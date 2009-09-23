@@ -255,7 +255,7 @@ public class ClsConstants {
 	public static final ResourceBundle initProperties=ResourceBundle.getBundle(initPropsFile);
 
 	public static final String USER_DIR = System.getProperty("user.dir");
-	public static final String RES_DIR = "C://eclipse//workspace//SIGA-92//WebContent";
+	public static final String RES_DIR = "C://eclipse//workspace//SIGA92//WebContent";
 
 	public static final String APPLICATION_NAME = initProperties.getString("init.application.name");
   	public static final String DEFAULT_LANGUAGE= initProperties.getString("init.default.language");
