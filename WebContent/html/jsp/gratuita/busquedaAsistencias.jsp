@@ -1,0 +1,551 @@
+<!-- busquedaAsistencias.jsp -->
+<!-- CABECERA JSP -->
+<meta http-equiv="Expires" content="0">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="Conte nt-Type" content="text/html; charset=ISO-8859-1">
+<%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
+
+<!-- TAGLIBS -->
+<%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
+<%@ taglib uri = "struts-bean.tld" prefix="bean"%>
+<%@ taglib uri = "struts-html.tld" prefix="html"%>
+<%@ taglib uri = "struts-logic.tld" prefix="logic"%>
+
+<!-- IMPORTS -->
+<%@ page import="com.siga.administracion.SIGAConstants"%>
+<%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
+<%@ page import="com.atos.utils.UsrBean"%>
+<%@ page import="java.util.*"%>
+<%@ page import="com.siga.Utilidades.*"%>
+<%@ page import="com.siga.beans.*"%>
+
+<% 
+	String app=request.getContextPath(); 
+	HttpSession ses=request.getSession(true);
+	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
+	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+
+	// parametro
+	GenParametrosAdm admPar = new GenParametrosAdm(usr);
+	String validarVolantes = admPar.getValor(usr.getLocation(),"SCS","VALIDAR_VOLANTE","N");	
+	
+	String nColegiado =  request.getAttribute("nColegiado")==null?"":(String)request.getAttribute("nColegiado");
+	String nombreColegiado =  request.getAttribute("nombreColegiado")==null?"":(String)request.getAttribute("nombreColegiado");
+
+	String[] dato = {usr.getLocation()};
+	// Comprobamos si existe busqueda anterior
+	Hashtable busqueda = (Hashtable) ses.getAttribute("DATOSFORMULARIO");
+	//ses.removeAttribute("DATOSFORMULARIO");
+    Hashtable datosBusqueda = (Hashtable) ses.getAttribute("busqueda");
+	//ses.removeAttribute("busqueda");
+	String anio = 			  "";
+	String numero =           "";
+	String fechaDesde =       "";
+	String fechaHasta =       "";
+	String idTurno =          "";
+	String idGuardia =        "";
+	String tAsistencia =      "";
+	String tAsistenciaColegio = "";
+	String nif =              "";
+	String nombre =           "";
+	String apellido1 =        "";
+	String apellido2 =        "";
+	String actuacionValidada =        "";	
+	String asunto	=		  "";
+	String juzgado=			  "";
+	String comisariaAsi="";
+	String tipoActuacion =	  "";
+	String comisariaInstitucionAsi="";
+	String numeroColegiado = "";
+	ArrayList tipoActuacionSel   = new ArrayList();
+	ArrayList juzgadoActu   = new ArrayList();
+	ArrayList acreditacion   = new ArrayList();	
+	
+	ArrayList estadoSel    = new ArrayList();
+	ArrayList actuacionesPendientesSel = new ArrayList();
+	String estado="",actuacionesPendientes="";
+    String busquedaRealizada= "";
+	
+   	ArrayList tAsistenciaA = new ArrayList();
+   	ArrayList tAsistenciaColegioA = new ArrayList();
+   	ArrayList turnosA = new ArrayList();
+   	ArrayList guardiasA = new ArrayList();
+	ArrayList comisariaSel = new ArrayList();
+	boolean buscar = false;
+	String esVolver = (String) ses.getAttribute("esVolver");
+	anio = UtilidadesBDAdm.getYearBD("");
+    if (busqueda!=null && (busqueda.get("BUSQUEDAREALIZADA")!=null ||!busqueda.get("BUSQUEDAREALIZADA").toString().equals("") )){
+		busquedaRealizada = busqueda.get("BUSQUEDAREALIZADA").toString();
+	}
+	fechaDesde=UtilidadesBDAdm.getFechaBD("");
+	
+	//if((busquedaRealizada!=null) && (!busquedaRealizada.equals("")) ) 
+	if(busqueda!=null && (esVolver!=null && esVolver.equals("1")))
+	{ 
+	  
+		comisariaAsi            = (String) busqueda.get(ScsAsistenciasBean.C_COMISARIA);
+		comisariaInstitucionAsi = (String) busqueda.get(ScsAsistenciasBean.C_COMISARIA_IDINSTITUCION);
+		anio = 			  (String) datosBusqueda.get("anio");              
+		numero =           UtilidadesHash.getString(datosBusqueda,"numero");   
+		
+		         
+		fechaDesde =       (String) datosBusqueda.get("fechaDesde");        
+		fechaHasta =       (String) datosBusqueda.get("fechaHasta");        
+		idTurno =          (String) datosBusqueda.get("idTurno");           
+		idGuardia =        (String) datosBusqueda.get("idGuardia");         
+		nColegiado =       (String) datosBusqueda.get("nColegiado");    
+		tAsistencia =      (String) datosBusqueda.get("tAsistencia");       
+		tAsistenciaColegio = (String) datosBusqueda.get("tAsistenciaColegio");
+		nif =              (String) datosBusqueda.get("nif");               
+		nombre =           (String) datosBusqueda.get("nombre");            
+		apellido1 =        (String) datosBusqueda.get("apellido1");         
+		apellido2 =        (String) datosBusqueda.get("apellido2"); 
+		estado =		   (String) datosBusqueda.get("ESTADO");
+		actuacionesPendientes = (String) datosBusqueda.get("actuacionesPendientes");   
+		asunto=				(String) datosBusqueda.get("asunto");
+		juzgado=			(String) datosBusqueda.get("JUZGADO");
+		comisariaAsi=		(String) datosBusqueda.get(ScsAsistenciasBean.C_COMISARIA);
+		comisariaInstitucionAsi=		(String) datosBusqueda.get(ScsAsistenciasBean.C_COMISARIA_IDINSTITUCION);
+		tipoActuacion= 		(String) datosBusqueda.get("tipoActuacion");
+		numeroColegiado = (String)datosBusqueda.get("numeroColegiado");
+		// Preparamos la seleccion de los combos
+		tAsistenciaA.add(tAsistencia);
+		tAsistenciaColegioA.add(tAsistenciaColegio);
+		turnosA.add(usr.getLocation()+","+idTurno);
+		guardiasA.add(idGuardia);
+		ses.removeAttribute("esVolver");
+	}
+	
+	String[] parametroTipoActuacion = {usr.getLocation(), tAsistenciaColegio}; 
+	
+	if (tipoActuacion!=null )
+		tipoActuacionSel.add(0,tipoActuacion);
+	if (juzgado!=null )
+		juzgadoActu.add(0,juzgado);
+	if (estado!=null )
+		estadoSel.add(0,estado);
+	if (actuacionesPendientes!=null )
+		actuacionesPendientesSel.add(0,actuacionesPendientes);
+	if (comisariaAsi!=null && comisariaInstitucionAsi!=null)
+		comisariaSel.add(0,comisariaAsi+","+comisariaInstitucionAsi);
+	if((esVolver!=null && esVolver.equals("1")))
+	{
+		ses.removeAttribute("esVolver");
+		buscar = true;
+	}
+%>
+
+<html>
+
+<!-- HEAD -->
+<head>
+
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/validation.js" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>	
+	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+	
+	<!-- INICIO: TITULO Y LOCALIZACION -->
+	<siga:TituloExt 
+		titulo="gratuita.busquedaAsistencias.literal.titulo" 
+		localizacion="gratuita.busquedaAsistencias.literal.localizacion"/>
+	<!-- FIN: TITULO Y LOCALIZACION -->
+	
+	<script language="JavaScript">	
+	
+	function buscarCliente ()
+	{
+		var resultado = ventaModalGeneral("busquedaClientesModalForm","G");
+		var colegiado = document.getElementById('nColegiado');
+		if (resultado != null && resultado[2]!=null)
+		{
+			colegiado=resultado[2];
+		}
+		if(colegiado!=null) 
+		{
+			document.forms[1].colegiado.value = colegiado;
+		}
+	}
+	
+	function refrescarLocal()
+	{
+		buscar();
+	}
+
+	function fLoad()
+	{
+		var tmp1 = document.getElementsByName("turnos");
+		var tmp2 = tmp1[0]; 
+		tmp2.onchange();
+	}
+	function inicio(){
+		// Ajustamos el numero del colegiado y simulamos la busqueda
+		<%if(!nColegiado.equalsIgnoreCase("")){%>
+			 document.getElementById("numeroNifTagBusquedaPersonas").value =<%= numeroColegiado%>;
+			 obtenerPersonas();
+		<%}%>
+		// El turno se carga solo pero tenemos que forzar el onChange para cargar sus guardias 
+		fLoad();
+		// Leemos las actuaciones pendientes para seleccionar en el combo
+		<%if(actuacionesPendientes.equalsIgnoreCase("NO")){%>
+			document.getElementById("actuacionesPendientes").selectedIndex=1;
+		<%}else if(actuacionesPendientes.equalsIgnoreCase("SI")){%>
+			document.getElementById("actuacionesPendientes").selectedIndex=2; 
+		<%}else if(actuacionesPendientes.equalsIgnoreCase("SINACTUACIONES")){%>
+			document.getElementById("actuacionesPendientes").selectedIndex=3;
+		<%}else{%>
+			document.getElementById("actuacionesPendientes").selectedIndex=0;
+		<%}%>
+		<%if (busquedaRealizada.equals("1") && (esVolver!=null && esVolver.equals("1"))) {%>
+		      buscarPaginador();
+		<%}%>
+		}
+
+		function obtenerJuzgado() 
+			{ 
+			  if (document.getElementById("codigoExtJuzgadoActu").value!=""){
+
+  				   document.MantenimientoJuzgadoForm.nombreObjetoDestino.value="juzgado";	
+				   document.MantenimientoJuzgadoForm.codigoExt.value=document.getElementById("codigoExtJuzgadoActu").value;
+				   document.MantenimientoJuzgadoForm.submit();		
+				   
+				//}
+			 }
+			}
+			
+			function traspasoDatos(resultado){
+		
+		      seleccionComboSiga("juzgado",resultado[0]);
+		    }	
+
+	</script>
+	
+</head>
+
+<body onLoad="ajusteAlto('resultado');inicio();">
+
+	<!-- INICIO: FORMULARIO DE BUSQUEDA DE CLIENTES -->
+	
+	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="" style="display:none">
+		<input type="hidden" name="actionModal" value="">
+		<input type="hidden" name="modo" value="abrirBusquedaModal">
+	</html:form>
+
+	<!-- FIN: FORMULARIO DE BUSQUEDA DE CLIENTES -->	
+	<html:form action = "/JGR_Asistencia.do" method="POST" target="resultado">
+		<input type="hidden" name="actionModal" value="">
+		<html:hidden property = "modo" value = ""/>	
+		<html:hidden property = "idTurno" value = ""/>	
+		<html:hidden property = "idGuardia" value = ""/>	
+		<input type="hidden" name="limpiarFilaSeleccionada" value="">
+		<html:hidden name="AsistenciasForm" property="colegiado" value=""/>
+	
+	<!-- INICIO: CAPA DE REGISTRO CON MEDIDAS EN EL ESTILO -->
+	<!-- INICIO: CAMPOS DE BUSQUEDA-->
+	<!-- Zona de campos de busqueda o filtro -->
+ 	<siga:ConjCampos leyenda="gratuita.busquedaAsistencias.literal.titulo">
+	<table width="100%" border="0">
+
+		<tr>
+			<td class="labelText">	
+			<siga:Idioma key="gratuita.busquedaAsistencias.literal.anyo"/> / <siga:Idioma key="gratuita.busquedaAsistencias.literal.numero"/>
+			</td>
+		<td class="labelText">
+			<html:text name="AsistenciasForm" property="anio" size="4" maxlength="4" styleClass="box" value="<%=anio%>"></html:text> / <html:text name="AsistenciasForm" property="numero" size="10" maxlength="10" styleClass="box" value="<%=numero%>"></html:text>
+			</td>
+			<td class="labelText">
+			&nbsp;
+			</td>
+		<td class="labelText" >	
+			&nbsp;
+			</td>
+			<td class="labelText">	
+				<siga:Idioma key="gratuita.busquedaAsistencias.literal.fechaAsistencia"/>
+			 &nbsp; <siga:Idioma key="gratuita.busquedaAsistencias.literal.entre"/>
+			</td>
+		<td>
+			<siga:Fecha nombreCampo="fechaDesde" valorInicial="<%=fechaDesde%>" />
+			&nbsp;<a onClick="return showCalendarGeneral(fechaDesde);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+			</td>
+		<td class="labelText">	
+			<siga:Idioma key="gratuita.busquedaAsistencias.literal.y"/>
+		</td>
+		<td>	
+			<siga:Fecha nombreCampo="fechaHasta" valorInicial="<%=fechaHasta%>" />
+			&nbsp;<a onClick="return showCalendarGeneral(fechaHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+		</td>
+		</tr>
+		<tr>
+			<td class="labelText">
+				<siga:Idioma key="gratuita.busquedaAsistencias.literal.turno"/>
+			</td>
+			<td colspan="3">
+				<siga:ComboBD nombre ="turnos" tipo ="turnos" clase="boxCombo" ancho="300" obligatorio="false" accion="Hijo:scsinscripcionguardia" parametro="<%=dato%>" elementoSel="<%=turnosA%>" />
+			</td>	
+			<td class="labelText">
+				<siga:Idioma key="gratuita.busquedaAsistencias.literal.guardia"/>
+			</td>
+			<td colspan="3">
+				<siga:ComboBD nombre = "scsinscripcionguardia" tipo="guardias" clase="boxCombo" hijo="t" parametro="<%=dato%>"  elementoSel="<%=guardiasA%>" ancho="200"/>
+			</td>	
+		</tr>
+		
+		<tr>
+		
+		<td class="labelText">
+				<siga:Idioma key="gratuita.mantAsistencias.literal.estado"/>
+			</td>
+			<td colspan="3">	
+				<siga:ComboBD nombre="estado" tipo="cmbEstadosAsistencia" obligatorio="false" accion="" elementoSel="<%=estadoSel%>" clase="boxCombo" obligatorioSinTextoSeleccionar="no"/>
+			</td>
+			<td class="labelText">
+				<siga:Idioma key="gratuita.busquedaAsistencias.literal.actuacionesValidadas"/>
+			</td>	
+		<td colspan="3">	
+			<Select name="actuacionesPendientes" class="boxCombo">
+					<option value=''  selected ></option>
+					<option value='No' ><siga:Idioma key="general.no"/></option>
+					<option value='Si' ><siga:Idioma key="general.yes"/></option>
+					<option value='SinActuaciones' ><siga:Idioma key="gratuita.busquedaAsistencias.literal.sinActuaciones"/></option>
+			</Select>
+		</td>
+		
+			
+		
+		</tr>
+		
+		<tr><td colspan="8">
+			<siga:BusquedaPersona tipo="colegiado" titulo="gratuita.seleccionColegiadoJG.literal.titulo" idPersona="colegiado">
+			</siga:BusquedaPersona>
+		</td></tr>
+		<tr>
+
+			<td class="labelText">
+				<siga:Idioma key="gratuita.busquedaAsistencias.literal.tipoAsistencia"/>
+			</td>
+			<td  colspan="7">
+				<siga:ComboBD  ancho="660" nombre="idTipoAsistencia" tipo="scstipoasistencia" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=tAsistenciaA%>" />
+			</td>	
+		</tr>
+		<tr>
+
+			<td class="labelText" >
+				<siga:Idioma key="gratuita.busquedaAsistencias.literal.tipoAsistenciaColegio"/>
+			</td>
+			<td colspan="7">
+				<siga:ComboBD ancho="660" nombre="idTipoAsistenciaColegio" tipo="scstipoasistenciacolegio" estilo="true" clase="boxCombo" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=tAsistenciaColegioA%>" />
+			</td>	
+		</tr>
+	</table>
+	</siga:ConjCampos>
+
+	<siga:ConjCampos leyenda="gratuita.busquedaAsistencias.literal.asistido">
+	<table width="100%">
+	<tr>
+		<td class="labelText">	
+			<siga:Idioma key="gratuita.busquedaAsistencias.literal.nif"/>
+		</td>	
+		<td class="labelText">
+			<html:text name="AsistenciasForm" property="nif" size="10" maxlength="10" styleClass="box" value="<%=nif%>"></html:text>
+		</td>
+		<td class="labelText">
+			<siga:Idioma key="gratuita.busquedaAsistencias.literal.nombre"/>
+		</td>
+		<td class="labelText">	
+			<html:text name="AsistenciasForm" property="nombre" size="15" maxlength="100" styleClass="box" value="<%=nombre%>" ></html:text>
+		</td>	
+		<td class="labelText">
+			<siga:Idioma key="gratuita.busquedaAsistencias.literal.apellido1"/>
+		</td>
+		<td class="labelText">	
+			<html:text name="AsistenciasForm" property="apellido1" size="15" maxlength="100" styleClass="box" value="<%=apellido1%>" ></html:text>
+		</td>	
+		<td class="labelText">	
+			<siga:Idioma key="gratuita.busquedaAsistencias.literal.apellido2"/>
+		</td>
+		<td>
+			<html:text name="AsistenciasForm" property="apellido2" size="15" maxlength="100" styleClass="box" value="<%=apellido2%>" ></html:text>
+		</td>
+	</tr>
+	</table>
+	</siga:ConjCampos>
+	
+	<siga:ConjCampos leyenda="pestana.justiciagratuitadesigna.actuaciones">
+		<table  border="0" align="center" width="100%">
+			<tr>
+				<td class="labelText" colspan="1">	
+					<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.comisaria"/>
+				</td>	
+				<td class="labelText" colspan="1">
+					<siga:ComboBD nombre="comisaria" tipo="comboComisarias" ancho="300" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=comisariaSel%>" clase="boxCombo"/>
+				</td>
+				<td class="labelText" >
+					<siga:Idioma key="gratuita.mantAsistencias.literal.juzgado"/>
+				</td>
+				<td class="labelText" colspan="2">
+					<input type="text" name="codigoExtJuzgadoActu" class="box" size="8"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado();" />
+					<siga:ComboBD nombre="juzgado" tipo="comboJuzgados" ancho="383" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  hijo="t" elementoSel="<%=juzgadoActu%>" parametro="<%=dato%>" readonly="<%readOnly%>"/>           	   
+				</td>
+			</tr>
+			<tr>
+				<td class="labelText" colspan="1">	
+					<siga:Idioma key="informes.cartaAsistencia.asunto"/>
+				</td>	
+				<td class="labelText" colspan="1">
+					<html:text name="AsistenciasForm" property="asunto" size="44" maxlength="40" styleClass="box" value="<%=asunto%>"></html:text>					
+				</td>
+				<td class="labelText" colspan="1">
+					<siga:Idioma key="informes.cartaOficio.tipoActuacionLista"/>
+				</td>
+				<td class="labelText" colspan="2">
+				<siga:ComboBD ancho="450" nombre="tipoActuacion" tipo="comboTipoActuacionesGenerico" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorioSinTextoSeleccionar="no"  readonly="<%readOnly%>" elementoSel="<%=tipoActuacionSel%>" parametro="<%=parametroTipoActuacion%>" />
+				</td>
+			</tr>
+		</table>
+	</siga:ConjCampos>	
+	
+	
+	</html:form>
+	
+	<!-- FIN: CAMPOS DE BUSQUEDA-->	
+
+	
+<% if (validarVolantes.equals("S")) { %>
+		<siga:ConjBotonesBusqueda botones="VOL,C,B,N"  titulo="gratuita.busquedaAsistencias.literal.titulo"/>
+<% } else { %>
+		<siga:ConjBotonesBusqueda botones="C,B,N"  titulo="gratuita.busquedaAsistencias.literal.titulo"/>
+<% } %>
+
+	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
+	<!-- FIN  ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
+
+	<!-- INICIO: IFRAME LISTA RESULTADOS -->
+	<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
+					id="resultado"
+					name="resultado" 
+					scrolling="no"
+					frameborder="0"
+					marginheight="0"
+					marginwidth="0";					 
+					class="frameGeneral">
+	</iframe>
+
+
+	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
+	<script language="JavaScript">
+
+		function errorValidacion(){
+				var anio = document.getElementById('anio').value;		
+				var numero = document.getElementById('numero').value;
+				var colegiado = document.getElementById('colegiado').value;
+				var error = false;
+				
+				if ((anio !="") && isNaN(anio)) {
+						alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorAnio"/>');
+						error = true;
+				}
+				if (!error && (numero !="") && isNaN(numero)) {
+						alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorNumero"/>');
+						error = true;
+				}
+				if (!error && (colegiado !="") && isNaN(colegiado)) {
+						alert('<siga:Idioma key="FactSJCS.busquedaRetencionesJ.literal.errorNumerico"/>');
+						error = true;
+				}
+
+				return error;
+		}		
+
+		<!-- Funcion asociada a boton buscar -->
+		function buscar() 
+		{ 
+
+			document.forms[1].asunto.value = trim(document.forms[1].asunto.value);
+			document.forms[1].numero.value = trim(document.forms[1].numero.value);
+
+			if ( !validarObjetoAnio(document.getElementById("anio")) ){
+				alert("<siga:Idioma key="fecha.error.anio"/>");
+				return false;
+			}
+
+			if((validarFecha(document.forms[1].fechaDesde.value))&&
+				(validarFecha(document.forms[1].fechaHasta.value))){
+				sub();
+				if (!errorValidacion()) {
+					// obtenemos el idturno y el idguardia
+					document.forms[1].idGuardia.value 	= document.forms[1].scsinscripcionguardia.value;
+					document.forms[1].idTurno.value		= document.forms[1].turnos.value.substr(document.forms[1].turnos.value.indexOf(",")+1);
+					document.forms[1].target			= "resultado";
+					document.forms[1].modo.value 		= "buscarInit";
+					document.forms[1].submit();
+				}else{
+					fin();
+				}
+			}else{
+				setFocusFormularios();
+			}
+		}
+		function buscarPaginador() 
+		{
+		
+				if (!errorValidacion()) {
+					// obtenemos el idturno y el idguardia
+					document.forms[1].idGuardia.value 	= document.forms[1].scsinscripcionguardia.value;
+					document.forms[1].idTurno.value		= document.forms[1].turnos.value.substr(document.forms[1].turnos.value.indexOf(",")+1);
+					document.forms[1].target			= "resultado";
+					document.forms[1].modo.value 		= "buscarPor";
+					document.forms[1].submit();
+				}
+		}				
+		
+		function nuevo()
+		{
+			document.forms[1].modo.value = "nuevo";
+	   		var resultado = ventaModalGeneral(document.forms[1].name,"M");
+	   		if(resultado == "MODIFICADO") {
+				document.forms[1].anio.value   = "";
+				document.forms[1].numero.value = "";
+				document.forms[1].modo.value   = "editar";
+				document.forms[1].target       = "mainWorkArea";
+				document.forms[1].submit();
+	   		}
+		}
+		
+		function generarCarta() 
+		{
+			document.forms[1].modo.value	= "generarCarta";
+	   		var resultado = ventaModalGeneral(document.forms[1].name,"M");
+	   		if(resultado = "MODIFICADO"){
+	   			buscar();
+	   		}
+		}		
+		function validarVolante() 
+		{
+	   		var resultado = ventaModalGeneral(document.ValidarVolantesGuardiasForm.name,"G");
+		}
+		
+	</script>
+	<%
+		// para el boton volver
+		if(buscar) %><script>buscarPaginador();</script>
+	
+	<!-- INICIO: BOTONES BUSQUEDA -->	
+	<!-- FIN: BOTONES BUSQUEDA -->
+
+	<html:form action = "/JGR_ValidarVolantesGuardias.do" method="POST" target="resultado">
+		<input type="hidden" name="actionModal" value="">
+		<input type="hidden" name="modo" value="abrir">
+	</html:form>
+	<html:form action = "/JGR_MantenimientoJuzgados.do" method="POST" target="submitArea">
+		<input type="hidden" name="modo"        value="buscarJuzgado">
+		<html:hidden property = "codigoExt" value=""/>
+		<html:hidden property = "nombreObjetoDestino" value=""/>
+	</html:form>
+			
+<!-- INICIO: SUBMIT AREA -->
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+<!-- FIN: SUBMIT AREA -->
+</body>
+</html>

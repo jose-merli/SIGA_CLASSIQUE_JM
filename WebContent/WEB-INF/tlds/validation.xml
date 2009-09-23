@@ -1,0 +1,4349 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!DOCTYPE form-validation PUBLIC
+          "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.0//EN"
+          "http://jakarta.apache.org/commons/dtds/validator_1_0.dtd">
+
+<form-validation>
+
+    <global>
+        <!-- An example global constant
+        <constant>
+            <constant-name>postalCode</constant-name>
+            <constant-value>^\d{5}\d*$</constant-value>
+        </constant>
+        end example  Se llama asi: ${zip} -->
+    </global>
+
+	<global>
+	    <constant>
+	        <constant-name>telefonoSIGA</constant-name>
+<!--	        <constant-value>^(\+|[0-9])?[0-9]{8,14}$</constant-value>   -->
+	        <constant-value>^(\+|'')?[0-9]{9,14}$</constant-value>
+	    </constant>
+	</global>
+     <global>  
+        <constant>
+            <constant-name>sufijoFacturacion</constant-name>
+            <constant-value>^\w{1,5}$</constant-value>
+        </constant>
+      </global>
+
+    <formset>
+
+			<!-- Nota las comprobaciones sobre date dan problemas -->
+			
+			<form name="SolicitudIncorporacionForm">
+				<field 	property = "tipoSolicitud" 		   depends = "required"> 			<arg0 key="censo.SolicitudIncorporacion.literal.solicitudDe"/>				</field>
+				<field 	property = "fechaSolicitud" 		   depends = "required"> 			<arg0 key="censo.SolicitudIncorporacion.literal.fechaSolicitud"/>			</field>
+	  			<field 	property = "tipoColegiacion" 	   depends = "required"> 			<arg0 key="censo.SolicitudIncorporacion.literal.tipoColegiacion"/> 		</field>
+				<field 	property = "tipoDon" 				   depends = "required"> 			<arg0 key="censo.SolicitudIncorporacion.literal.tratamiento"/> 				</field>
+				<field 	property = "tipoIdentificacion" 	   depends = "required"> 			<arg0 key="censo.SolicitudIncorporacion.literal.tipoIdentificacion"/> 	    </field>
+				<field 	property = "NIFCIF" 				   depends = "required"> 			<arg0 key="censo.SolicitudIncorporacion.literal.nifcif"/>						</field>
+				<field 	property = "nombre" 				   depends = "required"> 			<arg0 key="censo.SolicitudIncorporacion.literal.nombre"/> 					</field>
+				<field 	property = "apellido1" 			   depends = "required"> 			<arg0 key="censo.SolicitudIncorporacion.literal.apellido1"/> 					</field>
+<!--			<field 	property = "apellido2" 			   depends = "required"> 			<arg0 key="censo.SolicitudIncorporacion.literal.apellido2"/> 					</field> -->
+				<field 	property = "fechaNacimiento" 	   depends = "required"> 			<arg0 key="censo.SolicitudIncorporacion.literal.fechaNacimiento"/>		</field>
+				<field 	property = "domicilio" 			   depends = "required"> 			<arg0 key="censo.SolicitudIncorporacion.literal.domicilio"/> 					</field>
+<!--				<field 	property = "poblacion" 			   depends = "required"> 			<arg0 key="censo.SolicitudIncorporacion.literal.poblacion"/> 				</field> -->
+<!--				<field 	property = "provincia" 			   depends = "required"> 			<arg0 key="censo.SolicitudIncorporacion.literal.provincia"/> 					</field> -->
+				<!-- RGG 20-10-2005 <field 	property = "estadoCivil" 			   depends = "required"> 			<arg0 key="censo.SolicitudIncorporacion.literal.estadoCivil"/> 					</field> -->
+				<field 	property = "CP" depends = "required,maxlength,integer"> 	
+					<arg0 key="censo.SolicitudIncorporacion.literal.codigoPostal"/>
+					<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+					<var>
+						<var-name>maxlength</var-name>
+						<var-value>5</var-value>
+					</var>
+				</field>
+				<field 	property = "telefono1" 				depends = "required,  mask"> 
+						<msg name="mask" key="errors.telefono"/>		
+						<arg0 key="censo.SolicitudIncorporacion.literal.telefono1"/>					
+						<var>
+			                <var-name>mask</var-name>
+			                <var-value>${telefonoSIGA}</var-value>
+			            </var>
+				</field>
+				<field 	property = "telefono2" 				depends = " mask"> 
+				       		<msg name="mask" key="errors.telefono"/>		
+							<arg0 key="censo.SolicitudIncorporacion.literal.telefono2"/>					
+							<var>
+				                <var-name>mask</var-name>
+				                <var-value>${telefonoSIGA}</var-value>
+				            </var>
+				</field>
+				<field 	property = "telefono3" 				depends = " mask"> 
+				       		<msg name="mask" key="errors.telefono"/>		
+							<arg0 key="censo.SolicitudIncorporacion.literal.telefono3"/>					
+							<var>
+				                <var-name>mask</var-name>
+				                <var-value>${telefonoSIGA}</var-value>
+				            </var>
+				</field>
+				<field 	property = "fax1" 				depends = "mask"> 
+				       		<msg name="mask" key="errors.telefono"/>		
+							<arg0 key="censo.SolicitudIncorporacion.literal.fax1"/>					
+							<var>
+				                <var-name>mask</var-name>
+				                <var-value>${telefonoSIGA}</var-value>
+				            </var>
+				</field>
+				<field 	property = "fax2" 				depends = "mask"> 
+				       		<msg name="mask" key="errors.telefono"/>		
+							<arg0 key="censo.SolicitudIncorporacion.literal.fax2"/>					
+							<var>
+				                <var-name>mask</var-name>
+				                <var-value>${telefonoSIGA}</var-value>
+				            </var>
+				</field>
+				<field 	property = "mail" 						depends = "required, email"><arg0 key="censo.SolicitudIncorporacion.literal.email"/>						</field>
+				<field 	property = "observaciones" 		depends = "maxlength">			
+						<arg0 key="censo.SolicitudIncorporacion.literal.observaciones"/>			
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>255</var-value>
+						</var>
+				</field>
+
+				<field 	property="tipoModalidadDocumentacion" depends="required"> <arg0 key="censo.SolicitudIncorporacion.literal.documentacion"/>	</field>
+				
+			</form>
+    
+       <!-- An example form
+        <form name="logonForm">
+            <field
+                property="username"
+                depends="required">
+                    <arg0 key="logonForm.username"/>
+             </field>
+         <field
+            property="password"
+            depends="required,mask">
+            <arg0 key="logonForm.password"/>
+            <var>
+                <var-name>mask</var-name>
+                <var-value>^[0-9a-zA-Z]*$</var-value>
+            </var>
+         </field>
+        </form>
+        
+        <arg0 key="${var:minlength}" name="minlength" resource="false" />
+				<arg1 key="${var:maxlength}" name="maxlength" resource="false" /> 
+					<var>
+						<var-name>minlength</var-name>
+						<var-value>3</var-value>
+					</var>
+					<var>
+						<var-name>maxlength</var-name>
+						<var-value>10</var-value>
+					</var>
+					
+					
+        end example form -->
+
+	<!-- BusquedaClientesForm raul.ggonzalez 30-12-2004 -->
+
+			<form name="busquedaClientesForm">
+				<field 	property = "nombreInstitucion" 	
+						depends = "maxlength"> 			
+						<arg0 key="censo.BusquedaClientesAvanzada.literal.colegio"/>				
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>100</var-value>
+						</var>
+				</field>
+				
+				<field 	property = "numeroColegiado" 	
+						depends = "mask"> 			
+        				<msg name="mask" key="gratuita.modalDefinirDesignas.errorNumero"/>		
+						<arg0 key="censo.BusquedaClientesAvanzada.literal.nColegiado"/>			
+						<var>
+		         			<var-name>mask</var-name>
+		         			<var-value>^[0-9*?]{0,20}$</var-value>
+						</var>
+				</field>
+	  			<field 	property = "tipoCliente" 		
+	  					depends = "maxlength"> 			
+	  					<arg0 key="censo.BusquedaClientesAvanzada.literal.tipoCliente"/> 		
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>8</var-value>
+						</var>
+	  			</field>
+				<field 	property = "nif" 				
+						depends = "maxlength"> 			
+						<arg0 key="censo.BusquedaClientesAvanzada.literal.nif"/> 				
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>20</var-value>
+						</var>
+				</field>
+				<field 	property = "nombrePersona" 		
+						depends = "maxlength"> 			
+						<arg0 key="censo.BusquedaClientesAvanzada.literal.nombre"/>	
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>100</var-value>
+						</var>
+				</field>
+				<field 	property = "apellido1" 			
+						depends = "maxlength"> 			
+						<arg0 key="censo.BusquedaClientesAvanzada.literal.apellido1"/>							
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>100</var-value>
+						</var>
+				</field>
+				<field 	property = "apellido2" 			
+						depends = "maxlength"> 			
+						<arg0 key="censo.BusquedaClientesAvanzada.literal.apellido2"/> 						
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>100</var-value>
+						</var>
+				</field>
+			</form>
+
+	<!-- FIN: BusquedaClientesForm raul.ggonzalez 30-12-2004 -->
+
+	<!-- BusquedaClientesAvanzada raul.ggonzalez 30-12-2004 -->
+
+			<form name="busquedaClientesAvanzadaForm">
+				<field 	property = "nombreInstitucion" 	
+						depends = "maxlength"> 			
+						<arg0 key="censo.BusquedaClientesAvanzada.literal.colegio"/>				
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>100</var-value>
+						</var>
+				</field>
+				
+				<field 	property = "numeroColegiado" 	
+						depends = "mask"> 			
+        				<msg name="mask" key="gratuita.modalDefinirDesignas.errorNumero"/>		
+						<arg0 key="censo.BusquedaClientesAvanzada.literal.nColegiado"/>			
+						<var>
+		         			<var-name>mask</var-name>
+		         			<var-value>^[0-9*?]{0,20}$</var-value>
+						</var>
+				</field>
+	  			<field 	property = "tipoCliente" 		
+	  					depends = "maxlength"> 			
+	  					<arg0 key="censo.BusquedaClientesAvanzada.literal.tipoCliente"/> 		
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>8</var-value>
+						</var>
+	  			</field>
+				<field 	property = "nif" 				
+						depends = "maxlength"> 			
+						<arg0 key="censo.BusquedaClientesAvanzada.literal.nif"/> 				
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>20</var-value>
+						</var>
+				</field>
+				<field 	property = "nombrePersona" 		
+						depends = "maxlength"> 			
+						<arg0 key="censo.BusquedaClientesAvanzada.literal.nombre"/>	
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>100</var-value>
+						</var>
+				</field>
+				<field 	property = "apellido1" 			
+						depends = "maxlength"> 			
+						<arg0 key="censo.BusquedaClientesAvanzada.literal.apellido1"/>							
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>100</var-value>
+						</var>
+				</field>
+				<field 	property = "apellido2" 			
+						depends = "maxlength"> 			
+						<arg0 key="censo.BusquedaClientesAvanzada.literal.apellido2"/> 						
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>100</var-value>
+						</var>
+				</field>
+				<field 	property = "grupoClientes" 		
+						depends = "maxlength"> 			
+						<arg0 key="censo.BusquedaClientesAvanzada.literal.grupoCliente"/> 					
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>100</var-value>
+						</var>
+				</field>
+				<field 	property = "fechaNacimiento" 	
+						depends = "maxlength"> 			
+						<arg0 key="censo.BusquedaClientesAvanzada.literal.fechaNacimiento"/> 					
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>10</var-value>
+						</var>
+				</field>
+				<field 	property = "sexo" 				
+						depends = "maxlength"> 			
+						<arg0 key="censo.BusquedaClientesAvanzada.literal.sexo"/>		
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>6</var-value>
+						</var>
+				</field>
+				<field 	property = "domicilio" 				
+						depends = "maxlength"> 			
+						<arg0 key="censo.BusquedaClientesAvanzada.literal.domicilio"/> 					
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>100</var-value>
+						</var>
+				</field>
+				<field 	property = "codigoPostal" 		
+						depends = "maxlength"> 			
+						<arg0 key="censo.BusquedaClientesAvanzada.literal.cp"/> 					
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>5</var-value>
+						</var>
+				</field>
+				<field 	property = "telefono" 			
+						depends = "maxlength,mask"> 
+						
+						<msg name="mask" key="errors.telefono"/>		
+									
+						<arg0 key="censo.BusquedaClientesAvanzada.literal.telefono"/> 			
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>20</var-value>
+						</var>
+						<var>
+			                <var-name>mask</var-name>
+			                <var-value>${telefonoSIGA}</var-value>
+			            </var>
+				</field>
+				<field 	property = "fax" 				
+						depends = "maxlength"> 			
+						<arg0 key="censo.BusquedaClientesAvanzada.literal.fax"/>					
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>20</var-value>
+						</var>
+				</field>
+				<field 	property = "correo" 			
+						depends = "maxlength,email">	
+						<arg0 key="censo.BusquedaClientesAvanzada.literal.correo"/>							
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>100</var-value>
+						</var>
+				</field>
+				<field 	property = "ejerciente" 		
+						depends = "maxlength">			
+						<arg0 key="censo.BusquedaClientesAvanzada.literal.situacion"/> 					
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>3</var-value>
+						</var>
+				</field>
+				<field 	property = "fechaIncorporacion" 
+						depends = "maxlength">			
+						<arg0 key="censo.BusquedaClientesAvanzada.literal.fechaIncorporacion"/> 					
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>10</var-value>
+						</var>
+				</field>
+				<field 	property = "residente" 			
+						depends = "maxlength">			
+						<arg0 key="censo.BusquedaClientesAvanzada.literal.residente"/> 					
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>3</var-value>
+						</var>
+				</field>
+				<field 	property = "fechaAlta" 			
+						depends = "maxlength">			
+						<arg0 key="censo.BusquedaClientesAvanzada.literal.fechaAlta"/> 					
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>10</var-value>
+						</var>
+				</field>
+				<field 	property = "concepto" 			
+						depends = "maxlength">			
+						<arg0 key="censo.BusquedaClientesAvanzada.literal.concepto"/>			
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>100</var-value>
+						</var>
+				</field>
+			</form>
+
+	<!-- FIN: BusquedaClientesAvanzadaForm raul.ggonzalez 30-12-2004 -->
+
+
+ <!-- INICIO: MantenimientoPJForm raul.ggonzalez 26-01-2006 -->
+
+   <form name="MantenimientoPJForm">
+                <field property = "partidoJudicial" depends = "maxlength">
+                    <arg0 key="gratuita.busquedaPJ.literal.partido"/>
+                    <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                    <var>
+                        <var-name>maxlength</var-name>
+                        <var-value>100</var-value>
+                    </var>
+                </field>
+
+            </form>
+
+ <!-- FIN: MantenimientoPJForm raul.ggonzalez 26-01-2006 -->
+
+ <!-- INICIO: MantenimientoMaestroPJForm LMS 31-08-2006 -->
+
+	<form name="MantenimientoMaestroPJForm">
+		<field property = "partidoJudicial" depends = "maxlength">
+			<arg0 key="gratuita.busquedaMaestroPJ.literal.partido"/>
+			<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>100</var-value>
+				</var>
+		</field>
+	</form>
+
+ <!-- FIN: MantenimientoMaestroPJForm LMS 31-08-2006 -->
+
+ <!-- INICIO: SancionesLetradoForm RGG 19/03/2007 -->
+
+	<form name="SancionesLetradoForm">
+		<field property = "nombreMostrado" depends = "required">
+			<arg0 key="censo.busquedaSancionesLetrado.literal.ncolegiado"/>
+		</field>
+		<field property = "tipoSancion" depends = "required">
+			<arg0 key="censo.busquedaSancionesLetrado.literal.tipoSancion"/>
+		</field>
+		<field property = "nombreInstitucion" depends = "required">
+			<arg0 key="censo.busquedaSancionesLetrado.literal.colegio"/>
+		</field>
+		<field property = "refColegio" depends = "maxlength">
+			<arg0 key="censo.BusquedaSancionesLetrado.literal.refColegio"/>
+			<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>50</var-value>
+				</var>
+		</field>
+		<field property = "refCGAE" depends = "maxlength">
+			<arg0 key="censo.BusquedaSancionesLetrado.literal.refCGAE"/>
+			<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>50</var-value>
+				</var>
+		</field>
+		<field property = "texto" depends = "maxlength">
+			<arg0 key="gratuita.BusquedaSancionesLetrado.literal.texto"/>
+			<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>3500</var-value>
+				</var>
+		</field>
+		<field property = "observaciones" depends = "maxlength">
+			<arg0 key="gratuita.BusquedaSancionesLetrado.literal.observaciones"/>
+			<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>3500</var-value>
+				</var>
+		</field>
+	</form>
+
+ <!-- FIN: SancionesLetradoForm RGG 19/03/2007 -->
+
+ <!-- INICIO: DefinirGuardiasTurnosForm ruben.fernandez 03-01-2004 -->
+
+  <form name="DefinirGuardiasTurnosForm">
+            <field  property = "guardia" depends ="required,maxlength">         
+            <arg0 key="censo.SolicitudIncorporacion.literal.nombre"/>
+             <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+               <var>
+                   <var-name>maxlength</var-name>
+                   <var-value>100</var-value>
+                </var>
+            </field>
+            <field  property = "descripcion" depends = "required,maxlength">         
+            <arg0 key="gratuita.maestroTurnos.literal.descripcion"/>
+                    <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                    <var>
+                            <var-name>maxlength</var-name>
+                            <var-value>1024</var-value>
+                    </var>
+            </field>
+            <field  property = "letradosGuardia" depends = "required,integer,mask">           
+            <arg0 key="gratuita.listarGuardiasTurno.literal.letradosGuardia"/>
+            <var><var-name>mask</var-name><var-value>^[0-9]*$</var-value></var>
+			</field>
+            <field  property = "letradosSustitutos" depends = "required,integer,mask">           
+            <arg0 key="gratuita.listarGuardiasTurno.literal.numeroSustitutos"/>
+            <var><var-name>mask</var-name><var-value>^[0-9]*$</var-value></var>            
+			</field>
+            <field  property = "duracion"      depends = "required,integer,mask">           
+            <arg0 key="gratuita.listarGuardias.literal.duracion"/>
+            <var><var-name>mask</var-name><var-value>^[0-9]*$</var-value></var>            
+			</field>
+			<field  property = "diasPeriodo"   depends = "integer,mask">           
+            <arg0 key="gratuita.calendarioGuardias.literal.periodo"/>
+            <var><var-name>mask</var-name><var-value>^[0-9]*$</var-value></var>            
+			</field>
+            <field  property = "diasPagados"    depends = "required,integer">           
+            <arg0 key="gratuita.listarGuardiasTurno.literal.diasPagados"/>
+			</field>
+            <field  property = "diasSeparacion" depends = "required,integer,mask">           
+            <arg0 key="gratuita.maestroGuardias.literal.diasSeparacion"/>
+            <var><var-name>mask</var-name><var-value>^[0-9]*$</var-value></var>            
+			</field>
+		  <field  property = "crit_1"    depends = "required">
+		   <arg0 key="gratuita.maestroTurnos.literal.primerCriterio"/>
+		  </field>
+		     <field  property = "crit_2"    depends = "required">
+		   <arg0 key="gratuita.maestroTurnos.literal.segundoCriterio"/>
+		  </field>
+		     <field  property = "crit_3"    depends = "required">
+		   <arg0 key="gratuita.maestroTurnos.literal.terceroCriterio"/>
+		  </field>
+		     <field  property = "crit_4"    depends = "required">
+		   <arg0 key="gratuita.maestroTurnos.literal.cuartoCriterio"/>
+		  </field>
+		     <field  property = "ord_1"    depends = "required">
+		   <arg0 key="gratuita.maestroTurnos.literal.ordPrimerCriterio"/>
+		  </field>
+		     <field  property = "ord_2"    depends = "required">
+		   <arg0 key="gratuita.maestroTurnos.literal.ordSegundoCriterio"/>
+		  </field>
+		     <field  property = "ord_3"    depends = "required">
+		   <arg0 key="gratuita.maestroTurnos.literal.ordTercerCriterio"/>
+		  </field>
+		     <field  property = "ord_4"    depends = "required">
+		   <arg0 key="gratuita.maestroTurnos.literal.ordCuartoCriterio"/>
+		  </field>
+		
+		  </form>
+	 <!-- FIN: DefinirGuardiasTurnosForm ruben.fernandez 03-01-2004 -->
+
+
+
+
+
+	<!-- INICIO: DefinirMantenimDictamenesEJGForm leandro 14-07-2008 -->
+
+			<form name="DefinirMantenimDictamenesEJGForm">
+			    <field property = "codigoExt" depends = "required">
+			        <arg0 key="general.codeext"/>
+			    </field>
+			    <field property = "abreviatura" depends = "required">
+			        <arg0 key="censo.fichaCliente.literal.abreviatura"/>
+			    </field>
+			    <field property = "descripcion" depends = "required">
+			        <arg0 key="general.description"/>
+			    </field>
+			    <field property = "idFundamento" depends = "required">
+			        <arg0 key="gratuita.operarDictamen.literal.fundamentoclf"/>
+			    </field>
+			    <field property = "idTipoDictamen" depends = "required">
+			        <arg0 key="gratuita.operarDictamen.literal.tipoDictamen"/>
+			    </field>			    			    			    			    
+
+
+			</form>	
+
+	<!-- FIN: DefinirMantenimDictamenesEJGForm leandro 14-07-2008 -->	
+	
+
+
+
+
+	<!-- INICIO: HistoricoForm miguel.villegas 04-01-2004 -->
+
+			<form name="HistoricoForm">
+			    <field property = "cmbCambioHistorico" depends = "required">
+			        <arg0 key="censo.consultaHistorico.literal.tipo"/>
+			    </field>
+			    <field property = "fechaEntrada" depends = "required">
+			        <arg0 key="censo.consultaHistorico.literal.fechaEntrada"/>
+			    </field>
+			    <field property = "fechaEfectiva" depends = "required">
+			        <arg0 key="censo.consultaHistorico.literal.fechaEfectiva"/>
+			    </field>
+			    <field property = "motivo" depends = "required,maxlength">
+			        <arg0 key="censo.consultaHistorico.literal.motivo"/>
+			        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+			        <var>
+			            <var-name>maxlength</var-name>
+			            <var-value>255</var-value>
+			        </var> 
+			    </field>
+			</form>	
+
+	<!-- FIN: HistoricoForm miguel.villegas 04-01-2004 -->
+
+ <!-- INICIO: DefinirTurnosForm ruben.fernandez 11-02-2005 -->
+   <form name="DefinirTurnosForm">
+     <field  property = "abreviatura"    depends = "required,maxlength">
+
+   <arg0 key="gratuita.listarGuardiasTurno.literal.abreviatura"/>
+       <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+       <var>
+        <var-name>maxlength</var-name>
+        <var-value>30</var-value>
+       </var>
+     </field>
+     <field  property = "nombre"    depends = "required,maxlength">
+   <arg0 key="censo.SolicitudIncorporacion.literal.nombre"/>
+      <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+      <var>
+        <var-name>maxlength</var-name>
+        <var-value>1024</var-value>
+       </var>
+     </field>
+     <field  property = "descripcion"    depends = "required,maxlength">
+
+   <arg0 key="gratuita.listarGuardiasTurno.literal.descripcion"/>
+      <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+      <var>
+        <var-name>maxlength</var-name>
+        <var-value>1024</var-value>
+      </var>
+     </field>
+     <field  property = "requisitos"    depends = "required,maxlength">
+   <arg0 key="gratuita.listarGuardiasTurno.literal.requisitos"/>
+      <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+      <var>
+        <var-name>maxlength</var-name>
+        <var-value>1024</var-value>
+      </var>
+     </field>
+     <field  property = "zona"    depends = "required">
+      <arg0 key="gratuita.definirTurnosIndex.literal.zona"/>
+     </field>
+     <field  property = "subzona"    depends = "required">
+      <arg0 key="gratuita.definirTurnosIndex.literal.subzona"/>
+     </field>
+     <field  property = "crit_1"    depends = "required">
+   <arg0 key="gratuita.maestroTurnos.literal.primerCriterio"/>
+  </field>
+     <field  property = "crit_2"    depends = "required">
+   <arg0 key="gratuita.maestroTurnos.literal.segundoCriterio"/>
+  </field>
+     <field  property = "crit_3"    depends = "required">
+   <arg0 key="gratuita.maestroTurnos.literal.terceroCriterio"/>
+  </field>
+     <field  property = "crit_4"    depends = "required">
+   <arg0 key="gratuita.maestroTurnos.literal.cuartoCriterio"/>
+  </field>
+     <field  property = "ord_1"    depends = "required">
+   <arg0 key="gratuita.maestroTurnos.literal.ordPrimerCriterio"/>
+  </field>
+     <field  property = "ord_2"    depends = "required">
+   <arg0 key="gratuita.maestroTurnos.literal.ordSegundoCriterio"/>
+  </field>
+     <field  property = "ord_3"    depends = "required">
+   <arg0 key="gratuita.maestroTurnos.literal.ordTercerCriterio"/>
+  </field>
+     <field  property = "ord_4"    depends = "required">
+   <arg0 key="gratuita.maestroTurnos.literal.ordCuartoCriterio"/>
+  </field>
+   </form>
+
+ <!-- FIN: DefinirTurnosForm ruben.fernandez 11-02-2005 -->
+
+
+
+	<!-- INICIO: DefinirListaGuardiasForm david.sanchezp 07-01-2004 -->
+			<form name="DefinirListaGuardiasForm">
+                <field property = "listaGuardias" depends = "required,maxlength">
+                    <arg0 key="gratuita.mantenimientoLG.literal.nombre"/>
+                    <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                    <var>
+                        <var-name>maxlength</var-name>
+                        <var-value>100</var-value>
+                    </var> 
+                </field>
+                
+                <field property = "lugar" depends = "maxlength">
+                    <arg0 key="gratuita.mantenimientoLG.literal.lugar"/>
+                    <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                    <var>
+                        <var-name>maxlength</var-name>
+                        <var-value>100</var-value>
+                    </var> 
+                </field>
+                
+                <field property = "observaciones" depends = "maxlength">
+                    <arg0 key="gratuita.mantenimientoLG.literal.observaciones"/>
+                    <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                    <var>
+                        <var-name>maxlength</var-name>
+                        <var-value>1024</var-value>
+                    </var> 
+                </field>
+            </form>
+	
+	<!-- FIN: DefinirListaGuardiasForm david.sanchezp 07-01-2004 -->
+
+	<!-- INICIO: DatosGeneralesSolicForm raul.ggonzalez 26-01-2005 -->
+
+			<form name="datosGeneralesSolicForm">
+				<field 	property = "motivo" 		
+						depends = "maxlength,required"> 			
+						<arg0 key="censo.consultaDatosGenerales.literal.motivo"/>	
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>255</var-value>
+						</var>
+				</field>
+			</form>
+
+	<!-- FIN: DatosGeneralesSolicForm raul.ggonzalez 26-01-2005 -->
+
+<!-- INICIO: consultaDireccionesForm nuria.rodriguezg 13-01-2005 -->
+      <form name="consultaDireccionesForm">
+        <field property = "telefono1" depends = "mask">
+           		<msg name="mask" key="errors.telefono"/>		
+                <arg0 key="censo.datosDireccion.literal.telefono1"/>
+				<var>
+	                <var-name>mask</var-name>
+	                <var-value>${telefonoSIGA}</var-value>
+	            </var>
+			</field>     
+			<field property = "telefono2" depends = "mask">
+           		<msg name="mask" key="errors.telefono"/>		
+                <arg0 key="censo.datosDireccion.literal.telefono2"/>
+				<var>
+	                <var-name>mask</var-name>
+	                <var-value>${telefonoSIGA}</var-value>
+	            </var>
+			</field>    
+			<field property = "fax1" depends = "mask">
+				<msg name="mask" key="errors.telefono"/>		
+                <arg0 key="censo.datosDireccion.literal.fax1"/>
+				<var>
+	                <var-name>mask</var-name>
+	                <var-value>${telefonoSIGA}</var-value>
+	            </var>
+			</field>    
+			<field property = "fax2" depends = "mask">
+				<msg name="mask" key="errors.telefono"/>
+                <arg0 key="censo.datosDireccion.literal.fax2"/>
+				<var>
+	                <var-name>mask</var-name>
+	                <var-value>${telefonoSIGA}</var-value>
+	            </var>
+			</field>    
+			<field property = "movil" depends = "mask">
+				<msg name="mask" key="errors.telefono"/>
+                <arg0 key="censo.datosDireccion.literal.movil"/>
+				<var>
+	                <var-name>mask</var-name>
+	                <var-value>${telefonoSIGA}</var-value>
+	            </var>
+			</field> 
+         <field property = "correoElectronico" depends = "maxlength,email">
+          <arg0 key="censo.datosDireccion.literal.correo"/>
+          <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+          <var>
+            <var-name>maxlength</var-name> <var-value>100</var-value>
+          </var>
+        </field>
+        <field property = "motivo" depends = "required,maxlength">
+          <arg0 key="censo.datosDireccion.literal.motivo"/>
+          <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+          <var>
+            <var-name>maxlength</var-name> <var-value>255</var-value>
+          </var>
+        </field>
+        <!--<field property = "idTipoDireccion" depends = "required">
+              <arg0 key="censo.datosDireccion.literal.tipoDireccion"/>
+        </field>  -->
+		</form>
+        <!-- FIN: consultaDireccionesForm nuria.rodriguezg 13-01-2005 -->
+
+        <!-- INICIO: datosCVForm nuria.rodriguezg 13-01-2005 -->
+      <form name="datosCVForm">
+                       
+                        <field property = "fechaInicio" depends = "required">   
+                        	<arg0 key="censo.datosCV.literal.fechaInicio"/>       
+                       	</field>
+                        
+                        <field property = "descripcion" depends = "required,maxlength">
+                            <arg0 key="censo.datosCV.literal.descripcion"/>
+                            <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+				                 <var>
+                	                <var-name>maxlength</var-name> <var-value>255</var-value>
+				                 </var>
+                        </field>
+				        <field property = "motivo"                      
+				        depends = "required,maxlength">
+				          <arg0 key="censo.datosCV.literal.motivo"/>
+				          <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+					          <var>
+					              <var-name>maxlength</var-name> <var-value>255</var-value>
+					          </var>
+ 						  <arg2 key="${var:minlength}" name="minlength" resource="false" />
+							  <var>
+								  <var-name>minlength</var-name> <var-value>1</var-value>
+							  </var>					          
+			          	</field>
+						<field property = "creditos" 
+							   depends = "integer"> 
+							   <arg0 key="censo.datosCV.literal.creditos"/> 
+						</field>
+	      </form>
+        <!-- FIN: datosCVForm nuria.rodriguezg 13-01-2005 -->
+
+<!-- INICIO: DefinirHitosFacturablesGuardiasForm ruben.fernandez 18-01-2004 -->
+			<form name="DefinirHitosFacturablesGuardiasForm">
+				<field 	property = "precio" 			depends = "required,float">		
+					<msg name="mask" key="gratuita.listadoHistosFacturables.literal.precio"/>
+					<arg0 key="gratuita.listadoHistosFacturables.literal.precio"/>
+				</field>
+				<field 	property = "puntos" 			depends = "required,maxlength,mask">		
+					<msg name="mask" key="gratuita.listadoHistosFacturables.literal.puntos"/>
+					<arg0 key="gratuita.listadoHistosFacturables.literal.puntos"/>	
+					<arg1 key="${var:maxlength}" name="maxlength,mask" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>10</var-value>
+						</var>
+						<var>
+							<var-name>mask</var-name>
+							<var-value>^[0-9]*$</var-value>
+						</var>
+				</field>
+			</form>
+<!-- FIN: DefinirHitosFacturablesGuardiasForm ruben.fernandez 18-01-2004 -->
+
+<!-- INICIO: DatosColegialesForm miguel.villegas 18-01-2005 -->
+
+    <form name="DatosColegialesForm">
+
+        <field property = "observaciones" depends = "maxlength">
+
+            <arg0 key="censo.consultaDatosColegiales.literal.observaciones"/>
+
+            <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+
+            <var>
+
+                <var-name>maxlength</var-name>
+
+                <var-value>255</var-value>
+
+            </var> 
+
+        </field>
+
+        <field property = "cmbEstadoColegial" depends = "required">
+            <arg0 key="censo.consultaDatosColegiales.literal.estado"/>
+        </field>
+        
+        <field property = "fechaEstado" depends = "required">
+            <arg0 key="censo.consultaDatosGenerales.literal.fechaEstado"/>
+        </field>
+
+        <field property = "numColegiado" depends = "required">
+            <arg0 key="censo.resultadosSolicitudesModificacion.literal.nColegiado"/>
+        </field>
+
+    </form> 
+
+<!-- FIN: DatosColegialesForm miguel.villegas 18-01-2005 --> 
+
+<!-- INICIO: DefinirCalendarioGuardiaForm david.sanchezp 20-01-2005 -->
+              <form name="DefinirCalendarioGuardiaForm">
+	             <field property = "observaciones" 
+                   		  depends = "maxlength">
+                   <arg0 key="gratuita.modalNuevo_DefinirCalendarioGuardia.literal.observaciones"/>
+                   <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                   <var>
+                       <var-name>maxlength</var-name>
+                       <var-value>1024</var-value>
+                   </var>
+    	         </field>
+               </form>
+<!-- FIN: DefinirCalendarioGuardiaForm david.sanchezp 20-01-2005 -->	        
+
+<!-- INICIO: consultaDireccionesSolicForm nuria.rodriguezg 18-01-2005 -->
+      <form name="consultaDireccionesSolicForm">
+         <field property = "correoElectronico" depends = "maxlength,email">
+          <arg0 key="censo.datosDireccion.literal.correo"/>
+          <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+          <var>
+            <var-name>maxlength</var-name> <var-value>100</var-value>
+          </var>
+        </field>
+        <field property = "motivo" depends = "required,maxlength">
+          <arg0 key="censo.datosDireccion.literal.motivo"/>
+          <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+          <var>
+            <var-name>maxlength</var-name> <var-value>255</var-value>
+          </var>
+        </field>
+      </form>
+  <!-- FIN: consultaDireccionesSolicForm nuria.rodriguezg 18-01-2005 -->
+
+<!-- INICIO: cuentasBancariasSolicForm nuria.rodriguezg 21-01-2005 -->
+     <form name="cuentasBancariasSolicForm">
+         <field property = "titular" depends = "required,maxlength">
+          <arg0 key="censo.datosCuentaBancaria.literal.titular"/>
+          <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+          <var>
+            <var-name>maxlength</var-name> <var-value>100</var-value>
+          </var>
+        </field>
+
+        <field property = "banco"  depends = "required">
+          <arg0 key="censo.datosCuentaBancaria.literal.banco"/>
+        </field>
+
+        <field property = "cbo_Codigo" depends ="required, minlength,maxlength, mask">
+          <arg0 key="censo.datosCuentaBancaria.literal.codigoBanco"/>
+          <var><var-name>mask</var-name> <var-value>^[0-9]{4}</var-value></var>
+          <arg1 key="${var:minlength}" name="minlength" resource="false" />
+          <var><var-name>minlength</var-name> <var-value>4</var-value></var>
+          <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+          <var><var-name>maxlength</var-name> <var-value>4</var-value></var>
+        </field>
+
+        <field property = "codigoSucursal" depends ="required, minlength,maxlength, mask">
+          <arg0 key="censo.datosCuentaBancaria.literal.codigoSucursal"/>
+          <var><var-name>mask</var-name> <var-value>^[0-9]{4}</var-value></var>
+          <arg1 key="${var:minlength}" name="minlength" resource="false" />
+          <var><var-name>minlength</var-name> <var-value>4</var-value></var>
+          <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+          <var><var-name>maxlength</var-name> <var-value>4</var-value></var>
+        </field>
+
+        <field property = "digitoControl" depends ="required, minlength,maxlength, mask">
+          <arg0 key="censo.datosCuentaBancaria.literal.digitoControl"/>
+          <var><var-name>mask</var-name> <var-value>^[0-9]{2}</var-value></var>
+          <arg1 key="${var:minlength}" name="minlength" resource="false" />
+          <var><var-name>minlength</var-name> <var-value>2</var-value></var>
+          <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+          <var><var-name>maxlength</var-name> <var-value>2</var-value></var>
+        </field>
+
+        <field property = "numeroCuenta" depends ="required, minlength,maxlength, mask">
+          <arg0 key="censo.datosCuentaBancaria.literal.cuenta"/>
+          <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+          <arg1 key="${var:minlength}" name="minlength" resource="false" />
+          <var><var-name>mask</var-name> <var-value>^[0-9]{10}</var-value></var>
+          <var> <var-name>maxlength</var-name> <var-value>10</var-value></var>
+          <var> <var-name>minlength</var-name> <var-value>10</var-value></var>
+        </field>
+
+         <field property = "motivo" depends = "required,maxlength">
+          <arg0 key="censo.datosCuentaBancaria.literal.motivo"/>
+          <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+          <var>
+            <var-name>maxlength</var-name> <var-value>255</var-value>
+          </var>
+        </field>
+      </form>
+  <!-- FIN: cuentasBancariasSolicForm nuria.rodriguezg 21-01-2005 -->
+
+
+
+  <!-- INICIO: datosCVSolicForm nuria.rodriguezg 18-01-2005 -->
+      <form name="datosCVSolicForm">
+      
+        <field property = "fechaInicio" depends = "required">
+                <arg0 key="censo.datosCV.literal.fechaInicio"/>
+        </field>
+        
+        <field property = "descripcion" depends = "maxlength,required">
+          <arg0 key="censo.datosCV.literal.descripcion"/>
+          <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+          <var>
+            <var-name>maxlength</var-name> <var-value>255</var-value>
+          </var>
+       </field>
+       <field property = "motivo"    depends = "required,maxlength">
+                <arg0 key="censo.datosCV.literal.motivo"/>
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                  <var>
+                      <var-name>maxlength</var-name> <var-value>255</var-value>
+                  </var>
+                <arg2 key="${var:minlength}" name="minlength" resource="false" />
+                  <var>
+                      <var-name>minlength</var-name> <var-value>1</var-value>
+                  </var>
+       </field>
+       </form>
+  <!-- FIN: datosCVSolicForm nuria.rodriguezg 18-01-2005 -->
+
+<!-- INICIO: SolicitudRetencionForm julio.vicente 19-01-2005 -->
+                <form name="SolicitudRetencionForm">                    
+            <field property = "descripcion" depends = "required,maxlength"> 
+                <arg0 key="gratuita.retenciones.descripcion"/>
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                    <var-name>maxlength</var-name>
+                    <var-value>60</var-value>
+                </var> 
+            </field>
+                     
+            <field property = "retencion" depends = "required,float,floatRange"> 
+                <arg0 key="gratuita.retenciones.retencion"/>
+                                <arg1 name="range" key="${var:min}" resource="false"/>
+                            <arg2 name="range" key="${var:max}" resource="false"/>
+                            <var>
+                                <var-name>min</var-name>
+                                <var-value>0.0</var-value>
+                            </var>
+                            <var>
+                                <var-name>max</var-name>
+                                <var-value>100.0</var-value>
+                            </var>
+            </field>
+        </form>
+<!-- FIN: SolicitudRetencionForm julio.vicente 19-01-2005 -->
+
+<!-- INICIO: DefinirPartidaPresupuestariaForm julio.vicente 19-01-2005 -->
+                <form name="DefinirPartidaPresupuestariaForm">
+                
+            <field property = "nombrePartida" depends = "required,maxlength">
+                <arg0 key="gratuita.partidaPresupuestaria.literal.nombre"/>
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                    <var-name>maxlength</var-name>
+                    <var-value>60</var-value>
+                </var> 
+            </field>
+            
+            <field property = "descripcion" depends = "required,maxlength">
+                <arg0 key="gratuita.partidaPresupuestaria.literal.descripcion"/>
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                    <var-name>maxlength</var-name>
+                    <var-value>1024</var-value>
+                </var> 
+            </field>          
+               
+		    <field property = "importePartida" depends = "required,double,maxlength,mask"> 
+		        <msg name="mask" key="messages.pys.mantenimientoProductos.errorPrecio"/>
+		        <arg0 key="factSJCS.datosFacturacion.literal.importePartida"/> 
+		        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+		        <var>
+		            <var-name>maxlength</var-name>
+		            <var-value>11</var-value>
+		        </var> 
+		        <var>
+		            <var-name>mask</var-name>
+		            <var-value>^[0-9]{0,8}((\.|\,)[0-9][0-9]{0,1}){0,1}$</var-value>
+		        </var> 
+		    </field>    		            
+            
+        </form>
+<!-- FIN: DefinirPartidaPresupuestariaForm julio.vicente 19-01-2005 -->
+
+<!-- INICIO: CalendarioLaboralForm julio.vicente 19-01-2005 -->
+                <form name="CalendarioLaboralForm">
+                
+            <field property = "fecha" depends = "required">
+                <arg0 key="gratuita.listadoCalendario.literal.fecha"/>
+            </field>
+            
+            <field property = "nombreFiesta" depends = "maxlength">
+                <arg0 key="gratuita.listadoCalendario.literal.nombre"/>
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                    <var-name>maxlength</var-name>
+                    <var-value>100</var-value>
+                </var> 
+            </field>                
+            
+        </form>
+<!-- FIN: CalendarioLaboralForm julio.vicente 19-01-2005 -->
+
+        <!-- INICIO: DefinirAreasMateriasForm julio.vicente 19-01-2005 -->
+                <form name="DefinirAreasMateriasForm">
+                
+            <field property = "nombreArea" depends = "required,maxlength">
+                <arg0 key="gratuita.busquedaAreas.literal.nombreArea"/>
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                    <var-name>maxlength</var-name>
+                    <var-value>60</var-value>
+                </var>
+            </field>           
+            
+            <field property = "contenidoArea" depends = "maxlength">
+                <arg0 key="gratuita.listadoAreas.literal.contenidoArea"/>
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                    <var-name>maxlength</var-name>
+                    <var-value>4000</var-value>
+                </var>
+            </field>                
+            
+                        <field property = "nombreMateria" depends = "required,maxlength">
+                <arg0 key="gratuita.busquedaAreas.literal.nombreMateria"/>
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                    <var-name>maxlength</var-name>
+                    <var-value>60</var-value>
+                </var>
+            </field>
+
+            <field property = "contenidoMateria" depends = "maxlength">
+                <arg0 key="gratuita.listadoAreas.literal.contenidoMateria"/>
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                    <var-name>maxlength</var-name>
+                    <var-value>4000</var-value>
+                </var>
+            </field>
+            
+        </form>
+<!-- FIN: DefinirAreasMateriasForm julio.vicente 19-01-2005 -->
+
+<!-- INICIO: cuentasBancariasForm (Daniel Campos 22-01-2005) -->
+      <form name="cuentasBancariasForm">
+         <field property = "titular" depends = "required,maxlength">
+          <arg0 key="censo.datosCuentaBancaria.literal.titular"/>
+          <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+          <var> <var-name>maxlength</var-name> <var-value>100</var-value>     </var>
+        </field>
+        
+        <field property = "banco"  depends = "required">  <arg0 key="censo.datosCuentaBancaria.literal.banco"/>    </field>
+        
+        <field property = "codigoSucursal" depends = "required,maxlength,minlength">
+          <arg0 key="censo.datosCuentaBancaria.literal.codigoSucursal"/>
+          <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+          <var> <var-name>maxlength</var-name> <var-value>4</var-value> </var>
+          <arg1 key="${var:minlength}" name="minlength" resource="false" />
+          <var> <var-name>minlength</var-name> <var-value>4</var-value> </var>
+        </field>
+        
+        <field property = "numeroCuenta" depends ="required, minlength,maxlength, mask">
+          <arg0 key="censo.datosCuentaBancaria.literal.cuenta"/>
+          <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+          <arg1 key="${var:minlength}" name="minlength" resource="false" />
+          <var><var-name>mask</var-name> <var-value>^[0-9]{10}</var-value></var>
+          <var> <var-name>maxlength</var-name> <var-value>10</var-value> </var>
+          <var> <var-name>minlength</var-name> <var-value>10</var-value> </var>
+        </field>
+      </form>
+ 
+  <!-- FIN: cuentasBancariasSolicForm 22-01-2005 -->
+  
+<!-- INICIO: ExpDatosGeneralesForm emilio.grau 24-01-2005 -->
+
+<form name="ExpDatosGeneralesForm">
+    <field property = "numExpDisciplinario" depends = "integer">
+        <arg0 key="expedientes.auditoria.literal.nexpdisciplinario"/> 
+    </field> 
+    <field property = "anioExpDisciplinario" depends = "integer,mask">
+        <arg0 key="expedientes.auditoria.literal.nexpdisciplinario"/>
+        <var><var-name>mask</var-name> <var-value>^[0-9]{4}</var-value></var>
+    </field> 
+    <field property = "asunto" depends = "required">
+        <arg0 key="expedientes.auditoria.literal.asunto"/>
+    </field> 
+    <field property = "fechaInicial" depends = "required">
+        <arg0 key="expedientes.auditoria.literal.fechainicial"/>
+    </field> 
+    <field property = "clasificacion" depends = "required,integer">
+        <arg0 key="expedientes.auditoria.literal.clasificacion"/>
+    </field> 
+    <field property = "comboEstados" depends = "required">
+        <arg0 key="expedientes.auditoria.literal.estado"/>
+    </field>
+    <field property = "comboFases" depends = "required">
+        <arg0 key="expedientes.auditoria.literal.fase"/>
+    </field> 
+    <field property = "idPersona" depends = "required">
+        <arg0 key="expedientes.auditoria.literal.denunciado"/>
+    </field> 
+</form>
+
+<!-- FIN: ExpDatosGeneralesForm emilio.grau 24-01-2005 -->
+
+<form name="camposForm">
+	<field 	property = "pestanaConf1" 		
+			depends = "maxlength"> 			
+			<arg0 key="expedientes.campos.literal.pestanaConf1"/>	
+			<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+			<var>
+				<var-name>maxlength</var-name>
+				<var-value>25</var-value>
+			</var>
+	</field>
+	<field 	property = "pestanaConf2" 		
+			depends = "maxlength"> 			
+			<arg0 key="expedientes.campos.literal.pestanaConf2"/>	
+			<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+			<var>
+				<var-name>maxlength</var-name>
+				<var-value>25</var-value>
+			</var>
+	</field>
+	<field 	property = "tiempoCaducidad" 		
+			depends = "integer"> 			
+			<arg0 key="expedientes.tiposexpedientes.literal.tiempoCaducidad"/>	
+	</field>
+</form>
+
+
+<form name="camposConfigurablesForm">
+	<field 	property = "nombre" 		
+			depends = "required"> 			
+			<arg0 key="expedientes.tipoExpediente.ecicion.literal.nombre"/>	
+	</field>
+	<field 	property = "orden" 		
+			depends = "required,integer"> 			
+			<arg0 key="expedientes.tipoExpediente.ecicion.literal.orden"/>	
+	</field>
+</form>
+
+	<!-- INICIO: ExpDenuncianteForm emilio.grau 25-01-2005 -->
+
+	<form name="ExpDenuncianteForm">
+		<field property = "nombre" 
+				depends = "required">
+			<arg0 key="expedientes.auditoria.literal.nombre"/> 
+		</field> 
+		<field property = "primerApellido" 
+				depends = "required">
+			<arg0 key="expedientes.auditoria.literal.primerapellido"/>
+		</field> 
+	</form>
+	
+	<form name="ExpDenunciadoForm">
+		<field property = "nombre" 
+				depends = "required">
+			<arg0 key="expedientes.auditoria.literal.nombre"/> 
+		</field> 
+		<field property = "primerApellido" 
+				depends = "required">
+			<arg0 key="expedientes.auditoria.literal.primerapellido"/>
+		</field> 
+	</form>
+	
+	
+	<!-- FIN: ExpDenuncianteForm emilio.grau 25-01-2005 -->
+
+<!-- INICIO: componentesJuridicosForm (Daniel Campos 26-01-2005) -->
+      <form name="componentesJuridicosForm">
+	     <field property = "nifcif"      depends = "required"> <arg0 key="censo.consultaComponentesJuridicos.literal.nifcif"/>     </field>
+	     <field property = "nombre"      depends = "required"> <arg0 key="censo.consultaComponentesJuridicos.literal.nombre"/>       </field>
+	     <field property = "apellidos1"      depends = "required"> <arg0 key="censo.consultaComponentesJuridicos.literal.apellido1"/>       </field>
+      </form>
+<!-- FIN: componentesJuridicosForm (Daniel Campos 26-01-2005) -->
+
+<!-- INICIO: ExpDocumentacionForm emilio.grau 27-01-2005 -->
+
+	<form name="ExpDocumentacionForm">
+		<field property = "descripcion"  depends = "required">
+	    	<arg0 key="expedientes.auditoria.literal.descripcion"/> 
+		</field> 
+		<field property = "fase"  depends = "required">
+	    	<arg0 key="expedientes.auditoria.literal.fase"/> 
+		</field>
+		<field property = "estado"  depends = "required">
+	    	<arg0 key="expedientes.auditoria.literal.estado"/> 
+		</field>
+	</form>
+
+<!-- FIN: ExpDocumentacionForm emilio.grau 27-01-2005 -->
+
+	<!-- BusquedaClientesModalForm raul.ggonzalez 31-01-2005 -->
+
+			<form name="busquedaClientesModalForm">
+			
+				<field 	property = "numeroColegiado" 	
+						depends = "mask"> 	
+        				<msg name="mask" key="gratuita.modalDefinirDesignas.errorNumero"/>		
+						<arg0 key="censo.BusquedaClientesAvanzada.literal.nColegiado"/>			
+						<var>
+		         			<var-name>mask</var-name>
+		         			<var-value>^[0-9*?]{0,20}$</var-value>
+						</var>
+				</field>
+				<field 	property = "nif" 				
+						depends = "maxlength"> 			
+						<arg0 key="censo.BusquedaClientesAvanzada.literal.nif"/> 				
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>20</var-value>
+						</var>
+				</field>
+				<field 	property = "nombrePersona" 		
+						depends = "maxlength"> 			
+						<arg0 key="censo.BusquedaClientesAvanzada.literal.nombre"/>	
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>100</var-value>
+						</var>
+				</field>
+				<field 	property = "apellido1" 			
+						depends = "maxlength"> 			
+						<arg0 key="censo.BusquedaClientesAvanzada.literal.apellido1"/>							
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>100</var-value>
+						</var>
+				</field>
+				<field 	property = "apellido2" 			
+						depends = "maxlength"> 			
+						<arg0 key="censo.BusquedaClientesAvanzada.literal.apellido2"/> 						
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>100</var-value>
+						</var>
+				</field>
+			</form>
+
+	<!-- FIN: BusquedaClientesModalForm raul.ggonzalez 31-01-2005 -->
+
+	<!-- INICIO: SolicitudesModificacionEspecificasForm miguel.villegas 31-01-2005 --> 
+
+    <!--	<form name="SolicitudesModificacionEspecificasForm">
+    	    <field property = "tipoModifEspec" depends = "required">
+        	    <arg0 key="censo.busquedaSolicitudesModificacion.literal.tipoModificacion"/>
+	        </field>
+	    </form> -->
+
+<!-- FIN: SolicitudesModificacionEspecificasForm miguel.villegas 31-01-2005 -->    
+
+<!-- INICIO: MantenimientoProductosForm miguel.villegas 3-02-2005 -->
+<form name="MantenimientoProductosForm">
+
+    <field property = "tipoProducto" depends = "required">
+        <arg0 key="pys.resultadoBusquedaProductos.literal.tipo"/>
+    </field>
+
+    <field property = "producto" depends = "required">
+        <arg0 key="pys.mantenimientoBusquedaProductos.literal.categoria"/>
+    </field>
+
+    <field property = "iva" depends = "required">
+        <arg0 key="pys.resultadoBusquedaProductos.literal.IVA"/>
+    </field> 
+
+    <field property = "precio" depends = "required,double,maxlength,mask"> 
+        <msg name="mask" key="messages.pys.mantenimientoProductos.errorPrecio"/>
+        <arg0 key="pys.resultadoBusquedaProductos.literal.precio"/> 
+        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+        <var>
+            <var-name>maxlength</var-name>
+            <var-value>11</var-value>
+        </var> 
+        <var>
+            <var-name>mask</var-name>
+            <var-value>^[0-9]{0,8}((\.|\,)[0-9][0-9]{0,1}){0,1}$</var-value>
+        </var> 
+    </field>
+
+    <field property = "nombre" depends = "required,maxlength"> 
+        <arg0 key="pys.mantenimientoBusquedaProductos.literal.producto"/> 
+        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+        <var>
+            <var-name>maxlength</var-name>
+            <var-value>100</var-value>
+        </var>
+    </field>
+
+    <field property = "cuentaContable" depends = "maxlength"> 
+        <arg0 key="pys.mantenimientoBusquedaProductos.literal.cuenta"/> 
+        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+        <var>
+            <var-name>maxlength</var-name>
+            <var-value>20</var-value>
+        </var>
+    </field> 
+
+</form> 
+<!-- FIN: MantenimientoProductosForm miguel.villegas 3-02-2005 -->
+
+<!-- INICIO: DatosGeneralesForm (Yolanda Garcia 03-02-2005) -->
+        <form name="DatosGeneralesForm">
+  <field property = "nombreAbreviado" depends = "required"> 
+   <arg0 key="facturacion.datosGenerales.literal.nombreAbreviado"/>      
+  </field>
+      <field property = "descripcion" depends = "required"> 
+       <arg0 key="facturacion.datosGenerales.literal.descripcion"/>     
+      </field>
+      <field property = "idPlantilla" depends = "required"> 
+       <arg0 key="facturacion.datosGenerales.literal.plantilla"/>     
+      </field>
+       </form>
+ <!-- FIN: DatosGeneralesForm (Yolanda Garcia 03-02-2005) -->
+ 
+ <!-- INICIO: TiposProductosForm (Yolanda Garcia 03-02-2005) -->
+        <form name="TiposProductosForm">
+  <field property = "idTipoProducto" depends = "required"> 
+   <arg0 key="facturacion.nuevoTipoProducto.literal.tipoProducto"/>      
+  </field>
+       </form>
+ <!-- FIN: TiposProductosForm (Yolanda Garcia 03-02-2005) -->
+ 
+ <!-- INICIO: TiposServiciosForm (Yolanda Garcia 03-02-2005) -->
+        <form name="TiposServiciosForm">
+  <field property = "idTipoServicios" depends = "required"> 
+   <arg0 key="facturacion.nuevoTipoServicio.literal.tipoServicio"/>      
+  </field>
+       </form>
+ <!-- FIN: TiposServiciosForm (Yolanda Garcia 03-02-2005) -->
+ 
+ <!-- INICIO: GruposFijosForm (Yolanda Garcia 03-02-2005) -->
+        <form name="GruposFijosForm">
+  <field property = "idGrupo" depends = "required"> 
+   <arg0 key="facturacion.nuevoGrupoFijo.literal.grupoFijo"/>      
+  </field>
+       </form>
+ <!-- FIN: GruposFijosForm (Yolanda Garcia 03-02-2005) -->
+ 
+ <!-- INICIO: GruposDinamicosForm (Yolanda Garcia 03-02-2005) -->
+        <form name="GruposDinamicosForm">
+  <field property = "idGruposCriterios" depends = "required"> 
+   <arg0 key="facturacion.nuevoGrupoDinamico.literal.grupoDinamico"/>      
+  </field>
+       </form>
+ <!-- FIN: GruposDinamicosForm (Yolanda Garcia 03-02-2005) -->  
+ 
+ <!-- INICIO: PrevisionesFacturacionForm (Yolanda Garcia 04-02-2005) -->
+        <form name="PrevisionesFacturacionForm">
+  <field property = "descripcionPrevision" depends = "required"> 
+   <arg0 key="facturacion.nuevaPrevisionFacturacion.literal.descripcion"/>      
+  </field>
+  <field property = "idSerieFacturacion" depends = "required"> 
+   <arg0 key="facturacion.nuevaPrevisionFacturacion.literal.serieFacturacion"/>      
+  </field>
+  <field property = "fechaInicioProductos" depends = "required"> 
+   <arg0 key="facturacion.nuevaPrevisionFacturacion.literal.fechaInicioProductos"/>      
+  </field>
+  <field property = "fechaFinProductos" depends = "required"> 
+   <arg0 key="facturacion.nuevaPrevisionFacturacion.literal.fechaFinProductos"/>      
+  </field>
+  <field property = "fechaInicioServicios" depends = "required"> 
+   <arg0 key="facturacion.nuevaPrevisionFacturacion.literal.fechaInicioServicios"/>      
+  </field>
+  <field property = "fechaFinServicios" depends = "required"> 
+   <arg0 key="facturacion.nuevaPrevisionFacturacion.literal.fechaFinServicios"/>      
+  </field>
+       </form>
+ <!-- FIN: PrevisionesFacturacionForm (Yolanda Garcia 03-02-2005) -->  
+
+<!-- INICIO: BuscarDesignasForm ruben.fernandez 8-2-2005 -->
+                        <form name="BuscarDesignasForm">
+                                <field  property = "fechaAperturaInicio"                        depends = "required">           
+                                        <arg0 key="gratuita.busquedaDesignas.literal.fechaApertura"/>
+                                </field>
+                                <field  property = "ncolegiado"                         depends = "required,maxlength,mask">            
+                                        <msg name="mask" key="gratuita.listadoModal_DefinirCalendarioGuardia.literal.numeroColegiado"/>
+                                        <arg0 key="gratuita.listadoModal_DefinirCalendarioGuardia.literal.numeroColegiado"/>    
+                                        <arg1 key="${var:maxlength}" name="maxlength,mask" resource="false"/>
+                                                <var>
+                                                        <var-name>maxlength</var-name>
+                                                        <var-value>10</var-value>
+                                                </var>
+                                                <var>
+                                                        <var-name>mask</var-name>
+                                                        <var-value>^[0-9*]{0,20}$</var-value>
+                                                </var>
+                                </field>
+                        </form>
+<!-- FIN: BuscarDesignasForm ruben.fernandez 8-2-2005 -->
+
+<!-- INICIO: NuevoExpedienteForm emilio.grau 03-02-2005 -->
+
+<form name="NuevoExpedienteForm">
+    <field property = "comboTipoExpediente" depends = "required">
+        <arg0 key="expedientes.auditoria.literal.tipo"/> 
+    </field> 
+</form>
+
+<!-- FIN: NuevoExpedienteForm emilio.grau 03-02-2005 -->
+
+ 
+
+<!-- INICIO: ExpPartesForm emilio.grau 07-02-2005 -->
+
+	<form name="ExpPartesForm">
+	    <field property = "nombre" depends = "required">
+	        <arg0 key="expedientes.auditoria.literal.cliente"/> 
+	    </field> 
+	    <field property = "idRol" depends = "required">
+	        <arg0 key="expedientes.auditoria.literal.rol"/> 
+	    </field> 
+	</form>
+
+<!-- FIN: ExpPartesForm emilio.grau 07-02-2005 -->
+
+<!-- INICIO: datosFacturacionForm raul.ggonzalez 09-02-2005 -->
+
+<form name="datosFacturacionForm">
+    <field property = "motivo" depends = "required,maxlength">
+        <arg0 key="cen.datosFacturacion.literal.motivo"/> 
+        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+        <var>
+            <var-name>maxlength</var-name>
+            <var-value>250</var-value>
+        </var>
+    </field> 
+    <field property = "cuentaBancaria" depends = "required">
+        <arg0 key="cen.consultaProductos.literal.nCuenta"/> 
+    </field> 
+</form>
+
+<!-- FIN: datosFacturacionForm raul.ggonzalez 09-02-2005 -->
+
+<!-- INICIO: GestionarSolicitudesPeticiones  Daniel Campos 04-02-2005 --> 
+  <form name="GestionSolicitudesForm">
+      <field property = "buscarIdPeticionCompra" depends = "mask"> 
+       <arg0 key="pys.gestionSolicitudes.literal.idPeticion"/>
+         <var>
+           <var-name>mask</var-name>    <var-value>^[0-9]{0,10}</var-value>
+         </var> 
+       </field>
+   </form> 
+ <!-- FIN: GestionarSolicitudesPeticiones  Daniel Campos 04-02-2005 --> 
+   
+<!-- INICIO: MantenimientoServiciosForm miguel.villegas 9-02-2005 -->
+<form name="MantenimientoServiciosForm">
+
+    <field property = "servicio" depends = "required">
+        <arg0 key="pys.mantenimientoServicios.literal.categoria"/>
+    </field>
+
+    <field property = "iva" depends = "required">
+        <arg0 key="pys.mantenimientoServicios.literal.IVA"/>
+    </field>
+
+    <field property = "tipoServicio" depends = "required">
+        <arg0 key="pys.mantenimientoServicios.literal.tipo"/>
+    </field>
+
+    <field property = "periodicidad" depends = "required">
+        <arg0 key="pys.mantenimientoServicios.literal.periodicidad"/>
+    </field> 
+
+    <field property = "precio" depends = "required,double,maxlength,mask"> 
+        <msg name="mask" key="messages.pys.mantenimientoProductos.errorPrecio"/>
+        <arg0 key="pys.mantenimientoServicios.literal.precio"/> 
+        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+        <var>
+            <var-name>maxlength</var-name>
+            <var-value>11</var-value>
+        </var> 
+        <var>
+            <var-name>mask</var-name>
+            <var-value>^[0-9]{0,8}((\.|\,)[0-9][0-9]{0,1}){0,1}$</var-value>
+        </var> 
+    </field>
+
+    <field property = "nombre" depends = "required,maxlength"> 
+        <arg0 key="pys.mantenimientoServicios.literal.servicio"/> 
+        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+        <var>
+            <var-name>maxlength</var-name>
+            <var-value>100</var-value>
+        </var>
+    </field>
+
+    <field property = "cuentaContable" depends = "maxlength"> 
+        <arg0 key="pys.mantenimientoServicios.literal.cuenta"/> 
+        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+        <var>
+            <var-name>maxlength</var-name>
+            <var-value>20</var-value>
+        </var>
+    </field> 
+
+</form> 
+<!-- FIN: MantenimientoServiciosForm miguel.villegas 9-02-2005 -->
+
+<!-- INICIO: PermutasConfirmadorForm david.sanchez 17-02-2005 -->    
+
+    <form name="PermutasConfirmadorForm">
+        <field property = "motivosConfirmador" depends = "maxlength,required">
+            <arg0 key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.motivos"/>
+            <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+            <var>
+                <var-name>maxlength</var-name>
+                <var-value>1024</var-value>
+            </var>
+        </field>
+    </form>    
+
+<!-- FIN: PermutasConfirmadorForm david.sanchez 17-02-2005 -->
+
+<!-- INICIO: PermutasForm david.sanchez 17-02-2005 -->    
+
+    <form name="PermutasForm">
+        <field property = "motivosSolicitante" depends = "maxlength,required">
+	        <arg0 key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.motivos"/>
+            <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+            <var>
+                <var-name>maxlength</var-name>
+                <var-value>1024</var-value>
+            </var>
+        </field>
+    </form>    
+
+<!-- FIN: PermutasForm david.sanchez 17-02-2005 -->
+
+
+<!-- INICIO: documentacionSolicitudForm raul.ggonzalez 14-02-2005 -->    
+<form name="documentacionSolicitudForm">
+    <field property = "tipoColegiacion" depends = "required">
+            <arg0 key="censo.documentacionSolicitud.literal.tipoColegiacion"/>
+    </field>
+    <field property = "tipoSolicitud" depends = "required">
+            <arg0 key="censo.documentacionSolicitud.literal.tipoSolicitud"/>
+    </field>
+    <field property = "tipoModalidad" depends = "required">
+            <arg0 key="censo.documentacionSolicitud.literal.modalidad"/>
+    </field>
+</form>    
+<!-- FIN: documentacionSolicitudForm raul.ggonzalez 14-02-2005 -->    
+
+<!-- INICIO: ExpSeguimientoForm emilio.grau 16-02-2005 -->
+
+	<form name="ExpSeguimientoForm">
+	    <field property = "idTipoAnotacion" depends = "required">
+    	    <arg0 key="expedientes.auditoria.literal.tipoanotacion"/> 
+	    </field> 
+	    <field property = "fecha" depends = "required">
+    	    <arg0 key="expedientes.auditoria.literal.fecha"/> 
+	    </field> 
+	</form>
+
+<!-- FIN: ExpSeguimientoForm emilio.grau 16-02-2005 --> 
+
+<!-- INICIO: MantenimientoCategoriasProductosForm daniel.campos 14-02-2005 -->    
+<form name="MantenimientoCategoriasProductosForm">
+    <field property = "idTipoProducto"    depends = "required"> <arg0 key="pys.mantenimientoCategorias.literal.tipoProducto"/> </field>
+    <field property = "descripcionProducto" depends = "maxlength,required">
+            <arg0 key="pys.mantenimientoCategorias.literal.descripcion"/>
+            <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+            <var> <var-name>maxlength</var-name>  
+               <var-value>100</var-value>
+            </var>
+    </field>
+</form>    
+<!-- FIN: MantenimientoCategoriasProductosForm daniel.campos 14-02-2005 -->    
+ 
+<!-- INICIO: MantenimientoCategoriasServiciosForm daniel.campos 14-02-2005 -->    
+<form name="MantenimientoCategoriasServiciosForm">
+    <field property = "idTipoServicio"    depends = "required"> <arg0 key="pys.mantenimientoCategorias.literal.tipoServicio"/> </field>
+    <field property = "descripcionServicio" depends = "maxlength,required">
+            <arg0 key="pys.mantenimientoCategorias.literal.descripcion"/>
+            <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+            <var> <var-name>maxlength</var-name>  
+               <var-value>100</var-value>
+            </var>
+    </field>
+</form>    
+<!-- FIN: MantenimientoCategoriasServiciosForm daniel.campos 14-02-2005 -->    
+
+<!-- INICIO: SolicitudesModificacionForm miguel.villegas 21-02-2005 -->
+
+    <form name="SolicitudesModificacionForm">
+        <field property = "cmbTipoModificacion" depends = "required">
+            <arg0 key="censo.solicitudTextoLibre.literal.tipoModificacion"/>
+        </field>
+        <field property = "descripcion" depends = "required,maxlength">
+            <arg0 key="censo.solicitudTextoLibre.literal.descripcion"/>
+            <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+            <var>
+                <var-name>maxlength</var-name>
+                <var-value>4000</var-value>
+            </var> 
+        </field>
+    </form> 
+
+<!-- FIN: SolicitudesModificacionForm miguel.villegas 21-02-2005 -->
+
+<!-- INICIO: ExpedientesForm miguel.villegas 17-02-2005 --> 
+
+    <form name="ExpedientesForm">
+        <field property = "motivo" depends = "required,maxlength">
+            <arg0 key="censo.consultaExpedientes.literal.motivo"/>
+            <var>
+                <var-name>maxlength</var-name>
+                <var-value>4000</var-value>
+            </var>
+        </field>
+    </form> 
+
+<!-- FIN: ExpedientesForm miguel.villegas 17-02-2005 -->         
+
+<!-- INICIO: SaltosYCompensacionesForm david.sanchez 25-02-2005 -->   
+
+    <form name="SaltosYCompensacionesForm">
+        <field property = "motivos" depends = "maxlength">
+            <arg0 key="gratuita.modalMantenimiento_SaltosYCompensaciones.literal.motivos"/>
+            <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+            <var>
+                <var-name>maxlength</var-name>
+                <var-value>1024</var-value>
+            </var>
+        </field>
+       <field property = "fecha" depends = "required">
+            <arg0 key="gratuita.modalMantenimiento_SaltosYCompensaciones.literal.fecha"/>
+        </field>
+    </form>   
+
+    <form name="SaltosYCompensacionesNuevoForm">
+        <field property = "motivos" depends = "maxlength">
+            <arg0 key="gratuita.modalNuevo_SaltosYCompensaciones.literal.motivos"/>
+            <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+            <var>
+                <var-name>maxlength</var-name>
+                <var-value>1024</var-value>
+            </var>
+        </field>
+        <field property = "nombreMostrado" depends = "required">
+            <arg0 key="gratuita.seleccionColegiadoJG.literal.colegiado"/>
+        </field>       
+        <field property = "fecha" depends = "required">
+            <arg0 key="gratuita.modalNuevo_SaltosYCompensaciones.literal.fecha"/>
+        </field>       
+    </form>   
+
+<!-- FIN: SaltosYCompensacionesForm david.sanchez 25-02-2005 -->
+
+<!-- INICIO: EstadosForm juan.grau 01-03-2005 -->
+
+        <form name="EstadosForm">
+                <field property = "idInst_idExp_idFase"
+                                depends = "required">
+                        <arg0 key="expedientes.auditoria.literal.fase"/>
+                </field>
+                <field property = "estado"
+                                depends = "required">
+                        <arg0 key="expedientes.auditoria.literal.estado"/>
+                </field>
+                <field property = "diasAntelacion"
+                                depends = "integer">
+                        <arg0 key="expedientes.auditoria.literal.diasAntelacion"/>
+                </field>
+        </form>
+
+<!-- FIN: EstadosForm juan.grau 01-03-2005 -->
+
+<!-- INICIO: TiposAnotacionesForm juan.grau 03-03-2005 -->
+
+        <form name="TiposAnotacionesForm">
+                <field property = "nombre"
+                         depends = "required">
+                        <arg0 key="expedientes.auditoria.literal.nombre"/>
+                </field>
+                <field property = "mensaje"
+                         depends = "maxlength">
+                        <arg0 key="expedientes.auditoria.literal.mensaje"/>
+                        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                    <var-name>maxlength</var-name>
+                    <var-value>100</var-value>
+                </var>
+                </field>
+        </form>
+
+<!-- FIN: TiposAnotacionesForm juan.grau 03-03-2005 -->
+
+<!-- INICIO: FasesForm juan.grau 03-03-2005 -->
+
+        <form name="FasesForm">
+                <field property = "nombre"
+                                depends = "required">
+                        <arg0 key="expedientes.auditoria.literal.nombre"/>
+                </field>
+	            <field property = "diasVencimiento" depends = "integer">
+	                <arg0 key="expedientes.auditoria.literal.diasVencimiento"/>
+	            </field>
+	            <field property = "diasAntelacion" depends = "integer">
+	                <arg0 key="expedientes.auditoria.literal.diasAntelacion"/>
+	            </field>
+        </form>
+
+<!-- FIN: FasesForm juan.grau 03-03-2005 -->
+
+<!-- INICIO: ClasificacionesForm juan.grau 03-03-2005 -->
+
+        <form name="ClasificacionesForm">
+                <field property = "nombre"
+                                depends = "required">
+                        <arg0 key="expedientes.auditoria.literal.nombre"/>
+                </field>
+        </form>
+
+<!-- FIN: ClasificacionesForm juan.grau 03-03-2005 -->
+
+<!-- INICIO: RolesForm juan.grau 03-03-2005 -->
+
+        <form name="RolesForm">
+                <field property = "nombre"
+                                depends = "required">
+                        <arg0 key="expedientes.auditoria.literal.nombre"/>
+                </field>
+        </form>
+
+<!-- FIN: RolesForm juan.grau 03-03-2005 -->
+
+<!-- INICIO: MantenimientoFacturacionForm raul.ggonzalez 09-03-2005 -->
+
+        <form name="mantenimientoFacturacionForm">
+                <field property = "nombre"
+                         depends = "maxlength">
+                        <arg0 key="factSJCS.datosFacturacion.literal.nombre"/>
+                        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                    <var-name>maxlength</var-name>
+                    <var-value>255</var-value>
+                </var>
+                </field>
+        </form>
+
+<!-- FIN: MantenimientoFacturacionForm raul.ggonzalez 09-03-2005 -->
+
+
+<!-- INICIO: DefinirSOJForm julio.vicente 19-02-2005 -->
+        <form name="DefinirSOJForm">                
+<!--            <field property = "anio" depends = "integer">
+                <arg0 key="gratuita.busquedaSOJ.literal.anyo"/>
+            </field>           
+            
+            <field property = "numero" depends = "integer">
+                <arg0 key="gratuita.busquedaSOJ.literal.numero"/>
+            </field>
+            
+             <field property = "idPersona" depends = "mask">
+                <arg0 key="gratuita.insertarSOJ.literal.letradoTramitador"/>              
+                                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                          <var><var-name>mask</var-name> <var-value>^[0-9]*$</var-value></var>
+                          <var> <var-name>maxlength</var-name> <var-value>10</var-value></var>
+            </field>
+-->
+
+
+
+            <field  property = "anio" depends = "required,integer">        
+                <arg0 key="gratuita.busquedaSOJ.literal.anyo"/>                
+            </field>
+           
+            <field property = "idTipoSOJ" depends = "required">
+           		<arg0 key="gratuita.busquedaSOJ.literal.tipoSOJ"/>
+            </field>          
+           
+           <!--
+            <field property = "idTipoSOJColegio" depends = "required">
+				<arg0 key="gratuita.busquedaSOJ.literal.SOJColegio"/>
+            </field>
+			<field property = "identificador" depends = "required">
+                <arg0 key="gratuita.busquedaSOJ.literal.turno"/>
+            </field>
+           
+            <field property = "idGuardia" depends = "required">
+                <arg0 key="gratuita.busquedaSOJ.literal.guardia"/>
+            </field>
+ 			-->
+ 			<field property = "fechaAperturaSOJ" depends = "required">
+                <arg0 key="gratuita.busquedaSOJ.literal.fechaApertura"/>
+            </field>
+ 
+            <field property = "idPersona" depends = "mask">
+                <arg0 key="gratuita.insertarSOJ.literal.letradoTramitador"/>             
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                	<var>
+						<var-name>mask</var-name> 
+						<var-value>^[0-9]*$</var-value>
+					</var>
+					<var> 
+						<var-name>maxlength</var-name> 
+						<var-value>10</var-value>
+					</var>
+            </field>
+
+        </form>
+<!-- FIN: DefinirSOJForm julio.vicente 19-02-2005 -->
+
+<!-- INICIO: DatosGeneralesSOJForm julio.vicente 19-02-2005 -->
+        <form name="DatosGeneralesSOJForm">               
+                     <!--   <field  property = "anio" depends = "required,integer">        
+                                <arg0 key="gratuita.busquedaSOJ.literal.anyo"/>                
+                        </field>-->
+           
+           <field property = "numero" depends = "required,integer">
+                <arg0 key="gratuita.busquedaSOJ.literal.numero"/>           
+            </field>
+           
+           
+            <field property = "idTipoSOJ" depends = "required">
+                <arg0 key="gratuita.busquedaSOJ.literal.tipoSOJ"/>
+            </field>
+            <field property = "idTipoSOJColegio" depends = "required">
+                <arg0 key="gratuita.busquedaSOJ.literal.SOJColegio"/>
+            </field>
+           
+            
+            <field property = "fechaApertura" depends = "required">
+                <arg0 key="gratuita.busquedaSOJ.literal.fechaApertura"/>
+            </field>
+
+           <field property = "NColegiado" depends = "required">
+                <arg0 key="gratuita.insertarSOJ.literal.letradoTramitador"/>
+            </field>
+           
+        </form>
+<!-- FIN: DatosGeneralesSOJForm julio.vicente 19-02-2005 -->
+
+<!-- INICIO: DefinirPersonaJGForm julio.vicente 19-02-2005 -->
+        <form name="DefinirPersonaJGForm">                
+                        <field  property = "nombre" depends = "maxlength">              
+                                <arg0 key="gratuita.busquedaSOJ.literal.nombre"/>
+                                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                                <var>
+                        <var-name>maxlength</var-name>
+                    <var-value>100</var-value>
+                </var>          
+                        </field>
+
+                        <field  property = "apellido1" depends = "maxlength">           
+                                <arg0 key="gratuita.busquedaSOJ.literal.apellido1"/>
+                                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                                <var>
+                        <var-name>maxlength</var-name>
+                        <var-value>100</var-value>
+                    </var>              
+                        </field>
+                        
+                        <field  property = "apellido2" depends = "maxlength">           
+                                <arg0 key="gratuita.busquedaSOJ.literal.apellido2"/>
+                                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                                <var>
+                   <var-name>maxlength</var-name>
+                   <var-value>100</var-value>
+                    </var>              
+                        </field>
+            
+            <field property = "codigoPostal" depends = "integer">
+                <arg0 key="gratuita.operarDatosBeneficiario.literal.codigoPostal"/>            
+            </field>
+            
+            <field property = "direccion" depends = "maxlength">
+                <arg0 key="gratuita.operarDatosBeneficiario.literal.direccion"/>
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                   <var-name>maxlength</var-name>
+                   <var-value>100</var-value>
+                    </var>
+            </field>
+            
+            <field property = "idPais" depends = "required">
+                <arg0 key="gratuita.operarDatosBeneficiario.literal.pais"/>
+            </field>
+            
+            <field property = "fechaNacimiento" depends = "required">
+                <arg0 key="gratuita.operarDatosBeneficiario.literal.fechaNacimiento"/>
+            </field>
+            
+            <field 	property = "nombreTelefono" 	depends = "required, maxlength, mask"> 
+		            	<msg name="mask" key="errors.telefono"/>
+						<arg0 key="gratuita.operarDatosBeneficiario.literal.telefonoUso"/>					
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<arg2 key="${var:minlength}" name="minlength" resource="false" />
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>14</var-value>
+						</var>
+	 					<var>
+                             <var-name>minlength</var-name>
+                             <var-value>9</var-value>
+                        </var>
+						<var>
+			                <var-name>mask</var-name>
+			                <var-value>${telefonoSIGA}</var-value>
+			            </var>
+			</field>
+			
+			<field 	property = "numeroTelefono" 	depends = "required, maxlength, mask"> 
+						<msg name="mask" key="errors.telefono"/>
+						<arg0 key="gratuita.operarDatosBeneficiario.literal.numeroTelefono"/>					
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<arg2 key="${var:minlength}" name="minlength" resource="false" />
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>14</var-value>
+						</var>
+	 					<var>
+                             <var-name>minlength</var-name>
+                             <var-value>9</var-value>
+                        </var>
+						<var>
+			                <var-name>mask</var-name>
+			                <var-value>${telefonoSIGA}</var-value>
+			            </var>
+			</field>
+                        
+            
+        </form>
+<!-- FIN: DefinirPersonaJGForm julio.vicente 19-02-2005 -->
+
+<!-- INICIO: PersonaJGForm raul.ggonzalez 09-04-2006 -->
+        <form name="PersonaJGForm">                
+                        <!--<field  property = "tipo" depends = "required">              
+                                <arg0 key="gratuita.personaJG.literal.tipo"/>
+                        </field>
+                        <field  property = "tipoId" depends = "required">              
+                                <arg0 key="gratuita.personaJG.literal.tipoIdentificacion"/>
+                        </field>
+                        <field  property = "provincia" depends = "required">              
+                                <arg0 key="gratuita.personaJG.literal.provincia"/>
+                        </field>
+                        <field  property = "poblacion" depends = "required">              
+                                <arg0 key="gratuita.personaJG.literal.poblacion"/>
+                        </field>
+                        <field  property = "nacionalidad" depends = "required">              
+                                <arg0 key="gratuita.personaJG.literal.nacionalidad"/>
+                        </field>-->
+                <!--
+                        <field  property = "fechaNac" depends = "required">              
+                                <arg0 key="gratuita.personaJG.literal.fechaNac"/>
+                        </field>
+                 -->
+                        <field  property = "nombre" depends = "maxlength, required">              
+                                <arg0 key="gratuita.personaJG.literal.nombreDeno"/>
+                                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                                <var>
+                        <var-name>maxlength</var-name>
+                    <var-value>100</var-value>
+                </var>          
+                        </field>
+
+                        <field  property = "apellido1" depends = "maxlength, required">           
+                                <arg0 key="gratuita.personaJG.literal.apellido1Abre"/>
+                                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                                <var>
+                        <var-name>maxlength</var-name>
+                        <var-value>100</var-value>
+                    </var>              
+                        </field>
+                        
+                        <field  property = "apellido2" depends = "maxlength">           
+                                <arg0 key="gratuita.personaJG.literal.apellido2"/>
+                                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                                <var>
+                   <var-name>maxlength</var-name>
+                   <var-value>100</var-value>
+                    </var>              
+                        </field>
+            
+            <field property = "cp" depends = "integer">
+                <arg0 key="gratuita.personaJG.literal.cp"/>            
+            </field>
+            
+            <field property = "direccion" depends = "maxlength">
+                <arg0 key="gratuita.personaJG.literal.direccion"/>
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                   <var-name>maxlength</var-name>
+                   <var-value>100</var-value>
+                    </var>
+            </field>
+            
+                        
+           	<field property = "hijos" depends = "integer,intRange">
+            	<arg0 key="gratuita.busquedaSOJ.literal.nHijos"/>
+                <arg1 name="intRange" key="${var:min}" resource="false"/>
+                <arg2 name="intRange" key="${var:max}" resource="false"/>
+                    <var>
+                        <var-name>min</var-name>
+                        <var-value>0</var-value>
+                    </var>
+                    <var>
+                        <var-name>max</var-name>
+                        <var-value>99</var-value>
+                    </var>
+            </field>
+            
+        </form>
+<!-- FIN: PersonaJGForm raul.ggonzalez 09-04-2006 -->
+
+<!-- INICIO: BusquedaPersonaJGForm raul.ggonzalez 09-04-2006 -->
+        <form name="BusquedaPersonaJGForm">                
+                        <field  property = "nombre" depends = "maxlength">              
+                                <arg0 key="gratuita.personaJG.literal.nombreDeno"/>
+                                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                                <var>
+                        <var-name>maxlength</var-name>
+                    <var-value>100</var-value>
+                </var>          
+                        </field>
+
+                        <field  property = "apellido1" depends = "maxlength">           
+                                <arg0 key="gratuita.personaJG.literal.apellido1Abre"/>
+                                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                                <var>
+                        <var-name>maxlength</var-name>
+                        <var-value>100</var-value>
+                    </var>              
+                        </field>
+                        
+                        <field  property = "apellido2" depends = "maxlength">           
+                                <arg0 key="gratuita.personaJG.literal.apellido2"/>
+                                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                                <var>
+                   <var-name>maxlength</var-name>
+                   <var-value>100</var-value>
+                    </var>              
+                        </field>
+            
+            
+        </form>
+<!-- FIN: PersonaJGForm raul.ggonzalez 09-04-2006 -->
+
+<!-- INICIO: DatosDocumentacionSOJForm julio.vicente 19-02-2005 -->
+        <form name="DatosDocumentacionSOJForm">  
+            <field property = "fechaLimite" depends = "required">
+                <arg0 key="gratuita.operarEJG.literal.fechaLimitePresentacion"/>
+            </field>     
+        </form>
+<!-- FIN: DatosDocumentacionSOJForm julio.vicente 19-02-2005 -->
+
+<!-- INICIO: DefinirEJGForm julio.vicente 08-03-2005 -->
+        <form name="DefinirEJGForm">               
+            <field property = "idTipoEJG" depends = "required">
+                <arg0 key="gratuita.busquedaEJG.literal.tipoEJG"/>
+            </field>
+           
+<!--            <field property = "guardiaTurnoIdTurno" depends = "required">	-->
+<!--                <arg0 key="gratuita.busquedaEJG.literal.turno"/>			-->
+<!--            </field>														-->
+           
+<!--            <field property = "guardiaTurnoIdGuardia" depends = "required">	-->
+<!--                <arg0 key="gratuita.busquedaEJG.literal.guardia"/>			-->
+<!--            </field>														-->
+           
+            <field property = "idPersona" depends = "mask">
+<!--                <arg0 key="gratuita.insertarSOJ.literal.letradoTramitador"/>   -->          
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                	<var-name>mask</var-name> 
+					<var-value>^[0-9]*$</var-value>
+				</var>
+                <var> 
+                	<var-name>maxlength</var-name> 
+					<var-value>10</var-value>
+				</var>
+            </field>
+           
+            <field property = "fechaApertura" depends = "required">
+                <arg0 key="gratuita.busquedaEJG.literal.fechaApertura"/>
+            </field>
+           
+<!--            <field property = "NColegiado" depends = "required">			-->	
+<!--                <arg0 key="gratuita.insertarSOJ.literal.letradoTramitador"/>-->
+<!--            </field>														-->
+
+        </form>
+<!-- FIN: DefinirEJGForm julio.vicente 08-03-2005 -->
+
+<!-- INICIO: DefinirInteresadoEJGForm julio.vicente 08-03-2005 -->
+                <form name="DefinirInteresadoEJGForm">
+                        <field  property = "nombre" depends = "maxlength">              
+                                <arg0 key="gratuita.busquedaSOJ.literal.nombre"/>
+                                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                                <var>
+                        <var-name>maxlength</var-name>
+                    <var-value>100</var-value>
+                </var>          
+                        </field>
+
+                        <field  property = "apellido1" depends = "maxlength">           
+                                <arg0 key="gratuita.busquedaSOJ.literal.apellido1"/>
+                                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                                <var>
+                        <var-name>maxlength</var-name>
+                        <var-value>100</var-value>
+                    </var>              
+                        </field>
+                        
+                        <field  property = "apellido2" depends = "maxlength">           
+                                <arg0 key="gratuita.busquedaSOJ.literal.apellido2"/>
+                                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                                <var>
+                   <var-name>maxlength</var-name>
+                   <var-value>100</var-value>
+                    </var>              
+                        </field>
+            
+            <field property = "codigoPostal" depends = "integer">
+                <arg0 key="gratuita.operarDatosBeneficiario.literal.codigoPostal"/>            
+            </field>
+            
+            <field property = "direccion" depends = "maxlength">
+                <arg0 key="gratuita.operarDatosBeneficiario.literal.direccion"/>            
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                        <var-name>maxlength</var-name>
+                        <var-value>100</var-value>
+                    </var>
+            </field>
+            
+            <field property = "idPais" depends = "required">
+                <arg0 key="gratuita.operarDatosBeneficiario.literal.pais"/>
+            </field>
+            
+            <field property = "fechaNacimiento" depends = "required">
+                <arg0 key="gratuita.operarDatosBeneficiario.literal.fechaNacimiento"/>
+            </field>
+            
+            <field property = "descripcionIngresosAnuales" depends = "maxlength">
+                <arg0 key="gratuita.operarInteresado.literal.ingresosAnuales"/>
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                        <var-name>maxlength</var-name>
+                        <var-value>1024</var-value>
+                    </var>              
+            </field>
+            
+			<field property = "importeIngresosAnuales" depends = "float,floatRange">
+			<arg0 key="gratuita.operarInteresado.literal.ingresosAnuales"/>
+			<arg1 name="floatRange" key="${var:min}" resource="false"/>
+			<arg2 name="floatRange" key="${var:max}" resource="false"/>
+			 <var>
+			  <var-name>min</var-name>
+			  <var-value>0</var-value>
+			 </var>
+			 <var>
+			  <var-name>max</var-name>
+			  <var-value>99999999.99</var-value>
+			 </var>
+			</field>
+
+            <field property = "bienesInmuebles" depends = "maxlength">
+                <arg0 key="gratuita.operarInteresado.literal.ingresosAnuales"/>
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                        <var-name>maxlength</var-name>
+                        <var-value>1024</var-value>
+                    </var>              
+            </field>
+            
+			<field property = "importeBienesInmuebles" depends = "float,floatRange">
+			<arg0 key="gratuita.operarInteresado.literal.bienesInmuebles"/> 
+			<arg1 name="floatRange" key="${var:min}" resource="false"/>
+			<arg2 name="floatRange" key="${var:max}" resource="false"/>
+			 <var>
+			  <var-name>min</var-name>
+			  <var-value>0</var-value>
+			 </var>
+			 <var>
+			  <var-name>max</var-name>
+			  <var-value>99999999.99</var-value>
+			 </var>
+			</field>
+
+            <field property = "bienesMuebles" depends = "maxlength">
+                <arg0 key="gratuita.operarInteresado.literal.bienesMobiliarios"/>
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                        <var-name>maxlength</var-name>
+                        <var-value>1024</var-value>
+                    </var>              
+            </field>
+            
+			<field property = "importeBienesMuebles" depends = "float,floatRange">
+			<arg0 key="gratuita.operarInteresado.literal.bienesMobiliarios"/>
+			<arg1 name="floatRange" key="${var:min}" resource="false"/>
+			<arg2 name="floatRange" key="${var:max}" resource="false"/>
+			 <var>
+			  <var-name>min</var-name>
+			  <var-value>0</var-value>
+			 </var>
+			 <var>
+			  <var-name>max</var-name>
+			  <var-value>99999999.99</var-value>
+			 </var>
+			</field>
+        
+             <field property = "otrosBienes" depends = "maxlength">
+                <arg0 key="gratuita.operarInteresado.literal.otrosBienes"/>
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                        <var-name>maxlength</var-name>
+                        <var-value>1024</var-value>
+                    </var>              
+            </field>
+            
+			<field property = "importeOtrosBienes" depends = "float,floatRange">
+			<arg0 key="gratuita.operarInteresado.literal.otrosBienes"/>
+			<arg1 name="floatRange" key="${var:min}" resource="false"/>
+			<arg2 name="floatRange" key="${var:max}" resource="false"/>
+			 <var>
+			  <var-name>min</var-name>
+			  <var-value>0</var-value>
+			 </var>
+			 <var>
+			  <var-name>max</var-name>
+			  <var-value>99999999.99</var-value>
+			 </var>
+			</field>           
+                        
+       </form>
+<!-- FIN: DefinirInteresadoEJGForm julio.vicente 08-03-2005 -->
+
+
+<!-- INICIO: DefinirEstadosEJGForm julio.vicente 08-03-2005 -->
+                <form name="DefinirEstadosEJGForm">
+            <field property = "fechaInicio" depends = "required">
+                <arg0 key="gratuita.operarEJG.literal.fecha"/>
+            </field>
+
+            <field property = "idEstadoEJG" depends = "required">
+                <arg0 key="pestana.justiciagratuitaejg.estados"/>
+            </field>
+
+            
+       </form>
+<!-- FIN: DefinirInteresadoEJGForm julio.vicente 08-03-2005 -->
+
+<!-- INICIO: DefinirDocumentacionEJGForm julio.vicente 19-02-2005 -->
+        <form name="DefinirDocumentacionEJGForm">  
+            <field property = "fechaLimitePresentacion" depends = "">
+                <arg0 key="gratuita.operarEJG.literal.fechaLimitePresentacion"/>
+            </field>     
+        </form>
+<!-- FIN: DefinirDocumentacionEJGForm julio.vicente 19-02-2005 -->
+
+
+<!-- INICIO: DefinirUnidadFamiliarEJGForm julio.vicente 19-02-2005 -->
+        <form name="DefinirUnidadFamiliarEJGForm">  
+        
+                <field property = "observaciones" depends = "maxlength">
+                <arg0 key="gratuita.operarEJG.literal.observaciones"/>
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                                <var>
+                        <var-name>maxlength</var-name>
+                    <var-value>1024</var-value>
+                </var>
+            </field>
+            
+            <field property = "enCalidadDe" depends = "maxlength">
+                <arg0 key="gratuita.operarUnidadFamiliar.literal.enCalidadDe"/>
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                                <var>
+                        <var-name>maxlength</var-name>
+                    <var-value>20</var-value>
+                </var>
+            </field>
+        
+                        <field  property = "nombre" depends = "maxlength">              
+                                <arg0 key="gratuita.busquedaSOJ.literal.nombre"/>
+                                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                                <var>
+                        <var-name>maxlength</var-name>
+                    <var-value>100</var-value>
+                </var>          
+                        </field>
+
+                        <field  property = "apellido1" depends = "maxlength">           
+                                <arg0 key="gratuita.busquedaSOJ.literal.apellido1"/>
+                                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                                <var>
+                        <var-name>maxlength</var-name>
+                        <var-value>100</var-value>
+                    </var>              
+                        </field>
+                        
+                        <field  property = "apellido2" depends = "maxlength">           
+                                <arg0 key="gratuita.busquedaSOJ.literal.apellido2"/>
+                                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                                <var>
+                   <var-name>maxlength</var-name>
+                   <var-value>100</var-value>
+                    </var>              
+                        </field>
+            
+            <field property = "codigoPostal" depends = "integer">
+                <arg0 key="gratuita.operarDatosBeneficiario.literal.codigoPostal"/>            
+            </field>
+            
+            <field property = "direccion" depends = "maxlength">
+                <arg0 key="gratuita.operarDatosBeneficiario.literal.direccion"/>
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                        <var-name>maxlength</var-name>
+                        <var-value>100</var-value>
+                    </var>
+            </field>
+            
+            <field property = "idPais" depends = "required">
+                <arg0 key="gratuita.operarDatosBeneficiario.literal.pais"/>
+            </field>
+            
+            <field property = "fechaNacimiento" depends = "required">
+                <arg0 key="gratuita.operarDatosBeneficiario.literal.fechaNacimiento"/>
+            </field>
+
+            <field property = "descripcionIngresosAnuales" depends = "maxlength">
+                <arg0 key="gratuita.operarInteresado.literal.ingresosAnuales"/>
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                        <var-name>maxlength</var-name>
+                        <var-value>1024</var-value>
+                    </var>              
+            </field>
+            
+			<field property = "importeIngresosAnuales" depends = "float,floatRange">
+			<arg0 key="gratuita.operarInteresado.literal.ingresosAnuales"/>
+			<arg1 name="floatRange" key="${var:min}" resource="false"/>
+			<arg2 name="floatRange" key="${var:max}" resource="false"/>
+			<var>
+			<var-name>min</var-name>
+			<var-value>0</var-value>
+			</var>
+			<var>
+			<var-name>max</var-name>
+			<var-value>99999999.99</var-value>
+			</var>
+			</field>
+
+            <field property = "bienesInmuebles" depends = "maxlength">
+                <arg0 key="gratuita.operarInteresado.literal.ingresosAnuales"/>
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                        <var-name>maxlength</var-name>
+                        <var-value>1024</var-value>
+                    </var>              
+            </field>
+            
+			<field property = "importeBienesInmuebles" depends = "float,floatRange">
+			<arg0 key="gratuita.operarInteresado.literal.bienesInmuebles"/>
+			<arg1 name="floatRange" key="${var:min}" resource="false"/>
+			<arg2 name="floatRange" key="${var:max}" resource="false"/>
+			<var>
+			<var-name>min</var-name>
+			<var-value>0</var-value>
+			</var>
+			<var>
+			<var-name>max</var-name>
+			<var-value>99999999.99</var-value>
+			</var>
+			</field>
+
+            <field property = "bienesMuebles" depends = "maxlength">
+                <arg0 key="gratuita.operarInteresado.literal.bienesMobiliarios"/>
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                        <var-name>maxlength</var-name>
+                        <var-value>1024</var-value>
+                    </var>              
+            </field>
+            
+			<field property = "importeBienesMuebles" depends = "float,floatRange">
+			<arg0 key="gratuita.operarInteresado.literal.bienesMobiliarios"/>
+			<arg1 name="floatRange" key="${var:min}" resource="false"/>
+			<arg2 name="floatRange" key="${var:max}" resource="false"/>
+			<var>
+			<var-name>min</var-name>
+			<var-value>0</var-value>
+			</var>
+			<var>
+			<var-name>max</var-name>
+			<var-value>99999999.99</var-value>
+			</var>
+			</field>
+
+                        
+            <field property = "otrosBienes" depends = "maxlength">
+                <arg0 key="gratuita.operarInteresado.literal.otrosBienes"/>
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                        <var-name>maxlength</var-name>
+                        <var-value>1024</var-value>
+                    </var>              
+            </field>
+            
+			<field property = "importeOtrosBienes" depends = "float,floatRange">
+			<arg0 key="gratuita.operarInteresado.literal.otrosBienes"/>
+			<arg1 name="floatRange" key="${var:min}" resource="false"/>
+			<arg2 name="floatRange" key="${var:max}" resource="false"/>
+			<var>
+			<var-name>min</var-name>
+			<var-value>0</var-value>
+			</var>
+			<var>
+			<var-name>max</var-name>
+			<var-value>99999999.99</var-value>
+			</var>
+			</field> 
+        
+        </form>
+<!-- FIN: DefinirUnidadFamiliarEJGForm julio.vicente 19-02-2005 -->
+
+<!-- INICIO: TipoExpedienteForm juan.grau 14-03-2005 -->
+
+        <form name="TipoExpedienteForm">
+                <field property = "nombre"
+                                depends = "required">
+                        <arg0 key="expedientes.auditoria.literal.nombre"/>
+                </field>
+        </form>
+
+<!-- FIN: TipoExpedienteForm juan.grau 14-03-2005 -->
+
+
+<!-- INICIO: ListaCorreosForm juan.grau 14-03-2005 -->
+
+        <form name="ListaCorreosForm">
+                <field property = "nombre"
+                                depends = "required">
+                        <arg0 key="expedientes.auditoria.literal.nombre"/>
+                </field>
+        </form>
+
+<!-- FIN: ListaCorreosForm juan.grau 14-03-2005 -->
+
+<!-- INICIO: AsistenciasForm carlos.vidal 17-03-2005 -->
+
+     <form name="AsistenciasForm">
+        <field property = "acnumero" depends = "required">
+            <arg0 key="gratuita.mantActuacion.literal.nactuacion"/>
+        </field>
+        <field property = "acfecha" depends = "required">
+            <arg0 key="gratuita.mantActuacion.literal.fecha"/>
+        </field>
+        <field property = "idTipoActuacion" depends = "required">
+            <arg0 key="gratuita.mantActuacion.literal.tipoActuacion"/>
+        </field>
+    </form> 
+
+<!-- FIN: AsistenciasForm carlos.vidal 17-03-2005 -->
+    
+<!-- INICIO: Asistencias1Form carlos.vidal 17-03-2005 -->
+    
+    <form name="Asistencias1Form">
+        <field property = "idPais" depends = "required">
+            <arg0 key="gratuita.aisRespAsistencias.literal.pais"/>
+        </field>
+        <field property = "idProvincia" depends = "required">
+            <arg0 key="gratuita.aisRespAsistencias.literal.provincia"/>
+        </field>
+        <field property = "idPoblacion" depends = "required">
+            <arg0 key="gratuita.aisRespAsistencias.literal.poblacion"/>
+        </field>
+    </form> 
+    
+<!-- FIN: Asistencias1Form carlos.vidal 17-03-2005 -->
+
+<!-- INICIO: GenerarAbonosForm miguel.villegas 15-03-2005 -->
+
+    <form name="GenerarAbonosForm">
+
+        <field property = "busquedaIdAbono" depends = "mask,maxlength">
+
+           <arg0 key="facturacion.busquedaAbonos.literal.numeroAbono"/>
+
+           <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+
+            <var>
+
+                <var-name>maxlength</var-name>
+
+                <var-value>10</var-value>
+
+            </var>
+
+            <var>
+
+                <var-name>mask</var-name>
+
+                <var-value>^[0-9]{0,10}$</var-value>
+
+            </var> 
+
+        </field>
+
+	    <field property = "busquedaIdFactura" depends = "maxlength">
+
+            <arg0 key="facturacion.busquedaAbonos.literal.numeroFactura"/>
+
+            <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+
+            <var>
+
+                <var-name>maxlength</var-name>
+
+                <var-value>20</var-value>
+
+            </var> 
+
+
+
+        </field>
+
+    </form> 
+
+<!-- FIN: GenerarAbonosForm miguel.villegas 15-03-2005 -->
+
+<!-- INICIO: AltaAbonosForm miguel.villegas 15-03-2005 -->
+
+<form name="AltaAbonosForm">
+
+    <field property = "idFactura" depends = "required,maxlength">
+
+        <arg0 key="facturacion.busquedaAbonos.literal.numeroFactura"/>
+
+        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+
+        <var>
+
+            <var-name>maxlength</var-name>
+
+            <var-value>20</var-value>
+
+        </var> 
+
+
+       </field>
+
+        <field property = "motivos" depends = "required,maxlength">
+
+            <arg0 key="facturacion.altaAbonos.literal.motivos"/>
+
+            <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+
+            <var>
+
+                <var-name>maxlength</var-name>
+
+                <var-value>255</var-value>
+
+            </var> 
+
+        </field>
+
+     </form> 
+
+<!-- FIN: AltaAbonosForm miguel.villegas 15-03-2005 -->
+
+<!-- INICIO: AbonosDatosGeneralesForm miguel.villegas 15-03-2005 -->
+
+    <form name="AbonosDatosGeneralesForm">
+
+        <field property = "motivos" depends = "required,maxlength">
+
+            <arg0 key="facturacion.altaAbonos.literal.motivos"/>
+
+            <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+
+            <var>
+
+                <var-name>maxlength</var-name>
+
+                <var-value>255</var-value>
+
+            </var> 
+
+        </field>
+
+    </form> 
+
+<!-- FIN: AbonosDatosGeneralesForm miguel.villegas 15-03-2005 -->
+
+<!-- INICIO: AbonosLineasForm miguel.villegas 15-03-2005 -->
+
+    <form name="AbonosLineasForm">
+
+        <field property = "cantidad" depends = "required,mask">
+
+            <arg0 key="facturacion.lineasAbonos.literal.cantidad"/>
+
+            <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+
+            <var>
+
+                <var-name>maxlength</var-name>
+
+                <var-value>5</var-value>
+
+            </var> 
+
+            <var>
+
+                <var-name>mask</var-name>
+
+                <var-value>^[1-9]([0-9]{0,4})$</var-value>
+
+            </var> 
+
+        </field>
+
+        <field property = "descripcion" depends = "required,maxlength">
+
+            <arg0 key="facturacion.mantenimientoLineas.literal.contabilizado"/>
+
+            <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+
+            <var>
+
+                <var-name>maxlength</var-name>
+
+                <var-value>80</var-value>
+
+            </var> 
+
+        </field>
+
+        <field property = "precio" depends = "required,mask">
+
+            <arg0 key="facturacion.lineasAbonos.literal.precioUnit"/>
+
+            <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+
+            <var>
+
+                <var-name>maxlength</var-name>
+
+                <var-value>11</var-value>
+
+            </var> 
+
+            <var>
+
+                <var-name>mask</var-name>
+
+                <var-value>^[0-9]{0,8}((\.|\,)[0-9][0-9]{0,1}){0,1}$</var-value>
+
+            </var> 
+
+        </field>
+
+        <field property = "iva" depends = "required,mask">
+
+            <arg0 key="facturacion.lineasAbonos.literal.iva"/>
+
+            <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+
+            <var>
+
+                <var-name>maxlength</var-name>
+
+                <var-value>5</var-value>
+
+            </var> 
+
+            <var>
+
+                <var-name>mask</var-name>
+
+                <var-value>^[0-9]{0,2}((\.|\,)[0-9][0-9]{0,1}){0,1}$</var-value>
+
+            </var> 
+
+        </field>
+
+    </form> 
+
+<!-- FIN: AbonosLineasForm miguel.villegas 15-03-2005 -->
+
+<!-- INICIO: programarFacturacionForm nuria.rodriguezg 15-03-2005 -->
+
+    <form name="programarFacturacionForm">
+    
+        <field property = "descripcionProgramacion" depends = "required">
+            <arg0 key="facturacion.seriesFacturacion.literal.descripcion"/>
+        </field>
+    
+        <field property = "serieFacturacion" depends = "required">
+            <arg0 key="facturacion.seriesFacturacion.literal.serieFacturacion"/>
+        </field>
+        <field property = "fechaInicialProducto" depends = "required">
+            <arg0 key="facturacion.seriesFacturacion.literal.fechasProducto"/>
+        </field>
+        <field property = "fechaFinalProducto" depends = "required">
+            <arg0 key="facturacion.seriesFacturacion.literal.fechasProducto"/>
+        </field>
+        <field property = "fechaInicialServicio" depends = "required">
+            <arg0 key="facturacion.seriesFacturacion.literal.fechasServicio"/>
+        </field>
+        <field property = "fechaFinalServicio" depends = "required">
+            <arg0 key="facturacion.seriesFacturacion.literal.fechasServicio"/>
+        </field>
+        <field property = "fechaProgramacion" depends = "required">
+            <arg0 key="facturacion.seriesFacturacion.literal.fechaProgramacion"/>
+        </field>
+        <field property = "fechaPrevistaGeneracion" depends = "required">
+            <arg0 key="facturacion.seriesFacturacion.literal.fechaPrevistaGeneracion"/>
+        </field>
+        
+        
+    </form>
+
+<!-- FIN: programarFacturacionForm nuria.rodriguezg 15-03-2005 -->
+
+<!-- INICIO: confirmarFacturacionForm RGG 01/02/2007 -->
+
+    <form name="confirmarFacturacionForm">
+        <field property = "estadoConfirmacion" depends = "required">
+            <arg0 key="facturacion.confirmarFacturacion.literal.estadoConfirmacion"/>
+        </field>
+    </form>
+
+<!-- INICIO: DatosGeneralesFacturacionForm ruben.fernandez 15-03-2005 -->
+
+        <form name="DatosGeneralesFacturacionForm">
+                
+            <field property = "nombre" depends = "required,maxlength">
+                <arg0 key="factSJCS.datosFacturacion.literal.nombre"/>
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                    <var-name>maxlength</var-name>
+                    <var-value>100</var-value>
+                </var> 
+            </field>
+            
+            <field property = "fechaInicio" depends = "required">
+                <arg0 key="factSJCS.datosFacturacion.literal.fechaInicio"/>
+            </field>
+            
+            <field property = "fechaFin" depends = "required">
+                <arg0 key="factSJCS.datosFacturacion.literal.fechaFin"/>
+            </field>                
+            
+        </form>
+
+<!-- FIN: DatosGeneralesFacturacionForm ruben.fernandez 15-03-2005 -->
+
+<!-- INICIO: AbonosPagosForm miguel.villegas 18-03-2005 -->
+
+    <form name="AbonosPagosForm">
+        <field property = "numeroCuenta" depends = "required">
+            <arg0 key="facturacion.abonosPagos.datosPagoAbono.nCuenta"/>
+        </field>
+        <field property = "importe" depends = "required,mask">
+            <arg0 key="facturacion.abonosPagos.datosPagoAbono.importePago"/>
+            <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+            <var>
+                <var-name>maxlength</var-name>
+                <var-value>11</var-value>
+            </var> 
+            <var>
+                <var-name>mask</var-name>
+                <var-value>^[0-9]{0,8}((\.|\,)[0-9][0-9]{0,1}){0,1}$</var-value>
+            </var> 
+        </field>
+    </form> 
+
+<!-- FIN: AbonosPagosForm miguel.villegas 18-03-2005 -->
+
+
+
+<!-- INICIO: regularizacionForm raul.ggonzalez 28-03-2005 -->
+
+    <form name="regularizacionForm">
+        <field property = "nombre" depends = "required, maxlength">
+            <arg0 key="factSJCS.datosRegularizacion.literal.nombre"/>
+            <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+            <var>
+                <var-name>maxlength</var-name>
+                <var-value>100</var-value>
+            </var>
+        </field>
+        <field property = "idFacturacion" depends = "required">
+            <arg0 key="factSJCS.datosRegularizacion.literal.facturacion"/>
+        </field>
+    </form> 
+
+<!-- FIN: regularizacionForm raul.ggonzalez 28-03-2005 -->
+
+<!-- INICIO: DefinirEnviosForm juan.grau 15-03-2005 -->
+
+        <form name="DefinirEnviosForm">
+                <field property = "nombre"
+                                depends = "required">
+                        <arg0 key="envios.definir.literal.nombre"/>
+                </field>
+                <field property = "idEnvioBuscar" depends = "integer">
+                  <arg0 key="envios.definir.literal.identificador"/>
+                </field>
+                
+                <field property = "comboTipoEnvio"
+                                depends = "required">
+                        <arg0 key="envios.definir.literal.tipoenvio"/>
+                </field>
+                                <field property = "comboPlantillaEnvio"
+                                depends = "required">
+                        <arg0 key="envios.plantillas.literal.plantilla"/>
+                </field>
+        </form>
+
+<!-- FIN: DefinirEnviosForm juan.grau 15-03-2005 -->
+
+
+<!-- INICIO: MantenimientoMovimientosForm ruben.fernandez 28-3-2005 -->
+        
+    <form name="MantenimientoMovimientosForm">
+        <field property = "motivo" depends = "maxlength">
+            <arg0 key="factSJCS.datosMovimientos.literal.motivo"/>
+            <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+            <var>
+                <var-name>maxlength</var-name>
+                <var-value>255</var-value>
+            </var> 
+        </field>
+        
+        <field property = "descripcion" depends = "maxlength,required">
+            <arg0 key="factSJCS.datosMovimientos.literal.descripcion"/>
+            <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+            <var>
+                <var-name>maxlength</var-name>
+                <var-value>100</var-value>
+            </var> 
+        </field>
+        <field property = "cantidad" depends = "required,double,maxlength,mask"> 
+	        <msg name="mask" key="messages.pys.mantenimientoProductos.errorPrecio"/>
+	        <arg0 key="factSJCS.datosMovimientos.literal.cantidad"/> 
+	        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+	        <var>
+	            <var-name>maxlength</var-name>
+	            <var-value>11</var-value>
+	        </var> 
+	        <var>
+	            <var-name>mask</var-name>
+	            <var-value>^[-]{0,1}[0-9]{0,8}((\.|\,)[0-9][0-9]{0,1}){0,1}$</var-value>
+	        </var> 
+	    </field>   
+        
+    </form>
+            
+<!-- FIN: MantenimientoMovimientosForm ruben.fernandez 28-3-2005 -->        
+
+<!-- INICIO: MantenimientoTramosLECForm ruben.fernandez 04-04-2005 -->
+
+        <form name="MantenimientoTramosLECForm">
+                <field property = "minimo" depends = "required,integer">
+                                        <arg0 key="FactSJCS.mantTramosLEC.literal.minimo"/>
+                </field>
+                <field property = "maximo" depends = "required,integer">
+                                        <arg0 key="FactSJCS.mantTramosLEC.literal.maximo"/>
+                </field>
+                <field property = "retencion" depends = "required,integer,intRange">
+                	<arg0 key="FactSJCS.mantTramosLEC.literal.nombre"/>
+                    <arg1 name="intRange" key="${var:min}" resource="false"/>
+                    <arg2 name="intRange" key="${var:max}" resource="false"/>
+                        <var>
+                            <var-name>min</var-name>
+                            <var-value>0</var-value>
+                        </var>
+                        <var>
+                            <var-name>max</var-name>
+                            <var-value>100</var-value>
+                        </var>
+                </field>
+        </form>
+
+<!-- FIN: MantenimientoTramosLECForm ruben.fernandez 04-04-2005 -->
+
+
+<!-- INICIO: DevolucionesForm miguel.villegas 04-04-2005 -->
+    <form name="DevolucionesForm">
+        <field property = "ruta" depends = "required">
+            <arg0 key="facturacion.nuevoFichero.literal.seleccion"/>
+        </field>
+    </form> 
+<!-- FIN: DevolucionesForm miguel.villegas 04-04-2005 -->
+
+<!-- INICIO: DevolucionesManualesForm RGG 08/01/2007  -->
+    <form name="DevolucionesManualesForm">
+        <field property = "fechaDevolucion" depends = "required">
+            <arg0 key="facturacion.devolucionManual.fechaDevolucion"/>
+        </field>
+        <field property = "numeroRecibo" depends = "maxlength">
+            <arg0 key="facturacion.devolucionManual.numeroRecibo"/>
+            <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+            <var>
+                <var-name>maxlength</var-name>
+                <var-value>12</var-value>
+            </var> 
+        </field>
+    </form> 
+<!-- FIN -->
+
+<!-- INICIO: MantenimientoRetencionesJudicialesForm julio.vicente 4-4-2005 -->
+        
+        <form name="MantenimientoRetencionesJudicialesForm">
+            <field property = "tipoRetencion" depends = "required">
+                <arg0 key="FactSJCS.mantRetencionesJ.literal.tipoRetencion"/>
+            </field>
+            
+            <field property = "fechaInicio" depends = "required">
+                <arg0 key="FactSJCS.mantRetencionesJ.literal.fechaInicioRJ"/>
+            </field>
+            
+            
+            <field property = "idDestinatario" depends = "required">
+                <arg0 key="FactSJCS.mantRetencionesJ.literal.destinatario"/>
+            </field>
+            
+            <field property = "observaciones" depends = "maxlength">
+                <arg0 key="FactSJCS.mantRetencionesJ.literal.observaciones"/>
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                    <var-name>maxlength</var-name>
+                    <var-value>400</var-value>
+                </var> 
+            </field>
+                <field property = "importe" depends = "required,maxlength,double,mask">
+                        <arg0 key="FactSJCS.mantRetencionesJ.literal.importe"/>
+                        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                        <var>
+                            <var-name>maxlength</var-name>
+                            <var-value>11</var-value>
+                        </var>
+                        <var>
+                            <var-name>mask</var-name>                            
+							<var-value>^[0-9]{1,8}((\.|\,)[0-9]{0,2}){0,1}$</var-value>
+                        </var>
+                </field>
+               
+
+        </form>
+        
+<!-- FIN: MantenimientoRetencionesJudicialesForm julio.vicente 4-4-2005 --> 
+
+<!-- INICIO: generarImpreso190Form raul.ggonzalez 5-4-2005 -->
+        
+        <form name="generarImpreso190Form">
+            <field property = "anio" depends = "required">
+                <arg0 key="factSJCS.impreso190.anio"/>
+            </field>
+
+            <field property = "nombreFichero" depends = "required,maxlength">
+                <arg0 key="factSJCS.impreso190.literal.nombreFichero"/>
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                
+                <var>
+                    <var-name>maxlength</var-name>
+                    <var-value>100</var-value>
+                </var> 
+                
+            </field>
+
+            <field property = "codigoProvincia" depends = "required">
+                <arg0 key="factSJCS.impreso190.literal.provincia"/>
+            </field>
+            
+            <field property = "soporte" depends = "required">
+                <arg0 key="factSJCS.impreso190.literal.soporte"/>
+            </field>
+            
+            <field property = "telefonoContacto" depends = "required,maxlength,mask">
+            	<msg name="mask" key="errors.telefono"/>
+                <arg0 key="factSJCS.impreso190.literal.telefonoContacto"/>
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <arg2 key="${var:minlength}" name="minlength" resource="false" />
+                <var>
+                    <var-name>maxlength</var-name>
+                    <var-value>14</var-value>
+                </var> 
+                <var>
+                    <var-name>minlength</var-name>
+                    <var-value>9</var-value>
+                </var> 
+				<var>
+	                <var-name>mask</var-name>
+	                <var-value>${telefonoSIGA}</var-value>
+	            </var>
+			</field>
+            
+            <field property = "nombreContacto" depends = "required,maxlength">
+                <arg0 key="factSJCS.impreso190.literal.nombreContacto"/>
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                    <var-name>maxlength</var-name>
+                    <var-value>20</var-value>
+                </var> 
+            </field>
+            
+            <field property = "apellido1Contacto" depends = "maxlength,maxlength">
+                <arg0 key="factSJCS.impreso190.literal.apellido1Contacto"/>
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                    <var-name>maxlength</var-name>
+                    <var-value>20</var-value>
+                </var> 
+            </field>
+            
+            <field property = "apellido2Contacto" depends = "maxlength,maxlength">
+                <arg0 key="factSJCS.impreso190.literal.apellido2Contacto"/>
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                    <var-name>maxlength</var-name>
+                    <var-value>20</var-value>
+                </var> 
+            </field>
+            
+         <!-- PDM nuevos campos obligatorios-->   
+            <field property = "apellido1Contacto" depends = "required">
+                <arg0 key="factSJCS.impreso190.literal.apellido1Contacto"/>
+            </field>
+            
+            <field property = "apellido2Contacto" depends = "required">
+                <arg0 key="factSJCS.impreso190.literal.apellido2Contacto"/>
+            </field>
+            
+        </form>
+        
+<!-- FIN: generarImpreso190Form raul.ggonzalez 5-4-2005 -->
+
+<!-- INICIO: ProgramacionForm juan.grau 07-04-2005 -->
+
+        <form name="ProgramacionForm">
+                <field property = "horas" depends = "required,integer,intRange">
+                        <arg0 key="envios.definir.literal.horas"/>
+                        <arg1 name="intRange" key="${var:min}" resource="false"/>
+                        <arg2 name="intRange" key="${var:max}" resource="false"/>
+                        <var>
+                            <var-name>min</var-name>
+                            <var-value>0</var-value>
+                        </var>
+                        <var>
+                            <var-name>max</var-name>
+                            <var-value>23</var-value>
+                        </var>
+                </field>
+                <field property = "minutos" depends = "required,integer,intRange">
+                        <arg0 key="envios.definir.literal.minutos"/>
+                        <arg1 name="intRange" key="${var:min}" resource="false"/>
+                        <arg2 name="intRange" key="${var:max}" resource="false"/>
+                        <var>
+                            <var-name>min</var-name>
+                            <var-value>0</var-value>
+                        </var>
+                        <var>
+                            <var-name>max</var-name>
+                            <var-value>59</var-value>
+                        </var>
+                </field>
+        </form>
+
+<!-- FIN: ProgramacionForm juan.grau 07-04-2005 -->
+
+<!-- INICIO: MantenimientoProcedimientosForm ruben.fernandez 08-04-2005 -->
+
+        <form name="MantenimientoProcedimientosForm">
+                <field property = "nombre" depends = "required">
+                    <arg0 key="gratuita.procedimientos.literal.nombre"/>
+                </field>
+                <field property = "importe" depends = "required,double,maxlength,mask"> 
+			        <msg name="mask" key="messages.pys.mantenimientoProductos.errorPrecio"/>
+			        <arg0 key="gratuita.procedimientos.literal.importe"/> 
+			        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+			        <var>
+			            <var-name>maxlength</var-name>
+			            <var-value>11</var-value>
+			        </var> 
+			        <var>
+			            <var-name>mask</var-name>
+			            <var-value>^[0-9]{0,8}((\.|\,)[0-9][0-9]{0,1}){0,1}$</var-value>
+			        </var> 
+                </field>
+               <!-- <field property = "puntos" depends = "required,integer">
+                    <arg0 key="gratuita.procedimientos.literal.puntos"/>
+                </field>-->
+                <field property = "jurisdiccion" depends = "required">
+                    <arg0 key="gratuita.procedimientos.literal.Jurisdiccion"/>
+                </field>
+                
+        </form>
+
+<!-- FIN: MantenimientoProcedimientosForm ruben.fernandez 08-04-2005 -->
+
+<!-- INICIO: DefinirGrupoFacturacionForm julio.vicente 8-4-2005 -->
+        
+        <form name="DefinirGrupoFacturacionForm">
+                
+            <field property = "nombre" depends = "required,maxlength">
+                <arg0 key="gratuita.gruposFacturacion.literal.nombre"/>
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                    <var-name>maxlength</var-name>
+                    <var-value>100</var-value>
+                </var> 
+            </field>        
+
+                <field property = "porcentajeInicio" depends = "required,integer,intRange">
+                <arg0 key="gratuita.gruposFacturacion.literal.porcentajeInicio"/>
+                        <arg1 name="intRange" key="${var:min}" resource="false"/>
+            <arg2 name="intRange" key="${var:max}" resource="false"/>
+            <var>
+                <var-name>min</var-name>
+                <var-value>0</var-value>
+            </var>
+            <var>
+                <var-name>max</var-name>
+                <var-value>100</var-value>
+            </var>
+        </field>     
+        
+        <field property = "porcentajeExtrajudicial" depends = "required,integer,intRange"> 
+            <arg0 key="gratuita.gruposFacturacion.literal.porcentajeExtrajudicial"/>
+            <arg1 name="intRange" key="${var:min}" resource="false"/>
+            <arg2 name="intRange" key="${var:max}" resource="false"/>
+            <var>
+                <var-name>min</var-name>
+                <var-value>0</var-value>
+            </var>
+            <var>
+                <var-name>max</var-name>
+                <var-value>100</var-value>
+            </var>
+        </field>
+
+        </form>
+        
+<!-- FIN: DefinirGrupoFacturacionForm julio.vicente 8-4-2005 -->   
+
+<!-- INICIO: DocumentosForm juan.grau 13-04-2005 -->
+
+        <form name="DocumentosForm">
+                <field property = "descripcion" depends = "required">
+                        <arg0 key="envios.definir.literal.descripcion"/>
+                </field>
+                <field property = "theFile" depends = "required">
+                        <arg0 key="certificados.mantenimiento.literal.archivo"/>
+                </field>
+        </form>
+
+<!-- FIN: DocumentosForm juan.grau 13-04-2005 -->
+
+<!-- INICIO: datosGeneralesPagoForm david.sanchez 19-04-2005 -->
+        <form name="datosGeneralesPagoForm">
+                <field property = "nombre" depends = "required,maxlength">
+                        <arg0 key="factSJCS.datosPagos.literal.nombre"/>
+                        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                        <var>
+                            <var-name>maxlength</var-name>
+                            <var-value>100</var-value>
+                        </var>
+                </field>
+                <field property = "abreviatura" depends = "required,maxlength">
+                        <arg0 key="factSJCS.datosPagos.literal.abreviatura"/>
+                        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                        <var>
+                            <var-name>maxlength</var-name>
+                            <var-value>36</var-value>
+                        </var>
+                </field>
+                <field property = "comboFacturacion" depends = "required">
+                        <arg0 key="factSJCS.datosPagos.literal.facturacion"/>
+                </field>
+                <field property = "importeRepartir" depends = "required,maxlength,double,mask">
+                        <arg0 key="factSJCS.datosPagos.literal.importe"/>
+                        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                        <var>
+                            <var-name>maxlength</var-name>
+                            <var-value>11</var-value>
+                        </var>
+                        <var>
+                            <var-name>mask</var-name>                            
+							<var-value>^[0-9]{1,8}((\.|\,)[0-9]{0,2}){0,1}$</var-value>
+                        </var>
+                </field>
+                <field property = "porcentajeOficio" depends = "required,maxlength,integer,mask">
+                        <arg0 key="factSJCS.datosPagos.literal.porcentajeTurnos"/>
+                        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                        <var>
+                            <var-name>maxlength</var-name>
+                            <var-value>3</var-value>
+                        </var>
+                        <var>
+                            <var-name>mask</var-name>                            
+							<var-value>^[0-9]{1,3}$</var-value>
+                        </var>
+                </field>
+                <field property = "porcentajeGuardias" depends = "required,maxlength,integer,mask">
+                        <arg0 key="factSJCS.datosPagos.literal.porcentajeGuardias"/>
+                        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                        <var>
+                            <var-name>maxlength</var-name>
+                            <var-value>3</var-value>
+                        </var>
+                        <var>
+                            <var-name>mask</var-name>                            
+							<var-value>^[0-9]{1,3}$</var-value>
+                        </var>
+                </field>
+                <field property = "porcentajeEJG" depends = "required,maxlength,integer,mask">
+                        <arg0 key="factSJCS.datosPagos.literal.porcentajeEJG"/>
+                        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                        <var>
+                            <var-name>maxlength</var-name>
+                            <var-value>3</var-value>
+                        </var>
+                        <var>
+                            <var-name>mask</var-name>                            
+							<var-value>^[0-9]{1,3}$</var-value>
+                        </var>
+                </field>
+                <field property = "porcentajeSOJ" depends = "required,maxlength,integer,mask">
+                        <arg0 key="factSJCS.datosPagos.literal.porcentajeSOJ"/>
+                        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                        <var>
+                            <var-name>maxlength</var-name>
+                            <var-value>3</var-value>
+                        </var>
+                        <var>
+                            <var-name>mask</var-name>                            
+							<var-value>^[0-9]{1,3}$</var-value>
+                        </var>
+                </field>
+        </form>
+
+
+<!-- FIN: datosGeneralesPagoForm david.sanchez 19-04-2005 -->
+        
+<!-- INICIO: MantenimientoHistoricoPreciosForm julio.vicente 15-04-2005 -->
+
+       <form name="MantenimientoHistoricoPreciosForm">
+               <field property = "idFacturacion" depends = "required">
+                       <arg0 key="factSJCS.historicoPrecios.literal.nombreFacturacion"/>
+               </field>
+       </form>
+
+<!-- FIN: MantenimientoHistoricoPreciosForm julio.vicente 15-04-2005 -->
+
+<!-- INICIO: MantenimientoPrevisionesForm raul.ggonzalez 20-04-2005 -->
+        <form name="mantenimientoPrevisionesForm">
+                <field property = "nombre" depends = "maxlength">
+                        <arg0 key="factSJCS.datosFacturacion.literal.nombre"/>
+                        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                    <var-name>maxlength</var-name>
+                    <var-value>255</var-value>
+                </var>
+                </field>
+
+                <field property = "nombreB" depends = "maxlength">
+                        <arg0 key="factSJCS.datosFacturacion.literal.nombre"/>
+                        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                    <var-name>maxlength</var-name>
+                    <var-value>255</var-value>
+                </var>
+                </field>
+        </form>
+<!-- FIN: MantenimientoPrevisionesForm raul.ggonzalez 20-04-2005 -->
+
+<!--INICIO: MantenimientoPrevisionesNuevaForm david.sanchezp 29-06-2005 -->
+        <form name="mantenimientoPrevisionesNuevaForm">
+                <field property = "nombre"
+                         depends = "maxlength,required">
+                        <arg0 key="factSJCS.datosFacturacion.literal.nombre"/>
+                        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                    <var-name>maxlength</var-name>
+                    <var-value>255</var-value>
+                </var>
+                </field>
+
+                <field property = "nombreB"
+                         depends = "maxlength">
+                        <arg0 key="factSJCS.datosFacturacion.literal.nombre"/>
+                        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                    <var-name>maxlength</var-name>
+                    <var-value>255</var-value>
+                </var>
+                </field>
+
+               <field property = "fechaDesde" depends = "required">
+                       <arg0 key="factSJCS.datosFacturacion.literal.fechaInicio"/>
+               </field>
+               <field property = "fechaHasta" depends = "required">
+                       <arg0 key="factSJCS.datosFacturacion.literal.fechaFin"/>
+               </field>
+        </form>
+<!-- FIN: MantenimientoPrevisionesNuevaForm david.sanchezp 29-06-2005 -->
+
+
+<!-- INICIO: RemitentesForm juan.grau 20-05-2005 -->
+<!-- 
+        <form name="RemitentesForm">
+               <field property = "idTipoEnvio" depends = "required">
+                        <arg0 key="envios.definir.literal.tipoenvio"/>
+                </field>
+        </form>-->
+
+<!-- FIN: RemitentesForm juan.grau 20-05-2005 -->
+
+<!-- INICIO: RemitentesPlantillasForm juan.grau 20-05-2005 -->
+
+        <form name="RemitentesPlantillasForm">
+                <field property = "idTipoEnvios" depends = "required">
+                        <arg0 key="envios.definir.literal.tipoenvio"/>
+                </field>
+        </form>
+
+<!-- FIN: RemitentesPlantillasForm juan.grau 20-05-2005 -->
+
+<!-- INICIO: SolicitudCertificadoForm juan.grau 19-05-2005 -->
+        <form name="SolicitudCertificadoForm">
+                <field property = "idPersona" depends = "required">
+                        <arg0 key="certificados.solicitudes.literal.solicitante"/>
+                </field>
+<!--
+                <field property = "idInstitucionOrigen" depends = "required">
+                        <arg0 key="certificados.solicitudes.literal.institucionorigen"/>
+                </field>
+                <field property = "idInstitucionDestino" depends = "required">
+                        <arg0 key="certificados.solicitudes.literal.institucionDestino2"/>
+                </field>
+-->                
+        </form>
+
+<!-- FIN: SolicitudCertificadoForm juan.grau 19-05-2005 -->
+
+<!-- INICIO: GestionarFacturaForm Daniel Campos 25-04-2005 -->
+ 
+    <form name="GestionarFacturaForm">
+	   <field  property = "datosLineaDescripcion"   depends = "maxlength">   
+	     <arg0 key="facturacion.lineasFactura.literal.Descripcion"/>
+	     <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+	     <var>
+	      <var-name>maxlength</var-name>
+	      <var-value>100</var-value>
+	     </var>
+	   </field>
+	 
+	   <field  property = "datosLineaIVA"   depends = "floatRange">   
+	    <arg0 key="facturacion.lineasFactura.literal.IVA"/>
+	    <arg1 key="${var:min}" resource="false"/>
+	    <arg2 key="${var:max}" resource="false"/>
+	    <var>
+	     <var-name>min</var-name>
+	     <var-value>0</var-value>
+	    </var>
+	    <var>
+	     <var-name>max</var-name>
+	     <var-value>100</var-value>
+	    </var>
+	   </field>
+    </form>
+ 
+<!-- FIN: GestionarFacturaForm Daniel Campos 25-04-2005 -->
+
+<!-- INICIO: PlantillasForm miguel.villegas 26-04-2005 -->
+    <form name="PlantillasForm">
+        <field property = "descripcion" depends = "required,maxlength">
+            <arg0 key="facturacion.datosPlantillas.literal.descripcion"/>
+            <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+            <var>
+                <var-name>maxlength</var-name>
+                <var-value>100</var-value>
+            </var> 
+        </field>
+        <field property = "plantillaPDF" depends = "required">
+            <arg0 key="facturacion.datosPlantillas.literal.plantilla"/>
+        </field>
+    </form> 
+<!-- FIN: PlantillasForm miguel.villegas 26-04-2005 -->
+ 
+<!-- INICIO: EditarConsultaForm emilio.grau 22-04-2005 -->
+
+<form name="EditarConsultaForm">
+
+    <field property = "descripcion"     depends = "required">
+
+        <arg0 key="consultas.recuperarconsulta.literal.descripcion"/> 
+
+    </field> 
+
+    <field property = "modulo" depends = "required">
+
+        <arg0 key="consultas.recuperarconsulta.literal.modulo"/>
+
+    </field> 
+
+</form>
+
+<!-- FIN: EditarConsultaForm emilio.grau 25-01-2005 -->
+  
+<!-- INICIO: ActuacionesDesignasForm david.sanchezp 13-02-2006 -->
+    <form name="ActuacionesDesignasForm">
+        <field property = "fechaActuacion" depends = "required">
+            <arg0 key="gratuita.inicio_PestanaCalendarioGuardias.literal.fecha"/>
+        </field>
+       <!--<field property = "juzgado" depends = "required">
+            <arg0 key="gratuita.mantenimientoTablasMaestra.literal.juzgado"/>
+        </field>
+        <field property = "procedimiento" depends = "required">
+            <arg0 key="gratuita.actuacionesDesigna.literal.procedimiento"/>
+        </field>-->
+        <field property = "acreditacion" depends = "required">
+            <arg0 key="gratuita.procedimientos.literal.acreditacion"/>
+        </field>
+    </form>
+<!-- INICIO: ActuacionesDesignasForm david.sanchezp 13-02-2006 -->
+
+<!-- INICIO: MantenimientoInformesForm para Pagos 30-05-2005 -->
+    <form name="mantenimientoInformesForm">
+        <field property = "idioma" depends = "required">
+            <arg0 key="factSJCS.datosPagos.literal.idioma"/>
+        </field>
+        <field property = "idPago" depends = "required">
+            <arg0 key="factSJCS.datosPagos.literal.pago"/>
+        </field>
+    </form>
+<!-- FIN: MantenimientoInformesForm para Pagos 30-05-2005 -->
+
+<!-- INICIO: MantenimientoInformesForm para Facturaciones 30-05-2005 -->
+    <form name="mantenimientoInformesFacturacionesForm">
+        <field property = "idioma" depends = "required">
+            <arg0 key="factSJCS.datosPagos.literal.idioma"/>
+        </field>
+        <field property = "idFacturacion" depends = "required">
+            <arg0 key="factSJCS.datosPagos.literal.facturacion"/>
+        </field>
+    </form>
+<!-- FIN: MantenimientoInformesForm para Facturaciones 30-05-2005 -->
+ 
+
+<!-- INICIO: DefinirTurnosFormNuevo david.sanchezp 24-06-2005 -->
+
+<form name="DefinirTurnosFormNuevo">
+   <field  property = "abreviatura"    depends = "required,maxlength">
+   <arg0 key="gratuita.listarGuardiasTurno.literal.abreviatura"/>
+       <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+       <var>
+	        <var-name>maxlength</var-name>
+	        <var-value>30</var-value>
+       </var>
+     </field>
+   <field  property = "nombre"    depends = "required,maxlength">
+   <arg0 key="censo.SolicitudIncorporacion.literal.nombre"/>
+      <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+      <var>
+        <var-name>maxlength</var-name>
+        <var-value>1024</var-value>
+       </var>
+   </field>
+   <field  property = "descripcion"    depends = "required,maxlength">
+   <arg0 key="gratuita.listarGuardiasTurno.literal.descripcion"/>
+      <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+      <var>
+        <var-name>maxlength</var-name>
+        <var-value>1024</var-value>
+      </var>
+   </field>
+   <field  property = "requisitos"    depends = "required,maxlength">
+ 	  <arg0 key="gratuita.listarGuardiasTurno.literal.requisitos"/>
+      <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+      <var>
+        <var-name>maxlength</var-name>
+        <var-value>1024</var-value>
+      </var>
+    </field>
+    <field  property = "zona"    depends = "required">
+      <arg0 key="gratuita.definirTurnosIndex.literal.zona"/>
+    </field>
+    <field  property = "subzona"    depends = "required">
+      <arg0 key="gratuita.definirTurnosIndex.literal.subzona"/>
+    </field>
+    <field  property = "crit_1"    depends = "required">
+   	  <arg0 key="gratuita.maestroTurnos.literal.primerCriterio"/>
+	</field>
+    <field  property = "crit_2"    depends = "required">
+	  <arg0 key="gratuita.maestroTurnos.literal.segundoCriterio"/>
+	</field>
+    <field  property = "crit_3"    depends = "required">
+		<arg0 key="gratuita.maestroTurnos.literal.terceroCriterio"/>
+	</field>
+     <field  property = "crit_4"    depends = "required">
+   <arg0 key="gratuita.maestroTurnos.literal.cuartoCriterio"/>
+  </field>
+     <field  property = "ord_1"    depends = "required">
+   <arg0 key="gratuita.maestroTurnos.literal.ordPrimerCriterio"/>
+  </field>
+     <field  property = "ord_2"    depends = "required">
+   <arg0 key="gratuita.maestroTurnos.literal.ordSegundoCriterio"/>
+  </field>
+     <field  property = "ord_3"    depends = "required">
+   <arg0 key="gratuita.maestroTurnos.literal.ordTercerCriterio"/>
+  </field>
+     <field  property = "ord_4"    depends = "required">
+   <arg0 key="gratuita.maestroTurnos.literal.ordCuartoCriterio"/>
+  </field>
+   <field  property = "partidaPresupuestaria"    depends = "required">
+   <arg0 key="gratuita.definirTurnosIndex.literal.partidaPresupuestaria"/>
+  </field>
+ </form>
+ <!-- FIN: DefinirTurnosFormNuevo david.sanchezp 24-06-2005 -->
+
+
+
+	<!-- INICIO: sufijosForm david.sanchezp 27-10-2005 -->
+			<form name="sufijosForm">
+                <field property = "sufijo" depends = "required,mask">
+                    <arg0 key="facturacion.sufijos.literal.sufijo"/>
+                   	<var>
+			                <var-name>mask</var-name>
+			                <var-value>${sufijoFacturacion}</var-value>
+			              </var>
+                </field>
+                <field property = "concepto" depends = "required">
+                    <arg0 key="facturacion.sufijos.literal.concepto"/>
+                </field>
+            </form>
+	<!-- FIN: sufijosForm david.sanchezp 27-10-2005 -->
+
+
+	<!-- INICIO: MantenimientoProcuradorForm david.sanchezp 20-1-2006 -->
+			<form name="MantenimientoProcuradorForm">
+                <field property = "nombre" depends = "required">
+                    <arg0 key="gratuita.mantenimientoTablasMaestra.literal.nombre"/>
+                </field>
+                <field property = "apellido1" depends = "required">
+                    <arg0 key="gratuita.mantenimientoTablasMaestra.literal.apellido1"/>
+                </field>
+                <field property = "email" depends = "email">
+                    <arg0 key="gratuita.mantenimientoTablasMaestra.literal.email"/>
+                </field>
+   				<field 	property = "telefono1" depends = "mask"> 
+					<msg name="mask" key="errors.telefono"/>		
+					<arg0 key="gratuita.mantenimientoTablasMaestra.literal.telefono2"/>					
+					<var>
+		                <var-name>mask</var-name>
+		                <var-value>${telefonoSIGA}</var-value>
+		            </var>
+				</field>
+				<field 	property = "telefono2" depends = "mask"> 
+		       		<msg name="mask" key="errors.telefono"/>		
+					<arg0 key="gratuita.mantenimientoTablasMaestra.literal.telefono1"/>					
+					<var>
+		                <var-name>mask</var-name>
+		                <var-value>${telefonoSIGA}</var-value>
+		            </var>
+				</field>
+				<field 	property = "fax1" depends = "mask"> 
+		       		<msg name="mask" key="errors.telefono"/>		
+					<arg0 key="gratuita.mantenimientoTablasMaestra.literal.fax1"/>					
+					<var>
+		                <var-name>mask</var-name>
+		                <var-value>${telefonoSIGA}</var-value>
+		            </var>
+				</field>
+                <field 	property = "codProcurador" 	
+						depends = "maxlength"> 			
+        				<arg0 key="gratuita.mantenimientoTablasMaestra.literal.errorCodProcurador"/>
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						       <var>
+							        <var-name>maxlength</var-name>
+							        <var-value>10</var-value>
+						       </var>
+				</field>
+            </form>
+
+	<!-- FIN: MantenimientoProcuradorForm david.sanchezp 20-1-2006 -->
+	
+	<!-- INICIO: MantenimientoGruposFijosForm PDM 04-09-2006 -->
+			<form name="MantenimientoGruposFijosForm">
+                <field property = "nombre" depends = "required">
+                    <arg0 key="gratuita.mantenimientoTablasMaestra.literal.nombre"/>
+                </field>
+            </form>
+
+	<!-- FIN: MantenimientoGruposFijosForm PDM 04-09-2006 -->
+	
+
+
+	<!-- INICIO: MantenimientoPrisionForm david.sanchezp 20-1-2006 -->
+			<form name="MantenimientoPrisionForm">
+                <field property = "nombre" depends = "required">
+                    <arg0 key="gratuita.mantenimientoTablasMaestra.literal.nombre"/>
+                </field>
+                <field 	property = "telefono1" 	depends = " mask"> 
+	                	<msg name="mask" key="errors.telefono"/>
+						<arg0 key="gratuita.mantenimientoTablasMaestra.literal.telefono2"/>					
+						<var>
+			                <var-name>mask</var-name>
+			                <var-value>${telefonoSIGA}</var-value>
+			            </var>
+				</field>
+				<field 	property = "telefono2" 	depends = "mask"> 
+						<msg name="mask" key="errors.telefono"/>
+						<arg0 key="gratuita.mantenimientoTablasMaestra.literal.telefono1"/>					
+						<var>
+			                <var-name>mask</var-name>
+			                <var-value>${telefonoSIGA}</var-value>
+			            </var>
+				</field>
+				<field 	property = "fax1" 	depends = "mask"> 
+						<msg name="mask" key="errors.telefono"/>
+						<arg0 key="gratuita.mantenimientoTablasMaestra.literal.fax1"/>					
+						<var>
+			                <var-name>mask</var-name>
+			                <var-value>${telefonoSIGA}</var-value>
+			            </var>
+				</field>
+            </form>
+	<!-- FIN: MantenimientoPrisionForm david.sanchezp 20-1-2006 -->
+
+	<!-- INICIO: MantenimientoComisariaForm david.sanchezp 23-1-2006 -->
+			<form name="MantenimientoComisariaForm">
+                <field property = "nombre" depends = "required">
+                    <arg0 key="gratuita.mantenimientoTablasMaestra.literal.nombre"/>
+                </field>
+                <field property = "idProvincia" depends = "required">
+                    <arg0 key="gratuita.mantenimientoTablasMaestra.literal.provincia"/>
+                </field>
+                <field property = "idPoblacion" depends = "required">
+                    <arg0 key="gratuita.mantenimientoTablasMaestra.literal.poblacion"/>
+                </field>
+            </form>
+	<!-- FIN: MantenimientoComisariaForm david.sanchezp 23-1-2006 -->
+
+	<!-- INICIO: MantenimientoJuzgadoForm david.sanchezp 23-1-2006 -->
+			<form name="MantenimientoJuzgadoForm">
+                <field property = "nombre" depends = "required">
+                    <arg0 key="censo.SolicitudIncorporacion.literal.nombre"/>
+                </field>
+                 <field property = "idProvincia" depends = "required">
+                    <arg0 key="gratuita.mantenimientoTablasMaestra.literal.provincia"/>
+                </field>
+                <field property = "idPoblacion" depends = "required">
+                    <arg0 key="gratuita.mantenimientoTablasMaestra.literal.poblacion"/>
+                </field>
+                <field 	property = "telefono1" 	depends = "mask"> 
+	                	<msg name="mask" key="errors.telefono"/>
+						<arg0 key="gratuita.mantenimientoTablasMaestra.literal.telefono2"/>					
+						<var>
+			                <var-name>mask</var-name>
+			                <var-value>${telefonoSIGA}</var-value>
+			            </var>
+			</field>
+			<field 	property = "telefono2" 	depends = "mask"> 
+				<msg name="mask" key="errors.telefono"/>
+				<arg0 key="gratuita.mantenimientoTablasMaestra.literal.telefono1"/>					
+				<var>
+					<var-name>mask</var-name>
+					<var-value>${telefonoSIGA}</var-value>
+		        </var>
+			</field>
+			<field 	property = "fax1" 	depends = "mask"> 
+				<msg name="mask" key="errors.telefono"/>
+				<arg0 key="gratuita.mantenimientoTablasMaestra.literal.fax1"/>					
+				<var>
+	                <var-name>mask</var-name>
+	                <var-value>${telefonoSIGA}</var-value>
+	            </var>
+			</field>
+			<field 	property = "codProcurador" 	
+						depends = "maxlength"> 			
+        				<arg0 key="gratuita.mantenimientoTablasMaestra.literal.errorCodProcurador"/>
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						       <var>
+							        <var-name>maxlength</var-name>
+							        <var-value>10</var-value>
+						       </var>
+				</field>
+            </form>
+	<!-- FIN: MantenimientoJuzgadoForm david.sanchezp 23-1-2006 -->
+
+	<!-- INICIO: pestanaDelitoEJGForm david.sanchezp 25-1-2006 -->
+			<form name="pestanaDelitoEJGForm">
+                <field property = "idDelito" depends = "required">
+                    <arg0 key="gratuita.mantenimientoTablasMaestra.literal.delito"/>
+                </field>
+            </form>
+	<!-- FIN: pestanaDelitoEJGForm david.sanchezp 25-1-2006 -->
+
+	<!-- INICIO: pestanaDelitoDesignaForm david.sanchezp 25-1-2006 -->
+			<form name="pestanaDelitoDesignaForm">
+                <field property = "idDelito" depends = "required">
+                    <arg0 key="gratuita.mantenimientoTablasMaestra.literal.delito"/>
+                </field>
+            </form>
+	<!-- FIN: pestanaDelitoDesignaForm david.sanchezp 25-1-2006 -->
+
+	<!-- INICIO: pestanaDelitoAsistenciaForm david.sanchezp 25-1-2006 -->
+			<form name="pestanaDelitoAsistenciaForm">
+                <field property = "idDelito" depends = "required">
+                    <arg0 key="gratuita.mantenimientoTablasMaestra.literal.delito"/>
+                </field>
+            </form>
+	<!-- FIN: pestanaDelitoAsistenciaForm david.sanchezp 25-1-2006 -->
+
+
+    <!-- FIN: datosGeneralesNoColegiadoForm david.sanchezp 06/02/2006 -->
+
+            <form name="datosGeneralesNoColegiadoForm">
+                  <field     property = "tipo"  depends = "required">             
+                          <arg0 key="censo.general.literal.tipoRegistro"/>         
+                  </field>
+                  <field     property = "tipoIdentificacion"     depends = "required">             
+                          <arg0 key="censo.fichaCliente.literal.tipoIdentificacion"/>         
+                  </field>
+                <field     property = "numIdentificacion"   depends = "maxlength,required">             
+                        <arg0 key="censo.consultaDatosGenerales.literal.nIdentificacion"/>    
+                        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                        <var>
+                            <var-name>maxlength</var-name>
+                            <var-value>20</var-value>
+                        </var>
+                </field>
+                <field     property = "denominacion"   depends = "required,maxlength">             
+                        <arg0 key="censo.consultaDatosGenerales.literal.denominacion"/>
+                        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                        <var>
+                            <var-name>maxlength</var-name>
+                            <var-value>100</var-value>
+                        </var>
+                </field>
+               
+                 
+<!--			  <field     property = "caracter"													-->
+<!--                      depends = "required">             										-->
+<!--                      <arg0 key="censo.consultaDatosGenerales.literal.caracter"/>				-->
+<!--              </field>																			-->
+                <field     property = "cuentaContable"             
+                        depends = "maxlength">             
+                        <arg0 key="censo.consultaDatosBancarios.literal.cuentaContable"/>            
+             
+                        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                        <var>
+                            <var-name>maxlength</var-name>
+                            <var-value>20</var-value>
+                        </var>
+                </field>
+                <field     property = "idioma"
+                        depends = "required">             
+                        <arg0 key="censo.consultaDatosGenerales.literal.idioma"/>    
+                </field>
+                <field     property = "anotaciones" depends = "maxlength">             
+                        <arg0 key="censo.general.literal.anotaciones"/>    
+                        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                        <var>
+                            <var-name>maxlength</var-name>
+                            <var-value>2000</var-value>
+                        </var>
+                </field>
+            
+            </form>
+
+    <!-- FIN: datosGeneralesNoColegiadoForm david.sanchezp 06/02/2006 -->
+
+	<!-- FIN: DatosGeneralesForm david.sanchezp 06/02/2006 -->
+
+			<form name="datosGeneralesForm">
+				<field 	property = "tratamiento" 	
+						depends = "maxlength,required"> 			
+						<arg0 key="censo.consultaDatosGenerales.literal.tratamiento"/>			
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>30</var-value>
+						</var>
+				</field>
+	  			<field 	property = "nombre" 		
+	  					depends = "maxlength,required"> 			
+	  					<arg0 key="censo.consultaDatosGenerales.literal.nombre"/> 		
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>100</var-value>
+						</var>
+	  			</field>
+				<field 	property = "apellido1" 				
+						depends = "maxlength,required"> 			
+						<arg0 key="censo.consultaDatosGenerales.literal.apellido1"/> 				
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>100</var-value>
+						</var>
+				</field>
+				<field 	property = "apellido2" 				
+						depends = "maxlength"> 			
+						<arg0 key="censo.consultaDatosGenerales.literal.apellido2"/> 				
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>100</var-value>
+						</var>
+				</field>
+				<field 	property = "numIdentificacion" 		
+						depends = "maxlength,required"> 			
+						<arg0 key="censo.consultaDatosGenerales.literal.nIdentificacion"/>	
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>20</var-value>
+						</var>
+				</field>
+				<field 	property = "tipoIdentificacion" 		
+						depends = "required"> 			
+						<arg0 key="censo.consultaDatosGenerales.literal.tipoIdentificacion"/>	
+				</field>
+				<field 	property = "lugarNacimiento" 			
+						depends = "maxlength"> 			
+						<arg0 key="censo.consultaDatosGenerales.literal.nacido"/>							
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>100</var-value>
+						</var>
+				</field>
+				<field 	property = "cuentaContable" 			
+						depends = "maxlength"> 			
+						<arg0 key="censo.consultaDatosBancarios.literal.cuentaContable"/> 						
+						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+						<var>
+							<var-name>maxlength</var-name>
+							<var-value>20</var-value>
+						</var>
+				</field>
+				<!--<field 	property = "caracter" 		
+						depends = "required"> 			
+						<arg0 key="censo.consultaDatosGenerales.literal.caracter"/>	
+				</field>-->
+				<field 	property = "idioma" 		
+						depends = "required"> 			
+						<arg0 key="censo.consultaDatosGenerales.literal.idioma"/>	
+				</field>
+				
+			</form>
+
+	<!-- FIN: DatosGeneralesForm david.sanchezp 06/02/2006 -->
+
+	<!-- INICIO: CambiosLetradosDesignasForm raul.ggonzalez 3-3-2006  --> 
+	<form name="CambiosLetradosDesignasForm">
+	    <field property = "fechaDesigna" depends = "required">
+	        <arg0 key="gratuita.cambiosProcuradoresDesigna.literal.fechaDesigna"/>
+	    </field>
+	    <field property = "idPersona" depends = "required">
+	        <arg0 key="gratuita.modalCambioLetradoDesigna.titulo"/>
+	    </field>
+	    <field property = "idTipoMotivo" depends = "required">
+	        <arg0 key="gratuita.cambiosProcuradoresDesigna.literal.tipoMotivo"/>
+	    </field>
+	    <field property = "observaciones" depends = "maxlength">
+	        <arg0 key="gratuita.modalConsulta_DefinirCalendarioGuardia.literal.observaciones"/>
+	        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+	        <var>
+	            <var-name>maxlength</var-name>
+	            <var-value>1024</var-value>
+	        </var>
+	    </field>
+	</form>
+	<!-- FIN: CambiosLetradosDesignasForm raul.ggonzalez 3-3-2006 -->
+
+	<!-- INICIO: CambiosProcuradoresDesignasForm -->
+	<!-- JBD 23-1-2009 Añadido institProcurador --> 
+	<form name="CambiosProcuradoresDesignasForm">
+	    <field property = "fechaDesigna" depends = "required">
+	        <arg0 key="gratuita.cambiosProcuradoresDesigna.literal.fechaDesigna"/>
+	    </field>
+	    <field property = "idProcurador" depends = "required">
+	        <arg0 key="gratuita.cambiosProcuradoresDesigna.literal.nuevoProcurador"/>
+	    </field>
+		<field 	property = "numeroDesigna" 	depends = "maxlength"> 			
+			<arg0 key="gratuita.cambiosProcuradoresDesigna.literal.numeroDesigna"/>	
+			<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+			<var>
+				<var-name>maxlength</var-name>
+				<var-value>10</var-value>
+			</var>
+		</field>
+	    <!--<field property = "idTipoMotivo" depends = "required"><arg0 key="gratuita.cambiosProcuradoresDesigna.literal.tipoMotivo"/></field>-->
+	    <field property = "observaciones" depends = "maxlength">
+	        <arg0 key="gratuita.modalConsulta_DefinirCalendarioGuardia.literal.observaciones"/>
+	        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+	        <var>
+	            <var-name>maxlength</var-name>
+	            <var-value>1024</var-value>
+	        </var>
+	    </field>
+	</form>
+	<!-- FIN: CambiosProcuradoresDesignasForm -->
+	
+	<!-- INICIO: solicitudCompraForm Pilar.Duran 31-01-2007 -->
+
+<!-- INICIO: solicitudCompraForm para catalogo 31-01-2007 -->
+    <form name="solicitudCompraForm">
+        <field property = "catalogo" depends = "required">
+            <arg0 key="pys.solicitudCompra.literal.catalogo"/>
+        </field>
+        
+    </form>
+<!-- FIN: MantenimientoInformesForm para Pagos 30-05-2005 -->
+
+<!-- INICIO: DefinirTelefonosJGForm pilar.duran 19-2-2007 -->
+        
+        <form name="DefinirTelefonosJGForm">
+            <field property = "nombreTelefonoJG" depends = "required">
+                <arg0 key="gratuita.operarDatosBeneficiario.literal.telefonoUso"/>
+          	
+			</field>
+			<field property = "numeroTelefonoJG" depends = "required,mask">
+				<msg name="mask" key="errors.telefono"/>
+                <arg0 key="gratuita.operarDatosBeneficiario.literal.numeroTelefono"/>
+                <var>
+	                <var-name>mask</var-name>
+	                <var-value>${telefonoSIGA}</var-value>
+	            </var>
+			</field>
+        </form>    
+<!-- FIN: DefinirTelefonosJGForm pilar.duran 19-2-2007 -->
+
+<!-- INICIO: AltaTurnosGuardiasForm pilar.duran 19-2-2007 -->
+        
+        <form name="AltaTurnosGuardiasForm">
+            <field 	property = "telefono1" 	depends = "required, mask"> 
+		            	<msg name="mask" key="errors.telefono"/>
+						<arg0 key="censo.datosDireccion.literal.telefono1"/>					
+						<var>
+			                <var-name>mask</var-name>
+			                <var-value>${telefonoSIGA}</var-value>
+			            </var>
+				</field>
+				<field 	property = "telefono2" 	depends = "mask"> 
+						<msg name="mask" key="errors.telefono"/>
+						<arg0 key="censo.datosDireccion.literal.telefono2"/>					
+						<var>
+			                <var-name>mask</var-name>
+			                <var-value>${telefonoSIGA}</var-value>
+			            </var>
+				</field>
+				<field 	property = "fax1" 	depends = "mask"> 
+						<msg name="mask" key="errors.telefono"/>
+						<arg0 key="censo.datosDireccion.literal.fax1"/>					
+						<var>
+			                <var-name>mask</var-name>
+			                <var-value>${telefonoSIGA}</var-value>
+			            </var>
+				</field>
+				<field 	property = "fax2" 	depends = "mask"> 
+						<msg name="mask" key="errors.telefono"/>
+						<arg0 key="censo.datosDireccion.literal.fax2"/>					
+						<var>
+			                <var-name>mask</var-name>
+			                <var-value>${telefonoSIGA}</var-value>
+			            </var>
+				</field>
+				<field 	property = "movil" 	depends = "mask"> 
+						<msg name="mask" key="errors.telefono"/>
+						<arg0 key="censo.datosDireccion.literal.movil"/>					
+						<var>
+			                <var-name>mask</var-name>
+			                <var-value>${telefonoSIGA}</var-value>
+			            </var>
+				</field>
+        </form>    
+<!-- FIN: AltaTurnosGuardiasForm pilar.duran 19-2-2007 -->
+
+<!-- INICIO: busquedaClientesFiltrosForm pilar.duran 19-2-2007 -->
+        
+        <form name="busquedaClientesFiltrosForm">
+            <field 	property = "telefono1" 	depends = "required,mask"> 
+		            	<msg name="mask" key="errors.telefono"/>
+						<arg0 key="censo.datosDireccion.literal.telefono1"/>					
+						<var>
+			                <var-name>mask</var-name>
+			                <var-value>${telefonoSIGA}</var-value>
+			            </var>
+				</field>
+				<field 	property = "telefono2" 	depends = "mask"> 
+						<msg name="mask" key="errors.telefono"/>
+						<arg0 key="censo.datosDireccion.literal.telefono2"/>					
+						<var>
+			                <var-name>mask</var-name>
+			                <var-value>${telefonoSIGA}</var-value>
+			            </var>
+				</field>
+				<field 	property = "fax1" 	depends = "mask"> 
+						<msg name="mask" key="errors.telefono"/>
+						<arg0 key="censo.datosDireccion.literal.fax1"/>					
+						<var>
+			                <var-name>mask</var-name>
+			                <var-value>${telefonoSIGA}</var-value>
+			            </var>
+				</field>
+				<field 	property = "fax2" 	depends = "mask"> 
+						<msg name="mask" key="errors.telefono"/>
+						<arg0 key="censo.datosDireccion.literal.fax2"/>					
+						<var>
+			                <var-name>mask</var-name>
+			                <var-value>${telefonoSIGA}</var-value>
+			            </var>
+				</field>
+				<field 	property = "movil" 	depends = "mask"> 
+						<msg name="mask" key="errors.telefono"/>
+						<arg0 key="censo.datosDireccion.literal.movil"/>					
+						<var>
+			                <var-name>mask</var-name>
+			                <var-value>${telefonoSIGA}</var-value>
+			            </var>
+				</field>
+        </form>    
+<!-- FIN: busquedaClientesFiltrosForm pilar.duran 19-2-2007 -->
+
+
+<!-- INICIO: gestionContadoresForm pilar.duran 03-09-2007 -->
+        
+        <form name="gestionContadoresForm">
+            <field 	property = "nombreContador" 	depends = "required"> 
+		            	
+						<arg0 key="administracion.parametrosGenerales.literal.nombre"/>					
+						
+			</field>
+			<field 	property = "modo" 	depends = "required"> 
+		            	
+						<arg0 key="administracion.parametrosGenerales.literal.modo"/>					
+						
+			</field>
+			<field 	property = "contador" 	depends = "required,mask"> 
+		            	
+						<arg0 key="administracion.parametrosGenerales.literal.contadorActual"/>	
+				<var>
+		         			<var-name>mask</var-name>
+		         			<var-value>^[0-9*?]{0,20}$</var-value>
+				</var>						
+						
+			</field>
+			<field 	property = "longitud" 	depends = "required,mask"> 
+		            	
+						<arg0 key="administracion.parametrosGenerales.literal.longitud"/>
+				<var>
+		         <var-name>mask</var-name>
+		         <var-value>^[0-9*?]{0,20}$</var-value>
+				</var>						
+						
+			</field>
+			<field 	property = "reconfiguracionContador" 	depends = "mask"> 
+		            	
+						<arg0 key="administracion.parametrosGenerales.literal.contadorSiguiente"/>
+				<var>
+		         <var-name>mask</var-name>
+		         <var-value>^[0-9*?]{0,20}$</var-value>
+				</var>						
+						
+			</field>
+			
+        </form>    
+
+<!-- INICIO: auditoriaUsuariosForm 6/9/2007 -->
+        <form name="auditoriaUsuariosForm">
+            <field 	property = "fechaEntrada" 	depends = "required"> 
+						<arg0 key="administracion.auditoriaUsuarios.literal.fechaEntrada"/>
+			</field>
+            <field 	property = "fechaEfectiva" 	depends = "required"> 
+						<arg0 key="administracion.auditoriaUsuarios.literal.fechaEfectiva"/>
+			</field>
+            <field 	property = "motivo"		 	depends = "required"> 
+						<arg0 key="administracion.auditoriaUsuarios.literal.motivo"/>
+			</field>
+        </form>    
+<!-- FIN: auditoriaUsuariosForm 6/9/2007 -->
+
+
+<!-- INICIO: informesFacturasEmitidasForm 6/11/2007 -->
+        <form name="informesFacturasEmitidasForm">
+            <field 	property = "fechaDesde" 	depends = "required"> 
+				<arg0 key="facturacion.informes.facturasEmitidas.fechaDesde.literal"/>
+			</field>
+            <field 	property = "fechaHasta" 	depends = "required"> 
+				<arg0 key="facturacion.informes.facturasEmitidas.fechaHasta.literal"/>
+			</field>
+        </form>    
+<!-- FIN: informesFacturasEmitidasForm 6/11/2007 -->
+
+	<form name="DefinicionRemesas_CAJG_Form">
+	        <field  property="fechaGeneracion" depends="required">           
+	            <arg0 key="gratuita.BusquedaRemesas_CAJG.literal.fGeneracion"/>
+	        </field>
+	</form>
+	
+	<form name="DefinicionRemesaResolucionesCAJGForm">
+        <field  property="fechaResolucion" depends="required">           
+            <arg0 key="gratuita.BusquedaResolucionCAJG.literal.fResolucion"/>
+        </field>        
+	</form>
+	
+	<form name="EstadosRemesaForm">
+	        <field  property="fechaEstado" depends="required">           
+	            <arg0 key="gratuita.BusquedaRemesas_CAJG.literal.fechaEstado"/>
+	        </field>
+	</form>
+	
+	<form name="AnticiposClienteForm">
+		<field 	property = "importeAnticipado" 			depends = "required,float,floatRange">		
+			<arg0 key="censo.anticipos.literal.importeAnticipado" />
+			<arg1 name="floatRange" key="${var:min}" resource="false"/>
+			<arg2 name="floatRange" key="${var:max}" resource="false"/>
+			 <var>
+			  <var-name>min</var-name>
+			  <var-value>0</var-value>
+			 </var>
+			 <var>
+			  <var-name>max</var-name>
+			  <var-value>99999999.99</var-value>
+			 </var>
+		</field>
+		<field 	property = "descripcion" 			depends = "required,maxlength">		
+			<msg name="mask" key="censo.anticipos.literal.descripcion"/>
+			<arg0 key="censo.anticipos.literal.descripcion"/>	
+			<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>200</var-value>
+				</var>
+		</field>
+	</form>
+	
+	<form name="MantenimientoDestinatariosRetencionesForm">
+		<field 	property = "nombre"			depends = "required,maxlength">		
+			<msg name="mask" key="gratuita.maestros.destinatariosRetenciones.literal.descripcion"/>
+			<arg0 key="gratuita.maestros.destinatariosRetenciones.literal.descripcion"/>	
+			<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>250</var-value>
+				</var>
+		</field>
+		<field 	property = "cuentaContable"			depends = "maxlength">		
+			<msg name="mask" key="gratuita.maestros.destinatariosRetenciones.literal.cuentaContable"/>
+			<arg0 key="gratuita.maestros.destinatariosRetenciones.literal.cuentaContable"/>	
+			<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>20</var-value>
+				</var>
+		</field>
+		<field property = "orden" depends = "integer,intRange">
+        	<arg0 key="gratuita.maestros.destinatariosRetenciones.literal.orden"/>
+            <arg1 name="intRange" key="${var:min}" resource="false"/>
+            <arg2 name="intRange" key="${var:max}" resource="false"/>
+                <var>
+                    <var-name>min</var-name>
+                    <var-value>0</var-value>
+                </var>
+                <var>
+                    <var-name>max</var-name>
+                    <var-value>9999</var-value>
+                </var>
+        </field>
+	</form>
+	
+	
+	<form name="configuracionAbonosForm">
+		<field property = "concepto" depends = "required,integer,intRange">
+        	<arg0 key="factSJCS.abonos.configuracion.literal.concepto"/>
+            <arg1 name="intRange" key="${var:min}" resource="false"/>
+            <arg2 name="intRange" key="${var:max}" resource="false"/>
+                <var>
+                    <var-name>min</var-name>
+                    <var-value>0</var-value>
+                </var>
+                <var>
+                    <var-name>max</var-name>
+                    <var-value>9</var-value>
+                </var>
+        </field>
+	</form>
+	<!--  -->
+	<form name="compensacionAbonosPagosForm">
+        <field property = "numFacturaCompensadora" depends = "required">
+            <arg0 key="facturacion.abonos.compensacionManual.numeroFacturaCompensadora"/>
+        </field>
+        
+    </form> 
+	
+	<form name="informeRetencionesIRPFForm">
+		<field property = "anyoInformeIRPF" depends = "required,integer,intRange">
+        	<arg0 key="gratuita.retencionesIRPF.informe.literal.anyo"/>
+            <arg1 name="intRange" key="${var:min}" resource="false"/>
+            <arg2 name="intRange" key="${var:max}" resource="false"/>
+                <var>
+                    <var-name>min</var-name>
+                    <var-value>1900</var-value>
+                </var>
+                <var>
+                    <var-name>max</var-name>
+                    <var-value>2100</var-value>
+                </var>
+        </field>
+        
+        <field 	property = "idioma" 		
+					depends = "required"> 			
+					<arg0 key="gratuita.retencionesIRPF.informe.literal.idioma"/>	
+			</field>
+	</form>
+	<form name="busquedaAlertaForm">
+	
+    
+        <field property = "comboTipoExpediente" depends = "required">
+            <arg0 key="expedientes.auditoria.literal.tipo"/>
+        </field>
+        <field property ="comboFases" depends ="required">
+            <arg0 key="expedientes.auditoria.literal.fase"/>
+        </field>
+        
+    </form> 
+					
+</formset>
+
+
+
+    <!-- An example formset for another locale
+    <formset language="fr">
+
+        <constant>
+            <constant-name>postalCode</constant-name>
+            <constant-value>^[0-9a-zA-Z]*$</constant-value>
+        </constant>
+
+   </formset>
+   -->
+   
+   
+
+</form-validation>

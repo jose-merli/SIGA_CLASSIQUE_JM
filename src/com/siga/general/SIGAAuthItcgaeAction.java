@@ -1,0 +1,417 @@
+package com.siga.general;
+
+import java.util.Hashtable;
+import java.util.Vector;
+
+import com.atos.utils.*;
+
+import javax.servlet.http.*;
+
+import org.apache.struts.Globals;
+import org.apache.struts.action.*;
+
+import com.pra.core.filters.security.helper.UsuariosTO;
+import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
+import com.siga.administracion.SIGAConstants;
+import com.siga.administracion.SIGAGestorInterfaz;
+import com.siga.beans.AdmLenguajesAdm;
+import com.siga.beans.AdmLenguajesBean;
+import com.siga.beans.AdmUsuariosAdm;
+import com.siga.beans.AdmUsuariosBean;
+import com.siga.beans.CenClienteAdm;
+import com.siga.beans.CenClienteBean;
+import com.siga.beans.CenInstitucionAdm;
+import com.siga.beans.CenInstitucionBean;
+import com.siga.beans.CenInstitucionLenguajesAdm;
+import com.siga.beans.CenInstitucionLenguajesBean;
+import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.CenPersonaBean;
+
+public class SIGAAuthItcgaeAction extends Action
+{
+	public SIGAAuthItcgaeAction()
+	{
+		super();
+	}
+	
+	public ActionForward execute(ActionMapping mapping, 
+			 ActionForm form, 
+			 HttpServletRequest request, 
+			 HttpServletResponse response) throws ClsExceptions, SIGAException
+{
+		ClsLogging.writeFileLog(" INFO >> ATENCION . ESTAMOS DENTRO DEL SERVLET DE ITCGAEINIT. Por lo tanto SE HAN SUPERADO LO FILTRO",1);	
+
+		String result="";
+//		String user=request.getParameter("user");
+		String profile="AGE";
+		String location="3500";
+		String menuPosition=request.getParameter("posMenu");
+		String sAccess=request.getParameter("access");
+		String profileArray[]=new String[1];
+		profileArray[0]=profile;
+		String letrado="N";
+		
+		UsrBean usrbean = UsrBean.UsrBeanAutomatico(location);
+		UsuariosTO certificado = (UsuariosTO) request.getAttribute("USUARIOTO");
+
+		///////////////////////////////////////////////////
+		// Verficamos si el usuario es de la 2000. Solo puede ser de esta institucion
+		try {
+			if (certificado != null && !certificado.getZon_codigo().equalsIgnoreCase("2000") ) {
+				ClsLogging.writeFileLog("ERROR >> O NO HAY  CERTIFICADO O LA ZONA NO ES LA 2000. ZONA="+((certificado!=null)?certificado.getZon_codigo():" el certificado es nulo."),1);	
+				request.removeAttribute("USUARIOTO");
+				return mapping.findForward("accesodenegado");
+			}
+		}
+		catch (Exception e) {
+			ClsLogging.writeFileLog("ERR>> No se ha podido leer el Usuario " + 	"del Certificado desde la peticion: UsuariosTO no existe",1);
+			e.printStackTrace();
+		}
+		///////////////////////////////////////////////////
+
+		///////////////////////////////////////////////////
+		// Verficamos si el usuario es dado de alta en la insticion seleccionada en los combos
+		// Tambien se establece el idUsuario en el UsrBean
+		try {
+			this.checkCertificadoEnInstitucion_Y_FijaUsuarioEnUsrBean(usrbean, certificado);
+		}
+		catch (Exception e) {
+			
+			String mensaje = "";
+			if (e instanceof SIGAException) mensaje = ((SIGAException)e).getLiteral();
+			else                            mensaje = e.getMessage();
+				
+			ClsLogging.writeFileLog("ERROR >> el usuario no está dado de alta en la institucion ",1);	
+			request.setAttribute("mensaje",mensaje);
+			return mapping.findForward("accesodenegado");
+		}
+		///////////////////////////////////////////////////
+
+//		 obtengo datos para el userbean
+		usrbean.setIdPersona(obtenerIdPersona(location, usrbean));
+		Vector v = obtenerUsuario(location, usrbean);
+		AdmUsuariosBean usu = (AdmUsuariosBean) v.get(0);
+		CenPersonaBean per = null; 
+		CenClienteBean cli = null; 
+		if (v.size()>1) {
+		    per = (CenPersonaBean) v.get(1);
+		}
+		if (v.size()>2) {
+		    cli = (CenClienteBean) v.get(2);
+		}
+
+		//		usrbean.setIdRol("CNE");
+		//		 rgg cambio de codigos
+		usrbean.setIdRol("2");		
+		usrbean.setProfile(profileArray);
+		usrbean.setLocation(location);
+		usrbean.setLetrado(letrado.equals("S")?true:false);
+
+		//		 obtengo el idioma de la institucion
+		String idLenguajeInstitucion = "1";
+		Hashtable ht2 = new Hashtable();
+		ht2.put(CenInstitucionBean.C_IDINSTITUCION,location);
+		CenInstitucionAdm ins = new CenInstitucionAdm(usrbean);
+		Vector v4 = ins.selectByPK(ht2);
+		if (v4!=null && v4.size()>0) {
+		    CenInstitucionBean in = (CenInstitucionBean) v4.get(0);
+		    idLenguajeInstitucion=in.getIdLenguaje();
+		}		
+		
+		//		 obtengo el idioma del usuario
+		String sInsti="";
+		String idLenguaje = null; 
+		String idLenguajeExt = null; 
+		if (cli!=null) {
+		    //		 Es cliente, obtenemos su idioma
+		    idLenguaje = cli.getIdLenguaje();
+		} else {
+			idLenguaje = idLenguajeInstitucion;
+			sInsti = "(Obtenido de Institucion)";
+		}
+
+		
+		CenInstitucionLenguajesAdm admLen = new CenInstitucionLenguajesAdm (usrbean);
+		Hashtable h = new Hashtable();
+		UtilidadesHash.set(h, CenInstitucionLenguajesBean.C_IDINSTITUCION, location);
+		UtilidadesHash.set(h, CenInstitucionLenguajesBean.C_IDLENGUAJE, idLenguaje);
+		Vector vLen = admLen.selectByPK(h);
+		if (vLen == null || vLen.size() != 1) {
+		    //		 El idoma del lenguaje no esta traducido, ponemos el idioma de la institucion
+		    idLenguaje = idLenguajeInstitucion;
+		}
+		
+		if (idLenguaje!=null) {
+			Hashtable ht = new Hashtable();
+			ht.put(AdmLenguajesBean.C_IDLENGUAJE,idLenguaje);
+			AdmLenguajesAdm len = new AdmLenguajesAdm(usrbean);
+			Vector v3 = len.selectByPK(ht);
+			if (v3!=null && v3.size()>0) {
+				AdmLenguajesBean l = (AdmLenguajesBean) v3.get(0);
+				idLenguajeExt = l.getCodigoExt();
+			}
+		}
+
+		usrbean.setLanguage(idLenguaje);
+		usrbean.setLanguageExt(idLenguajeExt);
+		usrbean.setLanguageInstitucion(idLenguajeInstitucion);
+		
+		HttpSession ses= request.getSession();
+		ses.setAttribute(Globals.LOCALE_KEY, new java.util.Locale(idLenguajeExt.toLowerCase(), "es"));
+
+		ClsLogging.writeFileLog("LENGUAJE "+sInsti+" = " + idLenguaje + " ("+idLenguajeExt+")",7);
+
+		usrbean.setUserDescription("USUARIO DE PRUEBAS");
+		ses.setAttribute("USRBEAN", usrbean);
+
+		initStyles(location, ses);
+
+		//		 RGG 13/01/2007 cambio para obtener IP
+		String IPServidor = UtilidadesString.obtenerIPServidor(request); 
+		request.getSession().setAttribute("IPSERVIDOR",IPServidor);
+		ClsLogging.writeFileLog("IP DEL SERVIDOR="+IPServidor,7);
+		
+		
+		ClsLogging.writeFileLog("INFO >> FIN ",1);	
+		
+		result="topMenu";
+		ses.setAttribute(SIGAConstants.MENU_POSITION_REF, SIGAConstants.MENU_TOP);
+		
+		return mapping.findForward(result);
+
+}	
+
+////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////
+	
+	/*
+	* Verifica si el usuario del certificado esta dado de alta en la institucion del 
+	* usrbean (la seleccionada pantalla en combos)
+	* Si no esta, se inserta en dicha institucion
+	*/
+	public String checkCertificadoEnInstitucion_Y_FijaUsuarioEnUsrBean (UsrBean usrBean, UsuariosTO certificado) throws Exception 
+	{
+		String sql = "";
+	
+		if (certificado != null) {
+			String nif = certificado.getUsu_nif().toUpperCase();
+		
+			//	 Hacemos la comparacion del NIF sin los 0 por la izquierda
+			sql = " WHERE LTRIM (" + AdmUsuariosBean.C_NIF + ",'0') = '" + UtilidadesString.LTrim(nif, "0") + "' ";
+		}
+		else {
+		    //	 Usamos el Usuario comodin para pruebas (Entorno Local)
+		    sql = " WHERE " + AdmUsuariosBean.C_IDUSUARIO + " = 1 "; 
+		}
+	
+		sql += " AND " + AdmUsuariosBean.C_IDINSTITUCION + " = " + usrBean.getLocation();  
+	
+		AdmUsuariosAdm admUsu = new AdmUsuariosAdm(usrBean);
+		Vector v = admUsu.select(sql);
+		AdmUsuariosBean admBean = null;
+	
+	
+	//	 Si existe el usuario
+		if (v != null && v.size() == 1) {
+		    admBean = (AdmUsuariosBean)v.get(0);
+		}
+		else {
+			if (v == null || v.size() == 0) {
+		        //	 Si no existe el usuario, el certificado no esta registrado
+			    admBean = insertarUsuarioEnInstitucion (usrBean, certificado.getPfiNombre(), certificado.getUsu_nif().toUpperCase());
+				
+				//	this.printTraza("Certificado no registrado --> Mostramos el mensaje");
+				//	throw new SIGAException("messages.general.errorCertificadoNoRegistrado");
+			}
+			else {
+			    //	 Hay mas de uno usario con el mismo nif
+			    throw new SIGAException("messages.general.errorUsuarioDuplicado");
+			}
+		}
+		
+		if (!admBean.getActivo().equalsIgnoreCase("S")) {
+		    throw new SIGAException("messages.general.errorUsuarioDesactivado");
+		}
+	
+		//	 Guardo el nombre y el idUsuario
+		usrBean.setUserName("" + admBean.getIdUsuario());
+		usrBean.setUserDescription(admBean.getDescripcion());
+		return usrBean.getUserName();
+	}
+
+	private AdmUsuariosBean insertarUsuarioEnInstitucion (UsrBean usrBean, String nombre, String nif) throws Exception 
+	{
+		AdmUsuariosBean beanUsuario = new AdmUsuariosBean();
+	
+		try {
+	     	//	 Obtenemos el nuevo idusuario
+			String sql = " select max( " + AdmUsuariosBean.C_IDUSUARIO+") as MAXIDUSER " +
+			      " from " + AdmUsuariosBean.T_NOMBRETABLA +
+				  " where " + AdmUsuariosBean.C_IDINSTITUCION + " = " + usrBean.getLocation();
+		
+			RowsContainer o = new RowsContainer();
+			if (o.findForUpdate(sql)) {
+				Vector vecto=o.getAll();
+				if (vecto==null || vecto.size()==0) {
+				    beanUsuario.setIdUsuario(new Integer("0"));
+				} 
+				else {
+					Row row=(Row)vecto.elementAt(0);
+					String nuevoIdUsuario = row.getString("MAXIDUSER");
+					if (nuevoIdUsuario==null || nuevoIdUsuario.trim().equals("")) {
+					   nuevoIdUsuario = "0";
+					}
+				
+					Integer value = new Integer(nuevoIdUsuario);
+					beanUsuario.setIdUsuario(new Integer(value.intValue()+1));
+				}
+			}
+		
+			beanUsuario.setActivo("S");
+			beanUsuario.setFechaAlta("SYSDATE");
+			beanUsuario.setFechaMod("SYSDATE");
+			beanUsuario.setIdInstitucion(new Integer(usrBean.getLocation()));
+			beanUsuario.setIdLenguaje(ClsConstants.LENGUAJE_ESP);
+			beanUsuario.setDescripcion(nombre);
+			beanUsuario.setNIF(nif);
+			beanUsuario.setUsuMod(new Integer("-1"));
+		
+			AdmUsuariosAdm admUsuarios = new AdmUsuariosAdm(usrBean);
+			admUsuarios.insert(beanUsuario);
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+		return beanUsuario;
+	}
+
+	private long obtenerIdPersona(String sIdInstitucion, UsrBean usr)
+	{
+		long idPersona=-1;
+		try
+		{
+			String sWHERE = " WHERE " + AdmUsuariosBean.C_IDUSUARIO + " = " +  usr.getUserName() + 
+			  	      " AND " + AdmUsuariosBean.C_IDINSTITUCION + " = " + sIdInstitucion;
+		
+			AdmUsuariosAdm admUsuario = new AdmUsuariosAdm(usr);
+			Vector vUsuario = admUsuario.select(sWHERE);
+		
+			if (vUsuario!=null && vUsuario.size()>0)
+			{
+				AdmUsuariosBean beanUsuario = (AdmUsuariosBean)vUsuario.elementAt(0);
+				String sNIF = beanUsuario.getNIF();
+			
+				//	 Hacemos la comparacion del NIF sin los 0 por la izquierda
+				sWHERE = " WHERE ltrim(upper(" + CenPersonaBean.C_NIFCIF + "),'0') = '" + UtilidadesString.LTrim(sNIF.toUpperCase(),"0") + "'";
+			
+				CenPersonaAdm admPersona = new CenPersonaAdm(usr);
+				Vector vPersona = admPersona.select(sWHERE);
+				if (vPersona!=null && vPersona.size()>0)
+				{
+				    CenPersonaBean beanPersona = (CenPersonaBean)vPersona.elementAt(0);
+				    idPersona = beanPersona.getIdPersona().longValue();
+				}
+				else {
+				    ClsLogging.writeFileLog("***** NO SE HA PODIDO OBTENER EL IDPERSONA. USRBEAN CONTIENE IDPERSONA=-1 *****",1);
+				}
+			}
+			else  {
+			    ClsLogging.writeFileLog("***** NO SE HA PODIDO OBTENER EL IDPERSONA. USRBEAN CONTIENE IDPERSONA=-1 *****",1);
+			}
+		}
+		catch(Exception e) {
+		    ClsLogging.writeFileLog("***** NO SE HA PODIDO OBTENER EL IDPERSONA. USRBEAN CONTIENE IDPERSONA=-1 *****",1);
+		}
+		return idPersona;
+	}
+
+	private Vector obtenerUsuario(String sIdInstitucion, UsrBean usr)
+	{
+		long idPersona=-1;
+		Vector salida = new Vector();
+	
+		try
+		{
+			String sWHERE = " WHERE " + AdmUsuariosBean.C_IDUSUARIO + " = " + usr.getUserName() +
+			         " AND " + AdmUsuariosBean.C_IDINSTITUCION + " = " + sIdInstitucion;
+		
+			AdmUsuariosAdm admUsuario = new AdmUsuariosAdm(usr);
+			Vector vUsuario = admUsuario.select(sWHERE);
+		
+			if (vUsuario!=null && vUsuario.size()>0)
+			{
+				AdmUsuariosBean beanUsuario = (AdmUsuariosBean)vUsuario.elementAt(0);
+				salida.add(beanUsuario);
+			
+				String sNIF = beanUsuario.getNIF();
+			
+				//	 Hacemos la comparacion del NIF sin los 0 por la izquierda
+				sWHERE = " WHERE ltrim(upper(" + CenPersonaBean.C_NIFCIF + "),'0') = '" + UtilidadesString.LTrim(sNIF.toUpperCase(),"0") + "'";
+			
+				CenPersonaAdm admPersona = new CenPersonaAdm(usr);
+				Vector vPersona = admPersona.select(sWHERE);
+			
+				if (vPersona!=null && vPersona.size()>0)
+				{
+					CenPersonaBean beanPersona = (CenPersonaBean)vPersona.elementAt(0);
+					salida.add(beanPersona);
+				
+					sWHERE = " WHERE " + CenClienteBean.C_IDPERSONA + " = " + beanPersona.getIdPersona() +
+							   " AND " + CenClienteBean.C_IDINSTITUCION + " = " + sIdInstitucion;
+				
+					CenClienteAdm admCliente = new CenClienteAdm(usr);
+				
+					Vector vCliente = admCliente.select(sWHERE);
+				
+					if (vCliente!=null && vCliente.size()>0)
+					{
+					   CenClienteBean beanCliente = (CenClienteBean)vCliente.elementAt(0);
+					   salida.add(beanCliente);
+					}
+					idPersona = beanPersona.getIdPersona().longValue();
+				}
+				else {
+				    ClsLogging.writeFileLog("***** NO SE HA PODIDO OBTENER EL IDPERSONA. USRBEAN CONTIENE IDPERSONA=-1 *****",1);
+				}
+			}
+			else  {
+			    ClsLogging.writeFileLog("***** NO SE HA PODIDO OBTENER EL IDPERSONA. USRBEAN CONTIENE IDPERSONA=-1 *****",1);
+			}
+		}
+		catch(Exception e) {
+		    ClsLogging.writeFileLog("***** NO SE HA PODIDO OBTENER EL IDPERSONA. USRBEAN CONTIENE IDPERSONA=-1 *****",1);
+		}
+		return salida;
+	}
+
+	/**
+	* <p>Este método es temporal, consiste en que a partir de la institución 
+	* que se haya elegido al entrar en la aplicación, se selecciona una hoja de estilos u otra,
+	* así como el logotipo correspondiente.</p>
+	* <p>Más adelante, las hojas de estilos se generarán dinámicamente y el logotipo
+	* se cargará desde base de datos en la tabla de instituciones, por lo que éste
+	* método será innecesario.</p>     
+	* @param location Código de localización
+	* @param ses Objeto de Sesion.
+	*/
+	private void initStyles(String location, HttpSession ses)
+	{
+		String iconsPath="/"+ClsConstants.PATH_DOMAIN+"/"+ClsConstants.RELATIVE_PATH_LOGOS;
+		String icon="logoconsejo2.gif";
+		try
+		{
+			SIGAGestorInterfaz interfazGestor=new SIGAGestorInterfaz(location);
+		
+			java.util.Properties stylesheet = interfazGestor.getInterfaceOptions();
+			icon = interfazGestor.getLogoImg();
+			ses.setAttribute(SIGAConstants.STYLESHEET_REF, stylesheet);
+			ses.setAttribute(SIGAConstants.PATH_LOGO, iconsPath+"/"+icon);
+		}
+		catch(com.atos.utils.ClsExceptions ex)
+		{
+		    com.atos.utils.ClsLogging.writeFileLogError(ex.getMessage(), ex, 3);
+		}		
+	}
+}

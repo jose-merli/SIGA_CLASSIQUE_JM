@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+	<settings 
+		cacheModelsEnabled="false"
+		enhancementEnabled="true"
+		lazyLoadingEnabled="false"
+		maxRequests="128"
+		maxSessions="10"
+		maxTransactions="5"
+		useStatementNamespaces="true"
+		defaultStatementTimeout="50"
+		statementCachingEnabled="true"
+		classInfoCacheEnabled="true"
+	/>
+
+	<transactionManager type="JDBC">
+		<dataSource type="JNDI">
+			<property name="DataSource" value="DataSourceSIGA_RW"/>
+		</dataSource>
+	</transactionManager>
+
+	<sqlMap resource="sqlmap/Censo.xml"/>
+</sqlMapConfig>

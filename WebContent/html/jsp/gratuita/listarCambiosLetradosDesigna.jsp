@@ -1,0 +1,182 @@
+<!-- listarCambiosLetradosDesigna.jsp -->
+<!-- Contiene el contenido del frame de una pantalla de detalle multiregistro
+	 Utilizando tags pinta una lista con cabeceras fijas -->
+	 
+<!-- CABECERA JSP -->
+<meta http-equiv="Expires" content="0">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
+
+<!-- TAGLIBS -->
+<%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
+<%@ taglib uri = "struts-bean.tld" prefix="bean"%>
+<%@ taglib uri = "struts-html.tld" prefix="html"%>
+<%@ taglib uri = "struts-logic.tld" prefix="logic"%>
+
+<%@ page import="com.siga.administracion.SIGAConstants"%>
+<%@ page import="com.atos.utils.*"%>
+<%@ page import="com.siga.beans.*"%>
+<%@ page import="com.siga.Utilidades.*"%>
+
+<!-- JSP -->
+<% 	String app=request.getContextPath();
+	HttpSession ses=request.getSession();
+	UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
+	Vector obj = (Vector)request.getSession().getAttribute("resultado");
+	request.getSession().removeAttribute("resultado");
+	String boton="";
+
+	
+	Hashtable designaActual = (Hashtable)ses.getAttribute("designaActual");
+	String modo = (String) ses.getAttribute("Modo");
+	String anio="",numero="", idTurno="";
+	anio = (String)designaActual.get("ANIO");
+	numero = (String)designaActual.get("NUMERO");
+	idTurno = (String)designaActual.get("IDTURNO");
+%>	
+
+<html>
+<!-- HEAD -->
+<head>
+
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+
+	<!-- INICIO: TITULO Y LOCALIZACION -->
+	<!-- Escribe el título y localización en la barra de título del frame principal -->
+	<siga:Titulo 
+		titulo="gratuita.cambiosLetradoDesigna.literal.titulo" 
+		localizacion="gratuita.cambiosLetradoDesigna.literal.location"/>
+	<!-- FIN: TITULO Y LOCALIZACION -->
+
+	
+
+</head>
+
+<body class="tablaCentralCampos">
+
+		<!-- INICIO: LISTA DE VALORES -->
+		<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista 
+			 de cabeceras fijas -->
+
+		<!-- Formulario de la lista de detalle multiregistro -->
+		<html:form action="JGR_CambiosLetradosDesigna.do" method="POST" target="mainPestanas" style="display:none">
+		
+		<html:hidden property = "modo" value = ""/>
+			<!-- RGG: cambio a formularios ligeros -->
+			<input type="hidden" name="tablaDatosDinamicosD">
+			<input type="hidden" name="actionModal" value="">
+		</html:form>	
+		<table class="tablaTitulo" cellspacing="0" heigth="38">
+		<tr>
+			<td id="titulo" class="titulitosDatos">
+	
+					<% 
+					    String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "";
+						ScsDesignaAdm adm = new ScsDesignaAdm (usr);
+						Hashtable hTitulo = adm.getTituloPantallaDesigna(usr.getLocation(), anio, numero,idTurno);
+
+						if (hTitulo != null) {
+							t_nombre    = (String)hTitulo.get(ScsPersonaJGBean.C_NOMBRE);
+							t_apellido1 = (String)hTitulo.get(ScsPersonaJGBean.C_APELLIDO1);
+							t_apellido2 = (String)hTitulo.get(ScsPersonaJGBean.C_APELLIDO2);
+							t_anio      = (String)hTitulo.get(ScsDesignaBean.C_ANIO);
+							t_numero    = (String)hTitulo.get(ScsDesignaBean.C_CODIGO);
+							
+						}
+					
+					%>
+					<%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%>
+					- <%=UtilidadesString.mostrarDatoJSP(t_nombre)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido1)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido2)%>
+					
+					
+			</td>
+		</tr>
+		</table>
+		<siga:TablaCabecerasFijas 
+			   nombre="tablaDatos"
+			   borde="1"
+			   clase="tableTitle"
+			   nombreCol="censo.resultadosSolicitudesModificacion.literal.fecha,gratuita.busquedaSOJ.literal.nColegiado,gratuita.defendidosDesigna.literal.nombreApellidos,gratuita.cambiosProcuradoresDesigna.literal.fechaRenuncia,"
+			   tamanoCol="15,15,50,10,10"
+		   			alto="100%"
+			   modal="M">
+			   
+		<!-- Campo obligatorio -->
+	  <% if (obj==null || obj.size()==0){%>
+	 		<br>
+	   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
+	 		<br>
+		<%}else{%>
+		<%	int recordNumber=1;
+				while ((recordNumber) <= obj.size()){	 
+					Hashtable hash = (Hashtable)obj.get(recordNumber-1);
+				String fDesigna=(String)hash.get("FECHADESIGNA");
+				String fRenuncia=(String)hash.get("FECHARENUNCIA");
+				String rn=String.valueOf(recordNumber);
+				boton=(fRenuncia==null || fRenuncia.equals("")?"C,E":"C");
+			 	%>	
+				  	<siga:FilaConIconos fila='<%=rn%>' botones="<%=boton%>" visibleEdicion="no" visibleBorrado="no" clase="listaNonEdit"  modo="<%=modo%>">
+						<td>
+						    <input type='hidden' name='oculto<%=rn%>_1' value='<%=hash.get("IDPERSONA")%>'>
+						    <input type='hidden' name='oculto<%=rn%>_2' value='<%=hash.get("NCOLEGIADO")%>'>
+							<input type='hidden' name='oculto<%=rn%>_3' value='<%=fDesigna%>'>
+							<%if(fDesigna!=null && !fDesigna.equals("")){%>
+								<%=GstDate.getFormatedDateShort("",fDesigna)%>
+							<%}%>
+						</td>
+						<td>&nbsp;<%=hash.get("NCOLEGIADO")%></td>
+						<td>&nbsp;<%=hash.get("NOMBRE")+" "+hash.get("APELLIDOS1")+" "+hash.get("APELLIDOS2")%></td>
+						<td>&nbsp;
+						<%if(fRenuncia!=null && !fRenuncia.equals("")){%>
+							<%=GstDate.getFormatedDateShort("",fRenuncia)%>
+						<%}%>
+						</td>
+					</siga:FilaConIconos>	
+				<%recordNumber++;%>
+			<%	}
+			}%>	
+		</siga:TablaCabecerasFijas>
+
+
+<!-- FIN: LISTA DE VALORES -->
+		
+	
+<!-- INICIO: SUBMIT AREA -->
+
+<script language="JavaScript">
+
+	
+	<!-- Asociada al boton Volver -->
+		
+		function accionNuevo() 
+		{	
+			document.forms[0].target="submitArea";
+			document.forms[0].modo.value = "nuevo";
+			var resultado=ventaModalGeneral(document.forms[0].name,"M");
+			if(resultado=='MODIFICADO') buscar();
+		}
+		
+		function buscar()
+		{
+			document.forms[0].target="mainPestanas";
+			document.forms[0].modo.value="";
+			document.forms[0].submit();
+		}
+		
+		function refrescarLocal()
+		{
+			buscar();
+		}
+				
+</script>		
+
+<!-- Obligatoria en todas las páginas-->
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+<!-- FIN: SUBMIT AREA -->
+
+</body>
+</html>

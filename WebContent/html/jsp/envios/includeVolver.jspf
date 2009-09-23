@@ -1,0 +1,117 @@
+<!-- includeVolver.inc -->
+<%
+	// includeVolver.inc
+	// juan.grau 05-05-2005 Creacion
+	//
+	// Este include contiene la logica de vuelta para las pestanhas 
+	// de envío. SE PUEDE PEGAR EN CUALQUIER PARTE SIEMPRE QUE ESTE
+	// DENTRO DEL BODY Y DESPUES DEL FORMULARIO PRINCIPAL.
+	// crea el formulario de vuelta
+	if (!busquedaVolver.equals("volverNo")) { 
+ 		if (busquedaVolver.equals("GS")) {  %>
+			<html:form  action="/CER_GestionSolicitudes.do" method="POST" target="mainWorkArea">
+				<html:hidden property="modo" value="abrir"/>
+			</html:form>
+
+<% 		} else if (busquedaVolver.equals("GSI")) {  %>
+			<html:form  action="/CEN_SolicitudesIncorporacion.do?noReset=true&buscar=true" method="POST" target="mainWorkArea">
+				<html:hidden property="modo" value=""/>
+			</html:form>
+			
+<% 		} else if (busquedaVolver.equals("GMG")) {  %>
+			<html:form  action="/CEN_SolicitudesModificacionGenericas.do?noReset=true&buscar=true" method="POST" target="mainWorkArea">
+				<html:hidden property="modo" value=""/>
+			</html:form>
+			
+<% 		} else if (busquedaVolver.equals("GME")) {  %>
+			<html:form  action="/CEN_SolicitudesModificacionEspecificas.do?noReset=true&buscar=true" method="POST" target="mainWorkArea">
+				<html:hidden property="modo" value=""/>
+			</html:form>
+			
+<% 		} else if (busquedaVolver.equals("GPS")) {  %>
+			<html:form  action="/PYS_GestionarSolicitudes.do?noReset=true&buscar=true" method="POST" target="mainWorkArea">
+				<html:hidden property="modo" value=""/>
+			</html:form>
+			
+<% 		} else if (busquedaVolver.equals("FAC")) {  %>
+			<html:form  action="/FAC_BusquedaFactura.do?noReset=true&buscar=true" method="POST" target="mainWorkArea">
+				<html:hidden property="modo" value=""/>
+			</html:form>
+			
+<% 		} else if (busquedaVolver.equals("PYSV")) {  %>
+			<html:form  action="/PYS_GestionarSolicitudes.do?noReset=true&buscar=true" method="POST" target="mainWorkArea">
+				<html:hidden property="modo" value=""/>
+			</html:form>
+			
+<% 		} else if (busquedaVolver.equals("GAF")) {  %>
+			<html:form  action="/FAC_GenerarAbonos.do?noReset=true&buscar=true" method="POST" target="mainWorkArea">
+				<html:hidden property="modo" value=""/>
+			</html:form>
+			
+<% 		} else if (busquedaVolver.equals("EDP")) {  %>
+			<html:form  action="/ENV_DefinirPlantillas?noReset=true&buscar=true" method="POST" target="mainWorkArea">
+				<html:hidden property="modo" value=""/>
+			</html:form>
+<%
+		} else {
+%>
+			<html:form  action="/ENV_DefinirEnvios.do?noReset=true&buscar=true" method="POST" target="mainWorkArea">
+				<html:hidden property="modo" value="abrir"/>
+			</html:form>
+
+<%		
+		}
+ 	} 
+%>
+
+<!-- script para la función volver -->
+<script language="javascript">
+
+		<!-- Asociada al boton Volver -->
+		function accionVolver() 
+		{
+<%
+ 		if (!busquedaVolver.equals("volverNo")) { 
+		if (busquedaVolver.equals("GS")) {	%>
+ 					document.SolicitudesCertificadosForm.action = "<%=app%>/CER_GestionSolicitudes.do?noReset=true&buscar=true";
+					document.SolicitudesCertificadosForm.submit();
+<%  // RGG VOLER DE ENVIOS
+ 		} else if (busquedaVolver.equals("GSI")) {  %>
+
+			document.SolicitudIncorporacionForm.submit();
+			
+<% 		} else if (busquedaVolver.equals("GMG")) {  %>
+
+			document.SolicitudesModificacionForm.submit();
+			
+<% 		} else if (busquedaVolver.equals("GME")) {  %>
+
+			document.SolicitudesModificacionEspecificasForm.submit();
+			
+<% 		} else if (busquedaVolver.equals("GPS")) {  %>
+
+			document.GestionSolicitudesForm.submit();
+			
+<% 		} else if (busquedaVolver.equals("FAC")) {  %>
+
+			document.BusquedaFacturaForm.submit();
+			
+<% 		} else if (busquedaVolver.equals("PYSV")) {  %>
+
+			document.GestionSolicitudesForm.submit();
+			
+<% 		} else if (busquedaVolver.equals("GAF")) {  %>
+
+			document.GenerarAbonosForm.submit();
+
+<% 		} else if (busquedaVolver.equals("EDP")) {  %>
+
+			document.PlantillasEnviosForm.submit();
+
+<%		} else { %>
+				document.DefinirEnviosForm.submit();
+<%		}
+		}%>
+		}
+</script>
+

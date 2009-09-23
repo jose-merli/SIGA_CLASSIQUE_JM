@@ -1,0 +1,2793 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN" "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+<struts-config>
+	<form-beans>
+
+		<form-bean name="DummyForm" type="com.siga.productos.form.DummyForm"/>
+
+		<form-bean name="CensoBusquedaLetradosBean" type="es.satec.siga.util.formbeans.censo.BusquedaBean"/>
+
+
+		<!-- ************************** FORMS CENSO ************************* -->
+		<form-bean name="busquedaClientesForm" type="com.siga.censo.form.BusquedaClientesForm"/>
+		<form-bean name="busquedaClientesAvanzadaForm" type="com.siga.censo.form.BusquedaClientesForm"/>
+		<form-bean name="SolicitudIncorporacionForm" type="com.siga.censo.form.SolicitudIncorporacionForm"/>
+		<form-bean name="consultaDireccionesForm" type="com.siga.censo.form.DireccionesForm"/>
+		<form-bean name="consultaDireccionesSolicForm" type="com.siga.censo.form.DireccionesForm"/>
+		<form-bean name="cuentasBancariasForm" type="com.siga.censo.form.CuentasBancariasForm"/>
+		<form-bean name="cuentasBancariasSolicForm" type="com.siga.censo.form.CuentasBancariasForm"/>
+		<form-bean name="datosCVForm" type="com.siga.censo.form.DatosCVForm"/>
+		<form-bean name="datosCVSolicForm" type="com.siga.censo.form.DatosCVForm"/>
+		<form-bean name="componentesJuridicosForm" type="com.siga.censo.form.ComponentesJuridicosForm"/>
+		<form-bean name="HistoricoForm" type="com.siga.censo.form.HistoricoForm"/>
+		<form-bean name="DatosColegialesForm" type="com.siga.censo.form.DatosColegialesForm"/>
+		<form-bean name="SolicitudesModificacionForm" type="com.siga.censo.form.SolicitudesModificacionForm"/>
+		<form-bean name="datosGeneralesForm" type="com.siga.censo.form.DatosGeneralesForm"/>
+		<form-bean name="datosGeneralesNoColegiadoForm" type="com.siga.censo.form.DatosGeneralesForm"/>
+		<form-bean name="DatosColegiacionForm" type="com.siga.censo.form.DatosColegiacionForm"/>
+		<form-bean name="DatosRegistralesForm" type="com.siga.censo.form.DatosRegistralesForm"/>
+		<form-bean name="ActividadProfesionalForm" type="com.siga.censo.form.ActividadProfesionalForm"/>
+		<form-bean name="AnticiposClienteForm" type="com.siga.censo.form.AnticiposClienteForm"/>
+		
+		<!-- PDM Mantenimiento de Grupos Fijos-->
+		<form-bean name="MantenimientoGruposFijosForm" type="com.siga.censo.form.MantenimientoGruposFijosForm"/>
+		<form-bean name="GruposClienteClienteForm" type="com.siga.censo.form.GruposClienteClienteForm"/>
+		<form-bean name="datosGeneralesSolicForm" type="com.siga.censo.form.DatosGeneralesForm"/>
+		<form-bean name="certificadosForm" type="com.siga.censo.form.CertificadosForm"/>
+		<form-bean name="expedientesForm" type="com.siga.censo.form.ExpedientesForm"/>
+		<form-bean name="SolicitudesModificacionEspecificasForm" type="com.siga.censo.form.SolicitudesModificacionEspecificasForm"/>
+		<form-bean name="busquedaClientesModalForm" type="com.siga.censo.form.BusquedaClientesForm"/>
+		<form-bean name="SolicitudIncorporacionAccesoDirectoForm" type="com.siga.censo.form.SolicitudIncorporacionAccesoDirectoForm"/>
+		<form-bean name="datosFacturacionForm" type="com.siga.censo.form.DatosFacturacionForm"/>
+		<form-bean name="documentacionSolicitudForm" type="com.siga.censo.form.DocumentacionSolicitudForm"/>
+		<form-bean name="fichaColegialForm" type="com.siga.censo.form.FichaColegialForm"/>
+		<form-bean name="AbonosClienteForm" type="com.siga.censo.form.AbonosClienteForm"/>
+		<form-bean name="facturasClienteForm" type="com.siga.censo.form.FacturasClienteForm"/>
+		<form-bean name="SancionesLetradoForm" type="com.siga.censo.form.SancionesLetradoForm"/>
+
+
+		<!-- ************************** FORMS FACTURACIÓN ************************* -->
+		<form-bean name="AsignacionConceptosFacturablesForm" type="com.siga.facturacion.form.AsignacionConceptosFacturablesForm"/>
+		<form-bean name="DatosGeneralesForm" type="com.siga.facturacion.form.DatosGeneralesForm"/>
+		<form-bean name="TiposProductosForm" type="com.siga.facturacion.form.TiposProductosForm"/>
+		<form-bean name="TiposServiciosForm" type="com.siga.facturacion.form.TiposServiciosForm"/>
+		<form-bean name="DestinatariosIndividualesForm" type="com.siga.facturacion.form.DestinatariosIndividualesForm"/>
+		<form-bean name="GruposFijosForm" type="com.siga.facturacion.form.GruposFijosForm"/>
+		<form-bean name="GruposDinamicosForm" type="com.siga.facturacion.form.GruposDinamicosForm"/>
+		<form-bean name="ComprobarPoblacionForm" type="com.siga.facturacion.form.ComprobarPoblacionForm"/>
+		<form-bean name="ContabilidadPestanaForm" type="com.siga.facturacion.form.ContabilidadPestanaForm"/>
+		<form-bean name="PrevisionesFacturacionForm" type="com.siga.facturacion.form.PrevisionesFacturacionForm"/>
+		<form-bean name="BusquedaFacturaForm" type="com.siga.facturacion.form.BusquedaFacturaForm"/>
+		<form-bean name="GenerarAbonosForm" type="com.siga.facturacion.form.GenerarAbonosForm"/>
+		<form-bean name="AltaAbonosForm" type="com.siga.facturacion.form.AltaAbonosForm"/>
+		<form-bean name="AbonosDatosGeneralesForm" type="com.siga.facturacion.form.AbonosDatosGeneralesForm"/>
+		<form-bean name="AbonosLineasForm" type="com.siga.facturacion.form.AbonosLineasForm"/>
+		<form-bean name="AbonosPagosForm" type="com.siga.facturacion.form.AbonosPagosForm"/>
+		<form-bean name="compensacionAbonosPagosForm" type="com.siga.facturacion.form.AbonosPagosForm"/>
+		
+		<form-bean name="GestionarFacturaForm" type="com.siga.facturacion.form.GestionarFacturaForm"/>
+		<form-bean name="ConsultaMorososForm" type="com.siga.facturacion.form.ConsultaMorososForm"/>
+		<form-bean name="programarFacturacionForm" type="com.siga.facturacion.form.ProgramarFacturacionForm"/>
+		<form-bean name="generarFacturacionForm" type="com.siga.facturacion.form.GenerarFacturacionForm"/>
+		<form-bean name="eliminarFacturacionForm" type="com.siga.facturacion.form.EliminarFacturacionForm"/>
+		<form-bean name="confirmarFacturacionForm" type="com.siga.facturacion.form.ConfirmarFacturacionForm"/>
+		<form-bean name="ficheroBancarioPagosForm" type="com.siga.facturacion.form.FicheroBancarioPagosForm"/>
+		<form-bean name="informesFacturasEmitidasForm" type="com.siga.facturacion.form.InformesFacturasEmitidasForm"/>
+
+		<form-bean name="ficheroBancarioAbonosForm" type="com.siga.facturacion.form.FicheroBancarioAbonosForm"/>
+		<form-bean name="ContabilidadForm" type="com.siga.facturacion.form.ContabilidadForm"/>
+		<form-bean name="DevolucionesForm" type="com.siga.facturacion.form.DevolucionesForm"/>
+		<form-bean name="PlantillasForm" type="com.siga.facturacion.form.PlantillasForm"/>
+		<form-bean name="DevolucionesManualesForm" type="com.siga.facturacion.form.DevolucionesManualesForm"/>
+
+
+		<!-- ************************** FORMS PRODUCTOS Y SERVICIOS ************************* -->
+		<form-bean name="MantenimientoProductosForm" type="com.siga.productos.form.MantenimientoProductosForm"/>
+		<form-bean name="solicitudCompraForm" type="com.siga.productos.form.SolicitudCompraForm"/>
+		<form-bean name="MantenimientoServiciosForm" type="com.siga.productos.form.MantenimientoServiciosForm"/>
+		<form-bean name="GestionSolicitudesForm" type="com.siga.productos.form.GestionSolicitudesForm"/>
+		<form-bean name="MantenimientoCategoriasProductosForm" type="com.siga.productos.form.MantenimientoCategoriasProductosForm"/>
+		<form-bean name="MantenimientoCategoriasServiciosForm" type="com.siga.productos.form.MantenimientoCategoriasServiciosForm"/>
+		<form-bean name="solicitudBajaForm" type="com.siga.productos.form.SolicitudBajaForm"/>
+		<form-bean name="CargaProductosForm" type="com.siga.productos.form.CargaProductosForm"/>
+
+		<form-bean name="sufijosForm" type="com.siga.facturacion.form.SufijosForm"/>
+
+
+		<!-- ************************** FORMS EXPEDIENTES ************************* -->
+		<form-bean name="FasesForm" type="com.siga.expedientes.form.FasesForm"/>
+		<form-bean name="ClasificacionesForm" type="com.siga.expedientes.form.ClasificacionesForm"/>
+		<form-bean name="RolesForm" type="com.siga.expedientes.form.RolesForm"/>
+		<form-bean name="busquedaExpedientesForm" type="com.siga.expedientes.form.BusquedaExpedientesForm"/>
+		<form-bean name="TipoExpedienteForm" type="com.siga.expedientes.form.TipoExpedienteForm"/>
+		<form-bean name="TiposAnotacionesForm" type="com.siga.expedientes.form.TiposAnotacionesForm"/>
+		<form-bean name="ExpDatosGeneralesForm" type="com.siga.expedientes.form.ExpDatosGeneralesForm"/>
+		<form-bean name="ExpDenuncianteForm" type="com.siga.expedientes.form.ExpDenuncianteForm"/>
+		<form-bean name="ExpDenunciadoForm" type="com.siga.expedientes.form.ExpDenunciadoForm"/>
+		<form-bean name="ExpAlertaForm" type="com.siga.expedientes.form.ExpAlertaForm"/>
+		<form-bean name="ExpPartesForm" type="com.siga.expedientes.form.ExpPartesForm"/>
+		<form-bean name="ExpDocumentacionForm" type="com.siga.expedientes.form.ExpDocumentacionForm"/>
+		<form-bean name="ExpSeguimientoForm" type="com.siga.expedientes.form.ExpSeguimientoForm"/>
+		<form-bean name="expResolucionForm" type="com.siga.expedientes.form.ExpResolucionForm"/>
+		<form-bean name="EstadosForm" type="com.siga.expedientes.form.EstadosForm"/>
+		<form-bean name="camposForm" type="com.siga.expedientes.form.CampoTipoExpedienteForm"/>
+		<form-bean name="camposConfigurablesForm" type="com.siga.expedientes.form.CamposConfigurablesForm"/>
+		<form-bean name="busquedaAlertaForm" type="com.siga.expedientes.form.BusquedaAlertaForm"/>
+		<form-bean name="NuevoExpedienteForm" type="com.siga.expedientes.form.NuevoExpedienteForm"/>
+		<form-bean name="PermisosTiposExpedientesForm" type="com.siga.expedientes.form.PermisosTiposExpedientesForm"/>
+		<form-bean name="EjecucionSancionForm" type="com.siga.expedientes.form.EjecucionSancionForm"/>
+		<form-bean name="PestanaConfigurableForm" type="com.siga.expedientes.form.PestanaConfigurableForm"/>
+		
+
+		<!-- ************************** FORMS SOLICITUD INCORPORACIÓN ************************* -->
+		<!-- ************************** FORMS CATÁLOGO DE PRODUCTOS ************************* -->
+		<!-- ************************** FORMS CATÁLOGO DE CURSOS ************************* -->
+		<!-- ************************** FORMS SECRETARÍA ************************* -->
+		<!-- ************************** FORMS CERTIFICADOS ************************* -->
+		<form-bean name="MantenimientoCertificadosForm" type="com.siga.certificados.form.SIGAMantenimientoCertificadosForm"/>
+		<form-bean name="MantenimientoCertificadosCamposForm" type="com.siga.certificados.form.SIGAMantenimientoCertificadosCamposForm"/>
+		<form-bean name="MantenimientoCertificadosPlantillasForm" type="com.siga.certificados.form.SIGAMantenimientoCertificadosPlantillasForm"/>
+		<form-bean name="SolicitudesCertificadosForm" type="com.siga.certificados.form.SIGASolicitudesCertificadosForm"/>
+		<form-bean name="SolicitudCertificadoForm" type="com.siga.certificados.form.SIGASolicitudCertificadoForm"/>
+
+		<!-- ************************** FORMS CONTACTOS ************************* -->
+		<!-- ************************** FORMS ENVÍOS A GRUPOS ************************* -->
+		<form-bean name="ListaCorreosForm" type="com.siga.envios.form.ListaCorreosForm"/>
+		<form-bean name="DefinirEnviosForm" type="com.siga.envios.form.DefinirEnviosForm"/>
+		<form-bean name="DestinatarioManualForm" type="com.siga.envios.form.DestinatarioManualForm"/>
+		<form-bean name="ListasDestinatariasForm" type="com.siga.envios.form.ListasDestinatariasForm"/>
+		<form-bean name="RemitentesForm" type="com.siga.envios.form.RemitentesForm"/>
+		<form-bean name="ProgramacionForm" type="com.siga.envios.form.ProgramacionForm"/>
+		<form-bean name="DocumentosForm" type="com.siga.envios.form.DocumentosForm"/>
+		<form-bean name="PlantillasEnviosForm" type="com.siga.envios.form.SIGAPlantillasEnviosForm"/>
+		<form-bean name="PlantillasEnviosCamposForm" type="com.siga.envios.form.SIGAPlantillasEnviosCamposForm"/>
+		<form-bean name="PlantillasEnviosPlantillasForm" type="com.siga.envios.form.SIGAPlantillasEnviosPlantillasForm"/>
+		<form-bean name="PlantillasEnviosCorreoElectronicoForm" type="com.siga.envios.form.SIGAPlantillasEnviosCorreoElectronicoForm"/>
+		<form-bean name="RemitentesPlantillasForm" type="com.siga.envios.form.RemitentesPlantillasForm"/>
+		<form-bean name="EnviosDatosGeneralesForm" type="com.siga.envios.form.SIGAEnviosDatosGeneralesForm"/>
+		<form-bean name="EnviosCorreoElectronicoForm" type="com.siga.envios.form.SIGAEnviosCorreoElectronicoForm"/>
+		<form-bean name="TextoSMSForm" type="com.siga.envios.form.TextoSMSForm"/>
+		<form-bean name="TextoEnviosSMSForm" type="com.siga.envios.form.TextoEnviosSMSForm"/>
+
+
+    	<!-- ************************** FORMS ADMINISTRACIÓN ************************* -->
+		<!--form-bean name="tablaMaestraForm" type="com.siga.administracion.form.SIGAAdmGenericMTForm"/-->
+		<form-bean name="confInterfazForm" type="com.siga.administracion.form.SIGAGestorInterfazForm"/>
+		<form-bean name="auditoriaAdminForm" type="com.siga.administracion.form.SIGAAuditoriaAdminForm"/>
+		<form-bean name="auditoriaUsuariosForm" type="com.siga.administracion.form.AuditoriaUsuariosForm"/>
+		<form-bean name="multidiomasForm" type="com.siga.administracion.form.MultidiomasForm"/>
+		<form-bean name="parametrosGeneralesForm" type="com.siga.administracion.form.ParametrosGeneralesForm"/>
+		<form-bean name="gestionContadoresForm" type="com.siga.administracion.form.SIGAGestionContadoresForm"/>
+		<form-bean name="listadoGruposUsuarioForm" type="com.siga.administracion.form.SIGAListadoGruposUsuarioForm"/>
+		<form-bean name="listadoUsuariosForm" type="com.siga.administracion.form.SIGAListadoUsuariosForm"/>
+		<form-bean name="listadoCertificadosForm" type="com.siga.administracion.form.SIGAListadoCertificadosForm"/>
+		<form-bean name="listadoPerfilRolForm" type="com.siga.administracion.form.SIGAListadoPerfilRolForm"/>
+		<form-bean name="listadoTablasMaestrasForm" type="com.siga.administracion.form.SIGAListadoTablasMaestrasForm"/>
+		<form-bean name="listadoTablasMaestrasPCAJGForm" type="com.siga.administracion.form.PCAJGListadoTablasMaestrasForm"/>		
+		<form-bean name="asignarUsuariosGrupoForm" type="com.siga.administracion.form.SIGAAsignarUsuariosGrupoForm"/>
+		<form-bean name="configurarPermisosAplicacionForm" type="com.siga.administracion.form.SIGAConfigurarPermisosAplicacionForm"/>
+
+
+    	<!-- ************************** FORMS JUSTICIA GRATUÍTA ************************* -->
+    	<form-bean name="tablaMaestraSJCSRet" type="com.siga.gratuita.form.SolicitudRetencionForm"/>
+    	<form-bean name="DefinirTurnosForm" type="com.siga.gratuita.form.DefinirTurnosForm"/>
+    	<form-bean name="DefinirTurnosFormNuevo" type="com.siga.gratuita.form.DefinirTurnosForm"/>
+		<form-bean name="AltaTurnosGuardiasForm" type="com.siga.gratuita.form.AltaTurnosGuardiasForm"/>
+    	<form-bean name="SolicitudRetencionForm" type="com.siga.gratuita.form.SolicitudRetencionForm"/>
+		<form-bean name="CalendarioLaboralForm" type="com.siga.gratuita.form.CalendarioLaboralForm"/>
+		<form-bean name="DefinirPartidaPresupuestariaForm" type="com.siga.gratuita.form.DefinirPartidaPresupuestariaForm"/>
+		<form-bean name="DefinirAreasMateriasForm" type="com.siga.gratuita.form.DefinirAreasMateriasForm"/>
+		<form-bean name="DefinirGuardiasTurnosForm" type="com.siga.gratuita.form.DefinirGuardiasTurnosForm"/>
+		<form-bean name="DefinirGuardiasLetradoForm" type="com.siga.gratuita.form.DefinirGuardiasLetradoForm"/>
+		<form-bean name="MantenimientoPJForm" type="com.siga.gratuita.form.MantenimientoPJForm"/>
+		<form-bean name="MantenimientoMaestroPJForm" type="com.siga.gratuita.form.MantenimientoMaestroPJForm"/>
+		<form-bean name="DefinirListaGuardiasForm" type="com.siga.gratuita.form.DefinirListaGuardiasForm"/>
+		<form-bean name="DefinirIncompatibilidadesGuardiaForm" type="com.siga.gratuita.form.DefinirIncompatibilidadesGuardiaForm"/>
+		<form-bean name="ValidarTurnosForm" type="com.siga.gratuita.form.ValidarTurnosForm"/>
+		<form-bean name="DefinirZonasSubzonasForm" type="com.siga.gratuita.form.DefinirZonasSubzonasForm"/>
+		<form-bean name="DefinirCalendarioGuardiaForm" type="com.siga.gratuita.form.DefinirCalendarioGuardiaForm"/>
+		<form-bean name="BajaTurnosForm" type="com.siga.gratuita.form.BajaTurnosForm"/>
+		<form-bean name="DefinirHitosFacturablesGuardiasForm" type="com.siga.gratuita.form.DefinirHitosFacturablesGuardiasForm"/>
+		<form-bean name="BusquedaDesignasForm" type="com.siga.gratuita.form.BusquedaDesignasForm"/>
+		<form-bean name="RetencionesIRPFForm" type="com.siga.gratuita.form.RetencionesIRPFForm"/>
+		<form-bean name="informeRetencionesIRPFForm" type="com.siga.gratuita.form.RetencionesIRPFForm"/>
+		<form-bean name="PermutasForm" type="com.siga.gratuita.form.DefinirPermutaGuardiasForm"/>
+		<form-bean name="DefinirSOJForm" type="com.siga.gratuita.form.DefinirSOJForm"/>
+		<form-bean name="DatosGeneralesSOJForm" type="com.siga.gratuita.form.DatosGeneralesSOJForm"/>
+		<form-bean name="DefinirPersonaJGForm" type="com.siga.gratuita.form.DefinirPersonaJGForm"/>
+		<form-bean name="DatosDocumentacionSOJForm" type="com.siga.gratuita.form.DatosDocumentacionSOJForm"/>
+		<form-bean name="PermutasConfirmadorForm" type="com.siga.gratuita.form.DefinirPermutaGuardiasForm"/>
+		<form-bean name="SaltosYCompensacionesNuevoForm" type="com.siga.gratuita.form.SaltosYCompensacionesForm"/>
+		<form-bean name="SaltosYCompensacionesForm" type="com.siga.gratuita.form.SaltosYCompensacionesForm"/>
+		<form-bean name="BuscarDesignasForm" type="com.siga.gratuita.form.BuscarDesignasForm"/>
+		<form-bean name="MaestroDesignasForm" type="com.siga.gratuita.form.MaestroDesignasForm"/>
+		<form-bean name="DefendidosDesignasForm" type="com.siga.gratuita.form.DefendidosDesignasForm"/>
+		<form-bean name="ContrariosDesignasForm" type="com.siga.gratuita.form.ContrariosDesignasForm"/>
+		<form-bean name="ContrariosEjgForm" type="com.siga.gratuita.form.ContrariosEjgForm"/>
+		<form-bean name="CambiosLetradosDesignasForm" type="com.siga.gratuita.form.CambiosLetradosDesignasForm"/>
+		<form-bean name="CambiosProcuradoresDesignasForm" type="com.siga.gratuita.form.CambiosProcuradoresDesignasForm"/>
+		<form-bean name="EjgDesignasForm" type="com.siga.gratuita.form.EjgDesignasForm"/>
+		<form-bean name="DefensaJuridicaDesignasForm" type="com.siga.gratuita.form.DefensaJuridicaDesignasForm"/>
+		<form-bean name="ActuacionesDesignasForm" type="com.siga.gratuita.form.ActuacionesDesignasForm"/>
+		<form-bean name="AsistenciasForm" type="com.siga.gratuita.form.AsistenciasForm"/>
+		<form-bean name="DefinirEJGForm" type="com.siga.gratuita.form.DefinirEJGForm"/>
+		<form-bean name="BusquedaCAJG_EJGForm" type="com.siga.gratuita.form.BusquedaCAJG_EJGForm"/>
+		<form-bean name="DefinicionRemesas_CAJG_Form" type="com.siga.gratuita.form.DefinicionRemesas_CAJG_Form"/>
+		<form-bean name="DefinicionRemesaResolucionesCAJGForm" type="com.siga.gratuita.form.DefinicionRemesaResolucionesCAJGForm"/>
+		<form-bean name="EstadosRemesaForm" type="com.siga.gratuita.form.EstadosRemesaForm"/>
+		<form-bean name="DefinirMantenimientoEJGForm" type="com.siga.gratuita.form.DefinirMantenimientoEJGForm"/>
+		<form-bean name="DefinirMantenimDocumentacionEJGForm" type="com.siga.gratuita.form.DefinirMantenimDocumentacionEJGForm"/>
+		<form-bean name="DefinirMantenimDictamenesEJGForm" type="com.siga.gratuita.form.DefinirMantenimDictamenesEJGForm"/>
+		<form-bean name="DefinirInteresadoEJGForm" type="com.siga.gratuita.form.DefinirInteresadoEJGForm"/>
+		<form-bean name="DefinirUnidadFamiliarEJGForm" type="com.siga.gratuita.form.DefinirUnidadFamiliarEJGForm"/>
+		<form-bean name="DefinirEstadosEJGForm" type="com.siga.gratuita.form.DefinirEstadosEJGForm"/>
+		<form-bean name="DefinirDocumentacionEJGForm" type="com.siga.gratuita.form.DefinirDocumentacionEJGForm"/>
+		<form-bean name="Asistencias1Form" type="com.siga.gratuita.form.AsistenciasForm"/>
+		<form-bean name="DefinirGrupoFacturacionForm" type="com.siga.gratuita.form.DefinirGrupoFacturacionForm"/>
+		<form-bean name="MantenimientoProcedimientosForm" type="com.siga.gratuita.form.MantenimientoProcedimientosForm"/>
+		<form-bean name="DefinirTurnosLetradoForm" type="com.siga.gratuita.form.DefinirTurnosLetradoForm"/>
+
+		<form-bean name="MantenimientoProcuradorForm" type="com.siga.gratuita.form.MantenimientoProcuradorForm"/>
+		<form-bean name="MantenimientoPrisionForm" type="com.siga.gratuita.form.MantenimientoPrisionForm"/>
+		<form-bean name="MantenimientoComisariaForm" type="com.siga.gratuita.form.MantenimientoComisariaForm"/>
+		<form-bean name="MantenimientoJuzgadoForm" type="com.siga.gratuita.form.MantenimientoJuzgadoForm"/>
+		<form-bean name="pestanaDelitoEJGForm" type="com.siga.gratuita.form.PestanaDelitoEJGForm"/>
+		<form-bean name="pestanaDelitoDesignaForm" type="com.siga.gratuita.form.PestanaDelitoDesignaForm"/>
+		<form-bean name="pestanaDelitoAsistenciaForm" type="com.siga.gratuita.form.PestanaDelitoAsistenciaForm"/>
+		<form-bean name="contrariosAsistenciaForm" type="com.siga.gratuita.form.ContrariosAsistenciaForm"/>
+		<form-bean name="DefinirTelefonosJGForm" type="com.siga.gratuita.form.DefinirTelefonosJGForm"/>
+		<form-bean name="DefinirDictamenEJGForm" type="com.siga.gratuita.form.DefinirDictamenEJGForm"/>
+		<form-bean name="busquedaClientesFiltrosForm" type="com.siga.gratuita.form.BusquedaClientesFiltrosForm"/>
+		<form-bean name="PersonaJGForm" type="com.siga.gratuita.form.PersonaJGForm"/>
+		<form-bean name="BusquedaPersonaJGForm" type="com.siga.gratuita.form.BusquedaPersonaJGForm"/>
+		<form-bean name="BusquedaPorTipoSJCSForm" type="com.siga.gratuita.form.BusquedaPorTipoSJCSForm"/>
+		<form-bean name="BusquedaComisionesForm" type="com.siga.censo.form.BusquedaComisionesForm"/>
+		<form-bean name="ValidarVolantesGuardiasForm" type="com.siga.gratuita.form.ValidarVolantesGuardiasForm"/>
+		<form-bean name="MantenimientoIncompatibilidadesGuardiasForm" type="com.siga.gratuita.form.BusquedaIncompatibilidadesGuardiasForm" />
+		<form-bean name="VolantesExpresForm" type="com.siga.gratuita.form.VolantesExpresForm" />
+		<form-bean name="InformeJustificacionMasivaForm" type="com.siga.gratuita.form.InformeJustificacionMasivaForm" />
+		<form-bean name="MantenimientoDestinatariosRetencionesForm" type="com.siga.gratuita.form.MantenimientoDestinatariosRetencionesForm" />
+		
+		
+		
+    	<!-- ************************** FORMS CONSULTAS ************************* -->
+		<form-bean name="RecuperarConsultasForm" type="com.siga.consultas.form.RecuperarConsultasForm"/>
+		<form-bean name="PermisosConsultaForm" type="com.siga.consultas.form.PermisosConsultaForm"/>
+		<form-bean name="EditarConsultaForm" type="com.siga.consultas.form.EditarConsultaForm"/>
+		<form-bean name="EditarConsultaExpertaForm" type="com.siga.consultas.form.EditarConsultaExpertaForm"/>
+
+
+    	<!-- ************************** FORMS FACTURACIÓN SJCS************************* -->
+    	<form-bean name="mantenimientoFacturacionForm" type="com.siga.facturacionSJCS.form.MantenimientoFacturacionForm"/>
+		<form-bean name="DatosGeneralesFacturacionForm" type="com.siga.facturacionSJCS.form.DatosGeneralesFacturacionForm"/>
+		<form-bean name="MantenimientoMovimientosForm" type="com.siga.facturacionSJCS.form.MantenimientoMovimientosForm"/>
+		<form-bean name="regularizacionForm" type="com.siga.facturacionSJCS.form.RegularizacionForm"/>
+		<form-bean name="mantenimientoPagoForm" type="com.siga.facturacionSJCS.form.MantenimientoPagoForm"/>
+		<form-bean name="datosGeneralesPagoForm" type="com.siga.facturacionSJCS.form.DatosGeneralesPagoForm"/>
+		<form-bean name="DatosDetalleFacturacionForm" type="com.siga.facturacionSJCS.form.DatosDetalleFacturacionForm"/>
+		<form-bean name="DatosDetallePagoForm" type="com.siga.facturacionSJCS.form.DatosDetallePagoForm"/>
+		<form-bean name="MantenimientoRetencionesJudicialesForm" type="com.siga.facturacionSJCS.form.MantenimientoRetencionesJudicialesForm"/>
+		<form-bean name="generarImpreso190Form" type="com.siga.facturacionSJCS.form.GenerarImpreso190Form"/>
+		<form-bean name="MantenimientoHistoricoPreciosForm" type="com.siga.facturacionSJCS.form.MantenimientoHistoricoPreciosForm"/>
+		<form-bean name="mantenimientoPrevisionesForm" type="com.siga.facturacionSJCS.form.MantenimientoPrevisionesForm"/>
+		<form-bean name="mantenimientoPrevisionesNuevaForm" type="com.siga.facturacionSJCS.form.MantenimientoPrevisionesForm"/>
+		<form-bean name="mantenimientoInformesForm" type="com.siga.informes.form.MantenimientoInformesForm"/>
+		<form-bean name="mantenimientoInformesFacturacionesForm" type="com.siga.informes.form.MantenimientoInformesForm"/>
+		<form-bean name="ColaGuardiasForm" type="com.siga.gratuita.form.ColaGuardiasForm"/>
+		<form-bean name="ColaOficiosForm" type="com.siga.gratuita.form.ColaOficiosForm"/>		
+		<form-bean name="SolicitarBajaTurnoForm" type="com.siga.gratuita.form.BajaTurnosForm"/>
+		<form-bean name="ResumenPagosForm" type="com.siga.facturacionSJCS.form.ResumenPagosForm"/>
+		<form-bean name="InformesGenericosForm" type="com.siga.informes.form.InformesGenericosForm"/>
+		<form-bean name="BusquedaRetencionesAplicadasForm" type="com.siga.facturacionSJCS.form.BusquedaRetencionesAplicadasForm" />
+		<form-bean name="mantenimientoFicherosPagoForm" type="com.siga.facturacionSJCS.form.MantenimientoFicherosPagoForm" />
+		<form-bean name="mantenimientoPagosSCJSAForm" type="com.siga.facturacionSJCS.form.MantenimientoPagosSCJSAForm" />
+		<form-bean name="configuracionAbonosForm" type="com.siga.facturacionSJCS.form.ConfiguracionAbonosForm"/>
+		<form-bean name="InformesFacturacionMultipleForm" type="com.siga.informes.form.InformesFacturacionMultipleForm"/>
+	</form-beans>
+
+
+    <global-forwards type="org.apache.struts.action.ActionForward">
+		<forward name="exception" path="/exceptionsManagement.do"/>
+		<forward name="refresh" path="/html/jsp/general/genericLoadForm.jsp"/>
+		<forward name="notImplemented" path="/notImplemented.do"/>
+		<forward name="exito" path="/html/jsp/general/exito.jsp"/>
+		<forward name="exitoConString" path="/html/jsp/general/exitoConString.jsp"/>
+		<forward name="accesodenegado" path="/html/jsp/general/accesoDenegado.jsp"/>
+		<forward name="clienteNoExiste" path="/html/jsp/censo/clienteNoExiste.jsp"/>
+		<forward name="serieFacturacionNoExiste" path="/html/jsp/facturacion/serieFacturacionNoExiste.jsp"/>
+		<forward name="inicioGlobal" path="/html/jsp/general/inicioSesion.jsp"/>
+		<forward name="descargaFichero" path="/ServletDescargaFichero.svrl"/>
+		<forward name="descargaFicheroPrevio" path="/html/jsp/gratuita/descargarFichero.jsp"/>
+		<forward name="descarga" path="/html/jsp/gratuita/imprimir.jsp"/>
+    </global-forwards>
+
+
+    <action-mappings>
+    	<!-- *************************************************************************** -->
+    	<!-- ************************** INICIO ACTION GLOBALES ************************* -->
+    	<!-- *************************************************************************** -->
+
+		<action path="/menu" include="/html/jsp/general/menu.jsp"/>
+		<action path="/menu_izq" include="/html/jsp/general/menu_izq.jsp"/>
+    	<action path="/openMainFrameset" forward="/html/jsp/general/main.jsp"/>
+		<action path="/openMainFrameset2" forward="/html/jsp/general/main2.jsp"/>
+		<action path="/notImplemented" forward="/html/jsp/general/notImplementedYet.jsp"/>
+		<action path="/recargarPantallaPrincipal" forward="/html/jsp/administracion/recargarPantallaPrincipal.jsp"/>
+
+    	<action path="/Dispatcher" type="com.siga.general.SIGADispatcher">
+    		<forward name="inicio" path="/html/jsp/general/inicioSesion.jsp"/>
+    	</action>
+
+		<action path="/exceptionsManagement" type="com.atos.utils.ExceptionManagerAction">
+			<forward name="success" path="/html/jsp/general/loadErrorPage.jsp"/>
+			<forward name="hSucces" path="/html/jsp/general/errorAlerts.jsp"/>
+			<forward name="exception" path="/html/jsp/general/errors.jsp?printStackTrace=true"/>
+		</action>
+
+		<action path="/developmentLogin" type="com.siga.test.SIGATemporalAccessAction">
+			<forward name="topMenu" path="/openMainFrameset.do"/>
+			<forward name="leftMenu" path="/openMainFrameset2.do"/>
+			<forward name="accesoDevelopNoPermitido" path="/html/jsp/general/accesoDevelopNoPermitido.jsp"/>
+		</action>
+
+		<action path="/sigainit" type="com.siga.general.SIGAAuthAction">
+			<forward name="topMenu" path="/openMainFrameset.do"/>
+			<forward name="leftMenu" path="/openMainFrameset2.do"/>
+		</action>
+
+		<action path="/itcgaeinit" type="com.siga.general.SIGAAuthItcgaeAction">
+			<forward name="topMenu" path="/openMainFrameset.do"/>
+			<forward name="leftMenu" path="/openMainFrameset2.do"/>
+		</action>
+
+		<!-- /*#############################################################################*/ -->
+		<!-- /**********INICIO TEMPORAL PARA EL ACCESO DE DESARROLLO ************************/ -->
+		<!-- /*#############################################################################*/ -->
+		<action path="/developmentLoginTipoAcceso" include="/html/jsp/developmentLogin/selectorTipoAcceso.jsp"/>
+		<!-- /*#############################################################################*/ -->
+		<!-- /*************FIN TEMPORAL PARA EL ACCESO DE DESARROLLO ************************/ -->
+		<!-- /*#############################################################################*/ -->
+
+		<!-- *************************************************************************** -->
+		<!-- **************************** FIN ACTION GLOBALES ************************** -->
+		<!-- *************************************************************************** -->
+
+		<!-- *************************************************************************** -->
+		<!-- ************************** INICIO PRUEBA BUSQUEDA ************************* -->
+		<!-- *************************************************************************** -->
+		<action path="/CEN_BusquedaLetradosPruebas" type="es.satec.siga.util.actions.censo.BusquedaLetradosAction" name="CensoBusquedaLetradosBean" scope="request">
+			<forward name="inicio" path="/html/jsp/pruebaCenso/BusquedaLetrados.jsp"/>
+		</action>
+		<!-- *************************************************************************** -->
+		<!-- *************************** FIN PRUEBA BUSQUEDA *************************** -->
+		<!-- *************************************************************************** -->
+
+		<!-- **************************************************************************** -->
+		<!-- **************************** INICIO ACTION MENÚS *************************** -->
+		<!-- **************************************************************************** -->
+
+		<!-- ***** Censo / Acceso Directo Solicitud Incorporación ***** -->
+		<action path="/CEN_SolicitudesIncorporacionAccesoDirecto" type="com.siga.censo.action.SolicitudIncorporacionAccesoDirectoAction" name="SolicitudIncorporacionAccesoDirectoForm" scope="request" validate="true">
+			<forward name="inicio" path="/html/jsp/censo/SolicitudIncorporacionAccesoDirectoMain.jsp"/>
+			<forward name="abrir" path="/SIN_SolicitudIncorporacion.do?modo=abrir"/>
+			<!--forward name="topMenu" path="/openMainFrameset.do"/>
+			<forward name="leftMenu" path="/openMainFrameset2.do"/-->
+		</action>
+
+		<!-- ***** Censo / Buscar Colegiados ***** -->
+		<action path="/CEN_BuscarCliente(Colegiados)" forward="/notImplemented.do"/>
+
+		<!-- ***** Censo / Buscar No Colegiados ***** -->
+		<action path="/CEN_BuscarCliente(NoColegiados)" forward="/notImplemented.do"/>
+
+		<!-- ***** Censo / Buscar Clientes, Colegiados y No Colegiados ***** -->
+		<action path="/CEN_BusquedaClientes" type="com.siga.censo.action.BusquedaClientesAction" name="busquedaClientesForm" scope="session">
+			<forward name="inicio" path="/html/jsp/censo/BusquedaClientes.jsp"/>
+			<forward name="avanzada" path="/html/jsp/censo/BusquedaClientesAvanzada.jsp"/>
+			<forward name="resultado" path="/html/jsp/censo/ResultadoBusquedaClientes.jsp"/>
+			<forward name="resultadoAvanzada" path="/html/jsp/censo/ResultadoBusquedaClientesAvanzada.jsp"/>
+			<forward name="administracion" path="/html/jsp/censo/AdministracionClientes.jsp"/>
+			<forward name="buscarPersonas" path="/html/jsp/censo/buscarPersonasOculta.jsp"/>	
+			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>		
+		</action>
+
+		<action path="/CEN_BusquedaClientesColegiados" forward="/CEN_BusquedaClientes.do?colegiado=1">
+			<forward name="inicio" path="/html/jsp/censo/BusquedaClientes.jsp"/>
+			<forward name="avanzada" path="/html/jsp/censo/BusquedaClientesAvanzada.jsp"/>
+			<forward name="resultado" path="/html/jsp/censo/ResultadoBusquedaClientes.jsp"/>
+			<forward name="resultadoAvanzada" path="/html/jsp/censo/ResultadoBusquedaClientesAvanzada.jsp"/>
+			<forward name="administracion" path="/html/jsp/censo/AdministracionClientes.jsp"/>
+			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>
+		</action>
+
+		<action path="/CEN_BusquedaClientesNoColegiados" forward="/CEN_BusquedaClientes.do?colegiado=0">
+			<forward name="inicio" path="/html/jsp/censo/BusquedaClientes.jsp"/>
+			<forward name="avanzada" path="/html/jsp/censo/BusquedaClientesAvanzada.jsp"/>
+			<forward name="resultado" path="/html/jsp/censo/ResultadoBusquedaClientes.jsp"/>
+			<forward name="resultadoAvanzada" path="/html/jsp/censo/ResultadoBusquedaClientesAvanzada.jsp"/>
+			<forward name="administracion" path="/html/jsp/censo/AdministracionClientes.jsp"/>
+			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>
+		</action>
+		
+		<action path="/CEN_BusquedaLetrados" forward="/CEN_BusquedaClientes.do?colegiado=2">
+			<forward name="inicio" path="/html/jsp/censo/BusquedaClientes.jsp"/>
+			<forward name="avanzada" path="/html/jsp/censo/BusquedaClientesAvanzada.jsp"/>
+			<forward name="resultado" path="/html/jsp/censo/ResultadoBusquedaClientes.jsp"/>
+			<forward name="resultadoAvanzada" path="/html/jsp/censo/ResultadoBusquedaClientesAvanzada.jsp"/>
+			<forward name="administracion" path="/html/jsp/censo/AdministracionClientes.jsp"/>
+			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>
+		</action>
+
+		<action path="/CEN_BusquedaClientesAvanzada" type="com.siga.censo.action.BusquedaClientesAction" name="busquedaClientesAvanzadaForm" scope="session">
+			<forward name="inicio" path="/html/jsp/censo/BusquedaClientes.jsp"/>
+			<forward name="avanzada" path="/html/jsp/censo/BusquedaClientesAvanzada.jsp"/>
+			<forward name="resultado" path="/html/jsp/censo/ResultadoBusquedaClientes.jsp"/>
+			<forward name="resultadoAvanzada" path="/html/jsp/censo/ResultadoBusquedaClientesAvanzada.jsp"/>
+			<forward name="administracion" path="/html/jsp/censo/AdministracionClientes.jsp"/>
+			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>
+		</action>
+
+		<action path="/CEN_BusquedaClientesAvanzadaColegiados" forward="/CEN_BusquedaClientesAvanzada.do?colegiado=1">
+			<forward name="inicio" path="/html/jsp/censo/BusquedaClientes.jsp"/>
+			<forward name="avanzada" path="/html/jsp/censo/BusquedaClientesAvanzada.jsp"/>
+			<forward name="resultado" path="/html/jsp/censo/ResultadoBusquedaClientes.jsp"/>
+			<forward name="resultadoAvanzada" path="/html/jsp/censo/ResultadoBusquedaClientesAvanzada.jsp"/>
+			<forward name="administracion" path="/html/jsp/censo/AdministracionClientes.jsp"/>
+			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>
+		</action>
+
+		<action path="/CEN_BusquedaClientesAvanzadaNoColegiados" forward="/CEN_BusquedaClientesAvanzada.do?colegiado=0">
+			<forward name="inicio" path="/html/jsp/censo/BusquedaClientes.jsp"/>
+			<forward name="avanzada" path="/html/jsp/censo/BusquedaClientesAvanzada.jsp"/>
+			<forward name="resultado" path="/html/jsp/censo/ResultadoBusquedaClientes.jsp"/>
+			<forward name="resultadoAvanzada" path="/html/jsp/censo/ResultadoBusquedaClientesAvanzada.jsp"/>
+			<forward name="administracion" path="/html/jsp/censo/AdministracionClientes.jsp"/>
+			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>
+		</action>
+
+		<!-- ***** Censo / Busqueda modal ***** -->
+		<action path="/CEN_BusquedaClientesModal" type="com.siga.censo.action.BusquedaClientesAction" name="busquedaClientesModalForm" scope="request">
+			<forward name="inicio" path="/html/jsp/censo/busquedaClientesModal.jsp"/>
+			<forward name="resultado" path="/html/jsp/censo/resultadosBusquedaClientesModal.jsp"/>
+			<forward name="seleccion" path="/html/jsp/censo/seleccionClienteModal.jsp"/>
+			<forward name="buscarPersona" path="/html/jsp/censo/busquedaPersonasModal.jsp"/>
+			<forward name="resultadoPersonas" path="/html/jsp/censo/resultadoBusquedaPersonasModal.jsp"/>
+			<forward name="seleccionPersona" path="/html/jsp/censo/seleccionPersonaModal.jsp"/>
+			<forward name="inicioProcurador" path="/html/jsp/censo/busquedaProcuradorModal.jsp"/>
+			<forward name="resultadoProcurador" path="/html/jsp/censo/resultadosBusquedaProcuradorModal.jsp"/>
+			<forward name="buscarPersonas" path="/html/jsp/censo/buscarPersonasOculta.jsp"/>			
+		</action>
+
+		<!-- ***** Censo / Ver Solicitudes Incorporación ***** -->
+		<action path="/CEN_SolicitudesIncorporacion" type="com.siga.censo.action.SolicitudIncorporacionAction" name="SolicitudIncorporacionForm" scope="request" validate="true" >
+			<forward name="inicio" path="/html/jsp/censo/busquedaSolicitudesIncorporacion.jsp"/>
+			<forward name="resultados" path="/html/jsp/censo/busquedaSolicitudesIncorporacionResultados.jsp"/>
+			<forward name="SolicitudIncorporacionDesestimada" path="/html/jsp/censo/SolicitudIncorporacionDesestimada.jsp"/>
+			<forward name="SolicitudIncorporacionDatos" path="/html/jsp/censo/SolicitudIncorporacionDatos.jsp"/>
+			<forward name="exitoInsercion" path="/html/jsp/censo/exitoInsercionIncorporacion.jsp"/>
+			<forward name="continuarAprobacion" path="/html/jsp/censo/continuarAprobacionSolicitud.jsp"/>
+		</action>
+
+		<!-- ***** Censo / Ver Solicitudes Modificación / Solicitudes Genéricas ***** -->
+		<action path="/CEN_SolicitudesModificacionGenericas" type="com.siga.censo.action.SolicitudesModificacionAction" name="SolicitudesModificacionForm" scope="session">
+			<forward name="abrir" path="/html/jsp/censo/busquedaSolicitudesModificacion.jsp"/>
+			<forward name="listar" path="/html/jsp/censo/consultaSolicitudesModificacion.jsp"/>
+			<forward name="procesarSolicitud" path="/html/jsp/censo/consultaSolicitudesModificacion.jsp"/>
+			<forward name="denegarSolicitud" path="/html/jsp/censo/consultaSolicitudesModificacion.jsp"/>
+			<forward name="modificarDatos" path="/html/jsp/censo/AdministracionClientes.jsp"/>
+		</action>
+
+		<!-- ***** Censo / Ver Solicitudes Modificación / Solicitudes Específicas ***** -->
+		<action path="/CEN_SolicitudesModificacionEspecificas" type="com.siga.censo.action.SolicitudesModificacionEspecificasAction" name="SolicitudesModificacionEspecificasForm" scope="request">
+			<forward name="abrir" path="/html/jsp/censo/busquedaSolicitudesModificacionEspecificas.jsp"/>
+			<forward name="listar" path="/html/jsp/censo/consultaSolicitudesModificacionEspecificas.jsp"/>
+			<forward name="verDatosGenerales" path="/html/jsp/censo/verSolicitudDatosGenerales.jsp"/>
+			<forward name="verDirecciones" path="/html/jsp/censo/verSolicitudDirecciones.jsp"/>
+			<forward name="verCuentasBancarias" path="/html/jsp/censo/verSolicitudCuentasBancarias.jsp"/>
+			<forward name="verDatosCV" path="/html/jsp/censo/verSolicitudDatosCV.jsp"/>
+			<forward name="verFacturacion" path="/html/jsp/censo/verSolicitudDatosFacturacion.jsp"/>
+			<forward name="verExpediente" path="/html/jsp/censo/verSolicitudDatosExpediente.jsp"/>
+			<forward name="procesarSolicitud" path="/html/jsp/censo/consultaSolicitudesModificacionEspecificas.jsp"/>
+			<forward name="denegarSolicitud" path="/html/jsp/censo/consultaSolicitudesModificacionEspecificas.jsp"/>
+		</action>
+
+		<!-- ***** Censo / Ver Solicitudes Modificación / Modificación Datos ***** -->
+		<action path="/CEN_ModificacionDatos" type="com.siga.censo.action.SolicitudesModificacionAction" name="SolicitudesModificacionForm" scope="request">
+			<forward name="abrir" path="/html/jsp/censo/solicitudTextoLibre.jsp"/>
+			<forward name="insertar" path="/html/jsp/censo/insercionOK.jsp"/>
+		</action>
+
+		<!-- ***** Censo / Documentos Solicitados ***** -->
+		<action path="/CEN_DocumentacionSolicitudes" type="com.siga.censo.action.DocumentacionSolicitudAction" name="documentacionSolicitudForm" scope="request">
+			<forward name="inicio" path="/html/jsp/censo/busquedaDocumentacionSolicitud.jsp"/>
+			<forward name="resultado" path="/html/jsp/censo/consultaDocumentacionSolicitud.jsp"/>
+		</action>
+
+		<!-- ***** Censo / Informes / Carta de Confirmación ***** -->
+		<action path="/CEN_CartaConfirmacion" forward="/notImplemented.do"/>
+
+		<!-- ***** Censo / Informes / Carta de Documentación Pendiente ***** -->
+		<action path="/CEN_CartaDocumentacionPendiente" forward="/notImplemented.do"/>
+
+		<!-- ***** Censo / Informes / Carta de Incorporación ***** -->
+		<action path="/CEN_CartaIncorporacion" forward="/notImplemented.do"/>
+
+		<!-- ***** Censo / Informes / Candidatos a Aprobar por Junta de Gobierno ***** -->
+		<action path="/CEN_CandidatosaAprobarporJuntadeGobierno" forward="/notImplemented.do"/>
+
+		<!-- ***** Censo / Informes / Número de Incorporaciones ***** -->
+		<action path="/CEN_NumeroIncorporaciones" forward="/notImplemented.do"/>
+
+		<!-- ***** Censo / Consultas ***** -->
+		<action path="/CEN_Consultas" forward="/notImplemented.do"/>
+
+		<!-- ***** Censo / Gestion Histórico ***** -->
+		<action path="/CEN_Historico" type="com.siga.censo.action.HistoricoAction" name="HistoricoForm" scope="request">
+			<forward name="abrir" path="/html/jsp/censo/busquedaHistorico.jsp"/>
+			<forward name="listar" path="/html/jsp/censo/consultaHistorico.jsp"/>
+			<forward name="nuevo" path="/html/jsp/censo/datosHistorico.jsp"/>
+			<forward name="editar" path="/html/jsp/censo/datosHistorico.jsp"/>
+			<forward name="ver" path="/html/jsp/censo/datosHistorico.jsp"/>
+			<forward name="modificar" path="/html/jsp/censo/datosHistorico.jsp"/>
+			<forward name="insertar" path="/html/jsp/censo/datosHistorico.jsp"/>
+		</action>
+
+				<!-- ***** Censo / Consultas Direcciones ***** -->
+		<action path="/CEN_SolicitudDirecciones" type="com.siga.censo.action.DireccionesAction" name="consultaDireccionesSolicForm">
+			<forward name="solicitarModificacion" path="/html/jsp/censo/solicitudModificacionDirecciones.jsp"/>
+			<forward name="preguntaCambioPreferenciaSolicitud" path="/html/jsp/censo/preguntaCambioPreferenciaSolicitud.jsp"/>
+		</action>
+
+		<action path="/CEN_ConsultasDirecciones" type="com.siga.censo.action.DireccionesAction" name="consultaDireccionesForm" scope="request">
+			<forward name="inicio" path="/html/jsp/censo/consultaDirecciones.jsp"/>
+			<forward name="resultado" path="/html/jsp/censo/consultaDirecciones.jsp"/>
+			<forward name="ver" path="/html/jsp/censo/datosDireccion.jsp"/>
+			<forward name="editar" path="/html/jsp/censo/datosDireccion.jsp"/>
+			<forward name="borrar" path="/html/jsp/censo/datosDireccion.jsp"/>
+			<forward name="nuevo" path="/html/jsp/censo/datosDireccion.jsp"/>
+			<forward name="preguntaCambioPreferencia" path="/html/jsp/censo/preguntaCambioPreferencia.jsp"/>
+			<forward name="solicitarModificacion" path="/CEN_SolicitudDirecciones.do"/>
+		</action>
+
+		<action path="/INF_InformesGenericos" type="com.siga.informes.action.InformesGenericosAction" name="InformesGenericosForm" scope="request">
+			<forward name="seleccionPlantillas" path="/html/jsp/informes/seleccionPlantillas.jsp"/>
+			<forward name="seleccionPlantillasModal" path="/html/jsp/informes/seleccionPlantillasModal.jsp"/>
+			<forward name="definirEnvios" path="/html/jsp/envios/redirigeDefinicionEnvios.jsp"/>
+			
+		</action>
+
+		<action path="/INF_InformesMultiples" type="com.siga.informes.action.InformesFacturacionMultipleAction" name="InformesFacturacionMultipleForm" scope="request">
+            <forward name="inicio" path="/html/jsp/informes/informeFacturacionMultiple.jsp"/>
+			<!-- Modificar entradas correspondiente a generarInforme y descargar excels -->
+			<forward name="generaInformes" path="/html/jsp/informes/informeFacturacionMultiple.jsp"/>
+			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>
+		</action>
+
+		<!-- ***** Censo / Cuentas Bancarias ***** -->
+		<action path="/CEN_SolicitudCuentasBancarias" type="com.siga.censo.action.CuentasBancariasAction" name="cuentasBancariasSolicForm">
+			<forward name="solicitarModificacion" path="/html/jsp/censo/solicitudModificacionCuentasBancarias.jsp"/>
+		</action>
+
+		<!-- ***** Censo / Anticipos Letrado ***** -->
+		<action path="/CEN_AnticiposCliente" type="com.siga.censo.action.AnticiposClienteAction" name="AnticiposClienteForm"  scope="request">
+			<forward name="abrir" path="/html/jsp/censo/anticiposCliente.jsp"/>
+			<forward name="editar" path="/html/jsp/censo/anticiposEditar.jsp"/>
+			<forward name="servicios" path="/html/jsp/censo/anticiposServicios.jsp"/>
+			<forward name="abrirFacturas" path="/html/jsp/censo/anticiposUsado.jsp"/>
+			<forward name="facturas" path="/html/jsp/censo/anticiposFacturas.jsp"/>
+			<forward name="abrirServicios" path="/html/jsp/censo/busquedaServiciosAnticipos.jsp"/>
+			<forward name="buscarServicios" path="/html/jsp/censo/resultadosServiciosAnticipos.jsp"/>
+			<forward name="borrarServicios" path="/html/jsp/censo/anticiposCliente.jsp"/>
+		</action>
+
+		<action path="/CEN_CuentasBancarias" type="com.siga.censo.action.CuentasBancariasAction" name="cuentasBancariasForm" scope="request">
+			<forward name="inicio" path="/html/jsp/censo/consultaDatosBancarios.jsp"/>
+			<forward name="resultado" path="/html/jsp/censo/consultaDatosBancarios.jsp"/>
+			<forward name="ver" path="/html/jsp/censo/datosCuentaBancaria.jsp"/>
+			<forward name="editar" path="/html/jsp/censo/datosCuentaBancaria.jsp"/>
+			<forward name="borrar" path="/html/jsp/censo/datosCuentaBancaria.jsp"/>
+			<forward name="nuevo" path="/html/jsp/censo/datosCuentaBancaria.jsp"/>
+			<forward name="solicitarModificacion" path="/CEN_SolicitudCuentasBancarias.do"/>
+		</action>
+
+
+		<!-- ***** Censo / Ver Datos CV ***** -->
+		<action path="/CEN_SolicitudCV" type="com.siga.censo.action.DatosCVAction" name="datosCVSolicForm">
+			<forward name="solicitarModificacion" path="/html/jsp/censo/solicitudModificacionCV.jsp"/>
+			<forward name="solicitarNuevo" path="/html/jsp/censo/solicitudModificacionCV.jsp"/>
+		</action>
+
+		<action path="/CEN_DatosCV" type="com.siga.censo.action.DatosCVAction" name="datosCVForm" scope="request">
+			<forward name="inicio" path="/html/jsp/censo/consultaDatosCV.jsp"/>
+			<forward name="resultado" path="/html/jsp/censo/consultaDatosCV.jsp"/>
+			<forward name="ver" path="/html/jsp/censo/datosCV.jsp"/>
+			<forward name="editar" path="/html/jsp/censo/datosCV.jsp"/>
+			<forward name="borrar" path="/html/jsp/censo/datosCV.jsp"/>
+			<forward name="nuevo" path="/html/jsp/censo/datosCV.jsp"/>
+			<forward name="solicitarNuevo" path="/CEN_SolicitudCV.do"/>
+			<forward name="solicitarModificacion" path="/CEN_SolicitudCV.do"/>
+		</action>
+
+		<!-- ***** Censo / Ver Componentes Personas Jurídicas ***** -->
+		<action path="/CEN_ComponentesJuridicos" type="com.siga.censo.action.ComponentesJuridicosAction" name="componentesJuridicosForm" scope="request">
+			<forward name="inicio" path="/html/jsp/censo/consultaComponentesJuridicos.jsp"/>
+			<forward name="resultado" path="/html/jsp/censo/consultaComponentesJuridicos.jsp"/>
+			<forward name="ver" path="/html/jsp/censo/datosComponentesJuridicos.jsp"/>
+			<forward name="editar" path="/html/jsp/censo/datosComponentesJuridicos.jsp"/>
+			<forward name="borrar" path="/html/jsp/censo/datosComponentesJuridicos.jsp"/>
+			<forward name="nuevo" path="/html/jsp/censo/datosComponentesJuridicos.jsp"/>
+			<forward name="buscarNIF" path="/html/jsp/censo/ComponentesOculta.jsp"/>
+			<forward name="solicitarModificacion" path="/html/jsp/censo/datosComponentesJuridicos.jsp"/>
+		</action>
+
+		<!--  Datos Registrales -->
+		<action path="/CEN_DatosRegistrales" type="com.siga.censo.action.DatosRegistralesAction" name="DatosRegistralesForm" scope="request">
+			<forward name="inicio" path="/html/jsp/censo/consultaDatosRegistrales.jsp"/>
+			<forward name="buscarNIF" path="/html/jsp/censo/NotariosOculta.jsp"/>
+		</action>
+		<action path="/CEN_ActividadProfesional" type="com.siga.censo.action.ActividadProfesionalAction" name="ActividadProfesionalForm" scope="request">
+			<forward name="listado" path="/html/jsp/censo/listadoActividadProfesional.jsp"/>
+			<forward name="abrirModal" path="/html/jsp/censo/nuevoActividadProfesional.jsp"/>
+		</action>
+		
+		<!-- ***** Censo / Ver Datos Colegiales ***** -->
+		<action path="/CEN_DatosColegiales" type="com.siga.censo.action.DatosColegialesAction" name="DatosColegialesForm" scope="request">
+			<forward name="abrir" path="/html/jsp/censo/consultaDatosColegiales.jsp"/>
+			<forward name="modificarDatos" path="/html/jsp/censo/insercionOK.jsp"/>
+			<forward name="nuevo" path="/html/jsp/censo/datosEstadoColegial.jsp"/>
+			<forward name="editar" path="/html/jsp/censo/datosEstadoColegial.jsp"/>
+			<forward name="modificar" path="/html/jsp/censo/insercionOK.jsp"/>
+			<forward name="insertar" path="/html/jsp/censo/datosEstadoColegial.jsp"/>
+			<forward name="exitoConEditarNColegiado" path="/html/jsp/censo/exitoConEditarNColegiado.jsp"/>
+		</action>
+		
+		<!-- ***** Censo / Ver Datos Colegiacion ***** -->
+        <action path="/CEN_DatosColegiacion" type="com.siga.censo.action.DatosColegiacionAction" name="DatosColegiacionForm" scope="request">
+            <forward name="abrir" path="/html/jsp/censo/consultaDatosColegiacion.jsp"/>
+            <forward name="abrirDatosColegiacion" path="/html/jsp/censo/abrirDatosColegiacion.jsp"/>
+            <forward name="nuevo" path="/html/jsp/censo/datosEstadoColegial.jsp"/>
+            <!--<forward name="editar" path="/html/jsp/censo/datosEstadoColegial.jsp"/>-->
+            <forward name="editar" path="/html/jsp/censo/consultaDatosColegiales.jsp"/>
+        </action>
+
+		<!-- ***** Censo / Ficha Colegial ***** -->
+		<action path="/CEN_FichaColegial" type="com.siga.censo.action.FichaColegialAction" name="fichaColegialForm" scope="request">
+			<forward name="administracion" path="/html/jsp/censo/AdministracionClientes.jsp"/>
+		</action>
+
+		<!-- ***** Censo / Ficha Colegial / SJCS ***** -->
+		<action path="/CEN_SJCS" forward="/html/jsp/gratuita/pestanasCenSJCS.jsp"/>
+
+		<!-- ***** Censo / Datos Generales ***** -->
+		<action path="/CEN_SolicitudDatosGenerales" type="com.siga.censo.action.DatosGeneralesAction" name="datosGeneralesSolicForm">
+			<forward name="solicitarModificacion" path="/html/jsp/censo/solicitudModificacionDatosGenerales.jsp"/>
+		</action>
+
+		<!-- ***** Censo / Grupos Fijos Clientes ***** -->
+		<action path="/CEN_GruposFijosClientes" type="com.siga.censo.action.GruposFijosAction" name="GruposClienteClienteForm" scope="request">
+			<forward name="listado" path="/html/jsp/censo/listadoGruposCliente.jsp"/>
+			<forward name="abrirModal" path="/html/jsp/censo/nuevoGrupoCliente.jsp"/>
+		</action>
+
+		<!-- ***** Censo / Datos Generales de un Colegiado y de un No Colegiado ***** -->
+		<action path="/CEN_DatosGenerales" type="com.siga.censo.action.DatosGeneralesAction" name="datosGeneralesForm" scope="request">
+			<forward name="inicio" path="/html/jsp/censo/consultaDatosGenerales.jsp"/>
+			<forward name="exitoInsercion" path="/html/jsp/censo/exitoInsercion.jsp"/>
+			<forward name="solicitarModificacion" path="/CEN_SolicitudDatosGenerales.do"/>
+			<forward name="sociedadSJ_inicio" path="/html/jsp/censo/consultaDatosGeneralesNoColegiado.jsp"/>
+			<forward name="altaNoColegiado" path="/html/jsp/censo/altaNoColegiado.jsp"/>
+			<forward name="exitoInsercionNoColegiado" path="/html/jsp/censo/exitoInsercionNoColegiado.jsp"/>
+		</action>
+		
+		<action path="/EXP_AltaNoColegiado" forward="/CEN_DatosGenerales.do" >
+			<forward name="altaNoColegiado" path="/html/jsp/expedientes/altaNoColegiado.jsp"/>
+			<forward name="exitoInsercionNoColegiado" path="/html/jsp/censo/exitoInsercionNoColegiado.jsp"/>
+		</action>
+
+		
+
+		<!-- ***** Censo / Ver Datos Certificado Digital ***** -->
+		<action path="/CEN_DatosCertificados" type="com.siga.censo.action.CertificadosAction" name="certificadosForm" scope="request">
+			<forward name="inicio" path="/html/jsp/censo/consultaCertificados.jsp"/>
+		</action>
+
+		<!-- ***** Censo / Ver Datos Expedientes ***** -->
+		<action path="/CEN_Expedientes" type="com.siga.censo.action.ExpedientesAction" name="expedientesForm" scope="request">
+			<forward name="inicio" path="/html/jsp/censo/consultaExpedientes.jsp"/>
+			<forward name="solicitarModificacion" path="/EXP_SolicitarBorradodeAnotaciones.do"/>
+		</action>
+
+		<!-- ***** Expedientes / Borrar Anotaciones ***** -->
+		<action path="/EXP_SolicitarBorradodeAnotaciones" type="com.siga.censo.action.ExpedientesAction" name="expedientesForm" scope="request">
+			<forward name="solicitarModificacion" path="/html/jsp/censo/solicitudModificacionExpedientes.jsp"/>
+		</action>
+
+        <action path="/CEN_SolicitudFacturacion" type="com.siga.censo.action.DatosFacturacionAction" name="datosFacturacionForm">
+			<forward name="abrirSolicitud" path="/html/jsp/censo/solicitudModificacionFacturacionServicios.jsp"/>
+		</action>
+
+		<action path="/CEN_Facturacion" type="com.siga.censo.action.DatosFacturacionAction" name="datosFacturacionForm"  scope="request">
+			<forward name="administracionFacturacion" path="/html/jsp/censo/administracionFacturacion.jsp"/>
+			<forward name="abrirProductos" path="/html/jsp/censo/consultaProductos.jsp"/>
+			<forward name="abrirServicios" path="/html/jsp/censo/consultaServicios.jsp"/>
+			<forward name="abrirFacturas" path="/html/jsp/censo/consultaFacturas.jsp"/>
+			<forward name="abrirAbonos" path="/html/jsp/censo/consultaAbonos.jsp"/>
+			<forward name="modificarProducto" path="/html/jsp/censo/datosProductosSolicitados.jsp"/>
+			<forward name="modificarServicio" path="/html/jsp/censo/datosServiciosSolicitados.jsp"/>
+			<forward name="abrirSolicitud" path="/CEN_SolicitudFacturacion.do"/>
+			<forward name="editarCambiarFecha" path="/html/jsp/censo/cambioFechaEfectiva.jsp"/>
+		</action>
+
+		<action path="/CEN_FacturasCliente" type="com.siga.censo.action.FacturasClienteAction" name="facturasClienteForm" scope="request">
+			<forward name="inicio" path="/html/jsp/censo/consultaFacturas.jsp"/>
+			<forward name="ver" path="/html/jsp/facturacion/facturaAdministracionPestanas.jsp"/>
+		</action>
+
+		<action path="/CEN_SancionesLetrado" type="com.siga.censo.action.SancionesLetradoAction" name="SancionesLetradoForm" scope="request">
+			<forward name="inicio" path="/html/jsp/censo/busquedaSancionLetrado.jsp"/>
+			<forward name="editar" path="/html/jsp/censo/datosSancionLetrado.jsp"/>
+			<forward name="resultados" path="/html/jsp/censo/resultadosSancionLetrado.jsp"/>
+		</action>
+
+		<action path="/CEN_AbonosCliente" type="com.siga.censo.action.AbonosClienteAction" name="AbonosClienteForm" scope="request">
+			<forward name="abrir" path="/html/jsp/censo/consultaAbonos.jsp"/>
+			<forward name="ver" path="/html/jsp/facturacion/administracionAbonos.jsp"/>
+		</action>
+
+		<action path="/CEN_ProductosCliente" forward="/CEN_Facturacion.do?modo=abrirProductosPaginados" >
+			<forward name="abrirProductos" path="/html/jsp/censo/consultaProductos.jsp"/>
+		</action>
+
+		<action path="/CEN_ServiciosCliente" forward="/CEN_Facturacion.do?modo=abrirServiciosPaginados">
+			<forward name="abrirServicios" path="/html/jsp/censo/consultaServicios.jsp"/>
+		</action>
+		
+		<!--PDM   *** Censo / Mantenimiento de Grupos Fijos *** -->
+		<action path="/CEN_MantenimientoGruposFijos" type="com.siga.censo.action.MantenimientoGruposFijosAction" name="MantenimientoGruposFijosForm" scope="request" validate="false">
+			<forward name="inicio" path="/html/jsp/censo/busquedaGruposFijos.jsp"/>
+			<forward name="buscarPor" path="/html/jsp/censo/busquedaGruposFijosResultados.jsp"/>
+			<forward name="editar" path="/html/jsp/censo/datosGruposFijos.jsp"/>
+		</action>
+
+		<!-- ***** Facturación / Plantillas de Facturación ***** -->
+		<action path="/FAC_DefinirPlantillasFacturacion" forward="/notImplemented.do"/>
+
+		<!-- ***** Facturación / Asignación de Conceptos Facturables ***** -->
+		<action path="/FAC_AsignacionConceptosFacturables" type="com.siga.facturacion.action.AsignacionConceptosFacturablesAction" name="AsignacionConceptosFacturablesForm" scope="request">
+			<forward name="inicio" path="/html/jsp/facturacion/busquedaSeriesFacturacion.jsp"/>
+			<forward name="success" path="/html/jsp/facturacion/resultadoSeriesFacturacion.jsp"/>
+			<forward name="pestanasFacturacion" path="/html/jsp/facturacion/pestanasFacturacion.jsp"/>
+		</action>
+
+		<action path="/FAC_DatosGenerales" type="com.siga.facturacion.action.DatosGeneralesAction" name="DatosGeneralesForm" scope="request">
+			<forward name="inicio" path="/html/jsp/facturacion/datosGenerales.jsp"/>
+			<forward name="exitoInsercion" path="/html/jsp/facturacion/exitoInsercion.jsp"/>
+		</action>
+
+		<action path="/FAC_TiposProductos" type="com.siga.facturacion.action.TiposProductosAction" name="TiposProductosForm" scope="request">
+			<forward name="inicio" path="/html/jsp/facturacion/tiposProductos.jsp"/>
+			<forward name="nuevoTipoProducto" path="/html/jsp/facturacion/nuevoTipoProducto.jsp"/>
+			<forward name="mensaje" path="/html/jsp/facturacion/datosGenerales.jsp"/>
+		</action>
+
+		<action path="/FAC_TiposServicios" type="com.siga.facturacion.action.TiposServiciosAction" name="TiposServiciosForm" scope="request">
+			<forward name="inicio" path="/html/jsp/facturacion/tiposServicios.jsp"/>
+			<forward name="nuevoTipoServicio" path="/html/jsp/facturacion/nuevoTipoServicio.jsp"/>
+			<forward name="mensaje" path="/html/jsp/facturacion/datosGenerales.jsp"/>
+		</action>
+
+		<action path="/FAC_DestinatariosIndividuales" type="com.siga.facturacion.action.DestinatariosIndividualesAction" name="DestinatariosIndividualesForm" scope="request">
+			<forward name="inicio" path="/html/jsp/facturacion/destinatariosIndividuales.jsp"/>
+			<forward name="mensaje" path="/html/jsp/facturacion/datosGenerales.jsp"/>
+			
+		</action>
+
+		<action path="/FAC_GruposFijos" type="com.siga.facturacion.action.GruposFijosAction" name="GruposFijosForm" scope="request">
+			<forward name="inicio" path="/html/jsp/facturacion/gruposFijos.jsp"/>
+			<forward name="nuevoGrupoFijo" path="/html/jsp/facturacion/nuevoGrupoFijo.jsp"/>
+			<forward name="mensaje" path="/html/jsp/facturacion/datosGenerales.jsp"/>
+		</action>
+
+		<action path="/FAC_GruposDinamicos" type="com.siga.facturacion.action.GruposDinamicosAction" name="GruposDinamicosForm" scope="request">
+			<forward name="inicio" path="/html/jsp/facturacion/gruposDinamicos.jsp"/>
+			<forward name="nuevoGrupoDinamico" path="/html/jsp/facturacion/nuevoGrupoDinamico.jsp"/>
+			<forward name="mensaje" path="/html/jsp/facturacion/datosGenerales.jsp"/>
+		</action>
+
+		<action path="/FAC_ComprobarPoblacion" type="com.siga.facturacion.action.ComprobarPoblacionAction" name="ComprobarPoblacionForm" scope="request">
+			<forward name="inicio" path="/html/jsp/facturacion/comprobarPoblacion.jsp"/>
+			<forward name="mensaje" path="/html/jsp/facturacion/datosGenerales.jsp"/>
+		</action>
+
+		<action path="/FAC_ContabilidadPestana" type="com.siga.facturacion.action.ContabilidadPestanaAction" name="ContabilidadPestanaForm" scope="request">
+			<forward name="inicio" path="/html/jsp/facturacion/contabilidad.jsp"/>
+			<forward name="mensaje" path="/html/jsp/facturacion/datosGenerales.jsp"/>
+		</action>
+
+		<!-- ***** Facturación / Previsiones Facturación ***** -->
+		<action path="/FAC_PrevisionesFacturacion" type="com.siga.facturacion.action.PrevisionesFacturacionAction" name="PrevisionesFacturacionForm" scope="request">
+			<forward name="abrir" path="/html/jsp/facturacion/abrirPrevisionesFacturacion.jsp"/>
+			<forward name="buscar" path="/html/jsp/facturacion/buscarPrevisionesFacturacion.jsp"/>
+			<forward name="nuevaPrevisionFacturacion" path="/html/jsp/facturacion/nuevaPrevisionFacturacion.jsp"/>
+		</action>
+
+		<!-- ***** Facturación / Resumen de pagos ***** -->
+		<action path="/JGR_ResumenPagos" type="com.siga.facturacionSJCS.action.ResumenPagosAction" name="ResumenPagosForm" scope="request">
+			<forward name="abrir" path="/html/jsp/facturacionSJCS/resumenPagos.jsp"/>
+			<forward name="descargas" path="/html/jsp/facturacionSJCS/descargasPrevision.jsp"/>
+			<forward name="onLoadDescargas" path="/html/jsp/facturacionSJCS/muestraModalFicheros.jsp"/>
+		</action>
+
+		<!-- ***** Facturación / Programar Facturación ***** -->
+		<action path="/FAC_ProgramarFacturacion" type="com.siga.facturacion.action.ProgramarFacturacionAction" name="programarFacturacionForm" scope="request">
+			<forward name="abrir" path="/html/jsp/facturacion/consultaProgramarFacturacion.jsp"/>
+			<forward name="borrar" path="/html/jsp/facturacion/consultaProgramarFacturacion.jsp"/>
+			<forward name="editar" path="/html/jsp/facturacion/seriesFacturacion.jsp"/>
+			<forward name="actualizaDatos" path="/html/jsp/facturacion/actualizaDatos.jsp"/>
+			<forward name="nuevo" path="/html/jsp/facturacion/seriesFacturacion.jsp"/>
+		</action>
+
+		<!-- ***** Facturación / Generar Facturación ***** -->
+		<action path="/FAC_GenerarFacturacion" type="com.siga.facturacion.action.GenerarFacturacionAction" name="generarFacturacionForm" scope="request">
+			<forward name="abrir" path="/html/jsp/facturacion/consultaGenerarFacturacion.jsp"/>
+			<forward name="exitoConString" path="/html/jsp/facturacion/exitoConString.jsp"/>
+		</action>
+
+		<!-- ***** Facturación / Eliminar Facturación ***** -->
+		<action path="/FAC_EliminarFacturacion" type="com.siga.facturacion.action.EliminarFacturacionAction" name="eliminarFacturacionForm" scope="request">
+			<forward name="abrir" path="/html/jsp/facturacion/consultaEliminarFacturacion.jsp"/>
+		</action>
+
+		<!-- ***** Facturación / Confirmar Facturación ***** -->
+		<action path="/FAC_ConfirmarFacturacion" type="com.siga.facturacion.action.ConfirmarFacturacionAction" name="confirmarFacturacionForm" scope="request">
+			<forward name="abrir" path="/html/jsp/facturacion/busquedaConfirmaciones.jsp"/>
+			<forward name="resultados" path="/html/jsp/facturacion/consultaConfirmarFacturacion.jsp"/>
+			<forward name="exitoConString" path="/html/jsp/facturacion/exitoConString.jsp"/>
+			<forward name="abrirFechaCargo" path="/html/jsp/facturacion/ventanaFechaCargo.jsp"/>
+		</action>
+
+		<!-- ***** Facturación / Buscar Factura ***** -->
+		<action path="/FAC_BusquedaFactura" type="com.siga.facturacion.action.BusquedaFacturaAction" name="BusquedaFacturaForm" scope="session">
+			<forward name="inicio" path="/html/jsp/facturacion/busquedaFacturas.jsp"/>
+			<forward name="buscarPor" path="/html/jsp/facturacion/busquedaFacturasResultados.jsp"/>
+			<forward name="administrarPestanas" path="/html/jsp/facturacion/facturaAdministracionPestanas.jsp"/>
+		</action>
+
+		<!-- ***** Facturación / Mantenimiento Factura / Datos Generales ***** -->
+		<action path="/FAC_DatosGeneralesFactura" type="com.siga.facturacion.action.GestionarFacturaDatosGeneralesAction" name="GestionarFacturaForm" scope="request">
+			<forward name="inicio" path="/html/jsp/facturacion/facturaDatosGenerales.jsp"/>
+			<forward name="ValidarDireccion" path="/html/jsp/facturacion/preguntaValidacionDireccion.jsp"/>
+		</action>
+
+		<!-- ***** Facturación / Mantenimiento Factura / Pagos ***** -->
+		<action path="/FAC_PagosFactura" type="com.siga.facturacion.action.GestionarFacturaPagosAction" name="GestionarFacturaForm" scope="request">
+			<forward name="inicio" path="/html/jsp/facturacion/facturaPagos.jsp"/>
+			<forward name="ver" path="/html/jsp/facturacion/facturaPagosComprobante.jsp"/>
+			<forward name="pagoPorCaja" path="/html/jsp/facturacion/facturaPagosCaja.jsp"/>
+			<forward name="pagoRenegociar" path="/html/jsp/facturacion/facturaPagosRenegociar.jsp"/>
+			<forward name="pagoPorTarjeta" path="/notImplemented.do"/>
+		</action>
+
+		<!-- ***** Facturación / Mantenimiento Factura / Lineas ***** -->
+		<action path="/FAC_LineasFactura" type="com.siga.facturacion.action.GestionarFacturaLineasAction" name="GestionarFacturaForm" scope="request">
+			<forward name="inicio" path="/html/jsp/facturacion/facturaLineas.jsp"/>
+			<forward name="ver" path="/html/jsp/facturacion/facturaLineasDatos.jsp"/>
+			<forward name="editar" path="/html/jsp/facturacion/facturaLineasDatos.jsp"/>
+		</action>
+
+		<!-- ***** Facturación / Facturas ***** -->
+		<action path="/FAC_GenerarFacturas" forward="/notImplemented.do"/>
+
+		<!-- ***** Facturación / Abonos ***** -->
+		<action path="/FAC_GenerarAbonos" type="com.siga.facturacion.action.GenerarAbonosAction" name="GenerarAbonosForm" scope="session">
+			<forward name="abrir" path="/html/jsp/facturacion/busquedaAbonos.jsp"/>
+			<forward name="listar" path="/html/jsp/facturacion/consultaAbonos.jsp"/>
+			<forward name="nuevo" path="/html/jsp/facturacion/datosAbonos.jsp"/>
+			<forward name="administrar" path="/html/jsp/facturacion/administracionAbonos.jsp"/>
+		</action>
+
+		<action path="/FAC_AltaAbonos" type="com.siga.facturacion.action.AltaAbonosAction" name="AltaAbonosForm" scope="request">
+			<!--forward name="abrir" path="/html/jsp/facturacion/datosAbonos.jsp"/-->
+			<forward name="abrir" path="/html/jsp/facturacion/datosAbonosDevolucion.jsp"/>			
+			<forward name="insertar" path="/html/jsp/facturacion/censo/datosHistorico.jsp"/>
+			<forward name="borrar" path="/html/jsp/facturacion/censo/datosHistorico.jsp"/>
+			<forward name="nuevaRecarga" path="/html/jsp/facturacion/recargaModalAltaAbonos.jsp" />
+			
+		</action>
+
+		<action path="/FAC_AbonosDatosGenerales" type="com.siga.facturacion.action.AbonosDatosGeneralesAction" name="AbonosDatosGeneralesForm" scope="request">
+			<forward name="abrir" path="/html/jsp/facturacion/consultaDatosGeneralesAbonos.jsp"/>
+		</action>
+
+		<action path="/FAC_AbonosLineas" type="com.siga.facturacion.action.AbonosLineasAction" name="AbonosLineasForm" scope="request">
+			<forward name="abrir" path="/html/jsp/facturacion/consultaAbonosLineas.jsp"/>
+			<forward name="editar" path="/html/jsp/facturacion/datosLineaAbono.jsp"/>
+			<forward name="nuevo" path="/html/jsp/facturacion/datosLineaAbono.jsp"/>
+		</action>
+
+		<action path="/FAC_AbonosPagos" type="com.siga.facturacion.action.AbonosPagosAction" name="AbonosPagosForm" scope="request">
+			<forward name="abrir" path="/html/jsp/facturacion/consultaPagosAbonos.jsp"/>
+			<forward name="datosImpresion" path="/html/jsp/facturacion/datosImpresionAbono.jsp"/>
+			<forward name="pagarCaja" path="/html/jsp/facturacion/datosPagoCajaAbono.jsp"/>
+			<forward name="pagarBanco" path="/html/jsp/facturacion/datosPagoBancoAbono.jsp"/>
+			<forward name="dialogoCompensacionFacturaManual" path="/html/jsp/facturacion/dialogoCompensacionFacturaManual.jsp"/>
+			<forward name="mostrarDatosFactura" path="/html/jsp/facturacion/mostrarDatosFacturaCompensadora.jsp" />
+		</action>
+
+		<!-- ***** Facturación / Fichero Bancario de Abonos ***** -->
+		<action path="/FAC_GenerarFicheroBancarioAbonos" forward="/notImplemented.do"/>
+
+		<action path="/FAC_EnvioAbonosABanco" type="com.siga.facturacion.action.FicheroBancarioAbonosAction" name="ficheroBancarioAbonosForm" scope="request">
+			<forward name="abrir" path="/html/jsp/facturacion/ficheroBancarioAbonos.jsp"/>
+			<forward name="generarFichero" path="/html/jsp/facturacion/ficheroBancarioAbonos.jsp"/>
+			<forward name="exitoConString" path="/html/jsp/facturacion/exitoConString.jsp"/>
+			<forward name="informeRemesa" path="/html/jsp/facturacion/informeRemesa.jsp"/>
+		</action>
+
+		<!-- ***** Facturación / Gestionar Devoluciones ***** -->
+		<action path="/FAC_GestionarDevoluciones" forward="/notImplemented.do"/>
+
+		<!-- ***** Facturación / Fichero Bancario de Pagos ***** -->
+		<action path="/FAC_GenerarFicheroBancarioPagos" forward="/notImplemented.do"/>
+
+		<action path="/FAC_DisqueteCargos" type="com.siga.facturacion.action.FicheroBancarioPagosAction" name="ficheroBancarioPagosForm" scope="request">
+			<forward name="abrir" path="/html/jsp/facturacion/ficheroBancarioPagos.jsp"/>
+			<forward name="generarFichero" path="/html/jsp/facturacion/ficheroBancarioPagos.jsp"/>
+			<forward name="exitoConString" path="/html/jsp/facturacion/exitoConString.jsp"/>
+			<forward name="abrirFechaCargo" path="/html/jsp/facturacion/ventanaFechaCargo.jsp"/>
+			<forward name="informeRemesa" path="/html/jsp/facturacion/informeRemesa.jsp"/>
+		</action>
+		
+		<action path="/FAC_InformesFacturasEmitidas" type="com.siga.facturacion.action.InformesFacturasEmitidasAction" name="informesFacturasEmitidasForm" scope="request">
+			<forward name="inicio" path="/html/jsp/facturacion/informesFactuasEmitidas.jsp"/>
+		</action>
+
+		<!-- ***** Facturación / Paso a Contabilidad ***** -->
+		<action path="/FAC_PasoaContabilidad" forward="/notImplemented.do"/>
+
+		<!-- ***** Facturación / Informes y Consultas / Consulta de Morosos ***** -->
+		<action path="/FAC_ConsultaMorosos" type="com.siga.facturacion.action.ConsultaMorososAction" name="ConsultaMorososForm" scope="session">
+			<forward name="inicio" path="/html/jsp/facturacion/consultaMorosos.jsp"/>
+			<forward name="resultado" path="/html/jsp/facturacion/listadoMorosos.jsp"/>
+			<forward name="facturasPendientes" path="/html/jsp/facturacion/facturasMoroso.jsp"/>
+			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>
+			
+		</action>
+
+		<!-- ***** Facturación / Informes y Consultas / Certificado de Factura ***** -->
+		<action path="/FAC_CertificadoFactura" forward="/notImplemented.do"/>
+
+		<!-- ***** Facturación / Informes y Consultas / Relación de Facturas ***** -->
+		<action path="/FAC_RelacionFacturas" forward="/notImplemented.do"/>
+
+		<!-- ***** Facturación / Informes y Consultas / Recibos devueltos por el Banco ***** -->
+		<action path="/FAC_RecibosDevueltosporelBanco" forward="/notImplemented.do"/>
+
+		<!-- ***** Facturación / Informes y Consultas / Facturas renegociadas ***** -->
+		<action path="/FAC_FacturasRenegociadas" forward="/notImplemented.do"/>
+
+		<!-- ***** Facturación / Informes y Consultas / Certificados de Abonos ***** -->
+		<action path="/FAC_CertificadosAbonos" forward="/notImplemented.do"/>
+
+		<!-- ***** Facturación / Informes y Consultas / Relación de Abonos ***** -->
+		<action path="/FAC_RelacionAbonos" forward="/notImplemented.do"/>
+
+		<action path="/FAC_Contabilidad" type="com.siga.facturacion.action.MantContabilidadAction" name="ContabilidadForm">
+			<forward name="inicio" path="/html/jsp/facturacion/busquedaContabilidad.jsp"/>
+			<forward name="listado" path="/html/jsp/facturacion/listadoContabilidad.jsp"/>
+			<forward name="nuevo" path="/html/jsp/facturacion/nuevaContabilidad.jsp"/>
+		</action>
+
+		<action path="/FAC_PagosFacturaPorTarjeta" type="com.siga.facturacion.action.PagoContabilidadAction" name="GestionarFacturaForm">
+			<forward name="abrir" path="/html/jsp/facturacion/pagoContabilidad.jsp"/>
+			<forward name="nuevo" path="/html/jsp/productos/pagoTPV.jsp"/>
+			<forward name="comprobantePago" path="/html/jsp/facturacion/comprobantePago.jsp"/>
+		</action>
+
+		<!-- ***** Facturación / Devoluciones ***** -->
+		<action path="/FAC_Devoluciones" type="com.siga.facturacion.action.DevolucionesAction" name="DevolucionesForm" scope="session">
+			<forward name="abrir" path="/html/jsp/facturacion/consultaDevoluciones.jsp"/>
+			<forward name="nuevo" path="/html/jsp/facturacion/datosNuevoFichero.jsp"/>
+			<forward name="editar" path="/html/jsp/facturacion/datosDevoluciones.jsp"/>
+			<forward name="editarFactura" path="/html/jsp/facturacion/facturaAdministracionPestanas.jsp"/>
+			<forward name="mostrarVentana" path="/html/jsp/facturacion/confirmar.jsp"/>
+		</action>
+
+		<!-- ***** Facturación / Plantillas ***** -->
+		<action path="/FAC_Plantillas" type="com.siga.facturacion.action.PlantillasAction" name="PlantillasForm" scope="request">
+			<forward name="abrir" path="/html/jsp/facturacion/consultaPlantillas.jsp"/>
+			<forward name="nuevo" path="/html/jsp/facturacion/datosPlantilla.jsp"/>
+			<forward name="editar" path="/html/jsp/facturacion/datosPlantilla.jsp"/>
+		</action>
+
+		<!-- ***** Facturación / Devoluciones Manuales ***** -->
+		<action path="/FAC_DevolucionesManual" type="com.siga.facturacion.action.DevolucionesManualesAction" name="DevolucionesManualesForm" scope="session">
+			<forward name="abrir" path="/html/jsp/facturacion/busquedaRecibos.jsp"/>
+			<forward name="listar" path="/html/jsp/facturacion/consultaRecibos.jsp"/>
+			<forward name="nuevo" path="/html/jsp/facturacion/cabeceraDevolucion.jsp"/>
+			<forward name="exitoDevolucion" path="/html/jsp/facturacion/exitoDevolucionManual.jsp"/>
+			<forward name="verFactura" path="/html/jsp/facturacion/facturaAdministracionPestanas.jsp"/>
+		</action>
+
+		<!-- ***** Productos y Servicios / Mantenimiento / Productos ***** -->
+		<action path="/PYS_MantenimientoProductos" type="com.siga.productos.action.MantenimientoProductosAction" name="MantenimientoProductosForm" scope="request" validate="false">
+			<forward name="abrir" path="/html/jsp/productos/busquedaProductos.jsp"/>
+			<forward name="listar" path="/html/jsp/productos/resultadoBusquedaProductos.jsp"/>
+			<forward name="nuevo" path="/html/jsp/productos/mantenimientoProductos.jsp"/>
+			<forward name="editar" path="/html/jsp/productos/mantenimientoProductos.jsp"/>
+			<forward name="ver" path="/html/jsp/productos/mantenimientoProductos.jsp"/>
+			<forward name="modificar" path="/html/jsp/productos/busquedaProductos.jsp"/>
+			<forward name="insertar" path="/html/jsp/productos/busquedaProductos.jsp"/>
+			<forward name="refresco" path="/html/jsp/productos/productoLoadForm.jsp"/>
+		</action>
+		
+		
+		
+		<!-- ***** Productos y Servicios / Carga Productos ***** -->
+		<action path="/PYS_CargaProductos" type="com.siga.productos.action.CargaProductosAction" name="CargaProductosForm" scope="request" validate="false">
+			<forward name="abrir" path="/html/jsp/productos/cargaProductos.jsp"/>
+		</action>
+
+		<!-- ***** Productos y Servicios / Mantenimiento / Servicios ***** -->
+		<action path="/PYS_MantenimientoServicios" type="com.siga.productos.action.MantenimientoServiciosAction" name="MantenimientoServiciosForm" scope="request" validate="false">
+			<forward name="abrir" path="/html/jsp/productos/busquedaServicios.jsp"/>
+			<forward name="abrirAvanzada" path="/html/jsp/productos/criteriosClienteFrame.jsp"/>
+			<forward name="listar" path="/html/jsp/productos/resultadoBusquedaServicios.jsp"/>
+			<forward name="nuevo" path="/html/jsp/productos/mantenimientoServicios.jsp"/>
+			<forward name="nuevoCriterio" path="/html/jsp/productos/criteriosCliente.jsp"/>
+			<forward name="editar" path="/html/jsp/productos/mantenimientoServicios.jsp"/>
+			<forward name="editarCriterio" path="/html/jsp/productos/criteriosCliente.jsp"/>
+			<forward name="ver" path="/html/jsp/productos/mantenimientoServicios.jsp"/>
+			<forward name="verCriterio" path="/html/jsp/productos/criteriosCliente.jsp"/>
+			<forward name="modificar" path="/html/jsp/productos/busquedaServicios.jsp"/>
+			<forward name="insertar" path="/html/jsp/productos/busquedaServicios.jsp"/>
+			<forward name="exitoEspecifico" path="/html/jsp/productos/exitoEspecifico.jsp"/>
+			<forward name="exitoBorrado" path="/html/jsp/productos/exitoBorrado.jsp"/>
+			<forward name="configurarEliminacion" path="/html/jsp/productos/configurarEliminacion.jsp"/>
+			<forward name="condicionSuscripcionAutomatica" path="/html/jsp/productos/condicionSuscripcionAutomatica.jsp"/>
+			<forward name="mensajeInsertarPrecioPorDefecto" path="/html/jsp/productos/mensajeInsertarPrecioPorDefecto.jsp"/>
+		</action>
+
+		<!-- ***** Productos y Servicios / Mantenimiento Sufijos ***** -->
+		<action path="/FAC_Sufijos" type="com.siga.facturacion.action.SufijosAction" name="sufijosForm" scope="request" validate="false">
+			<forward name="inicio" 	  path="/html/jsp/facturacion/busquedaSufijos.jsp"/>
+			<forward name="resultado" path="/html/jsp/facturacion/consultaSufijos.jsp"/>
+			<forward name="editar"     path="/html/jsp/facturacion/datosSufijos.jsp"/>
+		</action>
+
+		<!-- ***** Productos y Servicios / Mantenimiento Categorías Productos ***** -->
+		<action path="/PYS_MantenimientoCategoriasProductos" type="com.siga.productos.action.MantenimientoCategoriasProductosAction" name="MantenimientoCategoriasProductosForm" scope="request" validate="false">
+			<forward name="inicio" path="/html/jsp/productos/busquedaCategoriasProductos.jsp"/>
+			<forward name="buscarPor" path="/html/jsp/productos/busquedaCategoriasProductosResultados.jsp"/>
+			<forward name="editar" path="/html/jsp/productos/datosCategoriasProductos.jsp"/>
+			<forward name="borrar" path="/html/jsp/productos/datosCategoriasProductos.jsp"/>
+			<forward name="nuevo" path="/html/jsp/productos/datosCategoriasProductos.jsp"/>
+		</action>
+
+		<!-- ***** Productos y Servicios / Mantenimiento Categorías Servicios ***** -->
+		<action path="/PYS_MantenimientoCategoriasServicios" type="com.siga.productos.action.MantenimientoCategoriasServiciosAction" name="MantenimientoCategoriasServiciosForm" scope="request" validate="false">
+			<forward name="inicio" path="/html/jsp/productos/busquedaCategoriasServicios.jsp"/>
+			<forward name="buscarPor" path="/html/jsp/productos/busquedaCategoriasServiciosResultados.jsp"/>
+			<forward name="editar" path="/html/jsp/productos/datosCategoriasServicios.jsp"/>
+			<forward name="borrar" path="/html/jsp/productos/datosCategoriasServicios.jsp"/>
+			<forward name="nuevo" path="/html/jsp/productos/datosCategoriasServicios.jsp"/>
+		</action>
+
+		<!-- ***** Productos y Servicios / Gestionar Solicitudes ***** -->
+		<action path="/PYS_GestionarSolicitudes" type="com.siga.productos.action.GestionSolicitudesAction" name="GestionSolicitudesForm" scope="session" validate="false">
+			<forward name="inicio" path="/html/jsp/productos/busquedaSolicitudes.jsp"/>
+			<forward name="buscarInit" path="/html/jsp/productos/busquedaSolicitudesResultados.jsp" />
+			<forward name="buscarPor" path="/html/jsp/productos/busquedaSolicitudesResultados.jsp"/>
+			<forward name="editar" path="/html/jsp/productos/datosSolicitud.jsp"/>
+			<forward name="confirmar" path="/html/jsp/productos/datosSolicitud.jsp"/>
+			<forward name="denegar" path="/html/jsp/productos/datosSolicitud.jsp"/>
+			<forward name="modificarCuenta" path="/html/jsp/productos/seleccionCuentaBancaria.jsp"/>
+			<forward name="mostrarAnticipos" path="/html/jsp/productos/anticiparImporte.jsp"/>
+			<forward name="guardarAnticipos" path="/html/jsp/productos/anticiparImporte.jsp"/>
+		</action>
+
+		<!-- ***** Productos y Servicios / Informes ***** -->
+		<action path="/PYS_GenerarInformes" forward="/notImplemented.do"/>
+
+		<!-- ***** Productos y Servicios / Consultas ***** -->
+		<action path="/PYS_Consultas" forward="/notImplemented.do"/>
+
+		<!-- ***** Productos y Servicios / Bajas ***** -->
+		<action path="/PYS_Bajas" type="com.siga.productos.action.SolicitudBajaAction" name="solicitudBajaForm" scope="request">
+			<forward name="abrir" path="/html/jsp/productos/solicitudBaja.jsp"/>
+			<forward name="buscarArticulos" path="/html/jsp/productos/consultaProductosServiciosSolicitados.jsp"/>
+			<forward name="solicitar" path="/html/jsp/productos/consultaProductosServiciosSolicitados.jsp"/>
+		</action>
+
+		<!-- ***** Productos y Servicios / Solicitudes ***** -->
+		<action path="/PYS_GenerarSolicitudes" type="com.siga.productos.action.SolicitudCompraAction" name="solicitudCompraForm" scope="session">
+			<forward name="abrir" path="/html/jsp/productos/solicitudCompra.jsp"/>
+			<forward name="solicitar" path="/html/jsp/productos/productosSolicitados.jsp"/>
+			<forward name="borrarCarrito" path="/html/jsp/productos/productosSolicitados.jsp"/>
+			<forward name="continuar" path="/html/jsp/productos/aceptacionSolicitud.jsp"/>
+			<forward name="modificarCuenta" path="/html/jsp/productos/seleccionCuentaBancaria.jsp"/>
+			<forward name="validarTarjeta" path="/html/jsp/productos/pagarConTarjeta.jsp"/>
+			<forward name="desglosePago" path="/html/jsp/productos/desglosePago.jsp"/>
+			<forward name="comprobanteCompra" path="/html/jsp/productos/comprobanteSolicitud.jsp"/>
+			<forward name="comprobanteCompraImpresion" path="/html/jsp/productos/comprobanteSolicitudImpresion.jsp"/>
+			<forward name="cargaTarjeta" path="/html/jsp/productos/pagoTPV.jsp"/>
+			<forward name="consultarCertificado" path="/html/jsp/productos/datosEnvio.jsp"/>
+			<forward name="buscarProducto" path="/html/jsp/productos/productosEncontrados.jsp"/>
+			<forward name="seleccionSerie" path="/html/jsp/productos/seleccionSerie.jsp"/>
+			<forward name="seleccionSerieModal" path="/html/jsp/productos/seleccionSerieModal.jsp"/>
+		</action>
+
+		<action path="/PYS_SolicitarCertificado" forward="/PYS_GenerarSolicitudes.do?certificado=1">
+			<forward name="abrir" path="/html/jsp/productos/solicitudCompra.jsp"/>
+			<forward name="solicitar" path="/html/jsp/productos/productosSolicitados.jsp"/>
+			<forward name="borrarCarrito" path="/html/jsp/productos/productosSolicitados.jsp"/>
+			<forward name="continuar" path="/html/jsp/productos/aceptacionSolicitud.jsp"/>
+			<forward name="modificarCuenta" path="/html/jsp/productos/seleccionCuentaBancaria.jsp"/>
+			<forward name="validarTarjeta" path="/html/jsp/productos/pagarConTarjeta.jsp"/>
+			<forward name="desglosePago" path="/html/jsp/productos/desglosePago.jsp"/>
+			<forward name="comprobanteCompra" path="/html/jsp/productos/comprobanteSolicitud.jsp"/>
+			<forward name="comprobanteCompraImpresion" path="/html/jsp/productos/comprobanteSolicitudImpresion.jsp"/>
+			<forward name="cargaTarjeta" path="/html/jsp/productos/pagoTPV.jsp"/>
+			<forward name="consultarCertificado" path="/html/jsp/productos/datosEnvio.jsp"/>
+			<forward name="buscarProducto" path="/html/jsp/productos/productosEncontrados.jsp"/>
+		</action>
+		
+		<action path="/PYS_SolicitarPYS" forward="/PYS_GenerarSolicitudes.do?certificado=0">
+			<forward name="abrir" path="/html/jsp/productos/solicitudCompra.jsp"/>
+			<forward name="solicitar" path="/html/jsp/productos/productosSolicitados.jsp"/>
+			<forward name="borrarCarrito" path="/html/jsp/productos/productosSolicitados.jsp"/>
+			<forward name="continuar" path="/html/jsp/productos/aceptacionSolicitud.jsp"/>
+			<forward name="modificarCuenta" path="/html/jsp/productos/seleccionCuentaBancaria.jsp"/>
+			<forward name="validarTarjeta" path="/html/jsp/productos/pagarConTarjeta.jsp"/>
+			<forward name="desglosePago" path="/html/jsp/productos/desglosePago.jsp"/>
+			<forward name="comprobanteCompra" path="/html/jsp/productos/comprobanteSolicitud.jsp"/>
+			<forward name="comprobanteCompraImpresion" path="/html/jsp/productos/comprobanteSolicitudImpresion.jsp"/>
+			<forward name="cargaTarjeta" path="/html/jsp/productos/pagoTPV.jsp"/>
+			<forward name="consultarCertificado" path="/html/jsp/productos/datosEnvio.jsp"/>
+			<forward name="buscarProducto" path="/html/jsp/productos/productosEncontrados.jsp"/>
+		</action>
+
+		<!-- PDM--><!-- ***** Envíos a Grupos / Seleccionar Remitentes ***** -->
+		<action path="/PYS_SolicitarDireccion" type="com.siga.envios.action.RemitentesAction" name="RemitentesForm" scope="request">
+			<forward name="inicio" path="/html/jsp/envios/abrirRemitentes.jsp"/>
+			<forward name="editar" path="/html/jsp/envios/direccionRemitentesModal.jsp"/>
+			<!--forward name="buscarDirecciones" path="/html/jsp/envios/resultadoBusqDireccion.jsp"/-->
+			<forward name="buscarDirecciones" path="/html/jsp/envios/busquedaDireccionesModal.jsp"/>
+			<forward name="mostrarDirecciones" path="/html/jsp/envios/resultadoBusqDireccion.jsp"/>
+			<forward name="seleccion" path="/html/jsp/envios/seleccionDireccionModal.jsp"/>
+		</action>
+
+		<action path="/PYS_CompraPredefinida" type="com.siga.productos.action.CompraPredefinidaAction" name="DummyForm" scope="request">
+			<forward name="mensajes" path="/html/jsp/productos/mensajesCertificadoPredefinido.jsp"/>
+			<forward name="mensajes2" path="/html/jsp/productos/mensajesCertificadoPredefinido2.jsp"/>
+			<forward name="mensajesDiligencia" path="/html/jsp/productos/mensajesDiligencia.jsp"/>
+			<forward name="abrirDiligencia" path="/html/jsp/productos/abrirSolicitudDiligencia.jsp"/>
+			<forward name="selPlantilla" path="/html/jsp/productos/asignarPlantillaCertificadoPredefinido.jsp"/>
+			<forward name="selPlantilla2" path="/html/jsp/productos/asignarPlantillaCertificadoPredefinido2.jsp"/>
+			<forward name="preguntaDireccionGeneraPDFPredefinido" path="/html/jsp/productos/preguntaDireccionGeneraPDFPredefinido.jsp"/>
+			<forward name="exitoHaciaCertificados" path="/html/jsp/productos/exitoCompraPredefinida.jsp"/>
+			<forward name="exitoDiligencia" path="/html/jsp/productos/exitoDiligencia.jsp"/>
+
+			<forward name="abrirCompraColegio" path="/html/jsp/productos/abrirCompraColegioPredefinido.jsp"/>
+			<forward name="compraColegio" path="/html/jsp/productos/compraColegioPredefinido.jsp"/>
+
+		</action>
+		
+		<action path="/Cen_BotonesAccion" type="com.siga.censo.action.ColegiarAction" name="DummyForm" scope="request">
+			<forward name="abrirColegiar" path="/html/jsp/censo/abrirColegiar.jsp"/>
+			<forward name="exitoInsercion" path="/html/jsp/censo/exitoInsercionIncorporacion.jsp"/>
+		</action>
+
+        <!-- ***** Expedientes / Tipos Expedientes ***** -->
+		<action path="/EXP_MantenerTiposExpedientes" type="com.siga.expedientes.action.TipoExpedienteAction" name="TipoExpedienteForm" scope="request">
+			<forward name="abrir" path="/html/jsp/expedientes/abrirTipoExpediente.jsp"/>
+			<forward name="ver" path="/notImplemented.do"/>
+			<forward name="mostrar" path="/html/jsp/expedientes/tipoExpediente_Edit.jsp"/>
+			<forward name="editar" path="/html/jsp/expedientes/pestanasExpedientes.jsp"/>
+			<forward name="refresh2" path="/html/jsp/general/genericLoadForm2.jsp"/>
+			<forward name="permisos" path="/html/jsp/expedientes/pestanaExpedientePermisos.jsp"/>
+		</action>
+
+		<action path="/EXP_TiposExpedientes_Campos" type="com.siga.expedientes.action.CampoTipoExpedienteAction" name="camposForm" scope="request">
+			<forward name="abrir" path="/html/jsp/expedientes/abrirCampoTipoExpediente.jsp"/>
+			<forward name="refresh" path="/html/jsp/general/genericLoadForm.jsp"/>
+		</action>
+
+		<action path="/EXP_TiposExpedientes_CamposConf" type="com.siga.expedientes.action.CamposConfigurablesAction" name="camposConfigurablesForm" scope="request">
+			<forward name="abrir" path="/html/jsp/expedientes/abrirCamposConfTipoExpediente.jsp"/>
+			<forward name="editar" path="/html/jsp/expedientes/editarCampoConfTipoExpediente.jsp"/>
+		</action>
+
+		<action path="/EXP_TiposExpedientes_Fases" type="com.siga.expedientes.action.FasesAction" name="FasesForm" scope="request">
+			<forward name="abrir" path="/html/jsp/expedientes/abrirFases.jsp"/>
+			<forward name="mostrar" path="/html/jsp/expedientes/fases_Edit.jsp"/>
+			<forward name="refresh" path="/html/jsp/general/genericLoadForm.jsp"/>
+		</action>
+
+		<action path="/EXP_TiposExpedientes_Clasificaciones" type="com.siga.expedientes.action.ClasificacionesAction" name="ClasificacionesForm" scope="request">
+			<forward name="abrir" path="/html/jsp/expedientes/abrirClasificaciones.jsp"/>
+			<forward name="mostrar" path="/html/jsp/expedientes/clasificaciones_Edit.jsp"/>
+			<forward name="refresh" path="/html/jsp/general/genericLoadForm.jsp"/>
+		</action>
+
+		<action path="/EXP_TiposExpedientes_Estados" type="com.siga.expedientes.action.EstadosAction" name="EstadosForm" scope="request">
+			<forward name="abrir" path="/html/jsp/expedientes/busquedaEstados.jsp"/>
+			<forward name="resultado" path="/html/jsp/expedientes/busquedaEstadosResultados.jsp"/>
+			<forward name="mostrar" path="/html/jsp/expedientes/estados_Edit.jsp"/>
+			<forward name="refresh" path="/html/jsp/general/genericLoadForm.jsp"/>
+		</action>
+
+		<action path="/EXP_TiposExpedientes_Roles" type="com.siga.expedientes.action.RolesAction" name="RolesForm" scope="request">
+			<forward name="abrir" path="/html/jsp/expedientes/abrirRoles.jsp"/>
+			<forward name="mostrar" path="/html/jsp/expedientes/roles_Edit.jsp"/>
+			<forward name="refresh" path="/html/jsp/general/genericLoadForm.jsp"/>
+		</action>
+
+		<action path="/EXP_TiposExpedientes_TiposAnotaciones" type="com.siga.expedientes.action.TiposAnotacionesAction" name="TiposAnotacionesForm" scope="request">
+			<forward name="abrir" path="/html/jsp/expedientes/abrirTiposAnotaciones.jsp"/>
+			<forward name="mostrar" path="/html/jsp/expedientes/tiposAnotaciones_Edit.jsp"/>
+			<forward name="refresh" path="/html/jsp/general/genericLoadForm.jsp"/>
+		</action>
+
+		<action path="/EXP_TiposExpedientes_Permisos" type="com.siga.expedientes.action.PermisosTiposExpedientesAction" name="PermisosTiposExpedientesForm" scope="request">
+			<forward name="abrir" path="/html/jsp/expedientes/abrirPermisos.jsp"/>
+			<forward name="refresh" path="/html/jsp/general/genericLoadForm.jsp"/>
+		</action>
+
+		<!-- ***** Expedientes / Auditoría Expedientes ***** -->
+		<action path="/EXP_AuditoriaExpedientes" type="com.siga.expedientes.action.BusquedaExpedientesAction" name="busquedaExpedientesForm" scope="session">
+			<forward name="inicio" path="/html/jsp/expedientes/busquedaExpedientes.jsp"/>
+			<forward name="avanzada" path="/html/jsp/expedientes/busquedaExpedientesAvanzada.jsp"/>
+			<forward name="resultado" path="/html/jsp/expedientes/resultadoBusqExp.jsp"/>
+			<forward name="resultadoAvanzada" path="/html/jsp/expedientes/resultadoBusqExpAvanzada.jsp"/>
+			<forward name="editar" path="/html/jsp/expedientes/pestanasAuditExpedientes.jsp"/>
+			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>
+		</action>
+
+		<action path="/EXP_Auditoria_DatosGenerales" type="com.siga.expedientes.action.ExpDatosGeneralesAction" name="ExpDatosGeneralesForm" scope="request">
+			<forward name="inicio" path="/html/jsp/expedientes/datosGenerales.jsp"/>
+			<forward name="editar" path="/html/jsp/expedientes/pestanasAuditExpedientes.jsp"/>
+			<forward name="plazo" path="/html/jsp/expedientes/setPlazo.jsp"/>
+			<forward name="ejecucionSancion" path="/html/jsp/expedientes/abrirEjecucionSancion.jsp"/>
+		</action>
+
+		<action path="/EXP_Auditoria_Denunciante" type="com.siga.expedientes.action.ExpDenuncianteAction" name="ExpDenuncianteForm" scope="request">
+			<forward name="inicio" path="/html/jsp/expedientes/abrirDenunciantes.jsp"/>
+			<forward name="mostrar" path="/html/jsp/expedientes/denunciantes_Edit.jsp"/>
+		</action>
+		<action path="/EXP_Auditoria_Denunciado" type="com.siga.expedientes.action.ExpDenunciadoAction" name="ExpDenunciadoForm" scope="request">
+			<forward name="inicio" path="/html/jsp/expedientes/abrirDenunciados.jsp"/>
+			<forward name="mostrar" path="/html/jsp/expedientes/denunciados_Edit.jsp"/>
+		</action>
+		
+
+		<action path="/EXP_Auditoria_Alertas" type="com.siga.expedientes.action.ExpAlertaAction" name="ExpAlertaForm" scope="request">
+			<forward name="inicio" path="/html/jsp/expedientes/abrirAlerta.jsp"/>
+			<forward name="refresh" path="/html/jsp/general/genericLoadForm.jsp"/>
+		</action>
+
+		<action path="/EXP_Auditoria_Partes" type="com.siga.expedientes.action.ExpPartesAction" name="ExpPartesForm" scope="request">
+			<forward name="inicio" path="/html/jsp/expedientes/abrirPartes.jsp"/>
+			<forward name="mostrar" path="/html/jsp/expedientes/partes_Edit.jsp"/>
+		</action>
+
+		<action path="/EXP_Auditoria_Documentacion" type="com.siga.expedientes.action.ExpDocumentacionAction" name="ExpDocumentacionForm" scope="request">
+			<forward name="inicio" path="/html/jsp/expedientes/abrirDocumentacion.jsp"/>
+			<forward name="mostrar" path="/html/jsp/expedientes/documentacion_Edit.jsp"/>
+		</action>
+		<action path="/EXP_Auditoria_DocumentacionRegTel" type="com.siga.expedientes.action.ExpDocumentacionRegTelAction" name="ExpDocumentacionForm" scope="request">
+			<forward name="inicioDS" path="/html/jsp/expedientes/abrirDocumentacionDS.jsp"/>			
+		</action>
+		
+		<action path="/JGR_EJG_DocumentacionRegTel" type="com.siga.gratuita.action.EJGDocumentacionRegTelAction" name="DefinirEJGForm" scope="request">
+			<forward name="inicioDS" path="/html/jsp/gratuita/abrirDocumentacionDS.jsp"/>			
+		</action>
+		
+		<action path="/CEN_Censo_DocumentacionRegTel" type="com.siga.censo.action.CensoDocumentacionRegTelAction" name="DatosColegialesForm" scope="request">
+			<forward name="inicioDS" path="/html/jsp/censo/abrirDocumentacionDS.jsp"/>			
+		</action>
+
+		<action path="/EXP_Auditoria_Seguimiento" type="com.siga.expedientes.action.ExpSeguimientoAction" name="ExpSeguimientoForm" scope="request">
+			<forward name="inicio" path="/html/jsp/expedientes/busquedaSeguimiento.jsp"/>
+			<forward name="resultado" path="/html/jsp/expedientes/busquedaSeguimientoResultados.jsp"/>
+			<forward name="mostrar" path="/html/jsp/expedientes/seguimiento_Edit.jsp"/>
+			<forward name="errorAnotacion" path="/html/jsp/expedientes/errorAnotacion.jsp"/>
+		</action>
+
+		<action path="/EXP_Auditoria_Resolucion" type="com.siga.expedientes.action.ExpResolucionAction" name="expResolucionForm" scope="request">
+			<forward name="inicio" path="/html/jsp/expedientes/resolucion.jsp"/>
+			<forward name="volver" path="/html/jsp/expedientes/busquedaExpedientes.jsp"/>
+		</action>
+
+		<action path="/EXP_Auditoria_EjecucionSancion" type="com.siga.expedientes.action.EjecucionSancionAction" name="EjecucionSancionForm" scope="request">
+			<forward name="inicio" path="/html/jsp/expedientes/ejecucionSancion.jsp"/>
+		</action>
+
+		<!-- ***** Expedientes / Informes ***** -->
+		<action path="/EXP_GenerarInformes" forward="/notImplemented.do"/>
+
+		<!-- ***** Expedientes / Consultas ***** -->
+		<action path="/EXP_Consultas" type="com.siga.expedientes.action.BusquedaAlertaAction" name="busquedaAlertaForm" scope="session">
+			<forward name="inicio" path="/html/jsp/expedientes/busquedaAlerta.jsp"/>
+			<forward name="resultado" path="/html/jsp/expedientes/resultBusqAlerta.jsp"/>
+			<forward name="editar" path="/html/jsp/expedientes/pestanasAuditExpedientes.jsp"/>
+		</action>
+
+		<!-- ***** Expedientes / Nuevo Expediente ***** -->
+		<action path="/EXP_NuevoExpediente" type="com.siga.expedientes.action.NuevoExpedienteAction" name="NuevoExpedienteForm" scope="request">
+			<forward name="avanzada" path="/html/jsp/expedientes/busqTipoNuevoExp.jsp"/>
+			<forward name="inicio" path="/html/jsp/expedientes/nuevoExp.jsp"/>
+			<forward name="seleccion" path="/html/jsp/expedientes/selecTipoNuevoExp.jsp"/>
+		</action>
+
+		<action path="/EXP_PestanaConfigurable1" type="com.siga.expedientes.action.PestanaConfigurableAction1" name="PestanaConfigurableForm" scope="request">
+			<forward name="inicio" path="/html/jsp/expedientes/pestanaConfigurables.jsp"/>
+		</action>
+
+		<action path="/EXP_PestanaConfigurable2" type="com.siga.expedientes.action.PestanaConfigurableAction2" name="PestanaConfigurableForm" scope="request">
+			<forward name="inicio" path="/html/jsp/expedientes/pestanaConfigurables.jsp"/>
+		</action>
+
+		<!-- ***** Solicitud Incorporación ***** -->
+		<action path="/SIN_SolicitudIncorporacion" type="com.siga.censo.action.SolicitudIncorporacionAction" name="SolicitudIncorporacionForm" scope="request" validate="true">
+			<forward name="inicio" path="/html/jsp/censo/SolicitudIncorporacionValidacion.jsp"/>
+			<forward name="nuevo" path="/html/jsp/censo/SolicitudIncorporacion.jsp"/>
+			<forward name="SolicitudIncorporacionDesestimada" path="/html/jsp/censo/SolicitudIncorporacionDesestimada.jsp"/>
+			<forward name="SolicitudIncorporacionDatos" path="/html/jsp/censo/SolicitudIncorporacionDatos.jsp"/>
+			<forward name="SolicitudIncorporacionError" path="/html/jsp/censo/SolicitudIncorporacionError.jsp"/>
+			
+		</action>
+
+		<!-- ***** Catálogo de Cursos ***** -->
+		<action path="/CCU_CatalogoCursos" forward="/notImplemented.do"/>
+
+		<!-- ***** Secretaría / Mantenimiento Programas ***** -->
+		<action path="/SEC_MantenimientoProgramas" forward="/notImplemented.do"/>
+
+		<!-- ***** Secretaría / Mantenimiento Cursos ***** -->
+		<action path="/SEC_MantenimientoCursos" forward="/notImplemented.do"/>
+
+		<!-- ***** Secretaría / Solicitar Reserva ***** -->
+		<action path="/SEC_SolicitarReserva" forward="/notImplemented.do"/>
+
+		<!-- ***** Secretaría / Validar Reservas ***** -->
+		<action path="/SEC_ValidarReservas" forward="/notImplemented.do"/>
+
+		<!-- ***** Secretaría / Informes / Ficha del Programa ***** -->
+		<action path="/SEC_FichaPrograma" forward="/notImplemented.do"/>
+
+		<!-- ***** Secretaría / Informes / Lista de Programas Activos ***** -->
+		<action path="/SEC_ListaProgramasActivos" forward="/notImplemented.do"/>
+
+		<!-- ***** Secretaría / Informes / Ficha o Folleto del Curso ***** -->
+		<action path="/SEC_FichaoFolletoCurso" forward="/notImplemented.do"/>
+
+		<!-- ***** Secretaría / Informes / Listado de Control de Asistencias ***** -->
+		<action path="/SEC_ListadoControlAsistencias" forward="/notImplemented.do"/>
+
+		<!-- ***** Secretaría / Informes / Certificados de Asistencia y/o Aprovechamiento ***** -->
+		<action path="SEC_CertificadosAsistencia/Aprovechamiento" forward="/notImplemented.do"/>
+
+		<!-- ***** Secretaría / Informes / Listado de Alumnos inscritos en un Curso ***** -->
+		<action path="/SEC_ListadoAlumnosInscritosCurso" forward="/notImplemented.do"/>
+
+		<!-- ***** Certificados / Solicitud Certificado ***** -->
+		<action path="/CER_SolicitudCertificado" type="com.siga.certificados.action.SIGASolicitudCertificadoAction" name="SolicitudCertificadoForm" scope="request">
+			<forward name="abrir" path="/html/jsp/certificados/abrirSolicitudCertificado.jsp"/>
+			<forward name="preguntaNoColegiado" path="/html/jsp/certificados/preguntaNoColegiado.jsp"/>
+		</action>
+
+		<!-- ***** Certificados / Gestión Solicitudes ***** -->
+		<action path="/CER_GestionSolicitudes" type="com.siga.certificados.action.SIGASolicitudesCertificadosAction" name="SolicitudesCertificadosForm" scope="request">
+			<forward name="abrir" path="/html/jsp/certificados/abrirListadoSolicitudes.jsp"/>
+			<forward name="buscar" path="/html/jsp/certificados/buscarListadoSolicitudes.jsp"/>
+			<forward name="asignarPlantillaCertificado" path="/html/jsp/certificados/asignarPlantillaCertificado.jsp"/>
+			<forward name="mostrar" path="/html/jsp/certificados/detalleSolicitudCertificado.jsp"/>
+			<forward name="preguntaDireccionGeneraPDF" path="/html/jsp/certificados/preguntaDireccionGeneraPDF.jsp"/>
+			<forward name="copiarSanciones" path="/html/jsp/certificados/copiarSanciones.jsp"/>
+			<forward name="seleccionarPlantilla" path="/html/jsp/certificados/seleccionarPlantilla.jsp"/>
+			<forward name="preguntaNumeroFacturas" path="/html/jsp/certificados/preguntaNumeroFacturas.jsp"/>
+			
+		</action>
+
+		<!-- ***** Certificados / Mantenimiento de Certificados ***** -->
+		<action path="/CER_MantenimientoCertificados" type="com.siga.certificados.action.SIGAMantenimientoCertificadosAction" name="MantenimientoCertificadosForm" scope="request">
+			<forward name="abrir" path="/html/jsp/certificados/abrirListadoCertificados.jsp"/>
+			<forward name="buscar" path="/html/jsp/certificados/buscarListadoCertificados.jsp"/>
+			<forward name="abrirPestanas" path="/html/jsp/certificados/abrirPestanasCertificados.jsp"/>
+		</action>
+
+		<!-- ***** Certificados / Mantenimiento de Certificados / Campos ***** -->
+		<action path="/CER_Campos" type="com.siga.certificados.action.SIGAMantenimientoCertificadosCamposAction" name="MantenimientoCertificadosCamposForm" scope="request">
+			<forward name="abrir" path="/html/jsp/certificados/pestanaCampos.jsp"/>
+			<forward name="mostrar" path="/html/jsp/certificados/detalleRegistroCamposCertificado.jsp"/>
+		</action>
+
+		<!-- ***** Certificados / Mantenimiento de Certificados / Plantillas ***** -->
+		<action path="/CER_Plantillas" type="com.siga.certificados.action.SIGAMantenimientoCertificadosPlantillasAction" name="MantenimientoCertificadosPlantillasForm" scope="request">
+			<forward name="abrir" path="/html/jsp/certificados/pestanaPlantillas.jsp"/>
+			<forward name="mostrar" path="/html/jsp/certificados/detalleRegistroPlantillasCertificado.jsp"/>
+		</action>
+
+		<!-- ***** Certificados / Informes ***** -->
+		<action path="/CER_Informes" forward="/notImplemented.do"/>
+
+		<!-- ***** Certificados / Consultas ***** -->
+		<action path="/CER_Consultas" forward="/notImplemented.do"/>
+
+		<!-- ***** Certificados / Solicitudes ***** -->
+		<action path="/CER_Solicitudes" forward="/notImplemented.do"/>
+
+		<!-- ***** Certificados / Bajas ***** -->
+		<action path="/CER_Bajas" forward="/notImplemented.do"/>
+
+		<!-- ***** Contactos / Registrar Contactos ***** -->
+		<action path="/CON_RegistrarContactos" forward="/notImplemented.do"/>
+
+		<!-- ***** Contactos / Informes ***** -->
+		<action path="/CON_Informes" forward="/notImplemented.do"/>
+
+		<!-- ***** Contactos / Consultas ***** -->
+		<action path="/CON_Consultas" forward="/notImplemented.do"/>
+
+		<!-- ***** Contactos / Buscar Contacto ***** -->
+		<action path="/CON_BuscarContacto" forward="/notImplemented.do"/>
+
+		<!-- ***** Contactos / Purgar Contactos ***** -->
+		<action path="/CON_PurgarContactos" forward="/notImplemented.do"/>
+		
+		<!-- ***** Certificados / Comunicación Inter. Profesional ***** -->
+		<action path="/CER_ComunicacionInterProf" type="com.siga.certificados.action.SIGAComunicacionInterProfAction" name="MantenimientoCertificadosCamposForm" scope="request">
+			<forward name="abrir" path="/html/jsp/certificados/abrirComunicacionInterProf.jsp"/>
+		</action>
+		
+		
+
+		<!-- ***** Envíos a Grupos / Lista de Correos ***** -->
+		<action path="/ENV_ListaCorreos" type="com.siga.envios.action.BusqListaCorreosAction" name="ListaCorreosForm" scope="request">
+			<forward name="inicio" path="/html/jsp/envios/busqListaCorreos.jsp"/>
+			<forward name="resultado" path="/html/jsp/envios/resultadoBusqListaCorreos.jsp"/>
+			<forward name="nuevo" path="/html/jsp/envios/listaCorreos_Edit.jsp"/>
+			<forward name="editar" path="/html/jsp/envios/listadoComponentesLista.jsp"/>
+			<forward name="componentes" path="/html/jsp/envios/listadoComponentes.jsp"/>
+			<forward name="resultadoModal" path="/html/jsp/envios/resultadoBusqListaCorreosModal.jsp"/>
+			<forward name="seleccion" path="/html/jsp/envios/seleccionListaCorreoModal.jsp"/>
+			<forward name="editarDinamica" path="/html/jsp/envios/listadoCorreoConsulta.jsp"/>
+			<forward name="consultas" path="/html/jsp/envios/listaCorreosConsultas.jsp"/>
+			<forward name="seleccionarConsulta" path="/html/jsp/envios/seleccionarConsulta.jsp"/>
+		</action>
+
+		<!-- ***** Envíos a Grupos / Definir Envíos ***** -->
+		<action path="/ENV_DefinirEnvios" type="com.siga.envios.action.DefinirEnviosAction" name="DefinirEnviosForm" scope="session">
+			<forward name="inicio" path="/html/jsp/envios/abrirEnvios.jsp"/>
+			<forward name="resultado" path="/html/jsp/envios/busquedaEnvios.jsp"/>
+			<forward name="nuevo" path="/html/jsp/envios/envios_Edit.jsp"/>
+			<forward name="editar" path="/html/jsp/envios/pestanaEnvios.jsp"/>
+			<forward name="envioModal" path="/html/jsp/envios/envioModal.jsp"/>
+			<forward name="envioModalCertificado" path="/html/jsp/envios/envioModalCertificado.jsp"/>
+			<forward name="seleccionEnvio" path="/html/jsp/envios/seleccionEnvio.jsp"/>
+			<forward name="seleccionImpresoraModal" path="/html/jsp/envios/seleccionImpresoraModal.jsp"/>
+			<forward name="preguntaDireccionEnvio" path="/html/jsp/certificados/preguntaDireccionEnvio.jsp"/>
+			<forward name="export" path="/SIGASvlVectorToClientFile.svrl"/>
+		</action>
+
+		<!-- ***** Envíos a Grupos / Definir Plantillas ***** -->
+		<action path="/ENV_DefinirPlantillas" type="com.siga.envios.action.SIGAPlantillasEnviosAction" name="PlantillasEnviosForm" scope="request">
+			<forward name="abrir" path="/html/jsp/envios/abrirListadoPlantillasEnvios.jsp"/>
+			<forward name="buscar" path="/html/jsp/envios/buscarListadoPlantillasEnvios.jsp"/>
+			<forward name="mostrar" path="/html/jsp/envios/detallePlantillaEnvios.jsp"/>
+			<forward name="abrirPestanas" path="/html/jsp/envios/abrirPestanasPlantillasEnvios.jsp"/>
+		</action>
+
+		<!-- ***** Envíos a Grupos / Definir Plantillas / Campos ***** -->
+		<action path="/ENV_Campos_Plantillas" type="com.siga.envios.action.SIGAPlantillasEnviosCamposAction" name="PlantillasEnviosCamposForm" scope="request">
+			<forward name="abrir" path="/html/jsp/envios/pestanaCampos.jsp"/>
+			<forward name="mostrar" path="/html/jsp/envios/detalleRegistroCamposEnvios.jsp"/>
+		</action>
+
+		<!-- ***** Envíos a Grupos / Definir Plantillas / Plantillas de Generación ***** -->
+		<action path="/ENV_Plantillas_Salida" type="com.siga.envios.action.SIGAPlantillasEnviosPlantillasAction" name="PlantillasEnviosPlantillasForm" scope="request">
+			<forward name="abrir" path="/html/jsp/envios/pestanaPlantillas.jsp"/>
+			<forward name="mostrar" path="/html/jsp/envios/detalleRegistroPlantillasEnvios.jsp"/>
+		</action>
+
+		<!-- ***** Envíos a Grupos / Seleccionar Remitentes ***** -->
+		<action path="/ENV_RemitentesPlantilla" type="com.siga.envios.action.RemitentesPlantillasAction" name="RemitentesPlantillasForm" scope="request">
+			<forward name="inicio" path="/html/jsp/envios/pestanaRemitentesPlantillas.jsp"/>
+			<forward name="editar" path="/html/jsp/envios/direccionRemitentesModalPlantillas.jsp"/>
+			<forward name="buscarDirecciones" path="/html/jsp/envios/busquedaDireccionesModalPlantillas.jsp"/>
+			<forward name="mostrarDirecciones" path="/html/jsp/envios/resultadoBusqDireccionPlantillas.jsp"/>
+			<forward name="seleccion" path="/html/jsp/envios/seleccionDireccionModal.jsp"/>
+		</action>
+
+		<!-- ***** Envíos a Grupos / Definir Plantillas / Correo Electrónico ***** -->
+		<action path="/ENV_Campos_Correoe" type="com.siga.envios.action.SIGAPlantillasEnviosCorreoElectronicoAction" name="PlantillasEnviosCorreoElectronicoForm" scope="request">
+			<forward name="abrir" path="/html/jsp/envios/pestanaCorreoElectronico.jsp"/>
+			<!--forward name="mostrar" path="/html/jsp/envios/detalleRegistroPlantillasEnvios.jsp"/-->
+		</action>
+
+		<!-- ***** Envíos a Grupos / Procesar Envíos ***** -->
+		<action path="/ENV_ProcesarEnvios" forward="/notImplemented.do"/>
+
+		<!-- ***** Envíos a Grupos / Informes ***** -->
+		<action path="/ENV_Informes" forward="/notImplemented.do"/>
+
+		<!-- ***** Envíos a Grupos / Consultas ***** -->
+		<action path="/ENV_Consultas" forward="/notImplemented.do"/>
+
+		<!-- ***** Envíos a Grupos / Datos Generales ***** -->
+		<action path="/ENV_Datos_Generales" type="com.siga.envios.action.SIGAEnviosDatosGeneralesAction" name="EnviosDatosGeneralesForm" scope="request">
+			<forward name="inicio" path="/html/jsp/envios/abrirDatosGenerales.jsp"/>
+			<forward name="editar" path="/html/jsp/envios/detalleCampo.jsp"/>
+		</action>
+
+		<!-- ***** Envíos a Grupos / Correo Electrónico ***** -->
+		<action path="/ENV_Correo_Electronico" type="com.siga.envios.action.SIGAEnviosCorreoElectronicoAction" name="EnviosCorreoElectronicoForm" scope="request">
+			<forward name="inicio" path="/html/jsp/envios/pestanaDetalleCorreoElectronico.jsp"/>
+			<forward name="editar" path="/html/jsp/envios/detalleCampo.jsp"/>
+		</action>
+
+		<!-- ***** Envíos a Grupos / Seleccionar Destinatario Manual ***** -->
+		<action path="/ENV_Destinatario_Manual" type="com.siga.envios.action.DestinatarioManualAction" name="RemitentesForm" scope="request">
+			<forward name="inicio" path="/html/jsp/envios/abrirDestinatarioManual.jsp"/>
+			<forward name="editar" path="/html/jsp/envios/direccionDestinatarioModal.jsp"/>
+			<!--forward name="buscarDirecciones" path="/html/jsp/envios/resultadoBusqDireccion.jsp"/-->
+			<forward name="buscarDirecciones" path="/html/jsp/envios/busquedaDireccionesModal.jsp"/>
+			<forward name="mostrarDirecciones" path="/html/jsp/envios/resultadoBusqDireccion.jsp"/>
+			<forward name="seleccion" path="/html/jsp/envios/seleccionDireccionModal.jsp"/>
+		</action>
+
+		<!-- ***** Envíos a Grupos / Seleccionar Listas Destinatarias ***** -->
+		<action path="/ENV_Listas_Destinatarias" type="com.siga.envios.action.ListasDestinatariasAction" name="ListasDestinatariasForm" scope="request">
+			<forward name="inicio" path="/html/jsp/envios/abrirListasDestinatarias.jsp"/>
+			<forward name="nuevo" path="/html/jsp/envios/busqListaCorreosModal.jsp"/>
+		</action>
+
+		<!-- ***** Envíos a Grupos / Seleccionar Remitentes ***** -->
+		<action path="/ENV_Remitentes" type="com.siga.envios.action.RemitentesAction" name="RemitentesForm" scope="request">
+			<forward name="inicio" path="/html/jsp/envios/abrirRemitentes.jsp"/>
+			<forward name="editar" path="/html/jsp/envios/direccionRemitentesModal.jsp"/>
+			<!--forward name="buscarDirecciones" path="/html/jsp/envios/resultadoBusqDireccion.jsp"/-->
+			<forward name="buscarDirecciones" path="/html/jsp/envios/busquedaDireccionesModal.jsp"/>
+			<forward name="mostrarDirecciones" path="/html/jsp/envios/resultadoBusqDireccion.jsp"/>
+			<forward name="seleccion" path="/html/jsp/envios/seleccionDireccionModal.jsp"/>
+		</action>
+
+		<!-- ***** Envíos a Grupos / Programar Envío ***** -->
+		<action path="/ENV_Programacion" type="com.siga.envios.action.ProgramacionAction" name="ProgramacionForm" scope="request">
+			<forward name="inicio" path="/html/jsp/envios/programacion.jsp"/>
+		</action>
+
+		<!-- ***** Envíos a Grupos / Documentos Adjuntos ***** -->
+		<action path="/ENV_Documentos" type="com.siga.envios.action.DocumentosAction" name="DocumentosForm" scope="request">
+			<forward name="inicio" path="/html/jsp/envios/abrirDocumentos.jsp"/>
+			<forward name="mostrar" path="/html/jsp/envios/documentos_edit.jsp"/>
+		</action>
+		
+		<!-- ***** Envíos a Grupos / Plantilla de sms ***** -->
+		<action path="/ENV_Texto_SMS" type="com.siga.envios.action.TextoSMSAction" name="TextoSMSForm" scope="request">
+			<forward name="inicio" path="/html/jsp/envios/pestanaTextoSMS.jsp"/>
+		</action>
+		
+		<!-- ***** Envíos a Grupos / Envios de sms ***** -->
+		<action path="/ENV_TextoEnvio_SMS" type="com.siga.envios.action.TextoEnviosSMSAction" name="TextoEnviosSMSForm" scope="request">
+			<forward name="inicio" path="/html/jsp/envios/pestanaTextoEnvioSMS.jsp"/>
+		</action>
+
+		<!-- ***** Administración / Gestión Catálogos Maestros ***** -->
+		<action path="/ADM_GestionarTablasMaestras" type="com.siga.administracion.action.SIGAListadoTablasMaestrasAction" name="listadoTablasMaestrasForm" scope="request">
+			<forward name="abrir" path="/html/jsp/administracion/abrirListadoTablasMaestras.jsp"/>
+			<forward name="buscar" path="/html/jsp/administracion/buscarListadoTablasMaestras.jsp"/>
+			<forward name="mostrar" path="/html/jsp/administracion/detalleRegistroTablasMaestras.jsp"/>
+		</action>
+		
+		<!-- ***** Administración / Gestión Catálogos Maestros PCAJG ***** -->
+		<action path="/PCAJGGestionarTablasMaestras" type="com.siga.administracion.action.PCAJGListadoTablasMaestrasAction" name="listadoTablasMaestrasPCAJGForm" scope="request">
+			<forward name="abrir" path="/html/jsp/administracion/abrirListadoTablasMaestrasPCAJG.jsp"/>
+			<forward name="buscar" path="/html/jsp/administracion/buscarListadoTablasMaestrasPCAJG.jsp"/>
+			<forward name="mostrar" path="/html/jsp/administracion/detalleRegistroTablasMaestrasPCAJG.jsp"/>
+		</action>
+
+		<!--action path="/ADM_GestionarCatalogosMaestros" type="com.siga.administracion.SIGAAdmMasterTablesLoader">
+			<forward name="success" path="/html/jsp/administracion/tablasMaestras.jsp"/>
+		</action>
+
+		<action path="/selectorTablasMaestras" include="/html/jsp/administracion/selectorTablasMaestras.jsp"/>
+
+		<action path="/listadoTablaMaestra" type="com.siga.administracion.SIGAAdmGenericMasterTables" name="tablaMaestraForm" scope="request">
+			<forward name="listOk" path="/html/jsp/administracion/tablasMaestras_Reg.jsp"/>
+			<forward name="openReg" path="/html/jsp/administracion/tablasMaestras_Edit.jsp"/>
+			<forward name="deletedOk" path="/html/jsp/administracion/genericLoadFormTablasMaestras.jsp"/>
+			<forward name="refreshDelete" path="/html/jsp/administracion/genericLoadFormTablasMaestras.jsp"/>
+			<forward name="refreshUpdate" path="/html/jsp/administracion/genericLoadFormTablasMaestras.jsp"/>
+		</action>
+
+		<action path="/editarTablaMaestra" type="com.siga.administracion.SIGAAdmGenericMasterTables" name="tablaMaestraForm" scope="request">
+			<forward name="listOk" path="/html/jsp/administracion/tablasMaestras_Reg.jsp"/>
+			<forward name="updatedOk" path="/html/jsp/administracion/genericLoadFormTablasMaestras.jsp"/>
+			<forward name="insertedOk" path="/html/jsp/administracion/genericLoadFormTablasMaestras.jsp"/>
+		</action-->
+
+		<!-- ***** Administración / Seleccionar Idioma ***** -->
+		<action path="/ADM_SeleccionarIdiomaSesion" forward="/html/jsp/administracion/selIdioma.jsp"/>
+
+		<!-- ***** Administración / Configurar Interfaz Aplicación ***** -->
+		<action path="/ADM_ConfigurarInterfazAplicacion" type="com.siga.administracion.action.SIGAGestorInterfazAction" name="confInterfazForm" scope="request">
+			<forward name="listOptions" path="/html/jsp/administracion/confInterfaz.jsp"/>
+			<forward name="success" path="/recargarPantallaPrincipal.do"/>
+		</action>
+
+		<action path="/cambiarLenguaje" type="com.siga.administracion.action.SIGAChangeLanguageAction">
+			<forward name="success" path="/recargarPantallaPrincipal.do"/>
+		</action>
+
+		<!-- ***** Administración / Tipos de Usuario ***** -->
+		<action path="/ADM_GestionarTiposUsuario" forward="/notImplemented.do"/>
+
+		<!-- ***** Administración / Grupos de Usuarios ***** -->
+		<action path="/ADM_GestionarGruposUsuario" type="com.siga.administracion.action.SIGAListadoGruposUsuarioAction" name="listadoGruposUsuarioForm" scope="request">
+			<forward name="abrir" path="/html/jsp/administracion/abrirListadoGruposUsuario.jsp"/>
+			<forward name="abrirAvanzada" path="/html/jsp/administracion/usuariosGrupo.jsp"/>
+			<forward name="buscar" path="/html/jsp/administracion/buscarListadoGruposUsuario.jsp"/>
+			<forward name="mostrar" path="/html/jsp/administracion/detalleRegistroGruposUsuario.jsp"/>
+		</action>
+
+		<action path="/ADM_AsignarUsuariosGrupo" type="com.siga.administracion.action.SIGAAsignarUsuariosGrupoAction" name="asignarUsuariosGrupoForm" scope="request">
+			<forward name="abrir" path="/html/jsp/administracion/usuariosGrupo.jsp"/>
+			<forward name="buscar" path="/html/jsp/administracion/asignarUsuariosGrupo.jsp"/>
+		</action>
+
+		<!-- ***** Administración / Usuarios ***** -->
+		<action path="/ADM_GestionarUsuarios" type="com.siga.administracion.action.SIGAListadoUsuariosAction" name="listadoUsuariosForm" scope="request">
+			<forward name="abrir" path="/html/jsp/administracion/abrirListadoUsuarios.jsp"/>
+			<forward name="buscar" path="/html/jsp/administracion/buscarListadoUsuarios.jsp"/>
+			<forward name="mostrar" path="/html/jsp/administracion/detalleRegistroUsuario.jsp"/>
+		</action>
+
+		<!-- ***** Administración / Certificados ***** -->
+		<action path="/ADM_GestionarCertificados" type="com.siga.administracion.action.SIGAListadoCertificadosAction" name="listadoCertificadosForm" scope="request">
+			<forward name="abrir" path="/html/jsp/administracion/abrirListadoCertificados.jsp"/>
+			<forward name="buscar" path="/html/jsp/administracion/buscarListadoCertificados.jsp"/>
+			<forward name="mostrar" path="/html/jsp/administracion/detalleRegistroCertificado.jsp"/>
+		</action>
+
+		<!-- ***** Administración / Gestionar Perfil-Rol ***** -->
+		<action path="/ADM_GestionarPerfilRol" type="com.siga.administracion.action.SIGAListadoPerfilRolAction" name="listadoPerfilRolForm" scope="request">
+			<forward name="abrir" path="/html/jsp/administracion/abrirListadoPerfilRol.jsp"/>
+			<forward name="buscar" path="/html/jsp/administracion/buscarListadoPerfilRol.jsp"/>
+			<forward name="mostrar" path="/html/jsp/administracion/detalleRegistroPerfilRol.jsp"/>
+		</action>
+
+		<!-- ***** Administración / Gestionar Permisos Aplicación ***** -->
+		<!--action path="/ADM_ConfigurarPermisosAplicacion" forward="/html/jsp/administracion/permisosAplicacion.jsp"/-->
+
+		<!--action path="/administrarPermisos" forward="/html/jsp/administracion/administrarPermisos.jsp"/-->
+		<action path="/ADM_ConfigurarPermisosAplicacion" type="com.siga.administracion.action.SIGAConfigurarPermisosAplicacionAction" name="configurarPermisosAplicacionForm" scope="request">
+			<forward name="abrir" path="/html/jsp/administracion/permisosAplicacion.jsp"/>
+			<forward name="buscar" path="/html/jsp/administracion/administrarPermisos.jsp"/>
+		</action>
+
+		<!-- ***** Administración / Gestionar Permisos Datos ***** -->
+		<action path="/ADM_ConfigurarPermisosDatos" forward="/notImplemented.do"/>
+
+		<!-- ***** Administración / Administración Informes ***** -->
+		<action path="/ADM_AdministracionInformes" forward="/notImplemented.do"/>
+
+		<!-- ***** Administración / Auditoría / Configuracion ***** -->
+		<action path="/ADM_AuditoriaAdmin" type="com.siga.administracion.action.SIGAAuditoriaAdminAction" name="auditoriaAdminForm" scope="request" input="auditoriaAdmin.jsp">
+			<forward name="inicio" path="/html/jsp/administracion/auditoriaAdmin.jsp"/>
+			<forward name="resultado" path="/html/jsp/administracion/resultadosAuditoriaAdmin.jsp"/>
+		</action>
+
+		<!-- ***** Administración / Auditoría / Usuarios ***** -->
+		<action path="/ADM_AuditoriaUsuarios" type="com.siga.administracion.action.AuditoriaUsuariosAction" name="auditoriaUsuariosForm" scope="request" >
+			<forward name="inicio"    path="/html/jsp/administracion/auditoriaUsuariosBusqueda.jsp"/>
+			<forward name="resultado" path="/html/jsp/administracion/auditoriaUsuariosBusquedaResultado.jsp"/>
+			<forward name="datos"     path="/html/jsp/administracion/auditoriaUsuariosDatos.jsp"/>
+		</action>
+
+		<!-- ***** Administración / Gestion Paramaetros / Parametros Generales ***** -->
+		<action path="/ADM_ParametrosGenerales" type="com.siga.administracion.action.ParametrosGeneralesAction" name="parametrosGeneralesForm" scope="request" >
+			<forward name="inicio"    path="/html/jsp/administracion/parametrosGeneralesBusqueda.jsp"/>
+			<forward name="resultado" path="/html/jsp/administracion/parametrosGeneralesBusquedaResultado.jsp"/>
+		</action>
+
+		<!-- ***** Administración / Gestion Multidioma / Etiquetas ***** -->
+		<action path="/ADM_GestionarMultiidiomaEtiquetas" type="com.siga.administracion.action.MultidiomasAction" name="multidiomasForm" scope="request" >
+			<forward name="inicio"               path="/html/jsp/administracion/multidiomaBusqueda.jsp"/>
+			<forward name="resultado"            path="/html/jsp/administracion/multidiomaBusquedaResultado.jsp"/>
+		</action>
+
+		<!-- ***** Administración / Gestion Multidioma / Catalogo Maestros ***** -->
+		<action path="/ADM_GestionarMultiidiomaCatalogos"  forward="/ADM_GestionarMultiidiomaEtiquetas.do?catalogos=true" >
+			<forward name="inicio"               path="/html/jsp/administracion/multidiomaBusqueda.jsp"/>
+			<forward name="resultado"            path="/html/jsp/administracion/multidiomaBusquedaResultado.jsp"/>
+		</action>
+
+        <!-- ***** Administración / Gestion Paramaetros / Contadores ***** -->
+		<action path="/ADM_Contadores" type="com.siga.administracion.action.SIGAGestionContadoresAction" name="gestionContadoresForm" scope="request" >
+			<forward name="inicio" path="/html/jsp/administracion/busquedaContadores.jsp"/>
+			<forward name="resultado" path="/html/jsp/administracion/resultadoBusquedaContadores.jsp"/>
+			<forward name="mostrar" path="/html/jsp/administracion/datosContadores.jsp"/>
+			<forward name="ver" path="/html/jsp/administracion/datosContadores.jsp"/>
+		</action>
+		
+		
+		<action path="/JGR_Designas" type="com.siga.gratuita.action.BusquedaDesignasAction" name="BuscarDesignasForm">
+			<forward name="inicio" path="/html/jsp/gratuita/busquedaDesignas.jsp"/>
+			<forward name="listado" path="/html/jsp/gratuita/listadoDesignas.jsp"/>
+			<forward name="nuevo" path="/html/jsp/gratuita/modalDefinirDesignas.jsp"/>
+			<forward name="nuevoRecarga" path="/html/jsp/gratuita/recargarModalDesignas.jsp"/>
+			<forward name="nuevoRecargaAsistencia" path="/html/jsp/gratuita/recargarMantAsistencias.jsp"/>
+			<forward name="nuevoRecargaEjg" path="/html/jsp/gratuita/recargarMantEjg.jsp"/>
+			<forward name="edicion" path="/html/jsp/gratuita/pestanasDesignas.jsp"/>
+            <forward name="recogidaDatos" path="/html/jsp/gratuita/datosCartaOficio.jsp"/>
+   			<forward name="exitoDesigna" path="/html/jsp/gratuita/exitoDesigna.jsp"/>
+            
+		</action>
+
+		<action path="/JGR_MantenimientoDesignas" type="com.siga.gratuita.action.MaestroDesignasAction" name="MaestroDesignasForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/editarDesigna.jsp"/>
+			<forward name="edicion" path="/html/jsp/gratuita/pestanasDesignas.jsp"/>
+			<forward name="PreguntaDesignaDuplicada" path="/html/jsp/gratuita/preguntaDesignaDuplicada.jsp"/>
+
+		</action>
+
+   		<action path="/JGR_DefendidosDesignas" type="com.siga.gratuita.action.DefendidosDesignasAction" name="DefendidosDesignasForm">
+			<forward name="inicio" path="/html/jsp/gratuita/defendidosDesigna.jsp"/>
+			<forward name="nuevo" path="/html/jsp/gratuita/modalDefendidosDesigna.jsp"/>
+		</action>
+
+		<action path="/JGR_DefendidosDesignasPerJG" type="com.siga.gratuita.action.PersonaJGAction" name="PersonaJGForm" scope="request">
+			<forward name="personaJG" path="/html/jsp/gratuita/personaJG.jsp"/>
+			<forward name="buscarNIF" path="/html/jsp/gratuita/personasJGOculta.jsp"/>			
+			<forward name="seleccionPersonaJG" path="/html/jsp/gratuita/seleccionPersonaJG.jsp"/>			
+		</action>
+
+		<action path="/JGR_ContrariosDesignas" type="com.siga.gratuita.action.ContrariosDesignasAction" name="ContrariosDesignasForm">
+			<forward name="inicio" path="/html/jsp/gratuita/contrariosDesigna.jsp"/>
+			<forward name="nuevo" path="/html/jsp/gratuita/modalContrariosDesigna.jsp"/>
+			<forward name="listado" path="/html/jsp/gratuita/listarContrariosDesigna.jsp"/>
+		</action>
+		
+		<action path="/JGR_ContrariosEjg" type="com.siga.gratuita.action.ContrariosEjgAction" name="ContrariosEjgForm">
+			<forward name="inicio" path="/html/jsp/gratuita/contrariosEjg.jsp?esFichaColegial=0"/>
+			<forward name="listado" path="/html/jsp/gratuita/listarContrariosEjg.jsp"/>
+			<forward name="editar" path="/html/jsp/gratuita/modalContrariosAsistencia.jsp?esFichaColegial=0"/>
+			<forward name="abrirBusquedaOculta" path="/html/jsp/gratuita/personasJGOculta.jsp?esFichaColegial=0"/>
+		</action>
+
+		<action path="/JGR_ContrariosEjgPerJG" type="com.siga.gratuita.action.PersonaJGAction" name="PersonaJGForm" scope="request">
+			<forward name="personaJG" path="/html/jsp/gratuita/personaJG.jsp?esFichaColegial=0"/>
+			<forward name="buscarNIF" path="/html/jsp/gratuita/personasJGOculta.jsp?esFichaColegial=0"/>
+			<forward name="seleccionPersonaJG" path="/html/jsp/gratuita/seleccionPersonaJG.jsp?esFichaColegial=0"/>
+		</action>
+		
+		
+
+		<action path="/JGR_ContrariosDesignasPerJG" type="com.siga.gratuita.action.PersonaJGAction" name="PersonaJGForm" scope="request">
+			<forward name="personaJG" path="/html/jsp/gratuita/personaJG.jsp"/>
+			<forward name="buscarNIF" path="/html/jsp/gratuita/personasJGOculta.jsp"/>			
+			<forward name="seleccionPersonaJG" path="/html/jsp/gratuita/seleccionPersonaJG.jsp"/>			
+		</action>
+
+		<action path="/JGR_CambiosLetradosDesigna" type="com.siga.gratuita.action.CambiosLetradosDesignasAction" name="CambiosLetradosDesignasForm">
+			<forward name="inicio" path="/html/jsp/gratuita/cambiosLetradosDesigna.jsp"/>
+			<forward name="nuevo" path="/html/jsp/gratuita/modalCambioLetradoDesigna.jsp"/>
+			<forward name="edicion" path="/html/jsp/gratuita/modalEditarCambioLetradoDesigna.jsp"/>
+		</action>
+
+		<action path="/JGR_CambioProcuradorDesigna" type="com.siga.gratuita.action.CambiosProcuradoresDesignasAction" name="CambiosProcuradoresDesignasForm">
+			<forward name="inicio" path="/html/jsp/gratuita/cambiosProcuradoresDesigna.jsp"/>
+			<forward name="nuevo" path="/html/jsp/gratuita/modalCambioProcuradorDesigna.jsp"/>
+			<forward name="edicion" path="/html/jsp/gratuita/modalEditarCambioProcuradorDesigna.jsp"/>
+		</action>
+
+		<action path="/JGR_EJG_Designa" type="com.siga.gratuita.action.EjgDesignasAction" name="EjgDesignasForm">
+			<forward name="inicio" path="/html/jsp/gratuita/ejgDesigna.jsp"/>
+			<forward name="nuevo" path="/html/jsp/gratuita/insertarEJGDesdeDesigna.jsp"/>
+		</action>
+
+		<action path="/JGR_DefensaJuridiciaDesignas" type="com.siga.gratuita.action.DefensaJuridicaDesignasAction" name="DefensaJuridicaDesignasForm">
+			<forward name="inicio" path="/html/jsp/gratuita/defensaJuridicaDesigna.jsp"/>
+		</action>
+
+        <action path="/JGR_ActuacionesDesigna" type="com.siga.gratuita.action.ActuacionesDesignasAction" name="ActuacionesDesignasForm">
+            <forward name="listado" path="/html/jsp/gratuita/actuacionesDesigna.jsp"/>
+            <forward name="edicion" path="/html/jsp/gratuita/modalEditarActuacionesDesigna.jsp"/>
+        </action>
+
+		<action path="/JGR_ActuacionDesignaLetrado" type="com.siga.gratuita.action.ActuacionesDesignasAction" name="ActuacionesDesignasForm">
+			<forward name="listado" path="/html/jsp/gratuita/actuacionesDesigna.jsp"/>
+			<forward name="edicion" path="/html/jsp/gratuita/modalEditarActuacionesDesigna.jsp"/>
+		</action>
+
+		<action path="/JGR_DesignasRealizadas" type="com.siga.gratuita.action.MantenimientoDesignasAction"  name="BusquedaDesignasForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/buscarDesignasTurno.jsp"/>
+			<forward name="listado" path="/html/jsp/gratuita/listarDesignasTurno.jsp"/>
+			<forward name="edicion" path="/html/jsp/gratuita/pestanasDesignas.jsp"/>
+		</action>
+		<!--
+		<action path="/JGR_PestanaDesignas" type="com.siga.gratuita.action.MantenimientoDesignasLetradoAction"  name="BusquedaDesignasForm" scope="request"> 
+			<forward name="listado" path="/html/jsp/gratuita/listarDesignasLetrado.jsp"/>
+			
+			<forward name="edicion" path="/html/jsp/gratuita/pestanasActuacionesDesignas.jsp"/> 
+		</action> 
+		-->
+		<action path="/JGR_PestanaDesignas" type="com.siga.gratuita.action.InformeJustificacionMasivaLetradoAction" name="InformeJustificacionMasivaForm">
+			<forward name="inicio" path="/html/jsp/gratuita/informeJustificacionMasivaLetrado.jsp"/>
+			<forward name="resultado" path="/html/jsp/gratuita/informeJustificacionMasivaLetradoResultados.jsp" />
+			<forward name="buscarInit" path="/html/jsp/gratuita/informeJustificacionMasivaLetradoResultados.jsp" />
+		</action>
+
+		<action path="/JGR_PestanaProximasDesignas" type="com.siga.gratuita.action.ProximasDesignasAction">
+			<forward name="listado" path="/html/jsp/gratuita/listarProximasDesignasTurno.jsp"/>
+		</action>
+
+		<action path="/JGR_PestanaRetencionesIRPF" type="com.siga.gratuita.action.RetencionesIRPFAction" name="RetencionesIRPFForm" scope="request">
+			<forward name="abrir" path="/html/jsp/gratuita/retencionesIRPFIndex.jsp"/>
+			<forward name="listado" path="/html/jsp/gratuita/retencionesIRPF.jsp"/>
+			<forward name="nuevo" path="/html/jsp/gratuita/altaRetencionIRPF.jsp"/>
+			<forward name="editar" path="/html/jsp/gratuita/editarRetencionIRPF.jsp"/>
+			<forward name="dialogoInformeIRPF" path="/html/jsp/gratuita/dialogoInformeIRPF.jsp"/>
+		</action>
+		<action path="/INF_CertificadoIRPF" type="com.siga.informes.action.MantenimientoInformesAction" name="mantenimientoInformesForm" scope="request">
+            <forward name="inicio" path="/html/jsp/gratuita/dialogoInformeIRPF.jsp"/>
+            <forward name="descargas" path="/html/jsp/informes/descargaInformes.jsp"/>
+        </action>
+
+		<action path="/JGR_PestanaCalendarioGuardias" type="com.siga.gratuita.action.PestanaCalendarioGuardiasAction" name="PermutasForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/inicio_PestanaCalendarioGuardias.jsp"/>
+			<forward name="modalCambiar" path="/html/jsp/gratuita/modalCambiar_PestanaCalendarioGuardias.jsp"/>
+			<forward name="modalConfirmar" path="/html/jsp/gratuita/modalConfirmar_PestanaCalendarioGuardias.jsp"/>
+			<forward name="sustituir" path="/html/jsp/gratuita/modalSustitucionLetradoGuardia.jsp"/>
+		</action>
+
+		<action path="/JGR_MantenimientoAsistencia" type="com.siga.gratuita.action.MantenimientoAsistenciasAction" name="AsistenciasForm">
+			<forward name="editar" path="/html/jsp/gratuita/mantAsistencias.jsp?esFichaColegial=0"/>
+			<forward name="nuevo" path="/html/jsp/gratuita/nuevaAsistencia.jsp?esFichaColegial=0"/>
+			<forward name="abrirBusquedaModal" path="/html/jsp/gratuita/guardiasColegiadoAsistencia.jsp?esFichaColegial=0"/>
+			<forward name="insertarEJG" path="/html/jsp/gratuita/insertarEJGDesdeAsistencia.jsp?esFichaColegial=0"/>
+		</action>
+
+		<action path="/JGR_MantenimientoAsistenciaLetrado" type="com.siga.gratuita.action.MantenimientoAsistenciasAction" name="AsistenciasForm">
+			<forward name="editar" path="/html/jsp/gratuita/mantAsistencias.jsp?esFichaColegial=1"/>
+			<forward name="nuevo" path="/html/jsp/gratuita/nuevaAsistencia.jsp?esFichaColegial=1"/>
+			<forward name="abrirBusquedaModal" path="/html/jsp/gratuita/guardiasColegiadoAsistencia.jsp?esFichaColegial=1"/>
+			<forward name="insertarEJG" path="/html/jsp/gratuita/insertarEJGDesdeAsistencia.jsp?esFichaColegial=1"/>
+		</action>
+
+		<action path="/JGR_Asistencia" type="com.siga.gratuita.action.BusquedaAsistenciasAction" name="AsistenciasForm">
+            <forward name="inicio" path="/html/jsp/gratuita/busquedaAsistencias.jsp?esFichaColegial=0"/>
+            <forward name="listado" path="/html/jsp/gratuita/listadoAsistencias.jsp?esFichaColegial=0"/>
+            <forward name="editar" path="/html/jsp/gratuita/pestanasAsisSJCS.jsp?esFichaColegial=0"/>
+            <forward name="nuevo" path="/html/jsp/gratuita/nuevaAsistencia.jsp?esFichaColegial=0"/>
+            <forward name="recogidaDatos" path="/html/jsp/gratuita/datosCartaAsistencia.jsp?esFichaColegial=0"/>
+        </action>
+
+
+		<action path="/JGR_MovimientosVariosLetrado" forward="/CEN_MantenimientoMovimientos.do?esFichaColegial=1" >
+        </action>
+
+		<action path="/JGR_RetencionesJudicialesLetrado" forward="/FCS_RetencionesJudiciales.do?esFichaColegial=1" >
+        </action>
+
+
+		<action path="/JGR_AnulacionAsistencia" type="com.siga.gratuita.action.ContAnulDeliJuriAsistenciaAction" name="AsistenciasForm">
+            <forward name="editar" path="/html/jsp/gratuita/contAnulDeliJuriAsistencia.jsp"/>
+        </action>
+
+		<!--action path="/JGR_DelitosAsistencia" type="com.siga.gratuita.action.ContAnulDeliJuriAsistenciaAction" name="AsistenciasForm">
+            <forward name="editar" path="/html/jsp/gratuita/contAnulDeliJuriAsistencia.jsp"/>
+    </action-->
+
+		<action path="/JGR_DefensaJuridicaAsistencia" type="com.siga.gratuita.action.ContAnulDeliJuriAsistenciaAction" name="AsistenciasForm">
+            <forward name="editar" path="/html/jsp/gratuita/contAnulDeliJuriAsistencia.jsp?esFichaColegial=0"/>
+    </action>
+
+		<action path="/JGR_DefensaJuridicaAsistenciaLetrado" type="com.siga.gratuita.action.ContAnulDeliJuriAsistenciaAction" name="AsistenciasForm">
+            <forward name="editar" path="/html/jsp/gratuita/contAnulDeliJuriAsistencia.jsp?esFichaColegial=1"/>
+    </action>
+
+		<action path="/JGR_ActuacionesAsistencia" type="com.siga.gratuita.action.ActuacionesAsistenciaAction" name="AsistenciasForm">
+            <forward name="listado" path="/html/jsp/gratuita/listadoActuacionesAsistencia.jsp?esFichaColegial=0"/>
+            <forward name="editar" path="/html/jsp/gratuita/mantActuacion.jsp?esFichaColegial=0"/>
+        </action>
+
+		<action path="/JGR_SolicitarBajaTurno" type="com.siga.gratuita.action.BajaTurnosAction" name="BajaTurnosForm" scope="request">
+			<forward name="listado" path="/html/jsp/gratuita/listarTurnosLetrados.jsp"/>
+			<forward name="listadoBaja" path="/html/jsp/gratuita/listarTurnosBaja.jsp"/>
+			<forward name="confirmacion" path="/html/jsp/gratuita/listarTurnosBajaConfirmacion.jsp"/>
+			<forward name="verTurno" path="/html/jsp/gratuita/consultaTurno.jsp"/>
+			<forward name="verGuardia" path="/html/jsp/gratuita/altaTurno_2.jsp"/>
+			<forward name="editar" path="/html/jsp/gratuita/consultaTurno.jsp"/>
+	     	<forward name="nuevo" path="/html/jsp/gratuita/altaTurnos.jsp"/>
+			<forward name="nuevo2" path="/html/jsp/gratuita/altaTurno_2.jsp"/>
+			<forward name="operacionOK" path="/JGR_DefinirTurnosLetrado.do"/>
+			<forward name="error" path="/html/jsp/general/error.jsp"/>
+		</action>
+        
+		<action path="/JGR_TelefonosPersonasJG" type="com.siga.gratuita.action.DefinirTelefonosJGAction" name="DefinirTelefonosJGForm" scope="request">
+			<forward name="listadoTelefonos" path="/html/jsp/gratuita/listadoTelefonosJG.jsp"/>
+			<forward name="nuevoTelefono" path="/html/jsp/gratuita/nuevoTelefonoJG.jsp"/>
+		</action>
+
+		<!-- ***** Censo / Ficha Colegial / SJCS / Asistencia ***** -->
+		<action path="/JGR_AsistenciasLetrado"  type="com.siga.gratuita.action.BusquedaAsistenciasLetradoAction" name="AsistenciasForm">
+            <forward name="inicio" path="/html/jsp/gratuita/listadoAsistenciasLetrado.jsp?esFichaColegial=1"/>
+            <forward name="listado" path="/html/jsp/gratuita/listadoAsistenciasLetradoResultado.jsp?esFichaColegial=1"/>
+            <forward name="editar" path="/html/jsp/gratuita/pestanasAsisLetradoSJCS.jsp?esFichaColegial=1"/>
+            <forward name="nuevo" path="/html/jsp/gratuita/nuevaAsistencia.jsp?esFichaColegial=1"/>
+            <forward name="recogidaDatos" path="/html/jsp/gratuita/datosCartaAsistencia.jsp?esFichaColegial=1"/>
+    </action>
+
+		<action path="/JGR_ActuacionAsistenciaLetrado" type="com.siga.gratuita.action.ActuacionesAsistenciaLetradoAction" name="AsistenciasForm">
+            <forward name="listado" path="/html/jsp/gratuita/listadoActuacionesAsistenciaLetrado.jsp?esFichaColegial=1"/>
+            <forward name="editar" path="/html/jsp/gratuita/mantActuacionLetrado.jsp?esFichaColegial=1"/>
+        </action>
+
+		<action path="/JGR_ResponsableAsistencia" type="com.siga.gratuita.action.AsisRespAsistenciaAction" name="AsistenciasForm">
+		    <forward name="editar" path="/html/jsp/gratuita/asisRespAsistencias.jsp"/>
+		    <forward name="abrirBusquedaModal" path="/html/jsp/gratuita/personasJG.jsp"/>
+		    <forward name="abrirBusquedaOculta" path="/html/jsp/gratuita/personasJGOculta.jsp"/>
+		</action>
+
+		<action path="/JGR_AsistidoAsistencia" type="com.siga.gratuita.action.PersonaJGAction" name="PersonaJGForm" scope="request">
+			<forward name="personaJG" path="/html/jsp/gratuita/personaJG.jsp?esFichaColegial=0"/>
+			<forward name="buscarNIF" path="/html/jsp/gratuita/personasJGOculta.jsp?esFichaColegial=0"/>
+			<forward name="seleccionPersonaJG" path="/html/jsp/gratuita/seleccionPersonaJG.jsp?esFichaColegial=0"/>
+		</action>
+
+		<action path="/JGR_AsistidoAsistenciaLetrado" type="com.siga.gratuita.action.PersonaJGAction" name="PersonaJGForm" scope="request">
+			<forward name="personaJG" path="/html/jsp/gratuita/personaJG.jsp?esFichaColegial=1"/>
+			<forward name="buscarNIF" path="/html/jsp/gratuita/personasJGOculta.jsp?esFichaColegial=1"/>
+			<forward name="seleccionPersonaJG" path="/html/jsp/gratuita/seleccionPersonaJG.jsp?esFichaColegial=1"/>
+		</action>
+  
+		<!-- ***** Justicia Gratuita / Turnos / Cola Guardias ***** -->
+		<action path="/JGR_ColaGuardias" type="com.siga.gratuita.action.ColaGuardiasAction" name="ColaGuardiasForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/colaGuardiasSelect.jsp"/>
+			<forward name="ver"   path="/html/jsp/gratuita/colaGuardias.jsp"/>
+		</action>
+	  
+		<!-- ***** Justicia Gratuita / Turnos / Cola Oficios ***** -->
+		<action path="/JGR_ColaOficio" type="com.siga.gratuita.action.ColaOficiosAction" name="ColaOficiosForm" scope="request">
+			<forward name="ver" path="/html/jsp/gratuita/colaOficios.jsp"/>
+		</action>
+		
+		<!-- ***** Justicia Gratuita / Entrada a Consultar Retenciones ***** -->
+		<action path="/JGR_Retenciones" forward="/html/jsp/gratuita/formularioInicial.jsp"/>
+
+		<!-- ***** Justicia Gratuita / Maestro Consultar Retenciones ***** -->
+		<action path="/SolicitudRetencioAction" type="com.siga.gratuita.action.SolicitudRetencionAction" name="SolicitudRetencionForm" scope="request">
+			<forward name="listarRetenciones" path="/html/jsp/gratuita/listadoRetenciones.jsp"/>
+			<forward name="mostrar" path="/html/jsp/gratuita/opcionConsulta.jsp"/>
+			<forward name="modificacionOk" path="/html/jsp/gratuita/opcionModificar.jsp"/>
+			<forward name="insertarRetencion" path="/html/jsp/gratuita/insertarRetencion.jsp"/>
+		</action>
+
+		<!-- ***** Justicia Gratuita / Definir Turnos Letrado ***** -->
+		<action path="/JGR_DefinirTurnosLetrado" type="com.siga.gratuita.action.DefinirTurnosLetradoAction" name="DefinirTurnosLetradoForm" scope="request">
+			<forward name="listado" path="/html/jsp/gratuita/listarTurnos.jsp"/>
+		</action>
+
+		<!-- ***** Justicia Gratuita / Configurar Turnos / Clasificación Turnos ***** -->
+		<action path="/JGR_ClasificacionTurnos" forward="/notImplemented.do"/>
+
+		<!-- ***** Justicia Gratuita / Configurar Turnos / Turnos ***** -->
+		<action path="/JGR_Turnos" forward="/notImplemented.do"/>
+
+		<!-- ***** Justicia Gratuita / Configurar Turnos / Definir Hitos Facturables ***** --> 
+		<action path="/JGR_DefinirHitosFacturables" type="com.siga.gratuita.action.DefinirHitosFacturablesGuardiasAction" name="DefinirHitosFacturablesGuardiasForm" scope="request"> 
+		   <forward name="abrir" path="/html/jsp/gratuita/listadoHitosFacturables.jsp"/> 
+		   <forward name="editar" path="/html/jsp/gratuita/modalHitoFacturable.jsp"/> 
+		   <forward name="borrar" path="/html/jsp/gratuita/modalHitoFacturable.jsp"/> 
+		   <forward name="nuevo" path="/html/jsp/gratuita/modalDefinirHitoFacturable.jsp"/> 
+		   <forward name="consultar" path="/html/jsp/gratuita/listarActuacAsist.jsp"/>
+	    </action> 		
+		
+		<action path="/JGR_DefinirHitosPago" type="com.siga.gratuita.action.DefinirHitosPagosGuardiasAction" name="DefinirHitosFacturablesGuardiasForm" scope="request">
+			<forward name="abrir" path="/html/jsp/gratuita/listadoDefinirHitos.jsp"/>
+			<forward name="editar" path="/html/jsp/gratuita/modalHitoPago.jsp"/>
+			<forward name="borrar" path="/html/jsp/gratuita/modalHitoPago.jsp"/>
+			<forward name="nuevo" path="/html/jsp/gratuita/modalDefinirHitoPago.jsp"/>
+		</action>
+
+		<!-- ***** Justicia Gratuita / Validar Turnos ***** -->
+		<action path="/JGR_ValidarTurnos" type="com.siga.gratuita.action.ValidarTurnosAction" name="ValidarTurnosForm" scope="request">
+			<forward name="listado" path="/html/jsp/gratuita/listarTurnosLetrados.jsp"/>
+			<forward name="verTurno" path="/html/jsp/gratuita/consultaTurno.jsp"/>
+			<forward name="verGuardia" path="/html/jsp/gratuita/altaTurno_2.jsp"/>
+			<forward name="editar" path="/html/jsp/gratuita/consultaTurno.jsp"/>
+     		<forward name="nuevo" path="/html/jsp/gratuita/altaTurnos.jsp"/>
+			<forward name="nuevo2" path="/html/jsp/gratuita/altaTurno_2.jsp"/>
+			<forward name="operacionOK" path="/JGR_DefinirTurnosLetrado.do"/>
+			<forward name="error" path="/html/jsp/general/error.jsp"/>
+		</action>
+
+		<!-- ***** Justicia Gratuita / Baja Turnos / Guardias ***** -->
+		<action path="/JGR_BajaTurnos" type="com.siga.gratuita.action.BajaTurnosAction" name="BajaTurnosForm" scope="request">
+			<forward name="listado" path="/html/jsp/gratuita/listarTurnosLetrados.jsp"/>
+			<forward name="listadoBaja" path="/html/jsp/gratuita/listarTurnosBaja.jsp"/>
+			<forward name="confirmacion" path="/html/jsp/gratuita/listarTurnosBajaConfirmacion.jsp"/>
+			<forward name="verTurno" path="/html/jsp/gratuita/consultaTurno.jsp"/>
+			<forward name="verGuardia" path="/html/jsp/gratuita/altaTurno_2.jsp"/>
+			<forward name="editar" path="/html/jsp/gratuita/consultaTurno.jsp"/>
+	     	<forward name="nuevo" path="/html/jsp/gratuita/altaTurnos.jsp"/>
+			<forward name="nuevo2" path="/html/jsp/gratuita/altaTurno_2.jsp"/>
+			<forward name="operacionOK" path="/JGR_DefinirTurnosLetrado.do"/>
+			<forward name="error" path="/html/jsp/general/error.jsp"/>
+		</action>
+
+		<!-- ***** Justicia Gratuita / Definir Calendario de Guardias ***** -->
+		<action path="/JGR_DefinirCalendarioGuardia" type="com.siga.gratuita.action.DefinirCalendarioGuardiaAction" name="DefinirCalendarioGuardiaForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/inicio_DefinirCalendarioGuardia.jsp"/>
+			<forward name="buscarInicio" path="/html/jsp/gratuita/listado_DefinirCalendarioGuardia.jsp"/>
+			<forward name="modalNuevo" path="/html/jsp/gratuita/modalNuevo_DefinirCalendarioGuardia.jsp"/>
+			<forward name="modalMantenimiento" path="/html/jsp/gratuita/modalMantenimiento_DefinirCalendarioGuardia.jsp"/>
+			<forward name="buscarModalGuardia" path="/html/jsp/gratuita/listadoModalGuardia_DefinirCalendarioGuardia.jsp"/>
+			<forward name="buscarModalReserva" path="/html/jsp/gratuita/listadoModalReserva_DefinirCalendarioGuardia.jsp"/>
+			<forward name="modalRegistro" path="/html/jsp/gratuita/modalRegistro_DefinirCalendarioGuardia.jsp"/>
+			<forward name="modalConsulta" path="/html/jsp/gratuita/modalConsulta_DefinirCalendarioGuardia.jsp"/>
+		</action>
+
+		<!-- ***** Justicia Gratuita / Definir Lista de Guardias ***** -->
+		<action path="/JGR_DefinirListaGuardias" type="com.siga.gratuita.action.DefinirListaGuardiasAction" name="DefinirListaGuardiasForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/busquedaLG.jsp"/>
+			<forward name="listarLG" path="/html/jsp/gratuita/listadoLG.jsp"/>
+			<forward name="consultarLG" path="/html/jsp/gratuita/mantenimientoLG.jsp"/>
+			<forward name="listar3LG" path="/html/jsp/gratuita/listado3LG.jsp"/>
+			<forward name="modalLG" path="/html/jsp/gratuita/modalLG.jsp"/>
+			<forward name="listar2LG" path="/html/jsp/gratuita/listado2LG.jsp"/>
+            <forward name="recogidaDatos" path="/html/jsp/gratuita/datosPeriodoGuardias.jsp"/>
+		</action>
+
+		<action path="/JGR_InscribirseEnGuardia" type="com.siga.gratuita.action.InscribirseEnGuardiaAction" name="DefinirGuardiasTurnosForm" scope="request">
+			<forward name="editar" path="/html/jsp/gratuita/editarGuardiaTurnoInscripcion.jsp"/>
+			<forward name="nuevo" path="/html/jsp/gratuita/altaGuardia.jsp"/>
+			<forward name="listado" path="/html/jsp/gratuita/guardiasTurno.jsp"/>
+		</action>
+	
+		<action path="/JGR_BajaEnGuardia" type="com.siga.gratuita.action.BajaEnGuardiaAction" name="DefinirGuardiasTurnosForm" scope="request">
+			<forward name="editar" path="/html/jsp/gratuita/editarGuardiaTurnoInscripcion.jsp"/>
+			<forward name="nuevo" path="/html/jsp/gratuita/bajaGuardia.jsp"/>
+			<forward name="listado" path="/html/jsp/gratuita/guardiasTurno.jsp"/>
+		</action>
+
+		<!-- ***** Justicia Gratuita / Definir Incompatibilidades de Guardia ***** -->
+		<action path="/JGR_IncompatibilidadesGuardia" type="com.siga.gratuita.action.DefinirIncompatibilidadesGuardiaAction" name="DefinirIncompatibilidadesGuardiaForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/inicio_IncompatibilidadesGuardia.jsp"/>
+			<forward name="buscarInicio" path="/html/jsp/gratuita/listado_IncompatibilidadesGuardia.jsp"/>
+			<forward name="modal" path="/html/jsp/gratuita/modal_IncompatibilidadesGuardia.jsp"/>
+			<forward name="buscarModal" path="/html/jsp/gratuita/listadoModal_IncompatibilidadesGuardia.jsp"/>
+		</action>
+
+		<action path="/JGR_ListarGuardiasTurnosLetrado" type="com.siga.gratuita.action.DefinirGuardiasTurnosAction">
+			<forward name="listado" path="/html/jsp/gratuita/listarGuardiasTurnosLetrado.jsp"/>
+		</action>
+		
+
+		<action path="/JGR_ListaGuardiasTurno" type="com.siga.gratuita.action.DefinirGuardiasTurnosAction">
+			<forward name="listado" path="/html/jsp/gratuita/listarGuardiasTurnos.jsp"/>
+		</action>
+		
+		<action path="/JGR_VolantesExpres" type="com.siga.gratuita.action.VolantesExpresAction" name="VolantesExpresForm">
+			<forward name="inicio" path="/html/jsp/gratuita/volantesExpres.jsp"/>
+		</action>
+
+		<action path="/JGR_InformeJustificacionMasiva" type="com.siga.gratuita.action.InformeJustificacionMasivaAction" name="InformeJustificacionMasivaForm">
+			<forward name="inicio" path="/html/jsp/gratuita/informeJustificacionMasiva.jsp"/>
+			<forward name="resultado" path="/html/jsp/gratuita/informeJustificacionMasivaResultados.jsp" />
+			
+		</action>
+		<action path="/JGR_InformeJustificacion" type="com.siga.gratuita.action.InformeJustificacionAction" name="InformeJustificacionMasivaForm">
+			<forward name="inicio" path="/html/jsp/gratuita/informeJustificacion.jsp"/>
+		</action>
+		
+		<action path="/DefinirGuardiasTurnosAction" type="com.siga.gratuita.action.DefinirGuardiasTurnosAction" name="DefinirGuardiasTurnosForm" scope="request">
+			<forward name="nuevo" path="/html/jsp/gratuita/definirGuardiaTurno.jsp"/>
+			<forward name="ver" path="/html/jsp/gratuita/pestanasGuardias.jsp"/>
+			<forward name="editar" path="/html/jsp/gratuita/pestanasGuardias.jsp"/>
+			<forward name="edicion" path="/html/jsp/gratuita/editarGuardiaTurno.jsp"/>
+			<forward name="listado" path="/html/jsp/gratuita/listarGuardiasTurnos.jsp"/>
+			<forward name="verLetrado" path="/html/jsp/gratuita/pestanaGuardiaExp.jsp"/>
+			<forward name="sustituir" path="/html/jsp/gratuita/modalSustitucionLetradoGuardia.jsp"/>
+		</action>
+
+		<action path="/JGR_ListarGuardiasLetrado" type="com.siga.gratuita.action.DefinirGuardiasLetradoAction">
+			<forward name="listado" path="/html/jsp/gratuita/listarGuardiasLetrado.jsp"/>
+		</action>
+
+		<action path="/DefinirGuardiasLetradoAction" type="com.siga.gratuita.action.DefinirGuardiasLetradoAction" name="DefinirGuardiasLetradoForm" scope="request">
+			<forward name="ver" path="/html/jsp/gratuita/editarGuardiaTurno.jsp"/>
+		</action>
+
+		<!-- ***** Justicia Gratuita / Configurar Turnos / Validar Inscripciones ***** -->
+		<action path="/JGR_ValidarInscripciones" forward="/notImplemented.do"/>
+
+		<!-- ***** Justicia Gratuita / Configurar Turnos / Validar Inscripción Turno ***** -->
+		<action path="/JGR_ValidarInscripcionTurno" forward="/notImplemented.do"/>
+
+		<!-- ***** Justicia Gratuita / Configurar Turnos / Validar Baja en Turno ***** -->
+		<action path="/JGR_ValidarBajaTurno" forward="/notImplemented.do"/>
+
+		<!-- ***** Justicia Gratuita / Configurar Turnos / Validar Baja Clasificación Turno ***** -->
+		<action path="/JGR_ValidarBajaClasificacionTurno" forward="/notImplemented.do"/>
+
+		<!-- ***** Justicia Gratuita / Configurar Turnos / Partidos Judiciales ***** -->
+		<action path="/JGR_MantenimientoPartidosJudiciales" type="com.siga.gratuita.action.MantenimientoPJAction" name="MantenimientoPJForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/busquedaPJ.jsp"/>
+			<forward name="listarPJ" path="/html/jsp/gratuita/listadoPJ.jsp"/>
+			<forward name="consultarPJ" path="/html/jsp/gratuita/consultarPJ2.jsp"/>
+			<forward name="listar2PJ" path="/html/jsp/gratuita/listado2PJ.jsp"/>
+			<forward name="consultaPartidoPoblacion" path="/html/jsp/gratuita/consultaPartidoPoblacion.jsp"/>
+			<forward name="exitoMio" path="/html/jsp/gratuita/exitoInsertar.jsp"/>
+		</action>
+
+		<!-- ***** Justicia Gratuita / Configurar Turnos / Maestro Partidos Judiciales ***** -->
+		<action path="/JGR_MantenimientoMaestroPJ" type="com.siga.gratuita.action.MantenimientoMaestroPJAction" name="MantenimientoMaestroPJForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/busquedaMaestroPJ.jsp"/>
+			<forward name="listarMaestroPJ" path="/html/jsp/gratuita/listadoMaestroPJ.jsp"/>
+			<forward name="consultarMaestroPJ" path="/html/jsp/gratuita/consultarMaestroPJ2.jsp"/>
+			<forward name="listar2MaestroPJ" path="/html/jsp/gratuita/listado2MaestroPJ.jsp"/>
+			<forward name="consultaMaestroPartidoPoblacion" path="/html/jsp/gratuita/consultaMaestroPartidoPoblacion.jsp"/>
+			<forward name="exitoMio" path="/html/jsp/gratuita/exitoInsertarMaestro.jsp"/>
+		</action>
+		
+		<action path="/JGR_BusquedaClientesFiltros" type="com.siga.gratuita.action.BusquedaClientesFiltrosAction" name="busquedaClientesFiltrosForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/busquedaClientesFiltros.jsp"/>
+			<forward name="resultado" path="/html/jsp/gratuita/resultadosBusquedaClientesFiltros.jsp"/>
+			<forward name="seleccion" path="/html/jsp/gratuita/seleccionClientesFiltros.jsp"/>
+			<forward name="editarTelefono" path="/html/jsp/gratuita/editarTelefonoClientesFiltros.jsp"/>
+			<forward name="cargarCombo" path="/html/jsp/gratuita/exitoCargarCombo.jsp"/>
+		</action>
+
+		<action path="/JGR_PersonaJG" type="com.siga.gratuita.action.PersonaJGAction" name="PersonaJGForm" scope="request">
+			<forward name="personaJG" path="/html/jsp/gratuita/personaJG.jsp"/>
+			<forward name="buscarNIF" path="/html/jsp/gratuita/personasJGOculta.jsp"/>			
+			<forward name="seleccionPersonaJG" path="/html/jsp/gratuita/seleccionPersonaJG.jsp"/>			
+		</action>
+
+		<action path="/JGR_BusquedaPersonaJG" type="com.siga.gratuita.action.BusquedaPersonaJGAction" name="BusquedaPersonaJGForm" scope="request">
+			<forward name="abrir" path="/html/jsp/gratuita/busquedaModalPersonaJG.jsp"/>
+			<forward name="resultado" path="/html/jsp/gratuita/resultadosModalPersonaJG.jsp"/>			
+			<forward name="seleccion" path="/html/jsp/gratuita/seleccionModalPersonaJG.jsp"/>			
+		</action>
+
+		<action path="/JGR_BusquedaPorTipoSJCS" type="com.siga.gratuita.action.BusquedaPorTipoSJCSAction" name="BusquedaPorTipoSJCSForm" scope="request">
+			<forward name="abrir"     path="/html/jsp/gratuita/busquedaModalPorTipoSJCS.jsp"/>
+			<forward name="resultado" path="/html/jsp/gratuita/resultadosModalPorTipoSJCS.jsp"/>			
+			<forward name="seleccion" path="/html/jsp/gratuita/seleccionModalPorTipoSJCS.jsp"/>			
+		</action>
+
+		<action path="/JGR_RelacionadoConSJCS" type="com.siga.gratuita.action.RelacionadoConSJCSAction" name="DummyForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/listadoRelacionadoConSJCS.jsp"/>
+		</action>
+
+		<!-- ***** Justicia Gratuita / Configurar Turnos / Mantenimiento de Facturas ***** -->
+		<action path="/JGR_MantenimientoFacturas" forward="/notImplemented.do"/>
+
+		<!-- ***** Justicia Gratuita / Configurar Turnos / Mantenimiento de Pagos ***** -->
+		<action path="/JGR_MantenimientoPagos" forward="/notImplemented.do"/>
+
+		<!-- ***** Justicia Gratuita / Configurar Turnos / Generar Fichero 190 ***** -->
+		<action path="/JGR_GenerarFichero190" forward="/notImplemented.do"/>
+
+		<!-- ***** Justicia Gratuita / Configurar Turnos / Asistencia Guardia ***** -->
+		<action path="/JGR_AsistenciaGuardia" forward="/notImplemented.do"/>
+
+		<!-- ***** Justicia Gratuita / Entrada a Mantenimiento Calendario Laboral ***** -->
+		<action path="/JGR_Calendario" forward="/html/jsp/gratuita/calendario.jsp"/>
+
+		<!-- ***** Justicia Gratuita / Configurar Turnos / Calendario Laboral ***** -->
+		<action path="/CalendarioLaboralAction" type="com.siga.gratuita.action.CalendarioLaboralAction" name="CalendarioLaboralForm" scope="request">
+			<forward name="listarCalendario" path="/html/jsp/gratuita/listadoCalendario.jsp"/>
+			<forward name="modificacionOk" path="/html/jsp/gratuita/operarCalendario.jsp"/>
+			<forward name="insertarFiesta" path="/html/jsp/gratuita/insertarCalendario.jsp"/>
+		</action>
+
+		<!-- ***** Justicia Gratuita / Entrada a Mantenimiento Partidas Presupuestarias ***** -->
+		<action path="/JGR_PartidaPresupuestaria" forward="/html/jsp/gratuita/partidaPresupuestaria.jsp"/>
+
+		<!-- ***** Justicia Gratuita / Partidas Presupuestarias ***** -->
+		<action path="/PartidaPresupuestariaAction" type="com.siga.gratuita.action.DefinirPartidaPresupuestariaAction" name="DefinirPartidaPresupuestariaForm" scope="request">
+			<forward name="listarPartidas" path="/html/jsp/gratuita/listadoPartidasPresupuestarias.jsp"/>
+			<forward name="insertarPartida" path="/html/jsp/gratuita/insertarPartida.jsp"/>
+			<forward name="modificacionOk" path="/html/jsp/gratuita/operarPartida.jsp"/>
+		</action>
+
+		<!-- ***** Justicia Gratuita / Configurar Turnos / Expedientes SOJ ***** -->
+		<action path="/JGR_ExpedientesSOJ" type="com.siga.gratuita.action.DefinirExpedientesSOJAction" name="DefinirSOJForm" scope="session">
+			<forward name="inicio" path="/html/jsp/gratuita/busquedaSOJ.jsp"/>
+			<forward name="busqueda" path="/html/jsp/gratuita/busquedaSOJ.jsp"/>
+			<forward name="listarSOJ" path="/html/jsp/gratuita/listadoSOJ.jsp"/>
+			<forward name="insertarSOJ" path="/html/jsp/gratuita/insertarSOJ.jsp"/>
+			<forward name="operarSOJ" path="/html/jsp/gratuita/operarSOJ.jsp"/>
+			<forward name="editar" path="/html/jsp/gratuita/pestanasSOJ.jsp"/>
+			<forward name="ver" path="/html/jsp/gratuita/pestanasSOJ.jsp"/>
+			<forward name="exitoSOJ" path="/html/jsp/gratuita/exitoSOJ.jsp"/>
+		</action>
+
+		<action path="/JGR_PestanaSOJDatosGenerales" type="com.siga.gratuita.action.DefinirDatosGeneralesSOJAction" name="DatosGeneralesSOJForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/operarDatosGenerales.jsp"/>
+			<forward name="insertar" path="/html/jsp/gratuita/insertarEJGDesdeSOJ.jsp"/>
+		</action>
+
+<!--
+		<action path="/JGR_PestanaSOJBeneficiarios" type="com.siga.gratuita.action.DefinirDatosBeneficiarioSOJAction" name="DefinirPersonaJGForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/operarDatosBeneficiarios.jsp"/>
+			<forward name="listadoTelefonos" path="/html/jsp/gratuita/listadoTelefonos.jsp"/>
+			<forward name="insertarTelefono" path="/html/jsp/gratuita/insertarTelefono.jsp"/>
+		</action>
+-->		
+		<action path="/JGR_PestanaSOJBeneficiarios" type="com.siga.gratuita.action.PersonaJGAction" name="PersonaJGForm" scope="request">
+			<forward name="personaJG" path="/html/jsp/gratuita/personaJG.jsp"/>
+			<forward name="buscarNIF" path="/html/jsp/gratuita/personasJGOculta.jsp"/>			
+			<forward name="seleccionPersonaJG" path="/html/jsp/gratuita/seleccionPersonaJG.jsp"/>			
+		</action>
+		
+
+		<action path="/JGR_PestanaSOJDocumentacion" type="com.siga.gratuita.action.DefinirDocumentacionSOJAction" name="DatosDocumentacionSOJForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/listadoDocumentacionSOJ.jsp"/>
+			<forward name="insertar" path="/html/jsp/gratuita/insertarDocumentacionSOJ.jsp"/>
+			<forward name="editar" path="/html/jsp/gratuita/operarDatosDocumentacion.jsp"/>
+			<forward name="ver" path="/html/jsp/gratuita/operarDatosDocumentacion.jsp"/>
+		</action>
+
+		<!-- ***** Justicia Gratuita / Configurar Turnos / EJG ***** -->
+		<action path="/JGR_EJG" type="com.siga.gratuita.action.DefinirEJGAction" name="DefinirEJGForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/busquedaEJG.jsp"/>
+			<forward name="insertarEJG" path="/html/jsp/gratuita/insertarEJG.jsp"/>
+			<forward name="busquedaAutomatica" path="/html/jsp/gratuita/recargarModalInsercionEJG.jsp"/>
+			<forward name="listarEJG" path="/html/jsp/gratuita/listadoEJG.jsp"/>
+			<forward name="ver" path="/html/jsp/gratuita/pestanaEJG.jsp"/>
+			<forward name="editar" path="/html/jsp/gratuita/pestanaEJG.jsp"/>
+			<forward name="recogidaDatos" path="/html/jsp/gratuita/datosCartaEJG.jsp"/>
+			<forward name="exitoEJG" path="/html/jsp/gratuita/exitoEJG.jsp"/>
+		</action>
+
+		<action path="/JGR_MantenimientoEJG" type="com.siga.gratuita.action.DefinirMantenimientoEJGAction" name="DefinirMantenimientoEJGForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/operarEJG.jsp"/>
+			<forward name="editar" path="/html/jsp/gratuita/operarEJG.jsp"/>
+		</action>
+		
+		<action path="/JGR_DictamenEJG" type="com.siga.gratuita.action.DefinirDictamenEJGAction" name="DefinirDictamenEJGForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/operarDictamenEJG.jsp"/>
+		</action>
+
+		<action path="/JGR_DocumentacionEJG" type="com.siga.gratuita.action.DefinirDocumentacionEJGAction" name="DefinirDocumentacionEJGForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/listadoDocumentacionEJG.jsp"/>
+			<forward name="editar" path="/html/jsp/gratuita/operarDocumentacionEJG.jsp"/>
+			<forward name="ver" path="/html/jsp/gratuita/operarDocumentacionEJG.jsp"/>
+			<forward name="insertarDocumentacionEJG" path="/html/jsp/gratuita/insertarDocumentacionEJG.jsp"/>
+		</action>
+
+		<action path="/JGR_EstadosEJG" type="com.siga.gratuita.action.DefinirEstadosEJGAction" name="DefinirEstadosEJGForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/listadoEstadosEJG.jsp"/>
+			<forward name="insertar" path="/html/jsp/gratuita/insertarEstadoEJG.jsp"/>
+			<forward name="editar" path="/html/jsp/gratuita/insertarEstadoEJG.jsp"/>
+		</action>
+
+		<action path="/JGR_UnidadFamiliarEJG" type="com.siga.gratuita.action.DefinirUnidadFamiliarEJGAction" name="DefinirUnidadFamiliarEJGForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/listadoUnidadFamiliarEJG.jsp"/>
+			<forward name="insertar" path="/html/jsp/gratuita/operarUnidadFamiliarEJG.jsp"/>
+		</action>
+
+		<action path="/JGR_UnidadFamiliarPerJG" type="com.siga.gratuita.action.PersonaJGAction" name="PersonaJGForm" scope="request">
+			<forward name="personaJG" path="/html/jsp/gratuita/personaJG.jsp"/>
+			<forward name="buscarNIF" path="/html/jsp/gratuita/personasJGOculta.jsp"/>			
+			<forward name="seleccionPersonaJG" path="/html/jsp/gratuita/seleccionPersonaJG.jsp"/>			
+		</action>
+		
+<!--
+		<action path="/JGR_InteresadoEJG" type="com.siga.gratuita.action.DefinirInteresadoEJGAction" name="DefinirInteresadoEJGForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/operarInteresadoEJG.jsp"/>
+		</action>
+-->
+		<action path="/JGR_InteresadoEJG" type="com.siga.gratuita.action.PersonaJGAction" name="PersonaJGForm" scope="request">
+			<forward name="personaJG" path="/html/jsp/gratuita/personaJG.jsp"/>
+			<forward name="buscarNIF" path="/html/jsp/gratuita/personasJGOculta.jsp"/>			
+			<forward name="seleccionPersonaJG" path="/html/jsp/gratuita/seleccionPersonaJG.jsp"/>			
+		</action>
+
+		<action path="/JGR_RatificacionEJG" type="com.siga.gratuita.action.DefinirRatificacionEJGAction" name="DefinirEJGForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/operarRatificacionEJG.jsp"/>
+		</action>
+
+		<action path="/JGR_ImpugnacionEJG" type="com.siga.gratuita.action.DefinirImpugnacionEJGAction" name="DefinirEJGForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/operarImpugnacionEJG.jsp"/>
+		</action>
+
+		<!-- ***** Justicia Gratuita / Configurar Turnos / Mantenimiento Turnos de Oficio ***** -->
+		<action path="/JGR_MantenimientoTurnosdeOficio" forward="/notImplemented.do"/>
+
+		<!-- ***** Justicia Gratuita / Configurar Turno / Areas y Materias ***** -->
+		<action path="/JGR_DefinirAreasMaterias" type="com.siga.gratuita.action.DefinirAreasMateriasAction" name="DefinirAreasMateriasForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/busquedaAreas.jsp"/>
+		</action>
+
+		<!-- ***** Justicia Gratuita / Configurar Turno / Areas y Materias ***** -->
+		<action path="/DefinirAreasMateriasAction" type="com.siga.gratuita.action.DefinirAreasMateriasAction" name="DefinirAreasMateriasForm" scope="request">
+			<forward name="busqueda" path="/html/jsp/gratuita/busquedaAreas.jsp"/>
+			<forward name="listarAreas" path="/html/jsp/gratuita/listadoAreas.jsp"/>
+			<forward name="insertarArea" path="/html/jsp/gratuita/insertarArea.jsp"/>
+			<forward name="insertarMateria" path="/html/jsp/gratuita/insertarMateria.jsp"/>
+			<forward name="modificacionAreaOk" path="/html/jsp/gratuita/operarArea.jsp"/>
+			<forward name="modificacionMateriaOk" path="/html/jsp/gratuita/operarMateria.jsp"/>
+			<forward name="listadoMaterias" path="/html/jsp/gratuita/listadoMaterias.jsp"/>
+			<forward name="nuevaJurisdiccion" path="/html/jsp/gratuita/modalNuevaJurisdiccion.jsp"/>
+		</action>
+		
+		<!-- ***** Justicia Gratuita / Configurar Documentación EJG ***** -->
+		<action path="/JGR_MantenimientoDocumentacionEJG" type="com.siga.gratuita.action.DefinirMantenimDocumentacionEJGAction" name="DefinirMantenimDocumentacionEJGForm" scope="request">
+			<forward name="busqueda" path="/html/jsp/gratuita/busquedaDocumentoEJG.jsp"/>
+			<forward name="listarDocumento" path="/html/jsp/gratuita/listadoDocumentoEJG.jsp"/>
+			<forward name="insertarTipo" path="/html/jsp/gratuita/insertarTipoDocumento.jsp"/>
+			<forward name="insertarDocu" path="/html/jsp/gratuita/insertarDocumento.jsp"/>
+			<forward name="modificacionTipoOk" path="/html/jsp/gratuita/operarTipo.jsp"/>
+			<forward name="modificacionDocumentoOk" path="/html/jsp/gratuita/operarDocumento.jsp"/>
+			<forward name="listadoDocumentos" path="/html/jsp/gratuita/listadoDocumentos.jsp"/>
+		</action>		
+		
+		<!-- ***** Justicia Gratuita / Configurar Dictámenes EJG ***** -->
+		<action path="/JGR_MantenimientoDictamenesEJG" type="com.siga.gratuita.action.DefinirMantenimDictamenesEJGAction" name="DefinirMantenimDictamenesEJGForm" scope="request">
+			<forward name="busqueda" path="/html/jsp/gratuita/busquedaDictamenesEJG.jsp"/>
+			<forward name="listarDictamen" path="/html/jsp/gratuita/listadoDictamenesEJG.jsp"/>		
+			<forward name="modificacionTipoOk" path="/html/jsp/gratuita/operarDictamen.jsp"/>
+			<forward name="insertarDictamen" path="/html/jsp/gratuita/insertarDictamen.jsp"/>
+		</action>				
+
+		<!-- ***** Justicia Gratuita / Configurar Turno / Zonas y Subzonas ***** -->
+		<action path="/JGR_DefinirZonasSubzonas" type="com.siga.gratuita.action.DefinirZonasSubzonasAction" name="DefinirZonasSubzonasForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/busquedaZonas.jsp"/>
+			<forward name="busqueda" path="/html/jsp/gratuita/busquedaZonas.jsp"/>
+			<forward name="listarZonas" path="/html/jsp/gratuita/listadoZonas.jsp"/>
+			<forward name="insertarZona" path="/html/jsp/gratuita/insertarZona.jsp"/>
+			<forward name="insertarSubzona" path="/html/jsp/gratuita/insertarSubzona.jsp"/>
+			<forward name="modificacionZonaOk" path="/html/jsp/gratuita/operarZona.jsp"/>
+			<forward name="modificacionSubzonaOk" path="/html/jsp/gratuita/operarSubzona.jsp"/>
+			<forward name="listadoSubzonas" path="/html/jsp/gratuita/listadoSubzonas.jsp"/>
+		</action>
+
+		<!-- ***** Justicia Gratuita / Definir Turnos ***** -->
+		<action path="/JGR_DefinirTurnos" type="com.siga.gratuita.action.BusquedaTurnosAction" name="DefinirTurnosForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/definirTurnos.jsp"/>
+		</action>
+
+		<action path="/DefinirTurnosAction" type="com.siga.gratuita.action.DefinirTurnosAction" name="DefinirTurnosForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/definirTurnos.jsp"/>
+			<forward name="edicion" path="/html/jsp/gratuita/maestroTurnos.jsp"/>
+			<forward name="edicionLetrado" path="/html/jsp/gratuita/maestroTurnosLetrado.jsp"/>
+			<forward name="listado" path="/html/jsp/gratuita/listarTurnos.jsp"/>
+			<forward name="editar" path="/html/jsp/gratuita/pestanasTurnos.jsp"/>
+			<forward name="editarLetrado" path="/html/jsp/gratuita/pestanaTurnoExp.jsp"/>
+			<forward name="ver" path="/html/jsp/gratuita/pestanasTurnos.jsp"/>
+			<forward name="nuevo" path="/html/jsp/gratuita/nuevoTurno.jsp"/>
+			<forward name="avanzada" path="/JGR_DefinirTurnos.do"/>
+		</action>
+
+		<!-- ***** Justicia Gratuita / Alta Turnos / Guardias ***** -->
+		<action path="/JGR_AltaTurnosGuardias" type="com.siga.gratuita.action.AltaTurnosGuardiasAction" name="AltaTurnosGuardiasForm" scope="request">
+				<forward name="inicio" path="/html/jsp/gratuita/listarTurnosDisp_2.jsp"/>
+<!-- -->		<forward name="listadoResultados" path="/html/jsp/gratuita/listarTurnosDisp.jsp"/>
+				<forward name="nuevo" path="/html/jsp/gratuita/altaTurnos.jsp"/>
+				<forward name="nuevoMasivo" path="/html/jsp/gratuita/altaTurnosMasivo.jsp"/>
+				<forward name="nuevo2" path="/html/jsp/gratuita/altaTurno_2.jsp"/>
+				<forward name="operacionOK" path="/JGR_DefinirTurnosLetrado.do"/>
+				<forward name="verTurno" path="/html/jsp/gratuita/consultaTurno.jsp"/>
+				<forward name="error" path="/html/jsp/general/error.jsp"/>
+				<forward name="editarTelefonoGuardia" path="/html/jsp/gratuita/editarTelefonoGuardia.jsp"/>
+				<forward name="editarTelefonoGuardiaMasivo" path="/html/jsp/gratuita/editarTelefonoGuardiaMasivo.jsp"/>
+				
+		</action>
+
+		<!-- ***** Justicia Gratuita / Entrada a Saltos y Compensaciones ***** -->
+		<action path="/JGR_SaltosYCompensaciones" type="com.siga.gratuita.action.SaltosYCompensacionesAction" name="SaltosYCompensacionesForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/inicio_SaltosYCompensaciones.jsp"/>
+			<forward name="listado" path="/html/jsp/gratuita/listado_SaltosYCompensaciones.jsp"/>
+			<forward name="nuevo" path="/html/jsp/gratuita/modalNuevo_SaltosYCompensaciones.jsp"/>
+			<forward name="mantenimiento" path="/html/jsp/gratuita/modalMantenimiento_SaltosYCompensaciones.jsp"/>
+		</action>
+
+		<!-- ***** Justicia Gratuita / Mantenimiento Grupos de Facturación ***** -->
+		<action path="/JGR_MantenimientoGruposFacturacion" type="com.siga.gratuita.action.DefinirGrupoFacturacionAction" name="DefinirGrupoFacturacionForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/busquedaGrupoFacturacion.jsp"/>
+			<forward name="listarGrupos" path="/html/jsp/gratuita/consultaGrupoFacturacion.jsp"/>
+			<forward name="operar" path="/html/jsp/gratuita/datosGrupoFacturacion.jsp"/>
+		</action>
+
+		<!-- ***** Administración / Mantenimiento de Procedimientos ***** -->
+		<action path="/JGR_MantenimientoProcedimientos" type="com.siga.gratuita.action.MantenimientoProcedimientosAction" name="MantenimientoProcedimientosForm">
+			<forward name="inicio" path="/html/jsp/gratuita/busquedaProcedimientos.jsp"/>
+			<forward name="listarProcedimientos" path="/html/jsp/gratuita/consultaProcedimientos.jsp"/>
+			<forward name="mantenimiento" path="/html/jsp/gratuita/datosProcedimientos.jsp"/>
+			<forward name="nuevoAcreditacion" path="/html/jsp/gratuita/datosProcedimientosAcreditacion.jsp"/>
+			<forward name="exitoInsercionProcedimiento" path="/html/jsp/gratuita/exitoInsercionProcedimiento.jsp"/>
+		</action>
+
+		<!-- ***** Justicia Gratuita / Mantenimiento Incompatibilidades de Guardias ***** -->
+		<action path="/JGR_MantenimientoIncompatibilidadesGuardias" type="com.siga.gratuita.action.BusquedaIncompatibilidadesGuardiasAction" name="MantenimientoIncompatibilidadesGuardiasForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/busquedaIncompatibilidadesGuardias.jsp" />
+			<forward name="resultado" path="/html/jsp/gratuita/listadoIncompatibilidadesGuardias.jsp" />
+			<forward name="editar" path="/html/jsp/gratuita/busquedaIncompatibilidadesGuardias.jsp" />
+		</action>
+		
+		<!-- ***** Gratuita / validar volantes guardias ***** -->
+		<action path="/JGR_ValidarVolantesGuardias" type="com.siga.gratuita.action.ValidarVolantesGuardiasAction" name="ValidarVolantesGuardiasForm">
+			<forward name="abrir" path="/html/jsp/gratuita/busquedaVolantes.jsp"/>
+			<forward name="buscar" path="/html/jsp/gratuita/busquedaVolantesResultados.jsp"/>
+			<forward name="resultadoColegiado" path="/html/jsp/gratuita/resultadoBuscarColegiado.jsp"/>
+			<forward name="modalMantenimiento" path="/html/jsp/gratuita/modalMantenimiento_CalendarioGuardiaVolante.jsp"/>
+		</action>
+		
+		<!-- ***** Justicia Gratuita / e_comunicaciones / Seleccion ***** -->
+		<action path="/JGR_E-Comunicaciones_Seleccion" type="com.siga.gratuita.action.DefinirCAJGAction" name="BusquedaCAJG_EJGForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/busquedaEJG_CAJG.jsp"/>
+			<forward name="insertarEJG" path="/html/jsp/gratuita/insertarEJG.jsp"/>
+			<forward name="busquedaAutomatica" path="/html/jsp/gratuita/recargarModalInsercionEJG.jsp"/>
+			<forward name="listarEJG" path="/html/jsp/gratuita/listadoCAJG_EJG.jsp"/>
+			<forward name="ver" path="/html/jsp/gratuita/pestanaEJG.jsp"/>
+			<forward name="editar" path="/html/jsp/gratuita/pestanaEJG.jsp"/>
+			<forward name="recogidaDatos" path="/html/jsp/gratuita/datosCartaEJG.jsp"/>
+			<forward name="exitoEJG" path="/html/jsp/gratuita/exitoEJG.jsp"/>
+		</action>
+		<!-- ***** Justicia Gratuita / e_comunicaciones / Gestion ***** -->
+		<action path="/JGR_E-Comunicaciones_Gestion" type="com.siga.gratuita.action.DefinirRemesasCAJGAction" name="DefinicionRemesas_CAJG_Form" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/BusquedaRemesas_CAJG.jsp"/>
+			<forward name="insertarRemesa" path="/html/jsp/gratuita/insertarRemesa.jsp"/>
+			<forward name="busquedaAutomatica" path="/html/jsp/gratuita/recargarModalInsercionEJG.jsp"/>
+			<forward name="listarRemesas" path="/html/jsp/gratuita/listadoRemesas.jsp"/>
+			<forward name="ver" path="/html/jsp/gratuita/pestanaEJG.jsp"/>
+			<forward name="editar" path="/html/jsp/gratuita/remesa_EJG.jsp"/>
+			<forward name="recogidaDatos" path="/html/jsp/gratuita/datosCartaEJG.jsp"/>
+			<forward name="exitoRemesa" path="/html/jsp/gratuita/exitoRemesa.jsp"/>
+			<forward name="listarEJG" path="/html/jsp/gratuita/listadoEJG_Remesa.jsp"/>
+			<forward name="listarEJGListos" path="/html/jsp/gratuita/listadoEJG_RemesaListos.jsp"/>
+			<forward name="aniadirBusqueda" path="/html/jsp/gratuita/busquedaEJG_Listos.jsp"/>
+			<forward name="export" path="/SIGASvlVectorToClientFileConExtension.svrl"/>
+		</action>
+		
+		<action path="/JGR_EstadosRemesa" type="com.siga.gratuita.action.EstadosRemesaAction" name="EstadosRemesaForm" scope="request">
+			<forward name="listado" path="/html/jsp/gratuita/listadoEstadosRemesa.jsp"/>
+			<forward name="abrirModal" path="/html/jsp/gratuita/nuevoEstadoRemesa.jsp"/>
+			<forward name="editar" path="/html/jsp/gratuita/nuevoEstadoRemesa.jsp"/>
+		</action>
+		
+		<!-- ***** Justicia Gratuita / e_comunicaciones / Gestion Resoluciones ***** -->
+		<action path="/JGR_E-Comunicaciones_RemesaResolucion" type="com.siga.gratuita.action.DefinirRemesaResolucionesCAJGAction" name="DefinicionRemesaResolucionesCAJGForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/busquedaRemesaResoluciones_CAJG.jsp"/>
+			<forward name="insertarResolucion" path="/html/jsp/gratuita/insertarRemesaResolucion.jsp"/>						
+			<forward name="listarResoluciones" path="/html/jsp/gratuita/listadoRemesaResoluciones.jsp"/>			
+			<forward name="editar" path="/html/jsp/gratuita/remesaResolucionCAJG.jsp"/>			
+		</action>
+		
+		<!-- ***** Consultas / Recuperar Consultas ***** -->
+		<action path="/CON_RecuperarConsultas" type="com.siga.consultas.action.RecuperarConsultasAction" name="RecuperarConsultasForm" scope="request">
+			<forward name="inicio" path="/html/jsp/consultas/recuperarConsultas.jsp"/>
+			<forward name="resultado" path="/html/jsp/consultas/resultadoRecConsultas.jsp"/>
+			<forward name="editar" path="/html/jsp/consultas/pestanasConsultas.jsp"/>
+			<forward name="ejecucion" path="/html/jsp/consultas/ejecucionConsulta.jsp"/>
+			<forward name="export" path="/SIGASvlVectorToClientFile.svrl"/>
+			<forward name="criteriosDinamicos" path="/html/jsp/consultas/criteriosDinamicos.jsp"/>
+			<forward name="criteriosDinamicosExperta" path="/html/jsp/consultas/criteriosDinamicosExperta.jsp"/>
+			<forward name="exitoCriterios" path="/html/jsp/consultas/exitoCriteriosDinamicos.jsp"/>
+			<forward name="vacia" path="/html/jsp/consultas/consultaVacia.jsp"/>
+			<forward name="tipoEnvio" path="/html/jsp/consultas/seleccTipoEnvio.jsp"/>
+		</action>
+
+		<action path="/CON_RecuperarConsultasDinamicas" forward="/CON_RecuperarConsultas.do?tipoConsulta=listas">
+			<forward name="inicio" path="/html/jsp/consultas/recuperarConsultas.jsp"/>
+			<forward name="resultado" path="/html/jsp/consultas/resultadoRecConsultas.jsp"/>
+			<forward name="editar" path="/html/jsp/consultas/pestanasConsultas.jsp"/>
+			<forward name="ejecucion" path="/html/jsp/consultas/ejecucionConsulta.jsp"/>
+			<forward name="export" path="/SIGASvlVectorToClientFile.svrl"/>
+			<forward name="criteriosDinamicos" path="/html/jsp/consultas/criteriosDinamicos.jsp"/>
+			<forward name="exitoCriterios" path="/html/jsp/consultas/exitoCriteriosDinamicos.jsp"/>
+			<forward name="vacia" path="/html/jsp/consultas/consultaVacia.jsp"/>
+			<forward name="tipoEnvio" path="/html/jsp/consultas/seleccTipoEnvio.jsp"/>
+		</action>
+
+		<action path="/CON_EditarConsulta" type="com.siga.consultas.action.EditarConsultaAction" name="EditarConsultaForm" scope="request">
+			<forward name="inicio" path="/html/jsp/consultas/datosConsulta.jsp"/>
+			<forward name="inicioExperta" path="/html/jsp/consultas/datosConsultaExperta.jsp"/>
+			<forward name="combos" path="/html/jsp/consultas/operacionValor.jsp"/>
+			<forward name="tablaPri" path="/html/jsp/consultas/seleccTablaPrioritaria.jsp"/>
+			<forward name="pestanas" path="/html/jsp/consultas/pestanasConsultas.jsp"/>
+			<forward name="exitoInsercion" path="/html/jsp/consultas/exitoInsercion.jsp"/>
+			<forward name="exitoEjecucion" path="/html/jsp/consultas/exitoEjecucion.jsp"/>
+			<forward name="cambiarCriterio" path="/html/jsp/consultas/cambiarCriterio.jsp"/>
+		</action>
+		
+		
+
+		<action path="/CON_PermisosConsulta" type="com.siga.consultas.action.PermisosConsultaAction" name="PermisosConsultaForm" scope="request">
+			<forward name="inicio" path="/html/jsp/consultas/permisosConsulta.jsp"/>
+		</action>
+
+		<!-- ***** Consultas / Nueva Consulta ***** -->
+		<action path="/CON_NuevaConsulta" type="com.siga.consultas.action.NuevaConsultaAction" name="EditarConsultaForm" scope="request">
+			<forward name="inicio" path="/html/jsp/consultas/pestanasConsultas.jsp"/>
+		</action>
+        
+        <!-- ***** Consultas / Nueva Consulta Experta ***** -->
+        <action path="/CON_NuevaConsultaExperta" type="com.siga.consultas.action.NuevaConsultaExpertaAction" name="EditarConsultaForm" scope="request">
+			<forward name="inicio" path="/html/jsp/consultas/pestanasConsultas.jsp"/>
+			
+		</action>
+		
+		
+		 
+		<!-- ***** Facturación SJCS / Mantenimiento de Facturación ***** -->
+		<action path="/CEN_MantenimientoFacturacion" type="com.siga.facturacionSJCS.action.MantenimientoFacturacionAction" name="mantenimientoFacturacionForm" scope="session">
+			<forward name="inicio" path="/html/jsp/facturacionSJCS/busquedaFacturacion.jsp"/>
+			<forward name="resultado" path="/html/jsp/facturacionSJCS/busquedaFacturacionResultados.jsp"/>
+			<forward name="administracion" path="/html/jsp/facturacionSJCS/administracionFacturacion.jsp"/>
+		</action>
+
+		<action path="/FCS_DatosGeneralesFacturacion" type="com.siga.facturacionSJCS.action.DatosGeneralesFacturacionAction" name="DatosGeneralesFacturacionForm" scope="session">
+			<forward name="inicio" path="/html/jsp/facturacionSJCS/datosGeneralesFacturacion.jsp"/>
+			<forward name="nuevoCriterio" path="/html/jsp/facturacionSJCS/datosCriteriosFacturacion.jsp"/>
+			<forward name="refrescarCriterios" path="/html/jsp/facturacionSJCS/consultaCriteriosFacturacion.jsp"/>
+			<forward name="exitoFacturacion" path="/html/jsp/facturacionSJCS/exitoFacturacion.jsp"/>
+			<forward name="refrescar" path="/html/jsp/facturacionSJCS/administracionFacturacion.jsp"/>
+		</action>
+
+		<action path="/CEN_MantenimientoMovimientos" type="com.siga.facturacionSJCS.action.MantenimientoMovimientosAction" name="MantenimientoMovimientosForm" scope="session">
+			<forward name="inicio" path="/html/jsp/facturacionSJCS/busquedaMovimientos.jsp"/>
+			<forward name="resultado" path="/html/jsp/facturacionSJCS/busquedaMovimientosResultados.jsp"/>
+			<forward name="nuevo" path="/html/jsp/facturacionSJCS/datosMovimientos.jsp"/>
+		</action>
+
+		<action path="/FCS_DetalleFacturacion" type="com.siga.facturacionSJCS.action.DatosDetalleFacturacionAction" name="DatosDetalleFacturacionForm" scope="request">
+			<forward name="inicio" path="/html/jsp/facturacionSJCS/consultaDetalleFacturacion.jsp"/>
+			<!--forward name="consulta" path="/html/jsp/facturacionSJCS/datosDetalleFacturacion.jsp"/-->
+			<forward name="verDetalle" path="/html/jsp/facturacionSJCS/verDetalleFacturacion.jsp"/>
+			<forward name="descargas" path="/html/jsp/facturacionSJCS/descargasPrevision.jsp"/>
+		</action>
+
+		<!-- ***** Pestaña Facturación SJCS Pago ***** -->
+		<action path="/CEN_MantenimientoPagoSJCS" type="com.siga.facturacionSJCS.action.MantenimientoPagosSCJSAction" name="mantenimientoPagoForm" scope="session">
+			<forward name="inicio" path="/html/jsp/facturacionSJCS/pestanasMantenimientoPagos.jsp"/>
+		</action>
+
+		<!-- ***** Facturación SJCS / Búsqueda de Pago ***** -->
+		<action path="/CEN_MantenimientoPago" type="com.siga.facturacionSJCS.action.MantenimientoPagoAction" name="mantenimientoPagoForm" scope="session">
+			<forward name="inicio" path="/html/jsp/facturacionSJCS/busquedaPago.jsp"/>
+			<forward name="abrir" path="/html/jsp/facturacionSJCS/busquedaPago.jsp"/>
+			<forward name="resultado" path="/html/jsp/facturacionSJCS/busquedaPagoResultados.jsp"/>
+			<forward name="administracion" path="/html/jsp/facturacionSJCS/administracionPago.jsp"/>
+		</action>
+		
+		<!-- ***** Fichero abonos SJCS ***** -->
+		<action path="/CEN_MantenimientoFicherosPago" forward="/FAC_EnvioAbonosABanco.do?sjcs=1">
+			<forward name="abrir" path="/html/jsp/facturacion/ficheroBancarioAbonos.jsp"/>
+			<forward name="generarFichero" path="/html/jsp/facturacion/ficheroBancarioAbonos.jsp"/>
+			<forward name="exitoConString" path="/html/jsp/facturacion/exitoConString.jsp"/>
+		</action>
+
+		<!-- ***** Facturación SJCS / Mantenimiento de Pago ***** -->
+		<action path="/FCS_DatosGeneralesPago" type="com.siga.facturacionSJCS.action.DatosGeneralesPagoAction" name="datosGeneralesPagoForm" scope="session">
+			<forward name="inicio" path="/html/jsp/facturacionSJCS/datosPago.jsp"/>
+			<forward name="resultado" path="/html/jsp/facturacionSJCS/datosPagoResultados.jsp"/>
+			<forward name="abrirDeducirCobros" path="/html/jsp/facturacionSJCS/deducirCobrosManual.jsp"/>
+			<forward name="exitoInsertarPago" path="/html/jsp/facturacionSJCS/exitoInsertarPago.jsp"/>
+		</action>
+
+		<!-- ***** Facturación SJCS / Mantenimiento de Pago / Importes Totales ***** -->
+		<action path="/FCS_ImportesTotales" type="com.siga.facturacionSJCS.action.DatosImporteTotalesPagoAction" name="datosGeneralesPagoForm" scope="request">
+			<forward name="inicio" path="/html/jsp/facturacionSJCS/consultaPagoImportesTotales.jsp"/>
+		</action>
+
+		<!-- ***** Facturación SJCS / Mantenimiento de Pago / Conf. Abonos ***** -->
+		<action path="/FCS_ConfiguracionAbonos" type="com.siga.facturacionSJCS.action.ConfiguracionAbonosAction" name="configuracionAbonosForm" scope="session">
+			<forward name="inicio" path="/html/jsp/facturacionSJCS/configurarAbono.jsp"/>
+		</action>
+
+		<!-- ***** Facturación SJCS / Regularización ***** -->
+		<action path="/FCS_RegularizacionFacturacion" type="com.siga.facturacionSJCS.action.RegularizacionAction" name="regularizacionForm" scope="request">
+			<forward name="nuevo" 				path="/html/jsp/facturacionSJCS/datosRegularizacion.jsp"/>
+			<forward name="exitoRegularizacion" path="/html/jsp/facturacionSJCS/datosRegularizacionExito.jsp"/>
+		</action>
+
+		<action path="/FCS_RetencionesJudiciales" type="com.siga.facturacionSJCS.action.MantenimientoRetencionesJudicialesAction" name="MantenimientoRetencionesJudicialesForm" scope="session">
+			<forward name="inicio"	path="/html/jsp/facturacionSJCS/busquedaRetencionesJudiciales.jsp"/>
+			<forward name="resultado" path="/html/jsp/facturacionSJCS/resultadosRetencionesJudiciales.jsp"/>
+			<forward name="operar"	path="/html/jsp/facturacionSJCS/datosRetencionesJudiciales.jsp"/>
+			<forward name="inicioListado" path="/html/jsp/facturacionSJCS/busquedaListadoRetenciones.jsp"/>
+			<forward name="resultadoListado" path="/html/jsp/facturacionSJCS/resultadosListadoRetenciones.jsp"/>
+		</action>
+
+
+		<action path="/FCS_DetallePago" type="com.siga.facturacionSJCS.action.DatosDetallePagoAction" name="DatosDetallePagoForm" scope="request">
+			<forward name="inicio" path="/html/jsp/facturacionSJCS/consultaDetallePago.jsp"/>
+			<forward name="consulta" path="/html/jsp/facturacionSJCS/datosDetallePago.jsp"/>
+			<forward name="precioPago" path="/html/jsp/facturacionSJCS/modificacionImportePagos.jsp"/>
+			<forward name="verDetalle" path="/html/jsp/facturacionSJCS/verDetallePago.jsp"/>
+			<forward name="detalleConceptoDescargas" path="/html/jsp/facturacionSJCS/descargasPrevision.jsp"/>
+		</action>
+
+		<!-- ***** Facturación SJCS / Generar Impreso 190 ***** -->
+		<action path="/FCS_GenerarImpreso190" type="com.siga.facturacionSJCS.action.GenerarImpreso190Action" name="generarImpreso190Form" scope="request">
+			<forward name="inicio" path="/html/jsp/facturacionSJCS/generarImpreso190.jsp"/>
+			<forward name="exitoImpreso190" path="/html/jsp/facturacionSJCS/exitoImpreso190.jsp"/>
+			<forward name="generado" path="/html/jsp/facturacionSJCS/impreso190Generado.jsp"/>
+		</action>
+
+		<action path="/FCS_HistoricoPrecios" type="com.siga.facturacionSJCS.action.MantenimientoHistoricoPreciosAction" name="MantenimientoHistoricoPreciosForm" scope="request">
+			<forward name="inicio" path="/html/jsp/facturacionSJCS/busquedaHistoricoPrecios.jsp"/>
+			<forward name="listar" path="/html/jsp/facturacionSJCS/busquedaHistoricoPreciosResultados.jsp"/>
+		</action>
+
+		<!-- ***** Facturacion SJCS / mantenimiento de Previsiones ***** -->
+		<action path="/FCS_MantenimientoPrevisiones" type="com.siga.facturacionSJCS.action.MantenimientoPrevisionesAction" name="mantenimientoPrevisionesForm" scope="session">
+			<forward name="inicio" path="/html/jsp/facturacionSJCS/busquedaPrevisiones.jsp"/>
+			<forward name="resultado" path="/html/jsp/facturacionSJCS/busquedaPrevisionesResultados.jsp"/>
+			<forward name="exitoInsercion" path="/html/jsp/facturacionSJCS/exitoInsercion.jsp"/>
+			<forward name="abrir" path="/html/jsp/facturacionSJCS/datosGeneralesPrevisiones.jsp"/>
+			<forward name="configurarSalida" path="/html/jsp/facturacionSJCS/configurarSalida.jsp"/>
+			<forward name="descargas" path="/html/jsp/facturacionSJCS/descargasPrevision.jsp"/>
+		</action>
+
+
+
+
+		 <!-- ***** SJCS / Mantenimiento de Informes de Pagos ***** -->
+		<action path="/INF_FichaPago" type="com.siga.informes.action.MantenimientoInformesAction" name="mantenimientoInformesForm" scope="request">
+			<forward name="inicio" path="/html/jsp/informes/informeFichaPago.jsp"/>
+			<forward name="descargas" path="/html/jsp/informes/descargaInformes.jsp"/>
+		</action>
+		
+		
+
+		<!-- ***** SJCS / Mantenimiento de Informes de Facturaciones ***** -->
+		<action path="/INF_FichaFacturacion" type="com.siga.informes.action.MantenimientoInformesAction" name="mantenimientoInformesForm" scope="request">
+			<forward name="inicio" path="/html/jsp/informes/informeFichaFacturacion.jsp"/>
+			<forward name="descargas" path="/html/jsp/informes/descargaInformes.jsp"/>
+		</action>
+
+        <!-- ***** Facturacion SJCS / mantenimiento de Informes de Facturaciones ***** -->
+       <!-- <action path="/INF_CartaPago" type="com.siga.informes.action.MantenimientoInformesAction" name="mantenimientoInformesForm" scope="request">
+            <forward name="inicio" path="/html/jsp/informes/informeFichaColegiados.jsp"/>
+            <forward name="descargas" path="/html/jsp/informes/descargaInformes.jsp"/>
+        </action>
+         -->
+        <action path="/INF_CartaPago" type="com.siga.informes.action.InformePagosColegiadoAction" name="mantenimientoInformesForm" validate="true" scope="request">
+			<forward name="inicio" path="/html/jsp/informes/consultaPagoColegiados.jsp"/>
+			<forward name="resultado" path="/html/jsp/informes/listadoPagoColegiados.jsp"/>
+			<forward name="detallePagoColegiado" path="/html/jsp/informes/detallePagoColegiado.jsp"/>
+			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>
+			
+		</action>
+        
+
+        <!-- ***** Facturacion SJCS / mantenimiento de Informes de Facturaciones ***** -->
+        <action path="/INF_CertificadoPago" type="com.siga.informes.action.MantenimientoInformesAction" name="mantenimientoInformesForm" scope="request">
+            <forward name="inicio" path="/html/jsp/informes/informeFichaCertificados.jsp"/>
+            <forward name="descargas" path="/html/jsp/informes/descargaInformes.jsp"/>
+        </action>
+
+        <!-- ***** Facturacion SJCS / mantenimiento de Informes de Facturaciones ***** -->
+        <action path="/INF_InformeFacturacion" type="com.siga.informes.action.MantenimientoInformesAction" name="mantenimientoInformesForm" scope="request">
+            <forward name="inicio" path="/html/jsp/informes/informeFacturacion.jsp"/>
+            <forward name="descargas" path="/html/jsp/informes/descargaInformes.jsp"/>
+        </action>
+
+
+		<!-- ***** SJCS / Mantenimiento Procurador ***** -->
+		<action path="/JGR_MantenimientoProcuradores" type="com.siga.gratuita.action.MantenimientoProcuradorAction" name="MantenimientoProcuradorForm" scope="request" validate="false">
+			<forward name="inicio" path="/html/jsp/gratuita/busquedaProcurador.jsp"/>
+			<forward name="buscarPor" path="/html/jsp/gratuita/busquedaProcuradorResultados.jsp"/>
+			<forward name="editar" path="/html/jsp/gratuita/datosProcurador.jsp"/>
+		</action>
+
+		<!-- ***** SJCS / Mantenimiento Prision ***** -->
+		<action path="/JGR_MantenimientoPrisiones" type="com.siga.gratuita.action.MantenimientoPrisionAction" name="MantenimientoPrisionForm" scope="request" validate="false">
+			<forward name="inicio" path="/html/jsp/gratuita/busquedaPrision.jsp"/>
+			<forward name="buscarPor" path="/html/jsp/gratuita/busquedaPrisionResultados.jsp"/>
+			<forward name="editar" path="/html/jsp/gratuita/datosPrision.jsp"/>
+		</action>
+
+		<!-- ***** SJCS / Mantenimiento Comisaria ***** -->
+		<action path="/JGR_MantenimientoComisarias" type="com.siga.gratuita.action.MantenimientoComisariaAction" name="MantenimientoComisariaForm" scope="request" validate="false">
+			<forward name="inicio" path="/html/jsp/gratuita/busquedaComisaria.jsp"/>
+			<forward name="buscarPor" path="/html/jsp/gratuita/busquedaComisariaResultados.jsp"/>
+			<forward name="editar" path="/html/jsp/gratuita/datosComisaria.jsp"/>
+			<forward name="buscarComisaria" path="/html/jsp/gratuita/buscarComisariaOculta.jsp"/>
+		</action>
+        
+        <!-- ***** SJCS / Mantenimiento Juzgado o Tribunal ***** -->
+        <action path="/JGR_MantenimientoJuzgados" type="com.siga.gratuita.action.MantenimientoJuzgadoAction" name="MantenimientoJuzgadoForm" scope="request" validate="false">
+            <forward name="inicio" path="/html/jsp/gratuita/busquedaJuzgado.jsp"/>
+            <forward name="buscarPor" path="/html/jsp/gratuita/busquedaJuzgadoResultados.jsp"/>
+            <forward name="editar" path="/html/jsp/gratuita/datosJuzgado.jsp"/>
+            <forward name="nuevoProcedimiento" path="/html/jsp/gratuita/modalNuevoProcedimiento.jsp"/>
+            <forward name="buscarJuzgado" path="/html/jsp/gratuita/buscarJuzgadoOculta.jsp"/>
+        </action>
+
+		<!-- ***** SJCS / Pestana Delitos EJG ***** -->
+		<action path="/JGR_DelitosEJG" type="com.siga.gratuita.action.PestanaDelitoEJGAction" name="pestanaDelitoEJGForm" scope="request" validate="false">
+			<forward name="inicio" path="/html/jsp/gratuita/inicioDelitosEJG.jsp"/>
+			<forward name="lista" path="/html/jsp/gratuita/listaDelitosEJG.jsp"/>
+			<forward name="nuevo" path="/html/jsp/gratuita/modalNuevoDelitoEJG.jsp"/>
+		</action>
+
+		<!-- ***** SJCS / Pestana Delitos Designa ***** -->
+		<action path="/JGR_DelitosDesignas" type="com.siga.gratuita.action.PestanaDelitoDesignaAction" name="pestanaDelitoDesignaForm" scope="request" validate="false">
+			<forward name="inicio" path="/html/jsp/gratuita/inicioDelitosDesigna.jsp"/>
+			<forward name="lista" path="/html/jsp/gratuita/listaDelitosDesigna.jsp"/>
+			<forward name="nuevo" path="/html/jsp/gratuita/modalNuevoDelitoDesigna.jsp"/>
+		</action>
+
+		<!-- ***** SJCS / Pestana Delitos Asistencia ***** -->
+		<action path="/JGR_DelitosAsistencia" type="com.siga.gratuita.action.PestanaDelitoAsistenciaAction" name="pestanaDelitoAsistenciaForm" scope="request" validate="false">
+			<forward name="inicio" path="/html/jsp/gratuita/inicioDelitosAsistencia.jsp?esFichaColegial=0"/>
+			<forward name="lista" path="/html/jsp/gratuita/listaDelitosAsistencia.jsp?esFichaColegial=0"/>
+			<forward name="nuevo" path="/html/jsp/gratuita/modalNuevoDelitoAsistencia.jsp?esFichaColegial=0"/>
+		</action>
+
+		<action path="/JGR_DelitosAsistenciaLetrado" type="com.siga.gratuita.action.PestanaDelitoAsistenciaAction" name="pestanaDelitoAsistenciaForm" scope="request" validate="false">
+			<forward name="inicio" path="/html/jsp/gratuita/inicioDelitosAsistencia.jsp?esFichaColegial=1"/>
+			<forward name="lista" path="/html/jsp/gratuita/listaDelitosAsistencia.jsp?esFichaColegial=1"/>
+			<forward name="nuevo" path="/html/jsp/gratuita/modalNuevoDelitoAsistencia.jsp?esFichaColegial=1"/>
+		</action>
+
+		<action path="/JGR_ContrariosAsistencia" type="com.siga.gratuita.action.ContrariosAsistenciaAction" name="contrariosAsistenciaForm" scope="request">
+		    <forward name="inicio" path="/html/jsp/gratuita/contrariosAsistencia.jsp?esFichaColegial=0"/>
+		    <forward name="listado" path="/html/jsp/gratuita/listarContrariosAsistencia.jsp?esFichaColegial=0"/>
+		    <forward name="editar" path="/html/jsp/gratuita/modalContrariosAsistencia.jsp?esFichaColegial=0"/>
+		    <forward name="abrirBusquedaOculta" path="/html/jsp/gratuita/personasJGOculta.jsp?esFichaColegial=0"/>
+		</action>
+
+		<action path="/JGR_ContrariosAsistenciaLetrado" type="com.siga.gratuita.action.ContrariosAsistenciaAction" name="contrariosAsistenciaForm" scope="request">
+		    <forward name="inicio" path="/html/jsp/gratuita/contrariosAsistencia.jsp?esFichaColegial=1"/>
+		    <forward name="listado" path="/html/jsp/gratuita/listarContrariosAsistencia.jsp?esFichaColegial=1"/>
+		    <forward name="editar" path="/html/jsp/gratuita/modalContrariosAsistencia.jsp?esFichaColegial=1"/>
+		    <forward name="abrirBusquedaOculta" path="/html/jsp/gratuita/personasJGOculta.jsp?esFichaColegial=1"/>
+		</action>
+
+		<action path="/JGR_ContrariosAsistenciaPerJG" type="com.siga.gratuita.action.PersonaJGAction" name="PersonaJGForm" scope="request">
+			<forward name="personaJG" path="/html/jsp/gratuita/personaJG.jsp?esFichaColegial=0"/>
+			<forward name="buscarNIF" path="/html/jsp/gratuita/personasJGOculta.jsp?esFichaColegial=0"/>
+			<forward name="seleccionPersonaJG" path="/html/jsp/gratuita/seleccionPersonaJG.jsp?esFichaColegial=0"/>
+		</action>
+
+		<action path="/JGR_ContrariosAsistenciaPerJGLetrado" type="com.siga.gratuita.action.PersonaJGAction" name="PersonaJGForm" scope="request">
+			<forward name="personaJG" path="/html/jsp/gratuita/personaJG.jsp?esFichaColegial=1"/>
+			<forward name="buscarNIF" path="/html/jsp/gratuita/personasJGOculta.jsp?esFichaColegial=1"/>
+			<forward name="seleccionPersonaJG" path="/html/jsp/gratuita/seleccionPersonaJG.jsp?esFichaColegial=1"/>
+		</action>
+
+		<action path="/JGR_MantenimientoDestinatariosRetenciones"  type="com.siga.gratuita.action.MantenimientoDestinatariosRetencionesAction" name="MantenimientoDestinatariosRetencionesForm" scope="request">
+			<forward name="abrir" path="/html/jsp/gratuita/abrirDestinatariosRetenciones.jsp"/>
+			<forward name="resultados" path="/html/jsp/gratuita/listadoDestinatariosRetenciones.jsp"/>
+			<forward name="editar" path="/html/jsp/gratuita/editarDestinatarioRetenciones.jsp"/>
+			<forward name="buscarCuenta" path="/html/jsp/gratuita/buscarCuentaOculta.jsp"/>
+			
+		</action>
+		
+		<!-- ***** CENSO / Gestionar Comisiones ***** -->
+		<action path="/CEN_GestionarComisiones" type="com.siga.censo.action.BusquedaComisionesAction" name="BusquedaComisionesForm" scope="request">
+			<forward name="inicio" path="/html/jsp/censo/busquedaComisiones.jsp"/>
+			<forward name="busqueda" path="/html/jsp/censo/resultadoBusquedaComisiones.jsp"/>
+			<forward name="ver" path="/html/jsp/censo/datosCVComision.jsp"/>
+		</action>
+		
+		<!-- ***** CENSO / Gestionar Comisiones ***** -->
+		
+		 
+		<action path="/FCS_BusquedaRentencionesAplicadas" type="com.siga.facturacionSJCS.action.BusquedaRetencionesAplicadasAction" name="BusquedaRetencionesAplicadasForm" scope="request">
+			<forward name="inicio" path="/html/jsp/facturacionSJCS/busquedaRetencionesAplicadas.jsp"/>
+			<forward name="resultado" path="/html/jsp/facturacionSJCS/busquedaRetencionesAplicadasResultados.jsp"/>
+			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>
+			
+		</action>	
+
+		<!-- **************************************************************************** -->
+		<!-- *****************************  FIN ACTION MENÚS **************************** -->
+		<!-- **************************************************************************** -->
+	</action-mappings>
+
+	<plug-in className="org.apache.struts.validator.ValidatorPlugIn">
+		<set-property property="pathnames" value="/WEB-INF/tlds/validator-rules.xml, /WEB-INF/tlds/validation.xml"/>
+	</plug-in>
+</struts-config>

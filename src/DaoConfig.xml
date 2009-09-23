@@ -1,0 +1,9 @@
+<!DOCTYPE daoConfig PUBLIC "-//ibatis.apache.org//DTD DAO Configuration 2.0//EN" "http://ibatis.apache.org/dtd/dao-2.dtd">
+<daoConfig>
+	<context>
+		<transactionManager type="SQLMAP">
+			<property name="SqlMapConfigResource" value="SqlMapConfig.xml"/>
+		</transactionManager>
+   		<dao interface="es.satec.siga.util.daos.LetradoDao" implementation="es.satec.siga.util.daos.impl.IbatisLetradoDao"/>
+	</context>
+</daoConfig>

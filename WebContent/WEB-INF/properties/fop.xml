@@ -1,0 +1,7 @@
+<configuration>
+	<fonts>
+		<font metrics-file="trebuc.xml" kerning="yes" embed-file="trebuc.ttf">
+			<font-triplet name="TrebuchetMS" style="normal" weight="normal"/>
+		</font>
+	</fonts>
+</configuration>

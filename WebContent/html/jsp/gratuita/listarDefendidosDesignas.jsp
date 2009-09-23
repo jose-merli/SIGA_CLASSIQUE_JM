@@ -1,0 +1,221 @@
+<!-- listarDefendidosDesignas.jsp -->
+<!-- Contiene el contenido del frame de una pantalla de detalle multiregistro
+	 Utilizando tags pinta una lista con cabeceras fijas -->
+	 
+<!-- CABECERA JSP -->
+<meta http-equiv="Expires" content="0">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
+
+<!-- TAGLIBS -->
+<%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
+<%@ taglib uri = "struts-bean.tld" prefix="bean"%>
+<%@ taglib uri = "struts-html.tld" prefix="html"%>
+<%@ taglib uri = "struts-logic.tld" prefix="logic"%>
+
+
+<%@ page import="com.siga.gratuita.action.PersonaJGAction"%>
+<%@ page import="com.atos.utils.*"%>
+<%@ page import="com.siga.beans.*"%>
+<%@ page import="com.siga.Utilidades.*"%>
+<%@page import="java.util.Vector"%>
+<%@page import="java.util.Hashtable"%>
+
+
+<!-- JSP -->
+<% 
+	String app=request.getContextPath();
+	HttpSession ses=request.getSession();
+		
+	Vector obj = (Vector)request.getSession().getAttribute("resultado");
+	request.getSession().removeAttribute("resultado");
+	String modo = (String) ses.getAttribute("Modo");
+	UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+	String idInstitucionLocation = usr.getLocation();
+	String anio="",numero="", idturno="";
+	Hashtable designaActual = (Hashtable)ses.getAttribute("designaActual");
+	anio = (String)designaActual.get("ANIO");
+	numero = (String)designaActual.get("NUMERO");
+	idturno = (String)designaActual.get("IDTURNO");
+%>	
+
+
+
+<%@page import="com.siga.tlds.FilaExtElement"%>
+<%@page import="com.siga.administracion.SIGAConstants"%>
+<html>
+<!-- HEAD -->
+<head>
+
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
+	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+
+	<!-- INICIO: TITULO Y LOCALIZACION -->
+	<!-- Escribe el título y localización en la barra de título del frame principal -->
+	<siga:TituloExt 
+		titulo="gratuita.defendidosDesigna.literal.titulo" 
+		localizacion="gratuita.defendidosDesigna.literal.location"/>
+	<!-- FIN: TITULO Y LOCALIZACION -->
+
+	<!-- SCRIPTS LOCALES -->
+	<script language="JavaScript">
+	
+		function refrescarLocal(){
+			parent.buscar();
+		}
+	function comunicar(fila)
+			{
+			//subicono('iconoboton_comunicar'+fila);
+			var idPersonaJG = document.getElementById( 'oculto' + fila + '_6');
+			var idInstitucion = document.getElementById( 'oculto' + fila + '_7');
+			var idTurno = document.getElementById( 'oculto' + fila + '_8');
+			var anio = document.getElementById( 'oculto' + fila + '_9');
+			var numero = document.getElementById( 'oculto' + fila + '_10');
+
+		   	
+			
+			datos = "idInstitucion=="+idInstitucion.value +"##anio=="+anio.value + "##idTurno==" +idTurno.value+"##numero==" +numero.value+ "##idPersonaJG==" +idPersonaJG.value+"%%%";
+			
+			var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='/SIGA/INF_InformesGenericos.do' target='submitArea'>");
+			formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=idInstitucionLocation%>'>"));
+			formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
+			formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='OFICI'>"));
+			formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
+			formu.appendChild(document.createElement("<input type='hidden' name='enviar' value='1'>"));
+			formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value='0'>"));
+				
+			formu.appendChild(document.createElement("<input type='hidden' name='descargar' value='1'>"));
+			
+			
+			document.appendChild(formu);
+			formu.datosInforme.value=datos;
+			formu.submit();
+			
+			
+			
+      	    					
+					
+	
+} 	
+function accionCerrar() {
+		
+	}
+	
+	</script>
+
+</head>
+
+<body>
+
+		<!-- INICIO: LISTA DE VALORES -->
+		<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista 
+			 de cabeceras fijas -->
+
+		<!-- Formulario de la lista de detalle multiregistro -->
+		<!-- Formulario de la lista de detalle multiregistro -->
+		<html:form action="/JGR_DefendidosDesignasPerJG.do" method="post" target="submitArea" style="display:none">
+			<input type="hidden" name="modo" value="abrirPestana">
+			
+			<input type="hidden" name="idInstitucionJG" value="<%=usr.getLocation() %>">
+			<input type="hidden" name="idPersonaJG" value="">
+	
+			<input type="hidden" name="idInstitucionDES" value="<%=usr.getLocation() %>">
+			<input type="hidden" name="idTurnoDES" value="<%=idturno %>">
+			<input type="hidden" name="anioDES" value="<%=anio %>">
+			<input type="hidden" name="numeroDES" value="<%=numero %>">
+	
+			<input type="hidden" name="conceptoE" value="<%=PersonaJGAction.DESIGNACION_INTERESADO %>">
+			<input type="hidden" name="tituloE" value="gratuita.defendidosDesigna.literal.titulo">
+			<input type="hidden" name="localizacionE" value="">
+			<input type="hidden" name="accionE" value="nuevo">
+			<input type="hidden" name="actionE" value="/JGR_DefendidosDesignasPerJG.do">
+			<input type="hidden" name="pantallaE" value="M">
+			<!-- RGG: cambio a formularios ligeros -->
+			<input type="hidden" name="tablaDatosDinamicosD">
+			<input type="hidden" name="actionModal" value="">
+		</html:form>	
+		<table class="tablaTitulo" cellspacing="0" heigth="38">
+		<tr>
+			<td id="titulo" class="titulitosDatos">
+	
+					<%  String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "";
+						ScsDesignaAdm adm = new ScsDesignaAdm (usr);
+						Hashtable hTitulo = adm.getTituloPantallaDesigna(usr.getLocation(), anio, numero,idturno);
+
+						if (hTitulo != null) {
+							t_nombre    = (String)hTitulo.get(ScsPersonaJGBean.C_NOMBRE);
+							t_apellido1 = (String)hTitulo.get(ScsPersonaJGBean.C_APELLIDO1);
+							t_apellido2 = (String)hTitulo.get(ScsPersonaJGBean.C_APELLIDO2);
+							t_anio      = (String)hTitulo.get(ScsDesignaBean.C_ANIO);
+							t_numero    = (String)hTitulo.get(ScsDesignaBean.C_CODIGO);
+							
+						}
+					
+					%>
+					<%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%>
+					- <%=UtilidadesString.mostrarDatoJSP(t_nombre)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido1)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido2)%>
+			</td>
+		</tr>
+		</table>
+
+			<!-- Campo obligatorio -->
+			<siga:TablaCabecerasFijas 
+			   nombre="listadoDefendidos"
+			   borde="2"
+			   clase="tableTitle"
+			   nombreCol="gratuita.defendidosDesigna.literal.nif,gratuita.defendidosDesigna.literal.nombreApellidos,gratuita.defendidosDesigna.literal.representante,"
+			   tamanoCol="10,45,30,15"
+		   			alto="100%"
+		   			ajusteBotonera="true"	
+			   modal="G"
+			  >
+
+		<% if (obj==null || obj.size()==0){%>
+	 		<br>
+	   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
+	 		<br>
+		<%}else{%>
+		
+			  <%
+		    	int recordNumber=1;
+			  FilaExtElement[] elems = null;
+			  
+			  if(!modo.equalsIgnoreCase("ver")){
+			 	 elems = new FilaExtElement[4];
+			 	 elems[3]=new FilaExtElement("comunicar", "comunicar", SIGAConstants.ACCESS_READ);
+			  }else{
+				  elems = new FilaExtElement[3];  
+			  }
+			  
+			  
+				while ((recordNumber) <= obj.size()){	 
+					Hashtable hash = (Hashtable)obj.get(recordNumber-1);
+			 	%>	
+				  	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="E,C,B" elementos="<%=elems%>" clase="listaNonEdit" modo="<%=modo%>">
+						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=PersonaJGAction.DESIGNACION_INTERESADO%>">
+						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="gratuita.contrariosDesigna.literal.titulo">
+						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="gratuita.contrariosDesigna.literal.titulo">
+						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" value="editar">
+						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=usr.getLocation()%>">
+						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_6" value="<%=hash.get("IDPERSONA")%>">
+						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_7" value="<%=usr.getLocation()%>">
+						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_8" value="<%=idturno %>">
+						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_9" value="<%=anio %>">
+						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_10" value="<%=numero %>">
+						<td>&nbsp;<%=hash.get("NIF")%></td>
+						<td>&nbsp;<%=hash.get("NOMBRE")%></td>
+						<td>&nbsp;<%=(String)hash.get("REPRESENTANTE")%></td>
+					</siga:FilaConIconos>	
+				<%recordNumber++;%> 
+				<%}%>	
+		<%}%>
+
+			</siga:TablaCabecerasFijas>
+
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	</body>
+</html>
+		  
+		

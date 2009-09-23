@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="Pruebas">
+
+	<typeAlias alias="letrado" type="es.satec.siga.util.vos.impl.LetradoVo"/>
+
+	<sql id="letradosFromWhere">
+		FROM CEN_PERSONA p, CEN_CLIENTE c
+		WHERE p.IDPERSONA=c.IDPERSONA
+		<dynamic prepend="AND">
+			<isNotNull prepend="AND" property="letrado.idInstitucion">
+				c.IDINSTITUCION=#letrado.idInstitucion#
+			</isNotNull>
+			<isNotEmpty prepend="AND" property="letrado.nombre">
+				p.nombre=#letrado.nombre#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="letrado.apellidos1">
+				p.apellidos1=#letrado.apellidos1#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="letrado.apellidos2">
+				p.apellidos2=#letrado.apellidos2#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="letrado.nifCif">
+				p.nifcif=#letrado.nifCif#
+			</isNotEmpty>
+		</dynamic>
+	</sql>
+	
+	<sql id="ordenacion">
+		<dynamic prepend="ORDER BY">
+			<iterate prepend="," property="ordenacion.criteria">
+			    $ordenacion.criteria[].key$ $ordenacion.criteria[].value$
+			</iterate>
+ 		</dynamic>
+	</sql>
+
+	<select id="numeroLetrados" parameterClass="java.util.Map" resultClass="Integer">
+		SELECT count(*)
+		<include refid="Pruebas.letradosFromWhere"/>
+	</select>
+
+	<sql id="selectLetrados">
+		SELECT p.NIFCIF, p.NOMBRE, p.APELLIDOS1, p.APELLIDOS2, p.FECHANACIMIENTO, p.IDPERSONA, c.IDINSTITUCION, c.NOAPARECERREDABOGACIA
+		<include refid="Pruebas.letradosFromWhere"/>
+	</sql>
+
+	<select id="listadoLetrados" parameterClass="java.util.Map" resultClass="letrado">
+		<include refid="Pruebas.selectLetrados"/>
+		<include refid="Pruebas.ordenacion"/>
+	</select>
+
+	<select id="paginaLetrados" parameterClass="java.util.Map" resultClass="letrado">
+		select * 
+		from (select a.*, rownum rnum
+				from (<include refid="Pruebas.selectLetrados"/>
+					  <include refid="Pruebas.ordenacion"/>) a
+				where rownum &lt;= #paginador.lastRecord#)
+		where rnum &gt;= #paginador.firstRecord#
+	</select>
+</sqlMap>

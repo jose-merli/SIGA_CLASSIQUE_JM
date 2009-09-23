@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<License>
+  <Data>
+    <LicensedTo>RedAbogacia</LicensedTo>
+    <Developers>Limited to 1 developer.</Developers>
+    <OEM>This is a non-redistributable license.</OEM>
+    <Products>
+      <Product>Aspose.Words for Java</Product>
+    </Products>
+    <EditionType>Enterprise</EditionType>
+    <SerialNumber>2b05f30f-0f22-4c95-838c-34757adc0915</SerialNumber>
+    <SubscriptionExpiry>20090206</SubscriptionExpiry>
+    <LicenseVersion>2.1</LicenseVersion>
+  </Data>
+  <Signature>FT7wSpzqJZx6b9mCq5R6gCT6jyaurxuRHMymNftCEd5pkS4/YCfkM8ytEP88KiADwj96LUUd65xf91L0LC1jvpOFakYbAilJWF8pH218iag2edG8k/sQzavfssg+Gqian5o753/5mt8oTXnhqNTI1FHD4rPsy1GcdrE0HdReASQ=</Signature>
+</License>

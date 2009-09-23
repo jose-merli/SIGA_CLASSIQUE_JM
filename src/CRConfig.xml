@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<CrystalReportEngine-configuration>
+<!--    <reportlocation>../..</reportlocation> -->
+    <timeout>10</timeout>
+    
+    <ExternalFunctionLibraryClassNames> 
+		<classname> </classname>
+		<classname> </classname>
+    </ExternalFunctionLibraryClassNames>
+    
+<keycode>b6w6g-11cs200-000kv00-0m71</keycode>
+<Javaserver-configuration>
+<DataDriverCommon>
+	<JavaDir></JavaDir>
+    <Classpath>${CLASSPATH}</Classpath>
+	<IORFileLocation>${TEMP}</IORFileLocation>
+	<JavaServerTimeout>1800</JavaServerTimeout>
+	<JVMMaxHeap>64000000</JVMMaxHeap>
+	<JVMMinHeap>32000000</JVMMinHeap>
+	<NumberOfThreads>100</NumberOfThreads>
+</DataDriverCommon>
+<JDBC>
+	<CacheRowSetSize>100</CacheRowSetSize>
+	<JDBCURL>jdbc:oracle:thin:@192.168.11.55:1521:SIGADES</JDBCURL>
+	<JDBCClassName>oracle.jdbc.driver.OracleDriver</JDBCClassName>
+	<JDBCUserName>uscgae2</JDBCUserName>
+	<JDBCUserPwd>uscgae2</JDBCUserPwd>
+	<JNDIURL></JNDIURL>
+	<JNDIConnectionFactory>weblogic.jndi.WLInitialContextFactory</JNDIConnectionFactory>
+	<JNDIInitContext>/</JNDIInitContext>
+	<JNDIUserName>weblogic</JNDIUserName>
+	<GenericJDBCDriver>
+		<Option>No</Option>
+		<DatabaseStructure>catalogs,tables</DatabaseStructure>
+		<StoredProcType>Standard</StoredProcType>
+		<LogonStyle>Oracle</LogonStyle>
+	</GenericJDBCDriver>
+</JDBC>
+<XML>
+	<CacheRowSetSize>100</CacheRowSetSize>
+	<PreReadNBytes>4096</PreReadNBytes>
+	<XMLLocalURL></XMLLocalURL>
+	<SchemaLocalURL></SchemaLocalURL>
+	<XMLHttpURL></XMLHttpURL>
+	<SchemaHttpURL></SchemaHttpURL>
+</XML>
+<JavaBeans>
+    <CacheRowSetSize>100</CacheRowSetSize>
+	<JavaBeansClassPath></JavaBeansClassPath>
+</JavaBeans>
+</Javaserver-configuration>
+</CrystalReportEngine-configuration>

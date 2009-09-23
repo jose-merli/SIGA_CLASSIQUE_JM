@@ -1,0 +1,10 @@
+
+TD.heading {text-align:center; text-decoration: none; background-color:#444444; color:white; font:"bold 9pt arial, helvetica";}
+TD.cellColor {text-align:center; background-color:white; color:white}
+TABLE.weekClass {text-align:center; background-color:Black; border:none}
+
+A.focusDay:link {color:white; background-color:#444444; text-decoration: none; font:"11pt arial, helvetica";}
+A.focusDay:hover {color:#888888; text-decoration: none; font:"11pt arial, helvetica";}
+
+A.weekday:link {color:#444444; text-decoration: none; font:"11pt arial, helvetica";}
+A.weekday:hover {color:#888888; text-decoration: none; font:"11pt arial, helvetica";}
