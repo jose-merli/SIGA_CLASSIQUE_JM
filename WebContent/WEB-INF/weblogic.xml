@@ -4,7 +4,7 @@
   <wls:context-root>/SIGA/</wls:context-root>
 	<wls:jsp-descriptor>
 		<wls:keepgenerated>true</wls:keepgenerated>
-		<wls:page-check-seconds>0</wls:page-check-seconds>
+		<wls:page-check-seconds>1</wls:page-check-seconds>
 		<wls:precompile>false</wls:precompile>
 		<wls:verbose>true</wls:verbose>
 		<wls:working-dir>.\WEB-INF\classes</wls:working-dir>
