@@ -1,6 +1,6 @@
 <!-- busquedaSolicitudesIncorporacionResultados.jsp -->
 <meta http-equiv="Expires" content="0">
-<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
 
 <%@taglib uri	=	"struts-tiles.tld" 			prefix="tiles" 		%>
