@@ -53,6 +53,6 @@
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/external/Concurrent.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/external/icu4j.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
-	<classpathentry kind="lib" path="C:/bea92/sipserver31/server/lib/ojdbc14.jar"/>
+	<classpathentry kind="lib" path="C:/bea/sipserver31/server/lib/ojdbc14.jar"/>
 	<classpathentry kind="output" path="WebContent/WEB-INF/classes"/>
 </classpath>
