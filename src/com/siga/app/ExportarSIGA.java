@@ -47,7 +47,7 @@ public class ExportarSIGA
 			
 			// Copiamos los html
 			traza ("Exportando HTML ...");
-			copy (pathOrigen + File.separator + "html" , 
+			copy (pathOrigen + File.separator + "WebContent" + File.separator + "html" , 
 				  pathDestino + File.separator + "html" );
 			
 			// Copiamos los src
@@ -57,12 +57,12 @@ public class ExportarSIGA
 	
 			// Copiamos los WEB-INF
 			traza ("Exportando WEB-INF ...");
-			copy (pathOrigen + File.separator + "WEB-INF" , 
+			copy (pathOrigen + File.separator + "WebContent" + File.separator + "WEB-INF" , 
 				  pathDestino + File.separator + "WEB-INF" );
 			
 			// Copiamos las librerias
 			traza ("Exportando LIB-WEB ...");
-			copy (pathOrigen + File.separator + "WEB-INF" + File.separator + "lib", 
+			copy (pathOrigen + File.separator + "WebContent" + File.separator + "WEB-INF" + File.separator + "lib", 
 				  pathDestino + File.separator + "lib-web");
 	
 			// Borramos las clases iniciales
