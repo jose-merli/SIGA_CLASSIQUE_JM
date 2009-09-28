@@ -922,6 +922,24 @@ public abstract class MasterBeanAdministrador {
 		}
 		return false;
 	}
+	public boolean updateSQL(String sql) throws ClsExceptions{
+
+		try {
+			Row row = new Row();	
+			
+			if (row.updateSQL(sql) >= 0) {
+				return true;
+			}
+			else{
+				this.error = "Error al modificar el elemento en BD";
+			}
+		}
+		catch (Exception e) {
+		    this.error = e.toString();
+			throw new ClsExceptions(e,  e.getMessage());
+		}
+		return false;
+	}
 
 	public boolean 	insertSQL(String sql) throws ClsExceptions{
 

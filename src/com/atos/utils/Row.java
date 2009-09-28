@@ -642,6 +642,57 @@ public class Row implements Serializable
 		
 		return deletedRecords;
 	}
+	public int updateSQL(String sql) throws ClsExceptions 
+	{
+		boolean thowsExc=false;
+		Connection con = null;
+		int updatedRecords = 0;
+		Statement st = null;
+		try 
+		{
+			con = ClsMngBBDD.getConnection();
+			st = con.createStatement();
+            ClsLogging.writeFileLog("SQL UPDATE SQL: "+sql,10);
+            updatedRecords = st.executeUpdate(sql);
+		} 
+		
+		catch (SQLException ex) 
+		{
+            ClsExceptions psscEx = new ClsExceptions(ex,ex.getMessage().substring(0, ex.getMessage().length() - 1) + "  SQL: "+sql);
+			thowsExc=true;
+			throw psscEx;
+		} 
+		
+		finally 
+		{
+			try 
+			{
+				if (st != null)
+				{
+					st.close();
+				}
+				
+				if (con != null)
+				{
+					ClsMngBBDD.closeConnection(con);
+				}
+			} 
+			
+			catch (SQLException exc) 
+			{
+				if (con != null)
+				{
+					ClsMngBBDD.closeConnection(con);
+				}
+				if (!thowsExc) {
+					ClsExceptions psscEx = new ClsExceptions(exc,exc.getMessage().substring(0, exc.getMessage().length() - 1));
+					throw psscEx;
+				}
+			}
+		}
+		
+		return updatedRecords;
+	}
 	
 	public void insertSQL(String sql) throws ClsExceptions 
 	{
