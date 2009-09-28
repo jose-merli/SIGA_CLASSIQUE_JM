@@ -578,9 +578,10 @@ public class ScsPermutaGuardiasAdm extends MasterBeanAdministrador {
 			sqlConfirmador.append(" and "+ScsPermutaGuardiasBean.C_IDCALENDARIOGUARDIAS_CONFIRMAD+"="+idcalendarioguardias);
 			sqlConfirmador.append(" and "+ScsPermutaGuardiasBean.C_IDTURNO_CONFIRMADOR+"="+idturno);
 			sqlConfirmador.append(" and "+ScsPermutaGuardiasBean.C_IDGUARDIA_CONFIRMADOR+"="+idguardia);
-			
-			ClsMngBBDD.executeUpdate(sqlSolicitante.toString());			
-			ClsMngBBDD.executeUpdate(sqlConfirmador.toString());
+			deleteSQL(sqlSolicitante.toString());
+			deleteSQL(sqlConfirmador.toString());
+//			ClsMngBBDD.executeUpdate(sqlSolicitante.toString());			
+//			ClsMngBBDD.executeUpdate(sqlConfirmador.toString());
 			salida = true;
 		} catch (Exception e) {
 			salida = false;

@@ -694,8 +694,9 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 			sql.append(" and "+ScsSaltosCompensacionesBean.C_IDGUARDIA+"="+idguardia);
 			sql.append(" and "+ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION+"= 'S'");
 			sql.append(" and "+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+" IS NOT NULL");
-					
-			ClsMngBBDD.executeUpdate(sql.toString());
+			
+			updateSQL(sql.toString());
+//			ClsMngBBDD.executeUpdate(sql.toString());
 			salida = true;
 		} catch (Exception e) {
 			salida = false;
@@ -742,8 +743,8 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 			sql.append(" and "+ScsSaltosCompensacionesBean.C_IDGUARDIA+"="+idguardia);
 			sql.append(" and "+ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION+"= 'C'");
 			sql.append(" and "+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+" IS NOT NULL");
-					
-			ClsMngBBDD.executeUpdate(sql.toString());
+			updateSQL(sql.toString());		
+//			ClsMngBBDD.executeUpdate(sql.toString());
 			salida = true;
 		} catch (Exception e) {
 			salida = false;
@@ -785,8 +786,8 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 			sql.append(" and "+ScsSaltosCompensacionesBean.C_IDGUARDIA+"="+idguardia);
 			sql.append(" and "+ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION+"= 'C'");
 //			sql.append(" and "+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+" IS NULL");
-					
-			ClsMngBBDD.executeUpdate(sql.toString());
+			deleteSQL(sql.toString());		
+//			ClsMngBBDD.executeUpdate(sql.toString());
 			salida = true;
 		} catch (Exception e) {
 			salida = false;

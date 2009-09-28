@@ -160,8 +160,8 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 			sql.append(" and "+ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS+"="+idcalendarioguardias);
 			sql.append(" and "+ScsCabeceraGuardiasBean.C_IDTURNO+"="+idturno);
 			sql.append(" and "+ScsCabeceraGuardiasBean.C_IDGUARDIA+"="+idguardia);
-					
-			ClsMngBBDD.executeUpdate(sql.toString());
+			deleteSQL(sql.toString());
+//			ClsMngBBDD.executeUpdate(sql.toString());
 			salida = true;
 		} catch (Exception e) {
 			salida = false;

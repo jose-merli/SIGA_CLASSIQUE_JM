@@ -219,8 +219,8 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 			sql.append(" and "+ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS+"="+idcalendarioguardias);
 			sql.append(" and "+ScsGuardiasColegiadoBean.C_IDTURNO+"="+idturno);
 			sql.append(" and "+ScsGuardiasColegiadoBean.C_IDGUARDIA+"="+idguardia);
-					
-			ClsMngBBDD.executeUpdate(sql.toString());
+			deleteSQL(sql.toString());		
+//			ClsMngBBDD.executeUpdate(sql.toString());
 			salida = true;
 		} catch (Exception e) {
 			salida = false;
