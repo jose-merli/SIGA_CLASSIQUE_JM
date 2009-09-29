@@ -321,7 +321,7 @@
 
 
     <session-config>
-      <session-timeout>120</session-timeout> 
+      <session-timeout>3600</session-timeout> 
     </session-config>
 
   <welcome-file-list>
