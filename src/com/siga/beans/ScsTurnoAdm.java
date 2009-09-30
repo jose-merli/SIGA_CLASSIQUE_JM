@@ -44,7 +44,7 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 		String[] campos = {	ScsTurnoBean.C_IDINSTITUCION,			ScsTurnoBean.C_IDTURNO, 
 				ScsTurnoBean.C_NOMBRE,					ScsTurnoBean.C_ABREVIATURA,
 				ScsTurnoBean.C_DESCRIPCION,				ScsTurnoBean.C_GUARDIAS,
-				ScsTurnoBean.C_VALIDARJUSTIFICACIONES,	ScsTurnoBean.C_REPARTOPORPUNTOS,
+				ScsTurnoBean.C_VALIDARJUSTIFICACIONES,	
 				ScsTurnoBean.C_DESIGNADIRECTA,			ScsTurnoBean.C_VALIDARINSCRIPCIONES,	
 				ScsTurnoBean.C_IDMATERIA,				ScsTurnoBean.C_IDZONA,
 				ScsTurnoBean.C_IDSUBZONA,				ScsTurnoBean.C_IDORDENADIONCOLAS,
@@ -217,7 +217,6 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 			bean.setDescripcion(UtilidadesHash.getString(hash,ScsTurnoBean.C_DESCRIPCION));
 			bean.setGuardias(UtilidadesHash.getInteger(hash,ScsTurnoBean.C_GUARDIAS));
 			bean.setValidarJustificaciones(UtilidadesHash.getString(hash,ScsTurnoBean.C_VALIDARJUSTIFICACIONES));
-			bean.setRepartoPorPuntos(UtilidadesHash.getString(hash,ScsTurnoBean.C_REPARTOPORPUNTOS));
 			bean.setDesignaDirecta(UtilidadesHash.getString(hash,ScsTurnoBean.C_DESIGNADIRECTA));
 			bean.setValidarInscripciones(UtilidadesHash.getString(hash,ScsTurnoBean.C_VALIDARINSCRIPCIONES));
 			bean.setIdArea(Integer.valueOf(UtilidadesHash.getString(hash,ScsTurnoBean.C_IDAREA)));
@@ -258,7 +257,6 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash,ScsTurnoBean.C_DESCRIPCION, aux);
 			hash.put(ScsTurnoBean.C_GUARDIAS, String.valueOf(b.getGuardias()));
 			hash.put(ScsTurnoBean.C_VALIDARJUSTIFICACIONES, b.getValidarJustificaciones());
-			hash.put(ScsTurnoBean.C_REPARTOPORPUNTOS,  b.getRepartoPorPuntos());
 			hash.put(ScsTurnoBean.C_DESIGNADIRECTA,  b.getDesignaDirecta());
 			hash.put(ScsTurnoBean.C_VALIDARINSCRIPCIONES,  b.getValidarInscripciones());
 			hash.put(ScsTurnoBean.C_IDAREA,  String.valueOf(b.getIdArea()));

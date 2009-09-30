@@ -29,7 +29,6 @@ public class ScsTurnoBean extends MasterBean{
 	private Integer		idGrupoFacturacion;	
 	private String		requisitos;	
 	private Integer		idPersonaUltimo;
-	private String 		repartoPorPuntos;
 	private String      activarRestriccionAcreditacion;
 	private String      letradoAsistencias;
 	private String      letradoActuaciones;
@@ -115,13 +114,6 @@ public class ScsTurnoBean extends MasterBean{
 	 * @return void 
 	 */	
 	public void setValidarJustificaciones	(String valor)		{ this.validarJustificaciones = valor;}
-	/**
-	 * Almacena en la Bean el  campo repartoPorPuntos del turno "repartoPorPuntos" 
-	 * 
-	 * @param valor String repartoPorPuntos. De tipo "String". 
-	 * @return void 
-	 */	
-	public void setRepartoPorPuntos			(String valor)		{ this.repartoPorPuntos = valor;}
 	/**
 	 * Almacena en la Bean el  campo designaDirecta del turno "designaDirecta" 
 	 * 
@@ -244,12 +236,6 @@ public class ScsTurnoBean extends MasterBean{
 	 * @return Valor validarJustificaciones. De tipo "String" 
 	 */
 	public String getValidarJustificaciones		()	{ return this.validarJustificaciones;}
-	/**
-	 * Recupera del Bean el valor repartoPorPuntos.  
-	 * 
-	 * @return Valor repartoPorPuntos. De tipo "String" 
-	 */
-	public String getRepartoPorPuntos			()	{ return this.repartoPorPuntos;}
 	/**
 	 * Recupera del Bean el valor designaDirecta.  
 	 * 
