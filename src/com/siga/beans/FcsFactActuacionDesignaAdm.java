@@ -64,8 +64,6 @@ public class FcsFactActuacionDesignaAdm extends MasterBeanAdministrador {
 			bean.setCodigoProcedimiento	(UtilidadesHash.getString(hash,FcsFactActuacionDesignaBean.C_CODIGOPROCEDIMIENTO));
 			bean.setFechaActuacion	(UtilidadesHash.getString(hash,FcsFactActuacionDesignaBean.C_FECHA_ACTUACION));
 			bean.setFechaJustificacion	(UtilidadesHash.getString(hash,FcsFactActuacionDesignaBean.C_FECHA_JUSTIFICACION));
-			bean.setPuntosAplicados	(UtilidadesHash.getInteger(hash,FcsFactActuacionDesignaBean.C_PUNTOS_APLICADOS));
-			
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -94,7 +92,6 @@ public class FcsFactActuacionDesignaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, FcsFactActuacionDesignaBean.C_CODIGOPROCEDIMIENTO, b.getCodigoProcedimiento().toString());
 			UtilidadesHash.set(htData, FcsFactActuacionDesignaBean.C_FECHA_ACTUACION, b.getFechaActuacion().toString());
 			UtilidadesHash.set(htData, FcsFactActuacionDesignaBean.C_FECHA_JUSTIFICACION, b.getFechaJustificacion().toString());
-			UtilidadesHash.set(htData, FcsFactActuacionDesignaBean.C_PUNTOS_APLICADOS, b.getPuntosAplicados().toString());
 			UtilidadesHash.set(htData, FcsFactActuacionDesignaBean.C_CODIGOPROCEDIMIENTO, b.getCodigoProcedimiento().toString());
 		}
 		catch (Exception e) {

@@ -22,7 +22,7 @@ public class ScsProcedimientosAdm extends MasterBeanAdministrador {
 	protected String[] getCamposBean() {
 		String [] campos = {ScsProcedimientosBean.C_FECHAMODIFICACION,		ScsProcedimientosBean.C_IDINSTITUCION,
 							ScsProcedimientosBean.C_IDPROCEDIMIENTO,		ScsProcedimientosBean.C_NOMBRE,		
-							ScsProcedimientosBean.C_PRECIO,					ScsProcedimientosBean.C_PUNTOS,
+							ScsProcedimientosBean.C_PRECIO,					
 							ScsProcedimientosBean.C_USUMODIFICACION, 		ScsProcedimientosBean.C_IDJURISDICCION,
 							ScsProcedimientosBean.C_CODIGO, 				ScsProcedimientosBean.C_COMPLEMENTO,
 							ScsProcedimientosBean.C_VIGENTE};
@@ -48,7 +48,6 @@ public class ScsProcedimientosAdm extends MasterBeanAdministrador {
 			bean.setIdProcedimiento	(UtilidadesHash.getInteger(hash,ScsProcedimientosBean.C_IDPROCEDIMIENTO));
 			bean.setNombre			(UtilidadesHash.getString(hash,ScsProcedimientosBean.C_NOMBRE));
 			bean.setPrecio			(UtilidadesHash.getFloat(hash,ScsProcedimientosBean.C_PRECIO));
-			bean.setPuntos			(UtilidadesHash.getInteger(hash,ScsProcedimientosBean.C_PUNTOS));
 			bean.setFechaMod		(UtilidadesHash.getString(hash,ScsProcedimientosBean.C_FECHAMODIFICACION));
 			bean.setUsuMod			(UtilidadesHash.getInteger(hash,ScsProcedimientosBean.C_USUMODIFICACION));
 			bean.setCodigo		    (UtilidadesHash.getString(hash,ScsProcedimientosBean.C_CODIGO));
@@ -73,7 +72,6 @@ public class ScsProcedimientosAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, ScsProcedimientosBean.C_IDPROCEDIMIENTO, b.getIdInstitucion().toString());
 			UtilidadesHash.set(htData, ScsProcedimientosBean.C_NOMBRE, b.getNombre().toString());
 			UtilidadesHash.set(htData, ScsProcedimientosBean.C_PRECIO, b.getPrecio().toString());
-			UtilidadesHash.set(htData, ScsProcedimientosBean.C_PUNTOS, b.getPuntos().toString());
 			UtilidadesHash.set(htData, ScsProcedimientosBean.C_USUMODIFICACION, b.getUsuMod().toString());
 			UtilidadesHash.set(htData, ScsProcedimientosBean.C_CODIGO, b.getCodigo().toString());
 			UtilidadesHash.set(htData, ScsProcedimientosBean.C_COMPLEMENTO, b.getComplemento().toString());

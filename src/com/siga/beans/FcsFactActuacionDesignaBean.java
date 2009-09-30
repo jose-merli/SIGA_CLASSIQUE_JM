@@ -30,7 +30,6 @@ public class FcsFactActuacionDesignaBean extends MasterBean{
 	private String		fechaJustificacion;
 	private Double		precioAplicado;
 	private Integer		porcentajeFacturado;
-	private Integer		puntosAplicados;
 	private String		codigoProcedimiento;
 	
 	
@@ -209,10 +208,5 @@ public class FcsFactActuacionDesignaBean extends MasterBean{
 	public void setFechaJustificacion(String fechaJustificacion) {
 		this.fechaJustificacion = fechaJustificacion;
 	}
-	public Integer getPuntosAplicados() {
-		return puntosAplicados;
-	}
-	public void setPuntosAplicados(Integer puntosAplicados) {
-		this.puntosAplicados = puntosAplicados;
-	}
+
 }

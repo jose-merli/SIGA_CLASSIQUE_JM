@@ -73,10 +73,10 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 			bean.setFechaDesde(UtilidadesHash.getString(hash,FcsPagosJGBean.C_FECHADESDE));
 			bean.setFechaHasta(UtilidadesHash.getString(hash,FcsPagosJGBean.C_FECHAHASTA));
 			bean.setCriterioPagoTurno(UtilidadesHash.getString(hash,FcsPagosJGBean.C_CRITERIOPAGOTURNO));
-			bean.setPorcentajeOficio(UtilidadesHash.getInteger(hash,FcsPagosJGBean.C_PORCENTAJEOFICIO));
-			bean.setPorcentajeGuardias(UtilidadesHash.getInteger(hash,FcsPagosJGBean.C_PORCENTAJEGUARDIAS));
-			bean.setPorcentajeSOJ(UtilidadesHash.getInteger(hash,FcsPagosJGBean.C_PORCENTAJESOJ));
-			bean.setPorcentajeEJG(UtilidadesHash.getInteger(hash,FcsPagosJGBean.C_PORCENTAJEEJG));
+			bean.setPorcentajeOficio(UtilidadesHash.getDouble(hash,FcsPagosJGBean.C_PORCENTAJEOFICIO));
+			bean.setPorcentajeGuardias(UtilidadesHash.getDouble(hash,FcsPagosJGBean.C_PORCENTAJEGUARDIAS));
+			bean.setPorcentajeSOJ(UtilidadesHash.getDouble(hash,FcsPagosJGBean.C_PORCENTAJESOJ));
+			bean.setPorcentajeEJG(UtilidadesHash.getDouble(hash,FcsPagosJGBean.C_PORCENTAJEEJG));
 			bean.setImporteRepartir(UtilidadesHash.getDouble(hash,FcsPagosJGBean.C_IMPORTEREPARTIR));
 			bean.setImportePagado(UtilidadesHash.getDouble(hash,FcsPagosJGBean.C_IMPORTEPAGADO));
 			bean.setImporteEJG(UtilidadesHash.getDouble(hash,FcsPagosJGBean.C_IMPORTEEJG));
@@ -654,45 +654,15 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		int contador = 0;	            
 		
 		// select a ejecutar
-		String consulta = 	
-		" SELECT " + FcsPagoApunteBean.C_IDPERSONA + " AS IDPERSONA_SJCS" +  
-		" FROM " + FcsPagoApunteBean.T_NOMBRETABLA;
+		String consulta = 
+		" SELECT " + FcsPagoColegiadoBean.C_IDPERORIGEN + " AS IDPERSONA_SJCS" +
+		" FROM " + FcsPagoColegiadoBean.T_NOMBRETABLA;
 		contador++;
 		codigos.put(new Integer(contador),idInstitucion);
-		consulta += " WHERE " + FcsPagoApunteBean.C_IDINSTITUCION + "=:" + contador;
+		consulta += " WHERE " + FcsPagoColegiadoBean.C_IDINSTITUCION + "=:" + contador;
 		contador++;
 		codigos.put(new Integer(contador),idPago);
-		consulta += " AND " + FcsPagoApunteBean.C_IDPAGOSJG + "=:" + contador; 
-
-		consulta +=" UNION ALL " + 
-		" SELECT " + FcsPagoActuacionDesignaBean.C_IDPERSONA + " AS IDPERSONA_SJCS" +
-		" FROM " + FcsPagoActuacionDesignaBean.T_NOMBRETABLA;
-		contador++;
-		codigos.put(new Integer(contador),idInstitucion);
-		consulta +=" WHERE " + FcsPagoActuacionDesignaBean.C_IDINSTITUCION + "=:" + contador;
-		contador++;
-		codigos.put(new Integer(contador),idPago);
-		consulta += " AND " + FcsPagoActuacionDesignaBean.C_IDPAGOSJG + "=:" + contador;  
-
-		consulta += " UNION ALL " + 
-		" SELECT " + FcsPagoEjgBean.C_IDPERSONA + " AS IDPERSONA_SJCS" +
-		" FROM " + FcsPagoEjgBean.T_NOMBRETABLA;
-		contador++;
-		codigos.put(new Integer(contador),idInstitucion);
-		consulta += " WHERE " + FcsPagoEjgBean.C_IDINSTITUCION + "=:" + contador;
-		contador++;
-		codigos.put(new Integer(contador),idPago);
-		consulta += " AND " + FcsPagoEjgBean.C_IDPAGOSJG + "=:" + contador; 
-
-		consulta +=" UNION ALL " + 
-		" SELECT " + FcsPagoSojBean.C_IDPERSONA + " AS IDPERSONA_SJCS" +
-		" FROM " + FcsPagoSojBean.T_NOMBRETABLA;
-		contador++;
-		codigos.put(new Integer(contador),idInstitucion);
-		consulta += " WHERE " + FcsPagoSojBean.C_IDINSTITUCION + "=:" + contador;
-		contador++;
-		codigos.put(new Integer(contador),idPago);
-		consulta +=" AND " + FcsPagoSojBean.C_IDPAGOSJG + "=:" + contador;
+		consulta +=" AND " + FcsPagoColegiadoBean.C_IDPAGOSJG + "=:" + contador;
 		
 		consulta += " UNION ALL " + 
 		" SELECT " + FcsMovimientosVariosBean.C_IDPERSONA + " AS IDPERSONA_SJCS" + 
@@ -932,92 +902,30 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 			"          else " +
 			"           sum(IMPORTETOTALMOVIMIENTOS) " +
 			"        end AS IMPORTETOTALMOVIMIENTOS, " +
-			"        case " +
+			"        (((sum(TOTALIMPORTESJCS) + case " +
 			"          when (sum(IMPORTETOTALMOVIMIENTOS) < 0 and " +
 			"               abs(sum(IMPORTETOTALMOVIMIENTOS)) > sum(TOTALIMPORTESJCS)) then " +
-			//"         -1 * sum(TOTALIMPORTESJCS) " +
-			"           0 " +
+			"           -1 * sum(TOTALIMPORTESJCS) " +
 			"          else " +
-			"           sum(importeIRPF) + (sum(IMPORTETOTALMOVIMIENTOS)*max(porcentajeIRPF)/100) " +
-			"        end AS TOTALIMPORTEIRPF " +
+			"           sum(IMPORTETOTALMOVIMIENTOS) " +
+			"        end) * max(porcertajeIRPF)) / 100) AS TOTALIMPORTEIRPF " +
 			"" +
  			"   FROM (" +
-			"         (select "+FcsPagoActuacionDesignaBean.C_IDPERSONA+" as idpersonaSJCS, " +
-			"                 sum("+FcsPagoActuacionDesignaBean.C_IMPORTEPAGADO+") as totalImporteSJCS, " +
+			"         (select "+FcsPagoColegiadoBean.C_IDPERORIGEN+" as idpersonaSJCS, " +
+			"                 sum(impOficio+impAsistencia+impEJG+impSOJ) as totalImporteSJCS, " +
 			"                 0 as importeTotalRetenciones, " +
 			"                 0 as importeTotalMovimientos, " +
-			"                 max("+FcsPagoActuacionDesignaBean.C_PORCENTAJEIRPF+") as porcentajeIRPF, " +
-			"                 sum("+FcsPagoActuacionDesignaBean.C_IMPORTEIRPF+") as importeIRPF " +
-			"            from "+FcsPagoActuacionDesignaBean.T_NOMBRETABLA+" ";
+			"                 max("+FcsPagoColegiadoBean.C_IMPIRPF+") as porcertajeIRPF " +
+			"            from "+FcsPagoColegiadoBean.T_NOMBRETABLA+" ";
 				contador++;
 				codigos.put(new Integer(contador), idInstitucion);
 		sql +=
-			"           where "+FcsPagoActuacionDesignaBean.C_IDINSTITUCION+" = :"+contador+" ";
+			"           where "+FcsPagoColegiadoBean.C_IDINSTITUCION+" = :"+contador+" ";
 				contador++;
 				codigos.put(new Integer(contador), form.getIdPago());
 		sql +=
 			"             and "+FcsPagoActuacionDesignaBean.C_IDPAGOSJG+" = :"+contador+" " +
-			"           group by "+FcsPagoActuacionDesignaBean.C_IDPERSONA+" " +
-			"         ) " +
-			"" +
-			"         union all " +
-			"" +
-			"         (select "+FcsPagoApunteBean.C_IDPERSONA+" as idpersonaSJCS, " +
-			"                 sum("+FcsPagoApunteBean.C_IMPORTEPAGADO+") as totalImporteSJCS, " +
-			"                 0 as importeTotalRetenciones, " +
-			"                 0 as importeTotalMovimientos, " +
-			"                 max("+FcsPagoApunteBean.C_PORCENTAJEIRPF+") as porcentajeIRPF, " +
-			"                 sum("+FcsPagoApunteBean.C_IMPORTEIRPF+") as importeIRPF " +
-			"            from "+FcsPagoApunteBean.T_NOMBRETABLA+" ";
-			    contador++;
-				codigos.put(new Integer(contador), idInstitucion);
-		sql +=
-			"           where "+FcsPagoApunteBean.C_IDINSTITUCION+" = :"+contador+" ";
-				contador++;
-				codigos.put(new Integer(contador), form.getIdPago());
-		sql +=
-			"             and "+FcsPagoApunteBean.C_IDPAGOSJG+" = :"+contador+" " +
-			"           group by "+FcsPagoApunteBean.C_IDPERSONA+" " +
-			"         ) " +
-			"" +
-			"         union all " +
-			"" +
-			"         (select "+FcsPagoSojBean.C_IDPERSONA+" as idpersonaSJCS, " +
-			"                 sum("+FcsPagoSojBean.C_IMPORTEPAGADO+") as totalImporteSJCS, " +
-			"                 0 as importeTotalRetenciones, " +
-			"                 0 as importeTotalMovimientos, " +
-			"                 max("+FcsPagoSojBean.C_PORCENTAJEIRPF+") as porcentajeIRPF, " +
-			"                 sum("+FcsPagoSojBean.C_IMPORTEIRPF+") as importeIRPF " +
-			"            from "+FcsPagoSojBean.T_NOMBRETABLA+" ";
-			    contador++;
-				codigos.put(new Integer(contador), idInstitucion);
-		sql +=
-			"           where "+FcsPagoSojBean.C_IDINSTITUCION+" = :"+contador+" ";
-				contador++;
-				codigos.put(new Integer(contador), form.getIdPago());
-		sql +=
-			"             and "+FcsPagoSojBean.C_IDPAGOSJG+" = :"+contador+" " +
-			"           group by "+FcsPagoSojBean.C_IDPERSONA+" " +
-			"         ) " +
-			"" +
-			"         union all " +
-			"" +
-			"         (select "+FcsPagoEjgBean.C_IDPERSONA+" as idpersonaSJCS, " +
-			"                 sum("+FcsPagoEjgBean.C_IMPORTEPAGADO+") as totalImporteSJCS, " +
-			"                 0 as importeTotalRetenciones, " +
-			"                 0 as importeTotalMovimientos, " +
-			"                 max("+FcsPagoEjgBean.C_PORCENTAJEIRPF+") as porcentajeIRPF, " +
-			"                 sum("+FcsPagoEjgBean.C_IMPORTEIRPF+") as importeIRPF " +
-			"            from "+FcsPagoEjgBean.T_NOMBRETABLA+" " ;
-			    contador++;
-				codigos.put(new Integer(contador), idInstitucion);
-		sql +=
-			"           where "+FcsPagoEjgBean.C_IDINSTITUCION+" = :"+contador+" ";
-				contador++;
-				codigos.put(new Integer(contador), form.getIdPago());
-		sql +=
-			"             and "+FcsPagoEjgBean.C_IDPAGOSJG+" = :"+contador+" "+
-			"           group by "+FcsPagoEjgBean.C_IDPERSONA+" " +
+			"           group by "+FcsPagoColegiadoBean.C_IDPERORIGEN+" " +
 			"         ) " +
 			"" +
 			"         union all " +
@@ -1026,8 +934,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 			"                 0 as totalImporteSJCS, " +
 			"                 0 as importeTotalRetenciones, " +
 			"                 sum(nvl("+FcsMovimientosVariosBean.C_CANTIDAD+", 0)) as importeTotalMovimientos, " +
-			"                 0 as porcentajeIRPF, " +
-			"                 0 as importeIRPF " +
+			"                 0 as porcertajeIRPF " +
 			"            from "+FcsMovimientosVariosBean.T_NOMBRETABLA+" ";
 			    contador++;
 				codigos.put(new Integer(contador), idInstitucion);
@@ -1046,8 +953,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 			"                 0 as totalImporteSJCS, " +
 			"                 sum(nvl(importeretenido,0)) as importeTotalRetenciones, " +
 			"                 0 as importeTotalMovimientos, " +
-			"                 0 as porcentajeIRPF, " +
-			"                 0 as importeIRPF " +
+			"                 0 as porcertajeIRPF " +
 			"            from "+FcsCobrosRetencionJudicialBean.T_NOMBRETABLA+" ";
 			    contador++;
 				codigos.put(new Integer(contador), idInstitucion);
@@ -1150,6 +1056,82 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 	} //getQueryDetallePago()
 	
 	
+	
+
+	/**
+	 * 
+	 * @param form
+	 * @param idInstitucion
+	 * @param codigos
+	 * @return
+	 */
+	public String getQueryDetallePagoColegiado (String idInstitucion, String idPagosJg) 
+	{
+		StringBuffer sql = new StringBuffer();
+		
+		sql.append("select idpersonaSJCS as idpersonaSJCS,");
+		sql.append(" sum(totalImporteSJCS) as totalImporteSJCS,");
+		sql.append(" sum(importeTotalRetenciones) as importeTotalRetenciones,");
+		sql.append(" sum(importeTotalMovimientos) as importeTotalMovimientos,");
+		sql.append(" -1*abs(sum(TOTALIMPORTEIRPF)) as TOTALIMPORTEIRPF");
+		sql.append(" from	");	
+		sql.append("(");
+		sql.append("select IDPERORIGEN as idpersonaSJCS,");
+		sql.append(" sum(impOficio + impAsistencia + impEJG + impSOJ) as totalImporteSJCS,");
+		sql.append(" sum(impRet) as importeTotalRetenciones,");
+		sql.append(" sum(impMovVar) as importeTotalMovimientos,");
+		sql.append(" sum(impOficio + impAsistencia + impEJG + impSOJ + impMovVar) * max(impirpf) / 100 as TOTALIMPORTEIRPF");
+		sql.append(" from FCS_PAGO_COLEGIADO");
+		sql.append(" where IDINSTITUCION = ");	sql.append(idInstitucion);
+		sql.append(" and IDPAGOSJG = ");	sql.append(idPagosJg);
+		sql.append(" group by IDPERORIGEN");		
+		
+		sql.append(" union all ");		
+		
+		sql.append(" select IDPERSONA as idpersonaSJCS,");
+		sql.append(" 0 as totalImporteSJCS,");
+		sql.append(" 0 as importeTotalRetenciones,");
+		sql.append(" sum(nvl(CANTIDAD, 0)) as importeTotalMovimientos,");
+		sql.append(" sum(importeIRPF)");
+		sql.append(" from FCS_MOVIMIENTOSVARIOS");
+		sql.append(" where IDINSTITUCION = ");	sql.append(idInstitucion);
+		sql.append(" and IDPAGOSJG = ");	sql.append(idPagosJg);
+		sql.append(" and IDPERSONA not in (");		
+		sql.append(" select idperorigen from fcs_pago_colegiado p ");
+		sql.append(" where p.IDINSTITUCION = ");	sql.append(idInstitucion);
+		sql.append(" and p.IDPAGOSJG = ");	sql.append(idPagosJg);
+		sql.append(") ");
+		sql.append("   group by IDPERSONA");
+		
+		sql.append(" union all "); 
+		
+		sql.append("select idpersona as idpersonaSJCS,");
+		sql.append(" 0 as totalImporteSJCS,");
+		sql.append(" sum(nvl(importeretenido, 0)) as importeTotalRetenciones,");
+		sql.append(" 0 as importeTotalMovimientos,");
+		sql.append(" 0 as importeIRPF");
+		sql.append(" from FCS_COBROS_RETENCIONJUDICIAL");
+		sql.append(" where IDINSTITUCION = ");	sql.append(idInstitucion);
+		sql.append(" and IDPAGOSJG = ");	sql.append(idPagosJg);
+		sql.append(" and IDPERSONA not in (");
+		sql.append(" select idperorigen from fcs_pago_colegiado p ");
+		sql.append(" where p.IDINSTITUCION = ");	sql.append(idInstitucion);
+		sql.append(" and p.IDPAGOSJG = ");	sql.append(idPagosJg);
+		sql.append(") ");
+		sql.append("group by IDPERSONA");
+		sql.append(") ");
+		sql.append("group by idpersonaSJCS");
+
+
+
+		return sql.toString();
+
+	} //getQueryDetallePagoColegiado()
+
+
+
+
+	
 	public PaginadorCaseSensitiveBind  getPaginadorDetallePago(MantenimientoInformesForm form,String idInstitucion) throws ClsExceptions
 	{
 			            
@@ -1189,26 +1171,63 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		}
 	}
 	
+	
 	/**
-	 * 
+	 * Devuelve los datos del pago <code>idpago</code> para cada colegiado incluido en el pago.
 	 * @param idInstitucion
 	 * @param idPago
 	 * @return
 	 */
 	public Vector getDetallePago (Integer idInstitucion, Integer idPago) 
 	throws ClsExceptions , Exception{
-		String sql = "";
+		String sql = null;
 		try {
-			MantenimientoInformesForm form = new MantenimientoInformesForm();
-			form.setIdPago(idPago.toString());
-			Hashtable htCodigos = new Hashtable();
-			sql = getQueryDetallePago(form, idInstitucion.toString(),htCodigos);
+			sql = getQueryDetallePagoColegiado(idInstitucion.toString(),idPago.toString());
 			
-
-			return this.selectGenericoBind(sql, htCodigos);
+			return selectGenerico(sql);
 		}
 		catch (Exception e) {
 			throw new ClsExceptions (e,"Error en FcsPAgosJG.getDetallePago()" + sql);
 		}
 	}
-}
+	
+	
+	
+	/**
+	 * Obtiene el importe total y los importes y porcentajes pendientes para cada concepto de la facturacion.
+	 * @param Integer: idInstitucion
+	 * @param Integer: idPago
+	 * @return Hashtable: 
+	 */
+	public Hashtable getConceptosPendientesYTotal(Integer idInstitucion, Integer idFacturacion) throws ClsExceptions{
+
+		String consulta = null;
+
+		consulta =  "SELECT F.Importeoficio TOTALOFICIO, F.Importeguardia TOTALGUARDIA, F.Importeejg TOTALEJG, F.Importesoj TOTALSOJ ";
+		consulta += " FROM FCS_FACTURACIONJG F";
+		consulta += " WHERE F.IDINSTITUCION="+idInstitucion.toString();
+		consulta += " AND F.IDFACTURACION="+idFacturacion.toString();		
+
+		Hashtable totalFacturacion = (Hashtable)this.selectGenerico(consulta).get(0);
+
+		consulta =  "SELECT SUM (P.IMPORTEPAGADO) as TOTALIMPORTEPAGADO, "+
+		" SUM (P.IMPORTEOFICIO) as TOTALIMPORTEPAGADOOFICIO, "+
+		" SUM (P.IMPORTEGUARDIA)  as TOTALIMPORTEPAGADOGUARDIA, "+
+		" SUM (P.IMPORTEEJG)  as TOTALIMPORTEPAGADOEJG, "+
+		" SUM (P.IMPORTESOJ)  as TOTALIMPORTEPAGADOSOJ,"+
+		" SUM (P.PORCENTAJEOFICIO)  as TOTALPORCENTAJEPAGADOOFICIO, "+
+		" SUM (P.PORCENTAJEGUARDIAS)  as TOTALPORCENTAJEPAGADOGUARDIA, "+
+		" SUM (P.PORCENTAJEEJG)  as TOTALPORCENTAJEPAGADOEJG, "+
+		" SUM (P.PORCENTAJESOJ) as TOTALPORCENTAJEPAGADOSOJ" +
+		" FROM FCS_PAGOSJG P"+
+		" WHERE "+
+		" P.IDINSTITUCION="+idInstitucion.toString()+
+		" AND P.IDFACTURACION="+idFacturacion.toString();		
+
+		Hashtable totalConceptos = (Hashtable)this.selectGenerico(consulta).get(0);
+
+		totalConceptos.putAll(totalFacturacion);
+		return totalConceptos;
+	}
+
+} 

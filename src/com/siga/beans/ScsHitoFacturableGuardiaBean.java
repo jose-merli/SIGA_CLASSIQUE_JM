@@ -21,7 +21,6 @@ public class ScsHitoFacturableGuardiaBean extends MasterBean
 	static public final String	C_IDHITO			= "IDHITO";
 	static public final String 	C_PAGOFACTURACION	= "PAGOOFACTURACION";
 	static public final String 	C_PRECIOHITO		= "PRECIOHITO";
-	static public final String 	C_PUNTOS			= "PUNTOS";
 	static public final String 	C_DIASAPLICABLES	= "DIASAPLICABLES";
 	static public final String 	C_AGRUPAR			= "AGRUPAR";
 	
@@ -48,7 +47,6 @@ public class ScsHitoFacturableGuardiaBean extends MasterBean
 	public void setIdHito			(Integer	valor) {this.idHito				= valor;}
 	public void setPagoFacturacion	(String		valor) {this.pagoFacturacion	= valor;}
 	public void setPrecioHito		(float		valor) {this.precioHito			= valor;}
-	public void setPuntos			(Integer	valor) {this.puntos				= valor;}
 	public void setDiasAplicables	(String		valor) {this.diasAplicables		= valor;}
 	public void setAgrupar			(boolean	valor) {this.agrupar			= valor;}
 	
@@ -61,7 +59,6 @@ public class ScsHitoFacturableGuardiaBean extends MasterBean
 	public Integer	getIdHito			() {return this.idHito;				}
 	public String	getPagoFacturacion	() {return this.pagoFacturacion;	}
 	public float	getPrecioHito		() {return this.precioHito;			}
-	public Integer	getPuntos			() {return this.puntos;				}
 	public String	getDiasAplicables	() {return this.diasAplicables;		}
 	public boolean	getAgrupar			() {return this.agrupar;			}
 	

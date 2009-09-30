@@ -26,6 +26,10 @@ public class DatosGeneralesPagoForm extends MasterForm {
 	static public final String PorcentajeGuardias = "PORCENTAJEGUARDIAS";
 	static public final String PorcentajeEJG = "PORCENTAJEEJG";
 	static public final String PorcentajeSOJ = "PORCENTAJESOJ";
+	static public final String ImporteOficio = "IMPORTEOFICIO";
+	static public final String ImporteGuardias = "IMPORTEGUARDIAS";
+	static public final String ImporteEJG = "IMPORTEEJG";
+	static public final String ImporteSOJ = "IMPORTESOJ";
 	static public final String idInstitucion = "IDINSTITUCION";
 	static public final String criterios = "CRITERIOS";
 	static public final String criterioPago = "CRITERIOPAGO";
@@ -61,6 +65,10 @@ public class DatosGeneralesPagoForm extends MasterForm {
 	public void setPorcentajeGuardias (String dato) {UtilidadesHash.set(this.datos, DatosGeneralesPagoForm.PorcentajeGuardias, dato);}
 	public void setPorcentajeEJG (String dato) {UtilidadesHash.set(this.datos, DatosGeneralesPagoForm.PorcentajeEJG, dato);}
 	public void setPorcentajeSOJ (String dato) {UtilidadesHash.set(this.datos, DatosGeneralesPagoForm.PorcentajeSOJ, dato);}	
+	public void setImporteOficio (String dato) {UtilidadesHash.set(this.datos, DatosGeneralesPagoForm.ImporteOficio, dato);}
+	public void setImporteGuardias (String dato) {UtilidadesHash.set(this.datos, DatosGeneralesPagoForm.ImporteGuardias, dato);}
+	public void setImporteEJG (String dato) {UtilidadesHash.set(this.datos, DatosGeneralesPagoForm.ImporteEJG, dato);}
+	public void setImporteSOJ (String dato) {UtilidadesHash.set(this.datos, DatosGeneralesPagoForm.ImporteSOJ, dato);}	
 	public void setIdInstitucion (String dato) {UtilidadesHash.set(this.datos, DatosGeneralesPagoForm.idInstitucion, dato);} 	
 //	public void setCriterioPago (String dato) {UtilidadesHash.set(this.datos, DatosGeneralesPagoForm.criterioPago, dato);}
 	public void setCriterioPagoTurno (String dato) {UtilidadesHash.set(this.datos, DatosGeneralesPagoForm.criterioPagoTurno, dato);}
@@ -91,6 +99,10 @@ public class DatosGeneralesPagoForm extends MasterForm {
 	public String getPorcentajeGuardias () {return UtilidadesHash.getString(this.datos, DatosGeneralesPagoForm.PorcentajeGuardias);}
 	public String getPorcentajeEJG () {return UtilidadesHash.getString(this.datos, DatosGeneralesPagoForm.PorcentajeEJG);}
 	public String getPorcentajeSOJ () {return UtilidadesHash.getString(this.datos, DatosGeneralesPagoForm.PorcentajeSOJ);}
+	public String getImporteOficio () {return UtilidadesHash.getString(this.datos, DatosGeneralesPagoForm.ImporteOficio);}
+	public String getImporteGuardias () {return UtilidadesHash.getString(this.datos, DatosGeneralesPagoForm.ImporteGuardias);}
+	public String getImporteEJG () {return UtilidadesHash.getString(this.datos, DatosGeneralesPagoForm.ImporteEJG);}
+	public String getImporteSOJ () {return UtilidadesHash.getString(this.datos, DatosGeneralesPagoForm.ImporteSOJ);}
 	public String getIdInstitucion	() 	{return UtilidadesHash.getString(this.datos, DatosGeneralesPagoForm.idInstitucion);}
 //	public String getCriterioPago () {return UtilidadesHash.getString(this.datos, DatosGeneralesPagoForm.criterioPago);}
 	public String getCriterioPagoTurno () {return UtilidadesHash.getString(this.datos, DatosGeneralesPagoForm.criterioPagoTurno);}

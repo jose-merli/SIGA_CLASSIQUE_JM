@@ -422,6 +422,42 @@ public class FcsCobrosRetencionJudicialAdm extends MasterBeanAdministrador {
 	}
 	
 	
+	
+	/**
+	 * Devuelve la suma de las retenciones judiciales aplicadas al pago de un colegiado
+	 *  
+	 * @param idInstitucion
+	 * @param idPago
+	 * @param idPersona
+	 * @return
+	 */
+	public double getSumaRetenciones (String idInstitucion, String idPago, String idPersona) throws ClsExceptions 
+	{
+		Vector resultado = new Vector();
+		//query con la select a ejecutar
+		String consulta = " SELECT sum(" + FcsCobrosRetencionJudicialBean.C_IMPORTERETENIDO + ") as importe" +
+							" from " + 	FcsCobrosRetencionJudicialBean.T_NOMBRETABLA +
+							" where "+FcsCobrosRetencionJudicialBean.C_IDINSTITUCION+" = "+ idInstitucion +
+							" and " + FcsCobrosRetencionJudicialBean.C_IDPERSONA + " = "+ idPersona +
+							" and " + FcsCobrosRetencionJudicialBean.C_IDPAGOSJG + " = " + idPago ;
+							
+		try{
+			resultado = (Vector)this.selectGenerico(consulta);
+			if (resultado.isEmpty()){
+				return 0;
+			}
+			else{
+				String aux = ((Hashtable)resultado.get(0)).get("IMPORTE").toString();
+				if (aux == null || "".equals(aux))
+					return 0;
+				else
+					return Double.parseDouble(aux); 
+			}
+		}catch(Exception e){
+			throw new ClsExceptions (e,"Error en FcsCobrosRetencionJudicialAdm.getRetenciones:"+consulta);
+		}
+	}
+	
 }
 
 

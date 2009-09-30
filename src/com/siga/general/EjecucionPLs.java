@@ -25,48 +25,6 @@ import com.siga.facturacionSJCS.form.DatosGeneralesPagoForm;
 
 public class EjecucionPLs {
 
-	/**
-	 * PL para obtener el importe del Colegiado.
-	 * @param idInstitucion
-	 * @param idPago
-	 * @param idPersona
-	 * @return
-	 * @throws ClsExceptions
-	 */
-	public static String[] ejecutarPLObtenerImporteColegiado(String idInstitucion, String idPago, String idPersona) throws ClsExceptions
-	{
-		Object[] param_in  = new Object[3]; 		// Parametros de entrada del PL
-		String resultado[] = new String[14]; 	// Parametros de salida del PL
-	
-		try {
-			// Obtenemos los importes a abonar, desglosados
-			param_in[0] = idInstitucion;
-			param_in[1] = idPago;
-			param_in[2] = idPersona;
-			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS.PROC_FCS_OBTENER_IMPORT_COLEG (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}", 14, param_in);
-
-			// Datos de vuelta
-			//  P_IMPORTETURNOS 
-			//	P_IMPORTEGUARDIAS 
-			//	P_IMPORTESOJ 
-			//	P_IMPORTEEJG 
-			//	P_IMPORTEMOVIMIENTOS 
-			//	P_IMPORTERETENCIONES 
-			//	P_IRPFTURNOS 
-			//	P_IRPFGUARDIAS
-			//	P_IRPFSOJ 
-			//	P_IRPFEJG 
-			//	P_IRPFMOVIMIENTOS 
-			//	P_IDPERSONASOCIEDAD 
-			//	P_CODRETORNO 
-			//	P_DATOSERROR 
-		} 
-		catch (Exception e) { 
-	    	resultado[12] = "1"; 		// ERROR P_CODRETORNO
-	    	resultado[13] = "ERROR"; 	// ERROR P_DATOSERROR
-		}
-	    return resultado;
-	}
 
 	/**
 	 * PL para el pago de Turnos de Oficio con Criterio por Puntos:
@@ -126,7 +84,7 @@ public class EjecucionPLs {
 			paramIn[2] = usuario.toString(); // USUARIO
 			
 	    	String resultado[] = new String[3];
-	    	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS.PROC_FCS_PAGO_TURNOS_OFI(?,?,?,?,?,?)}", 3, paramIn);
+	    	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS_TEMP.PROC_FCS_PAGO_TURNOS_OFI(?,?,?,?,?,?)}", 3, paramIn);
 	    	if (!resultado[1].equalsIgnoreCase("0")) {
 	    		//ClsLogging.writeFileLog("Error en PL = "+(String)resultado[3],3);
 	    		throw new ClsExceptions ("Ha ocurrido un error al ejecutar el Pago de Turnos de Justicia Gratuita."+
@@ -155,7 +113,7 @@ public class EjecucionPLs {
 			paramIn[2] = usuario.toString(); // USUARIO
 			
 	    	String resultado[] = new String[3];
-	    	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS.PROC_FCS_PAGO_GUARDIAS(?,?,?,?,?,?)}", 3, paramIn);
+	    	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS_TEMP.PROC_FCS_PAGO_GUARDIAS(?,?,?,?,?,?)}", 3, paramIn);
 	    	if (!resultado[1].equalsIgnoreCase("0")) {
 	    		//ClsLogging.writeFileLog("Error en PL = "+(String)resultado[3],3);
 	    		throw new ClsExceptions ("Ha ocurrido un error al ejecutar el Pago de Guardias de Justicia Gratuita"+
@@ -184,7 +142,7 @@ public class EjecucionPLs {
 			paramIn[2] = usuario.toString(); // USUARIO
 			
 	    	String resultado[] = new String[3];
-	    	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS.PROC_FCS_PAGO_EJG(?,?,?,?,?,?)}", 3, paramIn);
+	    	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS_TEMP.PROC_FCS_PAGO_EJG(?,?,?,?,?,?)}", 3, paramIn);
 	    	if (!resultado[1].equalsIgnoreCase("0")) {
 	    		//ClsLogging.writeFileLog("Error en PL = "+(String)resultado[3],3);
 	    		throw new ClsExceptions ("Ha ocurrido un error al ejecutar el Pago de Expedientes EJG de Justicia Gratuita"+
@@ -213,7 +171,7 @@ public class EjecucionPLs {
 			paramIn[2] = usuario.toString(); // USUARIO
 			
 	    	String resultado[] = new String[3];
-	    	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS.PROC_FCS_PAGO_SOJ(?,?,?,?,?,?)}", 3, paramIn);
+	    	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS_TEMP.PROC_FCS_PAGO_SOJ(?,?,?,?,?,?)}", 3, paramIn);
 	    	if (!resultado[1].equalsIgnoreCase("0")) {
 	    		//ClsLogging.writeFileLog("Error en PL = "+(String)resultado[3],3);
 	    		throw new ClsExceptions ("Ha ocurrido un error al ejecutar el Pago de Expedientes SOJ de Justicia Gratuita"+
@@ -227,59 +185,6 @@ public class EjecucionPLs {
 	}
 
 	
-	/**
-	 * PL para actualizar el idPagosJG de los movimientos varios.
-	 * @param miform
-	 * @param usuModificacion
-	 * @return
-	 * @throws ClsExceptions
-	 */
-	public static String[] ejecutarPLMovimientos(String idInstitucion, String idPago) throws ClsExceptions{
-		Object[] param_in; //Parametros de entrada del PL
-		String resultado[] = null; //Parametros de salida del PL
-	
-		try {
-			//EXEC PROC_FCS_PAGAR_MOVIMIENTOS
-			//Parametros de entrada del PL
-			param_in = new Object[2];
-			param_in[0] = idInstitucion;
-			param_in[1] = idPago;
-	        resultado = new String[2];
-	        //Ejecucion del PL
-	        resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS.PROC_FCS_PAGAR_MOVIMIENTOS (?,?,?,?)}", 2, param_in);
-		} catch (Exception e){
-	    	resultado[0] = "1"; //ERROR P_CODRETORNO
-	    	resultado[1] = "ERROR"; //ERROR P_DATOSERROR        	
-		}
-	    
-	    //Resultado del PL        
-	    return resultado;
-	}
-
-	/**
-	 * PL para aplicar las retenciones.
-	 * @param idInstitucion
-	 * @param idPago
-	 * @return
-	 * @throws ClsExceptions
-	 */
-	public static String[] ejecutarPLRetenciones(String idInstitucion, String idPago) throws ClsExceptions{
-		Object[] param_in = new Object[2]; //Parametros de entrada del PL
-		String resultado[] = new String[2]; //Parametros de salida del PL
-	
-		try {
-	 		//Parametros de entrada del PL
-	        param_in[0] = idInstitucion;			
-			param_in[1] = idPago;
-	 		//Ejecucion del PL
-			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS.PROC_APLICAR_RETENCIONES_IRPF (?,?,?,?)}", 2, param_in);
-		} catch (Exception e) { 
-	    	resultado[0] = "1"; //ERROR P_CODRETORNO
-	    	resultado[1] = "ERROR"; //ERROR P_DATOSERROR        	
-		}
-	    //Resultado del PL        
-	    return resultado;
-	}
 
 	/**
 	 * PL para aplicar las retenciones judiciales.
@@ -289,17 +194,25 @@ public class EjecucionPLs {
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public static String[] ejecutarPLRetencionesJudiciales(String idInstitucion, String idPago, String idPersona) throws ClsExceptions{
-		Object[] param_in = new Object[3]; //Parametros de entrada del PL
+	public static String[] ejecutarPLAplicarRetencionesJudiciales(
+			String idInstitucion, String idPago,
+			String idPersona, String importeNeto, String usuMod) throws ClsExceptions{
+		
+		Object[] param_in = new Object[5]; //Parametros de entrada del PL
 		String resultado[] = new String[2]; //Parametros de salida del PL
-	
+
 		try {
 	 		//Parametros de entrada del PL
 			param_in[0] = idInstitucion;			
 			param_in[1] = idPago;
 			param_in[2] = idPersona;
+			param_in[3] = importeNeto;
+			param_in[4] = usuMod;
+			
 	 		//Ejecucion del PL
-			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_RETENCIONES_SJCS.PROC_FCS_RETEN_JUDICIALES (?,?,?,?,?)}", 2, param_in);			
+			resultado = ClsMngBBDD.callPLProcedure(
+					"{call PKG_SIGA_RETENCIONES_SJCS.PROC_FCS_APLICAR_RETENC_JUDIC (?,?,?,?,?,?,?)}", 
+					2, param_in);			
 		} catch (Exception e) { 
 	    	resultado[0] = "1"; //ERROR P_CODRETORNO
 	    	resultado[1] = "ERROR"; //ERROR P_DATOSERROR        	
@@ -347,7 +260,7 @@ public class EjecucionPLs {
 		param_in[2] = idinstitucion;
 		
 		String resultadoPl[] = new String[3];
-		resultadoPl = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS.PROC_FCS_CALCULAR_IRPF(?,?,?,?,?,?)}", 3, param_in);
+		resultadoPl = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS_TEMP.PROC_FCS_CALCULAR_IRPF(?,?,?,?,?,?)}", 3, param_in);
 		return resultadoPl;
 	}
 

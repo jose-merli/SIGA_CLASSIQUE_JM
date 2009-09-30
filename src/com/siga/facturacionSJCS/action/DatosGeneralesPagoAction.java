@@ -10,8 +10,11 @@
 package com.siga.facturacionSJCS.action;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -42,6 +45,7 @@ import com.siga.beans.FacAbonoAdm;
 import com.siga.beans.FacAbonoBean;
 import com.siga.beans.FacLineaAbonoAdm;
 import com.siga.beans.FacLineaAbonoBean;
+import com.siga.beans.FcsCobrosRetencionJudicialAdm;
 import com.siga.beans.FcsEstadosFacturacionBean;
 import com.siga.beans.FcsEstadosPagosBean;
 import com.siga.beans.FcsFactGrupoFactHitoAdm;
@@ -50,6 +54,8 @@ import com.siga.beans.FcsFacturacionJGAdm;
 import com.siga.beans.FcsFacturacionJGBean;
 import com.siga.beans.FcsMovimientosVariosAdm;
 import com.siga.beans.FcsMovimientosVariosBean;
+import com.siga.beans.FcsPagoColegiadoAdm;
+import com.siga.beans.FcsPagoColegiadoBean;
 import com.siga.beans.FcsPagoGrupoFactHitoAdm;
 import com.siga.beans.FcsPagoGrupoFactHitoBean;
 import com.siga.beans.FcsPagosEstadosPagosAdm;
@@ -153,59 +159,30 @@ public class DatosGeneralesPagoAction extends MasterAction {
 		UsrBean usr;
 		DatosGeneralesPagoForm miform = (DatosGeneralesPagoForm)formulario;
 		String forward = "";
-		Hashtable datos;
-		Hashtable registro, registroOriginal;
 		UserTransaction tx = null;
 		
 		try	{
 			usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 			tx = usr.getTransaction();
 			
-			datos = (Hashtable)miform.getDatos();
-			//Recuperamos de sesion el hashtable a modificar:
-			registroOriginal = (Hashtable)request.getSession().getAttribute("DATABACKUP");
+			//obtiene el bean a actualizar de BD
+			String where = " where "+FcsPagosJGBean.C_IDINSTITUCION+"="+ miform.getIdInstitucion()+" and "+FcsPagosJGBean.C_IDPAGOSJG+"="+ miform.getIdPagosJG() + " ";			
+			FcsPagosJGBean pagosBean = (FcsPagosJGBean)pagosAdm.select(where).elementAt(0);
+			pagosBean.setNombre(miform.getNombre());
+			pagosBean.setAbreviatura(miform.getAbreviatura());
+			
+			//actualiza la BD
+			tx.begin();
+			pagosAdm.updateDirect(pagosBean);
+			tx.commit();
 
-			//Chequeamos que el importe + facturado > pagado:
-//			if (pagosAdm.excedePagoFacturacion(miform.getIdInstitucion(),miform.getIdFacturacion(),Double.valueOf(miform.getImporteRepartir()).doubleValue()))
-//				forward = exito("messages.factSJCS.error.pagoExcedido",request);
-//			else {
-				//Obtenemos el Pago modificado del JSP:
-				//Hashtable datosEntrada = (Hashtable)miform.getDatos();
-				//FcsPagosJGBean pagosModificadoBean = (FcsPagosJGBean)pagosAdm.hashTableToBean(datosEntrada);
-				registro = new Hashtable();
-				registro.put(FcsPagosJGBean.C_IDINSTITUCION, miform.getIdInstitucion());
-				registro.put(FcsPagosJGBean.C_IDPAGOSJG, miform.getIdPagosJG());
-				registro.put(FcsPagosJGBean.C_NOMBRE, miform.getNombre());
-				registro.put(FcsPagosJGBean.C_ABREVIATURA, miform.getAbreviatura());
-				registro.put(FcsPagosJGBean.C_CRITERIOPAGOTURNO, miform.getCriterioPagoTurno());
-				registro.put(FcsPagosJGBean.C_PORCENTAJEOFICIO, miform.getPorcentajeOficio());
-				registro.put(FcsPagosJGBean.C_PORCENTAJEGUARDIAS, miform.getPorcentajeGuardias());
-				registro.put(FcsPagosJGBean.C_PORCENTAJEEJG, miform.getPorcentajeEJG());
-				registro.put(FcsPagosJGBean.C_PORCENTAJESOJ, miform.getPorcentajeSOJ());
-				//Tratamiento del importe a repartir:
-				registro.put(FcsPagosJGBean.C_IMPORTEREPARTIR, UtilidadesString.tratarImporte(new Double(miform.getImporteRepartir())));
+			//Consulta el registro modificado tal cual esta en base de datos y lo almacena en sesion:
+			Hashtable registroModificado = new Hashtable();
+			registroModificado = ((FcsPagosJGBean)pagosAdm.select(where).elementAt(0)).getOriginalHash();
+			request.getSession().setAttribute("DATABACKUP",registroModificado);
 
-//				if (miform.getValoresFacturacion()==null || miform.getValoresFacturacion().equals(ClsConstants.DB_FALSE))
-//					valoresFacturacion = ClsConstants.DB_FALSE;
-//				else
-//					valoresFacturacion = ClsConstants.DB_TRUE;
-//				miform.setValoresFacturacion(valoresFacturacion);
-//				registro.put(FcsPagosJGBean.C_VALORESFACTURACION, valoresFacturacion);
-				
-				//Actualizamos:
-				tx.begin();
-				pagosAdm.update(registro,registroOriginal);
-				tx.commit();
-				
-				//Consultamos el registro modificado tal cual esta en base de datos y lo almacenamos en sesion:
-				String where = " where "+FcsPagosJGBean.C_IDINSTITUCION+"="+ miform.getIdInstitucion()+" and "+FcsPagosJGBean.C_IDPAGOSJG+"="+ miform.getIdPagosJG() + " ";
-				Hashtable registroModificado = new Hashtable();
-				registroModificado = ((FcsPagosJGBean)pagosAdm.select(where).elementAt(0)).getOriginalHash();
-				request.getSession().setAttribute("DATABACKUP",registroModificado);
-				
-				request.setAttribute("modo","modificarPago");
-				forward = exito("messages.updated.success",request);
-//			}
+			request.setAttribute("modo","modificarPago");
+			forward = exito("messages.updated.success",request);
 		} 
 		catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null); 
@@ -269,7 +246,15 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			registroOriginal.put(FcsPagosJGBean.C_IMPORTESOJ, UtilidadesString.tratarImporte(pagosBean.getImporteSOJ()));
 			registroOriginal.put(FcsPagosJGBean.C_IMPORTEOFICIO, UtilidadesString.tratarImporte(pagosBean.getImporteOficio()));
 			registroOriginal.put(FcsPagosJGBean.C_IMPORTEGUARDIA, UtilidadesString.tratarImporte(pagosBean.getImporteGuardia()));
+			registroOriginal.put(FcsPagosJGBean.C_PORCENTAJEEJG, UtilidadesString.tratarImporte(pagosBean.getPorcentajeEJG()));
+			registroOriginal.put(FcsPagosJGBean.C_PORCENTAJESOJ, UtilidadesString.tratarImporte(pagosBean.getPorcentajeSOJ()));
+			registroOriginal.put(FcsPagosJGBean.C_PORCENTAJEOFICIO, UtilidadesString.tratarImporte(pagosBean.getPorcentajeOficio()));
+			registroOriginal.put(FcsPagosJGBean.C_PORCENTAJEGUARDIAS, UtilidadesString.tratarImporte(pagosBean.getPorcentajeGuardias()));
 			registroOriginal.put(FcsPagosJGBean.C_IMPORTEMINIMO, UtilidadesString.tratarImporte(pagosBean.getImporteMinimo()));
+			
+			// Recupera los importes totales y pendientes de cada concepto del pago
+			Hashtable hashConceptos = pagosAdm.getConceptosPendientesYTotal(new Integer(idInstitucion),pagosBean.getIdFacturacion());
+			request.setAttribute("CONCEPTOS",hashConceptos);
 			
 			//Recuperamos el estado, la fecha y el id del estado del pago:
 			Hashtable hash = pagosAdm.getEstadoPago(new Integer(idInstitucion),new Integer(idPagosJG));
@@ -485,9 +470,6 @@ public class DatosGeneralesPagoAction extends MasterAction {
 		Hashtable registroSesion;
 		String estadoPago=null, criterioTurno=null;
 		UserTransaction  tx = null;
-		//String resultadoTurnos[] 		= new String[3]; //Parametros de salida del PL: TotalPagado, CodRetorno, DatosError.
-		//String resultadoGuardias[] 		= new String[3]; //Parametros de salida del PL: TotalPagado, CodRetorno, DatosError.
-		//String resultadoMovimientos[] 	= new String[3]; //Parametros de salida del PL: TotalPagado, CodRetorno, DatosError.
 				
 		try	{
 			usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
@@ -496,7 +478,6 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			//Datos del pago:
 			estadoPago = miform.getIdEstadoPagosJG();
 			criterioTurno = miform.getCriterioPagoTurno();
-//			criterioGuardia = miform.getCriterioPago();
 			
 			//Validacion de los datos antes de ejecutar el pago:
 			//1. El estado del pago debe ser abierto:
@@ -504,39 +485,12 @@ public class DatosGeneralesPagoAction extends MasterAction {
 				return exito("messages.factSJCS.error.EstadoPagoNoCorrecto",request);	
 			
 			//2. Criterios correctos del Turno:
-			if (!criterioTurno.equals(ClsConstants.CRITERIOS_PAGO_PUNTOS) && 
-				!criterioTurno.equals(ClsConstants.CRITERIOS_PAGO_FACTURACION))
+			if (!criterioTurno.equals(ClsConstants.CRITERIOS_PAGO_FACTURACION))
 				return exito("messages.factSJCS.error.criterioPagoTurno",request);
-
-//			//3. Criterios correctos de la Guardia:
-//			if (!criterioGuardia.equals(ClsConstants.CRITERIOS_PAGO_FACTURACION) && 
-//				!criterioGuardia.equals(ClsConstants.CRITERIOS_PAGO_PAGOS))
-//				return exito("messages.factSJCS.error.criterioPagoTurno",request);
-			
-			//Calculo de los importes a repartir segun los porcentajes:
-//			double importeRepartirDouble = Double.parseDouble(miform.getImporteRepartir());
-//			String importeTurnos = Double.toString((importeRepartirDouble * Double.parseDouble(miform.getPorcentajeOficio()))/100);
-//			String importeGuardias = Double.toString((importeRepartirDouble * Double.parseDouble(miform.getPorcentajeGuardias()))/100);
-//			String importeExpedientesSOJ = Double.toString((importeRepartirDouble * Double.parseDouble(miform.getPorcentajeSOJ()))/100);
-//			String importeExpedientesEJG = Double.toString((importeRepartirDouble * Double.parseDouble(miform.getPorcentajeEJG()))/100);
-			
+		
 			//INICIO TRANSACCION
 			tx.begin();
-    		
-			// Vuelvo a chequear aunque no es necesario que los 2 PLs han ido bien:
-/*			if (resultadoTurnos[1].equals("0") && resultadoGuardias[1].equals("0")) { //PLs de Turnos y Guardias han ido bien:
-				//Ejecutamos el PL que actualiza el idpagosJG de movimientos que no lo tengan:
-				resultadoMovimientos = EjecucionPLs.ejecutarPLMovimientos(miform,this.getUserBean(request).toString());
-				if (!resultadoMovimientos[0].equals("0")) {
-					//
-					//ROLLBACK
-					//						
-					tx.rollback();
-					//Terminamos:
-					forward = exito("messages.factSJCS.error.pagar",request);
-				} else { //Todo ha ido bien:
-				
-*/				
+    					
 			//Obtenemos el Pago modificado del JSP:			
 			Hashtable datosEntrada = (Hashtable)miform.getDatos();			
 			datosEntrada.put(FcsEstadosPagosBean.C_FECHAMODIFICACION,"SYSDATE");
@@ -561,68 +515,37 @@ public class DatosGeneralesPagoAction extends MasterAction {
 					importeSOJ = null,  
 					importeEJG = null; 
 
-			Integer idPagosJG = new Integer(miform.getIdPagosJG());
-			importeOficio = EjecucionPLs.ejecutarPL_PagoTurnosOficio(idInstitucion, idPagosJG, new Integer(usr.getUserName()));
+			// crea el bean de pago colegiado e inicializa los datos comunes 
+			Integer idPagoJG = new Integer(miform.getIdPagosJG());
+			Integer idPersona = new Integer(usr.getUserName());
+			
+			//Se llama a los paquetes que ejecutan los pagos para cada concepto
+			//Estas funciones sólo actualizan los importes de los conceptos 
+			//del registro creado anteriormente
+			importeOficio = EjecucionPLs.ejecutarPL_PagoTurnosOficio(idInstitucion, idPagoJG, idPersona);
 			importeTotal += importeOficio.doubleValue();
 			
-			importeGuardia = EjecucionPLs.ejecutarPL_PagoGuardias(idInstitucion, idPagosJG, new Integer(usr.getUserName()));
+			importeGuardia = EjecucionPLs.ejecutarPL_PagoGuardias(idInstitucion, idPagoJG, idPersona);
 			importeTotal += importeGuardia.doubleValue();
 			
-			importeSOJ = EjecucionPLs.ejecutarPL_PagoSOJ(idInstitucion, idPagosJG, new Integer(usr.getUserName()));
+			importeSOJ = EjecucionPLs.ejecutarPL_PagoSOJ(idInstitucion, idPagoJG, idPersona);
 			importeTotal += importeSOJ.doubleValue();
 			
-			importeEJG = EjecucionPLs.ejecutarPL_PagoEJG(idInstitucion, idPagosJG, new Integer(usr.getUserName()));
+			importeEJG = EjecucionPLs.ejecutarPL_PagoEJG(idInstitucion, idPagoJG, idPersona);
 			importeTotal += importeEJG.doubleValue();
 			
-			// Obtenemos el pago original
-			FcsPagosJGBean pagoJGBeanOld = new FcsPagosJGBean();
-			Hashtable datosHash = new Hashtable();
-			Vector vectorPago;
-			datosHash.put(FcsPagosJGBean.C_IDINSTITUCION, miform.getIdInstitucion());
-			datosHash.put(FcsPagosJGBean.C_IDPAGOSJG, miform.getIdPagosJG());
-			vectorPago = pagosJGAdm.selectByPK(datosHash);
-			pagoJGBeanOld = (FcsPagosJGBean)vectorPago.firstElement();
+			// Calcula y actualiza IRPF, retenciones, movimientos varios y personaSociedad (idperdestino)
 			
-			// Actualizamos el importe Total Pagado de Turnos y Guardias:
-			FcsPagosJGBean pagoJGBean = new FcsPagosJGBean();				
-			pagoJGBean.setIdInstitucion (new Integer(miform.getIdInstitucion()));
-			pagoJGBean.setIdFacturacion(idFacturacion);
-			pagoJGBean.setIdPagosJG(new Integer(miform.getIdPagosJG()));
-			pagoJGBean.setNombre(miform.getNombre());
-			pagoJGBean.setAbreviatura(miform.getAbreviatura());
-			pagoJGBean.setCriterioPagoTurno(miform.getCriterioPagoTurno());
-			pagoJGBean.setPorcentajeOficio(new Integer(miform.getPorcentajeOficio()));
-			pagoJGBean.setPorcentajeGuardias(new Integer(miform.getPorcentajeGuardias()));
-			pagoJGBean.setPorcentajeEJG(new Integer(miform.getPorcentajeEJG()));
-			pagoJGBean.setPorcentajeSOJ(new Integer(miform.getPorcentajeSOJ()));
-			pagoJGBean.setImporteRepartir(new Double(miform.getImporteRepartir()));
-
-			pagoJGBean.setImportePagado(new Double(importeTotal));
-			pagoJGBean.setImporteEJG(importeEJG);
-			pagoJGBean.setImporteGuardia(importeGuardia);
-			pagoJGBean.setImporteOficio(importeOficio);
-			pagoJGBean.setImporteSOJ(importeSOJ);
-
-			pagoJGBean.setFechaDesde(UtilidadesHash.getString(registroSesion, FcsPagosJGBean.C_FECHADESDE));
-			pagoJGBean.setFechaHasta(UtilidadesHash.getString(registroSesion, FcsPagosJGBean.C_FECHAHASTA));
-			pagoJGBean.setImporteMinimo(UtilidadesHash.getDouble(registroSesion, FcsPagosJGBean.C_IMPORTEMINIMO));
-			pagoJGBean.setContabilizado("0");
-			pagoJGBean.setOriginalHash(registroSesion);
 			
-			pagoJGBean.setConcepto(pagoJGBeanOld.getConcepto());
-			pagoJGBean.setBancosCodigo(pagoJGBeanOld.getBancosCodigo());
-	
-			if (!pagosJGAdm.updateDirect(pagoJGBean)) {
-				throw new ClsExceptions ("Error al actualizar en la tabla " + FcsPagosJGBean.T_NOMBRETABLA);
-			}
 			tx.commit();
 
-			
+		
 			// Exportacion de datos a EXCEL
-			UtilidadesFacturacionSJCS.exportarDatosPagos(idInstitucion, idFacturacion, idPagosJG, null, usr);
+			UtilidadesFacturacionSJCS.exportarDatosPagos(idInstitucion, idFacturacion, idPagoJG, null, usr);
 			
 			//Consultamos el registro modificado tal cual esta en base de datos y lo almacenamos en sesion:
-			String where = " where " + FcsPagosJGBean.C_IDINSTITUCION + " = " + miform.getIdInstitucion()+ " and " + FcsPagosJGBean.C_IDPAGOSJG + " = " + miform.getIdPagosJG() + " ";
+			String where = 	" where " + FcsPagosJGBean.C_IDINSTITUCION + " = " + miform.getIdInstitucion()+ 
+							" and " + FcsPagosJGBean.C_IDPAGOSJG + " = " + miform.getIdPagosJG() + " ";
 			Hashtable registroModificado = new Hashtable();
 			registroModificado = ((FcsPagosJGBean)pagosJGAdm.select(where).elementAt(0)).getOriginalHash();
 			request.getSession().setAttribute("DATABACKUP",registroModificado);
@@ -814,12 +737,12 @@ public class DatosGeneralesPagoAction extends MasterAction {
 					registro.put(FcsPagosJGBean.C_FECHAHASTA, GstDate.getApplicationFormatDate(usr.getLanguage(),GstDate.getFormatedDateShort(usr.getLanguage(),factBean.getFechaHasta())));
 //					registro.put(FcsPagosJGBean.C_CRITERIOPAGO, miform.getCriterioPago());
 					registro.put(FcsPagosJGBean.C_CRITERIOPAGOTURNO, miform.getCriterioPagoTurno());
-					registro.put(FcsPagosJGBean.C_PORCENTAJEOFICIO, miform.getPorcentajeOficio());
-					registro.put(FcsPagosJGBean.C_PORCENTAJEGUARDIAS, miform.getPorcentajeGuardias());
-					registro.put(FcsPagosJGBean.C_PORCENTAJEEJG, miform.getPorcentajeEJG());
-					registro.put(FcsPagosJGBean.C_PORCENTAJESOJ, miform.getPorcentajeSOJ());
+					registro.put(FcsPagosJGBean.C_PORCENTAJEOFICIO, tratarValor(miform.getPorcentajeOficio()));
+					registro.put(FcsPagosJGBean.C_PORCENTAJEGUARDIAS,  tratarValor(miform.getPorcentajeGuardias()));
+					registro.put(FcsPagosJGBean.C_PORCENTAJEEJG,  tratarValor(miform.getPorcentajeEJG()));
+					registro.put(FcsPagosJGBean.C_PORCENTAJESOJ,  tratarValor(miform.getPorcentajeSOJ()));
 					//Tratamiento de los importes:
-					registro.put(FcsPagosJGBean.C_IMPORTEREPARTIR, UtilidadesString.tratarImporte(new Double(miform.getImporteRepartir())));
+					registro.put(FcsPagosJGBean.C_IMPORTEREPARTIR, new Double(miform.getImporteRepartir()));
 					registro.put(FcsPagosJGBean.C_IMPORTEPAGADO, miform.getImportePagado());
 					registro.put(FcsPagosJGBean.C_CONTABILIZADO, "0");
 					
@@ -831,11 +754,11 @@ public class DatosGeneralesPagoAction extends MasterAction {
 					registro.put(FcsPagosJGBean.C_CONCEPTO, paramConcepto);
 					registro.put(FcsPagosJGBean.C_BANCOS_CODIGO, paramAdm.getValor(idInstitucion, "FCS", "BANCOS_CODIGO_ABONO", "")); 
 					
-					UtilidadesHash.set(registro, FcsPagosJGBean.C_IMPORTEEJG, 		new Double(0));
-					UtilidadesHash.set(registro, FcsPagosJGBean.C_IMPORTEGUARDIA, 	new Double(0));
 					UtilidadesHash.set(registro, FcsPagosJGBean.C_IMPORTEMINIMO, 	new Double(0));
-					UtilidadesHash.set(registro, FcsPagosJGBean.C_IMPORTEOFICIO, 	new Double(0));
-					UtilidadesHash.set(registro, FcsPagosJGBean.C_IMPORTESOJ, 		new Double(0));
+					UtilidadesHash.set(registro, FcsPagosJGBean.C_IMPORTEEJG, 		tratarValor((miform.getImporteEJG())));
+					UtilidadesHash.set(registro, FcsPagosJGBean.C_IMPORTEGUARDIA, 	tratarValor(miform.getImporteGuardias()));
+					UtilidadesHash.set(registro, FcsPagosJGBean.C_IMPORTEOFICIO, 	tratarValor(miform.getImporteOficio()));
+					UtilidadesHash.set(registro, FcsPagosJGBean.C_IMPORTESOJ, 		tratarValor(miform.getImporteSOJ()));
 					
 					
 //					if (miform.getValoresFacturacion() == null || miform.getValoresFacturacion().equals(ClsConstants.DB_FALSE))
@@ -941,15 +864,10 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			String idInstitucion = usr.getLocation();
 			idPago = miform.getIdPagosJG();
 			idFacturacion=miform.getIdFacturacion();
-			boolean salidaCorrecta = this.generarAbonos(idInstitucion, idPago, request, null);
+			generarAbonos(idInstitucion, idPago, request, null);
 
-			if (!salidaCorrecta) {
-				request.setAttribute("mensaje","messages.updated.error");
-				tx.rollback();
-			} else {
-				request.setAttribute("mensaje","messages.updated.success");
-				tx.commit();
-			}				
+			request.setAttribute("mensaje","messages.updated.success");
+			tx.commit();			
 
 			// Exportacion de datos a EXCEL
 			UtilidadesFacturacionSJCS.exportarDatosPagos(new Integer(idInstitucion), new Integer(idFacturacion),new Integer(idPago),null, usr);
@@ -1023,7 +941,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			    letradosAPagar.add(b);
 			}
 			
-			boolean salidaCorrecta = this.generarAbonos(idInstitucion, idPago, request, letradosAPagar);
+			this.generarAbonos(idInstitucion, idPago, request, letradosAPagar);
 			
 			//Paso los parametros al jsp del refresco especifico para este caso de uso:
 			request.setAttribute("modo","abrirAvanzada");					
@@ -1031,13 +949,9 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			request.setAttribute("idInstitucion",idInstitucion);
 			request.setAttribute("cerrarModal","SI");
 			forward = "exitoInsertarPago";						
-			if (!salidaCorrecta) {
-				request.setAttribute("mensaje","messages.updated.error");
-				tx.rollback();
-			} else {
-				request.setAttribute("mensaje","messages.updated.success");
-				tx.commit();
-			}				
+	
+			request.setAttribute("mensaje","messages.updated.success");
+			tx.commit();
 		} 
 		catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,tx); 
@@ -1046,9 +960,15 @@ public class DatosGeneralesPagoAction extends MasterAction {
 	}
 
 	/**
-	 * Funcion que Actualiza las retenciones, obtiene los importes a abonar a cada colegiado (para un pago).<br>
-	 * Si el importe es positivo genera un abono, y en caso de ser negativo crea dos movimientos varios, uno con <br>
-	 * un movimiento sin pago y con la diferencia bruta del pago, y otro relacionado con el pago y con la diferencia neta.
+	 *
+	 * 	Por cada colegiado aplicamos el proceso de generar Abonos
+	 * 		1. Obtener el total SJCS
+	 * 		2. Aplicar los movimientos varios
+	 * 		3. Obtener importe bruto como la suma de los movimientos varios y el total SJCS
+	 * 		4. Obtener el importe neto aplicando el IRPF
+	 * 		5. Aplicar retenciones judiciales y no judiciales
+	 * 			- Aplicar tramos LEC ????
+	 * 		6. Generar abono	 
 	 * 
 	 * @param idInstitucion
 	 * @param idPago
@@ -1057,214 +977,219 @@ public class DatosGeneralesPagoAction extends MasterAction {
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	protected boolean generarAbonos(String idInstitucion, String idPago,
-			HttpServletRequest request, Vector colegiadosMarcados)
-			throws ClsExceptions {
+	protected void generarAbonos(String idInstitucion, String idPago, HttpServletRequest request, 
+			Vector colegiadosMarcados) throws ClsExceptions {
 		//Controles
 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
-		FcsMovimientosVariosAdm movimientosAdm = new FcsMovimientosVariosAdm(
-				usr);
- 		FcsPagosJGAdm pagoAdm = new FcsPagosJGAdm(this.getUserBean(request));
+		FcsPagosJGAdm pagoAdm = new FcsPagosJGAdm(usr);
 		Hashtable importes = new Hashtable();
-		
-		//Variable de salida: donde devolveremos el resultado del proceso
-		boolean resultado = false;
-		
-		//variables para los resultados de los PLs:
- 		String resultadoPl[] = new String[2];
- 		String resultadoPlReten[] = new String[2];
- 		String resultadoPlImportes[] = new String[2];	 	
-	 	
-	 	//variables para hacer el calculo del importe final a pagar
- 		String idPersonaSociedad="";
- 		
-	 	double importeSJCS=0.0d;
-	 	double importeTurnos=0.0d, importeGuardias=0.0d, importeSoj=0.0d, importeEjg=0.0d;
-	 	double importeMovimientos=0.0d, importeRetenciones=0.0d;
-	 	
-	 	double irpfSJCS=0.0d;
-	 	double irpfTurnos=0.0d, irpfGuardias=0.0d, irpfSoj=0.0d, irpfEjg=0.0d;
-	 	double irpfMovimientos=0.0d;
-	 	double irpfTotal=0.0d;
-		
-		// EJECUCION DE PLs DE RETENCIONES:
- 		
-		// 1. Aplicamos los movimientos varios
- 		resultadoPl = EjecucionPLs.ejecutarPLMovimientos(idInstitucion, idPago);
-		if (!resultadoPl[0].equals("0"))
-			throw new ClsExceptions("Error al aplicar movimientos varios: "
-					+ resultadoPl[1]);
 
- 		// 2. Actualizamos las retenciones a dia de hoy
-		resultadoPl = EjecucionPLs.ejecutarPLRetenciones(idInstitucion,idPago);
-		if (!resultadoPl[0].equals("0")) 
-			throw new ClsExceptions("Error al aplicar retenciones: "
-					+ resultadoPl[1]);
-		
-		// 3. Aplicamos las retenciones Judiciales
-		resultadoPlReten = EjecucionPLs.ejecutarPLRetencionesJudiciales(
-				idInstitucion, idPago, this.getUserName(request).toString());
-		if (!resultadoPlReten[0].equals("0"))
-			throw new ClsExceptions("Error al aplicar retenciones judiciales: "
-					+ resultadoPlReten[1]);
-			
- 		// 4. Recuperamos los colegiados a los que tenemos que pagar
-		Vector colegiados = (Vector) pagoAdm.getColegiadosAPagar(idInstitucion,
-				idPago);
-		if (colegiados.size()==0) {
-		    resultado = true;
-		}
- 		// 5. Por cada colegiado aplicamos el proceso de generar Abonos
- 		for (int contador=0; contador<colegiados.size(); contador++) {
- 			//cogemos el colegiado
-			String idPersona = UtilidadesHash.getString((Hashtable) colegiados
-					.get(contador), "IDPERSONA_SJCS");
-			
-			//PL Obtener el Importe del Colegiado:
-			resultadoPlImportes = EjecucionPLs
-					.ejecutarPLObtenerImporteColegiado(idInstitucion, idPago,
-							idPersona);
-			if (!resultadoPlImportes[12].equals("0"))
-				throw new ClsExceptions(
-						"Error al obtener importes de colegiado: "
-								+ resultadoPlImportes[13]);
-	 		
-			resultado = true;
+		//variables para hacer el calculo del importe final a pagar
+		String idPersonaSociedad="";
+		double importeSJCS=0.0d;
+		double importeTurnos=0.0d, importeGuardias=0.0d, importeSoj=0.0d, importeEjg=0.0d;
+		double importeMovimientos=0.0d, importeRetenciones=0.0d;	
+		Double porcentajeIRPF;
+		double importeIrpfTotal=0.0d;
 
-			// Resultados del PL
-			//   0 IMPORTETURNOS 
-			//	 1 IMPORTEGUARDIAS 
-			//	 2 IMPORTESOJ 
-			//	 3 IMPORTEEJG 
-			//	 4 IMPORTEMOVIMIENTOS 
-			//	 5 IMPORTERETENCIONES 
-			//	 6 IRPFTURNOS 
-			//	 7 IRPFGUARDIAS
-			//	 8 IRPFSOJ 
-			//	 9 IRPFEJG 
-			//	10 IRPFMOVIMIENTOS 
-			//	11 IDPERSONASOCIEDAD 
-			//	12 CODRETORNO 
-			//	13 DATOSERROR 
-			
-			importeTurnos		= Double.parseDouble ((String) resultadoPlImportes[0]);
-			importeGuardias = Double
-					.parseDouble((String) resultadoPlImportes[1]);
-			importeSoj			= Double.parseDouble ((String) resultadoPlImportes[2]);
-			importeEjg			= Double.parseDouble ((String) resultadoPlImportes[3]);
-			importeMovimientos = Double
-					.parseDouble((String) resultadoPlImportes[4]);
-			importeRetenciones = Double
-					.parseDouble((String) resultadoPlImportes[5]);
-			irpfTurnos			= Double.parseDouble ((String) resultadoPlImportes[6]);
-			irpfGuardias		= Double.parseDouble ((String) resultadoPlImportes[7]);
-			irpfSoj				= Double.parseDouble ((String) resultadoPlImportes[8]);
-			irpfEjg				= Double.parseDouble ((String) resultadoPlImportes[9]);
-			irpfMovimientos = Double
-					.parseDouble((String) resultadoPlImportes[10]);
-			idPersonaSociedad = ((String) resultadoPlImportes[11] == null ? ""
-					: (String) resultadoPlImportes[11]);
-			
-			//Aplicamos signo negativo a los IMPORTES IRPF:
-			irpfTurnos   	= (-1) * irpfTurnos;
-			irpfGuardias 	= (-1) * irpfGuardias;
-			irpfSoj 	 	= (-1) * irpfSoj;
-			irpfEjg 		= (-1) * irpfEjg;
-			irpfMovimientos = (-1) * irpfMovimientos;
+		// Recuperamos los colegiados a los que tenemos que pagar
+		// aquellos incluidos en el pago o con movimientos varios pendientes
+		Vector colegiados = (Vector) pagoAdm.getColegiadosAPagar(idInstitucion, idPago);
 
-			// Calculamos el IMPORTE SJCS BRUTO:
-			importeSJCS = importeTurnos + importeGuardias + importeSoj
-					+ importeEjg;
-			
-			// IRPF Total
-			irpfSJCS = irpfEjg +  irpfGuardias + irpfSoj + irpfTurnos;
-			
-			if (importeSJCS > 0 || Math.abs(importeMovimientos) > 0) //solo se
-																	 // inserta
-																	 // abono si
-																	 // hay algo
-																	 // que
-																	 // abonar
-			{
-				if (importeMovimientos == 0) {
-					irpfTotal = irpfSJCS;
-				}
-				else if (importeMovimientos > 0) {
-					irpfTotal = irpfSJCS - irpfMovimientos;
-				}
-				else { //importeMovimientos <= 0
-					if (Math.abs (importeMovimientos) <= importeSJCS) {
-						irpfTotal = irpfSJCS - irpfMovimientos;
-					} else {//si los movimientos varios anulan el abono SJCS
-					//generando un registro de movimientos varios por la
-					// diferencia
-						Hashtable movimientoBean = new Hashtable ();
-						movimientoBean.put (FcsMovimientosVariosBean.C_CANTIDAD, 
-								String
-										.valueOf(importeSJCS
-												+ importeMovimientos));
-						movimientoBean
-								.put(
-										FcsMovimientosVariosBean.C_DESCRIPCION,
-										UtilidadesString
-												.getMensajeIdioma((String) usr
-														.getLanguage(),
-										"factSJCS.abonos.literal.descripcionMovimiento"));
-						movimientoBean
-								.put(FcsMovimientosVariosBean.C_FECHAALTA,
-										"SYSDATE");
-						movimientoBean.put(
-								FcsMovimientosVariosBean.C_FECHAMODIFICACION,
-								"SYSDATE");
-						movimientoBean.put(
-								FcsMovimientosVariosBean.C_IDINSTITUCION,
-								idInstitucion);
-						movimientoBean
-								.put(FcsMovimientosVariosBean.C_IDPERSONA,
-										idPersona);
-						movimientoBean.put(
-								FcsMovimientosVariosBean.C_CONTABILIZADO, "0");
-						movimientoBean = movimientosAdm
-								.prepararInsert(movimientoBean);
-						movimientosAdm.insert (movimientoBean);
-						
-						//el abono sera nulo
-						irpfTotal = 0;
-						importeMovimientos = (-1) * importeSJCS;
-					}
-				}
-				
+		for (Iterator iter = colegiados.iterator(); iter.hasNext(); ) {
+			//recupera el colegiado
+			String idPersona = UtilidadesHash.getString((Hashtable) iter.next(), "IDPERSONA_SJCS");
+
+			//obtiene el pago del colegiado
+			FcsPagoColegiadoAdm pcAdm = new FcsPagoColegiadoAdm(usr);
+			Hashtable hash = new Hashtable();
+			hash.put(FcsPagoColegiadoBean.C_IDINSTITUCION, idInstitucion);
+			hash.put(FcsPagoColegiadoBean.C_IDPAGOSJG, idPago);
+			hash.put(FcsPagoColegiadoBean.C_IDPERORIGEN, idPersona);
+			Vector vector = pcAdm.selectByPK(hash);
+			// Si no existe un pago para el colegiado debe existir al menos un MV
+			// por lo que pasa a tratar los movimientos varios
+			if (!vector.isEmpty()){
+				FcsPagoColegiadoBean pcBean = (FcsPagoColegiadoBean) vector.get(0);
+				importeTurnos		= pcBean.getImpOficio().doubleValue();
+				importeGuardias		= pcBean.getImpAsistencia().doubleValue();
+				importeSoj			= pcBean.getImpSOJ().doubleValue();
+				importeEjg			= pcBean.getImpEJG().doubleValue();		
+				idPersonaSociedad 	= pcBean.getIdPerDestino() == null ? "" : pcBean.getIdPerDestino().toString();
+
+				// 1. Calcula el IMPORTE SJCS BRUTO
+				importeSJCS = importeTurnos + importeGuardias + importeSoj + importeEjg;
+			}
+
+			//obtiene el porcentajeIRPF del colegiado para utilizarlo al aplicar 
+			//los movimientos varios y calcular el IRPF del importe bruto.
+			porcentajeIRPF = obtenerIrpf(idInstitucion, idPersona, !idPersonaSociedad.equals(""));
+
+			// 2. Aplicar los movimientos varios
+			// Asocia todos los movimientos sin idpago al pago actual.
+			// Actualiza el porcentaje e importe IRPF para cada movimiento.
+			FcsMovimientosVariosAdm movimientosAdm = new FcsMovimientosVariosAdm(usr);
+			movimientosAdm.updatePago(idInstitucion, idPago, idPersona, porcentajeIRPF.toString());
+			importeMovimientos = aplicarMovimientosVarios(idInstitucion, idPago, idPersona, usr);
+
+			// 3. Obtener importe bruto como la suma de los movimientos varios y el total SJCS
+			double importeBruto = importeSJCS + importeMovimientos;
+
+			// 4. Obtener el importe neto aplicando el IRPF	
+			importeIrpfTotal = -1 * (importeBruto * porcentajeIRPF / 100);
+			double importeNeto = importeBruto + importeIrpfTotal;
+
+			// 5. Aplicar retenciones judiciales y no judiciales
+			aplicarRetencionesJudiciales( idInstitucion, idPago, idPersona, 
+					Double.toString(importeNeto), Long.toString(usr.getIdPersona()));
+			// obtener el importe de las retenciones judiciales
+			FcsCobrosRetencionJudicialAdm crjAdm = new FcsCobrosRetencionJudicialAdm(usr); 
+			importeRetenciones = crjAdm.getSumaRetenciones(idInstitucion, idPago, idPersona);
+
+			//Actualizar el irpf, movimientos varios y retenciones en fcs_pago_colegiado
+			pcAdm.updateCierrePago(idInstitucion, idPago, idPersona, 
+					porcentajeIRPF, importeMovimientos, importeRetenciones);
+
+
+			// 6. Generar abono	si corresponde
+			if (importeMovimientos > 0 || importeNeto > 0){
 				try {
 					//consultamos la cuenta
 					CenClienteAdm clienteAdm = new CenClienteAdm (usr);
 					ArrayList cuenta = clienteAdm.getCuentaAbono (idInstitucion, 
-							(!idPersonaSociedad.equals("") ? idPersonaSociedad
-									: idPersona));
-					
+							(!idPersonaSociedad.equals("") ? idPersonaSociedad : idPersona));
+
 					//Guardamos los importes:
-					importes
-							.put("importeTurnos", String.valueOf(importeTurnos));
-					importes.put("importeGuardias", String
-							.valueOf(importeGuardias));
-					importes.put ("importeSoj",			String.valueOf (importeSoj));
-					importes.put ("importeEjg",			String.valueOf (importeEjg));
-					importes.put("importeMovimientos", String
-							.valueOf(importeMovimientos));
-					importes.put("importeRetenciones", String
-							.valueOf(importeRetenciones));
-					
+					importes.put("importeTurnos", String.valueOf(importeTurnos));
+					importes.put("importeGuardias", String.valueOf(importeGuardias));
+					importes.put("importeSoj", String.valueOf (importeSoj));
+					importes.put("importeEjg", String.valueOf (importeEjg));
+					importes.put("importeMovimientos", String.valueOf(importeMovimientos));
+					importes.put("importeRetenciones", String.valueOf(importeRetenciones));
+
 					//Creamos el Abono:
 					this.crearAbonos (cuenta, request, colegiadosMarcados, 
-							(!idPersonaSociedad.equals("") ? idPersonaSociedad
-									: idPersona), idPago, idInstitucion,
-							importes, irpfTotal, idPersona);
+							(!idPersonaSociedad.equals("") ? idPersonaSociedad: idPersona),
+							idPago, idInstitucion, importes, importeIrpfTotal, idPersona);
 				} catch (Exception e) {
-					throw new ClsExceptions(e,
-							"DatosGeneralesPagoAction.generarAbonos");
+					throw new ClsExceptions(e,"DatosGeneralesPagoAction.generarAbonos");
 				} 
-				}
- 		} //fin del for de colegiados
-		return resultado;
+			}
+		} //fin del for de colegiados
+
+	}
+
+	/**
+	 * Devuelve el porcentaje de irpf a aplicar en un pago
+	 * @param idInstitucion
+	 * @param idPersonaSociedad
+	 * @param esSociedad 
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	private Double obtenerIrpf(String idInstitucion, String idPersonaSociedad, boolean esSociedad) throws ClsExceptions {
+		String resultado[] = EjecucionPLs.ejecutarPLCalcularIRPF_Pagos(
+				idInstitucion, idPersonaSociedad, esSociedad);
+		//comprueba si el pl se ha ejecutado correctamente
+		if (!resultado[1].equals("0")){
+			throw new ClsExceptions("Error al obtener importes de colegiado: " + resultado[2]);
+		}
+		return new Double((String) resultado[0]);
+	}
+	
+	
+	/**
+	 * Devuelve el porcentaje de irpf a aplicar en un pago
+	 * @param idInstitucion
+	 * @param idPersonaSociedad
+	 * @param usuario de modificacion 
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	private void aplicarRetencionesJudiciales(
+			String idInstitucion, String idPagoJg, String idPersonaSociedad, 
+			String importeNeto, String usuMod) throws ClsExceptions {
+
+
+		// Aplicar las retenciones judiciales
+		String resultado[] = EjecucionPLs.ejecutarPLAplicarRetencionesJudiciales(
+				idInstitucion, idPagoJg, idPersonaSociedad, importeNeto, usuMod);
+		//comprueba si el pl se ha ejecutado correctamente
+		if (!resultado[0].equals("0")){
+			throw new ClsExceptions("Error al obtener importes de colegiado: " + resultado[1]);
+		}
+		
+	}
+	
+	
+	/**
+	 *  Devuelve el importe total de los movimientos varios.
+	 *  El algoritmos utilizado es el siguiente:
+	 *	1 Aplicar todos los MVs positivos
+	 *	2 Ordenar los MVs negativos por fecha
+	 *	3 Intentar aplicar MV
+	 *		· Si la cantidad resultante es igual a 0 entonces
+	 *			Terminar
+	 *		· Si la cantidad resultante es menor que 0 entonces
+	 *			Dejar cantidad resultante en 0
+	 *			Crear MV con la diferencia
+	 *			Terminar
+	 *	4 Seguir con otro MV en el paso 2.3
+
+	 * @param idInstitucion
+	 * @param idPago
+	 * @param idPersona
+	 * @param usr
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	private double aplicarMovimientosVarios(
+			String idInstitucion, String idPago, String idPersona, UsrBean usr) throws ClsExceptions{
+		
+		// en esta variable se guarda el importe final de los movimientos varios
+		double importeMovimientos = 0.0d;
+		
+		//obtiene todos los movimientos varios del colegiado ordenados por fecha de alta
+		FcsMovimientosVariosAdm movimientosAdm = new FcsMovimientosVariosAdm(usr);
+		Vector movimientos =  movimientosAdm.getMovimientosRW(idInstitucion, idPago, idPersona);
+
+		//obtiene la suma de todos los movimientos varios positivos
+		for(Iterator iterMov = movimientos.iterator(); iterMov.hasNext();){
+			double aux = UtilidadesHash.getDouble((Hashtable) iterMov.next(), "CANTIDAD").doubleValue();
+			if (aux > -1){
+				importeMovimientos += aux;
+				iterMov.remove();
+			}
+		}
+		// Intentar aplicar MV negativos
+		for(Iterator iterMov = movimientos.iterator(); iterMov.hasNext();){
+			double aux = UtilidadesHash.getDouble((Hashtable) iterMov.next(), "CANTIDAD").doubleValue();
+			importeMovimientos += aux;
+			// Si no se pueden aplicar mas movimientos negativos, sale de la iteracion
+			if (importeMovimientos == 0)
+				break;
+			// Si el importe del movimiento es mayor que el restante de movimientos positivos
+			// deja la cantidad resultante en 0, crea un MV con la diferencia y termina.
+			if (importeMovimientos < 0){
+				double importeNuevoMovimiento = importeMovimientos;
+				importeMovimientos = 0;
+				Hashtable movimientoBean = new Hashtable ();
+				movimientoBean.put(FcsMovimientosVariosBean.C_CANTIDAD, String.valueOf(importeNuevoMovimiento));
+				movimientoBean.put(FcsMovimientosVariosBean.C_DESCRIPCION,
+						UtilidadesString.getMensajeIdioma( usr.getLanguage(), "factSJCS.abonos.literal.descripcionMovimiento"));
+				movimientoBean.put(FcsMovimientosVariosBean.C_FECHAALTA, "SYSDATE");
+				movimientoBean.put(FcsMovimientosVariosBean.C_FECHAMODIFICACION, "SYSDATE");
+				movimientoBean.put(FcsMovimientosVariosBean.C_IDINSTITUCION, idInstitucion);
+				movimientoBean.put(FcsMovimientosVariosBean.C_IDPERSONA, idPersona);
+				movimientoBean.put(FcsMovimientosVariosBean.C_CONTABILIZADO, "0");
+				movimientoBean = movimientosAdm	.prepararInsert(movimientoBean);
+				movimientosAdm.insert (movimientoBean);
+				// Seguir con otro MV
+				continue;
+			}
+		}
+		
+		return importeMovimientos;
 	}
 	
 	/**
@@ -1704,6 +1629,20 @@ public class DatosGeneralesPagoAction extends MasterAction {
 		} 
 		catch(Exception e) {
 			throw new ClsExceptions (e,"DatosGeneralesPagoAction.generarAbonos");
+		}
+	}
+	
+	
+	/**
+	 * Retorna el valor Double de una cadena o 0 si no se puede obtener un numero
+	 * @return
+	 */
+	private Double tratarValor(String valor){
+		try{
+			return new Double(valor.replaceAll(",","."));
+		}
+		catch (Exception e){
+			return new Double(0);
 		}
 	}
 }

@@ -9,6 +9,7 @@ import java.util.Vector;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
@@ -103,8 +104,8 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 */
 	public Vector selectGenerico(String select) throws ClsExceptions {
-		Vector datos = new Vector();
 		
+		Vector datos = new Vector();
 		// Acceso a BBDD
 		RowsContainer rc = null;
 		try { 
@@ -183,7 +184,8 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 							" AND M." + FcsMovimientosVariosBean.C_IDPAGOSJG + " = P." + FcsPagosJGBean.C_IDPAGOSJG + " " +
 							" AND M." + FcsMovimientosVariosBean.C_IDINSTITUCION + "=" + idInstitucion +
 							" AND M." + FcsMovimientosVariosBean.C_IDPAGOSJG + "=" + idPago +
-							" AND M." + FcsMovimientosVariosBean.C_IDPERSONA + "=" + idPersona +" ";
+							" AND M." + FcsMovimientosVariosBean.C_IDPERSONA + "=" + idPersona +" " +
+							" ORDER BY  M." + FcsMovimientosVariosBean.C_FECHAALTA ;		
 							
 		try{
 			resultado = (Vector)this.selectGenerico(consulta);
@@ -194,6 +196,43 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 		return resultado;
 		
 	}
+	
+	/**
+	 * Devuelve un vector con los movimientos varios que hay que pagar para una persona
+	 * ordenados por fecha de alta utilizando el pool RW
+	 * @param idInstitucion
+	 * @param idPago
+	 * @param idPersona
+	 * @return
+	 */
+	public Vector getMovimientosRW (String idInstitucion, String idPago, String idPersona) throws ClsExceptions 
+	{
+		//donde devolveremos el resultado
+		Vector resultado = new Vector();
+		//query con la select a ejecutar
+		String consulta = " SELECT M." + FcsMovimientosVariosBean.C_MOTIVO + " " + FcsMovimientosVariosBean.C_MOTIVO + ","+
+							" M." + FcsMovimientosVariosBean.C_DESCRIPCION + " " + FcsMovimientosVariosBean.C_DESCRIPCION + ","+
+							" M." + FcsMovimientosVariosBean.C_IDINSTITUCION + " " + FcsMovimientosVariosBean.C_IDINSTITUCION + ","+
+							" M." + FcsMovimientosVariosBean.C_IDMOVIMIENTO + " " + FcsMovimientosVariosBean.C_IDMOVIMIENTO + ","+
+							" M." + FcsMovimientosVariosBean.C_CANTIDAD + " " + FcsMovimientosVariosBean.C_CANTIDAD + ","+
+							" M." + FcsMovimientosVariosBean.C_IMPORTEIRPF + " " + FcsMovimientosVariosBean.C_IMPORTEIRPF + ","+
+							" M." + FcsMovimientosVariosBean.C_PORCENTAJEIRPF + " " + FcsMovimientosVariosBean.C_PORCENTAJEIRPF + " "+
+							" FROM " + FcsMovimientosVariosBean.T_NOMBRETABLA + " M " + 
+							" WHERE M." + FcsMovimientosVariosBean.C_IDINSTITUCION + "=" + idInstitucion +
+							" AND M." + FcsMovimientosVariosBean.C_IDPAGOSJG + "=" + idPago +
+							" AND M." + FcsMovimientosVariosBean.C_IDPERSONA + "=" + idPersona +" " +
+							" ORDER BY  M." + FcsMovimientosVariosBean.C_FECHAALTA ;		
+							
+		try{
+			resultado = (Vector)super.selectGenerico(consulta);
+		}catch(Exception e){
+			throw new ClsExceptions (e,"Error en FcsMovimientosVarios.getMovimientos()"+consulta);
+		}
+		
+		return resultado;
+		
+	}
+	
 	
 	/**
 	 * Actualiza a NULL el idPagosJG de los movimientos si conincide el idPago del registro con el del método. 
@@ -355,4 +394,37 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 		return this.selectGenerico(consulta);
 	}
 
+	
+	/**
+	 * Actualizar el idpagojg, el importeIRPF y el porcentajeIRPF 
+	 * de los movimientos de un colegiado que no tengan pago asociado.
+	 * @param idInstitucion
+	 * @param idPago
+	 * @param idPersona
+	 * @param porcentajeIRPF
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public boolean updatePago(
+			String idInstitucion, String idPago, String idPersona, String porcentajeIRPF) throws ClsExceptions {
+		//query con la select a ejecutar
+		StringBuffer consulta = new StringBuffer();
+		consulta.append("UPDATE FCS_MOVIMIENTOSVARIOS SET IDPAGOSJG = ");
+		consulta.append(idPago);
+		consulta.append(" , PORCENTAJEIRPF = ");
+		consulta.append(porcentajeIRPF);
+		consulta.append(" , IMPORTEIRPF = CANTIDAD * " +porcentajeIRPF+" / 100 ");
+		consulta.append(" WHERE IDINSTITUCION = ");
+		consulta.append(idInstitucion);
+		consulta.append(" AND IDPERSONA = ");
+		consulta.append(idPersona);
+		consulta.append(" AND IDPAGOSJG IS NULL");		
+		int resultado;				
+		try{
+			resultado = ClsMngBBDD.executeUpdate(consulta.toString());
+		}catch(Exception e){
+			throw new ClsExceptions (e,"Error en FcsMovimientosVarios.getMovimientos()"+consulta);
+		}
+		return (resultado > 0);
+	}
 }

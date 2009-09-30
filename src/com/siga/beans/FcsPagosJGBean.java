@@ -13,8 +13,8 @@ package com.siga.beans;
 public class FcsPagosJGBean extends MasterBean {
 	
 	/* Variables */
-	private Integer idInstitucion, idPagosJG, idFacturacion, porcentajeOficio, porcentajeGuardias, porcentajeSOJ, porcentajeEJG;
-	private Double importeRepartir, importePagado, importeOficio = null, importeGuardia = null, importeSOJ = null, importeEJG = null, importeMinimo = null;
+	private Integer idInstitucion, idPagosJG, idFacturacion;
+	private Double importeRepartir, importePagado, importeOficio = null, importeGuardia = null, importeSOJ = null, importeEJG = null, importeMinimo = null, porcentajeOficio, porcentajeGuardias, porcentajeSOJ, porcentajeEJG;
 	private String 	nombre=null, abreviatura=null, fechaDesde=null, fechaHasta=null, criterioPagoTurno=null, contabilizado=null, concepto=null, bancosCodigo=null;
 	
 
@@ -163,49 +163,49 @@ public class FcsPagosJGBean extends MasterBean {
 	/**
 	 * @return Returns the porcentajeEJG.
 	 */
-	public Integer getPorcentajeEJG() {
+	public Double getPorcentajeEJG() {
 		return porcentajeEJG;
 	}
 	/**
 	 * @param porcentajeEJG The porcentajeEJG to set.
 	 */
-	public void setPorcentajeEJG(Integer porcentajeEJG) {
+	public void setPorcentajeEJG(Double porcentajeEJG) {
 		this.porcentajeEJG = porcentajeEJG;
 	}
 	/**
 	 * @return Returns the porcentajeGuardias.
 	 */
-	public Integer getPorcentajeGuardias() {
+	public Double getPorcentajeGuardias() {
 		return porcentajeGuardias;
 	}
 	/**
 	 * @param porcentajeGuardias The porcentajeGuardias to set.
 	 */
-	public void setPorcentajeGuardias(Integer porcentajeGuardias) {
+	public void setPorcentajeGuardias(Double porcentajeGuardias) {
 		this.porcentajeGuardias = porcentajeGuardias;
 	}
 	/**
 	 * @return Returns the porcentajeOficio.
 	 */
-	public Integer getPorcentajeOficio() {
+	public Double getPorcentajeOficio() {
 		return porcentajeOficio;
 	}
 	/**
 	 * @param porcentajeOficio The porcentajeOficio to set.
 	 */
-	public void setPorcentajeOficio(Integer porcentajeOficio) {
+	public void setPorcentajeOficio(Double porcentajeOficio) {
 		this.porcentajeOficio = porcentajeOficio;
 	}
 	/**
 	 * @return Returns the porcentajeSOJ.
 	 */
-	public Integer getPorcentajeSOJ() {
+	public Double getPorcentajeSOJ() {
 		return porcentajeSOJ;
 	}
 	/**
 	 * @param porcentajeSOJ The porcentajeSOJ to set.
 	 */
-	public void setPorcentajeSOJ(Integer porcentajeSOJ) {
+	public void setPorcentajeSOJ(Double porcentajeSOJ) {
 		this.porcentajeSOJ = porcentajeSOJ;
 	}
 	/**

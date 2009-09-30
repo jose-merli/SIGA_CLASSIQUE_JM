@@ -21,7 +21,6 @@ public class ScsProcedimientosBean extends MasterBean
 	static public final String C_IDPROCEDIMIENTO	= "IDPROCEDIMIENTO";
 	static public final String C_NOMBRE				= "NOMBRE";
 	static public final String C_PRECIO				= "PRECIO";
-	static public final String C_PUNTOS				= "PUNTOS";
 	static public final String C_IDJURISDICCION		= "IDJURISDICCION";
 	static public final String C_CODIGO				= "CODIGO";
 	static public final String C_COMPLEMENTO		= "COMPLEMENTO";
@@ -36,7 +35,6 @@ public class ScsProcedimientosBean extends MasterBean
 	private String	idProcedimiento;
 	private String	nombre;
 	private Float	precio;
-	private Integer puntos;
 	private Integer idJurisdiccion;
 	private String	codigo;
 	private String	complemento;
@@ -52,7 +50,6 @@ public class ScsProcedimientosBean extends MasterBean
 	public Integer	getIdProcedimiento()	{return Integer.valueOf(idProcedimiento);}
 	public String	getNombre()				{return nombre;}
 	public Float	getPrecio()				{return precio;}
-	public Integer	getPuntos()				{return puntos;}
 	public String	getCodigo()				{return codigo;}
     public String	getComplemento()		{return complemento;}
 	public String	getVigente()			{return vigente;}
@@ -67,7 +64,6 @@ public class ScsProcedimientosBean extends MasterBean
 	public void setIdProcedimiento	(Integer	idProcedimiento)	{this.idProcedimiento	= idProcedimiento.toString();}
 	public void setNombre			(String		nombre)				{this.nombre			= nombre;}
 	public void setPrecio			(Float		precio)				{this.precio			= precio;}
-	public void setPuntos			(Integer	puntos)				{this.puntos			= puntos;}
 	public void setCodigo			(String		codigo)				{this.codigo			= codigo;}
     public void setComplemento		(String		complemento)		{this.complemento		= complemento;}
 	public void setVigente			(String		vigente)			{this.vigente			= vigente;}

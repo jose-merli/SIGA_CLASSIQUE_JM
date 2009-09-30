@@ -1564,7 +1564,7 @@ public class DatosDetallePagoAction extends MasterAction {
 					String importeTotalMovimientoVarios = UtilidadesNumero.redondea(UtilidadesHash.getString(fila, "IMPORTETOTALMOVIMIENTOS"),2);
 					float totalBrutos = Float.parseFloat(importeTotalSJCS) + Float.parseFloat(importeTotalMovimientoVarios);
 					if (totalBrutos<0) totalBrutos=0; 
-					float totalTotal = Float.parseFloat(importeTotalSJCS) + Float.parseFloat(importeTotalMovimientoVarios)-Float.parseFloat(irpf)+Float.parseFloat(importeRetenciones);
+					float totalTotal = Float.parseFloat(importeTotalSJCS) + Float.parseFloat(importeTotalMovimientoVarios)+Float.parseFloat(irpf)+Float.parseFloat(importeRetenciones);
 					if (totalTotal<0) totalTotal=0; 
 					
 					

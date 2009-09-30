@@ -42,7 +42,6 @@ public class ScsHitoFacturableGuardiaAdm extends MasterBeanAdministrador
 				ScsHitoFacturableGuardiaBean.C_IDTURNO,
 				ScsHitoFacturableGuardiaBean.C_PAGOFACTURACION,
 				ScsHitoFacturableGuardiaBean.C_PRECIOHITO,
-				ScsHitoFacturableGuardiaBean.C_PUNTOS,
 				ScsHitoFacturableGuardiaBean.C_DIASAPLICABLES,
 				ScsHitoFacturableGuardiaBean.C_AGRUPAR,
 				ScsHitoFacturableGuardiaBean.C_FECHAMODIFICACION,
@@ -84,7 +83,6 @@ public class ScsHitoFacturableGuardiaAdm extends MasterBeanAdministrador
 			bean.setIdTurno			(UtilidadesHash.getInteger	(hash, ScsHitoFacturableGuardiaBean.C_IDTURNO));
 			bean.setPagoFacturacion	(UtilidadesHash.getString	(hash, ScsHitoFacturableGuardiaBean.C_PAGOFACTURACION));
 			bean.setPrecioHito		(UtilidadesHash.getFloat	(hash, ScsHitoFacturableGuardiaBean.C_PRECIOHITO).floatValue ());
-			bean.setPuntos			(UtilidadesHash.getInteger	(hash, ScsHitoFacturableGuardiaBean.C_PUNTOS));
 			bean.setDiasAplicables	(UtilidadesHash.getString	(hash, ScsHitoFacturableGuardiaBean.C_DIASAPLICABLES));
 			bean.setAgrupar			(UtilidadesHash.getBoolean	(hash, ScsHitoFacturableGuardiaBean.C_AGRUPAR).booleanValue ());
 			bean.setFechaMod		(UtilidadesHash.getString	(hash, ScsHitoFacturableGuardiaBean.C_FECHAMODIFICACION));
@@ -114,7 +112,6 @@ public class ScsHitoFacturableGuardiaAdm extends MasterBeanAdministrador
 			hash.put (ScsHitoFacturableGuardiaBean.C_IDTURNO,			String.valueOf (b.getIdTurno ()));
 			hash.put (ScsHitoFacturableGuardiaBean.C_PAGOFACTURACION,	b.getPagoFacturacion ());
 			hash.put (ScsHitoFacturableGuardiaBean.C_PRECIOHITO,		String.valueOf (b.getPrecioHito ()));
-			hash.put (ScsHitoFacturableGuardiaBean.C_PUNTOS,			String.valueOf (b.getPuntos ()));
 			hash.put (ScsHitoFacturableGuardiaBean.C_DIASAPLICABLES,	b.getDiasAplicables ());
 			hash.put (ScsHitoFacturableGuardiaBean.C_AGRUPAR,			b.getAgrupar () ? "1" : "0");
 			hash.put (ScsHitoFacturableGuardiaBean.C_FECHAMODIFICACION,	b.getFechaMod ());
