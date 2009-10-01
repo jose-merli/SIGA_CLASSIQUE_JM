@@ -13,6 +13,7 @@
 <%@ page import="java.util.*"%>
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
+<%@ page import="com.siga.Utilidades.UtilidadesMultidioma"%>
 
 <%  
 	String app=request.getContextPath();
@@ -27,7 +28,8 @@
 	request.removeAttribute("datos");	
 %>	
 
-<html>
+
+<%@page import="com.siga.Utilidades.UtilidadesMultidioma"%><html>
 	<head>
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 		
@@ -43,7 +45,7 @@
 		<!-- INICIO: SCRIPTS BOTONES -->
 		<script language="JavaScript">
 	
-			<!-- Asociada al boton Nuevo -->
+			// Asociada al boton Nuevo 
 			function accionNuevo() 
 			{		
 				  document.forms[0].modo.value = "nuevo";
@@ -51,7 +53,7 @@
    				  if(resultado=='MODIFICADO') parent.buscar();
 			}
 	
-			<!-- Asociada al boton Volver -->
+			// Asociada al boton Volver
 			function accionVolver() 
 			{		
 				top.frames["mainWorkArea"].location.href='<%=app%>/Dispatcher.do?proceso=41';
@@ -120,7 +122,7 @@
 						<input type="hidden" name="oculto<%=""+(i+1)%>_1" value="<%=bean.getIdRol()%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_2" value="<%=bean.getIdTipoExpediente()%>">						
 						
-						<%=bean.getNombre()%>
+						<%=UtilidadesMultidioma.getDatoMaestroIdioma(bean.getNombre(),user)%>
 					</td>					
 				</siga:FilaConIconos>
 <%

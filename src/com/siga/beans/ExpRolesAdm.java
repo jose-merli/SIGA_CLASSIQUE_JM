@@ -26,7 +26,7 @@ public class ExpRolesAdm extends MasterBeanAdministrador {
     /* (non-Javadoc)
      * @see com.siga.beans.MasterBeanAdministrador#getCamposBean()
      */
-    protected String[] getCamposBean() {
+    public String[] getCamposBean() {
         String[] campos = {
                 ExpRolesBean.C_IDROL,
 				ExpRolesBean.C_NOMBRE,
@@ -42,7 +42,7 @@ public class ExpRolesAdm extends MasterBeanAdministrador {
     /* (non-Javadoc)
      * @see com.siga.beans.MasterBeanAdministrador#getClavesBean()
      */
-    protected String[] getClavesBean() {
+    public String[] getClavesBean() {
         
         String[] claves = {ExpRolesBean.C_IDINSTITUCION, ExpRolesBean.C_IDROL, ExpRolesBean.C_IDTIPOEXPEDIENTE};
 		return claves;

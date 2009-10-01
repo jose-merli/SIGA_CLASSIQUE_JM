@@ -12,6 +12,7 @@
 <%@ page import="com.siga.administracion.SIGAConstants,com.atos.utils.*,com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="java.util.*"%>
 <%@ page import="com.siga.beans.*"%>
+<%@ page import="com.siga.Utilidades.UtilidadesMultidioma"%>
 
 <%  
 	String app=request.getContextPath();
@@ -26,7 +27,8 @@
 	request.removeAttribute("datos");	
 %>	
 
-<html>
+
+<%@page import="com.siga.Utilidades.UtilidadesMultidioma"%><html>
 	<head>
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 		
@@ -130,7 +132,7 @@
 						<input type="hidden" name="oculto<%=""+(i+1)%>_1" value="<%=tipoAnotacion%>">						
 						<input type="hidden" name="oculto<%=""+(i+1)%>_2" value="<%=fila.getString("IDINSTITUCION")%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_3" value="<%=fila.getString("IDTIPOEXPEDIENTE")%>">						
-						<%=fila.getString("NOMBRE")%>
+						<%=UtilidadesMultidioma.getDatoMaestroIdioma(fila.getString("NOMBRE"),user)%>
 					</td>
 					<td><%=fila.getString("NOMBREFASE").equals("")?"&nbsp;":fila.getString("NOMBREFASE")%></td>
 					<td><%=fila.getString("NOMBREESTADO").equals("")?"&nbsp;":fila.getString("NOMBREESTADO")%></td>

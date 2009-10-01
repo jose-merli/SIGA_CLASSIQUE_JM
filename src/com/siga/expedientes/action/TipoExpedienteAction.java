@@ -25,10 +25,13 @@ import com.siga.beans.ExpCamposExpedientesAdm;
 import com.siga.beans.ExpCamposExpedientesBean;
 import com.siga.beans.ExpPestanaConfAdm;
 import com.siga.beans.ExpPestanaConfBean;
+import com.siga.beans.ExpRolesBean;
 import com.siga.beans.ExpTipoExpedienteAdm;
 import com.siga.beans.ExpTipoExpedienteBean;
 import com.siga.beans.ExpTiposAnotacionesAdm;
 import com.siga.beans.ExpTiposAnotacionesBean;
+import com.siga.beans.GenRecursosCatalogosAdm;
+import com.siga.beans.GenRecursosCatalogosBean;
 import com.siga.expedientes.form.TipoExpedienteForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -219,36 +222,99 @@ public class TipoExpedienteAction extends MasterAction {
 	        beanAnotacion.setIdInstitucion(tipo.getIdInstitucion());
 	        beanAnotacion.setIdTipoExpediente(tipo.getIdTipoExpediente());
 	        beanAnotacion.setIdTipoAnotacion(ExpTiposAnotacionesAdm.codigoTipoComunicacion);
-	        beanAnotacion.setNombre(UtilidadesString.getMensajeIdioma(userBean,"expedientes.tipoAnotacion.comunicacion.nombre") );
+	        ///
+	        String idRecurso = GenRecursosCatalogosAdm.getNombreIdRecurso(ExpTiposAnotacionesBean.T_NOMBRETABLA, ExpTiposAnotacionesBean.C_NOMBRE, new Integer(tipo.getIdInstitucion()), tipo.getIdTipoExpediente()+"_"+ExpTiposAnotacionesAdm.codigoTipoComunicacion);
+	        beanAnotacion.setNombre((idRecurso!=null)?""+idRecurso:UtilidadesString.getMensajeIdioma(userBean,"expedientes.tipoAnotacion.comunicacion.nombre"));
+
 	        beanAnotacion.setMensaje(UtilidadesString.getMensajeIdioma(userBean,"expedientes.tipoAnotacion.comunicacion.mensaje"));	    
 		    //Ahora procedemos a insertarlo
 		    if (!admAnotacion.insert(beanAnotacion)) {
 		        throw new ClsExceptions("Error al insertar anotación base (comunicacion). "+admAnotacion.getError());
 		    }
+		    ///////////////////////////////////////////
+        	// Multiidioma: Insertamos los recursos en gen_recursos_catalogos
+    		if (idRecurso != null) {
+    			String idRecursoAlias = GenRecursosCatalogosAdm.getNombreIdRecursoAlias(ExpTiposAnotacionesBean.T_NOMBRETABLA, ExpTiposAnotacionesBean.C_NOMBRE, new Integer(tipo.getIdInstitucion()), tipo.getIdTipoExpediente()+"_"+ExpTiposAnotacionesAdm.codigoTipoComunicacion);
+	        	GenRecursosCatalogosAdm admRecCatalogos = new GenRecursosCatalogosAdm (this.getUserBean(request));
+	        	GenRecursosCatalogosBean recCatalogoBean = new GenRecursosCatalogosBean ();
+	        	recCatalogoBean.setCampoTabla(ExpRolesBean.C_NOMBRE);
+	        	recCatalogoBean.setDescripcion(UtilidadesString.getMensajeIdioma(userBean,"expedientes.tipoAnotacion.comunicacion.nombre"));
+	        	recCatalogoBean.setIdInstitucion(this.getIDInstitucion(request));
+	        	recCatalogoBean.setIdRecurso(idRecurso);
+	        	recCatalogoBean.setIdRecursoAlias(idRecursoAlias);
+	        	recCatalogoBean.setNombreTabla(ExpRolesBean.T_NOMBRETABLA);
+	        	if(!admRecCatalogos.insert(recCatalogoBean, userBean.getLanguageInstitucion())) { 
+	        		throw new ClsExceptions ("Error al insertar en recursos catalogos "+admRecCatalogos.getError());
+	        	}
+        	}
+        	///////////////////////////////////////////
+
 		    
 	        // anotación base de anotaciones automaticas
 	        beanAnotacion = new ExpTiposAnotacionesBean();
 	        beanAnotacion.setIdInstitucion(tipo.getIdInstitucion());
 	        beanAnotacion.setIdTipoExpediente(tipo.getIdTipoExpediente());
 	        beanAnotacion.setIdTipoAnotacion(ExpTiposAnotacionesAdm.codigoTipoAutomatico);
-	        beanAnotacion.setNombre(UtilidadesString.getMensajeIdioma(userBean,"expedientes.tipoAnotacion.automatica.nombre") );
+	        ///
+	        idRecurso = GenRecursosCatalogosAdm.getNombreIdRecurso(ExpTiposAnotacionesBean.T_NOMBRETABLA, ExpTiposAnotacionesBean.C_NOMBRE, new Integer(tipo.getIdInstitucion()), tipo.getIdTipoExpediente()+"_"+ExpTiposAnotacionesAdm.codigoTipoAutomatico);
+	        beanAnotacion.setNombre((idRecurso!=null)?""+idRecurso:UtilidadesString.getMensajeIdioma(userBean,"expedientes.tipoAnotacion.automatica.nombre"));
+
 	        beanAnotacion.setMensaje(UtilidadesString.getMensajeIdioma(userBean,"expedientes.tipoAnotacion.automatica.mensaje"));	    
 		    //Ahora procedemos a insertarlo
 		    if (!admAnotacion.insert(beanAnotacion)) {
 		        throw new ClsExceptions("Error al insertar anotación base (automatica). "+admAnotacion.getError());
 		    }
+		    ///////////////////////////////////////////
+        	// Multiidioma: Insertamos los recursos en gen_recursos_catalogos
+    		if (idRecurso != null) {
+    			String idRecursoAlias = GenRecursosCatalogosAdm.getNombreIdRecursoAlias(ExpTiposAnotacionesBean.T_NOMBRETABLA, ExpTiposAnotacionesBean.C_NOMBRE, new Integer(tipo.getIdInstitucion()), tipo.getIdTipoExpediente()+"_"+ExpTiposAnotacionesAdm.codigoTipoAutomatico);
+	        	GenRecursosCatalogosAdm admRecCatalogos = new GenRecursosCatalogosAdm (this.getUserBean(request));
+	        	GenRecursosCatalogosBean recCatalogoBean = new GenRecursosCatalogosBean ();
+	        	recCatalogoBean.setCampoTabla(ExpRolesBean.C_NOMBRE);
+	        	recCatalogoBean.setDescripcion(UtilidadesString.getMensajeIdioma(userBean,"expedientes.tipoAnotacion.automatica.nombre"));
+	        	recCatalogoBean.setIdInstitucion(this.getIDInstitucion(request));
+	        	recCatalogoBean.setIdRecurso(idRecurso);
+	        	recCatalogoBean.setIdRecursoAlias(idRecursoAlias);
+	        	recCatalogoBean.setNombreTabla(ExpRolesBean.T_NOMBRETABLA);
+	        	if(!admRecCatalogos.insert(recCatalogoBean, userBean.getLanguageInstitucion())) { 
+	        		throw new ClsExceptions ("Error al insertar en recursos catalogos "+admRecCatalogos.getError());
+	        	}
+        	}
+        	///////////////////////////////////////////
+		    
 		    
 	        // anotación base de cambios de estado
 	        beanAnotacion = new ExpTiposAnotacionesBean();
 	        beanAnotacion.setIdInstitucion(tipo.getIdInstitucion());
 	        beanAnotacion.setIdTipoExpediente(tipo.getIdTipoExpediente());
 	        beanAnotacion.setIdTipoAnotacion(ExpTiposAnotacionesAdm.codigoTipoCambioEstado);
-	        beanAnotacion.setNombre(UtilidadesString.getMensajeIdioma(userBean,"expedientes.tipoAnotacion.cambioEstado.nombre") );
+	        ///
+	        idRecurso = GenRecursosCatalogosAdm.getNombreIdRecurso(ExpTiposAnotacionesBean.T_NOMBRETABLA, ExpTiposAnotacionesBean.C_NOMBRE, new Integer(tipo.getIdInstitucion()), tipo.getIdTipoExpediente()+"_"+ExpTiposAnotacionesAdm.codigoTipoCambioEstado);
+	        beanAnotacion.setNombre((idRecurso!=null)?""+idRecurso:UtilidadesString.getMensajeIdioma(userBean,"expedientes.tipoAnotacion.cambioEstado.nombre"));
+
+	        //beanAnotacion.setNombre(UtilidadesString.getMensajeIdioma(userBean,"expedientes.tipoAnotacion.cambioEstado.nombre") );
 	        beanAnotacion.setMensaje(UtilidadesString.getMensajeIdioma(userBean,"expedientes.tipoAnotacion.cambioEstado.mensaje"));	    
 		    //Ahora procedemos a insertarlo
 		    if (!admAnotacion.insert(beanAnotacion)) {
 		        throw new ClsExceptions("Error al insertar anotación base (cambio de estado). "+admAnotacion.getError());
 		    }
+		    ///////////////////////////////////////////
+        	// Multiidioma: Insertamos los recursos en gen_recursos_catalogos
+    		if (idRecurso != null) {
+    			String idRecursoAlias = GenRecursosCatalogosAdm.getNombreIdRecursoAlias(ExpTiposAnotacionesBean.T_NOMBRETABLA, ExpTiposAnotacionesBean.C_NOMBRE, new Integer(tipo.getIdInstitucion()), tipo.getIdTipoExpediente()+"_"+ExpTiposAnotacionesAdm.codigoTipoCambioEstado);
+	        	GenRecursosCatalogosAdm admRecCatalogos = new GenRecursosCatalogosAdm (this.getUserBean(request));
+	        	GenRecursosCatalogosBean recCatalogoBean = new GenRecursosCatalogosBean ();
+	        	recCatalogoBean.setCampoTabla(ExpRolesBean.C_NOMBRE);
+	        	recCatalogoBean.setDescripcion(UtilidadesString.getMensajeIdioma(userBean,"expedientes.tipoAnotacion.cambioEstado.nombre"));
+	        	recCatalogoBean.setIdInstitucion(this.getIDInstitucion(request));
+	        	recCatalogoBean.setIdRecurso(idRecurso);
+	        	recCatalogoBean.setIdRecursoAlias(idRecursoAlias);
+	        	recCatalogoBean.setNombreTabla(ExpRolesBean.T_NOMBRETABLA);
+	        	if(!admRecCatalogos.insert(recCatalogoBean, userBean.getLanguageInstitucion())) { 
+	        		throw new ClsExceptions ("Error al insertar en recursos catalogos "+admRecCatalogos.getError());
+	        	}
+        	}
+        	///////////////////////////////////////////
 		    
 	        tx.commit();
 	        request.setAttribute("descOperation","messages.inserted.success");

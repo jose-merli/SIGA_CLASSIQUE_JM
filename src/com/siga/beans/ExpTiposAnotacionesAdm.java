@@ -31,7 +31,7 @@ public class ExpTiposAnotacionesAdm extends MasterBeanAdministrador {
     /* (non-Javadoc)
      * @see com.siga.beans.MasterBeanAdministrador#getCamposBean()
      */
-    protected String[] getCamposBean() {
+    public String[] getCamposBean() {
         String[] campos = {
                 ExpTiposAnotacionesBean.C_IDTIPOANOTACION,
                 ExpTiposAnotacionesBean.C_NOMBRE,
@@ -50,7 +50,7 @@ public class ExpTiposAnotacionesAdm extends MasterBeanAdministrador {
     /* (non-Javadoc)
      * @see com.siga.beans.MasterBeanAdministrador#getClavesBean()
      */
-    protected String[] getClavesBean() {
+    public String[] getClavesBean() {
         
         String[] claves = {ExpTiposAnotacionesBean.C_IDINSTITUCION, ExpTiposAnotacionesBean.C_IDTIPOEXPEDIENTE, ExpTiposAnotacionesBean.C_IDTIPOANOTACION};
 		return claves;
@@ -59,7 +59,7 @@ public class ExpTiposAnotacionesAdm extends MasterBeanAdministrador {
     /* (non-Javadoc)
      * @see com.siga.beans.MasterBeanAdministrador#getOrdenCampos()
      */
-    protected String[] getOrdenCampos() {
+    public String[] getOrdenCampos() {
         // TODO Auto-generated method stub
         return null;
     }

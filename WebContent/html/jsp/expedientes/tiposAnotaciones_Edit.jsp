@@ -19,8 +19,9 @@
 
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
-<%@ page import="com.atos.utils.ClsConstants"%>
+<%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.beans.ExpTiposAnotacionesBean"%>
+<%@ page import="com.siga.Utilidades.*"%>
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();
@@ -31,7 +32,8 @@
 	String descFase = ((String)request.getAttribute("descFase")==null?"":(String)request.getAttribute("descFase"));
 	boolean bEditable = ((String)request.getAttribute("editable")).equals("1");
 	String modo=request.getParameter("modo");
-	
+	UsrBean user=(UsrBean) ses.getAttribute("USRBEAN");
+
 	
 	
 	request.removeAttribute("datos");
@@ -75,9 +77,16 @@
 	<!-- Zona de campos de busqueda o filtro -->
 
 	<table  class="tablaCentralCamposPeque"  align="center">
+<%
+		ExpTiposAnotacionesBean bean = (ExpTiposAnotacionesBean)datos.elementAt(0);
+		String idTipoAnotacion=(bean.getIdTipoAnotacion()!=null)?bean.getIdTipoAnotacion().toString():""; 
+%>
 
 	<html:form action="/EXP_TiposExpedientes_TiposAnotaciones.do" method="POST" target="submitArea">
 	<html:hidden property = "hiddenFrame" value = "1"/>
+	<html:hidden property = "idInstitucion" value = "<%=bean.getIdInstitucion().toString() %>"/>
+	<html:hidden property = "idTipoExpediente" value = "<%=bean.getIdTipoExpediente().toString() %>"/>
+	<html:hidden property = "idTipoAnotacion" value = "<%=idTipoAnotacion%>"/>
 
 <% if(modo.equalsIgnoreCase("Nuevo"))  { %>
 	<html:hidden property = "modo" value = "Insertar"/>
@@ -86,9 +95,6 @@
 	<html:hidden property = "modo" value = "Modificar"/>
 
 <% }%>
-<%
-		ExpTiposAnotacionesBean bean = (ExpTiposAnotacionesBean)datos.elementAt(0);
-%>
 
 	<tr>				
 	<td>
@@ -105,9 +111,9 @@
 		</td>				
 		<td>
 		  <%if (modo!=null && modo.equals("Ver")){ %>	
-				<html:text name="tiposAnotacionesForm" property="nombre" size="30" maxlength="30" styleClass="boxConsulta" value="<%=bean.getNombre()%>" readonly="true"></html:text>
+				<html:text name="tiposAnotacionesForm" property="nombre" size="30" maxlength="30" styleClass="boxConsulta" value="<%=UtilidadesMultidioma.getDatoMaestroIdioma(bean.getNombre(),user)%>" readonly="true"></html:text>
 		 <%}else{%>
-		 		<html:text name="tiposAnotacionesForm" property="nombre" size="30" maxlength="30" styleClass="box" value="<%=bean.getNombre()%>"></html:text>
+		 		<html:text name="tiposAnotacionesForm" property="nombre" size="30" maxlength="30" styleClass="box" value="<%=UtilidadesMultidioma.getDatoMaestroIdioma(bean.getNombre(),user)%>"></html:text>
 		 <%} %>	
 				<input type="hidden" name="idTipoExpediente" value="<%=bean.getIdTipoExpediente()%>"/>			
 		</td>

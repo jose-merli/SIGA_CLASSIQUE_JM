@@ -19,7 +19,8 @@
 
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
-<%@ page import="com.atos.utils.ClsConstants"%>
+<%@ page import="com.atos.utils.*"%>
+<%@ page import="java.util.*"%>
 <%@ page import="com.siga.beans.ExpRolesBean"%>
 <!-- JSP -->
 <%  
@@ -29,11 +30,13 @@
 	Vector datos = (Vector)request.getAttribute("datos");
 	boolean bEditable = ((String)request.getAttribute("editable")).equals("1");
 	String modo=request.getParameter("modo");
-	
+	UsrBean user=(UsrBean) ses.getAttribute("USRBEAN");
+
 	request.removeAttribute("datos");
 	request.removeAttribute("editable");
 %>	
-<html>
+
+<%@page import="com.siga.Utilidades.UtilidadesMultidioma"%><html>
 
 <!-- HEAD -->
 <head>
@@ -70,9 +73,16 @@
 	<!-- Zona de campos de busqueda o filtro -->
 
 	<table  class="tablaCentralCamposPeque"  align="center">
+<%
+		ExpRolesBean bean = (ExpRolesBean)datos.elementAt(0);
+		String idRol = (bean.getIdRol()!=null)?bean.getIdRol().toString():"";
+%>
 
 	<html:form action="/EXP_TiposExpedientes_Roles.do" method="POST" target="submitArea">
 	<html:hidden property = "hiddenFrame" value = "1"/>
+	<html:hidden property = "idInstitucion" value = "<%=user.getLocation() %>"/>
+	<html:hidden property = "idTipoExpediente" value = "<%=bean.getIdTipoExpediente().toString() %>"/>
+	<html:hidden property = "idRol" value = "<%=idRol %>"/>
 
 <% if(modo.equalsIgnoreCase("Nuevo"))  { %>
 	<html:hidden property = "modo" value = "Insertar"/>
@@ -81,9 +91,6 @@
 	<html:hidden property = "modo" value = "Modificar"/>
 
 <% }%>
-<%
-		ExpRolesBean bean = (ExpRolesBean)datos.elementAt(0);
-%>
 
 	<tr>				
 	<td>
@@ -100,9 +107,9 @@
 		</td>				
 		<td>
 			<% if (bEditable){ %>
-				<html:text name="rolesForm" property="nombre" size="30" maxlength="30" styleClass="box" value="<%=bean.getNombre()%>"></html:text>
+				<html:text name="rolesForm" property="nombre" size="30" maxlength="30" styleClass="box" value="<%=UtilidadesMultidioma.getDatoMaestroIdioma(bean.getNombre(),user)%>"></html:text>
 			<% } else { %>
-				<html:text name="rolesForm" property="nombre" size="30" maxlength="30" styleClass="boxConsulta" disabled="true" value="<%=bean.getNombre()%>"></html:text>
+				<html:text name="rolesForm" property="nombre" size="30" maxlength="30" styleClass="boxConsulta" disabled="true" value="<%=UtilidadesMultidioma.getDatoMaestroIdioma(bean.getNombre(),user)%>"></html:text>
 			<% } %>
 			
 			<input type="hidden" name="idTipoExpediente" value="<%=bean.getIdTipoExpediente()%>"/>

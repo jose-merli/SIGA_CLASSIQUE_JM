@@ -32,7 +32,8 @@
 	HttpSession ses=request.getSession();
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
 	Vector vDatos = (Vector)request.getAttribute("datos");
-	
+	UsrBean userBean = ((UsrBean)ses.getAttribute(("USRBEAN")));
+
 	String editable = (String)request.getParameter("editable");		
 	String soloSeguimiento = (String)request.getParameter("soloSeguimiento");	
 	boolean bEditable=false;
@@ -144,7 +145,7 @@
 						<input type="hidden" name="oculto<%=""+(i+1)%>_7" value="<%=fila.getString("IDPERSONA")%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_8" value="<%=fila.getString("IDROL")%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_9" value="<%=UtilidadesString.mostrarDatoJSP(fila.getString("ROL"))%>">
-						<%=fila.getString("ROL")%>
+						<%=UtilidadesMultidioma.getDatoMaestroIdioma(fila.getString("ROL"),userBean)%>
 					</td>
 					<td><%=fila.getString("NOMBREYAPELLIDO")%></td>
 					<td><%=fila.getString("NIFCIF")%></td>					

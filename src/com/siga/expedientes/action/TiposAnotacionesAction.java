@@ -10,20 +10,26 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.beans.CenClienteBean;
 import com.siga.beans.ExpEstadosAdm;
 import com.siga.beans.ExpEstadosBean;
 import com.siga.beans.ExpFasesAdm;
 import com.siga.beans.ExpFasesBean;
+import com.siga.beans.ExpRolesBean;
 import com.siga.beans.ExpTipoExpedienteAdm;
 import com.siga.beans.ExpTipoExpedienteBean;
 import com.siga.beans.ExpTiposAnotacionesAdm;
 import com.siga.beans.ExpTiposAnotacionesBean;
+import com.siga.beans.GenRecursosCatalogosAdm;
+import com.siga.beans.GenRecursosCatalogosBean;
 import com.siga.expedientes.form.TiposAnotacionesForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -41,7 +47,6 @@ public class TiposAnotacionesAction extends MasterAction {
     protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException
 	{	
         UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
-        String institucion = userBean.getLocation();
         
 		//Aplicar acceso
         if(request.getParameter("acceso").equalsIgnoreCase("Ver")) {
@@ -54,7 +59,7 @@ public class TiposAnotacionesAction extends MasterAction {
         String where = " WHERE ";
         
 //      campos de búsqueda
-        where += "TA." + ExpTiposAnotacionesBean.C_IDINSTITUCION + " = " + institucion + " AND TA." + ExpTiposAnotacionesBean.C_IDTIPOEXPEDIENTE + " = " + form.getIdTipoExpediente();
+        where += "TA." + ExpTiposAnotacionesBean.C_IDINSTITUCION + " = " + userBean.getLocation() + " AND TA." + ExpTiposAnotacionesBean.C_IDTIPOEXPEDIENTE + " = " + form.getIdTipoExpediente();
         
 //      join de las tablas TIPOANOTACION TA, FASES F
         where += " AND TA."+ExpTiposAnotacionesBean.C_IDFASE+" = "+ "F." + ExpFasesBean.C_IDFASE + "(+)";
@@ -77,7 +82,7 @@ public class TiposAnotacionesAction extends MasterAction {
         
 //      ******************************        
         String where1 = " WHERE ";        
-        where1 += ExpFasesBean.C_IDINSTITUCION + " = " + institucion+" AND "+ExpFasesBean.C_IDTIPOEXPEDIENTE + " = " + form.getIdTipoExpediente();
+        where1 += ExpFasesBean.C_IDINSTITUCION + " = " + userBean.getLocation()+" AND "+ExpFasesBean.C_IDTIPOEXPEDIENTE + " = " + form.getIdTipoExpediente();
         
 //      Recupero el bean de Tipo de expediente para mostrar el nombre
         ExpTipoExpedienteAdm tipoExpedienteAdm = new ExpTipoExpedienteAdm (this.getUserBean(request));
@@ -123,13 +128,12 @@ public class TiposAnotacionesAction extends MasterAction {
 			throws SIGAException { 	    
 	    
 	    UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));        
-	    String institucion = userBean.getLocation();
 	    TiposAnotacionesForm form = (TiposAnotacionesForm)formulario;
         
         ExpTiposAnotacionesBean nuevaAnotacion = new ExpTiposAnotacionesBean();
         nuevaAnotacion.setNombre("");
         nuevaAnotacion.setMensaje("");
-        nuevaAnotacion.setIdInstitucion(Integer.valueOf(institucion));
+        nuevaAnotacion.setIdInstitucion(Integer.valueOf(userBean.getLocation()));
         nuevaAnotacion.setIdTipoExpediente(Integer.valueOf(form.getIdTipoExpediente()));
                 
         Vector datos = new Vector();
@@ -147,9 +151,9 @@ public class TiposAnotacionesAction extends MasterAction {
 			HttpServletRequest request, HttpServletResponse response)
 			throws SIGAException {
 		
-	    UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));        
-	    String institucion = userBean.getLocation();
-        
+	    UserTransaction tx = null;
+		UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));        
+	    tx=userBean.getTransaction();
 	    ExpTiposAnotacionesAdm anotacionesAdm = new ExpTiposAnotacionesAdm(this.getUserBean(request));
 	    TiposAnotacionesForm form = (TiposAnotacionesForm) formulario;
 	    
@@ -159,21 +163,48 @@ public class TiposAnotacionesAction extends MasterAction {
 	    
 	    try{
 	       
-		    anotacion.setIdInstitucion(Integer.valueOf(institucion));
+	    	tx.begin();
+	    	
+		    anotacion.setIdInstitucion(Integer.valueOf(form.getIdInstitucion()));
 		    anotacion.setIdTipoExpediente(Integer.valueOf(form.getIdTipoExpediente()));
 		    anotacion.setIdTipoAnotacion(anotacionesAdm.getNewIdTipoAnotacion(form.getIdTipoExpediente(),userBean));
-		    anotacion.setNombre(form.getNombre());
 		    anotacion.setMensaje(form.getMensaje());	    
 		    anotacion.setIdEstado(form.getIdInst_idExp_idFase_idEstado().equals("")?null:Integer.valueOf(form.getIdEstado()));
 		    anotacion.setIdFase(form.getIdInst_idExp_idFase().equals("")?null:Integer.valueOf(form.getIdFase()));
-		    
+		    String idRecurso = GenRecursosCatalogosAdm.getNombreIdRecurso(ExpTiposAnotacionesBean.T_NOMBRETABLA, ExpTiposAnotacionesBean.C_NOMBRE, new Integer(form.getIdInstitucion()), form.getIdTipoExpediente()+"_"+anotacion.getIdTipoAnotacion());
+		    anotacion.setNombre((idRecurso!=null)?""+idRecurso:form.getNombre());
+
 		    //Ahora procedemos a insertarlo
 		    if (anotacionesAdm.insert(anotacion))
 	        {
 	            request.setAttribute("descOperation","messages.inserted.success");
+	        } else {
+	        	throw new ClsExceptions("Error al insertar tipo de anotación. "+anotacionesAdm.getError());
 	        }
+		    
+		    ///////////////////////////////////////////
+        	// Multiidioma: Insertamos los recursos en gen_recursos_catalogos
+    		if (idRecurso != null) {
+    			String idRecursoAlias = GenRecursosCatalogosAdm.getNombreIdRecursoAlias(ExpTiposAnotacionesBean.T_NOMBRETABLA, ExpTiposAnotacionesBean.C_NOMBRE, new Integer(form.getIdInstitucion()), form.getIdTipoExpediente()+"_"+anotacion.getIdTipoAnotacion());
+	        	GenRecursosCatalogosAdm admRecCatalogos = new GenRecursosCatalogosAdm (this.getUserBean(request));
+	        	GenRecursosCatalogosBean recCatalogoBean = new GenRecursosCatalogosBean ();
+	        	recCatalogoBean.setCampoTabla(ExpRolesBean.C_NOMBRE);
+	        	recCatalogoBean.setDescripcion(form.getNombre());
+	        	recCatalogoBean.setIdInstitucion(this.getIDInstitucion(request));
+	        	recCatalogoBean.setIdRecurso(idRecurso);
+	        	recCatalogoBean.setIdRecursoAlias(idRecursoAlias);
+	        	recCatalogoBean.setNombreTabla(ExpRolesBean.T_NOMBRETABLA);
+	        	if(!admRecCatalogos.insert(recCatalogoBean, userBean.getLanguageInstitucion())) { 
+	        		throw new ClsExceptions ("Error al insertar en recursos catalogos "+admRecCatalogos.getError());
+	        	}
+        	}
+        	///////////////////////////////////////////
+		    
+		    
+		    tx.commit();
+		    
 	    } catch (Exception e) {
-            throwExcp("messages.general.error",new String[] {"modulo.expediente"},e,null);
+            throwExcp("messages.general.error",new String[] {"modulo.expediente"},e,tx);
         }
 
 	    request.setAttribute("modal","1");
@@ -187,34 +218,80 @@ public class TiposAnotacionesAction extends MasterAction {
 			HttpServletRequest request, HttpServletResponse response)
 			throws SIGAException {
 	    
+	    UserTransaction tx = null;
+	    UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));        
 	    TiposAnotacionesForm form = (TiposAnotacionesForm)formulario;	    
 	    ExpTiposAnotacionesAdm anotacionesAdm = new ExpTiposAnotacionesAdm (this.getUserBean(request));
 	    
-        Vector vOcultos = form.getDatosTablaOcultos(0);
-        Hashtable hashOld = (Hashtable)request.getSession().getAttribute("DATABACKUP");
-        
-        Hashtable hashNew = (Hashtable)hashOld.clone();
-	    
-        hashNew.put(ExpTiposAnotacionesBean.C_NOMBRE, form.getNombre());
-	    hashNew.put(ExpTiposAnotacionesBean.C_IDTIPOANOTACION, hashOld.get(ExpTiposAnotacionesBean.C_IDTIPOANOTACION));
-	    hashNew.put(ExpTiposAnotacionesBean.C_IDFASE, form.getIdFase());
-	    hashNew.put(ExpTiposAnotacionesBean.C_IDESTADO, form.getIdEstado());
-	    hashNew.put(ExpTiposAnotacionesBean.C_MENSAJE, form.getMensaje());	
-	    
-	    request.removeAttribute("DATABACKUP");
-	    boolean exito = false;
-	    try{
-	        exito = anotacionesAdm.update(hashNew, hashOld);		       
+	    try {
+	        Vector vOcultos = form.getDatosTablaOcultos(0);
+	        Hashtable hashOld = (Hashtable)request.getSession().getAttribute("DATABACKUP");
+	        
+	        Hashtable hashNew = (Hashtable)hashOld.clone();
+		    
+	        hashNew.put(ExpTiposAnotacionesBean.C_NOMBRE, form.getNombre());
+		    hashNew.put(ExpTiposAnotacionesBean.C_IDTIPOANOTACION, hashOld.get(ExpTiposAnotacionesBean.C_IDTIPOANOTACION));
+		    hashNew.put(ExpTiposAnotacionesBean.C_IDFASE, form.getIdFase());
+		    hashNew.put(ExpTiposAnotacionesBean.C_IDESTADO, form.getIdEstado());
+		    hashNew.put(ExpTiposAnotacionesBean.C_MENSAJE, form.getMensaje());	
+	
+		    Hashtable codigos = new Hashtable();
+	        codigos.put(new Integer(1),form.getIdInstitucion());
+	        codigos.put(new Integer(2),form.getIdTipoExpediente());
+	        codigos.put(new Integer(3),form.getIdTipoAnotacion());
+	        String sSQL = "SELECT NOMBRE FROM EXP_TIPOANOTACION WHERE IDINSTITUCION=:1 AND IDTIPOEXPEDIENTE=:2 AND IDTIPOANOTACION=:3";
+		    
+		    request.removeAttribute("DATABACKUP");
+		    
+		    RowsContainer rc = new RowsContainer();
+		    
+	    	tx = userBean.getTransaction();
+	    	tx.begin();
+	    	if (rc.findForUpdateBind(sSQL,codigos)) {
+	
+		        Row row = (Row)rc.get(0);
+		        row.setCompareData(row.getRow());
+		        
+		        String idRecurso = GenRecursosCatalogosAdm.getNombreIdRecurso(ExpTiposAnotacionesBean.T_NOMBRETABLA, ExpTiposAnotacionesBean.C_NOMBRE, new Integer(form.getIdInstitucion()), form.getIdTipoExpediente()+"_"+form.getIdTipoAnotacion());
+				if (idRecurso == null) {
+					hashNew.put(ExpTipoExpedienteBean.C_NOMBRE, form.getNombre());
+				} else {
+					hashNew.put(ExpTipoExpedienteBean.C_NOMBRE, idRecurso);
+				}
+	
+				if (!anotacionesAdm.updateDirect(hashNew, anotacionesAdm.getClavesBean(), anotacionesAdm.getCamposBean())) {
+		        	throw new ClsExceptions("Error al actualizar el tipo anotación. "+anotacionesAdm.getError());
+		        }
+		        
+	        	///////////////////////////////////////////
+	        	// Multiidioma: Actualizamos los recursos en gen_recursos_catalogos
+				// Long idRecurso = GenRecursosCatalogosAdm.getNombreIdRecurso(sNombreTabla, sNombreCampoDescripcion, (sLocal.equalsIgnoreCase("S")?this.getIDInstitucion(request):null), sCodigo);
+				if (idRecurso != null) {
+	    			String idRecursoAlias = GenRecursosCatalogosAdm.getNombreIdRecursoAlias(ExpTiposAnotacionesBean.T_NOMBRETABLA, ExpTiposAnotacionesBean.C_NOMBRE, new Integer(form.getIdInstitucion()), form.getIdTipoExpediente()+"_"+form.getIdTipoAnotacion());
+	    			GenRecursosCatalogosAdm admRecCatalogos = new GenRecursosCatalogosAdm(this.getUserBean(request));
+		        	GenRecursosCatalogosBean recCatalogoBean = new GenRecursosCatalogosBean ();
+		        	recCatalogoBean.setDescripcion(form.getNombre());
+		        	recCatalogoBean.setIdRecurso(idRecurso);
+		        	recCatalogoBean.setIdRecursoAlias(idRecursoAlias);
+		        	if(!admRecCatalogos.update(recCatalogoBean, this.getUserBean(request))) { 
+		        		throw new ClsExceptions ("Error al insertar en recursos catalogos "+admRecCatalogos.getError());
+		        	}
+				}
+	        	///////////////////////////////////////////
+		        
+	    	}
+		    else {
+		    	throw new ClsExceptions("No se encuentra el elemento a modificar");	    	
+		    }
+	
+	    	tx.commit();
+		    
+	        
 	    } catch (Exception e) {
-            throwExcp("messages.general.error",new String[] {"modulo.expediente"},e,null);
+            throwExcp("messages.general.error",new String[] {"modulo.expediente"},e,tx);
         }
 	    
-        if (exito){
-            return exitoModal("messages.updated.success",request);
-        }        
-        else {
-            return exito("messages.updated.error",request);
-        }	    
+        return exitoModal("messages.updated.success",request);
 	}
 
 	/* (non-Javadoc)
@@ -224,33 +301,47 @@ public class TiposAnotacionesAction extends MasterAction {
 			HttpServletRequest request, HttpServletResponse response)
 			throws SIGAException {
 		
+		UserTransaction tx = null;
 		TiposAnotacionesForm form = (TiposAnotacionesForm)formulario;
+		
 		try{
-	    form.setModal("false");
-	    
-	    UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));        
-	    String institucion = userBean.getLocation();
-	    
-	    ExpTiposAnotacionesAdm anotacionesAdm = new ExpTiposAnotacionesAdm (this.getUserBean(request));
-	    
-	    Vector vOcultos = form.getDatosTablaOcultos(0);
-	    Hashtable hash = new Hashtable();	    	    
-	    hash.put(ExpTiposAnotacionesBean.C_IDINSTITUCION, userBean.getLocation());
-	    hash.put(ExpTiposAnotacionesBean.C_IDTIPOANOTACION, (String)vOcultos.elementAt(0));	
-	    hash.put(ExpTiposAnotacionesBean.C_IDTIPOEXPEDIENTE,form.getIdTipoExpediente());
-        
-	    
+		    form.setModal("false");
+		    
+		    UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
+		    tx = userBean.getTransaction();
+		    
+		    tx.begin();
+		    
+		    ExpTiposAnotacionesAdm anotacionesAdm = new ExpTiposAnotacionesAdm (this.getUserBean(request));
+		    
+		    Vector vOcultos = form.getDatosTablaOcultos(0);
+		    Hashtable hash = new Hashtable();	    	    
+		    hash.put(ExpTiposAnotacionesBean.C_IDINSTITUCION, userBean.getLocation());
+		    hash.put(ExpTiposAnotacionesBean.C_IDTIPOANOTACION, (String)vOcultos.elementAt(0));	
+		    hash.put(ExpTiposAnotacionesBean.C_IDTIPOEXPEDIENTE,form.getIdTipoExpediente());
 	    
 	    	if (!anotacionesAdm.delete(hash)){
-	        	throw new SIGAException("messages.elementoenuso.error");
-	        	//throw new ClsExceptions("mensaje: "+estadosAdm.getError());
+	        	throw new ClsExceptions("Error al eliminar tipo de anotación. "+anotacionesAdm.getError());
 	        }
 	        
+	    	///////////////////////////////////////////
+        	// Multiidioma: Borramos los recursos en gen_recursos_catalogos
+			String idRecurso = GenRecursosCatalogosAdm.getNombreIdRecurso(ExpTiposAnotacionesBean.T_NOMBRETABLA, ExpTiposAnotacionesBean.C_NOMBRE, new Integer(userBean.getLocation()), form.getIdTipoExpediente()+"_"+(String)hash.get(ExpTiposAnotacionesBean.C_IDTIPOANOTACION));
+			if (idRecurso != null) {
+    			GenRecursosCatalogosAdm admRecCatalogos = new GenRecursosCatalogosAdm (this.getUserBean(request));
+	        	GenRecursosCatalogosBean recCatalogoBean = new GenRecursosCatalogosBean ();
+	        	recCatalogoBean.setIdRecurso(idRecurso);
+	        	if(!admRecCatalogos.delete(recCatalogoBean)) { 
+	        		throw new ClsExceptions ("Error al eliminar recursos catalogos. "+admRecCatalogos.getError());
+	        	}
+			}
+        	///////////////////////////////////////////
+				    	
 	        request.setAttribute("descOperation","messages.deleted.success");
-	    } catch (Exception exc){
-			throwExcp("messages.general.error",new String[] {"modulo.expedientes"},exc,null);
-	    	//throwExcp("messages.elementoenuso.error",exc,null);
-
+	        tx.commit();
+	        
+		} catch (Exception exc){
+			throwExcp("messages.general.error",new String[] {"modulo.expedientes"},exc,tx);
 	    }    
         
 	    request.setAttribute("urlAction", "/SIGA/EXP_TiposExpedientes_TiposAnotaciones.do");
@@ -266,7 +357,6 @@ public class TiposAnotacionesAction extends MasterAction {
         ExpFasesAdm faseAdm = new ExpFasesAdm(this.getUserBean(request));
         
         UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));        
-	    String institucion = userBean.getLocation();
 
 		Vector vVisibles = form.getDatosTablaVisibles(0);
 		Vector vOcultos = form.getDatosTablaOcultos(0);		
@@ -277,7 +367,7 @@ public class TiposAnotacionesAction extends MasterAction {
         String where = " WHERE ";
         
         where += ExpTiposAnotacionesBean.C_IDTIPOANOTACION + " = '" + idAnotacion + "' AND ";
-        where += ExpTiposAnotacionesBean.C_IDINSTITUCION + " = '" + institucion + "' AND ";
+        where += ExpTiposAnotacionesBean.C_IDINSTITUCION + " = '" + userBean.getLocation() + "' AND ";
         where += ExpTiposAnotacionesBean.C_IDTIPOEXPEDIENTE + " = '" + form.getIdTipoExpediente() + "'";
         Hashtable datosEstado=new Hashtable();
         Hashtable datosFase=new Hashtable();
@@ -314,7 +404,7 @@ public class TiposAnotacionesAction extends MasterAction {
         Hashtable hashBackUp = new Hashtable();
         
         hashBackUp.put(ExpTiposAnotacionesBean.C_IDTIPOANOTACION, idAnotacion);
-        hashBackUp.put(ExpTiposAnotacionesBean.C_IDINSTITUCION, institucion);
+        hashBackUp.put(ExpTiposAnotacionesBean.C_IDINSTITUCION, userBean.getLocation());
         hashBackUp.put(ExpTiposAnotacionesBean.C_IDTIPOEXPEDIENTE, form.getIdTipoExpediente());
         
         request.getSession().setAttribute("DATABACKUP", hashBackUp);

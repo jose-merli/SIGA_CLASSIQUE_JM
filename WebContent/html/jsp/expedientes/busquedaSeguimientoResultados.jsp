@@ -134,7 +134,7 @@
 					<td><%=fila.getString("USUARIO").equals("")?"&nbsp;":UtilidadesString.mostrarDatoJSP(fila.getString("USUARIO"))%></td>
 					<td><%=fila.getString("FASE").equals("")?"&nbsp;":fila.getString("FASE")%></td>
 					<td><%=fila.getString("ESTADO").equals("")?"&nbsp;":fila.getString("ESTADO")%></td>
-					<td><%=fila.getString("TIPO")%></td>
+					<td><%=UtilidadesMultidioma.getDatoMaestroIdioma(fila.getString("TIPO"),userBean)%></td>
 					<td align="center"><%=sAutomatico%></td>
 					<td><%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(fila.getRow(), "DESCRIPCION"),100)%></td>
 				</siga:FilaConIconos>
