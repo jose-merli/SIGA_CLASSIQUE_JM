@@ -355,7 +355,7 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 		try {
 			//hacemos la consulta de los procediminetos de la institucion 
 			ScsProcedimientosAdm procedimientosAdm = new ScsProcedimientosAdm(this.getUserBean(request));
-			String condicion = " select " + ScsProcedimientosBean.C_NOMBRE + "," + ScsProcedimientosBean.C_PRECIO + "," + ScsProcedimientosBean.C_CODIGO + "," + ScsProcedimientosBean.C_PUNTOS + "," + ScsProcedimientosBean.C_IDPROCEDIMIENTO + " " +
+			String condicion = " select " + ScsProcedimientosBean.C_NOMBRE + "," + ScsProcedimientosBean.C_PRECIO + "," + ScsProcedimientosBean.C_CODIGO + "," + ScsProcedimientosBean.C_IDPROCEDIMIENTO + " " +
 								" from " + ScsProcedimientosBean.T_NOMBRETABLA + " " +
 								" where " + ScsProcedimientosBean.C_IDINSTITUCION + "=" + (String)usr.getLocation(); 
 

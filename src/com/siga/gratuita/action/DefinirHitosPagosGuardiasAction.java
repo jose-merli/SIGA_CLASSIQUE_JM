@@ -207,7 +207,6 @@ public class DefinirHitosPagosGuardiasAction extends MasterAction {
 			hash.put("IDINSTITUCION",usr.getLocation());
 			hash.put("IDGUARDIA",elegido.getIdGuardia());
 			hash.put("IDTURNO",elegido.getIdTurno());
-			hash.put("PUNTOS",elegido.getPuntos());
 			hash.put("FECHAMODIFICACION","SYSDATE");
 			hash.put("USUMODIFICACION",usr.getUserName());
 			

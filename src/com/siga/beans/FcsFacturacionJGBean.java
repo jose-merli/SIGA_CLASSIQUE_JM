@@ -14,7 +14,7 @@ public class FcsFacturacionJGBean extends MasterBean {
 	
 	/* Variables */
 	private Integer idInstitucion, idFacturacion, idFacturacion_regulariza;
-	private Double importeTotal, importeOficio, importeGuardia, importeSOJ, importeEJG, importePunto;
+	private Double importeTotal, importeOficio, importeGuardia, importeSOJ, importeEJG;
 	
 	private String 	nombre, fechaDesde, fechaHasta, regularizacion, prevision;
 
@@ -31,7 +31,6 @@ public class FcsFacturacionJGBean extends MasterBean {
 	static public final String C_IMPORTEGUARDIA			= "IMPORTEGUARDIA";					
 	static public final String C_IMPORTESOJ				= "IMPORTESOJ";			
 	static public final String C_IMPORTEEJG				= "IMPORTEEJG";
-	static public final String C_IMPORTEPUNTO			= "IMPORTEPUNTO";				
 	static public final String C_PREVISION			    = "PREVISION";
 	static public final String C_NOMBRE					= "NOMBRE";
 	static public final String C_REGULARIZACION			= "REGULARIZACION";
@@ -133,18 +132,6 @@ public class FcsFacturacionJGBean extends MasterBean {
 	 */
 	public void setImporteOficio(Double importeOficio) {
 		this.importeOficio = importeOficio;
-	}
-	/**
-	 * @return Returns the importePunto.
-	 */
-	public Double getImportePunto() {
-		return importePunto;
-	}
-	/**
-	 * @param importePunto The importePunto to set.
-	 */
-	public void setImportePunto(Double importePunto) {
-		this.importePunto = importePunto;
 	}
 	/**
 	 * @return Returns the importeSOJ.

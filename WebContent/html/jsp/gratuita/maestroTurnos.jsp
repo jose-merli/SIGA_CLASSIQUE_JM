@@ -471,20 +471,6 @@
 						<INPUT NAME="validacionInscripcion" TYPE=CHECKBOX   <% if ((!accion.equalsIgnoreCase("nuevo"))&&(((String)turno.get("VALIDARINSCRIPCIONES")).equalsIgnoreCase("S"))){%> checked<%}%> <%=valida2%>>
 						<siga:Idioma key="gratuita.maestroTurnos.literal.validarInscripciones"/> 
 					</td>
-
-<!-- rgg cambio para eliminar criterios 				
-				<tr>
-					<td class="labelText" style="text-align:left">
-						<siga:Idioma key="gratuita.maestroTurnos.literal.designaDirecta"/></td><td> 
-							<INPUT NAME="designaDirecta" TYPE=CHECKBOX < % if ((accion.equalsIgnoreCase("nuevo"))||(((String)turno.get("DESIGNADIRECTA")).equalsIgnoreCase("S"))){%> checked< %}%> < %=valida2%>>
-					</td>
-					<td class="labelText" style="text-align:left">
-						<siga:Idioma key="gratuita.maestroTurnos.literal.repartoPorPuntos"/> </td><td>
-							<INPUT NAME="repartoPorPuntos" TYPE=CHECKBOX < % if ((!accion.equalsIgnoreCase("nuevo"))&&(((String)turno.get("REPARTOPORPUNTOS")).equalsIgnoreCase("S"))){%> checked< %}%> < %=valida2%>>
-					</td>
-				</tr>
--->				
-
 					<td class="labelText" >
 						<input type="checkbox" name="activarRestriccionActuacion" value="1" <% if (UtilidadesString.stringToBoolean((String)turno.get("ACTIVARRETRICCIONACREDIT"))) { %> checked <% } %> <%=valida2%> > 
 						<siga:Idioma key="gratuita.maestroTurnos.literal.activarRestriccion"/>

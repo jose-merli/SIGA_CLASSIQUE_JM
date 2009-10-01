@@ -135,14 +135,6 @@
 		<td class="labelText">
 			<html:text name="MantenimientoProcedimientosForm" property="importe" maxlength="11" styleClass="boxNumber" readonly="false" value="<%=UtilidadesNumero.formatoCampo(importe)%>"/>&nbsp;&euro; 
 		</td>
-
-		<!-- -->
-		<!--<td class="labelText">
-			<siga:Idioma key="gratuita.procedimientos.literal.puntos"/>&nbsp;(*)
-		</td>-->
-		<!--<td class="labelText">
-			<html:text name="MantenimientoProcedimientosForm" property="puntos" maxlength="5" styleClass="boxNumber" readonly="false" value="< %=puntos%>"/>
-		</td>-->
 		<td class="labelText">
 			<siga:Idioma key="gratuita.procedimientos.literal.vigente"/>&nbsp;
 		</td>

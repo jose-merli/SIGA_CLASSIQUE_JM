@@ -27,48 +27,6 @@ public class EjecucionPLs {
 
 
 	/**
-	 * PL para el pago de Turnos de Oficio con Criterio por Puntos:
-	 * @param importeTurnos
-	 * @param miform
-	 * @param usuModificacion
-	 * @return
-	 * @throws ClsExceptions
-	 */
-	public static String[] ejecutarPLTurnosPuntos(String importeTurnos, DatosGeneralesPagoForm miform, String usuModificacion) throws ClsExceptions{
-		Object[] param_in; //Parametros de entrada del PL
-		String resultado[] = null; //Parametros de salida del PL
-	
-		try {
-			//EXEC PROC_FCS_PAG_TURNSOFIC_PNTOS
-			//Parametros de entrada del PL
-			resultado = new String[3];
-			if (Double.parseDouble(importeTurnos) == 0) {
-				resultado[0] = "0";
-	        	resultado[1] = "0"; 
-	        	resultado[2] = "FIN SIN EJECUCION DEL PL";         	
-			} else {
-				param_in = new Object[6];
-				param_in[0] = miform.getIdInstitucion();
-				param_in[1] = miform.getIdPagosJG();
-				param_in[2] = miform.getIdFacturacion();
-				param_in[3] = importeTurnos;
-				param_in[4] = usuModificacion;
-				param_in[5] = miform.getValoresFacturacion();		        
-		        //Ejecucion del PL
-		        resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS.PROC_FCS_PAG_TURNSOFIC_PNTOS (?,?,?,?,?,?,?,?,?)}", 3, param_in);
-			}
-		} catch (Exception e){
-			resultado[0] = "0";
-	    	resultado[1] = "1"; //ERROR P_CODRETORNO
-	    	resultado[2] = "ERROR"; //ERROR P_DATOSERROR        	
-		}
-	    
-	    //Resultado del PL        
-	    return resultado;
-	}
-
-
-	/**
  	 * PL para el pago de Turnos de Oficio con Criterio por Facturacion:
 	 * @param idInstitucion
 	 * @param idFacturacion

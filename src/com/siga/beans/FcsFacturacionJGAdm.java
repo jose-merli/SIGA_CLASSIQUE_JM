@@ -9,10 +9,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -21,7 +19,8 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Vector;
-import java.util.zip.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.transaction.UserTransaction;
 
@@ -42,7 +41,6 @@ import com.siga.Utilidades.UtilidadesString;
 import com.siga.facturacionSJCS.UtilidadesFacturacionSJCS;
 import com.siga.facturacionSJCS.form.GenerarImpreso190Form;
 import com.siga.general.CenVisibilidad;
-import com.siga.general.EjecucionPLs;
 import com.siga.general.SIGAException;
 
 /**
@@ -67,7 +65,6 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 							FcsFacturacionJGBean.C_IMPORTEEJG,
 							FcsFacturacionJGBean.C_IMPORTEGUARDIA,
 							FcsFacturacionJGBean.C_IMPORTEOFICIO,
-							FcsFacturacionJGBean.C_IMPORTEPUNTO,
 							FcsFacturacionJGBean.C_IMPORTESOJ,
 							FcsFacturacionJGBean.C_IMPORTETOTAL,
 							FcsFacturacionJGBean.C_NOMBRE,
@@ -100,7 +97,6 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			bean.setImporteEJG(UtilidadesHash.getDouble(hash, FcsFacturacionJGBean.C_IMPORTEEJG));
 			bean.setImporteGuardia(UtilidadesHash.getDouble(hash, FcsFacturacionJGBean.C_IMPORTEGUARDIA));
 			bean.setImporteOficio(UtilidadesHash.getDouble(hash, FcsFacturacionJGBean.C_IMPORTEOFICIO));
-			bean.setImportePunto(UtilidadesHash.getDouble(hash, FcsFacturacionJGBean.C_IMPORTEPUNTO));
 			bean.setImporteSOJ(UtilidadesHash.getDouble(hash, FcsFacturacionJGBean.C_IMPORTESOJ));
 			bean.setImporteTotal(UtilidadesHash.getDouble(hash, FcsFacturacionJGBean.C_IMPORTETOTAL));
 			bean.setNombre(UtilidadesHash.getString(hash, FcsFacturacionJGBean.C_NOMBRE));
@@ -129,7 +125,6 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, FcsFacturacionJGBean.C_IMPORTEEJG, b.getImporteEJG());
 			UtilidadesHash.set(htData, FcsFacturacionJGBean.C_IMPORTEGUARDIA, b.getImporteGuardia());
 			UtilidadesHash.set(htData, FcsFacturacionJGBean.C_IMPORTEOFICIO, b.getImporteOficio());
-			UtilidadesHash.set(htData, FcsFacturacionJGBean.C_IMPORTEPUNTO, b.getImportePunto());
 			UtilidadesHash.set(htData, FcsFacturacionJGBean.C_IMPORTESOJ, b.getImporteSOJ());
 			UtilidadesHash.set(htData, FcsFacturacionJGBean.C_IMPORTETOTAL, b.getImporteTotal());
 			UtilidadesHash.set(htData, FcsFacturacionJGBean.C_NOMBRE, b.getNombre());
@@ -680,7 +675,6 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			bean.setImporteEJG(new Double(0));
 			bean.setImporteGuardia(new Double(0));
 			bean.setImporteOficio(new Double(0));
-			bean.setImportePunto(new Double(0));
 			bean.setImporteSOJ(new Double(0));
 			bean.setImporteTotal(new Double(0));
 			bean.setNombre(nombre);
@@ -3416,8 +3410,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				Double  importeOficio = null, 
 				importeGuardia = null, 
 				importeSOJ = null,  
-				importeEJG = null, 
-				importePunto = null;
+				importeEJG = null;
 
 				//////////////////////////////////
 				// TURNOS DE OFICIO rgg 16-03-2005
@@ -3427,14 +3420,13 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				param_in_facturacion[1] = beanFac.getIdFacturacion().toString(); // IDFACTURACION 
 				param_in_facturacion[2] = beanFac.getUsuMod().toString();        // USUMODIFICACION
 				
-				String resultado[] = new String[4];
-				resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION_SJCS.PROC_FCS_FACTURAR_TURNOS_OFI(?,?,?,?,?,?,?)}", 4, param_in_facturacion);
-				if (!resultado[2].equalsIgnoreCase("0")) {
-					ClsLogging.writeFileLog("Error en PL = "+(String)resultado[3],3);
+				String resultado[] = new String[3];
+				resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION_SJCS.PROC_FCS_FACTURAR_TURNOS_OFI(?,?,?,?,?,?)}", 3, param_in_facturacion);
+				if (!resultado[1].equalsIgnoreCase("0")) {
+					ClsLogging.writeFileLog("Error en PL = "+(String)resultado[2],3);
 					throw new ClsExceptions ("Ha ocurrido un error al ejecutar la facturación de Turnos de Oficio");
 				}
 				importeOficio = new Double(resultado[0].replaceAll(",","."));
-				importePunto  = new Double(resultado[1].replaceAll(",","."));
 				importeTotal += importeOficio.doubleValue();
 				
 				
@@ -3496,7 +3488,6 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				beanFac.setImporteEJG(importeEJG);
 				beanFac.setImporteGuardia(importeGuardia);
 				beanFac.setImporteOficio(importeOficio);
-				beanFac.setImportePunto(importePunto);
 				beanFac.setImporteSOJ(importeSOJ);
 				beanFac.setImporteTotal(new Double(importeTotal));
 				if (!this.update(beanFac)) {
@@ -3640,9 +3631,9 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				
 				//////////////////////////////////
 				// TURNOS DE OFICIO rgg 29-03-2005
-				resultado = new String[4];
-				resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_REGULARIZACION_SJCS.PROC_FCS_REGULAR_TURNOS_OFI(?,?,?,?,?,?,?,?)}", 4, param_in_facturacion);
-				if (!resultado[2].equals("0")) {
+				resultado = new String[3];
+				resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_REGULARIZACION_SJCS.PROC_FCS_REGULAR_TURNOS_OFI(?,?,?,?,?,?,?)}", 3, param_in_facturacion);
+				if (!resultado[1].equals("0")) {
 					ClsLogging.writeFileLog("Error en PL = "+(String)resultado[2],3);
 					throw new ClsExceptions ("Ha ocurrido un error al ejecutar la facturación de Turnos de Oficio");
 				}

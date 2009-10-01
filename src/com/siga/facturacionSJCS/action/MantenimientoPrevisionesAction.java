@@ -372,8 +372,7 @@ public class MantenimientoPrevisionesAction extends MasterAction {
 					Double  importeOficio = null, 
 							importeGuardia = null, 
 							importeSOJ = null,  
-							importeEJG = null, 
-							importePunto = null;
+							importeEJG = null;
 
 					//////////////////////////////////
 					// TURNOS DE OFICIO rgg 16-03-2005
@@ -383,14 +382,13 @@ public class MantenimientoPrevisionesAction extends MasterAction {
 					param_in_facturacion[1] = beanFac.getIdFacturacion().toString(); // IDFACTURACION 
 					param_in_facturacion[2] = beanFac.getUsuMod().toString();        // USUMODIFICACION
 					
-		        	String resultado[] = new String[4];
-		        	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION_SJCS.PROC_FCS_FACTURAR_TURNOS_OFI(?,?,?,?,?,?,?)}", 4, param_in_facturacion);
-		        	if (!resultado[2].equalsIgnoreCase("0")) {
-		        		ClsLogging.writeFileLog("Error en PL = "+(String)resultado[3],3);
+		        	String resultado[] = new String[3];
+		        	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION_SJCS.PROC_FCS_FACTURAR_TURNOS_OFI(?,?,?,?,?,?)}", 3, param_in_facturacion);
+		        	if (!resultado[1].equalsIgnoreCase("0")) {
+		        		ClsLogging.writeFileLog("Error en PL = "+(String)resultado[2],3);
 		        		throw new ClsExceptions ("Ha ocurrido un error al ejecutar la facturación de Turnos de Oficio");
 		        	}
 		        	importeOficio = new Double(resultado[0]);
-	        		importePunto  = new Double(resultado[1]);
 	        		importeTotal += importeOficio.doubleValue();
 
 
@@ -453,7 +451,6 @@ public class MantenimientoPrevisionesAction extends MasterAction {
 	        		beanFac.setImporteEJG(importeEJG);
 	        		beanFac.setImporteGuardia(importeGuardia);
 	        		beanFac.setImporteOficio(importeOficio);
-	        		beanFac.setImportePunto(importePunto);
 	        		beanFac.setImporteSOJ(importeSOJ);
 		        	beanFac.setImporteTotal(new Double(importeTotal));
 		        	if (!admFac.update(beanFac)) {

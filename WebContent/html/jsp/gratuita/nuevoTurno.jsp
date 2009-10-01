@@ -268,19 +268,7 @@
 					<td style="text-align:left" >
 						<INPUT NAME="validacionInscripcion" TYPE=CHECKBOX checked>
 						<siga:Idioma key="gratuita.maestroTurnos.literal.validarInscripciones"/>
-					</td>
-<!--				
-				<tr>
-					<td class="labelText" style="text-align:left">
-						<siga:Idioma key="gratuita.maestroTurnos.literal.designaDirecta"/>:</td><td> 
-						<INPUT NAME="designaDirecta" TYPE=CHECKBOX checked>
-					</td>
-					<td class="labelText" style="text-align:left">
-						<siga:Idioma key="gratuita.maestroTurnos.literal.repartoPorPuntos"/>: </td><td>
-						<INPUT NAME="repartoPorPuntos" TYPE=CHECKBOX>
-					</td>
-				</tr>
--->				
+					</td>			
 
 <%
 	GenParametrosAdm admGen = new GenParametrosAdm(usr);

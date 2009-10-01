@@ -163,7 +163,6 @@
 	<td>
 		<!--siga:ComboBD nombre = "criteriosPagos" tipo="cmbHitoGeneral" clase="boxCombo" obligatorio="false" /-->						
 		<html:select name="mantenimientoPagoForm" property="criterioPago" styleClass="boxCombo" value="<%=ClsConstants.CRITERIOS_PAGO_PUNTOS%>">
-			<html:option value="<%=ClsConstants.CRITERIOS_PAGO_PUNTOS%>" key="factSJCS.datosPagos.literal.criteriosPuntos"/>
 			<html:option value="<%=ClsConstants.CRITERIOS_PAGO_FACTURACION%>" key="factSJCS.datosPagos.literal.criteriosFacturacion"/>
 			<html:option value="<%=ClsConstants.CRITERIOS_PAGO_PAGOS%>" key="factSJCS.datosPagos.literal.criteriosPagos"/>
 		</html:select>

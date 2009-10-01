@@ -181,7 +181,7 @@
 			}
 
 
-			float aux = Float.parseFloat(UtilidadesHash.getString(fila, "TOTALIMPORTESJCS")) + Float.parseFloat(UtilidadesHash.getString(fila, "IMPORTETOTALMOVIMIENTOS")) - Float.parseFloat(UtilidadesHash.getString(fila, "TOTALIMPORTEIRPF"))  + Float.parseFloat(UtilidadesHash.getString(fila, "IMPORTETOTALRETENCIONES"));
+			float aux = Float.parseFloat(UtilidadesHash.getString(fila, "TOTALIMPORTESJCS")) + Float.parseFloat(UtilidadesHash.getString(fila, "IMPORTETOTALMOVIMIENTOS")) + Float.parseFloat(UtilidadesHash.getString(fila, "TOTALIMPORTEIRPF"))  + Float.parseFloat(UtilidadesHash.getString(fila, "IMPORTETOTALRETENCIONES"));
 			importeTotalTotal = UtilidadesString.mostrarDatoJSP(UtilidadesNumero.redondea((new Float(aux)).toString(),2));
 			
 			// total     += Float.parseFloat(importe);
@@ -239,16 +239,8 @@
 		<table border="0" width="100%">
 			<tr>
 				
-				  <% if (existeMV){%>
-		 
-		                 <td width="<%=tamIni%>%" style="color: red; ">
-		                  <B><siga:Idioma key="factSJCS.datosFacturacion.literal.aviso"/></B>
-		                 </td>
-		
-		          <%}else{ %>
-				      <td width="<%=tamIni%>%" class="labelTextNum">&nbsp;</td>
-				  <%}%>
-				  
+		      <td width="<%=tamIni%>%" class="labelTextNum">&nbsp;</td>
+
 				<td width="<%=tamA%>%" class="labelTextNum">
 					<B>
 						<siga:Idioma key="factSJCS.datosFacturacion.literal.totalBruto"/>:<br><%=UtilidadesNumero.formatoCampo(valorFinal)%>&nbsp;&euro;
