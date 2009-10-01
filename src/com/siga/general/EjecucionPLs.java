@@ -10,7 +10,6 @@ import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.siga.Utilidades.UtilidadesBDAdm;
-import com.siga.facturacionSJCS.form.DatosGeneralesPagoForm;
 
 
 /**
