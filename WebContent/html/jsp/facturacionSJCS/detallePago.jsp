@@ -17,7 +17,7 @@
 <%@ page import="com.siga.facturacionSJCS.form.MantenimientoPagoForm"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
- 
+ <%@ page import="java.util.Properties"%>
 
 <!-- JSP -->
 <%  
@@ -199,7 +199,7 @@
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
 
-		<!-- Funcion asociada a boton buscar -->
+		// Funcion asociada a boton buscar -->
 		function buscar() 
 		{		
 			if (validateMantenimientoPagoForm(document.mantenimientoPagoForm)) 
@@ -215,7 +215,7 @@
 			}
 		}
 
-		<!-- Funcion asociada a boton nuevo -->
+		// Funcion asociada a boton nuevo -->
 		function nuevo() 
 		{		
 			document.forms[0].modo.value="nuevo";
