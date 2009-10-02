@@ -1030,7 +1030,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			// Actualiza el porcentaje e importe IRPF para cada movimiento.
 			FcsMovimientosVariosAdm movimientosAdm = new FcsMovimientosVariosAdm(usr);
 			movimientosAdm.updatePago(idInstitucion, idPago, idPersona, porcentajeIRPF.toString());
-			importeMovimientos = aplicarMovimientosVarios(idInstitucion, idPago, idPersona, usr);
+			importeMovimientos = aplicarMovimientosVarios(idInstitucion, idPago, idPersona, importeSJCS, usr);
 
 			// 3. Obtener importe bruto como la suma de los movimientos varios y el total SJCS
 			double importeBruto = importeSJCS + importeMovimientos;
@@ -1144,7 +1144,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 	 * @throws ClsExceptions
 	 */
 	private double aplicarMovimientosVarios(
-			String idInstitucion, String idPago, String idPersona, UsrBean usr) throws ClsExceptions{
+			String idInstitucion, String idPago, String idPersona, double importeSJCS, UsrBean usr) throws ClsExceptions{
 		
 		// en esta variable se guarda el importe final de los movimientos varios
 		double importeMovimientos = 0.0d;
@@ -1170,8 +1170,8 @@ public class DatosGeneralesPagoAction extends MasterAction {
 				break;
 			// Si el importe del movimiento es mayor que el restante de movimientos positivos
 			// deja la cantidad resultante en 0, crea un MV con la diferencia y termina.
-			if (importeMovimientos < 0){
-				double importeNuevoMovimiento = importeMovimientos;
+			if ((importeSJCS + importeMovimientos) < 0){
+				double importeNuevoMovimiento = importeSJCS + importeMovimientos;
 				importeMovimientos = 0;
 				Hashtable movimientoBean = new Hashtable ();
 				movimientoBean.put(FcsMovimientosVariosBean.C_CANTIDAD, String.valueOf(importeNuevoMovimiento));
