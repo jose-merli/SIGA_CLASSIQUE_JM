@@ -17,7 +17,7 @@
 <%@ page import="com.siga.censo.form.SancionesLetradoForm"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
- 
+ <%@ page import="java.util.Properties"%>
 <!-- JSP -->
 <%
 	String app=request.getContextPath();

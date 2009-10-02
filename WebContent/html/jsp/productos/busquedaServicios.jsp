@@ -22,7 +22,7 @@
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="javax.servlet.http.*"%>
-
+<%@ page import="java.util.Properties"%>
 <!-- JSP -->
 
 

@@ -282,13 +282,13 @@
 
 		<script language="JavaScript">
 		
-			<!-- Asociada al boton Restablecer -->
+			//Asociada al boton Restablecer
 			function accionRestablecer() 
 			{		
 				document.forms[0].reset();	
 			}
 		
-			<!-- Asociada al boton Guardar -->
+			//Asociada al boton Guardar -->
 			function accionGuardar() 
 			{
 				sub();		

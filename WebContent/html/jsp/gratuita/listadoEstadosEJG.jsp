@@ -184,7 +184,7 @@
 	
 	<script type="text/javascript">
 				
-	<!-- Asociada al boton Cerrar -->
+	//Asociada al boton Cerrar -->
 	function accionVolver()
 	{
 		document.forms[0].action="./JGR_EJG.do";	

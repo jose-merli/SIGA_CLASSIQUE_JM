@@ -13,6 +13,7 @@
 
 <!-- IMPORTS -->
 <%@ page import="com.siga.beans.PysServiciosBean"%>
+<%@ page import="java.util.ArrayList"%>
 
 <!-- JSP -->
 <% 
@@ -60,17 +61,17 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 
-		<!-- Asociada al boton Volver -->
+		//Asociada al boton Volver -->
 		function accionCerrar(){ 
 			window.close();
 		}	
 
-		<!-- Asociada al boton Reset -->
+		//Asociada al boton Reset -->
 		function accionRestablecer(){ 
 			MantenimientoCategoriasServiciosForm.reset();
 		}	
 	
-		<!-- Asociada al boton GuardarCerrar -->
+		//Asociada al boton GuardarCerrar -->
 		function accionGuardarCerrar() {
 			if (!validateMantenimientoCategoriasServiciosForm(document.MantenimientoCategoriasServiciosForm)){
 				return;

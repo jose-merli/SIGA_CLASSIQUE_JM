@@ -5,6 +5,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp" %>
 <%@ page import="java.sql.*"%>
+<%@ page import="java.util.Vector"%>
 <% String app=request.getContextPath(); %>
 <%@ taglib uri = "libreria_SIGA.tld" prefix="siga"%>
 

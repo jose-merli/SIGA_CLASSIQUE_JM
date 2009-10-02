@@ -13,7 +13,7 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.ReadProperties"%>
 <%@ page import="com.atos.utils.BotonesMenu"%>
-
+<%@ page import="java.util.Properties"%>
 
 <%
 	String app=request.getContextPath();

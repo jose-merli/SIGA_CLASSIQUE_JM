@@ -245,7 +245,7 @@
 	
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
-		<!-- Funcion asociada a boton buscarCliente -->
+		//Funcion asociada a boton buscarCliente -->
 		function buscarCliente() 
 		{
 			var datos = new Array();
@@ -271,14 +271,14 @@
 
 		
 		
-		<!-- Funcion asociada a boton buscar -->
+		//Funcion asociada a boton buscar -->
 		function limpiarCliente() 
 		{
 				document.BusquedaFacturaForm.buscarIdPersona.value="-1";
 				document.BusquedaFacturaForm.buscarNombreCliente.value= "";
 		}
 
-		<!-- Funcion asociada a boton buscar -->
+		//Funcion asociada a boton buscar -->
 		function limpiar() 
 		{
 				document.BusquedaFacturaForm.buscarIdPersona.value="<%=idPersonaAnterior%>";
@@ -294,7 +294,7 @@
 				document.BusquedaFacturaForm.buscarContabilizada.value= "";
 		}
 
-		<!-- Funcion asociada a boton buscar -->
+		//Funcion asociada a boton buscar -->
 		function buscar() 
 		{		
 			if((validarFecha(document.BusquedaFacturaForm.buscarFechaDesde.value))&&

@@ -98,13 +98,13 @@
 	
 		<script language="JavaScript">
 
-		<!-- Funcion asociada al refresco -->
+		//Funcion asociada al refresco
 		function refrescarLocal() 
 		{		
 			parent.buscar();
 		}		
 		
-		</script	
+		</script>
 	
 	
 	<!-- Obligatoria en todas las páginas-->

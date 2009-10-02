@@ -18,7 +18,7 @@
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.administracion.SIGAMasterTable"%>
 <%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
-
+<%@ page import="java.util.Hashtable"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath(); 
@@ -88,7 +88,7 @@
 			else alert("Seleccione turno y guardia");
 		}
 */		
-		<!-- Modif Carlos -->
+		//Modif Carlos
 		function busquedaAutomatica ()
 		{
 			document.forms[1].idTurno.value 	= document.forms[2].identificador.value;
@@ -111,7 +111,7 @@
 			else
 				alert("<siga:Idioma key='gratuita.nuevaAsistencia.mensaje.alert5' />");
 		}
-		<!-- Fin Modif Carlos -->
+		//Fin Modif Carlos
 		
 	</script>
 	<script type="text/javascript">
@@ -299,13 +299,13 @@
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">	
 	
-		<!-- Asociada al boton Restablecer -->
+		//Asociada al boton Restablecer
 		function accionRestablecer() 
 		{		
 			document.forms[2].reset();
 		}
 		
-		<!-- Asociada al boton Guardar y Cerrar -->
+		//Asociada al boton Guardar y Cerrar
 		function accionGuardarCerrar() 		
 		{	
 			/* El identificador está compuesto por [idinstitucion,idturno] por tanto hay que dividirlo y quedarnos sólo
@@ -333,7 +333,7 @@
 			//} else alert("Debe seleccionar un beneficiario");
 		}
 		
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar
 		function accionCerrar()
 		{
 			top.cierraConParametros("NORMAL");			

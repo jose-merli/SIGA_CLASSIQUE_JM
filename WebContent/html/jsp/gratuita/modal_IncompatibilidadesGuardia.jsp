@@ -16,6 +16,7 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
+<%@ page import="java.util.Properties"%>
 
 <!-- JSP -->
 <% 
@@ -150,7 +151,7 @@
 	<script language="JavaScript">
 
 		
-		<!-- Funcion asociada al boton buscar -->
+		//Funcion asociada al boton buscar -->
 		function buscar() 
 		{
 			document.forms[0].target = 'resultado';		
@@ -204,7 +205,7 @@
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">
 	
-		<!-- Asociada al boton GuardarCerrar -->
+		//Asociada al boton GuardarCerrar -->
 		function accionGuardarCerrar() 
 		{	
 			if (document.getElementById('motivosAux').value == ""){// si no se introduce motivo
@@ -236,7 +237,7 @@
 			}
 		}
 
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar
 		function accionCerrar() 
 		{		
 			top.cierraConParametros("NORMAL");

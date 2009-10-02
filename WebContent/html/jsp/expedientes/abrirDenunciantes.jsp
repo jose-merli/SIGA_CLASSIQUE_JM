@@ -191,7 +191,7 @@
 		}
 
 
-		<!-- Asociada al boton Volver -->
+		//Asociada al boton Volver -->
 		function accionVolver() 
 		{					
 				<% if (busquedaVolver.equals("AB")) { %>
@@ -209,7 +209,7 @@
 				document.forms[1].submit();				
 		}
 		
-		<!-- Asociada al boton Nuevo -->
+		//Asociada al boton Nuevo -->
 		function accionNuevo() 
 		{		
 			document.forms[0].modo.value = "nuevo";

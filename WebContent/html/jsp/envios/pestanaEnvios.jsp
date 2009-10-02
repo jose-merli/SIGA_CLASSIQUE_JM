@@ -20,7 +20,8 @@
 <!-- IMPORTS -->
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Hashtable"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();

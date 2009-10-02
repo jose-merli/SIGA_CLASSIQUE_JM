@@ -21,7 +21,8 @@
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.siga.facturacionSJCS.form.RegularizacionForm"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.ArrayList"%>
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();
@@ -130,7 +131,7 @@
 		<script language="JavaScript">
 	
 	 
-			<!-- Asociada al boton GuardarCerrar -->
+			//Asociada al boton GuardarCerrar
 			function accionGuardarCerrar() 
 			{		
 				if (validateRegularizacionForm(document.forms[0])) 
@@ -140,7 +141,7 @@
 				}
 			}
 	
-			<!-- Asociada al boton Cerrar -->
+			//Asociada al boton Cerrar
 			function accionCerrar() 
 			{		
 				var a = new Array ();
@@ -148,7 +149,7 @@
 				top.cierraConParametros(a);
 			}
 	
-			<!-- Asociada al boton Restablecer -->
+			//Asociada al boton Restablecer
 			function accionRestablecer() 
 			{		
 				document.forms[0].reset();

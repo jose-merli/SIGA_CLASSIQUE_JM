@@ -23,7 +23,7 @@
 <%@ page import="com.siga.general.CenVisibilidad"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.Utilidades.*"%>
-
+<%@ page import="java.util.Properties"%>
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();

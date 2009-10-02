@@ -136,7 +136,7 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 
-		<!-- Asociada al boton GuardarCerrar -->
+		//Asociada al boton GuardarCerrar -->
 		function accionGuardarCerrar() 
 		{		
 			if (document.forms[0].descripcion.value!=""){
@@ -149,7 +149,7 @@
 			else alert('<siga:Idioma key="gratuita.listadoHistosFacturables.literal.hito"/>');
 		}
 
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar -->
 		function accionCerrar() 
 		{		
 			// esta funcion cierra la ventana y devuelve 
@@ -157,7 +157,7 @@
 			top.cierraConParametros("NORMAL");
 		}
 
-		<!-- Asociada al boton Restablecer -->
+		//Asociada al boton Restablecer -->
 		function accionRestablecer() 
 		{		
 			document.forms[0].reset();

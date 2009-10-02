@@ -15,7 +15,8 @@
 <%@ page import = "com.siga.Utilidades.UtilidadesString"%>
 <%@ page import = "com.atos.utils.*"%>
 <%@ page import = "com.siga.general.*"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.ArrayList"%>
 <%
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();

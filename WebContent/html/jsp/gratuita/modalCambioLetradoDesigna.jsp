@@ -52,7 +52,7 @@
 	       }
 		} 
 
-	<!--Eliminamos la persona actual -->
+	//Eliminamos la persona actual
 	function borraActual(){
 		with(document.CambiosLetradosDesignasForm){
 			//idPersona.value="";
@@ -211,7 +211,7 @@
 	<script language="JavaScript">
 
 
-		<!-- Asociada al boton GuardarCerrar -->
+		//Asociada al boton GuardarCerrar
 		function accionGuardarCerrar() 
 		{	
 			sub();
@@ -263,7 +263,7 @@
 		}
 		
 		
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar
 		function accionCerrar() 
 		{		
 			// esta funcion cierra la ventana y devuelve 
@@ -271,7 +271,7 @@
 			top.cierraConParametros("NORMAL");
 		}
 
-		<!-- Asociada al boton Restablecer -->
+		//Asociada al boton Restablecer
 		function accionRestablecer() 
 		{		
 			document.forms[0].reset();

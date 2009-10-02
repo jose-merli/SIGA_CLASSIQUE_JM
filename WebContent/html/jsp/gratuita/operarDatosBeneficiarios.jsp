@@ -20,7 +20,9 @@
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.administracion.SIGAMasterTable"%>
 <%@ page import="com.atos.utils.*"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.Hashtable"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
@@ -401,7 +403,7 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 	
-		<!-- Asociada al boton Volver -->
+		//Asociada al boton Volver
 		function accionVolver() 
 		{	
 			document.forms[1].action="./JGR_ExpedientesSOJ.do";	
@@ -417,13 +419,13 @@
 			document.forms[1].submit();
 		}
 
-		<!-- Asociada al boton Restablecer -->
+		//Asociada al boton Restablecer -->
 		function accionRestablecer() 
 		{		
 			document.forms[1].reset();
 		}
 		
-		<!-- Asociada al boton Guardar -->
+		//Asociada al boton Guardar -->
 		function accionGuardar()	{				
 			if (validateDefinirPersonaJGForm(document.forms[1])){
 				document.forms[1].modo.value='<%=modo%>';

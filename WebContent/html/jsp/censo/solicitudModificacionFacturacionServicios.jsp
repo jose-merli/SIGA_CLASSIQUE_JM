@@ -20,7 +20,9 @@
 <%@ page import="com.siga.beans.CenPersonaBean"%>
 <%@ page import="com.siga.censo.form.DatosFacturacionForm"%>
 <%@ page import="com.siga.beans.CenSolModiFacturacionServicioBean"%>
-
+<%@ page import="java.util.Properties" %>
+<%@ page import="java.util.Vector" %>
+<%@ page import="java.util.ArrayList" %>
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();

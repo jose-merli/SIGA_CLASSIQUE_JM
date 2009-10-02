@@ -20,7 +20,8 @@
 <%@page import="com.siga.tlds.FilaExtElement"%>
 <%@page import="com.siga.Utilidades.UtilidadesHash" %>
 <%@page import="com.siga.Utilidades.UtilidadesString" %>
-
+<%@ page import="java.util.Vector"%>
+<%@ page import="java.util.Hashtable"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath(); 
@@ -206,13 +207,13 @@
 	<!-- INICIO: SCRIPTS BOTONES -->	
 	<script language="JavaScript">	
 	
-		<!-- Asociada al boton Restablecer -->
+		//Asociada al boton Restablecer
 		function accionRestablecer() 
 		{		
 			document.forms[0].reset();
 		}
 		
-		<!-- Asociada al boton Guardar -->
+		//Asociada al boton Guardar
 		function accionGuardar() 
 		{	
 			var nombre = document.forms[0].nombreMateria.value;
@@ -228,12 +229,12 @@
 			else alert('<siga:Idioma key="gratuita.areasMaterias.message.longitudNombre"/>');		
 		} 
 				
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar
 		function accionCerrar()
 		{
 			top.cierraConParametros("NORMAL");			
 		}
-		<!-- Asociada al boton Nuevo -->
+		//Asociada al boton Nuevo
 		function accionNuevo() 
 		{		
 			document.forms[0].modo.value = "nuevaJurisdiccionModal";

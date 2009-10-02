@@ -25,7 +25,9 @@
 <%@ page import	=	"com.siga.beans.CenCuentasBancariasBean"%>
 <%@ page import = "com.siga.Utilidades.UtilidadesString"%>
 <%@ page import = "com.atos.utils.*"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Hashtable"%>
+<%@ page import="java.util.ArrayList"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
@@ -141,17 +143,17 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 	
-		<!-- Asociada al boton Volver -->
+		//Asociada al boton Volver
 		function accionCerrar(){ 		
 			window.close();
 		}	
 		
-		<!-- Asociada al boton Restablecer -->
+		//Asociada al boton Restablecer
 		function accionRestablecer(){		
 			document.all.componentesJuridicosForm.reset();
 			rellenarCampos();
 		}			
-		<!-- Asociada al boton GuardarCerrar -->
+		//Asociada al boton GuardarCerrar
 		function accionGuardarCerrar() {
             sub();
             //habilita los posibles botones deshabilitados para que sí se envíen en el formulario
@@ -211,7 +213,7 @@
 			}
 		}		
 		
-		<!-- Selecciona los valores de los campos check y combo dependiendo de los valores del Hashtable -->
+		//Selecciona los valores de los campos check y combo dependiendo de los valores del Hashtable
 		function rellenarCampos(){	
 			// Obtenemos los valores para el check sociedad.
 			sociedad = "<%=sociedad%>"	;
@@ -619,8 +621,8 @@
 		</tr>
 	</table>   		
 
-	<script>rellenarCampos();
-	
+	<script>
+		rellenarCampos();
 	</script>
 	</html:form>
 	

@@ -28,8 +28,10 @@
 <%@ page import="com.atos.utils.Row"%>
 <%@ page import="com.siga.Utilidades.PaginadorCaseSensitive"%>
 <%@ page import="com.siga.facturacion.form.DevolucionesManualesForm"%>
-
-
+<%@ page import="java.util.Hashtable"%>
+<%@ page import="java.util.Vector"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.HashMap"%>
 
 <%
 	String app = request.getContextPath(); 

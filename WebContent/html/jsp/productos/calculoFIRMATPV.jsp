@@ -18,6 +18,7 @@
 <%@ page import = "com.siga.Utilidades.*"%>
 <%@ page import = "com.atos.utils.*"%>
 <%@ page import = "com.siga.general.*"%>
+<%@ page import="java.util.Properties"%>
 
 <!-- JSP -->
 <% 

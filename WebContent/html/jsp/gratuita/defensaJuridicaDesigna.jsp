@@ -19,7 +19,9 @@
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="com.siga.Utilidades.*"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Hashtable"%>
+<%@ page import="java.util.Vector"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();

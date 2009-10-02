@@ -15,7 +15,7 @@
 <!-- IMPORTS -->
 <%@ page import="com.siga.beans.FacSufijoBean"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
-
+<%@ page import="java.util.Vector"%>
 <!-- JSP -->
 <%
 	String app = request.getContextPath(); 

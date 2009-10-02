@@ -25,17 +25,16 @@
 <%@ page import="com.siga.beans.CenInstitucionAdm"%>
 <%@ page import="com.atos.utils.ReadProperties"%>
 <%@ page import="com.atos.utils.BotonesMenu"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="es.satec.siga.util.SIGAReferences"%>
 
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
-	ReadProperties rproperties=new ReadProperties("SIGA.properties");
-%>
-
-<% //Parte para el Applet:
+	ReadProperties rproperties=new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+	//Parte para el Applet:
      //LMS 19/09/2006
      //Se detecta si es petición HTTP ó HTTPS.
      String sProtocolo = request.getRequestURL().toString().toLowerCase().indexOf("https")>-1 ? "https" : "http"; 

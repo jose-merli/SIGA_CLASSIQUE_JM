@@ -17,7 +17,7 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.gratuita.form.PestanaDelitoAsistenciaForm"%>
-
+<%@ page import="java.util.Properties"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath(); 
@@ -108,8 +108,12 @@
 	<!-- FIN: BOTONES REGISTRO -->
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">
+	//Asociada al boton Cerrar -->
+		function accionCerrar() {
+			top.cierraConParametros("NORMAL");
+		}
 
-		<!-- Asociada al boton GuardarCerrar -->
+		//Asociada al boton GuardarCerrar -->
 		function accionGuardarCerrar() 
 		{
 			sub();	
@@ -125,18 +129,11 @@
 						document.forms[0].submit();	
 						window.returnValue="MODIFICADO";
 				}else{
-				
 					fin();
 					return false;
 				
 				}
 		}
-
-		<!-- Asociada al boton Cerrar -->
-		function accionCerrar() 
-		{		
-			top.cierraConParametros("NORMAL");
-		}		
 
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->

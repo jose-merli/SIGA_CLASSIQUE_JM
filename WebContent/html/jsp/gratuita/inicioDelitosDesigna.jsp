@@ -20,7 +20,8 @@
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="com.siga.Utilidades.*"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Hashtable"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath(); 
@@ -105,8 +106,7 @@
 		
 	<!-- INICIO: SCRIPTS BOTONES ACCION -->
 	<script language="JavaScript">
-
-		<!-- Asociada al boton Volver -->
+		//Asociada al boton Volver -->
 		function accionVolver() 
 		{	
 			document.forms[0].target = "mainWorkArea";	
@@ -115,15 +115,14 @@
 			document.forms[0].submit();
 		}
 		
-		<!-- Funcion asociada a boton buscar -->
+		//Funcion asociada a boton buscar -->
 		function refrescarLocal() 
 		{
 			document.forms[0].target = 'resultado';		
 			document.forms[0].modo.value = "buscar";
 			document.forms[0].submit();
 		}		
-
-		<!-- Funcion asociada a boton Nuevo -->
+		//Funcion asociada a boton Nuevo -->
 		function accionNuevo() 
 		{		
 			document.forms[0].modo.value = "nuevo";

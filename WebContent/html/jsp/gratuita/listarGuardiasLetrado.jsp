@@ -20,6 +20,9 @@
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.siga.tlds.FilaExtElement"%>
 <%@ page import="com.siga.beans.ScsGuardiasTurnoAdm"%>
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Vector"%>
+<%@ page import="java.util.Hashtable"%>
 
 <!-- JSP -->
 <% 

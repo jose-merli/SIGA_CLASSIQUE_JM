@@ -12,7 +12,7 @@
 
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.administracion.*"%>
-
+<%@ page import="java.util.Properties"%>
 <%  
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();

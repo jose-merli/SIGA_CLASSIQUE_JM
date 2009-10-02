@@ -59,7 +59,7 @@
 		localizacion="gratuita.turnos.localizacion"/>
 	<script language="JavaScript">
 
-		<!-- Funcion asociada a boton buscar -->
+		//Funcion asociada a boton buscar
 		function buscar() 
 		{
 			sub();
@@ -67,7 +67,7 @@
 			document.forms[0].submit();
 		}		
 		
-		<!-- Funcion asociada a boton limpiar -->
+		//Funcion asociada a boton limpiar
 		function limpiar() 
 		{		
 			document.forms[0].reset();

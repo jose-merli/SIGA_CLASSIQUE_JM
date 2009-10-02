@@ -23,8 +23,8 @@
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
-
-
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.Properties" %>
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();

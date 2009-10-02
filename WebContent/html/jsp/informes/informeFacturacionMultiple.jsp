@@ -23,7 +23,7 @@
 <%@ page import="com.siga.facturacionSJCS.form.MantenimientoPagoForm"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
-
+<%@ page import="java.util.Properties"%>
 
 <!-- JSP -->
 <%  

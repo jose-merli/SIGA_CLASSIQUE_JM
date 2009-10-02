@@ -23,7 +23,9 @@
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.siga.beans.ScsGuardiasTurnoAdm"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Hashtable"%>
+<%@ page import="java.util.Vector"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();

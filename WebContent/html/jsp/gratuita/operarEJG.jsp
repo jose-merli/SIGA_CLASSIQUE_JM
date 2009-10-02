@@ -1160,7 +1160,7 @@
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
 
-		<!-- Funcion asociada a boton limpiar -->
+		//Funcion asociada a boton limpiar
 		function limpiar() 
 		{		
 			document.forms[0].reset();
@@ -1243,19 +1243,19 @@
 			document.forms[1].modo.value="editar";
 			document.forms[1].submit();
 		}
-		<!-- Asociada al boton Consultar Designa -->
+		//Asociada al boton Consultar Designa
 		function consultarDesignaFuncion(modo) {
 		   	document.forms[2].modo.value = modo;
 		   	document.forms[2].submit();
 	 	}
 
-		<!-- Asociada al boton Consultar Asistencia -->
+		//Asociada al boton Consultar Asistencia
 		function consultarAsistenciaFuncion(modo) {
 		   	document.forms[3].modo.value = modo;
 		   	document.forms[3].submit();
 	 	}
 	
-		<!-- Asociada al boton Ver SOJ -->
+		//Asociada al boton Ver SOJ
 		function consultarSOJFuncion(_modo) {
 		   	document.forms[4].modo.value = _modo;
 		   	document.forms[4].submit();
@@ -1296,7 +1296,6 @@
 			}
 		}
 		
-<!--			-->		
 		function borrarRelacionarConSOJ() 
 		{
 			if (confirm("<siga:Idioma key='messages.deleteConfirmation'/>"))
@@ -1305,7 +1304,6 @@
 				document.forms[7].submit();
 			}
 		}
-<!--			-->
 		
 		function borrarRelacionarConAsistencia() 
 		{

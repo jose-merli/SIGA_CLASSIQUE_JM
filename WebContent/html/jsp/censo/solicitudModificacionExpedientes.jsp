@@ -27,6 +27,7 @@
 <%@ page import="com.siga.censo.form.DatosFacturacionForm"%>
 <%@ page import="com.siga.beans.CenSolModiFacturacionServicioBean"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
+<%@ page import="java.util.Properties"%>
 
 <!-- JSP -->
 <%  
@@ -142,7 +143,7 @@
 		<script language="JavaScript">
 	
 	 
-			<!-- Asociada al boton GuardarCerrar -->
+			//Asociada al boton GuardarCerrar
 			function accionGuardarCerrar() 
 			{		
 				sub();
@@ -156,13 +157,13 @@
 				}
 			}
 	
-			<!-- Asociada al boton Cerrar -->
+			//Asociada al boton Cerrar
 			function accionCerrar() 
 			{		
 				top.cierraConParametros("NORMAL");
 			}
 	
-			<!-- Asociada al boton Restablecer -->
+			//Asociada al boton Restablecer 
 			function accionRestablecer() 
 			{		
 				document.forms[0].reset();

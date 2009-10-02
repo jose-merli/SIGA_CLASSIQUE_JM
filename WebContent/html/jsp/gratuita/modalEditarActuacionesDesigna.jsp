@@ -19,7 +19,9 @@
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.Utilidades.*"%>
 <%@ page import="com.siga.beans.*"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.Hashtable"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();  
@@ -196,7 +198,7 @@
 
 	<script language="JavaScript">
 	
-		<!-- Selecciona el valor del combo -->
+		//Selecciona el valor del combo -->
 		function rellenarCombos() {
 			<% if (modoAnterior!=null && !modoAnterior.equalsIgnoreCase("VER")) { %>
 				document.getElementById("juzgado").onchange();
@@ -586,7 +588,7 @@
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">
 	
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar -->
 		function accionGuardarCerrar() 
 		{
 			sub();	
@@ -618,12 +620,16 @@
 			}	
 		}		
 
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar -->
 		function accionCerrar() 
 		{		
 			top.cierraConParametros("NORMAL");
 		}		
 		
+		function limpiarValor(combo){
+			  seleccionComboSiga (combo, "");
+		}
+
 		function validarJustificacion () {
 				if(document.forms[0].actuacionValidada.value=="1"){
 					document.forms[0].fechaJustificacion.className="box";
@@ -637,17 +643,10 @@
 					document.getElementById("calendarioTd").style.visibility="hidden";
 					document.forms[0].estadoActuacion.value='<siga:Idioma key='gratuita.mantActuacion.literal.actuacionValidada'/>';
 					if((document.forms[0].fechaJustificacion.value==null)||(document.forms[0].fechaJustificacion.value=="")){					
-					document.forms[0].fechaJustificacion.value="<%=UtilidadesBDAdm.getFechaBD("")%>";
-				}		
-		
-
+						document.forms[0].fechaJustificacion.value="<%=UtilidadesBDAdm.getFechaBD("")%>";
+					}		
+				}
 		}
-		}
-		function limpiarValor(combo){
-		  seleccionComboSiga (combo, "");
-		}
-
-
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
 

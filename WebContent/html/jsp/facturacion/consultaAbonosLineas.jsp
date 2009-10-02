@@ -266,7 +266,7 @@
 		<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 		<script language="JavaScript">
 		
-			<!-- Funcion asociada a boton nuevo -->
+			//Funcion asociada a boton nuevo -->
 			function accionNuevo() 
 			{							
 				document.forms[0].modo.value='nuevo';

@@ -185,7 +185,7 @@
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
 
-		<!-- Funcion asociada a boton buscar -->
+		//Funcion asociada a boton buscar
 		function buscar() 
 		{	sub();	
 			document.forms[0].modo.value="buscarProcuradorModalInit";
@@ -233,7 +233,7 @@
 	<script language="JavaScript">
 
 
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar
 		function accionCerrar() 
 		{		
 			top.cierraConParametros("NORMAL");

@@ -25,7 +25,8 @@
 <%@ page import = "com.siga.Utilidades.UtilidadesString"%>
 <%@ page import = "com.atos.utils.*"%>
 <%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.ArrayList"%>
 
 <!-- JSP -->
 <% 
@@ -68,13 +69,13 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 
-		<!-- Asociada al boton Volver -->
+		//Asociada al boton Volver -->
 		function accionCerrar(){ 
 			var datos = new Array();
 			window.close();
 		}	
 		
-		<!-- Asociada al boton Pagar -->
+		//Asociada al boton Pagar -->
 		function accionRealizarPago() {
 
 			if (validateAbonosPagosForm(document.AbonosPagosForm)){

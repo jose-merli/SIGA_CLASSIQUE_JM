@@ -498,7 +498,7 @@
 			document.location.reload();
 		}
 	
-		<!-- Asociada al boton Volver -->
+		//Asociada al boton Volver -->
 		function accionVolver() {	
 			document.forms[0].action="./JGR_ExpedientesSOJ.do";	
 			document.forms[0].modo.value="abrirAvanzada";
@@ -511,12 +511,11 @@
 			document.forms[0].submit();
 		}
 
-		<!-- Asociada al boton Restablecer -->
+		// Asociada al boton Restablecer -->
 		function accionRestablecer() {		
 			document.forms[0].reset();
 		}
-		
-		<!-- Asociada al boton Guardar -->
+		// Asociada al boton Guardar -->
 		function accionGuardar()	{
 			sub();
 			var descripcionConsulta = document.forms[0].descripcionConsulta.value;

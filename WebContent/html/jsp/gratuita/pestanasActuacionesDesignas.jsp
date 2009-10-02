@@ -12,7 +12,7 @@
  
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
-
+<%@ page import="java.util.Properties"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
@@ -36,7 +36,7 @@
 	<!-- FIN: TITULO Y LOCALIZACION -->
 
 <script language="JavaScript">
-			<!-- Funcion asociada a boton buscar -->
+			///Funcion asociada a boton buscar -->
 			function buscar() 
 			{
 				document.frames["mainPestanas"].location.href=document.frames["mainPestanas"].location.href;

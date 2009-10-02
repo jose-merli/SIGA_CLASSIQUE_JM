@@ -17,7 +17,8 @@
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.siga.beans.EnvEnviosBean"%>
-
+<%@ page import="java.util.Properties" %>
+<%@ page import="java.util.Hashtable" %>
 
 <!-- JSP -->
 <% 

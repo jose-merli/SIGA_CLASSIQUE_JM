@@ -19,7 +19,8 @@
 <%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.administracion.SIGAMasterTable"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Hashtable"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
@@ -121,13 +122,13 @@
 			document.forms[0].submit();
 		}
 
-		<!-- Asociada al boton Restablecer -->
+		//Asociada al boton Restablecer
 		function accionRestablecer() 
 		{		
 			document.forms[0].reset();
 		}
 		
-		<!-- Asociada al boton Guardar -->
+		//Asociada al boton Guardar
 		function accionGuardar() 
 		{
 			//sub();
@@ -192,7 +193,7 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 	
-		<!-- Asociada al boton Nuevo -->		
+		//Asociada al boton Nuevo		
 		function accionNuevo() 
 		{				
 			document.forms[0].modo.value = "nuevo";
@@ -201,7 +202,7 @@
 			if(resultado=='MODIFICADO') buscar();	
 		}
 
-		<!-- Asociada al boton Volver -->
+		//Asociada al boton Volver
 		function accionVolver() 
 		{		
 			document.forms[0].modo.value="abrirAvanzada";

@@ -16,7 +16,8 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.envios.form.RemitentesForm"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
- 
+ <%@ page import="java.util.Properties"%>
+ <%@ page import="java.util.ArrayList"%>
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();
@@ -133,7 +134,7 @@
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
 
-		<!-- Funcion asociada a boton buscar -->
+		//Funcion asociada a boton buscar
 		function buscar() 		
 		{		
 			//if (validateRemitentesForm(document.RemitentesForm)){
@@ -186,7 +187,7 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar -->
 		function accionCerrar() 
 		{		
 			top.cierraConParametros("NORMAL");

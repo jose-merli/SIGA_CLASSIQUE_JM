@@ -77,7 +77,7 @@
 
 		}
 
-		<!-- Funcion asociada al botón eliminar población -->
+		//Funcion asociada al botón eliminar población -->
 		function eliminarPoblacion(fila) 
 		{		
 			//Datos del elemento seleccionado:

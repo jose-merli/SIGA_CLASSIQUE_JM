@@ -119,13 +119,13 @@
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">	
 	
-		<!-- Asociada al boton Restablecer -->
+		//Asociada al boton Restablecer -->
 		function accionRestablecer() 
 		{		
 			document.forms[0].reset();
 		}
 		
-		<!-- Asociada al boton GuardarCerrar -->
+		//Asociada al boton GuardarCerrar -->
 		function accionGuardarCerrar() 
 		{
 			sub();		
@@ -140,7 +140,7 @@
 			}
 		}
 		
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar -->
 		function accionCerrar()
 		{
 			top.cierraConParametros("NORMAL");

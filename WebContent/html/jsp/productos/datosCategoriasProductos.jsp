@@ -13,7 +13,7 @@
 
 <!-- IMPORTS -->
 <%@ page import="com.siga.beans.PysProductosBean"%>
-
+<%@ page import="java.util.ArrayList" %>
 <!-- JSP -->
 <% 
 		String app=request.getContextPath(); 

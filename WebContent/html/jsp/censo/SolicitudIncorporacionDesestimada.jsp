@@ -38,7 +38,7 @@
 <siga:ConjBotonesAccion botones="V"  />
 
 <script>
-<!-- Asociada al boton Volver -->
+//Asociada al boton Volver -->
 function accionVolver() 
 {		
 	window.location = "<%=app%>/html/jsp/censo/SolicitudIncorporacionValidacion.jsp";

@@ -106,13 +106,13 @@
 			document.forms[0].submit();		
 		}
 		
-		<!-- Asociada al boton Restablecer -->
+		//Asociada al boton Restablecer
 		function accionRestablecer() 
 		{		
 			document.forms[0].reset();
 		}
 		
-		<!-- Asociada al boton Guardar -->
+		//Asociada al boton Guardar
 		function accionGuardar() 
 		{	sub();
 			var nombre = document.forms[0].descripcion.value;
@@ -162,7 +162,7 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 	
-		<!-- Asociada al boton Nuevo -->		
+		//Asociada al boton Nuevo		
 		function accionNuevo() 
 		{
 			if(document.forms[0].tipoDocumento.value==null){
@@ -174,7 +174,7 @@
 			}
 		}
 
-		<!-- Asociada al boton Volver -->
+		//Asociada al boton Volver
 		function accionVolver() 
 		{
 			document.DefinirMantenimDocumentacionEJGForm.modo.value="abrir";

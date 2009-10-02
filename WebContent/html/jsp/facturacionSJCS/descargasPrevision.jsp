@@ -30,6 +30,7 @@
 <%@ page import="java.util.Hashtable"%>
 <%@ page import="java.util.Enumeration"%>
 <%@ page import="com.siga.Utilidades.*"%>
+<%@ page import="java.util.Properties"%>
 
 <!-- JSP -->
 <% 

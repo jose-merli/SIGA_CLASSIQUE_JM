@@ -84,7 +84,7 @@
 			document.forms[0].submit();
 		}
 		
-		<!-- Asociada al boton Nuevo -->
+		//Asociada al boton Nuevo -->
 		function accionNuevo() 
 		{		
 			document.forms[0].target = "submitArea";

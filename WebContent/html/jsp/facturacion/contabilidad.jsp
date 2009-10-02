@@ -22,6 +22,7 @@
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.siga.beans.*"%>
+<%@ page import="java.util.Properties"%>
 
 <!-- JSP -->
 <% 

@@ -24,7 +24,8 @@
 <%@ page import="com.siga.censo.action.SolicitudesModificacionAction"%>
 <%@ page import="com.siga.censo.form.SolicitudesModificacionForm"%>
 <%@ page import="javax.servlet.http.*"%>
-
+<%@ page import="java.util.Properties" %>
+<%@ page import="java.util.ArrayList" %>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();

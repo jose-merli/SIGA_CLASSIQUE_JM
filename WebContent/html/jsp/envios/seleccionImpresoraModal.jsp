@@ -24,7 +24,7 @@
 <%@ page import="com.siga.beans.PysProductosInstitucionAdm"%>
 <%@ page import="com.siga.beans.EnvEnviosBean"%>
 <%@ page import="java.util.ArrayList"%>
-
+<%@ page import="java.util.Properties"%>
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();

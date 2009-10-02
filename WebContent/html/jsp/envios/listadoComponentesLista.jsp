@@ -23,6 +23,9 @@
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.atos.utils.Row"%>
 <%@ page import="com.siga.beans.*"%>
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Hashtable"%>
+
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();

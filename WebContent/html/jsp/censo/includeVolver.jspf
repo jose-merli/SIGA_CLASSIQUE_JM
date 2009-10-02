@@ -81,7 +81,7 @@
 <!-- script para la función volver -->
 <script language="javascript">
 
-		<!-- Asociada al boton Volver -->
+		//Asociada al boton Volver
 		function accionVolver() 
 		{
 <%

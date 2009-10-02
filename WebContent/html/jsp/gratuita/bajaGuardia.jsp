@@ -116,7 +116,7 @@
 	if(guardias.equals("2"))
 	{
 	%>
-		<div style="position:absolute;top:420px;left: 0px"
+		<div style="position:absolute;top:420px;left: 0px">
 			<p class="labelText" style="text-align:center">
 				<siga:Idioma key="gratuita.bajaGuardia.literal.infElegir"/>
 			</p>

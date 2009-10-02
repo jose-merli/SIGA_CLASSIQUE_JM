@@ -18,7 +18,9 @@
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="com.siga.Utilidades.*"%>
 <%@ page import="com.atos.utils.*"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Vector"%>
+<%@ page import="java.util.Hashtable"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
@@ -194,10 +196,11 @@
 							<siga:Idioma key="<%=regSJCS%>"/>
 						</td>
 						<td><%=regAnio%></td>
-						<td><%if(regCodigo==null||regCodigo.equals(""))%>
+						<td><%if(regCodigo==null||regCodigo.equals("")){%>
 							&nbsp;
-						<%else%>
+						<%}else{%>
 							<%=regCodigo%>
+						<%}%>
 						</td>
 						<td>
 							<%=UtilidadesString.mostrarDatoJSP(regDesTipo)%>

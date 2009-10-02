@@ -12,7 +12,7 @@
 <%@ page import="com.siga.beans.PysTipoServiciosBean"%>
 <%@ page import="com.siga.Utilidades.UtilidadesHash"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
-
+<%@ page import="java.util.Vector"%>
 <%
 	String app = request.getContextPath(); 
 	Vector servicios = (Vector) request.getAttribute("servicios");

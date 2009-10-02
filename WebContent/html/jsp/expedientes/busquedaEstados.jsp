@@ -73,15 +73,15 @@
 <!-- INICIO: SCRIPTS BOTONES -->
 <script language="JavaScript">
 		
-			<!-- Refresco -->
-			<!-- esta función es llamada desde exito.jsp tras mostrar el mensaje de éxito --!
+			//Refresco -->
+			//esta función es llamada desde exito.jsp tras mostrar el mensaje de éxito --!
 			function refrescarLocal() 
 			{		
 				var elemento=parent.document.getElementById('pestana.tiposexpedientes.estado');
 				parent.pulsar(elemento,'mainPestanas')
 			}
 	
-			<!-- Asociada al boton Nuevo -->
+			//Asociada al boton Nuevo -->
 			function accionNuevo() 
 			{		
 				   document.forms[0].modo.value = "nuevo";
@@ -89,12 +89,13 @@
    				  if(resultado=='MODIFICADO') parent.buscar();
 			}
 	
-			<!-- Asociada al boton Volver -->
+			//Asociada al boton Volver -->
 			function accionVolver() 
 			{		
 				<%request.getSession().removeAttribute("nombreExp");%>
 				top.frames["mainWorkArea"].location.href='<%=app%>/Dispatcher.do?proceso=41';
 			}
+			
 			function accionBuscar() 
 			{	sub();	
 				//var auxTarget = document.forms[0].target;

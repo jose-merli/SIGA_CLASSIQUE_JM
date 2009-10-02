@@ -23,7 +23,7 @@
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.siga.facturacion.form.AsignacionConceptosFacturablesForm"%>
 <%@ page import="com.atos.utils.UsrBean"%>
-
+<%@ page import="java.util.Properties"%>
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();
@@ -145,7 +145,7 @@
 		<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 		<script language="JavaScript">
 
-			<!-- Asociada al boton GuardarCerrar -->
+			//Asociada al boton GuardarCerrar
 			function accionGuardarCerrar() 
 			{
 				sub();
@@ -171,7 +171,7 @@
 				}
 			}
 
-			<!-- Asociada al boton Cerrar -->
+			//Asociada al boton Cerrar
 			function accionCerrar() 
 			{		
 				// esta funcion cierra la ventana y devuelve 

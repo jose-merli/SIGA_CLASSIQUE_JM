@@ -20,7 +20,9 @@
 <%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.administracion.SIGAMasterTable"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Vector"%>
+<%@ page import="java.util.Hashtable"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
@@ -127,7 +129,7 @@
 		}
 
 		
-		<!-- Asociada al boton Guardar -->
+		//Asociada al boton Guardar
 		function accionNuevo()	{
 			<%if ((idPersona != "") && (idPersona != null)) {%>
 				document.forms[0].modo.value = "nuevoTelefono";

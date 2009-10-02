@@ -20,8 +20,8 @@
 <%@ page import="com.siga.beans.EnvDestinatariosBean"%>
 <%@ page import="com.siga.beans.EnvEnviosBean"%>
 <%@ page import="com.siga.beans.CenDireccionesBean"%>
-
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Hashtable"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();

@@ -24,7 +24,7 @@
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="com.siga.administracion.SIGAMasterTable"%>
 <%@ page import="java.lang.*"%>
-
+<%@ page import="java.util.Properties"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();

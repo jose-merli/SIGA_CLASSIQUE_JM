@@ -25,45 +25,42 @@
 	String idInstitucion = (String)request.getAttribute("idInstitucion");
 	String tipo = (String)request.getAttribute("tipo");
 	String error=(String)request.getAttribute("error");
-	
-	
 %>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
-	<script type="text/jscript" language="JavaScript1.2">
-	function reloadPage() {
-	 
-		<% 
-		 if (mensaje!=null){
-		    if (error!=null && error.equals("ERROR")){
-		      String contadorSugeridoSP=(String)request.getAttribute("contadorSugeridoSP");
-		      String contadorSugeridoSJ=(String)request.getAttribute("contadorSugeridoSJ");
-		
-		%>
-		    
-		    var type = '<siga:Idioma key="<%=mensaje%>"/>';
-			alert(type);
-			<%if (contadorSugeridoSP!=null){%>
-			  window.parent.document.datosGeneralesForm.contadorNumRegSP.value='<%=contadorSugeridoSP%>';
-			<%}else{
-			  if (contadorSugeridoSJ!=null){%>
-			  window.parent.document.datosGeneralesForm.contadorNumRegSJ.value='<%=contadorSugeridoSJ%>';
-			<%}
-			 }%>
-		 
-			
-		<%  }else{
-		  
-		%>
-		    
-		   var type = '<siga:Idioma key="<%=mensaje%>"/>';
-			alert(type);
-			document.forms[0].submit();
-		 <% }
-		 }%>
-			
-	}
+	<script type="text/jscript" language="JavaScript">
+		function reloadPage() {
+			<% 
+				if (mensaje!=null) {
+					if (error!=null && error.equals("ERROR")){
+						String contadorSugeridoSP=(String)request.getAttribute("contadorSugeridoSP");
+						String contadorSugeridoSJ=(String)request.getAttribute("contadorSugeridoSJ");
+						%>
+							var type = '<siga:Idioma key="<%=mensaje%>"/>';
+							alert(type);
+						<%
+							if (contadorSugeridoSP!=null){
+								%>
+			  						window.parent.document.datosGeneralesForm.contadorNumRegSP.value='<%=contadorSugeridoSP%>';
+								<%
+							} else {
+								if (contadorSugeridoSJ!=null){
+									%>
+			  							window.parent.document.datosGeneralesForm.contadorNumRegSJ.value='<%=contadorSugeridoSJ%>';
+									<%
+								}
+			 				} 
+					} else {
+						%>
+							var type = '<siga:Idioma key="<%=mensaje%>"/>';
+							alert(type);
+							document.forms[0].submit();
+		 				<%
+		 			}
+				}
+			%>
+		}
 	</script>
 </head>
 

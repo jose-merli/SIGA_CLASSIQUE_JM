@@ -25,7 +25,9 @@
 <%@ page import="com.atos.utils.Row"%>
 <%@ page import="com.atos.utils.ClsLogging" %>
 <%@ page import="com.siga.beans.*"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Vector"%>
+<%@ page import="java.util.Hashtable"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
@@ -215,18 +217,16 @@
 		<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 		<script language="JavaScript">
 	
-			<!-- Asociada al boton Nuevo -->
-			function accionNuevo() 
-			{		
+			//Asociada al boton Nuevo
+			function accionNuevo() {		
 				document.forms[0].modo.value="nuevo";
 				document.forms[0].target='';						
 				var salida = ventaModalGeneral(document.forms[0].name,"P");
 				if (salida == "MODIFICADO") refrescarLocal();
 			}
 
-			<!-- Asociada al boton Volver -->
-			function accionVolver() 
-			{		
+			//Asociada al boton Volver
+			function accionVolver()	{		
 				document.forms[0].action = "<%=app%>/FAC_AsignacionConceptosFacturables.do";
 				document.forms[0].target = "mainWorkArea";
 				document.forms[0].modo.value = "abrirAvanzada";

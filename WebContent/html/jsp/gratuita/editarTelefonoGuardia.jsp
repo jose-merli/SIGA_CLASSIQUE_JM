@@ -164,7 +164,7 @@
 	
 		}
 		
-		<!-- Asociada al boton Siguiente -->
+		//Asociada al boton Siguiente -->
 		function accionSiguiente() 
 		{		
 			//Submitimos en el propio frame:
@@ -175,7 +175,7 @@
 			document.forms[0].submit();
 		}
 		
-		<!-- Asociada al boton Finalizar -->
+		//Asociada al boton Finalizar -->
 		function accionFinalizar() 
 		{		
 			sub();

@@ -218,7 +218,7 @@
 		}
 
 
-		<!-- Asociada al boton Volver -->
+		//Asociada al boton Volver
 		function accionVolver() 
 		{		
 			
@@ -272,9 +272,8 @@
 %>
 		}
 		
-		<!-- Asociada al boton Guardar-->
-		function accionGuardar() 
-		{
+		//Asociada al boton Guardar
+		function accionGuardar()  {
 			sub();
 			PermisosConsultaForm.grupos.value="";
 			PermisosConsultaForm.modo.value="modificar";
@@ -283,14 +282,12 @@
 			
 			var gruposC = document.getElementById("gruposCON");
 			
-			for (i=0; i<gruposC.length; i++)
-			{
+			for (i=0; i<gruposC.length; i++) {
 				document.PermisosConsultaForm.grupos.value += gruposC.options[i].value + ",";
 			}
 
 			document.PermisosConsultaForm.gruposAntiguos.value="<%=gruposAntiguos%>";
 			document.PermisosConsultaForm.submit();
-
 		}
 		
 

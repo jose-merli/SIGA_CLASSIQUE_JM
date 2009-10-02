@@ -17,7 +17,8 @@
 
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.*"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Vector"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
@@ -98,11 +99,8 @@ if (deDonde!=null && deDonde.equals("ficha") && usr.isLetrado()){
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 <!-- FIN: SUBMIT AREA -->
 <script language="JavaScript">
-
-	
-		<!-- Asociada al boton Volver -->
-		function accionVolver() 
-		{	
+		//Asociada al boton Volver
+		function accionVolver() {	
 			document.forms[0].target = "mainWorkArea";	
 			document.forms[0].action="JGR_Designas.do";
 			document.forms[0].modo.value="volverBusqueda";

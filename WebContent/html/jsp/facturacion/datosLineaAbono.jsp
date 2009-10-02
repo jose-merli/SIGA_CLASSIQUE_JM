@@ -25,8 +25,9 @@
 <%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="javax.servlet.http.*"%>
 <%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
-
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Vector"%>
+<%@ page import="java.util.ArrayList"%>
 <!-- JSP -->
 
 

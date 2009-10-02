@@ -12,6 +12,7 @@
 
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.administracion.*"%>
+<%@ page import="java.util.Properties" %>
 
 <%
 	String app=request.getContextPath();
@@ -31,7 +32,6 @@
 
 		<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 		<script language="JavaScript">
-	
 			<!-- Funcion asociada a boton buscar -->
 			function buscar() 
 			{

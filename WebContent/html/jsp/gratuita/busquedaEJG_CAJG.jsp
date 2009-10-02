@@ -346,7 +346,7 @@
 		<td class="labelText" >
 	
 			<input type="text" name="codigoExtJuzgado" class="box" size="8"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado();" />
-			<siga:ComboBD nombre="juzgado" tipo="comboJuzgados" ancho="500" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  hijo="t" elementoSel="<%=juzgado%>" parametro="<%=datos%>" readonly="<%readOnly%>"/>           	   
+			<siga:ComboBD nombre="juzgado" tipo="comboJuzgados" ancho="500" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  hijo="t" elementoSel="<%=juzgado%>" parametro="<%=datos%>"/>           	   
 		</td>
 		</tr><tr>
 		<td class="labelText">

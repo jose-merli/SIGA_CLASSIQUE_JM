@@ -25,7 +25,8 @@
 <%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="com.siga.beans.FacPlantillaFacturacionBean"%>
 <%@ page import="javax.servlet.http.*"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Vector"%>
 <!-- JSP -->
 
 

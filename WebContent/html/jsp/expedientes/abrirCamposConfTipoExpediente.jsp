@@ -24,7 +24,8 @@
 <%@ page import="com.siga.expedientes.form.CamposConfigurablesForm"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Vector"%>
 <!-- JSP -->
 <%  
 

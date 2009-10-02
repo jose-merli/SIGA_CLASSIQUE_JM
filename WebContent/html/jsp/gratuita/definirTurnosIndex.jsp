@@ -17,6 +17,7 @@
 <%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="com.siga.gratuita.util.Colegio"%>
 <%@ page import="com.atos.utils.UsrBean"%>
+<%@ page import="java.util.Properties"%>
 
 <!-- JSP -->
 <% 	

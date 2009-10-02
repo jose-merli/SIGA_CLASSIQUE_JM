@@ -13,7 +13,7 @@
 
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.Utilidades.*"%>
-
+<%@ page import="java.util.ArrayList" %>
 <% 
 	String app=request.getContextPath(); 
 	UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);

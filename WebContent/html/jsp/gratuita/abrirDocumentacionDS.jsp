@@ -135,7 +135,7 @@
 			document.location.reload();
 		}
 
-	<!-- Asociada al boton Volver -->
+	//Asociada al boton Volver -->
 		function accionVolver() 
 		{				
 			document.forms[0].action="./JGR_EJG.do";	

@@ -59,7 +59,7 @@
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">	
 	
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar
 		function accionCerrar() 
 		{
 			top.cierraConParametros ("VACIO");		

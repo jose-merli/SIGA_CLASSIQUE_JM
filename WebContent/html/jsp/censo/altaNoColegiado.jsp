@@ -947,7 +947,7 @@ function str_replace(search, replace, subject) {
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 
-		<!-- Asociada al boton Restablecer -->
+		//Asociada al boton Restablecer
 		function accionRestablecer() {
 			document.forms[0].reset();	
 		}
@@ -985,7 +985,7 @@ function str_replace(search, replace, subject) {
 	}
 
 
-		<!-- Asociada al boton Guardar -->
+		//Asociada al boton Guardar
 		function accionGuardar() {
 		
 			sub();

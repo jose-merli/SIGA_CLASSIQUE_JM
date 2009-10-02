@@ -23,7 +23,10 @@
 <%@ page import = "com.siga.general.*"%>
 <%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
 <%@ page import="com.siga.tlds.FilaExtElement"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Enumeration"%>
+<%@ page import="java.util.Hashtable"%>
+<%@ page import="java.util.Vector"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();

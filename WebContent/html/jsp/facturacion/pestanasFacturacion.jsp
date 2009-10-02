@@ -23,7 +23,7 @@
  
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
-
+<%@ page import="java.util.Properties"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();

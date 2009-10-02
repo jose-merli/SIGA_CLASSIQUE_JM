@@ -43,7 +43,7 @@
 <%@ page import="com.siga.Utilidades.PaginadorBind"%>
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.Utilidades.UtilidadesHash"%>
-
+<%@ page import="java.util.Properties"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();

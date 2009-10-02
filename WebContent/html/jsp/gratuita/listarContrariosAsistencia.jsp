@@ -19,8 +19,9 @@
 <%@ page import="com.siga.gratuita.form.ContrariosAsistenciaForm"%>
 <%@ page import="com.siga.gratuita.action.PersonaJGAction"%>
 <%@ page import="com.atos.utils.*"%>
-
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Vector"%>
+<%@ page import="java.util.Hashtable"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();

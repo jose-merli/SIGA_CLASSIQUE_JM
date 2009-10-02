@@ -18,8 +18,8 @@
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.administracion.SIGAMasterTable"%>
 <%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
-
-
+<%@ page import="java.util.Hashtable"%>
+<%@ page import="java.util.ArrayList"%>
 <!-- JSP -->
 <%	String app=request.getContextPath(); 
 	HttpSession ses=request.getSession(true);
@@ -253,12 +253,12 @@
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">	
 	
-		<!-- Asociada al boton Restablecer -->
+		//Asociada al boton Restablecer
 		function accionRestablecer() {		
 			document.forms[0].reset();
 		}
 		
-		<!-- Asociada al boton Guardar y Cerrar -->
+		//Asociada al boton Guardar y Cerrar
 		function accionGuardarCerrar() {	
 			sub();
 			/* El identificador está compuesto por [idinstitucion,idturno] por tanto hay que dividirlo y quedarnos sólo
@@ -283,7 +283,7 @@
 			}
 		}
 		
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar
 		function accionCerrar()	{
 			top.cierraConParametros("NORMAL");			
 		}

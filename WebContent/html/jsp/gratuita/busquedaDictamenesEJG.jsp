@@ -113,7 +113,7 @@
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
 	
-		<!-- Funcion asociada a boton buscar -->
+		//Funcion asociada a boton buscar
 		function buscar() 
 		{			
 			<%if (esVolver.equals("1")){%>
@@ -125,13 +125,13 @@
 			document.forms[0].submit();
 		}		
 		
-		<!-- Funcion asociada a boton limpiar -->
+		//Funcion asociada a boton limpiar
 		function limpiar() 
 		{		
 			document.forms[0].reset();
 		}
 		
-		<!-- Funcion asociada a boton Nuevo -->
+		//Funcion asociada a boton Nuevo
 		function nuevo() 
 		{
 			document.forms[0].target="mainWorkArea";

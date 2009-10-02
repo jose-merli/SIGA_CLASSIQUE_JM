@@ -17,7 +17,8 @@
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.beans.ExpDenuncianteBean"%>
 <%@ page import="com.siga.expedientes.form.ExpPartesForm"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.ArrayList"%>
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();
@@ -206,7 +207,7 @@
 	<script language="JavaScript">
 
 
-		<!-- Asociada al boton GuardarCerrar -->
+		//Asociada al boton GuardarCerrar
 		function accionGuardarCerrar() 
 		{
 			sub();		
@@ -224,13 +225,13 @@
 			}									
 		}
 
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar
 		function accionCerrar() 
 		{		
 			window.close();
 		}
 	
-		<!-- Asociada al boton Restablecer -->
+		//Asociada al boton Restablecer
 		function accionRestablecer() 
 		{		
 			document.forms[0].reset();

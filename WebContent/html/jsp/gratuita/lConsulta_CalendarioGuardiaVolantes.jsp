@@ -16,7 +16,7 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
-
+<%@ page import="java.util.Properties"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath(); 
@@ -166,7 +166,7 @@
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">
 	
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar -->
 		function accionCerrar() 
 		{		
 			top.cierraConParametros("NORMAL");

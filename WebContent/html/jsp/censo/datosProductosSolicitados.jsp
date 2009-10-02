@@ -20,7 +20,7 @@
 <%@ page import="com.siga.censo.form.DatosFacturacionForm"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.atos.utils.UsrBean"%>
-
+<%@ page import="java.util.Vector"%>
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();

@@ -198,11 +198,11 @@
 	
 		var idEspana='<%=ClsConstants.ID_PAIS_ESPANA%>';
 		
-		<!-- Asociada al boton Volver -->
+		//Asociada al boton Volver -->
 		function accionCerrar(){ 		
 			window.close();
 		}	
-		<!-- Asociada al boton Restablecer -->
+		//Asociada al boton Restablecer -->
 		function accionRestablecer(){		
 			if(confirm('<siga:Idioma key="messages.confirm.cancel"/>')) {
 				document.all.consultaDireccionesForm.reset();
@@ -296,7 +296,7 @@
 	    	}
 	    } 
 
-<!-- Asociada al boton GuardarCerrar -->
+//Asociada al boton GuardarCerrar -->
 		function accionGuardarAnyadirHistorico() {		
 		
            
@@ -496,7 +496,7 @@
 			}
 		}
 
-		<!-- Asociada al boton GuardarCerrar -->
+		//Asociada al boton GuardarCerrar
 		function accionGuardarCerrar() {		
 		
            
@@ -697,7 +697,7 @@
 				fin();
 			}
 		}		
-		<!-- Selecciona los valores de los campos check y combo dependiendo de los valores del Hashtable -->
+		//Selecciona los valores de los campos check y combo dependiendo de los valores del Hashtable
 		function rellenarCampos(){
 				document.getElementById("provincia").onchange();
 		}

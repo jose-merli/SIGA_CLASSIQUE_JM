@@ -17,7 +17,7 @@
 <%@ page import="com.siga.gratuita.form.BusquedaPorTipoSJCSForm"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
- 
+ <%@ page import="java.util.Properties"%>
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();

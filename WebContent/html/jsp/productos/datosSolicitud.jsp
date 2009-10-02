@@ -18,8 +18,8 @@
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.atos.utils.GstDate"%>
 <%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
-
-
+<%@ page import="java.util.Vector"%>
+<%@ page import="java.util.Hashtable"%>
 <%   	
 
 	String app = request.getContextPath(); 
@@ -147,17 +147,17 @@
 		var existePrecioAsociado=document.getElementById('oculto' + fila + '_' + 10);
 		sub();
 		if(confirm("<siga:Idioma key="messages.pys.solicitudCompra.confirmarDenegar"/>")){
-	    if (existePrecioAsociado.value == "0") { 
-			var mensaje='<siga:Idioma key="messages.pys.solicitudCompra.errorProductoSinPrecio"/>';
-			alert(mensaje);
+	    	if (existePrecioAsociado.value == "0") { 
+				var mensaje='<siga:Idioma key="messages.pys.solicitudCompra.errorProductoSinPrecio"/>';
+				alert(mensaje);
 				fin();
-			return(false);
-	    }else{
-			return miSubmitFormConModo (fila, "denegar");
-		}	
+				return(false);
+	    	}else{
+				return miSubmitFormConModo (fila, "denegar");
+			}	
 		}else{
 			fin();
-	}
+		}
 	}
 	
 	function miSubmitFormConModo (fila, modo) {

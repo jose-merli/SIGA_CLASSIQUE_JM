@@ -20,7 +20,8 @@
 <%@ page import = "com.siga.beans.ScsAcreditacionProcedimientoBean"%>
 <%@ page import = "com.siga.Utilidades.*"%>
 <%@ page import = "com.atos.utils.*"%>
-
+<%@ page import="java.util.Vector"%>
+<%@ page import="java.util.ArrayList"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();

@@ -23,7 +23,9 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
-
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.Hashtable"%>
+<%@ page import="java.util.Vector"%>
 
 <!-- JSP -->
 <% 

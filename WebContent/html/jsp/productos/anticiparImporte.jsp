@@ -142,7 +142,7 @@
 
 			registrarEnterFormularios ();
 			
-			<!-- Asociada a la tecla ENTER mediante la función registrarEnterFormularios()-->
+			//Asociada a la tecla ENTER mediante la función registrarEnterFormularios()
 			function buscar(){
 				accionGuardarCerrar();
 				window.event.cancelBubble = true;

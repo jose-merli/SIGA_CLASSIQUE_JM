@@ -39,13 +39,13 @@
 		<!-- INICIO: SCRIPTS BOTONES -->
 		<script language="JavaScript">
 
-			<!-- Asociada al boton Restablecer -->
+			//Asociada al boton Restablecer -->
 			function accionRestablecer() 
 			{		
 				listadoCertificadosForm.reset();
 			}
 			
-			<!-- Asociada al boton GuardarCerrar -->
+			//Asociada al boton GuardarCerrar -->
 			function accionGuardarCerrar() 
 			{	
 				listadoCertificadosForm.submit();
@@ -53,7 +53,7 @@
 				window.returnValue="MODIFICADO";
 			}
 			
-			<!-- Asociada al boton Cerrar -->
+			//Asociada al boton Cerrar -->
 			function accionCerrar() 
 			{		
 				window.close();

@@ -31,7 +31,7 @@
 <%@ page import="java.util.Enumeration"%>
 <%@ page import="com.atos.utils.Row"%>
 <%@ page import="com.siga.Utilidades.*"%>
-
+<%@ page import="java.util.Properties"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();

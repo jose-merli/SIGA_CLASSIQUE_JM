@@ -18,7 +18,7 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
-
+<%@ page import="java.util.Properties"%>
 <!-- JSP -->
 <%	String app=request.getContextPath();
 	HttpSession ses=request.getSession();

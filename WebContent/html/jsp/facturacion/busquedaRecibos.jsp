@@ -27,7 +27,7 @@
 <%@ page import="com.siga.beans.CenPersonaAdm"%>
 <%@ page import="com.siga.facturacion.form.DevolucionesManualesForm"%>
 <%@ page import="com.siga.Utilidades.*"%>
-
+<%@ page import="java.util.Properties"%>
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();

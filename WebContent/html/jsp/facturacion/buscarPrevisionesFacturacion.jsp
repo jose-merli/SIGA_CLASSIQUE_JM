@@ -27,7 +27,9 @@
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="com.siga.Utilidades.*"%>
 <%@ page import="com.siga.tlds.FilaExtElement"%>
-
+<%@ page import="java.util.Properties" %>
+<%@ page import="java.util.Vector" %>
+<%@ page import="java.util.Hashtable"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();

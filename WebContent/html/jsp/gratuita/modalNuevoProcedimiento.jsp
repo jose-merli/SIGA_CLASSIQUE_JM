@@ -15,7 +15,9 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.beans.ScsProcedimientosBean"%>
 <%@ page import="com.siga.Utilidades.*"%>
-
+<%@ page import="java.util.Properties" %>
+<%@ page import="java.util.Vector" %>
+<%@ page import="java.util.Hashtable" %>
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();
@@ -113,7 +115,7 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 
-		<!-- Asociada al boton GuardarCerrar -->
+		//Asociada al boton GuardarCerrar -->
 		function accionGuardarCerrar() 
 		{
 			var datos = "";
@@ -141,7 +143,7 @@
 		
 		
 		
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar -->
 		function accionCerrar() 
 		{		
 			// esta funcion cierra la ventana y devuelve 

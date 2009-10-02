@@ -14,7 +14,8 @@
 
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.*"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Vector"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();

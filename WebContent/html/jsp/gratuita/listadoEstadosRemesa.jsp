@@ -65,7 +65,7 @@
 			parent.refrescarLocal();				
 		}
 		
-		<!-- Asociada al boton Nuevo -->
+		//Asociada al boton Nuevo
 		function nuevo(idEstado) {	
 			document.forms[0].modo.value="nuevo";
 			document.forms[0].idEstado.value = idEstado;

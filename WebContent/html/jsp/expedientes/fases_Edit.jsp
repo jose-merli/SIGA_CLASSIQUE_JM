@@ -21,7 +21,8 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.siga.beans.ExpFasesBean"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Vector"%>
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();

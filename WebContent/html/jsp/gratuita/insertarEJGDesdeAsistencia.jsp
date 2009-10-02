@@ -18,6 +18,7 @@
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.administracion.SIGAMasterTable"%>
 <%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
+<%@ page import="java.util.ArrayList"%>
 
 <!-- JSP -->
 <% 

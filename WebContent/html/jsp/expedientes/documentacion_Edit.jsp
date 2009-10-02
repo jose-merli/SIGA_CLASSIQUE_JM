@@ -17,7 +17,7 @@
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.siga.beans.ExpDenuncianteBean"%>
 <%@ page import="com.siga.expedientes.form.ExpDocumentacionForm"%>
-
+<%@ page import="java.util.Properties"%>
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();

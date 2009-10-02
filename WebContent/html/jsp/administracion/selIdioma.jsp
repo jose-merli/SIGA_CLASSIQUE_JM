@@ -13,6 +13,8 @@
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
+<%@ page import="java.util.Hashtable" %>
+<%@ page import="java.util.Vector" %>
 <html>
 <head>
 <%

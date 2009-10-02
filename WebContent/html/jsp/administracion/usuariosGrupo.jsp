@@ -12,7 +12,7 @@
 
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.*"%>
-
+<%@ page import="java.util.Properties" %>
 <%
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
@@ -35,7 +35,7 @@
 		<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 		<script language="JavaScript">
 	
-			<!-- Funcion asociada a boton buscar -->
+			//Funcion asociada a boton buscar -->
 			function buscar() 
 			{
 				var bBuscar=true;

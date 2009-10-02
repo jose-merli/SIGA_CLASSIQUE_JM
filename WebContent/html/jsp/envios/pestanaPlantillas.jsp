@@ -14,7 +14,8 @@
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="com.siga.administracion.*"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Vector"%>
 <% 
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
@@ -42,7 +43,7 @@
 		
 		<!-- INICIO: SCRIPTS BOTONES -->
 		<script language="JavaScript">
-			<!-- Asociada al boton Volver -->
+			//Asociada al boton Volver
 			function accionVolver()
 			{
 				PlantillasEnviosPlantillasForm.action = "/SIGA/ENV_DefinirPlantillas.do?noreset=true";
@@ -50,7 +51,7 @@
 				PlantillasEnviosPlantillasForm.submit();
 			}
 	
-			<!-- Asociada al boton Nuevo -->
+			//Asociada al boton Nuevo
 			function accionNuevo()
 			{
 				PlantillasEnviosPlantillasForm.action = "/SIGA/ENV_Plantillas_Salida.do";

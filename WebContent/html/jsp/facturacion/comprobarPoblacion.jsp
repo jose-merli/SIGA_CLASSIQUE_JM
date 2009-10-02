@@ -22,7 +22,9 @@
 <%@ page import="com.atos.utils.Row"%>
 <%@ page import="com.atos.utils.ClsLogging" %>
 <%@ page import="com.siga.beans.*"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Vector"%>
+<%@ page import="java.util.Hashtable"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();

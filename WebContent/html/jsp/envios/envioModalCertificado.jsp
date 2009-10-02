@@ -25,7 +25,7 @@
 <%@ page import="com.siga.beans.FacFacturaBean"%>
 <%@ page import="java.util.ArrayList"%>
 <%@ page import="com.siga.Utilidades.*"%>
-
+<%@ page import="java.util.Properties"%>
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();

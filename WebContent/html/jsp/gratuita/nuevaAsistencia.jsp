@@ -209,13 +209,13 @@ function rellenarComboGuardia(){
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
 
-		<!-- Funcion asociada a boton limpiar -->
+		// Funcion asociada a boton limpiar -->
 		function accionCerrar() 
 		{		
 			window.close();
 		}
 
-		<!-- Funcion asociada a boton Nuevo -->
+		//Funcion asociada a boton Nuevo -->
 		function accionGuardarCerrar() 
 		{	
 		

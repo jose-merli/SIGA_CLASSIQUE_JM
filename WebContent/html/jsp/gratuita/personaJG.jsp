@@ -1974,7 +1974,7 @@ function str_replace(search, replace, subject) {
 	// VOLVER PARA CADA CASO
 	if (conceptoE.equals(PersonaJGAction.EJG)) { %>
 	
-		<!-- Asociada al boton Volver -->
+		//Asociada al boton Volver -->
 		function accionVolver()   
 		{	
 		 	document.forms[0].action="<%=app%>/JGR_EJG.do";	
@@ -1983,7 +1983,7 @@ function str_replace(search, replace, subject) {
 			document.forms[0].submit(); 
 		}
 		
-		<!-- Asociada al boton Guardar -->
+		//Asociada al boton Guardar -->
 		function accionGuardar()	{	
 			sub();			
 			document.forms[0].importeIngresosAnuales.value=document.forms[0].importeIngresosAnuales.value.replace(/,/,".");
@@ -2059,7 +2059,7 @@ function str_replace(search, replace, subject) {
 	// VOLVER PARA CADA CASO
 	if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) { %>
 	
-		<!-- Asociada al boton Guardar -->
+		//Asociada al boton Guardar -->
 		function accionGuardarCerrar()	{	
 		  
 		  	sub();  					
@@ -2141,7 +2141,7 @@ function str_replace(search, replace, subject) {
 				return false;
 			}				
 		}			
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar -->
 		function accionCerrar()   
 		{	
 			window.close();
@@ -2152,7 +2152,7 @@ function str_replace(search, replace, subject) {
 		}
 <% } else if (conceptoE.equals(PersonaJGAction.SOJ)) { %>
 
-		<!-- Asociada al boton Volver -->
+		//Asociada al boton Volver -->
 		function accionVolver()   
 		{	
 		 	document.forms[0].action="<%=app%>/JGR_ExpedientesSOJ.do";	
@@ -2160,7 +2160,7 @@ function str_replace(search, replace, subject) {
 			document.forms[0].target="mainWorkArea"; 
 			document.forms[0].submit(); 
 		}
-		<!-- Asociada al boton Guardar -->
+		//Asociada al boton Guardar -->
 		function accionGuardar()	{
 			sub();
 			if (!validaNumeroIdentificacion()) {
@@ -2219,7 +2219,7 @@ function str_replace(search, replace, subject) {
 		}
 		
 
-		<!-- Asociada al boton Guardar -->
+		//Asociada al boton Guardar -->
 		function accionGuardar()	{		
 			sub();
 			if (!validaNumeroIdentificacion()) {
@@ -2260,13 +2260,13 @@ function str_replace(search, replace, subject) {
 <% } else 
    if (conceptoE.equals(PersonaJGAction.ASISTENCIA_CONTRARIOS)) { %>
 
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar -->
 		function accionCerrar()   
 		{	
 			window.close();
 		}
 
-		<!-- Asociada al boton Guardar -->
+		//Asociada al boton Guardar -->
 		function accionGuardarCerrar()	{				
             sub();
 			if (!validaNumeroIdentificacion()) {
@@ -2309,13 +2309,13 @@ function str_replace(search, replace, subject) {
  
 if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) { %>
 
-		<!-- Asociada al boton Cerrar -->
+		// Asociada al boton Cerrar -->
 		function accionCerrar()   
 		{	
 			window.close();
 		}
 
-		<!-- Asociada al boton Guardar -->
+		//Asociada al boton Guardar -->
 		function accionGuardarCerrar()	{				
             sub();
 			if (!validaNumeroIdentificacion()) {
@@ -2357,7 +2357,7 @@ if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) { %>
 <% } else 
    if (conceptoE.equals(PersonaJGAction.PERSONAJG)) { %>
 
-		<!-- Asociada al boton Guardar -->
+		//Asociada al boton Guardar -->
 		function accionGuardarCerrar()	{	
 			
 			sub();
@@ -2393,7 +2393,7 @@ if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) { %>
 			}	
 		}			
 
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar -->
 		function accionCerrar()   
 		{	
 			window.close();
@@ -2405,13 +2405,13 @@ if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) { %>
 
 <% } else 
    if (conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS) || conceptoE.equals(PersonaJGAction.DESIGNACION_INTERESADO)) { %>
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar -->
 		function accionCerrar()   
 		{	
 			window.close();
 		}
 
-		<!-- Asociada al boton Guardar -->
+		//Asociada al boton Guardar -->
 		function accionGuardarCerrar()	{	
 			sub();
 			if (!validaNumeroIdentificacion()) {
@@ -2457,7 +2457,7 @@ if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) { %>
 			}
 		}
 
-		<!-- Asociada al boton Restablecer -->
+		//Asociada al boton Restablecer -->
 		function accionRestablecer() 
 		{		
 			document.forms[0].reset();

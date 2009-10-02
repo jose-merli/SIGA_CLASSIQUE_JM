@@ -24,7 +24,7 @@
 <%@ page import="com.siga.facturacion.form.GenerarAbonosForm"%>
 <%@ page import="com.siga.beans.CenPersonaAdm"%>
 <%@ page import="javax.servlet.http.*"%>
-
+<%@ page import="java.util.Properties"%>
 <!-- JSP -->
 
 

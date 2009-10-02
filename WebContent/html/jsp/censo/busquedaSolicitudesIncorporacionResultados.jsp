@@ -15,7 +15,8 @@
 <%@ page import="com.siga.Utilidades.UtilidadesMultidioma"%>
 <%@ page import="com.siga.administracion.*"%>
 <%@ page import="com.atos.utils.ClsConstants" %>
-
+<%@ page import="java.util.Vector"%>
+<%@ page import="java.util.Hashtable"%>
 <%
 	String app = request.getContextPath(); 
 	Vector resultados = (Vector) request.getAttribute("resultados");

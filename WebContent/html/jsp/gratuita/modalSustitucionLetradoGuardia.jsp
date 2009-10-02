@@ -213,7 +213,7 @@
 		
 	
 	
-		<!-- Asociada al boton GuardarCerrar -->
+		//Asociada al boton GuardarCerrar -->
 		function accionGuardarCerrar() 
 		{		
 			sub();
@@ -246,7 +246,7 @@
 			}
 		}
 
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar -->
 		function accionCerrar() 
 		{		
 			top.cierraConParametros("NORMAL");

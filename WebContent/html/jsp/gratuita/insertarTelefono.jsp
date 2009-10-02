@@ -103,13 +103,13 @@
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">	
 	
-		<!-- Asociada al boton Restablecer -->
+		//Asociada al boton Restablecer -->
 		function accionRestablecer() 
 		{		
 			document.forms[0].reset();
 		}
 		
-		<!-- Asociada al boton Guardar y Cerrar -->
+		//Asociada al boton Guardar y Cerrar -->
 		function accionGuardarCerrar() 
 		{	
 			if (isNaN(document.forms[0].numeroTelefono.value)) {			
@@ -128,7 +128,7 @@
 			}			
 		}				
 		
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar -->
 		function accionCerrar()
 		{
 			top.cierraConParametros("NORMAL");

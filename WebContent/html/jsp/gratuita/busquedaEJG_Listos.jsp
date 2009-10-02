@@ -148,7 +148,7 @@
 		
 		<% if (mensajeError != null) {%>
 			alert("<%=mensajeError%>");
-			buscar()
+			buscar();
 		<%} else if (busquedaRealizada.equals("1")) {%>
 		      buscarPaginador();
 		<%}%>	
@@ -349,7 +349,7 @@
 		<td class="labelText" >
 	
 			<input type="text" name="codigoExtJuzgado" class="box" size="8"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado();" />
-			<siga:ComboBD nombre="juzgado" tipo="comboJuzgados" ancho="500" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  hijo="t" elementoSel="<%=juzgado%>" parametro="<%=datos%>" readonly="<%readOnly%>"/>           	   
+			<siga:ComboBD nombre="juzgado" tipo="comboJuzgados" ancho="500" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  hijo="t" elementoSel="<%=juzgado%>" parametro="<%=datos%>"/>           	   
 		</td>
 		</tr><tr>
 		<td class="labelText">
@@ -456,7 +456,7 @@
 	
 	
 
-		<!-- Funcion asociada a boton buscar -->
+		//Funcion asociada a boton buscar
 		
 		function buscarPaginador() 
 		{
@@ -486,7 +486,7 @@
 			}
 		}	
 		
-		<!-- Funcion asociada a boton limpiar -->
+		//Funcion asociada a boton limpiar
 		function limpiar() 
 		{		
 			document.forms[1].reset();
@@ -506,20 +506,16 @@
 			
 			
 		}
-		<!-- Funcion asociada a boton ListoParaEnviar -->
-		
+		//Funcion asociada a boton ListoParaEnviar
 		function getElementsByAttr(attr){
-var all = document.frames.resultado.document.getElementsByTagName('*');
-var elements = [];
-for(var i = 0; i < all.length; i++){
-if(all[i].getAttribute(attr))elements.push(all[i]);
-}
-return elements;
-} 
+			var all = document.frames.resultado.document.getElementsByTagName('*');
+			var elements = [];
+			for(var i = 0; i < all.length; i++){
+				if(all[i].getAttribute(attr))elements.push(all[i]);
+			}
+			return elements;
+		} 
 
-
-		 
-		 
 		function accionListoParaEnviar() 
 		{
 
@@ -533,14 +529,9 @@ return elements;
 			
 		}
 		
-		
 		function traspasoDatos(resultado){
 		 seleccionComboSiga("juzgado",resultado[0]);
-		}	
-
-
-		
-		
+		}
 	</script>
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 	<!-- FIN  ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->

@@ -18,6 +18,7 @@
 <%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
+<%@ page import="java.util.Vector"%>
 
 
 <!-- JSP -->

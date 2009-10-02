@@ -29,12 +29,13 @@
 <%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="com.siga.Utilidades.*"%>
+<%@ page import="java.util.Properties" %>
 <%@ page import="java.util.Vector"%>
 <%@ page import="java.util.Hashtable"%>
 <%@ page import="java.util.Enumeration"%>
 <%@ page import="com.siga.tlds.FilaExtElement"%>
 <%@ page import="com.atos.utils.Row"%>
-
+<%@ page import="java.util.HashMap" %>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();

@@ -24,7 +24,7 @@
 <%@ page import = "com.siga.beans.CenDatosCVBean"%>
 <%@ page import = "com.siga.Utilidades.UtilidadesString"%>
 <%@ page import = "com.atos.utils.*"%>
-
+<%@ page import="java.util.Properties"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();

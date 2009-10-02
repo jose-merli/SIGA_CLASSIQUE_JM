@@ -14,7 +14,8 @@
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="com.siga.administracion.*"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Vector"%>
 <% 
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
@@ -42,7 +43,7 @@
 		
 		<!-- INICIO: SCRIPTS BOTONES -->
 		<script language="JavaScript">
-			<!-- Asociada al boton Volver -->
+			//Asociada al boton Volver
 			function accionVolver()
 			{
 				MantenimientoCertificadosPlantillasForm.action = "/SIGA/CER_MantenimientoCertificados.do";
@@ -50,7 +51,7 @@
 				MantenimientoCertificadosPlantillasForm.submit();
 			}
 	
-			<!-- Asociada al boton Nuevo -->
+			//Asociada al boton Nuevo
 			function accionNuevo()
 			{
 				MantenimientoCertificadosPlantillasForm.action = "/SIGA/CER_Plantillas.do";

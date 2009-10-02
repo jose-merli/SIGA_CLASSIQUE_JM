@@ -17,7 +17,8 @@
 <%@ page import="com.siga.facturacionSJCS.form.MantenimientoMovimientosForm"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.ArrayList"%>
 
 <!-- JSP -->
 <%  
@@ -167,7 +168,7 @@
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
 
-		<!-- Funcion asociada a boton buscar -->
+		//Funcion asociada a boton buscar
 		function buscar() 
 		{		
 			sub();
@@ -176,7 +177,7 @@
 			document.forms[0].target="resultado";	
 			document.forms[0].submit();	
 		}
-		<!-- Función para cuando se busque por refresco -->
+		//Función para cuando se busque por refresco
 		function buscar2() 
 		{		
 			sub();
@@ -185,7 +186,7 @@
 			document.forms[0].target="resultado";	
 			document.forms[0].submit();	
 		}
-		<!-- Funcion asociada a boton nuevo -->
+		//Funcion asociada a boton nuevo
 		function nuevo() 
 		{	
 			document.forms[0].modo.value="nuevo";

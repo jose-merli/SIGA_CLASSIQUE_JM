@@ -227,7 +227,7 @@
 			<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 			<script language="JavaScript">
 	
-				<!-- Asociada al boton GuardarCerrar -->
+				//Asociada al boton GuardarCerrar -->
 				function accionGuardarCerrar() 
 				{
 				
@@ -243,7 +243,7 @@
 					}	
 				}
 	
-				<!-- Asociada al boton Cerrar -->
+				//Asociada al boton Cerrar -->
 				function accionCerrar() 
 				{		
 					// esta funcion cierra la ventana y devuelve 
@@ -253,7 +253,7 @@
 				
 				
 				
-				<!-- Asociada al evento onchange numFactura -->
+				//Asociada al evento onchange numFactura -->
 				function validarFacturaCompensacionManual() {
 					sub();
 					if (document.AbonosPagosForm.numFacturaCompensadora.value!=undefined){

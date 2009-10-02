@@ -28,7 +28,8 @@
 <%@ page import="java.util.Hashtable"%>
 
 <%@ page import="com.siga.tlds.FilaExtElement"%>
- 
+ <%@ page import="java.util.Properties"%>
+ <%@ page import="java.util.ArrayList"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();

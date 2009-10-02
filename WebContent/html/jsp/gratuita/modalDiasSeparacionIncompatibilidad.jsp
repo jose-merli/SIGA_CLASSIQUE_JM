@@ -39,7 +39,7 @@
     
 	<script language="JavaScript">
 
-		<!-- Asociada al evento onload -->
+		//Asociada al evento onload
 		function setDefault () {
 			var datos = new Array ();
 			datos[0] = 0;
@@ -48,13 +48,13 @@
 			window.returnValue=datos;
 		}	
 		
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar
 		function accionCerrar () {
 			setDefault ();
 			window.close ();
 		}	
 		
-		<!-- Asociada al boton GuardarCerrar -->
+		//Asociada al boton GuardarCerrar
 		function accionGuardarCerrar () {
             var dias = document.forms[0].diasseparacion.value;
             var moti = document.forms[0].motivos.value;

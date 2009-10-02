@@ -22,7 +22,7 @@
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="javax.servlet.http.*"%>
-
+<%@ page import="java.util.Properties"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
@@ -180,7 +180,7 @@
 							frameborder="0"
 							marginheight="0"
 							marginwidth="0"				 
-							class="frameGeneral"
+							class="frameGeneral">
 			</iframe>
 		</div>
 		<!-- FIN: IFRAME LISTA RESULTADOS -->

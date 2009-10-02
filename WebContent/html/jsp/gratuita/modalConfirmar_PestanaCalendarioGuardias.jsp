@@ -271,7 +271,7 @@
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">
 	
-		<!-- Asociada al boton GuardarCerrar -->
+		//Asociada al boton GuardarCerrar -->
 		function accionGuardarCerrar() 
 		{		sub();
 				//Valido el tamanho del textarea motivosSolicitud
@@ -290,7 +290,7 @@
 				}
 		}
 
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar -->
 		function accionCerrar() 
 		{		
 			top.cierraConParametros("NORMAL");

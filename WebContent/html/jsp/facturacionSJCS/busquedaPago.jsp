@@ -22,7 +22,8 @@
 <%@ page import="com.siga.facturacionSJCS.form.MantenimientoPagoForm"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.ArrayList"%>
 
 <!-- JSP -->
 <%  
@@ -193,7 +194,7 @@
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
 
-		<!-- Funcion asociada a boton buscar -->
+		//Funcion asociada a boton buscar
 		function buscar() 
 		{
 			sub();		
@@ -207,7 +208,7 @@
 			}
 		}
 
-		<!-- Funcion asociada a boton nuevo -->
+		//Funcion asociada a boton nuevo -->
 		function nuevo() 
 		{		
 			document.forms[0].modo.value="nuevo";

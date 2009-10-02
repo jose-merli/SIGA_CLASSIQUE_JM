@@ -21,6 +21,9 @@
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.Utilidades.Paginador"%>
 <%@ page import="com.atos.utils.Row"%>
+<%@ page import="java.util.HashMap"%>
+<%@ page import="java.util.Vector"%>
+<%@ page import="java.util.Hashtable"%>
 
 <%	String app = request.getContextPath();
     HttpSession ses=request.getSession();

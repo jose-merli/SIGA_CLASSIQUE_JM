@@ -61,36 +61,36 @@ String clase="boxConsulta";
 
 <script language="JavaScript">
 
-		<!-- Asociada al boton Volver -->
+		//Asociada al boton Volver
 		function accionVolver() 
 		{		
 			
 		}
 
-		<!-- Asociada al boton Cancelar -->
+		//Asociada al boton Cancelar
 		function accionCancelar() 
 		{	
 			window.close();	
 		}
 		
-		<!-- Asociada al boton Cancelar -->
+		//Asociada al boton Cancelar
 		function accionCerrar() 
 		{		
 			window.close();
 		}
 
-		<!-- Asociada al boton Restablecer -->
+	//Asociada al boton Restablecer
 		function accionRestablecer() 
 		{		
 			document.forms[0].reset();
 		}
 		
-		<!-- Asociada al boton Guardar -->
+		//Asociada al boton Guardar
 		function accionGuardar() 
 		{		
 		}
 
-		<!-- Asociada al boton Siguiente -->
+		//Asociada al boton Siguiente
 		function accionSiguiente() 
 		{	sub();
 			document.forms[0].target="_self";

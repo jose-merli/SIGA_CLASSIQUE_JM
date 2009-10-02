@@ -14,7 +14,7 @@
 <%@ page import="com.siga.beans.CenDocumentacionSolicitudInstituBean" %>
 <%@ page import="com.atos.utils.ClsConstants" %>
 <%@ page import="java.util.ArrayList" %>
-
+<%@ page import="java.util.Vector"%>
 <%
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();

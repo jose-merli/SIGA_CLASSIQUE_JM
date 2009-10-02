@@ -21,7 +21,7 @@
 <%@ page import="com.siga.facturacion.form.MantenimientoFacturacionForm"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
-
+<%@ page import="java.util.Properties"%>
 
 <!-- JSP -->
 <%  

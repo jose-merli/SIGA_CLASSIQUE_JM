@@ -11,10 +11,11 @@
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.ReadProperties"%>
+<%@ page import="es.satec.siga.util.SIGAReferences"%>
 <% 
 String app=request.getContextPath();
 String logo=(String)request.getSession().getAttribute(SIGAConstants.PATH_LOGO);
-ReadProperties rproperties=new ReadProperties("SIGA.properties");
+ReadProperties rproperties=new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 String pathInicio = rproperties.returnProperty("general.paginaInicio");
 %>
 

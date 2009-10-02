@@ -27,7 +27,11 @@
 <%@ page import = "com.siga.beans.CenProvinciaBean"%>
 <%@ page import = "com.siga.Utilidades.UtilidadesString"%>
 <%@ page import = "com.atos.utils.*"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Hashtable"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.Vector"%>
+<%@ page import="java.util.Enumeration"%>
 <!-- JSP -->
 <% 
 	// Declaraciones varias
@@ -129,12 +133,12 @@
 		<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 		<script language="JavaScript">
 
-			<!-- Asociada al boton Cerrar -->
+			//Asociada al boton Cerrar
 			function accionCerrar(){ 			
 				window.close();
 			}	
 
-			<!-- Asociada a la carga de la pagina -->
+			//Asociada a la carga de la pagina
 			function originalModificado(estado){ 			
 				if (estado!="10"){
 					var mensaje='<siga:Idioma key="messages.censo.solicitudesModificacion.advertencia"/>';

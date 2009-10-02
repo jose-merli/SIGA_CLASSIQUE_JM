@@ -18,7 +18,7 @@
 <%@ page import="com.siga.beans.FacSufijoBean"%>
 <%@ page import="com.siga.Utilidades.UtilidadesHash"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
-
+<%@ page import="java.util.Hashtable"%>
 <!-- JSP -->
 <%
 	String app = request.getContextPath(); 

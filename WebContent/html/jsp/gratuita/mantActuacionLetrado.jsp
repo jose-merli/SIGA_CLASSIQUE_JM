@@ -641,7 +641,7 @@
 				
 				}
 			}
-			<!-- Asociada al boton Cerrar -->
+			//Asociada al boton Cerrar
 			function accionCerrar() 
 			{		
 				// esta funcion cierra la ventana y devuelve 

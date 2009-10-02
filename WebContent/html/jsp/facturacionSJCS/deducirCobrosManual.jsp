@@ -15,7 +15,8 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.beans.*"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Vector"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath(); 
@@ -118,7 +119,7 @@ color:black;
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">
 	
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar
 		function accionCerrarPago() 
 		{		
 			sub();
@@ -156,13 +157,13 @@ color:black;
 			document.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.factSJCS.procesandoPago';
 		}		
 
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar
 		function accionCerrar() 
 		{		
 			top.cierraConParametros("NORMAL");
 		}		
 
-			<!-- Asociada al boton MarcarTodos -->
+			//Asociada al boton MarcarTodos
 			function accionMarcarTodos() 
 			{		
 				if (document.getElementById("oculto1_1")!=null){
@@ -182,7 +183,7 @@ color:black;
 				}	
 			}
 		
-			<!-- Asociada al boton DesmarcarTodos -->
+			//Asociada al boton DesmarcarTodos
 			function accionDesmarcarTodos() 
 			{		
 				if (document.getElementById("oculto1_1")!=null){

@@ -16,7 +16,8 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.envios.form.RemitentesPlantillasForm"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
- 
+ <%@ page import="java.util.Properties"%>
+ <%@ page import="java.util.ArrayList"%>
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();

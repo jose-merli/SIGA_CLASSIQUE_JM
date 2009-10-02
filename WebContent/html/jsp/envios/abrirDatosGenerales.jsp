@@ -15,7 +15,10 @@
 <%@ page import="com.siga.Utilidades.*"%>
 <%@ page import="com.siga.administracion.*"%>
 <%@ page import="com.siga.gui.processTree.*"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Vector"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.Hashtable"%>
 <%  
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();

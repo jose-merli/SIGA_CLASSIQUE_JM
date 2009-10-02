@@ -10,6 +10,7 @@
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 
 <%@ page import="com.siga.administracion.SIGAConstants"%>
+<%@ page import="java.util.Hashtable" %>
 
 <html:html>
 <head>

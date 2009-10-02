@@ -10,7 +10,7 @@
 <%@ taglib uri = "libreria_SIGA.tld" prefix="siga"%>
 
 <%@ page import="com.siga.administracion.SIGAConstants"%>
-
+<%@ page import="java.util.Properties" %>
 <% 
 	String app=request.getContextPath(); 
 	HttpSession ses=request.getSession();

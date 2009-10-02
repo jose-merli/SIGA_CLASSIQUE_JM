@@ -285,77 +285,62 @@
 			document.BusquedaCAJG_EJGForm.selDefinitivo.value=seleccionados1;
 			
 	   }
-	   function cargarChecksTodos(o){
-	   	
-	   	  if (o.checked){
-	   		 <% 
-	   		 if (ejgSeleccionados!=null){
-	   		 	for (int p=0;p<ejgSeleccionados.size();p++){
-	   		 	
-		   			Hashtable clavesEJG= (Hashtable) ejgSeleccionados.get(p);
-					valor=clavesEJG.get(ScsEJGBean.C_ANIO)+"||"+clavesEJG.get(ScsEJGBean.C_NUMERO)+"||"+clavesEJG.get(ScsEJGBean.C_IDTIPOEJG);%>
-					
-						var aux='<%=valor%>';
-						ObjArray.push(aux);
-					
-			<%} }%>
-			ObjArray.toString();
-			seleccionados1=ObjArray;
-			document.BusquedaCAJG_EJGForm.selDefinitivo.value=seleccionados1;
-			
-			var ele = document.getElementsByName("chkGuardia");
-				
+	   
+		function cargarChecksTodos(o){
+			if (o.checked){
+	   			<% 
+					if (ejgSeleccionados!=null){
+						for (int p=0;p<ejgSeleccionados.size();p++){
+							Hashtable clavesEJG= (Hashtable) ejgSeleccionados.get(p);
+							valor=clavesEJG.get(ScsEJGBean.C_ANIO)+"||"+clavesEJG.get(ScsEJGBean.C_NUMERO)+"||"+clavesEJG.get(ScsEJGBean.C_IDTIPOEJG);
+							%>
+								var aux='<%=valor%>';
+								ObjArray.push(aux);
+							<%
+						}
+					}
+				%>
+				ObjArray.toString();
+				seleccionados1=ObjArray;
+				document.BusquedaCAJG_EJGForm.selDefinitivo.value=seleccionados1;
+				var ele = document.getElementsByName("chkGuardia");
 				for (i = 0; i < ele.length; i++) {
-					
 					ele[i].checked = true;
-					
 				}
-			
-		 }else{
-		 	ObjArray1= new Array();
-		 	ObjArray=ObjArray1;
-		 	seleccionados1=ObjArray;
-			document.BusquedaCAJG_EJGForm.selDefinitivo.value=seleccionados1;
-			var ele = document.getElementsByName("chkGuardia");
-				
+			} else {
+		 		ObjArray1= new Array();
+		 		ObjArray=ObjArray1;
+		 		seleccionados1=ObjArray;
+				document.BusquedaCAJG_EJGForm.selDefinitivo.value=seleccionados1;
+				var ele = document.getElementsByName("chkGuardia");
 				for (i = 0; i < ele.length; i++) {
-					
 					ele[i].checked = false; 
-					
 				}
-
-		 }
-		
-	   }
+			}
+		}
 	   
 	   function checkTodos(){
-	   	var todos=1;
-	   
-	   <% 
-	   		 if (ejgSeleccionados!=null){
-	   		 	
-	   		 	for (int p=0;p<ejgSeleccionados.size();p++){
-	   		 	
-		   			Hashtable clavesEJG= (Hashtable) ejgSeleccionados.get(p);
-					valor=clavesEJG.get(ScsEJGBean.C_ANIO)+"||"+clavesEJG.get(ScsEJGBean.C_NUMERO)+"||"+clavesEJG.get(ScsEJGBean.C_IDTIPOEJG);
-					if (!clavesEJG.get("SELECCIONADO").equals("1")){%>
-						todos=0;
-						
-					<%}%>
-			<%} }%>
-				
+			var todos=1;
+			<% 
+				if (ejgSeleccionados!=null){
+					for (int p=0;p<ejgSeleccionados.size();p++){
+			   			Hashtable clavesEJG= (Hashtable) ejgSeleccionados.get(p);
+						valor=clavesEJG.get(ScsEJGBean.C_ANIO)+"||"+clavesEJG.get(ScsEJGBean.C_NUMERO)+"||"+clavesEJG.get(ScsEJGBean.C_IDTIPOEJG);
+						if (!clavesEJG.get("SELECCIONADO").equals("1")){
+							%>
+								todos=0;
+							<%
+						}
+					}
+				}
+			%>
 			if (todos==1){
 				document.getElementById("chkGeneral").checked=true;
 			}else{
 				document.getElementById("chkGeneral").checked=false;
 			}
-			
 	   }
-	   
-	   
-	   
-	  
-			</script>
+	</script>
 <!-- INICIO: SUBMIT AREA -->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 <!-- FIN: SUBMIT AREA -->	

@@ -19,7 +19,7 @@
 <%@ page import="com.siga.Utilidades.UtilidadesHash"%>
 <%@ page import="com.atos.utils.GstDate"%>
 <%@ page import="com.siga.beans.ScsSaltosCompensacionesBean"%>
-
+<%@ page import="java.util.Properties"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath(); 
@@ -179,7 +179,7 @@
 	<script language="JavaScript">
 			
 		
-		<!-- Asociada al boton GuardarCerrar -->
+		//Asociada al boton GuardarCerrar -->
 		function accionGuardarCerrar() 
 		{		
 			//Valido e inserto:
@@ -199,7 +199,7 @@
 				} 
 		}
 
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar -->
 		function accionCerrar() 
 		{		
 			top.cierraConParametros("NORMAL");

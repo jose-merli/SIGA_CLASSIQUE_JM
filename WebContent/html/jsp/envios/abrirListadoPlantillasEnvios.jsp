@@ -12,7 +12,8 @@
 
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.administracion.*"%>
-
+<%@ page import="java.util.Properties" %>
+<%@ page import="java.util.ArrayList"%>
 <%  
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();

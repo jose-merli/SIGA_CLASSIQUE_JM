@@ -59,7 +59,7 @@
 			document.forms[0].submit();				
 		}
 		
-		<!-- Asociada al boton Nuevo -->
+		//Asociada al boton Nuevo
 		function nuevo() {	
 			document.forms[0].modo.value="nuevo";
 			var resultado = ventaModalGeneral(document.forms[0].name,"P");

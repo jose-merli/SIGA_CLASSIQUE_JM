@@ -47,7 +47,7 @@
 
 		<!-- INICIO: SCRIPTS BOTONES -->
 		<script language="JavaScript">
-			<!-- Asociada al boton GuardarCerrar -->
+			//Asociada al boton GuardarCerrar
 			function accionGuardarCerrar() 
 			{  
 				//sub();
@@ -87,7 +87,7 @@
 				window.returnValue="MODIFICADO";
 			}
 			
-			<!-- Asociada al boton Cerrar -->
+			//Asociada al boton Cerrar
 			function accionCerrar() 
 			{		
 				window.close();

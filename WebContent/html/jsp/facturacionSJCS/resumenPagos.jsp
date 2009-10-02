@@ -18,7 +18,7 @@
 <%@ page import = "com.siga.Utilidades.UtilidadesString"%>
 <%@ page import = "com.atos.utils.*"%>
 <%@ page import = "com.siga.facturacionSJCS.form.ResumenPagosForm"%>
-
+<%@ page import="java.util.Properties"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();

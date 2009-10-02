@@ -20,7 +20,7 @@
 
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
-
+<%@ page import="java.util.Properties" %>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
@@ -117,13 +117,13 @@
 		<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 		<script language="JavaScript">
 		
-			<!-- Asociada al boton Restablecer -->
+			//Asociada al boton Restablecer -->
 			function accionRestablecer() 
 			{		
 				document.forms[0].reset();
 			}
 		
-			<!-- Asociada al boton Guardar -->
+			//Asociada al boton Guardar -->
 			function accionGuardar() 
 			{	
 				sub();	

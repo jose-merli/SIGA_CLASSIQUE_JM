@@ -27,6 +27,11 @@
 <%@ page import = "com.siga.beans.CenProvinciaBean"%>
 <%@ page import = "com.siga.Utilidades.UtilidadesString"%>
 <%@ page import = "com.atos.utils.*"%>
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.Enumeration"%>
+<%@ page import="java.util.Vector"%>
+<%@ page import="java.util.Hashtable"%>
 
 <!-- JSP -->
 <% 

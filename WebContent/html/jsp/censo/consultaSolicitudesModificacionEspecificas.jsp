@@ -269,7 +269,7 @@
 		<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 		<script language="JavaScript">
 
-			<!-- Asociada al boton MarcarTodos -->
+			//Asociada al boton MarcarTodos
 			function accionMarcarTodos() 
 			{		
 				if (document.getElementById("solicita_1")!=null){
@@ -285,7 +285,7 @@
 				}	
 			}
 		
-			<!-- Asociada al boton DesmarcarTodos -->
+			//Asociada al boton DesmarcarTodos
 			function accionDesmarcarTodos() 
 			{		
 				if (document.getElementById("solicita_1")!=null){
@@ -301,7 +301,7 @@
 				}	
 			}
 		
-			<!-- Asociada al boton ProcesarSolicitud -->
+			//Asociada al boton ProcesarSolicitud
 			function accionProcesarSolicitud() 
 			{			
 				var datos = "";
@@ -340,7 +340,7 @@
 				document.forms[0].submit();
 			}
 
-			<!-- Asociada al boton DenegarSolicitud -->			
+			//Asociada al boton DenegarSolicitud			
 			function accionDenegarSolicitud () 
 			{
 				var datos = "";

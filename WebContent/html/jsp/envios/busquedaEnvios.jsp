@@ -29,7 +29,7 @@
 <%@ page import="com.atos.utils.GstDate"%>
 <%@ page import="com.siga.Utilidades.Paginador"%>
 <%@ page import="com.atos.utils.Row"%>
-
+<%@ page import="java.io.File" %>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();

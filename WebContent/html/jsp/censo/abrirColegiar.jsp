@@ -18,7 +18,8 @@
 <%@ page import="com.siga.beans.CenInstitucionAdm"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
- 
+ <%@ page import="java.util.Properties" %>
+ <%@ page import="java.util.Date"%>
 <!-- JSP -->
 <%
 	String app=request.getContextPath();
@@ -75,13 +76,13 @@
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 		<script language="JavaScript">
 
-		<!-- Funcion asociada a boton Finalizar -->
+		//Funcion asociada a boton Finalizar
 		function accionCerrar()
 		{
 			window.close();
 		}
 
-		<!-- Asociada al boton Aceptar -->
+		//Asociada al boton Aceptar
 		function accionAceptar()
 		{ sub();
 			//var aux=document.forms[0].idPlantilla.value;

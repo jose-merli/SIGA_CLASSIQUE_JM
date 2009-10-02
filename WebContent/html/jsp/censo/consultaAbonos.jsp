@@ -31,7 +31,8 @@
 <%@page import="java.util.HashMap"%>
 <%@page import="com.siga.Utilidades.PaginadorBind"%>
 <%@page import="com.atos.utils.Row"%>
-
+<%@ page import="java.util.Vector"%>
+<%@ page import="java.util.Enumeration"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();

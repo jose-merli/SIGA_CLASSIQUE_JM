@@ -31,7 +31,7 @@ function reloadPage() {
 	//parent.parent.frames[0].location='<%=urlAction%>';
 	//parent.parent.frames[1].location='<%=app%>/jsp/general/blank.jsp';
 	parent.parent.irA("buscarPor");
-<%  };%>
+<%  }%>
 	return false;
 
 }

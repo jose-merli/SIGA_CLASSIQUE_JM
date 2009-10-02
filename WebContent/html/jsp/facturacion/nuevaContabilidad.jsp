@@ -120,7 +120,7 @@
    </td>
    </tr>
    	</html:form>
-		<div style="position:absolute;top:348px;left: 0px"
+		<div style="position:absolute;top:348px;left: 0px">
 			<siga:ConjBotonesAccion botones="<%=botones%>" clase="" modal="P"/>	
 		</div>
 	</table>

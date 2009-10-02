@@ -18,6 +18,7 @@
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.beans.ExpDenuncianteBean"%>
 <%@ page import="com.siga.expedientes.form.ExpDenuncianteForm"%>
+<%@ page import="java.util.Properties"%>
 
 <!-- JSP -->
 <%  
@@ -268,7 +269,7 @@
 	<script language="JavaScript">
 
 
-		<!-- Asociada al boton GuardarCerrar -->
+		//Asociada al boton GuardarCerrar -->
 		function accionGuardarCerrar() 
 		{
 			sub();		
@@ -287,13 +288,13 @@
 			}									
 		}
 
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar -->
 		function accionCerrar() 
 		{		
 			window.close();
 		}
 	
-		<!-- Asociada al boton Restablecer -->
+		//Asociada al boton Restablecer -->
 		function accionRestablecer() 
 		{		
 			document.forms[0].reset();
@@ -341,7 +342,7 @@
 			}		
 		}
 
-		<!-- Asociada al boton Buscar Direccion -->
+		//Asociada al boton Buscar Direccion -->
 		function buscarDireccion() 
 		{
 			<%  if(accion.equals("nuevo")) { %>

@@ -119,7 +119,7 @@
 		<%}%>
 		</siga:TablaCabecerasFijas>
 
-		<div style="position:absolute;bottom:45px;"
+		<div style="position:absolute;bottom:45px;">
 			<p class="labelText" style="text-align:center">
 				<siga:Idioma key="<%=texto%>"/>
 			</p>

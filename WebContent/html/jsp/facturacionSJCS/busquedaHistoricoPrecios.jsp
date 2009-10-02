@@ -92,7 +92,7 @@
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
 
-		<!-- Funcion asociada a boton buscar -->
+		//Funcion asociada a boton buscar -->
 		function buscar() 
 		{
 			if (validateMantenimientoHistoricoPreciosForm(document.MantenimientoHistoricoPreciosForm)){

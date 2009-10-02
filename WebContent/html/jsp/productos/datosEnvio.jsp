@@ -23,6 +23,8 @@
 <%@ page import = "com.siga.beans.EnvDestinatariosBean"%>
 <%@ page import = "com.siga.Utilidades.UtilidadesString"%>
 <%@ page import = "com.atos.utils.*"%>
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Hashtable"%>
 
 <!-- JSP -->
 <% 

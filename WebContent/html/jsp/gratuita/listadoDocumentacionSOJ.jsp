@@ -165,7 +165,7 @@
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">	
 				
-		<!-- Asociada al boton Volver -->
+		//Asociada al boton Volver -->
 		function accionVolver() 
 		{	
 			document.forms[0].action="./JGR_ExpedientesSOJ.do";	
@@ -174,14 +174,14 @@
 			document.forms[0].submit(); 
 		}
 		
-		<!-- Asociada al boton Guardar -->
+		//Asociada al boton Guardar -->
 		function accionGuardar()
 		{
 			document.forms[0].submit();
 
 		}
 		
-		<!-- Asociada al boton Nuevo -->
+		//Asociada al boton Nuevo -->
 		function accionNuevo()
 		{
 			document.forms[0].modo.value = "nuevo";
@@ -190,7 +190,7 @@
 			if(resultado=='MODIFICADO') buscar();
 		}
 		
-		<!-- Asociada al boton Buscar -->
+		//Asociada al boton Buscar -->
 		function buscar()
 		{
 				document.forms[0].modo.value = "abrirAvanzada";

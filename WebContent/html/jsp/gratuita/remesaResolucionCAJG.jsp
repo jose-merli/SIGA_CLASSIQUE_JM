@@ -21,8 +21,8 @@
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.atos.utils.GstDate"%>
 <%@ page import="com.siga.gratuita.action.DefinirRemesaResolucionesCAJGAction"%>
-
-
+<%@ page import="java.io.File"%>
+<%@ page import="java.util.Hashtable"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath(); 
@@ -266,13 +266,13 @@
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">	
 	
-		<!-- Asociada al boton Restablecer -->
+		//Asociada al boton Restablecer -->
 		function accionRestablecer() 
 		{		
 			document.forms[0].reset();
 		}
 		
-		<!-- Asociada al boton Guardar y Cerrar -->
+		//Asociada al boton Guardar y Cerrar -->
 		function accionGuardarCerrar() {		
 			var f = document.getElementById("DefinicionRemesaResolucionesCAJGForm");			
 			
@@ -288,7 +288,7 @@
 			}
 		}
 		
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar -->
 		function accionCerrar() {
 			top.cierraConParametros("NORMAL");			
 		}

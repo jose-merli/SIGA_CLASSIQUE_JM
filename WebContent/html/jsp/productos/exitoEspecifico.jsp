@@ -34,24 +34,30 @@
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
 	<script type="text/jscript" language="JavaScript1.2">
 		function reloadPage() {
-			<% if (mensaje!=null){%>
-				var type = '<siga:Idioma key="<%=mensaje%>"/>';
-				alert(type);
-			<% } %>
-			<% if (modal!=null){%>
-			  
-				//document.MantenimientoServiciosForm.submit();
-				<% if (modal.equalsIgnoreCase("SI_HAY_CONDICION")) { %> 
-						window.returnValue="<%=modal%>"; 
-						window.close();
-				<% }
-				else { %>
-						window.returnValue="MODIFICADO";
-				<% } %>
-				//window.close();
-			<% }else{ %>	
-				document.MantenimientoServiciosForm.submit();
-			<% } %>
+			<%
+				if (mensaje!=null){
+					%>
+						var type = '<siga:Idioma key="<%=mensaje%>"/>';
+						alert(type);
+					<%
+				}
+				if (modal!=null){
+					if (modal.equalsIgnoreCase("SI_HAY_CONDICION")) {
+						%> 
+							window.returnValue="<%=modal%>"; 
+							window.close();
+						<%
+					} else { 
+						%>
+							window.returnValue="MODIFICADO";
+						<%
+					}
+				} else {
+					%>	
+						document.MantenimientoServiciosForm.submit();
+					<%
+				}
+			%>
 		} 
 	</script>
 </head>

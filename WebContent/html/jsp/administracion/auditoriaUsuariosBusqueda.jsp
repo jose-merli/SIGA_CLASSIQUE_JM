@@ -12,7 +12,7 @@
 
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.Utilidades.*"%>
-
+<%@ page import="java.util.Hashtable" %>
 <% 
 	String app=request.getContextPath();
 	UsrBean userBean = (UsrBean)request.getSession().getAttribute("USRBEAN");

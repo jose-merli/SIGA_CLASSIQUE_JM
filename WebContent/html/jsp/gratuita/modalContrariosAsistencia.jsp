@@ -21,7 +21,10 @@
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.Utilidades.*"%>
 <%@ page import="com.siga.gratuita.form.ContrariosAsistenciaForm"%>
-
+<%@ page import="java.util.Properties" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.Hashtable" %>
+<%@ page import="java.util.Vector" %>
 <!-- JSP -->
 <% 
 	String app = request.getContextPath();
@@ -432,17 +435,17 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar
 		function accionCerrar() {		
 			top.cierraConParametros("NORMAL");
 		}
 		
-		<!-- Asociada al boton Restablecer -->
+		//Asociada al boton Restablecer
 		function accionRestablecer() 	{		
 			document.forms[0].reset();
 		}
 		
-		<!-- Asociada al boton Guardar -->
+		//Asociada al boton Guardar
 		function accionGuardar() {				
 	
 			var nif = (document.forms[0].nif.value).toUpperCase();

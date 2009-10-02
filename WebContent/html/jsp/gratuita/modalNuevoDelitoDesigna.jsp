@@ -17,7 +17,7 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.gratuita.form.PestanaDelitoDesignaForm"%>
-
+<%@ page import="java.util.Properties"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath(); 
@@ -103,7 +103,7 @@
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">
 
-		<!-- Asociada al boton GuardarCerrar -->
+		//Asociada al boton GuardarCerrar -->
 		function accionGuardarCerrar() 
 		{	
 				sub();
@@ -120,7 +120,7 @@
 				}
 		}
 
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar -->
 		function accionCerrar() 
 		{		
 			top.cierraConParametros("NORMAL");

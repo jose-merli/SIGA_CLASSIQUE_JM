@@ -19,7 +19,7 @@
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.gui.processTree.*"%>
-
+<%@ page import="java.util.Properties" %>
 <!-- JSP -->
 
 <% 

@@ -51,7 +51,7 @@
 	var seleccionadoProc = false;
 	
 		
-	<!--Eliminamos la opcion del procurador actual -->
+	//Eliminamos la opcion del procurador actual
 	function borraActual(){
 	<logic:notEmpty name="CambiosProcuradoresDesignasForm" property="nombreActual">
 		var actual='<bean:write name="CambiosProcuradoresDesignasForm" property="idProcurador"/>';
@@ -237,7 +237,7 @@
 	  }	
 	}
 
-		<!-- Asociada al boton GuardarCerrar -->
+		//Asociada al boton GuardarCerrar
 		function accionGuardarCerrar() 
 		{
 			// JBD 23-1-2009 Añadida comprobacion de seleccionadoProcurador INC-5643
@@ -269,7 +269,7 @@
 			}
 		}
 		
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar
 		function accionCerrar() 
 		{		
 			// esta funcion cierra la ventana y devuelve 
@@ -277,7 +277,7 @@
 			top.cierraConParametros("NORMAL");
 		}
 
-		<!-- Asociada al boton Restablecer -->
+		//Asociada al boton Restablecer
 		function accionRestablecer() 
 		{		
 			document.forms[0].reset();

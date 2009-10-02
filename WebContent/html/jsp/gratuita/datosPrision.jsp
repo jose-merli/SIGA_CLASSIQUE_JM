@@ -15,7 +15,7 @@
 
 <!-- IMPORTS -->
 <%@page import="com.siga.gratuita.form.MantenimientoPrisionForm"%>
-
+<%@ page import="java.util.ArrayList"%>
 <!-- JSP -->
 <% 
 		String app=request.getContextPath(); 
@@ -79,17 +79,17 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 
-		<!-- Asociada al boton Volver -->
+		//Asociada al boton Volver -->
 		function accionCerrar(){ 
 			window.close();
 		}	
 
-		<!-- Asociada al boton Reset -->
+		//Asociada al boton Reset -->
 		function accionRestablecer(){ 
 			MantenimientoPrisionForm.reset();
 		}	
 	
-		<!-- Asociada al boton GuardarCerrar -->
+		//Asociada al boton GuardarCerrar -->
 		function accionGuardarCerrar() {
 			sub();
 		    document.MantenimientoPrisionForm.telefono1.value=eliminarBlancos(trim(document.MantenimientoPrisionForm.telefono1.value));

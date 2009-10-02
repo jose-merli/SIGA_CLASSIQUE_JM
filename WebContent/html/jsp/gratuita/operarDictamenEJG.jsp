@@ -236,13 +236,13 @@
 		clase="botonesDetalle" /> <!-- INICIO: SCRIPTS BOTONES --> <script
 		language="JavaScript">	
 	
-		<!-- Asociada al boton Restablecer -->
+		//Asociada al boton Restablecer
 		function accionRestablecer() 
 		{		
 			document.forms[0].reset();
 		}
 				
-		<!-- Asociada al boton Volver -->
+		//Asociada al boton Volver
 		function accionVolver()
 		{
 			document.forms[0].action="./JGR_EJG.do";	
@@ -252,7 +252,7 @@
 
 		}
 		
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar
 		function accionGuardar()
 		{
 			sub();

@@ -23,7 +23,8 @@
 <%@ page import="com.siga.beans.ExpTipoExpedienteBean"%>
 <%@ page import="com.siga.general.CenVisibilidad"%>
 <%@ page import="com.atos.utils.UsrBean"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Vector"%>
 <!-- JSP -->
 <%  
 

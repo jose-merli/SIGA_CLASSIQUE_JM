@@ -19,7 +19,8 @@
 <%@ page import="com.siga.Utilidades.UtilidadesHash"%>
 <%@ page import="com.atos.utils.GstDate"%>
 <%@ page import="com.siga.beans.ScsSaltosCompensacionesBean"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Hashtable"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath(); 
@@ -194,7 +195,7 @@
 	
 	
 	
-		<!-- Asociada al boton GuardarCerrar -->
+		//Asociada al boton GuardarCerrar
 		function accionGuardarCerrar() 
 		{	
 			//Valido y modifico:
@@ -210,7 +211,7 @@
 			}
 		}
 
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar
 		function accionCerrar() 
 		{		
 			top.cierraConParametros("NORMAL");

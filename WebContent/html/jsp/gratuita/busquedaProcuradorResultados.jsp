@@ -19,6 +19,8 @@
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.siga.beans.ScsProcuradorBean"%>
 <%@ page import="com.atos.utils.UsrBean"%>
+<%@ page import="java.util.Hashtable"%>
+<%@ page import="java.util.Vector"%>
 
 <%	String app = request.getContextPath();
     HttpSession ses=request.getSession();

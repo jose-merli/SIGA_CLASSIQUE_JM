@@ -24,7 +24,7 @@
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="com.siga.administracion.SIGAMasterTable"%>
 <%@ page import="java.lang.*"%>
-
+<%@ page import="java.util.Properties"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
@@ -159,7 +159,7 @@
 			<script language="JavaScript">
 
 
-			<!-- Asociada al boton GuardarCerrar -->
+			//Asociada al boton GuardarCerrar -->
 			function accionGuardar() 
 			{					
 				var f=document.forms[0];
@@ -168,7 +168,7 @@
 				submitArea.location='/SIGA/html/jsp/general/loadingWindowOpener.jsp?formName='+f.name+'&msg=messages.factSJCS.procesandoInforme';
 			}
 
-			<!-- Asociada al boton Cerrar -->
+			//Asociada al boton Cerrar -->
 			function accionCerrar() 
 			{		
 				// esta funcion cierra la ventana y devuelve 
@@ -176,7 +176,7 @@
 				top.cierraConParametros("NORMAL");
 			}
 
-			<!-- Asociada al boton Restablecer -->
+			//Asociada al boton Restablecer -->
 			function accionRestablecer() 
 			{		
 				document.forms[0].reset();

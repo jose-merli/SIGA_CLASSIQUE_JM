@@ -126,7 +126,7 @@
 	<script language="JavaScript">
 
 
-		<!-- Asociada al boton GuardarCerrar -->
+		//Asociada al boton GuardarCerrar -->
 		function accionGuardarCerrar() 
 		{		
 					if (document.forms[0].descripcion.value!=""){
@@ -146,7 +146,7 @@
 			window.returnValue="MODIFICADO";			
 		}
 		
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar -->
 		function accionCerrar() 
 		{		
 			// esta funcion cierra la ventana y devuelve 
@@ -154,7 +154,7 @@
 			top.cierraConParametros("NORMAL");
 		}
 
-		<!-- Asociada al boton Restablecer -->
+		//Asociada al boton Restablecer -->
 		function accionRestablecer() 
 		{		
 			document.forms[0].reset();

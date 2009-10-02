@@ -11,7 +11,7 @@
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 
 <%@ page import="com.siga.administracion.SIGAConstants"%>
-
+<%@ page import="java.util.Properties"%>
 <%  
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
@@ -34,7 +34,7 @@
 		<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 		<script language="JavaScript">
 	
-			<!-- Funcion asociada a boton buscar -->
+			//Funcion asociada a boton buscar -->
 			function buscar() 
 			{
 				document.forms[0].modo.value="buscar";
@@ -94,7 +94,7 @@
 			<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 			<script language="JavaScript">
 		
-				<!-- Asociada al boton Nuevo -->
+				//Asociada al boton Nuevo -->
 				function accionNuevo() 
 				{		
 					document.forms[0].modo.value="nuevo";

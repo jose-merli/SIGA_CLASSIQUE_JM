@@ -16,7 +16,7 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="java.util.Vector"%>
-
+<%@ page import="java.util.Properties"%>
 <!-- JSP --> 
 <% 
 	String app=request.getContextPath(); 
@@ -164,7 +164,7 @@
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">
 		
-		<!-- Funcion asociada a la recarga del iframe de la tabla. -->
+		//Funcion asociada a la recarga del iframe de la tabla. -->
 		function buscarGuardias() {
 			if (document.forms[0].accion.value != "nuevo")
 			{
@@ -175,7 +175,7 @@
 			}
 		}
 		
-		<!-- Funcion asociada a la recarga de la pagina cuando se pulsa en Guardar -->
+		//Funcion asociada a la recarga de la pagina cuando se pulsa en Guardar -->
 		function refrescarLocal() 
 		{				
 			if (document.forms[0].accion.value != "nuevo")
@@ -194,13 +194,13 @@
 			}
 		}		
 
-		<!-- Asociada al boton Restablecer -->
+		//Asociada al boton Restablecer -->
 		function accionRestablecer() 
 		{		
 				document.forms[0].reset();
 		}
 		
-		<!-- Asociada al boton Guardar -->
+		//Asociada al boton Guardar -->
 		function accionGuardar() 
 		{	
 			sub();
@@ -256,7 +256,7 @@
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
 
-		<!-- Funcion asociada a boton volver -->
+		//Funcion asociada a boton volver -->
 		function accionVolver() 
 		{
 			document.forms[0].target = "mainWorkArea";
@@ -264,7 +264,7 @@
 			document.forms[0].submit();
 		}		
 			
-		<!-- Funcion asociada a boton Nuevo -->
+		//Funcion asociada a boton Nuevo -->
 		function accionNuevo() 
 		{		
 			document.forms[0].modo.value = "nuevo";

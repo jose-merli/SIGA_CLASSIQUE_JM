@@ -34,7 +34,7 @@
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 	
 	<script language="JavaScript">
-			<!-- Asociada al boton GuardarCerrar -->
+			//Asociada al boton GuardarCerrar -->
 			function accionGuardarCerrar() {
 			sub();
 			if (document.all.confirmarFacturacionForm.fechaCargo.value == ''){

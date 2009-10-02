@@ -48,7 +48,7 @@
 		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
 		<!-- INICIO: SCRIPTS BOTONES -->
 		<script language="JavaScript">
-			<!-- Asociada al boton Restablecer -->
+			//Asociada al boton Restablecer -->
 			function refrescarLocal() {		
 				document.location=document.location;
 			}
@@ -57,14 +57,14 @@
 				document.PestanaConfigurableForm.reset();
 			}
 		
-			<!-- Asociada al boton GuardarCerrar -->
+			//Asociada al boton GuardarCerrar -->
 			function accionGuardar() {
 			    sub();
 			    document.PestanaConfigurableForm.modo.value = "modificar";
 				document.PestanaConfigurableForm.submit();
 			}
 			
-			<!-- Asociada al boton Volver -->
+			//Asociada al boton Volver -->
 			function accionVolver() {		
 				<% if (busquedaVolver.equals("AB")) { %>
 					document.forms[1].action = "<%=app%>/EXP_AuditoriaExpedientes.do?noReset=true";

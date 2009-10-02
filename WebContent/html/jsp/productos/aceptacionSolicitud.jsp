@@ -22,8 +22,10 @@
 <%@ page import = "com.siga.tlds.FilaExtElement"%>
 <%@ page import = "com.siga.Utilidades.UtilidadesNumero"%>
 <%@ page import = "com.siga.Utilidades.UtilidadesBDAdm"%>
-
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Vector"%>
+<%@ page import="java.util.Hashtable"%>
+<%@ page import="java.util.ArrayList"%>
 
 <!-- JSP -->
 <% 

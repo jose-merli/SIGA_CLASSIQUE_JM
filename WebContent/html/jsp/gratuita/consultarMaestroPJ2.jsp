@@ -16,7 +16,7 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="java.util.ArrayList"%>
-
+<%@ page import="java.util.Properties"%>
 <!-- JSP --> 
 <% 
 	//FORMULARIO

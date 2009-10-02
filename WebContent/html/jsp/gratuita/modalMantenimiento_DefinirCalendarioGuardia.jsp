@@ -257,7 +257,7 @@
 	
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
-		<!-- Funcion asociada a boton buscarCliente -->
+		//Funcion asociada a boton buscarCliente
 		function buscarCliente() 
 		{
 			var datos = new Array();
@@ -271,20 +271,12 @@
 
 			var datos = ventaModalGeneral("busquedaClientesModalForm","G");
 			if ((datos == null) ||(typeof datos[0] == "undefined"))  {
-			
 				return false;
 			}
-			
 			document.DefinirCalendarioGuardiaForm.buscarIdPersona.value 		 = datos[0];
-
-			
 		}
 
-		
-		
-		
-
-		<!-- Funcion asociada a boton buscar -->
+		//Funcion asociada a boton buscar
 		function buscar() 
 		{		
 						
@@ -304,7 +296,7 @@
 	<!-- FIN: BOTONES REGISTRO -->
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">
-		<!-- Funcion que devuelve true si alguna de las fechas del calendario es anterior a la actual
+		//Funcion que devuelve true si alguna de las fechas del calendario es anterior a la actual
 		function esFechaAnteriorHoy(){
 			var f_desde = document.forms[0].fechaDesde.value; //DD/MM/YYYY
 			
@@ -320,7 +312,7 @@
 				return false;
 		}
 	
-		<!-- Asociada al boton GenerarCalendario -->
+		//Asociada al boton GenerarCalendario
 		function accionGenerarCalendario() {
 			// Creo Calendario de Titulares y despues el de Reservas
 			document.forms[0].modo.value = "insertarCalendarioAutomaticamente";
@@ -339,7 +331,7 @@
 				document.frames.submitAreaPrincipal.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.gratuita.generandoCalendario';			
 		}
 		
-		<!-- Asociada al boton GuardarCerrar -->
+		//Asociada al boton GuardarCerrar
 		function accionGuardarCerrar() 
 		{
 			sub();	
@@ -357,13 +349,13 @@
 			}
 		}
 
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar
 		function accionCerrar() 
 		{		
 			top.cierraConParametros("NORMAL");
 		}		
 
-		<!-- Funcion asociada a boton Nuevo -->
+		//Funcion asociada a boton Nuevo
 		function accionNuevoLetrado() {		
 			document.forms[0].modo.value = "modalNuevaGuardia";
 			var salida = ventaModalGeneral(document.forms[0].name,"M");	

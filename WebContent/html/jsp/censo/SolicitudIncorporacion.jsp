@@ -24,7 +24,8 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.censo.form.SolicitudIncorporacionForm" %>
 <%@ page import="com.atos.utils.UsrBean"%>
-
+<%@ page import="java.util.Properties" %>
+<%@ page import="java.util.ArrayList" %>
 
 <!-- JSP -->
 <% 
@@ -85,7 +86,7 @@
 
 		var idEspana='<%=ClsConstants.ID_PAIS_ESPANA%>';
 		
-		<!--  refrescarLocal -->
+		//refrescarLocal -->
 		function refrescarLocal() 
 		{		
 			document.SolicitudIncorporacionForm.modo.value="abrirAvanzada";
@@ -711,13 +712,12 @@ function str_replace(search, replace, subject) {
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 
-		<!-- Asociada al boton Volver -->
+		//Asociada al boton Volver -->
 		function accionVolver() 
 		{		
 			window.location = "<%=app%>/html/jsp/censo/SolicitudIncorporacionValidacion.jsp";
 		}
-
-		<!-- Asociada al boton Restablecer -->
+		//Asociada al boton Restablecer -->
 		function accionRestablecer() 
 		{		
 			if(confirm('<siga:Idioma key="messages.confirm.cancel"/>')) {
@@ -727,7 +727,7 @@ function str_replace(search, replace, subject) {
 			}
 		}
 		
-		<!-- Asociada al boton Guardar -->
+		//Asociada al boton Guardar -->
 		function accionGuardar() 
 		{   sub();
 		

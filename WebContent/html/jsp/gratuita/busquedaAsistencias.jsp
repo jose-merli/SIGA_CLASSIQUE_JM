@@ -386,7 +386,7 @@
 				</td>
 				<td class="labelText" colspan="2">
 					<input type="text" name="codigoExtJuzgadoActu" class="box" size="8"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado();" />
-					<siga:ComboBD nombre="juzgado" tipo="comboJuzgados" ancho="383" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  hijo="t" elementoSel="<%=juzgadoActu%>" parametro="<%=dato%>" readonly="<%readOnly%>"/>           	   
+					<siga:ComboBD nombre="juzgado" tipo="comboJuzgados" ancho="383" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  hijo="t" elementoSel="<%=juzgadoActu%>" parametro="<%=dato%>" />           	   
 				</td>
 			</tr>
 			<tr>
@@ -400,7 +400,7 @@
 					<siga:Idioma key="informes.cartaOficio.tipoActuacionLista"/>
 				</td>
 				<td class="labelText" colspan="2">
-				<siga:ComboBD ancho="450" nombre="tipoActuacion" tipo="comboTipoActuacionesGenerico" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorioSinTextoSeleccionar="no"  readonly="<%readOnly%>" elementoSel="<%=tipoActuacionSel%>" parametro="<%=parametroTipoActuacion%>" />
+				<siga:ComboBD ancho="450" nombre="tipoActuacion" tipo="comboTipoActuacionesGenerico" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorioSinTextoSeleccionar="no" elementoSel="<%=tipoActuacionSel%>" parametro="<%=parametroTipoActuacion%>" />
 				</td>
 			</tr>
 		</table>

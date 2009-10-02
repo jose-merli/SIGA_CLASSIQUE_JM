@@ -129,7 +129,7 @@
 		}
 
 		
-		<!-- Asociada al boton Guardar -->
+		//Asociada al boton Guardar -->
 		function accionNuevo()	{
 		 
 			<%	

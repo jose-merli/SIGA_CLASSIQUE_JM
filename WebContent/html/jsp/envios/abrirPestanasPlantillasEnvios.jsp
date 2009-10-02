@@ -56,7 +56,7 @@
 		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
 
 		<script language="JavaScript">
-			<!-- Funcion asociada a boton buscar -->
+			//Funcion asociada a boton buscar
 			function buscar() 
 			{
 				document.frames["mainPestanas"].location.href=document.frames["mainPestanas"].location.href;

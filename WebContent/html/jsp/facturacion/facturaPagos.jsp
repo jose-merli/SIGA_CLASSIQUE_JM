@@ -18,7 +18,8 @@
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.beans.ConsPLFacturacion"%>
 <%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
-
+<%@ page import="java.util.Vector"%>
+<%@ page import="java.util.Hashtable"%>
 
 <!-- JSP -->
 <% 
@@ -164,14 +165,14 @@
 			document.location.reload();
 		}
 
-		<!-- Asociada al boton Pago por caja -->
+		//Asociada al boton Pago por caja -->
 		function pagoPorCaja() { 
 			document.GestionarFacturaForm.modo.value = "pagoPorCaja";
 			rc = ventaModalGeneral(document.GestionarFacturaForm.name, "P");
 			if (rc == "MODIFICADO") refrescarLocal();
 		}	
 
-		<!-- Asociada al boton Pago por tarjeta -->
+		//Asociada al boton Pago por tarjeta -->
 		function pagoPorTarjeta(){ 
 			document.forms[0].modo.value = "abrir";
 			document.forms[0].action = "<%=app%>"+"/FAC_PagosFacturaPorTarjeta.do";
@@ -179,7 +180,7 @@
 			document.forms[0].submit();
 		}	
 
-		<!-- Asociada al boton Renegociar -->
+		//Asociada al boton Renegociar -->
 		function botonRenegociar(){ 
 			document.GestionarFacturaForm.modo.value = "pagoRenegociar";
 			rc = ventaModalGeneral(document.GestionarFacturaForm.name, "M");

@@ -12,8 +12,10 @@
 <%@ page import="com.siga.administracion.*"%>
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="javax.transaction.*"%>
-
-
+<%@ page import="java.io.File" %>
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Vector"%>
+<%@ page import="es.satec.siga.util.SIGAReferences"%>
 <% 
 String app=request.getContextPath(); 
 HttpSession ses=request.getSession();
@@ -46,7 +48,7 @@ try {
 		    idFacturacionProgramada!=null && !idFacturacionProgramada.trim().equals("")) {
 			
 			FacFacturaAdm facturaAdm = new FacFacturaAdm(user);
-			if (0!=facturaAdm.almacenar(request,
+			if (0!=facturaAdm.almacenarOldParaBorrar(request,
 										new Integer(idInstitucion),
 										new Long(idSerieFacturacion),
 										new Long(idFacturacionProgramada), 
@@ -57,7 +59,7 @@ try {
 			}
 			
 			// Obtencion de la ruta donde se almacenan las facturas en formato PDF			
-		    ReadProperties rp = new ReadProperties("SIGA.properties");
+		    ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 		    String rutaAlmacen = rp.returnProperty("facturacion.directorioFisicoFacturaPDFJava")+rp.returnProperty("facturacion.directorioFacturaPDFJava");
 		    String idserieidprogramacion = idSerieFacturacion.toString()+"_" + idFacturacionProgramada.toString();
 			String barraAlmacen = "";

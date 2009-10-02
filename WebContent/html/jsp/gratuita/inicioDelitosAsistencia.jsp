@@ -19,8 +19,8 @@
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="com.siga.Utilidades.*"%>
 <%@ page import="com.siga.gratuita.form.PestanaDelitoAsistenciaForm"%>
-
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Hashtable"%>
 
 <!-- JSP -->
 <% 

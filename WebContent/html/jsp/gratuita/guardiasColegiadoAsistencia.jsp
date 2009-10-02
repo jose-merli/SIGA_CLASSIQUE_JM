@@ -28,10 +28,13 @@
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
 	Vector obj = (Vector) request.getAttribute("resultado");
-	if(obj==null || obj.size()==0) %><script>top.cierraConParametros(null);</script><%
+	if(obj==null || obj.size()==0){
+		%>
+			<script>top.cierraConParametros(null);</script>
+		<%
+	}
 	FilaExtElement[] elems=new FilaExtElement[1];
 	elems[0]=new FilaExtElement("seleccionar","seleccionar",SIGAConstants.ACCESS_READ);  	
-%>
 %>
 <!-- HEAD -->
 <head>
@@ -109,8 +112,13 @@
 				</p>
 			</td>
 		</tr>
-		<%}
-		if(obj != null && obj.size()==1) %><script>seleccionar(1);</script><%
+		<%
+			}
+			if (obj!=null && obj.size()==1){
+				%>
+					<script>seleccionar(1);</script>
+				<%
+			}
 		%>
 		</siga:TablaCabecerasFijas>
 	

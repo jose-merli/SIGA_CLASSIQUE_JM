@@ -19,7 +19,9 @@
 <%@ page import = "com.siga.beans.*"%>
 <%@ page import = "com.siga.Utilidades.*"%>
 <%@ page import = "com.atos.utils.*"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Vector"%>
+<%@ page import="java.util.Hashtable"%>
 <!-- JSP -->
 <% 
 	//elementos para las tablas, botones

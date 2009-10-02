@@ -16,7 +16,7 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.general.CenVisibilidad"%>
 <%@ page import="com.atos.utils.*"%>
-
+<%@ page import="java.util.Properties" %>
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();

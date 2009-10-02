@@ -290,7 +290,7 @@
 		}
 		
 
-		<!-- Funcion asociada al boton Consultar -->
+		//Funcion asociada al boton Consultar -->
 		function consultar(fila) 
 		{		
 			//Datos del elemento seleccionado:

@@ -22,7 +22,8 @@
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
-
+<%@ page import="java.util.Properties" %>
+<%@ page import="java.util.ArrayList" %>
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();
@@ -115,7 +116,7 @@
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
 
-		<!-- Funcion asociada a boton buscar -->
+		//Funcion asociada a boton buscar
 		function buscar() 
 		{
 			if((validarFecha(document.SolicitudIncorporacionForm.buscarFechaDesde.value))&&

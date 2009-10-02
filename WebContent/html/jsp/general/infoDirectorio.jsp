@@ -10,7 +10,7 @@
 <%@ page import="com.siga.general.InfoDirectorio"%>
 <%@ page import="java.util.*"%>
 <%@ page import="com.siga.*"%>
-
+<%@ page import="java.io.File" %>
 
 <% String app=request.getContextPath(); %>
 

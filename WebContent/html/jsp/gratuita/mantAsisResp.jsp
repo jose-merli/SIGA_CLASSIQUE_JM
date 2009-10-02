@@ -135,7 +135,7 @@
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
 
-		<!-- Funcion asociada a boton buscar -->
+		//Funcion asociada a boton buscar
 		function buscar() 
 		{
 				// obtenemos el idturno y el idguardia
@@ -146,16 +146,21 @@
 				document.forms[1].submit();
 		}		
 		
-		<!-- Funcion asociada a boton limpiar -->
+		//Funcion asociada a boton limpiar
 		function limpiar() 
 		{		
 			document.forms[0].reset();
 		}
 		
-		<!-- Funcion asociada a boton Nuevo -->
-		function nuevo() 
-		{		
-			 <%if(usr.isLetrado()){%>alert("<siga:Idioma key='gratuita.mantAsisResp.mensaje.alert1'/>");<%}%>
+		//Funcion asociada a boton Nuevo
+		function nuevo() {		
+			 <%
+			 	if(usr.isLetrado()){
+			 		%>
+			 			alert("<siga:Idioma key='gratuita.mantAsisResp.mensaje.alert1'/>");
+			 		<%
+			 	}
+			 %>
 			alert('Aun no está definido');
 		}
 		

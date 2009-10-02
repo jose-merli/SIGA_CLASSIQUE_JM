@@ -21,7 +21,7 @@
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import = "com.siga.Utilidades.UtilidadesBDAdm"%>
-
+<%@ page import="java.util.Properties"%>
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();

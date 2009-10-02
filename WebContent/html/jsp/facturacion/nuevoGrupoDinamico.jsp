@@ -23,7 +23,7 @@
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.siga.facturacion.form.AsignacionConceptosFacturablesForm"%>
 <%@ page import="com.atos.utils.UsrBean"%>
-
+<%@ page import="java.util.Properties"%>
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();

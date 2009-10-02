@@ -24,7 +24,8 @@
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.atos.utils.GstDate"%>
 <%@ page import="com.siga.productos.form.GestionSolicitudesForm"%>
-
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.ArrayList"%>
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();

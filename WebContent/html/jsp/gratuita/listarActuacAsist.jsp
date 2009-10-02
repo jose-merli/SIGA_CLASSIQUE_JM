@@ -17,6 +17,9 @@
 
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.*"%>
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.util.Vector"%>
+<%@ page import="java.util.Hashtable"%>
 
 <!-- JSP -->
 <% 
@@ -55,7 +58,7 @@
 	<!-- SCRIPTS LOCALES -->
 	<script language="JavaScript">
 	
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar -->
 		function accionCerrar() 
 		{		
 			window.close();
