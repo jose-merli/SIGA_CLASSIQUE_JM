@@ -55,7 +55,7 @@
 	// Campos de la factura a mostrar en la jsp
 	String nombreInstitucion = "", nombre="", fechaInicio="", fechaFin="", importe="", idFacturacion="";
 	String estado="", botones = "",botonesAbajo="V", fechaEstado="", destino="mainWorkArea";
-	String idInstitucion="", modo="", precioPunto="", nombreFacturacion="";
+	String idInstitucion="", modo="", nombreFacturacion="";
 	Integer idEstado = new Integer(0);
 
 	//string que dirá cual es el modo en el que se envie el form
@@ -96,11 +96,6 @@
 				nombreFacturacion = (String)request.getAttribute("NOMBREFACTURACION");
 				nombre = (String)facturaBean.getNombre();
 				idFacturacion = ((Integer)facturaBean.getIdFacturacion()).toString();
-				//Importe del Punto:
-				if (facturaBean.getImportePunto()==null)
-					precioPunto = "-";
-				else
-					precioPunto = facturaBean.getImportePunto().toString();
 				fechaInicio = GstDate.getFormatedDateShort("",(String)facturaBean.getFechaDesde());
 				fechaFin = GstDate.getFormatedDateShort("",(String)facturaBean.getFechaHasta());
 				importe = (String)request.getAttribute("importe");
@@ -126,7 +121,6 @@
 	}
 
 	if ((idEstado!=null)&&(idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_ABIERTA)) {
-		precioPunto = "-";
 		if (!bRegularizacion) botonesAbajo = "V,N"; 
 		else botonesAbajo = "V";
 		botones += ",R,EF";
@@ -192,7 +186,6 @@
 				if ((compararFecha(document.forms[0].fechaInicio,document.forms[0].fechaFin)==2)) {
 						document.forms[0].modo.value = "<%=accion%>";
 						document.forms[0].target = "submitArea2";
-						document.forms[0].precioPunto.value=document.forms[0].precioPunto.value.replace(/,/,".");
 						document.forms[0].submit();
 				}else {
 					alert('<siga:Idioma key="gratuita.altaRetencionesIRPF.literal.alert1"/>');
@@ -285,14 +278,9 @@
 					<table class="tablaCampos" align="center" >	
 						<tr>		
 							<td class="labelText" ><siga:Idioma key="factSJCS.datosFacturacion.literal.nombre"/>&nbsp(*)</td>
-							<td>
+							<td colspan="3">
 								<html:text name="DatosGeneralesFacturacionForm" property="nombre" value='<%=nombre%>' size="60" maxlength="100" styleClass="<%=clase%>" readOnly="<%=readonly%>"></html:text>
 							</td>
-							<td class="labelText" ><siga:Idioma key="factSJCS.datosFacturacion.literal.importePunto"/></td>
-							<td class="labelTextNum" >
-								<html:text name="mantenimientoPrevisionesForm" property="precioPunto" value='<%=UtilidadesNumero.formatoCampo(precioPunto)%>' size="20" styleClass="boxConsultaNumber" readOnly="true"></html:text>&nbsp;&euro;						
-							</td>
-							
 						</tr>
 						
 						<tr>

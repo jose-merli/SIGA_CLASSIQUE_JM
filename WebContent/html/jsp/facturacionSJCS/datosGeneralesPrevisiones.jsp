@@ -47,7 +47,7 @@
 	// Campos de la factura a mostrar en la jsp
 	String nombreInstitucion = "", nombre="", fechaInicio="", fechaFin="", idFacturacion="";
 	String estado="", idEstado ="", botones = "G",botonesAbajo="V", fechaEstado="", destino="mainWorkArea";
-	String idInstitucion="", modo="", precioPunto="";
+	String idInstitucion="", modo="";
 
 	//string que dirá cual es el modo en el que se envie el form
 	String accion="Insertar";
@@ -74,11 +74,6 @@
 			destino = "submitArea2";
 			if (facturaBean!=null){
 				nombre = (String)facturaBean.getNombre();
-				//Importe del Punto:
-				if (facturaBean.getImportePunto()==null)
-					precioPunto = "- ";
-				else
-					precioPunto = UtilidadesNumero.formatoCampo(facturaBean.getImportePunto().toString());
 				idFacturacion = ((Integer)facturaBean.getIdFacturacion()).toString();
 				fechaInicio = GstDate.getFormatedDateShort("",(String)facturaBean.getFechaDesde());
 				fechaFin = GstDate.getFormatedDateShort("",(String)facturaBean.getFechaHasta());
@@ -240,17 +235,10 @@
 					<table class="tablaCampos" align="center">	
 						<tr>		
 							<td class="labelText" ><siga:Idioma key="factSJCS.datosFacturacion.literal.nombre"/>&nbsp(*)</td>
-							<td colspan="3">
-									<html:text name="mantenimientoPrevisionesForm" property="nombre" value='<%=nombre%>' size="60" maxlength="100" styleClass="<%=clase%>" readOnly="<%=readonly%>"></html:text>
-									<html:hidden name="mantenimientoPrevisionesForm" property="nombreB"></html:hidden>
+							<td >
+								<html:text name="mantenimientoPrevisionesForm" property="nombre" value='<%=nombre%>' size="60" maxlength="100" styleClass="<%=clase%>" readOnly="<%=readonly%>"></html:text>
+								<html:hidden name="mantenimientoPrevisionesForm" property="nombreB"></html:hidden>
 							</td>
-							<td class="labelText" ><siga:Idioma key="factSJCS.datosFacturacion.literal.importePunto"/></td>
-							<td class="labelTextValue" >
-								<html:text name="mantenimientoPrevisionesForm" property="precioPunto" value='<%=precioPunto%>' size="20" styleClass="boxConsultaNumber" readOnly="true"></html:text>&nbsp;&euro;								
-							</td>
-						</tr>
-						
-						<tr>
 							<td class="labelText" ><siga:Idioma key="factSJCS.datosFacturacion.literal.fechaInicio"/>&nbsp(*)</td>
 							<td>
 								<html:text name="mantenimientoPrevisionesForm" property="fechaDesde" value='<%=fechaInicio%>' size="10" styleClass="<%=clase%>" readOnly="true"></html:text>

@@ -3276,67 +3276,7 @@
                 <field property = "comboFacturacion" depends = "required">
                         <arg0 key="factSJCS.datosPagos.literal.facturacion"/>
                 </field>
-                <field property = "importeRepartir" depends = "required,maxlength,double,mask">
-                        <arg0 key="factSJCS.datosPagos.literal.importe"/>
-                        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
-                        <var>
-                            <var-name>maxlength</var-name>
-                            <var-value>11</var-value>
-                        </var>
-                        <var>
-                            <var-name>mask</var-name>                            
-							<var-value>^[0-9]{1,8}((\.|\,)[0-9]{0,2}){0,1}$</var-value>
-                        </var>
-                </field>
-                <field property = "porcentajeOficio" depends = "required,maxlength,integer,mask">
-                        <arg0 key="factSJCS.datosPagos.literal.porcentajeTurnos"/>
-                        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
-                        <var>
-                            <var-name>maxlength</var-name>
-                            <var-value>3</var-value>
-                        </var>
-                        <var>
-                            <var-name>mask</var-name>                            
-							<var-value>^[0-9]{1,3}$</var-value>
-                        </var>
-                </field>
-                <field property = "porcentajeGuardias" depends = "required,maxlength,integer,mask">
-                        <arg0 key="factSJCS.datosPagos.literal.porcentajeGuardias"/>
-                        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
-                        <var>
-                            <var-name>maxlength</var-name>
-                            <var-value>3</var-value>
-                        </var>
-                        <var>
-                            <var-name>mask</var-name>                            
-							<var-value>^[0-9]{1,3}$</var-value>
-                        </var>
-                </field>
-                <field property = "porcentajeEJG" depends = "required,maxlength,integer,mask">
-                        <arg0 key="factSJCS.datosPagos.literal.porcentajeEJG"/>
-                        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
-                        <var>
-                            <var-name>maxlength</var-name>
-                            <var-value>3</var-value>
-                        </var>
-                        <var>
-                            <var-name>mask</var-name>                            
-							<var-value>^[0-9]{1,3}$</var-value>
-                        </var>
-                </field>
-                <field property = "porcentajeSOJ" depends = "required,maxlength,integer,mask">
-                        <arg0 key="factSJCS.datosPagos.literal.porcentajeSOJ"/>
-                        <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
-                        <var>
-                            <var-name>maxlength</var-name>
-                            <var-value>3</var-value>
-                        </var>
-                        <var>
-                            <var-name>mask</var-name>                            
-							<var-value>^[0-9]{1,3}$</var-value>
-                        </var>
-                </field>
-        </form>
+         </form>
 
 
 <!-- FIN: datosGeneralesPagoForm david.sanchez 19-04-2005 -->

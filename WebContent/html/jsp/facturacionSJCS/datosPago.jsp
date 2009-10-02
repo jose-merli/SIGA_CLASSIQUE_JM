@@ -73,7 +73,7 @@
 	String scriptOnLoad = "ocultarConceptos();";
 	if (esVerEditar) {
 		//Funcion javascript que se llama en el onload 
-		scriptOnLoad = "inicializarVerEditar();";
+		scriptOnLoad = "inicializarVerEditar(); ocultarRestante();";
 		
 		//Datos del Bean:
 		FcsPagosJGBean pagosBean = (FcsPagosJGBean)request.getAttribute("PAGOSBEAN");
@@ -380,6 +380,15 @@
 			document.getElementById("filaEJG").style.display = "none";
 			document.getElementById("filaSOJ").style.display = "none";
 		}
+
+		/**
+		 * Oculta la columna con los importes restantes 
+		 */
+		function ocultarRestante(){
+			  fila=document.getElementById('tablaConceptos').getElementsByTagName('tr');
+			  for(i=0;i<fila.length;i++)
+			    fila[i].getElementsByTagName('td')[4].style.display="none";
+		}
 		
 		//Selecciona por texto el option adecuado segun el nombreFacturacion
 		function inicio(){
@@ -524,7 +533,7 @@
 	</tr>
 	<tr>
 	  <td colspan="4">
-			<table border="1" width="100%" cellspacing='0' cellpadding='0'>	
+			<table id="tablaConceptos" border="1" width="100%" cellspacing='0' cellpadding='0'>	
 				<tr>	
 					<td width="13%" class="tableTitle"><siga:Idioma key="factSJCS.datosPagos.literal.concepto"/></td>
 					<td width="19%" class="tableTitle"><siga:Idioma key="factSJCS.datosPagos.literal.total"/></td>
