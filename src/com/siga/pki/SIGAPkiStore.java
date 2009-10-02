@@ -4,13 +4,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import com.atos.utils.ReadProperties;
+import com.siga.Utilidades.SIGAReferences;
+
 
 public class SIGAPkiStore
 {
   public String dirBase=null;
   public SIGAPkiStore()  {
 	if (dirBase==null) {
-	  ReadProperties parameters=new ReadProperties("pki.properties");
+	    ReadProperties parameters= new ReadProperties(SIGAReferences.RESOURCE_FILES.PKI);
+//	  ReadProperties parameters=new ReadProperties("pki.properties");
 	  dirBase=parameters.returnProperty("PKI.SINGSTORE");
 	  if (dirBase!=null) {
 		dirBase=dirBase.trim();

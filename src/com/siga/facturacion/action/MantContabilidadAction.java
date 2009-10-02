@@ -20,6 +20,7 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
@@ -62,6 +63,7 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.servlets.SIGASvlProcesoAutomaticoRapido;
+
 
 /**
  * @author carlos.vidal
@@ -469,7 +471,8 @@ public class MantContabilidadAction extends MasterAction
 			user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			ContabilidadForm form = (ContabilidadForm)formulario;
 			ficheroName = form.getFichero();
-			ReadProperties rp = new ReadProperties("SIGA.properties");
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp = new ReadProperties("SIGA.properties");
 			sRutaFisicaJava = rp.returnProperty("contabilidad.directorioFisicoContabilidad");
 			File fich = new File(sRutaFisicaJava+File.separator+user.getLocation()+File.separator+ficheroName);
 			if(fich==null || !fich.exists()){

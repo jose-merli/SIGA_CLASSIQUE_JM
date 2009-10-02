@@ -34,8 +34,10 @@ import org.apache.struts.action.*;
 
 import com.atos.utils.*;
 import com.siga.general.SIGAException;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.SIGAConstants;
+
 
 public abstract class MasterAction extends SIGAActionBase {
 	
@@ -775,7 +777,8 @@ public abstract class MasterAction extends SIGAActionBase {
 	{
 	    int loglevel = 10;
 		try {
-			ReadProperties rp=new ReadProperties("SIGA.properties");
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp=new ReadProperties("SIGA.properties");
 			try
 			{
 			    // Obtenemos el loglevel de properties

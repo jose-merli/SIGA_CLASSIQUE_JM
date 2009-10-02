@@ -14,8 +14,10 @@ package com.siga.informes;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.*;
-
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.InputStream;
 import java.util.Hashtable;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -25,19 +27,25 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.atos.utils.ClsConstants;
-import com.crystaldecisions.reports.sdk.*;
-import com.crystaldecisions.sdk.occa.report.lib.*;
+import com.crystaldecisions.reports.sdk.ReportClientDocument;
+import com.crystaldecisions.sdk.occa.report.application.OpenReportOptions;
 import com.crystaldecisions.sdk.occa.report.data.Field;
 import com.crystaldecisions.sdk.occa.report.data.Fields;
-import com.crystaldecisions.sdk.occa.report.exportoptions.*;
-
+import com.crystaldecisions.sdk.occa.report.exportoptions.ReportExportFormat;
+import com.crystaldecisions.sdk.occa.report.lib.ReportSDKException;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.general.SIGAException;
+
 
 public class CrystalReportMaster 
 {
 	public static File generarPDF (String sFicheroReport, String sFicheroPDF, Hashtable datosASustituir)
 	{
+		return CrystalReportMaster.generarFichero(sFicheroReport, sFicheroPDF, datosASustituir, ReportExportFormat.PDF);
+	}
+
+	public static File generarPDF (String sFicheroReport, File sFicheroPDF, Hashtable datosASustituir) throws Exception {
 		return CrystalReportMaster.generarFichero(sFicheroReport, sFicheroPDF, datosASustituir, ReportExportFormat.PDF);
 	}
 
@@ -56,15 +64,45 @@ public class CrystalReportMaster
 		return CrystalReportMaster.generarFichero(sFicheroReport, sFicheroRFT, datosASustituir, ReportExportFormat.RTF);
 	}
 
-	private static File generarFichero (String sFicheroReport, String sFicheroSalida, Hashtable datos, ReportExportFormat formatoExportacion) 
-	{
+	private static File generarFichero (String sFicheroReport, File sFicheroSalida, Hashtable datos, ReportExportFormat formatoExportacion) throws Exception {
+//		System.out.println("CrystalReport: Comienzo a generar fichero: \n   Entrada:" + sFicheroReport + "\n   salida: " + sFicheroSalida);
+
+		File fichero=null;
+
+		// Abrimos el report			
+		ReportClientDocument docReport = new ReportClientDocument();			
+		docReport.open(sFicheroReport, OpenReportOptions.openAsReadOnly.value());
+
+		// Establecemos las varibles dinamicas
+		if (!CrystalReportMaster.sustituirVariablesDinamicas (docReport, datos))
+			throw new SIGAException ("No se pudo sustituir las variables dinamicas en el informe."); 
+
+			// Establecemos los parametros de conexion con BD
+		Hashtable conf = leerParametrosConfiguracion();
+			
+//			System.out.println("CrystalReport: usuario: " + UtilidadesHash.getString(conf, "USER") + " y password:" + UtilidadesHash.getString(conf, "PWD"));
+
+		docReport.getDatabaseController().logon(UtilidadesHash.getString(conf, "USER"), UtilidadesHash.getString(conf, "PWD"));
+
+			// Exportamos el report a PDF
+		ByteArrayInputStream byteArrayInputStream = (ByteArrayInputStream)docReport.getPrintOutputController().export(formatoExportacion);
+		CrystalReportMaster.writeToFileSystem(byteArrayInputStream, sFicheroSalida);
+		byteArrayInputStream.close();
+
+		// Cerramos el report
+		docReport.close();
+
+		return fichero;
+	}
+	
+	private static File generarFichero (String sFicheroReport, String sFicheroSalida, Hashtable datos, ReportExportFormat formatoExportacion) {
 //		System.out.println("CrystalReport: Comienzo a generar fichero: \n   Entrada:" + sFicheroReport + "\n   salida: " + sFicheroSalida);
 
 		File fichero = null;
 		try {
 			// Abrimos el report			
 			ReportClientDocument docReport = new ReportClientDocument();			
-			docReport.open(sFicheroReport, 0);
+			docReport.open(sFicheroReport, OpenReportOptions.openAsReadOnly.value());
 
 			// Establecemos las varibles dinamicas
 			if (!CrystalReportMaster.sustituirVariablesDinamicas (docReport, datos))
@@ -122,6 +160,37 @@ public class CrystalReportMaster
 		return true;
 	}
 	
+	private static File writeToFileSystem(InputStream is, File file) throws Exception{
+	    FileOutputStream fileOutputStream = null;
+	    ByteArrayOutputStream byteArrayOutputStream = null;
+		try {
+			byte byteArray[] = new byte[is.available()];
+	
+			fileOutputStream = new FileOutputStream(file);
+	
+			byteArrayOutputStream = new ByteArrayOutputStream( is.available());
+			int x = is.read(byteArray, 0, is.available());
+	
+			byteArrayOutputStream.write(byteArray, 0, x);
+			byteArrayOutputStream.writeTo(fileOutputStream);
+	
+			is.close();
+			byteArrayOutputStream.close();
+			fileOutputStream.close();
+			return file;
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+		    try {
+		        is.close();
+				byteArrayOutputStream.close();
+				fileOutputStream.close();
+		    } catch (Exception eee) {}
+		}
+		return null;
+	}
+
 	private static File writeToFileSystem(ByteArrayInputStream byteArrayInputStream, String sFicheroAGenerar) throws Exception 
 	{
 	    FileOutputStream fileOutputStream = null;
@@ -162,12 +231,16 @@ public class CrystalReportMaster
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance ( );
 			DocumentBuilder builder = factory.newDocumentBuilder();
 				   
-			File fichero = new File (ClsConstants.RES_DIR + ClsConstants.RES_PROP_DOMAIN + "/classes/CRConfig.xml");
-			if (!fichero.exists()) {
-				return null;
-			}
+//			File fichero = new File (ClsConstants.RES_DIR + ClsConstants.RES_PROP_DOMAIN + "/classes/CRConfig.xml");
+//			if (!fichero.exists()) {
+//				return null;
+//			}
+//			Document documento = builder.parse(fichero);
 			
-			Document documento = builder.parse(fichero);
+			InputStream is=SIGAReferences.getInputReference(SIGAReferences.RESOURCE_FILES.CRCONFIG);
+			if (is==null)
+				return null;
+			Document documento=builder.parse(is);
 			Node root = documento.getFirstChild();
 			   
 			Hashtable h = new Hashtable();

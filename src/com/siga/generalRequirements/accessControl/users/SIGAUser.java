@@ -7,12 +7,14 @@ import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.generalRequirements.accessControl.SIGAGrDDBB;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ColumnConstants;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.TableConstants;
+
 
 /**
  * <p>Tittle: Propulsion Support System Core</p>
@@ -300,7 +302,8 @@ String MGR_DN = "";
 String MGR_PW = "";
 String MY_SEARCHBASE = "";
 
-ReadProperties ldapProperties=new ReadProperties("ldap.properties");
+ReadProperties ldapProperties= new ReadProperties(SIGAReferences.RESOURCE_FILES.LDAP);
+//ReadProperties ldapProperties=new ReadProperties("ldap.properties");
 INITCTX = ldapProperties.returnProperty("LDAP.INITCTX");
 String hosts = ldapProperties.returnProperty("LDAP.MY_HOST");
 StringTokenizer tok=new StringTokenizer(hosts,";");
@@ -370,7 +373,8 @@ ldapUser.fillinData();
     String MGR_PW = "";
     String MY_SEARCHBASE = "";
 
-    ReadProperties ldapProperties=new ReadProperties("ldap.properties");
+    ReadProperties ldapProperties= new ReadProperties(SIGAReferences.RESOURCE_FILES.LDAP);
+//    ReadProperties ldapProperties=new ReadProperties("ldap.properties");
     INITCTX = ldapProperties.returnProperty("LDAP.INITCTX");
     String hosts = ldapProperties.returnProperty("LDAP.MY_HOST");
     StringTokenizer tok=new StringTokenizer(hosts,";");

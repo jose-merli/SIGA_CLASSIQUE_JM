@@ -21,6 +21,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.Utilidades.UtilidadesString;
@@ -55,6 +56,7 @@ import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinirEJGForm;
 import com.siga.gratuita.form.DefinirMantenimientoEJGForm;
 import com.siga.informes.InformeDefinirMantenimientoEJG;
+
 
 /**
 * Maneja las acciones que se pueden realizar sobre la tabla SCS_EJG
@@ -130,7 +132,8 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 		
 		try {		
 			//obtener plantilla
-			ReadProperties rp = new ReadProperties("SIGA.properties");			
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp = new ReadProperties("SIGA.properties");			
 		    String rutaPlantilla = Plantilla.obtenerPathNormalizado(rp.returnProperty("sjcs.directorioFisicoSolicitudAsistenciaJava")+rp.returnProperty("sjcs.directorioSolicitudAsistenciaJava"))+ClsConstants.FILE_SEP+institucion;
 		    
 		    // RGG cambio de codigos 

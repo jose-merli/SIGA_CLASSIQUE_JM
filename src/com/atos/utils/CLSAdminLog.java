@@ -15,11 +15,13 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmRolAdm;
 import com.siga.beans.AdmRolBean;
 import com.siga.beans.AdmUsuariosAdm;
 import com.siga.beans.AdmUsuariosBean;
+
 
 
 /**
@@ -44,12 +46,18 @@ public class CLSAdminLog {
 	 * Log.properties. Si no existe el archivo de log, lo crea.
 	 */
 	public static synchronized void init(){
-		File f = new File(ClsConstants.RESOURCES_DIR+ClsConstants.FILE_SEP+"SIGA.properties");
-		long lst = f.lastModified();
+		long lst=0;
+		//File f = new File(ClsConstants.RESOURCES_DIR+ClsConstants.FILE_SEP+"SIGA.properties");
+		try {
+			File f = SIGAReferences.getFileReference(SIGAReferences.RESOURCE_FILES.SIGA);
+			lst = f.lastModified();
+		} catch (Exception e){
+		}
 		if(nLastMod != lst){
 			nLastMod = lst;
 			ClsLogging.writeFileLog("Inicializando Log ...",7);		 	
-			ReadProperties rp=new ReadProperties("SIGA.properties");
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp=new ReadProperties("SIGA.properties");
 			bStoreFile=rp.returnProperty("LogAdmin.run").equals("1");
 			fileName=rp.returnProperty("LogAdmin.archivo");
 			numentradas=Integer.parseInt(rp.returnProperty("LogAdmin.numentradas"));  
@@ -97,6 +105,7 @@ public class CLSAdminLog {
 	 * @param ses		Se utiliza para obtener el nombre de usuario
 	 * @param mensaje	Mensaje que describe la acción realizada
 	 */
+	@SuppressWarnings("unchecked")
 	protected static void insertar(HttpServletRequest req, String idInstitucion, String idUsuario, String idRol, String mensaje, UsrBean usr){
 		init();
 		PrintWriter printer = null;
@@ -148,19 +157,19 @@ public class CLSAdminLog {
 				String sFecha = sdfLong.format(dat);
 				String sDescripcion = mensaje;
 				
-				Hashtable htUsuario = new Hashtable();
+				Hashtable<String, String> htUsuario = new Hashtable<String, String>();
 				htUsuario.put(AdmUsuariosBean.C_IDUSUARIO, idUsuario);
 				htUsuario.put(AdmUsuariosBean.C_IDINSTITUCION, idInstitucion);
 				
 				AdmUsuariosAdm admUsuario = new AdmUsuariosAdm(usr);
-				Vector vUsuario = admUsuario.selectByPK(htUsuario);
+				Vector<AdmUsuariosBean> vUsuario = admUsuario.selectByPK(htUsuario);
 				AdmUsuariosBean beanUsuario = (AdmUsuariosBean)vUsuario.elementAt(0);
 				sUsuario = beanUsuario.getDescripcion(); 
 				sNIF = beanUsuario.getNIF();
-				Hashtable htRol = new Hashtable();
+				Hashtable<String, String> htRol = new Hashtable<String, String>();
 				htRol.put(AdmRolBean.C_IDROL, idRol);
 				AdmRolAdm admRol = new AdmRolAdm(usr);
-				Vector vRol = admRol.selectByPK(htRol);
+				Vector<AdmRolBean> vRol = admRol.selectByPK(htRol);
 				AdmRolBean beanRol = (AdmRolBean)vRol.elementAt(0);
 				sRol = beanRol.getDescripcion();
 				

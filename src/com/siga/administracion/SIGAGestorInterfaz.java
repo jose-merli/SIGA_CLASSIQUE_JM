@@ -1,14 +1,15 @@
 package com.siga.administracion;
 
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
-import java.io.FileInputStream;
+
 import com.atos.utils.ClsExceptions;
-//import com.atos.utils.ClsLogging;
+import com.atos.utils.ColumnConstants;
 import com.atos.utils.Persistible;
 import com.atos.utils.Row;
-import com.atos.utils.ColumnConstants;
-import com.atos.utils.ClsConstants;
+import com.siga.Utilidades.SIGAReferences;
+
 
 /**
  * @author tomas.narros
@@ -245,7 +246,7 @@ public class SIGAGestorInterfaz implements Persistible {
 		//System.out.println("fontToLoad: "+fontToLoad);
 		//System.out.println("LogoToLoad: "+LogoToLoad);
 		
-		java.util.Enumeration en=all.keys();
+		Enumeration<Object> en=all.keys();
 		while (en.hasMoreElements()) {
 			String key=(String)en.nextElement();
 			if(key.startsWith(colorsToLoad)||key.startsWith(fontToLoad)||key.startsWith(LogoToLoad)) {
@@ -269,16 +270,15 @@ public class SIGAGestorInterfaz implements Persistible {
 	
 	private Properties readOptionsFile() throws ClsExceptions {
 		Properties props=new Properties();
-		String file=ClsConstants.RESOURCES_DIR+
-					ClsConstants.FILE_SEP+
-					SIGAGestorInterfaz.interfaceOptionsFile;
+		//String file=ClsConstants.RESOURCES_DIR+ClsConstants.FILE_SEP+SIGAGestorInterfaz.interfaceOptionsFile;
 		
 		//System.out.println("file file: "+file);
 					
 		try {
-			props.load(new FileInputStream(file));
+			//props.load(new FileInputStream(file));
+			props.load(SIGAReferences.getInputReference(SIGAReferences.RESOURCE_FILES.INTERFACE));
 		} catch (java.io.IOException e) {
-			 throw new ClsExceptions("ERROR DE PROGRAMACION: NO SE ENCUENTRA EL ARCHIVO DE PROPIEDADES!!! "+file);
+			 throw new ClsExceptions("ERROR DE PROGRAMACION: NO SE ENCUENTRA EL ARCHIVO DE PROPIEDADES!!! "+SIGAReferences.RESOURCE_FILES.INTERFACE.getFileName());
 		}
 		return props;
 	}

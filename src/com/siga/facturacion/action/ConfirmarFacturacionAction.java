@@ -23,6 +23,7 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.FacEstadoConfirmFactAdm;
@@ -38,6 +39,7 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.servlets.SIGASvlProcesoAutomaticoRapido;
+
 
 /**
  * Clase action para confirmar la facturacion.<br/>
@@ -216,7 +218,8 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			String idSerieFacturacion = (String) vOcultos.elementAt(0);
 			String idProgramacion=(String) vOcultos.elementAt(1);
 
-			ReadProperties rp = new ReadProperties("SIGA.properties");
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp = new ReadProperties("SIGA.properties");
 			sRutaTemporal = rp.returnProperty("sjcs.directorioFisicoTemporalSJCSJava") +
 			rp.returnProperty("facturacion.directorioTemporalFacturasJava");
 
@@ -568,7 +571,8 @@ public class ConfirmarFacturacionAction extends MasterAction{
 		UserTransaction tx = null;	
 		
 		try {
-			ReadProperties p = new ReadProperties ("SIGA.properties");
+		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties p = new ReadProperties ("SIGA.properties");
 			String pathFichero 		= p.returnProperty("facturacion.directorioFisicoLogProgramacion");
     		String sBarra = "";
     		if (pathFichero.indexOf("/") > -1) sBarra = "/"; 

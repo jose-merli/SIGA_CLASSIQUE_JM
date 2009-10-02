@@ -21,6 +21,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenCuentasBancariasBean;
@@ -44,6 +45,7 @@ import com.siga.facturacion.form.FicheroBancarioAbonosForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+
 
 /**
  * Clase action para Descargar los ficheros bancarios.<br/>
@@ -164,7 +166,8 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			//FacDisqueteAbonosBean beanDisquete	= new FacDisqueteAbonosBean();
 			//FacFacturaAdm admFactura = new FacFacturaAdm(usuario);
 			
-			ReadProperties p 	= new ReadProperties ("SIGA.properties");
+		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties p 	= new ReadProperties ("SIGA.properties");
 			pathFichero 		= p.returnProperty(directorioFisico) + p.returnProperty(directorio);		
 			//String nombreFichero 	= p.returnProperty(keyFichero);						
 			
@@ -228,7 +231,8 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 		try {		 				
 			
 			
-			ReadProperties p 	= new ReadProperties ("SIGA.properties");
+		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties p 	= new ReadProperties ("SIGA.properties");
 			String extensionFichero = p.returnProperty("facturacion.extension.ficherosAbonos");
 			String prefijoFichero = p.returnProperty("facturacion.prefijo.ficherosAbonos");
 			
@@ -678,7 +682,8 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 		int nlinea = 0;
 		try{	
 			
-			ReadProperties rp 		= new ReadProperties("SIGA.properties");			
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp 		= new ReadProperties("SIGA.properties");			
 			String rutaServidor 	= rp.returnProperty("facturacion.directorioFisicoAbonosBancosJava") + rp.returnProperty("facturacion.directorioAbonosBancosJava");
 			String sPrefijo 		= rp.returnProperty("facturacion.prefijo.ficherosAbonos");
 			String sExtension 		= rp.returnProperty("facturacion.extension.ficherosAbonos");

@@ -21,6 +21,7 @@ import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesNumero;
@@ -29,6 +30,7 @@ import com.siga.facturacion.form.ContabilidadForm;
 import com.siga.facturacionSJCS.UtilidadesFacturacionSJCS;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+
 
 /**
  * Implementa las operaciones sobre la base de datos, es decir: select, insert, update... a la tabla SCS_INSCRIPCIONTURNO
@@ -386,7 +388,8 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 
 			// PREPARAMOS EL FICHERO
 			// Se crea el directorio en el servidor web.
-			ReadProperties rp = new ReadProperties("SIGA.properties");
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp = new ReadProperties("SIGA.properties");
 			String sRutaFisicaJava = rp.returnProperty("contabilidad.directorioFisicoContabilidad");
 			String directorio = sRutaFisicaJava+File.separator+this.usrbean.getLocation();
 			File fDirectorio = new File(directorio);

@@ -8,6 +8,9 @@ import javax.naming.NamingException;
 import javax.rmi.PortableRemoteObject;
 import javax.servlet.http.HttpServletRequest;
 
+import com.siga.Utilidades.SIGAReferences;
+
+
 /**
  * <p>Copyright: Copyright (c) 2003</p>
  * <p>Empresa: SLB</p>
@@ -29,7 +32,8 @@ public class Mngjndi {
   public LdapUserEJHome lookupHome()
     throws NamingException
 {
-    ReadProperties prop= new ReadProperties("jndi.properties" , null);
+//    ReadProperties prop= new ReadProperties("jndi.properties" , null);
+    ReadProperties prop= new ReadProperties(SIGAReferences.RESOURCE_FILES.JNDI, null);
     String pUrl = prop.returnProperty("JNDI.DEFAULT_URL");
     String pName = prop.returnProperty("JNDI.EJB_LDAP_NAME");
     String pFact = prop.returnProperty("JNDI.IIOP_FACTORY");
@@ -85,7 +89,8 @@ public class Mngjndi {
      throws NamingException
  {
      // Lookup the beans home using JNDI
-     ReadProperties prop= new ReadProperties("jndi.properties" , req);
+    ReadProperties prop= new ReadProperties(SIGAReferences.RESOURCE_FILES.JNDI, req);
+//     ReadProperties prop= new ReadProperties("jndi.properties" , req);
      String pUrl = prop.returnProperty("JNDI.DEFAULT_URL");
      String pName = prop.returnProperty("JNDI.EJB_LDAP_NAME");
      String pFact = prop.returnProperty("JNDI.IIOP_FACTORY");

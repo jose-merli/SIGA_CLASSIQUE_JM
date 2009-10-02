@@ -41,6 +41,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.GestorContadores;
 import com.siga.Utilidades.Paginador;
 import com.siga.Utilidades.PaginadorCaseSensitive;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
@@ -71,6 +72,7 @@ import com.siga.gratuita.form.DefinirEJGForm;
 import com.siga.gratuita.util.PCAJGGeneraXML;
 import com.siga.informes.InformeDefinirEJG;
 import com.siga.informes.MasterWords;
+
 
 
 
@@ -711,7 +713,8 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 	
 	public static File getFichero(String idInstitucion, String idRemesa) {
 		File file = null;
-		ReadProperties rp = new ReadProperties("SIGA.properties");
+	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//		ReadProperties rp = new ReadProperties("SIGA.properties");
 		String rutaAlmacen = rp.returnProperty("cajg.directorioFisicoCAJG") + rp.returnProperty("cajg.directorioCAJGJava");
 			
 		rutaAlmacen += File.separator + idInstitucion;
@@ -845,7 +848,8 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 
 		try {
 			// obtener plantilla
-			ReadProperties rp = new ReadProperties("SIGA.properties");
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp = new ReadProperties("SIGA.properties");
 			String rutaPlantilla = Plantilla.obtenerPathNormalizado(rp.returnProperty("sjcs.directorioFisicoCartaEJGJava")
 					+ rp.returnProperty("sjcs.directorioCartaEJGJava"))
 					+ ClsConstants.FILE_SEP + institucion;
@@ -966,7 +970,8 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		UtilidadesHash.set(datos, "PIE_CARTA_EJG", miForm.getPieCarta());
 		UtilidadesHash.set(datos, "FECHA", UtilidadesBDAdm.getFechaBD(""));
 		UtilidadesHash.set(datos, "TEXTO_TRATAMIENTO_DESTINATARIO", UtilidadesString.getMensajeIdioma(idioma, "informes.cartaAsistencia.estimado"));
-		ReadProperties rp = new ReadProperties("SIGA.properties");
+	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//		ReadProperties rp = new ReadProperties("SIGA.properties");
 		String rutaPlantilla = Plantilla.obtenerPathNormalizado(rp.returnProperty("sjcs.directorioFisicoCartaEJGJava")
 				+ rp.returnProperty("sjcs.directorioCartaEJGJava"))
 				+ ClsConstants.FILE_SEP + institucion;
@@ -1757,7 +1762,8 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		String keyPath = "cajg.directorioFisicoCAJG";
 		String keyPath2 = "cajg.directorioCAJGJava";
 				
-		ReadProperties p = new ReadProperties("SIGA.properties");
+	    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//		ReadProperties p = new ReadProperties("SIGA.properties");
 		String pathFichero = p.returnProperty(keyPath) + p.returnProperty(keyPath2);
 		String idInstitucion = this.getIDInstitucion(request).toString();
 		ArrayList ficheros = new ArrayList();		
@@ -1890,7 +1896,8 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		String keyPathPlantillas = "cajg.directorioPlantillaCAJG";
 		String keyPath2 = "cajg.directorioCAJGJava";
 				
-		ReadProperties p = new ReadProperties("SIGA.properties");
+	    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//		ReadProperties p = new ReadProperties("SIGA.properties");
 		String pathFichero = p.returnProperty(keyPathFicheros) + p.returnProperty(keyPath2);
 		String pathPlantillas = p.returnProperty(keyPathPlantillas) + p.returnProperty(keyPath2);
 						

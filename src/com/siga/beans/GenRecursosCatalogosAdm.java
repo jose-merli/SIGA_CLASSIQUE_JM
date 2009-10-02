@@ -9,8 +9,10 @@ import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.general.MultidiomaGenCatalogosMultidioma;
+
 
 /**
  * Implementa las operaciones sobre la base de datos, es decir: select, insert, update... a la tabla GEN_RECURSOS_CATALOGOS
@@ -343,7 +345,8 @@ public class GenRecursosCatalogosAdm extends MasterBeanAdministrador {
 		try {
 			int numMaxRegistros = 0;
 			try {
-	        	ReadProperties rp = new ReadProperties("SIGA.properties");
+			    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//	        	ReadProperties rp = new ReadProperties("SIGA.properties");
 	        	String numMaxReg = rp.returnProperty("certificados.numMaxRegistros");
 	        	numMaxRegistros = Integer.parseInt(numMaxReg);
 			}

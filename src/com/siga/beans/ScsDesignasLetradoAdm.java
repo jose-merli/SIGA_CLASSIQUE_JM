@@ -15,8 +15,10 @@ import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorBind;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.general.SIGAException;
+
 
 
 /**
@@ -195,7 +197,8 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 
 		StringBuffer sql = new StringBuffer("");
 		
-		ReadProperties rp3 = new ReadProperties("SIGA.properties");
+	    ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		//ReadProperties rp3 = new ReadProperties("SIGA.properties");
 		
 		GenParametrosAdm paramAdm = new GenParametrosAdm (usrbean);
 		//Haria falta meter los parametros en con ClsConstants

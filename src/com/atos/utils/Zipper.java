@@ -22,8 +22,10 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 import javax.servlet.http.HttpServletRequest;
 
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesString;
 //import com.siga.pki.PkiStore;
+
 
 public class Zipper {
 
@@ -254,7 +256,8 @@ public class Zipper {
 	Enumeration entries;
 
 
-	 ReadProperties prop= new ReadProperties("Upload.properties" , req);
+//	 ReadProperties prop= new ReadProperties("Upload.properties" , req);
+    ReadProperties prop= new ReadProperties(SIGAReferences.RESOURCE_FILES.UPLOAD, req);
 
 	String sDrive=prop.returnProperty("UPLOAD.drive");
 
@@ -349,7 +352,8 @@ public class Zipper {
 	private static String getPath(String sPath){
 		String pathToGenerate="";
 
-		ReadProperties prop= new ReadProperties("Upload.properties");
+	    ReadProperties prop= new ReadProperties(SIGAReferences.RESOURCE_FILES.UPLOAD);
+//		ReadProperties prop= new ReadProperties("Upload.properties");
 
 		String sDrive=prop.returnProperty("UPLOAD.drive");
 /*

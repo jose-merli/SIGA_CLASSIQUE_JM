@@ -16,6 +16,7 @@ import org.apache.struts.action.ActionMapping;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.ReadProperties;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturacionProgramadaAdm;
 import com.siga.beans.FacFacturacionProgramadaBean;
@@ -27,6 +28,7 @@ import com.siga.facturacion.form.EliminarFacturacionForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+
 
 
 /**
@@ -204,7 +206,8 @@ public class EliminarFacturacionAction extends MasterAction{
 					// ok
 			
 			 		// RGG 05/02/2007 ELIMINAMOS LOS FICHERO DE LOG ASOCIADOS A LA PROGRAMACION
-					ReadProperties p = new ReadProperties ("SIGA.properties");
+				    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//					ReadProperties p = new ReadProperties ("SIGA.properties");
 					String pathFichero 		= p.returnProperty("facturacion.directorioFisicoLogProgramacion");
 		    		String sBarra = "";
 		    		if (pathFichero.indexOf("/") > -1) sBarra = "/"; 

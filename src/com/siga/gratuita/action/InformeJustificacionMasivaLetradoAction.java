@@ -26,6 +26,7 @@ import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 
 import com.siga.Utilidades.PaginadorBind;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenColegiadoAdm;
@@ -44,6 +45,7 @@ import com.siga.beans.ScsDesignasLetradoAdm;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.InformeJustificacionMasivaForm;
+
 
 public class InformeJustificacionMasivaLetradoAction extends InformeJustificacionMasivaAction {
 	protected ActionForward executeInternal(ActionMapping mapping,
@@ -102,7 +104,8 @@ public class InformeJustificacionMasivaLetradoAction extends InformeJustificacio
 		StringBuffer msgSinAcreditaciones = new StringBuffer();
 		UsrBean user = (UsrBean) request.getSession().getAttribute(
 		"USRBEAN");
-		ReadProperties rp3 = new ReadProperties("SIGA.properties");
+	    ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//		ReadProperties rp3 = new ReadProperties("SIGA.properties");
 		final String TIPO_ACREDIT_INIFIN = rp3.returnProperty("codigo.general.scstipoacreditacion.iniciofin");
 		final String ACREDITACION_INIFIN = rp3.returnProperty("codigo.general.scsacreditacion.iniciofin");
 		String obsJustificacion = UtilidadesString.getMensajeIdioma(user, "gratuita.informeJustificacionMasiva.observaciones.justificacion");

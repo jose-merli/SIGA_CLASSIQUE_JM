@@ -24,6 +24,7 @@ import com.atos.utils.GstDate;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorBind;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
@@ -47,6 +48,7 @@ import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.AsistenciasForm;
 import com.siga.informes.InformeBusquedaAsistencias;
+
 
 /**
  * @author carlos.vidal
@@ -870,7 +872,8 @@ public class BusquedaAsistenciasAction extends MasterAction {
 			
 		try {
 			//obtener plantilla
-			ReadProperties rp = new ReadProperties("SIGA.properties");	
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp = new ReadProperties("SIGA.properties");	
 			//System.out.println("*************** 1: " + rp.returnProperty("sjcs.directorioFisicoCartaAsistenciaJava"));
 			//System.out.println("*************** 2: " + rp.returnProperty("sjcs.directorioCartaAsistenciaJava"));
 			//System.out.println("*************** 3: " + ClsConstants.FILE_SEP+institucion);
@@ -1070,7 +1073,8 @@ public class BusquedaAsistenciasAction extends MasterAction {
 		UtilidadesHash.set(datos,"PIE_CARTA_EJG",miForm.getPieCarta());
 		UtilidadesHash.set(datos,"FECHA",UtilidadesBDAdm.getFechaBD(""));
 		UtilidadesHash.set(datos,"TEXTO_TRATAMIENTO_DESTINATARIO",UtilidadesString.getMensajeIdioma(idioma,"informes.cartaAsistencia.estimado"));
-		ReadProperties rp = new ReadProperties("SIGA.properties");			
+	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//		ReadProperties rp = new ReadProperties("SIGA.properties");			
 	    String rutaPlantilla = Plantilla.obtenerPathNormalizado(rp.returnProperty("sjcs.directorioFisicoCartaAsistenciaJava")+rp.returnProperty("sjcs.directorioCartaAsistenciaJava"))+ClsConstants.FILE_SEP+institucion;
 	    UtilidadesHash.set(datos,"RUTA_LOGO",rutaPlantilla+ClsConstants.FILE_SEP+"recursos"+ClsConstants.FILE_SEP+"logo.gif");
 

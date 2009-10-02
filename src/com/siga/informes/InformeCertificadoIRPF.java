@@ -23,6 +23,7 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.GstStringTokenizer;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmInformeAdm;
@@ -44,6 +45,7 @@ import com.siga.envios.Envio;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.informes.form.InformesGenericosForm;
+
 
 /**
  * Clase de genracion de informes IRPF
@@ -138,7 +140,8 @@ public class InformeCertificadoIRPF extends MasterReport {
 					}
 					
 					String nombreFicheroZIP=beanT.getDescripcion().trim() + "_" +UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","").replaceAll(":","").replaceAll(" ","");
-					ReadProperties rp = new ReadProperties("SIGA.properties");
+				    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//					ReadProperties rp = new ReadProperties("SIGA.properties");
 					String rutaServidorDescargasZip = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
 					rutaServidorDescargasZip += ClsConstants.FILE_SEP+miform.getIdInstitucion()+ClsConstants.FILE_SEP+"temp"+ File.separator;
 					File ruta = new File(rutaServidorDescargasZip);
@@ -209,7 +212,8 @@ public class InformeCertificadoIRPF extends MasterReport {
 		
 		File ficheroSalida = null;
 		// --- acceso a paths y nombres 
-		ReadProperties rp = new ReadProperties("SIGA.properties");	
+	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//		ReadProperties rp = new ReadProperties("SIGA.properties");	
 		String rutaPlantilla = rp.returnProperty("informes.directorioFisicoPlantillaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
 		String rutaAlmacen = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
 		////////////////////////////////////////////////

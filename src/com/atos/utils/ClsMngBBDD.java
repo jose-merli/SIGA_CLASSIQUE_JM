@@ -16,14 +16,17 @@ import javax.sql.DataSource;
 import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesString;
 //import com.atos.utils.*;
+
 
 public final class ClsMngBBDD {
 
   private static Hashtable poolHashtab = null;
   private static String poolName="none";
-  private static ReadProperties dsProperties=new ReadProperties("pool.properties");
+  private static ReadProperties dsProperties= new ReadProperties(SIGAReferences.RESOURCE_FILES.POOL);
+//private static ReadProperties dsProperties=new ReadProperties("pool.properties");
   private static String POOLWR = dsProperties.returnProperty("POOL.WRITE");
   private static String POOLRD = dsProperties.returnProperty("POOL.READ");
   private static String POOLNLS = dsProperties.returnProperty("POOL.NLS");

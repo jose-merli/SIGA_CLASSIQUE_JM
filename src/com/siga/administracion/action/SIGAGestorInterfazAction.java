@@ -9,6 +9,7 @@ import com.atos.utils.CLSAdminLog;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
 import com.atos.utils.ClsExceptions;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.administracion.SIGAConstants;
 import com.siga.administracion.SIGAGestorInterfaz;
 import com.siga.administracion.form.SIGAGestorInterfazForm;
@@ -28,6 +29,7 @@ import java.util.Random;
 import com.atos.utils.ClsConstants;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+
 
 /**
  * @author tomas.narros
@@ -169,7 +171,8 @@ public class SIGAGestorInterfazAction extends MasterAction {
 							mensaje = "Se ha modificado el esquema de colores a "+f.getIdColor()+". ";
 						}
 						if(!f.getIdTipoLetra().equals(anteriorLetra)){		
-							ReadProperties rp=new ReadProperties("interface.properties");
+						    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.INTERFACE);
+//							ReadProperties rp=new ReadProperties("interface.properties");
 						    String aux =rp.returnProperty("font.style."+f.getIdTipoLetra());
 							
 							mensaje = mensaje + "Se ha modificado el tipo de letra a "+aux+". ";

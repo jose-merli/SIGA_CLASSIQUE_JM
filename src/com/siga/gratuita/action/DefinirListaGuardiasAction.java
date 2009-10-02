@@ -13,10 +13,12 @@ import org.apache.struts.action.*;
 import java.io.File;
 import java.util.*;
 
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.*;
 import com.siga.certificados.Plantilla;
+
 
 /**
  * Maneja las acciones que se pueden realizar sobre las tablas SCS_LISTAGUARDIAS Y SCS_INCLUSIONGUARDIASENLISTAS
@@ -748,7 +750,8 @@ public class DefinirListaGuardiasAction extends MasterAction {
 				institucion=usr.getLocation();
 				
 				// Gestion de nombres de ficheros
-				ReadProperties rp = new ReadProperties("SIGA.properties");			
+			    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//				ReadProperties rp = new ReadProperties("SIGA.properties");			
 			    String rutaServidor = rp.returnProperty("sjcs.directorioFisicoSJCSJava")+rp.returnProperty("sjcs.directorioSJCSJava");
 	    		String barra = "";
 	    		String nombreFichero = "";

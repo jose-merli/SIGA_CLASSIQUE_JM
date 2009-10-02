@@ -11,6 +11,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.siga.Utilidades.SIGAReferences;
+
+
 
 /**
  * Esta clase permite gestionar el log de la gestion automatica de solicitudes
@@ -21,44 +24,42 @@ import java.util.Date;
 public class ClsGestionAutomaticaLog {
 	
 	private static final String DATEFORMATLONG = "yyyy/MM/dd HH:mm:ss";
-	private static final String DATEFORMATSHORT = "yyyyMMdd";
-	private static final String sError = "\n***** ERROR ***** ";
 	private static Integer NSEM = new Integer(0);
 	private static String fileName;
 	private static final String nomFich = "LogAutomatic.out";
 	private static File ficLog;
 	private static boolean bStoreFile;
-	private static int loglevel=10;
 	private static long nLastMod = 0;
 	private static int contadorLineas = 0;
 //	private static String archivolog="admin.log"; // Contiene la ruta del archivo de log
 	private static int numentradas; // Número máximo de entradas en el archivo de log
 	private static String comandoshell=null;
-/**
- * Inicializa el log de la administración según los parámetros establecidos en
- * Log.properties. Si no existe el archivo de log, lo crea.
- */
+
+	/**
+	 * Inicializa el log de la administración según los parámetros establecidos en
+	 * Log.properties. Si no existe el archivo de log, lo crea.
+	 */
 	public static void init(){
+		//File f= new File(ClsConstants.RESOURCES_DIR+ClsConstants.FILE_SEP+"SIGA.properties");
+		long lst=0; 
+		try {
+			File f = SIGAReferences.getFileReference(SIGAReferences.RESOURCE_FILES.SIGA);
+			lst = f.lastModified();
+		} catch (Exception e){
+		}
 		
-		File f = new File(ClsConstants.RESOURCES_DIR+ClsConstants.FILE_SEP+"SIGA.properties");
-		long lst = f.lastModified();
-		synchronized (NSEM)
-		{
-			if(nLastMod != lst)
-		    {
+		synchronized (NSEM) {
+			if(nLastMod != lst) {
 				nLastMod = lst;
-		        ReadProperties rp=new ReadProperties("SIGA.properties");
+			    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//		        ReadProperties rp=new ReadProperties("SIGA.properties");
 		        bStoreFile=rp.returnProperty("LogSolicAutomaticas.run").equals("1");
 		        fileName=rp.returnProperty("LogSolicAutomaticas.archivo");
 		        numentradas=Integer.parseInt(rp.returnProperty("LogSolicAutomaticas.numentradas"));  
 		        if(numentradas<100)
 		        		numentradas=100;
 		        comandoshell = rp.returnProperty("LogSolicAutomaticas.comandoshell");			
-		        try
-		        {		    
-				    loglevel = Integer.parseInt(rp.returnProperty("LOG.level"));
-		        }catch (Exception nfe){}
-		      }
+		    }
 			if (contadorLineas == 0){
 	        	contadorLineas = contarLineas();
 	        }else{
@@ -114,9 +115,8 @@ public class ClsGestionAutomaticaLog {
 				if(bStoreFile && !mensaje.equals("")) {
 					Date dat = Calendar.getInstance().getTime();
 					SimpleDateFormat sdf = new SimpleDateFormat(DATEFORMATLONG);
-					SimpleDateFormat sdffile = new SimpleDateFormat(DATEFORMATSHORT);
 					if(contadorLineas > numentradas) {									
-						Process p = Runtime.getRuntime().exec(comandoshell);						
+						Runtime.getRuntime().exec(comandoshell);						
 						borrarTodos();
 					}
 			        PrintWriter printer = new PrintWriter(new BufferedWriter(new FileWriter(ficLog, true)));

@@ -3,7 +3,10 @@ package com.siga.servlets;
 import java.util.*;
 import javax.servlet.*;
 import com.atos.utils.*;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.beans.*;
+
+
 import javax.management.*;
 import weblogic.management.timer.Timer;
 
@@ -21,7 +24,8 @@ public final class SIGASvlProcesoAutomaticoExpedientes implements ServletContext
         ClsLogging.writeFileLogWithoutSession("<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>", 3);
         ClsLogging.writeFileLogWithoutSession(" Arrancando Notificaciones JMX.", 3);
 
-        ReadProperties properties=new ReadProperties("SIGA.properties");
+	    ReadProperties properties= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//        ReadProperties properties=new ReadProperties("SIGA.properties");
         String sIntervaloAux = properties.returnProperty("expedientes.alarmas.tiempo.ciclo");
         String sIntervalo = sIntervaloAux;
 

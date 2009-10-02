@@ -10,6 +10,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
+
  
 
 /**
@@ -55,7 +56,8 @@ public class PaginadorCaseSensitiveBind extends PaginadorSQLBind
 
 		try {
 			this.codigos=codigos;
-			ReadProperties properties = new ReadProperties("SIGA.properties");
+		    ReadProperties properties= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties properties = new ReadProperties("SIGA.properties");
 			String numRegistros = properties.returnProperty("paginador.registrosPorPagina", true);
 			this.numeroRegistrosPagina = numRegistros != null ? Integer.parseInt(numRegistros) : NUM_REGISTROS;
 			String pagCache = properties.returnProperty("paginador.distanciaPaginasCache", true);

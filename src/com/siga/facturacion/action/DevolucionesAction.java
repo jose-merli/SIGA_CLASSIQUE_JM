@@ -19,11 +19,13 @@ import org.apache.struts.action.*;
 import org.apache.struts.upload.FormFile;
 
 import com.atos.utils.*;
-import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.*;
 import com.siga.general.*;
 import com.siga.facturacion.form.DevolucionesForm;
+
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -294,7 +296,8 @@ public class DevolucionesAction extends MasterAction {
 			idInstitucion = usr.getLocation();	
 						
 //			 Gestion de nombres de ficheros del servidor y de oracle
-			ReadProperties rp 	 = new ReadProperties("SIGA.properties");			
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp 	 = new ReadProperties("SIGA.properties");			
 		    String rutaServidor  = rp.returnProperty("facturacion.directorioFisicoDevolucionesJava") + rp.returnProperty("facturacion.directorioDevolucionesJava");
 		    String rutaOracle  	 = rp.returnProperty("facturacion.directorioDevolucionesOracle");
 
@@ -905,7 +908,8 @@ public class DevolucionesAction extends MasterAction {
 			String idInstitucion = usr.getLocation();	
 						
 //			 Gestion del nombre del fichero de oracle
-			ReadProperties rp 	 = new ReadProperties("SIGA.properties");
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp 	 = new ReadProperties("SIGA.properties");
 		    String rutaOracle  	 = rp.returnProperty("facturacion.directorioDevolucionesOracle");
 		    
 //		    Comienzo control de transacciones
@@ -1025,7 +1029,8 @@ public class DevolucionesAction extends MasterAction {
 		String rutaServidor;
 		String nombreFichero;
 		
-		ReadProperties rp 	 = new ReadProperties("SIGA.properties");			
+	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//		ReadProperties rp 	 = new ReadProperties("SIGA.properties");			
 	    rutaServidor  = rp.returnProperty("facturacion.directorioFisicoDevolucionesJava") + rp.returnProperty("facturacion.directorioDevolucionesJava");
 		boolean ok=false; 
 		
@@ -1054,7 +1059,8 @@ public class DevolucionesAction extends MasterAction {
 
 		    // Nombre del fichero
 	 		String ficheroDownload = ((String)vOcultos.elementAt(2)).trim();
-	 		ReadProperties rp 	 = new ReadProperties("SIGA.properties");			
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//	 		ReadProperties rp 	 = new ReadProperties("SIGA.properties");			
 		    String rutaFicheroDownload = rp.returnProperty("facturacion.directorioFisicoDevolucionesJava") + 
 		    							 rp.returnProperty("facturacion.directorioDevolucionesJava") +
 		    							 File.separator + idInstitucion +

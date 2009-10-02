@@ -53,6 +53,7 @@ import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.Paginador;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.certificados.Plantilla;
@@ -65,6 +66,7 @@ import com.siga.general.SIGAException;
 import java.net.URL;
 import com.ecos.ws.solicitarEnvio.ResultadoSolicitudEnvio;
 import com.ecos.ws.solicitarEnvio.SolicitudEnvioSMS;
+
 import service.ServiciosECOS.ServiciosECOSServiceSOAPStub;
 import service.ServiciosECOS.ServiciosECOSService_ServiceLocator;
 
@@ -1253,7 +1255,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 
 			if (consulta==null)
 			{
-				ReadProperties rp = new ReadProperties("SIGA.properties");
+			    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+				//ReadProperties rp = new ReadProperties("SIGA.properties");
 				if(CenPersonaAdm.K_PERSONA_GENERICA.equals(idPersona)){
 		        	sSQL = rp.returnProperty("envios.consulta.sinPersona");
 				}else{
@@ -4346,7 +4349,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    Session sesion = (Session)javax.rmi.PortableRemoteObject.narrow(ctx.lookup("CorreoSIGA"), Session.class);
 	    ctx.close();
 
-		ReadProperties rp = new ReadProperties("SIGA.properties");	
+	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//		ReadProperties rp = new ReadProperties("SIGA.properties");	
 		
 	    // RGG autenticar SMTP
 	    sesion.getProperties().put("mail.smtp.auth", "true");
@@ -4664,7 +4668,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    Session sesion = (Session)javax.rmi.PortableRemoteObject.narrow(ctx.lookup("CorreoSIGA"), Session.class);
 	    ctx.close();
 
-		ReadProperties rp = new ReadProperties("SIGA.properties");	
+	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//		ReadProperties rp = new ReadProperties("SIGA.properties");	
 		
 	    // RGG autenticar SMTP
 	    sesion.getProperties().put("mail.smtp.auth", "true");
@@ -4877,7 +4882,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    Session sesion = (Session)javax.rmi.PortableRemoteObject.narrow(ctx.lookup("CorreoSIGA"), Session.class);
 	    ctx.close();
 
-		ReadProperties rp = new ReadProperties("SIGA.properties");	
+	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//		ReadProperties rp = new ReadProperties("SIGA.properties");	
 		
 	    // RGG autenticar SMTP
 	    sesion.getProperties().put("mail.smtp.auth", "true");

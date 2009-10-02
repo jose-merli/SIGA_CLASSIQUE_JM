@@ -14,6 +14,7 @@ import com.atos.utils.GstDate;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 
 import com.siga.Utilidades.UtilidadesString;
@@ -27,6 +28,7 @@ import com.siga.beans.EnvPlantillaGeneracionAdm;
 
 import com.siga.certificados.Plantilla;
 import com.siga.general.SIGAException;
+
 
 /**
  * Realiza un informe PDF mediante FOP de las facturas emitidas según plantilla introducida
@@ -130,7 +132,8 @@ public class InformeComunicacionCobros extends MasterReport
 			String idTipoEnvio ,String idPlantilla,String idPlantillaGeneracion,
 			String idPersona, String idInstitucion) throws ClsExceptions,SIGAException 
 	{
-		ReadProperties rp = new ReadProperties("SIGA.properties");
+	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//		ReadProperties rp = new ReadProperties("SIGA.properties");
 		// Obtencion de la ruta donde se almacenan temporalmente los ficheros formato FOP			
 	    String rutaTemporal =  rp.returnProperty("facturacion.directorioFisicoTemporalFacturasJava")+rp.returnProperty("facturacion.directorioTemporalFacturasJava");
 		String barraTemporal = "";

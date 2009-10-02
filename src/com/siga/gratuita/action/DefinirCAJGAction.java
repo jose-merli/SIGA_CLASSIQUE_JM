@@ -32,6 +32,7 @@ import com.siga.Utilidades.GestorContadores;
 import com.siga.Utilidades.Paginador;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.PaginadorSQLBind;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
@@ -91,6 +92,8 @@ import com.siga.general.SIGAException;
 import com.siga.gratuita.form.BusquedaCAJG_EJGForm;
 import com.siga.gratuita.form.DefinirEJGForm;
 import com.siga.informes.InformeDefinirEJG;
+
+
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
@@ -1752,7 +1755,8 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
 			
 		try {
 			//obtener plantilla
-			ReadProperties rp = new ReadProperties("SIGA.properties");			
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp = new ReadProperties("SIGA.properties");			
 		    String rutaPlantilla = Plantilla.obtenerPathNormalizado(rp.returnProperty("sjcs.directorioFisicoCartaEJGJava")+rp.returnProperty("sjcs.directorioCartaEJGJava"))+ClsConstants.FILE_SEP+institucion;
 		    
 		    // RGG cambio de codigos 
@@ -1870,7 +1874,8 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
 		UtilidadesHash.set(datos,"PIE_CARTA_EJG",miForm.getPieCarta());
 		UtilidadesHash.set(datos,"FECHA",UtilidadesBDAdm.getFechaBD(""));
 		UtilidadesHash.set(datos,"TEXTO_TRATAMIENTO_DESTINATARIO",UtilidadesString.getMensajeIdioma(idioma,"informes.cartaAsistencia.estimado"));
-		ReadProperties rp = new ReadProperties("SIGA.properties");			
+	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//		ReadProperties rp = new ReadProperties("SIGA.properties");			
 	    String rutaPlantilla = Plantilla.obtenerPathNormalizado(rp.returnProperty("sjcs.directorioFisicoCartaEJGJava")+rp.returnProperty("sjcs.directorioCartaEJGJava"))+ClsConstants.FILE_SEP+institucion;
 		UtilidadesHash.set(datos,"RUTA_LOGO",rutaPlantilla+ClsConstants.FILE_SEP+"recursos"+ClsConstants.FILE_SEP+"logo.gif");
 

@@ -41,6 +41,7 @@ import com.lowagie.text.pdf.PdfSignatureAppearance;
 import com.lowagie.text.pdf.PdfStamper;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.SIGALogging;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
@@ -51,6 +52,7 @@ import com.siga.facturacion.form.BusquedaFacturaForm;
 import com.siga.facturacion.form.ConsultaMorososForm;
 import com.siga.general.SIGAException;
 import com.siga.informes.InformeFactura;
+
 
 /**
 *
@@ -1296,7 +1298,8 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			plantillas=plantillaAdm.getPlantillaSerieFacturacion(institucion.toString(),serieFacturacion.toString());
 			plantilla=plantillas.firstElement().toString();
 						
-			ReadProperties rp = new ReadProperties("SIGA.properties");
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			//ReadProperties rp = new ReadProperties("SIGA.properties");
 			Plantilla plantillaMng = new Plantilla(this.usrbean);
 			
 			

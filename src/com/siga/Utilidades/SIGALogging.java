@@ -22,6 +22,7 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ExceptionManager;
 import com.atos.utils.ReadProperties;
 
+
 public class SIGALogging
 {
 	private SimpleDateFormat sdfLong = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); 
@@ -49,7 +50,8 @@ public class SIGALogging
 		{
 			path.mkdirs();
 		}
-		ReadProperties rp = new ReadProperties("SIGA.properties");	
+	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//		ReadProperties rp = new ReadProperties("SIGA.properties");	
 		iniciado = false;
 		logLevel = new Integer(rp.returnProperty("log.colaLetrados.level")).intValue();
 	

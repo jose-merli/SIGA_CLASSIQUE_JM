@@ -31,6 +31,7 @@ import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
@@ -79,6 +80,7 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.productos.form.SolicitudCompraForm;
+
 
 /**
  * Clase action para la solicitud de Compra de Productos y Servicios .<br/>
@@ -1473,7 +1475,8 @@ public class SolicitudCompraAction extends MasterAction{
 			
 			String idInstitucion=(String)request.getAttribute("factRapidaIdInstitucion");
 			Long idPeticion = (Long)request.getAttribute("factRapidaIdPeticion");
-			ReadProperties rp = new ReadProperties("SIGA.properties");	
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp = new ReadProperties("SIGA.properties");	
 			String rutaAlmacen = rp.returnProperty("facturacion.directorioFisicoFacturaPDFJava")+rp.returnProperty("facturacion.directorioFacturaPDFJava");
     		rutaAlmacen += ClsConstants.FILE_SEP+idInstitucion;
 			rutaAlmacen+=ClsConstants.FILE_SEP;

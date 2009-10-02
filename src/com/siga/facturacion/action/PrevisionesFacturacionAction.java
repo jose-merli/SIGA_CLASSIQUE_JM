@@ -28,11 +28,13 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.*;
 import com.siga.general.*;
 import com.siga.facturacion.form.PrevisionesFacturacionForm;
+
 
 public class PrevisionesFacturacionAction extends MasterAction {
 
@@ -341,7 +343,8 @@ or	 * @param request -
 				String idPrevision = UtilidadesHash.getString(hashMaximo,
 						FacPrevisionFacturacionBean.C_IDPREVISION);
 
-				ReadProperties rp = new ReadProperties("SIGA.properties");
+			    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//				ReadProperties rp = new ReadProperties("SIGA.properties");
 				String nombreFichero = rp
 						.returnProperty("facturacion.prefijo.ficherosPrevisiones")
 						+ idSerieFacturacion + "_" + idPrevision;
@@ -565,7 +568,8 @@ or	 * @param request -
 
 				// Se borra el fichero asociado a la previsión en el servidor
 				// web.
-				ReadProperties rp = new ReadProperties("SIGA.properties");
+			    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//				ReadProperties rp = new ReadProperties("SIGA.properties");
 				String sRutaJava = rp
 						.returnProperty("facturacion.directorioPrevisionesJava");
 				String sRutaFisicaJava = rp
@@ -670,7 +674,8 @@ or	 * @param request -
 			String idSerieFacturacion = (String) vOcultos.elementAt(0);
 			String idPrevision = (String) vOcultos.elementAt(1);
 
-			ReadProperties rp = new ReadProperties("SIGA.properties");
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp = new ReadProperties("SIGA.properties");
 			sRutaJava = rp
 					.returnProperty("facturacion.directorioPrevisionesJava");
 			String sRutaFisicaJava = rp

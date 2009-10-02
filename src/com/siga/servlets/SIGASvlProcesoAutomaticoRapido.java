@@ -15,7 +15,9 @@ import weblogic.management.timer.Timer;
 
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ReadProperties;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.beans.MasterBean;
+
 
 /**
  * <p>Title: </p>
@@ -44,7 +46,8 @@ public class SIGASvlProcesoAutomaticoRapido extends HttpServlet implements Notif
 		ClsLogging.writeFileLogWithoutSession("<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>", 3);
 		ClsLogging.writeFileLogWithoutSession(" Arrancando Notificaciones JMX.", 3);
 
-		ReadProperties properties=new ReadProperties("SIGA.properties");
+	    ReadProperties properties= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//		ReadProperties properties=new ReadProperties("SIGA.properties");
 		String sIntervaloAux = properties.returnProperty("facturacion.procesoRapido.tiempo.ciclo");
 		String sIntervalo = sIntervaloAux;
 

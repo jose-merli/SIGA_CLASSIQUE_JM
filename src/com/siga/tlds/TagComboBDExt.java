@@ -11,6 +11,7 @@ import com.atos.utils.*;
 import javax.servlet.http.*;
 import com.siga.Utilidades.*;
 
+
 import javax.servlet.jsp.tagext.*;
 
 /**
@@ -120,7 +121,8 @@ public class TagComboBDExt extends TagSupport {
 			Hashtable codigos = new Hashtable();
 			Vector almacenBD = new Vector();
 			int contador = 1;
-			ReadProperties p = new ReadProperties ("Combo.properties");
+		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.COMBO);
+//			ReadProperties p = new ReadProperties ("Combo.properties");
 			String consultaSQL = p.returnProperty(this.tipo, true);
 			if (consultaSQL == null) {
 				rc = this.getTipoIncorrecto (almacenBD);

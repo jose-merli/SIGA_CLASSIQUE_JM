@@ -11,19 +11,22 @@ import javax.servlet.http.HttpServletResponse;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsConstants;
-import java.io.FileOutputStream;
+import com.siga.Utilidades.SIGAReferences;
+
+
 import java.io.*;
 
 
 public class SIGASvlUploadFiles extends HttpServlet {
-    private static int BUFFER_SIZE = 8 * 1024;   
+	private static final long serialVersionUID = -102663719471049646L;
+	private static int BUFFER_SIZE = 8 * 1024;   
     
     public void doPost(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
         InputStream inStream = null;
         ObjectOutputStream outStream = null;
         String sOut = "";
-        File inFile= null;
+//        File inFile= null;
         try {
             inStream = req.getInputStream();
             String fileName = "";
@@ -80,8 +83,8 @@ public class SIGASvlUploadFiles extends HttpServlet {
 		System.out.println(" * Property File -- " +ClsConstants.initPropsFile); 
 		System.out.println(" * ClsConstants.USER_DIR -- " + ClsConstants.USER_DIR);
 		System.out.println(" * ClsConstants.RES_PROP_DOMAIN -- " + ClsConstants.RES_PROP_DOMAIN);
-		System.out.println(" * ClsConstants.RESOURCES_DIR_STRUTS -- " + ClsConstants.RESOURCES_DIR_STRUTS);
-		System.out.println(" * ClsConstants.RESOURCES_DIR -- " + ClsConstants.RESOURCES_DIR);
+//		System.out.println(" * ClsConstants.RESOURCES_DIR_STRUTS -- " + ClsConstants.RESOURCES_DIR_STRUTS);
+//		System.out.println(" * ClsConstants.RESOURCES_DIR -- " + ClsConstants.RESOURCES_DIR);
     	
 
 //        doPost(req, res);
@@ -89,7 +92,8 @@ public class SIGASvlUploadFiles extends HttpServlet {
 
     private String writeFile(InputStream inStream, String newFolder, String fileName, HttpServletRequest req) {
         String result = "";
-        ReadProperties rp=new ReadProperties("Upload.properties");
+	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.UPLOAD);
+//        ReadProperties rp=new ReadProperties("Upload.properties");
         String path=rp.returnProperty("UPLOAD.drive")+
                     ClsConstants.FILE_SEP+rp.returnProperty("path.path")+
                     ClsConstants.FILE_SEP+rp.returnProperty("UPLOAD.path")+

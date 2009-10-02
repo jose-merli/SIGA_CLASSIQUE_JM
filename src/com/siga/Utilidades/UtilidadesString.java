@@ -7,10 +7,6 @@
 package com.siga.Utilidades;
 
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringUtils;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -18,7 +14,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.StringBufferInputStream;
+import java.io.StringReader;
+import java.net.URISyntaxException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,13 +24,17 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import com.atos.utils.ClsConstants;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
 import com.siga.beans.AdmLenguajesAdm;
 import com.siga.beans.AdmLenguajesBean;
 import com.siga.general.SIGAException;
+
 
 
 /**
@@ -45,7 +46,7 @@ import com.siga.general.SIGAException;
  */
 public class UtilidadesString {
 	
-    static private Hashtable idiomas = null;
+    static private Hashtable<String, Properties> idiomas = null;
 	//static private ResourceBundle bundle = null;
     //static private String lengact="none";
 	
@@ -153,7 +154,7 @@ public class UtilidadesString {
 	public static void recargarFicherosIdiomasEnCaliente()
 	{
 		if (idiomas==null) {
-		    idiomas = new Hashtable();
+		    idiomas = new Hashtable<String, Properties>();
 		} 
 		else {
 		    idiomas.clear();
@@ -162,7 +163,7 @@ public class UtilidadesString {
 		UsrBean usu = new UsrBean();
 		usu.setLanguage("1");
 		AdmLenguajesAdm a = new AdmLenguajesAdm(usu);
-		Vector v;
+		Vector<AdmLenguajesBean> v;
 		FileInputStream fis = null;
         try {
             v = a.select();
@@ -170,8 +171,15 @@ public class UtilidadesString {
     			AdmLenguajesBean b = (AdmLenguajesBean) v.get(i);
     			Properties aux = new Properties();
     			try {
-    			    fis = new FileInputStream(ClsConstants.RESOURCES_DIR+ClsConstants.FILE_SEP+"ApplicationResources_"+b.getCodigoExt().toLowerCase()+".properties");
+    				StringBuilder strBld = new StringBuilder();
+    				strBld.append(SIGAReferences.getDirectoryReference(SIGAReferences.RESOURCE_FILES.PROPERTIES_DIR))
+    						.append("/ApplicationResources_")
+    						.append(b.getCodigoExt().toLowerCase())
+    						.append(".properties");
+    			    fis = new FileInputStream(strBld.toString());
                     aux.load(fis);
+                } catch (URISyntaxException e1) {
+                    e1.printStackTrace();
                 } catch (FileNotFoundException e1) {
                     e1.printStackTrace();
                 } catch (IOException e1) {
@@ -188,9 +196,6 @@ public class UtilidadesString {
         }
         ClsLogging.writeFileLog("Ficheros de idiomas recargados en caliente.",8);
 	}
-	
-	
-
 	
 	static public boolean stringToBoolean (String dato) {
 		if (dato != null) {
@@ -762,7 +767,6 @@ public class UtilidadesString {
 				}
 
 				int i=0;
-				String pila="";
 
 				while (i<parteEntera.length()){
 					if (((parteEntera.length()-(i+1))%3==0)&&(parteEntera.length()-(i+1)!=0)){
@@ -800,7 +804,7 @@ public class UtilidadesString {
 		  * @param <B>properties</B> Conjunto de propiedades con sus valores
 		  * @return String con los valores reemplazados
 		  */
-		public static String reemplazaParametros(String texto, String marca, Hashtable properties){
+		public static String reemplazaParametros(String texto, String marca, Hashtable<String,String> properties){
 			
 			StringBuffer finalText = new StringBuffer();
 			int dif=marca.length();
@@ -908,12 +912,16 @@ public class UtilidadesString {
 		 */	
 		public static void setFileContent(File file, String content) throws SIGAException{
 			try {
-				InputStream is= new StringBufferInputStream(content);
+				StringReader is= new StringReader(content);
 				OutputStream os = new FileOutputStream(file);
-				int nBytes = is.available();
-				byte buffer[] = new byte[nBytes];
-				is.read(buffer, 0, nBytes);
-				os.write(buffer, 0, nBytes);
+				int car;
+				while ((car=is.read())!=-1){
+					os.write(car);
+				}
+//				int nBytes = is.available();
+//				byte buffer[] = new byte[nBytes];
+//				is.read(buffer, 0, nBytes);
+//				os.write(buffer, 0, nBytes);
 				os.flush();
 				os.close();
 				is.close();
@@ -1020,8 +1028,8 @@ public class UtilidadesString {
 		}
 		
 		// vector con el signo, la parte entera y la parte decimal para el impreso 190
-		public static Vector desdoblarDouble (Double valor) throws ClsExceptions {
-			Vector salida= new Vector();
+		public static Vector<String> desdoblarDouble (Double valor) throws ClsExceptions {
+			Vector<String> salida= new Vector<String>();
 			
 			String signo = " ";
 			

@@ -19,6 +19,7 @@ import com.siga.certificados.*;
 import com.siga.certificados.form.*;
 
 
+
 public class SIGASolicitudesCertificadosAction extends MasterAction
 {
 	public ActionForward executeInternal (ActionMapping mapping, ActionForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
@@ -278,7 +279,8 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 														  form.getBuscarNumCertificadoCompra());  
 
 	        
-	        ReadProperties rp = new ReadProperties("SIGA.properties");
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//	        ReadProperties rp = new ReadProperties("SIGA.properties");
 	        String numMaxReg = rp.returnProperty("certificados.numMaxRegistros");
 	        
 	       
@@ -2857,7 +2859,8 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    	}
 		   
 		        //throw new SIGAException("messages.facturacionRapida.error.facturado");
-		        ReadProperties rp = new ReadProperties("SIGA.properties");
+			    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//		        ReadProperties rp = new ReadProperties("SIGA.properties");
 		        String rutaAlmacen = rp.returnProperty("facturacion.directorioFisicoFacturaPDFJava")+rp.returnProperty("facturacion.directorioFacturaPDFJava");
 		        String barraAlmacen = "";
 		        String nombreFicheroAlmacen = "";
@@ -3001,7 +3004,8 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 	        	
 			 /*************************************/
 			// devolver factura
-			ReadProperties rp = new ReadProperties("SIGA.properties");	
+     	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp = new ReadProperties("SIGA.properties");	
 			String rutaAlmacen = rp.returnProperty("facturacion.directorioFisicoFacturaPDFJava")+rp.returnProperty("facturacion.directorioFacturaPDFJava");
     		rutaAlmacen += ClsConstants.FILE_SEP+idInstitucion;
 			rutaAlmacen+=ClsConstants.FILE_SEP;

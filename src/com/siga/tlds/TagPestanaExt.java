@@ -20,10 +20,12 @@ import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.SIGAConstants;
 import com.siga.beans.ExpCampoTipoExpedienteAdm;
 import com.siga.beans.ExpPestanaConfAdm;
+
 
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -50,7 +52,7 @@ public class TagPestanaExt extends TagSupport {
 	private Hashtable htParametros=null;
 	private Element elements[]=null;
 	public static final String SQL_KEY="sql";
-	public static final String PROPERTIES_FILE="Pestana.properties";
+	//public static final String PROPERTIES_FILE="Pestana.properties";
 	private static final String parametroWhere = "@parametro@";
 	private static final String PROCESS_KEY="PROCESS";
 	private static final String URL_KEY="URL";
@@ -251,7 +253,8 @@ public class TagPestanaExt extends TagSupport {
 	
 	private void executeConsulta(UsrBean usrbean) throws Exception  {
 		int rc = 0;
-		ReadProperties p = new ReadProperties (PROPERTIES_FILE);
+	    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.PESTANA);
+		//ReadProperties p = new ReadProperties (PROPERTIES_FILE);
 		String consultaSQL = p.returnProperty(SQL_KEY, true);
 		if (consultaSQL != null) {
 			consultaSQL = ReemplazaParametros(consultaSQL.toLowerCase());

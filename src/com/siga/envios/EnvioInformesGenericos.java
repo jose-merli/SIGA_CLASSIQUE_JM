@@ -20,6 +20,7 @@ import com.atos.utils.GstDate;
 import com.atos.utils.GstStringTokenizer;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesNumero;
@@ -52,6 +53,7 @@ import com.siga.general.SIGAException;
 import com.siga.informes.MasterReport;
 import com.siga.informes.MasterWords;
 import com.siga.informes.form.InformesGenericosForm;
+
 
 /**
  * 
@@ -938,7 +940,8 @@ public class EnvioInformesGenericos extends MasterReport {
 					+ UtilidadesBDAdm.getFechaCompletaBD("")
 					.replaceAll("/", "").replaceAll(":", "")
 					.replaceAll(" ", "");
-					ReadProperties rp = new ReadProperties("SIGA.properties");
+				    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+					//ReadProperties rp = new ReadProperties("SIGA.properties");
 					String rutaServidorDescargasZip = rp
 					.returnProperty("informes.directorioFisicoSalidaInformesJava")
 					+ rp
@@ -1111,13 +1114,12 @@ public class EnvioInformesGenericos extends MasterReport {
 
 		File ficheroSalida = null;
 		// --- acceso a paths y nombres
-		ReadProperties rp = new ReadProperties("SIGA.properties");
-		String rutaPlantilla = rp
-		.returnProperty("informes.directorioFisicoPlantillaInformesJava")
-		+ rp.returnProperty("informes.directorioPlantillaInformesJava");
-		String rutaAlmacen = rp
-		.returnProperty("informes.directorioFisicoSalidaInformesJava")
-		+ rp.returnProperty("informes.directorioPlantillaInformesJava");
+	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//		ReadProperties rp = new ReadProperties("SIGA.properties");
+		String rutaPlantilla = rp.returnProperty("informes.directorioFisicoPlantillaInformesJava")
+							+ rp.returnProperty("informes.directorioPlantillaInformesJava");
+		String rutaAlmacen = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")
+							+ rp.returnProperty("informes.directorioPlantillaInformesJava");
 		// //////////////////////////////////////////////
 		// MODELO DE TIPO WORD: LLAMADA A ASPOSE.WORDS
 

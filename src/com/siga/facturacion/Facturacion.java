@@ -27,6 +27,7 @@ import com.atos.utils.GstDate;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.SIGALogging;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
@@ -61,6 +62,7 @@ import com.siga.envios.Envio;
 import com.siga.facturacionSJCS.UtilidadesFacturacionSJCS;
 import com.siga.general.SIGAException;
 import com.siga.informes.InformeFactura;
+
 
 /**
  * @author juan.grau
@@ -324,7 +326,8 @@ public class Facturacion {
 			
 			tx = (UserTransaction) usr.getTransactionPesada();
    			// fichero de log
-			ReadProperties p = new ReadProperties ("SIGA.properties");
+		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties p = new ReadProperties ("SIGA.properties");
 			
 	    	// ficheros de log
 			String pathFichero2 = p.returnProperty("facturacion.directorioFisicoLogProgramacion");
@@ -727,7 +730,8 @@ public class Facturacion {
 			ClsLogging.writeFileLog("CONFIRMAR PROGRAMACIONES FACTURAS INSTITUCION: "+idInstitucion,10);
 			
    			// fichero de log
-			ReadProperties p = new ReadProperties ("SIGA.properties");
+		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties p = new ReadProperties ("SIGA.properties");
 			
 	    	// ficheros de log
 			String pathFichero2 = p.returnProperty("facturacion.directorioFisicoLogProgramacion");
@@ -815,7 +819,8 @@ public class Facturacion {
 			ClsLogging.writeFileLog("GENERAR PDF DE FACTURAS POR INSTITUCION: "+idInstitucion,10);
 			
    			// fichero de log
-			ReadProperties p = new ReadProperties ("SIGA.properties");
+		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties p = new ReadProperties ("SIGA.properties");
 			
 	    	// ficheros de log
 			String pathFichero2 = p.returnProperty("facturacion.directorioFisicoLogProgramacion");
@@ -893,7 +898,8 @@ public class Facturacion {
 		String sNombreFichero = "";
 		String sRutaJava = "";
 		String sRutaTemporal = "";
-		ReadProperties rp = new ReadProperties("SIGA.properties");
+	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//		ReadProperties rp = new ReadProperties("SIGA.properties");
 		sRutaJava = rp.returnProperty("facturacion.directorioFacturaPDFJava");
 		sRutaTemporal = rp.returnProperty("sjcs.directorioFisicoTemporalSJCSJava") +
 		rp.returnProperty("facturacion.directorioTemporalFacturasJava");
@@ -1298,7 +1304,8 @@ public class Facturacion {
             
             // actualizacion de estado
    			// fichero de log
-			ReadProperties p = new ReadProperties ("SIGA.properties");
+		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties p = new ReadProperties ("SIGA.properties");
 			String pathFichero2 = p.returnProperty("facturacion.directorioFisicoLogProgramacion");
     		String sBarra2 = "";
     		if (pathFichero2.indexOf("/") > -1) sBarra2 = "/"; 
@@ -1632,7 +1639,8 @@ public class Facturacion {
 
     		// actualizacion de estado
     		// fichero de log
-    		ReadProperties p = new ReadProperties ("SIGA.properties");
+		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//    		ReadProperties p = new ReadProperties ("SIGA.properties");
     		String pathFichero2 = p.returnProperty("facturacion.directorioFisicoLogProgramacion");
     		String sBarra2 = "";
     		if (pathFichero2.indexOf("/") > -1) sBarra2 = "/"; 
@@ -2065,7 +2073,8 @@ public class Facturacion {
 			plantillas=plantillaAdm.getPlantillaSerieFacturacion(institucion.toString(),serieFacturacion.toString());
 			plantilla=plantillas.firstElement().toString();
 						
-			ReadProperties rp = new ReadProperties("SIGA.properties");
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp = new ReadProperties("SIGA.properties");
 			
 			// Obtencion de la ruta donde se almacenan temporalmente los ficheros formato FOP			
 		    String rutaTemporal = rp.returnProperty("facturacion.directorioFisicoTemporalFacturasJava")+rp.returnProperty("facturacion.directorioTemporalFacturasJava");

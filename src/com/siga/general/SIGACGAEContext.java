@@ -26,11 +26,13 @@ import com.atos.utils.UsrBean;
 //import com.pra.core.context.ContextFactory;
 //import com.pra.core.context.IContext;
 //import com.pra.core.sesion.SesionTO;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.SIGAConstants;
 import com.siga.administracion.SIGAGestorInterfaz;
 import com.siga.beans.*;
+
 
 /**
  * @author esdras.martin
@@ -53,7 +55,8 @@ public class SIGACGAEContext {
 
 	public UsrBean rellenaContexto(HttpServletRequest request, ActionServlet config ) throws SIGAException
 	{
-		ReadProperties rproperties=new ReadProperties("SIGA.properties");
+	    ReadProperties rproperties= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//		ReadProperties rproperties=new ReadProperties("SIGA.properties");
 		boolean desarrollo = rproperties.returnProperty("administracion.login.entorno").equalsIgnoreCase(SIGACGAEContext.ENTORNO_DESARROLLO);
 		if (desarrollo)
 		{

@@ -17,6 +17,7 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ReadProperties;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.FacEstadoConfirmFactBean;
@@ -28,6 +29,7 @@ import com.siga.facturacion.form.ProgramarFacturacionForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+
 
 /**
  * Clase action para la programacion de series de Facturacion.<br/>
@@ -371,7 +373,8 @@ public class ProgramarFacturacionAction extends MasterAction{
 			}			
 			
 			// borramos tambien el fichero de log
-			ReadProperties p = new ReadProperties ("SIGA.properties");
+		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties p = new ReadProperties ("SIGA.properties");
 			String pathFichero 		= p.returnProperty("facturacion.directorioFisicoLogProgramacion");
     		String sBarra = "";
     		if (pathFichero.indexOf("/") > -1) sBarra = "/"; 

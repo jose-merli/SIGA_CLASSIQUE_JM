@@ -21,6 +21,7 @@ import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesNumero;
@@ -30,6 +31,7 @@ import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.certificados.Plantilla;
 import com.siga.general.SIGAException;
+
 
 /**
  * Realiza un informe PDF mediante FOP de las facturas emitidas según plantilla introducida
@@ -102,7 +104,8 @@ public class InformeFacturasEmitidas extends MasterReport
 			String idInstitucion = usr.getLocation();
 			
 			GenParametrosAdm admParametros = new GenParametrosAdm(usr);
-			ReadProperties rp = new ReadProperties("SIGA.properties");	
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp = new ReadProperties("SIGA.properties");	
 			
 			// RGG 26/02/2007 cambio en los codigos de lenguajes
 			AdmLenguajesAdm a = new AdmLenguajesAdm(usr);
@@ -183,7 +186,8 @@ public class InformeFacturasEmitidas extends MasterReport
 			String idInstitucion = usr.getLocation();
 			
 	
-			ReadProperties rp = new ReadProperties("SIGA.properties");	
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp = new ReadProperties("SIGA.properties");	
 			
 			// RGG 26/02/2007 cambio en los codigos de lenguajes
 			AdmLenguajesAdm a = new AdmLenguajesAdm(usr);

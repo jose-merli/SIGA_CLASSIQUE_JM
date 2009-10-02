@@ -10,8 +10,10 @@ import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.SIGALogging;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.general.EjecucionPLs;
+
 
 
 /**
@@ -174,7 +176,8 @@ public class CenColaCambioLetradoAdm extends MasterBeanAdministrador
 	public void chequearCola() 
 	{
 	    try {
-		    ReadProperties rp = new ReadProperties("SIGA.properties");			       
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//		    ReadProperties rp = new ReadProperties("SIGA.properties");			       
 			String pathFicheroLog = rp.returnProperty("LogAdmin.archivo");
 			String nombreFichero = rp.returnProperty("LogAdmin.archivo.gestionColas");
 			SIGALogging log = new SIGALogging(pathFicheroLog + nombreFichero);

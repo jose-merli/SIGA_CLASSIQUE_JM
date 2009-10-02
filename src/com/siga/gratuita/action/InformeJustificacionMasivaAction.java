@@ -22,6 +22,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 
@@ -39,6 +40,7 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.InformeJustificacionMasivaForm;
+
 
 public class InformeJustificacionMasivaAction extends MasterAction {
 	protected ActionForward executeInternal(ActionMapping mapping,
@@ -93,7 +95,8 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		StringBuffer msgAviso = new StringBuffer();
 		UsrBean user = (UsrBean) request.getSession().getAttribute(
 				"USRBEAN");
-		ReadProperties rp3 = new ReadProperties("SIGA.properties");
+	    ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//		ReadProperties rp3 = new ReadProperties("SIGA.properties");
 		final String TIPO_ACREDIT_INIFIN = rp3.returnProperty("codigo.general.scstipoacreditacion.iniciofin");
 		final String ACREDITACION_INIFIN = rp3.returnProperty("codigo.general.scsacreditacion.iniciofin");
 		String obsJustificacion = UtilidadesString.getMensajeIdioma(user, "gratuita.informeJustificacionMasiva.observaciones.justificacion");
@@ -801,7 +804,8 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		//Si es posterior a esa fecha cogera otros tipos de
 		// acreditacion(6 si es inuicio y 7 si es final)
 		String idAcreditacion = "";
-		ReadProperties rp3 = new ReadProperties("SIGA.properties");
+	    ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//		ReadProperties rp3 = new ReadProperties("SIGA.properties");
 		//Miramos es tipo de jurisdiccion(constante ==1). 
 		//Si es de penal va a depender de la fecha de acreditacion 
 		

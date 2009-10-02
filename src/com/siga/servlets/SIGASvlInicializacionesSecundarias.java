@@ -13,13 +13,12 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import com.aspose.words.License;
-import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsLogging;
-import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.beans.GenParametrosAdm;
 import com.siga.informes.CrystalReportMaster;
 import com.siga.informes.MasterWords;
+
 
 /**
  * @author danielc
@@ -51,8 +50,8 @@ public final class SIGASvlInicializacionesSecundarias implements ServletContextL
 	    ClsLogging.writeFileLogWithoutSession("<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>", 3);
 	    ClsLogging.writeFileLogWithoutSession("  Arrancando Inicializaciones Secundarias ", 3);
 	    ClsLogging.writeFileLogWithoutSession("<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>", 3);
-
-	    //this.inicializarCrystal();
+	    SIGAReferences.initialize(arg0.getServletContext());
+	    this.inicializarCrystal();
 	    this.inicializarWords();
 	}
 
@@ -62,35 +61,39 @@ public final class SIGASvlInicializacionesSecundarias implements ServletContextL
 	    ClsLogging.writeFileLogWithoutSession("  <> CrystalReport: Inicializando ...", 3);
 	    ClsLogging.writeFileLogWithoutSession("-------------------------------------------------", 3);
 
-	    String pathAplicacion = "";
-	    try {
-	    	UsrBean us = new UsrBean();
-		    us.setUserName(new Integer(ClsConstants.USUMODIFICACION_AUTOMATICO).toString());
-		    GenParametrosAdm adm = new GenParametrosAdm (us);
-		    pathAplicacion = adm.getValor("0", "CEN", "PATH_APP", ClsConstants.RES_DIR);
-	    }
-	    catch (Exception e) {
-	    	pathAplicacion = ClsConstants.RES_DIR;
-		}
+//	    String pathAplicacion = "";
+//	    try {
+//	    	UsrBean us = new UsrBean();
+//		    us.setUserName(new Integer(ClsConstants.USUMODIFICACION_AUTOMATICO).toString());
+//		    GenParametrosAdm adm = new GenParametrosAdm (us);
+//		    pathAplicacion = adm.getValor("0", "CEN", "PATH_APP", ClsConstants.RES_DIR);
+//	    }
+//	    catch (Exception e) {
+//	    	pathAplicacion = ClsConstants.RES_DIR;
+//		}
 	    
-	    String fIn  = pathAplicacion + ClsConstants.FILE_SEP + "html" + ClsConstants.FILE_SEP +"jsp"+ ClsConstants.FILE_SEP + "general" + ClsConstants.FILE_SEP + "inicializacionCrystal.rpt", 
-			   fOut = pathAplicacion + ClsConstants.FILE_SEP + "html" + ClsConstants.FILE_SEP +"jsp"+ ClsConstants.FILE_SEP + "general" + ClsConstants.FILE_SEP + "l23p57r22a15d31.pdf";
+//	    String fIn  = pathAplicacion + ClsConstants.FILE_SEP + "html" + ClsConstants.FILE_SEP +"jsp"+ ClsConstants.FILE_SEP + "general" + ClsConstants.FILE_SEP + "inicializacionCrystal.rpt"; 
+//		String fOut = pathAplicacion + ClsConstants.FILE_SEP + "html" + ClsConstants.FILE_SEP +"jsp"+ ClsConstants.FILE_SEP + "general" + ClsConstants.FILE_SEP + "l23p57r22a15d31.pdf";
 	    
-	    Hashtable parametros = new Hashtable();
+	    Hashtable<String, String> parametros = new Hashtable<String, String>();
 	    UtilidadesHash.set(parametros, "idlenguaje", "1");
 	    
-	    File f = CrystalReportMaster.generarPDF(fIn, fOut, parametros);
-	    if (f == null) {    
+//	    File f = CrystalReportMaster.generarPDF(fIn, fOut, parametros);
+	    try {
+	    	CrystalReportMaster.generarPDF(SIGAReferences.getDirectoryReference(SIGAReferences.RESOURCE_FILES.CRYSTAL_INIT), SIGAReferences.getFileReference(SIGAReferences.RESOURCE_FILES.CRYSTAL_INIT_RESULT), parametros);
+	    	//File f = CrystalReportMaster.generarPDF(SIGAReferences.getDirectoryReference(SIGAReferences.RESOURCE_FILES.CRYSTAL_INIT), SIGAReferences.getFileReference(SIGAReferences.RESOURCE_FILES.CRYSTAL_INIT_RESULT), parametros);
+		    //if (f.exists())
+		    //	f.delete();
+		    
+		    ClsLogging.writeFileLogWithoutSession("-------------------------------------------------", 3);
+		    ClsLogging.writeFileLogWithoutSession("  <> CrystalReport: Inicializacion Completada", 3);
+		    ClsLogging.writeFileLogWithoutSession("-------------------------------------------------", 3);
+	    } catch (Exception e){
 		    ClsLogging.writeFileLogWithoutSession("-------------------------------------------------", 3);
 	    	ClsLogging.writeFileLogWithoutSession("  <> CrystalReport: Error en la inicializacion", 3);
 		    ClsLogging.writeFileLogWithoutSession("-------------------------------------------------", 3);
 		    return;
 	    }
-	    if (f.exists()) f.delete();
-	    
-	    ClsLogging.writeFileLogWithoutSession("-------------------------------------------------", 3);
-	    ClsLogging.writeFileLogWithoutSession("  <> CrystalReport: Inicializacion Completada", 3);
-	    ClsLogging.writeFileLogWithoutSession("-------------------------------------------------", 3);
 	}
 	
 	private void inicializarWords() 
@@ -102,11 +105,12 @@ public final class SIGASvlInicializacionesSecundarias implements ServletContextL
 	    
 	    License license = new License();
 	    try {
-		    UsrBean us = new UsrBean();
-		    us.setUserName(new Integer(ClsConstants.USUMODIFICACION_AUTOMATICO).toString());
-		    GenParametrosAdm adm = new GenParametrosAdm (us);
-		    String pathAplicacion = adm.getValor("0", "CEN", "PATH_APP", ClsConstants.RES_DIR);
-	        license.setLicense(pathAplicacion+ File.separator + "WEB-INF"+ File.separator + "lib"+ File.separator + "Aspose.Words.lic");
+//		    UsrBean us = new UsrBean();
+//		    us.setUserName(new Integer(ClsConstants.USUMODIFICACION_AUTOMATICO).toString());
+//		    GenParametrosAdm adm = new GenParametrosAdm (us);
+//		    String pathAplicacion = adm.getValor("0", "CEN", "PATH_APP", ClsConstants.RES_DIR);
+//	        license.setLicense(pathAplicacion+ File.separator + "WEB-INF"+ File.separator + "lib"+ File.separator + "Aspose.Words.lic");
+		    license.setLicense(SIGAReferences.getInputReference(SIGAReferences.RESOURCE_FILES.WORDS_LICENSE));
 	    } catch (Exception e) {
 		    ClsLogging.writeFileLogWithoutSession("-------------------------------------------------", 3);
 	        ClsLogging.writeFileLogWithoutSession("Error en licencia de Aspose ", 3);

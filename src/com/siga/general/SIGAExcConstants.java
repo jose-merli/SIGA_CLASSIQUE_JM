@@ -6,10 +6,11 @@
  */
 package com.siga.general;
 
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Properties;
 
-import com.atos.utils.ClsConstants;
+import com.siga.Utilidades.SIGAReferences;
+
 
 /**
  * @author esdras.martin
@@ -22,8 +23,10 @@ public class SIGAExcConstants {
 	static {
 		sqlstates=new Properties();
 		try {
-			FileInputStream in=new FileInputStream(ClsConstants.RESOURCES_DIR+"/"+"except.properties");
-			sqlstates.load(in);
+//			FileInputStream in=new FileInputStream(ClsConstants.RESOURCES_DIR+"/"+"except.properties");
+//			sqlstates.load(in);
+			InputStream is=SIGAReferences.getInputReference(SIGAReferences.RESOURCE_FILES.EXCEPT);
+			sqlstates.load(is);
 		} catch (Exception e) {e.printStackTrace();}
 	}
 		

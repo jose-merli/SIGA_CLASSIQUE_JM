@@ -23,6 +23,7 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.beans.AdmInformeAdm;
 import com.siga.beans.AdmInformeBean;
@@ -39,6 +40,7 @@ import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.InformeJustificacionMasivaForm;
 import com.siga.informes.MasterWords;
+
 
 public class InformeJustificacionAction extends MasterAction {
 	
@@ -118,7 +120,8 @@ public class InformeJustificacionAction extends MasterAction {
 			AdmInformeBean b = (AdmInformeBean) plantillas.get(0);
 			
 			// --- acceso a paths y nombres 
-			ReadProperties rp = new ReadProperties("SIGA.properties");	
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp = new ReadProperties("SIGA.properties");	
 			String rutaPlantilla = rp.returnProperty("informes.directorioFisicoPlantillaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
 			String rutaAlmacen = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
 			////////////////////////////////////////////////

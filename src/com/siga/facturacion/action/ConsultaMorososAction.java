@@ -25,6 +25,7 @@ import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorCaseSensitiveBind;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
@@ -41,6 +42,7 @@ import com.siga.facturacion.form.ConsultaMorososForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+
 
 /**
  * Action para la consulta de morosos.
@@ -277,7 +279,8 @@ protected String imprimirMorososPDF(ActionMapping mapping, MasterForm formulario
 	       
 	        
 			// Ubicacion de la carpeta donde se crean los ficheros FOP y PDF temporales
-			ReadProperties rp = new ReadProperties("SIGA.properties");			
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp = new ReadProperties("SIGA.properties");			
 		    String rutaServidor = rp.returnProperty("facturacion.directorioFisicoTemporalFacturasJava")+rp.returnProperty("facturacion.directorioTemporalFacturasJava");
     		String barra = "";
     		String nombreFichero = "";

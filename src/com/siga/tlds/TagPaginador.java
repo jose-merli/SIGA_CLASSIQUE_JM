@@ -12,7 +12,9 @@ import javax.servlet.jsp.tagext.TagSupport;
 import org.apache.commons.lang.StringUtils;
 
 import com.atos.utils.ReadProperties;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesString;
+
 
 /**
  * 
@@ -126,7 +128,8 @@ public class TagPaginador extends TagSupport {
 		if (this.distanciaPaginas!=null && !this.distanciaPaginas.equals("")){
 			distance = Integer.parseInt(this.distanciaPaginas);
 		}else{
-			ReadProperties properties=new ReadProperties("SIGA.properties");
+		    ReadProperties properties= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties properties=new ReadProperties("SIGA.properties");
 			this.distanciaPaginas = properties.returnProperty("paginador.distanciaPaginasPaginador",true);
 			distance = this.distanciaPaginas!=null?Integer.parseInt(this.distanciaPaginas):DISTANCIA_PAG_PAGINADOR;
 		}

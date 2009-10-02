@@ -3,23 +3,24 @@ package com.siga.informes;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import com.aspose.words.Document;
 import com.aspose.words.DocumentBuilder;
+import com.aspose.words.SaveFormat;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
-import com.atos.utils.UsrBean;
-import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.GenParametrosAdm;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.general.SIGAException;
+
 
 /**
  * Descripcion: Clase que recibiendo un vector de datos, los añade a documentos doc en funcion del nombre 
@@ -29,7 +30,7 @@ import com.siga.general.SIGAException;
 public class MasterWords
 {
 	String pathPlantilla=null;
-	Vector datos=null;
+	Vector<Hashtable<String,String>> datos=null;
 
 	/**
 	 * Descripcion: Primer constructor que solo recibe un parametro
@@ -44,7 +45,7 @@ public class MasterWords
 	 * @param _pathPlantilla: ruta donde se encuentra la plantilla
 	 * @param _datos: vector de Hashtable con la informacion a incluir en los doc
 	 */
-	public MasterWords(String _pathPlantilla, Vector _datos){
+	public MasterWords(String _pathPlantilla, Vector<Hashtable<String,String>> _datos){
 		this.pathPlantilla=_pathPlantilla;
 		this.datos=_datos;
 	}
@@ -58,7 +59,7 @@ public class MasterWords
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public Vector generarInforme(String nombreFichero,String pathFinal, Vector salida) throws ClsExceptions
+	public Vector<File> generarInforme(String nombreFichero,String pathFinal, Vector<File> salida) throws ClsExceptions
 	{
 		Document doc;
 		File nuevo=new File(pathFinal);
@@ -69,7 +70,7 @@ public class MasterWords
 		{
 			for(int i=0;i<datos.size();i++){
 				//relleno plantilla y la almaceno en el ArrayList
-				doc=generaUnInforme(pathPlantilla,(Hashtable)datos.get(i));
+				doc=generaUnInforme(pathPlantilla,(Hashtable<String,String>)datos.get(i));
 				try {
 					doc.save(rutaFinal+i+".doc");
 					aux=new File(rutaFinal+i+".doc");//
@@ -83,7 +84,7 @@ public class MasterWords
 	}
 	
 	 
-		public Vector generarInformePorIdioma(String nombreFichero,String pathFinal, Vector salida,String idiomaUsuario) throws ClsExceptions
+		public Vector<File> generarInformePorIdioma(String nombreFichero,String pathFinal, Vector<File> salida,String idiomaUsuario) throws ClsExceptions
 		{
 			Document doc;
 			//File nuevo=new File(pathFinal);
@@ -96,13 +97,13 @@ public class MasterWords
 			{
 				for(int i=0;i<datos.size();i++){
 					//relleno plantilla y la almaceno en el ArrayList
-					Hashtable auxidioma=(Hashtable) datos.get(i);
+					Hashtable<String,String> auxidioma=(Hashtable<String,String>) datos.get(i);
     				String idiomainteresado=(String)auxidioma.get("CODIGOLENGUAJE");
     				if (idiomainteresado==null || idiomainteresado.equals("")){
     					idiomainteresado=idiomaUsuario;
     				}
     				
-					doc=generaUnInforme(pathPlantilla+"_"+idiomainteresado+".doc",(Hashtable)datos.get(i));
+					doc=generaUnInforme(pathPlantilla+"_"+idiomainteresado+".doc",(Hashtable<String,String>)datos.get(i));
 					try {
 						doc.save(rutaFinal+i+".doc");
 						aux=new File(rutaFinal+i+".doc");//
@@ -115,7 +116,7 @@ public class MasterWords
 			
 			return salida;
 		}
-		public Vector generarInformePorIdioma(String nombreFichero,String pathFinal,String pathTemporal, Vector salida,String idiomaUsuario) throws ClsExceptions
+		public Vector<File> generarInformePorIdioma(String nombreFichero,String pathFinal,String pathTemporal, Vector<File> salida,String idiomaUsuario) throws ClsExceptions
 		{
 			Document doc;
 			//File nuevo=new File(pathFinal);
@@ -128,13 +129,13 @@ public class MasterWords
 			{
 				for(int i=0;i<datos.size();i++){
 					//relleno plantilla y la almaceno en el ArrayList
-					Hashtable auxidioma=(Hashtable) datos.get(i);
+					Hashtable<String, String> auxidioma=(Hashtable<String, String>) datos.get(i);
     				String idiomainteresado=(String)auxidioma.get("CODIGOLENGUAJE");
     				if (idiomainteresado==null || idiomainteresado.trim().equals("")){
     					idiomainteresado=idiomaUsuario;
     				}
     				
-					doc=generaUnInforme(pathPlantilla+"_"+idiomainteresado+".doc",pathTemporal,nombreFichero,(Hashtable)datos.get(i));
+					doc=generaUnInforme(pathPlantilla+"_"+idiomainteresado+".doc",pathTemporal,nombreFichero,(Hashtable<String, String>)datos.get(i));
 					try {
 						doc.save(rutaFinal+i+".doc");
 						//Borramos el fichero que nos sirvio para generar el nuevo docuemento
@@ -152,7 +153,7 @@ public class MasterWords
 		
 		
 	//Agrupa en un fichero tipo zip los doc generados
-	public static File doZip(ArrayList array, String rutaFinal) throws ClsExceptions
+	public static File doZip(ArrayList<File> array, String rutaFinal) throws ClsExceptions
 	{
 		File ficZip=null;
 		byte[] buffer = new byte[8192];
@@ -200,13 +201,12 @@ public class MasterWords
 	}
 
 	//Rellena las plantillas sustituyendo los campos por la información
-	private Document generaUnInforme(String pathFichero,Hashtable dato) throws ClsExceptions
+	private Document generaUnInforme(String pathFichero,Hashtable<String,String> dato) throws ClsExceptions
 	{
 		 
 		
-		Enumeration claves=dato.keys();
+		Enumeration<String> claves=dato.keys();
 		Document doc=null;
-		boolean testigo;
 		
 		try {
 			doc=new Document(pathFichero);
@@ -233,13 +233,12 @@ public class MasterWords
 		
 		return doc;
 	}
-	private Document generaUnInforme(String pathFichero,String pathFicheroTemporal,String nombreFichero,Hashtable dato) throws ClsExceptions
+	private Document generaUnInforme(String pathFichero,String pathFicheroTemporal,String nombreFichero,Hashtable<String, String> dato) throws ClsExceptions
 	{
 		 
 		
-		Enumeration claves=dato.keys();
+		Enumeration<String> claves=dato.keys();
 		Document doc=null;
-		boolean testigo;
 		String ficheroTemporal = pathFicheroTemporal+ClsConstants.FILE_SEP+nombreFichero+".doc";
 		//File fileDocMaestro = new File(ficheroTemporal);
 		
@@ -322,11 +321,11 @@ public class MasterWords
 		return doc;
 	}
 	
-	public Document sustituyeDocumento(Document doc,Hashtable dato)throws ClsExceptions
+	public Document sustituyeDocumento(Document doc,Hashtable<String,Object> dato)throws ClsExceptions
 	{
 
 		try {
-			Enumeration claves=dato.keys();
+			Enumeration<String> claves=dato.keys();
 			do{
 				DocumentBuilder builder=new DocumentBuilder(doc);
 				String clave = (String) claves.nextElement();
@@ -383,41 +382,57 @@ public class MasterWords
 		return archivo;
 	}
 
-	public static void precargaInformes() 
-	{
+	public static void precargaInformes() {
+		File salida=null;
+		
 		try {
 		    // --- acceso a paths y nombres 
-		    String pathAplicacion = "";
-		    try {
-		    	UsrBean us = new UsrBean();
-			    us.setUserName(new Integer(ClsConstants.USUMODIFICACION_AUTOMATICO).toString());
-			    GenParametrosAdm adm = new GenParametrosAdm (us);
-			    pathAplicacion = adm.getValor("0", "CEN", "PATH_APP", ClsConstants.RES_DIR);
-		    }
-		    catch (Exception e) {
-		    	pathAplicacion = ClsConstants.RES_DIR;
-			}
-			String rutaPlantilla = pathAplicacion + ClsConstants.FILE_SEP + "html" + ClsConstants.FILE_SEP +"jsp"+ ClsConstants.FILE_SEP + "general" + ClsConstants.FILE_SEP + "inicializacionWords.doc";
-			String rutaAlmacen = pathAplicacion + ClsConstants.FILE_SEP + "html" + ClsConstants.FILE_SEP +"jsp"+ ClsConstants.FILE_SEP + "general" + ClsConstants.FILE_SEP + "inicializacionCrystal"+UtilidadesString.formatoFecha(new Date(),"yyyyMMddhhmmss")+".doc";
-		    Hashtable htLocal = new Hashtable();
+//		    String pathAplicacion = "";
+//		    try {
+//		    	UsrBean us = new UsrBean();
+//			    us.setUserName(new Integer(ClsConstants.USUMODIFICACION_AUTOMATICO).toString());
+//			    GenParametrosAdm adm = new GenParametrosAdm (us);
+//			    pathAplicacion = adm.getValor("0", "CEN", "PATH_APP", ClsConstants.RES_DIR);
+//		    }
+//		    catch (Exception e) {
+//		    	pathAplicacion = ClsConstants.RES_DIR;
+//			}
+//			String rutaPlantilla = pathAplicacion + ClsConstants.FILE_SEP + "html" + ClsConstants.FILE_SEP +"jsp"+ ClsConstants.FILE_SEP + "general" + ClsConstants.FILE_SEP + "inicializacionWords.doc";
+//			String rutaAlmacen = pathAplicacion + ClsConstants.FILE_SEP + "html" + ClsConstants.FILE_SEP +"jsp"+ ClsConstants.FILE_SEP + "general" + ClsConstants.FILE_SEP + "inicializacionCrystal"+UtilidadesString.formatoFecha(new Date(),"yyyyMMddhhmmss")+".doc";
+		    Hashtable<String, String> htLocal = new Hashtable<String, String>();
 		    htLocal.put("NUMERO_EJG","123456");
-			File aux=null;//
 			//relleno plantilla y la almaceno en el ArrayList
-			Enumeration claves=htLocal.keys();
-			Document docu=new Document(rutaPlantilla);
-			do{
+//			Enumeration claves=htLocal.keys();
+//			Document docu=new Document(rutaPlantilla);
+//			do{
+//				DocumentBuilder builder=new DocumentBuilder(docu);
+//				String clave = (String) claves.nextElement();
+//				if(builder.moveToMergeField(clave)) //si lo encuentra
+//					builder.write((String)htLocal.get(clave));
+//			} while(claves.hasMoreElements());
+
+			InputStream is=SIGAReferences.getInputReference(SIGAReferences.RESOURCE_FILES.WORDS_INIT);
+			Document docu=new Document(is);
+			for (Map.Entry<String,String> entrada:htLocal.entrySet()){
 				DocumentBuilder builder=new DocumentBuilder(docu);
-				String clave = (String) claves.nextElement();
-				if(builder.moveToMergeField(clave)) //si lo encuentra
-					builder.write((String)htLocal.get(clave));
-			} while(claves.hasMoreElements());
-			
-			docu.save(rutaAlmacen);
-			aux=new File(rutaAlmacen);
-			aux.delete();
-			
+				if(builder.moveToMergeField(entrada.getKey())) //si lo encuentra
+					builder.write(entrada.getValue());
+			}
+			salida=SIGAReferences.getFileReference(SIGAReferences.RESOURCE_FILES.WORDS_INIT_RESULT);
+			salida.createNewFile();
+			FileOutputStream fos=new FileOutputStream(salida);
+			docu.save(fos, SaveFormat.DOC);
+			fos.flush();
+			fos.close();
 		} catch (Exception e) {
 		    ClsLogging.writeFileLog("ERROR al precargar informes aspose.words: "+e.toString(),3);
+		} finally {
+//Comentado para que no se borre el fichero y en la siguiente ejecucion no falle.
+//			if (salida!=null){
+//				try {
+//					salida.delete();
+//				} catch (Exception e){}
+//			}
 		}
 	}
 	

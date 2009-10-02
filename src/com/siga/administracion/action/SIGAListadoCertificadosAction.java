@@ -13,7 +13,9 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.*;
 
 import com.siga.Utilidades.Paginador;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.administracion.form.*;
+
 
 public class SIGAListadoCertificadosAction extends MasterAction
 {
@@ -135,7 +137,8 @@ public class SIGAListadoCertificadosAction extends MasterAction
                     
                     serialNumber = serialNumber.trim();
                     
-                    ReadProperties rp3 = new ReadProperties("SIGA.properties");
+        		    ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//                    ReadProperties rp3 = new ReadProperties("SIGA.properties");
                     
                     String sURLServidor = rp3.returnProperty("ACA.URL.EJB.validador");
                     String sParametroNumeroSerie = rp3.returnProperty("ACA.parametro.numero.serie");

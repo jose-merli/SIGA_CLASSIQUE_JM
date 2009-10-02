@@ -26,6 +26,7 @@ import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesNumero;
@@ -63,6 +64,7 @@ import com.siga.informes.InformeCertificadoIRPF;
 import com.siga.informes.MasterReport;
 import com.siga.informes.MasterWords;
 import com.siga.informes.form.InformesGenericosForm;
+
 
 
 /**
@@ -353,7 +355,8 @@ public class InformesGenericosAction extends MasterAction {
 			// y se sirven como un vector de hashtables por si se trata de datos multiregistro.
 			Vector datos = admInf.obtenerDatosFormulario(miform);
 			// --- acceso a paths y nombres 
-			ReadProperties rp = new ReadProperties("SIGA.properties");	
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp = new ReadProperties("SIGA.properties");	
 			String rutaPlantilla = rp.returnProperty("informes.directorioFisicoPlantillaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
 			String rutaAlmacen = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
 			////////////////////////////////////////////////
@@ -824,7 +827,8 @@ public class InformesGenericosAction extends MasterAction {
 
 			Vector datos = admInf.obtenerDatosFormulario(miform);
 			// --- acceso a paths y nombres 
-			ReadProperties rp = new ReadProperties("SIGA.properties");	
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp = new ReadProperties("SIGA.properties");	
 			String rutaPlantilla = rp.returnProperty("informes.directorioFisicoPlantillaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
 			String rutaAlmacen = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
 			////////////////////////////////////////////////
@@ -958,7 +962,8 @@ public class InformesGenericosAction extends MasterAction {
 
 			Vector datos = admInf.obtenerDatosFormulario(miform);
 			// --- acceso a paths y nombres 
-			ReadProperties rp = new ReadProperties("SIGA.properties");	
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp = new ReadProperties("SIGA.properties");	
 			String rutaPlantilla = rp.returnProperty("informes.directorioFisicoPlantillaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
 			String rutaAlmacen = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
 			////////////////////////////////////////////////
@@ -1220,7 +1225,8 @@ public class InformesGenericosAction extends MasterAction {
 			}
 
 			//obteniendo rutas y nombres de las plantillas y ficheros a usar 
-			ReadProperties rp = new ReadProperties ("SIGA.properties");
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp = new ReadProperties ("SIGA.properties");
 			baseRutaPlantilla = 
 				rp.returnProperty ("informes.directorioFisicoPlantillaInformesJava") + 
 				rp.returnProperty ("informes.directorioPlantillaInformesJava");
@@ -1657,7 +1663,8 @@ public class InformesGenericosAction extends MasterAction {
 			// y se sirven como un vector de hashtables por si se trata de datos multiregistro.
 			Vector datos = admInf.obtenerDatosFormulario(miform);
 			// --- acceso a paths y nombres 
-			ReadProperties rp = new ReadProperties("SIGA.properties");	
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp = new ReadProperties("SIGA.properties");	
 			String rutaPlantilla = rp.returnProperty("informes.directorioFisicoPlantillaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
 			String rutaAlmacen = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
 
@@ -1753,7 +1760,8 @@ public class InformesGenericosAction extends MasterAction {
 			// y se sirven como un vector de hashtables por si se trata de datos multiregistro.
 			Vector datos = admInf.obtenerDatosFormulario(miform);
 			// --- acceso a paths y nombres 
-			ReadProperties rp = new ReadProperties("SIGA.properties");	
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp = new ReadProperties("SIGA.properties");	
 			String rutaPlantilla = rp.returnProperty("informes.directorioFisicoPlantillaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
 			String rutaAlmacen = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
 
@@ -2171,7 +2179,8 @@ public class InformesGenericosAction extends MasterAction {
 			int cuentaArchivos = 0;
 
 			// --- acceso a paths y nombres 
-			ReadProperties rp = new ReadProperties("SIGA.properties");	
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp = new ReadProperties("SIGA.properties");	
 			String rutaPlantilla = rp.returnProperty("informes.directorioFisicoPlantillaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
 			String rutaAlmacen = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
 

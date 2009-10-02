@@ -8,8 +8,11 @@ import java.io.*;
 import java.util.*;
 
 import com.atos.utils.*;
+
 import javax.servlet.http.*;
 import com.siga.Utilidades.*;
+
+
 import javax.servlet.jsp.tagext.*;
 
 /**
@@ -123,7 +126,8 @@ public class TagComboBD extends TagSupport {
 			Hashtable codigos = new Hashtable();
 			int contador=1;
 			Vector almacenBD = new Vector();
-			ReadProperties p = new ReadProperties ("Combo.properties");
+		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.COMBO);
+//			ReadProperties p = new ReadProperties ("Combo.properties");
 			String consultaSQL = p.returnProperty(this.tipo, true);
 			if (consultaSQL == null) {
 				rc = this.getTipoIncorrecto (almacenBD);

@@ -10,6 +10,7 @@
 package com.atos.utils;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -19,8 +20,9 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Properties;
 
-
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.beans.AdmLenguajesAdm;
+
 
 public class ClsMngProperties {
 	public static String TN_RESOURCES="GEN_RECURSOS";
@@ -30,8 +32,8 @@ public class ClsMngProperties {
 	public static String FN_DESC_RESOURCE="DESCRIPCION";
 	public static String FN_ERROR="ERROR";
 	 
-	private static Hashtable htLanguages=new Hashtable();
-	private static final String resourcesLocation=ClsConstants.RESOURCES_DIR_STRUTS + ClsConstants.FILE_SEP+"ApplicationResources";
+	private static Hashtable<String, LinkedHashMap> htLanguages=new Hashtable<String, LinkedHashMap>();
+	//private static final String resourcesLocation=ClsConstants.RESOURCES_DIR_STRUTS + ClsConstants.FILE_SEP+"ApplicationResources";
 	private static String selectLanguages="select "+ColumnConstants.FN_LANG_ID_LANGUAGE+" from "+TableConstants.TABLE_LANGUAGE;
 	private static String selectResources="select "+FN_ID_RESOURCE+", "+FN_DESC_RESOURCE+
 										  " from "+TN_RESOURCES+" where "+FN_ID_LANGUAGE+"=";
@@ -67,13 +69,12 @@ public class ClsMngProperties {
 	  				String languageCode=(String)rowL.getString(ColumnConstants.FN_LANG_ID_LANGUAGE);
       				rowsResources=new RowsContainer();
 	  				lhmResources= new LinkedHashMap();
-	  				Hashtable codigos = new Hashtable();
+	  				Hashtable<Integer, String> codigos = new Hashtable<Integer, String>();
 	  				codigos.put(new Integer(1),languageCode);
 	  				if(rowsResources.queryBind(selectResources+":1 ORDER BY 1",codigos)) {
 	    				int sizeResources=rowsResources.size();
 	    				for(int j=0;j<sizeResources;j++){
 	      					Row rowR=(Row)rowsResources.get(j);
-          					String idRes=rowR.getString(FN_ID_RESOURCE);
 	      					lhmResources.put(rowR.getString(FN_ID_RESOURCE),
 											 rowR.getString(FN_DESC_RESOURCE));
 	    				}
@@ -91,15 +92,15 @@ public class ClsMngProperties {
 	 * la base de datos, y cargados en el Hash <code>htLanguages</code>
 	 * @throws ClsExceptions
 	 */
+	@SuppressWarnings("unchecked")
 	private static void writePropertiesInFiles() throws ClsExceptions{
   		FileOutputStream outputStream=null;
   		BufferedWriter bufferedWriter = null;
     	try {
-      		int nLanguages= htLanguages.size();
       		String lang=null;
       		LinkedHashMap lhm=null;
       		OutputStreamWriter outputStreamWriter=null;
-      		Enumeration enumLanguages=htLanguages.keys();
+      		Enumeration<String> enumLanguages=htLanguages.keys();
       		while(enumLanguages.hasMoreElements()) {
         		lang=(String) enumLanguages.nextElement();
         		lhm=(LinkedHashMap) htLanguages.get(lang);
@@ -109,7 +110,7 @@ public class ClsMngProperties {
 				usr.setLanguage("1");
         		AdmLenguajesAdm a = new AdmLenguajesAdm(usr);
         		String lenguajeExt=a.getLenguajeExt(lang);
-        		outputStream= new FileOutputStream(resourcesLocation+"_"+lenguajeExt.toLowerCase()+".properties");
+        		outputStream= new FileOutputStream(SIGAReferences.getDirectoryReference(SIGAReferences.RESOURCE_FILES.PROPERTIES_DIR)+"/ApplicationResources_"+lenguajeExt.toLowerCase()+".properties");
 				outputStreamWriter=new OutputStreamWriter(outputStream);
 				bufferedWriter = new BufferedWriter(outputStreamWriter);
 				Iterator itResources=lhm.orderedKeys();

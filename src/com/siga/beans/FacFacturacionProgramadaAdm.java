@@ -10,11 +10,13 @@ import java.io.File;
 import java.util.*;
 
 import com.atos.utils.*;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.certificados.Plantilla;
 import com.siga.envios.Envio;
 import com.siga.general.SIGAException;
+
 
 
 public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
@@ -434,7 +436,8 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 		try { 
 			String idserieidprogramacion = bean.getIdSerieFacturacion().toString()+"_" + bean.getIdProgramacion().toString();
 			String institucion = bean.getIdInstitucion().toString();
-			ReadProperties p = new ReadProperties ("SIGA.properties");
+		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			//ReadProperties p = new ReadProperties ("SIGA.properties");
 			
 			// directorio de fichero bancario 
 			String pathFichero = p.returnProperty("facturacion.directorioBancosOracle");

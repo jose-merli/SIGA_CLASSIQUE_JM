@@ -21,12 +21,14 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorCaseSensitive;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.*;
 import com.siga.general.*;
 import com.siga.informes.form.MantenimientoInformesForm;
 import com.siga.facturacion.form.DevolucionesManualesForm;
+
 
 /**
  * Clase Action de struts para el mantenimiento de devoluciones manuales<b>
@@ -159,7 +161,8 @@ public class DevolucionesManualesAction extends MasterAction{
 	 		String identificador = devolucionesAdm.getNuevoID(idInstitucion).toString();
 
 		    // Generación del fichero
-			ReadProperties rp 	 = new ReadProperties("SIGA.properties");			
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp 	 = new ReadProperties("SIGA.properties");			
 		    String rutaServidor  = rp.returnProperty("facturacion.directorioFisicoDevolucionesJava") + rp.returnProperty("facturacion.directorioDevolucionesJava");
 	 		rutaServidor += File.separator + idInstitucion;
 	 		String nombreFichero = rutaServidor + File.separator +"Manual-"+UtilidadesString.formatoFecha(form.getFechaDevolucion(),"dd/MM/yyyy","ddMMyy")+"-"+form.getBanco()+"-"+identificador+".d19";

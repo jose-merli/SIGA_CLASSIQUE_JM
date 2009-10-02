@@ -25,8 +25,10 @@ import org.apache.log4j.Logger;
 //import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.Category;
 
-public class ClsLogging
-{
+import com.siga.Utilidades.SIGAReferences;
+
+
+public class ClsLogging{
 	private static final SimpleDateFormat sdfLong = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); 
 	private static final SimpleDateFormat sdfShort = new SimpleDateFormat("yyyyMMdd"); 
 	private static final String sError = "\n***** ERROR ***** ";
@@ -47,12 +49,19 @@ public class ClsLogging
 	 *  Read the configuration parameters of the Logs.
 	 */
 	private static synchronized void init() {
-		File f = new File(ClsConstants.RESOURCES_DIR+ClsConstants.FILE_SEP+"SIGA.properties");
-		long lst = f.lastModified();
+		//File f = new File(ClsConstants.RESOURCES_DIR+ClsConstants.FILE_SEP+"SIGA.properties");
+		long lst=0;
+		try {
+			File f = SIGAReferences.getFileReference(SIGAReferences.RESOURCE_FILES.SIGA);
+			if (f!=null)
+				lst = f.lastModified();
+		} catch (Exception e){
+		}
 		if(nLastMod != lst) {
 			nLastMod = lst;
 			ClsLogging.writeFileLog("CLSLOGGING INIT() SE EJECUTA",3);
-			ReadProperties rp=new ReadProperties("SIGA.properties");
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp=new ReadProperties("SIGA.properties");
 
 			//LMS 29/08/2006
 			//Esto viene de la capa básica, pero se ha adaptado a SIGA.
@@ -62,42 +71,34 @@ public class ClsLogging
 			bLog4j=rp.returnProperty("LOG.log4j").equals("1");
 			bLogXeMail=rp.returnProperty("LOG.email").equals("1");
 			
-			fileName = ClsConstants.RES_DIR+ClsConstants.RES_PROP_DOMAIN+ClsConstants.FILE_SEP+rp.returnProperty("LOG.dir")+ClsConstants.FILE_SEP+rp.returnProperty("LOG.name");
-			try
-			{
-				loglevel = Integer.parseInt(rp.returnProperty("LOG.level").trim());
+			try {
+				StringBuilder strBld = new StringBuilder();
+				strBld.append(SIGAReferences.RESOURCE_FILES.WEB_INF_DIR.getFileName())
+						.append(rp.returnProperty("LOG.dir")).append("/").append(rp.returnProperty("LOG.name"));
+				fileName=SIGAReferences.getReference(strBld.toString());
+			} catch (Exception e){
+				e.printStackTrace();
 			}
 			
-			catch (Exception nfe)
-			{
+			try{
+				loglevel = Integer.parseInt(rp.returnProperty("LOG.level").trim());
+			}catch (Exception nfe){
 				nfe.printStackTrace();
 			}
 			
-			try
-			{
+			try{
 				logger = Logger.getLogger("SIGA");
-			}
-			
-			catch(Exception e)
-			{
+			}catch(Exception e){
 				logger=null;
 				e.printStackTrace();
 			}
 			
-			try
-			{
+			try{
 				logXeMail = Logger.getLogger("EMAIL");
-			}
-			
-			catch(Exception e)
-			{
+			}catch(Exception e){
 				logXeMail=null;
 				e.printStackTrace();
 			}
-			
-			
-			
-			
 			
 			//System.out.println("GESTION DEL LOG: logLevel Init="+loglevel);
 			ClsLogging.writeFileLog("--------------------",3);

@@ -7,6 +7,8 @@ package com.siga.Utilidades;
 import java.util.Vector;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ReadProperties;
+
+
 import java.io.Serializable;
 
 /**
@@ -55,7 +57,8 @@ public class PaginadorVector extends Paginador implements IPaginador, Serializab
 	private void inicializar() throws ClsExceptions 
 	{
 		try {
-			ReadProperties properties = new ReadProperties("SIGA.properties");
+		    ReadProperties properties= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties properties = new ReadProperties("SIGA.properties");
 			String numRegistros = properties.returnProperty("paginador.registrosPorPagina", true);
 
 			this.numeroRegistrosPagina = numRegistros != null ? Integer.parseInt(numRegistros) : NUM_REGISTROS;

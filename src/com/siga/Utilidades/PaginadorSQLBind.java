@@ -16,6 +16,7 @@ import com.atos.utils.RowsContainer;
 import java.io.Serializable;
 import com.siga.general.SIGAException;
 
+
 /**
  * Paginador no sensitivo a mayusculas/minusculas y acentos. Utiliza un Pool configurado
  * con los parametros:
@@ -129,7 +130,8 @@ public class PaginadorSQLBind extends PaginadorBind implements IPaginador, Seria
 		try {
 			
 			this.codigos=codigos;
-			ReadProperties properties = new ReadProperties("SIGA.properties");
+		    ReadProperties properties= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties properties = new ReadProperties("SIGA.properties");
 			String numRegistros = properties.returnProperty("paginador.registrosPorPagina", true);
 			this.numeroRegistrosPagina = numRegistros != null ? Integer.parseInt(numRegistros) : NUM_REGISTROS;
 			String pagCache = properties.returnProperty("paginador.distanciaPaginasCache", true);

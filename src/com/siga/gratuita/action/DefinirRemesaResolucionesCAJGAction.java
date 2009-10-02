@@ -36,6 +36,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.GestorContadores;
 import com.siga.Utilidades.Paginador;
 import com.siga.Utilidades.PaginadorCaseSensitive;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CajgRemesaResolucionAdm;
@@ -48,6 +49,7 @@ import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinicionRemesaResolucionesCAJGForm;
 import com.siga.gratuita.form.DefinirEJGForm;
 import com.siga.informes.MasterWords;
+
 
 
 public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
@@ -444,7 +446,8 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 			DefinicionRemesaResolucionesCAJGForm miForm = (DefinicionRemesaResolucionesCAJGForm) formulario;
 			String idInstitucion = miForm.getIdInstitucion();
 			
-			ReadProperties rp = new ReadProperties("SIGA.properties");
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp = new ReadProperties("SIGA.properties");
 			String rutaAlmacen = rp.returnProperty("cajg.directorioFisicoCAJG") + rp.returnProperty("cajg.directorioCAJGJava");				
 			rutaAlmacen += File.separator + idInstitucion + File.separator + "remesaResoluciones";
 			
@@ -765,7 +768,8 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 		
 	public static File getFichero(String idInstitucion, String idRemesaResolucion, boolean log) {
 		File file = null;
-		ReadProperties rp = new ReadProperties("SIGA.properties");
+	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//		ReadProperties rp = new ReadProperties("SIGA.properties");
 		String rutaAlmacen = rp.returnProperty("cajg.directorioFisicoCAJG") + rp.returnProperty("cajg.directorioCAJGJava");
 			
 		rutaAlmacen += File.separator + idInstitucion + File.separator + "remesaResoluciones";		

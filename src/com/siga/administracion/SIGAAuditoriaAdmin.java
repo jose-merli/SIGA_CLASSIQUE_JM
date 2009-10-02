@@ -32,9 +32,11 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 
 import com.atos.utils.ReadProperties;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenInstitucionBean;
 import com.siga.general.CenVisibilidad;
+
 
 /**
  * @author nuria.rgonzalez
@@ -77,14 +79,19 @@ public class SIGAAuditoriaAdmin{
 	}
 	
 	public void ficheroLog(){
-		File file = new File(ClsConstants.RESOURCES_DIR+ClsConstants.FILE_SEP+"SIGA.properties");
-		long lst = file.lastModified();
-		synchronized (NSEM)
-		{
-			if(nLastMod != lst)
-			{
+//		File file = new File(ClsConstants.RESOURCES_DIR+ClsConstants.FILE_SEP+"SIGA.properties");
+		long lst=0; 
+		try {
+			File file = SIGAReferences.getFileReference(SIGAReferences.RESOURCE_FILES.SIGA);
+			if (file!=null)
+				lst = file.lastModified();
+		} catch (Exception e){
+		}
+		synchronized (NSEM) {
+			if(nLastMod != lst) {
 				nLastMod = lst;
-			    ReadProperties rp=new ReadProperties("SIGA.properties");			       
+			    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			    ReadProperties rp=new ReadProperties("SIGA.properties");			       
 			    fileName=rp.returnProperty("LogAdmin.archivo");				    
 			}			
 		}

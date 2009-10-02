@@ -4,24 +4,31 @@ package com.siga.servlets;
 // raul.ggonzalez 28-12-2004 Se anhade la inicializacion de visibilidad al init de la clase
 // Luis Miguel Sánchez PIÑA - 24/02/2005 - Se apanhan un poco los mensajes.
 
-import javax.servlet.*;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 
-import com.atos.utils.*;
-import com.siga.general.CenVisibilidad;
-
+import org.apache.struts.action.ActionServlet;
 import org.apache.struts.config.ModuleConfig;
 
-public class SIGADataSourceInit extends org.apache.struts.action.ActionServlet 
-{
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
+import com.atos.utils.ClsMngProperties;
+import com.siga.Utilidades.SIGAReferences;
+import com.siga.general.CenVisibilidad;
+
+
+public class SIGADataSourceInit extends ActionServlet {
+	private static final long serialVersionUID = 1770505503324002123L;
 	static ModuleConfig moduleConfig = null;
 	
     public SIGADataSourceInit() { }
 
-    public void init(ServletConfig cfg) throws javax.servlet.ServletException 
-    {
+    public void init(ServletConfig cfg) throws javax.servlet.ServletException {
 		long seg_first =0;
 		long seg_last =0;
 		seg_first=System.currentTimeMillis();
+		
+		SIGAReferences.initialize(cfg.getServletContext());
 
 		//ClsLogging.writeFileLogWithoutSession("");
         //ClsLogging.writeFileLogWithoutSession("Inicializando DataSource(s)",1);
@@ -31,6 +38,7 @@ public class SIGADataSourceInit extends org.apache.struts.action.ActionServlet
         ClsLogging.writeFileLogWithoutSession("**************************",1);
         ClsLogging.writeFileLogWithoutSession("* INICIALIZANDO SERVIDOR *",1);
         ClsLogging.writeFileLogWithoutSession("**************************",1);
+		SIGAReferences.initialize(cfg.getServletContext());
         ClsLogging.writeFileLogWithoutSession("",1);
         ClsLogging.writeFileLogWithoutSession(" > Generando ficheros Properties de Idiomas.",1);
         

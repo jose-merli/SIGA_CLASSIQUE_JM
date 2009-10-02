@@ -18,6 +18,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenPersonaAdm;
@@ -38,6 +39,7 @@ import com.siga.general.SIGAException;
 import com.siga.gratuita.form.VolantesExpresForm;
 import com.siga.gratuita.util.calendarioSJCS.CalendarioSJCS;
 import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
+
 
 public class VolantesExpresAction extends MasterAction 
 {
@@ -84,7 +86,9 @@ public class VolantesExpresAction extends MasterAction
 	}
 	
 	protected String nuevo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException 
-	{	ReadProperties rp3 = new ReadProperties("SIGA.properties");
+	{
+	    ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//		ReadProperties rp3 = new ReadProperties("SIGA.properties");
 		String tipoAsistenciaDefecto = rp3.returnProperty("codigo.general.scs_tipoasistencia.volanteExpres");
 		request.setAttribute("tipoAsistenciaDefecto", tipoAsistenciaDefecto);
 		formulario.reset(mapping, request);
@@ -102,7 +106,8 @@ public class VolantesExpresAction extends MasterAction
 	protected String limpiarPersona(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException 
 	{
 		//formulario.reset(mapping, request);	
-		ReadProperties rp3 = new ReadProperties("SIGA.properties");
+	    ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//		ReadProperties rp3 = new ReadProperties("SIGA.properties");
 		VolantesExpresForm f  = (VolantesExpresForm) formulario;
         String tipoAsistenciaDefecto = rp3.returnProperty("codigo.general.scs_tipoasistencia.volanteExpres");
         String letrado        = f.getLetrado();
@@ -469,7 +474,8 @@ public class VolantesExpresAction extends MasterAction
 	protected String obtenerDatosCabecera (ActionForm formulario, HttpServletRequest request) 
 	{
 		try {
-			ReadProperties rp3 = new ReadProperties("SIGA.properties");
+		    ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp3 = new ReadProperties("SIGA.properties");
 			String tipoAsistenciaDefecto = rp3.returnProperty("codigo.general.scs_tipoasistencia.volanteExpres");
 			request.setAttribute("tipoAsistenciaDefecto", tipoAsistenciaDefecto);
 			VolantesExpresForm f  = (VolantesExpresForm) formulario;

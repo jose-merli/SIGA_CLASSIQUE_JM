@@ -50,6 +50,7 @@ import com.atos.utils.GstDate;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
@@ -65,6 +66,7 @@ import com.siga.beans.EnvDestinatariosBean;
 import com.siga.beans.FacFacturaBean;
 import com.siga.beans.FacLineaFacturaBean;
 import com.siga.general.SIGAException;
+
 
 /**
  * Plantillas para certificados
@@ -234,8 +236,9 @@ public class Plantilla {
         	ClsLogging.writeFileLog(">>> baseDir:" + sBaseDir,10);
         	
             org.apache.fop.configuration.Configuration.put("baseDir", sBaseDir);
-            org.apache.fop.configuration.Configuration.put("fontBaseDir", ClsConstants.FOP_FONTS_DIR);
-            new Options(new File(ClsConstants.FOP_CONFIG_FILE));
+            org.apache.fop.configuration.Configuration.put("fontBaseDir", SIGAReferences.getReference(SIGAReferences.RESOURCE_FILES.FOP_DIR.getFileName()));
+//            new Options(new File(ClsConstants.FOP_CONFIG_FILE));
+            new Options(SIGAReferences.getInputReference(SIGAReferences.RESOURCE_FILES.FOP));
 
             ClsLogging.writeFileLog(">>> org.apache.fop.configuration.Configuration",10);
             // Construct driver and setup output format
@@ -315,7 +318,8 @@ public class Plantilla {
 		try{			
 						
 			// Obtencion plantilla factura
-			ReadProperties rp = new ReadProperties("SIGA.properties");			
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp = new ReadProperties("SIGA.properties");			
 		    String rutaPlantilla = rp.returnProperty("facturacion.directorioFisicoPlantillaFacturaJava")+rp.returnProperty("facturacion.directorioPlantillaFacturaJava");		    
 		    String barra="";
     		if (rutaPlantilla.indexOf("/") > -1){ 

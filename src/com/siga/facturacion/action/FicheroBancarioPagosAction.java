@@ -21,12 +21,14 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.FacDisqueteCargosAdm;
 import com.siga.facturacion.form.FicheroBancarioPagosForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+
 
 /**
  * Clase action para Descargar los ficheros bancarios.<br/>
@@ -160,7 +162,8 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			//FacDisqueteCargosBean beanDisquete	= new FacDisqueteCargosBean();
 			//FacFacturaAdm admFactura = new FacFacturaAdm(usuario);
 			
-			ReadProperties p 	= new ReadProperties ("SIGA.properties");
+		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties p 	= new ReadProperties ("SIGA.properties");
 			pathFichero 		= p.returnProperty(directorioFisico) + p.returnProperty(directorio);			
 			//String nombreFichero 	= p.returnProperty(keyFichero);						
 			
@@ -213,7 +216,8 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			//FacDisqueteCargosAdm adm 			= new FacDisqueteCargosAdm(usuario);
 			//FacDisqueteCargosBean beanDisquete	= new FacDisqueteCargosBean();	
 			
-			ReadProperties p 		= new ReadProperties ("SIGA.properties");
+		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties p 		= new ReadProperties ("SIGA.properties");
 			pathFichero 			= p.returnProperty(keyPath);
 			idInstitucion			= this.getIDInstitucion(request).toString();
 			

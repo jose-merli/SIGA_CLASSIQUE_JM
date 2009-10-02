@@ -5,6 +5,8 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 import com.atos.utils.ReadProperties;
+import com.siga.Utilidades.SIGAReferences;
+
 
 public class ServletPruebaACA extends HttpServlet
 {
@@ -20,7 +22,8 @@ public class ServletPruebaACA extends HttpServlet
     
     public void doWork (HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
     {
-        ReadProperties rp = new ReadProperties("SIGA.properties");
+	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//        ReadProperties rp = new ReadProperties("SIGA.properties");
         
         String sRetorno = rp.returnProperty("ACA.TMP_VALOR_RETORNO_SERVLET");
         

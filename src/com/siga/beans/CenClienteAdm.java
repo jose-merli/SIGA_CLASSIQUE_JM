@@ -20,6 +20,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.GestorContadores;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.PaginadorCaseSensitiveBind;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
@@ -29,6 +30,7 @@ import com.siga.censo.form.BusquedaClientesForm;
 import com.siga.general.CenVisibilidad;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.SIGAException;
+
 
 /**
  * Administrador de Cliente
@@ -3409,7 +3411,8 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	        Hashtable htDatos = new Hashtable();
 	        Hashtable htDatos1 = new Hashtable();
 	        
-	        ReadProperties rp = new ReadProperties("SIGA.properties");
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//	        ReadProperties rp = new ReadProperties("SIGA.properties");
 	        
 	        String sSQL = rp.returnProperty("certificados.consultacliente");
 	        

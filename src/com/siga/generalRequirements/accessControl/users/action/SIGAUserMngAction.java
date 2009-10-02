@@ -16,6 +16,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.generalRequirements.accessControl.SIGAGrDDBBObject;
 import com.siga.generalRequirements.accessControl.users.SIGAUser;
 import com.siga.generalRequirements.accessControl.users.SIGAUserMng;
@@ -28,6 +29,7 @@ import com.atos.utils.Crypter;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.Table;
 import com.atos.utils.TableConstants;
+
 
 
 /**
@@ -181,7 +183,8 @@ public class SIGAUserMngAction extends Action {
     String MGR_PW = "";
     String MY_SEARCHBASE = "";
 
-    ReadProperties ldapProperties=new ReadProperties("ldap.properties");
+    ReadProperties ldapProperties= new ReadProperties(SIGAReferences.RESOURCE_FILES.LDAP);
+//    ReadProperties ldapProperties=new ReadProperties("ldap.properties");
     INITCTX = ldapProperties.returnProperty("LDAP.INITCTX");
     String hosts = ldapProperties.returnProperty("LDAP.MY_HOST");
     StringTokenizer tok=new StringTokenizer(hosts,";");
@@ -679,7 +682,8 @@ public class SIGAUserMngAction extends Action {
       String MGR_PW = "";
       String MY_SEARCHBASE = "";
 
-      ReadProperties ldapProperties=new ReadProperties("ldap.properties");
+      ReadProperties ldapProperties= new ReadProperties(SIGAReferences.RESOURCE_FILES.LDAP);
+//      ReadProperties ldapProperties=new ReadProperties("ldap.properties");
       INITCTX = ldapProperties.returnProperty("LDAP.INITCTX");
       String hosts = ldapProperties.returnProperty("LDAP.MY_HOST");
       StringTokenizer tok=new StringTokenizer(hosts,";");

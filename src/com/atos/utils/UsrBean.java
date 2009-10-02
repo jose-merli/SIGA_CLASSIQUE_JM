@@ -19,6 +19,7 @@ import javax.naming.NamingException;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.SIGAConstants;
 import com.siga.beans.AdmLenguajesAdm;
@@ -26,6 +27,7 @@ import com.siga.beans.AdmLenguajesBean;
 import com.siga.beans.AdmUsuariosAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.general.CenVisibilidad;
+
 
 public class UsrBean implements Serializable {
 
@@ -51,13 +53,15 @@ public class UsrBean implements Serializable {
 	private boolean aplicarLOPD = false;
 
 	public UsrBean() {
-		ReadProperties ldapProperties = new ReadProperties("jndi.properties");
+	    ReadProperties ldapProperties= new ReadProperties(SIGAReferences.RESOURCE_FILES.JNDI);
+//		ReadProperties ldapProperties = new ReadProperties("jndi.properties");
 		trans = ldapProperties.returnProperty("JNDI.TX");
 	}
 
 	public UsrBean(String _usuario, String _lenguaje) {
 		try {
-		    ReadProperties ldapProperties = new ReadProperties("jndi.properties");
+		    ReadProperties ldapProperties= new ReadProperties(SIGAReferences.RESOURCE_FILES.JNDI);
+//		    ReadProperties ldapProperties = new ReadProperties("jndi.properties");
 			trans = ldapProperties.returnProperty("JNDI.TX");
 			language = _lenguaje;
 			UsrBean uu = new UsrBean();
@@ -146,7 +150,8 @@ public class UsrBean implements Serializable {
 		tx=getTransaction();
 		// RGG para limitacion de tiempo de transacciones
 		try {
-			ReadProperties rp = new ReadProperties("SIGA.properties");
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp = new ReadProperties("SIGA.properties");
 			tx.setTransactionTimeout(new Integer(rp.returnProperty("siga.jta.timeout.ligera")).intValue());
 		} catch (SystemException se) {
 			ClsLogging.writeFileLogError("Error al establecer JTA timeout LIGERA",se,3);
@@ -158,7 +163,8 @@ public class UsrBean implements Serializable {
 		UserTransaction tx = null;
 		tx=getTransaction();
 		try {
-			ReadProperties rp = new ReadProperties("SIGA.properties");
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp = new ReadProperties("SIGA.properties");
 			tx.setTransactionTimeout(new Integer(rp.returnProperty("siga.jta.timeout.pesada")).intValue());
 		} catch (SystemException se) {
 			ClsLogging.writeFileLogError("Error al establecer JTA timeout PESADA",se,3);
