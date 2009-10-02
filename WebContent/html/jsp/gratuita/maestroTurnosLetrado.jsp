@@ -126,19 +126,19 @@
 		document.forms[0].submit();
 	}
 	
-		<!-- Asociada al boton Cancelar -->
+		//Asociada al boton Cancelar
 		function accionCancelar() 
 		{		
 			document.forms[0].reset();
 		}
 		
-		<!-- Asociada al boton Restablecer -->
+		//Asociada al boton Restablecer
 		function accionRestablecer() 
 		{		
 			document.forms[0].reset();
 		}
 		
-		<!-- Asociada al boton Guardar -->
+		//Asociada al boton Guardar 
 		function accionGuardar() 
 		{	
 			<%
@@ -162,7 +162,7 @@
 			}
 		}
 
-		<!-- Asociada al boton Siguiente -->
+		//Asociada al boton Siguiente
 		function accionSiguiente() 
 		{		
 			document.forms[0].target="_self";
@@ -412,7 +412,7 @@
 			<siga:Idioma key="gratuita.maestroTurnos.literal.requisitosAcceso"/>
 			</td>
 			<td>
-				<textarea class="<%=classTipo%>" onKeyDown="cuenta(this,1023)" onChange="cuenta(this,1023)"  name="requisitos" rows="3" cols="70" <%=valida%>><% if (!accion.equalsIgnoreCase("nuevo")){%><%=(String)turno.get("REQUISITOS")%><%}%></textarea>
+				<textarea class="<%=classTipo%>" onKeyDown="cuenta(this,1023)" onChange="cuenta(this,1023)" name="requisitos" rows="3" cols="70" <%=valida%>><% if (!accion.equalsIgnoreCase("nuevo")){%><%=(String)turno.get("REQUISITOS")%><%}%></textarea>
 			</td>
 	
 		</tr>	

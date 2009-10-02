@@ -121,7 +121,7 @@
 		document.forms[0].submit();*/
 	}
 	
-		<!-- Asociada al boton Volver -->
+		//Asociada al boton Volver -->
 		function accionVolver() 
 		{		
 			document.forms[0].action="JGR_DefinirTurnos.do";
@@ -130,19 +130,19 @@
 			document.forms[0].submit();
 		}
 
-		<!-- Asociada al boton Cancelar -->
+		//Asociada al boton Cancelar -->
 		function accionCancelar() 
 		{		
 			document.forms[0].reset();
 		}
 		
-		<!-- Asociada al boton Restablecer -->
+		//Asociada al boton Restablecer -->
 		function accionRestablecer() 
 		{		
 			document.forms[0].reset();
 		}
 		
-		<!-- Asociada al boton Guardar -->
+		//Asociada al boton Guardar -->
 		function accionGuardar() 
 		{
 		   	
@@ -186,7 +186,7 @@
 			}
 		}
 
-		<!-- Asociada al boton Siguiente -->
+		//Asociada al boton Siguiente -->
 		function accionSiguiente() 
 		{		
 			document.forms[0].target="_self";

@@ -73,7 +73,7 @@
 	
 <script language="JavaScript">
 		
-		<!-- Asociada al boton Volver -->
+		//Asociada al boton Volver -->
 		function accionVolver() 
 		{		
 			<%if (entrada.equalsIgnoreCase("1")){%>
@@ -90,13 +90,13 @@
 			
 		}
 
-		<!-- Asociada al boton Cancelar -->
+		//Asociada al boton Cancelar -->
 		function accionCancelar() 
 		{		
 			document.forms[0].reset();
 		}
 		
-		<!-- Asociada al boton Restablecer -->
+		//Asociada al boton Restablecer -->
 		function accionRestablecer() 
 		{		
 			document.forms[0].reset();
@@ -108,7 +108,7 @@
 						document.forms[0].submit();
 		}
 		
-		<!-- Asociada al boton Guardar -->
+		//Asociada al boton Guardar -->
 		function accionGuardar() 
 		{	
 			sub();			
@@ -137,7 +137,7 @@
 			}
 		}
 
-		<!-- Asociada al boton Siguiente -->
+		//Asociada al boton Siguiente -->
 		function accionSiguiente() 
 		{		
 			document.forms[0].target="_self";
