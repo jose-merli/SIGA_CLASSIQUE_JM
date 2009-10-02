@@ -255,7 +255,7 @@ public class ClsConstants {
 	public static final ResourceBundle initProperties=ResourceBundle.getBundle(initPropsFile);
 
 	public static final String USER_DIR = System.getProperty("user.dir");
-	public static final String RES_DIR = "C://eclipse//workspace//SIGA92//WebContent";
+//	public static final String RES_DIR = "C://eclipse//workspace//SIGA92//WebContent";
 
 	public static final String APPLICATION_NAME = initProperties.getString("init.application.name");
   	public static final String DEFAULT_LANGUAGE= initProperties.getString("init.default.language");
@@ -273,13 +273,13 @@ public class ClsConstants {
   public static final String RES_APP_PATH = initProperties.getString("init.path.res.app").replaceAll(SEP_PATTERN, REPLACE_PATTERN);
 
 	  public static final String PROPERTIES = initProperties.getString("init.path.resources").replaceAll(SEP_PATTERN, REPLACE_PATTERN);
-	  public static final String RESOURCES_DIR_STRUTS = RES_DIR + RES_PROP_DOMAIN + RES_APP_PATH;
-	  public static final String RESOURCES_DIR = RES_DIR + RES_PROP_DOMAIN + PROPERTIES;
+//	  public static final String RESOURCES_DIR_STRUTS = RES_DIR + RES_PROP_DOMAIN + RES_APP_PATH;
+//	  public static final String RESOURCES_DIR = RES_DIR + RES_PROP_DOMAIN + PROPERTIES;
 	
 	  public static final String FOP_FONTS = initProperties.getString("init.path.fop.fonts").replaceAll(SEP_PATTERN, REPLACE_PATTERN);
 	  public static final String FOP_FILE = initProperties.getString("init.fop.config").replaceAll(SEP_PATTERN, REPLACE_PATTERN);
-	  public static final String FOP_FONTS_DIR = RES_DIR + RES_PROP_DOMAIN + FOP_FONTS;
-	  public static final String FOP_CONFIG_FILE = RES_DIR + RES_PROP_DOMAIN + PROPERTIES + FOP_FILE;
+//	  public static final String FOP_FONTS_DIR = RES_DIR + RES_PROP_DOMAIN + FOP_FONTS;
+//	  public static final String FOP_CONFIG_FILE = RES_DIR + RES_PROP_DOMAIN + PROPERTIES + FOP_FILE;
 	  
 	  
 	  public static final String IMAGESVIDEOUPLOAD = "";
