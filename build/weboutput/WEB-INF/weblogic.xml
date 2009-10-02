@@ -4,7 +4,7 @@
   <wls:context-root>SIGA/</wls:context-root>
 	<wls:jsp-descriptor>
 		<wls:keepgenerated>true</wls:keepgenerated>
-		<wls:page-check-seconds>0</wls:page-check-seconds>
+		<wls:page-check-seconds>1</wls:page-check-seconds>
 		<wls:precompile>false</wls:precompile>
 		<wls:verbose>true</wls:verbose>
 		<wls:working-dir>C:\eclipse\workspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\mydomain\work\SIGA92</wls:working-dir>
