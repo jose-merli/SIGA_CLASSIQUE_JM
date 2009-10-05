@@ -37,7 +37,6 @@ public class SIGADataSourceInit extends SIGAServletAdapter {
         ClsLogging.writeFileLogWithoutSession("**************************",1);
         ClsLogging.writeFileLogWithoutSession("* INICIALIZANDO SERVIDOR *",1);
         ClsLogging.writeFileLogWithoutSession("**************************",1);
-		SIGAReferences.initialize(cfg.getServletContext());
         ClsLogging.writeFileLogWithoutSession("",1);
         ClsLogging.writeFileLogWithoutSession(" > Generando ficheros Properties de Idiomas.",1);
         
