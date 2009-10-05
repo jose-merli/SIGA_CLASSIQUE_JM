@@ -9,7 +9,6 @@ package com.siga.servlets;
 import java.util.Hashtable;
 
 import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
 
 import com.aspose.words.License;
 import com.atos.utils.ClsLogging;
@@ -90,7 +89,7 @@ public final class SIGASvlInicializacionesSecundarias extends SIGAContextListene
 		    ClsLogging.writeFileLogWithoutSession("-------------------------------------------------", 3);
 	    } catch (Exception e){
 		    ClsLogging.writeFileLogWithoutSession("-------------------------------------------------", 3);
-	    	ClsLogging.writeFileLogWithoutSession("  <> CrystalReport: Error en la inicializacion", 3);
+	    	ClsLogging.writeFileLogWithoutSession("  <> CrystalReport: Error en la inicializacion "+e, 3);
 		    ClsLogging.writeFileLogWithoutSession("-------------------------------------------------", 3);
 		    return;
 	    }
