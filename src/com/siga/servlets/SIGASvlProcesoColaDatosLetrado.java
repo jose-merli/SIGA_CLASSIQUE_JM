@@ -74,8 +74,11 @@ public final class SIGASvlProcesoColaDatosLetrado extends SIGAContextListenerAda
 
         try
 		{
-            timer.stop();
-            timer.removeNotification(idNotificacion);
+			if (timer!=null) {
+				if (timer.isActive())
+					timer.stop();
+				timer.removeNotification(idNotificacion);
+			}
 
             ClsLogging.writeFileLogWithoutSession("    - Notificación \"" + sNombreProceso + "\" parada.", 3);
             ClsLogging.writeFileLogWithoutSession(" Notificaciones JMX destruídas.", 3);

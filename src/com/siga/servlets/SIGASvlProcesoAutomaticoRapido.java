@@ -9,7 +9,6 @@ import javax.management.InstanceNotFoundException;
 import javax.management.Notification;
 import javax.management.NotificationListener;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 
 import weblogic.management.timer.Timer;
 
@@ -29,6 +28,7 @@ import com.siga.beans.MasterBean;
  */
 
 public class SIGASvlProcesoAutomaticoRapido extends SIGAServletAdapter implements NotificationListener {
+	private static final long serialVersionUID = 1859932068515262676L;
 
 	static private Timer timer;
     private Integer idNotificacion;
@@ -96,30 +96,24 @@ public class SIGASvlProcesoAutomaticoRapido extends SIGAServletAdapter implement
 		ClsLogging.writeFileLogWithoutSession("<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>", 3);
 		ClsLogging.writeFileLogWithoutSession(" Destruyendo notificaciones JMX.", 3);
 
-		try
-		{
-			timer.stop();
-			timer.removeNotification(idNotificacion);
+		try {
+			if (timer!=null) {
+				if (timer.isActive())
+					timer.stop();
+				timer.removeNotification(idNotificacion);
+			}
 
 			ClsLogging.writeFileLogWithoutSession("    - Notificación \"" + sNombreProceso + "\" parada.", 3);
 			ClsLogging.writeFileLogWithoutSession(" Notificaciones JMX destruídas.", 3);
 			ClsLogging.writeFileLogWithoutSession("<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>", 3);
 			//ClsLogging.writeFileLogWithoutSession("", 3);
 			//ClsLogging.writeFileLogWithoutSession("", 3);
-		}
-
-		catch (InstanceNotFoundException e)
-		{
+		} catch (InstanceNotFoundException e) {
 			e.printStackTrace();
 		}
-		// TODO Auto-generated method stub
-		super.destroy();
-
 	}
 
-
-	public void handleNotification(Notification notif, Object handback)
-	{
+	public void handleNotification(Notification notif, Object handback){
 		Object userData = (Object)notif.getUserData();
 		
 		//Como actualmente se necesita un unico String solo esta implementado esto.
@@ -133,7 +127,6 @@ public class SIGASvlProcesoAutomaticoRapido extends SIGAServletAdapter implement
 			{
 			    // invocamos al servlet
 				URL url = new URL(urlSiga+proceso+".svrl");
-			    Object ret = url.getContent();
 
 				ClsLogging.writeFileLogWithoutSession(" - OK.  >>>  Ejecutando Notificación: \"" + sNombreProceso + "\".", 3);
 			}

@@ -96,8 +96,11 @@ public class SIGASvlProcesoAutomaticoEnvios extends SIGAServletAdapter implement
 
     try
 	{
-        timer.stop();
-        timer.removeNotification(idNotificacion);
+		if (timer!=null) {
+			if (timer.isActive())
+				timer.stop();
+			timer.removeNotification(idNotificacion);
+		}
 
         ClsLogging.writeFileLogWithoutSession("    - Notificación \"" + sNombreProceso + "\" parada.", 3);
         ClsLogging.writeFileLogWithoutSession(" Notificaciones JMX destruídas.", 3);
@@ -110,9 +113,6 @@ public class SIGASvlProcesoAutomaticoEnvios extends SIGAServletAdapter implement
 	{
         e.printStackTrace();
     }
-	// TODO Auto-generated method stub
-	super.destroy();
-
  }
 
  
