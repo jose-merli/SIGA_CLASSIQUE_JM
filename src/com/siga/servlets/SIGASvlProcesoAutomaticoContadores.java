@@ -1,19 +1,21 @@
 package com.siga.servlets;
 
-import java.util.*;
+import java.util.Date;
 
-import javax.servlet.*;
-
-import com.atos.utils.*;
-import com.siga.Utilidades.SIGAReferences;
-import com.siga.Utilidades.UtilidadesBDAdm;
-
-
-import javax.management.*;
+import javax.management.InstanceNotFoundException;
+import javax.management.Notification;
+import javax.management.NotificationListener;
+import javax.servlet.ServletContextEvent;
 
 import weblogic.management.timer.Timer;
 
-public final class SIGASvlProcesoAutomaticoContadores implements ServletContextListener, NotificationListener 
+import com.atos.utils.ClsLogging;
+import com.atos.utils.ClsMngBBDD;
+import com.atos.utils.ReadProperties;
+import com.siga.Utilidades.SIGAReferences;
+import com.siga.Utilidades.UtilidadesBDAdm;
+
+public final class SIGASvlProcesoAutomaticoContadores extends SIGAContextListenerAdapter implements NotificationListener 
 {
     private Timer timer;
     private Integer idNotificacion;
@@ -24,6 +26,7 @@ public final class SIGASvlProcesoAutomaticoContadores implements ServletContextL
 
     public void contextInitialized(ServletContextEvent event)
     {
+    	super.contextInitialized(event);
         //ClsLogging.writeFileLogWithoutSession("", 3);
     	//ClsLogging.writeFileLogWithoutSession("", 3);
         ClsLogging.writeFileLogWithoutSession("<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>", 3);

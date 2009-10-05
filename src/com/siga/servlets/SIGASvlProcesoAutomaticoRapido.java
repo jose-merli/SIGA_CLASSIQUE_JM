@@ -28,7 +28,7 @@ import com.siga.beans.MasterBean;
  * @version 1.0
  */
 
-public class SIGASvlProcesoAutomaticoRapido extends HttpServlet implements NotificationListener {
+public class SIGASvlProcesoAutomaticoRapido extends SIGAServletAdapter implements NotificationListener {
 
 	static private Timer timer;
     private Integer idNotificacion;
@@ -41,6 +41,7 @@ public class SIGASvlProcesoAutomaticoRapido extends HttpServlet implements Notif
     
 	//Global vars
 	public void init() throws ServletException {
+		super.init();
 		//ClsLogging.writeFileLogWithoutSession("", 3);
 		//ClsLogging.writeFileLogWithoutSession("", 3);
 		ClsLogging.writeFileLogWithoutSession("<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>", 3);

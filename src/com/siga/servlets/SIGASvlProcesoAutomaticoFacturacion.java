@@ -26,7 +26,7 @@ import com.siga.Utilidades.SIGAReferences;
  * @version 1.0
  */
 
-public class SIGASvlProcesoAutomaticoFacturacion extends HttpServlet implements NotificationListener {
+public class SIGASvlProcesoAutomaticoFacturacion extends SIGAServletAdapter implements NotificationListener {
 
     private Timer timer;
     private Integer idNotificacion;
@@ -36,6 +36,7 @@ public class SIGASvlProcesoAutomaticoFacturacion extends HttpServlet implements 
     
   //Global vars
   public void init() throws ServletException {
+	  super.init();
     //ClsLogging.writeFileLogWithoutSession("", 3);
   	//ClsLogging.writeFileLogWithoutSession("", 3);
     ClsLogging.writeFileLogWithoutSession("<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>", 3);

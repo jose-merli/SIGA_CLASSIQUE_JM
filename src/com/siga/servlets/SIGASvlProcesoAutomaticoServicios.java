@@ -11,7 +11,7 @@ import com.siga.beans.*;
 import javax.management.*;
 import weblogic.management.timer.Timer;
 
-public final class SIGASvlProcesoAutomaticoServicios implements ServletContextListener, NotificationListener
+public final class SIGASvlProcesoAutomaticoServicios extends SIGAContextListenerAdapter implements NotificationListener
 {
     private Timer timer;
     private Integer idNotificacion;
@@ -20,7 +20,7 @@ public final class SIGASvlProcesoAutomaticoServicios implements ServletContextLi
 
     public void contextInitialized(ServletContextEvent event)
     {
-
+		super.contextInitialized(event);
     	//ClsLogging.writeFileLogWithoutSession("", 3);
     	//ClsLogging.writeFileLogWithoutSession("", 3);
         ClsLogging.writeFileLogWithoutSession("<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>", 3);

@@ -7,7 +7,6 @@ package com.siga.servlets;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 
-import org.apache.struts.action.ActionServlet;
 import org.apache.struts.config.ModuleConfig;
 
 import com.atos.utils.ClsExceptions;
@@ -17,19 +16,19 @@ import com.siga.Utilidades.SIGAReferences;
 import com.siga.general.CenVisibilidad;
 
 
-public class SIGADataSourceInit extends ActionServlet {
+public class SIGADataSourceInit extends SIGAServletAdapter {
 	private static final long serialVersionUID = 1770505503324002123L;
 	static ModuleConfig moduleConfig = null;
 	
     public SIGADataSourceInit() { }
 
     public void init(ServletConfig cfg) throws javax.servlet.ServletException {
-		long seg_first =0;
+    	super.init(cfg);
+
+    	long seg_first =0;
 		long seg_last =0;
 		seg_first=System.currentTimeMillis();
 		
-		SIGAReferences.initialize(cfg.getServletContext());
-
 		//ClsLogging.writeFileLogWithoutSession("");
         //ClsLogging.writeFileLogWithoutSession("Inicializando DataSource(s)",1);
         ClsLogging.writeFileLogWithoutSession("",1);

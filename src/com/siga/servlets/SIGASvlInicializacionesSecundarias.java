@@ -6,7 +6,6 @@
 
 package com.siga.servlets;
 
-import java.io.File;
 import java.util.Hashtable;
 
 import javax.servlet.ServletContextEvent;
@@ -43,10 +42,11 @@ import com.siga.informes.MasterWords;
 //	}
 //}
 
-public final class SIGASvlInicializacionesSecundarias implements ServletContextListener  
+public final class SIGASvlInicializacionesSecundarias extends SIGAContextListenerAdapter  
 {
 	public void contextInitialized(ServletContextEvent arg0) 
 	{
+		super.contextInitialized(arg0);
 	    ClsLogging.writeFileLogWithoutSession("<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>", 3);
 	    ClsLogging.writeFileLogWithoutSession("  Arrancando Inicializaciones Secundarias ", 3);
 	    ClsLogging.writeFileLogWithoutSession("<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>", 3);

@@ -1,23 +1,22 @@
 package com.siga.servlets;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectOutputStream;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.atos.utils.ReadProperties;
-import com.atos.utils.ClsLogging;
+
 import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsLogging;
+import com.atos.utils.ReadProperties;
 import com.siga.Utilidades.SIGAReferences;
 
 
-import java.io.*;
-
-
-public class SIGASvlUploadFiles extends HttpServlet {
+public class SIGASvlUploadFiles extends SIGAServletAdapter {
 	private static final long serialVersionUID = -102663719471049646L;
 	private static int BUFFER_SIZE = 8 * 1024;   
     

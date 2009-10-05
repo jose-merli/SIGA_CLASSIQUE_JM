@@ -9,7 +9,6 @@ import java.util.StringTokenizer;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,8 +16,6 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.ReadProperties;
 import com.siga.Utilidades.SIGAReferences;
-
-
 
 /**
  * <p>Title: </p>
@@ -29,17 +26,20 @@ import com.siga.Utilidades.SIGAReferences;
  * @version 1.0
  */
 
-public class SIGASvlAuthenticate extends HttpServlet {
-  static final private String CONTENT_TYPE = "text/html";
+public class SIGASvlAuthenticate extends SIGAServletAdapter {
+	private static final long serialVersionUID = 2092588302399699149L;
 
-  private String INITCTX = "";
-  private String MY_HOST[] = {""};
-  private String MGR_DN = "";
-  private String MGR_PW = "";
-  private  String MY_SEARCHBASE = "";
+	private static final String CONTENT_TYPE = "text/html";
+
+	private String INITCTX = "";
+	private String MY_HOST[] = {""};
+	private String MGR_DN = "";
+	private String MGR_PW = "";
+	private  String MY_SEARCHBASE = "";
 
   //Inicializar variables globales
   public void init() throws ServletException {
+	  super.init();
   }
   //Procesar una petición HTTP Get
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -48,8 +48,8 @@ public class SIGASvlAuthenticate extends HttpServlet {
 
   public void init(ServletConfig cfg) throws javax.servlet.ServletException {
     super.init(cfg);
-    String LDAPPropertiesFile = cfg.getInitParameter("LDAPPROPERTIESFILE");
     ReadProperties ldapProperties= new ReadProperties(SIGAReferences.RESOURCE_FILES.LDAP);
+    //String LDAPPropertiesFile = cfg.getInitParameter("LDAPPROPERTIESFILE");
 //    ReadProperties ldapProperties=new ReadProperties(LDAPPropertiesFile);
     INITCTX = ldapProperties.returnProperty("LDAP.INITCTX");
     String hosts = ldapProperties.returnProperty("LDAP.MY_HOST");

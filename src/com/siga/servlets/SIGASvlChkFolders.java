@@ -12,7 +12,6 @@ import java.sql.Statement;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -23,7 +22,7 @@ import com.atos.utils.ReadProperties;
 import com.siga.Utilidades.SIGAReferences;
 
 
-public class SIGASvlChkFolders extends HttpServlet {
+public class SIGASvlChkFolders extends SIGAServletAdapter {
 	private static final long serialVersionUID = -7382682789248251947L;
 
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
