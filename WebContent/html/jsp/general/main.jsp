@@ -26,7 +26,7 @@
 <%@ page import="com.atos.utils.ReadProperties"%>
 <%@ page import="com.atos.utils.BotonesMenu"%>
 <%@ page import="java.util.Properties"%>
-<%@ page import="es.satec.siga.util.SIGAReferences"%>
+<%@ page import="com.siga.Utilidades.SIGAReferences"%>
 
 <!-- JSP -->
 <% 
