@@ -34,7 +34,7 @@
 	Vector resultado = (Vector) request.getAttribute("resultado");
 
 	//campos a mostrar en la tabla
-	String nombre ="", codigo ="", precio="", puntos="";
+	String nombre ="", codigo ="", precio="";
 
 	//campos ocultos
 	String idProc="";
@@ -108,9 +108,6 @@
 			nombre = UtilidadesString.mostrarDatoJSP((String)fila.get(ScsProcedimientosBean.C_NOMBRE));
 			codigo = UtilidadesString.mostrarDatoJSP((String)fila.get(ScsProcedimientosBean.C_CODIGO));
 			precio = (String)fila.get(ScsProcedimientosBean.C_PRECIO);
-			try{
-				puntos = UtilidadesString.mostrarDatoJSP((String)fila.get(ScsProcedimientosBean.C_PUNTOS));
-			}catch(Exception e){puntos="&nbsp;";}
 			idProc = UtilidadesString.mostrarDatoJSP(((String)fila.get(ScsProcedimientosBean.C_IDPROCEDIMIENTO)));
 %>
   			<siga:FilaConIconos fila="<%=String.valueOf(cont)%>" visibleConsulta="no" pintarEspacio="no" botones="E,B" clase="listaNonEdit">
