@@ -23,6 +23,7 @@
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
+<%@ page import="com.siga.Utilidades.UtilidadesHash"%>
 <%@ page import="com.siga.tlds.FilaExtElement"%>
 <%@ page import="com.siga.Utilidades.PaginadorCaseSensitiveBind"%>
 <%@page import="com.siga.beans.CenColegiadoBean"%>
@@ -152,12 +153,15 @@
 		   		  borde="1"
 		   		  clase="tableTitle"
 		   		  nombreCol=" <input type='checkbox' onclick='marcarDesmarcarTodos(this)'/> ,
-		   		   informes.sjcs.pagos.literal.ncolegiado,
-				  informes.sjcs.pagos.literal.colegiado,
+		   		   	informes.sjcs.pagos.literal.ncolegiado,
+				  	informes.sjcs.pagos.literal.colegiado,
+				  	factSJCS.datosPagos.literal.importeSJCS,
+		   		  	factSJCS.datosPagos.literal.importeMovimientosVarios,
 		   		  	informes.sjcs.pagos.literal.importeBruto,
-		   		  	informes.sjcs.pagos.literal.importeIRPF
-		   		  	, "
-		   		  tamanoCol="5,10,30,8,10,15"
+		   		  	informes.sjcs.pagos.literal.importeIRPF,
+		   		  	factSJCS.datosPagos.literal.importeRetenciones,
+		   		  	factSJCS.detalleFacturacion.literal.importe,"
+		   		  tamanoCol="5,9,18,10,10,10,10,10,10,8"
 		   		  alto="70%"
 		   		  ajusteBotonera="true"
 		   		  activarFilaSel="true"	
@@ -179,10 +183,9 @@
 			 		for (int i=0; i<resultado.size(); i++)
 			   		{
 				  		Row fila = (Row)resultado.elementAt(i);
-						FilaExtElement[] elemento=new FilaExtElement[3];
-				  		elemento[0]=new FilaExtElement("consultar","consultar",SIGAConstants.ACCESS_READ);
-				  		elemento[1]=new FilaExtElement("enviar","enviar",SIGAConstants.ACCESS_READ);
-				  		elemento[2]=new FilaExtElement("download","download",SIGAConstants.ACCESS_READ);
+						FilaExtElement[] elemento=new FilaExtElement[2];
+				  		elemento[0]=new FilaExtElement("enviar","enviar",SIGAConstants.ACCESS_READ);
+				  		elemento[1]=new FilaExtElement("download","download",SIGAConstants.ACCESS_READ);
 						
 %>
 	  			<siga:FilaConIconos 
@@ -192,7 +195,7 @@
 	  				visibleEdicion = "no"
 	  				visibleBorrado = "no"
 	  				elementos='<%=elemento%>' 
-					
+					pintarEspacio = "no"
 	  				clase="listaNonEdit">
 	  					
 	  					
@@ -205,9 +208,20 @@
 					<td><%=UtilidadesString.mostrarDatoJSP(fila.getString(CenColegiadoBean.C_NCOLEGIADO))%></td>
 					<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("NOMBRE"))%></td>
 					<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(fila.getString("TOTALIMPORTESJCS"),2))%>&nbsp;&euro;</td>
+					<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(fila.getString("IMPORTETOTALMOVIMIENTOS"),2))%>&nbsp;&euro;</td>
+					<%
+					float aux = Float.parseFloat(fila.getString("TOTALIMPORTESJCS")) + Float.parseFloat(fila.getString("IMPORTETOTALMOVIMIENTOS"));
+					String importe = UtilidadesString.mostrarDatoJSP(UtilidadesNumero.redondea((new Float(aux)).toString(),2));
+					%>
+					<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(importe,2))%>&nbsp;&euro;</td>
 					<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(fila.getString("TOTALIMPORTEIRPF"),2))%>&nbsp;&euro;</td>
-					
-					
+					<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(fila.getString("IMPORTETOTALRETENCIONES"),2))%>&nbsp;&euro;</td>
+					<%
+					aux = aux + Float.parseFloat(fila.getString("TOTALIMPORTEIRPF"))  + Float.parseFloat(fila.getString("IMPORTETOTALRETENCIONES"));
+					importe = UtilidadesString.mostrarDatoJSP(UtilidadesNumero.redondea((new Float(aux)).toString(),2));
+					%>
+					<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(importe,2))%>&nbsp;&euro;</td>
+			
 				</siga:FilaConIconos>
 <%
 					}
@@ -219,7 +233,7 @@
 			</siga:TablaCabecerasFijas>
 			<table class="botonesDetalle" >
 				<tr>
-					<td class=""tdBotones>
+					<td>
 					<input type="button" class="button" alt="<%=imprimir%>" name="idButton"  onclick="accionDownload();" value="<%=imprimir%>"/>&nbsp;
 					<input type="button" class="button" alt="<%=comunicar%>" name="idButton"  onclick="enviarPagos();" value="<%=comunicar%>"/>&nbsp;
 					</td>
@@ -266,7 +280,6 @@
 		}
 		
 		
-		
 		function accionDownload()
 		{
 			sub();
@@ -285,32 +298,11 @@
 			document.mantenimientoInformesForm.idPersona.value = document.getElementById(idPersona).value;
 			datos = idPersona + "," +idFactura + "#"; 
 			document.forms[0].tablaDatosDinamicosD.value = datos;
-			
-			
 		}
 		
 
-		//Funcion asociada al boton Consultar -->
-		function consultar(fila) 
-		{		
-			//Datos del elemento seleccionado:
-			
-			var idPersona = "idPersona"+fila;
-			document.mantenimientoInformesForm.idPersona.value = document.getElementById(idPersona).value;
-			document.mantenimientoInformesForm.idPago.value = parent.document.mantenimientoInformesForm.idPago.value;
-
-	
-			//Submito
-			document.mantenimientoInformesForm.modo.value = "detallePago";
-			var salida = ventaModalGeneral(mantenimientoInformesForm.name,"M"); 			
-		}
-				
-		
-		
-		
 		function enviar(fila)
 		{
-		
 			var idPers = "idPersona"+fila;
 			idPersona = document.getElementById(idPers).value;
 			idPago = parent.document.mantenimientoInformesForm.idPago.value;
