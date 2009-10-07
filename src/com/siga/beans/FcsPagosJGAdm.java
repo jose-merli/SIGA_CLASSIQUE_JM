@@ -868,7 +868,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 									   String idInstitucion, Hashtable codigos) 
 	{
 		//Variables
-		int contador;
+		int contador = 0;
 		boolean isFiltrado;
 		String sql;
 		
@@ -889,84 +889,8 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 			"( ";
 		}
 		
-		//Consulta
-		contador = 0;
-		sql +=
-			" SELECT IDPERSONASJCS, " +
-			"        sum(TOTALIMPORTESJCS) AS TOTALIMPORTESJCS, " +
-			"        sum(IMPORTETOTALRETENCIONES) AS IMPORTETOTALRETENCIONES, " +
-			"        case " +
-			"          when (sum(IMPORTETOTALMOVIMIENTOS) < 0 and " +
-			"               abs(sum(IMPORTETOTALMOVIMIENTOS)) > sum(TOTALIMPORTESJCS)) then " +
-			"           -1 * sum(TOTALIMPORTESJCS) " +
-			"          else " +
-			"           sum(IMPORTETOTALMOVIMIENTOS) " +
-			"        end AS IMPORTETOTALMOVIMIENTOS, " +
-			"        (((sum(TOTALIMPORTESJCS) + case " +
-			"          when (sum(IMPORTETOTALMOVIMIENTOS) < 0 and " +
-			"               abs(sum(IMPORTETOTALMOVIMIENTOS)) > sum(TOTALIMPORTESJCS)) then " +
-			"           -1 * sum(TOTALIMPORTESJCS) " +
-			"          else " +
-			"           sum(IMPORTETOTALMOVIMIENTOS) " +
-			"        end) * max(porcertajeIRPF)) / 100) AS TOTALIMPORTEIRPF " +
-			"" +
- 			"   FROM (" +
-			"         (select "+FcsPagoColegiadoBean.C_IDPERORIGEN+" as idpersonaSJCS, " +
-			"                 sum(impOficio+impAsistencia+impEJG+impSOJ) as totalImporteSJCS, " +
-			"                 0 as importeTotalRetenciones, " +
-			"                 0 as importeTotalMovimientos, " +
-			"                 max("+FcsPagoColegiadoBean.C_IMPIRPF+") as porcertajeIRPF " +
-			"            from "+FcsPagoColegiadoBean.T_NOMBRETABLA+" ";
-				contador++;
-				codigos.put(new Integer(contador), idInstitucion);
-		sql +=
-			"           where "+FcsPagoColegiadoBean.C_IDINSTITUCION+" = :"+contador+" ";
-				contador++;
-				codigos.put(new Integer(contador), form.getIdPago());
-		sql +=
-			"             and "+FcsPagoActuacionDesignaBean.C_IDPAGOSJG+" = :"+contador+" " +
-			"           group by "+FcsPagoColegiadoBean.C_IDPERORIGEN+" " +
-			"         ) " +
-			"" +
-			"         union all " +
-			"" +
-			"         (select "+FcsMovimientosVariosBean.C_IDPERSONA+" as idpersonaSJCS, " +
-			"                 0 as totalImporteSJCS, " +
-			"                 0 as importeTotalRetenciones, " +
-			"                 sum(nvl("+FcsMovimientosVariosBean.C_CANTIDAD+", 0)) as importeTotalMovimientos, " +
-			"                 0 as porcertajeIRPF " +
-			"            from "+FcsMovimientosVariosBean.T_NOMBRETABLA+" ";
-			    contador++;
-				codigos.put(new Integer(contador), idInstitucion);
-		sql +=
-			"           where "+FcsMovimientosVariosBean.C_IDINSTITUCION+" = :"+contador+" " ;
-				contador++;
-				codigos.put(new Integer(contador), form.getIdPago());
-		sql +=
-			"             and "+FcsMovimientosVariosBean.C_IDPAGOSJG+" = :"+contador+" " +
-			"           group by "+FcsMovimientosVariosBean.C_IDPERSONA+" " +
-			"         ) " +
-			"" +
-			"         union all " +
-			"" +
-			"         (select idpersona as idpersonaSJCS, " +
-			"                 0 as totalImporteSJCS, " +
-			"                 sum(nvl(importeretenido,0)) as importeTotalRetenciones, " +
-			"                 0 as importeTotalMovimientos, " +
-			"                 0 as porcertajeIRPF " +
-			"            from "+FcsCobrosRetencionJudicialBean.T_NOMBRETABLA+" ";
-			    contador++;
-				codigos.put(new Integer(contador), idInstitucion);
-		sql +=
-			"           where "+FcsCobrosRetencionJudicialBean.C_IDINSTITUCION+" = :"+contador+" ";
-				contador++;
-				codigos.put(new Integer(contador), form.getIdPago());
-		sql +=
-			"             and "+FcsCobrosRetencionJudicialBean.C_IDPAGOSJG+" = :"+contador+" " +
-			"           group by "+FcsCobrosRetencionJudicialBean.C_IDPERSONA+" " +
-			"         ) " +
-			"        ) " +
-			"  group by idpersonaSJCS";
+		//Obtiene la consulta base
+		sql += getQueryDetallePagoColegiado(idInstitucion, form.getIdPago());
 		
 		if (isFiltrado) {
 			sql +=
@@ -1060,67 +984,70 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 
 	/**
 	 * 
-	 * @param form
 	 * @param idInstitucion
-	 * @param codigos
+	 * @param idPagosJg si es null se obtienen los datos de todos los pagos de la institucion.
 	 * @return
 	 */
 	public String getQueryDetallePagoColegiado (String idInstitucion, String idPagosJg) 
 	{
 		StringBuffer sql = new StringBuffer();
 		
-		sql.append("select idpersonaSJCS as idpersonaSJCS,");
-		sql.append(" sum(totalImporteSJCS) as totalImporteSJCS,");
-		sql.append(" sum(importeTotalRetenciones) as importeTotalRetenciones,");
-		sql.append(" sum(importeTotalMovimientos) as importeTotalMovimientos,");
-		sql.append(" -1*abs(sum(TOTALIMPORTEIRPF)) as TOTALIMPORTEIRPF");
-		sql.append(" from	");	
-		sql.append("(");
+//		sql.append("select idpersonaSJCS as idpersonaSJCS,");
+//		sql.append(" idpagos, ");		
+//		sql.append(" sum(totalImporteSJCS) as totalImporteSJCS,");
+//		sql.append(" sum(importeTotalRetenciones) as importeTotalRetenciones,");
+//		sql.append(" sum(importeTotalMovimientos) as importeTotalMovimientos,");
+//		sql.append(" -1*abs(sum(TOTALIMPORTEIRPF)) as TOTALIMPORTEIRPF");
+//		sql.append(" from	");	
+//		sql.append("(");
 		sql.append("select IDPERORIGEN as idpersonaSJCS,");
+		sql.append(" idpagosjg as idpagos, ");		
 		sql.append(" sum(impOficio + impAsistencia + impEJG + impSOJ) as totalImporteSJCS,");
 		sql.append(" sum(impRet) as importeTotalRetenciones,");
 		sql.append(" sum(impMovVar) as importeTotalMovimientos,");
-		sql.append(" sum(impOficio + impAsistencia + impEJG + impSOJ + impMovVar) * max(impirpf) / 100 as TOTALIMPORTEIRPF");
+		sql.append(" -1*abs(sum(impOficio + impAsistencia + impEJG + impSOJ + impMovVar) * max(impirpf) / 100) as TOTALIMPORTEIRPF");
 		sql.append(" from FCS_PAGO_COLEGIADO");
 		sql.append(" where IDINSTITUCION = ");	sql.append(idInstitucion);
-		sql.append(" and IDPAGOSJG = ");	sql.append(idPagosJg);
-		sql.append(" group by IDPERORIGEN");		
+		sql.append(" and IDPAGOSJG = nvl("+idPagosJg+", IDPAGOSJG)");
+		sql.append(" group by IDPERORIGEN, IDPAGOSJG ");	
 		
-		sql.append(" union all ");		
-		
-		sql.append(" select IDPERSONA as idpersonaSJCS,");
-		sql.append(" 0 as totalImporteSJCS,");
-		sql.append(" 0 as importeTotalRetenciones,");
-		sql.append(" sum(nvl(CANTIDAD, 0)) as importeTotalMovimientos,");
-		sql.append(" sum(importeIRPF)");
-		sql.append(" from FCS_MOVIMIENTOSVARIOS");
-		sql.append(" where IDINSTITUCION = ");	sql.append(idInstitucion);
-		sql.append(" and IDPAGOSJG = ");	sql.append(idPagosJg);
-		sql.append(" and IDPERSONA not in (");		
-		sql.append(" select idperorigen from fcs_pago_colegiado p ");
-		sql.append(" where p.IDINSTITUCION = ");	sql.append(idInstitucion);
-		sql.append(" and p.IDPAGOSJG = ");	sql.append(idPagosJg);
-		sql.append(") ");
-		sql.append("   group by IDPERSONA");
-		
-		sql.append(" union all "); 
-		
-		sql.append("select idpersona as idpersonaSJCS,");
-		sql.append(" 0 as totalImporteSJCS,");
-		sql.append(" sum(nvl(importeretenido, 0)) as importeTotalRetenciones,");
-		sql.append(" 0 as importeTotalMovimientos,");
-		sql.append(" 0 as importeIRPF");
-		sql.append(" from FCS_COBROS_RETENCIONJUDICIAL");
-		sql.append(" where IDINSTITUCION = ");	sql.append(idInstitucion);
-		sql.append(" and IDPAGOSJG = ");	sql.append(idPagosJg);
-		sql.append(" and IDPERSONA not in (");
-		sql.append(" select idperorigen from fcs_pago_colegiado p ");
-		sql.append(" where p.IDINSTITUCION = ");	sql.append(idInstitucion);
-		sql.append(" and p.IDPAGOSJG = ");	sql.append(idPagosJg);
-		sql.append(") ");
-		sql.append("group by IDPERSONA");
-		sql.append(") ");
-		sql.append("group by idpersonaSJCS");
+//		sql.append(" union all ");		
+//		
+//		sql.append(" select IDPERSONA as idpersonaSJCS,");
+//		sql.append(" idpagosjg as idpagos, ");		
+//		sql.append(" 0 as totalImporteSJCS,");
+//		sql.append(" 0 as importeTotalRetenciones,");
+//		sql.append(" sum(nvl(CANTIDAD, 0)) as importeTotalMovimientos,");
+//		sql.append(" sum(importeIRPF)");
+//		sql.append(" from FCS_MOVIMIENTOSVARIOS");
+//		sql.append(" where IDINSTITUCION = ");	sql.append(idInstitucion);
+//		sql.append(" and IDPAGOSJG = nvl("+idPagosJg+", IDPAGOSJG)");
+//		sql.append(" and IDPERSONA not in (");		
+//		sql.append(" select idperorigen from fcs_pago_colegiado p ");
+//		sql.append(" where p.IDINSTITUCION = ");	sql.append(idInstitucion);
+//		sql.append(" and p.IDPAGOSJG = ");	sql.append(idPagosJg);
+//		sql.append(") ");
+//		sql.append(" group by IDPERSONA, IDPAGOSJG ");
+//		
+//		sql.append(" union all "); 
+//		
+//		sql.append("select idpersona as idpersonaSJCS,");
+//		sql.append(" idpagosjg as idpagos, ");
+//		sql.append(" 0 as totalImporteSJCS,");
+//		sql.append(" sum(nvl(importeretenido, 0)) as importeTotalRetenciones,");
+//		sql.append(" 0 as importeTotalMovimientos,");
+//		sql.append(" 0 as importeIRPF");
+//		sql.append(" from FCS_COBROS_RETENCIONJUDICIAL");
+//		sql.append(" where IDINSTITUCION = ");	sql.append(idInstitucion);
+//		sql.append(" and IDPAGOSJG = nvl("+idPagosJg+", IDPAGOSJG)");
+//		sql.append(" and IDPERSONA not in (");
+//		sql.append(" select idperorigen from fcs_pago_colegiado p ");
+//		sql.append(" where p.IDINSTITUCION = ");	sql.append(idInstitucion);
+//		sql.append(" and p.IDPAGOSJG = ");	sql.append(idPagosJg);
+//		sql.append(") ");
+//		sql.append("   group by IDPERSONA, IDPAGOSJG ");
+//		sql.append(") ");
+//		sql.append("group by idpersonaSJCS, idpagos");
 
 
 
