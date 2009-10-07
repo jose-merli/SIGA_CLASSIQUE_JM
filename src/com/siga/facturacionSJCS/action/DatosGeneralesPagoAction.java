@@ -967,7 +967,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 	 * 		3. Obtener importe bruto como la suma de los movimientos varios y el total SJCS
 	 * 		4. Obtener el importe neto aplicando el IRPF
 	 * 		5. Aplicar retenciones judiciales y no judiciales
-	 * 			- Aplicar tramos LEC ????
+	 * 			- ¿Aplicar tramos LEC?
 	 * 		6. Generar abono	 
 	 * 
 	 * @param idInstitucion
@@ -1048,7 +1048,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 
 			//Actualizar el irpf, movimientos varios y retenciones en fcs_pago_colegiado
 			pcAdm.updateCierrePago(idInstitucion, idPago, idPersona, 
-					porcentajeIRPF, importeMovimientos, importeRetenciones);
+					porcentajeIRPF, importeMovimientos, importeRetenciones, vector.isEmpty());
 
 
 			// 6. Generar abono	si corresponde

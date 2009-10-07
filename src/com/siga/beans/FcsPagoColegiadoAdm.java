@@ -162,7 +162,7 @@ public class FcsPagoColegiadoAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions 
 	 */
 	public boolean updateCierrePago(String idInstitucion, String idPago, String idPersona, 
-			double irpf, double movimientos, double retenciones) throws ClsExceptions {
+			double irpf, double movimientos, double retenciones, boolean insertar) throws ClsExceptions {
 		Hashtable hash = new Hashtable();
 		hash.put(FcsPagoColegiadoBean.C_IDINSTITUCION, idInstitucion);
 		hash.put(FcsPagoColegiadoBean.C_IDPAGOSJG, idPago);
@@ -175,7 +175,15 @@ public class FcsPagoColegiadoAdm extends MasterBeanAdministrador {
 						FcsPagoColegiadoBean.C_IMPMOVVAR,
 						FcsPagoColegiadoBean.C_IMPRET};
 		try {
-			return updateDirect(hash, null, aux);
+			if (insertar){
+				hash.put(FcsPagoColegiadoBean.C_IMPOFICIO, "0");				
+				hash.put(FcsPagoColegiadoBean.C_IMPASISTENCIA, "0");				
+				hash.put(FcsPagoColegiadoBean.C_IMPSOJ, "0");				
+				hash.put(FcsPagoColegiadoBean.C_IMPEJG, "0");				
+				return insert(hash);
+			}
+			else
+				return updateDirect(hash, null, aux);
 		} catch (ClsExceptions e) {
 			throw new ClsExceptions (e, "Error al actualizar impMovVar en fcs_pago_colegiado");
 		}
