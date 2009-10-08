@@ -100,7 +100,6 @@ public class DefinirHitosFacturablesGuardiasForm extends MasterForm
 	public String getFechaModificacion	() {return (String) this.datos.get("FECHAMODIFICACION");}
 	public String getModal				() {return (String) this.datos.get("MODAL");}
 	public String getPrecio				() {return (String) this.datos.get("PRECIOHITO");}
-	public String getPuntos				() {return (String) this.datos.get("PUNTOS");}
 	public String getUsuModificacion	() {return (String) this.datos.get("USUMODIFICACION");}
 	
 	
@@ -147,6 +146,5 @@ public class DefinirHitosFacturablesGuardiasForm extends MasterForm
 	public void setFechaModificacion	(String fechaModificacion) {this.datos.put ("FECHAMODIFICACION", fechaModificacion);}
 	public void setModal				(String modal) {this.datos.put ("MODAL", modal);}
 	public void setPrecio				(String precio) {this.datos.put ("PRECIOHITO", precio);}
-	public void setPuntos				(String puntos) {this.datos.put ("PUNTOS", puntos);}
 	public void setUsuModificacion		(String usuModificacion) {this.datos.put ("USUMODIFICACION", usuModificacion);}
 }
