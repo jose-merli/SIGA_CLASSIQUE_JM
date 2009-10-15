@@ -198,7 +198,7 @@ public class ExpSeguimientoAction extends MasterAction {
 	        String idAnotacion = (String)vOcultos.elementAt(5);
 	        String fase = UtilidadesString.mostrarDatoJSP((String)vOcultos.elementAt(6));
 	        String estado = UtilidadesString.mostrarDatoJSP((String)vOcultos.elementAt(7));
-	        String usuario = UtilidadesString.mostrarDatoJSP((String)vOcultos.elementAt(8));
+	        String usuario = (String)vOcultos.elementAt(8);
 	        String tipoAnotacion =UtilidadesString.mostrarDatoJSP((String)vOcultos.elementAt(9));
 	        String idFase =(String)vOcultos.elementAt(10); 
 	        String idEstado =(String)vOcultos.elementAt(11); 
@@ -223,6 +223,9 @@ public class ExpSeguimientoAction extends MasterAction {
 	        form.setDescripcion(bean.getDescripcion());
 	        form.setRegentrada(bean.getRegEntrada());
 	        form.setRegsalida(bean.getRegSalida());
+			form.setFechaInicioEstado(GstDate.getFormatedDateShort("",bean.getFechaInicioEstado()));
+			form.setFechaFinEstado(GstDate.getFormatedDateShort("",bean.getFechaFinEstado()));
+
 	        //form.setIdTipoAnotacion(String.valueOf(bean.getIdTipoAnotacion()));
 	                     
 	        if (bEditable){
@@ -244,6 +247,8 @@ public class ExpSeguimientoAction extends MasterAction {
 				request.setAttribute("idTipoAnotacion",String.valueOf(bean.getIdTipoAnotacion()));
 	        	request.setAttribute("accion","consulta");
 	        }
+
+	        request.setAttribute("automatico", bean.getAutomatico());
 	        
 		}catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.expediente"},e,null); 
@@ -273,6 +278,8 @@ public class ExpSeguimientoAction extends MasterAction {
 	        bean.setDescripcion(form.getDescripcion());
 	        bean.setRegEntrada(form.getRegentrada());
 	        bean.setRegSalida(form.getRegsalida());
+	        bean.setFechaInicioEstado(GstDate.getApplicationFormatDate("",form.getFechaInicioEstado()));
+	        bean.setFechaFinEstado(GstDate.getApplicationFormatDate("",form.getFechaFinEstado()));
 	        
 	        /*if (anotAdm.update(bean)){
 	        	return exitoModal("messages.updated.success",request);
@@ -389,6 +396,10 @@ public class ExpSeguimientoAction extends MasterAction {
 			}
 			//fin selects
 			
+			form.setFechaInicioEstado(GstDate.getFormatedDateShort("",expBean.getFechaInicialEstado()));
+			form.setFechaFinEstado(GstDate.getFormatedDateShort("",expBean.getFechaFinalEstado()));
+
+			
 			//Comprobamos que existen tipos de anotaciones definidos para este tipo de expediente
 			ExpTiposAnotacionesAdm tAnotAdm = new ExpTiposAnotacionesAdm (this.getUserBean(request));
 			
@@ -458,6 +469,9 @@ public class ExpSeguimientoAction extends MasterAction {
 		    anotBean.setIdUsuario(this.getUserName(request));
 		    anotBean.setIdInstitucion_Usuario(this.getIDInstitucion(request));
 		    anotBean.setAutomatico("N");
+		    anotBean.setFechaInicioEstado(GstDate.getApplicationFormatDate("",form.getFechaInicioEstado()));
+		    anotBean.setFechaFinEstado(GstDate.getApplicationFormatDate("",form.getFechaFinEstado()));
+		    
 		    
 		    //Nuevo idAnotacion
 		    Hashtable datosAnot = new Hashtable();

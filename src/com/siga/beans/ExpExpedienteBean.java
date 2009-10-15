@@ -59,6 +59,9 @@ public class ExpExpedienteBean extends MasterBean {
 	private String  fechaResolucion;
 	private String  Observaciones;
 	private Double  minuta;
+	private Double  importeIVA;
+	private Double  importeTotal;
+	private Double  porcentajeIVA;
 	private Integer idTipoIVA;
 	private Integer idResultadoJuntaGobierno;
 	
@@ -110,6 +113,9 @@ public class ExpExpedienteBean extends MasterBean {
 	static public final String C_FECHARESOLUCION ="FECHARESOLUCION";
 	static public final String C_OBSERVACIONES ="OBSERVACIONES";
 	static public final String C_MINUTA ="MINUTA";
+	static public final String C_IMPORTEIVA ="IMPORTEIVA";
+	static public final String C_IMPORTETOTAL ="IMPORTETOTAL";
+	static public final String C_PORCENTAJEIVA ="PORCENTAJEIVA";
 	static public final String C_IDTIPOIVA ="IDTIPOIVA";
 	static public final String C_IDRESULTADOJUNTAGOBIERNO ="IDRESULTADOJUNTAGOBIERNO";
 	static public final String C_ALERTAFASEGENERADA ="ALERTAFASEGENERADA";
@@ -141,6 +147,24 @@ public class ExpExpedienteBean extends MasterBean {
 	}
 	public void setMinuta(Double minuta) {
 		this.minuta = minuta;
+	}
+	public Double getImporteIVA() {
+		return importeIVA;
+	}
+	public void setImporteIVA(Double valor) {
+		this.importeIVA = valor;
+	}
+	public Double getImporteTotal() {
+		return importeTotal;
+	}
+	public void setImporteTotal(Double valor) {
+		this.importeTotal = valor;
+	}
+	public Double getPorcentajeIVA() {
+		return porcentajeIVA;
+	}
+	public void setPorcentajeIVA(Double valor) {
+		this.porcentajeIVA = valor;
 	}
 	public Integer getIdTipoIVA() {
 		return idTipoIVA;

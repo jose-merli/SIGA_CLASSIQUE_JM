@@ -17,6 +17,8 @@ public class ExpAnotacionBean extends MasterBean {
 	private Integer idTipoAnotacion;
 	private Integer idAnotacion;
 	private String fechaAnotacion;
+	private String fechaFinEstado;
+	private String fechaInicioEstado;
 	private String descripcion;
 	private String regEntrada;
 	private String regSalida;
@@ -37,6 +39,8 @@ public class ExpAnotacionBean extends MasterBean {
 	static public final String C_IDTIPOANOTACION ="IDTIPOANOTACION";
 	static public final String C_IDANOTACION ="IDANOTACION";
 	static public final String C_FECHAANOTACION ="FECHAANOTACION";
+	static public final String C_FECHAINICIOESTADO ="FECHAINICIOESTADO";
+	static public final String C_FECHAFINESTADO ="FECHAFINESTADO";
 	static public final String C_DESCRIPCION ="DESCRIPCION";
 	static public final String C_REGENTRADA ="REGENTRADA";
 	static public final String C_REGSALIDA ="REGSALIDA";
@@ -75,8 +79,20 @@ public class ExpAnotacionBean extends MasterBean {
 	public String getFechaAnotacion() {
 		return fechaAnotacion;
 	}
-	public void setFechaAnotacion(String fechaAnotacion) {
-		this.fechaAnotacion = fechaAnotacion;
+	public void setFechaAnotacion(String valor) {
+		this.fechaAnotacion = valor;
+	}
+	public String getFechaInicioEstado() {
+		return fechaInicioEstado;
+	}
+	public void setFechaInicioEstado(String valor) {
+		this.fechaInicioEstado = valor;
+	}
+	public String getFechaFinEstado() {
+		return fechaFinEstado;
+	}
+	public void setFechaFinEstado(String valor) {
+		this.fechaFinEstado = valor;
 	}
 	public String getFechaModificacion() {
 		return fechaModificacion;

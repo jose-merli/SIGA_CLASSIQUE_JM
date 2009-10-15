@@ -40,6 +40,8 @@ public class ExpAnotacionAdm extends MasterBeanAdministrador {
 				ExpAnotacionBean.C_IDTIPOANOTACION,
 				ExpAnotacionBean.C_IDANOTACION,
 				ExpAnotacionBean.C_FECHAANOTACION,
+				ExpAnotacionBean.C_FECHAINICIOESTADO,
+				ExpAnotacionBean.C_FECHAFINESTADO,
 				ExpAnotacionBean.C_DESCRIPCION,
 				ExpAnotacionBean.C_REGENTRADA,
 				ExpAnotacionBean.C_REGSALIDA,
@@ -96,6 +98,8 @@ public class ExpAnotacionAdm extends MasterBeanAdministrador {
 			bean.setIdTipoAnotacion(UtilidadesHash.getInteger(hash, ExpAnotacionBean.C_IDTIPOANOTACION));
 			bean.setIdAnotacion(UtilidadesHash.getInteger(hash, ExpAnotacionBean.C_IDANOTACION));
 			bean.setFechaAnotacion(UtilidadesHash.getString(hash, ExpAnotacionBean.C_FECHAANOTACION));
+			bean.setFechaInicioEstado(UtilidadesHash.getString(hash, ExpAnotacionBean.C_FECHAINICIOESTADO));
+			bean.setFechaFinEstado(UtilidadesHash.getString(hash, ExpAnotacionBean.C_FECHAFINESTADO));
 			bean.setDescripcion(UtilidadesHash.getString(hash, ExpAnotacionBean.C_DESCRIPCION));
 			bean.setRegEntrada(UtilidadesHash.getString(hash, ExpAnotacionBean.C_REGENTRADA));
 			bean.setRegSalida(UtilidadesHash.getString(hash, ExpAnotacionBean.C_REGSALIDA));
@@ -141,6 +145,8 @@ public class ExpAnotacionAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, ExpAnotacionBean.C_IDTIPOANOTACION, b.getIdTipoAnotacion());
 			UtilidadesHash.set(htData, ExpAnotacionBean.C_IDANOTACION, b.getIdAnotacion());
 			UtilidadesHash.set(htData, ExpAnotacionBean.C_FECHAANOTACION, b.getFechaAnotacion());
+			UtilidadesHash.set(htData, ExpAnotacionBean.C_FECHAINICIOESTADO, b.getFechaInicioEstado());
+			UtilidadesHash.set(htData, ExpAnotacionBean.C_FECHAFINESTADO, b.getFechaFinEstado());
 			UtilidadesHash.set(htData, ExpAnotacionBean.C_DESCRIPCION, b.getDescripcion());
 			UtilidadesHash.set(htData, ExpAnotacionBean.C_REGENTRADA, b.getRegEntrada());
 			UtilidadesHash.set(htData, ExpAnotacionBean.C_REGSALIDA, b.getRegSalida());
@@ -476,6 +482,8 @@ public class ExpAnotacionAdm extends MasterBeanAdministrador {
 			anotacionBean.setIdAnotacion(this.getNewIdAnotacion(expBean));
 			anotacionBean.setIdEstado(expBean.getIdEstado());
 			anotacionBean.setIdFase(expBean.getIdFase());
+			anotacionBean.setFechaInicioEstado(expBean.getFechaInicialEstado());
+			anotacionBean.setFechaFinEstado(expBean.getFechaFinalEstado());
 			anotacionBean.setDescripcion(texto);
 			anotacionBean.setAutomatico("S");
 			anotacionBean.setIdUsuario(new Integer(this.usrbean.getUserName()));

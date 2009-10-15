@@ -319,22 +319,25 @@ public class ExpDatosGeneralesAction extends MasterAction
 			String sMinuta = fila.getString(ExpExpedienteBean.C_MINUTA); 
 			if (sMinuta != null && !sMinuta.equals("")) {
 				double minuta = Double.parseDouble(sMinuta);
-//				double totalMinuta = 0.0d;
-//				
-//				String sIVA = fila.getString("VALOR_IVA"); 
-//				if (sIVA != null && !sIVA.equals("")) {
-//					float iva  = Float.parseFloat(sIVA);
-//					totalMinuta = minuta + (minuta * iva / 100);
-//				}
-//				else { 
-//					totalMinuta = minuta;
-//				}
-//				request.setAttribute("totalMinuta", UtilidadesNumero.formato(totalMinuta));
 				form.setMinuta("" + minuta);
-				
-				if (fila.getString("VALOR_IVA") != null)
-					request.setAttribute("idTipoIVA", fila.getString("VALOR_IVA"));
+				//if (fila.getString("VALOR_IVA") != null)
+				//	request.setAttribute("idTipoIVA", fila.getString("VALOR_IVA"));
 			}
+			String sImporteTotal = fila.getString(ExpExpedienteBean.C_IMPORTETOTAL); 
+			if (sImporteTotal != null && !sImporteTotal.equals("")) {
+				double ImporteTotal = Double.parseDouble(sImporteTotal);
+				form.setImporteTotal("" + ImporteTotal);
+			}			
+			String sImporteIVA = fila.getString(ExpExpedienteBean.C_IMPORTEIVA); 
+			if (sImporteIVA != null && !sImporteIVA.equals("")) {
+				double ImporteIVA = Double.parseDouble(sImporteIVA);
+				form.setImporteIVA("" + ImporteIVA);
+			}			
+			String sPorcentajeIVA = fila.getString(ExpExpedienteBean.C_PORCENTAJEIVA); 
+			if (sPorcentajeIVA != null && !sPorcentajeIVA.equals("")) {
+				double PorcentajeIVA = Double.parseDouble(sPorcentajeIVA);
+				form.setPorcentajeIVA("" + PorcentajeIVA);
+			}			
 			form.setObservaciones(fila.getString(ExpExpedienteBean.C_OBSERVACIONES));
 			if (fila.getString(ExpExpedienteBean.C_FECHACADUCIDAD)!=null && !fila.getString(ExpExpedienteBean.C_FECHACADUCIDAD).equals("")){
 				form.setFechaCaducidad(GstDate.getFormatedDateShort("",fila.getString(ExpExpedienteBean.C_FECHACADUCIDAD)));
@@ -443,7 +446,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 	        expBean.setNumExpDisciplinario(form.getNumExpDisciplinario().equals("")?null:Integer.valueOf(form.getNumExpDisciplinario()));
 	        expBean.setAnioExpDisciplinario(form.getAnioExpDisciplinario().equals("")?null:Integer.valueOf(form.getAnioExpDisciplinario()));
 	        expBean.setAsunto(form.getAsunto());
-	        expBean.setIdClasificacion(Integer.valueOf(form.getClasificacion()));
+	        expBean.setIdClasificacion(form.getClasificacion().equals("")?null:Integer.valueOf(form.getClasificacion()));
 	        expBean.setJuzgado(form.getJuzgado());
 	        expBean.setIdPretension(form.getIdPretension().equals("")?null:Integer.valueOf(form.getIdPretension()));
 	        expBean.setOtrasPretensiones(form.getOtrasPretensiones());
@@ -456,8 +459,21 @@ public class ExpDatosGeneralesAction extends MasterAction
 	        expBean.setIdMateria(form.getIdMateria().equals("")?null:Integer.valueOf(form.getIdMateria()));
 	        //expBean.setIdEstado(form.getEstado().equals("")?null:Integer.valueOf(form.getEstado()));
 	        expBean.setIdPersona(Long.valueOf(form.getIdPersona()));
-	        expBean.setFechaInicialEstado(form.getFechaInicial().equals("")?"":GstDate.getApplicationFormatDate("",form.getFechaInicial()));
-	        expBean.setFechaFinalEstado(form.getFechaFinal().equals("")?"":GstDate.getApplicationFormatDate("",form.getFechaFinal()));
+	        if (form.getFechaInicial().trim().equals("")) {
+	        	expBean.setFechaInicialEstado(GstDate.getApplicationFormatDate("",form.getFecha()));
+	        } else {
+	        	expBean.setFechaInicialEstado(GstDate.getApplicationFormatDate("",form.getFechaInicial()));
+	        }
+			//expBean.setFechaInicialEstado(form.getFechaInicial().equals("")?"":GstDate.getApplicationFormatDate("",form.getFechaInicial()));
+	        if (form.getFechaFinal().equals("")) {
+				//calculo la fecha final con este método, y me la devuelve en el bean
+				ExpPlazoEstadoClasificacionAdm plazoAdm = new ExpPlazoEstadoClasificacionAdm (this.getUserBean(request));
+				if(expBean.getIdEstado()!=null)
+					plazoAdm.establecerFechaFinal(expBean);
+	        } else {
+	        	expBean.setFechaFinalEstado(GstDate.getApplicationFormatDate("",form.getFechaFinal()));
+	        }
+	        //expBean.setFechaFinalEstado(form.getFechaFinal().equals("")?"":GstDate.getApplicationFormatDate("",form.getFechaFinal()));
 	        expBean.setFechaProrrogaEstado(form.getFechaProrroga().equals("")?"":GstDate.getApplicationFormatDate("",form.getFechaProrroga()));
 	        
 	        expBean.setFechaCaducidad(form.getFechaCaducidad().equals("")?"":GstDate.getApplicationFormatDate("",form.getFechaCaducidad()));
@@ -465,6 +481,17 @@ public class ExpDatosGeneralesAction extends MasterAction
 	        	expBean.setObservaciones(form.getObservaciones());
 	        if (form.getMinuta()!= null && !form.getMinuta().equals(""))
 	        	expBean.setMinuta(new Double(form.getMinuta()));
+
+			if (form.getImporteIVA()!= null && !form.getImporteIVA().trim().equals("")) {
+			    expBean.setImporteIVA(new Double(form.getImporteIVA()));
+			}
+			if (form.getImporteTotal()!= null && !form.getImporteTotal().trim().equals("")) {
+			    expBean.setImporteTotal(new Double(form.getImporteTotal()));
+			}
+			if (form.getPorcentajeIVA()!= null && !form.getPorcentajeIVA().trim().equals("")) {
+			    expBean.setPorcentajeIVA(new Double(form.getPorcentajeIVA()));
+			}
+	        
 	        if (form.getIdTipoIVA() != null && !form.getIdTipoIVA().equals("")) {
 	        	String a = form.getIdTipoIVA().split(",")[0];
 	        	expBean.setIdTipoIVA(new Integer(a));
@@ -529,10 +556,12 @@ public class ExpDatosGeneralesAction extends MasterAction
 		        	}
 		        }
 		
+		        
 		        //Transformamos el bean en hash para poder hacer update sobre campos numericos que se ponen a vacio:
 		        Hashtable hashExp = new Hashtable();
 		        hashExp = expAdm.beanToHashTableForUpdate(expBean);
 
+		        
 		        if (expAdm.update(hashExp, hashExpOld)){
 		        	//Si ha cambiado el estado, averiguamos si el nuevo estado tiene ESEJECUCIONSANCION=S
 		        	if (estadoCambiado){
@@ -596,6 +625,15 @@ public class ExpDatosGeneralesAction extends MasterAction
 			if (form.getMinuta()!= null && !form.getMinuta().trim().equals("")) {
 			    expBean.setMinuta(new Double(form.getMinuta()));
 			}
+			if (form.getImporteIVA()!= null && !form.getImporteIVA().trim().equals("")) {
+			    expBean.setImporteIVA(new Double(form.getImporteIVA()));
+			}
+			if (form.getImporteTotal()!= null && !form.getImporteTotal().trim().equals("")) {
+			    expBean.setImporteTotal(new Double(form.getImporteTotal()));
+			}
+			if (form.getPorcentajeIVA()!= null && !form.getPorcentajeIVA().trim().equals("")) {
+			    expBean.setPorcentajeIVA(new Double(form.getPorcentajeIVA()));
+			}
 			if (form.getIdTipoIVA() != null && !form.getIdTipoIVA().equals("")) {
 	        	String a = form.getIdTipoIVA().split(",")[0];
 	        	expBean.setIdTipoIVA(new Integer(a));
@@ -607,11 +645,24 @@ public class ExpDatosGeneralesAction extends MasterAction
 			expBean.setIdInstitucionJuzgado(form.getIdInstitucionJuzgado().equals("")?null:form.getIdInstitucionJuzgado());
 			expBean.setIdInstitucionProcedimiento(form.getIdInstitucionProcedimiento().equals("")?null:form.getIdInstitucionProcedimiento());
 			expBean.setNumAsunto(form.getNumAsunto().equals("")?null:form.getNumAsunto());
-			expBean.setIdClasificacion(Integer.valueOf(form.getClasificacion()));
+			expBean.setIdClasificacion(form.getClasificacion().equals("")?null:Integer.valueOf(form.getClasificacion()));
 			expBean.setIdFase(form.getFase().equals("")?null:Integer.valueOf(form.getFase()));
 			expBean.setIdEstado(form.getEstado().equals("")?null:Integer.valueOf(form.getEstado()));
-			expBean.setFechaInicialEstado(form.getFechaInicial().equals("")?null:GstDate.getApplicationFormatDate("",form.getFechaInicial()));
-			expBean.setFechaFinalEstado(form.getFechaFinal().equals("")?null:GstDate.getApplicationFormatDate("",form.getFechaFinal()));
+			if (form.getFechaInicial().trim().equals("")) {
+	        	expBean.setFechaInicialEstado(expBean.getFecha());
+	        } else {
+	        	expBean.setFechaInicialEstado(GstDate.getApplicationFormatDate("",form.getFechaInicial()));
+	        }
+			//expBean.setFechaInicialEstado(form.getFechaInicial().equals("")?null:GstDate.getApplicationFormatDate("",form.getFechaInicial()));
+        	if (form.getFechaFinal().trim().equals("")) {
+				//calculo la fecha final con este método, y me la devuelve en el bean
+				ExpPlazoEstadoClasificacionAdm plazoAdm = new ExpPlazoEstadoClasificacionAdm (this.getUserBean(request));
+				if (expBean.getIdEstado()!=null)
+					plazoAdm.establecerFechaFinal(expBean);
+	        } else {
+	        	expBean.setFechaFinalEstado(GstDate.getApplicationFormatDate("",form.getFechaFinal()));
+	        }
+			//expBean.setFechaFinalEstado(form.getFechaFinal().equals("")?null:GstDate.getApplicationFormatDate("",form.getFechaFinal()));
 			expBean.setFechaProrrogaEstado(form.getFechaProrroga().equals("")?null:GstDate.getApplicationFormatDate("",form.getFechaProrroga()));
 			expBean.setIdArea(form.getIdArea().equals("")?null:Integer.valueOf(form.getIdArea()));
 			expBean.setIdMateria(form.getIdMateria().equals("")?null:Integer.valueOf(form.getIdMateria()));

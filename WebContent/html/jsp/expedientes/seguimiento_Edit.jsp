@@ -16,8 +16,9 @@
 <%  
 	String app=request.getContextPath();
 	String accion = (String)request.getAttribute("accion");
-	String boxStyle = accion.equals("consulta")?"boxConsulta":"box";
-	
+	String boxStyle = (accion.equals("consulta"))?"boxConsulta":"box";
+	String boxStyleFecha = (accion.equals("consulta") || accion.equals("edicion"))?"boxConsulta":"box";
+	 
 	boolean bLectura=(accion.equals("consulta"));
 	
 	String botones = "C";
@@ -38,7 +39,9 @@
 	String dato[] = null;
 	String comboAnotacion = "";
 	
+	String autom = (String)request.getAttribute("automatico");
 	boolean isAnotacionAutomatica = false;
+	isAnotacionAutomatica = (autom!=null && autom.equals("S"));
 	if (idFase!=null && !idFase.equals("") && idEstado!=null && !idEstado.equals("")) {
 		dato = new String[]{idInstitucionTipoexpediente,idTipoExpediente,idFase,idEstado};
 		comboAnotacion="cmbTipoAnotacionSinNull";
@@ -49,7 +52,7 @@
 	} else {
 		dato = new String[]{idInstitucionTipoexpediente,idTipoExpediente};
 		comboAnotacion="cmbTipoAnotacionTodosNull";
-		isAnotacionAutomatica = true;
+		//isAnotacionAutomatica = true;
 	}
 	
 	aIdTipoAnotacion.add((String)request.getAttribute("idTipoAnotacion"));
@@ -131,9 +134,12 @@
 				<siga:Idioma key="expedientes.auditoria.literal.descripcion"/>
 			</td>				
 			<td colspan="3" width="250">
-			
-				<html:textarea name="ExpSeguimientoForm" property="descripcion" onkeydown="cuenta(this,1024)" onchange="cuenta(this,1024)"  rows="4" style="width:450px;" styleClass="<%=boxStyle%>"   ></html:textarea>
-			
+				<% if (!isAnotacionAutomatica) { %>
+					<html:textarea name="ExpSeguimientoForm" property="descripcion" onkeydown="cuenta(this,1024)" onchange="cuenta(this,1024)"  rows="4" style="width:450px;" styleClass="<%=boxStyle%>"   ></html:textarea>
+				<% } else { %>
+					<html:textarea name="ExpSeguimientoForm" property="descripcion" onkeydown="cuenta(this,1024)" onchange="cuenta(this,1024)"  rows="4" style="width:450px;" styleClass="boxConsulta"  readonly="true" ></html:textarea>
+				<% } %>
+				
 			
 			
 				
@@ -156,18 +162,37 @@
 				<html:hidden property = "idEstado"/>
 			</td>	
 		</tr>	
+		<tr>
+			<td class="labelText">
+				<siga:Idioma key="expedientes.auditoria.literal.fechaInicioEstado"/>
+			</td>				
+			<td>
+				<html:text name="ExpSeguimientoForm" property="fechaInicioEstado" size="10" styleClass="boxConsulta" readonly="true" />
+			</td>
+
+			<td class="labelText">
+				<siga:Idioma key="expedientes.auditoria.literal.fechaFinEstado"/>
+			</td>
+			<td>
+				<html:text name="ExpSeguimientoForm" property="fechaFinEstado" size="10" styleClass="<%=boxStyle%>" readonly="true" />
+				<% if (!bLectura){
+				%>
+					<a href='javascript://'onClick="return showCalendarGeneral(fechaFinEstado);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+				<%}%>
+			</td>
+		</tr>	
 		<!-- FILA -->
 		<tr>
 			<td class="labelText">
 				<siga:Idioma key="expedientes.auditoria.literal.tipoanotacion"/> (*)
 			</td>				
 			<td>
-				<%if (!bLectura&&!isAnotacionAutomatica){
+				<%if (!bLectura && !isAnotacionAutomatica){
 				%>		
 				<siga:ComboBD nombre = "idTipoAnotacion" tipo="<%=comboAnotacion%>" clase="<%=boxStyle%>" obligatorio="true" parametro="<%=dato%>" elementoSel="<%=aIdTipoAnotacion%>"/>						
 				<%}else{
 				%>
-				<siga:ComboBD nombre = "idTipoAnotacion" tipo="<%=comboAnotacion%>" clase="<%=boxStyle%>" obligatorio="true" readonly="true" parametro="<%=dato%>" elementoSel="<%=aIdTipoAnotacion%>"/>
+				<siga:ComboBD nombre = "idTipoAnotacion" tipo="<%=comboAnotacion%>" clase="boxConsulta" obligatorio="true" readonly="true" parametro="<%=dato%>" elementoSel="<%=aIdTipoAnotacion%>"/>
 				<%}%>
 			</td>
 
@@ -175,8 +200,8 @@
 				<siga:Idioma key="expedientes.auditoria.literal.fecha"/> (*)
 			</td>
 			<td>
-				<html:text name="ExpSeguimientoForm" property="fecha" size="10" styleClass="<%=boxStyle%>" readonly="true" />
-				<% if (!bLectura){
+				<html:text name="ExpSeguimientoForm" property="fecha" size="10" styleClass="<%=boxStyleFecha%>" readonly="true" />
+				<% if (!bLectura && !accion.equals("edicion")){
 				%>
 					<a href='javascript://'onClick="return showCalendarGeneral(fecha);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
 				<%}%>
@@ -188,13 +213,21 @@
 				<siga:Idioma key="expedientes.auditoria.literal.regentrada"/>
 			</td>				
 			<td>
+				<% if (!isAnotacionAutomatica) { %>
 				<html:text name="ExpSeguimientoForm" property="regentrada" size="15" maxlength="30" styleClass="<%=boxStyle%>" readonly="<%=bLectura%>"></html:text>
+				<% } else { %>
+				<html:text name="ExpSeguimientoForm" property="regentrada" size="15" maxlength="30" styleClass="boxConsulta" readonly="true"></html:text>
+				<% } %>
 			</td>
 			<td class="labelText">
 				<siga:Idioma key="expedientes.auditoria.literal.regsalida"/>
 			</td>				
 			<td>
+				<% if (!isAnotacionAutomatica) { %>
 				<html:text name="ExpSeguimientoForm" property="regsalida" size="15" maxlength="30" styleClass="<%=boxStyle%>" readonly="<%=bLectura%>"></html:text>
+				<% } else { %>
+				<html:text name="ExpSeguimientoForm" property="regsalida" size="15" maxlength="30" styleClass="boxConsulta" readonly="true"></html:text>
+				<% } %>
 			</td>
 		</tr>				
 		

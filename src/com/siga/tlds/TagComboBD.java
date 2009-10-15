@@ -530,8 +530,27 @@ public class TagComboBD extends TagSupport {
 						if (!this.obligatorioSinTextoSeleccionar)
 							datos.insertElementAt(new ParejaNombreID ("", UtilidadesString.getMensajeIdiomaCombo(usrbean, "general.combo.seleccionar")), 0);
 					}
+					String grupoAnt="";
+					boolean primeraVez =true;
 					for (int i = 0; i < datos.size(); i++) {
 						ParejaNombreID dato =  (ParejaNombreID) datos.get(i);
+						
+						// RGG cambio paa OPTGROUP
+						String nombreCompleto = dato.getNombre();
+						String grupo = "";
+						int pos1=nombreCompleto.indexOf("[[");
+						if (pos1!=-1) {
+							grupo = nombreCompleto.substring(pos1+2,nombreCompleto.indexOf("]]"));
+							nombreCompleto = nombreCompleto.substring(0,pos1);
+						}
+						if (!grupo.equals("") && !grupoAnt.equals(grupo)) {
+							if (!primeraVez) {
+								out.print("</optgroup>");
+							}
+							primeraVez=false;
+							out.print("<optgroup label=\""+grupo+"\">");
+							grupoAnt = grupo;
+						}
 						String  option = "<option value=\"" + dato.getIdNombre() + "\"";
 	//					Seleccion por id					
 						if (this.porFilas==0) {					
@@ -557,8 +576,15 @@ public class TagComboBD extends TagSupport {
 								option += " selected ";
 							}	
 						}
-						option += " >" + UtilidadesString.getMensajeIdiomaCombo(usrbean,dato.getNombre()) + "</option>";
+						option += " >" + UtilidadesString.getMensajeIdiomaCombo(usrbean,nombreCompleto) + "</option>";
 						out.print(option);
+						
+						grupoAnt=grupo;
+
+						
+					}
+					if (!grupoAnt.equals("")) {
+						out.print("</optgroup>");
 					}
 				}
 				out.print("</Select>");

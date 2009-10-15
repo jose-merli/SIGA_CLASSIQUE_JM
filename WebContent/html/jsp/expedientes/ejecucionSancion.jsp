@@ -153,6 +153,7 @@
 		<!-- Asociada al boton GuardarCerrar -->
 		function accionGuardarCerrar() 
 		{		
+			sub();
 			document.forms[0].modo.value="modificar";
 			document.forms[0].submit();
 		}		

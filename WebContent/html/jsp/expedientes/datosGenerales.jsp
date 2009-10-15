@@ -254,7 +254,16 @@
 							}
 						}
 						if (document.forms[0].minuta){
-						  document.forms[0].minuta.value = document.forms[0].minuta.value.replace(/,/,".");
+							  document.forms[0].minuta.value = document.forms[0].minuta.value.replace(/,/,".");
+						}
+						if (document.forms[0].importeTotal){
+							  document.forms[0].importeTotal.value = document.forms[0].importeTotal.value.replace(/,/,".");
+						}
+						if (document.forms[0].importeIVA){
+							  document.forms[0].importeIVA.value = document.forms[0].importeIVA.value.replace(/,/,".");
+						}
+						if (document.forms[0].porcentajeIVA){
+							  document.forms[0].porcentajeIVA.value = document.forms[0].porcentajeIVA.value.replace(/,/,".");
 						}
 										
 						<%if (accion.equals("nuevo")){%>
@@ -467,16 +476,21 @@
 			<td>				
 				<html:text name="ExpDatosGeneralesForm" property="tipoExpediente" size="25" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
+<% if (bEstado){%>
 			<td class="labelText">
 				<siga:Idioma key="expedientes.auditoria.literal.clasificacion"/>&nbsp(*)
 			</td>	
-			<td>
+			<td>	
 				<%if (bEditable){%>		
 				<siga:ComboBD nombre = "clasificacion" tipo="cmbClasificacion" clase="boxCombo" obligatorio="false" ElementoSel="<%=vClasif%>" parametro="<%=dato%>"/>
 				<%}else{%>
 				<html:text name="ExpDatosGeneralesForm" property="clasificacionSel"  styleClass="boxConsulta" readonly="true"></html:text>
 				<%}%>
 			</td>
+<% } else { %>
+			<html:hidden name="ExpDatosGeneralesForm" property="clasificacion"  ></html:hidden>
+
+<% } %>
 			
 			
 <% if (bInstitucion){%>
@@ -531,27 +545,29 @@
 					<siga:Idioma key="expedientes.auditoria.literal.minuta"/>
 				</td>
 				<td class="labelTextValue">
-					<html:text name="ExpDatosGeneralesForm" property="minuta" size="10" maxlength="10" styleClass="<%=boxNumero%>" readonly="<%=!bEditable%>" onkeypress="filterChars(this,false,true);" onkeyup="filterCharsUp(this);" onblur="filterCharsNaN(this);" onchange="calcularTotalMinuta()"></html:text> &euro;
+					<html:text name="ExpDatosGeneralesForm" property="minuta" size="10" maxlength="10" styleClass="<%=boxNumero%>" readonly="<%=!bEditable%>" onkeypress="filterChars(this,false,true);" onkeyup="filterCharsUp(this);" onblur="filterCharsNaN(this);" ></html:text> &euro;
 				</td>
 				
 				<td class="labelText">
 					<siga:Idioma key="expedientes.auditoria.literal.porcentajeIVA"/>
 				</td>				
-				<td >
-					<%if(bEditable){%>
-						<siga:ComboBD nombre="idTipoIVA" tipo="porcentajeIvaConValor" clase="boxCombo" obligatorio="false" readonly="false" elementoSel="<%=tipoIVASel%>" accion="calcularTotalMinuta()"/>
-					<%}else{%>
-						<siga:ComboBD nombre="idTipoIVA" tipo="porcentajeIvaConValor" clase="boxConsulta" obligatorio="false" readonly="true"  elementoSel="<%=tipoIVASel%>" accion="calcularTotalMinuta()"/>
-					<%}%>							
-					
-				</td>	
+				<td class="labelTextValue">
+					<html:text name="ExpDatosGeneralesForm" property="porcentajeIVA" size="10" maxlength="10" styleClass="<%=boxNumero%>" readonly="<%=!bEditable%>" onkeypress="filterChars(this,false,true);" onkeyup="filterCharsUp(this);" onblur="filterCharsNaN(this);" ></html:text> %
+				</td>
+				
+				<td class="labelText">
+					<siga:Idioma key="expedientes.auditoria.literal.importeIVA"/>
+				</td>				
+				<td class="labelTextValue">
+					<html:text name="ExpDatosGeneralesForm" property="importeIVA" size="10" maxlength="10" styleClass="<%=boxNumero%>" readonly="<%=!bEditable%>" onkeypress="filterChars(this,false,true);" onkeyup="filterCharsUp(this);" onblur="filterCharsNaN(this);" ></html:text> &euro;
+				</td>
 				
 				<td class="labelText" width="10%">
 					<siga:Idioma key="expedientes.auditoria.literal.totalMinuta"/>
 				</td>				
 				<td class="labelTextValue">
-					<input type="text" id="totalMinuta" size="8" value="<%=totalMinuta%>" class="boxConsultaNumber" readOnly > &euro;
-				</td>	
+					<html:text name="ExpDatosGeneralesForm" property="importeTotal" size="10" maxlength="10" styleClass="<%=boxNumero%>" readonly="<%=!bEditable%>" onkeypress="filterChars(this,false,true);" onkeyup="filterCharsUp(this);" onblur="filterCharsNaN(this);" ></html:text> &euro;
+				</td>
 			</tr>
 		</table>
 	</siga:ConjCampos>
@@ -694,7 +710,7 @@
 	<html:hidden name="ExpDatosGeneralesForm" property="numAsunto"/>
 <%}%>
 	
-
+<% if (bEstado){%>
 	<siga:ConjCampos leyenda="expedientes.auditoria.literal.estado">
 	<table class="tablaCampos" align="center">
 	<!-- FILA -->
@@ -714,7 +730,7 @@
 				<% } %>
 			</td>
 
-		<% if (bEstado){%>
+		
 			<td class="labelText">
 				<siga:Idioma key="expedientes.auditoria.literal.estado"/>&nbsp(*)
 			</td>
@@ -725,11 +741,8 @@
 				<html:text name="ExpDatosGeneralesForm" property="estadoSel"  styleClass="boxConsulta" readonly="true"></html:text>
 				<%}%>
  			</td>
-		<% } else {%>
-			<td>&nbsp;</td>
-		<%  } %>
  			
-<% if (bEditable && bEstado){%>
+<% if (bEditable){%>
 			<td class="labelText">
 				<input type="button" class="button" alt="<%=plazo%>" id="searchDeadline"  name = "idButton" onclick="return getPlazo();" value="<%=plazo%>"/>&nbsp;
 			</td>
@@ -739,7 +752,7 @@
 <%}%>				
 		</tr>
 
-<% if (bEstado){%>
+
 		<tr>					
 			<td class="labelText">
 				<siga:Idioma key="expedientes.auditoria.literal.fechainicial"/>&nbsp(*)
@@ -768,21 +781,23 @@
 				&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
 				<html:text name="ExpDatosGeneralesForm" property="fechaProrroga" maxlength="10" size="10" styleClass="<%=boxStyle%>" readonly="true"></html:text>
 				<% if (bEditable){%>
-				<a href='javascript://'onClick="return showCalendarGeneral(fechaProrroga);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+				<a href="javascript://" onClick="return showCalendarGeneral(fechaProrroga);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
 				<%}%>
 			</td>			
 		</tr>
+
+	</table>
+		
+	</siga:ConjCampos>
 <%}else{%>	
 	<html:hidden name="ExpDatosGeneralesForm" property="comboEstados"/>
+	<html:hidden name="ExpDatosGeneralesForm" property="comboFases"/>
 	<html:hidden name="ExpDatosGeneralesForm" property="estadoSel"/>
+	<html:hidden name="ExpDatosGeneralesForm" property="faseSel"/>
 	<html:hidden name="ExpDatosGeneralesForm" property="fechaInicial"/>
 	<html:hidden name="ExpDatosGeneralesForm" property="fechaFinal"/>
 	<html:hidden name="ExpDatosGeneralesForm" property="fechaProrroga"/>
 <%}%>
-	</table>
-		
-	</siga:ConjCampos>
-
 	
 			
 	</td>

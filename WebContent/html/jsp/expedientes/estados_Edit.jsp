@@ -137,7 +137,7 @@
 										 	
 					if(modo.equalsIgnoreCase("Nuevo")){ 	
 			%>				 	
-				<siga:ComboBD nombre = "idInst_idExp_idFase" tipo="cmbFases" clase="boxCombo" parametro="<%=parametros%>" obligatorio="true"/>
+				<siga:ComboBD nombre = "idInst_idExp_idFase" tipo="cmbFases" clase="boxCombo" parametro="<%=parametros%>" ancho="150" obligatorio="true"/>
 			<% } else { 
 				    ArrayList faseSel =null;
 					faseSel = new ArrayList ();
@@ -187,10 +187,10 @@
 				 		clase = "boxCombo";
 				 	} 
 			%>
-				 	<siga:ComboBD nombre = "idInst_idExp_idFase_idEstadoSig" tipo="cmbEstadosSiguientes" elementoSel="<%=estadoSel%>" clase="<%=clase%>" parametro="<%=parametros%>" obligatorio="false" readonly="<%=readOnly%>" />
+				 	<siga:ComboBD nombre = "idInst_idExp_idFase_idEstadoSig" tipo="cmbEstadosSiguientes" elementoSel="<%=estadoSel%>" clase="<%=clase%>" ancho="200" parametro="<%=parametros%>" obligatorio="false" readonly="<%=readOnly%>" />
 
 			 <% } else { %>
-					<siga:ComboBD nombre = "idInst_idExp_idFase_idEstadoSig" tipo="cmbEstadosSiguientesTodos" clase="boxCombo" parametro="<%=parametros%>" obligatorio="false"/>
+					<siga:ComboBD nombre = "idInst_idExp_idFase_idEstadoSig" tipo="cmbEstadosSiguientesTodos" clase="boxCombo" parametro="<%=parametros%>" ancho="200" obligatorio="false"/>
 			 <% } %>				
 				
 		</td>	

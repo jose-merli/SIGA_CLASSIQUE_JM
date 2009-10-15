@@ -58,6 +58,9 @@ public class ExpDatosGeneralesForm extends MasterForm {
     private String fechaCaducidad="";
     private String observaciones="";
     private String minuta="";
+    private String importeIVA="";
+    private String importeTotal="";
+    private String porcentajeIVA="";
     private String idTipoIVA="";
         
     public String getFechaCaducidad() {
@@ -81,6 +84,27 @@ public class ExpDatosGeneralesForm extends MasterForm {
 		this.minuta = minuta;
 	}
 	
+	public String getImporteIVA() {
+		return importeIVA;
+	}
+	public void setImporteIVA(String valor) {
+		this.importeIVA = valor;
+	}
+
+	public String getImporteTotal() {
+		return importeTotal;
+	}
+	public void setImporteTotal(String valor) {
+		this.importeTotal = valor;
+	}
+
+	public String getPorcentajeIVA() {
+		return porcentajeIVA;
+	}
+	public void setPorcentajeIVA(String valor) {
+		this.porcentajeIVA = valor;
+	}
+
 	public String getIdTipoIVA() {
 		return idTipoIVA;
 	}

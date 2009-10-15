@@ -26,6 +26,8 @@ public class ExpSeguimientoForm extends MasterForm {
 //	private String modo="";
     private String modal="";
     private String fecha="";
+    private String fechaInicioEstado="";
+    private String fechaFinEstado="";
     private String idTipoAnotacion="";
     private String tipoAnotacion="";
     private String fase="";    
@@ -119,6 +121,18 @@ public class ExpSeguimientoForm extends MasterForm {
 	}
 	public void setFecha(String fecha) {
 		this.fecha = fecha;
+	}
+	public String getFechaInicioEstado() {
+		return fechaInicioEstado;
+	}
+	public void setFechaInicioEstado(String fecha) {
+		this.fechaInicioEstado = fecha;
+	}
+	public String getFechaFinEstado() {
+		return fechaFinEstado;
+	}
+	public void setFechaFinEstado(String fecha) {
+		this.fechaFinEstado = fecha;
 	}
 	public String getIdEstado() {
 		return idEstado;

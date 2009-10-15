@@ -83,6 +83,9 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			ExpExpedienteBean.C_FECHAINICIALFASE,
 			ExpExpedienteBean.C_OBSERVACIONES,
 			ExpExpedienteBean.C_MINUTA,
+			ExpExpedienteBean.C_IMPORTEIVA,
+			ExpExpedienteBean.C_IMPORTETOTAL,
+			ExpExpedienteBean.C_PORCENTAJEIVA,
 			ExpExpedienteBean.C_IDAREA,
 			ExpExpedienteBean.C_IDMATERIA,
 			ExpExpedienteBean.C_IDPRETENSION,
@@ -173,6 +176,9 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			bean.setFechaResolucion(UtilidadesHash.getString(hash, ExpExpedienteBean.C_FECHARESOLUCION));
 			bean.setObservaciones(UtilidadesHash.getString(hash, ExpExpedienteBean.C_OBSERVACIONES));
 			bean.setMinuta(UtilidadesHash.getDouble(hash, ExpExpedienteBean.C_MINUTA));
+			bean.setImporteIVA(UtilidadesHash.getDouble(hash, ExpExpedienteBean.C_IMPORTEIVA));
+			bean.setImporteTotal(UtilidadesHash.getDouble(hash, ExpExpedienteBean.C_IMPORTETOTAL));
+			bean.setPorcentajeIVA(UtilidadesHash.getDouble(hash, ExpExpedienteBean.C_PORCENTAJEIVA));
 			bean.setIdTipoIVA(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_IDTIPOIVA));
 			bean.setIdResultadoJuntaGobierno(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_IDRESULTADOJUNTAGOBIERNO));
 			
@@ -247,6 +253,9 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_FECHARESOLUCION, b.getFechaResolucion());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_OBSERVACIONES, b.getObservaciones());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_MINUTA, b.getMinuta());
+			UtilidadesHash.set(htData, ExpExpedienteBean.C_IMPORTEIVA, b.getImporteIVA());
+			UtilidadesHash.set(htData, ExpExpedienteBean.C_IMPORTETOTAL, b.getImporteTotal());
+			UtilidadesHash.set(htData, ExpExpedienteBean.C_PORCENTAJEIVA, b.getPorcentajeIVA());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDTIPOIVA, b.getIdTipoIVA());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDRESULTADOJUNTAGOBIERNO, b.getIdResultadoJuntaGobierno());
 
@@ -1333,6 +1342,15 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		    faseOldBean = (ExpFasesBean)fasesAdm.selectByPK(htFase).firstElement();
 	    }
 
+	    ExpFasesBean faseNewBean=new ExpFasesBean();
+	    if (estNuevo!=null){
+	    	Hashtable htFase = new Hashtable();
+		    htFase.put(ExpFasesBean.C_IDINSTITUCION,estNuevo.getIdInstitucion());
+		    htFase.put(ExpFasesBean.C_IDTIPOEXPEDIENTE,estNuevo.getIdTipoExpediente());
+		    htFase.put(ExpFasesBean.C_IDFASE,estNuevo.getIdFase());
+		    faseNewBean = (ExpFasesBean)fasesAdm.selectByPK(htFase).firstElement();
+	    }
+
 	    if (estAntiguo!=null){
 	        if (estAntiguo.getPostActPrescritas().equalsIgnoreCase("N")){
 	            exp.setActuacionesPrescritas("");
@@ -1372,19 +1390,25 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 	    anotBean.setIdInstitucion(exp.getIdInstitucion());
 	    anotBean.setIdInstitucion_TipoExpediente(exp.getIdInstitucion_tipoExpediente());
 	    anotBean.setIdTipoExpediente(exp.getIdTipoExpediente());
-	    anotBean.setIdTipoAnotacion(ExpTiposAnotacionesAdm.codigoTipoCambioEstado);	    
+	    if (automatico) {
+	    	anotBean.setIdTipoAnotacion(ExpTiposAnotacionesAdm.codigoTipoAutomatico);	    
+	    } else {
+	    	anotBean.setIdTipoAnotacion(ExpTiposAnotacionesAdm.codigoTipoCambioEstado);	    
+	    }
 	    anotBean.setFechaAnotacion("sysdate");
 	    if (estAntiguo!=null)
-	    	anotBean.setDescripcion("Cambio "+(automatico?"AUTOMÁTICO ":"")+"desde "+estAntiguo.getNombre()+"("+faseOldBean.getNombre()+")");
+	    	anotBean.setDescripcion(UtilidadesString.getMensajeIdioma(this.usrbean, "expedientes.auditoria.mensaje.cambioEstado")+" "+(automatico?"AUTOMÁTICO ":"")+UtilidadesString.getMensajeIdioma(this.usrbean, "expedientes.auditoria.mensaje.cambioDesde")+" "+estAntiguo.getNombre()+" ("+faseOldBean.getNombre()+")");
 	    else
-	    	anotBean.setDescripcion("Cambio "+(automatico?"AUTOMÁTICO ":"")+"desde N/A ("+faseOldBean.getNombre()+")");
+	    	anotBean.setDescripcion(UtilidadesString.getMensajeIdioma(this.usrbean, "expedientes.auditoria.mensaje.estadoInicial")+" "+estNuevo.getNombre()+" ("+faseNewBean.getNombre()+")");
 	    anotBean.setIdEstado(estNuevo.getIdEstado());
 	    anotBean.setIdFase(estNuevo.getIdFase());
 	    anotBean.setNumeroExpediente(exp.getNumeroExpediente());
 	    anotBean.setAnioExpediente(exp.getAnioExpediente());
-	    anotBean.setIdUsuario(exp.getUsuModificacion());
+	    anotBean.setIdUsuario(this.usuModificacion);
 	    anotBean.setIdInstitucion_Usuario(exp.getIdInstitucion());
 	    anotBean.setAutomatico(automatico?"S":"N");
+	    anotBean.setFechaInicioEstado(exp.getFechaInicialEstado());
+	    anotBean.setFechaFinEstado(exp.getFechaFinalEstado());
 	    
 	    //Nuevo idAnotacion
 	    Hashtable datosAnot = new Hashtable();
@@ -1405,12 +1429,9 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 	    htPk.put(ExpFasesBean.C_IDFASE,exp.getIdFase());
 
 	    try {
-	        if (estAntiguo!=null){
-			    anotBean.setIdAnotacion(anotAdm.getNewIdAnotacion(datosAnot));
-			    anotAdm.insert(anotBean);
-	        	//alertaAdm.insertarAlerta(exp,"Cambio "+(automatico?"AUTOMÁTICO ":"")+"desde "+estAntiguo.getNombre()+"("+faseOldBean.getNombre()+")");
-	        }
-            logAdm.insertarEntrada(exp,estAntiguo,estNuevo);
+           anotBean.setIdAnotacion(anotAdm.getNewIdAnotacion(datosAnot));
+		   anotAdm.insert(anotBean);
+           logAdm.insertarEntrada(exp,estAntiguo,estNuevo);
         } catch (ClsExceptions e) {
             throw new ClsExceptions (e, "Error al recuperar datos en B.D.");
         }	    
@@ -1621,19 +1642,26 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			/////////////////////////////////////////////
 			/// CONTROL 1: CAMBIOS DE ESTADO  
 			/////////////////////////////////////////////
-			String sql_estado1="SELECT IDINSTITUCION, "+
-			       " IDINSTITUCION_TIPOEXPEDIENTE, "+
-			       " IDTIPOEXPEDIENTE, "+
-			       " ANIOEXPEDIENTE, "+
-			       " NUMEROEXPEDIENTE, "+
-			       " decode(abs(FECHAPRORROGAESTADO - FECHAFINALESTADO) - "+
-			       " (FECHAPRORROGAESTADO - FECHAFINALESTADO), "+
+			String sql_estado1="SELECT E.IDINSTITUCION, "+
+			       " E.IDINSTITUCION_TIPOEXPEDIENTE, "+
+			       " E.IDTIPOEXPEDIENTE, "+
+			       " E.ANIOEXPEDIENTE, "+
+			       " E.NUMEROEXPEDIENTE, "+
+			       " decode(abs(E.FECHAPRORROGAESTADO - E.FECHAFINALESTADO) - "+
+			       " (E.FECHAPRORROGAESTADO - E.FECHAFINALESTADO), "+
 			       " 0, "+
-			       " FECHAPRORROGAESTADO, "+
-			       " FECHAFINALESTADO) as FECHAFINAL "+
-			       " FROM EXP_EXPEDIENTE "+
-			       " WHERE ALERTAGENERADA <> 'S' "+
-			       " AND FECHAFINALESTADO IS NOT NULL";
+			       " E.FECHAPRORROGAESTADO, "+
+			       " E.FECHAFINALESTADO) as FECHAFINAL "+
+			       " FROM EXP_EXPEDIENTE E , exp_tipoexpediente t, exp_campotipoexpediente c "+
+			       " where E.Idinstitucion_Tipoexpediente=t.idinstitucion "+
+			       " and   E.IDTIPOEXPEDIENTE = t.idtipoexpediente "+
+			       " and   E.Idinstitucion_Tipoexpediente=c.idinstitucion "+
+			       " and   E.IDTIPOEXPEDIENTE = c.idtipoexpediente "+
+			       " and   c.idcampo = 3 "+
+			       " and   c.visible = 'S' "+
+			       " and  E.ALERTAGENERADA <> 'S' "+
+			       " AND E.FECHAFINALESTADO IS NOT NULL"+
+			       " AND decode(abs(E.FECHAPRORROGAESTADO - E.FECHAFINALESTADO) - (E.FECHAPRORROGAESTADO - E.FECHAFINALESTADO),0,E.FECHAPRORROGAESTADO,E.FECHAFINALESTADO) < SYSDATE ";
 			
 			if (rc1.query(sql_estado1)) {
 				for (int i = 0; i < rc1.size(); i++)	{
@@ -1683,13 +1711,13 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 				    " E.NUMEROEXPEDIENTE, "+
 				    " ES.NOMBRE "+
 				    " FROM   EXP_EXPEDIENTE E, EXP_ESTADO ES "+
-				    " WHERE  E.IDESTADO = ES.IDESTADO "+
-				    " AND    E.IDFASE = ES.IDFASE "+
-				    " AND    E.IDINSTITUCION_TIPOEXPEDIENTE = ES.IDINSTITUCION "+
-				    " AND    E.IDTIPOEXPEDIENTE = ES.IDTIPOEXPEDIENTE "+
+				    " WHERE  E.IDESTADO = ES.IDESTADO (+) "+
+				    " AND    E.IDFASE = ES.IDFASE (+) "+
+				    " AND    E.IDINSTITUCION_TIPOEXPEDIENTE = ES.IDINSTITUCION (+) "+
+				    " AND    E.IDTIPOEXPEDIENTE = ES.IDTIPOEXPEDIENTE (+) "+
 				    " AND    E.ALERTACADUCIDADGENERADA <> 'S' "+
 				    " AND    E.FECHACADUCIDAD <= SYSDATE "+
-				    " AND    ES.ESTADOFINAL = 'N'";
+				    " AND    ES.ESTADOFINAL (+) = 'N'";
 			
 			rc1 = new RowsContainer();
 			if (rc1.query(sql_estado2)) {
@@ -1954,12 +1982,11 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		       {
 			        Hashtable htPkEstNew = (Hashtable)htPkEst.clone();
 			        htPkEstNew.put(ExpEstadosBean.C_IDESTADO,expEstOld.getIdEstadoSiguiente());
+			        htPkEstNew.put(ExpEstadosBean.C_IDFASE,expEstOld.getIdFaseSiguiente());
 			        Object obj=expEstAdm.selectByPK(htPkEstNew).firstElement();
 			        if (obj!=null){
 					    expEstNew = (ExpEstadosBean)obj;		        
 					    
-				        cambioEstado(expBean,expEstOld,expEstNew,true);
-				        
 				        Date dFechaFinal;
 				        SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
 				        try {
@@ -1991,7 +2018,10 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 				        	expBean.setFechaFinalEstado(null);
 				        	alertaAdm.insertarAlerta(expBean,"Se ha anulado la fecha final del estado");
 				        }
+
+				        cambioEstado(expBean,expEstOld,expEstNew,true);
 				        
+
 				        // RGG Ya no se inserta aquí el mensaje.
 				        // En el control de aviso de antelacion del estado se pone este mensaje
 					    //Insertamos alerta de estado antiguo			        
@@ -2099,6 +2129,9 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_FECHARESOLUCION, b.getFechaResolucion());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_OBSERVACIONES, b.getObservaciones());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_MINUTA, b.getMinuta());
+			UtilidadesHash.set(htData, ExpExpedienteBean.C_IMPORTEIVA, b.getImporteIVA());
+			UtilidadesHash.set(htData, ExpExpedienteBean.C_IMPORTETOTAL, b.getImporteTotal());
+			UtilidadesHash.set(htData, ExpExpedienteBean.C_PORCENTAJEIVA, b.getPorcentajeIVA());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDTIPOIVA, b.getIdTipoIVA());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDRESULTADOJUNTAGOBIERNO, b.getIdResultadoJuntaGobierno());
 
@@ -2126,7 +2159,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			sql.append(" EXP.ESVISIBLE,EXP.ESVISIBLEENFICHA,EXP.SANCIONADO,EXP.SANCIONPRESCRITA,EXP.ACTUACIONESPRESCRITAS, ");
 			sql.append(" EXP.SANCIONFINALIZADA,EXP.ANOTACIONESCANCELADAS,EXP.ANIOEXPDISCIPLINARIO,EXP.NUMEXPDISCIPLINARIO, ");
 			sql.append(" EXP.NUMASUNTO,TO_CHAR(EXP.FECHAINICIALESTADO, 'dd-mm-yyyy') AS FECHAINICIALESTADO,TO_CHAR(EXP.FECHAFINALESTADO, 'dd-mm-yyyy') AS FECHAFINALESTADO ");
-			sql.append(" ,TO_CHAR(EXP.FECHAPRORROGAESTADO, 'dd-mm-yyyy') AS FECHAPRORROGAESTADO,EXP.DESCRIPCIONRESOLUCION,TO_CHAR(EXP.FECHARESOLUCION, 'dd-mm-yyyy') AS FECHARESOLUCION,TO_CHAR(EXP.FECHACADUCIDAD, 'dd-mm-yyyy') AS FECHACADUCIDAD,EXP.OBSERVACIONES,EXP.MINUTA ");
+			sql.append(" ,TO_CHAR(EXP.FECHAPRORROGAESTADO, 'dd-mm-yyyy') AS FECHAPRORROGAESTADO,EXP.DESCRIPCIONRESOLUCION,TO_CHAR(EXP.FECHARESOLUCION, 'dd-mm-yyyy') AS FECHARESOLUCION,TO_CHAR(EXP.FECHACADUCIDAD, 'dd-mm-yyyy') AS FECHACADUCIDAD,EXP.OBSERVACIONES,EXP.MINUTA, EXP.IMPORTETOTAL, EXP.IMPORTEIVA, EXP.PORCENTAJEIVA ");
 			sql.append(" ,PER.IDPERSONA,PER.NOMBRE PER_NOMBRE,PER.APELLIDOS1 PER_APELLIDOS1,PER.APELLIDOS2 PER_APELLIDOS2,PER.NIFCIF PER_NIFCIF ");
 			sql.append(" ,TE.NOMBRE TE_NOMBRE,TE.ESGENERAL TE_ESGENERAL ");
 			sql.append(" ,CLA.NOMBRE CLA_NOMBRE ");

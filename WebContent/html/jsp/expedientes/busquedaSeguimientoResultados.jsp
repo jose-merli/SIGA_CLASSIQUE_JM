@@ -72,12 +72,14 @@
 		   		  clase="tableTitle"
 		   		  nombreCol="expedientes.auditoria.literal.fecha,
 					expedientes.auditoria.literal.usuario,
+					expedientes.auditoria.literal.fechaInicioEstado,
+					expedientes.auditoria.literal.fechaFinEstado,
 					expedientes.auditoria.literal.fase,
 					expedientes.auditoria.literal.estado,
 					expedientes.auditoria.literal.tipo,
 					expedientes.auditoria.literal.automatico,
 					expedientes.auditoria.literal.descripcion,"
-		   		  tamanoCol="10,10,10,10,15,5,30,10"
+		   		  tamanoCol="8,10,8,8,8,8,12,5,23,10"
 			   			alto="100%"
 		   			ajusteBotonera="true"		
 
@@ -108,7 +110,11 @@
 					  		}
 				  							  		
 					  	}else{
-					  		botones="C";
+					  		if (editable.booleanValue()) {
+					  			botones="C,E";
+					  		} else {
+					  			botones="C";
+					  		}
 					  	}
 					  	String sAutomatico="";
 					  	if (fila.getValue("AUTOMATICO")!=null) {
@@ -132,6 +138,8 @@
 						<%=GstDate.getFormatedDateShort("",fila.getString("FECHAANOTACION"))%>
 					</td>
 					<td><%=fila.getString("USUARIO").equals("")?"&nbsp;":UtilidadesString.mostrarDatoJSP(fila.getString("USUARIO"))%></td>
+					<td><%=(fila.getString("FECHAINICIOESTADO")==null || fila.getString("FECHAINICIOESTADO").equals(""))?"&nbsp;":GstDate.getFormatedDateShort("",fila.getString("FECHAINICIOESTADO"))%></td>
+					<td><%=(fila.getString("FECHAINICIOESTADO")==null || fila.getString("FECHAFINESTADO").equals(""))?"&nbsp;":GstDate.getFormatedDateShort("",fila.getString("FECHAFINESTADO"))%></td>
 					<td><%=fila.getString("FASE").equals("")?"&nbsp;":fila.getString("FASE")%></td>
 					<td><%=fila.getString("ESTADO").equals("")?"&nbsp;":fila.getString("ESTADO")%></td>
 					<td><%=UtilidadesMultidioma.getDatoMaestroIdioma(fila.getString("TIPO"),userBean)%></td>

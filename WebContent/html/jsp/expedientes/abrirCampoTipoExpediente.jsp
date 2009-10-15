@@ -94,7 +94,9 @@
 					return false;
 				}
 				if (validateCamposForm(document.camposForm)) {
-					alert('<siga:Idioma key="pestana.tiposexpedientes.campos.aviso"/>');
+					if (document.getElementById("estado").checked!=false) {
+						alert('<siga:Idioma key="pestana.tiposexpedientes.campos.aviso"/>');
+					}
 					camposForm.submit();
 				} else {
 					fin();
@@ -178,7 +180,15 @@
 	 			var resultado=ventaModalGeneral(document.camposConfigurablesForm.name,"M");
 	 			
 			}	
+
 			
+			function faviso() {
+				 if (document.getElementById("estado").checked!=false) {
+					 document.getElementById("aviso").style.display="block";
+				 } else {
+					 document.getElementById("aviso").style.display="none";
+				}
+			}			
 
 		</script>
 		
@@ -193,7 +203,7 @@
 		
 	</head>
 	
-	<body class="detallePestanas" onLoad="inicioPestana();">
+	<body class="detallePestanas" onLoad="faviso();inicioPestana();">
 	
 	<div id="camposRegistro">
 				
@@ -217,7 +227,7 @@
 					</tr>
 				</table>	
 			
-				<table align="center">
+				<table align="center" id="aviso" style="display:none">
 					<tr>
 						<td class="labelText" width="100%" colspan="2" >
 							<siga:Idioma key="pestana.tiposexpedientes.campos.aviso"/>
@@ -250,10 +260,10 @@
 								</tr>
 								<tr>
 									<td id="titulo" class="labelText">
-										<siga:Idioma key="expedientes.auditoria.literal.estado"/> : 				    
+										<siga:Idioma key="expedientes.auditoria.literal.estadoTipoExpediente"/> : 				    
 									</td>
 									<td>
-										<html:checkbox name="camposForm" property="estado" value="true" disabled="<%=bLectura%>"/>
+										<html:checkbox name="camposForm" property="estado" onclick="faviso();" value="true" disabled="<%=bLectura%>"/>
 									</td>
 								</tr>
 								<tr>
