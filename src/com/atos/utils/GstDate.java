@@ -387,6 +387,26 @@ public class GstDate {
 		return result;
 	}
 
+	public static String dateSumaDiasJava(String fecha,Integer dias) throws ClsExceptions{	
+		String result = "";	
+		SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA); 
+		
+		try {
+			String fechaIni = fecha;
+			Date d=sdf.parse(fechaIni);
+			d.setTime(d.getTime()+86399000*dias.intValue());
+			result = (sdf.format(d));
+			
+		} catch (Exception e) {
+	      	ClsExceptions exc=new ClsExceptions(e,"Formato de fecha no reconocido");
+	      	exc.setErrorCode("DATEFORMAT");
+	        throw exc;
+		}
+	
+		
+		return result;
+	}
+
 	public static String dateFormatoJava(String fecha) throws ClsExceptions{	
 		String result = "";	
 		SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA); 

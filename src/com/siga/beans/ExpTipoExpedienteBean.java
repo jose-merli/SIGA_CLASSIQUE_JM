@@ -19,6 +19,8 @@ public class ExpTipoExpedienteBean extends MasterBean {
 	private String esGeneral;
 	private Integer idTipoExpediente;
 	private Integer tiempoCaducidad;
+	private Integer diasAntelacionCad;
+	
 	
 	
 	// Nombre campos de la tabla 
@@ -28,6 +30,7 @@ public class ExpTipoExpedienteBean extends MasterBean {
 	static public final String C_IDINSTITUCION = "IDINSTITUCION";
 	static public final String C_ESGENERAL = "ESGENERAL";
 	static public final String C_TIEMPOCADUCIDAD = "TIEMPOCADUCIDAD";
+	static public final String C_DIASANTELACIONCAD = "DIASANTELACIONCAD";
 	static public final String C_IDTIPOEXPEDIENTE = "IDTIPOEXPEDIENTE";
 	
 	static public final String T_NOMBRETABLA = "EXP_TIPOEXPEDIENTE";
@@ -89,6 +92,13 @@ public class ExpTipoExpedienteBean extends MasterBean {
 	}
 	public void setTiempoCaducidad(Integer valor) {
 		this.tiempoCaducidad = valor;
+	}	
+
+	public Integer getDiasAntelacionCad() {
+		return diasAntelacionCad;
+	}
+	public void setDiasAntelacionCad(Integer valor) {
+		this.diasAntelacionCad = valor;
 	}	
 
 }

@@ -39,6 +39,7 @@ public class ExpExpedienteBean extends MasterBean {
 	private String sancionFinalizada;
 	private String sancionado;
 	private String alertaGenerada;
+	private String alertaGeneradaCad;
 	private String alertaFaseGenerada;
 	private String alertaCaducidadGenerada;
 	private String alertaFinalGenerada;
@@ -86,6 +87,7 @@ public class ExpExpedienteBean extends MasterBean {
 	static public final String C_ACTUACIONESPRESCRITAS ="ACTUACIONESPRESCRITAS";
 	static public final String C_SANCIONFINALIZADA ="SANCIONFINALIZADA";
 	static public final String C_ALERTAGENERADA ="ALERTAGENERADA";
+	static public final String C_ALERTAGENERADACAD ="ALERTAGENERADACAD";
 	static public final String C_ALERTACADUCIDADGENERADA ="ALERTACADUCIDADGENERADA";
 	static public final String C_ALERTAFINALGENERADA ="ALERTAFINALGENERADA";
 	static public final String C_FECHAMODIFICACION ="FECHAMODIFICACION";
@@ -204,6 +206,12 @@ public class ExpExpedienteBean extends MasterBean {
 	}
 	public void setAlertaGenerada(String alertaFaseGenerada) {
 		this.alertaGenerada = alertaFaseGenerada;
+	}
+	public String getAlertaGeneradaCad() {
+		return alertaGeneradaCad;
+	}
+	public void setAlertaGeneradaCad(String valor) {
+		this.alertaGeneradaCad = valor;
 	}
 	public String getAlertaCaducidadGenerada() {
 		return alertaCaducidadGenerada;

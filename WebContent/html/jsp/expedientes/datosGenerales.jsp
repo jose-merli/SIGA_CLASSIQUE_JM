@@ -440,33 +440,25 @@
 				/
 				<html:text name="ExpDatosGeneralesForm" property="anioExpDisciplinario" size="4" maxlength="4" styleClass="box" style="text-align:right;"></html:text>
 			<%}%>
-			
-		<%if (accion.equals("nuevo")){%>
-			<td colspan="2"></td>
-		<%}else{%>
-				
-				&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-				<b><siga:Idioma key="expedientes.auditoria.literal.fecha"/></b>
-				&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-				<html:text name="ExpDatosGeneralesForm" property="fecha" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
-		<%}%>
 <%}else{%>						
 			<html:hidden name="ExpDatosGeneralesForm" property="numExpDisciplinario"/>
 			<html:hidden name="ExpDatosGeneralesForm" property="anioExpDisciplinario"/>			
 
-		<%if (accion.equals("nuevo")){%>
-			<td colspan="4"></td>
-		<%}else{%>
-				<td class="labelText">
-					<siga:Idioma key="expedientes.auditoria.literal.fecha"/>
-				</td>
-				<td>
-					<html:text name="ExpDatosGeneralesForm" property="fecha" styleClass="boxConsulta" readonly="true"></html:text>
-				</td>
-				<td colspan="2"></td>
-		<%}%>
 <%}%>		
+			
+			<td  class="labelText">
+				<siga:Idioma key="expedientes.auditoria.literal.fecha"/>
+			</td>
+			<td>
+				<%if (accion.equals("nuevo")){%>
+					<html:text name="ExpDatosGeneralesForm" property="fecha" styleClass="box" readonly="true" size="10"></html:text>
+					<a href='javascript://'onClick="return showCalendarGeneral(fecha);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+				<%}else{%>
+					<html:text name="ExpDatosGeneralesForm" property="fecha" styleClass="boxConsulta" readonly="true"></html:text>
+				<%}%>
+			</td>
+
 		</tr>						
 	
 		<tr>
@@ -480,7 +472,7 @@
 			<td class="labelText">
 				<siga:Idioma key="expedientes.auditoria.literal.clasificacion"/>&nbsp(*)
 			</td>	
-			<td>	
+			<td colspan="3">	
 				<%if (bEditable){%>		
 				<siga:ComboBD nombre = "clasificacion" tipo="cmbClasificacion" clase="boxCombo" obligatorio="false" ElementoSel="<%=vClasif%>" parametro="<%=dato%>"/>
 				<%}else{%>
@@ -497,12 +489,12 @@
 			<td class="labelText"  style="display:none">
 				<siga:Idioma key="expedientes.auditoria.literal.institucion"/>
 			</td>
-			<td colspan="3" align="left" class="labelTextValue" style="display:none">
+			<td colspan="5" align="left" class="labelTextValue" style="display:none">
 				<!--<html:text name="ExpDatosGeneralesForm" property="institucion" styleClass="boxConsulta" readonly="true"></html:text>-->
 				<bean:write name="ExpDatosGeneralesForm" property="institucion"/>
 			</td>
 <%}else{%>
-			<td colspan="4" style="display:none"></td>
+			<td colspan="6" style="display:none"></td>
 <%}%>	
 		</tr>
 		<tr>
@@ -518,8 +510,8 @@
 				<td class="labelText">
 				<siga:Idioma key="expedientes.auditoria.literal.asunto"/>&nbsp(*)
 			</td>
-			<td>
-				<html:text name="ExpDatosGeneralesForm" property="asunto" size="82" maxlength="100" styleClass="<%=boxStyle%>" readonly="<%=!bEditable%>"></html:text>
+			<td colspan="3">
+				<html:text name="ExpDatosGeneralesForm" property="asunto" size="78" maxlength="100" styleClass="<%=boxStyle%>" readonly="<%=!bEditable%>"></html:text>
 			</td>
 			</tr>
 
@@ -527,7 +519,7 @@
 				<td class="labelText">
 					<siga:Idioma key="expedientes.auditoria.literal.observaciones"/>
 				</td>				
-				<td colspan="3">
+				<td colspan="5">
 					<html:textarea cols="60" rows="4" property="observaciones" style="width: 815px" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)"  styleclass="<%=boxStyle%>" ></html:textarea> 
 				</td>	
 			</tr>

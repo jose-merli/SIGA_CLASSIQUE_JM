@@ -389,6 +389,14 @@
 										<html:text name="camposForm" property="tiempoCaducidad" styleClass="<%=estiloCaja%>" readonly="<%=bLectura%>" size="3" maxlength="3" />
 									</td>
 								</tr>
+								<tr>
+									<td id="titulo" class="labelText">
+										<siga:Idioma key="expedientes.tiposexpedientes.literal.diasAntelacion"/> :
+									</td>
+									<td>
+										<html:text name="camposForm" property="diasAntelacionCad" styleClass="<%=estiloCaja%>" readonly="<%=bLectura%>" size="3" maxlength="3" />
+									</td>
+								</tr>
 							</table>
 							</siga:ConjCampos>		
 						</td>

@@ -38,6 +38,7 @@ public class CampoTipoExpedienteForm extends MasterForm {
     private String chkPestanaConf2;
     private String pestanaConf2;
     private String tiempoCaducidad;
+    private String diasAntelacionCad;
     
     private String nombre;
 	private String idTipoExpediente;
@@ -200,6 +201,13 @@ public class CampoTipoExpedienteForm extends MasterForm {
     }
     public void setTiempoCaducidad(String valor) {
         this.tiempoCaducidad = valor;
+    }
+
+    public String getDiasAntelacionCad() {
+        return diasAntelacionCad;
+    }
+    public void setDiasAntelacionCad(String valor) {
+        this.diasAntelacionCad = valor;
     }
 
 }

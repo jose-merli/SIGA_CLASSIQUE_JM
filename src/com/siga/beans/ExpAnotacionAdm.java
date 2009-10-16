@@ -318,7 +318,7 @@ public class ExpAnotacionAdm extends MasterBeanAdministrador {
 			    sql += ExpAnotacionBean.T_NOMBRETABLA+" A, "+ExpEstadosBean.T_NOMBRETABLA+" E, "+ExpFasesBean.T_NOMBRETABLA+" F, "+ExpTiposAnotacionesBean.T_NOMBRETABLA+" T, "+AdmUsuariosBean.T_NOMBRETABLA+" U, "+CenInstitucionBean.T_NOMBRETABLA+" I";
 			    		    		
 				sql += " " + where;
-				sql += " ORDER BY A."+ExpAnotacionBean.C_FECHAANOTACION+", 1, F."+ExpFasesBean.C_NOMBRE+", E."+ExpEstadosBean.C_NOMBRE+", T."+ExpTiposAnotacionesBean.C_NOMBRE;
+				sql += " ORDER BY A."+ExpAnotacionBean.C_FECHAANOTACION+", A."+ExpAnotacionBean.C_IDANOTACION+", 1, F."+ExpFasesBean.C_NOMBRE+", E."+ExpEstadosBean.C_NOMBRE+", T."+ExpTiposAnotacionesBean.C_NOMBRE;
 	    		
 	    		
 	    		// Acceso a BBDD

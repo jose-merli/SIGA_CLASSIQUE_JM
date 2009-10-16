@@ -35,6 +35,7 @@ public class ExpTipoExpedienteAdm extends MasterBeanAdministrador {
 				ExpTipoExpedienteBean.C_IDINSTITUCION,
 				ExpTipoExpedienteBean.C_ESGENERAL,
 				ExpTipoExpedienteBean.C_TIEMPOCADUCIDAD,
+				ExpTipoExpedienteBean.C_DIASANTELACIONCAD,
 				ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE};
 
 		return campos;
@@ -73,6 +74,7 @@ public class ExpTipoExpedienteAdm extends MasterBeanAdministrador {
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash, ExpTipoExpedienteBean.C_IDINSTITUCION));
 			bean.setEsGeneral(UtilidadesHash.getString(hash, ExpTipoExpedienteBean.C_ESGENERAL));
 			bean.setTiempoCaducidad(UtilidadesHash.getInteger(hash, ExpTipoExpedienteBean.C_TIEMPOCADUCIDAD));
+			bean.setDiasAntelacionCad(UtilidadesHash.getInteger(hash, ExpTipoExpedienteBean.C_DIASANTELACIONCAD));
 			bean.setIdTipoExpediente(UtilidadesHash.getInteger(hash, ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE));
 		}
 
@@ -103,6 +105,7 @@ public class ExpTipoExpedienteAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, ExpTipoExpedienteBean.C_IDINSTITUCION, b.getIdInstitucion());
 			UtilidadesHash.set(htData, ExpTipoExpedienteBean.C_ESGENERAL, b.getEsGeneral());
 			UtilidadesHash.set(htData, ExpTipoExpedienteBean.C_TIEMPOCADUCIDAD, b.getTiempoCaducidad());
+			UtilidadesHash.set(htData, ExpTipoExpedienteBean.C_DIASANTELACIONCAD, b.getDiasAntelacionCad());
 			UtilidadesHash.set(htData, ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE, b.getIdTipoExpediente());
 		}
 

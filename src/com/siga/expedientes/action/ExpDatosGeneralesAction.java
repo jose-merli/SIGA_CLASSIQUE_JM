@@ -5,8 +5,11 @@
  */
 package com.siga.expedientes.action;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Locale;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -601,6 +604,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 		try{
 			
 			ExpExpedienteAdm expAdm = new ExpExpedienteAdm(this.getUserBean(request));
+			ExpTipoExpedienteAdm expTipoAdm = new ExpTipoExpedienteAdm(this.getUserBean(request));
 			ExpDatosGeneralesForm form = (ExpDatosGeneralesForm)formulario;
 			HttpSession ses = request.getSession();
 			UsrBean user = (UsrBean)ses.getAttribute("USRBEAN");
@@ -610,17 +614,49 @@ public class ExpDatosGeneralesAction extends MasterAction
 			String idInstitucion = user.getLocation();
 			String idInstitucion_TipoExpediente = (String)hash.get(ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE);
 			String idTipoExpediente = (String)hash.get(ExpExpedienteBean.C_IDTIPOEXPEDIENTE);
+
+			// obtenemos el tipo de expediente para ver el tiempo de caducidad y calcularlo
+			Hashtable hashTipo = new Hashtable();
+			hashTipo.put(ExpTipoExpedienteBean.C_IDINSTITUCION, idInstitucion_TipoExpediente);
+			hashTipo.put(ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE, idTipoExpediente);
+			Vector vTipo = expTipoAdm.selectByPK(hashTipo);
+			Integer diasCaducidad = null;
+			if (vTipo.size()>0) {
+				ExpTipoExpedienteBean beanTipo = (ExpTipoExpedienteBean) vTipo.get(0);
+				diasCaducidad = beanTipo.getTiempoCaducidad();
+				if (diasCaducidad==null) diasCaducidad = new Integer(0);
+			}
+			
 			
 			//Rellenamos el nuevo Bean	    
 			ExpExpedienteBean expBean = new ExpExpedienteBean();	    
-			
+
 			expBean.setIdInstitucion(Integer.valueOf(idInstitucion));
 			expBean.setIdInstitucion_tipoExpediente(Integer.valueOf(idInstitucion_TipoExpediente));
 			expBean.setIdTipoExpediente(Integer.valueOf(idTipoExpediente));
 			expBean.setIdPersona(form.getIdPersona().equals("")?null:Long.valueOf(form.getIdPersona()));   
 			expBean.setNumExpDisciplinario(form.getNumExpDisciplinario().equals("")?null:Integer.valueOf(form.getNumExpDisciplinario()));
 			expBean.setAnioExpDisciplinario(form.getAnioExpDisciplinario().equals("")?null:Integer.valueOf(form.getAnioExpDisciplinario()));
-			expBean.setFecha("sysdate");
+			if (form.getFecha().equals("")) {
+				expBean.setFecha("sysdate");
+			} else {
+				expBean.setFecha(GstDate.getApplicationFormatDate("",form.getFecha()));
+			}
+			
+			if (form.getFechaCaducidad().equals("")) {
+				if (expBean.getFecha().equals("sysdate")) {
+					// tengo que obtener la fecha de hoy para trabajar con ella
+					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		            Date date = new Date();
+		            expBean.setFechaCaducidad(GstDate.dateSumaDiasJava(dateFormat.format(date), diasCaducidad));
+				} else {
+					// tengo una fecha normal
+					expBean.setFechaCaducidad(GstDate.dateSumaDiasJava(expBean.getFecha(), diasCaducidad));
+				}
+				
+			} else {
+				expBean.setFechaCaducidad(GstDate.getApplicationFormatDate("",form.getFechaCaducidad()));
+			}
 			expBean.setAsunto(form.getAsunto());
 			if (form.getMinuta()!= null && !form.getMinuta().trim().equals("")) {
 			    expBean.setMinuta(new Double(form.getMinuta()));
@@ -675,6 +711,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 			expBean.setSancionFinalizada(null);
 			expBean.setSancionado("N");
 			expBean.setAlertaGenerada("N");
+			expBean.setAlertaGeneradaCad("N");
 			expBean.setAlertaCaducidadGenerada("N");
 			expBean.setAlertaFaseGenerada("N");
 			expBean.setAlertaFinalGenerada("N");

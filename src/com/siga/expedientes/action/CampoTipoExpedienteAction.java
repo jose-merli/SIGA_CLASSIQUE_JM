@@ -81,6 +81,9 @@ public class CampoTipoExpedienteAction extends MasterAction {
         if (beantipoexp.getTiempoCaducidad()!=null) {
             form.setTiempoCaducidad(beantipoexp.getTiempoCaducidad().toString());        
         }
+        if (beantipoexp.getDiasAntelacionCad()!=null) {
+            form.setDiasAntelacionCad(beantipoexp.getDiasAntelacionCad().toString());        
+        }
         //Metemos en el backup los resultados de los campos obtenidos y el tipo de expediente
         Vector backup=new Vector();
         backup.add(0,beantipoexp);
@@ -138,6 +141,11 @@ public class CampoTipoExpedienteAction extends MasterAction {
 		        tipoExp.setTiempoCaducidad(new Integer(form.getTiempoCaducidad()));
 	        } else {
 	            tipoExp.setTiempoCaducidad(null);
+	        }
+	        if (form.getDiasAntelacionCad()!=null && !form.getDiasAntelacionCad().trim().equals("")) {
+		        tipoExp.setDiasAntelacionCad(new Integer(form.getDiasAntelacionCad()));
+	        } else {
+	            tipoExp.setDiasAntelacionCad(null);
 	        }
 	        tipoExpAdm.update(tipoExp);        
 	        
