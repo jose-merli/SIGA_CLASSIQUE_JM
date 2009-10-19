@@ -648,45 +648,31 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		// donde devolveremos el resultado
 		Vector resultado = new Vector();
         Hashtable codigos = new Hashtable();
-        Vector salida = new Vector();
         
 		// select a ejecutar
 		int contador = 0;	            
 		
 		// select a ejecutar
-		String consulta = 
-		" SELECT " + FcsPagoColegiadoBean.C_IDPERORIGEN + " AS IDPERSONA_SJCS" +
-		" FROM " + FcsPagoColegiadoBean.T_NOMBRETABLA;
+		StringBuffer consulta = new StringBuffer();
+		consulta.append(" SELECT " + FcsPagoColegiadoBean.C_IDPERORIGEN + " AS IDPERSONA_SJCS");
+		consulta.append(" FROM " + FcsPagoColegiadoBean.T_NOMBRETABLA);
 		contador++;
 		codigos.put(new Integer(contador),idInstitucion);
-		consulta += " WHERE " + FcsPagoColegiadoBean.C_IDINSTITUCION + "=:" + contador;
+		consulta.append(" WHERE " + FcsPagoColegiadoBean.C_IDINSTITUCION + "=:" + contador);
 		contador++;
 		codigos.put(new Integer(contador),idPago);
-		consulta +=" AND " + FcsPagoColegiadoBean.C_IDPAGOSJG + "=:" + contador;
-		
-		consulta += " UNION ALL " + 
-		" SELECT " + FcsMovimientosVariosBean.C_IDPERSONA + " AS IDPERSONA_SJCS" + 
-		" FROM " + FcsMovimientosVariosBean.T_NOMBRETABLA;
-		contador++;
-		codigos.put(new Integer(contador),idInstitucion);
-		consulta += " WHERE " + FcsMovimientosVariosBean.C_IDINSTITUCION + "=:" + contador;
-		contador++;
-		codigos.put(new Integer(contador),idPago);
-		consulta += " AND (" + FcsMovimientosVariosBean.C_IDPAGOSJG + "=:" + contador; 
-		consulta += " OR " + FcsMovimientosVariosBean.C_IDPAGOSJG + " IS NULL)"+
-		" ORDER BY IDPERSONA_SJCS ASC";
-							
+		consulta.append(" AND " + FcsPagoColegiadoBean.C_IDPAGOSJG + "=:" + contador);		
+		consulta.append(" ORDER BY IDPERSONA_SJCS ASC");
 							
 		try
 		{
-			resultado = (Vector)this.selectGenericoBind(consulta,codigos);
-			salida = UtilidadesHash.eliminaRepetidosUnaClave(resultado,"IDPERSONA_SJCS");
+			resultado = (Vector)this.selectGenericoBind(consulta.toString(),codigos);
 		}
 		catch(Exception e)
 		{
 			throw new ClsExceptions (e,"Error en FcsPAgosJG.getColegiadosAPagar()" + consulta);
 		}
-		return salida; 
+		return resultado; 
 	}
 	
 	public boolean excedePagoFacturacion(String idInstitucion, String idFacturacion, double importeActual) throws ClsExceptions {
@@ -980,8 +966,6 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 	} //getQueryDetallePago()
 	
 	
-	
-
 	/**
 	 * 
 	 * @param idInstitucion
@@ -989,6 +973,17 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 	 * @return
 	 */
 	public String getQueryDetallePagoColegiado (String idInstitucion, String idPagosJg) 
+	{
+		return getQueryDetallePagoColegiado(idInstitucion, idPagosJg, null);
+	}	
+
+	/**
+	 * 
+	 * @param idInstitucion
+	 * @param idPagosJg si es null se obtienen los datos de todos los pagos de la institucion.
+	 * @return
+	 */
+	public String getQueryDetallePagoColegiado (String idInstitucion, String idPagosJg, String idPersona) 
 	{
 		StringBuffer sql = new StringBuffer();
 		
@@ -1009,6 +1004,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		sql.append(" from FCS_PAGO_COLEGIADO");
 		sql.append(" where IDINSTITUCION = ");	sql.append(idInstitucion);
 		sql.append(" and IDPAGOSJG = nvl("+idPagosJg+", IDPAGOSJG)");
+		sql.append(" and IDPERORIGEN = nvl("+idPersona+", IDPERORIGEN)");
 		sql.append(" group by IDPERORIGEN, IDPAGOSJG ");	
 		
 //		sql.append(" union all ");		

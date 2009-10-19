@@ -189,6 +189,32 @@ public class FcsPagoColegiadoAdm extends MasterBeanAdministrador {
 		}
 	}
 	
+	
+	/**
+	 * 
+	 * @param idInstitucion
+	 * @param idPago
+	 * @param idPersona
+	 * @return
+	 * @throws Exception 
+	 */
+	public String getIrpf(String idInstitucion, String idPago, String idPersona) throws Exception{
+		Vector resultado;
+		
+		StringBuffer sql = new StringBuffer();
+		sql.append("select nvl(impirpf,0) IMPIRPF ");
+		sql.append(" from fcs_pago_colegiado col ");
+		sql.append(" WHERE col.IDPAGOSJG = " + idPago);
+		sql.append(" and col.idinstitucion = " + idInstitucion);
+		sql.append(" and col.idperorigen = " + idPersona);
+		try {
+			resultado = this.selectGenerico(sql.toString());
+		} catch (ClsExceptions e) {
+			throw new ClsExceptions (e, "Error al obtener el IRPF");
+		}
+		return ((Hashtable)resultado.get(0)).get("IMPIRPF").toString();
+	}
+
 }
 
 

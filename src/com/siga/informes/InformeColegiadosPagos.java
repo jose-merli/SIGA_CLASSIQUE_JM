@@ -22,7 +22,6 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -32,12 +31,14 @@ import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmLenguajesAdm;
+import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenDireccionTipoDireccionBean;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.EnvEnvioProgramadoBean;
 import com.siga.beans.EnvEnviosBean;
 import com.siga.beans.EnvProgramPagosBean;
+import com.siga.beans.FcsPagoColegiadoAdm;
 import com.siga.beans.FcsPagosJGAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.certificados.Plantilla;
@@ -71,17 +72,6 @@ public class InformeColegiadosPagos extends MasterReport {
 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 		String institucion =usr.getLocation();
 		
-		String idioma=miform.getIdioma();
-
-		// RGG 26/02/2007 cambio en los codigos de lenguajes
-		AdmLenguajesAdm a = new AdmLenguajesAdm(usr);
-		String idiomaExt = "es";
-		try {
-			idiomaExt = a.getLenguajeExt(idioma).toUpperCase();
-		} catch (Exception e) {
-			
-		}
-		
 		ArrayList ficherosPDF= new ArrayList();
 		File rutaFin=null;
 		File rutaTmp=null;
@@ -96,10 +86,6 @@ public class InformeColegiadosPagos extends MasterReport {
 				ClsConstants.FILE_SEP+institucion;
 
 		    
-		    String nombrePlantilla=ClsConstants.PLANTILLA_FO_COLEGIADOPAGO+"_"+idiomaExt+".fo";
-		    
-		    String contenidoPlantilla = this.obtenerContenidoPlantilla(rutaPlantilla,nombrePlantilla);
-			
 		    //obtener la ruta de descarga
 			String rutaServidor = 
 				admParametros.getValor(institucion, "INF", "PATH_INFORMES_DESCARGA", "")+
@@ -116,24 +102,20 @@ public class InformeColegiadosPagos extends MasterReport {
 				throw new SIGAException("facturacion.nuevoFichero.literal.errorAcceso");					
 			}
 			
-		    //obtener los datos comunes
-		    Hashtable datosComunes= this.obtenerDatosComunes(usr,idiomaExt);
 			
 			// TRATAMIENTO POR CADA COLEGIADO
 			/////////////////////////////////
 			String idPago = miform.getIdPago();
-			datosComunes.put("IDPAGO",idPago);
+
 			Vector vColegiados = null;
 			if(miform.getIdPersona()!=null && !miform.getIdPersona().trim().equals("")){
 				vColegiados = new Vector();
 				Hashtable registro = new Hashtable(); 
 				registro.put("IDPERSONA_SJCS", miform.getIdPersona());
-					
 				vColegiados.add(registro);
 			}else{
 				FcsPagosJGAdm pagosAdm = new FcsPagosJGAdm(usr);
 				vColegiados = pagosAdm.getColegiadosAPagar(institucion,idPago);
-				
 			}
 			
 			File fPdf = null;
@@ -142,14 +124,35 @@ public class InformeColegiadosPagos extends MasterReport {
 				Enumeration lista=vColegiados.elements();
 	    		
 				while(correcto && lista.hasMoreElements()){
-					
 					Hashtable datosBase=(Hashtable)lista.nextElement();
-					String ncolegiado=admColegiado.getIdentificadorColegiado(admColegiado.getDatosColegiales((UtilidadesHash.getLong(datosBase,"IDPERSONA_SJCS")),new Integer(usr.getLocation())));
+					
+					// Obtener el idioma del colegiado
+					AdmLenguajesAdm lenguajesAdm = new AdmLenguajesAdm(usr);
+					CenClienteAdm clienteAdm = new CenClienteAdm(usr);
+					String idiomaExt;
+					String idpersona = datosBase.get("IDPERSONA_SJCS").toString();
+					idiomaExt = lenguajesAdm.getCodigoExt(
+								clienteAdm.getLenguaje(miform.getIdInstitucion(), idpersona));
+				
+					//Obtiene la plantilla segun el idioma
+				    String nombrePlantilla=ClsConstants.PLANTILLA_FO_COLEGIADOPAGO+"_"+idiomaExt+".fo";
+				    String contenidoPlantilla = this.obtenerContenidoPlantilla(rutaPlantilla,nombrePlantilla);
+					
+					
+					String ncolegiado=admColegiado.getIdentificadorColegiado(
+							admColegiado.getDatosColegiales(UtilidadesHash.getLong(datosBase,"IDPERSONA_SJCS"),new Integer(usr.getLocation())));
 					if (ncolegiado==null){
 						ncolegiado="";
 					}
+					
+				    //Los datos comunes son los mismos datos para todos los 
+					//colegiados pero puede variar el idioma.
+				    Hashtable datosComunes= this.obtenerDatosComunes(usr,idiomaExt);
+				    datosComunes.put("IDPAGO",idPago);				    
 					datosBase.putAll(datosComunes);
-					fPdf = this.generarInforme(usr,datosBase,rutaPlantilla,contenidoPlantilla,rutaPlantilla,ncolegiado+"-"+"colegiadoPago_" +numeroCarta);
+					
+					
+					fPdf = this.generarInforme(usr,datosBase,rutaServidorTmp,contenidoPlantilla,rutaServidorTmp,ncolegiado+"-"+"colegiadoPago_" +numeroCarta);
 					correcto=(fPdf!=null);
 					if(correcto){
 						ficherosPDF.add(fPdf);
@@ -166,16 +169,18 @@ public class InformeColegiadosPagos extends MasterReport {
 						request.setAttribute("nombreFichero", nombreFicheroPDF + ".zip");
 						request.setAttribute("rutaFichero", rutaServidorDescargasZip+nombreFicheroPDF + ".zip");			
 						request.setAttribute("borrarFichero", "true");
+						if(rutaTmp!=null){
+							Plantilla.borrarDirectorio(rutaTmp);
+						}
 					}else{
-						
+						//una vez se descargue el fichero, hay que borrar el directorio
+						request.setAttribute("borrarDirectorio","true");
 						request.setAttribute("nombreFichero", fPdf.getName());
 						request.setAttribute("rutaFichero", fPdf.getPath());			
-						
-						
 					}
 					
 					//resultado = "descargaFichero";				
-					request.setAttribute("generacionOK","OK");			
+					request.setAttribute("generacionOK","OK");
 					resultado = "descarga";
 				}else{
 					request.setAttribute("generacionOK","ERROR");			
@@ -188,13 +193,13 @@ public class InformeColegiadosPagos extends MasterReport {
 			
 		}catch (Exception e) {
 			throw new ClsExceptions(e,"Error al generar el informe");
-		} finally{
-			if(rutaTmp!=null){
-				Plantilla.borrarDirectorio(rutaTmp);
-			}
-		}
+		} 
+		
         return resultado;
 	}
+	
+	
+	
 	public String getPathInformePagoColegiadoAEnviar (UsrBean usr,	String idPago,String idPersona,
 			String idioma,String idInstitucion) throws ClsExceptions {
 
@@ -403,7 +408,7 @@ public class InformeColegiadosPagos extends MasterReport {
 		plantillaFO = this.reemplazaRegistros(plantillaFO,datosOficios,htDatos,"OFICIOS");
 		
 		//Datos del Pago y Totales
-		htAux=this.obtenerDatosPago(institucion, idPersona, idPagos);
+		htAux=this.obtenerDatosPago(institucion, idPersona, idPagos, usr);
 		String total2=(htAux.get("TOTAL_MOVIMIENTOS")!=null)?(String)htAux.get("TOTAL_MOVIMIENTOS"):"0";
 		if (total2.length()>2) total2=total2.substring(0,total2.length()-2);
 		if (total2.equals("0")) {
@@ -556,7 +561,7 @@ public class InformeColegiadosPagos extends MasterReport {
 
 			// Datos Bancarios de la sociedad o persona
 		    sql=
-		    	"SELECT DECODE(CUEN.NUMEROCUENTA,NULL,'',CUEN.CBO_CODIGO||' '||CUEN.CODIGOSUCURSAL||' '||CUEN.DIGITOCONTROL||' '||CUEN.NUMEROCUENTA||' '||BAN.NOMBRE) CUENTA_CORRIENTE" +
+		    	"SELECT DECODE(CUEN.NUMEROCUENTA,NULL,'',CUEN.CBO_CODIGO||' '||CUEN.CODIGOSUCURSAL||' '||CUEN.DIGITOCONTROL||' '||CUEN.NUMEROCUENTA||' '|| substr(BAN.NOMBRE,6)) CUENTA_CORRIENTE" +
 		    	"  FROM CEN_CUENTASBANCARIAS CUEN, CEN_BANCOS BAN" +
 		    	" WHERE BAN.CODIGO = CUEN.CBO_CODIGO " +
 		    	"   AND CUEN.FECHABAJA IS NULL " +
@@ -595,29 +600,38 @@ public class InformeColegiadosPagos extends MasterReport {
 		double importeAsistenciaAux=0;
 		
 		try {
-			String sql1=
-				"select to_char(AP.FECHAINICIO,'DD/MM/YYYY') FECHA, TU.NOMBRE TURNO," +
-				"       f_siga_formatonumero(AP.IMPORTEPAGADO,2) IMPORTEPAGADO, " +
-				"		AP.IDFACTURACION, AP.IDTURNO, AP.IDGUARDIA, AP.IDCALENDARIOGUARDIAS, " +
-				"       f_siga_formatonumero(fa.precioaplicado,2) IMPORTE_ACTUACION, AP.IDAPUNTE "+
-				"  from FCS_PAGO_APUNTE AP, SCS_TURNO TU, fcs_fact_apunte fa " +
-				" where AP.IDINSTITUCION = TU.IDINSTITUCION" +
-				"   and AP.IDTURNO = TU.IDTURNO" ;
+			StringBuffer sql1 = new StringBuffer();
+			sql1.append("select to_char(pag.fechadesde, 'DD/MM/YYYY') FECHADESDE, ");
+			sql1.append(" to_char(pag.fechahasta, 'DD/MM/YYYY') FECHAHASTA, ");
+			sql1.append("TU.NOMBRE TURNO, ");
+			sql1.append("f_siga_formatonumero(col.impasistencia, 2) IMPORTEPAGADO, ");
+			sql1.append("pag.IDFACTURACION, ");
+			sql1.append("fa.IDTURNO, ");
+			sql1.append("fa.IDGUARDIA, ");
+			sql1.append("fa.IDCALENDARIOGUARDIAS, ");
+			sql1.append("f_siga_formatonumero(fa.precioaplicado, 2) IMPORTE_ACTUACION, ");
+			sql1.append("fa.IDAPUNTE ");
+			sql1.append("from FCS_PAGO_COLEGIADO col, fcs_pagosjg pag, fcs_fact_apunte fa, SCS_TURNO TU ");
 			contador++;
 			codigo.put(new Integer(contador),idInstitucion);
-			sql1+= "   and AP.IDINSTITUCION = :"+contador;
+			sql1.append(" where COL.IDINSTITUCION = :"+contador);
 			contador++;
 			codigo.put(new Integer(contador),idPersona);
-			sql1+= 	"   and AP.IDPERSONA = :" +contador;
+			sql1.append("   and COL.IDPERORIGEN = :" +contador);
 			contador++;
 			codigo.put(new Integer(contador),idPagos);	
-			sql1+= 	"   and AP.IDPAGOSJG = :" +contador+
-				"   and AP.IDINSTITUCION = fa.IDINSTITUCION"+
-				"   and AP.Idfacturacion = fa.idfacturacion"+
-				"   and AP.Idapunte = fa.idapunte"+
-				" order by AP.FECHAINICIO, TU.NOMBRE, AP.IDAPUNTE";
+			sql1.append("   and COL.IDPAGOSJG = :" +contador);
+			sql1.append("   and COL.IDINSTITUCION = PAG.IDINSTITUCION ");
+			sql1.append("   and COL.IDPAGOSJG = PAG.IDPAGOSJG ");
+			sql1.append("   and PAG.IDFACTURACION = FA.IDFACTURACION ");
+			sql1.append("   and PAG.IDINSTITUCION= FA.IDINSTITUCION ");
+			sql1.append("   and COL.IDPERORIGEN = FA.IDPERSONA ");
+			sql1.append("   and FA.IDTURNO = TU.IDTURNO ");
+			sql1.append("   and FA.IDINSTITUCION = TU.IDINSTITUCION ");
+			sql1.append(" order by PAG.FECHADESDE, TU.NOMBRE, FA.IDAPUNTE");
+	 
 			RowsContainer rc=new RowsContainer();
-			rc.findBind(sql1,codigo);
+			rc.findBind(sql1.toString(),codigo);
 			if(rc!=null && rc.size()>0){
 				int size=rc.size();
 				for(int i=0;i<size;i++){
@@ -632,7 +646,8 @@ public class InformeColegiadosPagos extends MasterReport {
 					String idGuardia=r1.getString("IDGUARDIA");
 					String idCalendarioGuardias=r1.getString("IDCALENDARIOGUARDIAS");
 					String idFacturacion=r1.getString("IDFACTURACION");
-					String fecha=r1.getString("FECHA");
+					String fechaDesde=r1.getString("FECHADESDE");
+					String fechaHasta=r1.getString("FECHAHASTA");
 					String idApunte=r1.getString("IDAPUNTE");
 					
 					String sql2=
@@ -650,7 +665,7 @@ public class InformeColegiadosPagos extends MasterReport {
 						"   and FAP.IDTURNO ="+idTurno +
 						"   and FAP.IDGUARDIA = "+idGuardia +
 						"   and FAP.IDCALENDARIOGUARDIAS = "+idCalendarioGuardias +
-						"   and to_char(FAP.FECHAINICIO,'DD/MM/YYYY') = '"+fecha+"'"+
+						"   and FAP.FECHAINICIO between to_date('"+fechaDesde+"', 'DD/MM/YYYY') and to_date('"+fechaHasta+"', 'DD/MM/YYYY') "+
 						"   and FAP.Idpersona = "+idPersona+" "+
 						"   and FAP.IdApunte = "+idApunte+" "+
 						"   and FAAS.IDINSTITUCION = AAS.IDINSTITUCION (+)" +
@@ -706,58 +721,52 @@ public class InformeColegiadosPagos extends MasterReport {
 		Hashtable codigo=new Hashtable();
 		
 		try {
-			String sql1=
-				"select distinct AD.FECHA, to_char(AD.FECHA,'DD/MM/YYYY') FECHA_OFICIO,  PRO.NOMBRE PROCEDIMIENTO," +
-				"       f_siga_formatonumero(PAD.IMPORTEPAGADO,2)  IMPORTEPAGADO, " +
-//				"       PAD.ANIO || '/' || DES.CODIGO ||'/'||PAD.NUMERO ASIOFI, " +
-				"       PAD.ANIO || '/' || DES.CODIGO  ASIOFI, " +
-//				"       PJG.NOMBRE||' '||PJG.APELLIDO1||' '||PJG.APELLIDO2 NOMBRE_SOLICITANTE " +
-				"       f_siga_getdefendidosdesigna(DES.IDINSTITUCION, des.anio, des.idturno, des.numero,0) NOMBRE_SOLICITANTE, " +
-				"       f_siga_formatonumero(fact.precioaplicado,2) IMPORTE_PROCEDIMIENTO, " +
-				"       f_siga_formatonumero(fact.precioaplicado*fact.porcentajefacturado/100,2) IMPORTE_OFICIO " +
-				"  from FCS_PAGO_ACTUACIONDESIGNA PAD, SCS_ACTUACIONDESIGNA AD, " +
-				"       SCS_PROCEDIMIENTOS PRO, SCS_DESIGNA DES,  fcs_fact_actuaciondesigna fact " +
-				" where DES.IDINSTITUCION=AD.IDINSTITUCION " +
-				" AND DES.IDTURNO=AD.IDTURNO " +
-				" AND DES.ANIO = AD.ANIO " +
-				" AND DES.NUMERO=AD.NUMERO " +
-				" AND PAD.IDINSTITUCION = AD.IDINSTITUCION" +
-				"   and PAD.IDTURNO = AD.IDTURNO" +
-				"   and PAD.ANIO = AD.ANIO" +
-				"   and PAD.NUMERO = AD.NUMERO" +
-				"   and PAD.NUMEROASUNTO=AD.NUMEROASUNTO" +
-				"   and AD.IDINSTITUCION = PRO.IDINSTITUCION" +
-				"   and AD.IDPROCEDIMIENTO = PRO.IDPROCEDIMIENTO" ;
-			
-//				"   and AD.IDINSTITUCION = DD.IDINSTITUCION(+)" +
-//				"   and AD.IDTURNO = DD.IDTURNO(+)" +
-//				"   and AD.ANIO= DD.ANIO(+)" +
-//				"   and AD.NUMERO = DD.NUMERO(+)" +
-//				"   and DD.IDINSTITUCION = PJG.IDINSTITUCION(+)" +
-//				"   and DD.IDPERSONA = PJG.IDPERSONA(+)" +
-			contador++;
-			codigo.put(new Integer(contador),idInstitucion);
-			
-			
-			sql1+="   and PAD.IDINSTITUCION= :"+contador;
-			contador++;
-			codigo.put(new Integer(contador),idPersona);
-			sql1+="   and PAD.IDPERSONA=:" +contador;
-			contador++;
-			codigo.put(new Integer(contador),idPagos);
-			sql1+=	"   and PAD.IDPAGOSJG= :"+contador+
-				"   and pad.idfacturacion=fact.idfacturacion"+
-				"   and pad.idturno=fact.idturno"+
-				"   and pad.anio=fact.anio"+
-				"   and pad.numero=fact.numero"+
-				"   and pad.numeroasunto=fact.numeroasunto"+
-				"   and pad.idinstitucion=fact.idinstitucion"+
-				" order by AD.FECHA";
+			StringBuffer sql = new StringBuffer();
+			sql.append(" select distinct AD.FECHA, to_char(AD.FECHA,'DD/MM/YYYY') FECHA_OFICIO,  PRO.NOMBRE PROCEDIMIENTO, ");
+			sql.append(" f_siga_formatonumero(COL.IMPOFICIO,2)  IMPORTEPAGADO, ");
+			sql.append(" DES.ANIO || '/' || DES.CODIGO  ASIOFI, ");
+			sql.append(" f_siga_getdefendidosdesigna(DES.IDINSTITUCION, des.anio, des.idturno, des.numero,0) NOMBRE_SOLICITANTE, ");
+			sql.append(" f_siga_formatonumero(fact.precioaplicado,2) IMPORTE_PROCEDIMIENTO, ");
+			sql.append(" f_siga_formatonumero(fact.precioaplicado*fact.porcentajefacturado/100,2) IMPORTE_OFICIO ");
+			sql.append(" from FCS_PAGO_COLEGIADO   COL, ");
+			sql.append(" SCS_ACTUACIONDESIGNA      AD, ");
+			sql.append(" SCS_PROCEDIMIENTOS        PRO, ");
+			sql.append(" SCS_DESIGNA               DES, ");
+			sql.append(" FCS_FACT_ACTUACIONDESIGNA fact, ");
+			sql.append(" FCS_PAGOSJG               pag, ");
+			sql.append(" FCS_FACTURACIONJG         fac ");
+
+			sql.append(" where DES.IDINSTITUCION = AD.IDINSTITUCION ");
+			sql.append("    AND DES.IDTURNO = AD.IDTURNO ");
+			sql.append("    AND DES.ANIO = AD.ANIO ");
+			sql.append("    AND DES.NUMERO = AD.NUMERO ");
+			sql.append("    AND COL.IDINSTITUCION = AD.IDINSTITUCION ");
+			sql.append("    and AD.IDINSTITUCION = PRO.IDINSTITUCION ");
+			sql.append("    and AD.IDPROCEDIMIENTO = PRO.IDPROCEDIMIENTO ");
+			   
+			sql.append("    and COL.IDINSTITUCION = "+idInstitucion);
+			sql.append("    and COL.IDPERORIGEN = "+idPersona);
+			sql.append("    and COL.IDPAGOSJG = "+idPagos);
+			  
+			sql.append("    and col.idinstitucion = pag.idinstitucion ");
+			sql.append("    and col.idpagosjg = pag.idpagosjg ");
+			sql.append("    and COL.idinstitucion = fact.idinstitucion ");
+			sql.append("    and COL.idperorigen = fact.idpersona ");
+			  
+			sql.append("    and ad.idinstitucion = fact.idinstitucion ");
+			sql.append("    and ad.idfacturacion = fact.idfacturacion ");
+			sql.append("    and ad.idpersonacolegiado = fact.idpersona ");
+
+			sql.append("    and pag.idinstitucion = fact.idinstitucion ");
+			sql.append("    and pag.idfacturacion = fact.idfacturacion ");
+			  
+			sql.append("    and fac.idinstitucion = fact.idinstitucion ");
+			sql.append("    and fac.idfacturacion = fact.idfacturacion ");
+			sql.append(" order by AD.FECHA");
 			
 			RowsContainer rc=new RowsContainer();
-			rc.findBind(sql1,codigo);
+			rc.find(sql.toString());
 			result=new Vector();
-			double importeOficioAux=0;
 			if(rc!=null && rc.size()>0){
 				Vector result3=rc.getAll();
 				Vector aux=new Vector();
@@ -769,10 +778,8 @@ public class InformeColegiadosPagos extends MasterReport {
 				    ht.put("IMPORTEPAGADO", ((String)ht.get("IMPORTEPAGADO"))+ClsConstants.CODIGO_EURO);
 				    ht.put("IMPORTE_OFICIO", ((String)ht.get("IMPORTE_OFICIO"))+ClsConstants.CODIGO_EURO);
 				    result.add(g,ht);
-				     
 				}
 			}
-			
 
 		} catch (Exception e) {
 			throw new ClsExceptions(e,"Error al generar el informe");
@@ -808,7 +815,7 @@ public class InformeColegiadosPagos extends MasterReport {
 	 * @return
 	 * @throws SIGAException
 	 */
-	protected Hashtable obtenerDatosPago(String idInstitucion, String idPersona, String idPago) throws ClsExceptions {
+	protected Hashtable obtenerDatosPago(String idInstitucion, String idPersona, String idPago, UsrBean usr) throws ClsExceptions {
 		RowsContainer rc=null;
 		Hashtable result= new Hashtable();
 		double dTotalAsistencia=0;
@@ -839,286 +846,82 @@ public class InformeColegiadosPagos extends MasterReport {
 				pcOficio=(String)r.getString("PORCENTAJE_TURNOS");
 			}
 
+
+			//Se reutiliza la query del detalle de pagos para recuperar importes
+			FcsPagosJGAdm pagosAdm = new FcsPagosJGAdm(usr);
+			String sql = pagosAdm.getQueryDetallePagoColegiado(idInstitucion, idPago, idPersona);
 			
-			
-			
-			//1. Calculo los importes:
-			//TOTAL_ASISTENCIA,TOTAL_OFICIO,TOTAL_GENERAL,TOTAL_IRPF y TOTAL_LIQUIDACION
-			/*StringBuffer buf1 = new StringBuffer();
-			buf1.append("select A.importe_pagado TOTAL_ASISTENCIA, ");
-			buf1.append(" A.importe_facturado TOTAL_FACTURADO, ");
-			buf1.append("   O.importe_pagado TOTAL_OFICIO, ");
-			buf1.append("   O.importe_FACTURADO TOTAL_FACTURADO_OFICIO, ");
-			buf1.append("M.importe_pagado TOTAL_MOVIMIENTOS, ");
-			buf1.append("		       R.importe_pagado TOTAL_RETENCIONES, ");
-			buf1.append("f_siga_formatonumero(A.importe_pagado + O.importe_pagado,2) ");
-			buf1.append(" TOTAL_GENERAL, ");
-			buf1.append("f_siga_formatonumero(A.importe_irpf + O.importe_irpf + M.importe_irpf, 2) TOTAL_IRPF, ");
-			buf1.append("f_siga_formatonumero(A.importe_TOTAL + O.importe_TOTAL + M.importe_TOTAL + R.importe_pagado,2) TOTAL_LIQUIDACION ");
-			buf1.append("		  from (select nvl(sum(importepagado), 0) importe_pagado, ");
-			buf1.append("nvl(sum(importeIrpf), 0) importe_irpf, ");
-			buf1.append("nvl(sum(importepagado - importeIrpf), 0) importe_total, ");
-			buf1.append("nvl(sum(fcs_fact_apunte.Precioaplicado), 0) importe_facturado ");
-			buf1.append("		          from fcs_pago_apunte ,fcs_fact_apunte");
-			buf1.append("		         where fcs_pago_apunte.idpagosjg = "+idPago+" ");
-			buf1.append("and fcs_pago_apunte.idpersona = "+idPersona+" ");
-			buf1.append("AND fcs_pago_apunte.idinstitucion=fcs_fact_apunte.IDINSTITUCION ");
-			buf1.append("AND fcs_pago_apunte.idfacturacion=fcs_fact_apunte.idfacturacion ");
-			buf1.append("and fcs_pago_apunte.idapunte=fcs_fact_apunte.idapunte ");
-			buf1.append("and fcs_pago_apunte.idInstitucion = "+idInstitucion+") A, ");
-			buf1.append("(select nvl(sum(importepagado), 0) importe_pagado, ");
-			buf1.append("nvl(sum(importeIrpf), 0) importe_irpf, ");
-			buf1.append("nvl(sum(importepagado - importeIrpf), 0) importe_total, ");
-			buf1.append("nvl(sum(fcs_fact_actuaciondesigna.precioaplicado), 0) importe_facturado ");
-			buf1.append("from fcs_pago_actuaciondesigna , fcs_fact_actuaciondesigna ");
-			buf1.append("where fcs_pago_actuaciondesigna.idpagosjg = "+idPago+" ");
-			buf1.append("and fcs_pago_actuaciondesigna.idpersona = "+idPersona+" ");
-			buf1.append("AND fcs_pago_actuaciondesigna.idinstitucion=fcs_fact_actuaciondesigna.IDINSTITUCION ");
-			buf1.append("AND fcs_pago_actuaciondesigna.idfacturacion=fcs_fact_actuaciondesigna.idfacturacion ");
-			buf1.append("and fcs_pago_actuaciondesigna.idturno=fcs_fact_actuaciondesigna.idturno ");
-			buf1.append("and fcs_pago_actuaciondesigna.anio=fcs_fact_actuaciondesigna.anio ");
-			buf1.append("and fcs_pago_actuaciondesigna.numero=fcs_fact_actuaciondesigna.numero ");
-			buf1.append(" and fcs_pago_actuaciondesigna.numeroasunto=fcs_fact_actuaciondesigna.numeroasunto ");
-			buf1.append("	           and fcs_pago_actuaciondesigna.idInstitucion = "+idInstitucion+") O, ");
-			buf1.append("		       (select nvl(sum(cantidad), 0) importe_pagado, ");
-			buf1.append("		               nvl(sum(importeIrpf), 0) importe_irpf, ");
-			buf1.append("		               nvl(sum(cantidad - importeIrpf), 0) importe_total ");
-			buf1.append("		          from fcs_movimientosvarios ");
-			buf1.append("		         where idpagosjg = "+idPago+" ");
-			buf1.append("		           and idpersona = "+idPersona+" ");
-			buf1.append("		           and idInstitucion = "+idInstitucion+") M, ");
-			buf1.append("		       (select nvl(sum(importeretenido), 0) importe_pagado, ");
-			buf1.append("		               0 importe_irpf, ");
-			buf1.append("		               nvl(sum(importeretenido), 0)  importe_total ");
-			buf1.append("		          from fcs_cobros_retencionjudicial ");
-			buf1.append("		         where idpagosjg = "+idPago+" ");
-			buf1.append("		           and idpersona = "+idPersona+" ");
-			buf1.append("		           and idInstitucion = "+idInstitucion+") R ");*/
-			StringBuffer buf1 = new StringBuffer();
-			buf1.append("SELECT IMPORTETOTALMOVIMIENTOS AS TOTAL_MOVIMIENTOS,                                   ");
-			buf1.append("       IMPORTETOTALRETENCIONES AS TOTAL_RETENCIONES,                                   ");
-			buf1.append("       TOTALIMPORTESJCS AS TOTAL_GENERAL,                                              ");
-			buf1.append("       (-1 * TOTALIMPORTEIRPF) AS TOTAL_IRPF,                       ");
-			//buf1.append("       TOTALIMPORTESJCS + IMPORTETOTALMOVIMIENTOS - IMPORTETOTALRETENCIONES -          ");
-			//buf1.append("       TOTALIMPORTEIRPF AS TOTAL_LIQUIDACION,                                          ");
-			buf1.append("       TOTALIMPORTESJCS + IMPORTETOTALMOVIMIENTOS + IMPORTETOTALRETENCIONES +          ");
-			buf1.append("       (-1 * TOTALIMPORTEIRPF) AS TOTAL_LIQUIDACION,                                   ");
-			buf1.append("       A.IMPORTE_PAGADO AS TOTAL_ASISTENCIA,                                           ");
-			buf1.append("       A.IMPORTE_FACTURADO AS TOTAL_FACTURADO,                                         ");
-			buf1.append("       O.IMPORTE_PAGADO AS TOTAL_OFICIO,                                               ");
-			buf1.append("       O.IMPORTE_FACTURADO AS TOTAL_FACTURADO_OFICIO                                   ");
-			buf1.append("  FROM (SELECT IDPERSONASJCS,                                                          ");
-			buf1.append("               SUM(TOTALIMPORTESJCS) AS TOTALIMPORTESJCS,                              ");
-			buf1.append("               SUM(IMPORTETOTALRETENCIONES) AS IMPORTETOTALRETENCIONES,                ");
-			buf1.append("               CASE                                                                    ");
-			buf1.append("                 WHEN (SUM(IMPORTETOTALMOVIMIENTOS) < 0 AND                            ");
-			buf1.append("                      ABS(SUM(IMPORTETOTALMOVIMIENTOS)) >                              ");
-			buf1.append("                      SUM(TOTALIMPORTESJCS)) THEN                                      ");
-			buf1.append("                  -1 * SUM(TOTALIMPORTESJCS)                                           ");
-			buf1.append("                 ELSE                                                                  ");
-			buf1.append("                  SUM(IMPORTETOTALMOVIMIENTOS)                                         ");
-			buf1.append("               END AS IMPORTETOTALMOVIMIENTOS,                                         ");
-			
-			/*buf1.append("               (((SUM(TOTALIMPORTESJCS) + CASE                                         ");
-			buf1.append("                 WHEN (SUM(IMPORTETOTALMOVIMIENTOS) < 0 AND                            ");
-			buf1.append("                      ABS(SUM(IMPORTETOTALMOVIMIENTOS)) >                              ");
-			buf1.append("                      SUM(TOTALIMPORTESJCS)) THEN                                      ");
-			buf1.append("                  -1 * SUM(TOTALIMPORTESJCS)                                           ");
-			buf1.append("                 ELSE                                                                  ");
-			buf1.append("                  SUM(IMPORTETOTALMOVIMIENTOS)                                         ");
-			buf1.append("               END) * MAX(PORCERTAJEIRPF)) / 100) AS TOTALIMPORTEIRPF                  ");*/
-			
-			buf1.append("               CASE ");
-			buf1.append("                 WHEN (SUM(IMPORTETOTALMOVIMIENTOS) < 0 AND ABS(SUM(IMPORTETOTALMOVIMIENTOS)) >                              ");
-			buf1.append("                      SUM(TOTALIMPORTESJCS)) THEN                                      ");
-			buf1.append("                    0 ");
-			buf1.append("                 ELSE ");
-			buf1.append("                    SUM(IMPORTEIRPF) + (SUM(IMPORTETOTALMOVIMIENTOS)*MAX(PORCENTAJEIRPF)/100) ");
-			buf1.append("                 END AS TOTALIMPORTEIRPF " );
-			
-			buf1.append("          FROM ((SELECT IDPERSONA AS IDPERSONASJCS,                                    ");
-			buf1.append("                        SUM(IMPORTEPAGADO) AS TOTALIMPORTESJCS,                        ");
-			buf1.append("                        0 AS IMPORTETOTALRETENCIONES,                                  ");
-			buf1.append("                        0 AS IMPORTETOTALMOVIMIENTOS,                                  ");
-			buf1.append("                        MAX(PORCENTAJEIRPF) AS PORCENTAJEIRPF,                          ");
-			buf1.append("                        SUM(IMPORTEIRPF) AS IMPORTEIRPF                                ");
-			buf1.append("                   FROM FCS_PAGO_ACTUACIONDESIGNA                                      ");
-			buf1.append("                  WHERE IDINSTITUCION = "+idInstitucion+"                              ");
-			buf1.append("                    AND IDPAGOSJG = "+idPago+"                                         ");
-			buf1.append("                  GROUP BY IDPERSONA) UNION ALL                                        ");
-			buf1.append("                (SELECT IDPERSONA AS IDPERSONASJCS,                                    ");
-			buf1.append("                        SUM(IMPORTEPAGADO) AS TOTALIMPORTESJCS,                        ");
-			buf1.append("                        0 AS IMPORTETOTALRETENCIONES,                                  ");
-			buf1.append("                        0 AS IMPORTETOTALMOVIMIENTOS,                                  ");
-			buf1.append("                        MAX(PORCENTAJEIRPF) AS PORCENTAJEIRPF,                         ");
-			buf1.append("                        SUM(IMPORTEIRPF) AS IMPORTEIRPF                                ");
-			buf1.append("                   FROM FCS_PAGO_APUNTE                                                ");
-			buf1.append("                  WHERE IDINSTITUCION = "+idInstitucion+"                              ");
-			buf1.append("                    AND IDPAGOSJG = "+idPago+"                                         ");
-			buf1.append("                  GROUP BY IDPERSONA) UNION ALL                                        ");
-			buf1.append("                (SELECT IDPERSONA AS IDPERSONASJCS,                                    ");
-			buf1.append("                        SUM(IMPORTEPAGADO) AS TOTALIMPORTESJCS,                        ");
-			buf1.append("                        0 AS IMPORTETOTALRETENCIONES,                                  ");
-			buf1.append("                        0 AS IMPORTETOTALMOVIMIENTOS,                                  ");
-			buf1.append("                        MAX(PORCENTAJEIRPF) AS PORCENTAJEIRPF,                         ");
-			buf1.append("                        SUM(IMPORTEIRPF) AS IMPORTEIRPF                                ");
-			buf1.append("                   FROM FCS_PAGO_SOJ                                                   ");
-			buf1.append("                  WHERE IDINSTITUCION = "+idInstitucion+"                              ");
-			buf1.append("                    AND IDPAGOSJG = "+idPago+"                                         ");
-			buf1.append("                  GROUP BY IDPERSONA) UNION ALL                                        ");
-			buf1.append("                (SELECT IDPERSONA AS IDPERSONASJCS,                                    ");
-			buf1.append("                        SUM(IMPORTEPAGADO) AS TOTALIMPORTESJCS,                        ");
-			buf1.append("                        0 AS IMPORTETOTALRETENCIONES,                                  ");
-			buf1.append("                        0 AS IMPORTETOTALMOVIMIENTOS,                                  ");
-			buf1.append("                        MAX(PORCENTAJEIRPF) AS PORCENTAJEIRPF,                         ");
-			buf1.append("                        SUM(IMPORTEIRPF) AS IMPORTEIRPF                                ");
-			buf1.append("                   FROM FCS_PAGO_EJG                                                   ");
-			buf1.append("                  WHERE IDINSTITUCION = "+idInstitucion+"                              ");
-			buf1.append("                    AND IDPAGOSJG = "+idPago+"                                         ");
-			buf1.append("                  GROUP BY IDPERSONA) UNION ALL                                        ");
-			buf1.append("                (SELECT IDPERSONA AS IDPERSONASJCS,                                    ");
-			buf1.append("                        0 AS TOTALIMPORTESJCS,                                         ");
-			buf1.append("                        0 AS IMPORTETOTALRETENCIONES,                                  ");
-			buf1.append("                        SUM(NVL(CANTIDAD, 0)) AS IMPORTETOTALMOVIMIENTOS,              ");
-			buf1.append("                        0 AS PORCENTAJEIRPF,                                           ");
-			buf1.append("                        0 AS IMPORTEIRPF                                               ");
-			buf1.append("                   FROM FCS_MOVIMIENTOSVARIOS                                          ");
-			buf1.append("                  WHERE IDINSTITUCION = "+idInstitucion+"                              ");
-			buf1.append("                    AND IDPAGOSJG = "+idPago+"                                         ");
-			buf1.append("                  GROUP BY IDPERSONA) UNION ALL                                        ");
-			buf1.append("                (SELECT IDPERSONA AS IDPERSONASJCS,                                    ");
-			buf1.append("                        0 AS TOTALIMPORTESJCS,                                         ");
-			buf1.append("                        SUM(NVL(IMPORTERETENIDO, 0)) AS IMPORTETOTALRETENCIONES,       ");
-			buf1.append("                        0 AS IMPORTETOTALMOVIMIENTOS,                                  ");
-			buf1.append("                        0 AS PORCENTAJEIRPF,                                           ");
-			buf1.append("                        0 AS IMPORTEIRPF                                               ");
-			buf1.append("                   FROM FCS_COBROS_RETENCIONJUDICIAL                                   ");
-			buf1.append("                  WHERE IDINSTITUCION = "+idInstitucion+"                              ");
-			buf1.append("                    AND IDPAGOSJG = "+idPago+"                                         ");
-			buf1.append("                  GROUP BY IDPERSONA))                                                 ");
-			buf1.append("         GROUP BY IDPERSONASJCS),                                                      ");
-			buf1.append("       (SELECT NVL(SUM(IMPORTEPAGADO), 0) IMPORTE_PAGADO,                              ");
-			buf1.append("               NVL(SUM(FCS_FACT_APUNTE.PRECIOAPLICADO), 0) IMPORTE_FACTURADO           ");
-			buf1.append("          FROM FCS_PAGO_APUNTE, FCS_FACT_APUNTE                                        ");
-			buf1.append("         WHERE FCS_PAGO_APUNTE.IDPAGOSJG = "+idPago+"                                  ");
-			buf1.append("           AND FCS_PAGO_APUNTE.IDPERSONA = "+idPersona+"                               ");
-			buf1.append("           AND FCS_PAGO_APUNTE.IDINSTITUCION = FCS_FACT_APUNTE.IDINSTITUCION           ");
-			buf1.append("           AND FCS_PAGO_APUNTE.IDFACTURACION = FCS_FACT_APUNTE.IDFACTURACION           ");
-			buf1.append("           AND FCS_PAGO_APUNTE.IDAPUNTE = FCS_FACT_APUNTE.IDAPUNTE                     ");
-			buf1.append("           AND FCS_PAGO_APUNTE.IDINSTITUCION = "+idInstitucion+") A,                   ");
-			buf1.append("       (SELECT NVL(SUM(IMPORTEPAGADO), 0) IMPORTE_PAGADO,                              ");
-			buf1.append("               NVL(SUM(FCS_FACT_ACTUACIONDESIGNA.PRECIOAPLICADO), 0) IMPORTE_FACTURADO ");
-			buf1.append("          FROM FCS_PAGO_ACTUACIONDESIGNA, FCS_FACT_ACTUACIONDESIGNA                    ");
-			buf1.append("         WHERE FCS_PAGO_ACTUACIONDESIGNA.IDPAGOSJG = "+idPago+"                        ");
-			buf1.append("           AND FCS_PAGO_ACTUACIONDESIGNA.IDPERSONA = "+idPersona+"                     ");
-			buf1.append("           AND FCS_PAGO_ACTUACIONDESIGNA.IDINSTITUCION =                               ");
-			buf1.append("               FCS_FACT_ACTUACIONDESIGNA.IDINSTITUCION                                 ");
-			buf1.append("           AND FCS_PAGO_ACTUACIONDESIGNA.IDFACTURACION =                               ");
-			buf1.append("               FCS_FACT_ACTUACIONDESIGNA.IDFACTURACION                                 ");
-			buf1.append("           AND FCS_PAGO_ACTUACIONDESIGNA.IDTURNO =                                     ");
-			buf1.append("               FCS_FACT_ACTUACIONDESIGNA.IDTURNO                                       ");
-			buf1.append("           AND FCS_PAGO_ACTUACIONDESIGNA.ANIO =                                        ");
-			buf1.append("               FCS_FACT_ACTUACIONDESIGNA.ANIO                                          ");
-			buf1.append("           AND FCS_PAGO_ACTUACIONDESIGNA.NUMERO =                                      ");
-			buf1.append("               FCS_FACT_ACTUACIONDESIGNA.NUMERO                                        ");
-			buf1.append("           AND FCS_PAGO_ACTUACIONDESIGNA.NUMEROASUNTO =                                ");
-			buf1.append("               FCS_FACT_ACTUACIONDESIGNA.NUMEROASUNTO                                  ");
-			buf1.append("           AND FCS_PAGO_ACTUACIONDESIGNA.IDINSTITUCION = "+idInstitucion+") O          ");
-			buf1.append("           WHERE IDPERSONASJCS = "+idPersona+"                                         ");
-			
-			
-			/*buf1.append("select ");
-			buf1.append("A.importe_pagado TOTAL_ASISTENCIA,");
-			buf1.append("O.importe_pagado TOTAL_OFICIO,");
-			buf1.append("to_char(A.importe_pagado + O.importe_pagado,'"+formatoImportes+"') TOTAL_GENERAL,");
-			buf1.append("to_char(A.importe_irpf + O.importe_irpf,'"+formatoImportes+"') TOTAL_IRPF,");
-			buf1.append("to_char(A.importe_TOTAL + O.importe_TOTAL,'"+formatoImportes+"') TOTAL_LIQUIDACION");
-			buf1.append("  from ");
-			buf1.append("(select nvl(sum(importepagado), 0) importe_pagado, nvl(sum(importeIrpf), 0) importe_irpf, nvl(sum(importepagado - importeIrpf), 0) importe_total");
-			buf1.append("   from fcs_pago_apunte ");
-			buf1.append("  where idpagosjg="+idPago+" and idpersona="+idPersona+" and idInstitucion="+idInstitucion);
-			buf1.append(") A,");
-			buf1.append("(select nvl(sum(importepagado), 0) importe_pagado, nvl(sum(importeIrpf), 0) importe_irpf, nvl(sum(importepagado - importeIrpf), 0) importe_total");
-			buf1.append("   from fcs_pago_actuaciondesigna ");
-			buf1.append("  where idpagosjg="+idPago+" and idpersona="+idPersona+" and idInstitucion="+idInstitucion);
-			buf1.append(") O");*/
-			/*
-			 buf.append("from fcs_pago_ejg ");
-			 buf.append("from fcs_pago_soj ");
-			 */
 			rc = new RowsContainer();
-			rc.find(buf1.toString());
+			rc.find(sql);
 			if(rc!=null && rc.size()>0){
 				Row r=(Row)rc.get(0);
 				result.putAll(r.getRow());
 				
-				String sTotalGeneral=r.getString("TOTAL_GENERAL");
+				String sTotalGeneral=r.getString("TOTALIMPORTESJCS");
 				result.put("IMPORTETOTAL",UtilidadesNumero.formatoCartaPago(sTotalGeneral));
 				result.put("TOTAL_GENERAL",UtilidadesNumero.formatoCartaPago(sTotalGeneral)+ClsConstants.CODIGO_EURO);
-				
-				String sTotalLiquidacion=r.getString("TOTAL_LIQUIDACION");
-			
-				result.put("TOTAL_LIQUIDACION",UtilidadesNumero.formatoCartaPago(sTotalLiquidacion)+ClsConstants.CODIGO_EURO);
-				String sTotalIRPF=r.getString("TOTAL_IRPF");
-				
+					
+				String sTotalIRPF=r.getString("TOTALIMPORTEIRPF");
 				result.put("TOTAL_IRPF",UtilidadesNumero.formatoCartaPago(sTotalIRPF)+ClsConstants.CODIGO_EURO);
 				
-				String sTotalMovimientos=r.getString("TOTAL_MOVIMIENTOS");
+				String sTotalMovimientos=r.getString("IMPORTETOTALMOVIMIENTOS");
 				result.put("TOTAL_MOVIMIENTOS",UtilidadesNumero.formatoCartaPago(sTotalMovimientos)+ClsConstants.CODIGO_EURO);
 				
-				String sTotalRetenciones=r.getString("TOTAL_RETENCIONES");
+				String sTotalRetenciones=r.getString("IMPORTETOTALRETENCIONES");
 				result.put("TOTAL_RETENCIONES",UtilidadesNumero.formatoCartaPago(sTotalRetenciones)+ClsConstants.CODIGO_EURO);
+				
+				Double dTotalLiquidacion =  Double.parseDouble(sTotalGeneral) + 
+											Double.parseDouble(sTotalRetenciones) + 
+											Double.parseDouble(sTotalIRPF) + 
+											Double.parseDouble(sTotalMovimientos); 
+				result.put("TOTAL_LIQUIDACION",UtilidadesNumero.formatoCartaPago(dTotalLiquidacion.toString())+ClsConstants.CODIGO_EURO);
+			}
+			
+			//Obtiene el IRPF,los totales y facturados de asistencias y oficios
+			buf0 = new StringBuffer();
+			buf0.append("SELECT NVL(SUM(col.impasistencia), 0) TOTAL_ASISTENCIA, ");
+			buf0.append("NVL(SUM(apu.PRECIOAPLICADO + apu.preciocostesfijos), 0) TOTAL_FACTURADO, ");
+			buf0.append("NVL(SUM(col.impoficio), 0) TOTAL_OFICIO, ");
+			buf0.append("NVL(SUM(act.PRECIOAPLICADO), 0) TOTAL_FACTURADO_OFICIO ");
+			buf0.append("FROM FCS_PAGO_COLEGIADO col, FCS_PAGOSJG pag, FCS_FACTURACIONJG fac, FCS_FACT_ACTUACIONDESIGNA act, FCS_FACT_APUNTE apu ");
+			buf0.append("WHERE col.IDPAGOSJG = "+idPago);
+			buf0.append(" and col.idinstitucion = "+idInstitucion);
+			buf0.append(" and col.idperorigen = "+idPersona);
+			buf0.append(" and col.idinstitucion = pag.idinstitucion ");
+			buf0.append(" and col.idpagosjg = pag.idpagosjg ");
+			buf0.append(" and pag.idinstitucion = act.idinstitucion ");
+			buf0.append(" and pag.idfacturacion = act.idfacturacion ");
+			buf0.append(" and fac.idinstitucion = act.idinstitucion ");
+			buf0.append(" and fac.idfacturacion = act.idfacturacion ");
+			buf0.append(" and col.idperorigen = act .idpersona ");
+			buf0.append(" and pag.idinstitucion = apu.idinstitucion ");
+			buf0.append(" and pag.idfacturacion = apu.idfacturacion ");
+			buf0.append(" and fac.idinstitucion = apu.idinstitucion ");
+			buf0.append(" and fac.idfacturacion = apu.idfacturacion ");
+			buf0.append(" and col.idperorigen = apu.idpersona ");
+
+			rc = new RowsContainer();
+			rc.find(buf0.toString());
+			if(rc!=null && rc.size()>0){
+				Row r=(Row)rc.get(0);
+				result.putAll(r.getRow());
 				
 				dTotalAsistencia = Double.parseDouble(r.getString("TOTAL_ASISTENCIA"));
 				result.put("TOTAL_ASISTENCIA",UtilidadesString.formatoImporte(dTotalAsistencia)+ClsConstants.CODIGO_EURO);
 				dTotalFactAsistencia = Double.parseDouble(r.getString("TOTAL_FACTURADO"));
-			    result.put("CPC_ASISTENCIA",
-						 UtilidadesString.formatoImporte(dTotalFactAsistencia)+ClsConstants.CODIGO_EURO);
+				result.put("CPC_ASISTENCIA", UtilidadesString.formatoImporte(dTotalFactAsistencia)+ClsConstants.CODIGO_EURO);
 				
 				dTotalOficio = Double.parseDouble(r.getString("TOTAL_OFICIO"));
 				dTotalFactOficio = Double.parseDouble(r.getString("TOTAL_FACTURADO_OFICIO"));
 				result.put("TOTAL_OFICIOS",UtilidadesString.formatoImporte(dTotalOficio)+ClsConstants.CODIGO_EURO);
-				result.put("CPC_OFICIOS",
-						 UtilidadesString.formatoImporte(dTotalFactOficio)+ClsConstants.CODIGO_EURO);
+				result.put("CPC_OFICIOS", UtilidadesString.formatoImporte(dTotalFactOficio)+ClsConstants.CODIGO_EURO);
 			}
 			
-			//2. Calculo el IRPF:
-			StringBuffer buf2 = new StringBuffer();
-			buf2.append("select  distinct porcentajeirpf from ");
-			buf2.append(" ( ");
-			
-			buf2.append("select  porcentajeirpf ");
-			buf2.append("from fcs_pago_actuaciondesigna pp ");
-			buf2.append("where idpagosjg="+idPago+" and idpersona="+idPersona+" and idInstitucion="+idInstitucion+" ");
-			
-			buf2.append("union ");
-			
-			buf2.append("select  porcentajeirpf ");
-			buf2.append("from fcs_pago_apunte ");
-			buf2.append("where idpagosjg="+idPago+" and idpersona="+idPersona+" and idInstitucion="+idInstitucion+" ");
-			
-			buf2.append("union ");
-			 
-			buf2.append("select  porcentajeirpf ");
-			buf2.append("from fcs_pago_ejg ");
-			buf2.append("where idpagosjg="+idPago+" and idpersona="+idPersona+" and idInstitucion="+idInstitucion+" ");
-			 
-			buf2.append("union ");
-			 
-			buf2.append("select  porcentajeirpf ");
-			buf2.append("from fcs_pago_soj ");
-			buf2.append("where idpagosjg="+idPago+" and idpersona="+idPersona+" and idInstitucion="+idInstitucion+" ");
-			 
-			buf2.append(") ");
-			
-			rc = new RowsContainer();
-			rc.find(buf2.toString());
-			if(rc!=null && rc.size()>0){
-				Row r=(Row)rc.get(0);
-				if (r.getString("PORCENTAJEIRPF")!=null && !r.getString("PORCENTAJEIRPF").equals(""))
-					IRPF = Integer.parseInt(r.getString("PORCENTAJEIRPF"));
-			}
-			result.put("IRPF",Integer.toString(IRPF));
+			//obtiene el irpf del pago
+			FcsPagoColegiadoAdm pagoAdm = new FcsPagoColegiadoAdm(usr);
+			String irpf = pagoAdm.getIrpf(idInstitucion, idPago, idPersona);		
+			result.put("IRPF",irpf);
+				
 		} catch (Exception e) {
 			throw new ClsExceptions(e,"Error al generar el informe");
 		}		

@@ -151,14 +151,15 @@ public class InformeCertificadoPago extends MasterReport {
 		RowsContainer rc=null;
 		
 		try {
-			String sql=
-				"select count(1) NUMEROTURNOS, " +
-				"       to_char(nvl(sum(AD.IMPORTEPAGADO+AD.IMPORTEIRPF),0),'"+formatoImportes+"') IMPORTETURNOS " +
-				"  from FCS_PAGO_ACTUACIONDESIGNA AD" +
-				" where AD.IDINSTITUCION ="+idInstitucion+
-				"   and AD.IDPAGOSJG = " +idPago;
+			StringBuffer sql = new StringBuffer();
+			sql.append("select count(1) NUMEROTURNOS, ");
+			sql.append(" nvl(sum(AD.IMPOFICIO + AD.IMPOFICIO * AD.IMPIRPF / 100), 0) IMPORTETURNOS ");
+			sql.append(" from FCS_PAGO_COLEGIADO AD ");
+			sql.append(" where AD.IDINSTITUCION ="+idInstitucion);
+			sql.append(" and AD.IDPAGOSJG = " +idPago);
+			
 			rc = new RowsContainer();
-			rc.find(sql);
+			rc.find(sql.toString());
 			if(rc!=null && rc.size()>0){
 				Row r=(Row)rc.get(0);
 				result.putAll(r.getRow());
@@ -185,17 +186,24 @@ public class InformeCertificadoPago extends MasterReport {
 		RowsContainer rc=null;
 		
 		try {
-			String sql56=
-				"select count(*) NUMERO" +
-				"  from FCS_PAGO_APUNTE PA, FCS_FACT_APUNTE FA" +
-				" where PA.IDINSTITUCION = FA.IDINSTITUCION" +
-				"   and PA.IDINSTITUCION ="+idInstitucion+
-				"   and PA.IDFACTURACION = FA.IDFACTURACION" +
-				"   and PA.IDAPUNTE = FA.IDAPUNTE" +
-				"   and PA.IDPAGOSJG = " +idPago;
+			StringBuffer sql56 = new StringBuffer();
+				sql56.append("select count(1) NUMERO ");
+				sql56.append(" FROM FCS_PAGO_COLEGIADO   col, ");
+				sql56.append(" FCS_PAGOSJG               pag, ");
+				sql56.append(" FCS_FACTURACIONJG         fac, ");
+				sql56.append(" FCS_FACT_APUNTE           apu ");
+				sql56.append(" WHERE col.IDPAGOSJG = "+idPago);
+				sql56.append(" and col.idinstitucion = "+idInstitucion);
+				sql56.append(" and col.idinstitucion = pag.idinstitucion ");
+				sql56.append(" and col.idpagosjg = pag.idpagosjg ");
+				sql56.append(" and pag.idinstitucion = apu.idinstitucion ");
+				sql56.append(" and pag.idfacturacion = apu.idfacturacion ");
+				sql56.append(" and fac.idinstitucion = apu.idinstitucion ");
+				sql56.append(" and fac.idfacturacion = apu.idfacturacion ");
+				sql56.append(" and col.idperorigen = apu.idpersona ");
 			//5 Numero de guardias inferiores o iguales a X actuaciones
 			rc = new RowsContainer();
-			rc.find(sql56+" and FA.IDHITO = 1");//GAc
+			rc.find(sql56.toString() + " and apu.IDHITO = 1");//GAc
 			if(rc!=null && rc.size()>0){
 				Row r=(Row)rc.get(0);
 				result.put("NUMEROGUARDIASINF",r.getString("NUMERO"));
@@ -203,52 +211,69 @@ public class InformeCertificadoPago extends MasterReport {
 			
 			//6 Numero de guardias superiores a X actuaciones
 			rc = new RowsContainer();
-			rc.find(sql56+" and FA.IDHITO = 2");//GDAc
+			rc.find(sql56.toString() + " and apu.IDHITO = 2");//GDAc
 			if(rc!=null && rc.size()>0){
 				Row r=(Row)rc.get(0);
 				result.put("NUMEROGUARDIASSUP",r.getString("NUMERO"));
 			}
 			
 			
-			String sql7=
-				"select count(*) NUMERO" +
-				"  from FCS_PAGO_APUNTE PA, FCS_FACT_APUNTE FA, FCS_FACT_ASISTENCIA A" +
-				" where PA.IDINSTITUCION = FA.IDINSTITUCION" +
-				"   and PA.IDINSTITUCION = A.IDINSTITUCION" +
-				"   and PA.IDINSTITUCION ="+idInstitucion+
-				"   and PA.IDFACTURACION = FA.IDFACTURACION" +
-				"   and PA.IDFACTURACION = A.IDFACTURACION" +
-				"   and PA.IDAPUNTE = FA.IDAPUNTE" +
-				"   and A.IDAPUNTE = FA.IDAPUNTE" +
-				"   and FA.IDHITO = 44"+ //GAc
-				"   and PA.IDPAGOSJG = " +idPago;
+			StringBuffer sql7 = new StringBuffer();
+			sql7.append("select count(*) NUMERO ");
+			sql7.append("from FCS_FACT_ASISTENCIA A, FCS_PAGO_COLEGIADO  col, FCS_PAGOSJG  pag,  ");
+			sql7.append(" FCS_FACTURACIONJG  fac, FCS_FACT_APUNTE apu ");
+			sql7.append(" where col.IDINSTITUCION = apu.IDINSTITUCION ");
+			sql7.append(" and col.IDINSTITUCION = A.IDINSTITUCION ");
+			sql7.append(" and col.IDINSTITUCION = " + idInstitucion);
+			sql7.append(" and apu.IDHITO = 44 "); //GAc
+			sql7.append(" and col.IDPAGOSJG = " + idPago );
+			sql7.append(" and col.idinstitucion = pag.idinstitucion ");
+			sql7.append(" and col.idpagosjg = pag.idpagosjg ");
+			sql7.append(" and pag.idinstitucion = apu.idinstitucion ");
+			sql7.append(" and pag.idfacturacion = apu.idfacturacion ");
+			sql7.append(" and fac.idinstitucion = apu.idinstitucion ");
+			sql7.append(" and fac.idfacturacion = apu.idfacturacion ");
+			sql7.append(" and col.idperorigen = apu.idpersona ");
+			sql7.append(" and A.idinstitucion = apu.idinstitucion ");
+			sql7.append(" and A.idfacturacion = apu.idfacturacion ");
+			sql7.append(" and A.idapunte = apu.Idapunte ");
 			
 			 //7 Numero de asistencias en guardias inferiores o iguales a y actuaciones
 			rc = new RowsContainer();
-			rc.find(sql7);
+			rc.find(sql7.toString());
 			if(rc!=null && rc.size()>0){
 				Row r=(Row)rc.get(0);
 				result.put("NUMEROASISTENCIASINF",r.getString("NUMERO"));
 			}
 			
-			String sql9=
-				"select count(*) NUMERO from (" +
-				"  select distinct FA.IDINSTITUCION, FA.ANIO, FA.NUMERO" +
-				"    from FCS_PAGO_APUNTE PA, FCS_FACT_ASISTENCIA FA, FCS_FACT_ACTUACIONASISTENCIA FAA" +
-				"   where PA.IDINSTITUCION = FA.IDINSTITUCION" +
-				"     and PA.IDINSTITUCION = FAA.IDINSTITUCION" +
-				"     and PA.IDINSTITUCION ="+idInstitucion+
-				"     and PA.IDFACTURACION = FA.IDFACTURACION" +
-				"     and PA.IDFACTURACION = FAA.IDFACTURACION" +
-				"     and PA.IDAPUNTE = FA.IDAPUNTE" +
-				"     and PA.IDAPUNTE = FAA.IDAPUNTE" +
-				"     and FAA.IDHITO in (6, 9, 24, 25, 26, 31, 32, 43)" +
-				"     and PA.IDPAGOSJG = " +idPago+
-				")";
+			StringBuffer sql9 = new StringBuffer();
+			sql9.append(" select distinct FA.IDINSTITUCION, FA.ANIO, FA.NUMERO ");
+			sql9.append(" from FCS_PAGO_COLEGIADO col, ");
+			sql9.append(" FCS_PAGOSJG        pag, ");
+			sql9.append(" FCS_FACTURACIONJG  fac, ");
+			sql9.append(" FCS_FACT_APUNTE    apu, ");
+			sql9.append(" FCS_FACT_ASISTENCIA          FA, ");
+			sql9.append(" FCS_FACT_ACTUACIONASISTENCIA FAA ");
+			sql9.append(" where col.IDINSTITUCION = FA.IDINSTITUCION ");
+			sql9.append(" and col.IDINSTITUCION = FAA.IDINSTITUCION ");
+			sql9.append(" and col.IDINSTITUCION = "+idInstitucion);
+			sql9.append(" and FAA.IDHITO in (6, 9, 24, 25, 26, 31, 32, 43) ");
+			sql9.append(" and col.IDPAGOSJG = "+idPago);
+			sql9.append(" and col.idinstitucion = pag.idinstitucion ");
+			sql9.append(" and col.idpagosjg = pag.idpagosjg ");
+			sql9.append(" and pag.idinstitucion = apu.idinstitucion ");
+			sql9.append(" and pag.idfacturacion = apu.idfacturacion ");
+			sql9.append(" and fac.idinstitucion = apu.idinstitucion ");
+			sql9.append(" and fac.idfacturacion = apu.idfacturacion ");
+			sql9.append(" and col.idperorigen = apu.idpersona ");
+			sql9.append(" and FA.idfacturacion = apu.idfacturacion ");
+			sql9.append(" and FA.idapunte = apu.Idapunte ");
+			sql9.append(" and FAA.IDAPUNTE = apu.IDAPUNTE ");
+			sql9.append(" and FAA.IDFACTURACION = apu.IDFACTURACION ");		
 			
 			//9 Numero de asistencias con posterioridad al dia de guardia
 			rc = new RowsContainer();
-			rc.find(sql9);
+			rc.find(sql9.toString());
 			if(rc!=null && rc.size()>0){
 				Row r=(Row)rc.get(0);
 				result.put("NUMEROASISTENCIASPOST",r.getString("NUMERO"));
@@ -274,16 +299,24 @@ public class InformeCertificadoPago extends MasterReport {
 		
 		try {
 			//IMPORTEASISTENCIAS (10)
-			String sql=
-				"select to_char(nvl(sum(FA.PRECIOAPLICADO),0),'"+formatoImportes+"') IMPORTEASISTENCIAS" +
-				"  from FCS_PAGO_APUNTE FP, FCS_FACT_ASISTENCIA FA" +
-				" where FP.IDINSTITUCION = FA.IDINSTITUCION" +
-				"   and FP.IDFACTURACION = FA.IDFACTURACION" +
-				"	and FP.IDAPUNTE = FA.IDAPUNTE" +
-				"	and FP.IDINSTITUCION ="+idInstitucion+
-				"	and FP.IDPAGOSJG = " +idPago;
+			StringBuffer sql = new StringBuffer();
+			sql.append(" select to_char(nvl(sum(FA.PRECIOAPLICADO),0),'"+formatoImportes+"') IMPORTEASISTENCIAS ");
+			sql.append(" FROM FCS_PAGO_COLEGIADO   col, ");
+			sql.append(" FCS_PAGOSJG               pag, ");
+			sql.append(" FCS_FACTURACIONJG         fac, ");
+			sql.append(" FCS_FACT_ASISTENCIA       fa ");
+			sql.append(" WHERE col.IDPAGOSJG = "+idPago);
+			sql.append(" and col.idinstitucion = "+idInstitucion);
+			sql.append(" and col.idinstitucion = pag.idinstitucion ");
+			sql.append(" and col.idpagosjg = pag.idpagosjg ");
+			sql.append(" and pag.idinstitucion = fa.idinstitucion ");
+			sql.append(" and pag.idfacturacion = fa.idfacturacion ");
+			sql.append(" and fac.idinstitucion = fa.idinstitucion ");
+			sql.append(" and fac.idfacturacion = fa.idfacturacion ");
+			sql.append(" and col.idperorigen = fa.idpersona ");
+
 			rc = new RowsContainer();
-			rc.find(sql);
+			rc.find(sql.toString());
 			if(rc!=null && rc.size()>0){
 				Row r=(Row)rc.get(0);
 				result.putAll(r.getRow());
