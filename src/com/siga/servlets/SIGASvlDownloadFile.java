@@ -5,6 +5,7 @@ import java.io.*;
 import javax.servlet.*;
 
 import com.atos.utils.*;
+import com.siga.Utilidades.UtilidadesFicheros;
 import com.siga.Utilidades.UtilidadesString;
 
 import javax.servlet.http.*;
@@ -77,14 +78,8 @@ public class SIGASvlDownloadFile extends HttpServlet
 	    	sRutaFichero = UtilidadesString.replaceAllIgnoreCase(sRutaFichero,"+"," ");
 	    	
 	    	// El indicador de borrar fichero puede llegar como parametro o como atributo 
-	        String pBorrarFichero =(String)request.getParameter("borrarFichero");
-	        boolean borrar=false;
-	        if(pBorrarFichero==null){
-		        String aBorrarFichero =(String)request.getAttribute("borrarFichero");
-		        borrar=(aBorrarFichero!=null && aBorrarFichero.equalsIgnoreCase("true"));
-	        }else{
-	        	borrar=pBorrarFichero.equalsIgnoreCase("true");
-	        }
+	        boolean borrarFichero = obtenerBooleanAttrParam(request, "borrarFichero");
+	        boolean borrarDirectorio = obtenerBooleanAttrParam(request, "borrarDirectorio");
 	        		
 	        response.setContentType("application/download");	        		
 	        response.setHeader("Content-Disposition", "attachment; filename=\"" + sNombreFichero + "\"");
@@ -107,11 +102,23 @@ public class SIGASvlDownloadFile extends HttpServlet
 
 	        ClsLogging.writeFileLog("SERVLET DESCARGA > OK ", request, 10);
 	        
-	        if(borrar){
+	        if(borrarFichero){
 	        	ClsLogging.writeFileLog("SERVLET DESCARGA > Se va a borrar el fichero de la ruta "+sRutaFichero, request, 10);
+	            cerrar(out, in);
 	        	File f= new File(sRutaFichero);
-	        	f.delete();
-		        ClsLogging.writeFileLog("SERVLET DESCARGA > Fichero borrado por peticion de la ruta "+sRutaFichero, request, 10);
+	        	if (f.delete())
+	        		ClsLogging.writeFileLog("SERVLET DESCARGA > Fichero borrado por peticion de la ruta "+sRutaFichero, request, 10);
+	        	else
+	        		ClsLogging.writeFileLog("SERVLET DESCARGA > NO se ha borrado el fichero en la ruta "+sRutaFichero, request, 10);
+	        }
+	        if(borrarDirectorio){
+	        	ClsLogging.writeFileLog("SERVLET DESCARGA > Se va a borrar el directorio de la ruta "+sRutaFichero, request, 10);
+	            cerrar(out, in);
+	        	File f= new File(sRutaFichero).getParentFile();
+		        if (UtilidadesFicheros.deleteDir(f))
+		        	ClsLogging.writeFileLog("SERVLET DESCARGA > Directorio borrado por peticion de la ruta "+f.getPath(), request, 10);
+		        else
+		        	ClsLogging.writeFileLog("SERVLET DESCARGA > No se ha borrado el directorio en la ruta "+f.getPath(), request, 10);
 	        }
 	        
 	        
@@ -123,25 +130,44 @@ public class SIGASvlDownloadFile extends HttpServlet
         	ClsLogging.writeFileLogError("Error al descargar fichero: " + e.toString() ,e, 1);
         	throw new ServletException("Error al descargar el fichero. " + e);
         }finally{
-
-            if(in !=null){
-                    in.close();
-                    in = null;
-            }
-
-            if(out!=null){
-                    out.flush();
-                    out.close();
-                    out = null;
-
-            }
+            cerrar(out, in);
         }
 
 
     	
     	
     }
-    
+
+	private void cerrar(OutputStream out, InputStream in) throws IOException {
+		if(in !=null){
+		        in.close();
+		        in = null;
+		}
+
+		if(out!=null){
+		        out.flush();
+		        out.close();
+		        out = null;
+
+		}
+	}
+	
+	
+	/**
+	 * Devuelve <code>true</code> si el attributo o parámetro <code>clave</code> vale true, <code>false</code> en caso contrario.
+	 * @param clave Parameter o Attribute a comprobar
+	 * @return <code>true</code> si el attributo o parámetro <code>clave</code> vale true, <code>false</code> en caso contrario.
+	 */
+	private boolean obtenerBooleanAttrParam(HttpServletRequest request, String clave){
+		String parameter =(String)request.getParameter(clave);
+		if(parameter==null){
+			String attribute =(String)request.getAttribute(clave);
+			return (attribute!=null && attribute.equalsIgnoreCase("true"));
+		}else{
+			return parameter.equalsIgnoreCase("true");
+		}
+	}
+	
 //    public void uploadFichero(HttpServletRequest req, HttpServletResponse res)
 //    throws ServletException, IOException {
 //    	InputStream inStream = null;
