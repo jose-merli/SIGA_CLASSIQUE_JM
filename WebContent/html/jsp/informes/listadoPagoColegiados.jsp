@@ -233,7 +233,7 @@
 			</siga:TablaCabecerasFijas>
 			<table class="botonesDetalle" >
 				<tr>
-					<td>
+					<td style="text-align:right" >
 					<input type="button" class="button" alt="<%=imprimir%>" name="idButton"  onclick="accionDownload();" value="<%=imprimir%>"/>&nbsp;
 					<input type="button" class="button" alt="<%=comunicar%>" name="idButton"  onclick="enviarPagos();" value="<%=comunicar%>"/>&nbsp;
 					</td>
