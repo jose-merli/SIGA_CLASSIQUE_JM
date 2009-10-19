@@ -59,32 +59,22 @@
 	<html:hidden property="idInstitucion"/>
 	<input type="hidden" name="limpiarFilaSeleccionada" value="">
 	<html:hidden property="letrado"/>
+	<html:hidden property="idioma"/>
+	
 
 
 <table class="tablaCampos" align="center">
 		
 	<tr>
 		<td class="labelText" width="10%">
-			<siga:Idioma key="informes.sjcs.pagos.literal.idioma"/>&nbsp;(*)
-		</td>				
-		<td width="10%">
-			<siga:ComboBD nombre="idioma" tipo="cmbIdioma"  clase="boxCombo" obligatorioSinTextoSeleccionar="true" />
-		</td>				
-		<td class="labelText" width="10%">
 			<siga:Idioma key="informes.sjcs.pagos.literal.pago"/>&nbsp;(*)
-		</td>				
-		<td width="40%">
 			<bean:define id="parametrosComboPago" name="mantenimientoInformesForm" property="parametrosComboPago"/>
 			<siga:ComboBD nombre="idPago" tipo="cmb_PagosCerrados" parametro="<%=(String[])parametrosComboPago%>" clase="boxCombo" obligatorio="false" accion=";buscar();"/>
-			
 		</td>
-		<td width="30%">
-			&nbsp;
-			</td>
 	</tr>
 
 	<tr>
-		<td colspan="5">
+		<td>
 		<siga:BusquedaPersona tipo="colegiado"
 			titulo='informes.sjcs.pagos.literal.colegiado'
 			idPersona="letrado">
@@ -93,7 +83,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td colspan="5">
+		<td>
 			<siga:ConjCampos leyenda="informes.sjcs.pagos.literal.cliente">
 				<table width="100%">
 				<tr>
