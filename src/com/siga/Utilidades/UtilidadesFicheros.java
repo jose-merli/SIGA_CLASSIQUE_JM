@@ -43,6 +43,22 @@ public class UtilidadesFicheros {
 			throw e;
 		}
 	}
+	
+	
+	/**
+	 * Elimina el directorio <code>dir</code> 
+	 * @param dir Directorio a eliminar
+	 * @return <code>true</code> si el directorio se elimina correctamente, <code>false</code> en caso contrario.
+	 */
+	public static boolean deleteDir(File dir){
+		File[] lista = dir.listFiles();
+		for (int i = 0; i < lista.length; i++){
+			if (!lista[i].delete()){
+				return false;
+			}
+		}
+		return dir.delete();
+	}
 
 	
 }
