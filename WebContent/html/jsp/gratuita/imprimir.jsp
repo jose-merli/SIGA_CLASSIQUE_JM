@@ -36,6 +36,7 @@
 	String avisoFicherosNoGenerado = (String)request.getAttribute("avisoFicherosNoGenerado");
 	String rutaFichero = (String)request.getAttribute("rutaFichero");
 	String borrarFichero = (String)request.getAttribute("borrarFichero");
+	String borrarDirectorio = (String)request.getAttribute("borrarDirectorio");
 %>	
 
 <%@page import="java.util.Properties"%>
@@ -74,6 +75,9 @@
 	<html:hidden name="mantenimientoInformesForm" property = "rutaFichero" value = "<%=rutaFichero%>"/>
 	<%if(borrarFichero!=null){%>
 	<html:hidden property = "borrarFichero" value = "<%=borrarFichero%>"/>
+	<%}%>
+	<%if(borrarDirectorio!=null){%>
+	<html:hidden property = "borrarDirectorio" value = "<%=borrarDirectorio%>"/>
 	<%}%>
 	</html:form>
 	
