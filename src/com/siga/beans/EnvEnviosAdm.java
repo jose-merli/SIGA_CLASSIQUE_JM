@@ -4797,6 +4797,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 					//SMS
 					SolicitudEnvioSMS sesms01 = new SolicitudEnvioSMS();
 					sesms01.setIdClienteECOS(idClienteECOS);
+					sesms01.setIdColegio(destBean.getIdInstitucion().toString());
 					sesms01.setListaTOs(new String[] {sTo});
 					sesms01.setTexto(sTexto);
 					
@@ -5014,6 +5015,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 					//SMS
 					SolicitudEnvioSMS sesms01 = new SolicitudEnvioSMS();
 					sesms01.setIdClienteECOS(idClienteECOS);
+					sesms01.setIdColegio(destBean.getIdInstitucion().toString());
 					sesms01.setListaTOs(new String[] {sTo});
 					sesms01.setTexto(sTexto);
 					
