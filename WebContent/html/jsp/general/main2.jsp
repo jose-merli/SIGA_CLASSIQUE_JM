@@ -11,7 +11,7 @@
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.ReadProperties"%>
-<%@ page import="es.satec.siga.util.SIGAReferences"%>
+<%@ page import="com.siga.Utilidades.SIGAReferences"%>
 <% 
 String app=request.getContextPath();
 String logo=(String)request.getSession().getAttribute(SIGAConstants.PATH_LOGO);

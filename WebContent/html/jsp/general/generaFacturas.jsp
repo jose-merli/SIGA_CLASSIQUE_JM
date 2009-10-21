@@ -15,7 +15,7 @@
 <%@ page import="java.io.File" %>
 <%@ page import="java.util.Properties"%>
 <%@ page import="java.util.Vector"%>
-<%@ page import="es.satec.siga.util.SIGAReferences"%>
+<%@ page import="com.siga.Utilidades.SIGAReferences"%>
 <% 
 String app=request.getContextPath(); 
 HttpSession ses=request.getSession();
