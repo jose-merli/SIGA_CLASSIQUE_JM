@@ -7,6 +7,7 @@ package com.siga.servlets;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Hashtable;
 import java.util.Vector;
 
 import javax.servlet.ServletConfig;
@@ -70,7 +71,13 @@ public class SIGASvlVectorToClientFile extends HttpServlet {
 				String linea = "";
 				String cabecera = "";
 				String columna = "";
-				Row row = (Row)datos.elementAt(i);
+				Row row = null;
+				try {
+					row = (Row)datos.elementAt(i);
+				} catch (ClassCastException cce) {
+					row = new Row();
+					row.setRow((Hashtable)datos.elementAt(i));
+				}
 				
 				
 				if (i==0){

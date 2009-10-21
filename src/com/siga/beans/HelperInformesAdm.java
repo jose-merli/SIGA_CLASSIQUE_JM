@@ -4,11 +4,17 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.siga.general.SIGAException;
 
 public class HelperInformesAdm  {
+	
+	private String TABULADOR = "\t";
+	private String SALTOLINEA = "\n";
+
+	
 	public Vector selectGenericoBindHashVacio(String select, Hashtable codigos) throws ClsExceptions, SIGAException 
 	{
 		Vector datos = new Vector();
@@ -418,5 +424,278 @@ public class HelperInformesAdm  {
 	}
 	
 	
+	public Vector getCamposConfigurablesExpediente(Vector datos, String idInstitucion, String idInstitucionTipoExp, String idTipoExp, String anio, String numero, String idPersona)throws SIGAException,ClsExceptions
+	{	
+		try { 
+			 
+			Hashtable codigos = new Hashtable();
+			codigos.put(new Integer(1), idInstitucion);
+			codigos.put(new Integer(2), idInstitucionTipoExp);
+			codigos.put(new Integer(3), idTipoExp);
+			codigos.put(new Integer(4), anio);
+			codigos.put(new Integer(5), numero);
+			
+
+			for (int j=0;j<datos.size();j++) {
+				Hashtable dato = (Hashtable) datos.get(j);
+
+				StringBuffer sql = new StringBuffer();
+				sql.append(" select p.idinstitucion, p.idtipoexpediente, p.idcampo, p.idpestanaconf, c.idcampoconf, c.nombre, c.orden, v.VALOR "); 
+				sql.append(" from exp_pestanaconf p, exp_campoconf c, exp_camposvalor v ");
+				sql.append(" where p.idinstitucion=c.idinstitucion ");
+				sql.append(" and   p.idtipoexpediente=c.idtipoexpediente ");
+				sql.append(" and   p.idcampo = c.idcampo ");
+				sql.append(" and   p.idpestanaconf=c.idpestanaconf ");
+				sql.append(" and   c.idinstitucion = v.idinstitucion_tipoexpediente ");
+				sql.append(" and   c.idtipoexpediente = v.idtipoexpediente ");
+				sql.append(" and   c.idcampo = v.idcampo ");
+				sql.append(" and   c.idpestanaconf = v.idpestanaconf ");
+				sql.append(" and   c.idcampoconf = v.idcampoconf ");
+				sql.append(" and   v.idinstitucion =:1  ");
+				sql.append(" and   v.idinstitucion_tipoexpediente=:2 "); 
+				sql.append(" and   v.idtipoexpediente=:3 ");
+				sql.append(" and   v.anioexpediente=:4 ");
+				sql.append(" and   v.numeroexpediente=:5 ");
+				sql.append(" and   p.idpestanaconf=:6 ");
+				sql.append(" order by c.orden");
+				
+				// pestaña uno
+				codigos.put(new Integer(6), "1");
+				Vector aux = ejecutaConsultaBind(sql.toString(), codigos);
+				// recorrido de los 5 posibles campos
+				for (int i=0;i<5;i++) {
+					try {
+						Object o = aux.get(i);
+						Hashtable reg = (Hashtable) o;
+						dato.put("CAMPOCONF1"+(i+1), (String)reg.get("VALOR"));
+					} catch (ArrayIndexOutOfBoundsException a) {
+						dato.put("CAMPOCONF1"+(i+1), " ");
+					}
+				}
+				
+				// pestaña dos
+				codigos.put(new Integer(6), "2");
+				Vector aux2 = ejecutaConsultaBind(sql.toString(), codigos);
+				// recorrido de los 5 posibles campos
+				for (int i=0;i<5;i++) {
+					try {
+						Object o = aux2.get(i);
+						Hashtable reg = (Hashtable) o;
+						dato.put("CAMPOCONF2"+(i+1), (String)reg.get("VALOR"));
+					} catch (ArrayIndexOutOfBoundsException a) {
+						dato.put("CAMPOCONF2"+(i+1), " ");
+					}
+				}
+				
+				//datos.add(j, dato);
+				
+			}
+			
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar getCamposConfigurablesExpediente");
+		} finally {
+			return datos;
+		}
+		
+	}	
+	
+		
+	public Vector getAnotacionesExpediente(Vector datos, String idInstitucion, String idInstitucionTipoExp, String idTipoExp, String anio, String numero, String idPersona)throws SIGAException,ClsExceptions
+	{	
+		try { 
+			 
+			Hashtable codigos = new Hashtable();
+			codigos.put(new Integer(1), idInstitucion);
+			codigos.put(new Integer(2), idInstitucionTipoExp);
+			codigos.put(new Integer(3), idTipoExp);
+			codigos.put(new Integer(4), anio);
+			codigos.put(new Integer(5), numero);
+			
+
+			for (int j=0;j<datos.size();j++) {
+				Hashtable dato = (Hashtable) datos.get(j);
+
+				StringBuffer sql = new StringBuffer();
+				sql.append(" select a.fechaanotacion AS FECHAANOTACION, fa.nombre AS NOMBREFASE, es.nombre AS NOMBREESTADO, a.fechainicioestado AS FECHAINICIOESTADO, a.fechafinestado AS FECHAFINESTADO");
+				sql.append(" from exp_anotacion a, exp_estado es, exp_fases fa ");
+				sql.append(" where a.idinstitucion_tipoexpediente = es.idinstitucion ");
+				sql.append(" and   a.idtipoexpediente = es.idtipoexpediente ");
+				sql.append(" and   a.idfase = es.idfase ");
+				sql.append(" and   a.idestado = es.idestado ");
+				sql.append(" and   a.idinstitucion_tipoexpediente = fa.idinstitucion ");
+				sql.append(" and   a.idtipoexpediente = fa.idtipoexpediente ");
+				sql.append(" and   a.idfase = fa.idfase ");
+				sql.append(" and   a.idinstitucion = :1 ");
+				sql.append(" and   a.idinstitucion_tipoexpediente= :2"); 
+				sql.append(" and   a.idtipoexpediente= :3 ");
+				sql.append(" and   a.anioexpediente= :4 ");
+				sql.append(" and   a.numeroexpediente= :5 ");
+				sql.append(" order by a.fechaanotacion ");
+				
+				Vector aux = ejecutaConsultaBind(sql.toString(), codigos);
+				String campoAnotaciones = "";
+				// recorrido de los 5 posibles campos
+				for (int i=0;i<aux.size();i++) {
+					Hashtable reg = (Hashtable) aux.get(i);
+					campoAnotaciones += GstDate.getFormatedDateShort("", (String) reg.get("FECHAANOTACION")) + TABULADOR + (String) reg.get("NOMBREFASE") + TABULADOR + (String) reg.get("NOMBREESTADO") + TABULADOR + GstDate.getFormatedDateShort("", ((reg.get("FECHAINICIOESTADO")!=null)?(String) reg.get("FECHAINICIOESTADO"):" "))+ TABULADOR + GstDate.getFormatedDateShort("", ((reg.get("FECHAFINESTADO")!=null)?(String) reg.get("FECHAFINESTADO"):" "))+ SALTOLINEA;
+				}
+				dato.put("HISTORICOESTADOS", campoAnotaciones);
+				
+				//datos.add(j, dato);
+				
+			}
+			
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar getAnotacionesExpediente");
+		} finally {
+			return datos;
+		}
+		
+	}	
+	
+	
+	public Vector getNombresImplicadosExpediente(Vector datos, String idInstitucion, String idInstitucionTipoExp, String idTipoExp, String anio, String numero, String idPersona)throws SIGAException,ClsExceptions
+	{	
+		try { 
+			 
+			Hashtable codigos = new Hashtable();
+			codigos.put(new Integer(1), idInstitucion);
+			codigos.put(new Integer(2), idInstitucionTipoExp);
+			codigos.put(new Integer(3), idTipoExp);
+			codigos.put(new Integer(4), anio);
+			codigos.put(new Integer(5), numero);
+			codigos.put(new Integer(6), idInstitucion);
+			codigos.put(new Integer(7), idInstitucionTipoExp);
+			codigos.put(new Integer(8), idTipoExp);
+			codigos.put(new Integer(9), anio);
+			codigos.put(new Integer(10), numero);
+			
+
+			for (int j=0;j<datos.size();j++) {
+				Hashtable dato = (Hashtable) datos.get(j);
+
+				StringBuffer sql = new StringBuffer();
+				sql.append(" select pe.nombre || ' ' || pe.apellidos1 || ' ' || pe.apellidos2 as NOMBRE "); 
+				sql.append(" from exp_denunciado d, cen_persona pe ");
+				sql.append(" where d.idpersona = pe.idpersona ");
+				sql.append(" and   d.idinstitucion =:1 ");
+				sql.append(" and   d.idinstitucion_tipoexpediente=:2 "); 
+				sql.append(" and   d.idtipoexpediente=:3 ");
+				sql.append(" and   d.anioexpediente=:4 ");
+				sql.append(" and   d.numeroexpediente=:5 ");
+				sql.append(" union ");
+				sql.append(" select pe.nombre || ' ' || pe.apellidos1 || ' ' || pe.apellidos2 as NOMBRE "); 
+				sql.append(" from exp_expediente ex, cen_persona pe ");
+				sql.append(" where ex.idpersona = pe.idpersona ");
+				sql.append(" and   ex.idinstitucion =:6 ");
+				sql.append(" and   ex.idinstitucion_tipoexpediente=:7 "); 
+				sql.append(" and   ex.idtipoexpediente=:8 ");
+				sql.append(" and   ex.anioexpediente=:9 ");
+				sql.append(" and   ex.numeroexpediente=:10 ");
+				
+				Vector aux = ejecutaConsultaBind(sql.toString(), codigos);
+				String campoDenunciados = "";
+				// recorrido de los 5 posibles campos
+				for (int i=0;i<aux.size();i++) {
+					Hashtable reg = (Hashtable) aux.get(i);
+					campoDenunciados += (String) reg.get("NOMBRE") + ", ";
+				}
+				if (campoDenunciados.length()>0) campoDenunciados = campoDenunciados.substring(0,campoDenunciados.length()-2);
+				dato.put("DENUNCIADOS", campoDenunciados);
+
+				codigos = new Hashtable();
+				codigos.put(new Integer(1), idInstitucion);
+				codigos.put(new Integer(2), idInstitucionTipoExp);
+				codigos.put(new Integer(3), idTipoExp);
+				codigos.put(new Integer(4), anio);
+				codigos.put(new Integer(5), numero);
+				
+				sql = new StringBuffer();
+				sql.append(" select pe.nombre || ' ' || pe.apellidos1 || ' ' || pe.apellidos2 as NOMBRE "); 
+				sql.append(" from exp_denunciante d, cen_persona pe ");
+				sql.append(" where d.idpersona = pe.idpersona ");
+				sql.append(" and   d.idinstitucion =:1 ");
+				sql.append(" and   d.idinstitucion_tipoexpediente=:2 "); 
+				sql.append(" and   d.idtipoexpediente=:3 ");
+				sql.append(" and   d.anioexpediente=:4 ");
+				sql.append(" and   d.numeroexpediente=:5 ");
+				
+				
+				Vector aux2 = ejecutaConsultaBind(sql.toString(), codigos);
+				String campoDenunciantes = "";
+				// recorrido de los 5 posibles campos
+				for (int i=0;i<aux2.size();i++) {
+					Hashtable reg = (Hashtable) aux2.get(i);
+					campoDenunciantes += (String) reg.get("NOMBRE") + ", ";
+				}
+				if (campoDenunciantes.length()>0) campoDenunciantes = campoDenunciantes.substring(0,campoDenunciantes.length()-2);
+				dato.put("DENUNCIANTES", campoDenunciantes);
+
+				//datos.add(j, dato);
+				
+			}
+			
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar getNombresImplicadosExpediente");
+		} finally {
+			return datos;
+		}
+		
+	}	
+	
+	public Vector getNombresPartesExpediente(Vector datos, String idInstitucion, String idInstitucionTipoExp, String idTipoExp, String anio, String numero, String idPersona, String lenguaje)throws SIGAException,ClsExceptions
+	{	
+		try { 
+			 
+			Hashtable codigos = new Hashtable();
+			codigos.put(new Integer(1), lenguaje);
+			codigos.put(new Integer(2), idInstitucion);
+			codigos.put(new Integer(3), idInstitucionTipoExp);
+			codigos.put(new Integer(4), idTipoExp);
+			codigos.put(new Integer(5), anio);
+			codigos.put(new Integer(6), numero);
+
+			for (int j=0;j<datos.size();j++) {
+				Hashtable dato = (Hashtable) datos.get(j);
+
+				
+				StringBuffer sql = new StringBuffer();
+				sql.append(" select pe.nombre || ' ' || pe.apellidos1 || ' ' || pe.apellidos2 as NOMBRE, f_siga_getrecurso(r.nombre,:1) as NOMBREROL "); 
+				sql.append(" from exp_parte d, cen_persona pe, exp_rolparte r ");
+				sql.append(" where d.idpersona = pe.idpersona ");
+				sql.append(" and   d.idrol = r.idrol ");
+				sql.append(" and   d.idinstitucion_tipoexpediente = r.idinstitucion ");
+				sql.append(" and   d.idtipoexpediente = r.idtipoexpediente ");
+				sql.append(" and   d.idinstitucion =:2 ");
+				sql.append(" and   d.idinstitucion_tipoexpediente=:3 "); 
+				sql.append(" and   d.idtipoexpediente=:4 ");
+				sql.append(" and   d.anioexpediente=:5 ");
+				sql.append(" and   d.numeroexpediente=:6 ");
+				
+				
+				Vector aux2 = ejecutaConsultaBind(sql.toString(), codigos);
+				String campoPartes = "";
+				// recorrido de los 5 posibles campos
+				for (int i=0;i<aux2.size();i++) {
+					Hashtable reg = (Hashtable) aux2.get(i);
+					campoPartes += (String) reg.get("NOMBRE")+ TABULADOR + (String) reg.get("NOMBREROL") + SALTOLINEA;
+				}
+				dato.put("PARTES", campoPartes);
+
+				//datos.add(j, dato);
+				
+			}
+			
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar getNombresPartesExpediente");
+		} finally {
+			return datos;
+		}
+		
+	}	
 	
 }

@@ -8,50 +8,7 @@
 			<attribute name="owner.project.facets" value="jst.java"/>
 		</attributes>
 	</classpathentry>
-		<classpathentry kind="lib" path="C:/bea/sipserver31/server/lib/weblogic.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/cecore.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/celib.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/ceplugins.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/cereports.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/cesession.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/ceutils.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/cexsd.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/corbaidl.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/CRDBJavabeansServer.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/CRDBJavaServer.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/CRDBJavaServerCommon.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/CRDBJDBCServer.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/CRDBXMLServer.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/crlov.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/crlovexternal.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/crlovmanifest.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/CrystalCharting.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/CrystalCommon.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/CrystalContentModels.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/CrystalDatabaseConnectors.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/CrystalExporters.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/CrystalExportingBase.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/CrystalFormulas.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/CrystalQueryEngine.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/CrystalReportEngine.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/CrystalReportingCommon.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/ebus405.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/jrcadapter.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/jrcerom.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/keycodeDecoder.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/MetafileRenderer.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/rasapp.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/rascore.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/ReportPrinter.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/ReportViewer.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/rpoifs.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/Serialization.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/u211java.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/URIUtil.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/webreporting-jsf.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/webreporting.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/external/Concurrent.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/CrystalReport/external/icu4j.jar"/>
+	<classpathentry kind="lib" path="C:/bea/sipserver31/server/lib/weblogic.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="lib" path="C:/bea/sipserver31/server/lib/ojdbc14.jar"/>
 	<classpathentry kind="output" path="WebContent/WEB-INF/classes"/>
