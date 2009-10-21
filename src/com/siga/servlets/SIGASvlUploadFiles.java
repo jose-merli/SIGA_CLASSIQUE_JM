@@ -20,6 +20,9 @@ public class SIGASvlUploadFiles extends SIGAServletAdapter {
 	private static final long serialVersionUID = -102663719471049646L;
 	private static int BUFFER_SIZE = 8 * 1024;   
     
+	public void init() throws ServletException {
+		super.init(this.getServletConfig());
+	}
     public void doPost(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
         InputStream inStream = null;

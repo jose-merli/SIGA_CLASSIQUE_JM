@@ -143,11 +143,11 @@
     <servlet-name>SIGASvlProcesoAutomaticoRapido</servlet-name>
     <servlet-class>com.siga.servlets.SIGASvlProcesoAutomaticoRapido</servlet-class>
    	<load-on-startup>5</load-on-startup>
-  </servlet>
+  </servlet> 
   <servlet>
     <servlet-name>SIGASvlProcesoRapido</servlet-name>
     <servlet-class>com.siga.servlets.SIGASvlProcesoRapido</servlet-class>
-  </servlet>
+  </servlet> 
  <servlet>
     <servlet-name>SIGASvlProcesoGeneracionEnvio</servlet-name>
     <servlet-class>com.siga.servlets.SIGASvlProcesoGeneracionEnvio</servlet-class>
@@ -257,12 +257,12 @@
   <servlet-mapping>
     <servlet-name>SIGASvlProcesoAutomaticoRapido</servlet-name>
     <url-pattern>SIGASvlProcesoAutomaticoRapido.svrl</url-pattern>
-  </servlet-mapping>
+  </servlet-mapping> 
 
   <servlet-mapping>
     <servlet-name>SIGASvlProcesoRapido</servlet-name>
     <url-pattern>SIGASvlProcesoRapido.svrl</url-pattern>
-  </servlet-mapping>
+  </servlet-mapping> 
 
   <servlet-mapping>
     <servlet-name>SIGASvlProcesoGeneracionEnvio</servlet-name>

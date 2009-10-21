@@ -38,16 +38,13 @@ public class SIGASvlAuthenticate extends SIGAServletAdapter {
 	private  String MY_SEARCHBASE = "";
 
   //Inicializar variables globales
-  public void init() throws ServletException {
-	  super.init();
-  }
   //Procesar una petición HTTP Get
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     doPost(request,response);
   }
 
-  public void init(ServletConfig cfg) throws javax.servlet.ServletException {
-    super.init(cfg);
+  public void init() throws javax.servlet.ServletException {
+    super.init(this.getServletConfig());
     ReadProperties ldapProperties= new ReadProperties(SIGAReferences.RESOURCE_FILES.LDAP);
     //String LDAPPropertiesFile = cfg.getInitParameter("LDAPPROPERTIESFILE");
 //    ReadProperties ldapProperties=new ReadProperties(LDAPPropertiesFile);

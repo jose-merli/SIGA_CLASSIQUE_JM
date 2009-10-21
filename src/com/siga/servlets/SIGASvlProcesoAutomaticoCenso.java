@@ -9,7 +9,7 @@ import com.siga.Utilidades.*;
 
 import weblogic.management.timer.Timer;
 
-public final class SIGASvlProcesoAutomaticoCenso implements ServletContextListener, NotificationListener
+public final class SIGASvlProcesoAutomaticoCenso  extends SIGAContextListenerAdapter implements ServletContextListener, NotificationListener
 {
     private Timer timer;
     private Integer idNotificacion;
@@ -18,7 +18,9 @@ public final class SIGASvlProcesoAutomaticoCenso implements ServletContextListen
 
     public void contextInitialized(ServletContextEvent event)
     {
-
+    	
+    	super.contextInitialized(event);
+    	
     	//ClsLogging.writeFileLogWithoutSession("", 3);
     	//ClsLogging.writeFileLogWithoutSession("", 3);
         ClsLogging.writeFileLogWithoutSession("<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>", 3);

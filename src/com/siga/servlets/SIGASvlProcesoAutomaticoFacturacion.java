@@ -36,7 +36,7 @@ public class SIGASvlProcesoAutomaticoFacturacion extends SIGAServletAdapter impl
     
   //Global vars
   public void init() throws ServletException {
-	  super.init();
+	  super.init(this.getServletConfig());
     //ClsLogging.writeFileLogWithoutSession("", 3);
   	//ClsLogging.writeFileLogWithoutSession("", 3);
     ClsLogging.writeFileLogWithoutSession("<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>", 3);

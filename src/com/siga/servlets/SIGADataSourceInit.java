@@ -22,8 +22,8 @@ public class SIGADataSourceInit extends SIGAServletAdapter {
 	
     public SIGADataSourceInit() { }
 
-    public void init(ServletConfig cfg) throws javax.servlet.ServletException {
-    	super.init(cfg);
+    public void init() throws javax.servlet.ServletException {
+    	super.init(this.getServletConfig());
 
     	long seg_first =0;
 		long seg_last =0;

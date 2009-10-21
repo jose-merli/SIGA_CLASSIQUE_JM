@@ -41,7 +41,7 @@ public class SIGASvlProcesoAutomaticoRapido extends SIGAServletAdapter implement
     
 	//Global vars
 	public void init() throws ServletException {
-		super.init();
+		super.init(this.getServletConfig());
 		//ClsLogging.writeFileLogWithoutSession("", 3);
 		//ClsLogging.writeFileLogWithoutSession("", 3);
 		ClsLogging.writeFileLogWithoutSession("<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>", 3);
@@ -127,7 +127,8 @@ public class SIGASvlProcesoAutomaticoRapido extends SIGAServletAdapter implement
 			{
 			    // invocamos al servlet
 				URL url = new URL(urlSiga+proceso+".svrl");
-
+				Object ret = url.getContent();
+				
 				ClsLogging.writeFileLogWithoutSession(" - OK.  >>>  Ejecutando Notificación: \"" + sNombreProceso + "\".", 3);
 			}
 			catch(Exception e)
