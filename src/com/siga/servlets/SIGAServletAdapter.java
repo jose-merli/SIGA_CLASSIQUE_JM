@@ -3,8 +3,6 @@ package com.siga.servlets;
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServlet;
 
-import org.apache.struts.action.ActionServlet;
-
 import com.siga.Utilidades.SIGAReferences;
 
 public class SIGAServletAdapter extends HttpServlet {
