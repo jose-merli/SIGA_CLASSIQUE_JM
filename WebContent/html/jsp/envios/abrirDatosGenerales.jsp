@@ -42,6 +42,7 @@
 	String  cambioPlantilla = UtilidadesString.getMensajeIdioma(userBean, "messages.envios.error.direccionNecesaria");
 	
 	Boolean existePlantilla = (Boolean)request.getAttribute("existePlantilla");
+	String descargar = UtilidadesString.getMensajeIdioma(userBean,"envios.definirEnvios.visualizarPlantilla");
 	
 %>	
 
@@ -50,7 +51,7 @@
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 		
 		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
-
+		<script src="<html:rewrite page="/html/js/validacionStruts.js"/>" type="text/javascript"></script>
 		<script language="JavaScript">
 			var bPrimeraVez=true;
 			
@@ -115,6 +116,39 @@
 				
 				bPrimeraVez=false;
 			}
+			function descargar() 
+			{
+				sub();
+				
+				if (!validateEnviosDatosGeneralesForm(EnviosDatosGeneralesForm)){
+					fin();
+					return false;
+				}
+				if(document.EnviosDatosGeneralesForm.idPlantillaEnvio.value==''){
+					var campo = '<siga:Idioma key="envios.definir.literal.plantilla"/>';
+  					var msg = "<siga:Idioma key="errors.required"  arg0=' " + campo + "'/>";
+					alert (msg);
+					fin();
+					return false;
+				}
+								
+				if(document.EnviosDatosGeneralesForm.idPlantillaGeneracion.value==''){
+					var campo = '<siga:Idioma key="envios.definir.literal.plantillageneracion"/>';
+  					var msg = "<siga:Idioma key="errors.required"  arg0=' " + campo + "'/>";
+					alert (msg);
+					fin();
+					return false;
+				}
+						
+
+				
+				EnviosDatosGeneralesForm.modo.value = "descargar";
+				EnviosDatosGeneralesForm.submit();
+				
+				
+			   	//ProgramacionForm.submit();
+			   	//ProgramacionForm.modo.value = "modificar";
+			}
 		</script>
 
 		<siga:Titulo
@@ -125,7 +159,7 @@
 </head>
 
 <body onLoad="recargarCombos();mensaje();">
-
+<html:javascript formName="EnviosDatosGeneralesForm" staticJavascript="false" />
 
 			<html:form action="/ENV_Datos_Generales.do" method="POST" target="submitArea">
 				<html:hidden property = "modo" value = ""/>
@@ -196,6 +230,9 @@
 						<td>
 							<siga:ComboBD nombre="idPlantillaGeneracion" tipo="cmbPlantillaGeneracion" clase="boxConsulta" obligatorio="false" parametro="<%=parametro3%>" elementoSel="<%=al2%>" hijo="true" pestana="t" readOnly="true"/>
 						</td>
+						<td>
+							<input type="button" class="button" alt="<%=descargar%>" name="idButton"  onclick="return descargar();" value="<%=descargar%>"/>
+						</td>
 <%
 					}
 					
@@ -211,10 +248,16 @@
 						<td>
 							<siga:ComboBD nombre="idPlantillaGeneracion" tipo="cmbPlantillaGeneracion" clase="boxCombo" obligatorio="false" parametro="<%=parametro%>" elementoSel="<%=al2%>" hijo="true" pestana="true"/>
 						</td>
+						
+						<td >
+						<input type="button" class="button" alt="<%=descargar%>" name="idButton"  onclick="return descargar();" value="<%=descargar%>"/>
+						</td>
+				
 <%
 					}
 %>
 					</tr>
+					
 
 			<!-- RGG: cambio a formularios ligeros -->
 			<input type="hidden" name="tablaDatosDinamicosD">

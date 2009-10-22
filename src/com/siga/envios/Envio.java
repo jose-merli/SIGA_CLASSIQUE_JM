@@ -24,6 +24,7 @@ import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CerSolicitudCertificadosAdm;
 import com.siga.beans.CerSolicitudCertificadosBean;
+import com.siga.beans.EnvCamposEnviosAdm;
 import com.siga.beans.EnvComunicacionMorososAdm;
 import com.siga.beans.EnvComunicacionMorososBean;
 import com.siga.beans.EnvDestinatariosAdm;
@@ -870,98 +871,99 @@ public class Envio
 	    }    
 	    
     }
-
-	public boolean generarDocumentoEnvioPDF(Integer idInstitucion, Integer idEnvio) throws SIGAException, ClsExceptions
-	{
-        try
-        {           
-            EnvEnviosAdm admEnvio = new EnvEnviosAdm(this.usrBean);
-
-            Hashtable htEnvio = new Hashtable();
-
-            htEnvio.put(EnvEnviosBean.C_IDINSTITUCION, idInstitucion);
-            htEnvio.put(EnvEnviosBean.C_IDENVIO, idEnvio);
-
-            Vector vEnvio = admEnvio.selectByPK(htEnvio);
-
-            EnvEnviosBean beanEnvio = (EnvEnviosBean)vEnvio.elementAt(0);
-
-            EnvPlantillaGeneracionAdm admPlantilla = new EnvPlantillaGeneracionAdm(this.usrBean);
-
-            // Obtenemos el archivo con la plantilla
-            
-            File fPlantilla = admPlantilla.obtenerPlantilla(""+beanEnvio.getIdInstitucion(), 
-                    										""+beanEnvio.getIdTipoEnvios(), 
-                    										""+beanEnvio.getIdPlantillaEnvios(), 
-                    										""+beanEnvio.getIdPlantilla());
-
-            if (fPlantilla==null)
-            {
-                throw new SIGAException("messages.envios.error.noPlantilla");
-            } else {
-            	if (!fPlantilla.exists()) {
-                    throw new SIGAException("messages.envios.error.noPlantilla");
-            	} else
-			    if (!fPlantilla.canRead()){
-					throw new ClsExceptions ("Error de lectura del fichero: "+fPlantilla.getAbsolutePath());
-					//throw new SIGAException("facturacion.nuevoFichero.literal.errorLectura");
-			    }            		 
-            }
-            
-            Plantilla plantilla = new Plantilla(fPlantilla,this.usrBean);
-
-            Vector vDestinatarios = admEnvio.getDestinatarios(""+idInstitucion, ""+idEnvio, 
-                    											""+beanEnvio.getIdTipoEnvios());
-
-            if (vDestinatarios!=null) {
-	            for (int i=0; i<vDestinatarios.size(); i++)
-	            {
-	                EnvDestinatariosBean beanDestinatario = (EnvDestinatariosBean)vDestinatarios.elementAt(i);
-	
-		            Hashtable htDatos = admEnvio.getDatosEnvio(beanDestinatario.getIdInstitucion(), beanDestinatario.getIdEnvio(), beanDestinatario.getIdPersona(), consulta);
-	
-					htDatos = admEnvio.darFormatoCampos(idInstitucion, idEnvio, this.usrBean.getLanguage(), htDatos);
-	
-		            String path = admEnvio.getPathEnvio(""+idInstitucion, ""+idEnvio) + File.separator + "documentosdest";
-		            
-		            // Generamos el archivo temporal que se obtendrá de sustituir las etiquetas
-		            // de la plantilla
-		            String nombreFin = path + File.separator + idInstitucion + "_" + idEnvio + "_" + beanDestinatario.getIdPersona();
-		            File fIn = new File(nombreFin);
-		            
-		            // fIN contendrá el archivo obtenido de sustituir las etiquetas a la plantilla.
-		            plantilla.sustituirEtiquetas(htDatos, fIn);
-		            
-		            String nombreFout = path + File.separator + beanDestinatario.getIdPersona() + ".pdf";
-		            File fOut = new File(nombreFout);
-	
-		            // El path base para los recursos será al path donde se almacena la plantilla
-		            
-		            //plantilla.convertFO2PDF(fIn, fOut, fPlantilla.getPath());
-		            try {
-		            	plantilla.convertFO2PDF(fIn, fOut, fPlantilla.getParent());
-		            } catch (Exception e) {
-		        		ClsLogging.writeFileLogError("Error convirtiendo PDF.  Mensaje:" + e.getLocalizedMessage(),e,3);
-		            	throw new ClsExceptions(e,"Error al convertir a PDF");
-		            }
-		            // Borramos el temporal
-		            
-		            fIn.delete();	            
-		            
-	            }
-            }
-            return true;
-
-        } catch (SIGAException e1) {
-    		ClsLogging.writeFileLogError("Error generando PDF.  Mensaje:" + e1.getMsg(""),e1,3);
-            throw e1;
-            
-        }catch(Exception e){
-    		ClsLogging.writeFileLogError("Error generando PDF.  Mensaje:" + e.getLocalizedMessage(),e,3);
-			throw new ClsExceptions (e, "Error general generando PDF ");
-//            throw new SIGAException("messages.envios.error.generarPDF",e);
-        }
-	}
+//
+//	public boolean generarDocumentoEnvioPDF(Integer idInstitucion, Integer idEnvio) throws SIGAException, ClsExceptions
+//	{
+//        try
+//        {           
+//            EnvEnviosAdm admEnvio = new EnvEnviosAdm(this.usrBean);
+//
+//            Hashtable htEnvio = new Hashtable();
+//
+//            htEnvio.put(EnvEnviosBean.C_IDINSTITUCION, idInstitucion);
+//            htEnvio.put(EnvEnviosBean.C_IDENVIO, idEnvio);
+//
+//            Vector vEnvio = admEnvio.selectByPK(htEnvio);
+//
+//            EnvEnviosBean beanEnvio = (EnvEnviosBean)vEnvio.elementAt(0);
+//
+//            EnvPlantillaGeneracionAdm admPlantilla = new EnvPlantillaGeneracionAdm(this.usrBean);
+//
+//            // Obtenemos el archivo con la plantilla
+//            
+//            File fPlantilla = admPlantilla.obtenerPlantilla(""+beanEnvio.getIdInstitucion(), 
+//                    										""+beanEnvio.getIdTipoEnvios(), 
+//                    										""+beanEnvio.getIdPlantillaEnvios(), 
+//                    										""+beanEnvio.getIdPlantilla());
+//
+//            if (fPlantilla==null)
+//            {
+//                throw new SIGAException("messages.envios.error.noPlantilla");
+//            } else {
+//            	if (!fPlantilla.exists()) {
+//                    throw new SIGAException("messages.envios.error.noPlantilla");
+//            	} else
+//			    if (!fPlantilla.canRead()){
+//					throw new ClsExceptions ("Error de lectura del fichero: "+fPlantilla.getAbsolutePath());
+//					//throw new SIGAException("facturacion.nuevoFichero.literal.errorLectura");
+//			    }            		 
+//            }
+//            
+//            Plantilla plantilla = new Plantilla(fPlantilla,this.usrBean);
+//
+//            Vector vDestinatarios = admEnvio.getDestinatarios(""+idInstitucion, ""+idEnvio, 
+//                    											""+beanEnvio.getIdTipoEnvios());
+//            EnvCamposEnviosAdm admCampos = new EnvCamposEnviosAdm(this.usrBean);            
+//            Vector vCampos = admCampos.obtenerCamposEnvios(""+idInstitucion, ""+idEnvio, "");
+//            
+//            if (vDestinatarios!=null) {
+//	            for (int i=0; i<vDestinatarios.size(); i++)
+//	            {
+//	                EnvDestinatariosBean beanDestinatario = (EnvDestinatariosBean)vDestinatarios.elementAt(i);
+//		            Hashtable htDatos = admEnvio.getDatosEnvio(beanDestinatario, consulta);
+//		            
+//					htDatos = admEnvio.darFormatoCampos(idInstitucion, idEnvio, this.usrBean.getLanguage(), htDatos,vCampos);
+//	
+//		            String path = admEnvio.getPathEnvio(""+idInstitucion, ""+idEnvio) + File.separator + "documentosdest";
+//		            
+//		            // Generamos el archivo temporal que se obtendrá de sustituir las etiquetas
+//		            // de la plantilla
+//		            String nombreFin = path + File.separator + idInstitucion + "_" + idEnvio + "_" + beanDestinatario.getIdPersona();
+//		            File fIn = new File(nombreFin);
+//		            
+//		            // fIN contendrá el archivo obtenido de sustituir las etiquetas a la plantilla.
+//		            plantilla.sustituirEtiquetas(htDatos, fIn);
+//		            
+//		            String nombreFout = path + File.separator + beanDestinatario.getIdPersona() + ".pdf";
+//		            File fOut = new File(nombreFout);
+//	
+//		            // El path base para los recursos será al path donde se almacena la plantilla
+//		            
+//		            //plantilla.convertFO2PDF(fIn, fOut, fPlantilla.getPath());
+//		            try {
+//		            	plantilla.convertFO2PDF(fIn, fOut, fPlantilla.getParent());
+//		            } catch (Exception e) {
+//		        		ClsLogging.writeFileLogError("Error convirtiendo PDF.  Mensaje:" + e.getLocalizedMessage(),e,3);
+//		            	throw new ClsExceptions(e,"Error al convertir a PDF");
+//		            }
+//		            // Borramos el temporal
+//		            
+//		            fIn.delete();	            
+//		            
+//	            }
+//            }
+//            return true;
+//
+//        } catch (SIGAException e1) {
+//    		ClsLogging.writeFileLogError("Error generando PDF.  Mensaje:" + e1.getMsg(""),e1,3);
+//            throw e1;
+//            
+//        }catch(Exception e){
+//    		ClsLogging.writeFileLogError("Error generando PDF.  Mensaje:" + e.getLocalizedMessage(),e,3);
+//			throw new ClsExceptions (e, "Error general generando PDF ");
+////            throw new SIGAException("messages.envios.error.generarPDF",e);
+//        }
+//	}
 
 	
 	/**

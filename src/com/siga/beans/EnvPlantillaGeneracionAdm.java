@@ -26,6 +26,7 @@ public class EnvPlantillaGeneracionAdm extends MasterBeanAdministrador
 		        		   EnvPlantillaGeneracionBean.C_IDPLANTILLA,
 		        		   EnvPlantillaGeneracionBean.C_DESCRIPCION,
 		        		   EnvPlantillaGeneracionBean.C_PORDEFECTO,
+		        		   EnvPlantillaGeneracionBean.C_TIPOARCHIVO,
 		        		   EnvPlantillaGeneracionBean.C_FECHAMODIFICACION, 
 						   EnvPlantillaGeneracionBean.C_USUMODIFICACION};
 
@@ -53,6 +54,7 @@ public class EnvPlantillaGeneracionAdm extends MasterBeanAdministrador
 			bean.setIdPlantilla(UtilidadesHash.getInteger(hash, EnvPlantillaGeneracionBean.C_IDPLANTILLA));
 			bean.setDescripcion(UtilidadesHash.getString(hash, EnvPlantillaGeneracionBean.C_DESCRIPCION));
 			bean.setPorDefecto(UtilidadesHash.getString(hash, EnvPlantillaGeneracionBean.C_PORDEFECTO));
+			bean.setTipoArchivo(UtilidadesHash.getString(hash, EnvPlantillaGeneracionBean.C_TIPOARCHIVO));
 		}
 
 		catch (Exception e)
@@ -81,6 +83,7 @@ public class EnvPlantillaGeneracionAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(htData, EnvPlantillaGeneracionBean.C_IDPLANTILLA, b.getIdPlantilla());
 			UtilidadesHash.set(htData, EnvPlantillaGeneracionBean.C_DESCRIPCION, b.getDescripcion());
 			UtilidadesHash.set(htData, EnvPlantillaGeneracionBean.C_PORDEFECTO, b.getPorDefecto());
+			UtilidadesHash.set(htData, EnvPlantillaGeneracionBean.C_TIPOARCHIVO, b.getTipoArchivo());
 		}
 
 		catch (Exception e)
@@ -95,7 +98,7 @@ public class EnvPlantillaGeneracionAdm extends MasterBeanAdministrador
 
     protected String[] getOrdenCampos()
     {
-        return null;
+        return new String[]{EnvPlantillaGeneracionBean.C_DESCRIPCION};
     }
     
     public Vector obtenerListaPlantillas(String idInstitucion, String idTipoEnvios, String idPlantilla)
@@ -161,7 +164,7 @@ public class EnvPlantillaGeneracionAdm extends MasterBeanAdministrador
    	        						 String idPlantilla, 
    	        						 File fPlantilla, 
    	        						 boolean bPorDefecto, 
-   	        						 boolean bZIP) throws SIGAException, ClsExceptions 
+   	        						 String extension) throws SIGAException, ClsExceptions 
    	{
    	    boolean bGrabarFicheroPlantilla=fPlantilla!=null;
    	    boolean bInsertDB=(idPlantilla==null || idPlantilla.equals("")) ? true : false;
@@ -205,6 +208,10 @@ public class EnvPlantillaGeneracionAdm extends MasterBeanAdministrador
 		    
 		    String sPorDefecto = (bPorDefecto) ? "S" : "N" ;
 		    htDatos.put(EnvPlantillaGeneracionBean.C_PORDEFECTO, sPorDefecto);
+		    if(extension.toLowerCase().equals("zip"))
+		    	htDatos.put(EnvPlantillaGeneracionBean.C_TIPOARCHIVO, "fo");
+		    else
+		    htDatos.put(EnvPlantillaGeneracionBean.C_TIPOARCHIVO, extension);
 
 	        if (!insert(htDatos))
 		    {
@@ -230,7 +237,7 @@ public class EnvPlantillaGeneracionAdm extends MasterBeanAdministrador
         if (bGrabarFicheroPlantilla)
         {
             //if (!grabarFicheroPlantilla(idInstitucion, idTipoProducto, idProducto, idProductoInstitucion, idPlantilla2, fPlantilla, bZIP))
-            if (!grabarFicheroPlantilla(idInstitucion, idTipoEnvios, idPlantillaEnvios, idPlantilla2, fPlantilla, bZIP))
+            if (!grabarFicheroPlantilla(idInstitucion, idTipoEnvios, idPlantillaEnvios, idPlantilla2, fPlantilla, extension))
             {
                 if (bInsertDB)
                 {
@@ -258,7 +265,7 @@ public class EnvPlantillaGeneracionAdm extends MasterBeanAdministrador
 				 						   String idPlantillaEnvios, 
 				 						   String idPlantilla, 
 				 						   File fPlantilla, 
-				 						   boolean bZIP) throws SIGAException, ClsExceptions
+				 						   String extension) throws SIGAException, ClsExceptions
    	{
    	    try
    	    {
@@ -303,7 +310,7 @@ public class EnvPlantillaGeneracionAdm extends MasterBeanAdministrador
 	            }
 	        }
 	        
-	        if (bZIP)
+	        if (extension.toLowerCase().equals("zip"))
 	        {
 	            try 
 	            {
@@ -329,7 +336,10 @@ public class EnvPlantillaGeneracionAdm extends MasterBeanAdministrador
 	                        FileOutputStream fos = null;
 	                        
 	                        //if (cont==0)
-	                        if (sNombreAux.endsWith(".fo"))
+	                        if (sNombreAux.toLowerCase().endsWith(".doc")){
+	                        	throw new SIGAException("messages.certificados.error.nocomunicacion");
+	                        }
+	                        else if (sNombreAux.endsWith(".fo"))
 	                        {
 	                            fos = new FileOutputStream(sNombreFinal + ".tmp");
 	                        }
@@ -400,23 +410,32 @@ public class EnvPlantillaGeneracionAdm extends MasterBeanAdministrador
 	                fTemp.deleteOnExit();
 	                fTemp.delete();
 	            }
-	            
+	            catch(SIGAException e)
+	            {	throw e;
+	                
+	            }
 	            catch(Exception e)
 	            {
 	                e.printStackTrace();
 	            }
 	        }
 	        
-	        else
+	        else 
 	        {
-	            File fFicheroDestino = new File(sNombreFinal);
+//	        	if(extension.toLowerCase().equals("doc")){
+//	        		sNombreFinal += ".doc";
+//	        	}
+	        	File fFicheroDestino = new File(sNombreFinal);
 	            
 	            fPlantilla.renameTo(fFicheroDestino);
 	        }
 	        
 	        return true;
    	    }
-   	    
+   	 catch(SIGAException e)
+     {	throw e;
+         
+     }
    	    catch(Exception e)
    	    {
    	        return false;
@@ -426,7 +445,7 @@ public class EnvPlantillaGeneracionAdm extends MasterBeanAdministrador
    	public File descargarPlantilla(String idInstitucion, 
 				 				   String idTipoEnvios, 
 				 				   String idPlantillaEnvios, 
-				 				   String idPlantilla) throws SIGAException, ClsExceptions 
+				 				   String idPlantilla,String tipoArchivo) throws SIGAException, ClsExceptions 
 	{
    	    ZipOutputStream zos = null;
    	    File fPlantilla=null;
@@ -452,13 +471,15 @@ public class EnvPlantillaGeneracionAdm extends MasterBeanAdministrador
                 }
                 
                 else
-                {
-                    return new File(sNombreFinal);
+                {	
+                    return fPlantilla;
                 }
 
             }
             
+            
             fPlantilla = new File(sNombreFinal + ".zip");
+//            System.out.println(fPlantilla.get);
             
             FileInputStream fis=new FileInputStream(new File(sNombreFinal));
             zos = new ZipOutputStream(new FileOutputStream(fPlantilla));

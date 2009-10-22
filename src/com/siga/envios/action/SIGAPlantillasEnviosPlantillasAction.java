@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.*;
 
 import com.atos.utils.*;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.*;
 import com.siga.general.*;
 
@@ -11,12 +12,14 @@ import javax.servlet.http.*;
 import javax.transaction.UserTransaction;
 
 import com.siga.envios.form.*;
+
 import org.apache.struts.action.*;
 import org.apache.struts.upload.*;
 
 public class SIGAPlantillasEnviosPlantillasAction extends MasterAction
 {
     private String sContentTypeZIP="application/x-zip-compressed";
+    
     
 	public ActionForward executeInternal (ActionMapping mapping, ActionForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
 	{
@@ -39,6 +42,9 @@ public class SIGAPlantillasEnviosPlantillasAction extends MasterAction
 	            else if (accion.equalsIgnoreCase("download"))
 	            {
 	                mapDestino = download(mapping, miForm, request, response);
+	            }  else if (accion.equalsIgnoreCase("descargar"))
+	            {
+	                mapDestino = descargar(mapping, miForm, request, response);
 	            } 
 
 	            else 
@@ -81,6 +87,7 @@ public class SIGAPlantillasEnviosPlantillasAction extends MasterAction
 			String idTipoEnvios = (String)vOcultos.elementAt(1);
 			String idPlantillaEnvios = (String)vOcultos.elementAt(2);
 			String idPlantilla = (String)vOcultos.elementAt(3);
+			String idTipoArchivo = (String)vOcultos.elementAt(6);
 			
 			//String sNombrePlantilla = idTipoEnvios + "_" + idPlantillaEnvios + "_" + idPlantilla + ".zip";
 	    	//String sRutaPlantilla = getPathPlantillasFromDB() + File.separator + form.getIdInstitucion();
@@ -88,11 +95,18 @@ public class SIGAPlantillasEnviosPlantillasAction extends MasterAction
 			
 			EnvPlantillaGeneracionAdm admPlantilla = new EnvPlantillaGeneracionAdm(this.getUserBean(request));
 			//fPlantilla = admPlantilla.descargarPlantilla(idInstitucion, idTipoProducto, idProducto, idProductoInstitucion, idPlantilla);
-			fPlantilla = admPlantilla.descargarPlantilla(idInstitucion, idTipoEnvios, idPlantillaEnvios, idPlantilla);
+			fPlantilla = admPlantilla.descargarPlantilla(idInstitucion, idTipoEnvios, idPlantillaEnvios, idPlantilla,idTipoArchivo);
 			
 			if(fPlantilla==null || !fPlantilla.exists()){
 				throw new SIGAException("messages.general.error.ficheroNoExiste"); 
 			}
+			String nombreFichero = fPlantilla.getName();
+			if (fPlantilla.getName().indexOf(".zip")==-1){
+			    nombreFichero = nombreFichero + "."+idTipoArchivo;
+			}
+			request.setAttribute("nombreFichero", nombreFichero);
+			request.setAttribute("rutaFichero", fPlantilla.getPath());
+			//request.setAttribute("generacionOK","OK");
 		} 
 		catch (SIGAException e) 
 		{ 
@@ -102,12 +116,7 @@ public class SIGAPlantillasEnviosPlantillasAction extends MasterAction
 		{ 
 		  	throwExcp("messages.certificados.error.descargarplantilla", null, null); 
 		}
-		String nombreFichero = fPlantilla.getName();
-		if (fPlantilla.getName().indexOf(".zip")==-1){
-		    nombreFichero = nombreFichero + ".fo";
-		}
-		request.setAttribute("nombreFichero", nombreFichero);
-		request.setAttribute("rutaFichero", fPlantilla.getPath());
+		
 		
 		return "descargaFichero";
 	}
@@ -279,7 +288,13 @@ public class SIGAPlantillasEnviosPlantillasAction extends MasterAction
 
 			String sNombreFicheroTemporal="";
 			File fPlantilla=null;
-			boolean bZIP=theFile.getContentType().equals(sContentTypeZIP);
+			String nombre =  theFile.getFileName();
+			
+			String 	extension = nombre.substring(nombre.lastIndexOf(".")+1).toLowerCase();
+			
+			
+//			System.out.println("extension"+extension);
+			//boolean bZIP=theFile.getContentType().equals(this.extZip);
 	
 		    if(theFile.getFileSize()>0) 
 		    {
@@ -331,7 +346,7 @@ public class SIGAPlantillasEnviosPlantillasAction extends MasterAction
 	        boolean bPorDefecto = (form.getPorDefecto()!=null && form.getPorDefecto().equals("1")) ? true : false;
 
 	        tx.begin();	        
-	        if (admPlantilla.importarPlantilla(descripcionPlantilla, idInstitucion, idTipoEnvios, idPlantillaEnvios, idPlantilla, fPlantilla, bPorDefecto, bZIP))
+	        if (admPlantilla.importarPlantilla(descripcionPlantilla, idInstitucion, idTipoEnvios, idPlantillaEnvios, idPlantilla, fPlantilla, bPorDefecto, extension))
 	        {
 	            sMensaje="messages.updated.success";
 	            tx.commit();
@@ -380,5 +395,48 @@ public class SIGAPlantillasEnviosPlantillasAction extends MasterAction
 	    }
 	    
 	    return sPath;
+	}
+	protected String descargar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException
+	{
+	    UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
+	    
+	    SIGAPlantillasEnviosPlantillasForm form = (SIGAPlantillasEnviosPlantillasForm)formulario;
+
+		Vector vOcultos = form.getDatosTablaOcultos(0);
+        
+	    String idInstitucion = (String)vOcultos.elementAt(0);
+		String idTipoEnvios = (String)vOcultos.elementAt(1);
+		String idPlantillaEnvios = (String)vOcultos.elementAt(2);
+		String idPlantilla = (String)vOcultos.elementAt(3);
+		String idTipoArchivo = (String)vOcultos.elementAt(6);
+	    
+//		if(idTipoArchivo.equals(EnvEnviosAdm.TIPOARCHIVO_DOC))
+//			return download(mapping, formulario, request, response);
+	    
+	    EnvPlantillaGeneracionAdm admPlantilla = new EnvPlantillaGeneracionAdm(userBean);
+        File fPlantilla = admPlantilla.obtenerPlantilla(idInstitucion, 
+        		idTipoEnvios,    		idPlantillaEnvios, idPlantilla);
+        Hashtable htPkPlantillaGeneracion = new Hashtable();
+        htPkPlantillaGeneracion.put(EnvPlantillaGeneracionBean.C_IDINSTITUCION,idInstitucion);
+        htPkPlantillaGeneracion.put(EnvPlantillaGeneracionBean.C_IDTIPOENVIOS,idTipoEnvios);
+        htPkPlantillaGeneracion.put(EnvPlantillaGeneracionBean.C_IDPLANTILLAENVIOS,idPlantillaEnvios);
+        htPkPlantillaGeneracion.put(EnvPlantillaGeneracionBean.C_IDPLANTILLA,idPlantilla);
+        
+//        Vector vPlant = admPlantilla.selectByPK(htPkPlantillaGeneracion);	    
+//	    EnvPlantillaGeneracionBean plantBean = (EnvPlantillaGeneracionBean)vPlant.firstElement();
+//	    String tipoArchivoPlantilla = plantBean.getTipoArchivo();
+	               
+        EnvEnviosAdm admEnvios = new EnvEnviosAdm(userBean);
+        EnvEnviosBean envBean = new EnvEnviosBean();
+        envBean.setIdInstitucion(new Integer(idInstitucion));
+        envBean.setIdEnvio(new Integer(0));
+        envBean.setFechaCreacion(UtilidadesString.formatoFecha(new Date(), "yyyy/MM/dd HH:mm:ss"));
+        EnvDestinatariosBean beanDestinatario = new EnvDestinatariosBean();
+        beanDestinatario.setIdPersona(new Long("0"));
+    	String pathArchivoGenerado = admEnvios.generarDocumentoEnvioPDFDestinatario(envBean, beanDestinatario, fPlantilla,idTipoArchivo,new Hashtable());
+		
+		request.setAttribute("rutaFichero", pathArchivoGenerado);
+		request.setAttribute("generacionOK","OK");
+		return "descarga";
 	}
 }

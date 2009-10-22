@@ -9,6 +9,7 @@ public class EnvPlantillaGeneracionBean extends MasterBean
 	private Integer idPlantilla;
 	private String descripcion;
 	private String porDefecto;
+	private String tipoArchivo;
 
 	/* Nombre campos de la tabla */
 	static public final String C_IDINSTITUCION = "IDINSTITUCION";
@@ -17,6 +18,7 @@ public class EnvPlantillaGeneracionBean extends MasterBean
 	static public final String C_IDPLANTILLA = "IDPLANTILLA";
 	static public final String C_DESCRIPCION = "DESCRIPCION";
 	static public final String C_PORDEFECTO = "PORDEFECTO";
+	static public final String C_TIPOARCHIVO = "TIPOARCHIVO";
 	
 	static public final String T_NOMBRETABLA = "ENV_PLANTILLAGENERACION";
 	
@@ -80,4 +82,12 @@ public class EnvPlantillaGeneracionBean extends MasterBean
     {
         this.porDefecto = porDefecto;
     }
+
+	public String getTipoArchivo() {
+		return tipoArchivo;
+	}
+
+	public void setTipoArchivo(String tipoArchivo) {
+		this.tipoArchivo = tipoArchivo;
+	}
 }

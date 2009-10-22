@@ -18,8 +18,8 @@
 <%@ page import="java.util.Vector"%>
 <% 
 	String app=request.getContextPath();
-	HttpSession ses=request.getSession();
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	
+	
 	Vector vDatos = (Vector)request.getAttribute("datos");
 	
 	String sIdInstitucion = (String)request.getAttribute("idInstitucion");
@@ -32,9 +32,10 @@
 	String descripcionPlantilla = (String)request.getAttribute("descripcionPlantilla");
 	String idTipoEnvios = (String)request.getAttribute("idTipoEnvios");
 
-	UsrBean userBean = (UsrBean)request.getSession().getAttribute("USRBEAN");
+	
 %>	
 
+<%@page import="java.util.Vector"%>
 <html>
 	<head>
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
@@ -114,6 +115,54 @@
 					document.forms[0].target="mainWorkArea";
 				}
 			}
+			function descargar(fila) 
+			{
+				sub();
+				var datos;
+				datos = document.getElementById('tablaDatosDinamicosD');
+				datos.value = ""; 
+				var i, j;
+				for (i = 0; i < 2; i++) 
+				{
+  						var tabla;
+  						tabla = document.getElementById('tabladatos');
+  						if (i == 0)
+  						{
+    						var flag = true;
+    						j = 1;
+    						while (flag) 
+    						{
+      							var aux = 'oculto' + fila + '_' + j;
+      							var oculto = document.getElementById(aux);
+      							if (oculto == null)  
+      							{ 
+      								flag = false; 
+      							}
+     							else 
+     							{ 
+     								datos.value = datos.value + oculto.value + ','; 
+     							}
+      							j++;
+    						}
+    						datos.value = datos.value + "%"
+  						} 
+  						else 
+  						{ 
+  							j = 2; 
+  						}
+  						if ((tabla.rows[fila].cells)[i].innerText == "") 
+    						datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
+ 						else
+    						datos.value = datos.value + (tabla.rows[fila].cells)[i].innerText + ',';
+				document.forms[0].target="submitArea";
+					document.forms[0].modo.value = "descargar";
+					document.forms[0].submit();
+					document.forms[0].target="mainWorkArea";
+				}
+			   	//ProgramacionForm.submit();
+			   	//ProgramacionForm.modo.value = "modificar";
+			}
+			
 		</script>
 		<!-- FIN: SCRIPTS BOTONES -->
 		<siga:Titulo
@@ -151,8 +200,8 @@
 		   	      nombre="tablaDatos"
 		   		  borde="1"
 		   		  clase="tableTitle"
-		   		  nombreCol="certificados.mantenimiento.literal.plantilla,certificados.mantenimiento.literal.pordefecto,"
-		   		  tamanoCol="72,15,13"
+		   		  nombreCol="certificados.mantenimiento.literal.plantilla,certificados.mantenimiento.literal.pordefecto,certificados.mantenimiento.literal.tipoArchivo,"
+		   		  tamanoCol="60,15,6,19"
 		   			alto="100%"
 		   			ajusteBotonera="true"		
 
@@ -177,8 +226,9 @@
 				  		//CerPlantillasBean bean = (CerPlantillasBean)vDatos.elementAt(i);
 				  		EnvPlantillaGeneracionBean bean = (EnvPlantillaGeneracionBean)vDatos.elementAt(i);
 				  		
-						FilaExtElement[] elems=new FilaExtElement[1];
+						FilaExtElement[] elems=new FilaExtElement[2];
 						elems[0]=new FilaExtElement("download","download",SIGAConstants.ACCESS_READ);
+						elems[1]=new FilaExtElement("enviar","descargar",SIGAConstants.ACCESS_READ);
 
 %>
 	  			<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="<%=sBotones%>" elementos='<%=elems%>' clase="listaNonEdit" visibleConsulta='no'>
@@ -189,6 +239,7 @@
 						<input type="hidden" name="oculto<%=""+(i+1)%>_4" value="<%=bean.getIdPlantilla()%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_5" value="<%=bean.getDescripcion()%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_6" value="<%=bean.getPorDefecto()%>">
+						<input type="hidden" name="oculto<%=""+(i+1)%>_7" value="<%=bean.getTipoArchivo()%>">
 						
 						<%=bean.getDescripcion()%>
 					</td>
@@ -211,6 +262,7 @@
 					}
 %>
 					</td>
+					<td><%=bean.getTipoArchivo()%></td>
 				</siga:FilaConIconos>
 <%
 					}

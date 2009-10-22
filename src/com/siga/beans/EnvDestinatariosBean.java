@@ -25,6 +25,10 @@ public class EnvDestinatariosBean extends MasterBean {
     private String apellidos2;
 	private String nifcif;	
 	private String movil;	
+	private String pais;
+	private String provincia;
+	private String poblacion;
+	
 	
 	
 	// Nombre campos de la tabla 
@@ -154,4 +158,22 @@ public class EnvDestinatariosBean extends MasterBean {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
+	public String getPais() {
+		return pais;
+	}
+	public void setPais(String pais) {
+		this.pais = pais;
+	}
+	public String getProvincia() {
+		return provincia;
+	}
+	public void setProvincia(String provincia) {
+		this.provincia = provincia;
+	}
+	public String getPoblacion() {
+		return poblacion;
+	}
+	public void setPoblacion(String poblacion) {
+		this.poblacion = poblacion;
+	}
 }

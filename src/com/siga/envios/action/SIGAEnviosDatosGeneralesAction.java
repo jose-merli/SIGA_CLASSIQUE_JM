@@ -1,13 +1,22 @@
 package com.siga.envios.action;
 
+import java.io.File;
 import java.util.*;
+
 import com.atos.utils.*;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.*;
 import com.siga.general.*;
+
 import javax.transaction.*;
 import javax.servlet.http.*;
+
 import com.siga.envios.form.*;
+
 import org.apache.struts.action.*;
+
+import weblogic.jms.deployer.BEAdminHandler;
+
 import com.siga.gui.processTree.*;
 
 public class SIGAEnviosDatosGeneralesAction extends MasterAction
@@ -38,7 +47,10 @@ public class SIGAEnviosDatosGeneralesAction extends MasterAction
 				else if (accion.equalsIgnoreCase("borrarCampos"))
 				{
 					mapDestino = borrarCampos(mapping, miForm, request, response);
-				}
+				}  else if (accion.equalsIgnoreCase("descargar"))
+	            {
+	                mapDestino = descargar(mapping, miForm, request, response);
+	            } 
 
 				else
 				{
@@ -368,4 +380,45 @@ public class SIGAEnviosDatosGeneralesAction extends MasterAction
 
 	    return "editar";
 	}
+	protected String descargar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException
+	{
+	    UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
+	    
+	    SIGAEnviosDatosGeneralesForm form = (SIGAEnviosDatosGeneralesForm)formulario;
+        
+	    String idInstitucion = userBean.getLocation();
+	    String idEnvio = form.getIdEnvio();
+	    String idTipoEnvio = form.getIdTipoEnvio();
+	    String idPlantillaEnvio = form.getIdPlantillaEnvio();
+	    String idPlantillaGeneracion = form.getIdPlantillaGeneracion();
+	    
+	    
+	    EnvPlantillaGeneracionAdm admPlantilla = new EnvPlantillaGeneracionAdm(userBean);
+        File fPlantilla = admPlantilla.obtenerPlantilla(idInstitucion, 
+        		idTipoEnvio,    		idPlantillaEnvio, idPlantillaGeneracion);
+        Hashtable htPkPlantillaGeneracion = new Hashtable();
+        htPkPlantillaGeneracion.put(EnvPlantillaGeneracionBean.C_IDINSTITUCION,idInstitucion);
+        htPkPlantillaGeneracion.put(EnvPlantillaGeneracionBean.C_IDTIPOENVIOS,idTipoEnvio);
+        htPkPlantillaGeneracion.put(EnvPlantillaGeneracionBean.C_IDPLANTILLAENVIOS,idPlantillaEnvio);
+        htPkPlantillaGeneracion.put(EnvPlantillaGeneracionBean.C_IDPLANTILLA,idPlantillaGeneracion);
+        
+        Vector vPlant = admPlantilla.selectByPK(htPkPlantillaGeneracion);	    
+	    EnvPlantillaGeneracionBean plantBean = (EnvPlantillaGeneracionBean)vPlant.firstElement();
+	    String tipoArchivoPlantilla = plantBean.getTipoArchivo();
+	               
+        EnvEnviosAdm admEnvios = new EnvEnviosAdm(userBean);
+        
+	    Hashtable htPk = new Hashtable();
+	    htPk.put(EnvEnviosBean.C_IDINSTITUCION,idInstitucion);
+	    htPk.put(EnvEnviosBean.C_IDENVIO,idEnvio);
+	    EnvEnviosBean envioBean = (EnvEnviosBean)admEnvios.selectByPK(htPk).firstElement();
+        EnvDestinatariosBean beanDestinatario = new EnvDestinatariosBean();
+        beanDestinatario.setIdPersona(new Long("0"));
+    	String pathArchivoGenerado = admEnvios.generarDocumentoEnvioPDFDestinatario(envioBean, beanDestinatario, fPlantilla,tipoArchivoPlantilla,new Hashtable());
+		
+		request.setAttribute("rutaFichero", pathArchivoGenerado);
+		request.setAttribute("generacionOK","OK");
+		return "descarga";
+	}
+	
 }
