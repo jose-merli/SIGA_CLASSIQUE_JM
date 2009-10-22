@@ -15,6 +15,7 @@ public class SIGAAccessObj extends SIGABaseNode implements Serializable, Compara
 	static protected ImageIcon imageiconNone=null;
 
 	public SIGAAccessObj() { }
+	private static final long serialVersionUID = -403250971215465050L;
 
 	public void restoreState()
 	{
