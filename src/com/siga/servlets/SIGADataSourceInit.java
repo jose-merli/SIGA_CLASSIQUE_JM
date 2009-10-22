@@ -4,9 +4,9 @@ package com.siga.servlets;
 // raul.ggonzalez 28-12-2004 Se anhade la inicializacion de visibilidad al init de la clase
 // Luis Miguel Sánchez PIÑA - 24/02/2005 - Se apanhan un poco los mensajes.
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 
+import org.apache.struts.action.ActionServlet;
 import org.apache.struts.config.ModuleConfig;
 
 import com.atos.utils.ClsExceptions;
@@ -16,15 +16,15 @@ import com.siga.Utilidades.SIGAReferences;
 import com.siga.general.CenVisibilidad;
 
 
-public class SIGADataSourceInit extends SIGAServletAdapter {
+public class SIGADataSourceInit extends ActionServlet {
 	private static final long serialVersionUID = 1770505503324002123L;
 	static ModuleConfig moduleConfig = null;
 	
     public SIGADataSourceInit() { }
 
     public void init() throws javax.servlet.ServletException {
-    	super.init(this.getServletConfig());
-
+    	SIGAReferences.initialize(this.getServletContext());
+    	
     	long seg_first =0;
 		long seg_last =0;
 		seg_first=System.currentTimeMillis();
