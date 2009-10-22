@@ -21,7 +21,7 @@ public class SIGASvlUploadFiles extends SIGAServletAdapter {
 	private static int BUFFER_SIZE = 8 * 1024;   
     
 	public void init() throws ServletException {
-		super.init(this.getServletConfig());
+		super.init();
 	}
     public void doPost(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {

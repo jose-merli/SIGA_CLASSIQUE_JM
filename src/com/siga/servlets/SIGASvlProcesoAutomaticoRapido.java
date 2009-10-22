@@ -8,7 +8,6 @@ import java.util.Hashtable;
 import javax.management.InstanceNotFoundException;
 import javax.management.Notification;
 import javax.management.NotificationListener;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 
 import weblogic.management.timer.Timer;
@@ -41,9 +40,9 @@ public class SIGASvlProcesoAutomaticoRapido extends SIGAServletAdapter implement
     static final public String procesoGeneracionEnvio = "SIGASvlProcesoGeneracionEnvio";
     
 	//Global vars
-	public void init(ServletConfig servletConfig) throws ServletException {
-		super.init(servletConfig);
-		
+	public void init() throws ServletException {
+		super.init();
+
 		//ClsLogging.writeFileLogWithoutSession("", 3);
 		//ClsLogging.writeFileLogWithoutSession("", 3);
 		ClsLogging.writeFileLogWithoutSession("<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>", 3);

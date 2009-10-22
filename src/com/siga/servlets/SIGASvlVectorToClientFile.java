@@ -10,7 +10,6 @@ import java.io.OutputStream;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -26,10 +25,6 @@ import com.siga.Utilidades.UtilidadesString;
  */
 public class SIGASvlVectorToClientFile extends HttpServlet {
 	
-	public void init(ServletConfig config) throws ServletException {
-	    super.init(config);
-	  }
-
 	public void doGet(HttpServletRequest request, HttpServletResponse response)	throws ServletException, IOException {
 		doPost(request,response);
 	}

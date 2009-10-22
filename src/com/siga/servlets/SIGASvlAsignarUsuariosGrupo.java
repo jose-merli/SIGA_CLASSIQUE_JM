@@ -194,7 +194,7 @@ public class SIGASvlAsignarUsuariosGrupo extends HttpServlet
 	    }
 	}
 	
-	public void init(ServletConfig cfg) throws javax.servlet.ServletException
+	public void init() throws javax.servlet.ServletException
 	{
 		//System.out.println("Init SIGASvlPermisosAplicacion");
     }

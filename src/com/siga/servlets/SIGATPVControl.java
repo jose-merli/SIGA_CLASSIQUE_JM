@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +16,6 @@ import javax.transaction.UserTransaction;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
-import com.siga.beans.ConsPLFacturacion;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
 import com.siga.beans.FacPagosPorCajaAdm;
@@ -45,13 +43,8 @@ import com.siga.general.PagoTarjeta;
  */
 public class SIGATPVControl extends HttpServlet {
 	
-	public void init(ServletConfig config){		
+	public void init(){		
 		com.atos.utils.ClsLogging.writeFileLog("SIGATVPControl: init()", 1);		
-		try {
-			super.init(config);
-		} catch (Exception e){
-			com.atos.utils.ClsLogging.writeFileLogError("SIGATVPControl: Excepcion en el init()",e, 1);
-		}
 	}
 	
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {

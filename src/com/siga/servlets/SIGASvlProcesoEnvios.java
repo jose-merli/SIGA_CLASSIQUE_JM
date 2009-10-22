@@ -43,13 +43,10 @@ public class SIGASvlProcesoEnvios extends HttpServlet {
     
 // version de una sola llamada
     
-    public void init() throws ServletException {
-
-    }
-
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	doPost(request,response);
     }
+
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //ClsLogging.writeFileLogWithoutSession("", 3);
     	//ClsLogging.writeFileLogWithoutSession("", 3);
@@ -114,14 +111,7 @@ public class SIGASvlProcesoEnvios extends HttpServlet {
    			ClsLogging.writeFileLogWithoutSession(" - Notificación \"" + sNombreProceso + "\" ejecutada ERROR. : " + e.toString() , 3);
    		    e.printStackTrace();
    		}
-
-
-    
     }
-    
-
-    
-    
     
 /* RGG version con timer    
   //Global vars

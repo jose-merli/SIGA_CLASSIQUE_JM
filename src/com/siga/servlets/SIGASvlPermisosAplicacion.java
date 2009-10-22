@@ -118,15 +118,4 @@ public class SIGASvlPermisosAplicacion extends HttpServlet
 	        e.printStackTrace();
 	    }
 	}
-	
-	public void init(ServletConfig cfg) throws javax.servlet.ServletException
-	{
-		//System.out.println("Init SIGASvlPermisosAplicacion");
-    }
-
-
-	public void destroy()
-	{
-		//System.out.println("Destroy SIGASvlPermisosAplicacion");
-	}
 }

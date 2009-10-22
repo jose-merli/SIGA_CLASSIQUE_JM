@@ -32,10 +32,6 @@ public class SIGASvlProcesoRapido extends HttpServlet {
 
     
 // version de una sola llamada
-    
-    public void init() throws ServletException {
-
-    }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	doPost(request,response);

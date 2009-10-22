@@ -10,7 +10,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,8 +38,8 @@ public class SIGASvlChkFolders extends SIGAServletAdapter {
 		doPost(req, res);
 	}
 
-	public void init(ServletConfig cfg) throws javax.servlet.ServletException {
-		super.init(cfg);
+	public void init() throws javax.servlet.ServletException {
+		super.init();
 
 		/**********************************/
 		/*   CHECKING DB PSSC PARAMETERS  */

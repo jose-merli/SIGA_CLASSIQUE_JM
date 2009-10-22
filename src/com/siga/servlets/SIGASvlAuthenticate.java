@@ -7,7 +7,6 @@ import java.sql.Statement;
 import java.util.StringTokenizer;
 
 import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,7 +43,7 @@ public class SIGASvlAuthenticate extends SIGAServletAdapter {
   }
 
   public void init() throws javax.servlet.ServletException {
-    super.init(this.getServletConfig());
+    super.init();
     ReadProperties ldapProperties= new ReadProperties(SIGAReferences.RESOURCE_FILES.LDAP);
     //String LDAPPropertiesFile = cfg.getInitParameter("LDAPPROPERTIESFILE");
 //    ReadProperties ldapProperties=new ReadProperties(LDAPPropertiesFile);

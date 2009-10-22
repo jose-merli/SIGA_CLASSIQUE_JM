@@ -30,9 +30,7 @@ import com.atos.utils.TableConstants;
 
 public class SIGASvlDispatcher extends HttpServlet {
   //static final private String CONTENT_TYPE = "text/html";
-  //Global vars
-  public void init() throws ServletException {
-  }
+
   //Process a HTTP GET request
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     ClsLogging.writeFileLog("GET METHOD Dispatcher",request,3);

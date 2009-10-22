@@ -45,10 +45,7 @@ public class SIGASvlProcesoGeneracionEnvio extends HttpServlet {
 
     
 // version de una sola llamada
-    
-    public void init() throws ServletException {
 
-    }
 
     public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
     	doPost(request,response);

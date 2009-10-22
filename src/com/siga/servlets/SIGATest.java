@@ -18,14 +18,6 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class SIGATest extends HttpServlet {
 
-	public void init(){
-		try {
-			super.init();
-		} catch (Exception e){
-			
-		}
-	}
-	
 	 protected void processRequest(HttpServletRequest request, HttpServletResponse response)
 	 	throws ServletException {
 	 	

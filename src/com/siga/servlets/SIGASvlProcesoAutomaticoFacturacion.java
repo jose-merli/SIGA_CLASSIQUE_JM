@@ -8,7 +8,6 @@ import javax.management.InstanceNotFoundException;
 import javax.management.Notification;
 import javax.management.NotificationListener;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 
 import weblogic.management.timer.Timer;
 
@@ -36,7 +35,8 @@ public class SIGASvlProcesoAutomaticoFacturacion extends SIGAServletAdapter impl
     
   //Global vars
   public void init() throws ServletException {
-	  super.init(this.getServletConfig());
+	  super.init();
+
     //ClsLogging.writeFileLogWithoutSession("", 3);
   	//ClsLogging.writeFileLogWithoutSession("", 3);
     ClsLogging.writeFileLogWithoutSession("<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>", 3);

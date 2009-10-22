@@ -38,51 +38,51 @@ public class SIGASvlProcesoAutomaticoEnvios extends SIGAServletAdapter implement
     
   //Global vars
   public void init() throws ServletException {
-	  super.init(this.getServletConfig());
-    //ClsLogging.writeFileLogWithoutSession("", 3);
-  	//ClsLogging.writeFileLogWithoutSession("", 3);
-    ClsLogging.writeFileLogWithoutSession("<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>", 3);
-    ClsLogging.writeFileLogWithoutSession(" Arrancando Notificaciones JMX.", 3);
+	  super.init();
+	  //ClsLogging.writeFileLogWithoutSession("", 3);
+	  //ClsLogging.writeFileLogWithoutSession("", 3);
+	  ClsLogging.writeFileLogWithoutSession("<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>", 3);
+	  ClsLogging.writeFileLogWithoutSession(" Arrancando Notificaciones JMX.", 3);
 
-    
-    ReadProperties properties= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//    ReadProperties properties=new ReadProperties("SIGA.properties");
-    String sIntervaloAux = properties.returnProperty("envios.programacionAutomatica.tiempo.ciclo");
-    String sIntervalo = sIntervaloAux;
 
-    urlSiga = properties.returnProperty("general.urlSIGA");
-    
-    if (sIntervalo==null || sIntervalo.trim().equals(""))
-    {
-        sIntervalo="0";
-    }
+	  ReadProperties properties= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+	  //    ReadProperties properties=new ReadProperties("SIGA.properties");
+	  String sIntervaloAux = properties.returnProperty("envios.programacionAutomatica.tiempo.ciclo");
+	  String sIntervalo = sIntervaloAux;
 
-    if (sIntervalo.equals("0"))
-    {
-        ClsLogging.writeFileLogWithoutSession("    - Notificación \"" + sNombreProceso + "\" no arrancada.", 3);
-        ClsLogging.writeFileLogWithoutSession("    - Intervalo de ejecución: Erróneo (" + sIntervaloAux + ").", 3);
-    }
+	  urlSiga = properties.returnProperty("general.urlSIGA");
 
-    else
-    {
-        lIntervalo = Long.parseLong(sIntervalo)*60*1000;
+	  if (sIntervalo==null || sIntervalo.trim().equals(""))
+	  {
+		  sIntervalo="0";
+	  }
 
-        timer = new Timer();
-        timer.addNotificationListener(this, null, sNombreProceso);
+	  if (sIntervalo.equals("0"))
+	  {
+		  ClsLogging.writeFileLogWithoutSession("    - Notificación \"" + sNombreProceso + "\" no arrancada.", 3);
+		  ClsLogging.writeFileLogWithoutSession("    - Intervalo de ejecución: Erróneo (" + sIntervaloAux + ").", 3);
+	  }
 
-        Date timerTriggerAt = new Date((new Date()).getTime() + 60000L);
-        idNotificacion = timer.addNotification(sNombreProceso, sNombreProceso, this, timerTriggerAt, lIntervalo);
+	  else
+	  {
+		  lIntervalo = Long.parseLong(sIntervalo)*60*1000;
 
-        timer.start();
+		  timer = new Timer();
+		  timer.addNotificationListener(this, null, sNombreProceso);
 
-        ClsLogging.writeFileLogWithoutSession("    - Notificación \"" + sNombreProceso + "\" arrancada.", 3);
-        ClsLogging.writeFileLogWithoutSession("    - Intervalo de ejecución: " + sIntervalo + " minuto(s).", 3);
-    }
+		  Date timerTriggerAt = new Date((new Date()).getTime() + 60000L);
+		  idNotificacion = timer.addNotification(sNombreProceso, sNombreProceso, this, timerTriggerAt, lIntervalo);
 
-    ClsLogging.writeFileLogWithoutSession(" Notificaciones JMX arrancadas.", 3);
-    ClsLogging.writeFileLogWithoutSession("<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>", 3);
-    //ClsLogging.writeFileLogWithoutSession("", 3);
-    //ClsLogging.writeFileLogWithoutSession("", 3);  	
+		  timer.start();
+
+		  ClsLogging.writeFileLogWithoutSession("    - Notificación \"" + sNombreProceso + "\" arrancada.", 3);
+		  ClsLogging.writeFileLogWithoutSession("    - Intervalo de ejecución: " + sIntervalo + " minuto(s).", 3);
+	  }
+
+	  ClsLogging.writeFileLogWithoutSession(" Notificaciones JMX arrancadas.", 3);
+	  ClsLogging.writeFileLogWithoutSession("<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>", 3);
+	  //ClsLogging.writeFileLogWithoutSession("", 3);
+	  //ClsLogging.writeFileLogWithoutSession("", 3);  	
   }
   
   /* (non-Javadoc)
