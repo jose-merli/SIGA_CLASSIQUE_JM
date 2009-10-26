@@ -115,7 +115,7 @@ public class InformeColegiadosPagos extends MasterReport {
 				vColegiados.add(registro);
 			}else{
 				FcsPagosJGAdm pagosAdm = new FcsPagosJGAdm(usr);
-				vColegiados = pagosAdm.getColegiadosAPagar(institucion,idPago);
+				vColegiados = pagosAdm.getColegiadosInformeCartaPago(institucion,idPago);
 			}
 			
 			File fPdf = null;
@@ -831,11 +831,13 @@ public class InformeColegiadosPagos extends MasterReport {
 			// Porcentajes DEL PAGO
 			StringBuffer buf0 = new StringBuffer();
 			buf0.append("select PA.IMPORTEPAGADO, PA.NOMBRE NOMBRE_PAGO, ");
-			buf0.append("       PA.PORCENTAJEOFICIO PORCENTAJE_TURNOS, ");
-			buf0.append("       PA.PORCENTAJEGUARDIAS PORCENTAJE_ASISTENCIA");
-			buf0.append("  from FCS_PAGOSJG PA");
+			buf0.append("       PA.IMPORTEOFICIO * 100 / FA.IMPORTEOFICIO PORCENTAJE_TURNOS, ");
+			buf0.append("       PA.IMPORTEGUARDIA * 100 / FA.IMPORTEGUARDIA PORCENTAJE_ASISTENCIA");
+			buf0.append("  from FCS_PAGOSJG PA, FCS_FACTURACIONJG FA");
 			buf0.append(" where pa.idinstitucion = "+idInstitucion);
 			buf0.append("   and pa.idpagosjg = " +idPago);
+			buf0.append("   and pa.idinstitucion = fa.idinstitucion");
+			buf0.append("   and pa.idfacturacion = fa.idfacturacion");
 
 			rc = new RowsContainer();
 			rc.find(buf0.toString());
