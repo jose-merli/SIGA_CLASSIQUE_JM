@@ -857,6 +857,14 @@ function replaceAll( text, busca, reemplaza ){
 fin();
 
 
-
-
+/**
+ * Redondea num con dec posiciones decimales
+ * @param num numero a redondear
+ * @param dec posiciones decimales que se quieren obtener
+ * @return num redondeado con dec posiciones decimales
+ */
+function roundNumber(num, dec) {
+	var result = Math.round( Math.round( num * Math.pow( 10, dec + 1 ) ) / Math.pow( 10, 1 ) ) / Math.pow(10,dec);
+	return result;
+}
 
