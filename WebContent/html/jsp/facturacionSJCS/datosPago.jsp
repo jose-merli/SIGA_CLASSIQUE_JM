@@ -85,18 +85,21 @@
 		fechaDesde = pagosBean.getFechaDesde()==null?"":GstDate.getFormatedDateShort(usrbean.getLanguage(),pagosBean.getFechaDesde());
 		fechaHasta = pagosBean.getFechaHasta()==null?"":GstDate.getFormatedDateShort(usrbean.getLanguage(),pagosBean.getFechaHasta());
 		criterioPagoTurno = pagosBean.getCriterioPagoTurno()==null?"":pagosBean.getCriterioPagoTurno();
-		porcentajeOficio = pagosBean.getPorcentajeOficio()==null?"":pagosBean.getPorcentajeOficio().toString();
-		porcentajeGuardias = pagosBean.getPorcentajeGuardias()==null?"":pagosBean.getPorcentajeGuardias().toString();
-		porcentajeEJG = pagosBean.getPorcentajeEJG()==null?"":pagosBean.getPorcentajeEJG().toString();
-		porcentajeSOJ = pagosBean.getPorcentajeSOJ()==null?"":pagosBean.getPorcentajeSOJ().toString();
+		
 		importeOficio = pagosBean.getImporteOficio()==null?"":pagosBean.getImporteOficio().toString();
 		importeGuardias = pagosBean.getImporteGuardia()==null?"":pagosBean.getImporteGuardia().toString();
 		importeEJG = pagosBean.getImporteEJG()==null?"":pagosBean.getImporteEJG().toString();
 		importeSOJ = pagosBean.getImporteSOJ()==null?"":pagosBean.getImporteSOJ().toString();
+		
 		cantidad = pagosBean.getImporteRepartir()==null?"":pagosBean.getImporteRepartir().toString();
 		importePagado = pagosBean.getImportePagado()==null?"":pagosBean.getImportePagado().toString();
 
 		Hashtable conceptos = (Hashtable)request.getAttribute("CONCEPTOS");
+
+		porcentajeOficio = (String)conceptos.get("PORCENTAJEOFICIO");
+		porcentajeGuardias = (String)conceptos.get("PORCENTAJEGUARDIAS");
+		porcentajeEJG = (String)conceptos.get("PORCENTAJEEJG");
+		porcentajeSOJ = (String)conceptos.get("PORCENTAJESOJ");
 
 		importePagado = (String)conceptos.get("TOTALIMPORTEPAGADO");
 		//Datos Oficio
@@ -337,7 +340,7 @@
 		 * Calcula los importes y porcentajes pendientes de cada concepto
 		 */
 		function calcularPendiente(){
-			// actualizo las variables javascript de importe pendiente y porcentaje pendiente 
+			// actualiza las variables javascript de importe pendiente y porcentaje pendiente 
 			// para cada concepto
 			
 			/*alert(totalOficio + " - " + importePagadoOficio + " - " + porcentajePagadoOficio + " - " + 
@@ -556,10 +559,10 @@
 					<td class="labelTextNum" >
 						<% if (!esVerEditar){ %>
 							<input name="radioAPagarOficio" value="importe" type="radio" Checked/>
-							<input name="importeOficio" id="importeOficio" style="width:50%" class="<%=estiloNumber%>" onblur="actualizaConcepto('Oficio', totalOficio, importePendOficio, porcentajePendOficio);" onfocus="backup('Oficio', 0)" />						
+							<input name="importeOficio" id="importeOficio" style="width:50%" class="<%=estiloNumber%>" onblur="actualizaConcepto('Oficio', totalOficio, importePendOficio, porcentajePendOficio);" onfocus="backup('importeOficio')" />						
 							<span style="vertical-align:40%">&euro;	&nbsp;</span>
 						  	<input name="radioApagarOficio" value="porcentaje" type="radio" />
-							<input name="porcentajeOficio" id="porcentajeOficio" style="width:15%" maxlength="5" class="<%=estiloNumber%>" onblur="actualizaConcepto('Oficio', totalOficio, importePendOficio, porcentajePendOficio);"	onfocus="backup('Oficio', 1);" />						
+							<input name="porcentajeOficio" id="porcentajeOficio" style="width:15%" maxlength="5" class="<%=estiloNumber%>" onblur="actualizaConcepto('Oficio', totalOficio, importePendOficio, porcentajePendOficio);"	onfocus="backup('porcentajeOficio');" />						
 							<span style="vertical-align:40%">&#37;</span>
 						<% } else {%>
 							<input name="txtAPagarOficio" id="txtAPagarOficio" style="width:100%" class="boxConsultaNumber"/>
@@ -585,12 +588,12 @@
 					<td class="labelTextNum" >
 						<% if (!esVerEditar){ %>
 							<input name="radioAPagarGuardias" value="importe" type="radio" Checked/>
-							<input name="importeGuardias" id="importeGuardias" style="width:50%" class="<%=estiloNumber%>" onblur="actualizaConcepto('Guardias', totalGuardias, importePendGuardias, porcentajePendGuardias);" onfocus="backup('Guardias', 0);" />						
+							<input name="importeGuardias" id="importeGuardias" style="width:50%" class="<%=estiloNumber%>" onblur="actualizaConcepto('Guardias', totalGuardias, importePendGuardias, porcentajePendGuardias);" onfocus="backup('importeGuardias');" />						
 							<span style="vertical-align:40%">&euro;	&nbsp;</span>
 						  	<input name="radioAPagarGuardias" value="porcentaje" type="radio" />
 							<input name="porcentajeGuardias" id="porcentajeGuardias" style="width:15%" maxlength="5" class="<%=estiloNumber%>"  									
 										onblur="actualizaConcepto('Guardias', totalGuardias, importePendGuardias, porcentajePendGuardias);"
-										onfocus="backup('Guardias', 1);" />						
+										onfocus="backup('porcentajeGuardias');" />						
 							<span style="vertical-align:40%">&#37;</span>
 						<% } else {%>
 							<input name="txtAPagarGuardias" id="txtAPagarGuardias" size="18" class="boxConsultaNumber"/>
@@ -616,10 +619,10 @@
 					<td class="labelTextNum" >
 						<% if (!esVerEditar){ %>
 							<input name="radioAPagarEJG" value="importe" type="radio" Checked/>
-							<input name="importeEJG" id="importeEJG" style="width:50%" class="<%=estiloNumber%>" onblur="actualizaConcepto('EJG', totalEJG, importePendEJG, porcentajePendEJG);" onfocus="backup('EJG', 0);" />						
+							<input name="importeEJG" id="importeEJG" style="width:50%" class="<%=estiloNumber%>" onblur="actualizaConcepto('EJG', totalEJG, importePendEJG, porcentajePendEJG);" onfocus="backup('importeEJG');" />						
 							<span style="vertical-align:40%">&euro;	&nbsp;</span>
 						  	<input name="radioAPagarEJG" value="porcentaje" type="radio" />
-							<input name="porcentajeEJG" id="porcentajeEJG" style="width:15%" maxlength="5" class="<%=estiloNumber%>" onblur="actualizaConcepto('EJG', totalEJG, importePendEJG, porcentajePendEJG);" onfocus="backup('EJG', 1);" />						
+							<input name="porcentajeEJG" id="porcentajeEJG" style="width:15%" maxlength="5" class="<%=estiloNumber%>" onblur="actualizaConcepto('EJG', totalEJG, importePendEJG, porcentajePendEJG);" onfocus="backup('porcentajeEJG');" />						
 							<span style="vertical-align:40%">&#37;</span>
 						<% } else {%>
 							<input name="txtAPagarEJG" id="txtAPagarEJG" size="18" class="boxConsultaNumber"/>
@@ -645,10 +648,10 @@
 					<td class="labelTextNum" >
 						<% if (!esVerEditar){ %>
 							<input name="radioAPagarSOJ" value="importe" type="radio" Checked/>
-							<input name="importeSOJ" id="importeSOJ" style="width:50%" class="<%=estiloNumber%>" onblur="actualizaConcepto('SOJ', totalSOJ, importePendSOJ, porcentajePendSOJ);" onfocus="backup('SOJ', 0);" />						
+							<input name="importeSOJ" id="importeSOJ" style="width:50%" class="<%=estiloNumber%>" onblur="actualizaConcepto('SOJ', totalSOJ, importePendSOJ, porcentajePendSOJ);" onfocus="backup('importeSOJ');" />						
 							<span style="vertical-align:40%">&euro;	&nbsp;</span>
 						  	<input name="radioAPagarSOJ" value="porcentaje" type="radio" />
-							<input name="porcentajeSOJ" id="porcentajeSOJ" style="width:15%" maxlength="5" class="<%=estiloNumber%>" onblur="actualizaConcepto('SOJ', totalSOJ, importePendSOJ, porcentajePendSOJ);" onfocus="backup('SOJ', 1);" />						
+							<input name="porcentajeSOJ" id="porcentajeSOJ" style="width:15%" maxlength="5" class="<%=estiloNumber%>" onblur="actualizaConcepto('SOJ', totalSOJ, importePendSOJ, porcentajePendSOJ);" onfocus="backup('porcentajeSOJ');" />						
 							<span style="vertical-align:40%">&#37;</span>
 						<% } else {%>
 							<input name="txtAPagarSOJ" id="txtAPagarSOJ" size="18" class="boxConsultaNumber"/>
@@ -723,7 +726,7 @@
 			document.forms[0].importeFacturado.value=document.forms[0].importeFacturado.value.replace(/,/,".");
 
 			//Convierte los importes y porcentajes de cada concepto
-			var conceptos = new Array(4)
+			var conceptos = new Array(4);
 			conceptos[0] = 'Oficio'; conceptos[1] = 'Guardias';
 			conceptos[2] = 'EJG'; conceptos[3] = 'SOJ';
 			for (i=0;i<4;i++){
@@ -807,13 +810,9 @@
 		/**
 		 * Guarda el valor de un input en una variable.
 		 * Esta funcion se llama cuando se entra en cada uno de los inputs "a pagar"
-		 * concepto (Oficio, Turno, EJG, SOJ)
-		 * tipo (importe, porcentaje)
 		 */
-		function backup(concepto, tipo){
-			var radio = document.getElementsByName("radioAPagar"+concepto)[tipo];
-			if (radio.checked)
-				backupAPagar = document.getElementById("importe"+concepto).value;
+		function backup(valor){
+			backupAPagar = document.getElementById(valor).value;
 		}
 
 		
@@ -855,14 +854,14 @@
 			porcentajeRestante = parseFloat(importeRestante * 100 / total);	
 
 			//si el porcentaje restante es menor que 1, se sustituye el importe a pagar 
-			//por el importe pendiente y se recalcula todo	
-			if (porcentajeRestante < 1 && porcentajeRestante > 0){
+			//por el importe pendiente y se actualiza el importe restante
+			if ( porcentajeRestante < 1 && porcentajeRestante > 0 ){
 				document.getElementById("importe"+concepto).value = importePendiente;	
-				document.getElementById("porcentaje"+concepto).value = porcentajePendiente;							
-				actualizaConcepto(concepto, total, importePendiente, porcentajePendiente);
-				return;
-			}	
-			
+				document.getElementById("porcentaje"+concepto).value = porcentajePendiente;	
+				importeRestante = 0;
+				porcentajeRestante = 0;	
+			}
+
 			document.getElementById("txtRestante"+concepto).value = convertirAFormato(new String(importeRestante)) + "\u20AC (" + convertirAFormato(new String(porcentajeRestante)) + "%)";
 		}
 
