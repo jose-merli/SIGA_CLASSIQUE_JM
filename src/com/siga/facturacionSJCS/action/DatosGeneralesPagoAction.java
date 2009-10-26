@@ -10,9 +10,7 @@
 package com.siga.facturacionSJCS.action;
 
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.StringTokenizer;
@@ -32,6 +30,7 @@ import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.GestorContadores;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenColegiadoAdm;
@@ -231,11 +230,20 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			//Creamos una clausula where que nos servirá para consultar por idPagosJG e idInstitucion
 			String where = " where "+FcsPagosJGBean.C_IDINSTITUCION+"="+ idInstitucion +" and "+FcsPagosJGBean.C_IDPAGOSJG+"="+ idPagosJG + " ";
 
-			//Traemos de base de datos la factura seleccionada, con los datos recogidos de la pestanha
+			//Traemos de base de datos el pago seleccionado, con los datos recogidos de la pestanha
 			Vector registros = pagosAdm.select(where);
 			pagosBean = (FcsPagosJGBean)registros.get(0);
 			registroOriginal = pagosAdm.beanToHashTable(pagosBean);
 
+			//Recupera la facturacion para saber el importe total de cada concepto
+			//y poder calcular los porcentajes parciales pagados hasta el momento
+			FcsFacturacionJGAdm factJGAdm = new FcsFacturacionJGAdm(usr);
+			Hashtable hashFact = new Hashtable();
+			hashFact.put(FcsFacturacionJGBean.C_IDINSTITUCION, idInstitucion);
+			hashFact.put(FcsFacturacionJGBean.C_IDFACTURACION, pagosBean.getIdFacturacion().toString());
+			registros = factJGAdm.selectByPK(hashFact);
+			FcsFacturacionJGBean factJGBean = (FcsFacturacionJGBean)registros.get(0);
+			
 			//Tratamiento de los importes:
 			//IMPORTE REPARTIR:
 			registroOriginal.put(FcsPagosJGBean.C_IMPORTEREPARTIR, UtilidadesString.tratarImporte(pagosBean.getImporteRepartir()));
@@ -246,14 +254,20 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			registroOriginal.put(FcsPagosJGBean.C_IMPORTESOJ, UtilidadesString.tratarImporte(pagosBean.getImporteSOJ()));
 			registroOriginal.put(FcsPagosJGBean.C_IMPORTEOFICIO, UtilidadesString.tratarImporte(pagosBean.getImporteOficio()));
 			registroOriginal.put(FcsPagosJGBean.C_IMPORTEGUARDIA, UtilidadesString.tratarImporte(pagosBean.getImporteGuardia()));
-			registroOriginal.put(FcsPagosJGBean.C_PORCENTAJEEJG, UtilidadesString.tratarImporte(pagosBean.getPorcentajeEJG()));
-			registroOriginal.put(FcsPagosJGBean.C_PORCENTAJESOJ, UtilidadesString.tratarImporte(pagosBean.getPorcentajeSOJ()));
-			registroOriginal.put(FcsPagosJGBean.C_PORCENTAJEOFICIO, UtilidadesString.tratarImporte(pagosBean.getPorcentajeOficio()));
-			registroOriginal.put(FcsPagosJGBean.C_PORCENTAJEGUARDIAS, UtilidadesString.tratarImporte(pagosBean.getPorcentajeGuardias()));
 			registroOriginal.put(FcsPagosJGBean.C_IMPORTEMINIMO, UtilidadesString.tratarImporte(pagosBean.getImporteMinimo()));
 			
 			// Recupera los importes totales y pendientes de cada concepto del pago
 			Hashtable hashConceptos = pagosAdm.getConceptosPendientesYTotal(new Integer(idInstitucion),pagosBean.getIdFacturacion());
+			//Los porcentajes se calculan en funcion del total facturado y el importe parcial de cada pago
+			Double porcentajeEJG = UtilidadesNumero.redondea(pagosBean.getImporteEJG() * 100 / Double.valueOf(factJGBean.getImporteEJG()), 2);
+			hashConceptos.put("PORCENTAJEEJG", UtilidadesString.tratarImporte(porcentajeEJG));
+			Double porcentajeSOJ = UtilidadesNumero.redondea(pagosBean.getImporteSOJ() * 100 / Double.valueOf(factJGBean.getImporteSOJ()), 2);
+			hashConceptos.put("PORCENTAJESOJ", UtilidadesString.tratarImporte(porcentajeSOJ));
+			Double porcentajeOficio = UtilidadesNumero.redondea(pagosBean.getImporteOficio() * 100 / Double.valueOf(factJGBean.getImporteOficio()), 2);
+			hashConceptos.put("PORCENTAJEOFICIO", UtilidadesString.tratarImporte(porcentajeOficio));
+			Double porcentajeGuardias = UtilidadesNumero.redondea(pagosBean.getImporteGuardia() * 100 / Double.valueOf(factJGBean.getImporteGuardia()), 2);
+			hashConceptos.put("PORCENTAJEGUARDIAS", UtilidadesString.tratarImporte(porcentajeGuardias));
+			
 			request.setAttribute("CONCEPTOS",hashConceptos);
 			
 			//Recuperamos el estado, la fecha y el id del estado del pago:
@@ -279,18 +293,9 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			//Importe Facturado:
 			importeFacturado = ((FcsFacturacionJGBean)(facturacionAdm.select(where).get(0))).getImporteTotal().toString();
 			
-			//Actualizamos el criterio:
-//			miform.setCriterioPago(pagosBean.getCriterioPago());
+			//Actualiza el criterio
 			miform.setCriterioPagoTurno(pagosBean.getCriterioPagoTurno());
 			
-			//Actualizamos el criterio de valor de facturacion (para saber si recuperamos los puntos de cuando 
-			// hicimos la factura o del momento del pago):			
-//			if (pagosBean.getValoresFacturacion()==null || pagosBean.getValoresFacturacion().equals(ClsConstants.DB_FALSE))
-//				valoresFacturacion = null;//ClsConstants.DB_FALSE;
-//			else
-//				valoresFacturacion = ClsConstants.DB_TRUE;
-//			miform.setValoresFacturacion(valoresFacturacion);
-
 			//COnsultamos el Parámetro COBRO AUTOMATICO
 			//para el caso de que se quiera Cerrar el Pago
 			//y lo pasamos por la request
@@ -606,13 +611,8 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			nombreInstitucion = (String)institucionAdm.getNombreInstitucion(usr.getLocation().toString());
 
 			//Seleccionamos el Criterio de Pago por Facturacion:
-//			miform.setCriterioPago(ClsConstants.CRITERIOS_PAGO_FACTURACION);
 			miform.setCriterioPagoTurno(ClsConstants.CRITERIOS_PAGO_FACTURACION);
-			
-			//Seleccionamos el criterio de valor de facturacion (para saber si recuperamos los puntos de cuando 
-			// hicimos la factura o del momento del pago): por defecto seleccionado.
-//			miform.setValoresFacturacion(ClsConstants.DB_TRUE);
-			
+					
 			//pasamos por el request el modo y el nombre De la institucion
 			request.setAttribute("modo","insertarPago");
 			request.setAttribute("accion",accion);
@@ -695,7 +695,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 		//Hitos y Grupos de Pagos y Facturas:
 		FcsPagoGrupoFactHitoAdm pagoGrupoAdm = new FcsPagoGrupoFactHitoAdm(this.getUserBean(request));
 		FcsFactGrupoFactHitoAdm factGrupoAdm = new FcsFactGrupoFactHitoAdm(this.getUserBean(request));
-		
+
 		UsrBean usr;
 		String forward="";
 		DatosGeneralesPagoForm miform = (DatosGeneralesPagoForm)formulario;
@@ -704,120 +704,101 @@ public class DatosGeneralesPagoAction extends MasterAction {
 		UserTransaction tx = null;
 		FcsFacturacionJGBean factBean;
 		Vector vCriterios;
-		
+
 		try 
 		{
 			usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 			tx = usr.getTransaction();
 			String idInstitucion = miform.getIdInstitucion();
-			
+
 			//Chequeamos que no exista ningun pago con estado distinto a cerrado para esa facturacion:
 			if (pagosAdm.hayEstadoPagoNoCerrados(idInstitucion,miform.getIdFacturacion()))
 				forward = exito("messages.factSJCS.error.existePagoAbierto",request);
 			else {
-				//Chequeamos que el importe + facturado > pagado:
-				//if (pagosAdm.excedePagoFacturacion(idInstitucion,miform.getIdFacturacion(),Double.valueOf(miform.getImporteRepartir()).doubleValue()))
-				//	forward = exito("messages.factSJCS.error.pagoExcedido",request);
-				//else {
-					//Consulto las fechas de la facturacion:
-					where = " WHERE " + FcsFacturacionJGBean.C_IDINSTITUCION + "=" + idInstitucion+
-							" AND "   + FcsFacturacionJGBean.C_IDFACTURACION + "=" + miform.getIdFacturacion();						
-					factBean = (FcsFacturacionJGBean)facturacionAdm.select(where).get(0);
-					
-					//1. INSERTAMOS EL PAGO:
-					//preparamos el nuevo registro del pago:
-					registro = new Hashtable();
-					registro.put(FcsPagosJGBean.C_IDINSTITUCION, idInstitucion);
-					idPagosJG = pagosAdm.getNuevoId(idInstitucion);
-					registro.put(FcsPagosJGBean.C_IDPAGOSJG, idPagosJG);
-					registro.put(FcsPagosJGBean.C_IDFACTURACION, miform.getIdFacturacion());
-					registro.put(FcsPagosJGBean.C_NOMBRE, miform.getNombre());
-					registro.put(FcsPagosJGBean.C_ABREVIATURA, miform.getAbreviatura());
-					registro.put(FcsPagosJGBean.C_FECHADESDE, GstDate.getApplicationFormatDate(usr.getLanguage(),GstDate.getFormatedDateShort(usr.getLanguage(),factBean.getFechaDesde())));
-					registro.put(FcsPagosJGBean.C_FECHAHASTA, GstDate.getApplicationFormatDate(usr.getLanguage(),GstDate.getFormatedDateShort(usr.getLanguage(),factBean.getFechaHasta())));
-//					registro.put(FcsPagosJGBean.C_CRITERIOPAGO, miform.getCriterioPago());
-					registro.put(FcsPagosJGBean.C_CRITERIOPAGOTURNO, miform.getCriterioPagoTurno());
-					registro.put(FcsPagosJGBean.C_PORCENTAJEOFICIO, tratarValor(miform.getPorcentajeOficio()));
-					registro.put(FcsPagosJGBean.C_PORCENTAJEGUARDIAS,  tratarValor(miform.getPorcentajeGuardias()));
-					registro.put(FcsPagosJGBean.C_PORCENTAJEEJG,  tratarValor(miform.getPorcentajeEJG()));
-					registro.put(FcsPagosJGBean.C_PORCENTAJESOJ,  tratarValor(miform.getPorcentajeSOJ()));
-					//Tratamiento de los importes:
-					registro.put(FcsPagosJGBean.C_IMPORTEREPARTIR, new Double(miform.getImporteRepartir()));
-					registro.put(FcsPagosJGBean.C_IMPORTEPAGADO, miform.getImportePagado());
-					registro.put(FcsPagosJGBean.C_CONTABILIZADO, "0");
-					
-					GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request));
-					String paramConcepto = paramAdm.getValor(idInstitucion, "FCS", "CONCEPTO_ABONO", "");
-					if (!paramConcepto.equalsIgnoreCase("1")&&!paramConcepto.equalsIgnoreCase("8")&&!paramConcepto.equalsIgnoreCase("9")){
-						throw new SIGAException("administracion.parametrosGenerales.error.conceptoAbono");
-					}
-					registro.put(FcsPagosJGBean.C_CONCEPTO, paramConcepto);
-					registro.put(FcsPagosJGBean.C_BANCOS_CODIGO, paramAdm.getValor(idInstitucion, "FCS", "BANCOS_CODIGO_ABONO", "")); 
-					
-					UtilidadesHash.set(registro, FcsPagosJGBean.C_IMPORTEMINIMO, 	new Double(0));
-					UtilidadesHash.set(registro, FcsPagosJGBean.C_IMPORTEEJG, 		tratarValor((miform.getImporteEJG())));
-					UtilidadesHash.set(registro, FcsPagosJGBean.C_IMPORTEGUARDIA, 	tratarValor(miform.getImporteGuardias()));
-					UtilidadesHash.set(registro, FcsPagosJGBean.C_IMPORTEOFICIO, 	tratarValor(miform.getImporteOficio()));
-					UtilidadesHash.set(registro, FcsPagosJGBean.C_IMPORTESOJ, 		tratarValor(miform.getImporteSOJ()));
-					
-					
-//					if (miform.getValoresFacturacion() == null || miform.getValoresFacturacion().equals(ClsConstants.DB_FALSE))
-//						valoresFacturacion = ClsConstants.DB_FALSE;
-//					else
-//						valoresFacturacion = ClsConstants.DB_TRUE;
-//					miform.setValoresFacturacion(valoresFacturacion);
-//					registro.put(FcsPagosJGBean.C_VALORESFACTURACION, valoresFacturacion);
+				//Consulto las fechas de la facturacion:
+				where = " WHERE " + FcsFacturacionJGBean.C_IDINSTITUCION + "=" + idInstitucion+
+				" AND "   + FcsFacturacionJGBean.C_IDFACTURACION + "=" + miform.getIdFacturacion();						
+				factBean = (FcsFacturacionJGBean)facturacionAdm.select(where).get(0);
 
-					//insertamos:
-					tx.begin();
-					pagosAdm.insert(registro);
-					//Almacenamos en sesion el bean del pago:
-					request.getSession().setAttribute("DATABACKUP",registro);
-					
-					//Insercion del estado del registro como abierto:
-					registro = new Hashtable();
-					registro.put(FcsPagosEstadosPagosBean.C_IDINSTITUCION,idInstitucion);
-					registro.put(FcsPagosEstadosPagosBean.C_IDPAGOSJG,idPagosJG);
-					idEstadoPagosJG = ClsConstants.ESTADO_PAGO_ABIERTO;
-					registro.put(FcsPagosEstadosPagosBean.C_IDESTADOPAGOSJG,idEstadoPagosJG);
-					registro.put(FcsPagosEstadosPagosBean.C_FECHAESTADO,"SYSDATE");
-					registro.put(FcsPagosEstadosPagosBean.C_USUMODIFICACION,usr.getUserName());
-					registro.put(FcsPagosEstadosPagosBean.C_FECHAMODIFICACION,"SYSDATE");
-					//insertamos:
-					estadoPagosAdm.insert(registro);
-					
-					//2. INSERTAMOS EL CRITERIO DE PAGO:
-					//Preparamos el nuevo registro del pago:
-					where = " WHERE "+FcsFactGrupoFactHitoBean.C_IDINSTITUCION+"="+idInstitucion+
-						    " AND "+FcsFactGrupoFactHitoBean.C_IDFACTURACION+"="+miform.getIdFacturacion();				
-					vCriterios = factGrupoAdm.select(where);
-					for (int i=0; i < vCriterios.size();i++) {
-						FcsFactGrupoFactHitoBean bean = (FcsFactGrupoFactHitoBean)vCriterios.get(i);
-						registro = new Hashtable();
-						registro.put(FcsPagoGrupoFactHitoBean.C_IDINSTITUCION, idInstitucion);
-						registro.put(FcsPagoGrupoFactHitoBean.C_IDPAGOSJG, idPagosJG);
-						registro.put(FcsPagoGrupoFactHitoBean.C_IDHITOGENERAL, bean.getIdHitoGeneral().toString());
-						registro.put(FcsPagoGrupoFactHitoBean.C_IDGRUPOFACTURACION, bean.getIdGrupoFacturacion().toString());				
-						//Primero borramos el posible registro:
-						pagoGrupoAdm.delete(registro);				
-						//Luego Insertamos:
-						registro.put(FcsPagoGrupoFactHitoBean.C_USUMODIFICACION, usr.getUserName());
-						registro.put(FcsPagoGrupoFactHitoBean.C_FECHAMODIFICACION, "sysdate");
-						pagoGrupoAdm.insert(registro);
-					}
-					
-					//Actualizamos el criterio:
-//					miform.setCriterioPago(miform.getCriterioPago());
-					tx.commit();
+				//1. INSERTAMOS EL PAGO:
+				//preparamos el nuevo registro del pago:
+				registro = new Hashtable();
+				registro.put(FcsPagosJGBean.C_IDINSTITUCION, idInstitucion);
+				idPagosJG = pagosAdm.getNuevoId(idInstitucion);
+				registro.put(FcsPagosJGBean.C_IDPAGOSJG, idPagosJG);
+				registro.put(FcsPagosJGBean.C_IDFACTURACION, miform.getIdFacturacion());
+				registro.put(FcsPagosJGBean.C_NOMBRE, miform.getNombre());
+				registro.put(FcsPagosJGBean.C_ABREVIATURA, miform.getAbreviatura());
+				registro.put(FcsPagosJGBean.C_FECHADESDE, GstDate.getApplicationFormatDate(usr.getLanguage(),GstDate.getFormatedDateShort(usr.getLanguage(),factBean.getFechaDesde())));
+				registro.put(FcsPagosJGBean.C_FECHAHASTA, GstDate.getApplicationFormatDate(usr.getLanguage(),GstDate.getFormatedDateShort(usr.getLanguage(),factBean.getFechaHasta())));
+				registro.put(FcsPagosJGBean.C_CRITERIOPAGOTURNO, miform.getCriterioPagoTurno());
+				//Tratamiento de los importes:
+				registro.put(FcsPagosJGBean.C_IMPORTEREPARTIR, new Double(miform.getImporteRepartir()));
+				registro.put(FcsPagosJGBean.C_IMPORTEPAGADO, miform.getImportePagado());
+				registro.put(FcsPagosJGBean.C_CONTABILIZADO, "0");
 
-					//Paso los parametros al jsp del refresco especifico para este caso de uso:
-					request.setAttribute("mensaje","messages.inserted.success"); 
-					request.setAttribute("modo","abrirAvanzada");					
-					request.setAttribute("idPagosJG",idPagosJG);
-					request.setAttribute("idInstitucion",idInstitucion);
-					forward = "exitoInsertarPago";						
+				GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request));
+				String paramConcepto = paramAdm.getValor(idInstitucion, "FCS", "CONCEPTO_ABONO", "");
+				if (!paramConcepto.equalsIgnoreCase("1")&&!paramConcepto.equalsIgnoreCase("8")&&!paramConcepto.equalsIgnoreCase("9")){
+					throw new SIGAException("administracion.parametrosGenerales.error.conceptoAbono");
 				}
-			//}
+				registro.put(FcsPagosJGBean.C_CONCEPTO, paramConcepto);
+				registro.put(FcsPagosJGBean.C_BANCOS_CODIGO, paramAdm.getValor(idInstitucion, "FCS", "BANCOS_CODIGO_ABONO", "")); 
+
+				UtilidadesHash.set(registro, FcsPagosJGBean.C_IMPORTEMINIMO, 	new Double(0));
+				UtilidadesHash.set(registro, FcsPagosJGBean.C_IMPORTEEJG, 		tratarValor((miform.getImporteEJG())));
+				UtilidadesHash.set(registro, FcsPagosJGBean.C_IMPORTEGUARDIA, 	tratarValor(miform.getImporteGuardias()));
+				UtilidadesHash.set(registro, FcsPagosJGBean.C_IMPORTEOFICIO, 	tratarValor(miform.getImporteOficio()));
+				UtilidadesHash.set(registro, FcsPagosJGBean.C_IMPORTESOJ, 		tratarValor(miform.getImporteSOJ()));
+
+				//insertamos:
+				tx.begin();
+				pagosAdm.insert(registro);
+				//Almacenamos en sesion el bean del pago:
+				request.getSession().setAttribute("DATABACKUP",registro);
+
+				//Insercion del estado del registro como abierto:
+				registro = new Hashtable();
+				registro.put(FcsPagosEstadosPagosBean.C_IDINSTITUCION,idInstitucion);
+				registro.put(FcsPagosEstadosPagosBean.C_IDPAGOSJG,idPagosJG);
+				idEstadoPagosJG = ClsConstants.ESTADO_PAGO_ABIERTO;
+				registro.put(FcsPagosEstadosPagosBean.C_IDESTADOPAGOSJG,idEstadoPagosJG);
+				registro.put(FcsPagosEstadosPagosBean.C_FECHAESTADO,"SYSDATE");
+				registro.put(FcsPagosEstadosPagosBean.C_USUMODIFICACION,usr.getUserName());
+				registro.put(FcsPagosEstadosPagosBean.C_FECHAMODIFICACION,"SYSDATE");
+				//insertamos:
+				estadoPagosAdm.insert(registro);
+
+				//2. INSERTAMOS EL CRITERIO DE PAGO:
+				//Preparamos el nuevo registro del pago:
+				where = " WHERE "+FcsFactGrupoFactHitoBean.C_IDINSTITUCION+"="+idInstitucion+
+				" AND "+FcsFactGrupoFactHitoBean.C_IDFACTURACION+"="+miform.getIdFacturacion();				
+				vCriterios = factGrupoAdm.select(where);
+				for (int i=0; i < vCriterios.size();i++) {
+					FcsFactGrupoFactHitoBean bean = (FcsFactGrupoFactHitoBean)vCriterios.get(i);
+					registro = new Hashtable();
+					registro.put(FcsPagoGrupoFactHitoBean.C_IDINSTITUCION, idInstitucion);
+					registro.put(FcsPagoGrupoFactHitoBean.C_IDPAGOSJG, idPagosJG);
+					registro.put(FcsPagoGrupoFactHitoBean.C_IDHITOGENERAL, bean.getIdHitoGeneral().toString());
+					registro.put(FcsPagoGrupoFactHitoBean.C_IDGRUPOFACTURACION, bean.getIdGrupoFacturacion().toString());				
+					//Primero borramos el posible registro:
+					pagoGrupoAdm.delete(registro);				
+					//Luego Insertamos:
+					registro.put(FcsPagoGrupoFactHitoBean.C_USUMODIFICACION, usr.getUserName());
+					registro.put(FcsPagoGrupoFactHitoBean.C_FECHAMODIFICACION, "sysdate");
+					pagoGrupoAdm.insert(registro);
+				}
+
+				//Actualizamos el criterio:
+				tx.commit();
+
+				//Paso los parametros al jsp del refresco especifico para este caso de uso:
+				request.setAttribute("mensaje","messages.inserted.success"); 
+				request.setAttribute("modo","abrirAvanzada");					
+				request.setAttribute("idPagosJG",idPagosJG);
+				request.setAttribute("idInstitucion",idInstitucion);
+				forward = "exitoInsertarPago";						
+			}
 		} 
 		catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,tx); 
