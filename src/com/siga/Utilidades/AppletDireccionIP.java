@@ -11,10 +11,11 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import netscape.javascript.JSObject; 
 
-
 //Applet para obtener la IP del CLiente y enviarla a un Servlet que la inserta en Sesion con el nombre "IPCLIENTE".
 public class AppletDireccionIP extends Applet {
 
+	private static final long serialVersionUID = 1538230694419253136L;
+	
 	private String direccionIP = "";
 	
 	public void init(){ 
