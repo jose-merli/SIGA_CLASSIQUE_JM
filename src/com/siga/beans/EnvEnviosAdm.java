@@ -5394,10 +5394,26 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    } catch (Exception e) {}
 
 	}
-    
-	
-}
+	}
 
+  
+    public Vector getDireccionEspecifica(String idInstitucion,String idPersona,String idDireccion,String idTipoEnvio)
+    		throws ClsExceptions{
+
+    	
+		Vector direcciones = new Vector();
+		CenDireccionesAdm direccionesAdm = new CenDireccionesAdm(this.usrbean);
+		
+		// primero buscamos el iddireccion por tipo de direccion. SI no existe buscamos con el criterio anterior.
+		Vector vDir = direccionesAdm.getDireccionEspecificaConTipo(idInstitucion, idPersona, idDireccion, idTipoEnvio);
+		if (vDir!=null && vDir.size()>0) {
+			return vDir;
+		} else {		
+			return getDirecciones(idInstitucion, idPersona, idTipoEnvio);
+		}
+	}
+
+	
 
 
 

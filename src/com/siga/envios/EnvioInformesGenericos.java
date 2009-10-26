@@ -109,7 +109,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 		//Velores comunes para la obttencion de los datos del informe
 		String idTipoInforme = (String) datosInforme.get("idTipoInforme");
-
+		
 		String idioma = (String) datosInforme.get("idioma");
 
 		if (idTipoInforme.equals(EnvioInformesGenericos.comunicacionesCenso)) {
@@ -257,6 +257,8 @@ public class EnvioInformesGenericos extends MasterReport {
 			String idInstitucion = (String)datosInforme.get("idInstitucion");
 			String idInstitucionTipoExp = (String)datosInforme.get("idInstitucionTipoExp");
     		String idTipoExp = (String)datosInforme.get("idTipoExp");
+			String aSolicitantes = (String) datosInforme.get("aSolicitantes");
+			boolean isSolicitantes = aSolicitantes!=null && aSolicitantes.equalsIgnoreCase("S");
 			
 			String anio = (String)datosInforme.get("anioExpediente");
 			
@@ -267,7 +269,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			
 			ExpExpedienteAdm expedienteAdm = new ExpExpedienteAdm (usrBean);
 			Vector vDatosInformeFinal = expedienteAdm.getDatosInformeExpediente(idInstitucion, idInstitucionTipoExp, 
-					idTipoExp, anio, numero, idPersona, true);
+					idTipoExp, anio, numero, idPersona, true, isSolicitantes);
 
 			htDatosInforme.put("row", vDatosInformeFinal);
 		}
@@ -552,8 +554,7 @@ public class EnvioInformesGenericos extends MasterReport {
 				envio.generarComunicacionMoroso(destProgramInfBean.getIdPersona().toString(),
 						vDocumentos,alFacturas,programInfBean.getIdInstitucion().toString(),
 						enviosBean.getDescripcion());
-			}
-
+			} 
 
 			if (htPersonas.containsKey(idPersona)) {
 				Vector vAuxDocumentos = (Vector) htPersonas.get(idPersona);
@@ -759,6 +760,18 @@ public class EnvioInformesGenericos extends MasterReport {
 		return vPlantillas;
 
 	}
+	
+	public boolean esAlgunaASolicitantes(Vector plantillas) throws ClsExceptions, SIGAException {
+
+		for (int i = 0; i < plantillas.size(); i++) {
+			AdmInformeBean plantillaInforme = (AdmInformeBean)plantillas.get(i);
+			if (plantillaInforme.getASolicitantes().equals("S")) {
+				return true;
+			}
+		}
+		return false;
+
+	}	
 	/**
 	 * Metodo que nos convierte una cadena de caracteres separados(pepe||juan||pedro)
 	 *  por un string en un vector de datos([pepe,juan,pedro])
@@ -1278,13 +1291,14 @@ public class EnvioInformesGenericos extends MasterReport {
 
 		// obtener fechaProgramada
 		String fechaProgramada = getFechaProgramada(form.getFechaProgramada(), locale, userBean);
-
+		EnvEnviosAdm envioAdm = new EnvEnviosAdm(userBean);
 
 		enviosBean.setIdInstitucion(Integer.valueOf(idInstitucion));
 
 		if(isEnvioUnico){
 			//String idEnvio = form.getIdEnvio();
-			enviosBean.setIdEnvio(Integer.valueOf(form.getIdEnvio()));
+			//enviosBean.setIdEnvio(Integer.valueOf(form.getIdEnvio()));
+			enviosBean.setIdEnvio(envioAdm.getNewIdEnvio(idInstitucion));
 		}
 
 
@@ -1887,8 +1901,6 @@ public class EnvioInformesGenericos extends MasterReport {
 
 		MasterReport masterReport = new  MasterReport(); 
 		Vector vCampos = masterReport.obtenerDatosFormulario(form);
-		//Tenemos que obtener el letrado de la designa ya que no se saca en la query del
-		//paginador(¡¡¡¡Esta persona se obtiene en la jsp!!!!)
 
 
 		String idPersona = getIdColegiadoUnico(vCampos);
@@ -1899,31 +1911,96 @@ public class EnvioInformesGenericos extends MasterReport {
 
 		if(idPersona!=null){
 
-
-
-			//String claveIterante = this.getClaveIterante(vCampos);
-			//if(claveIterante!=null){
-			//vCampos = this.setCamposIterantes(vCampos,"idPersona");
-			//}
-
-
+			////////////////////*************************************************************
 			Vector vDocumentos = new Vector();
+			Vector vPlantillas = null;
+			// recorro los expedientes a enviar
+			for (int i = 0; i < vCampos.size(); i++) {
+				Hashtable datosInforme = (Hashtable) vCampos.get(i);
+
+				// Obtengo los datos del expediente
+				String idiomaExt = (String) datosInforme.get("idiomaExt");
+				if (idiomaExt == null || idiomaExt.equals(""))
+					idiomaExt = userBean.getLanguageExt();
+				datosInforme.put("idiomaExt", idiomaExt);
+				String idioma = (String) datosInforme.get("idioma");
+				if (idioma == null || idioma.equals(""))
+					idioma = userBean.getLanguage();
+				datosInforme.put("idioma", idioma);
+				String idPersona2 = (String) datosInforme.get("idPersona");
+				String idInstitucion2 = (String) datosInforme.get("idInstitucion");
+				String anio = (String) datosInforme.get("anioExpediente");
+				String numero = (String) datosInforme.get("numeroExpediente");
+				String idInstitucionTipoExp = (String) datosInforme.get("idInstitucionTipoExp");
+				String idTipoExp = (String) datosInforme.get("idTipoExp");
+
+				// Obtengo las plantillas afectadas
+				if(vPlantillas==null){
+					String plantillas = (String) datosInforme.get("plantillas");
+					vPlantillas = this.getPlantillas(plantillas,userBean.getLocation(),userBean);
+				}
+				// voy a mirar si alguno de los informes es asolicitantes
+				boolean aSolicitantes = this.esAlgunaASolicitantes(vPlantillas);
+				
+				
+				// Obtengo los datos de la consulta. 
+				// A CADA UNO DE LOS REGISTROS DE ESTA CONSULTA SE LE ENVÍAN TODOS LOS DOCUMENTOS
+				// DE LAS PLANTILLAS OBTENIDAS ARRIBA, RESUELTOS PARA EL DESTINATARIO.
+				ExpExpedienteAdm expedienteAdm = new ExpExpedienteAdm(userBean);
+				Vector vDatosInformeFinal = expedienteAdm.getDatosInformeExpediente(idInstitucion2, idInstitucionTipoExp, 
+						idTipoExp, anio, numero, idPersona2, true, aSolicitantes );
+
+				// Anotación en cada expediente
+				Envio.generarComunicacionExpediente(idInstitucion2,new Integer(idInstitucionTipoExp),
+						new Integer(idTipoExp),new Integer(numero),new Integer(anio),idPersona2,userBean);
+
+				// RECORRER LOS DATOSINFORMEFINAL 
+				// Por cada destinatario real
+				for (int j=0;j<vDatosInformeFinal.size();j++){
+					Hashtable datoReal = (Hashtable)vDatosInformeFinal.get(j);
+					String idPersonaReal = (String) datoReal.get("IDPERSONA_DEST");
+					String idDireccionReal = (String) datoReal.get("IDDIRECCION_DEST");
+					datoReal.put("idTipoInforme", "EXP");
+					datoReal.put("idPersona", (String) datosInforme.get("idPersona"));
+					datoReal.put("idInstitucion", (String) datosInforme.get("idInstitucion"));
+					datoReal.put("anioExpediente", (String) datosInforme.get("anioExpediente"));
+					datoReal.put("numeroExpediente", (String) datosInforme.get("numeroExpediente"));
+					datoReal.put("idInstitucionTipoExp", (String) datosInforme.get("idInstitucionTipoExp"));
+					datoReal.put("idTipoExp", (String) datosInforme.get("idTipoExp"));
+
+					
+					// Hago un envio
+					Envio envio = getEnvio(form,true,locale, userBean);
+					// obtengo sus documentos según vPlantillas
+											
+					vDocumentos.addAll(this.getDocumentosAEnviar(datoReal,vPlantillas, userBean,EnvioInformesGenericos.docDocument,EnvioInformesGenericos.comunicacionesExpedientes));
+					// Genera el envio:
+					envio.generarEnvioDireccionEspecifica(idPersonaReal, idDireccionReal, vDocumentos);				
+					
+				}
+				
+			}
+			////////////////////*************************************************************
+
+				
+			// ELIMINADO POR RGG EL DIA 23/10/2009 Y SUSTITUIDO POR LO DE ARRIBA
+			/*Vector vDocumentos = new Vector();
 			Vector vPlantillas = null;
 			ArrayList alExpedientes = new ArrayList();;
 			for (int i = 0; i < vCampos.size(); i++) {
 				Hashtable datosInforme = (Hashtable) vCampos.get(i);
 				if(vPlantillas==null){
 					String plantillas = (String) datosInforme.get("plantillas");
-
 					vPlantillas = this.getPlantillas(plantillas,userBean.getLocation(),userBean);
 				}
 				vDocumentos.addAll(this.getDocumentosAEnviar(datosInforme,vPlantillas, userBean,EnvioInformesGenericos.docDocument,EnvioInformesGenericos.comunicacionesExpedientes));
 				alExpedientes.add(datosInforme);
-
 			} 
 			Envio envio = getEnvio(form,true,locale, userBean);
-			
-			for (int i = 0; i < alExpedientes.size(); i++) {
+			*/
+			//////////////////////////////////////////////////////////////
+			// Esto es solo para dar de alta la anotación en el expediente
+			/*for (int i = 0; i < alExpedientes.size(); i++) {
 				Hashtable datosExpediente = (Hashtable)alExpedientes.get(i);
 				String idInstitucionLocal = (String)datosExpediente.get("idInstitucion");
 				String idInstitucionTipoExp = (String)datosExpediente.get("idInstitucionTipoExp");
@@ -1939,10 +2016,10 @@ public class EnvioInformesGenericos extends MasterReport {
 				envio.generarComunicacionExpediente(idInstitucionLocal,new Integer(idInstitucionTipoExp)
 				,new Integer(idTipoExp),new Integer(numero),new Integer(anio),idPersonaLocal,userBean);
 				
-			}
-			
+			}*/
+			//////////////////////////////////////////////////////////////
 			// Genera el envio:
-			envio.generarEnvio(idPersona,vDocumentos);
+			//envio.generarEnvioDireccionEspecifica(idPersona, idDireccion, vDocumentos);
 
 		}else{
 			//vCampos = this.obtenerDatosFormulario(form);
@@ -2001,7 +2078,15 @@ public class EnvioInformesGenericos extends MasterReport {
 				ArrayList alExpedientes = (ArrayList) ht.get("idExpedientes");
 				plantillas = (String) ht.get("plantillas");
 
-
+				String idPersona2 = (String) ht.get("idPersona");
+				String idInstitucion2 = (String) ht.get("idInstitucion");
+				String anio = (String) ht.get("anioExpediente");
+				String numero = (String) ht.get("numeroExpediente");
+				String idInstitucionTipoExp = (String) ht.get("idInstitucionTipoExp");
+				String idTipoExp = (String) ht.get("idTipoExp");
+				// Anotación en cada expediente
+				Envio.generarComunicacionExpediente(idInstitucion2,new Integer(idInstitucionTipoExp),
+						new Integer(idTipoExp),new Integer(numero),new Integer(anio),idPersona2,userBean);
 
 				if(!isInformeProgramado){
 					programInformes = new EnvProgramInformesBean();

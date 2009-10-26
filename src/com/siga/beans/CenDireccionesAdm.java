@@ -1491,4 +1491,28 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 		return idDireccion;
 
 	}
+
+	
+	public Vector getDireccionEspecificaConTipo(String idInstitucion, String idPersona, String idDireccion, String idTipoEnvio) throws ClsExceptions
+	{
+		Vector salida = new Vector();
+		
+		Hashtable codigos=new Hashtable();
+		codigos.put(new Integer(1), idTipoEnvio);
+		codigos.put(new Integer(2), idInstitucion);
+		codigos.put(new Integer(3), idPersona);
+		codigos.put(new Integer(4), idDireccion);
+		String where = "where (select count(*) from cen_direccion_tipodireccion t where cen_direcciones.idinstitucion = t.idinstitucion and   cen_direcciones.idpersona = t.idpersona and   cen_direcciones.iddireccion = t.iddireccion " +
+						" and t.idtipodireccion=:1) > 0 and   cen_direcciones.idinstitucion=:2 and   cen_direcciones.idpersona=:3 and   cen_direcciones.iddireccion=:4 ";
+		
+		try{
+			salida = this.selectBind(where, codigos);
+		} catch (Exception e) {
+			throw new ClsExceptions(e,"Error al buscar la direccion adecuada con un tipo determinado. ");
+		}
+
+		return salida;
+
+	}	
+	
 }

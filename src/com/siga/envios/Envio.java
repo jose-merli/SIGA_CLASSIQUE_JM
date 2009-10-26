@@ -242,6 +242,70 @@ public class Envio
         }        
     }
     
+    public void addDocumentosDestinatarioDireccionEspecifica(String idPersona, String idDireccion, Vector documentos) throws SIGAException{
+        
+        try{
+            EnvDestinatariosAdm destAdm = new EnvDestinatariosAdm(this.usrBean);
+            EnvDestinatariosBean destBean = null;
+	        boolean crearDestinatario;
+            if (!destAdm.existeDestinatario(String.valueOf(enviosBean.getIdEnvio()),
+                    						String.valueOf(enviosBean.getIdInstitucion()),
+                    						idPersona)){                
+            
+	            EnvEnviosAdm enviosAdm = new EnvEnviosAdm(this.usrBean);
+	            // Esto debería buscar la idrección indicada, y si no es del tipo de envío programado entonces busca una adecuada.
+	            Vector direcciones = enviosAdm.getDireccionEspecifica(String.valueOf(enviosBean.getIdInstitucion()),
+	                    									  			idPersona,
+	                    									  			idDireccion,
+	                    									  			String.valueOf(enviosBean.getIdTipoEnvios()));
+	            
+                destBean = new EnvDestinatariosBean();
+		        destBean.setIdEnvio(enviosBean.getIdEnvio());
+		        destBean.setIdInstitucion(enviosBean.getIdInstitucion());
+		        destBean.setIdPersona(Long.valueOf(idPersona));
+				CenPersonaAdm personaAdm = new CenPersonaAdm(this.usrBean);			
+				String nombre = personaAdm.obtenerNombre(String.valueOf(idPersona));
+				String apellidos1 = personaAdm.obtenerApellidos1(String.valueOf(idPersona));
+				String apellidos2 = personaAdm.obtenerApellidos2(String.valueOf(idPersona));
+				destBean.setApellidos1(apellidos1);
+		        destBean.setApellidos2(apellidos2);
+		        destBean.setNombre(nombre);
+				
+		        if (direcciones!=null && direcciones.size()>0) {
+	            	Hashtable htDir = (Hashtable)direcciones.firstElement();
+			        destBean.setDomicilio((String)htDir.get(CenDireccionesBean.C_DOMICILIO));
+			        destBean.setIdPoblacion((String)htDir.get(CenDireccionesBean.C_IDPOBLACION));
+			        destBean.setPoblacionExtranjera((String)htDir.get(CenDireccionesBean.C_POBLACIONEXTRANJERA));
+			        destBean.setIdProvincia((String)htDir.get(CenDireccionesBean.C_IDPROVINCIA));
+			        destBean.setIdPais((String)htDir.get(CenDireccionesBean.C_IDPAIS));
+			        if (destBean.getIdPais().equals("")) destBean.setIdPais(ClsConstants.ID_PAIS_ESPANA); 
+			        destBean.setCodigoPostal((String)htDir.get(CenDireccionesBean.C_CODIGOPOSTAL));
+			        destBean.setCorreoElectronico((String)htDir.get(CenDireccionesBean.C_CORREOELECTRONICO));
+			        destBean.setFax1((String)htDir.get(CenDireccionesBean.C_FAX1));
+			        destBean.setFax2((String)htDir.get(CenDireccionesBean.C_FAX2));
+		        }
+			    crearDestinatario=true;
+
+            } else {
+                
+            	Hashtable htDest = new Hashtable();
+                htDest.put(EnvDestinatariosBean.C_IDENVIO,enviosBean.getIdEnvio());
+                htDest.put(EnvDestinatariosBean.C_IDINSTITUCION,enviosBean.getIdInstitucion());
+                htDest.put(EnvDestinatariosBean.C_IDPERSONA,idPersona);
+                destBean = (EnvDestinatariosBean)destAdm.selectByPK(htDest).firstElement();                
+                crearDestinatario=false;
+                
+            }
+	        addDestinatarioIndividualDocAdjuntos(destBean,documentos,crearDestinatario);
+            // RGG 29-09-2005 se quita para usar en todos los lados la funcion de arriba
+	        // addDestinatarioIndividual(destBean,documentos,crearDestinatario);
+        } catch (SIGAException e1) {
+            throw e1;
+        } catch (Exception e1) {
+            throw new SIGAException("messages.general.error",e1);
+        }        
+    }
+    
     /**
      * Método para el envío simultáneo a un grupo de personas, con 
      * un único documento adjunto para cada una. La correspondencia persona-documento
@@ -287,6 +351,21 @@ public class Envio
 
         if (idPersona!=null) 
         	addDocumentosDestinatario(idPersona,documentos);        
+    }
+
+    public void generarEnvioDireccionEspecifica(String idPersona, String idDireccion, Vector documentos) throws SIGAException,ClsExceptions
+	{
+        EnvEnviosAdm envAdm = new EnvEnviosAdm(this.usrBean);
+        envAdm.insert(enviosBean);
+
+        // Copiamos los datos la plantilla, incluidos los remitentes
+        envAdm.copiarCamposPlantilla(enviosBean.getIdInstitucion(), 
+				enviosBean.getIdEnvio(), 
+				enviosBean.getIdTipoEnvios(),
+				enviosBean.getIdPlantillaEnvios());
+
+        if (idPersona!=null) 
+        	addDocumentosDestinatarioDireccionEspecifica(idPersona, idDireccion, documentos);        
     }
     /**
      * Se ha creado este metodo para el proceso de generacion de envios.
@@ -377,7 +456,7 @@ public class Envio
     	
                 
     }
-    public void generarComunicacionExpediente(String idInstitucion, 
+    public static void generarComunicacionExpediente(String idInstitucion, 
 			Integer idInstitucionTipoExp, Integer idTipoExp, Integer numeroExpediente, 
 			Integer anioExpediente	,String idPersona, UsrBean usrBean) throws SIGAException,ClsExceptions
     		

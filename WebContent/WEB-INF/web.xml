@@ -114,11 +114,11 @@
   <!--<listener>
     <listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoContadores</listener-class>
   </listener>-->
- <!-- <servlet>
+  <servlet>
     <servlet-name>SIGASvlProcesoAutomaticoEnvios</servlet-name>
     <servlet-class>com.siga.servlets.SIGASvlProcesoAutomaticoEnvios</servlet-class>
    	<load-on-startup>3</load-on-startup>
-  </servlet>-->
+  </servlet>
   <servlet>
     <servlet-name>SIGATest</servlet-name>
     <servlet-class>com.siga.servlets.SIGATest</servlet-class>
@@ -234,10 +234,10 @@
     <url-pattern>SIGATest.svrl</url-pattern>
   </servlet-mapping>
 
-  <!--<servlet-mapping>
+  <servlet-mapping>
     <servlet-name>SIGASvlProcesoAutomaticoEnvios</servlet-name>
     <url-pattern>SIGASvlProcesoAutomaticoEnvios.svrl</url-pattern>
-  </servlet-mapping>-->
+  </servlet-mapping>
 
   <servlet-mapping>
     <servlet-name>SIGASvlProcesoEnvios</servlet-name>

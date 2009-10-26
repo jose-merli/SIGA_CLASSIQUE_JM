@@ -2017,7 +2017,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		return htData;
 	}
 	public Vector getDatosInformeExpediente (String idInstitucion ,String idInstitucionTipoExp,String idTipoExp ,
-			String anio,String numero, String idPersona, boolean isInforme
+			String anio,String numero, String idPersona, boolean isInforme, boolean isASolicitantes
 	) throws ClsExceptions  
 	{
 		Vector datos = null;
@@ -2113,16 +2113,15 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			sql.append(" AND EXP.NUMEROEXPEDIENTE = :");
 			sql.append(keyContador);
 			
+/*
 			if(idPersona!=null){
 				keyContador++;
 				htCodigos.put(new Integer(keyContador), idPersona); 
 			
 				sql.append(" AND CLI.IDPERSONA = :");
 				sql.append(keyContador);
-
-			
 			}
-			
+*/			
 
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
 
@@ -2146,12 +2145,12 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			datos = helperInformes.getCamposConfigurablesExpediente(datos,idInstitucion,idInstitucionTipoExp,idTipoExp,anio, numero, idPersona);
 			// historico de anotaciones
 			datos = helperInformes.getAnotacionesExpediente(datos,idInstitucion,idInstitucionTipoExp,idTipoExp,anio, numero, idPersona);
-			// Implicados y direcciones
-			//datos = helperInformes.getImplicadosDireccionesExpediente(datos,idInstitucion,idInstitucionTipoExp,idTipoExp,anio, numero, idPersona);
 			// Nombres implicados separados por comas
 			datos = helperInformes.getNombresImplicadosExpediente(datos,idInstitucion,idInstitucionTipoExp,idTipoExp,anio, numero, idPersona);
 			// Nombres de partes separados por comas
 			datos = helperInformes.getNombresPartesExpediente(datos,idInstitucion,idInstitucionTipoExp,idTipoExp,anio, numero, idPersona, this.usrbean.getLanguage());
+			// Implicados y direcciones
+			datos = helperInformes.getImplicadosDireccionesExpediente(datos,idInstitucion,idInstitucionTipoExp,idTipoExp,anio, numero, idPersona, this.usrbean.getLanguage(), isASolicitantes);
 			
 		}
 		catch (Exception e) {
