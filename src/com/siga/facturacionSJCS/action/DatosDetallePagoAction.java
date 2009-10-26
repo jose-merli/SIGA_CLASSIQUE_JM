@@ -58,8 +58,8 @@ public class DatosDetallePagoAction extends MasterAction {
 			if ((accion != null)&&(((accion.equalsIgnoreCase("nuevo"))||accion.equalsIgnoreCase("edicion"))||(accion.equalsIgnoreCase("consulta")))){
 				return mapping.findForward(this.abrir(mapping, miForm, request, response));
 			}//en caso contrario (consulta) se llama al executeInternal de MasterForm
-			else if ((miForm.getModo()!=null)&&(miForm.getModo().equalsIgnoreCase("modificarPrecioPago")))
-				return mapping.findForward(modificarPrecioPago (mapping, miForm, request, response));
+//			else if ((miForm.getModo()!=null)&&(miForm.getModo().equalsIgnoreCase("modificarPrecioPago")))
+//				return mapping.findForward(modificarPrecioPago (mapping, miForm, request, response));
 			else if ((miForm.getModo()!=null)&&(miForm.getModo().equalsIgnoreCase("abrirVolver")))
 				return mapping.findForward(abrirVolver (mapping, miForm, request, response));
 			else if ((miForm.getModo()!=null)&&(miForm.getModo().equalsIgnoreCase("verDetalle")))
@@ -175,65 +175,65 @@ public class DatosDetallePagoAction extends MasterAction {
 	 * @return  String  Destino del action  
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
-	protected String abrirAvanzada(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		
-		//Recogemos el formulario
-		DatosDetallePagoForm miform = (DatosDetallePagoForm)formulario;
-		
-		//recuperamos el UsrBean
-		HttpSession ses = request.getSession();
-		UsrBean usr = (UsrBean)ses.getAttribute("USRBEAN");
-		
-		//recuperamos la fila seleccionada y el campo oculto(idPersona)
-		String idPersona = (String)miform.getIdPersona();
-		//String nColegiado = (String)visibles.get(0);
-		String nombreColegiado = (String)miform.getNombreColegiado();
-		//String importeTotal = (String)miform.getImporteTotal();
-		
-		//recuperamos el identificador del pago y de la institucion
-		String idInstitucion = (String)miform.getIdInstitucion();
-		if(idInstitucion==null){
-			idInstitucion = (String)usr.getLocation();
-			//idPersona = (String)request.getSession().getAttribute("idPersona");
-			request.getSession().removeAttribute("idPersona");
-		}
-		String idPago = (String)miform.getIdPago();
-		
-		//variable para recoger el nombre del colegio
-		String nombreInstitucion = "";
-		
-		//variable para consultar el estado
-		Hashtable hash = new Hashtable();
-		
-		try{
-			//Consultamos el nombre de la institucion
-			CenInstitucionAdm institucionAdm = new CenInstitucionAdm(this.getUserBean(request));
-			nombreInstitucion = (String)institucionAdm.getNombreInstitucion(usr.getLocation().toString());
-		}catch(ClsExceptions e){
-			ClsLogging.writeFileLogError("Error: No se ha podido recuperar el nombre del Colegio", e,3);
-		}
-		
-		//consultamos el estado del pago
-		FcsPagosJGAdm pagosAdm = new FcsPagosJGAdm (this.getUserBean(request));
-		try{
-			Integer idInst = new Integer (idInstitucion);
-			Integer idPag = new Integer (idPago);
-			hash = (Hashtable)pagosAdm.getEstadoPago(idInst, idPag);
-		}catch(Exception e){}
-		
-		//consultamos los detalles del pago para esa persona
-		FcsPagosJGAdm pagoAdm = new FcsPagosJGAdm (this.getUserBean(request));
-		Vector resultado = (Vector)pagoAdm.getDetallePorColegiado(idInstitucion,idPago,idPersona);
-		
-		//devolvemos el vector con los resultados y el nombre del cliente
-		request.setAttribute("estado",(String)hash.get(FcsEstadosPagosBean.C_IDESTADOPAGOSJG));
-		request.setAttribute("resultado",resultado);
-		request.setAttribute("idPago",idPago);
-		request.setAttribute("nombreColegiado",nombreColegiado);
-		request.setAttribute("nombreInstitucion",nombreInstitucion);
-		request.setAttribute("modoOriginal",miform.getModoOriginal());
-		return "consulta";
-	}
+//	protected String abrirAvanzada(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+//		
+//		//Recogemos el formulario
+//		DatosDetallePagoForm miform = (DatosDetallePagoForm)formulario;
+//		
+//		//recuperamos el UsrBean
+//		HttpSession ses = request.getSession();
+//		UsrBean usr = (UsrBean)ses.getAttribute("USRBEAN");
+//		
+//		//recuperamos la fila seleccionada y el campo oculto(idPersona)
+//		String idPersona = (String)miform.getIdPersona();
+//		//String nColegiado = (String)visibles.get(0);
+//		String nombreColegiado = (String)miform.getNombreColegiado();
+//		//String importeTotal = (String)miform.getImporteTotal();
+//		
+//		//recuperamos el identificador del pago y de la institucion
+//		String idInstitucion = (String)miform.getIdInstitucion();
+//		if(idInstitucion==null){
+//			idInstitucion = (String)usr.getLocation();
+//			//idPersona = (String)request.getSession().getAttribute("idPersona");
+//			request.getSession().removeAttribute("idPersona");
+//		}
+//		String idPago = (String)miform.getIdPago();
+//		
+//		//variable para recoger el nombre del colegio
+//		String nombreInstitucion = "";
+//		
+//		//variable para consultar el estado
+//		Hashtable hash = new Hashtable();
+//		
+//		try{
+//			//Consultamos el nombre de la institucion
+//			CenInstitucionAdm institucionAdm = new CenInstitucionAdm(this.getUserBean(request));
+//			nombreInstitucion = (String)institucionAdm.getNombreInstitucion(usr.getLocation().toString());
+//		}catch(ClsExceptions e){
+//			ClsLogging.writeFileLogError("Error: No se ha podido recuperar el nombre del Colegio", e,3);
+//		}
+//		
+//		//consultamos el estado del pago
+//		FcsPagosJGAdm pagosAdm = new FcsPagosJGAdm (this.getUserBean(request));
+//		try{
+//			Integer idInst = new Integer (idInstitucion);
+//			Integer idPag = new Integer (idPago);
+//			hash = (Hashtable)pagosAdm.getEstadoPago(idInst, idPag);
+//		}catch(Exception e){}
+//		
+//		//consultamos los detalles del pago para esa persona
+//		FcsPagosJGAdm pagoAdm = new FcsPagosJGAdm (this.getUserBean(request));
+//		Vector resultado = (Vector)pagoAdm.getDetallePorColegiado(idInstitucion,idPago,idPersona);
+//		
+//		//devolvemos el vector con los resultados y el nombre del cliente
+//		request.setAttribute("estado",(String)hash.get(FcsEstadosPagosBean.C_IDESTADOPAGOSJG));
+//		request.setAttribute("resultado",resultado);
+//		request.setAttribute("idPago",idPago);
+//		request.setAttribute("nombreColegiado",nombreColegiado);
+//		request.setAttribute("nombreInstitucion",nombreInstitucion);
+//		request.setAttribute("modoOriginal",miform.getModoOriginal());
+//		return "consulta";
+//	}
 	
 	/** 
 	 * Método que atiende la accion abrir al pulsar sobre la pestanha de Detalle en el Mantenimiento del Pago.
@@ -338,219 +338,219 @@ public class DatosDetallePagoAction extends MasterAction {
 	 * @return  String  Destino del action  
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
-	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		
-		//recogemos el formulario
-		DatosDetallePagoForm miform = (DatosDetallePagoForm)formulario;
-		//recogemos el campo oculto para ver que registro hemos editado
-		Vector ocultos = (Vector)miform.getDatosTablaOcultos(0);
-		String tipo = (String)ocultos.get(0);
-		//recogemos los campos de la tabla seleccionados
-		//Vector visibles = (Vector)miform.getDatosTablaVisibles(0);
-		//recogemos el idPAgo
-		String idPago = (String)miform.getIdPago();
-		String idPersona = (String)miform.getIdPersona();
-		
-		String importeIrpf = "0"; 
-		String importe = "0";
-		String porcentajeIrpf = "0";
-		
-		if ((tipo!=null)&&(tipo.equalsIgnoreCase("TURNO"))){
-			String idInstitucion = (String)ocultos.get(1);
-			String idTurno = (String)ocultos.get(3);
-			String anio = (String)ocultos.get(4);
-			String numero = (String)ocultos.get(5);
-			String numeroAsunto = (String)ocultos.get(6);			
-			String consulta = " where " + FcsPagoActuacionDesignaBean.C_IDINSTITUCION + "=" + idInstitucion +
-			" and " + FcsPagoActuacionDesignaBean.C_IDPAGOSJG + "=" + idPago + " "+
-			" and " + FcsPagoActuacionDesignaBean.C_IDTURNO + "=" + idTurno + " " +
-			" and " + FcsPagoActuacionDesignaBean.C_ANIO + "=" + anio + " " +
-			" and " + FcsPagoActuacionDesignaBean.C_NUMERO + "=" + numero+ " " +
-			" and " + FcsPagoActuacionDesignaBean.C_NUMEROASUNTO + "=" + numeroAsunto + " ";
-			FcsPagoActuacionDesignaAdm admin = new FcsPagoActuacionDesignaAdm(this.getUserBean(request));
-			try{
-				FcsPagoActuacionDesignaBean beanReg = (FcsPagoActuacionDesignaBean)((Vector)admin.select(consulta)).get(0);
-				Hashtable bean = (Hashtable)beanReg.getOriginalHash().clone();
-				bean.put("IMPORTE",(String)bean.get(FcsPagoActuacionDesignaBean.C_IMPORTEPAGADO));
-				request.getSession().setAttribute("DATABACKUP", bean);
-				request.setAttribute("tipo","turno");
-				importeIrpf = (String)ocultos.get(7);
-				importe = (String)ocultos.get(8);
-				porcentajeIrpf = (String)ocultos.get(9);
-			}catch(Exception e){
-				throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null);
-			}
-			
-		}else if ((tipo!=null)&&(tipo.equalsIgnoreCase("GUARDIA"))){
-			String idInstitucion = (String)ocultos.get(1);
-			String idTurno = (String)ocultos.get(3);
-			String idGuardia = (String)ocultos.get(4);
-			String idCalendario = (String)ocultos.get(5);
-			String idPers = (String)ocultos.get(6);
-			String fecha = (String)ocultos.get(7);
-			String consulta = " where " + FcsPagoGuardiasColegiadoBean.C_IDINSTITUCION + "=" + idInstitucion + 
-			" and " + FcsPagoGuardiasColegiadoBean.C_IDTURNO + "=" + idTurno +
-			" and " + FcsPagoGuardiasColegiadoBean.C_IDPAGOSJG + "=" + idPago +
-			" and " + FcsPagoGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS + "=" + idCalendario +
-			" and " + FcsPagoGuardiasColegiadoBean.C_IDPERSONA + "=" + idPers +
-			" and " + FcsPagoGuardiasColegiadoBean.C_FECHAINICIO + "= TO_DATE('"+fecha+"','YYYY/MM/DD HH24:MI:SS')"+
-			" and " + FcsPagoGuardiasColegiadoBean.C_IDGUARDIA + "=" + idGuardia + " ";
-			FcsPagoGuardiasColegiadoAdm admin = new FcsPagoGuardiasColegiadoAdm(this.getUserBean(request));
-			try{
-				FcsPagoGuardiasColegiadoBean beanReg = (FcsPagoGuardiasColegiadoBean)((Vector)admin.select(consulta)).get(0);
-				Hashtable bean = (Hashtable)beanReg.getOriginalHash().clone();
-				bean.put("IMPORTE",(String)bean.get(FcsPagoGuardiasColegiadoBean.C_IMPORTEPAGADO));
-				request.getSession().setAttribute("DATABACKUP", bean);
-				request.setAttribute("tipo","guardia");
-				importeIrpf = (String)ocultos.get(8);
-				importe = (String)ocultos.get(9);
-				porcentajeIrpf = (String)ocultos.get(10);
-			}catch(Exception e){
-				throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null);
-			}
-			
-		}else if ((tipo!=null)&&(tipo.equalsIgnoreCase("ACTUACION"))){
-			String idInstitucion = (String)ocultos.get(1);
-			String anio = (String)ocultos.get(3);
-			String numero = (String)ocultos.get(4);
-			String idActuacion = (String)ocultos.get(5);
-			String consulta =  " where " + FcsPagoActuacionAsistBean.C_IDINSTITUCION +"="+idInstitucion+
-			" and " + FcsPagoActuacionAsistBean.C_IDPAGOSJG + "=" + idPago +
-			" and " + FcsPagoActuacionAsistBean.C_NUMERO + "=" + numero + 
-			" and " + FcsPagoActuacionAsistBean.C_IDACTUACION + "=" + idActuacion + 
-			" and " + FcsPagoActuacionAsistBean.C_ANIO + "=" + anio +
-			" and " + FcsPagoActuacionAsistBean.C_IDACTUACION + "=" + idActuacion + " ";
-			FcsPagoActuacionAsistAdm admin = new FcsPagoActuacionAsistAdm(this.getUserBean(request));
-			try{
-				FcsPagoActuacionAsistBean beanReg = (FcsPagoActuacionAsistBean)((Vector)admin.select(consulta)).get(0);
-				Hashtable bean = (Hashtable)beanReg.getOriginalHash().clone();
-				bean.put("IMPORTE",(String)bean.get(FcsPagoActuacionAsistBean.C_IMPORTEPAGADO));
-				request.getSession().setAttribute("DATABACKUP", bean);
-				request.setAttribute("tipo","actuacion");
-				importeIrpf = (String)ocultos.get(6);
-				importe = (String)ocultos.get(7);
-				porcentajeIrpf = (String)ocultos.get(8);
-			}catch(Exception e){
-				throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null);
-			}
-			
-		}else if ((tipo!=null)&&(tipo.equalsIgnoreCase("ASISTENCIA"))){
-			String idInstitucion = (String)ocultos.get(1);
-			String anio = (String)ocultos.get(3);
-			String numero = (String)ocultos.get(4);
-			FcsPagoAsistenciaAdm admin = new FcsPagoAsistenciaAdm(this.getUserBean(request));
-			String consulta = " where " + FcsPagoAsistenciaBean.C_IDINSTITUCION + "=" + idInstitucion +
-			" and " +FcsPagoAsistenciaBean.C_IDPAGOSJG + "=" + idPago +
-			" and " +FcsPagoAsistenciaBean.C_ANIO + "=" + anio +
-			" and " +FcsPagoAsistenciaBean.C_NUMERO + "=" + numero + " ";
-			try{
-				FcsPagoAsistenciaBean beanReg = (FcsPagoAsistenciaBean)((Vector)admin.select(consulta)).get(0);
-				Hashtable bean = (Hashtable)beanReg.getOriginalHash().clone();
-				bean.put("IMPORTE",(String)bean.get(FcsPagoAsistenciaBean.C_IMPORTEPAGADO));
-				request.getSession().setAttribute("DATABACKUP", bean);
-				request.setAttribute("tipo","asistencia");
-				importeIrpf = (String)ocultos.get(5);
-				importe = (String)ocultos.get(6);
-				porcentajeIrpf = (String)ocultos.get(7);
-			}catch(Exception e){
-				throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null);
-			}
-			
-		}else if ((tipo!=null)&&(tipo.equalsIgnoreCase("SOJ"))){
-			String idInstitucion = (String)ocultos.get(1);
-			String idTipoSoj = (String)ocultos.get(3);
-			String anio = (String)ocultos.get(4);
-			String numero = (String)ocultos.get(5);
-			FcsPagoSojAdm admin = new FcsPagoSojAdm(this.getUserBean(request));
-			String consulta = " where " + FcsPagoSojBean.C_IDINSTITUCION + "=" + idInstitucion +
-			" and " + FcsPagoSojBean.C_IDTIPOSOJ + "=" + idTipoSoj +
-			" and " + FcsPagoSojBean.C_IDPAGOSJG + "=" + idPago +
-			" and " + FcsPagoSojBean.C_ANIO + "=" + anio +
-			" and " + FcsPagoSojBean.C_NUMERO + "=" + numero + " ";
-			try{
-				FcsPagoSojBean beanReg = (FcsPagoSojBean)((Vector)admin.select(consulta)).get(0);
-				Hashtable bean = (Hashtable)beanReg.getOriginalHash().clone();
-				bean.put("IMPORTE",(String)bean.get(FcsPagoSojBean.C_IMPORTEPAGADO));
-				request.getSession().setAttribute("DATABACKUP", bean);
-				request.setAttribute("tipo","soj");
-				importeIrpf = (String)ocultos.get(6);
-				importe = (String)ocultos.get(7);
-				porcentajeIrpf = (String)ocultos.get(8);
-			}catch(Exception e){
-				throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null);
-			}
-			
-		}else if ((tipo!=null)&&(tipo.equalsIgnoreCase("EJG"))){
-			String idInstitucion = (String)ocultos.get(1);
-			String idTipoEjg = (String)ocultos.get(3);
-			String anio = (String)ocultos.get(4);
-			String numero = (String)ocultos.get(5);
-			FcsPagoEjgAdm admin = new FcsPagoEjgAdm(this.getUserBean(request));
-			String consulta = " where " + FcsPagoEjgBean.C_IDINSTITUCION + "=" + idInstitucion +
-			" and " + FcsPagoEjgBean.C_IDTIPOEJG + "=" + idTipoEjg +
-			" and " + FcsPagoEjgBean.C_ANIO + "=" + anio +
-			" and " + FcsPagoEjgBean.C_IDPAGOSJG + "=" + idPago +
-			" and " + FcsPagoEjgBean.C_NUMERO + "=" + numero + " ";
-			try{
-				FcsPagoEjgBean beanReg = (FcsPagoEjgBean)((Vector)admin.select(consulta)).get(0); 
-				Hashtable bean = (Hashtable)beanReg.getOriginalHash().clone();
-				bean.put("IMPORTE",(String)bean.get(FcsPagoEjgBean.C_IMPORTEPAGADO));
-				request.getSession().setAttribute("DATABACKUP", bean);
-				request.setAttribute("tipo","ejg");
-				importeIrpf = (String)ocultos.get(6);
-				importe = (String)ocultos.get(7);
-				porcentajeIrpf = (String)ocultos.get(8);
-			}catch(Exception e){
-				throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null);
-			}
-			
-		}else if ((tipo!=null)&&(tipo.equalsIgnoreCase("MOVIMIENTO"))){
-			String idInstitucion = (String)ocultos.get(1);
-			String idMovimiento =(String)ocultos.get(2);
-			FcsMovimientosVariosAdm admin = new FcsMovimientosVariosAdm(this.getUserBean(request));
-			String consulta = "select * from "+ FcsMovimientosVariosBean.T_NOMBRETABLA+" where " + FcsMovimientosVariosBean.C_IDINSTITUCION +"="+idInstitucion+
-			" and " + FcsMovimientosVariosBean.C_IDMOVIMIENTO+"="+idMovimiento+" ";
-			try{
-				Hashtable bean = (Hashtable)((Vector)admin.selectGenerico(consulta)).get(0);
-				bean.put("IMPORTE",(String)bean.get(FcsMovimientosVariosBean.C_CANTIDAD));
-				request.getSession().setAttribute("DATABACKUP", bean);
-				request.setAttribute("tipo","movimiento");
-				importeIrpf = (String)ocultos.get(3);
-				importe = (String)ocultos.get(4);
-				porcentajeIrpf = (String)ocultos.get(5);
-			}catch(Exception e){
-				throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null);
-			}
-			
-			/*}else if ((tipo!=null)&&(tipo.equalsIgnoreCase("RETENCION"))){
-			 String idInstitucion = (String)ocultos.get(1);
-			 String idPersona = (String)ocultos.get(2);
-			 String idRetencion = (String)ocultos.get(3);
-			 FcsRetencionesJudicialesAdm admin = new FcsRetencionesJudicialesAdm(this.getUserBean(request));
-			 String consulta = "select "+ FcsRetencionesJudicialesBean.C_IMPORTE+" as IMPORTE from "+ FcsRetencionesJudicialesBean.T_NOMBRETABLA+" where " + FcsRetencionesJudicialesBean.C_IDINSTITUCION+"="+idInstitucion+
-			 " and "+FcsRetencionesJudicialesBean.C_IDRETENCION+"="+idRetencion+" ";
-			 try{
-			 Hashtable bean = (Hashtable)((Vector)admin.selectGenerico(consulta)).get(0);
-			 request.getSession().setAttribute("DATABACKUP", bean);
-			 //request.getSession().setAttribute("fila",ocultos);
-			  request.setAttribute("tipo","retencion");
-			  }catch(Exception e){
-			  throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null);
-			  }*/
-			
-		}
-		
-		// para el scroll de la ventana modal
-		//request.getSession().setAttribute("ScrollModal","S");
-		
-		request.setAttribute("idPago",idPago);
-		request.setAttribute("idPersona",idPersona);
-		request.setAttribute("importeIrpf",importeIrpf);
-		request.setAttribute("importe",importe);
-		request.setAttribute("porcentajeIrpf",porcentajeIrpf);
-		return "precioPago";
-	}
-	
+//	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+//		
+//		//recogemos el formulario
+//		DatosDetallePagoForm miform = (DatosDetallePagoForm)formulario;
+//		//recogemos el campo oculto para ver que registro hemos editado
+//		Vector ocultos = (Vector)miform.getDatosTablaOcultos(0);
+//		String tipo = (String)ocultos.get(0);
+//		//recogemos los campos de la tabla seleccionados
+//		//Vector visibles = (Vector)miform.getDatosTablaVisibles(0);
+//		//recogemos el idPAgo
+//		String idPago = (String)miform.getIdPago();
+//		String idPersona = (String)miform.getIdPersona();
+//		
+//		String importeIrpf = "0"; 
+//		String importe = "0";
+//		String porcentajeIrpf = "0";
+//		
+//		if ((tipo!=null)&&(tipo.equalsIgnoreCase("TURNO"))){
+//			String idInstitucion = (String)ocultos.get(1);
+//			String idTurno = (String)ocultos.get(3);
+//			String anio = (String)ocultos.get(4);
+//			String numero = (String)ocultos.get(5);
+//			String numeroAsunto = (String)ocultos.get(6);			
+//			String consulta = " where " + FcsPagoActuacionDesignaBean.C_IDINSTITUCION + "=" + idInstitucion +
+//			" and " + FcsPagoActuacionDesignaBean.C_IDPAGOSJG + "=" + idPago + " "+
+//			" and " + FcsPagoActuacionDesignaBean.C_IDTURNO + "=" + idTurno + " " +
+//			" and " + FcsPagoActuacionDesignaBean.C_ANIO + "=" + anio + " " +
+//			" and " + FcsPagoActuacionDesignaBean.C_NUMERO + "=" + numero+ " " +
+//			" and " + FcsPagoActuacionDesignaBean.C_NUMEROASUNTO + "=" + numeroAsunto + " ";
+//			FcsPagoActuacionDesignaAdm admin = new FcsPagoActuacionDesignaAdm(this.getUserBean(request));
+//			try{
+//				FcsPagoActuacionDesignaBean beanReg = (FcsPagoActuacionDesignaBean)((Vector)admin.select(consulta)).get(0);
+//				Hashtable bean = (Hashtable)beanReg.getOriginalHash().clone();
+//				bean.put("IMPORTE",(String)bean.get(FcsPagoActuacionDesignaBean.C_IMPORTEPAGADO));
+//				request.getSession().setAttribute("DATABACKUP", bean);
+//				request.setAttribute("tipo","turno");
+//				importeIrpf = (String)ocultos.get(7);
+//				importe = (String)ocultos.get(8);
+//				porcentajeIrpf = (String)ocultos.get(9);
+//			}catch(Exception e){
+//				throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null);
+//			}
+//			
+//		}else if ((tipo!=null)&&(tipo.equalsIgnoreCase("GUARDIA"))){
+//			String idInstitucion = (String)ocultos.get(1);
+//			String idTurno = (String)ocultos.get(3);
+//			String idGuardia = (String)ocultos.get(4);
+//			String idCalendario = (String)ocultos.get(5);
+//			String idPers = (String)ocultos.get(6);
+//			String fecha = (String)ocultos.get(7);
+//			String consulta = " where " + FcsPagoGuardiasColegiadoBean.C_IDINSTITUCION + "=" + idInstitucion + 
+//			" and " + FcsPagoGuardiasColegiadoBean.C_IDTURNO + "=" + idTurno +
+//			" and " + FcsPagoGuardiasColegiadoBean.C_IDPAGOSJG + "=" + idPago +
+//			" and " + FcsPagoGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS + "=" + idCalendario +
+//			" and " + FcsPagoGuardiasColegiadoBean.C_IDPERSONA + "=" + idPers +
+//			" and " + FcsPagoGuardiasColegiadoBean.C_FECHAINICIO + "= TO_DATE('"+fecha+"','YYYY/MM/DD HH24:MI:SS')"+
+//			" and " + FcsPagoGuardiasColegiadoBean.C_IDGUARDIA + "=" + idGuardia + " ";
+//			FcsPagoGuardiasColegiadoAdm admin = new FcsPagoGuardiasColegiadoAdm(this.getUserBean(request));
+//			try{
+//				FcsPagoGuardiasColegiadoBean beanReg = (FcsPagoGuardiasColegiadoBean)((Vector)admin.select(consulta)).get(0);
+//				Hashtable bean = (Hashtable)beanReg.getOriginalHash().clone();
+//				bean.put("IMPORTE",(String)bean.get(FcsPagoGuardiasColegiadoBean.C_IMPORTEPAGADO));
+//				request.getSession().setAttribute("DATABACKUP", bean);
+//				request.setAttribute("tipo","guardia");
+//				importeIrpf = (String)ocultos.get(8);
+//				importe = (String)ocultos.get(9);
+//				porcentajeIrpf = (String)ocultos.get(10);
+//			}catch(Exception e){
+//				throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null);
+//			}
+//			
+//		}else if ((tipo!=null)&&(tipo.equalsIgnoreCase("ACTUACION"))){
+//			String idInstitucion = (String)ocultos.get(1);
+//			String anio = (String)ocultos.get(3);
+//			String numero = (String)ocultos.get(4);
+//			String idActuacion = (String)ocultos.get(5);
+//			String consulta =  " where " + FcsPagoActuacionAsistBean.C_IDINSTITUCION +"="+idInstitucion+
+//			" and " + FcsPagoActuacionAsistBean.C_IDPAGOSJG + "=" + idPago +
+//			" and " + FcsPagoActuacionAsistBean.C_NUMERO + "=" + numero + 
+//			" and " + FcsPagoActuacionAsistBean.C_IDACTUACION + "=" + idActuacion + 
+//			" and " + FcsPagoActuacionAsistBean.C_ANIO + "=" + anio +
+//			" and " + FcsPagoActuacionAsistBean.C_IDACTUACION + "=" + idActuacion + " ";
+//			FcsPagoActuacionAsistAdm admin = new FcsPagoActuacionAsistAdm(this.getUserBean(request));
+//			try{
+//				FcsPagoActuacionAsistBean beanReg = (FcsPagoActuacionAsistBean)((Vector)admin.select(consulta)).get(0);
+//				Hashtable bean = (Hashtable)beanReg.getOriginalHash().clone();
+//				bean.put("IMPORTE",(String)bean.get(FcsPagoActuacionAsistBean.C_IMPORTEPAGADO));
+//				request.getSession().setAttribute("DATABACKUP", bean);
+//				request.setAttribute("tipo","actuacion");
+//				importeIrpf = (String)ocultos.get(6);
+//				importe = (String)ocultos.get(7);
+//				porcentajeIrpf = (String)ocultos.get(8);
+//			}catch(Exception e){
+//				throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null);
+//			}
+//			
+//		}else if ((tipo!=null)&&(tipo.equalsIgnoreCase("ASISTENCIA"))){
+//			String idInstitucion = (String)ocultos.get(1);
+//			String anio = (String)ocultos.get(3);
+//			String numero = (String)ocultos.get(4);
+//			FcsPagoAsistenciaAdm admin = new FcsPagoAsistenciaAdm(this.getUserBean(request));
+//			String consulta = " where " + FcsPagoAsistenciaBean.C_IDINSTITUCION + "=" + idInstitucion +
+//			" and " +FcsPagoAsistenciaBean.C_IDPAGOSJG + "=" + idPago +
+//			" and " +FcsPagoAsistenciaBean.C_ANIO + "=" + anio +
+//			" and " +FcsPagoAsistenciaBean.C_NUMERO + "=" + numero + " ";
+//			try{
+//				FcsPagoAsistenciaBean beanReg = (FcsPagoAsistenciaBean)((Vector)admin.select(consulta)).get(0);
+//				Hashtable bean = (Hashtable)beanReg.getOriginalHash().clone();
+//				bean.put("IMPORTE",(String)bean.get(FcsPagoAsistenciaBean.C_IMPORTEPAGADO));
+//				request.getSession().setAttribute("DATABACKUP", bean);
+//				request.setAttribute("tipo","asistencia");
+//				importeIrpf = (String)ocultos.get(5);
+//				importe = (String)ocultos.get(6);
+//				porcentajeIrpf = (String)ocultos.get(7);
+//			}catch(Exception e){
+//				throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null);
+//			}
+//			
+//		}else if ((tipo!=null)&&(tipo.equalsIgnoreCase("SOJ"))){
+//			String idInstitucion = (String)ocultos.get(1);
+//			String idTipoSoj = (String)ocultos.get(3);
+//			String anio = (String)ocultos.get(4);
+//			String numero = (String)ocultos.get(5);
+//			FcsPagoSojAdm admin = new FcsPagoSojAdm(this.getUserBean(request));
+//			String consulta = " where " + FcsPagoSojBean.C_IDINSTITUCION + "=" + idInstitucion +
+//			" and " + FcsPagoSojBean.C_IDTIPOSOJ + "=" + idTipoSoj +
+//			" and " + FcsPagoSojBean.C_IDPAGOSJG + "=" + idPago +
+//			" and " + FcsPagoSojBean.C_ANIO + "=" + anio +
+//			" and " + FcsPagoSojBean.C_NUMERO + "=" + numero + " ";
+//			try{
+//				FcsPagoSojBean beanReg = (FcsPagoSojBean)((Vector)admin.select(consulta)).get(0);
+//				Hashtable bean = (Hashtable)beanReg.getOriginalHash().clone();
+//				bean.put("IMPORTE",(String)bean.get(FcsPagoSojBean.C_IMPORTEPAGADO));
+//				request.getSession().setAttribute("DATABACKUP", bean);
+//				request.setAttribute("tipo","soj");
+//				importeIrpf = (String)ocultos.get(6);
+//				importe = (String)ocultos.get(7);
+//				porcentajeIrpf = (String)ocultos.get(8);
+//			}catch(Exception e){
+//				throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null);
+//			}
+//			
+//		}else if ((tipo!=null)&&(tipo.equalsIgnoreCase("EJG"))){
+//			String idInstitucion = (String)ocultos.get(1);
+//			String idTipoEjg = (String)ocultos.get(3);
+//			String anio = (String)ocultos.get(4);
+//			String numero = (String)ocultos.get(5);
+//			FcsPagoEjgAdm admin = new FcsPagoEjgAdm(this.getUserBean(request));
+//			String consulta = " where " + FcsPagoEjgBean.C_IDINSTITUCION + "=" + idInstitucion +
+//			" and " + FcsPagoEjgBean.C_IDTIPOEJG + "=" + idTipoEjg +
+//			" and " + FcsPagoEjgBean.C_ANIO + "=" + anio +
+//			" and " + FcsPagoEjgBean.C_IDPAGOSJG + "=" + idPago +
+//			" and " + FcsPagoEjgBean.C_NUMERO + "=" + numero + " ";
+//			try{
+//				FcsPagoEjgBean beanReg = (FcsPagoEjgBean)((Vector)admin.select(consulta)).get(0); 
+//				Hashtable bean = (Hashtable)beanReg.getOriginalHash().clone();
+//				bean.put("IMPORTE",(String)bean.get(FcsPagoEjgBean.C_IMPORTEPAGADO));
+//				request.getSession().setAttribute("DATABACKUP", bean);
+//				request.setAttribute("tipo","ejg");
+//				importeIrpf = (String)ocultos.get(6);
+//				importe = (String)ocultos.get(7);
+//				porcentajeIrpf = (String)ocultos.get(8);
+//			}catch(Exception e){
+//				throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null);
+//			}
+//			
+//		}else if ((tipo!=null)&&(tipo.equalsIgnoreCase("MOVIMIENTO"))){
+//			String idInstitucion = (String)ocultos.get(1);
+//			String idMovimiento =(String)ocultos.get(2);
+//			FcsMovimientosVariosAdm admin = new FcsMovimientosVariosAdm(this.getUserBean(request));
+//			String consulta = "select * from "+ FcsMovimientosVariosBean.T_NOMBRETABLA+" where " + FcsMovimientosVariosBean.C_IDINSTITUCION +"="+idInstitucion+
+//			" and " + FcsMovimientosVariosBean.C_IDMOVIMIENTO+"="+idMovimiento+" ";
+//			try{
+//				Hashtable bean = (Hashtable)((Vector)admin.selectGenerico(consulta)).get(0);
+//				bean.put("IMPORTE",(String)bean.get(FcsMovimientosVariosBean.C_CANTIDAD));
+//				request.getSession().setAttribute("DATABACKUP", bean);
+//				request.setAttribute("tipo","movimiento");
+//				importeIrpf = (String)ocultos.get(3);
+//				importe = (String)ocultos.get(4);
+//				porcentajeIrpf = (String)ocultos.get(5);
+//			}catch(Exception e){
+//				throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null);
+//			}
+//			
+//			/*}else if ((tipo!=null)&&(tipo.equalsIgnoreCase("RETENCION"))){
+//			 String idInstitucion = (String)ocultos.get(1);
+//			 String idPersona = (String)ocultos.get(2);
+//			 String idRetencion = (String)ocultos.get(3);
+//			 FcsRetencionesJudicialesAdm admin = new FcsRetencionesJudicialesAdm(this.getUserBean(request));
+//			 String consulta = "select "+ FcsRetencionesJudicialesBean.C_IMPORTE+" as IMPORTE from "+ FcsRetencionesJudicialesBean.T_NOMBRETABLA+" where " + FcsRetencionesJudicialesBean.C_IDINSTITUCION+"="+idInstitucion+
+//			 " and "+FcsRetencionesJudicialesBean.C_IDRETENCION+"="+idRetencion+" ";
+//			 try{
+//			 Hashtable bean = (Hashtable)((Vector)admin.selectGenerico(consulta)).get(0);
+//			 request.getSession().setAttribute("DATABACKUP", bean);
+//			 //request.getSession().setAttribute("fila",ocultos);
+//			  request.setAttribute("tipo","retencion");
+//			  }catch(Exception e){
+//			  throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null);
+//			  }*/
+//			
+//		}
+//		
+//		// para el scroll de la ventana modal
+//		//request.getSession().setAttribute("ScrollModal","S");
+//		
+//		request.setAttribute("idPago",idPago);
+//		request.setAttribute("idPersona",idPersona);
+//		request.setAttribute("importeIrpf",importeIrpf);
+//		request.setAttribute("importe",importe);
+//		request.setAttribute("porcentajeIrpf",porcentajeIrpf);
+//		return "precioPago";
+//	}
+//	
 	
 	/** 
 	 * Abre la modal de detalle de pago de cada colegiado.
@@ -562,75 +562,75 @@ public class DatosDetallePagoAction extends MasterAction {
 	 * @return  String  Destino del action  
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
-	protected String ver(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		
-		//Recogemos el formulario
-		DatosDetallePagoForm miform = (DatosDetallePagoForm)formulario;
-		
-		//recuperamos el UsrBean
-		HttpSession ses = request.getSession();
-		UsrBean usr = (UsrBean)ses.getAttribute("USRBEAN");
-		
-		//recuperamos la fila seleccionada y el campo oculto(idPersona)
-		Vector ocultos = (Vector)miform.getDatosTablaOcultos(0);
-		Vector visibles = (Vector)miform.getDatosTablaVisibles(0);
-		String idPersona = (String)ocultos.get(0);
-		String nColegiado = (String)visibles.get(0);
-		String nombreColegiado = (String)visibles.get(1);
-		//String importeTotal = (String)visibles.get(2);
-		
-		//Recuperamos el modo original:
-		String modoOriginal = miform.getModoOriginal();
-		
-		//recuperamos el identificador del pago y de la institucion
-		String idInstitucion = (String)miform.getIdInstitucion();
-		if(idInstitucion==null){
-			idInstitucion = (String)usr.getLocation();
-			idPersona = (String)request.getSession().getAttribute("idPersona");
-			request.getSession().removeAttribute("idPersona");
-		}
-		String idPago = (String)miform.getIdPago();
-		
-		//variable para recoger el nombre del colegio
-		String nombreInstitucion = "";
-		
-		//variable para consultar el estado
-		Hashtable hash = new Hashtable();
-		
-		try{
-			//Consultamos el nombre de la institucion
-			CenInstitucionAdm institucionAdm = new CenInstitucionAdm(this.getUserBean(request));
-			nombreInstitucion = (String)institucionAdm.getNombreInstitucion(usr.getLocation().toString());
-		}catch(ClsExceptions e){
-			ClsLogging.writeFileLogError("Error: No se ha podido recuperar el nombre del Colegio", e,3);
-		}
-		
-		//consultamos el estado del pago
-		FcsPagosJGAdm pagosAdm = new FcsPagosJGAdm (this.getUserBean(request));
-		try{
-			Integer idInst = new Integer (idInstitucion);
-			Integer idPag = new Integer (idPago);
-			hash = (Hashtable)pagosAdm.getEstadoPago(idInst, idPag);
-		}catch(Exception e){}
-		
-		//consultamos los detalles del pago para esa persona
-		FcsPagosJGAdm pagoAdm = new FcsPagosJGAdm (this.getUserBean(request));
-		Vector resultado = (Vector)pagoAdm.getDetallePorColegiado(idInstitucion,idPago,idPersona);
-		
-		// para el scroll de la ventana modal
-		//request.getSession().setAttribute("ScrollModal","S");
-		
-		//devolvemos el vector con los resultados y el nombre del cliente
-		request.setAttribute("estado",(String)hash.get(FcsEstadosPagosBean.C_IDESTADOPAGOSJG));
-		request.setAttribute("resultado",resultado);
-		request.setAttribute("idPago",idPago);
-		request.setAttribute("idLetrado",idPersona);
-		request.setAttribute("nombreColegiado",nombreColegiado);
-		request.setAttribute("numeroColegiado",nColegiado);
-		request.setAttribute("nombreInstitucion",nombreInstitucion);
-		request.setAttribute("modoOriginal",modoOriginal);
-		return "consulta";
-	}
+//	protected String ver(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+//		
+//		//Recogemos el formulario
+//		DatosDetallePagoForm miform = (DatosDetallePagoForm)formulario;
+//		
+//		//recuperamos el UsrBean
+//		HttpSession ses = request.getSession();
+//		UsrBean usr = (UsrBean)ses.getAttribute("USRBEAN");
+//		
+//		//recuperamos la fila seleccionada y el campo oculto(idPersona)
+//		Vector ocultos = (Vector)miform.getDatosTablaOcultos(0);
+//		Vector visibles = (Vector)miform.getDatosTablaVisibles(0);
+//		String idPersona = (String)ocultos.get(0);
+//		String nColegiado = (String)visibles.get(0);
+//		String nombreColegiado = (String)visibles.get(1);
+//		//String importeTotal = (String)visibles.get(2);
+//		
+//		//Recuperamos el modo original:
+//		String modoOriginal = miform.getModoOriginal();
+//		
+//		//recuperamos el identificador del pago y de la institucion
+//		String idInstitucion = (String)miform.getIdInstitucion();
+//		if(idInstitucion==null){
+//			idInstitucion = (String)usr.getLocation();
+//			idPersona = (String)request.getSession().getAttribute("idPersona");
+//			request.getSession().removeAttribute("idPersona");
+//		}
+//		String idPago = (String)miform.getIdPago();
+//		
+//		//variable para recoger el nombre del colegio
+//		String nombreInstitucion = "";
+//		
+//		//variable para consultar el estado
+//		Hashtable hash = new Hashtable();
+//		
+//		try{
+//			//Consultamos el nombre de la institucion
+//			CenInstitucionAdm institucionAdm = new CenInstitucionAdm(this.getUserBean(request));
+//			nombreInstitucion = (String)institucionAdm.getNombreInstitucion(usr.getLocation().toString());
+//		}catch(ClsExceptions e){
+//			ClsLogging.writeFileLogError("Error: No se ha podido recuperar el nombre del Colegio", e,3);
+//		}
+//		
+//		//consultamos el estado del pago
+//		FcsPagosJGAdm pagosAdm = new FcsPagosJGAdm (this.getUserBean(request));
+//		try{
+//			Integer idInst = new Integer (idInstitucion);
+//			Integer idPag = new Integer (idPago);
+//			hash = (Hashtable)pagosAdm.getEstadoPago(idInst, idPag);
+//		}catch(Exception e){}
+//		
+//		//consultamos los detalles del pago para esa persona
+//		FcsPagosJGAdm pagoAdm = new FcsPagosJGAdm (this.getUserBean(request));
+//		Vector resultado = (Vector)pagoAdm.getDetallePorColegiado(idInstitucion,idPago,idPersona);
+//		
+//		// para el scroll de la ventana modal
+//		//request.getSession().setAttribute("ScrollModal","S");
+//		
+//		//devolvemos el vector con los resultados y el nombre del cliente
+//		request.setAttribute("estado",(String)hash.get(FcsEstadosPagosBean.C_IDESTADOPAGOSJG));
+//		request.setAttribute("resultado",resultado);
+//		request.setAttribute("idPago",idPago);
+//		request.setAttribute("idLetrado",idPersona);
+//		request.setAttribute("nombreColegiado",nombreColegiado);
+//		request.setAttribute("numeroColegiado",nColegiado);
+//		request.setAttribute("nombreInstitucion",nombreInstitucion);
+//		request.setAttribute("modoOriginal",modoOriginal);
+//		return "consulta";
+//	}
 	
 	/** 
 	 *  Funcion que implementa la accion nuevo
@@ -986,239 +986,239 @@ public class DatosDetallePagoAction extends MasterAction {
 	 * @return  String  Destino del action  
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
-	protected String modificarPrecioPago(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		
-		boolean resultado = false;
-		//recogemos el registro seleccionado al principio en la tabla de detalles
-		Hashtable elegido;
-		//recogemos el formulario
-		DatosDetallePagoForm miform = (DatosDetallePagoForm)formulario;
-		//recogemos el tipo de modificacion que estamos haciendo, el apunte
-		String tipo=null, idPago=null;
-		UserTransaction tx = null;
-		UsrBean usr;
-		double diferenciaImportePagado=0, importeAnterior=0;
-		String resultadoPL[];
-		double importeIrpf=0;
-		
-		try {
-			double importeActual = (new Double((String)miform.getImporteTotal())).doubleValue();
-			usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
-			tipo = (String)miform.getTipo();
-			//recogemos el idPago, para luego actualizar en FcsPagosJG y el idPErsona
-			idPago = (String)miform.getIdPago();
-			
-			//Recuperamos de Sesion:
-			elegido = (Hashtable)request.getSession().getAttribute("DATABACKUP");
-			
-			if (tipo.equalsIgnoreCase("turno")){
-				//creamos el nuevo apunte, modificado
-				FcsPagoActuacionDesignaAdm admin = new FcsPagoActuacionDesignaAdm(this.getUserBean(request));
-				Hashtable nuevoApunte = (Hashtable)elegido.clone();
-				nuevoApunte.put(FcsPagoActuacionDesignaBean.C_IMPORTEPAGADO,(String)miform.getImporteTotal());
-				nuevoApunte.put(FcsPagoActuacionDesignaBean.C_IMPORTEIRPF,miform.getImporteIrpf());
-				
-				//calculamos la diferencia entre el importepagado anterior y el actual
-				importeAnterior = (new Double((String)elegido.get(FcsPagoActuacionDesignaBean.C_IMPORTEPAGADO))).doubleValue();
-				diferenciaImportePagado = importeAnterior - importeActual;
-				
-				//Calculo del IRPF:
-				resultadoPL = new String[3];
-				resultadoPL = EjecucionPLs.ejecutarPLCalcularIRPF(usr.getLocation(),miform.getIdPersona(),miform.getImporteTotal(),miform.getPorcentajeIrpf());
-				//Si el PL se ha ejecutado correctamente anhado en la hash el porcentajeIRPF calculado:
-				if (resultadoPL[2].equals("0")) {
-					nuevoApunte.put(FcsPagoActuacionDesignaBean.C_IMPORTEIRPF,resultadoPL[0]);
-				} else {
-					return exitoModal("messages.updated.error",request);
-				}
-				
-				//iniciamos la transaccion
-				tx = usr.getTransaction();
-				tx.begin();
-				resultado = admin.update(nuevoApunte, elegido);
-			}
-			if (tipo.equalsIgnoreCase("guardia")){
-				FcsPagoGuardiasColegiadoAdm admin = new FcsPagoGuardiasColegiadoAdm(this.getUserBean(request));
-				//creamos el nuevo apunte, modificado
-				Hashtable nuevoApunte = (Hashtable)elegido.clone();
-				nuevoApunte.put(FcsPagoGuardiasColegiadoBean.C_IMPORTEPAGADO,miform.getImporteTotal());
-				nuevoApunte.put(FcsPagoGuardiasColegiadoBean.C_IMPORTEIRPF,miform.getImporteIrpf());
-				
-				//calculamos la diferencia entre el importepagado anterior y el actual
-				importeAnterior = (new Double((String)elegido.get(FcsPagoGuardiasColegiadoBean.C_IMPORTEPAGADO))).doubleValue();
-				diferenciaImportePagado = importeAnterior - importeActual;
-				
-				//Calculo del IRPF:
-				resultadoPL = new String[3];
-				resultadoPL = EjecucionPLs.ejecutarPLCalcularIRPF(usr.getLocation(),miform.getIdPersona(),miform.getImporteTotal(),miform.getPorcentajeIrpf());
-				//Si el PL se ha ejecutado correctamente anhado en la hash el porcentajeIRPF calculado:
-				if (resultadoPL[2].equals("0")) {
-					nuevoApunte.put(FcsPagoGuardiasColegiadoBean.C_IMPORTEIRPF,resultadoPL[0]);
-				} else {
-					return exitoModal("messages.updated.error",request);
-				}
-				
-				//iniciamos la transaccion
-				tx = usr.getTransaction();
-				tx.begin();
-				resultado = admin.update(nuevoApunte, elegido);
-			}
-			if (tipo.equalsIgnoreCase("actuacion")){
-				FcsPagoActuacionAsistAdm admin = new FcsPagoActuacionAsistAdm(this.getUserBean(request));
-				//creamos el nuevo apunte, modificado
-				Hashtable nuevoApunte = (Hashtable)elegido.clone();
-				nuevoApunte.put(FcsPagoActuacionAsistBean.C_IMPORTEPAGADO,(String)miform.getImporteTotal());
-				nuevoApunte.put(FcsPagoActuacionAsistBean.C_IMPORTEIRPF,miform.getImporteIrpf());
-				
-				//calculamos la diferencia entre el importepagado anterior y el actual
-				importeAnterior = (new Double((String)elegido.get(FcsPagoActuacionAsistBean.C_IMPORTEPAGADO))).doubleValue();
-				diferenciaImportePagado = importeAnterior - importeActual;
-				
-				//Calculo del IRPF:
-				resultadoPL = new String[3];
-				resultadoPL = EjecucionPLs.ejecutarPLCalcularIRPF(usr.getLocation(),miform.getIdPersona(),miform.getImporteTotal(),miform.getPorcentajeIrpf());
-				//Si el PL se ha ejecutado correctamente anhado en la hash el porcentajeIRPF calculado:
-				if (resultadoPL[2].equals("0")) {
-					nuevoApunte.put(FcsPagoActuacionAsistBean.C_IMPORTEIRPF,resultadoPL[0]);
-				} else {
-					return exitoModal("messages.updated.error",request);
-				}
-				
-				//iniciamos la transaccion
-				tx = usr.getTransaction();
-				tx.begin();
-				resultado = admin.update(nuevoApunte, elegido);
-			}
-			if (tipo.equalsIgnoreCase("asistencia")){
-				FcsPagoAsistenciaAdm admin = new FcsPagoAsistenciaAdm(this.getUserBean(request));
-				//creamos el nuevo apunte, modificado
-				Hashtable nuevoApunte = (Hashtable)elegido.clone();
-				nuevoApunte.put(FcsPagoAsistenciaBean.C_IMPORTEPAGADO,(String)miform.getImporteTotal());
-				nuevoApunte.put(FcsPagoAsistenciaBean.C_IMPORTEIRPF,miform.getImporteIrpf());
-				
-				//calculamos la diferencia entre el importepagado anterior y el actual
-				importeAnterior = (new Double((String)elegido.get(FcsPagoAsistenciaBean.C_IMPORTEPAGADO))).doubleValue();
-				diferenciaImportePagado = importeAnterior - importeActual;
-				
-				//Calculo del IRPF:
-				resultadoPL = new String[3];
-				resultadoPL = EjecucionPLs.ejecutarPLCalcularIRPF(usr.getLocation(),miform.getIdPersona(),miform.getImporteTotal(),miform.getPorcentajeIrpf());
-				//Si el PL se ha ejecutado correctamente anhado en la hash el porcentajeIRPF calculado:
-				if (resultadoPL[2].equals("0")) {
-					nuevoApunte.put(FcsPagoAsistenciaBean.C_IMPORTEIRPF,resultadoPL[0]);
-				} else {
-					return exitoModal("messages.updated.error",request);
-				}
-				
-				//iniciamos la transaccion
-				tx = usr.getTransaction();
-				tx.begin();
-				resultado = admin.update(nuevoApunte, elegido);
-			}
-			if (tipo.equalsIgnoreCase("soj")){
-				FcsPagoSojAdm admin = new FcsPagoSojAdm(this.getUserBean(request));
-				//creamos el nuevo apunte, modificado
-				Hashtable nuevoApunte = (Hashtable)elegido.clone();
-				nuevoApunte.put(FcsPagoSojBean.C_IMPORTEPAGADO,(String)miform.getImporteTotal());
-				nuevoApunte.put(FcsPagoSojBean.C_IMPORTEIRPF,miform.getImporteIrpf());
-				
-				//calculamos la diferencia entre el importepagado anterior y el actual
-				importeAnterior = (new Double((String)elegido.get(FcsPagoSojBean.C_IMPORTEPAGADO))).doubleValue();
-				diferenciaImportePagado = importeAnterior - importeActual;
-				
-				//Calculo del IRPF:
-				resultadoPL = new String[3];
-				resultadoPL = EjecucionPLs.ejecutarPLCalcularIRPF(usr.getLocation(),miform.getIdPersona(),miform.getImporteTotal(),miform.getPorcentajeIrpf());
-				//Si el PL se ha ejecutado correctamente anhado en la hash el porcentajeIRPF calculado:
-				if (resultadoPL[2].equals("0")) {
-					nuevoApunte.put(FcsPagoSojBean.C_IMPORTEIRPF,resultadoPL[0]);
-				} else {
-					return exitoModal("messages.updated.error",request);
-				}
-				
-				//iniciamos la transaccion
-				tx = usr.getTransaction();
-				tx.begin();
-				resultado = admin.update(nuevoApunte, elegido);
-			}
-			if (tipo.equalsIgnoreCase("ejg")){
-				FcsPagoEjgAdm admin = new FcsPagoEjgAdm(this.getUserBean(request));
-				//creamos el nuevo apunte, modificado
-				Hashtable nuevoApunte = (Hashtable)elegido.clone();
-				nuevoApunte.put(FcsPagoEjgBean.C_IMPORTEPAGADO, (String)miform.getImporteTotal());
-				nuevoApunte.put(FcsPagoEjgBean.C_IMPORTEIRPF,miform.getImporteIrpf());
-				
-				//calculamos la diferencia entre el importepagado anterior y el actual
-				importeAnterior = (new Double((String)elegido.get(FcsPagoEjgBean.C_IMPORTEPAGADO))).doubleValue();
-				diferenciaImportePagado = importeAnterior - importeActual;
-				
-				//Calculo del IRPF:
-				resultadoPL = new String[3];
-				resultadoPL = EjecucionPLs.ejecutarPLCalcularIRPF(usr.getLocation(),miform.getIdPersona(),miform.getImporteTotal(),miform.getPorcentajeIrpf());
-				//Si el PL se ha ejecutado correctamente anhado en la hash el porcentajeIRPF calculado:
-				if (resultadoPL[2].equals("0")) {
-					nuevoApunte.put(FcsPagoEjgBean.C_IMPORTEIRPF,resultadoPL[0]);
-				} else {
-					return exitoModal("messages.updated.error",request);
-				}
-				
-				//iniciamos la transaccion
-				tx = usr.getTransaction();
-				tx.begin();
-				resultado = admin.update(nuevoApunte, elegido);
-			}
-			if (tipo.equalsIgnoreCase("movimiento")){
-				FcsMovimientosVariosAdm admin = new FcsMovimientosVariosAdm (this.getUserBean(request));
-				//creamos el nuevo apunte, modificado
-				Hashtable nuevoApunte = (Hashtable)elegido.clone();
-				nuevoApunte.put(FcsMovimientosVariosBean.C_CANTIDAD,(String)miform.getImporteTotal());
-				nuevoApunte.put(FcsMovimientosVariosBean.C_IMPORTEIRPF,String.valueOf(importeIrpf));
-				
-				//calculamos la diferencia entre el importepagado anterior y el actual
-				importeAnterior = (new Double((String)elegido.get(FcsMovimientosVariosBean.C_CANTIDAD))).doubleValue();
-				diferenciaImportePagado = importeAnterior - importeActual;
-				
-				//Calculo del IRPF:
-				resultadoPL = new String[3];
-				resultadoPL = EjecucionPLs.ejecutarPLCalcularIRPF(usr.getLocation(),miform.getIdPersona(),miform.getImporteTotal(),miform.getPorcentajeIrpf());
-				//Si el PL se ha ejecutado correctamente anhado en la hash el porcentajeIRPF calculado:
-				if (resultadoPL[2].equals("0")) {
-					nuevoApunte.put(FcsMovimientosVariosBean.C_IMPORTEIRPF,resultadoPL[0]);
-				} else {
-					return exitoModal("messages.updated.error",request);
-				}
-				
-				//iniciamos la transaccion
-				tx = usr.getTransaction();
-				tx.begin();
-				resultado = admin.update(nuevoApunte, elegido);
-			}
-			
-			//Ahora modificamos en FcsPAgosJG
-			FcsPagosJGAdm pagosAdm = new FcsPagosJGAdm(this.getUserBean(request));
-			String consulta = " where " + FcsPagosJGBean.C_IDINSTITUCION + "=" + usr.getLocation() +
-			" and " + FcsPagosJGBean.C_IDPAGOSJG + "=" +idPago+" ";
-			FcsPagosJGBean pago = (FcsPagosJGBean)((Vector)pagosAdm.select(consulta)).get(0);
-			Hashtable pagoOld = (Hashtable)pago.getOriginalHash().clone();
-			Hashtable pagoNew = (Hashtable)pagoOld.clone();
-			
-			//calculamos el nuevo importe pagado
-			//que será el valor anterior mas la suma de la diferencia de importes del apunte modificado
-			double importePagoAnterior = ((Double)pago.getImportePagado()).doubleValue();
-			double importePagoActual = importePagoAnterior + diferenciaImportePagado;
-			pagoNew.put(FcsPagosJGBean.C_IMPORTEPAGADO,String.valueOf(importePagoActual));
-			resultado = pagosAdm.update(pagoNew, pagoOld);
-			tx.commit();
-			
-			//devolvemos el mapping
-			//como vamos a volver a cargar el detalle para la persona sin pasar por seleccionar una fila
-			//pasamos el idPersona por la session, se borrará al editar los detalles
-			request.getSession().setAttribute("idPersona",(String)elegido.get(FcsMovimientosVariosBean.C_IDPERSONA));
-		} catch(Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,tx);
-		}
-		return exitoModal("messages.updated.success",request);
-	}
+//	protected String modificarPrecioPago(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+//		
+//		boolean resultado = false;
+//		//recogemos el registro seleccionado al principio en la tabla de detalles
+//		Hashtable elegido;
+//		//recogemos el formulario
+//		DatosDetallePagoForm miform = (DatosDetallePagoForm)formulario;
+//		//recogemos el tipo de modificacion que estamos haciendo, el apunte
+//		String tipo=null, idPago=null;
+//		UserTransaction tx = null;
+//		UsrBean usr;
+//		double diferenciaImportePagado=0, importeAnterior=0;
+//		String resultadoPL[];
+//		double importeIrpf=0;
+//		
+//		try {
+//			double importeActual = (new Double((String)miform.getImporteTotal())).doubleValue();
+//			usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+//			tipo = (String)miform.getTipo();
+//			//recogemos el idPago, para luego actualizar en FcsPagosJG y el idPErsona
+//			idPago = (String)miform.getIdPago();
+//			
+//			//Recuperamos de Sesion:
+//			elegido = (Hashtable)request.getSession().getAttribute("DATABACKUP");
+//			
+//			if (tipo.equalsIgnoreCase("turno")){
+//				//creamos el nuevo apunte, modificado
+//				FcsPagoActuacionDesignaAdm admin = new FcsPagoActuacionDesignaAdm(this.getUserBean(request));
+//				Hashtable nuevoApunte = (Hashtable)elegido.clone();
+//				nuevoApunte.put(FcsPagoActuacionDesignaBean.C_IMPORTEPAGADO,(String)miform.getImporteTotal());
+//				nuevoApunte.put(FcsPagoActuacionDesignaBean.C_IMPORTEIRPF,miform.getImporteIrpf());
+//				
+//				//calculamos la diferencia entre el importepagado anterior y el actual
+//				importeAnterior = (new Double((String)elegido.get(FcsPagoActuacionDesignaBean.C_IMPORTEPAGADO))).doubleValue();
+//				diferenciaImportePagado = importeAnterior - importeActual;
+//				
+//				//Calculo del IRPF:
+//				resultadoPL = new String[3];
+//				resultadoPL = EjecucionPLs.ejecutarPLCalcularIRPF(usr.getLocation(),miform.getIdPersona(),miform.getImporteTotal(),miform.getPorcentajeIrpf());
+//				//Si el PL se ha ejecutado correctamente anhado en la hash el porcentajeIRPF calculado:
+//				if (resultadoPL[2].equals("0")) {
+//					nuevoApunte.put(FcsPagoActuacionDesignaBean.C_IMPORTEIRPF,resultadoPL[0]);
+//				} else {
+//					return exitoModal("messages.updated.error",request);
+//				}
+//				
+//				//iniciamos la transaccion
+//				tx = usr.getTransaction();
+//				tx.begin();
+//				resultado = admin.update(nuevoApunte, elegido);
+//			}
+//			if (tipo.equalsIgnoreCase("guardia")){
+//				FcsPagoGuardiasColegiadoAdm admin = new FcsPagoGuardiasColegiadoAdm(this.getUserBean(request));
+//				//creamos el nuevo apunte, modificado
+//				Hashtable nuevoApunte = (Hashtable)elegido.clone();
+//				nuevoApunte.put(FcsPagoGuardiasColegiadoBean.C_IMPORTEPAGADO,miform.getImporteTotal());
+//				nuevoApunte.put(FcsPagoGuardiasColegiadoBean.C_IMPORTEIRPF,miform.getImporteIrpf());
+//				
+//				//calculamos la diferencia entre el importepagado anterior y el actual
+//				importeAnterior = (new Double((String)elegido.get(FcsPagoGuardiasColegiadoBean.C_IMPORTEPAGADO))).doubleValue();
+//				diferenciaImportePagado = importeAnterior - importeActual;
+//				
+//				//Calculo del IRPF:
+//				resultadoPL = new String[3];
+//				resultadoPL = EjecucionPLs.ejecutarPLCalcularIRPF(usr.getLocation(),miform.getIdPersona(),miform.getImporteTotal(),miform.getPorcentajeIrpf());
+//				//Si el PL se ha ejecutado correctamente anhado en la hash el porcentajeIRPF calculado:
+//				if (resultadoPL[2].equals("0")) {
+//					nuevoApunte.put(FcsPagoGuardiasColegiadoBean.C_IMPORTEIRPF,resultadoPL[0]);
+//				} else {
+//					return exitoModal("messages.updated.error",request);
+//				}
+//				
+//				//iniciamos la transaccion
+//				tx = usr.getTransaction();
+//				tx.begin();
+//				resultado = admin.update(nuevoApunte, elegido);
+//			}
+//			if (tipo.equalsIgnoreCase("actuacion")){
+//				FcsPagoActuacionAsistAdm admin = new FcsPagoActuacionAsistAdm(this.getUserBean(request));
+//				//creamos el nuevo apunte, modificado
+//				Hashtable nuevoApunte = (Hashtable)elegido.clone();
+//				nuevoApunte.put(FcsPagoActuacionAsistBean.C_IMPORTEPAGADO,(String)miform.getImporteTotal());
+//				nuevoApunte.put(FcsPagoActuacionAsistBean.C_IMPORTEIRPF,miform.getImporteIrpf());
+//				
+//				//calculamos la diferencia entre el importepagado anterior y el actual
+//				importeAnterior = (new Double((String)elegido.get(FcsPagoActuacionAsistBean.C_IMPORTEPAGADO))).doubleValue();
+//				diferenciaImportePagado = importeAnterior - importeActual;
+//				
+//				//Calculo del IRPF:
+//				resultadoPL = new String[3];
+//				resultadoPL = EjecucionPLs.ejecutarPLCalcularIRPF(usr.getLocation(),miform.getIdPersona(),miform.getImporteTotal(),miform.getPorcentajeIrpf());
+//				//Si el PL se ha ejecutado correctamente anhado en la hash el porcentajeIRPF calculado:
+//				if (resultadoPL[2].equals("0")) {
+//					nuevoApunte.put(FcsPagoActuacionAsistBean.C_IMPORTEIRPF,resultadoPL[0]);
+//				} else {
+//					return exitoModal("messages.updated.error",request);
+//				}
+//				
+//				//iniciamos la transaccion
+//				tx = usr.getTransaction();
+//				tx.begin();
+//				resultado = admin.update(nuevoApunte, elegido);
+//			}
+//			if (tipo.equalsIgnoreCase("asistencia")){
+//				FcsPagoAsistenciaAdm admin = new FcsPagoAsistenciaAdm(this.getUserBean(request));
+//				//creamos el nuevo apunte, modificado
+//				Hashtable nuevoApunte = (Hashtable)elegido.clone();
+//				nuevoApunte.put(FcsPagoAsistenciaBean.C_IMPORTEPAGADO,(String)miform.getImporteTotal());
+//				nuevoApunte.put(FcsPagoAsistenciaBean.C_IMPORTEIRPF,miform.getImporteIrpf());
+//				
+//				//calculamos la diferencia entre el importepagado anterior y el actual
+//				importeAnterior = (new Double((String)elegido.get(FcsPagoAsistenciaBean.C_IMPORTEPAGADO))).doubleValue();
+//				diferenciaImportePagado = importeAnterior - importeActual;
+//				
+//				//Calculo del IRPF:
+//				resultadoPL = new String[3];
+//				resultadoPL = EjecucionPLs.ejecutarPLCalcularIRPF(usr.getLocation(),miform.getIdPersona(),miform.getImporteTotal(),miform.getPorcentajeIrpf());
+//				//Si el PL se ha ejecutado correctamente anhado en la hash el porcentajeIRPF calculado:
+//				if (resultadoPL[2].equals("0")) {
+//					nuevoApunte.put(FcsPagoAsistenciaBean.C_IMPORTEIRPF,resultadoPL[0]);
+//				} else {
+//					return exitoModal("messages.updated.error",request);
+//				}
+//				
+//				//iniciamos la transaccion
+//				tx = usr.getTransaction();
+//				tx.begin();
+//				resultado = admin.update(nuevoApunte, elegido);
+//			}
+//			if (tipo.equalsIgnoreCase("soj")){
+//				FcsPagoSojAdm admin = new FcsPagoSojAdm(this.getUserBean(request));
+//				//creamos el nuevo apunte, modificado
+//				Hashtable nuevoApunte = (Hashtable)elegido.clone();
+//				nuevoApunte.put(FcsPagoSojBean.C_IMPORTEPAGADO,(String)miform.getImporteTotal());
+//				nuevoApunte.put(FcsPagoSojBean.C_IMPORTEIRPF,miform.getImporteIrpf());
+//				
+//				//calculamos la diferencia entre el importepagado anterior y el actual
+//				importeAnterior = (new Double((String)elegido.get(FcsPagoSojBean.C_IMPORTEPAGADO))).doubleValue();
+//				diferenciaImportePagado = importeAnterior - importeActual;
+//				
+//				//Calculo del IRPF:
+//				resultadoPL = new String[3];
+//				resultadoPL = EjecucionPLs.ejecutarPLCalcularIRPF(usr.getLocation(),miform.getIdPersona(),miform.getImporteTotal(),miform.getPorcentajeIrpf());
+//				//Si el PL se ha ejecutado correctamente anhado en la hash el porcentajeIRPF calculado:
+//				if (resultadoPL[2].equals("0")) {
+//					nuevoApunte.put(FcsPagoSojBean.C_IMPORTEIRPF,resultadoPL[0]);
+//				} else {
+//					return exitoModal("messages.updated.error",request);
+//				}
+//				
+//				//iniciamos la transaccion
+//				tx = usr.getTransaction();
+//				tx.begin();
+//				resultado = admin.update(nuevoApunte, elegido);
+//			}
+//			if (tipo.equalsIgnoreCase("ejg")){
+//				FcsPagoEjgAdm admin = new FcsPagoEjgAdm(this.getUserBean(request));
+//				//creamos el nuevo apunte, modificado
+//				Hashtable nuevoApunte = (Hashtable)elegido.clone();
+//				nuevoApunte.put(FcsPagoEjgBean.C_IMPORTEPAGADO, (String)miform.getImporteTotal());
+//				nuevoApunte.put(FcsPagoEjgBean.C_IMPORTEIRPF,miform.getImporteIrpf());
+//				
+//				//calculamos la diferencia entre el importepagado anterior y el actual
+//				importeAnterior = (new Double((String)elegido.get(FcsPagoEjgBean.C_IMPORTEPAGADO))).doubleValue();
+//				diferenciaImportePagado = importeAnterior - importeActual;
+//				
+//				//Calculo del IRPF:
+//				resultadoPL = new String[3];
+//				resultadoPL = EjecucionPLs.ejecutarPLCalcularIRPF(usr.getLocation(),miform.getIdPersona(),miform.getImporteTotal(),miform.getPorcentajeIrpf());
+//				//Si el PL se ha ejecutado correctamente anhado en la hash el porcentajeIRPF calculado:
+//				if (resultadoPL[2].equals("0")) {
+//					nuevoApunte.put(FcsPagoEjgBean.C_IMPORTEIRPF,resultadoPL[0]);
+//				} else {
+//					return exitoModal("messages.updated.error",request);
+//				}
+//				
+//				//iniciamos la transaccion
+//				tx = usr.getTransaction();
+//				tx.begin();
+//				resultado = admin.update(nuevoApunte, elegido);
+//			}
+//			if (tipo.equalsIgnoreCase("movimiento")){
+//				FcsMovimientosVariosAdm admin = new FcsMovimientosVariosAdm (this.getUserBean(request));
+//				//creamos el nuevo apunte, modificado
+//				Hashtable nuevoApunte = (Hashtable)elegido.clone();
+//				nuevoApunte.put(FcsMovimientosVariosBean.C_CANTIDAD,(String)miform.getImporteTotal());
+//				nuevoApunte.put(FcsMovimientosVariosBean.C_IMPORTEIRPF,String.valueOf(importeIrpf));
+//				
+//				//calculamos la diferencia entre el importepagado anterior y el actual
+//				importeAnterior = (new Double((String)elegido.get(FcsMovimientosVariosBean.C_CANTIDAD))).doubleValue();
+//				diferenciaImportePagado = importeAnterior - importeActual;
+//				
+//				//Calculo del IRPF:
+//				resultadoPL = new String[3];
+//				resultadoPL = EjecucionPLs.ejecutarPLCalcularIRPF(usr.getLocation(),miform.getIdPersona(),miform.getImporteTotal(),miform.getPorcentajeIrpf());
+//				//Si el PL se ha ejecutado correctamente anhado en la hash el porcentajeIRPF calculado:
+//				if (resultadoPL[2].equals("0")) {
+//					nuevoApunte.put(FcsMovimientosVariosBean.C_IMPORTEIRPF,resultadoPL[0]);
+//				} else {
+//					return exitoModal("messages.updated.error",request);
+//				}
+//				
+//				//iniciamos la transaccion
+//				tx = usr.getTransaction();
+//				tx.begin();
+//				resultado = admin.update(nuevoApunte, elegido);
+//			}
+//			
+//			//Ahora modificamos en FcsPAgosJG
+//			FcsPagosJGAdm pagosAdm = new FcsPagosJGAdm(this.getUserBean(request));
+//			String consulta = " where " + FcsPagosJGBean.C_IDINSTITUCION + "=" + usr.getLocation() +
+//			" and " + FcsPagosJGBean.C_IDPAGOSJG + "=" +idPago+" ";
+//			FcsPagosJGBean pago = (FcsPagosJGBean)((Vector)pagosAdm.select(consulta)).get(0);
+//			Hashtable pagoOld = (Hashtable)pago.getOriginalHash().clone();
+//			Hashtable pagoNew = (Hashtable)pagoOld.clone();
+//			
+//			//calculamos el nuevo importe pagado
+//			//que será el valor anterior mas la suma de la diferencia de importes del apunte modificado
+//			double importePagoAnterior = ((Double)pago.getImportePagado()).doubleValue();
+//			double importePagoActual = importePagoAnterior + diferenciaImportePagado;
+//			pagoNew.put(FcsPagosJGBean.C_IMPORTEPAGADO,String.valueOf(importePagoActual));
+//			resultado = pagosAdm.update(pagoNew, pagoOld);
+//			tx.commit();
+//			
+//			//devolvemos el mapping
+//			//como vamos a volver a cargar el detalle para la persona sin pasar por seleccionar una fila
+//			//pasamos el idPersona por la session, se borrará al editar los detalles
+//			request.getSession().setAttribute("idPersona",(String)elegido.get(FcsMovimientosVariosBean.C_IDPERSONA));
+//		} catch(Exception e) {
+//			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,tx);
+//		}
+//		return exitoModal("messages.updated.success",request);
+//	}
 	
 	/** 
 	 * Funcion que implementa la accion verDetalle
