@@ -39,9 +39,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 							FcsPagosJGBean.C_IDFACTURACION, 	FcsPagosJGBean.C_NOMBRE,
 							FcsPagosJGBean.C_ABREVIATURA, 		FcsPagosJGBean.C_FECHADESDE,
 							FcsPagosJGBean.C_FECHAHASTA, 		FcsPagosJGBean.C_CRITERIOPAGOTURNO,
-							FcsPagosJGBean.C_IMPORTEPAGADO,		FcsPagosJGBean.C_PORCENTAJEOFICIO, 
-							FcsPagosJGBean.C_PORCENTAJEGUARDIAS,FcsPagosJGBean.C_PORCENTAJESOJ, 
-							FcsPagosJGBean.C_PORCENTAJEEJG, 	FcsPagosJGBean.C_IMPORTEREPARTIR,
+							FcsPagosJGBean.C_IMPORTEPAGADO,		FcsPagosJGBean.C_IMPORTEREPARTIR,
 							FcsPagosJGBean.C_IMPORTEEJG,		FcsPagosJGBean.C_IMPORTEGUARDIA,
 							FcsPagosJGBean.C_IMPORTEMINIMO,		FcsPagosJGBean.C_IMPORTEOFICIO,
 							FcsPagosJGBean.C_IMPORTESOJ,		FcsPagosJGBean.C_CONTABILIZADO,
@@ -73,10 +71,6 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 			bean.setFechaDesde(UtilidadesHash.getString(hash,FcsPagosJGBean.C_FECHADESDE));
 			bean.setFechaHasta(UtilidadesHash.getString(hash,FcsPagosJGBean.C_FECHAHASTA));
 			bean.setCriterioPagoTurno(UtilidadesHash.getString(hash,FcsPagosJGBean.C_CRITERIOPAGOTURNO));
-			bean.setPorcentajeOficio(UtilidadesHash.getDouble(hash,FcsPagosJGBean.C_PORCENTAJEOFICIO));
-			bean.setPorcentajeGuardias(UtilidadesHash.getDouble(hash,FcsPagosJGBean.C_PORCENTAJEGUARDIAS));
-			bean.setPorcentajeSOJ(UtilidadesHash.getDouble(hash,FcsPagosJGBean.C_PORCENTAJESOJ));
-			bean.setPorcentajeEJG(UtilidadesHash.getDouble(hash,FcsPagosJGBean.C_PORCENTAJEEJG));
 			bean.setImporteRepartir(UtilidadesHash.getDouble(hash,FcsPagosJGBean.C_IMPORTEREPARTIR));
 			bean.setImportePagado(UtilidadesHash.getDouble(hash,FcsPagosJGBean.C_IMPORTEPAGADO));
 			bean.setImporteEJG(UtilidadesHash.getDouble(hash,FcsPagosJGBean.C_IMPORTEEJG));
@@ -110,10 +104,6 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, FcsPagosJGBean.C_FECHADESDE, beanJG.getFechaDesde());
 			UtilidadesHash.set(htData, FcsPagosJGBean.C_FECHAHASTA, beanJG.getFechaHasta());
 			UtilidadesHash.set(htData, FcsPagosJGBean.C_CRITERIOPAGOTURNO, beanJG.getCriterioPagoTurno());
-			UtilidadesHash.set(htData, FcsPagosJGBean.C_PORCENTAJEOFICIO, beanJG.getPorcentajeOficio());
-			UtilidadesHash.set(htData, FcsPagosJGBean.C_PORCENTAJEGUARDIAS, beanJG.getPorcentajeGuardias());
-			UtilidadesHash.set(htData, FcsPagosJGBean.C_PORCENTAJESOJ, beanJG.getPorcentajeSOJ());
-			UtilidadesHash.set(htData, FcsPagosJGBean.C_PORCENTAJEEJG, beanJG.getPorcentajeEJG());
 			UtilidadesHash.set(htData, FcsPagosJGBean.C_IMPORTEREPARTIR, beanJG.getImporteRepartir());			
 			UtilidadesHash.set(htData, FcsPagosJGBean.C_IMPORTEPAGADO, beanJG.getImportePagado());
 			UtilidadesHash.set(htData, FcsPagosJGBean.C_IMPORTEEJG, beanJG.getImporteEJG());
@@ -276,10 +266,6 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 				"       pag."+FcsPagosJGBean.C_FECHADESDE+", " +
 				"       pag."+FcsPagosJGBean.C_FECHAHASTA+", " +
 				"       pag."+FcsPagosJGBean.C_CRITERIOPAGOTURNO+", " +
-				"       pag."+FcsPagosJGBean.C_PORCENTAJEOFICIO+", " +
-				"       pag."+FcsPagosJGBean.C_PORCENTAJEGUARDIAS+", " +
-				"       pag."+FcsPagosJGBean.C_PORCENTAJESOJ+", " +
-				"       pag."+FcsPagosJGBean.C_PORCENTAJEEJG+", " +
 				"       pag."+FcsPagosJGBean.C_IMPORTEREPARTIR+", " +
 				"       pag."+FcsPagosJGBean.C_CONCEPTO+", " +
 				"       pag."+FcsPagosJGBean.C_BANCOS_CODIGO+", " +
@@ -377,10 +363,6 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 				"       pag."+FcsPagosJGBean.C_FECHADESDE+", " +
 				"       pag."+FcsPagosJGBean.C_FECHAHASTA+", " +
 				"       pag."+FcsPagosJGBean.C_CRITERIOPAGOTURNO+", " +
-				"       pag."+FcsPagosJGBean.C_PORCENTAJEOFICIO+", " +
-				"       pag."+FcsPagosJGBean.C_PORCENTAJEGUARDIAS+", " +
-				"       pag."+FcsPagosJGBean.C_PORCENTAJESOJ+", " +
-				"       pag."+FcsPagosJGBean.C_PORCENTAJEEJG+", " +
 				"       pag."+FcsPagosJGBean.C_IMPORTEREPARTIR+", " +
 				"       pag."+FcsPagosJGBean.C_CONCEPTO+", " +
 				"       pag."+FcsPagosJGBean.C_BANCOS_CODIGO+", " +
@@ -532,103 +514,103 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 	 * @param idPersona
 	 * @return
 	 */
-	public Vector getDetallePorColegiado (String idInstitucion, String idPago, String idPersona )
-	{
-		//resultado final
-		Vector resultado = new Vector();
-		//turnos de oficio
-		Vector actuacionDesigna = new Vector();
-		//guardias presenciales
-		Vector guardiasPresenciales = new Vector();
-		//asistencias
-		Vector asistencias = new Vector();
-		//actuaciones
-		Vector actuaciones = new Vector();
-		//expedientesSoj
-		Vector expedientesSoj = new Vector();
-		//expedientesEjg
-		Vector expedientesEjg = new Vector();
-		//movimientos varios
-		Vector movimientos = new Vector();
-		//retenciones Judiciales
-		Vector retencionesJudiciales = new Vector();
-		
-		//consultamos el estado del pago
-		Integer idInst = new Integer(idInstitucion);
-		Integer idPag = new Integer (idPago);
-		
-		//variable para saber si el estado del pago es = 30
-		boolean cerrado = false;
-		try{
-			Hashtable hash = (Hashtable)this.getEstadoPago(idInst,idPag);
-			cerrado = ((String)hash.get(FcsEstadosPagosBean.C_IDESTADOPAGOSJG)).equals(ClsConstants.ESTADO_PAGO_CERRADO);
-		}catch(Exception e){}
-		
-		//llenamos cada uno de los Vectores parciales
-		try{
-			FcsPagoActuacionDesignaAdm actDesAdm = new FcsPagoActuacionDesignaAdm (this.usrbean);
-			actuacionDesigna = (Vector)actDesAdm.getTurnosOficio(idInstitucion,idPago,idPersona);
-		}catch(Exception e){
-			actuacionDesigna = null;
-		}
-		try{
-			FcsPagoGuardiasColegiadoAdm guarColAdm = new FcsPagoGuardiasColegiadoAdm (this.usrbean);
-			guardiasPresenciales = (Vector)guarColAdm.getGuardiasPresenciales(idInstitucion,idPago,idPersona);
-		}catch(Exception e){
-			guardiasPresenciales = null;
-		}
-		try{
-			FcsPagoAsistenciaAdm asisAdm = new FcsPagoAsistenciaAdm (this.usrbean);
-			asistencias = (Vector)asisAdm.getAsistencias(idInstitucion,idPago,idPersona);
-		}catch(Exception e){
-			asistencias = null;
-		}
-		try{
-			FcsPagoActuacionAsistAdm actAsisAdm = new FcsPagoActuacionAsistAdm (this.usrbean);
-			actuaciones = (Vector)actAsisAdm.getActuacionAsistencias(idInstitucion,idPago,idPersona);
-		}catch(Exception e){
-			actuaciones = null;
-		}
-		try{
-			FcsPagoSojAdm sojAdm = new FcsPagoSojAdm (this.usrbean);
-			expedientesSoj = (Vector)sojAdm.getExpedientesSoj(idInstitucion,idPago,idPersona);
-		}catch(Exception e){
-			expedientesSoj = null;
-		}
-		try{
-			FcsPagoEjgAdm ejgAdm = new FcsPagoEjgAdm (this.usrbean);
-			expedientesEjg = (Vector)ejgAdm.getExpedientesEjg(idInstitucion,idPago,idPersona);
-		}catch(Exception e){
-			expedientesEjg = null;
-		}
-		try{
-			FcsMovimientosVariosAdm movimientosAdm = new FcsMovimientosVariosAdm (this.usrbean);
-			movimientos = (Vector)movimientosAdm.getMovimientos(idInstitucion,idPago,idPersona);
-		}catch(Exception e){
-			expedientesEjg = null;
-		}
-		if(cerrado){
-			try{
-				FcsCobrosRetencionJudicialAdm retencionesJudAdm = new FcsCobrosRetencionJudicialAdm(this.usrbean);
-				retencionesJudiciales = (Vector)retencionesJudAdm.getRetenciones(idInstitucion,idPago,idPersona);
-			}catch(Exception e){
-				expedientesEjg = null;
-			}
-		}
-		
-		
-		//los metemos todos en el Vector resultado
-		resultado.add(0, actuacionDesigna);
-		resultado.add(1, guardiasPresenciales);
-		resultado.add(2, asistencias);
-		resultado.add(3, actuaciones); 
-		resultado.add(4, expedientesSoj);
-		resultado.add(5, expedientesEjg);
-		resultado.add(6, movimientos);
-		if (cerrado)resultado.add(7, retencionesJudiciales);
-		
-		return resultado; 
-	}
+//	public Vector getDetallePorColegiado (String idInstitucion, String idPago, String idPersona )
+//	{
+//		//resultado final
+//		Vector resultado = new Vector();
+//		//turnos de oficio
+//		Vector actuacionDesigna = new Vector();
+//		//guardias presenciales
+//		Vector guardiasPresenciales = new Vector();
+//		//asistencias
+//		Vector asistencias = new Vector();
+//		//actuaciones
+//		Vector actuaciones = new Vector();
+//		//expedientesSoj
+//		Vector expedientesSoj = new Vector();
+//		//expedientesEjg
+//		Vector expedientesEjg = new Vector();
+//		//movimientos varios
+//		Vector movimientos = new Vector();
+//		//retenciones Judiciales
+//		Vector retencionesJudiciales = new Vector();
+//		
+//		//consultamos el estado del pago
+//		Integer idInst = new Integer(idInstitucion);
+//		Integer idPag = new Integer (idPago);
+//		
+//		//variable para saber si el estado del pago es = 30
+//		boolean cerrado = false;
+//		try{
+//			Hashtable hash = (Hashtable)this.getEstadoPago(idInst,idPag);
+//			cerrado = ((String)hash.get(FcsEstadosPagosBean.C_IDESTADOPAGOSJG)).equals(ClsConstants.ESTADO_PAGO_CERRADO);
+//		}catch(Exception e){}
+//		
+//		//llenamos cada uno de los Vectores parciales
+//		try{
+//			FcsPagoActuacionDesignaAdm actDesAdm = new FcsPagoActuacionDesignaAdm (this.usrbean);
+//			actuacionDesigna = (Vector)actDesAdm.getTurnosOficio(idInstitucion,idPago,idPersona);
+//		}catch(Exception e){
+//			actuacionDesigna = null;
+//		}
+//		try{
+//			FcsPagoGuardiasColegiadoAdm guarColAdm = new FcsPagoGuardiasColegiadoAdm (this.usrbean);
+//			guardiasPresenciales = (Vector)guarColAdm.getGuardiasPresenciales(idInstitucion,idPago,idPersona);
+//		}catch(Exception e){
+//			guardiasPresenciales = null;
+//		}
+//		try{
+//			FcsPagoAsistenciaAdm asisAdm = new FcsPagoAsistenciaAdm (this.usrbean);
+//			asistencias = (Vector)asisAdm.getAsistencias(idInstitucion,idPago,idPersona);
+//		}catch(Exception e){
+//			asistencias = null;
+//		}
+//		try{
+//			FcsPagoActuacionAsistAdm actAsisAdm = new FcsPagoActuacionAsistAdm (this.usrbean);
+//			actuaciones = (Vector)actAsisAdm.getActuacionAsistencias(idInstitucion,idPago,idPersona);
+//		}catch(Exception e){
+//			actuaciones = null;
+//		}
+//		try{
+//			FcsPagoSojAdm sojAdm = new FcsPagoSojAdm (this.usrbean);
+//			expedientesSoj = (Vector)sojAdm.getExpedientesSoj(idInstitucion,idPago,idPersona);
+//		}catch(Exception e){
+//			expedientesSoj = null;
+//		}
+//		try{
+//			FcsPagoEjgAdm ejgAdm = new FcsPagoEjgAdm (this.usrbean);
+//			expedientesEjg = (Vector)ejgAdm.getExpedientesEjg(idInstitucion,idPago,idPersona);
+//		}catch(Exception e){
+//			expedientesEjg = null;
+//		}
+//		try{
+//			FcsMovimientosVariosAdm movimientosAdm = new FcsMovimientosVariosAdm (this.usrbean);
+//			movimientos = (Vector)movimientosAdm.getMovimientos(idInstitucion,idPago,idPersona);
+//		}catch(Exception e){
+//			expedientesEjg = null;
+//		}
+//		if(cerrado){
+//			try{
+//				FcsCobrosRetencionJudicialAdm retencionesJudAdm = new FcsCobrosRetencionJudicialAdm(this.usrbean);
+//				retencionesJudiciales = (Vector)retencionesJudAdm.getRetenciones(idInstitucion,idPago,idPersona);
+//			}catch(Exception e){
+//				expedientesEjg = null;
+//			}
+//		}
+//		
+//		
+//		//los metemos todos en el Vector resultado
+//		resultado.add(0, actuacionDesigna);
+//		resultado.add(1, guardiasPresenciales);
+//		resultado.add(2, asistencias);
+//		resultado.add(3, actuaciones); 
+//		resultado.add(4, expedientesSoj);
+//		resultado.add(5, expedientesEjg);
+//		resultado.add(6, movimientos);
+//		if (cerrado)resultado.add(7, retencionesJudiciales);
+//		
+//		return resultado; 
+//	}
 	
 	
 	
@@ -741,87 +723,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 	}
 
 
-	/**
-	 * Obtiene de los detalles de pagos de una persona el procentaje IRPF que se aplico al pago
-	 * @param idPago
-	 * @param idPersona
-	 * @param idInstitucion
-	 * @return
-	 * @throws ClsExceptions
-	 */
-	
-	public double obtenerPorcentajeIRPF (String idPago, String idPersona, String idInstitucion) throws ClsExceptions
-	{
-		//donde devolveremos el resultado
-		Vector resultado = new Vector();
-		//select a ejecutar
-		String consulta = 	" SELECT DISTINCT " + FcsPagoActuacionAsistBean.C_PORCENTAJEIRPF + " AS IRPF " +
-							" FROM " + FcsPagoActuacionAsistBean.T_NOMBRETABLA +
-							" WHERE " + FcsPagoActuacionAsistBean.C_IDINSTITUCION + "=" + idInstitucion +
-							" AND " + FcsPagoActuacionAsistBean.C_IDPAGOSJG + "=" + idPago + 
-							" AND " + FcsPagoActuacionAsistBean.C_IDPERSONA + "=" + idPersona + 
 
-							" UNION " + 
-							" SELECT DISTINCT " + FcsPagoActuacionDesignaBean.C_PORCENTAJEIRPF + " AS IRPF " +  
-							" FROM " + FcsPagoActuacionDesignaBean.T_NOMBRETABLA +
-							" WHERE " + FcsPagoActuacionDesignaBean.C_IDINSTITUCION + "=" + idInstitucion +
-							" AND " + FcsPagoActuacionDesignaBean.C_IDPAGOSJG + "=" + idPago + 
-							" AND " + FcsPagoActuacionDesignaBean.C_IDPERSONA + "=" + idPersona + 
-
-							" UNION " + 
-							" SELECT DISTINCT " + FcsPagoAsistenciaBean.C_PORCENTAJEIRPF + " AS IRPF " +
-							" FROM " + FcsPagoAsistenciaBean.T_NOMBRETABLA +
-							" WHERE " + FcsPagoAsistenciaBean.C_IDINSTITUCION + "=" + idInstitucion +
-							" AND " + FcsPagoAsistenciaBean.C_IDPAGOSJG + "=" + idPago + 
-							" AND " + FcsPagoAsistenciaBean.C_IDPERSONA + "=" + idPersona + 
-
-							" UNION " + 
-							" SELECT DISTINCT " + FcsPagoEjgBean.C_PORCENTAJEIRPF + " AS IRPF " +
-							" FROM " + FcsPagoEjgBean.T_NOMBRETABLA +
-							" WHERE " + FcsPagoEjgBean.C_IDINSTITUCION + "=" + idInstitucion +
-							" AND " + FcsPagoEjgBean.C_IDPAGOSJG + "=" + idPago + 
-							" AND " + FcsPagoEjgBean.C_IDPERSONA + "=" + idPersona + 
-
-							" UNION " + 
-							" SELECT DISTINCT " + FcsPagoGuardiasColegiadoBean.C_PORCENTAJEIRPF + " AS IRPF " +
-							" FROM " + FcsPagoGuardiasColegiadoBean.T_NOMBRETABLA +
-							" WHERE " + FcsPagoGuardiasColegiadoBean.C_IDINSTITUCION + "=" + idInstitucion +
-							" AND " + FcsPagoGuardiasColegiadoBean.C_IDPAGOSJG + "=" + idPago + 
-							" AND " + FcsPagoGuardiasColegiadoBean.C_IDPERSONA + "=" + idPersona + 
-
-							" UNION " + 
-							" SELECT DISTINCT " + FcsPagoSojBean.C_PORCENTAJEIRPF +  " AS IRPF " +
-							" FROM " + FcsPagoSojBean.T_NOMBRETABLA +
-							" WHERE " + FcsPagoSojBean.C_IDINSTITUCION + "=" + idInstitucion +
-							" AND " + FcsPagoSojBean.C_IDPAGOSJG + "=" + idPago +
-							" AND " + FcsPagoSojBean.C_IDPERSONA + "=" + idPersona +
-							
-							" UNION " + 
-							" SELECT DISTINCT " + FcsMovimientosVariosBean.C_PORCENTAJEIRPF +  " AS IRPF " +
-							" FROM " + FcsMovimientosVariosBean.T_NOMBRETABLA +
-							" WHERE " + FcsMovimientosVariosBean.C_IDINSTITUCION + "=" + idInstitucion +
-							" AND " + FcsMovimientosVariosBean.C_IDPAGOSJG + "=" + idPago +
-							" AND " + FcsMovimientosVariosBean.C_IDPERSONA + "=" + idPersona; 
-
-		try
-		{
-			//ejecutamos la consulta
-			resultado = (Vector)this.selectGenerico(consulta);
-			if (resultado!=null && resultado.size()>0) {
-				Hashtable res = (Hashtable) resultado.get(0);
-				return new Double((String)res.get("IRPF")).doubleValue();
-			} else {
-				return 0;
-			}
-		}
-		catch(Exception e)
-		{
-			throw new ClsExceptions (e,"Error en FcsPAgosJG.obtenerPorcentajeIRPF()" + consulta);
-		}
-		 
-	}
-
-	
 	// DCG ///////////////////////////
 	
 	/**
@@ -1127,32 +1029,30 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 	 */
 	public Hashtable getConceptosPendientesYTotal(Integer idInstitucion, Integer idFacturacion) throws ClsExceptions{
 
-		String consulta = null;
+		StringBuffer consulta = new StringBuffer();
 
-		consulta =  "SELECT F.Importeoficio TOTALOFICIO, F.Importeguardia TOTALGUARDIA, F.Importeejg TOTALEJG, F.Importesoj TOTALSOJ ";
-		consulta += " FROM FCS_FACTURACIONJG F";
-		consulta += " WHERE F.IDINSTITUCION="+idInstitucion.toString();
-		consulta += " AND F.IDFACTURACION="+idFacturacion.toString();		
+		consulta.append("SELECT SUM (P.IMPORTEPAGADO) as TOTALIMPORTEPAGADO, ");
+		consulta.append(" SUM (P.IMPORTEOFICIO) as TOTALIMPORTEPAGADOOFICIO, ");
+		consulta.append(" SUM (P.IMPORTEGUARDIA)  as TOTALIMPORTEPAGADOGUARDIA, ");
+		consulta.append(" SUM (P.IMPORTEEJG)  as TOTALIMPORTEPAGADOEJG, ");
+		consulta.append(" SUM (P.IMPORTESOJ)  as TOTALIMPORTEPAGADOSOJ, ");
+		consulta.append(" round( SUM(P.IMPORTEOFICIO)  * 100 / max(F.IMPORTEOFICIO)  ,2)  as TOTALPORCENTAJEPAGADOOFICIO, ");
+		consulta.append(" round( SUM(P.IMPORTEGUARDIA) * 100 / max(F.IMPORTEGUARDIA) ,2)  as TOTALPORCENTAJEPAGADOGUARDIA, ");
+		consulta.append(" round( SUM(P.IMPORTEEJG)     * 100 / max(F.IMPORTEEJG)     ,2)  as TOTALPORCENTAJEPAGADOEJG, ");
+		consulta.append(" round( SUM(P.IMPORTESOJ)     * 100 / max(F.IMPORTESOJ)     ,2)  as TOTALPORCENTAJEPAGADOSOJ, ");
+		consulta.append(" max(F.IMPORTEOFICIO)  as TOTALOFICIO, ");
+		consulta.append(" max(F.IMPORTEGUARDIA) as TOTALGUARDIA, ");
+		consulta.append(" max(F.IMPORTEEJG)     as TOTALEJG, ");
+		consulta.append(" max(F.IMPORTESOJ)     as TOTALSOJ ");
+		consulta.append(" FROM FCS_PAGOSJG P, FCS_FACTURACIONJG F");
+		consulta.append(" WHERE ");
+		consulta.append(" P.IDINSTITUCION="+idInstitucion.toString());
+		consulta.append(" AND P.IDFACTURACION="+idFacturacion.toString());
+		consulta.append(" AND F.IDINSTITUCION = P.IDINSTITUCION");
+		consulta.append(" AND F.IDFACTURACION = P.IDFACTURACION");
 
-		Hashtable totalFacturacion = (Hashtable)this.selectGenerico(consulta).get(0);
+		Hashtable totalConceptos = (Hashtable)this.selectGenerico(consulta.toString()).get(0);
 
-		consulta =  "SELECT SUM (P.IMPORTEPAGADO) as TOTALIMPORTEPAGADO, "+
-		" SUM (P.IMPORTEOFICIO) as TOTALIMPORTEPAGADOOFICIO, "+
-		" SUM (P.IMPORTEGUARDIA)  as TOTALIMPORTEPAGADOGUARDIA, "+
-		" SUM (P.IMPORTEEJG)  as TOTALIMPORTEPAGADOEJG, "+
-		" SUM (P.IMPORTESOJ)  as TOTALIMPORTEPAGADOSOJ,"+
-		" SUM (P.PORCENTAJEOFICIO)  as TOTALPORCENTAJEPAGADOOFICIO, "+
-		" SUM (P.PORCENTAJEGUARDIAS)  as TOTALPORCENTAJEPAGADOGUARDIA, "+
-		" SUM (P.PORCENTAJEEJG)  as TOTALPORCENTAJEPAGADOEJG, "+
-		" SUM (P.PORCENTAJESOJ) as TOTALPORCENTAJEPAGADOSOJ" +
-		" FROM FCS_PAGOSJG P"+
-		" WHERE "+
-		" P.IDINSTITUCION="+idInstitucion.toString()+
-		" AND P.IDFACTURACION="+idFacturacion.toString();		
-
-		Hashtable totalConceptos = (Hashtable)this.selectGenerico(consulta).get(0);
-
-		totalConceptos.putAll(totalFacturacion);
 		return totalConceptos;
 	}
 

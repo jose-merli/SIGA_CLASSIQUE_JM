@@ -14,7 +14,7 @@ public class FcsPagosJGBean extends MasterBean {
 	
 	/* Variables */
 	private Integer idInstitucion, idPagosJG, idFacturacion;
-	private Double importeRepartir, importePagado, importeOficio = null, importeGuardia = null, importeSOJ = null, importeEJG = null, importeMinimo = null, porcentajeOficio, porcentajeGuardias, porcentajeSOJ, porcentajeEJG;
+	private Double importeRepartir, importePagado, importeOficio = null, importeGuardia = null, importeSOJ = null, importeEJG = null, importeMinimo = null; 
 	private String 	nombre=null, abreviatura=null, fechaDesde=null, fechaHasta=null, criterioPagoTurno=null, contabilizado=null, concepto=null, bancosCodigo=null;
 	
 
@@ -30,10 +30,6 @@ public class FcsPagosJGBean extends MasterBean {
 	static public final String C_FECHADESDE			= "FECHADESDE";
 	static public final String C_FECHAHASTA			= "FECHAHASTA";
 	static public final String C_CRITERIOPAGOTURNO	= "CRITERIOPAGOTURNO";
-	static public final String C_PORCENTAJEOFICIO	= "PORCENTAJEOFICIO";
-	static public final String C_PORCENTAJEGUARDIAS	= "PORCENTAJEGUARDIAS";
-	static public final String C_PORCENTAJESOJ		= "PORCENTAJESOJ";
-	static public final String C_PORCENTAJEEJG		= "PORCENTAJEEJG";
 	static public final String C_IMPORTEREPARTIR	= "IMPORTEREPARTIR";
 	static public final String C_IMPORTEPAGADO		= "IMPORTEPAGADO";
 	static public final String C_IMPORTEOFICIO	= "IMPORTEOFICIO";			
@@ -159,54 +155,6 @@ public class FcsPagosJGBean extends MasterBean {
 	 */
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
-	}
-	/**
-	 * @return Returns the porcentajeEJG.
-	 */
-	public Double getPorcentajeEJG() {
-		return porcentajeEJG;
-	}
-	/**
-	 * @param porcentajeEJG The porcentajeEJG to set.
-	 */
-	public void setPorcentajeEJG(Double porcentajeEJG) {
-		this.porcentajeEJG = porcentajeEJG;
-	}
-	/**
-	 * @return Returns the porcentajeGuardias.
-	 */
-	public Double getPorcentajeGuardias() {
-		return porcentajeGuardias;
-	}
-	/**
-	 * @param porcentajeGuardias The porcentajeGuardias to set.
-	 */
-	public void setPorcentajeGuardias(Double porcentajeGuardias) {
-		this.porcentajeGuardias = porcentajeGuardias;
-	}
-	/**
-	 * @return Returns the porcentajeOficio.
-	 */
-	public Double getPorcentajeOficio() {
-		return porcentajeOficio;
-	}
-	/**
-	 * @param porcentajeOficio The porcentajeOficio to set.
-	 */
-	public void setPorcentajeOficio(Double porcentajeOficio) {
-		this.porcentajeOficio = porcentajeOficio;
-	}
-	/**
-	 * @return Returns the porcentajeSOJ.
-	 */
-	public Double getPorcentajeSOJ() {
-		return porcentajeSOJ;
-	}
-	/**
-	 * @param porcentajeSOJ The porcentajeSOJ to set.
-	 */
-	public void setPorcentajeSOJ(Double porcentajeSOJ) {
-		this.porcentajeSOJ = porcentajeSOJ;
 	}
 	/**
 	 * @return Returns the importePagado.
