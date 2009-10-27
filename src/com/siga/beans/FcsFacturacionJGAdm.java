@@ -992,67 +992,24 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 					if (i < resultado1.size() - 1) sPagos += ",";
 				}
 		
-				String select = " SELECT IDPERSONAIMPRESO, SUM(TOTALIMPORTEIRPF) AS TOTALIMPORTEIRPF, SUM(TOTALIMPORTEPAGADO) AS TOTALIMPORTEPAGADO " +
-								" FROM (" +
-									
-									// Designa
-									" ( " +
-										" SELECT NVL (" + FcsPagoActuacionDesignaBean.C_IDPERSONASOCIEDAD + ", " + FcsPagoActuacionDesignaBean.C_IDPERSONA + ") AS IDPERSONAIMPRESO, " +
-											   " SUM (" + FcsPagoActuacionDesignaBean.C_IMPORTEIRPF + ") AS TOTALIMPORTEIRPF, " +
-											   " SUM (" + FcsPagoActuacionDesignaBean.C_IMPORTEPAGADO + ") AS TOTALIMPORTEPAGADO " +
-										" FROM "  + FcsPagoActuacionDesignaBean.T_NOMBRETABLA + 
-										" WHERE " + FcsPagoActuacionDesignaBean.C_IDINSTITUCION + " = " + idInstitucion + 
-										" AND "   + FcsPagoActuacionDesignaBean.C_IDPAGOSJG + " IN (" + sPagos + ")" +
-										" GROUP BY NVL (" + FcsPagoActuacionDesignaBean.C_IDPERSONASOCIEDAD + ", " + FcsPagoActuacionDesignaBean.C_IDPERSONA + ")" +
-									" ) " +
-									
-									// Apunte
-									" UNION ALL ( " +
-										" SELECT NVL (" + FcsPagoApunteBean.C_IDPERSONASOCIEDAD + ", " + FcsPagoApunteBean.C_IDPERSONA + ") AS IDPERSONAIMPRESO, " +
-											   " SUM (" + FcsPagoApunteBean.C_IMPORTEIRPF + ") AS TOTALIMPORTEIRPF, " +
-											   " SUM (" + FcsPagoApunteBean.C_IMPORTEPAGADO + ") AS TOTALIMPORTEPAGADO " +
-										" FROM "  + FcsPagoApunteBean.T_NOMBRETABLA + 
-										" WHERE " + FcsPagoApunteBean.C_IDINSTITUCION + " = " + idInstitucion + 
-										" AND "   + FcsPagoApunteBean.C_IDPAGOSJG + " IN (" + sPagos + ")" +
-										" GROUP BY NVL (" + FcsPagoApunteBean.C_IDPERSONASOCIEDAD + ", " + FcsPagoApunteBean.C_IDPERSONA + ")" +
-									" ) " +
-									
-									// SOJ
-									" UNION ALL ( " +
-										" SELECT NVL (" + FcsPagoSojBean.C_IDPERSONASOCIEDAD + ", " + FcsPagoSojBean.C_IDPERSONA + ") AS IDPERSONAIMPRESO, " +
-											   " SUM (" + FcsPagoSojBean.C_IMPORTEIRPF + ") AS TOTALIMPORTEIRPF, " +
-											   " SUM (" + FcsPagoSojBean.C_IMPORTEPAGADO + ") AS TOTALIMPORTEPAGADO " +
-										" FROM "  + FcsPagoSojBean.T_NOMBRETABLA + 
-										" WHERE " + FcsPagoSojBean.C_IDINSTITUCION + " = " + idInstitucion + 
-										" AND "   + FcsPagoSojBean.C_IDPAGOSJG + " IN (" + sPagos + ")" +
-										" GROUP BY NVL (" + FcsPagoSojBean.C_IDPERSONASOCIEDAD + ", " + FcsPagoSojBean.C_IDPERSONA + ")" +
-									" ) " +
-									
-									// EJG
-									" UNION ALL ( " +
-										" SELECT NVL (" + FcsPagoEjgBean.C_IDPERSONASOCIEDAD + ", " + FcsPagoEjgBean.C_IDPERSONA + ") AS IDPERSONAIMPRESO, " +
-											   " SUM (" + FcsPagoEjgBean.C_IMPORTEIRPF + ") AS TOTALIMPORTEIRPF, " +
-											   " SUM (" + FcsPagoEjgBean.C_IMPORTEPAGADO + ") AS TOTALIMPORTEPAGADO " +
-										" FROM "  + FcsPagoEjgBean.T_NOMBRETABLA + 
-										" WHERE " + FcsPagoEjgBean.C_IDINSTITUCION + " = " + idInstitucion + 
-										" AND "   + FcsPagoEjgBean.C_IDPAGOSJG + " IN (" + sPagos + ")" +
-										" GROUP BY NVL (" + FcsPagoEjgBean.C_IDPERSONASOCIEDAD + ", " + FcsPagoEjgBean.C_IDPERSONA + ")" +
-									" ) " +
-									
-									// MOVIMIENTOS
-									" UNION ALL ( " +
-										" SELECT NVL (" + FcsMovimientosVariosBean.C_IDPERSONASOCIEDAD + ", " + FcsMovimientosVariosBean.C_IDPERSONA + ") AS IDPERSONAIMPRESO, " +
-											   " SUM (" + FcsMovimientosVariosBean.C_IMPORTEIRPF + ") AS TOTALIMPORTEIRPF, " +
-											   " SUM (" + FcsMovimientosVariosBean.C_CANTIDAD + ") AS TOTALIMPORTEPAGADO " +
-										" FROM "  + FcsMovimientosVariosBean.T_NOMBRETABLA + 
-										" WHERE " + FcsMovimientosVariosBean.C_IDINSTITUCION + " = " + idInstitucion + 
-										" AND "   + FcsMovimientosVariosBean.C_IDPAGOSJG + " IN (" + sPagos + ")" +
-										" GROUP BY NVL (" + FcsMovimientosVariosBean.C_IDPERSONASOCIEDAD + ", " + FcsMovimientosVariosBean.C_IDPERSONA + ")" +
-									" ) " +
-								" ) " +
-								" GROUP BY IDPERSONAIMPRESO";
+				StringBuffer select = new StringBuffer();
+				select.append(" SELECT NVL (" + FcsPagoColegiadoBean.C_IDPERDESTINO + ", " + FcsPagoColegiadoBean.C_IDPERORIGEN + ") AS IDPERSONAIMPRESO, ");
+				select.append("        SUM ( (" + FcsPagoColegiadoBean.C_IMPOFICIO + " + ");
+				select.append(                  FcsPagoColegiadoBean.C_IMPASISTENCIA + " + ");
+				select.append(                  FcsPagoColegiadoBean.C_IMPEJG + " + ");
+				select.append(                  FcsPagoColegiadoBean.C_IMPSOJ + " + ");
+				select.append(                  FcsPagoColegiadoBean.C_IMPMOVVAR + ") * " + FcsPagoColegiadoBean.C_IMPIRPF + " / 100 ) AS TOTALIMPORTEIRPF, ");
+				select.append("        SUM (" + FcsPagoColegiadoBean.C_IMPOFICIO + " + ");
+				select.append(                  FcsPagoColegiadoBean.C_IMPASISTENCIA + " + ");
+				select.append(                  FcsPagoColegiadoBean.C_IMPEJG + " + ");
+				select.append(                  FcsPagoColegiadoBean.C_IMPSOJ + " + ");
+				select.append(                  FcsPagoColegiadoBean.C_IMPMOVVAR + " ) AS TOTALIMPORTEPAGADO ");
+				select.append(" FROM "  + FcsPagoColegiadoBean.T_NOMBRETABLA);
+				select.append(" WHERE " + FcsPagoColegiadoBean.C_IDINSTITUCION + " = " + idInstitucion);
+				select.append(" AND "   + FcsPagoColegiadoBean.C_IDPAGOSJG + " IN (" + sPagos + ")");
+				select.append(" GROUP BY NVL (" + FcsPagoColegiadoBean.C_IDPERDESTINO + ", " + FcsPagoColegiadoBean.C_IDPERORIGEN + ")");
 
-				Vector vIRPF = (Vector) this.selectGenerico(select);
+				Vector vIRPF = (Vector) this.selectGenerico(select.toString());
 				if (vIRPF != null && vIRPF.size() > 0) {					
 					for (int j = 0; j < vIRPF.size(); j++) {
 						Hashtable aux = (Hashtable) vIRPF.get(j);
