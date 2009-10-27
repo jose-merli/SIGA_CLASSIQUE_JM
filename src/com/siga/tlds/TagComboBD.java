@@ -146,7 +146,7 @@ public class TagComboBD extends TagSupport {
 					{
 						String elem=st.nextToken();
 						if(elem.equals("parametro")){
-							if (this.parametros != null && this.parametros.length > 0 && this.parametros.length>iParametro && this.parametros[iParametro] != null && !this.parametros[iParametro].equals("")){
+							if (this.parametros != null && this.parametros.length > 0 && this.parametros.length>iParametro && this.parametros[iParametro] != null && !this.parametros[iParametro].equals("")&& !this.parametros[iParametro].equals("null") ){
 								Vector v2 = ReemplazaParametrosBind(parametroWhere,consultaSQL, parametros[iParametro],codigos,contador);
 								iParametro++;
 								consultaSQL = (String) v2.get(0);
@@ -155,7 +155,7 @@ public class TagComboBD extends TagSupport {
 							}	
 
 						}else if(elem.equals("parametroIn")){
-							if (this.parametrosIn != null && this.parametrosIn.length > 0 && this.parametrosIn.length>iParametroInt && this.parametrosIn[iParametroInt] != null&& !this.parametrosIn[iParametroInt].equals("")) {
+							if (this.parametrosIn != null && this.parametrosIn.length > 0 && this.parametrosIn.length>iParametroInt && this.parametrosIn[iParametroInt] != null && !this.parametrosIn[iParametroInt].equals("")&& !this.parametrosIn[iParametroInt].equals("null") ) {
 //								consultaSQL = ReemplazaParametrosIn(parametroIn,consultaSQL, this.parametrosIn);
 								Vector v2 = ReemplazaParametrosBindIn(parametroIn,consultaSQL, (Object[]) this.parametrosIn[iParametroInt],codigos,contador);
 								iParametroInt++;

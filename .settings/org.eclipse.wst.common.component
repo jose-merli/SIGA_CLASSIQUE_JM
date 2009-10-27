@@ -5,6 +5,7 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/WebContent/WEB-INF/properties"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/WebContent/html"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/.apt_src"/>
         <property name="java-output-path"/>
         <property name="context-root" value="/SIGA/"/>
     </wb-module>

@@ -37,8 +37,9 @@
 	String buscar = (String) request.getParameter("buscar");
 	String funcionBuscar = "";
 	if (buscar != null) {
-		funcionBuscar = "buscar()";
+		funcionBuscar = "buscarPag()";
 	}
+	String modoBuscar = "";
 
 	ArrayList vTipoExp = new ArrayList();
 	ArrayList vFase = new ArrayList();
@@ -46,13 +47,15 @@
 	try {
 		BusquedaAlertaForm form = (BusquedaAlertaForm) session.getAttribute("busquedaAlertaForm");
 		if (form == null) {
+			modoBuscar = "buscarIni";
 			vTipoExp.add("");
 			vFase.add("");
 			vEstado.add("");
 		} else {
+			modoBuscar = "buscar";
 			vTipoExp.add(form.getComboTipoExpediente());
-			vFase.add(form.getIdFase());
-			vEstado.add(form.getIdEstado());
+			vFase.add(form.getComboTipoExpediente()+","+form.getIdFase());
+			vEstado.add(form.getComboTipoExpediente()+","+form.getIdFase() +","+ form.getIdEstado());
 		}
 	} catch (Exception e) {
 		vTipoExp.add("");
@@ -67,24 +70,20 @@
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
 		<script>
+
+			function valoresCombo() {
 			var faseSeleccionada='<%=(String)vFase.get(0)%>';
 			var estadoSeleccionado='<%=(String)vEstado.get(0)%>';
-/*			function valoresCombo() {
-			
-				var acceso = comboFasesFrame.document.getElementsByTagName("select");
-				acceso[0].value = faseSeleccionada;
-				document.forms[0].comboFases.value = faseSeleccionada;
-
-				acceso = comboEstadosFrame.document.getElementsByTagName("select");
-				acceso[0].value = estadoSeleccionado;
-				document.forms[0].comboEstados.value = estadoSeleccionado;
-
+				document.forms[0].getElementById("comboTipoExpediente").onChange();
+				//document.forms[0].getElementById("comboFases").selectedIndex = faseSeleccionada;
+				document.forms[0].getElementById("comboFases").onChange();
+				//document.forms[0].getElementById("comboEstados").selectedIndex = estadoSeleccionado;
 			}
-*/			
+			
 			function recargarCombos() {
 				document.forms[0].comboTipoExpediente.onchange();
-				//window.setTimeout("valoresCombo()",1000,"Javascript");
-				
+			//	var faseSeleccionada='<%=(String)vFase.get(0)%>';
+
 			}
 			
 		</script>
@@ -109,7 +108,7 @@
 	</style>
 	<body onload="ajusteAlto('resultado');recargarCombos();<%=funcionBuscar%>">
 		<html:javascript formName="busquedaAlertaForm" staticJavascript="false" />
-		<html:form action="/EXP_Consultas.do?noReset=true" method="POST" target="resultado">
+		<html:form action="/EXP_Consultas.do?noReset=false" method="POST" target="resultado">
 			<html:hidden property="modo" value="" />
 			<input type="hidden" name="limpiarFilaSeleccionada" value="">
 			<fieldset>
@@ -180,13 +179,25 @@
 		<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 		<script language="JavaScript">
 			<!-- Funcion asociada a boton buscar -->
-			function buscar() {
+			function buscarPag() {
 				sub();
 				if (!validateBusquedaAlertaForm(document.busquedaAlertaForm)){
 					fin();
 					return false;
 				}		
 				document.forms[0].modo.value="buscar";
+				document.forms[0].target="resultado";	
+				document.forms[0].submit();	
+			}
+
+			<!-- Funcion asociada a boton buscar -->
+			function buscar() {
+				sub();
+				if (!validateBusquedaAlertaForm(document.busquedaAlertaForm)){
+					fin();
+					return false;
+				}		
+				document.forms[0].modo.value="buscarIni";
 				document.forms[0].target="resultado";	
 				document.forms[0].submit();	
 			}

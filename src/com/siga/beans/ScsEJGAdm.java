@@ -3105,6 +3105,56 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error ScsEJGAdm.getProcuradorCalificacionEjgSalida");
 		}
 	}
+	
+	/**
+	 * 
+	 * @param idInstitucion
+	 * @param idProcurador ejg.idprocurador
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	private Vector getDatosProcuradorEjgSalida (String idInstitucion, String idProcurador) throws ClsExceptions  
+	{
+		try {
+			Hashtable htCodigos = new Hashtable();
+			int keyContador = 0;
+			
+		
+			StringBuffer sql = new StringBuffer();
+			sql.append(" ");
+			sql.append(" select nvl(pro.nombre || ' ' || pro.apellidos1 || ' ' || pro.apellidos2 || '  ' || ");
+			sql.append(" pro.ncolegiado || '', ");
+			sql.append(" '-') as PROCURADOR_DEFENSA_JURIDICA,");
+			sql.append(" pro.ncolegiado as PROCURADOR_DJ_NCOLEGIADO, ");
+			sql.append(" pro.telefono1 as PROCURADOR_DJ_TELEFONO1, ");
+			sql.append(" pro.telefono2 as PROCURADOR_DJ_TELEFONO2 ");
+			sql.append(" from  ");
+			sql.append(" scs_procurador          pro ");
+
+			sql.append(" WHERE ");
+			
+		
+			
+			keyContador++;
+			htCodigos.put(new Integer(keyContador), idInstitucion);
+			sql.append(" pro.idinstitucion = :");
+			sql.append(keyContador);
+			
+			keyContador++;
+			htCodigos.put(new Integer(keyContador), idProcurador);
+			sql.append(" AND pro.idprocurador  = :");
+			sql.append(keyContador);
+			
+			HelperInformesAdm helperInformes = new HelperInformesAdm();	
+			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
+			
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error ScsEJGAdm.getProcuradorCalificacionEjgSalida");
+		}
+	}
+	
+	
 	/**
 	 * 
 	 * @param idInstitucion
@@ -3616,7 +3666,12 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" EJG.ratificaciondictamen, ");
 			sql.append(" TO_CHAR(EJG.fechaauto,'dd-mm-yyyy') AS fechaauto,");
 			sql.append(" EJG.idtiporesolauto, ");
-			sql.append(" EJG.idtiposentidoauto ");
+			sql.append(" EJG.idtiposentidoauto, ");
+			
+			sql.append(" (Select F_SIGA_GETRECURSO(DESCRIPCION, "+idioma+") as DESCRIPCION");
+			sql.append("  From SCS_TIPOEJGCOLEGIO TEC");
+			sql.append("  where tec.IDINSTITUCION = EJG.IDINSTITUCION and TEC.IDTIPOEJGCOLEGIO=EJG.IDTIPOEJGCOLEGIO) AS TIPO_EJG_COLEGIO ");
+			
 			sql.append(" ,TO_CHAR(EJG.Fecharatificacion, 'dd-mm-yyyy') AS Fecharatificacion ");
 			
 			sql.append(" ,TO_CHAR(EJG.FECHAPRESENTACION, 'dd-mm-yyyy') as FECHAPRESENTACION");
@@ -4231,8 +4286,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				//Aniadimos los datos del procurador del ejg
 				String idProcurador = (String)registro.get("IDPROCURADOR");
 				String idInstitucionProc = (String)registro.get("IDINSTITUCION_PROC");
-				helperInformes.completarHashSalida(registro,getProcuradorCalificacionEjgSalida(idInstitucionProc, 
-						idProcurador,"PROCURADOR_DEFENSA_JURIDICA"));
+				helperInformes.completarHashSalida(registro,getDatosProcuradorEjgSalida(idInstitucionProc, 
+						idProcurador));
 
 				// Aniadimos el fundamento del ejg
 				String idFundamento = (String)registro.get("IDFUNDAMENTOCALIF");
@@ -4261,9 +4316,15 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 					} else {
 						registro.put("POBLACION_JUZGADO_D_J", " ");
 					}
+					if(registro.containsKey("ID_PROVINCIA_JUZGADO_D_J") && registro.get("ID_PROVINCIA_JUZGADO_D_J")!=null && !((String)registro.get("ID_PROVINCIA_JUZGADO_D_J")).trim().equals("")){
+						helperInformes.completarHashSalida(registro,helperInformes.getNombreProvinciaSalida((String)registro.get("ID_PROVINCIA_JUZGADO_D_J"), "PROVINCIA_JUZGADO_D_J"));
+					} else {
+						registro.put("PROVINCIA_JUZGADO_D_J", " ");
+					}
 				}else{
 					registro.put("JUZGADO_DEFENSA_JURIDICA", " ");
 					registro.put("POBLACION_JUZGADO_D_J", " ");
+					registro.put("PROVINCIA_JUZGADO_D_J", " ");
 					registro.put("DIR_JUZGADO_D_J", " ");
 					registro.put("CP_JUZGADO_D_J", " ");
 					registro.put("ID_PROVINCIA_JUZGADO_D_J", " ");

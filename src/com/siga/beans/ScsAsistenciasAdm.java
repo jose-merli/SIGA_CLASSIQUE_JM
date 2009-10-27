@@ -1026,13 +1026,25 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 
 			sql += where;
 			ScsEJGAdm ejgAdm = new ScsEJGAdm(this.usrbean);
+			ScsDelitosAsistenciaAdm delitoAsisAdm = new ScsDelitosAsistenciaAdm(this.usrbean);
+			
 			if (rc.query(sql)) {
 				
 				for (int i = 0; i < rc.size(); i++)	{
 					Row fila = (Row) rc.get(i);
 					Hashtable registro = (Hashtable)fila.getRow(); 
 					if (registro != null){
-						
+						Vector vDelitos = delitoAsisAdm.getDelitosAsitencia(
+								new Integer((String)registro.get(ScsAsistenciasBean.C_IDINSTITUCION))
+								,new Integer((String)registro.get(ScsAsistenciasBean.C_ANIO))
+								,new Integer((String)registro.get(ScsAsistenciasBean.C_NUMERO)),null);
+						if(vDelitos!=null && vDelitos.size()>0){
+							Hashtable htDelitoAsistencia = (Hashtable)vDelitos.get(0);
+							registro.put("IDDELITO",(String)htDelitoAsistencia.get("IDDELITO"));
+						}else{
+							registro.put("IDDELITO","");
+							
+						}
 						if(registro.get(ScsAsistenciasBean.C_EJGANIO)!=null && !((String)registro.get(ScsAsistenciasBean.C_EJGANIO)).equals("")){
 							Hashtable htEjg = new Hashtable();
 							htEjg.put(ScsEJGBean.C_IDINSTITUCION, (String)registro.get(ScsAsistenciasBean.C_IDINSTITUCION));

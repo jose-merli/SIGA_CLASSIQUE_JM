@@ -29,6 +29,12 @@
 		ArrayList provinciaSel = new ArrayList();
 		ArrayList poblacionSel = new ArrayList();
 		String parametro[] = new String[1];
+		Integer PCAJG_ACTIVADO =(Integer) (request.getAttribute("PCAJG_ACTIVO"));
+		String pintarAsterisco="";
+		if (PCAJG_ACTIVADO!=null && PCAJG_ACTIVADO.intValue()>1){
+			pintarAsterisco="&nbsp;(*)";
+			
+		}
 
 	// Formulario
 	MantenimientoProcuradorForm formulario = (MantenimientoProcuradorForm) request.getAttribute("MantenimientoProcuradorForm");
@@ -91,7 +97,17 @@
 		//Asociada al boton GuardarCerrar -->
 		function accionGuardarCerrar() {
 		  	sub();
+		  	
+		   
 			if (validateMantenimientoProcuradorForm(document.MantenimientoProcuradorForm)){
+			  <%if (PCAJG_ACTIVADO!=null && PCAJG_ACTIVADO.intValue()>1){%>
+			   if (document.MantenimientoProcuradorForm.NColegiado.value==""){
+			    fin();
+			    alert('<siga:Idioma key="gratuita.datosProcurador.message.requeridoNColegiado"/>');
+			    return false;
+		       }
+		   <%}%> 
+			  
 				MantenimientoProcuradorForm.modo.value = "<%=accion%>";
 				MantenimientoProcuradorForm.submit();
 			}else{
@@ -163,7 +179,7 @@
 
 							<tr>
 								<td class="labelText">
-									<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.colegiado"/>
+									<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.colegiado"/><%=pintarAsterisco%>
 								</td>
 								<td>
 									<html:text name="MantenimientoProcuradorForm" property="NColegiado" size="30" maxlength="100" styleClass="<%=estilo%>"></html:text>

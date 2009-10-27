@@ -41,6 +41,15 @@
 	}
 	
 	PestanaDelitoAsistenciaForm form = (PestanaDelitoAsistenciaForm)request.getAttribute("pestanaDelitoAsistenciaForm");
+	
+	String botonesAccion;
+	
+	if(modopestanha != null && modopestanha.equalsIgnoreCase("modificar")){
+		System.out.println(esFichaColegial);
+ 		botonesAccion = esFichaColegial ? "n,r,g" : "v,n,r,g";
+	}else{
+ 		botonesAccion = esFichaColegial ? "" : "v";
+	}
 %>
 
 <html>
@@ -131,7 +140,7 @@
 		String sClasePestanas = esFichaColegial ? "botonesDetalle3" : "botonesDetalle";
 %>
 
-	<siga:ConjBotonesAccion botones="N,R,G"  clase="botonesDetalle" modo="<%=modopestanha%>"/>	
+	<siga:ConjBotonesAccion botones="<%=botonesAccion %>"  clase="botonesDetalle" modo="<%=modopestanha%>"/>	
 		
 	<!-- INICIO: SCRIPTS BOTONES ACCION -->
 	<script language="JavaScript">
@@ -197,7 +206,21 @@
 			document.forms[0].target = "submitArea";
 			document.forms[0].submit();
 		}
-				
+
+		function accionVolver()
+		{
+			<%
+			// indicamos que es boton volver
+			ses.setAttribute("esVolver","1");
+			%>
+			<%
+			String sAction2 = esFichaColegial ? "JGR_AsistenciasLetrado.do" : "JGR_Asistencia.do";
+			%>
+			document.forms[0].action = "<%=sAction2%>";
+			document.forms[0].target = "mainWorkArea";
+			document.forms[0].modo.value= "abrir";
+			document.forms[0].submit();
+		}		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES ACCION -->
 	

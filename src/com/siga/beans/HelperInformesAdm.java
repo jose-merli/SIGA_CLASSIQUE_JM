@@ -215,7 +215,7 @@ public class HelperInformesAdm  {
 			h.put(new Integer(1), idInstitucion);
 			h.put(new Integer(2), idTurno);
 			String sql = "select scs_turno.descripcion AS DESCRIPCION_TURNO ,"+
-			" scs_turno.abreviatura AS ABREV_TURNO ,scs_turno.LETRADOACTUACIONES AS LETRADOACTUACIONES"+
+			" scs_turno.abreviatura AS ABREV_TURNO ,scs_turno.LETRADOACTUACIONES AS LETRADOACTUACIONES, scs_turno.validarjustificaciones as VALIDARJUSTIFICACIONES "+
 			" from scs_turno where idinstitucion = :1 and idturno = :2";
 				
 			return ejecutaConsultaBind(sql, h);

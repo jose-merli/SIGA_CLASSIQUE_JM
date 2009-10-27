@@ -170,6 +170,14 @@
 			document.DefinicionRemesas_CAJG_Form.target="submitArea";
 			document.DefinicionRemesas_CAJG_Form.submit();	
 		}
+
+		function envioFTP(){
+			document.DefinicionRemesas_CAJG_Form.modo.value="envioFTP";
+			document.DefinicionRemesas_CAJG_Form.idRemesa.value=document.forms[0].idRemesa.value;	
+			document.DefinicionRemesas_CAJG_Form.idInstitucion.value=document.forms[0].idInstitucion.value;	
+			document.DefinicionRemesas_CAJG_Form.target="submitArea";
+			document.DefinicionRemesas_CAJG_Form.submit();	
+		}
 		
 		
 		function accionGuardar(){

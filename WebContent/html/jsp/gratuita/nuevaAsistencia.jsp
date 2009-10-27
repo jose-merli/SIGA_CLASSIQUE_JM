@@ -38,6 +38,7 @@
 	String fecha = UtilidadesBDAdm.getFechaBD("");
 	
 	boolean bEsFichaColegial = request.getParameter("esFichaColegial")!=null && ((String)request.getParameter("esFichaColegial")).equals("1")?true:false;
+	
 
 %>
 <!-- JSP -->
@@ -97,7 +98,9 @@
 	<input type="hidden" name = "flagSalto" value=""/>
 	<input type="hidden" name = "flagCompensacion" value=""/>
 	<input type="hidden" name = "checkSalto" value=""/>
-	<input type="hidden" name = "checkCompensacion" value=""/>		
+	<input type="hidden" name = "checkCompensacion" value=""/>	
+	<input type="hidden" name = "esFichaColegial" value="<%=bEsFichaColegial%>"/>
+		
 
 	<fieldset>
 	<table  class="tablaCentralCamposMedia"  align="center" border="0">

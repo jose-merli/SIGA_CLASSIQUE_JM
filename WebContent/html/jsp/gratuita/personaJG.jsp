@@ -37,9 +37,15 @@
 	boolean esFichaColegial = false;
 
 	String sEsFichaColegial = (String) request.getAttribute("esFichaColegial");
-	if ((sEsFichaColegial != null)
-			&& ((sEsFichaColegial.equalsIgnoreCase("1"))||(sEsFichaColegial.equalsIgnoreCase("true"))  )) {
+	if ((sEsFichaColegial != null)&&
+			((sEsFichaColegial.equalsIgnoreCase("1"))||(sEsFichaColegial.equalsIgnoreCase("true")))) {
 		esFichaColegial = true;
+	}
+	
+	boolean pcajgActivo = false;
+	String sEsPcajgActivo = (String)request.getAttribute("pcajgActivo");
+	if ((sEsPcajgActivo!=null) && (sEsPcajgActivo.equalsIgnoreCase("true"))){
+		pcajgActivo = true;
 	}
 	
 
@@ -51,6 +57,7 @@
     String importeOtrosBienes=miform.getImporteOtrosBienes();
     String importeIngresosAnuales=miform.getImporteIngresosAnuales();
     String importeBienesMuebles=miform.getImporteBienesMuebles();
+    
 	String estiloBox = "box";
 	String estiloBoxNumber = "boxNumber";
 	String classCombo = "box";
@@ -95,6 +102,16 @@
 	String pideJG = miform.getChkPideJG();
 	String solicitaInfoJG = miform.getChkSolicitaInfoJG();
 	String checkSolicitante = miform.getSolicitante();
+	
+	System.out.println(conceptoE + " " + pcajgActivo);
+	String asterisco="";
+	// Ponemos astericos en los campos obligatorios para el pcajg activo
+	if ((pcajgActivo) && 
+			(( conceptoE.equals(PersonaJGAction.EJG)
+			|| conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR) 
+			|| conceptoE.equals(PersonaJGAction.PERSONAJG) ))){
+		asterisco="&nbsp(*)&nbsp";
+	}
 %>	
 
 
@@ -308,33 +325,20 @@
 			function obtenerNif(){
 				if((document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")&&(document.forms[0].NIdentificacion.value!="")) {
 					var sNIF = document.forms[0].NIdentificacion.value;
-					var aux1=formateaNIFLocal(sNIF);
-					if(aux1!=false){
-						document.forms[0].NIdentificacion.value = aux1;
-					}
-					else{
-						return;
-					}
-												
-					
-			    } else if((document.forms[0].tipoId.value == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>")){
-		   	   		var sNIE = document.forms[0].NIdentificacion.value;
-		   	   		var aux2=formateaNIELocal(sNIE);
-		   	   		if(aux2!=false){
-						document.forms[0].NIdentificacion.value = aux2;
-					}else{
-						return;
-					}
+					document.forms[0].NIdentificacion.value = formateaNIFLocal(sNIF);
+				 } else if((document.forms[0].tipoId.value == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>")){
+				   var sNIE = document.forms[0].NIdentificacion.value;
+				   document.forms[0].NIdentificacion.value =formateaNIELocal(sNIE);
 	   			}
-	   			
+					   			
 				//LMSP En lugar de abrir la ventana modal, se manda al frame oculto, y éste se encarga de todo :)
 				if(generarLetra()){
 					document.forms[0].modo.value="buscarNIF";
 					document.forms[0].target="submitArea2";
 					document.forms[0].submit();
 			  	}
-			}				
-			
+			}
+
 			function formateaNIFLocal(valorX) {
 	    		var longitud=9;
 	    		var salida='';
@@ -743,10 +747,8 @@ function str_replace(search, replace, subject) {
 					if (!isNaN(document.forms[0].NIdentificacion.value)){
 					alert('<siga:Idioma key="messages.nif.comprobacion.digitos.error"/>');
 					return false;
-				}
-					
-						
-				
+					}
+									
 			    } else if((document.forms[0].tipoId.value == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>")){
 			    	var sNIE = document.forms[0].NIdentificacion.value;
 		   	   		var aux2=formateaNIELocal(sNIE);
@@ -756,8 +758,7 @@ function str_replace(search, replace, subject) {
 						return false;
 					}
 										
-				}
-				if(!generarLetra()){
+				}if(!generarLetra()){
 				  return false;
 				}else{
 				
@@ -766,7 +767,7 @@ function str_replace(search, replace, subject) {
 			 }else{
 			   return true;
 			 }	 
-				
+			
 			}
 					
 			function addOption(combo,text, value) {
@@ -1046,101 +1047,72 @@ function str_replace(search, replace, subject) {
 	<table  align="center" width="100%" border="0" >
 	<tr >
 	
-<%
-		if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {
-	%> 
+	<%if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {%> 
         <td class="labelText">
 			<siga:Idioma key="gratuita.busquedaSOJ.literal.solicitante"/>&nbsp;	
+		 	<html:checkbox  name="PersonaJGForm" property="solicitante" disabled="<%=scheck%>" />
 		</td>
-		<td >
-		 <html:checkbox  name="PersonaJGForm" property="solicitante" disabled="<%=scheck%>" />
-		</td>
-<%
-	}
-%>
-<%
-	if (!conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {
-%> 
-		<td class="labelText" colspan="2">
+	<%} %>
+		<td class="labelText">
 			<siga:Idioma key="gratuita.personaJG.literal.tipo"/>		
 		</td>
-<%
-	} else {
-%>
-       <td class="labelText" >
-       		<siga:Idioma key="gratuita.personaJG.literal.tipo"/>		
-		</td>
-<%
-	}
-%>		
-			
+
+	
 		<td>
-			<%
-				if (accion.equalsIgnoreCase("ver")) {
-							String tip = "";
-							if (miform.getTipo() != null
-									&& miform.getTipo().equalsIgnoreCase("F")) {
-								tip = UtilidadesString.getMensajeIdioma(usr,
-										"gratuita.personaJG.literal.tipoFisica");
-							} else {
-								tip = UtilidadesString.getMensajeIdioma(usr,
-										"gratuita.personaJG.literal.tipoJuridica");
-							}
-			%>
-				<html:text property="tipo" value="<%=tip%>" size="5" styleClass="boxConsulta" readonly="true"></html:text>
-			<%
-				} else {
-			%>
+			<%if (accion.equalsIgnoreCase("ver")) {
+					String tip = "";
+					if (miform.getTipo() != null
+							&& miform.getTipo().equalsIgnoreCase("F")) {
+						tip = UtilidadesString.getMensajeIdioma(usr,
+								"gratuita.personaJG.literal.tipoFisica");
+					} else if (miform.getTipo() != null) {
+						tip = UtilidadesString.getMensajeIdioma(usr,
+								"gratuita.personaJG.literal.tipoJuridica");
+			}%>
+			<html:text property="tipo" value="<%=tip%>" size="5" styleClass="boxConsulta" readonly="true"></html:text>
+			<%} else {%>
 			<html:select styleClass="boxCombo" name="PersonaJGForm" property="tipo"   readOnly="false">
 				<html:option value="F"><siga:Idioma key="gratuita.personaJG.literal.tipoFisica"/></html:option>
 				<html:option value="J"><siga:Idioma key="gratuita.personaJG.literal.tipoJuridica"/></html:option>
 			</html:select>
-			<%
-				}
-			%>
+			<%}%>
 		</td>
-		<td class="labelText">
-			<siga:Idioma key="gratuita.personaJG.literal.tipoIdentificacion"/>	
-		</td>
-		<td>
-		<%
-			ArrayList tipoIdentificacionSel = new ArrayList();
-					if (miform.getNIdentificacion() != null) {
-						tipoIdentificacionSel.add(miform.getTipoId());
 
-					}
+		<%if (!conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {%> 
+		<td></td>
+		<%}	%>		
+		<td class="labelText">
+			<siga:Idioma key="gratuita.personaJG.literal.tipoIdentificacion"/>
+			<%if (!conceptoE.equals(PersonaJGAction.PERSONAJG)) {%>
+			<%=asterisco %> 
+			<%}%>
+		</td>
+		<td colspan="3">
+		<%	ArrayList tipoIdentificacionSel = new ArrayList();
+			if (miform.getNIdentificacion() != null) {
+				tipoIdentificacionSel.add(miform.getTipoId());
+			}
 		%>
-		  <%
-		  	if (accion.equalsIgnoreCase("ver")) {
+		  <%if (accion.equalsIgnoreCase("ver")) {
 		  				String tipoIdent = (String) request
 		  						.getAttribute("identificacion");
 		  %>
-		   <html:text property="tipoId" value="<%=tipoIdent%>" size="10" styleClass="boxConsulta" readonly="true"></html:text>
-		  <%
-		  	} else {
-		  %>
-		   <siga:ComboBD nombre = "tipoId" tipo="cmbTipoIdentificacion" elementoSel="<%=tipoIdentificacionSel%>" clase="<%=classCombo %>" obligatorio="false"   readonly="<%=sreadonly%> "/>
-		   <%
-		   	}
-		   %>
-			
-		
-		</td>
-		<td class="labelText">
-			<siga:Idioma key="gratuita.personaJG.literal.nIdentificacion"/>		
-		</td>
-		<td >
-			<html:text name="PersonaJGForm" property="NIdentificacion" size="10" maxlength="20" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>"  onBlur="obtenerNif();"></html:text>
+		   	<html:text property="tipoId" value="<%=tipoIdent%>" size="10" styleClass="boxConsulta" readonly="true"></html:text>
+		  <%}else{%>
+		   	<siga:ComboBD nombre = "tipoId" tipo="cmbTipoIdentificacion" elementoSel="<%=tipoIdentificacionSel%>" clase="<%=classCombo %>" obligatorio="true"  readonly="<%=sreadonly%>"/>
+		   <%}%>
+		   <html:text name="PersonaJGForm" property="NIdentificacion" size="10" maxlength="20" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>"  onBlur="obtenerNif();"></html:text>
 		</td>
 	</tr>
 	<tr>
 		<td class="labelText" colspan="3">
 			<siga:Idioma key="gratuita.personaJG.literal.nombreDeno"/>&nbsp;(*)		
 		</td>
-		<td colspan="5" >
+		<td colspan="6" >
 			<html:text name="PersonaJGForm" property="nombre" maxlength="100" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>" style="width:600"></html:text>
 		</td>
-		
+		<td>
+		</td>
 		
 	</tr>
 	<tr>
@@ -1148,13 +1120,13 @@ function str_replace(search, replace, subject) {
 			<siga:Idioma key="gratuita.personaJG.literal.apellido1Abre"/>&nbsp;(*)		
 		</td>
 		<td colspan="2"> 
-			<html:text name="PersonaJGForm" property="apellido1" maxlength="100" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:250"></html:text>
+			<html:text name="PersonaJGForm" property="apellido1" maxlength="100" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:200"></html:text>
 		</td>
-		<td class="labelText"  >
+		<td class="labelText" colspan="1" >
 			<siga:Idioma key="gratuita.personaJG.literal.apellido2"/>		
 		</td>
-		<td  >
-			<html:text name="PersonaJGForm" property="apellido2" maxlength="100" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:190"></html:text>
+		<td  colspan="1">
+			<html:text name="PersonaJGForm" property="apellido2" maxlength="100" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:200"></html:text>
 		</td>
 		<td >
 			<%
@@ -1174,7 +1146,7 @@ function str_replace(search, replace, subject) {
 	<table  align="center" width="100%">
 	<tr>
 		<td class="labelText">
-			<siga:Idioma key="gratuita.personaJG.literal.direccion"/>		
+			<siga:Idioma key="gratuita.personaJG.literal.direccion"/><%=asterisco%>		
 		</td>
 		<td>
 			<html:text name="PersonaJGForm" property="direccion" maxlength="100" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:340" ></html:text>
@@ -1235,13 +1207,9 @@ function str_replace(search, replace, subject) {
 									.getAttribute("poblacion");
 			%>
 		   		<html:text property="poblacion" value="<%=poblacion%>" maxlength="100" styleClass="boxConsulta" readonly="true" style="width:220"></html:text>
-		   <%
-		   	} else {
-		   %>
+		   <%} else {%>
 				<siga:ComboBD pestana="<%=bPestana%>" nombre="poblacion" tipo="poblacion" elementoSel="<%=selPoblacion%>" clase="<%=classCombo%>" obligatorio="true" hijo="t" readOnly="<%=sreadonly%>" obligatorioSinTextoSeleccionar="false" />
-		   <%
-		   	}
-		   %>
+		   <%}%>
 		</td>
 	</tr>
 	</table>
@@ -1263,7 +1231,7 @@ function str_replace(search, replace, subject) {
 																																		selPais.add(ClsConstants.ID_PAIS_ESPANA);
 																																	}*/
 			%>
-			<siga:ComboBD pestana="<%=bPestana%>" elementoSel="<%=selPais %>" nombre = "nacionalidad" tipo="pais" ancho="250" clase="<%=classCombo %>" readOnly="<%=sreadonly%>"/>
+			<siga:ComboBD pestana="<%=bPestana%>" elementoSel="<%=selPais %>" nombre = "nacionalidad" tipo="pais" ancho="220" clase="<%=classCombo %>" readOnly="<%=sreadonly%>"/>
 		</td>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.personaJG.literal.fechaNac"/>		
@@ -1401,28 +1369,20 @@ function str_replace(search, replace, subject) {
 				if (accion.equalsIgnoreCase("ver")) {
 							String regimen = "";
 							if (miform.getRegimenConyugal() != null) {
-								if (miform.getRegimenConyugal().equalsIgnoreCase(
-										"G")) {
+								if (miform.getRegimenConyugal().equalsIgnoreCase("G")) {
 									regimen = UtilidadesString
 											.getMensajeIdioma(usr,
 													"gratuita.personaJG.regimen.literal.gananciales");
 								}
-								if (miform.getRegimenConyugal().equalsIgnoreCase(
-										"I")) {
+								if (miform.getRegimenConyugal().equalsIgnoreCase("I")) {
 									regimen = UtilidadesString
 											.getMensajeIdioma(usr,
 													"gratuita.personaJG.regimen.literal.indeterminado");
 								}
-								if (miform.getRegimenConyugal().equalsIgnoreCase(
-										"S")) {
-									regimen = UtilidadesString
-											.getMensajeIdioma(usr,
+								if (miform.getRegimenConyugal().equalsIgnoreCase("S")) {
+									regimen = UtilidadesString.getMensajeIdioma(usr,
 													"gratuita.personaJG.regimen.literal.separacion");
 								}
-							} else {
-								regimen = UtilidadesString
-										.getMensajeIdioma(usr,
-												"gratuita.personaJG.regimen.literal.separacion");
 							}
 
 							/*				if (miform.getRegimenConyugal()!=null && miform.getRegimenConyugal().equalsIgnoreCase("G")) {
@@ -1462,14 +1422,10 @@ function str_replace(search, replace, subject) {
 		</td>
 	 
 <%
-	 	if (conceptoE
-	 					.equals(PersonaJGAction.ASISTENCIA_REPRESENTANTE)
-	 					|| conceptoE
-	 							.equals(PersonaJGAction.DESIGNACION_REPRESENTANTE)
-	 					|| conceptoE
-	 							.equals(PersonaJGAction.EJG_REPRESENTANTE)
-	 					|| conceptoE
-	 							.equals(PersonaJGAction.SOJ_REPRESENTANTE)) {
+	 	if (conceptoE.equals(PersonaJGAction.ASISTENCIA_REPRESENTANTE)
+	 					|| conceptoE.equals(PersonaJGAction.DESIGNACION_REPRESENTANTE)
+	 					|| conceptoE.equals(PersonaJGAction.EJG_REPRESENTANTE)
+	 					|| conceptoE.equals(PersonaJGAction.SOJ_REPRESENTANTE)) {
 	 %>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.personaJG.literal.enCalidadDe"/>		
@@ -1478,11 +1434,10 @@ function str_replace(search, replace, subject) {
 			<siga:ComboBD nombre = "enCalidadDe" tipo="cmbEnCalidadDe" clase="<%=estiloBox%>" readOnly="<%=sreadonly%>"/>
 		</td>
 <%
-	} else if (conceptoE
-					.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {
+	} else if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {
 %>
 		<td class="labelText">
-			<siga:Idioma key="gratuita.personaJG.literal.parentescoNormalizado"/>		
+			<siga:Idioma key="gratuita.personaJG.literal.parentescoNormalizado"/><%=asterisco%>			
 		</td>
 		<td  style="display:none">
 			<html:text name="PersonaJGForm" property="enCalidadDeLibre" size="10" maxlength="20" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"></html:text>
@@ -1497,8 +1452,7 @@ function str_replace(search, replace, subject) {
 			<siga:ComboBD  nombre="parentesco" tipo="cmbParentesco" elementoSel="<%=selParentesco %>" parametro="<%=paramParentesco%>" clase="<%=classCombo %>" obligatorio="false" readOnly="<%=sreadonly%>" obligatorioSinTextoSeleccionar="false"/>
 		</td>
 <%
-	} else if (conceptoE
-					.equals(PersonaJGAction.DESIGNACION_CONTRARIOS)) {
+	} else if (conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS)) {
 %>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.personaJG.literal.procurador"/>		
@@ -1728,7 +1682,7 @@ function str_replace(search, replace, subject) {
 	 <%
 		 	} else {
 		 %>	
-	   <siga:ComboBD nombre = "tipoGrupoLaboral" tipo="cmbTipoGrupoLaboral" readonly="true" clase="boxComboConsulta"  parametro="<%=dato%>" elementoSel="<%=selTipoGrupoLaboral%>" />	
+	   <siga:ComboBD nombre = "tipoGrupoLaboral" tipo="cmbTipoGrupoLaboral" readonly="true" clase="boxComboConsulta"  parametro="<%=dato%>" elementoSel="<%=selTipoGrupoLaboral%>" ancho="150"/>	
 	 <%
 		 	}
 		 %>	
@@ -1848,12 +1802,36 @@ function str_replace(search, replace, subject) {
 	} else if (conceptoE.equals(PersonaJGAction.EJG)
 				|| conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {
 %> 
+
+	<%
+		String tipoIngreso;
+		if (miform.getTipoIngreso() != null) {
+			tipoIngreso = miform.getTipoIngreso();
+		} else {
+			tipoIngreso = "";
+		}
+		ArrayList selTipoIngreso = new ArrayList();
+		selTipoIngreso.add(tipoIngreso);
+	%>
 <!-- para datos financieros -->
  	<siga:ConjCampos leyenda="gratuita.personaJG.literal.datosFinancieros">
 	<table width="100%" >
 	<tr>
 		<td class="labelText">
-			<siga:Idioma key="gratuita.operarInteresado.literal.ingresosAnuales"/>
+			<siga:Idioma key="gratuita.operarInteresado.literal.tipoIngresos"/>
+		</td>
+
+		<td>
+		<%if (!accion.equalsIgnoreCase("ver")) {%>
+			<siga:ComboBD nombre = "tipoIngreso" tipo="tipoIngreso" clase="boxCombo" elementoSel="<%=selTipoIngreso%>"/>
+		<%}else{%>
+			<siga:ComboBD nombre = "tipoIngreso" tipo="tipoIngreso" clase="boxComboConsulta" elementoSel="<%=selTipoIngreso%>" readonly="true"/>
+		<%}%>
+		</td>
+	</tr>
+	<tr>
+		<td class="labelText">
+			<siga:Idioma key="gratuita.operarInteresado.literal.ingresos"/>
 		</td>
 
 		<td>
@@ -1985,7 +1963,17 @@ function str_replace(search, replace, subject) {
 		
 		//Asociada al boton Guardar -->
 		function accionGuardar()	{	
-			sub();			
+			sub();
+			var tipoIdent=document.forms[0].tipoId.value;
+			var numId=document.forms[0].NIdentificacion.value;
+			if((tipoIdent!="")&&(numId!="")){
+							
+			}else if(!((tipoIdent=="")&&(numId==""))||((tipoIdent!="")&&(numId!=""))){
+					document.forms[0].tipoId.value="";
+					document.forms[0].NIdentificacion.value="";
+					
+			}
+						
 			document.forms[0].importeIngresosAnuales.value=document.forms[0].importeIngresosAnuales.value.replace(/,/,".");
 			document.forms[0].importeBienesInmuebles.value=document.forms[0].importeBienesInmuebles.value.replace(/,/,".");
 			document.forms[0].importeBienesMuebles.value=document.forms[0].importeBienesMuebles.value.replace(/,/,".");
@@ -1997,7 +1985,7 @@ function str_replace(search, replace, subject) {
 			var tipoId = document.forms[0].tipoId.value;
 			var msg1="<siga:Idioma key="gratuita.personaJG.messages.alertTipo1"/>";
 			var msg2="<siga:Idioma key="gratuita.personaJG.messages.alertTipo2"/>";
-											
+												
 			if (!validaNumeroIdentificacion()) {
 				fin();
 				return false;
@@ -2043,6 +2031,23 @@ function str_replace(search, replace, subject) {
 					return false;
 				} else
 					if (validatePersonaJGForm(document.forms[0]) ){
+								
+					// jbd: comprobaciones adicionales para el pcajg
+					if(<%=pcajgActivo%>){
+						var error = "";
+						if (document.forms[0].tipoId.value=="")
+							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.tipoIdentificacion'/>"+ '\n';
+						if (document.forms[0].NIdentificacion.value=="")
+							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nIdentificacion'/>"+ '\n';
+						if (document.forms[0].direccion.value.length<1)
+							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
+						if(error!=""){
+							alert(error);
+							fin();
+							return false;
+						}
+					}
+				
 					//	if (document.forms[0].poblacion.value)
 					 	document.forms[0].submit();
 					}else{
@@ -2061,8 +2066,17 @@ function str_replace(search, replace, subject) {
 	
 		//Asociada al boton Guardar -->
 		function accionGuardarCerrar()	{	
-		  
-		  	sub();  					
+		   	sub();
+		   	var tipoIdent=document.forms[0].tipoId.value;
+			var numId=document.forms[0].NIdentificacion.value;
+			if((tipoIdent!="")&&(numId!="")){
+							
+			}else if(!((tipoIdent=="")&&(numId==""))||((tipoIdent!="")&&(numId!=""))){
+					document.forms[0].tipoId.value="";
+					document.forms[0].NIdentificacion.value="";
+					
+			}
+ 	  					
 			document.forms[0].importeIngresosAnuales.value=document.forms[0].importeIngresosAnuales.value.replace(/,/,".");
 			document.forms[0].importeBienesInmuebles.value=document.forms[0].importeBienesInmuebles.value.replace(/,/,".");
 			document.forms[0].importeBienesMuebles.value=document.forms[0].importeBienesMuebles.value.replace(/,/,".");
@@ -2074,10 +2088,8 @@ function str_replace(search, replace, subject) {
 			var tipoId = document.forms[0].tipoId.value;
 			var msg1="<siga:Idioma key="gratuita.personaJG.messages.alertTipo1"/>";
 			var msg2="<siga:Idioma key="gratuita.personaJG.messages.alertTipo2"/>";
-		  	  			
+		  	  				
 			if (!validaNumeroIdentificacion()) {
-			 
-			
 				fin();
 				return false;
 			}
@@ -2127,6 +2139,22 @@ function str_replace(search, replace, subject) {
 				fin();
 				return false;
 			} else if (validatePersonaJGForm(document.forms[0])){
+			
+				// jbd: comprobaciones adicionales para el pcajg
+				if(<%=pcajgActivo%>){
+					var error = "";
+					if (document.forms[0].tipoId.value=="")
+						error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.tipoIdentificacion'/>"+ '\n';
+					if (document.forms[0].NIdentificacion.value=="")
+							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nIdentificacion'/>"+ '\n';
+					if (document.forms[0].parentesco.value=="")
+						error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.parentescoNormalizado'/>"+ '\n';;
+					if(error!=""){
+						alert(error);
+						fin();
+						return false;
+					}
+				}
 			   
 				//angelcorral: enviamos el formulario si es nuevo o no ha cambiado de persona o confirma la pregunta
 				if (<%=idPersona==null%> || (document.PersonaJGForm.idPersonaJG.value == '<%=idPersona%>') || confirm('<siga:Idioma key="gratuita.personaJG.messages.cambioPersona"/>')) {
@@ -2163,11 +2191,21 @@ function str_replace(search, replace, subject) {
 		//Asociada al boton Guardar -->
 		function accionGuardar()	{
 			sub();
+			var tipoIdent=document.forms[0].tipoId.value;
+			var numId=document.forms[0].NIdentificacion.value;
+			if((tipoIdent!="")&&(numId!="")){
+							
+			}else if(!((tipoIdent=="")&&(numId==""))||((tipoIdent!="")&&(numId!=""))){
+					document.forms[0].tipoId.value="";
+					document.forms[0].NIdentificacion.value="";
+					
+			}
 			if (!validaNumeroIdentificacion()) {
 			
 				fin();
 				return false;
-			}	
+			}
+			
 			
 			document.forms[0].action="<%=app+actionE%>";	
 			document.forms[0].modo.value='guardarSOJ';
@@ -2222,6 +2260,16 @@ function str_replace(search, replace, subject) {
 		//Asociada al boton Guardar -->
 		function accionGuardar()	{		
 			sub();
+			var tipoIdent=document.forms[0].tipoId.value;
+			var numId=document.forms[0].NIdentificacion.value;
+			if((tipoIdent!="")&&(numId!="")){
+							
+			}else if(!((tipoIdent=="")&&(numId==""))||((tipoIdent!="")&&(numId!=""))){
+					document.forms[0].tipoId.value="";
+					document.forms[0].NIdentificacion.value="";
+					
+			}
+			
 			if (!validaNumeroIdentificacion()) {
 				fin();
 				return false;
@@ -2269,6 +2317,16 @@ function str_replace(search, replace, subject) {
 		//Asociada al boton Guardar -->
 		function accionGuardarCerrar()	{				
             sub();
+            var tipoIdent=document.forms[0].tipoId.value;
+			var numId=document.forms[0].NIdentificacion.value;
+			if((tipoIdent!="")&&(numId!="")){
+							
+			}else if(!((tipoIdent=="")&&(numId==""))||((tipoIdent!="")&&(numId!=""))){
+					document.forms[0].tipoId.value="";
+					document.forms[0].NIdentificacion.value="";
+					
+			}
+            
 			if (!validaNumeroIdentificacion()) {
 				fin();
 				return false;
@@ -2318,6 +2376,16 @@ if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) { %>
 		//Asociada al boton Guardar -->
 		function accionGuardarCerrar()	{				
             sub();
+            var tipoIdent=document.forms[0].tipoId.value;
+			var numId=document.forms[0].NIdentificacion.value;
+			if((tipoIdent!="")&&(numId!="")){
+							
+			}else if(!((tipoIdent=="")&&(numId==""))||((tipoIdent!="")&&(numId!=""))){
+					document.forms[0].tipoId.value="";
+					document.forms[0].NIdentificacion.value="";
+					
+			}
+            
 			if (!validaNumeroIdentificacion()) {
 				fin();
 				return false;
@@ -2361,6 +2429,16 @@ if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) { %>
 		function accionGuardarCerrar()	{	
 			
 			sub();
+			var tipoIdent=document.forms[0].tipoId.value;
+			var numId=document.forms[0].NIdentificacion.value;
+			if((tipoIdent!="")&&(numId!="")){
+							
+			}else if(!((tipoIdent=="")&&(numId==""))||((tipoIdent!="")&&(numId!=""))){
+					document.forms[0].tipoId.value="";
+					document.forms[0].NIdentificacion.value="";
+					
+			}
+			
 			if (!validaNumeroIdentificacion()) {
 				fin();
 				return false;
@@ -2384,6 +2462,17 @@ if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) { %>
 					return false;
 				} else{
 					if (validatePersonaJGForm(document.forms[0])){
+						// jbd: comprobaciones adicionales para el pcajg
+						if(<%=pcajgActivo%>){
+							var error = "";
+							if (document.forms[0].direccion.value.length<1)
+								error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';;
+							if(error!=""){
+								alert(error);
+								fin();
+								return false;
+							}
+						}
 						document.forms[0].submit();
 					}else{
 						fin();
@@ -2414,6 +2503,16 @@ if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) { %>
 		//Asociada al boton Guardar -->
 		function accionGuardarCerrar()	{	
 			sub();
+			var tipoIdent=document.forms[0].tipoId.value;
+			var numId=document.forms[0].NIdentificacion.value;
+			if((tipoIdent!="")&&(numId!="")){
+							
+			}else if(!((tipoIdent=="")&&(numId==""))||((tipoIdent!="")&&(numId!=""))){
+					document.forms[0].tipoId.value="";
+					document.forms[0].NIdentificacion.value="";
+					
+			}
+			
 			if (!validaNumeroIdentificacion()) {
 				fin();
 				return false;
@@ -2494,6 +2593,7 @@ if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) { %>
 		<input type="hidden" name="accionE" value="editar">
 		<input type="hidden" name="actionE" value="<%=actionE %>">
 		<input type="hidden" name="pantallaE" value="M">
+		<input type="hidden" name="repPCAJG" value="<%=pcajgActivo %>">
 	</form>
 	<!-- FIN formulario para seleccionar representante -->
 <%

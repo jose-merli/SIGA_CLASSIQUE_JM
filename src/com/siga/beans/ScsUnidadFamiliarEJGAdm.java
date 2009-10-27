@@ -190,7 +190,8 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 							ScsUnidadFamiliarEJGBean.C_IMPORTEBIENESINMUEBLES,	ScsUnidadFamiliarEJGBean.C_BIENESMUEBLES,
 							ScsUnidadFamiliarEJGBean.C_IMPORTEBIENESMUEBLES,	ScsUnidadFamiliarEJGBean.C_OTROSBIENES,
 							ScsUnidadFamiliarEJGBean.C_IMPORTEOTROSBIENES,		ScsUnidadFamiliarEJGBean.C_IDPERSONA,
-							ScsUnidadFamiliarEJGBean.C_TIPOGRUPOLAB, 		    ScsUnidadFamiliarEJGBean.C_IDPARENTESCO
+							ScsUnidadFamiliarEJGBean.C_TIPOGRUPOLAB, 		    ScsUnidadFamiliarEJGBean.C_IDPARENTESCO,
+							ScsUnidadFamiliarEJGBean.C_TIPOINGRESO
 						};
 		return campos;
 	}
@@ -231,6 +232,7 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 			bean.setImporteOtrosBienes(UtilidadesHash.getDouble(hash,ScsUnidadFamiliarEJGBean.C_IMPORTEOTROSBIENES));
 			bean.setTipoGrupoLab(UtilidadesHash.getInteger(hash,ScsUnidadFamiliarEJGBean.C_TIPOGRUPOLAB));
 			bean.setIdParentesco(UtilidadesHash.getInteger(hash,ScsUnidadFamiliarEJGBean.C_IDPARENTESCO));
+			bean.setTipoIngreso(UtilidadesHash.getInteger(hash,ScsUnidadFamiliarEJGBean.C_TIPOINGRESO));
 		}
 		catch(Exception e){
 			bean = null;
@@ -267,6 +269,7 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash,ScsUnidadFamiliarEJGBean.C_IMPORTEOTROSBIENES,miBean.getImporteOtrosBienes());	
 			UtilidadesHash.set(hash,ScsUnidadFamiliarEJGBean.C_TIPOGRUPOLAB,miBean.getTipoGrupoLab());
 			UtilidadesHash.set(hash,ScsUnidadFamiliarEJGBean.C_IDPARENTESCO,miBean.getIdParentesco());
+			UtilidadesHash.set(hash,ScsUnidadFamiliarEJGBean.C_TIPOINGRESO,miBean.getTipoIngreso());
 		}
 		catch (Exception e){
 			hash = null;

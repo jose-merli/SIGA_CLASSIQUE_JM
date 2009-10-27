@@ -260,7 +260,7 @@ public class FcsCobrosRetencionJudicialAdm extends MasterBeanAdministrador {
 			sql.append(":"+contador);
 		}
 		if(pagoRelacionado!=null && !pagoRelacionado.trim().equals("")){
-			sql.append(" AND PAGO.NOMBRE = ");
+			sql.append(" AND PAGO.IDPAGOSJG = ");
 			contador++;
 			codigos.put(new Integer(contador),pagoRelacionado);
 			sql.append(":"+contador);

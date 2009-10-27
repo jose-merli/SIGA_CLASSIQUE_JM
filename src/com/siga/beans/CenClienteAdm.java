@@ -591,7 +591,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			// consulta de insituciones 
 			//String bBusqueda = formulario.getChkBusqueda();
 			boolean bBusqueda  = UtilidadesString.stringToBoolean(formulario.getValorCheck());
-			sqlClientes = "SELECT "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+" , " + CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_NOAPARECERREDABOGACIA+"  " +" ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_NOENVIARREVISTA+" , " +
+			sqlClientes = "SELECT "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+" , nvl(" + CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_NOAPARECERREDABOGACIA+" ,'0') "+CenClienteBean.C_NOAPARECERREDABOGACIA+"  ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_NOENVIARREVISTA+" , " +
 				" DECODE("+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_COMUNITARIO+",'" + ClsConstants.DB_TRUE + "',"+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOMUNITARIO+","+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOLEGIADO+") AS "+CenColegiadoBean.C_NCOLEGIADO+"," +
 				" "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOMUNITARIO+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NOMBRE+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+","+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_FECHANACIMIENTO+", "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_FECHAINCORPORACION+", "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDPERSONA+" , "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDINSTITUCION+", "+
 //				" (SELECT F_SIGA_GETRECURSO("+CenEstadoColegialBean.T_NOMBRETABLA+"."+CenEstadoColegialBean.C_DESCRIPCION+", " + idioma + ") \"" + CenEstadoColegialBean.T_NOMBRETABLA+"."+CenEstadoColegialBean.C_DESCRIPCION + "\" " + 
@@ -727,17 +727,23 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	   // de no meter comodines se ha creado un nuevo metodo ComodinBusquedas.preparaCadenaNIFSinComodin para que monte 
 	   // la consulta adecuada.    
 	       if (!formulario.getNif().trim().equals("")) {
-	       	 if (ComodinBusquedas.hasComodin(formulario.getNif())){
-	       	 contador++;
-	       	 sqlClientesWhere += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getNif().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF,contador,codigosBind )+") ";
-	       	 }else{
-	       		if ((bBusqueda) ) {
-	       	     sqlClientesWhere +=" AND "+ComodinBusquedas.prepararSentenciaNIFExacta(formulario.getNif(),"UPPER("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+")");
-	       		}else{
-	       			contador++;
-	       			sqlClientesWhere +=" AND "+ComodinBusquedas.prepararSentenciaNIFBind(formulario.getNif(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF,contador,codigosBind);	
-	       		}
-	       	 }
+	    	   if ((bBusqueda) ) {
+	    		   contador++;
+	    		   codigosBind.put(new Integer(contador), formulario.getNif().trim().toUpperCase());
+	    		   sqlClientesWhere +=" AND UPPER("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+")= :"+contador;
+	    		   //a peticion de lp INC_06550_SIGA. Estaba la siguiente linea
+	    		   //sqlClientesWhere +=" AND "+ComodinBusquedas.prepararSentenciaNIFExacta(formulario.getNif(),"UPPER("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+")");
+	    	   }else{
+	    		   if (ComodinBusquedas.hasComodin(formulario.getNif())){
+	    			   contador++;
+	    			   sqlClientesWhere += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getNif().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF,contador,codigosBind )+") ";
+	    		   }else{
+
+	    			   contador++;
+
+	    			   sqlClientesWhere +=" AND "+ComodinBusquedas.prepararSentenciaNIFBind(formulario.getNif(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF,contador,codigosBind);	
+	    		   }
+	    	   }
 	       }
 //	 7
 	       if (!formulario.getTipoCliente().trim().equals("")) {
@@ -1134,8 +1140,9 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			//String bBusqueda = formulario.getChkBusqueda();
 			boolean bBusqueda  = UtilidadesString.stringToBoolean(formulario.getValorCheck());
 			// consulta de insituciones
-			sqlClientes = "SELECT "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NOMBRE+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_FECHANACIMIENTO+", "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" , "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" "+ " ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_NOAPARECERREDABOGACIA+"  " +" ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_NOENVIARREVISTA+"  " +
-							//Campos Sociedad SJ que dice si es o no una sociedad de Servicios Juridicos
+			sqlClientes = "SELECT "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NOMBRE+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_FECHANACIMIENTO+", "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" , "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" "+ " ,  nvl("+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_NOAPARECERREDABOGACIA+",'0') "+CenClienteBean.C_NOAPARECERREDABOGACIA+"  " +" ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_NOENVIARREVISTA+"  " +
+							
+			//Campos Sociedad SJ que dice si es o no una sociedad de Servicios Juridicos
 							","+CenNoColegiadoBean.T_NOMBRETABLA+"."+CenNoColegiadoBean.C_SOCIEDADSJ+
 							","+CenNoColegiadoBean.T_NOMBRETABLA+"."+CenNoColegiadoBean.C_TIPO+", "+
 							"decode((select '1' "+
@@ -1270,18 +1277,22 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 		// de no meter comodines se ha creado un nuevo metodo ComodinBusquedas.preparaCadenaNIFSinComodin para que monte 
 	    // la consulta adecuada. 
 	       if (!formulario.getNif().trim().equals("")) {
-	       	if (ComodinBusquedas.hasComodin(formulario.getNif())){
-	       		contador++;
-	       		sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getNif().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF,contador,codigosBind)+") ";
-	       	}else{
-	       		if ((bBusqueda ) ) {
-	       			
-	       		    sqlClientes +=" AND "+ComodinBusquedas.prepararSentenciaNIFExacta(formulario.getNif(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF);
-	       		}else{
-	       			contador++;
-	       			sqlClientes +=" AND "+ComodinBusquedas.prepararSentenciaNIFBind(formulario.getNif(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF,contador,codigosBind);	
-	       		}
-	       	}
+	    	   if ((bBusqueda ) ) {
+	    		   contador++;
+	    		   codigosBind.put(new Integer(contador), formulario.getNif().trim().toUpperCase());
+	    		   sqlClientes +=" AND UPPER("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+")= :"+contador;
+//	    		   //a peticion de lp INC_06550_SIGA. Estaba la siguiente linea
+	    		  // sqlClientes +=" AND "+ComodinBusquedas.prepararSentenciaNIFExacta(formulario.getNif(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF);
+	    	   }else{
+	    		   if (ComodinBusquedas.hasComodin(formulario.getNif())){
+	    			   contador++;
+	    			   sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getNif().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF,contador,codigosBind)+") ";
+	    		   }else{
+
+	    			   contador++;
+	    			   sqlClientes +=" AND "+ComodinBusquedas.prepararSentenciaNIFBind(formulario.getNif(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF,contador,codigosBind);	
+	    		   }
+	    	   }
 	       }
 //	 7
 //	       if (!formulario.getTipoCliente().trim().equals("")) {
@@ -1640,7 +1651,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			sqlClientes = "SELECT "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+" , " +
 			
 			" "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NOMBRE+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+","+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_FECHANACIMIENTO+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDPERSONA+" , "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" "+
-			" ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_NOAPARECERREDABOGACIA+"  " +
+			" ,  nvl("+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_NOAPARECERREDABOGACIA+",'0') "+CenClienteBean.C_NOAPARECERREDABOGACIA+" " +
 			" FROM  "+CenPersonaBean.T_NOMBRETABLA+" ,  "+CenClienteBean.T_NOMBRETABLA;
 			 if (formulario.getResidente()!=null && !formulario.getResidente().equals("0")){
 				 
@@ -1728,17 +1739,20 @@ public class CenClienteAdm extends MasterBeanAdmVisible
    // de no meter comodines se ha creado un nuevo metodo ComodinBusquedas.preparaCadenaNIFSinComodin para que monte 
    // la consulta adecuada.    
        if (formulario.getNif()!=null && !formulario.getNif().trim().equals("")) {
-       	 if (ComodinBusquedas.hasComodin(formulario.getNif())){
-       		 contador++;
-       		  sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaTranslateUpper(formulario.getNif().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF )+") ";
-       	 }else{
-       	   if ((bBusqueda ) ) {
-       		   contador++;
-       	      sqlClientes +=" AND "+ComodinBusquedas.prepararSentenciaNIFUpperExacta(formulario.getNif(),"UPPER("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+")");
-       	   }else{
-       	      sqlClientes +=" AND "+ComodinBusquedas.prepararSentenciaNIFUpper(formulario.getNif(),"UPPER("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+")");
-       	   }
-       	 }
+    	   if ((bBusqueda ) ) {
+    		   contador++;
+    		   codigos.put(new Integer(contador), formulario.getNif().trim().toUpperCase());
+    		   sqlClientes +=" AND UPPER("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+")= :"+contador;
+    		   //sqlClientes +=" AND "+ComodinBusquedas.prepararSentenciaNIFUpperExacta(formulario.getNif(),"UPPER("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+")");
+    	   }else{
+    		   if (ComodinBusquedas.hasComodin(formulario.getNif())){
+    			   contador++;
+    			   sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaTranslateUpper(formulario.getNif().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF )+") ";
+    		   }else{
+
+    			   sqlClientes +=" AND "+ComodinBusquedas.prepararSentenciaNIFUpper(formulario.getNif(),"UPPER("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+")");
+    		   }
+    	   }
        }
 // 9 
        if (formulario.getSexo()!=null &&!formulario.getSexo().trim().equals("")) {
@@ -2210,16 +2224,18 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 		// la consulta adecuada. 
 	       
 	       if (!formulario.getNif().trim().equals("")) {
-	       	
+	    	   if ((bBusqueda ) ) {
+	    		   contador++;
+	    		   codigos.put(new Integer(contador), formulario.getNif().trim().toUpperCase());
+	    		   sqlClientes +=" AND UPPER("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+")= :"+contador;
+	       		   //sqlClientes +="AND "+ComodinBusquedas.prepararSentenciaNIFExacta(formulario.getNif(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF); 
+	       		}else{
 	     
 	       	if (ComodinBusquedas.hasComodin(formulario.getNif())){
 	       		contador++;
 	       		sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getNif().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF,contador,codigos)+") ";
 	       	}else{
-	       		if ((bBusqueda ) ) {
-	       			
-	       		   sqlClientes +="AND "+ComodinBusquedas.prepararSentenciaNIFExacta(formulario.getNif(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF); 
-	       		}else{
+	       		
 	       			contador++;
 	       		   sqlClientes +="AND "+ComodinBusquedas.prepararSentenciaNIFBind(formulario.getNif(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF,contador,codigos);
 	       		}
@@ -2303,20 +2319,23 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 		// de no meter comodines se ha creado un nuevo metodo ComodinBusquedas.preparaCadenaNIFSinComodin para que monte 
 		// la consulta adecuada. 
 	       
-	       if (!formulario.getNif().trim().equals("")) {
-	       	if (ComodinBusquedas.hasComodin(formulario.getNif())){
-	       		contador++;
-	       		sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getNif().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF,contador,codigos)+") ";
-	       	}else{
-	       		if (bBusqueda)  {	
-	       			
-	       		  sqlClientes +="AND "+ComodinBusquedas.prepararSentenciaNIFExacta(formulario.getNif(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF); 
-	       		}else{
-	       			contador++;
-	       		  sqlClientes +="AND "+ComodinBusquedas.prepararSentenciaNIFBind(formulario.getNif(),"UPPER("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+")",contador,codigos);	
-	       		}
-	       	}
-	       }
+  	       if (!formulario.getNif().trim().equals("")) {
+  	    	   if (bBusqueda)  {	
+  	    		 contador++;
+	    		   codigos.put(new Integer(contador), formulario.getNif().trim().toUpperCase());
+	    		   sqlClientes +=" AND UPPER("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+")= :"+contador;
+  	    		   //sqlClientes +="AND "+ComodinBusquedas.prepararSentenciaNIFExacta(formulario.getNif(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF); 
+  	    	   }else{
+  	    		   if (ComodinBusquedas.hasComodin(formulario.getNif())){
+  	    			   contador++;
+  	    			   sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getNif().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF,contador,codigos)+") ";
+  	    		   }else{
+
+  	    			   contador++;
+  	    			   sqlClientes +="AND "+ComodinBusquedas.prepararSentenciaNIFBind(formulario.getNif(),"UPPER("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+")",contador,codigos);	
+  	    		   }
+  	    	   }
+  	       }
 	    	       
 	       sqlClientes +=")";
             
@@ -2704,30 +2723,32 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 		             
 
 		             if (!formulario.getNif().trim().equals("")) {
+		            	 if (bBusqueda)  {
 
-		                  if (ComodinBusquedas.hasComodin(formulario.getNif())){
+		            		 contador++;
+		  	    		   codigos.put(new Integer(contador), formulario.getNif().trim().toUpperCase());
+		  	    		   sqlClientes +=" AND UPPER("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+")= :"+contador;
 
-		                        contador++;
+	                          //sqlClientes +=" AND "+ComodinBusquedas.prepararSentenciaNIFExacta(formulario.getNif(),"upper("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+")");
 
-		                        sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getNif().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF,contador,codigos); 
-
-		                  }else{
-
-		                        if (bBusqueda)  {
-
-		                              
-
-		                          sqlClientes +=" AND "+ComodinBusquedas.prepararSentenciaNIFExacta(formulario.getNif(),"upper("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+")");
-
-		                        }else{
-
-		                         contador++;      
-
-		                          sqlClientes +=" AND "+ComodinBusquedas.prepararSentenciaNIFBind(formulario.getNif(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF,contador,codigos);      
-
-		                        }
-
-		                  }
+	                        }else{
+			                  if (ComodinBusquedas.hasComodin(formulario.getNif())){
+	
+			                        contador++;
+	
+			                        sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getNif().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF,contador,codigos)+")"; 
+	
+			                  }else{
+	
+			                        
+	
+			                         contador++;      
+	
+			                          sqlClientes +=" AND "+ComodinBusquedas.prepararSentenciaNIFBind(formulario.getNif(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF,contador,codigos);      
+	
+			                        }
+	
+			                  }
 
 		             }
 

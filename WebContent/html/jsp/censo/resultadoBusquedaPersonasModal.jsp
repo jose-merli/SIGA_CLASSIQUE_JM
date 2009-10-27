@@ -54,12 +54,12 @@
 	String totalRegistros ="";
 	
 	String registrosPorPagina = "";
-	HashMap hm = null;
+	HashMap hm = new HashMap();
 	String idPaginador = (String)request.getAttribute(ClsConstants.PARAM_PAGINACION);
 	if (ses.getAttribute(idPaginador)!=null) {
 		hm = (HashMap)ses.getAttribute(idPaginador);
 	
-	 if ( hm.get("datos")!=null && !hm.get("datos").equals("")){
+	 if ( hm!=null && hm.get("datos")!=null && !hm.get("datos").equals("")){
 	  vPersonas = (Vector)hm.get("datos");
 	  Paginador paginador = (Paginador)hm.get("paginador");
 	
@@ -346,7 +346,7 @@
 
 		<!-- FIN: LISTA DE VALORES -->
 		<!-- Pintamos la paginacion-->	
-		<%if ( hm.get("datos")!=null && !hm.get("datos").equals("")){%>
+		<%if (hm!=null && hm.get("datos")!=null && !hm.get("datos").equals("")){%>
 		<siga:Paginador totalRegistros="<%=totalRegistros%>" 
 								registrosPorPagina="<%=registrosPorPagina%>" 
 								paginaSeleccionada="<%=paginaSeleccionada%>" 

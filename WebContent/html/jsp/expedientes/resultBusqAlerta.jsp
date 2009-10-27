@@ -5,7 +5,6 @@
 -->
 
 <!-- CABECERA JSP -->
-
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
@@ -19,8 +18,10 @@
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.expedientes.ExpPermisosTiposExpedientes"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
+<%@ page import="com.siga.Utilidades.Paginador"%>
 
 <!-- JSP -->
+<bean:define id="datosPaginador" name="busquedaAlertaForm" property="datosPaginador" type="java.util.HashMap"/>
 <% 
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
@@ -30,8 +31,55 @@
 	UsrBean userBean = ((UsrBean)ses.getAttribute(("USRBEAN")));
 	request.removeAttribute("datos");
 	String idInstitucion = userBean.getLocation();
+	String idioma=userBean.getLanguage().toUpperCase();
 	String botones = "";
 	ExpPermisosTiposExpedientes perm=(ExpPermisosTiposExpedientes)request.getAttribute("permisos");
+	
+	/** PAGINADOR ***/
+	String paginaSeleccionada = "";
+	
+	String totalRegistros = "";
+
+	String registrosPorPagina = "";
+	Vector resultado = null;
+	String valorCheckPersona = "";
+	if (datosPaginador!=null) {
+	
+
+		if (datosPaginador.get("datos") != null && !datosPaginador.get("datos").equals("")) {
+			resultado = (Vector) datosPaginador.get("datos");
+			
+				Paginador paginador = (Paginador) datosPaginador
+						.get("paginador");
+				paginaSeleccionada = String.valueOf(paginador
+						.getPaginaActual());
+
+				totalRegistros = String.valueOf(paginador
+						.getNumeroTotalRegistros());
+
+				registrosPorPagina = String.valueOf(paginador
+						.getNumeroRegistrosPorPagina());
+			
+		} else {
+			resultado = new Vector();
+			paginaSeleccionada = "0";
+
+			totalRegistros = "0";
+
+			registrosPorPagina = "0";
+		}
+	} else {
+		resultado = new Vector();
+		paginaSeleccionada = "0";
+
+		totalRegistros = "0";
+
+		registrosPorPagina = "0";
+	}
+
+	String action = app + "/EXP_Consultas.do?noReset=true";
+	
+	/* FIN PAGINADOR */
 
 %>	
 
@@ -81,12 +129,13 @@
 		   		  	expedientes.auditoria.literal.nexpediente,
 		   		  	expedientes.auditoria.literal.alerta,"
 		   		  tamanoCol="13,15,12,12,8,25,10"
-		   		  alto="358" 
-		   		  activarFilaSel="true">
+		   		  alto="100px" 
+		   		  activarFilaSel="true"
+		   		  ajustePaginador="true">
 		   		  
 		    <!-- INICIO: ZONA DE REGISTROS -->
 <%
-				if (vDatos==null || vDatos.size()==0)
+				if (resultado==null || resultado.size()==0)
 				{
 %>
 				<br><br>
@@ -97,9 +146,9 @@
 				
 				else
 				{
-			 		for (int i=0; i<vDatos.size(); i++)
+			 		for (int i=0; i<resultado.size(); i++)
 			   		{
-				  		Row fila = (Row)vDatos.elementAt(i);	
+				  		Row fila = (Row)resultado.elementAt(i);	
 						if (fila.getString("IDINSTITUCION").equals(idInstitucion)){	
 				  			botones="C,E,B";
 				  		}else{
@@ -116,7 +165,7 @@
 						<input type="hidden" name="oculto<%=""+(i+1)%>_6" value="<%=UtilidadesString.mostrarDatoJSP(fila.getString("NOMBRETIPOEXPEDIENTE"))%>">	
 						<input type="hidden" name="oculto<%=""+(i+1)%>_7" value="<%=fila.getString("IDALERTA")%>">	
 											
-					<td><%=fila.getString("FECHAALERTA")%></td>
+					<td><%=UtilidadesString.formatoFecha(fila.getString("FECHAALERTA"),"yyyy/MM/dd HH:mm:ss","dd/MM/yyyy HH:mm:ss")%></td>
 					<td><%=fila.getString("NOMBRETIPOEXPEDIENTE")%></td>
 					<td><%=fila.getString("FAS_NOMBRE")%></td>
 					<td><%=fila.getString("EST_NOMBRE")%></td>
@@ -130,6 +179,19 @@
 			<!-- FIN: ZONA DE REGISTROS -->
 			</siga:TablaCabecerasFijas>
 			
+			
+		<%if (  datosPaginador!=null && datosPaginador.get("datos")!=null && !datosPaginador.get("datos").equals("")){%>
+	  
+			<siga:Paginador totalRegistros="<%=totalRegistros%>" 
+				registrosPorPagina="<%=registrosPorPagina%>" 
+				paginaSeleccionada="<%=paginaSeleccionada%>" 
+				idioma="<%=idioma%>"
+				modo="buscar"								
+				clase="paginator" 
+				divStyle="position:absolute; width:100%; height:20;  z-index:3; bottom:0px; left: 0px"
+				distanciaPaginas=""
+				action="<%=action%>" />
+      	<%}%>
 
 		<!-- FIN: LISTA DE VALORES -->
 	

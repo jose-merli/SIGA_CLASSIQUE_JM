@@ -604,7 +604,7 @@ public class DefinirAreasMateriasAction extends MasterAction {
 			
 			ScsMateriaJurisdiccionAdm adm = new ScsMateriaJurisdiccionAdm (this.getUserBean(request));
 			
-			Vector v = adm.busquedaJurisdiccionMateriaQueNoEstenEnMateria(miForm.getIdMateria(),miForm.getIdArea(),usr.getLanguage() );
+			Vector v = adm.busquedaJurisdiccionMateriaQueNoEstenEnMateria(miForm.getIdInstitucion(),miForm.getIdMateria(),miForm.getIdArea(),usr.getLanguage() );
 			request.setAttribute("JURISDICCIONES", v);
 			request.setAttribute("IDINSTITUCION", miForm.getIdInstitucion());
 			request.setAttribute("IDMATERIA", miForm.getIdMateria());

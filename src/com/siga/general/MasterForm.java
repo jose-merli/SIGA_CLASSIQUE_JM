@@ -156,12 +156,15 @@ public class MasterForm extends ActionForm {
 			}
 			else if(objeto instanceof Map){ 
 				((Map)objeto).clear();
+			}else if(objeto instanceof String){ 
+				objeto="";
 			}
 		}
 		
 		
 		
 	}
+	
 	public ArrayList getRegistrosSeleccionados() {
 		return UtilidadesHash.getArrayList(this.datos, "registrosSeleccionados");	
 		
@@ -182,6 +185,14 @@ public class MasterForm extends ActionForm {
 //		UtilidadesHash.set(this.datos,"datosPaginador", datosPaginador);
 		//this.registrosSeleccionados = registrosSeleccionados;
 //	}
+	String seleccionarTodos;
+
+	public String getSeleccionarTodos() {
+		return UtilidadesHash.getString(this.datos, "seleccionarTodos");
+	}
+	public void setSeleccionarTodos(String seleccionarTodos) {
+		UtilidadesHash.set(this.datos,"seleccionarTodos", seleccionarTodos);
+	}
 	
 	
 	

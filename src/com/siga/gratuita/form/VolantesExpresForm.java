@@ -72,4 +72,13 @@ public class VolantesExpresForm extends MasterForm
 	public void setSinAvisos(String sinAvisos) {
 		UtilidadesHash.set(this.datos, "sinAvisos", sinAvisos);
 	}
+	String fechaJustificacion ;
+	public String getFechaJustificacion() {
+		return fechaJustificacion;
+	}
+	public void setFechaJustificacion(String fechaJustificacion) {
+		this.fechaJustificacion = fechaJustificacion;
+	}
+	
+	
 }

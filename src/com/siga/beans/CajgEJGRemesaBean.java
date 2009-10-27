@@ -17,11 +17,12 @@ public class CajgEJGRemesaBean extends MasterBean{
 	private Integer idTipoEJG;
 	private Integer	idInstitucionRemesa;
 	private Integer idRemesa;
-
+	private Integer numeroIntercambio;
 	
 	
 	/*
 	 *  Nombre de Tabla*/
+	
 	
 	static public String T_NOMBRETABLA = "CAJG_EJGREMESA";
 	
@@ -33,6 +34,7 @@ public class CajgEJGRemesaBean extends MasterBean{
 	static public final String	C_IDTIPOEJG=					"IDTIPOEJG";
 	static public final String	C_IDINSTITUCIONREMESA=			"IDINSTITUCIONREMESA";
 	static public final String	C_IDREMESA =					"IDREMESA";
+	static public final String	C_NUMEROINTERCAMBIO = "NUMEROINTERCAMBIO";
 	
 	
 	public Integer getIdInstitucion() {
@@ -72,10 +74,17 @@ public class CajgEJGRemesaBean extends MasterBean{
 		this.idRemesa = idRemesa;
 	}
 	
-	
-	
-	
-	
-
+	/**
+	 * @return the numeroIntercambio
+	 */
+	public Integer getNumeroIntercambio() {
+		return numeroIntercambio;
+	}
+	/**
+	 * @param numeroIntercambio the numeroIntercambio to set
+	 */
+	public void setNumeroIntercambio(Integer numeroIntercambio) {
+		this.numeroIntercambio = numeroIntercambio;
+	}
 	
 }

@@ -219,6 +219,7 @@ public class ClsConstants {
 	public static final String MODULO_CENSO = "CEN";  
 	public static final String MODULO_GENERAL = "GEN";
 	public static final String MODULO_FACTURACION = "FAC"; 
+	public static final String MODULO_SJCS = "SCS";
 	public static final String MODULO_FACTURACION_SJCS = "FCS";
 	public static final String MODULO_PRODUCTOS = "PYS";
 	public static final String MODULO_CERTIFICADOS = "CER";	
@@ -256,6 +257,7 @@ public class ClsConstants {
 
 	public static final String USER_DIR = System.getProperty("user.dir");
 //	public static final String RES_DIR = "C://eclipse//workspace//SIGA92//WebContent";
+	public static final String RES_DIR = initProperties.getString("init.application.path");
 
 	public static final String APPLICATION_NAME = initProperties.getString("init.application.name");
   	public static final String DEFAULT_LANGUAGE= initProperties.getString("init.default.language");
@@ -518,6 +520,8 @@ MDB Microsoft Access Database
   public static final String GEN_PARAM_EXCLUIR_EJG_DENEGADOS_JUSTIF_LETRADO="EXCLUIR_EJG_DENEGADOS_JUSTIF_LETRADO";
 //parametro para aplicar logicade acreditaciones anterires a 2005
   public static final String GEN_PARAM_FACT_JA_2005="FACT_JA_2005";
+  public static final String GEN_PARAM_DELITOS_VE="DELITOS_VOLANTE_EXPRES";
+  
   
   public static final String PERMITIR_FACTURA_CERTIFICADO="PERMITIR_FACTURA_CERTIFICADO";
   

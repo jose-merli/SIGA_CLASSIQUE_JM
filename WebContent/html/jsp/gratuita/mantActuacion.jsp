@@ -567,7 +567,7 @@
 					<% //if((validarJustificaciones != null) && (validarJustificaciones.equalsIgnoreCase("S"))) { %>
 						<% if (!usr.isLetrado()) { // Agente %>
 							<% if ((facturada != null) && (!facturada.equals("1"))) {%>
-									<input type="button" alt="<siga:Idioma key='gratuita.altaTurnos.literal.validacion'/>" id="bValidarActuacion" onclick="validarJustificacion();" class="button" value="<siga:Idioma key='gratuita.altaTurnos.literal.validacion'/>">
+									<input type="button" alt="<siga:Idioma key='gratuita.altaTurnos.literal.validacion'/>" id="idButton" onclick="validarJustificacion();" class="button" value="<siga:Idioma key='gratuita.altaTurnos.literal.validacion'/>">
 							<%}%>
 						<%} %>
 					<%} %>						

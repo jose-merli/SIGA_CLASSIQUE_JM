@@ -78,14 +78,14 @@
 					return false;
 				} else if (fechaProgramada.value!="") {
 						//Para la validacion no tengo en cuenta si empieza por 0 y tiene 2 digitos (tanto hora como minuto)
-						var horas = document.ProgramacionForm.horas.value;
+						/*var horas = document.ProgramacionForm.horas.value;
 						var minutos = document.ProgramacionForm.minutos.value;
 						if (horas.length==2 && horas.charAt(0)=='0') {
 							document.ProgramacionForm.horas.value = horas.charAt(1);
 						}
 						if (minutos.length==2 && minutos.charAt(0)=='0') {
 							document.ProgramacionForm.minutos.value = minutos.charAt(1);
-						}
+						}*/
 
 						if (validateProgramacionForm(document.ProgramacionForm)) {
 								//document.getElementById("modo").value="modificar";
@@ -144,6 +144,7 @@
 				ProgramacionForm.imgCalendario.width=0;
 				ProgramacionForm.horas.readOnly=true;
 				ProgramacionForm.minutos.readOnly=true;
+				ProgramacionForm.fechaProgramada.readOnly=true;
 			
 				ProgramacionForm.fechaProgramada.value="";
 				ProgramacionForm.horas.value="";
@@ -154,6 +155,7 @@
 				ProgramacionForm.imgCalendario.width=16;
 				ProgramacionForm.horas.readOnly=false;
 				ProgramacionForm.minutos.readOnly=false;
+				ProgramacionForm.fechaProgramada.readOnly=false;
 
 				var fFecha = new Date();
 				
@@ -163,16 +165,13 @@
 				
 				var hora=fFecha.getHours();
 				var minuto=fFecha.getMinutes();
-				
-				if (dia<10) dia="0"+dia;
-				if (mes<10) mes="0"+mes;
 
-				if (hora<10) hora="0"+hora;
-				if (minuto<10) minuto="0"+minuto;
-								
 				ProgramacionForm.fechaProgramada.value=dia+"/"+mes+"/"+yea;
-				ProgramacionForm.horas.value=hora;
-				ProgramacionForm.minutos.value=minuto;
+				if(hora<10) ProgramacionForm.horas.value="0"+hora;
+				else ProgramacionForm.horas.value=hora;
+				
+				if(minuto<10) ProgramacionForm.minutos.value="0"+minuto;
+				else ProgramacionForm.minutos.value=minuto;
 			 
 			}
 		}
@@ -206,16 +205,13 @@
 				
 				var hora=fFecha.getHours();
 				var minuto=fFecha.getMinutes();
-				
-				if (dia<10) dia="0"+dia;
-				if (mes<10) mes="0"+mes;
-
-				if (hora<10) hora="0"+hora;
-				if (minuto<10) minuto="0"+minuto;
 								
 				ProgramacionForm.fechaProgramada.value=dia+"/"+mes+"/"+yea;
-				ProgramacionForm.horas.value=hora;
-				ProgramacionForm.minutos.value=minuto;
+				if(hora<10) ProgramacionForm.horas.value="0"+hora;
+				else ProgramacionForm.horas.value=hora;
+				
+				if(minuto<10) ProgramacionForm.minutos.value="0"+minuto;
+				else ProgramacionForm.minutos.value=minuto;
 			  <%}else{%>
 			  
 			    ProgramacionForm.fechaProgramada.value='<%=fechaOrig%>';
@@ -242,7 +238,7 @@
 		
 	</head>
 	
-	<body onload="validarCheckInit()">
+	<body>
 	
 	
 	
@@ -277,25 +273,26 @@
 			</tr>
 			<tr>			
 				<td class="labelText">
-					<siga:Idioma key="envios.definir.literal.fechaenvio"/>
+					<siga:Idioma key="envios.definir.literal.fechaenvio"/>(*)
 				</td>
 				<td>
-					<html:text name="ProgramacionForm" property="fechaProgramada" size="7" maxlength="10" styleClass="<%=boxStyle%>" readonly="true">
-					</html:text>
 					<% if (bEditable){%>
-					<a href='javascript://'onClick="return showCalendarGeneral(fechaProgramada);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0" id="imgCalendario"></a>
+						<siga:Fecha nombreCampo="fechaProgramada" valorInicial="<%=fechaOrig%>"/>
+						<a href='javascript://'onClick="return showCalendarGeneral(fechaProgramada);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0" id="imgCalendario"></a>
+					<%}else{%>
+						<html:text name="ProgramacionForm" property="fechaProgramada" styleClass="boxConsulta" value="<%=fechaOrig%>" size="10" maxlength="10" readonly="<%=!bEditable%>"/>
 					<%}%>
 				</td>
 			</tr>
 			<tr>
 				<td class="labelText">
-					<siga:Idioma key="envios.definir.literal.horaenvio"/>
+					<siga:Idioma key="envios.definir.literal.horaenvio"/>(*)
 				</td>
 				<td class="boxConsulta">
 				<%if (bEditable){%>
-					<html:text name="ProgramacionForm" property="horas" size="2" maxlength="2" styleClass="box" readonly="<%=!bEditable%>"></html:text>					
+					<html:text name="ProgramacionForm" property="horas" size="2" maxlength="2" styleClass="box" readonly="<%=!bEditable%>" value="<%=horasOrig%>" style="text-align:center"></html:text>					
 					:
-					<html:text name="ProgramacionForm" property="minutos"  size="2" maxlength="2" styleClass="box" readonly="<%=!bEditable%>"></html:text>	
+					<html:text name="ProgramacionForm" property="minutos"  size="2" maxlength="2" styleClass="box" readonly="<%=!bEditable%>" value="<%=minutosOrig%>" style="text-align:center"></html:text>	
 				<% } else {%>
 					<bean:write name="ProgramacionForm" property="horas"/>
 					:

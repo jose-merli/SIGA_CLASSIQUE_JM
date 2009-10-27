@@ -6,6 +6,9 @@
  */
 package com.siga.gratuita.util.calendarioSJCS;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.transaction.UserTransaction;
 
 import com.atos.utils.ClsLogging;
@@ -54,9 +57,13 @@ public class EjecutarCalendarioAutomatico {
 			ClsLogging.writeFileLog("--> Datos del Calendario...",3);
 			calendarioSJCS.pintarCalendarioSJCS();
 			
+			//Obtenemos los dias a Agrupar
+			//ArrayList lDiasASeparar = new ArrayList();
+			List lDiasASeparar = calendarioSJCS.getDiasASeparar(idInstitucion, idTurno, idGuardia, usr);
+			
 			ClsLogging.writeFileLog("",3);
 			ClsLogging.writeFileLog("--> Obtengo la matriz de letrados de Guardia para los periodos calculados...",3);
-			int salidaError = calendarioSJCS.calcularMatrizLetradosGuardia();
+			int salidaError = calendarioSJCS.calcularMatrizLetradosGuardia(lDiasASeparar);
 			
 			ClsLogging.writeFileLog("",3);
 			ClsLogging.writeFileLog("--> Salida del resultado de ejecutar CalcularMatrizLetradosGuardia:",3);

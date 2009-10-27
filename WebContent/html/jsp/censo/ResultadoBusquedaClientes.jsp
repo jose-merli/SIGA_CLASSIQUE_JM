@@ -221,6 +221,8 @@
 	<html:hidden property="modo" value="" />
 	<html:hidden property="registrosSeleccionados" />
 	<html:hidden property="datosPaginador" />
+	<html:hidden property="seleccionarTodos" />
+	
 
 	<!-- parametro para colegiados o no -->
 	<html:hidden property="colegiado" value="<%=colegiado %>" />
@@ -501,34 +503,32 @@
 		clase="listaNonEdit" pintarEspacio="no">
 		<td>
 		<%
-			String valorCheck = idPersona+"||"+idInstitucion;
-							boolean encontrado = false;
-							int z = 0;
-
-							while (z < registrosSeleccionados.size()
-									&& !encontrado) {
-								Hashtable clavesRegistro = (Hashtable) registrosSeleccionados
-										.get(z);
-
-								if ((valorCheck.equals(clavesRegistro
-										.get(CenPersonaBean.C_IDPERSONA+"||"+"IDINSTITUCION")))) {
-									if (clavesRegistro.get("SELECCIONADO")
-											.equals("1")) {
-										encontrado = true;
-									} else {
-										encontrado = false;
-									}
-									break;
-								} else {
-									encontrado = false;
-								}
-								z++;
-
-							}
-							if(isAplicarLOPD){%>
+		
+		String valorCheck = idInstitucion+"||"+idPersona;
+			
+							if(isAplicarLOPD){
+								valorCheck+="||"+ClsConstants.DB_TRUE;
+							
+							%>
 								<input type="checkbox" value="<%=valorCheck%>"  name="chkPersona"  disabled >
 							<% }else{
-								if (encontrado) {
+								valorCheck+="||"+ClsConstants.DB_FALSE;
+							
+								boolean isChecked = false;
+								for (int z = 0; z < registrosSeleccionados.size(); z++) {
+									Hashtable clavesRegistro = (Hashtable) registrosSeleccionados
+											.get(z);
+
+									String clave = (String)clavesRegistro.get("CLAVE");
+									
+									if (valorCheck.equals(clave)) {
+										isChecked = true;
+										break;
+									}
+									
+
+								}
+								if (isChecked) {
 			%>
 								
 									<input type="checkbox" value="<%=valorCheck%>"  name="chkPersona" checked onclick="pulsarCheck(this)">
@@ -639,7 +639,7 @@
 
 <!-- FIN: LISTA DE VALORES -->
 <%
-	if (datosPaginador.get("datos") != null && !datosPaginador.get("datos").equals("")) {
+	if ( datosPaginador!=null && datosPaginador.get("datos") != null && !datosPaginador.get("datos").equals("")) {
 		String regSeleccionados = ("" + ((registrosSeleccionados == null) ? 0
 				: registrosSeleccionados.size()));
 
@@ -704,25 +704,21 @@
 		   
 	}
 	function cargarChecks(){
-	   		
-	   	 	
-		<%if (registrosSeleccionados!=null){
+		<%
+		if (registrosSeleccionados!=null){
 	   		for (int p=0;p<registrosSeleccionados.size();p++){
-	   		 	
 		   		Hashtable clavesEJG= (Hashtable) registrosSeleccionados.get(p);
-		   		
-				valorCheckPersona=(String)clavesEJG.get(CenPersonaBean.C_IDPERSONA)+"||"+(String)clavesEJG.get("IDINSTITUCION");
-						
-				if (clavesEJG.get("SELECCIONADO").equals(ClsConstants.DB_TRUE)&&clavesEJG.get("APLICARLOPD").equals(ClsConstants.DB_FALSE)){%>
-					var aux='<%=valorCheckPersona%>';
-					ObjArray.push(aux);
-				<%}
+				valorCheckPersona=(String)clavesEJG.get("CLAVE");
+				String noApareceEnRedAbogacia =  (String)clavesEJG.get(CenClienteBean.C_NOAPARECERREDABOGACIA);
+				if(noApareceEnRedAbogacia==null || noApareceEnRedAbogacia.equals("")|| noApareceEnRedAbogacia.equals(ClsConstants.DB_FALSE)){
+				%>
+					ObjArray.push('<%=valorCheckPersona%>');
+				<%
+				}
 			} 
 	   	}%>
-	   	
 		ObjArray.toString();
 		seleccionados1=ObjArray;
-			
 		document.forms[0].registrosSeleccionados.value=seleccionados1;
 		if(document.getElementById('registrosSeleccionadosPaginador'))
 			document.getElementById('registrosSeleccionadosPaginador').value =ObjArray.length;
@@ -735,39 +731,14 @@
 	  		var conf = confirm('<siga:Idioma key="paginador.message.marcarDesmarcar"/>'); 
 	   	   	
 		   	if (conf){
+		   		
 				ObjArray = new Array();
 			   	if (o.checked){
-			   	 	<%if (registrosSeleccionados!=null){
-			   		 	for (int p=0;p<registrosSeleccionados.size();p++){
-			   		 	
-				   			Hashtable clavesEJG= (Hashtable) registrosSeleccionados.get(p);
-				   			valorCheckPersona=(String)clavesEJG.get(CenPersonaBean.C_IDPERSONA)+"||"+(String)clavesEJG.get("IDINSTITUCION");
-				   			
-				   			if (clavesEJG.get("APLICARLOPD").equals(ClsConstants.DB_FALSE)){
-				   			
-				   	%>
-							
-								var aux='<%=valorCheckPersona%>';
-								ObjArray.push(aux);
-							
-						<%
-				   			}
-				   		} 
-			   		 }%>
-					ObjArray.toString();
-					seleccionados1=ObjArray;
-					
-					document.forms[0].registrosSeleccionados.value=seleccionados1;
-					
-					var ele = document.getElementsByName("chkPersona");
-						
-					for (i = 0; i < ele.length; i++) {
-						if(!ele[i].disabled)
-							ele[i].checked = true;
-							
-					}
+			
+					parent.seleccionarTodos('<%=paginaSeleccionada%>');
 					
 				}else{
+					
 					ObjArray1= new Array();
 				 	ObjArray=ObjArray1;
 				 	
@@ -786,13 +757,13 @@
 		   	  
 		   	  }else{
 		   	  	if (!o.checked ){
+		   	  			
 			   	  		var ele = document.getElementsByName("chkPersona");
 							
 					  	for (i = 0; i < ele.length; i++) {
 					  		if(!ele[i].disabled){
 					  			if(ele[i].checked){	
 			     					ele[i].checked = false;
-			     				//alert("ele.value"+ele.value);
 									ObjArray.splice(ObjArray.indexOf(ele[i].value),1);
 								}
 							}
@@ -800,6 +771,7 @@
 					   	
 					   	seleccionados1=ObjArray;
 				   }else{
+				   	
 					   	var ele = document.getElementsByName("chkPersona");
 								
 					  	for (i = 0; i < ele.length; i++) {
@@ -826,13 +798,14 @@
 	 	var ele = document.getElementsByName("chkPersona");
 		var todos=1;	
 	  	for (i = 0; i < ele.length; i++) {
-   			if(!ele[i].checked){
+   			if(!ele[i].checked && !ele[i].disabled){
    				todos=0;
    				break;
    			} 
    		}
 	   
 	   if (todos==1){
+	   		
 			document.getElementById("chkGeneral").checked=true;
 		}else{
 			document.getElementById("chkGeneral").checked=false;
@@ -877,11 +850,17 @@
 			datos = "";
 		
 		for (i = 0; i < ObjArray.length; i++) {
-			var idPersonaInstitucion = ObjArray[i];
-			index = idPersonaInstitucion.indexOf('||');
-			//alert("index"+index);
-			idPersona  = idPersonaInstitucion.substring(0,index);
-			idInstitucion = idPersonaInstitucion.substring(index+2);
+			var idRegistros = ObjArray[i];
+			index = idRegistros.indexOf('||');
+			idInstitucion  = idRegistros.substring(0,index);
+			idRegistros = idRegistros.substring(index+2);
+			index = idRegistros.indexOf('||');
+			idPersona  = idRegistros.substring(0,index);
+			idRegistros = idRegistros.substring(index+2);
+			index = idRegistros.indexOf('||');
+			apareceenRedAbogacia = idRegistros.substring(0,index);
+			
+			
  		   	datos = datos +"idPersona=="+idPersona + "##idInstitucion==" +idInstitucion+"%%%";
 			
 			
@@ -925,11 +904,17 @@
 			datos = "";
 		
 		for (i = 0; i < ObjArray.length; i++) {
-			var idPersonaInstitucion = ObjArray[i];
-			index = idPersonaInstitucion.indexOf('||');
-			//alert("index"+index);
-			idPersona  = idPersonaInstitucion.substring(0,index);
-			idInstitucion = idPersonaInstitucion.substring(index+2);
+			
+			var idRegistros = ObjArray[i];
+			index = idRegistros.indexOf('||');
+			idInstitucion  = idRegistros.substring(0,index);
+			idRegistros = idRegistros.substring(index+2);
+			index = idRegistros.indexOf('||');
+			idPersona  = idRegistros.substring(0,index);
+			idRegistros = idRegistros.substring(index+2);
+			index = idRegistros.indexOf('||');
+			apareceenRedAbogacia = idRegistros.substring(0,index);
+			
 			datos = datos +	idPersona + "," +idInstitucion +",<%=colegiado%>#";
  		   	
 			
@@ -943,7 +928,6 @@
 				fin();
 				return;
 			}
-			
 			document.forms[0].tablaDatosDinamicosD.value = datos;
 			document.forms[0].modo.value ='generaExcel';
 			

@@ -64,6 +64,7 @@
 	<html:hidden property="modo" value="" />
 	<input type="hidden" name="limpiarFilaSeleccionada" value="">
 	<html:hidden property="letrado"/>
+	<html:hidden property="seleccionarTodos" />
 
 	<fieldset>
 	<table class="tablaCampos" align="center" border="0">
@@ -205,7 +206,7 @@
 <script language="JavaScript">
 		
 		<!-- Funcion asociada a boton buscar -->
-		function buscar() 
+		function buscar(modo) 
 		{ var importeDesde=document.forms[0].importeAdeudadoDesde.value.replace(/,/,".");
 		  var importeHasta=document.forms[0].importeAdeudadoHasta.value.replace(/,/,".");
 
@@ -259,13 +260,24 @@
 				document.forms[0].facturasImpagadasHasta.value=document.forms[0].facturasImpagadasHasta.value.replace(/,/,".");
 				document.forms[0].importeAdeudadoDesde.value=document.forms[0].importeAdeudadoDesde.value.replace(/,/,".");
 				document.forms[0].importeAdeudadoHasta.value=document.forms[0].importeAdeudadoHasta.value.replace(/,/,".");
-				document.forms[0].modo.value="buscarInit";
+				
+				if(modo)
+					document.forms[0].modo.value = modo;
+				else
+					document.forms[0].modo.value="buscarInit";
 				document.forms[0].target="resultado";	
 				document.forms[0].submit();
 			}else{
 				setFocusFormularios();
 			}	
 		}
+		function seleccionarTodos(pagina) 
+		{
+			document.forms[0].seleccionarTodos.value = pagina;
+			buscar('buscarPor');
+				
+		}		
+		
 		
 		function buscarPaginador() 
 		{		

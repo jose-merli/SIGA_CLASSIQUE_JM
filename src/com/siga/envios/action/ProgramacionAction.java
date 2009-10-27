@@ -406,7 +406,15 @@ public class ProgramacionAction extends MasterAction {
 			//obtengo el envio
 			EnvEnviosBean envBean = (EnvEnviosBean)envAdm.selectByPKForUpdate(htPk).firstElement();
 			Envio envio = new Envio(envBean, userBean);
-	
+			if(envBean.getIdEstado().compareTo(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESANDO)==0){
+				throw new SIGAException("messages.envios.procesandoEnvio");
+				
+			}else{
+				envBean.setIdEstado(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESANDO);
+                envAdm.updateDirect(envBean);
+                
+				
+			}
 			// lo proceso
 			envio.procesarEnvio(tx);
 			

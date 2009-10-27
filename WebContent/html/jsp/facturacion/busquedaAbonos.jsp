@@ -111,7 +111,7 @@
 				<tr>				
 					<td>
 						<siga:ConjCampos leyenda="facturacion.busquedaAbonos.literal.busquedaAbonos">
-						<table class="tablaCampos" align="center">	
+						<table class="tablaCampos" align="center" border="0">	
 							<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="">
 								<html:hidden property = "actionModal" value=""/>
 								<html:hidden property = "modo" value = "abrirBusquedaModal"/>
@@ -129,103 +129,75 @@
 								<html:hidden property = "idPersonaBusqueda" value = "<%=idPersonaBusqueda%>"/>
 								<input type="hidden" name="limpiarFilaSeleccionada" value="">
 								<tr>
-									<td class="labelText" width="20%" style="display:none">
-										<siga:Idioma key="facturacion.busquedaAbonos.literal.numeroAbono"/>&nbsp;&nbsp;
+									<td class="labelText" width="8%">
+									<siga:Idioma key="expedientes.auditoria.literal.tipo"/>
 									</td>
-									<td class="labelText" width="15%" style="display:none">
-										<html:text property="busquedaIdAbono" styleClass="box" size="12" maxlength="10" value="<%=busquedaIdAbono%>"></html:text>
-									</td>
-									<td class="labelText" width="20%" >
-										<siga:Idioma key="facturacion.busquedaAbonos.literal.numeroAbono"/>&nbsp;&nbsp;
-									</td>
-									<td class="labelText" width="15%" >
-										<html:text property="numeroAbono" styleClass="box" size="12" maxlength="10" value="<%=busquedaNumeroAbono%>"></html:text>
-									</td>
-									<td class="labelText" width="18%">
-										<siga:Idioma key="facturacion.busquedaAbonos.literal.fechaAbonoDesde"/>&nbsp;&nbsp;
-									</td>	
-									<td class="labelText" width="17%">										
-										<html:text property="fechaAbonoDesde" size="10" styleClass="box" readOnly="true"></html:text>
-										<a href='javascript://' onClick="return showCalendarGeneral(fechaAbonoDesde);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-											<img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>'  border="0">
-										</a>
-									</td>
-									<td class="labelText" width="18%">
-										<siga:Idioma key="facturacion.busquedaAbonos.literal.fechaAbonoHasta"/>&nbsp;&nbsp;
-									</td>	
-									<td class="labelText" width="17%">
-										<html:text property="fechaAbonoHasta" size="10" styleClass="box" readOnly="true"></html:text>
-										<a href='javascript://' onClick="return showCalendarGeneral(fechaAbonoHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-											<img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>'  border="0">
-										</a>
-									</td>
-								</tr>
-								<tr>
-									<td class="labelText">
-										<siga:Idioma key="facturacion.busquedaAbonos.literal.cliente"/>&nbsp;&nbsp;
-									</td>
-									<% if (!user.isLetrado()) { %>
-										<td class="labelText">
-											<html:button property="idButton" onclick="return buscarCliente();" styleClass="button"> 
-												<siga:Idioma key="general.boton.search"/> 
-											</html:button>
-										</td>
-									<% } %>
-									<td class="labelText" colspan="2">										
-										<html:text property="busquedaCliente" styleClass="boxConsulta" size="50" maxlength="50" value="<%=busquedaCliente%>"></html:text>
-									</td>
-									<td class="labelText">
-										<siga:Idioma key="expedientes.auditoria.literal.tipo"/>&nbsp;&nbsp;
-									</td>
-									<td class="labelText">
-										<html:select name="datosGeneralesForm" property="tipoAbonoBusqueda" style = "null" styleClass = "box" value="<%=tipoAbonoBusqueda%>">
+									<td class="labelText" width="8%" style="text-align: right">
+									<html:select name="datosGeneralesForm" property="tipoAbonoBusqueda" style = "null" styleClass = "box" value="<%=tipoAbonoBusqueda%>">
 											<html:option value="" ></html:option>
 											<html:option value="<%=ClsConstants.TIPO_ABONO_FACTURACION %>" ><siga:Idioma key="factSJCS.datosPagos.literal.facturacion"/></html:option>
 											<html:option value="<%=ClsConstants.TIPO_ABONO_JUSTICIA_GRATUITA %>" ><siga:Idioma key="modulo.gratuita"/></html:option>
 										</html:select>
 									</td>
+									<td class="labelText" width="15%" style="display:none">
+										<html:text property="busquedaIdAbono" styleClass="box" size="12" maxlength="10" value="<%=busquedaIdAbono%>"></html:text>
+									</td>
+									<td class="labelText" width="20%" colspan="2">	
+										<siga:Idioma key="facturacion.busquedaAbonos.literal.numeroAbono"/>
+									</td>
+									<td class="labelText">	
+										<html:text property="numeroAbono" styleClass="box" size="12" maxlength="10" value="<%=busquedaNumeroAbono%>"></html:text>
+									</td>
+									<td class="labelText" colspan="2" style="text-align: right">	
+										<siga:Idioma key="facturacion.busquedaAbonos.literal.fechaAbonoEntre"/>
+										<html:text property="fechaAbonoDesde" size="10" styleClass="box" readOnly="true"></html:text>
+										<a href='javascript://' onClick="return showCalendarGeneral(fechaAbonoDesde);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
+										<img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>'  border="0"></a>&nbsp;&nbsp;
+										<siga:Idioma key="facturacion.consultamorosos.literal.y"/>&nbsp;&nbsp;
+										<html:text property="fechaAbonoHasta" size="10" styleClass="box" readOnly="true"></html:text>
+										<a href='javascript://' onClick="return showCalendarGeneral(fechaAbonoHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
+										<img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>'  border="0">
+										</a>
+									</td>
 								</tr>
 								<tr>
-									<td class="labelText">
-										<siga:Idioma key="facturacion.busquedaAbonos.literal.numeroFactura"/>&nbsp;&nbsp;
+									<td class="labelText" colspan="2" width="8%">
+									
+									</td>
+									<td class="labelText" colspan="2">									
+										<siga:Idioma key="facturacion.busquedaAbonos.literal.numeroFactura"/>
 									</td>
 									<td class="labelText">
 										<html:text property="busquedaIdFactura" styleClass="box" size="12" maxlength="20" value="<%=busquedaIdFactura%>"></html:text>
 									</td>
-									<td class="labelText">
-										<siga:Idioma key="facturacion.busquedaAbonos.literal.fechaFacturaDesde"/>&nbsp;&nbsp;
-									</td>	
-									<td class="labelText">										
+									<td class="labelText" colspan="2" style="text-align: right">	
+										<siga:Idioma key="facturacion.busquedaAbonos.literal.fechaFacturaEntre"/>
 										<html:text property="fechaFacturaDesde" size="10" styleClass="box" readOnly="true"></html:text>
 										<a href='javascript://' onClick="return showCalendarGeneral(fechaFacturaDesde);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-											<img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>' border="0">
-										</a>
-									</td>
-									<td class="labelText">
-										<siga:Idioma key="facturacion.busquedaAbonos.literal.fechaFacturaHasta"/>&nbsp;&nbsp;
-									</td>	
-									<td class="labelText">
+										<img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>' border="0"></a>&nbsp;&nbsp;
+										<siga:Idioma key="facturacion.consultamorosos.literal.y"/>&nbsp;&nbsp;
 										<html:text property="fechaFacturaHasta" size="10" styleClass="box" readOnly="true"></html:text>
 										<a href='javascript://' onClick="return showCalendarGeneral(fechaFacturaHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-											<img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>'  border="0">
-										</a>
+										<img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>'  border="0"></a>
 									</td>
 								</tr>
 								<tr>
-									<td class="labelText">
-										<siga:Idioma key="facturacion.busquedaAbonos.literal.formaPagoAbono"/>&nbsp;&nbsp;
-									</td>
-									<td class="labelText">
+								<td class="labelText" colspan="2" width="8%">
+									
+								</td>
+								<td class="labelText" width="20%" colspan="3">
+										<siga:Idioma key="facturacion.busquedaAbonos.literal.formaPagoAbono"/>
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 										<html:select name="datosGeneralesForm" property="formaPagoBusqueda" style = "null" styleClass = "box" value="<%=formaPagoBusqueda%>">
-											<html:option value="" ></html:option>
-											<html:option value="<%=ClsConstants.TIPO_CARGO_BANCO %>" ><siga:Idioma key="censo.tipoAbono.banco"/></html:option>
-											<html:option value="<%=ClsConstants.TIPO_CARGO_CAJA %>" ><siga:Idioma key="censo.tipoAbono.caja"/></html:option>
+										<html:option value="" ></html:option>
+										<html:option value="<%=ClsConstants.TIPO_CARGO_BANCO %>" ><siga:Idioma key="censo.tipoAbono.banco"/></html:option>
+										<html:option value="<%=ClsConstants.TIPO_CARGO_CAJA %>" ><siga:Idioma key="censo.tipoAbono.caja"/></html:option>
 										</html:select>
-									</td>
-									<td class="labelText">
-										<siga:Idioma key="facturacion.busquedaAbonos.literal.pagadoAbono"/>&nbsp;&nbsp;
-									</td>	
-									<td class="labelText">										
+					   	 		</td>
+					   	 		<td class="labelText">
+					   	 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										<siga:Idioma key="facturacion.busquedaAbonos.literal.pagadoAbono"/>
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 										<html:select name="datosGeneralesForm" property="pagadoBusqueda" style = "null" styleClass = "box" value="<%=pagadoBusqueda%>">
 											<html:option value="" ></html:option>
 											<html:option value="<%=ClsConstants.DB_TRUE %>" ><siga:Idioma key="general.yes"/></html:option>
@@ -233,19 +205,23 @@
 										</html:select>
 									</td>
 									<td class="labelText">
-										<siga:Idioma key="facturacion.busquedaAbonos.literal.contabilizadoAbono"/>&nbsp;&nbsp;
-									</td>	
-									<td class="labelText">										
+										<siga:Idioma key="facturacion.busquedaAbonos.literal.contabilizadoAbono"/>&nbsp;&nbsp;&nbsp;
 										<html:select name="datosGeneralesForm" property="contabilizadoBusqueda" style = "null" styleClass = "box" value="<%=contabilizadoBusqueda%>">
 											<html:option value="" ></html:option>
 											<html:option value="<%=ClsConstants.FACTURA_ABONO_CONTABILIZADA %>" ><siga:Idioma key="general.yes"/></html:option>
 											<html:option value="<%=ClsConstants.FACTURA_ABONO_NO_CONTABILIZADA %>" ><siga:Idioma key="general.no"/></html:option>
 										</html:select>
 									</td>
-								</tr>
-							</html:form>	
-						</table>
-						</siga:ConjCampos>
+							 	</tr>
+							 	<tr>
+							 		<td class="labelText" colspan="7">
+							 		<siga:BusquedaPersona tipo="personas" titulo="gratuita.seleccionColegiadoJG.literal.titulo" anchoNum="10" anchoDesc="50" idPersona="idPersonaBusqueda">
+									</siga:BusquedaPersona>
+							 		</td>	
+							   </tr>
+					   	  </html:form>	
+				        </table>
+					 </siga:ConjCampos>
 					</td>
 				</tr>
 			</table>

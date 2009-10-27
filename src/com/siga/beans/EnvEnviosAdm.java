@@ -1549,7 +1549,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    try {
             vDestManuales = destAdm.select(htPk);
         } catch (ClsExceptions e1) {
-            throw new ClsExceptions(e1,"Error obteniendo los estinatarios del envio");
+            throw new ClsExceptions(e1,"Error obteniendo los destinatarios del envio");
         }
 	    
 	    
@@ -1639,7 +1639,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			
 		}catch(Exception e){
 //	        throw new SIGAException("messages.envios.error.obtenciondestinatarios",e);
-            throw new ClsExceptions(e,"Error obteniendo los estinatarios del envio");
+            throw new ClsExceptions(e,"Error obteniendo los destinatarios del envio");
 
 	    }
 		
@@ -1788,7 +1788,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			}	 	
 		}catch(Exception e){
 //	        throw new SIGAException("messages.envios.error.obtenciondestinatarios",e);
-            throw new ClsExceptions(e,"Error obteniendo los estinatarios del envio");
+            throw new ClsExceptions(e,"Error obteniendo los destinatarios del envio");
 
 	    }
 		
@@ -1949,7 +1949,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			}
 		} catch (ClsExceptions e1) {
 //            throw new SIGAException("messages.envios.error.obtenciondestinatarios",e1);
-            throw new ClsExceptions(e1,"Error obteniendo los estinatarios del envio");
+            throw new ClsExceptions(e1,"Error obteniendo los destinatarios del envio");
 			
         }
 		//2. Montamos y ejecutamos la query que obtendrá 
@@ -1973,7 +1973,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 				}
 			} catch (ClsExceptions e1) {
 //	            throw new SIGAException("messages.envios.error.obtenciondestinatarios",e1);
-	            throw new ClsExceptions(e1,"Error obteniendo los estinatarios del envio");
+	            throw new ClsExceptions(e1,"Error obteniendo los destinatarios del envio");
 				
 	        }					
 		}
@@ -3877,6 +3877,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		    sql += C_IDINSTITUCION + " = " + idInst;
 			sql += " AND " + C_IDESTADO + " = " + EnvEstadoEnvioAdm.K_ESTADOENVIO_PENDIENTE_AUTOMATICO;
 			sql += " AND " + C_FECHAPROGRAMADA + " <= SYSDATE";
+		    //sql += " AND " + EnvEnviosBean.C_IDENVIO + " = 3732";
 					
 			enviosBeans = this.select(sql);
 			return enviosBeans;
@@ -5119,6 +5120,11 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 					ClsLogging.writeFileLog("Recibida respuesta SMS. TIEMPO: "+new Long((fin.getTime()-ini.getTime())).toString(),10);
 					
 					ClsLogging.writeFileLog("Resultado de la operación: " + response03.getResultado(),10);
+	    	        if (response03.getResultado().indexOf("KO")!=-1) {
+	    	        	// ERROR
+	    	        	throw new ClsExceptions("Error en el servicio ECOS. "+response03.getResultado());	
+	    	        }
+
 					ClsLogging.writeFileLog("ID de solicitud: " + response03.getIdSolicitud(),10);
 					
 		    	    // RGG 08/06/2009 ESTADISTICA
@@ -5185,19 +5191,10 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
             throw new ClsExceptions("Tipo de envio electrónico incorrecto");
         }
         
-        // OBTENCIÓN DE SERVIDOR DE CORREO
-        /////////////////////////////////////
-	    Context ctx = new InitialContext();
-	    Session sesion = (Session)javax.rmi.PortableRemoteObject.narrow(ctx.lookup("CorreoSIGA"), Session.class);
-	    ctx.close();
 
 	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 //		ReadProperties rp = new ReadProperties("SIGA.properties");	
 		
-	    // RGG autenticar SMTP
-	    sesion.getProperties().put("mail.smtp.auth", "true");
-	    tr = sesion.getTransport("smtp");
-	    tr.connect(rp.returnProperty("mail.smtp.host"),rp.returnProperty("mail.smtp.user"), rp.returnProperty("mail.smtp.pwd"));
 	   
 
 
@@ -5344,6 +5341,11 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 					ClsLogging.writeFileLog("Recibida respuesta BuroSMS. TIEMPO: "+new Long((fin.getTime()-ini.getTime())).toString(),10);
 					
 					ClsLogging.writeFileLog("Resultado de la operación: " + response03.getResultado(),10);
+	    	        if (response03.getResultado().indexOf("KO")!=-1) {
+	    	        	// ERROR
+	    	        	throw new ClsExceptions("Error en el servicio ECOS. "+response03.getResultado());	
+	    	        }
+
 					ClsLogging.writeFileLog("ID de solicitud: " + response03.getIdSolicitud(),10);
 							            
 		            

@@ -27,6 +27,13 @@
 	UsrBean usr = (UsrBean) ses.getAttribute("USRBEAN");
 	Properties src = (Properties) ses
 			.getAttribute(SIGAConstants.STYLESHEET_REF);
+	
+	Integer PCAJG_ACTIVADO =(Integer) (request.getAttribute("PCAJG_ACTIVO"));
+	String pintarAsterisco="";
+	if (PCAJG_ACTIVADO!=null && PCAJG_ACTIVADO.intValue()>1){
+		pintarAsterisco="&nbsp;(*)";
+		
+	}
 
 	// Validamos si es una consulta o no.
 	String modo = (String) request.getAttribute("MODO");
@@ -44,6 +51,7 @@
 	ArrayList pretensionesSel = new ArrayList();
 	Hashtable hash = (Hashtable) request.getSession().getAttribute(
 			"DATABACKUP");
+	
 	
 	try {
 		ESTADO = hash.get("ESTADO").toString();
@@ -278,7 +286,14 @@
 		} catch (Exception e) {
 		}
 	}
-
+	
+	
+	ArrayList vOrigenCAJGSel = new ArrayList();
+	String vOrigenCAJG = (String) hash.get(ScsEJGBean.C_IDORIGENCAJG);
+	if (vOrigenCAJG != null && vOrigenCAJG != null){
+		vOrigenCAJGSel.add(0, vOrigenCAJG);
+	}	
+	
 	String[] datos = { usr.getLocation(), idTurno };
 	String[] datos2 = { usr.getLocation(), usr.getLanguage() };
 %>
@@ -291,6 +306,8 @@
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>	
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/validation.js" type="text/jscript"></script>
+  
 	
 	<script type="text/javascript">
 
@@ -516,7 +533,9 @@
 		</tr>
 		<tr>
 			<td class="labelText">
-				<siga:Idioma key='gratuita.busquedaEJG.literal.EJGColegio'/>
+			   
+				 <siga:Idioma key='gratuita.busquedaEJG.literal.EJGColegio'/><%=pintarAsterisco%>
+				
 			</td>
 			<td>	
 			<%
@@ -565,46 +584,48 @@
 			</td>
 		</tr>
 		<tr>
-			<td class="labelText">	
-				<siga:Idioma key='gratuita.operarEJG.literal.numeroCAJG'/>
+			
+			 <td class="labelText">	
+				<siga:Idioma key='gratuita.operarEJG.literal.CAJG'/> <siga:Idioma key='gratuita.operarEJG.literal.anio'/> / <siga:Idioma key='gratuita.busquedaEJG.literal.codigo'/>
 			</td>
-			<td>	
+			
+			
 			<%
-					if (modo.equals("ver")) {
+			   if (modo.equals("ver")) {
 				%>
+			   <td  class="labelText">	
+				  <input size="4" type="text" class="boxConsulta" value="<%=anioCAJG%>" readOnly="true" > / <input type="text" class="boxConsulta" size="10" value="<%=numeroCAJG%>" readOnly="true" >
+			   </td>
 				
-				<html:text name="DefinirMantenimientoEJGForm" property="numeroCAJG" size="10" maxlength="20" styleClass="boxConsulta" value="<%=numeroCAJG%>" readonly="true"></html:text>
 			<%
 				} else {
 			%>
-			    <html:text name="DefinirMantenimientoEJGForm" property="numeroCAJG" size="10" maxlength="20" styleClass="box" value="<%=numeroCAJG%>"></html:text>
+			  <td  class="labelText">	
+				
+				<html:text name="DefinirMantenimientoEJGForm"  onkeypress="filterChars(this,false,true);"
+                             onkeyup="filterCharsUp(this);"  onblur="filterCharsNaN(this);" property="anioCAJG" size="4" maxlength="4" styleClass="boxNumber"  value="<%=anioCAJG%>" ></html:text> / <html:text name="DefinirMantenimientoEJGForm" property="numeroCAJG" size="10" maxlength="20" onkeypress="filterChars(this,false,true);"
+                             onkeyup="filterCharsUp(this);"  onblur="filterCharsNaN(this);"  styleClass="boxNumber" value="<%=numeroCAJG%>"></html:text>
+			  </td>
 				
 			<%
-								}
-							%>
-			</td>
-			<td class="labelText">	
-				<siga:Idioma key='gratuita.operarEJG.literal.anioCAJG'/>
-			</td>
-			<td>	
-			<%
-					if (modo.equals("ver")) {
-				%>
-				
-				<html:text name="DefinirMantenimientoEJGForm" property="anioCAJG" size="10" maxlength="20" styleClass="boxConsulta" value="<%=anioCAJG%>" readonly="true"></html:text>
-			<%
-				} else {
+						}
 			%>
-                <html:text name="DefinirMantenimientoEJGForm" property="anioCAJG" size="10" maxlength="20" styleClass="box" value="<%=anioCAJG%>" ></html:text>
-			<%
-				}
-			%>
+			
+			
+			<td class="labelText" colspan="2">	
+				<siga:Idioma key='gratuita.operarEJG.literal.origen'/> &nbsp;
+			
+			
+		<%	 if (modo.equals("ver")) {%> 
+				<siga:ComboBD nombre="idOrigenCAJG" tipo="origenCAJG" clase="boxConsulta" ancho="230"  filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vOrigenCAJGSel%>" readOnly="true"/>
+			 <%}else{ %>
+			    <siga:ComboBD nombre="idOrigenCAJG" tipo="origenCAJG" clase="boxCombo" ancho="250" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vOrigenCAJGSel%>" />
+			 <%}%>		
 			</td>
-			<td class="labelText">	
-				<siga:Idioma key='gratuita.busquedaEJG.dictamen'/>
-			</td>
-			<td>
-				<siga:ComboBD nombre="idTipoDictamenEJG" tipo="dictamenEJG" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vIntFDict%>" readOnly="true"/>	
+			
+			<td class="labelText" colspan="2">	
+				<siga:Idioma key='gratuita.busquedaEJG.dictamen'/> &nbsp;
+				<siga:ComboBD nombre="idTipoDictamenEJG" ancho="200" tipo="dictamenEJG" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vIntFDict%>" readOnly="true"/>	
 			</td>
 			
 		</tr>
@@ -1192,6 +1213,30 @@
 		{	
 			sub();
 			var observaciones = document.forms[0].observaciones.value;
+			
+		 <%if (PCAJG_ACTIVADO!=null && PCAJG_ACTIVADO.intValue()>1){%>
+		   if (document.forms[0].idTipoEJGColegio.value==""){
+		    fin();
+		    alert('<siga:Idioma key="gratuita.operarEJG.message.requeridoTipoEJGColegio"/>');
+		    return false;
+		   }
+		 <%}%> 
+		
+		 if(!((document.forms[0].anioCAJG.value!="" && document.forms[0].numeroCAJG.value!="" && document.forms[0].idOrigenCAJG.value!="")
+		    || (document.forms[0].anioCAJG.value=="" && document.forms[0].numeroCAJG.value=="" && document.forms[0].idOrigenCAJG.value=="")) ){
+		    fin();
+		    alert('<siga:Idioma key="gratuita.operarEJG.message.anioNumeroOrigen.obligatorios"/>');
+		    return false;
+		   
+		 } 
+		 
+		  if (document.forms[0].anioCAJG.value.length!=0 && document.forms[0].anioCAJG.value.length<4){
+			  fin();
+			  alert('<siga:Idioma key="gratuita.operarEJG.message.longitudAnioCAJG"/>');
+			  return false;
+		  
+		 }	  
+		 	
 		 if(document.forms[0].fechaAperturaEJG.value!=""){
 			if (observaciones.length <= 1024) {
 			     var datosTurno =  document.forms[0].identificador.value.split(",");

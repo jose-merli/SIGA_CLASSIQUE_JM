@@ -51,7 +51,7 @@
 	String paginaSeleccionada = "";
 	String totalRegistros = "";
 	String registrosPorPagina = "";
-	HashMap hm = null;
+	HashMap hm = new HashMap();
 
 	String idPaginador = (String) request.getAttribute(ClsConstants.PARAM_PAGINACION);
 	if (ses.getAttribute(idPaginador) != null) {

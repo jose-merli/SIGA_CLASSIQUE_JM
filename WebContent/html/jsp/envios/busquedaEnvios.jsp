@@ -92,6 +92,7 @@
     /**************/
 %>	
 
+<%@page import="java.io.File"%>
 <html>
 
 <!-- HEAD -->
@@ -280,7 +281,8 @@
 		}
 		
 		function enviar(fila) {
-			
+			sub();
+			subicono('iconoboton_enviar'+fila);
 			var auxEnv = 'oculto' + fila + '_1';
 			var idEnv = document.getElementById(auxEnv);			          		
 			
@@ -310,6 +312,7 @@
 			
 			document.forms[0].submit();
 			document.forms[0].target="mainWorkArea";
+			//finsubicono('iconoboton_enviar'+fila);
 		}
 
 			function download(fila)

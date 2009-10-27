@@ -136,9 +136,8 @@
 								<td class="labelText">
 									<siga:Idioma key="factSJCS.busquedaRetAplicadas.literal.pagoRelacionado"/>
 								</td>
-								<td >	
-								<html:text property="pagoRelacionado"  size="10" styleClass="box" />
-									
+								<td >
+									<siga:ComboBD nombre="pagoRelacionado" tipo="cmbPagosInstitucion" ancho="300" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=new String[]{(String)usr.getLocation()}%>"/>
 								</td>	
 								<td>
 								</td>

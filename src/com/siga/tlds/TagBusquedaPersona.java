@@ -17,6 +17,8 @@ public class TagBusquedaPersona extends TagSupport
 	String accion = "";
 	String idPersona = "";
 	String numeroColegiado="";
+	String anchoDesc = "";
+	String anchoNum = "";
 
 //	public String getNumeroColegiado() {
 //		return numeroColegiado;
@@ -29,6 +31,18 @@ public class TagBusquedaPersona extends TagSupport
 	}
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
+	}
+	public String getAnchoDesc() {
+		return anchoDesc;
+	}
+	public void setAnchoDesc(String anchoDesc) {
+		this.anchoDesc = anchoDesc;
+	}
+	public String getAnchoNum() {
+		return anchoNum;
+	}
+	public void setAnchoNum(String anchoNum) {
+		this.anchoNum = anchoNum;
 	}
 	public String getIdPersona() {
 		return idPersona;
@@ -53,6 +67,13 @@ public class TagBusquedaPersona extends TagSupport
 		try {
 			HttpSession session = pageContext.getSession();
 			UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);
+			if (this.anchoDesc ==null ||this.anchoDesc.equals("")){
+				this.anchoDesc="50";
+			}
+			
+			if (this.anchoNum ==null ||this.anchoNum.equals("")){
+				this.anchoNum="4";
+			}
 			if (usrbean==null) usrbean = UsrBean.UsrBeanAutomatico("2000");
 
 			PrintWriter out = pageContext.getResponse().getWriter();
@@ -65,6 +86,7 @@ public class TagBusquedaPersona extends TagSupport
 				out.println("</legend>");
 			}
 			out.println("<table align=\"left\">");
+			
 			
 			if (tipo.equals("colegiado")){
 				out.println("			<tr>");	
@@ -87,10 +109,10 @@ public class TagBusquedaPersona extends TagSupport
 			}
 			out.println("<td>");
 			
-			out.println("	<input type=\"text\" id=\"numeroNifTagBusquedaPersonas\" name=\"numeroNifTagBusquedaPersonas\" size=\"4\" maxlength=\"8\" class=\"box\" onBlur=\"obtenerPersonas();\"/>");				
+			out.println("	<input type=\"text\" id=\"numeroNifTagBusquedaPersonas\" name=\"numeroNifTagBusquedaPersonas\" size="+this.anchoNum+" maxlength=\"9\" class=\"box\" onBlur=\"obtenerPersonas();\"/>");				
 			out.println("</td>");
 			out.println("<td>");
-			out.println("	<input type=\"text\" name=\"nombrePersona\" size=\"50\" maxlength=\"50\" class=\"box\" readonly=\"true\"/>");				
+			out.println("	<input type=\"text\" name=\"nombrePersona\" size="+this.anchoDesc+" maxlength=\"50\" class=\"box\" readonly=\"true\"/>");				
 			out.println("</td>");
 			out.println("<td>");
 																								

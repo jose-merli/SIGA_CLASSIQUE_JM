@@ -151,8 +151,8 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 			CenPersonaBean perBean = null;
 			
 			Hashtable codigos = new Hashtable();
-			codigos.put(new Integer(1),nifcif.toUpperCase());
-			Vector personas = selectBind("WHERE UPPER(" + CenPersonaBean.C_NIFCIF + ") = :1",codigos);			
+			codigos.put(new Integer(1),UtilidadesString.LTrim(nifcif.toUpperCase(),"0"));
+			Vector personas = selectBind("WHERE ltrim(UPPER(" +CenPersonaBean.C_NIFCIF+"),'0') = :1",codigos);			
 			
 			if ((personas != null) && personas.size() == 1) {
 				perBean = (CenPersonaBean)personas.get(0);
@@ -205,8 +205,8 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 			
 			CenPersonaBean perBean = null;
 			Hashtable codigos = new Hashtable();
-			codigos.put(new Integer(1),nifcif.toUpperCase());
-			Vector personas = selectBind("WHERE UPPER(" + CenPersonaBean.C_NIFCIF + ") = :1", codigos);			
+			codigos.put(new Integer(1),UtilidadesString.LTrim(nifcif.toUpperCase(),"0"));
+			Vector personas = selectBind("WHERE ltrim(UPPER(" +CenPersonaBean.C_NIFCIF+"),'0') = :1", codigos);			
 			
 			if ((personas != null) && personas.size() == 1) {
 				perBean = (CenPersonaBean)personas.get(0);
@@ -252,8 +252,8 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 		try {
 			CenPersonaBean perBean = null;
 			Hashtable codigos = new Hashtable();
-			codigos.put(new Integer(1),nifcif.toUpperCase());
-			Vector personas = selectBind("WHERE UPPER(" + CenPersonaBean.C_NIFCIF + ") = :1",codigos);			
+			codigos.put(new Integer(1),UtilidadesString.LTrim(nifcif.toUpperCase(),"0"));
+			Vector personas = selectBind("WHERE ltrim(UPPER(" +CenPersonaBean.C_NIFCIF+"),'0') = :1",codigos);			
 			
 			if ((personas != null) && personas.size() == 1) {
 				perBean = (CenPersonaBean)personas.get(0);
@@ -337,8 +337,8 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 			return persona;*/
 			CenPersonaBean perBean = null;
 			Hashtable codigos = new Hashtable();
-			codigos.put(new Integer(1),nifcif.toUpperCase());
-			Vector personas = selectBind("WHERE UPPER(" + CenPersonaBean.C_NIFCIF + ") = :1",codigos);			
+			codigos.put(new Integer(1),UtilidadesString.LTrim(nifcif.toUpperCase(),"0"));
+			Vector personas = selectBind("WHERE ltrim(UPPER(" + CenPersonaBean.C_NIFCIF + "),'0') = :1",codigos);			
 			
 			if ((personas != null) && personas.size() == 1) {
 				perBean = (CenPersonaBean)personas.get(0);
@@ -388,8 +388,8 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 			return persona;*/
 			CenPersonaBean perBean = null;
 			Hashtable codigos = new Hashtable();
-			codigos.put(new Integer(1),nifcif.toUpperCase());
-			Vector personas = selectBind("WHERE UPPER(" + CenPersonaBean.C_NIFCIF + ") = :1",codigos);			
+			codigos.put(new Integer(1),UtilidadesString.LTrim(nifcif.toUpperCase(),"0"));
+			Vector personas = selectBind("WHERE ltrim(UPPER(" +CenPersonaBean.C_NIFCIF+"),'0') = :1",codigos);			
 			
 			if ((personas != null) && personas.size() == 1) {
 				perBean = (CenPersonaBean)personas.get(0);
@@ -908,14 +908,21 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 			// de no meter comodines se ha creado un nuevo metodo ComodinBusquedas.preparaCadenaNIFSinComodin para que monte 
 			// la consulta adecuada.				
 			if (nif!=null && !nif.equals("")){
-				if (ComodinBusquedas.hasComodin(nif)){
-					
-					sql +=" AND "+ComodinBusquedas.prepararSentenciaCompleta(nif.trim(),P_NIF);
-				}else{
-					sql +=" AND "+ComodinBusquedas.prepararSentenciaNIF(nif,"UPPER(" + P_NIF + ")");
-				}
-			}else{
-				sql +="";
+				if (!bBusqueda) {
+					if (ComodinBusquedas.hasComodin(nif)){
+						
+						sql +=" AND "+ComodinBusquedas.prepararSentenciaCompleta(nif.trim(),P_NIF);
+					}else{
+						sql +=" AND "+ComodinBusquedas.prepararSentenciaNIF(nif,"UPPER(" + P_NIF + ")");
+					}
+		       	}
+		       	else {
+		       		sql += " and (UPPER(" + P_NIF     + ") " + ComodinBusquedas.prepararSentenciaExacta(nif.trim().toUpperCase())    + ") ";
+		       	}
+				
+				
+				
+				
 			}
 	        
 			sql+= " ORDER BY ORDENAR, "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NOMBRE;
@@ -1092,16 +1099,24 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 			// de no meter comodines se ha creado un nuevo metodo ComodinBusquedas.preparaCadenaNIFSinComodin para que monte 
 			// la consulta adecuada.				
 			if (nif!=null && !nif.equals("")){
-				if (ComodinBusquedas.hasComodin(nif)){
-					
-					condiciones +=" AND "+ComodinBusquedas.prepararSentenciaCompleta(nif.trim(),P_NIF);
-				}else{
-					condiciones +=" AND "+ComodinBusquedas.prepararSentenciaNIF(nif,"UPPER(" + P_NIF + ")");
-				}
-			}else{
-				condiciones +="";
+				if (!bBusqueda) {
+					if (ComodinBusquedas.hasComodin(nif)){
+						
+						condiciones +=" AND "+ComodinBusquedas.prepararSentenciaCompleta(nif.trim(),P_NIF);
+					}else{
+						condiciones +=" AND "+ComodinBusquedas.prepararSentenciaNIF(nif,"UPPER(" + P_NIF + ")");
+					}
+		       	}
+		       	else {
+		       		condiciones += " and (UPPER(" + P_NIF     + ") " + ComodinBusquedas.prepararSentenciaExacta(nif.trim().toUpperCase())    + ") ";
+		       	}
+				
+				
+				
+				
 			}
-	        
+			
+			
 			
 			
 			

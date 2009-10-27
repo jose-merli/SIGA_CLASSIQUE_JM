@@ -128,6 +128,13 @@ public class InformeCertificadosEspeciales extends MasterReport
 		String nif = UtilidadesHash.getString(registro,"CIFNIF");
 		String fechaEmisionCert = UtilidadesHash.getString(registro,"FECHAEMISIONCERTIFICADO");
 		String fechaIncorporacionCert = UtilidadesHash.getString(registro,"FECHAINCORPORACION");
+		String valor1 = UtilidadesHash.getString(registro,"VALOR1");
+		String valor2 = UtilidadesHash.getString(registro,"VALOR2");
+		String valor3 = UtilidadesHash.getString(registro,"VALOR3");
+		String valor4 = UtilidadesHash.getString(registro,"VALOR4");
+		String valor5 = UtilidadesHash.getString(registro,"VALOR5");
+		String valor6 = UtilidadesHash.getString(registro,"VALOR6");
+		
 		
 		
 		
@@ -138,6 +145,13 @@ public class InformeCertificadosEspeciales extends MasterReport
 		UtilidadesHash.set(hDatosFijos, "FECHAEMISIONCERTIFICADO", fechaEmisionCert);
 		UtilidadesHash.set(hDatosFijos, "RESIDENTE", SITUACIONRESIDENTE);
 		UtilidadesHash.set(hDatosFijos, "FECHAINCORPORACION", fechaIncorporacionCert);
+		
+		UtilidadesHash.set(hDatosFijos, "VALOR1", valor1);
+		UtilidadesHash.set(hDatosFijos, "VALOR2", valor2);
+		UtilidadesHash.set(hDatosFijos, "VALOR3", valor3);
+		UtilidadesHash.set(hDatosFijos, "VALOR4", valor4);
+		UtilidadesHash.set(hDatosFijos, "VALOR5", valor5);
+		UtilidadesHash.set(hDatosFijos, "VALOR6", valor6);
 		
 		UtilidadesHash.set(hDatosFijos, "FECHAACTUAL", UtilidadesHash.getString(registro,"FECHAACTUAL"));
 		UtilidadesHash.set(hDatosFijos, "TRATAMIENTO", UtilidadesHash.getString(registro,"TRATAMIENTO"));

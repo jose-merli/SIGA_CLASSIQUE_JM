@@ -2,6 +2,8 @@
 package com.siga.beans;
 
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.TreeMap;
 import java.util.Vector;
 
 import com.atos.utils.ClsConstants;
@@ -571,6 +573,9 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 			throws ClsExceptions,SIGAException
 	{
 		   Vector datos=new Vector();
+		   String idcalendarioguardias="",  idturno="", idguardia="", idpersona="";
+		   HelperInformesAdm helperInformes = new HelperInformesAdm();
+		   TreeMap tmListaGuardias = new TreeMap();
 	       try {
 	            RowsContainer rc = new RowsContainer();
 	            
@@ -586,12 +591,13 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 			    int contador=0;
 				
 	            
-	            String sql =" SELECT GUARDIA, LETRADO, OFICINA1, OFICINA2, RESIDENCIA, MOVIL, FAX1, FAX2, FECHA_INICIO, TURNO, FECHA_FIN" +
-							" FROM (SELECT " +
-									"(" + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS1 + " || ' ' || " +
+	            String sql =" SELECT " +ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_IDGUARDIA+ " AS IDGUARDIA, "+
+	                        "(" + CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS1 + " || ' ' || " +
 									CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS2 + " || ', ' || " +
 									CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NOMBRE + ") AS LETRADO," +
-					    			ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_NOMBRE + " AS GUARDIA," ;
+					    			ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_NOMBRE + " AS GUARDIA," +
+	                                " guardias2.idpersona IDPERSONA,  guardias2.idcalendarioguardias IDCALENDARIOGUARDIAS,  "+ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_NOMBRE+"	 TURNO, "+ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDTURNO+" IDTURNO, ";
+	            //guardias2.fechainicio FECHA_INICIO, guardias2.fecha_fin FECHA_FIN,
 					    			contador++;
 	            					codigos.put(new Integer(contador),institucion);
 	            					//contador++;
@@ -612,7 +618,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 	            					sql += " f_siga_getdireccioncliente(:"+contador+", guardias2.idpersona,6,14) AS FAX1, ";
 					    			contador++;
 	            					codigos.put(new Integer(contador),institucion);
-	            					sql +=" f_siga_getdireccioncliente(:"+contador+", guardias2.idpersona, 6,15) AS FAX2," ;
+	            					sql +=" f_siga_getdireccioncliente(:"+contador+", guardias2.idpersona, 6,15) AS FAX2, " ;
 	            					contador++;
 	            					codigos.put(new Integer(contador),institucion);
 	            				
@@ -632,11 +638,9 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
         					codigos.put(new Integer(contador),institucion);
         					
         					sql += " F_SIGA_FECHAINISOLICITANTE(:"+contador+","+ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDTURNO+","+ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDGUARDIA+","+
-	                                         "guardias2.idpersona, guardias2.fechainicio, guardias2.idcalendarioguardias)) AS FECHA_INICIO, "+
-									" (select "+ ScsTurnoBean.C_NOMBRE+
-									"  from "+ScsTurnoBean.T_NOMBRETABLA+
-									"  where "+ScsTurnoBean.C_IDTURNO+"= "+ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_IDTURNO+
-									"    and "+ScsTurnoBean.C_IDINSTITUCION+"= "+ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_IDINSTITUCION+") TURNO, ";
+	                                         "guardias2.idpersona, guardias2.fechainicio, guardias2.idcalendarioguardias)) AS FECHA_INICIO, ";
+							sql+=	ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_NOMBRE+"	 TURNO, ";
+							
 	            					contador++;
 	            					codigos.put(new Integer(contador),institucion);
 	            					
@@ -656,30 +660,29 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
         					codigos.put(new Integer(contador),institucion);
         					
         					sql += " F_SIGA_FECHAFINSOLICITANTE(:"+contador+","+ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDTURNO+","+ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDGUARDIA+","+
-	                                         "guardias2.idpersona, guardias2.fechainicio, guardias2.idcalendarioguardias)) AS FECHA_FIN"+	
+	                                         "guardias2.idpersona, guardias2.fechainicio, guardias2.idcalendarioguardias)) AS FECHA_FIN";	
 											
-					    /***********************/
+					   
 	                                         
-									" FROM " + ScsGuardiasTurnoBean.T_NOMBRETABLA + "," + CenPersonaBean.T_NOMBRETABLA + "," +  
-											   ScsCalendarioGuardiasBean.T_NOMBRETABLA + "," +
-											   ScsCabeceraGuardiasBean.T_NOMBRETABLA + " guardias2 " + 
+							sql+=		" FROM " + ScsGuardiasTurnoBean.T_NOMBRETABLA + "," + CenPersonaBean.T_NOMBRETABLA + "," +  
+											  	   ScsCabeceraGuardiasBean.T_NOMBRETABLA + " guardias2, " +ScsTurnoBean.T_NOMBRETABLA+ 
+											  	   ", "+CenColegiadoBean.T_NOMBRETABLA+
 											   
 									" WHERE " +
-									ScsGuardiasTurnoBean.T_NOMBRETABLA +"."+ ScsGuardiasTurnoBean.C_IDINSTITUCION + "=" + ScsCalendarioGuardiasBean.T_NOMBRETABLA +"."+ ScsCalendarioGuardiasBean.C_IDINSTITUCION +
+									ScsGuardiasTurnoBean.T_NOMBRETABLA +"."+ ScsGuardiasTurnoBean.C_IDINSTITUCION + "=guardias2." +ScsCabeceraGuardiasBean.C_IDINSTITUCION +
 									" AND " +
-									ScsGuardiasTurnoBean.T_NOMBRETABLA +"."+ ScsGuardiasTurnoBean.C_IDTURNO + "=" + ScsCalendarioGuardiasBean.T_NOMBRETABLA +"."+ ScsCalendarioGuardiasBean.C_IDTURNO +
+									ScsGuardiasTurnoBean.T_NOMBRETABLA +"."+ ScsGuardiasTurnoBean.C_IDTURNO + "=guardias2." + ScsCabeceraGuardiasBean.C_IDTURNO +
 									" AND " +
-									ScsGuardiasTurnoBean.T_NOMBRETABLA +"."+ ScsGuardiasTurnoBean.C_IDGUARDIA + "=" + ScsCalendarioGuardiasBean.T_NOMBRETABLA +"."+ ScsCalendarioGuardiasBean.C_IDGUARDIA +
+									ScsGuardiasTurnoBean.T_NOMBRETABLA +"."+ ScsGuardiasTurnoBean.C_IDGUARDIA + "=guardias2." + ScsCabeceraGuardiasBean.C_IDGUARDIA +
+									" AND "+
+									" guardias2."+ScsCabeceraGuardiasBean.C_IDINSTITUCION + "=" +ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDINSTITUCION+
+									 " AND "+
+									 " guardias2."+ScsCabeceraGuardiasBean.C_IDTURNO + "=" +ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDTURNO+
+									
 									" AND " +
-									ScsCalendarioGuardiasBean.T_NOMBRETABLA +"."+ ScsCalendarioGuardiasBean.C_IDINSTITUCION + "= guardias2."+ ScsCabeceraGuardiasBean.C_IDINSTITUCION + 
-									" AND " +
-									ScsCalendarioGuardiasBean.T_NOMBRETABLA +"."+ ScsCalendarioGuardiasBean.C_IDTURNO + "= guardias2."+ ScsCabeceraGuardiasBean.C_IDTURNO +
-									" AND " +
-									ScsCalendarioGuardiasBean.T_NOMBRETABLA +"."+ ScsCalendarioGuardiasBean.C_IDGUARDIA + "= guardias2."+ ScsCabeceraGuardiasBean.C_IDGUARDIA+
-									" AND " +
-									ScsCalendarioGuardiasBean.T_NOMBRETABLA +"."+ ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS + "= guardias2."+ ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS+							
-									" AND " +
-									"guardias2."+ ScsCabeceraGuardiasBean.C_IDPERSONA+"="+ CenPersonaBean.T_NOMBRETABLA +"."+ CenPersonaBean.C_IDPERSONA +
+									CenColegiadoBean.T_NOMBRETABLA+"."+ CenColegiadoBean.C_IDPERSONA+"="+ CenPersonaBean.T_NOMBRETABLA +"."+ CenPersonaBean.C_IDPERSONA +
+									" AND "+CenColegiadoBean.T_NOMBRETABLA+"."+ CenColegiadoBean.C_IDINSTITUCION+"=guardias2."+ ScsCabeceraGuardiasBean.C_IDINSTITUCION +
+									" AND "+CenColegiadoBean.T_NOMBRETABLA+"."+ CenColegiadoBean.C_IDPERSONA+"=guardias2."+ ScsCabeceraGuardiasBean.C_IDPERSONA +
 									" AND " ;
 	            					contador++;
 	            					codigos.put(new Integer(contador),fechaInicio);
@@ -725,28 +728,141 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 	         	               }
 	         	               sql += aux + ")";
 	         	            }
-	         	            
-	         	            sql +=" ) ";
-//									if (valoresGuardia.length()>0) {
-//	            		     		    	sql += " AND " +
-//										"(SCS_GUARDIASTURNO.IDTURNO||'_'||SCS_GUARDIASTURNO.Idguardia) in (" + valoresGuardia +") ";
-//									}
-//	            		     
-									//ScsGuardiasTurnoBean.T_NOMBRETABLA +"."+ ScsGuardiasTurnoBean.C_IDTURNO + "=" + turno +
-									//" AND " +
-									//"((ScsGuardiasTurnoBean.T_NOMBRETABLA +"."+ ScsGuardiasTurnoBean.C_IDGUARDIA + "=" + guardia +
+	         	           
+	         	     
+//								
 									
-							  sql += "GROUP BY TURNO, GUARDIA, LETRADO, FECHA_INICIO,FECHA_FIN" +
+							/*  sql += "GROUP BY TURNO, GUARDIA, LETRADO, FECHA_INICIO,FECHA_FIN" +
 							  		",OFICINA1, OFICINA2, RESIDENCIA, MOVIL,  FAX1,  FAX2 " +
-							  " ORDER BY FECHA_INICIO,FECHA_FIN, TURNO, GUARDIA, LETRADO";
-							  //" ORDER BY FECHA_INICIO";
-														
-	            if (rc.findNLSBind(sql,codigos)) {
+							  " ORDER BY FECHA_INICIO,FECHA_FIN, TURNO, GUARDIA, LETRADO";*/
+							
+
+							  
+				  
+							  
+	            if (rc.findBind(sql,codigos)) {
 	               for (int i = 0; i < rc.size(); i++){
 	                  Row fila = (Row) rc.get(i);
-	                  Hashtable resultado=fila.getRow();	                  
-	                  datos.add(resultado);
+	                  Hashtable resultado=fila.getRow();	
+	                   
+						idturno = (String)resultado.get("IDTURNO");
+						String turno = (String)resultado.get("TURNO");
+						String guardia = (String)resultado.get("GUARDIA");
+						String letrado = (String)resultado.get("LETRADO");
+						idguardia = (String)resultado.get(ScsGuardiasTurnoBean.C_IDGUARDIA);
+						idpersona = (String)resultado.get("IDPERSONA");
+						idcalendarioguardias = (String)resultado.get("IDCALENDARIOGUARDIAS");
+						String fechaInicioPK = (String)resultado.get("FECHA_INICIO");
+						String fechaFinPK = (String)resultado.get("FECHA_FIN");
+
+						/*Hashtable htCodigoDireccion = new Hashtable();
+						htCodigoDireccion.put(new Integer(1), institucion);
+						htCodigoDireccion.put(new Integer(2), idpersona);
+						htCodigoDireccion.put(new Integer(3), "6");
+						htCodigoDireccion.put(new Integer(4), "11");
+						
+						
+						helperInformes.completarHashSalida(resultado,helperInformes.ejecutaFuncionSalida(
+								htCodigoDireccion, "f_siga_getdireccioncliente", "OFICINA1"));
+						
+						htCodigoDireccion = new Hashtable();
+						htCodigoDireccion.put(new Integer(1), institucion);
+						htCodigoDireccion.put(new Integer(2), idpersona);
+						htCodigoDireccion.put(new Integer(3), "6");
+						htCodigoDireccion.put(new Integer(4), "12");
+						helperInformes.completarHashSalida(resultado,helperInformes.ejecutaFuncionSalida(
+								htCodigoDireccion, "f_siga_getdireccioncliente", "OFICINA2"));
+						
+						htCodigoDireccion = new Hashtable();
+						htCodigoDireccion.put(new Integer(1), institucion);
+						htCodigoDireccion.put(new Integer(2), idpersona);
+						htCodigoDireccion.put(new Integer(3), "1");
+						htCodigoDireccion.put(new Integer(4), "11");
+						helperInformes.completarHashSalida(resultado,helperInformes.ejecutaFuncionSalida(
+								htCodigoDireccion, "f_siga_getdireccioncliente", "RESIDENCIA"));
+						
+						htCodigoDireccion = new Hashtable();
+						htCodigoDireccion.put(new Integer(1), institucion);
+						htCodigoDireccion.put(new Integer(2), idpersona);
+						htCodigoDireccion.put(new Integer(3), "6");
+						htCodigoDireccion.put(new Integer(4), "13");
+						helperInformes.completarHashSalida(resultado,helperInformes.ejecutaFuncionSalida(
+								htCodigoDireccion, "f_siga_getdireccioncliente", "MOVIL"));
+						
+						htCodigoDireccion = new Hashtable();
+						htCodigoDireccion.put(new Integer(1), institucion);
+						htCodigoDireccion.put(new Integer(2), idpersona);
+						htCodigoDireccion.put(new Integer(3), "6");
+						htCodigoDireccion.put(new Integer(4), "14");
+						helperInformes.completarHashSalida(resultado,helperInformes.ejecutaFuncionSalida(
+								htCodigoDireccion, "f_siga_getdireccioncliente", "FAX1"));
+						
+						htCodigoDireccion = new Hashtable();
+						htCodigoDireccion.put(new Integer(1), institucion);
+						htCodigoDireccion.put(new Integer(2), idpersona);
+						htCodigoDireccion.put(new Integer(3), "6");
+						htCodigoDireccion.put(new Integer(4), "15");
+						helperInformes.completarHashSalida(resultado,helperInformes.ejecutaFuncionSalida(
+								htCodigoDireccion, "f_siga_getdireccioncliente", "FAX2"));*/
+						
+						/*Hashtable htCodigo = new Hashtable();
+						htCodigo.put(new Integer(1), institucion);
+						htCodigo.put(new Integer(2), idturno);
+						htCodigo.put(new Integer(3), idguardia);
+						htCodigo.put(new Integer(4), idpersona);
+						htCodigo.put(new Integer(5), fechaInicio);
+						htCodigo.put(new Integer(6), idcalendarioguardias); 
+						
+						//FECHAINICIO
+						helperInformes.completarHashSalida(resultado,helperInformes.ejecutaFuncionSalida(
+								htCodigo, "F_SIGA_FECHAINISOLICITANTE", "FECHA_INICIO"));
+						String fInicio = (String)resultado.get("FECHA_INICIO");
+						//Si la fecha de inicio del solicitante es nula miramos  la fecha de inicio del confirmador
+						if(fInicio==null||fInicio.trim().equals("")){
+							helperInformes.completarHashSalida(resultado,helperInformes.ejecutaFuncionSalida(
+									htCodigo, "F_SIGA_FECHAINICONFIRMADOR", "FECHA_INICIO"));
+							fInicio = (String)resultado.get("FECHA_INICIO");
+							//Si la fecha de inicio del confirmador es nula ponemos como fecha de inicio de la permuta 
+							//la fecha de inicio real
+							if(fInicio==null||fInicio.trim().equals("")){
+								fInicio = fechaInicioPK;
+								
+							}
+							
+						}
+						resultado.put("FECHA_INICIO", fInicio);
+						//FECHAFINPERMUTA
+						helperInformes.completarHashSalida(resultado,helperInformes.ejecutaFuncionSalida(
+								htCodigo, "F_SIGA_FECHAFINSOLICITANTE", "FECHA_FIN"));
+						String fFin = (String)resultado.get("FECHA_FIN");
+						//Si la fecha de fin del solicitante es nula miramos  la fecha de fin del confirmador
+						if(fFin==null||fFin.trim().equals("")){
+							helperInformes.completarHashSalida(resultado,helperInformes.ejecutaFuncionSalida(
+									htCodigo, "F_SIGA_FECHAFINCONFIRMADOR", "FECHA_FIN"));
+							fFin = (String)resultado.get("FECHAFINPERMUTA");
+							//Si la fecha de fin del confirmador es nula ponemos como fecha de fin de la permuta 
+							//la fecha de fin real
+							if(fFin==null||fFin.trim().equals("")){
+								fFin = fechaFinPK;
+								
+							}
+							
+						}
+						resultado.put("FECHA_FIN", fFin);*/
+				  
+						
+						String keyTreeMap = fechaInicioPK+fechaFinPK+turno+guardia+letrado.toLowerCase();
+						tmListaGuardias.put(keyTreeMap, resultado);
+						
+						
+	                 
 	               }
+	               Iterator iteLista = tmListaGuardias.keySet().iterator();
+					while (iteLista.hasNext()) {
+						String key = (String) iteLista.next();
+		        		Hashtable listaGuardiasOrdenadas = (Hashtable) tmListaGuardias.get(key);
+		        		datos.add(listaGuardiasOrdenadas);
+					}
 	            } 
 	       }
 	       catch (Exception e) {

@@ -180,7 +180,7 @@
 		{
 			sub();
 			document.InformeJustificacionMasivaForm.modo.value = "informe";
-			document.InformeJustificacionMasivaForm.submit();
+			//document.InformeJustificacionMasivaForm.submit();
 			var f = document.InformeJustificacionMasivaForm.name;	
 			document.frames.submitArea21.location = '<html:rewrite page="/html/jsp/general/loadingWindowOpener.jsp"/>?formName=' + f + '&msg=messages.wait';
 				

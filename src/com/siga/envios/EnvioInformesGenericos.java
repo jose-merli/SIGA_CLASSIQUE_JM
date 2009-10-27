@@ -31,6 +31,7 @@ import com.siga.beans.AdmTipoInformeAdm;
 import com.siga.beans.AdmTipoInformeBean;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenNoColegiadoAdm;
+import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.EnvDestProgramInformesAdm;
 import com.siga.beans.EnvDestProgramInformesBean;
 import com.siga.beans.EnvEnvioProgramadoAdm;
@@ -492,7 +493,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		} else {
 			enviosBean.setIdPlantilla(null);
 		}
-
+		List lComunicacionesMorosos = new ArrayList();
 		Hashtable htPersonas = new Hashtable();
 		for (int j = 0; j < vDestProgramInfBean.size(); j++) {
 			EnvDestProgramInformesBean destProgramInfBean = (EnvDestProgramInformesBean) vDestProgramInfBean
@@ -550,11 +551,17 @@ public class EnvioInformesGenericos extends MasterReport {
 			
 			//en el metodo getDatosInformeFinal metemos la key definitiva idFacturas en el datosInforme
 			ArrayList alFacturas = ((ArrayList)datosInforme.get("idFacturas"));
+			//Vamos a acumular las comunicaciones para luego insertarlas ya que en el proceso de envio se
+			//les setea el idEnvio
 			if(programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesMorosos)){
-				envio.generarComunicacionMoroso(destProgramInfBean.getIdPersona().toString(),
-						vDocumentos,alFacturas,programInfBean.getIdInstitucion().toString(),
-						enviosBean.getDescripcion());
-			} 
+				ComunicacionMoroso comunicacion = new ComunicacionMoroso();
+				comunicacion.setIdPersona(destProgramInfBean.getIdPersona());
+				comunicacion.setDocumentos(vDocumentos);
+				comunicacion.setFacturas(alFacturas);
+				comunicacion.setIdInstitucion(programInfBean.getIdInstitucion());
+				comunicacion.setDescripcion(enviosBean.getDescripcion());
+				lComunicacionesMorosos.add(comunicacion);
+			}
 
 			if (htPersonas.containsKey(idPersona)) {
 				Vector vAuxDocumentos = (Vector) htPersonas.get(idPersona);
@@ -566,6 +573,18 @@ public class EnvioInformesGenericos extends MasterReport {
 		}
 
 		envio.generarEnvioOrdinario(envio.getEnviosBean(), htPersonas);
+		if(programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesMorosos)){
+			for (int i = 0; i < lComunicacionesMorosos.size(); i++) {
+				ComunicacionMoroso comunicacion = (ComunicacionMoroso)lComunicacionesMorosos.get(i);
+				envio.generarComunicacionMoroso(comunicacion.getIdPersona().toString(),
+						comunicacion.getDocumentos(),comunicacion.getFacturas(),
+						comunicacion.getIdInstitucion().toString(),comunicacion.getDescripcion());	
+				
+			}
+			
+			
+		}
+		
 
 
 	}
@@ -591,11 +610,14 @@ public class EnvioInformesGenericos extends MasterReport {
 
 		// Bean envio
 		EnvEnviosBean enviosBean = envio.getEnviosBean();
+		//pdm
+		CenPersonaAdm persAdm = new CenPersonaAdm(this.getUsuario());
+		
 		enviosBean.setDescripcion(enviosBean.getIdEnvio() + " "
-				+ enviosBean.getDescripcion());
+				+ enviosBean.getDescripcion()+" "+persAdm.obtenerNombreApellidos(destProgramInfBean.getIdPersona().toString()));
 		// Preferencia del tipo de envio si el usuario tiene uno:
 		enviosBean.setIdTipoEnvios(envioProgramadoBean.getIdTipoEnvios());
-
+		enviosBean.setFechaProgramada(envioProgramadoBean.getFechaProgramada());
 		enviosBean.setIdPlantillaEnvios(envioProgramadoBean
 				.getIdPlantillaEnvios());
 		if (envioProgramadoBean.getIdPlantilla() != null
@@ -2176,4 +2198,48 @@ public class EnvioInformesGenericos extends MasterReport {
 
 
 
+}
+class ComunicacionMoroso{
+	public ComunicacionMoroso()
+    {        
+        	    
+    }
+	Long idPersona;
+	Vector documentos;
+	ArrayList facturas;
+	Integer idInstitucion;
+	String descripcion;
+	
+	public Vector getDocumentos() {
+		return documentos;
+	}
+	public void setDocumentos(Vector documentos) {
+		this.documentos = documentos;
+	}
+
+	public Long getIdPersona() {
+		return idPersona;
+	}
+	public void setIdPersona(Long idPersona) {
+		this.idPersona = idPersona;
+	}
+	public ArrayList getFacturas() {
+		return facturas;
+	}
+	public void setFacturas(ArrayList facturas) {
+		this.facturas = facturas;
+	}
+	public Integer getIdInstitucion() {
+		return idInstitucion;
+	}
+	public void setIdInstitucion(Integer idInstitucion) {
+		this.idInstitucion = idInstitucion;
+	}
+	public String getDescripcion() {
+		return descripcion;
+	}
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+	
 }

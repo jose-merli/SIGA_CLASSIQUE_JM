@@ -53,6 +53,7 @@ import com.siga.beans.EnvEnvioProgramadoAdm;
 import com.siga.beans.EnvEnvioProgramadoBean;
 import com.siga.beans.EnvEnviosAdm;
 import com.siga.beans.EnvEnviosBean;
+import com.siga.beans.EnvEstadoEnvioAdm;
 import com.siga.beans.EnvEstatEnvioAdm;
 import com.siga.beans.EnvProgramIRPFAdm;
 import com.siga.beans.EnvProgramIRPFBean;
@@ -739,7 +740,7 @@ public class DefinirEnviosAction extends MasterAction {
 			{
 
 		UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));   
-		UserTransaction tx = userBean.getTransaction();
+		UserTransaction tx = userBean.getTransactionPesada();
 		DefinirEnviosForm form = (DefinirEnviosForm)formulario;
 		boolean tieneDireccion = true;
 		boolean isEnvioBatch = false;
@@ -1647,10 +1648,11 @@ public class DefinirEnviosAction extends MasterAction {
 	throws SIGAException{
 		UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
 		UserTransaction tx = null;
-
+		EnvEnviosAdm envAdm = new EnvEnviosAdm(this.getUserBean(request));
+		Integer idEstadoEnvioFinal = null;
 		try {
 
-			EnvEnviosAdm envAdm = new EnvEnviosAdm(this.getUserBean(request));
+			
 			tx = userBean.getTransaction();
 
 			// Obtengo las claves
@@ -1661,212 +1663,34 @@ public class DefinirEnviosAction extends MasterAction {
 			Hashtable htPk = new Hashtable();
 			htPk.put(EnvEnviosBean.C_IDINSTITUCION,idInstitucion);
 			htPk.put(EnvEnviosBean.C_IDENVIO,idEnvio);
-
+			
 			//obtengo el envio
 			EnvEnviosBean envBean = (EnvEnviosBean)envAdm.selectByPKForUpdate(htPk).firstElement();
+			
+			if(envBean.getIdEstado().compareTo(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESANDO)==0){
+				throw new SIGAException("messages.envios.procesandoEnvio");
+				
+			}else{
+				envBean.setIdEstado(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESANDO);
+                envAdm.updateDirect(envBean);
+                
+				
+			}
+			
 			Envio envio = new Envio(envBean, userBean);
-
 			// lo proceso
 			envio.procesarEnvio(tx);
+			idEstadoEnvioFinal = envBean.getIdEstado();
 
 		}catch (Exception e){
 			this.throwExcp("messages.general.error",new String[] {"modulo.envios"},e,tx);
 		}
-		return exitoRefresco("messages.envio.success",request);
+		if(idEstadoEnvioFinal!=null && idEstadoEnvioFinal.compareTo(Integer.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES))==0)
+			return exitoRefresco("messages.envio.successErrores",request);
+		else
+			return exitoRefresco("messages.envio.success",request);
 	}	
 
-	/*        
-	protected String procesarEnvio(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) 
-		throws SIGAException{
-    UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));   
-    try {
-
-        EnvEnviosAdm envAdm = new EnvEnviosAdm(this.getUserName(request));
-
-		DefinirEnviosForm form = (DefinirEnviosForm)formulario;
-		String idInstitucion = userBean.getLocation();	
-		String idEnvio = form.getIdEnvio();
-
-		Hashtable htPk = new Hashtable();
-		htPk.put(EnvEnviosBean.C_IDINSTITUCION,idInstitucion);
-		htPk.put(EnvEnviosBean.C_IDENVIO,idEnvio);
-
-		Integer idTipoEnvio = Integer.valueOf(form.getIdTipoEnvio());
-		int iTipoEnvio = idTipoEnvio.intValue();
-        EnvEnviosBean envBean = (EnvEnviosBean)envAdm.selectByPKForUpdate(htPk).firstElement();
-
-		if (iTipoEnvio==EnvEnviosAdm.TIPO_CORREO_ELECTRONICO) {
-
-			String estadoEnvio = "";
-			// Proceso de Correo Electrónico
-	        try {
-
-				estadoEnvio = envAdm.enviarCorreoElectronico(Integer.valueOf(idInstitucion),
-																		Integer.valueOf(idEnvio));
-			    try {
-	                envBean.setIdEstado(Integer.valueOf(estadoEnvio));
-	                envAdm.update(envBean);
-	            } catch (ClsExceptions e) {	                
-	                throw new SIGAException("messages.general.error",e,new String[] {"modulo.envios"});
-	            }
-	            if (estadoEnvio.equals(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES)) {
-	            	return exitoRefresco("messages.envios.error.enviandoCorreoElectronico",request);
-	            } else {
-	            	return exitoRefresco("messages.updated.success",request);
-	            }
-            } catch (SIGAException e) {	                
-			    try {
-	                envBean.setIdEstado(Integer.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES));
-	                envAdm.update(envBean);
-	            } catch (ClsExceptions e2) {	                
-	                throw new SIGAException("messages.general.error",e2,new String[] {"modulo.envios"});
-	            }
-            	throw e;
-			} catch (Exception e) {			    
-			    try {
-	                envBean.setIdEstado(Integer.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES));
-	                envAdm.update(envBean);
-	            } catch (ClsExceptions e2) {	                
-	                throw new SIGAException("messages.updated.error",e2,new String[] {"modulo.envios"});
-	            }
-			    throw new SIGAException("messages.updated.error",e,new String[] {"modulo.envios"});
-			} 
-
-		} else if (iTipoEnvio==EnvEnviosAdm.TIPO_CORREO_ORDINARIO) {
-
-			String estadoEnvio = "";
-			//Ejecutamos el procesado, recogemos el estado en que queda el envío y lo seteamos
-	        try {
-	        	estadoEnvio = envAdm.enviarCorreoOrdinario(Integer.valueOf(idInstitucion),
-																	Integer.valueOf(idEnvio));
-			    try {
-	                envBean.setIdEstado(Integer.valueOf(estadoEnvio));
-	                envAdm.update(envBean);
-	            } catch (ClsExceptions e) {	                
-	                throw new SIGAException("messages.general.error",e,new String[] {"modulo.envios"});
-	            }
-	            if (estadoEnvio.equals(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES)) {
-	            	return exitoRefresco("messages.envios.error.enviandoCorreoOrdinario",request);
-	            } else {
-	            	return exitoRefresco("messages.updated.success",request);
-	            }
-
-            } catch (SIGAException e) {	                
-			    try {
-	                envBean.setIdEstado(Integer.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES));
-	                envAdm.update(envBean);
-	            } catch (ClsExceptions e2) {	                
-	                throw new SIGAException("messages.general.error",e2,new String[] {"modulo.envios"});
-	            }
-                throw e;
-			} catch (Exception e) {			    
-			    try {
-	                envBean.setIdEstado(Integer.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES));
-	                envAdm.update(envBean);
-	            } catch (ClsExceptions e2) {	                
-	                throw new SIGAException("messages.general.error",e2,new String[] {"modulo.envios"});
-	            }
-			    throw new SIGAException("messages.updated.error",e,new String[] {"modulo.envios"});
-			}
-
-		} else if (iTipoEnvio==EnvEnviosAdm.TIPO_FAX) {
-
-				String estadoEnvio = "";
-			  //Ejecutamos el procesado, recogemos el estado en que queda el envío y lo seteamos
-		        try {
-		        	estadoEnvio = envAdm.enviarFax(Integer.valueOf(idInstitucion),
-																		Integer.valueOf(idEnvio));
-				    try {
-		                envBean.setIdEstado(Integer.valueOf(estadoEnvio));
-		                envAdm.update(envBean);
-		            } catch (ClsExceptions e) {	                
-		                throw new SIGAException("messages.general.error",e,new String[] {"modulo.envios"});
-		            }
-		            if (estadoEnvio.equals(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES)) {
-		            	return exitoRefresco("messages.envios.error.enviandoFax",request);
-		            } else {
-		            	return exitoRefresco("messages.updated.success",request);
-		            }
-	            } catch (SIGAException e) {	                
-				    try {
-		                envBean.setIdEstado(Integer.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES));
-		                envAdm.update(envBean);
-		            } catch (ClsExceptions e2) {	                
-		                throw new SIGAException("messages.general.error",e2,new String[] {"modulo.envios"});
-		            }
-	                throw e;
-				} catch (Exception e) {			    
-				    try {
-		                envBean.setIdEstado(Integer.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES));
-		                envAdm.update(envBean);
-		            } catch (ClsExceptions e2) {	                
-		                throw new SIGAException("messages.general.error",e2,new String[] {"modulo.envios"});
-		            }
-				    throw new SIGAException("envios.definir.literal.errorEnvio",e);
-				}
-
-		} else {
-		    try {
-                envBean.setIdEstado(Integer.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES));
-                envAdm.update(envBean);
-            } catch (ClsExceptions e) {	                
-                throw new SIGAException("messages.general.error",e,new String[] {"modulo.envios"});
-            }			    
-		    throw new SIGAException("messages.general.error",new String[] {"modulo.envios"});
-		}
-
-
-    } catch (SIGAException se) {
-    	return exitoRefresco(se.getLiteral(userBean.getLanguage()),request); 
-
-
-    } catch (Exception ee) {
-	    throw new SIGAException("messages.general.error",ee,new String[] {"modulo.envios"});
-    }
-
-    }
-	 */
-
-	/*protected String procesarCorreoOrdinario(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) 
-		throws SIGAException{
-
-	    EnvEnviosAdm envAdm = new EnvEnviosAdm(this.getUserName(request));	    
-	    DefinirEnviosForm form = (DefinirEnviosForm)formulario;
-	    UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));   
-
-	    String idInstitucion = userBean.getLocation();
-	    String idEnvio = form.getIdEnvio();
-
-	    Hashtable htPk = new Hashtable();
-		htPk.put(EnvEnviosBean.C_IDINSTITUCION,idInstitucion);
-		htPk.put(EnvEnviosBean.C_IDENVIO,idEnvio);
-
-		EnvEnviosBean envBean;
-
-		//Asignamos la impresora seleccionada al envío
-		try {
-            envBean = (EnvEnviosBean)envAdm.selectByPKForUpdate(htPk).firstElement();
-            envBean.setIdImpresora(Integer.valueOf(form.getIdImpresora()));
-            envAdm.update(envBean);
-        } catch (ClsExceptions e) {	                
-            throw new SIGAException("messages.updated.error");
-        }
-
-        //Ejecutamos el procesado, recogemos el estado en que queda el envío y lo seteamos
-        String estadoEnvio = envAdm.enviarCorreoOrdinario(Integer.valueOf(idInstitucion),
-																Integer.valueOf(idEnvio));
-		if (!estadoEnvio.equalsIgnoreCase(EnvEstadoEnvioAdm.K_ESTADOENVIO_PENDIENTE_MANUAL)){
-		    try {
-                envBean.setIdEstado(Integer.valueOf(estadoEnvio));
-                envAdm.update(envBean);
-            } catch (ClsExceptions e) {	                
-                throw new SIGAException("messages.updated.error");
-            }
-		    return exitoRefresco("messages.updated.success",request);
-		} else {			    
-		    throw new SIGAException("messages.updated.error");
-		}		
-	}*/
 
 	/**
 	 * Descarga el fichero de Log.

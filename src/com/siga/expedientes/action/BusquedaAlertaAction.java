@@ -5,6 +5,8 @@
  */
 package com.siga.expedientes.action;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -12,23 +14,76 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.Paginador;
 import com.siga.beans.ExpAlertaAdm;
 import com.siga.beans.ExpAlertaBean;
 import com.siga.beans.ExpCampoTipoExpedienteAdm;
+import com.siga.beans.ExpExpedienteAdm;
 import com.siga.beans.ExpExpedienteBean;
 import com.siga.expedientes.ExpPermisosTiposExpedientes;
 import com.siga.expedientes.form.BusquedaAlertaForm;
+import com.siga.expedientes.form.BusquedaExpedientesForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
+import com.siga.general.SIGAException;
 
 /**
  * Action para la búsqueda de expedientes (simple y avanzada)
  */
 public class BusquedaAlertaAction extends MasterAction {
+	
+	public ActionForward executeInternal (ActionMapping mapping,
+							      ActionForm formulario,
+							      HttpServletRequest request, 
+							      HttpServletResponse response) throws SIGAException {
+
+		String mapDestino = "exception";
+		MasterForm miForm = null;
+		try { 
+			do {
+				miForm = (MasterForm) formulario;
+				if (miForm == null) {
+					break;
+				}
+				String accion = miForm.getModo();
+
+		  		// La primera vez que se carga el formulario 
+				// Abrir
+				if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
+					mapDestino = abrir(mapping, miForm, request, response);
+					break;
+				}else if (accion.equalsIgnoreCase("buscarIni")){
+					borrarPaginador(request, paginador);
+					BusquedaAlertaForm formExp = (BusquedaAlertaForm)miForm;
+					formExp.reset(new String[]{"datosPaginador"});
+					//formExp.reset(mapping,request);
+					mapDestino = buscar(mapping, miForm, request, response);
+					break;
+				}else if (accion.equalsIgnoreCase("buscar")){
+					mapDestino = buscar(mapping, miForm, request, response);
+					break;
+				} else {
+					return super.executeInternal(mapping,formulario,request,response);
+				}
+			} while (false);
+			// Redireccionamos el flujo a la JSP correspondiente
+			if (mapDestino == null) { 
+			    throw new ClsExceptions("El ActionMapping no puede ser nulo","","0","GEN00","15");
+			}
+			return mapping.findForward(mapDestino);
+		} catch (SIGAException es) {
+			throw es;
+		} catch (Exception e) {
+			throw new SIGAException("messages.general.error",e,new String[] {"modulo.censo"});
+		}
+	}	
 	
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions {
 		return("inicio");
@@ -37,7 +92,7 @@ public class BusquedaAlertaAction extends MasterAction {
 	/* (non-Javadoc)
 	 * @see com.siga.general.MasterAction#buscar(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
-    protected String buscar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions {
+    protected String buscarInit(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions {
         BusquedaAlertaForm form = (BusquedaAlertaForm)formulario;
 //        HttpSession ses=request.getSession();
         UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
@@ -63,6 +118,76 @@ public class BusquedaAlertaAction extends MasterAction {
 		ExpPermisosTiposExpedientes perm=new ExpPermisosTiposExpedientes(userBean);
 		request.setAttribute("permisos",perm);
         return "resultado";
+	}
+    
+    /**
+     * Busca usando el paginador 
+     */
+    protected String buscar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException
+	{
+		String forward = "resultado";
+		try{
+			BusquedaAlertaForm miFormulario = (BusquedaAlertaForm)formulario; 
+			UsrBean user = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
+	        
+	        String idInstitucion = user.getLocation();
+	        ExpAlertaAdm alertaAdm = new ExpAlertaAdm (this.getUserBean(request));
+	                
+			miFormulario.setIdInstitucion(idInstitucion);
+			
+			HashMap databackup = (HashMap) miFormulario.getDatosPaginador();
+			if (databackup!=null && databackup.get("paginador")!=null){ 
+				Paginador paginador = (Paginador)databackup.get("paginador");
+				Vector datos=new Vector();
+	
+	
+				//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
+				String pagina = (String)request.getParameter("pagina");
+	
+				if (paginador!=null){	 
+					if (pagina!=null){
+						datos = paginador.obtenerPagina(Integer.parseInt(pagina));
+					}else{// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
+						datos = paginador.obtenerPagina((paginador.getPaginaActual()));
+					}
+				}	
+	
+				databackup.put("paginador",paginador);
+				databackup.put("datos",datos);
+	
+	
+	
+	
+			}else{
+				
+				databackup=new HashMap();
+	
+				//obtengo datos de la consulta 			
+				Paginador resultado = null;
+				Vector datos = null;
+				
+				resultado = alertaAdm.getPaginadorAlertas(miFormulario,user);
+				// Paso de parametros empleando la sesion
+				databackup.put("paginador",resultado);
+				
+				if (resultado!=null){ 
+					datos = resultado.obtenerPagina(1);
+					databackup.put("datos",datos);
+				} 
+				miFormulario.setDatosPaginador(databackup);
+			}
+			//para saber en que tipo de busqueda estoy
+			request.getSession().setAttribute("volverAuditoriaExpedientes","Al");
+			
+			//obtenemos los permisos a aplicar
+			ExpPermisosTiposExpedientes perm=new ExpPermisosTiposExpedientes(user);
+			request.setAttribute("permisos",perm);
+			
+		}catch(Exception e){
+			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
+		}
+		
+		return forward;
 	}
     
 	/* (non-Javadoc)

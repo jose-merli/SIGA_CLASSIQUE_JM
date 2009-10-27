@@ -12,7 +12,7 @@
 
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
-<%@ page import="com.siga.Utilidades.UtilidadesString"%>
+<%@ page import="com.siga.Utilidades.UtilidadesString"%> 
 
 <html:html>
 <head>

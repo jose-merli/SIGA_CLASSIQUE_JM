@@ -16,6 +16,7 @@ import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.Paginador;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.expedientes.form.BusquedaAlertaForm;
 
@@ -432,5 +433,150 @@ public class ExpAlertaAdm extends MasterBeanAdministrador {
             }            
         }
         return new Integer(valor);        
+    }
+    
+    /**
+     * Consulta que devuelve las alertas para paginar
+     * */
+    public Paginador getPaginadorAlertas(BusquedaAlertaForm form,UsrBean userBean) throws ClsExceptions 
+    {
+		//int indiceCodigo = 0;
+		//Map codigos = new Hashtable();
+	
+		String A_IDINSTITUCION="A." + ExpAlertaBean.C_IDINSTITUCION;
+		String A_IDINSTITUCIONTIPOEXPEDIENTE="A." + ExpAlertaBean.C_IDINSTITUCIONTIPOEXPEDIENTE;
+		String A_IDTIPOEXPEDIENTE="A." + ExpAlertaBean.C_IDTIPOEXPEDIENTE;
+		String A_IDFASE="A." + ExpAlertaBean.C_IDFASE;
+		String A_IDESTADO="A." + ExpAlertaBean.C_IDESTADO;
+		String A_NUMEROEXPEDIENTE="A." + ExpAlertaBean.C_NUMEROEXPEDIENTE;
+		String A_ANIOEXPEDIENTE="A." + ExpAlertaBean.C_ANIOEXPEDIENTE;
+		String A_BORRADO="A." + ExpAlertaBean.C_BORRADO;
+	
+		//Tabla exp_tipoexpediente
+		String T_IDINSTITUCION="T." + ExpTipoExpedienteBean.C_IDINSTITUCION;
+		String T_IDTIPOEXPEDIENTE="T." + ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE;
+	
+		//LMS 09/08/2006
+		//Se añade la relación con la tabla de permisos de expedientes.
+		//Tabla EXP_PERMISOSTIPOSEXPEDIENTES
+		//String E_IDINSTITUCION="X."+ExpPermisosTiposExpedientesBean.C_IDINSTITUCION;
+		String E_IDPERFIL="X."+ExpPermisosTiposExpedientesBean.C_IDPERFIL;
+		String E_IDINSTITUCIONTIPOEXPEDIENTE="X."+ExpPermisosTiposExpedientesBean.C_IDINSTITUCIONTIPOEXPEDIENTE;
+		String E_IDTIPOEXPEDIENTE="X."+ExpPermisosTiposExpedientesBean.C_IDTIPOEXPEDIENTE;
+	
+		String A_FECHAALERTA = "A." + ExpAlertaBean.C_FECHAALERTA;
+		String T_TIPOEXPEDIENTE = "T." + ExpTipoExpedienteBean.C_NOMBRE + " AS NOMBRETIPOEXPEDIENTE ";
+		String A_TEXTO = "A." + ExpAlertaBean.C_TEXTO;
+		String A_IDALERTA = "A." + ExpAlertaBean.C_IDALERTA;
+	
+		//NOMBRES TABLAS PARA LA JOIN
+		String T_EXP_ALERTA = ExpAlertaBean.T_NOMBRETABLA + " A";
+		String T_EXP_TIPOEXPEDIENTE = ExpTipoExpedienteBean.T_NOMBRETABLA + " T";
+	
+		//LMS 09/08/2006
+		//Se añade el control de permisos sobre el tipo de expediente.
+		String T_EXP_PERMISOSTIPOSEXPEDIENTES = ExpPermisosTiposExpedientesBean.T_NOMBRETABLA + " X";
+	
+	
+		//Valores recogidos del formulario para la búsqueda
+		String comboTipoExp = form.getComboTipoExpediente();
+	
+		//getComboTipoExpediente nos está devolviendo (idinstitucion,idtipoexpediente)
+		String idinstitucion_tipoexpediente = "";
+		if (comboTipoExp!=null && !comboTipoExp.equals("")){
+			StringTokenizer st = new StringTokenizer(comboTipoExp,",");
+			idinstitucion_tipoexpediente=st.nextToken();
+			form.setTipoExpediente(st.nextToken());        	
+		}else{
+			idinstitucion_tipoexpediente="";
+			form.setTipoExpediente("");  
+		}
+	
+		String tipoExpediente = form.getTipoExpediente();
+		String numeroExpediente = form.getNumeroExpediente();
+		String anioExpediente = form.getAnioExpediente();
+	
+		String where = " WHERE ";
+	
+		where += A_IDINSTITUCION + " = " + form.getIdInstitucion();
+	
+		where += " AND " + A_IDTIPOEXPEDIENTE + " = " + T_IDTIPOEXPEDIENTE;
+		where += " AND " + A_IDINSTITUCIONTIPOEXPEDIENTE + " = " + T_IDINSTITUCION;
+		where += " AND A.IDINSTITUCION_TIPOEXPEDIENTE =  A.IDINSTITUCION ";
+		where += " AND A.IDINSTITUCION_TIPOEXPEDIENTE =  EST.IDINSTITUCION ";
+		where += " AND A.IDFASE=EST.IDFASE AND A.IDESTADO=EST.IDESTADO ";
+		where += " AND A.IDTIPOEXPEDIENTE=EST.IDTIPOEXPEDIENTE ";
+		where += " AND EST.IDINSTITUCION = FAS.IDINSTITUCION  "; 
+		where += " AND EST.IDTIPOEXPEDIENTE = FAS.IDTIPOEXPEDIENTE ";
+		where += " AND EST.IDFASE = FAS.IDFASE ";
+	
+		//campos de búsqueda
+	
+		if(tipoExpediente!=null && !tipoExpediente.equals("")){
+			where += " AND " + A_IDTIPOEXPEDIENTE + " = " + tipoExpediente ;
+		}
+		if(numeroExpediente!=null && !numeroExpediente.equals("")){
+			where += " AND "+ComodinBusquedas.prepararSentenciaCompleta(numeroExpediente,A_NUMEROEXPEDIENTE ) ;
+		}
+	
+		if(anioExpediente!=null && !anioExpediente.equals("")){
+			where += " AND "+ComodinBusquedas.prepararSentenciaCompleta(anioExpediente,A_ANIOEXPEDIENTE ) ;
+		}
+		//registros no borrados lógicamente (campo Borrado='N')
+		where += " AND " + A_BORRADO + " = 'N'";
+	
+		//LMS 09/08/2006
+		//Se añade el control de permisos sobre el tipo de expediente.
+		where += " AND " + E_IDINSTITUCIONTIPOEXPEDIENTE + " = " + A_IDINSTITUCION;
+		where += " AND " + E_IDTIPOEXPEDIENTE + " = " + A_IDTIPOEXPEDIENTE;
+		where += " AND " + E_IDPERFIL + " IN (";
+	
+		String[] aPerfiles = userBean.getProfile();
+	
+		for (int i=0; i<aPerfiles.length; i++, where+=",")
+		{
+			where += "'"+aPerfiles[i] +"'";
+		}
+	
+		where = where.substring(0,where.length()-1);
+		where += ")";
+		if(form.getIdFase()!=null && !form.getIdFase().equals("")){
+			where += " AND "+A_IDFASE+"="+form.getIdFase();
+		}
+		if(form.getIdEstado()!=null && !form.getIdEstado().equals("")){
+			where += " AND "+A_IDESTADO+"="+form.getIdEstado();
+		}
+	
+		if((form.getFechaDesde()!=null && !form.getFechaDesde().equals(""))||(form.getFechaHasta()!=null && !form.getFechaHasta().equals(""))){
+			
+			String fDesde = GstDate.getApplicationFormatDate("", form.getFechaDesde());
+			String fHasta = GstDate.getApplicationFormatDate("", form.getFechaHasta());
+			where += " AND "+GstDate.dateBetweenDesdeAndHasta(A_FECHAALERTA, fDesde, fHasta);
+	
+		}
+	
+		//select completa
+		String sql = "SELECT ";
+	
+		sql += A_FECHAALERTA +"," + T_TIPOEXPEDIENTE +","+ A_NUMEROEXPEDIENTE +","+
+		A_ANIOEXPEDIENTE +","+ A_TEXTO +","+ A_IDALERTA +","+ A_IDINSTITUCION +","+ 
+		A_IDINSTITUCIONTIPOEXPEDIENTE +","+ A_IDTIPOEXPEDIENTE+
+			",EST.NOMBRE EST_NOMBRE,    FAS.NOMBRE FAS_NOMBRE "
+		
+		
+		+ " FROM ";	
+		sql += T_EXP_ALERTA + "," + T_EXP_TIPOEXPEDIENTE + "," + T_EXP_PERMISOSTIPOSEXPEDIENTES;
+		sql += " ,EXP_ESTADO EST, EXP_FASES FAS ";
+		sql += " " + where;
+		
+		Paginador paginador = new Paginador(sql);				
+		int totalRegistros = paginador.getNumeroTotalRegistros();
+		
+		if (totalRegistros==0){					
+			paginador =null;
+		}
+		
+		return paginador;
+
     }
 }

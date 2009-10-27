@@ -165,6 +165,7 @@
 		<html:hidden property ="actionModal" value = ""/>
 		<input type="hidden" name="limpiarFilaSeleccionada" value="">
 		<html:hidden name="BuscarDesignasForm" property="ncolegiado" value=""/>
+		<html:hidden property="seleccionarTodos" />
 
 	<siga:ConjCampos leyenda="gratuita.busquedaDesignas.literal.datosDesigna">
 	<table width="100%" border="0" >
@@ -278,7 +279,7 @@
 	<tr>
 		<td>
 		<siga:BusquedaPersona tipo="colegiado" titulo="gratuita.seleccionColegiadoJG.literal.titulo" idPersona="ncolegiado">
-		</siga:BusquedaPersona>
+		</siga:BusquedaPersona> 
 	</tr>
 	</table>
 
@@ -417,7 +418,7 @@
 
 		
 		<!-- Funcion asociada a boton buscar -->
-		function buscar() 
+		function buscar(modo) 
 		{
 			if ( !validarObjetoAnio(document.getElementById("anio")) ){
 				alert("<siga:Idioma key="fecha.error.anio"/>");
@@ -437,15 +438,26 @@
 						alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorAnio"/>');
 						return false;
 					}
+					
+					
 					document.forms[1].target="resultado";
-					document.forms[1].modo.value = "buscarInicio";
+					if(modo)
+						document.forms[1].modo.value = modo;
+					else
+						document.forms[1].modo.value = "buscarInicio";
+					
 					document.forms[1].submit();
 				//}
 			}else{
 				setFocusFormularios();
 			}
 		}
-		
+			function seleccionarTodos(pagina) 
+		{
+				document.forms[1].seleccionarTodos.value = pagina;
+				buscar('buscarPor');
+				
+		}		
 			function buscarPaginador() 
 		{
 				/*var codigo = document.forms[1].codigo.value;
@@ -454,7 +466,7 @@
 				else {*/
 					//document.forms[1].action = "<%=app%>/JGR_Designas.do";
 					document.forms[1].target="resultado";
-					document.forms[1].modo.value = "buscar";
+					document.forms[1].modo.value = "buscarPor";
 					document.forms[1].submit();
 				//}
 		}			

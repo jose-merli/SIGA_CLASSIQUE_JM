@@ -8,9 +8,11 @@ package com.siga.gratuita.util.calendarioSJCS;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsConstants;
@@ -34,6 +36,8 @@ import com.siga.beans.ScsGuardiasColegiadoAdm;
 import com.siga.beans.ScsGuardiasColegiadoBean;
 import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
+import com.siga.beans.ScsHitoFacturableGuardiaAdm;
+import com.siga.beans.ScsHitoFacturableGuardiaBean;
 import com.siga.beans.ScsSaltosCompensacionesAdm;
 import com.siga.beans.ScsSaltosCompensacionesBean;
 import com.siga.gratuita.util.calendarioSJCS.Entity.PeriodoEfectivo;
@@ -149,6 +153,11 @@ public class CalendarioSJCS {
 	
 	
 	
+
+	
+
+
+
 
 	/**
 	 * @return Returns the arrayPeriodosDiasGuardiaSJCS.
@@ -513,89 +522,95 @@ public class CalendarioSJCS {
 	}
 
 	//Almacena para un letrado la guardia del mismo con los registros correspondientes a sus dias de guardia.
-	public void almacenarAsignacionGuardiaLetrado(LetradoGuardia letrado, ArrayList periodoDiasGuardia) throws ClsExceptions {
+	public void almacenarAsignacionGuardiaLetrado(LetradoGuardia letrado, ArrayList periodoDiasGuardia, List lDiasASeparar) throws ClsExceptions {
 		ArrayList arrayLetrados = new ArrayList();
 		//Anhado el letrado
 		arrayLetrados.add(letrado);
-		almacenarAsignacionGuardia(arrayLetrados, periodoDiasGuardia, UtilidadesString.getMensajeIdioma(this.getUsrBean(),"gratuita.literal.letrado.refuerzo"));
+		almacenarAsignacionGuardia(arrayLetrados, periodoDiasGuardia, lDiasASeparar,UtilidadesString.getMensajeIdioma(this.getUsrBean(),"gratuita.literal.letrado.refuerzo"));
 	}
 	
 	//Almacena para una lista de letrados las guardias con los registros correspondientes a sus dias de guardia.
-	private void almacenarAsignacionGuardia(ArrayList arrayLetrados, ArrayList periodoDiasGuardia, String mensaje) throws ClsExceptions {
+	private void almacenarAsignacionGuardia(ArrayList arrayLetrados, ArrayList periodoDiasGuardia,List lDiasASeparar, String mensaje) throws ClsExceptions {
 		Iterator iter;
 		Iterator iterLetrados;
 		String fechaInicioPeriodo=null, fechaFinPeriodo=null, fechaPeriodo=null;
 		ScsCabeceraGuardiasBean beanCabeceraGuardias;
 		ScsGuardiasColegiadoBean beanGuardiasColegiado;
 		LetradoGuardia letrado;
-			
+
 		try {
-			ScsCabeceraGuardiasAdm admCabeceraGuardias = new ScsCabeceraGuardiasAdm(this.usrBean);
-			ScsGuardiasColegiadoAdm admGuardiasColegiado = new ScsGuardiasColegiadoAdm(this.usrBean);
 
-			fechaInicioPeriodo = (String)periodoDiasGuardia.get(0);
-			fechaFinPeriodo = (String)periodoDiasGuardia.get(periodoDiasGuardia.size()-1);
-			
-			iterLetrados = arrayLetrados.iterator();
-			while (iterLetrados.hasNext()) {
-				letrado = (LetradoGuardia)iterLetrados.next();
-			
-				//Paso1: inserto un registro cada guardia:
-				beanCabeceraGuardias = new ScsCabeceraGuardiasBean();
-		 		beanCabeceraGuardias.setIdInstitucion(letrado.getIdInstitucion());
-		 		beanCabeceraGuardias.setIdTurno(letrado.getIdTurno());
-		 		beanCabeceraGuardias.setIdGuardia(letrado.getIdGuardia());
-		 		beanCabeceraGuardias.setIdCalendario(this.idCalendarioGuardias);
-		 		beanCabeceraGuardias.setIdPersona(letrado.getIdPersona());
-		 		beanCabeceraGuardias.setFechaInicio(GstDate.getApplicationFormatDate(this.usrBean.getLanguage(),fechaInicioPeriodo));
-		 		beanCabeceraGuardias.setFechaFin(GstDate.getApplicationFormatDate(this.usrBean.getLanguage(),fechaFinPeriodo));
-		 		beanCabeceraGuardias.setFechaMod("SYSDATE");
-		 		beanCabeceraGuardias.setComenSustitucion(mensaje);
-		 		beanCabeceraGuardias.setSustituto("0");
-		 		beanCabeceraGuardias.setUsuMod(new Integer(usrBean.getUserName()));
-		 		beanCabeceraGuardias.setFacturado("");
-		 		beanCabeceraGuardias.setPagado("");							
-							
-		 		
-		 		// RGG cambio para cabeceras de guardia validadas
-		 		GenParametrosAdm admPar = new GenParametrosAdm(this.usrBean);
-		 		String valorValidar = admPar.getValor(this.usrBean.getLocation(),"SCS","VALIDAR_VOLANTE","N"); 
-		 		if (valorValidar.equals("N")) {
-		 		    // directamente quedan validados
-		 		    beanCabeceraGuardias.setValidado(ClsConstants.DB_TRUE);
-		 		} else {
-		 		    // quedan pendientes de validacion
-		 		    beanCabeceraGuardias.setValidado(ClsConstants.DB_FALSE);
-		 		}
+			List alPeriodosSinAgrupar = getPeriodos(periodoDiasGuardia,lDiasASeparar);
+			for (int j = 0; j < alPeriodosSinAgrupar.size(); j++) {
+				ArrayList alDiasPeriodo = (ArrayList) alPeriodosSinAgrupar.get(j);
 
-		 		
-		 		admCabeceraGuardias.insert(beanCabeceraGuardias);
-				
-				
-				//Paso2: inserto un registro por dia de guardia en cada guardia:
-				iter = periodoDiasGuardia.iterator();
-				while (iter.hasNext()) {
-					fechaPeriodo = (String)iter.next();
-					
-					beanGuardiasColegiado = new ScsGuardiasColegiadoBean();
-					beanGuardiasColegiado.setIdInstitucion(letrado.getIdInstitucion());
-					beanGuardiasColegiado.setIdTurno(letrado.getIdTurno());
-					beanGuardiasColegiado.setIdGuardia(letrado.getIdGuardia());
-					beanGuardiasColegiado.setIdCalendarioGuardias(this.idCalendarioGuardias);
-					beanGuardiasColegiado.setIdPersona(letrado.getIdPersona());
-					beanGuardiasColegiado.setFechaInicio(GstDate.getApplicationFormatDate(this.usrBean.getLanguage(),fechaInicioPeriodo));
-			 		beanGuardiasColegiado.setFechaFin(GstDate.getApplicationFormatDate(this.usrBean.getLanguage(),fechaPeriodo));
-					beanGuardiasColegiado.setDiasGuardia(new Long(this.beanGuardiasTurno.getDiasGuardia().longValue()));
-					beanGuardiasColegiado.setDiasACobrar(new Long(this.beanGuardiasTurno.getDiasPagados().longValue()));
-					beanGuardiasColegiado.setFechaMod("SYSDATE");			 		
-					beanGuardiasColegiado.setUsuMod(new Integer(usrBean.getUserName()));
-					beanGuardiasColegiado.setReserva("N");
-					beanGuardiasColegiado.setObservaciones("-");
-					beanGuardiasColegiado.setFacturado("N");
-					beanGuardiasColegiado.setPagado("N");
-					beanGuardiasColegiado.setIdFacturacion(null);					
-					
-					admGuardiasColegiado.insert(beanGuardiasColegiado);
+				ScsCabeceraGuardiasAdm admCabeceraGuardias = new ScsCabeceraGuardiasAdm(this.usrBean);
+				ScsGuardiasColegiadoAdm admGuardiasColegiado = new ScsGuardiasColegiadoAdm(this.usrBean);
+
+				fechaInicioPeriodo = (String)alDiasPeriodo.get(0);
+				fechaFinPeriodo = (String)alDiasPeriodo.get(alDiasPeriodo.size()-1);
+
+				iterLetrados = arrayLetrados.iterator();
+				while (iterLetrados.hasNext()) {
+					letrado = (LetradoGuardia)iterLetrados.next();
+
+					//Paso1: inserto un registro cada guardia:
+					beanCabeceraGuardias = new ScsCabeceraGuardiasBean();
+					beanCabeceraGuardias.setIdInstitucion(letrado.getIdInstitucion());
+					beanCabeceraGuardias.setIdTurno(letrado.getIdTurno());
+					beanCabeceraGuardias.setIdGuardia(letrado.getIdGuardia());
+					beanCabeceraGuardias.setIdCalendario(this.idCalendarioGuardias);
+					beanCabeceraGuardias.setIdPersona(letrado.getIdPersona());
+					beanCabeceraGuardias.setFechaInicio(GstDate.getApplicationFormatDate(this.usrBean.getLanguage(),fechaInicioPeriodo));
+					beanCabeceraGuardias.setFechaFin(GstDate.getApplicationFormatDate(this.usrBean.getLanguage(),fechaFinPeriodo));
+					beanCabeceraGuardias.setFechaMod("SYSDATE");
+					beanCabeceraGuardias.setComenSustitucion(mensaje);
+					beanCabeceraGuardias.setSustituto("0");
+					beanCabeceraGuardias.setUsuMod(new Integer(usrBean.getUserName()));
+					beanCabeceraGuardias.setFacturado("");
+					beanCabeceraGuardias.setPagado("");							
+
+
+					// RGG cambio para cabeceras de guardia validadas
+					GenParametrosAdm admPar = new GenParametrosAdm(this.usrBean);
+					String valorValidar = admPar.getValor(this.usrBean.getLocation(),"SCS","VALIDAR_VOLANTE","N"); 
+					if (valorValidar.equals("N")) {
+						// directamente quedan validados
+						beanCabeceraGuardias.setValidado(ClsConstants.DB_TRUE);
+					} else {
+						// quedan pendientes de validacion
+						beanCabeceraGuardias.setValidado(ClsConstants.DB_FALSE);
+					}
+
+
+					admCabeceraGuardias.insert(beanCabeceraGuardias);
+
+
+					//Paso2: inserto un registro por dia de guardia en cada guardia:
+					iter = alDiasPeriodo.iterator();
+					while (iter.hasNext()) {
+						fechaPeriodo = (String)iter.next();
+
+						beanGuardiasColegiado = new ScsGuardiasColegiadoBean();
+						beanGuardiasColegiado.setIdInstitucion(letrado.getIdInstitucion());
+						beanGuardiasColegiado.setIdTurno(letrado.getIdTurno());
+						beanGuardiasColegiado.setIdGuardia(letrado.getIdGuardia());
+						beanGuardiasColegiado.setIdCalendarioGuardias(this.idCalendarioGuardias);
+						beanGuardiasColegiado.setIdPersona(letrado.getIdPersona());
+						beanGuardiasColegiado.setFechaInicio(GstDate.getApplicationFormatDate(this.usrBean.getLanguage(),fechaInicioPeriodo));
+						beanGuardiasColegiado.setFechaFin(GstDate.getApplicationFormatDate(this.usrBean.getLanguage(),fechaPeriodo));
+						beanGuardiasColegiado.setDiasGuardia(new Long(this.beanGuardiasTurno.getDiasGuardia().longValue()));
+						beanGuardiasColegiado.setDiasACobrar(new Long(this.beanGuardiasTurno.getDiasPagados().longValue()));
+						beanGuardiasColegiado.setFechaMod("SYSDATE");			 		
+						beanGuardiasColegiado.setUsuMod(new Integer(usrBean.getUserName()));
+						beanGuardiasColegiado.setReserva("N");
+						beanGuardiasColegiado.setObservaciones("-");
+						beanGuardiasColegiado.setFacturado("N");
+						beanGuardiasColegiado.setPagado("N");
+						beanGuardiasColegiado.setIdFacturacion(null);					
+
+						admGuardiasColegiado.insert(beanGuardiasColegiado);
+					}
 				}
 			}
 		} catch (Exception e) {		
@@ -879,6 +894,31 @@ public class CalendarioSJCS {
 		}
 		return salida;
 	}
+	public List getDiasASeparar(Integer idInstitucion, Integer idTurno, Integer idGuardia,UsrBean usrBean) throws ClsExceptions{
+		ScsHitoFacturableGuardiaAdm admScsHitoFacturableGuardia = new ScsHitoFacturableGuardiaAdm(usrBean);
+		List alDiasASeparar = admScsHitoFacturableGuardia.getDiasASeparar(idInstitucion, idTurno, idGuardia);
+		List alDiasASepararEnUnidadesDiarias = null;
+		if(alDiasASeparar!=null && alDiasASeparar.size()>0){
+			alDiasASepararEnUnidadesDiarias = new ArrayList();
+			for (int i=0; i<alDiasASeparar.size(); i++){
+				Hashtable htRegistro = (Hashtable)alDiasASeparar.get(i);
+				String diasSemana = (String)htRegistro.get(ScsHitoFacturableGuardiaBean.C_DIASAPLICABLES);
+				for (int j = 0; j < diasSemana.length(); j++) {
+					char diaSemana = diasSemana.charAt(j);
+					
+					alDiasASepararEnUnidadesDiarias.add(new Integer 
+							(CalendarioAutomatico.convertirUnidadesDiasSemana (diaSemana)));
+						
+				}
+				
+			}
+		}
+		return alDiasASepararEnUnidadesDiarias;
+		
+	}
+	
+
+	
 	
 	//Inserta en el arraylist arrayPeriodosDiasGuardiaSJCS los periodos de dias de guardia calculados por el CGAE
 	//Nota: cada periodo es un arraylist de fechas (String en formato de fecha corto DD/MM/YYYY).
@@ -955,7 +995,7 @@ public class CalendarioSJCS {
 	//- 2: Hay Incompatibilidad de Guardias	
 	//- 3: NO hay Separacion suficiente
 	//- 4: Error al provocarse una excepcion en el desarrollo del metodo.
-	public int calcularMatrizLetradosGuardia() throws ClsExceptions {		
+	public int calcularMatrizLetradosGuardia(List lDiasASeparar) throws ClsExceptions {		
 		//En este objeto guardo los datos de los parametros modificados por otros metodos y usados en este:
 		DatosIteracionCalendarioSJCS salidaObtenerLetrado = new DatosIteracionCalendarioSJCS();
 		
@@ -1047,7 +1087,7 @@ public class CalendarioSJCS {
 
 				//Almaceno la asignacion de guardia en BBDD si todo ha ido bien:
 				if (salidaCalcularMatrizLetradosGuardia == 0)
-					this.almacenarAsignacionGuardia(arrayLetrados, periodoDiasGuardia, UtilidadesString.getMensajeIdioma(this.usrBean,"gratuita.literal.comentario.sustitucion"));
+					this.almacenarAsignacionGuardia(arrayLetrados, periodoDiasGuardia,lDiasASeparar, UtilidadesString.getMensajeIdioma(this.usrBean,"gratuita.literal.comentario.sustitucion"));
 					
 				//////////////////////////////////////////////////////////////////////
 				//FIN: Bucle por el numero total de letrados por periodo de guardia
@@ -1146,4 +1186,57 @@ public class CalendarioSJCS {
 		}
 		return total;
 	}
+
+	/**
+	 * Metodo que genera una array de periodos de de fecha a partir de otro. La restriccion que tenemos para 
+	 * partir el array inicial es que contenga dias que se agrupan(que vienen en alDiasAgrupar)
+	 * @param alPeriodo
+	 * @param alDiasAgrupar
+	 * @return
+	 * @throws Exception
+	 */
+	private List getPeriodos(ArrayList alPeriodo, List alDiasAgrupar) throws Exception{
+		
+        
+		List lPeriodosSinAgrupar = new ArrayList();
+		if(alDiasAgrupar==null || alDiasAgrupar.size()<1){
+			lPeriodosSinAgrupar.add(alPeriodo);
+			return lPeriodosSinAgrupar;
+		}
+        List alDias = new ArrayList();
+		for (int i = 0; i < alPeriodo.size(); i++) {
+			String date = (String)alPeriodo.get(i);
+			Calendar c = Calendar.getInstance ();
+		    c.setTime (GstDate.convertirFecha(date,"dd/MM/yyyy"));
+		    if(alDiasAgrupar.contains(new Integer (c.get (Calendar.DAY_OF_WEEK)))){
+		    	//añadimos el acuemulado anterios si no esta vacio
+		    	if(alDias.size()>0){
+		    		lPeriodosSinAgrupar.add(alDias);
+		    		
+		    	}
+		    	//Creamos un nuevo almacen para el dia
+		    	alDias = new ArrayList();
+		    	alDias.add(date);
+		    	//lo añadimos al que devolveremos
+		    	lPeriodosSinAgrupar.add(alDias);
+		    	//inicializamos de nuevo el acumulador de dias
+		    	alDias = new ArrayList();
+		    	
+		    	
+		    }else{
+		    	alDias.add(date);
+		    	
+		    }
+			
+		}
+		//añadimos el último
+		if(alDias.size()>0)
+			lPeriodosSinAgrupar.add(alDias);
+			
+		return lPeriodosSinAgrupar; 
+		
+		
+		
+	}
+	
 }

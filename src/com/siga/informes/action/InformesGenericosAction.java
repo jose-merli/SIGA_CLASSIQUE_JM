@@ -40,6 +40,7 @@ import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FcsFacturacionJGAdm;
 import com.siga.beans.GenParametrosAdm;
+import com.siga.beans.GenRecursosAdm;
 import com.siga.beans.HelperInformesAdm;
 import com.siga.beans.ScsDesignaAdm;
 import com.siga.beans.ScsDocumentacionEJGAdm;
@@ -1097,7 +1098,7 @@ public class InformesGenericosAction extends MasterAction {
 
 						}	
 					}catch(Exception p){
-
+						ClsLogging.writeFileLogError("Error generando un informe EJG: "+beanInforme.getDescripcion(), p, 3);
 						avisoFicherosNoGenerado.append(beanInforme.getDescripcion());
 						avisoFicherosNoGenerado.append(",");
 
@@ -1271,13 +1272,32 @@ public class InformesGenericosAction extends MasterAction {
 						idioma, doc, words, datoscomunes);
 
 				//Regiones de Guardias y Asistencias/Actuaciones
-				if (infBean.getIdPlantilla().equals ("INFJGM3")||infBean.getIdPlantilla().equals ("INFJG3"))
+				if (infBean.getIdPlantilla().equals ("INFJGM3")||infBean.getIdPlantilla().equals ("INFJG3")) {
 					totalGA += generaRegionesGA3 (fac, idinstitucion, facturaciones, 
 							idioma, doc, words, datoscomunes);
-				else if (infBean.getIdPlantilla().equals ("INFJGM3001")||infBean.getIdPlantilla().equals ("INFJG3001"))
+					
+					//comprobacion de importe de Guardias
+					Object objImporteGuardia = datoscomunes.get ("IMPORTEGUARDIA");
+					String strImporteGuardia = ((String) (objImporteGuardia == null ? "0" : objImporteGuardia));
+					double importeGuardia = Double.parseDouble (strImporteGuardia.equals ("") ? "0" : strImporteGuardia); 
+					if (totalGA != importeGuardia) {
+						GenRecursosAdm recAdm = new GenRecursosAdm (usr);
+						Vector recursos = recAdm.select (
+								" where idrecurso = 'factSJCS.informes.informeFacturacion.error'" +
+								"   and idlenguaje = "+idioma+" ");
+						datoscomunes.put("AVISOERRORGUARDIAS", recursos.isEmpty() ? 
+								"ERROR. REVISAR EXCELS" : 
+								((com.siga.beans.GenRecursosBean) recursos.firstElement()).getDescripcion());
+					}
+					else {
+						datoscomunes.put("AVISOERRORGUARDIAS", " ");
+					}
+				}
+				else if (infBean.getIdPlantilla().equals ("INFJGM3001")||infBean.getIdPlantilla().equals ("INFJG3001")) {
 					totalGA += generaRegionesGA3001 (fac, idinstitucion, facturaciones, 
 							idioma, doc, words, datoscomunes);
-
+				}
+				
 				//Total de totales
 				datoscomunes.put ("TTOTAL", UtilidadesNumero.formato 
 						(UtilidadesNumero.redondea (totalTO + totalGA, 2)));
@@ -1409,6 +1429,7 @@ public class InformesGenericosAction extends MasterAction {
 				aux.put ("VALOR_NUM", "");
 				aux.put ("VALOR_EXTRAJUD", "");
 				aux.put ("VALOR_NUM_EXTRAJUD", "");
+				aux.put ("VALOR_NORMALYEXTRAJUD", "");
 				datosconsulta.add (aux);
 			}else{
 				//jbd // Sobreescribimos los valores con los valores numericos para trabajar siempre con los mismos datos
@@ -1417,6 +1438,9 @@ public class InformesGenericosAction extends MasterAction {
 					hash = (Hashtable)datosconsulta.elementAt(k);
 					hash.put("VALOR", UtilidadesNumero.formato((String)hash.get("VALOR_NUM")));
 					hash.put("VALOR_EXTRAJUD", UtilidadesNumero.formato((String)hash.get("VALOR_NUM_EXTRAJUD")));
+					hash.put("VALOR_NORMALYEXTRAJUD", UtilidadesNumero.formato (UtilidadesNumero.redondea (
+							Double.parseDouble((String)hash.get("VALOR_NUM")) + 
+							Double.parseDouble((String)hash.get("VALOR_NUM_EXTRAJUD")), 2)));
 					datosconsulta.set(k, hash);
 			}
 			}
@@ -1446,6 +1470,11 @@ public class InformesGenericosAction extends MasterAction {
 		return tata;
 	} //generaRegionesTO()
 
+	/* 
+	 * Cambio completo del Informe de Facturacion/Justificación a Consejo
+	 * El metodo nuevo esta a continuacion
+	 * Se pide: quitar este comentado si se ha dado como bueno en nuevo
+	 * 
 	private double generaRegionesGA3 (FcsFacturacionJGAdm fac,
 			String idinstitucion,
 			String facturaciones,
@@ -1534,6 +1563,43 @@ public class InformesGenericosAction extends MasterAction {
 				(UtilidadesNumero.redondea (totalNumAsistenciasVG + totalNumGuardiasVG, 2)));
 
 		return (ttotal);
+	} //generaRegionesGA3()
+	*/
+	private double generaRegionesGA3 (FcsFacturacionJGAdm fac,
+									  String idinstitucion,
+									  String facturaciones,
+									  String idioma,
+									  Document doc,
+									  MasterWords words,
+									  Hashtable datoscomunes)
+		throws ClsExceptions, SIGAException
+	{
+		//Variables
+		Vector datosconsulta;
+		double total=0.0d;
+		
+		//Regiones del documento
+		String[] region =
+		{
+				"ApuntesPorHitoYGuardia"
+		};
+		int regionUnica = 0;
+		
+		//Sustitucion en el documento
+		datosconsulta = fac.informeFJGPorHitos 
+				(idinstitucion, facturaciones, region[regionUnica], idioma);
+		if (datosconsulta!=null && datosconsulta.size()>0) {
+			doc = words.sustituyeRegionDocumento
+					(doc, region[regionUnica], datosconsulta);
+			
+			total += this.getTotal (datosconsulta, "IMPORTE_NUM");
+		}
+		
+		//Campos de totales de Violencia de Genero
+		datoscomunes.put ("TOTAL", UtilidadesNumero.formato
+				(UtilidadesNumero.redondea (total, 2)));
+		
+		return (total);
 	} //generaRegionesGA3()
 
 	private double generaRegionesGA3001 (FcsFacturacionJGAdm fac,

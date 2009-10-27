@@ -166,9 +166,9 @@
 			   borde="1"
 			   clase="tableTitle"
 			   nombreCol="facturacion.busquedaAbonos.literal.numeroAbono,facturacion.busquedaAbonos.literal.fecha,
-			   			  facturacion.busquedaAbonos.literal.cliente,facturacion.busquedaAbonos.literal.estado,
+			   			  facturacion.busquedaAbonos.literal.cliente,gratuita.modalRegistro_DefinirCalendarioGuardia.literal.observaciones,facturacion.busquedaAbonos.literal.estado,
 			   			  facturacion.busquedaAbonos.literal.totalAbono,facturacion.busquedaAbonos.literal.numeroFactura,"
-			   tamanoCol="10,10,25,20,10,10,15"
+			   tamanoCol="8,10,20,10,20,10,8,15"
 			   alto="245"
 			   ajustePaginador="true" 
 			   activarFilaSel="true" >
@@ -233,6 +233,9 @@
 						</td>
 						<td>
 							<%=UtilidadesString.mostrarDatoJSP(personaAdm.obtenerNombreApellidos(row.getString(FacAbonoBean.C_IDPERSONA)))%>
+						</td>
+						<td>
+							<%=UtilidadesString.mostrarDatoJSP(row.getString(FacAbonoBean.C_OBSERVACIONES))%>
 						</td>
 						<td>
 							<%=UtilidadesString.mostrarDatoJSP(estado)%>

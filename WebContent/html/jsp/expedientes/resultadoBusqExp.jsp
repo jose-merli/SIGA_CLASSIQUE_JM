@@ -135,6 +135,7 @@
 			<html:hidden property = "hiddenFrame" value = "1"/>
 			<html:hidden property="registrosSeleccionados" />
 			<html:hidden property="datosPaginador" />
+			<html:hidden property="seleccionarTodos" />
 
 			<!-- RGG: cambio a formularios ligeros -->
 			<input type="hidden" name="filaSelD">
@@ -200,12 +201,12 @@
 									
 								Hashtable clavesRegistro = (Hashtable) registrosSeleccionados
 										.get(z);
-								String clave = (String)clavesRegistro.get("CLAVE");
 								
-								if (valorCheck.equals(clave)) {
-									isChecked = clavesRegistro.get("SELECCIONADO").equals("1");
+								if (valorCheck.equals((String)clavesRegistro.get("CLAVE"))) {
+									
+									isChecked = true;
 									break;
-								}
+								} 
 								
 
 							}
@@ -268,7 +269,7 @@
   
 			
 
-<%if ( datosPaginador.get("datos")!=null && !datosPaginador.get("datos").equals("")){
+<%if (  datosPaginador!=null && datosPaginador.get("datos")!=null && !datosPaginador.get("datos").equals("")){
 	String regSeleccionados = ("" + ((registrosSeleccionados == null) ? 0
 			: registrosSeleccionados.size()));
 %>
@@ -326,16 +327,16 @@
 			
 	   		for (int p=0;p<registrosSeleccionados.size();p++){
 	   		 	
-		   		Hashtable clavesEJG= (Hashtable) registrosSeleccionados.get(p);
+		   		Hashtable claves= (Hashtable) registrosSeleccionados.get(p);
 		   		
 		   		
-				valorCheckPersona=(String)clavesEJG.get("CLAVE");
+				valorCheckPersona=(String)claves.get("CLAVE");
 				
 						
-				if (clavesEJG.get("SELECCIONADO").equals(ClsConstants.DB_TRUE)){%>
+				%>
 					var aux='<%=valorCheckPersona%>';
 					ObjArray.push(aux);
-				<%}
+				<%
 			} 
 	   	}%>
 	   	
@@ -357,33 +358,16 @@
 		   	if (conf){
 				ObjArray = new Array();
 			   	if (o.checked){
-			   	 	<%if (registrosSeleccionados!=null){
-			   		 	for (int p=0;p<registrosSeleccionados.size();p++){
-			   		 	
-				   			Hashtable clavesEJG= (Hashtable) registrosSeleccionados.get(p);
-				   			valorCheckPersona=(String)clavesEJG.get("CLAVE");
-				   			
-				   	%>
-							
-								var aux='<%=valorCheckPersona%>';
-								ObjArray.push(aux);
-							
-						<%
-				   			
-				   		} 
-			   		 }%>
-					ObjArray.toString();
-					seleccionados1=ObjArray;
-					
-					document.forms[0].registrosSeleccionados.value=seleccionados1;
-					
-					var ele = document.getElementsByName("chkPersona");
-						
-					for (i = 0; i < ele.length; i++) {
-						if(!ele[i].disabled)
-							ele[i].checked = true;
-							
-					}
+			   		<%if(isBusquedaAvanzada){%>
+			   		document.forms[0].target = "mainWorkArea";
+			   		<%}else{ %>
+			   	 	document.forms[0].target = "resultado";
+			   	 	<%}%>
+			   	 	
+			   	 	
+					document.forms[0].modo.value = "buscarPor";
+					document.forms[0].seleccionarTodos.value = "<%=paginaSeleccionada%>";
+					document.forms[0].submit();
 					
 				}else{
 					ObjArray1= new Array();

@@ -30,20 +30,26 @@
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
 	String profile[]=usr.getProfile();
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
-
+	Integer PCAJG_ACTIVADO =(Integer) (request.getAttribute("PCAJG_ACTIVO"));
+	String pintarAsterisco="";
+	if (PCAJG_ACTIVADO!=null && PCAJG_ACTIVADO.intValue()>1){
+		pintarAsterisco="&nbsp;(*)";
+		
+	}
 	String modopestanha = request.getSession().getAttribute("accion")==null?"":(String)request.getSession().getAttribute("accion");
 	
 	ArrayList estadoSel    = new ArrayList();
 	ArrayList juzgadoSel   = new ArrayList();
 	ArrayList comisariaSel = new ArrayList();
 	ArrayList pretensionesSel = new ArrayList();
+	ArrayList preceptivoSel = new ArrayList();
 
 	//ScsEJGAdm adm = new ScsEJGAdm (usr);
 	
 	String OBSERVACIONES = "", DELITOS = "", PROCURADOR = "", PROCURADORNECESARIO ="",idProcurador="", idInstitucionProcurador="", calidad="", FECHAPROCURADOR="",  
 		   procuradorNombreCompleto = "", procuradorNumColegiado = "", procuradorSel = "",idTurno = "", nombreCompleto="";	
    	String numeroDiligenciaAsi    = "",numeroProcedimientoAsi = "", juzgadoAsi="", juzgadoInstitucionAsi="", comisariaAsi="", comisariaInstitucionAsi="";
-   	String idPretension    = "", idPretensionInstitucion="",pretension="";
+   	String idPretension    = "", idPretensionInstitucion="",pretension="", idPreceptivo="";
    	
 	Hashtable hash = (Hashtable)ses.getAttribute("DATABACKUP");
 	
@@ -57,6 +63,7 @@
 		if (hash.containsKey("PROCURADORNECESARIO")) PROCURADORNECESARIO					  			=  hash.get("PROCURADORNECESARIO").toString();
 
 		if (hash.containsKey("IDPRETENSION")) idPretension			  				=  hash.get("IDPRETENSION").toString(); 		
+		if (hash.containsKey("IDPRECEPTIVO")) idPreceptivo			  				=  hash.get("IDPRECEPTIVO").toString();
 
 		if (hash.containsKey("IDTURNO")) idTurno					  			=  hash.get("IDTURNO").toString(); 		
 		if (hash.containsKey("CALIDAD")) calidad					  			=  hash.get("CALIDAD").toString();
@@ -105,10 +112,14 @@
 	
 	if (comisariaAsi!=null && comisariaInstitucionAsi!=null)
 		comisariaSel.add(0,comisariaAsi+","+comisariaInstitucionAsi);
+	
+	if (idPreceptivo!=null)
+		preceptivoSel.add(0,idPreceptivo);	
 
 	String estilo = "box", readOnly="false", estiloCombo="boxCombo";
 	String[] datos={usr.getLocation(),idTurno};		
 	String[] datos2={usr.getLocation(),usr.getLanguage()};	
+	
 %>
 
 <%@page import="java.util.Properties"%>
@@ -161,6 +172,7 @@
 		<html:hidden property = "numeroProcedimiento" value="<%=numeroProcedimientoAsi%>"/>		
 		<html:hidden property = "delitos" value="<%=DELITOS%>"/>
 		<html:hidden property = "pretension" value=""/>
+		<html:hidden property = "idPreceptivo" value="<%=idPreceptivo%>"/>
 		<html:hidden property = "fechaProc" value=""/>
 	</html:form>
 	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="submitArea" type=""  style="display:none">
@@ -211,6 +223,19 @@
 		  <tr><td>
 			<siga:ConjCampos leyenda="pestana.justiciagratuitadesigna.defensajuridica">
 				<table width="100%" style="table-layout:fixed" border=0>
+				   <tr>
+						<td  class="labelText" colspan="3">
+						   <siga:Idioma key='gratuita.operarEJG.literal.Preceptivo'/><%=pintarAsterisco%>
+					    </td> 
+						<td colspan="20" >
+						 <%if(modopestanha.equals("editar")){%>
+						 
+							<siga:ComboBD nombre="preceptivo2" tipo="comboPreceptivo" ancho="250" clase="<%=estiloCombo%>" filasMostrar="1"  seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=preceptivoSel%>"  readonly="false"/> 
+						 <%}else{%>
+							<siga:ComboBD nombre="preceptivo2" tipo="comboPreceptivo" ancho="250" clase="boxConsulta" filasMostrar="1"  seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=preceptivoSel%>"  readonly="true"/>          	   
+						 <%}%>						
+						</td>
+					 </tr>
 					<tr>
 						<td colspan="3" class="labelText" ><siga:Idioma key='gratuita.mantAsistencias.literal.numeroDiligenciasolo'/></td>
 							<td colspan="2" width="100">
@@ -260,14 +285,14 @@
 								<html:textarea property="observaciones2" size="7" cols="60" rows="2" style="overflow:auto width:330px;" styleClass="boxConsulta" value="<%=OBSERVACIONES%>"></html:textarea>
 							<%}%>							
 						</td>
-						<td colspan="3" class="labelText">
+						<td colspan="4" class="labelText">
 							<siga:Idioma key='gratuita.general.literal.comentariosDelitos'/>
 						</td>
-						<td colspan="9">	
+						<td colspan="8">	
 							<%if(modopestanha.equals("editar")){%>
-									<html:textarea name="DefinirMantenimientoEJGForm" size="7" property="delitos2" cols="60" rows="2" style="overflow:auto; width:370px;" styleClass="box" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" value="<%=DELITOS%>"></html:textarea>							
+									<html:textarea name="DefinirMantenimientoEJGForm" size="7" property="delitos2" cols="60" rows="2" style="overflow:auto; width:340px;" styleClass="box" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" value="<%=DELITOS%>"></html:textarea>							
 							<%}else{%>
-								<html:textarea  name="DefinirMantenimientoEJGForm" size="7" property="delitos2" cols="60" rows="2" style="overflow:auto; width:370px;" styleClass="boxConsulta" value="<%=DELITOS%>"></html:textarea>							
+								<html:textarea  name="DefinirMantenimientoEJGForm" size="7" property="delitos2" cols="60" rows="2" style="overflow:auto; width:340px;" styleClass="boxConsulta" value="<%=DELITOS%>"></html:textarea>							
 							<%}%>							
 						</td>		
 					</tr>			
@@ -290,14 +315,14 @@
 							}%>						
 						
 						</td>	
-						<td colspan="3" class="labelText">	
-							<siga:Idioma key='gratuita.actuacionesDesigna.literal.pretensiones'/>
+						<td colspan="4" class="labelText">	
+							<siga:Idioma key='gratuita.actuacionesDesigna.literal.pretensiones'/><%=pintarAsterisco%>
 						</td>	
-						<td  colspan="9">
+						<td  colspan="8">
 							<%if(modopestanha.equals("editar")){%>
-								<siga:ComboBD nombre="pretensiones2" tipo="comboPretensiones" ancho="370" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="false"/>           	   
+								<siga:ComboBD nombre="pretensiones2" tipo="comboPretensiones" ancho="340" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="false"/>           	   
 							<%}else{%>
-								<siga:ComboBD nombre="pretensiones2" tipo="comboPretensiones" ancho="370" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="true"/>           	   
+								<siga:ComboBD nombre="pretensiones2" tipo="comboPretensiones" ancho="340" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="true"/>           	   
 							<%}%>
 						</td>
 					</tr>
@@ -434,13 +459,27 @@
 			document.forms[0].submit(); 
 		}
 		function accionGuardar(){
+		 
 			sub();
 			var observaciones = document.getElementById("observaciones").value;
+			<%if (PCAJG_ACTIVADO!=null && PCAJG_ACTIVADO.intValue()>1){%>
+		   		if (document.getElementById("preceptivo2").value==""){
+		    		fin();
+		    		alert('<siga:Idioma key="gratuita.operarEJG.message.requeridoPreceptivo"/>');
+		    		return false;
+		   		}
+		   		if (document.getElementById("pretensiones2").value==""){
+		    		fin();
+		    		alert('<siga:Idioma key="gratuita.operarEJG.message.requeridoProcedimientos"/>');
+		    		return false;
+		   		}
+		 	<%}%> 
 			if (observaciones.length <= 1024) {
 				document.DefinirMantenimientoEJGForm.modo.value = "modificarDefensa";
 				document.DefinirMantenimientoEJGForm.target = "submitArea";
 				
 				document.DefinirMantenimientoEJGForm.procurador.value				=	document.getElementById("procurador").value	;
+				document.DefinirMantenimientoEJGForm.idPreceptivo.value				=	document.getElementById("preceptivo2").value	;
 				document.DefinirMantenimientoEJGForm.calidad.value					=	document.getElementById("calidad2").value	;
 				document.DefinirMantenimientoEJGForm.comisaria.value				=	document.getElementById("comisaria").value	;
 				document.DefinirMantenimientoEJGForm.juzgado.value					=	document.getElementById("juzgado").value	;				
@@ -450,6 +489,7 @@
 				document.DefinirMantenimientoEJGForm.delitos.value					=	document.getElementById("delitos2").value;
 				document.DefinirMantenimientoEJGForm.pretension.value				=	document.getElementById("pretensiones2").value;		
 				document.DefinirMantenimientoEJGForm.fechaProc.value				=	document.getElementById("fechaProc1").value;				
+				
 
 //				alert("observaciones->"+document.DefinirMantenimientoEJGForm.observaciones.value+"<observaciones2->"+document.getElementById("observaciones").value);							
 //				alert("Procedimiento->"+document.DefinirMantenimientoEJGForm.numeroProcedimiento.value+"<Procedimiento2->"+document.getElementById("numeroProcedimiento").value);											

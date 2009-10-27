@@ -123,6 +123,8 @@ public class SIGAListadoCertificadosAction extends MasterAction
 	            {
 	                tx = userBean.getTransaction();
 	                
+	                StringBuffer mensaje = new StringBuffer();
+	                
                     String serialNumber =(String) hashDatos.get("NUMSERIE");
 
                     serialNumber = serialNumber.replaceAll(" ", "");
@@ -148,6 +150,14 @@ public class SIGAListadoCertificadosAction extends MasterAction
 	                
 	                URL direction = new URL(sURL);
 	
+	                // Trazamos los siguientes valores: serialNumber, sURLServidor, sParametroNumeroSerie, sURL
+
+					mensaje.append(" BUSQUEDA CERTIFICADOS ACA: serialNumber: " + serialNumber);
+					mensaje.append(" + sParametroNumeroSerie: " + sParametroNumeroSerie);
+					mensaje.append(" + sURL: " + sURL);
+					mensaje.append(" + sURLServidor: " + sURLServidor);
+					ClsLogging.writeFileLog(mensaje.toString(), 10);
+					
 					URLConnection conexion = null;
 					
 					try {

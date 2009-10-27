@@ -1,5 +1,6 @@
 <!-- validacionSIGA.jsp -->
 <%@ page contentType="text/javascript" language="java" errorPage=""%>
+<%@ page pageEncoding="ISO-8859-1"%>
 
 <!-- TAGLIBS -->
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
@@ -13,6 +14,7 @@
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.atos.utils.UsrBean"%>
+
 
 <%@ page import="java.util.*"%>
 <%@ page import="com.atos.utils.*"%>

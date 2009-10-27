@@ -86,6 +86,7 @@
 	String descripcionCosteFijo = "";
 	String IDTURNO = "";
 	String facturada = "";
+	String fechaDelDia = UtilidadesBDAdm.getFechaBD("");
 	
 	if(vec != null && vec.size()>0)
 	{
@@ -261,6 +262,7 @@
 	<html:form action = "/JGR_ActuacionAsistenciaLetrado.do" method="POST">
 		<input type="hidden" name="acidactuacion" value="<%=ACIDACTUACION%>" />
 		<input type="hidden" name="actuacionValidada" value="<%=actuacionValidada%>" />
+		<input type="hidden" name="validarJustificacion" value="<%=validarJustificaciones%>" />
 		<html:hidden name="AsistenciasForm" property="modo" value = "<%=modo%>"/>	
 		<html:hidden name="AsistenciasForm" property="anio" />
 		<html:hidden name="AsistenciasForm" property="numero" />
@@ -488,8 +490,10 @@
 			<td class="labelText" >
 				<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.comisaria"/>
 			</td>
-			<td colspan="5">	
-			    <input type="text" name="codigoExtComisaria" class="box" size="8"  style="margin-top:3px;" maxlength="10" onBlur="obtenerComisaria();" />			
+			<td colspan="5">
+			 <%if(!modo.equals("consulta")){%>	
+			    <input type="text" name="codigoExtComisaria" class="box" size="8"  style="margin-top:3px;" maxlength="10" onBlur="obtenerComisaria();" />
+			 <%}%>			
 				<siga:ComboBD ancho="200"  nombre="comisaria" tipo="comboComisariasTurno" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=dato%>"  elementoSel="<%=comisariaSel%>"  />
 			</td>
 		</tr>
@@ -533,7 +537,8 @@
 		</tr>
 	</table>
 	</siga:ConjCampos>
-	<siga:ConjCampos leyenda="gratuita.mantActuacion.literal.justificacion">
+<% if ((!usr.isLetrado())) { // Agente %>	
+	<siga:ConjCampos leyenda="gratuita.mantActuacion.literal.justificacion" >
 	<table width="100%" border="0">
 		<tr>
 <% 
@@ -559,10 +564,10 @@
 
 			<td  style="padding-top: 5px;vertical-align: top;">
 				<% if(!modo.equals("consulta")) {%>
-					<% //if((validarJustificaciones != null) && (validarJustificaciones.equalsIgnoreCase("S"))) { %>
+					<%// if((validarJustificaciones != null) && (validarJustificaciones.equalsIgnoreCase("S"))) { %>
 						<% if (!usr.isLetrado()) { // Agente %>
 							<% if ((facturada != null) && (!facturada.equals("1"))) {%>
-									<input type="button" alt="<siga:Idioma key='gratuita.altaTurnos.literal.validacion'/>" id="bValidarActuacion" onclick="validarJustificacion();" class="button" value="<siga:Idioma key='gratuita.altaTurnos.literal.validacion'/>">
+									<input type="button" alt="<siga:Idioma key='gratuita.altaTurnos.literal.validacion'/>" id="idButton" onclick="validarJustificacion();" class="button" value="<siga:Idioma key='gratuita.altaTurnos.literal.validacion'/>">
 							<%}%>
 						<%} %>
 					<%} %>						
@@ -593,6 +598,7 @@
 		</tr>
 	</table>
 	</siga:ConjCampos>
+	 <%} %>
 
 </html:form>
 
@@ -619,12 +625,24 @@
 				// validaciones struct
 				sub();
 				fecha = document.getElementById("acfjustificacion");
+			 if (fecha){
 				if(!((fecha.value == null)||(fecha.value == ""))){
+				
+				   
 					document.forms[0].actuacionValidada.value="1";
 					document.forms[0].estadoActuacion.value = '<siga:Idioma key='gratuita.mantActuacion.literal.actuacionValidada'/>';
+					
 				}else{
 					document.forms[0].actuacionValidada.value="0";
 				}
+			 }else{
+			   <%if((validarJustificaciones != null) && (validarJustificaciones.equalsIgnoreCase("S"))) {%>
+			      document.forms[0].actuacionValidada.value="0";
+			   <%}else{%>
+			     document.forms[0].actuacionValidada.value="1";
+			     
+			   <%}%>   
+			 }
 				if(validateAsistenciasForm(document.AsistenciasForm))
 				{
 					document.forms[0].target = "submitArea";							

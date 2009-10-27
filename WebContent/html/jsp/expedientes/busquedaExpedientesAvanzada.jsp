@@ -151,6 +151,8 @@
 		<html:hidden property="modo" value="" />
 		<html:hidden property="avanzada" value="" />
 		<html:hidden property="esGeneral" value="<%=general%>" />
+		<html:hidden property="seleccionarTodos" />
+		
 		<input type="hidden" name="limpiarFilaSeleccionada" value="">
 
 
@@ -163,11 +165,20 @@
 					<tr>
 						<td class="labelText"><siga:Idioma
 							key="expedientes.auditoria.literal.tipo" /></td>
-						<td><siga:ComboBD nombre="cmbTipoExpediente"
+						<td id="comboTipoTodos" style="display: none">
+							<siga:ComboBD nombre="comboTipoExpediente"
 							tipo="cmbTipoExpedienteLocaloGeneralPermisos"  ancho="200" clase="boxCombo"
 							elementoSel="<%=vTipoExp%>" obligatorio="false"  parametro="<%=datoTipoExp%>" 
 							parametrosIn="<%=aPerfiles%>"
 							accion="Hijo:comboFases;Hijo:rol" /></td>
+							
+						<td id="comboTipoGeneral" style="display: none">
+							<siga:ComboBD nombre="comboTipoExpedienteG"
+							tipo="cmbTipoExpedienteGeneral"  ancho="200" clase="boxCombo"
+							elementoSel="<%=vTipoExp%>" obligatorio="false"  parametro="<%=datoTipoExp%>" 
+							parametrosIn="<%=aPerfiles%>"
+							accion="Hijo:comboFases;Hijo:rol" /></td>
+							
 						<td class="labelText"><siga:Idioma
 							key="expedientes.auditoria.literal.otrainstitucion" /></td>
 						<td><input type="checkbox" name="checkGeneral" value="S"
@@ -416,59 +427,43 @@
 		{		
 			if (document.forms[0].checkGeneral.checked){				
 				document.forms[0].esGeneral.value="S";
-				var tipo='cmbTipoExpedienteGeneral';
-				var inst='cmbInstitucion';
-				document.getElementById('institucionFrame').className="visibleexp";
-				document.getElementById('nombreInst').className="ocultoexp";	
+				document.getElementById("comboTipoTodos").style.display="none";
+				document.getElementById("comboTipoGeneral").style.display="block";	
+				document.getElementById("comboTipoExpedienteG").onchange();
 				
 			}else{			
 				document.forms[0].esGeneral.value="N";
-				//document.forms[0].institucion.value=<%=idinstitucion%>;
-				var tipo='cmbTipoExpedienteLocaloGeneralPermisos';
-				var inst='cmbInstitucionLocal';				
-				document.getElementById('institucionFrame').className="ocultoexp";	
-				document.getElementById('nombreInst').className="boxConsulta";
+				document.getElementById("comboTipoTodos").style.display="block";
+				document.getElementById("comboTipoGeneral").style.display="none";
+				document.getElementById("comboTipoExpediente").onchange();
+				
 			}			
-			<%-- combo anidado: tipoExpediente --%>
-/*			var destino_esGeneral0=(document.getElementById('comboTipoExpedienteFrame')).src;		
-			var tam_esGeneral0 = destino_esGeneral0.indexOf('&id=');
-			if(tam_esGeneral0==-1)
-			{
-				tam_esGeneral0=destino_esGeneral0.length;
-			}	
-			destino_esGeneral0=destino_esGeneral0.substring(0,tam_esGeneral0)+'&id='+<%=idinstitucion%>+'&tipoalt='+tipo;			
-			(document.getElementById('comboTipoExpedienteFrame')).src=destino_esGeneral0;	
-*/			
-			<%-- combo anidado: institucion --%>
-			var destino_esGeneral1=(document.getElementById('institucionFrame')).src;		
-			var tam_esGeneral1 = destino_esGeneral1.indexOf('&id=');
-			if(tam_esGeneral1==-1)
-			{
-				tam_esGeneral1=destino_esGeneral1.length;
-			}	
-			destino_esGeneral1=destino_esGeneral1.substring(0,tam_esGeneral1)+'&id='+<%=idinstitucion%>+'&tipoalt='+inst;			
-			(document.getElementById('institucionFrame')).src=destino_esGeneral1;	
-		}
-		
-		function recargarCombos()
-		{
-			var tmp1 = document.getElementsByName("comboTipoExpediente"); 
-			var tmp2 = tmp1[0];			 
-			tmp2.onchange();
-			var tmp3 = document.getElementsByName("comboFases");
-			var tmp4 = tmp3[0];
-			tmp4.onchange();
 		}
 		
 		<!-- Funcion asociada a boton buscar -->
-		function buscar() 
+		function buscar(modo) 
 		{
-			sub();		
+			sub();
+			if (document.forms[0].checkGeneral.checked){
+				document.getElementById("comboTipoExpediente").value=
+						document.getElementById("comboTipoExpedienteG").value;
+			}	
 			document.forms[0].modo.value="buscarInit";
 			document.forms[0].avanzada.value="<%=ClsConstants.DB_TRUE %>";
-			document.forms[0].target="mainWorkArea";	
+			if(modo)
+				document.forms[0].modo.value = modo;
+			else
+				document.forms[0].target="mainWorkArea";	
 			document.forms[0].submit();	
 		}
+		
+		function seleccionarTodos(pagina) 
+		{
+			document.forms[0].seleccionarTodos.value = pagina;
+			buscar('buscarPor');
+				
+		}	
+		
 
 		<!-- Funcion asociada a boton busqueda simple -->
 		function buscarSimple() 
@@ -484,7 +479,7 @@
 		{							
 			document.forms[1].submit();
 		}
-		
+
 	</script> <!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 
 <html:form action="/CEN_BusquedaClientesModal.do" method="POST"

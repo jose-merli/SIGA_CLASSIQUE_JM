@@ -31,7 +31,8 @@
 	boolean esFichaColegial = false;
 
 	String sEsFichaColegial = (String) request.getAttribute("esFichaColegial");
-	if ((sEsFichaColegial != null) && (sEsFichaColegial.equalsIgnoreCase("1"))) {
+	if ((sEsFichaColegial != null)
+			&& ((sEsFichaColegial.equalsIgnoreCase("1"))||(sEsFichaColegial.equalsIgnoreCase("true"))  )) {
 		esFichaColegial = true;
 	}
 	
@@ -59,6 +60,12 @@
 		FECHAANULACION = formador.format(new Date());
 	}
 		
+	String botonesAccion;
+	if(accion != null && accion.equalsIgnoreCase("modificar")){
+ 		botonesAccion = esFichaColegial ? "g,r" : "g,r,v";
+	}else{
+ 		botonesAccion = esFichaColegial ? "" : "v";
+	}
 		
 %>
 
@@ -133,23 +140,23 @@
 		</tr>
 		<%}%>
 			<%if(accion != null && accion.equalsIgnoreCase("modificar")){%>
-			<tr align="center">
-			<td class="labelText"  width="150" >	
-				<siga:Idioma key='<%=TITULOTEXTAREA%>'/>
-			</td>	
-			<td class="labelTextValor" >	
-				<html:textarea name="AsistenciasForm" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" property="<%=NOMBRETEXTAREA%>" cols="200" rows="20" style="overflow:auto" styleClass="boxCombo" value="<%=VALORDATO%>" readOnly="false" ></html:textarea>
-			</td>
-			</tr>
+				<tr align="center">
+				<td class="labelText"  width="150" >	
+					<siga:Idioma key='<%=TITULOTEXTAREA%>'/>
+				</td>	
+				<td class="labelTextValor" >	
+					<html:textarea name="AsistenciasForm" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" property="<%=NOMBRETEXTAREA%>" cols="200" rows="25" style="overflow:auto" styleClass="boxCombo" value="<%=VALORDATO%>" readOnly="false" ></html:textarea>
+				</td>
+				</tr>
 			<%}else{%>
-			<tr align="center">
-			<td class="labelText"  width="150">	
-				<siga:Idioma key='<%=TITULOTEXTAREA%>'/>
-			</td>	
-			<td class="labelTextValor">	
-				<%=NOMBRETEXTAREA%>
-			</td>
-			</tr>
+				<tr align="center">
+				<td class="labelText"  width="150">	
+					<siga:Idioma key='<%=TITULOTEXTAREA%>'/>
+				</td>	
+				<td class="labelTextValor">	
+					<html:textarea name="AsistenciasForm" property="<%=NOMBRETEXTAREA%>" cols="200" rows="25" style="overflow:auto" styleClass="boxConsulta" value="<%=VALORDATO%>" readOnly="true" ></html:textarea>
+				</td>
+				</tr>
 			<%}%>
 	</table>
 	</fieldset>
@@ -189,15 +196,28 @@
 			document.forms[0].submit();
 		}
 
+		
+		function accionVolver()
+		{
+			<%
+			// indicamos que es boton volver
+			ses.setAttribute("esVolver","1");
+			%>
+<%
+			String sAction2 = esFichaColegial ? "JGR_AsistenciasLetrado.do" : "JGR_Asistencia.do";
+%>
+			document.forms[0].action = "<%=sAction2%>";
+			document.forms[0].modo.value= "abrir";
+			document.forms[0].submit();
+		}
 	</script>
 
 <%
 		String sClasePestanas = esFichaColegial ? "botonesDetalle3" : "botonesDetalle";
 %>
 	<!-- INICIO: BOTONES BUSQUEDA -->	
-<%if(accion != null && accion.equalsIgnoreCase("modificar")){%>
-		<siga:ConjBotonesAccion botones="g,r" clase="<%=sClasePestanas%>"  />	
-<%}%>
+
+		<siga:ConjBotonesAccion botones="<%=botonesAccion %>" clase="<%=sClasePestanas%>"  />	
 	<!-- FIN: BOTONES BUSQUEDA -->
 
 			

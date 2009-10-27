@@ -41,6 +41,7 @@ import com.siga.beans.ScsActuacionDesignaBean;
 import com.siga.beans.ScsDesignaAdm;
 import com.siga.beans.ScsDesignaBean;
 import com.siga.beans.ScsDesignasLetradoAdm;
+import com.siga.beans.ScsTurnoBean;
 
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -155,6 +156,7 @@ public class InformeJustificacionMasivaLetradoAction extends InformeJustificacio
 				String codigoDesigna = (String) vCampos.get(12);
 				String numeroJustificaciones = (String) vCampos.get(13);
 				String baja = (String) vCampos.get(14);
+				String validarJustificaciones = (String) vCampos.get(15);
 
 				Hashtable h = new Hashtable();
 
@@ -258,6 +260,11 @@ public class InformeJustificacionMasivaLetradoAction extends InformeJustificacio
 										hashActuacion,
 										ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO,
 										idInstitucion);
+						
+						UtilidadesHash.set(
+								hashActuacion,
+								ScsTurnoBean.C_VALIDARJUSTIFICACIONES,
+								validarJustificaciones);
 	
 						Hashtable hashInicial = (Hashtable)hashActuacion.clone();
 						
@@ -283,6 +290,7 @@ public class InformeJustificacionMasivaLetradoAction extends InformeJustificacio
 								msgAviso.append(" / ");
 								msgAviso.append(codigoDesigna);
 							}else {
+							  
 								String fechaJustificacion = null;
 								switch (sizeHash) {
 									case 1:
@@ -295,7 +303,9 @@ public class InformeJustificacionMasivaLetradoAction extends InformeJustificacio
 										String idAcreditActExistente = (String)hashActuacion.get(ScsActuacionDesignaBean.C_IDACREDITACION);
 										String idTipoAcreditacion =  (String)hashActuacion.get(ScsAcreditacionBean.C_IDTIPOACREDITACION);
 										fechaJustificacion = (String)hashActuacion.get(ScsActuacionDesignaBean.C_FECHAJUSTIFICACION);
+										
 										if(idTipoAcreditacion.equalsIgnoreCase(TIPO_ACREDIT_INIFIN)){
+											if (!(user.isLetrado() && (hashActuacion.get(ScsTurnoBean.C_VALIDARJUSTIFICACIONES)!=null && hashActuacion.get(ScsTurnoBean.C_VALIDARJUSTIFICACIONES).equals("S")))){
 											//si es de inicio y fin nos da igual lo que haya marcado ya que se va a justificar una sola
 											UtilidadesHash.set(hashActuacion,
 													ScsActuacionDesignaBean.C_IDACREDITACION,
@@ -314,6 +324,8 @@ public class InformeJustificacionMasivaLetradoAction extends InformeJustificacio
 											}
 											
 											actuacionDesginaAdm.updateDirect(actuacionDesginaAdm.hashTableToBean(hashActuacion));
+											}
+											
 										}else{
 											//si no es de este tipo y solo hay una dada de alta, que es la de inicio
 											//(POR DEFINICION NO PUEDE EXISTIR ACTUACION DE FIN SIN INICIO) 
@@ -322,6 +334,7 @@ public class InformeJustificacionMasivaLetradoAction extends InformeJustificacio
 												//y nos selecciona los dos check
 												//HAY QUE MODIFICAR LA DE INICIO E INSEERTAR LA DE FIN
 												//HAY QUE MODIFICAR LA DE INICIO
+												
 												UtilidadesHash.set(hashActuacion,
 														ScsActuacionDesignaBean.C_IDACREDITACION,
 														idAcreditActExistente);
@@ -334,12 +347,15 @@ public class InformeJustificacionMasivaLetradoAction extends InformeJustificacio
 															ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,
 														"sysdate");
 												}else{
+												  	
 													UtilidadesHash.set(hashActuacion,
 															ScsActuacionDesignaBean.C_VALIDADA, "1");
+												  
 													
 												}
+												if (!(user.isLetrado() && (hashActuacion.get(ScsTurnoBean.C_VALIDARJUSTIFICACIONES)!=null && hashActuacion.get(ScsTurnoBean.C_VALIDARJUSTIFICACIONES).equals("S")))){
 												actuacionDesginaAdm.updateDirect(actuacionDesginaAdm.hashTableToBean(hashActuacion));
-												
+												}
 												//Preparamos el insert de la acreditacion de fin
 												idAcreditacion = getAcreditacion(htAcumulaAcreditacionesProcedimiento,
 														isFactAnterior2005,dateFechaDefecto,dateFechaInicioActuacion,
@@ -364,6 +380,14 @@ public class InformeJustificacionMasivaLetradoAction extends InformeJustificacio
 												
 												//comprobamos si existe la actuacion solo que no esta justificada
 												hashInicial = actuacionDesginaAdm.prepararInsert(hashInicial);
+												if ((user.isLetrado() && (hashActuacion.get(ScsTurnoBean.C_VALIDARJUSTIFICACIONES)!=null && hashActuacion.get(ScsTurnoBean.C_VALIDARJUSTIFICACIONES).equals("S")))){
+													UtilidadesHash.set(hashInicial,
+															ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,
+															"");
+													UtilidadesHash.set(hashInicial,
+															ScsActuacionDesignaBean.C_VALIDADA,
+															"0");
+												}
 												actuacionDesginaAdm.insert(hashInicial);
 												
 											}else if(isFechaInicio||isFechaFin){
@@ -371,6 +395,7 @@ public class InformeJustificacionMasivaLetradoAction extends InformeJustificacio
 												// que la de inicio este justificada y la de fin no. 
 												//Por lo tanto solo queda un check por marcar que es el de inicio o el de fin
 												//HAY QUE MODIFICAR LA DE INICIO O LA DE FIN
+												if (!(user.isLetrado() && (hashActuacion.get(ScsTurnoBean.C_VALIDARJUSTIFICACIONES)!=null && hashActuacion.get(ScsTurnoBean.C_VALIDARJUSTIFICACIONES).equals("S")))){	
 												UtilidadesHash.set(hashActuacion,
 														ScsActuacionDesignaBean.C_IDACREDITACION,
 														idAcreditActExistente);
@@ -387,6 +412,7 @@ public class InformeJustificacionMasivaLetradoAction extends InformeJustificacio
 													
 												}
 												actuacionDesginaAdm.updateDirect(actuacionDesginaAdm.hashTableToBean(hashActuacion));
+												}
 												
 											}
 											
@@ -397,7 +423,9 @@ public class InformeJustificacionMasivaLetradoAction extends InformeJustificacio
 										hashActuacion = (Hashtable)alHashActuacion.get(0);
 										fechaJustificacion = (String)hashActuacion.get(ScsActuacionDesignaBean.C_FECHAJUSTIFICACION);
 										String idAcreditActExistenteInicio = (String)hashActuacion.get(ScsActuacionDesignaBean.C_IDACREDITACION);
+										
 										if (isFechaInicio && isFechaFin) {
+											if (!(user.isLetrado() && (hashActuacion.get(ScsTurnoBean.C_VALIDARJUSTIFICACIONES)!=null && hashActuacion.get(ScsTurnoBean.C_VALIDARJUSTIFICACIONES).equals("S")))){
 											UtilidadesHash.set(hashActuacion,
 													ScsActuacionDesignaBean.C_IDACREDITACION,
 													idAcreditActExistenteInicio);
@@ -434,11 +462,14 @@ public class InformeJustificacionMasivaLetradoAction extends InformeJustificacio
 														ScsActuacionDesignaBean.C_VALIDADA, "1");
 												
 											}
+											
 											actuacionDesginaAdm.updateDirect(actuacionDesginaAdm.hashTableToBean(hashActuacion));
+											}
 											
 										}else{
 											//Solo puede ser que sea de inicio
 											//(por progama Si esta seleccionado el fin hay que seleccionar el incio)
+											if (!(user.isLetrado() && (hashActuacion.get(ScsTurnoBean.C_VALIDARJUSTIFICACIONES)!=null && hashActuacion.get(ScsTurnoBean.C_VALIDARJUSTIFICACIONES).equals("S")))){
 											UtilidadesHash.set(hashActuacion,
 													ScsActuacionDesignaBean.C_IDACREDITACION,
 													idAcreditActExistenteInicio);
@@ -456,7 +487,7 @@ public class InformeJustificacionMasivaLetradoAction extends InformeJustificacio
 											}
 											actuacionDesginaAdm.updateDirect(actuacionDesginaAdm.hashTableToBean(hashActuacion));
 											
-										
+											}
 											
 										}
 										
@@ -465,7 +496,7 @@ public class InformeJustificacionMasivaLetradoAction extends InformeJustificacio
 									default:
 										break;
 								}
-	
+							
 							}
 						}else{
 							
@@ -513,6 +544,7 @@ public class InformeJustificacionMasivaLetradoAction extends InformeJustificacio
 											
 											
 										}else{
+											if (!(user.isLetrado() && (hashActuacion.get(ScsTurnoBean.C_VALIDARJUSTIFICACIONES)!=null && hashActuacion.get(ScsTurnoBean.C_VALIDARJUSTIFICACIONES).equals("S")))){
 											UtilidadesHash.set(hashActuacion,
 													ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION,
 													obsJustificacion);
@@ -520,6 +552,7 @@ public class InformeJustificacionMasivaLetradoAction extends InformeJustificacio
 													ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,
 													"sysdate");
 											actuacionDesginaAdm.updateDirect(actuacionDesginaAdm.hashTableToBean(hashActuacion));
+											}
 											
 											
 										}
@@ -527,21 +560,32 @@ public class InformeJustificacionMasivaLetradoAction extends InformeJustificacio
 									}else{
 									//Si no trae numero de asunto es que no existe registro no justificado.
 									//Habra que dar de alta la actuacion
-										hashActuacion = actuacionDesginaAdm.prepararInsert(hashActuacion);
-										UtilidadesHash.set(hashActuacion,
-												ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION,
-												obsJustificacion);
-										UtilidadesHash.set(hashActuacion,
-												ScsActuacionDesignaBean.C_OBSERVACIONES,
-												obsActuacion);
-										UtilidadesHash.set(hashActuacion,
-												ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,
-												"sysdate");
-										UtilidadesHash
-											.set(hashActuacion,
-												ScsActuacionDesignaBean.C_FECHA,
-												"sysdate");
-										actuacionDesginaAdm.insert(hashActuacion);
+											
+											hashActuacion = actuacionDesginaAdm.prepararInsert(hashActuacion);
+											UtilidadesHash.set(hashActuacion,
+													ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION,
+													obsJustificacion);
+											UtilidadesHash.set(hashActuacion,
+													ScsActuacionDesignaBean.C_OBSERVACIONES,
+													obsActuacion);
+											UtilidadesHash.set(hashActuacion,
+													ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,
+													"sysdate");
+											UtilidadesHash
+												.set(hashActuacion,
+													ScsActuacionDesignaBean.C_FECHA,
+													"sysdate");
+											
+											if ((user.isLetrado() && (hashActuacion.get(ScsTurnoBean.C_VALIDARJUSTIFICACIONES)!=null && hashActuacion.get(ScsTurnoBean.C_VALIDARJUSTIFICACIONES).equals("S")))){
+												UtilidadesHash.set(hashActuacion,
+														ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,
+														"");
+												UtilidadesHash.set(hashActuacion,
+														ScsActuacionDesignaBean.C_VALIDADA,
+														"0");
+											}
+											actuacionDesginaAdm.insert(hashActuacion);
+										
 									}
 									
 									
@@ -581,6 +625,7 @@ public class InformeJustificacionMasivaLetradoAction extends InformeJustificacio
 											
 											
 										}else{
+											if (!(user.isLetrado() && (hashActuacion.get(ScsTurnoBean.C_VALIDARJUSTIFICACIONES)!=null && hashActuacion.get(ScsTurnoBean.C_VALIDARJUSTIFICACIONES).equals("S")))){
 											UtilidadesHash.set(hashActuacion,
 													ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION,
 													obsJustificacion);
@@ -588,6 +633,7 @@ public class InformeJustificacionMasivaLetradoAction extends InformeJustificacio
 													ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,
 													"sysdate");
 											actuacionDesginaAdm.updateDirect(actuacionDesginaAdm.hashTableToBean(hashActuacion));
+											}
 											
 											
 										}
@@ -595,6 +641,7 @@ public class InformeJustificacionMasivaLetradoAction extends InformeJustificacio
 									}else{
 									//Si no trae numero de asunto es que no existe registro no justificado.
 									//Habra que dar de alta la actuacion
+											
 										hashActuacion = actuacionDesginaAdm.prepararInsert(hashActuacion);
 										UtilidadesHash.set(hashActuacion,
 												ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION,
@@ -609,7 +656,16 @@ public class InformeJustificacionMasivaLetradoAction extends InformeJustificacio
 											.set(hashActuacion,
 												ScsActuacionDesignaBean.C_FECHA,
 												"sysdate");
+										if ((user.isLetrado() && (hashActuacion.get(ScsTurnoBean.C_VALIDARJUSTIFICACIONES)!=null && hashActuacion.get(ScsTurnoBean.C_VALIDARJUSTIFICACIONES).equals("S")))){
+											UtilidadesHash.set(hashActuacion,
+													ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,
+													"");
+											UtilidadesHash.set(hashActuacion,
+													ScsActuacionDesignaBean.C_VALIDADA,
+													"0");
+										}
 										actuacionDesginaAdm.insert(hashActuacion);
+										
 									}
 									idAcreditacion = getAcreditacion(htAcumulaAcreditacionesProcedimiento,
 											isFactAnterior2005,dateFechaDefecto,dateFechaInicioActuacion,
@@ -644,6 +700,7 @@ public class InformeJustificacionMasivaLetradoAction extends InformeJustificacio
 											msgAviso.append(codigoDesigna);
 											
 										}else{
+											if (!(user.isLetrado() && (hashActuacion.get(ScsTurnoBean.C_VALIDARJUSTIFICACIONES)!=null && hashActuacion.get(ScsTurnoBean.C_VALIDARJUSTIFICACIONES).equals("S")))){	
 											UtilidadesHash.set(hashActuacion,
 													ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION,
 													obsJustificacion);
@@ -651,6 +708,7 @@ public class InformeJustificacionMasivaLetradoAction extends InformeJustificacio
 													ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,
 													"sysdate");
 											actuacionDesginaAdm.updateDirect(actuacionDesginaAdm.hashTableToBean(hashActuacion));
+											}
 											
 											
 										}
@@ -658,6 +716,7 @@ public class InformeJustificacionMasivaLetradoAction extends InformeJustificacio
 									}else{
 									//Si no trae numero de asunto es que no existe registro no justificado.
 									//Habra que dar de alta la actuacion
+										
 										hashActuacion = actuacionDesginaAdm.prepararInsert(hashActuacion);
 										UtilidadesHash.set(hashActuacion,
 												ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION,
@@ -672,7 +731,16 @@ public class InformeJustificacionMasivaLetradoAction extends InformeJustificacio
 											.set(hashActuacion,
 												ScsActuacionDesignaBean.C_FECHA,
 												"sysdate");
+										if ((user.isLetrado() && (hashActuacion.get(ScsTurnoBean.C_VALIDARJUSTIFICACIONES)!=null && hashActuacion.get(ScsTurnoBean.C_VALIDARJUSTIFICACIONES).equals("S")))){
+											UtilidadesHash.set(hashActuacion,
+													ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,
+													"");
+											UtilidadesHash.set(hashActuacion,
+													ScsActuacionDesignaBean.C_VALIDADA,
+													"0");
+										}
 										actuacionDesginaAdm.insert(hashActuacion);
+										
 									}
 								
 								}
@@ -709,6 +777,7 @@ public class InformeJustificacionMasivaLetradoAction extends InformeJustificacio
 										msgAviso.append(codigoDesigna);
 										
 									}else{
+										if (!(user.isLetrado() && (hashActuacion.get(ScsTurnoBean.C_VALIDARJUSTIFICACIONES)!=null && hashActuacion.get(ScsTurnoBean.C_VALIDARJUSTIFICACIONES).equals("S")))){
 										UtilidadesHash.set(hashActuacion,
 												ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION,
 												obsJustificacion);
@@ -716,13 +785,14 @@ public class InformeJustificacionMasivaLetradoAction extends InformeJustificacio
 												ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,
 												"sysdate");
 										actuacionDesginaAdm.updateDirect(actuacionDesginaAdm.hashTableToBean(hashActuacion));
-										
+										}
 										
 									}
 									
 								}else{
 								//Si no trae numero de asunto es que no existe registro no justificado.
 								//Habra que dar de alta la actuacion
+										
 									hashActuacion = actuacionDesginaAdm.prepararInsert(hashActuacion);
 									UtilidadesHash.set(hashActuacion,
 											ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION,
@@ -737,7 +807,16 @@ public class InformeJustificacionMasivaLetradoAction extends InformeJustificacio
 										.set(hashActuacion,
 											ScsActuacionDesignaBean.C_FECHA,
 											"sysdate");
+									if ((user.isLetrado() && (hashActuacion.get(ScsTurnoBean.C_VALIDARJUSTIFICACIONES)!=null && hashActuacion.get(ScsTurnoBean.C_VALIDARJUSTIFICACIONES).equals("S")))){
+										UtilidadesHash.set(hashActuacion,
+												ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,
+												"");
+										UtilidadesHash.set(hashActuacion,
+												ScsActuacionDesignaBean.C_VALIDADA,
+												"0");
+									}
 									actuacionDesginaAdm.insert(hashActuacion);
+
 								}
 		
 							}

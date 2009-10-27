@@ -21,109 +21,137 @@
 <%@ page import="com.siga.beans.*"%>
 
 
-<%  
+<%
 	//System.out.println("Entramos en la pagina");
-	String app=request.getContextPath(); 
-	HttpSession ses=request.getSession(true);
-	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
-	
-	String[] dato = {usr.getLocation()};
+	String app = request.getContextPath();
+	HttpSession ses = request.getSession(true);
+	UsrBean usr = (UsrBean) ses.getAttribute("USRBEAN");
+	Boolean isDelitosVE = (Boolean) request.getAttribute("isDelitosVE");
+
+	String[] dato = { usr.getLocation() };
 	String[] datoTurno = null;
-	String[] datoGuardia  = {"1", "1", usr.getLocation(), "", ""};
-	String[] datoSustituto = {usr.getLocation(), "",""};
-	String[] colegiadosGuardia = {usr.getLocation(), "",""};
+	String[] datoGuardia = { "1", "1", usr.getLocation(), "", "" };
+	String[] datoSustituto = { usr.getLocation(), "", "" };
+	String[] colegiadosGuardia = { usr.getLocation(), "", "" };
 	String comboBD = "turnos";
 	String bJuzgado = "";
 	boolean primeraVisita = false;
-	String tipoAsistenciaDefecto	 = (String)request.getAttribute("tipoAsistenciaDefecto") ;
-	
-	String modoAnterior    		 = (request.getAttribute("modoAnterior")    	  == null?"":(String)request.getAttribute("modoAnterior"));
-	String diaGuardia    		 = (request.getAttribute("diaGuardia")    		  == null?"":(String)request.getAttribute("diaGuardia"));
-	String idLetrado     		 = (request.getAttribute("idpersona")     		  == null?"":(String)request.getAttribute("idpersona"));
-	String numLetrado    		 = (request.getAttribute("ncolegiado")    		  == null?"":(String)request.getAttribute("ncolegiado"));
-	String nombreLetrado 		 = (request.getAttribute("nombreletrado") 		  == null?"":(String)request.getAttribute("nombreletrado"));
-	String centroJuzgado 		 = (request.getAttribute("centroJuzgado") 		  == null?"":(String)request.getAttribute("centroJuzgado"));
-	String idGuardia 	 		 = (request.getAttribute("idGuardia") 			  == null?"":(String)request.getAttribute("idGuardia"));
-	String idGuardiaSelec 	 		 = (request.getAttribute("idGuardiaSelec") 			  == null?"":(String)request.getAttribute("idGuardiaSelec"));
-	String idTurno 		 		 = (request.getAttribute("idTurno") 			  == null?"":(String)request.getAttribute("idTurno"));
-	String tipoAsistencia 		 = (request.getAttribute("tipoAsistencia") 		  == null?"":(String)request.getAttribute("tipoAsistencia"));
-	String tipoAsistenciaColegio = (request.getAttribute("tipoAsistenciaColegio") == null?"":(String)request.getAttribute("tipoAsistenciaColegio"));
-	String sustitutoDe           = (request.getAttribute("sustituto")             == null?"":(String)request.getAttribute("sustituto"));
-	String guardiaDelSustituto   = (request.getAttribute("guardiaDelSustituto")   == null?"":(String)request.getAttribute("guardiaDelSustituto"));
-	String aviso         		 = (request.getAttribute("aviso")         		  == null?"":(String)request.getAttribute("aviso"));
-	boolean desdeNuevo    		 = (request.getAttribute("desdeNuevo")    		  == null?false:UtilidadesString.stringToBoolean((String)request.getAttribute("desdeNuevo")));
-	boolean sinAvisos    		 = (request.getAttribute("sinAvisos")     		  == null?false:UtilidadesString.stringToBoolean((String)request.getAttribute("sinAvisos")));
-	
-	
-	ArrayList turnoSel   = new ArrayList();
-   	ArrayList guardiaSel = new ArrayList();
-   	ArrayList colegioSel = new ArrayList();
-  	ArrayList tipoAsistenciaSel        = new ArrayList();
-   	ArrayList tipoAsistenciaColegioSel = new ArrayList();
-   	
-	
+	String tipoAsistenciaDefecto = (String) request
+			.getAttribute("tipoAsistenciaDefecto");
+
+	String modoAnterior = (request.getAttribute("modoAnterior") == null ? ""
+			: (String) request.getAttribute("modoAnterior"));
+	String diaGuardia = (request.getAttribute("diaGuardia") == null ? ""
+			: (String) request.getAttribute("diaGuardia"));
+	String idLetrado = (request.getAttribute("idpersona") == null ? ""
+			: (String) request.getAttribute("idpersona"));
+	String numLetrado = (request.getAttribute("ncolegiado") == null ? ""
+			: (String) request.getAttribute("ncolegiado"));
+	String nombreLetrado = (request.getAttribute("nombreletrado") == null ? ""
+			: (String) request.getAttribute("nombreletrado"));
+	String centroJuzgado = (request.getAttribute("centroJuzgado") == null ? ""
+			: (String) request.getAttribute("centroJuzgado"));
+	String idGuardia = (request.getAttribute("idGuardia") == null ? ""
+			: (String) request.getAttribute("idGuardia"));
+	String idGuardiaSelec = (request.getAttribute("idGuardiaSelec") == null ? ""
+			: (String) request.getAttribute("idGuardiaSelec"));
+	String idTurno = (request.getAttribute("idTurno") == null ? ""
+			: (String) request.getAttribute("idTurno"));
+	String tipoAsistencia = (request.getAttribute("tipoAsistencia") == null ? ""
+			: (String) request.getAttribute("tipoAsistencia"));
+	String tipoAsistenciaColegio = (request
+			.getAttribute("tipoAsistenciaColegio") == null ? ""
+			: (String) request.getAttribute("tipoAsistenciaColegio"));
+	String sustitutoDe = (request.getAttribute("sustituto") == null ? ""
+			: (String) request.getAttribute("sustituto"));
+	String guardiaDelSustituto = (request
+			.getAttribute("guardiaDelSustituto") == null ? ""
+			: (String) request.getAttribute("guardiaDelSustituto"));
+	String aviso = (request.getAttribute("aviso") == null ? ""
+			: (String) request.getAttribute("aviso"));
+	boolean desdeNuevo = (request.getAttribute("desdeNuevo") == null ? false
+			: UtilidadesString.stringToBoolean((String) request
+					.getAttribute("desdeNuevo")));
+	boolean sinAvisos = (request.getAttribute("sinAvisos") == null ? false
+			: UtilidadesString.stringToBoolean((String) request
+					.getAttribute("sinAvisos")));
+
+	String fechaJustificacion = (String) request
+			.getAttribute("fechaJustificacion");
+	if (fechaJustificacion == null || fechaJustificacion.equals(""))
+		fechaJustificacion = UtilidadesBDAdm.getFechaBD("");
+	ArrayList turnoSel = new ArrayList();
+	ArrayList guardiaSel = new ArrayList();
+	ArrayList colegioSel = new ArrayList();
+	ArrayList tipoAsistenciaSel = new ArrayList();
+	ArrayList tipoAsistenciaColegioSel = new ArrayList();
+
 	// Si se ha refrescado buscando datos del colegiado 
-	if (diaGuardia != null && !diaGuardia.equals("") && (idLetrado == null || idLetrado.equals(""))) {
+	if (diaGuardia != null && !diaGuardia.equals("")
+			&& (idLetrado == null || idLetrado.equals(""))) {
 		//System.out.println("CON dia GUARDIA SIN LETRADO");
-		comboBD = "turnosVolSinLetrado";		
-		datoTurno = new String [3];
+		comboBD = "turnosVolSinLetrado";
+		datoTurno = new String[3];
 		datoTurno[0] = usr.getLocation();
 		datoTurno[1] = diaGuardia;
-		datoGuardia[1] = "1";	// Para que busque cualquier guardia independiente del letrado y fecha
+		datoGuardia[1] = "1"; // Para que busque cualquier guardia independiente del letrado y fecha
 		datoGuardia[0] = "1"; // Para que no filtre por guardias de sustitucion
 		datoGuardia[3] = diaGuardia;
 
 		datoSustituto[1] = diaGuardia;
 		datoSustituto[2] = idLetrado;
-		
+
 		colegiadosGuardia[1] = diaGuardia;
-		
-	}else if (diaGuardia != null && !diaGuardia.equals("") && idLetrado != null && !idLetrado.equals("")) {
+
+	} else if (diaGuardia != null && !diaGuardia.equals("")
+			&& idLetrado != null && !idLetrado.equals("")) {
 		//System.out.println("CON dia GUARDIA CON LETRADO");
 		comboBD = "turnosVol";
-		if(!tipoAsistencia.equals(""))
+		if (!tipoAsistencia.equals(""))
 			tipoAsistenciaSel.add(tipoAsistencia);
-		else{
+		else {
 			tipoAsistencia = tipoAsistenciaDefecto;
-			tipoAsistenciaSel.add(tipoAsistencia);				// Por defecto marcamos "Asistencia generada por volante Express
+			tipoAsistenciaSel.add(tipoAsistencia); // Por defecto marcamos "Asistencia generada por volante Express
 		}
-		if(!tipoAsistenciaColegio.equals(""))
+		if (!tipoAsistenciaColegio.equals(""))
 			tipoAsistenciaColegioSel.add(tipoAsistenciaColegio);
 		else
-			tipoAsistenciaColegioSel.add("2");		// Por defecto marcamos "Guardia 24h. Asistencia al detenido. Procedimiento general"
-		
+			tipoAsistenciaColegioSel.add("2"); // Por defecto marcamos "Guardia 24h. Asistencia al detenido. Procedimiento general"
+
 		// Si tiene guardias, ponemos combos con su informacion, sino los genericos
 		//System.out.println("aviso:"+aviso);
 		if (!aviso.equals("")) {
-			
-			if (aviso.equals(UtilidadesString.getMensajeIdioma(usr, "gratuita.volantesExpres.mensaje.letradoSinGuardia"))) {
-				
+
+			if (aviso
+					.equals(UtilidadesString
+							.getMensajeIdioma(usr,
+									"gratuita.volantesExpres.mensaje.letradoSinGuardia"))) {
+
 				//System.out.println("LETRADO SIN GUARDIA");
-				comboBD = "turnosVolSinLetrado";		
-				datoTurno = new String [3];
+				comboBD = "turnosVolSinLetrado";
+				datoTurno = new String[3];
 				datoTurno[0] = usr.getLocation();
 				datoTurno[1] = diaGuardia;
-			}else{
+			} else {
 				//System.out.println("LETRADO CON MENSAJE DE GUARDIA");
-				datoTurno = new String [3];
+				datoTurno = new String[3];
 				datoTurno[0] = usr.getLocation();
 				datoTurno[1] = idLetrado;
 				datoTurno[2] = diaGuardia;
 				datoGuardia[1] = "0";
 			}
 
-				
-			
-		}else{
+		} else {
 			//.out.println("LETRADO CON GUARDIA");
-			datoTurno = new String [3];
+			datoTurno = new String[3];
 			datoTurno[0] = usr.getLocation();
 			datoTurno[1] = idLetrado;
 			datoTurno[2] = diaGuardia;
-			datoGuardia[1] = "0";	// Para que busque cualquier guardia independiente del letrado y fecha
-			
+			datoGuardia[1] = "0"; // Para que busque cualquier guardia independiente del letrado y fecha
+
 		}
-		if (aviso.equals(UtilidadesString.getMensajeIdioma(usr, "gratuita.volantesExpres.mensaje.esLetradoSustituto"))) {
+		if (aviso.equals(UtilidadesString.getMensajeIdioma(usr,
+				"gratuita.volantesExpres.mensaje.esLetradoSustituto"))) {
 			//System.out.println("ES LETRADO SUSTITUTO");
 			datoGuardia[0] = "1"; // Para que no filtre por guardias de sustitucion
 		}
@@ -132,60 +160,68 @@
 
 		datoSustituto[1] = diaGuardia;
 		datoSustituto[2] = idLetrado;
-		
-		colegiadosGuardia[1]=diaGuardia;
-		
-	}
-	else {
+
+		colegiadosGuardia[1] = diaGuardia;
+
+	} else {
 		//System.out.println("SIN GUARDIA SIN LETRADO");
-		tipoAsistenciaSel.add(tipoAsistenciaDefecto);				// Por defecto marcamos "Asistencia generada por volante Express
-		tipoAsistenciaColegioSel.add("2");		// Por defecto marcamos "Guardia 24h. Asistencia al detenido. Procedimiento general"
+		tipoAsistenciaSel.add(tipoAsistenciaDefecto); // Por defecto marcamos "Asistencia generada por volante Express
+		tipoAsistenciaColegioSel.add("2"); // Por defecto marcamos "Guardia 24h. Asistencia al detenido. Procedimiento general"
 		primeraVisita = true;
 	}
-	
-	if (centroJuzgado != null && centroJuzgado.equalsIgnoreCase ("juzgado")) {
+
+	if (centroJuzgado != null
+			&& centroJuzgado.equalsIgnoreCase("juzgado")) {
 		bJuzgado = "checked";
 	}
-   	Vector vAsistencias = (Vector) request.getAttribute("asistencias");
-   	
-   	if (vAsistencias == null || vAsistencias.size()==0) {
-   		//System.out.println("SIN ASISTENCIAS");
+	Vector vAsistencias = (Vector) request.getAttribute("asistencias");
+
+	if (vAsistencias == null || vAsistencias.size() == 0) {
+		//System.out.println("SIN ASISTENCIAS");
 		turnoSel.add(idTurno);
 		guardiaSel.add(idGuardia);
 		colegioSel.add(numLetrado);
 		tipoAsistenciaSel.add(tipoAsistencia);
 		tipoAsistenciaColegioSel.add(tipoAsistenciaColegio);
-		
-   	}
-   	else {
-   		//System.out.println("CON ASISTENCIAS");
-		if (!(!desdeNuevo && !sinAvisos && aviso != null && !aviso.equals(""))) {
+
+	} else {
+		//System.out.println("CON ASISTENCIAS");
+		if (!(!desdeNuevo && !sinAvisos && aviso != null && !aviso
+				.equals(""))) {
 			//System.out.println("POR ESTE LADO");
 			//System.out.println("DESDENUEVO"+desdeNuevo);
 			//System.out.println("sinAvisos"+sinAvisos);
 			//System.out.println("aviso"+aviso);
-			
+
 			Hashtable h = (Hashtable) vAsistencias.get(0);
-			
-			if (h.get(ScsAsistenciasBean.C_JUZGADO)!= null && !((String)h.get(ScsAsistenciasBean.C_JUZGADO)).equals("") ) {
+
+			if (h.get(ScsAsistenciasBean.C_JUZGADO) != null
+					&& !((String) h.get(ScsAsistenciasBean.C_JUZGADO))
+							.equals("")) {
 				bJuzgado = "checked";
 			}
-	
-			datoGuardia[4] = (String)h.get(ScsAsistenciasBean.C_IDTURNO);
+
+			datoGuardia[4] = (String) h
+					.get(ScsAsistenciasBean.C_IDTURNO);
 			turnoSel = new ArrayList();
 			//turnoSel.add(usr.getLocation()+","+(String)h.get(ScsAsistenciasBean.C_IDTURNO));
-			turnoSel.add(usr.getLocation()+","+(String)h.get(ScsAsistenciasBean.C_IDTURNO));
-			guardiaSel =  new ArrayList();
-			guardiaSel.add((String)h.get(ScsAsistenciasBean.C_IDGUARDIA)+","+(String)h.get(ScsAsistenciasBean.C_IDTURNO));
+			turnoSel.add(usr.getLocation() + ","
+					+ (String) h.get(ScsAsistenciasBean.C_IDTURNO));
+			guardiaSel = new ArrayList();
+			guardiaSel.add((String) h
+					.get(ScsAsistenciasBean.C_IDGUARDIA)
+					+ ","
+					+ (String) h.get(ScsAsistenciasBean.C_IDTURNO));
 			colegioSel.add(numLetrado);
-			tipoAsistenciaSel.add((String)h.get(ScsAsistenciasBean.C_IDTIPOASISTENCIA));
-			tipoAsistenciaColegioSel.add((String)h.get(ScsAsistenciasBean.C_IDTIPOASISTENCIACOLEGIO));
-		}else{
-			
+			tipoAsistenciaSel.add((String) h
+					.get(ScsAsistenciasBean.C_IDTIPOASISTENCIA));
+			tipoAsistenciaColegioSel.add((String) h
+					.get(ScsAsistenciasBean.C_IDTIPOASISTENCIACOLEGIO));
+		} else {
+
 			//System.out.println("POR aqui");
 		}
-   	}
-
+	}
 %>
 
 <html>
@@ -272,12 +308,29 @@
 			celda.innerText="";
 			celda.innerHTML ='<input type="text" id="diligencia_' + numFila + '" class="box" maxlength="20" style="width:70;margin-top:3px;" value=""/> ';
 
-			// observaciones
-			celda = fila.insertCell(); 
-			celda.className = "";
-			celda.innerText="";
-			celda.innerHTML ='<input type="text" id="observaciones_' + numFila + '" class="box" style="width:130;margin-top:3px;" value=""/>';
-
+			// delitos
+			
+			if(<%=isDelitosVE.booleanValue()%>){
+				celda = fila.insertCell(); 
+				celda.className = "";
+				celda.innerText="";
+				aux = '';
+				
+				// Delitos
+				aux =  '<iframe ID="idDelito_' + numFila + 'Frame" SRC="/SIGA/html/jsp/general/comboAnidado.jsp?nombre=idDelito_' + numFila + '&tipo=comboDelitos&clase=boxCombo&estilo=width:215px;&ancho=null&obligatorio=false&elementoSel=[]&seleccionMultiple=false&parametros=<%=usr.getLocation()%>&id='+ document.VolantesExpresForm.turno.value +'&accion=&filasMostrar=1&obligatorioSinTextoSeleccionar=false&readonly=false&pestana=" WIDTH="230" HEIGHT="21" FRAMEBORDER="0" MARGINWIDTH="2" MARGINHEIGHT="1" SCROLLING="NO"></iframe> ' + 
+					      '<input type="hidden" id="idDelito_' + numFila + '" value="">'+
+					      '<input type="hidden" id="observaciones_' + numFila + '" value="">';
+					      
+				
+				celda.innerHTML = aux;
+			}else{
+			
+				celda = fila.insertCell(); 
+				celda.className = "";
+				celda.innerText="";
+				celda.innerHTML ='<input type="text" id="observaciones_' + numFila + '" class="box" style="width:130;margin-top:3px;" value=""/>'+
+				'<input type="hidden" id="idDelito_' + numFila + '" value="">';
+			}
 			// boton borrar
 			celda = fila.insertCell(); 
 			celda.className = "";
@@ -600,6 +653,12 @@
 							document.getElementById("idPersona_<%=i+1%>").value = "<%=UtilidadesHash.getString(h, "IDPERSONAJG")%>";
 							document.getElementById("diligencia_<%=i+1%>").value = "<%=UtilidadesHash.getString(h, "NUMERODILIGENCIA")%>";
 							document.getElementById("observaciones_<%=i+1%>").value = "<%=UtilidadesHash.getString(h, "OBSERVACIONES")%>";
+							
+							idDelito = "<%=UtilidadesHash.getString(h, "IDDELITO")%>";
+							if(document.getElementById("idDelito_<%=i+1%>"))
+								seleccionComboSiga ("idDelito_<%=i+1%>", idDelito);
+							
+							
 							
 							<% if (!bJuzgado.equals("")) { %>
 								valor = "<%=UtilidadesHash.getString(h, "JUZGADO")%>,<%=UtilidadesHash.getString(h, "JUZGADOIDINSTITUCION")%>";
@@ -959,6 +1018,10 @@
 
 				
 				obs = document.getElementById("observaciones_" + i).value;
+				
+				idDelito = document.getElementById("idDelito_" + i).value;
+				if(idDelito=='')
+					idDelito = ' ';
 				if (obs == "") obs = "--vacio--";
 				else obs = replaceAll(obs,',','~');
 				
@@ -989,10 +1052,11 @@
                                     idPer + "," +
                                     diligencia + "," +
                                     obs + "," +
+                                    
                                     numeroEjg + "," +
                                     anioEjg + "," +
                                     idTipoEjg + "," + 
-                                   
+                                   idDelito + "," +
                                     
                                     "#";
 				//}
@@ -1188,7 +1252,7 @@
 <body onLoad="initPage();">
 
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->	
-	<html:form action = "/JGR_VolantesExpres.do" method="POST" target="mainWorkArea">
+	<html:form action = "/JGR_VolantesExpres" method="POST" target="mainWorkArea">
 
 		<input type="hidden" name="modo"       value=""/>
 		<input type="hidden" name="letrado"    value=""/>
@@ -1203,6 +1267,7 @@
 						<siga:Idioma key="gratuita.volantesExpres.literal.GuardiaDia"/>&nbsp;(*)
 					</td>
 					<td>
+					
 
 						<input type="text" name="guardiaDia" size="10"  value="" readOnly="readonly" class="box" />&nbsp;
 						<a href='javascript://' id="iconoCalendarioA" onClick="accionCalendario();" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img id="iconoCalendario" src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
@@ -1232,21 +1297,21 @@
 					<td class="labelText">
 						<siga:Idioma key="gratuita.volantesExpres.literal.turno"/>&nbsp;(*)
 					</td>
-					<td>
-						<% 
-						
-						if (datoTurno == null) { %>
+					<td><%
+							if (datoTurno == null) {
+						%>
 							<siga:ComboBD nombre="turno" tipo="<%=comboBD%>" clase="boxCombo" obligatorio="false" accion="Hijo:guardia;" parametro="<%=dato%>" elementoSel="<%=turnoSel%>" obligatorio="si" ancho="320" />
-						<% } else { %>
+						<%
+							} else {
+						%>
 							<siga:ComboBD nombre="turno" tipo="<%=comboBD%>" clase="boxCombo" obligatorio="false" accion="Hijo:guardia" parametro="<%=datoTurno%>" elementoSel="<%=turnoSel%>"  ancho="320" />
-						<% } %>
-					</td>	
+						<%
+							}
+						%></td>	
 					<td class="labelText">
 						<siga:Idioma key="gratuita.volantesExpres.literal.guardia"/>&nbsp;(*)
 					</td>
-					<td>
-						<siga:ComboBD nombre="guardia" tipo="guardiasVol" clase="boxCombo" hijo="t" parametro="<%=datoGuardia%>" elementoSel="<%=guardiaSel%>" obligatorioSinTextoSeleccionar="si" ancho="320" accion="Hijo:sustitutoDe,Hijo:colegiadosGuardia;parent.accionComboGuardia();"/>
-						<br>
+					<td><siga:ComboBD nombre="guardia" tipo="guardiasVol" clase="boxCombo" hijo="t" parametro="<%=datoGuardia%>" elementoSel="<%=guardiaSel%>" obligatorioSinTextoSeleccionar="si" ancho="470" accion="Hijo:sustitutoDe,Hijo:colegiadosGuardia;parent.accionComboGuardia();"/>
 					</td>	
 				</tr>
 				<tr>
@@ -1268,25 +1333,23 @@
 			
 			<tr>
 							
-					<td colspan="3">
-						<siga:BusquedaPersona  tipo="colegiado" titulo='<%=UtilidadesString.getMensajeIdioma(usr, "gratuita.volantesExpres.literal.letrado") + " (*)"%>' idPersona="letrado" accion="accionBusquedaPersona();">
-						</siga:BusquedaPersona>
-						<br>
-					</td>
-					<td class="labelText"><br>
-						<input type="hidden" name="guardiaDelSustituto" value="<%=guardiaDelSustituto%>"/>
-						<input type="checkbox" name="checkSustitutoDe" value="" onclick="activarComboSustituto();" <%if (!sustitutoDe.equals("")) out.print("checked"); %> >
-						<siga:Idioma key="gratuita.volantesExpres.literal.sustitudoDe"/>&nbsp;
-						<siga:ComboBD nombre="sustitutoDe" tipo="sustitutosGuardiaExcluyente" hijo="t" clase="boxCombo" parametro="<%=datoSustituto%>" ancho="200" accion="parent.activarComboSustituto();" />
+					<td colspan="4">
+						<table cellspacing=0 cellpadding=0>
+						<tr>
+						<td>
+							<siga:BusquedaPersona  tipo="colegiado" titulo='<%=UtilidadesString.getMensajeIdioma(usr, "gratuita.volantesExpres.literal.letrado") + " (*)"%>' idPersona="letrado" accion="accionBusquedaPersona();">
+							</siga:BusquedaPersona>
+						</td>
+						<td  class="labelText" style="text-align:right">
+							<input type="hidden" name="guardiaDelSustituto" value="<%=guardiaDelSustituto%>"/>&nbsp;
+							<input type="checkbox" name="checkSustitutoDe" value="" onclick="activarComboSustituto();" <%if (!sustitutoDe.equals("")) out.print("checked"); %> >
+							<siga:Idioma key="gratuita.volantesExpres.literal.sustitudoDe"/>&nbsp;
+							<siga:ComboBD nombre="sustitutoDe" tipo="sustitutosGuardiaExcluyente" hijo="t" clase="boxCombo" parametro="<%=datoSustituto%>" ancho="200" accion="parent.activarComboSustituto();" />
+						</td>
+						</tr>
+						</table>
 					</td>
 				</tr>
-				
-				
-				
-				
-				
-				
-
 				<tr>
 					<!--  
 					<td class="labelText">
@@ -1298,36 +1361,62 @@
 					-->
 					
 					<td class="labelText">
-					
 						<siga:Idioma key="gratuita.volantesExpres.literal.tipoAsistenciaColegio"/>&nbsp;(*)
 					</td>
 					<td colspan="3">
 						<siga:ComboBD nombre="tipoAsistenciaColegio" tipo="cscstipoasistenciacolegio" clase="boxCombo" parametro="<%=dato%>" elementoSel="<%=tipoAsistenciaColegioSel%>" obligatorio="si" ancho="750" obligatorioSinTextoSeleccionar="si" accion="accionObtenerDatosCabecera(false,'');"/>
+						<input type="hidden" name="tipoAsistencia" value="<%=tipoAsistencia%>"/>
 					</td>
-					<td><input type="hidden" name="tipoAsistencia" value="<%=tipoAsistencia%>"/>&nbsp;</td>
-					<td>&nbsp;</td>
 				</tr>
-				
-			</table>
+			
+		<tr>
+		<td colspan="3" width="1000px">
 			<p class="labelText">
 				<siga:Idioma key="gratuita.volantesExpres.mensaje.indicaFormaIdentificacion"/>
 			</p>
-
+		</td>
+		<td class="labelText" style="text-align: right"><siga:Idioma key="gratuita.volantesExpres.literal.fechaJustificacion" />
+						<siga:Fecha nombreCampo="fechaJustificacion"
+								valorInicial="<%=fechaJustificacion%>" /> &nbsp;<a
+								onClick="return showCalendarGeneral(fechaJustificacion);"
+								onMouseOut="MM_swapImgRestore();"
+								onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img
+								src="<%=app%>/html/imagenes/calendar.gif"
+								alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"
+								border="0"></a>
+						</td>
+		</tr>
+		</td>
+		</tr>
+		</table>
 		</siga:ConjCampos>
 
-		<% 
-			String nCabeceras =
-					"gratuita.volantesExpres.literal.hora, " + 
-					UtilidadesString.getMensajeIdioma(usr, "gratuita.volantesExpres.literal.centroDetencion") + " / " +
-						UtilidadesString.getMensajeIdioma(usr, "gratuita.volantesExpres.literal.juzgado") + ", " +
-					"gratuita.volantesExpres.literal.asistido, " +
-					"gratuita.volantesExpres.literal.numeroDiligencia, " +
-					"gratuita.volantesExpres.literal.observaciones, " +
-					"<input type='button'  id = 'idButton' " +
-						"value='" + UtilidadesString.getMensajeIdioma(usr, "general.boton.insertar") + "' " +
-						"alt='" + UtilidadesString.getMensajeIdioma(usr, "general.boton.insertar") + "' " +
-						"class='button' onclick='accionInsertarRegistroTabla();'" +
-					">";
+		<%
+			String nCabeceras = "gratuita.volantesExpres.literal.hora, "
+						+ UtilidadesString
+								.getMensajeIdioma(usr,
+										"gratuita.volantesExpres.literal.centroDetencion")
+						+ " / "
+						+ UtilidadesString.getMensajeIdioma(usr,
+								"gratuita.volantesExpres.literal.juzgado")
+						+ ", " + "gratuita.volantesExpres.literal.asistido, "
+						+ "gratuita.volantesExpres.literal.numeroDiligencia, ";
+				if (isDelitosVE.booleanValue())
+					nCabeceras += "gratuita.volantesExpres.literal.delitos,";
+				else
+					nCabeceras += "gratuita.volantesExpres.literal.observaciones,";
+
+				nCabeceras += "<input type='button'  id = 'idButton' "
+						+ "value='"
+						+ UtilidadesString.getMensajeIdioma(usr,
+								"general.boton.insertar")
+						+ "' "
+						+ "alt='"
+						+ UtilidadesString.getMensajeIdioma(usr,
+								"general.boton.insertar")
+						+ "' "
+						+ "class='button' onclick='accionInsertarRegistroTabla();'"
+						+ ">";
 		%>
 
 		<siga:TablaCabecerasFijas 
@@ -1347,38 +1436,38 @@
 	
 	
 	<!-- Formularios auxiliares -->
-	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="" style="display:none">
+	<html:form action="/CEN_BusquedaClientesModal" method="POST" target="mainWorkArea" type="" style="display:none">
 		<input type="hidden" name="actionModal" value="">
 		<input type="hidden" name="modo"        value="abrirBusquedaModal">
 	</html:form>
 
-	<html:form action="/JGR_AsistidoAsistencia.do" method="POST" target="submitArea" type="" style="display:none">
+	<html:form action="/JGR_AsistidoAsistencia" method="POST" target="submitArea" type="" style="display:none">
 		<input type="hidden" name="modo"        	    value="buscarNIF">
 		<input type="hidden" name="conceptoE"   	    value="PersonaJG">
 		<input type="hidden" name="NIdentificacion"     value="">
 		<input type="hidden" name="nombreObjetoDestino" value="">
 	</html:form>
 
-	<html:form action = "/JGR_MantenimientoJuzgados.do" method="POST" target="submitArea">
+	<html:form action = "/JGR_MantenimientoJuzgados" method="POST" target="submitArea">
 		<input type="hidden" name="modo"                value="buscarJuzgado">
 		<input type="hidden" name="codigoExt"           value="">
 		<input type="hidden" name="nombreObjetoDestino" value="">
 	</html:form>	
 
-	<html:form action = "/JGR_MantenimientoComisarias.do" method="POST" target="submitArea">
+	<html:form action = "/JGR_MantenimientoComisarias" method="POST" target="submitArea">
 		<input type="hidden" name="modo"                value="buscarComisaria">
 		<input type="hidden" name="codigoExtBusqueda"   value="" >
 		<input type="hidden" name="nombreObjetoDestino" value="" >
 	</html:form>
 
-	<html:form action = "/JGR_ValidarVolantesGuardias.do" method="POST" target="resultado">
+	<html:form action = "/JGR_ValidarVolantesGuardias" method="POST" target="resultado">
 		<input type="hidden" name="modo"         value="" >
 		<input type="hidden" name="datosValidar" value="" >
 		<input type="hidden" name="datosBorrar"  value="" >
 		<input type="hidden" name="desde"        value="" >
 	</html:form>
-	<html:form action="/JGR_EJG.do" method="post" target="mainWorkArea">
-		<html:hidden property = "actionModal" value = ""/>
+	<html:form action="/JGR_EJG" method="post" target="mainWorkArea">
+		<input type="hidden" name = "actionModal" value = ""/>
 		<input type="hidden" name="idTipoEJG"/>
 		<input type="hidden" name="anio"/>
 		<input type="hidden" name="numero"/>
@@ -1390,7 +1479,7 @@
 		<input type="hidden" name="asistenciaNumero" />
 	</html:form>
 	
-	<html:form action="/JGR_ActuacionesAsistencia.do" method="post" target="submitArea" style="display:none">
+	<html:form action="/JGR_ActuacionesAsistencia" method="post" target="submitArea" style="display:none">
 		<input type="hidden" name="modo" value="nuevo"/>
 		<html:hidden name="AsistenciasForm" property="anio" />
 		<html:hidden name="AsistenciasForm" property="numero" />

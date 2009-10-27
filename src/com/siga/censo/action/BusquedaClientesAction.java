@@ -36,6 +36,7 @@ import com.siga.beans.CenNoColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.EnvEnviosAdm;
+import com.siga.beans.ExpExpedienteBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsProcuradorAdm;
 import com.siga.censo.form.BusquedaClientesForm;
@@ -50,7 +51,11 @@ import com.siga.general.SIGAException;
  * @author AtosOrigin 14-12-2004
  */
 public class BusquedaClientesAction extends MasterAction {
-	final String separador = "||";
+	//Atencion!!Tenr en cuenta que el orden de estas claves es el mismo oden que se va a
+	//seguir al obtener los adtos en la jsp. Ver metodos actualizarSelecionados y aniadeClaveBusqueda(2)
+	//de la super clase(MasterAction)
+	final String[] clavesBusqueda={CenClienteBean.C_IDINSTITUCION,CenClienteBean.C_IDPERSONA,CenClienteBean.C_NOAPARECERREDABOGACIA};
+	
 	/** 
 	 *  Funcion que atiende a las peticiones. Segun el valor del parametro modo del formulario ejecuta distintas acciones
 	 * @param  mapping - Mapeo de los struts
@@ -77,9 +82,9 @@ public class BusquedaClientesAction extends MasterAction {
 
 					if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
 						BusquedaClientesForm formClientes = (BusquedaClientesForm)miForm;
-						formClientes.reset(new String[]{"registrosSeleccionados","datosPaginador"});
+						formClientes.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
 						formClientes.reset(mapping,request);
-						
+						request.getSession().removeAttribute("DATAPAGINADOR");
 						mapDestino = abrir(mapping, miForm, request, response);
 						break;
 					} else if (accion.equalsIgnoreCase("abrirAvanzadaConParametros")){
@@ -117,6 +122,7 @@ public class BusquedaClientesAction extends MasterAction {
 						//borrarPaginador(mapping, miForm, request, response);
 						String idPaginador = getIdPaginador(super.paginador,getClass().getName());
 						borrarPaginador(request, idPaginador);
+						
 						mapDestino = buscarPersonasModal(mapping, miForm, request, response);
 					} else if (accion.equalsIgnoreCase("enviarPersona")){
 						// enviarCliente
@@ -125,7 +131,9 @@ public class BusquedaClientesAction extends MasterAction {
 						// nuevaSociedad
 						mapDestino = nuevaSociedad(mapping, miForm, request, response);
 					} else if (accion.equalsIgnoreCase("buscarInit")){
-						miForm.reset(new String[]{"registrosSeleccionados","datosPaginador"});
+						miForm.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
+						request.getSession().removeAttribute("DATAPAGINADOR");
+						
 						//borrarPaginador(mapping, miForm, request, response);
 						//String idPaginador = getIdPaginador(super.paginador,getClass().getName());
 						//borrarPaginador(request, idPaginador);
@@ -140,6 +148,7 @@ public class BusquedaClientesAction extends MasterAction {
 						//borrarPaginadorModal(mapping, miForm, request, response);
 						String idPaginador = getIdPaginador(super.paginadorModal,getClass().getName());
 						borrarPaginador(request, idPaginador);
+						
 						mapDestino = buscarProcuradorModal(mapping, miForm, request, response);	
 					} else if (accion.equalsIgnoreCase("buscarProcuradorModal")){
 						// buscar Procurador
@@ -803,53 +812,15 @@ public class BusquedaClientesAction extends MasterAction {
 	   	 }
 	     return destino;
 	}
-	protected ArrayList actualizarSelecionados(String seleccionados, ArrayList claves){
-		int contador=1;
-		if (seleccionados.equals("")){
-			contador=0;
-		}
-    	String sTextoBuscado=",";
-    	String seleccionadosAux=seleccionados;
-    	while (seleccionadosAux.indexOf(sTextoBuscado) > -1) {
-    		seleccionadosAux = seleccionadosAux.substring(seleccionadosAux.indexOf(
-    	        sTextoBuscado)+sTextoBuscado.length(),seleccionadosAux.length());
-    	      contador++;
-    	}
-    	String[] v_seleccionados=new String[contador];
-    	v_seleccionados=seleccionados.split(",");
-    	
-    	ArrayList v_seleccionadosSesion=new ArrayList();
-    	for (int z=0;z<claves.size();z++){
-	    	Hashtable h=new Hashtable();
-	    	h=(Hashtable)claves.get(z);
-	    	String idPersonaInstitucion=(String)h.get(CenPersonaBean.C_IDPERSONA+"||IDINSTITUCION");
-	    	
-	    	String seleccionado=(String)h.get("SELECCIONADO");
-	    	boolean encontrado=false;
-		    	if (!seleccionados.equals("")){
-		    	int j=0;
-		    	while (!encontrado && j<contador ){
-		    		String v_aux=v_seleccionados[j];
-		    		Hashtable primarias=new Hashtable();
-		    		String idPersona_aux=v_aux;
-		    		
+
 	
-		    		if (idPersonaInstitucion.equals(idPersona_aux)){
-		    			encontrado=true;
-		    			h.put("SELECCIONADO", "1");
-		    		}
-		    		j++;
-		    	}
-	    	}
-	    	if (!encontrado){
-	    		h.put("SELECCIONADO", "0");
-	    	}
-	    	v_seleccionadosSesion.add(h);
-	    	
-	    
-    	}
-    	return v_seleccionadosSesion;
-	}
+	
+	
+	
+	
+	
+	
+	
 	
 	/**
 	 * Metodo que implementa el modo buscarPor para realizar la busqueda de un colegiado o no colegiado.
@@ -873,25 +844,37 @@ public class BusquedaClientesAction extends MasterAction {
 			// casting del formulario
 			BusquedaClientesForm miFormulario = (BusquedaClientesForm)formulario;
 			String colegiado = miFormulario.getColegiado();
-
-			ArrayList clavesRegSeleccinados = (ArrayList) miFormulario.getRegistrosSeleccionados();
-			String seleccionados = request.getParameter("Seleccion");
 			
-			if (seleccionados != null ) {
-				ArrayList alRegistros = actualizarSelecionados(seleccionados, clavesRegSeleccinados);
-				if (alRegistros != null) {
-					clavesRegSeleccinados = alRegistros;
-					miFormulario.setRegistrosSeleccionados(clavesRegSeleccinados);
+			//Si es seleccionar todos esta variable no vandra nula y ademas nos traera el numero de pagina 
+			//donde nos han marcado el seleccionar todos(asi evitamos meter otra variable)
+			boolean isSeleccionarTodos = miFormulario.getSeleccionarTodos()!=null 
+				&& !miFormulario.getSeleccionarTodos().equals("");
+			//si no es seleccionar todos los cambios van a fectar a los datos que se han mostrado en 
+			//la jsp por lo que parseamos los datos dento dela variable Registro seleccionados. Cuando hay modificacion
+			//habra que actualizar estos datos
+			if(!isSeleccionarTodos){
+				ArrayList clavesRegSeleccinados = (ArrayList) miFormulario.getRegistrosSeleccionados();
+				String seleccionados = request.getParameter("Seleccion");
+				
+				
+				if (seleccionados != null ) {
+					ArrayList alRegistros = actualizarSelecionados(this.clavesBusqueda,seleccionados, clavesRegSeleccinados);
+					if (alRegistros != null) {
+						clavesRegSeleccinados = alRegistros;
+						miFormulario.setRegistrosSeleccionados(clavesRegSeleccinados);
+					}
 				}
 			}
 			
+			
 			HashMap databackup = (HashMap) miFormulario.getDatosPaginador();
-			if (databackup!=null && databackup.get("paginador")!=null){ 
+			if (databackup!=null && databackup.get("paginador")!=null &&!isSeleccionarTodos){ 
 				PaginadorBind paginador = (PaginadorBind)databackup.get("paginador");
 				//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
-				String pagina = (String)request.getParameter("pagina");
+				
 				Vector datos=new Vector();
 				if (paginador!=null){
+					String pagina = (String)request.getParameter("pagina");
 					if (pagina!=null){
 						datos = paginador.obtenerPagina(Integer.parseInt(pagina));
 					}else{// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
@@ -924,27 +907,29 @@ public class BusquedaClientesAction extends MasterAction {
 				}
 				databackup.put("paginador",resultado);
 				if (resultado!=null){ 
-					//Sacanmos las claves para el check multiregistro
-					clavesRegSeleccinados = new ArrayList((Collection)cliente.selectGenericoNLSBind(resultado.getQueryInicio(), resultado.getCodigosInicio()));
-					clavesRegSeleccinados = getClavesLetrado(clavesRegSeleccinados);
-					
-					datos = resultado.obtenerPagina(1);
+					if(isSeleccionarTodos){
+						//Si hay que seleccionar todos hacemos la query completa.
+						ArrayList clavesRegSeleccinados = new ArrayList((Collection)cliente.selectGenericoNLSBind(resultado.getQueryInicio(), resultado.getCodigosInicio()));
+						aniadeClavesBusqueda(this.clavesBusqueda,clavesRegSeleccinados);
+						miFormulario.setRegistrosSeleccionados(clavesRegSeleccinados);
+						datos = resultado.obtenerPagina(Integer.parseInt(miFormulario.getSeleccionarTodos()));
+						miFormulario.setSeleccionarTodos("");
+						
+					}else{
+//					
+						miFormulario.setRegistrosSeleccionados(new ArrayList());
+						datos = resultado.obtenerPagina(1);
+					}
+						
 					databackup.put("datos",datos);
 					
 					
 					
-				}
+				}else{
+					miFormulario.setRegistrosSeleccionados(new ArrayList());
+				} 
 				miFormulario.setDatosPaginador(databackup);
 				
-				//Inicialmente seleccionamos todos los registros
-				if (clavesRegSeleccinados != null) {
-					miFormulario.setRegistrosSeleccionados(clavesRegSeleccinados);
-				}else{
-					if(miFormulario.getRegistrosSeleccionados()==null)
-						miFormulario.setRegistrosSeleccionados(new ArrayList());
-					
-				}
-
 
 				request.setAttribute("CenResultadoBusquedaClientes",resultado);
 			}
@@ -966,7 +951,7 @@ public class BusquedaClientesAction extends MasterAction {
 		}
 		return destino;
 	}
-	protected ArrayList getClavesLetrado(ArrayList v){
+	/*protected ArrayList getClavesLetrado(ArrayList v){
 		
 		Hashtable aux=new Hashtable();
 		
@@ -1007,7 +992,7 @@ public class BusquedaClientesAction extends MasterAction {
 		}
 		
 		return claves;
-	}
+	}*/
 
 
 	/**
@@ -1694,9 +1679,9 @@ public class BusquedaClientesAction extends MasterAction {
 					" and f_siga_calculoncolegiado(cl.idinstitucion,cl.idpersona) ='"+nif+"'"+ 
 					" and rownum<2"+
 					" order by residente desc, ejerciente desc";
-		}else if(tipo.equals("persona")){
+		}else if(tipo.equals("personas")){
 			select="Select cl.idpersona, p.nombre, p.apellidos1, p.apellidos2, " +
-					" (f_siga_gettipocliente(cl.idpersona,cl.idinstitucion,sysdate),20,1,0) as ejerciente," +
+					" decode(f_siga_gettipocliente(cl.idpersona,cl.idinstitucion,sysdate),20,1,0) as ejerciente," +
 					" c.situacionresidente as residente," +
 					" f_siga_calculoncolegiado(cl.idinstitucion,cl.idpersona) as ncolegiado" +
 					" from cen_colegiado c, cen_cliente cl, cen_persona p" +

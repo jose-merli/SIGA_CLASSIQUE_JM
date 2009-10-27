@@ -12,6 +12,8 @@ import java.util.Vector;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.general.SIGAException;
@@ -34,6 +36,7 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 		String [] campos = {CajgEJGRemesaBean.C_IDINSTITUCION, 		CajgEJGRemesaBean.C_ANIO,
 							CajgEJGRemesaBean.C_NUMERO, 			CajgEJGRemesaBean.C_IDTIPOEJG,
 							CajgEJGRemesaBean.C_IDINSTITUCIONREMESA,CajgEJGRemesaBean.C_IDREMESA,
+							CajgEJGRemesaBean.C_NUMEROINTERCAMBIO,
 							CajgEJGRemesaBean.C_FECHAMODIFICACION,	CajgEJGRemesaBean.C_USUMODIFICACION};
 		return campos;
 	}
@@ -65,6 +68,8 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 			bean.setIdTipoEJG(UtilidadesHash.getInteger(hash,CajgEJGRemesaBean.C_IDTIPOEJG));
 			bean.setIdInstitucionRemesa(UtilidadesHash.getInteger(hash,CajgEJGRemesaBean.C_IDINSTITUCIONREMESA));
 			bean.setIdRemesa(UtilidadesHash.getInteger(hash, CajgEJGRemesaBean.C_IDREMESA));
+			bean.setNumeroIntercambio(UtilidadesHash.getInteger(hash, CajgEJGRemesaBean.C_NUMEROINTERCAMBIO));
+			
 			bean.setFechaMod(UtilidadesHash.getString (hash,CajgRemesaBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,CajgRemesaBean.C_USUMODIFICACION));
 		}
@@ -88,7 +93,9 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, CajgEJGRemesaBean.C_NUMERO, b.getNumero());
 			UtilidadesHash.set(hash, CajgEJGRemesaBean.C_IDTIPOEJG, b.getIdTipoEJG());
 			UtilidadesHash.set(hash, CajgEJGRemesaBean.C_IDINSTITUCIONREMESA, b.getIdInstitucionRemesa());
-			UtilidadesHash.set(hash, CajgEJGRemesaBean.C_IDREMESA, b.getIdRemesa());	
+			UtilidadesHash.set(hash, CajgEJGRemesaBean.C_IDREMESA, b.getIdRemesa());
+			UtilidadesHash.set(hash, CajgEJGRemesaBean.C_NUMEROINTERCAMBIO, b.getNumeroIntercambio());
+			
 			UtilidadesHash.set(hash, CajgEJGRemesaBean.C_FECHAMODIFICACION, b.getFechaMod());	
 			UtilidadesHash.set(hash, CajgEJGRemesaBean.C_USUMODIFICACION, b.getUsuMod());	
 		}
@@ -342,6 +349,31 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 		//llamada al metodo compruebaCampos es solo para debug.
 		compruebaCampos(datos);
 		return datos;
+	}
+
+	
+	/**
+	 * @throws ClsExceptions 
+	 * @throws  
+	 * Selecciona el siguiente número de intercambio de la institucion que se le pasa por parámetro
+	 * @param idInstitucion
+	 * @return
+	 */
+	public int getNextNumeroIntercambio(Integer idInstitucion) throws ClsExceptions {
+		int numeroIntercambio = -1;
+		
+		String sql = "SELECT NVL(MAX(" + CajgEJGRemesaBean.C_NUMEROINTERCAMBIO + "), 0) AS " + CajgEJGRemesaBean.C_NUMEROINTERCAMBIO +
+				" FROM " + CajgEJGRemesaBean.T_NOMBRETABLA +
+				" WHERE " + CajgEJGRemesaBean.C_IDINSTITUCION + " = " + idInstitucion;
+		
+		RowsContainer rc = new RowsContainer();
+
+		if (rc.find(sql)) {
+			Row r = (Row) rc.get(0);
+			numeroIntercambio = Integer.parseInt(r.getString(CajgEJGRemesaBean.C_NUMEROINTERCAMBIO));
+			numeroIntercambio++;
+		}
+		return numeroIntercambio;
 	}
 	
 }

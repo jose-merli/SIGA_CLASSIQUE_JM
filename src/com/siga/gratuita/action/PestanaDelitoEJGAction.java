@@ -12,6 +12,7 @@ import org.apache.struts.action.ActionMapping;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.beans.CajgConfiguracionAdm;
 import com.siga.beans.ScsDelitosEJGAdm;
 import com.siga.beans.ScsDelitosEJGBean;
 import com.siga.beans.ScsEJGAdm;
@@ -39,10 +40,13 @@ public class PestanaDelitoEJGAction extends MasterAction {
 		String anio=null, numero=null, idInstitucion=null, idTipoEJG=null;
 		String idProcurador=null, idInstitucionProcurador=null;
 		
+		
 		try {			
 			UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 			ScsEJGAdm admBean =  new ScsEJGAdm(this.getUserBean(request));
 			request.getSession().removeAttribute("DATABACKUP");
+			int valorPcajgActivo=CajgConfiguracionAdm.getTipoCAJG(new Integer(usr.getLocation()));
+			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
 			
 			
 			Vector v = new Vector ();
@@ -72,7 +76,7 @@ public class PestanaDelitoEJGAction extends MasterAction {
 					" ejg.CALIDAD, ejg.OBSERVACIONES, ejg.DELITOS, ejg.IDPROCURADOR, ejg.IDINSTITUCION_PROC, ejg.NUMERO_CAJG," +
 					" ejg.ANIOCAJG, ejg.NUMERODILIGENCIA NUMERODILIGENCIA, ejg.NUMEROPROCEDIMIENTO NUMEROPROCEDIMIENTO, ejg.JUZGADO JUZGADO," +
 					" ejg.JUZGADOIDINSTITUCION JUZGADOIDINSTITUCION, ejg.COMISARIA COMISARIA, ejg.COMISARIAIDINSTITUCION COMISARIAIDINSTITUCION," +
-					" ejg.FECHA_DES_PROC "+
+					" ejg.FECHA_DES_PROC,ejg.IDPRECEPTIVO "+
 					"  from scs_ejg            ejg" ;
 			consulta += " where "+
 			"ejg.idtipoejg = " + idTipoEJG + " and ejg.idinstitucion = " + usr.getLocation() + " and ejg.anio = " + anio + " and ejg.numero = " + numero;			

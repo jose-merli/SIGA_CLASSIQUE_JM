@@ -189,5 +189,37 @@ public class ScsDelitosAsistenciaAdm extends MasterBeanAdministrador {
 		}
 		return vDelitos;
 	}	
+	public void borrarDelitosAsitencia(Integer idInstitucion, Integer anio, Integer numero) throws ClsExceptions {
+		
+		StringBuffer del = new StringBuffer();
+		
+		try {
+			del.append("DELETE FROM ");
+			del.append(ScsDelitosAsistenciaBean.T_NOMBRETABLA);
+			del.append(" WHERE ");
+			del.append(ScsDelitosAsistenciaBean.C_IDINSTITUCION);
+			
+			
+			del.append("=");
+			del.append(idInstitucion);
+			del.append(" and ");
+			del.append(ScsDelitosAsistenciaBean.C_ANIO);
+			
+			del.append(" = ");
+			del.append(anio);
+			del.append(" and ");
+			del.append(ScsDelitosAsistenciaBean.C_NUMERO);
+			
+			del.append(" = ");
+			del.append(numero);
+			
+			this.deleteSQL(del.toString());
+		} 
+		catch (ClsExceptions e) { 	
+			throw (e); 
+		}
+		
+	}
+	
 	
 }

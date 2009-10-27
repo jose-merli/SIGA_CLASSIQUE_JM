@@ -88,7 +88,13 @@ import com.siga.beans.ScsEJGDESIGNAAdm;
  */
 
 public class BusquedaDesignasAction extends MasterAction {
-	final String separador = "||";
+	//Atencion!!Tenr en cuenta que el orden de estas claves es el mismo oden que se va a
+	//seguir al obtener los adtos en la jsp. Ver metodos actualizarSelecionados y aniadeClaveBusqueda(2)
+	//de la super clase(MasterAction)  
+	final String[] clavesBusqueda={ScsDesignaBean.C_IDINSTITUCION,ScsDesignaBean.C_ANIO
+			,ScsDesignaBean.C_IDTURNO,ScsDesignaBean.C_NUMERO};
+	
+	
 	/** 
 	 *  Funcion que atiende a las peticiones. Segun el valor del parametro modo del formulario ejecuta distintas acciones
 	 * @param  mapping - Mapeo de los struts
@@ -118,8 +124,9 @@ public class BusquedaDesignasAction extends MasterAction {
 			// La primera vez que se carga el formulario 
 			if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
 				BuscarDesignasForm form = (BuscarDesignasForm)miForm;
-				form.reset(new String[]{"registrosSeleccionados","datosPaginador"});
+				form.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
 				form.reset(mapping,request);
+				request.getSession().removeAttribute("DATAPAGINADOR");
 				mapDestino = abrir(mapping, miForm, request, response);						
 			}else if (accion.equalsIgnoreCase("generarCarta")){
 				mapDestino = generarCarta(mapping, miForm, request, response);
@@ -130,10 +137,12 @@ public class BusquedaDesignasAction extends MasterAction {
 				mapDestino = volverBusqueda(mapping, miForm, request, response);
 
 			}else if (accion.equalsIgnoreCase("buscarInicio")){
-				miForm.reset(new String[]{"registrosSeleccionados","datosPaginador"});
+				miForm.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
+				request.getSession().removeAttribute("DATAPAGINADOR");
 				mapDestino = buscarPor(mapping, miForm, request, response); 
 			}else if (accion.equalsIgnoreCase("insertar")){
-				miForm.reset(new String[]{"registrosSeleccionados","datosPaginador"});
+				miForm.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
+				request.getSession().removeAttribute("DATAPAGINADOR");
 				mapDestino = insertar(mapping, miForm, request, response); 
 				
 			}else {
@@ -1487,19 +1496,29 @@ public class BusquedaDesignasAction extends MasterAction {
 
 		try {
 
-			ArrayList clavesRegSeleccinados = (ArrayList) miFormulario.getRegistrosSeleccionados();
-			String seleccionados = request.getParameter("Seleccion");
-			
-			if (seleccionados != null){
-				ArrayList alRegistros = actualizarSelecionados(seleccionados, clavesRegSeleccinados);
-				if (alRegistros != null) {
-					clavesRegSeleccinados = alRegistros;
-					miFormulario.setRegistrosSeleccionados(clavesRegSeleccinados);
+			//Si es seleccionar todos esta variable no vandra nula y ademas nos traera el numero de pagina 
+			//donde nos han marcado el seleccionar todos(asi evitamos meter otra variable)
+			boolean isSeleccionarTodos = miFormulario.getSeleccionarTodos()!=null 
+				&& !miFormulario.getSeleccionarTodos().equals("");
+			//si no es seleccionar todos los cambios van a fectar a los datos que se han mostrado en 
+			//la jsp por lo que parseamos los datos dento dela variable Registro seleccionados. Cuando hay modificacion
+			//habra que actualizar estos datos
+			if(!isSeleccionarTodos){
+				ArrayList clavesRegSeleccinados = (ArrayList) miFormulario.getRegistrosSeleccionados();
+				String seleccionados = request.getParameter("Seleccion");
+				
+				
+				if (seleccionados != null ) {
+					ArrayList alRegistros = actualizarSelecionados(this.clavesBusqueda,seleccionados, clavesRegSeleccinados);
+					if (alRegistros != null) {
+						clavesRegSeleccinados = alRegistros;
+						miFormulario.setRegistrosSeleccionados(clavesRegSeleccinados);
+					}
 				}
 			}
 			
 			HashMap databackup = (HashMap) miFormulario.getDatosPaginador();
-			if (databackup!=null && databackup.get("paginador")!=null){
+			if (databackup!=null && databackup.get("paginador")!=null&&!isSeleccionarTodos){
 				PaginadorBind paginador = (PaginadorBind)databackup.get("paginador");
 				Vector datos=new Vector();
 
@@ -1535,26 +1554,32 @@ public class BusquedaDesignasAction extends MasterAction {
 
 
 				databackup.put("paginador",resultado);
+				
 				if (resultado!=null){ 
-					//Sacanmos las claves para el check multiregistro
-					clavesRegSeleccinados = new ArrayList((Collection)desigAdm.selectGenericoNLSBind(resultado.getQueryInicio(), resultado.getCodigosInicio()));
-					//Inciializamos los registros a sin seleccionar
-					clavesRegSeleccinados = getClavesBusqueda(clavesRegSeleccinados,false);
 					
-					datos = resultado.obtenerPagina(1);
+					
+					if(isSeleccionarTodos){
+						//Si hay que seleccionar todos hacemos la query completa.
+						ArrayList clavesRegSeleccinados = new ArrayList((Collection)desigAdm.selectGenericoNLSBind(resultado.getQueryInicio(), resultado.getCodigosInicio()));
+						aniadeClavesBusqueda(this.clavesBusqueda,clavesRegSeleccinados);
+						miFormulario.setRegistrosSeleccionados(clavesRegSeleccinados);
+						datos = resultado.obtenerPagina(Integer.parseInt(miFormulario.getSeleccionarTodos()));
+						miFormulario.setSeleccionarTodos("");
+						
+					}else{
+//					
+						miFormulario.setRegistrosSeleccionados(new ArrayList());
+						datos = resultado.obtenerPagina(1);
+					}
 					databackup.put("datos",datos);
-				}
+						
+					
+					
+				}else{
+					miFormulario.setRegistrosSeleccionados(new ArrayList());
+				} 
 				miFormulario.setDatosPaginador(databackup);
 				
-				//Inicializamos los registros seleccionados
-				if (clavesRegSeleccinados != null) {
-					miFormulario.setRegistrosSeleccionados(clavesRegSeleccinados);
-				}else{
-					if(miFormulario.getRegistrosSeleccionados()==null)
-						miFormulario.setRegistrosSeleccionados(new ArrayList());
-					
-				}
-
 
 				//resultado = admBean.selectGenerico(consulta);
 				//request.getSession().setAttribute("resultado",v);
@@ -1817,93 +1842,6 @@ public class BusquedaDesignasAction extends MasterAction {
 		}
 		return "buscarJuzgado";
 	}
-	protected ArrayList getClavesBusqueda(ArrayList v,boolean isSeleccionado){
-		 
-		Hashtable aux=new Hashtable();
-		ArrayList claves= new ArrayList();
 
-		for (int k=0;k<v.size();k++){
-			aux = (Hashtable) v.get(k);
-			
-			//String idPersona = (String)aux.get(ScsDesignasLetradoBean.C_IDPERSONA);
-			String idInstitucion = (String)aux.get(ScsDesignaBean.C_IDINSTITUCION);
-			String anio = (String)aux.get(ScsDesignaBean.C_ANIO);
-			String idTurno = (String)aux.get(ScsDesignaBean.C_IDTURNO);
-			String numero = (String)aux.get(ScsDesignaBean.C_NUMERO);
-			
-			Hashtable aux2= getIds( idInstitucion, anio, idTurno, numero);
-					;
-			if(isSeleccionado)
-				aux2.put("SELECCIONADO", "1");
-			else
-				aux2.put("SELECCIONADO", "0");
-			claves.add(aux2);	
-		}
-		
-		return claves;
-	}
-	private Hashtable getIds( String idInstitucion, String anio,String idTurno,String numero){
-		Hashtable aux2= new Hashtable();
-		StringBuffer clave = new StringBuffer();
-		
-		//clave.append(idPersona);
-		//clave.append(separador);
-		clave.append(idInstitucion);
-		clave.append(separador);
-		clave.append(anio);
-		clave.append(separador);
-		clave.append(idTurno);
-		clave.append(separador);
-		clave.append(numero);
-		
-		
-		aux2.put("CLAVE",clave.toString());
-		//aux2.put(ScsDesignasLetradoBean.C_IDPERSONA,idPersona );
-		aux2.put(ScsDesignaBean.C_IDINSTITUCION,idInstitucion);
-		aux2.put(ScsDesignaBean.C_ANIO,anio);
-		aux2.put(ScsDesignaBean.C_IDTURNO,idTurno);
-		aux2.put(ScsDesignaBean.C_NUMERO,numero);
-		aux2.put("SELECCIONADO", "1");
-		return aux2;
-	}
-
-	protected ArrayList actualizarSelecionados(String seleccionados, ArrayList alClaves){
-		
-    	String[] aSeleccionados = seleccionados.split(",");
-    	
-    	for (int z=0;z<alClaves.size();z++){
-	    	Hashtable htclavesBusqueda = (Hashtable)alClaves.get(z);
-	    	String clave = (String)htclavesBusqueda.get("CLAVE");
-	    	boolean isEncontrado = false;
-	    	  if (!seleccionados.equals("")){
-		    	for (int i = 0; i < aSeleccionados.length; i++) {
-		    		String registro = aSeleccionados[i];
-		    		String[] ids = UtilidadesString.split(registro, separador);
-		    		
-		    		//String idPersona = ids[0];
-		    		String idInstitucion = ids[0];
-		    		String anio = ids[1];
-		    		String idTurno = ids[2];
-		    		String numero = ids[3];
-		    		
-		    		Hashtable aux2= getIds(idInstitucion, anio, idTurno, numero);
-		    		if(clave.equals(aux2.get("CLAVE"))){
-		    			htclavesBusqueda.put("SELECCIONADO", "1");
-		    			isEncontrado = true;
-		    			break;
-		    		}
-		    		
-		    		
-				}
-	    	  }
-	    	if (!isEncontrado){
-	    		htclavesBusqueda.put("SELECCIONADO", "0");
-	    	}
-	    
-    	}
-    	
-    	
-    	return alClaves;
-	}
 
 }

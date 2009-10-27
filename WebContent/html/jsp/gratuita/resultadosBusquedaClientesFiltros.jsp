@@ -61,7 +61,8 @@
 	String totalRegistros     = "0";
 	String paginaSeleccionada = "0";
 	String registrosPorPagina = "0";
-	HashMap hm = (HashMap)ses.getAttribute("DATAPAGINADOR_VECTOR");
+	HashMap hm =new HashMap();
+	hm = (HashMap)ses.getAttribute("DATAPAGINADOR_VECTOR");
 
 	if (hm != null && hm.get("datos")!=null && !hm.get("datos").equals("")){
 		resultado = (Vector)hm.get("datos");
@@ -78,6 +79,7 @@
     /**************/
 %>
 
+<%@page import="java.util.HashMap"%>
 <html>
 <!-- HEAD -->
 <head>

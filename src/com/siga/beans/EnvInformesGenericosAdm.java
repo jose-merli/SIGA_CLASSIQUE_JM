@@ -172,6 +172,12 @@ public class EnvInformesGenericosAdm extends MasterBeanAdministrador {
 			select.append(" AND T.IDPROGRAM = :");
 			select.append(keyContador);
 			
+			keyContador++;
+			htCodigos.put(new Integer(keyContador), programInformes.getIdInstitucion());
+			select.append(" AND T.IDINSTITUCION = :");
+			select.append(keyContador);
+			
+			
 			select.append(" AND (T.IDINSTITUCION, T.IDPLANTILLA) NOT IN ");
 			select.append(" (SELECT TP.IDINSTITUCION, TP.IDPLANTILLA ");
 			select.append(" FROM ENV_INFORMESGENERICOS TP, ADM_INFORME TI ");

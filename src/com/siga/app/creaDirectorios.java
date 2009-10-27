@@ -402,6 +402,16 @@ public class creaDirectorios {
 				}
 			}
 
+			// CAJG
+			path = rp.getString("cajg.directorioPlantillaCAJG");
+		    path += File.separator + rp.getString("cajg.directorioCAJGJava");
+			if (instituciones!=null && instituciones.size()>0) {
+				for (int j=0;j<instituciones.size();j++) {
+					CenInstitucionBean insti = (CenInstitucionBean) instituciones.get(j); 
+					if (path!=null) salida.add(path + File.separator + insti.getIdInstitucion().toString());
+				}
+			}
+			
 			// previsiones Oracle
 		    path = rp.getString("facturacion.directorioPrevisionesOracle");
 			if (instituciones!=null && instituciones.size()>0) {
@@ -913,6 +923,19 @@ public class creaDirectorios {
 				 	if (hijoOrigen.exists()) {
 				 		recur(hijoOrigen, hijoDestino,insti.getIdInstitucion().toString(),institucionDefecto);
 				 	}
+				 	
+				 	//cajg.directorioCAJGJava
+				 	pathDestino = rp.getString("cajg.directorioPlantillaCAJG");
+					pathDestino += File.separator + rp.getString("cajg.directorioCAJGJava");
+					destino = new File(pathDestino);
+					destino.mkdirs();
+				 	carpeta = rp.getString("cajg.directorioCAJGJava");
+					hijoOrigen = new File(origen.getAbsolutePath() + File.separator + carpeta);   
+				 	hijoDestino = new File(destino.getAbsolutePath());
+				 	hijoDestino.mkdirs();
+				 	if (hijoOrigen.exists()) {
+				 		recur(hijoOrigen, hijoDestino,insti.getIdInstitucion().toString(),institucionDefecto);
+				 	}
 					
 				 	//carpeta.lista.guardias
 				 	pathDestino = rp.getString("sjcs.directorioFisicoListaGuardiasJava");
@@ -959,6 +982,19 @@ public class creaDirectorios {
 					destino = new File(pathDestino);
 					destino.mkdirs();
 				 	carpeta = rp.getString("directorios.carpeta.informes.genericos");
+					hijoOrigen = new File(origen.getAbsolutePath() + File.separator + carpeta);   
+				 	hijoDestino = new File(destino.getAbsolutePath());
+				 	hijoDestino.mkdirs();
+				 	if (hijoOrigen.exists()) {
+				 		recur(hijoOrigen, hijoDestino,insti.getIdInstitucion().toString(),institucionDefecto);
+				 	}
+				 	
+				 	//carpeta.CAJG
+				 	pathDestino = rp.getString("cajg.directorioPlantillaCAJG");
+				 	pathDestino += File.separator + rp.getString("cajg.directorioCAJGJava");
+					destino = new File(pathDestino);
+					destino.mkdirs();
+					carpeta = rp.getString("directorios.carpeta.cajg");
 					hijoOrigen = new File(origen.getAbsolutePath() + File.separator + carpeta);   
 				 	hijoDestino = new File(destino.getAbsolutePath());
 				 	hijoDestino.mkdirs();
@@ -1117,6 +1153,19 @@ public class creaDirectorios {
 			 	if (hijoOrigen.exists()) {
 			 		recur(hijoOrigen, hijoDestino,idinstitucion,idinstitucion);
 			 	}
+			 	
+			 	// cajg.directorioPlantillaCAJG
+			 	pathDestino = rp.getString("cajg.directorioPlantillaCAJG");
+				pathDestino += File.separator + rp.getString("cajg.directorioCAJGJava");
+				destino = new File(pathDestino);
+				destino.mkdirs();
+				carpeta = rp.getString("cajg.directorioCAJGJava");
+				hijoOrigen = new File(origen.getAbsolutePath() + File.separator + carpeta);   
+			 	hijoDestino = new File(destino.getAbsolutePath());
+			 	hijoDestino.mkdirs();
+			 	if (hijoOrigen.exists()) {
+			 		recur(hijoOrigen, hijoDestino,idinstitucion,idinstitucion);
+			 	}
 				
 			 	//carpeta.carta.oficio
 			 	pathDestino = rp.getString("sjcs.directorioFisicoCartaOficioJava");
@@ -1163,6 +1212,19 @@ public class creaDirectorios {
 				destino = new File(pathDestino);
 				destino.mkdirs();
 			 	carpeta = rp.getString("directorios.carpeta.informes.genericos");
+				hijoOrigen = new File(origen.getAbsolutePath() + File.separator + carpeta);   
+			 	hijoDestino = new File(destino.getAbsolutePath());
+			 	hijoDestino.mkdirs();
+			 	if (hijoOrigen.exists()) {
+			 		recur(hijoOrigen, hijoDestino,idinstitucion,idinstitucion);
+			 	}
+			 	
+			 	//carpeta.CAJG
+			 	pathDestino = rp.getString("cajg.directorioPlantillaCAJG");
+			 	pathDestino += File.separator + rp.getString("cajg.directorioCAJGJava");
+				destino = new File(pathDestino);
+				destino.mkdirs();
+				carpeta = rp.getString("directorios.carpeta.cajg");
 				hijoOrigen = new File(origen.getAbsolutePath() + File.separator + carpeta);   
 			 	hijoDestino = new File(destino.getAbsolutePath());
 			 	hijoDestino.mkdirs();

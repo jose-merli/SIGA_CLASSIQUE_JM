@@ -3,7 +3,7 @@ package com.siga.gratuita.action;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.TreeMap;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -1494,7 +1494,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 	 * 
 	 * @return void 
 	 */
-	private String insertarCalendarioAutomaticamente(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	private synchronized String insertarCalendarioAutomaticamente(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		DefinirCalendarioGuardiaForm miForm = (DefinirCalendarioGuardiaForm) formulario;
 		String idCalendarioGuardias = "", idInstitucion="", idGuardia="", idTurno="";
 		UsrBean usr = null;
@@ -1759,6 +1759,12 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 					usr);
 			calendarioSJCS.calcularMatrizPeriodosDiasGuardia();
 
+			
+			//Obtenemos los dias a Agrupar
+			List lDiasASeparar = calendarioSJCS.getDiasASeparar(new Integer(idInstitucion), new Integer(idTurno), new Integer(idGuardia) , usr);
+			
+			
+			
 			//Nota: El array arrayPeriodosSJCS es un array periodos y cada periodo es un array de dias
 			ArrayList arrayPeriodosSJCS = calendarioSJCS.getArrayPeriodosDiasGuardiaSJCS();
 
@@ -1806,7 +1812,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 				tx=usr.getTransaction();
 				tx.begin();   
 				//Almaceno en BBDD la cabecera y las guardias colegiado para este letrado:
-				calendarioSJCS.almacenarAsignacionGuardiaLetrado(letrado,arrayPeriodoSeleccionado);
+				calendarioSJCS.almacenarAsignacionGuardiaLetrado(letrado,arrayPeriodoSeleccionado,lDiasASeparar);
 				tx.commit();
 
 				forward = exitoModal("messages.inserted.success", request);

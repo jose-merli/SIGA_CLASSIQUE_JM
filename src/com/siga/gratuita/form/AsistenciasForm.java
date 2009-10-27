@@ -125,11 +125,13 @@ public class AsistenciasForm extends MasterForm
 
 	private String comisaria = "comisaria";
 	private String juzgado = "juzgado";
+	private String idDelito = "idDelito";
+	
 	
 	/*
 	 * Metodos SET y GET 
 	 */
-	
+	public void    setIdDelito          		 (String	valor)	{ this.datos.put(this.idDelito, valor);}
 	public void    setAsunto          		 (String	valor)	{ this.datos.put(this.asunto, valor);}
 	public void    setEstado          		 (String	valor)	{ this.datos.put(this.estado, valor);}	
 	public void    setIdInstitucion          (String	valor)	{ this.datos.put(this.idInstitucion, valor);}

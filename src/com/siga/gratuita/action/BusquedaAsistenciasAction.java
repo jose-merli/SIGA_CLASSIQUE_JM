@@ -335,6 +335,7 @@ public class BusquedaAsistenciasAction extends MasterAction {
 		
 		if ((desdeEjg!=null && desdeEjg.equalsIgnoreCase("si"))||(desdeEJG!=null && desdeEJG.equalsIgnoreCase("si"))){
 			ses.removeAttribute("DATAPAGINADOR");
+			ses.removeAttribute("DATOSFORMULARIO");
 		}
 		
 		return "editar";

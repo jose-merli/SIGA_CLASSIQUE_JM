@@ -46,6 +46,7 @@ public abstract class MasterAction extends SIGAActionBase {
 	public final String paginador = "DATAPAGINADOR";
 	public final String paginadorModal = "DATAPAGINADORMODAL";
 	public final String paginadorPenstania = "DATAPAGINADORPESTANIA";
+	protected final String separador = "||";
 	//public final String sPrefijoDownload = "download:/";
 	
 	/** 
@@ -871,6 +872,7 @@ public abstract class MasterAction extends SIGAActionBase {
 	protected void borrarPaginador(HttpServletRequest request,String paginador) throws SIGAException {
 		//Cada vez que se da al boton buscar, se borra el paginador guardado en sesion para luego cargarlo con nuevos criterios
 		request.getSession().removeAttribute(paginador);
+		request.getSession().removeAttribute("DATAPAGINADOR");
 		
 	}
 	protected HashMap getPaginador(HttpServletRequest request,String paginador) throws SIGAException {
@@ -883,6 +885,62 @@ public abstract class MasterAction extends SIGAActionBase {
 		//Mete el paginador en sesion
 		request.getSession().setAttribute(paginador,databackup);
 		
+	}
+	protected void aniadeClavesBusqueda(String[] clavesBusqueda,ArrayList alClavesBusqueda){
+		 
+		Hashtable registro = null;
+
+		for (int k=0;k<alClavesBusqueda.size();k++){
+			registro = (Hashtable) alClavesBusqueda.get(k);
+			aniadeClaveBusqueda(clavesBusqueda, registro);
+			
+		}
+
+	}
+	
+	
+	protected void aniadeClaveBusqueda(String[] clavesBusqueda, Hashtable registro){
+		StringBuffer clave = new StringBuffer();
+		for (int i = 0; i < clavesBusqueda.length; i++) {
+			String claveBusqueda = clavesBusqueda[i]; 
+			clave.append((String)registro.get(claveBusqueda));
+			if(i!=clavesBusqueda.length-1)
+				clave.append(separador);
+			
+		}
+		registro.put("CLAVE",clave.toString());
+
+	}
+	protected ArrayList actualizarSelecionados(String[]clavesBusqueda,String seleccionados, ArrayList alClaves){
+		
+    	alClaves.clear();
+		String[] aSeleccionados = null;
+		if(seleccionados!=null && !seleccionados.equals("")){
+			aSeleccionados = seleccionados.split(",");
+		}
+
+	    	
+	    	if( aSeleccionados!=null){
+		    	for (int i = 0; i < aSeleccionados.length; i++) {
+		    		String registro = aSeleccionados[i];
+		    		String[] ids = UtilidadesString.split(registro, separador);
+		    		Hashtable registroBusqueda = new Hashtable();
+		    		for (int j = 0; j < clavesBusqueda.length; j++) {
+		    			String id = ids[j];
+		    			registroBusqueda.put(clavesBusqueda[j],id);
+					}
+		    		
+		    		aniadeClaveBusqueda(clavesBusqueda, registroBusqueda);
+		    		if(!alClaves.contains(registroBusqueda))
+		    			alClaves.add(registroBusqueda);
+		    		
+		    		
+		    		
+				}
+	    	}
+
+    	
+    	return alClaves;
 	}
 
 }

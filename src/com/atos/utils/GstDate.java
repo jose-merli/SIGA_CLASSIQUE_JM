@@ -572,6 +572,13 @@ public class GstDate {
        fecha = sdf.parse(sFecha);
        return fecha;
     }
+    public static Date convertirFecha(String sFecha, String pattern) throws Exception
+    {
+       SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+       Date fecha = null;
+       fecha = sdf.parse(sFecha);
+       return fecha;
+    }
  
     public static Date convertirFechaHora(String sFecha) throws Exception
     {

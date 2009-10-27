@@ -1,7 +1,9 @@
 package com.siga.beans;
 
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
@@ -162,4 +164,76 @@ public class ScsHitoFacturableGuardiaAdm extends MasterBeanAdministrador
 		return datos;
 	} //ejecutaSelect ()
 	
+	public List getDiasASeparar (Integer idInstitucion, Integer idTurno, Integer idGuardia)
+	throws ClsExceptions 
+	{
+		List datos = null;
+		Hashtable htCodigos = new Hashtable();
+		int contador = 0;
+		StringBuffer sql =  new StringBuffer();
+		sql.append(" SELECT ");
+		sql.append(ScsHitoFacturableGuardiaBean.C_DIASAPLICABLES);
+		sql.append(" FROM ");
+		sql.append(ScsHitoFacturableGuardiaBean.T_NOMBRETABLA);
+		sql.append(" WHERE ");
+		sql.append(ScsHitoFacturableGuardiaBean.C_IDINSTITUCION);
+		contador++;
+		sql.append(" = :");
+		sql.append(contador);
+		htCodigos.put(new Integer(contador), idInstitucion);
+		sql.append(" AND ");
+		sql.append(ScsHitoFacturableGuardiaBean.C_IDTURNO);
+		contador++;
+		sql.append(" = :");
+		sql.append(contador);
+		htCodigos.put(new Integer(contador), idTurno);
+		sql.append(" AND ");
+		sql.append(ScsHitoFacturableGuardiaBean.C_IDGUARDIA);
+		contador++;
+		sql.append(" = :");
+		sql.append(contador);
+		htCodigos.put(new Integer(contador), idGuardia);
+		sql.append(" AND ");
+		sql.append(ScsHitoFacturableGuardiaBean.C_PAGOFACTURACION);
+		contador++;
+		sql.append(" = :");
+		sql.append(contador);
+		htCodigos.put(new Integer(contador), "F");
+		sql.append(" AND NVL(");
+		sql.append(ScsHitoFacturableGuardiaBean.C_AGRUPAR);
+		sql.append(" ,0) ");
+		contador++;
+		sql.append(" = :");
+		sql.append(contador);
+		htCodigos.put(new Integer(contador), "0");
+		sql.append(" AND  ");
+		sql.append(ScsHitoFacturableGuardiaBean.C_DIASAPLICABLES);
+		sql.append(" IS NOT NULL  ");
+		sql.append(" GROUP BY ");
+		sql.append(ScsHitoFacturableGuardiaBean.C_DIASAPLICABLES);
+
+
+		//Acceso a BBDD
+		RowsContainer rc = null;
+		try { 
+			rc = new RowsContainer (); 
+			if (rc.queryBind(sql.toString(), htCodigos)) {
+				datos = new ArrayList();
+				for (int i=0; i < rc.size(); i++) {
+					Row fila = (Row) rc.get (i);
+					if(fila!=null){
+						Hashtable registro = (Hashtable) fila.getRow (); 
+						if (registro != null)
+							datos.add(registro);
+					}
+				}
+			}
+		} 
+		catch (Exception e) { 	
+			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D."); 
+		}
+		return datos;
+	}
+	
+		
 }

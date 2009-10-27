@@ -140,7 +140,7 @@ public class ScsMateriaJurisdiccionAdm extends MasterBeanAdministrador {
 */
 
 	
-	public Vector busquedaJurisdiccionMateriaQueNoEstenEnMateria(Integer idMateria, Integer idArea,String idioma) throws ClsExceptions
+	public Vector busquedaJurisdiccionMateriaQueNoEstenEnMateria(Integer idInstitucion, Integer idMateria, Integer idArea,String idioma) throws ClsExceptions
 	{
 		Vector datos = new Vector();
 		String select = null;
@@ -155,6 +155,7 @@ public class ScsMateriaJurisdiccionAdm extends MasterBeanAdministrador {
 							 		" (SELECT "+ScsJurisdiccionBean.C_IDJURISDICCION+
 									   " FROM " + ScsMateriaJurisdiccionBean.T_NOMBRETABLA + 
 									  " WHERE " + ScsMateriaJurisdiccionBean.C_IDMATERIA+ " = " + idMateria +
+									  "   and " + ScsMateriaJurisdiccionBean.C_IDINSTITUCION+ " = " + idInstitucion +
 									  "   and " + ScsMateriaJurisdiccionBean.C_IDAREA+ " = " + idArea+")";
 			
 					  

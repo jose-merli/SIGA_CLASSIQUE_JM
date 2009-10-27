@@ -496,5 +496,11 @@ public class PersonaJGForm extends MasterForm {
 	public String getTipoIdentificacion	() 	{ 
  		return UtilidadesHash.getString(this.datos, CenPersonaBean.C_IDTIPOIDENTIFICACION);		
  	}
+	public String getTipoIngreso	() 	{ 
+ 		return UtilidadesHash.getString(this.datos, "TIPO_INGRESO");		
+ 	}
+	public void setTipoIngreso	(String dato) 	{ 
+ 		UtilidadesHash.set(this.datos, "TIPO_INGRESO" , dato);		
+ 	}
 
 }

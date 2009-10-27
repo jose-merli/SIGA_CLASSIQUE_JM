@@ -64,7 +64,7 @@ public class SIGACGAEContext {
 Properties properties = System.getProperties();
 
 properties.put("http.proxyHost", "localhost");
-properties.put("http.proxyPort", "8080");
+properties.put("http.proxyPort", "7001");
 
 System.setProperties(properties);
 		}

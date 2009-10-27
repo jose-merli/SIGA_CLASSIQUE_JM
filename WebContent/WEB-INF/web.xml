@@ -121,7 +121,7 @@
   </servlet>
   <servlet>
     <servlet-name>SIGATest</servlet-name>
-    <servlet-class>com.siga.servlets.SIGATest</servlet-class>
+    <servlet-class>com.siga.servlets.SIGASvlConectarBaseDatos</servlet-class>
   </servlet>
 
   <servlet>

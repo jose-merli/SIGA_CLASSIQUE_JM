@@ -18,6 +18,7 @@
 <%@ page import="com.siga.beans.ScsMaestroEstadosEJGBean"%>
 <%@ page import="com.siga.beans.ScsEJGAdm"%>
 <%@ page import="com.siga.beans.CajgRemesaEstadosAdm"%>
+<%@ page import="com.siga.beans.CajgConfiguracionAdm"%>
 <%@ page import="com.siga.administracion.SIGAMasterTable"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.Utilidades.PaginadorCaseSensitive"%>
@@ -93,6 +94,9 @@
 		String action=app+"/JGR_E-Comunicaciones_Gestion.do?noReset=true";
     /**************/
 
+    
+    Integer idInstitucion = new Integer(usr.getLocation());
+	int cajgConfig = CajgConfiguracionAdm.getTipoCAJG(idInstitucion);
 	
 %>
 
@@ -236,7 +240,7 @@
 				numRemesa+=(sufijo!=null && !sufijo.trim().equals(""))?(sufijo):"";
 				
 	    	
-	    	if (DefinirRemesasCAJGAction.getFichero(usr.getLocation(), (String)registro.get("IDREMESA")) != null) {
+	    	if (cajgConfig != 0 && cajgConfig < 2 && DefinirRemesasCAJGAction.getFichero(usr.getLocation(), (String)registro.get("IDREMESA")) != null) {
 	    		elems[1]=new FilaExtElement("download", "descargar", SIGAConstants.ACCESS_FULL);
 	    	}
 	    		    	

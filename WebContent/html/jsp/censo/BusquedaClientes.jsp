@@ -138,7 +138,7 @@
 
 	<html:form action="/CEN_BusquedaClientes.do?noReset=true" method="POST" target="resultado">
 	<html:hidden name="busquedaClientesForm" property = "modo" value = ""/>
-	
+	<html:hidden property="seleccionarTodos" />
 	<input type="hidden" name="limpiarFilaSeleccionada" value="">
 
 	<!-- parametro para colegiados o no -->
@@ -354,7 +354,7 @@
 				document.forms[0].submit();	
 			}
 		}
-		function buscar() 
+		function buscar(modo) 
 		
 		{
 				sub();
@@ -365,12 +365,20 @@
 				   document.forms[0].chkBusqueda.value="0";
 				    document.forms[0].valorCheck.value="0";
 				}
-		        document.forms[0].modo.value="buscarInit";
+				if(modo)
+					document.forms[0].modo.value = modo;
+				else
+		        	document.forms[0].modo.value="buscarInit";
 				document.forms[0].target="resultado";	
 				document.forms[0].submit();	
 			
 		}
-	
+		function seleccionarTodos(pagina) 
+		{
+			document.forms[0].seleccionarTodos.value = pagina;
+			buscar('buscarPor');
+				
+		}		
 
 		<!-- Funcion asociada a boton busqueda avanzada -->
 		function buscarAvanzada() 

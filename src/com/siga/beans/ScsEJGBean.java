@@ -81,6 +81,9 @@ public class ScsEJGBean extends MasterBean{
 	private String fechaDesigProc;
 	private String sufijo;
 	private String identificadorDS;
+	private String idOrigenCAJG;
+	private String idPreceptivo;
+	
 
 	
 	/*
@@ -157,6 +160,8 @@ public class ScsEJGBean extends MasterBean{
 	static public final String C_REFAUTO   = "REFAUTO";
 	static public final String C_FECHADESIGPROC   = "FECHA_DES_PROC";
 	static public final String C_IDENTIFICADORDS   = "IDENTIFICADORDS";
+	static public final String C_IDORIGENCAJG   = "IDORIGENCAJG";
+	static public final String C_PRECEPTIVO   = "IDPRECEPTIVO";
 	
 	
 	
@@ -795,5 +800,18 @@ public class ScsEJGBean extends MasterBean{
 	 */
 	public void setIdentificadorDS(String identificadorDS) {
 		this.identificadorDS = identificadorDS;
+	}
+	
+	public String getIdOrigenCAJG() {
+		return idOrigenCAJG;
+	}
+	public void setIdOrigenCAJG(String idOrigenCAJG) {
+		this.idOrigenCAJG = idOrigenCAJG;
+	}
+	public String getIdPreceptivo() {
+		return idPreceptivo;
+	}
+	public void setIdPreceptivo(String idPreceptivo) {
+		this.idPreceptivo = idPreceptivo;
 	}
 }

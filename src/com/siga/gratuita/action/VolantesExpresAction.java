@@ -3,6 +3,7 @@ package com.siga.gratuita.action;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,11 +23,14 @@ import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsActuacionAsistCosteFijoAdm;
 import com.siga.beans.ScsActuacionAsistenciaAdm;
 import com.siga.beans.ScsActuacionAsistenciaBean;
 import com.siga.beans.ScsAsistenciasAdm;
 import com.siga.beans.ScsAsistenciasBean;
+import com.siga.beans.ScsDelitosAsistenciaAdm;
+import com.siga.beans.ScsDelitosAsistenciaBean;
 import com.siga.beans.ScsGuardiasColegiadoAdm;
 import com.siga.beans.ScsGuardiasColegiadoBean;
 import com.siga.beans.ScsGuardiasTurnoAdm;
@@ -51,6 +55,7 @@ public class VolantesExpresAction extends MasterAction
 		try { 
 			do {
 				miForm = (MasterForm) formulario;
+				
 				if (miForm != null) {
 					String accion = miForm.getModo();
 				
@@ -91,6 +96,14 @@ public class VolantesExpresAction extends MasterAction
 //		ReadProperties rp3 = new ReadProperties("SIGA.properties");
 		String tipoAsistenciaDefecto = rp3.returnProperty("codigo.general.scs_tipoasistencia.volanteExpres");
 		request.setAttribute("tipoAsistenciaDefecto", tipoAsistenciaDefecto);
+		UsrBean usrBean = this.getUserBean(request);
+		GenParametrosAdm paramAdm = new GenParametrosAdm (usrBean);
+		String delitos_VE = paramAdm.getValor (usrBean.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_DELITOS_VE, "");
+		Boolean isDelitosVE = new Boolean((delitos_VE!=null && delitos_VE.equalsIgnoreCase(ClsConstants.DB_TRUE)));
+		request.setAttribute("isDelitosVE", isDelitosVE);
+		VolantesExpresForm f  = (VolantesExpresForm) formulario;
+		request.setAttribute("fechaJustificacion", f.getFechaJustificacion());
+		
 		formulario.reset(mapping, request);
 		return "inicio";
 	}
@@ -100,6 +113,14 @@ public class VolantesExpresAction extends MasterAction
 			HttpServletResponse response) throws ClsExceptions, SIGAException 
 			{
 		request.getSession().removeAttribute("DATABACKUP");
+		UsrBean usrBean = this.getUserBean(request);
+		GenParametrosAdm paramAdm = new GenParametrosAdm (usrBean);
+		String delitos_VE = paramAdm.getValor (usrBean.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_DELITOS_VE, "");
+		Boolean isDelitosVE = new Boolean((delitos_VE!=null && delitos_VE.equalsIgnoreCase(ClsConstants.DB_TRUE)));
+		request.setAttribute("isDelitosVE", isDelitosVE);
+		VolantesExpresForm f  = (VolantesExpresForm) formulario;
+		request.setAttribute("fechaJustificacion", f.getFechaJustificacion());
+		
 		return "inicio";
 			}
 	
@@ -110,6 +131,14 @@ public class VolantesExpresAction extends MasterAction
 //		ReadProperties rp3 = new ReadProperties("SIGA.properties");
 		VolantesExpresForm f  = (VolantesExpresForm) formulario;
         String tipoAsistenciaDefecto = rp3.returnProperty("codigo.general.scs_tipoasistencia.volanteExpres");
+        UsrBean usrBean = this.getUserBean(request);
+		GenParametrosAdm paramAdm = new GenParametrosAdm (usrBean);
+		String delitos_VE = paramAdm.getValor (usrBean.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_DELITOS_VE, "");
+		Boolean isDelitosVE = new Boolean((delitos_VE!=null && delitos_VE.equalsIgnoreCase(ClsConstants.DB_TRUE)));
+		request.setAttribute("isDelitosVE", isDelitosVE);
+		
+		request.setAttribute("fechaJustificacion", f.getFechaJustificacion());
+        
         String letrado        = f.getLetrado();
 		String diaGuardia     = f.getGuardiaDia();
 		Integer idInstitucion = this.getIDInstitucion(request);
@@ -136,6 +165,8 @@ public class VolantesExpresAction extends MasterAction
         
         request.setAttribute("tipoAsistenciaDefecto", tipoAsistenciaDefecto);
         
+		
+        
 		return "inicio";
 	}
 	private void borrar (String anio, String numero, String idInstitucion, UsrBean usr) throws ClsExceptions 
@@ -152,6 +183,9 @@ public class VolantesExpresAction extends MasterAction
 		
 		ScsActuacionAsistenciaAdm actuacionAdm = new ScsActuacionAsistenciaAdm (usr);
 		actuacionAdm.deleteDirect(claves, campos);
+		ScsDelitosAsistenciaAdm delitosAsistenciaAdm = new ScsDelitosAsistenciaAdm (usr);
+		delitosAsistenciaAdm.borrarDelitosAsitencia(new Integer(idInstitucion),new Integer(anio),new Integer(numero));
+		
 		
 		ScsAsistenciasAdm asistenciaAdm = new ScsAsistenciasAdm (usr);
 		asistenciaAdm.delete(claves);
@@ -201,6 +235,7 @@ public class VolantesExpresAction extends MasterAction
 				String numeroEjg = (String)vCampos.get(15);
 				String anioEjg = (String)vCampos.get(16);
 				String idTipoEjg = (String)vCampos.get(17);
+				String idDelito = (String)vCampos.get(18);
 				
 				// Estos campos pueden ser vacios o nulos
 				if (this.esCampoVacio(hora)) hora = new String ("00");
@@ -248,6 +283,7 @@ public class VolantesExpresAction extends MasterAction
 				UtilidadesHash.set (salida, "numeroEjg", numeroEjg);
 				UtilidadesHash.set (salida, "anioEjg", anioEjg);
 				UtilidadesHash.set (salida, "idTipoEjg", idTipoEjg);
+				UtilidadesHash.set (salida, "idDelito", idDelito.trim());
 			}
 		}
 		catch (Exception e) {
@@ -268,7 +304,8 @@ public class VolantesExpresAction extends MasterAction
 			String idInstitucion     = "" + this.getIDInstitucion(request);
 			String idPersonaSaliente = f.getSustitutoDe(); 
 			String idPersonaEntrante = f.getLetrado(); 
-
+			String fechaJustificacion = GstDate.getApplicationFormatDate("", f.getFechaJustificacion());
+			
 			tx = this.getUserBean(request).getTransaction();		
 			tx.begin(); // Abro aqui la transaccion porque se insertan personas
 			
@@ -320,6 +357,7 @@ public class VolantesExpresAction extends MasterAction
 			ScsAsistenciasAdm asistenciaAdm = new ScsAsistenciasAdm (this.getUserBean(request));
 			ScsActuacionAsistenciaAdm actAdm = new ScsActuacionAsistenciaAdm (this.getUserBean(request)); 
 			
+			
 			Vector vAsistencias = f.getDatosTabla();
 			for (int i = 0; i < vAsistencias.size(); i++ ) {
 				
@@ -349,16 +387,22 @@ public class VolantesExpresAction extends MasterAction
 				String numeroEjg = UtilidadesHash.getString(h, "numeroEjg");
 				String anioEjg = UtilidadesHash.getString(h, "anioEjg");
 				String idTipoEjg = UtilidadesHash.getString(h, "idTipoEjg");
-
+				String idDelito = UtilidadesHash.getString(h, "idDelito");
+				
 				ScsAsistenciasBean asistencia = new ScsAsistenciasBean ();
+				
 				asistencia.setAnio(new Integer(anio));
 				asistencia.setFechaEstadoAsistencia(fechaAsistencia);
 				asistencia.setFechaGuardia(GstDate.getApplicationFormatDate("", f.getGuardiaDia()));
+				
 				
 				asistencia.setFechaHora(fechaAsistencia);
 				asistencia.setIdEstadoAsistencia(new Integer(1));
 				asistencia.setIdguardia(new Integer(idGuardia));
 				asistencia.setIdInstitucion(new Integer(idInstitucion));
+				
+				
+				
 				asistencia.setIdPersonaColegiado(new Integer(f.getLetrado()));
 				asistencia.setIdPersonaJG(new Integer(idPersonaAsistido));
 				asistencia.setIdTipoAsistencia(new Integer(f.getTipoAsistencia()));
@@ -409,6 +453,34 @@ public class VolantesExpresAction extends MasterAction
 					asistencia.setNumero(new Integer(claveNumero));
 					asistenciaAdm.updateDirect(asistencia);
 				}
+				ScsDelitosAsistenciaBean delitoAsistencia = null;
+				if(idDelito!=null && !idDelito.equals("")){
+					delitoAsistencia = new ScsDelitosAsistenciaBean();
+					delitoAsistencia.setIdDelito(new Integer(idDelito));
+					delitoAsistencia.setIdInstitucion(asistencia.getIdInstitucion());
+					delitoAsistencia.setNumero(asistencia.getNumero());
+					delitoAsistencia.setAnio(asistencia.getAnio());
+				}
+				ScsDelitosAsistenciaAdm delAsisAdm =  null;
+				if (accion.equalsIgnoreCase("--insertar--")){
+					//Insertamos el delito
+					if(delitoAsistencia!=null){
+						delAsisAdm =  new ScsDelitosAsistenciaAdm(this.getUserBean(request));
+						delAsisAdm.insert(delitoAsistencia);
+					}
+					
+				}else{
+					delAsisAdm =  new ScsDelitosAsistenciaAdm(this.getUserBean(request));
+					//Borramos los delitos que tuviera
+					delAsisAdm.borrarDelitosAsitencia(asistencia.getIdInstitucion(), asistencia.getAnio(), asistencia.getNumero());
+					//si tiene delito lo insertamos
+					if(delitoAsistencia!=null){
+						delAsisAdm =  new ScsDelitosAsistenciaAdm(this.getUserBean(request));
+						delAsisAdm.insert(delitoAsistencia);
+					}
+					
+					
+				}
 				
 				ScsActuacionAsistenciaBean act = new ScsActuacionAsistenciaBean ();
 				act.setAcuerdoExtrajudicial(new Integer(0));
@@ -416,7 +488,7 @@ public class VolantesExpresAction extends MasterAction
 				act.setDescripcionBreve("("+UtilidadesString.getMensajeIdioma(this.getUserBean(request), "menu.justiciaGratuita.volantesExpres")+")");
 				act.setDiaDespues("N");
 				act.setFecha(fechaAsistencia);
-				act.setFechaJustificacion("sysdate");
+				act.setFechaJustificacion(fechaJustificacion);
 				act.setIdActuacion(new Long(1));
 				act.setIdInstitucion(asistencia.getIdInstitucion());
 				act.setIdTipoAsistencia(asistencia.getIdTipoAsistencia());
@@ -458,6 +530,7 @@ public class VolantesExpresAction extends MasterAction
 				}
 			}
 			tx.commit();
+			request.setAttribute("fechaJustificacion", f.getFechaJustificacion());
 		}
 		catch (Exception e) {
 			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 
@@ -478,7 +551,17 @@ public class VolantesExpresAction extends MasterAction
 //			ReadProperties rp3 = new ReadProperties("SIGA.properties");
 			String tipoAsistenciaDefecto = rp3.returnProperty("codigo.general.scs_tipoasistencia.volanteExpres");
 			request.setAttribute("tipoAsistenciaDefecto", tipoAsistenciaDefecto);
+			UsrBean usrBean = this.getUserBean(request);
+			GenParametrosAdm paramAdm = new GenParametrosAdm (usrBean);
+			String delitos_VE = paramAdm.getValor (usrBean.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_DELITOS_VE, "");
+			Boolean isDelitosVE = new Boolean((delitos_VE!=null && delitos_VE.equalsIgnoreCase(ClsConstants.DB_TRUE)));
+			request.setAttribute("isDelitosVE", isDelitosVE);
+					
+			
+			
+			
 			VolantesExpresForm f  = (VolantesExpresForm) formulario;
+			request.setAttribute("fechaJustificacion", f.getFechaJustificacion());
 			String letrado        = f.getLetrado();
 			String diaGuardia     = f.getGuardiaDia();
 			Integer idInstitucion = this.getIDInstitucion(request);
@@ -800,7 +883,10 @@ public class VolantesExpresAction extends MasterAction
 			
 			//Nota: El array arrayPeriodosSJCS es un array periodos y cada periodo es un array de dias
 			ArrayList arrayPeriodosSJCS = calendarioSJCS.getArrayPeriodosDiasGuardiaSJCS();
-					
+			
+			//Obtenemos los dias a Agrupar
+			List lDiasASeparar = calendarioSJCS.getDiasASeparar(new Integer(idInstitucion), new Integer(idTurno), new Integer(idGuardia) , usr);
+			
 			//Selecciono el periodo de la lista de periodos:
 			String fechaInicioCalendario ="";
 			String fechaFinCalendario ="";
@@ -847,7 +933,7 @@ public class VolantesExpresAction extends MasterAction
 			
 			try {
 				//Almaceno en BBDD la cabecera y las guardias colegiado para este letrado:
-				calendarioSJCS.almacenarAsignacionGuardiaLetrado(letrado,arrayPeriodoSeleccionado);
+				calendarioSJCS.almacenarAsignacionGuardiaLetrado(letrado,arrayPeriodoSeleccionado,lDiasASeparar);
 			} catch (Exception e) {
 				throw e;
 			}

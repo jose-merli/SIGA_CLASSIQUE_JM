@@ -181,6 +181,7 @@ public class ValidarTurnosAction extends MasterAction {
 				" AND SCS_ZONA.idzona (+)= SCS_TURNO.idzona"+
 				" AND CEN_PARTIDOJUDICIAL.idpartido (+)= SCS_SUBZONA.idpartido"+
 				" and scs_ordenacioncolas.idordenacioncolas = scs_turno.idordenacioncolas "+
+				" AND SCS_INSCRIPCIONTURNO.idinstitucion = SCS_TURNO.idinstitucion "+
 				" AND SCS_INSCRIPCIONTURNO.idturno = SCS_TURNO.idturno"+
 				" AND SCS_INSCRIPCIONTURNO.idturno ="+IDTURNO+
 				" AND SCS_INSCRIPCIONTURNO.idinstitucion = "+IDINSTITUCION+

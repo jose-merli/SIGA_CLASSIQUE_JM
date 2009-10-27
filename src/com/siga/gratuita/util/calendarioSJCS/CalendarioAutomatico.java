@@ -102,7 +102,7 @@ public class CalendarioAutomatico
 		
 		//Seleccion de laborables:
 		this.seleccionLaborables = new Vector ();
-		semana = beanGuardiasTurno.getSeleccionLaborables ();
+		semana = beanGuardiasTurno.getSeleccionLaborables();
 		for (int i=0; i<semana.length(); i++)
 			this.seleccionLaborables.add (new Integer 
 					(this.convertirUnidadesDiasSemana (semana.charAt (i))));
@@ -143,7 +143,7 @@ public class CalendarioAutomatico
 	/** Convierte de nuestro formato para los checkBox 
 	 * de los dias seleccionados del campo SEMANA en los usados por el CGAE.
 	 */
-	private int convertirUnidadesDiasSemana (char dia) {
+	public static int convertirUnidadesDiasSemana (char dia) {
 		int unidades = 0;
 		
 		try {

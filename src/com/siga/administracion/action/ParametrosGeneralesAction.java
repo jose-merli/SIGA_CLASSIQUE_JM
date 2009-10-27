@@ -87,6 +87,16 @@ public class ParametrosGeneralesAction extends MasterAction
 				bean.setModulo(idModulo);
 				bean.setParametro(parametro);
 				bean.setValor(valor);
+				Hashtable h = new Hashtable();
+				UtilidadesHash.set (h, GenParametrosBean.C_IDINSTITUCION, new Integer(ClsConstants.INSTITUCION_POR_DEFECTO));
+				UtilidadesHash.set (h, GenParametrosBean.C_MODULO, bean.getModulo());
+				UtilidadesHash.set (h, GenParametrosBean.C_PARAMETRO, bean.getParametro());
+				Vector v = adm.selectByPK(h);
+				if (v.size() == 1) {
+					String idRecurso = ((GenParametrosBean)v.get(0)).getIdRecurso();
+					bean.setIdRecurso(idRecurso);
+				}
+				
 
 				// Si esto modificando los parametros generales a todos ....
 				if (form.getCheckParametrosGenerales().equals("1")) {
@@ -98,15 +108,8 @@ public class ParametrosGeneralesAction extends MasterAction
 					// Si soy colegio y estoy modificando los parametros generales ....
 					if (idIntitucion.equals("" + ClsConstants.INSTITUCION_POR_DEFECTO)) {
 						
-						Hashtable h = new Hashtable();
-						UtilidadesHash.set (h, GenParametrosBean.C_IDINSTITUCION, new Integer(ClsConstants.INSTITUCION_POR_DEFECTO));
-						UtilidadesHash.set (h, GenParametrosBean.C_MODULO, bean.getModulo());
-						UtilidadesHash.set (h, GenParametrosBean.C_PARAMETRO, bean.getParametro());
-						Vector v = adm.selectByPK(h);
-						if (v.size() == 1) {
-							String idRecurso = ((GenParametrosBean)v.get(0)).getIdRecurso();
-							bean.setIdRecurso(idRecurso);
-						}
+						
+						
 						bean.setIdInstitucion(this.getIDInstitucion(request));
 						if (!adm.insert(bean)) {
 							throw new ClsExceptions ("messages.updated.error");

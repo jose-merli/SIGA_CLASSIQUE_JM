@@ -1054,352 +1054,85 @@ public class Envio
 		// OBTENCION DE DESTINATARIOS 
         /////////////////////////////////////
 		EnvEnviosAdm envAdm = new EnvEnviosAdm(this.usrBean);
-		Vector vDestinatarios = envAdm.getDestinatarios(this.enviosBean.getIdInstitucion().toString(), this.enviosBean.getIdEnvio().toString(), this.enviosBean.getIdTipoEnvios().toString());
+		Vector vDestinatarios = null;
 		Hashtable htErrores = new Hashtable();
+		try {
+			vDestinatarios = envAdm.getDestinatarios(this.enviosBean.getIdInstitucion().toString(), this.enviosBean.getIdEnvio().toString(), this.enviosBean.getIdTipoEnvios().toString());			
+		} catch (Exception e) {
+			SIGAException sigaExc = new SIGAException("messages.envios.errorDestinatarios");
+			envAdm.generarLogEnvioExceptionHT(this.enviosBean,sigaExc);
+			enviosBean.setIdEstado(Integer.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES));
+			envAdm.updateDirect(enviosBean);
+			throw sigaExc;
+		}
+		
+		
 		this.procesarEnvioMasivo(vDestinatarios, htErrores, true, tx);
 	}
-
-
-	/**
-	 * Procesa un envío individual de muchos y genera o no el log según el parámetro<br>
-	 * Para envíos masivos: El objetivo es controlar la transaccion y sacar el log de esta.
-	 * @throws SIGAException
-	 */
-	public void procesarEnvioMasivo(Vector vDestinatarios,Hashtable htErrores,boolean generarLog, UserTransaction tx) throws SIGAException{
+	
+	public void procesarEnvioMasivo(Vector vDestinatarios,Hashtable htErrores,boolean generarLog, UserTransaction tx) throws SIGAException,ClsExceptions{
 
 		EnvEnviosAdm envAdm = new EnvEnviosAdm(this.usrBean);
-		
-		String idInstitucion = String.valueOf(enviosBean.getIdInstitucion());
-		String idEnvio = String.valueOf(enviosBean.getIdEnvio());
-		
-		Hashtable htPk = new Hashtable();
-		htPk.put(EnvEnviosBean.C_IDINSTITUCION,idInstitucion);
-		htPk.put(EnvEnviosBean.C_IDENVIO,idEnvio);
-		
 		Integer idTipoEnvio = enviosBean.getIdTipoEnvios();
-		int iTipoEnvio = idTipoEnvio.intValue();
 		
-		
-		
-		if (iTipoEnvio==EnvEnviosAdm.TIPO_CORREO_ELECTRONICO) {
+		String estadoEnvio = "";
+
+		try {
+			int iTipoEnvio = idTipoEnvio.intValue();
+			// Proceso de Correo Electrónico
+			switch (iTipoEnvio) {
 			
-			/////////////////////////////////////
-			/// CORREO ELECTRONICO
-			/////////////////////////////////////
-			
-			String estadoEnvio = "";
-
-			try {
-
-				// Proceso de Correo Electrónico
-		    	estadoEnvio = envAdm.enviarCorreoElectronico(enviosBean, vDestinatarios, htErrores, generarLog);
-		        if (!estadoEnvio.equalsIgnoreCase(EnvEstadoEnvioAdm.K_ESTADOENVIO_PENDIENTE_MANUAL)){
-			    
-				    try {
-		                enviosBean.setIdEstado(Integer.valueOf(estadoEnvio));
-		                tx.begin();
-		                envAdm.update(enviosBean);
-		                tx.commit();
-		            } catch (ClsExceptions e) {	                
-		            	try {tx.rollback();} catch (Exception eee) {};
-		                throw new SIGAException("messages.updated.error",e);
-		            }			    
-		        
-		        } else {			    
-				    try {
-		                enviosBean.setIdEstado(Integer.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES));
-		                tx.begin();
-		                envAdm.update(enviosBean);
-		                tx.commit();
-		            } catch (ClsExceptions e) {	                
-		            	try {tx.rollback();} catch (Exception eee) {};
-		                throw new SIGAException("messages.updated.error",e);
-		            }			    
-				    throw new SIGAException("messages.updated.error");
-				}
-			} catch (SIGAException e) {	                
-                enviosBean.setIdEstado(Integer.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES));
-			    try {
-	                tx.begin();
-	                envAdm.update(enviosBean);
-	                tx.commit();
-	            } catch (Exception e2) {	                
-	            	try {tx.rollback();} catch (Exception eee) {};
-	                throw new SIGAException("messages.updated.error",e2);
-	            }			    
-                throw e;
-            } catch (Exception e) {	                
-                enviosBean.setIdEstado(Integer.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES));
-			    try {
-	                tx.begin();
-	                envAdm.update(enviosBean);
-	                tx.commit();
-	            } catch (Exception e2) {
-	            	try {tx.rollback();} catch (Exception eee) {};
-	                throw new SIGAException("messages.updated.error",e2);
-	            }			    
-                throw new SIGAException("messages.updated.error",e);
-            }			
-		
-		    
-		} else if (iTipoEnvio==EnvEnviosAdm.TIPO_SMS) {
-			
-			/////////////////////////////////////
-			/// SMS
-			/////////////////////////////////////
-			
-			String estadoEnvio = "";
-
-			try {
-
-				// Proceso de SMS
-		    	estadoEnvio = envAdm.enviarSMS(enviosBean, vDestinatarios, htErrores, generarLog);
-		        if (!estadoEnvio.equalsIgnoreCase(EnvEstadoEnvioAdm.K_ESTADOENVIO_PENDIENTE_MANUAL)){
-			    
-				    try {
-		                enviosBean.setIdEstado(Integer.valueOf(estadoEnvio));
-		                tx.begin();
-		                envAdm.update(enviosBean);
-		                tx.commit();
-		            } catch (ClsExceptions e) {	                
-		            	try {tx.rollback();} catch (Exception eee) {};
-		                throw new SIGAException("messages.updated.error",e);
-		            }			    
-		        
-		        } else {			    
-				    try {
-		                enviosBean.setIdEstado(Integer.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES));
-		                tx.begin();
-		                envAdm.update(enviosBean);
-		                tx.commit();
-		            } catch (ClsExceptions e) {	                
-		            	try {tx.rollback();} catch (Exception eee) {};
-		                throw new SIGAException("messages.updated.error",e);
-		            }			    
-				    throw new SIGAException("messages.updated.error");
-				}
-			} catch (SIGAException e) {	                
-                enviosBean.setIdEstado(Integer.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES));
-			    try {
-	                tx.begin();
-	                envAdm.update(enviosBean);
-	                tx.commit();
-	            } catch (Exception e2) {	                
-	            	try {tx.rollback();} catch (Exception eee) {};
-	                throw new SIGAException("messages.updated.error",e2);
-	            }			    
-                throw e;
-            } catch (Exception e) {	                
-                enviosBean.setIdEstado(Integer.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES));
-			    try {
-	                tx.begin();
-	                envAdm.update(enviosBean);
-	                tx.commit();
-	            } catch (Exception e2) {
-	            	try {tx.rollback();} catch (Exception eee) {};
-	                throw new SIGAException("messages.updated.error",e2);
-	            }			    
-                throw new SIGAException("messages.updated.error",e);
-            }			
-		
-		    
-		} else if (iTipoEnvio==EnvEnviosAdm.TIPO_BUROSMS) {
-			
-			/////////////////////////////////////
-			/// BURO SMS
-			/////////////////////////////////////
-			
-			String estadoEnvio = "";
-
-			try {
-
-				// Proceso de Buro SMS
-		    	estadoEnvio = envAdm.enviarBuroSMS(enviosBean, vDestinatarios, htErrores, generarLog);
-		        if (!estadoEnvio.equalsIgnoreCase(EnvEstadoEnvioAdm.K_ESTADOENVIO_PENDIENTE_MANUAL)){
-			    
-				    try {
-		                enviosBean.setIdEstado(Integer.valueOf(estadoEnvio));
-		                tx.begin();
-		                envAdm.update(enviosBean);
-		                tx.commit();
-		            } catch (ClsExceptions e) {	                
-		            	try {tx.rollback();} catch (Exception eee) {};
-		                throw new SIGAException("messages.updated.error",e);
-		            }			    
-		        
-		        } else {			    
-				    try {
-		                enviosBean.setIdEstado(Integer.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES));
-		                tx.begin();
-		                envAdm.update(enviosBean);
-		                tx.commit();
-		            } catch (ClsExceptions e) {	                
-		            	try {tx.rollback();} catch (Exception eee) {};
-		                throw new SIGAException("messages.updated.error",e);
-		            }			    
-				    throw new SIGAException("messages.updated.error");
-				}
-			} catch (SIGAException e) {	                
-                enviosBean.setIdEstado(Integer.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES));
-			    try {
-	                tx.begin();
-	                envAdm.update(enviosBean);
-	                tx.commit();
-	            } catch (Exception e2) {	                
-	            	try {tx.rollback();} catch (Exception eee) {};
-	                throw new SIGAException("messages.updated.error",e2);
-	            }			    
-                throw e;
-            } catch (Exception e) {	                
-                enviosBean.setIdEstado(Integer.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES));
-			    try {
-	                tx.begin();
-	                envAdm.update(enviosBean);
-	                tx.commit();
-	            } catch (Exception e2) {
-	            	try {tx.rollback();} catch (Exception eee) {};
-	                throw new SIGAException("messages.updated.error",e2);
-	            }			    
-                throw new SIGAException("messages.updated.error",e);
-            }			
-		
-		    
-		} else if (iTipoEnvio==EnvEnviosAdm.TIPO_CORREO_ORDINARIO) {
-		
-			/////////////////////////////////////
-			/// CORREO ORDINARIO
-			/////////////////////////////////////
-		    
-			String estadoEnvio = "";
-		    //Ejecutamos el procesado, recogemos el estado en que queda el envío y lo seteamos
-			try {
-
-		        //Proceso de Correo Ordinario	        
+			case EnvEnviosAdm.TIPO_CORREO_ELECTRONICO:
+				estadoEnvio = envAdm.enviarCorreoElectronico(enviosBean, vDestinatarios, htErrores, generarLog);
+				break;
+			case EnvEnviosAdm.TIPO_SMS:
+				estadoEnvio = envAdm.enviarSMS(enviosBean, vDestinatarios, htErrores, generarLog);
+				break;
+			case EnvEnviosAdm.TIPO_BUROSMS:
+				estadoEnvio = envAdm.enviarBuroSMS(enviosBean, vDestinatarios, htErrores, generarLog);
+				break;
+			case EnvEnviosAdm.TIPO_CORREO_ORDINARIO:
 				estadoEnvio = envAdm.enviarCorreoOrdinario(enviosBean, vDestinatarios, htErrores, generarLog);
-				if (!estadoEnvio.equalsIgnoreCase(EnvEstadoEnvioAdm.K_ESTADOENVIO_PENDIENTE_MANUAL)){
-				    try {
-				        enviosBean.setIdEstado(Integer.valueOf(estadoEnvio));
-		                tx.begin();
-		                envAdm.update(enviosBean);
-		                tx.commit();
+				break;
+			case EnvEnviosAdm.TIPO_FAX:
+				estadoEnvio = envAdm.enviarFax(enviosBean, vDestinatarios, htErrores, generarLog);
 
-		            } catch (ClsExceptions e) {	                
-		            	try {tx.rollback();} catch (Exception eee) {};
-		                throw new SIGAException("messages.updated.error",e);
-		            }			    
-				} else {			    
-				    try {
-		                enviosBean.setIdEstado(Integer.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES));
-		                tx.begin();
-		                envAdm.update(enviosBean);
-		                tx.commit();
-		            } catch (ClsExceptions e) {	                
-		            	try {tx.rollback();} catch (Exception eee) {};
-		                throw new SIGAException("messages.updated.error",e);
-		            }			    
-				    throw new SIGAException("messages.updated.error");
-				}
-            } catch (SIGAException e) {	                
-			    try {
-	                enviosBean.setIdEstado(Integer.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES));
-	                tx.begin();
-	                envAdm.update(enviosBean);
-	                tx.commit();
-	            } catch (Exception e2) {	                
-	            	try {tx.rollback();} catch (Exception eee) {};
-	                throw new SIGAException("messages.updated.error",e2);
-	            }			    
-                throw e;
-	        } catch (Exception e) {	                
-			    try {
-	                enviosBean.setIdEstado(Integer.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES));
-	                tx.begin();
-	                envAdm.update(enviosBean);
-	                tx.commit();
-	            } catch (Exception e2) {	                
-	            	try {tx.rollback();} catch (Exception eee) {};
-	                throw new SIGAException("messages.updated.error",e2);
-	            }			    
-	            throw new SIGAException("messages.updated.error",e);
-	        }			
-		
-		} else if (iTipoEnvio==EnvEnviosAdm.TIPO_FAX) {
+				break;
+			default:
+				estadoEnvio = EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES;
+				break;
+				
 			
-			/////////////////////////////////////
-			/// FAX
-			/////////////////////////////////////
-
-			String estadoEnvio = "";
-		  //Ejecutamos el procesado, recogemos el estado en que queda el envío y lo seteamos
-	        try {
-
-	            //Proceso de Fax	        
-	        	estadoEnvio = envAdm.enviarFax(enviosBean, vDestinatarios, htErrores, generarLog);
-				if (!estadoEnvio.equalsIgnoreCase(EnvEstadoEnvioAdm.K_ESTADOENVIO_PENDIENTE_MANUAL)){
-				    try {
-				        enviosBean.setIdEstado(Integer.valueOf(estadoEnvio));
-		                tx.begin();
-		                envAdm.update(enviosBean);
-		                tx.commit();
-
-		            } catch (ClsExceptions e) {	                
-		            	try {tx.rollback();} catch (Exception eee) {};
-		                throw new SIGAException("messages.updated.error",e);
-		            }
-				} else {			    
-				    try {
-		                enviosBean.setIdEstado(Integer.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES));
-		                tx.begin();
-		                envAdm.update(enviosBean);
-		                tx.commit();
-
-		            } catch (ClsExceptions e) {	                
-		            	try {tx.rollback();} catch (Exception eee) {};
-		                throw new SIGAException("messages.updated.error",e);
-		            }			    
-				    throw new SIGAException("messages.updated.error");
-				}
-            } catch (SIGAException e) {	                
-			    try {
-	                enviosBean.setIdEstado(Integer.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES));
-	                tx.begin();
-	                envAdm.update(enviosBean);
-	                tx.commit();
-
-	            } catch (Exception e2) {	                
-	            	try {tx.rollback();} catch (Exception eee) {};
-	                throw new SIGAException("messages.updated.error",e2);
-	            }			    
-                throw e;
-            } catch (Exception e) {	                
-			    try {
-	                enviosBean.setIdEstado(Integer.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES));
-	                tx.begin();
-	                envAdm.update(enviosBean);
-	                tx.commit();
-
-	            } catch (Exception e2) {	                
-	            	try {tx.rollback();} catch (Exception eee) {};
-	                throw new SIGAException("messages.updated.error",e2);
-	            }			    
-                throw new SIGAException("messages.updated.error",e);
-            }			
+			}
 			
-        } else {
-		    try {
-                enviosBean.setIdEstado(Integer.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES));
-                tx.begin();
-                envAdm.update(enviosBean);
-                tx.commit();
+			enviosBean.setIdEstado(Integer.valueOf(estadoEnvio));
+			envAdm.updateDirect(enviosBean);
 
-            } catch (Exception e) {	                
-            	try {tx.rollback();} catch (Exception eee) {};
-               throw new SIGAException("messages.updated.error",e);
-            }			    
-            throw new SIGAException("messages.updated.error");
-        }
-	}
+
+		}  catch (SIGAException e) {	                
+			enviosBean.setIdEstado(Integer.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES));
+			envAdm.updateDirect(enviosBean);
+			throw e;
+			
+			
+		}catch (ClsExceptions e) {	                
+			enviosBean.setIdEstado(Integer.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES));
+			envAdm.updateDirect(enviosBean);
+			throw e;
+			
+			
+		}finally{
+			if(enviosBean.getIdEstado().compareTo(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESANDO)==0 ||
+					estadoEnvio.equalsIgnoreCase(EnvEstadoEnvioAdm.K_ESTADOENVIO_PENDIENTE_MANUAL)||
+					enviosBean.getIdEstado().equals("")){
+//				enviosBean.getOriginalHash().get(EnvEnviosBean.C_IDESTADO);
+				enviosBean.setIdEstado(Integer.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES));
+				envAdm.updateDirect(enviosBean);
+			}
+
+		}			
 	
+	}
 	
 	/**
 	 * Método estático para el procesado automático de envíos pendientes
@@ -1425,12 +1158,47 @@ public class Envio
 			    
 			    for (int i=0;i<enviosBeans.size();i++){
 		    		EnvEnviosBean envBean = (EnvEnviosBean)enviosBeans.elementAt(i);
+		    		Hashtable htPk = new Hashtable();
+					htPk.put(EnvEnviosBean.C_IDINSTITUCION,idInstitucion);
+					htPk.put(EnvEnviosBean.C_IDENVIO,envBean.getIdEnvio());
+					
+					//obtengo el envio para ver si lo ha generado alguien durante el tiempo que
+					// dura el proceso
+					envBean = (EnvEnviosBean)envAdm.selectByPKForUpdate(htPk).firstElement();
 		    		Envio envio = new Envio(envBean, _usrBean);
+		    		
+		    		
+		    		
 		    		try { 
+		    			if(envBean.getIdEstado().compareTo(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESANDO)==0){
+		    				//Algo esta procesando este envio
+		    				//(bien este mismo proceso en otro instante, bien el envio manual)
+		    				continue;
+							
+						}else if(!envBean.getIdEstado().toString().equalsIgnoreCase(EnvEstadoEnvioAdm.K_ESTADOENVIO_PENDIENTE_AUTOMATICO)){
+							//Si algun otro proceso lo ha enviado pasamos al siguiente
+							continue;
+						}else{
+							envBean.setIdEstado(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESANDO);
+			                envAdm.updateDirect(envBean);
+			                
+							
+						}
 			    		
 		    			// OBTENCION DE DESTINATARIOS 
 		    	        /////////////////////////////////////
-		    			Vector vDestinatarios = envAdm.getDestinatarios(envBean.getIdInstitucion().toString(), envBean.getIdEnvio().toString(), envBean.getIdTipoEnvios().toString());
+		    			Vector vDestinatarios = null;
+		    			try {
+		    				vDestinatarios = envAdm.getDestinatarios(envBean.getIdInstitucion().toString(), 
+				    				envBean.getIdEnvio().toString(), envBean.getIdTipoEnvios().toString());			
+		    			} catch (Exception e) {
+		    				SIGAException sigaExc = new SIGAException("messages.envios.errorDestinatarios");
+		    				//envAdm.generarLogEnvioExceptionHT(envBean,sigaExc);
+		    				throw sigaExc;
+		    			}
+		    			
+		    			
+		    			
 		    			Hashtable htErrores = new Hashtable();
 		    			
 		    			envio.procesarEnvioMasivo(vDestinatarios,htErrores,false,tx);
@@ -1442,9 +1210,13 @@ public class Envio
 	
 		    		} catch (SIGAException e) {
 		    			envAdm.generarLogEnvioExceptionHT(envBean,e);
+		    			envBean.setIdEstado(Integer.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES));
+		                envAdm.updateDirect(envBean);
 			    		ClsLogging.writeFileLogError("@@@ Error procesando envío AUTOMATICO " + envBean.getDescripcion() + "(" + envBean.getIdEnvio() + ")  Mensaje:" + e.getMsg(""),e,3);
 	
 		    		} catch (Exception e) {
+		    			envBean.setIdEstado(Integer.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES));
+		                envAdm.updateDirect(envBean);
 		    			envAdm.generarLogEnvioExceptionHT(envBean,e);
 			    		ClsLogging.writeFileLogError("@@@ Error procesando envío AUTOMATICO " + envBean.getDescripcion() + "(" + envBean.getIdEnvio() + ")  Mensaje:" + e.getLocalizedMessage(),e,3);
 			    	}

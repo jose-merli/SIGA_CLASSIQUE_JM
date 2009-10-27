@@ -135,7 +135,7 @@
 		<siga:Idioma key="gratuita.operarEJG.literal.fecha"/>&nbsp;(*)
 	</td>
 	<td>
-		<html:text name="DefinirEstadosEJGForm" property="fechaInicio" size="10" styleClass="<%=estilo%>" value="<%=fechaInicio%>" readonly="<%=bReadOnly%>"></html:text>&nbsp;&nbsp;
+		<siga:Fecha nombreCampo="fechaInicio" valorInicial="<%=fechaInicio%>" />
 		<%if (automatico!=null && !automatico.equals("1")){%>
 		<a onClick="return showCalendarGeneral(fechaInicio);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
 		<%}%>

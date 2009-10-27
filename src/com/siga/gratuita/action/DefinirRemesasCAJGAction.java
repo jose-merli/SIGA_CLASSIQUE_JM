@@ -5,6 +5,7 @@
 package com.siga.gratuita.action;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -14,16 +15,13 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Properties;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.transaction.UserTransaction;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -38,6 +36,8 @@ import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
 import com.siga.Utilidades.GestorContadores;
 import com.siga.Utilidades.Paginador;
 import com.siga.Utilidades.PaginadorCaseSensitive;
@@ -47,6 +47,8 @@ import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmLenguajesAdm;
+import com.siga.beans.CajgConfiguracionAdm;
+import com.siga.beans.CajgConfiguracionBean;
 import com.siga.beans.CajgEJGRemesaAdm;
 import com.siga.beans.CajgEJGRemesaBean;
 import com.siga.beans.CajgProcedimientoRemesaBean;
@@ -131,6 +133,8 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				mapDestino = generarFichero(mapping, miForm, request, response);
 			} else if (accion.equalsIgnoreCase("generaXML")) {
 				mapDestino = generaXML(mapping, miForm, request, response);
+			} else if (accion.equalsIgnoreCase("envioFTP")) {
+				mapDestino = envioFTP(mapping, miForm, request, response);
 			} else if (accion.equalsIgnoreCase("marcarEnviada")) {
 				mapDestino = marcarEnviada(mapping, miForm, request, response);
 			} else if (accion.equalsIgnoreCase("borrarRemesa")) {
@@ -1045,7 +1049,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		return v_seleccionadosSesion;
 	}
 
-	protected String aniadirARemesa(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response)
+	protected synchronized String aniadirARemesa(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response)
 			throws SIGAException {
 		DefinicionRemesas_CAJG_Form miForm = (DefinicionRemesas_CAJG_Form) formulario;
 		String seleccionados = miForm.getSelDefinitivo();
@@ -1054,11 +1058,11 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		if (seleccionados != null && !seleccionados.equals("")) {
 			v_seleccionadosSesion = actualizarSelecionados(seleccionados, claves, request);
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			ScsEstadoEJGAdm admBean = new ScsEstadoEJGAdm(usr);
-			CajgEJGRemesaAdm admEJGRemesa = new CajgEJGRemesaAdm(usr);
+			ScsEstadoEJGAdm estadoEJGAdm = new ScsEstadoEJGAdm(usr);
+			CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(usr);
 			UserTransaction tx = null;
 			try {
-				tx = usr.getTransaction();
+				tx = usr.getTransactionPesada();
 				tx.begin();
 
 				CajgRemesaAdm cajgRemesaAdm = new CajgRemesaAdm(usr);
@@ -1075,6 +1079,8 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				String numRemesa = (prefijo != null && !prefijo.trim().equals("")) ? (prefijo) : "";
 				numRemesa += cajgRemesaBean.getNumero();
 				numRemesa += (sufijo != null && !sufijo.trim().equals("")) ? (sufijo) : "";
+				
+				int numeroIntercambio = cajgEJGRemesaAdm.getNextNumeroIntercambio(getIDInstitucion(request));
 
 				for (int i = 0; i < v_seleccionadosSesion.size(); i++) {
 
@@ -1083,26 +1089,29 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 					String seleccionado = (String) miHashaux.get("SELECCIONADO");
 					if (seleccionado.equals("1")) {
 						Hashtable miHash = new Hashtable();
-						miHash.put("IDINSTITUCION", miHashaux.get("IDINSTITUCION"));
-						miHash.put("ANIO", miHashaux.get("ANIO"));
-						miHash.put("NUMERO", miHashaux.get("NUMERO"));
-						miHash.put("IDTIPOEJG", miHashaux.get("IDTIPOEJG"));
+						miHash.put(ScsEJGBean.C_IDINSTITUCION, miHashaux.get(ScsEJGBean.C_IDINSTITUCION));
+						miHash.put(ScsEJGBean.C_ANIO, miHashaux.get(ScsEJGBean.C_ANIO));
+						miHash.put(ScsEJGBean.C_NUMERO, miHashaux.get(ScsEJGBean.C_NUMERO));
+						miHash.put(ScsEJGBean.C_IDTIPOEJG, miHashaux.get(ScsEJGBean.C_IDTIPOEJG));
 						miHash.put(ScsEstadoEJGBean.C_IDESTADOEJG, ClsConstants.GENERADO_EN_REMESA);
 						miHash.put(ScsEstadoEJGBean.C_FECHAINICIO, UtilidadesBDAdm.getFechaBD("es"));
 						miHash.put(ScsEstadoEJGBean.C_AUTOMATICO, "1");
 						miHash.put(ScsEstadoEJGBean.C_OBSERVACIONES, numRemesa);
 
-						Hashtable miHash2 = new Hashtable();
-						miHash2.put("IDINSTITUCION", miHashaux.get("IDINSTITUCION"));
-						miHash2.put("ANIO", miHashaux.get("ANIO"));
-						miHash2.put("NUMERO", miHashaux.get("NUMERO"));
-						miHash2.put("IDTIPOEJG", miHashaux.get("IDTIPOEJG"));
-						miHash2.put("IDINSTITUCIONREMESA", miHashaux.get("IDINSTITUCION"));
-						miHash2.put("IDREMESA", miForm.getIdRemesa());
+						Hashtable hashEJGRemesa = new Hashtable();
+						hashEJGRemesa.put(CajgEJGRemesaBean.C_IDINSTITUCION, miHashaux.get(ScsEJGBean.C_IDINSTITUCION));
+						hashEJGRemesa.put(CajgEJGRemesaBean.C_ANIO, miHashaux.get(ScsEJGBean.C_ANIO));
+						hashEJGRemesa.put(CajgEJGRemesaBean.C_NUMERO, miHashaux.get(ScsEJGBean.C_NUMERO));
+						hashEJGRemesa.put(CajgEJGRemesaBean.C_IDTIPOEJG, miHashaux.get(ScsEJGBean.C_IDTIPOEJG));
+						hashEJGRemesa.put(CajgEJGRemesaBean.C_IDINSTITUCIONREMESA, miHashaux.get(ScsEJGBean.C_IDINSTITUCION));
+						hashEJGRemesa.put(CajgEJGRemesaBean.C_IDREMESA, miForm.getIdRemesa());
+						hashEJGRemesa.put(CajgEJGRemesaBean.C_NUMEROINTERCAMBIO, String.valueOf(numeroIntercambio));
+						numeroIntercambio++;
+						
 
 						SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 						Date fecha_modificacion = null;
-						String fecha_modificacion_aux = consultaMaximaFechaModificacionEJG(miHash, admBean);
+						String fecha_modificacion_aux = consultaMaximaFechaModificacionEJG(miHash, estadoEJGAdm);
 
 						if (fecha_modificacion_aux != null) {
 							fecha_modificacion = sdf.parse(fecha_modificacion_aux);
@@ -1114,10 +1123,10 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 						fecha_busqueda = sdf1.parse(fecha_aux);
 
 						if (fecha_modificacion.before(fecha_busqueda)) {
-							admBean.prepararInsert(miHash);
+							estadoEJGAdm.prepararInsert(miHash);
 
-							admBean.insert(miHash);
-							admEJGRemesa.insert(miHash2);
+							estadoEJGAdm.insert(miHash);
+							cajgEJGRemesaAdm.insert(hashEJGRemesa);
 
 						} else {
 							tx.rollback();//								
@@ -1902,10 +1911,124 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		String pathPlantillas = p.returnProperty(keyPathPlantillas) + p.returnProperty(keyPath2);
 						
 		String dirFicheros = pathFichero + File.separator + idInstitucion  + File.separator + form.getIdRemesa() + File.separator + "xml";
-		String dirPlantillas = pathPlantillas + File.separator + idInstitucion  + File.separator + "xsl";
+		String dirPlantillas = pathPlantillas + File.separator + idInstitucion;
 		
 		File file = generaXML(usr, idInstitucion, idRemesa, dirFicheros, dirPlantillas);
 		return descargaFichero(formulario, request, file);
+	}
+	
+	/**
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	private String envioFTP(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws Exception {
+				
+		generaXML(mapping, formulario, request, response);
+		
+		String idInstitucion = this.getIDInstitucion(request).toString();
+		DefinicionRemesas_CAJG_Form form = (DefinicionRemesas_CAJG_Form) formulario;		
+		
+		String keyPathFicheros = "cajg.directorioFisicoCAJG";		
+		String keyPath2 = "cajg.directorioCAJGJava";
+				
+		ReadProperties p = new ReadProperties("SIGA.properties");
+		String pathFichero = p.returnProperty(keyPathFicheros) + p.returnProperty(keyPath2);								
+		String dirFicheros = pathFichero + File.separator + idInstitucion  + File.separator + form.getIdRemesa() + File.separator + "xml";		
+		
+		File dir = new File(dirFicheros);
+		File[] files = dir.listFiles();
+		File file = null;
+		if (files != null){
+			for (int i = 0; i < files.length; i++) {
+				if (files[i].getName().endsWith(".xml")) {
+					file = files[i];
+					break;
+				}
+			}
+		}
+		
+		if (file == null || !file.exists()) {
+			throw new SIGAException("messages.cajg.error.ficheroNoEncontrado");
+		}
+		FileInputStream fis = new FileInputStream(file);
+		
+		CajgConfiguracionAdm cajgConfiguracionAdm = new CajgConfiguracionAdm(getUserBean(request));
+		Hashtable hash = new Hashtable();
+		hash.put(CajgConfiguracionBean.C_IDINSTITUCION, this.getIDInstitucion(request));
+		Vector vector = cajgConfiguracionAdm.selectByPK(hash);
+		if (vector == null || vector.size() != 1) {
+			throw new SIGAException("messages.cajg.error.revisarConfiguracion");
+		}
+		CajgConfiguracionBean cajgConfiguracionBean = (CajgConfiguracionBean) vector.get(0);
+		
+		if (cajgConfiguracionBean.getFtpIP() == null || cajgConfiguracionBean.getFtpIP().trim().equals("")
+				|| cajgConfiguracionBean.getFtpPuerto() == null
+				|| cajgConfiguracionBean.getFtpUser() == null
+				|| cajgConfiguracionBean.getFtpPass() == null) {
+			throw new SIGAException("messages.cajg.error.revisarConfiguracion");
+		}
+		
+		JSch jsch = new JSch();
+		com.jcraft.jsch.Session session = null;
+		ChannelSftp chan = null;
+		
+		try {
+			session = jsch.getSession(cajgConfiguracionBean.getFtpUser(), cajgConfiguracionBean.getFtpIP(), cajgConfiguracionBean.getFtpPuerto().intValue());
+			
+			session.setPassword(cajgConfiguracionBean.getFtpPass());
+			
+			// El SFTP requiere un intercambio de claves
+			// con esta propiedad le decimos que acepte la clave
+			// sin pedir confirmación
+			Properties prop = new Properties();
+			prop.put("StrictHostKeyChecking", "no");
+			session.setConfig(prop);
+			session.connect();
+
+			// Abrimos el canal de sftp y conectamos
+			chan = (ChannelSftp) session.openChannel("sftp");
+			chan.connect();
+		
+
+			String dirFTP = cajgConfiguracionBean.getFtpDirectorio();
+						
+			chan.cd(dirFTP);
+			chan.put(fis, file.getName()); 
+			
+			fis.close();
+			
+			
+			UsrBean usr = getUserBean(request);
+			
+			UserTransaction tx = usr.getTransaction();
+			tx.begin();
+			// Marcar como generada
+			nuevoEstadoRemesa(usr, getIDInstitucion(request), Integer.valueOf(form.getIdRemesa()), Integer.valueOf("1"));
+
+			
+			//MARCAMOS COMO ENVIADA
+			if (nuevoEstadoRemesa(usr, getIDInstitucion(request), Integer.valueOf(form.getIdRemesa()), Integer.valueOf("2"))) {
+				nuevoEstadoEJGRemitidoComision(request, form.getIdRemesa(), ClsConstants.REMITIDO_COMISION);
+			}
+			tx.commit();
+
+		
+		} finally {
+			
+			if (chan != null && chan.isConnected()) {
+				chan.disconnect();
+			}
+			if (session != null && session.isConnected()) {
+				session.disconnect();
+			}			
+		}
+		
+		return exitoRefresco("messages.cajg.envioFTP.correcto", request);
 	}
 	
 	/**

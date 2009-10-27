@@ -173,6 +173,7 @@
 		<html:hidden name="busquedaClientesAvanzadaForm" property = "colegiado" value="<%=colegiado%>"/>
 		<html:hidden name="busquedaClientesAvanzadaForm" property = "avanzada"/>
 		<input type="hidden" name="limpiarFilaSeleccionada" value="">
+		<html:hidden property="seleccionarTodos" />
 	<tr>				
 	<td>
 
@@ -565,16 +566,26 @@
 	<script language="JavaScript">
 
 		<!-- Funcion asociada a boton buscar -->
-		function buscar() 
+		function buscar(modo) 
 		{		
 //			if (validateBusquedaClientesAvanzadaForm(document.forms[0])) 
 			{
 				sub();
-				document.forms[0].modo.value="buscarInit";
+				if(modo)
+					document.forms[0].modo.value = modo;
+				else
+					document.forms[0].modo.value="buscarInit";
+				
 				document.forms[0].avanzada.value="<%=ClsConstants.DB_TRUE %>";
 				document.forms[0].target="mainWorkArea";	
 				document.forms[0].submit();	
 			}
+		}
+		function seleccionarTodos(pagina) 
+		{
+			document.forms[0].seleccionarTodos.value = pagina;
+			buscar('buscarPor');
+				
 		}
 
 		<!-- Funcion asociada a boton busqueda simple -->

@@ -407,7 +407,155 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		sql.append(")");
 		
 		// Me quedo con la primera, se presupone que solo hay una ");
-		sql.append(" and rownum<2) as acreditacion_fin ");   
+		sql.append(" and rownum<2) as acreditacion_fin, ");   
+		
+		
+		sql.append(" (select trunc(actini.fecha) ");
+		sql.append(" from scs_actuaciondesigna actini, scs_acreditacionprocedimiento acp, scs_acreditacion ac ");       
+		sql.append(" where actini.idinstitucion = ");
+		
+		contador++;
+		codigos.put(new Integer(contador),idInstitucion.toString());
+		sql.append(":"+contador);
+		
+		sql.append(" and   actini.idturno = d.idturno ");
+		sql.append(" and   actini.anio = d.anio ");
+		sql.append(" and   actini.numero = d.numero ");
+		
+		sql.append(" and   acp.idinstitucion = ");
+		
+		//ultima modificacion
+		sql.append(" actini.idinstitucion_proc");
+		//sql.append(idInstitucion);
+		
+		sql.append(" and   acp.idprocedimiento = actini.idprocedimiento ");
+		sql.append(" and   acp.idacreditacion = actini.idacreditacion ");
+		sql.append(" and   acp.idacreditacion = ac.idacreditacion ");
+		sql.append(" and   (ac.idtipoacreditacion=");
+		
+		contador++;
+		codigos.put(new Integer(contador),TIPO_ACREDIT_INI);
+		sql.append(":"+contador);
+		
+		sql.append(" or   ac.idtipoacreditacion=");
+
+		contador++;
+		codigos.put(new Integer(contador),TIPO_ACREDIT_INIFIN);
+		sql.append(":"+contador);
+		
+		sql.append(")");
+		//acreditacion de inicio normal ");        
+		//para penal la acreditacion es 2 cuando la mayor entre fechadesigna y fechaactuacion es > 2005, si no es 10 ");
+		sql.append(" and   ac.idacreditacion  ");
+		
+		//lo de arriba lo sustituyo por estp
+		sql.append(" in (");
+
+		contador++;
+		codigos.put(new Integer(contador),INI_DESPUES_2005);
+		sql.append(":"+contador);
+		
+		sql.append(",");
+
+		contador++;
+		codigos.put(new Integer(contador),INI_ANTES_2005);
+		sql.append(":"+contador);
+		
+		sql.append(",");
+
+		contador++;
+		codigos.put(new Integer(contador),INI_FIN);
+		sql.append(":"+contador);
+		
+		sql.append(",");
+
+		contador++;
+		codigos.put(new Integer(contador),INCOMPARECENCIA);
+		sql.append(":"+contador);
+		
+		sql.append(",");
+
+		contador++;
+		codigos.put(new Integer(contador),TRANS_EXTRAJUDICIAL);
+		sql.append(":"+contador);
+		
+		sql.append(")");
+		//Me quedo con la primera, se presupone que solo hay una ");
+		sql.append(" and rownum<2) as fechaActuacionIni, ");
+		
+		
+		sql.append(" (select trunc(actfin.fecha) ");
+		sql.append(" from scs_actuaciondesigna actfin, scs_acreditacionprocedimiento acpfin, scs_acreditacion acfin ");       
+		sql.append(" where actfin.idinstitucion = ");
+
+		contador++;
+		codigos.put(new Integer(contador),idInstitucion.toString());
+		sql.append(":"+contador);
+		
+		sql.append(" and   actfin.idturno = d.idturno ");
+		sql.append(" and   actfin.anio = d.anio ");
+		sql.append(" and   actfin.numero = d.numero ");
+		sql.append(" and   acpfin.idinstitucion =  ");
+
+		contador++;
+		codigos.put(new Integer(contador),idInstitucion.toString());
+		sql.append(":"+contador);
+		
+		sql.append(" and   acpfin.idprocedimiento = actfin.idprocedimiento ");
+		sql.append(" and   acpfin.idacreditacion = actfin.idacreditacion ");
+		sql.append(" and   acpfin.idacreditacion = acfin.idacreditacion ");
+		sql.append(" and  ( acfin.idtipoacreditacion=");
+
+		contador++;
+		codigos.put(new Integer(contador),TIPO_ACREDIT_FIN);//2 ; // acreditacion de fin normal ");
+		sql.append(":"+contador);
+		
+		sql.append(" or   acfin.idtipoacreditacion=");
+
+		contador++;
+		codigos.put(new Integer(contador),TIPO_ACREDIT_INIFIN);//3) ");
+		sql.append(":"+contador);
+		
+		sql.append(")");
+		// para penal la acreditacion es 3 cuando la mayor entre fechadesigna y fechaactuacion es > 2005, si no es 11 ");
+		sql.append(" and   acfin.idacreditacion "); 
+		
+		sql.append(" in (");
+
+		contador++;
+		codigos.put(new Integer(contador),FIN_DESPUES_2005);
+		sql.append(":"+contador);
+		
+		sql.append(",");
+
+		contador++;
+		codigos.put(new Integer(contador),FIN_ANTES_2005);
+		sql.append(":"+contador);
+		
+		sql.append(",");
+
+		contador++;
+		codigos.put(new Integer(contador),INI_FIN);
+		sql.append(":"+contador);
+		
+		sql.append(",");
+
+		contador++;
+		codigos.put(new Integer(contador),INCOMPARECENCIA);
+		sql.append(":"+contador);
+		
+		sql.append(",");
+
+		contador++;
+		codigos.put(new Integer(contador),TRANS_EXTRAJUDICIAL);
+		sql.append(":"+contador);
+		
+		sql.append(")");
+		
+		// Me quedo con la primera, se presupone que solo hay una ");
+		sql.append(" and rownum<2) as fechaActuacionFin ");  
+		
+		
 		
 		//Vamos a meter este datos para ver las concurrencias
 		if(!isInforme){

@@ -16,7 +16,7 @@ import com.siga.general.MasterForm;
  {
 	String numeroDilegencia = "", numeroProcedimiento = "", comisaria = "", juzgado = "", 
 			designa_anio= "", designa_numero = "", designa_turno = "", designa_idInstitucion = "",
-	        idTurnoEJG="",idGuardiaEJG="",pretension="" ;
+	        idTurnoEJG="",idGuardiaEJG="",pretension="", idOrigenCAJG="", idPreceptivo="" ;
 
 	public String getPretension() {
 		return pretension;
@@ -24,6 +24,21 @@ import com.siga.general.MasterForm;
 	public void setPretension(String pretension) {
 		this.pretension = pretension;
 	}
+	
+	public String getIdOrigenCAJG() {
+		return idOrigenCAJG;
+	}
+	public void setIdOrigenCAJG(String idOrigenCAJG) {
+		this.idOrigenCAJG = idOrigenCAJG;
+	}
+	
+	public String getIdPreceptivo() {
+		return idPreceptivo;
+	}
+	public void setIdPreceptivo(String idPreceptivo) {
+		this.idPreceptivo = idPreceptivo;
+	}
+
 
 	/*
 	 * Metodos SET

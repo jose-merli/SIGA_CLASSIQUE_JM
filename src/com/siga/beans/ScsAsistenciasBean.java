@@ -55,6 +55,8 @@ public class ScsAsistenciasBean extends MasterBean{
 	private Integer juzgadoIdInstitucion;
 	private Integer idEstadoAsistencia;
 	private String  fechaEstadoAsistencia;
+	
+	
 
 	
 	/*
@@ -284,4 +286,5 @@ public class ScsAsistenciasBean extends MasterBean{
 	public void setFechaEstadoAsistencia(String fechaEstadoAsistencia) {
 		this.fechaEstadoAsistencia = fechaEstadoAsistencia;
 	}
+	
 }

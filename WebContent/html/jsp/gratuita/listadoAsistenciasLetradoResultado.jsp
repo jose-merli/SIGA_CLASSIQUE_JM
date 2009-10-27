@@ -192,6 +192,8 @@ String nC="";
 		if (esFichaColegial) { 
 				target = "mainPestanas";
 		} 
+		
+		
 	 %>
 
 		<html:form action="/JGR_AsistenciasLetrado.do" method="post" target="<%=target%>" style="display:none">
@@ -203,6 +205,7 @@ String nC="";
 			<!-- RGG: cambio a formularios ligeros -->
 			<input type="hidden" name="tablaDatosDinamicosD">
 			<input type="hidden" name="actionModal" value="">
+			<input type="hidden" name="esFichaColegial" value="<%=esFichaColegial%>">
 		</html:form>	
 		
 		<!-- campos a pasar -->

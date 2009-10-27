@@ -144,7 +144,7 @@
 	</script>
 </head>
 
-<body onload="ajusteAlto('resultado');<%=funcionBuscar%>">
+<body onload="ajusteAlto('resultado');marked();<%=funcionBuscar%>">
 
 <!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
 
@@ -156,7 +156,8 @@
 	<html:hidden property="esGeneral" value="<%=general%>" />
 	<html:hidden property="hiddenFrame" value="1" />
 	<input type="hidden" name="limpiarFilaSeleccionada" value="">
- 
+ 	<html:hidden property="seleccionarTodos" />
+	
 	<siga:ConjCampos leyenda="expedientes.auditoria.literal.datosgenerales">
 
 		<table align="left" border="0">
@@ -402,15 +403,28 @@
 		
 		
 		<!-- Funcion asociada a boton buscar -->
-		function buscar() 
+		function buscar(modo) 
 		{	
-			sub();				
-			document.forms[0].modo.value="buscarInit";
+			sub();	
+			if(modo)
+				document.forms[0].modo.value = modo;
+			else			
+				document.forms[0].modo.value="buscarInit";
+			
 			document.forms[0].avanzada.value="<%=ClsConstants.DB_FALSE%>";
 			document.forms[0].target="resultado";
 			document.forms[0].submit();
 					
 		}
+		
+		function seleccionarTodos(pagina) 
+		{
+			document.forms[0].seleccionarTodos.value = pagina;
+			buscar('buscarPor');
+				
+		}		
+		
+		
 		<!-- Funcion asociada a boton busqueda avanzada -->
 		function buscarAvanzada() 
 		{

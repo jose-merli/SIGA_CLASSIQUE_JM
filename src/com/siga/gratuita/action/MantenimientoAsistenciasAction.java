@@ -456,7 +456,7 @@ public class MantenimientoAsistenciasAction extends MasterAction
 		
 		UsrBean usr = null;
 		UserTransaction tx = null;
-		
+		Vector v=new Vector();
 		try{
 			usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			tx = usr.getTransaction();
@@ -479,6 +479,8 @@ public class MantenimientoAsistenciasAction extends MasterAction
 			String idTipoAsistenciaColegio = miForm.getIdTipoAsistenciaColegio();
 			String anio = miForm.getFechaHora().substring(6);
 			String fecha = GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaHora());
+			boolean esFichaColegial  = UtilidadesString.stringToBoolean(request.getParameter("esFichaColegial").toString());
+
 			
 			//-------------------------------------------------------------------------------------------
 			// Comprobamos si el asistente esta ya inscrito en alguna guardia en la fecha de asistencia.
@@ -494,12 +496,13 @@ public class MantenimientoAsistenciasAction extends MasterAction
 			guardia.put(ScsGuardiasColegiadoBean.C_IDPERSONA,idPersona);
 			guardia.put(ScsGuardiasColegiadoBean.C_FECHAFIN,fecha);
 			
-			Vector v = guardiasAdm.select(guardia);
+			 v = guardiasAdm.select(guardia);
 			
 			tx.begin();
 			
-			if(v == null || v.size() == 0)
-			{
+			if(v == null || v.isEmpty())
+			{ 
+				if (!esFichaColegial){
 				// EL ASISTENTE NO ESTÁ DE GUARDIA ESE DÍA. 
 				
 				//----------------------------------------------------------------------------------------------------------------------------------
@@ -567,6 +570,10 @@ public class MantenimientoAsistenciasAction extends MasterAction
 				}
 				else
 					throw new SIGAException("gratuita.nuevaAsistencia.literal.noCalendario");
+				
+			}else{
+				throw new SIGAException("gratuita.nuevaAsistencia.literal.letradoSinGuardia");
+			}
 				
 			}
 			// Insertamos la asistencia
@@ -697,6 +704,9 @@ public class MantenimientoAsistenciasAction extends MasterAction
 						}
 					}
 					//////////////////////
+				}else{
+					//NO HA CAMBIADO NADA
+					UtilidadesHash.set(hash, ScsAsistenciasBean.C_IDESTADOASISTENCIA, estado);
 				}
 			}
 

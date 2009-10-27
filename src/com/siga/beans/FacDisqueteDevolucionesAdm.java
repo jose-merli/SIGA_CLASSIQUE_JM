@@ -111,16 +111,16 @@ public class FacDisqueteDevolucionesAdm extends MasterBeanAdministrador {
 				"       (SELECT COUNT (*) " +
 				"          FROM "+FacLineaDevoluDisqBancoBean.T_NOMBRETABLA+" LIN " +
 				"         WHERE LIN."+FacLineaDevoluDisqBancoBean.C_IDINSTITUCION+" = " +
-				"               LIN."+FacDisqueteDevolucionesBean.C_IDINSTITUCION+" " +
+				"               DIS."+FacDisqueteDevolucionesBean.C_IDINSTITUCION+" " +
 				"           AND LIN."+FacLineaDevoluDisqBancoBean.C_IDDISQUETEDEVOLUCIONES+" = " +
-				"               LIN."+FacDisqueteDevolucionesBean.C_IDDISQUETEDEVOLUCIONES+" " +
+				"               DIS."+FacDisqueteDevolucionesBean.C_IDDISQUETEDEVOLUCIONES+" " +
 				"       ) AS FACTURAS, " +
 				"       (SELECT COUNT (DISTINCT LIN."+FacLineaDevoluDisqBancoBean.C_CARGARCLIENTE+")+ 1" +
 				"          FROM "+FacLineaDevoluDisqBancoBean.T_NOMBRETABLA+" LIN " +
 				"         WHERE LIN."+FacLineaDevoluDisqBancoBean.C_IDINSTITUCION+" = " +
-				"               LIN."+FacDisqueteDevolucionesBean.C_IDINSTITUCION+" " +
+				"               DIS."+FacDisqueteDevolucionesBean.C_IDINSTITUCION+" " +
 				"           AND LIN."+FacLineaDevoluDisqBancoBean.C_IDDISQUETEDEVOLUCIONES+" = " +
-				"               LIN."+FacDisqueteDevolucionesBean.C_IDDISQUETEDEVOLUCIONES+" " +
+				"               DIS."+FacDisqueteDevolucionesBean.C_IDDISQUETEDEVOLUCIONES+" " +
 				"           AND LIN."+FacLineaDevoluDisqBancoBean.C_CARGARCLIENTE+" = 'S') AS COMISION, " +
 				"       BAN."+CenBancosBean.C_NOMBRE+" " +
 				"  FROM "+FacDisqueteDevolucionesBean.T_NOMBRETABLA+" DIS, " +

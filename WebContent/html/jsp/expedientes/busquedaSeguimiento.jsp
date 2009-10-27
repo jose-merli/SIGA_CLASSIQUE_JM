@@ -155,6 +155,10 @@
 				<% } else if (busquedaVolver.equals("NB")){ %>
 					document.forms[1].action = "<%=app%>/EXP_AuditoriaExpedientes.do?noReset=true&buscar=true";
 					document.forms[1].modo.value="abrir";
+				<% } else if(busquedaVolver.equals("AV")) { %>
+					document.forms[1].action = "<%=app%>/EXP_AuditoriaExpedientes.do?noReset=true";
+					document.forms[1].modo.value="buscarPor";
+					document.forms[1].avanzada.value="<%=ClsConstants.DB_TRUE %>";
 				<% }  else if (busquedaVolver.equals("Al")){%>
 					document.forms[1].action = "<%=app%>/EXP_Consultas.do?noReset=true&buscar=true";
 					document.forms[1].modo.value="abrir";

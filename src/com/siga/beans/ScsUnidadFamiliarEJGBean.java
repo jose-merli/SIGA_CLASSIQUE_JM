@@ -28,7 +28,7 @@ public class ScsUnidadFamiliarEJGBean extends MasterBean{
 	private Double importeOtrosBienes;
 	private String  descripcionIngresosAnuales;
 	private Integer idParentesco;
-	
+	private Integer tipoIngreso;
 		
 	
 	/* Nombre de Tabla*/
@@ -55,6 +55,7 @@ public class ScsUnidadFamiliarEJGBean extends MasterBean{
 	static public final String  C_DESCRIPCIONINGRESOSANUALES= 					"DESCRIPCIONINGRESOSANUALES";
 	static public final String  C_TIPOGRUPOLAB= 	             				"IDTIPOGRUPOLAB";
 	static public final String  C_IDPARENTESCO= 	             				"IDPARENTESCO";
+	static public final String  C_TIPOINGRESO= 	             				"IDTIPOINGRESO";
 	
 	
 	/*Metodos SET*/
@@ -187,6 +188,14 @@ public class ScsUnidadFamiliarEJGBean extends MasterBean{
 	 * @return void 
 	 */
 	public void setDescripcionIngresosAnuales (String valor)	{ this.descripcionIngresosAnuales = valor;}
+	
+	/**
+	 * Almacena en el Bean el identificador del tipo de ingreso del EJG
+	 * 
+	 * @param tipo de ingreso del EJG  
+	 * @return void 
+	 */
+	public void setTipoIngreso				(Integer valor)	{ this.tipoIngreso = valor;}
 		
 	/*Metodos GET*/
 	
@@ -310,4 +319,10 @@ public class ScsUnidadFamiliarEJGBean extends MasterBean{
 	public void setIdParentesco(Integer idParentesco) {
 		this.idParentesco = idParentesco;
 	}
+	
+	/**
+	 * Recupera del Bean el identificador del tipo de ingreso del EJG  
+	 * @return Integer 
+	 */
+	public Integer getTipoIngreso			()	{ return this.tipoIngreso;}
 }

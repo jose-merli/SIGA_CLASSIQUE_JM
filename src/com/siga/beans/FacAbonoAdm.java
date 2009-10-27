@@ -1047,9 +1047,9 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CODIGOSUCURSAL + ", " +
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_DIGITOCONTROL + ", " +
 							"lpad(substr("+CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_NUMEROCUENTA + ",7),10,'*') NUMEROCUENTA, " +
-							"-1*"+FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDCUENTA + " AS TOTAL_NETO, " +
-							"-1*"+FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDCUENTA + " AS TOTAL_IVA, " +
-							"-1*"+FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDCUENTA + " AS TOTAL_ABONO " +
+							"-1*"+FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPTOTALNETO + " AS TOTAL_NETO, " +
+							"-1*"+FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPTOTALIVA + " AS TOTAL_IVA, " +
+							"-1*"+FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPTOTAL + " AS TOTAL_ABONO " +
 //							"-1*PKG_SIGA_TOTALESABONO.TOTALNETO(" + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION + ", " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") as TOTAL_NETO, " +
 //							"-1*PKG_SIGA_TOTALESABONO.TOTALIVA(" + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION + ", " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") as TOTAL_IVA, " +
 //							"-1*PKG_SIGA_TOTALESABONO.TOTAL(" + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDINSTITUCION + ", " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDABONO + ") as TOTAL_ABONO " +

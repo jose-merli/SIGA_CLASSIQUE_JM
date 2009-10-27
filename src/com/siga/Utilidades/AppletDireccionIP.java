@@ -76,7 +76,7 @@ public class AppletDireccionIP extends Applet {
             int port = this.getCodeBase().getPort();            
             String peticion = "/SIGA/SIGADireccionIP.svrl";
            	parametro = "IPCLIENTE=" + URLEncoder.encode(this.direccionIP,"UTF-8");
-           	urlServlet = new URL("http://localhost:80/SIGA/SIGADireccionIP.svrl");           	
+           	urlServlet = new URL("http://localhost:7001/SIGA/SIGADireccionIP.svrl");           	
 
 			//
             //Realizo la conexion al Servlet:

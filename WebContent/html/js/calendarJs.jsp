@@ -1,6 +1,7 @@
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 <%@taglib uri	=	"struts-bean.tld" prefix="bean" %>
 <%@ taglib uri = "libreria_SIGA.tld" prefix="siga"%>
+<%@ page pageEncoding="ISO-8859-1"%>
 
 <%
 

@@ -45,8 +45,8 @@
 	firma.setFirma(firma.calcularFirma());
 
 	//URL de vuelta para OK y Error:
-	String urlOK = "http://localhost/SIGA/html/jsp/general/modalControlTpv.jsp?operacion=OK";
-	String urlKO = "http://localhost/SIGA/html/jsp/general/modalControlTpv.jsp?operacion=ERROR";
+	String urlOK = "http://localhost:7001/SIGA/html/jsp/general/modalControlTpv.jsp?operacion=OK";
+	String urlKO = "http://localhost:7001/SIGA/html/jsp/general/modalControlTpv.jsp?operacion=ERROR";
 	//---------------------------------------------------
 %>
 

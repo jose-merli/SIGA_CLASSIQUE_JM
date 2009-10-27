@@ -195,6 +195,7 @@
 	<html:hidden property = "modo" value = ""/>
 	<html:hidden property="registrosSeleccionados" value="" />
 	<html:hidden property="datosPaginador" value="" />
+	<html:hidden property="seleccionarTodos" />
 
 	<!-- parametro para colegiados o no -->
 	<html:hidden property = "colegiado" value= "<%=colegiado %>"/>
@@ -394,45 +395,39 @@
   			<siga:FilaConIconos fila="<%=cont %>" botones="<%=permisos %>" modo="<%=modo %>" elementos="<%=elems%>" visibleBorrado="no" clase="listaNonEdit"  pintarEspacio="no">
 			<td>
 		<%
-			String valorCheck = idPersona+"||"+idInstitucion;
-							boolean encontrado = false;
-							int z = 0;
-
-							while (z < registrosSeleccionados.size()
-									&& !encontrado) {
-								Hashtable clavesRegistro = (Hashtable) registrosSeleccionados
-										.get(z);
-
-								if ((valorCheck.equals(clavesRegistro
-										.get(CenPersonaBean.C_IDPERSONA+"||"+"IDINSTITUCION")))) {
-									if (clavesRegistro.get("SELECCIONADO")
-											.equals("1")) {
-										encontrado = true;
-									} else {
-										encontrado = false;
-									}
-									break;
-								} else {
-									encontrado = false;
-								}
-								z++;
-
-							}
-
-							if(isAplicarLOPD){%>
-							<input type="checkbox" value="<%=valorCheck%>"  name="chkPersona"  disabled >
-						<% }else{
-							if (encontrado) {
-		%>
-							
-								<input type="checkbox" value="<%=valorCheck%>"  name="chkPersona" checked onclick="pulsarCheck(this)">
-							<%
-								} else {
+		String valorCheck = idInstitucion+"||"+idPersona;
+			
+							if(isAplicarLOPD){
+								valorCheck+="||"+ClsConstants.DB_TRUE;
 							%>
-								<input type="checkbox" value="<%=valorCheck%>"  name="chkPersona" onclick="pulsarCheck(this)" >
-						<%
+								<input type="checkbox" value="<%=valorCheck%>"  name="chkPersona"  disabled >
+							<% }else{
+								valorCheck+="||"+ClsConstants.DB_FALSE;
+								boolean isChecked = false;
+								for (int z = 0; z < registrosSeleccionados.size(); z++) {
+									Hashtable clavesRegistro = (Hashtable) registrosSeleccionados
+											.get(z);
+
+									String clave = (String)clavesRegistro.get("CLAVE");
+									
+									if (valorCheck.equals(clave)) {
+										isChecked = true;
+										break;
+									}
+									
+
+								}
+								if (isChecked) {
+			%>
+								
+									<input type="checkbox" value="<%=valorCheck%>"  name="chkPersona" checked onclick="pulsarCheck(this)">
+								<%
+									} else {
+								%>
+									<input type="checkbox" value="<%=valorCheck%>"  name="chkPersona" onclick="pulsarCheck(this)" >
+							<%
+								}
 							}
-						}
 							%>
 		</td>
 <%		if (colegiado.equals(ClsConstants.DB_TRUE)) { %>
@@ -502,7 +497,7 @@
 		<!-- FIN: LISTA DE VALORES -->
 		
 		<!-- Pintamos la paginacion-->	
-		<%if ( datosPaginador.get("datos")!=null && !datosPaginador.get("datos").equals("")){
+		<%if (  datosPaginador!=null && datosPaginador.get("datos")!=null && !datosPaginador.get("datos").equals("")){
 			String regSeleccionados = ("" + ((registrosSeleccionados == null) ? 0
 					: registrosSeleccionados.size()));
 		%>
@@ -573,12 +568,14 @@
 	   		 	
 		   		Hashtable clavesEJG= (Hashtable) registrosSeleccionados.get(p);
 		   		
-				valorCheckPersona=(String)clavesEJG.get(CenPersonaBean.C_IDPERSONA)+"||"+(String)clavesEJG.get("IDINSTITUCION");
-						
-				if (clavesEJG.get("SELECCIONADO").equals(ClsConstants.DB_TRUE)&&clavesEJG.get("APLICARLOPD").equals(ClsConstants.DB_FALSE)){%>
+				valorCheckPersona=(String)clavesEJG.get("CLAVE");
+				String noApareceEnRedAbogacia =  (String)clavesEJG.get(CenClienteBean.C_NOAPARECERREDABOGACIA);
+				if(noApareceEnRedAbogacia==null || noApareceEnRedAbogacia.equals("")|| noApareceEnRedAbogacia.equals(ClsConstants.DB_FALSE)){	
+				%>
 					var aux='<%=valorCheckPersona%>';
 					ObjArray.push(aux);
-				<%}
+				<%
+				}
 			} 
 	   	}%>
 	   	
@@ -597,35 +594,11 @@
 	   	if (conf){
 			ObjArray = new Array();
 		   	if (o.checked){
-		   	 	<%if (registrosSeleccionados!=null){
-		   		 	for (int p=0;p<registrosSeleccionados.size();p++){
-		   		 	
-			   			Hashtable clavesEJG= (Hashtable) registrosSeleccionados.get(p);
-			   			valorCheckPersona=(String)clavesEJG.get(CenPersonaBean.C_IDPERSONA)+"||"+(String)clavesEJG.get("IDINSTITUCION");
-			   			
-			   			if (clavesEJG.get("APLICARLOPD").equals(ClsConstants.DB_FALSE)){
-			   			
-			   	%>
-						
-							var aux='<%=valorCheckPersona%>';
-							ObjArray.push(aux);
-						
-					<%
-			   			}
-			   		} 
-		   		 }%>
-				ObjArray.toString();
-				seleccionados1=ObjArray;
-				
-				document.forms[0].registrosSeleccionados.value=seleccionados1;
-				
-				var ele = document.getElementsByName("chkPersona");
-					
-				for (i = 0; i < ele.length; i++) {
-					if(!ele[i].disabled)
-						ele[i].checked = true;
-						
-				}
+		   	 	document.forms[0].modo.value="buscarPor";
+				document.forms[0].avanzada.value="<%=ClsConstants.DB_TRUE %>";
+				document.forms[0].target="mainWorkArea";
+				document.forms[0].seleccionarTodos.value = "<%=paginaSeleccionada%>";
+				document.forms[0].submit();
 				
 			}else{
 				ObjArray1= new Array();
@@ -685,7 +658,7 @@
 	 	var ele = document.getElementsByName("chkPersona");
 		var todos=1;	
 	  	for (i = 0; i < ele.length; i++) {
-   			if(!ele[i].checked){
+   			if(!ele[i].checked&& !ele[i].disabled){
    				todos=0;
    				break;
    			} 
@@ -736,11 +709,15 @@
 			datos = "";
 		
 		for (i = 0; i < ObjArray.length; i++) {
-			var idPersonaInstitucion = ObjArray[i];
-			index = idPersonaInstitucion.indexOf('||');
-			//alert("index"+index);
-			idPersona  = idPersonaInstitucion.substring(0,index);
-			idInstitucion = idPersonaInstitucion.substring(index+2);
+			var idRegistros = ObjArray[i];
+			index = idRegistros.indexOf('||');
+			idInstitucion  = idRegistros.substring(0,index);
+			idRegistros = idRegistros.substring(index+2);
+			index = idRegistros.indexOf('||');
+			idPersona  = idRegistros.substring(0,index);
+			idRegistros = idRegistros.substring(index+2);
+			index = idRegistros.indexOf('||');
+			apareceenRedAbogacia = idRegistros.substring(0,index);
  		   	datos = datos +"idPersona=="+idPersona + "##idInstitucion==" +idInstitucion+"%%%";
 			
 			
@@ -784,11 +761,15 @@
 			datos = "";
 		
 		for (i = 0; i < ObjArray.length; i++) {
-			var idPersonaInstitucion = ObjArray[i];
-			index = idPersonaInstitucion.indexOf('||');
-			//alert("index"+index);
-			idPersona  = idPersonaInstitucion.substring(0,index);
-			idInstitucion = idPersonaInstitucion.substring(index+2);
+			var idRegistros = ObjArray[i];
+			index = idRegistros.indexOf('||');
+			idInstitucion  = idRegistros.substring(0,index);
+			idRegistros = idRegistros.substring(index+2);
+			index = idRegistros.indexOf('||');
+			idPersona  = idRegistros.substring(0,index);
+			idRegistros = idRegistros.substring(index+2);
+			index = idRegistros.indexOf('||');
+			apareceenRedAbogacia = idRegistros.substring(0,index);
 			datos = datos +	idPersona + "," +idInstitucion +",<%=colegiado%>#";
  		   	
 			

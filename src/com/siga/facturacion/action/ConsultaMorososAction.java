@@ -29,6 +29,7 @@ import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.CenClienteBean;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.EnvDocumentosAdm;
@@ -48,7 +49,11 @@ import com.siga.general.SIGAException;
  * Action para la consulta de morosos.
  */
 public class ConsultaMorososAction extends MasterAction {
-	final String separador = "||";
+	//Atencion!!Tenr en cuenta que el orden de estas claves es el mismo oden que se va a
+	//seguir al obtener los adtos en la jsp. Ver metodos actualizarSelecionados y aniadeClaveBusqueda(2)
+	//de la super clase(MasterAction)
+	final String[] clavesBusqueda={FacFacturaBean.C_IDFACTURA,FacFacturaBean.C_IDPERSONA,FacFacturaBean.C_IDINSTITUCION};
+	
 	/** 
 	 *  Funcion que atiende a las peticiones. Segun el valor del parametro modo del formulario ejecuta distintas acciones
 	 * @param  mapping - Mapeo de los struts
@@ -78,11 +83,13 @@ public class ConsultaMorososAction extends MasterAction {
 				// Abrir
 				if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
 					ConsultaMorososForm formMororos = (ConsultaMorososForm)miForm;
-					formMororos.reset(new String[]{"registrosSeleccionados","datosPaginador"});
+					formMororos.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
 					formMororos.reset(mapping,request);
+					request.getSession().removeAttribute("DATAPAGINADOR");
 					mapDestino = abrir(mapping, miForm, request, response);
 				}else if (accion.equalsIgnoreCase("buscarInit")){
-					miForm.reset(new String[]{"registrosSeleccionados","datosPaginador"});
+					miForm.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
+					request.getSession().removeAttribute("DATAPAGINADOR");
 					mapDestino = buscarPor(mapping, miForm, request, response); 
 				}
 				else if (accion.equalsIgnoreCase("consultaMoroso")){
@@ -370,21 +377,30 @@ protected String imprimirMorososPDF(ActionMapping mapping, MasterForm formulario
 			
 			UsrBean user = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
 			
-			ArrayList clavesRegSeleccinados = (ArrayList) miFormulario.getRegistrosSeleccionados();
-			String seleccionados = request.getParameter("Seleccion");
-			
-			if (seleccionados != null) {
-				ArrayList alRegistros = actualizarSelecionados(seleccionados, clavesRegSeleccinados);
-				if (alRegistros != null) {
-					clavesRegSeleccinados = alRegistros;
-					miFormulario.setRegistrosSeleccionados(clavesRegSeleccinados);
+			//Si es seleccionar todos esta variable no vandra nula y ademas nos traera el numero de pagina 
+			//donde nos han marcado el seleccionar todos(asi evitamos meter otra variable)
+			boolean isSeleccionarTodos = miFormulario.getSeleccionarTodos()!=null 
+				&& !miFormulario.getSeleccionarTodos().equals("");
+			//si no es seleccionar todos los cambios van a fectar a los datos que se han mostrado en 
+			//la jsp por lo que parseamos los datos dento dela variable Registro seleccionados. Cuando hay modificacion
+			//habra que actualizar estos datos
+			if(!isSeleccionarTodos){
+				ArrayList clavesRegSeleccinados = (ArrayList) miFormulario.getRegistrosSeleccionados();
+				String seleccionados = request.getParameter("Seleccion");
+				
+				
+				if (seleccionados != null ) {
+					ArrayList alRegistros = actualizarSelecionados(this.clavesBusqueda,seleccionados, clavesRegSeleccinados);
+					if (alRegistros != null) {
+						clavesRegSeleccinados = alRegistros;
+						miFormulario.setRegistrosSeleccionados(clavesRegSeleccinados);
+					}
 				}
 			}
 			
 			
-			
 			HashMap databackup = (HashMap) miFormulario.getDatosPaginador();
-			if (databackup!=null && databackup.get("paginador")!=null){ 
+			if (databackup!=null && databackup.get("paginador")!=null&&!isSeleccionarTodos){ 
 				PaginadorCaseSensitiveBind paginador = (PaginadorCaseSensitiveBind)databackup.get("paginador");
 				Vector datos=new Vector();
 	
@@ -424,26 +440,31 @@ protected String imprimirMorososPDF(ActionMapping mapping, MasterForm formulario
 				
 				
 				if (resultado!=null){ 
-					//Sacanmos las claves para el check multiregistro
-					clavesRegSeleccinados = new ArrayList((Collection)facAdm.selectGenericoNLSBind(resultado.getQueryInicio(), resultado.getCodigosInicio()));
-					//Inciializamos los registros a sin seleccionar
-					clavesRegSeleccinados = getClavesBusqueda(clavesRegSeleccinados,false);
 					
 					
-					datos = resultado.obtenerPagina(1);
+					if(isSeleccionarTodos){
+						//Si hay que seleccionar todos hacemos la query completa.
+						ArrayList clavesRegSeleccinados = new ArrayList((Collection)facAdm.selectGenericoNLSBind(resultado.getQueryInicio(), resultado.getCodigosInicio()));
+						aniadeClavesBusqueda(this.clavesBusqueda,clavesRegSeleccinados);
+						miFormulario.setRegistrosSeleccionados(clavesRegSeleccinados);
+						datos = resultado.obtenerPagina(Integer.parseInt(miFormulario.getSeleccionarTodos()));
+						miFormulario.setSeleccionarTodos("");
+						
+					}else{
+//					
+						miFormulario.setRegistrosSeleccionados(new ArrayList());
+						datos = resultado.obtenerPagina(1);
+					}
 					databackup.put("datos",datos);
+						
 					
-				} 
+					
+				}else{
+					miFormulario.setRegistrosSeleccionados(new ArrayList());
+				}  
 				miFormulario.setDatosPaginador(databackup);
 				
-				//Inicializamos los registros seleccionados
-				if (clavesRegSeleccinados != null) {
-					miFormulario.setRegistrosSeleccionados(clavesRegSeleccinados);
-				}else{
-					if(miFormulario.getRegistrosSeleccionados()==null)
-						miFormulario.setRegistrosSeleccionados(new ArrayList());
-					
-				}
+				
 	
 				//request.setAttribute("datos", datos);
 				request.setAttribute("fechaDesde",miFormulario.getFechaDesde());
@@ -456,79 +477,10 @@ protected String imprimirMorososPDF(ActionMapping mapping, MasterForm formulario
 
 		return "resultado";
 	}
-	protected ArrayList getClavesBusqueda(ArrayList v,boolean isSeleccionado){
-		 
-		Hashtable aux=new Hashtable();
-		ArrayList claves= new ArrayList();
-
-		for (int k=0;k<v.size();k++){
-			aux = (Hashtable) v.get(k);
-			String idFactura = (String)aux.get(FacFacturaBean.C_IDFACTURA);
-			String idPersona = (String)aux.get(FacFacturaBean.C_IDPERSONA);
-			String idInstitucion = (String)aux.get(FacFacturaBean.C_IDINSTITUCION);
-			Hashtable aux2= getIds(idFactura, idPersona, idInstitucion);
-			if(isSeleccionado)
-				aux2.put("SELECCIONADO", "1");
-			else
-				aux2.put("SELECCIONADO", "0");
-			claves.add(aux2);	
-		}
-		
-		return claves;
-	}
-	private Hashtable getIds(String idFactura, String idPersona, String idInstitucion){
-		Hashtable aux2= new Hashtable();
-		StringBuffer clave = new StringBuffer();
-		clave.append(idFactura);
-		clave.append(separador);
-		clave.append(idPersona);
-		clave.append(separador);
-		clave.append(idInstitucion);
-		
-		
-		aux2.put("CLAVE",clave.toString());
-		aux2.put(FacFacturaBean.C_IDPERSONA,idPersona );
-		aux2.put(FacFacturaBean.C_IDFACTURA,idFactura);
-		aux2.put(FacFacturaBean.C_IDINSTITUCION,idInstitucion);
-		aux2.put("SELECCIONADO", "1");
-		return aux2;
-	}
-
-	protected ArrayList actualizarSelecionados(String seleccionados, ArrayList alClaves){
-		
-    	String[] aSeleccionados = seleccionados.split(",");
-    	
-    	for (int z=0;z<alClaves.size();z++){
-	    	Hashtable htclavesBusqueda = (Hashtable)alClaves.get(z);
-	    	String clave = (String)htclavesBusqueda.get("CLAVE");
-	    	boolean isEncontrado = false;
-	    	if (!seleccionados.equals("")){
-		    	for (int i = 0; i < aSeleccionados.length; i++) {
-		    		String registro = aSeleccionados[i];
-		    		String[] ids = UtilidadesString.split(registro, separador);
-		    		String idFactura = ids[0];
-		    		String idPersona = ids[1];
-		    		String idInstitucion = ids[2];
-		    		
-		    		Hashtable aux2= getIds(idFactura, idPersona, idInstitucion);
-		    		if(clave.equals(aux2.get("CLAVE"))){
-		    			htclavesBusqueda.put("SELECCIONADO", "1");
-		    			isEncontrado = true;
-		    			break;
-		    		}
-		    		
-		    		
-				}
-	    	}
-	    	if (!isEncontrado){
-	    		htclavesBusqueda.put("SELECCIONADO", "0");
-	    	}
-	    
-    	}
-    	
-    	
-    	return alClaves;
-	}
+	
+	
+	
+	
     
         /**
      * Elimina los ficheros generados en el proceso de envios

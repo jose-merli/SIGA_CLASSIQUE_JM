@@ -20,6 +20,7 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.Utilidades.Paginador"%>
 <%@ page import="com.siga.beans.CajgRemesaEstadosAdm"%>
+<%@ page import="com.siga.beans.CajgConfiguracionAdm"%>
 <%@ page import="com.atos.utils.*"%>
 
 <%@ page import="java.util.*"%>
@@ -81,16 +82,29 @@
 	CajgRemesaEstadosAdm admBean =  new CajgRemesaEstadosAdm(usr);	
 	int idEstado = admBean.UltimoEstadoRemesa(usr.getLocation(), idremesa);
 	
+	Integer idInstitucion = new Integer(usr.getLocation());
+	int cajgConfig = CajgConfiguracionAdm.getTipoCAJG(idInstitucion);	
 	
-	String buttons="";
-	
+	String buttons="";	
 	
 	if (modo.equals("consultar")) {
 		buttons="";			
 	} else if (idEstado == 0) {
-		buttons="g,ae,gf,gxml";
+		if (cajgConfig != 0) {
+			buttons="g,ae";//guardar y añadir expedientes
+			if (cajgConfig < 2) {
+				buttons+=",gf";//generar fichero txt
+			} else if (cajgConfig == 2) {
+				buttons+=",ftp";//envio ftp
+			}		
+		}
 	} else if (idEstado > 0) {
-		buttons="g,d,gxml";
+		if (cajgConfig != 0) {
+			buttons="g";//guardar
+			if (cajgConfig < 2) {
+				buttons+=",d";//descargar
+			}
+		}
 	} 
 	
 	
@@ -137,6 +151,10 @@
 		
 		function generaXML(){			
 			parent.generaXML();	
+		}
+
+		function envioFTP(){			
+			parent.envioFTP();	
 		}
 		
 		function accionDownload(){
@@ -224,7 +242,7 @@
 					<td><%=(String)registro.get("ESTADO")%>&nbsp;</td>
 					<td><%=(String)registro.get(ScsPersonaJGBean.C_NOMBRE) + " " + (String)registro.get(ScsPersonaJGBean.C_APELLIDO1) + " " + (String)registro.get(ScsPersonaJGBean.C_APELLIDO2)%>&nbsp;</td>
 				</siga:FilaConIconos>		
-			<% 	recordNumber++;		   
+			<% 	recordNumber++;
 			} %>
 	<%
 	}else {

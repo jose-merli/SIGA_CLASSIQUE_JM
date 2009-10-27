@@ -22,6 +22,7 @@ import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.CajgConfiguracionAdm;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPoblacionesAdm;
 import com.siga.beans.CenPoblacionesBean;
@@ -1105,6 +1106,7 @@ public class PersonaJGAction extends MasterAction {
 				UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_SOLICITANTE,"1");
 			}
 			
+			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_TIPOINGRESO,miform.getTipoIngreso());
 			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_DESCRIPCIONINGRESOSANUALES,miform.getIngresosAnuales());
 			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_IMPORTEINGRESOSANUALES,miform.getImporteIngresosAnuales());
 			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_BIENESINMUEBLES,miform.getBienesInmuebles());
@@ -2574,6 +2576,7 @@ public class PersonaJGAction extends MasterAction {
 							UtilidadesHash.setForCompare(hash,ScsUnidadFamiliarEJGBean.C_OTROSBIENES,ufBean.getOtrosBienes());
 							UtilidadesHash.setForCompare(hash,ScsUnidadFamiliarEJGBean.C_IMPORTEOTROSBIENES,ufBean.getImporteOtrosBienes());
 							UtilidadesHash.setForCompare(hash,ScsUnidadFamiliarEJGBean.C_TIPOGRUPOLAB,ufBean.getTipoGrupoLab());
+							UtilidadesHash.setForCompare(hash,ScsUnidadFamiliarEJGBean.C_TIPOINGRESO,ufBean.getTipoIngreso());
 							dataBackup.put(ScsUnidadFamiliarEJGBean.T_NOMBRETABLA,hash);
 							
 							if (ufBean.getImoporteBienesInmuebles()!=null)
@@ -2593,6 +2596,8 @@ public class PersonaJGAction extends MasterAction {
 							miform.setEnCalidadDeLibre(ufBean.getEnCalidadDe());
 							if (ufBean.getTipoGrupoLab()!=null)
 							  miform.setTipoGrupoLaboral(ufBean.getTipoGrupoLab().toString());
+							if (ufBean.getTipoIngreso()!=null)
+								miform.setTipoIngreso(ufBean.getTipoIngreso().toString());
 							if (ufBean.getIdParentesco()!=null)
 								  miform.setParentesco(ufBean.getIdParentesco().toString());
 							
@@ -2602,18 +2607,28 @@ public class PersonaJGAction extends MasterAction {
 							dataBackup.remove(ScsUnidadFamiliarEJGBean.T_NOMBRETABLA);
 						}
 					}
+					//jbd 19/10/2009 Recuperamos el estado de activacion PCAJG
+					int tipoCAJG = CajgConfiguracionAdm.getTipoCAJG(new Integer(miform.getIdInstitucionEJG()));
+					if (tipoCAJG>1){
+						request.setAttribute("pcajgActivo","true");
+					}else{
+						request.setAttribute("pcajgActivo","false");
+					}
 
 				} else
 					if (miform.getConceptoE().equals(PersonaJGAction.SOJ)) {
 
 				} else
 					if (miform.getConceptoE().equals(PersonaJGAction.PERSONAJG)) {
+						// Recuperamos el parametro repPCAJG que indica que es representante y necesita direccion
+						request.setAttribute("pcajgActivo",request.getParameter("repPCAJG"));
 						if (miform.getIdRepresentanteJG()!=null) {
 							hash = new Hashtable();
 							hash.put(ScsPersonaJGBean.C_IDINSTITUCION,miform.getIdInstitucionJG());
 							hash.put(ScsPersonaJGBean.C_IDPERSONA,miform.getIdRepresentanteJG());
 							ScsPersonaJGAdm perAdm = new ScsPersonaJGAdm(this.getUserBean(request)); 
 							Vector v = perAdm.selectByPK(hash);
+							
 							
 							if (v!=null && v.size()>0) {
 								ScsPersonaJGBean perBean = (ScsPersonaJGBean) v.get(0);

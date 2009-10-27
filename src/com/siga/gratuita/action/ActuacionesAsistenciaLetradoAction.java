@@ -520,7 +520,7 @@ public class ActuacionesAsistenciaLetradoAction extends MasterAction {
 		try {
 			usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 			tx = usr.getTransaction();
-
+            String validarJustificaciones=request.getParameter("validarJustificacion");
 			ScsActuacionAsistenciaAdm admActuacionAsistencia = new ScsActuacionAsistenciaAdm(this.getUserBean(request));			
 			
 			//Para el combo tipo Actuacion:
@@ -573,12 +573,17 @@ public class ActuacionesAsistenciaLetradoAction extends MasterAction {
 				hash.put(ScsActuacionAsistenciaBean.C_DIADESPUES,"N");
 			if(miForm.getAcfecha()!=null && !miForm.getAcfecha().equals(""))
 				hash.put(ScsActuacionAsistenciaBean.C_FECHA,GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getAcfecha()));
-			if(miForm.getAcfjustificacion()!=null && !miForm.getAcfjustificacion().equals(""))
+			if(miForm.getAcfjustificacion()!=null && !miForm.getAcfjustificacion().equals("")){
 				hash.put(ScsActuacionAsistenciaBean.C_FECHAJUSTIFICACION,GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getAcfjustificacion()));
+		    }else{
+		    	if (usr.isLetrado() && !((validarJustificaciones != null) && (validarJustificaciones.equalsIgnoreCase("S"))) ){
+		    		hash.put(ScsActuacionAsistenciaBean.C_FECHAJUSTIFICACION,"sysdate");		
+		    	}
+		    }
 
 			hash.put(ScsActuacionAsistenciaBean.C_NUMEROASUNTO,miForm.getAcnumeroasunto());
 			hash.put(ScsActuacionAsistenciaBean.C_OBSERVACIONES,miForm.getAcobservaciones());
-			hash.put(ScsActuacionAsistenciaBean.C_OBSERVACIONESJUSTIFICACION,miForm.getAcojustificacion());
+			UtilidadesHash.set(hash,ScsActuacionAsistenciaBean.C_OBSERVACIONESJUSTIFICACION,miForm.getAcojustificacion());
 			
 			if (miForm.getActuacionValidada() != null) {
 				if (UtilidadesString.stringToBoolean(miForm.getActuacionValidada())) {
@@ -655,6 +660,7 @@ public class ActuacionesAsistenciaLetradoAction extends MasterAction {
 			tx = usr.getTransaction();
 			
 			Hashtable hash = new Hashtable();
+			String validarJustificaciones=request.getParameter("validarJustificacion");
 			
 			ScsActuacionAsistenciaAdm admActuacionAsistencia = new ScsActuacionAsistenciaAdm(this.getUserBean(request));
 			AsistenciasForm miForm 	= (AsistenciasForm)formulario;
@@ -744,12 +750,17 @@ public class ActuacionesAsistenciaLetradoAction extends MasterAction {
 				hash.put(ScsActuacionAsistenciaBean.C_DIADESPUES,"N");
 			if(miForm.getAcfecha()!=null && !miForm.getAcfecha().equals(""))
 				hash.put(ScsActuacionAsistenciaBean.C_FECHA,GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getAcfecha()));
-			if(miForm.getAcfjustificacion()!=null && !miForm.getAcfjustificacion().equals(""))
+			if(miForm.getAcfjustificacion()!=null && !miForm.getAcfjustificacion().equals("")){
 				hash.put(ScsActuacionAsistenciaBean.C_FECHAJUSTIFICACION,GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getAcfjustificacion()));
+			}else{
+		    	if (usr.isLetrado() && !((validarJustificaciones != null) && (validarJustificaciones.equalsIgnoreCase("S"))) ){
+		    		hash.put(ScsActuacionAsistenciaBean.C_FECHAJUSTIFICACION,"sysdate");		
+		    	}
+		    }
 			
 			hash.put(ScsActuacionAsistenciaBean.C_NUMEROASUNTO,miForm.getAcnumeroasunto());
 			hash.put(ScsActuacionAsistenciaBean.C_OBSERVACIONES,miForm.getAcobservaciones());
-			hash.put(ScsActuacionAsistenciaBean.C_OBSERVACIONESJUSTIFICACION,miForm.getAcojustificacion());
+			UtilidadesHash.set(hash,ScsActuacionAsistenciaBean.C_OBSERVACIONESJUSTIFICACION,miForm.getAcojustificacion());
 			
 			if (miForm.getActuacionValidada() != null) {
 				if (UtilidadesString.stringToBoolean(miForm.getActuacionValidada())) {

@@ -2,14 +2,14 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="WebContent/WEB-INF/properties"/>
-	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk150_10">
+	<classpathentry exported="true" kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk150_10">
 		<attributes>
 			<attribute name="owner.project.facets" value="jst.java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/bea/sipserver31/server/lib/weblogic.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
-	<classpathentry kind="lib" path="C:/bea/sipserver31/server/lib/ojdbc14.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/bea/sipserver31/server/lib/weblogic.jar"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
+	<classpathentry exported="true" kind="lib" path="C:/bea/sipserver31/server/lib/ojdbc14.jar"/>
 	<classpathentry kind="output" path="WebContent/WEB-INF/classes"/>
 </classpath>

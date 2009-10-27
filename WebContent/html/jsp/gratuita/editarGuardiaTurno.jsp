@@ -32,133 +32,146 @@
 
 
 <!-- JSP -->
-<% 
-	String app=request.getContextPath();
-	HttpSession ses=request.getSession();
-	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+<bean:define id="diasASeparar" name="DefinirGuardiasTurnosForm" property="diasASeparar" type="String"/>
+<%
+	String app = request.getContextPath();
+	HttpSession ses = request.getSession();
+	UsrBean usr = (UsrBean) request.getSession()
+			.getAttribute("USRBEAN");
+	Properties src = (Properties) ses
+			.getAttribute(SIGAConstants.STYLESHEET_REF);
 
-	ScsGuardiasTurnoBean beanGuardiasTurno = (ScsGuardiasTurnoBean)ses.getAttribute("DATABACKUPPESTANA");
-	DefinirGuardiasTurnosForm miform = (DefinirGuardiasTurnosForm) request.getAttribute("DefinirGuardiasTurnosForm");
+	ScsGuardiasTurnoBean beanGuardiasTurno = (ScsGuardiasTurnoBean) ses
+			.getAttribute("DATABACKUPPESTANA");
+	DefinirGuardiasTurnosForm miform = (DefinirGuardiasTurnosForm) request
+			.getAttribute("DefinirGuardiasTurnosForm");
 
 	//Modo de las pestanhas anteriores:
-	String modoPestanha = request.getAttribute("MODOPESTANA")==null?"":(String)request.getAttribute("MODOPESTANA");	
-	
-	Hashtable hash = (Hashtable)beanGuardiasTurno.getOriginalHash();
-	String inscripcion = (String)ses.getAttribute("inscripcion");
-	String action = (String)request.getAttribute("action");
-	ses.removeAttribute("inscripcion");
-	
-	//Datos del turno:
-	Hashtable hashTurno =(Hashtable) request.getSession().getAttribute("turnoElegido");	
-//	Hashtable hashTurno =(Hashtable) request.getAttribute("turnoElegido");	
-	String turnoAbreviatura = (String)hashTurno.get("ABREVIATURA");
-	String turnoNombre = (String)hashTurno.get("NOMBRE");
-	String turnoArea = (String)hashTurno.get("AREA");
-	String turnoMateria = (String)hashTurno.get("MATERIA");
-	String turnoZona = (String)hashTurno.get("ZONA");
-	String turnoSubzona = (String)hashTurno.get("SUBZONA");
-	String turnoPartidoJudicial = (String)hashTurno.get("PARTIDOJUDICIAL");
-	
-		
-	Vector campos = (Vector)request.getSession().getAttribute("campos");
-	String[] dato1 = {usr.getLocation()};
-	ScsOrdenacionColasAdm ordenacion = new ScsOrdenacionColasAdm(usr);
-	String condicion =" where "+ScsOrdenacionColasBean.C_IDORDENACIONCOLAS+"="+(String)hash.get("IDORDENACIONCOLAS")+" ";
-	Vector vOrdenacion = ordenacion.select(condicion);
-	ScsOrdenacionColasBean orden = (ScsOrdenacionColasBean) vOrdenacion.get(0);
+	String modoPestanha = request.getAttribute("MODOPESTANA") == null ? ""
+			: (String) request.getAttribute("MODOPESTANA");
 
-	String cOrd ="";
+	Hashtable hash = (Hashtable) beanGuardiasTurno.getOriginalHash();
+	String inscripcion = (String) ses.getAttribute("inscripcion");
+	String action = (String) request.getAttribute("action");
+	ses.removeAttribute("inscripcion");
+
+	//Datos del turno:
+	Hashtable hashTurno = (Hashtable) request.getSession()
+			.getAttribute("turnoElegido");
+	//	Hashtable hashTurno =(Hashtable) request.getAttribute("turnoElegido");	
+	String turnoAbreviatura = (String) hashTurno.get("ABREVIATURA");
+	String turnoNombre = (String) hashTurno.get("NOMBRE");
+	String turnoArea = (String) hashTurno.get("AREA");
+	String turnoMateria = (String) hashTurno.get("MATERIA");
+	String turnoZona = (String) hashTurno.get("ZONA");
+	String turnoSubzona = (String) hashTurno.get("SUBZONA");
+	String turnoPartidoJudicial = (String) hashTurno
+			.get("PARTIDOJUDICIAL");
+
+	Vector campos = (Vector) request.getSession()
+			.getAttribute("campos");
+	String[] dato1 = { usr.getLocation() };
+	ScsOrdenacionColasAdm ordenacion = new ScsOrdenacionColasAdm(usr);
+	String condicion = " where "
+			+ ScsOrdenacionColasBean.C_IDORDENACIONCOLAS + "="
+			+ (String) hash.get("IDORDENACIONCOLAS") + " ";
+	Vector vOrdenacion = ordenacion.select(condicion);
+	ScsOrdenacionColasBean orden = (ScsOrdenacionColasBean) vOrdenacion
+			.get(0);
+
+	String cOrd = "";
 	String[] dato2;
-	
+
 	try {
 		ScsGuardiasTurnoAdm guardAdm = new ScsGuardiasTurnoAdm(usr);
-		cOrd = guardAdm.getOrdenacionLetradosInscritos (orden.getIdOrdenacionColas().intValue());
-		
+		cOrd = guardAdm.getOrdenacionLetradosInscritos(orden
+				.getIdOrdenacionColas().intValue());
+
 		dato2 = new String[4];
 		dato2[0] = usr.getLocation();
-		dato2[1] = (String)hashTurno.get("IDTURNO");
-		dato2[2] = (String)hash.get("IDGUARDIA");
+		dato2[1] = (String) hashTurno.get("IDTURNO");
+		dato2[2] = (String) hash.get("IDGUARDIA");
 		dato2[3] = cOrd;
-	}catch(Exception e){
+	} catch (Exception e) {
 	}
-	
+
 	//Datos del Colegiado si procede:
-	String entrada = (String)ses.getAttribute("entrada");
-	String nombrePestanha=null, numeroPestanha=null;
+	String entrada = (String) ses.getAttribute("entrada");
+	String nombrePestanha = null, numeroPestanha = null;
 	try {
-		Hashtable datosColegiado = (Hashtable)request.getSession().getAttribute("DATOSCOLEGIADO");
-		nombrePestanha = (String)datosColegiado.get("NOMBRECOLEGIADO");
-		numeroPestanha = (String)datosColegiado.get("NUMEROCOLEGIADO");
-	} catch (Exception e){
+		Hashtable datosColegiado = (Hashtable) request.getSession()
+				.getAttribute("DATOSCOLEGIADO");
+		nombrePestanha = (String) datosColegiado.get("NOMBRECOLEGIADO");
+		numeroPestanha = (String) datosColegiado.get("NUMEROCOLEGIADO");
+	} catch (Exception e) {
 		nombrePestanha = "";
 		numeroPestanha = "";
 	}
-	
 
 	String alto = "345";
 	String botonesAccion = "";
 	String altoBotones = "387";
-	String classCombo="boxCombo", estiloText="box";
+	String classCombo = "boxCombo", estiloText = "box";
 	boolean soloLectura = false;
 	boolean menuCenso = false;
-	
 
 	//Si venimos del menu de Censo tenemos un alto menor ya que ponemos el nombre del colegiado:
-	if (entrada!=null && entrada.equals("2")) {
-		altoBotones= "371";
+	if (entrada != null && entrada.equals("2")) {
+		altoBotones = "371";
 		alto = "293";
 		menuCenso = true;
 	} else {
 		alto = "345";
 		altoBotones = "381";
-		botonesAccion="V,";
+		botonesAccion = "V,";
 	}
 
 	//Estilo en modo consulta:
 	if (modoPestanha.equalsIgnoreCase("ver")) {
-		classCombo="boxConsulta";
+		classCombo = "boxConsulta";
 		estiloText = "boxConsulta";
 		soloLectura = true;
 	} else {
-		classCombo="boxCombo";
+		classCombo = "boxCombo";
 		estiloText = "box";
 		soloLectura = false;
-		botonesAccion+="G,R";
+		botonesAccion += "G,R";
 	}
-	
-	
-	
+
 	//Datos de la guardia:
-	String descripcionGuardia="", nombreGuardia="", descripcionFacturacion="", descripcionPago="", numeroLetradosGuardia="";
-	String numeroSustitutosGuardia="", diasGuardia="", diasPagados="", diasSeparacionGuardias="";
-	String tipoDiasGuardia="", diasPeriodo="", tipoDiasPeriodo="", tipoDias="", semana="";
-	
-	nombreGuardia = (String)hash.get(ScsGuardiasTurnoBean.C_NOMBRE);
-	descripcionGuardia = (String)hash.get("DESCRIPCION");
-	descripcionFacturacion = (String)hash.get("DESCRIPCIONFACTURACION");
-	descripcionPago = (String)hash.get("DESCRIPCIONPAGO");
-	numeroLetradosGuardia = (String)hash.get("NUMEROLETRADOSGUARDIA");
-	numeroSustitutosGuardia = (String)hash.get("NUMEROSUSTITUTOSGUARDIA");
-	diasGuardia = (String)hash.get("DIASGUARDIA");
-	diasPagados = (String)hash.get("DIASPAGADOS");
-	diasSeparacionGuardias = (String)hash.get("DIASSEPARACIONGUARDIAS");
-	String esViolenciaGenero = (String)hash.get("ESVIOLENCIAGENERO");
-	
-	tipoDiasGuardia = (String)hash.get(ScsGuardiasTurnoBean.C_TIPODIASGUARDIA);
-	diasPeriodo = (String)hash.get(ScsGuardiasTurnoBean.C_DIASPERIODO);
-	tipoDiasPeriodo = (String)hash.get(ScsGuardiasTurnoBean.C_TIPODIASPERIODO);
+	String descripcionGuardia = "", nombreGuardia = "", descripcionFacturacion = "", descripcionPago = "", numeroLetradosGuardia = "";
+	String numeroSustitutosGuardia = "", diasGuardia = "", diasPagados = "", diasSeparacionGuardias = "";
+	String tipoDiasGuardia = "", diasPeriodo = "", tipoDiasPeriodo = "", tipoDias = "", semana = "";
+
+	nombreGuardia = (String) hash.get(ScsGuardiasTurnoBean.C_NOMBRE);
+	descripcionGuardia = (String) hash.get("DESCRIPCION");
+	descripcionFacturacion = (String) hash
+			.get("DESCRIPCIONFACTURACION");
+	descripcionPago = (String) hash.get("DESCRIPCIONPAGO");
+	numeroLetradosGuardia = (String) hash.get("NUMEROLETRADOSGUARDIA");
+	numeroSustitutosGuardia = (String) hash
+			.get("NUMEROSUSTITUTOSGUARDIA");
+	diasGuardia = (String) hash.get("DIASGUARDIA");
+	diasPagados = (String) hash.get("DIASPAGADOS");
+	diasSeparacionGuardias = (String) hash
+			.get("DIASSEPARACIONGUARDIAS");
+	String esViolenciaGenero = (String) hash.get("ESVIOLENCIAGENERO");
+
+	tipoDiasGuardia = (String) hash
+			.get(ScsGuardiasTurnoBean.C_TIPODIASGUARDIA);
+	diasPeriodo = (String) hash.get(ScsGuardiasTurnoBean.C_DIASPERIODO);
+	tipoDiasPeriodo = (String) hash
+			.get(ScsGuardiasTurnoBean.C_TIPODIASPERIODO);
 
 	String[] datoGuardia = new String[2];
-   	ArrayList guardiaSel = new ArrayList();
-	
-	try {	
-		datoGuardia[0] = usr.getLocation();
-		datoGuardia[1] = (String)hashTurno.get("IDTURNO");
-	   	guardiaSel.add( (String)hash.get("IDGUARDIASUSTITUCION") );
-	}
-	catch (Exception e){}
+	ArrayList guardiaSel = new ArrayList();
 
+	try {
+		datoGuardia[0] = usr.getLocation();
+		datoGuardia[1] = (String) hashTurno.get("IDTURNO");
+		guardiaSel.add((String) hash.get("IDGUARDIASUSTITUCION"));
+	} catch (Exception e) {
+	}
 %>	
 
 
@@ -173,19 +186,21 @@
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
  	
 <!-- INICIO: TITULO Y LOCALIZACION -->
-<% if (entrada!=null && entrada.equals("2"))
-   {
+<%
+	if (entrada != null && entrada.equals("2")) {
 %>
 	<siga:TituloExt 
 		titulo="censo.fichaCliente.sjcs.guardias.datosGenerales.cabecera" 
 		localizacion="censo.fichaCliente.sjcs.guardias.datosGenerales.localizacion"/>
 <%
-   } else {
+	} else {
 %>
 	<siga:TituloExt 
 		titulo="censo.fichaCliente.sjcs.guardias.datosGenerales.cabecera" 
 		localizacion="gratuita.DatosGeneralesGuardia.literal.localizacion"/>
-<% }%>
+<%
+	}
+%>
 
 	<html:javascript formName="DefinirGuardiasTurnosForm" staticJavascript="false" />
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
@@ -195,21 +210,31 @@
 <body class="tablaCentralCampos" onload="modificarVarios();">
 	
 	<%
-		//Entrada desde el menu de Censo:
-		if (entrada.equalsIgnoreCase("2")) { %>
+			//Entrada desde el menu de Censo:
+			if (entrada.equalsIgnoreCase("2")) {
+		%>
 		    <table class="tablaTitulo" align="center" cellspacing=0>
 			<tr>
 				<td class="titulitosDatos">
 					<siga:Idioma key="censo.consultaDatosGenerales.literal.titulo1"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombrePestanha)%>&nbsp;&nbsp;
-				    <% if(numeroPestanha!= null && !numeroPestanha.equalsIgnoreCase("")) { %>
+				    <%
+				    	if (numeroPestanha != null
+				    				&& !numeroPestanha.equalsIgnoreCase("")) {
+				    %>
 							<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(numeroPestanha)%>
-					<% } else { %>
+					<%
+						} else {
+					%>
 						   <siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>
-					<% } %>
+					<%
+						}
+					%>
 				</td>
 			</tr>
 			</table>	
-	<% } %>
+	<%
+			}
+		%>
 
 
 		
@@ -260,7 +285,8 @@
 				<siga:Idioma key="gratuita.definirTurnosIndex.literal.partidoJudicial"/>
 			</td>
 			<td  class="labelTextValor" style="text-align:left">
-				<%=UtilidadesString.mostrarDatoJSP(turnoPartidoJudicial)%>
+				<%=UtilidadesString
+										.mostrarDatoJSP(turnoPartidoJudicial)%>
 			</td>
 		</tr>
 		</table>
@@ -284,9 +310,15 @@
 			<tr>
 				<td class="labelText" colspan="3">
 					<siga:Idioma key="gratuita.turno.guardia.literal.deSustitucion"/> &nbsp;&nbsp;
-					<% if (hash.get("IDGUARDIASUSTITUCION") != null && !((String)hash.get("IDGUARDIASUSTITUCION")).equals("")) { %>
+					<%
+						if (hash.get("IDGUARDIASUSTITUCION") != null
+										&& !((String) hash.get("IDGUARDIASUSTITUCION"))
+												.equals("")) {
+					%>
 						<siga:ComboBD nombre="guardiaDeSustitucion" tipo="guardias" clase="boxComboConsulta" readOnly="true" parametro="<%=datoGuardia%>" elementoSel="<%=guardiaSel%>" ancho="300"/>
-					<% } %>
+					<%
+						}
+					%>
 				</td>
 				<td class="labelText">
 					<siga:Idioma key="gratuita.turno.guardia.literal.deViolenciaGenero"/>&nbsp<input type=checkbox name="vg" value=1 <%=(esViolenciaGenero.equals("1"))?"checked":""%> >
@@ -339,16 +371,22 @@
 				<td>
 					<html:text name="DefinirGuardiasTurnosForm" property="duracion" size="5" maxlength="4" styleClass="<%=estiloText%>" value='<%=diasGuardia%>' readonly="<%=soloLectura%>"></html:text>
 					&nbsp;
-					<% if (modoPestanha.equalsIgnoreCase("ver")) { %>
+					<%
+						if (modoPestanha.equalsIgnoreCase("ver")) {
+					%>
 						<html:text name="DefinirGuardiasTurnosForm" property="tipoDiasGuardia" readOnly="true" styleClass="boxConsulta" value="<%=DefinirGuardiasTurnosAction.obtenerTipoDiaPeriodo(tipoDiasGuardia, usr)%>" />
-					<% } else { %>
+					<%
+						} else {
+					%>
 						<html:select name="DefinirGuardiasTurnosForm" property="tipoDiasGuardia" size="1" value="<%=tipoDiasGuardia%>" styleClass="boxCombo">
 							<html:option value="<%=ClsConstants.TIPO_PERIODO_DIAS_GUARDIA_DIAS_NATURALES%>" key="gratuita.combo.literal.diasNaturales"/>
 							<html:option value="<%=ClsConstants.TIPO_PERIODO_DIAS_GUARDIA_SEMANAS_NATURALES%>" key="gratuita.combo.literal.semanasNaturales"/>
 							<html:option value="<%=ClsConstants.TIPO_PERIODO_DIAS_GUARDIA_QUINCENAS_NATURALES%>" key="gratuita.combo.literal.quincenasNaturales"/>
 							<html:option value="<%=ClsConstants.TIPO_PERIODO_DIAS_GUARDIA_MESES_NATURALES%>" key="gratuita.combo.literal.mesesNaturales"/>
 						</html:select>
-					<% } %>
+					<%
+						}
+					%>
 				</td>
 				<td class="labelText">
 					<html:checkbox name="DefinirGuardiasTurnosForm" property="checkDiasPeriodo" value="<%=ClsConstants.DB_TRUE%>" onclick="modificarDiasPeriodo()" disabled="<%=soloLectura%>" />
@@ -358,16 +396,22 @@
 				<td>
 					<html:text name="DefinirGuardiasTurnosForm" property="diasPeriodo" size="5" maxlength="4" styleClass="<%=estiloText%>" value="<%=diasPeriodo%>" readonly="<%=soloLectura%>"/>
 					&nbsp;
-					<% if (modoPestanha.equalsIgnoreCase("ver")) { %>
+					<%
+						if (modoPestanha.equalsIgnoreCase("ver")) {
+					%>
 						<html:text name="DefinirGuardiasTurnosForm" property="tipoDiasPeriodo" readOnly="true" styleClass="boxConsulta" value="<%=DefinirGuardiasTurnosAction.obtenerTipoDiaPeriodo(tipoDiasPeriodo, usr)%>" />
-					<% } else { %>
+					<%
+						} else {
+					%>
 						<html:select name="DefinirGuardiasTurnosForm" property="tipoDiasPeriodo" size="1" value="<%=tipoDiasPeriodo%>" styleClass="boxCombo">
 							<html:option value="<%=ClsConstants.TIPO_PERIODO_DIAS_GUARDIA_DIAS_NATURALES%>" key="gratuita.combo.literal.diasNaturales"/>
 							<html:option value="<%=ClsConstants.TIPO_PERIODO_DIAS_GUARDIA_SEMANAS_NATURALES%>" key="gratuita.combo.literal.semanasNaturales"/>
 							<html:option value="<%=ClsConstants.TIPO_PERIODO_DIAS_GUARDIA_QUINCENAS_NATURALES%>" key="gratuita.combo.literal.quincenasNaturales"/>
 							<html:option value="<%=ClsConstants.TIPO_PERIODO_DIAS_GUARDIA_MESES_NATURALES%>" key="gratuita.combo.literal.mesesNaturales"/>
 						</html:select>
-					<% } %>
+					<%
+						}
+					%>
 				</td>		
 			</tr>
 			
@@ -381,11 +425,15 @@
 							<siga:Idioma key="gratuita.combo.literal.laborables"/>
 						</td>
 						<td>
-							<% if (!modoPestanha.equalsIgnoreCase("ver")) {%>
+							<%
+								if (!modoPestanha.equalsIgnoreCase("ver")) {
+							%>
 								<html:button property="boton" onclick="marcarTodosLaborables()" styleClass="button" disabled="<%=soloLectura%>">
 									<siga:Idioma key="general.boton.marcarTodos"/>
 								</html:button>
-							<% } %>
+							<%
+								}
+							%>
 						</td>
 						<td class="labelText" style="width:255px;">
 							<siga:Idioma key="gratuita.checkbox.literal.Lunes"/>
@@ -402,11 +450,15 @@
 								<html:checkbox name="DefinirGuardiasTurnosForm" property="seleccionLaborablesSabado" value="<%=ClsConstants.DB_TRUE%>" disabled="<%=soloLectura%>" onclick="modificarSeleccionDias()" />
 						</td>
 						<td>
-							<% if (!modoPestanha.equalsIgnoreCase("ver")) {%>
+							<%
+								if (!modoPestanha.equalsIgnoreCase("ver")) {
+							%>
 								<html:button property="boton" onclick="desmarcarTodosLaborables()" styleClass="button" disabled="<%=soloLectura%>">
 									<siga:Idioma key="general.boton.desmarcarTodos"/>
 								</html:button>
-							<% } %>
+							<%
+								}
+							%>
 						</td>
 					</tr>
 							
@@ -415,11 +467,15 @@
 							<siga:Idioma key="gratuita.combo.literal.festivos"/>
 						</td>
 						<td>
-							<% if (!modoPestanha.equalsIgnoreCase("ver")) {%>
+							<%
+								if (!modoPestanha.equalsIgnoreCase("ver")) {
+							%>
 								<html:button property="boton" onclick="marcarTodosFestivos()" styleClass="button" disabled="<%=soloLectura%>">
 									<siga:Idioma key="general.boton.marcarTodos"/>
 								</html:button>
-							<% } %>
+							<%
+								}
+							%>
 						</td>
 						<td class="labelText">
 							<siga:Idioma key="gratuita.checkbox.literal.Lunes"/>
@@ -438,17 +494,50 @@
 								<html:checkbox name="DefinirGuardiasTurnosForm" property="seleccionFestivosDomingo" value="<%=ClsConstants.DB_TRUE%>" disabled="<%=soloLectura%>" onclick="modificarSeleccionDias()" />
 						</td>
 						<td>
-							<% if (!modoPestanha.equalsIgnoreCase("ver")) {%>
+							<%
+								if (!modoPestanha.equalsIgnoreCase("ver")) {
+							%>
 								<html:button property="boton" onclick="desmarcarTodosFestivos()" styleClass="button" disabled="<%=soloLectura%>">
 									<siga:Idioma key="general.boton.desmarcarTodos"/>
 								</html:button>
-							<% } %>
+							<%
+								}
+							%>
 						</td>
 					</tr>
 				</table></td>
 				
 				<td class="labelText" width="12%">
 					<div id="labelSeleccionDias"><siga:Idioma key="gratuita.guardiasTurno.literal.seleccionBase"/>:</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan = "5">
+					<table>	
+						<tr >
+							<td rowspan="2" class="labelText" valign="center" align="middle"><html:checkbox
+								name="DefinirGuardiasTurnosForm" property="hayDiasASeparar"
+								value="<%=ClsConstants.DB_TRUE%>" disabled="true" />
+								
+								<siga:Idioma key="gratuita.guardiasTurno.literal.separarGuardia"/>
+							
+								<%=diasASeparar%>
+								</td>
+								<td></td>
+							
+							
+						</tr>
+						<tr >
+							<td><IMG border=0
+								src="<%=app+"/html/imagenes/"%>help.gif"
+								alt="<siga:Idioma key="gratuita.guardiasTurno.ayuda.separarGuardia"/>">
+							</td>
+							<td width="45%"></td>
+							
+						
+						
+						</tr>
+					</table>
 				</td>
 			</tr>
 		</table>
@@ -461,7 +550,9 @@
 			<tr>
 				<td class="labelText" style="text-align:left"><siga:Idioma key="gratuita.maestroTurnos.literal.primerCriterio"/></td>
 				<td class="labelText" style="text-align:right">
-				<% if (!modoPestanha.equalsIgnoreCase("ver")) {%>
+				<%
+					if (!modoPestanha.equalsIgnoreCase("ver")) {
+				%>
 					<html:select styleClass="<%=classCombo %>" name="DefinirGuardiasTurnosForm" property="crit_1">
 						<html:option value="0"><siga:Idioma key="gratuita.maestroTurnos.literal.sinDefinir"/></html:option>
 						<html:option value="1"><siga:Idioma key="gratuita.maestroTurnos.literal.alfabetico"/></html:option>
@@ -474,38 +565,50 @@
 						<html:option value="A"><siga:Idioma key="gratuita.maestroTurnos.literal.ascendente"/></html:option>
 						<html:option value="D"><siga:Idioma key="gratuita.maestroTurnos.literal.descendente"/></html:option>
 					</html:select>
-				<% } else {
-					String valor1 = "";
-					if (miform.getCrit_1().equalsIgnoreCase("0")) {
-						valor1=UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.sinDefinir");
-					} else
-					if (miform.getCrit_1().equalsIgnoreCase("1")) {
-						valor1=UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.alfabetico");
-					} else
-					if (miform.getCrit_1().equalsIgnoreCase("2")) {
-						valor1=UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.antiguedad");
-					} else
-					if (miform.getCrit_1().equalsIgnoreCase("3")) {
-						valor1=UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.edad");
-					} else
-					if (miform.getCrit_1().equalsIgnoreCase("4")) {
-						valor1=UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.cola");
-					} 
+				<%
+					} else {
+								String valor1 = "";
+								if (miform.getCrit_1().equalsIgnoreCase("0")) {
+									valor1 = UtilidadesString
+											.getMensajeIdioma(usr,
+													"gratuita.maestroTurnos.literal.sinDefinir");
+								} else if (miform.getCrit_1().equalsIgnoreCase("1")) {
+									valor1 = UtilidadesString
+											.getMensajeIdioma(usr,
+													"gratuita.maestroTurnos.literal.alfabetico");
+								} else if (miform.getCrit_1().equalsIgnoreCase("2")) {
+									valor1 = UtilidadesString
+											.getMensajeIdioma(usr,
+													"gratuita.maestroTurnos.literal.antiguedad");
+								} else if (miform.getCrit_1().equalsIgnoreCase("3")) {
+									valor1 = UtilidadesString.getMensajeIdioma(usr,
+											"gratuita.maestroTurnos.literal.edad");
+								} else if (miform.getCrit_1().equalsIgnoreCase("4")) {
+									valor1 = UtilidadesString.getMensajeIdioma(usr,
+											"gratuita.maestroTurnos.literal.cola");
+								}
 
-					String orden1 = "";
-					if (miform.getOrd_1().equalsIgnoreCase("A")) {
-						orden1=UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.ascendente");
-					} else
-					if (miform.getOrd_1().equalsIgnoreCase("D")) {
-						orden1=UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.descendente");
-					}
+								String orden1 = "";
+								if (miform.getOrd_1().equalsIgnoreCase("A")) {
+									orden1 = UtilidadesString
+											.getMensajeIdioma(usr,
+													"gratuita.maestroTurnos.literal.ascendente");
+								} else if (miform.getOrd_1().equalsIgnoreCase("D")) {
+									orden1 = UtilidadesString
+											.getMensajeIdioma(usr,
+													"gratuita.maestroTurnos.literal.descendente");
+								}
 				%>
 				<input type="text" name="crit_1" class="boxConsulta" value="<%=valor1%>"/>&nbsp;<input type="text" name="ord_1" class="boxConsulta" value="<%=orden1%>"/>
-				<% } %>
+				<%
+					}
+				%>
 				</td>
 				<td class="labelText" style="text-align:left"><siga:Idioma key="gratuita.maestroTurnos.literal.segundoCriterio"/></td>
 				<td class="labelText" style="text-align:right">
-				<% if (!modoPestanha.equalsIgnoreCase("ver")) {%>
+				<%
+					if (!modoPestanha.equalsIgnoreCase("ver")) {
+				%>
 					<html:select styleClass="<%=classCombo %>" name="DefinirGuardiasTurnosForm" property="crit_2">
 						<html:option value="0"><siga:Idioma key="gratuita.maestroTurnos.literal.sinDefinir"/></html:option>
 						<html:option value="1"><siga:Idioma key="gratuita.maestroTurnos.literal.alfabetico"/></html:option>
@@ -518,41 +621,53 @@
 						<html:option value="A"><siga:Idioma key="gratuita.maestroTurnos.literal.ascendente"/></html:option>
 						<html:option value="D"><siga:Idioma key="gratuita.maestroTurnos.literal.descendente"/></html:option>
 					</html:select>
-				<% } else {
-					String valor2 = "";
-					if (miform.getCrit_2().equalsIgnoreCase("0")) {
-						valor2=UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.sinDefinir");
-					} else
-					if (miform.getCrit_2().equalsIgnoreCase("1")) {
-						valor2=UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.alfabetico");
-					} else
-					if (miform.getCrit_2().equalsIgnoreCase("2")) {
-						valor2=UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.antiguedad");
-					} else
-					if (miform.getCrit_2().equalsIgnoreCase("3")) {
-						valor2=UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.edad");
-					} else
-					if (miform.getCrit_2().equalsIgnoreCase("4")) {
-						valor2=UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.cola");
-					} 
+				<%
+					} else {
+								String valor2 = "";
+								if (miform.getCrit_2().equalsIgnoreCase("0")) {
+									valor2 = UtilidadesString
+											.getMensajeIdioma(usr,
+													"gratuita.maestroTurnos.literal.sinDefinir");
+								} else if (miform.getCrit_2().equalsIgnoreCase("1")) {
+									valor2 = UtilidadesString
+											.getMensajeIdioma(usr,
+													"gratuita.maestroTurnos.literal.alfabetico");
+								} else if (miform.getCrit_2().equalsIgnoreCase("2")) {
+									valor2 = UtilidadesString
+											.getMensajeIdioma(usr,
+													"gratuita.maestroTurnos.literal.antiguedad");
+								} else if (miform.getCrit_2().equalsIgnoreCase("3")) {
+									valor2 = UtilidadesString.getMensajeIdioma(usr,
+											"gratuita.maestroTurnos.literal.edad");
+								} else if (miform.getCrit_2().equalsIgnoreCase("4")) {
+									valor2 = UtilidadesString.getMensajeIdioma(usr,
+											"gratuita.maestroTurnos.literal.cola");
+								}
 
-					String orden2 = "";
-					if (miform.getOrd_2().equalsIgnoreCase("A")) {
-						orden2=UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.ascendente");
-					} else
-					if (miform.getOrd_2().equalsIgnoreCase("D")) {
-						orden2=UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.descendente");
-					}
+								String orden2 = "";
+								if (miform.getOrd_2().equalsIgnoreCase("A")) {
+									orden2 = UtilidadesString
+											.getMensajeIdioma(usr,
+													"gratuita.maestroTurnos.literal.ascendente");
+								} else if (miform.getOrd_2().equalsIgnoreCase("D")) {
+									orden2 = UtilidadesString
+											.getMensajeIdioma(usr,
+													"gratuita.maestroTurnos.literal.descendente");
+								}
 				%>
 				<input type="text" name="crit_2" class="boxConsulta" value="<%=valor2%>"/>&nbsp;<input type="text" name="ord_2" class="boxConsulta" value="<%=orden2%>"/>
-				<% } %>
+				<%
+					}
+				%>
 				</td>
 			</tr>
 			
 			<tr>
 				<td class="labelText" style="text-align:left"><siga:Idioma key="gratuita.maestroTurnos.literal.terceroCriterio"/></td>
 				<td class="labelText" style="text-align:right">
-				<% if (!modoPestanha.equalsIgnoreCase("ver")) {%>
+				<%
+					if (!modoPestanha.equalsIgnoreCase("ver")) {
+				%>
 					<html:select styleClass="<%=classCombo %>" name="DefinirGuardiasTurnosForm" property="crit_3">
 						<html:option value="0"><siga:Idioma key="gratuita.maestroTurnos.literal.sinDefinir"/></html:option>
 						<html:option value="1"><siga:Idioma key="gratuita.maestroTurnos.literal.alfabetico"/></html:option>
@@ -565,38 +680,50 @@
 						<html:option value="A"><siga:Idioma key="gratuita.maestroTurnos.literal.ascendente"/></html:option>
 						<html:option value="D"><siga:Idioma key="gratuita.maestroTurnos.literal.descendente"/></html:option>
 					</html:select>
-				<% } else {
-					String valor3 = "";
-					if (miform.getCrit_3().equalsIgnoreCase("0")) {
-						valor3=UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.sinDefinir");
-					} else
-					if (miform.getCrit_3().equalsIgnoreCase("1")) {
-						valor3=UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.alfabetico");
-					} else
-					if (miform.getCrit_3().equalsIgnoreCase("2")) {
-						valor3=UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.antiguedad");
-					} else
-					if (miform.getCrit_3().equalsIgnoreCase("3")) {
-						valor3=UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.edad");
-					} else
-					if (miform.getCrit_3().equalsIgnoreCase("4")) {
-						valor3=UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.cola");
-					} 
+				<%
+					} else {
+								String valor3 = "";
+								if (miform.getCrit_3().equalsIgnoreCase("0")) {
+									valor3 = UtilidadesString
+											.getMensajeIdioma(usr,
+													"gratuita.maestroTurnos.literal.sinDefinir");
+								} else if (miform.getCrit_3().equalsIgnoreCase("1")) {
+									valor3 = UtilidadesString
+											.getMensajeIdioma(usr,
+													"gratuita.maestroTurnos.literal.alfabetico");
+								} else if (miform.getCrit_3().equalsIgnoreCase("2")) {
+									valor3 = UtilidadesString
+											.getMensajeIdioma(usr,
+													"gratuita.maestroTurnos.literal.antiguedad");
+								} else if (miform.getCrit_3().equalsIgnoreCase("3")) {
+									valor3 = UtilidadesString.getMensajeIdioma(usr,
+											"gratuita.maestroTurnos.literal.edad");
+								} else if (miform.getCrit_3().equalsIgnoreCase("4")) {
+									valor3 = UtilidadesString.getMensajeIdioma(usr,
+											"gratuita.maestroTurnos.literal.cola");
+								}
 
-					String orden3 = "";
-					if (miform.getOrd_3().equalsIgnoreCase("A")) {
-						orden3=UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.ascendente");
-					} else
-					if (miform.getOrd_3().equalsIgnoreCase("D")) {
-						orden3=UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.descendente");
-					}
+								String orden3 = "";
+								if (miform.getOrd_3().equalsIgnoreCase("A")) {
+									orden3 = UtilidadesString
+											.getMensajeIdioma(usr,
+													"gratuita.maestroTurnos.literal.ascendente");
+								} else if (miform.getOrd_3().equalsIgnoreCase("D")) {
+									orden3 = UtilidadesString
+											.getMensajeIdioma(usr,
+													"gratuita.maestroTurnos.literal.descendente");
+								}
 				%>
 				<input type="text" name="crit_3" class="boxConsulta" value="<%=valor3%>"/>&nbsp;<input type="text" name="ord_3" class="boxConsulta" value="<%=orden3%>"/>
-				<% } %>
+				<%
+					}
+				%>
 				</td>
 				<td class="labelText" style="text-align:left"><siga:Idioma key="gratuita.maestroTurnos.literal.cuartoCriterio"/></td>
 				<td class="labelText" style="text-align:right">
-				<% if (!modoPestanha.equalsIgnoreCase("ver")) {%>
+				<%
+					if (!modoPestanha.equalsIgnoreCase("ver")) {
+				%>
 					<html:select styleClass="<%=classCombo %>" name="DefinirGuardiasTurnosForm" property="crit_4">
 						<html:option value="0"><siga:Idioma key="gratuita.maestroTurnos.literal.sinDefinir"/></html:option>
 						<html:option value="1"><siga:Idioma key="gratuita.maestroTurnos.literal.alfabetico"/></html:option>
@@ -609,34 +736,44 @@
 						<html:option value="A"><siga:Idioma key="gratuita.maestroTurnos.literal.ascendente"/></html:option>
 						<html:option value="D"><siga:Idioma key="gratuita.maestroTurnos.literal.descendente"/></html:option>
 					</html:select>
-				<% } else {
-					String valor4 = "";
-					if (miform.getCrit_4().equalsIgnoreCase("0")) {
-						valor4=UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.sinDefinir");
-					} else
-					if (miform.getCrit_4().equalsIgnoreCase("1")) {
-						valor4=UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.alfabetico");
-					} else
-					if (miform.getCrit_4().equalsIgnoreCase("2")) {
-						valor4=UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.antiguedad");
-					} else
-					if (miform.getCrit_4().equalsIgnoreCase("3")) {
-						valor4=UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.edad");
-					} else
-					if (miform.getCrit_4().equalsIgnoreCase("4")) {
-						valor4=UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.cola");
-					} 
+				<%
+					} else {
+								String valor4 = "";
+								if (miform.getCrit_4().equalsIgnoreCase("0")) {
+									valor4 = UtilidadesString
+											.getMensajeIdioma(usr,
+													"gratuita.maestroTurnos.literal.sinDefinir");
+								} else if (miform.getCrit_4().equalsIgnoreCase("1")) {
+									valor4 = UtilidadesString
+											.getMensajeIdioma(usr,
+													"gratuita.maestroTurnos.literal.alfabetico");
+								} else if (miform.getCrit_4().equalsIgnoreCase("2")) {
+									valor4 = UtilidadesString
+											.getMensajeIdioma(usr,
+													"gratuita.maestroTurnos.literal.antiguedad");
+								} else if (miform.getCrit_4().equalsIgnoreCase("3")) {
+									valor4 = UtilidadesString.getMensajeIdioma(usr,
+											"gratuita.maestroTurnos.literal.edad");
+								} else if (miform.getCrit_4().equalsIgnoreCase("4")) {
+									valor4 = UtilidadesString.getMensajeIdioma(usr,
+											"gratuita.maestroTurnos.literal.cola");
+								}
 
-					String orden4 = "";
-					if (miform.getOrd_4().equalsIgnoreCase("A")) {
-						orden4=UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.ascendente");
-					} else
-					if (miform.getOrd_4().equalsIgnoreCase("D")) {
-						orden4=UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.descendente");
-					}
+								String orden4 = "";
+								if (miform.getOrd_4().equalsIgnoreCase("A")) {
+									orden4 = UtilidadesString
+											.getMensajeIdioma(usr,
+													"gratuita.maestroTurnos.literal.ascendente");
+								} else if (miform.getOrd_4().equalsIgnoreCase("D")) {
+									orden4 = UtilidadesString
+											.getMensajeIdioma(usr,
+													"gratuita.maestroTurnos.literal.descendente");
+								}
 				%>
 				<input type="text" name="crit_4" class="boxConsulta" value="<%=valor4%>"/>&nbsp;<input type="text" name="ord_4" class="boxConsulta" value="<%=orden4%>"/>
-				<% } %>
+				<%
+					}
+				%>
 				</td>
 			</tr>
 		</table>
@@ -644,9 +781,13 @@
 		
 	</html:form>
 
-	<% if(!menuCenso) { %>
+	<%
+		if (!menuCenso) {
+	%>
 		<siga:ConjBotonesAccion botones="<%=botonesAccion%>"  />
-	<% } %>
+	<%
+		}
+	%>
 
 
 	

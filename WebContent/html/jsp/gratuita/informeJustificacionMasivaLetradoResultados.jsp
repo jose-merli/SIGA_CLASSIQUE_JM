@@ -154,7 +154,8 @@
 					String numJustificaciones = "";
 					String idInstitucion = " ", idTurno = " ", anio = " ", numero = " ", idJuzgado = " ",idInstJuzgado=" ", 
 					       fDesigna=" ",fFinAct=" ", fIniAct=" ", estado=" ", cliente=" ",expedientes=" ", 
-					       codigoDesigna=" ", asunto=" ", categoria=" ",idJurisdiccion="",idProcedimiento=" ",descJuzgado = " ";
+					       codigoDesigna=" ", asunto=" ", categoria=" ",idJurisdiccion="",idProcedimiento=" ",descJuzgado = " ", validarJustificaciones="",
+					       fechaActuacionIni="", fechaActuacionFin="";;
 					boolean puedeLetradoJustificar  = false;
 					       
 
@@ -171,6 +172,8 @@
 						fDesigna = UtilidadesHash.getString(hash, "FECHADESIGNA");
 						fFinAct = UtilidadesHash.getString(hash, "ACREDITACION_FIN");
 						fIniAct = UtilidadesHash.getString(hash, "ACREDITACION_INI");
+						fechaActuacionIni = UtilidadesHash.getString(hash, "FECHAACTUACIONINI");
+						fechaActuacionFin = UtilidadesHash.getString(hash, "FECHAACTUACIONFIN");
 						estado = UtilidadesHash.getString(hash, "ESTADO");
 						expedientes = UtilidadesHash.getString(hash, "EXPEDIENTES");
 						cliente = UtilidadesHash.getString(hash, "CLIENTE");
@@ -181,6 +184,7 @@
 						idProcedimiento = UtilidadesHash.getString(hash, "IDPROCEDIMIENTO");
 						idPersona =  UtilidadesHash.getString(hash, "IDPERSONA");
 						numJustificaciones = UtilidadesHash.getString(hash, "NUMJUSTIFICACIONES");
+						validarJustificaciones = UtilidadesHash.getString(hash, "VALIDARJUSTIFICACIONES");
 						String letradoActuaciones = UtilidadesHash.getString(hash, "LETRADOACTUACIONES");  
 						puedeLetradoJustificar = letradoActuaciones!=null && letradoActuaciones.equalsIgnoreCase("1");
 
@@ -210,6 +214,7 @@
 						<input type="hidden" name="idPersona<%=i%>"  value="<%=idPersona%>">
 						<input type="hidden" name="codigoDesigna<%=i%>"  value="<%=codigoDesigna%>">
 						<input type="hidden" name="numJustificaciones<%=i%>"  value="<%=numJustificaciones%>">
+						<input type="hidden" name="validarJustificaciones<%=i%>"  value="<%=validarJustificaciones%>">
 						
 						<%=UtilidadesString.mostrarDatoJSP(codigoDesigna)%>
 					</td>
@@ -254,17 +259,30 @@
 					<td align="center">
 						<% if (fIniAct != null && !fIniAct.equals("")) { %> 
 							&nbsp;<%=GstDate.getFormatedDateShort("",fIniAct)%>
-						<% }  else { %>
+						<% }  else { 
+						     if (usr.isLetrado() && (validarJustificaciones!=null && validarJustificaciones.equals("S")) && (fechaActuacionIni!=null && !fechaActuacionIni.equals("")) ){%>
+						    	<siga:Idioma key="gratuita.informeJustificacionMasiva.aviso.actPendVal"/>
+						    	<input style="display:none" type="checkBox" name="checkFechaIni<%=i%>" value="checkFechaIni" onClick="accionCheckInicio('<%=i%>');"  <% if (estado != null && estado.equals("F")) out.print("disabled "); else{ if(!puedeLetradoJustificar && checkreadonly)out.print("disabled ");}%>> 
+						    	 
+						     <%}else{%>
+						
+						
+						
 							<input type="checkBox" name="checkFechaIni<%=i%>" value="checkFechaIni" onClick="accionCheckInicio('<%=i%>');"  <% if (estado != null && estado.equals("F")) out.print("disabled "); else{ if(!puedeLetradoJustificar && checkreadonly)out.print("disabled ");}%>>
-							<% }%>
+							<% }}%>
 					</td>
 
 					<td align="center" >
 						<% if (fFinAct != null && !fFinAct.equals("")) { %> 
 							&nbsp;<%=GstDate.getFormatedDateShort("",fFinAct)%>
-						<% }  else { %>
+						<% }  else {
+							if (usr.isLetrado() && (validarJustificaciones!=null && validarJustificaciones.equals("S")) && (fechaActuacionFin!=null && !fechaActuacionFin.equals("")) ){%>
+					    	<siga:Idioma key="gratuita.informeJustificacionMasiva.aviso.actPendVal"/>
+					    	<input style="display:none" type="checkBox" name="checkFechaFin<%=i%>" value="checkFechaFin" onClick="accionCheckFin('<%=i%>');"   <% if (estado != null && estado.equals("F")) out.print("disabled "); else{ if(!puedeLetradoJustificar && checkreadonly)out.print("disabled ");}%>> 
+					     <% }else{%>
 							<input type="checkBox" name="checkFechaFin<%=i%>" value="checkFechaFin" onClick="accionCheckFin('<%=i%>');"   <% if (estado != null && estado.equals("F")) out.print("disabled "); else{ if(!puedeLetradoJustificar && checkreadonly)out.print("disabled ");}%>>
-						<% }%>
+						<%  }
+						  }%>
 					</td>
 					<%}
 					if(!isPermitidoGuardar){
@@ -450,6 +468,7 @@
 				idPersona = document.getElementById ("idPersona"+i).value;
 				codigoDesigna = document.getElementById ("codigoDesigna"+i).value;
 				numJustificaciones = document.getElementById ("numJustificaciones"+i).value;
+				validarJustificaciones = document.getElementById ("validarJustificaciones"+i).value;
 				
 				fIniAct = " ";
 				if(objFechaIni!=null)
@@ -506,7 +525,8 @@
 								idPersona + "," +
 								codigoDesigna + "," +
 								numJustificaciones + "," +
-								baja + "#";
+								baja + "," +
+								validarJustificaciones+ "#";
 				
 				
 				

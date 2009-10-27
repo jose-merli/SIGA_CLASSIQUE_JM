@@ -683,7 +683,7 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 			bw.close();
 		}
 		
-		if (ELIMINA_DATOS_TABLA_TEMPORAL) {
+		if (ELIMINA_DATOS_TABLA_TEMPORAL && cabecera != null && !cabecera.trim().equals("2")) {
 			Hashtable hash = new Hashtable();
 			hash.put(CajgRemesaResolucionFicheroBean.C_IDINSTITUCION, idInstitucion);
 			hash.put(CajgRemesaResolucionFicheroBean.C_IDREMESARESOLUCION, idRemesaResolucion);

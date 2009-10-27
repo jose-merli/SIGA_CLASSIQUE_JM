@@ -34,7 +34,7 @@
 	boolean esFichaColegial = false;
 
 	String sEsFichaColegial = (String) request.getAttribute("esFichaColegial");
-	if ((sEsFichaColegial != null) && (sEsFichaColegial.equalsIgnoreCase("1"))) {
+	if ((sEsFichaColegial != null) && ( (sEsFichaColegial.equalsIgnoreCase("1") || (sEsFichaColegial.equalsIgnoreCase("true")) ))) {
 		esFichaColegial = true;
 	}
 %>
@@ -124,14 +124,13 @@
 <%			}%>
 
 				if (validatePestanaDelitoAsistenciaForm(document.pestanaDelitoAsistenciaForm)) {
-						document.forms[0].modo.value = "insertar";
-						document.forms[0].target = "submitArea";							
-						document.forms[0].submit();	
-						window.returnValue="MODIFICADO";
+					document.forms[0].modo.value = "insertar";
+					document.forms[0].target = "submitArea";							
+					document.forms[0].submit();	
+					window.returnValue="MODIFICADO";
 				}else{
 					fin();
 					return false;
-				
 				}
 		}
 

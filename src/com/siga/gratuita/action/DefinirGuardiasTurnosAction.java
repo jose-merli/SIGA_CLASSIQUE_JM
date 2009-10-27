@@ -1,6 +1,7 @@
 package com.siga.gratuita.action;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +22,8 @@ import com.siga.beans.ScsCabeceraGuardiasBean;
 import com.siga.beans.ScsGuardiasColegiadoAdm;
 import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
+import com.siga.beans.ScsHitoFacturableGuardiaAdm;
+import com.siga.beans.ScsHitoFacturableGuardiaBean;
 import com.siga.beans.ScsOrdenacionColasAdm;
 import com.siga.beans.ScsOrdenacionColasBean;
 import com.siga.beans.ScsTurnoAdm;
@@ -29,6 +32,8 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinirGuardiasTurnosForm;
+import com.siga.gratuita.util.calendarioSJCS.CalendarioAutomatico;
+import com.siga.gratuita.util.calendarioSJCS.CalendarioSJCS;
 
 
 /**
@@ -206,9 +211,13 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 				
 				//Obteniendo los campos de busqueda de la guardia
 				Hashtable hashGuardia = new Hashtable();
-				hashGuardia.put(ScsGuardiasTurnoBean.C_IDINSTITUCION, request.getParameter(ScsGuardiasTurnoBean.C_IDINSTITUCION));
-				hashGuardia.put(ScsGuardiasTurnoBean.C_IDTURNO, request.getParameter(ScsGuardiasTurnoBean.C_IDTURNO));
-				hashGuardia.put(ScsGuardiasTurnoBean.C_IDGUARDIA, request.getParameter(ScsGuardiasTurnoBean.C_IDGUARDIA));
+				String idInstitucion = request.getParameter(ScsGuardiasTurnoBean.C_IDINSTITUCION);
+				String idTurno = request.getParameter(ScsGuardiasTurnoBean.C_IDTURNO);
+				String idGuardia = request.getParameter(ScsGuardiasTurnoBean.C_IDGUARDIA);
+				
+				hashGuardia.put(ScsGuardiasTurnoBean.C_IDINSTITUCION,idInstitucion );
+				hashGuardia.put(ScsGuardiasTurnoBean.C_IDTURNO,idTurno );
+				hashGuardia.put(ScsGuardiasTurnoBean.C_IDGUARDIA, idGuardia);
 				
 				//Aqui seleccionamos la guardia que queremos consultar
 				ScsGuardiasTurnoBean beanGuardiasTurno = 
@@ -242,6 +251,25 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 				miForm.setAntiguedad(orden.getNumeroColegiado().toString());
 				miForm.setAntiguedadEnCola(orden.getAntiguedadCola().toString());
 				miForm.setEdad(orden.getFechaNacimiento().toString());
+				
+				ScsHitoFacturableGuardiaAdm admScsHitoFacturableGuardia = new ScsHitoFacturableGuardiaAdm(usr);
+				List lDiasASeparar = admScsHitoFacturableGuardia.getDiasASeparar(new Integer(idInstitucion), new Integer(idTurno), new Integer(idGuardia));
+				if(lDiasASeparar!=null && lDiasASeparar.size()>0){
+					miForm.setHayDiasASeparar(ClsConstants.DB_TRUE);
+					StringBuffer sbDiasASeparar = new StringBuffer("[ ");
+					for (int i=0; i<lDiasASeparar.size(); i++){
+						Hashtable htRegistro = (Hashtable)lDiasASeparar.get(i);
+						String diasSemana = (String)htRegistro.get(ScsHitoFacturableGuardiaBean.C_DIASAPLICABLES);
+						sbDiasASeparar.append(diasSemana);
+						
+						
+					}
+					sbDiasASeparar.append(" ]");
+					miForm.setDiasASeparar(sbDiasASeparar.toString());
+				}else{
+					miForm.setHayDiasASeparar(ClsConstants.DB_FALSE);
+					miForm.setDiasASeparar("");
+				}
 				
 				
 				forward = "edicion";

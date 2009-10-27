@@ -2,8 +2,7 @@ package com.siga.gratuita.util;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Hashtable;
@@ -101,7 +100,7 @@ public class PCAJGGeneraXML extends PCAJGConstantes {
 	private Map htAbogadosDesignados = new Hashtable();
 	private Map htContrarios = new Hashtable();
 	private Map htDocumentacionExpediente = new Hashtable();
-
+	
 
 	/**
 	 * Clase encargada de generar un fichero XML segun clases generadas por xmlSpy a partir de un XSD
@@ -146,30 +145,57 @@ public class PCAJGGeneraXML extends PCAJGConstantes {
 		construyeHTxPersona(datosDocumentacionExpedienteDS, htDocumentacionExpediente);
 		
 		Vector datosIdenInter = cajgEJGRemesaAdm.getDatosIdentificacionIntercambio(idInstitucion, idRemesa);
+				
+		Hashtable ht = (Hashtable)datosIdenInter.get(0);
+		InformacionIntercambio informacionIntercambio = getInformacionIntercambio(intercambio, datos.size(), ht);
 		
-		if (datosIdenInter != null && datosIdenInter.size() > 0) {
-			Hashtable ht = (Hashtable)datosIdenInter.get(0);
-			InformacionIntercambio informacionIntercambio = getInformacionIntercambio(intercambio, datos.size(), ht);
-			
-			InformacionEJG informacionEJG = InformacionEJG.Factory.newInstance();
-			
-			Expedientes expedientes = informacionEJG.addNewExpedientes();
-			
-			for (int i = 0; i < datos.size(); i++) {
-				addExpediente(expedientes, (Hashtable)datos.get(i));
-			}
-			informacionIntercambio.setInformacion(informacionEJG);
+		InformacionEJG informacionEJG = InformacionEJG.Factory.newInstance();
+		
+		Expedientes expedientes = informacionEJG.addNewExpedientes();
+		
+		for (int i = 0; i < datos.size(); i++) {
+			addExpediente(expedientes, (Hashtable)datos.get(i));
 		}
+		informacionIntercambio.setInformacion(informacionEJG);		
 		
 		File file = new File(dirFicheros);
 		file.mkdirs();
-		file = new File(file, "IntercambioEJG.xml");
+		File[] files = file.listFiles();
+		if (files != null) { //borramos todos los xml que hayamos hecho antes
+			for (int i = 0; i < files.length; i++){
+				if (files[i].getName().endsWith(".xml")) {
+					files[i].delete();
+				}
+			}
+		}
+		
+		IdentificacionIntercambio identificacionIntercambio = informacionIntercambio.getIdentificacionIntercambio();
+		StringBuffer nombreFichero = new StringBuffer();
+		nombreFichero.append(identificacionIntercambio.getTipoIntercambio());
+		nombreFichero.append("_" + identificacionIntercambio.getOrigenIntercambio().getCodigo());
+		nombreFichero.append("_" + identificacionIntercambio.getDestinoIntercambio().getCodigo());
+		nombreFichero.append("_" + identificacionIntercambio.getIdentificadorIntercambio());
+		
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		String fechaIntercambio = sdf.format(identificacionIntercambio.getFechaIntercambio().getTime());
+		nombreFichero.append("_" + fechaIntercambio);
+		nombreFichero.append("_" + identificacionIntercambio.getNumeroDetallesIntercambio());
+		nombreFichero.append(".xml");
+		
+		file = new File(file, nombreFichero.toString());		
+		
+		deleteEmptyNode(intercambio.getDomNode());
 		
 		EnviarIntercambioDocument doc = EnviarIntercambioDocument.Factory.newInstance();
 		EnviarIntercambio req = doc.addNewEnviarIntercambio();
 		req.setIntercambio(intercambio);
+		
+		XmlOptions xmlOptions = new XmlOptions();
+		xmlOptions.setSavePrettyPrintIndent(4);
+		xmlOptions.setSavePrettyPrint();		
 						       
-		req.save(file);
+		req.save(file, xmlOptions);
 				
 		File fileXSL = null;
 		File dirXSL = new File(dirPlantilla);
@@ -185,39 +211,40 @@ public class PCAJGGeneraXML extends PCAJGConstantes {
 			if (fileXSL != null) { //si tiene xsl lo transformo
 				File xmlTrans = new File(file.getParentFile(), "T" + file.getName());
 				TransformerFactory tFactory = TransformerFactory.newInstance();
-				Transformer transformer = tFactory.newTransformer(new StreamSource(fileXSL));
-							
+				Transformer transformer = tFactory.newTransformer(new StreamSource(fileXSL));							
 				transformer.transform(new StreamSource(file), new StreamResult(xmlTrans));
+				
 				file.delete();
-				xmlTrans.renameTo(file);			
+				xmlTrans.renameTo(file);
+				
+				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+				DocumentBuilder builder = factory.newDocumentBuilder();
+				Document xmldoc = builder.parse(file);
+//				Node node = xmldoc.getFirstChild();
+				
+				FileOutputStream fos = new FileOutputStream(file);		
+				OutputFormat of = new OutputFormat("XML", "ISO-8859-15", true);				
+				of.setIndent(1);
+				of.setIndenting(true);
+				of.setLineWidth(500);
+				
+				XMLSerializer serializer = new XMLSerializer(fos, of);
+				serializer.asDOMSerializer();
+				serializer.serialize( xmldoc.getDocumentElement() );
+				fos.flush();
+				fos.close();
+				xmlTrans.delete();
 			}
 		}
-		
-		//Borramos los nodos que esten vacios y le damos formato al xml		
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder = factory.newDocumentBuilder();
-		Document xmldoc = builder.parse(file);
-		Node node = xmldoc.getFirstChild();
-		deleteEmptyNode(node);
-		
-//		validateXML(intercambio);
-		
-		FileOutputStream fos = new FileOutputStream(file);		
-		OutputFormat of = new OutputFormat("XML", "ISO-8859-15",true);
-		of.setIndent(1);
-		of.setIndenting(true);
-//		of.setDoctype(null,"tablas.dtd");
-		
-		XMLSerializer serializer = new XMLSerializer(fos, of);
-		serializer.asDOMSerializer();
-		serializer.serialize( xmldoc.getDocumentElement() );
-		fos.flush();
-		fos.close();
 			
 						
 		return file;
 	}
 	
+	/**
+	 * 
+	 * @param intercambio
+	 */
 	private void validateXML(Intercambio intercambio) {
 
 		List listaErrores = new ArrayList();		
@@ -236,55 +263,6 @@ public class PCAJGGeneraXML extends PCAJGConstantes {
 		}		
 	}
 
-
-	/**
-	 * 
-	 * @param args
-	 * @throws Exception
-	 */
-	public static void main(String[] args) throws Exception {
-		File file = new File("C:\\Datos\\ficheros\\CAJG\\2040\\15\\xml\\IntercambioEJG_C.xml");
-		File file2 = new File("C:\\Datos\\ficheros\\CAJG\\2040\\15\\xml\\IntercambioEJG_3.xml");
-//		XmlObject xmlObject = XmlObject.Factory.parse(file);
-//		xmlObject.getDomNode();	
-		copyFile(file2, file);
-		
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder = factory.newDocumentBuilder();
-		Document xmldoc = builder.parse(file);
-		Node node = xmldoc.getFirstChild();
-		long time1 = System.currentTimeMillis();
-//		System.out.println(time1);
-		deleteEmptyNode(node);
-		System.out.println(System.currentTimeMillis() - time1);
-		
-		FileOutputStream fos = new FileOutputStream(file);		
-		OutputFormat of = new OutputFormat("XML", "ISO-8859-15",true);
-		of.setIndent(1);
-		of.setIndenting(true);
-//		of.setDoctype(null,"tablas.dtd");
-		
-		XMLSerializer serializer = new XMLSerializer(fos, of);
-		serializer.asDOMSerializer();
-		serializer.serialize( xmldoc.getDocumentElement() );
-		fos.flush();
-		fos.close();
-		
-		System.out.println("");
-	}
-
-	private static void copyFile(File inputFile, File outputFile) throws Exception {
-		FileReader in = new FileReader(inputFile);
-		FileWriter out = new FileWriter(outputFile);
-		int c;
-
-		while ((c = in.read()) != -1)
-			out.write(c);
-
-		in.close();
-		out.close();
-	}
-	
 	
 	/**
 	 * 
@@ -352,13 +330,16 @@ public class PCAJGGeneraXML extends PCAJGConstantes {
 	 * @param nodeParent
 	 * @throws Exception
 	 */
-	private static void deleteEmptyNode(Node nodeParent) throws Exception {
+	private void deleteEmptyNode(Node nodeParent) throws Exception {
 		List arrayNodes = new ArrayList();
 		arrayNodes.add(nodeParent);
 		Node node = null;
 		while(!arrayNodes.isEmpty()){
 			node = (Node) arrayNodes.remove(0);
-			if (node != null) {									
+			if (node != null) {	
+//				if (node.getNodeValue() != null) { //ñapa del euro TODO					
+//					node.setNodeValue(new String(node.getNodeValue().getBytes(), "ISO-8859-1"));					
+//				}
 				if (node.getNodeType() != Node.TEXT_NODE) {
 					StringBuffer contenido = getContenido(node);
 					if (contenido.length() == 0) {				
@@ -571,7 +552,7 @@ public class PCAJGGeneraXML extends PCAJGConstantes {
 		if (b != null) {
 			datosAsistenciaDetenido.setEsAtestado(b.booleanValue());
 		}
-		rellenaTipoElementoTipificadoEstandar(datosAsistenciaDetenido.addNewOrigenValoracion(), (String)htEJGs.get(DAD_ORIGENVALORACION_CDA));
+		rellenaTipoElementoTipificadoEstandar(datosAsistenciaDetenido.addNewTipoDelito(), (String)htEJGs.get(DAD_TIPODELITO_CDA));
 	}
 
 	/**
@@ -680,11 +661,10 @@ public class PCAJGGeneraXML extends PCAJGConstantes {
 		String key = getKey(new Object[]{idInstitucion, anyo, numero, idTipoEJG, idPersona});
 		List list = (List) htDocumentacionExpediente.get(key);
 		
-		//TODO VER QUE RELLENA LOS FAMILIARES Y NO EL SOLICITANTE QUE VA APARTE
+		
 		if (list != null && list.size() > 0) {
 			for (int i = 0; i < list.size(); i++) {
-				Hashtable htDoc = (Hashtable)list.get(i);
-				//TODO: VER QUE COGE LOS DATOS DE LA VISTA CORRESPONDIENTE
+				Hashtable htDoc = (Hashtable)list.get(i);				
 				documentacionExpediente(tipoDocumentacionExpediente.addNewDocumentacion(), htDoc, F_F_DE_D_TIPODOCUMENTACION_CDA
 						, F_F_DE_D_DD_TIPODOCUMENTO_CDA, F_F_DE_D_DD_FECHAPRESENTACIDO, F_F_DE_D_DD_DESCRIPCIONAMPLIAD, F_F_DE_D_DD_PROCEDENTE);
 			}
@@ -771,7 +751,7 @@ public class PCAJGGeneraXML extends PCAJGConstantes {
 		String idPersona = (String)htEJGs.get(IDPERSONA);		
 		String key = getKey(new Object[]{idInstitucion, anyo, numero, idTipoEJG, idPersona});
 		List list = (List) htDocumentacionExpediente.get(key);
-		//TODO VER QUE RELLENA EL SOLICITANTE Y NO LOS FAMILIARES
+		
 		if (list != null && list.size() > 0) {
 			for (int i = 0; i < list.size(); i++) {
 				Hashtable ht = (Hashtable)list.get(i);
@@ -1188,15 +1168,17 @@ public class PCAJGGeneraXML extends PCAJGConstantes {
 		InformacionIntercambio informacionIntercambio = intercambio.addNewInformacionIntercambio();
 		IdentificacionIntercambio identificacionIntercambio = informacionIntercambio.addNewIdentificacionIntercambio();
 		
-		identificacionIntercambio.setTipoIntercambio((String)ht.get(TIPOINTERCAMBIO));
-		rellenaTipoElementoTipificadoIntercambio(identificacionIntercambio.addNewOrigenIntercambio(), (String)ht.get(ORIGENINTERCAMBIO_CDA));
-		rellenaTipoElementoTipificadoIntercambio(identificacionIntercambio.addNewDestinoIntercambio(), (String)ht.get(DESTINOINTERCAMBIO_CDA));		
-		
-		Long valueLong = getLong((String)ht.get(IDENTIFICADORINTERCAMBIO));
-		identificacionIntercambio.setIdentificadorIntercambio(valueLong.longValue());		
-		identificacionIntercambio.setFechaIntercambio(Calendar.getInstance());
-		identificacionIntercambio.setNumeroDetallesIntercambio(numDetalles);
-		identificacionIntercambio.setVersionPCAJG((String)ht.get(VERSION_PCAJG));
+		if (ht != null) {		
+			identificacionIntercambio.setTipoIntercambio((String)ht.get(TIPOINTERCAMBIO));
+			rellenaTipoElementoTipificadoIntercambio(identificacionIntercambio.addNewOrigenIntercambio(), (String)ht.get(ORIGENINTERCAMBIO_CDA));
+			rellenaTipoElementoTipificadoIntercambio(identificacionIntercambio.addNewDestinoIntercambio(), (String)ht.get(DESTINOINTERCAMBIO_CDA));		
+			
+			Long valueLong = getLong((String)ht.get(IDENTIFICADORINTERCAMBIO));
+			identificacionIntercambio.setIdentificadorIntercambio(valueLong.longValue());		
+			identificacionIntercambio.setFechaIntercambio(Calendar.getInstance());
+			identificacionIntercambio.setNumeroDetallesIntercambio(numDetalles);
+			identificacionIntercambio.setVersionPCAJG((String)ht.get(VERSION_PCAJG));
+		}
 		return informacionIntercambio;
 	}
 

@@ -27,6 +27,7 @@ import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmLenguajesAdm;
 import com.siga.beans.BusquedaClientesFiltrosAdm;
+import com.siga.beans.CajgConfiguracionAdm;
 import com.siga.beans.ScsAsistenciasAdm;
 import com.siga.beans.ScsAsistenciasBean;
 import com.siga.beans.ScsContrariosDesignaAdm;
@@ -211,7 +212,8 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 							   //ScsEJGBean.C_COMISARIA, 					ScsEJGBean.C_COMISARIAIDINSTITUCION,
 							   ScsEJGBean.C_NUMEROPROCEDIMIENTO, 		ScsEJGBean.C_NUMERODILIGENCIA,
 							   ScsEJGBean.C_IDPERSONA,                  ScsEJGBean.C_GUARDIATURNO_IDTURNO,
-							   ScsEJGBean.C_GUARDIATURNO_IDGUARDIA,     ScsEJGBean.C_FECHAAPERTURA};
+							   ScsEJGBean.C_GUARDIATURNO_IDGUARDIA,     ScsEJGBean.C_FECHAAPERTURA,
+							   ScsEJGBean.C_IDORIGENCAJG};
 
 			// Campos a modificar
 			hash = miForm.getDatos();
@@ -261,7 +263,16 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 			}
 			UtilidadesHash.set(hash, ScsEJGBean.C_NUMERODILIGENCIA,    miForm.getNumeroDilegencia());
 			UtilidadesHash.set(hash, ScsEJGBean.C_NUMEROPROCEDIMIENTO, miForm.getNumeroProcedimiento());
+			
+			String idOrigenCAJG=miForm.getIdOrigenCAJG();
+			if (idOrigenCAJG != null && !idOrigenCAJG.equals("")) {
+				
+				UtilidadesHash.set(hash, ScsEJGBean.C_IDORIGENCAJG, miForm.getIdOrigenCAJG());
 
+			}else{
+				UtilidadesHash.set(hash, ScsEJGBean.C_IDORIGENCAJG, "");
+			}
+			
 			tx.begin();
 			ejgAdm.updateDirect(hash,null,campos);
 			// Saltos y compensaciones
@@ -366,7 +377,7 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 								   ScsEJGBean.C_JUZGADO, 					ScsEJGBean.C_JUZGADOIDINSTITUCION,
 								   ScsEJGBean.C_COMISARIA, 					ScsEJGBean.C_COMISARIAIDINSTITUCION,
 								   ScsEJGBean.C_NUMEROPROCEDIMIENTO, 		ScsEJGBean.C_NUMERODILIGENCIA,
-								   ScsEJGBean.C_FECHADESIGPROC};
+								   ScsEJGBean.C_FECHADESIGPROC,             ScsEJGBean.C_PRECEPTIVO};
 
 				// Campos a modificar
 				hash = miForm.getDatos();
@@ -423,6 +434,12 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 				UtilidadesHash.set(hash, ScsEJGBean.C_NUMERODILIGENCIA,    miForm.getNumeroDilegencia());
 				UtilidadesHash.set(hash, ScsEJGBean.C_NUMEROPROCEDIMIENTO, miForm.getNumeroProcedimiento());
 
+				String idPreceptivo=miForm.getIdPreceptivo();
+				if (idPreceptivo != null && !idPreceptivo.equals("")) {
+					UtilidadesHash.set(hash, ScsEJGBean.C_PRECEPTIVO, miForm.getIdPreceptivo());
+				}else{
+					UtilidadesHash.set(hash, ScsEJGBean.C_PRECEPTIVO, "");
+				}
 				tx.begin();
 				ejgAdm.updateDirect(hash,null,campos);
 				
@@ -484,6 +501,8 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 			String nombreTurnoAsistencia="", nombreGuardiaAsistencia="", consultaTurnoAsistencia="", consultaGuardiaAsistencia="";
 			ScsEJGAdm admBean =  new ScsEJGAdm(this.getUserBean(request));
 			
+			int valorPcajgActivo=CajgConfiguracionAdm.getTipoCAJG(new Integer(usr.getLocation()));
+			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
 			// Recuperamos los datos de la clave del EJG. Pueden venir de la request si accedemos por primera vez a esa pestanha
 			try {
 				miHash.put(ScsEJGBean.C_IDINSTITUCION,usr.getLocation());
@@ -522,7 +541,7 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 							  ",ejg."+ScsEJGBean.C_COMISARIAIDINSTITUCION + " " + ScsEJGBean.C_COMISARIAIDINSTITUCION +
 							  ",ejg."+ScsEJGBean.C_GUARDIATURNO_IDTURNO + " IDTURNO " +
 							  ",ejg."+ScsEJGBean.C_SUFIJO + " SUFIJO " + 
-							  
+							  ",ejg."+ScsEJGBean.C_IDORIGENCAJG + " IDORIGENCAJG " + 
 							  ",designa.codigo codigo";
 			// Ahora las tablas de donde se sacan los campos
 			consulta += " from scs_ejg ejg, scs_personajg personajg, cen_colegiado colegiado, scs_turno turno, scs_guardiasturno guardia, " +

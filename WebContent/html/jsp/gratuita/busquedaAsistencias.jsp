@@ -81,7 +81,7 @@
 	fechaDesde=UtilidadesBDAdm.getFechaBD("");
 	
 	//if((busquedaRealizada!=null) && (!busquedaRealizada.equals("")) ) 
-	if(busqueda!=null && (esVolver!=null && esVolver.equals("1")))
+	if(busqueda!=null && (esVolver!=null && esVolver.equals("1")) && datosBusqueda!=null)
 	{ 
 	  
 		comisariaAsi            = (String) busqueda.get(ScsAsistenciasBean.C_COMISARIA);
@@ -129,7 +129,7 @@
 		actuacionesPendientesSel.add(0,actuacionesPendientes);
 	if (comisariaAsi!=null && comisariaInstitucionAsi!=null)
 		comisariaSel.add(0,comisariaAsi+","+comisariaInstitucionAsi);
-	if((esVolver!=null && esVolver.equals("1")))
+	if((esVolver!=null && esVolver.equals("1"))&&(busqueda!=null))
 	{
 		ses.removeAttribute("esVolver");
 		buscar = true;

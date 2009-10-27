@@ -1909,14 +1909,15 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			"       ins_con.nombre as NOMBRE_CONSEJO, " +
 			"       F_SIGA_GETDIRECCIONCLIENTE(ins_con.idinstitucion, ins_con.idpersona, 3, 3) as POBLACION_CONSEJO, " +
 			"       F_SIGA_GETNOMBRESFACTURACIONES(" + idInstitucion + ",'"+ facturaciones + "') as NOMBRE_FACTURACION," +
-			"       to_char (est.fechaestado, 'DD') as DIAFACTURACION, " +
-			"       to_char (est.fechaestado, 'MM') as MESFACTURACION, " +
-			"       to_char (est.fechaestado, 'YYYY') as ANIOFACTURACION, " +
-			"       pkg_siga_fecha_en_letra.f_siga_fechaenletra(est.fechaestado, 'D', "+idioma+") as DIAFACTURACION_ENLETRA, " +
-			"       pkg_siga_fecha_en_letra.f_siga_fechaenletra(est.fechaestado, 'M', "+idioma+") as MESFACTURACION_ENLETRA, " +
-			"       pkg_siga_fecha_en_letra.f_siga_fechaenletra(est.fechaestado, 'A', "+idioma+") as ANIOFACTURACION_ENLETRA, " +
-			"       lower(pkg_siga_fecha_en_letra.f_siga_fechacompletaenletra(est.fechaestado, 'DMA', "+idioma+")) as FECHAFACTURACION_DDDMMMYYY, " +
-			"       pkg_siga_fecha_en_letra.f_siga_fechacompletaenletra(est.fechaestado, 'M', "+idioma+") as FECHAFACTURACION_DDMMMYYYY " +
+			"       to_char (max(est.fechaestado), 'DD') as DIAFACTURACION, " +
+			"       to_char (max(est.fechaestado), 'MM') as MESFACTURACION, " +
+			"       to_char (max(est.fechaestado), 'YYYY') as ANIOFACTURACION, " +
+			"       pkg_siga_fecha_en_letra.f_siga_fechaenletra(max(est.fechaestado), 'D', "+idioma+") as DIAFACTURACION_ENLETRA, " +
+			"       pkg_siga_fecha_en_letra.f_siga_fechaenletra(max(est.fechaestado), 'M', "+idioma+") as MESFACTURACION_ENLETRA, " +
+			"       pkg_siga_fecha_en_letra.f_siga_fechaenletra(max(est.fechaestado), 'A', "+idioma+") as ANIOFACTURACION_ENLETRA, " +
+			"       lower(pkg_siga_fecha_en_letra.f_siga_fechacompletaenletra(max(est.fechaestado), 'DMA', "+idioma+")) as FECHAFACTURACION_DDDMMMYYY, " +
+			"       pkg_siga_fecha_en_letra.f_siga_fechacompletaenletra(max(est.fechaestado), 'M', "+idioma+") as FECHAFACTURACION_DDMMMYYYY, " +
+			"       sum(fac.importeguardia) as IMPORTEGUARDIA " +
 			
 			"  from FCS_FACTURACIONJG           FAC, " +
 			"       FCS_FACT_ESTADOSFACTURACION EST, " +
@@ -1933,7 +1934,9 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			"   and fac.idinstitucion = ins.idinstitucion " +
 			"   and ins.cen_inst_idinstitucion = ins_con.idinstitucion " +
 			"   and fac.idinstitucion = "+idInstitucion+" " +
-			"   and fac.idfacturacion in (" + facturaciones + ")" ;
+			"   and fac.idfacturacion in (" + facturaciones + ")" +
+			
+			" group by ins.nombre, ins.idinstitucion, ins.idpersona, ins_con.nombre, ins_con.idinstitucion, ins_con.idpersona" ;
 			
 		
 		hashDatosObtenidos = null;
@@ -1948,7 +1951,11 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		return hashDatosObtenidos;
 	} //obtenerComunes()
 	
-	/**
+	
+	/*
+	 * LOS SIGUIENTES METODOS SE HAN COMENTADO PARA DEJAR UNO SOLO LLAMADO informeFJGPorHitos()
+	 * 
+	**
 	 * Saca el informe de facturadas por guardias no de VG
 	 * 
 	 * @param idInstitucion
@@ -1956,7 +1963,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 	 * @param idioma
 	 * @return
 	 * @throws ClsExceptions 
-	 */
+	 *
 	public Vector informeFacturaPag1_1 (String idInstitucion,
 										String facturaciones,
 										String idioma) throws ClsExceptions
@@ -2045,7 +2052,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			//"                   and fgc.idfacturacion = "+idFacturacion+" " +
 			"                   and fgc.idfacturacion in  (" + facturaciones + ")" +
 			"                   and (upper(hf.nombre) like 'GA%' or " +
-			"                       upper(hf.nombre) like 'GS%') /*guardias simples facturadas*/ " +
+			"                       upper(hf.nombre) like 'GS%') " + //guardias simples facturadas
 			"                UNION ALL " +
 			"                select gc.idinstitucion as idinstitucion, " +
 			"                       gc.idturno       as idturno, " +
@@ -2064,7 +2071,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			"                   and gc.idinstitucion = "+idInstitucion+" " +
 			//"                   and fgc.idfacturacion = "+idFacturacion+" " +
 			"                   and fgc.idfacturacion in  (" + facturaciones + ")" +
-			"                   and (upper(hf.nombre) like 'GD%') /*guardias dobladas facturadas*/ " +
+			"                   and (upper(hf.nombre) like 'GD%') " + //guardias dobladas facturadas
 			"                ) " +
 			"         group by idinstitucion, idturno, idguardia) SEGUNDA " +
 			" where primera.idinstitucion = segunda.idinstitucion(+) " +
@@ -2083,7 +2090,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		return vector;
 	} //informeFacturaPag1_1()
 	
-	/**
+	**
 	 * Saca el informe de facturadas por asistencias no de VG
 	 * 
 	 * @param idInstitucion
@@ -2091,7 +2098,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 	 * @param idioma
 	 * @return
 	 * @throws ClsExceptions 
-	 */
+	 *
 	public Vector informeFacturaPag1_2 (String idInstitucion,
 										String facturaciones,
 										String idioma) throws ClsExceptions
@@ -2188,7 +2195,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		return vector;
 	} //informeFacturaPag1_2()
 	
-	/**
+	**
 	 * Saca el informe de facturadas por guardias de VG
 	 * 
 	 * @param idInstitucion
@@ -2197,7 +2204,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 	 * @return
 	 * @throws ClsExceptions
 	 * @throws SIGAException
-	 */
+	 *
 	public Vector informeFacturaPag2_1 (String idInstitucion,
 										String facturaciones,
 										String idioma)
@@ -2331,7 +2338,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		return vConsulta;
 	} //informeFacturaPag2_1()
 	
-	/**
+	**
 	 * Saca el informe de facturadas por asistencias de VG
 	 * 
 	 * @param idInstitucion
@@ -2340,7 +2347,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 	 * @return
 	 * @throws ClsExceptions
 	 * @throws SIGAException
-	 */
+	 *
     public Vector informeFacturaPag2_2 (String idInstitucion,
     									String facturaciones,
     									String idioma)
@@ -2431,6 +2438,521 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		
 		return vConsulta;
     } //informeFacturaPag2_2()
+    */
+	
+	public Vector informeFJGPorHitos (String idInstitucion,
+									  String facturaciones,
+									  String region,
+									  String idioma)
+		throws ClsExceptions
+	{
+		/*String[] region =
+		{
+				"ApuntesPorHitoYGuardia"
+		};*/
+		
+		String sql = null;
+		boolean esRegionVG = region.endsWith ("_SiVG");
+		
+		if (region.equalsIgnoreCase ("ApuntesPorHitoYGuardia")) {
+			sql = 
+				"select turno, " +
+				"       guardia, " +
+				"       decode(esviolenciagenero, " +
+				"              '0', " +
+				"              f_siga_getrecurso_etiqueta('general.no', "+idioma+"), " +
+				"              f_siga_getrecurso_etiqueta('general.yes', "+idioma+")) vg, " +
+				"       hito, " +
+				"       hitodesc, " +
+				"       f_siga_formatonumero(precio, 2) precio, " +
+				"       precio precio_num, " +
+				"       sum(cantidad) numero, " +
+				"       f_siga_formatonumero(precio * sum(cantidad), 2) importe, " +
+				"       precio * sum(cantidad) importe_num " +
+				"  from ( /*Formas de facturar las guardias*/ " +
+				"        select tur.abreviatura turno, " +
+				"               gua.nombre guardia, " +
+				"               nvl(gua.esviolenciagenero, '0') esviolenciagenero, " +
+				"               hit.nombre hito, " +
+				"               f_siga_getrecurso(hit.descripcion, "+idioma+") hitodesc, " +
+				"               0 idapunte, " +
+				"               hitgua.preciohito precio, " +
+				"               0 cantidad " +
+				"          from SCS_TURNO                 TUR, " +
+				"               SCS_GUARDIASTURNO         GUA, " +
+				"               SCS_HITOFACTURABLEGUARDIA HITGUA, " +
+				"               SCS_HITOFACTURABLE        HIT " +
+				"         where tur.idinstitucion = gua.idinstitucion " +
+				"           and tur.idturno = gua.idturno " +
+				"           and gua.idinstitucion = hitgua.idinstitucion " +
+				"           and gua.idturno = hitgua.idturno " +
+				"           and gua.idguardia = hitgua.idguardia " +
+				"           and hitgua.idhito = hit.idhito " +
+				"           and hit.idhito in " +
+				"               (select hit2.idhito " +
+				"                  from SCS_HITOFACTURABLE        HIT2, " +
+				"                       SCS_HITOFACTURABLEGUARDIA HITGUA " +
+				"                 where hitgua.idinstitucion = gua.idinstitucion " +
+				"                   and hitgua.idturno = gua.idturno " +
+				"                   and hitgua.idguardia = gua.idguardia " +
+				"                   and (case when " +
+				"                        hitgua.idhito = 1 and " +
+				"                        (select 1 " +
+				"                           from SCS_HITOFACTURABLEGUARDIA HITGUA_ND " +
+				"                          where hitgua_nd.idinstitucion = hitgua.idinstitucion " +
+				"                            and hitgua_nd.idturno = hitgua.idturno " +
+				"                            and hitgua_nd.idguardia = hitgua.idguardia " +
+				"                            and hitgua_nd.idhito = 46) = 1 then 44 else " +
+				"                        hitgua.idhito end) = hit2.idhitoconfiguracion " +
+				"                   and hitgua.agrupar = '0') " +
+				"               " +
+				"           and hitgua.idinstitucion = "+idInstitucion+" " +
+				"           and exists " +
+				"         (select * " +
+				"                  from FCS_FACT_GRUPOFACT_HITO FAC " +
+				"                 where fac.idinstitucion = tur.idinstitucion " +
+				"                   and fac.idgrupofacturacion = tur.idgrupofacturacion " +
+				"                   and fac.idfacturacion in ("+facturaciones+")) " +
+				"         " +
+				"        union all " +
+				"         " +
+				"        /*Actuaciones por unidades*/ " +
+				"        select tur.abreviatura turno, " +
+				"               gua.nombre guardia, " +
+				"               nvl(gua.esviolenciagenero, '0') esviolenciagenero, " +
+				"               hit.nombre hito, " +
+				"               f_siga_getrecurso(hit.descripcion, "+idioma+") hitodesc, " +
+				"               facact.idapunte idapunte, " +
+				"               facact.precioaplicado precio, " +
+				"               1 cantidad " +
+				"          from SCS_TURNO                    TUR, " +
+				"               SCS_GUARDIASTURNO            GUA, " +
+				"               FCS_FACT_ACTUACIONASISTENCIA FACACT, " +
+				"               SCS_HITOFACTURABLE           HIT " +
+				"         where tur.idinstitucion = gua.idinstitucion " +
+				"           and tur.idturno = gua.idturno " +
+				"           and exists (select * " +
+				"                  from FCS_FACT_APUNTE APU " +
+				"                 where gua.idinstitucion = apu.idinstitucion " +
+				"                   and gua.idturno = apu.idturno " +
+				"                   and gua.idguardia = apu.idguardia " +
+				"                   and apu.idinstitucion = facact.idinstitucion " +
+				"                   and apu.idfacturacion = facact.idfacturacion " +
+				"                   and apu.idapunte = facact.idapunte) " +
+				"           and not exists " +
+				"         (select * " +
+				"                  from FCS_FACT_APUNTE APU " +
+				"                 where gua.idinstitucion = apu.idinstitucion " +
+				"                   and gua.idturno = apu.idturno " +
+				"                   and gua.idguardia = apu.idguardia " +
+				"                   and apu.idinstitucion = facact.idinstitucion " +
+				"                   and apu.idfacturacion = facact.idfacturacion " +
+				"                   and apu.idapunte = facact.idapunte " +
+				"                   and apu.idhito not in (7, 9)) /*Ac, AcFG*/ " +
+				"           and not exists " +
+				"         (select * " +
+				"                  from FCS_FACT_GUARDIASCOLEGIADO APU, SCS_ASISTENCIA ASI " +
+				"                 where gua.idinstitucion = apu.idinstitucion " +
+				"                   and gua.idturno = apu.idturno " +
+				"                   and gua.idguardia = apu.idguardia " +
+				"                   and asi.idinstitucion = facact.idinstitucion " +
+				"                   and asi.anio = facact.anio " +
+				"                   and asi.numero = facact.numero " +
+				"                   and apu.idinstitucion = facact.idinstitucion " +
+				"                   and apu.idfacturacion = facact.idfacturacion " +
+				"                   and apu.idapunte = facact.idapunte " +
+				"                   and trunc(apu.fechafin) = trunc(asi.fechahora) " +
+				"                   and apu.idhito not in (7, 9)) /*Ac, AcFG*/ " +
+				"           and facact.idhito = hit.idhito " +
+				"           and hit.aplicablea = 'ACTUACION' " +
+				"           and facact.idhito in " +
+				"               (select hit2.idhito " +
+				"                  from SCS_HITOFACTURABLE        HIT2, " +
+				"                       SCS_HITOFACTURABLEGUARDIA HITGUA " +
+				"                 where hitgua.idinstitucion = gua.idinstitucion " +
+				"                   and hitgua.idturno = gua.idturno " +
+				"                   and hitgua.idguardia = gua.idguardia " +
+				"                   and (case when " +
+				"                        hitgua.idhito = 1 /*GAs*/ " +
+				"                        and " +
+				"                        (select 1 " +
+				"                           from SCS_HITOFACTURABLEGUARDIA HITGUA_ND " +
+				"                          where hitgua_nd.idinstitucion = hitgua.idinstitucion " +
+				"                            and hitgua_nd.idturno = hitgua.idturno " +
+				"                            and hitgua_nd.idguardia = hitgua.idguardia " +
+				"                            and hitgua_nd.idhito = 46 /*NDAc*/ " +
+				"                         ) = 1 then 44 /*GAc*/ " +
+				"                        else hitgua.idhito end) = hit2.idhitoconfiguracion) " +
+				"           and facact.idinstitucion = "+idInstitucion+" " +
+				"           and facact.idfacturacion in ("+facturaciones+") " +
+				"         " +
+				"        union all " +
+				"         " +
+				"        /*Asistencias por unidades*/ " +
+				"        select tur.abreviatura turno, " +
+				"               gua.nombre guardia, " +
+				"               nvl(gua.esviolenciagenero, '0') esviolenciagenero, " +
+				"               hit.nombre hito, " +
+				"               f_siga_getrecurso(hit.descripcion, "+idioma+") hitodesc, " +
+				"               facasi.idapunte idapunte, " +
+				"               facasi.precioaplicado precio, " +
+				"               1 cantidad " +
+				"          from SCS_TURNO           TUR, " +
+				"               SCS_GUARDIASTURNO   GUA, " +
+				"               FCS_FACT_ASISTENCIA FACASI, " +
+				"               SCS_HITOFACTURABLE  HIT " +
+				"         where tur.idinstitucion = gua.idinstitucion " +
+				"           and tur.idturno = gua.idturno " +
+				"           and exists (select * " +
+				"                  from FCS_FACT_APUNTE APU " +
+				"                 where gua.idinstitucion = apu.idinstitucion " +
+				"                   and gua.idturno = apu.idturno " +
+				"                   and gua.idguardia = apu.idguardia " +
+				"                   and apu.idinstitucion = facasi.idinstitucion " +
+				"                   and apu.idfacturacion = facasi.idfacturacion " +
+				"                   and apu.idapunte = facasi.idapunte) " +
+				"           and not exists " +
+				"         (select * " +
+				"                  from FCS_FACT_APUNTE APU " +
+				"                 where gua.idinstitucion = apu.idinstitucion " +
+				"                   and gua.idturno = apu.idturno " +
+				"                   and gua.idguardia = apu.idguardia " +
+				"                   and apu.idinstitucion = facasi.idinstitucion " +
+				"                   and apu.idfacturacion = facasi.idfacturacion " +
+				"                   and apu.idapunte = facasi.idapunte " +
+				"                   and apu.idhito not in (5)) /*As*/ " +
+				"           and not exists " +
+				"         (select * " +
+				"                  from FCS_FACT_GUARDIASCOLEGIADO APU " +
+				"                 where gua.idinstitucion = apu.idinstitucion " +
+				"                   and gua.idturno = apu.idturno " +
+				"                   and gua.idguardia = apu.idguardia " +
+				"                   and apu.idinstitucion = facasi.idinstitucion " +
+				"                   and apu.idfacturacion = facasi.idfacturacion " +
+				"                   and apu.idapunte = facasi.idapunte " +
+				"                   and trunc(apu.fechafin) = trunc(facasi.fechahora) " +
+				"                   and apu.idhito not in (5)) /*As*/ " +
+				"           and facasi.idhito = hit.idhito " +
+				"           and hit.aplicablea = 'ASISTENCIA' " +
+				"           and facasi.idhito in " +
+				"               (select hit2.idhito " +
+				"                  from SCS_HITOFACTURABLE        HIT2, " +
+				"                       SCS_HITOFACTURABLEGUARDIA HITGUA " +
+				"                 where hitgua.idinstitucion = gua.idinstitucion " +
+				"                   and hitgua.idturno = gua.idturno " +
+				"                   and hitgua.idguardia = gua.idguardia " +
+				"                   and (case when " +
+				"                        hitgua.idhito = 1 /*GAs*/ " +
+				"                        and " +
+				"                        (select 1 " +
+				"                           from SCS_HITOFACTURABLEGUARDIA HITGUA_ND " +
+				"                          where hitgua_nd.idinstitucion = hitgua.idinstitucion " +
+				"                            and hitgua_nd.idturno = hitgua.idturno " +
+				"                            and hitgua_nd.idguardia = hitgua.idguardia " +
+				"                            and hitgua_nd.idhito = 46 /*NDAc*/ " +
+				"                         ) = 1 then 44 /*GAc*/ " +
+				"                        else hitgua.idhito end) = hit2.idhitoconfiguracion) " +
+				"           and facasi.idinstitucion = "+idInstitucion+" " +
+				"           and facasi.idfacturacion in ("+facturaciones+") " +
+				"         " +
+				"        union all " +
+				"         " +
+				"        /*Dias de guardia mas o menos normales*/ " +
+				"        select tur.abreviatura turno, " +
+				"               gua.nombre guardia, " +
+				"               nvl(gua.esviolenciagenero, '0') esviolenciagenero, " +
+				"               hit.nombre hito, " +
+				"               f_siga_getrecurso(hit.descripcion, "+idioma+") hitodesc, " +
+				"               facgua.idapunte idapunte, " +
+				"               facgua.precioaplicado precio, " +
+				"               1 cantidad " +
+				"          from SCS_TURNO                  TUR, " +
+				"               SCS_GUARDIASTURNO          GUA, " +
+				"               FCS_FACT_GUARDIASCOLEGIADO FACGUA, " +
+				"               SCS_HITOFACTURABLE         HIT " +
+				"         where tur.idinstitucion = gua.idinstitucion " +
+				"           and tur.idturno = gua.idturno " +
+				"           and exists (select * " +
+				"                  from FCS_FACT_APUNTE APU " +
+				"                 where gua.idinstitucion = apu.idinstitucion " +
+				"                   and gua.idturno = apu.idturno " +
+				"                   and gua.idguardia = apu.idguardia " +
+				"                   and apu.idinstitucion = facgua.idinstitucion " +
+				"                   and apu.idfacturacion = facgua.idfacturacion " +
+				"                   and apu.idapunte = facgua.idapunte) " +
+				"           and facgua.idhito = hit.idhito " +
+				"           and hit.aplicablea = 'DIAOGUARDIA' " +
+				"           and not exists " +
+				"         (select * " +
+				"                  from FCS_FACT_APUNTE APU " +
+				"                 where gua.idinstitucion = apu.idinstitucion " +
+				"                   and gua.idturno = apu.idturno " +
+				"                   and gua.idguardia = apu.idguardia " +
+				"                   and apu.idinstitucion = facgua.idinstitucion " +
+				"                   and apu.idfacturacion = facgua.idfacturacion " +
+				"                   and apu.idapunte = facgua.idapunte " +
+				"                   and apu.idhito in (27, 29, 18, 34, 17, 33, 31, 26)) " +
+				"              /*As+, Ac+, AcMax+, AcMin+, AsMax+, AsMin+, AcFG+, AcFGMax+*/ " +
+				"           and not exists " +
+				"         (select * " +
+				"                  from FCS_FACT_GUARDIASCOLEGIADO FACGUA2 " +
+				"                 where facgua.idinstitucion = facgua2.idinstitucion " +
+				"                   and facgua.idfacturacion = facgua2.idfacturacion " +
+				"                   and facgua.idapunte = facgua2.idapunte " +
+				"                   and facgua.fechafin = facgua2.fechafin " +
+				"                   and facgua2.idhito in (27, 29, 18, 34, 17, 33, 31, 26)) " +
+				"              /*As+, Ac+, AcMax+, AcMin+, AsMax+, AsMin+, AcFG+, AcFGMax+*/ " +
+				"           and (facgua.idhito in (19, 10) or /*AcMin, AsMin*/ " +
+				"               not exists (select * " +
+				"                             from FCS_FACT_GUARDIASCOLEGIADO FACGUA2 " +
+				"                            where facgua.idinstitucion = facgua2.idinstitucion " +
+				"                              and facgua.idfacturacion = facgua2.idfacturacion " +
+				"                              and facgua.idapunte = facgua2.idapunte " +
+				"                              and facgua.fechafin = facgua2.fechafin " +
+				"                              and upper(facgua2.motivo) like '%TP%')) " +
+				"           and facgua.idhito in " +
+				"               (select hit2.idhito " +
+				"                  from SCS_HITOFACTURABLE        HIT2, " +
+				"                       SCS_HITOFACTURABLEGUARDIA HITGUA " +
+				"                 where hitgua.idinstitucion = gua.idinstitucion " +
+				"                   and hitgua.idturno = gua.idturno " +
+				"                   and hitgua.idguardia = gua.idguardia " +
+				"                   and (case when " +
+				"                        hitgua.idhito = 1 /*GAs*/ " +
+				"                        and " +
+				"                        (select 1 " +
+				"                           from SCS_HITOFACTURABLEGUARDIA HITGUA_ND " +
+				"                          where hitgua_nd.idinstitucion = hitgua.idinstitucion " +
+				"                            and hitgua_nd.idturno = hitgua.idturno " +
+				"                            and hitgua_nd.idguardia = hitgua.idguardia " +
+				"                            and hitgua_nd.idhito = 46 /*NDAc*/ " +
+				"                         ) = 1 then 44 /*GAc*/ " +
+				"                        else hitgua.idhito end) = hit2.idhitoconfiguracion " +
+				"                   and hitgua.agrupar = '0') " +
+				"           and facgua.idinstitucion = "+idInstitucion+" " +
+				"           and facgua.idfacturacion in ("+facturaciones+") " +
+				"         " +
+				"        union all " +
+				"         " +
+				"        /*Cabeceras de guardia mas o menos normales*/ " +
+				"        select tur.abreviatura turno, " +
+				"               gua.nombre guardia, " +
+				"               nvl(gua.esviolenciagenero, '0') esviolenciagenero, " +
+				"               hit.nombre hito, " +
+				"               f_siga_getrecurso(hit.descripcion, "+idioma+") hitodesc, " +
+				"               apu.idapunte idapunte, " +
+				"               apu.precioaplicado precio, " +
+				"               1 cantidad " +
+				"          from SCS_TURNO          TUR, " +
+				"               SCS_GUARDIASTURNO  GUA, " +
+				"               FCS_FACT_APUNTE    APU, " +
+				"               SCS_HITOFACTURABLE HIT " +
+				"         where tur.idinstitucion = gua.idinstitucion " +
+				"           and tur.idturno = gua.idturno " +
+				"           and gua.idinstitucion = apu.idinstitucion " +
+				"           and gua.idturno = apu.idturno " +
+				"           and gua.idguardia = apu.idguardia " +
+				"           and apu.idhito = hit.idhito " +
+				"           and hit.aplicablea = 'DIAOGUARDIA' " +
+				"           and apu.idhito not in (27, 29, 18, 34, 17, 33, 31, 26) " +
+				"              /*As+, Ac+, AcMax+, AcMin+, AsMax+, AsMin+, AcFG+, AcFGMax+*/ " +
+				"           and apu.idhito in " +
+				"               (select hit2.idhito " +
+				"                  from SCS_HITOFACTURABLE        HIT2, " +
+				"                       SCS_HITOFACTURABLEGUARDIA HITGUA " +
+				"                 where hitgua.idinstitucion = gua.idinstitucion " +
+				"                   and hitgua.idturno = gua.idturno " +
+				"                   and hitgua.idguardia = gua.idguardia " +
+				"                   and (case when " +
+				"                        hitgua.idhito = 1 /*GAs*/ " +
+				"                        and " +
+				"                        (select 1 " +
+				"                           from SCS_HITOFACTURABLEGUARDIA HITGUA_ND " +
+				"                          where hitgua_nd.idinstitucion = hitgua.idinstitucion " +
+				"                            and hitgua_nd.idturno = hitgua.idturno " +
+				"                            and hitgua_nd.idguardia = hitgua.idguardia " +
+				"                            and hitgua_nd.idhito = 46 /*NDAc*/ " +
+				"                         ) = 1 then 44 /*GAc*/ " +
+				"                        else hitgua.idhito end) = hit2.idhitoconfiguracion " +
+				"                   and hitgua.agrupar = '1') " +
+				"           and apu.idinstitucion = "+idInstitucion+" " +
+				"           and apu.idfacturacion in ("+facturaciones+") " +
+				"         " +
+				"        union all " +
+				"         " +
+				"        /*Dias de guardia de facturacion por tipos*/ " +
+				"        select tur.abreviatura turno, " +
+				"               gua.nombre guardia, " +
+				"               nvl(gua.esviolenciagenero, '0') esviolenciagenero, " +
+				"               hit.nombre hito, " +
+				"               f_siga_getrecurso(hit.descripcion, "+idioma+") hitodesc, " +
+				"               facgua.idapunte idapunte, " +
+				"               facgua.precioaplicado precio, " +
+				"               1 cantidad " +
+				"          from SCS_TURNO                  TUR, " +
+				"               SCS_GUARDIASTURNO          GUA, " +
+				"               FCS_FACT_GUARDIASCOLEGIADO FACGUA, " +
+				"               SCS_HITOFACTURABLE         HIT " +
+				"         where tur.idinstitucion = gua.idinstitucion " +
+				"           and tur.idturno = gua.idturno " +
+				"           and exists (select * " +
+				"                  from FCS_FACT_APUNTE APU " +
+				"                 where gua.idinstitucion = apu.idinstitucion " +
+				"                   and gua.idturno = apu.idturno " +
+				"                   and gua.idguardia = apu.idguardia " +
+				"                   and apu.idinstitucion = facgua.idinstitucion " +
+				"                   and apu.idfacturacion = facgua.idfacturacion " +
+				"                   and apu.idapunte = facgua.idapunte) " +
+				"           and facgua.idhito = hit.idhito " +
+				"           and upper(facgua.motivo) like '%TP%' " +
+				"           and not exists " +
+				"         (select * " +
+				"                  from FCS_FACT_GUARDIASCOLEGIADO FACGUA2 " +
+				"                 where facgua.idinstitucion = facgua2.idinstitucion " +
+				"                   and facgua.idfacturacion = facgua2.idfacturacion " +
+				"                   and facgua.idapunte = facgua2.idapunte " +
+				"                   and facgua.fechafin = facgua2.fechafin " +
+				"                   and facgua2.idhito in (27, 29, 18, 34, 17, 33, 31, 26)) " +
+				"              /*As+, Ac+, AcMax+, AcMin+, AsMax+, AsMin+, AcFG+, AcFGMax+*/ " +
+				"           and facgua.idinstitucion = "+idInstitucion+" " +
+				"           and facgua.idfacturacion in ("+facturaciones+") " +
+				"         " +
+				"        union all " +
+				"         " +
+				"        /*Dias de guardia devengadas - Precios raros*/ " +
+				"        select tur.abreviatura turno, " +
+				"               gua.nombre guardia, " +
+				"               nvl(gua.esviolenciagenero, '0') esviolenciagenero, " +
+				"               hit.nombre hito, " +
+				"               f_siga_getrecurso(hit.descripcion, "+idioma+") hitodesc, " +
+				"               facgua.idapunte idapunte, " +
+				"               facgua.precioaplicado precio, " +
+				"               1 cantidad " +
+				"          from SCS_TURNO                  TUR, " +
+				"               SCS_GUARDIASTURNO          GUA, " +
+				"               FCS_FACT_GUARDIASCOLEGIADO FACGUA, " +
+				"               SCS_HITOFACTURABLE         HIT " +
+				"         where tur.idinstitucion = gua.idinstitucion " +
+				"           and tur.idturno = gua.idturno " +
+				"           and gua.idinstitucion = facgua.idinstitucion " +
+				"           and gua.idturno = facgua.idturno " +
+				"           and gua.idguardia = facgua.idguardia " +
+				"           and facgua.idhito = hit.idhito " +
+				"           and facgua.idhito in (27, 29, 18, 34, 17, 33, 31, 26) " +
+				"              /*As+, Ac+, AcMax+, AcMin+, AsMax+, AsMin+, AcFG+, AcFGMax+*/ " +
+				"           and not exists " +
+				"         (select * " +
+				"                  from FCS_FACT_APUNTE APU " +
+				"                 where apu.idinstitucion = facgua.idinstitucion " +
+				"                   and apu.idfacturacion = facgua.idfacturacion " +
+				"                   and apu.idapunte = facgua.idapunte " +
+				"                   and apu.idhito in (27, 29, 18, 34, 17, 33, 31, 26)) " +
+				"              /*As+, Ac+, AcMax+, AcMin+, AsMax+, AsMin+, AcFG+, AcFGMax+*/ " +
+				"           and facgua.idinstitucion = "+idInstitucion+" " +
+				"           and facgua.idfacturacion in ("+facturaciones+") " +
+				"         " +
+				"        union all " +
+				"         " +
+				"        /*Cabeceras devengadas - Precios raros*/ " +
+				"        select tur.abreviatura turno, " +
+				"               gua.nombre guardia, " +
+				"               nvl(gua.esviolenciagenero, '0') esviolenciagenero, " +
+				"               hit.nombre hito, " +
+				"               f_siga_getrecurso(hit.descripcion, "+idioma+") hitodesc, " +
+				"               apu.idapunte idapunte, " +
+				"               apu.precioaplicado precio, " +
+				"               1 cantidad " +
+				"          from SCS_TURNO          TUR, " +
+				"               SCS_GUARDIASTURNO  GUA, " +
+				"               FCS_FACT_APUNTE    APU, " +
+				"               SCS_HITOFACTURABLE HIT " +
+				"         where tur.idinstitucion = gua.idinstitucion " +
+				"           and tur.idturno = gua.idturno " +
+				"           and gua.idinstitucion = apu.idinstitucion " +
+				"           and gua.idturno = apu.idturno " +
+				"           and gua.idguardia = apu.idguardia " +
+				"           and apu.idhito = hit.idhito " +
+				"           and apu.idhito in (27, 29, 18, 34, 17, 33, 31, 26) " +
+				"              /*As+, Ac+, AcMax+, AcMin+, AsMax+, AsMin+, AcFG+, AcFGMax+*/ " +
+				"           and apu.idinstitucion = "+idInstitucion+" " +
+				"           and apu.idfacturacion in ("+facturaciones+") " +
+				"         " +
+				"        union all " +
+				"         " +
+				"        /*Costes Fijos*/ " +
+				"        select tur.abreviatura turno, " +
+				"               gua.nombre guardia, " +
+				"               nvl(gua.esviolenciagenero, '0') esviolenciagenero, " +
+				"               f_siga_getrecurso_etiqueta('gratuita.mantActuacion.literal.Coste', "+idioma+") hito, " +
+				"               f_siga_getrecurso(cos.descripcion, "+idioma+") hitodesc, " +
+				"               0 idapunte, " +
+				"               tipcos.importe precio, " +
+				"               0 cantidad " +
+				"          from SCS_TURNO                  TUR, " +
+				"               SCS_GUARDIASTURNO          GUA, " +
+				"               SCS_TIPOACTUACIONCOSTEFIJO TIPCOS, " +
+				"               SCS_COSTEFIJO              COS " +
+				"         where tur.idinstitucion = gua.idinstitucion " +
+				"           and tur.idturno = gua.idturno " +
+				"           and gua.idinstitucion = tipcos.idinstitucion " +
+				"           and tipcos.idinstitucion = cos.idinstitucion " +
+				"           and tipcos.idcostefijo = cos.idcostefijo " +
+				"           and tipcos.idinstitucion = "+idInstitucion+" " +
+				"           and exists " +
+				"         (select * " +
+				"                  from FCS_FACT_GRUPOFACT_HITO FAC " +
+				"                 where fac.idinstitucion = tur.idinstitucion " +
+				"                   and fac.idgrupofacturacion = tur.idgrupofacturacion " +
+				"                   and fac.idfacturacion in ("+facturaciones+")) " +
+				"         " +
+				"        union all " +
+				"         " +
+				"        select tur.abreviatura turno, " +
+				"               gua.nombre guardia, " +
+				"               nvl(gua.esviolenciagenero, '0') esviolenciagenero, " +
+				"               f_siga_getrecurso_etiqueta('gratuita.mantActuacion.literal.Coste', "+idioma+") hito, " +
+				"               f_siga_getrecurso(cos.descripcion, "+idioma+") hitodesc, " +
+				"               facact.idapunte idapunte, " +
+				"               facact.preciocostesfijos precio, " +
+				"               1 cantidad " +
+				"          from SCS_TURNO                    TUR, " +
+				"               SCS_GUARDIASTURNO            GUA, " +
+				"               FCS_FACT_ACTUACIONASISTENCIA FACACT, " +
+				"               SCS_ASISTENCIA               ASI, " +
+				"               SCS_ACTUACIONASISTCOSTEFIJO  ACTCOS, " +
+				"               SCS_COSTEFIJO                COS " +
+				"         where tur.idinstitucion = gua.idinstitucion " +
+				"           and tur.idturno = gua.idturno " +
+				"           and gua.idinstitucion = asi.idinstitucion " +
+				"           and gua.idturno = asi.idturno " +
+				"           and gua.idguardia = asi.idguardia " +
+				"           and asi.idinstitucion = facact.idinstitucion " +
+				"           and asi.anio = facact.anio " +
+				"           and asi.numero = facact.numero " +
+				"           and facact.idinstitucion = actcos.idinstitucion " +
+				"           and facact.anio = actcos.anio " +
+				"           and facact.numero = actcos.numero " +
+				"           and facact.idactuacion = actcos.idactuacion " +
+				"           and actcos.idinstitucion = cos.idinstitucion " +
+				"           and actcos.idcostefijo = cos.idcostefijo " +
+				"           and facact.preciocostesfijos <> 0 " +
+				"           and not exists " +
+				"         (select * " +
+				"                  from FCS_FACT_ACTUACIONASISTENCIA FACACT2 " +
+				"                 where facact.idinstitucion = facact2.idinstitucion " +
+				"                   and facact.anio = facact2.anio " +
+				"                   and facact.numero = facact2.numero " +
+				"                   and facact.idactuacion = facact2.idactuacion " +
+				"                   and facact.idfacturacion > facact2.idfacturacion) " +
+				"           and facact.idinstitucion = "+idInstitucion+" " +
+				"           and facact.idfacturacion in ("+facturaciones+")) " +
+
+				" group by esviolenciagenero, turno, guardia, hito, hitodesc, precio " +
+				" order by esviolenciagenero, turno, guardia, hito, hitodesc, precio";
+		}
+		
+		return this.selectGenerico (sql);
+	} //informeFJGPorHitos()
     
     /**
      * CONSULTA MODULOS Y BASES DE COMPENSACION
@@ -3723,6 +4245,11 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			Hashtable codigos = new Hashtable();
 			codigos.put(new Integer(1),new Integer(ClsConstants.ESTADO_FACTURACION_PROGRAMADA).toString());
 			codigos.put(new Integer(2),idInstitucion);
+			codigos.put(new Integer(3),new Integer(ClsConstants.ESTADO_FACTURACION_EN_EJECUCION).toString());
+			
+			//OJO: ESTA CONSULTA PODRIA HACER QUE SE QUEDARA BLOQUEADAS TODAS LAS FACTURACIONES SJCS
+			//POR QUE: PORQUE SI SE QUEDA UNA FACTURACION EN ESTADO 40 (EN EJECUCION),
+			// YA NO SE PODRA EJECUTAR NINGUNA MAS
 			String sql = "SELECT F.IDFACTURACION, F.REGULARIZACION "+
 			    		" FROM FCS_FACT_ESTADOSFACTURACION E, FCS_FACTURACIONJG F "+
 	    		 		" WHERE F.IDINSTITUCION = E.IDINSTITUCION "+
@@ -3733,7 +4260,17 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 	    		 		" (SELECT MAX(E2.FECHAESTADO) "+
 	    		 		" FROM FCS_FACT_ESTADOSFACTURACION E2 "+
 	    		 		" WHERE E2.IDINSTITUCION = E.IDINSTITUCION "+
-	    		 		" AND E2.IDFACTURACION = E.IDFACTURACION)";
+	    		 		" AND E2.IDFACTURACION = E.IDFACTURACION)" +
+	    		 		" AND NOT EXISTS (" +
+	    		 		"         SELECT *" +
+	    		 		"           FROM FCS_FACT_ESTADOSFACTURACION ESTFAC" +
+	    		 		"          WHERE ESTFAC.FECHAESTADO =" +
+	    		 		"                (SELECT MAX(ESTFAC2.FECHAESTADO)" +
+	    		 		"                   FROM FCS_FACT_ESTADOSFACTURACION ESTFAC2" +
+	    		 		"                  WHERE ESTFAC2.IDINSTITUCION = ESTFAC.IDINSTITUCION" +
+	    		 		"                    AND ESTFAC2.IDFACTURACION = ESTFAC.IDFACTURACION)" +
+	    		 		"                    AND ESTFAC.IDESTADOFACTURACION = :3" +
+	    		 		"        )";
 			   
 			UserTransaction tx = usr.getTransactionPesada();
 			RowsContainer rc=new RowsContainer();

@@ -59,8 +59,21 @@
 			       <LI ><B style="FONT-SIZE: 14px;">%%MULTIVALOR@CONSULTA%%</B>, para campos multivalor. CONSULTA es una consulta con campos de salida ID y DESCRIPCION que no debe ir encerrada entre paréntesis.</LI>   
 			    </ul> 
 			  </LI>
-		   <BR>
+		  <BR>
+		   	<LI>Si se utiliza como criterio dinámico <B style="FONT-SIZE: 14px;">%%TEXTO%%</B>
+		   	para los campos alfanuméricos.Recuerde que puede usar los comodines <B style="FONT-SIZE: 14px;">%</B> Y <B style="FONT-SIZE: 14px;">_</B> tanto en la consulta como en los criterios dinámicos con el operador <B style="FONT-SIZE: 14px;">COMO</B>.
+		   	Si queremos hacer una búsqueda aproximada por nombre de colegiado ya que se desconoce su nombre exacto utilizaremos el comodín  <B style="FONT-SIZE: 14px;">%NOMBRE COLEGIADO%</B> y la consulta nos devolverá los resultados de esa cadena por ejemplo
+		   	<B style="FONT-SIZE: 14px;">%JOSE%</B> nos devolverá Maria Jose, Jose Maria.
+ 
+		  <BR>
+		  	<BR>
+		  		<LI>Para que los criterios dinámicos del campo de texto sean independientes de mayúsculas y minúsculas puede
+		  		 utilizar la función <B style="FONT-SIZE: 14px;">UPPER</B> delante de los campos usados en la consulta.
+		  		 Ejemplo: Si queremos buscar dinámicamente por el nombre de un colegiado para que nos ignore las mayúsculas y minúsculas haremos <B style="FONT-SIZE: 14px;">UPPER(Cen_persona.Nombre) </B>
+		  		 <B style="FONT-SIZE: 14px;">%%OPERADOR%%UPPER(%%TEXTO%%).</B>
 
+		  	<BR>
+		  <BR>
 			  <LI > Los campos de salida correspondientes a descripciones 'multi-idioma' deben tener el siguiente formato:<BR>
 			        &nbsp;&nbsp;&nbsp;&nbsp;<B style="FONT-SIZE: 14px;">F_SIGA_GETRECURSO(</B>campo <B>, %%IDIOMA%%)</B> as "alias_campo"
 			   </LI>

@@ -52,6 +52,8 @@ public class DefinirGuardiasTurnosForm extends MasterForm
 	//Ordenacion
 	private ArrayList ordenacion = new ArrayList();
 	
+	private String diasASeparar;
+	private String hayDiasASeparar;
 	
 	
 	//////////////////// GETTERS ////////////////////
@@ -475,5 +477,18 @@ public class DefinirGuardiasTurnosForm extends MasterForm
 	}
 	public void setSustituta(String sustituta) {
 		this.sustituta = sustituta;
+	}
+	
+	public String getDiasASeparar() {
+		return diasASeparar;
+	}
+	public void setDiasASeparar(String diasASeparar) {
+		this.diasASeparar = diasASeparar;
+	}
+	public String getHayDiasASeparar() {
+		return hayDiasASeparar;
+	}
+	public void setHayDiasASeparar(String hayDiasASeparar) {
+		this.hayDiasASeparar = hayDiasASeparar;
 	}
 }

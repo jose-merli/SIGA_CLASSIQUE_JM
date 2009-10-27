@@ -89,7 +89,8 @@
 		   		document.ficheroBancarioPagosForm.submit();
 		 }
 				
-		function generarFichero() {		
+		function generarFichero() {	
+		    sub();	
 			var ok = true;
 			var aviso = false;
 			var fechaCargo = "<%=tieneFechaCargo%>"
@@ -100,19 +101,30 @@
 				var resultado = ventaModalGeneral(document.all.confirmarFacturacionForm.name,"P");
 
 				// Compruebo que si necesito la fecha de cargo la he obtenido de la modal:
+				
 				if (resultado==undefined || (resultado!=undefined && resultado=='')) {
+				
+				fin(document);
 						//alert('<siga:Idioma key="censo.consultaComponentesJuridicos.literal.fechaCargo"/> <siga:Idioma key="messages.campoObligatorio.error"/>');
-						ok = false;				
+						ok = false;		
+								
 				} else
 					// Almaceno la fecha de Cargo de la modal:
+					
 					document.all.ficheroBancarioPagosForm.fechaCargo.value = resultado;
+			}else{
+			 fin();
 			} 
 
 			// Si todo ha ido bien y Acepto genero el fichero:
 			if (ok && confirm('<siga:Idioma key="facturacion.ficheroBancarioPagos.literal.confirmarFicheroRenegociaciones"/>')) {
+			
 					document.all.ficheroBancarioPagosForm.modo.value = "generarFichero";
 					var f = document.all.ficheroBancarioPagosForm.name;	
 			      	document.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=facturacion.ficheroBancarioPagos.mensaje.generandoFicheros';
+			}else{
+		
+			 fin();
 			} 
 		}
 
@@ -253,7 +265,7 @@
 			<table class="botonesDetalle" align="center" border="0">
 				<tr>
 					<td class="tdBotones">					
-						<html:button property="renegociaciones" onclick="return generarFichero();" styleClass="button"><siga:Idioma key="facturacion.ficheroBancarioPagos.boton.renegociacion"/>    </html:button>
+						<html:button property="renegociaciones" property="idButton" onclick="return generarFichero();" styleClass="button" ><siga:Idioma key="facturacion.ficheroBancarioPagos.boton.renegociacion"/>    </html:button>
 					</td>	
 				</tr>
 			</table>

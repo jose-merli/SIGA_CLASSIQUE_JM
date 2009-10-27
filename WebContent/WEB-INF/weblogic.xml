@@ -11,6 +11,8 @@
 		<wls:debug>true</wls:debug>
 	</wls:jsp-descriptor>
 	<wls:container-descriptor>
+        <wls:servlet-reload-check-secs>-1</wls:servlet-reload-check-secs>
+        <wls:resource-reload-check-secs>-1</wls:resource-reload-check-secs>
 		<wls:prefer-web-inf-classes>true</wls:prefer-web-inf-classes>
 	</wls:container-descriptor>
 </wls:weblogic-web-app>
