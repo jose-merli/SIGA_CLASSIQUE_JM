@@ -4268,6 +4268,18 @@
         </field>
         
     </form> 
+    <form name="EnviosDatosGeneralesForm">
+	
+	    <field property ="idPlantillaEnvio" depends ="required">
+	            <arg0 key="envios.definir.literal.plantilla"/>
+        </field>
+        <field property = "idPlantillaGeneracion" depends = "required">
+            <arg0 key="envios.definir.literal.plantillageneracion"/>
+        </field>
+        
+        
+    </form> 
+				
 					
 </formset>
 

@@ -16,6 +16,7 @@ import com.atos.utils.*;
 import com.siga.Utilidades.*;
 import com.siga.beans.*;
 import com.siga.censo.form.DireccionesForm;
+import com.siga.envios.form.RemitentesForm;
 import com.siga.general.*;
 
 
@@ -561,10 +562,15 @@ public class DireccionesAction extends MasterAction
 			//confirmando las modificaciones de BD
 			t.commit();
 			rc = exitoModal("messages.inserted.success", request);
+			if(true){
+				miForm.setIdDireccion(beanDir.getIdDireccion());
+				return enviarNuevaDireccion(mapping, miForm, request, response);
+			}
 		}
 		catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e, t);
 		}
+		
 		return rc; 
 	} //insertar()
 	
@@ -1289,4 +1295,33 @@ public class DireccionesAction extends MasterAction
 		}
 		return rc;
 	} //borrar()
+	protected String enviarNuevaDireccion (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws SIGAException 
+			{
+		try {
+
+			DireccionesForm form = (DireccionesForm)formulario;
+			
+				
+			Long idPersona = form.getIDPersona();
+			Long idDireccion = form.getIdDireccion();
+			Integer idInstitucionPersona = form.getIDInstitucion();
+			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");			
+			
+			CenClienteAdm clienteAdm =  new CenClienteAdm(this.getUserName(request),
+					user,idInstitucionPersona.intValue(), idPersona.longValue());
+			Hashtable hash = clienteAdm.getDirecciones(idPersona, idInstitucionPersona, idDireccion);
+
+			request.setAttribute("direccion", hash);		
+
+					
+
+		} 	
+		catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
+		}
+		return "seleccion";
+		}
 }

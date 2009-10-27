@@ -18,6 +18,7 @@
 <%@ page import="com.atos.utils.ClsConstants"%>
  <%@ page import="java.util.Properties"%>
 <!-- JSP -->
+<bean:define id="permitirAniadirNuevo" name="busquedaClientesModalForm" property="permitirAniadirNuevo" type="java.lang.String"/>
 <%  
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
@@ -26,8 +27,8 @@
 	
 <%  
 	// locales
-	BusquedaClientesForm formulario = (BusquedaClientesForm)request.getSession().getAttribute("busquedaClientesModalForm");
-		
+	//BusquedaClientesForm formulario = (BusquedaClientesForm)request.getSession().getAttribute("busquedaClientesModalForm");
+	
 	String titu = "censo.busquedaClientes.literal.titulo";
 	String busc = "censo.busquedaClientes.literal.titulo";
 
@@ -171,7 +172,10 @@
 
 	</siga:ConjCampos>
 
-
+<html:form action="/CEN_DatosGenerales.do" method="POST" target="mainWorkArea">
+		<input type="hidden" name="actionModal" value="1">
+		<input type="hidden" name="modo" value="altaNoColegiado">
+	</html:form>
 	<!-- FIN: CAMPOS DE BUSQUEDA-->
 
 
@@ -180,9 +184,11 @@
 		 boton una funcion que abajo se reescribe. Los valores asociados separados por comas
 		 son: V Volver, B Buscar,A Avanzada ,S Simple,N Nuevo registro ,L Limpiar,R Borrar Log
 	-->
-
+		<% if(permitirAniadirNuevo!=null && permitirAniadirNuevo.equals("S")){%>
+		<siga:ConjBotonesBusqueda botones="B,N"  modal="G" titulo="<%=busc%>" />
+	<%} else{%>
 		<siga:ConjBotonesBusqueda botones="B"  modal="G" titulo="<%=busc%>" />
-
+	<%} %>
 	<!-- FIN: BOTONES BUSQUEDA -->
 
 	
@@ -198,6 +204,24 @@
 				document.forms[0].modo.value="buscarModalInit";
 				document.forms[0].submit();	
 			//}
+		}
+		function nuevo() 
+		{		
+			
+			var resultado=ventaModalGeneral("datosGeneralesForm","M");
+			alert('resultado en busqeudaCleintes Modal'+resultado);
+			if (resultado!=undefined && resultado[0]!=undefined ){
+				document.forms[0].numeroColegiado.value=resultado[2];
+				document.forms[0].nif.value=resultado[3];
+				document.forms[0].nombrePersona.value=resultado[4];
+				document.forms[0].apellido1.value=resultado[5];
+				document.forms[0].apellido2.value=resultado[6];
+				buscar();
+			}
+			
+			
+				
+			
 		}
 
 	</script>

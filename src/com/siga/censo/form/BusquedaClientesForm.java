@@ -21,6 +21,7 @@ import com.siga.general.MasterForm;
  	
  	String fechaNacimientoDesde="", fechaNacimientoHasta="", fechaIncorporacionDesde="", fechaIncorporacionHasta="",fechaAltaHasta="",fechaAltaDesde="";
  	private String solBusqueda="", codigo = "";
+ 	String permitirAniadirNuevo= "N";
 
 
  	
@@ -537,5 +538,11 @@ import com.siga.general.MasterForm;
 		catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	public String getPermitirAniadirNuevo() {
+		return permitirAniadirNuevo;
+	}
+	public void setPermitirAniadirNuevo(String permitirAniadirNuevo) {
+		this.permitirAniadirNuevo = permitirAniadirNuevo;
 	}
 }

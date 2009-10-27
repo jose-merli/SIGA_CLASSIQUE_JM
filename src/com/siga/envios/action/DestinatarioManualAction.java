@@ -537,4 +537,5 @@ public class DestinatarioManualAction extends MasterAction {
 	   	 }
 		 return "seleccion";
 	}
+	
 }

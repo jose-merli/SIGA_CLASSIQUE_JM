@@ -42,8 +42,6 @@
 	}
 	String buscarPersona = UtilidadesString.getMensajeIdioma(userBean, "general.boton.search");
 	String buscar = UtilidadesString.getMensajeIdioma(userBean, "envios.remitentes.elegirdireccion");
-	String nuevaDireccion = UtilidadesString.getMensajeIdioma(userBean, "envios.remitentes.nuevaDireccion");
-	
 	
 	request.removeAttribute("accion");
 	
@@ -224,7 +222,6 @@
 		<td colspan="" align="right">
 			<% if (accion.equals("nuevo") || accion.equals("edicion") ){ %>
 				<input type="button" name="idButton" class="button" alt="<%=buscar%>" id="buscarDir" onclick="return buscarDireccion();" value="<%=buscar%>"/>&nbsp;
-				<input type="button" name="idButton" class="button" alt="<%=nuevaDireccion%>" id="buscarDir" onclick="return nuevaDireccion();" value="<%=nuevaDireccion%>"/>&nbsp;
 			<% } %>
 		</td>
 		</tr>				
@@ -238,14 +235,11 @@
 </tr>
 
 </html:form>
-</table>
 
 <html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="">
 	<input type="hidden" name="actionModal" value="">
 	<input type="hidden" name="modo" value="abrirBusquedaModal">
 	<input type="hidden" name="clientes"	value="1">
-	<input type="hidden" name="permitirAniadirNuevo" value="S">
-	
 </html:form>
 
 
@@ -257,20 +251,7 @@
 	<input type="hidden" name="idTipoEnvio"   value="">
 </html:form>
 
-<html:form method="post" action="/CEN_ConsultasDirecciones.do">
-		
-			<!-- Campo obligatorio -->
-			<html:hidden property = "modo" value = ""/>
-			<input type="hidden" name="nombreUsuario" value= ""/>
-			<input type="hidden" name="numeroUsuario" value= ""/>
-			<input type='hidden' name="idPersona" 		value= ""/>	
-			<input type='hidden' name="idInstitucion" value= "<%=idInstitucion%>"/>
-			<input type='hidden' name="accion" value= "">
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
-		</html:form>
-
+</table>
 
 
 
@@ -326,7 +307,7 @@
 		}
 		
 		function buscarCliente()
-		{		
+		{			
 			var resultado=ventaModalGeneral("busquedaClientesModalForm","G");
 			if (resultado!=undefined && resultado[0]!=undefined ){
 				document.forms[0].idPersona.value       = resultado[0];
@@ -398,60 +379,6 @@
 		//alert(document.forms[0].idPersona.value.length);
 		return;
 		}
-		
-		function nuevaDireccion() 
-		{
-			
-			if(document.forms[0].idPersona.value.length == 0) {					
-				alert ('<siga:Idioma key="factSJCS.resumenPagos.literal.seleccionarPersona"/>');
-				return;
-			}
-			alert("document.consultaDireccionesForm.idPersona"+document.consultaDireccionesForm.idPersona.value);
-			document.consultaDireccionesForm.idPersona.value = document.forms[0].idPersona.value;
-			alert("document.consultaDireccionesForm.idPersona"+document.consultaDireccionesForm.idPersona.value);
-			document.consultaDireccionesForm.idInstitucion.value = document.forms[0].idInstitucion.value;
-			document.consultaDireccionesForm.modo.value = "nuevo";
-	    	var direccion = ventaModalGeneral(document.consultaDireccionesForm.name, "G");
-	    	
-	    	document.forms[0].direccion.value=direccion[0];
-				document.forms[0].poblacion.value=direccion[1];
-				document.forms[0].provincia.value=direccion[2];
-				document.forms[0].pais.value=direccion[3];
-				document.forms[0].cpostal.value=direccion[4];
-				document.forms[0].idDireccion.value=direccion[11];
-
-				if (trim(direccion[13])=="") document.forms[0].telefono.value=direccion[14]; // el movil
-				else document.forms[0].telefono.value=direccion[13];
-	    	
-	    	
-	    	
-	    	aux[0]=unescape("<%=UtilidadesString.cambiarDoblesComillas(domicilio) %>");
-				aux[1]=unescape("<%=poblacion %>");
-				aux[2]=unescape("<%=provincia %>");
-				aux[3]=unescape("<%=pais %>");
-				aux[4]=unescape("<%=cp %>");
-				aux[5]=unescape("<%=fax1 %>");
-				aux[6]=unescape("<%=fax2 %>");
-				aux[7]=unescape("<%=correoElectronico %>");
-				aux[8]=unescape("<%=idPoblacion %>");
-				aux[9]=unescape("<%=idProvincia %>");
-				aux[10]=unescape("<%=idPais %>");
-				aux[11]=unescape("<%=idDireccion %>");
-				aux[12]=unescape("<%=idTipoEnvio %>");
-				aux[13]=unescape("<%=telefono1%>");
-				aux[14]=unescape("<%=movil%>");
-				aux[15]=unescape("<%=poblacionExt%>");
-				
-	    	
-  	  		if (rc != null) { 
-  	 	 		if (rc == "MODIFICADO") {
-  	 	 			refrescarLocal();
-  	  			}
-  	  		}
-			
-			
-		
-		"C:/Documents and Settings/jorgeta.ITCGAE/Datos de programa/Microsoft/Internet Explorer/Quick Launch/Mozilla Firefox.lnk"}
 
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
