@@ -326,23 +326,21 @@ public class MasterWords
 
 		try {
 			Enumeration<String> claves=dato.keys();
-			do{
-				DocumentBuilder builder=new DocumentBuilder(doc);
+			DocumentBuilder builder=new DocumentBuilder(doc);
+			while(claves.hasMoreElements()){
+				
 				String clave = (String) claves.nextElement();
-				do{
-					if(builder.moveToMergeField(clave)) //si lo encuentra
+				while(builder.moveToMergeField(clave))
 					{
 						Object o = dato.get(clave);
 						if (!(o instanceof String)) {
-							o = "" + o;
+							o = (String)o;
 						}
 						builder.write(((String)o).trim());	
 					}
-					else {
-						break;
-					}
-				}while(true);
-			}while(claves.hasMoreElements());
+					
+				
+			}
 		} catch (Exception e) {
 			throw new ClsExceptions(e,"Error al rellenar informe");
 		}
