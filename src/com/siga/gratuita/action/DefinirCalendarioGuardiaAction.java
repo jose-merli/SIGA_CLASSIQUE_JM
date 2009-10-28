@@ -1555,9 +1555,10 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 
 										//Pinta Datos del Calendario:
 										//calendarioSJCS.pintarCalendarioSJCS();
-
+										//Obtenemos los dias a Separar
+										List lDiasASeparar = calendarioSJCS.getDiasASeparar(new Integer(idInstitucion), new Integer(idTurno), new Integer(idGuardia) , usr);
 										//Obtengo la matriz de letrados de Guardia para los periodos calculados:
-										salidaError = calendarioSJCS.calcularMatrizLetradosGuardia();
+										salidaError = calendarioSJCS.calcularMatrizLetradosGuardia(lDiasASeparar);
 
 										//Salida del resultado de ejecutar CalcularMatrizLetradosGuardia:
 										//calendarioSJCS.pintarSalidaCalcularMatrizLetradosGuardia(salidaError);

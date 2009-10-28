@@ -1936,7 +1936,8 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		String keyPathFicheros = "cajg.directorioFisicoCAJG";		
 		String keyPath2 = "cajg.directorioCAJGJava";
 				
-		ReadProperties p = new ReadProperties("SIGA.properties");
+		//ReadProperties p = new ReadProperties("SIGA.properties");
+		ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 		String pathFichero = p.returnProperty(keyPathFicheros) + p.returnProperty(keyPath2);								
 		String dirFicheros = pathFichero + File.separator + idInstitucion  + File.separator + form.getIdRemesa() + File.separator + "xml";		
 		
