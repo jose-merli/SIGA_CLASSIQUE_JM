@@ -27,8 +27,7 @@
 	String app=request.getContextPath(); 
 	HttpSession ses=request.getSession(true);
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
-	String profile[]=usr.getProfile();
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	
 
 	String modopestanha = request.getSession().getAttribute("accion")==null?"":(String)request.getSession().getAttribute("accion");
 
@@ -127,7 +126,11 @@
 				<siga:Idioma key="gratuita.general.literal.comentariosDelitosFaltas"/>
 			</td>
 			<td>
-				<textarea name="delitoAux" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)"  id="delitoAux" cols="60" rows="3" style="overflow:auto" class="box"></textarea>
+			  <% if(modopestanha != null && modopestanha.equalsIgnoreCase("ver")){%>
+				<textarea name="delitoAux" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)"  id="delitoAux" cols="60" rows="3" style="overflow:auto" class="boxConsulta" readonly="true"></textarea>
+			  <%}else{ %>
+			    <textarea name="delitoAux" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)"  id="delitoAux" cols="60" rows="3" style="overflow:auto" class="box"></textarea> 
+			  <%}%>	
 			</td>
 		</tr>
 		</table>
