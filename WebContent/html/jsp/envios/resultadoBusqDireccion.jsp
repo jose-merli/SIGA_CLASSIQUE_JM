@@ -178,12 +178,12 @@
 			String movil       = UtilidadesString.mostrarDatoJSP((String) (direccion.get(CenDireccionesBean.C_MOVIL)));
 
 			String idPais2=String.valueOf(direccion.get("IDPAIS"));
-			String pob=String.valueOf(direccion.get("POBLACION"));
+			String pob=UtilidadesString.mostrarDatoJSP(String.valueOf(direccion.get("POBLACION")));
 			
 			String pobExt=String.valueOf(direccion.get("POBLACIONEXTRANJERA"));
 			if (pobExt==null) pobExt="";
 			if (!idPais2.equals(ClsConstants.ID_PAIS_ESPANA)) {
-				pob=String.valueOf(direccion.get("POBLACIONEXTRANJERA"));
+				pob=UtilidadesString.mostrarDatoJSP(String.valueOf(direccion.get("POBLACIONEXTRANJERA")));
 			}
 			
 
