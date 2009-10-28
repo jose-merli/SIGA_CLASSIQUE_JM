@@ -499,7 +499,6 @@
 		//Asociada al boton GuardarCerrar
 		function accionGuardarCerrar() {		
 		
-           
            sub();
            document.consultaDireccionesForm.telefono1.value=eliminarBlancos(trim(document.consultaDireccionesForm.telefono1.value));
 		   document.consultaDireccionesForm.telefono2.value=eliminarBlancos(trim(document.consultaDireccionesForm.telefono2.value));
@@ -736,6 +735,8 @@
 		<input type="hidden"  name="idTipoDireccionNew"  value="">
 		<input type="hidden" name="modificarPreferencias" value="">
 		<input type="hidden" name = "idDireccionesPreferentes" value = ""/>
+		<html:hidden property = "vieneDe" />
+		
 		<%if (editarCampos) {%>
 			<html:hidden property="idPersona" 				value="<%=idPersona%>"/> 
 			<html:hidden property="idDireccion" 			value="<%=idDireccion%>"/> 

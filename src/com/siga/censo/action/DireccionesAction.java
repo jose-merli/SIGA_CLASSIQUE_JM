@@ -561,11 +561,12 @@ public class DireccionesAction extends MasterAction
 			
 			//confirmando las modificaciones de BD
 			t.commit();
-			rc = exitoModal("messages.inserted.success", request);
-			if(true){
+			
+			if(miForm.getVieneDe()!=null && miForm.getVieneDe().equals("1")){
 				miForm.setIdDireccion(beanDir.getIdDireccion());
 				return enviarNuevaDireccion(mapping, miForm, request, response);
 			}
+			rc = exitoModal("messages.inserted.success", request);
 		}
 		catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e, t);

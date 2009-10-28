@@ -269,6 +269,8 @@
 			<!-- RGG: cambio a formularios ligeros -->
 			<input type="hidden" name="tablaDatosDinamicosD">
 			<input type="hidden" name="actionModal" value="">
+			<html:hidden property = "vieneDe" value=""/>
+			
 		</html:form>
 
 
@@ -406,14 +408,18 @@
 				alert ('<siga:Idioma key="factSJCS.resumenPagos.literal.seleccionarPersona"/>');
 				return;
 			}
-			alert("document.consultaDireccionesForm.idPersona"+document.consultaDireccionesForm.idPersona.value);
 			document.consultaDireccionesForm.idPersona.value = document.forms[0].idPersona.value;
-			alert("document.consultaDireccionesForm.idPersona"+document.consultaDireccionesForm.idPersona.value);
 			document.consultaDireccionesForm.idInstitucion.value = document.forms[0].idInstitucion.value;
+			document.consultaDireccionesForm.vieneDe.value = '1';
+			
 			document.consultaDireccionesForm.modo.value = "nuevo";
+			
 	    	var direccion = ventaModalGeneral(document.consultaDireccionesForm.name, "G");
-	    	
+	    	if(direccion){
 	    	document.forms[0].direccion.value=direccion[0];
+	    	
+	    	if (trim(direccion[1])=="") document.forms[0].poblacion.value=direccion[15]; // el movil
+				else document.forms[0].poblacion.value=direccion[1];
 				document.forms[0].poblacion.value=direccion[1];
 				document.forms[0].provincia.value=direccion[2];
 				document.forms[0].pais.value=direccion[3];
@@ -422,36 +428,19 @@
 
 				if (trim(direccion[13])=="") document.forms[0].telefono.value=direccion[14]; // el movil
 				else document.forms[0].telefono.value=direccion[13];
+			}else{
+				accionCerrar();
+			}
 	    	
 	    	
 	    	
-	    	aux[0]=unescape("<%=UtilidadesString.cambiarDoblesComillas(domicilio) %>");
-				aux[1]=unescape("<%=poblacion %>");
-				aux[2]=unescape("<%=provincia %>");
-				aux[3]=unescape("<%=pais %>");
-				aux[4]=unescape("<%=cp %>");
-				aux[5]=unescape("<%=fax1 %>");
-				aux[6]=unescape("<%=fax2 %>");
-				aux[7]=unescape("<%=correoElectronico %>");
-				aux[8]=unescape("<%=idPoblacion %>");
-				aux[9]=unescape("<%=idProvincia %>");
-				aux[10]=unescape("<%=idPais %>");
-				aux[11]=unescape("<%=idDireccion %>");
-				aux[12]=unescape("<%=idTipoEnvio %>");
-				aux[13]=unescape("<%=telefono1%>");
-				aux[14]=unescape("<%=movil%>");
-				aux[15]=unescape("<%=poblacionExt%>");
+	    	
 				
 	    	
-  	  		if (rc != null) { 
-  	 	 		if (rc == "MODIFICADO") {
-  	 	 			refrescarLocal();
-  	  			}
-  	  		}
+  	  		
 			
-			
-		
-		"C:/Documents and Settings/jorgeta.ITCGAE/Datos de programa/Microsoft/Internet Explorer/Quick Launch/Mozilla Firefox.lnk"}
+		}
+	
 
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->

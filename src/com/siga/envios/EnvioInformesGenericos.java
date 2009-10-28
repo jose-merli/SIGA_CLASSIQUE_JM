@@ -534,13 +534,27 @@ public class EnvioInformesGenericos extends MasterReport {
 				
 				vDocumentos = new Vector();
 	
+				ArrayList alFacturas = new ArrayList();
+				
 				for (int i = 0; i < alClavesDestinatario.size(); i++) {
-					Hashtable  htClaves =   (Hashtable) alClavesDestinatario.get(i);
-					datosInforme.putAll(htClaves);
-					vDocumentos.addAll(getDocumentosAEnviar(datosInforme,
-							vPlantillasInforme, usrBean,
-							EnvioInformesGenericos.docDocument,programInfBean.getIdTipoInforme()));
+					if(!programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesMorosos)){
+						Hashtable  htClaves =   (Hashtable) alClavesDestinatario.get(i);
+						datosInforme.putAll(htClaves);
+						vDocumentos.addAll(getDocumentosAEnviar(datosInforme,vPlantillasInforme, usrBean,
+								EnvioInformesGenericos.docDocument,programInfBean.getIdTipoInforme()));
+					}else{
+						Hashtable  htClaves =   (Hashtable) alClavesDestinatario.get(i);
+						String idFactura = (String)htClaves.get("idFactura");
+						alFacturas.add(idFactura);
+						
+					}
 					
+					
+				}
+				if(programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesMorosos)){
+					datosInforme.put("idFacturas", alFacturas);
+					vDocumentos.addAll(getDocumentosAEnviar(datosInforme,vPlantillasInforme, usrBean,
+							EnvioInformesGenericos.docDocument,programInfBean.getIdTipoInforme()));
 				}
 			}
 			
@@ -660,12 +674,27 @@ public class EnvioInformesGenericos extends MasterReport {
 			//List aClavesMultiple = (ArrayList)htClavesDestinatario.get("clavesMultiple");
 			//datosInforme.putAll(htClavesDestinatario);
 			vDocumentos = new Vector();
+			ArrayList alFacturas = new ArrayList();
 			for (int i = 0; i < alClavesDestinatario.size(); i++) {
-				Hashtable  htClaves =   (Hashtable) alClavesDestinatario.get(i);
-				datosInforme.putAll(htClaves);
+				
+				
+				if(!programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesMorosos)){
+					Hashtable  htClaves =   (Hashtable) alClavesDestinatario.get(i);
+					datosInforme.putAll(htClaves);
+					vDocumentos.addAll(getDocumentosAEnviar(datosInforme,vPlantillasInforme, usrBean,
+							EnvioInformesGenericos.docDocument,programInfBean.getIdTipoInforme()));
+				}else{
+					Hashtable  htClaves =   (Hashtable) alClavesDestinatario.get(i);
+					String idFactura = (String)htClaves.get("idFactura");
+					alFacturas.add(idFactura);
+					
+				}
+				
+			}
+			if(programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesMorosos)){
+				datosInforme.put("idFacturas", alFacturas);
 				vDocumentos.addAll(getDocumentosAEnviar(datosInforme,vPlantillasInforme, usrBean,
 						EnvioInformesGenericos.docDocument,programInfBean.getIdTipoInforme()));
-				
 			}
 		}
 		
@@ -1520,7 +1549,8 @@ public class EnvioInformesGenericos extends MasterReport {
 
 
 			Vector vCampos = this.obtenerDatosFormulario(form);
-			String claveIterante = form.getClavesIteracion();
+//			String claveIterante = form.getClavesIteracion();
+			String claveIterante = "idFactura";
 			if(claveIterante!=null){
 				vCampos = this.setCamposIterantes(vCampos,claveIterante);
 			}

@@ -22,6 +22,7 @@ import com.siga.general.MasterForm;
 public class DireccionesForm extends MasterForm{
 
 	String incluirRegistrosConBajaLogica;
+	String vieneDe;
 	
 	//	metodos set de los campos del formulario
 	public void setCodigoPostal(String codigoPostal) {
@@ -235,5 +236,13 @@ public class DireccionesForm extends MasterForm{
 	}
 	public void setIncluirRegistrosConBajaLogica(String s) {
 		this.incluirRegistrosConBajaLogica = s;
+	}
+
+	public String getVieneDe() {
+		return vieneDe;
+	}
+
+	public void setVieneDe(String vieneDe) {
+		this.vieneDe = vieneDe;
 	}
 }

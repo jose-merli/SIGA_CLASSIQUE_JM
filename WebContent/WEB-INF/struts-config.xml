@@ -547,6 +547,9 @@
 			<forward name="nuevo" path="/html/jsp/censo/datosDireccion.jsp"/>
 			<forward name="preguntaCambioPreferencia" path="/html/jsp/censo/preguntaCambioPreferencia.jsp"/>
 			<forward name="solicitarModificacion" path="/CEN_SolicitudDirecciones.do"/>
+			
+			<forward name="seleccion" path="/html/jsp/envios/seleccionDireccionModal.jsp"/>
+		
 		</action>
 
 		<action path="/INF_InformesGenericos" type="com.siga.informes.action.InformesGenericosAction" name="InformesGenericosForm" scope="request">
