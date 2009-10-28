@@ -1036,10 +1036,10 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		consulta.append(" SUM (P.IMPORTEGUARDIA)  as TOTALIMPORTEPAGADOGUARDIA, ");
 		consulta.append(" SUM (P.IMPORTEEJG)  as TOTALIMPORTEPAGADOEJG, ");
 		consulta.append(" SUM (P.IMPORTESOJ)  as TOTALIMPORTEPAGADOSOJ, ");
-		consulta.append(" decode(SUM(F.IMPORTEOFICIO),  0, 0, round( SUM(P.IMPORTEOFICIO)  * 100 / max(F.IMPORTEOFICIO)  ,2))  as TOTALPORCENTAJEPAGADOOFICIO, ");
-		consulta.append(" decode(SUM(F.IMPORTEGUARDIA), 0, 0, round( SUM(P.IMPORTEGUARDIA) * 100 / max(F.IMPORTEGUARDIA) ,2))  as TOTALPORCENTAJEPAGADOGUARDIA, ");
-		consulta.append(" decode(SUM(F.IMPORTEEJG),     0, 0, round( SUM(P.IMPORTEEJG)     * 100 / max(F.IMPORTEEJG)     ,2))  as TOTALPORCENTAJEPAGADOEJG, ");
-		consulta.append(" decode(SUM(F.IMPORTESOJ),     0, 0, round( SUM(P.IMPORTESOJ)     * 100 / max(F.IMPORTESOJ)     ,2))  as TOTALPORCENTAJEPAGADOSOJ, ");
+		consulta.append(" decode(max(F.IMPORTEOFICIO),  0, 0, round( SUM(P.IMPORTEOFICIO)  * 100 / max(F.IMPORTEOFICIO)  ,2))  as TOTALPORCENTAJEPAGADOOFICIO, ");
+		consulta.append(" decode(max(F.IMPORTEGUARDIA), 0, 0, round( SUM(P.IMPORTEGUARDIA) * 100 / max(F.IMPORTEGUARDIA) ,2))  as TOTALPORCENTAJEPAGADOGUARDIA, ");
+		consulta.append(" decode(max(F.IMPORTEEJG),     0, 0, round( SUM(P.IMPORTEEJG)     * 100 / max(F.IMPORTEEJG)     ,2))  as TOTALPORCENTAJEPAGADOEJG, ");
+		consulta.append(" decode(max(F.IMPORTESOJ),     0, 0, round( SUM(P.IMPORTESOJ)     * 100 / max(F.IMPORTESOJ)     ,2))  as TOTALPORCENTAJEPAGADOSOJ, ");
 		consulta.append(" max(F.IMPORTEOFICIO)  as TOTALOFICIO, ");
 		consulta.append(" max(F.IMPORTEGUARDIA) as TOTALGUARDIA, ");
 		consulta.append(" max(F.IMPORTEEJG)     as TOTALEJG, ");
