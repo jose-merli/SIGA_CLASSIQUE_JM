@@ -45,7 +45,6 @@
 	String botonesAccion;
 	
 	if(modopestanha != null && modopestanha.equalsIgnoreCase("modificar")){
-		System.out.println(esFichaColegial);
  		botonesAccion = esFichaColegial ? "n,r,g" : "v,n,r,g";
 	}else{
  		botonesAccion = esFichaColegial ? "" : "v";
