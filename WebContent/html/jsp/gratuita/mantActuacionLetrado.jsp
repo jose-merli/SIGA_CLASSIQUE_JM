@@ -300,7 +300,7 @@
 			</td>
 		</tr>
 	</table>
-	<table width="100%">
+	<table width="100%" border="0">
 		<tr>
 			<td class="labelText">	
 				<siga:Idioma key='gratuita.mantActuacion.literal.asistido'/>
@@ -311,19 +311,19 @@
 			<td class="labelTextValor">	
 				<%=PJGNIF%>
 			</td>
-			<td class="labelText">	
+			<td class="labelText" >	
 				<siga:Idioma key='gratuita.mantActuacion.literal.nombre'/>
 			</td>
 			<td class="labelTextValor">	
 				<%=PJGNOMBRE%>
 			</td>
-			<td class="labelText">	
+			<td class="labelText" >	
 				<siga:Idioma key='gratuita.mantActuacion.literal.apellidos1'/>
 			</td>
 			<td class="labelTextValor">	
 				<%=PJGAPELLIDO1%>
 			</td>
-			<td class="labelText">	
+			<td class="labelText" >	
 				<siga:Idioma key='gratuita.mantActuacion.literal.apellidos2'/>
 			</td>
 			<td class="labelTextValor">	
@@ -333,7 +333,7 @@
 	</table>
 	</siga:ConjCampos>
 	<siga:ConjCampos leyenda="gratuita.busquedaDesignas.literal.letrado">
-	<table width="100%">
+	<table width="100%" border="0">
 		<tr>
 			<td class="labelText">	
 				<siga:Idioma key='gratuita.mantActuacion.literal.ncolegiado'/>
@@ -341,19 +341,19 @@
 			<td class="labelTextValor">	
 				<%=CNCOLEGIADO%>
 			</td>
-			<td class="labelText">	
+			<td class="labelText" >	
 				<siga:Idioma key='gratuita.mantActuacion.literal.nombre'/>
 			</td>
 			<td class="labelTextValor">	
 				<%=PNOMBRE%>
 			</td>
-			<td class="labelText">	
+			<td class="labelText" >	
 				<siga:Idioma key='gratuita.mantActuacion.literal.apellidos1'/>
 			</td>
 			<td class="labelTextValor">	
 				<%=PAPELLIDOS1%>
 			</td>
-			<td class="labelText">	
+			<td class="labelText" >	
 				<siga:Idioma key='gratuita.mantActuacion.literal.apellidos2'/>
 			</td>
 			<td class="labelTextValor">	
@@ -567,7 +567,7 @@
 					<%// if((validarJustificaciones != null) && (validarJustificaciones.equalsIgnoreCase("S"))) { %>
 						<% if (!usr.isLetrado()) { // Agente %>
 							<% if ((facturada != null) && (!facturada.equals("1"))) {%>
-									<input type="button" alt="<siga:Idioma key='gratuita.altaTurnos.literal.validacion'/>" id="idButton" onclick="validarJustificacion();" class="button" value="<siga:Idioma key='gratuita.altaTurnos.literal.validacion'/>">
+									<input type="button" alt="<siga:Idioma key='gratuita.altaTurnos.literal.validacion'/>" id="idbutton" onClick="validarJustif();" class="button" value="<siga:Idioma key='gratuita.altaTurnos.literal.validacion'/>">
 							<%}%>
 						<%} %>
 					<%} %>						
@@ -667,7 +667,8 @@
 				top.cierraConParametros("MODICADO");
 			}
 
-			function validarJustificacion () {
+			function validarJustif() {
+			 
 				if(document.forms[0].actuacionValidada.value=="1"){
 					document.forms[0].acfjustificacion.className="box";
 					document.forms[0].actuacionValidada.value="0";
