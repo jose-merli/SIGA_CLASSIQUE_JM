@@ -160,19 +160,19 @@ public class SIGAListadoCertificadosAction extends MasterAction
 					
 					URLConnection conexion = null;
 					
-					/*try {
+					try {
 						conexion = direction.openConnection();
 						conexion.setUseCaches(false);
 						conexion.connect();
 					} catch (Exception e) {
 						e.printStackTrace();
 						throw new SIGAException("messages.certificados.error.NoConexionHTTP",e);
-					}*/
+					}
 
 					int iChar=0;
 					String sChar="";
 					
-				/*	InputStream is = null;
+					InputStream is = null;
 					try {
 						is = conexion.getInputStream();
 					} catch (Exception e) {
@@ -189,7 +189,7 @@ public class SIGAListadoCertificadosAction extends MasterAction
 					    sChar += (char)iChar;
 					}
 	
-					is.close();*/
+					is.close();
 					
 					ClsLogging.writeFileLog("VARIABLE sChar= "+sChar, 10);
 					
