@@ -466,8 +466,8 @@
 				  codigoEjg= CODIGO;  
 			  }
 			%>
-			<td  class="labelText">	
-				<input type="text" class="boxConsulta" value="<%=ANIO%>" readOnly="true" size="4" > / <input size="10" type="text" class="boxConsulta" value="<%=codigoEjg%>" readOnly="true" >
+			<td  class="labelText" width="200">	
+				<input type="text" class="boxConsulta" value="<%=ANIO%>" readOnly="true" size="4" > / <input size="4" type="text" class="boxConsulta" value="<%=codigoEjg%>" readOnly="true" >
 			</td>
 			
 			<td class="labelText">	
@@ -577,7 +577,7 @@
 			<%
 				} else {
 			%>
-				<html:text name="DefinirMantenimientoEJGForm" property="fechaLimitePresentacion" size="10" maxlength="10" styleClass="box" value="<%=FECHALIMITEPRESENTACION%>" readOnly="true"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaLimitePresentacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+				<html:text name="DefinirMantenimientoEJGForm" property="fechaLimitePresentacion" size="10" maxlength="10" styleClass="box" value="<%=FECHALIMITEPRESENTACION%>" readOnly="true"></html:text><a onClick="return showCalendarGeneral(fechaLimitePresentacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
 			<%
 				}
 			%>
@@ -619,13 +619,13 @@
 		<%	 if (modo.equals("ver")) {%> 
 				<siga:ComboBD nombre="idOrigenCAJG" tipo="origenCAJG" clase="boxConsulta" ancho="230"  filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vOrigenCAJGSel%>" readOnly="true"/>
 			 <%}else{ %>
-			    <siga:ComboBD nombre="idOrigenCAJG" tipo="origenCAJG" clase="boxCombo" ancho="250" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vOrigenCAJGSel%>" />
+			    <siga:ComboBD nombre="idOrigenCAJG" tipo="origenCAJG" clase="boxCombo" ancho="230" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vOrigenCAJGSel%>" />
 			 <%}%>		
 			</td>
 			
 			<td class="labelText" colspan="2">	
 				<siga:Idioma key='gratuita.busquedaEJG.dictamen'/> &nbsp;
-				<siga:ComboBD nombre="idTipoDictamenEJG" ancho="200" tipo="dictamenEJG" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vIntFDict%>" readOnly="true"/>	
+				<siga:ComboBD nombre="idTipoDictamenEJG" ancho="210" tipo="dictamenEJG" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vIntFDict%>" readOnly="true"/>	
 			</td>
 			
 		</tr>
