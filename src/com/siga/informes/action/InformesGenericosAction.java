@@ -1277,9 +1277,10 @@ public class InformesGenericosAction extends MasterAction {
 							idioma, doc, words, datoscomunes);
 					
 					//comprobacion de importe de Guardias
-					Object objImporteGuardia = datoscomunes.get ("IMPORTEGUARDIA");
+/*					Object objImporteGuardia = datoscomunes.get ("IMPORTEGUARDIA");
 					String strImporteGuardia = ((String) (objImporteGuardia == null ? "0" : objImporteGuardia));
-					double importeGuardia = Double.parseDouble (strImporteGuardia.equals ("") ? "0" : strImporteGuardia); 
+					double importeGuardia = Double.parseDouble (strImporteGuardia.equals ("") ? "0" : strImporteGuardia);
+*/					double importeGuardia = UtilidadesHash.getDouble ((Hashtable) datoscomunes, "IMPORTEGUARDIA");
 					if (totalGA != importeGuardia) {
 						GenRecursosAdm recAdm = new GenRecursosAdm (usr);
 						Vector recursos = recAdm.select (
@@ -1588,12 +1589,25 @@ public class InformesGenericosAction extends MasterAction {
 		//Sustitucion en el documento
 		datosconsulta = fac.informeFJGPorHitos 
 				(idinstitucion, facturaciones, region[regionUnica], idioma);
-		if (datosconsulta!=null && datosconsulta.size()>0) {
-			doc = words.sustituyeRegionDocumento
-					(doc, region[regionUnica], datosconsulta);
-			
-			total += this.getTotal (datosconsulta, "IMPORTE_NUM");
+		if (datosconsulta==null || datosconsulta.size()<1) {
+			datosconsulta = new Vector();
+			Hashtable aux = new Hashtable();
+			aux.put ("TURNO", "");
+			aux.put ("GUARDIA", "");
+			aux.put ("VG", "");
+			aux.put ("HITO", "");
+			aux.put ("HITODESC", "");
+			aux.put ("PRECIO", "");
+			aux.put ("PRECIO_NUM", "");
+			aux.put ("NUMERO", "");
+			aux.put ("IMPORTE", "");
+			aux.put ("IMPORTE_NUM", "");
+			datosconsulta.add (aux);
 		}
+		doc = words.sustituyeRegionDocumento
+				(doc, region[regionUnica], datosconsulta);
+		
+		total += this.getTotal (datosconsulta, "IMPORTE_NUM");
 		
 		//Campos de totales de Violencia de Genero
 		datoscomunes.put ("TOTAL", UtilidadesNumero.formato

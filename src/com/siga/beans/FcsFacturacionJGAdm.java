@@ -2512,7 +2512,8 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"                  from FCS_FACT_GRUPOFACT_HITO FAC " +
 				"                 where fac.idinstitucion = tur.idinstitucion " +
 				"                   and fac.idgrupofacturacion = tur.idgrupofacturacion " +
-				"                   and fac.idfacturacion in ("+facturaciones+")) " +
+				"                   and fac.idfacturacion in ("+facturaciones+")" +
+				"                   and fac.idhitogeneral = 20/*Guardias*/) " +
 				"         " +
 				"        union all " +
 				"         " +
@@ -2903,7 +2904,8 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"                  from FCS_FACT_GRUPOFACT_HITO FAC " +
 				"                 where fac.idinstitucion = tur.idinstitucion " +
 				"                   and fac.idgrupofacturacion = tur.idgrupofacturacion " +
-				"                   and fac.idfacturacion in ("+facturaciones+")) " +
+				"                   and fac.idfacturacion in ("+facturaciones+") " +
+				"                   and fac.idhitogeneral = 20/*Guardias*/) " +
 				"         " +
 				"        union all " +
 				"         " +
