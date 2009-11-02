@@ -58,16 +58,23 @@
 			modificada = (Row) enumSel.nextElement();
 		} 
 	}	
-	String paisOriginal=String.valueOf(original.get("PAIS"));
-	String paisModificado=modificada.getString("PAIS");
-	String poblacionOriginal=String.valueOf(original.get("POBLACION"));
-	String poblacionModificado=modificada.getString("POBLACION");
-	if (!String.valueOf(original.get("IDPAIS")).equals(ClsConstants.ID_PAIS_ESPANA)){
-		poblacionOriginal=String.valueOf(original.get("POBLACIONEXTRANJERA"));
-	}	
-	if (!modificada.getString("IDPAIS").equals(ClsConstants.ID_PAIS_ESPANA)){
-		poblacionModificado=modificada.getString("POBLACIONEXTRANJERA");
-	}	
+	
+	String paisOriginal="";
+	String paisModificado="";
+	String poblacionOriginal="";
+	String poblacionModificado="";
+	if (original!=null){
+		 paisOriginal=String.valueOf(original.get("PAIS"));
+		paisModificado=modificada.getString("PAIS");
+		poblacionOriginal=String.valueOf(original.get("POBLACION"));
+		poblacionModificado=modificada.getString("POBLACION");
+		if (!String.valueOf(original.get("IDPAIS")).equals(ClsConstants.ID_PAIS_ESPANA)){
+			poblacionOriginal=String.valueOf(original.get("POBLACIONEXTRANJERA"));
+		}	
+		if (!modificada.getString("IDPAIS").equals(ClsConstants.ID_PAIS_ESPANA)){
+			poblacionModificado=modificada.getString("POBLACIONEXTRANJERA");
+		}	
+	}
 %>
 
 <html>
@@ -165,11 +172,17 @@
 		</table>
 
 		<!-- INICIO ******* CAPA DE PRESENTACION ****** -->
-
+		
 		<div id="camposRegistro" class="posicionModalGrande" align="center">
 
 		<!-- INICIO: CAMPOS -->
 			<table class="tablaCentralCamposGrande" align="center">			
+			
+			<%if (original==null) { %>
+			 		<br><br>
+			   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
+			 		<br><br>
+			<%}else{ %>	 	
 				<html:form action="/CEN_SolicitudesModificacionEspecificas.do" method="POST" target="submitArea">
 					<html:hidden property = "modo" value = ""/>
 					<html:hidden property = "idPersona" value =""/>
@@ -347,6 +360,7 @@
 						</td>
 					</tr>
 				</html:form>
+				<%} %>
 			</table>
 			<!-- FIN: CAMPOS -->
 
@@ -361,6 +375,7 @@
 	
 
 		</div>
+		
 		<!-- FIN ******* CAPA DE PRESENTACION ****** -->
 			
 		<!-- INICIO: SUBMIT AREA -->

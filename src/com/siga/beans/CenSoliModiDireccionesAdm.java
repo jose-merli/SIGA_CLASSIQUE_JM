@@ -449,7 +449,7 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 				else{
 					// Obtengo el registro a modificar de la tabla cliente y preparo el bean correspondiente
 					CenDireccionesAdm adminDir = new CenDireccionesAdm(this.usrbean);					
-					dirOriginal=adminDir.getEntradaDireccion((String)hash.get(CenDireccionesBean.C_IDPERSONA),(String)hash.get(CenDireccionesBean.C_IDINSTITUCION),(String)hash.get(CenDireccionesBean.C_IDDIRECCION));
+					dirOriginal=adminDir.getEntradaDireccionGeneral((String)hash.get(CenDireccionesBean.C_IDPERSONA),(String)hash.get(CenDireccionesBean.C_IDINSTITUCION),(String)hash.get(CenDireccionesBean.C_IDDIRECCION));
 					dirModificada.setIdPersona(new Long((String)dirOriginal.get(CenDireccionesBean.C_IDPERSONA)));
 					dirModificada.setIdInstitucion(new Integer((String)dirOriginal.get(CenDireccionesBean.C_IDINSTITUCION)));
 					dirModificada.setIdDireccion(new Long((String)dirOriginal.get(CenDireccionesBean.C_IDDIRECCION)));					

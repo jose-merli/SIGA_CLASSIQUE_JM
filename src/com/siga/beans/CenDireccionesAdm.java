@@ -618,6 +618,64 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 	       return datos;                        
 	    }
 	
+	
+	/** 
+	 * Recoge la informacion del registro seleccionado esté dado de baja o no a partir de sus claves para <br/>
+	 * transacciones (for update)
+	 * @param  idPersona - identificador de persona 
+	 * @param  idInstitucion - identificador de la institucion
+	 * @param  idDireccion - identificador de la direccion
+	 * @return  hashtable - Entrada seleccionada  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */
+	public Hashtable getEntradaDireccionGeneral (String idPersona, String idInstitucion, String idDireccion) throws ClsExceptions, SIGAException {
+		   Hashtable datos=new Hashtable();
+	       try {
+	            RowsContainer rc = new RowsContainer(); 
+	            String sql ="SELECT " +
+							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDPERSONA + "," +
+							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDINSTITUCION + "," +
+							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDDIRECCION + "," +
+							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_DOMICILIO + "," +
+							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_CODIGOPOSTAL + "," +
+							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_TELEFONO1 + "," +
+							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_TELEFONO2 + "," +
+							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_MOVIL + "," +
+							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_FAX1 + "," +
+							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_FAX2 + "," +							
+							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_CORREOELECTRONICO + "," +
+			    			CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_PAGINAWEB + "," +
+			    			CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_FECHABAJA + "," +							
+			    			CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_PREFERENTE + "," +
+							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDPAIS + "," +
+							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDPROVINCIA + "," +
+							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDPOBLACION + "," +
+							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_POBLACIONEXTRANJERA + "," +
+							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_FECHAMODIFICACION + "," +
+	            			CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_USUMODIFICACION +
+							" FROM " + CenDireccionesBean.T_NOMBRETABLA + 
+							" WHERE " +
+							CenDireccionesBean.T_NOMBRETABLA +"."+ CenDireccionesBean.C_IDPERSONA + "=" + idPersona +
+							" AND " +
+							CenDireccionesBean.T_NOMBRETABLA +"."+ CenDireccionesBean.C_IDINSTITUCION + "=" + idInstitucion +
+							" AND " +
+							CenDireccionesBean.T_NOMBRETABLA +"."+ CenDireccionesBean.C_IDDIRECCION + "=" + idDireccion;
+
+														
+	            // RGG cambio visibilidad
+	            rc = this.findForUpdate(sql);
+	            if (rc!=null) {
+	               for (int i = 0; i < rc.size(); i++){
+	                  Row fila = (Row) rc.get(i);
+	                  datos=fila.getRow();
+	               }
+	            } 
+	       }
+	       catch (Exception e) {
+	       	throw new ClsExceptions (e, "Error al obtener la informacion sobre una entrada de la tabla direcciones.");
+	       }
+	       return datos;                        
+	    }
 	/** 
 	 * Recoge la informacion de la direccion especificada en los parametros
 	 * @param  idPersona - identificador de persona 
