@@ -1751,7 +1751,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 							// Nueva alerta de aviso de vencimiento del estado
 							ExpExpedienteBean expBean=this.getExpediente(fila1.getString("IDTIPOEXPEDIENTE"),fila1.getString("IDINSTITUCION"),fila1.getString("IDINSTITUCION_TIPOEXPEDIENTE"),fila1.getString("ANIOEXPEDIENTE"),fila1.getString("NUMEROEXPEDIENTE"));
 	
-							if (!alertaAdm.insertarAlerta(expBean,fila1.getString("MENSAJE") + ". "+UtilidadesString.getMensajeIdioma(this.usrbean,"expedientes.alertasyanotaciones.mensajes.aviso6")+" "+GstDate.getFormatedDateShort("ES",fila1.getString("FECHAFINALESTADO"))+". ("+fila1.getString("NOMBRE")+")")) {
+							if (!alertaAdm.insertarAlerta(expBean,fila1.getString("MENSAJE").substring(0,99) + ". "+UtilidadesString.getMensajeIdioma(this.usrbean,"expedientes.alertasyanotaciones.mensajes.aviso6")+" "+GstDate.getFormatedDateShort("ES",fila1.getString("FECHAFINALESTADO"))+". ("+fila1.getString("NOMBRE")+")")) {
 					            throw new ClsExceptions("6.Error al insertar alarma. "+alertaAdm.getError());
 					        }
 					        ClsLogging.writeFileLog("6.Alerta insertada.",7);
