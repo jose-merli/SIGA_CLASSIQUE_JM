@@ -333,9 +333,27 @@
 			calcularPendiente();
 					
 			inicializaConceptos();
+			// Al cargar una nueva facturacion hay que borrar los importes
+			// a pagar que se hubieran introducido para otra facturacion
+			borrarAPagar()
 			
 		}
+		
+		/**
+		 * Borra los campos "a pagar" de cada concepto
+		 */
+		function borrarAPagar(){
+			 document.getElementById('importeEJG').value = "";
+			 document.getElementById('porcentajeEJG').value = "";
+			 document.getElementById('importeSOJ').value = "";
+			 document.getElementById('porcentajeSOJ').value = "";
+			 document.getElementById('importeOficio').value = "";
+			 document.getElementById('porcentajeOficio').value = "";
+			 document.getElementById('importeGuardias').value = "";
+			 document.getElementById('porcentajeGuardias').value = "";
+		 }
 
+		 
 		/**
 		 * Calcula los importes y porcentajes pendientes de cada concepto
 		 */
