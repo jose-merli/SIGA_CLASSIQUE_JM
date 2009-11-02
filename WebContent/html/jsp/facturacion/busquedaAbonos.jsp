@@ -45,12 +45,14 @@
 	String pagadoBusqueda="";
 	String tipoAbonoBusqueda="";
 	String busquedaNumeroAbono="";
+	String nifCliente="";
 
 	// Si el cliente es un letrado, le establezco a el como parte de la busqueda
 	if (user.isLetrado()) {
 		idPersonaBusqueda=String.valueOf(user.getIdPersona());
 		CenPersonaAdm admPersona=new CenPersonaAdm(user);
 		busquedaCliente=admPersona.obtenerNombreApellidos(idPersonaBusqueda);
+		nifCliente = admPersona.obtenerNIF(idPersonaBusqueda);
 	}
 	
 	// para ver si tengo que buscar tras mostrar la pantalla
@@ -100,7 +102,7 @@
 	</head>
 
 
-	<body onLoad="ajusteAlto('resultado');<%=funcionBuscar %>">
+	<body onLoad="ajusteAlto('resultado');desahabilitaBonotesLetrado();<%=funcionBuscar %>">
 	
 		<div id="camposRegistro" class="posicionBusquedaSolo" align="center">	
 
@@ -214,10 +216,15 @@
 									</td>
 							 	</tr>
 							 	<tr>
-							 		<td class="labelText" colspan="7">
-							 		<siga:BusquedaPersona tipo="personas" titulo="gratuita.seleccionColegiadoJG.literal.titulo" anchoNum="10" anchoDesc="50" idPersona="idPersonaBusqueda">
-									</siga:BusquedaPersona>
-							 		</td>	
+							 		
+							 		<td id="busquedaLetrado" class="labelText" colspan="7">
+							 		<% 	if(user.isLetrado()){%>
+								 		<siga:BusquedaPersona tipo="personas" titulo="gratuita.seleccionColegiadoJG.literal.titulo" anchoNum="10" anchoDesc="50" idPersona="idPersonaBusqueda"></siga:BusquedaPersona>
+										<% 	}else{%>
+										<siga:BusquedaPersona tipo="personas" titulo="gratuita.seleccionColegiadoJG.literal.titulo" anchoNum="10" anchoDesc="50" idPersona="idPersonaBusqueda"></siga:BusquedaPersona>									
+										<% 	}%>
+									</td>
+										
 							   </tr>
 					   	  </html:form>	
 				        </table>
@@ -241,7 +248,7 @@
 			<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 			<script language="JavaScript">
 	
-				<!-- Funcion asociada a boton nuevo -->
+				// Funcion asociada a boton nuevo
 				function nuevo() 
 				{							
 					var resultado = ventaModalGeneral("AltaAbonosForm","M");
@@ -250,8 +257,28 @@
 						buscar();
 					}
 				}
+				
+				// Oculta los botones de busqueda para la consulta de un letrado
+				function desahabilitaBonotesLetrado(){
+					<% if(user.isLetrado()){%>
+						 // Si es letrado fijamos los valores del tag a los valores entrantes
+						 // Nif
+		 				 document.getElementById('numeroNifTagBusquedaPersonas').readOnly=true;
+		 				 document.getElementById('numeroNifTagBusquedaPersonas').value="<%=nifCliente%>";
+		 				 document.getElementById('numeroNifTagBusquedaPersonas').className="boxConsulta";
+		 				 // Nombre
+		 				 document.getElementById('nombrePersona').value="<%=busquedaCliente%>";
+		 				 document.getElementById('nombrePersona').className="boxConsulta";
+		 				 
+		 				 // Quitamos los botones (No se pueden hacer por id porque en ambos es 'idButton')
+						 var bLimpiar = document.getElementsByName("limpiar"); 
+						 bLimpiar[0].style.display='none';
+						 var bBuscar = document.getElementsByName("buscarCliente")
+						 bBuscar[0].style.display='none';
+					<%}%> // Si no es letrado todo queda igual
+				}
 
-				<!-- Funcion asociada a boton buscar -->
+				// Funcion asociada a boton buscar
 				function buscar()
 				{
 					sub();
@@ -270,7 +297,7 @@
 					}	
 				}
 				
-				<!-- Asociada al boton Restablecer -->
+				// Asociada al boton Restablecer
 				function limpiar() 
 				{		
 					document.GenerarAbonosForm.idPersonaBusqueda.value="<%=idPersonaBusqueda%>";
