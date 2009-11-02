@@ -2604,8 +2604,8 @@
 		<action path="/FCS_DetallePago" type="com.siga.facturacionSJCS.action.DatosDetallePagoAction" name="DatosDetallePagoForm" scope="request">
 			<forward name="inicio" path="/html/jsp/facturacionSJCS/consultaDetallePago.jsp"/>
 			<forward name="consulta" path="/html/jsp/facturacionSJCS/datosDetallePago.jsp"/>
-			<forward name="precioPago" path="/html/jsp/facturacionSJCS/modificacionImportePagos.jsp"/>
-			<forward name="verDetalle" path="/html/jsp/facturacionSJCS/verDetallePago.jsp"/>
+<!--			<forward name="precioPago" path="/html/jsp/facturacionSJCS/modificacionImportePagos.jsp"/>-->
+<!--			<forward name="verDetalle" path="/html/jsp/facturacionSJCS/verDetallePago.jsp"/>-->
 			<forward name="detalleConceptoDescargas" path="/html/jsp/facturacionSJCS/descargasPrevision.jsp"/>
 		</action>
 
