@@ -324,6 +324,8 @@ public class EstadosAction extends MasterAction {
         estadobean.setIdFaseSiguiente(siguientefase.equals("")?null:Integer.valueOf(siguientefase));
         if (form.getMensaje()!=null && !form.getMensaje().trim().equals("")) {
             estadobean.setMensaje(form.getMensaje());
+        }else{
+        	estadobean.setMensaje("");
         }
         estadobean.setAutomatico(form.getAutomatico()?"S":"N");
         estadobean.setEjecucionSancion(form.getEjecucionSancion()?"S":"N");
