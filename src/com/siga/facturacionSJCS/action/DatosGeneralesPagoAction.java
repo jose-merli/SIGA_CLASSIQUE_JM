@@ -1153,7 +1153,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			// deja la cantidad resultante en 0, crea un MV con la diferencia y termina.
 			if ((importeSJCS + importeMovimientos) < 0){
 				double importeNuevoMovimiento = importeSJCS + importeMovimientos;
-				importeMovimientos = 0;
+				importeMovimientos = - importeSJCS;
 				Hashtable movimientoBean = new Hashtable ();
 				movimientoBean.put(FcsMovimientosVariosBean.C_CANTIDAD, String.valueOf(importeNuevoMovimiento));
 				movimientoBean.put(FcsMovimientosVariosBean.C_DESCRIPCION,
@@ -1418,7 +1418,6 @@ public class DatosGeneralesPagoAction extends MasterAction {
 							 String idPersonaSoc, String idPago, String idInstitucion, 
 							 Hashtable importes, double irpfTotal, String idPersonaSJCS) throws ClsExceptions {
 		UsrBean usr = null;
-		boolean resultado = false;
 		Vector pagos = new Vector();
 	 	String importeTurnos="", importeGuardias="", importeSoj="", importeEjg="", importeMovimientos ="", importeRetenciones="", importeRetencionesPersona=""; 
 	 	String personaPago = "";
@@ -1503,7 +1502,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			htLista.put(FacLineaAbonoBean.C_CANTIDAD, "1");
 								
 			//insertamos el abono
-			resultado = abonoAdm.insert(hash);
+			abonoAdm.insert(hash);
 			gc.setContador(contadorTablaHash,gc.getNuevoContador(contadorTablaHash));
 			
 			double importeNeto=0;
