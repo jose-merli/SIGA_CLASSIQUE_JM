@@ -993,8 +993,9 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	        String rutaDocs = getPathEnvio(idInstitucion,idEnvio);
 	        File fDir = new File(rutaDocs);
 	        borrarDirectorio(fDir);
-	       	borraReferenciaMorosos(idInstitucion,idEnvio,htEnvioMorosos,tmIdEnviosAActualizar);
-	        
+	        if (htEnvioMorosos!=null){
+	       	  borraReferenciaMorosos(idInstitucion,idEnvio,htEnvioMorosos,tmIdEnviosAActualizar);
+	        }
 	        // Borramos los registros de BBDD
 		    delete(htEnvio);
 
