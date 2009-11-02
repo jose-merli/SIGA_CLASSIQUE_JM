@@ -303,14 +303,15 @@
 		
 			//Asociada al boton ProcesarSolicitud
 			function accionProcesarSolicitud() 
-			{			
+			{	sub();		
 				var datos = "";
 				var datosTipoModif = "";
 				if (document.getElementById("solicita_1")!=null){
-					var dd = document.getElementsByName("validado");
+				 	var dd = document.getElementsByName("validado");
 					if (dd.type != 'checkbox') {
 						for (i = 0; i < dd.length; i++){
 							if (dd[i].checked==1){
+							
 								var j=i+1;
 								var aux="solicita_"+j;
 								var solicitado=document.getElementById(aux);
@@ -318,10 +319,16 @@
 								var aux1="solicitaTipoModif_"+j;
 								var solicitadoTipoModif=document.getElementById(aux1);
 								datosTipoModif=datosTipoModif + solicitadoTipoModif.value + "%";						
+							}else{
+							 if (datos==""){
+							  fin();
+							  return false;
+							 }
 							}	
 						}
 					}	
 					else{
+				            
 						if (dd.checked==1){
 							var aux="solicita_1";
 							var solicitado=document.getElementById(aux);
@@ -331,13 +338,18 @@
 							datosTipoModif=datosTipoModif + solicitadoTipoModif.value + "%";						
 						}	
 					}
-				}	
-				
+					
+				}else{
+				 fin();
+				 return false;
+				}
+					
 				document.forms[0].solicitudes.value = datos;	
-				document.forms[0].solicitudesTipoModif.value = datosTipoModif;				
-				document.forms[0].modo.value = "procesarSolicitud";
-				document.forms[0].target = "submitArea";
-				document.forms[0].submit();
+					document.forms[0].solicitudesTipoModif.value = datosTipoModif;				
+					document.forms[0].modo.value = "procesarSolicitud";
+					document.forms[0].target = "submitArea";
+					document.forms[0].submit();
+				
 			}
 
 			//Asociada al boton DenegarSolicitud			
@@ -357,6 +369,10 @@
 								var aux1="solicitaTipoModif_"+j;
 								var solicitadoTipoModif=document.getElementById(aux1);
 								datosTipoModif=datosTipoModif + solicitadoTipoModif.value + "%";	
+							}else{
+							 if (datos==""){
+							  return false;
+							 } 
 							}
 						}
 					}	
@@ -370,6 +386,8 @@
 							datosTipoModif=datosTipoModif + solicitadoTipoModif.value + "%";					
 						}	
 					}
+				}else{
+				 return false;
 				}	
 				document.forms[0].solicitudes.value = datos;
 				document.forms[0].solicitudesTipoModif.value = datosTipoModif;	

@@ -312,7 +312,7 @@
 		
 			//Asociada al boton ProcesarSolicitud -->
 			function accionProcesarSolicitud() 
-			{			
+			{	sub();	
 				var datos = "";
 				if (document.getElementById("solicita_1")!=null){
 					var dd = document.getElementsByName("validado");
@@ -323,6 +323,11 @@
 								var aux="solicita_"+j;
 								var solicitado=document.getElementById(aux);
 								datos=datos + solicitado.value + "%";						
+							}else{
+							  if (datos==""){
+							    fin();
+							    return false;
+							  }
 							}	
 						}
 					}	
@@ -333,7 +338,11 @@
 							datos=datos + solicitado.value + "%";						
 						}	
 					}
+				}else{
+				fin();
+				  return false;
 				}	
+				
 				document.forms[0].solicitudes.value = datos;				
 				document.forms[0].modo.value = "procesarSolicitud";
 				document.forms[0].target = "submitArea";
@@ -353,6 +362,10 @@
 								var aux="solicita_"+j;
 								var solicitado=document.getElementById(aux);
 								datos=datos + solicitado.value + "%";
+							}else{
+							  if (datos==""){
+							    return false;
+							  }
 							}
 						}
 					}	
@@ -363,6 +376,8 @@
 							datos=datos + solicitado.value + "%";						
 						}	
 					}
+				}else{
+				 return false;
 				}	
 				document.forms[0].solicitudes.value = datos;								
 				document.forms[0].modo.value = "denegarSolicitud";
