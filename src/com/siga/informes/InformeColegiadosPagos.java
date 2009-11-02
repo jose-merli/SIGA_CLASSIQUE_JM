@@ -756,7 +756,11 @@ public class InformeColegiadosPagos extends MasterReport {
 			sql.append("    and ad.idinstitucion = fact.idinstitucion ");
 			sql.append("    and ad.idfacturacion = fact.idfacturacion ");
 			sql.append("    and ad.idpersonacolegiado = fact.idpersona ");
-
+			sql.append("    and ad.NUMEROASUNTO = fact.NUMEROASUNTO ");
+			sql.append("    and ad.NUMERO = fact.NUMERO ");
+			sql.append("    and ad.ANIO = fact.ANIO ");
+			sql.append("    and ad.IDTURNO = fact.IDTURNO ");
+			
 			sql.append("    and pag.idinstitucion = fact.idinstitucion ");
 			sql.append("    and pag.idfacturacion = fact.idfacturacion ");
 			  
@@ -831,8 +835,8 @@ public class InformeColegiadosPagos extends MasterReport {
 			// Porcentajes DEL PAGO
 			StringBuffer buf0 = new StringBuffer();
 			buf0.append("select PA.IMPORTEPAGADO, PA.NOMBRE NOMBRE_PAGO, ");
-			buf0.append("       PA.IMPORTEOFICIO * 100 / FA.IMPORTEOFICIO PORCENTAJE_TURNOS, ");
-			buf0.append("       PA.IMPORTEGUARDIA * 100 / FA.IMPORTEGUARDIA PORCENTAJE_ASISTENCIA");
+			buf0.append("       DECODE(FA.IMPORTEOFICIO,0,'0',F_SIGA_FORMATONUMERO(PA.IMPORTEOFICIO * 100 / FA.IMPORTEOFICIO, 2)) PORCENTAJE_TURNOS, ");
+			buf0.append("       DECODE(FA.IMPORTEGUARDIA,0,'0',F_SIGA_FORMATONUMERO(PA.IMPORTEGUARDIA * 100 / FA.IMPORTEGUARDIA, 2)) PORCENTAJE_ASISTENCIA");
 			buf0.append("  from FCS_PAGOSJG PA, FCS_FACTURACIONJG FA");
 			buf0.append(" where pa.idinstitucion = "+idInstitucion);
 			buf0.append("   and pa.idpagosjg = " +idPago);
@@ -864,7 +868,7 @@ public class InformeColegiadosPagos extends MasterReport {
 				result.put("TOTAL_GENERAL",UtilidadesNumero.formatoCartaPago(sTotalGeneral)+ClsConstants.CODIGO_EURO);
 					
 				String sTotalIRPF=r.getString("TOTALIMPORTEIRPF");
-				result.put("TOTAL_IRPF",UtilidadesNumero.formatoCartaPago(sTotalIRPF)+ClsConstants.CODIGO_EURO);
+				result.put("TOTAL_IRPF",UtilidadesNumero.round(sTotalIRPF,2)+ClsConstants.CODIGO_EURO);
 				
 				String sTotalMovimientos=r.getString("IMPORTETOTALMOVIMIENTOS");
 				result.put("TOTAL_MOVIMIENTOS",UtilidadesNumero.formatoCartaPago(sTotalMovimientos)+ClsConstants.CODIGO_EURO);
@@ -879,13 +883,11 @@ public class InformeColegiadosPagos extends MasterReport {
 				result.put("TOTAL_LIQUIDACION",UtilidadesNumero.formatoCartaPago(dTotalLiquidacion.toString())+ClsConstants.CODIGO_EURO);
 			}
 			
-			//Obtiene el IRPF,los totales y facturados de asistencias y oficios
+			//Obtiene el IRPF,los totales y facturados de oficios
 			buf0 = new StringBuffer();
-			buf0.append("SELECT NVL(SUM(col.impasistencia), 0) TOTAL_ASISTENCIA, ");
-			buf0.append("NVL(SUM(apu.PRECIOAPLICADO + apu.preciocostesfijos), 0) TOTAL_FACTURADO, ");
-			buf0.append("NVL(SUM(col.impoficio), 0) TOTAL_OFICIO, ");
+			buf0.append("SELECT NVL(SUM(col.impoficio), 0) TOTAL_OFICIO, ");
 			buf0.append("NVL(SUM(act.PRECIOAPLICADO), 0) TOTAL_FACTURADO_OFICIO ");
-			buf0.append("FROM FCS_PAGO_COLEGIADO col, FCS_PAGOSJG pag, FCS_FACTURACIONJG fac, FCS_FACT_ACTUACIONDESIGNA act, FCS_FACT_APUNTE apu ");
+			buf0.append("FROM FCS_PAGO_COLEGIADO col, FCS_PAGOSJG pag, FCS_FACTURACIONJG fac, FCS_FACT_ACTUACIONDESIGNA act ");
 			buf0.append("WHERE col.IDPAGOSJG = "+idPago);
 			buf0.append(" and col.idinstitucion = "+idInstitucion);
 			buf0.append(" and col.idperorigen = "+idPersona);
@@ -896,6 +898,29 @@ public class InformeColegiadosPagos extends MasterReport {
 			buf0.append(" and fac.idinstitucion = act.idinstitucion ");
 			buf0.append(" and fac.idfacturacion = act.idfacturacion ");
 			buf0.append(" and col.idperorigen = act .idpersona ");
+
+			rc = new RowsContainer();
+			rc.find(buf0.toString());
+			if(rc!=null && rc.size()>0){
+				Row r=(Row)rc.get(0);
+				result.putAll(r.getRow());
+								
+				dTotalOficio = Double.parseDouble(r.getString("TOTAL_OFICIO"));
+				dTotalFactOficio = Double.parseDouble(r.getString("TOTAL_FACTURADO_OFICIO"));
+				result.put("TOTAL_OFICIOS",UtilidadesString.formatoImporte(dTotalOficio)+ClsConstants.CODIGO_EURO);
+				result.put("CPC_OFICIOS", UtilidadesString.formatoImporte(dTotalFactOficio)+ClsConstants.CODIGO_EURO);
+			}
+			
+			//Obtiene el IRPF,los totales y facturados de asistencias
+			buf0 = new StringBuffer();
+			buf0.append("SELECT NVL(SUM(col.impasistencia), 0) TOTAL_ASISTENCIA, ");
+			buf0.append("NVL(SUM(apu.PRECIOAPLICADO + apu.preciocostesfijos), 0) TOTAL_FACTURADO ");
+			buf0.append("FROM FCS_PAGO_COLEGIADO col, FCS_PAGOSJG pag, FCS_FACTURACIONJG fac, FCS_FACT_APUNTE apu ");
+			buf0.append("WHERE col.IDPAGOSJG = "+idPago);
+			buf0.append(" and col.idinstitucion = "+idInstitucion);
+			buf0.append(" and col.idperorigen = "+idPersona);
+			buf0.append(" and col.idinstitucion = pag.idinstitucion ");
+			buf0.append(" and col.idpagosjg = pag.idpagosjg ");
 			buf0.append(" and pag.idinstitucion = apu.idinstitucion ");
 			buf0.append(" and pag.idfacturacion = apu.idfacturacion ");
 			buf0.append(" and fac.idinstitucion = apu.idinstitucion ");
@@ -912,11 +937,6 @@ public class InformeColegiadosPagos extends MasterReport {
 				result.put("TOTAL_ASISTENCIA",UtilidadesString.formatoImporte(dTotalAsistencia)+ClsConstants.CODIGO_EURO);
 				dTotalFactAsistencia = Double.parseDouble(r.getString("TOTAL_FACTURADO"));
 				result.put("CPC_ASISTENCIA", UtilidadesString.formatoImporte(dTotalFactAsistencia)+ClsConstants.CODIGO_EURO);
-				
-				dTotalOficio = Double.parseDouble(r.getString("TOTAL_OFICIO"));
-				dTotalFactOficio = Double.parseDouble(r.getString("TOTAL_FACTURADO_OFICIO"));
-				result.put("TOTAL_OFICIOS",UtilidadesString.formatoImporte(dTotalOficio)+ClsConstants.CODIGO_EURO);
-				result.put("CPC_OFICIOS", UtilidadesString.formatoImporte(dTotalFactOficio)+ClsConstants.CODIGO_EURO);
 			}
 			
 			//obtiene el irpf del pago

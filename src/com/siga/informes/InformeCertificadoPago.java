@@ -74,7 +74,7 @@ public class InformeCertificadoPago extends MasterReport {
 		try {
 			//FIRMA (1) ?? y FECHAACTUAL (13)
 			htDatos.put("FIRMA","XXXXXX XXXXXX XXXXXX");
-			htDatos.put("FECHAACTUAL","Leida a "+UtilidadesBDAdm.getFechaEscritaBD(idioma));
+			htDatos.put("FECHAACTUAL", UtilidadesBDAdm.getFechaEscritaBD(idioma));
 
 			//FECHADESDE y FECHAHASTA(2), IMPORTEFACTURADO (14)
 			htAux=this.obtenerDatosFacturacion(institucion,idPago);
@@ -115,7 +115,7 @@ public class InformeCertificadoPago extends MasterReport {
 		
 		try {
 			String sql=
-				"select to_char(nvl(F.IMPORTETOTAL,0),'"+formatoImportes+"') IMPORTEFACTURADO," +
+				"select F_SIGA_FORMATONUMERO(nvl(F.IMPORTETOTAL,0),2) IMPORTEFACTURADO," +
 				"       to_char(F.FECHADESDE,'DD/MM/YYYY') FECHADESDE," +
 				"       to_char(F.FECHAHASTA,'DD/MM/YYYY') FECHAHASTA," +
 				" 		F.NOMBRE AS DESCRIPCION_FACT" +
@@ -153,7 +153,7 @@ public class InformeCertificadoPago extends MasterReport {
 		try {
 			StringBuffer sql = new StringBuffer();
 			sql.append("select count(1) NUMEROTURNOS, ");
-			sql.append(" nvl(sum(AD.IMPOFICIO + AD.IMPOFICIO * AD.IMPIRPF / 100), 0) IMPORTETURNOS ");
+			sql.append(" to_char(nvl(sum(AD.IMPOFICIO + (AD.IMPOFICIO * AD.IMPIRPF / 100)), 0), '999,999.00') IMPORTETURNOS ");
 			sql.append(" from FCS_PAGO_COLEGIADO AD ");
 			sql.append(" where AD.IDINSTITUCION ="+idInstitucion);
 			sql.append(" and AD.IDPAGOSJG = " +idPago);
@@ -219,7 +219,7 @@ public class InformeCertificadoPago extends MasterReport {
 			
 			
 			StringBuffer sql7 = new StringBuffer();
-			sql7.append("select count(*) NUMERO ");
+			sql7.append("select count(1) NUMERO ");
 			sql7.append("from FCS_FACT_ASISTENCIA A, FCS_PAGO_COLEGIADO  col, FCS_PAGOSJG  pag,  ");
 			sql7.append(" FCS_FACTURACIONJG  fac, FCS_FACT_APUNTE apu ");
 			sql7.append(" where col.IDINSTITUCION = apu.IDINSTITUCION ");
@@ -247,6 +247,7 @@ public class InformeCertificadoPago extends MasterReport {
 			}
 			
 			StringBuffer sql9 = new StringBuffer();
+			sql9.append("select count(*) NUMERO from (" );
 			sql9.append(" select distinct FA.IDINSTITUCION, FA.ANIO, FA.NUMERO ");
 			sql9.append(" from FCS_PAGO_COLEGIADO col, ");
 			sql9.append(" FCS_PAGOSJG        pag, ");
@@ -269,7 +270,7 @@ public class InformeCertificadoPago extends MasterReport {
 			sql9.append(" and FA.idfacturacion = apu.idfacturacion ");
 			sql9.append(" and FA.idapunte = apu.Idapunte ");
 			sql9.append(" and FAA.IDAPUNTE = apu.IDAPUNTE ");
-			sql9.append(" and FAA.IDFACTURACION = apu.IDFACTURACION ");		
+			sql9.append(" and FAA.IDFACTURACION = apu.IDFACTURACION )");		
 			
 			//9 Numero de asistencias con posterioridad al dia de guardia
 			rc = new RowsContainer();
@@ -300,7 +301,7 @@ public class InformeCertificadoPago extends MasterReport {
 		try {
 			//IMPORTEASISTENCIAS (10)
 			StringBuffer sql = new StringBuffer();
-			sql.append(" select to_char(nvl(sum(FA.PRECIOAPLICADO),0),'"+formatoImportes+"') IMPORTEASISTENCIAS ");
+			sql.append(" select F_SIGA_FORMATONUMERO(nvl(sum(FA.PRECIOAPLICADO),0),2) IMPORTEASISTENCIAS ");
 			sql.append(" FROM FCS_PAGO_COLEGIADO   col, ");
 			sql.append(" FCS_PAGOSJG               pag, ");
 			sql.append(" FCS_FACTURACIONJG         fac, ");
@@ -323,26 +324,26 @@ public class InformeCertificadoPago extends MasterReport {
 			}
 			
 			// Importe a repartir (C) IMPORTESJCS
-			String sql1=
-				"select to_char(nvl(importerepartir,0),'"+formatoImportes+"') IMPORTESJCS " +
-				"  from fcs_pagosjg " +
-				" where idinstitucion="+idInstitucion+
-				"   and idpagosjg="+idPago;
+			sql = new StringBuffer();
+			sql.append(" select F_SIGA_FORMATONUMERO(nvl(importerepartir,0),2) IMPORTESJCS ");
+			sql.append(" from fcs_pagosjg ");
+			sql.append(" where idinstitucion="+idInstitucion );
+			sql.append(" and idpagosjg="+idPago );
 			rc = new RowsContainer();
-			rc.find(sql1);
+			rc.find(sql.toString());
 			if(rc!=null && rc.size()>0){
 				Row r=(Row)rc.get(0);
 				result.putAll(r.getRow());
 			}
 
 			// Movimientos varios (D) IMPORTEMOVIMIENTOS
-			String sql2=
-						"select to_char(nvl(sum(cantidad),0),'"+formatoImportes+"') IMPORTEMOVIMIENTOS" +
-						"  from fcs_movimientosvarios" +
-						" where idinstitucion="+idInstitucion+
-						"   and idpagosjg="+idPago;
+			sql = new StringBuffer();
+			sql.append("select F_SIGA_FORMATONUMERO(nvl(sum(impmovvar),0),2) IMPORTEMOVIMIENTOS");
+			sql.append("  from fcs_pago_colegiado");
+			sql.append(" where idinstitucion="+idInstitucion);
+			sql.append("   and idpagosjg="+idPago);
 			rc = new RowsContainer();
-			rc.find(sql2);
+			rc.find(sql.toString());
 			if(rc!=null && rc.size()>0){
 				Row r=(Row)rc.get(0);
 				result.putAll(r.getRow());
