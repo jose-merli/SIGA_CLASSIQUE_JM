@@ -439,18 +439,32 @@ public class DefinirEnviosAction extends MasterAction {
 
 		String idInstitucion = userBean.getLocation();
 		String idEnvio = (String)vOcultos.elementAt(0);
+		Vector resultado=new Vector();
 		EnvComunicacionMorososAdm admComunicaMorosos = new EnvComunicacionMorososAdm(userBean);
-
+		UserTransaction tx = userBean.getTransaction();
+		Hashtable htEnvioMorosos=null;
+		TreeMap tmIdEnviosAActualizar=null;
 		try {
 			//Hacemos todo esto antes para evitar que vayan los selects dentro de la transaccion
-			Hashtable htEnvioMorosos = admComunicaMorosos.getEnvioMorosos(idInstitucion, idEnvio);
-			TreeMap tmIdEnviosAActualizar = enviosAdm.getActualizacionIdEnviosMorosos(htEnvioMorosos);
-			UserTransaction tx = userBean.getTransaction();
+			
+			String sql="select * from env_envios e " +
+					"  where e.idenvio in (select t.idenviodoc from env_comunicacionmorosos t" +
+					"                      where idinstitucion=" +userBean.getLocation()+
+					"                      and idenviodoc="+idEnvio+")"+
+					"  and idinstitucion="+userBean.getLocation();
+			
+			resultado = (Vector)enviosAdm.selectGenerico(sql);
+			if (resultado!=null && resultado.size()>=1){ 
+			htEnvioMorosos = admComunicaMorosos.getEnvioMorosos(idInstitucion, idEnvio);
+			tmIdEnviosAActualizar = enviosAdm.getActualizacionIdEnviosMorosos(htEnvioMorosos);
+			}
+			
 			tx.begin();
             enviosAdm.borrarEnvio(idInstitucion,idEnvio,htEnvioMorosos,tmIdEnviosAActualizar);
             tx.commit();
 		} catch (Exception e) {
-			this.throwExcp("messages.elementoenuso.error",e,null);
+			
+			this.throwExcp("messages.elementoenuso.error",e,tx);
 		}
 
 		return exitoRefresco("messages.deleted.success",request);
