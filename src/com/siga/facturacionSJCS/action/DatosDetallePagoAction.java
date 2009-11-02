@@ -17,8 +17,6 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -27,14 +25,19 @@ import org.apache.struts.action.ActionMapping;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
-import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.*;
+import com.siga.beans.CenColegiadoAdm;
+import com.siga.beans.CenColegiadoBean;
+import com.siga.beans.CenInstitucionAdm;
+import com.siga.beans.FcsEstadosPagosBean;
+import com.siga.beans.FcsFacturacionJGAdm;
+import com.siga.beans.FcsPagosJGAdm;
+import com.siga.beans.FcsPagosJGBean;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.facturacionSJCS.form.DatosDetallePagoForm;
-import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -62,16 +65,14 @@ public class DatosDetallePagoAction extends MasterAction {
 //				return mapping.findForward(modificarPrecioPago (mapping, miForm, request, response));
 			else if ((miForm.getModo()!=null)&&(miForm.getModo().equalsIgnoreCase("abrirVolver")))
 				return mapping.findForward(abrirVolver (mapping, miForm, request, response));
-			else if ((miForm.getModo()!=null)&&(miForm.getModo().equalsIgnoreCase("verDetalle")))
-				return mapping.findForward(verDetalle (mapping, miForm, request, response));
-			else 
-				if ((miForm.getModo()!=null) && (miForm.getModo().equalsIgnoreCase("detalleLetrado")))
-					return mapping.findForward(detalleLetrado (mapping, miForm, request, response));
-				else 
-					if ((miForm.getModo()!=null) && (miForm.getModo().equalsIgnoreCase("detalleConcepto")))
-						return mapping.findForward(detalleConcepto (mapping, miForm, request, response));
-					else
-						return super.executeInternal(mapping, formulario, request, response);
+//			else if ((miForm.getModo()!=null)&&(miForm.getModo().equalsIgnoreCase("verDetalle")))
+//				return mapping.findForward(verDetalle (mapping, miForm, request, response));
+			else if ((miForm.getModo()!=null) && (miForm.getModo().equalsIgnoreCase("detalleLetrado")))
+				return mapping.findForward(detalleLetrado (mapping, miForm, request, response));
+			else if ((miForm.getModo()!=null) && (miForm.getModo().equalsIgnoreCase("detalleConcepto")))
+				return mapping.findForward(detalleConcepto (mapping, miForm, request, response));
+			else
+				return super.executeInternal(mapping, formulario, request, response);
 		}
 		catch(SIGAException e){
 			throw e;
@@ -1229,270 +1230,270 @@ public class DatosDetallePagoAction extends MasterAction {
 	 * @return  String  Destino del action  
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
-	protected String verDetalle (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		
-		String salida = "", idPago="", idInstitucion="", estadoPago="";
-		
-		try 
-		{ 
-			
-			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
-			
-			double totalTurnos = 0;
-			double totalGuardias = 0;
-			double totalEJG = 0;
-			double totalSOJ = 0;
-			double totalMovimientos = 0;
-			double totalRetenciones = 0;
-			double totalIRPFTurnos = 0;
-			double totalIRPFGuardias = 0;
-			double totalIRPFEJG = 0;
-			double totalIRPFSOJ = 0;
-			double totalIRPFMovimientos = 0;			
-			double total = 0;
-			double totalIRPF = 0;
-			double totalARepartir = 0;
-			
-			
-			DatosDetallePagoForm miform = (DatosDetallePagoForm)formulario;
-			idPago = miform.getIdPago();
-			idInstitucion = miform.getIdInstitucion(); 
-			estadoPago = miform.getEstadoPago();
-			
-			
-			//////////////////////////////////
-			// MOVIMIENTOS VARIOS rgg 10-05-2005
-			
-			Object[] param_in_facturacion = new Object[2];
-			// parametros de entrada
-			param_in_facturacion[0] = idInstitucion; // IDINSTITUCION
-			param_in_facturacion[1] = idPago; // idPago
-			
-			String resultado[] = new String[4];
-			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS.PROC_FCS_IMPORTE_MOVIM_VARIOS(?,?,?,?,?,?)}", 4, param_in_facturacion);
-			String codretorno = (String)resultado[2];
-			if (!codretorno.equals("0")){
-				//ClsLogging.writeFileLogError("ERROR EN PL = "+(String)resultado[2],3);
-        		throw new ClsExceptions ("Error al mostrar el detalle."+
-        				"\nError en PL = "+(String)resultado[2]);
-			} else {		        		
-				Double aux = new Double((String)resultado[0]);
-				totalMovimientos = aux.doubleValue();
-				aux = new Double((String)resultado[1]);
-				totalIRPFMovimientos = aux.doubleValue();
-			}
-			
-			//////////////////////////////////
-			// TURNOS DE OFICIO rgg 10-05-2005
-			
-			param_in_facturacion = new Object[2];
-			// parametros de entrada
-			param_in_facturacion[0] = idInstitucion; // IDINSTITUCION
-			param_in_facturacion[1] = idPago; // idPago
-			
-			resultado = new String[4];
-			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS.PROC_FCS_IMPORTE_TURNOS(?,?,?,?,?,?)}", 4, param_in_facturacion);
-			codretorno = (String)resultado[2];
-			if (!codretorno.equals("0")){
-				//ClsLogging.writeFileLogError("ERROR EN PL = "+(String)resultado[2],3);
-        		throw new ClsExceptions ("Error al mostrar el detalle."+
-        				"\nError en PL = "+(String)resultado[2]);
-			} else {		        		
-				Double aux = new Double((String)resultado[0]);
-				totalTurnos = aux.doubleValue();
-				aux = new Double((String)resultado[1]);
-				totalIRPFTurnos = aux.doubleValue();
-			}
-			
-			//////////////////////////////////
-			// TURNOS GUARDIAS rgg 10-05-2005
-			
-			param_in_facturacion = new Object[2];
-			// parametros de entrada
-			param_in_facturacion[0] = idInstitucion; // IDINSTITUCION
-			param_in_facturacion[1] = idPago; // idPago
-			
-			resultado = new String[4];
-			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS.PROC_FCS_IMPORTE_GUA_COLEG(?,?,?,?,?,?)}", 4, param_in_facturacion);
-			codretorno = (String)resultado[2];
-			if (!codretorno.equals("0")){
-				//ClsLogging.writeFileLogError("ERROR EN PL = "+(String)resultado[2],3);
-        		throw new ClsExceptions ("Error al mostrar el detalle."+
-        				"\nError en PL = "+(String)resultado[2]);
-			} else {		        		
-				Double aux = new Double((String)resultado[0]);
-				totalGuardias += aux.doubleValue();
-				aux = new Double((String)resultado[1]);
-				totalIRPFGuardias += aux.doubleValue();
-			}
-			
-			param_in_facturacion = new Object[2];
-			// parametros de entrada
-			param_in_facturacion[0] = idInstitucion; // IDINSTITUCION
-			param_in_facturacion[1] = idPago; // idPago
-			
-			resultado = new String[4];
-			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS.PROC_FCS_IMPORTE_ACT_ASIST(?,?,?,?,?,?)}", 4, param_in_facturacion);
-			codretorno = (String)resultado[2];
-			if (!codretorno.equals("0")){
-				//ClsLogging.writeFileLogError("ERROR EN PL = "+(String)resultado[2],3);
-        		throw new ClsExceptions ("Error al mostrar el detalle."+
-        				"\nError en PL = "+(String)resultado[2]);
-			} else {		        		
-				Double aux = new Double((String)resultado[0]);
-				totalGuardias += aux.doubleValue();
-				aux = new Double((String)resultado[1]);
-				totalIRPFGuardias += aux.doubleValue();
-			}
-			
-			param_in_facturacion = new Object[2];
-			// parametros de entrada
-			param_in_facturacion[0] = idInstitucion; // IDINSTITUCION
-			param_in_facturacion[1] = idPago; // idPago
-			
-			resultado = new String[4];
-			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS.PROC_FCS_IMPORTE_ASISTENCIA(?,?,?,?,?,?)}", 4, param_in_facturacion);
-			codretorno = (String)resultado[2];
-			if (!codretorno.equals("0")){
-				//ClsLogging.writeFileLogError("ERROR EN PL = "+(String)resultado[2],3);
-        		throw new ClsExceptions ("Error al mostrar el detalle."+
-        				"\nError en PL = "+(String)resultado[2]);
-			} else {		        		
-				Double aux = new Double((String)resultado[0]);
-				totalGuardias += aux.doubleValue();
-				aux = new Double((String)resultado[1]);
-				totalIRPFGuardias += aux.doubleValue();
-			}
-			
-			//////////////////////////////////
-			// EJG rgg 10-05-2005
-			
-			param_in_facturacion = new Object[2];
-			// parametros de entrada
-			param_in_facturacion[0] = idInstitucion; // IDINSTITUCION
-			param_in_facturacion[1] = idPago; // idPago
-			
-			resultado = new String[6];
-			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS.PROC_FCS_IMPORTE_EJG(?,?,?,?,?,?,?,?)}", 6, param_in_facturacion);
-			codretorno = (String)resultado[4];
-			if (!codretorno.equals("0")){
-				//ClsLogging.writeFileLogError("ERROR EN PL = "+(String)resultado[2],3);
-        		throw new ClsExceptions ("Error al mostrar el detalle."+
-        				"\nError en PL = "+(String)resultado[2]);
-			} else {		        		
-				Double aux = new Double((String)resultado[0]);
-				totalEJG = aux.doubleValue();
-				aux = new Double((String)resultado[1]);
-				totalIRPFEJG += aux.doubleValue();
-				aux = new Double((String)resultado[2]);
-				totalEJG += aux.doubleValue();
-				aux = new Double((String)resultado[3]);
-				totalIRPFEJG += aux.doubleValue();
-			}
-			
-			//////////////////////////////////
-			// SOJ rgg 10-05-2005
-			
-			param_in_facturacion = new Object[2];
-			// parametros de entrada
-			param_in_facturacion[0] = idInstitucion; // IDINSTITUCION
-			param_in_facturacion[1] = idPago; // idPago
-			
-			resultado = new String[6];
-			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS.PROC_FCS_IMPORTE_SOJ(?,?,?,?,?,?,?,?)}", 6, param_in_facturacion);
-			codretorno = (String)resultado[4];
-			if (!codretorno.equals("0")){
-				//ClsLogging.writeFileLogError("ERROR EN PL = "+(String)resultado[2],3);
-        		throw new ClsExceptions ("Error al mostrar el detalle."+
-        				"\nError en PL = "+(String)resultado[2]);
-			} else {		        		
-				Double aux = new Double((String)resultado[0]);
-				totalSOJ = aux.doubleValue();
-				aux = new Double((String)resultado[1]);
-				totalIRPFSOJ += aux.doubleValue();
-				aux = new Double((String)resultado[2]);
-				totalSOJ += aux.doubleValue();
-				aux = new Double((String)resultado[3]);
-				totalIRPFSOJ += aux.doubleValue();
-			}
-			
-			//////////////////////////////////
-			// RETENCIONES JUDICIALES:
-			if (Integer.parseInt(miform.getEstadoPago()) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_CERRADO)) {
-				param_in_facturacion = new Object[2];
-				// parametros de entrada
-				param_in_facturacion[0] = idInstitucion; // IDINSTITUCION
-				param_in_facturacion[1] = idPago; // idPago
-				
-				resultado = new String[3];
-				resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS.PROC_FCS_IMPORTE_RETENC(?,?,?,?,?)}", 3, param_in_facturacion);
-				codretorno = (String)resultado[1];
-				if (!codretorno.equals("0")){
-					//ClsLogging.writeFileLogError("ERROR EN PL = "+(String)resultado[2],3);
-	        		throw new ClsExceptions ("Error al mostrar el detalle."+
-	        				"\nError en PL = "+(String)resultado[2]);
-				} else {		        		
-					Double aux = new Double((String)resultado[0]);
-					totalRetenciones += aux.doubleValue();        		
-				}
-			}
-			
-			//////////////////////////////////
-			// TOTALES rgg 10-05-2005
-			
-			param_in_facturacion = new Object[2];
-			// parametros de entrada
-			param_in_facturacion[0] = idInstitucion; // IDINSTITUCION
-			param_in_facturacion[1] = idPago; // idPago
-			
-			resultado = new String[4];
-			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS.PROC_FCS_IMPORTES_PAGOS(?,?,?,?,?,?)}", 4, param_in_facturacion);
-			codretorno = (String)resultado[2];
-			if (!codretorno.equals("0")){
-				//ClsLogging.writeFileLogError("ERROR EN PL = "+(String)resultado[2],3);
-        		throw new ClsExceptions ("Error al mostrar el detalle."+
-        				"\nError en PL = "+(String)resultado[2]);
-			} else {		        		
-				Double aux = new Double((String)resultado[1]);
-				totalARepartir = aux.doubleValue();
-			}
-			
-			total = totalTurnos + totalGuardias + totalEJG + totalSOJ + totalMovimientos + totalRetenciones; 
-			totalIRPF = totalIRPFTurnos + totalIRPFGuardias + totalIRPFEJG + totalIRPFSOJ + totalIRPFMovimientos; 
-			
-			Hashtable valoresTotales = new Hashtable();
-			valoresTotales.put("turnos", String.valueOf(UtilidadesNumero.redondea(totalTurnos,2)));
-			valoresTotales.put("guardias", String.valueOf(UtilidadesNumero.redondea(totalGuardias,2)));
-			valoresTotales.put("ejg", String.valueOf(UtilidadesNumero.redondea(totalEJG,2)));
-			valoresTotales.put("soj", String.valueOf(UtilidadesNumero.redondea(totalSOJ,2)));
-			valoresTotales.put("movimientos", String.valueOf(UtilidadesNumero.redondea(totalMovimientos,2)));
-			valoresTotales.put("total", String.valueOf(UtilidadesNumero.redondea(total,2)));
-			valoresTotales.put("totalRepartir", String.valueOf(UtilidadesNumero.redondea(totalARepartir,2)));
-			valoresTotales.put("totalIRPF", String.valueOf(UtilidadesNumero.redondea(totalIRPF,2)));
-			valoresTotales.put("retenciones", String.valueOf(UtilidadesNumero.redondea(totalRetenciones,2)));
-			request.setAttribute("valoresTotalPagos",valoresTotales);
-			request.setAttribute("estadoPago",estadoPago);
-			
-			String nombreInstitucion = "";
-			try{
-				//Consultamos el nombre de la institucion
-				CenInstitucionAdm institucionAdm = new CenInstitucionAdm(this.getUserBean(request));
-				nombreInstitucion = (String)institucionAdm.getNombreInstitucion(usr.getLocation().toString());
-			}catch(ClsExceptions e){
-				ClsLogging.writeFileLogError("Error: No se ha podido recuperar el nombre del Colegio", e,3);
-			}
-			
-			//pasamos el nombre de la institución, y los identificadores del pago y la institucion
-			request.setAttribute("nombreInstitucion",nombreInstitucion);
-			
-			salida = "verDetalle";
-			
-		} 
-		catch (Exception e) { 
-			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null); 
-		}					
-		return salida;
-	}
+//	protected String verDetalle (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+//		
+//		String salida = "", idPago="", idInstitucion="", estadoPago="";
+//		
+//		try 
+//		{ 
+//			
+//			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+//			
+//			double totalTurnos = 0;
+//			double totalGuardias = 0;
+//			double totalEJG = 0;
+//			double totalSOJ = 0;
+//			double totalMovimientos = 0;
+//			double totalRetenciones = 0;
+//			double totalIRPFTurnos = 0;
+//			double totalIRPFGuardias = 0;
+//			double totalIRPFEJG = 0;
+//			double totalIRPFSOJ = 0;
+//			double totalIRPFMovimientos = 0;			
+//			double total = 0;
+//			double totalIRPF = 0;
+//			double totalARepartir = 0;
+//			
+//			
+//			DatosDetallePagoForm miform = (DatosDetallePagoForm)formulario;
+//			idPago = miform.getIdPago();
+//			idInstitucion = miform.getIdInstitucion(); 
+//			estadoPago = miform.getEstadoPago();
+//			
+//			
+//			//////////////////////////////////
+//			// MOVIMIENTOS VARIOS rgg 10-05-2005
+//			
+//			Object[] param_in_facturacion = new Object[2];
+//			// parametros de entrada
+//			param_in_facturacion[0] = idInstitucion; // IDINSTITUCION
+//			param_in_facturacion[1] = idPago; // idPago
+//			
+//			String resultado[] = new String[4];
+//			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS.PROC_FCS_IMPORTE_MOVIM_VARIOS(?,?,?,?,?,?)}", 4, param_in_facturacion);
+//			String codretorno = (String)resultado[2];
+//			if (!codretorno.equals("0")){
+//				//ClsLogging.writeFileLogError("ERROR EN PL = "+(String)resultado[2],3);
+//        		throw new ClsExceptions ("Error al mostrar el detalle."+
+//        				"\nError en PL = "+(String)resultado[2]);
+//			} else {		        		
+//				Double aux = new Double((String)resultado[0]);
+//				totalMovimientos = aux.doubleValue();
+//				aux = new Double((String)resultado[1]);
+//				totalIRPFMovimientos = aux.doubleValue();
+//			}
+//			
+//			//////////////////////////////////
+//			// TURNOS DE OFICIO rgg 10-05-2005
+//			
+//			param_in_facturacion = new Object[2];
+//			// parametros de entrada
+//			param_in_facturacion[0] = idInstitucion; // IDINSTITUCION
+//			param_in_facturacion[1] = idPago; // idPago
+//			
+//			resultado = new String[4];
+//			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS.PROC_FCS_IMPORTE_TURNOS(?,?,?,?,?,?)}", 4, param_in_facturacion);
+//			codretorno = (String)resultado[2];
+//			if (!codretorno.equals("0")){
+//				//ClsLogging.writeFileLogError("ERROR EN PL = "+(String)resultado[2],3);
+//        		throw new ClsExceptions ("Error al mostrar el detalle."+
+//        				"\nError en PL = "+(String)resultado[2]);
+//			} else {		        		
+//				Double aux = new Double((String)resultado[0]);
+//				totalTurnos = aux.doubleValue();
+//				aux = new Double((String)resultado[1]);
+//				totalIRPFTurnos = aux.doubleValue();
+//			}
+//			
+//			//////////////////////////////////
+//			// TURNOS GUARDIAS rgg 10-05-2005
+//			
+//			param_in_facturacion = new Object[2];
+//			// parametros de entrada
+//			param_in_facturacion[0] = idInstitucion; // IDINSTITUCION
+//			param_in_facturacion[1] = idPago; // idPago
+//			
+//			resultado = new String[4];
+//			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS.PROC_FCS_IMPORTE_GUA_COLEG(?,?,?,?,?,?)}", 4, param_in_facturacion);
+//			codretorno = (String)resultado[2];
+//			if (!codretorno.equals("0")){
+//				//ClsLogging.writeFileLogError("ERROR EN PL = "+(String)resultado[2],3);
+//        		throw new ClsExceptions ("Error al mostrar el detalle."+
+//        				"\nError en PL = "+(String)resultado[2]);
+//			} else {		        		
+//				Double aux = new Double((String)resultado[0]);
+//				totalGuardias += aux.doubleValue();
+//				aux = new Double((String)resultado[1]);
+//				totalIRPFGuardias += aux.doubleValue();
+//			}
+//			
+//			param_in_facturacion = new Object[2];
+//			// parametros de entrada
+//			param_in_facturacion[0] = idInstitucion; // IDINSTITUCION
+//			param_in_facturacion[1] = idPago; // idPago
+//			
+//			resultado = new String[4];
+//			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS.PROC_FCS_IMPORTE_ACT_ASIST(?,?,?,?,?,?)}", 4, param_in_facturacion);
+//			codretorno = (String)resultado[2];
+//			if (!codretorno.equals("0")){
+//				//ClsLogging.writeFileLogError("ERROR EN PL = "+(String)resultado[2],3);
+//        		throw new ClsExceptions ("Error al mostrar el detalle."+
+//        				"\nError en PL = "+(String)resultado[2]);
+//			} else {		        		
+//				Double aux = new Double((String)resultado[0]);
+//				totalGuardias += aux.doubleValue();
+//				aux = new Double((String)resultado[1]);
+//				totalIRPFGuardias += aux.doubleValue();
+//			}
+//			
+//			param_in_facturacion = new Object[2];
+//			// parametros de entrada
+//			param_in_facturacion[0] = idInstitucion; // IDINSTITUCION
+//			param_in_facturacion[1] = idPago; // idPago
+//			
+//			resultado = new String[4];
+//			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS.PROC_FCS_IMPORTE_ASISTENCIA(?,?,?,?,?,?)}", 4, param_in_facturacion);
+//			codretorno = (String)resultado[2];
+//			if (!codretorno.equals("0")){
+//				//ClsLogging.writeFileLogError("ERROR EN PL = "+(String)resultado[2],3);
+//        		throw new ClsExceptions ("Error al mostrar el detalle."+
+//        				"\nError en PL = "+(String)resultado[2]);
+//			} else {		        		
+//				Double aux = new Double((String)resultado[0]);
+//				totalGuardias += aux.doubleValue();
+//				aux = new Double((String)resultado[1]);
+//				totalIRPFGuardias += aux.doubleValue();
+//			}
+//			
+//			//////////////////////////////////
+//			// EJG rgg 10-05-2005
+//			
+//			param_in_facturacion = new Object[2];
+//			// parametros de entrada
+//			param_in_facturacion[0] = idInstitucion; // IDINSTITUCION
+//			param_in_facturacion[1] = idPago; // idPago
+//			
+//			resultado = new String[6];
+//			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS.PROC_FCS_IMPORTE_EJG(?,?,?,?,?,?,?,?)}", 6, param_in_facturacion);
+//			codretorno = (String)resultado[4];
+//			if (!codretorno.equals("0")){
+//				//ClsLogging.writeFileLogError("ERROR EN PL = "+(String)resultado[2],3);
+//        		throw new ClsExceptions ("Error al mostrar el detalle."+
+//        				"\nError en PL = "+(String)resultado[2]);
+//			} else {		        		
+//				Double aux = new Double((String)resultado[0]);
+//				totalEJG = aux.doubleValue();
+//				aux = new Double((String)resultado[1]);
+//				totalIRPFEJG += aux.doubleValue();
+//				aux = new Double((String)resultado[2]);
+//				totalEJG += aux.doubleValue();
+//				aux = new Double((String)resultado[3]);
+//				totalIRPFEJG += aux.doubleValue();
+//			}
+//			
+//			//////////////////////////////////
+//			// SOJ rgg 10-05-2005
+//			
+//			param_in_facturacion = new Object[2];
+//			// parametros de entrada
+//			param_in_facturacion[0] = idInstitucion; // IDINSTITUCION
+//			param_in_facturacion[1] = idPago; // idPago
+//			
+//			resultado = new String[6];
+//			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS.PROC_FCS_IMPORTE_SOJ(?,?,?,?,?,?,?,?)}", 6, param_in_facturacion);
+//			codretorno = (String)resultado[4];
+//			if (!codretorno.equals("0")){
+//				//ClsLogging.writeFileLogError("ERROR EN PL = "+(String)resultado[2],3);
+//        		throw new ClsExceptions ("Error al mostrar el detalle."+
+//        				"\nError en PL = "+(String)resultado[2]);
+//			} else {		        		
+//				Double aux = new Double((String)resultado[0]);
+//				totalSOJ = aux.doubleValue();
+//				aux = new Double((String)resultado[1]);
+//				totalIRPFSOJ += aux.doubleValue();
+//				aux = new Double((String)resultado[2]);
+//				totalSOJ += aux.doubleValue();
+//				aux = new Double((String)resultado[3]);
+//				totalIRPFSOJ += aux.doubleValue();
+//			}
+//			
+//			//////////////////////////////////
+//			// RETENCIONES JUDICIALES:
+//			if (Integer.parseInt(miform.getEstadoPago()) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_CERRADO)) {
+//				param_in_facturacion = new Object[2];
+//				// parametros de entrada
+//				param_in_facturacion[0] = idInstitucion; // IDINSTITUCION
+//				param_in_facturacion[1] = idPago; // idPago
+//				
+//				resultado = new String[3];
+//				resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS.PROC_FCS_IMPORTE_RETENC(?,?,?,?,?)}", 3, param_in_facturacion);
+//				codretorno = (String)resultado[1];
+//				if (!codretorno.equals("0")){
+//					//ClsLogging.writeFileLogError("ERROR EN PL = "+(String)resultado[2],3);
+//	        		throw new ClsExceptions ("Error al mostrar el detalle."+
+//	        				"\nError en PL = "+(String)resultado[2]);
+//				} else {		        		
+//					Double aux = new Double((String)resultado[0]);
+//					totalRetenciones += aux.doubleValue();        		
+//				}
+//			}
+//			
+//			//////////////////////////////////
+//			// TOTALES rgg 10-05-2005
+//			
+//			param_in_facturacion = new Object[2];
+//			// parametros de entrada
+//			param_in_facturacion[0] = idInstitucion; // IDINSTITUCION
+//			param_in_facturacion[1] = idPago; // idPago
+//			
+//			resultado = new String[4];
+//			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS.PROC_FCS_IMPORTES_PAGOS(?,?,?,?,?,?)}", 4, param_in_facturacion);
+//			codretorno = (String)resultado[2];
+//			if (!codretorno.equals("0")){
+//				//ClsLogging.writeFileLogError("ERROR EN PL = "+(String)resultado[2],3);
+//        		throw new ClsExceptions ("Error al mostrar el detalle."+
+//        				"\nError en PL = "+(String)resultado[2]);
+//			} else {		        		
+//				Double aux = new Double((String)resultado[1]);
+//				totalARepartir = aux.doubleValue();
+//			}
+//			
+//			total = totalTurnos + totalGuardias + totalEJG + totalSOJ + totalMovimientos + totalRetenciones; 
+//			totalIRPF = totalIRPFTurnos + totalIRPFGuardias + totalIRPFEJG + totalIRPFSOJ + totalIRPFMovimientos; 
+//			
+//			Hashtable valoresTotales = new Hashtable();
+//			valoresTotales.put("turnos", String.valueOf(UtilidadesNumero.redondea(totalTurnos,2)));
+//			valoresTotales.put("guardias", String.valueOf(UtilidadesNumero.redondea(totalGuardias,2)));
+//			valoresTotales.put("ejg", String.valueOf(UtilidadesNumero.redondea(totalEJG,2)));
+//			valoresTotales.put("soj", String.valueOf(UtilidadesNumero.redondea(totalSOJ,2)));
+//			valoresTotales.put("movimientos", String.valueOf(UtilidadesNumero.redondea(totalMovimientos,2)));
+//			valoresTotales.put("total", String.valueOf(UtilidadesNumero.redondea(total,2)));
+//			valoresTotales.put("totalRepartir", String.valueOf(UtilidadesNumero.redondea(totalARepartir,2)));
+//			valoresTotales.put("totalIRPF", String.valueOf(UtilidadesNumero.redondea(totalIRPF,2)));
+//			valoresTotales.put("retenciones", String.valueOf(UtilidadesNumero.redondea(totalRetenciones,2)));
+//			request.setAttribute("valoresTotalPagos",valoresTotales);
+//			request.setAttribute("estadoPago",estadoPago);
+//			
+//			String nombreInstitucion = "";
+//			try{
+//				//Consultamos el nombre de la institucion
+//				CenInstitucionAdm institucionAdm = new CenInstitucionAdm(this.getUserBean(request));
+//				nombreInstitucion = (String)institucionAdm.getNombreInstitucion(usr.getLocation().toString());
+//			}catch(ClsExceptions e){
+//				ClsLogging.writeFileLogError("Error: No se ha podido recuperar el nombre del Colegio", e,3);
+//			}
+//			
+//			//pasamos el nombre de la institución, y los identificadores del pago y la institucion
+//			request.setAttribute("nombreInstitucion",nombreInstitucion);
+//			
+//			salida = "verDetalle";
+//			
+//		} 
+//		catch (Exception e) { 
+//			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null); 
+//		}					
+//		return salida;
+//	}
 	
 	/**
 	 * 
