@@ -196,7 +196,7 @@ public class SolicitudesModificacionEspecificasAction extends MasterAction {
 				modificacion=adminD.obtenerEntradaSolicitudModificacion((String)ocultos.get(2));
 				// Obtencion de los datos originales					
 				CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserBean(request));
-				temporal = clienteAdm.getDirecciones(new Long((String)ocultos.get(0)),new Integer((String)ocultos.get(1)),new Long((String)ocultos.get(4)));
+				temporal = clienteAdm.getDirecciones(new Long((String)ocultos.get(0)),new Integer((String)ocultos.get(1)),new Long((String)ocultos.get(4)),true);
 				original.addElement(temporal);
 				result="verDirecciones";
 			}
