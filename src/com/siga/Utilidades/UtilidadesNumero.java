@@ -7,6 +7,7 @@
 package com.siga.Utilidades;
 
 import java.lang.Math;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -114,4 +115,17 @@ public class UtilidadesNumero {
 		numero = UtilidadesString.replaceAllIgnoreCase(numero, ",", ".");
 		return Double.parseDouble(numero);
 	}
+	
+	/**
+	 * Redondea el numero <code>d</code> a <code>dec</code> decimales.
+	 * @param d
+	 * @param dec
+	 * @return
+	 */
+	public static double round(String d, int dec){
+		BigDecimal bd = new BigDecimal(d);
+		bd = bd.setScale(dec,BigDecimal.ROUND_HALF_UP);
+		return bd.doubleValue();
+	}
+
 }
