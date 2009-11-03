@@ -102,13 +102,13 @@ public class InformeFichaPago extends MasterReport {
 			
 			//Los porcentajes se calculan en funcion del total facturado y el importe parcial de cada pago
 			Double porcentajeEJG = UtilidadesNumero.redondea(beanPago.getImporteEJG() * 100 / Double.valueOf(beanFacturacion.getImporteEJG()), 2);
-			hashDatos.put("PORCENTAJEEJG_PAGO", UtilidadesString.tratarImporte(porcentajeEJG));
+			hashDatos.put("PORCENTAJEEJG_PAGO", UtilidadesString.formatoImporte(porcentajeEJG));
 			Double porcentajeSOJ = UtilidadesNumero.redondea(beanPago.getImporteSOJ() * 100 / Double.valueOf(beanFacturacion.getImporteSOJ()), 2);
-			hashDatos.put("PORCENTAJESOJ_PAGO", UtilidadesString.tratarImporte(porcentajeSOJ));
+			hashDatos.put("PORCENTAJESOJ_PAGO", UtilidadesString.formatoImporte(porcentajeSOJ));
 			Double porcentajeOficio = UtilidadesNumero.redondea(beanPago.getImporteOficio() * 100 / Double.valueOf(beanFacturacion.getImporteOficio()), 2);
-			hashDatos.put("PORCENTAJETURNOS_PAGO", UtilidadesString.tratarImporte(porcentajeOficio));
+			hashDatos.put("PORCENTAJETURNOS_PAGO", UtilidadesString.formatoImporte(porcentajeOficio));
 			Double porcentajeGuardias = UtilidadesNumero.redondea(beanPago.getImporteGuardia() * 100 / Double.valueOf(beanFacturacion.getImporteGuardia()), 2);
-			hashDatos.put("PORCENTAJEGUARDIAS_PAGO", UtilidadesString.tratarImporte(porcentajeGuardias));
+			hashDatos.put("PORCENTAJEGUARDIAS_PAGO", UtilidadesString.formatoImporte(porcentajeGuardias));
 
 			hashDatos.put("ESTADO_PAGO",admNombreEstadosPago.getNombreEstadoPago(idEstado));//Estado del Pago				
 			hashDatos.put("FECHAEJECUCION_PAGO",GstDate.getFormatedDateShort(usr.getLanguage(),admEstadoPago.getFechaEstadoPago(idInstitucion,idPago,idEstado)));//Fecha del último Estado del Pago				
