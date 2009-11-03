@@ -103,7 +103,6 @@
 	String solicitaInfoJG = miform.getChkSolicitaInfoJG();
 	String checkSolicitante = miform.getSolicitante();
 	
-	System.out.println(conceptoE + " " + pcajgActivo);
 	String asterisco="";
 	// Ponemos astericos en los campos obligatorios para el pcajg activo
 	if ((pcajgActivo) && 
