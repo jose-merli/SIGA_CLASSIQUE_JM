@@ -135,73 +135,60 @@
 	<td>			
 	
 	<!-- FILA -->
-	<tr>
-	<td class="labelText">
-		<siga:Idioma key="gratuita.operarRatificacion.literal.fechaAuto"/>
-	</td>
-	<td>
-		<%
-			if (accion.equalsIgnoreCase("ver")) {
-		%>
-			<html:text name="DefinirEJGForm" property="fechaAuto" size="10" styleClass="boxConsulta" value="<%=fechaAuto%>" disabled="false" readonly="true"></html:text>
-		<%
-			} else {
-		%>
-			<html:text name="DefinirEJGForm" property="fechaAuto" size="10" styleClass="box" value="<%=fechaAuto%>" disabled="false" readonly="true"></html:text>
-			&nbsp;
-			<a onClick="return showCalendarGeneral(fechaAuto);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-			<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0">
-			</a>
-		<%
-			}
-		%>
-	</td>
-	<td class="labelText">
-		<siga:Idioma key="gratuita.EJG.literal.autoResolutorio"/>
-	</td>	
-	<td>
-		<%
-			if (accion.equalsIgnoreCase("ver")) {
-		%>
-			<siga:ComboBD nombre="idTipoResolAuto" tipo="idTipoResolAuto" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" elementoSel="<%=vTipoResolAuto%>" readOnly="true"/>
-		<%
-			} else {
-		%>
-			<siga:ComboBD nombre="idTipoResolAuto" tipo="idTipoResolAuto" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" elementoSel="<%=vTipoResolAuto%>"/>
-		<%
-			}
-		%>
-	</td>
-	</tr>
+		<tr>
+			<td class="labelText">
+				<siga:Idioma key="gratuita.operarRatificacion.literal.fechaAuto"/>
+			</td>
+			<td>
+				<%if (accion.equalsIgnoreCase("ver")) {%>
+					<html:text name="DefinirEJGForm" property="fechaAuto" size="10" styleClass="boxConsulta" value="<%=fechaAuto%>" disabled="false" readonly="true"></html:text>
+				<%}else{%>
+					<html:text name="DefinirEJGForm" property="fechaAuto" size="10" styleClass="box" value="<%=fechaAuto%>" disabled="false" readonly="true"></html:text>
+					&nbsp;
+					<a onClick="return showCalendarGeneral(fechaAuto);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
+					<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0">
+					</a>
+				<%}%>
+			</td>
+			<td class="labelText">
+				<siga:Idioma key="gratuita.EJG.literal.autoResolutorio"/>
+			</td>	
+			<td>
+				<%if (accion.equalsIgnoreCase("ver")) {%>
+					<siga:ComboBD nombre="idTipoResolAuto" tipo="idTipoResolAuto" clase="boxConsulta"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" elementoSel="<%=vTipoResolAuto%>" readOnly="true"/>
+				<%}else{%>
+					<siga:ComboBD nombre="idTipoResolAuto" tipo="idTipoResolAuto" clase="boxCombo"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" elementoSel="<%=vTipoResolAuto%>"/>
+				<%}%>
+			</td>
+		</tr>
 
-				<tr>
-					<td class="labelText"><siga:Idioma
-						key="gratuita.EJG.literal.sentidoAuto" /></td>
-					<td colspan="3">
-					<%
-						if (accion.equalsIgnoreCase("ver")) {
-					%> <siga:ComboBD
-						nombre="idTipoSentidoAuto" tipo="idTipoSentidoAuto"
-						clase="boxConsulta" filasMostrar="1" seleccionMultiple="false"
-						obligatorio="false" elementoSel="<%=vTipoSentidoAuto%>"
-						readOnly="true" /> <%
- 	} else {
- %> <siga:ComboBD
-						nombre="idTipoSentidoAuto" tipo="idTipoSentidoAuto"
-						clase="boxCombo" filasMostrar="1" seleccionMultiple="false"
-						obligatorio="false" elementoSel="<%=vTipoSentidoAuto%>" /> <%
- 	}
- %>
-					</td>
-				</tr>
+		<tr>
+			<td class="labelText"><siga:Idioma
+				key="gratuita.EJG.literal.sentidoAuto" /></td>
+			<td colspan="3">
+			<%if (accion.equalsIgnoreCase("ver")) {%> 
+				<siga:ComboBD
+					nombre="idTipoSentidoAuto" tipo="idTipoSentidoAuto"
+					clase="boxConsulta" filasMostrar="1" seleccionMultiple="false"
+					obligatorio="false" elementoSel="<%=vTipoSentidoAuto%>"
+					readOnly="true" /> 
+			<%}else{%> 
+				<siga:ComboBD
+					nombre="idTipoSentidoAuto" tipo="idTipoSentidoAuto"
+					clase="boxCombo" filasMostrar="1" seleccionMultiple="false"
+					obligatorio="false" elementoSel="<%=vTipoSentidoAuto%>" /> 
+			<%}%>
+			</td>
+		</tr>
 
-				<tr>
-					<td class="labelText" colspan="4"><siga:Idioma
-						key="gratuita.operarRatificacion.literal.requiereTurnado" />&nbsp;&nbsp;
-					<input type="Checkbox" name="turnadoRatificacion"
-						<%=(requiereTurnado?"checked":"")%>></td>
-				</tr>
-
+		<tr>
+			<td class="labelText" colspan="4">
+				<siga:Idioma key="gratuita.operarRatificacion.literal.requiereTurnado" />&nbsp;&nbsp;
+				<input type="Checkbox" name="turnadoRatificacion" 
+					<%=(accion.equalsIgnoreCase("ver")?"disabled":"")%> 
+					<%=(requiereTurnado?"checked":"")%>>
+			</td>
+		</tr>
 				
 	</html:form>
 	</table>
