@@ -37,14 +37,13 @@
 	Vector v = (Vector)request.getAttribute("acreditaciones");
 
 	//variables quese van a mostrar en la jsp
-	String nombre="", importe="", puntos="", idProc="", idJurisdiccion="", codigo="", complemento="", vigente="" ;
+	String nombre="", importe="", idProc="", idJurisdiccion="", codigo="", complemento="", vigente="" ;
 
 	//inicializamos los valores
 	try{
 		nombre = (String)resultado.get(ScsProcedimientosBean.C_NOMBRE);
 		importe = (String)resultado.get(ScsProcedimientosBean.C_PRECIO);
 		idProc = (String)resultado.get(ScsProcedimientosBean.C_IDPROCEDIMIENTO);
-		puntos = (String)resultado.get(ScsProcedimientosBean.C_PUNTOS);
 		idJurisdiccion = (String)resultado.get(ScsProcedimientosBean.C_IDJURISDICCION);
 		codigo = (String)resultado.get(ScsProcedimientosBean.C_CODIGO);
 		complemento = (String)resultado.get(ScsProcedimientosBean.C_COMPLEMENTO);
