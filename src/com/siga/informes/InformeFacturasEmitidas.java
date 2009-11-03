@@ -258,7 +258,7 @@ public class InformeFacturasEmitidas extends MasterReport
 	 * @throws SIGAException
 	 */
 	
-	public File getXmlFileToReportWithXslFo (String pathXml, Hashtable datosFormulario) throws ClsExceptions 
+	public File getXmlFileToReportWithXslFo (String pathXml, Hashtable datosFormulario) throws ClsExceptions, SIGAException 
 	{
 		
 		
@@ -374,9 +374,12 @@ public class InformeFacturasEmitidas extends MasterReport
 
                
              
+       }catch (SIGAException e) {
+       		throw e;
        }
+		
        catch (Exception e) {
-       		throw new ClsExceptions (e, "InformeFacturasEmitidas.getXmlFacturasEmitidas.Error al ejecutar consulta.");
+       		throw new ClsExceptions (e, "InformeFacturasEmitidas.getXmlFileToReportWithXslFo.Error al ejecutar consulta.");
        }
        return file;
     }

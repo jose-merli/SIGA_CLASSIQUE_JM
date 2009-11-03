@@ -362,7 +362,7 @@ public class MasterReport  {
 	 * @return Devuelve el archivo pdf generado
 	 */
 	public File generarInformePdfFromXmlToFoXsl(String pathXml,String xslDir,String xslName,
-			String pdfDir,String pdfName, Hashtable datosFormulario){
+			String pdfDir,String pdfName, Hashtable datosFormulario) throws SIGAException{
 		File pdfFile = null;
 		File xmlFile = null;
 		try {
@@ -391,7 +391,8 @@ public class MasterReport  {
 			convertXML2PDF(xmlFile, xsltFile, pdfFile);
 			ClsLogging.writeFileLog("Pdf creado. ",10);
 
-			
+		} catch (SIGAException e) {
+			throw e;	
 		} catch (Exception e) {
 			System.err.println(ExceptionUtil.printStackTrace(e));
 			//System.exit(-1);
