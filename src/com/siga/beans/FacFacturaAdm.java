@@ -3324,7 +3324,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
        }
        return salida;
     }
-	public RowsContainer getRowsFacturasEmitidas(String institucion, String fechaDesde, String fechaHasta) throws ClsExceptions{
+	public RowsContainer getRowsFacturasEmitidas(String institucion, String fechaDesde, String fechaHasta) throws ClsExceptions, SIGAException{
 		RowsContainer rc = new RowsContainer(); 
 		try {
 	
@@ -3421,10 +3421,13 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	
 	
 			if(!rc.findBind(sql, codigos))
-				throw new ClsExceptions("FacFacturaAdm.getRowsFacturasEmitidas().No se han obtenido resultados");
+				throw new SIGAException("messages.informes.ficheroVacio");
 				
 				
 	
+		}
+		catch (SIGAException e) {
+			throw e;
 			
 		}
 		catch (ClsExceptions e) {
