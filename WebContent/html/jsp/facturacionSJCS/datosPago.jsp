@@ -340,18 +340,28 @@
 		}
 		
 		/**
-		 * Borra los campos "a pagar" de cada concepto
-		 */
+		* Borra los campos "a pagar" de cada concepto
+		*/
 		function borrarAPagar(){
-			 document.getElementById('importeEJG').value = "";
-			 document.getElementById('porcentajeEJG').value = "";
-			 document.getElementById('importeSOJ').value = "";
-			 document.getElementById('porcentajeSOJ').value = "";
-			 document.getElementById('importeOficio').value = "";
-			 document.getElementById('porcentajeOficio').value = "";
-			 document.getElementById('importeGuardias').value = "";
-			 document.getElementById('porcentajeGuardias').value = "";
-		 }
+			//Obtener la suma del importe a repartir 
+			var importeRepartirTotal = 0;
+			var concepto = new Array(4)
+			concepto[0] = 'Oficio';
+			concepto[1] = 'Guardias';
+			concepto[2] = 'EJG';
+			concepto[3] = 'SOJ';
+
+			for (i=0;i<4;i++){			
+				//inicializa el valor de los elementos
+				document.getElementById("importe"+concepto[i]).value = "0,00";
+				document.getElementById("porcentaje"+concepto[i]).value = "0,00";
+				//inicializa el aspecto de los elementos
+				document.getElementById("porcentaje"+concepto[i]).className  = "boxConsultaNumber";	
+				document.getElementById("porcentaje"+concepto[i]).readOnly = true;
+				document.getElementById("importe"+concepto[i]).readOnly = false;
+				document.getElementById("importe"+concepto[i]).className  = "<%=estiloNumber%>";
+			}
+		}
 
 		 
 		/**
@@ -576,11 +586,11 @@
 					</td>
 					<td class="labelTextNum" >
 						<% if (!esVerEditar){ %>
-							<input name="radioAPagarOficio" value="importe" type="radio" Checked/>
+							<input name="radioAPagarOficio" value="importe" type="radio" onclick="cambiar('Oficio');" Checked/>
 							<input name="importeOficio" id="importeOficio" style="width:50%" class="<%=estiloNumber%>" onblur="actualizaConcepto('Oficio', totalOficio, importePendOficio, porcentajePendOficio);" onfocus="backup('importeOficio')" />						
 							<span style="vertical-align:40%">&euro;	&nbsp;</span>
-						  	<input name="radioApagarOficio" value="porcentaje" type="radio" />
-							<input name="porcentajeOficio" id="porcentajeOficio" style="width:15%" maxlength="5" class="<%=estiloNumber%>" onblur="actualizaConcepto('Oficio', totalOficio, importePendOficio, porcentajePendOficio);"	onfocus="backup('porcentajeOficio');" />						
+						  	<input name="radioApagarOficio" value="porcentaje" type="radio" onclick="cambiar('Oficio');" />
+							<input name="porcentajeOficio" id="porcentajeOficio" style="width:15%" maxlength="5" class="boxConsultaNumber" readonly="true" onblur="actualizaConcepto('Oficio', totalOficio, importePendOficio, porcentajePendOficio);"	onfocus="backup('porcentajeOficio');" />						
 							<span style="vertical-align:40%">&#37;</span>
 						<% } else {%>
 							<input name="txtAPagarOficio" id="txtAPagarOficio" style="width:100%" class="boxConsultaNumber"/>
@@ -605,11 +615,11 @@
 					</td>
 					<td class="labelTextNum" >
 						<% if (!esVerEditar){ %>
-							<input name="radioAPagarGuardias" value="importe" type="radio" Checked/>
+							<input name="radioAPagarGuardias" value="importe" type="radio" onclick="cambiar('Guardias');" Checked/>
 							<input name="importeGuardias" id="importeGuardias" style="width:50%" class="<%=estiloNumber%>" onblur="actualizaConcepto('Guardias', totalGuardias, importePendGuardias, porcentajePendGuardias);" onfocus="backup('importeGuardias');" />						
 							<span style="vertical-align:40%">&euro;	&nbsp;</span>
-						  	<input name="radioAPagarGuardias" value="porcentaje" type="radio" />
-							<input name="porcentajeGuardias" id="porcentajeGuardias" style="width:15%" maxlength="5" class="<%=estiloNumber%>"  									
+						  	<input name="radioAPagarGuardias" value="porcentaje" type="radio" onclick="cambiar('Guardias');" />
+							<input name="porcentajeGuardias" id="porcentajeGuardias" style="width:15%" maxlength="5" class="boxConsultaNumber" readonly="true"  									
 										onblur="actualizaConcepto('Guardias', totalGuardias, importePendGuardias, porcentajePendGuardias);"
 										onfocus="backup('porcentajeGuardias');" />						
 							<span style="vertical-align:40%">&#37;</span>
@@ -636,11 +646,11 @@
 					</td>
 					<td class="labelTextNum" >
 						<% if (!esVerEditar){ %>
-							<input name="radioAPagarEJG" value="importe" type="radio" Checked/>
+							<input name="radioAPagarEJG" value="importe" type="radio" onclick="cambiar('EJG');" Checked/>
 							<input name="importeEJG" id="importeEJG" style="width:50%" class="<%=estiloNumber%>" onblur="actualizaConcepto('EJG', totalEJG, importePendEJG, porcentajePendEJG);" onfocus="backup('importeEJG');" />						
 							<span style="vertical-align:40%">&euro;	&nbsp;</span>
-						  	<input name="radioAPagarEJG" value="porcentaje" type="radio" />
-							<input name="porcentajeEJG" id="porcentajeEJG" style="width:15%" maxlength="5" class="<%=estiloNumber%>" onblur="actualizaConcepto('EJG', totalEJG, importePendEJG, porcentajePendEJG);" onfocus="backup('porcentajeEJG');" />						
+						  	<input name="radioAPagarEJG" value="porcentaje" type="radio" onclick="cambiar('EJG');" />
+							<input name="porcentajeEJG" id="porcentajeEJG" style="width:15%" maxlength="5" class="boxConsultaNumber" readonly="true" onblur="actualizaConcepto('EJG', totalEJG, importePendEJG, porcentajePendEJG);" onfocus="backup('porcentajeEJG');" />						
 							<span style="vertical-align:40%">&#37;</span>
 						<% } else {%>
 							<input name="txtAPagarEJG" id="txtAPagarEJG" size="18" class="boxConsultaNumber"/>
@@ -665,11 +675,11 @@
 					</td>
 					<td class="labelTextNum" >
 						<% if (!esVerEditar){ %>
-							<input name="radioAPagarSOJ" value="importe" type="radio" Checked/>
+							<input name="radioAPagarSOJ" value="importe" type="radio" onclick="cambiar('SOJ');" Checked/>
 							<input name="importeSOJ" id="importeSOJ" style="width:50%" class="<%=estiloNumber%>" onblur="actualizaConcepto('SOJ', totalSOJ, importePendSOJ, porcentajePendSOJ);" onfocus="backup('importeSOJ');" />						
 							<span style="vertical-align:40%">&euro;	&nbsp;</span>
-						  	<input name="radioAPagarSOJ" value="porcentaje" type="radio" />
-							<input name="porcentajeSOJ" id="porcentajeSOJ" style="width:15%" maxlength="5" class="<%=estiloNumber%>" onblur="actualizaConcepto('SOJ', totalSOJ, importePendSOJ, porcentajePendSOJ);" onfocus="backup('porcentajeSOJ');" />						
+						  	<input name="radioAPagarSOJ" value="porcentaje" type="radio" onclick="cambiar('SOJ');" />
+							<input name="porcentajeSOJ" id="porcentajeSOJ" style="width:15%" maxlength="5" class="boxConsultaNumber" readonly="true" onblur="actualizaConcepto('SOJ', totalSOJ, importePendSOJ, porcentajePendSOJ);" onfocus="backup('porcentajeSOJ');" />						
 							<span style="vertical-align:40%">&#37;</span>
 						<% } else {%>
 							<input name="txtAPagarSOJ" id="txtAPagarSOJ" size="18" class="boxConsultaNumber"/>
@@ -833,6 +843,24 @@
 			backupAPagar = document.getElementById(valor).value;
 		}
 
+		/**
+		 * Cambia el valor
+		 */
+		function cambiar(concepto){
+			if (document.getElementsByName("radioAPagar"+concepto)[0].checked){
+				document.getElementById("porcentaje"+concepto).className  = "boxConsultaNumber";	
+				document.getElementById("porcentaje"+concepto).readOnly = true;
+				document.getElementById("importe"+concepto).readOnly = false;
+				document.getElementById("importe"+concepto).className  = "<%=estiloNumber%>";
+			}
+			else{			
+				document.getElementById("importe"+concepto).className  = "boxConsultaNumber";
+				document.getElementById("importe"+concepto).readOnly = true;
+				document.getElementById("porcentaje"+concepto).readOnly = false;
+				document.getElementById("porcentaje"+concepto).className  = "<%=estiloNumber%>";				
+			}
+		}
+
 		
 		/**
 		 * Actualiza el campo "restante" y los campos "porcentaje a pagar" e "importe a pagar" 
@@ -873,7 +901,7 @@
 
 			//si el porcentaje restante es menor que 1, se sustituye el importe a pagar 
 			//por el importe pendiente y se actualiza el importe restante
-			if ( porcentajeRestante < 1 && porcentajeRestante > 0 ){
+			if ( porcentajeRestante < 1 && porcentajeRestante > 0 || importeRestante < 0){
 				document.getElementById("importe"+concepto).value = importePendiente;	
 				document.getElementById("porcentaje"+concepto).value = porcentajePendiente;	
 				importeRestante = 0;
