@@ -757,8 +757,8 @@
 				<td class="labelText">	
 					<siga:Idioma key='gratuita.actuacionesDesigna.literal.pretensiones'/>
 				</td>	
-				<td>
-					<siga:ComboBD nombre="pretensiones2" tipo="comboPretensiones" ancho="200" clase="boxComboConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="true"/>           	   
+				<td colspan="3">
+					<siga:ComboBD nombre="pretensiones2" tipo="comboPretensiones" ancho="500" clase="boxComboConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="true"/>           	   
 				</td>
 			</tr>
 			<tr>
@@ -1221,14 +1221,15 @@
 		    return false;
 		   }
 		 <%}%> 
-		
-		 if(!((document.forms[0].anioCAJG.value!="" && document.forms[0].numeroCAJG.value!="" && document.forms[0].idOrigenCAJG.value!="")
-		    || (document.forms[0].anioCAJG.value=="" && document.forms[0].numeroCAJG.value=="" && document.forms[0].idOrigenCAJG.value=="")) ){
-		    fin();
-		    alert('<siga:Idioma key="gratuita.operarEJG.message.anioNumeroOrigen.obligatorios"/>');
-		    return false;
-		   
-		 } 
+		//< %if (PCAJG_ACTIVADO!=null && PCAJG_ACTIVADO.intValue()>1){%>
+			 if( !((document.forms[0].anioCAJG.value!="" && document.forms[0].numeroCAJG.value!="" && document.forms[0].idOrigenCAJG.value!="")
+			    || (document.forms[0].anioCAJG.value=="" && document.forms[0].numeroCAJG.value=="" && document.forms[0].idOrigenCAJG.value=="")) ){
+			    fin();
+			    alert('<siga:Idioma key="gratuita.operarEJG.message.anioNumeroOrigen.obligatorios"/>');
+			    return false;
+			   
+			 } 
+		 //< %}%>
 		 
 		  if (document.forms[0].anioCAJG.value.length!=0 && document.forms[0].anioCAJG.value.length<4){
 			  fin();
