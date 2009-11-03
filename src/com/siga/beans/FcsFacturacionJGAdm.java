@@ -994,11 +994,11 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		
 				StringBuffer select = new StringBuffer();
 				select.append(" SELECT NVL (" + FcsPagoColegiadoBean.C_IDPERDESTINO + ", " + FcsPagoColegiadoBean.C_IDPERORIGEN + ") AS IDPERSONAIMPRESO, ");
-				select.append("        SUM ( (" + FcsPagoColegiadoBean.C_IMPOFICIO + " + ");
+				select.append(" round( SUM ( (" + FcsPagoColegiadoBean.C_IMPOFICIO + " + ");
 				select.append(                  FcsPagoColegiadoBean.C_IMPASISTENCIA + " + ");
 				select.append(                  FcsPagoColegiadoBean.C_IMPEJG + " + ");
 				select.append(                  FcsPagoColegiadoBean.C_IMPSOJ + " + ");
-				select.append(                  FcsPagoColegiadoBean.C_IMPMOVVAR + ") * " + FcsPagoColegiadoBean.C_IMPIRPF + " / 100 ) AS TOTALIMPORTEIRPF, ");
+				select.append(                  FcsPagoColegiadoBean.C_IMPMOVVAR + ") * " + FcsPagoColegiadoBean.C_IMPIRPF + " / 100 ), 2) AS TOTALIMPORTEIRPF, ");
 				select.append("        SUM (" + FcsPagoColegiadoBean.C_IMPOFICIO + " + ");
 				select.append(                  FcsPagoColegiadoBean.C_IMPASISTENCIA + " + ");
 				select.append(                  FcsPagoColegiadoBean.C_IMPEJG + " + ");
@@ -1372,12 +1372,12 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 					valor = desdoblarDouble(personaImporteTotalDouble); 
 					linea += formatea(valor.get(0),1,false); // signo
 					linea += formatea(valor.get(1),11,true); // entera
-					linea += formatea(valor.get(2),2,true); // decimal
+					linea += formateaDecimal(valor.get(2),2); // decimal
 					
 					// retencion total
 					valor = desdoblarDouble(personaIrpfTotalDouble); 
 					linea += formatea(valor.get(1),11,true); // entera
-					linea += formatea(valor.get(2),2,true); // decimal
+					linea += formateaDecimal(valor.get(2),2); // decimal
 					linea += relleno(" ",1); // signo de percepcion en especie
 					linea += relleno("0",39); // valor de percepcion en especie
 					linea += relleno("0",4); // ejercicio devengo
@@ -1465,6 +1465,26 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		return salida;	
 	}
 
+	
+	/**
+	 * Rellena con ceros a la izquierda.
+	 * @param datoOrig
+	 * @param longitud
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	private String formateaDecimal (Object datoOrig, int longitud) throws ClsExceptions {
+		String salida= datoOrig.toString();
+		if (datoOrig==null) {
+			salida += relleno("0",longitud);  
+		} 
+		else {
+			salida += relleno("0",longitud - salida.length());
+		}
+		return salida;
+	}
+	
+	
 	// crea un string de longitud x relleno de caracteres para el impreso 190
 	private String relleno (String caracter, int longitud) throws ClsExceptions {
 		String salida= "";
