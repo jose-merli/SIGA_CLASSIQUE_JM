@@ -385,7 +385,7 @@
 					<siga:Idioma key="gratuita.mantAsistencias.literal.juzgado"/>
 				</td>
 				<td class="labelText" colspan="2">
-					<input type="text" name="codigoExtJuzgadoActu" class="box" size="8"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado();" />
+					<input type="text" name="codigoExtJuzgadoActu" class="box" size="5"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado();" />
 					<siga:ComboBD nombre="juzgado" tipo="comboJuzgados" ancho="383" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  hijo="t" elementoSel="<%=juzgadoActu%>" parametro="<%=dato%>" />           	   
 				</td>
 			</tr>
