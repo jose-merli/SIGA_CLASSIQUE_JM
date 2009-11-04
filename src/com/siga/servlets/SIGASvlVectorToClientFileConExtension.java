@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.Row;
+import com.siga.Utilidades.UtilidadesString;
 
 /**
  * 
@@ -82,7 +83,7 @@ public class SIGASvlVectorToClientFileConExtension extends HttpServlet {
 				}
 				
 				for (int k=0;k<cabeceras.length;k++){
-					linea += row.getString(cabeceras[k])+ClsConstants.SEPARADOR;
+					linea += UtilidadesString.sustituirParaExcell(row.getString(cabeceras[k]))+ClsConstants.SEPARADOR;
 				}
 				
 				linea=linea+"\r\n";

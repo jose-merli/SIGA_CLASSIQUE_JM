@@ -1560,11 +1560,22 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 		codigos.put(new Integer(2), idInstitucion);
 		codigos.put(new Integer(3), idPersona);
 		codigos.put(new Integer(4), idDireccion);
-		String where = "where (select count(*) from cen_direccion_tipodireccion t where cen_direcciones.idinstitucion = t.idinstitucion and   cen_direcciones.idpersona = t.idpersona and   cen_direcciones.iddireccion = t.iddireccion " +
+		String sql = "select * from cen_direcciones where (select count(*) from cen_direccion_tipodireccion t where cen_direcciones.idinstitucion = t.idinstitucion and   cen_direcciones.idpersona = t.idpersona and   cen_direcciones.iddireccion = t.iddireccion " +
 						" and t.idtipodireccion=:1) > 0 and   cen_direcciones.idinstitucion=:2 and   cen_direcciones.idpersona=:3 and   cen_direcciones.iddireccion=:4 ";
 		
 		try{
-			salida = this.selectBind(where, codigos);
+			RowsContainer rows = new RowsContainer();
+            RowsContainer rc = this.findBind(sql,codigos);
+			if (rc!=null) {
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					Hashtable registro = (Hashtable)fila.getRow(); 
+					if (registro != null) 
+						salida.add(registro);
+				}
+			}
+
+
 		} catch (Exception e) {
 			throw new ClsExceptions(e,"Error al buscar la direccion adecuada con un tipo determinado. ");
 		}

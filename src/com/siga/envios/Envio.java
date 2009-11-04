@@ -110,6 +110,9 @@ public class Envio
         	enviosBean.setIdInstitucion(new Integer(idInstitucion));
             enviosBean.setIdEnvio(enviosAdm.getNewIdEnvio(this.usrBean));        
 	        enviosBean.setDescripcion(descripcion);
+			// trunco la descripción
+			if (enviosBean.getDescripcion().length()>200)  enviosBean.setDescripcion(enviosBean.getDescripcion().substring(0,99));
+
 	        enviosBean.setFechaCreacion("SYSDATE");
 	        enviosBean.setFechaProgramada("SYSDATE");        
             enviosBean.setGenerarDocumento(paramAdm.getValor(idInstitucion,"ENV","GENERAR_DOCUMENTO_ENVIO","C"));

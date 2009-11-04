@@ -368,6 +368,9 @@ public class InformeCertificadoIRPF extends MasterReport {
 		// Bean envio
 		EnvEnviosBean enviosBean = envio.getEnviosBean();
 		enviosBean.setDescripcion(enviosBean.getIdEnvio()+" "+enviosBean.getDescripcion());
+		// trunco la descripción
+		if (enviosBean.getDescripcion().length()>200)  enviosBean.setDescripcion(enviosBean.getDescripcion().substring(0,99));
+
 		// Preferencia del tipo de envio si el usuario tiene uno:
 		enviosBean.setIdTipoEnvios(envioProgramadoBean.getIdTipoEnvios());
 

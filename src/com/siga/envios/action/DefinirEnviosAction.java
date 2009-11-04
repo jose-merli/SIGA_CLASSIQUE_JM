@@ -628,9 +628,22 @@ public class DefinirEnviosAction extends MasterAction {
 			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesExpedientes)){
 				idPersona = getIdColegiadoUnico(form);
 
-				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")));
+				request.setAttribute("isDescargar",new Boolean(idPersona!=null));
+				form.setDescargar((idPersona!=null)?"1":"");
 				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
-				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null));
+				// RGG también se añade que, incluso siendo un aúnica persona, no sea asolicitantes
+				MasterReport masterReport = new  MasterReport(); 
+				EnvioInformesGenericos informesAdm = new EnvioInformesGenericos();
+				Vector vCampos = masterReport.obtenerDatosFormulario(form);
+				Hashtable datosInforme = null;
+				if (vCampos.size()>0) {
+					datosInforme = (Hashtable) vCampos.get(0);
+				}
+				String plantillas = (String) datosInforme.get("plantillas");
+				Vector vPlantillas = informesAdm.getPlantillas(plantillas,userBean.getLocation(),userBean);
+				boolean aSolicitantes = informesAdm.esAlgunaASolicitantes(vPlantillas);
+
+				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null && !aSolicitantes));
 				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.genericos.expedientes.asunto");
 
 
@@ -1009,6 +1022,9 @@ public class DefinirEnviosAction extends MasterAction {
 						// Bean envio
 						enviosBean = envio.getEnviosBean();
 						enviosBean.setDescripcion(enviosBean.getIdEnvio()+" "+enviosBean.getDescripcion());
+						// trunco la descripción
+						if (enviosBean.getDescripcion().length()>200)  enviosBean.setDescripcion(enviosBean.getDescripcion().substring(0,99));
+
 						// Preferencia del tipo de envio si el usuario tiene uno:
 						enviosBean.setIdTipoEnvios(new Integer(idTipoEnvio));
 
@@ -1147,6 +1163,8 @@ public class DefinirEnviosAction extends MasterAction {
 						// Bean envio
 						enviosBean = envio.getEnviosBean();
 						enviosBean.setDescripcion(enviosBean.getIdEnvio()+" "+enviosBean.getDescripcion());
+						// trunco la descripción
+						if (enviosBean.getDescripcion().length()>200)  enviosBean.setDescripcion(enviosBean.getDescripcion().substring(0,99));
 						// Preferencia del tipo de envio si el usuario tiene uno:
 						enviosBean.setIdTipoEnvios(new Integer(idTipoEnvio));
 
@@ -1448,6 +1466,9 @@ public class DefinirEnviosAction extends MasterAction {
 
 				nombreEnvioError = nombreEnvio;
 				enviosBean.setDescripcion(nombreEnvio);
+				// trunco la descripción
+				if (enviosBean.getDescripcion().length()>200)  enviosBean.setDescripcion(enviosBean.getDescripcion().substring(0,99));
+
 				enviosBean.setIdTipoEnvios(Integer.valueOf(idTipoEnvio));
 				enviosBean.setIdPlantillaEnvios(Integer.valueOf(idPlantilla));
 				if (idPlantillaGeneracion!=null && !idPlantillaGeneracion.equals("")) {

@@ -735,7 +735,7 @@ public class HelperInformesAdm  {
 					Hashtable datoNuevo = new Hashtable();
 					datoNuevo.putAll(dato);
 					
-					datoNuevo.put("NOMBRE_DESTINO", (String) reg.get("NOMBRE"));
+					datoNuevo.put("NOMBRE_DEST", (String) reg.get("NOMBRE"));
 					// .. resto de campos obtenidos.
 					datoNuevo.put("IDPERSONA_DEST", (String) reg.get("IDPERSONA_DIR"));
 					datoNuevo.put("IDDIRECCION_DEST", (String) reg.get("IDDIRECCION_DIR"));
@@ -781,7 +781,7 @@ public class HelperInformesAdm  {
 						Hashtable datoNuevo = new Hashtable();
 						datoNuevo.putAll(dato);
 						
-						datoNuevo.put("NOMBRE_DESTINO", (String) reg.get("NOMBRE"));
+						datoNuevo.put("NOMBRE_DEST", (String) reg.get("NOMBRE"));
 						// .. resto de campos obtenidos.
 						datoNuevo.put("IDPERSONA_DEST", (String) reg.get("IDPERSONA_DIR"));
 						datoNuevo.put("IDDIRECCION_DEST", (String) reg.get("IDDIRECCION_DIR"));
@@ -835,7 +835,7 @@ public class HelperInformesAdm  {
 						Hashtable datoNuevo = new Hashtable();
 						datoNuevo.putAll(dato);
 						
-						datoNuevo.put("NOMBRE_DESTINO", (String) reg.get("NOMBRE"));
+						datoNuevo.put("NOMBRE_DEST", (String) reg.get("NOMBRE"));
 						// .. resto de campos obtenidos.
 						datoNuevo.put("IDPERSONA_DEST", (String) reg.get("IDPERSONA_DIR"));
 						datoNuevo.put("IDDIRECCION_DEST", (String) reg.get("IDDIRECCION_DIR"));
@@ -877,7 +877,7 @@ public class HelperInformesAdm  {
 					sql3.append(" and   d.idinstitucion_tipoexpediente = r.idinstitucion "); 
 					sql3.append(" and   d.idtipoexpediente = r.idtipoexpediente ");
 					sql3.append(" and   d.idpersona = dir.idpersona ");
-					sql3.append(" adn   d.iddireccion = dir.iddireccion ");
+					sql3.append(" and   d.iddireccion = dir.iddireccion ");
 					sql3.append(" and   d.idinstitucion = dir.idinstitucion ");
 					sql3.append(" and   d.idinstitucion =:3 ");
 					sql3.append(" and   d.idinstitucion_tipoexpediente=:4 "); 

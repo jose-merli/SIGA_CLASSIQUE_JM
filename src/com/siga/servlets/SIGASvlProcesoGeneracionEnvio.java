@@ -199,13 +199,8 @@ public class SIGASvlProcesoGeneracionEnvio extends HttpServlet {
 	   								envioInformeGenerico.enviarInformeGenerico(usr, destProgramInfBean,  programInfGenericoBean, vPlantillas, programInfGenericoBean.getEnvioProgramado());
 								} catch (Exception e) {
 									if(destProgramInfBean.getIdPersona()!=null)
-		   								ClsLogging.writeFileLogWithoutSession(" ----------ERROR ENVIO DE INFORMES GENERICOS PENDIENTES IDPERSONA: "+destProgramInfBean.getIdPersona(), 3);
+		   								ClsLogging.writeFileLogWithoutSession(" ----------ERROR ENVIO DE INFORMES GENERICOS PENDIENTES IDPERSONA: "+destProgramInfBean.getIdPersona() + " "+e.toString(), 3);
 								}
-	   							
-	   						
-	   						
-	   						
-	   						
 	   						}
 							
 						}
@@ -221,11 +216,11 @@ public class SIGASvlProcesoGeneracionEnvio extends HttpServlet {
 
    					} catch (Exception e) {
    						if(programInfGenericoBean != null && programInfGenericoBean.getIdInstitucion()!=null){
-   							ClsLogging.writeFileLogWithoutSession(" ----------ERROR ENVIO DE INFORMES GENERICOS PENDIENTES. TIPO DE INFORME: "+programInfGenericoBean.getIdTipoInforme(), 3);
+   							ClsLogging.writeFileLogWithoutSession(" ----------ERROR ENVIO DE INFORMES GENERICOS PENDIENTES. TIPO DE INFORME: "+programInfGenericoBean.getIdTipoInforme() + " "+e.toString(), 3);
    							
    						}
    						else
-   							ClsLogging.writeFileLogWithoutSession(" ---------- ERROR ENVIO DE INFORMES GENERICOS PENDIENTESS.", 3);
+   							ClsLogging.writeFileLogWithoutSession(" ---------- ERROR ENVIO DE INFORMES GENERICOS PENDIENTESS." + " "+e.toString(), 3);
    					}
    				}
    			}
