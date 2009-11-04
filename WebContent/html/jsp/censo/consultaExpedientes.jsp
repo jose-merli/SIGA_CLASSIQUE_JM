@@ -159,9 +159,10 @@
 			 	else
 			 		{	
 			 		Enumeration en = vDatos.elements();
-					int recordNumber=1;
+					int recordNumber=0;
 					String botonesMostrados="";
 					while(en.hasMoreElements()){
+						recordNumber++;
 						Row row = (Row)en.nextElement();
 						
 						// Control icono solicitud modificacion

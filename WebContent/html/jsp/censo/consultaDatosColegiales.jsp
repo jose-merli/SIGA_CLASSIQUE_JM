@@ -446,7 +446,7 @@
 											<% if (request.getAttribute("DATSEGURO") == null){%>
 												<html:text property="tipoSeguro" size="" styleClass="boxConsulta" value="" readOnly="true"></html:text>
 											<% }else{ %>
-												<html:text property="tipoSeguro" size="20" styleClass="boxConsulta" value="<%=seguro%>" readOnly="true"></html:text>											
+												<html:text property="tipoSeguro"  size="50" styleClass="boxConsulta" value="<%=seguro%>" readOnly="true"></html:text>											
 											<% } %>
 										<% }else{ %>
 											<siga:ComboBD nombre = "cmbTipoSeguro" tipo="cmbTipoSeguro" clase="boxCombo" elementoSel="<%=arraySel%>" obligatorio="false"/>
@@ -698,18 +698,19 @@
 						<br><br>
 					<% } else { %>
 				    	<%Enumeration en = ((Vector)request.getAttribute("DATESTADO")).elements();
+				    	int fila = 1;
 						while (en.hasMoreElements())
 						{
-		            		Row row = (Row) en.nextElement(); 
+		            		Row row = (Row) en.nextElement();
 							%>
-		            		<tr>						  
-								<td class="listaNonEdit" align="center">
+		            		<tr class="<%=(fila%2==0?"filaTablaPar":"filaTablaImpar")%>" style="padding:5px;">					  
+								<td align="center">
 									<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("",row.getString(CenDatosColegialesEstadoBean.C_FECHAESTADO)))%>
 								</td>
-								<td class="listaNonEdit" align="center">
+								<td align="center">
 									<%=UtilidadesString.mostrarDatoJSP(row.getString(CenEstadoColegialBean.C_DESCRIPCION))%>
 								</td>  	
-								<td class="listaNonEdit" align="center">
+								<td>
 									<% if (row.getString(CenDatosColegialesEstadoBean.C_OBSERVACIONES).equalsIgnoreCase("")){%>
 										&nbsp;
 									<% } else { %>
@@ -717,7 +718,8 @@
 									<% } %>
 								</td>  								
 							</tr>	
-						<% } 
+						<% fila++; 
+						} 
 					} %>
 				</siga:TablaCabecerasFijas>												
 			<% } %>

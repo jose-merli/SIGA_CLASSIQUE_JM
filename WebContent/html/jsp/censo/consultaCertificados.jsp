@@ -131,16 +131,16 @@
 	 		{	
 		 		for (int i=0; i<vDatos.size(); i++)
 				{
-					  AdmCertificadosBean bean = (AdmCertificadosBean)vDatos.elementAt(i);
+					  AdmCertificadosBean bean = (AdmCertificadosBean)vDatos.elementAt(i); 
 	%>
-		  			<tr class="listaNonEdit">
-							<td width="45%"nowrap>
+		  			<tr class="<%=((i+1)%2==0?"filaTablaPar":"filaTablaImpar")%>" style="padding:5px;">
+						<td>
 		  						<%=UtilidadesString.mostrarDatoJSP(bean.getNumSerie())%> 
 		  				</td>
-		  				<td width="35%"nowrap>
+		  				<td>
 		  						<%=UtilidadesString.mostrarDatoJSP(bean.getRol())%>
 		  				</td>
-							<td width="20%"nowrap>
+						<td>
 		  						<%=UtilidadesString.mostrarDatoJSP(com.atos.utils.GstDate.getFormatedDateShort("",bean.getFechaCad()))%>
 		  				</td>	
 	  				</tr>			
