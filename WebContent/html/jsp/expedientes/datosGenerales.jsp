@@ -386,6 +386,37 @@
 			document.getElementById("totalMinuta").value = a;
 		}
 
+		function accionComunicar()
+		{
+			
+			idPersona = '<%=form.getIdPersona()%>';
+			idInstitucion= '<%=userBean.getLocation()%>';
+			idInstitucionTipoExp= '<%=idinstitucion_tipoexpediente%>';
+			idTipoExpediente= '<%=tipoExp%>';
+			anioExpediente= '<%=form.getAnioExpediente()%>';
+			numeroExpediente= '<%=form.getNumExpediente()%>';
+
+		 
+		   	datos = "idInstitucion=="+idInstitucion +"##idInstitucionTipoExp=="+idInstitucionTipoExp +
+ 		   		 "##idTipoExp==" +idTipoExpediente+"##anioExpediente=="+anioExpediente 
+ 		   		 +"##numeroExpediente=="+numeroExpediente +"##idPersona=="+idPersona +"%%%";
+			
+		
+			var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='/SIGA/INF_InformesGenericos.do' target='submitArea'>");
+				formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=userBean.getLocation()%>'>"));
+				formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
+				formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='EXP'>"));
+				formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
+				formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value='0'>"));
+				formu.appendChild(document.createElement("<input type='hidden' name='enviar' value='1'>"));
+				formu.appendChild(document.createElement("<input type='hidden' name='descargar' value='1'>"));
+			
+				document.appendChild(formu);
+				formu.datosInforme.value=datos;
+				formu.submit();
+				
+		}
+		
 	</script>
 	
 	<!-- FIN: SCRIPTS BOTONES -->
@@ -808,7 +839,7 @@
 	<%if (accion.equals("nuevo")){%>
 		<siga:ConjBotonesAccion botones="V,G" clase="botonesDetalle" />
 	<% } else if (bEditable){%>
-		<siga:ConjBotonesAccion botones="V,R,G" clase="botonesDetalle" />
+		<siga:ConjBotonesAccion botones="V,R,G,COM" clase="botonesDetalle" />
 	<% } else{%>
 		<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"  />
 	<% } %>	
