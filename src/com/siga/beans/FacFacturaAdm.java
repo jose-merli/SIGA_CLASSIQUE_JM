@@ -2042,7 +2042,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	 */
 	public Vector selectFacturasMoroso(String idInstitucion, String idPersona, 
 			String fechaDesde, String fechaHasta,ArrayList alFacturas,
-			String idFactura,boolean isComunicacionLarga, boolean isInforme)  
+			String idFactura,boolean isComunicacionLarga, boolean isInforme, String lenguaje)  
 		throws ClsExceptions,SIGAException {
 		
 	    Vector datos = new Vector();
@@ -2053,11 +2053,11 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 		    
 			String select = "SELECT " +
 				"to_char("+FacFacturaBean.C_FECHAEMISION+",'DD/MM/RRRR') AS "+FacFacturaBean.C_FECHAEMISION+", "+
-			
+				"PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(to_char("+FacFacturaBean.C_FECHAEMISION+",'DD/MM/RRRR'),'m',"+lenguaje+") AS FECHAEMISIONMESLETRA, "+
 					
 					FacFacturaBean.C_NUMEROFACTURA	+ ", " +
 					FacFacturaBean.C_IDFACTURA	+ ", " +
-					"NETO,TOTALIVA,TOTAL,PAGADO,DEUDA,COMUNICACIONES,"+
+					"NETO,TOTALIVA,TOTAL,PAGADO,DEUDA,COMUNICACIONES,COMUNICACIONESMESLETRA,"+
 					CenColegiadoBean.C_NCOLEGIADO+",NOMBRE,"+CenPersonaBean.C_NIFCIF+", CONCEPTO_DESCSERIEFACT"+
 					" FROM (SELECT " + 
 							"F." + FacFacturaBean.C_FECHAEMISION + ", " +
@@ -2081,7 +2081,15 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 							else
 								select+=",0";
 							
-							select+=") as COMUNICACIONES,";
+							select+=") as COMUNICACIONES,"+
+							
+							" F_SIGA_GETCOMFACTURAFECHALETRA(F."+FacFacturaBean.C_IDINSTITUCION+",F."+FacFacturaBean.C_IDPERSONA+",F."+FacFacturaBean.C_IDFACTURA;
+							if(isComunicacionLarga)
+								select+=",1";
+							else
+								select+=",0";
+							
+							select+=","+lenguaje+") as COMUNICACIONESMESLETRA,";
 							contador++;
 							codigos.put(new Integer(contador),idInstitucion);				
 							select+=" f_siga_calculoncolegiado(:"+contador+",F."+FacFacturaBean.C_IDPERSONA+") as "+CenColegiadoBean.C_NCOLEGIADO+", "+

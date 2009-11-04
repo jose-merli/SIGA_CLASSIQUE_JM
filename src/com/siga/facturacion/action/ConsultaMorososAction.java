@@ -198,7 +198,7 @@ public class ConsultaMorososAction extends MasterAction {
 				//Aqui habria que ver si a la query le metemos los numero de facturas o sin meterlo recorremos el
 				//Vector y eliminamos las facturas que no ha seleccionado. Vamos a hacerlo de este 
 				//segundo modo...
-				Vector datosTabla = facAdm.selectFacturasMoroso(idInstitucion,idPersona, null, null,alFacturas,null,false,false);
+				Vector datosTabla = facAdm.selectFacturasMoroso(idInstitucion,idPersona, null, null,alFacturas,null,false,false,user.getLanguage());
 				datos.addAll(datosTabla);
 			}
 			/*FacFacturaBean.C_IDFACTURA	+ ", " +
@@ -277,7 +277,7 @@ protected String imprimirMorososPDF(ActionMapping mapping, MasterForm formulario
 				//Aqui habria que ver si a la query le metemos los numero de facturas o sin meterlo recorremos el
 				//Vector y eliminamos las facturas que no ha seleccionado. Vamos a hacerlo de este 
 				//segundo modo...
-				Vector datosTabla = facAdm.selectFacturasMoroso(idInstitucion,idPersona, null, null,alFacturas,null,true,false);
+				Vector datosTabla = facAdm.selectFacturasMoroso(idInstitucion,idPersona, null, null,alFacturas,null,true,false,user.getLanguage());
 				datos.addAll(datosTabla);
 			}
 	        
@@ -532,7 +532,7 @@ protected String imprimirMorososPDF(ActionMapping mapping, MasterForm formulario
         	throw new Exception();
         }
         
-        datos = facturaAdm.selectFacturasMoroso(idInstitucion,idPersona,fechaDesde,fechaHasta,null,idFactura,true,false);
+        datos = facturaAdm.selectFacturasMoroso(idInstitucion,idPersona,fechaDesde,fechaHasta,null,idFactura,true,false,userBean.getLanguage());
         
         Hashtable clavesLineas = new Hashtable ();
 		UtilidadesHash.set(clavesLineas, FacLineaFacturaBean.C_IDINSTITUCION, idInstitucion);
