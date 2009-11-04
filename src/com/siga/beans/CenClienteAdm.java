@@ -3589,7 +3589,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			
 			if(isIncluirDeudas){
 				FacFacturaAdm facturaAdm = new FacFacturaAdm (this.usrbean);       
-		        Vector vMorosos = facturaAdm.selectFacturasMoroso(idInstitucion,personaCertificado.toString(),null,null,null,null,false,false);
+		        Vector vMorosos = facturaAdm.selectFacturasMoroso(idInstitucion,personaCertificado.toString(),null,null,null,null,false,false,this.usrbean.getLanguage());
 		        StringBuffer descMorosos = new StringBuffer("");
 	    		if(vMorosos!=null && !vMorosos.isEmpty()){
 	    			double totalDeuda = 0; 
