@@ -48,6 +48,7 @@ import com.siga.beans.EnvValorCampoClaveBean;
 import com.siga.beans.ExpExpedienteAdm;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.GenParametrosAdm;
+import com.siga.beans.HelperInformesAdm;
 import com.siga.beans.ScsDesignaAdm;
 import com.siga.certificados.Plantilla;
 import com.siga.envios.form.DefinirEnviosForm;
@@ -185,7 +186,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 			Vector vDatosInforme = facturaAdm.selectFacturasMoroso(
 					idInstitucion, idPersona, null, null, alFacturasPersona,
-					null, false, true);
+					null, false, true,usrBean.getLanguage());
 
 			Hashtable htCabeceraInforme = new Hashtable();
 
@@ -217,19 +218,59 @@ public class EnvioInformesGenericos extends MasterReport {
 				nombre = (String) htCol.get("NOMBRE_LETRADO");
 			}
 			htCabeceraInforme.put("NOMBRE", nombre);
-
+			HelperInformesAdm helperInformes = new HelperInformesAdm();
 			htCabeceraInforme.put("FECHA", sHoy);
+			Hashtable htFuncion = new Hashtable();
+			htFuncion.put(new Integer(1), (String)sHoy);
+			htFuncion.put(new Integer(2), "m");
+			htFuncion.put(new Integer(3), usrBean.getLanguage());
+			helperInformes.completarHashSalida(htCabeceraInforme,helperInformes.ejecutaFuncionSalida(
+					htFuncion, "PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA", "FECHAMESLETRA"));
+
+			
 
 			double importeTotal = 0;
 			double deudaTotal = 0;
+			
 			for (int j = 0; j < vDatosInforme.size(); j++) {
 				Hashtable fila = (Hashtable) vDatosInforme.get(j);
 				double importe = Double.parseDouble((String) fila.get("TOTAL"));
 				importeTotal += importe;
 				double deuda = Double.parseDouble((String) fila.get("DEUDA"));
 				deudaTotal += deuda;
+				
+				//INC_06198_SIGA
+				//se separan las comunicaciones desde la 1 hasta la 5, si existen
+				//estas etiquetas podran usarse en cualquier parte de la plantilla
+				String sComunicaciones = (String)fila.get("COMUNICACIONES");
+				String[] lComunicaciones = sComunicaciones.split("\n\r");
+				String sComunicacionesMesLetra = (String)fila.get("COMUNICACIONESMESLETRA");
+				String[] lComunicacionesMesLetra = sComunicacionesMesLetra.split("\n\r");
+				int k;
+				int p;
+				for(k = 0; k < lComunicaciones.length && k < 5; k++){
+					fila.put("FECHA_"+(k+1)+"COMUNICACION", lComunicaciones[k]);
+					htCabeceraInforme.put("FECHA_"+(k+1)+"COMUNICACION", lComunicaciones[k]);
+					
+					fila.put("FECHA_"+(k+1)+"COMUNICACIONMESLETRA", lComunicacionesMesLetra[k]);
+					htCabeceraInforme.put("FECHA_"+(k+1)+"COMUNICACIONMESLETRA", lComunicacionesMesLetra[k]);
+				}
+				
+				for(; k < 5; k++){
+					fila.put("FECHA_"+(k+1)+"COMUNICACION", "");
+					htCabeceraInforme.put("FECHA_"+(k+1)+"COMUNICACION", "");
+					fila.put("FECHA_"+(k+1)+"COMUNICACIONMESLETRA", "");
+					htCabeceraInforme.put("FECHA_"+(k+1)+"COMUNICACIONMESLETRA", "");
+					
+				}
+			
+
+				
 
 			}
+			
+			
+			
 			htCabeceraInforme.put("BRUTO", UtilidadesNumero
 					.formatoCampo(UtilidadesNumero.redondea(importeTotal, 2)));
 			htCabeceraInforme.put("LIQUIDO", UtilidadesNumero
