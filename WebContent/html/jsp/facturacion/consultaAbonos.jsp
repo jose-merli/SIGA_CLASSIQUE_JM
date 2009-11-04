@@ -168,7 +168,7 @@
 			   nombreCol="facturacion.busquedaAbonos.literal.numeroAbono,facturacion.busquedaAbonos.literal.fecha,
 			   			  facturacion.busquedaAbonos.literal.cliente,gratuita.modalRegistro_DefinirCalendarioGuardia.literal.observaciones,facturacion.busquedaAbonos.literal.estado,
 			   			  facturacion.busquedaAbonos.literal.totalAbono,facturacion.busquedaAbonos.literal.numeroFactura,"
-			   tamanoCol="8,10,20,10,20,10,8,15"
+			   tamanoCol="8,8,20,20,15,7,8,15"
 			   alto="245"
 			   ajustePaginador="true" 
 			   activarFilaSel="true" >
