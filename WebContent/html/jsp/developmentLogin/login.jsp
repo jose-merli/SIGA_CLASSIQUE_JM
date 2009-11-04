@@ -37,20 +37,9 @@
 			if (validarCampos())
 			{
 				var urlGet=document.frmLogin.action+"?location="+frmLogin.location.value+"&profile="+frmLogin.profile.value+"&user="+frmLogin.user.value+"&letrado="+frmLogin.letrado.value+"&tmpLoginInstitucion="+frmLogin.tmpLoginInstitucion.value+"&posMenu="+frmLogin.posMenu.value;
-				//alert(urlGet);
 				//window.open(urlGet,'sigaTop','channelmode=no;directories=no;fullscreen=no;height=760;width=1024;location=no;menubar=no;resizable=no;scrollbars=no;status=no;titlebar=no;toolbar=no');
 				frmLogin.submit();
 			}
-		}
-
-		function entradaDirecta()
-		{
-			frmLogin.location.value="2040";
-			frmLogin.profile.value="ADM";
-			frmLogin.user.value="";
-			frmLogin.letrado.value="N";
-			var urlGet=document.frmLogin.action+"?location="+frmLogin.location.value+"&profile="+frmLogin.profile.value+"&user="+frmLogin.user.value+"&letrado="+frmLogin.letrado.value+"&tmpLoginInstitucion="+frmLogin.tmpLoginInstitucion.value+"&posMenu="+frmLogin.posMenu.value;
-			frmLogin.submit();
 		}
 		
 		function validarCampos()
@@ -126,14 +115,13 @@
 				<td class="labelText">¿Letrado?</td>
 				<td >
 					<select name="sLetrado" class="boxCombo">
-						<option value=S>SÍ, soy Letrado</option>
 						<option value=N>NO, no soy Letrado</option>
+						<option value=S>SÍ, soy Letrado</option>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2" align="center"><br><input type="button" class="button" value="Entrar" onClick="entrar()">
-				<input type="button" class="button" value="Entrar Leon\Administrador\No colegiado" onClick="entradaDirecta()"><br><br></td>
+				<td colspan="2" align="center"><br><input type="button" class="button" value="Entrar" onClick="entrar()"><br><br></td>
 			</tr>
 			
 			<tr>
@@ -156,4 +144,3 @@
 		</form>
 	</body>
 </html>
-
