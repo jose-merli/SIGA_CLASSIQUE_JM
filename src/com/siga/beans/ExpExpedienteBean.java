@@ -67,6 +67,8 @@ public class ExpExpedienteBean extends MasterBean {
 	private Integer idResultadoJuntaGobierno;
 	
 	private String identificadorDS;
+	private String idDireccion;
+	
 
 	// Nombre campos de la tabla 
 	static public final String C_NUMEROEXPEDIENTE ="NUMEROEXPEDIENTE";
@@ -124,6 +126,8 @@ public class ExpExpedienteBean extends MasterBean {
 	static public final String C_IDENTIFICADORDS ="IDENTIFICADORDS";
 	
 	static public final String T_NOMBRETABLA = "EXP_EXPEDIENTE";
+	
+	static public final String C_IDDIRECCION ="IDDIRECCION";
 	
 	
 	public String getFechaCaducidad() {
@@ -445,6 +449,12 @@ public class ExpExpedienteBean extends MasterBean {
 	 */
 	public void setIdentificadorDS(String identificadorDS) {
 		this.identificadorDS = identificadorDS;
+	}
+	public String getIdDireccion() {
+		return idDireccion;
+	}
+	public void setIdDireccion(String idDireccion) {
+		this.idDireccion = idDireccion;
 	}
 
 }

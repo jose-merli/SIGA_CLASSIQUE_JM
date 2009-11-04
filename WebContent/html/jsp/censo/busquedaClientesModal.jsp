@@ -91,8 +91,10 @@
 
 	<table class="tablaCampos" align="center">
 
-	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="resultadoModal">
+	<html:form action="/CEN_BusquedaClientesModal" method="POST" target="resultadoModal">
 	<html:hidden name="busquedaClientesModalForm" property = "modo" value = ""/>
+	<html:hidden name="busquedaClientesModalForm" property = "idPersona" />
+	<html:hidden name="busquedaClientesModalForm" property = "idInstitucion" />
 	<input type="hidden" name="clientes" value="<%=(String)request.getAttribute("clientes")%>">
     <input type="hidden" name="busquedaSancion" value="<%=busquedaSancion%>">
  
@@ -172,7 +174,7 @@
 
 	</siga:ConjCampos>
 
-<html:form action="/CEN_DatosGenerales.do" method="POST" target="mainWorkArea">
+<html:form action="/CEN_DatosGenerales" method="POST" target="mainWorkArea">
 		<input type="hidden" name="actionModal" value="1">
 		<input type="hidden" name="modo" value="altaNoColegiado">
 	</html:form>
@@ -207,21 +209,19 @@
 		}
 		function nuevo() 
 		{		
-			
-			var resultado=ventaModalGeneral("datosGeneralesForm","M");
-			alert('resultado en busqeudaCleintes Modal'+resultado);
+			var resultado=ventaModalGeneral("datosGeneralesForm","G");
 			if (resultado!=undefined && resultado[0]!=undefined ){
+				
+				document.forms[0].idPersona.value=resultado[0];
+				document.forms[0].idInstitucion.value=resultado[1];
 				document.forms[0].numeroColegiado.value=resultado[2];
 				document.forms[0].nif.value=resultado[3];
 				document.forms[0].nombrePersona.value=resultado[4];
 				document.forms[0].apellido1.value=resultado[5];
 				document.forms[0].apellido2.value=resultado[6];
-				buscar();
+				document.forms[0].modo.value = "enviarCliente";
+			   	document.forms[0].submit();
 			}
-			
-			
-				
-			
 		}
 
 	</script>

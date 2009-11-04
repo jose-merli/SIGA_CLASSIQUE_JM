@@ -1,41 +1,51 @@
 <!-- denunciados_Edit.jsp -->
 <!-- CABECERA JSP -->
-
+<meta http-equiv="Expires" content="0">
+<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
+<%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 
 <!-- IMPORTS -->
-
+<%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.beans.ExpDenunciadoBean"%>
 <%@ page import="com.siga.expedientes.form.ExpDenunciadoForm"%>
+<%@ page import="java.util.Properties"%>
 
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	UsrBean userBean = ((UsrBean)ses.getAttribute(("USRBEAN")));
+	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
 	ExpDenunciadoForm form = (ExpDenunciadoForm)request.getAttribute("ExpDenunciadoForm");
 	String pob = form.getPoblacion();
 	if (pob==null || pob.trim().equals("")) {
 		pob = form.getPoblacionExt();
 	}
 	String accion = (String)request.getAttribute("accion");
-
-	
+	String boxStyle = accion.equals("consulta")?"boxConsulta":"box";
+	boolean editable = accion.equals("consulta")?false:true;
 	String botones = "C";
 	if (accion.equals("nuevo")){	
 		botones = "Y,C";
-	}else if (accion.equals("edicion")){
+	}else if (accion.equals("edicion") || accion.equals("edicionDenunciado")){
 		botones = "Y,R,C";
 	}
 	String buscarPersona = UtilidadesString.getMensajeIdioma(userBean, "general.boton.search");
 	String buscar = UtilidadesString.getMensajeIdioma(userBean, "envios.remitentes.elegirdireccion");
+	String nuevaDireccion = UtilidadesString.getMensajeIdioma(userBean, "envios.remitentes.nuevaDireccion");
+	
+	
+	
 	
 	request.removeAttribute("accion");
 	
@@ -46,7 +56,6 @@
 	 String idTipoExpediente = (String)request.getAttribute("idTipoExpediente");
 	
 %>	
-
 
 <html>
 
@@ -71,7 +80,7 @@
 <div id="camposRegistro" class="posicionModalMedia" align="center">
 
 
-	<table class="tablaTitulo" cellspacing="0" height="32">
+	<table class="tablaTitulo" cellspacing="0" heigth="32">
 		<tr>
 			<td id="titulo" class="titulosPeq">
 				<% ExpDenunciadoForm f = (ExpDenunciadoForm)request.getAttribute("ExpDenunciadoForm"); %>
@@ -88,12 +97,17 @@
 
 	<table  class="tablaCentralCamposMedia"  align="center">
 
-	<html:form action="/EXP_Auditoria_Denunciado.do" method="POST" target="submitArea">
+	<html:form action="/EXP_Auditoria_Denunciado" method="POST" target="submitArea">
+	
 	<html:hidden property = "hiddenFrame" value = "1"/>
+	
 	<html:hidden property = "modo" value = ""/>
+	<html:hidden property = "modal" />
 
-	<html:hidden property = "idPersona"   value = ""/>
-	<html:hidden property = "idDireccion" value = ""/>
+	<html:hidden property = "idPersona" />
+	<html:hidden property = "idDireccion"/>
+	<html:hidden property = "numColegiado"/>
+	
 	
 	<html:hidden property = "idInstitucion" value = "<%=idInstitucion%>"/>
 	<html:hidden property = "idTipoExpediente" value = "<%=idTipoExpediente%>"/>
@@ -112,13 +126,13 @@
 	<!-- FILA -->
 		<tr>					
 			<td class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.nombre"/>&nbsp;(*)
+				<siga:Idioma key="expedientes.auditoria.literal.nombre"/>&nbsp(*)
 			</td>				
 			<td>
 				<html:text name="ExpDenunciadoForm" property="nombre" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 			<td class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.primerapellido"/>&nbsp;(*)
+				<siga:Idioma key="expedientes.auditoria.literal.primerapellido"/>&nbsp(*)
 			</td>
 			<td>
 				<html:text name="ExpDenunciadoForm" property="primerApellido" styleClass="boxConsulta" readonly="true"></html:text>				
@@ -130,7 +144,7 @@
 		<tr>		
 		
 			<td class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.segundoapellido"/>&nbsp;(*)
+				<siga:Idioma key="expedientes.auditoria.literal.segundoapellido"/>&nbsp(*)
 			</td>
 			<td>
 				<html:text name="ExpDenunciadoForm" property="segundoApellido" styleClass="boxConsulta" readonly="true"></html:text>				
@@ -146,9 +160,12 @@
 	<!-- FILA -->
 		<tr>		
 		
-<% if (accion.equals("nuevo")){%>			
+<% //if (accion.equals("nuevo")){
+if (accion.equals("nuevo")||accion.equals("edicionDenunciado")){
+%>			
 			<td colspan="4" align="right">
 				<input type="button" class="button" name="idButton" alt="<%=buscarPersona%>" id="idButton"  onclick="return buscarCliente();" value="<%=buscarPersona%>"/>&nbsp;
+				
 			</td>	
 <%}else{%>
 			<td colspan="4"></td>
@@ -168,7 +185,7 @@
 			<siga:Idioma key="expedientes.auditoria.literal.direccion"/>
 		</td>				
 		<td colspan="3">
-			<html:textarea cols="90" rows="2"  property="direccion"  name="ExpDenunciadoForm"  onkeydown="cuenta(this,100)" onchange="cuenta(this,100)" styleClass="boxConsulta" readonly="true"></html:textarea>
+			<html:textarea cols="90" rows="2"  property="direccion"  name="ExpDenunciadoForm"  onKeyDown="cuenta(this,100)" onChange="cuenta(this,100)" styleClass="boxConsulta" readonly="true"></html:textarea>
 		</td>	
 		</tr>		
 		
@@ -213,10 +230,13 @@
 		<td colspan="2">
 			<html:text name="ExpDenunciadoForm" property="telefono" size="14" maxlength="20" styleClass="boxConsulta" readonly="true"></html:text>
 		</td>
-		
-		<td colspan="" align="right">
-			<% if (accion.equals("nuevo") || accion.equals("edicion") ){ %>
+		<td></td>
+		</tr>
+		<tr>
+		<td colspan="4" align="right">
+			<% if (!accion.equals("consulta")){ %>
 				<input type="button" name="idButton" class="button" alt="<%=buscar%>" id="buscarDir" onclick="return buscarDireccion();" value="<%=buscar%>"/>&nbsp;
+				<input type="button" name="idButton" class="button" alt="<%=nuevaDireccion%>" id="buscarDir" onclick="return nuevaDireccion();" value="<%=nuevaDireccion%>"/>&nbsp;
 			<% } %>
 		</td>
 		</tr>				
@@ -230,15 +250,18 @@
 </tr>
 
 </html:form>
+</table>
 
-<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="">
+<html:form action="/CEN_BusquedaClientesModal" method="POST" target="mainWorkArea" type="">
 	<input type="hidden" name="actionModal" value="">
 	<input type="hidden" name="modo" value="abrirBusquedaModal">
 	<input type="hidden" name="clientes"	value="1">
+	<input type="hidden" name="permitirAniadirNuevo" value="S">
+	
 </html:form>
 
 
-<html:form action="/ENV_Destinatario_Manual.do" method="POST" target="submitArea">
+<html:form action="/ENV_Destinatario_Manual" method="POST" target="submitArea">
 	<input type="hidden" name="actionModal"   value="">
 	<input type="hidden" name="modo"          value="">
 	<input type="hidden" name="idPersona"     value="">
@@ -246,8 +269,26 @@
 	<input type="hidden" name="idTipoEnvio"   value="">
 </html:form>
 
-</table>
+<html:form method="post" action="/CEN_ConsultasDirecciones">
+		
+			<!-- Campo obligatorio -->
+			<html:hidden property = "modo" value = ""/>
+			<input type="hidden" name="nombreUsuario" value= ""/>
+			<input type="hidden" name="numeroUsuario" value= ""/>
+			<input type='hidden' name="idPersona" 		value= ""/>	
+			<input type='hidden' name="idInstitucion" value= "<%=idInstitucion%>"/>
+			<input type='hidden' name="accion" value= "">
+			<!-- RGG: cambio a formularios ligeros -->
+			<input type="hidden" name="tablaDatosDinamicosD">
+			<input type="hidden" name="actionModal" value="">
+			<html:hidden property = "vieneDe" value=""/>
+			
+		</html:form>
 
+<html:form action="/CEN_DatosGenerales" method="POST" target="mainWorkArea">
+		<input type="hidden" name="actionModal" value="1">
+		<input type="hidden" name="modo" value="altaNoColegiado">
+	</html:form>
 
 
 	<!-- FIN: CAMPOS -->
@@ -264,16 +305,21 @@
 	<script language="JavaScript">
 
 
-		<!-- Asociada al boton GuardarCerrar -->
+		//Asociada al boton GuardarCerrar -->
 		function accionGuardarCerrar() 
 		{
 			sub();		
 			if (validateExpDenunciadoForm(document.ExpDenunciadoForm)){
-				<%if (accion.equals("nuevo")){%>
-					document.forms[0].modo.value="insertar";
-				<%}else{%>
-					document.forms[0].modo.value="modificar";
-				<%}%>
+				if(document.ExpDenunciadoForm.modal.value){
+					document.ExpDenunciadoForm.modo.value=document.forms[0].modal.value;
+				}else{
+					<%if (accion.equals("nuevo")){%>
+						document.forms[0].modo.value="insertar";
+					<%}else{%>
+						document.forms[0].modo.value="modificar";
+					<%}%>
+				}
+				
 				ExpDenunciadoForm.submit();
 			}else{
 			
@@ -283,13 +329,13 @@
 			}									
 		}
 
-		<!-- Asociada al boton Cerrar -->
+		//Asociada al boton Cerrar -->
 		function accionCerrar() 
 		{		
 			window.close();
 		}
 	
-		<!-- Asociada al boton Restablecer -->
+		//Asociada al boton Restablecer -->
 		function accionRestablecer() 
 		{		
 			document.forms[0].reset();
@@ -302,16 +348,20 @@
 		}
 		
 		function buscarCliente()
-		{			
+		{		
+			
 			var resultado=ventaModalGeneral("busquedaClientesModalForm","G");
 			if (resultado!=undefined && resultado[0]!=undefined ){
 				document.forms[0].idPersona.value       = resultado[0];
+				document.forms[0].idInstitucion.value   = resultado[1];
+				document.forms[0].numColegiado.value   =  resultado[2];
 				document.forms[0].nif.value             = resultado[3];
 				document.forms[0].nombre.value          = resultado[4];
 				document.forms[0].primerApellido.value  = resultado[5];
 				document.forms[0].segundoApellido.value = resultado[6]; 
 
 				document.forms[2].idInstitucion.value   = resultado[1];  // para la busqueda de direcciones
+				document.forms[2].idPersona.value   = resultado[0];
 				
 				// Si tiene una unica direccion, la seleccionamos. Sino resetamos la direccion
 				if (resultado[7] != undefined) {
@@ -337,24 +387,18 @@
 			}		
 		}
 
-		<!-- Asociada al boton Buscar Direccion -->
+		//Asociada al boton Buscar Direccion -->
 		function buscarDireccion() 
 		{
-			<%  if(accion.equals("nuevo")) { %>
-					if(document.forms[0].idPersona.value.length == 0) {					
-						alert ('<siga:Idioma key="factSJCS.resumenPagos.literal.seleccionarPersona"/>');
-						return;
-					}
-					document.forms[2].idPersona.value = document.forms[0].idPersona.value;		
-			<%  } 
-				else { 
-					ExpDenunciadoBean bean = (ExpDenunciadoBean)ses.getAttribute("DATABACKUP_BEAN");
-					if (bean != null) {
-				%>
-						document.forms[2].idPersona.value     = "<%=bean.getIdPersona()%>";
-						document.forms[2].idInstitucion.value = "<%=bean.getIdInstitucion()%>"
-			     <% }
-			   } %>
+		
+			    
+		    if(document.forms[0].idPersona.value.length == 0) {					
+					alert ('<siga:Idioma key="factSJCS.resumenPagos.literal.seleccionarPersona"/>');
+					return;
+				}
+			document.forms[2].idPersona.value     = document.forms[0].idPersona.value;
+			document.forms[2].idInstitucion.value = document.forms[0].idInstitucion.value;
+			
 				
 			document.forms[2].idTipoEnvio.value = "-1";		
 			document.forms[2].modo.value = "buscar";
@@ -367,6 +411,7 @@
 				document.forms[0].pais.value=direccion[3];
 				document.forms[0].cpostal.value=direccion[4];
 				document.forms[0].idDireccion.value=direccion[11];
+				
 
 				if (trim(direccion[13])=="") document.forms[0].telefono.value=direccion[14]; // el movil
 				else document.forms[0].telefono.value=direccion[13];
@@ -374,6 +419,40 @@
 		//alert(document.forms[0].idPersona.value.length);
 		return;
 		}
+		
+		function nuevaDireccion() 
+		{
+			
+			
+			document.consultaDireccionesForm.idPersona.value = document.forms[0].idPersona.value;
+			document.consultaDireccionesForm.idInstitucion.value = document.forms[0].idInstitucion.value;
+			
+			document.consultaDireccionesForm.vieneDe.value = '1';
+			
+			document.consultaDireccionesForm.modo.value = "nuevo";
+			
+	    	var direccion = ventaModalGeneral(document.consultaDireccionesForm.name, "G");
+	    	if(direccion){
+	    	document.forms[0].direccion.value=direccion[0];
+	    	
+	    	if (trim(direccion[1])=="") document.forms[0].poblacion.value=direccion[15]; // el movil
+				else document.forms[0].poblacion.value=direccion[1];
+				document.forms[0].poblacion.value=direccion[1];
+				document.forms[0].provincia.value=direccion[2];
+				document.forms[0].pais.value=direccion[3];
+				document.forms[0].cpostal.value=direccion[4];
+				document.forms[0].idDireccion.value=direccion[11];
+
+				if (trim(direccion[13])=="") document.forms[0].telefono.value=direccion[14]; // el movil
+				else document.forms[0].telefono.value=direccion[13];
+			}else{
+				accionCerrar();
+			}
+	    	
+			
+		}
+		
+	
 
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->

@@ -23,6 +23,7 @@
 		<form-bean name="DatosColegialesForm" type="com.siga.censo.form.DatosColegialesForm"/>
 		<form-bean name="SolicitudesModificacionForm" type="com.siga.censo.form.SolicitudesModificacionForm"/>
 		<form-bean name="datosGeneralesForm" type="com.siga.censo.form.DatosGeneralesForm"/>
+		<form-bean name="datosGeneralesDireccionForm" type="com.siga.censo.form.DatosGeneralesForm"/>
 		<form-bean name="datosGeneralesNoColegiadoForm" type="com.siga.censo.form.DatosGeneralesForm"/>
 		<form-bean name="DatosColegiacionForm" type="com.siga.censo.form.DatosColegiacionForm"/>
 		<form-bean name="DatosRegistralesForm" type="com.siga.censo.form.DatosRegistralesForm"/>
@@ -547,7 +548,6 @@
 			<forward name="nuevo" path="/html/jsp/censo/datosDireccion.jsp"/>
 			<forward name="preguntaCambioPreferencia" path="/html/jsp/censo/preguntaCambioPreferencia.jsp"/>
 			<forward name="solicitarModificacion" path="/CEN_SolicitudDirecciones.do"/>
-			
 			<forward name="seleccion" path="/html/jsp/envios/seleccionDireccionModal.jsp"/>
 		
 		</action>
@@ -1261,6 +1261,7 @@
 		<action path="/EXP_Auditoria_Denunciado" type="com.siga.expedientes.action.ExpDenunciadoAction" name="ExpDenunciadoForm" scope="request">
 			<forward name="inicio" path="/html/jsp/expedientes/abrirDenunciados.jsp"/>
 			<forward name="mostrar" path="/html/jsp/expedientes/denunciados_Edit.jsp"/>
+			<forward name="seleccion" path="/html/jsp/expedientes/seleccionDenunciado.jsp"/>
 		</action>
 		
 

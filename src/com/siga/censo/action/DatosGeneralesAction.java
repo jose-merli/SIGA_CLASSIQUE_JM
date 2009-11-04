@@ -32,6 +32,9 @@ import com.siga.beans.CenClienteBean;
 import com.siga.beans.CenColaCambioLetradoAdm;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
+import com.siga.beans.CenDireccionTipoDireccionBean;
+import com.siga.beans.CenDireccionesAdm;
+import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenHistoricoAdm;
 import com.siga.beans.CenHistoricoBean;
 import com.siga.beans.CenNoColegiadoActividadAdm;
@@ -43,6 +46,7 @@ import com.siga.beans.CenPersonaBean;
 import com.siga.beans.CenSolicitModifDatosBasicosAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.censo.form.DatosGeneralesForm;
+import com.siga.censo.form.DireccionesForm;
 import com.siga.general.CenVisibilidad;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
@@ -258,6 +262,7 @@ public class DatosGeneralesAction extends MasterAction {
 		
 		try {
 			DatosGeneralesForm miform = (DatosGeneralesForm)formulario;
+			
 			miform.reset(mapping,request);
 
 			// cargo los valores recibidos por paramtros en el FORM
@@ -1134,17 +1139,119 @@ public class DatosGeneralesAction extends MasterAction {
 			hashNoColegiado.put(CenNoColegiadoBean.C_FECHAMODIFICACION,"SYSDATE");
 			
    		    admNoColegiado.insert(hashNoColegiado);
-
+   		    
+   		    ///////////////////////////////////////////////////////////////////////////
+   		 
+   		    if(miForm.getIdTipoDireccion()!=null && !miForm.getIdTipoDireccion().equals("")){
+	   		    CenDireccionesBean beanDir = new CenDireccionesBean ();
+				beanDir.setCodigoPostal (miForm.getCodigoPostal ());
+				beanDir.setCorreoElectronico (miForm.getCorreoElectronico ());
+				beanDir.setDomicilio (miForm.getDomicilio ());
+				beanDir.setFax1 (miForm.getFax1 ());
+				beanDir.setFax2 (miForm.getFax2 ());
+				beanDir.setIdInstitucion(new Integer(idInstitucion));
+				beanDir.setIdPais (miForm.getPais ());
+				if (miForm.getPais ().equals ("")) {
+					miForm.setPais (ClsConstants.ID_PAIS_ESPANA);
+				}
+				if (miForm.getPais().equals (ClsConstants.ID_PAIS_ESPANA)) {
+					beanDir.setIdPoblacion (miForm.getPoblacion ());
+					beanDir.setIdProvincia (miForm.getProvincia ());
+					beanDir.setPoblacionExtranjera ("");
+				} else {
+					beanDir.setPoblacionExtranjera (miForm.getPoblacionExt ());
+					beanDir.setIdPoblacion ("");
+					beanDir.setIdProvincia ("");
+				}
+				beanDir.setIdPersona (beanCli.getIdPersona());
+				beanDir.setMovil (miForm.getMovil ());
+				beanDir.setPaginaweb (miForm.getPaginaWeb ());
+				beanDir.setPreferente (this.campoPreferenteBooleanToString
+						(miForm.getPreferenteMail (), 
+						miForm.getPreferenteCorreo (), 
+						miForm.getPreferenteFax (),
+						miForm.getPreferenteSms ()));
+				beanDir.setTelefono1 (miForm.getTelefono1 ());
+				beanDir.setTelefono2 (miForm.getTelefono2 ());
+				
+				//estableciendo los datos del tipo de direccion
+				
+				CenDireccionTipoDireccionBean vBeanTipoDir [] = new CenDireccionTipoDireccionBean [1];
+				CenDireccionTipoDireccionBean b = new CenDireccionTipoDireccionBean ();
+				b.setIdTipoDireccion (new Integer (miForm.getIdTipoDireccion()));
+				vBeanTipoDir[0] = b;
+				
+				
+				//estableciendo los datos del Historico
+				CenHistoricoBean beanHis = new CenHistoricoBean ();
+				beanHis.setMotivo (miForm.getMotivo ());
+				
+			//obteniendo adm de BD de direcciones
+				CenDireccionesAdm direccionesAdm = new CenDireccionesAdm (this.getUserBean (request));
+				
+				//insertando la direccion
+				if (! direccionesAdm.insertarConHistorico (beanDir, vBeanTipoDir, beanHis, this.getLenguaje (request)))
+					throw new SIGAException (direccionesAdm.getError());
+				
+				
+				//insertando en la cola de modificacion de datos para Consejos
+				CenColaCambioLetradoAdm colaAdm = new CenColaCambioLetradoAdm (this.getUserBean (request));
+				if (! colaAdm.insertarCambioEnCola (ClsConstants.COLA_CAMBIO_LETRADO_MODIFICACION_DIRECCION, 
+						beanDir.getIdInstitucion (), beanDir.getIdPersona (), beanDir.getIdDireccion ()))
+					throw new SIGAException (colaAdm.getError ());
+				
+//				request.setAttribute("direccion",miForm.getDomicilio());
+//				if (miForm.getPais().equals (ClsConstants.ID_PAIS_ESPANA)) {
+//					//beanDir.setIdPoblacion (miForm.getPoblacion());
+//					//beanDir.setIdProvincia (miForm.getProvincia());
+//					//beanDir.setPoblacionExtranjera ("");
+//					request.setAttribute("poblacion",miForm.getPoblacion());
+//					request.setAttribute("provincia",miForm.getProvincia());
+//					request.setAttribute("pais",miForm.getPais());
+//				} else {
+//					//beanDir.setPoblacionExtranjera ();
+//					//beanDir.setIdPoblacion ("");
+//					//beanDir.setIdProvincia ("");
+//					request.setAttribute("poblacion",miForm.getPoblacionExt ());
+//					request.setAttribute("provincia","");
+//					request.setAttribute("pais",miForm.getPais());
+//				}
+//				
+//				request.setAttribute("cpostal",miForm.getCodigoPostal());
+				
+				request.setAttribute("idDireccion",beanDir.getIdDireccion().toString());
+//				request.setAttribute("telefono",miForm.getApellido2());
+//   		    
+   		    
+   		    }
+   		    
+////////////////////////////////////////////////////////////////////////////////////////
 			tx.commit();
 
 			//Mandamos los datos para el refresco:
 			request.setAttribute("mensaje",mensInformacion);
+			request.setAttribute("idInstitucion",beanCli.getIdInstitucion().toString());
 			request.setAttribute("idPersona",beanCli.getIdPersona().toString());
-			request.setAttribute("nColegiado",beanCli.getIdInstitucion().toString());
+			request.setAttribute("nColegiado","");
 			request.setAttribute("nif",miForm.getNumIdentificacion());
 			request.setAttribute("nombre",miForm.getNombre());
 			request.setAttribute("apellido1",miForm.getApellido1());
 			request.setAttribute("apellido2",miForm.getApellido2());
+			
+			
+			
+			
+			
+			/*document.forms[0].direccion.value   = resultado[7];
+					document.forms[0].poblacion.value   = resultado[8];
+					document.forms[0].provincia.value   = resultado[9];
+					document.forms[0].pais.value        = resultado[10];
+					document.forms[0].cpostal.value     = resultado[11];
+					document.forms[0].idDireccion.value = resultado[12];
+
+					if (trim(resultado[13])=="") document.forms[0].telefono.value=resultado[14]; // el movil
+					else document.forms[0].telefono.value=resultado[13];
+*/
 			
 			
 	   } 	
@@ -1153,7 +1260,30 @@ public class DatosGeneralesAction extends MasterAction {
    	   }
 	   return "exitoInsercionNoColegiado";			
 	}
+	private String campoPreferenteBooleanToString (Boolean mail, 
+			Boolean correo, 
+			Boolean fax,
+			Boolean sms)
+	throws SIGAException
+	{
+		String valor = "";
 
+		try
+		{
+			if (mail!=null && mail.booleanValue())
+				valor += ClsConstants.TIPO_PREFERENTE_CORREOELECTRONICO;
+			if (fax!=null && fax.booleanValue())
+				valor += ClsConstants.TIPO_PREFERENTE_FAX;
+			if (correo!=null && correo.booleanValue())
+				valor += ClsConstants.TIPO_PREFERENTE_CORREO;
+			if (sms!=null && sms.booleanValue())
+				valor += ClsConstants.TIPO_PREFERENTE_SMS;
+		}
+		catch (Exception e) {
+			throwExcp ("messages.general.error", new String[] {"modulo.censo"}, e, null);
+		}
+		return valor;
+	}
 
 	/** 
 	 * Adecua los formatos de las fechas para la insercion en BBDD. <br/>

@@ -25,7 +25,7 @@ public class ExpDenuncianteForm extends MasterForm {
 	private String telefono="";
 	private String nif="";
 	private String poblacionExt="";
-	
+	private String numColegiado = "";
 	private String idPersona = "", 
 			idDireccion = "" , 
 			idInstitucion = "", 
@@ -201,4 +201,10 @@ public class ExpDenuncianteForm extends MasterForm {
     public void setTituloVentana(String tituloVentana) {
         this.tituloVentana = tituloVentana;
     }
+	public String getNumColegiado() {
+		return numColegiado;
+	}
+	public void setNumColegiado(String numColegiado) {
+		this.numColegiado = numColegiado;
+	}
 }

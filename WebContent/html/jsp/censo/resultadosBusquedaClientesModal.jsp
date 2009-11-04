@@ -44,7 +44,6 @@
 
 	// locales
 	BusquedaClientesForm formulario = (BusquedaClientesForm) request.getSession().getAttribute("busquedaClientesModalForm");
-
 	//Vector resultado = (Vector) request.getAttribute("CenResultadoBusquedaClientesModal");
 	Vector resultado = null;
 	/** PAGINADOR **/
@@ -122,7 +121,12 @@
 				  	} else { 
 					  	datos.value = datos.value + oculto.value + ','; 
 					}
-					if(j=='3'){
+					if(j=='1'){
+						document.busquedaClientesModalForm.idPersona.value = oculto.value;
+					}else if(j=='2'){
+						document.busquedaClientesModalForm.idInstitucion.value = oculto.value;
+					
+					}else if(j=='3'){
 						document.busquedaClientesModalForm.numeroColegiado.value = oculto.value;
 					} else if(j=='4'){
 					  	document.busquedaClientesModalForm.nif.value = oculto.value;
@@ -152,13 +156,15 @@
 			 de cabeceras fijas -->
 
 		<!-- Formulario de la lista de detalle multiregistro -->
-		<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="submitArea" style="display:none">
+		<html:form action="/CEN_BusquedaClientesModal" method="POST" target="submitArea" style="display:none">
 			<!-- Campo obligatorio -->
-			<html:hidden property = "modo" value = "" />
+			<html:hidden property ="modo" value = "" />
 			<!-- RGG: cambio a formularios ligeros -->
 			<input type="hidden" name="tablaDatosDinamicosD">
 			<input type="hidden" name="actionModal" value="">
 			<html:hidden property="numeroColegiado" value=""/>
+			<html:hidden property="idInstitucion" value=""/>
+			<html:hidden property="idPersona" value=""/>
 			<html:hidden property="nif" value=""/>
 			<html:hidden property="nombrePersona" value=""/>
 			<html:hidden property="apellido1" value=""/>
@@ -245,11 +251,14 @@
 					String ncolegiado = "";
 					String estadoColegial = "";
 					ncomunitario = UtilidadesString.mostrarDatoJSP(registro.get(CenColegiadoBean.C_NCOMUNITARIO));
-					ncolegiado = UtilidadesString.mostrarDatoJSP(registro.get(CenColegiadoBean.C_NCOLEGIADO));
+					
+					if(registro.get(CenColegiadoBean.C_NCOLEGIADO)!=null)
+						ncolegiado = (String)registro.get(CenColegiadoBean.C_NCOLEGIADO);
 					estadoColegial = UtilidadesString.mostrarDatoJSP(UtilidadesMultidioma.getDatoMaestroIdioma((String) registro.get("ESTADOCOLEGIAL"), 
 																												usrbean));
 		
 					String institucion = CenVisibilidad.getAbreviaturaInstitucion(idInstitucion);
+					
 			 		%>
 						<!-- REGISTRO  -->
 						<!-- Esto es un ejemplo de dos columnas de datos, lo que significa
@@ -276,7 +285,7 @@
 								if (busquedaSancion == null || busquedaSancion.equals("0")) {
 									%>
 										<td>
-											<%=ncolegiado%>
+											<%=UtilidadesString.mostrarDatoJSP(registro.get(CenColegiadoBean.C_NCOLEGIADO))%>
 										</td>
 									<%
 								}

@@ -93,7 +93,8 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			ExpExpedienteBean.C_OTRASPRETENSIONES,
 			ExpExpedienteBean.C_IDTIPOIVA,
 			ExpExpedienteBean.C_IDRESULTADOJUNTAGOBIERNO,
-			ExpExpedienteBean.C_IDENTIFICADORDS};
+			ExpExpedienteBean.C_IDENTIFICADORDS,
+			ExpExpedienteBean.C_IDDIRECCION};
 
 		return campos;
 	}
@@ -185,6 +186,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			bean.setIdResultadoJuntaGobierno(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_IDRESULTADOJUNTAGOBIERNO));
 			
 			bean.setIdentificadorDS(UtilidadesHash.getString(hash, ExpExpedienteBean.C_IDENTIFICADORDS));
+			bean.setIdDireccion(UtilidadesHash.getString(hash, ExpExpedienteBean.C_IDDIRECCION));
 		}
 
 		catch (Exception e)
@@ -263,6 +265,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDRESULTADOJUNTAGOBIERNO, b.getIdResultadoJuntaGobierno());
 
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDENTIFICADORDS, b.getIdentificadorDS());
+			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDDIRECCION, b.getIdDireccion());
 
 		}
 
@@ -1986,6 +1989,8 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDINSTITUCION, b.getIdInstitucion());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_ANIOEXPEDIENTE, b.getAnioExpediente());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDPERSONA, b.getIdPersona());
+			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDDIRECCION, b.getIdDireccion());
+			
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDTIPOEXPEDIENTE, b.getIdTipoExpediente());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE, b.getIdInstitucion_tipoExpediente());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_ESVISIBLE, b.getEsVisible());

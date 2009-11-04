@@ -18,7 +18,7 @@
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%> 
-<%@ page import="com.siga.beans.CenPersonaBean"%>
+
 <%@ page import="com.siga.beans.CenClienteBean"%>
 <%@ page import="com.siga.beans.CenInstitucionAdm"%>
 <%@ page import="com.siga.beans.CenInstitucionBean"%>
@@ -84,6 +84,8 @@
 	ArrayList estadoCivilSel = new ArrayList();
 	ArrayList idiomaSel = new ArrayList();
 	ArrayList caracterSel = new ArrayList();
+
+	
 
 	String idInstitucion = "";
 	String idPersona = "";
@@ -193,6 +195,9 @@ caracterParam[0] = tipoCliente;
 <%@page import="java.util.Vector"%>
 <%@page import="java.util.Hashtable"%>
 <%@page import="java.io.File"%>
+<style>
+.ocultar {display:none}
+</style>	
 <html>
 	<!-- HEAD -->
 	<head>
@@ -207,7 +212,8 @@ caracterParam[0] = tipoCliente;
 		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 		<!-- Validaciones en Cliente -->
 		<!-- El nombre del formulario se obtiene del struts-config -->
-			<html:javascript formName="datosGeneralesForm" staticJavascript="false" />  
+			<html:javascript formName="datosGeneralesForm" staticJavascript="false" /> 
+			<html:javascript formName="datosGeneralesDireccionForm" staticJavascript="false" /> 
 		  	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 		<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->	
 
@@ -434,9 +440,6 @@ caracterParam[0] = tipoCliente;
 		
 		var temp=a.toUpperCase();
 		var cadenadni="TRWAGMYFPDXBNJZSQVHLCKE";
- 		
- 		alert("comp1");
-			
 		//comprobacion de NIEs
 		//T
 		if (/^[T]{1}/.test(temp))
@@ -459,23 +462,18 @@ caracterParam[0] = tipoCliente;
 		//XYZ
 		if (/^[XYZ]{1}/.test(temp))
 		{
-			alert("comp");
+			
 			pos = str_replace(['X', 'Y', 'Z'], ['0','1','2'], temp).substring(0, 8) % 23;
-			alert("comp1"+a[8]);
-			alert("comp10"+cadenadni.substring(pos, pos + 1));
 			if (a[8] == cadenadni.substring(pos, pos + 1))
 			
 			{
-				alert("comp2");
 				return 3;
 			}
 			else
 			{
-				alert("comp3");
 				return -3;
 			}
 		}
-		alert("comp4");
 		return 0;
 	} 		
 		
@@ -626,7 +624,7 @@ function str_replace(search, replace, subject) {
 
 
 
-	<body class="tablaCentralCampos">
+	<body onload="comprobarTelefonoAsterico();selPaisInicio();" class="tablaCentralCampos">
 
 <%
 			tipoIdentificacionSel.add(""+ClsConstants.TIPO_IDENTIFICACION_NIF);
@@ -649,15 +647,16 @@ function str_replace(search, replace, subject) {
 	<!-- Tabla central principal -->
 	<!------------------------------->
 	<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0" >
-		<html:form  action="/CEN_DatosGenerales.do" method="POST" target="mainPestanas"  enctype="multipart/form-data">
+		<html:form  action="/CEN_DatosGenerales" method="POST" target="mainPestanas"  enctype="multipart/form-data">
 			<html:hidden  name="datosGeneralesForm" property="modo"/>
 			<html:hidden  name="datosGeneralesForm" property="idInstitucion"/>
 			<html:hidden  name="datosGeneralesForm" property="idPersona"/>
 			<html:hidden  name="datosGeneralesForm" property="accion"/>
-			<html:hidden  name="datosGeneralesForm" property="idTratamiento" value="1"/>
+			<html:hidden  name="datosGeneralesForm" property="tratamiento" value="1"/>
 			<html:hidden name="datosGeneralesForm" property="motivo"/>
 			<html:hidden name="datosGeneralesForm" property="abono" value="B" />
 			<html:hidden name="datosGeneralesForm" property="cargo" value="B" />
+			<html:hidden name="datosGeneralesForm" property="idTipoDireccion" value=""/>
 			<html:hidden property="actionModal" value=""/>
 			<html:hidden property="tipo" value="<%=sTipo%>"/>
 	<tr>
@@ -685,16 +684,16 @@ function str_replace(search, replace, subject) {
 					<td> 
 					
 				 <% if ( formulario.getAccion().equalsIgnoreCase("nuevo")) { %>
-				      <html:text name="datosGeneralesForm" property="numIdentificacion" size="20" styleClass="<%=estiloCajaNif%>" value="<%=nIdentificacion %>"  onBlur="formatearDocumento();"></html:text>		
-				      <td><input type="button" name="idButton" value='<siga:Idioma key="censo.nif.letra.letranif" />' onclick="generarLetra();" style="align:right" class="button"></td>		
+				      <html:text name="datosGeneralesForm" property="numIdentificacion" size="20" styleClass="<%=estiloCajaNif%>" value="<%=nIdentificacion %>"  onblur="formatearDocumento();"></html:text>		
+				      <input type="button" name="idButton" value='<siga:Idioma key="censo.nif.letra.letranif" />' onclick="generarLetra();" style="align:right" class="button">		
 				 <% }else{ %>
 				     <% if(formulario.getAccion().equalsIgnoreCase("editar")){ %> 
 				         <% if(!pintaComboSexo){ %>
-							<html:text name="datosGeneralesForm" property="numIdentificacion" size="20" styleClass="boxConsulta" value="<%=nIdentificacion %>" readonly="true" onBlur="formatearDocumento();"></html:text>
+							<html:text name="datosGeneralesForm" property="numIdentificacion" size="20" styleClass="boxConsulta" value="<%=nIdentificacion %>" readonly="true" onblur="formatearDocumento();"></html:text>
 				         <%}else{ %>
 				            <%if (bResidente){%>
-								<html:text name="datosGeneralesForm" property="numIdentificacion" size="20" styleClass="<%=estiloCajaNif%>" value="<%=nIdentificacion %>"  onBlur="formatearDocumento();"></html:text>		
-							<td><input type="button" name="idButton" value='<siga:Idioma key="censo.nif.letra.letranif" />' onclick="generarLetra();" style="align:right" class="button"></td>
+								<html:text name="datosGeneralesForm" property="numIdentificacion" size="20" styleClass="<%=estiloCajaNif%>" value="<%=nIdentificacion %>"  onblur="formatearDocumento();"></html:text>		
+							<input type="button" name="idButton" value='<siga:Idioma key="censo.nif.letra.letranif" />' onclick="generarLetra();" style="align:right" class="button">
 							<% }else{ %>
 								<!-- Necesario para el validation.xml -->
 								<html:text name="datosGeneralesForm" property="numIdentificacion" styleClass="boxConsulta" value="<%=nIdentificacion %>" />
@@ -702,9 +701,9 @@ function str_replace(search, replace, subject) {
 					    <% } %>
 					<% }else{ %>
 						<% if (formulario.getAccion().equalsIgnoreCase("editar")&& !bResidente){%>
-							<html:text name="datosGeneralesForm" property="numIdentificacion" size="20" styleClass="boxConsulta" value="<%=nIdentificacion %>" readonly="true" onBlur="formatearDocumento();"></html:text>
+							<html:text name="datosGeneralesForm" property="numIdentificacion" size="20" styleClass="boxConsulta" value="<%=nIdentificacion %>" readonly="true" onblur="formatearDocumento();"></html:text>
 						<% }else{%>
-							<html:text name="datosGeneralesForm" property="numIdentificacion" size="20" styleClass="boxConsulta" value="<%=nIdentificacion %>" readonly="true" onBlur="formatearDocumento();"></html:text>
+							<html:text name="datosGeneralesForm" property="numIdentificacion" size="20" styleClass="boxConsulta" value="<%=nIdentificacion %>" readonly="true" onblur="formatearDocumento();"></html:text>
 						<% } %>
 					<% } %>
 				 <% } %>
@@ -899,8 +898,163 @@ function str_replace(search, replace, subject) {
 		</table>
 		</td>
 	</tr>
-	</html:form>
-	</table>
+	
+
+<tr>
+	<td>
+	
+		<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0" >
+			<tr>
+				<td>
+	
+					<siga:ConjCampos leyenda="censo.consultaDirecciones.cabecera">
+						<table class="tablaCampos" align="left" cellpadding="0" cellpadding="0" style="width:400px">	
+							
+							<tr>
+								<td class="labelText" width="180px" id="direccionSinAsterisco"><siga:Idioma
+									key="censo.datosDireccion.literal.direccion" />&nbsp;</td>
+								<td class="ocultar" width="180px" id="direccionConAsterisco"><siga:Idioma
+									key="censo.datosDireccion.literal.direccion" />&nbsp;(*)</td>
+								<td><html:textarea cols="70" rows="2"
+									name="datosGeneralesForm" property="domicilio"
+									onKeyDown="cuenta(this,100)" onChange="cuenta(this,100)"
+									styleClass="box"></html:textarea></td>
+				
+				
+								<td class="labelText" width="180px" id="cpSinAsterisco" nowrap><siga:Idioma
+									key="censo.datosDireccion.literal.cp" />&nbsp;</td>
+								<td class="ocultar" width="180px" id="cpConAsterisco" nowrap><siga:Idioma
+									key="censo.datosDireccion.literal.cp" />&nbsp;(*)</td>
+								<td><html:text name="datosGeneralesForm"
+									property="codigoPostal" maxlength="5" size="5" styleClass="box"></html:text></td>
+				
+				
+							</tr>
+		
+							<tr>
+								<td class="labelText" width="180px" id="paisSinAsterisco"><siga:Idioma
+									key="censo.datosDireccion.literal.pais2" />&nbsp;</td>
+								<td class="ocultar" width="180px" id="paisConAsterisco"><siga:Idioma
+									key="censo.datosDireccion.literal.pais2" />&nbsp;</td>
+								<td colspan = "3"><siga:ComboBD nombre="pais" tipo="pais" clase="boxCombo"
+									obligatorio="false" accion="selPais(this.value);" /></td>
+				
+							</tr>
+		
+							<tr>
+								<td class="labelText" id="provinciaSinAsterisco"><siga:Idioma
+									key="censo.datosDireccion.literal.provincia" />&nbsp;</td>
+								<td class="ocultar" id="provinciaConAsterisco"><siga:Idioma
+									key="censo.datosDireccion.literal.provincia" />&nbsp;(*)</td>
+								<td id="provinciaEspanola"><siga:ComboBD nombre="provincia"
+									tipo="provincia" clase="boxCombo" obligatorio="false"
+									accion="Hijo:poblacion" /></td>
+				
+								<td class="labelText" id="poblacionSinAsterisco"><siga:Idioma
+									key="censo.datosDireccion.literal.poblacion" />&nbsp;</td>
+								<td class="ocultar" id="poblacionConAsterisco"><siga:Idioma
+									key="censo.datosDireccion.literal.poblacion" />&nbsp;(*)</td>
+								<td id="poblacionEspanola"><siga:ComboBD nombre="poblacion"
+									tipo="poblacion" clase="boxCombo" hijo="t" /></td>
+								<td class="ocultar" id="poblacionExtranjera"><html:text
+									name="datosGeneralesForm" property="poblacionExt" size="30"
+									styleClass="box"></html:text></td>
+							</tr>
+		
+							<tr>
+								<td class="labelText" id="telefonoSinAsterisco"><siga:Idioma
+									key="censo.datosDireccion.literal.telefono1" />&nbsp;</td>
+								<td class="ocultar" id="telefonoConAsterisco"><siga:Idioma
+									key="censo.datosDireccion.literal.telefono1" />&nbsp;(*)</td>
+								<td><html:text name="datosGeneralesForm"
+									property="telefono1" maxlength="20" size="10" styleClass="box"></html:text>
+									</td>
+				
+								<td class="labelText"><siga:Idioma
+									key="censo.datosDireccion.literal.telefono2" />&nbsp;</td>
+								<td><html:text name="datosGeneralesForm"
+									property="telefono2" maxlength="20" size="10" styleClass="box"></html:text></td>
+							</tr>
+		
+							<tr>
+								<td class="labelText"><siga:Idioma
+									key="censo.datosDireccion.literal.movil" />&nbsp;</td>
+								<td ><html:text name="datosGeneralesForm" property="movil"
+									maxlength="20" size="10" styleClass="box"></html:text></td>
+								<td></td>
+								<td></td>
+							</tr>
+		
+							<tr>
+								<td class="labelText"><siga:Idioma
+									key="censo.datosDireccion.literal.fax1" />&nbsp;</td>
+								<td><html:text name="datosGeneralesForm" property="fax1"
+									maxlength="20" size="10" styleClass="box"></html:text></td>
+				
+								<td class="labelText"><siga:Idioma
+									key="censo.datosDireccion.literal.fax2" />&nbsp;</td>
+								<td><html:text name="datosGeneralesForm" property="fax2"
+									maxlength="20" size="10" styleClass="box"></html:text></td>
+							</tr>
+		
+							<tr>
+								<td class="labelText"><siga:Idioma
+									key="censo.datosDireccion.literal.correo" />&nbsp;</td>
+								<td nowrap="nowrap"><html:text name="datosGeneralesForm"
+									property="correoElectronico" maxlength="100" size="50"
+									styleClass="box"></html:text></td>
+				
+								<td class="labelText"><siga:Idioma
+									key="censo.datosDireccion.literal.paginaWeb" />&nbsp;</td>
+								<td><html:text name="datosGeneralesForm"
+									property="paginaWeb" maxlength="100" size="25" styleClass="box"></html:text></td>
+							</tr>
+		
+							<tr>
+								<td class="labelText"><siga:Idioma
+									key="censo.datosDireccion.literal.preferente" /></td>
+								<td class="labelText"><siga:Idioma
+									key="censo.preferente.mail" /><input type="checkbox"
+									name="preferenteMail">&nbsp;&nbsp;&nbsp; <siga:Idioma
+									key="censo.preferente.correo" /><input type="checkbox"
+									name="preferenteCorreo">&nbsp;&nbsp;&nbsp; <siga:Idioma
+									key="censo.preferente.fax" /><input type="checkbox"
+									name="preferenteFax">&nbsp;&nbsp;&nbsp; <siga:Idioma
+									key="censo.preferente.sms" /><input type="checkbox"
+									name="preferenteSms"></td>
+								<td></td>
+								<td></td>
+							</tr>
+		
+	
+						</table>
+		
+					</siga:ConjCampos>	
+				</td>
+			</tr>
+		
+		</table>
+		
+	</td>
+</tr>
+</table>
+
+	
+
+</html:form>
+
+
+
+
+
+<!-- FIN: CAMPOS -->
+
+
+
+
+
+	
+	
 
 	
 	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
@@ -946,7 +1100,7 @@ function str_replace(search, replace, subject) {
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
-
+var idEspana='<%=ClsConstants.ID_PAIS_ESPANA%>';
 		//Asociada al boton Restablecer
 		function accionRestablecer() {
 			document.forms[0].reset();	
@@ -989,15 +1143,165 @@ function str_replace(search, replace, subject) {
 		function accionGuardar() {
 		
 			sub();
-			if (validarFormulario()) {
+			if (validarFormulario()&&validarDireccion()) {
+				
 				document.forms[0].target="submitArea";
 				document.forms[0].modo.value="insertarNoColegiado";
-				document.forms[0].submit();	
+     			document.forms[0].submit();
+				 
+					
 			}else{
 				fin();
 				return false;
 			}
 		}
+		
+		//funciones de direcciones
+		function selPais(valor) {                                                                   
+		   if (valor!="" && valor!=idEspana) {
+		   		document.getElementById("poblacion").value="";
+		   		document.getElementById("provincia").value="";
+			   	document.getElementById("provincia").disabled=true;
+				document.getElementById("poblacionEspanola").className="ocultar";
+				document.getElementById("poblacionExtranjera").className="";
+	       } else {
+		   		document.getElementById("poblacionExt").value="";
+				document.getElementById("provincia").disabled=false;
+				document.getElementById("poblacionEspanola").className="";
+				document.getElementById("poblacionExtranjera").className="ocultar";
+	       }
+	    }
+		
+		function selPaisInicio() {
+			var p = document.getElementById("pais");
+			selPais(p.value);
+		}	    
+		function comprobarTelefonoAsterico() 
+		{
+			document.getElementById("direccionSinAsterisco").className="labelText";
+			document.getElementById("direccionConAsterisco").className="ocultar";
+			document.getElementById("cpSinAsterisco").className="labelText";
+			document.getElementById("cpConAsterisco").className="ocultar";
+			document.getElementById("provinciaSinAsterisco").className="labelText";
+			document.getElementById("provinciaConAsterisco").className="ocultar";
+			document.getElementById("poblacionSinAsterisco").className="labelText";
+			document.getElementById("poblacionConAsterisco").className="ocultar";
+			document.getElementById("paisSinAsterisco").className="labelText";
+			document.getElementById("paisConAsterisco").className="ocultar";
+
+	    } 
+	
+		 function validarDireccion() {
+		 	
+		 	//Validamos que haya algun campo metido y en ese caso pasamos las otras validadciones
+		 	//si no devolvemos true. Como no hemos metido idTipoDireccion no insertara
+		 	
+		 	if(trim(document.datosGeneralesForm.telefono1.value)!='' ||
+		 	trim(document.datosGeneralesForm.telefono2.value)!='' ||
+		 	trim(document.datosGeneralesForm.domicilio.value)!='' ||
+		 	trim(document.datosGeneralesForm.codigoPostal.value)!='' ||
+		 	trim(document.datosGeneralesForm.poblacion.value)!='' ||
+		 	trim(document.datosGeneralesForm.provincia.value)!='' ||
+		 	trim(document.datosGeneralesForm.poblacionExt.value)!='' ||
+		 	trim(document.datosGeneralesForm.movil.value)!='' ||
+		 	trim(document.datosGeneralesForm.fax1.value)!='' ||
+		 	trim(document.datosGeneralesForm.fax2.value)!='' ||
+		 	document.datosGeneralesForm.preferenteFax.checked||document.datosGeneralesForm.preferenteSms.checked
+		 	||document.datosGeneralesForm.preferenteMail.checked||document.datosGeneralesForm.preferenteCorreo.checked){
+		 	
+		 	
+		 	
+		 	
+			 	document.datosGeneralesForm.telefono1.value=eliminarBlancos(trim(document.datosGeneralesForm.telefono1.value));
+			  	document.datosGeneralesForm.telefono2.value=eliminarBlancos(trim(document.datosGeneralesForm.telefono2.value));
+				// Validamos los errores ///////////
+				// Campos Tipo de Direccion obligatorio -> no se usa validacion Struts pq es multiple seleccion
+				
+				
+	           document.datosGeneralesForm.idTipoDireccion.value=<%=ClsConstants.TIPO_DIRECCION_PUBLICA%>;
+			  
+			   
+				// VALIDAMOS QUE SOLO HAYAN INTRODUCIDO EN EL COMBO DE TIPO DE DIRECCION DIRECCION DE GUARDIA.
+				// SI ES ASI SOLO REALIZAMOS LA VALIDACION DEL CAMPO TELEFONO 1. EN CASO CONTRARIO SE REALIZAN
+				// EL RESTO DE VALIDACIONES TAMBIEN NECESARIAS PARA LOS OTROS TIPOS DE DIRECCION
+										
+				//VALIDACIONES GENERALES A TODOS LOS TIPOS DE DIRECCION SELECCIONADOS
+			  
+			   if (!validateDatosGeneralesDireccionForm(document.datosGeneralesForm)){
+					return false;
+				}
+			   
+			   if((document.datosGeneralesForm.preferenteMail.checked) && 
+						 (trim(document.datosGeneralesForm.correoElectronico.value)=="")) {
+						
+		 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.correo"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+		 				 alert (mensaje);
+		 								 
+						 return false;
+					}
+					if((document.datosGeneralesForm.preferenteCorreo.checked) && 
+						 (trim(document.datosGeneralesForm.domicilio.value)=="")) {
+						 
+		 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.direccion"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+		 				 alert (mensaje);
+						 
+						 return false;
+					}
+					// RGG 25/04/2005
+					if((trim(document.datosGeneralesForm.domicilio.value)!="") &&
+						(trim(document.datosGeneralesForm.codigoPostal.value)=="")) {
+						
+		 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.cp"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+		 				 alert (mensaje);
+		 				 
+						 return false;
+					}
+					if((trim(document.datosGeneralesForm.domicilio.value)!="") && (trim(document.datosGeneralesForm.pais.value)==idEspana ||trim(document.datosGeneralesForm.pais.value)=="" ) && 
+						(trim(document.datosGeneralesForm.provincia.value)=="")) {
+						
+		 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.provincia"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+		 				 alert (mensaje);
+		 				
+						 return false;
+					}
+					if((trim(document.datosGeneralesForm.domicilio.value)!="") && (trim(document.datosGeneralesForm.pais.value)==idEspana ||trim(document.datosGeneralesForm.pais.value)=="") && 
+						(trim(document.datosGeneralesForm.poblacion.value)=="")) {
+						
+		 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.poblacion"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+		 				 alert (mensaje);
+		 				
+						 return false;
+					}
+					
+					if((trim(document.datosGeneralesForm.domicilio.value)!="") && (trim(document.datosGeneralesForm.pais.value)!=idEspana && trim(document.datosGeneralesForm.pais.value)!="") && 
+						(trim(document.datosGeneralesForm.poblacionExt.value)=="")) {
+						
+		 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.poblacion"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+		 				 alert (mensaje);
+		 				
+						 return false;
+					}
+					if((document.datosGeneralesForm.preferenteFax.checked) && 
+						 (trim(document.datosGeneralesForm.fax1.value)=="")) {
+		 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.fax1"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+		 				 alert (mensaje);
+						 return false;
+					}
+					// jbd 04/06/2009 opcion sms
+					if((document.datosGeneralesForm.preferenteSms.checked) && 
+							 (trim(document.datosGeneralesForm.movil.value)=="")) {
+							 
+			 				 var mensaje = "<siga:Idioma key="censo.datosDireccion.literal.movil"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+			 				 alert (mensaje);
+						 return false;
+						}
+					return true;
+			 
+			 }else{
+			 	return true;
+			 }
+		 }	
+		
 		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->

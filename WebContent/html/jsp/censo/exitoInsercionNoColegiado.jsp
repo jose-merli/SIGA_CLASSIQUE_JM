@@ -24,11 +24,15 @@
 	// MENSAJE = mensaje a mostrar (si no hay mensaje no muestra alert)  
 	String mensaje = (String)request.getAttribute("mensaje");
 	String idPersona = (String)request.getAttribute("idPersona");
+	String idInstitucion = (String)request.getAttribute("idInstitucion");
 	String nColegiado = (String)request.getAttribute("nColegiado");
 	String nif = (String)request.getAttribute("nif");
 	String nombre=(String)request.getAttribute("nombre");
 	String apellido1=(String)request.getAttribute("apellido1");
 	String apellido2=(String)request.getAttribute("apellido2");
+		String idDireccion=(String)request.getAttribute("idDireccion");
+	
+	
 	
 	
 %>
@@ -46,11 +50,16 @@
 			
 				var aux = new Array();
 				aux[0]="<%=idPersona %>";
-				aux[2]="";
-				aux[3]="<%=nif %>";
+				aux[1]="<%=idInstitucion %>";
+				aux[2]="<%=nColegiado%>";
+				
+				aux[3]="<%=nif%>";
 				aux[4]="<%=UtilidadesString.cambiarDoblesComillas(nombre) %>";
 				aux[5]="<%=UtilidadesString.cambiarDoblesComillas(apellido1) %>";
 				aux[6]="<%=UtilidadesString.cambiarDoblesComillas(apellido2) %>";
+				aux[7]="<%=idDireccion%>";
+				
+				
 				top.cierraConParametros(aux);
 	
 	 	<% 	

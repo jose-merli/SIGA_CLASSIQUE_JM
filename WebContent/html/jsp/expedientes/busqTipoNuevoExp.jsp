@@ -115,10 +115,13 @@
 		
 		<!-- Asociada al boton GuardarCerrar -->
 		function accionGuardarCerrar() 
-		{		
+		{	
+			sub();	
 			if (validateNuevoExpedienteForm(document.NuevoExpedienteForm)) {
 				document.forms[0].modo.value="modificar";
 				document.forms[0].submit();
+			}else{
+				fin();
 			}
 		}
 		

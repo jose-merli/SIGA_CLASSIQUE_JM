@@ -606,4 +606,188 @@ import com.siga.beans.*;
 		return UtilidadesHash.getString(this.datos, "ACTIVIDADPROSESIONAL");		
 	}
 	
+	
+	
+	
+	
+	
+	String idTipoDireccion;
+	String pais;
+	String poblacion;
+	String poblacionExt;
+	String provincia;
+	String motivo;
+	String movil;
+	String paginaWeb;
+	String preferente;
+	String telefono1;
+	String telefono2;
+	Boolean preferenteFax;
+	Boolean preferenteCorreo;
+	Boolean preferenteMail;	
+	Boolean preferenteSms;	
+	String codigoPostal;
+	String correoElectronico;
+	String domicilio;
+	String fax1;
+	String fax2;
+
+	public String getIdTipoDireccion() {
+		return idTipoDireccion;
+	}
+
+	public void setIdTipoDireccion(String idTipoDireccion) {
+		this.idTipoDireccion = idTipoDireccion;
+	}
+
+	public String getPais() {
+		return pais;
+	}
+
+	public void setPais(String pais) {
+		this.pais = pais;
+	}
+
+	public String getPoblacion() {
+		return poblacion;
+	}
+
+	public void setPoblacion(String poblacion) {
+		this.poblacion = poblacion;
+	}
+
+	
+	public String getPoblacionExt() {
+		return poblacionExt;
+	}
+
+	public void setPoblacionExt(String poblacionExt) {
+		this.poblacionExt = poblacionExt;
+	}
+
+	public String getProvincia() {
+		return provincia;
+	}
+
+	public void setProvincia(String provincia) {
+		this.provincia = provincia;
+	}
+
+	public String getMovil() {
+		return movil;
+	}
+
+	public void setMovil(String movil) {
+		this.movil = movil;
+	}
+
+	public String getPaginaWeb() {
+		return paginaWeb;
+	}
+
+	public void setPaginaWeb(String paginaWeb) {
+		this.paginaWeb = paginaWeb;
+	}
+
+	public String getPreferente() {
+		return preferente;
+	}
+
+	public void setPreferente(String preferente) {
+		this.preferente = preferente;
+	}
+
+	public String getTelefono1() {
+		return telefono1;
+	}
+
+	public void setTelefono1(String telefono1) {
+		this.telefono1 = telefono1;
+	}
+
+	public String getTelefono2() {
+		return telefono2;
+	}
+
+	public void setTelefono2(String telefono2) {
+		this.telefono2 = telefono2;
+	}
+
+	
+	public Boolean getPreferenteFax() {
+		return preferenteFax;
+	}
+
+	public void setPreferenteFax(Boolean preferenteFax) {
+		this.preferenteFax = preferenteFax;
+	}
+
+	public Boolean getPreferenteCorreo() {
+		return preferenteCorreo;
+	}
+
+	public void setPreferenteCorreo(Boolean preferenteCorreo) {
+		this.preferenteCorreo = preferenteCorreo;
+	}
+
+	public Boolean getPreferenteMail() {
+		return preferenteMail;
+	}
+
+	public void setPreferenteMail(Boolean preferenteMail) {
+		this.preferenteMail = preferenteMail;
+	}
+
+	public Boolean getPreferenteSms() {
+		return preferenteSms;
+	}
+
+	public void setPreferenteSms(Boolean preferenteSms) {
+		this.preferenteSms = preferenteSms;
+	}
+
+	public String getCodigoPostal() {
+		return codigoPostal;
+	}
+
+	public void setCodigoPostal(String codigoPostal) {
+		this.codigoPostal = codigoPostal;
+	}
+
+	public String getCorreoElectronico() {
+		return correoElectronico;
+	}
+
+	public void setCorreoElectronico(String correoElectronico) {
+		this.correoElectronico = correoElectronico;
+	}
+
+	public String getDomicilio() {
+		return domicilio;
+	}
+
+	public void setDomicilio(String domicilio) {
+		this.domicilio = domicilio;
+	}
+
+	public String getFax1() {
+		return fax1;
+	}
+
+	public void setFax1(String fax1) {
+		this.fax1 = fax1;
+	}
+
+	public String getFax2() {
+		return fax2;
+	}
+
+	public void setFax2(String fax2) {
+		this.fax2 = fax2;
+	}
+	
+	
+	
+		
+	
 }

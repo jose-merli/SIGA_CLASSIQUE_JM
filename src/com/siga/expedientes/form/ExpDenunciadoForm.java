@@ -12,8 +12,11 @@ import com.siga.general.MasterForm;
  */
 public class ExpDenunciadoForm extends MasterForm {
 	
-	private String modo="";
-    private String modal="";
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5836085717716239024L;
 	private String nombre="";
 	private String primerApellido="";
 	private String segundoApellido="";
@@ -25,6 +28,7 @@ public class ExpDenunciadoForm extends MasterForm {
 	private String telefono="";
 	private String nif="";
 	private String poblacionExt="";
+	private String numColegiado;
 	
 	private String idPersona = "", 
 			idDireccion = "" , 
@@ -201,4 +205,10 @@ public class ExpDenunciadoForm extends MasterForm {
     public void setTituloVentana(String tituloVentana) {
         this.tituloVentana = tituloVentana;
     }
+	public String getNumColegiado() {
+		return numColegiado;
+	}
+	public void setNumColegiado(String numColegiado) {
+		this.numColegiado = numColegiado;
+	}
 }

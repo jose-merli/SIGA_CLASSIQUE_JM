@@ -117,7 +117,7 @@
 	// para saber hacia donde volver
 	String busquedaVolver = (String) request.getSession().getAttribute("volverAuditoriaExpedientes");
 	
-	String buscar = UtilidadesString.getMensajeIdioma(userBean, "general.search");
+	String seleccionarPersona = UtilidadesString.getMensajeIdioma(userBean, "general.boton.seleccionar");
 	String nuevoNoCol = UtilidadesString.getMensajeIdioma(userBean, "general.new");
 	String plazo = UtilidadesString.getMensajeIdioma(userBean, "general.boton.consultarplazo");
 	
@@ -323,10 +323,9 @@
 			<%}%>
 		
 		}
-
 		function altaPersona()
 		{					
-			var resultado=ventaModalGeneral("datosGeneralesForm","M");
+			var resultado=ventaModalGeneral("datosGeneralesForm","G");
 			if (resultado!=undefined && resultado[0]!=undefined ){
 				document.forms[0].idPersona.value=resultado[0];
 				document.forms[0].numColegiado.value=resultado[2];
@@ -334,20 +333,34 @@
 				document.forms[0].nombre.value=resultado[4];
 				document.forms[0].primerApellido.value=resultado[5];
 				document.forms[0].segundoApellido.value=resultado[6];
+				document.forms[0].idDireccion.value=resultado[7];
+
+				
 			}
 		}
 		
 		
-		function buscarPersona()
-		{					
-			var resultado=ventaModalGeneral("busquedaClientesModalForm","G");
+		
+		function seleccionarPersona()
+		{	
+			document.ExpDenunciadoForm.idPersona.value = document.forms[0].idPersona.value;
+			document.ExpDenunciadoForm.idDireccion.value = document.forms[0].idDireccion.value;
+			document.ExpDenunciadoForm.modal.value = "seleccion";
+			if(document.forms[0].idPersona.value)
+				document.ExpDenunciadoForm.modo.value = "editarDenunciado";
+			else
+				document.ExpDenunciadoForm.modo.value = "nuevo";
+				
+			var resultado=ventaModalGeneral("ExpDenunciadoForm","M");
 			if (resultado!=undefined && resultado[0]!=undefined ){
 				document.forms[0].idPersona.value=resultado[0];
-				document.forms[0].numColegiado.value=resultado[2];
-				document.forms[0].nif.value=resultado[3];
-				document.forms[0].nombre.value=resultado[4];
-				document.forms[0].primerApellido.value=resultado[5];
-				document.forms[0].segundoApellido.value=resultado[6];
+				document.forms[0].idDireccion.value=resultado[1];
+				document.forms[0].nombre.value=resultado[2];
+				document.forms[0].primerApellido.value=resultado[3];
+				document.forms[0].segundoApellido.value=resultado[4];
+				document.forms[0].nif.value=resultado[5];
+				document.forms[0].numColegiado.value=resultado[6];
+				
 			}
 		}
 		
@@ -435,7 +448,7 @@
 	<!-- Zona de campos de busqueda o filtro -->
 	<table  class="tablaCentralCampos"  align="center" >
 	
-	<html:form action="/EXP_Auditoria_DatosGenerales.do" method="POST" target="submitArea">
+	<html:form action="/EXP_Auditoria_DatosGenerales" method="POST" target="submitArea">
 	<html:hidden property = "modo" value = ""/>
 	<html:hidden property = "hiddenFrame" value = "1"/>
 	
@@ -609,6 +622,8 @@
 		<tr>					
 			<td class="labelText">
 				<html:hidden name="ExpDatosGeneralesForm" property = "idPersona"/>
+				<html:hidden name="ExpDatosGeneralesForm" property = "idDireccion"/>
+				
 				<siga:Idioma key="expedientes.auditoria.literal.nombre"/>&nbsp(*)
 			</td>				
 			<td>
@@ -647,9 +662,10 @@
 			</td>
 <% if (bEditable){%>			
 			<td colspan="2" align="right">
-				<input type="button" class="button" alt="<%=buscar%>" id="searchPerson" name = "idButton"  onclick="return buscarPersona();" value="<%=buscar%>"/>&nbsp;
+				
+				<input type="button" class="button" alt="<%=seleccionarPersona%>" id="newPerson" name = "idButton"  onclick="return seleccionarPersona();" value="<%=seleccionarPersona%>"/>
 				&nbsp;
-				<input type="button" class="button" alt="<%=nuevoNoCol%>" id="newPerson" name = "idButton"  onclick="return altaPersona();" value="<%=nuevoNoCol%>"/>&nbsp;
+				<input type="button" class="button" alt="<%=nuevoNoCol%>" id="newPerson" name = "idButton"  onclick="return altaPersona();" value="<%=nuevoNoCol%>"/>
 			</td>	
 <%}else{%>
 			<td colspan="2"></td>
@@ -846,27 +862,40 @@
 	
 </div>	
 
-	<html:form action="/EXP_AuditoriaExpedientes.do" method="POST" target="mainWorkArea">
+	<html:form action="/EXP_AuditoriaExpedientes" method="POST" target="mainWorkArea">
 		<html:hidden property = "modo" value = ""/>
 		<html:hidden property = "avanzada" value = ""/>		
 	</html:form>
 
-	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="">
+	<html:form action="/CEN_BusquedaClientesModal" method="POST" target="mainWorkArea" type="">
 		<input type="hidden" name="actionModal" value="">
 		<input type="hidden" name="modo" value="abrirBusquedaModal">
 		<input type="hidden" name="clientes"	value="1">
 	</html:form>
 		
-	<html:form action="/CEN_DatosGenerales.do" method="POST" target="mainWorkArea">
-		<input type="hidden" name="actionModal" value="1">
-		<input type="hidden" name="modo" value="altaNoColegiado">
+	<html:form action="/EXP_Auditoria_Denunciado" method="POST" target="mainWorkArea">
+		<html:hidden property = "actionModal" value = ""/>
+		<html:hidden property = "modo" value = "altaNoColegiado"/>
+		<html:hidden property = "modal" value = "seleccion"/>
+		<html:hidden property = "idPersona" />
+		<html:hidden property = "idDireccion"/>
+		<html:hidden property = "idInstitucion"/>
+		
+		
+		
+		
 	</html:form>
 
-	<html:form action = "/JGR_MantenimientoJuzgados.do" method="POST" target="submitArea33">
+	<html:form action = "/JGR_MantenimientoJuzgados" method="POST" target="submitArea33">
 		<input type="hidden" name="modo"        value="buscarJuzgado">
 		<html:hidden property = "codigoExt" value=""/>
 		<html:hidden property = "nombreObjetoDestino" value=""/>
 	</html:form>
+	<html:form action="/CEN_DatosGenerales" method="POST" target="mainWorkArea">
+		<input type="hidden" name="actionModal" value="1">
+		<input type="hidden" name="modo" value="altaNoColegiado">
+	</html:form>
+	
 		
 <!-- INICIO: SUBMIT AREA -->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>

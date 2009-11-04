@@ -15,11 +15,13 @@
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants,com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.atos.utils.*"%>
-<%@ page import="com.siga.beans.ExpDenuncianteBean"%>
 <%@ page import="com.siga.expedientes.form.ExpPartesForm"%>
 <%@ page import="java.util.Properties"%>
 <%@ page import="java.util.ArrayList"%>
 <!-- JSP -->
+<bean:define id="pob" name="ExpPartesForm" property="poblacion" type="String"/>
+<bean:define id="poblacionExt" name="ExpPartesForm" property="poblacionExt" type="String"/>
+<bean:define id="idInstitucion" name="ExpPartesForm" property="idInstitucion" type="String"/>
 <%  
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
@@ -41,8 +43,13 @@
 	
 	
 	String dato[] = {userBean.getLocation(),(String)request.getAttribute("idTipoExpediente")};
-	String buscar = UtilidadesString.getMensajeIdioma(userBean, "general.search");
+	String buscarPersona = UtilidadesString.getMensajeIdioma(userBean, "general.boton.search");
+	String buscar = UtilidadesString.getMensajeIdioma(userBean, "envios.remitentes.elegirdireccion");
+	String nuevaDireccion = UtilidadesString.getMensajeIdioma(userBean, "envios.remitentes.nuevaDireccion");
 	
+	if (pob==null || pob.trim().equals("")) {
+		pob = poblacionExt;
+	}
 	request.removeAttribute("accion");
 	request.removeAttribute("idTipoExpediente");
 	
@@ -57,7 +64,7 @@
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
 		
 	<!-- Validaciones en Cliente -->
-	<html:javascript formName="ExpPartesForm" staticJavascript="false" />  
+	<html:javascript formName="ExpPartesForm" staticJavascript="true" />  
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 	
 </head>
@@ -85,9 +92,13 @@
 
 	<table  class="tablaCentralCamposMedia"  align="center">
 
-	<html:form action="/EXP_Auditoria_Partes.do" method="POST" target="submitArea">
+	<html:form action="/EXP_Auditoria_Partes" method="POST" target="submitArea">
 	<html:hidden property = "hiddenFrame" value = "1"/>
 	<html:hidden property = "modo" value = ""/>
+	<html:hidden property = "idPersona" />
+	<html:hidden property = "idDireccion"/>
+	<html:hidden property = "numColegiado"/>
+	<html:hidden property = "idInstitucion"/>
 
 
 	<tr>				
@@ -108,7 +119,7 @@
 	<!-- FILA -->
 		<tr>					
 			<td class="labelText">
-				<html:hidden name="ExpPartesForm" property = "idPersona"/>
+				
 				<siga:Idioma key="expedientes.auditoria.literal.nombre"/>&nbsp(*)
 			</td>				
 			<td>
@@ -116,7 +127,7 @@
 			</td>
 <% if (editable){%>			
 			<td colspan="2" align="right">
-				<input type="button" name="idButton" class="button" alt="<%=buscar%>" id="searchPerson"  onclick="return buscarPersona();" value="<%=buscar%>"/>&nbsp;
+				<input type="button" class="button" name="idButton" alt="<%=buscarPersona%>" id="idButton"  onclick="return buscarCliente();" value="<%=buscarPersona%>"/>&nbsp;
 			</td>	
 <%}else{%>
 			<td colspan="2"></td>
@@ -162,6 +173,78 @@
 		
 	</siga:ConjCampos>
 	
+	<siga:ConjCampos leyenda="expedientes.auditoria.literal.direccion">
+	<table width="100%">
+		
+		<!-- FILA -->
+		<tr>				
+
+		<td class="labelText">
+			<siga:Idioma key="expedientes.auditoria.literal.direccion"/>
+		</td>				
+		<td colspan="3">
+			<html:textarea cols="90" rows="2"  property="direccion"  name="ExpPartesForm"  onKeyDown="cuenta(this,100)" onChange="cuenta(this,100)" styleClass="boxConsulta" readonly="true"></html:textarea>
+		</td>	
+		</tr>		
+		
+		<!-- FILA -->
+		<tr>				
+
+		<td class="labelText">
+			<siga:Idioma key="expedientes.auditoria.literal.poblacion"/>
+		</td>				
+		<td>
+			<html:text name="ExpPartesForm" property="poblacion" size="30" maxlength="100" styleClass="boxConsulta" value="<%=pob%>"> readonly="true"></html:text>
+		</td>
+		<td class="labelText">
+			<siga:Idioma key="expedientes.auditoria.literal.codigopostal"/>
+		</td>		
+		<td>
+			<html:text name="ExpPartesForm" property="cpostal" size="5" maxlength="5" styleClass="boxConsulta" readonly="true"></html:text>
+		</td>
+		</tr>
+				
+		<!-- FILA -->
+		<tr>	
+		<td class="labelText">
+			<siga:Idioma key="expedientes.auditoria.literal.provincia"/>
+		</td>				
+		<td>
+			<html:text name="ExpPartesForm" property="provincia" size="20" maxlength="100" styleClass="boxConsulta" readonly="true"></html:text>
+		</td>
+		<td class="labelText">
+			<siga:Idioma key="expedientes.auditoria.literal.pais"/>
+		</td>				
+		<td>
+			<html:text name="ExpPartesForm" property="pais" size="20" maxlength="100" styleClass="boxConsulta" readonly="true"></html:text>
+		</td>				
+		</tr>
+		
+		<!-- FILA -->
+		<tr>				
+		<td class="labelText">
+			<siga:Idioma key="expedientes.auditoria.literal.telefono"/>
+		</td>				
+		<td colspan="2">
+			<html:text name="ExpPartesForm" property="telefono" size="14" maxlength="20" styleClass="boxConsulta" readonly="true"></html:text>
+		</td>
+		<td></td>
+		</tr>
+		<tr>
+		<td colspan="4" align="right">
+			<% if (accion.equals("nuevo") || accion.equals("edicion") ){ %>
+				<input type="button" name="idButton" class="button" alt="<%=buscar%>" id="buscarDir" onclick="return buscarDireccion();" value="<%=buscar%>"/>&nbsp;
+				<input type="button" name="idButton" class="button" alt="<%=nuevaDireccion%>" id="buscarDir" onclick="return nuevaDireccion();" value="<%=nuevaDireccion%>"/>&nbsp;
+			<% } %>
+		</td>
+		</tr>				
+		
+		</table>
+
+	</siga:ConjCampos>
+	
+	
+	
 	<siga:ConjCampos leyenda="expedientes.auditoria.literal.rol">
 
 	<table class="tablaCampos" align="center">
@@ -191,6 +274,37 @@
 
 </table>
 
+<html:form action="/CEN_BusquedaClientesModal" method="POST"
+	target="mainWorkArea" type="">
+	<input type="hidden" name="actionModal" value="">
+	<input type="hidden" name="modo" value="abrirBusquedaModal">
+	<input type="hidden" name="clientes" value="1">
+	<input type="hidden" name="permitirAniadirNuevo" value="S">
+</html:form>
+<html:form action="/ENV_Destinatario_Manual" method="POST" target="submitArea">
+	<input type="hidden" name="actionModal"   value="">
+	<input type="hidden" name="modo"          value="">
+	<input type="hidden" name="idPersona"     value="">
+	<input type="hidden" name="idInstitucion" value="">
+	<input type="hidden" name="idTipoEnvio"   value="">
+</html:form>
+
+<html:form method="post" action="/CEN_ConsultasDirecciones">
+
+	<!-- Campo obligatorio -->
+	<html:hidden property="modo" value="" />
+	<input type="hidden" name="nombreUsuario" value="" />
+	<input type="hidden" name="numeroUsuario" value="" />
+	<input type='hidden' name="idPersona" value="" />
+	<input type="hidden" name="idInstitucion" value="">
+	<input type='hidden' name="accion" value="">
+	<!-- RGG: cambio a formularios ligeros -->
+	<input type="hidden" name="tablaDatosDinamicosD">
+	<input type="hidden" name="actionModal" value="">
+	<html:hidden property="vieneDe" value="" />
+
+</html:form>
+
 
 
 	<!-- FIN: CAMPOS -->
@@ -200,6 +314,8 @@
 		<siga:ConjBotonesAccion botones="<%=botones%>" modal="M" />
 
 	<!-- FIN: BOTONES REGISTRO -->
+
+
 
 	
 	<!-- INICIO: SCRIPTS BOTONES -->
@@ -211,13 +327,15 @@
 		function accionGuardarCerrar() 
 		{
 			sub();		
+			
 			if (validateExpPartesForm(document.ExpPartesForm)){
 				<%if (accion.equals("nuevo")){%>
-					document.forms[0].modo.value="insertar";
+					document.ExpPartesForm.modo.value="insertar";
 				<%}else{%>
-					document.forms[0].modo.value="modificar";
+					document.ExpPartesForm.modo.value="modificar";
 				<%}%>
-				ExpPartesForm.submit();
+
+				document.ExpPartesForm.submit();
 			}else{
 			
 				fin();
@@ -242,18 +360,96 @@
 		{		
 			parent.location.reload();
 		}
-		
-		function buscarPersona()
-		{					
+		function buscarCliente()
+		{		
+			
 			var resultado=ventaModalGeneral("busquedaClientesModalForm","G");
 			if (resultado!=undefined && resultado[0]!=undefined ){
-				document.forms[0].idPersona.value=resultado[0];
-				document.forms[0].numColegiado.value=resultado[2];
-				document.forms[0].nif.value=resultado[3];
-				document.forms[0].nombre.value=resultado[4];
-				document.forms[0].primerApellido.value=resultado[5];
-				document.forms[0].segundoApellido.value=resultado[6];
+				document.ExpPartesForm.idPersona.value       = resultado[0];
+     			document.ExpPartesForm.idInstitucion.value   = resultado[1];
+				document.ExpPartesForm.numColegiado.value    = resultado[2];
+				document.ExpPartesForm.nif.value             = resultado[3];
+				document.ExpPartesForm.nombre.value          = resultado[4];
+				document.ExpPartesForm.primerApellido.value  = resultado[5];
+				document.ExpPartesForm.segundoApellido.value = resultado[6]; 
+
+				
+				// Si tiene una unica direccion, la seleccionamos. Sino resetamos la direccion
+				if (resultado[7] != undefined) {
+					document.ExpPartesForm.direccion.value   = resultado[7];
+					document.ExpPartesForm.poblacion.value   = resultado[8];
+					document.ExpPartesForm.provincia.value   = resultado[9];
+					document.ExpPartesForm.pais.value        = resultado[10];
+					document.ExpPartesForm.cpostal.value     = resultado[11];
+					document.ExpPartesForm.idDireccion.value = resultado[12];
+
+					if (trim(resultado[13])=="") document.forms[0].telefono.value=resultado[14]; // el movil
+					else document.ExpPartesForm.telefono.value=resultado[13];
+				}
+				else {
+					document.ExpPartesForm.direccion.value="";
+					document.ExpPartesForm.poblacion.value="";
+					document.ExpPartesForm.provincia.value="";
+					document.ExpPartesForm.pais.value="";
+					document.ExpPartesForm.cpostal.value="";
+					document.ExpPartesForm.idDireccion.value="";
+					document.ExpPartesForm.telefono.value="";
+				}
+			}		
+		}
+		
+		//Asociada al boton Buscar Direccion -->
+		function buscarDireccion() 
+		{
+			document.RemitentesForm.idPersona.value = document.ExpPartesForm.idPersona.value;
+			document.RemitentesForm.idInstitucion.value = document.ExpPartesForm.idInstitucion.value;
+			document.RemitentesForm.idTipoEnvio.value = "-1";		
+			document.RemitentesForm.modo.value = "buscar";
+			
+			var direccion = ventaModalGeneral("RemitentesForm","G");
+			if (direccion!=undefined && direccion[0]!=undefined) {
+				document.ExpPartesForm.direccion.value=direccion[0];
+				document.ExpPartesForm.poblacion.value=direccion[1];
+				document.ExpPartesForm.provincia.value=direccion[2];
+				document.ExpPartesForm.pais.value=direccion[3];
+				document.ExpPartesForm.cpostal.value=direccion[4];
+				document.ExpPartesForm.idDireccion.value=direccion[11];
+
+				if (trim(direccion[13])=="") document.ExpPartesForm.telefono.value=direccion[14]; // el movil
+				else document.ExpPartesForm.telefono.value=direccion[13];
+			} 
+		return;
+		}
+		
+		function nuevaDireccion() 
+		{
+			
+			
+			document.consultaDireccionesForm.idPersona.value = document.ExpPartesForm.idPersona.value;
+			document.consultaDireccionesForm.idInstitucion.value = document.ExpPartesForm.idInstitucion.value;
+			document.consultaDireccionesForm.vieneDe.value = '1';
+			
+			document.consultaDireccionesForm.modo.value = "nuevo";
+			
+	    	var direccion = ventaModalGeneral(document.consultaDireccionesForm.name, "G");
+	    	if(direccion){
+	    	document.ExpPartesForm.direccion.value=direccion[0];
+	    	
+	    	if (trim(direccion[1])=="") document.ExpPartesForm.poblacion.value=direccion[15]; // el movil
+				else document.ExpPartesForm.poblacion.value=direccion[1];
+				document.ExpPartesForm.poblacion.value=direccion[1];
+				document.ExpPartesForm.provincia.value=direccion[2];
+				document.ExpPartesForm.pais.value=direccion[3];
+				document.ExpPartesForm.cpostal.value=direccion[4];
+				document.ExpPartesForm.idDireccion.value=direccion[11];
+
+				if (trim(direccion[13])=="") document.ExpPartesForm.telefono.value=direccion[14]; // el movil
+				else document.ExpPartesForm.telefono.value=direccion[13];
+			}else{
+				accionCerrar();
 			}
+	    	
+			
 		}
 
 	</script>
@@ -264,11 +460,8 @@
 
 </div>
 
-	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="">
-		<input type="hidden" name="actionModal" value="">
-		<input type="hidden" name="modo" value="abrirBusquedaModal">
-		<input type="hidden" name="clientes"	value="1">
-	</html:form>
+
+
 <!-- FIN ******* CAPA DE PRESENTACION ****** -->
 		
 <!-- INICIO: SUBMIT AREA -->

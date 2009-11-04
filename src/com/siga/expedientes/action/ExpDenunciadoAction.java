@@ -12,12 +12,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenClienteAdm;
+import com.siga.beans.CenColegiadoAdm;
+import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
@@ -27,6 +32,7 @@ import com.siga.beans.ExpDenunciadoAdm;
 import com.siga.beans.ExpDenunciadoBean;
 import com.siga.beans.ExpExpedienteAdm;
 import com.siga.beans.ExpExpedienteBean;
+import com.siga.censo.form.BusquedaClientesForm;
 import com.siga.expedientes.form.ExpDenunciadoForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -36,7 +42,60 @@ import com.siga.general.SIGAException;
  * Action Denunciantes de un expediente
  */
 public class ExpDenunciadoAction extends MasterAction {
+	
+	/** 
+	 *  Funcion que atiende a las peticiones. Segun el valor del parametro modo del formulario ejecuta distintas acciones
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */
+	
+	public ActionForward executeInternal (ActionMapping mapping,
+							      ActionForm formulario,
+							      HttpServletRequest request, 
+							      HttpServletResponse response) throws SIGAException {
 
+		String mapDestino = "exception";
+		MasterForm miForm = null;
+
+		try { 
+			
+				miForm = (MasterForm) formulario;
+				if (miForm != null) {
+					String accion = miForm.getModo();
+
+					if (accion != null && accion.equalsIgnoreCase("seleccion")){
+						
+						mapDestino = seleccion(mapping, miForm, request, response);
+						
+					
+					}else if (accion != null  && accion.equalsIgnoreCase("editarDenunciado")){
+						
+						mapDestino = editarDenunciado(mapping, miForm, request, response);
+						
+					
+					}else {
+						return super.executeInternal(mapping,formulario,request,response);
+					}
+				}
+			
+
+			// Redireccionamos el flujo a la JSP correspondiente
+			if (mapDestino == null)	{ 
+			    throw new ClsExceptions("El ActionMapping no puede ser nulo");
+			}
+			return mapping.findForward(mapDestino);
+		} catch (SIGAException es) {
+			throw es;
+		} catch (Exception e) {
+			throw new SIGAException("messages.general.error",e,new String[] {"modulo.censo"});
+		}
+	}
+	
+	
 	/* (non-Javadoc)
 	 * @see com.siga.general.MasterAction#abrir(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
@@ -136,7 +195,81 @@ public class ExpDenunciadoAction extends MasterAction {
 	    
 	    return mostrarRegistro(mapping, formulario, request, response, true);
 	}
+	protected String editarDenunciado(ActionMapping mapping, MasterForm formulario,
+			HttpServletRequest request, HttpServletResponse response)
+			throws SIGAException {
+	    
+		try{
+		    ExpDenunciadoForm form = (ExpDenunciadoForm)formulario;
+	        ExpDenunciadoAdm DenunciadoAdm = new ExpDenunciadoAdm (this.getUserBean(request));
+			HttpSession ses = request.getSession();
+			UsrBean usr = this.getUserBean(request);
+	        		
+	
+			String idInstitucion = usr.getLocation();
+//			String idInstitucion_TipoExpediente = form.getIdInstitucion_TipoExpediente();
+//			String idTipoExpediente = form.getIdTipoExpediente();
+//			String numExpediente = form.getNumExpediente();
+//			String anioExpediente = form.getAnioExpediente();
+	        String idDenunciado = form.getIdPersona();
+	        String idDireccion = form.getIdDireccion();
+	        form.setIdInstitucion(idInstitucion);
+	        
+//			Hashtable hash = new Hashtable();		
+//			hash.put(ExpDenunciadoBean.C_IDINSTITUCION,idInstitucion);
+//			hash.put(ExpDenunciadoBean.C_IDINSTITUCION_TIPOEXPEDIENTE,idInstitucion_TipoExpediente);
+//			hash.put(ExpDenunciadoBean.C_IDTIPOEXPEDIENTE,idTipoExpediente);
+//			hash.put(ExpDenunciadoBean.C_NUMEROEXPEDIENTE,numExpediente);
+//			hash.put(ExpDenunciadoBean.C_ANIOEXPEDIENTE,anioExpediente);
+//			hash.put(ExpDenunciadoBean.C_IDDENUNCIADO,idDenunciado);
+//			
+	        
+	        
+	        
+	        CenPersonaAdm personaAdm = new CenPersonaAdm (this.getUserBean(request));
+            CenClienteAdm clienteAdm = new CenClienteAdm (this.getUserBean(request));
 
+	        CenPersonaBean persona = personaAdm.getIdentificador(new Long(idDenunciado));
+	        
+	        
+	        
+
+	        // hacemos los set del formulario       
+	        form.setNombre(persona.getNombre());
+	        form.setNif(persona.getNIFCIF());                
+
+	        form.setPrimerApellido(persona.getApellido1());
+	        form.setSegundoApellido(persona.getApellido2());
+	        if(idDireccion!=null && !idDireccion.trim().equals("")){
+	        	Hashtable direccion = clienteAdm.getDirecciones(new Long(idDenunciado),new Integer(idInstitucion),new Long(idDireccion));
+	        	 form.setDireccion(UtilidadesHash.getString(direccion, CenDireccionesBean.C_DOMICILIO));
+	 	        form.setPoblacion(UtilidadesHash.getString(direccion, "POBLACION"));
+	 	        form.setPoblacionExt(UtilidadesHash.getString(direccion, CenDireccionesBean.C_POBLACIONEXTRANJERA));
+	 	        form.setProvincia(UtilidadesHash.getString(direccion, "PROVINCIA"));
+	 	        form.setPais(UtilidadesHash.getString(direccion, "PAIS"));
+	 	        form.setCpostal(UtilidadesHash.getString(direccion, CenDireccionesBean.C_CODIGOPOSTAL));
+	 	        
+	 	        String telefono = UtilidadesHash.getString(direccion, CenDireccionesBean.C_TELEFONO1);
+	 	        if (telefono == null || telefono.equals("")) telefono = UtilidadesHash.getString(direccion, CenDireccionesBean.C_MOVIL);
+	 	       form.setTelefono(telefono);
+	        }
+	        ExpDenunciadoBean bean = new ExpDenunciadoBean();
+	        bean.setIdPersona(new Long(idDenunciado));
+	        bean.setIdInstitucion(new Integer(idInstitucion));
+	        
+	        ses.setAttribute("DATABACKUP_BEAN",bean);	 
+	        
+        	request.setAttribute("accion","edicionDenunciado");
+        
+		}catch(Exception e){
+			throwExcp("messages.general.error",new String[] {"modulo.expediente"},e,null); 
+		}
+
+		return "mostrar";
+	}
+	
+	
+	
 	/* (non-Javadoc)
 	 * @see com.siga.general.MasterAction#ver(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
@@ -174,6 +307,22 @@ public class ExpDenunciadoAction extends MasterAction {
 			String anioExpediente = (String)vOcultos.elementAt(4);
 	        String idDenunciado = (String)vOcultos.elementAt(5);
 	        
+	        //obtenemos datos del colegiado
+	        Hashtable hashCol = new Hashtable();
+	        CenColegiadoAdm colAdm = new CenColegiadoAdm (this.getUserBean(request));
+	        hashCol.put(CenColegiadoBean.C_IDINSTITUCION,idInstitucion);        
+	        hashCol.put(CenColegiadoBean.C_IDPERSONA,idDenunciado);
+	        Vector datosCol = colAdm.select(hashCol);
+	        
+	        if(datosCol!=null && datosCol.size()>0){
+	        	CenColegiadoBean cBean = (CenColegiadoBean)datosCol.elementAt(0);
+	        	form.setNumColegiado(cBean.getNColegiado());
+	        }
+	        else 
+	        	form.setNumColegiado("");
+	        
+	        
+	        
 			Hashtable hash = new Hashtable();		
 			hash.put(ExpDenunciadoBean.C_IDINSTITUCION,idInstitucion);
 			hash.put(ExpDenunciadoBean.C_IDINSTITUCION_TIPOEXPEDIENTE,idInstitucion_TipoExpediente);
@@ -189,28 +338,46 @@ public class ExpDenunciadoAction extends MasterAction {
             CenClienteAdm clienteAdm = new CenClienteAdm (this.getUserBean(request));
 
 	        CenPersonaBean persona = personaAdm.getIdentificador(bean.getIdPersona());
-	        Hashtable direccion = clienteAdm.getDirecciones(bean.getIdPersona(),bean.getIdInstitucion(), bean.getIdDireccion());
-
-	        // hacemos los set del formulario       
-	        form.setNombre(persona.getNombre());
-	        form.setNif(persona.getNIFCIF());                
-
-	        form.setPrimerApellido(persona.getApellido1());
-	        form.setSegundoApellido(persona.getApellido2());
-	        form.setDireccion(UtilidadesHash.getString(direccion, CenDireccionesBean.C_DOMICILIO));
-	        form.setPoblacion(UtilidadesHash.getString(direccion, "POBLACION"));
-	        form.setPoblacionExt(UtilidadesHash.getString(direccion, CenDireccionesBean.C_POBLACIONEXTRANJERA));
-	        form.setProvincia(UtilidadesHash.getString(direccion, "PROVINCIA"));
-	        form.setPais(UtilidadesHash.getString(direccion, "PAIS"));
-	        form.setCpostal(UtilidadesHash.getString(direccion, CenDireccionesBean.C_CODIGOPOSTAL));
 	        
-	        String telefono = UtilidadesHash.getString(direccion, CenDireccionesBean.C_TELEFONO1);
-	        if (telefono == null || telefono.equals("")) telefono = UtilidadesHash.getString(direccion, CenDireccionesBean.C_MOVIL);
-	 
-	        form.setTelefono(telefono);
+	        if(bean.getIdDireccion()!=null && !bean.getIdDireccion().equals("")){
+		        Hashtable direccion = clienteAdm.getDirecciones(bean.getIdPersona(),bean.getIdInstitucion(), bean.getIdDireccion());
+	
+		        // hacemos los set del formulario       
+		        form.setNombre(persona.getNombre());
+		        form.setNif(persona.getNIFCIF());                
+	
+		        form.setPrimerApellido(persona.getApellido1());
+		        form.setSegundoApellido(persona.getApellido2());
+		        form.setDireccion(UtilidadesHash.getString(direccion, CenDireccionesBean.C_DOMICILIO));
+		        form.setPoblacion(UtilidadesHash.getString(direccion, "POBLACION"));
+		        form.setPoblacionExt(UtilidadesHash.getString(direccion, CenDireccionesBean.C_POBLACIONEXTRANJERA));
+		        form.setProvincia(UtilidadesHash.getString(direccion, "PROVINCIA"));
+		        form.setPais(UtilidadesHash.getString(direccion, "PAIS"));
+		        form.setCpostal(UtilidadesHash.getString(direccion, CenDireccionesBean.C_CODIGOPOSTAL));
+		        
+		        String telefono = UtilidadesHash.getString(direccion, CenDireccionesBean.C_TELEFONO1);
+		        if (telefono == null || telefono.equals("")) telefono = UtilidadesHash.getString(direccion, CenDireccionesBean.C_MOVIL);
+		 
+		        form.setTelefono(telefono);
+	        }else{
+	        	
+	        	form.setNombre("");
+		        form.setNif("");                
+		        
+		        form.setPrimerApellido("");
+		        form.setSegundoApellido("");
+		        form.setDireccion("");
+		        form.setPoblacion("");
+		        form.setPoblacionExt("");
+		        form.setProvincia("");
+		        form.setPais("");
+		        form.setCpostal("");
+		 
+		        form.setTelefono("");
+	        }
 	        
         	ses.setAttribute("DATABACKUP_BEAN",bean); // hay que etiquetarlo como DATABACKUP_BEAN pq sino se borra con las ventanas modales que se abren (buscar cliente, buscar direccion)
-
+        	
         	if (bEditable){
 	        	request.setAttribute("accion","edicion");
 	        }
@@ -328,4 +495,15 @@ public class ExpDenunciadoAction extends MasterAction {
 		}
 	    return exitoModal("messages.inserted.success",request);
 	}
+	
+	protected String seleccion(ActionMapping mapping, MasterForm formulario,	HttpServletRequest request, HttpServletResponse response) throws SIGAException 
+	{
+        ExpDenunciadoForm form = (ExpDenunciadoForm)formulario;
+//        request.setAttribute("idPersona",form.getIdPersona());
+//        request.setAttribute("idDireccion",form.getIdDireccion());
+        
+		return "seleccion";
+	}
+	
+	
 }

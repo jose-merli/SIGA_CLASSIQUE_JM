@@ -16,9 +16,12 @@ import javax.servlet.http.HttpSession;
 import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsExceptions;
+import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
+import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.ExpCampoTipoExpedienteAdm;
@@ -52,6 +55,7 @@ public class ExpPartesAction extends MasterAction {
 	                
 			//Datos generales para todas las pestanhas
 			String idInstitucion = request.getParameter("idInstitucion");
+			form.setIdInstitucion(idInstitucion);
 			String idInstitucion_TipoExpediente = request.getParameter("idInstitucion_TipoExpediente");
 			String idTipoExpediente = request.getParameter("idTipoExpediente");
 			String numExpediente = request.getParameter("numeroExpediente");
@@ -166,7 +170,7 @@ public class ExpPartesAction extends MasterAction {
 		try{
 		    ExpPartesForm form = (ExpPartesForm)formulario;
 	        ExpPartesAdm partesAdm = new ExpPartesAdm (this.getUserBean(request));
-	        CenPersonaAdm perAdm = new CenPersonaAdm (this.getUserBean(request));
+	        
 	        CenColegiadoAdm colAdm = new CenColegiadoAdm (this.getUserBean(request));
 			HttpSession ses = request.getSession();
 			HashMap datosExpediente = (HashMap)ses.getAttribute("DATABACKUP");
@@ -182,38 +186,63 @@ public class ExpPartesAction extends MasterAction {
 		        String idParte = (String)vOcultos.elementAt(5);
 		        String idPersona = (String)vOcultos.elementAt(6);
 		        String idRol = (String)vOcultos.elementAt(7);
-		        String nombreRol = UtilidadesString.mostrarDatoJSP((String)vOcultos.elementAt(8));
-		        
+		        String nombreRol = (String)vOcultos.elementAt(8);
+		        String idDireccion = (String)vOcultos.elementAt(9);
 		        request.setAttribute("idTipoExpediente",idTipoExpediente);	        
+		        
+		        form.setIdDireccion(idDireccion);
+		        form.setIdPersona(idPersona);
 		        form.setIdRol(idRol);
 		        form.setRolSel(nombreRol);
-	        
-		        //obtenemos datos de la persona
-		        Hashtable hashPersona = new Hashtable();	
-		        hashPersona.put(CenPersonaBean.C_IDPERSONA,idPersona);
-		        Vector datosPersona = perAdm.select(hashPersona);
-		        CenPersonaBean pBean = (CenPersonaBean)datosPersona.elementAt(0);
+		        form.setIdInstitucion(idInstitucion);
 		        
-		        form.setNombre(pBean.getNombre());
-		        form.setPrimerApellido(pBean.getApellido1());
-		        form.setSegundoApellido(pBean.getApellido2());
-		        form.setNif(pBean.getNIFCIF());
-		        form.setIdPersona(pBean.getIdPersona().toString());
 		        
 		        //obtenemos datos del colegiado
 		        Hashtable hashCol = new Hashtable();
 		        hashCol.put(CenColegiadoBean.C_IDINSTITUCION,idInstitucion);        
 		        hashCol.put(CenColegiadoBean.C_IDPERSONA,idPersona);
 		        Vector datosCol = colAdm.select(hashCol);
-
+		        
 		        if(datosCol!=null && datosCol.size()>0){
 		        	CenColegiadoBean cBean = (CenColegiadoBean)datosCol.elementAt(0);
 		        	form.setNumColegiado(cBean.getNColegiado());
 		        }
 		        else 
 		        	form.setNumColegiado("");
-		        		        	
+		        CenPersonaAdm personaAdm = new CenPersonaAdm (this.getUserBean(request));
+		        CenPersonaBean persona = personaAdm.getIdentificador(new Long(idPersona));
 		        
+		        form.setNombre(persona.getNombre());
+		        form.setNif(persona.getNIFCIF());                
+		        form.setPrimerApellido(persona.getApellido1());
+		        form.setSegundoApellido(persona.getApellido2());
+		        
+		        CenClienteAdm clienteAdm = new CenClienteAdm (this.getUserBean(request));
+		        if(idDireccion!=null && !idDireccion.trim().equals("")){
+			        Hashtable direccion = clienteAdm.getDirecciones(new Long(idPersona),new Integer(idInstitucion), new Long(idDireccion));
+			        form.setDireccion(UtilidadesHash.getString(direccion, CenDireccionesBean.C_DOMICILIO));
+			        form.setPoblacion(UtilidadesHash.getString(direccion, "POBLACION"));
+			        form.setPoblacionExt(UtilidadesHash.getString(direccion, CenDireccionesBean.C_POBLACIONEXTRANJERA));
+			        form.setProvincia(UtilidadesHash.getString(direccion, "PROVINCIA"));
+			        form.setPais(UtilidadesHash.getString(direccion, "PAIS"));
+			        form.setCpostal(UtilidadesHash.getString(direccion, CenDireccionesBean.C_CODIGOPOSTAL));
+			        
+			        String telefono = UtilidadesHash.getString(direccion, CenDireccionesBean.C_TELEFONO1);
+			        if (telefono == null || telefono.equals("")) telefono = UtilidadesHash.getString(direccion, CenDireccionesBean.C_MOVIL);
+			 
+			        form.setTelefono(telefono);
+		        }else{
+		        	
+			        form.setDireccion("");
+			        form.setPoblacion("");
+			        form.setPoblacionExt("");
+			        form.setProvincia("");
+			        form.setPais("");
+			        form.setCpostal("");
+			 
+			        form.setTelefono("");
+		        	
+		        }
 		        
 		        
 		        if (bEditable){ //pensando en el update
@@ -235,6 +264,7 @@ public class ExpPartesAction extends MasterAction {
 				
 				
 				 Hashtable hash = (Hashtable)datosExpediente.get("datosGenerales");
+				 form.setIdInstitucion(hash.get(ExpExpedienteBean.C_IDINSTITUCION).toString());
 				 request.setAttribute("idTipoExpediente",hash.get(ExpExpedienteBean.C_IDTIPOEXPEDIENTE));
 				
 				
@@ -275,6 +305,7 @@ public class ExpPartesAction extends MasterAction {
 	        
 	        // Actualizamos los datos del expediente
 	        bean.setIdPersona(Integer.valueOf(form.getIdPersona()));
+	        bean.setIdDireccion(form.getIdDireccion());
 	        bean.setIdRol(Integer.valueOf(form.getIdRol()));        
 	        
 	        /*if (parAdm.update(bean)){
@@ -361,6 +392,7 @@ public class ExpPartesAction extends MasterAction {
 		    parBean.setIdParte(parAdm.getNewIdParte(hash));
 		    parBean.setIdPersona(Integer.valueOf(form.getIdPersona()));
 		    parBean.setIdRol(Integer.valueOf(form.getIdRol()));
+		    parBean.setIdDireccion(form.getIdDireccion());
 		    
 		    //Ahora procedemos a insertarlo
 		    /*if (parAdm.insert(parBean))

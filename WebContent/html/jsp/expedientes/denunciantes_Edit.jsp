@@ -45,6 +45,8 @@
 	String nuevaDireccion = UtilidadesString.getMensajeIdioma(userBean, "envios.remitentes.nuevaDireccion");
 	
 	
+	
+	
 	request.removeAttribute("accion");
 	
 	 String anioExpediente = (String)request.getAttribute("anioExpediente");
@@ -95,12 +97,13 @@
 
 	<table  class="tablaCentralCamposMedia"  align="center">
 
-	<html:form action="/EXP_Auditoria_Denunciante.do" method="POST" target="submitArea">
+	<html:form action="/EXP_Auditoria_Denunciante" method="POST" target="submitArea">
 	<html:hidden property = "hiddenFrame" value = "1"/>
 	<html:hidden property = "modo" value = ""/>
 
-	<html:hidden property = "idPersona"   value = ""/>
-	<html:hidden property = "idDireccion" value = ""/>
+	<html:hidden property = "idPersona" />
+	<html:hidden property = "idDireccion"/>
+	<html:hidden property = "numColegiado"/>
 	
 	<html:hidden property = "idInstitucion" value = "<%=idInstitucion%>"/>
 	<html:hidden property = "idTipoExpediente" value = "<%=idTipoExpediente%>"/>
@@ -156,6 +159,7 @@
 <% if (accion.equals("nuevo")){%>			
 			<td colspan="4" align="right">
 				<input type="button" class="button" name="idButton" alt="<%=buscarPersona%>" id="idButton"  onclick="return buscarCliente();" value="<%=buscarPersona%>"/>&nbsp;
+				
 			</td>	
 <%}else{%>
 			<td colspan="4"></td>
@@ -220,8 +224,10 @@
 		<td colspan="2">
 			<html:text name="ExpDenuncianteForm" property="telefono" size="14" maxlength="20" styleClass="boxConsulta" readonly="true"></html:text>
 		</td>
-		
-		<td colspan="" align="right">
+		<td></td>
+		</tr>
+		<tr>
+		<td colspan="4" align="right">
 			<% if (accion.equals("nuevo") || accion.equals("edicion") ){ %>
 				<input type="button" name="idButton" class="button" alt="<%=buscar%>" id="buscarDir" onclick="return buscarDireccion();" value="<%=buscar%>"/>&nbsp;
 				<input type="button" name="idButton" class="button" alt="<%=nuevaDireccion%>" id="buscarDir" onclick="return nuevaDireccion();" value="<%=nuevaDireccion%>"/>&nbsp;
@@ -240,7 +246,7 @@
 </html:form>
 </table>
 
-<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="">
+<html:form action="/CEN_BusquedaClientesModal" method="POST" target="mainWorkArea" type="">
 	<input type="hidden" name="actionModal" value="">
 	<input type="hidden" name="modo" value="abrirBusquedaModal">
 	<input type="hidden" name="clientes"	value="1">
@@ -249,7 +255,7 @@
 </html:form>
 
 
-<html:form action="/ENV_Destinatario_Manual.do" method="POST" target="submitArea">
+<html:form action="/ENV_Destinatario_Manual" method="POST" target="submitArea">
 	<input type="hidden" name="actionModal"   value="">
 	<input type="hidden" name="modo"          value="">
 	<input type="hidden" name="idPersona"     value="">
@@ -257,7 +263,7 @@
 	<input type="hidden" name="idTipoEnvio"   value="">
 </html:form>
 
-<html:form method="post" action="/CEN_ConsultasDirecciones.do">
+<html:form method="post" action="/CEN_ConsultasDirecciones">
 		
 			<!-- Campo obligatorio -->
 			<html:hidden property = "modo" value = ""/>
@@ -273,7 +279,10 @@
 			
 		</html:form>
 
-
+<html:form action="/CEN_DatosGenerales" method="POST" target="mainWorkArea">
+		<input type="hidden" name="actionModal" value="1">
+		<input type="hidden" name="modo" value="altaNoColegiado">
+	</html:form>
 
 
 	<!-- FIN: CAMPOS -->
@@ -329,9 +338,12 @@
 		
 		function buscarCliente()
 		{		
+			
 			var resultado=ventaModalGeneral("busquedaClientesModalForm","G");
 			if (resultado!=undefined && resultado[0]!=undefined ){
 				document.forms[0].idPersona.value       = resultado[0];
+				document.forms[0].idInstitucion.value   = resultado[1];
+				document.forms[0].numColegiado.value    = resultado[2];
 				document.forms[0].nif.value             = resultado[3];
 				document.forms[0].nombre.value          = resultado[4];
 				document.forms[0].primerApellido.value  = resultado[5];
@@ -404,12 +416,23 @@
 		function nuevaDireccion() 
 		{
 			
-			if(document.forms[0].idPersona.value.length == 0) {					
-				alert ('<siga:Idioma key="factSJCS.resumenPagos.literal.seleccionarPersona"/>');
-				return;
-			}
-			document.consultaDireccionesForm.idPersona.value = document.forms[0].idPersona.value;
-			document.consultaDireccionesForm.idInstitucion.value = document.forms[0].idInstitucion.value;
+			<%  if(accion.equals("nuevo")) { %>
+					if(document.forms[0].idPersona.value.length == 0) {					
+						alert ('<siga:Idioma key="factSJCS.resumenPagos.literal.seleccionarPersona"/>');
+						return;
+					}
+					document.consultaDireccionesForm.idPersona.value = document.forms[0].idPersona.value;
+					document.consultaDireccionesForm.idInstitucion.value = document.forms[0].idInstitucion.value;		
+			<%  } 
+				else { 
+					ExpDenuncianteBean bean = (ExpDenuncianteBean)ses.getAttribute("DATABACKUP_BEAN");
+					if (bean != null) {
+				%>
+						document.consultaDireccionesForm.idPersona.value     = "<%=bean.getIdPersona()%>";
+						document.consultaDireccionesForm.idInstitucion.value = "<%=bean.getIdInstitucion()%>"
+			     <% }
+			   } %>
+			
 			document.consultaDireccionesForm.vieneDe.value = '1';
 			
 			document.consultaDireccionesForm.modo.value = "nuevo";
@@ -432,14 +455,9 @@
 				accionCerrar();
 			}
 	    	
-	    	
-	    	
-	    	
-				
-	    	
-  	  		
 			
 		}
+		
 	
 
 	</script>

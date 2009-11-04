@@ -455,8 +455,7 @@
 	         
 
 			if(checkPostal) {
-				// valido que sea una direccion postal
-				if((trim(document.consultaDireccionesForm.domicilio.value)=="") ||
+ 				if((trim(document.consultaDireccionesForm.domicilio.value)=="") ||
 					((trim(document.consultaDireccionesForm.pais.value)==idEspana) && (trim(document.consultaDireccionesForm.provincia.value)=="")) ||
 					((trim(document.consultaDireccionesForm.pais.value)==idEspana) && (trim(document.consultaDireccionesForm.poblacion.value)=="")) ||
 					(trim(document.consultaDireccionesForm.codigoPostal.value)=="")) {
@@ -730,7 +729,7 @@
 	<!-- INICIO: CAMPOS -->
 	<!-- Zona de campos de busqueda o filtro -->
 
-	<html:form action="/CEN_ConsultasDirecciones.do" method="POST" target="resultado">
+  	<html:form action="/CEN_ConsultasDirecciones" method="POST" target="resultado">
 		<html:hidden property="modo" value="cerrar"/>
 		<input type="hidden"  name="idTipoDireccionNew"  value="">
 		<input type="hidden" name="modificarPreferencias" value="">

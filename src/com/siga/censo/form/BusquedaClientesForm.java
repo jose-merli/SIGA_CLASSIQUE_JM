@@ -19,10 +19,14 @@ import com.siga.general.MasterForm;
 	// BLOQUE PARA EL FORMULARIO DE BUSQUEDA SIMPLE 
 
  	
- 	String fechaNacimientoDesde="", fechaNacimientoHasta="", fechaIncorporacionDesde="", fechaIncorporacionHasta="",fechaAltaHasta="",fechaAltaDesde="";
+ 
+	String fechaNacimientoDesde="", fechaNacimientoHasta="", fechaIncorporacionDesde="", fechaIncorporacionHasta="",fechaAltaHasta="",fechaAltaDesde="";
  	private String solBusqueda="", codigo = "";
  	String permitirAniadirNuevo= "N";
+ 	String idPersona=  null;
+ 	String idInstitucion;
 
+	
 
  	
  	/**
@@ -544,5 +548,17 @@ import com.siga.general.MasterForm;
 	}
 	public void setPermitirAniadirNuevo(String permitirAniadirNuevo) {
 		this.permitirAniadirNuevo = permitirAniadirNuevo;
+	}
+	public String getIdPersona() {
+		return idPersona;
+	}
+	public void setIdPersona(String idPersona) {
+		this.idPersona = idPersona;
+	}
+	public String getIdInstitucion() {
+		return idInstitucion;
+	}
+	public void setIdInstitucion(String idInstitucion) {
+		this.idInstitucion = idInstitucion;
 	}
 }

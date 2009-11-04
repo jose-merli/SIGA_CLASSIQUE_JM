@@ -22,6 +22,7 @@ public class ExpPartesBean extends MasterBean {
 	private Integer idPersona;
 	private Integer idRol;
 	private String fechaModificacion;
+	private String idDireccion;
 	private Integer usuModificacion;
 	
 	// Nombre campos de la tabla 
@@ -32,6 +33,7 @@ public class ExpPartesBean extends MasterBean {
 	static public final String C_ANIOEXPEDIENTE ="ANIOEXPEDIENTE";
 	static public final String C_IDPARTE ="IDPARTE";
 	static public final String C_IDPERSONA ="IDPERSONA";
+	static public final String C_IDDIRECCION ="IDDIRECCION";
 	static public final String C_IDROL ="IDROL";
 	static public final String C_FECHAMODIFICACION ="FECHAMODIFICACION";
 	static public final String C_USUMODIFICACION ="USUMODIFICACION";
@@ -100,5 +102,11 @@ public class ExpPartesBean extends MasterBean {
 	}
 	public void setUsuModificacion(Integer usuModificacion) {
 		this.usuModificacion = usuModificacion;
+	}
+	public String getIdDireccion() {
+		return idDireccion;
+	}
+	public void setIdDireccion(String idDireccion) {
+		this.idDireccion = idDireccion;
 	}
 }

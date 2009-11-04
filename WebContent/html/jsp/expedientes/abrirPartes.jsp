@@ -144,7 +144,8 @@
 						<input type="hidden" name="oculto<%=""+(i+1)%>_6" value="<%=fila.getString("IDPARTE")%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_7" value="<%=fila.getString("IDPERSONA")%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_8" value="<%=fila.getString("IDROL")%>">
-						<input type="hidden" name="oculto<%=""+(i+1)%>_9" value="<%=UtilidadesString.mostrarDatoJSP(fila.getString("ROL"))%>">
+						<input type="hidden" name="oculto<%=""+(i+1)%>_9" value="<%=fila.getString("ROL")%>">
+						<input type="hidden" name="oculto<%=""+(i+1)%>_10" value="<%=fila.getString("IDDIRECCION")%>">
 						<%=UtilidadesMultidioma.getDatoMaestroIdioma(fila.getString("ROL"),userBean)%>
 					</td>
 					<td><%=fila.getString("NOMBREYAPELLIDO")%></td>

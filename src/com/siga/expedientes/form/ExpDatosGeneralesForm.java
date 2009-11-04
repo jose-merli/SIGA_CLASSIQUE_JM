@@ -62,6 +62,7 @@ public class ExpDatosGeneralesForm extends MasterForm {
     private String importeTotal="";
     private String porcentajeIVA="";
     private String idTipoIVA="";
+    private String idDireccion;
         
     public String getFechaCaducidad() {
 		return fechaCaducidad;
@@ -430,6 +431,12 @@ public class ExpDatosGeneralesForm extends MasterForm {
 	}
 	public void setClasificacion(String clasificacion) {
 		this.clasificacion = clasificacion;
+	}
+	public String getIdDireccion() {
+		return idDireccion;
+	}
+	public void setIdDireccion(String idDireccion) {
+		this.idDireccion = idDireccion;
 	}
 	 
 	

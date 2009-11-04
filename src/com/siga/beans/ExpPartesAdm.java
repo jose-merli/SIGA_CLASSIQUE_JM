@@ -37,6 +37,7 @@ public class ExpPartesAdm extends MasterBeanAdministrador {
 				ExpPartesBean.C_IDPARTE,
 				ExpPartesBean.C_IDPERSONA,
 				ExpPartesBean.C_IDROL,
+				ExpPartesBean.C_IDDIRECCION,
 				ExpPartesBean.C_FECHAMODIFICACION,
 				ExpPartesBean.C_USUMODIFICACION};
 				
@@ -84,6 +85,7 @@ public class ExpPartesAdm extends MasterBeanAdministrador {
 			bean.setAnioExpediente(UtilidadesHash.getInteger(hash, ExpPartesBean.C_ANIOEXPEDIENTE));
 			bean.setIdParte(UtilidadesHash.getInteger(hash, ExpPartesBean.C_IDPARTE));
 			bean.setIdPersona(UtilidadesHash.getInteger(hash, ExpPartesBean.C_IDPERSONA));
+			bean.setIdDireccion(UtilidadesHash.getString(hash, ExpPartesBean.C_IDDIRECCION));
 			bean.setIdRol(UtilidadesHash.getInteger(hash, ExpPartesBean.C_IDROL));
 			bean.setFechaModificacion(UtilidadesHash.getString(hash, ExpPartesBean.C_FECHAMODIFICACION));			
 			bean.setUsuModificacion(UtilidadesHash.getInteger(hash, ExpPartesBean.C_USUMODIFICACION));
@@ -120,6 +122,7 @@ public class ExpPartesAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, ExpPartesBean.C_ANIOEXPEDIENTE, b.getAnioExpediente());
 			UtilidadesHash.set(htData, ExpPartesBean.C_IDPARTE, b.getIdParte());
 			UtilidadesHash.set(htData, ExpPartesBean.C_IDPERSONA, b.getIdPersona());
+			UtilidadesHash.set(htData, ExpPartesBean.C_IDDIRECCION, b.getIdDireccion());
 			UtilidadesHash.set(htData, ExpPartesBean.C_IDROL, b.getIdRol());
 			UtilidadesHash.set(htData, ExpPartesBean.C_FECHAMODIFICACION, b.getFechaModificacion());
 			UtilidadesHash.set(htData, ExpPartesBean.C_USUMODIFICACION, b.getUsuModificacion());

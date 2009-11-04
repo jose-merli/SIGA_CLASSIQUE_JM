@@ -18,6 +18,8 @@ import com.atos.utils.ClsExceptions;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenClienteAdm;
+import com.siga.beans.CenColegiadoAdm;
+import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
@@ -174,6 +176,21 @@ public class ExpDenuncianteAction extends MasterAction {
 			String anioExpediente = (String)vOcultos.elementAt(4);
 	        String idDenunciante = (String)vOcultos.elementAt(5);
 	        
+	      //obtenemos datos del colegiado
+	        Hashtable hashCol = new Hashtable();
+	        CenColegiadoAdm colAdm = new CenColegiadoAdm (this.getUserBean(request));
+	        hashCol.put(CenColegiadoBean.C_IDINSTITUCION,idInstitucion);        
+	        hashCol.put(CenColegiadoBean.C_IDPERSONA,idDenunciante);
+	        Vector datosCol = colAdm.select(hashCol);
+	        if(datosCol!=null && datosCol.size()>0){
+	        	CenColegiadoBean cBean = (CenColegiadoBean)datosCol.elementAt(0);
+	        	form.setNumColegiado(cBean.getNColegiado());
+	        }
+	        else 
+	        	form.setNumColegiado("");
+	        
+	        
+	        
 			Hashtable hash = new Hashtable();		
 			hash.put(ExpDenuncianteBean.C_IDINSTITUCION,idInstitucion);
 			hash.put(ExpDenuncianteBean.C_IDINSTITUCION_TIPOEXPEDIENTE,idInstitucion_TipoExpediente);
@@ -189,25 +206,40 @@ public class ExpDenuncianteAction extends MasterAction {
             CenClienteAdm clienteAdm = new CenClienteAdm (this.getUserBean(request));
 
 	        CenPersonaBean persona = personaAdm.getIdentificador(bean.getIdPersona());
-	        Hashtable direccion = clienteAdm.getDirecciones(bean.getIdPersona(),bean.getIdInstitucion(), bean.getIdDireccion());
-
-	        // hacemos los set del formulario       
-	        form.setNombre(persona.getNombre());
-	        form.setNif(persona.getNIFCIF());                
-
-	        form.setPrimerApellido(persona.getApellido1());
-	        form.setSegundoApellido(persona.getApellido2());
-	        form.setDireccion(UtilidadesHash.getString(direccion, CenDireccionesBean.C_DOMICILIO));
-	        form.setPoblacion(UtilidadesHash.getString(direccion, "POBLACION"));
-	        form.setPoblacionExt(UtilidadesHash.getString(direccion, CenDireccionesBean.C_POBLACIONEXTRANJERA));
-	        form.setProvincia(UtilidadesHash.getString(direccion, "PROVINCIA"));
-	        form.setPais(UtilidadesHash.getString(direccion, "PAIS"));
-	        form.setCpostal(UtilidadesHash.getString(direccion, CenDireccionesBean.C_CODIGOPOSTAL));
-	        
-	        String telefono = UtilidadesHash.getString(direccion, CenDireccionesBean.C_TELEFONO1);
-	        if (telefono == null || telefono.equals("")) telefono = UtilidadesHash.getString(direccion, CenDireccionesBean.C_MOVIL);
-	 
-	        form.setTelefono(telefono);
+	        if(bean.getIdDireccion()!=null && !bean.getIdDireccion().equals("")){
+		        Hashtable direccion = clienteAdm.getDirecciones(bean.getIdPersona(),bean.getIdInstitucion(), bean.getIdDireccion());
+		        // hacemos los set del formulario       
+		        form.setNombre(persona.getNombre());
+		        form.setNif(persona.getNIFCIF());                
+		        
+		        form.setPrimerApellido(persona.getApellido1());
+		        form.setSegundoApellido(persona.getApellido2());
+		        form.setDireccion(UtilidadesHash.getString(direccion, CenDireccionesBean.C_DOMICILIO));
+		        form.setPoblacion(UtilidadesHash.getString(direccion, "POBLACION"));
+		        form.setPoblacionExt(UtilidadesHash.getString(direccion, CenDireccionesBean.C_POBLACIONEXTRANJERA));
+		        form.setProvincia(UtilidadesHash.getString(direccion, "PROVINCIA"));
+		        form.setPais(UtilidadesHash.getString(direccion, "PAIS"));
+		        form.setCpostal(UtilidadesHash.getString(direccion, CenDireccionesBean.C_CODIGOPOSTAL));
+		        
+		        String telefono = UtilidadesHash.getString(direccion, CenDireccionesBean.C_TELEFONO1);
+		        if (telefono == null || telefono.equals("")) telefono = UtilidadesHash.getString(direccion, CenDireccionesBean.C_MOVIL);
+		 
+		        form.setTelefono(telefono);
+	        }else{
+	        	form.setNombre("");
+		        form.setNif("");                
+		        
+		        form.setPrimerApellido("");
+		        form.setSegundoApellido("");
+		        form.setDireccion("");
+		        form.setPoblacion("");
+		        form.setPoblacionExt("");
+		        form.setProvincia("");
+		        form.setPais("");
+		        form.setCpostal("");
+		 
+		        form.setTelefono("");
+	        }
 	        
         	ses.setAttribute("DATABACKUP_BEAN",bean); // hay que etiquetarlo como DATABACKUP_BEAN pq sino se borra con las ventanas modales que se abren (buscar cliente, buscar direccion)
 

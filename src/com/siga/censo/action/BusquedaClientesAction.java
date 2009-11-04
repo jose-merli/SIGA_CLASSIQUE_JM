@@ -1203,13 +1203,14 @@ public class BusquedaClientesAction extends MasterAction {
 
 			// OBTENGO VALORES DEL FORM
 			// solamente el 0 porque es el unico que he pulsado
-			Vector vOcultos = miform.getDatosTablaOcultos(0);
+//			Vector vOcultos = miform.getDatosTablaOcultos(0);
 			
 			
-			// obtener idpersona
-			String idPersona = (String)vOcultos.get(0);
+				// obtener idpersona
+			String idPersona = miform.getIdPersona();
 			// obtener idinstitucion
-			String idInstitucion = (String)vOcultos.get(1);
+			String idInstitucion = miform.getIdInstitucion();
+			
 			// obtener nColegiado
 			//String nColegiado = (String)vOcultos.get(2);
 			String nColegiado = miform.getNumeroColegiado();

@@ -280,6 +280,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 			form.setInstitucion(fila.getString("NOMBREINSTITUCION"));
 			form.setAsunto(fila.getString(ExpExpedienteBean.C_ASUNTO));
 			form.setIdPersona(fila.getString(ExpExpedienteBean.C_IDPERSONA));
+			form.setIdDireccion(fila.getString(ExpExpedienteBean.C_IDDIRECCION));
 			form.setNombre(fila.getString("NOMBREPERSONA"));
 			form.setPrimerApellido(fila.getString(CenPersonaBean.C_APELLIDOS1));
 			form.setSegundoApellido(fila.getString(CenPersonaBean.C_APELLIDOS2));
@@ -462,6 +463,11 @@ public class ExpDatosGeneralesAction extends MasterAction
 	        expBean.setIdMateria(form.getIdMateria().equals("")?null:Integer.valueOf(form.getIdMateria()));
 	        //expBean.setIdEstado(form.getEstado().equals("")?null:Integer.valueOf(form.getEstado()));
 	        expBean.setIdPersona(Long.valueOf(form.getIdPersona()));
+	        //if(form.getIdDireccion()!=null && !form.getIdDireccion().trim().equals(""))
+	        	expBean.setIdDireccion(form.getIdDireccion());
+	       // else
+	        //	expBean.setIdDireccion(null);
+	        	
 	        if (form.getFechaInicial().trim().equals("")) {
 	        	expBean.setFechaInicialEstado(GstDate.getApplicationFormatDate("",form.getFecha()));
 	        } else {

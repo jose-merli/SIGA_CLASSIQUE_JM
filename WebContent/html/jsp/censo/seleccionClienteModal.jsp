@@ -67,6 +67,7 @@
 		idPais      = (String) h.get(CenDireccionesBean.C_IDPAIS);       if (idPais      == null) idPais      = new String("");
 		poblacionExtranjera = (String) h.get(CenDireccionesBean.C_POBLACIONEXTRANJERA);	  if (poblacionExtranjera == null) poblacionExtranjera = new String("");
 	}
+	
 
 %>	
 
@@ -81,7 +82,8 @@
 			function cerrarVentana() {
 				var aux = new Array();
 				aux[0]="<%=idPersona %>";
-				aux[1]="<%=idInstitucion %>";
+				aux[1]="<%=idInstitucion%>";
+				
 				aux[2]="<%=nColegiado %>";
 				aux[3]="<%=nifCif %>";
 				aux[4]="<%=UtilidadesString.cambiarDoblesComillas(nombre) %>";
@@ -91,7 +93,7 @@
 				// Devolvemos la direccion si es unica
 				<% if (h != null) { 
 				
-					if (idPais != ClsConstants.ID_PAIS_ESPANA) {
+					if (idPais !=null && !idPais.equals("") && !idPais.equals(ClsConstants.ID_PAIS_ESPANA)) {
 						poblacion = poblacionExtranjera;
 					}
 				%>
