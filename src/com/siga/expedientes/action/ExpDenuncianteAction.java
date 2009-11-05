@@ -206,14 +206,15 @@ public class ExpDenuncianteAction extends MasterAction {
             CenClienteAdm clienteAdm = new CenClienteAdm (this.getUserBean(request));
 
 	        CenPersonaBean persona = personaAdm.getIdentificador(bean.getIdPersona());
-	        if(bean.getIdDireccion()!=null && !bean.getIdDireccion().equals("")){
+	        form.setIdPersona(bean.getIdPersona().toString());
+	        form.setNombre(persona.getNombre());
+	        form.setNif(persona.getNIFCIF());                
+	        form.setPrimerApellido(persona.getApellido1());
+	        form.setSegundoApellido(persona.getApellido2());
+	        if(bean.getIdDireccion()!=null ){
 		        Hashtable direccion = clienteAdm.getDirecciones(bean.getIdPersona(),bean.getIdInstitucion(), bean.getIdDireccion());
 		        // hacemos los set del formulario       
-		        form.setNombre(persona.getNombre());
-		        form.setNif(persona.getNIFCIF());                
 		        
-		        form.setPrimerApellido(persona.getApellido1());
-		        form.setSegundoApellido(persona.getApellido2());
 		        form.setDireccion(UtilidadesHash.getString(direccion, CenDireccionesBean.C_DOMICILIO));
 		        form.setPoblacion(UtilidadesHash.getString(direccion, "POBLACION"));
 		        form.setPoblacionExt(UtilidadesHash.getString(direccion, CenDireccionesBean.C_POBLACIONEXTRANJERA));
@@ -225,19 +226,15 @@ public class ExpDenuncianteAction extends MasterAction {
 		        if (telefono == null || telefono.equals("")) telefono = UtilidadesHash.getString(direccion, CenDireccionesBean.C_MOVIL);
 		 
 		        form.setTelefono(telefono);
+		        form.setIdDireccion(bean.getIdDireccion().toString());
 	        }else{
-	        	form.setNombre("");
-		        form.setNif("");                
-		        
-		        form.setPrimerApellido("");
-		        form.setSegundoApellido("");
 		        form.setDireccion("");
 		        form.setPoblacion("");
 		        form.setPoblacionExt("");
 		        form.setProvincia("");
 		        form.setPais("");
 		        form.setCpostal("");
-		 
+		        form.setIdDireccion("");
 		        form.setTelefono("");
 	        }
 	        

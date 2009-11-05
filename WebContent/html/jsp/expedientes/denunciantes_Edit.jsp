@@ -305,9 +305,9 @@
 			sub();		
 			if (validateExpDenuncianteForm(document.ExpDenuncianteForm)){
 				<%if (accion.equals("nuevo")){%>
-					document.forms[0].modo.value="insertar";
+					document.ExpDenuncianteForm.modo.value="insertar";
 				<%}else{%>
-					document.forms[0].modo.value="modificar";
+					document.ExpDenuncianteForm.modo.value="modificar";
 				<%}%>
 				ExpDenuncianteForm.submit();
 			}else{
@@ -327,7 +327,7 @@
 		//Asociada al boton Restablecer -->
 		function accionRestablecer() 
 		{		
-			document.forms[0].reset();
+			document.ExpDenuncianteForm.reset();
 		}
 	
 	
@@ -341,36 +341,36 @@
 			
 			var resultado=ventaModalGeneral("busquedaClientesModalForm","G");
 			if (resultado!=undefined && resultado[0]!=undefined ){
-				document.forms[0].idPersona.value       = resultado[0];
-				document.forms[0].idInstitucion.value   = resultado[1];
-				document.forms[0].numColegiado.value    = resultado[2];
-				document.forms[0].nif.value             = resultado[3];
-				document.forms[0].nombre.value          = resultado[4];
-				document.forms[0].primerApellido.value  = resultado[5];
-				document.forms[0].segundoApellido.value = resultado[6]; 
+				document.ExpDenuncianteForm.idPersona.value       = resultado[0];
+				document.ExpDenuncianteForm.idInstitucion.value   = resultado[1];
+				document.ExpDenuncianteForm.numColegiado.value    = resultado[2];
+				document.ExpDenuncianteForm.nif.value             = resultado[3];
+				document.ExpDenuncianteForm.nombre.value          = resultado[4];
+				document.ExpDenuncianteForm.primerApellido.value  = resultado[5];
+				document.ExpDenuncianteForm.segundoApellido.value = resultado[6]; 
 
-				document.forms[2].idInstitucion.value   = resultado[1];  // para la busqueda de direcciones
+				document.RemitentesForm.idInstitucion.value   = resultado[1];  // para la busqueda de direcciones
 				
 				// Si tiene una unica direccion, la seleccionamos. Sino resetamos la direccion
 				if (resultado[7] != undefined) {
-					document.forms[0].direccion.value   = resultado[7];
-					document.forms[0].poblacion.value   = resultado[8];
-					document.forms[0].provincia.value   = resultado[9];
-					document.forms[0].pais.value        = resultado[10];
-					document.forms[0].cpostal.value     = resultado[11];
-					document.forms[0].idDireccion.value = resultado[12];
+					document.ExpDenuncianteForm.direccion.value   = resultado[7];
+					document.ExpDenuncianteForm.poblacion.value   = resultado[8];
+					document.ExpDenuncianteForm.provincia.value   = resultado[9];
+					document.ExpDenuncianteForm.pais.value        = resultado[10];
+					document.ExpDenuncianteForm.cpostal.value     = resultado[11];
+					document.ExpDenuncianteForm.idDireccion.value = resultado[12];
 
-					if (trim(resultado[13])=="") document.forms[0].telefono.value=resultado[14]; // el movil
-					else document.forms[0].telefono.value=resultado[13];
+					if (trim(resultado[13])=="") document.ExpDenuncianteForm.telefono.value=resultado[14]; // el movil
+					else document.ExpDenuncianteForm.telefono.value=resultado[13];
 				}
 				else {
-					document.forms[0].direccion.value="";
-					document.forms[0].poblacion.value="";
-					document.forms[0].provincia.value="";
-					document.forms[0].pais.value="";
-					document.forms[0].cpostal.value="";
-					document.forms[0].idDireccion.value="";
-					document.forms[0].telefono.value="";
+					document.ExpDenuncianteForm.direccion.value="";
+					document.ExpDenuncianteForm.poblacion.value="";
+					document.ExpDenuncianteForm.provincia.value="";
+					document.ExpDenuncianteForm.pais.value="";
+					document.ExpDenuncianteForm.cpostal.value="";
+					document.ExpDenuncianteForm.idDireccion.value="";
+					document.ExpDenuncianteForm.telefono.value="";
 				}
 			}		
 		}
@@ -378,60 +378,41 @@
 		//Asociada al boton Buscar Direccion -->
 		function buscarDireccion() 
 		{
-			<%  if(accion.equals("nuevo")) { %>
-					if(document.forms[0].idPersona.value.length == 0) {					
-						alert ('<siga:Idioma key="factSJCS.resumenPagos.literal.seleccionarPersona"/>');
-						return;
-					}
-					document.forms[2].idPersona.value = document.forms[0].idPersona.value;		
-			<%  } 
-				else { 
-					ExpDenuncianteBean bean = (ExpDenuncianteBean)ses.getAttribute("DATABACKUP_BEAN");
-					if (bean != null) {
-				%>
-						document.forms[2].idPersona.value     = "<%=bean.getIdPersona()%>";
-						document.forms[2].idInstitucion.value = "<%=bean.getIdInstitucion()%>"
-			     <% }
-			   } %>
+			if(document.ExpDenuncianteForm.idPersona.value.length == 0) {					
+				alert ('<siga:Idioma key="factSJCS.resumenPagos.literal.seleccionarPersona"/>');
+				return;
+			}
+			document.RemitentesForm.idPersona.value     = document.ExpDenuncianteForm.idPersona.value;
+			document.RemitentesForm.idInstitucion.value = document.ExpDenuncianteForm.idInstitucion.value;
 				
-			document.forms[2].idTipoEnvio.value = "-1";		
-			document.forms[2].modo.value = "buscar";
+			document.RemitentesForm.idTipoEnvio.value = "-1";		
+			document.RemitentesForm.modo.value = "buscar";
 			
 			var direccion = ventaModalGeneral("RemitentesForm","G");
 			if (direccion!=undefined && direccion[0]!=undefined) {
-				document.forms[0].direccion.value=direccion[0];
-				document.forms[0].poblacion.value=direccion[1];
-				document.forms[0].provincia.value=direccion[2];
-				document.forms[0].pais.value=direccion[3];
-				document.forms[0].cpostal.value=direccion[4];
-				document.forms[0].idDireccion.value=direccion[11];
+				document.ExpDenuncianteForm.direccion.value=direccion[0];
+				document.ExpDenuncianteForm.poblacion.value=direccion[1];
+				document.ExpDenuncianteForm.provincia.value=direccion[2];
+				document.ExpDenuncianteForm.pais.value=direccion[3];
+				document.ExpDenuncianteForm.cpostal.value=direccion[4];
+				document.ExpDenuncianteForm.idDireccion.value=direccion[11];
 
-				if (trim(direccion[13])=="") document.forms[0].telefono.value=direccion[14]; // el movil
-				else document.forms[0].telefono.value=direccion[13];
+				if (trim(direccion[13])=="") document.ExpDenuncianteForm.telefono.value=direccion[14]; // el movil
+				else document.ExpDenuncianteForm.telefono.value=direccion[13];
 			} 
-		//alert(document.forms[0].idPersona.value.length);
+		//alert(document.ExpDenuncianteForm.idPersona.value.length);
 		return;
 		}
 		
 		function nuevaDireccion() 
 		{
 			
-			<%  if(accion.equals("nuevo")) { %>
-					if(document.forms[0].idPersona.value.length == 0) {					
-						alert ('<siga:Idioma key="factSJCS.resumenPagos.literal.seleccionarPersona"/>');
-						return;
-					}
-					document.consultaDireccionesForm.idPersona.value = document.forms[0].idPersona.value;
-					document.consultaDireccionesForm.idInstitucion.value = document.forms[0].idInstitucion.value;		
-			<%  } 
-				else { 
-					ExpDenuncianteBean bean = (ExpDenuncianteBean)ses.getAttribute("DATABACKUP_BEAN");
-					if (bean != null) {
-				%>
-						document.consultaDireccionesForm.idPersona.value     = "<%=bean.getIdPersona()%>";
-						document.consultaDireccionesForm.idInstitucion.value = "<%=bean.getIdInstitucion()%>"
-			     <% }
-			   } %>
+			if(document.ExpDenuncianteForm.idPersona.value.length == 0) {					
+					alert ('<siga:Idioma key="factSJCS.resumenPagos.literal.seleccionarPersona"/>');
+					return;
+				}
+			document.consultaDireccionesForm.idPersona.value = document.ExpDenuncianteForm.idPersona.value;
+			document.consultaDireccionesForm.idInstitucion.value = document.ExpDenuncianteForm.idInstitucion.value;
 			
 			document.consultaDireccionesForm.vieneDe.value = '1';
 			
@@ -439,18 +420,18 @@
 			
 	    	var direccion = ventaModalGeneral(document.consultaDireccionesForm.name, "G");
 	    	if(direccion){
-	    	document.forms[0].direccion.value=direccion[0];
+	    	document.ExpDenuncianteForm.direccion.value=direccion[0];
 	    	
-	    	if (trim(direccion[1])=="") document.forms[0].poblacion.value=direccion[15]; // el movil
-				else document.forms[0].poblacion.value=direccion[1];
-				document.forms[0].poblacion.value=direccion[1];
-				document.forms[0].provincia.value=direccion[2];
-				document.forms[0].pais.value=direccion[3];
-				document.forms[0].cpostal.value=direccion[4];
-				document.forms[0].idDireccion.value=direccion[11];
+	    	if (trim(direccion[1])=="") document.ExpDenuncianteForm.poblacion.value=direccion[15]; // el movil
+				else document.ExpDenuncianteForm.poblacion.value=direccion[1];
+				document.ExpDenuncianteForm.poblacion.value=direccion[1];
+				document.ExpDenuncianteForm.provincia.value=direccion[2];
+				document.ExpDenuncianteForm.pais.value=direccion[3];
+				document.ExpDenuncianteForm.cpostal.value=direccion[4];
+				document.ExpDenuncianteForm.idDireccion.value=direccion[11];
 
-				if (trim(direccion[13])=="") document.forms[0].telefono.value=direccion[14]; // el movil
-				else document.forms[0].telefono.value=direccion[13];
+				if (trim(direccion[13])=="") document.ExpDenuncianteForm.telefono.value=direccion[14]; // el movil
+				else document.ExpDenuncianteForm.telefono.value=direccion[13];
 			}else{
 				accionCerrar();
 			}

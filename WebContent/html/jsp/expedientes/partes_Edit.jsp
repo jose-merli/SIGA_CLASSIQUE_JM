@@ -401,8 +401,14 @@
 		//Asociada al boton Buscar Direccion -->
 		function buscarDireccion() 
 		{
+			if(document.ExpPartesForm.idPersona.value.length == 0) {					
+				alert ('<siga:Idioma key="factSJCS.resumenPagos.literal.seleccionarPersona"/>');
+				return;
+			}
+		
 			document.RemitentesForm.idPersona.value = document.ExpPartesForm.idPersona.value;
 			document.RemitentesForm.idInstitucion.value = document.ExpPartesForm.idInstitucion.value;
+
 			document.RemitentesForm.idTipoEnvio.value = "-1";		
 			document.RemitentesForm.modo.value = "buscar";
 			
@@ -423,6 +429,12 @@
 		
 		function nuevaDireccion() 
 		{
+			
+			if(document.ExpPartesForm.idPersona.value.length == 0) {					
+					alert ('<siga:Idioma key="factSJCS.resumenPagos.literal.seleccionarPersona"/>');
+					return;
+				}
+			
 			
 			
 			document.consultaDireccionesForm.idPersona.value = document.ExpPartesForm.idPersona.value;

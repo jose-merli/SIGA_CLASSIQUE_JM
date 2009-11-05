@@ -308,15 +308,16 @@ if (accion.equals("nuevo")||accion.equals("edicionDenunciado")){
 		//Asociada al boton GuardarCerrar -->
 		function accionGuardarCerrar() 
 		{
+		
 			sub();		
 			if (validateExpDenunciadoForm(document.ExpDenunciadoForm)){
 				if(document.ExpDenunciadoForm.modal.value){
-					document.ExpDenunciadoForm.modo.value=document.forms[0].modal.value;
+					document.ExpDenunciadoForm.modo.value=document.ExpDenunciadoForm.modal.value;
 				}else{
 					<%if (accion.equals("nuevo")){%>
-						document.forms[0].modo.value="insertar";
+						document.ExpDenunciadoForm.modo.value="insertar";
 					<%}else{%>
-						document.forms[0].modo.value="modificar";
+						document.ExpDenunciadoForm.modo.value="modificar";
 					<%}%>
 				}
 				
@@ -338,7 +339,7 @@ if (accion.equals("nuevo")||accion.equals("edicionDenunciado")){
 		//Asociada al boton Restablecer -->
 		function accionRestablecer() 
 		{		
-			document.forms[0].reset();
+			document.ExpDenunciadoForm.reset();
 		}
 	
 	
@@ -352,37 +353,37 @@ if (accion.equals("nuevo")||accion.equals("edicionDenunciado")){
 			
 			var resultado=ventaModalGeneral("busquedaClientesModalForm","G");
 			if (resultado!=undefined && resultado[0]!=undefined ){
-				document.forms[0].idPersona.value       = resultado[0];
-				document.forms[0].idInstitucion.value   = resultado[1];
-				document.forms[0].numColegiado.value   =  resultado[2];
-				document.forms[0].nif.value             = resultado[3];
-				document.forms[0].nombre.value          = resultado[4];
-				document.forms[0].primerApellido.value  = resultado[5];
-				document.forms[0].segundoApellido.value = resultado[6]; 
+				document.ExpDenunciadoForm.idPersona.value       = resultado[0];
+				document.ExpDenunciadoForm.idInstitucion.value   = resultado[1];
+				document.ExpDenunciadoForm.numColegiado.value   =  resultado[2];
+				document.ExpDenunciadoForm.nif.value             = resultado[3];
+				document.ExpDenunciadoForm.nombre.value          = resultado[4];
+				document.ExpDenunciadoForm.primerApellido.value  = resultado[5];
+				document.ExpDenunciadoForm.segundoApellido.value = resultado[6]; 
 
-				document.forms[2].idInstitucion.value   = resultado[1];  // para la busqueda de direcciones
-				document.forms[2].idPersona.value   = resultado[0];
+				document.RemitentesForm.idInstitucion.value   = resultado[1];  // para la busqueda de direcciones
+				document.RemitentesForm.idPersona.value   = resultado[0];
 				
 				// Si tiene una unica direccion, la seleccionamos. Sino resetamos la direccion
 				if (resultado[7] != undefined) {
-					document.forms[0].direccion.value   = resultado[7];
-					document.forms[0].poblacion.value   = resultado[8];
-					document.forms[0].provincia.value   = resultado[9];
-					document.forms[0].pais.value        = resultado[10];
-					document.forms[0].cpostal.value     = resultado[11];
-					document.forms[0].idDireccion.value = resultado[12];
+					document.ExpDenunciadoForm.direccion.value   = resultado[7];
+					document.ExpDenunciadoForm.poblacion.value   = resultado[8];
+					document.ExpDenunciadoForm.provincia.value   = resultado[9];
+					document.ExpDenunciadoForm.pais.value        = resultado[10];
+					document.ExpDenunciadoForm.cpostal.value     = resultado[11];
+					document.ExpDenunciadoForm.idDireccion.value = resultado[12];
 
-					if (trim(resultado[13])=="") document.forms[0].telefono.value=resultado[14]; // el movil
-					else document.forms[0].telefono.value=resultado[13];
+					if (trim(resultado[13])=="") document.ExpDenunciadoForm.telefono.value=resultado[14]; // el movil
+					else document.ExpDenunciadoForm.telefono.value=resultado[13];
 				}
 				else {
-					document.forms[0].direccion.value="";
-					document.forms[0].poblacion.value="";
-					document.forms[0].provincia.value="";
-					document.forms[0].pais.value="";
-					document.forms[0].cpostal.value="";
-					document.forms[0].idDireccion.value="";
-					document.forms[0].telefono.value="";
+					document.ExpDenunciadoForm.direccion.value="";
+					document.ExpDenunciadoForm.poblacion.value="";
+					document.ExpDenunciadoForm.provincia.value="";
+					document.ExpDenunciadoForm.pais.value="";
+					document.ExpDenunciadoForm.cpostal.value="";
+					document.ExpDenunciadoForm.idDireccion.value="";
+					document.ExpDenunciadoForm.telefono.value="";
 				}
 			}		
 		}
@@ -390,42 +391,44 @@ if (accion.equals("nuevo")||accion.equals("edicionDenunciado")){
 		//Asociada al boton Buscar Direccion -->
 		function buscarDireccion() 
 		{
-		
-			    
-		    if(document.forms[0].idPersona.value.length == 0) {					
-					alert ('<siga:Idioma key="factSJCS.resumenPagos.literal.seleccionarPersona"/>');
-					return;
-				}
-			document.forms[2].idPersona.value     = document.forms[0].idPersona.value;
-			document.forms[2].idInstitucion.value = document.forms[0].idInstitucion.value;
+		    
+		    if(document.ExpDenunciadoForm.idPersona.value.length == 0) {					
+				alert ('<siga:Idioma key="factSJCS.resumenPagos.literal.seleccionarPersona"/>');
+				return;
+			}
+			document.RemitentesForm.idPersona.value     = document.ExpDenunciadoForm.idPersona.value;
+			document.RemitentesForm.idInstitucion.value = document.ExpDenunciadoForm.idInstitucion.value;
 			
 				
-			document.forms[2].idTipoEnvio.value = "-1";		
-			document.forms[2].modo.value = "buscar";
+			document.RemitentesForm.idTipoEnvio.value = "-1";		
+			document.RemitentesForm.modo.value = "buscar";
 			
 			var direccion = ventaModalGeneral("RemitentesForm","G");
 			if (direccion!=undefined && direccion[0]!=undefined) {
-				document.forms[0].direccion.value=direccion[0];
-				document.forms[0].poblacion.value=direccion[1];
-				document.forms[0].provincia.value=direccion[2];
-				document.forms[0].pais.value=direccion[3];
-				document.forms[0].cpostal.value=direccion[4];
-				document.forms[0].idDireccion.value=direccion[11];
+				document.ExpDenunciadoForm.direccion.value=direccion[0];
+				document.ExpDenunciadoForm.poblacion.value=direccion[1];
+				document.ExpDenunciadoForm.provincia.value=direccion[2];
+				document.ExpDenunciadoForm.pais.value=direccion[3];
+				document.ExpDenunciadoForm.cpostal.value=direccion[4];
+				document.ExpDenunciadoForm.idDireccion.value=direccion[11];
 				
 
-				if (trim(direccion[13])=="") document.forms[0].telefono.value=direccion[14]; // el movil
-				else document.forms[0].telefono.value=direccion[13];
+				if (trim(direccion[13])=="") document.ExpDenunciadoForm.telefono.value=direccion[14]; // el movil
+				else document.ExpDenunciadoForm.telefono.value=direccion[13];
 			} 
-		//alert(document.forms[0].idPersona.value.length);
+		//alert(document.ExpDenunciadoForm.idPersona.value.length);
 		return;
 		}
 		
 		function nuevaDireccion() 
 		{
 			
-			
-			document.consultaDireccionesForm.idPersona.value = document.forms[0].idPersona.value;
-			document.consultaDireccionesForm.idInstitucion.value = document.forms[0].idInstitucion.value;
+			if(document.ExpDenunciadoForm.idPersona.value.length == 0) {					
+					alert ('<siga:Idioma key="factSJCS.resumenPagos.literal.seleccionarPersona"/>');
+					return;
+				}
+			document.consultaDireccionesForm.idPersona.value = document.ExpDenunciadoForm.idPersona.value;
+			document.consultaDireccionesForm.idInstitucion.value = document.ExpDenunciadoForm.idInstitucion.value;
 			
 			document.consultaDireccionesForm.vieneDe.value = '1';
 			
@@ -433,18 +436,18 @@ if (accion.equals("nuevo")||accion.equals("edicionDenunciado")){
 			
 	    	var direccion = ventaModalGeneral(document.consultaDireccionesForm.name, "G");
 	    	if(direccion){
-	    	document.forms[0].direccion.value=direccion[0];
+	    	document.ExpDenunciadoForm.direccion.value=direccion[0];
 	    	
-	    	if (trim(direccion[1])=="") document.forms[0].poblacion.value=direccion[15]; // el movil
-				else document.forms[0].poblacion.value=direccion[1];
-				document.forms[0].poblacion.value=direccion[1];
-				document.forms[0].provincia.value=direccion[2];
-				document.forms[0].pais.value=direccion[3];
-				document.forms[0].cpostal.value=direccion[4];
-				document.forms[0].idDireccion.value=direccion[11];
+	    	if (trim(direccion[1])=="") document.ExpDenunciadoForm.poblacion.value=direccion[15]; // el movil
+				else document.ExpDenunciadoForm.poblacion.value=direccion[1];
+				document.ExpDenunciadoForm.poblacion.value=direccion[1];
+				document.ExpDenunciadoForm.provincia.value=direccion[2];
+				document.ExpDenunciadoForm.pais.value=direccion[3];
+				document.ExpDenunciadoForm.cpostal.value=direccion[4];
+				document.ExpDenunciadoForm.idDireccion.value=direccion[11];
 
-				if (trim(direccion[13])=="") document.forms[0].telefono.value=direccion[14]; // el movil
-				else document.forms[0].telefono.value=direccion[13];
+				if (trim(direccion[13])=="") document.ExpDenunciadoForm.telefono.value=direccion[14]; // el movil
+				else document.ExpDenunciadoForm.telefono.value=direccion[13];
 			}else{
 				accionCerrar();
 			}

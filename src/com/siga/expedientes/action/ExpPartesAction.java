@@ -216,6 +216,7 @@ public class ExpPartesAction extends MasterAction {
 		        form.setNif(persona.getNIFCIF());                
 		        form.setPrimerApellido(persona.getApellido1());
 		        form.setSegundoApellido(persona.getApellido2());
+		        form.setIdPersona(idPersona);
 		        
 		        CenClienteAdm clienteAdm = new CenClienteAdm (this.getUserBean(request));
 		        if(idDireccion!=null && !idDireccion.trim().equals("")){
@@ -229,7 +230,7 @@ public class ExpPartesAction extends MasterAction {
 			        
 			        String telefono = UtilidadesHash.getString(direccion, CenDireccionesBean.C_TELEFONO1);
 			        if (telefono == null || telefono.equals("")) telefono = UtilidadesHash.getString(direccion, CenDireccionesBean.C_MOVIL);
-			 
+			        form.setIdDireccion(idDireccion);
 			        form.setTelefono(telefono);
 		        }else{
 		        	
@@ -239,7 +240,7 @@ public class ExpPartesAction extends MasterAction {
 			        form.setProvincia("");
 			        form.setPais("");
 			        form.setCpostal("");
-			 
+			        form.setIdDireccion("");
 			        form.setTelefono("");
 		        	
 		        }
