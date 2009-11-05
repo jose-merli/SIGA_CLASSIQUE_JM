@@ -1772,29 +1772,37 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	        
 			int contador=0;
 			Hashtable codigos = new Hashtable();
-			
-	        String sql = "SELECT ";
-	        
-		    sql += FacFacturaBean.C_IDINSTITUCION+", ";	
-		    sql += FacFacturaBean.C_IDPERSONA+", ";
-		    sql += " NCOLEGIADO AS "+CenColegiadoBean.C_NCOLEGIADO+", ";
-		    sql += "NOMBRE, ";
-		    
-		    
-//		    sql += "MIN("+FacFacturaBean.C_FECHAEMISION+"), ";
-//		    sql += "MAX("+FacFacturaBean.C_FECHAEMISION+"), ";
-//		    sql += "COUNT("+FacFacturaBean.C_NUMEROFACTURA+"), ";
-//		    sql += "SUM(DEUDA) FROM ";
-		    //sql += FacFacturaBean.C_FECHAEMISION+", ";
-		    sql += "trunc("+FacFacturaBean.C_FECHAEMISION+") "+FacFacturaBean.C_FECHAEMISION+", ";
-		   // sql += FacFacturaBean.C_FECHAEMISION+", ";
-		    sql += FacFacturaBean.C_NUMEROFACTURA+", ";
-		    sql += "DEUDA,"+FacFacturaBean.C_IDFACTURA+", COMUNICACIONES" ;
-		    if(isFacturasPendientes)
-		    	sql +=" ,FACTURASPENDIENTES ";
-		    
-		    sql +=" FROM ";
-		    sql += "(SELECT F."+FacFacturaBean.C_IDINSTITUCION+", ";
+			String nComunicacionesDesde = form.getNumeroComunicacionesDesde();
+			 String nComunicacionesHasta = form.getNumeroComunicacionesHasta();
+			 String sql="";
+			 
+			 if((nComunicacionesDesde!=null && !nComunicacionesDesde.equalsIgnoreCase("")) || ((nComunicacionesHasta!=null && !nComunicacionesHasta.equalsIgnoreCase(""))) || 
+					 (isFacturasPendientes)||(form.getImporteAdeudadoDesde()!=null && !form.getImporteAdeudadoDesde().equals(""))
+						||(form.getImporteAdeudadoHasta()!=null && !form.getImporteAdeudadoHasta().equals(""))){
+			         sql = "SELECT ";
+			        
+				    sql += FacFacturaBean.C_IDINSTITUCION+", ";	
+				    sql += FacFacturaBean.C_IDPERSONA+", ";
+				    sql += " NCOLEGIADO AS "+CenColegiadoBean.C_NCOLEGIADO+", ";
+				    sql += "NOMBRE, ";
+				    
+				    
+		//		    sql += "MIN("+FacFacturaBean.C_FECHAEMISION+"), ";
+		//		    sql += "MAX("+FacFacturaBean.C_FECHAEMISION+"), ";
+		//		    sql += "COUNT("+FacFacturaBean.C_NUMEROFACTURA+"), ";
+		//		    sql += "SUM(DEUDA) FROM ";
+				    //sql += FacFacturaBean.C_FECHAEMISION+", ";
+				    sql += "trunc("+FacFacturaBean.C_FECHAEMISION+") "+FacFacturaBean.C_FECHAEMISION+", ";
+				   // sql += FacFacturaBean.C_FECHAEMISION+", ";
+				    sql += FacFacturaBean.C_NUMEROFACTURA+", ";
+				    sql += "DEUDA,"+FacFacturaBean.C_IDFACTURA+", COMUNICACIONES" ;
+				    if(isFacturasPendientes)
+				    	sql +=" ,FACTURASPENDIENTES ";
+				    
+				    sql +=" FROM ";
+				    sql += "( ";
+			 }
+		    sql+=" SELECT F."+FacFacturaBean.C_IDINSTITUCION+", ";
 		    sql += "F."+FacFacturaBean.C_NUMEROFACTURA+", ";
 		    sql += "F."+FacFacturaBean.C_IDFACTURA+", ";
 		    sql += "F."+FacFacturaBean.C_FECHAEMISION+", ";
@@ -1808,13 +1816,17 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 		    sql += "P."+CenPersonaBean.C_NOMBRE+" || ' ' || P."+CenPersonaBean.C_APELLIDOS1+ " || ' ' || P."+CenPersonaBean.C_APELLIDOS2+" NOMBRE ";
 		    contador++;
 		    codigos.put(new Integer(contador),this.usrbean.getLocation());
-		    sql += ", F_SIGA_GETCOMFACTURA(:"+contador+",F."+FacFacturaBean.C_IDPERSONA+",F."+FacFacturaBean.C_IDFACTURA+",0)  COMUNICACIONES,";
-		    sql += "(SELECT count("+EnvComunicacionMorososBean.C_IDINSTITUCION+") FROM "+EnvComunicacionMorososBean.T_NOMBRETABLA+" ECM ";
+		    sql += ", F_SIGA_GETCOMFACTURA(:"+contador+",F."+FacFacturaBean.C_IDPERSONA+",F."+FacFacturaBean.C_IDFACTURA+",0)  COMUNICACIONES";
+		    
+		    if(nComunicacionesDesde!=null && !nComunicacionesDesde.equalsIgnoreCase("") || (nComunicacionesHasta!=null && !nComunicacionesHasta.equalsIgnoreCase(""))){
+		    sql += ",(SELECT count("+EnvComunicacionMorososBean.C_IDINSTITUCION+") FROM "+EnvComunicacionMorososBean.T_NOMBRETABLA+" ECM ";
 		    sql += "WHERE ECM."+EnvComunicacionMorososBean.C_IDFACTURA+" = F."+FacFacturaBean.C_IDFACTURA;
 		    contador++;
 		    codigos.put(new Integer(contador),this.usrbean.getLocation());
 		    sql += " AND ECM."+EnvComunicacionMorososBean.C_IDINSTITUCION+" = :"+contador+" ";
 		    sql += "AND ECM."+EnvComunicacionMorososBean.C_IDPERSONA+" = F."+FacFacturaBean.C_IDPERSONA+") NCOMUNICACIONES ";
+		    
+		    }
 		    if(isFacturasPendientes){
 		    	sql += ",(SELECT count(F2."+FacFacturaBean.C_IDINSTITUCION+") ";
 				sql += "FROM "+FacFacturaBean.T_NOMBRETABLA+" F2 ";
@@ -1903,7 +1915,11 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 		    
 		    
 	    	sql += " AND F."+FacFacturaBean.C_IMPTOTALPORPAGAR + " > 0";
-		    sql += " ) ";
+	    	if((nComunicacionesDesde!=null && !nComunicacionesDesde.equalsIgnoreCase("")) || ((nComunicacionesHasta!=null && !nComunicacionesHasta.equalsIgnoreCase(""))) || 
+					 (isFacturasPendientes)||(form.getImporteAdeudadoDesde()!=null && !form.getImporteAdeudadoDesde().equals(""))
+						||(form.getImporteAdeudadoHasta()!=null && !form.getImporteAdeudadoHasta().equals(""))){
+	    		sql += " ) ";
+	    	}
 		   
 		    
 		    
@@ -1923,14 +1939,14 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 //		    }
 	    	// fin modificacion		    
 		    boolean isAnd = false;
-		    String nComunicacionesDesde = form.getNumeroComunicacionesDesde();
+		    
 		    if(nComunicacionesDesde!=null && !nComunicacionesDesde.equalsIgnoreCase("")){
 		        contador++;
 			    codigos.put(new Integer(contador),nComunicacionesDesde);
 		    	sql += " WHERE NCOMUNICACIONES >= :"+contador;
 			    isAnd = true;
 		    }
-		    String nComunicacionesHasta = form.getNumeroComunicacionesHasta();
+		    
 		    if(nComunicacionesHasta!=null && !nComunicacionesHasta.equalsIgnoreCase("")){
 		    	if(isAnd)
 		    		sql += " AND ";
