@@ -450,40 +450,41 @@ public class EnvioInformesGenericos extends MasterReport {
 
 
 
-			}else
-			if(tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesExpedientes)){
-					
-				//Vector datosInformeExpediente = (Vector)htDatosInformeFinal.get("row");
-				//for (int k = 0; k < datosInformeExpediente.size(); k++) {
-					//Hashtable datosInformeK = (Hashtable)datosInformeExpediente.get(k);
-					Hashtable datosInformeK =  datosInforme;
-					Hashtable htDatosInforme = new Hashtable();
-					htDatosInforme.put("row", datosInformeK);
-											
-
-					String anio = (String) datosInforme.get("anioExpediente");
-					String numero = (String) datosInforme.get("numeroExpediente");
-					String idInstitucionTipoExp = (String) datosInforme.get("idInstitucionTipoExp");
-					String idTipoExp = (String) datosInforme.get("idTipoExp");
-					String idPersonaK = (String) datosInformeK.get("IDPERSONA_DEST");
-					identificador = new StringBuffer();
-					identificador.append(idInstitucion);
-					identificador.append("_");
-					identificador.append(anio);
-					identificador.append("_");
-					identificador.append(numero);
-					identificador.append("_");
-					identificador.append(idTipoExp);
-					identificador.append("_");
-					identificador.append(idInstitucionTipoExp);
-					identificador.append("_");
-					identificador.append(idPersonaK);
-					identificador.append("_");
-					//identificador.append(new Integer(k).toString());
-					identificador.append(new Integer(i).toString());
-					
+			}else{
+					if(tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesExpedientes)){
+							
+						//Vector datosInformeExpediente = (Vector)htDatosInformeFinal.get("row");
+						//for (int k = 0; k < datosInformeExpediente.size(); k++) {
+							//Hashtable datosInformeK = (Hashtable)datosInformeExpediente.get(k);
+							Hashtable datosInformeK =  datosInforme;
+							Hashtable htDatosInforme = new Hashtable();
+							htDatosInforme.put("row", datosInformeK);
+													
+		
+							String anio = (String) datosInforme.get("anioExpediente");
+							String numero = (String) datosInforme.get("numeroExpediente");
+							String idInstitucionTipoExp = (String) datosInforme.get("idInstitucionTipoExp");
+							String idTipoExp = (String) datosInforme.get("idTipoExp");
+							String idPersonaK = (String) datosInformeK.get("IDPERSONA_DEST");
+							identificador = new StringBuffer();
+							identificador.append(idInstitucion);
+							identificador.append("_");
+							identificador.append(anio);
+							identificador.append("_");
+							identificador.append(numero);
+							identificador.append("_");
+							identificador.append(idTipoExp);
+							identificador.append("_");
+							identificador.append(idInstitucionTipoExp);
+							identificador.append("_");
+							identificador.append(idPersonaK);
+							identificador.append("_");
+							//identificador.append(new Integer(k).toString());
+							identificador.append(new Integer(i).toString());
+							htDatosInformeFinal = htDatosInforme;
+					}
 					File fileDocumento = getInformeGenerico(beanInforme,
-							htDatosInforme, idiomaExt, identificador.toString(), usrBean);
+							htDatosInformeFinal, idiomaExt, identificador.toString(), usrBean);
 					String pathDocumento = fileDocumento.getPath();
 					// Creacion documentos
 					int indice = pathDocumento.lastIndexOf(ClsConstants.FILE_SEP);
@@ -825,7 +826,6 @@ public class EnvioInformesGenericos extends MasterReport {
 			// en algun formulario el idioma seleccionable, se puede meter como clave de la
 			// programacion. de este modo el idioma inicial se macahacara con este ultimo, por eso es
 			// importante que el putAll este aqui y no antes.
-			vDocumentos = null;
 			
 			datosInforme.putAll(htClavesProgramacion);
 			if(alClavesDestinatario==null){
