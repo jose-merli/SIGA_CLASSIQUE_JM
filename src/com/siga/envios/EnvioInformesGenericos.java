@@ -527,6 +527,7 @@ public class EnvioInformesGenericos extends MasterReport {
 	 * @throws ClsExceptions
 	 * @throws SIGAException
 	 */
+	
 	public void enviarInformeGenericoOrdinario(UsrBean usrBean,
 			Vector vDestProgramInfBean, EnvProgramInformesBean programInfBean,
 			Vector vPlantillasInforme,
@@ -539,9 +540,6 @@ public class EnvioInformesGenericos extends MasterReport {
 		EnvEnviosBean enviosBean = envio.getEnviosBean();
 		enviosBean.setDescripcion(enviosBean.getIdEnvio() + " "
 				+ enviosBean.getDescripcion());
-		// trunco la descripción
-		if (enviosBean.getDescripcion().length()>200)  enviosBean.setDescripcion(enviosBean.getDescripcion().substring(0,99));
-
 		// Preferencia del tipo de envio si el usuario tiene uno:
 		enviosBean.setIdTipoEnvios(envioProgramadoBean.getIdTipoEnvios());
 
@@ -579,41 +577,55 @@ public class EnvioInformesGenericos extends MasterReport {
 					.getIdInstitucionPersona().toString());
 			datosInforme.put("idTipoInforme", programInfBean.getIdTipoInforme());
 
-			
-			Vector vDocumentos = new Vector();
 			datosInforme.putAll(htClavesProgramacion);
-			
+			Vector vDocumentos = null;
 			if(!programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesExpedientes)){
 			
-				vDocumentos = null;
+			
+			
+			
+			
+			datosInforme.putAll(htClavesProgramacion);
+			if(alClavesDestinatario==null){
+				//datosInforme.putAll(htClavesDestinatario);
+				vDocumentos = getDocumentosAEnviar(datosInforme,
+						vPlantillasInforme, usrBean,
+						EnvioInformesGenericos.docDocument,programInfBean.getIdTipoInforme());
+			}else{
 				
-				if(alClavesDestinatario==null){
-					//datosInforme.putAll(htClavesDestinatario);
-					vDocumentos = getDocumentosAEnviar(datosInforme,
-							vPlantillasInforme, usrBean,
-							EnvioInformesGenericos.docDocument,programInfBean.getIdTipoInforme());
-				}else{
-					
-					
-					vDocumentos = new Vector();
-		
-					for (int i = 0; i < alClavesDestinatario.size(); i++) {
+				
+				vDocumentos = new Vector();
+	
+				ArrayList alFacturas = new ArrayList();
+				
+				for (int i = 0; i < alClavesDestinatario.size(); i++) {
+					if(!programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesMorosos)){
 						Hashtable  htClaves =   (Hashtable) alClavesDestinatario.get(i);
 						datosInforme.putAll(htClaves);
-						vDocumentos.addAll(getDocumentosAEnviar(datosInforme,
-								vPlantillasInforme, usrBean,
+						vDocumentos.addAll(getDocumentosAEnviar(datosInforme,vPlantillasInforme, usrBean,
 								EnvioInformesGenericos.docDocument,programInfBean.getIdTipoInforme()));
+					}else{
+						Hashtable  htClaves =   (Hashtable) alClavesDestinatario.get(i);
+						String idFactura = (String)htClaves.get("idFactura");
+						alFacturas.add(idFactura);
 						
 					}
+					
+					
 				}
+				if(programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesMorosos)){
+					datosInforme.put("idFacturas", alFacturas);
+					vDocumentos.addAll(getDocumentosAEnviar(datosInforme,vPlantillasInforme, usrBean,
+							EnvioInformesGenericos.docDocument,programInfBean.getIdTipoInforme()));
+				}
+			}
+			
+			
+			}else{
+// caso de envios de expedientes
 				
 				
-				
-			} else {
-				// caso de envios de expedientes
-				
-				
-				
+				vDocumentos = new Vector();
 				if(alClavesDestinatario==null){
 					//datosInforme.putAll(htClavesDestinatario);
 					//vDocumentos = getDocumentosAEnviar(datosInforme,
@@ -699,11 +711,9 @@ public class EnvioInformesGenericos extends MasterReport {
 							
 						}
 					}
-					
-				//}
-				////////////////////*************************************************************					
-			
+				
 			}
+			
 
 			
 			//en el metodo getDatosInformeFinal metemos la key definitiva idFacturas en el datosInforme
@@ -745,6 +755,8 @@ public class EnvioInformesGenericos extends MasterReport {
 
 
 	}
+	
+	
 	/**
 	 * Este metodo es el encargado de generar envios NO ordinarios de correos(e-mail, fax).
 	 * 
@@ -824,12 +836,27 @@ public class EnvioInformesGenericos extends MasterReport {
 				//List aClavesMultiple = (ArrayList)htClavesDestinatario.get("clavesMultiple");
 				//datosInforme.putAll(htClavesDestinatario);
 				vDocumentos = new Vector();
+				ArrayList alFacturas = new ArrayList();
 				for (int i = 0; i < alClavesDestinatario.size(); i++) {
-					Hashtable  htClaves =   (Hashtable) alClavesDestinatario.get(i);
-					datosInforme.putAll(htClaves);
+					
+					
+					if(!programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesMorosos)){
+						Hashtable  htClaves =   (Hashtable) alClavesDestinatario.get(i);
+						datosInforme.putAll(htClaves);
+						vDocumentos.addAll(getDocumentosAEnviar(datosInforme,vPlantillasInforme, usrBean,
+								EnvioInformesGenericos.docDocument,programInfBean.getIdTipoInforme()));
+					}else{
+						Hashtable  htClaves =   (Hashtable) alClavesDestinatario.get(i);
+						String idFactura = (String)htClaves.get("idFactura");
+						alFacturas.add(idFactura);
+						
+					}
+					
+				}
+				if(programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesMorosos)){
+					datosInforme.put("idFacturas", alFacturas);
 					vDocumentos.addAll(getDocumentosAEnviar(datosInforme,vPlantillasInforme, usrBean,
 							EnvioInformesGenericos.docDocument,programInfBean.getIdTipoInforme()));
-					
 				}
 			}
 			
@@ -841,11 +868,8 @@ public class EnvioInformesGenericos extends MasterReport {
 
 		} else {
 			// caso de envio de expedientes
+
 			
-			// (JTA) IDEA!!!!! Ahora mismo el idioma de las comunicaciones es el de el usuario que la genera. si por necesidades se va a meter
-			// en algun formulario el idioma seleccionable, se puede meter como clave de la
-			// programacion. de este modo el idioma inicial se macahacara con este ultimo, por eso es
-			// importante que el putAll este aqui y no antes.
 			vDocumentos = null;
 			
 			datosInforme.putAll(htClavesProgramacion);
@@ -973,7 +997,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			envio.generarComunicacionMoroso(destProgramInfBean.getIdPersona().toString(),
 					vDocumentos,alFacturas,programInfBean.getIdInstitucion().toString(),enviosBean.getDescripcion());
 		}
-		//Generamos la comunicacion de morosos
+		//Generamos la comunicacion de expedientes
 		if(programInfBean.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesExpedientes)){
 			String idInstitucion = (String)datosInforme.get("idInstitucion");
 			String idInstitucionTipoExp = (String)datosInforme.get("idInstitucionTipoExp");
