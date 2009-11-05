@@ -38,7 +38,7 @@
 		 	
 		 	//document.forms[0].submit();
 		 	var f = document.forms[0].name;
-			document.frames.submitArea.location = '<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName=' + f + '&msg=messages.wait';
+		 	document.forms[0].submit();
 			return false;
 		}
 				
