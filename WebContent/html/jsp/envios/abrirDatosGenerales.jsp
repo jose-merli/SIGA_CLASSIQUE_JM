@@ -222,7 +222,7 @@
 					{
 %>
 						<td>
-							<siga:ComboBD nombre="idPlantillaEnvio" tipo="cmbPlantillaEnvios" clase="boxConsulta" obligatorio="true" parametro="<%=parametro%>" elementoSel="<%=al%>" accion="hijo:idPlantillaGeneracion" pestana="true" readOnly="true" obligatorioSinTextoSeleccionar="true"/>
+							<siga:ComboBD nombre="idPlantillaEnvio" tipo="cmbPlantillaEnvios" clase="boxConsulta" ancho="250" obligatorio="true" parametro="<%=parametro%>" elementoSel="<%=al%>" accion="hijo:idPlantillaGeneracion" pestana="true" readOnly="true" obligatorioSinTextoSeleccionar="true"/>
 						</td>
 						<td class="labelText">
 							<siga:Idioma key="envios.definir.literal.plantillageneracion"/>
