@@ -255,6 +255,11 @@ public class EnvDocumentosAdm extends MasterBeanAdministrador {
 				select.append(EnvComunicacionMorososBean.C_IDINSTITUCION); 
 				
 				select.append(" and doc.");
+				select.append(EnvDocumentosBean.C_IDDOCUMENTO);
+				select.append(" = moro.");
+				select.append(EnvComunicacionMorososBean.C_IDDOCUMENTO);
+				
+				select.append(" and doc.");
 				select.append(EnvDocumentosBean.C_IDINSTITUCION);
 				select.append(" = ");
 				select.append(idInstitucion);
