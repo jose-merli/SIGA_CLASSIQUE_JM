@@ -30,9 +30,7 @@
 	HttpSession ses=request.getSession();
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
 	UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);
-%>	
-	
-<%  
+
 	DatosGeneralesPagoForm formulario = (DatosGeneralesPagoForm)request.getAttribute("formularioPagos");
 	String modo = (String)request.getAttribute("modo");
 	String accion = (String)request.getAttribute("accion");
@@ -68,13 +66,13 @@
 	Long importePendienteDePago = null;
 
 	//DATOS CUANDO VENIMOS DE EDITAR/VER:
+	boolean esNuevo = accion.equalsIgnoreCase("nuevo");
 	boolean esConsulta = accion.equalsIgnoreCase("consulta");
-	boolean esVerEditar = accion.equalsIgnoreCase("edicion") || esConsulta;
+	boolean esEdicion = accion.equalsIgnoreCase("edicion");
+	boolean esVerEditar = esEdicion || esConsulta;
+	boolean estadoAbierto = idEstadoPagosJG.equals(ClsConstants.ESTADO_PAGO_ABIERTO);
 	String scriptOnLoad = "ocultarConceptos();";
 	if (esVerEditar) {
-		//Funcion javascript que se llama en el onload 
-		scriptOnLoad = "inicializarVerEditar(); ocultarRestante();";
-		
 		//Datos del Bean:
 		FcsPagosJGBean pagosBean = (FcsPagosJGBean)request.getAttribute("PAGOSBEAN");
 		idInstitucion = pagosBean.getIdInstitucion().toString();//Propia del registro
@@ -127,10 +125,18 @@
 		idEstadoFacturacion = request.getAttribute("idEstadoFacturacion")==null?"":(String)request.getAttribute("idEstadoFacturacion");
 		nombreFacturacion = request.getAttribute("nombreFacturacion")==null?"":(String)request.getAttribute("nombreFacturacion");
 		importeFacturado = request.getAttribute("importeFacturado")==null?"":(String)request.getAttribute("importeFacturado");
+		
+		estadoAbierto = idEstadoPagosJG.equals(ClsConstants.ESTADO_PAGO_ABIERTO);
+		scriptOnLoad = "inicializarVerEditar();";
+		if (esConsulta || !estadoAbierto){
+			scriptOnLoad += " ocultarRestante();";
+		}
+
 	} 
 	else { //Venimos de Nuevo
 		idInstitucion = request.getAttribute("idInstitucionRegistro")==null?"":(String)request.getAttribute("idInstitucionRegistro");//Propia del registro
 	}
+
 	
 	importePendienteDePago = request.getAttribute("importePendienteDePago")==null?null:(Long)request.getAttribute("importePendienteDePago");
 	
@@ -142,28 +148,28 @@
 	boolean b_lectura=false;
 	String estilo="";
 	String estiloNumber="boxConsultaNumber";
-	if (accion.equalsIgnoreCase("nuevo")) {
+	if (esNuevo) {
 		nombreEstado="";
 		fechaEstado="";
 		b_lectura = false;
 		estilo = "box";
 		estiloNumber="boxNumber";
 	} else {
-		if (accion.equalsIgnoreCase("edicion")) {			
+		if (esEdicion) {			
 			estilo = "box";
+			estiloNumber="boxNumber";			
 			if (idEstadoPagosJG.equals(ClsConstants.ESTADO_PAGO_EJECUTADO) || idEstadoPagosJG.equals(ClsConstants.ESTADO_PAGO_CERRADO)) {
 				b_lectura = true;
 				estilo = "boxConsulta";
 				estiloNumber="boxConsultaNumber";
 			}
-		} else if (accion.equalsIgnoreCase("consulta")) {
+		} else if (esConsulta) {
 					b_lectura = true;
 					estilo = "boxConsulta";
 					estiloNumber="boxConsultaNumber";
 					
 				}
 	}
-	
 	//COMBO FACTURACION:
 	String facturacionParams[] = new String[2];
 	facturacionParams[0] = usrbean.getLocation();
@@ -233,6 +239,13 @@
 		var	porcentajePagadoSOJ = <%=porcentajePagadoSOJ%>;		
 		
 		var backupAPagar;
+
+		var conceptos = new Array(4);
+		conceptos[0] = 'Oficio';
+		conceptos[1] = 'Guardias';
+		conceptos[2] = 'EJG';
+		conceptos[3] = 'SOJ';
+	
 	</script>
 	
 	<script>
@@ -335,34 +348,38 @@
 			inicializaConceptos();
 			// Al cargar una nueva facturacion hay que borrar los importes
 			// a pagar que se hubieran introducido para otra facturacion
-			borrarAPagar()
-			
+			borrarAPagar();
 		}
-		
+
 		/**
 		* Borra los campos "a pagar" de cada concepto
 		*/
 		function borrarAPagar(){
 			//Obtener la suma del importe a repartir 
 			var importeRepartirTotal = 0;
-			var concepto = new Array(4)
-			concepto[0] = 'Oficio';
-			concepto[1] = 'Guardias';
-			concepto[2] = 'EJG';
-			concepto[3] = 'SOJ';
-
 			for (i=0;i<4;i++){			
 				//inicializa el valor de los elementos
-				document.getElementById("importe"+concepto[i]).value = "0,00";
-				document.getElementById("porcentaje"+concepto[i]).value = "0,00";
+				document.getElementById("importe"+conceptos[i]).value = "0,00";
+				document.getElementById("porcentaje"+conceptos[i]).value = "0,00";
 				//inicializa el aspecto de los elementos
-				document.getElementById("porcentaje"+concepto[i]).className  = "boxConsultaNumber";	
-				document.getElementById("porcentaje"+concepto[i]).readOnly = true;
-				document.getElementById("importe"+concepto[i]).readOnly = false;
-				document.getElementById("importe"+concepto[i]).className  = "<%=estiloNumber%>";
+				document.getElementById("porcentaje"+conceptos[i]).className  = "boxConsultaNumber";	
+				document.getElementById("porcentaje"+conceptos[i]).readOnly = true;
+				document.getElementById("importe"+conceptos[i]).readOnly = false;
+				document.getElementById("importe"+conceptos[i]).className  = "<%=estiloNumber%>";
 			}
 		}
 
+		/**
+		* Inicializa campos "a pagar" de cada concepto
+		*/
+		function inicializaAPagar(){
+			for (i=0;i<4;i++){			
+				//inicializa el valor de los elementos
+				document.getElementById("importe"+conceptos[i]).value = convertirAFormato(eval("importe"+conceptos[i])+"");
+				actualizaConcepto(conceptos[i], eval("total"+conceptos[i]), eval("importePend"+conceptos[i]), 0);
+			}
+		}
+		
 		 
 		/**
 		 * Calcula los importes y porcentajes pendientes de cada concepto
@@ -378,7 +395,7 @@
 			
 			importePendOficio = parseFloat(totalOficio) - parseFloat(importePagadoOficio);
 			porcentajePendOficio = parseFloat(100) - parseFloat(porcentajePagadoOficio);
-
+			
 			importePendGuardias = parseFloat(totalGuardias) - parseFloat(importePagadoGuardias);
 			porcentajePendGuardias = parseFloat(100) - parseFloat(porcentajePagadoGuardias);
 
@@ -395,6 +412,9 @@
 		function inicializarVerEditar(){
 			calcularPendiente();
 			inicializaConceptos();
+			<% if (esEdicion && estadoAbierto){%>
+			inicializaAPagar();
+			<% } %>			
 			/*alert(importePendOficio + " - " + porcentajePendOficio + " - " + 
 			  importePendGuardias + " - " + porcentajePendGuardias + " - " + 
 			  importePendEJG + " - " + porcentajePendEJG + " - " + 
@@ -405,11 +425,9 @@
 		 * Oculta las fila de cada concepto de la tabla de reparto
 		 */
 		function ocultarConceptos(){
-			//Ocultar las filas de cada concepto
-			document.getElementById("filaOficio").style.display = "none";
-			document.getElementById("filaGuardias").style.display = "none";
-			document.getElementById("filaEJG").style.display = "none";
-			document.getElementById("filaSOJ").style.display = "none";
+			for (i=0;i<4;i++){					
+				document.getElementById("fila"+conceptos[i]).style.display = "none";
+			}
 		}
 
 		/**
@@ -491,7 +509,7 @@
 			<siga:Idioma key="factSJCS.datosPagos.literal.facturacion"/>&nbsp;(*)
 		</td>
 		<td class="labelText" >		
-			<% if (accion.equalsIgnoreCase("nuevo")) { %>
+			<% if (esNuevo) { %>
 				<siga:ComboBD nombre="comboFacturacion" tipo="cmb_facturacionPagosTodos" estilo="width:325" parametro="<%=facturacionParams %>" clase="boxCombo" obligatorio="false" accion="actualizarFechas(this);"  />
 			<% } else { %>
 				<html:text name="datosGeneralesPagoForm" property="comboFacturacion" style="width:325" value='<%=nombreFacturacion%>' styleClass="boxConsulta" readOnly="true"></html:text>
@@ -579,13 +597,13 @@
 						<siga:Idioma key="factSJCS.datosPagos.literal.Oficio"/>
 					</td>				
 					<td class="labelTextNum">
-						<input name="txtTotalOficio" id="txtTotalOficio" size="18" class="boxConsultaNumber"/>
+						<input name="txtTotalOficio" id="txtTotalOficio" size="18" class="boxConsultaNumber" readonly="true" />
 					</td>
 					<td class="labelTextNum">
-						<input name="txtPendienteOficio" id="txtPendienteOficio" size="18" class="boxConsultaNumber"/>	
+						<input name="txtPendienteOficio" id="txtPendienteOficio" size="18" class="boxConsultaNumber" readonly="true" />	
 					</td>
 					<td class="labelTextNum" >
-						<% if (!esVerEditar){ %>
+						<% if (esNuevo || (esEdicion && estadoAbierto)){ %>
 							<input name="radioAPagarOficio" value="importe" type="radio" onclick="cambiar('Oficio');" Checked/>
 							<input name="importeOficio" id="importeOficio" style="width:50%" class="<%=estiloNumber%>" onblur="actualizaConcepto('Oficio', totalOficio, importePendOficio, porcentajePendOficio);" onfocus="backup('importeOficio')" />						
 							<span style="vertical-align:40%">&euro;	&nbsp;</span>
@@ -593,13 +611,13 @@
 							<input name="porcentajeOficio" id="porcentajeOficio" style="width:15%" maxlength="5" class="boxConsultaNumber" readonly="true" onblur="actualizaConcepto('Oficio', totalOficio, importePendOficio, porcentajePendOficio);"	onfocus="backup('porcentajeOficio');" />						
 							<span style="vertical-align:40%">&#37;</span>
 						<% } else {%>
-							<input name="txtAPagarOficio" id="txtAPagarOficio" style="width:100%" class="boxConsultaNumber"/>
+							<input name="txtAPagarOficio" id="txtAPagarOficio" style="width:100%" class="boxConsultaNumber" readonly="true"/>
 							<input type="hidden" name="importeOficio" id="importeOficio"/>
 							<input type="hidden" name="porcentajeOficio" id="porcentajeOficio"/>
 						<% } %>
 					</td>
 					<td class="labelTextNum">
-						<input name="txtRestanteOficio" id="txtRestanteOficio" style="width:100%" class="boxConsultaNumber"/>
+						<input name="txtRestanteOficio" id="txtRestanteOficio" style="width:100%" class="boxConsultaNumber" readonly="true" />
 					</td>
 				</tr>
 				<!-- GUARDIAS -->
@@ -608,13 +626,13 @@
 						<siga:Idioma key="factSJCS.datosPagos.literal.Guardias"/>
 					</td>				
 					<td class="labelTextNum">
-						<input name="txtTotalGuardias" id="txtTotalGuardias" size="18" class="boxConsultaNumber"/>
+						<input name="txtTotalGuardias" id="txtTotalGuardias" size="18" class="boxConsultaNumber" readonly="true"/>
 					</td>
 					<td class="labelTextNum">
-						<input name="txtPendienteGuardias" id="txtPendienteGuardias" size="18" class="boxConsultaNumber"/>	
+						<input name="txtPendienteGuardias" id="txtPendienteGuardias" size="18" class="boxConsultaNumber" readonly="true"/>	
 					</td>
 					<td class="labelTextNum" >
-						<% if (!esVerEditar){ %>
+						<% if (esNuevo || (esEdicion && estadoAbierto)){ %>
 							<input name="radioAPagarGuardias" value="importe" type="radio" onclick="cambiar('Guardias');" Checked/>
 							<input name="importeGuardias" id="importeGuardias" style="width:50%" class="<%=estiloNumber%>" onblur="actualizaConcepto('Guardias', totalGuardias, importePendGuardias, porcentajePendGuardias);" onfocus="backup('importeGuardias');" />						
 							<span style="vertical-align:40%">&euro;	&nbsp;</span>
@@ -624,13 +642,13 @@
 										onfocus="backup('porcentajeGuardias');" />						
 							<span style="vertical-align:40%">&#37;</span>
 						<% } else {%>
-							<input name="txtAPagarGuardias" id="txtAPagarGuardias" size="18" class="boxConsultaNumber"/>
+							<input name="txtAPagarGuardias" id="txtAPagarGuardias" size="18" class="boxConsultaNumber" readonly="true"/>
 							<input type="hidden" name="importeGuardias" id="importeGuardias"/>
 							<input type="hidden" name="porcentajeGuardias" id="porcentajeGuardias"/>
 						<% } %>
 					</td>
 					<td class="labelTextNum">
-						<input name="txtRestanteGuardias" id="txtRestanteGuardias" size="18" class="boxConsultaNumber"/>
+						<input name="txtRestanteGuardias" id="txtRestanteGuardias" size="18" class="boxConsultaNumber" readonly="true"/>
 					</td>
 				</tr>
 				<!-- EJG -->
@@ -639,13 +657,13 @@
 						<siga:Idioma key="factSJCS.datosPagos.literal.EJG"/>
 					</td>				
 					<td class="labelTextNum">
-						<input name="txtTotalEJG" id="txtTotalEJG" size="18" class="boxConsultaNumber"/>
+						<input name="txtTotalEJG" id="txtTotalEJG" size="18" class="boxConsultaNumber" readonly="true"/>
 					</td>
 					<td class="labelTextNum">
-						<input name="txtPendienteEJG" id="txtPendienteEJG" size="18" class="boxConsultaNumber"/>	
+						<input name="txtPendienteEJG" id="txtPendienteEJG" size="18" class="boxConsultaNumber" readonly="true"/>	
 					</td>
 					<td class="labelTextNum" >
-						<% if (!esVerEditar){ %>
+						<% if (esNuevo || (esEdicion && estadoAbierto)){ %>
 							<input name="radioAPagarEJG" value="importe" type="radio" onclick="cambiar('EJG');" Checked/>
 							<input name="importeEJG" id="importeEJG" style="width:50%" class="<%=estiloNumber%>" onblur="actualizaConcepto('EJG', totalEJG, importePendEJG, porcentajePendEJG);" onfocus="backup('importeEJG');" />						
 							<span style="vertical-align:40%">&euro;	&nbsp;</span>
@@ -653,13 +671,13 @@
 							<input name="porcentajeEJG" id="porcentajeEJG" style="width:15%" maxlength="5" class="boxConsultaNumber" readonly="true" onblur="actualizaConcepto('EJG', totalEJG, importePendEJG, porcentajePendEJG);" onfocus="backup('porcentajeEJG');" />						
 							<span style="vertical-align:40%">&#37;</span>
 						<% } else {%>
-							<input name="txtAPagarEJG" id="txtAPagarEJG" size="18" class="boxConsultaNumber"/>
+							<input name="txtAPagarEJG" id="txtAPagarEJG" size="18" class="boxConsultaNumber" readonly="true"/>
 							<input type="hidden" name="importeEJG" id="importeEJG"/>
 							<input type="hidden" name="porcentajeEJG" id="porcentajeEJG"/>
 						<% } %>
 					</td>
 					<td class="labelTextNum">
-						<input name="txtRestanteEJG" id="txtRestanteEJG" size="18" class="boxConsultaNumber"/>
+						<input name="txtRestanteEJG" id="txtRestanteEJG" size="18" class="boxConsultaNumber" readonly="true"/>
 					</td>
 				</tr>
 				<!-- SOJ -->
@@ -668,13 +686,13 @@
 						<siga:Idioma key="factSJCS.datosPagos.literal.SOJ"/>
 					</td>				
 					<td class="labelTextNum">
-						<input name="txtTotalSOJ" id="txtTotalSOJ" size="18" class="boxConsultaNumber"/>
+						<input name="txtTotalSOJ" id="txtTotalSOJ" size="18" class="boxConsultaNumber" readonly="true"/>
 					</td>
 					<td class="labelTextNum">
-						<input name="txtPendienteSOJ" id="txtPendienteSOJ" size="18" class="boxConsultaNumber"/>	
+						<input name="txtPendienteSOJ" id="txtPendienteSOJ" size="18" class="boxConsultaNumber" readonly="true"/>	
 					</td>
 					<td class="labelTextNum" >
-						<% if (!esVerEditar){ %>
+						<% if (esNuevo || (esEdicion && estadoAbierto)){ %>
 							<input name="radioAPagarSOJ" value="importe" type="radio" onclick="cambiar('SOJ');" Checked/>
 							<input name="importeSOJ" id="importeSOJ" style="width:50%" class="<%=estiloNumber%>" onblur="actualizaConcepto('SOJ', totalSOJ, importePendSOJ, porcentajePendSOJ);" onfocus="backup('importeSOJ');" />						
 							<span style="vertical-align:40%">&euro;	&nbsp;</span>
@@ -682,13 +700,13 @@
 							<input name="porcentajeSOJ" id="porcentajeSOJ" style="width:15%" maxlength="5" class="boxConsultaNumber" readonly="true" onblur="actualizaConcepto('SOJ', totalSOJ, importePendSOJ, porcentajePendSOJ);" onfocus="backup('porcentajeSOJ');" />						
 							<span style="vertical-align:40%">&#37;</span>
 						<% } else {%>
-							<input name="txtAPagarSOJ" id="txtAPagarSOJ" size="18" class="boxConsultaNumber"/>
+							<input name="txtAPagarSOJ" id="txtAPagarSOJ" size="18" class="boxConsultaNumber" readonly="true"/>
 							<input type="hidden" name="importeSOJ" id="importeSOJ"/>
 							<input type="hidden" name="porcentajeSOJ" id="porcentajeSOJ"/>
 						<% } %>
 					</td>
 					<td class="labelTextNum">
-						<input name="txtRestanteSOJ" id="txtRestanteSOJ" size="18" class="boxConsultaNumber"/>
+						<input name="txtRestanteSOJ" id="txtRestanteSOJ" size="18" class="boxConsultaNumber" readonly="true"/>
 					</td>
 				</tr>
 				
@@ -747,16 +765,15 @@
 			f.submit();
 		}
 		
-		//Convierte a formato java los campos de tipo precio
+		/**
+		 * Convierte a formato java los campos de tipo precio
+		 */
 		function actualizarCamposPrecio(){
 			document.forms[0].importeRepartir.value=document.forms[0].importeRepartir.value.replace(/,/,".");
 			document.forms[0].importePagado.value=document.forms[0].importePagado.value.replace(/,/,".");
 			document.forms[0].importeFacturado.value=document.forms[0].importeFacturado.value.replace(/,/,".");
 
 			//Convierte los importes y porcentajes de cada concepto
-			var conceptos = new Array(4);
-			conceptos[0] = 'Oficio'; conceptos[1] = 'Guardias';
-			conceptos[2] = 'EJG'; conceptos[3] = 'SOJ';
 			for (i=0;i<4;i++){
 				var objImporte = document.getElementById("importe"+conceptos[i]);
 				objImporte.value = objImporte.value.replace(/,/,".");
@@ -768,7 +785,11 @@
 		function formatearCamposprecio(){
 			document.forms[0].importeRepartir.value = convertirAFormato(document.forms[0].importeRepartir.value);
 			document.forms[0].importePagado.value = convertirAFormato(document.forms[0].importePagado.value);
-			document.forms[0].importeFacturado.value = convertirAFormato(document.forms[0].importeFacturado.value);								
+			document.forms[0].importeFacturado.value = convertirAFormato(document.forms[0].importeFacturado.value);
+			for (i=0;i<4;i++){			
+				document.getElementById("importe"+conceptos[i]).value = convertirAFormato(document.getElementById("importe"+conceptos[i]).value);
+				document.getElementById("porcentaje"+conceptos[i]).value = convertirAFormato(document.getElementById("porcentaje"+conceptos[i]).value);
+			}
 		}
 
 		
@@ -776,61 +797,20 @@
 		 *
 		 */
 		function inicializaConceptos(){
-			//Oficio
-			if (totalOficio==0)
-				document.getElementById("filaOficio").style.display = "none";
-			else{
-				document.getElementById("filaOficio").style.display = "inline";				
-				document.forms[0].txtTotalOficio.value = convertirAFormato(totalOficio+"") + '\u20AC';
-				document.forms[0].txtPendienteOficio.value = convertirAFormato(importePendOficio+"") + '\u20AC (' + convertirAFormato(porcentajePendOficio+"") + '%)';
-				document.forms[0].txtRestanteOficio.value = convertirAFormato(importePendOficio+"") + '\u20AC (' + convertirAFormato(porcentajePendOficio+"") + '%)';
-				<% if (esVerEditar){%>
-				document.forms[0].txtAPagarOficio.value = convertirAFormato(importeOficio+"") + '\u20AC (' + convertirAFormato(porcentajeOficio+"") + '%)';
-				document.forms[0].importeOficio.value = convertirAFormato(importeOficio+"");
-				document.forms[0].porcentajeOficio.value = convertirAFormato(porcentajeOficio+"");;
-				<% }%>
-			}
-			//Guardias
-			if (totalGuardias==0)
-				document.getElementById("filaGuardias").style.display = "none";
-			else{
-				document.getElementById("filaGuardias").style.display = "inline";				
-				document.forms[0].txtTotalGuardias.value = convertirAFormato(totalGuardias+"") + '\u20AC';
-				document.forms[0].txtPendienteGuardias.value = convertirAFormato(importePendGuardias+"") + '\u20AC (' + convertirAFormato(porcentajePendGuardias+"") + '%)';
-				document.forms[0].txtRestanteGuardias.value = convertirAFormato(importePendGuardias+"") + '\u20AC (' + convertirAFormato(porcentajePendGuardias+"") + '%)';
-				<% if (esVerEditar){%>
-				document.forms[0].txtAPagarGuardias.value = convertirAFormato(importeGuardias+"") + '\u20AC (' + convertirAFormato(porcentajeGuardias+"") + '%)';
-				document.forms[0].importeGuardias.value = convertirAFormato(importeGuardias+"");
-				document.forms[0].porcentajeGuardias.value = convertirAFormato(porcentajeGuardias+"");;
-				<% }%>
-			}
-			//EJG
-			if (totalEJG==0)
-				document.getElementById("filaEJG").style.display = "none";
-			else{
-				document.getElementById("filaEJG").style.display = "inline";				
-				document.forms[0].txtTotalEJG.value = convertirAFormato(totalEJG+"") + '\u20AC';
-				document.forms[0].txtPendienteEJG.value = convertirAFormato(importePendEJG+"") + '\u20AC (' + convertirAFormato(porcentajePendEJG+"") + '%)';
-				document.forms[0].txtRestanteEJG.value = convertirAFormato(importePendEJG+"") + '\u20AC (' + convertirAFormato(porcentajePendEJG+"") + '%)';
-				<% if (esVerEditar){%>
-				document.forms[0].txtAPagarEJG.value = convertirAFormato(importeEJG+"") + '\u20AC (' + convertirAFormato(porcentajeEJG+"") + '%)';
-				document.forms[0].importeEJG.value = convertirAFormato(importeEJG+"");
-				document.forms[0].porcentajeEJG.value = convertirAFormato(porcentajeEJG+"");;
-				<% }%>
-			}
-			//SOJ
-			if (totalSOJ==0)
-				document.getElementById("filaSOJ").style.display = "none";
-			else{
-				document.getElementById("filaSOJ").style.display = "inline";				
-				document.forms[0].txtTotalSOJ.value = convertirAFormato(totalSOJ+"") + '\u20AC';
-				document.forms[0].txtPendienteSOJ.value = convertirAFormato(importePendSOJ+"") + '\u20AC (' + convertirAFormato(porcentajePendSOJ+"") + '%)';
-				document.forms[0].txtRestanteSOJ.value = convertirAFormato(importePendSOJ+"") + '\u20AC (' + convertirAFormato(porcentajePendSOJ+"") + '%)';
-				<% if (esVerEditar){%>
-				document.forms[0].txtAPagarSOJ.value = convertirAFormato(importeSOJ+"") + '\u20AC (' + convertirAFormato(porcentajeSOJ+"") + '%)';
-				document.forms[0].importeSOJ.value = convertirAFormato(importeSOJ+"");
-				document.forms[0].porcentajeSOJ.value = convertirAFormato(porcentajeSOJ+"");;
-			<% }%>
+			for (i=0;i<4;i++){	
+				if (eval("total"+conceptos[i])==0)
+					document.getElementById("fila"+conceptos[i]).style.display = "none";
+				else{
+					document.getElementById("fila"+conceptos[i]).style.display = "inline";				
+					document.getElementById("txtTotal"+conceptos[i]).value = convertirAFormato(eval("total"+conceptos[i])+"") + '\u20AC';
+					document.getElementById("txtPendiente"+conceptos[i]).value = convertirAFormato(eval("importePend"+conceptos[i])+"") + '\u20AC (' + convertirAFormato(eval("porcentajePend"+conceptos[i])+"") + '%)';
+					document.getElementById("txtRestante"+conceptos[i]).value = convertirAFormato(eval("importePend"+conceptos[i])+"") + '\u20AC (' + convertirAFormato(eval("porcentajePend"+conceptos[i])+"") + '%)';
+					<% if (esConsulta || esEdicion && !estadoAbierto){%>
+					document.getElementById("txtAPagar"+conceptos[i]).value = convertirAFormato(eval("importe"+conceptos[i])+"") + '\u20AC (' + convertirAFormato(eval("porcentaje"+conceptos[i])+"") + '%)';
+					document.getElementById("importe"+conceptos[i]).value = convertirAFormato(eval("importe"+conceptos[i])+"");
+					document.getElementById("porcentaje"+conceptos[i]).value = convertirAFormato(eval("porcentaje"+conceptos[i])+"");;
+					<% }%>
+				}
 			}
 		}
 
@@ -935,16 +915,16 @@
 
 			//Obtener la suma del importe a repartir 
 			var importeRepartirTotal = 0;
-			var conceptos = new Array(4)
-			conceptos[0] = 'Oficio';
-			conceptos[1] = 'Guardias';
-			conceptos[2] = 'EJG';
-			conceptos[3] = 'SOJ';
 
+			var restantes = new Array(4);
+			
 			for (i=0;i<4;i++){
 				var objImporte = document.getElementById("importe"+conceptos[i]);
 				var importe = convertirANumero(objImporte.value);
 
+				//Copia del importe restante para recuperarla tras enviar el formulario
+				restantes[i] = document.getElementById("txtRestante"+conceptos[i]).value;
+				
 				if (isNaN(importe) || importe == 0){
 					objImporte.value = importe;
 					document.getElementById("porcentaje"+conceptos[i]).value = 0;
@@ -955,6 +935,11 @@
 					importeRepartirTotal = parseFloat(importeRepartirTotal) + parseFloat(importe);
 				}
 			} 
+			// Guarda los valores de los importes a repartir y pagado
+			// para recuperarlos una vez enviados al guardar si 
+			// se esta editando el pago en el estado ABIERTO
+			var iportePagadoAux = f.importePagado.value;
+
 			document.getElementById("importeRepartir").value = importeRepartirTotal;
 			
 			f.target = "submitArea";
@@ -977,12 +962,22 @@
 				actualizarCamposPrecio();
 
 				f.submit();
-
+				
 				//Dejo el formato con los 2 decimales y la coma:
 				inicializaConceptos();
+
+				<% if (esEdicion && estadoAbierto){%>
+				// Se recuperan los datos del importe Pagado si se edita el pago con estado ABIERTO
+				f.importePagado.value = iportePagadoAux;
+				for (i=0;i<4;i++){
+					document.getElementById("txtRestante"+conceptos[i]).value = restantes[i];
+				}
+				<% } %>	
+
 				formatearCamposprecio();
 			}else{
 				fin();
+				formatearCamposprecio();				
 				return false;
 			}
 		}
@@ -1020,7 +1015,7 @@
 				if(resultado=='MODIFICADO') refrescarLocal();
 			<%}%>
 			
-			//Dejoel formato con los 2 decimales y la coma:
+			//Dejo el formato con los 2 decimales y la coma:
 			formatearCamposprecio();
 		}
 		

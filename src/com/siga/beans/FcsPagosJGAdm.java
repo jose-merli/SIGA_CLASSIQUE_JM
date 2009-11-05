@@ -1025,32 +1025,40 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 	 * Obtiene el importe total y los importes y porcentajes pendientes para cada concepto de la facturacion.
 	 * @param Integer: idInstitucion
 	 * @param Integer: idPago
+	 * @param boolean: sinPagosAbiertos
+	 * 
 	 * @return Hashtable: 
 	 */
-	public Hashtable getConceptosPendientesYTotal(Integer idInstitucion, Integer idFacturacion) throws ClsExceptions{
+	public Hashtable getConceptosPendientesYTotal(Integer idInstitucion, Integer idFacturacion, boolean sinPagosAbiertos) throws ClsExceptions{
 
 		StringBuffer consulta = new StringBuffer();
 
-		consulta.append("SELECT SUM (P.IMPORTEPAGADO) as TOTALIMPORTEPAGADO, ");
-		consulta.append(" SUM (P.IMPORTEOFICIO) as TOTALIMPORTEPAGADOOFICIO, ");
-		consulta.append(" SUM (P.IMPORTEGUARDIA)  as TOTALIMPORTEPAGADOGUARDIA, ");
-		consulta.append(" SUM (P.IMPORTEEJG)  as TOTALIMPORTEPAGADOEJG, ");
-		consulta.append(" SUM (P.IMPORTESOJ)  as TOTALIMPORTEPAGADOSOJ, ");
-		consulta.append(" decode(max(F.IMPORTEOFICIO),  0, 0, round( SUM(P.IMPORTEOFICIO)  * 100 / max(F.IMPORTEOFICIO)  ,2))  as TOTALPORCENTAJEPAGADOOFICIO, ");
-		consulta.append(" decode(max(F.IMPORTEGUARDIA), 0, 0, round( SUM(P.IMPORTEGUARDIA) * 100 / max(F.IMPORTEGUARDIA) ,2))  as TOTALPORCENTAJEPAGADOGUARDIA, ");
-		consulta.append(" decode(max(F.IMPORTEEJG),     0, 0, round( SUM(P.IMPORTEEJG)     * 100 / max(F.IMPORTEEJG)     ,2))  as TOTALPORCENTAJEPAGADOEJG, ");
-		consulta.append(" decode(max(F.IMPORTESOJ),     0, 0, round( SUM(P.IMPORTESOJ)     * 100 / max(F.IMPORTESOJ)     ,2))  as TOTALPORCENTAJEPAGADOSOJ, ");
-		consulta.append(" max(F.IMPORTEOFICIO)  as TOTALOFICIO, ");
-		consulta.append(" max(F.IMPORTEGUARDIA) as TOTALGUARDIA, ");
-		consulta.append(" max(F.IMPORTEEJG)     as TOTALEJG, ");
-		consulta.append(" max(F.IMPORTESOJ)     as TOTALSOJ ");
+		consulta.append("select aux.*, ");
+		consulta.append("(select FJG.IMPORTEOFICIO  from FCS_FACTURACIONJG FJG where FJG.IDINSTITUCION = "+idInstitucion.toString()+" AND FJG.IDFACTURACION = "+idFacturacion.toString()+") as TOTALOFICIO, ");
+		consulta.append("(select FJG.IMPORTEGUARDIA from FCS_FACTURACIONJG FJG where FJG.IDINSTITUCION = "+idInstitucion.toString()+" AND FJG.IDFACTURACION = "+idFacturacion.toString()+") as TOTALGUARDIA, ");
+		consulta.append("(select FJG.IMPORTEEJG     from FCS_FACTURACIONJG FJG where FJG.IDINSTITUCION = "+idInstitucion.toString()+" AND FJG.IDFACTURACION = "+idFacturacion.toString()+") as TOTALEJG, ");
+		consulta.append("(select FJG.IMPORTESOJ     from FCS_FACTURACIONJG FJG where FJG.IDINSTITUCION = "+idInstitucion.toString()+" AND FJG.IDFACTURACION = "+idFacturacion.toString()+") as TOTALSOJ ");
+		consulta.append("from ( ");
+		consulta.append("SELECT NVL(SUM (P.IMPORTEPAGADO),0) as TOTALIMPORTEPAGADO, ");
+		consulta.append(" NVL(SUM (P.IMPORTEOFICIO),0) as TOTALIMPORTEPAGADOOFICIO, ");
+		consulta.append(" NVL(SUM (P.IMPORTEGUARDIA),0)  as TOTALIMPORTEPAGADOGUARDIA, ");
+		consulta.append(" NVL(SUM (P.IMPORTEEJG),0)  as TOTALIMPORTEPAGADOEJG, ");
+		consulta.append(" NVL(SUM (P.IMPORTESOJ),0)  as TOTALIMPORTEPAGADOSOJ, ");
+		consulta.append(" NVL(decode(max(F.IMPORTEOFICIO),  0, 0, round( SUM(P.IMPORTEOFICIO)  * 100 / max(F.IMPORTEOFICIO)  ,2)),0)  as TOTALPORCENTAJEPAGADOOFICIO, ");
+		consulta.append(" NVL(decode(max(F.IMPORTEGUARDIA), 0, 0, round( SUM(P.IMPORTEGUARDIA) * 100 / max(F.IMPORTEGUARDIA) ,2)),0)  as TOTALPORCENTAJEPAGADOGUARDIA, ");
+		consulta.append(" NVL(decode(max(F.IMPORTEEJG),     0, 0, round( SUM(P.IMPORTEEJG)     * 100 / max(F.IMPORTEEJG)     ,2)),0)  as TOTALPORCENTAJEPAGADOEJG, ");
+		consulta.append(" NVL(decode(max(F.IMPORTESOJ),     0, 0, round( SUM(P.IMPORTESOJ)     * 100 / max(F.IMPORTESOJ)     ,2)),0)  as TOTALPORCENTAJEPAGADOSOJ ");
 		consulta.append(" FROM FCS_PAGOSJG P, FCS_FACTURACIONJG F");
 		consulta.append(" WHERE ");
 		consulta.append(" P.IDINSTITUCION="+idInstitucion.toString());
 		consulta.append(" AND P.IDFACTURACION="+idFacturacion.toString());
 		consulta.append(" AND F.IDINSTITUCION = P.IDINSTITUCION");
 		consulta.append(" AND F.IDFACTURACION = P.IDFACTURACION");
-
+		if (sinPagosAbiertos){
+			consulta.append(" AND (SELECT max(ep.idestadopagosjg) FROM FCS_PAGOS_ESTADOSPAGOS EP WHERE EP.IDINSTITUCION = EP.idinstitucion AND EP.IDPAGOSJG = p.idpagosjg) > 10");
+		}
+		consulta.append(" ) aux");
+		
 		Hashtable totalConceptos = (Hashtable)this.selectGenerico(consulta.toString()).get(0);
 
 		return totalConceptos;

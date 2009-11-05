@@ -169,7 +169,22 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			FcsPagosJGBean pagosBean = (FcsPagosJGBean)pagosAdm.select(where).elementAt(0);
 			pagosBean.setNombre(miform.getNombre());
 			pagosBean.setAbreviatura(miform.getAbreviatura());
+			pagosBean.setImporteEJG(Double.valueOf(miform.getImporteEJG()));
+			pagosBean.setImporteSOJ(Double.valueOf(miform.getImporteSOJ()));
+			pagosBean.setImporteOficio(Double.valueOf(miform.getImporteOficio()));
+			pagosBean.setImporteGuardia(Double.valueOf(miform.getImporteGuardias()));
+			pagosBean.setImporteGuardia(Double.valueOf(miform.getImporteGuardias()));
+			pagosBean.setImporteRepartir(Double.valueOf(miform.getImporteRepartir()));
+			pagosBean.setImportePagado(Double.valueOf(miform.getImportePagado()));
 			
+			GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request));
+			String paramConcepto = paramAdm.getValor(miform.getIdInstitucion(), "FCS", "CONCEPTO_ABONO", "");
+			if (!paramConcepto.equalsIgnoreCase("1")&&!paramConcepto.equalsIgnoreCase("8")&&!paramConcepto.equalsIgnoreCase("9")){
+				throw new SIGAException("administracion.parametrosGenerales.error.conceptoAbono");
+			}
+			pagosBean.setConcepto(paramConcepto);
+			pagosBean.setBancosCodigo(paramAdm.getValor(miform.getIdInstitucion(), "FCS", "BANCOS_CODIGO_ABONO", "")); 
+
 			//actualiza la BD
 			tx.begin();
 			pagosAdm.updateDirect(pagosBean);
@@ -255,9 +270,19 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			registroOriginal.put(FcsPagosJGBean.C_IMPORTEOFICIO, UtilidadesString.tratarImporte(pagosBean.getImporteOficio()));
 			registroOriginal.put(FcsPagosJGBean.C_IMPORTEGUARDIA, UtilidadesString.tratarImporte(pagosBean.getImporteGuardia()));
 			registroOriginal.put(FcsPagosJGBean.C_IMPORTEMINIMO, UtilidadesString.tratarImporte(pagosBean.getImporteMinimo()));
+
+			//Recuperamos el estado, la fecha y el id del estado del pago:
+			Hashtable hash = pagosAdm.getEstadoPago(new Integer(idInstitucion),new Integer(idPagosJG));
+			String nombreEstado = (String)hash.get(FcsEstadosPagosBean.C_DESCRIPCION);
+			String fechaEstado = (String)hash.get(FcsPagosEstadosPagosBean.C_FECHAESTADO);
+			String idEstadoPagosJG = (String)hash.get(FcsPagosEstadosPagosBean.C_IDESTADOPAGOSJG);
 			
 			// Recupera los importes totales y pendientes de cada concepto del pago
-			Hashtable hashConceptos = pagosAdm.getConceptosPendientesYTotal(new Integer(idInstitucion),pagosBean.getIdFacturacion());
+			// si es una edicion y el estado es abierto, no se tienen en cuenta los 
+			// pagos en estado ABIERTO (como sera el caso del mismo pago que se edita)
+			Hashtable hashConceptos = pagosAdm.getConceptosPendientesYTotal(
+					new Integer(idInstitucion),pagosBean.getIdFacturacion(),
+					ClsConstants.ESTADO_PAGO_ABIERTO.equals(idEstadoPagosJG) && "edicion".equals(accion));
 			//Los porcentajes se calculan en funcion del total facturado y el importe parcial de cada pago
 			Double porcentajeEJG = UtilidadesNumero.redondea(pagosBean.getImporteEJG() * 100 / Double.valueOf(factJGBean.getImporteEJG()), 2);
 			hashConceptos.put("PORCENTAJEEJG", UtilidadesString.tratarImporte(porcentajeEJG));
@@ -270,11 +295,6 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			
 			request.setAttribute("CONCEPTOS",hashConceptos);
 			
-			//Recuperamos el estado, la fecha y el id del estado del pago:
-			Hashtable hash = pagosAdm.getEstadoPago(new Integer(idInstitucion),new Integer(idPagosJG));
-			String nombreEstado = (String)hash.get(FcsEstadosPagosBean.C_DESCRIPCION);
-			String fechaEstado = (String)hash.get(FcsPagosEstadosPagosBean.C_FECHAESTADO);
-			String idEstadoPagosJG = (String)hash.get(FcsPagosEstadosPagosBean.C_IDESTADOPAGOSJG);
 			
 			//Consultamos el nombre de la institucion
 			CenInstitucionAdm institucionAdm = new CenInstitucionAdm(this.getUserBean(request));
