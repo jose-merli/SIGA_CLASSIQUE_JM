@@ -120,7 +120,7 @@
 										<siga:Idioma key="facturacion.busquedaAbonos.literal.fecha"/>
 									</td>	
 									<td class="labelTextValor">
-										<html:text property="fecha" size="8" maxlength="10" styleClass="boxConsultaLabelText" readOnly="true" value="<%=fechaA%>"></html:text>
+										<html:text property="fecha" size="10" maxlength="10" styleClass="boxConsultaLabelText" readOnly="true" value="<%=fechaA%>"></html:text>
 									</td>
 								</tr>
 								<tr>
@@ -146,7 +146,7 @@
 										<siga:Idioma key="facturacion.busquedaAbonos.literal.fecha"/>
 									</td>	
 									<td class="labelText">										
-										<html:text property="fechaFactura" size="8" maxlength="10" styleClass="boxConsulta" readOnly="true"></html:text>
+										<html:text property="fechaFactura" size="10" maxlength="10" styleClass="boxConsulta" readOnly="true"></html:text>
 									</td>
 								</tr>
 								<tr>
