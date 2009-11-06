@@ -1302,8 +1302,8 @@ public class creaDirectorios {
 						// creo el directorio y llamo a recursivo
 						File aux = new File(destino.getAbsolutePath() + File.separator + institucionOriginal);
 						aux.mkdirs();
+						System.out.println("		Creado directorio "+aux.getAbsolutePath());
 						recur2(hijos[i],aux);
-						System.out.println("		Creado directorio "+aux.getName());
 					} else {
 						System.out.println("		No se ha creado directorio "+hijos[i].getName());
 					}
@@ -1335,7 +1335,7 @@ public class creaDirectorios {
 								writer.close();
 						    	bufferLectura.close();
 						    }
-							System.out.println("		copiado correctamente "+hijos[i].getName() +" a "+destino.getName());
+							System.out.println("		copiado correctamente "+hijos[i].getName() +" a "+destino.getAbsolutePath());
 					    }
 					} catch(IOException _ex) {
 						try {
@@ -1376,8 +1376,8 @@ public class creaDirectorios {
 					// creo el directorio y llamo a recursivo
 					File aux = new File(destino.getAbsolutePath() + File.separator + hijos[i].getName());
 					aux.mkdirs();
+					System.out.println("		Creado directorio "+aux.getAbsolutePath());
 					recur2(hijos[i],aux);
-					System.out.println("		Creado directorio "+aux.getName());
 				} else {
 					// copio el fichero al destino
 					String linea;
@@ -1405,7 +1405,7 @@ public class creaDirectorios {
 						    	}
 								writer.close();
 						    	bufferLectura.close();
-						    	System.out.println("		copiado correctamente "+hijos[i].getName() +" a "+destino.getName());
+						    	System.out.println("		copiado correctamente "+hijos[i].getName() +" a "+destino.getAbsolutePath());
 						    }
 					    }
 					} catch(IOException _ex) {
