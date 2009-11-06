@@ -1335,7 +1335,7 @@ public class creaDirectorios {
 								writer.close();
 						    	bufferLectura.close();
 						    }
-							System.out.println("		copiado correctamente "+hijos[i].getName() +" a "+nuevoFile.getName());
+							System.out.println("		copiado correctamente "+hijos[i].getName() +" a "+destino.getName());
 					    }
 					} catch(IOException _ex) {
 						try {
@@ -1405,7 +1405,7 @@ public class creaDirectorios {
 						    	}
 								writer.close();
 						    	bufferLectura.close();
-						    	System.out.println("		copiado correctamente "+hijos[i].getName() +" a "+nuevoFile.getName());
+						    	System.out.println("		copiado correctamente "+hijos[i].getName() +" a "+destino.getName());
 						    }
 					    }
 					} catch(IOException _ex) {
