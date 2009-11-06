@@ -1303,6 +1303,9 @@ public class creaDirectorios {
 						File aux = new File(destino.getAbsolutePath() + File.separator + institucionOriginal);
 						aux.mkdirs();
 						recur2(hijos[i],aux);
+						System.out.println("		Creado directorio "+aux.getName());
+					} else {
+						System.out.println("		No se ha creado directorio "+hijos[i].getName());
 					}
 				} else {
 					// copio el fichero al destino
@@ -1332,6 +1335,7 @@ public class creaDirectorios {
 								writer.close();
 						    	bufferLectura.close();
 						    }
+							System.out.println("		copiado correctamente "+hijos[i].getName() +" a "+nuevoFile.getName());
 					    }
 					} catch(IOException _ex) {
 						try {
@@ -1358,6 +1362,8 @@ public class creaDirectorios {
 					
 				}
 			}
+		} else {
+			System.out.println("		No se ha copiado nada porque no tiene hijos: "+origen.getName());
 		}
 	}
 	
@@ -1371,6 +1377,7 @@ public class creaDirectorios {
 					File aux = new File(destino.getAbsolutePath() + File.separator + hijos[i].getName());
 					aux.mkdirs();
 					recur2(hijos[i],aux);
+					System.out.println("		Creado directorio "+aux.getName());
 				} else {
 					// copio el fichero al destino
 					String linea;
@@ -1398,6 +1405,7 @@ public class creaDirectorios {
 						    	}
 								writer.close();
 						    	bufferLectura.close();
+						    	System.out.println("		copiado correctamente "+hijos[i].getName() +" a "+nuevoFile.getName());
 						    }
 					    }
 					} catch(IOException _ex) {
