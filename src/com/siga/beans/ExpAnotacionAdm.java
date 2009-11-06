@@ -284,7 +284,7 @@ public class ExpAnotacionAdm extends MasterBeanAdministrador {
 	    		if(form.getIdTipoAnotacion()!=null && !form.getIdTipoAnotacion().equals("")){
 	    			indiceCodigo++;
 	    			codigos.put(new Integer(indiceCodigo),form.getIdTipoAnotacion());
-	    			where += " AND A."+ExpAnotacionBean.C_IDANOTACION+"=:"+indiceCodigo;
+	    			where += " AND A."+ExpAnotacionBean.C_IDTIPOANOTACION+"=:"+indiceCodigo;
 
 	    		}
 	    		if(form.getIdUsuario()!=null && !form.getIdUsuario().equals("")){
