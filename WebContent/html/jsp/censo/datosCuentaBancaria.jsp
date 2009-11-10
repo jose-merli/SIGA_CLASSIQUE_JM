@@ -370,7 +370,7 @@ VERSIONES: -->
 							<!-- FILA -->
 							<tr>
 								<td class="labelText" nowrap><siga:Idioma key="censo.datosCuentaBancaria.literal.banco"/></td>
-								<td class="labelText" COLSPAN="3"><siga:ComboBD nombre="banco" tipo="cmbBancos" clase="<%=claseCombo%>" obligatorio="true" elementoSel="<%=listaBancos%>" accion="document.all.cuentasBancariasForm.cbo_Codigo.value=document.all.cuentasBancariasForm.banco.value" readonly="<%=String.valueOf(desactivado)%>"/></td>
+								<td class="labelText" COLSPAN="3"><siga:ComboBD nombre="banco" ancho="500" tipo="cmbBancos" clase="<%=claseCombo%>" obligatorio="true" elementoSel="<%=listaBancos%>" accion="document.all.cuentasBancariasForm.cbo_Codigo.value=document.all.cuentasBancariasForm.banco.value" readonly="<%=String.valueOf(desactivado)%>"/></td>
 							</tr>
 
 							<!-- FILA -->
