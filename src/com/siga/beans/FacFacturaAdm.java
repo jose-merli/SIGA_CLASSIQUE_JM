@@ -60,6 +60,7 @@ import com.siga.informes.InformeFactura;
 * 
 */
 public class FacFacturaAdm extends MasterBeanAdministrador {
+	public static String IDESTADO_FACTURA_ANULADA="8";
 	private String incluirRegistrosConBajaLogica;
 
 	
@@ -1912,8 +1913,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 		    	sql += " AND F."+FacFacturaBean.C_NUMEROFACTURA+">'0'";
 		    }
 		    
-		    
-		    
+		    sql += " AND F."+FacFacturaBean.C_ESTADO + " <> "+FacFacturaAdm.IDESTADO_FACTURA_ANULADA;
 	    	sql += " AND F."+FacFacturaBean.C_IMPTOTALPORPAGAR + " > 0";
 	    	if((nComunicacionesDesde!=null && !nComunicacionesDesde.equalsIgnoreCase("")) || ((nComunicacionesHasta!=null && !nComunicacionesHasta.equalsIgnoreCase(""))) || 
 					 (isFacturasPendientes)||(form.getImporteAdeudadoDesde()!=null && !form.getImporteAdeudadoDesde().equals(""))
