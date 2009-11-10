@@ -58,7 +58,6 @@ public class ScsTurnoBean extends MasterBean{
 	static public final String	C_IDPARTIDAPRESUPUESTARIA = "IDPARTIDAPRESUPUESTARIA";
 	static public final String	C_IDGRUPOFACTURACION = 		"IDGRUPOFACTURACION";	
 	static public final String 	C_IDPERSONAULTIMO = 		"IDPERSONA_ULTIMO";
-	static public final String  C_REPARTOPORPUNTOS = 		"REPARTOPORPUNTOS";
 	static public final String  C_ACTIVARRETRICCIONACREDIT ="ACTIVARRETRICCIONACREDIT";
 	
 	static public final String  C_LETRADOASISTENCIAS		= "LETRADOASISTENCIAS";

@@ -96,7 +96,6 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 					"turnos."+ScsTurnoBean.C_VALIDARJUSTIFICACIONES+ " VALIDARJUSTIFICACIONES",
 					"turnos."+ScsTurnoBean.C_VALIDARINSCRIPCIONES+" VALIDARINSCRIPCIONES",
 					"turnos."+ScsTurnoBean.C_DESIGNADIRECTA+" DESIGNADIRECTA",
-					"turnos."+ScsTurnoBean.C_REPARTOPORPUNTOS+" REPARTOPORPUNTOS",
 					"turnos."+ScsTurnoBean.C_DESCRIPCION+" DESCRIPCION",
 					"turnos."+ScsTurnoBean.C_REQUISITOS+" REQUISITOS",
 					"turnos."+ScsTurnoBean.C_IDPERSONAULTIMO+" IDPERSONAULTIMO",
@@ -129,7 +128,6 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 					ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_VALIDARJUSTIFICACIONES									+ " VALIDARJUSTIFICACIONES",
 					ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_VALIDARINSCRIPCIONES										+" VALIDARINSCRIPCIONES",
 					ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_DESIGNADIRECTA											+" DESIGNADIRECTA",
-					ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_REPARTOPORPUNTOS											+" REPARTOPORPUNTOS",
 					ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_DESCRIPCION												+" DESCRIPCION",
 					ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_REQUISITOS												+" REQUISITOS",
 					ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDPERSONAULTIMO											+" IDPERSONAULTIMO",
@@ -614,7 +612,7 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 		" turno.idpartidapresupuestaria idpartidapresupuestaria, turno.idgrupofacturacion idgrupofacturacion, turno.guardias guardias, turno.descripcion descripcion,"+
 		" turno.requisitos requisitos, turno.idordenacioncolas idordenacioncolas, turno.idpersona_ultimo idpersona_ultimo, turno.idsubzona idsubzona, area.nombre area,"+
 		" materia.nombre materia, zona.nombre zona, subzona.nombre subzona, partida.nombrepartida partidapresupuestaria, turno.idordenacioncolas idordenacioncolas, turno.idturno idturno, turno.validarjustificaciones validarjustificaciones, turno.validarinscripciones validarinscripciones,"+
-		" turno.designadirecta designadirecta, turno.repartoporpuntos repartoporpuntos, subzona.idpartido idpartidojudicial, "+
+		" turno.designadirecta designadirecta, subzona.idpartido idpartidojudicial, "+
 		"  PKG_SIGA_SJCS.FUN_SJ_PARTIDOSJUDICIALES(turno.idinstitucion, turno.idsubzona, turno.idzona) partidojudicial, " +
 		" turno." + ScsTurnoBean.C_ACTIVARRETRICCIONACREDIT + " " + ScsTurnoBean.C_ACTIVARRETRICCIONACREDIT + ", " + 
 		" turno." + ScsTurnoBean.C_LETRADOACTUACIONES + " " + ScsTurnoBean.C_LETRADOACTUACIONES + ", " + 

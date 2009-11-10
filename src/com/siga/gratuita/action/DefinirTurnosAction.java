@@ -85,7 +85,7 @@ public class DefinirTurnosAction extends MasterAction {
 		//los campos del vector campos son: 
 		//abreviatura , nombre , nombreArea , nombreMateria, nombreZona, nombreSubzona, nombrePartidoJudicial, nombrePartidaPresupuestaria, nombreGrupoFacturacion 
 		//los campos del vector ocultos son: 
-		//IDTURNO, GUARDIAS, VALIDARJUSTIFICACIONES, VALIDARINSCRIPCIONES, DESIGNADIRECTA, REPARTOPORPUNTOS, DESCRIPCION,
+		//IDTURNO, GUARDIAS, VALIDARJUSTIFICACIONES, VALIDARINSCRIPCIONES, DESIGNADIRECTA, DESCRIPCION,
 		//REQUISITOS,IDORDENACIONCOLAS,IDPERSONAULTIMO,IDAREA,IDMATERIA,IDZONA,IDSUBZONA,IDPARTIDAPRESUPUESTARIA,IDGRUPOFACTURACION,
 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 		Vector campos = new Vector(); 
@@ -121,7 +121,7 @@ public class DefinirTurnosAction extends MasterAction {
 								" turno.idpartidapresupuestaria idpartidapresupuestaria, turno.idgrupofacturacion idgrupofacturacion, turno.guardias guardias, turno.descripcion descripcion,"+
 								" turno.requisitos requisitos, turno.idordenacioncolas idordenacioncolas, turno.idpersona_ultimo idpersona_ultimo, turno.idsubzona idsubzona, area.nombre area,"+
 								" materia.nombre materia, zona.nombre zona, subzona.nombre subzona, partida.nombrepartida partidapresupuestaria, turno.idordenacioncolas idordenacioncolas, turno.idturno idturno, turno.validarjustificaciones validarjustificaciones, turno.validarinscripciones validarinscripciones,"+
-								" turno.designadirecta designadirecta, turno.repartoporpuntos repartoporpuntos, subzona.idpartido idpartidojudicial, " +
+								" turno.designadirecta designadirecta, subzona.idpartido idpartidojudicial, " +
 								// RGG partido.nombre partidojudicial"+
 								"  PKG_SIGA_SJCS.FUN_SJ_PARTIDOSJUDICIALES(turno.idinstitucion, turno.idsubzona, turno.idzona) partidojudicial " +
 								" from scs_turno turno, scs_area area, scs_materia materia, scs_zona zona, scs_subzona subzona, scs_partidapresupuestaria partida, cen_partidojudicial partido"+
@@ -320,12 +320,6 @@ public class DefinirTurnosAction extends MasterAction {
 				aux.put("DESIGNADIRECTA","S");
 		}catch(Exception e){
 			aux.put("DESIGNADIRECTA","N");
-		}
-		//REPARTOPORPUNTOS
-		try{
-			if (((String)hash.get("REPARTOPORPUNTOS")).equalsIgnoreCase("on"))aux.put("REPARTOPORPUNTOS","S");
-		}catch(Exception e){
-			aux.put("REPARTOPORPUNTOS","N");
 		}
 		//VALIDARINSCRIPCIONES:
 		try {
@@ -745,7 +739,7 @@ public class DefinirTurnosAction extends MasterAction {
 		//los campos del vector campos son: 
 		//abreviatura , nombre , nombreArea , nombreMateria, nombreZona, nombreSubzona, nombrePartidoJudicial, nombrePartidaPresupuestaria, nombreGrupoFacturacion 
 		//los campos del vector ocultos son: 
-		//IDTURNO, GUARDIAS, VALIDARJUSTIFICACIONES, VALIDARINSCRIPCIONES, DESIGNADIRECTA, REPARTOPORPUNTOS, DESCRIPCION,
+		//IDTURNO, GUARDIAS, VALIDARJUSTIFICACIONES, VALIDARINSCRIPCIONES, DESIGNADIRECTA, DESCRIPCION,
 		//REQUISITOS,IDORDENACIONCOLAS,IDPERSONAULTIMO,IDAREA,IDMATERIA,IDZONA,IDSUBZONA,IDPARTIDAPRESUPUESTARIA,IDGRUPOFACTURACION,
 		
 		String forward="";

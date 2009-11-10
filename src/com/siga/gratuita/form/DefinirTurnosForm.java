@@ -132,9 +132,6 @@ public class DefinirTurnosForm extends MasterForm {
 	public void setValidacionInscripcion(String valor){
 		this.datos.put("VALIDARINSCRIPCIONES",valor);
 	}
-	public void setRepartoPorPuntos(String valor){
-		this.datos.put("REPARTOPORPUNTOS",valor);
-	}
 	
 	public void setAlfabeticoApellidos(String valor){
 //		this.datos.put("ALFABETICOAPELLIDOS",valor);
@@ -368,9 +365,7 @@ public class DefinirTurnosForm extends MasterForm {
 	public String getValidacionInscripcion(){
 		return (String)this.datos.get("VALIDACIONINSCRIPCION");
 	}
-	public String getRepartoPorPuntos(){
-		return (String)this.datos.get("REPARTOPORPUNTOS");
-	}
+
 	
 	public String getAlfabeticoApellidos(){
 //		return (String)this.datos.get("ALFABETICOAPELLIDOS");
