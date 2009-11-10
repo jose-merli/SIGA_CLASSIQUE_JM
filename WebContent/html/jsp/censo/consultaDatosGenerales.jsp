@@ -1269,9 +1269,9 @@ function str_replace(search, replace, subject) {
 					<% if (! user.isLetrado()) {
 						 if (descripcion.booleanValue()){
 					%>
-						<input type="checkbox" name="descripcion"  value="<%=ClsConstants.DB_TRUE %>" <%=checkreadonly  == " disabled "%> checked />
+						<input type="checkbox" name="descripcion"  value="<%=ClsConstants.DB_TRUE %>" disabled checked />
 					<%   } else { %>
-						<input type="checkbox" name="descripcion"  value="<%=ClsConstants.DB_TRUE %>" <%=checkreadonly  == " disabled "%> />
+						<input type="checkbox" name="descripcion"  value="<%=ClsConstants.DB_TRUE %>" disabled  />
 					<%   } %>
 						<siga:Idioma key="censo.consultaDatosGenerales.literal.ver.observaciones"/>
 					<% } %>
