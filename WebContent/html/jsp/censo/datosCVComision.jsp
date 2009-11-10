@@ -324,7 +324,7 @@
 							<tr>
 								<td class="labelText" ><siga:Idioma key="censo.datosCV.literal.descripcion"/>&nbsp(*)</td>
 									<td colspan="3">
-										<textarea cols="70" rows="4" name="descripcion" class="<%=clase%>" style="overflow:hidden"><%=descripcion%></textarea>
+										<textarea cols="70" rows="4" name="descripcion" class="<%=clase%>" style="overflow:hidden" readOnly="<%=desactivado%>"><%=descripcion%></textarea>
 									</td>			   	
 							</tr>
 						</table>
