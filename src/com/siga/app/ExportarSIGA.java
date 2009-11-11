@@ -24,6 +24,7 @@ public class ExportarSIGA
 {
 	static String pathDestino;
 	static String pathOrigen;
+	static String pathLibrerias;
 	static String entorno;
 	
 	public static void main(String[] args) 
@@ -63,6 +64,11 @@ public class ExportarSIGA
 			// Copiamos las librerias
 			traza ("Exportando LIB-WEB ...");
 			copy (pathOrigen + File.separator + "WebContent" + File.separator + "WEB-INF" + File.separator + "lib", 
+				  pathDestino + File.separator + "lib-web");
+			
+			// Copiamos el resto de las librerias que estan en el dominio
+			traza ("Exportando libs XML...");
+			copy (pathLibrerias + File.separator + "lib", 
 				  pathDestino + File.separator + "lib-web");
 	
 			// Borramos las clases iniciales
@@ -253,6 +259,12 @@ public class ExportarSIGA
     	pathDestino = (String)properties.getProperty("PATH_DESTINO");
     	if (pathDestino == null || pathDestino.equals("")) {
     		traza ("Falta configurar el path destino");
+    		error = true;
+    	}
+    	
+    	pathLibrerias = (String)properties.getProperty("PATH_LIBRERIAS");
+    	if (pathDestino == null || pathDestino.equals("")) {
+    		traza ("Falta configurar el path  de librerias");
     		error = true;
     	}
 
