@@ -34,7 +34,6 @@ public class ScsHitoFacturableGuardiaBean extends MasterBean
 	private Integer	idHito;
 	private String	pagoFacturacion;
 	private float	precioHito;
-	private Integer	puntos;
 	private String	diasAplicables;
 	private boolean	agrupar;
 	
