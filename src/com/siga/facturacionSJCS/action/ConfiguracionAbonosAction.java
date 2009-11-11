@@ -99,8 +99,7 @@ public class ConfiguracionAbonosAction extends MasterAction{
 			
 			ConfiguracionAbonosForm miform = (ConfiguracionAbonosForm)formulario;
 			FcsPagosJGAdm pagos = new FcsPagosJGAdm(this.getUserBean(request));
-			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			String idInstitucion = user.getLocation();
+			String idInstitucion = miform.getIdInstitucion();
 			String accion = request.getParameter("accion");
 			String idPago = miform.getIdPagosJG();
 			
@@ -110,11 +109,6 @@ public class ConfiguracionAbonosAction extends MasterAction{
 			Vector datosBancos = admBancoFac.obtenerBancos(idInstitucion);
 			request.setAttribute("bancosInstitucion", datosBancos);
 			
-			// FacBancoInstitucionAbonosAdm bancoInstAdm = new FacBancoInstitucionAbonosAdm(this.getUserBean(request));
-			// Hashtable datosPago = bancoInstAdm.getDatosAbono(idInstitucion, idPago);
-			// request.setAttribute("concepto", datosPago.get(FacBancoInstitucionAbonosBean.T_NOMBRETABLA + "." + FacBancoInstitucionAbonosBean.C_CONCEPTO));
-			// request.setAttribute("cuenta", datosPago.get(FacBancoInstitucionAbonosBean.T_NOMBRETABLA + "." + FacBancoInstitucionAbonosBean.C_BANCOS_CODIGO));
-			
 			CenInstitucionAdm institucionAdm = new CenInstitucionAdm(this.getUserBean(request));
 			String nombreInstitucion = (String)institucionAdm.getNombreInstitucion(idInstitucion);
 			request.setAttribute("nombreInstitucion",nombreInstitucion);
@@ -122,8 +116,6 @@ public class ConfiguracionAbonosAction extends MasterAction{
 			if((idPago!=null)&&(!idPago.equals(""))){
 				//Recuperamos el estado, la fecha y el id del estado del pago:
 				Hashtable hashEstado = pagos.getEstadoPago(new Integer(idInstitucion),new Integer(idPago));
-				String nombreEstado = (String)hashEstado.get(FcsEstadosPagosBean.C_DESCRIPCION);
-				String fechaEstado = (String)hashEstado.get(FcsPagosEstadosPagosBean.C_FECHAESTADO);
 				String idEstadoPagosJG = (String)hashEstado.get(FcsPagosEstadosPagosBean.C_IDESTADOPAGOSJG);
 				request.setAttribute("idEstadoPagosJG",idEstadoPagosJG);
 				
@@ -142,7 +134,6 @@ public class ConfiguracionAbonosAction extends MasterAction{
 			GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request));
 			request.setAttribute("paramConcepto", paramAdm.getValor(idInstitucion, "FCS", "CONCEPTO_ABONO", ""));
 			request.setAttribute("paramIdCuenta", paramAdm.getValor(idInstitucion, "FCS", "BANCOS_CODIGO_ABONO", ""));
-			
 			
 		} catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
