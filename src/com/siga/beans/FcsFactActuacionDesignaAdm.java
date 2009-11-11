@@ -26,9 +26,8 @@ public class FcsFactActuacionDesignaAdm extends MasterBeanAdministrador {
 							FcsFactActuacionDesignaBean.C_IDFACTURACION,			FcsFactActuacionDesignaBean.C_IDINSTITUCION,
 							FcsFactActuacionDesignaBean.C_IDPERSONA,				FcsFactActuacionDesignaBean.C_IDTURNO,
 							FcsFactActuacionDesignaBean.C_PORCENTAJEFACTURADO,		FcsFactActuacionDesignaBean.C_NUMERO,
-							FcsFactActuacionDesignaBean.C_PUNTOS_APLICADOS,			FcsFactActuacionDesignaBean.C_USUMODIFICACION,
-							FcsFactActuacionDesignaBean.C_PRECIOAPLICADO,			FcsFactActuacionDesignaBean.C_PROCEDIMIENTO,
-							FcsFactActuacionDesignaBean.C_NUMEROASUNTO};
+							FcsFactActuacionDesignaBean.C_USUMODIFICACION,			FcsFactActuacionDesignaBean.C_PRECIOAPLICADO,			
+							FcsFactActuacionDesignaBean.C_PROCEDIMIENTO,			FcsFactActuacionDesignaBean.C_NUMEROASUNTO};
 		return campos;
 	}
 

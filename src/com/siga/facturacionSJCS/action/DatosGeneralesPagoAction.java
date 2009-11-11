@@ -431,14 +431,6 @@ public class DatosGeneralesPagoAction extends MasterAction {
 //			miform.setCriterioPago(pagosBean.getCriterioPago());
 			miform.setCriterioPagoTurno(pagosBean.getCriterioPagoTurno());
 			
-			//Actualizamos el criterio de valor de facturacion (para saber si recuperamos los puntos de cuando 
-			// hicimos la factura o del momento del pago):
-//			if (pagosBean.getValoresFacturacion()==null || pagosBean.getValoresFacturacion().equals(ClsConstants.DB_FALSE))
-//				valoresFacturacion = null;//ClsConstants.DB_FALSE;
-//			else
-//				valoresFacturacion = ClsConstants.DB_TRUE;
-//			miform.setValoresFacturacion(valoresFacturacion);
-
 			//Consultamos el Parámetro COBRO AUTOMATICO
 			//para el caso de que se quiera Cerrar el Pago
 			//y lo pasamos por la request

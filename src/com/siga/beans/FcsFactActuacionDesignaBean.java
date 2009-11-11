@@ -56,7 +56,6 @@ public class FcsFactActuacionDesignaBean extends MasterBean{
 	static public final String 	C_ACREDITACION = 			"ACREDITACION";
 	static public final String 	C_FECHA_ACTUACION = 		"FECHAACTUACION";
 	static public final String 	C_FECHA_JUSTIFICACION = 	"FECHAJUSTIFICACION";
-	static public final String 	C_PUNTOS_APLICADOS = 		"PUNTOSAPLICADOS";
 	static public final String 	C_CODIGOPROCEDIMIENTO = 	"CODIGOPROCEDIMIENTO";
 	
 	

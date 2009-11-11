@@ -21,7 +21,6 @@ public class MantenimientoPrevisionesForm extends MasterForm {
 	private String idPrevision = 	"IDPREVISION";
 	private String idFacturacion = 	"IDFACTURACION";
 	private String idInstitucion = 	"IDINSTITUCION";
-	private String precioPunto = 	"PRECIOPUNTO";
 	
 	
 	/**
@@ -37,18 +36,6 @@ public class MantenimientoPrevisionesForm extends MasterForm {
 		this.datos.put(idInstitucion , valor);
 	}
 
-	/**
-	 * @return Returns the PrecioPunto.
-	 */
-	public String getPrecioPunto() {
-		return (String)datos.get(precioPunto);
-	}
-	/**
-	 * @param valor The PrecioPunto to set.
-	 */
-	public void setPrecioPunto(String valor) {
-		this.datos.put(precioPunto , valor);
-	}	
 	
 	/**
 	 * @return Returns the idFacturacion.

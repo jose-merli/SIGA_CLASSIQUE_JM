@@ -47,7 +47,7 @@ public class DefinirHitosPagosGuardiasAction extends MasterAction {
 			Hashtable hash = (Hashtable)guardia.getOriginalHash();
 			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 			ScsHitoFacturableGuardiaAdm hFact = new ScsHitoFacturableGuardiaAdm (this.getUserBean(request));
-			String consulta= " select "+UtilidadesMultidioma.getCampoMultidioma("h.descripcion",this.getUserBean(request).getLanguage()) + " , hg.preciohito, hg.puntos, hg.idinstitucion IDINSTITUCION, hg.idturno IDTURNO, hg.idguardia IDGUARDIA, hg.idhito IDHITO, hg.pagoofacturacion PAGOFACTURACION"+
+			String consulta= " select "+UtilidadesMultidioma.getCampoMultidioma("h.descripcion",this.getUserBean(request).getLanguage()) + " , hg.preciohito, hg.idinstitucion IDINSTITUCION, hg.idturno IDTURNO, hg.idguardia IDGUARDIA, hg.idhito IDHITO, hg.pagoofacturacion PAGOFACTURACION"+
 							 " from  scs_hitofacturable h,"+
 							 " scs_hitofacturableguardia hg"+
 							 " where h.idhito = hg.idhito"+						 

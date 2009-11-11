@@ -291,7 +291,6 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 			Hashtable tramoNew = (Hashtable)procedimientoOld.clone();
 			tramoNew.put(ScsProcedimientosBean.C_NOMBRE, (String)miform.getNombre());
 			tramoNew.put(ScsProcedimientosBean.C_PRECIO, (String)miform.getPrecio());
-			//tramoNew.put(ScsProcedimientosBean.C_PUNTOS, (String)miform.getPuntos());// Se ha ocultado el campo puntos
 			tramoNew.put(ScsProcedimientosBean.C_CODIGO, (String)miform.getCodigo());
 			tramoNew.put(ScsProcedimientosBean.C_IDJURISDICCION, miform.getJurisdiccion());
 

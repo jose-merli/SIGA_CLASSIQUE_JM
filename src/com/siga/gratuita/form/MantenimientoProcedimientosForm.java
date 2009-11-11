@@ -13,7 +13,6 @@ public class MantenimientoProcedimientosForm extends MasterForm {
 	private String idProcedimiento = 	"IDPROCEDIMIENTO";
 	private String nombre =	 			"NOMBRE";
 	private String precio =	  			"PRECIO";
-	private String puntos = 			"PUNTOS";
 	private String idJurisdiccion =		ScsProcedimientosBean.C_IDJURISDICCION;
 	private String idAcreditacion =		"IDACREDITACION";
 	private String porcentaje =			"PORCENTAJE";
@@ -109,18 +108,7 @@ public class MantenimientoProcedimientosForm extends MasterForm {
 	public void setNombre(String valor) {
 		this.datos.put(nombre , valor);
 	}
-	/**
-	 * @return Returns the puntos.
-	 */
-	public String getPuntos() {
-		return (String)this.datos.get(puntos);
-	}
-	/**
-	 * @param puntos The puntos to set.
-	 */
-	public void setPuntos(String valor) {
-		this.datos.put(puntos ,valor);
-	}
+
 	public String getCodigo() {
 		return (String)this.datos.get(codigo);
 	}
