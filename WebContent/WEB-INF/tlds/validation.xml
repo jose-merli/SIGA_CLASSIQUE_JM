@@ -887,19 +887,6 @@
 					<msg name="mask" key="gratuita.listadoHistosFacturables.literal.precio"/>
 					<arg0 key="gratuita.listadoHistosFacturables.literal.precio"/>
 				</field>
-				<field 	property = "puntos" 			depends = "required,maxlength,mask">		
-					<msg name="mask" key="gratuita.listadoHistosFacturables.literal.puntos"/>
-					<arg0 key="gratuita.listadoHistosFacturables.literal.puntos"/>	
-					<arg1 key="${var:maxlength}" name="maxlength,mask" resource="false"/>
-						<var>
-							<var-name>maxlength</var-name>
-							<var-value>10</var-value>
-						</var>
-						<var>
-							<var-name>mask</var-name>
-							<var-value>^[0-9]*$</var-value>
-						</var>
-				</field>
 			</form>
 <!-- FIN: DefinirHitosFacturablesGuardiasForm ruben.fernandez 18-01-2004 -->
 
@@ -3226,9 +3213,6 @@
 			            <var-value>^[0-9]{0,8}((\.|\,)[0-9][0-9]{0,1}){0,1}$</var-value>
 			        </var> 
                 </field>
-               <!-- <field property = "puntos" depends = "required,integer">
-                    <arg0 key="gratuita.procedimientos.literal.puntos"/>
-                </field>-->
                 <field property = "jurisdiccion" depends = "required">
                     <arg0 key="gratuita.procedimientos.literal.Jurisdiccion"/>
                 </field>
