@@ -76,7 +76,6 @@
 	<html:javascript formName="DefinirHitosFacturablesGuardiasForm" staticJavascript="false" />
 	<html:form action="/JGR_DefinirHitosFacturables.do" method="POST" target="submitArea">
 	<html:hidden property = "modo" value = ""/>
-	<html:hidden property = "puntos" value = "0"/>
 	<tr>				
 	<td>
 
