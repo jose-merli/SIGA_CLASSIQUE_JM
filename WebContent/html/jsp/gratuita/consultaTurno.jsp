@@ -132,7 +132,7 @@ String clase="boxConsulta";
 
 	<siga:ConjCampos leyenda="gratuita.maestroTurnos.literal.datosGenerales">
 		
-	<table width="100%" border=0>
+	<table width="100%" border=1>
 	<tr>
 		<td class="labelText" style="text-align:left">
 			<siga:Idioma key="gratuita.definirTurnosIndex.literal.abreviatura"/>
@@ -179,12 +179,12 @@ String clase="boxConsulta";
 	</tr><tr>
 		<td class="labelText" style="text-align:left"><siga:Idioma key="gratuita.definirTurnosIndex.literal.partidaPresupuestaria"/> </td>
 		<td colspan="3" class="labelText" style="text-align:left">
-			<input name="partidaPresupuestaria" type="text" class="boxConsulta" value="<%=(String)hash.get("PARTIDAPRESUPUESTARIA")%>" readonly>
+			<input name="partidaPresupuestaria" type="text" style="width: 500" class="boxConsulta" value="<%=(String)hash.get("PARTIDAPRESUPUESTARIA")%>" readonly>
 		</td>
 	</tr><tr>
 		<td class="labelText" style="text-align:left"><siga:Idioma key="gratuita.definirTurnosIndex.literal.grupoFacturacion"/> </td>
 		<td colspan="3" class="labelText" style="text-align:left">
-			<input name="grupoFacturacion" type="text" class="boxConsulta" value="<%=(String)hash.get("GRUPOFACTURACION")%>" readonly>
+			<input name="grupoFacturacion" type="text" style="width: 500" class="boxConsulta" value="<%=(String)hash.get("GRUPOFACTURACION")%>" readonly>
 		</td>
 	</tr>
 	<tr>
