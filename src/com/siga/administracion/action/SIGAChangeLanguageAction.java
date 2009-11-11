@@ -13,9 +13,16 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.Globals;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.AdmLenguajesAdm;
+import com.siga.beans.AdmLenguajesBean;
+import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenInstitucionBean;
+import com.siga.beans.CenInstitucionLenguajesAdm;
+import com.siga.beans.CenInstitucionLenguajesBean;
+import com.sun.media.imageioimpl.plugins.clib.CLibImageReader;
+
 import javax.transaction.*;
 
 /**
@@ -45,6 +52,7 @@ public class SIGAChangeLanguageAction extends Action {
 		String lanEnd="";
 		String countryEnd="";
 		String opt=request.getParameter("opt");
+		String idioma="";
 		
 		AdmLenguajesAdm a = new AdmLenguajesAdm(usr);
 		String lenguajeExt = "es";
@@ -65,7 +73,37 @@ public class SIGAChangeLanguageAction extends Action {
 		CenInstitucionAdm ai = new CenInstitucionAdm(usrbean);
 		Hashtable ht = new Hashtable();
 		ht.put(CenInstitucionBean.C_IDINSTITUCION,usrbean.getLocation());
+		
+		
+		// Verficamos si el idioma del usuario esta traducido
+		CenInstitucionLenguajesAdm admLen = new CenInstitucionLenguajesAdm (usrbean);
+		
+        
 		try {
+			CenClienteAdm cliAdm=new CenClienteAdm (usrbean);
+	        idioma=cliAdm.getLenguaje(usrbean.getLocation(), String.valueOf(usrbean.getIdPersona()));
+			Hashtable h = new Hashtable();
+			UtilidadesHash.set(h, CenInstitucionLenguajesBean.C_IDINSTITUCION, usrbean.getLocation());
+			UtilidadesHash.set(h, CenInstitucionLenguajesBean.C_IDLENGUAJE,idioma);
+			Vector vLen = admLen.selectByPK(h);
+			
+			if (vLen == null || vLen.size() != 1) {
+				// El idoma del lenguaje no esta traducido, ponemos el idioma de la institucion
+				idioma = opt;
+			}
+		
+
+		if (idioma!=null) {
+			Hashtable ht1 = new Hashtable();
+			ht1.put(AdmLenguajesBean.C_IDLENGUAJE,idioma);
+			AdmLenguajesAdm len = new AdmLenguajesAdm(usrbean);
+			Vector v3 = len.selectByPK(ht1);
+			if (v3!=null && v3.size()>0) {
+				AdmLenguajesBean l = (AdmLenguajesBean) v3.get(0);
+				lenguajeExt = l.getCodigoExt();
+				
+			}
+		}
 			tx = usr.getTransaction();
 			tx.begin();	
 
@@ -82,15 +120,13 @@ public class SIGAChangeLanguageAction extends Action {
 			try { tx.rollback(); } catch (Exception ee) {}
 		}
 		
-	
-	  	
+		usrbean.setLanguage(idioma);
+		usrbean.setLanguageExt(lenguajeExt);
+		ses.setAttribute("USRBEAN",usrbean);
 		ses.setAttribute(Globals.LOCALE_KEY, new java.util.Locale(lanEnd, countryEnd));
 
 		ClsLogging.writeFileLog("LOCALE CHANGED TO:  Language/Country:"+lanEnd+"/"+countryEnd,request,3);
-		usrbean.setLanguage(opt);
-		usrbean.setLanguageExt(lenguajeExt);
 		
-		ses.setAttribute("USRBEAN",usrbean);
 		request.setAttribute("descOperation","messages.updated.successInstitucion");
 
 		return mapping.findForward(forward);

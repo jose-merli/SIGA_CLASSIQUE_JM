@@ -46,6 +46,7 @@
 
 	CenInstitucionLenguajesAdm cilAdm = new CenInstitucionLenguajesAdm (usr);
 	Vector vLenXInstitucion = cilAdm.select(ht);	
+	
 
 	
 	// RGG 26/02/2007 cambio para que esta ventana sea dinámica. Obtiene todos los lenguajes de la base de datos. 
@@ -93,11 +94,14 @@
 
 
 		boolean bVisto = false;
+		String deshabilitarOpcion="disabled";
 
 		for (int jj = 0; vLenXInstitucion!=null && jj < vLenXInstitucion.size(); jj++) {
 			CenInstitucionLenguajesBean bb = (CenInstitucionLenguajesBean) vLenXInstitucion.get(jj);
 			if (b.getIdLenguaje().equals(bb.getIdLenguaje()) ) {
+				
 				bVisto = true;
+				deshabilitarOpcion="";
 				break;
 			}
 		}
@@ -106,7 +110,7 @@
 
 	  	<tr>
 			<td class="labelText" width="10%">
-				<input type="radio" name="opt" value="<%=b.getIdLenguaje() %>" <%=(leng.equalsIgnoreCase(b.getCodigoExt().toLowerCase()))?"checked":""%>>
+				<input type="radio" name="opt" <%=deshabilitarOpcion%> value="<%=b.getIdLenguaje()%>" <%=(leng.equalsIgnoreCase(b.getCodigoExt().toLowerCase()))?"checked":""%>>
 			</td>
 			<td class="labelText" width="35%"><img src="<%=app%>/html/imagenes/lenguaje_<%=b.getCodigoExt().toLowerCase().trim() %>.gif"></td>
 			<td class="labelText" width="50%">
