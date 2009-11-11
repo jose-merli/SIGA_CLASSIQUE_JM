@@ -52,7 +52,7 @@ public class SIGAChangeLanguageAction extends Action {
 		String lanEnd="";
 		String countryEnd="";
 		String opt=request.getParameter("opt");
-		String idioma="";
+		String idiomaUsuario="";
 		
 		AdmLenguajesAdm a = new AdmLenguajesAdm(usr);
 		String lenguajeExt = "es";
@@ -81,21 +81,21 @@ public class SIGAChangeLanguageAction extends Action {
         
 		try {
 			CenClienteAdm cliAdm=new CenClienteAdm (usrbean);
-	        idioma=cliAdm.getLenguaje(usrbean.getLocation(), String.valueOf(usrbean.getIdPersona()));
+	        idiomaUsuario=cliAdm.getLenguaje(usrbean.getLocation(), String.valueOf(usrbean.getIdPersona()));
 			Hashtable h = new Hashtable();
 			UtilidadesHash.set(h, CenInstitucionLenguajesBean.C_IDINSTITUCION, usrbean.getLocation());
-			UtilidadesHash.set(h, CenInstitucionLenguajesBean.C_IDLENGUAJE,idioma);
+			UtilidadesHash.set(h, CenInstitucionLenguajesBean.C_IDLENGUAJE,idiomaUsuario);
 			Vector vLen = admLen.selectByPK(h);
 			
 			if (vLen == null || vLen.size() != 1) {
 				// El idoma del lenguaje no esta traducido, ponemos el idioma de la institucion
-				idioma = opt;
+				idiomaUsuario = opt;
 			}
 		
 
-		if (idioma!=null) {
+		if (idiomaUsuario!=null) {
 			Hashtable ht1 = new Hashtable();
-			ht1.put(AdmLenguajesBean.C_IDLENGUAJE,idioma);
+			ht1.put(AdmLenguajesBean.C_IDLENGUAJE,idiomaUsuario);
 			AdmLenguajesAdm len = new AdmLenguajesAdm(usrbean);
 			Vector v3 = len.selectByPK(ht1);
 			if (v3!=null && v3.size()>0) {
@@ -120,7 +120,7 @@ public class SIGAChangeLanguageAction extends Action {
 			try { tx.rollback(); } catch (Exception ee) {}
 		}
 		
-		usrbean.setLanguage(idioma);
+		usrbean.setLanguage(idiomaUsuario);
 		usrbean.setLanguageExt(lenguajeExt);
 		ses.setAttribute("USRBEAN",usrbean);
 		ses.setAttribute(Globals.LOCALE_KEY, new java.util.Locale(lanEnd, countryEnd));
