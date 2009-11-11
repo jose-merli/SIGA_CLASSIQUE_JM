@@ -946,7 +946,8 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		sql.append(" sum(impOficio + impAsistencia + impEJG + impSOJ) as totalImporteSJCS,");
 		sql.append(" sum(impRet) as importeTotalRetenciones,");
 		sql.append(" sum(impMovVar) as importeTotalMovimientos,");
-		sql.append(" -1*abs(sum(impOficio + impAsistencia + impEJG + impSOJ + impMovVar) * max(impirpf) / 100) as TOTALIMPORTEIRPF");
+		// jbd (1.41) Añadido round para que no haya incongruencias
+		sql.append(" -1*round(abs(sum(impOficio + impAsistencia + impEJG + impSOJ + impMovVar) * max(impirpf) / 100),2) as TOTALIMPORTEIRPF");
 		sql.append(" from FCS_PAGO_COLEGIADO");
 		sql.append(" where IDINSTITUCION = ");	sql.append(idInstitucion);
 		sql.append(" and IDPAGOSJG = nvl("+idPagosJg+", IDPAGOSJG)");
