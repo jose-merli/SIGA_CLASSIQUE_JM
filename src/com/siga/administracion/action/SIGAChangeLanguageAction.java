@@ -122,6 +122,7 @@ public class SIGAChangeLanguageAction extends Action {
 		
 		usrbean.setLanguage(idiomaUsuario);
 		usrbean.setLanguageExt(lenguajeExt);
+		usrbean.setLanguageInstitucion(opt);
 		ses.setAttribute("USRBEAN",usrbean);
 		ses.setAttribute(Globals.LOCALE_KEY, new java.util.Locale(lanEnd, countryEnd));
 
