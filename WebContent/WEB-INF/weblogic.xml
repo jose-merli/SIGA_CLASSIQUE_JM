@@ -8,6 +8,7 @@
 		<wls:precompile>false</wls:precompile>
 		<wls:verbose>true</wls:verbose>
 		<wls:working-dir>.\WEB-INF\classes</wls:working-dir>
+        <wls:encoding>ISO-8859-1</wls:encoding>
 		<wls:debug>true</wls:debug>
 	</wls:jsp-descriptor>
 	<wls:container-descriptor>
@@ -15,4 +16,10 @@
         <wls:resource-reload-check-secs>-1</wls:resource-reload-check-secs>
 		<wls:prefer-web-inf-classes>true</wls:prefer-web-inf-classes>
 	</wls:container-descriptor>
+	<wls:charset-params>
+	    <wls:input-charset>
+	        <wls:resource-path>/*</wls:resource-path>
+	        <wls:java-charset-name>ISO-8859-1</wls:java-charset-name>
+	    </wls:input-charset>
+	</wls:charset-params> 
 </wls:weblogic-web-app>
