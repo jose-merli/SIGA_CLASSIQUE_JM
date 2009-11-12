@@ -22,6 +22,7 @@ import org.apache.struts.upload.FormFile;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsMngBBDD;
+import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.GestorContadores;
@@ -95,6 +96,8 @@ public class DatosGeneralesAction extends MasterAction {
 				mapDestino = insertarSociedad(mapping, miForm, request, response);
 			} else if (accion.equalsIgnoreCase("altaNoColegiado")){
 				mapDestino = altaNoColegiado(mapping, miForm, request, response);
+			} else if (accion.equalsIgnoreCase("validarNoColegiado")){
+				mapDestino = validarNoColegiado(mapping, miForm, request, response);
 			} else if (accion.equalsIgnoreCase("insertarNoColegiado")){
 				mapDestino = insertarNoColegiado(mapping, miForm, request, response);
 			} else if (accion.equalsIgnoreCase("modificarSociedad")){
@@ -286,6 +289,54 @@ public class DatosGeneralesAction extends MasterAction {
 
 	   } catch (Exception e) {
 		 throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
+   	   }
+		return forward;
+	}
+	protected String validarNoColegiado (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
+	{
+		String forward ="exception";
+		try {
+			// Obtengo los datos del formulario
+			DatosGeneralesForm miForm = (DatosGeneralesForm)formulario;
+			UsrBean usr = this.getUserBean(request);
+			
+			CenPersonaAdm adminPer=new CenPersonaAdm(usr);
+    		CenPersonaBean cenPersona = adminPer.getPersona(miForm.getNumIdentificacion());
+    		if(cenPersona!=null){
+    			boolean isNombre = ComodinBusquedas.sustituirVocales(cenPersona.getNombre().toUpperCase().trim()).equalsIgnoreCase(ComodinBusquedas.sustituirVocales(miForm.getNombre().toUpperCase().trim())); 
+    			boolean isApellido1 =ComodinBusquedas.sustituirVocales(cenPersona.getApellido1().toUpperCase().trim()).equalsIgnoreCase(ComodinBusquedas.sustituirVocales(miForm.getApellido1().toUpperCase().trim()));
+    			boolean isApellido2 =ComodinBusquedas.sustituirVocales(cenPersona.getApellido2().toUpperCase().trim()).equalsIgnoreCase(ComodinBusquedas.sustituirVocales(miForm.getApellido2().toUpperCase().trim()));
+    			if (!isNombre || ! isApellido1 ||!isApellido2){
+    				miForm.setAccion("messages.fichaCliente.mostrarPersonaExistente");
+    				forward = "validarNoColegiado";
+   				}else{
+   					CenClienteAdm clienteAdm = new CenClienteAdm(usr);
+   					CenClienteBean cli = clienteAdm.existeCliente(cenPersona.getIdPersona(),new Integer(usr.getLocation()));
+   					if (cli==null) {
+   						forward =  insertarNoColegiado(mapping, formulario, request, response);
+   					}else{
+   						miForm.setAccion("messages.fichaCliente.clienteExiste");
+   						forward = "validarNoColegiado";
+   					}	
+   					
+   				}
+    			miForm.setNombre(cenPersona.getNombre());
+				miForm.setApellido1(cenPersona.getApellido1());
+				miForm.setApellido2(cenPersona.getApellido2());
+    			
+				
+    			
+    			
+    				
+    		}else{
+    			forward =  insertarNoColegiado(mapping, formulario, request, response);
+    			
+    		}
+			
+			
+
+	   } catch (Exception e) {
+		   throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
    	   }
 		return forward;
 	}
@@ -1089,7 +1140,7 @@ public class DatosGeneralesAction extends MasterAction {
 		
 		try {		
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
-			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			UsrBean usr = this.getUserBean(request);
 
  			
 			// Obtengo los datos del formulario
@@ -1097,7 +1148,7 @@ public class DatosGeneralesAction extends MasterAction {
 			Hashtable hash = miForm.getDatos();
 
 			//CenPersonaAdm adminPer=new CenPersonaAdm(this.getUserName(request));
-			CenClienteAdm adminCli=new CenClienteAdm(this.getUserBean(request));
+			CenClienteAdm adminCli=new CenClienteAdm(usr);
 
 			// Adecuo formatos
 			hash = this.prepararFormatosFechas(hash);
@@ -1113,6 +1164,25 @@ public class DatosGeneralesAction extends MasterAction {
 
 			hash.remove(CenClienteBean.C_FOTOGRAFIA);
     		
+    		/*CenPersonaAdm adminPer=new CenPersonaAdm(usr);
+    		CenPersonaBean cenPersona = adminPer.getPersona(miForm.getNumIdentificacion());
+    		if(cenPersona!=null){
+    			if (!( ( ComodinBusquedas.sustituirVocales(cenPersona.getNombre()).equals(ComodinBusquedas.sustituirVocales(miForm.getNombre().toUpperCase())) && ComodinBusquedas.sustituirVocales(cenPersona.getApellido1()).equals(ComodinBusquedas.sustituirVocales(miForm.getApellido1().toUpperCase())) ) || 
+   					 ( ComodinBusquedas.sustituirVocales(cenPersona.getNombre()).equals(ComodinBusquedas.sustituirVocales(miForm.getNombre().toUpperCase())) && ComodinBusquedas.sustituirVocales(cenPersona.getApellido2()).equals(ComodinBusquedas.sustituirVocales(miForm.getApellido2().toUpperCase())) ) ||
+   					 ( ComodinBusquedas.sustituirVocales(cenPersona.getApellido1()).equals(ComodinBusquedas.sustituirVocales(miForm.getApellido1().toUpperCase())) && ComodinBusquedas.sustituirVocales(cenPersona.getApellido2()).equals(ComodinBusquedas.sustituirVocales((""+miForm.getApellido2()).toUpperCase())) ) 
+   					)) {
+    				miForm.setNombre(cenPersona.getNombre());
+    				miForm.setApellido1(cenPersona.getApellido1());
+    				miForm.setApellido2(cenPersona.getApellido2());
+   					 return existePersonaNoColegiado(mapping, formulario, request, response);
+   				}
+    			
+			
+				
+    		}
+			*/
+			
+			
 			// Comienzo control de transacciones
 			tx = usr.getTransactionPesada();
 			tx.begin();	

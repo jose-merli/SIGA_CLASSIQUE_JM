@@ -647,7 +647,7 @@ function str_replace(search, replace, subject) {
 	<!-- Tabla central principal -->
 	<!------------------------------->
 	<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0" >
-		<html:form  action="/CEN_DatosGenerales" method="POST" target="mainPestanas"  enctype="multipart/form-data">
+		<html:form  action="/CEN_DatosGenerales" method="POST" target="submitArea"  enctype="multipart/form-data">
 			<html:hidden  name="datosGeneralesForm" property="modo"/>
 			<html:hidden  name="datosGeneralesForm" property="idInstitucion"/>
 			<html:hidden  name="datosGeneralesForm" property="idPersona"/>
@@ -1143,17 +1143,20 @@ var idEspana='<%=ClsConstants.ID_PAIS_ESPANA%>';
 		function accionGuardar() {
 		
 			sub();
-			if (validarFormulario()&&validarDireccion()) {
+			if (validarFormulario() && validarDireccion()) {
+				document.datosGeneralesForm.modo.value = "validarNoColegiado";
+				document.datosGeneralesForm.submit();
 				
-				document.forms[0].target="submitArea";
-				document.forms[0].modo.value="insertarNoColegiado";
-     			document.forms[0].submit();
-				 
-					
 			}else{
 				fin();
 				return false;
 			}
+		}
+		function traspasaDatos(resultado){
+			document.datosGeneralesForm.nombre.value=resultado[0];
+			document.datosGeneralesForm.apellido1.value=resultado[1];
+			document.datosGeneralesForm.apellido2.value=resultado[2];
+		
 		}
 		
 		//funciones de direcciones

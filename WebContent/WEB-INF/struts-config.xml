@@ -680,11 +680,14 @@
 			<forward name="sociedadSJ_inicio" path="/html/jsp/censo/consultaDatosGeneralesNoColegiado.jsp"/>
 			<forward name="altaNoColegiado" path="/html/jsp/censo/altaNoColegiado.jsp"/>
 			<forward name="exitoInsercionNoColegiado" path="/html/jsp/censo/exitoInsercionNoColegiado.jsp"/>
+			<forward name="validarNoColegiado" path="/html/jsp/censo/validarNoColegiado.jsp"/>
 		</action>
 		
 		<action path="/EXP_AltaNoColegiado" forward="/CEN_DatosGenerales.do" >
 			<forward name="altaNoColegiado" path="/html/jsp/expedientes/altaNoColegiado.jsp"/>
 			<forward name="exitoInsercionNoColegiado" path="/html/jsp/censo/exitoInsercionNoColegiado.jsp"/>
+			<forward name="validarNoColegiado" path="/html/jsp/censo/validarNoColegiado.jsp"/>
+			
 		</action>
 
 		
