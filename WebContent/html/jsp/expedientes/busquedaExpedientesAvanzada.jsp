@@ -366,19 +366,19 @@
 
 						<td class="labelText"><siga:Idioma
 							key="expedientes.auditoria.literal.nombre" /></td>
-						<td><html:text name="busquedaExpedientesForm"
+						<td><html:text id="nombreParte" name="busquedaExpedientesForm"
 							property="nombreParte" maxlength="100" size="29" styleClass="box"></html:text>
 						</td>
 
 						<td class="labelText"><siga:Idioma
 							key="gratuita.busquedaAsistencias.literal.apellido1" /></td>
-						<td><html:text name="busquedaExpedientesForm"
+						<td><html:text id="primerApellidoParte" name="busquedaExpedientesForm"
 							property="primerApellidoParte" maxlength="100" size="29" styleClass="box"></html:text>
 						</td>
 
 						<td class="labelText"><siga:Idioma
 							key="gratuita.busquedaAsistencias.literal.apellido2" /></td>
-						<td><html:text name="busquedaExpedientesForm"
+						<td><html:text id="segundoApellidoParte" name="busquedaExpedientesForm"
 							property="segundoApellidoParte" maxlength="100" size="29" styleClass="box"></html:text>
 						</td>
 
@@ -389,7 +389,7 @@
 
 						<td class="labelText"><siga:Idioma
 							key="expedientes.auditoria.literal.rol" /></td>
-						<td colspan="5"><siga:ComboBD nombre="rol" tipo="cmbRol"
+						<td colspan="5"><siga:ComboBD id="rol" nombre="rol" tipo="cmbRol"
 							clase="boxCombo" elementoSel="<%=vRol%>" obligatorio="false"
 							hijo="t" /></td>
 					</tr>
@@ -471,6 +471,16 @@
 			document.forms[0].modo.value="abrir";
 			document.forms[0].avanzada.value="<%=ClsConstants.DB_FALSE%>";			
 			document.forms[0].target="mainWorkArea";	
+
+			//antes de abrir el modo simple se vacian los campos exclusivos
+			//de la busqueda avanzada
+			document.getElementsByName("comboFases")[0].value = "";
+			document.getElementsByName("comboEstados")[0].value = "";
+			document.getElementById("nombreParte").value = "";
+			document.getElementById("primerApellidoParte").value = "";
+			document.getElementById("segundoApellidoParte").value = "";
+			document.getElementById("rol").value = "";
+			
 			document.forms[0].submit();	
 		}
 			
