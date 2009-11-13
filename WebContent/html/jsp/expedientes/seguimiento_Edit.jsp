@@ -16,18 +16,18 @@
 <%  
 	String app=request.getContextPath();
 	String accion = (String)request.getAttribute("accion");
-	String boxStyle = (accion.equals("consulta"))?"boxConsulta":"box";
-	String boxStyleFecha = (accion.equals("consulta") || accion.equals("edicion"))?"boxConsulta":"box";
-	 
 	boolean bLectura=(accion.equals("consulta"));
-	
+	boolean bEdicion=(accion.equals("edicion"));
+	boolean bNuevo=(accion.equals("nuevo"));
+	String boxStyle = (bLectura)?"boxConsulta":"box";
+	String boxStyleFecha = (bLectura || bEdicion)?"boxConsulta":"box";
+	 
 	String botones = "C";
-	if (accion.equals("nuevo")){	
+	if (bNuevo){	
 		botones = "Y,C";
-	}else if (accion.equals("edicion")){
+	}else if (bEdicion){
 		botones = "Y,R,C";
 	}
-	
 	
 	String idInstitucionTipoexpediente=(String)request.getAttribute("idInstitucion_TipoExpediente");
 	String idTipoExpediente=(String)request.getAttribute("idTipoExpediente");
@@ -174,8 +174,8 @@
 				<siga:Idioma key="expedientes.auditoria.literal.fechaFinEstado"/>
 			</td>
 			<td>
-				<html:text name="ExpSeguimientoForm" property="fechaFinEstado" size="10" styleClass="<%=boxStyle%>" readonly="true" />
-				<% if (!bLectura){
+				<html:text name="ExpSeguimientoForm" property="fechaFinEstado" size="10" styleClass="<%=boxStyleFecha%>" readonly="true" />
+				<% if (!bLectura && !bEdicion){
 				%>
 					<a href='javascript://'onClick="return showCalendarGeneral(fechaFinEstado);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
 				<%}%>
@@ -197,11 +197,11 @@
 			</td>
 
 			<td class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.fecha"/> (*)
+				<siga:Idioma key="expedientes.auditoria.literal.fechaAnotacion"/> (*)
 			</td>
 			<td>
 				<html:text name="ExpSeguimientoForm" property="fecha" size="10" styleClass="<%=boxStyleFecha%>" readonly="true" />
-				<% if (!bLectura && !accion.equals("edicion")){
+				<% if (!bLectura && !bEdicion){
 				%>
 					<a href='javascript://'onClick="return showCalendarGeneral(fecha);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
 				<%}%>
