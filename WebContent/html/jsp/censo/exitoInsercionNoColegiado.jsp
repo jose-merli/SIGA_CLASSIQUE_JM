@@ -57,7 +57,11 @@
 				aux[4]="<%=UtilidadesString.cambiarDoblesComillas(nombre) %>";
 				aux[5]="<%=UtilidadesString.cambiarDoblesComillas(apellido1) %>";
 				aux[6]="<%=UtilidadesString.cambiarDoblesComillas(apellido2) %>";
+				<%if(idDireccion!=null){%>
 				aux[7]="<%=idDireccion%>";
+				<%}else{%>
+					aux[7]="";
+				<%}%>
 				
 				
 				top.cierraConParametros(aux);

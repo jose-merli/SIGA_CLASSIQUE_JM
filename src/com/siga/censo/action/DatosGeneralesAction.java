@@ -316,10 +316,12 @@ public class DatosGeneralesAction extends MasterAction {
    						forward =  insertarNoColegiado(mapping, formulario, request, response);
    					}else{
    						miForm.setAccion("messages.fichaCliente.clienteExiste");
+   						miForm.setIdInstitucion(cli.getIdInstitucion().toString());
    						forward = "validarNoColegiado";
    					}	
    					
    				}
+    			miForm.setIdPersona(cenPersona.getIdPersona().toString());
     			miForm.setNombre(cenPersona.getNombre());
 				miForm.setApellido1(cenPersona.getApellido1());
 				miForm.setApellido2(cenPersona.getApellido2());

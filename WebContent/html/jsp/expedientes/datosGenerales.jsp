@@ -326,6 +326,7 @@
 		function altaPersona()
 		{					
 			var resultado=ventaModalGeneral("datosGeneralesForm","G");
+			
 			if (resultado!=undefined && resultado[0]!=undefined ){
 				document.forms[0].idPersona.value=resultado[0];
 				document.forms[0].numColegiado.value=resultado[2];
@@ -335,11 +336,8 @@
 				document.forms[0].segundoApellido.value=resultado[6];
 				document.forms[0].idDireccion.value=resultado[7];
 
-				
 			}
 		}
-		
-		
 		
 		function seleccionarPersona()
 		{	
@@ -354,12 +352,14 @@
 			var resultado=ventaModalGeneral("ExpDenunciadoForm","M");
 			if (resultado!=undefined && resultado[0]!=undefined ){
 				document.forms[0].idPersona.value=resultado[0];
-				document.forms[0].idDireccion.value=resultado[1];
-				document.forms[0].nombre.value=resultado[2];
-				document.forms[0].primerApellido.value=resultado[3];
-				document.forms[0].segundoApellido.value=resultado[4];
-				document.forms[0].nif.value=resultado[5];
-				document.forms[0].numColegiado.value=resultado[6];
+				document.forms[0].numColegiado.value=resultado[2];
+				document.forms[0].nif.value=resultado[3];
+				document.forms[0].nombre.value=resultado[4];
+				document.forms[0].primerApellido.value=resultado[5];
+				document.forms[0].segundoApellido.value=resultado[6];
+				document.forms[0].idDireccion.value=resultado[7];
+			
+				
 				
 			}
 		}

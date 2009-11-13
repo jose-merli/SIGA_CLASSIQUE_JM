@@ -1153,10 +1153,14 @@ var idEspana='<%=ClsConstants.ID_PAIS_ESPANA%>';
 			}
 		}
 		function traspasaDatos(resultado){
-			document.datosGeneralesForm.nombre.value=resultado[0];
-			document.datosGeneralesForm.apellido1.value=resultado[1];
-			document.datosGeneralesForm.apellido2.value=resultado[2];
+			
+			document.datosGeneralesForm.nombre.value=resultado[4];
+			document.datosGeneralesForm.apellido1.value=resultado[5];
+			document.datosGeneralesForm.apellido2.value=resultado[6];
 		
+		}
+		function traspasaDatosCliente(resultado){
+			top.cierraConParametros(resultado);
 		}
 		
 		//funciones de direcciones

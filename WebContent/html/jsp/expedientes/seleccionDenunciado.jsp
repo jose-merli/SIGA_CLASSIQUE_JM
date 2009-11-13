@@ -28,6 +28,7 @@
 <bean:define id="segundoApellido" name="ExpDenunciadoForm" property="segundoApellido" type="java.lang.String"/>
 <bean:define id="nif" name="ExpDenunciadoForm" property="nif" type="java.lang.String"/>
 <bean:define id="numColegiado" name="ExpDenunciadoForm" property="numColegiado" type="java.lang.String"/>
+<bean:define id="idInstitucion" name="ExpDenunciadoForm" property="idInstitucion" type="java.lang.String"/>
 
 
 
@@ -39,18 +40,24 @@
 		<script>
 			function cerrarVentana() {
 				
-				var aux = new Array();
-				aux[0]= <%=idPersona%>;
-				aux[1]= '<%=idDireccion%>';
-				aux[2]= '<%=nombre%>';
-				aux[3]= '<%=primerApellido%>';
-				aux[4]= '<%=segundoApellido%>';
-				aux[5]= '<%=nif%>';
+				var resultado = new Array();
+				resultado[0]="<%=idPersona %>";
+				resultado[1]="<%=idInstitucion %>";
 				<%if(numColegiado==null)
 					numColegiado="";%>
-				aux[6]= '<%=numColegiado%>';
+				resultado[2]= '<%=numColegiado%>';
+				resultado[3]="<%=nif%>";
+				resultado[4]="<%=nombre %>";
+				resultado[5]="<%=primerApellido %>";
+				resultado[6]="<%=segundoApellido %>";
+				resultado[7]="<%=idDireccion%>";
 				
-				top.cierraConParametros(aux);
+				
+
+				
+			
+				
+				top.cierraConParametros(resultado);
 			}
 		</script>
 
