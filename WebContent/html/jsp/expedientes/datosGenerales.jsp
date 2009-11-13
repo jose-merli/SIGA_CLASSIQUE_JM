@@ -496,7 +496,7 @@
 <%}%>		
 			
 			<td  class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.fecha"/>
+				<siga:Idioma key="expedientes.gestionarExpedientes.fechaApertura"/>
 			</td>
 			<td>
 				<%if (accion.equals("nuevo")){%>

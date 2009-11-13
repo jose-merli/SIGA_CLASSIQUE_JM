@@ -42,7 +42,7 @@
 	String nombreCol = "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,expedientes.auditoria.literal.institucion, 	expedientes.auditoria.literal.tipo,expedientes.auditoria.literal.nexpediente,	expedientes.tiposexpedientes.literal.estado,expedientes.auditoria.literal.fecha, 	expedientes.auditoria.literal.nombreyapellidos,";
 	String tamanoCol="3,15,15,8,14,8,25,12";
 	if(isInstitucion){
-		nombreCol = "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,expedientes.auditoria.literal.tipo,expedientes.auditoria.literal.nexpediente,	expedientes.tiposexpedientes.literal.estado,expedientes.auditoria.literal.fecha,	expedientes.auditoria.literal.nombreyapellidos,";
+		nombreCol = "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,expedientes.auditoria.literal.tipo,expedientes.auditoria.literal.nexpediente,	expedientes.tiposexpedientes.literal.estado,expedientes.gestionarExpedientes.fechaApertura,	expedientes.auditoria.literal.nombreyapellidos,";
 		  tamanoCol="3,15,8,14,8,25,12";
 		
 	}

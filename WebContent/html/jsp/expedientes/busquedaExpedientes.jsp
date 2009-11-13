@@ -208,19 +208,19 @@
 				<td class="labelText" ><siga:Idioma	key="expedientes.auditoria.literal.nexpediente" /></td>
 				<td class="labelTextValue"><html:text
 							name="busquedaExpedientesForm" property="numeroExpediente"
-							size="6" maxlength="6" styleClass="box"></html:text> / <html:text
-							name="busquedaExpedientesForm" property="anioExpediente" size="4"
-							maxlength="4" styleClass="box"></html:text></td>
+							style="width:40px;" maxlength="6" styleClass="box"></html:text> / <html:text
+							name="busquedaExpedientesForm" property="anioExpediente" 
+							style="width:50px;" maxlength="4" styleClass="box"></html:text></td>
 				
 				<td class="labelText"><siga:Idioma
 					key="expedientes.auditoria.literal.nexpdisciplinario" /></td>
 				<td class="labelTextValue" ><html:text
 					name="busquedaExpedientesForm" property="numeroExpDisciplinario"
-					size="6" maxlength="6" styleClass="box"></html:text> / <html:text
+					style="width:40px;" maxlength="6" styleClass="box"></html:text> / <html:text
 					name="busquedaExpedientesForm" property="anioExpDisciplinario"
-					size="4" maxlength="4" styleClass="box"></html:text></td>
+					style="width:50px;" maxlength="4" styleClass="box"></html:text></td>
 				<td class="labelText" ><siga:Idioma
-					key="expedientes.auditoria.literal.fecha" />
+					key="expedientes.gestionarExpedientes.fechaApertura" />
 				</td>
 				<td colspan="2"><html:text name="busquedaExpedientesForm" property="fecha" maxlength="10" size="10" styleClass="box" readonly="true">
 				 </html:text> <a href='javascript://' onClick="return showCalendarGeneral(fecha);"><img	src="<%=app%>/html/imagenes/calendar.gif" border="0">

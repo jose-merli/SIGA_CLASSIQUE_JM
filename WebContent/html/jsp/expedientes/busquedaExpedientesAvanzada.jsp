@@ -237,7 +237,7 @@
 							name="busquedaExpedientesForm" property="anioExpDisciplinario"
 							size="4" maxlength="4" styleClass="box"></html:text></td>
 						<td class="labelText"><siga:Idioma
-							key="expedientes.auditoria.literal.fecha" /></td>
+							key="expedientes.gestionarExpedientes.fechaApertura" /></td>
 						<td colspan="2"><html:text name="busquedaExpedientesForm"
 							property="fecha" maxlength="10" size="10" styleClass="box" readonly="true">
 						</html:text> <a href='javascript://'
