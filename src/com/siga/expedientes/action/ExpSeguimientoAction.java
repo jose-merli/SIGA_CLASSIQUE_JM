@@ -279,7 +279,6 @@ public class ExpSeguimientoAction extends MasterAction {
 	        bean.setRegEntrada(form.getRegentrada());
 	        bean.setRegSalida(form.getRegsalida());
 	        bean.setFechaInicioEstado(GstDate.getApplicationFormatDate("",form.getFechaInicioEstado()));
-	        bean.setFechaFinEstado(GstDate.getApplicationFormatDate("",form.getFechaFinEstado()));
 	        
 	        /*if (anotAdm.update(bean)){
 	        	return exitoModal("messages.updated.success",request);
