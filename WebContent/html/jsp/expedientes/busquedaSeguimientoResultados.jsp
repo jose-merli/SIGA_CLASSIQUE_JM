@@ -70,16 +70,14 @@
 		   	      nombre="tablaDatos"
 		   		  borde="1"
 		   		  clase="tableTitle"
-		   		  nombreCol="expedientes.auditoria.literal.fecha,
+		   		  nombreCol="expedientes.auditoria.literal.fechaAnotacion,
 					expedientes.auditoria.literal.usuario,
-					expedientes.auditoria.literal.fechaInicioEstado,
-					expedientes.auditoria.literal.fechaFinEstado,
 					expedientes.auditoria.literal.fase,
+					expedientes.auditoria.literal.fechaInicioEstado,
 					expedientes.auditoria.literal.estado,
-					expedientes.auditoria.literal.tipo,
 					expedientes.auditoria.literal.automatico,
 					expedientes.auditoria.literal.descripcion,"
-		   		  tamanoCol="8,10,8,8,8,8,12,5,23,10"
+		   		  tamanoCol="8,17,8,8,8,18,23,10"
 			   			alto="100%"
 		   			ajusteBotonera="true"		
 
@@ -138,11 +136,9 @@
 						<%=GstDate.getFormatedDateShort("",fila.getString("FECHAANOTACION"))%>
 					</td>
 					<td><%=fila.getString("USUARIO").equals("")?"&nbsp;":UtilidadesString.mostrarDatoJSP(fila.getString("USUARIO"))%></td>
-					<td><%=(fila.getString("FECHAINICIOESTADO")==null || fila.getString("FECHAINICIOESTADO").equals(""))?"&nbsp;":GstDate.getFormatedDateShort("",fila.getString("FECHAINICIOESTADO"))%></td>
-					<td><%=(fila.getString("FECHAINICIOESTADO")==null || fila.getString("FECHAFINESTADO").equals(""))?"&nbsp;":GstDate.getFormatedDateShort("",fila.getString("FECHAFINESTADO"))%></td>
 					<td><%=fila.getString("FASE").equals("")?"&nbsp;":fila.getString("FASE")%></td>
+					<td><%=(fila.getString("FECHAINICIOESTADO")==null || fila.getString("FECHAINICIOESTADO").equals(""))?"&nbsp;":GstDate.getFormatedDateShort("",fila.getString("FECHAINICIOESTADO"))%></td>
 					<td><%=fila.getString("ESTADO").equals("")?"&nbsp;":fila.getString("ESTADO")%></td>
-					<td><%=UtilidadesMultidioma.getDatoMaestroIdioma(fila.getString("TIPO"),userBean)%></td>
 					<td align="center"><%=sAutomatico%></td>
 					<td><%=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(fila.getRow(), "DESCRIPCION"),100)%></td>
 				</siga:FilaConIconos>
