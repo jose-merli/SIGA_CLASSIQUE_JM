@@ -188,12 +188,12 @@ public class TiposAnotacionesAction extends MasterAction {
     			String idRecursoAlias = GenRecursosCatalogosAdm.getNombreIdRecursoAlias(ExpTiposAnotacionesBean.T_NOMBRETABLA, ExpTiposAnotacionesBean.C_NOMBRE, new Integer(form.getIdInstitucion()), form.getIdTipoExpediente()+"_"+anotacion.getIdTipoAnotacion());
 	        	GenRecursosCatalogosAdm admRecCatalogos = new GenRecursosCatalogosAdm (this.getUserBean(request));
 	        	GenRecursosCatalogosBean recCatalogoBean = new GenRecursosCatalogosBean ();
-	        	recCatalogoBean.setCampoTabla(ExpRolesBean.C_NOMBRE);
+	        	recCatalogoBean.setCampoTabla(ExpTiposAnotacionesBean.C_NOMBRE);
 	        	recCatalogoBean.setDescripcion(form.getNombre());
 	        	recCatalogoBean.setIdInstitucion(this.getIDInstitucion(request));
 	        	recCatalogoBean.setIdRecurso(idRecurso);
 	        	recCatalogoBean.setIdRecursoAlias(idRecursoAlias);
-	        	recCatalogoBean.setNombreTabla(ExpRolesBean.T_NOMBRETABLA);
+	        	recCatalogoBean.setNombreTabla(ExpTiposAnotacionesBean.T_NOMBRETABLA);
 	        	if(!admRecCatalogos.insert(recCatalogoBean, userBean.getLanguageInstitucion())) { 
 	        		throw new ClsExceptions ("Error al insertar en recursos catalogos "+admRecCatalogos.getError());
 	        	}
@@ -223,6 +223,9 @@ public class TiposAnotacionesAction extends MasterAction {
 	    TiposAnotacionesForm form = (TiposAnotacionesForm)formulario;	    
 	    ExpTiposAnotacionesAdm anotacionesAdm = new ExpTiposAnotacionesAdm (this.getUserBean(request));
 	    
+	    String pepe = request.getParameter("mensaje");
+	    System.out.println("********************* VALOR RECIBIDO="+pepe);
+	    	
 	    try {
 	        Vector vOcultos = form.getDatosTablaOcultos(0);
 	        Hashtable hashOld = (Hashtable)request.getSession().getAttribute("DATABACKUP");

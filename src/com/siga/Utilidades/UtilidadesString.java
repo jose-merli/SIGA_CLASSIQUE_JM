@@ -660,6 +660,10 @@ public class UtilidadesString {
 			return mensaje;		
 		}
 
+		public static String quitarEspaciosAcentos(String s) throws ClsExceptions {
+			return quitarAcentos(replaceAllIgnoreCase(s, " ", "").toUpperCase()); 
+		}
+		
 		/**
 		  *  formatea un dato a una longitud rellenando por la izquierda a ceros 
 		  *  o por la derecha a blancos en funcion de si es numerico

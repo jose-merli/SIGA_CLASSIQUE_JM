@@ -361,7 +361,6 @@ public class EnvioInformesGenericos extends MasterReport {
 					usrBean);
 		
 		Hashtable hashConsultasHechas = new Hashtable();
-		String hoy = UtilidadesString.formatoFecha(new Date(),"yyyyMMddhhmmss");
 		for (int i = 0; i < vPlantillas.size(); i++) {
 			AdmInformeBean beanInforme = (AdmInformeBean) vPlantillas.get(i);
 
@@ -416,6 +415,9 @@ public class EnvioInformesGenericos extends MasterReport {
 					identificador.append("_");
 					identificador.append(idInstitucion);
 					identificador.append("_");
+					identificador.append(new Integer(i).toString());
+					identificador.append("_");
+					String hoy = UtilidadesString.formatoFecha(new Date(),"yyyyMMddhhmmssSSS");
 					identificador.append(hoy);
 					
 
@@ -479,8 +481,10 @@ public class EnvioInformesGenericos extends MasterReport {
 							identificador.append("_");
 							identificador.append(idPersonaK);
 							identificador.append("_");
-							//identificador.append(new Integer(k).toString());
 							identificador.append(new Integer(i).toString());
+							identificador.append("_");
+							String hoy = UtilidadesString.formatoFecha(new Date(),"yyyyMMddhhmmssSSS");
+							identificador.append(hoy);
 							htDatosInformeFinal = htDatosInforme;
 					}
 					File fileDocumento = getInformeGenerico(beanInforme,
@@ -1252,7 +1256,7 @@ public class EnvioInformesGenericos extends MasterReport {
 					datosFormulario = setCamposIterantes(datosFormulario,
 							claveIterante);
 				}
-
+				
 
 				Vector vPlantillas = null;
 				for (int j = 0; j < datosFormulario.size(); j++) {
@@ -1266,13 +1270,75 @@ public class EnvioInformesGenericos extends MasterReport {
 							vPlantillas = getPlantillas(plantillas, usr
 									.getLocation(), usr);
 						}
+						//////////////////////////////
+						if (idTipoInforme.equals(EnvioInformesGenericos.comunicacionesExpedientes)) {
+				
+							// Obtengo los datos del expediente
+							String idiomaExt = (String) datosInforme.get("idiomaExt");
+							if (idiomaExt == null || idiomaExt.equals(""))
+								idiomaExt = usr.getLanguageExt();
+							datosInforme.put("idiomaExt", idiomaExt);
+							String idioma = (String) datosInforme.get("idioma");
+							if (idioma == null || idioma.equals(""))
+								idioma = usr.getLanguage();
+							datosInforme.put("idioma", idioma);
+							String idPersona2 = (String) datosInforme.get("idPersona");
+							String idInstitucion2 = (String) datosInforme.get("idInstitucion");
+							String anio = (String) datosInforme.get("anioExpediente");
+							String numero = (String) datosInforme.get("numeroExpediente");
+							String idInstitucionTipoExp = (String) datosInforme.get("idInstitucionTipoExp");
+							String idTipoExp = (String) datosInforme.get("idTipoExp");
+	
+							// voy a mirar si alguno de los informes es asolicitantes
+							boolean aSolicitantes = this.esAlgunaASolicitantes(vPlantillas);
+							
+							
+							// Obtengo los datos de la consulta. 
+							// A CADA UNO DE LOS REGISTROS DE ESTA CONSULTA SE LE ENVÍAN TODOS LOS DOCUMENTOS
+							// DE LAS PLANTILLAS OBTENIDAS ARRIBA, RESUELTOS PARA EL DESTINATARIO.
+							ExpExpedienteAdm expedienteAdm = new ExpExpedienteAdm(usr);
+							Vector vDatosInformeFinal = expedienteAdm.getDatosInformeExpediente(idInstitucion2, idInstitucionTipoExp, 
+									idTipoExp, anio, numero, idPersona2, true, aSolicitantes );
+	
+							// Anotación en cada expediente
+							Envio.generarComunicacionExpediente(idInstitucion2,new Integer(idInstitucionTipoExp),
+									new Integer(idTipoExp),new Integer(numero),new Integer(anio),idPersona2,usr);
+	
+							// RECORRER LOS DATOSINFORMEFINAL 
+							// Por cada destinatario real
+							for (int k=0;k<vDatosInformeFinal.size();k++){
+								Hashtable datoReal = (Hashtable)vDatosInformeFinal.get(k);
+								String idPersonaReal = (String) datoReal.get("IDPERSONA_DEST");
+								String idDireccionReal = (String) datoReal.get("IDDIRECCION_DEST");
+								datoReal.put("idTipoInforme", "EXP");
+								datoReal.put("idPersona", (String) datosInforme.get("idPersona"));
+								datoReal.put("idInstitucion", (String) datosInforme.get("idInstitucion"));
+								datoReal.put("anioExpediente", (String) datosInforme.get("anioExpediente"));
+								datoReal.put("numeroExpediente", (String) datosInforme.get("numeroExpediente"));
+								datoReal.put("idInstitucionTipoExp", (String) datosInforme.get("idInstitucionTipoExp"));
+								datoReal.put("idTipoExp", (String) datosInforme.get("idTipoExp"));
+								datoReal.put("plantillas", (String) datosInforme.get("plantillas"));
+								datoReal.put("aSolicitantes", (aSolicitantes)?"S":"N");
+								
+								if (idPersonaReal!=null && !idPersonaReal.trim().equals("")) {
+									
+									Vector vDocumentos = new Vector();
+									vDocumentos.addAll(this.getDocumentosAEnviar(datoReal,vPlantillas, usr,EnvioInformesGenericos.docFile,EnvioInformesGenericos.comunicacionesExpedientes));
+									informesRes.addAll(vDocumentos);			
+								}
+							}						
+						
+						} else {
+							// no es de expedientes
+							//////////////////////////////////////////////////////// esto era lo anterior
+							Vector vDocumentos = getDocumentosAEnviar(datosInforme,
+									vPlantillas, usr,
+									EnvioInformesGenericos.docFile,idTipoInforme);
+							informesRes.addAll(vDocumentos);
 
-						Vector vDocumentos = getDocumentosAEnviar(datosInforme,
-								vPlantillas, usr,
-								EnvioInformesGenericos.docFile,idTipoInforme);
-
-						informesRes.addAll(vDocumentos);
-
+							//////////////////////////////////////////////////////////
+						}
+						
 					}
 				}
 
@@ -1302,7 +1368,7 @@ public class EnvioInformesGenericos extends MasterReport {
 						ficherosPDF.add(f);
 					}
 
-					String nombreFicheroZIP = beanT.getDescripcion().trim()
+					String nombreFicheroZIP = UtilidadesString.quitarEspaciosAcentos(beanT.getDescripcion().trim())
 					+ "_"
 					+ UtilidadesBDAdm.getFechaCompletaBD("")
 					.replaceAll("/", "").replaceAll(":", "")
