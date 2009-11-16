@@ -1233,6 +1233,7 @@
 			<forward name="abrir" path="/html/jsp/expedientes/abrirTiposAnotaciones.jsp"/>
 			<forward name="mostrar" path="/html/jsp/expedientes/tiposAnotaciones_Edit.jsp"/>
 			<forward name="refresh" path="/html/jsp/general/genericLoadForm.jsp"/>
+			<forward name="obtenerMensaje" path="/html/jsp/gratuita/buscarMensajeTipoAnotacionOculta.jsp"/>
 		</action>
 
 		<action path="/EXP_TiposExpedientes_Permisos" type="com.siga.expedientes.action.PermisosTiposExpedientesAction" name="PermisosTiposExpedientesForm" scope="request">

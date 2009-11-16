@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsExceptions;
@@ -30,10 +32,13 @@ import com.siga.beans.ExpTiposAnotacionesAdm;
 import com.siga.beans.ExpTiposAnotacionesBean;
 import com.siga.beans.GenRecursosCatalogosAdm;
 import com.siga.beans.GenRecursosCatalogosBean;
+import com.siga.beans.ScsJuzgadoAdm;
+import com.siga.beans.ScsJuzgadoBean;
 import com.siga.expedientes.form.TiposAnotacionesForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.form.MantenimientoJuzgadoForm;
 import com.siga.gui.processTree.SIGAPTConstants;
 
 /**
@@ -43,6 +48,38 @@ import com.siga.gui.processTree.SIGAPTConstants;
  *
  */
 public class TiposAnotacionesAction extends MasterAction {
+	
+	
+	
+	public ActionForward executeInternal (ActionMapping mapping,
+		      ActionForm formulario,
+		      HttpServletRequest request, 
+		      HttpServletResponse response) throws SIGAException {
+
+			String mapDestino = "exception";
+			MasterForm miForm = null;
+			
+			try { 
+				miForm = (MasterForm) formulario;
+				String accion = miForm.getModo();
+				if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
+					mapDestino = abrir(mapping, miForm, request, response);
+				}else if (accion.equalsIgnoreCase("obtenerMensaje")){
+					mapDestino = obtenerMensaje(mapping, miForm, request, response);	
+				
+				} else {
+					return super.executeInternal(mapping,
+						      formulario,
+						      request, 
+						      response);
+				}			
+			} catch (SIGAException es) {
+				throw es;
+			} catch (Exception e) {
+				throw new SIGAException("messages.general.error",e,new String[] {"modulo.censo"});
+			}
+				return mapping.findForward(mapDestino);
+	}	
     
     protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException
 	{	
@@ -416,4 +453,29 @@ public class TiposAnotacionesAction extends MasterAction {
 	}
 
 
+	/* (non-Javadoc)
+	 * @see com.siga.general.MasterAction#borrar(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
+	protected String obtenerMensaje(ActionMapping mapping, MasterForm formulario,
+			HttpServletRequest request, HttpServletResponse response)
+			throws ClsExceptions {
+		
+			try {
+				TiposAnotacionesForm miform = (TiposAnotacionesForm)formulario;
+			     ExpTiposAnotacionesAdm tipoAnotacionesAdm= new ExpTiposAnotacionesAdm(this.getUserBean(request));
+			     Hashtable<String, String> hClaves = new Hashtable<String, String>();
+			     hClaves.put(ExpTiposAnotacionesBean.C_IDINSTITUCION, miform.getIdInstitucion());
+			     hClaves.put(ExpTiposAnotacionesBean.C_IDTIPOEXPEDIENTE, miform.getIdTipoExpediente());
+			     hClaves.put(ExpTiposAnotacionesBean.C_IDTIPOANOTACION, miform.getIdTipoAnotacion());
+				
+				Vector resultado = tipoAnotacionesAdm.selectByPK(hClaves);
+				
+				request.setAttribute("resultadoTipoAnotacion",resultado);
+				
+			}
+			catch (Exception e) {
+				throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D."); 
+			}
+			return "obtenerMensaje";
+	}
 }

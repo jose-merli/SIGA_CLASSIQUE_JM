@@ -296,11 +296,16 @@
 		}
 		
 		function actualizarDescripcion(elementoSel){
-		
-		 document.forms[1].idTipoAnotacion.value=elementoSel.value;
-		 document.forms[1].idTipoExpediente.value="<%=idTipoExpediente%>";
-		 document.forms[1].idInstitucion.value="<%=idInstitucionTipoexpediente%>";
-		 document.forms[1].submit();
+		 
+		    if (elementoSel.value!=null && elementoSel.value!=""){
+		 
+			 document.forms[1].idTipoAnotacion.value=elementoSel.value;
+			 document.forms[1].idTipoExpediente.value="<%=idTipoExpediente%>";
+			 document.forms[1].idInstitucion.value="<%=idInstitucionTipoexpediente%>";
+			 document.forms[1].submit();
+			}else{
+			  document.forms[0].descripcion.value="";
+			}	 
 		
 		}
 
