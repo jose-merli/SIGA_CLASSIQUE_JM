@@ -141,7 +141,7 @@
 		<html:text name="DefinirSOJForm" property="anio" size="4" maxlength="4" styleClass="box"  value="<%=anio%>"></html:text> / <html:text name="DefinirSOJForm" property="numSOJ" size="5" maxlength="10" styleClass="box"  value="<%=numSOJ%>"></html:text>
 	</td>
 	<td class="labelText" colspan="6" style="text-align: right">
-		<siga:Idioma key="gratuita.busquedaSOJ.literal.fechaApertura"/><siga:Idioma key="gratuita.busquedaSOJ.literal.desde"/>
+		<siga:Idioma key="gratuita.busquedaSOJ.literal.fechaApertura"/>&nbsp;<siga:Idioma key="gratuita.busquedaSOJ.literal.desde"/>
 		<html:text name="DefinirSOJForm" property="fechaAperturaSOJDesde" size="10" maxlength="10" styleClass="box"  value="<%=fechaAperturaDesde%>" readOnly="true"></html:text>
 		<a onClick="return showCalendarGeneral(fechaAperturaSOJDesde);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
 		<siga:Idioma key="gratuita.busquedaSOJ.literal.hasta"/>
