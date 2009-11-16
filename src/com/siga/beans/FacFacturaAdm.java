@@ -1912,8 +1912,8 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 		    }else{
 		    	sql += " AND F."+FacFacturaBean.C_NUMEROFACTURA+">'0'";
 		    }
-		    
-		    sql += " AND F."+FacFacturaBean.C_ESTADO + " <> "+FacFacturaAdm.IDESTADO_FACTURA_ANULADA;
+		    //Comento por ordenes de LP
+		    //sql += " AND F."+FacFacturaBean.C_ESTADO + " <> "+FacFacturaAdm.IDESTADO_FACTURA_ANULADA;
 	    	sql += " AND F."+FacFacturaBean.C_IMPTOTALPORPAGAR + " > 0";
 	    	if((nComunicacionesDesde!=null && !nComunicacionesDesde.equalsIgnoreCase("")) || ((nComunicacionesHasta!=null && !nComunicacionesHasta.equalsIgnoreCase(""))) || 
 					 (isFacturasPendientes)||(form.getImporteAdeudadoDesde()!=null && !form.getImporteAdeudadoDesde().equals(""))
