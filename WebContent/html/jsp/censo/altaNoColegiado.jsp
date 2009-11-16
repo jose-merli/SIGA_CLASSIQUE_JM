@@ -657,6 +657,7 @@ function str_replace(search, replace, subject) {
 			<html:hidden name="datosGeneralesForm" property="abono" value="B" />
 			<html:hidden name="datosGeneralesForm" property="cargo" value="B" />
 			<html:hidden name="datosGeneralesForm" property="idTipoDireccion" value=""/>
+			<html:hidden name="datosGeneralesForm" property="numColegiado"/>
 			<html:hidden property="actionModal" value=""/>
 			<html:hidden property="tipo" value="<%=sTipo%>"/>
 	<tr>

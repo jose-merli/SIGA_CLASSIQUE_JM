@@ -315,12 +315,25 @@ public class DatosGeneralesAction extends MasterAction {
    					if (cli==null) {
    						forward =  insertarNoColegiado(mapping, formulario, request, response);
    					}else{
+   						//Comprobamos si el cliente que saca esta colegiado para coger su numero
+   						CenColegiadoAdm admColegiado = new CenColegiadoAdm(usr);
+   						CenColegiadoBean colegiado = admColegiado.getDatosColegiales(cli.getIdPersona(), cli.getIdInstitucion());
+   						if(colegiado!=null){
+   							if(colegiado.getNComunitario()!=null && !colegiado.getNComunitario().equals(""))
+   								miForm.setNumColegiado(colegiado.getNComunitario());
+   							else
+   								miForm.setNumColegiado(colegiado.getNColegiado());
+   						}
+   							
+   						
    						miForm.setAccion("messages.fichaCliente.clienteExiste");
    						miForm.setIdInstitucion(cli.getIdInstitucion().toString());
+
    						forward = "validarNoColegiado";
    					}	
    					
    				}
+    			
     			miForm.setIdPersona(cenPersona.getIdPersona().toString());
     			miForm.setNombre(cenPersona.getNombre());
 				miForm.setApellido1(cenPersona.getApellido1());

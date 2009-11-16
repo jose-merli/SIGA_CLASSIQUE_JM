@@ -631,6 +631,8 @@ import com.siga.beans.*;
 	String domicilio;
 	String fax1;
 	String fax2;
+	
+	String numColegiado="";
 
 	public String getIdTipoDireccion() {
 		return idTipoDireccion;
@@ -784,6 +786,14 @@ import com.siga.beans.*;
 
 	public void setFax2(String fax2) {
 		this.fax2 = fax2;
+	}
+
+	public String getNumColegiado() {
+		return numColegiado;
+	}
+
+	public void setNumColegiado(String numColegiado) {
+		this.numColegiado = numColegiado;
 	}
 	
 	

@@ -22,7 +22,9 @@
 <bean:define id="accion" name="datosGeneralesForm" property="accion" type="java.lang.String"/>
 <bean:define id="idPersona" name="datosGeneralesForm" property="idPersona" type="java.lang.String"/>
 <bean:define id="idInstitucion" name="datosGeneralesForm" property="idInstitucion" type="java.lang.String"/>
+<bean:define id="numColegiado" name="datosGeneralesForm" property="numColegiado" type="java.lang.String"/>
 <bean:define id="numIdentificacion" name="datosGeneralesForm" property="numIdentificacion" type="java.lang.String"/>
+
 
 <html>
 
@@ -32,6 +34,7 @@
 <script>
 	function cerrarVentana() {
 		var resultado = new Array();
+		
 		<%if(accion.equals("messages.fichaCliente.mostrarPersonaExistente")){%>
 			var type = '<siga:Idioma key="<%=accion%>"/>';
 			alert(type);
@@ -39,7 +42,13 @@
 			//Ponemos los datos comunes con otras jsp para que no vayan todas a su aire
 			resultado[0]="<%=idPersona %>";
 			resultado[1]="<%=idInstitucion %>";
-			resultado[2]="";
+			
+			<%
+
+			if(numColegiado==null)
+				numColegiado="";%>
+			resultado[2]= '<%=numColegiado%>';
+				
 			resultado[3]="<%=numIdentificacion%>";
 			resultado[4]="<%=nombre %>";
 			resultado[5]="<%=apellido1 %>";
@@ -52,7 +61,9 @@
 			//Ponemos los datos comunes con otras jsp para que no vayan todas a su aire
 			resultado[0]="<%=idPersona %>";
 			resultado[1]="<%=idInstitucion %>";
-			resultado[2]="";
+			<%if(numColegiado==null)
+				numColegiado="";%>
+			resultado[2]= '<%=numColegiado%>';
 			resultado[3]="<%=numIdentificacion%>";
 			resultado[4]="<%=nombre %>";
 			resultado[5]="<%=apellido1 %>";
