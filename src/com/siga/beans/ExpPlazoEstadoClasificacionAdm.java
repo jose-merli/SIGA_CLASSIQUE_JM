@@ -251,9 +251,15 @@ public class ExpPlazoEstadoClasificacionAdm extends MasterBeanAdministrador {
 				fechaFinal=sdf.format(d);
 			}
 			
-			bean.setFechaFinalEstado(fechaFinal);
-			bean.setFechaProrrogaEstado("");
+			if(valorPlazo>0){
+				bean.setFechaFinalEstado(fechaFinal);
+				bean.setFechaProrrogaEstado("");
+			}else{
+				bean.setFechaFinalEstado("");
+				bean.setFechaProrrogaEstado("");
+			}
 			return true;
+			
 			
     	}catch(ClsExceptions e){
     		throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D.");			
