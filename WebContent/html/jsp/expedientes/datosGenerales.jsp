@@ -180,6 +180,9 @@
 	
 			<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">
+	
+		var jsEstadoViejo="";
+		var jsEstadoNuevo="";
 		 
 		function traspasoDatos(resultado){
 		 seleccionComboSiga("juzgado",resultado[0]);
@@ -430,6 +433,19 @@
 				
 		}
 		
+		function limpiarFechas(){
+			if(jsEstadoViejo==("")){
+				jsEstadoViejo = document.ExpDatosGeneralesForm.comboEstados.value;
+			}else{
+				jsEstadoNuevo = document.ExpDatosGeneralesForm.comboEstados.value;
+				if(jsEstadoNuevo!=jsEstadoViejo){
+					document.getElementById("fechaInicial").value="";
+					document.getElementById("fechaFinal").value="";
+					jsEstadoViejo = document.ExpDatosGeneralesForm.comboEstados.value;
+				}
+			}
+		}
+		
 	</script>
 	
 	<!-- FIN: SCRIPTS BOTONES -->
@@ -550,10 +566,13 @@
 					<siga:Idioma key="expedientes.auditoria.literal.fechaCaducidad"/>
 			</td>
 			<td  valign="top">
-					<html:text name="ExpDatosGeneralesForm" property="fechaCaducidad" size="10" maxlength="10" styleClass="<%=boxStyle%>" readonly="true"></html:text>
+					
 					<%if (bEditable){%>	
+						<siga:Fecha nombreCampo="fechaCaducidad" valorInicial="<%=form.getFechaCaducidad()%>"/>
 						<a href='javascript://'onClick="return showCalendarGeneral(fechaCaducidad);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
-					<% } %>
+					<% }else{ %>
+						<html:text name="ExpDatosGeneralesForm" property="fechaCaducidad" size="10" maxlength="10" styleClass="<%=boxStyle%>" readonly="true"></html:text>							
+					<%}%>
 				</td>
 				<td class="labelText">
 				<siga:Idioma key="expedientes.auditoria.literal.asunto"/>&nbsp(*)
@@ -575,6 +594,105 @@
 	</table>
 
 	</siga:ConjCampos>
+	
+	<!-- Esto antes estaba abajo del todo (INICIO)-->
+<% if (bEstado){%>
+	<siga:ConjCampos leyenda="expedientes.auditoria.literal.estado">
+	<table class="tablaCampos" align="center">
+	<!-- FILA -->
+		<tr>					
+			<td class="labelText">
+				<siga:Idioma key="expedientes.auditoria.literal.fase"/>&nbsp(*)
+			</td>				
+			<td>
+				<% if (bEditable) {
+					String comboHijo = "";
+					if (bEstado)
+						comboHijo = "Hijo:comboEstados";
+				%>
+				<siga:ComboBD nombre = "comboFases" tipo="cmbFases"  clase="boxCombo" obligatorio="true" ElementoSel="<%=vFase%>" parametro="<%=dato%>" accion="<%=comboHijo%>" pestana="t"/>
+				<% } else { %>
+				<html:text name="ExpDatosGeneralesForm" property="faseSel"  styleClass="boxConsulta" readonly="true"></html:text>
+				<% } %>
+			</td>
+
+			<td class="labelText">
+				<siga:Idioma key="expedientes.auditoria.literal.fechainicial"/>&nbsp(*)
+			</td>
+			<td>
+				
+				<% if (bEditable){%>
+					<siga:Fecha nombreCampo="fechaInicial" valorInicial="<%=form.getFechaInicial()%>"/>
+					<a href='javascript://'onClick="return showCalendarGeneral(fechaInicial);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+				<%}else{%>
+					<html:text name="ExpDatosGeneralesForm" property="fechaInicial" maxlength="10" size="10" styleClass="<%=boxStyle%>" readonly="true">
+					</html:text>
+				<%}%>
+			</td>
+			
+			<td class="labelText">
+				<siga:Idioma key="expedientes.auditoria.literal.estado"/>&nbsp(*)
+			</td>
+			<td colspan="2">
+				<%if (bEditable){%>		
+				<siga:ComboBD nombre = "comboEstados" tipo="cmbEstados" clase="boxCombo" obligatorio="true" accion="parent.limpiarFechas();" ElementoSel="<%=vEstado%>" hijo="t" pestana="t"/>						
+				<%}else{%>
+				<html:text name="ExpDatosGeneralesForm" property="estadoSel"  styleClass="boxConsulta" readonly="true"></html:text>
+				<%}%>
+ 			</td>
+ 						
+		</tr>
+
+
+		<tr>					
+				
+		<% if (bEditable){%>
+			<td class="labelText" colspan="2">
+				<input type="button" class="button" alt="<%=plazo%>" id="searchDeadline"  name = "idButton" onclick="return getPlazo();" value="<%=plazo%>"/>&nbsp;
+			</td>	
+		<%}else{%>
+			<td colspan="2">&nbsp;</td>
+		<%}%>	
+			<td class="labelText">
+				<siga:Idioma key="expedientes.auditoria.literal.fechafinal"/>
+			</td>
+			<td>
+				<% if (bEditable){%>
+					<siga:Fecha nombreCampo="fechaFinal" valorInicial="<%=form.getFechaFinal()%>"/>
+					<a href='javascript://'onClick="return showCalendarGeneral(fechaFinal);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+				<%}else {%>	
+					<html:text name="ExpDatosGeneralesForm" property="fechaFinal" maxlength="10" size="10" styleClass="<%=boxStyle%>" readonly="true">
+					</html:text>
+				<%}%>
+			</td>		
+			
+			<td class="labelText">
+				<siga:Idioma key="expedientes.auditoria.literal.fechaprorroga"/>
+			</td>
+			<td>
+				<% if (bEditable){%>
+					<siga:Fecha nombreCampo="fechaProrroga" valorInicial="<%=form.getFechaProrroga()%>"/>
+					<a href="javascript://" onClick="return showCalendarGeneral(fechaProrroga);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+				<%}else{%>
+					<html:text name="ExpDatosGeneralesForm" property="fechaProrroga" maxlength="10" size="10" styleClass="<%=boxStyle%>" readonly="true"></html:text>
+				<%} %>
+			</td>	
+			<td>&nbsp;</td> <!-- Vacio para cuadrar el interfaz -->		
+		</tr>
+
+	</table>
+		
+	</siga:ConjCampos>
+<%}else{%>	
+	<html:hidden name="ExpDatosGeneralesForm" property="comboEstados"/>
+	<html:hidden name="ExpDatosGeneralesForm" property="comboFases"/>
+	<html:hidden name="ExpDatosGeneralesForm" property="estadoSel"/>
+	<html:hidden name="ExpDatosGeneralesForm" property="faseSel"/>
+	<html:hidden name="ExpDatosGeneralesForm" property="fechaInicial"/>
+	<html:hidden name="ExpDatosGeneralesForm" property="fechaFinal"/>
+	<html:hidden name="ExpDatosGeneralesForm" property="fechaProrroga"/>
+<%}%>
+<!-- Esto antes estaba abajo del todo (FIN)-->
 	
 <% if (mostrarMinuta != null && mostrarMinuta.equalsIgnoreCase("S")) {%>
 
@@ -753,94 +871,7 @@
 	<html:hidden name="ExpDatosGeneralesForm" property="numAsunto"/>
 <%}%>
 	
-<% if (bEstado){%>
-	<siga:ConjCampos leyenda="expedientes.auditoria.literal.estado">
-	<table class="tablaCampos" align="center">
-	<!-- FILA -->
-		<tr>					
-			<td class="labelText" width="100">
-				<siga:Idioma key="expedientes.auditoria.literal.fase"/>&nbsp(*)
-			</td>				
-			<td>
-				<% if (bEditable) {
-					String comboHijo = "";
-					if (bEstado)
-						comboHijo = "Hijo:comboEstados";
-				%>
-				<siga:ComboBD nombre = "comboFases" tipo="cmbFases"  clase="boxCombo" obligatorio="true" ElementoSel="<%=vFase%>" parametro="<%=dato%>" accion="<%=comboHijo%>" pestana="t"/>
-				<% } else { %>
-				<html:text name="ExpDatosGeneralesForm" property="faseSel"  styleClass="boxConsulta" readonly="true"></html:text>
-				<% } %>
-			</td>
 
-		
-			<td class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.estado"/>&nbsp(*)
-			</td>
-			<td>
-				<%if (bEditable){%>		
-				<siga:ComboBD nombre = "comboEstados" tipo="cmbEstados" clase="boxCombo" obligatorio="true" ElementoSel="<%=vEstado%>" hijo="t" pestana="t" />						
-				<%}else{%>
-				<html:text name="ExpDatosGeneralesForm" property="estadoSel"  styleClass="boxConsulta" readonly="true"></html:text>
-				<%}%>
- 			</td>
- 			
-<% if (bEditable){%>
-			<td class="labelText">
-				<input type="button" class="button" alt="<%=plazo%>" id="searchDeadline"  name = "idButton" onclick="return getPlazo();" value="<%=plazo%>"/>&nbsp;
-			</td>
-			<td>&nbsp;</td>	
-<%}else{%>
-			<td colspan="2">&nbsp;</td>
-<%}%>				
-		</tr>
-
-
-		<tr>					
-			<td class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.fechainicial"/>&nbsp(*)
-			</td>
-			<td>
-				<html:text name="ExpDatosGeneralesForm" property="fechaInicial" maxlength="10" size="10" styleClass="<%=boxStyle%>" readonly="true">
-				</html:text>
-				<% if (bEditable){%>
-				<a href='javascript://'onClick="return showCalendarGeneral(fechaInicial);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
-				<%}%>
-			</td>	
-		
-			<td class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.fechafinal"/>
-			</td>
-			<td>
-				<html:text name="ExpDatosGeneralesForm" property="fechaFinal" maxlength="10" size="10" styleClass="<%=boxStyle%>" readonly="true">
-				</html:text>
-				<% if (bEditable){%>
-				<a href='javascript://'onClick="return showCalendarGeneral(fechaFinal);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
-				<%}%>
-			</td>		
-			
-			<td class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.fechaprorroga"/>
-				&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-				<html:text name="ExpDatosGeneralesForm" property="fechaProrroga" maxlength="10" size="10" styleClass="<%=boxStyle%>" readonly="true"></html:text>
-				<% if (bEditable){%>
-				<a href="javascript://" onClick="return showCalendarGeneral(fechaProrroga);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
-				<%}%>
-			</td>			
-		</tr>
-
-	</table>
-		
-	</siga:ConjCampos>
-<%}else{%>	
-	<html:hidden name="ExpDatosGeneralesForm" property="comboEstados"/>
-	<html:hidden name="ExpDatosGeneralesForm" property="comboFases"/>
-	<html:hidden name="ExpDatosGeneralesForm" property="estadoSel"/>
-	<html:hidden name="ExpDatosGeneralesForm" property="faseSel"/>
-	<html:hidden name="ExpDatosGeneralesForm" property="fechaInicial"/>
-	<html:hidden name="ExpDatosGeneralesForm" property="fechaFinal"/>
-	<html:hidden name="ExpDatosGeneralesForm" property="fechaProrroga"/>
-<%}%>
 	
 			
 	</td>
