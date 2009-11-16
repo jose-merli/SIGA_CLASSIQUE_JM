@@ -12,22 +12,23 @@
 <!-- IMPORTS -->
 
 <%@ page import="com.siga.expedientes.form.ExpSeguimientoForm"%>
+<%@ page import="com.siga.expedientes.form.TiposAnotacionesForm"%>
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();
 	String accion = (String)request.getAttribute("accion");
-	boolean bLectura=(accion.equals("consulta"));
-	boolean bEdicion=(accion.equals("edicion"));
-	boolean bNuevo=(accion.equals("nuevo"));
-	String boxStyle = (bLectura)?"boxConsulta":"box";
-	String boxStyleFecha = (bLectura || bEdicion)?"boxConsulta":"box";
+	String boxStyle = (accion.equals("consulta"))?"boxConsulta":"box";
+	String boxStyleFecha = (accion.equals("consulta") || accion.equals("edicion"))?"boxConsulta":"box";
 	 
+	boolean bLectura=(accion.equals("consulta"));
+	
 	String botones = "C";
-	if (bNuevo){	
+	if (accion.equals("nuevo")){	
 		botones = "Y,C";
-	}else if (bEdicion){
+	}else if (accion.equals("edicion")){
 		botones = "Y,R,C";
 	}
+	
 	
 	String idInstitucionTipoexpediente=(String)request.getAttribute("idInstitucion_TipoExpediente");
 	String idTipoExpediente=(String)request.getAttribute("idTipoExpediente");
@@ -76,7 +77,7 @@
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
 	
 	<!-- Validaciones en Cliente -->
-	<html:javascript formName="ExpSeguimientoForm" staticJavascript="false" />  
+	<html:javascript formName="ExpSeguimientoForm" staticJavascript="false" /> 
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 	
 	<!-- Calendario -->
@@ -106,10 +107,12 @@
 	<!-- Zona de campos de busqueda o filtro -->
 
 	<table  class="tablaCentralCamposMedia"  align="center">
-
+     
+    
 	<html:form action="/EXP_Auditoria_Seguimiento.do" method="POST" target="submitArea">
 	<html:hidden property = "hiddenFrame" value = "1"/>
 	<html:hidden property = "modo" value = ""/>
+	
 
 	<tr>				
 	<td>	
@@ -128,23 +131,7 @@
 				<html:text name="ExpSeguimientoForm" property="usuario" size="60" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>				
 		</tr>
-		<!-- FILA -->
-		<tr>
-			<td class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.descripcion"/>
-			</td>				
-			<td colspan="3" width="250">
-				<% if (!isAnotacionAutomatica) { %>
-					<html:textarea name="ExpSeguimientoForm" property="descripcion" onkeydown="cuenta(this,1024)" onchange="cuenta(this,1024)"  rows="4" style="width:450px;" styleClass="<%=boxStyle%>"   ></html:textarea>
-				<% } else { %>
-					<html:textarea name="ExpSeguimientoForm" property="descripcion" onkeydown="cuenta(this,1024)" onchange="cuenta(this,1024)"  rows="4" style="width:450px;" styleClass="boxConsulta"  readonly="true" ></html:textarea>
-				<% } %>
-				
-			
-			
-				
-			</td>				
-		</tr>	
+		
 		<!-- FILA -->
 		<tr>
 			<td class="labelText">
@@ -174,8 +161,8 @@
 				<siga:Idioma key="expedientes.auditoria.literal.fechaFinEstado"/>
 			</td>
 			<td>
-				<html:text name="ExpSeguimientoForm" property="fechaFinEstado" size="10" styleClass="<%=boxStyleFecha%>" readonly="true" />
-				<% if (!bLectura && !bEdicion){
+				<html:text name="ExpSeguimientoForm" property="fechaFinEstado" size="10" styleClass="<%=boxStyle%>" readonly="true" />
+				<% if (!bLectura){
 				%>
 					<a href='javascript://'onClick="return showCalendarGeneral(fechaFinEstado);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
 				<%}%>
@@ -189,7 +176,7 @@
 			<td>
 				<%if (!bLectura && !isAnotacionAutomatica){
 				%>		
-				<siga:ComboBD nombre = "idTipoAnotacion" tipo="<%=comboAnotacion%>" clase="<%=boxStyle%>" obligatorio="true" parametro="<%=dato%>" elementoSel="<%=aIdTipoAnotacion%>"/>						
+				<siga:ComboBD nombre = "idTipoAnotacion" tipo="<%=comboAnotacion%>" clase="<%=boxStyle%>" obligatorio="true" parametro="<%=dato%>" elementoSel="<%=aIdTipoAnotacion%>" accion="actualizarDescripcion(this);"/>						
 				<%}else{
 				%>
 				<siga:ComboBD nombre = "idTipoAnotacion" tipo="<%=comboAnotacion%>" clase="boxConsulta" obligatorio="true" readonly="true" parametro="<%=dato%>" elementoSel="<%=aIdTipoAnotacion%>"/>
@@ -197,15 +184,33 @@
 			</td>
 
 			<td class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.fechaAnotacion"/> (*)
+				<siga:Idioma key="expedientes.auditoria.literal.fecha"/> (*)
 			</td>
 			<td>
 				<html:text name="ExpSeguimientoForm" property="fecha" size="10" styleClass="<%=boxStyleFecha%>" readonly="true" />
-				<% if (!bLectura && !bEdicion){
+				<% if (!bLectura && !accion.equals("edicion")){
 				%>
 					<a href='javascript://'onClick="return showCalendarGeneral(fecha);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
 				<%}%>
 			</td>
+		</tr>	
+		<!-- FILA -->
+		<tr>
+			<td class="labelText">
+				<siga:Idioma key="expedientes.auditoria.literal.descripcion"/>
+			</td>				
+			<td colspan="3" width="250">
+				<%if (!bLectura && !isAnotacionAutomatica){
+					%>
+					<html:textarea name="ExpSeguimientoForm" property="descripcion" onkeydown="cuenta(this,1024)" onchange="cuenta(this,1024)"  rows="4" style="width:450px;" styleClass="<%=boxStyle%>"   ></html:textarea>
+				<% } else { %>
+					<html:textarea name="ExpSeguimientoForm" property="descripcion" onkeydown="cuenta(this,1024)" onchange="cuenta(this,1024)"  rows="4" style="width:450px;" styleClass="boxConsulta"  readonly="true" ></html:textarea>
+				<% } %>
+				
+			
+			
+				
+			</td>				
 		</tr>	
 		<!-- FILA -->
 		<tr>
@@ -241,8 +246,17 @@
 
 </html:form>
 
+ 
+     
+	
 </table>
 
+     <html:form action="/EXP_TiposExpedientes_TiposAnotaciones.do" method="POST" target="submitArea">
+	    <html:hidden property = "modo" value = "obtenerMensaje"/>
+		<html:hidden property = "idTipoExpediente" value = ""/>
+		<html:hidden property = "idInstitucion" value = ""/>
+		<html:hidden property = "idTipoAnotacion" value = ""/>
+    </html:form> 
 
 
 	<!-- FIN: CAMPOS -->
@@ -261,22 +275,33 @@
 		
 		<!-- Asociada al boton GuardarCerrar -->
 		function accionGuardarCerrar() 
-		{
+		{  
 			sub();		
-			if (validateExpSeguimientoForm(document.ExpSeguimientoForm)){
+			 if (validateExpSeguimientoForm(document.ExpSeguimientoForm)){
+			 
 				<%if (accion.equals("nuevo")){%>
 					document.forms[0].modo.value="insertar";
 				<%}else{%>
 					document.forms[0].modo.value="modificar";
 									
 				<%}%>
-				document.forms[0].submit();												
+				document.forms[0].submit();	
+															
 			}else{
 			
 				fin();
 				return false;
 			}
 			
+		}
+		
+		function actualizarDescripcion(elementoSel){
+		
+		 document.forms[1].idTipoAnotacion.value=elementoSel.value;
+		 document.forms[1].idTipoExpediente.value="<%=idTipoExpediente%>";
+		 document.forms[1].idInstitucion.value="<%=idInstitucionTipoexpediente%>";
+		 document.forms[1].submit();
+		
 		}
 
 		<!-- Asociada al boton Cerrar -->
@@ -297,6 +322,11 @@
 			parent.location.reload();
 		}
 		
+		function traspasoDatos(resultado) 
+		{	
+			document.forms[0].descripcion.value=resultado[0];
+		}
+		
 
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
@@ -309,6 +339,7 @@
 			
 <!-- INICIO: SUBMIT AREA -->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	
 <!-- FIN: SUBMIT AREA -->
 
 </body>
