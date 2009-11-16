@@ -476,9 +476,11 @@ public class ExpDatosGeneralesAction extends MasterAction
 			//expBean.setFechaInicialEstado(form.getFechaInicial().equals("")?"":GstDate.getApplicationFormatDate("",form.getFechaInicial()));
 	        if (form.getFechaFinal().equals("")) {
 				//calculo la fecha final con este método, y me la devuelve en el bean
-				ExpPlazoEstadoClasificacionAdm plazoAdm = new ExpPlazoEstadoClasificacionAdm (this.getUserBean(request));
+				/*ExpPlazoEstadoClasificacionAdm plazoAdm = new ExpPlazoEstadoClasificacionAdm (this.getUserBean(request));
 				if(expBean.getIdEstado()!=null)
-					plazoAdm.establecerFechaFinal(expBean);
+					plazoAdm.establecerFechaFinal(expBean);*/
+	        	// En vez de calcular la fecha mantenemos el valor nulo
+	        	expBean.setFechaFinalEstado("");
 	        } else {
 	        	expBean.setFechaFinalEstado(GstDate.getApplicationFormatDate("",form.getFechaFinal()));
 	        }
@@ -650,6 +652,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 			}
 			
 			if (form.getFechaCaducidad().equals("")) {
+				/*
 				if (expBean.getFecha().equals("sysdate")) {
 					// tengo que obtener la fecha de hoy para trabajar con ella
 					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -659,6 +662,8 @@ public class ExpDatosGeneralesAction extends MasterAction
 					// tengo una fecha normal
 					expBean.setFechaCaducidad(GstDate.dateSumaDiasJava(expBean.getFecha(), diasCaducidad));
 				}
+				*/
+				expBean.setFechaCaducidad("");
 				
 			} else {
 				expBean.setFechaCaducidad(GstDate.getApplicationFormatDate("",form.getFechaCaducidad()));
