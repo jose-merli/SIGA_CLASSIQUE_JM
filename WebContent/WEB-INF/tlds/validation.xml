@@ -1256,10 +1256,33 @@
 				<var-value>25</var-value>
 			</var>
 	</field>
-	<field 	property = "tiempoCaducidad" 		
-			depends = "integer"> 			
-			<arg0 key="expedientes.tiposexpedientes.literal.tiempoCaducidad"/>	
+	<field 	property = "tiempoCaducidad" depends = "integer, intRange"> 			
+		<arg0 key="expedientes.tiposexpedientes.literal.tiempoCaducidad"/>
+		<arg1 name="intRange" key="${var:min}" resource="false"/>
+        <arg2 name="intRange" key="${var:max}" resource="false"/>
+	        <var>
+	            <var-name>min</var-name>
+	            <var-value>0</var-value>
+	        </var>
+	        <var>
+	            <var-name>max</var-name>
+	            <var-value>999</var-value>
+	        </var>
 	</field>
+	<field 	property = "diasAntelacionCad" depends = "integer, intRange"> 			
+		<arg0 key="expedientes.tiposexpedientes.literal.diasAntelacion"/>
+		<arg1 name="intRange" key="${var:min}" resource="false"/>
+        <arg2 name="intRange" key="${var:max}" resource="false"/>
+	        <var>
+	            <var-name>min</var-name>
+	            <var-value>0</var-value>
+	        </var>
+	        <var>
+	            <var-name>max</var-name>
+	            <var-value>999</var-value>
+	        </var>
+	</field>
+	
 </form>
 
 
@@ -1790,18 +1813,26 @@
 <!-- INICIO: EstadosForm juan.grau 01-03-2005 -->
 
         <form name="EstadosForm">
-                <field property = "idInst_idExp_idFase"
-                                depends = "required">
-                        <arg0 key="expedientes.auditoria.literal.fase"/>
+                <field property = "idInst_idExp_idFase" depends = "required">
+                	<arg0 key="expedientes.auditoria.literal.fase"/>
                 </field>
-                <field property = "estado"
-                                depends = "required">
-                        <arg0 key="expedientes.auditoria.literal.estado"/>
+                <field property = "estado"  depends = "required">
+                	<arg0 key="expedientes.auditoria.literal.estado"/>
                 </field>
-                <field property = "diasAntelacion"
-                                depends = "integer">
-                        <arg0 key="expedientes.auditoria.literal.diasAntelacion"/>
-                </field>
+                <field property = "diasAntelacion" depends = "integer, intRange">
+                	<arg0 key="expedientes.auditoria.literal.diasAntelacion"/>
+					<arg1 name="intRange" key="${var:min}" resource="false"/>
+                	<arg2 name="intRange" key="${var:max}" resource="false"/>
+	                    <var>
+	                        <var-name>min</var-name>
+	                        <var-value>0</var-value>
+	                    </var>
+	                    <var>
+	                        <var-name>max</var-name>
+	                        <var-value>999</var-value>
+	                    </var>
+	            </field>                
+                 
         </form>
 
 <!-- FIN: EstadosForm juan.grau 01-03-2005 -->
@@ -1833,11 +1864,31 @@
                                 depends = "required">
                         <arg0 key="expedientes.auditoria.literal.nombre"/>
                 </field>
-	            <field property = "diasVencimiento" depends = "integer">
+	            <field property = "diasVencimiento" depends = "integer, intRange">
 	                <arg0 key="expedientes.auditoria.literal.diasVencimiento"/>
+					<arg1 name="intRange" key="${var:min}" resource="false"/>
+                	<arg2 name="intRange" key="${var:max}" resource="false"/>
+	                    <var>
+	                        <var-name>min</var-name>
+	                        <var-value>0</var-value>
+	                    </var>
+	                    <var>
+	                        <var-name>max</var-name>
+	                        <var-value>999</var-value>
+	                    </var>
 	            </field>
-	            <field property = "diasAntelacion" depends = "integer">
+	            <field property = "diasAntelacion" depends = "integer, intRange">
 	                <arg0 key="expedientes.auditoria.literal.diasAntelacion"/>
+					<arg1 name="intRange" key="${var:min}" resource="false"/>
+                	<arg2 name="intRange" key="${var:max}" resource="false"/>
+	                    <var>
+	                        <var-name>min</var-name>
+	                        <var-value>0</var-value>
+	                    </var>
+	                    <var>
+	                        <var-name>max</var-name>
+	                        <var-value>999</var-value>
+	                    </var>
 	            </field>
         </form>
 
