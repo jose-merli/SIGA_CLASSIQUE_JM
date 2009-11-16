@@ -1334,7 +1334,13 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 	        exp.setAlertaFaseGenerada("N");
 	    }
 	    
+	    // actualizo la fase
+	    if (estAntiguo==null || !estAntiguo.getIdFase().equals(estNuevo.getIdFase())) {
+	    	// si ha cambiado la fase se pone fecha de inicio de fase
+	    	exp.setFechaInicialFase(exp.getFechaInicialEstado());
+	    }
 	    exp.setIdFase(estNuevo.getIdFase());
+	    
 	    exp.setIdEstado(estNuevo.getIdEstado());
 	    exp.setAlertaGenerada("N");
 	    ExpFasesAdm fasesAdm = new ExpFasesAdm(this.usrbean);
@@ -1635,7 +1641,8 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			       " AND    E.IDINSTITUCION_TIPOEXPEDIENTE = FA.IDINSTITUCION "+
 			       " AND    E.IDTIPOEXPEDIENTE = FA.IDTIPOEXPEDIENTE "+
 			       " AND    E.ALERTAFASEGENERADA <> 'S' "+
-			       " AND    E.FECHAINICIALFASE + nvl(FA.DIASVENCIMIENTO,0) <  SYSDATE";
+			       " AND    E.FECHAINICIALFASE + nvl(FA.DIASVENCIMIENTO,0) <  SYSDATE" +
+			       " and	nvl(FA.DIASVENCIMIENTO,0) > 0";
 			
 			rc1 = new RowsContainer();
 			if (rc1.query(sql_fase4)) {
@@ -1684,7 +1691,9 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			    " AND    E.IDINSTITUCION_TIPOEXPEDIENTE = FA.IDINSTITUCION "+
 			    " AND    E.IDTIPOEXPEDIENTE = FA.IDTIPOEXPEDIENTE "+
 			    " AND    E.ALERTAFASEGENERADA = 'N' "+
-			    " AND    (E.FECHAINICIALFASE + nvl(FA.DIASVENCIMIENTO,0)) - nvl(FA.DIASANTELACION,0) <  SYSDATE";
+			    " AND    (E.FECHAINICIALFASE + nvl(FA.DIASVENCIMIENTO,0)) - nvl(FA.DIASANTELACION,0) <  SYSDATE" +
+			    " and	nvl(FA.DIASVENCIMIENTO,0) > 0" +
+			    " and	nvl(FA.DIASANTELACION,0) >0";
 			
 			rc1 = new RowsContainer();
 			if (rc1.query(sql_fase5)) {
@@ -1754,7 +1763,8 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			       " 	(E.FECHAPRORROGAESTADO - E.FECHAFINALESTADO), "+
 			       " 	 0, "+
 			       " 	 E.FECHAPRORROGAESTADO, "+
-			       " 	 E.FECHAFINALESTADO) - nvl(ES.DIASANTELACION,0) <  SYSDATE";
+			       " 	 E.FECHAFINALESTADO) - nvl(ES.DIASANTELACION,0) <  SYSDATE" +
+			       " and nvl(ES.DIASANTELACION,0) > 0"; // para controlar si los días de antelación son 0.
 		
 			rc1 = new RowsContainer();
 			if (rc1.query(sql_estado6)) {
@@ -1809,7 +1819,8 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 					" WHERE  E.IDINSTITUCION_TIPOEXPEDIENTE = T.IDINSTITUCION "+
 					" AND    E.IDTIPOEXPEDIENTE = T.IDTIPOEXPEDIENTE "+
 					" AND    E.ALERTACADUCIDADGENERADA = 'N'  "+
-					" AND    E.FECHACADUCIDAD - nvl(T.DIASANTELACIONCAD,0) <  SYSDATE";
+					" AND    E.FECHACADUCIDAD - nvl(T.DIASANTELACIONCAD,0) <  SYSDATE" +
+					" and    nvl(T.DIASANTELACIONCAD,0)>0";
 			
 			rc1 = new RowsContainer();
 			if (rc1.query(sql_estado7)) {

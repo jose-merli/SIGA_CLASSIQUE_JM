@@ -109,7 +109,7 @@
 					expedientes.auditoria.literal.fase,
 		   		  	expedientes.auditoria.literal.estado,
 					expedientes.auditoria.literal.alerta,"
-		   		  tamanoCol="15,15,15,45,10"
+		   		  tamanoCol="15,20,25,30,10"
 		   			alto="100%"
 		   			ajusteBotonera="true"		
 
