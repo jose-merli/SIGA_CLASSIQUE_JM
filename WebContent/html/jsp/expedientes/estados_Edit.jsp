@@ -137,7 +137,7 @@
 										 	
 					if(modo.equalsIgnoreCase("Nuevo")){ 	
 			%>				 	
-				<siga:ComboBD nombre = "idInst_idExp_idFase" tipo="cmbFases" clase="boxCombo" parametro="<%=parametros%>" ancho="150" obligatorio="true"/>
+				<siga:ComboBD nombre = "idInst_idExp_idFase" tipo="cmbFases" clase="boxCombo" parametro="<%=parametros%>" ancho="300" obligatorio="true"/>
 			<% } else { 
 				    ArrayList faseSel =null;
 					faseSel = new ArrayList ();
@@ -151,21 +151,22 @@
 			<input type="hidden" name="idInstitución" value="<%=bean.getIdInstitucion()%>"/>
 			
 		</td>
-		<td class="labelText" >
+		<td class="labelText">
 			<siga:Idioma key="expedientes.auditoria.literal.estado"/>&nbsp(*)
 		</td>				
-		<td >
+		<td colspan="5">
 			<% if (bEditable){ %>
-				<html:text name="EstadosForm" property="estado" size="30" maxlength="30" styleClass="box" value="<%=estado%>"></html:text>
+				<html:text name="EstadosForm" property="estado" size="70" maxlength="30" styleClass="box" value="<%=estado%>"></html:text>
 			<% } else { %>
-				<html:text name="EstadosForm" property="estado" size="30" maxlength="30" styleClass="boxConsulta" readonly="true" value="<%=estado%>"></html:text>
+				<html:text name="EstadosForm" property="estado" size="70" maxlength="30" styleClass="boxConsulta" readonly="true" value="<%=estado%>"></html:text>
 			<% } %>
 		</td>
-		
-		<td class="labelText" >
+		</tr>
+		<tr>
+		<td class="labelText">
 			<siga:Idioma key="expedientes.tiposexpedientes.literal.siguienteestado"/>
 		</td>				
-		<td >
+		<td>
 			<% 
 				parametros = new String[4];
 			 	parametros[0] = bean.getIdInstitucion().toString();
@@ -187,30 +188,26 @@
 				 		clase = "boxCombo";
 				 	} 
 			%>
-				 	<siga:ComboBD nombre = "idInst_idExp_idFase_idEstadoSig" tipo="cmbEstadosSiguientes" elementoSel="<%=estadoSel%>" clase="<%=clase%>" ancho="200" parametro="<%=parametros%>" obligatorio="false" readonly="<%=readOnly%>" />
+				 	<siga:ComboBD nombre = "idInst_idExp_idFase_idEstadoSig" tipo="cmbEstadosSiguientes" elementoSel="<%=estadoSel%>" clase="<%=clase%>" ancho="300" parametro="<%=parametros%>" obligatorio="false" readonly="<%=readOnly%>" />
 
 			 <% } else { %>
-					<siga:ComboBD nombre = "idInst_idExp_idFase_idEstadoSig" tipo="cmbEstadosSiguientesTodos" clase="boxCombo" parametro="<%=parametros%>" ancho="200" obligatorio="false"/>
+					<siga:ComboBD nombre = "idInst_idExp_idFase_idEstadoSig" tipo="cmbEstadosSiguientesTodos" clase="boxCombo" parametro="<%=parametros%>" ancho="300" obligatorio="false"/>
 			 <% } %>				
 				
-		</td>	
-		</tr>
-					
-		<tr>
-			<td class="labelText" >
+		</td>
+		<td class="labelText" >
 				<siga:Idioma key="expedientes.tiposexpedientes.literal.automatico"/>
 			</td>
 			<td >
 				<html:checkbox name="EstadosForm" property="automatico" value="true" disabled="<%=!bEditable%>"/>
 			</td>
-			
-			<td class="labelText" >
+			<td class="labelText" style="text-align: right">
 				<siga:Idioma key="expedientes.auditoria.literal.ejecucionsancion"/>
 			</td>
 			<td >
 				<html:checkbox name="EstadosForm" property="ejecucionSancion" value="true" disabled="<%=!bEditable%>"/>
 			</td>
-			<td class="labelText" >
+			<td class="labelText" style="text-align: right">
 				<siga:Idioma key="expedientes.auditoria.literal.estadoFinal"/>
 			</td>
 			<td >
