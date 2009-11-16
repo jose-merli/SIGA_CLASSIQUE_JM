@@ -1233,4 +1233,13 @@ public final class Validaciones{
     }
 
 
+	/**
+	 * Comprueba si una cadena es nula o vacia. 	
+	 * @param valor
+	 * @return <code>true</code> si <code>valor</code> es nulo o vacio, <code>false</code> en caso contrario.
+	 */
+	public static boolean validaNoInformado(String valor){
+		return (valor == null || valor.trim().equals(""));
+	}
+	
 }

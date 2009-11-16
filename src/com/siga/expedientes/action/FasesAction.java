@@ -17,6 +17,8 @@ import javax.servlet.http.HttpSession;
 import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.UsrBean;
+import com.atos.utils.Validaciones;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.ExpFasesAdm;
 import com.siga.beans.ExpFasesBean;
 import com.siga.beans.ExpTipoExpedienteAdm;
@@ -169,9 +171,19 @@ public class FasesAction extends MasterAction {
         Hashtable hashOld = (Hashtable)request.getSession().getAttribute("DATABACKUP");
         
         Hashtable hashNew = (Hashtable)hashOld.clone();	    
-	    hashNew.put(ExpFasesBean.C_NOMBRE, form.getNombre());
-	    hashNew.put(ExpFasesBean.C_DIASANTELACION, form.getDiasAntelacion());
-	    hashNew.put(ExpFasesBean.C_DIASVENCIMIENTO, form.getDiasVencimiento());
+	    
+        hashNew.put(ExpFasesBean.C_NOMBRE, form.getNombre());
+	    String diasAntelacion = form.getDiasAntelacion();
+	    if (Validaciones.validaNoInformado(diasAntelacion)){
+	    	diasAntelacion = "0";
+	    }
+	    hashNew.put(ExpFasesBean.C_DIASANTELACION, diasAntelacion);
+	    
+	    String diasVencimiento = form.getDiasVencimiento();
+	    if (Validaciones.validaNoInformado(diasAntelacion)){
+	    	diasVencimiento = "0";
+	    }
+	    hashNew.put(ExpFasesBean.C_DIASVENCIMIENTO, diasVencimiento);
 	    
 	    request.removeAttribute("DATABACKUP");
 	    

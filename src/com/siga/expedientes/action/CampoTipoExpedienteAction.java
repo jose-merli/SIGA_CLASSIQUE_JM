@@ -20,6 +20,8 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
+import com.atos.utils.Validaciones;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.ExpCampoTipoExpedienteAdm;
 import com.siga.beans.ExpCampoTipoExpedienteBean;
 import com.siga.beans.ExpPestanaConfAdm;
@@ -137,15 +139,15 @@ public class CampoTipoExpedienteAction extends MasterAction {
 	        // Actualizamos el nombre del expediente
 	        ExpTipoExpedienteBean tipoExp=(ExpTipoExpedienteBean)backup.elementAt(0);	    
 	        tipoExp.setNombre(form.getNombre());
-	        if (form.getTiempoCaducidad()!=null && !form.getTiempoCaducidad().trim().equals("")) {
-		        tipoExp.setTiempoCaducidad(new Integer(form.getTiempoCaducidad()));
+	        if (Validaciones.validaNoInformado(form.getTiempoCaducidad())) {
+		        tipoExp.setTiempoCaducidad(0);
 	        } else {
-	            tipoExp.setTiempoCaducidad(null);
+	        	tipoExp.setTiempoCaducidad(new Integer(form.getTiempoCaducidad()));
 	        }
-	        if (form.getDiasAntelacionCad()!=null && !form.getDiasAntelacionCad().trim().equals("")) {
-		        tipoExp.setDiasAntelacionCad(new Integer(form.getDiasAntelacionCad()));
+	        if (Validaciones.validaNoInformado(form.getDiasAntelacionCad())) {
+	        	tipoExp.setDiasAntelacionCad(0);
 	        } else {
-	            tipoExp.setDiasAntelacionCad(null);
+	        	tipoExp.setDiasAntelacionCad(new Integer(form.getDiasAntelacionCad()));
 	        }
 	        tipoExpAdm.update(tipoExp);        
 	        

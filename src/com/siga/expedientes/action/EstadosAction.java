@@ -21,6 +21,8 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
+import com.atos.utils.Validaciones;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.ExpAnotacionAdm;
 import com.siga.beans.ExpAnotacionBean;
 import com.siga.beans.ExpClasificacionesBean;
@@ -332,8 +334,11 @@ public class EstadosAction extends MasterAction {
         estadobean.setEstadoFinal(form.getEstadoFinal()?"S":"N");
         
         estadobean.setActivarAlertas(form.getActivarAlertas()?"S":"N");
-        if (form.getDiasAntelacion()!=null && !form.getDiasAntelacion().trim().equals("")) {
-            estadobean.setDiasAntelacion(new Integer(form.getDiasAntelacion().trim()));
+        if (Validaciones.validaNoInformado(form.getDiasAntelacion())) {
+            estadobean.setDiasAntelacion(0);
+        }
+        else{
+        	estadobean.setDiasAntelacion(new Integer(form.getDiasAntelacion().trim()));
         }
         
         estadobean.setPreSancionado(form.getSancionado());
