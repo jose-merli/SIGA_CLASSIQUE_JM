@@ -1533,9 +1533,9 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 				    " AND    E.IDFASE = ES.IDFASE (+) "+
 				    " AND    E.IDINSTITUCION_TIPOEXPEDIENTE = ES.IDINSTITUCION (+) "+
 				    " AND    E.IDTIPOEXPEDIENTE = ES.IDTIPOEXPEDIENTE (+) "+
-				    " AND    E.ALERTACADUCIDADGENERADA <> 'S' "+
+				    " AND    E.ALERTAGENERADACAD <> 'S' "+ // COMPRUEBA QUE NO SE HA ANOTADO LA CADUCIDAD.
 				    " AND    E.FECHACADUCIDAD <= SYSDATE "+
-				    " AND    ES.ESTADOFINAL (+) = 'N'";
+				    " AND    ES.ESTADOFINAL = 'N'";
 			
 			rc1 = new RowsContainer();
 			if (rc1.query(sql_estado2)) {
@@ -1554,7 +1554,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 						    throw new ClsExceptions("2.Error al insertar anotacion. "+anotacionAdm.getError());
 						}
 				        ClsLogging.writeFileLog("2.Anotacion insertada.",7);
-				        expBean.setAlertaCaducidadGenerada("S");
+				        expBean.setAlertaGeneradaCad("S");
 				        if (!this.update(expBean)) {
 				            throw new ClsExceptions("2.Error al actualizar expediente. "+this.getError());
 				        }
@@ -1729,9 +1729,19 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			       " E.NUMEROEXPEDIENTE, "+
 			       " ES.NOMBRE,  "+
 			       " ES.MENSAJE,  "+
-			       " E.FECHAINICIALESTADO, "+ 
-			       " E.FECHAFINALESTADO, "+
-			       " E.FECHAFINALESTADO - nvl(ES.DIASANTELACION,0) AS  FECHAAVISO, "+
+			       " E.FECHAINICIALESTADO, "+
+			       " decode(abs(E.FECHAPRORROGAESTADO - E.FECHAFINALESTADO) - "+
+			       " 	(E.FECHAPRORROGAESTADO - E.FECHAFINALESTADO), "+
+			       " 	 0, "+
+			       " 	 E.FECHAPRORROGAESTADO, "+
+			       " 	 E.FECHAFINALESTADO) as FECHAFINALESTADO, "+
+			       " decode(abs(E.FECHAPRORROGAESTADO - E.FECHAFINALESTADO) - "+
+			       " 	(E.FECHAPRORROGAESTADO - E.FECHAFINALESTADO), "+
+			       " 	 0, "+
+			       " 	 E.FECHAPRORROGAESTADO, "+
+			       " 	 E.FECHAFINALESTADO) - nvl(ES.DIASANTELACION,0) AS  FECHAAVISO, "+
+			       //" E.FECHAFINALESTADO, "+
+			       //" E.FECHAFINALESTADO - nvl(ES.DIASANTELACION,0) AS  FECHAAVISO, "+
 			       " nvl(ES.DIASANTELACION,0) AS DIASANTELACION "+
 			       " FROM   EXP_EXPEDIENTE E, EXP_ESTADO ES "+
 			       " WHERE  E.IDESTADO = ES.IDESTADO "+
@@ -1740,7 +1750,11 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			       " AND    E.IDTIPOEXPEDIENTE = ES.IDTIPOEXPEDIENTE "+
 			       " AND    E.ALERTAGENERADA = 'N' "+
 			       " AND    ES.ACTIVARALERTAS = 'S' "+
-			       " AND    E.FECHAFINALESTADO - nvl(ES.DIASANTELACION,0) <  SYSDATE";
+			       " AND    decode(abs(E.FECHAPRORROGAESTADO - E.FECHAFINALESTADO) - "+
+			       " 	(E.FECHAPRORROGAESTADO - E.FECHAFINALESTADO), "+
+			       " 	 0, "+
+			       " 	 E.FECHAPRORROGAESTADO, "+
+			       " 	 E.FECHAFINALESTADO) - nvl(ES.DIASANTELACION,0) <  SYSDATE";
 		
 			rc1 = new RowsContainer();
 			if (rc1.query(sql_estado6)) {
@@ -1794,9 +1808,9 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 					" FROM   EXP_EXPEDIENTE E, EXP_TIPOEXPEDIENTE T "+
 					" WHERE  E.IDINSTITUCION_TIPOEXPEDIENTE = T.IDINSTITUCION "+
 					" AND    E.IDTIPOEXPEDIENTE = T.IDTIPOEXPEDIENTE "+
-					" AND    E.ALERTAGENERADACAD = 'N'  "+
+					" AND    E.ALERTACADUCIDADGENERADA = 'N'  "+
 					" AND    E.FECHACADUCIDAD - nvl(T.DIASANTELACIONCAD,0) <  SYSDATE";
-		
+			
 			rc1 = new RowsContainer();
 			if (rc1.query(sql_estado7)) {
 				for (int i = 0; i < rc1.size(); i++)	{
@@ -1813,7 +1827,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 					            throw new ClsExceptions("7.Error al insertar alarma. "+alertaAdm.getError());
 					        }
 					        ClsLogging.writeFileLog("7.Alerta insertada.",7);
-					        expBean.setAlertaGeneradaCad("S");
+					        expBean.setAlertaCaducidadGenerada("S"); // CONTROLA SI SE HA PRODUCIDO LA ALERTA
 					        if (!this.update(expBean)) {
 					            throw new ClsExceptions("7.Error al actualizar expediente. "+this.getError());
 					        }
@@ -1984,6 +1998,8 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_ACTUACIONESPRESCRITAS, b.getActuacionesPrescritas());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_SANCIONFINALIZADA, b.getSancionFinalizada());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_ALERTAGENERADA, b.getAlertaGenerada());
+			UtilidadesHash.set(htData, ExpExpedienteBean.C_ALERTAGENERADACAD, b.getAlertaGeneradaCad());
+			UtilidadesHash.set(htData, ExpExpedienteBean.C_ALERTACADUCIDADGENERADA, b.getAlertaCaducidadGenerada());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_FECHAMODIFICACION, b.getFechaModificacion());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_USUMODIFICACION, b.getUsuModificacion());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDINSTITUCION, b.getIdInstitucion());

@@ -438,9 +438,11 @@ public class ExpAnotacionAdm extends MasterBeanAdministrador {
 		anotBean.setFechaAnotacion("sysdate");
 		CenPersonaAdm persAdm = new CenPersonaAdm(usrBean);		
 		StringBuffer descripcion = new StringBuffer(UtilidadesString.getMensajeIdioma(usrBean,"expedientes.tipoAnotacion.comunicacion.mensaje"));
-		descripcion.append(" ");
-		descripcion.append(persAdm.obtenerNombreApellidos(idPersona));
-			
+		if (idPersona!=null) {
+			descripcion.append(" ");
+			descripcion.append(persAdm.obtenerNombreApellidos(idPersona));
+		}
+		
 		anotBean.setDescripcion(descripcion.toString());
 		//anotBean.setDescripcion("");
 

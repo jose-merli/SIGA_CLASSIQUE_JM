@@ -689,9 +689,14 @@ public class EnvioInformesGenericos extends MasterReport {
 							idTipoExp, anio, numero, idPersona2, true, aSolicitantes );
 
 					// Anotación en cada expediente
-					Envio.generarComunicacionExpediente(idInstitucion2,new Integer(idInstitucionTipoExp),
-							new Integer(idTipoExp),new Integer(numero),new Integer(anio),idPersona2,usrBean);
+					if (vDatosInformeFinal.size()==1) {
+						Envio.generarComunicacionExpediente(idInstitucion2,new Integer(idInstitucionTipoExp),
+								new Integer(idTipoExp),new Integer(numero),new Integer(anio),idPersona2,usrBean);
+					} else {
+						Envio.generarComunicacionExpediente(idInstitucion2,new Integer(idInstitucionTipoExp),
+								new Integer(idTipoExp),new Integer(numero),new Integer(anio),null,usrBean);
 
+					}
 					// RECORRER LOS DATOSINFORMEFINAL 
 					// Por cada destinatario real
 					//if (vDatosInformeFinal.size()>0){
@@ -936,8 +941,13 @@ public class EnvioInformesGenericos extends MasterReport {
 						idTipoExp, anio, numero, idPersona2, true, aSolicitantes );
 
 				// Anotación en cada expediente
-				Envio.generarComunicacionExpediente(idInstitucion2,new Integer(idInstitucionTipoExp),
-						new Integer(idTipoExp),new Integer(numero),new Integer(anio),idPersona2,usrBean);
+				if (vDatosInformeFinal.size()==1) {
+					Envio.generarComunicacionExpediente(idInstitucion2,new Integer(idInstitucionTipoExp),
+							new Integer(idTipoExp),new Integer(numero),new Integer(anio),idPersona2,usrBean);
+				} else {
+					Envio.generarComunicacionExpediente(idInstitucion2,new Integer(idInstitucionTipoExp),
+							new Integer(idTipoExp),new Integer(numero),new Integer(anio),null,usrBean);
+				}
 
 				// RECORRER LOS DATOSINFORMEFINAL 
 				// Por cada destinatario real
@@ -1014,8 +1024,8 @@ public class EnvioInformesGenericos extends MasterReport {
 			String idPersona = (String)datosInforme.get("idPersona");
 			
 			
-			envio.generarComunicacionExpediente(idInstitucion,new Integer(idInstitucionTipoExp)
-			,new Integer(idTipoExp),new Integer(numero),new Integer(anio),idPersona,usrBean);
+			//envio.generarComunicacionExpediente(idInstitucion,new Integer(idInstitucionTipoExp)
+			//,new Integer(idTipoExp),new Integer(numero),new Integer(anio),idPersona,usrBean);
 		}
 
 	}
@@ -1301,9 +1311,13 @@ public class EnvioInformesGenericos extends MasterReport {
 									idTipoExp, anio, numero, idPersona2, true, aSolicitantes );
 	
 							// Anotación en cada expediente
-							Envio.generarComunicacionExpediente(idInstitucion2,new Integer(idInstitucionTipoExp),
-									new Integer(idTipoExp),new Integer(numero),new Integer(anio),idPersona2,usr);
-	
+							if (vDatosInformeFinal.size()==1) {
+								Envio.generarComunicacionExpediente(idInstitucion2,new Integer(idInstitucionTipoExp),
+										new Integer(idTipoExp),new Integer(numero),new Integer(anio),idPersona2,usr);
+							} else {
+								Envio.generarComunicacionExpediente(idInstitucion2,new Integer(idInstitucionTipoExp),
+										new Integer(idTipoExp),new Integer(numero),new Integer(anio),null,usr);
+							}
 							// RECORRER LOS DATOSINFORMEFINAL 
 							// Por cada destinatario real
 							for (int k=0;k<vDatosInformeFinal.size();k++){
@@ -2378,9 +2392,13 @@ public class EnvioInformesGenericos extends MasterReport {
 						idTipoExp, anio, numero, idPersona2, true, aSolicitantes );
 
 				// Anotación en cada expediente
-				Envio.generarComunicacionExpediente(idInstitucion2,new Integer(idInstitucionTipoExp),
-						new Integer(idTipoExp),new Integer(numero),new Integer(anio),idPersona2,userBean);
-
+				if (vDatosInformeFinal.size()==1) {
+					Envio.generarComunicacionExpediente(idInstitucion2,new Integer(idInstitucionTipoExp),
+							new Integer(idTipoExp),new Integer(numero),new Integer(anio),idPersona2,userBean);
+				} else {
+					Envio.generarComunicacionExpediente(idInstitucion2,new Integer(idInstitucionTipoExp),
+							new Integer(idTipoExp),new Integer(numero),new Integer(anio),null,userBean);
+				}
 				// RECORRER LOS DATOSINFORMEFINAL 
 				// Por cada destinatario real
 				for (int j=0;j<vDatosInformeFinal.size();j++){
