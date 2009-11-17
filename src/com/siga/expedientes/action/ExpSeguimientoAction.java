@@ -376,7 +376,7 @@ public class ExpSeguimientoAction extends MasterAction {
 				form.setFase("");
 		    }
 		    
-			if 	(expBean.getIdEstado()!=null){	
+			if 	(expBean.getIdEstado()!=null && expBean.getIdFase()!=null){	
 				//ESTADO
 				ExpEstadosAdm estadoAdm = new ExpEstadosAdm (this.getUserBean(request));		
 				Hashtable hashEstado = new Hashtable();
