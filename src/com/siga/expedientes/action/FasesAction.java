@@ -141,7 +141,7 @@ public class FasesAction extends MasterAction {
 		    else
 		    	fase.setDiasAntelacion(Integer.valueOf(form.getDiasAntelacion()));
 		    if (form.getDiasVencimiento()==null || form.getDiasVencimiento().equals(""))
-		    	fase.setDiasVencimiento(new Integer(1));
+		    	fase.setDiasVencimiento(new Integer(0));
 		    else
 		    	fase.setDiasVencimiento(Integer.valueOf(form.getDiasVencimiento()));
 		    fase.setNombre(form.getNombre());
@@ -180,7 +180,7 @@ public class FasesAction extends MasterAction {
 	    hashNew.put(ExpFasesBean.C_DIASANTELACION, diasAntelacion);
 	    
 	    String diasVencimiento = form.getDiasVencimiento();
-	    if (Validaciones.validaNoInformado(diasAntelacion)){
+	    if (Validaciones.validaNoInformado(diasVencimiento)){
 	    	diasVencimiento = "0";
 	    }
 	    hashNew.put(ExpFasesBean.C_DIASVENCIMIENTO, diasVencimiento);
