@@ -97,7 +97,6 @@
 	<html:hidden property = "modo" value = ""/>
 	<html:hidden property = "idPersona" />
 	<html:hidden property = "idDireccion"/>
-	<html:hidden property = "numColegiado"/>
 	<html:hidden property = "idInstitucion"/>
 
 
