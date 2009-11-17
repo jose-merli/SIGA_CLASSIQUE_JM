@@ -32,7 +32,10 @@
 	boolean editable = accion.equals("consulta")?false:true;
 	String botones = "C";
 	ArrayList vRol = new ArrayList();
-	
+	ExpPartesForm form = (ExpPartesForm) request.getAttribute("ExpPartesForm");
+	String SRolSel=UtilidadesMultidioma.getDatoMaestroIdioma(form.getRolSel(),userBean);
+	System.out.println("RolSel="+form.getRolSel());
+	System.out.println("SRolSel="+SRolSel);
 	if (accion.equals("nuevo")){	
 		botones = "Y,C";
 	}else if (accion.equals("edicion")){
@@ -55,6 +58,7 @@
 	
 %>	
 
+<%@page import="com.siga.Utilidades.UtilidadesMultidioma"%>
 <html>
 
 <!-- HEAD -->
@@ -257,7 +261,7 @@
 				<%if (editable){%>		
 				<siga:ComboBD nombre = "idRol" tipo="cmbRol"  clase="boxCombo" obligatorio="true" parametro="<%=dato%>" ElementoSel="<%=vRol%>"/>
 				<%}else{%>
-				<html:text name="ExpPartesForm" property="rolSel"  styleClass="boxConsulta" readonly="true"></html:text>
+				<html:text name="ExpPartesForm" property="rolSel" value="<%=SRolSel%>" styleClass="boxConsulta" readonly="true"></html:text>
 				<%}%>
 			</td>
 		</tr>
