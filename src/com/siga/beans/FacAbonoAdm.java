@@ -1342,7 +1342,7 @@ public Vector getRetencionesIRPF (String idInstitucion, String idPersona,String 
 	            sql.append(" SELECT ");
 	            if(idPersona == null)
 	            	sql.append(" IDPERSONASJCS, ");
-	            sql.append(" SUM(TOTALIMPORTESJCS) + SUM(IMPORTETOTALMOVIMIENTOS) TOTALIMPORTESJCS, abs(SUM(TOTALIMPORTEIRPF)) + abs(SUM(IMPORTETOTALRETENCIONES)) TOTALIMPORTEIRPF ");
+	            sql.append(" SUM(TOTALIMPORTESJCS) + SUM(IMPORTETOTALMOVIMIENTOS) TOTALIMPORTESJCS, abs(SUM(TOTALIMPORTEIRPF)) TOTALIMPORTEIRPF ");
 	            sql.append(" FROM (SELECT IDPERSONASJCS, ");
 	            sql.append(" IDPAGOS, ");
 	            sql.append(" SUM(TOTALIMPORTESJCS) AS TOTALIMPORTESJCS, ");
