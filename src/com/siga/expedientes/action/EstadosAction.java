@@ -217,10 +217,13 @@ public class EstadosAction extends MasterAction {
         estado.setEstadoFinal(form.getEstadoFinal()?"S":"N");
         
         estado.setActivarAlertas(form.getActivarAlertas()?"S":"N");
-        if (form.getDiasAntelacion()!=null && !form.getDiasAntelacion().trim().equals("")) {
-            estado.setDiasAntelacion(new Integer(form.getDiasAntelacion().trim()));
+        if (Validaciones.validaNoInformado(form.getDiasAntelacion())) {
+            estado.setDiasAntelacion(0);
         }
-        
+        else{
+        	estado.setDiasAntelacion(new Integer(form.getDiasAntelacion().trim()));
+        }
+         
         estado.setPreSancionado(form.getSancionado());
         estado.setPreVisible(form.getPreVisible());
         estado.setPreVisibleFicha(form.getPreVisibleFicha());
