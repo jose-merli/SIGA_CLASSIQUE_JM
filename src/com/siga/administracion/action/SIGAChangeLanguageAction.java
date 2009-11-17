@@ -21,7 +21,6 @@ import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenInstitucionBean;
 import com.siga.beans.CenInstitucionLenguajesAdm;
 import com.siga.beans.CenInstitucionLenguajesBean;
-import com.sun.media.imageioimpl.plugins.clib.CLibImageReader;
 
 import javax.transaction.*;
 
