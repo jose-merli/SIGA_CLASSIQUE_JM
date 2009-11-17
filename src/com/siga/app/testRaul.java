@@ -7,6 +7,7 @@
 package com.siga.app;
 
 import java.io.*;
+import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -67,11 +68,15 @@ public class testRaul {
 		try {
 		    
 		    //configuración (No olvidar modificar la cadena de conexión)
-		    idInstitucionMantener="2010";
+		    /*idInstitucionMantener="2010";
 		    path="C:\\Documents and Settings\\raulg.ITCGAE\\Escritorio\\20090716\\borradoMurcia\\";
 		    entorno = "PRETEST";
 		    usuario= "uscgaetest";
 		    scriptBorradoInstitucion();
+		    */
+			
+			System.out.println("ISO-8859-1 = "+URLEncoder.encode("mamón", "ISO-8859-1"));
+			System.out.println("UTF-8 = "+URLEncoder.encode("mamón", "UTF-8"));
 		    
 		} catch (Exception e) {
 			System.out.println("ERROR: " + e.toString());
