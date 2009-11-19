@@ -25,6 +25,7 @@ import com.siga.beans.ExpCamposExpedientesAdm;
 import com.siga.beans.ExpCamposExpedientesBean;
 import com.siga.beans.ExpPestanaConfAdm;
 import com.siga.beans.ExpPestanaConfBean;
+import com.siga.beans.ExpRolesAdm;
 import com.siga.beans.ExpRolesBean;
 import com.siga.beans.ExpTipoExpedienteAdm;
 import com.siga.beans.ExpTipoExpedienteBean;
@@ -333,37 +334,83 @@ public class TipoExpedienteAction extends MasterAction {
 	 */
 	protected String borrar(ActionMapping mapping, MasterForm formulario,
 			HttpServletRequest request, HttpServletResponse response)
-			throws ClsExceptions {
-		
-		TipoExpedienteForm form = (TipoExpedienteForm)formulario;
-	    
-	    form.setModal("false");
-	    
-	    UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
-	    ExpTipoExpedienteAdm tipoExpAdm = new ExpTipoExpedienteAdm (this.getUserBean(request));
-	    
-	    Vector vOcultos = form.getDatosTablaOcultos(0);
-	    
-	    
-	    Hashtable hash = new Hashtable();
-	    	    
-	    hash.put(ExpTipoExpedienteBean.C_IDINSTITUCION, userBean.getLocation());
-	    hash.put(ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE, (String)vOcultos.elementAt(0));	    
-	    
-	    if (tipoExpAdm.delete(hash))
-	    {
-	        request.setAttribute("descOperation","messages.deleted.success");
-	    }
-	    
-	    else
-	    {
-	        request.setAttribute("descOperation","error.messages.deleted");
-	    }
+	throws SIGAException {
 
-	    request.setAttribute("urlAction", "/SIGA/EXP_MantenerTiposExpedientes.do");
-        //request.setAttribute("hiddenFrame", "1");
-	    
-	    return "refresh2";
+		TipoExpedienteForm form = (TipoExpedienteForm)formulario;
+
+		form.setModal("false");
+
+		UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
+
+		Vector vOcultos = form.getDatosTablaOcultos(0);
+
+		Hashtable hash = new Hashtable();
+		String idTipoExpediente = (String)vOcultos.elementAt(0);
+		hash.put(ExpTipoExpedienteBean.C_IDINSTITUCION, userBean.getLocation());
+		hash.put(ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE, idTipoExpediente);	
+		String[] claves = {ExpTipoExpedienteBean.C_IDINSTITUCION,ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE};
+
+		UserTransaction tx = null;
+		try{
+			tx = userBean.getTransaction();
+			tx.begin();
+
+			// Elimina los tipos_anotacion asociados al expediente y sus recursos
+			ExpTiposAnotacionesAdm anotacionesAdm = new ExpTiposAnotacionesAdm(this.getUserBean(request));
+			Vector anotaciones = anotacionesAdm.select(hash);
+			for (Iterator iter = anotaciones.iterator(); iter.hasNext();){
+				ExpTiposAnotacionesBean anotacionBean = (ExpTiposAnotacionesBean)iter.next();
+				String idRecurso = GenRecursosCatalogosAdm.getNombreIdRecurso(ExpTiposAnotacionesBean.T_NOMBRETABLA, ExpTiposAnotacionesBean.C_NOMBRE, new Integer(userBean.getLocation()), idTipoExpediente + "_" + anotacionBean.getIdTipoAnotacion());
+				if (idRecurso != null) {
+					GenRecursosCatalogosAdm admRecCatalogos = new GenRecursosCatalogosAdm (this.getUserBean(request));
+					GenRecursosCatalogosBean recCatalogoBean = new GenRecursosCatalogosBean ();
+					recCatalogoBean.setIdRecurso(idRecurso);
+					if(!admRecCatalogos.delete(recCatalogoBean)) { 
+						throw new ClsExceptions ("Error al eliminar recursos catalogos. "+admRecCatalogos.getError());
+					}
+				}
+			}
+			if (!anotacionesAdm.deleteDirect(hash, claves)){
+				throw new ClsExceptions ("Error al eliminar tipos de anotacion. "+anotacionesAdm.getError());
+			}
+
+
+			// Elimina los roles asociados al expediente y sus recursos
+			ExpRolesAdm rolesAdm = new ExpRolesAdm (this.getUserBean(request));
+			Vector roles = rolesAdm.select(hash);
+			for (Iterator iter = roles.iterator(); iter.hasNext();){
+				ExpRolesBean rolBean = (ExpRolesBean)iter.next();
+				String idRecurso = GenRecursosCatalogosAdm.getNombreIdRecurso(ExpRolesBean.T_NOMBRETABLA, ExpRolesBean.C_NOMBRE, new Integer(userBean.getLocation()),  idTipoExpediente+"_"+rolBean.getIdRol());
+				if (idRecurso != null) {
+					GenRecursosCatalogosAdm admRecCatalogos = new GenRecursosCatalogosAdm (this.getUserBean(request));
+					GenRecursosCatalogosBean recCatalogoBean = new GenRecursosCatalogosBean ();
+					recCatalogoBean.setIdRecurso(idRecurso);
+					if(!admRecCatalogos.delete(recCatalogoBean)) { 
+						throw new ClsExceptions ("Error al eliminar recursos catalogos. "+admRecCatalogos.getError());
+					}
+				}
+			}
+			if (!rolesAdm.deleteDirect(hash, claves)){
+				throw new ClsExceptions ("Error al eliminar roles. "+rolesAdm.getError());
+			}
+
+			// Elimina el expediente
+			ExpTipoExpedienteAdm tipoExpAdm = new ExpTipoExpedienteAdm (this.getUserBean(request));
+			if (!tipoExpAdm.delete(hash)){
+				request.setAttribute("descOperation","error.messages.deleted");
+			}
+			else
+			{
+				request.setAttribute("descOperation","messages.deleted.success");
+			}
+
+			tx.commit();
+		} catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.expediente"},e,tx);
+		}
+		request.setAttribute("urlAction", "/SIGA/EXP_MantenerTiposExpedientes.do");
+
+		return "refresh2";
 	}
 
 }
