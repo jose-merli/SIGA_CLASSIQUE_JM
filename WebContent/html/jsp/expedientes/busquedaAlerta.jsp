@@ -112,37 +112,36 @@
 			<html:hidden property="modo" value="" />
 			<input type="hidden" name="limpiarFilaSeleccionada" value="">
 			<fieldset>
-				<table class="tablaCampos" align="center">
+				<table class="tablaCampos" align="center"">
 					<!-- FILA -->
 					<tr>
-						<td class="labelText" width="10%">
+						<td class="labelText" width="100">
 							<siga:Idioma key="expedientes.auditoria.literal.tipo" />&nbsp;(*)
 						</td>
 						<td>
 							<siga:ComboBD nombre="comboTipoExpediente" tipo="cmbTipoExpedienteLocaloGeneralPermisos" elementoSel="<%=vTipoExp%>" clase="boxCombo" obligatorio="false" parametrosIn="<%=aPerfiles%>" parametro="<%=parametro%>" accion="Hijo:comboFases" />
 						</td>
-						<td class="labelText" width="14%">
+						<td class="labelText" width="100">
 							<siga:Idioma key="expedientes.auditoria.literal.nexpediente" />
 						</td>
-						<td class="labelTextValue">
-							<html:text name="busquedaAlertaForm" property="numeroExpediente" size="6" maxlength="6" styleClass="box">
-						</html:text> / <html:text name="busquedaAlertaForm" property="anioExpediente" size="4" maxlength="4" styleClass="box">
-						</html:text>
-					</td>
+						<td>
+							<html:text name="busquedaAlertaForm" property="numeroExpediente" size="6" maxlength="6" styleClass="box"></html:text> / <html:text name="busquedaAlertaForm" property="anioExpediente" size="4" maxlength="4" styleClass="box"></html:text>
+						</td>
 					</tr>
 					<tr>
-						<td class="labelText" width="100">
+						<td class="labelText">
 							<siga:Idioma key="expedientes.auditoria.literal.fase" />
 						</td>
 						<td>
 							<siga:ComboBD nombre="comboFases" tipo="cmbFases" clase="boxCombo" obligatorio="false" accion="Hijo:comboEstados" elementoSel="<%=vFase%>"  hijo="t" />
 						</td>
-						<td class="labelText">
+						<td class="labelText"> 
 							<siga:Idioma key="expedientes.auditoria.literal.estado" />
 						</td>
 						<td>
 							<siga:ComboBD nombre="comboEstados" tipo="cmbEstados" clase="boxCombo" obligatorio="true" elementoSel="<%=vEstado%>"  hijo="t" />
 						</td>
+						<td width="100"></td>
 					</tr>
 					<tr>
 						<td class="labelText">
@@ -161,6 +160,7 @@
 							</html:text>
 							<a href='javascript://' onClick="return showCalendarGeneral(fechaHasta);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
 						</td>
+						<td></td>
 					</tr>
 				</table>
 			</fieldset>

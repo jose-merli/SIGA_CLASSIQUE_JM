@@ -44,12 +44,8 @@
 	boolean isAnotacionAutomatica = false;
 	isAnotacionAutomatica = (autom!=null && autom.equals("S"));
 	if (idFase!=null && !idFase.equals("") && idEstado!=null && !idEstado.equals("")) {
-		dato = new String[]{idInstitucionTipoexpediente,idTipoExpediente,idFase,idEstado};
+		dato = new String[]{idInstitucionTipoexpediente,idTipoExpediente,idFase,idEstado, idFase};
 		comboAnotacion="cmbTipoAnotacionSinNull";
-	} else if (idFase==null && (idEstado!=null && !idEstado.equals(""))) {
-		comboAnotacion="cmbTipoAnotacionFaseNull";
-	} else if ((idFase!=null &&!idFase.equals("")) && idEstado==null) {
-		comboAnotacion="cmbTipoAnotacionEstadoNull";
 	} else {
 		dato = new String[]{idInstitucionTipoexpediente,idTipoExpediente};
 		comboAnotacion="cmbTipoAnotacionTodosNull";
