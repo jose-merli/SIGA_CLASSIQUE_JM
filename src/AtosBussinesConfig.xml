@@ -1,0 +1,11 @@
+<configuration xsi:noNamespaceSchemaLocation="C:\eclipse\workspace\BussinessDelegate\src\main\java\es\satec\BusinessManager\BusinessService.xsd">
+	<context id="volantesExpress">
+		<transactionManager type="JTA">
+			<property name="TransactionTimeOut">100</property>
+			<property name="TransactionContext">javax.transaction.UserTransaction</property>
+		</transactionManager>
+	
+		<service interface="com.siga.gratuita.service.VolantesExpressService" implementation="com.siga.gratuita.service.impl.AtosVolantesExpressService"/>
+	</context>
+</configuration> 
+	
