@@ -40,7 +40,8 @@ public class SIGAReferences {
 		WORDS_LICENSE("/WEB-INF/lib/Aspose.Words.lic"),
 		WORDS_INIT_RESULT("/html/jsp/general/resultadoInicializacionWords.doc"),
 		CRYSTAL_INIT("/html/jsp/general/inicializacionCrystal.rpt"),
-		CRYSTAL_INIT_RESULT("/html/jsp/general/l23p57r22a15d31.pdf");
+		CRYSTAL_INIT_RESULT("/html/jsp/general/l23p57r22a15d31.pdf"),
+		ATOS_BUSINESS_CONFIG("/WEB-INF/classes/AtosBussinesConfig.xml");
 		
 		private String fileName;
 		
