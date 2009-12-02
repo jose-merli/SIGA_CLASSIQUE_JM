@@ -9,6 +9,8 @@ package com.siga.beans;
  
 public class ScsTipoAsistenciaColegioBean extends MasterBean{
 	
+	public static final Integer TIPO_ASISTENCIA_DETENIDO_PROC_GENERAL = Integer.valueOf(2);
+	
 	/**
 	 *  Variables */ 
 	

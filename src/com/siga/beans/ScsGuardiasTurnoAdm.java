@@ -1,6 +1,8 @@
 
 package com.siga.beans;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.TreeMap;
@@ -15,6 +17,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.vos.VolantesExpressVo;
 
 
 /**
@@ -1271,6 +1274,91 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 	       }
 	       return datos;                        
 	    }	
+	
+	public Collection<ScsGuardiasTurnoBean> getGuariasTurnos(VolantesExpressVo volanteExpres)throws ClsExceptions{
+
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+				
+		if(volanteExpres.getFechaGuardia()!=null || volanteExpres.getIdColegiado()!=null){
+			sql.append(" SELECT GUA.IDGUARDIA,GUA.NOMBRE,GUA.IDTURNO,GUA.IDINSTITUCION ");
+			sql.append(" FROM SCS_GUARDIASTURNO GUA ");
+			sql.append(" WHERE GUA.IDINSTITUCION = :");
+			contador ++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador),volanteExpres.getIdInstitucion());
+			sql.append(" AND GUA.IDTURNO = :");
+			contador ++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador),volanteExpres.getIdTurno());
+			sql.append(" AND GUA.IDGUARDIA IN ");    
+			sql.append(" (SELECT DISTINCT IDGUARDIA ");
+			sql.append(" FROM SCS_GUARDIASCOLEGIADO GC WHERE GC.IDINSTITUCION = GUA.IDINSTITUCION ");
+			if(volanteExpres.getFechaGuardia() != null ){
+				sql.append(" AND TRUNC(GC.FECHAFIN) = :");
+				contador ++;
+			    htCodigos.put(new Integer(contador),volanteExpres.getFechaGuardia());
+			    sql.append(contador);
+			}
+			if(volanteExpres.getIdColegiado() != null ){
+				sql.append(" AND GC.IDPERSONA = :");
+				contador ++;
+				sql.append(contador);
+				htCodigos.put(new Integer(contador),volanteExpres.getIdColegiado());
+			}
+			sql.append(" )ORDER BY GUA.NOMBRE ");
+			
+			
+		}else{
+			sql.append(" SELECT IDGUARDIA, NOMBRE,IDINSTITUCION FROM SCS_GUARDIASTURNO ");
+			sql.append(" WHERE IDINSTITUCION =:");
+			contador ++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador),volanteExpres.getIdInstitucion()); 
+			sql.append(" AND IDTURNO = :");
+			contador ++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador),volanteExpres.getIdTurno());
+			 sql.append(" ORDER BY NOMBRE ");
+			
+			
+			
+		}
+		Collection<ScsGuardiasTurnoBean> alGuardias = null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+												
+            if (rc.findBind(sql.toString(),htCodigos)) {
+            	alGuardias = new ArrayList<ScsGuardiasTurnoBean>();
+            	ScsGuardiasTurnoBean guardiaBean = new ScsGuardiasTurnoBean();
+            	guardiaBean.setIdGuardia(new Integer(-1));
+        		guardiaBean.setNombre(UtilidadesString.getMensajeIdioma(volanteExpres.getUsrBean(), "general.combo.seleccionar"));
+    			alGuardias.add(guardiaBean);
+            	for (int i = 0; i < rc.size(); i++){
+            		Row fila = (Row) rc.get(i);
+            		Hashtable<String, Object> htFila=fila.getRow();
+            		
+            		
+            		guardiaBean = new ScsGuardiasTurnoBean();
+            		guardiaBean.setIdInstitucion(UtilidadesHash.getInteger(htFila,ScsGuardiasTurnoBean.C_IDINSTITUCION));
+            		guardiaBean.setIdTurno(UtilidadesHash.getInteger(htFila,ScsGuardiasTurnoBean.C_IDTURNO));
+            		guardiaBean.setNombre(UtilidadesHash.getString(htFila,ScsGuardiasTurnoBean.C_NOMBRE));
+            		guardiaBean.setIdGuardia(UtilidadesHash.getInteger(htFila,ScsGuardiasTurnoBean.C_IDGUARDIA));
+            		alGuardias.add(guardiaBean);
+            	}
+            } 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+       }
+       return alGuardias;
+		
+		
+		
+		
+		
+		
+	} 
 		
 
 }

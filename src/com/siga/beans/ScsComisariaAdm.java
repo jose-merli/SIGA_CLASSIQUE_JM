@@ -1,6 +1,8 @@
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsConstants;
@@ -11,7 +13,9 @@ import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.gratuita.form.MantenimientoComisariaForm;
+import com.siga.gratuita.vos.VolantesExpressVo;
 
 /**
  * Implementa las operaciones sobre el bean de la tabla SCS_COMISARIA
@@ -409,6 +413,73 @@ public class ScsComisariaAdm extends MasterBeanAdministrador {
 		}
 		return sinDuplicar;
 	}
+	public List<ScsComisariaBean> getComisarias(VolantesExpressVo volanteExpres)throws ClsExceptions{
+
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT C.IDCOMISARIA , C.IDINSTITUCION, ");
+		sql.append(" c.NOMBRE || ' (' || po.nombre || ')' AS NOMBRE ");
+		sql.append(" FROM SCS_COMISARIA       c, ");
+		sql.append(" cen_poblaciones     po, ");
+		sql.append(" cen_partidojudicial par, ");
+		sql.append(" scs_subzonapartido  spar, ");
+		sql.append(" scs_subzona         szo, ");
+		sql.append(" scs_zona            zo, ");
+		sql.append(" scs_turno           tu ");
+		sql.append(" where tu.idzona = zo.idzona ");
+		sql.append(" AND tu.idinstitucion = zo.idinstitucion ");
+		sql.append(" AND zo.idzona = szo.idzona ");
+		sql.append(" AND zo.idinstitucion = szo.idinstitucion ");
+		sql.append(" AND szo.idinstitucion = spar.idinstitucion ");
+		sql.append(" AND szo.idsubzona = spar.idsubzona ");
+		sql.append(" AND szo.idzona = spar.idzona ");
+		sql.append(" AND spar.idpartido = par.idpartido ");
+		sql.append(" AND par.idpartido = po.idpartido ");
+		sql.append(" AND c.idpoblacion = po.idpoblacion ");
+		sql.append(" and TU.IDINSTITUCION = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),volanteExpres.getIdInstitucion());
+		sql.append(" and tu.idinstitucion = c.idinstitucion ");
+		sql.append(" AND TU.IDTURNO = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),volanteExpres.getIdTurno());
+		sql.append(" ORDER BY DESCRIPCION ");
+		
+		List<ScsComisariaBean> alComisarias = null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+												
+            if (rc.findBind(sql.toString(),htCodigos)) {
+            	alComisarias = new ArrayList<ScsComisariaBean>();
+            	ScsComisariaBean comisariaBean = new ScsComisariaBean();
+            	comisariaBean.setNombre(UtilidadesString.getMensajeIdioma(volanteExpres.getUsrBean(), "general.combo.seleccionar"));
+            	comisariaBean.setIdComisaria(new Integer(-1));
+    			alComisarias.add(comisariaBean);
+    			for (int i = 0; i < rc.size(); i++){
+            		Row fila = (Row) rc.get(i);
+            		Hashtable<String, Object> htFila=fila.getRow();
+            		
+            		comisariaBean = new ScsComisariaBean();
+            		comisariaBean.setIdInstitucion(UtilidadesHash.getInteger(htFila,ScsComisariaBean.C_IDINSTITUCION));
+            		comisariaBean.setIdComisaria(UtilidadesHash.getInteger(htFila,ScsComisariaBean.C_IDCOMISARIA));
+            		comisariaBean.setNombre(UtilidadesHash.getString(htFila,ScsComisariaBean.C_NOMBRE));
+            		alComisarias.add(comisariaBean);
+            	}
+            } 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+       }
+       return alComisarias;
+		
+	} 
+	
+	
+	
+	
+	
 	
 	
 }

@@ -1,9 +1,11 @@
 
 package com.siga.beans;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
-
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -18,6 +20,7 @@ import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.AsistenciasForm;
+import com.siga.gratuita.vos.VolantesExpressVo;
 
 
 /**
@@ -1068,6 +1071,8 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 		return v;
 	}
 	
+	
+	
 	public PaginadorBind getBusquedaAsistencias(AsistenciasForm miForm, String idPersona)throws ClsExceptions,SIGAException {
 	    PaginadorBind paginador=null;
    try {
@@ -1465,5 +1470,328 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 	       return datos;                        
 	 }
 
+	
+	
+	public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo volanteExpres) 
+		throws ClsExceptions{
+			
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		
+			
+			String camposOrigen[] = this.getCamposBean();
+			String campos[] = new String [camposOrigen.length+6];
+			campos[this.getCamposBean().length]   = "TO_CHAR(" + ScsAsistenciasBean.C_FECHAHORA + ", 'hh24') HORA";
+			campos[this.getCamposBean().length+1] = "TO_CHAR(" + ScsAsistenciasBean.C_FECHAHORA + ", 'mi') MINUTO";
+			campos[this.getCamposBean().length+2] = ScsPersonaJGBean.C_NOMBRE;
+			campos[this.getCamposBean().length+3] = ScsPersonaJGBean.C_APELLIDO1;
+			campos[this.getCamposBean().length+4] = ScsPersonaJGBean.C_APELLIDO2;
+			campos[this.getCamposBean().length+5] = ScsPersonaJGBean.C_NIF;
+			for (int i = 0; i < camposOrigen.length; campos[i] = ScsAsistenciasBean.T_NOMBRETABLA + "." + camposOrigen[i], i++);
+
+			
+
+			StringBuffer sql =  new StringBuffer();
+			sql.append(", "); 
+			sql.append(ScsPersonaJGBean.T_NOMBRETABLA); 
+			sql.append( " P ");
+			sql.append(" WHERE ");
+			sql.append(ScsAsistenciasBean.T_NOMBRETABLA); 
+			sql.append( "."); 
+			sql.append( ScsAsistenciasBean.C_IDINSTITUCION); 
+			sql.append( " = :");
+			contador ++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador),volanteExpres.getIdInstitucion());
+			sql.append(" AND " );
+			sql.append( ScsAsistenciasBean.T_NOMBRETABLA); 
+			sql.append( "."); 
+			sql.append( ScsAsistenciasBean.C_IDTURNO); 
+			sql.append( " = :");
+			contador ++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador),volanteExpres.getIdTurno());
+			sql.append(" AND "); 
+			sql.append( ScsAsistenciasBean.T_NOMBRETABLA); 
+			sql.append( "."); 
+			sql.append( ScsAsistenciasBean.C_IDGUARDIA); 
+			sql.append( " = :");
+			contador ++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador),volanteExpres.getIdGuardia());
+			sql.append(" AND "); 
+			sql.append( ScsAsistenciasBean.T_NOMBRETABLA); 
+			sql.append("."); 
+			sql.append( ScsAsistenciasBean.C_IDPERSONACOLEGIADO); 
+			sql.append( " = :");
+			contador ++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador),volanteExpres.getIdColegiado());
+
+		
+			
+			sql.append(" AND trunc("); 
+			sql.append( ScsAsistenciasBean.T_NOMBRETABLA); 
+			sql.append( ".");
+			sql.append(ScsAsistenciasBean.C_FECHAHORA); 
+			sql.append( ") = :");
+			contador ++;
+		    htCodigos.put(new Integer(contador),volanteExpres.getFechaGuardia());
+		    sql.append(contador);
+			
+			sql.append(" AND P."); 
+			sql.append( ScsPersonaJGBean.C_IDPERSONA); 
+			sql.append( " = "); 
+			sql.append( ScsAsistenciasBean.T_NOMBRETABLA); 
+			sql.append( ".");
+			sql.append( ScsAsistenciasBean.C_IDPERSONAJG);	
+			sql.append(" AND P."); 
+			sql.append( ScsPersonaJGBean.C_IDINSTITUCION); 
+			sql.append( " = "); 
+			sql.append( ScsAsistenciasBean.T_NOMBRETABLA); 
+			sql.append( "."); 
+			sql.append( ScsAsistenciasBean.C_IDINSTITUCION); 
+			if(!volanteExpres.getLugar().equals("centro")){
+				sql.append(" AND "); 
+				sql.append( ScsAsistenciasBean.T_NOMBRETABLA); 
+				sql.append( "."); 
+				sql.append( ScsAsistenciasBean.C_JUZGADO); 
+				sql.append( " IS NOT NULL ");
+			}else{
+				sql.append(" AND "); 
+				sql.append( ScsAsistenciasBean.T_NOMBRETABLA); 
+				sql.append( "."); 
+				sql.append( ScsAsistenciasBean.C_COMISARIA); 
+				sql.append( " IS NOT NULL ");
+
+			}
+			if(volanteExpres.getIdTipoAsistencia() != null){
+				sql.append(" AND "); 
+				sql.append( ScsAsistenciasBean.T_NOMBRETABLA);
+				sql.append( "."); 
+				sql.append( ScsAsistenciasBean.C_IDTIPOASISTENCIA); 
+				sql.append( " = :");
+				contador ++;
+				sql.append(contador);
+				htCodigos.put(new Integer(contador),volanteExpres.getIdTipoAsistencia());
+			}
+			if(volanteExpres.getIdTipoAsistenciaColegio()!=null){
+				sql.append(" AND " + ScsAsistenciasBean.T_NOMBRETABLA); 
+				sql.append( "."); 
+				sql.append( ScsAsistenciasBean.C_IDTIPOASISTENCIACOLEGIO); 
+				sql.append(" = :");
+				contador ++;
+				sql.append(contador);
+				htCodigos.put(new Integer(contador),volanteExpres.getIdTipoAsistenciaColegio());
+			}
+
+
+			sql.append(" ORDER 	BY ");
+			sql.append( ScsAsistenciasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(ScsAsistenciasBean.C_ANIO);
+			sql.append(" asc, ");
+			sql.append(ScsAsistenciasBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(ScsAsistenciasBean.C_NUMERO); 
+			sql.append(" ASC");//ordenamos por orden de inserccion en base de datos
+				
+			
+			ScsEJGAdm ejgAdm = new ScsEJGAdm(this.usrbean);
+			ScsDelitosAsistenciaAdm delitoAsisAdm = new ScsDelitosAsistenciaAdm(this.usrbean);
+			List<ScsAsistenciasBean> alAsistencias = null;
+			try {
+				String sqlCampo = UtilidadesBDAdm.sqlSelect(ScsAsistenciasBean.T_NOMBRETABLA, campos);
+				sql.insert(0,sqlCampo);
+				RowsContainer rc = new RowsContainer(); 
+													
+	            if (rc.findBind(sql.toString(),htCodigos)) {
+	            	alAsistencias = new ArrayList<ScsAsistenciasBean>();
+	            	ScsAsistenciasBean asistenciaBean = null;
+	    			for (int i = 0; i < rc.size(); i++){
+	            		Row fila = (Row) rc.get(i);
+	            		Hashtable<String, Object> htFila=fila.getRow();
+	            		
+	            		
+	            		asistenciaBean = (ScsAsistenciasBean)this.hashTableToBean(htFila) ;
+	            		asistenciaBean.setHora((String)htFila.get("HORA"));
+	            		asistenciaBean.setMinuto((String)htFila.get("MINUTO"));
+	            		asistenciaBean.setAsistidoNif((String)htFila.get("NIF"));
+	            		asistenciaBean.setAsistidoNombre((String)htFila.get("NOMBRE"));
+	            		asistenciaBean.setAsistidoApellido1((String)htFila.get("APELLIDO1"));
+	            		asistenciaBean.setAsistidoApellido2((String)htFila.get("APELLIDO2"));
+//	            		asistenciaBean.setIdInstitucion(UtilidadesHash.getInteger(htFila,ScsAsistenciasBean.C_IDINSTITUCION));
+//	            		asistenciaBean.setAnio(UtilidadesHash.getInteger(htFila,ScsAsistenciasBean.C_ANIO));
+//	            		asistenciaBean.setNumero(UtilidadesHash.getInteger(htFila,ScsAsistenciasBean.C_NUMERO));
+	            		
+	            		Vector vDelitos = delitoAsisAdm.getDelitosAsitencia(asistenciaBean.getIdInstitucion()
+								,asistenciaBean.getAnio(),asistenciaBean.getNumero(),null);
+						if(vDelitos!=null && vDelitos.size()>0){
+							Hashtable htDelitoAsistencia = (Hashtable)vDelitos.get(0);
+							asistenciaBean.setDelitosImputados((String)htDelitoAsistencia.get("IDDELITO"));
+							
+						}else{
+							asistenciaBean.setDelitosImputados("");
+							
+						}
+						
+						if(htFila.get(ScsAsistenciasBean.C_EJGANIO)!=null && !((String)htFila.get(ScsAsistenciasBean.C_EJGANIO)).equals("")){
+							Hashtable htEjg = new Hashtable();
+							htEjg.put(ScsEJGBean.C_IDINSTITUCION, (String)htFila.get(ScsAsistenciasBean.C_IDINSTITUCION));
+							htEjg.put(ScsEJGBean.C_IDTIPOEJG, (String)htFila.get(ScsAsistenciasBean.C_EJGIDTIPOEJG));
+							htEjg.put(ScsEJGBean.C_ANIO, (String)htFila.get(ScsAsistenciasBean.C_EJGANIO));
+							htEjg.put(ScsEJGBean.C_NUMERO, (String)htFila.get(ScsAsistenciasBean.C_EJGNUMERO));
+							Vector vEjg =  ejgAdm.selectByPK(htEjg);
+							ScsEJGBean beanEjg = (ScsEJGBean)vEjg.get(0);
+							asistenciaBean.setEjgNumEjg(beanEjg.getAnio()+"/"+beanEjg.getNumEJG());
+							
+							
+						}
+						
+						
+						
+	            		alAsistencias.add(asistenciaBean);
+	            	}
+	            }else{
+	            	alAsistencias = new ArrayList<ScsAsistenciasBean>();
+	            } 
+	       } catch (Exception e) {
+	       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+	       }
+			
+		
+		return alAsistencias;
+	}
+	public void insertarAsistenciasVolanteExpress(VolantesExpressVo volantesExpressVo)throws ClsExceptions{
+		ScsAsistenciasBean asistencia = null;
+		
+		ScsActuacionAsistenciaAdm actAdm = null;
+		boolean isInsertar = false;
+		List<ScsAsistenciasBean> alAsistencias = (List<ScsAsistenciasBean>) volantesExpressVo.getAsistencias(); 
+		int size = alAsistencias.size();
+		for (int i = 0; i < size; i++ ) {
+			
+			if(actAdm==null)
+				actAdm = new ScsActuacionAsistenciaAdm (volantesExpressVo.getUsrBean());
+			
+			asistencia = (ScsAsistenciasBean)alAsistencias.get(i);
+			isInsertar = asistencia.getAnio()==null;
+			// Recuperamos los datos de la asistencia e inserta al asistido si no esta
+			
+			if (asistencia.getIdPersonaJG() == null) { 
+				ScsPersonaJGAdm personaAdm = new ScsPersonaJGAdm (volantesExpressVo.getUsrBean());
+				ScsPersonaJGBean p = new ScsPersonaJGBean();
+				p.setApellido1(asistencia.getAsistidoApellido1());
+				p.setApellido2(asistencia.getAsistidoApellido2());
+				p.setIdInstitucion(new Integer(asistencia.getIdInstitucion()));
+				p.setNif(asistencia.getAsistidoNif());
+				p.setNombre(asistencia.getAsistidoNombre());
+				p.setTipo(ClsConstants.TIPO_PERSONA_FISICA); 						// persona fisica
+				p.setTipoIdentificacion(""+ClsConstants.TIPO_IDENTIFICACION_OTRO);	// otro
+				personaAdm.prepararInsert(p);
+				personaAdm.insert(p);
+				asistencia.setIdPersonaJG(p.getIdPersona());
+			}
+
+			if (isInsertar){
+				String anio = volantesExpressVo.getFechaGuardia().split("/")[2];
+				asistencia.setAnio(new Integer(anio));
+				asistencia.setNumero(new Integer(this.getNumeroAsistencia(asistencia.getIdInstitucion().toString(), Integer.parseInt(anio))));
+				this.insert(asistencia);
+			}
+			else {
+				this.updateDirect(asistencia);
+			}
+			ScsDelitosAsistenciaBean delitoAsistencia = null;
+			if(asistencia.getDelitosImputados()!=null){
+				delitoAsistencia = new ScsDelitosAsistenciaBean();
+				delitoAsistencia.setIdDelito(new Integer(asistencia.getDelitosImputados()));
+				delitoAsistencia.setIdInstitucion(asistencia.getIdInstitucion());
+				delitoAsistencia.setNumero(asistencia.getNumero());
+				delitoAsistencia.setAnio(asistencia.getAnio());
+			}
+			ScsDelitosAsistenciaAdm delAsisAdm =  null;
+			if (isInsertar){
+				//Insertamos el delito
+				if(delitoAsistencia!=null){
+					delAsisAdm =  new ScsDelitosAsistenciaAdm(volantesExpressVo.getUsrBean());
+					delAsisAdm.insert(delitoAsistencia);
+				}
+				
+			}else{
+				delAsisAdm =  new ScsDelitosAsistenciaAdm(volantesExpressVo.getUsrBean());
+				//Borramos los delitos que tuviera
+				delAsisAdm.borrarDelitosAsitencia(asistencia.getIdInstitucion(), asistencia.getAnio(), asistencia.getNumero());
+				//si tiene delito lo insertamos
+				if(delitoAsistencia!=null){
+					
+					delAsisAdm.insert(delitoAsistencia);
+				}
+				
+			}
+			
+			ScsActuacionAsistenciaBean act = new ScsActuacionAsistenciaBean ();
+			act.setAcuerdoExtrajudicial(new Integer(0));
+			act.setAnio(asistencia.getAnio());
+			act.setDescripcionBreve("("+UtilidadesString.getMensajeIdioma(volantesExpressVo.getUsrBean(), "menu.justiciaGratuita.volantesExpres")+")");
+			act.setDiaDespues("N");
+			act.setFecha(asistencia.getFechaHora());
+			act.setFechaJustificacion(volantesExpressVo.getFechaJustificacion());
+			act.setIdActuacion(new Long(1));
+			act.setIdInstitucion(asistencia.getIdInstitucion());
+			act.setIdTipoAsistencia(asistencia.getIdTipoAsistencia());
+			act.setNumero(new Long(""+asistencia.getNumero()));
+			act.setNumeroAsunto(asistencia.getNumeroDiligencia());
+			act.setObservaciones(asistencia.getObservaciones());
+			act.setValidada("1"); // validada si 
+
+			if (asistencia.getJuzgado()!=null) {
+				act.setIdJuzgado(new Integer(""+asistencia.getJuzgado()));
+				act.setIdInstitucionJuzgado(new Long(""+asistencia.getJuzgadoIdInstitucion()));
+				act.setIdTipoActuacion(new Integer(2));
+			} 
+			else {
+				act.setIdComisaria(new Integer(""+asistencia.getComisaria()));
+				act.setIdInstitucionComisaria(new Long(""+asistencia.getComisariaIdInstitucion()));
+				act.setIdTipoActuacion(new Integer(1));
+			}
+			
+			if (isInsertar){
+				actAdm.insert(act);
+			}
+			else {
+				actAdm.updateDirect(act);
+			}
+		}
+		
+		
+	}
+	public void  borrarAsistenciasVolanteExpres(List alAsistenciasBorrar,UsrBean usr) throws ClsExceptions{
+		ScsAsistenciasBean asistencia = null;
+		if(alAsistenciasBorrar!=null){
+			for (int i = 0; i < alAsistenciasBorrar.size(); i++ ) {
+				asistencia = (ScsAsistenciasBean) alAsistenciasBorrar.get(i);
+				borrarAsistenciaVolanteExpress(asistencia.getAnio(), asistencia.getNumero(), asistencia.getIdInstitucion(),usr);
+				
+			}
+		}
+	}
+	
+	private void borrarAsistenciaVolanteExpress(Integer anio, Integer numero, Integer idInstitucion, UsrBean usr) throws ClsExceptions 
+	{
+		Hashtable<String,Object> claves = new Hashtable<String, Object> ();
+		UtilidadesHash.set (claves, ScsAsistenciasBean.C_ANIO, anio);
+		UtilidadesHash.set (claves, ScsAsistenciasBean.C_NUMERO, numero);
+		UtilidadesHash.set (claves, ScsAsistenciasBean.C_IDINSTITUCION, idInstitucion);
+		String campos [] = {ScsAsistenciasBean.C_ANIO, ScsAsistenciasBean.C_NUMERO, ScsAsistenciasBean.C_IDINSTITUCION};
+		ScsActuacionAsistCosteFijoAdm costeActuacionAdm = new ScsActuacionAsistCosteFijoAdm (usr);
+		costeActuacionAdm.deleteDirect(claves, campos);
+		ScsActuacionAsistenciaAdm actuacionAdm = new ScsActuacionAsistenciaAdm (usr);
+		actuacionAdm.deleteDirect(claves, campos);
+		ScsDelitosAsistenciaAdm delitosAsistenciaAdm = new ScsDelitosAsistenciaAdm (usr);
+		delitosAsistenciaAdm.borrarDelitosAsitencia(idInstitucion,anio,numero);
+		ScsAsistenciasAdm asistenciaAdm = new ScsAsistenciasAdm (usr);
+		asistenciaAdm.delete(claves);
+	}
 	
 }

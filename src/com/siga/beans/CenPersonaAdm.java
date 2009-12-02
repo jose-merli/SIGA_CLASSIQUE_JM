@@ -1200,7 +1200,17 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 		try {
 			v = this.selectGenericoBind(sql,codigos);
 			if (v != null && v.size() == 1) {
-			   	return (Hashtable) v.get(0);
+				Hashtable htCliente =(Hashtable) v.get(0);
+				StringBuffer nombreCompleto = new StringBuffer();
+				nombreCompleto.append(htCliente.get("NOMBRE"));
+				nombreCompleto.append(" ");
+				nombreCompleto.append(htCliente.get("APELLIDOS1"));
+				nombreCompleto.append(" ");
+				nombreCompleto.append(htCliente.get("APELLIDOS2"));
+				
+				
+				htCliente.put("NOMCOLEGIADO", nombreCompleto.toString());
+			   	return htCliente;
 			}
 		} 
 		catch (ClsExceptions e) {
@@ -1211,6 +1221,8 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 		}
 		return null;
 	}
+	
+	
 	
 }
 	

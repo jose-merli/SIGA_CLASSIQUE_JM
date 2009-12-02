@@ -1,5 +1,9 @@
 package com.siga.beans;
 
+import com.siga.Utilidades.AjaxXMLBuilderAnnotation;
+import com.siga.Utilidades.AjaxXMLBuilderNameAnnotation;
+import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
+
 /**
  * Implementa las operaciones sobre el bean de la tabla SCS_GUARDIASTURNO
  * 
@@ -8,7 +12,7 @@ package com.siga.beans;
  * @version 08/03/2006 david.sanchezp: nuevos campos
  * @version 14/05/2008 adrian.ayala: limpieza, nuevos campos y eliminacion de viejos campos
  */
-
+@AjaxXMLBuilderAnnotation
 public class ScsGuardiasTurnoBean extends MasterBean
 {
 	//////////////////// ATRIBUTOS DE CLASE ////////////////////
@@ -86,12 +90,14 @@ public class ScsGuardiasTurnoBean extends MasterBean
 	public Integer getDiasPagados() {return diasPagados;}
 	public Integer getDiasPeriodo() {return diasPeriodo;}
 	public Integer getDiasSeparacionGuardia() {return diasSeparacionGuardia;}
+	@AjaxXMLBuilderValueAnnotation(isCData=false)
 	public Integer getIdGuardia() {return idGuardia;}
 	public Integer getIdInstitucion() {return idInstitucion;}
 	public Integer getIdOrdenacionColas() {return idOrdenacionColas;}
 	public Integer getIdPartidaPresupuestaria() {return idPartidaPresupuestaria;}
 	public Long getIdPersona_Ultimo() {return idPersona_Ultimo;}
 	public Integer getIdTurno() {return idTurno;}
+	@AjaxXMLBuilderNameAnnotation
 	public String getNombre() {return nombre;}
 	public Integer getNumeroActuaciones() {return numeroActuaciones;}
 	public Integer getNumeroAsistencias() {return numeroAsistencias;}

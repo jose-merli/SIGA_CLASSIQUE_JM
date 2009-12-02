@@ -1,12 +1,15 @@
 package com.siga.beans;
 
+import com.siga.Utilidades.AjaxXMLBuilderAnnotation;
+import com.siga.Utilidades.AjaxXMLBuilderNameAnnotation;
+import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
 /**
  * Implementa las operaciones sobre el bean de la tabla SCS_TURNO
  * 
  * @author ruben.fernandez
  * @since 26/10/2004 
  */
-
+@AjaxXMLBuilderAnnotation 
 public class ScsTurnoBean extends MasterBean{
 	
 	/* Variables */ 
@@ -204,12 +207,14 @@ public class ScsTurnoBean extends MasterBean{
 	 * 
 	 * @return Valor idTurno. De tipo "Integer" 
 	 */
+	@AjaxXMLBuilderValueAnnotation(isCData=false)
 	public Integer getIdTurno					()	{ return this.idTurno;}
 	/**
 	 * Recupera del Bean el valor nombre.  
 	 * 
 	 * @return Valor nombre. De tipo "String" 
 	 */
+	@AjaxXMLBuilderNameAnnotation
 	public String getNombre						()	{ return this.nombre;}
 	/**
 	 * Recupera del Bean el valor abreviatura.  
@@ -222,6 +227,7 @@ public class ScsTurnoBean extends MasterBean{
 	 * 
 	 * @return Valor descripcion. De tipo "String" 
 	 */
+	
 	public String getDescripcion				()	{ return this.descripcion;}
 	/**
 	 * Recupera del Bean el valor guardias.  

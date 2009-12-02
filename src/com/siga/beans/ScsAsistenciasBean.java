@@ -43,6 +43,7 @@ public class ScsAsistenciasBean extends MasterBean{
 	private Integer ejgidtipoejg;
 	private Integer ejganio;
 	private Long ejgnumero;
+	private String ejgNumEjg;
 	
 	private Double facturado;
 	private Double pagado;
@@ -56,7 +57,12 @@ public class ScsAsistenciasBean extends MasterBean{
 	private Integer idEstadoAsistencia;
 	private String  fechaEstadoAsistencia;
 	
-	
+	private String hora;
+	private String minuto;
+	private String asistidoNif;
+	private String asistidoNombre;
+	private String asistidoApellido1;
+	private String asistidoApellido2;
 
 	
 	/*
@@ -285,6 +291,49 @@ public class ScsAsistenciasBean extends MasterBean{
 	}
 	public void setFechaEstadoAsistencia(String fechaEstadoAsistencia) {
 		this.fechaEstadoAsistencia = fechaEstadoAsistencia;
+	}
+	public String getHora() {
+		return hora;
+	}
+	public void setHora(String hora) {
+		this.hora = hora;
+	}
+	public String getMinuto() {
+		return minuto;
+	}
+	public void setMinuto(String minuto) {
+		this.minuto = minuto;
+	}
+	
+	public String getAsistidoNombre() {
+		return asistidoNombre;
+	}
+	public void setAsistidoNombre(String asistidoNombre) {
+		this.asistidoNombre = asistidoNombre;
+	}
+	public String getAsistidoApellido1() {
+		return asistidoApellido1;
+	}
+	public void setAsistidoApellido1(String asistidoApellido1) {
+		this.asistidoApellido1 = asistidoApellido1;
+	}
+	public String getAsistidoApellido2() {
+		return asistidoApellido2;
+	}
+	public void setAsistidoApellido2(String asistidoApellido2) {
+		this.asistidoApellido2 = asistidoApellido2;
+	}
+	public String getAsistidoNif() {
+		return asistidoNif;
+	}
+	public void setAsistidoNif(String asistidoNif) {
+		this.asistidoNif = asistidoNif;
+	}
+	public String getEjgNumEjg() {
+		return ejgNumEjg;
+	}
+	public void setEjgNumEjg(String ejgNumEjg) {
+		this.ejgNumEjg = ejgNumEjg;
 	}
 	
 }

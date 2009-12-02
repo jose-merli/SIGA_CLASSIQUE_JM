@@ -1,7 +1,13 @@
 
 package com.siga.beans;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Vector;
+
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.Row;
@@ -11,10 +17,9 @@ import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.SIGAException;
-
-import java.util.Vector;
-import com.atos.utils.*;
+import com.siga.gratuita.vos.VolantesExpressVo;
 
 /**
  * Implementa las operaciones sobre la base de datos, es decir: select, insert, update...
@@ -758,5 +763,78 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 		return paginador;  
 		
 	}
+	public List<ScsTurnoBean> getTurnos(VolantesExpressVo volanteExpres)throws ClsExceptions{
+
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+		if(volanteExpres.getFechaGuardia()!=null){
+			
+			sql.append(" SELECT IDINSTITUCION , IDTURNO ");
+			sql.append(" , NOMBRE FROM SCS_TURNO TURNO  ");
+			sql.append(" WHERE TURNO.IDINSTITUCION = :");
+		    contador ++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador),volanteExpres.getIdInstitucion());
+			sql.append(" AND TURNO.IDTURNO "); 
+			sql.append(" IN (SELECT DISTINCT GC.IDTURNO FROM SCS_GUARDIASCOLEGIADO GC "); 
+			sql.append(" WHERE GC.IDINSTITUCION = TURNO.IDINSTITUCION  ");
+			if(volanteExpres.getIdColegiado()!=null){
+				sql.append(" AND GC.IDPERSONA = :");
+			    contador ++;
+				sql.append(contador);
+				htCodigos.put(new Integer(contador),volanteExpres.getIdColegiado());
+				
+			}
+			sql.append(" AND TRUNC(GC.FECHAFIN) = :");
+			contador ++;
+		    htCodigos.put(new Integer(contador),volanteExpres.getFechaGuardia());
+		    sql.append(contador);
+			sql.append(" ) ORDER BY TURNO.DESCRIPCION ");
+			
+			
+		}else{
+			sql.append(" SELECT IDINSTITUCION , IDTURNO ");
+			sql.append(" , NOMBRE FROM SCS_TURNO TURNO  ");
+			sql.append(" WHERE TURNO.IDINSTITUCION = :");
+		    contador ++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador),volanteExpres.getIdInstitucion());
+			
+			sql.append(" ORDER BY TURNO.DESCRIPCION ");
+		}
+		List<ScsTurnoBean> alTurnos = null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+												
+            if (rc.findBind(sql.toString(),htCodigos)) {
+            	alTurnos = new ArrayList<ScsTurnoBean>();
+            	ScsTurnoBean turnoBean = new ScsTurnoBean();
+    			turnoBean.setNombre(UtilidadesString.getMensajeIdioma(volanteExpres.getUsrBean(), "general.combo.seleccionar"));
+    			turnoBean.setIdTurno(new Integer(-1));
+            	alTurnos.add(turnoBean);
+    			for (int i = 0; i < rc.size(); i++){
+            		Row fila = (Row) rc.get(i);
+            		Hashtable<String, Object> htFila=fila.getRow();
+            		
+            		
+            		turnoBean = new ScsTurnoBean();
+            		turnoBean.setIdInstitucion(UtilidadesHash.getInteger(htFila,ScsTurnoBean.C_IDINSTITUCION));
+            		turnoBean.setIdTurno(UtilidadesHash.getInteger(htFila,ScsTurnoBean.C_IDTURNO));
+        			turnoBean.setNombre(UtilidadesHash.getString(htFila,ScsTurnoBean.C_NOMBRE));
+            		alTurnos.add(turnoBean);
+            	}
+            } 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+       }
+       return alTurnos;
+		
+		
+		
+		
+		
+		
+	} 
 	
 }
