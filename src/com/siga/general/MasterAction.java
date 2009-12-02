@@ -18,22 +18,29 @@
 
 package com.siga.general;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.*;
 import javax.transaction.UserTransaction;
 
+import net.sourceforge.ajaxtags.xml.AjaxXmlBuilder;
+
 import org.apache.struts.action.*;
 
 import com.atos.utils.*;
 import com.siga.general.SIGAException;
+import com.siga.Utilidades.AjaxCollectionXmlBuilder;
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.SIGAConstants;
@@ -942,5 +949,31 @@ public abstract class MasterAction extends SIGAActionBase {
     	
     	return alClaves;
 	}
+	protected void respuestaAjax(AjaxXmlBuilder ajaxXmlBuilder,
+			List<String> list, HttpServletResponse response) throws IOException {
+		for (int i = 0; i < list.size(); i++) {
+			ajaxXmlBuilder.addItem((String)list.get(i));
+			
+		}
+		response.setContentType("text/xml");
+	    response.setHeader("Cache-Control", "no-cache");
+	    PrintWriter pw = response.getWriter();
+	    pw.write(ajaxXmlBuilder.toString());
+	    pw.close();
+		
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected void respuestaAjax(AjaxCollectionXmlBuilder builder, Collection collection, HttpServletResponse response) throws IOException{
+		builder.addItems(collection);
+		response.setContentType("text/xml");
+	    response.setHeader("Cache-Control", "no-cache");
+	    PrintWriter pw = response.getWriter();
+	    pw.write(builder.toString());
+	    pw.close();
+		
+	}
+	
 
 }
