@@ -114,7 +114,7 @@
   <!--<listener>
     <listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoContadores</listener-class>
   </listener>-->
-  <servlet>
+ <servlet>
     <servlet-name>SIGASvlProcesoAutomaticoEnvios</servlet-name>
     <servlet-class>com.siga.servlets.SIGASvlProcesoAutomaticoEnvios</servlet-class>
    	<load-on-startup>3</load-on-startup>
@@ -123,12 +123,12 @@
     <servlet-name>SIGATest</servlet-name>
     <servlet-class>com.siga.servlets.SIGASvlConectarBaseDatos</servlet-class>
   </servlet>
-
+  
   <servlet>
     <servlet-name>SIGASvlProcesoEnvios</servlet-name>
     <servlet-class>com.siga.servlets.SIGASvlProcesoEnvios</servlet-class>
   </servlet>
-
+ 
   <!--<servlet>
     <servlet-name>SIGASvlProcesoAutomaticoFacturacion</servlet-name>
     <servlet-class>com.siga.servlets.SIGASvlProcesoAutomaticoFacturacion</servlet-class>
@@ -225,26 +225,55 @@
     <servlet-name>SIGADireccionIP</servlet-name>
     <servlet-class>com.siga.servlets.SIGADireccionIP</servlet-class>
   </servlet>
+  <servlet>
+  	<servlet-name>Ajaxsourceloader</servlet-name>
+  	<servlet-class>
+  		net.sourceforge.ajaxtags.servlets.SourceLoader
+  	</servlet-class>
+  	<!-- you don't need this, don't use spaces in url-pattern!-->
+  	<init-param>
+  		<param-name>prefix</param-name>
+  		<param-value>/ajaxtags</param-value>
+  	</init-param>
+  </servlet>
+
+  <servlet-mapping>
+  	<servlet-name>Ajaxsourceloader</servlet-name>
+  	<!-- if you have /js/ in use in you webapp just map the url (use the prefix)-->
+  	<url-pattern>/ajaxtags/js/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+  	<servlet-name>Ajaxsourceloader</servlet-name>
+  	<url-pattern>/img/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+  	<servlet-name>Ajaxsourceloader</servlet-name>
+  	<url-pattern>/css/*</url-pattern>
+  </servlet-mapping>
 
 
 
-<!-- RGG para llamada externa -->
+
+
+
+  <!-- RGG para llamada externa -->
   <servlet-mapping>
     <servlet-name>SIGATest</servlet-name>
     <url-pattern>SIGATest.svrl</url-pattern>
   </servlet-mapping>
-
+<!--  
   <servlet-mapping>
     <servlet-name>SIGASvlProcesoAutomaticoEnvios</servlet-name>
     <url-pattern>SIGASvlProcesoAutomaticoEnvios.svrl</url-pattern>
   </servlet-mapping>
-
+-->
   <servlet-mapping>
     <servlet-name>SIGASvlProcesoEnvios</servlet-name>
     <url-pattern>SIGASvlProcesoEnvios.svrl</url-pattern>
   </servlet-mapping>
-
- <!--<servlet-mapping>
+<!--<servlet-mapping>
     <servlet-name>SIGASvlProcesoAutomaticoFacturacion</servlet-name>
     <url-pattern>SIGASvlProcesoAutomaticoFacturacion.svrl</url-pattern>
   </servlet-mapping>-->
@@ -403,5 +432,11 @@
 	    	<taglib-uri>displaytag.tld</taglib-uri> 
 	    	<taglib-location>/WEB-INF/tlds/displaytag-el.tld</taglib-location>
 		</taglib>
+		<taglib> 
+	    	<taglib-uri>ajaxtags.tld</taglib-uri> 
+	    	<taglib-location>/WEB-INF/tlds/ajaxtags.tld</taglib-location>
+		</taglib>
+		
+		
 	</jsp-config>
 </web-app>
