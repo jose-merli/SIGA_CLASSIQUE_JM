@@ -246,6 +246,7 @@
 		<form-bean name="ValidarVolantesGuardiasForm" type="com.siga.gratuita.form.ValidarVolantesGuardiasForm"/>
 		<form-bean name="MantenimientoIncompatibilidadesGuardiasForm" type="com.siga.gratuita.form.BusquedaIncompatibilidadesGuardiasForm" />
 		<form-bean name="VolantesExpresForm" type="com.siga.gratuita.form.VolantesExpresForm" />
+		<form-bean name="VolantesExpressForm" type="com.siga.gratuita.form.VolantesExpressForm" />
 		<form-bean name="InformeJustificacionMasivaForm" type="com.siga.gratuita.form.InformeJustificacionMasivaForm" />
 		<form-bean name="MantenimientoDestinatariosRetencionesForm" type="com.siga.gratuita.form.MantenimientoDestinatariosRetencionesForm" />
 		
@@ -2079,9 +2080,13 @@
 			<forward name="listado" path="/html/jsp/gratuita/listarGuardiasTurnos.jsp"/>
 		</action>
 		
-		<action path="/JGR_VolantesExpres" type="com.siga.gratuita.action.VolantesExpresAction" name="VolantesExpresForm">
-			<forward name="inicio" path="/html/jsp/gratuita/volantesExpres.jsp"/>
+		<action path="/JGR_VolantesExpres" type="com.siga.gratuita.action.VolantesExpressAction" name="VolantesExpressForm" >
+			<forward name="inicio" path="/html/jsp/gratuita/volantesExpress.jsp"/>
+			<forward name="listadoAsistencias" path="/html/jsp/gratuita/volantesExpressAsistencias.jsp"/>
+			<forward name="exception" path="/html/jsp/general/blank.jsp"/>
 		</action>
+
+		
 
 		<action path="/JGR_InformeJustificacionMasiva" type="com.siga.gratuita.action.InformeJustificacionMasivaAction" name="InformeJustificacionMasivaForm">
 			<forward name="inicio" path="/html/jsp/gratuita/informeJustificacionMasiva.jsp"/>
@@ -2388,7 +2393,7 @@
 				<forward name="editarTelefonoGuardiaMasivo" path="/html/jsp/gratuita/editarTelefonoGuardiaMasivo.jsp"/>
 				
 		</action>
-
+		
 		<!-- ***** Justicia Gratuita / Entrada a Saltos y Compensaciones ***** -->
 		<action path="/JGR_SaltosYCompensaciones" type="com.siga.gratuita.action.SaltosYCompensacionesAction" name="SaltosYCompensacionesForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/inicio_SaltosYCompensaciones.jsp"/>
