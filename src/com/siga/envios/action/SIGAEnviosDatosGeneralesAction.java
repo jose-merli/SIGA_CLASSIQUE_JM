@@ -1,23 +1,35 @@
 package com.siga.envios.action;
 
 import java.io.File;
-import java.util.*;
+import java.util.Hashtable;
+import java.util.Vector;
 
-import com.atos.utils.*;
-import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.*;
-import com.siga.general.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.UserTransaction;
 
-import javax.transaction.*;
-import javax.servlet.http.*;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
 
-import com.siga.envios.form.*;
-
-import org.apache.struts.action.*;
-
-import weblogic.jms.deployer.BEAdminHandler;
-
-import com.siga.gui.processTree.*;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.UsrBean;
+import com.siga.beans.EnvCamposAdm;
+import com.siga.beans.EnvCamposBean;
+import com.siga.beans.EnvCamposEnviosAdm;
+import com.siga.beans.EnvCamposEnviosBean;
+import com.siga.beans.EnvDestinatariosBean;
+import com.siga.beans.EnvEnviosAdm;
+import com.siga.beans.EnvEnviosBean;
+import com.siga.beans.EnvPlantillaGeneracionAdm;
+import com.siga.beans.EnvPlantillaGeneracionBean;
+import com.siga.beans.EnvTipoEnviosAdm;
+import com.siga.beans.EnvTipoEnviosBean;
+import com.siga.envios.form.SIGAEnviosDatosGeneralesForm;
+import com.siga.general.MasterAction;
+import com.siga.general.MasterForm;
+import com.siga.general.SIGAException;
+import com.siga.gui.processTree.SIGAPTConstants;
 
 public class SIGAEnviosDatosGeneralesAction extends MasterAction
 {
