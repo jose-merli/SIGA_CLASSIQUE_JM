@@ -161,6 +161,38 @@ public class CajgRemesaEstadosAdm extends MasterBeanAdministrador {
 		}
 		return ultimoEstado;
 	}
-	
+
+	/**
+	 * 
+	 * @param usr
+	 * @param idInstitucion
+	 * @param idRemesa
+	 * @param idEstado
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public boolean nuevoEstadoRemesa(UsrBean usr, Integer idInstitucion, Integer idRemesa, Integer idEstado) throws ClsExceptions {
+		boolean insertado = false;
+		CajgRemesaEstadosAdm cajgRemesaEstadosAdm = new CajgRemesaEstadosAdm(usr);
+
+		Vector vector = cajgRemesaEstadosAdm.select(" WHERE " + CajgRemesaEstadosBean.C_IDINSTITUCION + " = " + idInstitucion + " AND "
+				+ CajgRemesaEstadosBean.C_IDREMESA + " = " + idRemesa + " AND " + CajgRemesaEstadosBean.C_IDESTADO + " IN (SELECT MAX("
+				+ CajgRemesaEstadosBean.C_IDESTADO + ")" + " FROM " + CajgRemesaEstadosBean.T_NOMBRETABLA + " WHERE " + CajgRemesaEstadosBean.C_IDINSTITUCION
+				+ " = " + idInstitucion + " AND " + CajgRemesaEstadosBean.C_IDREMESA + " = " + idRemesa + " )");
+
+		if (vector != null && vector.size() > 0) {
+			CajgRemesaEstadosBean estadoAnterior = (CajgRemesaEstadosBean) vector.get(0);
+			if (estadoAnterior.getIdestado().intValue() == (idEstado.intValue() - 1)) {
+				CajgRemesaEstadosBean cajgRemesaEstadosBean = new CajgRemesaEstadosBean();
+				cajgRemesaEstadosBean.setIdInstitucion(idInstitucion);
+				cajgRemesaEstadosBean.setIdRemesa(idRemesa);
+				cajgRemesaEstadosBean.setIdestado(idEstado);
+				cajgRemesaEstadosBean.setFecharemesa("SYSDATE");
+				insertado = cajgRemesaEstadosAdm.insert(cajgRemesaEstadosBean);
+			}
+		}
+		return insertado;
+
+	}
 	
 }
