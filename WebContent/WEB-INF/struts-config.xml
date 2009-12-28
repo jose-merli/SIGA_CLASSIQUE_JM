@@ -2458,6 +2458,7 @@
 			<forward name="listarEJGListos" path="/html/jsp/gratuita/listadoEJG_RemesaListos.jsp"/>
 			<forward name="aniadirBusqueda" path="/html/jsp/gratuita/busquedaEJG_Listos.jsp"/>
 			<forward name="export" path="/SIGASvlVectorToClientFileConExtension.svrl"/>
+			<forward name="erroresResultadoCAJG" path="/html/jsp/gratuita/erroresResultadoCAJG.jsp"/>
 		</action>
 		
 		<action path="/JGR_EstadosRemesa" type="com.siga.gratuita.action.EstadosRemesaAction" name="EstadosRemesaForm" scope="request">
@@ -2467,11 +2468,15 @@
 		</action>
 		
 		<!-- ***** Justicia Gratuita / e_comunicaciones / Gestion Resoluciones ***** -->
-		<action path="/JGR_E-Comunicaciones_RemesaResolucion" type="com.siga.gratuita.action.DefinirRemesaResolucionesCAJGAction" name="DefinicionRemesaResolucionesCAJGForm" scope="request">
-			<forward name="inicio" path="/html/jsp/gratuita/busquedaRemesaResoluciones_CAJG.jsp"/>
+		<action path="/JGR_E-Comunicaciones_RemesaResolucion"  type="com.siga.gratuita.action.DefinirRemesaResolucionesCAJGAction" name="DefinicionRemesaResolucionesCAJGForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/busquedaRemesaResoluciones_CAJG.jsp?idTipoRemesa=1"/>
 			<forward name="insertarResolucion" path="/html/jsp/gratuita/insertarRemesaResolucion.jsp"/>						
 			<forward name="listarResoluciones" path="/html/jsp/gratuita/listadoRemesaResoluciones.jsp"/>			
 			<forward name="editar" path="/html/jsp/gratuita/remesaResolucionCAJG.jsp"/>			
+		</action>
+		
+		<action path="/CargaDesignaProcurador" type="com.siga.gratuita.action.DefinirRemesaResolucionesCAJGAction" name="DefinicionRemesaResolucionesCAJGForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/busquedaRemesaResoluciones_CAJG.jsp?idTipoRemesa=2"/>						
 		</action>
 		
 		<!-- ***** Consultas / Recuperar Consultas ***** -->
