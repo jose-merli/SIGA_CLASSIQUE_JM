@@ -33,8 +33,10 @@ public class CajgConfiguracionAdm extends MasterBeanAdministrador {
 				, CajgConfiguracionBean.C_FTP_PUERTO
 				, CajgConfiguracionBean.C_FTP_USER
 				, CajgConfiguracionBean.C_FTP_PASS
-				, CajgConfiguracionBean.C_FTP_DIRECTORIO
+				, CajgConfiguracionBean.C_FTP_DIRECTORIO_IN
+				, CajgConfiguracionBean.C_FTP_DIRECTORIO_OUT
 				, CajgConfiguracionBean.C_WS_URL
+				, CajgConfiguracionBean.C_WS_CLASS
 				, CajgConfiguracionBean.C_FECHAMODIFICACION
 				, CajgConfiguracionBean.C_USUMODIFICACION};
 		return campos;
@@ -64,8 +66,10 @@ public class CajgConfiguracionAdm extends MasterBeanAdministrador {
 			bean.setFtpPuerto(UtilidadesHash.getInteger(hash,CajgConfiguracionBean.C_FTP_PUERTO));
 			bean.setFtpUser(UtilidadesHash.getString (hash,CajgConfiguracionBean.C_FTP_USER));
 			bean.setFtpPass(UtilidadesHash.getString (hash,CajgConfiguracionBean.C_FTP_PASS));
-			bean.setFtpDirectorio(UtilidadesHash.getString (hash,CajgConfiguracionBean.C_FTP_DIRECTORIO));
+			bean.setFtpDirectorioIN(UtilidadesHash.getString (hash,CajgConfiguracionBean.C_FTP_DIRECTORIO_IN));
+			bean.setFtpDirectorioOUT(UtilidadesHash.getString (hash,CajgConfiguracionBean.C_FTP_DIRECTORIO_OUT));
 			bean.setWsURL(UtilidadesHash.getString (hash,CajgConfiguracionBean.C_WS_URL));
+			bean.setWsClass(UtilidadesHash.getString (hash,CajgConfiguracionBean.C_WS_CLASS));
 			
 			bean.setFechaMod(UtilidadesHash.getString (hash,CajgConfiguracionBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,CajgConfiguracionBean.C_USUMODIFICACION));
@@ -92,8 +96,10 @@ public class CajgConfiguracionAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, CajgConfiguracionBean.C_FTP_PUERTO, b.getFtpPuerto());
 			UtilidadesHash.set(hash, CajgConfiguracionBean.C_FTP_USER, b.getFtpUser());
 			UtilidadesHash.set(hash, CajgConfiguracionBean.C_FTP_PASS, b.getFtpPass());
-			UtilidadesHash.set(hash, CajgConfiguracionBean.C_FTP_DIRECTORIO, b.getFtpDirectorio());
+			UtilidadesHash.set(hash, CajgConfiguracionBean.C_FTP_DIRECTORIO_IN, b.getFtpDirectorioIN());
+			UtilidadesHash.set(hash, CajgConfiguracionBean.C_FTP_DIRECTORIO_OUT, b.getFtpDirectorioOUT());
 			UtilidadesHash.set(hash, CajgConfiguracionBean.C_WS_URL, b.getWsURL());
+			UtilidadesHash.set(hash, CajgConfiguracionBean.C_WS_CLASS, b.getWsClass());
 				
 			UtilidadesHash.set(hash, CajgConfiguracionBean.C_FECHAMODIFICACION, b.getFechaMod());	
 			UtilidadesHash.set(hash, CajgConfiguracionBean.C_USUMODIFICACION, b.getUsuMod());	

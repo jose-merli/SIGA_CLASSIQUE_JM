@@ -17,8 +17,10 @@ public class CajgConfiguracionBean extends MasterBean{
 	private Integer ftpPuerto;
 	private String ftpUser;
 	private String ftpPass;
-	private String ftpDirectorio;
+	private String ftpDirectorioIN;
 	private String wsURL;
+	private String wsClass;
+	private String ftpDirectorioOUT;
 	
 	
 	/*
@@ -34,8 +36,11 @@ public class CajgConfiguracionBean extends MasterBean{
 	static public final String C_FTP_PUERTO = "FTP_PUERTO";
 	static public final String C_FTP_USER = "FTP_USER";
 	static public final String C_FTP_PASS = "FTP_PASS";
-	static public final String C_FTP_DIRECTORIO = "FTP_DIRECTORIO";
+	static public final String C_FTP_DIRECTORIO_IN = "FTP_DIRECTORIO_IN";
+	static public final String C_FTP_DIRECTORIO_OUT = "FTP_DIRECTORIO_OUT";
 	static public final String C_WS_URL = "WS_URL";
+	static public final String C_WS_CLASS = "WS_CLASS";
+	
 	
 	/**
 	 * @return the idInstitucion
@@ -110,18 +115,6 @@ public class CajgConfiguracionBean extends MasterBean{
 		this.ftpPass = ftpPass;
 	}
 	/**
-	 * @return the ftpDirectorio
-	 */
-	public String getFtpDirectorio() {
-		return ftpDirectorio;
-	}
-	/**
-	 * @param ftpDirectorio the ftpDirectorio to set
-	 */
-	public void setFtpDirectorio(String ftpDirectorio) {
-		this.ftpDirectorio = ftpDirectorio;
-	}
-	/**
 	 * @return the wsURL
 	 */
 	public String getWsURL() {
@@ -133,7 +126,43 @@ public class CajgConfiguracionBean extends MasterBean{
 	public void setWsURL(String wsURL) {
 		this.wsURL = wsURL;
 	}
-	
+	/**
+	 * @return the wsClass
+	 */
+	public String getWsClass() {
+		return wsClass;
+	}
+	/**
+	 * @param wsClass the wsClass to set
+	 */
+	public void setWsClass(String wsClass) {
+		this.wsClass = wsClass;
+	}
+	/**
+	 * @return the ftpDirectorioIN
+	 */
+	public String getFtpDirectorioIN() {
+		return ftpDirectorioIN;
+	}
+	/**
+	 * @param ftpDirectorioIN the ftpDirectorioIN to set
+	 */
+	public void setFtpDirectorioIN(String ftpDirectorioIN) {
+		this.ftpDirectorioIN = ftpDirectorioIN;
+	}
+	/**
+	 * @return the ftpDirectorioOUT
+	 */
+	public String getFtpDirectorioOUT() {
+		return ftpDirectorioOUT;
+	}
+	/**
+	 * @param ftpDirectorioOUT the ftpDirectorioOUT to set
+	 */
+	public void setFtpDirectorioOUT(String ftpDirectorioOUT) {
+		this.ftpDirectorioOUT = ftpDirectorioOUT;
+	}
+
 	
 	
 }
