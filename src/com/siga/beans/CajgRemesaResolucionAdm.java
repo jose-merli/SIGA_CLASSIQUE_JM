@@ -25,7 +25,8 @@ public class CajgRemesaResolucionAdm extends MasterBeanAdministrador {
 				, CajgRemesaResolucionBean.C_FECHARESOLUCION
 				, CajgRemesaResolucionBean.C_FECHAMODIFICACION
 				, CajgRemesaResolucionBean.C_USUMODIFICACION
-				, CajgRemesaResolucionBean.C_LOGGENERADO};
+				, CajgRemesaResolucionBean.C_LOGGENERADO
+				, CajgRemesaResolucionBean.C_IDTIPOREMESA};
 		return campos;
 	}
 
@@ -60,6 +61,7 @@ public class CajgRemesaResolucionAdm extends MasterBeanAdministrador {
 			bean.setFechaCarga(UtilidadesHash.getString(hash, CajgRemesaResolucionBean.C_FECHACARGA));
 			bean.setFechaResolucion(UtilidadesHash.getString(hash, CajgRemesaResolucionBean.C_FECHARESOLUCION));
 			bean.setLogGenerado(UtilidadesHash.getString(hash, CajgRemesaResolucionBean.C_LOGGENERADO));
+			bean.setIdTipoRemesa(UtilidadesHash.getInteger(hash, CajgRemesaResolucionBean.C_IDTIPOREMESA));
 			
 			bean.setFechaMod(UtilidadesHash.getString(hash, CajgRemesaResolucionBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash, CajgRemesaResolucionBean.C_USUMODIFICACION));
@@ -92,6 +94,7 @@ public class CajgRemesaResolucionAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, CajgRemesaResolucionBean.C_FECHACARGA, b.getFechaCarga());
 			UtilidadesHash.set(hash, CajgRemesaResolucionBean.C_FECHARESOLUCION, b.getFechaResolucion());
 			UtilidadesHash.set(hash, CajgRemesaResolucionBean.C_LOGGENERADO, b.getLogGenerado());
+			UtilidadesHash.set(hash, CajgRemesaResolucionBean.C_IDTIPOREMESA, b.getIdTipoRemesa());
 
 			UtilidadesHash.set(hash, CajgRemesaResolucionBean.C_FECHAMODIFICACION, b.getFechaMod());
 			UtilidadesHash.set(hash, CajgRemesaResolucionBean.C_USUMODIFICACION, b.getUsuMod());
@@ -132,6 +135,30 @@ public class CajgRemesaResolucionAdm extends MasterBeanAdministrador {
 		}
 
 		return numeroMaximo;
+	}
+	
+	
+	/**
+	 * 
+	 * @param idInstitucion
+	 * @param idTipoRemesa
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public String getIdContador(String idInstitucion, String idTipoRemesa) throws ClsExceptions {
+		String idContador = null;
+		String IDCONTADOR = "IDCONTADOR";
+		RowsContainer rc = new RowsContainer();
+		String sql = "SELECT " + IDCONTADOR +
+				" FROM CAJG_TIPOREMESA" +
+				" WHERE IDINSTITUCION = " + idInstitucion +
+				" AND IDTIPOREMESA = " + idTipoRemesa;
+		if (rc.query(sql)) {
+			Row fila = (Row) rc.get(0);
+			Hashtable ht = fila.getRow();			
+			idContador = (String) ht.get(IDCONTADOR);
+		}
+		return idContador;
 	}
 
 }
