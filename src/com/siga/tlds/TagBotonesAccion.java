@@ -115,6 +115,10 @@ public class TagBotonesAccion extends TagSupport {
 	private boolean informeEnvios;
 	private boolean logFacturacion;
 	private boolean envioFTP;
+	private boolean envioWS;
+	private boolean respuestaFTP;
+	private boolean resolucionFTP;
+	
 	
 	private ArrayList valoresEdicion;  
 	private ArrayList valoresConsulta;  
@@ -223,6 +227,9 @@ public class TagBotonesAccion extends TagSupport {
 			informeEnvios = false;
 			logFacturacion = false;
 			envioFTP = false;
+			envioWS = false;
+			respuestaFTP = false;
+			resolucionFTP = false;
 			
 			if (dato == null) dato = "";
 			
@@ -433,6 +440,12 @@ public class TagBotonesAccion extends TagSupport {
 				    logFacturacion=true;
 				}else if (tipo.equalsIgnoreCase("ftp")){
 					envioFTP = true;
+				}else if (tipo.equalsIgnoreCase("ws")){
+					envioWS = true;					
+				}else if (tipo.equalsIgnoreCase("respFTP")){
+					respuestaFTP = true;					
+				}else if (tipo.equalsIgnoreCase("resolucionFTP")){
+					resolucionFTP = true;					
 				}
 				
 			}
@@ -1098,7 +1111,7 @@ public class TagBotonesAccion extends TagSupport {
 			
 			if (aniadirExpedientes) {
 				out.println("<td class=\"tdBotones\">");
-				out.print("<input type=\"button\" alt=\""+UtilidadesString.getMensajeIdioma(usrbean, "general.boton.aniadirExpedientes") +"\"  id=\"idButton\" onclick=\"return aniadirExpedientes(true);\" class=\"button\" value=\"");
+				out.print("<input type=\"button\" alt=\""+UtilidadesString.getMensajeIdioma(usrbean, "general.boton.aniadirExpedientes") +"\"  id=\"idButtonAniadirExpedientes\" onclick=\"return aniadirExpedientes(true);\" class=\"button\" value=\"");
 				out.print(UtilidadesString.getMensajeIdioma(usrbean,"general.boton.aniadirExpedientes"));
 				out.println("\">");
 				out.println("</td>");
@@ -1133,11 +1146,33 @@ public class TagBotonesAccion extends TagSupport {
 			}
 			if (envioFTP) {
 				out.println("<td class=\"tdBotones\">");
-				out.print("<input type=\"button\" alt=\""+UtilidadesString.getMensajeIdioma(usrbean, "general.boton.envioFTP") +"\"  id=\"idButton\" onclick=\"return envioFTP();\" class=\"button\" value=\"");
+				out.print("<input type=\"button\" alt=\""+UtilidadesString.getMensajeIdioma(usrbean, "general.boton.envioFTP") +"\"  id=\"idButtonEnvioFTP\" onclick=\"return envioFTP(this);\" class=\"button\" value=\"");
 				out.print(UtilidadesString.getMensajeIdioma(usrbean,"general.boton.envioFTP"));
 				out.println("\">");
 				out.println("</td>");
 			}
+			if (envioWS) {
+				out.println("<td class=\"tdBotones\">");
+				out.print("<input type=\"button\" alt=\""+UtilidadesString.getMensajeIdioma(usrbean, "general.boton.envioWS") +"\"  id=\"idButtonEnvioWS\" onclick=\"return envioWS(this);\" class=\"button\" value=\"");
+				out.print(UtilidadesString.getMensajeIdioma(usrbean,"general.boton.envioWS"));
+				out.println("\">");
+				out.println("</td>");
+			}
+			if (respuestaFTP) {
+				out.println("<td class=\"tdBotones\">");
+				out.print("<input type=\"button\" alt=\""+UtilidadesString.getMensajeIdioma(usrbean, "general.boton.respuestaFTP") +"\"  id=\"idButtonRespuestaFTP\" onclick=\"return respuestaFTP(this);\" class=\"button\" value=\"");
+				out.print(UtilidadesString.getMensajeIdioma(usrbean,"general.boton.respuestaFTP"));
+				out.println("\">");
+				out.println("</td>");
+			}
+			if (resolucionFTP) {
+				out.println("<td class=\"tdBotones\">");
+				out.print("<input type=\"button\" alt=\""+UtilidadesString.getMensajeIdioma(usrbean, "general.boton.resolucionFTP") +"\"  id=\"idButtonResolucionFTP\" onclick=\"return resolucionFTP(this);\" class=\"button\" value=\"");
+				out.print(UtilidadesString.getMensajeIdioma(usrbean,"general.boton.resolucionFTP"));
+				out.println("\">");
+				out.println("</td>");
+			}
+			
 
 			out.println("</tr>");
 			out.println("</table>");
