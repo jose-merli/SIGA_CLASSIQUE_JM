@@ -10,23 +10,22 @@
 <%@ page import="java.util.*"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.beans.ScsEJGBean"%>
-<%@ page import="com.siga.beans.ScsTipoEJGBean"%>
-<%@ page import="com.siga.beans.ScsTurnoBean"%>
-<%@ page import="com.siga.beans.ScsGuardiasTurnoBean"%>
 <%@ page import="com.siga.beans.ScsPersonaJGBean"%>
-<%@ page import="com.siga.beans.ScsMaestroEstadosEJGBean"%>
 <%@ page import="com.siga.beans.ScsEJGAdm"%>
-<%@ page import="com.siga.administracion.SIGAMasterTable"%>
-<%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.Utilidades.Paginador"%>
 <%@ page import="com.siga.beans.CajgRemesaEstadosAdm"%>
 <%@ page import="com.siga.beans.CajgConfiguracionAdm"%>
 <%@ page import="com.atos.utils.*"%>
+<%@page import="com.siga.beans.CajgEJGRemesaBean"%>
+<%@page import="com.siga.tlds.FilaExtElement"%>
+<%@ page import="com.siga.administracion.SIGAConstants"%>
+<%@ page import="com.siga.ws.SIGAWSListener"%>
+<%@ page import="com.siga.ws.SIGAWSClientAbstract"%>
+
+
 
 <%@ page import="java.util.*"%>
 <%@ page import="com.atos.utils.Row"%>
-<%@ page import="com.siga.tlds.*"%>
-<%@ page import="com.atos.utils.RowsContainer"%>
 
 <!-- TAGLIBS -->
 <%@taglib uri	=	"struts-bean.tld" 			prefix="bean" 		%>
@@ -96,22 +95,40 @@
 				buttons+=",gf";//generar fichero txt
 			} else if (cajgConfig == 2) {
 				buttons+=",ftp";//envio ftp
-			}		
+			} else if (cajgConfig == 3) {
+				buttons+=",ws";//envio WebService
+			} else if (cajgConfig == 4) {
+				buttons+=",ws";//envio WebService
+			}	
 		}
-	} else if (idEstado > 0) {
+	} else if (idEstado == 1) {
 		if (cajgConfig != 0) {
 			buttons="g";//guardar
 			if (cajgConfig < 2) {
 				buttons+=",d";//descargar
 			}
 		}
-	} 
+	} else if (idEstado == 2) {//enviada
+		if (cajgConfig != 0) {
+			buttons="g";//guardar
+			if (cajgConfig < 2) {
+				buttons+=",d";
+			} else if (cajgConfig == 2 && !SIGAWSClientAbstract.isRespondida(idInstitucion, Integer.parseInt(idremesa))) {
+				buttons+=",respFTP";//obtener respuesta
+			} else if (cajgConfig == 2 && SIGAWSClientAbstract.isRespondida(idInstitucion, Integer.parseInt(idremesa))) {
+				buttons+=",resolucionFTP";//obtener resoluciones
+			}
+		}
+	}
+	
+	boolean ejecutandose = SIGAWSListener.isEjecutandose(idInstitucion.intValue(), Integer.parseInt(idremesa));
 	
 	
     /**************/
 
 	
 %>
+
 
 <html>
 
@@ -149,12 +166,19 @@
 			parent.generarFichero();	
 		}
 		
-		function generaXML(){			
+		function generaXML(){	
+			deshabilitaTodos();		
 			parent.generaXML();	
 		}
 
-		function envioFTP(){			
+		function envioFTP(obj) {
+			deshabilitaTodos();						
 			parent.envioFTP();	
+		}
+		
+		function envioWS(obj){
+			deshabilitaTodos();
+			parent.envioWS();	
 		}
 		
 		function accionDownload(){
@@ -165,10 +189,47 @@
 			sub();
 			parent.accionGuardar();
 		}
+		function respuestaFTP() {
+			deshabilitaTodos();			
+			parent.respuestaFTP();
+		}
+		
+		function resolucionFTP() {
+			respuestaFTP();//llama al mismo metodo
+		}
+		
+		function descargarLog(fila) {
+	    	var idEjgRemesa = document.getElementById('oculto' + fila + '_1');
+	    	
+	    	document.DefinicionRemesas_CAJG_Form.modo.value="erroresResultadoCAJG";	    	
+	    	document.DefinicionRemesas_CAJG_Form.idEjgRemesa.value=idEjgRemesa.value
+		   	
+			ventaModalGeneral(document.DefinicionRemesas_CAJG_Form.name,'P')
+		}
+		
+		function deshabilita(button) {
+			if (button) {
+				button.disabled=true;
+			}
+		}
+		
+		function deshabilitaTodos(){
+			deshabilita(document.getElementById('idButtonEnvioFTP'));
+			deshabilita(document.getElementById('idButtonEnvioWS'));
+			deshabilita(document.getElementById('idButtonRespuestaFTP'));
+			deshabilita(document.getElementById('idButtonResolucionFTP'));			
+			deshabilita(document.getElementById('idButtonAniadirExpedientes'));
+		}
+		
+		function inicio() {
+			<%if (ejecutandose) {%>
+				deshabilitaTodos();				
+			<%}%>			
+		}
 	</script>
 </head>
 
-<body>
+<body onload="inicio()">
 
 	<html:form action="/JGR_E-Comunicaciones_Gestion.do?noReset=true" method="post" target="mainWorkArea" style="display:none">
 		<input type="hidden" name="modo" value="">
@@ -176,12 +237,13 @@
 		<input type="hidden" name="tablaDatosDinamicosD">
 		<input type="hidden" name="actionModal" value="">
 		<input type="hidden" name="idRemesa" value="">
+		<input type="hidden" name="idEjgRemesa" value="">		
 		<input type="hidden" name="volver" value="">
-	</html:form>	
-	
-	<siga:ConjBotonesAccion botones="<%= buttons %>" clase="botonesSeguido" titulo="gratuita.BusquedaRemesas_CAJG.literal.Remesa"/>
 		
-		<siga:TablaCabecerasFijas 		   
+	</html:form>		
+	<siga:ConjBotonesAccion botones="<%= buttons %>" clase="botonesSeguido" titulo="gratuita.BusquedaRemesas_CAJG.literal.Remesa"/>	
+		
+	<siga:TablaCabecerasFijas 		   
 		   nombre="listadoEJG"
 		   borde="1"
 		   clase="tableTitle"		   
@@ -189,8 +251,9 @@
 		   tamanoCol="15,15,5,6,15,9,10,15,10"
 		   alto="100%" 
 		   ajustePaginador="true"
-		   ajusteBotonera="true"		
-		   			 >
+		   ajusteBotonera="true"	
+		   activarFilaSel="true">		   			
+		   
 
 	<%if (resultado.size()>0){%>
   			<%
@@ -214,9 +277,11 @@
 				
 				// Comprobamos el estado del idfacturacion
 	    	ScsEJGAdm scsEJGAdm = new ScsEJGAdm(usr);
-
 			
-
+	    	FilaExtElement[] elems = new FilaExtElement[1];
+			if (!registro.get("ERRORES").equals("0")) {
+	    		elems[0]=new FilaExtElement("descargaLog", "descargarLog", "gratuita.BusquedaRemesas_CAJG.literal.IncidenciasEnvio", SIGAConstants.ACCESS_FULL);
+			}
 			String CODIGO=null;
 			if(registro.get(ScsEJGBean.C_NUMEJG)==null||registro.get(ScsEJGBean.C_NUMEJG).equals(""))
 				CODIGO="&nbsp;";
@@ -224,17 +289,18 @@
 				CODIGO=(String)registro.get(ScsEJGBean.C_NUMEJG);
 
 			%>
-			
-				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>" visibleconsulta="false" visibleEdicion="false" pintarespacio="false" clase="listaNonEdit">
+				
+				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' elementos="<%=elems%>" botones="<%=botones%>" visibleconsulta="false" visibleEdicion="false" pintarespacio="false" clase="listaNonEdit">
 					<td><%=(String)registro.get("TURNO")%>&nbsp;</td>
 					<td><%=(String)registro.get("GUARDIA")%>&nbsp;</td>
 					<td>
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=registro.get(ScsEJGBean.C_IDTIPOEJG)%>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=usr.getLocation()%>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=registro.get(ScsEJGBean.C_ANIO)%>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=registro.get(ScsEJGBean.C_NUMERO)%>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=idremesa%>">
-					<input type='hidden' name='datosCarta' value='idinstitucion==<%=usr.getLocation()%>##idtipo==<%=registro.get(ScsEJGBean.C_IDTIPOEJG)%>##anio==<%=registro.get(ScsEJGBean.C_ANIO)%>##numero==<%=registro.get(ScsEJGBean.C_NUMERO)%>'>
+					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=registro.get(CajgEJGRemesaBean.C_IDEJGREMESA)%>">
+										
+					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=registro.get(ScsEJGBean.C_ANIO)%>">
+					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=registro.get(ScsEJGBean.C_NUMERO)%>">
+					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=registro.get(ScsEJGBean.C_IDTIPOEJG)%>">
+					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=registro.get(ScsEJGBean.C_NUMEJG)%>">
+					
 					<%=registro.get(ScsEJGBean.C_ANIO)%></td>
 					<td><%=CODIGO%></td>
 					<td><%=registro.get("TIPOEJG")%></td>
