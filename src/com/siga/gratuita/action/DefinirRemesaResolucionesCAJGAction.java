@@ -3,12 +3,15 @@ package com.siga.gratuita.action;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.Reader;
+import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,7 +59,8 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 
 	private final boolean ELIMINA_DATOS_TABLA_TEMPORAL = true;
 	
-	private String CONTADOR_REMESARESOLUCIONCAJG = "REMESARESOLUCIONCAJG";
+		
+	
 	/**
 	 * Funcion que atiende a las peticiones. Segun el valor del parametro modo
 	 * del formulario ejecuta distintas acciones
@@ -193,7 +197,8 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 								"," + "R." + CajgRemesaResolucionBean.C_FECHARESOLUCION +
 								"," + "R." + CajgRemesaResolucionBean.C_LOGGENERADO +
 								" FROM " + CajgRemesaResolucionBean.T_NOMBRETABLA + " R" +
-								" WHERE R." + CajgRemesaResolucionBean.C_IDINSTITUCION + " = " + this.getIDInstitucion(request);						
+								" WHERE R." + CajgRemesaResolucionBean.C_IDINSTITUCION + " = " + this.getIDInstitucion(request) +
+								" AND R." + CajgRemesaResolucionBean.C_IDTIPOREMESA + " = " + miForm.getIdTipoRemesa();						
 						
 				
 						
@@ -276,7 +281,8 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 			}
 
 			request.getSession().setAttribute("DATOSFORMULARIO", miHash);
-
+			
+			
 		} catch (Exception e) {
 			throwExcp("messages.general.error", e, null);
 		}
@@ -316,7 +322,7 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 				
 				miHash.put(CajgRemesaResolucionBean.C_IDREMESARESOLUCION, miForm.getIdRemesaResolucion());
 				miHash.put(CajgRemesaResolucionBean.C_IDINSTITUCION, this.getIDInstitucion(request).toString());
-
+				miHash.put(CajgRemesaResolucionBean.C_IDTIPOREMESA, miForm.getIdTipoRemesa());
 			}
 			CajgRemesaResolucionAdm remesaAdm = new CajgRemesaResolucionAdm(this.getUserBean(request));
 			CajgRemesaResolucionBean b = new CajgRemesaResolucionBean();
@@ -379,40 +385,51 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 	 *            De tipo HttpServletResponse
 	 * 
 	 * @return String que indicará la siguiente acción a llevar a cabo.
+	 * @throws ClsExceptions 
 	 */
-	protected String nuevo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	protected String nuevo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException, ClsExceptions {
 		// si el usuario logado es letrado consultar en BBDD el nColegiado para
 		// mostrar en la jsp
 		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 
 		DefinicionRemesaResolucionesCAJGForm miForm = (DefinicionRemesaResolucionesCAJGForm) formulario;
 
-		try {
-			Integer idinstitucion = new Integer(usr.getLocation());
-			GestorContadores gcRemesa = new GestorContadores(this.getUserBean(request));
-			Hashtable contadorTablaHashRemesa = gcRemesa.getContador(idinstitucion, CONTADOR_REMESARESOLUCIONCAJG);
-			
-			String siguiente = gcRemesa.getNuevoContador(contadorTablaHashRemesa);
-  					
-			String prefijo = UtilidadesHash.getString(contadorTablaHashRemesa, "PREFIJO");
-			String sufijo = UtilidadesHash.getString(contadorTablaHashRemesa, "SUFIJO");
-			String modocontador = contadorTablaHashRemesa.get("MODO").toString();
+		Integer idinstitucion = new Integer(usr.getLocation());
+		GestorContadores gcRemesa = new GestorContadores(this.getUserBean(request));
 
-			miForm.setNumero(siguiente);
-			miForm.setPrefijo(prefijo);
-			miForm.setSufijo(sufijo);			
+		Hashtable contadorTablaHashRemesa = gcRemesa.getContador(idinstitucion,	getIdContador(usr, getIDInstitucion(request).toString(), miForm.getIdTipoRemesa()));
 
-			request.setAttribute("modoContador", modocontador);
+		String siguiente = gcRemesa.getNuevoContador(contadorTablaHashRemesa);
 
-		} catch (SIGAException e) {
-			throw e;
-		} catch (Exception e) {
-			miForm.setNumero("");
-			miForm.setPrefijo("");
-			miForm.setSufijo("");			
-			request.setAttribute("modoContador", "");
-		}
+		String prefijo = UtilidadesHash.getString(contadorTablaHashRemesa,"PREFIJO");
+		String sufijo = UtilidadesHash.getString(contadorTablaHashRemesa,"SUFIJO");
+		String modocontador = contadorTablaHashRemesa.get("MODO").toString();
+
+		miForm.setNumero(siguiente);
+		miForm.setPrefijo(prefijo);
+		miForm.setSufijo(sufijo);
+
+		request.setAttribute("modoContador", modocontador);			
+
+		
 		return "insertarResolucion";
+	}
+
+	/**
+	 * 
+	 * @param usrBean
+	 * @param idInstitucion
+	 * @param idTipoRemesa
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	private String getIdContador(UsrBean usrBean, String idInstitucion, String idTipoRemesa) throws ClsExceptions {
+		CajgRemesaResolucionAdm cajgRemesaResolucionAdm = new CajgRemesaResolucionAdm(usrBean);
+		String idContador = cajgRemesaResolucionAdm.getIdContador(idInstitucion, idTipoRemesa);
+		if (idContador == null || idContador.trim().equals("")) {
+			throw new ClsExceptions("No se ha encontrado el contador para el tipo remesa " + idTipoRemesa);
+		}
+		return idContador;
 	}
 
 	/**
@@ -463,7 +480,8 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 	    		
 			GestorContadores gcRemesa = new GestorContadores(this.getUserBean(request));
 			
-			Hashtable contadorTablaHashRemesa = gcRemesa.getContador(this.getIDInstitucion(request), CONTADOR_REMESARESOLUCIONCAJG);
+			
+			Hashtable contadorTablaHashRemesa = gcRemesa.getContador(this.getIDInstitucion(request), getIdContador(usr, idInstitucion, miForm.getIdTipoRemesa()));
 			String siguiente = gcRemesa.getNuevoContador(contadorTablaHashRemesa);		
 			
 			cajgRemesaResolucionBean.setPrefijo(contadorTablaHashRemesa.get("PREFIJO").toString());
@@ -479,7 +497,7 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 			String idRemesaResolucion = resolucionAdm.seleccionarMaximo(this.getIDInstitucion(request).toString());
 			
 			cajgRemesaResolucionBean.setIdRemesaResolucion(Integer.valueOf(idRemesaResolucion));			
-
+			cajgRemesaResolucionBean.setIdTipoRemesa(Integer.valueOf(miForm.getIdTipoRemesa()));
 			
 			
 			File parentFile = new File(rutaAlmacen, idRemesaResolucion);
@@ -487,7 +505,9 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 			parentFile.mkdirs();
 			
 			
-	    	InputStream stream = formFile.getInputStream();	    	
+	    	InputStream stream = formFile.getInputStream();
+//	    	stream.markSupported();
+//	    	detectCodepage(stream);
 	    	
 	    	File file = new File(parentFile, formFile.getFileName());
 	    	cajgRemesaResolucionBean.setNombreFichero(file.getName());
@@ -495,7 +515,7 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
     		
     		resolucionAdm.insert(cajgRemesaResolucionBean);
     		
-    		boolean generaLog = createZIP(usr, idInstitucion, idRemesaResolucion, file, stream);
+    		boolean generaLog = createZIP(usr, idInstitucion, miForm.getIdTipoRemesa(), idRemesaResolucion, file, stream);
     		
     		if (!generaLog) {
     			cajgRemesaResolucionBean.setLogGenerado("0");
@@ -552,7 +572,8 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 	 * @throws IOException
 	 * @throws ClsExceptions
 	 */
-	private boolean createZIP(UsrBean usr, String idInstitucion, String idRemesaResolucion, File file, InputStream stream) throws IOException, ClsExceptions, SIGAException {
+	private boolean createZIP(UsrBean usr, String idInstitucion, String idTipoRemesa, String idRemesaResolucion, File file, InputStream stream) throws IOException, ClsExceptions, SIGAException {
+		
 		OutputStream bos = new FileOutputStream(file);
 		int bytesRead = 0;
 		byte[] buffer = new byte[8192];
@@ -564,7 +585,7 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 		bos.flush();
 		bos.close();
 		
-		boolean generaLog = callProcedure(usr, idInstitucion, idRemesaResolucion, file);
+		boolean generaLog = callProcedure(usr, idInstitucion, idTipoRemesa, idRemesaResolucion, file);		
 		
 		ArrayList ficheros = new ArrayList();
 		ficheros.add(file);
@@ -574,21 +595,49 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 		
 		return generaLog;
 	}
+	
+    public Charset detectCodepage(InputStream in) throws IOException {
+    	int len = 1;
+        byte[] bom = new byte[len]; // Get the byte-order mark, if there is one
+        in.read(bom, 0, len);
+        // Unicode formats => read BOM
+        System.out.println(bom[0]==Byte.valueOf("-1"));
+        byte b = (byte)0xEF;
+        in.reset();
+        if (bom[0] == (byte)0x00 && bom[1] == (byte)0x00 && bom[2] == (byte)0xFE
+                && bom[2] == (byte)0xFF) // utf-32BE
+            return Charset.forName("UTF-32BE");
+        if (bom[0] == (byte)0xFF && bom[1] == (byte)0xFE && bom[2] == (byte)0x00
+                && bom[2] == (byte)0x00) // utf-32BE
+            return Charset.forName("UTF-32LE");
+        if (bom[0] == (byte)0xEF && bom[1] == (byte)0xBB && bom[2] == (byte)0xBF) // utf-8
+            return Charset.forName("UTF-8");
+        if (bom[0] == (byte)0xff && bom[1] == (byte)0xfe) // ucs-2le, ucs-4le, and ucs-16le
+            return Charset.forName("UTF-16LE");
+        if (bom[0] == (byte)0xfe && bom[1] == (byte)0xff) // utf-16 and ucs-2
+            return Charset.forName("UTF-16BE");
+        if (bom[0] == (byte)0 && bom[1] == (byte)0 && bom[2] == (byte)0xfe && bom[3] == (byte)0xff) // ucs-4
+            return Charset.forName("UCS-4");
+        return null;
+    }
+
 
 	/**
 	 * 
 	 * @param file
 	 * @throws IOException
 	 */
-	private boolean callProcedure(UsrBean usr, String idInstitucion, String idRemesaResolucion, File file) throws IOException, SIGAException, ClsExceptions {
+	private boolean callProcedure(UsrBean usr, String idInstitucion, String idTipoRemesa, String idRemesaResolucion, File file) throws IOException, SIGAException, ClsExceptions {
 		boolean generaLog = false;
-		FileReader fileReader = new FileReader(file);
-		BufferedReader br = new BufferedReader(fileReader);
-		String line = null;		
-		
+		FileInputStream fileInputStream = new FileInputStream(file);
+		InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
+		Reader reader = new BufferedReader(inputStreamReader);
+				
+				
 		String sql = "SELECT CONSULTA, CABECERA, DELIMITADOR" +
 				" FROM CAJG_PROCEDIMIENTOREMESARESOL" +
-				" WHERE IDINSTITUCION = " + idInstitucion;
+				" WHERE IDINSTITUCION = " + idInstitucion +
+				" AND IDTIPOREMESA = " + idTipoRemesa;
 		RowsContainer rc = new RowsContainer();
 		if (!rc.find(sql)) {							
 			throw new SIGAException("messages.cajg.funcionNoDefinida");
@@ -608,17 +657,53 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 		cajgRemesaResolucionFicheroBean.setIdInstitucion(Integer.valueOf(idInstitucion));
 		cajgRemesaResolucionFicheroBean.setIdRemesaResolucion(Integer.valueOf(idRemesaResolucion));
 		
-		int numLinea = 1;
-		while ((line = br.readLine()) != null) {
-			cajgRemesaResolucionFicheroBean.setNumeroLinea(new Integer(numLinea++));
+		int numLinea = 1;			    
+	    int ch = -1;
+	    
+	    String line = "";
+	    while((ch = reader.read()) != -1) {
+	    	
+	    	if (Character.LINE_SEPARATOR == (byte)ch) {
+	    		cajgRemesaResolucionFicheroBean.setNumeroLinea(new Integer(numLinea++));
+				cajgRemesaResolucionFicheroBean.setLinea(line);
+				cajgRemesaResolucionFicheroBean.setIdRemesaResolucionFichero(new Integer(idRemesaResolucionFichero++));
+				cajgResolucionFicheroAdm.insert(cajgRemesaResolucionFicheroBean);
+				line = "";	 
+	    	} else if (Character.LETTER_NUMBER == (byte)ch) {
+	    		
+	    	} else {
+	    		line += (char)ch;
+	    	}
+	    }
+	    
+	    if (line != null && !line.trim().equals("")) {
+	    	cajgRemesaResolucionFicheroBean.setNumeroLinea(new Integer(numLinea++));
 			cajgRemesaResolucionFicheroBean.setLinea(line);
 			cajgRemesaResolucionFicheroBean.setIdRemesaResolucionFichero(new Integer(idRemesaResolucionFichero++));
-			cajgResolucionFicheroAdm.insert(cajgRemesaResolucionFicheroBean);							
-		}
+			cajgResolucionFicheroAdm.insert(cajgRemesaResolucionFicheroBean);
+	    }
+	    
+//		while ((line = reader.rereadLine()) != null) {
+//			System.out.println(line);
+//			ByteBuffer byteBuffer = ByteBuffer.wrap(line.getBytes());
+//			if (byteBuffer.capacity() > 1) {
+//				String lineSet = decoder.decode(byteBuffer).toString();	
+//				System.out.println(lineSet);
+//				if (lineSet != null && !lineSet.trim().equals("")) {			
+//					cajgRemesaResolucionFicheroBean.setNumeroLinea(new Integer(numLinea++));
+//					cajgRemesaResolucionFicheroBean.setLinea(lineSet);
+//					cajgRemesaResolucionFicheroBean.setIdRemesaResolucionFichero(new Integer(idRemesaResolucionFichero++));
+//					cajgResolucionFicheroAdm.insert(cajgRemesaResolucionFicheroBean);
+//				}
+//			}
+//			
+//			
+//		}
 		
-		br.close();
-		fileReader.close();
 		
+		reader.close();
+		inputStreamReader.close();
+				
 		String nombreFichero = file.getName();
 		nombreFichero = nombreFichero.substring(0, nombreFichero.lastIndexOf("."));
     	
@@ -729,6 +814,7 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 			
 			miHash.put(CajgRemesaResolucionBean.C_NOMBREFICHERO, miForm.getNombreFichero());
 			miHash.put(CajgRemesaResolucionBean.C_OBSERVACIONES, miForm.getObservaciones());			
+			miHash.put(CajgRemesaResolucionBean.C_IDTIPOREMESA, miForm.getIdTipoRemesa());
 			miHash.put(CajgRemesaResolucionBean.C_FECHACARGA, GstDate.getApplicationFormatDate("", miForm.getFechaCarga()));
 			miHash.put(CajgRemesaResolucionBean.C_FECHARESOLUCION, GstDate.getApplicationFormatDate("", miForm.getFechaResolucion()));
 			miHash.put(CajgRemesaResolucionBean.C_LOGGENERADO, miForm.getLogGenerado());
