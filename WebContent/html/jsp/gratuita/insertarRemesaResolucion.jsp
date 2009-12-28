@@ -30,6 +30,7 @@
 	
 	String modo=(String)request.getAttribute("modoContador");
 	String estilocaja="";
+	String idTipoRemesa = request.getParameter("idTipoRemesa");
 	
 	if (modo.equals("0")) {	
 		estilocaja = "boxConsulta";		
@@ -84,6 +85,8 @@
 	<html:hidden property = "actionModal" value = ""/>
 	<html:hidden property = "modo" value = "Insertar"/>
 	<html:hidden property = "idInstitucion" value ="<%=usr.getLocation()%>"/>
+	<html:hidden property = "idTipoRemesa" value ="<%=idTipoRemesa%>"/>
+	
 	<html:hidden property = "usuMod" value = "<%=usr.getUserName()%>"/>
 	
 	
