@@ -5,17 +5,14 @@
 package com.siga.gratuita.action;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Properties;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +24,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import weblogic.management.timer.Timer;
+
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
@@ -36,8 +35,6 @@ import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSch;
 import com.siga.Utilidades.GestorContadores;
 import com.siga.Utilidades.Paginador;
 import com.siga.Utilidades.PaginadorCaseSensitive;
@@ -45,8 +42,6 @@ import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
-import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.AdmLenguajesAdm;
 import com.siga.beans.CajgConfiguracionAdm;
 import com.siga.beans.CajgConfiguracionBean;
 import com.siga.beans.CajgEJGRemesaAdm;
@@ -56,6 +51,8 @@ import com.siga.beans.CajgRemesaAdm;
 import com.siga.beans.CajgRemesaBean;
 import com.siga.beans.CajgRemesaEstadosAdm;
 import com.siga.beans.CajgRemesaEstadosBean;
+import com.siga.beans.CajgRespuestaEJGRemesaAdm;
+import com.siga.beans.CajgRespuestaEJGRemesaBean;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.GenClientesTemporalBean;
 import com.siga.beans.ScsEJGAdm;
@@ -65,15 +62,14 @@ import com.siga.beans.ScsEstadoEJGBean;
 import com.siga.beans.ScsGuardiasColegiadoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsTipoEJGBean;
-import com.siga.certificados.Plantilla;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinicionRemesas_CAJG_Form;
 import com.siga.gratuita.form.DefinirEJGForm;
-import com.siga.gratuita.util.PCAJGGeneraXML;
-import com.siga.informes.InformeDefinirEJG;
 import com.siga.informes.MasterWords;
+import com.siga.ws.SIGAWSClientAbstract;
+import com.siga.ws.SIGAWSListener;
 
 
 
@@ -130,11 +126,14 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			} else if (accion.equalsIgnoreCase("descargar")) {
 				mapDestino = descargar(mapping, miForm, request, response);
 			} else if (accion.equalsIgnoreCase("generarFichero")) {
-				mapDestino = generarFichero(mapping, miForm, request, response);
-			} else if (accion.equalsIgnoreCase("generaXML")) {
-				mapDestino = generaXML(mapping, miForm, request, response);
+				mapDestino = generarFichero(mapping, miForm, request, response);			
 			} else if (accion.equalsIgnoreCase("envioFTP")) {
 				mapDestino = envioFTP(mapping, miForm, request, response);
+			} else if (accion.equalsIgnoreCase("envioWS")) {
+				mapDestino = envioWS(mapping, miForm, request, response);
+			} else if (accion.equalsIgnoreCase("respuestaFTP")) {
+				mapDestino = respuestaFTP(mapping, miForm, request, response);			
+				
 			} else if (accion.equalsIgnoreCase("marcarEnviada")) {
 				mapDestino = marcarEnviada(mapping, miForm, request, response);
 			} else if (accion.equalsIgnoreCase("borrarRemesa")) {
@@ -142,6 +141,10 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			} else if (accion.equalsIgnoreCase("buscarListosInicio")) {
 				request.getSession().removeAttribute("DATAPAGINADOR");
 				mapDestino = buscarListos(mapping, miForm, request, response);
+			} else if (accion.equalsIgnoreCase("erroresResultadoCAJG")) {
+				mapDestino = erroresResultadoCAJG(mapping, miForm, request, response);
+			} else if (accion.equalsIgnoreCase("descargarLog")) {
+				mapDestino = descargarLog(mapping, miForm, request, response);				
 			} else {
 				return super.executeInternal(mapping, formulario, request, response);
 			}
@@ -166,7 +169,22 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		return mapping.findForward(mapDestino);
 	}
 
-	
+	/**
+	 * 
+	 * @param mapping
+	 * @param miForm
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+
+	private String respuestaFTP(ActionMapping mapping, MasterForm miForm, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		ejecutaBackground(miForm, request, 1);
+		return exito("messages.cajg.recuperandoRespuestaFTP", request);
+	}
+
+
 
 	/**
 	 * Rellena un hash con los valores recogidos del formulario y realiza la
@@ -363,6 +381,25 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			throwExcp("messages.general.error", e, null);
 		}
 		return "editar";
+	}
+	
+	protected String erroresResultadoCAJG(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+
+		try {
+			HttpSession session = request.getSession();
+			DefinicionRemesas_CAJG_Form miForm = (DefinicionRemesas_CAJG_Form) formulario;
+			
+			String idEjgRemesa = miForm.getIdEjgRemesa();
+			Hashtable hash = new Hashtable();
+			hash.put(CajgRespuestaEJGRemesaBean.C_IDEJGREMESA, idEjgRemesa);
+			CajgRespuestaEJGRemesaAdm cajgRespuestaEJGRemesaAdm = new CajgRespuestaEJGRemesaAdm(getUserBean(request));
+			Vector vector = cajgRespuestaEJGRemesaAdm.select(hash);
+			request.setAttribute("DATOS_RESPUESTA_CAJG", vector);
+
+		} catch (Exception e) {
+			throwExcp("messages.general.error", e, null);
+		}
+		return "erroresResultadoCAJG";
 	}
 
 	/**
@@ -602,30 +639,25 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 
 		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 		UserTransaction tx = null;
-
-		Vector ocultos = formulario.getDatosTablaOcultos(0);
+		
 		CajgEJGRemesaAdm admBean = new CajgEJGRemesaAdm(this.getUserBean(request));
-
+		Vector ocultos = formulario.getDatosTablaOcultos(0);
+		
 		Hashtable miHash = new Hashtable();
-
+		
 		try {
 
-			miHash.put(CajgEJGRemesaBean.C_IDTIPOEJG, (ocultos.get(0)));
-			miHash.put(CajgEJGRemesaBean.C_IDINSTITUCION, (ocultos.get(1)));
-			miHash.put(CajgEJGRemesaBean.C_ANIO, (ocultos.get(2)));
-			miHash.put(CajgEJGRemesaBean.C_NUMERO, (ocultos.get(3)));
-			miHash.put(CajgEJGRemesaBean.C_IDREMESA, (ocultos.get(4)));
-			miHash.put(CajgEJGRemesaBean.C_IDINSTITUCIONREMESA, (ocultos.get(1)));
-
+			miHash.put(CajgEJGRemesaBean.C_IDEJGREMESA, ocultos.get(0));
+			
 			tx = usr.getTransaction();
 			tx.begin();
 			admBean.delete(miHash);
 
 			Hashtable hashEstado = new Hashtable();
-			hashEstado.put("IDINSTITUCION", miHash.get("IDINSTITUCION"));
-			hashEstado.put("ANIO", miHash.get("ANIO"));
-			hashEstado.put("NUMERO", miHash.get("NUMERO"));
-			hashEstado.put("IDTIPOEJG", miHash.get("IDTIPOEJG"));
+			hashEstado.put(ScsEJGBean.C_IDINSTITUCION, getIDInstitucion(request));
+			hashEstado.put(ScsEJGBean.C_ANIO,ocultos.get(1));
+			hashEstado.put(ScsEJGBean.C_NUMERO, ocultos.get(2));
+			hashEstado.put(ScsEJGBean.C_IDTIPOEJG, ocultos.get(3));
 
 			gestionaEstadoEJG(request, hashEstado);
 
@@ -692,13 +724,13 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		ScsEstadoEJGAdm beanEstado = new ScsEstadoEJGAdm(this.getUserBean(request));
 		Hashtable idanterior = beanEstado.getEstadoAnterior(hashtable);
 
-		if (idanterior.get("IDESTADOEJG") != null && idanterior.get("IDESTADOEJG").equals(ClsConstants.GENERADO_EN_REMESA)) {
+		if (idanterior.get(ScsEstadoEJGBean.C_IDESTADOEJG) != null && idanterior.get(ScsEstadoEJGBean.C_IDESTADOEJG).equals(ClsConstants.GENERADO_EN_REMESA)) {
 			Hashtable hashEstado = new Hashtable();
-			hashEstado.put("IDINSTITUCION", hashtable.get("IDINSTITUCION"));
-			hashEstado.put("ANIO", hashtable.get("ANIO"));
-			hashEstado.put("NUMERO", hashtable.get("NUMERO"));
-			hashEstado.put("IDTIPOEJG", hashtable.get("IDTIPOEJG"));
-			hashEstado.put(ScsEstadoEJGBean.C_IDESTADOPOREJG, idanterior.get("IDESTADOPOREJG"));
+			hashEstado.put(ScsEJGBean.C_IDINSTITUCION, hashtable.get(ScsEJGBean.C_IDINSTITUCION));
+			hashEstado.put(ScsEJGBean.C_ANIO, hashtable.get(ScsEJGBean.C_ANIO));
+			hashEstado.put(ScsEJGBean.C_NUMERO, hashtable.get(ScsEJGBean.C_NUMERO));
+			hashEstado.put(ScsEJGBean.C_IDTIPOEJG, hashtable.get(ScsEJGBean.C_IDTIPOEJG));
+			hashEstado.put(ScsEstadoEJGBean.C_IDESTADOPOREJG, idanterior.get(ScsEstadoEJGBean.C_IDESTADOPOREJG));
 			beanEstado.delete(hashEstado);			
 		}
 
@@ -825,122 +857,6 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 	}
 
 	/**
-	 * @param mapping
-	 *            Mapeador de las acciones. De tipo ActionMapping.
-	 * @param formulario
-	 *            del que se recoge la información. De tipo MasterForm.
-	 * @param request
-	 *            Información de sesión. De tipo HttpServletRequest
-	 * @param response
-	 *            De tipo HttpServletResponse
-	 * @return String que indicará la siguiente acción a llevar a cabo.
-	 */
-	protected String finalizarCarta(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response)
-			throws SIGAException {
-
-		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-		String institucion = usr.getLocation();
-		String idioma = usr.getLanguage().toUpperCase();
-
-		String resultado = "recogidaDatos";
-
-		Vector vResultado = new Vector();
-		ArrayList ficherosPDF = new ArrayList();
-		File rutaFin = null;
-		File rutaTmp = null;
-		int numeroCarta = 0;
-
-		try {
-			// obtener plantilla
-		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//			ReadProperties rp = new ReadProperties("SIGA.properties");
-			String rutaPlantilla = Plantilla.obtenerPathNormalizado(rp.returnProperty("sjcs.directorioFisicoCartaEJGJava")
-					+ rp.returnProperty("sjcs.directorioCartaEJGJava"))
-					+ ClsConstants.FILE_SEP + institucion;
-
-			// RGG cambio de codigos
-			String lenguajeExt = "es";
-			AdmLenguajesAdm al = new AdmLenguajesAdm(this.getUserBean(request));
-			lenguajeExt = al.getLenguajeExt(idioma);
-
-			String nombrePlantilla = "plantillaCartaEJG_" + lenguajeExt + ".fo";
-
-			InformeDefinirEJG informe = new InformeDefinirEJG();
-			String contenidoPlantilla = informe.obtenerContenidoPlantilla(rutaPlantilla, nombrePlantilla);
-
-			// obtener la ruta de descarga
-			String rutaServidor = Plantilla.obtenerPathNormalizado(rp.returnProperty("sjcs.directorioFisicoSJCSJava")
-					+ rp.returnProperty("sjcs.directorioSJCSJava"))
-					+ ClsConstants.FILE_SEP + institucion;
-			rutaFin = new File(rutaServidor);
-			if (!rutaFin.exists()) {
-				if (!rutaFin.mkdirs()) {
-					throw new SIGAException("facturacion.nuevoFichero.literal.errorAcceso");
-				}
-			}
-			String rutaServidorTmp = rutaServidor + ClsConstants.FILE_SEP + "tmp_ejg_" + System.currentTimeMillis();
-			rutaTmp = new File(rutaServidorTmp);
-			if (!rutaTmp.mkdirs()) {
-				throw new SIGAException("facturacion.nuevoFichero.literal.errorAcceso");
-			}
-
-			// obtener los datos comunes
-			Hashtable datosComunes = this.obtenerDatosComunes(request);
-
-			// buscar los registros seleccionados
-			Hashtable miHash = (Hashtable) request.getSession().getAttribute("DATABACKUP");
-
-			ScsEJGAdm admEJG = new ScsEJGAdm(this.getUserBean(request));
-			vResultado = admEJG.getDatosCartaEJG(miHash);
-
-			if (vResultado != null && !vResultado.isEmpty()) {
-				boolean correcto = true;
-				Enumeration listaEJGs = vResultado.elements();
-
-				while (correcto && listaEJGs.hasMoreElements()) {
-					Hashtable datosBaseEJG = (Hashtable) listaEJGs.nextElement();
-					datosBaseEJG.putAll(datosComunes);
-					File fPdf = informe.generarInforme(request, datosBaseEJG, rutaServidorTmp, contenidoPlantilla, rutaServidorTmp, "cartasEJG_" + numeroCarta);
-					correcto = (fPdf != null);
-					if (correcto) {
-						ficherosPDF.add(fPdf);
-						numeroCarta++;
-					}
-				}
-
-				if (correcto) {
-					// Ubicacion de la carpeta donde se crean los ficheros PDF:
-					String nombreFicheroPDF = "cartasEJG_" + UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/", "").replaceAll(":", "").replaceAll(" ", "");
-					String rutaServidorDescargasZip = rutaServidor + File.separator;
-
-					Plantilla.doZip(rutaServidorDescargasZip, nombreFicheroPDF, ficherosPDF);
-					request.setAttribute("nombreFichero", nombreFicheroPDF + ".zip");
-					request.setAttribute("rutaFichero", rutaServidorDescargasZip + nombreFicheroPDF + ".zip");
-					request.setAttribute("borrarFichero", "true");
-
-					// resultado = "descargaFichero";
-					request.setAttribute("generacionOK", "OK");
-					resultado = "recogidaDatos";
-				} else {
-					request.setAttribute("generacionOK", "ERROR");
-					resultado = "recogidaDatos";
-				}
-
-			} else {
-				resultado = exitoModalSinRefresco("gratuita.retenciones.noResultados", request);
-			}
-
-		} catch (Exception e) {
-			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
-		} finally {
-			if (rutaTmp != null) {
-				Plantilla.borrarDirectorio(rutaTmp);
-			}
-		}
-		return resultado;
-	}
-
-	/**
 	 * 
 	 */
 	protected String download(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions,
@@ -950,38 +866,6 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		request.setAttribute("rutaFichero", miForm.getRutaFicheroDownload());
 		request.setAttribute("borrarFichero", miForm.getBorrarFicheroDownload());
 		return "descargaFichero";
-	}
-
-	/**
-	 * Este método reemplaza los valores comunes en las plantillas FO
-	 * 
-	 * @param request
-	 *            Objeto HTTPRequest
-	 * @param plantillaFO
-	 *            Plantilla FO con parametros
-	 * @return Plantilla FO en donde se han reemplazado los parámetros
-	 * @throws ClsExceptions
-	 */
-	protected Hashtable obtenerDatosComunes(HttpServletRequest request) throws ClsExceptions {
-		DefinirEJGForm miForm = (DefinirEJGForm) request.getAttribute("DefinirEJGForm");
-		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-		String institucion = usr.getLocation();
-		String idioma = usr.getLanguage();
-
-		Hashtable datos = new Hashtable();
-		UtilidadesHash.set(datos, "CABECERA_CARTA_EJG", miForm.getCabeceraCarta());
-		UtilidadesHash.set(datos, "MOTIVO_CARTA_EJG", miForm.getMotivoCarta());
-		UtilidadesHash.set(datos, "PIE_CARTA_EJG", miForm.getPieCarta());
-		UtilidadesHash.set(datos, "FECHA", UtilidadesBDAdm.getFechaBD(""));
-		UtilidadesHash.set(datos, "TEXTO_TRATAMIENTO_DESTINATARIO", UtilidadesString.getMensajeIdioma(idioma, "informes.cartaAsistencia.estimado"));
-	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//		ReadProperties rp = new ReadProperties("SIGA.properties");
-		String rutaPlantilla = Plantilla.obtenerPathNormalizado(rp.returnProperty("sjcs.directorioFisicoCartaEJGJava")
-				+ rp.returnProperty("sjcs.directorioCartaEJGJava"))
-				+ ClsConstants.FILE_SEP + institucion;
-		UtilidadesHash.set(datos, "RUTA_LOGO", rutaPlantilla + ClsConstants.FILE_SEP + "recursos" + ClsConstants.FILE_SEP + "logo.gif");
-
-		return datos;
 	}
 
 
@@ -1081,6 +965,33 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				numRemesa += (sufijo != null && !sufijo.trim().equals("")) ? (sufijo) : "";
 				
 				int numeroIntercambio = cajgEJGRemesaAdm.getNextNumeroIntercambio(getIDInstitucion(request));
+				int nextIdEjgRemesa = cajgEJGRemesaAdm.getNextVal();
+				nextIdEjgRemesa--;
+				
+				
+				StringBuffer sqlInsertEJGRemesa = new StringBuffer("insert into cajg_ejgremesa" +
+						" (idinstitucion, anio, numero, idtipoejg, idinstitucionremesa, idremesa, fechamodificacion" +
+						" , usumodificacion, numerointercambio, idejgremesa)" +
+						" SELECT EJG.IDINSTITUCION, EJG.ANIO, EJG.NUMERO, EJG.IDTIPOEJG, " + getIDInstitucion(request) +
+								", " + miForm.getIdRemesa() + ", SYSDATE, " + getUserBean(request).getUserName() +
+							    ", " + numeroIntercambio + " + ROWNUM, " + nextIdEjgRemesa + " + ROWNUM" +
+						" FROM SCS_EJG EJG" +
+						" WHERE EJG.IDINSTITUCION = " + getIDInstitucion(request) + 
+						" AND (1 = 0");
+				
+				String sqlMaxIdEstadoPorEJG = "SELECT NVL(MAX(IDESTADOPOREJG), 0) + 1" +
+						" FROM SCS_ESTADOEJG E" +
+						" WHERE E.IDINSTITUCION = ER.IDINSTITUCION" +
+						" AND E.ANIO = ER.ANIO" +
+						" AND E.NUMERO = ER.NUMERO" +
+						" AND E.IDTIPOEJG = ER.IDTIPOEJG";
+				String sqlInsertEstadoEJG = "insert into scs_estadoejg (idinstitucion, idtipoejg, anio, numero, idestadoejg" +
+						", fechainicio, fechamodificacion, usumodificacion, observaciones, idestadoporejg, automatico)" +
+						" SELECT ER.IDINSTITUCION, ER.IDTIPOEJG, ER.ANIO, ER.NUMERO, '" + ClsConstants.GENERADO_EN_REMESA + "'" +
+						", SYSDATE, SYSDATE, " + getUserBean(request).getUserName() + ", '" + numRemesa + "', (" + sqlMaxIdEstadoPorEJG + "), 1" +
+						" FROM CAJG_EJGREMESA ER" +
+						" WHERE ER.IDINSTITUCION = " + getIDInstitucion(request) +
+						" AND ER.IDREMESA = " + miForm.getIdRemesa();
 
 				for (int i = 0; i < v_seleccionadosSesion.size(); i++) {
 
@@ -1088,55 +999,15 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 					miHashaux = (Hashtable) v_seleccionadosSesion.get(i);
 					String seleccionado = (String) miHashaux.get("SELECCIONADO");
 					if (seleccionado.equals("1")) {
-						Hashtable miHash = new Hashtable();
-						miHash.put(ScsEJGBean.C_IDINSTITUCION, miHashaux.get(ScsEJGBean.C_IDINSTITUCION));
-						miHash.put(ScsEJGBean.C_ANIO, miHashaux.get(ScsEJGBean.C_ANIO));
-						miHash.put(ScsEJGBean.C_NUMERO, miHashaux.get(ScsEJGBean.C_NUMERO));
-						miHash.put(ScsEJGBean.C_IDTIPOEJG, miHashaux.get(ScsEJGBean.C_IDTIPOEJG));
-						miHash.put(ScsEstadoEJGBean.C_IDESTADOEJG, ClsConstants.GENERADO_EN_REMESA);
-						miHash.put(ScsEstadoEJGBean.C_FECHAINICIO, UtilidadesBDAdm.getFechaBD("es"));
-						miHash.put(ScsEstadoEJGBean.C_AUTOMATICO, "1");
-						miHash.put(ScsEstadoEJGBean.C_OBSERVACIONES, numRemesa);
-
-						Hashtable hashEJGRemesa = new Hashtable();
-						hashEJGRemesa.put(CajgEJGRemesaBean.C_IDINSTITUCION, miHashaux.get(ScsEJGBean.C_IDINSTITUCION));
-						hashEJGRemesa.put(CajgEJGRemesaBean.C_ANIO, miHashaux.get(ScsEJGBean.C_ANIO));
-						hashEJGRemesa.put(CajgEJGRemesaBean.C_NUMERO, miHashaux.get(ScsEJGBean.C_NUMERO));
-						hashEJGRemesa.put(CajgEJGRemesaBean.C_IDTIPOEJG, miHashaux.get(ScsEJGBean.C_IDTIPOEJG));
-						hashEJGRemesa.put(CajgEJGRemesaBean.C_IDINSTITUCIONREMESA, miHashaux.get(ScsEJGBean.C_IDINSTITUCION));
-						hashEJGRemesa.put(CajgEJGRemesaBean.C_IDREMESA, miForm.getIdRemesa());
-						hashEJGRemesa.put(CajgEJGRemesaBean.C_NUMEROINTERCAMBIO, String.valueOf(numeroIntercambio));
-						numeroIntercambio++;
-						
-
-						SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-						Date fecha_modificacion = null;
-						String fecha_modificacion_aux = consultaMaximaFechaModificacionEJG(miHash, estadoEJGAdm);
-
-						if (fecha_modificacion_aux != null) {
-							fecha_modificacion = sdf.parse(fecha_modificacion_aux);
-						}
-						String fecha_aux = (String) request.getSession().getAttribute("HORABUSQUEDA");
-						SimpleDateFormat sdf1 = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-						Date fecha_busqueda = null;
-
-						fecha_busqueda = sdf1.parse(fecha_aux);
-
-						if (fecha_modificacion.before(fecha_busqueda)) {
-							estadoEJGAdm.prepararInsert(miHash);
-
-							estadoEJGAdm.insert(miHash);
-							cajgEJGRemesaAdm.insert(hashEJGRemesa);
-
-						} else {
-							tx.rollback();//								
-							request.setAttribute("idremesa", miForm.getIdRemesa());
-							request.setAttribute("mensajeError", "Los datos de uno de los EJG ha sido modificado desde otra ubicación.");
-							return "aniadirBusqueda";
-						}
+						sqlInsertEJGRemesa.append(" OR (EJG.ANIO = " + miHashaux.get(ScsEJGBean.C_ANIO) +
+								" AND EJG.NUMERO = " + miHashaux.get(ScsEJGBean.C_NUMERO) +
+								" AND EJG.IDTIPOEJG = " + miHashaux.get(ScsEJGBean.C_IDTIPOEJG) + ")");
 					}
 
 				}
+				sqlInsertEJGRemesa.append(")");
+				cajgEJGRemesaAdm.insertSQL(sqlInsertEJGRemesa.toString());
+				estadoEJGAdm.insertSQL(sqlInsertEstadoEJG);
 				tx.commit();
 				exitoRefresco("messages.inserted.success", request);
 				Hashtable miHash = new Hashtable();
@@ -1213,6 +1084,10 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			String idinstitucion = this.getIDInstitucion(request).toString();
 			request.setAttribute("idremesa", idremesa);
 			HashMap databackup = new HashMap();
+			String idIncidenciasEnvio =  miForm.getIdIncidenciasEnvio();
+			if (idIncidenciasEnvio != null && !idIncidenciasEnvio.equals("0")) {
+				request.getSession().removeAttribute("DATAPAGINADOR");
+			}
 
 			if (request.getSession().getAttribute("DATAPAGINADOR") != null) {
 				databackup = (HashMap) request.getSession().getAttribute("DATAPAGINADOR");
@@ -1242,12 +1117,24 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				// obtengo datos de la consulta
 				
 				Vector datos = null;
+				
+				String cuentaErrores = "(SELECT COUNT(1) FROM CAJG_RESPUESTA_EJGREMESA ER WHERE ER.IDEJGREMESA = ejgremesa." +  CajgEJGRemesaBean.C_IDEJGREMESA + ")"; 
 
+				String filtrado = "";
+				if (idIncidenciasEnvio != null) {
+					if (idIncidenciasEnvio.equals("1")) {//con errores
+						filtrado = " and " + cuentaErrores + " > 0";	
+					} else if (idIncidenciasEnvio.equals("2")) {//sin errores
+						filtrado = " and " + cuentaErrores + " = 0";
+					}
+					 
+				}
+				
 				/*
 				 * Construimos la primera parte de la consulta, donde escogemos
 				 * los campos a recuperar y las tablas necesarias
 				 */
-				consulta = "select ejg."
+				consulta = "select ejgremesa.idejgremesa, ejg."
 						+ ScsEJGBean.C_ANIO
 						+ ", ejg."
 						+ ScsEJGBean.C_IDINSTITUCION
@@ -1284,12 +1171,15 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 //						+ ScsEstadoEJGBean.C_IDTIPOEJG + " = estadoejg." + ScsEstadoEJGBean.C_IDTIPOEJG + " and ultimoestado." + ScsEstadoEJGBean.C_ANIO
 //						+ " = estadoejg." + ScsEstadoEJGBean.C_ANIO + " and ultimoestado." + ScsEstadoEJGBean.C_NUMERO + " = estadoejg."
 //						+ ScsEstadoEJGBean.C_NUMERO + ") and rownum=1) as estado" +
-						+ " F_SIGA_GETRECURSO(f_siga_get_ultimoestadoejg(ejg.idinstitucion,ejg.idtipoejg, ejg.anio, ejg.numero), " + this.getUserBean(request).getLanguage() + ") as estado"
-								
+						+ " F_SIGA_GETRECURSO(f_siga_get_ultimoestadoejg(ejg.idinstitucion,ejg.idtipoejg, ejg.anio, ejg.numero), " + this.getUserBean(request).getLanguage() + ") as estado"								
 						+ ", ejg." + ScsEJGBean.C_NUMERO
+						+ ", "  + cuentaErrores + " AS ERRORES"						
 						+ " from " + ScsEJGBean.T_NOMBRETABLA + " ejg,"
-						+ ScsGuardiasTurnoBean.T_NOMBRETABLA + " guardia," + ScsTipoEJGBean.T_NOMBRETABLA + " tipoejg," + CenColegiadoBean.T_NOMBRETABLA
-						+ " colegiado, CAJG_EJGREMESA ejgremesa";
+						+ ScsGuardiasTurnoBean.T_NOMBRETABLA + " guardia,"
+						+ ScsTipoEJGBean.T_NOMBRETABLA + " tipoejg,"
+						+ CenColegiadoBean.T_NOMBRETABLA+ " colegiado, "
+						+ CajgEJGRemesaBean.T_NOMBRETABLA + " ejgremesa";
+						
 
 				/* realizamos la join con de las tablas que necesitamos */
 				consulta += " where ejg." + ScsEJGBean.C_IDTIPOEJG + " = tipoejg." + ScsTipoEJGBean.C_IDTIPOEJG + " and " + " ejg."
@@ -1299,7 +1189,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 						+ ScsEJGBean.C_IDINSTITUCION + " = colegiado." + CenColegiadoBean.C_IDINSTITUCION + "(+) and " + " ejg." + ScsEJGBean.C_IDPERSONA
 						+ " = colegiado." + CenColegiadoBean.C_IDPERSONA + "(+)" + " and ejg.idinstitucion=ejgremesa.idinstitucion"
 						+ " and ejg.anio=ejgremesa.anio" + " and ejg.numero=ejgremesa.numero" + " and ejg.idtipoejg=ejgremesa.idtipoejg"
-						+ " and ejgremesa.idremesa=" + idremesa + "" + " and ejgremesa.idinstitucion=" + idinstitucion + "";
+						+ " and ejgremesa.idremesa=" + idremesa + " and ejgremesa.idinstitucion=" + idinstitucion + filtrado;
 
 				// Y ahora concatenamos los criterios de búsqueda
 
@@ -1724,9 +1614,12 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 
 		UserTransaction tx = usr.getTransaction();
 		tx.begin();
+		
+		CajgRemesaEstadosAdm cajgRemesaEstadosAdm = new CajgRemesaEstadosAdm(usr);
+		CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(usr);
 
-		if (nuevoEstadoRemesa(usr, getIDInstitucion(request), Integer.valueOf(miForm.getIdRemesa()), Integer.valueOf("2"))) {
-			nuevoEstadoEJGRemitidoComision(request, miForm.getIdRemesa(), ClsConstants.REMITIDO_COMISION);
+		if (cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIDInstitucion(request), Integer.valueOf(miForm.getIdRemesa()), Integer.valueOf("2"))) {
+			cajgEJGRemesaAdm.nuevoEstadoEJGRemitidoComision(usr, getIDInstitucion(request).toString(), miForm.getIdRemesa(), ClsConstants.REMITIDO_COMISION);
 		}
 
 		tx.commit();
@@ -1784,14 +1677,16 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		NOMBRE_FICHERO_X_DEFECTO = reemplazaCaracteres(NOMBRE_FICHERO_X_DEFECTO);
 						
 		String sRutaJava = pathFichero + ClsConstants.FILE_SEP + idInstitucion  + ClsConstants.FILE_SEP + form.getIdRemesa();
+		
+		StringBuffer mensaje = new StringBuffer();
+		mensaje.append("El fichero se ha generado correctamente.");
 
 		try {
-
-			Vector resultado = null;
 			String[] campos = null;
 			Row fila = null;
 			String funcion, cabecera, delimitador, saltoLinea, subCabecera = null;
 			String fila_consulta;
+			
 			
 			Boolean imprimirCabecera = Boolean.FALSE;
 
@@ -1804,8 +1699,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				throw new SIGAException("messages.cajg.funcionNoDefinida");
 			}
 
-			for (int j = 0; j < rc.size(); j++) {
-				resultado = new Vector();
+			for (int j = 0; j < rc.size(); j++) {				
 				fila = (Row) rc.get(j);
 				funcion = fila.getString(CajgProcedimientoRemesaBean.C_CONSULTA);
 				cabecera = (String) fila.getValue(CajgProcedimientoRemesaBean.C_CABECERA);
@@ -1815,28 +1709,36 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				String nombreFichero = fila.getString(CajgProcedimientoRemesaBean.C_NOMBREFICHERO);
 				if (nombreFichero == null || nombreFichero.trim().equals("")) {
 					nombreFichero = NOMBRE_FICHERO_X_DEFECTO;
+				} else {
+					nombreFichero = trataNombreFichero(nombreFichero);
 				}
 				
 				if (cabecera != null && cabecera.trim().equals("1")) {
 					imprimirCabecera = Boolean.TRUE;
 				}
 
-				String sql1 = "select " + funcion + "(" + idInstitucion + "," + form.getIdRemesa() + ") as consulta from dual";
+				String sql1 = "SELECT " + funcion + "(" + idInstitucion + "," + form.getIdRemesa() + ") as consulta, COUNT(1) NUMEROEJGS" +
+						" FROM " + CajgEJGRemesaBean.T_NOMBRETABLA +
+						" WHERE " + CajgEJGRemesaBean.C_IDINSTITUCION + " = " + idInstitucion +
+						" AND " + CajgEJGRemesaBean.C_IDREMESA + " = " + form.getIdRemesa();
 				
 				RowsContainer rc1 = new RowsContainer();
+				String numeroEJGs = null;
 				
 				try {// Si la funcion no existe en la base de datos
+					boolean usaTablaEJGremesa = false;
+					RowsContainer rc2 = new RowsContainer();
+					
 					if (rc1.find(sql1)) {
 						fila_consulta = rc1.getClob("dual", "consulta", sql1);
+						Row row = (Row) rc1.get(0);
+						numeroEJGs = row.getString("NUMEROEJGS");
 						// meter datos de la consulta en el vector
-						RowsContainer rc2 = new RowsContainer();
+						
 						if (rc2.find(fila_consulta)) {
+							usaTablaEJGremesa = fila_consulta.toUpperCase().indexOf(CajgEJGRemesaBean.T_NOMBRETABLA) > -1;
 							campos = rc2.getFieldNames();
-							int i = 0;
-							while (rc2.get(i) != null) {
-								resultado.add(rc2.get(i));
-								i++;
-							}
+							
 						} else {
 							ClsLogging.writeFileLog("La query de la funcion " + funcion + " no ha devuelto datos",request, 3);
 						}
@@ -1844,9 +1746,13 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 						ClsLogging.writeFileLog("La funcion " + funcion + " no ha devuelto una query",request, 3);
 					}
 					
-					if (resultado != null && !resultado.isEmpty()) {						
+					if (rc2 != null && rc2.size() > 0) {						
 						// creación fichero
-						ficheros.add(generaFichero(resultado, nombreFichero, sRutaJava, campos, "txt", imprimirCabecera, delimitador, saltoLinea, subCabecera));
+						if (!usaTablaEJGremesa) {
+							numeroEJGs = null;
+						}
+						File file = generaFichero(rc2, nombreFichero, sRutaJava, campos, "txt", imprimirCabecera, delimitador, saltoLinea, subCabecera, numeroEJGs, mensaje); 
+						ficheros.add(file);
 					}
 					
 				} catch (Exception e) {
@@ -1865,7 +1771,8 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				UserTransaction tx = usr.getTransaction();
 				tx.begin();
 				// Marcar como generada
-				nuevoEstadoRemesa(usr, getIDInstitucion(request), Integer.valueOf(form.getIdRemesa()), Integer.valueOf("1"));
+				CajgRemesaEstadosAdm cajgRemesaEstadosAdm = new CajgRemesaEstadosAdm(usr);				
+				cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIDInstitucion(request), Integer.valueOf(form.getIdRemesa()), Integer.valueOf("1"));
 
 				tx.commit();
 
@@ -1883,174 +1790,118 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
 		}
 
-		return exitoRefresco("messages.cajg.generacionFichero.correcto", request);
+		return exitoRefresco(mensaje.toString(), request);
 	}
 
 	/**
 	 * 
-	 * @param mapping
-	 * @param formulario
-	 * @param request
-	 * @param response
+	 * @param nombreFichero
 	 * @return
-	 * @throws Exception
 	 */
-	private String generaXML(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-		String idInstitucion = this.getIDInstitucion(request).toString();
-		DefinicionRemesas_CAJG_Form form = (DefinicionRemesas_CAJG_Form) formulario;
-		String idRemesa = form.getIdRemesa();
-		
-		String keyPathFicheros = "cajg.directorioFisicoCAJG";
-		String keyPathPlantillas = "cajg.directorioPlantillaCAJG";
-		String keyPath2 = "cajg.directorioCAJGJava";
-				
-	    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//		ReadProperties p = new ReadProperties("SIGA.properties");
-		String pathFichero = p.returnProperty(keyPathFicheros) + p.returnProperty(keyPath2);
-		String pathPlantillas = p.returnProperty(keyPathPlantillas) + p.returnProperty(keyPath2);
-						
-		String dirFicheros = pathFichero + File.separator + idInstitucion  + File.separator + form.getIdRemesa() + File.separator + "xml";
-		String dirPlantillas = pathPlantillas + File.separator + idInstitucion;
-		
-		File file = generaXML(usr, idInstitucion, idRemesa, dirFicheros, dirPlantillas);
-		return descargaFichero(formulario, request, file);
-	}
-	
-	/**
-	 * 
-	 * @param mapping
-	 * @param formulario
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	private String envioFTP(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws Exception {
-				
-		generaXML(mapping, formulario, request, response);
-		
-		String idInstitucion = this.getIDInstitucion(request).toString();
-		DefinicionRemesas_CAJG_Form form = (DefinicionRemesas_CAJG_Form) formulario;		
-		
-		String keyPathFicheros = "cajg.directorioFisicoCAJG";		
-		String keyPath2 = "cajg.directorioCAJGJava";
-				
-		//ReadProperties p = new ReadProperties("SIGA.properties");
-		ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		String pathFichero = p.returnProperty(keyPathFicheros) + p.returnProperty(keyPath2);								
-		String dirFicheros = pathFichero + File.separator + idInstitucion  + File.separator + form.getIdRemesa() + File.separator + "xml";		
-		
-		File dir = new File(dirFicheros);
-		File[] files = dir.listFiles();
-		File file = null;
-		if (files != null){
-			for (int i = 0; i < files.length; i++) {
-				if (files[i].getName().endsWith(".xml")) {
-					file = files[i];
-					break;
+	private String trataNombreFichero(String nombreFichero) {
+		String nombre = nombreFichero;
+		try {
+			if (nombre != null) {
+				int iniDate = -1;				
+				while ((iniDate = nombre.indexOf("$DATE")) > -1) { //para plantilla $DATE(ddMMyyyy)$
+					int finDate = nombreFichero.indexOf("$", iniDate+1) + 1;
+					String sub = nombre.substring(iniDate, finDate);										
+					String formato  = sub.substring(sub.indexOf("(")+1, sub.indexOf(")"));
+					SimpleDateFormat sdf = new SimpleDateFormat(formato);
+					String fechaSt = sdf.format(new Date());
+					nombre = nombre.substring(0, iniDate) + fechaSt + nombre.substring(finDate);
 				}
 			}
+		} catch (Exception e) {
+			//si ocurre cualquier excepcion devolvemos el dato inicial y para que se revise
+			nombre = nombreFichero;
 		}
-		
-		if (file == null || !file.exists()) {
-			throw new SIGAException("messages.cajg.error.ficheroNoEncontrado");
-		}
-		FileInputStream fis = new FileInputStream(file);
+		return nombre;
+	}
+
+
+	/**
+	 * 
+	 * @param formulario
+	 * @param request
+	 * @throws Exception
+	 */
+	private void ejecutaBackground(MasterForm formulario, HttpServletRequest request, int indexClass) throws ClsExceptions {
+		DefinicionRemesas_CAJG_Form form = (DefinicionRemesas_CAJG_Form) formulario;
+		Integer idInstitucion = getIDInstitucion(request);
+		UsrBean usrBean = getUserBean(request);
+					
+		String idRemesa = form.getIdRemesa();
 		
 		CajgConfiguracionAdm cajgConfiguracionAdm = new CajgConfiguracionAdm(getUserBean(request));
-		Hashtable hash = new Hashtable();
-		hash.put(CajgConfiguracionBean.C_IDINSTITUCION, this.getIDInstitucion(request));
+		
+		Hashtable<String, Integer> hash = new Hashtable<String, Integer>();
+		hash.put(CajgConfiguracionBean.C_IDINSTITUCION, idInstitucion);
 		Vector vector = cajgConfiguracionAdm.selectByPK(hash);
 		if (vector == null || vector.size() != 1) {
-			throw new SIGAException("messages.cajg.error.revisarConfiguracion");
-		}
+			throw new ClsExceptions("No se ha encontrado la configuración para este colegio");
+		}		
 		CajgConfiguracionBean cajgConfiguracionBean = (CajgConfiguracionBean) vector.get(0);
+		String clase = cajgConfiguracionBean.getWsClass();
+		if (clase == null || clase.trim().equals("")) {
+			throw new ClsExceptions("No esta definido el campo clase de la tabla de configuración.");
+		}
+		String[] clases = clase.split(";");
 		
-		if (cajgConfiguracionBean.getFtpIP() == null || cajgConfiguracionBean.getFtpIP().trim().equals("")
-				|| cajgConfiguracionBean.getFtpPuerto() == null
-				|| cajgConfiguracionBean.getFtpUser() == null
-				|| cajgConfiguracionBean.getFtpPass() == null) {
-			throw new SIGAException("messages.cajg.error.revisarConfiguracion");
+		if (indexClass >= clases.length) {
+			throw new ClsExceptions("Faltan nombres en el campo clase de la tabla de configuración.");
 		}
 		
-		JSch jsch = new JSch();
-		com.jcraft.jsch.Session session = null;
-		ChannelSftp chan = null;
-		
-		try {
-			session = jsch.getSession(cajgConfiguracionBean.getFtpUser(), cajgConfiguracionBean.getFtpIP(), cajgConfiguracionBean.getFtpPuerto().intValue());
-			
-			session.setPassword(cajgConfiguracionBean.getFtpPass());
-			
-			// El SFTP requiere un intercambio de claves
-			// con esta propiedad le decimos que acepte la clave
-			// sin pedir confirmación
-			Properties prop = new Properties();
-			prop.put("StrictHostKeyChecking", "no");
-			session.setConfig(prop);
-			session.connect();
-
-			// Abrimos el canal de sftp y conectamos
-			chan = (ChannelSftp) session.openChannel("sftp");
-			chan.connect();
-		
-
-			String dirFTP = cajgConfiguracionBean.getFtpDirectorio();
-						
-			chan.cd(dirFTP);
-			chan.put(fis, file.getName()); 
-			
-			fis.close();
-			
-			
-			UsrBean usr = getUserBean(request);
-			
-			UserTransaction tx = usr.getTransaction();
-			tx.begin();
-			// Marcar como generada
-			nuevoEstadoRemesa(usr, getIDInstitucion(request), Integer.valueOf(form.getIdRemesa()), Integer.valueOf("1"));
-
-			
-			//MARCAMOS COMO ENVIADA
-			if (nuevoEstadoRemesa(usr, getIDInstitucion(request), Integer.valueOf(form.getIdRemesa()), Integer.valueOf("2"))) {
-				nuevoEstadoEJGRemitidoComision(request, form.getIdRemesa(), ClsConstants.REMITIDO_COMISION);
-			}
-			tx.commit();
-
-		
-		} finally {
-			
-			if (chan != null && chan.isConnected()) {
-				chan.disconnect();
-			}
-			if (session != null && session.isConnected()) {
-				session.disconnect();
-			}			
+		SIGAWSClientAbstract sigaWSClient = SIGAWSClientAbstract.getInstance(clases[indexClass]);
+				
+		if (sigaWSClient == null) {
+			throw new ClsExceptions("El colegio no tiene implementado el WebService");
 		}
+		sigaWSClient.setIdInstitucion(getIDInstitucion(request));
+		sigaWSClient.setUsrBean(usrBean);
+		sigaWSClient.setIdRemesa(Integer.parseInt(idRemesa));
+		sigaWSClient.setUrlWS(cajgConfiguracionBean.getWsURL());
+				
+		SIGAWSListener sigaWSListener = new SIGAWSListener();
+		Timer timer = new Timer();
+		timer.addNotificationListener(sigaWSListener, null, timer);
+		Integer idNotificacion = timer.addNotification("WSType", "WSMessage", sigaWSClient, new Date(), 0);
+		sigaWSListener.setIdNotificacion(idNotificacion);		
 		
-		return exitoRefresco("messages.cajg.envioFTP.correcto", request);
-	}
+		timer.start();
+		
+	} 
 	
 	/**
 	 * 
-	 * @param usr
-	 * @param idInstitucion
-	 * @param idRemesa
-	 * @param dirPadre
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
 	 * @return
 	 * @throws Exception
 	 */
-	private File generaXML(UsrBean usr, String idInstitucion, String idRemesa, String dirFicheros, String dirPlantillas) throws Exception {
-		CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(usr);				
-		PCAJGGeneraXML pcajgGeneraXML = new PCAJGGeneraXML(cajgEJGRemesaAdm, idInstitucion, idRemesa);
-		File file = pcajgGeneraXML.generaXML(dirFicheros, dirPlantillas);	
+	private String envioWS(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
-		
-		//lo ultimo que hago es la codificacion pq si tenemos que transformarlo con la xsl no acepta la codificion ISO
-		//file = pcajgGeneraXML.setEncodingISO_8859_15(file);
-		return file;
+		ejecutaBackground(formulario, request, 0);		
+		return exitoRefresco("messages.cajg.enviandoWS", request);
 	}
+	
+	
+	/**
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	private String envioFTP(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws Exception {				
+		ejecutaBackground(formulario, request, 0);		
+		return exito("messages.cajg.envioFTP.correcto", request);
+	}
+
 
 	/**
 	 * Funcion que reemplaza los caracteres extraños no permitidos como nombre de un fichero
@@ -2073,29 +1924,23 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		return nombre;
 	}
 
-	private void nuevoEstadoEJGRemitidoComision(HttpServletRequest request, String idRemesa, String idEstado) throws ClsExceptions {
-
-		CajgEJGRemesaAdm admEJGRemesa = new CajgEJGRemesaAdm(this.getUserBean(request));
-		Vector datos = admEJGRemesa.busquedaEJGRemesaParaRemitidoComision(this.getIDInstitucion(request).toString(), idRemesa);
-		// pasamos todos los EJG al estado anterior que tenían antes de estar en
-		// la remesa
-
-		for (int i = 0; i < datos.size(); i++) {
-			Hashtable ejg = (Hashtable) datos.get(i);
-			ScsEstadoEJGAdm beanEstado = new ScsEstadoEJGAdm(this.getUserBean(request));
-			// int idanterior = beanEstado.getEstadoAnterior(ejg);
-			// ejg.put(ScsEstadoEJGBean.C_IDESTADOEJG,
-			// String.valueOf(idanterior));
-			ejg.put(ScsEstadoEJGBean.C_IDESTADOEJG, idEstado);
-			ejg.put(ScsEstadoEJGBean.C_FECHAINICIO, UtilidadesBDAdm.getFechaBD("es"));
-			ejg.put(ScsEstadoEJGBean.C_AUTOMATICO, "1");
-			beanEstado.prepararInsert(ejg);
-			beanEstado.insert(ejg);
-		}
-
-	}
-
-	private File generaFichero(Vector datos, String nombreFichero, String rutaFichero, String[] cabeceras, String extension, Boolean imprimirCabecera, String delimitador, String saltoLinea, String subCabecera)
+	/**
+	 * 
+	 * @param datos
+	 * @param nombreFichero
+	 * @param rutaFichero
+	 * @param cabeceras
+	 * @param extension
+	 * @param imprimirCabecera
+	 * @param delimitador
+	 * @param saltoLinea
+	 * @param subCabecera
+	 * @param mensaje 
+	 * @param numeroEJGs 
+	 * @return
+	 * @throws IOException
+	 */
+	private File generaFichero(RowsContainer rowsContainer, String nombreFichero, String rutaFichero, String[] cabeceras, String extension, Boolean imprimirCabecera, String delimitador, String saltoLinea, String subCabecera, String numeroEJGs, StringBuffer mensaje)
 			throws IOException {
 		
 		if (imprimirCabecera == null) {
@@ -2117,13 +1962,15 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		String valor;
 		String arraySubCabeceras = new String();
 		boolean inicioLinea = true;
+		int numeroDatos = 0;
 
-		for (i = 0; i < datos.size(); i++) {
+		for (i = 0; i < rowsContainer.size(); i++) {
 			String linea = "";
 			String cabecera = "";
 			inicioLinea = true;
+			numeroDatos++;
 
-			Row row = (Row) datos.elementAt(i);
+			Row row = (Row) rowsContainer.get(i);
 			if (imprimirCabecera.booleanValue()) {
 				for (int j = 0; j < cabeceras.length; j++) {					
 					if (j == 0) {
@@ -2137,6 +1984,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				imprimirCabecera = Boolean.FALSE;
 			}
 
+			boolean mismoExpediente = true;
 			
 			for (int k = 0; k < cabeceras.length; k++) {
 				valor = row.getString(cabeceras[k]);
@@ -2149,6 +1997,10 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 						linea = linea + "\r\n";
 					} else {
 						linea = "";
+						if (mismoExpediente) {
+							numeroDatos--;
+							mismoExpediente = false;
+						}
 					}	
 					inicioLinea = true;
 				} else if (saltoLinea != null && !saltoLinea.trim().equals("") && saltoLinea.trim().equals(valor)) {
@@ -2164,7 +2016,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				}
 			}
 
-			if (i+1 < datos.size()) {
+			if (i+1 < rowsContainer.size()) {
 				linea = linea + "\r\n";
 			}
 			out.write(linea.getBytes());
@@ -2172,32 +2024,43 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		}
 		out.flush();
 		out.close();
+		
+		if (numeroEJGs != null) {
+			if (!numeroEJGs.trim().equals(String.valueOf(numeroDatos))) {
+				mensaje.append("\nEn el fichero " + nombreFichero + " se ha generado información de " + numeroDatos + " expedientes y en la remesa existen " + numeroEJGs + ". Revise la información obtenida.");				
+			}
+		}
+		
 
 		return archivo;
 	}
 
-	private boolean nuevoEstadoRemesa(UsrBean usr, Integer idInstitucion, Integer idRemesa, Integer idEstado) throws ClsExceptions {
-		boolean insertado = false;
-		CajgRemesaEstadosAdm cajgRemesaEstadosAdm = new CajgRemesaEstadosAdm(usr);
+	/**
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @param log
+	 * @return
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
+	
+	private String descargarLog(ActionMapping mapping, MasterForm formulario,
+			HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 
-		Vector vector = cajgRemesaEstadosAdm.select(" WHERE " + CajgRemesaEstadosBean.C_IDINSTITUCION + " = " + idInstitucion + " AND "
-				+ CajgRemesaEstadosBean.C_IDREMESA + " = " + idRemesa + " AND " + CajgRemesaEstadosBean.C_IDESTADO + " IN (SELECT MAX("
-				+ CajgRemesaEstadosBean.C_IDESTADO + ")" + " FROM " + CajgRemesaEstadosBean.T_NOMBRETABLA + " WHERE " + CajgRemesaEstadosBean.C_IDINSTITUCION
-				+ " = " + idInstitucion + " AND " + CajgRemesaEstadosBean.C_IDREMESA + " = " + idRemesa + " )");
+		DefinicionRemesas_CAJG_Form miForm = (DefinicionRemesas_CAJG_Form) formulario;
+		File file = SIGAWSClientAbstract.getErrorFile(getIDInstitucion(request), Integer.parseInt(miForm.getIdRemesa()));
 
-		if (vector != null && vector.size() > 0) {
-			CajgRemesaEstadosBean estadoAnterior = (CajgRemesaEstadosBean) vector.get(0);
-			if (estadoAnterior.getIdestado().intValue() == (idEstado.intValue() - 1)) {
-				CajgRemesaEstadosBean cajgRemesaEstadosBean = new CajgRemesaEstadosBean();
-				cajgRemesaEstadosBean.setIdInstitucion(idInstitucion);
-				cajgRemesaEstadosBean.setIdRemesa(idRemesa);
-				cajgRemesaEstadosBean.setIdestado(idEstado);
-				cajgRemesaEstadosBean.setFecharemesa("SYSDATE");
-				insertado = cajgRemesaEstadosAdm.insert(cajgRemesaEstadosBean);
-			}
+		if (file == null) {
+			throw new SIGAException("messages.general.error.ficheroNoExiste");
 		}
-		return insertado;
 
+		request.setAttribute("nombreFichero", file.getName());
+		request.setAttribute("rutaFichero", file.getAbsolutePath());
+
+		return "descargaFichero";
 	}
 
 }
