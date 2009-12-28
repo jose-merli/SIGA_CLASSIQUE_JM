@@ -15,6 +15,7 @@ public class CajgRemesaResolucionBean extends MasterBean {
 	public String fechaResolucion;	
 	public String fechaResolucionHasta;
 	public String logGenerado;
+	public Integer idTipoRemesa;
 	
 	
 	/*
@@ -38,6 +39,7 @@ public class CajgRemesaResolucionBean extends MasterBean {
 	public static final String C_FECHARESOLUCION = "FECHARESOLUCION";
 	public static final String C_FECHARESOLUCIONHASTA = "FECHARESOLUCIONHASTA";
 	public static final String C_LOGGENERADO = "LOGGENERADO";
+	public static final String C_IDTIPOREMESA = "IDTIPOREMESA";
 	
 	
 	/**
@@ -184,6 +186,18 @@ public class CajgRemesaResolucionBean extends MasterBean {
 	 */
 	public void setLogGenerado(String logGenerado) {
 		this.logGenerado = logGenerado;
+	}	
+	/**
+	 * @return the idTipoRemesa
+	 */
+	public Integer getIdTipoRemesa() {
+		return idTipoRemesa;
+	}
+	/**
+	 * @param idTipoRemesa the idTipoRemesa to set
+	 */
+	public void setIdTipoRemesa(Integer idTipoRemesa) {
+		this.idTipoRemesa = idTipoRemesa;
 	}
 	
 	
