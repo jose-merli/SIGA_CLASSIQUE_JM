@@ -13,22 +13,9 @@
 
 
 <!-- IMPORTS -->
-<%@ page import="java.util.*"%>
+
 <%@ page import="com.atos.utils.UsrBean"%>
-<%@ page import="com.siga.beans.ScsEJGBean"%>
-<%@ page import="com.siga.beans.ScsEJGAdm"%>
-<%@ page import="com.siga.beans.*"%>
-<%@ page import="com.siga.beans.ScsEstadoEJGBean"%>
-<%@ page import="com.siga.beans.ScsPersonaJGBean"%>
-<%@ page import="com.siga.beans.ScsTurnoBean"%>
-<%@ page import="com.siga.beans.ScsGuardiasTurnoBean"%>
-<%@ page import="com.siga.beans.ScsTipoEJGBean"%>
-<%@ page import="com.siga.beans.ScsTipoEJGColegioBean"%>
-<%@ page import="com.siga.administracion.SIGAConstants"%>
-<%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
-<%@ page import="com.siga.administracion.SIGAMasterTable"%>
-<%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
-<%@ page import="com.siga.Utilidades.*"%>
+
 
 <!-- JSP -->
 
@@ -43,8 +30,19 @@
 	
 	String volver=(String)request.getAttribute("VOLVER");
 
-	Hashtable miHash = (Hashtable)ses.getAttribute("DATOSFORMULARIO");
 	ses.removeAttribute("DATOSFORMULARIO");	
+	String idTipoRemesa = request.getParameter("idTipoRemesa");
+	
+	String titulo = "";
+	String localizacion = "gratuita.BusquedaRemesas.localizacion";
+	
+	if (idTipoRemesa != null) {
+		if (idTipoRemesa.equals("1")) {
+			titulo = "menu.justiciaGratuita.e_comunicaciones.Resoluciones"; 
+		} else if(idTipoRemesa.equals("2")) {
+			titulo = "menu.justiciaGratuita.e_comunicaciones.cargaDesignaProcurador";
+		}
+	}
 	
 	
 %>
@@ -58,7 +56,7 @@
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 	<script type="text/javascript">	
-	
+		
 		function refrescarLocal() {		
 			buscar();
 		}		
@@ -87,8 +85,8 @@
 	</script>
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<siga:Titulo 
-		titulo="menu.justiciaGratuita.e_comunicaciones.Resoluciones"
-		localizacion="gratuita.BusquedaRemesas.localizacion"/>
+		titulo="<%=titulo%>"
+		localizacion="<%=localizacion%>"/>
 	<!-- FIN: TITULO Y LOCALIZACION -->
 
 </head>
@@ -100,6 +98,7 @@
 	<html:form action="/JGR_E-Comunicaciones_RemesaResolucion.do?noReset=true" method="POST" target="resultado">
 		<html:hidden property = "modo" value = "inicio"/>
 		<html:hidden property = "idInstitucion" value = "<%=usr.getLocation()%>"/>
+		<html:hidden property = "idTipoRemesa" value = "<%=idTipoRemesa%>"/>
 		<html:hidden property = "actionModal" value = ""/>
 		<html:hidden property = "idRemesaResolucion" value = ""/>
 		<html:hidden property = "paginaSeleccionada" value = ""/>
