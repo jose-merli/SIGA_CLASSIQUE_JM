@@ -171,4 +171,17 @@ public class DefinicionRemesaResolucionesCAJGForm extends MasterForm {
 	public void setLogGenerado(String logGenerado) {
 		this.datos.put(CajgRemesaResolucionBean.C_LOGGENERADO, logGenerado);
 	}
+	
+	/**
+	 * @return the idTipoRemesa
+	 */
+	public String getIdTipoRemesa() {
+		return UtilidadesHash.getString(this.datos, CajgRemesaResolucionBean.C_IDTIPOREMESA);
+	}
+	/**
+	 * @param idInstitucion the idTipoRemesa to set
+	 */
+	public void setIdTipoRemesa(String idTipoRemesa) {
+		this.datos.put(CajgRemesaResolucionBean.C_IDTIPOREMESA, idTipoRemesa);
+	}
 }
