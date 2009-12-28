@@ -2121,9 +2121,22 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
 
 				// comprobar si se han insertado nuevos EJG con los criterios de búsqueda
 				String mensaje = "messages.inserted.success";
-				if (hayNuevosEJGs(request)){
-					mensaje = "Desde la última selección se han incorporado nuevos EJG que se incluyen en la búsqueda";
-				}
+				
+				String sqlMaxIdEstadoPorEJG = "SELECT NVL(MAX(IDESTADOPOREJG), 0) + 1" +
+						" FROM SCS_ESTADOEJG E" +
+						" WHERE E.IDINSTITUCION = EJG.IDINSTITUCION" +
+						" AND E.ANIO = EJG.ANIO" +
+						" AND E.NUMERO = EJG.NUMERO" +
+						" AND E.IDTIPOEJG = EJG.IDTIPOEJG";
+				
+				StringBuffer sqlInsertEstadoEJG = new StringBuffer("insert into scs_estadoejg (idinstitucion, idtipoejg, anio, numero, idestadoejg" +
+						", fechainicio, fechamodificacion, usumodificacion, observaciones, idestadoporejg, automatico)" +
+						" SELECT EJG.IDINSTITUCION, EJG.IDTIPOEJG, EJG.ANIO, EJG.NUMERO, '" + ClsConstants.ESTADO_LISTO_COMISION + "'" +
+						", SYSDATE, SYSDATE, " + getUserBean(request).getUserName() + ", NULL, (" + sqlMaxIdEstadoPorEJG + "), 0" +
+						" FROM SCS_EJG EJG" +
+						" WHERE EJG.IDINSTITUCION = " + getIDInstitucion(request) + 
+						" AND (1 = 0");
+				
 				
 				for (int i = 0; i < v_seleccionadosSesion.size(); i++) {
 
@@ -2132,48 +2145,22 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
 					String seleccionado = (String) miHashaux.get("SELECCIONADO");
 
 					if (seleccionado.equals("1")) {
-						Hashtable miHash = new Hashtable();
-						miHash.put("IDINSTITUCION", miHashaux.get("IDINSTITUCION"));
-						miHash.put("ANIO", miHashaux.get("ANIO"));
-						miHash.put("NUMERO", miHashaux.get("NUMERO"));
-						miHash.put("IDTIPOEJG", miHashaux.get("IDTIPOEJG"));
-						miHash.put(ScsEstadoEJGBean.C_IDESTADOEJG, ClsConstants.ESTADO_LISTO_COMISION);
-						miHash.put(ScsEstadoEJGBean.C_FECHAINICIO, UtilidadesBDAdm.getFechaBD("es"));
-						miHash.put(ScsEstadoEJGBean.C_AUTOMATICO, "0");
+						
+						sqlInsertEstadoEJG.append(" OR (EJG.ANIO = " + miHashaux.get(ScsEJGBean.C_ANIO) +
+								" AND EJG.NUMERO = " + miHashaux.get(ScsEJGBean.C_NUMERO) +
+								" AND EJG.IDTIPOEJG = " + miHashaux.get(ScsEJGBean.C_IDTIPOEJG) + ")");
 
-						SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-						Date fecha_modificacion = null;
-						String fecha_modificacion_aux = consultaMaximaFechaModificacionEJG(miHash, admBean);
 
-						if (fecha_modificacion_aux != null) {
-							fecha_modificacion = sdf.parse(fecha_modificacion_aux);
-						}
-						String fecha_aux = (String) request.getSession().getAttribute("HORABUSQUEDA");
-						SimpleDateFormat sdf1 = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-						Date fecha_busqueda = null;
-
-						fecha_busqueda = sdf1.parse(fecha_aux);
-
-						if (fecha_modificacion.before(fecha_busqueda)) {
-							admBean.prepararInsert(miHash);
-
-							admBean.insert(miHash);
-
-						} else {
-							tx.rollback();
-							return exitoModal("Se han modificado los datos", request);
-
-						}
 					}
 
 				}
-				
+				sqlInsertEstadoEJG.append(")");
+				admBean.insertSQL(sqlInsertEstadoEJG.toString());
 				
 				tx.commit();
 				
 				return exitoRefresco(mensaje, request);
-			} catch (SIGAException e) {
-				throw e;
+			
 			} catch (Exception e) {
 				throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, tx);
 			}
