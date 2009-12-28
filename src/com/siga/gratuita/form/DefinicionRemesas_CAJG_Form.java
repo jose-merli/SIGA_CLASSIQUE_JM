@@ -14,11 +14,26 @@ import com.siga.general.MasterForm;
 
  public class DefinicionRemesas_CAJG_Form extends MasterForm{
  	
+	 	public String getIdIncidenciasEnvio() {
+			return UtilidadesHash.getString(this.datos,"idIncidenciasEnvio");			
+		}
+		
+		public void setIdIncidenciasEnvio(String idIncidenciasEnvio) {
+			this.datos.put("idIncidenciasEnvio", idIncidenciasEnvio);
+		}
+		
+	 	public String getIdEjgRemesa() {
+			return UtilidadesHash.getString(this.datos,CajgEJGRemesaBean.C_IDEJGREMESA);			
+		}
+		
+		public void setIdEjgRemesa(String idEjgRemesa) {
+			this.datos.put(CajgEJGRemesaBean.C_IDEJGREMESA, idEjgRemesa);
+		}
 	 	
 		public String getIdRemesa() {
-			return UtilidadesHash.getString(this.datos,CajgRemesaBean.C_IDREMESA);
-			
+			return UtilidadesHash.getString(this.datos,CajgRemesaBean.C_IDREMESA);			
 		}
+		
 		public void setIdRemesa(String idRemesa) {
 			this.datos.put(CajgRemesaBean.C_IDREMESA, idRemesa);
 		}
