@@ -9,23 +9,12 @@
 <!-- IMPORTS -->
 <%@ page import="java.util.*"%>
 <%@ page import="com.atos.utils.UsrBean"%>
-<%@ page import="com.siga.beans.ScsEJGBean"%>
-<%@ page import="com.siga.beans.ScsTipoEJGBean"%>
-<%@ page import="com.siga.beans.ScsTurnoBean"%>
-<%@ page import="com.siga.beans.ScsGuardiasTurnoBean"%>
-<%@ page import="com.siga.beans.ScsPersonaJGBean"%>
-<%@ page import="com.siga.beans.ScsMaestroEstadosEJGBean"%>
-<%@ page import="com.siga.beans.ScsEJGAdm"%>
-<%@ page import="com.siga.administracion.SIGAMasterTable"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
-<%@ page import="com.siga.Utilidades.Paginador"%>
 <%@ page import="com.siga.beans.CajgRemesaEstadosAdm"%>
-<%@ page import="com.atos.utils.*"%>
+<%@ page import="com.siga.ws.SIGAWSClientAbstract"%>
+<%@ page import="com.siga.beans.CajgConfiguracionAdm"%>
 
-<%@ page import="java.util.*"%>
-<%@ page import="com.atos.utils.Row"%>
-<%@ page import="com.siga.tlds.*"%>
-<%@ page import="com.atos.utils.RowsContainer"%>
+
 
 <!-- TAGLIBS -->
 <%@taglib uri	=	"struts-bean.tld" 			prefix="bean" 		%>
@@ -93,8 +82,12 @@
 		estilocaja = "box";		
 	}
 	
+	int cajgConfig = CajgConfiguracionAdm.getTipoCAJG(Integer.parseInt(usr.getLocation()));
+	boolean muestraFiltrado = cajgConfig >= 3;
+	
 %>
 
+<%@page import="java.io.File"%>
 <html>
 
 <!-- HEAD -->
@@ -179,6 +172,21 @@
 			document.DefinicionRemesas_CAJG_Form.submit();	
 		}
 		
+		function envioWS(){
+			document.DefinicionRemesas_CAJG_Form.modo.value="envioWS";
+			document.DefinicionRemesas_CAJG_Form.idRemesa.value=document.forms[0].idRemesa.value;	
+			document.DefinicionRemesas_CAJG_Form.idInstitucion.value=document.forms[0].idInstitucion.value;	
+			document.DefinicionRemesas_CAJG_Form.target="submitArea";
+			document.DefinicionRemesas_CAJG_Form.submit();	
+		}	
+		
+		function respuestaFTP() {
+			document.DefinicionRemesas_CAJG_Form.modo.value="respuestaFTP";
+			document.DefinicionRemesas_CAJG_Form.idRemesa.value=document.forms[0].idRemesa.value;	
+			document.DefinicionRemesas_CAJG_Form.idInstitucion.value=document.forms[0].idInstitucion.value;	
+			document.DefinicionRemesas_CAJG_Form.target="submitArea";
+			document.DefinicionRemesas_CAJG_Form.submit();
+		}			
 		
 		function accionGuardar(){
 			sub();
@@ -189,6 +197,17 @@
 			document.DefinicionRemesas_CAJG_Form.submit();	
 		}
 		
+		function filtrado() {		
+			document.DefinicionRemesas_CAJG_Form.modo.value="buscarPorEJG";
+			document.DefinicionRemesas_CAJG_Form.target="resultado1";
+			document.DefinicionRemesas_CAJG_Form.submit();
+		}
+		
+		function descargarLog() {		
+			document.DefinicionRemesas_CAJG_Form.modo.value="descargarLog";				
+		   	document.DefinicionRemesas_CAJG_Form.target="submitArea";		   	
+			document.DefinicionRemesas_CAJG_Form.submit();
+		}
 		
 	</script>
 </head>
@@ -236,12 +255,40 @@
 							<html:text name="DefinicionRemesas_CAJG_Form" property="descripcion"  size="60" maxlength="200" styleClass="<%=estilocaja%>" value="<%=descripcion%>" readonly="<%=breadonly%>" ></html:text>
 						</td>
 					</tr>
+					<% if (idEstado >= 2 && (muestraFiltrado || SIGAWSClientAbstract.isRespondida(Integer.parseInt(usr.getLocation()), Integer.parseInt(idremesa)))) {%>
+					<tr>
+						<td class="labelText">
+							<siga:Idioma key="gratuita.BusquedaRemesas_CAJG.literal.IncidenciasEnvio"/>	
+						</td>
+						<td class="labelText">
+							<html:select property="idIncidenciasEnvio" onchange="filtrado()" styleClass="boxCombo">
+								<html:option value=""/>
+								<option value="1"><siga:Idioma key="cajg.opcion.conErrores"/></option>								
+								<option value="2"><siga:Idioma key="cajg.opcion.sinErrores"/></option>
+							</html:select>
+							
+						</td>
+					</tr>
+					<% } %>
+					<% File errorFile = SIGAWSClientAbstract.getErrorFile(Integer.parseInt(usr.getLocation()), Integer.parseInt(idremesa));
+						if (errorFile != null && errorFile.length() > 0) { %>
+						<tr>
+							<td class="labelText">
+								<siga:Idioma key="gratuita.BusquedaResolucionCAJG.literal.FicheroLog"/>	
+							</td>
+							<td class="labelText">										
+								<html:link href="#" onclick="descargarLog()"><%=errorFile.getName()%></html:link>
+							</td>
+						</tr>
+					<% } %>
+						
+					
 				</table>
 			</td>
 			<td>
 				<table align="center" width="100%" border="0">
 					<tr>
-						<td  style="width:400px" rowspan="2">											
+						<td  style="width:400px;height:180px" rowspan="2">											
 							<!-- INICIO: IFRAME ESTADOS REMESA -->
 							<iframe align="left" src="<%=app%>/html/jsp/general/blank.jsp"
 								id="resultado"
