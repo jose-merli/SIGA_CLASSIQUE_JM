@@ -15,12 +15,13 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.general.SIGAException;
-import com.siga.gratuita.util.PCAJGConstantes;
+import com.siga.ws.cat.PCAJGConstantes;
 
 /**
- * @author fernando.gomez
+ * @author angel corral
  *
  * 
  * Window - Preferences - Java - Code Style - Code Templates
@@ -33,7 +34,7 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 
 
 	protected String[] getCamposBean() {
-		String [] campos = {CajgEJGRemesaBean.C_IDINSTITUCION, 		CajgEJGRemesaBean.C_ANIO,
+		String [] campos = {CajgEJGRemesaBean.C_IDEJGREMESA, CajgEJGRemesaBean.C_IDINSTITUCION, 		CajgEJGRemesaBean.C_ANIO,
 							CajgEJGRemesaBean.C_NUMERO, 			CajgEJGRemesaBean.C_IDTIPOEJG,
 							CajgEJGRemesaBean.C_IDINSTITUCIONREMESA,CajgEJGRemesaBean.C_IDREMESA,
 							CajgEJGRemesaBean.C_NUMEROINTERCAMBIO,
@@ -43,12 +44,7 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 
 
 	protected String[] getClavesBean() {
-		String[] campos = { CajgEJGRemesaBean.C_IDINSTITUCION,
-							CajgEJGRemesaBean.C_ANIO,
-							CajgEJGRemesaBean.C_NUMERO,
-							CajgEJGRemesaBean.C_IDTIPOEJG,	
-							CajgEJGRemesaBean.C_IDINSTITUCIONREMESA,
-							CajgEJGRemesaBean.C_IDREMESA};
+		String[] campos = { CajgEJGRemesaBean.C_IDEJGREMESA};
 		return campos;
 	}
 
@@ -62,6 +58,7 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 		CajgEJGRemesaBean bean = null;
 		try{
 			bean = new CajgEJGRemesaBean();
+			bean.setIdEjgRemesa(UtilidadesHash.getInteger(hash,CajgEJGRemesaBean.C_IDEJGREMESA));
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash,CajgEJGRemesaBean.C_IDINSTITUCION));
 			bean.setAnio(UtilidadesHash.getInteger(hash,CajgEJGRemesaBean.C_ANIO));
 			bean.setNumero(UtilidadesHash.getInteger(hash,CajgEJGRemesaBean.C_NUMERO));
@@ -88,6 +85,7 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 			hash = new Hashtable();
 			CajgEJGRemesaBean b = (CajgEJGRemesaBean) bean;
 			
+			UtilidadesHash.set(hash, CajgEJGRemesaBean.C_IDEJGREMESA, b.getIdEjgRemesa());
 			UtilidadesHash.set(hash, CajgEJGRemesaBean.C_IDINSTITUCION, b.getIdInstitucion());
 			UtilidadesHash.set(hash, CajgEJGRemesaBean.C_ANIO, b.getAnio());
 			UtilidadesHash.set(hash, CajgEJGRemesaBean.C_NUMERO, b.getNumero());
@@ -176,11 +174,12 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 * @throws SIGAException
 	 */	
-	public Vector getDatosEJGs(String idInstitucion, String idRemesa) throws ClsExceptions, SIGAException {				
+	public Vector getDatosEJGs(int idInstitucion, int idRemesa) throws ClsExceptions, SIGAException {				
 		String consulta = "SELECT *" +
 					" FROM V_PCAJG_EJG" +
-					" WHERE IDREMESA = " + idRemesa +
-					" AND IDINSTITUCION = " + idInstitucion;				
+					" WHERE " + PCAJGConstantes.IDREMESA + "  = " + idRemesa +
+					" AND " + PCAJGConstantes.IDINSTITUCION + " = " + idInstitucion +
+					" ORDER BY " + PCAJGConstantes.TIPOINTERCAMBIO;				
 			
 		return getDatos(consulta);
 	}
@@ -194,7 +193,7 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 * @throws SIGAException
 	 */
-	public Vector getDatosMarcasExpediente(String idInstitucion, String idRemesa) throws ClsExceptions, SIGAException {
+	public Vector getDatosMarcasExpediente(int idInstitucion, int idRemesa) throws ClsExceptions, SIGAException {
 				
 		String consulta = "SELECT *" +
 				" FROM V_PCAJG_MARCASEXPEDIENTES" +
@@ -213,7 +212,7 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 * @throws SIGAException
 	 */
-	public Vector getFamiliares(String idInstitucion, String idRemesa) throws ClsExceptions, SIGAException {				
+	public Vector getFamiliares(int idInstitucion, int idRemesa) throws ClsExceptions, SIGAException {				
 		String sql = "SELECT *" +
 				" FROM V_PCAJG_FAMILIARES" +
 				" WHERE IDREMESA = " + idRemesa +
@@ -231,7 +230,7 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 * @throws SIGAException
 	 */
-	public Vector getContrarios(String idInstitucion, String idRemesa) throws ClsExceptions, SIGAException {
+	public Vector getContrarios(int idInstitucion, int idRemesa) throws ClsExceptions, SIGAException {
 		String sql = "SELECT *" +
 				" FROM V_PCAJG_CONTRARIOS" +
 				" WHERE IDINSTITUCION = " + idInstitucion +
@@ -248,30 +247,13 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 * @throws SIGAException
 	 */
-	public Vector getAbogadosDesignados(String idInstitucion, String idRemesa) throws ClsExceptions, SIGAException {
+	public Vector getAbogadosDesignados(int idInstitucion, int idRemesa) throws ClsExceptions, SIGAException {
 		String sql = "SELECT *" +
 			" FROM V_PCAJG_ABOGADOSDESIGNADOS" +
 			" WHERE IDINSTITUCION = " + idInstitucion +
 			" AND IDREMESA = " + idRemesa;
 		
 		return getDatos(sql);
-	}
-
-	/**
-	 * Obtiene los datos de identificacion del intercambio
-	 * @param idInstitucion
-	 * @param idRemesa
-	 * @return
-	 * @throws ClsExceptions
-	 * @throws SIGAException
-	 */
-	public Vector getDatosIdentificacionIntercambio(String idInstitucion, String idRemesa) throws ClsExceptions, SIGAException {
-		String consulta = "SELECT *" +
-			" FROM V_PCAJG_INTERCAMBIO" +
-			" WHERE IDINSTITUCION = " + idInstitucion +
-			" AND IDREMESA = " + idRemesa;
-
-		return getDatos(consulta);
 	}
 
 	/**
@@ -282,7 +264,7 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 * @throws SIGAException
 	 */
-	public Vector getDocumentacionExpedienteDS(String idInstitucion, String idRemesa) throws ClsExceptions, SIGAException {
+	public Vector getDocumentacionExpedienteDS(int idInstitucion, int idRemesa) throws ClsExceptions, SIGAException {
 		String sql = "SELECT *" +
 				" FROM V_PCAJG_DOCUMENTACIONEXP_DS" +
 				" WHERE IDINSTITUCION = " + idInstitucion +
@@ -298,7 +280,7 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 * @throws SIGAException
 	 */
-	public Vector getDocumentacionExpedienteF(String idInstitucion, String idRemesa) throws ClsExceptions, SIGAException {
+	public Vector getDocumentacionExpedienteF(int idInstitucion, int idRemesa) throws ClsExceptions, SIGAException {
 		String sql = "SELECT *" +
 				" FROM V_PCAJG_DOCUMENTACIONEXP_F" +
 				" WHERE IDINSTITUCION = " + idInstitucion +
@@ -306,7 +288,7 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 		return getDatos(sql);
 	}
 	
-	public Vector getDatosPrestacionesResolucion(String idInstitucion, String idRemesa, String idTipoEJG, String anio, String numero) {
+	public Vector getDatosPrestacionesResolucion(int idInstitucion, int idRemesa, String idTipoEJG, String anio, String numero) {
 		Vector datos = new Vector();		
 		return datos;
 	}
@@ -376,4 +358,54 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 		return numeroIntercambio;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public int getNextVal() throws ClsExceptions {
+		int nextVal = -1;
+		
+		String sql = "SELECT NVL(MAX(" + CajgEJGRemesaBean.C_IDEJGREMESA + "), 0) AS " + CajgEJGRemesaBean.C_IDEJGREMESA +
+				" FROM " + CajgEJGRemesaBean.T_NOMBRETABLA;
+		
+		RowsContainer rc = new RowsContainer();
+
+		if (rc.find(sql)) {
+			Row r = (Row) rc.get(0);
+			nextVal = Integer.parseInt(r.getString(CajgEJGRemesaBean.C_IDEJGREMESA));
+			nextVal++;
+		}
+		return nextVal;
+	}
+	
+	/**
+	 * 
+	 * @param usr
+	 * @param idInstitucion
+	 * @param idRemesa
+	 * @param idEstado
+	 * @throws ClsExceptions
+	 */
+	public void nuevoEstadoEJGRemitidoComision(UsrBean usr, String idInstitucion, String idRemesa, String idEstado) throws ClsExceptions {
+		
+		String sqlMaxIdEstadoPorEJG = "SELECT NVL(MAX(IDESTADOPOREJG), 0) + 1" +
+				" FROM SCS_ESTADOEJG E" +
+				" WHERE E.IDINSTITUCION = ER.IDINSTITUCION" +
+				" AND E.ANIO = ER.ANIO" +
+				" AND E.NUMERO = ER.NUMERO" +
+				" AND E.IDTIPOEJG = ER.IDTIPOEJG";
+		
+		String sqlInsertEstadoEJG = "insert into scs_estadoejg (idinstitucion, idtipoejg, anio, numero, idestadoejg" +
+				", fechainicio, fechamodificacion, usumodificacion, observaciones, idestadoporejg, automatico)" +
+				" SELECT ER.IDINSTITUCION, ER.IDTIPOEJG, ER.ANIO, ER.NUMERO, '" + idEstado + "'" +
+				", SYSDATE, SYSDATE, " + usr.getUserName() + ", NULL, (" + sqlMaxIdEstadoPorEJG + "), 1" +
+				" FROM CAJG_EJGREMESA ER" +
+				" WHERE ER.IDINSTITUCION = " + idInstitucion +
+				" AND ER.IDREMESA = " + idRemesa;
+		
+		ScsEstadoEJGAdm beanEstado = new ScsEstadoEJGAdm(usr);
+		beanEstado.insertSQL(sqlInsertEstadoEJG);
+
+	}
 }
