@@ -85,7 +85,8 @@
 	 	registrosPorPagina = "0";
  }	 
 		
-String action=app+"/JGR_E-Comunicaciones_RemesaResolucion.do?noReset=true";
+	String action=app+"/JGR_E-Comunicaciones_RemesaResolucion.do?noReset=true";
+	String idTipoRemesa = request.getParameter("idTipoRemesa");
 
 
 	
@@ -151,7 +152,9 @@ String action=app+"/JGR_E-Comunicaciones_RemesaResolucion.do?noReset=true";
 		<input type="hidden" name="filaSelD">
 		<input type="hidden" name="tablaDatosDinamicosD">
 		<input type="hidden" name="actionModal" value="">
-		<input type="hidden" name="idRemesaResolucion" value="">		
+		<input type="hidden" name="idRemesaResolucion" value="">
+		<html:hidden property = "idTipoRemesa" value = "<%=idTipoRemesa%>"/>
+				
 	</html:form>	
 		
 		<siga:TablaCabecerasFijas 		   

@@ -29,6 +29,7 @@
 	HttpSession ses=request.getSession(true);
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 	String dato[] = {(String)usr.getLocation()};
+	String idTipoRemesa = request.getParameter("idTipoRemesa");
 	
 	String fecha = UtilidadesBDAdm.getFechaBD("");
 	
@@ -164,6 +165,8 @@
 	<html:hidden property = "idRemesaResolucion" value ="<%=idremesaresolucion%>"/>
 	<html:hidden property = "nombreFichero" value ="<%=nombreFichero%>"/>
 	<html:hidden property = "logGenerado" value ="<%=logGenerado%>"/>
+	<html:hidden property = "idTipoRemesa" value ="<%=idTipoRemesa%>"/>
+	
 	
 	
 	<html:hidden property = "usuMod" value = "<%=usr.getUserName()%>"/>
