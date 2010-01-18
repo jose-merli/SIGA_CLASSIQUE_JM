@@ -15,7 +15,6 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.general.SIGAException;
 import com.siga.ws.cat.PCAJGConstantes;
@@ -37,7 +36,7 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 		String [] campos = {CajgEJGRemesaBean.C_IDEJGREMESA, CajgEJGRemesaBean.C_IDINSTITUCION, 		CajgEJGRemesaBean.C_ANIO,
 							CajgEJGRemesaBean.C_NUMERO, 			CajgEJGRemesaBean.C_IDTIPOEJG,
 							CajgEJGRemesaBean.C_IDINSTITUCIONREMESA,CajgEJGRemesaBean.C_IDREMESA,
-							CajgEJGRemesaBean.C_NUMEROINTERCAMBIO,
+							CajgEJGRemesaBean.C_NUMEROINTERCAMBIO, CajgEJGRemesaBean.C_RECIBIDA,
 							CajgEJGRemesaBean.C_FECHAMODIFICACION,	CajgEJGRemesaBean.C_USUMODIFICACION};
 		return campos;
 	}
@@ -66,6 +65,7 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 			bean.setIdInstitucionRemesa(UtilidadesHash.getInteger(hash,CajgEJGRemesaBean.C_IDINSTITUCIONREMESA));
 			bean.setIdRemesa(UtilidadesHash.getInteger(hash, CajgEJGRemesaBean.C_IDREMESA));
 			bean.setNumeroIntercambio(UtilidadesHash.getInteger(hash, CajgEJGRemesaBean.C_NUMEROINTERCAMBIO));
+			bean.setRecibida(UtilidadesHash.getInteger(hash, CajgEJGRemesaBean.C_RECIBIDA));
 			
 			bean.setFechaMod(UtilidadesHash.getString (hash,CajgRemesaBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,CajgRemesaBean.C_USUMODIFICACION));
@@ -93,6 +93,7 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, CajgEJGRemesaBean.C_IDINSTITUCIONREMESA, b.getIdInstitucionRemesa());
 			UtilidadesHash.set(hash, CajgEJGRemesaBean.C_IDREMESA, b.getIdRemesa());
 			UtilidadesHash.set(hash, CajgEJGRemesaBean.C_NUMEROINTERCAMBIO, b.getNumeroIntercambio());
+			UtilidadesHash.set(hash, CajgEJGRemesaBean.C_RECIBIDA, b.getRecibida());
 			
 			UtilidadesHash.set(hash, CajgEJGRemesaBean.C_FECHAMODIFICACION, b.getFechaMod());	
 			UtilidadesHash.set(hash, CajgEJGRemesaBean.C_USUMODIFICACION, b.getUsuMod());	
