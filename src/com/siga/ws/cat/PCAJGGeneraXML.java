@@ -15,6 +15,7 @@ import javax.transaction.UserTransaction;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -88,6 +89,7 @@ import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CajgEJGRemesaAdm;
 import com.siga.beans.CajgRemesaEstadosAdm;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.action.DefinirRemesasCAJGAction;
 import com.siga.ws.SIGAWSClientAbstract;
 
 
@@ -149,6 +151,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		Intercambio intercambio = null;
 		InformacionEJG informacionEJG = null;
 		int numDetalles = 0;
+		int sufijoIdIntercambio = 0;
 		
 		for (int i = 0; i < datos.size(); i++) {
 			ht = (Hashtable)datos.get(i);
@@ -159,7 +162,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 				}
 				numDetalles = 0;
 				intercambio = Intercambio.Factory.newInstance();
-				rellenaInformacionIntercambio(intercambio, ht);
+				rellenaInformacionIntercambio(intercambio, ht, sufijoIdIntercambio++);
 				informacionEJG = InformacionEJG.Factory.newInstance();				
 				expedientes = informacionEJG.addNewExpedientes();										
 			}
@@ -1184,11 +1187,12 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 
 	/**
 	 * 
+	 * @param sufijoIdIntercambio 
 	 * @param intercambioType
 	 * @param numDetalles
 	 * @return
 	 */
-	private InformacionIntercambio rellenaInformacionIntercambio(Intercambio intercambio, Hashtable ht) throws SIGAException {
+	private InformacionIntercambio rellenaInformacionIntercambio(Intercambio intercambio, Hashtable ht, int sufijoIdIntercambio) throws SIGAException {
 				
 		InformacionIntercambio informacionIntercambio = intercambio.addNewInformacionIntercambio();
 		IdentificacionIntercambio identificacionIntercambio = informacionIntercambio.addNewIdentificacionIntercambio();
@@ -1199,7 +1203,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			rellenaTipoElementoTipificadoIntercambio(identificacionIntercambio.addNewDestinoIntercambio(), (String)ht.get(DESTINOINTERCAMBIO_CDA));		
 			
 			Long valueLong = getLong((String)ht.get(IDENTIFICADORINTERCAMBIO));
-			identificacionIntercambio.setIdentificadorIntercambio(valueLong.longValue());		
+			identificacionIntercambio.setIdentificadorIntercambio((valueLong.longValue() * 10) + sufijoIdIntercambio);		
 			identificacionIntercambio.setFechaIntercambio(Calendar.getInstance());			
 			identificacionIntercambio.setVersionPCAJG((String)ht.get(VERSION_PCAJG));
 		}
@@ -1209,22 +1213,26 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 
 	@Override
 	public void execute() throws Exception {
-		String keyMap = getKeyMap(String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()));
 				
 		SFTPmanager sftp = null;
+		
+		UsrBean usr = getUsrBean();
+		
+		String keyPathFicheros = "cajg.directorioFisicoCAJG";
+		String keyPathPlantillas = "cajg.directorioPlantillaCAJG";
+		String keyPath2 = "cajg.directorioCAJGJava";
+				
+	    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String pathFichero = p.returnProperty(keyPathFicheros) + p.returnProperty(keyPath2);
+		String pathPlantillas = p.returnProperty(keyPathPlantillas) + p.returnProperty(keyPath2);
+		
+		String dirFicheros = pathFichero + File.separator + getIdInstitucion()  + File.separator + getIdRemesa() + File.separator + "xml";
+		String dirPlantillas = pathPlantillas + File.separator + getIdInstitucion();
+
+		//si no queremos generar el fichero txt ademas del xml hay que cometar solamente esta línea
+		generaTXT(dirFicheros);
+		
 		try {
-			UsrBean usr = getUsrBean();
-			
-			String keyPathFicheros = "cajg.directorioFisicoCAJG";
-			String keyPathPlantillas = "cajg.directorioPlantillaCAJG";
-			String keyPath2 = "cajg.directorioCAJGJava";
-					
-		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-			String pathFichero = p.returnProperty(keyPathFicheros) + p.returnProperty(keyPath2);
-			String pathPlantillas = p.returnProperty(keyPathPlantillas) + p.returnProperty(keyPath2);
-							
-			String dirFicheros = pathFichero + File.separator + getIdInstitucion()  + File.separator + getIdRemesa() + File.separator + "xml";
-			String dirPlantillas = pathPlantillas + File.separator + getIdInstitucion();
 			
 			List<File> files = generaFicherosXML(dirFicheros, dirPlantillas);	
 				
@@ -1267,7 +1275,34 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			}
 		}
 		
+		
+		
 	}
 	
+	/**
+	 * 
+	 * @param pathFichero
+	 */
+	private void generaTXT(String pathFichero) {
+		
+		String nombreFichero = getIdInstitucion() + "_" + getIdRemesa() + "_TXT_BackupXML";
+		StringBuffer mensaje = new StringBuffer();		
+		DefinirRemesasCAJGAction definirRemesasCAJGAction = new DefinirRemesasCAJGAction();
+		try {
+			definirRemesasCAJGAction.generaFicherosTXT(String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()), nombreFichero, mensaje, pathFichero);
+		} catch (Exception e) {
+			ClsLogging.writeFileLogError("Error al generar el archivo TXT", e, 3);			
+		}
+		
+	}
+
+	public static void main(String[] args) throws Exception {
+		File fileXSL = new File("C:\\Datos\\plantillas\\CAJG\\2047\\plantilla.xsl");
+		File file = new File("C:\\Documents and Settings\\angelcpe.ITCGAE-WS011\\Escritorio\\temp\\generalitat\\IED_2047_GEN_12_20091221_5.xml");
+		File xmlTrans = new File(file.getParentFile(), "T" + file.getName());
+		TransformerFactory tFactory = TransformerFactory.newInstance();
+		Transformer transformer = tFactory.newTransformer(new StreamSource(fileXSL));							
+		transformer.transform(new StreamSource(file), new StreamResult(xmlTrans));
+	}
 	
 }
