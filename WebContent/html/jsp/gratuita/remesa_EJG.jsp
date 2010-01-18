@@ -83,7 +83,6 @@
 	}
 	
 	int cajgConfig = CajgConfiguracionAdm.getTipoCAJG(Integer.parseInt(usr.getLocation()));
-	boolean muestraFiltrado = cajgConfig >= 3;
 	
 %>
 
@@ -100,8 +99,8 @@
 		
 		var descargar = false;
 		
-		function refrescarLocal() {			
-			cargadatosRemesa()
+		function refrescarLocal() {
+			cargadatosRemesa();
 			
 			if (descargar) {
 				document.DefinicionRemesas_CAJG_Form.modo.value="descargar";
@@ -209,6 +208,16 @@
 			document.DefinicionRemesas_CAJG_Form.submit();
 		}
 		
+		function ultimoEstado(idEstado) {
+		
+			if(idEstado > 0) {				
+			 	var trFiltrado = document.getElementById("idTrFiltradoIncidencias");			 	
+			 	if (trFiltrado) {			 		
+			 		trFiltrado.style.display = "";
+			 	}
+			}
+		}
+		
 	</script>
 </head>
 
@@ -255,8 +264,8 @@
 							<html:text name="DefinicionRemesas_CAJG_Form" property="descripcion"  size="60" maxlength="200" styleClass="<%=estilocaja%>" value="<%=descripcion%>" readonly="<%=breadonly%>" ></html:text>
 						</td>
 					</tr>
-					<% if (idEstado >= 2 && (muestraFiltrado || SIGAWSClientAbstract.isRespondida(Integer.parseInt(usr.getLocation()), Integer.parseInt(idremesa)))) {%>
-					<tr>
+										  
+					<tr id="idTrFiltradoIncidencias" style='display:<%=(idEstado>0?"":"none")%>;'>
 						<td class="labelText">
 							<siga:Idioma key="gratuita.BusquedaRemesas_CAJG.literal.IncidenciasEnvio"/>	
 						</td>
@@ -268,8 +277,8 @@
 							</html:select>
 							
 						</td>
-					</tr>
-					<% } %>
+					</tr>					
+					
 					<% File errorFile = SIGAWSClientAbstract.getErrorFile(Integer.parseInt(usr.getLocation()), Integer.parseInt(idremesa));
 						if (errorFile != null && errorFile.length() > 0) { %>
 						<tr>
