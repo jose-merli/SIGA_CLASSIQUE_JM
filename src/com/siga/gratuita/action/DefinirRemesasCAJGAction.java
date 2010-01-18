@@ -8,6 +8,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,6 +32,7 @@ import weblogic.management.timer.Timer;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.GstDate;
 import com.atos.utils.ReadProperties;
@@ -1655,32 +1659,35 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 
 		return "descargaFichero";
 	}
+	
 
-	protected String generarFichero(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response)
-			throws ClsExceptions, SIGAException {
-
-		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+	/**
+	 * 
+	 * @param idInstitucion
+	 * @param idRemesa
+	 * @param nombreFicheroPorDefecto
+	 * @param mensaje
+	 * @param rutaFicheroZIP
+	 * @return
+	 * @throws Exception
+	 */
+	public File generaFicherosTXT (String idInstitucion, String idRemesa, String nombreFicheroPorDefecto, StringBuffer mensaje, String rutaFicheroZIP) throws Exception {
 		
 		String keyPath = "cajg.directorioFisicoCAJG";
 		String keyPath2 = "cajg.directorioCAJGJava";
 				
 	    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//		ReadProperties p = new ReadProperties("SIGA.properties");
 		String pathFichero = p.returnProperty(keyPath) + p.returnProperty(keyPath2);
-		String idInstitucion = this.getIDInstitucion(request).toString();
-		ArrayList ficheros = new ArrayList();		
 		
-		DefinicionRemesas_CAJG_Form form = (DefinicionRemesas_CAJG_Form) formulario;
+		File fileZIP = null;
 		
-		String NOMBRE_FICHERO_X_DEFECTO = form.getPrefijo() + form.getNumero() + form.getSufijo() + "_" + idInstitucion;
+		ArrayList<File> ficheros = new ArrayList<File>();		
+		
 		//quitamos los posibles simbolos que pueda tener el prefijo y sufijo
-		NOMBRE_FICHERO_X_DEFECTO = reemplazaCaracteres(NOMBRE_FICHERO_X_DEFECTO);
+		nombreFicheroPorDefecto = reemplazaCaracteres(nombreFicheroPorDefecto);
 						
-		String sRutaJava = pathFichero + ClsConstants.FILE_SEP + idInstitucion  + ClsConstants.FILE_SEP + form.getIdRemesa();
+		String sRutaJava = pathFichero + ClsConstants.FILE_SEP + idInstitucion  + ClsConstants.FILE_SEP + idRemesa;
 		
-		StringBuffer mensaje = new StringBuffer();
-		mensaje.append("El fichero se ha generado correctamente.");
-
 		try {
 			String[] campos = null;
 			Row fila = null;
@@ -1692,10 +1699,10 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 
 			String sql = "SELECT *" +
 					" FROM " + CajgProcedimientoRemesaBean.T_NOMBRETABLA + 
-					" WHERE " + CajgProcedimientoRemesaBean.C_IDINSTITUCION + " = " + this.getIDInstitucion(request);
+					" WHERE " + CajgProcedimientoRemesaBean.C_IDINSTITUCION + " = " + idInstitucion;
 			RowsContainer rc = new RowsContainer();
 			if (!rc.find(sql)) {
-				ClsLogging.writeFileLog("No hay ningún registro en " + CajgProcedimientoRemesaBean.T_NOMBRETABLA + " para la institucion " + idInstitucion, request, 3);				
+				ClsLogging.writeFileLog("No hay ningún registro en " + CajgProcedimientoRemesaBean.T_NOMBRETABLA + " para la institucion " + idInstitucion, 3);				
 				throw new SIGAException("messages.cajg.funcionNoDefinida");
 			}
 
@@ -1708,7 +1715,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				subCabecera = fila.getString(CajgProcedimientoRemesaBean.C_SUBCABECERA);
 				String nombreFichero = fila.getString(CajgProcedimientoRemesaBean.C_NOMBREFICHERO);
 				if (nombreFichero == null || nombreFichero.trim().equals("")) {
-					nombreFichero = NOMBRE_FICHERO_X_DEFECTO;
+					nombreFichero = nombreFicheroPorDefecto;
 				} else {
 					nombreFichero = trataNombreFichero(nombreFichero);
 				}
@@ -1717,33 +1724,47 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 					imprimirCabecera = Boolean.TRUE;
 				}
 
-				String sql1 = "SELECT " + funcion + "(" + idInstitucion + "," + form.getIdRemesa() + ") as consulta, COUNT(1) NUMEROEJGS" +
+				String sql1 = "SELECT COUNT(1) NUMEROEJGS" +
 						" FROM " + CajgEJGRemesaBean.T_NOMBRETABLA +
 						" WHERE " + CajgEJGRemesaBean.C_IDINSTITUCION + " = " + idInstitucion +
-						" AND " + CajgEJGRemesaBean.C_IDREMESA + " = " + form.getIdRemesa();
+						" AND " + CajgEJGRemesaBean.C_IDREMESA + " = " + idRemesa;
 				
 				RowsContainer rc1 = new RowsContainer();
 				String numeroEJGs = null;
 				
+				
 				try {// Si la funcion no existe en la base de datos
 					boolean usaTablaEJGremesa = false;
-					RowsContainer rc2 = new RowsContainer();
-					
+					RowsContainer rc2 = new RowsContainer();					
 					if (rc1.find(sql1)) {
-						fila_consulta = rc1.getClob("dual", "consulta", sql1);
+						Connection con = null;
+						try {
+							con=ClsMngBBDD.getReadConnection();
+							CallableStatement cs=con.prepareCall("{? = call " + funcion + " (?,?)}");
+							cs.registerOutParameter(1,Types.CLOB);
+							
+							cs.setString(2, idInstitucion);
+							cs.setString(3, idRemesa);					    	
+					    	cs.execute();
+					    	fila_consulta = cs.getString(1);
+					    } finally {
+					    	if (con != null) {
+					    		ClsMngBBDD.closeConnection(con);
+					    	}
+						}			    
+						
 						Row row = (Row) rc1.get(0);
-						numeroEJGs = row.getString("NUMEROEJGS");
-						// meter datos de la consulta en el vector
+						numeroEJGs = row.getString("NUMEROEJGS");						
 						
 						if (rc2.find(fila_consulta)) {
 							usaTablaEJGremesa = fila_consulta.toUpperCase().indexOf(CajgEJGRemesaBean.T_NOMBRETABLA) > -1;
 							campos = rc2.getFieldNames();
 							
 						} else {
-							ClsLogging.writeFileLog("La query de la funcion " + funcion + " no ha devuelto datos",request, 3);
+							ClsLogging.writeFileLog("La query de la funcion " + funcion + " no ha devuelto datos", 3);
 						}
 					} else {
-						ClsLogging.writeFileLog("La funcion " + funcion + " no ha devuelto una query",request, 3);
+						ClsLogging.writeFileLog("La funcion " + funcion + " no ha devuelto una query", 3);
 					}
 					
 					if (rc2 != null && rc2.size() > 0) {						
@@ -1753,29 +1774,26 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 						}
 						File file = generaFichero(rc2, nombreFichero, sRutaJava, campos, "txt", imprimirCabecera, delimitador, saltoLinea, subCabecera, numeroEJGs, mensaje); 
 						ficheros.add(file);
-					}
-					
+					}					
 				} catch (Exception e) {
 					throw new SIGAException("messages.cajg.error.descargaFichero");
-				}				
+				}			
 				
 			}
 
 			if (ficheros != null && !ficheros.isEmpty()) {	
 				
-				if (ficheros.size() > 0) {	// si tiene mas de un fichero hacemos un zip					
-					String pathdocumento = sRutaJava + ClsConstants.FILE_SEP + NOMBRE_FICHERO_X_DEFECTO;				
-					MasterWords.doZip(ficheros, pathdocumento);					
+				if (ficheros.size() > 0) {	// si tiene mas de un fichero hacemos un zip	
+					String pathdocumento = sRutaJava + ClsConstants.FILE_SEP + nombreFicheroPorDefecto;
+					if (rutaFicheroZIP != null) {
+						pathdocumento = rutaFicheroZIP + ClsConstants.FILE_SEP + nombreFicheroPorDefecto;
+						File file = new File(rutaFicheroZIP);
+						file.mkdirs();
+					}					
+									
+					fileZIP = MasterWords.doZip(ficheros, pathdocumento);					
 				}
 				
-				UserTransaction tx = usr.getTransaction();
-				tx.begin();
-				// Marcar como generada
-				CajgRemesaEstadosAdm cajgRemesaEstadosAdm = new CajgRemesaEstadosAdm(usr);				
-				cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIDInstitucion(request), Integer.valueOf(form.getIdRemesa()), Integer.valueOf("1"));
-
-				tx.commit();
-
 			} else {
 				// no devuelve ningun resultado la consulta
 				throw new SIGAException("messages.cajg.error.nodatos");
@@ -1786,6 +1804,48 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			throw e;
 		} catch (ClsExceptions e) {
 			throwExcp("messages.cajg.error.nodatos", new String[] { "modulo.gratuita" }, e, null);
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
+		}
+		
+		return fileZIP;
+	}
+
+	/**
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
+	protected String generarFichero(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response)
+			throws ClsExceptions, SIGAException {
+		
+		request.getSession().removeAttribute("DATAPAGINADOR");
+
+		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		String idInstitucion = this.getIDInstitucion(request).toString();	
+		DefinicionRemesas_CAJG_Form form = (DefinicionRemesas_CAJG_Form) formulario;		
+		String nombreFicheroPorDefecto = form.getPrefijo() + form.getNumero() + form.getSufijo() + "_" + idInstitucion;
+		
+		StringBuffer mensaje = new StringBuffer();
+		mensaje.append("El fichero se ha generado correctamente.");
+		
+		try {		
+			File fileZIP = generaFicherosTXT(idInstitucion, form.getIdRemesa(), nombreFicheroPorDefecto, mensaje, null);
+			
+			if (fileZIP != null) {
+				UserTransaction tx = usr.getTransaction();
+				tx.begin();
+				// Marcar como generada
+				CajgRemesaEstadosAdm cajgRemesaEstadosAdm = new CajgRemesaEstadosAdm(usr);				
+				cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIDInstitucion(request), Integer.valueOf(form.getIdRemesa()), Integer.valueOf("1"));
+	
+				tx.commit();
+			}
 		} catch (Exception e) {
 			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
 		}
