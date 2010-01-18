@@ -3,10 +3,6 @@
  */
 package com.siga.ws.i2055;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.ConnectException;
@@ -19,8 +15,6 @@ import java.util.Map;
 import java.util.Vector;
 
 import javax.transaction.UserTransaction;
-
-import org.apache.axis.AxisFault;
 
 import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
