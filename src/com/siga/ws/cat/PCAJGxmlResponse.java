@@ -6,8 +6,10 @@ package com.siga.ws.cat;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
@@ -53,6 +55,7 @@ import com.siga.ws.SIGAWSClientAbstract;
 public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConstantes {
 
 	private String namespace = IntercambioRespuestaDocument.type.getProperties()[0].getName().getNamespaceURI();//"rp.cat.ws.siga.com";
+	private String HIST = "HIST";
 	
 	
 	/**
@@ -86,16 +89,17 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 		try {
 			
 			ClsLogging.writeFileLog("Ejecutando la clase " + this.getClass(), 3);					
-			String comienzoFicheroIEE_GEN = "IEE_GEN_" + getIdInstitucion() + "_" + getIdRemesa();			
-			String comienzoFicheroIR_GEN = "IR_GEN_" + getIdInstitucion() + "_" + getIdRemesa();
+			String comienzoFicheroIEE_GEN = "IEE_GEN_" + getIdInstitucion() + "_";			
+			String comienzoFicheroIR_GEN = "IR_GEN_" + getIdInstitucion() + "_";
 			
 			sftpManager = new SFTPmanager(getUsrBean(), String.valueOf(getIdInstitucion()));	
 			escribeLogRemesa("Conectando con el servidor FTP");
 			ChannelSftp chan = sftpManager.connect();	
 			
 			Vector<LsEntry> vectorFiles = chan.ls(sftpManager.getFtpDirectorioOUT());
-			File fileIEE = null;
-			File fileIR = null;
+			List<File> filesIEE = new ArrayList<File>();			
+			List<File> filesIR = new ArrayList<File>();
+			
 			FileOutputStream fileOutputStream = null;
 			
 			for (LsEntry lsEntry : vectorFiles) {
@@ -106,11 +110,13 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 					
 					chan.cd(sftpManager.getFtpDirectorioIN());
 					if (fileName.startsWith(comienzoFicheroIEE_GEN)) {
-						fileIEE = getRespuestaFile(getIdInstitucion(), getIdRemesa(), fileName);					
-						fileOutputStream = new FileOutputStream(fileIEE);	
+						File fileIEE = getRespuestaFile(getIdInstitucion(), getIdRemesa(), fileName);					
+						fileOutputStream = new FileOutputStream(fileIEE);
+						filesIEE.add(fileIEE);
 					} else if (fileName.startsWith(comienzoFicheroIR_GEN)) {
-						fileIR = getRespuestaFile(getIdInstitucion(), getIdRemesa(), fileName);
+						File fileIR = getRespuestaFile(getIdInstitucion(), getIdRemesa(), fileName);
 						fileOutputStream = new FileOutputStream(fileIR);
+						filesIR.add(fileIR);
 					}
 					
 					chan.get(sftpManager.getFtpDirectorioOUT() + "/" + fileName, fileOutputStream);
@@ -120,13 +126,15 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 				}
 			}
 			
-			if (fileIEE != null) {
-				if (fileIR != null) {
-					fileIR.delete();
+			if (filesIEE.size() > 0 || filesIR.size() > 0) {
+
+				for (File file : filesIEE) {
+					procesaIEE(chan, sftpManager.getFtpDirectorioOUT(),  file);//fichero de respuesta					
+				}				
+			
+				for (File file : filesIR) {
+					procesaIR(chan, sftpManager.getFtpDirectorioOUT(), file);//fichero de resoluciones					
 				}
-				procesaIEE(fileIEE);
-			} else if (fileIR != null) {
-				procesaIR(fileIR);
 			} else {
 				escribeLogRemesa("No se ha encontrado el fichero en el servidor FTP");
 			}
@@ -143,7 +151,14 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 		
 	}
 	
-	private void procesaIR(File file) throws Exception {
+	
+	/**
+	 * 
+	 * @param chan
+	 * @param dirOUT
+	 * @param file
+	 */
+	private void procesaIR(ChannelSftp chan, String dirOUT, File file) {
 		if (file != null) {
 					
 			try {
@@ -204,12 +219,26 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 					}
 				}	
 				
-				CajgRemesaEstadosAdm cajgRemesaEstadosAdm = new CajgRemesaEstadosAdm(getUsrBean());
-				cajgRemesaEstadosAdm.nuevoEstadoRemesa(getUsrBean(), getIdInstitucion(), getIdRemesa(), Integer.valueOf("3"));
+				
+				CajgRemesaEstadosAdm cajgRemesaEstadosAdm = new CajgRemesaEstadosAdm(getUsrBean());				
+				List<Integer> listaIdRemesas = cajgRemesaEstadosAdm.comprobarRemesaRecibida(getIdInstitucion());
+				
+				if (listaIdRemesas != null) {
+					for (Integer idRemesa : listaIdRemesas) {
+						cajgRemesaEstadosAdm.nuevoEstadoRemesa(getUsrBean(), getIdInstitucion(), idRemesa, Integer.valueOf("3"));	
+					}
+				}
+				
+				chan.rename(dirOUT + "/" + file.getName(), dirOUT + "/" + HIST + "/" + file.getName());
 				
 			} catch (Exception e) {
-				e.printStackTrace();				
-				throw e;
+								
+				try {
+					escribeLogRemesa("Se ha producido un error al tratar la resolución");
+				} catch (IOException e1) {
+					ClsLogging.writeFileLogError("Se ha producido un error al escribir en el log de la remesa " + getIdRemesa(), e1, 3);
+				}
+				ClsLogging.writeFileLogError("Se ha producido un error al tratar la resolución en la remesa " + getIdRemesa(), e, 3);
 			}
 		}
 	}
@@ -229,6 +258,10 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 	private void actualizaExpediente(String anyoExpediente, String numExpediente, String fechaEstado, String identificadorResolucion, String codTipoResolucion, String codMotivoResolucion, String intervaloIngresosRecursos, String tipoPrestacion) throws Exception {		
 				
 		ScsEJGAdm scsEJGAdm = new ScsEJGAdm(getUsrBean());
+		CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(getUsrBean());
+		CajgEJGRemesaBean cajgEJGRemesaBean = new CajgEJGRemesaBean();
+		String[] claves = new String[]{CajgEJGRemesaBean.C_IDINSTITUCION, CajgEJGRemesaBean.C_ANIO, CajgEJGRemesaBean.C_NUMERO, CajgEJGRemesaBean.C_IDTIPOEJG};
+		String[] campos = new String[]{CajgEJGRemesaBean.C_RECIBIDA};
 			
 		if (numExpediente != null && numExpediente.trim().length() > 5) {
 			numExpediente = numExpediente.trim();
@@ -251,6 +284,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 				//EJG encontrado
 				ScsEJGBean scsEJGBean = (ScsEJGBean) vectorEJGs.get(0);	
 				
+				/* NO COMPROBAMOS QUE SEA DE MI REMESA
 				Hashtable<String, Object> hashEjgRem = new Hashtable<String, Object>();
 				hashEjgRem.put(CajgEJGRemesaBean.C_IDINSTITUCION, getIdInstitucion());
 				hashEjgRem.put(CajgEJGRemesaBean.C_ANIO, scsEJGBean.getAnio());
@@ -266,7 +300,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 					escribeLogRemesa("No se ha encontrado el EJG año/número = " + anyoExpediente + "/" + numExpediente + " en la remesa ");										
 				} else if (vectorRemesa.size() > 1) {
 					escribeLogRemesa("Se ha encontrado más de un EJG año/número = " + anyoExpediente + "/" + numExpediente + " en la remesa ");
-				} else {					
+				} else {	*/				
 					
 					//El estado lo pone el trigger como resuelto
 					String observaciones = intervaloIngresosRecursos;
@@ -297,7 +331,14 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 					        " AND " + ScsEJGBean.C_IDTIPOEJG + " = " + scsEJGBean.getIdTipoEJG();							           
 					
 					scsEJGAdm.updateSQL(update);
-				}
+					
+					cajgEJGRemesaBean.setIdInstitucion(scsEJGBean.getIdInstitucion());
+					cajgEJGRemesaBean.setAnio(scsEJGBean.getAnio());
+					cajgEJGRemesaBean.setNumero(scsEJGBean.getNumero());
+					cajgEJGRemesaBean.setIdTipoEJG(scsEJGBean.getIdTipoEJG());
+					cajgEJGRemesaBean.setRecibida(Integer.valueOf(1));
+					
+					cajgEJGRemesaAdm.updateDirect(cajgEJGRemesaBean, claves, campos);
 				
 			}
 		}
@@ -308,10 +349,12 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 
 	/**
 	 * 
+	 * @param chan 
+	 * @param string 
 	 * @param file
 	 * @throws ClsExceptions
 	 */
-	private void procesaIEE(File file) throws ClsExceptions {
+	private void procesaIEE(ChannelSftp chan, String dirOUT, File file) {
 		try {			
 			
 			if (file != null) {	
@@ -336,13 +379,15 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 				int idRemesa = (int)identificacionIntercambio.getIdentificadorIntercambio();
 				
 				if (!String.valueOf(getIdInstitucion()).equals(idInstitucion)) {
-					escribeLogRemesa("La institucion del fichero es distinta a la del usuario de SIGA");
+					escribeLogRemesa("La institucion del fichero es nula o distinta a la del usuario de SIGA");
 					throw new ClsExceptions("La institucion del fichero es distinta a la del usuario de SIGA");
 				}
 				
 				if (getIdRemesa() != idRemesa) {
-					escribeLogRemesa("La remesa del fichero es distinta a la del usuario de SIGA");
-					throw new ClsExceptions("La remesa del fichero es distinta a la del usuario de SIGA");
+					//si es distinta remesa ya lo tratará su remesa
+					return;
+//					escribeLogRemesa("La remesa del fichero es distinta a la del usuario de SIGA");
+//					throw new ClsExceptions("La remesa del fichero es distinta a la del usuario de SIGA");
 				}
 							
 			    
@@ -351,6 +396,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 				ScsEJGAdm scsEJGAdm = new ScsEJGAdm(getUsrBean());
 				CajgRespuestaEJGRemesaAdm cajgRespuestaEJGRemesaAdm = new CajgRespuestaEJGRemesaAdm(getUsrBean());
 				int idRespuesta = cajgRespuestaEJGRemesaAdm.getNextVal();
+				chan.rename(dirOUT + "/" + file.getName(), dirOUT + "/" + HIST + "/" + file.getName());
 				
 				for (DatosError datosError : datosErrors) {
 					
@@ -430,7 +476,9 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 						}
 					}
 					
-				}				
+				}
+				
+				
 				
 			} else {
 				escribeLogRemesa("No se ha encontrado el fichero de respuesta");
@@ -440,8 +488,13 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 		} catch (Exception e) {	
 			if (file != null) {
 				file.delete();
-			}			
-			throw new ClsExceptions(e, "Error al tratar la respuesta");
+			}
+			try {
+				escribeLogRemesa("Se ha producido un error al tratar la respuesta");
+			} catch (IOException e1) {
+				ClsLogging.writeFileLogError("Se ha producido un error al escribir en el log de la remesa " + getIdRemesa(), e1, 3);
+			}
+			ClsLogging.writeFileLogError("Se ha producido un error al tratar la respuesta en la remesa " + getIdRemesa(), e, 3);			
 		} finally {
 			
 		}
