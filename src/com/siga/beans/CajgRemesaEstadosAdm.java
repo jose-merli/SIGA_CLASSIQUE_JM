@@ -6,7 +6,9 @@
  */
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
@@ -193,6 +195,42 @@ public class CajgRemesaEstadosAdm extends MasterBeanAdministrador {
 		}
 		return insertado;
 
+	}
+	
+	/**
+	 * 
+	 * @param idInstitucion
+	 * @return
+	 * @throws ClsExceptions 
+	 */
+	public List<Integer> comprobarRemesaRecibida(int idInstitucion) throws ClsExceptions {
+		List<Integer> listaIdRemesas = new ArrayList<Integer>();
+		String sql = "SELECT T.IDREMESA" +
+				" FROM (SELECT DISTINCT ER.IDINSTITUCION, ER.IDREMESA," +
+				" (SELECT COUNT(1) FROM CAJG_EJGREMESA ER1" +
+				" WHERE ER1.IDINSTITUCION = ER.IDINSTITUCION" +
+				" AND ER1.IDREMESA = ER.IDREMESA) TOTAL," +
+				" (SELECT COUNT(1) FROM CAJG_EJGREMESA ER2" +
+				" WHERE ER2.IDINSTITUCION = ER.IDINSTITUCION" +
+				" AND ER2.IDREMESA = ER.IDREMESA" +
+				" AND ER2.RECIBIDA = 1) AS RECIBIDOS," +
+				" (SELECT COUNT(1) FROM CAJG_EJGREMESA ER3" +
+				" WHERE ER3.IDREMESA = ER.IDREMESA" +
+				" AND ER3.IDINSTITUCION = ER.IDINSTITUCION" +
+				" AND ER3.IDEJGREMESA IN (SELECT IDEJGREMESA FROM CAJG_RESPUESTA_EJGREMESA)) AS CON_ERRORES" +
+				" FROM CAJG_EJGREMESA ER) T" +
+				" WHERE T.TOTAL = (T.RECIBIDOS + T.CON_ERRORES)" +
+				" AND T.IDINSTITUCION = " + idInstitucion;
+		RowsContainer rc = new RowsContainer(); 
+		rc = this.find(sql);
+        if (rc!=null) {
+           for (int i = 0; i < rc.size(); i++){
+              Row fila = (Row) rc.get(i);
+              listaIdRemesas.add(Integer.parseInt(fila.getString("IDREMESA")));                              
+           }
+        }
+        
+        return listaIdRemesas;
 	}
 	
 }
