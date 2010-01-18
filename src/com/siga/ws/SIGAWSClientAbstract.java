@@ -25,7 +25,7 @@ public abstract class SIGAWSClientAbstract {
 	
 	protected static String rutaOUT = "xml" + File.separator + "OUT";
 	private BufferedWriter bw = null;
-	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss ");
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ");
 	
 	private UsrBean usrBean;
 	private int idInstitucion;
