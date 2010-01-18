@@ -147,7 +147,9 @@
     <% } } %>  			
   		</siga:TablaCabecerasFijas>
  	<!-- FIN TABLA DE GRUPOS -->		
-  			
+  		<script>
+  			parent.ultimoEstado(<%=idEstado%>);
+  		</script>	
 
 	<!-- 
 	<table class="botonesDetalle">
