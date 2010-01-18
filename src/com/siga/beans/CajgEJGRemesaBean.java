@@ -19,6 +19,7 @@ public class CajgEJGRemesaBean extends MasterBean{
 	private Integer	idInstitucionRemesa;
 	private Integer idRemesa;
 	private Integer numeroIntercambio;
+	private Integer recibida;
 	
 	
 	/*
@@ -37,6 +38,7 @@ public class CajgEJGRemesaBean extends MasterBean{
 	static public final String	C_IDINSTITUCIONREMESA=			"IDINSTITUCIONREMESA";
 	static public final String	C_IDREMESA =					"IDREMESA";
 	static public final String	C_NUMEROINTERCAMBIO = "NUMEROINTERCAMBIO";
+	static public final String	C_RECIBIDA = "RECIBIDA";
 	
 	
 	
@@ -100,6 +102,18 @@ public class CajgEJGRemesaBean extends MasterBean{
 	 */
 	public void setIdEjgRemesa(Integer idEjgRemesa) {
 		this.idEjgRemesa = idEjgRemesa;
+	}
+	/**
+	 * @return the recibida
+	 */
+	public Integer getRecibida() {
+		return recibida;
+	}
+	/**
+	 * @param recibida the recibida to set
+	 */
+	public void setRecibida(Integer recibida) {
+		this.recibida = recibida;
 	}
 	
 }
