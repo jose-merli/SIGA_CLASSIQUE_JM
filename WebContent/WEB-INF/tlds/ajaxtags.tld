@@ -2002,5 +2002,170 @@
 		</attribute>
 	</tag>
 	
+	<tag>
+		<description>
+			¡atencion está a medio probar!
+			Builds the JavaScript required to populate multiple selects 
+			based on some event of a select box
+		</description>
+		<name>updateMultipleSelectFromSelect</name>
+		<tag-class>net.sourceforge.ajaxtags.tags.AjaxUpdateMultipleSelectFromSelectTag</tag-class>
+		<body-content>empty</body-content>
+		<attribute>
+			<description>
+				the value for the option when select target is not
+				filled by ajax response
+				default EMPTY
+			</description>
+			<name>emptyOptionValue</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>
+				the display text for the option when select target is
+				not filled by ajax response
+				default EMPTY	</description>
+			<name>emptyOptionName</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<description>
+				Name of the JavaScript object created
+			</description>
+			<name>var</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<description>
+				Name of the JavaScript object to which select box will
+				attach. You must define 'var' for this to work.
+			</description>
+			<name>attachTo</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<description>
+				URL of server-side action or servlet that processes
+				search and returns list of values used in target select
+				field
+			</description>
+			<name>baseUrl</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<description>
+				The initial select field that will form the basis for
+				the search via AJAX
+			</description>
+			<name>source</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<description>
+				A comma-separated list of parameters to pass to the
+				server-side action for update 
+				
+			</description>
+			<name>target</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<description>
+				A comma-separated list of parameters to pass to the
+				server-side action or servlet
+			</description>
+			<name>parameters</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<description>
+				Specifies the event type to attach to the source
+				field(s)
+			</description>
+			<name>eventType</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<description>
+				Indicates whether the target select/dropdown should be
+				populated when the object is initialized (this is
+				essentially when
+				the form loads) [default=false]
+			</description>
+			<name>executeOnLoad</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>boolean</type>
+		</attribute>
+
+		<attribute>
+			<description>
+			¡atencion está sin probar!
+				A comma-separated list of values of options to be marked
+				as selected by default if they exist in the new set of
+				options
+			</description>
+			<name>defaultOptions</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<description>
+				Function to execute before Ajax is begun
+			</description>
+			<name>preFunction</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<description>
+				Function to execute after Ajax is finished, allowing for
+				a chain of additional functions to execute
+			</description>
+			<name>postFunction</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<description>
+				Function to execute if there is a server exception
+				(non-200 HTTP response)
+			</description>
+			<name>errorFunction</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<description>
+				The response parser to implement
+				[default=ResponseHtmlParser]
+			</description>
+			<name>parser</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	
 
 </taglib>
