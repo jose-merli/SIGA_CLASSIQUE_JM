@@ -1872,6 +1872,7 @@
             <forward name="editar" path="/html/jsp/gratuita/pestanasAsisSJCS.jsp?esFichaColegial=0"/>
             <forward name="nuevo" path="/html/jsp/gratuita/nuevaAsistencia.jsp?esFichaColegial=0"/>
             <forward name="recogidaDatos" path="/html/jsp/gratuita/datosCartaAsistencia.jsp?esFichaColegial=0"/>
+            
         </action>
 
 
@@ -1901,6 +1902,7 @@
 		<action path="/JGR_ActuacionesAsistencia" type="com.siga.gratuita.action.ActuacionesAsistenciaAction" name="AsistenciasForm">
             <forward name="listado" path="/html/jsp/gratuita/listadoActuacionesAsistencia.jsp?esFichaColegial=0"/>
             <forward name="editar" path="/html/jsp/gratuita/mantActuacion.jsp?esFichaColegial=0"/>
+            <forward name="consultarAsistencia" path="/html/jsp/gratuita/consultaAsistencia.jsp"/>
         </action>
 
 		<action path="/JGR_SolicitarBajaTurno" type="com.siga.gratuita.action.BajaTurnosAction" name="BajaTurnosForm" scope="request">
