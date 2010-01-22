@@ -2,12 +2,15 @@
 package com.siga.informes;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import javax.imageio.stream.FileImageInputStream;
 import javax.servlet.http.*;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -452,6 +455,59 @@ public class MasterReport  {
 		}
 		return pdf;
 	}
+	
+	private File convertXML2PDF(InputStream xml, File xslt, File pdf)
+	throws IOException, FOPException, TransformerException {
+		return convertXML2PDF(xml, new FileInputStream(xslt),pdf);
+		
+	}
+	
+	/***
+	 * 
+	 * @param xml Fichero xml a transfomar en pdf
+	 * @param xslt Fichero xsl que transforma el xml a pdf
+	 * @param pdf Fichero pdf que se convertira en el pdf deseado
+	 * @return Fichero pdf generado
+	 * @throws IOException
+	 * @throws FOPException
+	 * @throws TransformerException
+	 */
+	private File convertXML2PDF(InputStream xml, InputStream xslt, File pdf)
+	throws IOException, FOPException, TransformerException {
+//		Construct driver
+		Driver driver = new Driver();
+
+//		Setup logger
+		Logger logger = new ConsoleLogger(ConsoleLogger.LEVEL_INFO);
+		driver.setLogger(logger);
+		MessageHandler.setScreenLogger(logger);
+
+//		Setup Renderer (output format)        
+		driver.setRenderer(Driver.RENDER_PDF);
+
+//		Setup output
+		OutputStream out = new java.io.FileOutputStream(pdf);
+		try {
+			driver.setOutputStream(out);
+
+//			Setup XSLT
+			TransformerFactory factory = TransformerFactory.newInstance();
+			Transformer transformer = factory.newTransformer(new StreamSource(xslt));
+
+//			Setup input for XSLT transformation
+			Source src = new StreamSource(xml);
+
+//			Resulting SAX events (the generated FO) must be piped through to FOP
+			Result res = new SAXResult(driver.getContentHandler());
+
+//			Start XSLT transformation and FOP processing
+			transformer.transform(src, res);
+		} finally {
+			out.close();
+		}
+		return pdf;
+	}
+	
 	
 	/**
 	 * Genera el PDF. Devuelve Fichero!=null si lo ha hecho correctamente. Utiliza como temporal la ruta final para despues borrar el temporal.
