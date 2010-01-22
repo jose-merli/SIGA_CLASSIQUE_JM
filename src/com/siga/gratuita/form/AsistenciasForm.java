@@ -3,6 +3,7 @@ package com.siga.gratuita.form;
 /**
  * @author carlos.vidal
  */
+import com.siga.beans.ScsAsistenciasBean;
 import com.siga.general.MasterForm;
 
 public class AsistenciasForm extends MasterForm 
@@ -126,7 +127,7 @@ public class AsistenciasForm extends MasterForm
 	private String comisaria = "comisaria";
 	private String juzgado = "juzgado";
 	private String idDelito = "idDelito";
-	
+	private ScsAsistenciasBean asistenciaBean;
 	
 	/*
 	 * Metodos SET y GET 
@@ -472,6 +473,12 @@ public class AsistenciasForm extends MasterForm
 	}
 	public void setDesigna_turno(String designa_turno) {
 		this.designa_turno = designa_turno;
+	}
+	public ScsAsistenciasBean getAsistenciaBean() {
+		return asistenciaBean;
+	}
+	public void setAsistenciaBean(ScsAsistenciasBean asistenciaBean) {
+		this.asistenciaBean = asistenciaBean;
 	}
 	
 

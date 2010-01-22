@@ -130,7 +130,42 @@ var DefaultResponseParser = Class.create({
                     xdata.push(row);
                 }
             }
-        } else if (this.type === "plain") {
+        }else if (this.type === "xmlMultipleResponse") {
+            var root = this.contentXML.documentElement;
+            var responseNodes = root.getElementsByTagName("response");
+            xdata = [];
+            var i = 0, j = 0, k = 0, len1 = responseNodes.length, len2 = null, len3 = null;
+            var nameNodes = null, valueNodes = null, row = null, items = null, respuesta=null;
+            var itemNode, nameNode, responseNode, valueNode;
+            for (i = 0; i < len1; i++) {
+            	respuesta=[];
+                responseNode = responseNodes[i];
+                items = responseNode.getElementsByTagName("item");
+                len2 = items.length;
+                for (j = 0; j < len2; j++) {
+                    itemNode = items[j];
+                    nameNodes = itemNode.getElementsByTagName("name");
+                    valueNodes = itemNode.getElementsByTagName("value");
+                    row = [];
+                    len3 = nameNodes.length;
+                    for (k = 0; k < len3; k++) {
+                        nameNode = nameNodes[k];
+                        row.push(nameNode.firstChild ? nameNode.firstChild.nodeValue : "");
+                    }
+                    if (row.length !== 1) {
+                        throw new Error("XML is not supported");
+                    }
+                    len3 = valueNodes.length;
+                    for (k = 0; k < len3; k++) {
+                        valueNode = valueNodes[k];
+                        row.push(valueNode.firstChild ? valueNode.firstChild.nodeValue : "");
+                    }
+                    respuesta.push(row);
+                }
+                xdata.push(respuesta);
+            }
+        }
+         else if (this.type === "plain") {
             xdata = this.contentText;
         } else if (this.type === "text") {
             xdata = [];
@@ -186,6 +221,7 @@ var DefaultResponseParser = Class.create({
         this.type = cache; // just copy it back
     }
 });
+
 
 // ResponseCallBackXmlParser is broken!!! prototype exec javascript ?
 var ResponseXmlToHtmlLinkListParser = Class.create(DefaultResponseParser, {
@@ -1253,5 +1289,63 @@ AjaxJspTag.UpdateFieldFromSelect = Class.create(AjaxJspTag.Base, {
                 $(targets[i]).value = items[i];
             }
         }
+    }
+});
+
+AjaxJspTag.UpdateMultipleSelectFromSelect = Class.create(AjaxJspTag.Base, {
+    initialize: function (options) {
+        AjaxJspTag.add(this);
+        this.setOptions(options);
+        this.setListeners();
+        if (this.options.executeOnLoad) {
+            this.execute();
+        }
+    },
+    setOptions: function (options) {
+        this.options = Object.extend({
+            parameters: '',
+            emptyOptionValue: '',
+            emptyOptionName: '',
+            defaultOptions: '',
+            eventType: "change",
+            parser: new DefaultResponseParser("xmlMultipleResponse"),
+            handler: this.handler
+        }, options || {});
+        this.options.defaultOptions = this.options.defaultOptions.split(',');
+    },
+    setListeners: function () {
+        var o = this.options, s = $(o.source);
+        if (s) {
+            s.ajaxSelect = this.execute.bind(this);
+            s["on" + o.eventType] = this.execute.bind(this);
+        }
+    },
+    execute: function () {
+        this.request = this.getAjaxRequest();
+    },
+    handler: function () {
+        var targets = this.target.split(',');
+        var contenidos = this.parser.content;
+        var newOption = null;
+        for (i = 0; i < targets.length; i++) {
+	        $(targets[i]).options.length = 0;
+    	    $(targets[i]).disabled = false;
+    	    if (contenidos[i]===undefined)
+    	    	return;
+        	contenidos[i].each(function (line) {
+	   	        newOption = new Option(line[0], line[1]);
+            	newOption.selected = (line.length === 3 && ("true" === line[2].toLowerCase()) || (this.defaultOptions.indexOf(line[1]) != -1));
+	        $(targets[i]).options[$(targets[i]).options.length] = newOption;
+        	}, this);
+    	    if (newOption === null) {
+	            $(targets[i]).options[$(targets[i]).options.length] = new Option(this.emptyOptionName, this.emptyOptionValue);
+    	        $(targets[i]).disabled = true;
+	        }
+        	// auch ein SELECT TAG ?
+        	// kette ausloessen
+        	if (Object.isFunction($(targets[i]).ajaxSelect)) {
+   		        $(targets[i]).ajaxSelect();
+	       	}
+		}
     }
 });

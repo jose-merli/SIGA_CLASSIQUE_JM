@@ -2,7 +2,6 @@ package com.siga.gratuita.action;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
@@ -23,6 +22,7 @@ import com.atos.utils.GstDate;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.AjaxCollectionXmlBuilder;
+import com.siga.Utilidades.AjaxMultipleCollectionXmlBuilder;
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenClienteAdm;
@@ -33,9 +33,13 @@ import com.siga.beans.ScsAsistenciasAdm;
 import com.siga.beans.ScsAsistenciasBean;
 import com.siga.beans.ScsComisariaAdm;
 import com.siga.beans.ScsComisariaBean;
+import com.siga.beans.ScsDelitoAdm;
+import com.siga.beans.ScsDelitoBean;
 import com.siga.beans.ScsGuardiasColegiadoAdm;
 import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
+import com.siga.beans.ScsJuzgadoAdm;
+import com.siga.beans.ScsJuzgadoBean;
 import com.siga.beans.ScsTipoAsistenciaColegioAdm;
 import com.siga.beans.ScsTipoAsistenciaColegioBean;
 import com.siga.beans.ScsTurnoAdm;
@@ -78,9 +82,15 @@ public class VolantesExpressAction extends MasterAction
 					}else if ( accion.equalsIgnoreCase("getAjaxGuardias")){
 						getAjaxGuardias (mapping, miForm, request, response);
 						return null;
+						
 					}else if ( accion.equalsIgnoreCase("getAjaxColegiados")){
 						getAjaxColegiados(mapping, miForm, request, response);
 						return null;
+						
+					}else if ( accion.equalsIgnoreCase("getAjaxSustituidos")){
+						getAjaxSustituidos(mapping, miForm, request, response);
+						return null;
+						
 					}else if ( accion.equalsIgnoreCase("getAjaxColegiado")){
 						getAjaxColegiado(mapping, miForm, request, response);
 						return null;
@@ -89,6 +99,9 @@ public class VolantesExpressAction extends MasterAction
 						return null;
 					}else if ( accion.equalsIgnoreCase("getAjaxBusquedaAsistencias")){
 						mapDestino = getAjaxBusquedaAsistencias (mapping, miForm, request, response);
+						
+					}else if ( accion.equalsIgnoreCase("getAjaxPrimeraAsistencia")){
+						mapDestino = getAjaxPrimeraAsistencia (mapping, miForm, request, response);
 						
 					}else if ( accion.equalsIgnoreCase("getAjaxGuardarAsistencias")){
 						mapDestino = getAjaxGuardarAsistencias (mapping, miForm, request, response);
@@ -135,7 +148,20 @@ public class VolantesExpressAction extends MasterAction
 		GenParametrosAdm paramAdm = new GenParametrosAdm (usrBean);
 		String delitos_VE = paramAdm.getValor (usrBean.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_DELITOS_VE, "");
 		Boolean isDelitosVE = new Boolean((delitos_VE!=null && delitos_VE.equalsIgnoreCase(ClsConstants.DB_TRUE)));
-		miForm.setDelitos(isDelitosVE);
+		miForm.setDelito(isDelitosVE);
+		
+		if(isDelitosVE){
+			List<ScsDelitoBean> alDelitos = null;
+			ScsDelitoAdm admDelitos = new ScsDelitoAdm(miForm.getUsrBean());
+			alDelitos = admDelitos.getComisarias(miForm.getVolanteExpressVo());
+			if(alDelitos==null){
+				alDelitos = new ArrayList<ScsDelitoBean>();
+			
+			}
+			miForm.setDelitos(alDelitos);
+		}
+		
+		
 
 		//Sacamos los turnos
 		ScsTurnoAdm admTurnos = new ScsTurnoAdm(miForm.getUsrBean());
@@ -143,9 +169,19 @@ public class VolantesExpressAction extends MasterAction
 		miForm.setTurnos(turnos);
 		miForm.setGuardias(new ArrayList<ScsGuardiasTurnoBean>());
 		miForm.setColegiadosGuardia(new ArrayList<CenPersonaBean>());
+		miForm.setColegiadosSustituidos(new ArrayList<CenPersonaBean>());
+		
+		
+		miForm.setComisarias(new ArrayList<ScsComisariaBean>());
+		miForm.setJuzgados(new ArrayList<ScsJuzgadoBean>());
+		
+		
 		miForm.setLugar("centro");
 		miForm.setMsgError("");
 		miForm.setMsgAviso("");
+		
+		
+		
 		
 		ScsTipoAsistenciaColegioAdm admTiposAsis = new ScsTipoAsistenciaColegioAdm(miForm.getUsrBean());
 		Hashtable<String, Object> ht = new Hashtable<String, Object>();
@@ -174,6 +210,7 @@ public class VolantesExpressAction extends MasterAction
 		miForm.setTurnos(alTurnos);
 		miForm.setGuardias(new ArrayList<ScsGuardiasTurnoBean>());
 		miForm.setColegiadosGuardia(new ArrayList<CenPersonaBean>());
+		miForm.setColegiadosSustituidos(new ArrayList<CenPersonaBean>());
 		
 		miForm.setIdTurno(null);
 		miForm.setIdGuardia(null);
@@ -196,7 +233,7 @@ public class VolantesExpressAction extends MasterAction
 		
 		//Sacamos los turnos
 		ScsTurnoAdm admTurnos = new ScsTurnoAdm(miForm.getUsrBean());
-		Collection<ScsTurnoBean> alTurnos = admTurnos.getTurnos(miForm.getVolanteExpressVo());
+		List<ScsTurnoBean> alTurnos = admTurnos.getTurnos(miForm.getVolanteExpressVo());
 		if(alTurnos==null){
 			alTurnos = new ArrayList<ScsTurnoBean>();
 			
@@ -218,16 +255,20 @@ public class VolantesExpressAction extends MasterAction
 		String idTurno = request.getParameter("idTurno");
 		miForm.setIdTurno(idTurno);
 		//Sacamos las guardias si hay algo selccionado en el turno
-		Collection<ScsGuardiasTurnoBean> alGuardias = null;
+		List<ScsGuardiasTurnoBean> alGuardias = null;
+		
 		if(miForm.getIdTurno()!= null && !miForm.getIdTurno().equals("-1")&& !miForm.getIdTurno().equals("")){
 			ScsGuardiasTurnoAdm admGuardias = new ScsGuardiasTurnoAdm(miForm.getUsrBean());
-			alGuardias = admGuardias.getGuariasTurnos(miForm.getVolanteExpressVo());
+			alGuardias = admGuardias.getGuardiasTurnos(miForm.getVolanteExpressVo());
 		}
 		if(alGuardias==null){
 			alGuardias = new ArrayList<ScsGuardiasTurnoBean>();
 			
 		}
+		
 		respuestaAjax(new AjaxCollectionXmlBuilder<ScsGuardiasTurnoBean>(), alGuardias,response);
+		//respuestaAjax(new AjaxCollectionXmlBuilder<ScsComisariaBean>(), alComisarias,response);
+		
 	}
 	
 	protected void getAjaxCentros (ActionMapping mapping, 		
@@ -272,19 +313,69 @@ public class VolantesExpressAction extends MasterAction
 		
 		//Sacamos las guardias si hay algo selccionado en el turno
 		List<CenPersonaBean> alColegiadosGuardias = null;
+		List<CenPersonaBean> alColegiadosSustituidos = null;
 		if(miForm.getIdGuardia()!= null && !miForm.getIdGuardia().equals("")&& !miForm.getIdGuardia().equals("-1")){
 			ScsGuardiasColegiadoAdm admGuardiasCol = new ScsGuardiasColegiadoAdm(miForm.getUsrBean());
-			alColegiadosGuardias = admGuardiasCol.getColegiadosGuardia(miForm.getVolanteExpressVo());
+			alColegiadosGuardias = admGuardiasCol.getColegiadosGuardia(miForm.getVolanteExpressVo(),true);
+			alColegiadosSustituidos = admGuardiasCol.getColegiadosGuardia(miForm.getVolanteExpressVo(),false);
 		}
 		if(alColegiadosGuardias==null){
 			alColegiadosGuardias = new ArrayList<CenPersonaBean>();
-			
+		}
+		if(alColegiadosSustituidos==null){
+			alColegiadosSustituidos = new ArrayList<CenPersonaBean>();
 		}
 		miForm.setColegiadosGuardia(alColegiadosGuardias);
-
-		respuestaAjax(new AjaxCollectionXmlBuilder<CenPersonaBean>(), alColegiadosGuardias,response);
+		miForm.setColegiadosSustituidos(alColegiadosSustituidos);
+		List listaParametros = new ArrayList();
+		listaParametros.add(alColegiadosGuardias);
+		listaParametros.add(alColegiadosSustituidos);
+		
+		respuestaAjax(new AjaxMultipleCollectionXmlBuilder<CenPersonaBean>(), listaParametros,response);
 
 	}
+	@SuppressWarnings("unchecked")
+	protected void getAjaxSustituidos (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception
+			{
+		VolantesExpressForm miForm = (VolantesExpressForm) formulario;
+		
+		//Recogemos el parametro enviado por ajax
+		String fechaGuardia = request.getParameter("fechaGuardia");
+		miForm.setFechaGuardia(fechaGuardia);
+		String idTurno = request.getParameter("idTurno");
+		miForm.setIdTurno(idTurno);
+		String idGuardia = request.getParameter("idGuardia");
+		miForm.setIdGuardia(idGuardia);
+
+		
+		//Sacamos las guardias si hay algo selccionado en el turno
+		
+		List<CenPersonaBean> alColegiadosSustituidos = null;
+		if(miForm.getIdGuardia()!= null && !miForm.getIdGuardia().equals("")&& !miForm.getIdGuardia().equals("-1")){
+			ScsGuardiasColegiadoAdm admGuardiasCol = new ScsGuardiasColegiadoAdm(miForm.getUsrBean());
+		
+			alColegiadosSustituidos = admGuardiasCol.getColegiadosGuardia(miForm.getVolanteExpressVo(),false);
+		}
+		
+		if(alColegiadosSustituidos==null){
+			alColegiadosSustituidos = new ArrayList<CenPersonaBean>();
+		}
+		
+		miForm.setColegiadosSustituidos(alColegiadosSustituidos);
+		
+		respuestaAjax(new AjaxCollectionXmlBuilder<CenPersonaBean>(), alColegiadosSustituidos,response);
+		//respuestaAjax(new AjaxCollectionXmlBuilder<CenPersonaBean>(), alColegiadosSustituidos,response);
+		
+		
+		
+//		
+
+	}
+	
+
 	@SuppressWarnings("unchecked")
 	protected void getAjaxColegiado (ActionMapping mapping, 		
 			MasterForm formulario, 
@@ -399,8 +490,32 @@ public class VolantesExpressAction extends MasterAction
 		 
 		try {
 			
+			if(miForm.getLugar().equals("centro")){
+				List<ScsComisariaBean> alComisarias = null;
+				ScsComisariaAdm admComisarias = new ScsComisariaAdm(miForm.getUsrBean());
+				alComisarias = admComisarias.getComisarias(miForm.getVolanteExpressVo());
+				if(alComisarias==null){
+					alComisarias = new ArrayList<ScsComisariaBean>();
+				
+				}
+				miForm.setComisarias(alComisarias);
+			}else{
+				List<ScsJuzgadoBean> alJuzgados = null;
+				ScsJuzgadoAdm admJuzgados = new ScsJuzgadoAdm(miForm.getUsrBean());
+				alJuzgados = admJuzgados.getJuzgados(miForm.getVolanteExpressVo());
+				if(alJuzgados==null){
+					alJuzgados = new ArrayList<ScsJuzgadoBean>();
+				
+				}
+				miForm.setJuzgados(alJuzgados);
+				
+			}
+			
 			List<ScsAsistenciasBean> alAsistencias = admAsistencias.getAsistenciasVolantesExpres(volantesExpressVo);
 			miForm.setAsistencias(alAsistencias);
+			
+			
+			
 			
 		} catch (ClsExceptions e) {
 			miForm.setAsistencias(new ArrayList<ScsAsistenciasBean> ());
@@ -409,6 +524,80 @@ public class VolantesExpressAction extends MasterAction
 		}catch (Exception e){
 			miForm.setAsistencias(new ArrayList<ScsAsistenciasBean> ());
 			String error = UtilidadesString.getMensajeIdioma(volantesExpressVo.getUsrBean(),"messages.general.errorExcepcion");
+			miForm.setMsgError(error);
+			
+		}
+		return "listadoAsistencias";
+	}
+	protected String getAjaxPrimeraAsistencia (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions,Exception 
+			{
+		VolantesExpressForm miForm = (VolantesExpressForm) formulario;
+		//Recogemos el parametro enviado por ajax
+		
+		String lugar = request.getParameter("lugar");
+		miForm.setLugar(lugar);
+		
+		miForm.setMsgAviso("");
+		miForm.setMsgError("");
+		try {
+			
+			if(miForm.getLugar().equals("centro")){
+				List<ScsComisariaBean> alComisarias = null;
+				ScsComisariaAdm admComisarias = new ScsComisariaAdm(miForm.getUsrBean());
+				alComisarias = admComisarias.getComisarias(miForm.getVolanteExpressVo());
+				if(alComisarias==null){
+					alComisarias = new ArrayList<ScsComisariaBean>();
+				
+				}
+				miForm.setComisarias(alComisarias);
+			}else{
+				List<ScsJuzgadoBean> alJuzgados = null;
+				ScsJuzgadoAdm admJuzgados = new ScsJuzgadoAdm(miForm.getUsrBean());
+				alJuzgados = admJuzgados.getJuzgados(miForm.getVolanteExpressVo());
+				if(alJuzgados==null){
+					alJuzgados = new ArrayList<ScsJuzgadoBean>();
+				
+				}
+				miForm.setJuzgados(alJuzgados);
+				
+			}
+			
+			List<ScsAsistenciasBean> alAsistencias = new ArrayList<ScsAsistenciasBean>();
+			
+			ScsAsistenciasBean asistenciaBean = new ScsAsistenciasBean();
+    		asistenciaBean.setHora("");
+    		asistenciaBean.setMinuto("");
+    		asistenciaBean.setAsistidoNif("");
+    		asistenciaBean.setAsistidoNombre("");
+    		asistenciaBean.setAsistidoApellido1("");
+    		asistenciaBean.setAsistidoApellido2("");
+			asistenciaBean.setDelitosImputados("");
+			asistenciaBean.setObservaciones("");
+			asistenciaBean.setComisaria(new Long(-1));
+			asistenciaBean.setJuzgado(new Long(-1));
+			asistenciaBean.setNumeroDiligencia("");
+			asistenciaBean.setNumero(new Integer(-1));
+			asistenciaBean.setAnio(new Integer(-1));
+			asistenciaBean.setIdInstitucion(new Integer(miForm.getIdInstitucion()));
+			asistenciaBean.setEjgAnio(new Integer(-1));
+			asistenciaBean.setEjgIdTipoEjg(new Integer(-1));
+			asistenciaBean.setEjgNumEjg("");
+			asistenciaBean.setEjgNumero(new Long(-1));
+			asistenciaBean.setDesignaNumero(new Integer(-1));
+			
+			alAsistencias.add(asistenciaBean);
+			miForm.setAsistencias(alAsistencias);
+			
+		} catch (ClsExceptions e) {
+			miForm.setAsistencias(new ArrayList<ScsAsistenciasBean> ());
+			String error = UtilidadesString.getMensajeIdioma(miForm.getUsrBean(),e.getMsg());
+			miForm.setMsgError(error);
+		}catch (Exception e){
+			miForm.setAsistencias(new ArrayList<ScsAsistenciasBean> ());
+			String error = UtilidadesString.getMensajeIdioma(miForm.getUsrBean(),"messages.general.errorExcepcion");
 			miForm.setMsgError(error);
 			
 		}
@@ -440,7 +629,8 @@ public class VolantesExpressAction extends MasterAction
 		String idColegiadoSustituido = request.getParameter("idColegiadoSustituido");
 		miForm.setIdColegiadoSustituido(idColegiadoSustituido);
 		String fechaJustificacion = request.getParameter("fechaJustificacion");
-		miForm.setFechaJustificacion(GstDate.getApplicationFormatDate("", fechaJustificacion));
+		//miForm.setFechaJustificacion(GstDate.getApplicationFormatDate("", fechaJustificacion));
+		miForm.setFechaJustificacion(fechaJustificacion);
 		String datosAsistencias = (String)request.getParameter("datosAsistencias");
 		miForm.setDatosAsistencias(datosAsistencias);
 		miForm.setMsgAviso("");

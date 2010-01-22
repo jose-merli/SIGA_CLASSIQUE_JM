@@ -11,7 +11,12 @@ public class ScsAsistenciasBean extends MasterBean{
 	
 	/*
 	 *  Variables */ 
-	
+	ScsTurnoBean turno ;
+	ScsGuardiasTurnoBean guardia;
+	ScsPersonaJGBean asistido;
+	CenPersonaBean personaColegiado;
+	ScsDesignaBean designa;
+	ScsEJGBean ejg;
 	private Integer	idInstitucion;
 	private Integer	anio;
 	private Integer numero;
@@ -335,5 +340,42 @@ public class ScsAsistenciasBean extends MasterBean{
 	public void setEjgNumEjg(String ejgNumEjg) {
 		this.ejgNumEjg = ejgNumEjg;
 	}
+	public ScsTurnoBean getTurno() {
+		return turno;
+	}
+	public void setTurno(ScsTurnoBean turno) {
+		this.turno = turno;
+	}
+	public ScsGuardiasTurnoBean getGuardia() {
+		return guardia;
+	}
+	public void setGuardia(ScsGuardiasTurnoBean guardia) {
+		this.guardia = guardia;
+	}
+	public ScsPersonaJGBean getAsistido() {
+		return asistido;
+	}
+	public void setAsistido(ScsPersonaJGBean asistido) {
+		this.asistido = asistido;
+	}
+	public CenPersonaBean getPersonaColegiado() {
+		return personaColegiado;
+	}
+	public void setPersonaColegiado(CenPersonaBean personaColegiado) {
+		this.personaColegiado = personaColegiado;
+	}
+	public ScsDesignaBean getDesigna() {
+		return designa;
+	}
+	public void setDesigna(ScsDesignaBean designa) {
+		this.designa = designa;
+	}
+	public ScsEJGBean getEjg() {
+		return ejg;
+	}
+	public void setEjg(ScsEJGBean ejg) {
+		this.ejg = ejg;
+	}
+	
 	
 }

@@ -2,7 +2,9 @@ package com.siga.beans;
 
 
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsConstants;
@@ -13,7 +15,9 @@ import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.gratuita.form.MantenimientoJuzgadoForm;
+import com.siga.gratuita.vos.VolantesExpressVo;
 
 /**
  * Implementa las operaciones sobre el bean de la tabla SCS_JUZGADO
@@ -443,7 +447,73 @@ public class ScsJuzgadoAdm extends MasterBeanAdministrador {
 		}
 		return sinDuplicar;
 	}
-	
+	public List<ScsJuzgadoBean> getJuzgados(VolantesExpressVo volanteExpres)throws ClsExceptions{
+
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+		
+		sql.append(" select DISTINCT scs_JUZGADO.Idjuzgado , scs_juzgado.IDINSTITUCION, ");
+		sql.append(" scs_juzgado.NOMBRE || ' (' || cen_poblaciones.nombre || ')' AS NOMBRE ");
+		sql.append(" from scs_turno, ");
+		sql.append(" scs_materiajurisdiccion, ");
+		sql.append(" scs_procedimientos, ");
+		sql.append(" scs_juzgadoprocedimiento, ");
+		sql.append(" scs_juzgado, ");
+		sql.append(" cen_poblaciones ");
+		sql.append(" where scs_turno.idinstitucion = scs_materiajurisdiccion.idinstitucion ");
+		sql.append(" and scs_turno.idmateria = scs_materiajurisdiccion.idmateria ");
+		sql.append(" and scs_turno.idarea = scs_materiajurisdiccion.idarea ");
+		sql.append(" and scs_materiajurisdiccion.idjurisdiccion = ");
+		sql.append(" scs_procedimientos.idjurisdiccion ");
+		sql.append(" and scs_materiajurisdiccion.idinstitucion = ");
+		sql.append(" scs_procedimientos.idinstitucion ");
+		sql.append(" and scs_procedimientos.idinstitucion = ");
+		sql.append(" scs_juzgadoprocedimiento.idinstitucion ");
+		sql.append(" and scs_procedimientos.idprocedimiento = ");
+		sql.append(" scs_juzgadoprocedimiento.idprocedimiento ");
+		sql.append(" and scs_juzgadoprocedimiento.idinstitucion_juzg = ");
+		sql.append(" scs_juzgado.idinstitucion ");
+		sql.append(" and scs_juzgadoprocedimiento.idjuzgado = scs_juzgado.idjuzgado ");
+		sql.append(" and scs_juzgado.idpoblacion = cen_poblaciones.idpoblacion(+) ");
+		sql.append(" and scs_turno.IDINSTITUCION = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),volanteExpres.getIdInstitucion());
+		sql.append(" and scs_juzgado.visible = '1' ");
+		sql.append(" and scs_turno.idturno = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),volanteExpres.getIdTurno());
+		sql.append(" and nvl(scs_procedimientos.vigente, '0') = '1' ");
+		sql.append(" ORDER BY NOMBRE ");
+		List<ScsJuzgadoBean> alJuzgados= null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+												
+            if (rc.findBind(sql.toString(),htCodigos)) {
+            	alJuzgados = new ArrayList<ScsJuzgadoBean>();
+            	ScsJuzgadoBean juzgadoBean = new ScsJuzgadoBean();
+            	juzgadoBean.setNombre(UtilidadesString.getMensajeIdioma(volanteExpres.getUsrBean(), "general.combo.seleccionar"));
+            	juzgadoBean.setIdJuzgado(new Integer(-1));
+            	alJuzgados.add(juzgadoBean);
+    			for (int i = 0; i < rc.size(); i++){
+            		Row fila = (Row) rc.get(i);
+            		Hashtable<String, Object> htFila=fila.getRow();
+            		
+            		juzgadoBean = new ScsJuzgadoBean();
+            		juzgadoBean.setIdInstitucion(UtilidadesHash.getInteger(htFila,ScsJuzgadoBean.C_IDINSTITUCION));
+            		juzgadoBean.setIdJuzgado(UtilidadesHash.getInteger(htFila,ScsJuzgadoBean.C_IDJUZGADO));
+            		juzgadoBean.setNombre(UtilidadesHash.getString(htFila,ScsJuzgadoBean.C_NOMBRE));
+            		alJuzgados.add(juzgadoBean);
+            	}
+            } 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+       }
+       return alJuzgados;
+		
+	} 
 	
 
 }

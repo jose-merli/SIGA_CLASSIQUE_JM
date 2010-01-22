@@ -5,7 +5,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
-<meta http-equiv="Conte nt-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <%@ page contentType="text/html" language="java"
 	errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
@@ -54,16 +54,15 @@
 			
 			var resultado = showModalDialog("<html:rewrite page='/html/jsp/general/calendarGeneral.jsp'/>?valor="+document.VolantesExpressForm.fechaGuardia.value,document.VolantesExpressForm.fechaGuardia,"dialogHeight:275px;dialogWidth:400px;help:no;scroll:no;status:no;");
 			if (resultado) {
-				
 				 document.VolantesExpressForm.turnos.value= '';
 				 document.VolantesExpressForm.guardias.value= '';
 				 document.VolantesExpressForm.colegiadosGuardia.value= '';
 				 document.VolantesExpressForm.colegiadosSustituidos.value= '';
 				 document.VolantesExpressForm.idTurno.value = '';
 			     document.VolantesExpressForm.idGuardia.value = '';
-			     document.VolantesExpressForm.idColegiado.value = '';
 				 document.VolantesExpressForm.idColegiadoGuardia.value = '';
 				 document.VolantesExpressForm.idColegiadoSustituido.value = '';
+				 // document.VolantesExpressForm.idColegiado.value = '';
 				
 				 document.VolantesExpressForm.fechaGuardia.value = resultado;
 				 document.getElementById('fechaGuardia').onchange();
@@ -75,7 +74,7 @@
 				 document.VolantesExpressForm.colegiadosSustituidos.value= '';
 				 document.VolantesExpressForm.idTurno.value = '';
 			     document.VolantesExpressForm.idGuardia.value = '';
-			     document.VolantesExpressForm.idColegiado.value = '';
+			     // document.VolantesExpressForm.idColegiado.value = '';
 				 document.VolantesExpressForm.idColegiadoGuardia.value = '';
 				 document.VolantesExpressForm.idColegiadoSustituido.value = '';
 				
@@ -123,6 +122,21 @@
 		}
 					
 	}	
+	function  postAccionFechaGuardia(){
+		if((document.VolantesExpressForm.fechaGuardia && document.VolantesExpressForm.fechaGuardia.value != ''&& document.VolantesExpressForm.idGuardia.value != '-1')){
+			actualizarResultados();
+			
+		}
+	}
+	function preAccionGuardia(){
+		
+//		if((document.VolantesExpressForm.idGuardia && document.VolantesExpressForm.idGuardia.value != ''&& document.VolantesExpressForm.idGuardia.value != '-1')){
+			
+// 		}else{
+	// 		return 'cancel';
+// 		}
+					
+	}
 	function postAccionGuardia(){
 		if((document.VolantesExpressForm.idGuardia && document.VolantesExpressForm.idGuardia.value != ''&& document.VolantesExpressForm.idGuardia.value != '-1')){
 			if(document.VolantesExpressForm.idColegiado){
@@ -214,6 +228,19 @@
 		crearFila();
 	} 
 	function preAccionGuardarAsistencias(){
+		var texto = '';
+		if((document.VolantesExpressForm.idColegiadoSustituido && document.VolantesExpressForm.idColegiadoSustituido.value != ''&& document.VolantesExpressForm.idColegiadoSustituido.value != '-1')){
+			texto = '<siga:Idioma key="gratuita.volantesExpres.msg.confirmaSustitucion"/>';
+		}else if(document.VolantesExpressForm.idColegiado && document.VolantesExpressForm.idColegiado.value != '' && (document.VolantesExpressForm.idColegiadoGuardia==null ||document.VolantesExpressForm.idColegiadoGuardia.value=='-1')){
+			texto = '<siga:Idioma key="gratuita.volantesExpres.msg.confirmaRefuerzo"/>';
+		
+		}
+		if(texto!=''){
+			if (!confirm(texto)){
+				return 'cancel';
+			}
+		}
+	
 		sub();
 		var validado = validarDatosMinimos ();
 		if(!validado){
@@ -230,6 +257,15 @@
 
 	function postAccionGuardarAsistencias(){
 		fin();
+		if((document.VolantesExpressForm.idColegiadoSustituido && document.VolantesExpressForm.idColegiadoSustituido.value != ''&& document.VolantesExpressForm.idColegiadoSustituido.value != '-1')
+		||
+		(document.VolantesExpressForm.idColegiado && document.VolantesExpressForm.idColegiado.value != '' && (document.VolantesExpressForm.idColegiadoGuardia==null ||document.VolantesExpressForm.idColegiadoGuardia.value=='-1'))
+		||
+		((!document.VolantesExpressForm.idColegiadoGuardia || document.VolantesExpressForm.idColegiadoGuardia.value == ''|| document.VolantesExpressForm.idColegiadoGuardia.value == '') && (!document.VolantesExpressForm.idColegiadoSustituido || document.VolantesExpressForm.idColegiadoSustituido.value == ''|| document.VolantesExpressForm.idColegiadoSustituido.value == ''))
+		){
+			document.getElementById('idGuardia').onchange();
+			
+		}
 	}
 
 	function preAccionBuscarAsistencias(){
@@ -246,7 +282,8 @@
 		// Datos Dinamicos Asistencias
 		var datos = "", accion = "";
 			
-		for (i = 0; i < filas ; i++) {
+		for (a = 0; a < filas ; a++) {
+			i = table.rows[a].id.split("_")[1];
 			 
 			var validado = validarDatosFila (i);
 			  
@@ -256,12 +293,20 @@
 			}
 	              
 			claveAnio = document.getElementById("claveAnio_" + i).value;
+			if(claveAnio=='-1')
+				claveAnio ="";
+			
 			datos += 'claveAnio='+claveAnio;
 			datos += ',';
 			claveNumero = document.getElementById("claveNumero_" + i).value;
+			if(claveNumero=='-1')
+				claveNumero ="";
 			datos += 'claveNumero='+claveNumero;
 			datos += ',';
+			
 			claveIdInstitucion = document.getElementById("claveIdInstitucion_" + i).value;
+			if(claveIdInstitucion=='-1')
+				claveIdInstitucion ="";
 			datos += 'claveIdInstitucion='+claveIdInstitucion;
 			datos += ',';
 			
@@ -319,32 +364,43 @@
 			
 			
 
-               diligencia = document.getElementById("diligencia_" + i).value;
-               diligencia = replaceAll(diligencia,',','~');
-               diligencia = replaceAll(diligencia,'=','¬');
-               
-               datos += 'diligencia='+diligencia;
-               datos += ',';
-							
-			observaciones = document.getElementById("observaciones_" + i).value;
-			observaciones = replaceAll(observaciones,',','~');
-			observaciones = replaceAll(observaciones,'=','¬');
+             diligencia = document.getElementById("diligencia_" + i).value;
+             diligencia = replaceAll(diligencia,',','~');
+             diligencia = replaceAll(diligencia,'=','¬');
+             
+             datos += 'diligencia='+diligencia;
+             datos += ',';
+			observaciones = '';
+			if(document.getElementById("observaciones_" + i)){		
+				observaciones = document.getElementById("observaciones_" + i).value;
+				observaciones = replaceAll(observaciones,',','~');
+				observaciones = replaceAll(observaciones,'=','¬');
+			}
 			datos += 'observaciones='+observaciones;
 			datos += ',';
 			
 			idDelito = document.getElementById("idDelito_" + i).value;
+			if(idDelito=='-1')
+				idDelito ="";
 			datos += 'idDelito='+idDelito;
 			datos += ',';
 			
+			
 			ejgNumero = document.getElementById("ejgNumero_" + i).value;
+			if(ejgNumero=='-1')
+				ejgNumero ="";
 			datos += 'ejgNumero='+ejgNumero;
 			datos += ',';
 			
 			ejgAnio = document.getElementById("ejgAnio_" + i).value;
+			if(ejgAnio=='-1')
+				ejgAnio ="";
 			datos += 'ejgAnio='+ejgAnio;
 			datos += ',';
 			
 			ejgTipo = document.getElementById("ejgTipo_" + i).value;
+			if(ejgTipo=='-1')
+				ejgTipo ="";
 			datos += 'ejgTipo='+ejgTipo;
 			datos += "%%%";
 			
@@ -352,148 +408,213 @@
 		return datos;
 			
 	}
-		
+	//Valdia el ancho de la tabla cuando sale el scroll
+	
 	function crearFila () 
 		{ 
+			
 		table = document.getElementById("asistencias");
-		numFila = table.rows.length;
-		tr = table.insertRow();
-		tr.id = "fila_" + numFila;
-		tr.align = "center";
-
-		td = tr.insertCell();
-		td.setAttribute("width", "6%");
-		td.setAttribute("align", "center");
-		td.className = "";
-		td.innerText="";
-		td.innerHTML = '<input type="hidden" id="claveAnio_' + numFila + '" value=""> ' +
-		                  '<input type="hidden" id="claveNumero_' + numFila + '" value="">' + 
-		                  '<input type="hidden" id="claveIdInstitucion_' + numFila + '" value="">' +
-		                  '<input type="hidden" id="numero_designa_' + numFila + '" value=""> ' +
-		                  '<input type="hidden" id="ejgNumero_' + numFila + '" value=""> ' +
-		                  '<input type="hidden" id="ejgAnio_' + numFila + '" value=""> ' +
-		                  '<input type="hidden" id="ejgTipo_' + numFila + '" value=""> ' +
-						  '<input type="text" id="hora_'   + numFila + '" class="box" style="width:21;margin-top:3px;text-align:center;" maxLength="2" value="" onBlur="validaHora(this);" /> : ' + 
-		 				  '<input type="text" id="minuto_' + numFila + '" class="box" style="width:21;margin-top:3px;text-align:center;" maxLength="2" value="" onBlur="validaMinuto(this);" />';
-
-		
-		// centro detencion	/ Juzgado
-		td = tr.insertCell(); 
-		td.setAttribute("width", "27%");
-		td.className = "";
-		td.innerText="";
-		aux = '';
-		//Centro detencion
-		if (document.VolantesExpressForm.lugar[0].checked && 
-		    document.VolantesExpressForm.lugar[0].value == "centro") {
-
-			aux = '<input type="text" id="codComisaria_' + numFila + '" class="box" size="8"  style="width:21;margin-top:3px;margin-left:3px;" maxlength="10" onBlur="obtenerComisaria(' + numFila + ');" /> ' +
-				  '<iframe ID="comisaria_' + numFila + 'Frame" SRC="/SIGA/html/jsp/general/comboAnidado.jsp?nombre=comisaria_' + numFila + '&tipo=comboComisariasTurno&clase=boxCombo&estilo=width:230px;&ancho=null&obligatorio=false&elementoSel=[]&seleccionMultiple=false&parametros='+document.VolantesExpressForm.idTurno.value+'&id='+ document.VolantesExpressForm.idInstitucion.value +'&'+ document.VolantesExpressForm.idTurno.value +'&accion=&filasMostrar=1&obligatorioSinTextoSeleccionar=false&readonly=false&pestana=" WIDTH="230" HEIGHT="21" FRAMEBORDER="0" MARGINWIDTH="2" MARGINHEIGHT="1" SCROLLING="NO"></iframe> ' + 
-			      '<input type="hidden" id="comisaria_' + numFila + '" value="">';
-		}
-		// Juzgado
-		else {
-			aux = '<input type="text" id="codJuzgado_' + numFila + '" class="box" size="8" style="width:21;margin-top:3px;margin-left:3px;" maxlength="10" onBlur="obtenerJuzgado(' + numFila + ');"/> ' +
-				  '<iframe ID="juzgado_' + numFila + 'Frame" SRC="/SIGA/html/jsp/general/comboAnidado.jsp?nombre=juzgado_' + numFila + '&tipo=comboJuzgadosTurno&clase=boxCombo&estilo=width:230px;&ancho=null&obligatorio=false&elementoSel=[]&seleccionMultiple=false&parametros='+document.VolantesExpressForm.idTurno.value+'&id='+ document.VolantesExpressForm.idInstitucion.value +'&'+ document.VolantesExpressForm.idTurno.value +'&accion=&filasMostrar=1&obligatorioSinTextoSeleccionar=false&readonly=false&pestana=" WIDTH="230" HEIGHT="21" FRAMEBORDER="0" MARGINWIDTH="2" MARGINHEIGHT="1" SCROLLING="NO"></iframe> ' + 
-			      '<input type="hidden" id="juzgado_' + numFila + '" value="">';
-		}
-		
-		td.innerHTML = aux;
-		
-
-		// asistido (dni - nombre apellido1 apellido2)
-		td = tr.insertCell(); 
-		td.setAttribute("width", "36%");
-		td.className = "";
-		td.innerText="";
-		td.innerHTML ='<input type="text" id="dni_' + numFila + '" class="box" style="width:70;margin-top:3px;" value="" maxlength="20" onBlur="obtenerPersona(' + numFila + ');" /> - ' +
-		                 '<input type="text" id="nombre_' + numFila + '" class="box" style="width:80;margin-top:3px;" value="" maxlength="80"/>&nbsp;' + 
-		                 '<input type="text" id="apellido1_' + numFila + '" class="box" style="width:80;margin-top:3px;" value="" maxlength="80"/>&nbsp;' +
-		                 '<input type="text" id="apellido2_' + numFila + '" class="box" style="width:80;margin-top:3px;" value="" maxlength="80"/>' +
-		                 '<input type="hidden" id="idPersona_' + numFila + '" class="box" value=""/>' +
-		                 '<img id="info_existe_' + numFila + '" src="/SIGA/html/imagenes/nuevo.gif" alt="<siga:Idioma key="gratuita.volantesExpres.mensaje.esNuevaPersonaJG"/>"/>';
+		if(table.rows.length>0){
+			
+			numFila = table.rows.length;
+			tr = table.insertRow();
+			tr.id = "fila_" + numFila;
+			tr.align = "center";
 	
-		// numero diligencia (num diligencia / anio)
-		td = tr.insertCell(); 
-		td.setAttribute("width", "9%");
-		td.className = "";
-		td.innerText="";
-		td.innerHTML ='<input type="text" id="diligencia_' + numFila + '" class="box" maxlength="20" style="width:70;margin-top:3px;" value=""/> ';
-
-		// delitos
-		
-		td = tr.insertCell(); 
-		td.setAttribute("width", "14%");
-		td.className = "";
-		td.innerText="";
-		//if(isDelitosVE.booleanValue()%>){
-		if(document.VolantesExpressForm.delitos && document.VolantesExpressForm.delitos.value=='true'){
-			aux = '';
-			// Delitos
-			aux =  '<iframe ID="idDelito_' + numFila + 'Frame" SRC="/SIGA/html/jsp/general/comboAnidado.jsp?nombre=idDelito_' + numFila + '&tipo=comboDelitos&clase=boxCombo&estilo=width:215px;&ancho=null&obligatorio=false&elementoSel=[]&seleccionMultiple=false&parametros='+ document.VolantesExpressForm.idInstitucion.value +'&id='+ document.VolantesExpressForm.idInstitucion.value +'&accion=&filasMostrar=1&obligatorioSinTextoSeleccionar=false&readonly=false&pestana=" WIDTH="230" HEIGHT="21" FRAMEBORDER="0" MARGINWIDTH="2" MARGINHEIGHT="1" SCROLLING="NO"></iframe> ' + 
-				      '<input type="hidden" id="idDelito_' + numFila + '" value="">'+
-				      '<input type="hidden" id="observaciones_' + numFila + '" value="">';
-			td.innerHTML = aux;
-		}else{
-			td.innerHTML ='<input type="text" id="observaciones_' + numFila + '" class="box" style="width:130;margin-top:3px;" value=""/>'+
-			'<input type="hidden" id="idDelito_' + numFila + '" value="">';
-		}
-		
-		// boton borrar
-		td = tr.insertCell(); 
-		td.setAttribute("width", "8%");
-		td.className = "";
-		td.innerText="";
-
-		
-		concatenado = '<img src="/SIGA/html/imagenes/bborrar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='general.boton.borrar'/>" name="" border="0" onclick="borrarFila(\''+ td.id +'\')">';
-		td.innerHTML = concatenado;
-		tr.scrollIntoView(false);
+			td = tr.insertCell();
+			td.setAttribute("width", "5%");
+			td.setAttribute("align", "center");
+			td.className = "";
+			td.innerText="";
+			td.innerHTML = '<input type="hidden" id="claveAnio_' + numFila + '" value=""> ' +
+			                  '<input type="hidden" id="claveNumero_' + numFila + '" value="">' + 
+			                  '<input type="hidden" id="claveIdInstitucion_' + numFila + '" value="">' +
+			                  '<input type="hidden" id="designaNumero_' + numFila + '" value=""> ' +
+			                  '<input type="hidden" id="ejgNumero_' + numFila + '" value=""> ' +
+			                  '<input type="hidden" id="ejgAnio_' + numFila + '" value=""> ' +
+			                  '<input type="hidden" id="ejgTipo_' + numFila + '" value=""> ' +
+							  '<table><tr><td><input type="text" id="hora_'   + numFila + '" class="box" style="width:20;margin-top:2px;text-align:center;margin-rigth:1px;" maxLength="2" value="" onBlur="validaHora(this);" /></td>' + 
+			 				  '<td><input type="text" id="minuto_' + numFila + '" class="box" style="width:20;margin-top:2px;text-align:center;" maxLength="2" value="" onBlur="validaMinuto(this);" /></td></table></tr>';
+	
 			
-	} //crearFila ()
-
-		function validarDatosFila (fila)  
-		{
-			var campo = "";
-			var obligatorio = "<siga:Idioma key='messages.campoObligatorio.error'/>";
-			
-			
-			if (document.VolantesExpressForm.lugar[0].checked && document.VolantesExpressForm.lugar[0].value == "centro") {
+			// centro detencion	/ Juzgado
+			td = tr.insertCell(); 
+			td.setAttribute("width", "26%");
+			td.className = "";
+			td.innerText="";
+			//Centro detencion
+			if (document.VolantesExpressForm.lugar[0].checked && 
+			    document.VolantesExpressForm.lugar[0].value == "centro") {
 			    
-			    if (!document.getElementById("comisaria_"+fila).value) {
-					campo = "<siga:Idioma key='gratuita.volantesExpres.literal.centroDetencion'/>" ;
-					alert ("'"+ campo + "' " + obligatorio);
-					return false;
-				}
-			    
+				aux = '<table><tr><td><input type="text" id="codComisaria_' + numFila + '" class="box" size="8"  style="width:20;margin-top:2px;" maxlength="10" onBlur="obtenerComisaria(' + numFila + ');" /></td>'+ 			
+						'<td><select class="boxCombo" id="comisaria_' + numFila + '" style="width:220px;" name="comisaria_' + numFila + '" >'+ 
+							
+						'</select></td></table></tr>';
+				td.innerHTML = aux;
+			}
+			// Juzgado
+			else {
+				aux = '<table><tr><td><input type="text" id="codJuzgado_' + numFila + '" class="box" size="8" style="width:21;margin-top:2px;" maxlength="10" onBlur="obtenerJuzgado(' + numFila + ');"/></td> ' +
+					  '<td><select class="boxCombo" id="juzgado_' + numFila + '" style="width:220px;" name="juzgado_' + numFila + '" >'+ 
+						'</select></td></table></tr>';
+				 td.innerHTML = aux;
+			}
+			// asistido (dni - nombre apellido1 apellido2)
+			td = tr.insertCell(); 
+			td.setAttribute("width", "36%");
+			td.className = "";
+			td.innerText="";
+			td.innerHTML ='<table><tr><td><input type="text" id="dni_' + numFila + '" class="box" style="width:70;margin-top:2px;margin-rigth:1px;" value="" maxlength="20" onBlur="obtenerPersona(' + numFila + ');" />-</td>' +
+			                 '<td><input type="text" id="nombre_' + numFila + '" class="box" style="width:80;margin-top:2px;margin-rigth:1px;" value="" maxlength="80"/></td>' + 
+			                 '<td><input type="text" id="apellido1_' + numFila + '" class="box" style="width:80;margin-top:2px;margin-rigth:1px;" value="" maxlength="80"/></td>' +
+			                 '<td><input type="text" id="apellido2_' + numFila + '" class="box" style="width:80;margin-top:2px;" value="" maxlength="80"/></td>' +
+			                 '<td><img id="info_existe_' + numFila + '" src="/SIGA/html/imagenes/nuevo.gif" alt="<siga:Idioma key="gratuita.volantesExpres.mensaje.esNuevaPersonaJG"/>"/></td>'+
+			                 '<td><input type="hidden" id="idPersona_' + numFila + '" class="box" value=""/></td>' +
+			                 '</tr></table>'
+			                 ;
+		
+			// numero diligencia (num diligencia / anio)
+			td = tr.insertCell(); 
+			td.setAttribute("width", "8%");
+			td.className = "";
+			td.innerText="";
+			td.innerHTML ='<input type="text" id="diligencia_' + numFila + '" class="box" maxlength="20" style="width:70;margin-top:2px;" value=""/> ';
+	
+			// delitos
+			
+			td = tr.insertCell(); 
+			td.setAttribute("width", "14%");
+			td.className = "";
+			td.innerText="";
+			//if(isDelitosVE.booleanValue()%>){
+			if(document.VolantesExpressForm.delito && document.VolantesExpressForm.delito.value=='true'){
+				aux = '';
+				// Delitos
+				aux = '<select class="boxCombo" id="idDelito_' + numFila + '" style="width:230px;margin-top:2px;" name="idDelito_' + numFila + '" >'+ 
+    					'</select>';
+				
+				td.innerHTML = aux;
 			}else{
-			
-				if (!document.getElementById("juzgado_"+fila).value) {
-					campo = "<siga:Idioma key='gratuita.volantesExpres.literal.juzgado'/>";
-					alert ("'"+ campo + "' " + obligatorio);
-					return false;
-				}
-			
+				td.innerHTML ='<input type="text" id="observaciones_' + numFila + '" class="box" style="width:130;margin-top:2px;" value=""/>'+
+				'<input type="hidden" id="idDelito_' + numFila + '" value="">';
 			}
 			
+			// boton borrar
+			td = tr.insertCell(); 
+			td.setAttribute("width", "11%");
+			td.setAttribute("align", "left");
+			td.className = "";
+			td.innerText="";
+	
 			
+			concatenado = '<table><tr><td><img src="/SIGA/html/imagenes/bborrar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='general.boton.borrar'/>" name="" border="0" onclick="borrarFila(\''+ tr.id +'\')"></td></tr></table>';
+			td.innerHTML = concatenado;
+			tr.scrollIntoView(false);
 			
-			if (!document.getElementById("nombre_" + fila).value) {
-				campo = "<siga:Idioma key='gratuita.volantesExpres.literal.asistido'/>";
-				alert ("'"+ campo + "' " + obligatorio);
-				return false;
-			}
-
-			if (!document.getElementById("apellido1_" + fila).value) {
-				campo = "<siga:Idioma key='gratuita.volantesExpres.literal.apellido1'/>";
-				alert ("'"+ campo + "' " + obligatorio);
-				return false;
-			}
-
-			return true;
+			if (document.VolantesExpressForm.lugar[0].checked && 
+			    document.VolantesExpressForm.lugar[0].value == "centro") {
+				var selectPrimeraComisaria = document.getElementById("comisaria_0"); 
+				var auxComisaria = 'comisaria_'+numFila;
+			    var comisariaActual = document.getElementById(auxComisaria);
+		
+			    for (i = 0 ; i<selectPrimeraComisaria.options.length ; i++) {
+	   				var option = selectPrimeraComisaria.options[i];
+	   				var optionNueva = document.createElement('option');
+	   				optionNueva.text = option.text;
+	            	optionNueva.value = option.value;
+	     			comisariaActual.add(optionNueva);
+	    		}
+    		}else{
+    		
+	    		var selectPrimerJuzgado = document.getElementById("juzgado_0"); 
+				var auxJuzgado = 'juzgado_'+numFila;
+			    var juzgadoActual = document.getElementById(auxJuzgado);
+		
+			    for (i = 0 ; i<selectPrimerJuzgado.options.length ; i++) {
+	   				var option = selectPrimerJuzgado.options[i];
+	   				var optionNueva = document.createElement('option');
+	   				optionNueva.text = option.text;
+	            	optionNueva.value = option.value;
+	     			juzgadoActual.add(optionNueva);
+	    		}
+    		}
+    		if(document.VolantesExpressForm.delito && document.VolantesExpressForm.delito.value=='true'){
+	    		var selectPrimerDelito = document.getElementById("idDelito_0"); 
+				var auxDelito = 'idDelito_'+numFila;
+			    var delitoActual = document.getElementById(auxDelito);
+		
+			    for (i = 0 ; i<selectPrimerDelito.options.length ; i++) {
+	   				var option = selectPrimerDelito.options[i];
+	   				var optionNueva = document.createElement('option');
+	   				optionNueva.text = option.text;
+	            	optionNueva.value = option.value;
+	     			delitoActual.add(optionNueva);
+	    		}
+    		}
+			validarAnchoTabla();
+			
+		}else{
+			document.getElementById('idPrimeraAsistencia').onclick();
+			
 		}
+			
+	} 
+	function validarAnchoTabla () 
+		{
+			if (document.all.asistencias.clientHeight < document.all.divAsistencias.clientHeight) {
+				document.all.tabAsistenciasCabeceras.width='100%';
+			}
+			else {
+				document.all.tabAsistenciasCabeceras.width='98.30%';
+			}
+		}
+	
+
+	function validarDatosFila (fila)  
+	{
+		var campo = "";
+		var obligatorio = "<siga:Idioma key='messages.campoObligatorio.error'/>";
 		
+		if (!document.getElementById("hora_" + fila).value) {
+			campo = "<siga:Idioma key='gratuita.volantesExpres.literal.hora'/>" ;
+			
+			alert ("'"+ campo + "' " + obligatorio);
+			return false;
+		}
+		if (document.VolantesExpressForm.lugar[0].checked && document.VolantesExpressForm.lugar[0].value == "centro") {
+		    if (document.getElementById("comisaria_"+fila).value=='-1') {
+				campo = "<siga:Idioma key='gratuita.volantesExpres.literal.centroDetencion'/>" ;
+				alert ("'"+ campo + "' " + obligatorio);
+				return false;
+			}
+		}else{
 		
+			if (document.getElementById("juzgado_"+fila).value=='-1') {
+				campo = "<siga:Idioma key='gratuita.volantesExpres.literal.juzgado'/>";
+				alert ("'"+ campo + "' " + obligatorio);
+				return false;
+			}
+		}
+		if (!document.getElementById("nombre_" + fila).value) {
+			campo = "<siga:Idioma key='gratuita.volantesExpres.literal.asistido'/>";
+			alert ("'"+ campo + "' " + obligatorio);
+			return false;
+		}
+		if (!document.getElementById("apellido1_" + fila).value) {
+			campo = "<siga:Idioma key='gratuita.volantesExpres.literal.apellido1'/>";
+			alert ("'"+ campo + "' " + obligatorio);
+			return false;
+		}
+		if(document.VolantesExpressForm.delito && document.VolantesExpressForm.delito.value=='true'){
+			if (document.getElementById("idDelito_" + fila).value=='-1') {
+				campo = "<siga:Idioma key='gratuita.volantesExpres.literal.delitos'/>";
+				alert ("'"+ campo + "' " + obligatorio);
+				return false;
+			}
+		}
+
+		return true;
+	}
 		
 	</script>
 
@@ -503,7 +624,7 @@
 
 <bean:define id="fechaJustificacion" name="VolantesExpressForm" property="fechaJustificacion" type="String" />
 <!-- INICIO: CAMPOS DE BUSQUEDA-->
-<html:form action="/JGR_SaltosYCompensaciones" method="POST"
+<html:form action="/JGR_VolantesExpres" method="POST"
 	target="mainWorkArea">
 
 	<html:hidden property="modo" />
@@ -511,7 +632,9 @@
 	<html:hidden property="idInstitucion" />
 	<html:hidden property="datosAsistencias" />
 	<html:hidden property="idTipoAsistencia" />
+	<html:hidden property="delito" />
 	<html:hidden property="delitos" />
+	<html:hidden property="comisarias" />
 	<html:hidden property="msgError" value=""/>
 	<html:hidden property="msgAviso" value=""/>
 
@@ -526,7 +649,8 @@
 				<td width="35%"></td>
 			</tr>
 			<tr>
-				<td class="labelText"><siga:Idioma
+				<td class="labelText">
+				<siga:Idioma
 					key="gratuita.volantesExpres.literal.GuardiaDia" />&nbsp;(*)</td>
 				<td><html:text styleId="fechaGuardia" property="fechaGuardia"
 					size="10" readonly="true" styleClass="box" />&nbsp; <a
@@ -544,12 +668,12 @@
 				<table>
 					<tr>
 						<td class="boxConsulta">
-							<html:radio property="lugar" value="centro" onclick="actualizarResultados();"></html:radio>
+							<html:radio property="lugar" value="centro" onclick="cambiarDiligenciaProcedimiento();actualizarResultados();"></html:radio>
 							<siga:Idioma key="gratuita.volantesExpres.literal.centroDetencion"/>
 						</td>
 					
 						<td class="boxConsulta">
-							<html:radio property="lugar" value="juzgado" onclick="actualizarResultados();"></html:radio>
+							<html:radio property="lugar" value="juzgado" onclick="cambiarDiligenciaProcedimiento();actualizarResultados();"></html:radio>
 							<siga:Idioma key="gratuita.volantesExpres.literal.juzgado"/>
 						</td>
 					
@@ -606,55 +730,65 @@
 
 			<tr>
 
-				<td colspan="4">
+				<td colspan="4"><siga:ConjCampos
+					leyenda="gratuita.volantesExpres.literal.letrado">
 					<table width="100%">
 						<tr>
-							<td width="650px">
-								<siga:ConjCampos leyenda="gratuita.volantesExpres.literal.letrado">
-			
-									<table align="left">
-										<tr>
-											<td class="labelText"><siga:Idioma
-												key="gratuita.volantesExpres.literal.colegiado" /> (*)</td>
-											<td><html:text styleId="numeroColegiado"
-												property="numeroColegiado" size="4" maxlength="9"
-												styleClass="box"></html:text></td>
-											<td><html:text styleId="nombreColegiado"
-												property="nombreColegiado" size="50" maxlength="50"
-												styleClass="box" readonly="true"></html:text></td>
-											<td><!-- Boton buscar --> <input type="button"
-												class="button" id="idButton" name="Buscar"
-												value="<siga:Idioma
-												key="general.boton.search" />" onClick="buscarColegiado();">
-											 <!-- Boton limpiar -->
-											&nbsp;<input type="button" class="button" id="idButton"
-												name="Limpiar" value="<siga:Idioma
-												key="general.boton.clear" />" onClick="limpiarColegiado();">
-											</td>
-										</tr>
-								
-									</table>
-			
-								</siga:ConjCampos>
+							<td>
+
+
+							<table align="left">
+								<tr>
+									<td class="labelText"><siga:Idioma
+										key="gratuita.volantesExpres.literal.colegiado" /> (*)</td>
+									<td><html:text styleId="numeroColegiado"
+										property="numeroColegiado" size="4" maxlength="9"
+										styleClass="box"></html:text></td>
+									<td><html:text styleId="nombreColegiado"
+										property="nombreColegiado" size="50" maxlength="50"
+										styleClass="box" readonly="true"></html:text></td>
+									<td><!-- Boton buscar --> <input type="button"
+										class="button" id="idButton" name="Buscar"
+										value="<siga:Idioma
+												key="general.boton.search" />"
+										onClick="buscarColegiado();"> <!-- Boton limpiar -->
+									&nbsp;<input type="button" class="button" id="idButton"
+										name="Limpiar"
+										value="<siga:Idioma
+												key="general.boton.clear" />"
+										onClick="limpiarColegiado();"></td>
+
+									<td class="labelText" width="75px" style="text-align: right;">
+									<siga:Idioma key="gratuita.volantesExpres.literal.sustitudoDe" />
+									</td>
+									<td ><html:select
+										styleId="colegiadosSustituidos" style="width:200px;"
+										property="idColegiadoSustituido">
+										<bean:define id="colegiadosSustituidos"
+											name="VolantesExpressForm" property="colegiadosSustituidos"
+											type="java.util.Collection" />
+
+										<html:optionsCollection name="colegiadosSustituidos"
+											value="idPersona" label="nombre" />
+									</html:select>
+									</td>
+									<td> 
+									<img src="/SIGA/html/imagenes/botonAyuda.gif"
+										style="cursor: hand;"
+										alt="<siga:Idioma key="gratuita.volantesExpres.ayudaSustitutos"/>"
+										name="" border="0" /></td>
+								</tr>
+
+							</table>
+
+
 							</td>
-							<td class="labelText" width="100px" style="text-align: right">
-								
-								<html:checkbox	property="sustituto"></html:checkbox>
-								<siga:Idioma	key="gratuita.volantesExpres.literal.sustitudoDe" />
-							</td>
-							<td >
-								<html:select styleId="colegiadosSustituidos" style="width:200px;"
-									property="idColegiadoSustituido">
-									<bean:define id="colegiadosGuardia" name="VolantesExpressForm"
-										property="colegiadosGuardia" type="java.util.Collection" />
-									<html:optionsCollection name="colegiadosGuardia" value="idPersona"
-										label="nombre"  />
-								</html:select>
-							</td>
-							
+
+
 						</tr>
 					</table>
-				</td>
+				</siga:ConjCampos>
+			</td>
 			</tr>
 
 			<tr>
@@ -692,24 +826,28 @@
 	</siga:ConjCampos>
 
 <ajax:updateSelectFromField
-	baseUrl="/SIGA/JGR_SaltosYCompensaciones.do?modo=getAjaxTurnos"
+	baseUrl="/SIGA/JGR_VolantesExpres.do?modo=getAjaxTurnos"
 	source="fechaGuardia" target="turnos"
-	parameters="fechaGuardia={fechaGuardia}" />
+	parameters="fechaGuardia={fechaGuardia}" 
+	postFunction="postAccionFechaGuardia"
+	/>
 <ajax:select
-	baseUrl="/SIGA/JGR_SaltosYCompensaciones.do?modo=getAjaxGuardias"
+	baseUrl="/SIGA/JGR_VolantesExpres.do?modo=getAjaxGuardias"
 	source="turnos" target="guardias" parameters="fechaGuardia={fechaGuardia},idTurno={idTurno}"
 	postFunction="postAccionTurno" />
-<ajax:select
-	baseUrl="/SIGA/JGR_SaltosYCompensaciones.do?modo=getAjaxColegiados"
+	
+<ajax:updateMultipleSelectFromSelect
+	baseUrl="/SIGA/JGR_VolantesExpres.do?modo=getAjaxColegiados"
 	source="guardias" target="colegiadosGuardia,colegiadosSustituidos"
 	parameters="fechaGuardia={fechaGuardia},idTurno={idTurno},idGuardia={idGuardia}" 
 	postFunction="postAccionGuardia"/>
+
 <ajax:updateFieldFromField 
-	baseUrl="/SIGA/JGR_SaltosYCompensaciones.do?modo=getAjaxColegiado"
+	baseUrl="/SIGA/JGR_VolantesExpres.do?modo=getAjaxColegiado"
     source="numeroColegiado" target="idColegiado,numeroColegiado,nombreColegiado"
 	parameters="numeroColegiado={numeroColegiado}" postFunction="postAccionColegiado"  />
 <ajax:updateFieldFromSelect  
-	baseUrl="/SIGA/JGR_SaltosYCompensaciones.do?modo=getAjaxColegiadoGuardia"
+	baseUrl="/SIGA/JGR_VolantesExpres.do?modo=getAjaxColegiadoGuardia"
     source="colegiadosGuardia" target="idColegiado,numeroColegiado,nombreColegiado"
 	parameters="idColegiadoGuardia={idColegiadoGuardia}" postFunction="postAccionColegiadoGuardia"/>
 
@@ -717,22 +855,21 @@
 			
 
 <div>		
-	
 	<table id='tabAsistenciasCabeceras' border='1' width='100%' cellspacing='0' cellpadding='0'>
 		<tr class = 'tableTitle'>
-			<td align='center' width='6%'><siga:Idioma key="gratuita.volantesExpres.literal.hora"/></td>
-			<td align='center' width='27%'><siga:Idioma key="gratuita.volantesExpres.literal.centroDetencion"/>/<siga:Idioma key="gratuita.volantesExpres.literal.juzgado"/></td>
+			<td align='center' width='5%'><siga:Idioma key="gratuita.volantesExpres.literal.hora"/></td>
+			<td align='center' width='26%'><siga:Idioma key="gratuita.volantesExpres.literal.centroDetencion"/>/<siga:Idioma key="gratuita.volantesExpres.literal.juzgado"/></td>
 			<td align='center' width='36%'><siga:Idioma key="gratuita.volantesExpres.literal.asistido"/></td>
-			<td align='center' width='9%'><siga:Idioma key="gratuita.volantesExpres.literal.numeroDiligencia"/></td>
+			<td id='diligenciaProcedimiento' align='center' width='8%' ><siga:Idioma key="gratuita.volantesExpres.literal.numeroDiligencia"/></td>
 			<td align='center' width='14%'>
-				<c:if test="${VolantesExpressForm.delitos==true}">
+				<c:if test="${VolantesExpressForm.delito==true}">
 					<siga:Idioma key="gratuita.volantesExpres.literal.delitos"/>
 				</c:if>
-				<c:if test="${VolantesExpressForm.delitos==false}">
+				<c:if test="${VolantesExpressForm.delito==false}">
 					<siga:Idioma key="gratuita.volantesExpres.literal.observaciones"/>
 				</c:if>
 			</td>
-			<td align='center' width='8%'>
+			<td align='center' width='11%'>
 				<input type='button'  id = 'idBuscarAsistencias' name='idButton' style="display:none" value='Buscar' alt='Buscar' class='busquedaAsistencias'>
 				<input type='button'  id = 'idInsertarAsistencia' class="button" name='idButton' value='<siga:Idioma key="general.boton.insertar"/>' alt='<siga:Idioma key="general.boton.insertar"/>' onclick="accionInsertarRegistroTabla();">
 	
@@ -740,13 +877,9 @@
 		</tr>
 	</table>
 </div>
-<div id="divAsistencias">
-
-</div>
-<div>
-<table id='asistencias' border='1' width='100%' cellspacing='0' cellpadding='0'>
-	
-</table>
+<div id="divAsistencias" style='height:400px;position:absolute;width:100%; overflow-y:auto'>
+	<table id='asistencias' border='1' align='center' width='100%' cellspacing='0' cellpadding='0' style='table-layout:fixed'>
+	</table>
 </div>	
 
 
@@ -755,9 +888,15 @@
 <table class="botonesDetalle" align="center">
 	<tr>
 		<td style="width: 900px;">&nbsp;</td>
-		<td class="tdBotones"><input type="button" alt='<siga:Idioma key="general.boton.new"/>'
+		<td class="tdBotones">
+			<input type="button" alt='<siga:Idioma key="general.boton.new"/>'
 			name='idButton' id="idButton" onclick="return accionNuevo();" class="button"
-			value='<siga:Idioma key="general.boton.new"/>'></td>
+				value='<siga:Idioma key="general.boton.new"/>'>
+				
+			<input type='button'  id = 'idPrimeraAsistencia' name='idButton' 
+			style="display:none" class='primeraAsistencia'>
+		
+		</td>
 		<td class="tdBotones"><input type="button" alt='<siga:Idioma key="general.boton.guardar"/>'
 			name='idButton' id="idGuardarAsistencias"  class="button" 
 			value='<siga:Idioma key="general.boton.guardar"/>'></td>
@@ -767,7 +906,7 @@
 </html:form>
 
 <ajax:htmlContent
-	baseUrl="/SIGA/JGR_SaltosYCompensaciones.do?modo=getAjaxBusquedaAsistencias"
+	baseUrl="/SIGA/JGR_VolantesExpres.do?modo=getAjaxBusquedaAsistencias"
 	source="idBuscarAsistencias"
 	target="divAsistencias"
 	preFunction="preAccionBuscarAsistencias"
@@ -775,7 +914,16 @@
 	parameters="fechaGuardia={fechaGuardia},idTurno={idTurno},idGuardia={idGuardia},idColegiado={idColegiado},idColegiadoGuardia={idColegiadoGuardia},idTipoAsistenciaColegio={idTipoAsistenciaColegio},lugar={lugar},idColegiadoSustituido={idColegiadoSustituido}"/>
 
 <ajax:htmlContent
-	baseUrl="/SIGA/JGR_SaltosYCompensaciones.do?modo=getAjaxGuardarAsistencias"
+	baseUrl="/SIGA/JGR_VolantesExpres.do?modo=getAjaxPrimeraAsistencia"
+	source="idPrimeraAsistencia"
+	target="divAsistencias"
+	preFunction="preAccionBuscarAsistencias"
+	postFunction="postAccionBuscarAsistencias"
+	parameters="lugar={lugar}"/>
+
+
+<ajax:htmlContent
+	baseUrl="/SIGA/JGR_VolantesExpres.do?modo=getAjaxGuardarAsistencias"
 	source="idGuardarAsistencias"
 	target="divAsistencias"
 	preFunction="preAccionGuardarAsistencias"
@@ -846,9 +994,8 @@
 				<!-- RGG: cambio a formularios ligeros -->
 				<input type="hidden" name="tablaDatosDinamicosD">
 				<input type="hidden" name="actionModal" value="">
+				<html:hidden name="AsistenciasForm" property="idInstitucion" />
 			</html:form>
-
-
 
 <!-- FIN: BOTONES BUSQUEDA -->
 
@@ -859,7 +1006,6 @@
 </body>
 
 <script>
-
 	function accionNuevo(fila){
 		// document.VolantesExpressForm.modo = 'inicio';
 		document.VolantesExpressForm.submit();
@@ -867,174 +1013,195 @@
 	
 	}
 	function obtenerComisaria(fila) 
-		{
-			if (document.getElementById("codComisaria_"+fila).value!=""){
-				seleccionComboSiga ("comisaria_"+fila, "");
-				document.MantenimientoComisariaForm.codigoExtBusqueda.value = document.getElementById("codComisaria_"+fila).value;
-				document.MantenimientoComisariaForm.nombreObjetoDestino.value = "comisaria_" + fila;
-				document.MantenimientoComisariaForm.submit();	
-			}
+	{
+		if (document.getElementById("codComisaria_"+fila).value!=""){
+			seleccionComboSiga ("comisaria_"+fila, "");
+			document.MantenimientoComisariaForm.codigoExtBusqueda.value = document.getElementById("codComisaria_"+fila).value;
+			document.MantenimientoComisariaForm.nombreObjetoDestino.value = "comisaria_" + fila;
+			document.MantenimientoComisariaForm.submit();	
 		}
+	}
 	function obtenerJuzgado(fila) 
-		{ 
-			if (document.getElementById("codJuzgado_"+fila).value!=""){
-				seleccionComboSiga ("juzgado_"+fila, "");
-				document.MantenimientoJuzgadoForm.codigoExt.value = document.getElementById("codJuzgado_"+fila).value;
-				document.MantenimientoJuzgadoForm.nombreObjetoDestino.value = "juzgado_" + fila;
-				document.MantenimientoJuzgadoForm.submit();	
-			}
+	{ 
+		if (document.getElementById("codJuzgado_"+fila).value!=""){
+			seleccionComboSiga ("juzgado_"+fila, "");
+			document.MantenimientoJuzgadoForm.codigoExt.value = document.getElementById("codJuzgado_"+fila).value;
+			document.MantenimientoJuzgadoForm.nombreObjetoDestino.value = "juzgado_" + fila;
+			document.MantenimientoJuzgadoForm.submit();	
 		}
+	}
 		
-		function obtenerPersona (fila) 
-		{
-			o = document.getElementById ("dni_" + fila);
-			o.value = o.value.toUpperCase ();
+	function obtenerPersona (fila) 
+	{
+		o = document.getElementById ("dni_" + fila);
+		o.value = o.value.toUpperCase ();
 
-			if (o.value != "") {
-				document.PersonaJGForm.NIdentificacion.value = o.value;
-				document.PersonaJGForm.nombreObjetoDestino.value = fila;
-				document.PersonaJGForm.submit ();
-			}				
-		} //obtenerPersona ()
+		if (o.value != "") {
+			document.PersonaJGForm.NIdentificacion.value = o.value;
+			document.PersonaJGForm.nombreObjetoDestino.value = fila;
+			document.PersonaJGForm.submit ();
+		}				
+	} //obtenerPersona ()
 		
-		function traspasoDatosJuzgado (resultado)
-		{
-			if (resultado.length > 1) {
-				seleccionComboSiga (resultado[1], resultado[0]);
-				document.getElementById(resultado[1]).value = resultado[0];
-			}
-		} //traspasoDatosJuzgado ()
-		function traspasoDatosComisaria (resultado)
-		{
-			traspasoDatosJuzgado (resultado);
-		} //traspasoDatosComisaria ()
+	function traspasoDatosJuzgado (resultado)
+	{
+		if (resultado.length > 1) {
+			seleccionComboSiga (resultado[1], resultado[0]);
+			document.getElementById(resultado[1]).value = resultado[0];
+		}
+	} //traspasoDatosJuzgado ()
+	function traspasoDatosComisaria (resultado)
+	{
+		traspasoDatosJuzgado (resultado);
+	} //traspasoDatosComisaria ()
 		
 		// Para la busqueda por dni
-		function traspasoDatos (resultado, bNuevo, fila) 
-		{
-			// Porque todas las funciones se llaman igual, las separamos
-			if (!(bNuevo && fila)) 
-				return traspasoDatosJuzgado (resultado);
+	function traspasoDatos (resultado, bNuevo, fila) 
+	{
+		// Porque todas las funciones se llaman igual, las separamos
+		if (!(bNuevo && fila)) 
+			return traspasoDatosJuzgado (resultado);
+		
+		if (resultado && resultado.length > 7 && (bNuevo == 1)) { // Existe
+			document.getElementById("dni_" + fila).value = resultado[2];
+			document.getElementById("nombre_" + fila).value = resultado[3];
+			document.getElementById("apellido1_" + fila).value = resultado[4];
+			document.getElementById("apellido2_" + fila).value = resultado[5];
 			
-			if (resultado && resultado.length > 7 && (bNuevo == 1)) { // Existe
-				document.getElementById("dni_" + fila).value = resultado[2];
-				document.getElementById("nombre_" + fila).value = resultado[3];
-				document.getElementById("apellido1_" + fila).value = resultado[4];
-				document.getElementById("apellido2_" + fila).value = resultado[5];
-				
-				document.getElementById("idPersona_" + fila).value = resultado[1];
-				ponerIconoIdentPersona (fila, true);
-			}
-			else {	// Nuevo
-				document.getElementById("idPersona_" + fila).value = "nuevo";
-				ponerIconoIdentPersona (fila, false);
-			}
-		} //traspasoDatos ()
-		
-		function ponerIconoIdentPersona (fila, encontrado)
-		{
-			if (encontrado) {
-				document.getElementById("info_existe_" + fila).src = "/SIGA/html/imagenes/encontrado.gif";
-				document.getElementById("info_existe_" + fila).alt = "<siga:Idioma key='gratuita.volantesExpres.mensaje.esYaExistentePersonaJG'/>";
-				document.getElementById("nombre_" + fila).disabled = true;
-				document.getElementById("apellido1_" + fila).disabled = true;
-				document.getElementById("apellido2_" + fila).disabled = true;
-			}
-			else {
-				document.getElementById("info_existe_" + fila).src = "/SIGA/html/imagenes/nuevo.gif";
-				document.getElementById("info_existe_" + fila).alt = "<siga:Idioma key='gratuita.volantesExpres.mensaje.esNuevaPersonaJG'/>";
-				document.getElementById("nombre_" + fila).disabled = false;
-				document.getElementById("apellido1_" + fila).disabled = false;
-				document.getElementById("apellido2_" + fila).disabled = false;
-			}
-		} //ponerIconoIdentPersona ()
-		function accionCrearEJG(anioAsistencia,numeroAsistencia,idInstitucion,fila) 
-		{	
-			document.DefinirEJGForm.modo.value = "nuevo";
-			document.DefinirEJGForm.asistenciaAnio.value = anioAsistencia;
-			document.DefinirEJGForm.asistenciaNumero.value = numeroAsistencia;
-			document.DefinirEJGForm.origen.value = "A";
-			document.DefinirEJGForm.idInstitucion.value = idInstitucion;
-			var resultado=ventaModalGeneral(document.DefinirEJGForm.name,"M");
-			if (resultado){
-				if(resultado=="MODIFICADO"){
-					actualizarResultados();
-				}
-		   }	
+			document.getElementById("idPersona_" + fila).value = resultado[1];
+			ponerIconoIdentPersona (fila, true);
 		}
-		function accionNuevaActuacion(anioAsistencia,numeroAsistencia,idInstitucion) 
-		{	
-			document.AsistenciasForm.modo.value = "nuevo";
-			document.AsistenciasForm.anio.value = anioAsistencia;
-			document.AsistenciasForm.numero.value = numeroAsistencia;
-			var resultado=ventaModalGeneral(document.AsistenciasForm.name,"G");
+		else {	// Nuevo
+			document.getElementById("idPersona_" + fila).value = "nuevo";
+			ponerIconoIdentPersona (fila, false);
+		}
+	} //traspasoDatos ()
+		
+	function ponerIconoIdentPersona (fila, encontrado)
+	{
+		if (encontrado) {
+			document.getElementById("info_existe_" + fila).src = "/SIGA/html/imagenes/encontrado.gif";
+			document.getElementById("info_existe_" + fila).alt = "<siga:Idioma key='gratuita.volantesExpres.mensaje.esYaExistentePersonaJG'/>";
+			document.getElementById("nombre_" + fila).disabled = true;
+			document.getElementById("apellido1_" + fila).disabled = true;
+			document.getElementById("apellido2_" + fila).disabled = true;
+		}
+		else {
+			document.getElementById("info_existe_" + fila).src = "/SIGA/html/imagenes/nuevo.gif";
+			document.getElementById("info_existe_" + fila).alt = "<siga:Idioma key='gratuita.volantesExpres.mensaje.esNuevaPersonaJG'/>";
+			document.getElementById("nombre_" + fila).disabled = false;
+			document.getElementById("apellido1_" + fila).disabled = false;
+			document.getElementById("apellido2_" + fila).disabled = false;
+		}
+	} //ponerIconoIdentPersona ()
+	function accionCrearEJG(anioAsistencia,numeroAsistencia,idInstitucion,fila) 
+	{	
+		document.DefinirEJGForm.modo.value = "nuevo";
+		document.DefinirEJGForm.asistenciaAnio.value = anioAsistencia;
+		document.DefinirEJGForm.asistenciaNumero.value = numeroAsistencia;
+		document.DefinirEJGForm.origen.value = "A";
+		document.DefinirEJGForm.idInstitucion.value = idInstitucion;
+		var resultado=ventaModalGeneral(document.DefinirEJGForm.name,"M");
+		if (resultado){
+			if(resultado=="MODIFICADO"){
+				actualizarResultados();
+			}
+	   }	
+	}
+	function accionNuevaActuacion(anioAsistencia,numeroAsistencia,idInstitucion) 
+	{	
+		document.AsistenciasForm.modo.value = "nuevo";
+		document.AsistenciasForm.anio.value = anioAsistencia;
+		document.AsistenciasForm.numero.value = numeroAsistencia;
+		
+		var resultado=ventaModalGeneral(document.AsistenciasForm.name,"G");
 
-			if (resultado){
-				if(resultado=="MODIFICADO"){
-					
-				}
-		   }	
-		}
-		
-	function  borrarFila (fila) 
+		if (resultado){
+			if(resultado=="MODIFICADO"){
+				
+			}
+	   }	
+	}
+	function accionConsultaAsistencia(anioAsistencia,numeroAsistencia,idInstitucion) 
+	{	
+		document.AsistenciasForm.modo.value = "consultarAsistencia";
+		document.AsistenciasForm.anio.value = anioAsistencia;
+		document.AsistenciasForm.numero.value = numeroAsistencia;
+		document.AsistenciasForm.idInstitucion.value = idInstitucion;
+		var resultado=ventaModalGeneral(document.AsistenciasForm.name,"M");
+	}
+	function  borrarFila (idFila) 
 	{ 
 		if (!confirm('<siga:Idioma key="gratuita.volantesExpres.mensaje.eliminarAsistencia"/>'))
 			return;
-		t = document.getElementById("asistencias"); 
-		error = '';
-		numeroEjg = document.getElementById("ejgNumero_" + fila).value;
-		if(numeroEjg &&numeroEjg!=''){
-			error = '<siga:Idioma key="gratuita.volantesExpres.mensaje.borrar.ejgAsociado"/>';
+		t = document.getElementById("asistencias");
+		for (i = 0; i < t.rows.length; i++) {
+			if (t.rows[i].id == idFila) 
+			{
+				// Guardamos los datos a borrar
+				fila = idFila.split("_")[1];
+				error = '';
+				numeroEjg = document.getElementById("ejgNumero_" + fila).value;
+				if(numeroEjg &&numeroEjg!='-1'){
+					error = '<siga:Idioma key="gratuita.volantesExpres.mensaje.borrar.ejgAsociado"/>';
+				}
+				designaNumero = document.getElementById("designaNumero_" + fila).value;
+				if(designaNumero && designaNumero!='-1'){
+					error += '\n'+'<siga:Idioma key="gratuita.volantesExpres.mensaje.borrar.designaAsociada"/>';
+				}
+				if(error!=''){
+					alert(error);
+					return;
+				}
+				t.deleteRow (i); 
+				validarAnchoTabla();
+				return;
+			}
 		}
-		numeroDesigna = document.getElementById("designaNumero_" + fila).value;
-		if(numeroDesigna && numeroDesigna!=''){
-			error += '\n'+'<siga:Idioma key="gratuita.volantesExpres.mensaje.borrar.designaAsociada"/>';
-		}
-		if(error!=''){
-			alert(error);
-			return;
-		}
-		t.deleteRow (fila); 
-			
 	} 
+	
+	function validaHora (o) 
+	{
+		var horas = trim(o.value);
+		var mensajehoras = "<siga:Idioma key="messages.programarFacturacionForm.mensajeHoras"/>";
 		
+           
 		
-		function validaHora (o) 
-		{
-			
-			var horas = trim(o.value);
-			var mensajehoras = "<siga:Idioma key="messages.programarFacturacionForm.mensajeHoras"/>";
-			
-            
-			
-			if (horas.length==1) {
-				o.value = "0" + horas;
-			}
-			if (horas!="" && (horas>23 || horas<0 || !isNumero(horas))) {
-				alert(mensajehoras);
-				o.focus();
-				return false;
-			}
+		if (horas.length==1) {
+			o.value = "0" + horas;
+		}
+		if (horas!="" && (horas>23 || horas<0 || !isNumero(horas))) {
+			alert(mensajehoras);
+			o.focus();
+			return false;
+		}
+	}
+	function validaMinuto (o) 
+	{
+		var minutos = trim(o.value);
+		var mensajeminutos="<siga:Idioma key="messages.programarFacturacionForm.mensajeMinutos"/>";
+	
+		/*if (minutos.length==0) {
+			o.value = "00";
+		}*/
+		if (minutos.length==1) {
+			o.value = "0" + minutos;
 		}
 
-		function validaMinuto (o) 
-		{
-			var minutos = trim(o.value);
-			var mensajeminutos="<siga:Idioma key="messages.programarFacturacionForm.mensajeMinutos"/>";
-		
-			/*if (minutos.length==0) {
-				o.value = "00";
-			}*/
-			if (minutos.length==1) {
-				o.value = "0" + minutos;
-			}
-
-			if (minutos!="" && (minutos>59 || minutos<0 || !isNumero(minutos) )) {
-				alert(mensajeminutos);
-				o.focus();
-				return false;
-			}
+		if (minutos!="" && (minutos>59 || minutos<0 || !isNumero(minutos) )) {
+			alert(mensajeminutos);
+			o.focus();
+			return false;
 		}
+	}
+	function cambiarDiligenciaProcedimiento(){
+		td = document.getElementById("diligenciaProcedimiento");
+		if (document.VolantesExpressForm.lugar[0].checked && document.VolantesExpressForm.lugar[0].value == "centro") 
+			td.innerHTML = '<siga:Idioma key="gratuita.volantesExpres.literal.numeroDiligencia"/>';
+		else
+			td.innerHTML = '<siga:Idioma key="gratuita.volantesExpres.procedimiento"/>';		
+			
+	}
 
 </script>
 

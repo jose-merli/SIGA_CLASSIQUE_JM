@@ -57,16 +57,18 @@ public class AtosVolantesExpressService extends JtaBusinessServiceTemplate
 			volantesExpressVo.setAsistencias(alAsistencias);
 			List<ScsAsistenciasBean> alAsistenciasBorrar = (List<ScsAsistenciasBean>) getAsistenciasABorrar(alAsistencias,alAsistenciasOld);
 			
+			
 			ScsGuardiasColegiadoAdm guardiasColegiadoAdm = new ScsGuardiasColegiadoAdm(volantesExpressVo.getUsrBean());
+			String truncFechaGuardia = GstDate.getFormatedDateShort("", volantesExpressVo.getFechaGuardia());
 			if (volantesExpressVo.getIdColegiadoSustituido()!=null) {
 				//Si el colegiado sustituye a otro colegiado de la guardia
 				guardiasColegiadoAdm.aplicarSustitucion(volantesExpressVo.getIdInstitucion(), volantesExpressVo.getIdTurno(),
 							volantesExpressVo.getIdGuardia(), volantesExpressVo.getIdColegiadoSustituido(), 
-							volantesExpressVo.getIdColegiado(), volantesExpressVo.getFechaGuardia(), volantesExpressVo.getUsrBean());
+							volantesExpressVo.getIdColegiado(), truncFechaGuardia, volantesExpressVo.getUsrBean());
 			}else{
 				Hashtable<String, Object> h = new Hashtable<String, Object>();
 				UtilidadesHash.set (h, ScsGuardiasColegiadoBean.C_IDPERSONA, volantesExpressVo.getIdColegiado());
-				UtilidadesHash.set (h, ScsGuardiasColegiadoBean.C_FECHAFIN, GstDate.getApplicationFormatDate("", volantesExpressVo.getFechaGuardia()));
+				UtilidadesHash.set (h, ScsGuardiasColegiadoBean.C_FECHAFIN, GstDate.getApplicationFormatDate("", truncFechaGuardia));
 				UtilidadesHash.set (h, ScsGuardiasColegiadoBean.C_IDINSTITUCION, volantesExpressVo.getIdInstitucion());
 				if (volantesExpressVo.getIdTurno() != null) {
 					UtilidadesHash.set (h, ScsGuardiasColegiadoBean.C_IDTURNO,volantesExpressVo.getIdTurno());
@@ -81,7 +83,22 @@ public class AtosVolantesExpressService extends JtaBusinessServiceTemplate
 				//si no existe calendario saltara la excepcion y no insertara
 				
 				if (vGuardias == null || vGuardias.size()<1 ){
-					guardiasColegiadoAdm.insertarGuardiaManual(volantesExpressVo.getIdInstitucion().toString(), volantesExpressVo.getIdTurno().toString(), volantesExpressVo.getIdGuardia().toString(), volantesExpressVo.getIdColegiado().toString(),  volantesExpressVo.getFechaGuardia(), volantesExpressVo.getUsrBean());
+					try {
+						guardiasColegiadoAdm.insertarGuardiaManual(volantesExpressVo.getIdInstitucion().toString(), volantesExpressVo.getIdTurno().toString(),
+								volantesExpressVo.getIdGuardia().toString(), volantesExpressVo.getIdColegiado().toString(),  
+								truncFechaGuardia, volantesExpressVo.getUsrBean());
+					} catch (SIGAException e) {
+						
+						//Si es un dia sin calendario de guardias habra que insertarlo
+						if(e.getLiteral().equals("gratuita.volantesExpres.mensaje.diaSinCalendarioGuardias")){
+							ScsGuardiasColegiadoBean guardiaColegiadoBean = guardiasColegiadoAdm.getGuardiaSinCabecera(volantesExpressVo);
+							
+							guardiasColegiadoAdm.insertarCabeceraYGuardia(volantesExpressVo.getIdInstitucion(), volantesExpressVo.getIdTurno(), volantesExpressVo.getIdGuardia(),
+									guardiaColegiadoBean.getIdCalendarioGuardias(), volantesExpressVo.getIdColegiado(), volantesExpressVo.getFechaGuardia(), volantesExpressVo.getUsrBean());
+						}else
+							throw e;
+					}
+					
 				}
 			}
 			ScsAsistenciasAdm asistenciaAdm = new ScsAsistenciasAdm(volantesExpressVo.getUsrBean());
@@ -147,7 +164,8 @@ public class AtosVolantesExpressService extends JtaBusinessServiceTemplate
 							
 						
 					}else if(key.equals("idPersona")){
-						asistencia.setIdPersonaJG(new Integer(value));
+						if(value!=null && !value.equals("nuevo"))
+							asistencia.setIdPersonaJG(new Integer(value));
 					}else if(key.equals("dni")){
 						if(value!=null){
 							value = UtilidadesString.replaceAllIgnoreCase(value, "~",",");
@@ -196,11 +214,12 @@ public class AtosVolantesExpressService extends JtaBusinessServiceTemplate
 							asistencia.setEjgAnio(new Integer(value));
 					}else if(key.equals("ejgTipo")){
 						if(value!=null)
-							asistencia.setEjgNumero(new Long(value));
+							asistencia.setEjgIdTipoEjg(new Integer(value));
 					}
 				}
 				asistencia.setIdInstitucion(volanteExpressVo.getIdInstitucion());
-				asistencia.setFechaGuardia(volanteExpressVo.getFechaGuardia());
+				String truncFechaGuardia = GstDate.getFormatedDateShort("", volanteExpressVo.getFechaGuardia());
+				asistencia.setFechaGuardia(truncFechaGuardia);
 				asistencia.setIdturno(volanteExpressVo.getIdTurno());
 				asistencia.setIdguardia(volanteExpressVo.getIdGuardia());
 				asistencia.setIdPersonaColegiado(volanteExpressVo.getIdColegiado().intValue());
@@ -208,7 +227,7 @@ public class AtosVolantesExpressService extends JtaBusinessServiceTemplate
 				asistencia.setIdTipoAsistenciaColegio(volanteExpressVo.getIdTipoAsistenciaColegio());
 				String fechaAsistencia;
 				try {
-					fechaAsistencia = GstDate.getApplicationFormatDate("", volanteExpressVo.getFechaGuardia());
+					fechaAsistencia = GstDate.getApplicationFormatDate("", truncFechaGuardia);
 				} catch (ClsExceptions e) {
 					throw e;
 				}
@@ -216,9 +235,13 @@ public class AtosVolantesExpressService extends JtaBusinessServiceTemplate
 				asistencia.setFechaEstadoAsistencia(fechaAsistencia);
 				asistencia.setFechaHora(fechaAsistencia);
 				asistencia.setIdEstadoAsistencia(new Integer(1));
-				
-				if(asistencia.getJuzgado()!=null)
+				//Atencio en el campo diligencia se guarda, 
+				//DILIGENCIA si es centro de detencio y numero de PRECEDIMIENTO si es juzgado
+				if(asistencia.getJuzgado()!=null){
 					asistencia.setJuzgadoIdInstitucion(asistencia.getIdInstitucion());
+					asistencia.setNumeroProcedimiento(asistencia.getNumeroDiligencia());
+					asistencia.setNumeroDiligencia("");
+				}
 				if(asistencia.getComisaria()!=null)
 					asistencia.setComisariaIdInstitucion(asistencia.getIdInstitucion());
 				alAsistencias.add(asistencia);
@@ -231,30 +254,37 @@ public class AtosVolantesExpressService extends JtaBusinessServiceTemplate
 	private List<ScsAsistenciasBean> getAsistenciasABorrar(List<ScsAsistenciasBean> alAsistencias, List<ScsAsistenciasBean> alAsistenciasOld){
 		
 		Map<String, ScsAsistenciasBean> hmAsistenciasOld = new HashMap<String, ScsAsistenciasBean>();
-		for (int i = 0; i < alAsistenciasOld.size(); i++) {
-			ScsAsistenciasBean asistenciaOld = (ScsAsistenciasBean)alAsistenciasOld.get(i);
-			StringBuffer key = new StringBuffer();
-			key.append(asistenciaOld.getAnio());
-			key.append("#");
-			key.append(asistenciaOld.getNumero());
-			key.append("#");
-			key.append(asistenciaOld.getIdInstitucion());
-			key.append("#");
-			hmAsistenciasOld.put(key.toString(), asistenciaOld);
-			
+		if(alAsistenciasOld!=null && alAsistenciasOld.size()>0){
+			for (int i = 0; i < alAsistenciasOld.size(); i++) {
+				ScsAsistenciasBean asistenciaOld = (ScsAsistenciasBean)alAsistenciasOld.get(i);
+				if(asistenciaOld.getNumero()!=null&&asistenciaOld.getNumero().intValue()!=-1){
+					StringBuffer key = new StringBuffer();
+					key.append(asistenciaOld.getAnio());
+					key.append("#");
+					key.append(asistenciaOld.getNumero());
+					key.append("#");
+					key.append(asistenciaOld.getIdInstitucion());
+					key.append("#");
+					hmAsistenciasOld.put(key.toString(), asistenciaOld);
+				}
+				
+			}
 		}
-		for (int i = 0; i < alAsistencias.size(); i++) {
-			ScsAsistenciasBean asistencia = (ScsAsistenciasBean)alAsistencias.get(i);
-			if(asistencia.getAnio()!=null){
-				StringBuffer key = new StringBuffer();
-				key.append(asistencia.getAnio());
-				key.append("#");
-				key.append(asistencia.getNumero());
-				key.append("#");
-				key.append(asistencia.getIdInstitucion());
-				key.append("#");
-				if(hmAsistenciasOld.containsKey(key.toString())){
-					hmAsistenciasOld.remove(key.toString());
+		if(alAsistencias!=null && alAsistencias.size()>0){
+			
+			for (int i = 0; i < alAsistencias.size(); i++) {
+				ScsAsistenciasBean asistencia = (ScsAsistenciasBean)alAsistencias.get(i);
+				if(asistencia.getAnio()!=null){
+					StringBuffer key = new StringBuffer();
+					key.append(asistencia.getAnio());
+					key.append("#");
+					key.append(asistencia.getNumero());
+					key.append("#");
+					key.append(asistencia.getIdInstitucion());
+					key.append("#");
+					if(hmAsistenciasOld.containsKey(key.toString())){
+						hmAsistenciasOld.remove(key.toString());
+					}
 				}
 			}
 		}

@@ -1,6 +1,8 @@
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
@@ -8,6 +10,8 @@ import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
+import com.siga.gratuita.vos.VolantesExpressVo;
 
 /**
  * Implementa las operaciones sobre el bean de la tabla SCS_DELITO
@@ -158,5 +162,51 @@ public class ScsDelitoAdm extends MasterBeanAdministrador {
 		}
 		return nuevoId;
 	}
+	public List<ScsDelitoBean> getComisarias(VolantesExpressVo volanteExpres)throws ClsExceptions{
+
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT IDINSTITUCION,IDDELITO, F_SIGA_GETRECURSO(DESCRIPCION, 1) AS DESCRIPCION ");
+		sql.append(" FROM SCS_DELITO ");
+		sql.append(" WHERE IDINSTITUCION = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),volanteExpres.getIdInstitucion());
+		sql.append(" ORDER BY DESCRIPCION ");
+		
+		
+		
+		
+		
+		List<ScsDelitoBean> alDelitos = null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+												
+            if (rc.findBind(sql.toString(),htCodigos)) {
+            	alDelitos = new ArrayList<ScsDelitoBean>();
+            	ScsDelitoBean delitoBean = new ScsDelitoBean();
+            	delitoBean.setDescripcion(UtilidadesString.getMensajeIdioma(volanteExpres.getUsrBean(), "general.combo.seleccionar"));
+            	delitoBean.setIdDelito(new Integer(-1));
+    			alDelitos.add(delitoBean);
+    			for (int i = 0; i < rc.size(); i++){
+            		Row fila = (Row) rc.get(i);
+            		Hashtable<String, Object> htFila=fila.getRow();
+            		
+            		delitoBean = new ScsDelitoBean();
+            		delitoBean.setIdInstitucion(UtilidadesHash.getInteger(htFila,ScsDelitoBean.C_IDINSTITUCION));
+            		delitoBean.setIdDelito(UtilidadesHash.getInteger(htFila,ScsDelitoBean.C_IDDELITO));
+            		delitoBean.setDescripcion(UtilidadesHash.getString(htFila,ScsDelitoBean.C_DESCRIPCION));
+            		alDelitos.add(delitoBean);
+            	}
+            } 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+       }
+       return alDelitos;
+		
+	} 
+	
+	 
 	
 }

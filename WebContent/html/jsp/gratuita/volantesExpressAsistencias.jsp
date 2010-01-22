@@ -33,7 +33,8 @@
 <!--Step 2 -->
 <script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
 <script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
-<script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
+<script type="text/javascript"
+	src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
 <script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
 
 
@@ -41,12 +42,12 @@
   <!-- defaults for Autocomplete and displaytag -->
   <link type="text/css" rel="stylesheet" href="/html/css/ajaxtags.css" />
   <link type="text/css" rel="stylesheet" href="/html/css/displaytag.css" />
+  
 </head>
 
 <body>
-	<table id='asistencias' border='1' align='center' width='100%' cellspacing='0' cellpadding='0' style='table-layout:fixed'>
+	<table class="tablaCampos" id='asistencias' border='1' align='center' width='100%' cellspacing='0' cellpadding='0' style='table-layout:fixed'>
 		<logic:notEmpty name="VolantesExpressForm"	property="asistencias">
-		
 		<logic:iterate name="VolantesExpressForm" property="asistencias" id="asistencia" indexId="index">
 				<input type="hidden" id="claveAnio_<bean:write name='index'/>" value="<bean:write name="asistencia" property="anio" />">  
 				<input type="hidden" id="claveNumero_<bean:write name='index'/>" value="<bean:write name="asistencia" property="numero" />">
@@ -56,86 +57,160 @@
 				<input type="hidden" id="ejgTipo_<bean:write name='index'/>" value="<bean:write name="asistencia" property="ejgIdTipoEjg" />">
 				<input type="hidden" id="designaNumero_<bean:write name='index'/>" value="<bean:write name="asistencia" property="designaNumero" />">
 				
-			<tr>
-			
-			
-				<td align='center' width='6%'>
-					<input type="text" id="hora_<bean:write name='index'/>" class="box" style="width:21;margin-top:3px;text-align:center;" maxLength="2" value="<bean:write name="asistencia" property="hora" />" onBlur="validaHora(this);" />
-					:
-					<input type="text" id="minuto_<bean:write name='index'/>" class="box" style="width:21;margin-top:3px;text-align:center;" maxLength="2" value="<bean:write name="asistencia" property="minuto" />" onBlur="validaMinuto(this);" />
+			<tr id="fila_<bean:write name='index'/>">
+				<td align='center' width='5%'>
+					<input type="text" id="hora_<bean:write name='index'/>" class="box" style="width:20;margin-top:4px;text-align:center;" maxLength="2" value="<bean:write name="asistencia" property="hora" />" onBlur="validaHora(this);" />
+					<input type="text" id="minuto_<bean:write name='index'/>" class="box" style="width:20;margin-top:4px;text-align:center;" maxLength="2" value="<bean:write name="asistencia" property="minuto" />" onBlur="validaMinuto(this);" />
 				</td>
 				
-				<td align='center' width='27%'>
+				<td align='center' width='26%'>
 				
 					<c:if test="${VolantesExpressForm.lugar == 'centro'}">
-						<input type="text" id="codComisaria_<bean:write name='index'/>" class="box" size="8"  style="width:21;margin-top:3px;margin-left:3px;" maxlength="10" onBlur="obtenerComisaria(<bean:write name='index'/>);" /> 
-				  		<iframe ID="comisaria_<bean:write name='index'/>Frame" SRC="/SIGA/html/jsp/general/comboAnidado.jsp?nombre=comisaria_<bean:write name='index'/>&tipo=comboComisariasTurno&clase=boxCombo&estilo=width:230px;&ancho=null&obligatorio=false&elementoSel=[]&seleccionMultiple=false&parametros=<bean:write name="VolantesExpressForm" property="idTurno" />&id=<bean:write name="VolantesExpressForm" property="idInstitucion" />&<bean:write name="VolantesExpressForm" property="idTurno" />&accion=&filasMostrar=1&obligatorioSinTextoSeleccionar=false&readonly=false&pestana=" WIDTH="230" HEIGHT="21" FRAMEBORDER="0" MARGINWIDTH="2" MARGINHEIGHT="1" SCROLLING="NO"></iframe>  
-			      		<input type="hidden" id="comisaria_<bean:write name='index'/>" value="<bean:write name="asistencia" property="comisaria" />">
-			      		<script>
-			      			seleccionComboSiga ("comisaria_<bean:write name='index'/>", <bean:write name="asistencia" property="comisaria" />+','+<bean:write name="asistencia" property="idInstitucion" />);
-			      		</script>
+						<table>
+							<tr>
+								<td>	
+									<input type="text" id="codComisaria_<bean:write name='index'/>" class="box" size="8"  style="width:20;margin-top:2px;" maxlength="10" onBlur="obtenerComisaria(<bean:write name='index'/>);" />
+								</td> 			
+								<td>
+									<select class="boxCombo" id="comisaria_<bean:write name='index'/>" style="width:220px;margin-top:2px;" name="comisaria_<bean:write name='index'/>" > 
+										<bean:define id="comisarias" name="VolantesExpressForm" property="comisarias" type="java.util.List" />
+											<logic:iterate id="comisaria" name="comisarias">
+												<option value='<bean:write name="comisaria" property="idComisaria"/>' >
+													<bean:write name="comisaria" property="nombre"/>
+												</option>					
+											</logic:iterate> 
+									</select>
+								</td>
+						</tr>
+						</table>
+						<script>
+						if(${asistencia.comisaria!=null} && ${asistencia.comisaria!='-1'})
+							document.getElementById("comisaria_<bean:write name='index'/>").value ='<bean:write name="asistencia" property="comisaria"/>'; 
+						
+						</script>
 					</c:if>
 					<c:if test="${VolantesExpressForm.lugar == 'juzgado'}">
-			      		<input type="text" id="codJuzgado_<bean:write name='index'/>" class="box" size="8" style="width:21;margin-top:3px;margin-left:3px;" maxlength="10" onBlur="obtenerJuzgado(<bean:write name='index'/>);"/> 
-				  		<iframe ID="juzgado_<bean:write name='index'/>Frame" SRC="/SIGA/html/jsp/general/comboAnidado.jsp?nombre=juzgado_<bean:write name='index'/>&tipo=comboJuzgadosTurno&clase=boxCombo&estilo=width:230px;&ancho=null&obligatorio=false&elementoSel=[]&seleccionMultiple=false&parametros=<bean:write name="VolantesExpressForm" property="idTurno" />&id=<bean:write name="VolantesExpressForm" property="idInstitucion" />&<bean:write name="VolantesExpressForm" property="idTurno" />&accion=&filasMostrar=1&obligatorioSinTextoSeleccionar=false&readonly=false&pestana=" WIDTH="230" HEIGHT="21" FRAMEBORDER="0" MARGINWIDTH="2" MARGINHEIGHT="1" SCROLLING="NO"></iframe> 
-			      		<input type="hidden" id="juzgado_<bean:write name='index'/>" value="<bean:write name="asistencia" property="juzgado" />">
-			      		<script>
-			      			seleccionComboSiga ("juzgado_<bean:write name='index'/>", <bean:write name="asistencia" property="juzgado" />+','+<bean:write name="asistencia" property="idInstitucion" />);
-			      		</script>
-			      						
+			      		<table>
+							<tr>
+								<td>	
+			      		<input type="text" id="codJuzgado_<bean:write name='index'/>" class="box" size="8" style="width:20;margin-top:2px;" maxlength="10" onBlur="obtenerJuzgado(<bean:write name='index'/>);"/> 			
+						</td> 			
+						<td>
+						<select class="boxCombo" id="juzgado_<bean:write name='index'/>" style="width:220px;margin-top:2px;" name="juzgado_<bean:write name='index'/>" > 
+						<bean:define id="juzgados" name="VolantesExpressForm" property="juzgados" type="java.util.List" />
+							<logic:iterate id="juzgado" name="juzgados">
+								<option value='<bean:write name="juzgado" property="idJuzgado"/>' >
+									<bean:write name="juzgado" property="nombre"/>
+								</option>					
+								</logic:iterate> 
+								
+						</select>
+						</td>
+						</tr>
+						</table>
+						<script>
+						 if(${asistencia.juzgado!=null} && ${asistencia.juzgado!='-1'})
+							document.getElementById("juzgado_<bean:write name='index'/>").value ='<bean:write name="asistencia" property="juzgado"/>'; 
+						</script>
+			
 					</c:if>	
 										
 				
 				 </td>
 				<td align='center' width='36%'>
-					<input type="text" id="dni_<bean:write name='index'/>" class="box" style="width:70;margin-top:3px;" value="<bean:write name="asistencia" property="asistidoNif" />" maxlength="20" onBlur="obtenerPersona(<bean:write name='index'/>);" /> 
-			        <input type="text" id="nombre_<bean:write name='index'/>" class="box" style="width:80;margin-top:3px;" value="<bean:write name="asistencia" property="asistidoNombre" />" maxlength="80"/>&nbsp;
-			        <input type="text" id="apellido1_<bean:write name='index'/>" class="box" style="width:80;margin-top:3px;" value="<bean:write name="asistencia" property="asistidoApellido1" />" maxlength="80"/>&nbsp;
-			        <input type="text" id="apellido2_<bean:write name='index'/>" class="box" style="width:80;margin-top:3px;" value="<bean:write name="asistencia" property="asistidoApellido2" />" maxlength="80"/>
-			        <img id="info_existe_<bean:write name='index'/>" src="/SIGA/html/imagenes/nuevo.gif" alt="<siga:Idioma key="gratuita.volantesExpres.mensaje.esNuevaPersonaJG"/>"/>
-			        <input type="hidden" id="idPersona_<bean:write name='index'/>" class="box" value="<bean:write name="asistencia" property="idPersonaJG" />"/>
+						<table>
+							<tr>
+								<td><input type="text" id="dni_<bean:write name='index'/>" class="box" style="width:70;margin-top:2px;margin-rigth:1px;" value="<bean:write name="asistencia" property="asistidoNif" />" maxlength="20" onBlur="obtenerPersona(<bean:write name='index'/>);"/>-</td>
+								<td><input type="text" id="nombre_<bean:write name='index'/>" class="box" style="width:80;margin-top:2px;margin-rigth:1px;" value="<bean:write name="asistencia" property="asistidoNombre" />" maxlength="80"/></td>
+			        			<td><input type="text" id="apellido1_<bean:write name='index'/>" class="box" style="width:80;margin-top:2px;margin-rigth:1px;" value="<bean:write name="asistencia" property="asistidoApellido1" />" maxlength="80"/></td>
+			        			<td><input type="text" id="apellido2_<bean:write name='index'/>" class="box" style="width:80;margin-top:2px;" value="<bean:write name="asistencia" property="asistidoApellido2" />" maxlength="80"/></td>
+			        			<td><img id="info_existe_<bean:write name='index'/>" src="/SIGA/html/imagenes/nuevo.gif" alt="<siga:Idioma key="gratuita.volantesExpres.mensaje.esNuevaPersonaJG"/>"/></td>
+			        			<td><input type="hidden" id="idPersona_<bean:write name='index'/>" class="box" value="<bean:write name="asistencia" property="idPersonaJG" />"/></td>
+			        		</tr>
+			        	</table>
+			        	
 			      	<script>
-			      		ponerIconoIdentPersona (<bean:write name='index'/>, true);
+			      	
+			      		if(document.getElementById("dni_<bean:write name='index'/>")&&document.getElementById("dni_<bean:write name='index'/>").value!=''){
+			      			ponerIconoIdentPersona (<bean:write name='index'/>, true);
+			      		}
 			      	</script>
 			        
 				</td>
-				<td align='center' width='9%'>
-					<input type="text" id="diligencia_<bean:write name='index'/>" class="box" maxlength="20" style="width:70;margin-top:3px;" value="<bean:write name="asistencia" property="numeroDiligencia" />"/>
+				<c:if test="${VolantesExpressForm.lugar == 'centro'}">
+				<td align='center' width='8%'>
+					<input type="text" id="diligencia_<bean:write name='index'/>" class="box" maxlength="20" style="width:70;margin-top:2px;" value="<bean:write name="asistencia" property="numeroDiligencia" />"/>
 				</td>
+				</c:if>
+				<c:if test="${VolantesExpressForm.lugar == 'juzgado'}">
+				<td align='center' width='8%'>
+					<input type="text" id="diligencia_<bean:write name='index'/>" class="box" maxlength="20" style="width:70;margin-top:2px;" value="<bean:write name="asistencia" property="numeroProcedimiento" />"/>
+				</td>
+				</c:if>
 				<td align='center' width='14%'>
 				
-				
-				<c:if test="${VolantesExpressForm.delitos==true}">
-								
-					
-					<iframe ID="idDelito_<bean:write name='index'/>Frame" SRC="/SIGA/html/jsp/general/comboAnidado.jsp?nombre=idDelito_<bean:write name='index'/>&tipo=comboDelitos&clase=boxCombo&estilo=width:215px;&ancho=null&obligatorio=false&elementoSel=[]&seleccionMultiple=false&parametros=<bean:write name="VolantesExpressForm" property="idInstitucion" />&id=<bean:write name="VolantesExpressForm" property="idInstitucion" />&accion=&filasMostrar=1&obligatorioSinTextoSeleccionar=false&readonly=false&pestana=" WIDTH="230" HEIGHT="21" FRAMEBORDER="0" MARGINWIDTH="2" MARGINHEIGHT="1" SCROLLING="NO"></iframe>   
-					<input type="hidden" id="idDelito_<bean:write name='index'/>" value="<bean:write name="asistencia" property="delitosImputados" />">
-					<script>
-			      			seleccionComboSiga ("idDelito_<bean:write name='index'/>", '<bean:write name="asistencia" property="delitosImputados" />');
-			      		</script>
+				<c:if test="${VolantesExpressForm.delito==true}">
 					<input type="hidden" id="observaciones_<bean:write name='index'/>" value="">
+					<select class="boxCombo" id="idDelito_<bean:write name='index'/>" style="width:230px;margin-top:2px;" name="idDelito_<bean:write name='index'/>" > 
+						<bean:define id="delitos" name="VolantesExpressForm" property="delitos" type="java.util.List" />
+							<logic:iterate id="delito" name="delitos">
+								<option value='<bean:write name="delito" property="idDelito"/>' >
+									<bean:write name="delito" property="descripcion"/>
+								</option>					
+								</logic:iterate> 
+								
+					</select>
+					<script>
+					
+						if(${asistencia.delitosImputados!=null} && ${asistencia.delitosImputados!='-1'})
+							document.getElementById("idDelito_<bean:write name='index'/>").value ='<bean:write name="asistencia" property="delitosImputados"/>'; 
+						</script>
+					
 				</c:if>
 				
-				<c:if test="${VolantesExpressForm.delitos==false}">
+				<c:if test="${VolantesExpressForm.delito==false}">
 			
-					<input type="text" id="observaciones_<bean:write name='index'/>" class="box" style="width:130;margin-top:3px;" value="<bean:write name="asistencia" property="observaciones" />"/>
+					<input type="text" id="observaciones_<bean:write name='index'/>" class="box" style="width:130;margin-top:2px;" value="<bean:write name="asistencia" property="observaciones" />"/>
 					<input type="hidden" id="idDelito_<bean:write name='index'/>" value="">
 				</c:if>
 				
 				
+				
 				</td>
-				<td align='center' width='8%'>
+				<td align='left' width='11%'>
+					<table>
+						<tr>
+							<td id="consultar_<bean:write name='index'/>"><img  src="/SIGA/html/imagenes/bconsultar_on.gif" style="cursor:hand;" alt="<siga:Idioma key="general.boton.consultar"/>" name="" border="0" onclick="accionConsultaAsistencia(<bean:write name="asistencia" property="anio" />,<bean:write name="asistencia" property="numero" />,<bean:write name="asistencia" property="idInstitucion" />,<bean:write name='index'/>);"/></td>
+							<td id="nuevaActuacion_<bean:write name='index'/>"><img  src="/SIGA/html/imagenes/icono+.gif" style="cursor:hand;" alt="<siga:Idioma key="gratuita.volantesExpres.nuevaActuacion"/>" name="" border="0" onclick="accionNuevaActuacion(<bean:write name="asistencia" property="anio" />,<bean:write name="asistencia" property="numero" />,<bean:write name="asistencia" property="idInstitucion" />)"></td>
+							<td id="borrarActuacion_<bean:write name='index'/>"><img src="/SIGA/html/imagenes/bborrar_off.gif" style="cursor:hand;" alt='<siga:Idioma key="general.boton.borrar"/>' name="" border="0" onclick="borrarFila('fila_<bean:write name='index'/>')"></td>
+							<td id="nuevoEjg_<bean:write name='index'/>"><img  src="/SIGA/html/imagenes/binsertarestado_on.gif" style="cursor:hand;" alt="<siga:Idioma key="gratuita.volantesExpres.asociarEjg"/>" name="" border="0" onclick="accionCrearEJG(<bean:write name="asistencia" property="anio" />,<bean:write name="asistencia" property="numero" />,<bean:write name="asistencia" property="idInstitucion" />,<bean:write name='index'/>);"/></td>
+						</tr>
+					</table>	
+					<script>
+					//si no esta creada la asistencia no mostramos nada
+					if(${asistencia.anio!=null} && ${asistencia.anio!='-1'}){
+						if(${asistencia.ejgAnio!=null} && ${asistencia.ejgAnio!='-1'}){
+							var nuevoEjg = 'nuevoEjg_'+<bean:write name='index'/>;
+							document.getElementById(nuevoEjg).style.display="none";
+							document.getElementById("borrarActuacion_<bean:write name='index'/>").style.display="none";
+						}else if(${asistencia.designaNumero!=null} && ${asistencia.designaNumero!='-1'}){ 
+							document.getElementById("borrarActuacion_<bean:write name='index'/>").style.display="none";
+						}
+					}else{
+						document.getElementById("nuevaActuacion_<bean:write name='index'/>").style.display="none";
+						document.getElementById("consultar_<bean:write name='index'/>").style.display="none";
+						document.getElementById("nuevoEjg_<bean:write name='index'/>").style.display="none";
+					}
+					 
 					
-					<img src="/SIGA/html/imagenes/icono+.gif" style="cursor:hand;" alt='<siga:Idioma key="gratuita.volantesExpres.nuevaActuacion"/>' name="" border="0" onclick="accionNuevaActuacion(<bean:write name="asistencia" property="anio" />,<bean:write name="asistencia" property="numero" />,<bean:write name="asistencia" property="idInstitucion" />)">
-					<img src="/SIGA/html/imagenes/bborrar_off.gif" style="cursor:hand;" alt='<siga:Idioma key="general.boton.borrar"/>' name="" border="0" onclick="borrarFila('<bean:write name='index'/>')">						
 					
-					<c:if test="${asistencia.ejgAnio!=null}">
-						<input type="text" id="ejgNumEjg_<bean:write name='index'/>" size="10"  value="<bean:write name="asistencia" property="ejgNumEjg"/>" readOnly="readonly" class="box" />
-					</c:if>
-					<c:if test="${asistencia.ejgAnio==null}">
-						<input type="button"  id = "idButton" value="EJG" alt='<siga:Idioma key="gratuita.volantesExpres.asociarEjg"/>'  class="buttonEnTabla" onclick="accionCrearEJG(<bean:write name="asistencia" property="anio" />,<bean:write name="asistencia" property="numero" />,<bean:write name="asistencia" property="idInstitucion" />,<bean:write name='index'/>);"/>
-					</c:if>
-				</td>
+					
+					</script>
+					
+					
+				</td>	
+					
+				
 			</tr>
 		</logic:iterate>
 	</logic:notEmpty>

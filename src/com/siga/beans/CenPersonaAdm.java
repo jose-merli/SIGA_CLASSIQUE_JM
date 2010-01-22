@@ -1221,6 +1221,49 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 		}
 		return null;
 	}
+	/**
+	 * HAY QUE COMPLETAR ESTE METODO CON TODOS LOS CAMPOS(lA SELECT HABRIA QUE HACERLA CON EL JOIN DE CEN_COLEGIADO Y CEN_PERSONA) 
+	 * 
+	 * @param idPersona
+	 * @param idInstitucion
+	 * @return
+	 */
+	public CenPersonaBean getPersonaColegiado (Long idPersona, Integer idInstitucion) 
+	{
+	    Hashtable codigos = new Hashtable();
+	    
+	    
+		codigos.put(new Integer(1),idInstitucion.toString());
+		String sql = "Select p.idpersona, p.nombre, p.apellidos1, p.apellidos2, f_siga_calculoncolegiado(:1, p.idpersona) as NCOLEGIADO " +
+	   		         " from cen_persona p ";
+		codigos.put(new Integer(2),idPersona);
+		sql += " where p.idpersona = :2";
+		
+		CenPersonaBean personaBean = null;
+		CenColegiadoBean colegiadoBean;
+		try {
+			Vector v = this.selectGenericoBind(sql,codigos);
+			if (v != null && v.size() == 1) {
+				personaBean =  new CenPersonaBean();
+				colegiadoBean =  new CenColegiadoBean();
+				personaBean.setColegiado(colegiadoBean);
+				Hashtable htCliente =(Hashtable) v.get(0);
+				personaBean.setNombre((String)htCliente.get("NOMBRE"));
+				personaBean.setApellido1((String)htCliente.get("APELLIDOS1"));
+				personaBean.setApellido2((String)htCliente.get("APELLIDOS2"));
+				colegiadoBean.setNColegiado((String)htCliente.get("NCOLEGIADO"));
+				
+			}
+		} 
+		catch (ClsExceptions e) {
+			e.printStackTrace();
+		} 
+		catch (SIGAException e) {
+			e.printStackTrace();
+		}
+		return personaBean;
+	}
+	
 	
 	
 	

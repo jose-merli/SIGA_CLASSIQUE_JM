@@ -23,7 +23,9 @@ public class ScsTipoEJGBean extends MasterBean{
 	static public final String  C_DESCRIPCION 	= 					"DESCRIPCION";
 	/* cambio para codigo ext */
 	private String codigoExt;
+	private String bloqueado;
 	static public final String C_CODIGOEXT = "CODIGOEXT";
+	static public final String C_BLOQUEADO = "BLOQUEADO";
 	public void setCodigoExt (String valor)
 	{
 		this.codigoExt = valor;
@@ -64,5 +66,11 @@ public class ScsTipoEJGBean extends MasterBean{
 	 * @return String
 	 */
 	public String getDescripcion			()	{ return this.descripcion;}
+	public String getBloqueado() {
+		return bloqueado;
+	}
+	public void setBloqueado(String bloqueado) {
+		this.bloqueado = bloqueado;
+	}
 	
 }

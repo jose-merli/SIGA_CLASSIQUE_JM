@@ -4685,7 +4685,34 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error ScsEJGAdm.getComisariaEjgSalida");
 		}
 	}
-
+	public ScsTipoEJGBean getTipoEjg (String idTipoEjg) throws ClsExceptions  
+	{
+		ScsTipoEJGBean tipoEjg = null;
+		try {
+			Hashtable h = new Hashtable();
+			h.put(new Integer(1), idTipoEjg);
+			String sql = "SELECT te.CODIGOEXT,te.BLOQUEADO,f_siga_getrecurso(te.DESCRIPCION,1) AS DESCRIPCION "
+				+" FROM scs_tipoejg  te"
+				+" WHERE " 
+				
+				+" te.idtipoejg = :1";
+			
+				
+			Vector resultadoObj =  this.selectGenericoBind(sql, h);
+			Hashtable registro = (Hashtable) resultadoObj.get(0);
+			
+			tipoEjg = new ScsTipoEJGBean();
+			tipoEjg.setIdTipoEJG(new Integer(idTipoEjg));
+			tipoEjg.setDescripcion((String)registro.get("DESCRIPCION"));
+			tipoEjg.setCodigoExt((String)registro.get(ScsTipoEJGBean.C_CODIGOEXT));
+			tipoEjg.setCodigoExt((String)registro.get(ScsTipoEJGBean.C_BLOQUEADO));
+			
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener getTipoEjg.");
+		}
+		return tipoEjg;
+	}
 	
 
 	 

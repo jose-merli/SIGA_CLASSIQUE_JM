@@ -25,7 +25,8 @@ public class CenColegiadoBean extends MasterBean {
 					cuentacontableSJCS;
 
 	private String identificadorDS;
-
+	
+	
 	
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "CEN_COLEGIADO";
@@ -95,4 +96,5 @@ public class CenColegiadoBean extends MasterBean {
 	public String getFechaMovimiento 	()	{ return this.fechaMovimiento;}
 	public String getCuentaContableSJCS ()	{ return this.cuentacontableSJCS;}
 	public String getIdentificadorDS    () 	{ return this.identificadorDS; }
+	
 }

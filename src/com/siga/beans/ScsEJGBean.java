@@ -11,7 +11,9 @@ public class ScsEJGBean extends MasterBean{
 	
 	/*
 	 *  Variables */ 
-
+	ScsPersonaJGBean solicitante;
+	ScsTipoEJGBean tipoEjg;
+	
 	private Integer	anio;
 	private Integer numero;
 	private String	fechaApertura;
@@ -813,5 +815,17 @@ public class ScsEJGBean extends MasterBean{
 	}
 	public void setIdPreceptivo(String idPreceptivo) {
 		this.idPreceptivo = idPreceptivo;
+	}
+	public ScsPersonaJGBean getSolicitante() {
+		return solicitante;
+	}
+	public void setSolicitante(ScsPersonaJGBean solicitante) {
+		this.solicitante = solicitante;
+	}
+	public ScsTipoEJGBean getTipoEjg() {
+		return tipoEjg;
+	}
+	public void setTipoEjg(ScsTipoEJGBean tipoEjg) {
+		this.tipoEjg = tipoEjg;
 	}
 }

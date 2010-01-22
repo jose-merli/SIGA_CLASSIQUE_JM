@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.UserTransaction;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsMngBBDD;
@@ -22,6 +23,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.administracion.form.PCAJGListadoTablasMaestrasForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.util.calendarioSJCS.CalendarioSJCS;
 import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
@@ -1032,6 +1034,52 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		}
 		return !encontrado;
 	}
+	public void insertarCabeceraYGuardia(Integer idInstitucion,	Integer idTurno,Integer idGuardia
+			,Integer idCalendarioGuardia,Long idPersona,String fecha,UsrBean usrBean) throws SIGAException,ClsExceptions{
+		ScsCabeceraGuardiasAdm cabeceraGuardiasAdm = new ScsCabeceraGuardiasAdm(usrBean);
+		ScsGuardiasColegiadoAdm guardiasColegiadoAdm = new ScsGuardiasColegiadoAdm(usrBean);
+		ScsCabeceraGuardiasBean cabeceraGuardiaBean = new ScsCabeceraGuardiasBean();
+		ScsGuardiasColegiadoBean guardiaColegiadoBean = new ScsGuardiasColegiadoBean();
+		
+		cabeceraGuardiaBean.setIdInstitucion(idInstitucion);
+		cabeceraGuardiaBean.setIdTurno(idTurno);
+		cabeceraGuardiaBean.setIdGuardia(idGuardia);
+		cabeceraGuardiaBean.setIdCalendario(idCalendarioGuardia);
+		cabeceraGuardiaBean.setIdPersona(idPersona);
+		
+		cabeceraGuardiaBean.setFechaInicio(fecha);
+		cabeceraGuardiaBean.setFechaFin(fecha);
+		cabeceraGuardiaBean.setSustituto("N");
+		cabeceraGuardiaBean.setFacturado("0");
+		cabeceraGuardiaBean.setPagado("0");
+		cabeceraGuardiaBean.setValidado("0");
+		
+		guardiaColegiadoBean.setIdInstitucion(idInstitucion);
+		guardiaColegiadoBean.setIdTurno(idTurno);
+		guardiaColegiadoBean.setIdGuardia(idGuardia);
+		guardiaColegiadoBean.setIdCalendarioGuardias(idCalendarioGuardia);
+		guardiaColegiadoBean.setIdPersona(idPersona);
+		guardiaColegiadoBean.setFechaInicio(fecha);
+		guardiaColegiadoBean.setFechaFin(fecha);
+		guardiaColegiadoBean.setDiasGuardia(new Long(1));
+		guardiaColegiadoBean.setDiasACobrar(new Long(1));
+		guardiaColegiadoBean.setReserva("N");
+		guardiaColegiadoBean.setFacturado("0");
+		guardiaColegiadoBean.setPagado("0");
+		
+		
+		try {
+			cabeceraGuardiasAdm.insert(cabeceraGuardiaBean);
+			guardiasColegiadoAdm.insert(guardiaColegiadoBean);
+			
+		} catch (Exception e) {
+			
+			throw new SIGAException("gratuita.volantesExpres.mensaje.diaSinCalendarioGuardias");
+		}
+		
+		
+		
+	}
 	
 	public void sustitucionLetradoGuardiaPuntual(UsrBean usr,HttpServletRequest request,String idInstitucion, String idTurno,String idGuardia,String idCalendarioGuardias,String idPersonaSaliente,String fechaInicio,String fechaFin,String idPersonaEntrante,String salto,String compensacion,String sustituta) throws ClsExceptions
 	{
@@ -1422,19 +1470,40 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		}
 		return salida;
 	}
-	public List<CenPersonaBean> getColegiadosGuardia(VolantesExpressVo volanteExpres)throws ClsExceptions{
+	public List<CenPersonaBean> getColegiadosGuardia(VolantesExpressVo volanteExpres,boolean withAsistencias)throws ClsExceptions{
 
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
 		int contador = 0;
 		StringBuffer sql = new StringBuffer();
-				
-		
+		String truncFechaGuardia = null;
+		if(!withAsistencias){
+			sql.append(" SELECT * from ( ");
+		}
 		sql.append(" SELECT DISTINCT IDPERSONA, ");
 		sql.append(" (SELECT CEN_PERSONA.NOMBRE || ' ' || CEN_PERSONA.APELLIDOS1 || ' ' || ");
 		sql.append(" CEN_PERSONA.APELLIDOS2 ");
 		sql.append(" FROM CEN_PERSONA ");
 		sql.append(" WHERE CEN_PERSONA.IDPERSONA = ");
-		sql.append(" SCS_GUARDIASCOLEGIADO.IDPERSONA) AS NOMBRE ");
+		sql.append(" GC.IDPERSONA) AS NOMBRE ");
+		if(!withAsistencias){
+			if(volanteExpres.getFechaGuardia()!=null){
+				truncFechaGuardia = GstDate.getFormatedDateShort("", volanteExpres.getFechaGuardia());
+				sql.append(" ,( SELECT COUNT(*) FROM SCS_ASISTENCIA A WHERE A.IDPERSONACOLEGIADO=GC.IDPERSONA ");
+				sql.append(" AND A.IDINSTITUCION = GC.IDINSTITUCION ");
+				sql.append(" AND A.IDTURNO = GC.IDTURNO ");
+				sql.append(" AND A.IDGUARDIA = GC.IDGUARDIA ");
+				sql.append(" AND TRUNC(A.FECHAHORA) = :");
+				contador ++;
+				sql.append(contador);
+				htCodigos.put(new Integer(contador),truncFechaGuardia);
+				sql.append(") NUMASISTENCIAS ");
+				
+				
+			}
+		}
+		
+		
+		
 //		sql.append(" ,(SELECT F_SIGA_CALCULONCOLEGIADO(SCS_GUARDIASCOLEGIADO.IDINSTITUCION, ");
 //		sql.append(" SCS_GUARDIASCOLEGIADO.IDPERSONA) ");
 //		sql.append(" FROM CEN_COLEGIADO ");
@@ -1442,51 +1511,50 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 //		sql.append(" SCS_GUARDIASCOLEGIADO.IDINSTITUCION ");
 //		sql.append(" AND CEN_COLEGIADO.IDPERSONA = ");
 //		sql.append(" SCS_GUARDIASCOLEGIADO.IDPERSONA) AS NCOLEGIADO ");
-		sql.append(" FROM SCS_GUARDIASCOLEGIADO ");
-		sql.append(" WHERE IDINSTITUCION = :");
+		sql.append(" FROM SCS_GUARDIASCOLEGIADO GC");
+		sql.append(" WHERE GC.IDINSTITUCION = :");
 		contador ++;
 		sql.append(contador);
 		htCodigos.put(new Integer(contador),volanteExpres.getIdInstitucion());
-		sql.append(" AND IDTURNO = :");
+		sql.append(" AND GC.IDTURNO = :");
 		contador ++;
 		sql.append(contador);
 		htCodigos.put(new Integer(contador),volanteExpres.getIdTurno());
-		sql.append(" AND IDGUARDIA = :");
+		sql.append(" AND GC.IDGUARDIA = :");
 		contador ++;
 		sql.append(contador);
 		htCodigos.put(new Integer(contador),volanteExpres.getIdGuardia());
 		if(volanteExpres.getFechaGuardia()!=null){
+			if(truncFechaGuardia==null)
+				truncFechaGuardia = GstDate.getFormatedDateShort("", volanteExpres.getFechaGuardia());
 			sql.append(" AND :");
 			contador ++;
 			sql.append(contador);
-			htCodigos.put(new Integer(contador),volanteExpres.getFechaGuardia());
+			htCodigos.put(new Integer(contador),truncFechaGuardia);
 			sql.append(" BETWEEN ");
-			sql.append(" TRUNC(FECHAINICIO) AND TRUNC(FECHAFIN) ");
+			sql.append(" TRUNC(GC.FECHAINICIO) AND TRUNC(GC.FECHAFIN) ");
 		}
+		
 		sql.append(" ORDER BY NOMBRE ");
-
-		
-		
-			
-			
-		
+		if(!withAsistencias){
+			sql.append(" ) where NUMASISTENCIAS=0");
+		}
 		List<CenPersonaBean> alColegiadosGuardias = null;
+		CenPersonaBean personaBean = null;
+		
 		try {
 			RowsContainer rc = new RowsContainer(); 
 												
             if (rc.findBind(sql.toString(),htCodigos)) {
             	alColegiadosGuardias = new ArrayList<CenPersonaBean>();
-            	CenPersonaBean personaBean = new CenPersonaBean();
+            	personaBean = new CenPersonaBean();
             	personaBean.setIdPersona(new Long(-1));
             	personaBean.setNombre(UtilidadesString.getMensajeIdioma(volanteExpres.getUsrBean(), "general.combo.seleccionar"));
             	alColegiadosGuardias.add(personaBean);
             	for (int i = 0; i < rc.size(); i++){
             		Row fila = (Row) rc.get(i);
             		Hashtable<String, Object> htFila=fila.getRow();
-            		
-            		
             		personaBean = new CenPersonaBean();
-            		
             		personaBean.setNombre(UtilidadesHash.getString(htFila,CenPersonaBean.C_NOMBRE));
             		personaBean.setIdPersona(UtilidadesHash.getLong(htFila,CenPersonaBean.C_IDPERSONA));
             		alColegiadosGuardias.add(personaBean);
@@ -1497,16 +1565,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
        }
        return alColegiadosGuardias;
 		}
-		
-		
-		
-		
-		
-		
-
-	
-	
-	
+			
 	public Vector selectParaVolantes (Hashtable h) 
 	{
 		try {
@@ -1707,6 +1766,60 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 				
 			}
 		}
+	public ScsGuardiasColegiadoBean getGuardiaSinCabecera(VolantesExpressVo volanteExpres)throws ClsExceptions{
+
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+        
+		sql.append(" SELECT * FROM SCS_CALENDARIOGUARDIAS GC ");
+		sql.append(" WHERE GC.IDINSTITUCION = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),volanteExpres.getIdInstitucion());
+		sql.append(" AND  GC.IDTURNO = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),volanteExpres.getIdTurno());
+		sql.append(" AND  GC.IDGUARDIA = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),volanteExpres.getIdGuardia());
+		sql.append(" AND :");
+		contador ++;
+		sql.append(contador);
+		String truncFechaGuardia = GstDate.getFormatedDateShort("", volanteExpres.getFechaGuardia());
+		htCodigos.put(new Integer(contador),truncFechaGuardia);
+		sql.append(" BETWEEN TRUNC(GC.FECHAINICIO) AND ");
+		sql.append(" TRUNC(GC.FECHAFIN) ");	
+		
+
+			
+			
+		
+		ScsGuardiasColegiadoBean guardiaBean = null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+												
+            if (rc.findBind(sql.toString(),htCodigos)) {
+        		if(rc.size()>0){
+	            	Row fila = (Row) rc.get(0);
+	        		Hashtable<String, Object> htFila=fila.getRow(); 
+	            	guardiaBean = new ScsGuardiasColegiadoBean();
+	           		guardiaBean.setIdTurno(UtilidadesHash.getInteger(htFila,ScsGuardiasColegiadoBean.C_IDTURNO));
+	           		guardiaBean.setIdGuardia(UtilidadesHash.getInteger(htFila,ScsGuardiasColegiadoBean.C_IDGUARDIA));
+	           		guardiaBean.setIdCalendarioGuardias(UtilidadesHash.getInteger(htFila,ScsGuardiasColegiadoBean.C_IDCALENDARIOGUARDIAS));
+        		}
+            	
+            }
+ 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+       }
+       return guardiaBean;
+		
+		
+	} 
 	
 	
 }

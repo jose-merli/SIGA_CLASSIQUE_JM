@@ -1,6 +1,7 @@
 
 package com.siga.beans;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
@@ -1487,6 +1488,8 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 			campos[this.getCamposBean().length+3] = ScsPersonaJGBean.C_APELLIDO1;
 			campos[this.getCamposBean().length+4] = ScsPersonaJGBean.C_APELLIDO2;
 			campos[this.getCamposBean().length+5] = ScsPersonaJGBean.C_NIF;
+			
+			String truncFechaGuardia = GstDate.getFormatedDateShort("", volanteExpres.getFechaGuardia());
 			for (int i = 0; i < camposOrigen.length; campos[i] = ScsAsistenciasBean.T_NOMBRETABLA + "." + camposOrigen[i], i++);
 
 			
@@ -1536,7 +1539,9 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 			sql.append(ScsAsistenciasBean.C_FECHAHORA); 
 			sql.append( ") = :");
 			contador ++;
-		    htCodigos.put(new Integer(contador),volanteExpres.getFechaGuardia());
+		    //htCodigos.put(new Integer(contador),volanteExpres.getFechaGuardia());
+			htCodigos.put(new Integer(contador),truncFechaGuardia);
+			
 		    sql.append(contador);
 			
 			sql.append(" AND P."); 
@@ -1620,10 +1625,7 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 	            		asistenciaBean.setAsistidoNombre((String)htFila.get("NOMBRE"));
 	            		asistenciaBean.setAsistidoApellido1((String)htFila.get("APELLIDO1"));
 	            		asistenciaBean.setAsistidoApellido2((String)htFila.get("APELLIDO2"));
-//	            		asistenciaBean.setIdInstitucion(UtilidadesHash.getInteger(htFila,ScsAsistenciasBean.C_IDINSTITUCION));
-//	            		asistenciaBean.setAnio(UtilidadesHash.getInteger(htFila,ScsAsistenciasBean.C_ANIO));
-//	            		asistenciaBean.setNumero(UtilidadesHash.getInteger(htFila,ScsAsistenciasBean.C_NUMERO));
-	            		
+	            		asistenciaBean.setObservaciones((String)htFila.get("OBSERVACIONES"));
 	            		Vector vDelitos = delitoAsisAdm.getDelitosAsitencia(asistenciaBean.getIdInstitucion()
 								,asistenciaBean.getAnio(),asistenciaBean.getNumero(),null);
 						if(vDelitos!=null && vDelitos.size()>0){
@@ -1694,7 +1696,8 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 			}
 
 			if (isInsertar){
-				String anio = volantesExpressVo.getFechaGuardia().split("/")[2];
+				String truncFechaGuardia = GstDate.getFormatedDateShort("",volantesExpressVo.getFechaGuardia());
+				String anio = truncFechaGuardia.split("/")[2];
 				asistencia.setAnio(new Integer(anio));
 				asistencia.setNumero(new Integer(this.getNumeroAsistencia(asistencia.getIdInstitucion().toString(), Integer.parseInt(anio))));
 				this.insert(asistencia);
@@ -1776,7 +1779,104 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 			}
 		}
 	}
-	
+	public ScsAsistenciasBean getAsistenciaVolanteExpress (String anio, String numero, String idInstitucion) throws ClsExceptions,SIGAException {
+		ScsAsistenciasBean beanAsistencia = null;
+	       try {
+	    	   Hashtable miHash = new Hashtable();
+	   			miHash.put("IDINSTITUCION",idInstitucion);
+	   			miHash.put("ANIO",anio);
+	   			miHash.put("NUMERO",numero);
+	    	    Vector resultadoObj = this.selectByPK(miHash);
+	   		    beanAsistencia = (ScsAsistenciasBean)resultadoObj.get(0);
+	   		    miHash.clear();
+	   		    miHash.put("IDINSTITUCION",idInstitucion);
+	   		    miHash.put("IDTURNO",beanAsistencia.getIdTurno());
+	   		    ScsTurnoAdm admTurno = new ScsTurnoAdm(usrbean);
+	   		    resultadoObj = admTurno.selectByPK(miHash);
+	   		    ScsTurnoBean turno = (ScsTurnoBean)resultadoObj.get(0);
+	   		    beanAsistencia.setTurno(turno);
+	   		    miHash.clear();
+	   		    miHash.put("IDINSTITUCION",idInstitucion);
+	   		    miHash.put("IDTURNO",beanAsistencia.getIdTurno());
+	   		    miHash.put("IDGUARDIA",beanAsistencia.getIdGuardia());
+	   		    ScsGuardiasTurnoAdm admGuardias = new ScsGuardiasTurnoAdm(usrbean);
+	   		    resultadoObj = admGuardias.selectByPK(miHash);
+	   		    ScsGuardiasTurnoBean guardia = (ScsGuardiasTurnoBean)resultadoObj.get(0);
+	   		    beanAsistencia.setGuardia(guardia);
+	   		    miHash.clear();
+	   		    miHash.put("IDINSTITUCION",idInstitucion);
+	   		    miHash.put("IDPERSONA",beanAsistencia.getIdPersonaJG());
+	   		    ScsPersonaJGAdm admPersonaJG = new ScsPersonaJGAdm(usrbean);
+	   		    resultadoObj = admPersonaJG.selectByPK(miHash);
+	   		    ScsPersonaJGBean asistido = (ScsPersonaJGBean)resultadoObj.get(0);
+	   		    beanAsistencia.setAsistido(asistido);
+//	   		    miHash.clear();
+//	   		    miHash.put("IDINSTITUCION",idInstitucion);
+//	   		    miHash.put("IDPERSONA",beanAsistencia.getIdPersonaColegiado());
+	   		    CenPersonaAdm admPersona = new CenPersonaAdm(usrbean);
+	   		    CenPersonaBean colegiado =  admPersona.getPersonaColegiado(new Long(beanAsistencia.getIdPersonaColegiado().toString()),new Integer(idInstitucion));
+	   		    beanAsistencia.setPersonaColegiado(colegiado);
+	   		    
+	   		    if(beanAsistencia.getDesignaAnio()!=null ){
+	   		    	miHash.clear();
+		   		    miHash.put("IDINSTITUCION",idInstitucion);
+		   		    miHash.put("IDTURNO",beanAsistencia.getDesignaTurno());
+		   		    miHash.put("NUMERO",beanAsistencia.getDesignaNumero());
+		   		    miHash.put("ANIO",beanAsistencia.getDesignaAnio());
+		   		    ScsDesignaAdm admDesigna = new ScsDesignaAdm(usrbean);
+		   		    resultadoObj = admDesigna.selectByPK(miHash);
+		   		    ScsDesignaBean designa = (ScsDesignaBean)resultadoObj.get(0);
+		   		    beanAsistencia.setDesigna(designa);
+		   		    miHash.clear();
+		   		    miHash.put("IDINSTITUCION",idInstitucion);
+		   		    miHash.put("IDTURNO",designa.getIdTurno());
+		   		    resultadoObj = admTurno.selectByPK(miHash);
+		   		    ScsTurnoBean turnoDesigna = (ScsTurnoBean)resultadoObj.get(0);
+		   		    designa.setTurno(turno);
+		   		    String idPersonacolegiadoDesignado = admDesigna.getIDLetradoDesig(idInstitucion, designa.getIdTurno().toString(), designa.getAnio().toString(), designa.getNumero().toString());
+		   		    CenPersonaBean colegiadoDesignado =  admPersona.getPersonaColegiado(new Long(idPersonacolegiadoDesignado),new Integer(idInstitucion));
+		   		    designa.setColegiadoDesignado(colegiadoDesignado);
+		   		    
+	   		    }
+	   		    if(beanAsistencia.getEjgAnio()!=null ){
+	   		    	miHash.clear();
+		   		    miHash.put("IDINSTITUCION",idInstitucion);
+		   		    miHash.put("IDTIPOEJG",beanAsistencia.getEjgIdTipoEjg());
+		   		    miHash.put("NUMERO",beanAsistencia.getEjgNumero());
+		   		    miHash.put("ANIO",beanAsistencia.getEjgAnio());
+		   		    ScsEJGAdm admEJG = new ScsEJGAdm(usrbean);
+		   		    resultadoObj = admEJG.selectByPK(miHash);
+		   		    ScsEJGBean ejg = (ScsEJGBean)resultadoObj.get(0);
+		   		    beanAsistencia.setEjg(ejg);
+		   		    miHash.clear();
+		   		    miHash.put("IDINSTITUCION",idInstitucion);
+		   		    miHash.put("IDPERSONA",ejg.getIdPersonaJG());
+		   		    resultadoObj = admPersonaJG.selectByPK(miHash);
+		   		    ScsPersonaJGBean solicitante = (ScsPersonaJGBean)resultadoObj.get(0);
+		   		    ejg.setSolicitante(solicitante);
+		   		    ScsTipoEJGBean tipoEjg =  admEJG.getTipoEjg(ejg.getIdTipoEJG().toString());
+		   		    ejg.setTipoEjg(tipoEjg);
+		   		    
+		   		    
+		   		    
+		   		    
+		   		    
+	   		    }
+	   		    
+	   		     
+	   		    
+	   		    
+	   		    
+	   		    
+	   		    
+	   		    
+	   		    
+	       }
+	       catch (Exception e) {
+	       	throw new ClsExceptions (e, "Error al obtener la informacion sobre una asistencia EJG.");
+	       }
+	       return beanAsistencia;                        
+	 }
 	private void borrarAsistenciaVolanteExpress(Integer anio, Integer numero, Integer idInstitucion, UsrBean usr) throws ClsExceptions 
 	{
 		Hashtable<String,Object> claves = new Hashtable<String, Object> ();

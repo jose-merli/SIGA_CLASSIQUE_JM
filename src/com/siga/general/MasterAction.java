@@ -31,16 +31,25 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.transaction.UserTransaction;
 
 import net.sourceforge.ajaxtags.xml.AjaxXmlBuilder;
 
-import org.apache.struts.action.*;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
 
-import com.atos.utils.*;
-import com.siga.general.SIGAException;
+import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
+import com.atos.utils.ReadProperties;
+import com.atos.utils.RowsContainer;
+import com.atos.utils.UsrBean;
 import com.siga.Utilidades.AjaxCollectionXmlBuilder;
+import com.siga.Utilidades.AjaxMultipleCollectionXmlBuilder;
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.SIGAConstants;
@@ -949,21 +958,29 @@ public abstract class MasterAction extends SIGAActionBase {
     	
     	return alClaves;
 	}
-	protected void respuestaAjax(AjaxXmlBuilder ajaxXmlBuilder,
-			List<String> list, HttpServletResponse response) throws IOException {
+
+	protected void respuestaAjax(AjaxXmlBuilder ajaxXmlBuilder, List<String> list, HttpServletResponse response) throws IOException {
 		for (int i = 0; i < list.size(); i++) {
 			ajaxXmlBuilder.addItem((String)list.get(i));
-			
 		}
+		
 		response.setContentType("text/xml");
 	    response.setHeader("Cache-Control", "no-cache");
 	    PrintWriter pw = response.getWriter();
 	    pw.write(ajaxXmlBuilder.toString());
 	    pw.close();
-		
-		
 	}
 	
+	@SuppressWarnings("unchecked")
+	protected void respuestaAjax(AjaxMultipleCollectionXmlBuilder builder, Collection<Collection> collection, HttpServletResponse response) throws IOException{
+		builder.addItems(collection);
+		response.setContentType("text/xml");
+	    response.setHeader("Cache-Control", "no-cache");
+	    PrintWriter pw = response.getWriter();
+	    pw.write(builder.toString());
+	    pw.close();
+	}
+
 	@SuppressWarnings("unchecked")
 	protected void respuestaAjax(AjaxCollectionXmlBuilder builder, Collection collection, HttpServletResponse response) throws IOException{
 		builder.addItems(collection);
@@ -974,6 +991,4 @@ public abstract class MasterAction extends SIGAActionBase {
 	    pw.close();
 		
 	}
-	
-
 }

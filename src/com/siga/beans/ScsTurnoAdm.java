@@ -1,6 +1,7 @@
 
 package com.siga.beans;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
@@ -10,6 +11,7 @@ import java.util.Vector;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsMngBBDD;
+import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -776,23 +778,19 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 		    contador ++;
 			sql.append(contador);
 			htCodigos.put(new Integer(contador),volanteExpres.getIdInstitucion());
-			sql.append(" AND TURNO.IDTURNO "); 
-			sql.append(" IN (SELECT DISTINCT GC.IDTURNO FROM SCS_GUARDIASCOLEGIADO GC "); 
-			sql.append(" WHERE GC.IDINSTITUCION = TURNO.IDINSTITUCION  ");
-			if(volanteExpres.getIdColegiado()!=null){
-				sql.append(" AND GC.IDPERSONA = :");
-			    contador ++;
-				sql.append(contador);
-				htCodigos.put(new Integer(contador),volanteExpres.getIdColegiado());
-				
-			}
-			sql.append(" AND TRUNC(GC.FECHAFIN) = :");
+			sql.append(" AND TURNO.IDTURNO IN "); 
+			
+			sql.append(" (SELECT GC.IDTURNO ");
+			sql.append(" FROM SCS_CALENDARIOGUARDIAS GC ");
+			sql.append(" WHERE GC.IDINSTITUCION = TURNO.IDINSTITUCION ");
+			sql.append(" AND  GC.IDTURNO = TURNO.IDTURNO ");
+			sql.append(" AND :");
 			contador ++;
-		    htCodigos.put(new Integer(contador),volanteExpres.getFechaGuardia());
+			String truncFechaGuardia = GstDate.getFormatedDateShort("", volanteExpres.getFechaGuardia());
+		    htCodigos.put(new Integer(contador),truncFechaGuardia);
 		    sql.append(contador);
-			sql.append(" ) ORDER BY TURNO.DESCRIPCION ");
-			
-			
+			sql.append(" BETWEEN TRUNC(GC.FECHAINICIO) AND TRUNC(GC.FECHAFIN)) ");
+			sql.append(" ORDER BY TURNO.DESCRIPCION ");
 		}else{
 			sql.append(" SELECT IDINSTITUCION , IDTURNO ");
 			sql.append(" , NOMBRE FROM SCS_TURNO TURNO  ");

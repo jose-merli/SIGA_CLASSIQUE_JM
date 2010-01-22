@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsMngBBDD;
@@ -36,6 +38,56 @@ import com.siga.gratuita.form.AsistenciasForm;
  */
 
 public class ActuacionesAsistenciaAction extends MasterAction {
+	
+	
+	protected ActionForward executeInternal (ActionMapping mapping,
+			ActionForm formulario,
+			HttpServletRequest request, 
+			HttpServletResponse response)throws SIGAException {
+
+		String mapDestino = "exception";
+		MasterForm miForm = null;
+
+		try {
+			miForm = (MasterForm) formulario;
+			if (miForm == null) {
+				return mapping.findForward(mapDestino);
+			}
+
+			String accion = miForm.getModo();
+
+			if (accion.equalsIgnoreCase("consultarAsistencia")){
+				mapDestino = consultarAsistencia(mapping, miForm, request, response);
+			}else {
+				return super.executeInternal(mapping,
+						formulario,
+						request, 
+						response);
+			}
+
+//			Redireccionamos el flujo a la JSP correspondiente
+			if (mapDestino == null) 
+			{ 
+//				mapDestino = "exception";
+				if (miForm.getModal().equalsIgnoreCase("TRUE"))
+				{
+					request.setAttribute("exceptionTarget", "parent.modal");
+				}
+
+//				throw new ClsExceptions("El ActionMapping no puede ser nulo");
+				throw new ClsExceptions("El ActionMapping no puede ser nulo","","0","GEN00","15");
+			}
+
+		}
+		catch (SIGAException es) { 
+			throw es; 
+		} 
+		catch (Exception e) { 
+			throw new SIGAException("messages.general.error",e,new String[] {"modulo.facturacion"}); // o el recurso del modulo que sea 
+		} 
+		return mapping.findForward(mapDestino);
+	}	
+	
 	
 	/** 
 	 *  Funcion que atiende la accion abrir. Por defecto se abre el forward 'inicio'
@@ -876,6 +928,18 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 
 		} 
 		return exitoRefresco("messages.updated.success",request);
+	}
+	protected String consultarAsistencia(ActionMapping mapping, MasterForm formulario,
+			HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException
+			{
+		AsistenciasForm miForm =(AsistenciasForm)formulario;
+		ScsAsistenciasAdm admAsistencias = new ScsAsistenciasAdm(this.getUserBean(request));
+		ScsAsistenciasBean beanAsistencia = admAsistencias.getAsistenciaVolanteExpress(miForm.getAnio(),miForm.getNumero(),miForm.getIdInstitucion());
+		miForm.setAsistenciaBean(beanAsistencia);
+		
+		
+		return "consultarAsistencia";
+		
 	}
 
 }

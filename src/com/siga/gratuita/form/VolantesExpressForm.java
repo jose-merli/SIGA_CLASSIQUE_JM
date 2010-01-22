@@ -4,10 +4,15 @@ package com.siga.gratuita.form;
 import java.util.Collection;
 import java.util.List;
 
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.ScsAsistenciasBean;
+import com.siga.beans.ScsComisariaBean;
+import com.siga.beans.ScsDelitoBean;
 import com.siga.beans.ScsGuardiasTurnoBean;
+import com.siga.beans.ScsJuzgadoBean;
 import com.siga.beans.ScsTipoAsistenciaColegioBean;
 import com.siga.beans.ScsTurnoBean;
 import com.siga.general.MasterForm;
@@ -34,8 +39,12 @@ public class VolantesExpressForm extends MasterForm
 	String idTipoAsistencia;
 	String idTipoAsistenciaColegio;
 	List<CenPersonaBean> colegiadosGuardia;
+	List<CenPersonaBean> colegiadosSustituidos;
 	List<ScsTurnoBean> turnos;
 	List<ScsGuardiasTurnoBean> guardias;
+	List<ScsComisariaBean> comisarias;
+	List<ScsJuzgadoBean> juzgados;
+	List<ScsDelitoBean> delitos;
 	
 	List<ScsTipoAsistenciaColegioBean> tiposAsistenciaColegio;
 	
@@ -47,7 +56,7 @@ public class VolantesExpressForm extends MasterForm
 	UsrBean usrBean;
 	String fechaJustificacion;
 	
-	Boolean delitos;
+	Boolean delito;
 	
 	String msgError;
 	String msgAviso;
@@ -120,13 +129,14 @@ public class VolantesExpressForm extends MasterForm
 	public void setUsrBean(UsrBean usrBean) {
 		this.usrBean = usrBean;
 	} 
-	public VolantesExpressVo getVolanteExpressVo() {
+	public VolantesExpressVo getVolanteExpressVo() throws ClsExceptions {
 		VolantesExpressVo volanteExpressVo=new VolantesExpressVo();
 		volanteExpressVo.setUsrBean(usrBean);
 		if(idInstitucion!=null && !idInstitucion.equals(""))
 			volanteExpressVo.setIdInstitucion(new Integer(idInstitucion));
-		if(fechaGuardia!=null && !fechaGuardia.equals(""))
-			volanteExpressVo.setFechaGuardia(fechaGuardia);
+		if(fechaGuardia!=null && !fechaGuardia.equals("")){
+			volanteExpressVo.setFechaGuardia(GstDate.getApplicationFormatDate("", fechaGuardia));
+		}
 		if(idTurno!=null && !idTurno.equals("") && !idTurno.equals("-1"))
 			volanteExpressVo.setIdTurno(Integer.parseInt(idTurno));
 		if(idGuardia!=null && !idGuardia.equals("")&& !idGuardia.equals("-1"))
@@ -150,8 +160,10 @@ public class VolantesExpressForm extends MasterForm
 		if(asistencias!=null && asistencias.size()>0)
 			volanteExpressVo.setAsistencias(asistencias);
 		
-		if(fechaJustificacion!=null && !fechaJustificacion.equals(""))
-			volanteExpressVo.setFechaJustificacion(fechaJustificacion);
+		if(fechaJustificacion!=null && !fechaJustificacion.equals("")){
+			
+			volanteExpressVo.setFechaJustificacion(GstDate.getApplicationFormatDate("", fechaJustificacion));
+		}
 		
 		
 		
@@ -250,11 +262,11 @@ public class VolantesExpressForm extends MasterForm
 	public void setDatosAsistencias(String datosAsistencias) {
 		this.datosAsistencias = datosAsistencias;
 	}
-	public Boolean getDelitos() {
-		return delitos;
+	public Boolean getDelito() {
+		return delito;
 	}
-	public void setDelitos(Boolean delitos) {
-		this.delitos = delitos;
+	public void setDelito(Boolean delito) {
+		this.delito = delito;
 	}
 	public String getMsgError() {
 		return msgError;
@@ -267,6 +279,30 @@ public class VolantesExpressForm extends MasterForm
 	}
 	public void setMsgAviso(String msgAviso) {
 		this.msgAviso = msgAviso;
+	}
+	public List<ScsComisariaBean> getComisarias() {
+		return comisarias;
+	}
+	public void setComisarias(List<ScsComisariaBean> comisarias) {
+		this.comisarias = comisarias;
+	}
+	public List<ScsJuzgadoBean> getJuzgados() {
+		return juzgados;
+	}
+	public void setJuzgados(List<ScsJuzgadoBean> juzgados) {
+		this.juzgados = juzgados;
+	}
+	public void setDelitos(List<ScsDelitoBean> delitos) {
+		this.delitos = delitos;
+	}
+	public List<ScsDelitoBean> getDelitos() {
+		return delitos;
+	}
+	public List<CenPersonaBean> getColegiadosSustituidos() {
+		return colegiadosSustituidos;
+	}
+	public void setColegiadosSustituidos(List<CenPersonaBean> colegiadosSustituidos) {
+		this.colegiadosSustituidos = colegiadosSustituidos;
 	}
 	
 

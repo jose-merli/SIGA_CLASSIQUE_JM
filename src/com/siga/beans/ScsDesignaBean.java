@@ -9,6 +9,8 @@ package com.siga.beans;
 
 public class ScsDesignaBean extends MasterBean {
 	
+	ScsTurnoBean turno;
+	CenPersonaBean colegiadoDesignado;
 	// Variables 
 	private Integer	idInstitucion;
 	private Integer	idTurno;
@@ -370,6 +372,18 @@ public void setIdTipoDesignaColegio(Integer idTipoDesignaColegio) {
 	 */
 	public void setIdPretension(Integer idPretension) {
 		this.idPretension = idPretension;
+	}
+	public ScsTurnoBean getTurno() {
+		return turno;
+	}
+	public void setTurno(ScsTurnoBean turno) {
+		this.turno = turno;
+	}
+	public CenPersonaBean getColegiadoDesignado() {
+		return colegiadoDesignado;
+	}
+	public void setColegiadoDesignado(CenPersonaBean colegiadoDesignado) {
+		this.colegiadoDesignado = colegiadoDesignado;
 	}
 	
 	

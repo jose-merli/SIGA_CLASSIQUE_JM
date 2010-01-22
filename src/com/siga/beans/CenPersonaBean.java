@@ -24,7 +24,6 @@ public class CenPersonaBean extends MasterBean {
 	private Integer idTipoIdentificacion, idEstadoCivil;
 	private String nombre, apellido1, apellido2, nifcif, naturalDe,sexo;  
 	private String fechaNacimiento,fallecido;
-
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "CEN_PERSONA";
 
@@ -78,4 +77,13 @@ public class CenPersonaBean extends MasterBean {
 	public void setSexo(String sexo) {
 		this.sexo = sexo;
 	}
+	CenColegiadoBean colegiado;
+
+	public CenColegiadoBean getColegiado() {
+		return colegiado;
+	}
+	public void setColegiado(CenColegiadoBean colegiado) {
+		this.colegiado = colegiado;
+	}
+	
 }
