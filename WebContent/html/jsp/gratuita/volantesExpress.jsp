@@ -231,7 +231,7 @@
 		var texto = '';
 		if((document.VolantesExpressForm.idColegiadoSustituido && document.VolantesExpressForm.idColegiadoSustituido.value != ''&& document.VolantesExpressForm.idColegiadoSustituido.value != '-1')){
 			texto = '<siga:Idioma key="gratuita.volantesExpres.msg.confirmaSustitucion"/>';
-		}else if(document.VolantesExpressForm.idColegiado && document.VolantesExpressForm.idColegiado.value != '' && (document.VolantesExpressForm.idColegiadoGuardia==null ||document.VolantesExpressForm.idColegiadoGuardia.value=='-1')){
+		}else if(document.VolantesExpressForm.idColegiado && document.VolantesExpressForm.idColegiado.value != '' && (!document.VolantesExpressForm.idColegiadoGuardia||document.VolantesExpressForm.idColegiadoGuardia==null ||document.VolantesExpressForm.idColegiadoGuardia.value=='-1'||document.VolantesExpressForm.idColegiadoGuardia.value=='')){
 			texto = '<siga:Idioma key="gratuita.volantesExpres.msg.confirmaRefuerzo"/>';
 		
 		}
