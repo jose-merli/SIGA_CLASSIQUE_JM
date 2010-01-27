@@ -210,12 +210,12 @@
 		
 		function ultimoEstado(idEstado) {
 		
-			if(idEstado > 0) {				
+			/*if(idEstado > 0) {				
 			 	var trFiltrado = document.getElementById("idTrFiltradoIncidencias");			 	
 			 	if (trFiltrado) {			 		
 			 		trFiltrado.style.display = "";
 			 	}
-			}
+			}*/
 		}
 		
 	</script>
@@ -265,7 +265,7 @@
 						</td>
 					</tr>
 										  
-					<tr id="idTrFiltradoIncidencias" style='display:<%=(idEstado>0?"":"none")%>;'>
+					<tr id="idTrFiltradoIncidencias" style='display:<%=(idEstado>-1?"":"none")%>;'>
 						<td class="labelText">
 							<siga:Idioma key="gratuita.BusquedaRemesas_CAJG.literal.IncidenciasEnvio"/>	
 						</td>
