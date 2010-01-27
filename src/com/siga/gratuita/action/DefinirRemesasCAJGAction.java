@@ -645,17 +645,20 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		UserTransaction tx = null;
 		
 		CajgEJGRemesaAdm admBean = new CajgEJGRemesaAdm(this.getUserBean(request));
+		CajgRespuestaEJGRemesaAdm cajgRespuestaEJGRemesaAdm = new CajgRespuestaEJGRemesaAdm(getUserBean(request));
 		Vector ocultos = formulario.getDatosTablaOcultos(0);
 		
 		Hashtable miHash = new Hashtable();
 		
 		try {
 
-			miHash.put(CajgEJGRemesaBean.C_IDEJGREMESA, ocultos.get(0));
+			String idEjgRemesa = (String)ocultos.get(0);
+			miHash.put(CajgEJGRemesaBean.C_IDEJGREMESA, idEjgRemesa);
 			
 			tx = usr.getTransaction();
 			tx.begin();
-			admBean.delete(miHash);
+			cajgRespuestaEJGRemesaAdm.deleteDirect(miHash, new String[]{CajgRespuestaEJGRemesaBean.C_IDEJGREMESA});
+			admBean.delete(miHash);			
 
 			Hashtable hashEstado = new Hashtable();
 			hashEstado.put(ScsEJGBean.C_IDINSTITUCION, getIDInstitucion(request));
@@ -1696,6 +1699,19 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			
 			
 			Boolean imprimirCabecera = Boolean.FALSE;
+			
+			String sql1 = "SELECT COUNT(1) NUMEROEJGS" +
+				" FROM " + CajgEJGRemesaBean.T_NOMBRETABLA +
+				" WHERE " + CajgEJGRemesaBean.C_IDINSTITUCION + " = " + idInstitucion +
+				" AND " + CajgEJGRemesaBean.C_IDREMESA + " = " + idRemesa;
+	
+			RowsContainer rc1 = new RowsContainer();
+			String numeroEJGs = null;
+			
+			if (rc1.find(sql1)) {
+				Row row = (Row) rc1.get(0);
+				numeroEJGs = row.getString("NUMEROEJGS");
+			}
 
 			String sql = "SELECT *" +
 					" FROM " + CajgProcedimientoRemesaBean.T_NOMBRETABLA + 
@@ -1705,6 +1721,8 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				ClsLogging.writeFileLog("No hay ningún registro en " + CajgProcedimientoRemesaBean.T_NOMBRETABLA + " para la institucion " + idInstitucion, 3);				
 				throw new SIGAException("messages.cajg.funcionNoDefinida");
 			}
+			
+			
 
 			for (int j = 0; j < rc.size(); j++) {				
 				fila = (Row) rc.get(j);
@@ -1723,56 +1741,39 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				if (cabecera != null && cabecera.trim().equals("1")) {
 					imprimirCabecera = Boolean.TRUE;
 				}
-
-				String sql1 = "SELECT COUNT(1) NUMEROEJGS" +
-						" FROM " + CajgEJGRemesaBean.T_NOMBRETABLA +
-						" WHERE " + CajgEJGRemesaBean.C_IDINSTITUCION + " = " + idInstitucion +
-						" AND " + CajgEJGRemesaBean.C_IDREMESA + " = " + idRemesa;
-				
-				RowsContainer rc1 = new RowsContainer();
-				String numeroEJGs = null;
-				
 				
 				try {// Si la funcion no existe en la base de datos
 					boolean usaTablaEJGremesa = false;
 					RowsContainer rc2 = new RowsContainer();					
-					if (rc1.find(sql1)) {
-						Connection con = null;
-						try {
-							con=ClsMngBBDD.getReadConnection();
-							CallableStatement cs=con.prepareCall("{? = call " + funcion + " (?,?)}");
-							cs.registerOutParameter(1,Types.CLOB);
-							
-							cs.setString(2, idInstitucion);
-							cs.setString(3, idRemesa);					    	
-					    	cs.execute();
-					    	fila_consulta = cs.getString(1);
-					    } finally {
-					    	if (con != null) {
-					    		ClsMngBBDD.closeConnection(con);
-					    	}
-						}			    
+					
+					Connection con = null;
+					try {
+						con=ClsMngBBDD.getReadConnection();
+						CallableStatement cs=con.prepareCall("{? = call " + funcion + " (?,?)}");
+						cs.registerOutParameter(1,Types.CLOB);
 						
-						Row row = (Row) rc1.get(0);
-						numeroEJGs = row.getString("NUMEROEJGS");						
+						cs.setString(2, idInstitucion);
+						cs.setString(3, idRemesa);					    	
+				    	cs.execute();
+				    	fila_consulta = cs.getString(1);
+				    } finally {
+				    	if (con != null) {
+				    		ClsMngBBDD.closeConnection(con);
+				    	}
+					}			    
+					
+					if (rc2.find(fila_consulta)) {
+						usaTablaEJGremesa = fila_consulta.toUpperCase().indexOf(CajgEJGRemesaBean.T_NOMBRETABLA) > -1;
+						campos = rc2.getFieldNames();
 						
-						if (rc2.find(fila_consulta)) {
-							usaTablaEJGremesa = fila_consulta.toUpperCase().indexOf(CajgEJGRemesaBean.T_NOMBRETABLA) > -1;
-							campos = rc2.getFieldNames();
-							
-						} else {
-							ClsLogging.writeFileLog("La query de la funcion " + funcion + " no ha devuelto datos", 3);
-						}
 					} else {
-						ClsLogging.writeFileLog("La funcion " + funcion + " no ha devuelto una query", 3);
+						ClsLogging.writeFileLog("La query de la funcion " + funcion + " no ha devuelto datos", 3);
 					}
 					
+					
 					if (rc2 != null && rc2.size() > 0) {						
-						// creación fichero
-						if (!usaTablaEJGremesa) {
-							numeroEJGs = null;
-						}
-						File file = generaFichero(rc2, nombreFichero, sRutaJava, campos, "txt", imprimirCabecera, delimitador, saltoLinea, subCabecera, numeroEJGs, mensaje); 
+						// creación fichero						
+						File file = generaFichero(rc2, nombreFichero, sRutaJava, campos, "txt", imprimirCabecera, delimitador, saltoLinea, subCabecera, (usaTablaEJGremesa?numeroEJGs:null), mensaje); 
 						ficheros.add(file);
 					}					
 				} catch (Exception e) {
@@ -1796,7 +1797,11 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				
 			} else {
 				// no devuelve ningun resultado la consulta
-				throw new SIGAException("messages.cajg.error.nodatos");
+				if (numeroEJGs != null && Integer.parseInt(numeroEJGs) > 0) {
+					mensaje.delete(0, mensaje.length());
+					mensaje.append("No se ha generado ningún fichero. Revise su configuración.");
+				}
+				//throw new SIGAException("messages.cajg.error.nodatos");
 			}
 			
 
@@ -1836,16 +1841,16 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		
 		try {		
 			File fileZIP = generaFicherosTXT(idInstitucion, form.getIdRemesa(), nombreFicheroPorDefecto, mensaje, null);
-			
+				
 			if (fileZIP != null) {
 				UserTransaction tx = usr.getTransaction();
 				tx.begin();
 				// Marcar como generada
 				CajgRemesaEstadosAdm cajgRemesaEstadosAdm = new CajgRemesaEstadosAdm(usr);				
 				cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIDInstitucion(request), Integer.valueOf(form.getIdRemesa()), Integer.valueOf("1"));
-	
 				tx.commit();
 			}
+			
 		} catch (Exception e) {
 			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
 		}
