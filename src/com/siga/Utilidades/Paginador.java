@@ -10,6 +10,7 @@ import com.atos.utils.ClsExceptions;
 import java.io.Serializable;
 import com.siga.general.SIGAException;
 
+@Deprecated
 public class Paginador implements IPaginador, Serializable
 {
 	IPaginador paginador = null;

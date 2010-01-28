@@ -26,7 +26,7 @@ import com.siga.general.SIGAException;
  *
  *  
  */
-
+@Deprecated
 public class PaginadorSQLBind extends PaginadorBind implements IPaginador, Serializable
 {
 	protected int numeroTotalRegistros = 0;

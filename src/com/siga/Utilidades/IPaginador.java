@@ -17,6 +17,7 @@ import com.siga.general.SIGAException;
  * alter session set nls_sort=GENERIC_BASELETTER;
  */
 
+@Deprecated
 public interface IPaginador  
 {
 	static int NUM_REGISTROS = 100;

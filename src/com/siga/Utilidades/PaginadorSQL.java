@@ -27,6 +27,7 @@ import java.io.Serializable;
  *  
  */
 
+@Deprecated
 public class PaginadorSQL extends Paginador implements IPaginador,Serializable 
 {
 	protected int numeroTotalRegistros = 0;

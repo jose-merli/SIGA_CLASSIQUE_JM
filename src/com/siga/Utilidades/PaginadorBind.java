@@ -12,6 +12,7 @@ import com.siga.general.SIGAException;
 import java.util.*;
 import java.io.Serializable;
 
+@Deprecated
 public class PaginadorBind implements IPaginador,Serializable
 {
 	IPaginador paginador = null;

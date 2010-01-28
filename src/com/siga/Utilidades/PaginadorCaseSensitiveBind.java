@@ -19,6 +19,7 @@ import com.atos.utils.RowsContainer;
  * 
  * @author Ana.Combarros
  */
+@Deprecated
 public class PaginadorCaseSensitiveBind extends PaginadorSQLBind
 {
 	//

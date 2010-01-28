@@ -28,6 +28,7 @@ import com.atos.utils.RowsContainer;
  *
  *  
  */
+@Deprecated
 public class PaginadorCaseSensitive extends PaginadorSQL 
 {
 	 

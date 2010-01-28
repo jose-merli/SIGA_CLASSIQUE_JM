@@ -17,7 +17,7 @@ import java.io.Serializable;
  * alter session set nls_comp=linguistic ;
  * alter session set nls_sort=GENERIC_BASELETTER;
  */
-
+@Deprecated
 public class PaginadorVector extends Paginador implements IPaginador, Serializable 
 {
 	protected int numeroTotalRegistros = 0;
