@@ -27,7 +27,7 @@ public abstract class MasterBeanAdministrador {
 	protected UsrBean usrbean = null;
 	protected Integer usuModificacion;
 
-	MasterBeanAdministrador (String _tabla, UsrBean _usrBean) {
+	protected MasterBeanAdministrador (String _tabla, UsrBean _usrBean) {
 		try {
 		    if (_usrBean!=null) {
 			    if (_usrBean.getUserName()==null || _usrBean.getUserName().trim().equals("")) {

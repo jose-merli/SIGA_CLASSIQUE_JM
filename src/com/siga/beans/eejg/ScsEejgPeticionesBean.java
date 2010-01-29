@@ -12,6 +12,11 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	 * 
 	 */
 	private static final long serialVersionUID = -6457973849067549976L;
+	  public static final int EEJG_ESTADO_SOLICITADO = 10;  
+	  public static final int EEJG_ESTADO_ESPERA = 20;
+	  public static final int EEJG_ESTADO_FINALIZADO = 30;
+	  public static final int EEJG_ESTADO_ERROR = 40;
+	
 	Long idPeticion;
 	Integer idInstitucion;
 	String fechaPeticion;

@@ -534,11 +534,6 @@ MDB Microsoft Access Database
   public static String IDPROCESO_REGTEL_EJG="94U";
   public static String IDPROCESO_REGTEL_CENSO="222";
   
-  public static final int EEJG_ESTADO_SOLICITADO = 10;  
-  public static final int EEJG_ESTADO_ESPERA = 20;
-  public static final int EEJG_ESTADO_FINALIZADO = 30;
-  public static final int EEJG_ESTADO_ERROR = 40;
-
   
   
   
