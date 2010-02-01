@@ -19,6 +19,7 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	public static final int EEJG_ESTADO_ERROR = 40;
 	
 	Long idPeticion;
+	Integer idUsuarioPeticion;
 	Integer idInstitucion;
 	String fechaPeticion;
 	Integer estado;
@@ -54,6 +55,7 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	static public final String 	C_NUMEROINTENTOSSOLICITUD = "NUMEROINTENTOSSOLICITUD";
 	static public final String 	C_NUMEROINTENTOSCONSULTA = "NUMEROINTENTOSCONSULTA";
 	static public final String 	C_IDXML = "IDXML";
+	
 	public Long getIdPeticion() {
 		return idPeticion;
 	}
@@ -151,5 +153,20 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	public void setXmlPeticionEejg(ScsEejgXmlBean xmlPeticionEejg) {
 		this.xmlPeticionEejg = xmlPeticionEejg;
 	}
+	/**
+	 * @return the idUsuarioPeticion
+	 */
+	public Integer getIdUsuarioPeticion() {
+		return idUsuarioPeticion;
+	}
+	/**
+	 * @param idUsuarioPeticion the idUsuarioPeticion to set
+	 */
+	public void setIdUsuarioPeticion(Integer idUsuarioPeticion) {
+		this.idUsuarioPeticion = idUsuarioPeticion;
+	}
+	
+	
+
 	
 }

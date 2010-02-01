@@ -14,6 +14,7 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.CajgRemesaBean;
 import com.siga.beans.MasterBean;
 import com.siga.beans.MasterBeanAdministrador;
 import com.siga.beans.ScsTurnoBean;
@@ -83,6 +84,7 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		try{
 			bean = new ScsEejgPeticionesBean();
 			bean.setIdPeticion(UtilidadesHash.getLong(hash,ScsEejgPeticionesBean.C_IDPETICION));
+			bean.setIdUsuarioPeticion(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_IDUSUARIOPETICION));			
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_IDINSTITUCION));
 			bean.setAnio(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_ANIO));
 			bean.setEstado(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_ESTADO));
@@ -116,18 +118,19 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 			hash = new Hashtable<String, Object>();
 			ScsEejgPeticionesBean b = (ScsEejgPeticionesBean) bean;
 			
-			hash.put(ScsEejgPeticionesBean.C_IDPETICION, b.getIdPeticion());
-			hash.put(ScsEejgPeticionesBean.C_IDINSTITUCION, b.getIdInstitucion());
-			hash.put(ScsEejgPeticionesBean.C_ANIO, b.getAnio());
-			hash.put(ScsEejgPeticionesBean.C_ESTADO, b.getEstado());
-			hash.put(ScsEejgPeticionesBean.C_FECHAPETICION, b.getFechaPeticion());
-			hash.put(ScsEejgPeticionesBean.C_IDPERSONA, b.getIdPersona());
-			hash.put(ScsEejgPeticionesBean.C_IDSOLICITUD, b.getIdSolicitud());
-			hash.put(ScsEejgPeticionesBean.C_IDTIPOEJG, b.getIdTipoEjg());
-			hash.put(ScsEejgPeticionesBean.C_IDXML, b.getIdXml());
-			hash.put(ScsEejgPeticionesBean.C_NUMERO, b.getNumero());
-			hash.put(ScsEejgPeticionesBean.C_NUMEROINTENTOSCONSULTA, b.getNumeroIntentosConsulta());
-			hash.put(ScsEejgPeticionesBean.C_NUMEROINTENTOSSOLICITUD, b.getNumeroIntentosSolicitud());
+			UtilidadesHash.set(hash, ScsEejgPeticionesBean.C_IDPETICION, b.getIdPeticion());
+			UtilidadesHash.set(hash, ScsEejgPeticionesBean.C_IDUSUARIOPETICION, b.getIdUsuarioPeticion());
+			UtilidadesHash.set(hash, ScsEejgPeticionesBean.C_IDINSTITUCION, b.getIdInstitucion());
+			UtilidadesHash.set(hash, ScsEejgPeticionesBean.C_ANIO, b.getAnio());
+			UtilidadesHash.set(hash, ScsEejgPeticionesBean.C_ESTADO, b.getEstado());
+			UtilidadesHash.set(hash, ScsEejgPeticionesBean.C_FECHAPETICION, b.getFechaPeticion());
+			UtilidadesHash.set(hash, ScsEejgPeticionesBean.C_IDPERSONA, b.getIdPersona());
+			UtilidadesHash.set(hash, ScsEejgPeticionesBean.C_IDSOLICITUD, b.getIdSolicitud());
+			UtilidadesHash.set(hash, ScsEejgPeticionesBean.C_IDTIPOEJG, b.getIdTipoEjg());
+			UtilidadesHash.set(hash, ScsEejgPeticionesBean.C_IDXML, b.getIdXml());
+			UtilidadesHash.set(hash, ScsEejgPeticionesBean.C_NUMERO, b.getNumero());
+			UtilidadesHash.set(hash, ScsEejgPeticionesBean.C_NUMEROINTENTOSCONSULTA, b.getNumeroIntentosConsulta());
+			UtilidadesHash.set(hash, ScsEejgPeticionesBean.C_NUMEROINTENTOSSOLICITUD, b.getNumeroIntentosSolicitud());
 			
 			
 			hash.put(ScsEejgPeticionesBean.C_USUMODIFICACION, String.valueOf(b.getUsuMod()));
