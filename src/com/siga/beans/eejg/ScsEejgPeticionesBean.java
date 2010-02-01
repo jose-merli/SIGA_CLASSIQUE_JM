@@ -12,10 +12,11 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	 * 
 	 */
 	private static final long serialVersionUID = -6457973849067549976L;
-	  public static final int EEJG_ESTADO_SOLICITADO = 10;  
-	  public static final int EEJG_ESTADO_ESPERA = 20;
-	  public static final int EEJG_ESTADO_FINALIZADO = 30;
-	  public static final int EEJG_ESTADO_ERROR = 40;
+
+	public static final int EEJG_ESTADO_INICIAL = 10;  
+	public static final int EEJG_ESTADO_ESPERA = 20;
+	public static final int EEJG_ESTADO_FINALIZADO = 30;
+	public static final int EEJG_ESTADO_ERROR = 40;
 	
 	Long idPeticion;
 	Integer idInstitucion;
@@ -30,6 +31,7 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	Integer numeroIntentosSolicitud;
 	Integer numeroIntentosConsulta;
 	Integer idXml;
+	ScsEejgXmlBean xmlPeticionEejg = null;
 	
 	
 	/* Nombre de Tabla*/
@@ -142,6 +144,12 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	}
 	public void setIdXml(Integer idXml) {
 		this.idXml = idXml;
+	}
+	public ScsEejgXmlBean getXmlPeticionEejg() {
+		return xmlPeticionEejg;
+	}
+	public void setXmlPeticionEejg(ScsEejgXmlBean xmlPeticionEejg) {
+		this.xmlPeticionEejg = xmlPeticionEejg;
 	}
 	
 }
