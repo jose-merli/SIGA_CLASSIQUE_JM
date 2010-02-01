@@ -300,7 +300,7 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		
 	} 
 	
-	*/
+	
 
 
 	/**
