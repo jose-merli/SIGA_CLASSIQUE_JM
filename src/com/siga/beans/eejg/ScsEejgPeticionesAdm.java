@@ -242,5 +242,28 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		
 	} 
 	*/
+
+
+	/**
+	 * Método que obtiene una lista de peticines pendientes de solicitar o en estado inicial
+	 */
+	public List<ScsEejgPeticionesBean> getPeticionesIniciadas() throws ClsExceptions {
+		Hashtable hash = new Hashtable();
+		hash.put(ScsEejgPeticionesBean.C_ESTADO, ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL);
+		return select(hash);		
+	}
+
+
+	/**
+	 * 
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public List<ScsEejgPeticionesBean> getSolicitudesPendientes() throws ClsExceptions {
+		String horas = "1.25"; //1.25 = 30 horas
+		String where = " WHERE " + ScsEejgPeticionesBean.C_ESTADO  + " = " + ScsEejgPeticionesBean.EEJG_ESTADO_ESPERA;
+		where += " AND (SYSDATE - " + horas + ") >= " + ScsEejgPeticionesBean.C_FECHAPETICION;		
+		return select(where);
+	}
 	
 }
