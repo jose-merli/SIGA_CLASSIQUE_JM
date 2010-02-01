@@ -5,6 +5,9 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
+
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
@@ -14,10 +17,15 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.CenPersonaBean;
+import com.siga.beans.EnvEnviosBean;
+import com.siga.beans.CajgRemesaBean;
 import com.siga.beans.CajgRemesaBean;
 import com.siga.beans.MasterBean;
 import com.siga.beans.MasterBeanAdministrador;
+import com.siga.beans.ScsPersonaJGBean;
 import com.siga.beans.ScsTurnoBean;
+import com.siga.beans.ScsUnidadFamiliarEJGBean;
 /**
  * 
  * @author jorgeta
@@ -81,11 +89,23 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 	 */
 	public MasterBean hashTableToBean(Hashtable hash) throws ClsExceptions {
 		ScsEejgPeticionesBean bean = null;
+//		ScsUnidadFamiliarEJGBean unidadFamiliar = null;
+//		ScsPersonaJGBean personaJG;
 		try{
 			bean = new ScsEejgPeticionesBean();
+//			unidadFamiliar =  new ScsUnidadFamiliarEJGBean();
+//			personaJG = new ScsPersonaJGBean();
+//			unidadFamiliar.setPersonaJG(personaJG);
+//			bean.setUnidadFamiliar(unidadFamiliar);
+			
 			bean.setIdPeticion(UtilidadesHash.getLong(hash,ScsEejgPeticionesBean.C_IDPETICION));
 			bean.setIdUsuarioPeticion(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_IDUSUARIOPETICION));			
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_IDINSTITUCION));
+//			unidadFamiliar.setIdInstitucion(valor);
+//			unidadFamiliar.setAnio(valor);
+//			unidadFamiliar.setNumero(valor);
+//			unidadFamiliar.setIdPersona(valor);
+		
 			bean.setAnio(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_ANIO));
 			bean.setEstado(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_ESTADO));
 			bean.setFechaPeticion(UtilidadesHash.getString(hash,ScsEejgPeticionesBean.C_FECHAPETICION));
@@ -113,35 +133,33 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 	 * 
 	 */
 	protected Hashtable<String, Object> beanToHashTable(MasterBean bean) throws ClsExceptions {
-		Hashtable<String, Object> hash = null;
+		Hashtable<String, Object> htData = null;
 		try{
-			hash = new Hashtable<String, Object>();
+			htData = new Hashtable<String, Object>();
 			ScsEejgPeticionesBean b = (ScsEejgPeticionesBean) bean;
-			
-			UtilidadesHash.set(hash, ScsEejgPeticionesBean.C_IDPETICION, b.getIdPeticion());
-			UtilidadesHash.set(hash, ScsEejgPeticionesBean.C_IDUSUARIOPETICION, b.getIdUsuarioPeticion());
-			UtilidadesHash.set(hash, ScsEejgPeticionesBean.C_IDINSTITUCION, b.getIdInstitucion());
-			UtilidadesHash.set(hash, ScsEejgPeticionesBean.C_ANIO, b.getAnio());
-			UtilidadesHash.set(hash, ScsEejgPeticionesBean.C_ESTADO, b.getEstado());
-			UtilidadesHash.set(hash, ScsEejgPeticionesBean.C_FECHAPETICION, b.getFechaPeticion());
-			UtilidadesHash.set(hash, ScsEejgPeticionesBean.C_IDPERSONA, b.getIdPersona());
-			UtilidadesHash.set(hash, ScsEejgPeticionesBean.C_IDSOLICITUD, b.getIdSolicitud());
-			UtilidadesHash.set(hash, ScsEejgPeticionesBean.C_IDTIPOEJG, b.getIdTipoEjg());
-			UtilidadesHash.set(hash, ScsEejgPeticionesBean.C_IDXML, b.getIdXml());
-			UtilidadesHash.set(hash, ScsEejgPeticionesBean.C_NUMERO, b.getNumero());
-			UtilidadesHash.set(hash, ScsEejgPeticionesBean.C_NUMEROINTENTOSCONSULTA, b.getNumeroIntentosConsulta());
-			UtilidadesHash.set(hash, ScsEejgPeticionesBean.C_NUMEROINTENTOSSOLICITUD, b.getNumeroIntentosSolicitud());
+			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_IDPETICION, b.getIdPeticion());
+			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_IDINSTITUCION, b.getIdInstitucion());
+			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_ANIO, b.getAnio());
+			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_ESTADO, b.getEstado());
+			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_FECHAPETICION, b.getFechaPeticion());
+			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_IDPERSONA, b.getIdPersona());
+			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_IDSOLICITUD, b.getIdSolicitud());
+			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_IDTIPOEJG, b.getIdTipoEjg());
+			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_IDXML, b.getIdXml());
+			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_NUMERO, b.getNumero());
+			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_NUMEROINTENTOSCONSULTA, b.getNumeroIntentosConsulta());
+			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_NUMEROINTENTOSSOLICITUD, b.getNumeroIntentosSolicitud());
 			
 			
-			hash.put(ScsEejgPeticionesBean.C_USUMODIFICACION, String.valueOf(b.getUsuMod()));
-			hash.put(ScsEejgPeticionesBean.C_FECHAMODIFICACION, b.getFechaMod());
+			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_USUMODIFICACION, String.valueOf(b.getUsuMod()));
+			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_FECHAMODIFICACION, b.getFechaMod());
 			
 		}
 		catch (Exception e){
-			hash = null;
+			htData = null;
 			throw new ClsExceptions (e, "Error al construir el hashTable a partir del bean");			
 		}
-		return hash;
+		return htData;
 	}
 
 	/** Funcion getOrdenCampos ()
@@ -153,12 +171,31 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		return vector;
 	}
 	
+	public void insertarPeticionEejg(ScsEejgPeticionesBean peticionEejg) throws ClsExceptions, IllegalStateException, SecurityException, SystemException{
+	
+		UserTransaction tx = null;
+		try {
+			tx = this.usrbean.getTransaction();
+			tx.begin();
+			
+			Long idPeticion = getNuevoPeticionEejg(peticionEejg.getIdInstitucion());
+			peticionEejg.setIdPeticion(idPeticion);
+			peticionEejg.setIdUsuarioPeticion(Integer.parseInt(this.usrbean.getUserName()));
+			peticionEejg.setEstado(ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL);
+			insert(peticionEejg);
+			tx.commit();
+		} catch (Exception e) {
+			tx.rollback();
+			throw new ClsExceptions(e, "Error al ejecutar el 'select' en B.D.insertarPeticionEejg");
+		} 
+		
+	}
 
 	
 
-	public Integer getNuevoIdPeticion(String idInstitucion) throws ClsExceptions {
+	public Long getNuevoPeticionEejg(Integer idInstitucion) throws ClsExceptions {
 		String select = null;
-		Integer nuevoId;
+		Long nuevoId;
 		
 		try {
 			select  = "SELECT MAX("+ScsEejgPeticionesBean.C_IDPETICION+")+1 AS ID FROM "+ScsEejgPeticionesBean.T_NOMBRETABLA;
@@ -168,9 +205,9 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 			String id = (String)((Hashtable<String , Object>)datos.get(0)).get("ID");
 			
 			if ( (datos == null) || (id!= null && id.equals("")) )
-				nuevoId = new Integer("0");
+				nuevoId = new Long("0");
 			else
-				nuevoId = new Integer(id);
+				nuevoId = new Long(id);
 
 		} 
 		catch (Exception e) { 	
@@ -178,69 +215,91 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		}
 		return nuevoId;
 	}
-/*
-	public List<ScsEejgPeticionesBean> getComisarias(VolantesExpressVo volanteExpres)throws ClsExceptions{
+
+	public List<ScsEejgPeticionesBean> getPeticionesEejg(ScsEejgPeticionesBean peticionEejg)throws ClsExceptions{
 
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
 		int contador = 0;
 		StringBuffer sql = new StringBuffer();
-		sql.append(" SELECT C.IDCOMISARIA , C.IDINSTITUCION, ");
-		sql.append(" c.NOMBRE || ' (' || po.nombre || ')' AS NOMBRE ");
-		sql.append(" FROM SCS_COMISARIA       c, ");
-		sql.append(" cen_poblaciones     po, ");
-		sql.append(" cen_partidojudicial par, ");
-		sql.append(" scs_subzonapartido  spar, ");
-		sql.append(" scs_subzona         szo, ");
-		sql.append(" scs_zona            zo, ");
-		sql.append(" scs_turno           tu ");
-		sql.append(" where tu.idzona = zo.idzona ");
-		sql.append(" AND tu.idinstitucion = zo.idinstitucion ");
-		sql.append(" AND zo.idzona = szo.idzona ");
-		sql.append(" AND zo.idinstitucion = szo.idinstitucion ");
-		sql.append(" AND szo.idinstitucion = spar.idinstitucion ");
-		sql.append(" AND szo.idsubzona = spar.idsubzona ");
-		sql.append(" AND szo.idzona = spar.idzona ");
-		sql.append(" AND spar.idpartido = par.idpartido ");
-		sql.append(" AND par.idpartido = po.idpartido ");
-		sql.append(" AND c.idpoblacion = po.idpoblacion ");
-		sql.append(" and TU.IDINSTITUCION = :");
-		contador ++;
-		sql.append(contador);
-		htCodigos.put(new Integer(contador),volanteExpres.getIdInstitucion());
-		sql.append(" and tu.idinstitucion = c.idinstitucion ");
-		sql.append(" AND TU.IDTURNO = :");
-		contador ++;
-		sql.append(contador);
-		htCodigos.put(new Integer(contador),volanteExpres.getIdTurno());
-		sql.append(" ORDER BY DESCRIPCION ");
-		
-		List<ScsEejgPeticionesBean> alComisarias = null;
+				
+		sql.append(" SELECT PET.IDPETICION,  PET.IDUSUARIOPETICION,	PET.FECHAPETICION , ");
+		sql.append(" PET.ESTADO,  PET.IDSOLICITUD, PET.IDINSTITUCION , PET.IDTIPOEJG, ");
+		sql.append(" PET.ANIO,PET.NUMERO, PET.IDPERSONA, PET.NUMEROINTENTOSSOLICITUD, ");
+		sql.append(" PET.NUMEROINTENTOSCONSULTA, PET.IDXML, PET.FECHAMODIFICACION,  PET.USUMODIFICACION, ");
+		sql.append(" XML.ESTADO XML_ESTADO, XML.IDXML XML_IDXML, XML.ENVÍORESPUESTA XML_ENVÍORESPUESTA, ");
+		sql.append(" XML.XML XML_XML ");
+		sql.append(" FROM SCS_EEJG_PETICIONES PET, SCS_EEJG_XML XML ");
+		sql.append(" WHERE PET.IDPETICION = XML.IDPETICION ");
+		if(peticionEejg!=null){
+			if(peticionEejg.getEstado()!=null){
+				sql.append(" AND PET.ESTADO = :");
+				contador ++;
+				sql.append(contador);
+				htCodigos.put(new Integer(contador),peticionEejg.getEstado());
+			}
+			if(peticionEejg.getUnidadFamiliar()!=null){
+				sql.append(" AND PET.IDINSTITUCION =:");
+				contador ++;
+				sql.append(contador);
+				htCodigos.put(new Integer(contador),peticionEejg.getUnidadFamiliar().getIdInstitucion());
+				sql.append(" AND PET.IDTIPOEJG=:");
+				contador ++;
+				sql.append(contador);
+				htCodigos.put(new Integer(contador),peticionEejg.getUnidadFamiliar().getIdTipoEJG());
+				sql.append(" AND PET.ANIO = :");
+				contador ++;
+				sql.append(contador);
+				htCodigos.put(new Integer(contador),peticionEejg.getUnidadFamiliar().getAnio());
+				sql.append(" AND PET.NUMERO =:");
+				contador ++;
+				sql.append(contador);
+				htCodigos.put(new Integer(contador),peticionEejg.getUnidadFamiliar().getNumero());
+				if(peticionEejg.getUnidadFamiliar().getPersonaJG()!=null){
+					sql.append(" AND PET.IDPERSONA =:");
+					contador ++;
+					sql.append(contador);
+					htCodigos.put(new Integer(contador),peticionEejg.getUnidadFamiliar().getPersonaJG().getIdPersona());
+					
+					
+				}
+						
+				
+			}
+			
+		}
+		sql.append(" ORDER BY PET.FECHAPETICION ");
+		List<ScsEejgPeticionesBean> lPeticionesEejg = null;
 		try {
 			RowsContainer rc = new RowsContainer(); 
 												
             if (rc.findBind(sql.toString(),htCodigos)) {
-            	alComisarias = new ArrayList<ScsEejgPeticionesBean>();
-            	ScsEejgPeticionesBean comisariaBean = new ScsEejgPeticionesBean();
-            	comisariaBean.setNombre(UtilidadesString.getMensajeIdioma(volanteExpres.getUsrBean(), "general.combo.seleccionar"));
-            	comisariaBean.setIdComisaria(new Integer(-1));
-    			alComisarias.add(comisariaBean);
-    			for (int i = 0; i < rc.size(); i++){
+            	lPeticionesEejg = new ArrayList<ScsEejgPeticionesBean>();
+            	ScsEejgPeticionesBean peticionEejgOut = null;
+            	ScsEejgXmlBean xmlPeticionEejg = null;
+            	for (int i = 0; i < rc.size(); i++){
             		Row fila = (Row) rc.get(i);
             		Hashtable<String, Object> htFila=fila.getRow();
+            		peticionEejgOut = (ScsEejgPeticionesBean) this.hashTableToBean(htFila);
+            		if(peticionEejg.getUnidadFamiliar()!=null)
+            			peticionEejgOut.setUnidadFamiliar(peticionEejg.getUnidadFamiliar());
+            		xmlPeticionEejg = new ScsEejgXmlBean();
+            		peticionEejgOut.setXmlPeticionEejg(xmlPeticionEejg);
+            		xmlPeticionEejg.setIdPeticion(peticionEejgOut.getIdPeticion());
+            		xmlPeticionEejg.setEnvioRespuesta(UtilidadesHash.getString(htFila,"XML_"+ScsEejgXmlBean.C_ENVIORESPUESTA));
+            		xmlPeticionEejg.setXml(UtilidadesHash.getString(htFila,"XML_"+ScsEejgXmlBean.C_XML));
+            		xmlPeticionEejg.setEstado(UtilidadesHash.getInteger(htFila,"XML_"+ScsEejgXmlBean.C_ESTADO));
+            		xmlPeticionEejg.setIdXml(UtilidadesHash.getInteger(htFila,"XML_"+ScsEejgXmlBean.C_IDXML));
+            		lPeticionesEejg.add(peticionEejgOut);
             		
-            		comisariaBean = new ScsEejgPeticionesBean();
-            		comisariaBean.setIdInstitucion(UtilidadesHash.getInteger(htFila,ScsEejgPeticionesBean.C_IDINSTITUCION));
-            		comisariaBean.setIdComisaria(UtilidadesHash.getInteger(htFila,ScsEejgPeticionesBean.C_IDCOMISARIA));
-            		comisariaBean.setNombre(UtilidadesHash.getString(htFila,ScsEejgPeticionesBean.C_NOMBRE));
-            		alComisarias.add(comisariaBean);
             	}
             } 
        } catch (Exception e) {
        		throw new ClsExceptions (e, "Error al ejecutar consulta.");
        }
-       return alComisarias;
+       return lPeticionesEejg;
 		
 	} 
+	
 	*/
 
 
