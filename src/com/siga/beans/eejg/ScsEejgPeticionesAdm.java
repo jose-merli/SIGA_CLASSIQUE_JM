@@ -300,9 +300,11 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 	 * Método que obtiene una lista de peticines pendientes de solicitar o en estado inicial
 	 */
 	public List<ScsEejgPeticionesBean> getPeticionesIniciadas() throws ClsExceptions {
-		Hashtable hash = new Hashtable();
-		hash.put(ScsEejgPeticionesBean.C_ESTADO, ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL);
-		return select(hash);		
+				
+		String where = " WHERE " + ScsEejgPeticionesBean.C_ESTADO  + " = " + ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL;
+		where += " AND " + ScsEejgPeticionesBean.C_IDSOLICITUD + " IS NULL";		
+		
+		return select(where);		
 	}
 
 
