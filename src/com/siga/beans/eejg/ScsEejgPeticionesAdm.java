@@ -8,24 +8,13 @@ import java.util.Vector;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
-import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.ClsLogging;
-import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.CenPersonaBean;
-import com.siga.beans.EnvEnviosBean;
-import com.siga.beans.CajgRemesaBean;
-import com.siga.beans.CajgRemesaBean;
 import com.siga.beans.MasterBean;
 import com.siga.beans.MasterBeanAdministrador;
-import com.siga.beans.ScsPersonaJGBean;
-import com.siga.beans.ScsTurnoBean;
-import com.siga.beans.ScsUnidadFamiliarEJGBean;
 /**
  * 
  * @author jorgeta
@@ -316,13 +305,14 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 
 	/**
 	 * 
+	 * @param horas2 
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public List<ScsEejgPeticionesBean> getSolicitudesPendientes() throws ClsExceptions {
-		String horas = "1.25"; //1.25 = 30 horas
+	public List<ScsEejgPeticionesBean> getSolicitudesPendientes(int horas) throws ClsExceptions {
+		String horasSt = String.valueOf(horas / 24);//pasamos las horas a días 
 		String where = " WHERE " + ScsEejgPeticionesBean.C_ESTADO  + " = " + ScsEejgPeticionesBean.EEJG_ESTADO_ESPERA;
-		where += " AND (SYSDATE - " + horas + ") >= " + ScsEejgPeticionesBean.C_FECHAPETICION;		
+		where += " AND (SYSDATE - " + horasSt + ") >= " + ScsEejgPeticionesBean.C_FECHAPETICION;		
 		return select(where);
 	}
 	
