@@ -7,14 +7,24 @@
 
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.eejg.ScsEejgPeticionesAdm;
+import com.siga.beans.eejg.ScsEejgPeticionesBean;
+import com.siga.beans.eejg.ScsEejgXmlAdm;
+import com.siga.gratuita.form.DefinirUnidadFamiliarEJGForm;
+import com.siga.gratuita.vos.VolantesExpressVo;
 			 
 public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 	
@@ -349,5 +359,128 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 		 
 		return this.selectGenerico(consultaTUF);
 	}
+	
+	public DefinirUnidadFamiliarEJGForm getUnidadFamiliar(DefinirUnidadFamiliarEJGForm unidadFamiliarForm,UsrBean usrBean)throws ClsExceptions{
+		
+		
+		ScsEJGBean ejg = unidadFamiliarForm.getEjg();
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT familia.*, persona.NIF, persona.NOMBRE, persona.APELLIDO1, persona.APELLIDO2,");
+		sql.append(" (select F_SIGA_GETRECURSO(parentesco.descripcion,:");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),usrBean.getLanguage());
+		sql.append(") ");
+		sql.append(" from scs_parentesco parentesco where parentesco.idinstitucion=:");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),ejg.getIdInstitucion());
+		sql.append(" and parentesco.idparentesco=familia.idparentesco) PARENTESCO  ");
+		sql.append(" ,decode(ejg.idpersonajg,familia.IDPERSONA,1,0) orden ");
+		sql.append(" , eejg.estado ,eejg.idxml ");
+		
+		sql.append(" FROM SCS_UNIDADFAMILIAREJG familia, SCS_PERSONAJG persona,scs_ejg ejg, scs_eejg_peticiones eejg ");
+		sql.append(" WHERE familia.IDINSTITUCION = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),ejg.getIdInstitucion());
+		sql.append(" AND familia.IDTIPOEJG = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),ejg.getIdTipoEJG());
+		sql.append(" AND familia.ANIO = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),ejg.getAnio());
+		sql.append(" AND familia.NUMERO = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),ejg.getNumero());
+		sql.append("  AND familia.IDPERSONA = persona.IDPERSONA AND persona.IDINSTITUCION = familia.IDINSTITUCION");
+	    sql.append(" and ejg.idinstitucion = familia.IDINSTITUCION ");
+	    sql.append(" and ejg.idtipoejg = familia.idtipoejg ");
+	    sql.append(" and ejg.anio = familia.ANIO ");
+	    sql.append(" and ejg.numero = familia.numero ");
+	    sql.append(" and familia.IDINSTITUCION =  eejg.idinstitucion (+) ");
+	    sql.append(" and familia.idtipoejg = eejg.idtipoejg (+) ");
+	    sql.append(" and familia.ANIO = eejg.anio (+) ");
+	    sql.append(" and familia.numero = eejg.numero (+) ");
+	    sql.append(" and familia.idpersona = eejg.idpersona (+) ");
+	    
+	    
+	    sql.append(" order by familia.solicitante, orden,persona.NOMBRE ");
+		
+		String literalSolicitante = UtilidadesString.getMensajeIdioma(usrBean,"gratuita.busquedaEJG.literal.solicitante");
+		
+		unidadFamiliarForm.setEjg(ejg);
+		List<DefinirUnidadFamiliarEJGForm> alUnidadFamiliar = null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+												
+            if (rc.findBind(sql.toString(),htCodigos)) {
+            	alUnidadFamiliar = new ArrayList<DefinirUnidadFamiliarEJGForm>();
+            	ScsUnidadFamiliarEJGBean unidadFamiliar = null;
+            	ScsPersonaJGBean personaJG = null;
+            	ScsParentescoBean parentesco = null;
+            	
+            	
+            	
+            	ScsPersonaJGAdm admPersonaJG =  new ScsPersonaJGAdm(usrBean);
+            	ScsEejgPeticionesAdm admEejgPeticion =  new ScsEejgPeticionesAdm(usrBean);
+            	double importeMuebles = 0;
+				double importeInmuebles = 0;
+				double importeOtrosBienes = 0;
+				double importeIngresosAnuales = 0;
+				Integer idSolicitante = ejg.getIdPersonaJG();
+    			for (int i = 0; i < rc.size(); i++){
+            		Row fila = (Row) rc.get(i);
+            		Hashtable<String, Object> htFila=fila.getRow();
+            		unidadFamiliar = (ScsUnidadFamiliarEJGBean)this.hashTableToBean(htFila);
+            		personaJG = (ScsPersonaJGBean) admPersonaJG.hashTableToBean(htFila);
+            		unidadFamiliar.setPersonaJG(personaJG);
+            		parentesco = new ScsParentescoBean();
+            		ScsEejgPeticionesBean peticionEejg = null;
+            		if(unidadFamiliar.getSolicitante()!=null &&unidadFamiliar.getSolicitante().toString().equals(ClsConstants.DB_TRUE))
+            			parentesco.setDescripcion(literalSolicitante);
+            		else 
+            			parentesco.setDescripcion(UtilidadesHash.getString(htFila, "PARENTESCO"));
+            		unidadFamiliar.setParentesco(parentesco);
+            		if(htFila.get(ScsEejgPeticionesBean.C_IDPETICION)!=null){
+	            		peticionEejg = (ScsEejgPeticionesBean)admEejgPeticion.hashTableToBean(htFila);
+	            		unidadFamiliar.setPeticionEejg(peticionEejg);
+            		}
+            		if(unidadFamiliar.getImoporteBienesMuebles()!=null)
+						importeMuebles += unidadFamiliar.getImoporteBienesMuebles().doubleValue();
+					if(unidadFamiliar.getImoporteBienesInmuebles()!=null)
+						importeInmuebles += unidadFamiliar.getImoporteBienesInmuebles().doubleValue();
+					if(unidadFamiliar.getImporteOtrosBienes()!=null)
+						importeOtrosBienes += unidadFamiliar.getImporteOtrosBienes().doubleValue();
+					if(unidadFamiliar.getIngresosAnuales()!=null)
+						importeIngresosAnuales += unidadFamiliar.getIngresosAnuales().doubleValue();
+					if(idSolicitante.compareTo(unidadFamiliar.getPersonaJG().getIdPersona())==0)
+						unidadFamiliarForm.setPersonaJG(unidadFamiliar.getPersonaJG());
+            		
+            		alUnidadFamiliar.add(unidadFamiliar.getUnidadFamiliarEjgForm());
+            	}
+    			unidadFamiliarForm.setImporteIngresosAnuales(UtilidadesString.formatoImporte(importeIngresosAnuales));
+    			unidadFamiliarForm.setImporteBienesMuebles(UtilidadesString.formatoImporte(importeMuebles));
+				unidadFamiliarForm.setImporteBienesInmuebles(UtilidadesString.formatoImporte(importeInmuebles));
+				unidadFamiliarForm.setImporteOtrosBienes(UtilidadesString.formatoImporte(importeOtrosBienes));
+    			unidadFamiliarForm.setUnidadFamiliar(alUnidadFamiliar);
+            } 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta de getUnidadFamiliar");
+       }
+       return unidadFamiliarForm;
+		
+		
+		
+		
+		
+		
+	} 
+	
 
 }

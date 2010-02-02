@@ -181,6 +181,7 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 			Long idPeticion = getNuevoPeticionEejg(peticionEejg.getIdInstitucion());
 			peticionEejg.setIdPeticion(idPeticion);
 			peticionEejg.setIdUsuarioPeticion(Integer.parseInt(this.usrbean.getUserName()));
+			peticionEejg.setFechaPeticion("sysdate");
 			peticionEejg.setEstado(ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL);
 			insert(peticionEejg);
 			tx.commit();

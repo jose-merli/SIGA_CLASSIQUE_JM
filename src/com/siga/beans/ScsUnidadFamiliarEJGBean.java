@@ -6,9 +6,18 @@
 
 package com.siga.beans;
 
+import com.atos.utils.ClsExceptions;
+import com.siga.Utilidades.UtilidadesNumero;
+import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.eejg.ScsEejgPeticionesBean;
+import com.siga.gratuita.form.DefinirUnidadFamiliarEJGForm;
+
 public class ScsUnidadFamiliarEJGBean extends MasterBean{
 	
 	/* Variables */ 
+	ScsPersonaJGBean personaJG;
+	ScsParentescoBean parentesco;
+	ScsEejgPeticionesBean peticionEejg;
 	
 	private Integer idTipoEJG;
 	private Integer idInstitucion;
@@ -325,4 +334,93 @@ public class ScsUnidadFamiliarEJGBean extends MasterBean{
 	 * @return Integer 
 	 */
 	public Integer getTipoIngreso			()	{ return this.tipoIngreso;}
+
+	public ScsPersonaJGBean getPersonaJG() {
+		return personaJG;
+	}
+
+	public void setPersonaJG(ScsPersonaJGBean personaJG) {
+		this.personaJG = personaJG;
+	}
+
+	public ScsParentescoBean getParentesco() {
+		return parentesco;
+	}
+
+	public void setParentesco(ScsParentescoBean parentesco) {
+		this.parentesco = parentesco;
+	}
+	public DefinirUnidadFamiliarEJGForm getUnidadFamiliarEjgForm() throws ClsExceptions {
+		DefinirUnidadFamiliarEJGForm unidadFamiliarForm = new DefinirUnidadFamiliarEJGForm();
+		unidadFamiliarForm.setIdInstitucion(idInstitucion.toString());
+		unidadFamiliarForm.setAnio(anio.toString());
+		unidadFamiliarForm.setIdTipoEJG(idTipoEJG.toString());
+		unidadFamiliarForm.setNumero(numero.toString());
+		unidadFamiliarForm.setIdPersona(idPersona.toString());
+		unidadFamiliarForm.setPersonaJG(personaJG);
+		unidadFamiliarForm.setSolicitante(solicitante.toString());
+		unidadFamiliarForm.setPeticionEejg(peticionEejg);
+		if(bienesMuebles!=null && !bienesMuebles.equals(""))
+			unidadFamiliarForm.setBienesMuebles(bienesMuebles);
+		if(bienesInmuebles!=null && !bienesInmuebles.equals(""))
+			unidadFamiliarForm.setBienesInmuebles(bienesInmuebles);
+		if(otrosBienes!=null && !otrosBienes.equals(""))
+			unidadFamiliarForm.setOtrosBienes(otrosBienes);
+		if(descripcionIngresosAnuales!=null && !descripcionIngresosAnuales.equals(""))
+			unidadFamiliarForm.setDescripcionIngresosAnuales(descripcionIngresosAnuales);
+		
+		if(importeBienesInmuebles!=null )
+			unidadFamiliarForm.setImporteBienesInmuebles(UtilidadesString.formatoImporte(importeBienesInmuebles));
+		else
+			unidadFamiliarForm.setImporteBienesInmuebles("");
+		if(importeBienesMuebles!=null)
+			unidadFamiliarForm.setImporteBienesMuebles(UtilidadesString.formatoImporte(importeBienesMuebles));
+		else
+			unidadFamiliarForm.setImporteBienesMuebles("");
+		if(importeOtrosBienes!=null)
+			unidadFamiliarForm.setImporteOtrosBienes(UtilidadesString.formatoImporte(importeOtrosBienes));
+		else
+			unidadFamiliarForm.setImporteOtrosBienes("");
+			
+		if(ingresosAnuales!=null)
+			unidadFamiliarForm.setImporteIngresosAnuales(UtilidadesString.formatoImporte(ingresosAnuales));
+		else
+			unidadFamiliarForm.setImporteIngresosAnuales("");
+		
+		if(enCalidadDe!=null && !enCalidadDe.equals(""))
+			unidadFamiliarForm.setEnCalidadDe(enCalidadDe);
+		if(parentesco!=null ){
+			if(parentesco.getIdParentesco()!=null)
+				unidadFamiliarForm.setIdParentesco(parentesco.getIdParentesco().toString());
+			unidadFamiliarForm.setParentesco(parentesco);
+			
+		}
+		
+		if(observaciones!=null && !observaciones.equals(""))
+			unidadFamiliarForm.setObservaciones(observaciones);
+		
+		if(tipoGrupoLab!=null)
+			unidadFamiliarForm.setIdTipoGrupoLab(tipoGrupoLab.toString());
+		
+		if(tipoIngreso!=null)
+			unidadFamiliarForm.setIdTipoIngreso(tipoIngreso.toString());
+		
+		return unidadFamiliarForm;
+	}
+
+	public ScsEejgPeticionesBean getPeticionEejg() {
+		return peticionEejg;
+	}
+
+	public void setPeticionEejg(ScsEejgPeticionesBean peticionEejg) {
+		this.peticionEejg = peticionEejg;
+	}
+
+	
+	
+	
+	
+	
+	
+	
 }
