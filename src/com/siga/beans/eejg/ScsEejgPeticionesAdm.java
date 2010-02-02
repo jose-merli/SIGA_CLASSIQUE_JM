@@ -46,6 +46,7 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 				ScsEejgPeticionesBean.C_FECHAPETICION,
 				ScsEejgPeticionesBean.C_ESTADO,
 				ScsEejgPeticionesBean.C_IDSOLICITUD,
+				ScsEejgPeticionesBean.C_FECHASOLICITUD,
 				ScsEejgPeticionesBean.C_IDINSTITUCION,
 				ScsEejgPeticionesBean.C_IDTIPOEJG,
 				ScsEejgPeticionesBean.C_ANIO,
@@ -100,6 +101,7 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 			bean.setFechaPeticion(UtilidadesHash.getString(hash,ScsEejgPeticionesBean.C_FECHAPETICION));
 			bean.setIdPersona(UtilidadesHash.getLong(hash,ScsEejgPeticionesBean.C_IDPERSONA));
 			bean.setIdSolicitud(UtilidadesHash.getString(hash,ScsEejgPeticionesBean.C_IDSOLICITUD));
+			bean.setFechaSolicitud(UtilidadesHash.getString(hash,ScsEejgPeticionesBean.C_FECHASOLICITUD));
 			bean.setIdTipoEjg(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_IDTIPOEJG));
 			bean.setIdXml(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_IDXML));
 			bean.setNumero(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_NUMERO));
@@ -133,6 +135,7 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_FECHAPETICION, b.getFechaPeticion());
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_IDPERSONA, b.getIdPersona());
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_IDSOLICITUD, b.getIdSolicitud());
+			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_FECHASOLICITUD, b.getFechaSolicitud());
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_IDTIPOEJG, b.getIdTipoEjg());
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_IDXML, b.getIdXml());
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_NUMERO, b.getNumero());

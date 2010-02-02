@@ -21,9 +21,10 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	Long idPeticion;
 	Integer idUsuarioPeticion;
 	Integer idInstitucion;
-	String fechaPeticion;
+	String fechaPeticion;	
 	Integer estado;
 	String idSolicitud;
+	String fechaSolicitud;
 	Integer idTipoEjg;
 	Integer anio;
 	Integer numero;
@@ -47,6 +48,7 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	static public final String 	C_FECHAPETICION = "FECHAPETICION";
 	static public final String 	C_ESTADO = "ESTADO";
 	static public final String 	C_IDSOLICITUD = "IDSOLICITUD";
+	static public final String 	C_FECHASOLICITUD = "FECHASOLICITUD";
 	static public final String 	C_IDINSTITUCION = "IDINSTITUCION";
 	static public final String 	C_IDTIPOEJG = "IDTIPOEJG";
 	static public final String 	C_ANIO = "ANIO";
@@ -164,6 +166,18 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	 */
 	public void setIdUsuarioPeticion(Integer idUsuarioPeticion) {
 		this.idUsuarioPeticion = idUsuarioPeticion;
+	}
+	/**
+	 * @return the fechaSolicitud
+	 */
+	public String getFechaSolicitud() {
+		return fechaSolicitud;
+	}
+	/**
+	 * @param fechaSolicitud the fechaSolicitud to set
+	 */
+	public void setFechaSolicitud(String fechaSolicitud) {
+		this.fechaSolicitud = fechaSolicitud;
 	}
 	
 	
