@@ -5,19 +5,45 @@
 
 package com.siga.gratuita.form;
 
-import com.siga.beans.*;
+import java.util.List;
+
+import com.atos.utils.ClsExceptions;
+import com.siga.Utilidades.UtilidadesNumero;
+import com.siga.administracion.SIGAConstants;
+import com.siga.beans.ScsEJGBean;
+import com.siga.beans.ScsParentescoBean;
+import com.siga.beans.ScsPersonaJGBean;
+import com.siga.beans.ScsSOJBean;
+import com.siga.beans.ScsTelefonosPersonaBean;
+import com.siga.beans.ScsUnidadFamiliarEJGBean;
+import com.siga.beans.eejg.ScsEejgPeticionesBean;
 import com.siga.general.MasterForm;
+import com.siga.tlds.FilaExtElement;
 
 /**
 * Maneja el formulario que mantiene la tabla SCS_PERSONAJG
 */
  public class DefinirUnidadFamiliarEJGForm extends MasterForm{	
 	
+	private List<DefinirUnidadFamiliarEJGForm> unidadFamiliar;
+	ScsParentescoBean parentesco;
+	ScsPersonaJGBean personaJG;
+	ScsEejgPeticionesBean peticionEejg;
+	ScsEJGBean ejg ;
+	private String botones;
+	FilaExtElement[] elementosFila;
+	
+	
+	
+	private String idParentesco;
+	private String idTipoGrupoLab;
+	private String idTipoIngreso;
 	private String idPaisAux="idPaisAux";
 	private String idProvinciaAux="idProvinciaAux";
 	private String idPoblacionAux="idPoblacionAux";
 	private String idEstadoCivilAux="idEstadoCivilAux";
 	private String regimenConyugalAux="regimenConyugalAux";
+	
 	public void    setIdPaisAux				 (String	valor)	{ this.datos.put(this.idPaisAux, valor);}
 	public void    setIdProvinciaAux		 (String	valor)	{ this.datos.put(this.idProvinciaAux, valor);}
 	public void    setIdPoblacionAux		 (String	valor)	{ this.datos.put(this.idPoblacionAux, valor);}
@@ -424,7 +450,7 @@ import com.siga.general.MasterForm;
 	 * Recupera de la Hashtable la descripción de los bienes inmuebles
 	 * @return String 
 	 */
-	public String setBienesInmuebles			()						{ return this.datos.get(ScsUnidadFamiliarEJGBean.C_BIENESINMUEBLES).toString();}
+	public String getBienesInmuebles			()						{ return this.datos.get(ScsUnidadFamiliarEJGBean.C_BIENESINMUEBLES).toString();}
 	/** 
 	 * Recupera de la Hashtable el importe de los bienes inmuebles
 	 * @return String 
@@ -471,4 +497,162 @@ import com.siga.general.MasterForm;
 	 * @return void 
 	 */
 	public String getExistia					()						{ return this.datos.get("EXISTIA").toString();								}
+	public List<DefinirUnidadFamiliarEJGForm> getUnidadFamiliar() {
+		return unidadFamiliar;
+	}
+	public void setUnidadFamiliar(List<DefinirUnidadFamiliarEJGForm> unidadFamiliar) {
+		this.unidadFamiliar = unidadFamiliar;
+	}
+	public ScsUnidadFamiliarEJGBean getUnidadFamiliarEjgVo() throws ClsExceptions {
+		ScsUnidadFamiliarEJGBean unidadFamiliarVo = new ScsUnidadFamiliarEJGBean();
+		unidadFamiliarVo.setIdInstitucion(new Integer(getIdInstitucion()));
+		unidadFamiliarVo.setAnio(new Integer(getAnio()));
+		unidadFamiliarVo.setIdTipoEJG(new Integer(getIdTipoEJG()));
+		unidadFamiliarVo.setNumero(new Integer(getNumero()));
+		unidadFamiliarVo.setIdPersona(new Integer(getIdPersona()));
+		ScsPersonaJGBean personaJG = new ScsPersonaJGBean();
+		personaJG.setIdPersona(unidadFamiliarVo.getIdPersona());
+		unidadFamiliarVo.setPersonaJG(personaJG);
+		unidadFamiliarVo.setSolicitante(new Integer(getSolicitante()));
+		unidadFamiliarVo.setPeticionEejg(peticionEejg);
+		if(getBienesMuebles()!=null && !getBienesMuebles().equals(""))
+			unidadFamiliarVo.setBienesMuebles(getBienesMuebles());
+		if(getBienesInmuebles()!=null && !getBienesInmuebles().equals(""))
+			unidadFamiliarVo.setBienesInmuebles(getBienesInmuebles());
+		if(getOtrosBienes()!=null && !getOtrosBienes().equals(""))
+			unidadFamiliarVo.setOtrosBienes(getOtrosBienes());
+		if(getDescripcionIngresosAnuales()!=null && !getDescripcionIngresosAnuales().equals(""))
+			unidadFamiliarVo.setDescripcionIngresosAnuales(getDescripcionIngresosAnuales());
+		
+		if(getImporteBienesInmuebles()!=null && !getImporteBienesInmuebles().equals(""))
+			unidadFamiliarVo.setImoporteBienesInmuebles(UtilidadesNumero.getDouble(getImporteBienesInmuebles()));
+		if(getImporteBienesMuebles()!=null && !getImporteBienesMuebles().equals(""))
+			unidadFamiliarVo.setImoporteBienesMuebles(UtilidadesNumero.getDouble(getImporteBienesMuebles()));
+		if(getImporteOtrosBienes()!=null && !getImporteOtrosBienes().equals(""))
+			unidadFamiliarVo.setImporteOtrosBienes(UtilidadesNumero.getDouble(getImporteOtrosBienes()));
+		if(getImporteIngresosAnuales()!=null && !getImporteIngresosAnuales().equals(""))
+			unidadFamiliarVo.setIngresosAnuales(UtilidadesNumero.getDouble(getImporteIngresosAnuales()));
+		
+		if(getEnCalidadDe()!=null && !getEnCalidadDe().equals(""))
+			unidadFamiliarVo.setEnCalidadDe(getEnCalidadDe());
+		if(getIdParentesco()!=null && !getIdParentesco().equals("")){
+			unidadFamiliarVo.setIdParentesco(new Integer(getIdParentesco()));
+			ScsParentescoBean parentesco = new ScsParentescoBean();
+			parentesco.setIdParentesco(unidadFamiliarVo.getIdParentesco());
+			unidadFamiliarVo.setParentesco(parentesco);
+			
+		}
+		
+		if(getObservaciones()!=null && !getObservaciones().equals(""))
+			unidadFamiliarVo.setObservaciones(getObservaciones());
+		
+		if(getIdTipoGrupoLab()!=null && !getIdTipoGrupoLab().equals(""))
+			unidadFamiliarVo.setTipoGrupoLab(new Integer(getIdTipoGrupoLab()));
+		
+		if(getIdTipoIngreso()!=null && !getIdTipoIngreso().equals(""))
+			unidadFamiliarVo.setTipoIngreso(new Integer(getIdTipoIngreso()));
+		
+		
+		
+		
+		
+		return unidadFamiliarVo;
+	}
+	public String getIdParentesco() {
+		return idParentesco;
+	}
+	public void setIdParentesco(String idParentesco) {
+		this.idParentesco = idParentesco;
+	}
+	public String getIdTipoGrupoLab() {
+		return idTipoGrupoLab;
+	}
+	public void setIdTipoGrupoLab(String idTipoGrupoLab) {
+		this.idTipoGrupoLab = idTipoGrupoLab;
+	}
+	public String getIdTipoIngreso() {
+		return idTipoIngreso;
+	}
+	public void setIdTipoIngreso(String idTipoIngreso) {
+		this.idTipoIngreso = idTipoIngreso;
+	}
+	public String getBotones() {
+		String botones = "";
+		if (!getModo().equalsIgnoreCase("ver")){
+			botones = "C,E,B";
+		}
+		this.setBotones(botones);
+		
+		
+		return botones;
+	}
+	public void setBotones(String botones) {
+		this.botones = botones;
+	}
+	
+	public FilaExtElement[] getElementosFila() {
+		FilaExtElement[] elementosFila = null;
+		if (getModo().equalsIgnoreCase("ver")){
+			elementosFila = new FilaExtElement[3];
+		}else{
+			elementosFila = new FilaExtElement[5];
+			elementosFila[3] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
+			if(getPeticionEejg()!=null){
+				int estado = 0;
+				try {
+					estado = getPeticionEejg().getEstado();
+					
+				} catch (Exception e) {
+					System.out.println(e.toString());
+					// TODO: handle exception
+				}
+				
+				switch (estado) {
+					case ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL:case ScsEejgPeticionesBean.EEJG_ESTADO_ESPERA:
+						elementosFila[4] = new FilaExtElement("verSolicitud", "esperaEejg","esperaEejg",	SIGAConstants.ACCESS_DENY);
+					break;
+					case ScsEejgPeticionesBean.EEJG_ESTADO_ERROR:
+						elementosFila[4] = new FilaExtElement("solicitar", "solicitarEejg","errorEejg",SIGAConstants.ACCESS_READ);
+					break;
+					case ScsEejgPeticionesBean.EEJG_ESTADO_FINALIZADO:
+						elementosFila[4] = new FilaExtElement("descargar", "descargarEejg","descargarEejg",	SIGAConstants.ACCESS_READ);
+					break;
+				default:
+					break;
+				}
+			}else{
+				elementosFila[4] = new FilaExtElement("verSolicitud", "solicitarEejg","solicitarEejg",	SIGAConstants.ACCESS_READ);
+			}
+		}
+		this.setElementosFila(elementosFila);
+		return elementosFila;
+	}
+	public void setElementosFila(FilaExtElement[] elementosFila) {
+		this.elementosFila = elementosFila;
+	}
+	public ScsPersonaJGBean getPersonaJG() {
+		return personaJG;
+	}
+	public void setPersonaJG(ScsPersonaJGBean personaJG) {
+		this.personaJG = personaJG;
+	}
+	public ScsEJGBean getEjg() {
+		return ejg;
+	}
+	public void setEjg(ScsEJGBean ejg) {
+		this.ejg = ejg;
+	}
+	public ScsParentescoBean getParentesco() {
+		return parentesco;
+	}
+	public void setParentesco(ScsParentescoBean parentesco) {
+		this.parentesco = parentesco;
+	}
+	public ScsEejgPeticionesBean getPeticionEejg() {
+		return peticionEejg;
+	}
+	public void setPeticionEejg(ScsEejgPeticionesBean peticionEejg) {
+		this.peticionEejg = peticionEejg;
+	}
+	
 }

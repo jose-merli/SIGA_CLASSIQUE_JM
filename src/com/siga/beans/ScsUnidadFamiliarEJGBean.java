@@ -415,12 +415,5 @@ public class ScsUnidadFamiliarEJGBean extends MasterBean{
 	public void setPeticionEejg(ScsEejgPeticionesBean peticionEejg) {
 		this.peticionEejg = peticionEejg;
 	}
-
-	
-	
-	
-	
-	
-	
 	
 }

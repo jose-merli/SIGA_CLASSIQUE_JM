@@ -142,7 +142,7 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_NUMERO, b.getNumero());
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_NUMEROINTENTOSCONSULTA, b.getNumeroIntentosConsulta());
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_NUMEROINTENTOSSOLICITUD, b.getNumeroIntentosSolicitud());
-			
+		
 			
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_USUMODIFICACION, String.valueOf(b.getUsuMod()));
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_FECHAMODIFICACION, b.getFechaMod());
@@ -175,6 +175,8 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 			peticionEejg.setIdPeticion(idPeticion);
 			peticionEejg.setIdUsuarioPeticion(Integer.parseInt(this.usrbean.getUserName()));
 			peticionEejg.setFechaPeticion("sysdate");
+			peticionEejg.setNumeroIntentosSolicitud(0);
+			peticionEejg.setNumeroIntentosConsulta(0);
 			peticionEejg.setEstado(ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL);
 			insert(peticionEejg);
 			tx.commit();

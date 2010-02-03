@@ -379,7 +379,7 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 		htCodigos.put(new Integer(contador),ejg.getIdInstitucion());
 		sql.append(" and parentesco.idparentesco=familia.idparentesco) PARENTESCO  ");
 		sql.append(" ,decode(ejg.idpersonajg,familia.IDPERSONA,1,0) orden ");
-		sql.append(" , eejg.estado ,eejg.idxml ");
+		sql.append(" ,eejg.idpeticion , eejg.estado ,eejg.idxml ");
 		
 		sql.append(" FROM SCS_UNIDADFAMILIAREJG familia, SCS_PERSONAJG persona,scs_ejg ejg, scs_eejg_peticiones eejg ");
 		sql.append(" WHERE familia.IDINSTITUCION = :");
@@ -447,7 +447,7 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
             		else 
             			parentesco.setDescripcion(UtilidadesHash.getString(htFila, "PARENTESCO"));
             		unidadFamiliar.setParentesco(parentesco);
-            		if(htFila.get(ScsEejgPeticionesBean.C_IDPETICION)!=null){
+            		if(htFila.get(ScsEejgPeticionesBean.C_IDPETICION)!=null && !htFila.get(ScsEejgPeticionesBean.C_IDPETICION).equals("")){
 	            		peticionEejg = (ScsEejgPeticionesBean)admEejgPeticion.hashTableToBean(htFila);
 	            		unidadFamiliar.setPeticionEejg(peticionEejg);
             		}
@@ -461,13 +461,15 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 						importeIngresosAnuales += unidadFamiliar.getIngresosAnuales().doubleValue();
 					if(idSolicitante.compareTo(unidadFamiliar.getPersonaJG().getIdPersona())==0)
 						unidadFamiliarForm.setPersonaJG(unidadFamiliar.getPersonaJG());
-            		
-            		alUnidadFamiliar.add(unidadFamiliar.getUnidadFamiliarEjgForm());
+					DefinirUnidadFamiliarEJGForm unidad = unidadFamiliar.getUnidadFamiliarEjgForm(); 
+					unidad.setModo(unidadFamiliarForm.getModo());
+            		alUnidadFamiliar.add(unidad);
             	}
     			unidadFamiliarForm.setImporteIngresosAnuales(UtilidadesString.formatoImporte(importeIngresosAnuales));
     			unidadFamiliarForm.setImporteBienesMuebles(UtilidadesString.formatoImporte(importeMuebles));
 				unidadFamiliarForm.setImporteBienesInmuebles(UtilidadesString.formatoImporte(importeInmuebles));
 				unidadFamiliarForm.setImporteOtrosBienes(UtilidadesString.formatoImporte(importeOtrosBienes));
+				
     			unidadFamiliarForm.setUnidadFamiliar(alUnidadFamiliar);
             } 
        } catch (Exception e) {
