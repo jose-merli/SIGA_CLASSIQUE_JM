@@ -129,6 +129,7 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 			htData = new Hashtable<String, Object>();
 			ScsEejgPeticionesBean b = (ScsEejgPeticionesBean) bean;
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_IDPETICION, b.getIdPeticion());
+			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_IDUSUARIOPETICION, b.getIdUsuarioPeticion());
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_IDINSTITUCION, b.getIdInstitucion());
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_ANIO, b.getAnio());
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_ESTADO, b.getEstado());
