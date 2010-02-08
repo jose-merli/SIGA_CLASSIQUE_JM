@@ -128,31 +128,27 @@ public class ScsEejgXmlAdm extends MasterBeanAdministrador {
 	}
 	
 
-	
-
-	public Integer getNuevoIdXml(String idInstitucion) throws ClsExceptions {
-		Vector datos = new Vector();
-		String select = null;
-		Integer nuevoId;
-		
+	/**
+	 * 
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Integer getNuevoIdXml() throws ClsExceptions {
+		Integer nuevoId = null;		
 		try {
-			select  = "SELECT MAX("+ScsEejgXmlBean.C_IDXML+")+1 AS ID FROM "+ScsEejgXmlBean.T_NOMBRETABLA;
-					 			
-			
-			datos = this.selectGenerico(select);
+			String select  = "SELECT NVL(MAX("+ScsEejgXmlBean.C_IDXML+"), 0) + 1 AS ID FROM "+ScsEejgXmlBean.T_NOMBRETABLA;
+			Vector datos = this.selectGenerico(select);
 			String id = (String)((Hashtable)datos.get(0)).get("ID");
 			
-			if ( (datos == null) || (id!= null && id.equals("")) )
-				nuevoId = new Integer("0");
-			else
-				nuevoId = new Integer(id);
-
+			nuevoId = Integer.valueOf(id);
 		} 
 		catch (Exception e) { 	
 			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D."); 
 		}
 		return nuevoId;
 	}
+	
+
 /*
 	public List<ScsEejgXmlBean> getComisarias(VolantesExpressVo volanteExpres)throws ClsExceptions{
 

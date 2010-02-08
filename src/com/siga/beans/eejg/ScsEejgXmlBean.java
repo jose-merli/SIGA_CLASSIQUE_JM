@@ -12,6 +12,10 @@ public class ScsEejgXmlBean extends MasterBean{
 	 * 
 	 */
 	private static final long serialVersionUID = 8540074629939146417L;
+	
+	public static final String ENVIO = "0";
+	public static final String RESPUESTA = "1";
+	
 	Long idPeticion;
 	Integer idXml;
 	Integer estado;
