@@ -85,18 +85,14 @@ public class SolicitudesEEJG {
 	 * @throws Exception
 	 */
 	public String solicitudPeticionInfoAAPP(ScsEejgPeticionesBean scsEejgPeticionesBean) throws Exception {
+		UsrBean usrBean = new UsrBean();
+		usrBean.setUserName(String.valueOf(ClsConstants.USUMODIFICACION_AUTOMATICO));
 		String idPeticionInfoAAPP = null;
 		
 		ServiciosJGExpedienteServiceLocator locator = new ServiciosJGExpedienteServiceLocator(createClientConfig());
-		URL url = new URL(urlWS);
-		
+		URL url = new URL(urlWS);		
 		ServiciosJGExpedienteServiceSoapBindingStub stub = new ServiciosJGExpedienteServiceSoapBindingStub(url, locator);
 		
-		UsrBean usrBean = new UsrBean();
-		usrBean.setUserName(String.valueOf(ClsConstants.USUMODIFICACION_AUTOMATICO));
-		
-		ScsEejgXmlAdm scsEejgXmlAdm = new ScsEejgXmlAdm(usrBean);
-
 		String idSolicitudImportada = null;
 		String id = "ID_PETI";
 		String idSistema = String.valueOf(scsEejgPeticionesBean.getIdPeticion());
@@ -110,10 +106,11 @@ public class SolicitudesEEJG {
 		String dNI_NIE_Solicitante = scsPersonaJGBean.getNif();
 		String nombre = scsPersonaJGBean.getNombre();
 		String apellido1 = scsPersonaJGBean.getApellido1();
-		String apellido2 = scsPersonaJGBean.getApellido2();		
+		String apellido2 = scsPersonaJGBean.getApellido2();
+		String idioma = scsEejgPeticionesBean.getIdioma();
 		
-		DatosPeticionInfoAAPP datosPeticionInfoAAPP = new DatosPeticionInfoAAPP(idSistema, idZona, dNI_NIE_Tramitador, dNI_NIE_Solicitante, nombre, apellido1, apellido2);
-		Informacion informacion = new Informacion(idSolicitudImportada, datosPeticionInfoAAPP, id);
+		DatosPeticionInfoAAPP datosPeticionInfoAAPP = new DatosPeticionInfoAAPP(idSistema, idSolicitudImportada, idZona, dNI_NIE_Tramitador, dNI_NIE_Solicitante, nombre, apellido1, apellido2, idioma);
+		Informacion informacion = new Informacion(datosPeticionInfoAAPP, id);
 				
 		FirmaInformacion firmaInformacion = new FirmaInformacion();
 		SolicitudPeticionInfoAAPP solicitudPeticionInfoAAPP = new SolicitudPeticionInfoAAPP(informacion, firmaInformacion);
@@ -187,8 +184,9 @@ public class SolicitudesEEJG {
 		
 		String idSistema = String.valueOf(scsEejgPeticionesBean.getIdPeticion());
 		String idPeticionInfoAAPP = scsEejgPeticionesBean.getIdSolicitud();
+		String idioma = scsEejgPeticionesBean.getIdioma();
 		
-		DatosConsultaInfoAAPP datosConsultaInfoAAPP = new DatosConsultaInfoAAPP(idSistema, idPeticionInfoAAPP);
+		DatosConsultaInfoAAPP datosConsultaInfoAAPP = new DatosConsultaInfoAAPP(idSistema, idPeticionInfoAAPP, idioma);
 		String id = "ID_INFO"; 
 		org.redabogacia.www.pjgpra.wspjgpra.ConsultaInfoAAPP.Informacion informacion = new org.redabogacia.www.pjgpra.wspjgpra.ConsultaInfoAAPP.Informacion(datosConsultaInfoAAPP, id);
 		org.redabogacia.www.pjgpra.wspjgpra.ConsultaInfoAAPP.FirmaInformacion firmaInformacion = new org.redabogacia.www.pjgpra.wspjgpra.ConsultaInfoAAPP.FirmaInformacion();

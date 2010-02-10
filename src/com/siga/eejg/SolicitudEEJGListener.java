@@ -128,19 +128,18 @@ public class SolicitudEEJGListener extends SIGAContextListenerAdapter implements
 					} 
 					
 				} catch (AxisFault e) {
-					
-					if (e.getCause() instanceof ConnectException) {
-						numeroErrores++;						
+					numeroErrores++;
+					if (e.getCause() instanceof ConnectException) {												
 						ClsLogging.writeFileLogError("No hay conexión con el WS EEJG", e, 3);
 					} else {
 						ClsLogging.writeFileLogError("Error con el servidor", e, 3);
 					}
 				} finally {
 					scsEejgPeticionesBean.setNumeroIntentosSolicitud(scsEejgPeticionesBean.getNumeroIntentosSolicitud() + 1);
-					
-					if (scsEejgPeticionesBean.getNumeroIntentosSolicitud() >= NUMERO_REINTENTOS_SOLICITUD) {
+					if (idPeticionInfoAAPP == null && scsEejgPeticionesBean.getNumeroIntentosSolicitud() >= NUMERO_REINTENTOS_SOLICITUD) {
 						scsEejgPeticionesBean.setEstado(ScsEejgPeticionesBean.EEJG_ESTADO_ERROR_SOLICITUD);
 					}
+					
 					scsPeticionesAdm.updateDirect(scsEejgPeticionesBean);					
 				}
 			}
@@ -167,26 +166,27 @@ public class SolicitudEEJGListener extends SIGAContextListenerAdapter implements
 		if (listaPeticiones != null) {
 			
 			SolicitudesEEJG solicitudesEEJG = new SolicitudesEEJG();		
-							
+			boolean infoObtenida = false;
 			for (ScsEejgPeticionesBean scsEejgPeticionesBean : listaPeticiones) {
-				
+				infoObtenida = false;
 				try {					
-					if (numeroErrores < NUM_ERROR_CONEXION) {						 
-						if (solicitudesEEJG.consultaInfoAAPP(scsEejgPeticionesBean)) {					
-							scsEejgPeticionesBean.setEstado(ScsEejgPeticionesBean.EEJG_ESTADO_FINALIZADO);							
+					if (numeroErrores < NUM_ERROR_CONEXION) {
+						infoObtenida = solicitudesEEJG.consultaInfoAAPP(scsEejgPeticionesBean); 
+						if (infoObtenida) {					
+							scsEejgPeticionesBean.setEstado(ScsEejgPeticionesBean.EEJG_ESTADO_FINALIZADO);
+							scsEejgPeticionesBean.setFechaConsulta("SYSDATE");
 						}
 					}	
 				} catch (AxisFault e) {								
-					
-					if (e.getCause() instanceof ConnectException) {
-						numeroErrores++;						
+					numeroErrores++;
+					if (e.getCause() instanceof ConnectException) {												
 						ClsLogging.writeFileLogError("No hay conexión con el WS EEJG", e, 3);					
 					} else {
 						ClsLogging.writeFileLogError("Error con el servidor", e, 3);
 					}
 				} finally {
 					scsEejgPeticionesBean.setNumeroIntentosConsulta(scsEejgPeticionesBean.getNumeroIntentosConsulta() + 1);
-					if (scsEejgPeticionesBean.getNumeroIntentosConsulta() >= NUMERO_REINTENTOS_CONSULTA) {
+					if (!infoObtenida && scsEejgPeticionesBean.getNumeroIntentosConsulta() >= NUMERO_REINTENTOS_CONSULTA) {
 						scsEejgPeticionesBean.setEstado(ScsEejgPeticionesBean.EEJG_ESTADO_ERROR_CONSULTA_INFO);
 					}
 					scsPeticionesAdm.updateDirect(scsEejgPeticionesBean);
@@ -219,21 +219,21 @@ public class SolicitudEEJGListener extends SIGAContextListenerAdapter implements
 	 */
 	private String generaXMLError() {
 		String xml = null;
-		String tipoError = "ES001";
-		String descripcionError = "Error de conexión con el servidor de webservice";
-		String resultadoComunicacion = "FALSE";
-		String idPeticionInfoAAPP = "-1";
-		Long idOperacionSolicitud = new Long(0);
-		
-		Respuesta respuesta = new Respuesta(idOperacionSolicitud, idPeticionInfoAAPP, resultadoComunicacion, tipoError , descripcionError);
-		String id = "ID_RES";
-		Informacion informacion = new Informacion(respuesta, id);
-		RespuestaSolicitudPeticionInfoAAPP respuestaSolicitudPeticionInfoAAPP = new RespuestaSolicitudPeticionInfoAAPP(informacion, null);
-		try {
-			xml = AxisObjectSerializerDeserializer.serializeAxisObject(respuestaSolicitudPeticionInfoAAPP, false, false);
-		} catch (Exception e) {
-			ClsLogging.writeFileLogError("Error al crear el xml", e, 3);
-		}
+//		String tipoError = "ES001";
+//		String descripcionError = "Error de conexión con el servidor de webservice";
+//		String resultadoComunicacion = "FALSE";
+//		String idPeticionInfoAAPP = "-1";
+//		Long idOperacionSolicitud = new Long(0);
+//		
+//		Respuesta respuesta = new Respuesta(idOperacionSolicitud, idPeticionInfoAAPP, resultadoComunicacion, tipoError , descripcionError);
+//		String id = "ID_RES";
+//		Informacion informacion = new Informacion(respuesta, id);
+//		RespuestaSolicitudPeticionInfoAAPP respuestaSolicitudPeticionInfoAAPP = new RespuestaSolicitudPeticionInfoAAPP(informacion, null);
+//		try {
+//			xml = AxisObjectSerializerDeserializer.serializeAxisObject(respuestaSolicitudPeticionInfoAAPP, false, false);
+//		} catch (Exception e) {
+//			ClsLogging.writeFileLogError("Error al crear el xml", e, 3);
+//		}
 		return xml;
 	}
 }
