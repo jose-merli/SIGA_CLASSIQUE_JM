@@ -8,7 +8,6 @@ import java.math.BigInteger;
 import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -16,14 +15,29 @@ import java.util.Vector;
 
 import javax.transaction.UserTransaction;
 
+import org.apache.axis.message.MessageElement;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
 import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
+import com.siga.Utilidades.AxisObjectSerializerDeserializer;
 import com.siga.beans.CajgEJGRemesaAdm;
 import com.siga.beans.CajgEJGRemesaBean;
 import com.siga.beans.CajgRemesaEstadosAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaBean;
 import com.siga.ws.SIGAWSClientAbstract;
+import com.siga.ws.SigaWSHelper;
+import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument;
+import com.siga.ws.i2055.xmlbeans.DtArchivosDocument.DtArchivos;
+import com.siga.ws.i2055.xmlbeans.DtDireccionesDocument.DtDirecciones;
+import com.siga.ws.i2055.xmlbeans.DtExpedientesDocument.DtExpedientes;
+import com.siga.ws.i2055.xmlbeans.DtOtrosIngresosBienesPorPersonaDocument.DtOtrosIngresosBienesPorPersona;
+import com.siga.ws.i2055.xmlbeans.DtPersonasDocument.DtPersonas;
+import com.siga.ws.i2055.xmlbeans.DtPretensionesDefenderDocument.DtPretensionesDefender;
+import com.siga.ws.i2055.xmlbeans.RespuestaDocument.Respuesta;
+import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna;
 
 /**
  * @author angelcpe
@@ -37,14 +51,14 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 	
 	@Override
 	public void execute() throws Exception {
-		SIGAAsigna sigaAsigna = new SIGAAsigna();
+		
 		WSPamplonaAdm wsPamplonaAdm = new WSPamplonaAdm();
 		Map<String, String> mapExp;
-		Registrar_Solicitud registrar_Solicitud = new Registrar_Solicitud();
-		Registrar_SolicitudXML_Solicitud registrar_SolicitudXML_Solicitud = new Registrar_SolicitudXML_Solicitud();
-			
 		
+		Registrar_SolicitudXML_Solicitud registrar_SolicitudXML_Solicitud = new Registrar_SolicitudXML_Solicitud();
+					
 		WS_SIGA_ASIGNALocator locator = new WS_SIGA_ASIGNALocator();
+
 		WS_SIGA_ASIGNASoap_BindingStub stub = new WS_SIGA_ASIGNASoap_BindingStub(new java.net.URL(getUrlWS()), locator);
 		
 		List<Hashtable<String, String>> listDtExpedientes = wsPamplonaAdm.getDtExpedientes(getIdInstitucion(), getIdRemesa());
@@ -62,24 +76,41 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		
 			for (int i = 0; i < listDtExpedientes.size(); i++) {
 
-				Registra_SolicitudResponse registra_SolicitudResponse = null;
+				Registrar_SolicitudResponseRegistrar_SolicitudResult registrar_SolicitudResponseRegistrar_SolicitudResult = null;				
 				
 				try {
 					mapExp = listDtExpedientes.get(i);
 					anio = mapExp.get(ANIO);
 					numejg = mapExp.get(NUMEJG);
 					
-					sigaAsigna.setDtExpedientes(getDtExpedientes(mapExp));
+					SIGAAsignaDocument sigaAsignaDocument = SIGAAsignaDocument.Factory.newInstance();
+					SIGAAsigna sigaAsigna = sigaAsignaDocument.addNewSIGAAsigna();
+					addDtExpedientes(sigaAsigna, mapExp);					
+										
+					Element element = (Element)sigaAsigna.getDomNode().getOwnerDocument().getFirstChild();
 					
-					registrar_SolicitudXML_Solicitud.setSIGAAsigna(sigaAsigna);
-					registrar_Solicitud.setXML_Solicitud(registrar_SolicitudXML_Solicitud);
+					MessageElement messageElement = new MessageElement((Element)element);
 					
+					registrar_SolicitudXML_Solicitud.set_any(new MessageElement[]{messageElement});										
+						
+					escribeLogRemesa("Enviando información del expediente " + anio + "/" + numejg);	
+					SigaWSHelper.deleteEmptyNode(messageElement);
+										
+					registrar_SolicitudResponseRegistrar_SolicitudResult = stub.registrar_Solicitud(registrar_SolicitudXML_Solicitud);					
+					escribeLogRemesa("El expediente se ha enviado correctamente.");					
 					
-					escribeLogRemesa("Enviando información del expediente " + anio + "/" + numejg);
-					registra_SolicitudResponse = stub.registrar_Solicitud(registrar_Solicitud);					
-					escribeLogRemesa("El expediente se ha enviado correctamente. Analizando la respuesta para ver si hay errores en el envío");
+					MessageElement[] messageElements = registrar_SolicitudResponseRegistrar_SolicitudResult.get_any();
+					if (messageElements == null || messageElements.length != 1) {						
+						escribeLogRemesa("No se ha obtenido respuesta para el expediente " + anio + "/" + numejg);						
+						continue;
+					}
 					
-					SIGAAsigna sigAsignaRespuesta = registra_SolicitudResponse.getRegistrar_SolicitudResult().getSIGAAsigna();//trataremos la respuesta
+					messageElement = messageElements[0];
+
+								
+					SIGAAsignaDocument sigaAsignaDocumentrespuesta = SIGAAsignaDocument.Factory.parse(messageElement);
+					SIGAAsigna sigAsignaRespuesta = sigaAsignaDocumentrespuesta.getSIGAAsigna();
+					
 					if (sigAsignaRespuesta == null) {
 						escribeLogRemesa("No se ha obtenido respuesta para el expediente " + anio + "/" + numejg);						
 						continue;
@@ -160,12 +191,13 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 
 	/**
 	 * 
+	 * @param sigaAsigna 
 	 * @param map
 	 * @return
 	 * @throws Exception
 	 */
-	private DtExpedientes getDtExpedientes(Map<String, String> map) throws Exception {
-		DtExpedientes dtExpedientes = new DtExpedientes();
+	private void addDtExpedientes(SIGAAsigna sigaAsigna, Map<String, String> map) throws Exception {
+		DtExpedientes dtExpedientes = sigaAsigna.addNewDtExpedientes();
 		dtExpedientes.setIDExpedienteSIGA(getBigInteger(map.get(IDEXPEDIENTESIGA)));		
 		dtExpedientes.setNumeroExpedienteSIGA(map.get(NUMEROEXPEDIENTESIGA));
 		dtExpedientes.setAnoExpedienteSIGA(map.get(ANOEXPEDIENTESIGA));		
@@ -176,11 +208,9 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		dtExpedientes.setFechaPresentacion(getDate(map.get(FECHAPRESENTACION)));
 		dtExpedientes.setIDUsuarioRegistro(getBigInteger(map.get(IDUSUARIOREGISTRO)));
 		dtExpedientes.setIDOrganismoRegistra(getBigInteger(map.get(IDORGANISMOREGISTRA)));
-		dtExpedientes.setDtPretensionesDefender(getDtPretensionesDefender(map));
-		dtExpedientes.setDtPersonas(getDtPersonas(getKey(map)));
-		dtExpedientes.setDtArchivos(getDtArchivos(getKey(map)));
-		
-		return dtExpedientes;
+		addDtPretensionesDefender(dtExpedientes, map);
+		addDtPersonas(dtExpedientes, getKey(map));
+		addDtArchivos(dtExpedientes, getKey(map));		
 	}
 
 	/**
@@ -202,15 +232,14 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 	 * @return
 	 * @throws Exception
 	 */
-	private Date getDate(String st) throws Exception {		
+	private Calendar getDate(String st) throws Exception {		
 		
-		Date date = null;
+		Calendar cal = null;
 		if (st != null && !st.trim().equals("")) {
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(GstDate.convertirFecha(st));
-			date = cal.getTime();
+			cal = Calendar.getInstance();
+			cal.setTime(GstDate.convertirFecha(st));			
 		}
-		return date;
+		return cal;
 	}
 	
 	/**
@@ -276,12 +305,13 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 	
 	/**
 	 * 
+	 * @param dtPersona 
 	 * @param map
 	 * @return
 	 */
 	 
-	private DtDirecciones getDtDireccion(Map<String, String> map) {
-		DtDirecciones dtDirecciones = new DtDirecciones();		
+	private void addDtDireccion(DtPersonas dtPersona, Map<String, String> map) {
+		DtDirecciones dtDirecciones = dtPersona.addNewDtDirecciones();		
 		dtDirecciones.setIDTipoVia(getBigInteger(map.get(DIR_IDTIPOVIA)));
 		dtDirecciones.setNombreVia(map.get(DIR_NOMBREVIA));
 		dtDirecciones.setNumero(map.get(DIR_NUMERO));
@@ -292,56 +322,51 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		dtDirecciones.setTelefono2(map.get(DIR_TELEFONO2));
 		dtDirecciones.setFax(map.get(DIR_FAX));
 		dtDirecciones.setEmail(map.get(DIR_EMAIL));
-		dtDirecciones.setIDPais(getBigInteger(map.get(DIR_IDPAIS)));				
-		return dtDirecciones;
+		dtDirecciones.setIDPais(getBigInteger(map.get(DIR_IDPAIS)));			
+		
 	}
 
 	
 	/**
 	 * 
+	 * @param dtExpedientes 
 	 * @param st
 	 * @return
 	 */
-	private DtArchivos[] getDtArchivos(String st) {
-		DtArchivos[] dtArchivos = null;
+	private void addDtArchivos(DtExpedientes dtExpedientes, String st) {
+		
 		List<Map<String, String>> list = htCargaDtArchivo.get(st);
 		
-		if (list != null) {
-			dtArchivos = new DtArchivos[list.size()];
+		if (list != null) {		
 			for (int i = 0; i < list.size(); i++) {
 				Map<String, String> map = list.get(i);
 				if (map.get(IDARCHIVO) != null && !map.get(IDARCHIVO).trim().equals("")) {
-					DtArchivos dtArchivo = new DtArchivos();
+					DtArchivos dtArchivo = dtExpedientes.addNewDtArchivos();
 					dtArchivo.setIDArchivo(getBigInteger(map.get(IDARCHIVO)));
 					dtArchivo.setNombreArchivo(map.get(NOMBREARCHIVO));
 					dtArchivo.setIDTipoArchivo(getBigInteger(map.get(IDTIPOARCHIVO)));
-					dtArchivo.setPrincipal(getBoolean(map.get(PRINCIPAL)));				
-					dtArchivos[i] = dtArchivo;
-				} else {
-					dtArchivos = null;
+					dtArchivo.setPrincipal(getBoolean(map.get(PRINCIPAL)));
 				}
 			}
 		}
-		
-		return dtArchivos;
 	}
 	
 	
 	/**
 	 * 
+	 * @param dtExpedientes 
 	 * @param st
 	 * @return
 	 * @throws Exception
 	 */
-	private DtPersonas[] getDtPersonas(String st) throws Exception {
-		DtPersonas[] dtPersonas = null;
-		List<Map<String, String>> list = htCargaDtPersonas.get(st);
+	private void addDtPersonas(DtExpedientes dtExpedientes, String st) throws Exception {
 		
-		if (list != null) {
-			dtPersonas = new DtPersonas[list.size()];
+		List<Map<String, String>> list = htCargaDtPersonas.get(st);		
+		if (list != null) {			
 			for (int i = 0; i < list.size(); i++) {
 				Map<String, String> map = list.get(i);
-				DtPersonas dtPersona = new DtPersonas();
+				
+				DtPersonas dtPersona = dtExpedientes.addNewDtPersonas();
 				dtPersona.setIDTipoTercero(getBigInteger(map.get(IDTIPOTERCERO)));
 				dtPersona.setIDTipoPersona(getBigInteger(map.get(IDTIPOPERSONA)));	
 				dtPersona.setNombre(map.get(NOMBRE));
@@ -349,7 +374,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 				dtPersona.setApellido2(map.get(APELLIDO2));
 				dtPersona.setIDTipoIdentificacion(getBigInteger(map.get(IDTIPOIDENTIFICACION)));
 				dtPersona.setNumeroIdentificacion(map.get(NUMEROIDENTIFICACION));
-				dtPersona.setDtDirecciones(getDtDireccion(map));
+				addDtDireccion(dtPersona, map);
 				dtPersona.setIDEstadoCivil(getBigInteger(map.get(IDESTADOCIVIL)));
 				dtPersona.setRazonSocial(getBigInteger(map.get(RAZONSOCIAL)));
 				dtPersona.setIngresosAnuales(getBigDecimal(map.get(INGRESOSANUALES)));
@@ -360,24 +385,25 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 				dtPersona.setIDOtraPrestacion(getBigInteger(map.get(IDOTRAPRESTACION)));
 				dtPersona.setImporteOtraPrestacion(getBigDecimal(map.get(IMPORTEOTRAPRESTACION)));
 				dtPersona.setIDNacionalidad(getBigInteger(map.get(IDNACIONALIDAD)));
-				dtPersona.setDtOtrosIngresosBienesPorPersona(getDtOtrosIngresosBienesPorPersona(map));
-				dtPersonas[i] = dtPersona;
+				addDtOtrosIngresosBienesPorPersona(dtPersona, map);				
 			}
 		}
 		
-		return dtPersonas;
 	}
 
-	
-	private BigInteger[] getDtOtrosIngresosBienesPorPersona(
-			Map<String, String> map) {
-		BigInteger[] dtOtrosIngresosBienesPorPersona = null;
+	/**
+	 * 
+	 * @param dtPersona 
+	 * @param map
+	 * @return
+	 */
+	private void addDtOtrosIngresosBienesPorPersona(DtPersonas dtPersona, Map<String, String> map) {
+				
 		BigInteger idOtroIngresoBien = getBigInteger(map.get(IDOTROINGRESOBIEN));
 		if (idOtroIngresoBien != null) {
-			dtOtrosIngresosBienesPorPersona = new BigInteger[1];
-			dtOtrosIngresosBienesPorPersona[0] = idOtroIngresoBien;
+			DtOtrosIngresosBienesPorPersona dtOtrosIngresosBienesPorPersona = dtPersona.addNewDtOtrosIngresosBienesPorPersona();
+			dtOtrosIngresosBienesPorPersona.setIdOtroIngresoBienArray(new BigInteger[]{idOtroIngresoBien});			
 		}
-		return dtOtrosIngresosBienesPorPersona;
 	}
 
 	/**
@@ -396,12 +422,13 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 
 	/**
 	 * 
+	 * @param dtExpedientes 
 	 * @param map
 	 * @return
 	 * @throws Exception
 	 */
-	private DtPretensionesDefender getDtPretensionesDefender(Map<String, String> map) throws Exception {
-		DtPretensionesDefender dtPretensionesDefender = new DtPretensionesDefender();
+	private void addDtPretensionesDefender(DtExpedientes dtExpedientes, Map<String, String> map) throws Exception {
+		DtPretensionesDefender dtPretensionesDefender = dtExpedientes.addNewDtPretensionesDefender();
 		dtPretensionesDefender.setPrecisaAbogado(getBoolean(map.get(PRE_PRECISAABOGADO)));
 		dtPretensionesDefender.setIDTipoProcedimiento(getBigInteger(map.get(PRE_IDTIPOPROCEDIMIENTO)));		
 		dtPretensionesDefender.setOtrosAspectos(map.get(PRE_OTROSASPECTOS));
@@ -418,9 +445,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		dtPretensionesDefender.setPorcentajeTarifaProcurador(getBigDecimal(map.get(PRE_PORCENTAJETARIFAPROCURADOR)));		
 		dtPretensionesDefender.setIDTipoFacturacion(getBigInteger(map.get(PRE_IDTIPOFACTURACION)));		
 		dtPretensionesDefender.setPretensionDefender(map.get(PRE_PRETENSIONDEFENDER));		
-		dtPretensionesDefender.setSAM(getBoolean(map.get(PRE_SAM)));
-		
-		return dtPretensionesDefender;
+		dtPretensionesDefender.setSAM(getBoolean(map.get(PRE_SAM)));		
 	}
 
 

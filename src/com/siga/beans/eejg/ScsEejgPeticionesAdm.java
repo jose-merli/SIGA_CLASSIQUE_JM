@@ -9,9 +9,11 @@ import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.MasterBean;
 import com.siga.beans.MasterBeanAdministrador;
@@ -303,9 +305,13 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 	 * Método que obtiene una lista de peticines pendientes de solicitar o en estado inicial
 	 */
 	public List<ScsEejgPeticionesBean> getPeticionesIniciadas() throws ClsExceptions {
+		
+		ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String numeroReintentosSolicitud = rp.returnProperty("eejg.numeroReintentosSolicitud");
 				
 		String where = " WHERE " + ScsEejgPeticionesBean.C_ESTADO  + " = " + ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL;
-		where += " AND " + ScsEejgPeticionesBean.C_IDSOLICITUD + " IS NULL";		
+		where += " AND " + ScsEejgPeticionesBean.C_IDSOLICITUD + " IS NULL";
+		where += " AND " + ScsEejgPeticionesBean.C_NUMEROINTENTOSSOLICITUD + " < " + numeroReintentosSolicitud;
 		
 		return select(where);		
 	}
@@ -318,9 +324,14 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 */
 	public List<ScsEejgPeticionesBean> getSolicitudesPendientes(int horas) throws ClsExceptions {
+		ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String numeroReintentosConsulta = rp.returnProperty("eejg.numeroReintentosConsulta");
+		
 		String horasSt = String.valueOf(horas / 24);//pasamos las horas a días 
 		String where = " WHERE " + ScsEejgPeticionesBean.C_ESTADO  + " = " + ScsEejgPeticionesBean.EEJG_ESTADO_ESPERA;
-		where += " AND (SYSDATE - " + horasSt + ") >= " + ScsEejgPeticionesBean.C_FECHAPETICION;		
+		where += " AND (SYSDATE - " + horasSt + ") >= " + ScsEejgPeticionesBean.C_FECHASOLICITUD;
+		where += " AND " + ScsEejgPeticionesBean.C_IDSOLICITUD + " IS NOT NULL";
+		where += " AND " + ScsEejgPeticionesBean.C_NUMEROINTENTOSCONSULTA + " < " + numeroReintentosConsulta;
 		return select(where);
 	}
 	

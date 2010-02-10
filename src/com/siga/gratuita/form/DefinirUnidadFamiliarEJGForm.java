@@ -611,7 +611,7 @@ import com.siga.tlds.FilaExtElement;
 					case ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL:case ScsEejgPeticionesBean.EEJG_ESTADO_ESPERA:
 						elementosFila[4] = new FilaExtElement("verSolicitud", "esperaEejg","esperaEejg",	SIGAConstants.ACCESS_DENY);
 					break;
-					case ScsEejgPeticionesBean.EEJG_ESTADO_ERROR:
+					case ScsEejgPeticionesBean.EEJG_ESTADO_ERROR_SOLICITUD:case ScsEejgPeticionesBean.EEJG_ESTADO_ERROR_CONSULTA_INFO:
 						elementosFila[4] = new FilaExtElement("solicitar", "solicitarEejg","errorEejg",SIGAConstants.ACCESS_READ);
 					break;
 					case ScsEejgPeticionesBean.EEJG_ESTADO_FINALIZADO:

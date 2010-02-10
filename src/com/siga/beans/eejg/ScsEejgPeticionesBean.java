@@ -16,7 +16,8 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	public static final int EEJG_ESTADO_INICIAL = 10;  
 	public static final int EEJG_ESTADO_ESPERA = 20;
 	public static final int EEJG_ESTADO_FINALIZADO = 30;
-	public static final int EEJG_ESTADO_ERROR = 40;
+	public static final int EEJG_ESTADO_ERROR_SOLICITUD = 40;
+	public static final int EEJG_ESTADO_ERROR_CONSULTA_INFO = 50;
 	
 	Long idPeticion;
 	Integer idUsuarioPeticion;

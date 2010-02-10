@@ -15,7 +15,6 @@ import javax.transaction.UserTransaction;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -74,8 +73,6 @@ import org.apache.xml.serialize.XMLSerializer;
 import org.apache.xmlbeans.XmlError;
 import org.apache.xmlbeans.XmlOptions;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsLogging;
@@ -91,6 +88,7 @@ import com.siga.beans.CajgRemesaEstadosAdm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.action.DefinirRemesasCAJGAction;
 import com.siga.ws.SIGAWSClientAbstract;
+import com.siga.ws.SigaWSHelper;
 
 
 /**
@@ -208,7 +206,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		
 		file = new File(file, nombreFichero.toString());		
 		
-		deleteEmptyNode(intercambio.getDomNode());
+		SigaWSHelper.deleteEmptyNode(intercambio.getDomNode());
 		
 		EnviarIntercambioDocument doc = EnviarIntercambioDocument.Factory.newInstance();
 		EnviarIntercambio req = doc.addNewEnviarIntercambio();
@@ -347,54 +345,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		return key;
 	}
 
-
-	/**
-	 * 
-	 * @param nodeParent
-	 * @throws Exception
-	 */
-	private void deleteEmptyNode(Node nodeParent) throws Exception {
-		List arrayNodes = new ArrayList();
-		arrayNodes.add(nodeParent);
-		Node node = null;
-		while(!arrayNodes.isEmpty()){
-			node = (Node) arrayNodes.remove(0);
-			if (node != null) {	
-//				if (node.getNodeValue() != null) { //ñapa del euro TODO					
-//					node.setNodeValue(new String(node.getNodeValue().getBytes(), "ISO-8859-1"));					
-//				}
-				if (node.getNodeType() != Node.TEXT_NODE) {
-					StringBuffer contenido = getContenido(node);
-					if (contenido.length() == 0) {				
-						node.getParentNode().removeChild(node);
-					} else {						
-						NodeList nodeList = node.getChildNodes();
-						for (int i = 0; i < nodeList.getLength(); i++) {
-							arrayNodes.add(nodeList.item(i));	
-						}	
-					}
-				}
-			}	
-		}
-			
-	}
 	
-	/**
-	 * Obtiene el contenido de un nodo junto con sus hijos de manera recursiva
-	 * @param node
-	 * @return
-	 */
-	private static StringBuffer getContenido(Node node) {
-		StringBuffer contenido = new StringBuffer();
-		NodeList nodeList = node.getChildNodes();
-		for (int i = 0; i < nodeList.getLength(); i++) {
-			contenido.append(nodeList.item(i).getNodeValue()!=null?nodeList.item(i).getNodeValue().replaceAll("\\n", "").trim():"");
-			contenido.append(getContenido(nodeList.item(i)));
-		}
-		return contenido;
-	}
-
-
 	/**
 	 * Metodo que te setea el encodig ISO-8859-15 en el fichero xml que le pases por parametro
 	 * @param file
