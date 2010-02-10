@@ -26,9 +26,11 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	Integer estado;
 	String idSolicitud;
 	String fechaSolicitud;
+	String fechaConsulta;
 	Integer idTipoEjg;
 	Integer anio;
 	Integer numero;
+	String idioma;
 	Long idPersona;
 	ScsUnidadFamiliarEJGBean unidadFamiliar;
 	Integer numeroIntentosSolicitud;
@@ -58,6 +60,8 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	static public final String 	C_NUMEROINTENTOSSOLICITUD = "NUMEROINTENTOSSOLICITUD";
 	static public final String 	C_NUMEROINTENTOSCONSULTA = "NUMEROINTENTOSCONSULTA";
 	static public final String 	C_IDXML = "IDXML";
+	static public final String 	C_IDIOMA = "IDIOMA";
+	static public final String 	C_FECHACONSULTA = "FECHACONSULTA";
 	
 	public Long getIdPeticion() {
 		return idPeticion;
@@ -179,6 +183,30 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	 */
 	public void setFechaSolicitud(String fechaSolicitud) {
 		this.fechaSolicitud = fechaSolicitud;
+	}
+	/**
+	 * @return the fechaConsulta
+	 */
+	public String getFechaConsulta() {
+		return fechaConsulta;
+	}
+	/**
+	 * @param fechaConsulta the fechaConsulta to set
+	 */
+	public void setFechaConsulta(String fechaConsulta) {
+		this.fechaConsulta = fechaConsulta;
+	}
+	/**
+	 * @return the idioma
+	 */
+	public String getIdioma() {
+		return idioma;
+	}
+	/**
+	 * @param idioma the idioma to set
+	 */
+	public void setIdioma(String idioma) {
+		this.idioma = idioma;
 	}
 	
 	

@@ -49,6 +49,7 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 				ScsEejgPeticionesBean.C_ESTADO,
 				ScsEejgPeticionesBean.C_IDSOLICITUD,
 				ScsEejgPeticionesBean.C_FECHASOLICITUD,
+				ScsEejgPeticionesBean.C_FECHACONSULTA,
 				ScsEejgPeticionesBean.C_IDINSTITUCION,
 				ScsEejgPeticionesBean.C_IDTIPOEJG,
 				ScsEejgPeticionesBean.C_ANIO,
@@ -57,6 +58,7 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 				ScsEejgPeticionesBean.C_NUMEROINTENTOSSOLICITUD,
 				ScsEejgPeticionesBean.C_NUMEROINTENTOSCONSULTA,
 				ScsEejgPeticionesBean.C_IDXML,
+				ScsEejgPeticionesBean.C_IDIOMA,
 				ScsEejgPeticionesBean.C_USUMODIFICACION,
 				ScsEejgPeticionesBean.C_FECHAMODIFICACION
 				};
@@ -104,11 +106,14 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 			bean.setIdPersona(UtilidadesHash.getLong(hash,ScsEejgPeticionesBean.C_IDPERSONA));
 			bean.setIdSolicitud(UtilidadesHash.getString(hash,ScsEejgPeticionesBean.C_IDSOLICITUD));
 			bean.setFechaSolicitud(UtilidadesHash.getString(hash,ScsEejgPeticionesBean.C_FECHASOLICITUD));
+			bean.setFechaConsulta(UtilidadesHash.getString(hash,ScsEejgPeticionesBean.C_FECHACONSULTA));
 			bean.setIdTipoEjg(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_IDTIPOEJG));
 			bean.setIdXml(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_IDXML));
 			bean.setNumero(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_NUMERO));
 			bean.setNumeroIntentosConsulta(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_NUMEROINTENTOSCONSULTA));
 			bean.setNumeroIntentosSolicitud(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_NUMEROINTENTOSSOLICITUD));
+			bean.setIdioma(UtilidadesHash.getString(hash,ScsEejgPeticionesBean.C_IDIOMA));
+			
 			bean.setFechaMod(UtilidadesHash.getString(hash, ScsEejgPeticionesBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_USUMODIFICACION));
 			
@@ -139,12 +144,13 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_IDPERSONA, b.getIdPersona());
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_IDSOLICITUD, b.getIdSolicitud());
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_FECHASOLICITUD, b.getFechaSolicitud());
+			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_FECHACONSULTA, b.getFechaConsulta());
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_IDTIPOEJG, b.getIdTipoEjg());
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_IDXML, b.getIdXml());
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_NUMERO, b.getNumero());
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_NUMEROINTENTOSCONSULTA, b.getNumeroIntentosConsulta());
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_NUMEROINTENTOSSOLICITUD, b.getNumeroIntentosSolicitud());
-		
+			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_IDIOMA, b.getIdioma());
 			
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_USUMODIFICACION, String.valueOf(b.getUsuMod()));
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_FECHAMODIFICACION, b.getFechaMod());
