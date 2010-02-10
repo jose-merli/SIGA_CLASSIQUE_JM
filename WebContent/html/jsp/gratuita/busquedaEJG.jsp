@@ -398,12 +398,17 @@ String datoTipoOrdinario[]={idordinario,idordinario};
 		<html:hidden property = "codigoExt" value=""/>
 		<html:hidden property = "nombreObjetoDestino" value=""/>
 	</html:form>
+	<html:form action="/JGR_UnidadFamiliarEJG"  method="post" target="submitArea">
+		<html:hidden property="modo"/>
+		<html:hidden property="datosInforme"/>
+		
 	
+</html:form>
 	<!-- FIN: CAMPOS DE BUSQUEDA-->	
 	
 	<!-- INICIO: BOTONES BUSQUEDA -->	
 	
-	<siga:ConjBotonesBusqueda botones="C,N,B"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
+	<siga:ConjBotonesBusqueda botones="C,N,B,DE"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
 	
 	<!-- FIN: BOTONES BUSQUEDA -->
 	
@@ -589,6 +594,27 @@ String datoTipoOrdinario[]={idordinario,idordinario};
 			formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value='0'>"));
 			document.appendChild(formu);
 			return formu;
+		}
+		function descargaEejg(){
+			sub();
+		    var dat = "";
+		    var datos = document.frames.resultado.document.getElementsByName("datosCarta");
+		    if (datos.length==0){
+			    fin();
+			    return false;
+				}
+			for(i=0; i<datos.length; i++)
+			{
+				dat += datos[i].value+"%%%";
+			}
+			if (dat.length>3)
+				dat = dat.substring(0,dat.length-3);
+				
+			
+			document.DefinirUnidadFamiliarEJGForm.datosInforme.value = dat;
+	   		document.DefinirUnidadFamiliarEJGForm.modo.value = "descargaMultiplesEejg";
+			document.DefinirUnidadFamiliarEJGForm.submit();
+		
 		}
 
 			

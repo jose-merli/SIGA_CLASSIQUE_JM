@@ -14,6 +14,7 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.CerSolicitudCertificadosTextoBean;
 import com.siga.beans.MasterBean;
 import com.siga.beans.MasterBeanAdministrador;
 import com.siga.beans.ScsTurnoBean;
@@ -147,71 +148,25 @@ public class ScsEejgXmlAdm extends MasterBeanAdministrador {
 		}
 		return nuevoId;
 	}
+	public String getEejgXml(Integer idXml) throws ClsExceptions{
+		RowsContainer rows=new RowsContainer();
+		StringBuffer query = new StringBuffer();
+		query.append("SELECT ");
+		query.append(ScsEejgXmlBean.C_XML);
+		query.append(" FROM ");
+		query.append(ScsEejgXmlBean.T_NOMBRETABLA);
+		query.append(" WHERE ");
+		query.append(ScsEejgXmlBean.C_IDXML);
+		query.append(" = ");
+		query.append(idXml);
+		
+		
+		
+		String xml = rows.getClob(ScsEejgXmlBean.T_NOMBRETABLA,ScsEejgXmlBean.C_XML,query.toString());
+		return xml;
+	}
+	
 	
 
-/*
-	public List<ScsEejgXmlBean> getComisarias(VolantesExpressVo volanteExpres)throws ClsExceptions{
-
-		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
-		int contador = 0;
-		StringBuffer sql = new StringBuffer();
-		sql.append(" SELECT C.IDCOMISARIA , C.IDINSTITUCION, ");
-		sql.append(" c.NOMBRE || ' (' || po.nombre || ')' AS NOMBRE ");
-		sql.append(" FROM SCS_COMISARIA       c, ");
-		sql.append(" cen_poblaciones     po, ");
-		sql.append(" cen_partidojudicial par, ");
-		sql.append(" scs_subzonapartido  spar, ");
-		sql.append(" scs_subzona         szo, ");
-		sql.append(" scs_zona            zo, ");
-		sql.append(" scs_turno           tu ");
-		sql.append(" where tu.idzona = zo.idzona ");
-		sql.append(" AND tu.idinstitucion = zo.idinstitucion ");
-		sql.append(" AND zo.idzona = szo.idzona ");
-		sql.append(" AND zo.idinstitucion = szo.idinstitucion ");
-		sql.append(" AND szo.idinstitucion = spar.idinstitucion ");
-		sql.append(" AND szo.idsubzona = spar.idsubzona ");
-		sql.append(" AND szo.idzona = spar.idzona ");
-		sql.append(" AND spar.idpartido = par.idpartido ");
-		sql.append(" AND par.idpartido = po.idpartido ");
-		sql.append(" AND c.idpoblacion = po.idpoblacion ");
-		sql.append(" and TU.IDINSTITUCION = :");
-		contador ++;
-		sql.append(contador);
-		htCodigos.put(new Integer(contador),volanteExpres.getIdInstitucion());
-		sql.append(" and tu.idinstitucion = c.idinstitucion ");
-		sql.append(" AND TU.IDTURNO = :");
-		contador ++;
-		sql.append(contador);
-		htCodigos.put(new Integer(contador),volanteExpres.getIdTurno());
-		sql.append(" ORDER BY DESCRIPCION ");
-		
-		List<ScsEejgXmlBean> alComisarias = null;
-		try {
-			RowsContainer rc = new RowsContainer(); 
-												
-            if (rc.findBind(sql.toString(),htCodigos)) {
-            	alComisarias = new ArrayList<ScsEejgXmlBean>();
-            	ScsEejgXmlBean comisariaBean = new ScsEejgXmlBean();
-            	comisariaBean.setNombre(UtilidadesString.getMensajeIdioma(volanteExpres.getUsrBean(), "general.combo.seleccionar"));
-            	comisariaBean.setIdComisaria(new Integer(-1));
-    			alComisarias.add(comisariaBean);
-    			for (int i = 0; i < rc.size(); i++){
-            		Row fila = (Row) rc.get(i);
-            		Hashtable<String, Object> htFila=fila.getRow();
-            		
-            		comisariaBean = new ScsEejgXmlBean();
-            		comisariaBean.setIdInstitucion(UtilidadesHash.getInteger(htFila,ScsEejgXmlBean.C_IDINSTITUCION));
-            		comisariaBean.setIdComisaria(UtilidadesHash.getInteger(htFila,ScsEejgXmlBean.C_IDCOMISARIA));
-            		comisariaBean.setNombre(UtilidadesHash.getString(htFila,ScsEejgXmlBean.C_NOMBRE));
-            		alComisarias.add(comisariaBean);
-            	}
-            } 
-       } catch (Exception e) {
-       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
-       }
-       return alComisarias;
-		
-	} 
-	*/
 	
 }

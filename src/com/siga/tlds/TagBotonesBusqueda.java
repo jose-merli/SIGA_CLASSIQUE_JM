@@ -50,7 +50,8 @@ public class TagBotonesBusqueda extends TagSupport {
 	private boolean informeJustificacion;
 	private boolean listoParaEnviar;
 	private boolean aniadirARemesa;
-	private boolean generaExcel;;
+	private boolean generaExcel;
+	private boolean isDescargaEejg;
 	
 	private ArrayList valoresEdicion;  
 	private ArrayList valoresConsulta;  
@@ -145,6 +146,8 @@ public class TagBotonesBusqueda extends TagSupport {
 					listoParaEnviar=true;
 				}else if (tipo.equalsIgnoreCase("ar")) {
 					aniadirARemesa=true;
+				}else if (tipo.equalsIgnoreCase("de")) {
+					isDescargaEejg=true;
 				}
 					
 			}
@@ -391,6 +394,13 @@ public class TagBotonesBusqueda extends TagSupport {
 				out.println("<td class=\"tdBotones\">");
 				out.print("<input type=\"button\" alt=\""+UtilidadesString.getMensajeIdioma(usrbean, "general.boton.aniadirARemesa") +"\"  id=\"idButton\" onclick=\"return aniadirARemesa(true);\" class=\"button\" value=\"");
 				out.print(UtilidadesString.getMensajeIdioma(usrbean,"general.boton.aniadirARemesa"));
+				out.println("\">");
+				out.println("</td>");
+			}
+			if (isDescargaEejg) {
+				out.println("<td class=\"tdBotones\">");
+				out.print("<input type=\"button\" alt=\""+UtilidadesString.getMensajeIdioma(usrbean, "general.boton.descargaEejg") +"\"  id=\"idButton\" onclick=\"return descargaEejg(true);\" class=\"button\" value=\"");
+				out.print(UtilidadesString.getMensajeIdioma(usrbean,"general.boton.descargaEejg"));
 				out.println("\">");
 				out.println("</td>");
 			}

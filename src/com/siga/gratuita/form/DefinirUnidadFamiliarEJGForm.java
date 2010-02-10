@@ -32,7 +32,7 @@ import com.siga.tlds.FilaExtElement;
 	ScsEJGBean ejg ;
 	private String botones;
 	FilaExtElement[] elementosFila;
-	
+	String datosInforme;
 	
 	
 	private String idParentesco;
@@ -592,36 +592,30 @@ import com.siga.tlds.FilaExtElement;
 	
 	public FilaExtElement[] getElementosFila() {
 		FilaExtElement[] elementosFila = null;
+		
 		if (getModo().equalsIgnoreCase("ver")){
 			elementosFila = new FilaExtElement[3];
 		}else{
 			elementosFila = new FilaExtElement[5];
 			elementosFila[3] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
 			if(getPeticionEejg()!=null){
-				int estado = 0;
-				try {
-					estado = getPeticionEejg().getEstado();
+				int	estado = getPeticionEejg().getEstado();
 					
-				} catch (Exception e) {
-					System.out.println(e.toString());
-					// TODO: handle exception
-				}
-				
 				switch (estado) {
 					case ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL:case ScsEejgPeticionesBean.EEJG_ESTADO_ESPERA:
-						elementosFila[4] = new FilaExtElement("verSolicitud", "esperaEejg","esperaEejg",	SIGAConstants.ACCESS_DENY);
+						elementosFila[4] = new FilaExtElement("denegar", "esperaEejg","esperaEejg",SIGAConstants.ACCESS_DENY);
 					break;
 					case ScsEejgPeticionesBean.EEJG_ESTADO_ERROR_SOLICITUD:case ScsEejgPeticionesBean.EEJG_ESTADO_ERROR_CONSULTA_INFO:
 						elementosFila[4] = new FilaExtElement("solicitar", "solicitarEejg","errorEejg",SIGAConstants.ACCESS_READ);
 					break;
 					case ScsEejgPeticionesBean.EEJG_ESTADO_FINALIZADO:
-						elementosFila[4] = new FilaExtElement("descargar", "descargarEejg","descargarEejg",	SIGAConstants.ACCESS_READ);
+						elementosFila[4] = new FilaExtElement("descargaLog", "descargarEejg","descargarEejg",	SIGAConstants.ACCESS_READ);
 					break;
 				default:
 					break;
 				}
 			}else{
-				elementosFila[4] = new FilaExtElement("verSolicitud", "solicitarEejg","solicitarEejg",	SIGAConstants.ACCESS_READ);
+				elementosFila[4] = new FilaExtElement("versolicitud", "solicitarEejg","solicitarEejg",	SIGAConstants.ACCESS_READ);
 			}
 		}
 		this.setElementosFila(elementosFila);
@@ -653,6 +647,12 @@ import com.siga.tlds.FilaExtElement;
 	}
 	public void setPeticionEejg(ScsEejgPeticionesBean peticionEejg) {
 		this.peticionEejg = peticionEejg;
+	}
+	public String getDatosInforme() {
+		return datosInforme;
+	}
+	public void setDatosInforme(String datosInforme) {
+		this.datosInforme = datosInforme;
 	}
 	
 }

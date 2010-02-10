@@ -7,6 +7,7 @@
 package com.siga.beans;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.eejg.ScsEejgPeticionesBean;
@@ -18,6 +19,8 @@ public class ScsUnidadFamiliarEJGBean extends MasterBean{
 	ScsPersonaJGBean personaJG;
 	ScsParentescoBean parentesco;
 	ScsEejgPeticionesBean peticionEejg;
+	UsrBean usrBean;
+	
 	
 	private Integer idTipoEJG;
 	private Integer idInstitucion;
@@ -38,6 +41,7 @@ public class ScsUnidadFamiliarEJGBean extends MasterBean{
 	private String  descripcionIngresosAnuales;
 	private Integer idParentesco;
 	private Integer tipoIngreso;
+	
 		
 	
 	/* Nombre de Tabla*/
@@ -414,6 +418,14 @@ public class ScsUnidadFamiliarEJGBean extends MasterBean{
 
 	public void setPeticionEejg(ScsEejgPeticionesBean peticionEejg) {
 		this.peticionEejg = peticionEejg;
+	}
+
+	public UsrBean getUsrBean() {
+		return usrBean;
+	}
+
+	public void setUsrBean(UsrBean usrBean) {
+		this.usrBean = usrBean;
 	}
 	
 }

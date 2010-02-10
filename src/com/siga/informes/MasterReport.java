@@ -3,12 +3,19 @@ package com.siga.informes;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.imageio.stream.FileImageInputStream;
 import javax.servlet.http.*;
@@ -84,6 +91,33 @@ public class MasterReport  {
 	    }
 	    return salida;
 	}
+	public Vector obtenerDatosFormulario(String datosInforme) throws ClsExceptions {
+	    Vector salida = new Vector ();
+	    if(datosInforme.endsWith("%%%")){
+	    	int indice = datosInforme.lastIndexOf("%%%");
+	    	datosInforme = datosInforme.substring(0,indice);
+	    }
+	    try {
+	        GstStringTokenizer st1 = new GstStringTokenizer(datosInforme,"%%%");
+		    while (st1.hasMoreTokens()) {
+		        Hashtable ht = new Hashtable();
+		        String registro = st1.nextToken();
+		        GstStringTokenizer st = new GstStringTokenizer(registro,"##");
+			    while (st.hasMoreTokens()) {
+			        String dupla = st.nextToken();
+			        String d[]= dupla.split("==");
+			        if(d.length>1)
+			        	ht.put(d[0],d[1]);    
+			    }
+		        salida.add(ht);
+		    }
+	    } catch (Exception e) {
+	        throw new ClsExceptions(e,"Error al obtener los datos del formulario.");
+	    }
+	    return salida;
+	}
+	
+	
 	public Vector obtenerDatosFormulario(DefinirEnviosForm form) throws ClsExceptions {
 	    Vector salida = new Vector ();
 	    String datosInforme = form.getDatosEnvios();
@@ -456,9 +490,14 @@ public class MasterReport  {
 		return pdf;
 	}
 	
-	private File convertXML2PDF(InputStream xml, File xslt, File pdf)
+	protected File convertXML2PDF(InputStream xml, File xslt, File pdf)
 	throws IOException, FOPException, TransformerException {
 		return convertXML2PDF(xml, new FileInputStream(xslt),pdf);
+		
+	}
+	protected File convertXML2PDF(InputStream xml, File xslt, File pdf,Map<String, String> mapParameters)
+	throws IOException, FOPException, TransformerException {
+		return convertXML2PDF(xml, new FileInputStream(xslt),pdf,mapParameters);
 		
 	}
 	
@@ -493,9 +532,11 @@ public class MasterReport  {
 //			Setup XSLT
 			TransformerFactory factory = TransformerFactory.newInstance();
 			Transformer transformer = factory.newTransformer(new StreamSource(xslt));
+			transformer.setParameter("eejg", "2009/654");
 
 //			Setup input for XSLT transformation
 			Source src = new StreamSource(xml);
+			
 
 //			Resulting SAX events (the generated FO) must be piped through to FOP
 			Result res = new SAXResult(driver.getContentHandler());
@@ -507,6 +548,56 @@ public class MasterReport  {
 		}
 		return pdf;
 	}
+	
+	/***
+	 * 
+	 * @param xml Fichero xml a transfomar en pdf
+	 * @param xslt Fichero xsl que transforma el xml a pdf
+	 * @param pdf Fichero pdf que se convertira en el pdf deseado
+	 * @return Fichero pdf generado
+	 * @throws IOException
+	 * @throws FOPException
+	 * @throws TransformerException
+	 */
+	protected File convertXML2PDF(InputStream xml, InputStream xslt, File pdf,Map<String, String> mapParameters)
+	throws IOException, FOPException, TransformerException {
+//		Construct driver
+		Driver driver = new Driver();
+
+//		Setup logger
+		Logger logger = new ConsoleLogger(ConsoleLogger.LEVEL_INFO);
+		driver.setLogger(logger);
+		MessageHandler.setScreenLogger(logger);
+
+//		Setup Renderer (output format)        
+		driver.setRenderer(Driver.RENDER_PDF);
+
+//		Setup output
+		OutputStream out = new java.io.FileOutputStream(pdf);
+		try {
+			driver.setOutputStream(out);
+
+//			Setup XSLT
+			TransformerFactory factory = TransformerFactory.newInstance();
+			Transformer transformer = factory.newTransformer(new StreamSource(xslt));
+			for (Map.Entry<String, String> entrada:mapParameters.entrySet()){
+				transformer.setParameter(entrada.getKey(), entrada.getValue());
+			}
+//			Setup input for XSLT transformation
+			Source src = new StreamSource(xml);
+			
+
+//			Resulting SAX events (the generated FO) must be piped through to FOP
+			Result res = new SAXResult(driver.getContentHandler());
+
+//			Start XSLT transformation and FOP processing
+			transformer.transform(src, res);
+		} finally {
+			out.close();
+		}
+		return pdf;
+	}
+	
 	
 	
 	/**
@@ -690,6 +781,52 @@ public class MasterReport  {
 
 	public void setUsuario(UsrBean usuario) {
 		this.usuario = usuario;
+	}
+	public static File doZip(List<File> array, String rutaFinal) throws ClsExceptions
+	{
+		File ficZip=null;
+		byte[] buffer = new byte[8192];
+		int leidos;
+		ZipOutputStream outTemp = null;
+		try {
+			if ((array!=null) && (array.size()>0)) {
+				
+				ficZip = new File(rutaFinal+".zip");
+				outTemp = new ZipOutputStream(new FileOutputStream(ficZip));
+				
+				for (int i=0; i<array.size(); i++)
+				{
+					File auxFile = (File)array.get(i);
+					if (auxFile.exists()) {
+						ZipEntry ze = new ZipEntry(auxFile.getName());
+						outTemp.putNextEntry(ze);
+						FileInputStream fis=new FileInputStream(auxFile);
+						
+						buffer = new byte[8192];
+						
+						while ((leidos = fis.read(buffer, 0, buffer.length)) > 0)
+						{
+							outTemp.write(buffer, 0, leidos);
+						}
+						outTemp.flush();
+						fis.close();
+						outTemp.closeEntry();
+						auxFile.delete();
+					}
+				}
+				
+				outTemp.close();
+			}
+		 
+		} catch (Exception e) {
+			throw new ClsExceptions(e,"Error al crear fichero zip");
+		} finally {
+		    try {
+		        outTemp.close();
+		    } catch (Exception eee) {}
+		}
+		
+		return ficZip;
 	}
 
 

@@ -379,7 +379,7 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 		htCodigos.put(new Integer(contador),ejg.getIdInstitucion());
 		sql.append(" and parentesco.idparentesco=familia.idparentesco) PARENTESCO  ");
 		sql.append(" ,decode(ejg.idpersonajg,familia.IDPERSONA,1,0) orden ");
-		sql.append(" ,eejg.idpeticion , eejg.estado ,eejg.idxml ");
+		sql.append(" ,eejg.idpeticion , eejg.estado ,eejg.idxml ,eejg.idpeticion ");
 		
 		sql.append(" FROM SCS_UNIDADFAMILIAREJG familia, SCS_PERSONAJG persona,scs_ejg ejg, scs_eejg_peticiones eejg ");
 		sql.append(" WHERE familia.IDINSTITUCION = :");
@@ -408,19 +408,26 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 	    sql.append(" and familia.ANIO = eejg.anio (+) ");
 	    sql.append(" and familia.numero = eejg.numero (+) ");
 	    sql.append(" and familia.idpersona = eejg.idpersona (+) ");
+	    if(unidadFamiliarForm.getPeticionEejg()!=null && unidadFamiliarForm.getPeticionEejg().getEstado()!=null){
+	    	sql.append(" and eejg.estado =:");
+	    	contador ++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador),unidadFamiliarForm.getPeticionEejg().getEstado());
+	    }
 	    
-	    
-	    sql.append(" order by familia.solicitante, orden,persona.NOMBRE ");
+	    sql.append(" order by familia.solicitante, orden,persona.NOMBRE,eejg.idpeticion desc ");
 		
 		String literalSolicitante = UtilidadesString.getMensajeIdioma(usrBean,"gratuita.busquedaEJG.literal.solicitante");
 		
 		unidadFamiliarForm.setEjg(ejg);
 		List<DefinirUnidadFamiliarEJGForm> alUnidadFamiliar = null;
+		List<String> alPeticiones = null;
 		try {
 			RowsContainer rc = new RowsContainer(); 
 												
             if (rc.findBind(sql.toString(),htCodigos)) {
             	alUnidadFamiliar = new ArrayList<DefinirUnidadFamiliarEJGForm>();
+            	alPeticiones = new ArrayList<String>();
             	ScsUnidadFamiliarEJGBean unidadFamiliar = null;
             	ScsPersonaJGBean personaJG = null;
             	ScsParentescoBean parentesco = null;
@@ -462,9 +469,27 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 					if(idSolicitante.compareTo(unidadFamiliar.getPersonaJG().getIdPersona())==0)
 						unidadFamiliarForm.setPersonaJG(unidadFamiliar.getPersonaJG());
 					DefinirUnidadFamiliarEJGForm unidad = unidadFamiliar.getUnidadFamiliarEjgForm(); 
-					unidad.setModo(unidadFamiliarForm.getModo());
-            		alUnidadFamiliar.add(unidad);
+					if(unidadFamiliarForm.getModo()!=null)
+						unidad.setModo(unidadFamiliarForm.getModo());
+					StringBuffer peticion = new StringBuffer();
+					
+					peticion.append(unidadFamiliar.getIdInstitucion());
+					peticion.append("||");
+					peticion.append(unidadFamiliar.getAnio());
+					peticion.append("||");
+					peticion.append(unidadFamiliar.getNumero());
+					peticion.append("||");
+					peticion.append(unidadFamiliar.getIdTipoEJG());
+					peticion.append("||");
+					peticion.append(unidadFamiliar.getPersonaJG().getIdPersona());
+					peticion.append("||");
+					if(!alPeticiones.contains(peticion.toString())){
+						alPeticiones.add(peticion.toString());
+						alUnidadFamiliar.add(unidad);
+					}
+					
             	}
+    			
     			unidadFamiliarForm.setImporteIngresosAnuales(UtilidadesString.formatoImporte(importeIngresosAnuales));
     			unidadFamiliarForm.setImporteBienesMuebles(UtilidadesString.formatoImporte(importeMuebles));
 				unidadFamiliarForm.setImporteBienesInmuebles(UtilidadesString.formatoImporte(importeInmuebles));

@@ -4,7 +4,12 @@
 
 package com.siga.gratuita.action;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,8 +21,12 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
+import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.siga.administracion.SIGAConstants;
+import com.siga.beans.CerSolicitudCertificadosTextoBean;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
 import com.siga.beans.ScsPersonaJGAdm;
@@ -27,10 +36,17 @@ import com.siga.beans.ScsTelefonosPersonaJGAdm;
 import com.siga.beans.ScsTelefonosPersonaJGBean;
 import com.siga.beans.ScsUnidadFamiliarEJGAdm;
 import com.siga.beans.ScsUnidadFamiliarEJGBean;
+import com.siga.beans.eejg.ScsEejgPeticionesAdm;
+import com.siga.beans.eejg.ScsEejgPeticionesBean;
+import com.siga.beans.eejg.ScsEejgXmlAdm;
+import com.siga.beans.eejg.ScsEejgXmlBean;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinirUnidadFamiliarEJGForm;
+import com.siga.informes.InformeEejg;
+import com.siga.informes.InformeFacturasEmitidas;
+import com.siga.tlds.FilaExtElement;
 
 /**
 * Maneja las acciones que se pueden realizar sobre la tabla SCS_SOJ
@@ -43,21 +59,55 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 		      HttpServletResponse response) throws SIGAException {
 
 		MasterForm miForm = null;
+		String mapDestino =null;
 		miForm = (MasterForm) formulario;
 		try{
 			if((miForm == null)||(miForm.getModo()==null)||(miForm.getModo().equals(""))){
 				return mapping.findForward(this.abrir(mapping, miForm, request, response));
+				
 			}else{
 				if (miForm.getModo().equalsIgnoreCase("editar2")) 
-					return mapping.findForward( this.editar2(mapping, miForm, request,response));
-				//if (miForm.getModo().equalsIgnoreCase("nuevoTelefono")) 
-					//return mapping.findForward( this.nuevo(mapping, miForm, request,response));
-				return super.executeInternal(mapping, formulario, request, response);
+					mapDestino =  this.editar2(mapping, miForm, request,response);
+				else if(miForm.getModo().equalsIgnoreCase("solicitarEejg")){
+					mapDestino = this.solicitarEejg(mapping, miForm, request,response);
+				}else if(miForm.getModo().equalsIgnoreCase("descargaEejg")){
+					mapDestino = this.descargaEejg(mapping, miForm, request,response);
+				}else if(miForm.getModo().equalsIgnoreCase("descargaEejgMasivo")){
+					mapDestino = this.descargaEejgMasivo(mapping, miForm, request,response);
+				}else if(miForm.getModo().equalsIgnoreCase("descargaMultiplesEejg")){
+					mapDestino = this.descargaMultiplesEejg(mapping, miForm, request,response);
+				}
+				else{
+					return super.executeInternal(mapping,
+						      formulario,
+						      request, 
+						      response);
+					
+				}
+				
+				
 			}
+			// Redireccionamos el flujo a la JSP correspondiente
+			if (mapDestino == null) 
+			{ 
+				//mapDestino = "exception";
+			    if (miForm.getModal().equalsIgnoreCase("TRUE"))
+			    {
+			        request.setAttribute("exceptionTarget", "parent.modal");
+			    }
+			    
+			    //throw new ClsExceptions("El ActionMapping no puede ser nulo");
+			    throw new ClsExceptions("El ActionMapping no puede ser nulo","","0","GEN00","15");
+			}
+			
 		}
-		catch(Exception e){
-			return mapping.findForward("exception");
-		}
+		catch (SIGAException es) { 
+			throw es; 
+		} 
+		catch (Exception e) { 
+			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"}); // o el recurso del modulo que sea 
+		} 
+		return mapping.findForward(mapDestino);
 	}
 
 	
@@ -494,73 +544,241 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 
 	
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+
 		
 		try {
-		
-			/* "DATABACKUP" y "resultadoTelefonos" se usan habitualmente así que en primero lugar borramos esta variable*/		
-			request.getSession().removeAttribute("DATABACKUP");
-			request.getSession().removeAttribute("resultadoTelefonos");			
-			
 			ScsEJGAdm admEJG = new ScsEJGAdm(this.getUserBean(request));
-			ScsUnidadFamiliarEJGAdm admBean =  new ScsUnidadFamiliarEJGAdm(this.getUserBean(request));		
-			Vector v = new Vector ();
-			Hashtable miHash = new Hashtable();
+			Hashtable<String, Object> miHash = new Hashtable<String, Object>();
+			UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");	
+			DefinirUnidadFamiliarEJGForm miForm = (DefinirUnidadFamiliarEJGForm) formulario;
 			
-			/* En "resultadoTelefonos" se le pasa un vector vacío */
-			request.getSession().setAttribute("resultadoTelefonos", v);
+			String accion = (String)request.getSession().getAttribute("accion");
+			miForm.setModo(accion);
 			
-			String consulta="";
-			UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");		
-			
-			try {
+			if(request.getParameter("ANIO")!=null){
 				miHash.put("ANIO",request.getParameter("ANIO").toString());
 				miHash.put("NUMERO",request.getParameter("NUMERO").toString());
 				miHash.put("IDTIPOEJG",request.getParameter("IDTIPOEJG").toString());
 				miHash.put("IDINSTITUCION",usr.getLocation().toString());
-			} catch (Exception e){
-				DefinirUnidadFamiliarEJGForm miForm = (DefinirUnidadFamiliarEJGForm) formulario;				
+				miForm.setAnio(request.getParameter("ANIO"));
+				miForm.setNumero(request.getParameter("NUMERO"));
+				miForm.setIdTipoEJG(request.getParameter("IDTIPOEJG"));
+				miForm.setIdInstitucion(request.getParameter("IDINSTITUCION"));
+			}else{
 				miHash.put("ANIO",miForm.getAnio());
 				miHash.put("NUMERO",miForm.getNumero());
 				miHash.put("IDTIPOEJG",miForm.getIdTipoEJG());
 				miHash.put("IDINSTITUCION",usr.getLocation());				
 			}
-			request.setAttribute("DATOSEJG",miHash);
-			v = admEJG.selectPorClave(miHash);
-			Vector sumaValores = new Vector();
-			Hashtable sumaVal = new Hashtable();
-			
-			String idSolicitante = "";
-			if (!v.isEmpty()){
-				if (admEJG.beanToHashTable((ScsEJGBean)v.get(0)).containsKey("IDPERSONAJG")) //{
-					
-					idSolicitante = admEJG.beanToHashTable((ScsEJGBean)v.get(0)).get("IDPERSONAJG").toString(); 
-					consulta = "SELECT familia.*, persona.NIF, persona.NOMBRE, persona.APELLIDO1, persona.APELLIDO2, (select F_SIGA_GETRECURSO(parentesco.descripcion,"+this.getUserBean(request).getLanguage()+") from scs_parentesco parentesco where parentesco.idinstitucion=" + miHash.get("IDINSTITUCION")+" and parentesco.idparentesco=familia.idparentesco) PARENTESCO  FROM SCS_UNIDADFAMILIAREJG familia, SCS_PERSONAJG persona " + 
-							   "WHERE familia.IDINSTITUCION = " + miHash.get("IDINSTITUCION") + " AND familia.IDTIPOEJG = " + miHash.get("IDTIPOEJG") + " AND familia.ANIO = " + miHash.get("ANIO") +
-							   " AND familia.NUMERO = " + miHash.get("NUMERO") + " AND familia.IDPERSONA = persona.IDPERSONA AND persona.IDINSTITUCION = familia.IDINSTITUCION" ;
-					
-					v = admBean.selectGenerico(consulta);
-					
-					consulta = " SELECT SUM(IMPORTEINGRESOSANUALES ) SUMAINGRESOS, SUM(IMPORTEBIENESINMUEBLES ) SUMAINMUEBLES, SUM(IMPORTEBIENESMUEBLES) SUMAMUEBLES, SUM(IMPORTEOTROSBIENES) SUMAOTROS FROM SCS_UNIDADFAMILIAREJG " +
-							   "WHERE IDINSTITUCION = " + miHash.get("IDINSTITUCION") + " AND IDTIPOEJG = " + miHash.get("IDTIPOEJG") + " AND ANIO = " + miHash.get("ANIO") + " AND NUMERO = " + miHash.get("NUMERO");
-			
-					sumaValores = admBean.selectGenerico(consulta);
-					if (!sumaValores.isEmpty()) {sumaVal = (Hashtable)sumaValores.get(0);}
-				
-				//}
-				//else v.clear(); Cuidado con esto. 
-				//Modif. pq si el EJG se crea desde la pantalla "nuevo", no se inserta personajg, 
-				//con lo que la unidad familiar creada para el ejg, se elimina con la instruccion v.clear().
+			Vector<ScsEJGBean> vEjg = admEJG.selectByPK(miHash);
+			ScsEJGBean ejg = vEjg.get(0);
+			miForm.setEjg(ejg);
+			if (ejg.getIdPersonaJG()!=null ){
+				ScsUnidadFamiliarEJGAdm admUnidadFamiliar = new ScsUnidadFamiliarEJGAdm(usr);;
+				miForm = admUnidadFamiliar.getUnidadFamiliar(miForm, usr);
 			}
-			// Pasamos por la request el resultado de la busqueda y el identificador del solicitante
-			request.setAttribute("resultado",v);
-			request.setAttribute("sumavalores",sumaVal);
-			request.setAttribute("idSolicitante",idSolicitante); 
 			
+			request.setAttribute("EJG_UNIDADFAMILIAR", PersonaJGAction.EJG_UNIDADFAMILIAR);
 		} catch (Exception e) {
 			   throwExcp("messages.general.error",e,null);
 		}
 		
 		return "inicio";		
+	}
+	
+	protected String descargaEejg(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		DefinirUnidadFamiliarEJGForm miForm = (DefinirUnidadFamiliarEJGForm) formulario;
+		Vector vCampos = miForm.getDatosTablaOcultos(0);
+		String idPersonaJG = (String) vCampos.get(0);
+		String idInstitucionEJG = (String) vCampos.get(1);
+		String idTipoEJG = (String) vCampos.get(2);
+		String anio = (String) vCampos.get(3);
+		String numero = (String) vCampos.get(4);
+		String idXml = (String) vCampos.get(5);
+
+		UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
+		String salida = "";
+		try {
+			if(idXml==null ||idXml.equals(""))
+				throw new SIGAException("messages.general.error");
+			
+			ScsEJGAdm admEJG = new ScsEJGAdm(usr);
+			Hashtable<String, Object> miHash = new Hashtable<String, Object>();
+			miHash.put("ANIO",anio);
+			miHash.put("NUMERO",numero);
+			miHash.put("IDTIPOEJG",idTipoEJG);
+			miHash.put("IDINSTITUCION",idInstitucionEJG);
+			Vector<ScsEJGBean> vEjg = admEJG.selectByPK(miHash);
+			ScsEJGBean ejg = vEjg.get(0);
+			Map<Integer, Map<String, String>> mapInformes = new HashMap<Integer, Map<String,String>>();
+			Map<String, String> mapParameters = new HashMap<String, String>();
+			mapParameters.put("numEjg", ejg.getAnio()+"-"+ejg.getNumEJG());
+			mapParameters.put("idPersonaJG", idPersonaJG);
+			mapInformes.put(new Integer(idXml), mapParameters);
+			InformeEejg informe = new InformeEejg (usr);
+			File fichero = informe.generarInformeEejg(mapInformes);
+			if(fichero!= null){
+				request.setAttribute("nombreFichero", fichero.getName());
+				request.setAttribute("rutaFichero", fichero.getAbsolutePath());			
+				request.setAttribute("borrarFichero", "false");			
+				request.setAttribute("generacionOK","OK");
+				salida= "descarga";
+			}
+			else{
+				return exitoModalSinRefresco("facturacion.informes.facturasEmitidas.generarInforme.error", request);
+			}
+		}
+		catch (Exception e) { 
+			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
+		}				
+		return salida;
+	}
+	protected String descargaMultiplesEejg(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		DefinirUnidadFamiliarEJGForm miForm = (DefinirUnidadFamiliarEJGForm) formulario;
+		UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
+		String salida = "";
+		try {
+			ScsUnidadFamiliarEJGAdm admUnidadFamiliar = new ScsUnidadFamiliarEJGAdm(usr);;
+			ScsEJGAdm admEJG = new ScsEJGAdm(usr);
+			InformeEejg informe = new InformeEejg (usr);
+			Vector<Hashtable<String, String>> datosInforme = informe.obtenerDatosFormulario(miForm.getDatosInforme());
+			ScsEejgPeticionesBean peticionEejg = null;
+			Map<Integer, Map<String, String>> mapInformes = new HashMap<Integer, Map<String,String>>();
+			Hashtable<String, Object> miHash = null;
+			ScsEJGBean ejg = null;
+			for(Hashtable<String, String> datos:datosInforme){
+				String idTipoEJG= (String)datos.get("idtipo");
+				String anio= (String)datos.get("anio");
+				String numero= (String)datos.get("numero");
+				String idInstitucion= (String)datos.get("idinstitucion");
+				miHash = new Hashtable<String, Object>();
+				miHash.put("ANIO",anio);
+				miHash.put("NUMERO",numero);
+				miHash.put("IDTIPOEJG",idTipoEJG);
+				miHash.put("IDINSTITUCION",idInstitucion);
+				
+				Vector<ScsEJGBean> vEjg = admEJG.selectByPK(miHash);
+				ejg = (ScsEJGBean)vEjg.get(0);
+				miForm = new DefinirUnidadFamiliarEJGForm();
+				miForm.setEjg(ejg);
+				ejg.setIdInstitucion(new Integer(idInstitucion));
+				ejg.setIdTipoEJG(new Integer(idTipoEJG));
+				ejg.setAnio(new Integer(anio));
+				ejg.setNumero(new Integer(numero));
+				
+				miForm.setIdInstitucion(idInstitucion);
+				miForm.setIdTipoEJG(idTipoEJG);
+				miForm.setAnio(anio);
+				miForm.setNumero(numero);
+				//Sacaremmos solos las peticiones que esten finalizadas 
+				peticionEejg = new ScsEejgPeticionesBean();
+				peticionEejg.setEstado(ScsEejgPeticionesBean.EEJG_ESTADO_FINALIZADO);
+				miForm.setPeticionEejg(peticionEejg);
+				miForm = admUnidadFamiliar.getUnidadFamiliar(miForm, usr);
+				List<DefinirUnidadFamiliarEJGForm> alUnidadFamiliar = miForm.getUnidadFamiliar();
+				if(alUnidadFamiliar!=null && alUnidadFamiliar.size()>0){
+					for(DefinirUnidadFamiliarEJGForm formUnidadFamiliar:alUnidadFamiliar){
+						
+						Map<String, String> mapParameters = new HashMap<String, String>();
+						mapParameters.put("numEjg", ejg.getAnio()+"-"+ejg.getNumEJG());
+						mapParameters.put("idPersonaJG",formUnidadFamiliar.getIdPersona() );
+						mapInformes.put(formUnidadFamiliar.getPeticionEejg().getIdXml(), mapParameters);
+					}
+				}
+			}
+			File fichero =  informe.generarInformeEejg(mapInformes);
+			if(fichero!= null){
+				request.setAttribute("nombreFichero", fichero.getName());
+				request.setAttribute("rutaFichero", fichero.getAbsolutePath());			
+				request.setAttribute("borrarFichero", "false");			
+				request.setAttribute("generacionOK","OK");
+				salida= "descarga";
+			}
+			else{
+				return exitoModalSinRefresco("facturacion.informes.facturasEmitidas.generarInforme.error", request);
+			}
+		}
+		catch (Exception e) { 
+			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
+		}				
+		return salida;
+	}
+	
+	protected String descargaEejgMasivo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		DefinirUnidadFamiliarEJGForm miForm = (DefinirUnidadFamiliarEJGForm) formulario;
+		UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
+		String salida = "";
+		try {
+			ScsEJGAdm admEJG = new ScsEJGAdm(usr);
+			Hashtable<String, Object> miHash = null;
+			Map<Integer, Map<String, String>> mapInformes = new HashMap<Integer, Map<String,String>>();
+			int lengthDatosTabla = miForm.getDatosTabla().size();
+			for (int i = 0; i < lengthDatosTabla ; i++) {
+				Vector vCampos = miForm.getDatosTablaOcultos(i);
+				String idPersonaJG = (String) vCampos.get(0);
+				String idInstitucionEJG = (String) vCampos.get(1);
+				String idTipoEJG = (String) vCampos.get(2);
+				String anio = (String) vCampos.get(3);
+				String numero = (String) vCampos.get(4);
+				String idXml = (String) vCampos.get(5);
+				
+				miHash = new Hashtable<String, Object>();
+				miHash.put("ANIO",anio);
+				miHash.put("NUMERO",numero);
+				miHash.put("IDTIPOEJG",idTipoEJG);
+				miHash.put("IDINSTITUCION",idInstitucionEJG);
+				Vector<ScsEJGBean> vEjg = admEJG.selectByPK(miHash);
+				ScsEJGBean ejg = vEjg.get(0);
+				
+				Map<String, String> mapParameters = new HashMap<String, String>();
+				mapParameters.put("numEjg", ejg.getAnio()+"-"+ejg.getNumEJG());
+				mapParameters.put("idPersonaJG", idPersonaJG);
+				mapInformes.put(new Integer(idXml), mapParameters);
+				
+				
+			}
+			InformeEejg informe = new InformeEejg (usr);
+			File fichero =  informe.generarInformeEejg(mapInformes);
+			if(fichero!= null){
+				request.setAttribute("nombreFichero", fichero.getName());
+				request.setAttribute("rutaFichero", fichero.getAbsolutePath());			
+				request.setAttribute("borrarFichero", "false");			
+				request.setAttribute("generacionOK","OK");
+				salida= "descarga";
+			}
+			else{
+				return exitoModalSinRefresco("facturacion.informes.facturasEmitidas.generarInforme.error", request);
+			}
+		}
+		catch (Exception e) { 
+			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
+		}				
+		return salida;
+	}
+	
+	protected String solicitarEejg(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		DefinirUnidadFamiliarEJGForm miForm = (DefinirUnidadFamiliarEJGForm) formulario;
+		Vector vCampos = miForm.getDatosTablaOcultos(0);
+		String idPersonaJG = (String) vCampos.get(0);
+		String idinstitucion = (String) vCampos.get(1);
+		String idTipoEJG = (String) vCampos.get(2);
+		String anio = (String) vCampos.get(3);
+		String numero = (String) vCampos.get(4);
+		UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
+		ScsEejgPeticionesBean peticionEejg = new ScsEejgPeticionesBean();
+		peticionEejg.setIdInstitucion(Integer.parseInt(idinstitucion));
+		peticionEejg.setIdTipoEjg(Integer.parseInt(idTipoEJG));
+		peticionEejg.setAnio(Integer.parseInt(anio));
+		peticionEejg.setNumero(Integer.parseInt(numero));
+		peticionEejg.setIdPersona(Long.parseLong(idPersonaJG));
+		
+		ScsEejgPeticionesAdm admPeticionEejg = new ScsEejgPeticionesAdm(usr);
+		try {
+			admPeticionEejg.insertarPeticionEejg(peticionEejg);	
+		} catch (Exception e) {
+			throwExcp("messages.general.error",e,null);
+		}
+		return exitoRefresco("messages.inserted.success",request); 
 	}
 	
 	/** 

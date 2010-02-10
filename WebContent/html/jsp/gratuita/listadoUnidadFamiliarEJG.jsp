@@ -1,4 +1,4 @@
-<!-- listadoUnidadFamiliarEJG.jsp -->
+<!-- listadoUnidadFamiliarEJ2G2.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -6,399 +6,307 @@
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
-<!-- IMPORTS -->
-<%@ page import="java.util.*"%>
-<%@ page import="com.atos.utils.*"%>
-<%@ page import="com.siga.beans.*"%>
-<%@ page import="com.siga.Utilidades.*"%>
-<%@ page import="com.siga.beans.ScsUnidadFamiliarEJGBean"%>
-<%@ page import="com.siga.administracion.SIGAMasterTable"%>
-<%@ page import="com.siga.administracion.SIGAConstants"%>
-<%@ page import="com.siga.gratuita.action.PersonaJGAction"%>
-<%@page import="com.siga.tlds.FilaExtElement"%>
-
-
 <!-- TAGLIBS -->
 <%@taglib uri	=	"struts-bean.tld" 			prefix="bean" 		%>
 <%@taglib uri 	= 	"struts-html.tld" 			prefix="html" 		%>
 <%@taglib uri	= 	"libreria_SIGA.tld" 		prefix="siga"		%>
 <%@taglib uri	=	"struts-logic.tld" 			prefix="logic" 		%>
-
+<%@ taglib uri="c.tld" prefix="c"%>
 <!-- JSP -->
-<% 
-	String app=request.getContextPath();
-	HttpSession ses=request.getSession(true);
-	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
-	Vector obj = (Vector) request.getAttribute("resultado");
-	Hashtable valores = (Hashtable)request.getAttribute("sumavalores");
-	String idSolicitante = request.getAttribute("idSolicitante").toString();
-	String accion = (String)request.getSession().getAttribute("accion");
-	Hashtable solicitante = new Hashtable();
-		
-	String anio = "", numero = "", idTipoEJG = "", botones ="", botonVolverNuevo = "V,N";
-	
-	if (accion.equalsIgnoreCase("ver")){
-		botones = "";
-	}
-	else {
-		botones = "C,E,B";
-	}
-	
-	Hashtable fila = new Hashtable();
-	
-	try {
-		
-		anio = request.getParameter("ANIO").toString();
-		numero = request.getParameter("NUMERO").toString();
-		idTipoEJG = request.getParameter("IDTIPOEJG").toString();
-	}	
-	catch(Exception e){
-		Hashtable miHash = (Hashtable) request.getAttribute("DATOSEJG");
-		anio = miHash.get("ANIO").toString();
-		numero = miHash.get("NUMERO").toString();
-		idTipoEJG = miHash.get("IDTIPOEJG").toString();
-	}	
-%>
-
 <html>
 
 <!-- HEAD -->
 <head>
-
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
-	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+  
+	<link id="default" rel="stylesheet" type="text/css"	href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>">
+	<script src="<html:rewrite page='/html/js/SIGA.js'/>" type="text/javascript"></script>
 	<title><siga:Idioma key="gratuita.operarUnidadFamiliar.literal.unidadFamiliar"/></title>
-	
-	<script type="text/javascript">
-		function refrescarLocal()
-		{	
-			buscar();
-		}
-	</script>
-	
 	<siga:Titulo 
 		titulo="gratuita.busquedaEJG.unidadFamiliar" 
 		localizacion="gratuita.busquedaEJG.localizacion"/>
 </head>
 
 <body class="tablaCentralCampos" >	
-	
-	
-	<html:form action="/JGR_UnidadFamiliarPerJG.do" method="post" target="submitArea" style="display:none">
-		<input type="hidden" name="modo" value="abrirPestana">
-
-		<input type="hidden" name="idInstitucionJG" value="<%=usr.getLocation() %>">
-		<input type="hidden" name="idPersonaJG" value="">
-
-		<input type="hidden" name="idInstitucionEJG" value="<%=usr.getLocation() %>">
-		<input type="hidden" name="idTipoEJG" value="<%=idTipoEJG %>">
-		<input type="hidden" name="anioEJG" value="<%=anio %>">
-		<input type="hidden" name="numeroEJG" value="<%=numero %>">
-
-		<input type="hidden" name="conceptoE" value="<%=PersonaJGAction.EJG_UNIDADFAMILIAR %>">
-		<input type="hidden" name="tituloE" value="gratuita.personaJG.literal.unidadFamiliar">
-		<input type="hidden" name="localizacionE" value="">
-		<input type="hidden" name="accionE" value="nuevo">
-		<input type="hidden" name="actionE" value="/JGR_UnidadFamiliarPerJG.do">
-		<input type="hidden" name="pantallaE" value="M">
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
-		</html:form>	
-		
-		
 			
 
-		<table class="tablaTitulo" cellspacing="0" heigth="38">
-		<tr>
-			<td id="titulo" class="titulitosDatos">
-	
-					<%
-							String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "", t_tipoEJG = "";
-							;
-							ScsEJGAdm adm = new ScsEJGAdm(usr);
+<bean:define id="modo" name="DefinirUnidadFamiliarEJGForm" property="modo" type="java.lang.String"/>
+<bean:define id="conceptoEJG" scope="request" name="EJG_UNIDADFAMILIAR" />
 
-							Hashtable hTitulo = adm.getTituloPantallaEJG(usr.getLocation(),
-									anio, numero, idTipoEJG);
+<html:form action="/JGR_UnidadFamiliarPerJG" method="post" target="submitArea" >
+		<html:hidden property="modo" value="abrirPestana"/>
 
-							if (hTitulo != null) {
-								t_nombre = (String) hTitulo.get(ScsPersonaJGBean.C_NOMBRE);
-								t_apellido1 = (String) hTitulo
-										.get(ScsPersonaJGBean.C_APELLIDO1);
-								t_apellido2 = (String) hTitulo
-										.get(ScsPersonaJGBean.C_APELLIDO2);
-								t_anio = (String) hTitulo.get(ScsEJGBean.C_ANIO);
-								t_numero = (String) hTitulo.get(ScsEJGBean.C_NUMEJG);
-								t_tipoEJG = (String) hTitulo.get("TIPOEJG");
-							}
-						%>
-					<%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%>
-					- <%=UtilidadesString.mostrarDatoJSP(t_nombre)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido1)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido2)%>
-			</td>
-		</tr>
-		</table>
+		<html:hidden property="idInstitucionJG" value="${DefinirUnidadFamiliarEJGForm.idInstitucion}"/>
+		<html:hidden property="idPersonaJG" value=""/>
+
+		<html:hidden property="idInstitucionEJG" value="${DefinirUnidadFamiliarEJGForm.idInstitucion}"/>
+		<html:hidden property="idTipoEJG" value="${DefinirUnidadFamiliarEJGForm.idTipoEJG}"/>
+		<html:hidden property="anioEJG" value="${DefinirUnidadFamiliarEJGForm.anio}"/>
+		<html:hidden property="numeroEJG" value="${DefinirUnidadFamiliarEJGForm.numero}"/>
+
+		<html:hidden property="conceptoE" value="${conceptoEJG}"/>
+		<html:hidden property="tituloE" value="gratuita.personaJG.literal.unidadFamiliar"/>
+		<html:hidden property="localizacionE" value=""/>
+		<html:hidden property="accionE" value="nuevo"/>
+		<html:hidden property="actionE" value="/JGR_UnidadFamiliarPerJG.do"/>
+		<html:hidden property="pantallaE" value="M"/>
+			<!-- RGG: cambio a formularios ligeros -->
+		<input type="hidden" name="tablaDatosDinamicosD"/>
+		<input type="hidden" name="actionModal" value=""/>
+</html:form>
+		
+<html:form action="/JGR_UnidadFamiliarEJG"  method="post" target="submitArea">
+		<html:hidden property="modo"/>
+		<html:hidden property="idTipoEJG" value="${DefinirUnidadFamiliarEJGForm.idTipoEJG}"/>
+		<html:hidden property="anio" value="${DefinirUnidadFamiliarEJGForm.anio}"/>
+		<html:hidden property="numero" value="${DefinirUnidadFamiliarEJGForm.numero}"/>
+		<html:hidden property="idInstitucion" value="${DefinirUnidadFamiliarEJGForm.idInstitucion}"/>
+		<input type="hidden" name="tablaDatosDinamicosD"/>
 	
-		<siga:TablaCabecerasFijas 		   
+</html:form>
+
+
+<table class="tablaTitulo" cellspacing="0" heigth="38">
+<tr>
+	<td id="titulo" class="titulitosDatos">
+		<c:out value="${DefinirUnidadFamiliarEJGForm.ejg.anio}"></c:out>/<c:out value="${DefinirUnidadFamiliarEJGForm.ejg.numEJG}"></c:out>-<c:out value="${DefinirUnidadFamiliarEJGForm.personaJG.nombre}"></c:out>&nbsp;<c:out value="${DefinirUnidadFamiliarEJGForm.personaJG.apellido1}"></c:out>&nbsp;<c:out value="${DefinirUnidadFamiliarEJGForm.personaJG.apellido2}"></c:out>
+	</td>
+</tr>
+</table>
+
+
+			<siga:TablaCabecerasFijas 		   
 		   nombre="listadoUnidadFamiliar"
 		   borde="2"
 		   clase="tableTitle"		   
-		   nombreCol="gratuita.personaJG.literal.parentescoNormalizado,gratuita.busquedaEJG.literal.nif,gratuita.busquedaEJG.literal.nombre,gratuita.operarInteresado.literal.ingresosAnuales,gratuita.operarInteresado.literal.bienesMobiliarios,gratuita.operarInteresado.literal.bienesInmuebles,gratuita.operarInteresado.literal.otrosBienes,"
-		   tamanoCol="10,10,26,10,10,10,10,14"
+		   nombreCol="<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='checkTodos()'/> ,gratuita.personaJG.literal.parentescoNormalizado,gratuita.busquedaEJG.literal.nif,gratuita.busquedaEJG.literal.nombre,gratuita.operarInteresado.literal.ingresosAnuales,gratuita.operarInteresado.literal.bienesMobiliarios,gratuita.operarInteresado.literal.bienesInmuebles,gratuita.operarInteresado.literal.otrosBienes,"
+		   tamanoCol="5,10,9,25,9,9,9,9,16"
 		   alto="100%"
 		   ajusteBotonera="true"		
 		   mensajeBorrado="gratuita.ejg.unidadFamiliar.borrado"
 		   modal="G"
 		  >
-	<%
-		if ((obj != null) && (obj.size() > 0)) {
-
-				//preparamos los importes para visualizarlos.
-				java.text.DecimalFormatSymbols dfs = new java.text.DecimalFormatSymbols();
-				dfs.setDecimalSeparator(',');
-				dfs.setGroupingSeparator('.');
-				java.text.DecimalFormat dfEuro = new java.text.DecimalFormat(
-						"#,##0.00", dfs);
-				FilaExtElement[] elems = null;
-
-				if (!accion.equalsIgnoreCase("ver")) {
-					elems = new FilaExtElement[4];
-					elems[3] = new FilaExtElement("comunicar", "comunicar",
-							SIGAConstants.ACCESS_READ);
-				} else {
-					elems = new FilaExtElement[3];
-				}
-				int recordNumber = 0;
-				int recordNumber2 = 1;
-				while (obj.size() > recordNumber) {
-					fila = (Hashtable) obj.get(recordNumber);
-					if (fila.get("IDPERSONA").equals(idSolicitante)) {
-						solicitante = fila;
-					} else {
-	%>				
-					<siga:FilaConIconos fila='<%=String.valueOf(recordNumber2)%>' botones="<%=botones%>" elementos="<%=elems%>" clase="listaNonEdit" modo="<%=accion%>">
+		  
+	<logic:empty name="DefinirUnidadFamiliarEJGForm" property="unidadFamiliar">
+	<br>
+   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
+ 		<br>
+	</logic:empty>
+	<logic:notEmpty name="DefinirUnidadFamiliarEJGForm"	property="unidadFamiliar">
+		<logic:iterate name="DefinirUnidadFamiliarEJGForm"	property="unidadFamiliar" id="solicitante" indexId="index">
+			<%index = index.intValue()+1; %>
+			<input type="hidden" id="idPersonaJG_<%=index%>" value="<bean:write name="solicitante" property="idPersona" />">			
+			<c:if	test="${solicitante.idPersona!=DefinirUnidadFamiliarEJGForm.personaJG.idPersona}">
+			<bean:define id="elementosFila" name="solicitante" property="elementosFila" type="com.siga.tlds.FilaExtElement[]"/>
+			<bean:define id="botones" name="solicitante" property="botones" type="java.lang.String"/>	
+			
+			<siga:FilaConIconos fila="<%=String.valueOf(index.intValue())%>" botones="<%=botones%>" elementos="<%=elementosFila%>" clase="listaNonEdit" modo="<%=modo%>" >
+					
+					<td align="center">
+						<c:choose>
+							<c:when test="${solicitante.peticionEejg.idXml!=null}">
+							<input type="checkbox" value="${solicitante.peticionEejg.idXml}" name="chkPersona">
+							</c:when>
+							<c:otherwise>
+							  <input type="checkbox" value="<bean:write name="index"/>" disabled name="chkPersona">
+							</c:otherwise>
+						</c:choose>
+					
+						
+					</td>
+			
 					<td>
-
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber2)%>_1" value="<%=PersonaJGAction.EJG_UNIDADFAMILIAR%>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber2)%>_2" value="gratuita.personaJG.literal.unidadFamiliar">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber2)%>_3" value="gratuita.personaJG.literal.unidadFamiliar">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber2)%>_4" value="editar">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber2)%>_5" value="<%=usr.getLocation()%>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber2)%>_6" value="<%=fila.get("IDPERSONA")%>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber2)%>_7" value="<%=usr.getLocation()%>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber2)%>_8" value="<%=idTipoEJG%>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber2)%>_9" value="<%=anio%>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber2)%>_10" value="<%=numero%>">
-					<%
-						if (fila.get("SOLICITANTE").equals(
-													ClsConstants.DB_TRUE)) {
-					%>
-					   <siga:Idioma key="gratuita.busquedaEJG.literal.solicitante"/>
-					<%
-						} else {
-					%>
-					   <%=fila.get("PARENTESCO")%>&nbsp;
-					<%
-						}
-					%>
+						<input type="hidden" name="oculto<%=index%>_1" value="EJGUnidadFamiliar">
+						<input type="hidden" name="oculto<%=index%>_2" value="gratuita.personaJG.literal.unidadFamiliar">
+						<input type="hidden" name="oculto<%=index%>_3" value="gratuita.personaJG.literal.unidadFamiliar">
+						<input type="hidden" name="oculto<%=index%>_4" value="editar">
+						<input type="hidden" name="oculto<%=index%>_5" value="${DefinirUnidadFamiliarEJGForm.idInstitucion}">
+						<input type="hidden" name="oculto<%=index%>_6" value="${solicitante.personaJG.idPersona}">
+						<input type="hidden" name="oculto<%=index%>_7" value="${DefinirUnidadFamiliarEJGForm.idInstitucion}">
+						<input type="hidden" name="oculto<%=index%>_8" value="${DefinirUnidadFamiliarEJGForm.idTipoEJG}">
+						<input type="hidden" name="oculto<%=index%>_9" value="${DefinirUnidadFamiliarEJGForm.anio}">
+						<input type="hidden" name="oculto<%=index%>_10" value="${DefinirUnidadFamiliarEJGForm.numero}">
+						<input type="hidden" name="oculto<%=index%>_11" value="${solicitante.peticionEejg.idXml}">
+						
+						
+						
+						<c:out value="${solicitante.parentesco.descripcion}"></c:out>
 					
 					</td>
-					<td><%=fila.get("NIF")%>&nbsp;</td>
-					<td><%=fila.get("NOMBRE") + " "
-										+ fila.get("APELLIDO1") + " "
-										+ fila.get("APELLIDO2")%>&nbsp;</td>
-					<td align="right"><%
-						if (fila.get("IMPORTEINGRESOSANUALES") != null
-													&& !fila.get("IMPORTEINGRESOSANUALES")
-															.equals("")) {
-					%><%=dfEuro
-															.format(Double
-																	.valueOf((String) fila
-																			.get("IMPORTEINGRESOSANUALES")))%>&euro;<%
-						} else {
-					%>&nbsp;<%
-						}
-					%></td>
-					<td align="right"><%
-						if (fila.get("IMPORTEBIENESMUEBLES") != null
-													&& !fila.get("IMPORTEBIENESMUEBLES")
-															.equals("")) {
-					%><%=dfEuro
-															.format(Double
-																	.valueOf((String) fila
-																			.get("IMPORTEBIENESMUEBLES")))%>&euro;<%
-						} else {
-					%>&nbsp;<%
-						}
-					%></td>
-					<td align="right"><%
-						if (fila.get("IMPORTEBIENESINMUEBLES") != null
-													&& !fila.get("IMPORTEBIENESINMUEBLES")
-															.equals("")) {
-					%><%=dfEuro
-															.format(Double
-																	.valueOf((String) fila
-																			.get("IMPORTEBIENESINMUEBLES")))%>&euro;<%
-						} else {
-					%>&nbsp;<%
-						}
-					%></td>
-					<td align="right"><%
-						if (fila.get("IMPORTEOTROSBIENES") != null
-													&& !fila.get("IMPORTEOTROSBIENES")
-															.equals("")) {
-					%><%=dfEuro
-															.format(Double
-																	.valueOf((String) fila
-																			.get("IMPORTEOTROSBIENES")))%>&euro;<%
-						} else {
-					%>&nbsp;<%
-						}
-					%></td>
-					</siga:FilaConIconos>					
-		<%
-								recordNumber2++;
-											}
-											recordNumber++;
-										}
+					<td ><c:out value="${solicitante.personaJG.nif}"></c:out></td>
+					<td><c:out value="${solicitante.personaJG.nombre}"></c:out>&nbsp;
+					<c:out value="${solicitante.personaJG.apellido1}"></c:out>&nbsp;
+					<c:out value="${solicitante.personaJG.apellido2}"></c:out>
+					</td>
 
-										String importeIngresosAnualesFormat = "";
-										String importeMueblesFormat = "";
-										String importeInmueblesFormat = "";
-										String importeOtrosBienesFormat = "";
+					<td align="right">
+						<c:if	test="${solicitante.importeIngresosAnuales!=''}">
+						<c:out value="${solicitante.importeIngresosAnuales}"></c:out>&euro;
+						</c:if>
+						<c:if test="${solicitante.importeIngresosAnuales==''}">
+							&nbsp;
+						</c:if>
+					</td>
+					<td align="right">
+						<c:if test="${solicitante.importeBienesMuebles!=''}">
+						<c:out value="${solicitante.importeBienesMuebles}"></c:out>&euro;
+						</c:if>
+						<c:if	test="${solicitante.importeBienesMuebles==''}">
+							&nbsp;
+						</c:if>
+					</td>
+					<td align="right">
+						<c:if test="${solicitante.importeBienesInmuebles!=''}">
+						<c:out value="${solicitante.importeBienesInmuebles}"></c:out>&euro;
+						</c:if>
+						<c:if	test="${solicitante.importeBienesInmuebles==''}">
+							&nbsp;
+						</c:if>
+					</td>
+					<td align="right">
+						<c:if test="${solicitante.importeOtrosBienes!=''}">
+						<c:out value="${solicitante.importeOtrosBienes}"></c:out>&euro;
+						</c:if>
+						<c:if	test="${solicitante.importeOtrosBienes==''}">
+							&nbsp;
+						
+						</c:if>
+					</td>
 
-										if (!solicitante.isEmpty()) {
-											importeIngresosAnualesFormat = (String) solicitante
-													.get("IMPORTEINGRESOSANUALES");
-											importeMueblesFormat = (String) solicitante
-													.get("IMPORTEBIENESMUEBLES");
-											importeInmueblesFormat = (String) solicitante
-													.get("IMPORTEBIENESINMUEBLES");
-											importeOtrosBienesFormat = (String) solicitante
-													.get("IMPORTEOTROSBIENES");
+					</siga:FilaConIconos>
+				</c:if>
+				<c:if	test="${solicitante.idPersona==DefinirUnidadFamiliarEJGForm.personaJG.idPersona}">
+				<bean:define id="elementosFila" name="solicitante" property="elementosFila" type="com.siga.tlds.FilaExtElement[]"/>
+				<siga:FilaConIconos fila="<%=String.valueOf(index.intValue())%>" botones="" elementos="<%=elementosFila%>" clase="listaNonEdit" modo="<%=modo%>" visibleBorrado="false" visibleEdicion="false"	visibleConsulta="false">
+					<td align="center" >
+						
+						<c:choose>
+							<c:when test="${solicitante.peticionEejg.idXml!=null}">
+							<input type="checkbox" value="${solicitante.peticionEejg.idXml}" name="chkPersona">
+							</c:when>
+							<c:otherwise>
+							  <input type="checkbox" value="<bean:write name="index"/>" disabled name="chkPersona">
+							</c:otherwise>
+						</c:choose>
+						
+					</td>
+					<td>
+						<input type="hidden" name="oculto<%=index%>_1" value="EJGUnidadFamiliar">
+						<input type="hidden" name="oculto<%=index%>_2" value="gratuita.personaJG.literal.unidadFamiliar">
+						<input type="hidden" name="oculto<%=index%>_3" value="gratuita.personaJG.literal.unidadFamiliar">
+						<input type="hidden" name="oculto<%=index%>_4" value="editar">
+						<input type="hidden" name="oculto<%=index%>_5" value="${DefinirUnidadFamiliarEJGForm.idInstitucion}">
+						<input type="hidden" name="oculto<%=index%>_6" value="${solicitante.personaJG.idPersona}">
+						<input type="hidden" name="oculto<%=index%>_7" value="${DefinirUnidadFamiliarEJGForm.idInstitucion}">
+						<input type="hidden" name="oculto<%=index%>_8" value="${DefinirUnidadFamiliarEJGForm.idTipoEJG}">
+						<input type="hidden" name="oculto<%=index%>_9" value="${DefinirUnidadFamiliarEJGForm.anio}">
+						<input type="hidden" name="oculto<%=index%>_10" value="${DefinirUnidadFamiliarEJGForm.numero}">
+						<input type="hidden" name="oculto<%=index%>_11" value="${solicitante.peticionEejg.idXml}">
+						
+						
+						
+						<c:out value="${solicitante.parentesco.descripcion}"></c:out>
+					
+					</td>
+					<td><c:out value="${solicitante.personaJG.nif}"></c:out></td>
+					<td><c:out value="${solicitante.personaJG.nombre}"></c:out>&nbsp;
+					<c:out value="${solicitante.personaJG.apellido1}"></c:out>&nbsp;
+					<c:out value="${solicitante.personaJG.apellido2}"></c:out>
+					</td>
 
-											if (importeIngresosAnualesFormat != null
-													&& !importeIngresosAnualesFormat.equals(""))
-												importeIngresosAnualesFormat = dfEuro.format(Double
-														.valueOf(importeIngresosAnualesFormat));
-											else
-												importeIngresosAnualesFormat = "0";
-											if (importeMueblesFormat != null
-													&& !importeMueblesFormat.equals(""))
-												importeMueblesFormat = dfEuro.format(Double
-														.valueOf(importeMueblesFormat));
-											else
-												importeMueblesFormat = "0";
-											if (importeInmueblesFormat != null
-													&& !importeInmueblesFormat.equals(""))
-												importeInmueblesFormat = dfEuro.format(Double
-														.valueOf(importeInmueblesFormat));
-											else
-												importeInmueblesFormat = "0";
-											if (importeOtrosBienesFormat != null
-													&& !importeOtrosBienesFormat.equals(""))
-												importeOtrosBienesFormat = dfEuro.format(Double
-														.valueOf(importeOtrosBienesFormat));
-											else
-												importeOtrosBienesFormat = "0";
-							%>
+					<td align="right">
+						<c:if	test="${solicitante.importeIngresosAnuales!=''}">
+						<c:out value="${solicitante.importeIngresosAnuales}"></c:out>&euro;
+						</c:if>
+						<c:if test="${solicitante.importeIngresosAnuales==''}">
+							&nbsp;
+						</c:if>
+					</td>
+					<td align="right">
+						<c:if test="${solicitante.importeBienesMuebles!=''}">
+						<c:out value="${solicitante.importeBienesMuebles}"></c:out>&euro;
+						</c:if>
+						<c:if	test="${solicitante.importeBienesMuebles==''}">
+							&nbsp;
+						</c:if>
+					</td>
+					<td align="right">
+						<c:if test="${solicitante.importeBienesInmuebles!=''}">
+						<c:out value="${solicitante.importeBienesInmuebles}"></c:out>&euro;
+						</c:if>
+						<c:if	test="${solicitante.importeBienesInmuebles==''}">
+							&nbsp;
+						</c:if>
+					</td>
+					<td align="right">
+						<c:if test="${solicitante.importeOtrosBienes!=''}">
+						<c:out value="${solicitante.importeOtrosBienes}"></c:out>&euro;
+						</c:if>
+						<c:if	test="${solicitante.importeOtrosBienes==''}">
+							&nbsp;
+						
+						</c:if>
+					</td>
 
-	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber2+1)%>'
-		botones="" visibleBorrado="false" visibleEdicion="false"
-		visibleConsulta="false" clase="listaNonEdit" modo="<%=accion%>">
+					</siga:FilaConIconos>
+				
+				
+				
+				</c:if>
 
-		<td width="10%"><siga:Idioma
-			key="gratuita.busquedaEJG.literal.solicitante" /></td>
-		<td width="10%"><%=UtilidadesString
-											.mostrarDatoJSP(solicitante
-													.get("NIF"))%></td>
-		<td width="30%"><%=solicitante.get("NOMBRE") + " "
-									+ solicitante.get("APELLIDO1") + " "
-									+ solicitante.get("APELLIDO2")%>&nbsp;</td>
-		<td width="10%" align="right"><%=importeIngresosAnualesFormat%>&euro;</td>
-		<td width="10%" align="right"><%=importeMueblesFormat%>&euro;</td>
-		<td width="10%" align="right"><%=importeInmueblesFormat%>&euro;</td>
-		<td width="10%" align="right"><%=importeOtrosBienesFormat%>&euro;</td>
-
-	</siga:FilaConIconos>
-
-	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber2+2)%>' botones="" visibleBorrado="false" visibleEdicion="false" visibleConsulta="false" clase="listaNonEdit" modo="<%=accion%>">
-			   <td width="50%"  colspan="3" align="right"><b><siga:Idioma key="gratuita.listadoUnidadFamiliar.literal.totalUnidadFamiliar"/></b></td>
-			   <td width="10%" align="right" ><%=(valores.get("SUMAINGRESOS") == null || valores
-													.get("SUMAINGRESOS")
-													.equals("")) ? "0"
-											: dfEuro
-													.format(Double
-															.valueOf((String) valores
-																	.get("SUMAINGRESOS")))%>&euro;</td>
-			   <td width="10%" align="right"><%=(valores.get("SUMAMUEBLES") == null || valores
-													.get("SUMAMUEBLES").equals(
-															"")) ? "0"
-											: dfEuro
-													.format(Double
-															.valueOf((String) valores
-																	.get("SUMAMUEBLES")))%>&euro;</td>
-			   <td width="10%" align="right"><%=(valores.get("SUMAINMUEBLES") == null || valores
-													.get("SUMAINMUEBLES")
-													.equals("")) ? "0"
-											: dfEuro
-													.format(Double
-															.valueOf((String) valores
-																	.get("SUMAINMUEBLES")))%>&euro;</td>
-			   <td width="10%" align="right"><%=(valores.get("SUMAOTROS") == null || valores
-													.get("SUMAOTROS")
-													.equals("")) ? "0" : dfEuro
-											.format(Double
-													.valueOf((String) valores
-															.get("SUMAOTROS")))%>&euro;</td>
-				</siga:FilaConIconos>					
-
-		   
-		   <%
-							   		   	}
-							   		   %>	   	
-	<%
-	   			} else {
-	   		%>
-	 		<br>
-	   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
-	 		<br>
-	<%
-		}
-	%>	
-		   </siga:TablaCabecerasFijas>		
 			
-	
+		</logic:iterate>
+		
+		<siga:FilaConIconos fila="200" botones ="" visibleBorrado="false" visibleEdicion="false" visibleConsulta="false"  clase="listaNonEdit">
+					
+					<td colspan="4" align="right"><b><siga:Idioma key="gratuita.listadoUnidadFamiliar.literal.totalUnidadFamiliar"/></b></td>
+					<td align="right"><c:out
+						value="${DefinirUnidadFamiliarEJGForm.importeIngresosAnuales}"></c:out>&euro;</td>
+					<td align="right"><c:out
+						value="${DefinirUnidadFamiliarEJGForm.importeBienesMuebles}"></c:out>&euro;</td>
+					<td align="right"><c:out
+						value="${DefinirUnidadFamiliarEJGForm.importeBienesInmuebles}"></c:out>&euro;</td>
+					<td align="right"><c:out
+						value="${DefinirUnidadFamiliarEJGForm.importeOtrosBienes}"></c:out>&euro;</td>
+		
+		</siga:FilaConIconos>
+	</logic:notEmpty>
 
-	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
-	<siga:ConjBotonesAccion botones="<%=botonVolverNuevo%>" modo="<%=accion%>" clase="botonesDetalle" />
+</siga:TablaCabecerasFijas>
+<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
+	<siga:ConjBotonesAccion botones="V,N,D" modo="${DefinirUnidadFamiliarEJGForm.modo}" clase="botonesDetalle" />
+	
+	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"	style="display: none"></iframe>
+	
+	
+</body>	
+
 	
 	<script type="text/javascript">
 				
 	//Asociada al boton Cerrar
 	function accionVolver()
 	{
-		document.forms[1].action="./JGR_EJG.do";	
-		document.forms[1].modo.value="buscar";
-		document.forms[1].target="mainWorkArea"; 
-		document.forms[1].submit(); 
+		document.DefinirUnidadFamiliarEJGForm.action="./JGR_EJG.do";	
+		document.DefinirUnidadFamiliarEJGForm.modo.value="buscar";
+		document.DefinirUnidadFamiliarEJGForm.target="mainWorkArea"; 
+		document.DefinirUnidadFamiliarEJGForm.submit(); 
 
 	}
 	
 	function accionNuevo()
 	{
-		document.forms[0].target = "submitArea";
-		document.forms[0].modo.value = "abrirPestana";
-		document.forms[0].accionE.value = "nuevo";
+		document.PersonaJGForm.target = "submitArea";
+		document.PersonaJGForm.modo.value = "abrirPestana";
+		document.PersonaJGForm.accionE.value = "nuevo";
 		var resultado=ventaModalGeneral(document.forms[0].name,"G");
 		if (resultado=="MODIFICADO") buscar();
 		
 	}
 	function buscar()
-	{
-		document.forms[1].modo.value = "abrir";										
-		document.forms[1].target = "mainPestanas";
-		document.forms[1].submit();
+	{		
+		document.DefinirUnidadFamiliarEJGForm.modo.value = "abrir";
+		document.DefinirUnidadFamiliarEJGForm.target = "mainPestanas";
+		document.DefinirUnidadFamiliarEJGForm.submit();
 	}
 	function comunicar(fila) {
 
@@ -416,7 +324,7 @@
 	   				 
 		
 		var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='/SIGA/INF_InformesGenericos.do' target='submitArea'>");
-		formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=usr.getLocation() %>'>"));
+ 		formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='${DefinirUnidadFamiliarEJGForm.idInstitucion}'>"));
 		formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
 		formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='EJG'>"));
 		formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
@@ -429,22 +337,88 @@
 		
 		
 	   
-	} 	
+	} 
+	function solicitarEejg(fila) {
+		var idPersonaJG = document.getElementById( 'oculto' + fila + '_6');
+		var idInstitucionEJG = document.getElementById( 'oculto' + fila + '_7');
+		var idTipoEJG = document.getElementById( 'oculto' + fila + '_8');
+		var anio = document.getElementById( 'oculto' + fila + '_9');
+		var numero = document.getElementById( 'oculto' + fila + '_10');
+			datos = idPersonaJG.value + 	','
+	   			+idInstitucionEJG.value + 	','
+	   			+idTipoEJG.value + 	','
+	   			+anio.value + 	','
+	   			+numero.value + '#';
+	   	document.DefinirUnidadFamiliarEJGForm.tablaDatosDinamicosD.value = datos;
+	   	document.DefinirUnidadFamiliarEJGForm.modo.value = "solicitarEejg";
+		document.DefinirUnidadFamiliarEJGForm.submit();
+	
+	}	
+	function descargarEejg(fila) {
+		var idPersonaJG = document.getElementById( 'oculto' + fila + '_6');
+		var idInstitucionEJG = document.getElementById( 'oculto' + fila + '_7');
+		var idTipoEJG = document.getElementById( 'oculto' + fila + '_8');
+		var anio = document.getElementById( 'oculto' + fila + '_9');
+		var numero = document.getElementById( 'oculto' + fila + '_10');
+		var idxml = document.getElementById( 'oculto' + fila + '_11');
+		datos = idPersonaJG.value + 	','
+	   			+idInstitucionEJG.value + 	','
+	   			+idTipoEJG.value + 	','
+	   			+anio.value + 	','
+	   			+numero.value + ','
+				+idxml.value + 	'#';
+		
+	   	document.DefinirUnidadFamiliarEJGForm.tablaDatosDinamicosD.value = datos;
+	   	document.DefinirUnidadFamiliarEJGForm.modo.value = "descargaEejg";
+		document.DefinirUnidadFamiliarEJGForm.submit();
+	
+	}
+	function accionDownload() {
+		var chkPersonas = document.getElementsByName("chkPersona");
+		datos = '';
+		for (i = 0; i < chkPersonas.length; i++) {
+			if(chkPersonas[i].checked){
+				var idPersonaJG = document.getElementById( 'oculto' + (i+1) + '_6');
+				var idInstitucionEJG = document.getElementById( 'oculto' + (i+1) + '_7');
+				var idTipoEJG = document.getElementById( 'oculto' + (i+1) + '_8');
+				var anio = document.getElementById( 'oculto' + (i+1) + '_9');
+				var numero = document.getElementById( 'oculto' + (i+1) + '_10');
+				var idxml = document.getElementById( 'oculto' + (i+1) + '_11');
+				datos = datos + idPersonaJG.value + 	','
+	   			+idInstitucionEJG.value + 	','
+	   			+idTipoEJG.value + 	','
+	   			+anio.value + 	','
+	   			+numero.value + ','
+				+idxml.value + 	'#';
+	 		   
+ 		   	}
+			
+		}
+	   	document.DefinirUnidadFamiliarEJGForm.tablaDatosDinamicosD.value = datos;
+	   	document.DefinirUnidadFamiliarEJGForm.modo.value = "descargaEejgMasivo";
+		document.DefinirUnidadFamiliarEJGForm.submit();
+	
+	}	
+		
+	function checkTodos(){
+		var chkGeneral = document.getElementById("chkGeneral");
+	 	var chkPersonas = document.getElementsByName("chkPersona");
+	  	for (i = 0; i < chkPersonas.length; i++) {
+	  		if(chkGeneral.checked){
+	   			if(!chkPersonas[i].disabled){
+	   				chkPersonas[i].checked = chkGeneral.checked;
+	   			} 
+   			}else{
+   				chkPersonas[i].checked = chkGeneral.checked; 
+   			}
+   		}
+   	}
+	
+	function refrescarLocal()
+	{	
+		buscar();
+	}
+	
 	
 	</script>
-	
-
-
-
-
-	<html:form action="/JGR_UnidadFamiliarEJG" method="post" target="submitArea">
-		<input type="hidden" name="modo" value="<%=accion%>">
-		<input type="hidden" name="idTipoEJG" value="<%=idTipoEJG%>">
-		<input type="hidden" name="anio" value="<%=anio%>">
-		<input type="hidden" name="numero" value="<%=numero%>">
-	</html:form>
-	
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-	
-</body>	
 </html>

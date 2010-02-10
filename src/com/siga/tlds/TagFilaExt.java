@@ -58,7 +58,9 @@ public class TagFilaExt extends TagFila {
 
 	protected boolean checkAcceso(String accesoReal,String accesoMinimo) {
 		try {
-			if (((String)accesosVec.get(accesoReal)).compareTo((String)accesosVec.get(accesoMinimo)) <0) {
+			String strAccesoReal = (String)accesosVec.get(accesoReal); 
+			String strAccesoMinimo = (String)accesosVec.get(accesoMinimo); 
+			if ((strAccesoReal).compareTo(strAccesoMinimo) <0) {
 				return false;
 			}	
 			return true;
