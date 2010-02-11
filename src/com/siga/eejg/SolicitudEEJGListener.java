@@ -166,13 +166,14 @@ public class SolicitudEEJGListener extends SIGAContextListenerAdapter implements
 		if (listaPeticiones != null) {
 			
 			SolicitudesEEJG solicitudesEEJG = new SolicitudesEEJG();		
-			boolean infoObtenida = false;
+			int idXML = -1;
 			for (ScsEejgPeticionesBean scsEejgPeticionesBean : listaPeticiones) {
-				infoObtenida = false;
+				idXML = -1;
 				try {					
 					if (numeroErrores < NUM_ERROR_CONEXION) {
-						infoObtenida = solicitudesEEJG.consultaInfoAAPP(scsEejgPeticionesBean); 
-						if (infoObtenida) {					
+						idXML = solicitudesEEJG.consultaInfoAAPP(scsEejgPeticionesBean); 
+						if (idXML > -1) {		
+							scsEejgPeticionesBean.setIdXml(idXML);
 							scsEejgPeticionesBean.setEstado(ScsEejgPeticionesBean.EEJG_ESTADO_FINALIZADO);
 							scsEejgPeticionesBean.setFechaConsulta("SYSDATE");
 						}
@@ -186,7 +187,7 @@ public class SolicitudEEJGListener extends SIGAContextListenerAdapter implements
 					}
 				} finally {
 					scsEejgPeticionesBean.setNumeroIntentosConsulta(scsEejgPeticionesBean.getNumeroIntentosConsulta() + 1);
-					if (!infoObtenida && scsEejgPeticionesBean.getNumeroIntentosConsulta() >= NUMERO_REINTENTOS_CONSULTA) {
+					if (idXML == -1 && scsEejgPeticionesBean.getNumeroIntentosConsulta() >= NUMERO_REINTENTOS_CONSULTA) {
 						scsEejgPeticionesBean.setEstado(ScsEejgPeticionesBean.EEJG_ESTADO_ERROR_CONSULTA_INFO);
 					}
 					scsPeticionesAdm.updateDirect(scsEejgPeticionesBean);

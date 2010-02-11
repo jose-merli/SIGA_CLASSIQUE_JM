@@ -175,9 +175,9 @@ public class SolicitudesEEJG {
 	 * @param scsEejgPeticionesBean
 	 * @throws Exception
 	 */
-	public boolean consultaInfoAAPP(ScsEejgPeticionesBean scsEejgPeticionesBean) throws Exception {
+	public int consultaInfoAAPP(ScsEejgPeticionesBean scsEejgPeticionesBean) throws Exception {
 		
-		boolean obtenidaRespuesta = false;
+		int idXML = -1;
 		ServiciosJGExpedienteServiceLocator locator = new ServiciosJGExpedienteServiceLocator(createClientConfig());
 		URL url = new URL(urlWS);		
 		ServiciosJGExpedienteServiceSoapBindingStub stub = new ServiciosJGExpedienteServiceSoapBindingStub(url, locator);
@@ -191,21 +191,19 @@ public class SolicitudesEEJG {
 		org.redabogacia.www.pjgpra.wspjgpra.ConsultaInfoAAPP.Informacion informacion = new org.redabogacia.www.pjgpra.wspjgpra.ConsultaInfoAAPP.Informacion(datosConsultaInfoAAPP, id);
 		org.redabogacia.www.pjgpra.wspjgpra.ConsultaInfoAAPP.FirmaInformacion firmaInformacion = new org.redabogacia.www.pjgpra.wspjgpra.ConsultaInfoAAPP.FirmaInformacion();
 		ConsultaInfoAAPP consultaInfoAAPP = new ConsultaInfoAAPP(informacion, firmaInformacion);
-		
-		
+				
 		RespuestaConsultaInfoAAPP respuestaConsultaInfoAAPP = stub.consultaInfoAAPP(consultaInfoAAPP);		
 		
-		if (respuestaConsultaInfoAAPP != null) {
-			obtenidaRespuesta = true;
+		if (respuestaConsultaInfoAAPP != null) {			
 			UsrBean usrBean = new UsrBean();
 			usrBean.setUserName(String.valueOf(ClsConstants.USUMODIFICACION_AUTOMATICO));
 			ScsEejgXmlAdm scsEejgXmlAdm = new ScsEejgXmlAdm(usrBean);			
-			insertaLogBDD(scsEejgXmlAdm, scsEejgPeticionesBean, 
+			idXML = insertaLogBDD(scsEejgXmlAdm, scsEejgPeticionesBean, 
 					AxisObjectSerializerDeserializer.serializeAxisObject(respuestaConsultaInfoAAPP, false, false), 
 					ScsEejgXmlBean.RESPUESTA, ScsEejgPeticionesBean.EEJG_ESTADO_FINALIZADO);			
 		}
 				
-		return obtenidaRespuesta;
+		return idXML;
 	}
 
 
