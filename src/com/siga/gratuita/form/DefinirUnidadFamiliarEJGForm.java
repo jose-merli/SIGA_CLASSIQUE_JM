@@ -18,6 +18,7 @@ import com.siga.beans.ScsTelefonosPersonaBean;
 import com.siga.beans.ScsUnidadFamiliarEJGBean;
 import com.siga.beans.eejg.ScsEejgPeticionesBean;
 import com.siga.general.MasterForm;
+import com.siga.gratuita.service.EejgService;
 import com.siga.tlds.FilaExtElement;
 
 /**
@@ -33,9 +34,10 @@ import com.siga.tlds.FilaExtElement;
 	private String botones;
 	FilaExtElement[] elementosFila;
 	String datosInforme;
-	
+	private String idXml;
 	
 	private String idParentesco;
+	
 	private String idTipoGrupoLab;
 	private String idTipoIngreso;
 	private String idPaisAux="idPaisAux";
@@ -312,91 +314,91 @@ import com.siga.tlds.FilaExtElement;
 	 * Recupera de la Hashtable el identificador abogado de un SOJ
 	 * @return String 
 	 */
-	public String getIdPersona				()							{ return this.datos.get(ScsSOJBean.C_IDPERSONA).toString();						}
+	public String getIdPersona				()							{ return (String)this.datos.get(ScsSOJBean.C_IDPERSONA);						}
 	
 	/**
 	 * Recupera de la Hashtable la institucion de un SOJ 
 	 * @return String
 	 */
-	public String getIdInstitucion	 		()							{return this.datos.get(ScsSOJBean.C_IDINSTITUCION).toString();					}
+	public String getIdInstitucion	 		()							{return (String)this.datos.get(ScsSOJBean.C_IDINSTITUCION);					}
 	/**
 	 * Recupera de la Hashtable el anho de la EJG
 	 * 
 	 * @return Anho de la EJG
 	 */
-	public String getAnio 					()		{ return this.datos.get(ScsEJGBean.C_ANIO).toString();}
+	public String getAnio 					()		{ return (String)this.datos.get(ScsEJGBean.C_ANIO);}
 	/**
 	 * Recupera de la Hashtable el numero de la EJG
 	 * 
 	 * @return Numero de la EJG
 	 */
-	public String getNumero 				()		{ return this.datos.get(ScsEJGBean.C_NUMERO).toString();}
+	public String getNumero 				()		{ return (String)this.datos.get(ScsEJGBean.C_NUMERO);}
 	/**
 	 * Recupera de la Hashtable el identificador del tipo  de la EJG
 	 * 
 	 * @return Identificador del tipo de la EJG
 	 */
-	public String getIdTipoEJG				()		{ return this.datos.get(ScsEJGBean.C_IDTIPOEJG).toString();}
+	public String getIdTipoEJG				()		{ return (String)this.datos.get(ScsEJGBean.C_IDTIPOEJG);}
 	
 	/**
 	 * Recupera de la Hashtable el nombre del solicitante de un SOJ
 	 * @return String 
 	 */
-	public String getNombre		 			()						{ return this.datos.get(ScsPersonaJGBean.C_NOMBRE).toString();						}
+	public String getNombre		 			()						{ return (String)this.datos.get(ScsPersonaJGBean.C_NOMBRE);						}
 	
 	/**
 	 * Recupera de la Hashtable el apellido del solicitante de un SOJ
 	 * @return String 
 	 */
-	public String getApellido1	 			()						{ return this.datos.get(ScsPersonaJGBean.C_APELLIDO1).toString();					}
+	public String getApellido1	 			()						{ return (String)this.datos.get(ScsPersonaJGBean.C_APELLIDO1);					}
 	
 	/**
 	 * Recupera de la Hashtable el apellido del solicitante de un SOJ 
 	 * @return String 
 	 */
-	public String getApellido2	 			()						{ return this.datos.get(ScsPersonaJGBean.C_APELLIDO2).toString();					}
+	public String getApellido2	 			()						{ return (String)this.datos.get(ScsPersonaJGBean.C_APELLIDO2);					}
 	
 	/**
 	 * Recupera de la Hashtable el NIF de la persona
 	 * @return String
 	 */
-	public String getNif					()						{ return this.datos.get(ScsPersonaJGBean.C_NIF).toString();							}
+	public String getNif					()						{ return (String)this.datos.get(ScsPersonaJGBean.C_NIF);							}
 	
 	/**
 	 * Recupera de la Hashtable la dirección de la persona
 	 * @return String
 	 */
-	public String getDireccion				()						{ return this.datos.get(ScsPersonaJGBean.C_DIRECCION).toString();					}
+	public String getDireccion				()						{ return (String)this.datos.get(ScsPersonaJGBean.C_DIRECCION);					}
 	
 	/**
 	 * Recupera de la Hashtable el código postal de la persona
 	 * @return String
 	 */
-	public String getCodigoPostal			()						{ return this.datos.get(ScsPersonaJGBean.C_CODIGOPOSTAL).toString();				}
+	public String getCodigoPostal			()						{ return (String)this.datos.get(ScsPersonaJGBean.C_CODIGOPOSTAL);				}
 	
 	/**
 	 * Recupera de la Hashtable la fecha de nacimiento de la persona
 	 * @return String
 	 */
-	public String getFechaNacimiento		()						{ return this.datos.get(ScsPersonaJGBean.C_FECHANACIMIENTO).toString();				}
+	public String getFechaNacimiento		()						{ return (String)this.datos.get(ScsPersonaJGBean.C_FECHANACIMIENTO);				}
 	
 	/**
 	 * Recupera de la Hashtable el código de profesión de la persona
 	 * @return String
 	 */
-	public String getIdProfesion			()						{ return this.datos.get(ScsPersonaJGBean.C_IDPROFESION).toString();					}
+	public String getIdProfesion			()						{ return (String)this.datos.get(ScsPersonaJGBean.C_IDPROFESION);					}
 	
 	/**
 	 * Recupera de la Hashtable el código del país de la persona
 	 * @return String 
 	 */
-	public String getIdPais					()						{ return this.datos.get(ScsPersonaJGBean.C_IDPAIS).toString();						}
+	public String getIdPais					()						{ return (String)this.datos.get(ScsPersonaJGBean.C_IDPAIS);						}
 	
 	/**
 	 * Recupera de la Hashtable el código de la provincia de la persona
 	 * @return String 
 	 */
-	public String getIdProvincia			()						{ return this.datos.get(ScsPersonaJGBean.C_IDPROVINCIA).toString();					}
+	public String getIdProvincia			()						{ return (String)this.datos.get(ScsPersonaJGBean.C_IDPROVINCIA);					}
 	
 	/**
 	 * Recupera de la Hashtable el código postal de la persona 
@@ -404,99 +406,101 @@ import com.siga.tlds.FilaExtElement;
 	 * @param Código postal solicitante
 	 * @return String 
 	 */
-	public String getIdPoblacion			()						{ return this.datos.get(ScsPersonaJGBean.C_IDPOBLACION).toString();					}
+	public String getIdPoblacion			()						{ return (String)this.datos.get(ScsPersonaJGBean.C_IDPOBLACION);					}
 	
 	/**
 	 * Recupera de la Hashtable el código postal de la persona
 	 * @return String 
 	 */
-	public String getRegimenConyugal		()						{ return this.datos.get(ScsPersonaJGBean.C_REGIMENCONYUGAL).toString();				}
+	public String getRegimenConyugal		()						{ return (String)this.datos.get(ScsPersonaJGBean.C_REGIMENCONYUGAL);				}
 	
 	/**
 	 * Recupera de la Hashtable el identificador del estado civil
 	 * @return String 
 	 */
-	public String getIdEstadoCivil			()						{ return this.datos.get(ScsPersonaJGBean.C_ESTADOCIVIL).toString();					}
+	public String getIdEstadoCivil			()						{ return (String)this.datos.get(ScsPersonaJGBean.C_ESTADOCIVIL);					}
 	
 	/**
 	 * Recupera de la Hashtable el identificador del teléfono
 	 * @return Integer 
 	 */
-	public String getIdTelefono			()								{ return this.datos.get(ScsTelefonosPersonaBean.C_IDTELEFONO).toString();		}
+	public String getIdTelefono			()								{ return (String)this.datos.get(ScsTelefonosPersonaBean.C_IDTELEFONO);		}
 	
 	/**
 	 * Recupera de la Hashtable el nombre del teléfono
 	 * @return String 
 	 */
-	public String getNombreTelefono		()								{ return this.datos.get(ScsTelefonosPersonaBean.C_NOMBRETELEFONO).toString();	}
+	public String getNombreTelefono		()								{ return (String)this.datos.get(ScsTelefonosPersonaBean.C_NOMBRETELEFONO);	}
 	
 	/**
 	 * Recupera de la Hashtable el número de teléfono
 	 * @return String 
 	 */
-	public String getNumeroTelefono		()								{ return this.datos.get(ScsTelefonosPersonaBean.C_NUMEROTELEFONO).toString();	}
+	public String getNumeroTelefono		()								{ return (String)this.datos.get(ScsTelefonosPersonaBean.C_NUMEROTELEFONO);	}
 	
 	/**
 	 * Recupera de la Hashtable la descripción de los ingresos anuales
 	 * @return void 
 	 */
-	public String getDescripcionIngresosAnuales	()						{ return this.datos.get(ScsUnidadFamiliarEJGBean.C_DESCRIPCIONINGRESOSANUALES).toString();}
+	public String getDescripcionIngresosAnuales	()						{ return (String)this.datos.get(ScsUnidadFamiliarEJGBean.C_DESCRIPCIONINGRESOSANUALES);}
 	/** 
 	 * Recupera de la Hashtable el importe de los ingresos anuales
 	 * @return String 
 	 */
-	public String getImporteIngresosAnuales		()						{ return this.datos.get(ScsUnidadFamiliarEJGBean.C_IMPORTEINGRESOSANUALES).toString();}
+	public String getImporteIngresosAnuales		()						{ return (String)this.datos.get(ScsUnidadFamiliarEJGBean.C_IMPORTEINGRESOSANUALES);}
 	/** 
 	 * Recupera de la Hashtable la descripción de los bienes inmuebles
 	 * @return String 
 	 */
-	public String getBienesInmuebles			()						{ return this.datos.get(ScsUnidadFamiliarEJGBean.C_BIENESINMUEBLES).toString();}
+	public String getBienesInmuebles			()						{ return (String)this.datos.get(ScsUnidadFamiliarEJGBean.C_BIENESINMUEBLES);}
 	/** 
 	 * Recupera de la Hashtable el importe de los bienes inmuebles
 	 * @return String 
 	 */
-	public String getImporteBienesInmuebles		()						{ return this.datos.get(ScsUnidadFamiliarEJGBean.C_IMPORTEBIENESINMUEBLES).toString();}
+	public String getImporteBienesInmuebles		()						{ return (String)this.datos.get(ScsUnidadFamiliarEJGBean.C_IMPORTEBIENESINMUEBLES);}
 	/** 
 	 * Recupera de la Hashtable la descripción de otros bienes
 	 * @return String 
 	 */
-	public String getOtrosBienes				()						{ return this.datos.get(ScsUnidadFamiliarEJGBean.C_OTROSBIENES).toString();}
+	public String getOtrosBienes				()						{ return (String)this.datos.get(ScsUnidadFamiliarEJGBean.C_OTROSBIENES);}
 	/** 
 	 * Recupera de la Hashtable el importe de otros bienes
 	 * @return String 
 	 */
-	public String getImporteOtrosBienes			()						{ return this.datos.get(ScsUnidadFamiliarEJGBean.C_IMPORTEOTROSBIENES).toString();}
+	public String getImporteOtrosBienes			()						{ return (String)this.datos.get(ScsUnidadFamiliarEJGBean.C_IMPORTEOTROSBIENES);}
 	
 	/** 
 	 * Recupera de la Hashtable la descripción de los bienes muebles
 	 * @return String 
 	 */
-	public String getBienesMuebles				()						{ return this.datos.get(ScsUnidadFamiliarEJGBean.C_BIENESMUEBLES).toString();}
+	public String getBienesMuebles				()						{ return (String)this.datos.get(ScsUnidadFamiliarEJGBean.C_BIENESMUEBLES);}
 	/** 
 	 * Recupera de la Hashtable el importe de los bienes inmuebles
 	 * @return String 
 	 */
-	public String getImporteBienesMuebles		()						{ return this.datos.get(ScsUnidadFamiliarEJGBean.C_IMPORTEBIENESMUEBLES).toString();}
+	public String getImporteBienesMuebles		()						{ return (String)this.datos.get(ScsUnidadFamiliarEJGBean.C_IMPORTEBIENESMUEBLES);}
 	/** 
 	 * Recupera de la Hashtable si es solicitante
 	 * @return String
 	 */	
-	public String getSolicitante				()						{ return this.datos.get(ScsUnidadFamiliarEJGBean.C_SOLICITANTE).toString();}
+	public String getSolicitante				()						{ 
+		return (String)this.datos.get(ScsUnidadFamiliarEJGBean.C_SOLICITANTE);
+	}
 	/** 
 	 * Recupera de la Hashtable en calidad de que está relacinada la persona con el EJG
 	 * @return String 
 	 */
-	public String getEnCalidadDe				()						{ return this.datos.get(ScsUnidadFamiliarEJGBean.C_ENCALIDADDE).toString();}
+	public String getEnCalidadDe				()						{ return (String)this.datos.get(ScsUnidadFamiliarEJGBean.C_ENCALIDADDE);}
 	/** 
 	 * Recupera de la Hashtable las observaciones
 	 * @return String 
 	 */
-	public String getObservaciones				()						{ return this.datos.get(ScsUnidadFamiliarEJGBean.C_OBSERVACIONES).toString();}
+	public String getObservaciones				()						{ return (String)this.datos.get(ScsUnidadFamiliarEJGBean.C_OBSERVACIONES);}
 	/**
 	 * Almacena en la Hashtable si la persona existía en la base de datos 
 	 * @return void 
 	 */
-	public String getExistia					()						{ return this.datos.get("EXISTIA").toString();								}
+	public String getExistia					()						{ return (String)this.datos.get("EXISTIA");								}
 	public List<DefinirUnidadFamiliarEJGForm> getUnidadFamiliar() {
 		return unidadFamiliar;
 	}
@@ -510,11 +514,17 @@ import com.siga.tlds.FilaExtElement;
 		unidadFamiliarVo.setIdTipoEJG(new Integer(getIdTipoEJG()));
 		unidadFamiliarVo.setNumero(new Integer(getNumero()));
 		unidadFamiliarVo.setIdPersona(new Integer(getIdPersona()));
+		if(getIdXml()!=null){
+			peticionEejg = new ScsEejgPeticionesBean();
+			peticionEejg.setIdXml(new Integer(idXml));
+			
+		}
 		ScsPersonaJGBean personaJG = new ScsPersonaJGBean();
 		personaJG.setIdPersona(unidadFamiliarVo.getIdPersona());
 		unidadFamiliarVo.setPersonaJG(personaJG);
-		unidadFamiliarVo.setSolicitante(new Integer(getSolicitante()));
 		unidadFamiliarVo.setPeticionEejg(peticionEejg);
+		if(getSolicitante()!=null)
+			unidadFamiliarVo.setSolicitante(new Integer(getSolicitante()));
 		if(getBienesMuebles()!=null && !getBienesMuebles().equals(""))
 			unidadFamiliarVo.setBienesMuebles(getBienesMuebles());
 		if(getBienesInmuebles()!=null && !getBienesInmuebles().equals(""))
@@ -603,19 +613,19 @@ import com.siga.tlds.FilaExtElement;
 					
 				switch (estado) {
 					case ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL:case ScsEejgPeticionesBean.EEJG_ESTADO_ESPERA:
-						elementosFila[4] = new FilaExtElement("denegar", "esperaEejg","esperaEejg",SIGAConstants.ACCESS_DENY);
+						elementosFila[4] = new FilaExtElement("denegar", "esperaEejg","general.boton.esperaEejg",SIGAConstants.ACCESS_DENY);
 					break;
 					case ScsEejgPeticionesBean.EEJG_ESTADO_ERROR_SOLICITUD:case ScsEejgPeticionesBean.EEJG_ESTADO_ERROR_CONSULTA_INFO:
-						elementosFila[4] = new FilaExtElement("solicitar", "solicitarEejg","errorEejg",SIGAConstants.ACCESS_READ);
+						elementosFila[4] = new FilaExtElement("solicitar", "solicitarEejg","general.boton.errorEejg",SIGAConstants.ACCESS_READ);
 					break;
 					case ScsEejgPeticionesBean.EEJG_ESTADO_FINALIZADO:
-						elementosFila[4] = new FilaExtElement("descargaLog", "descargarEejg","descargarEejg",	SIGAConstants.ACCESS_READ);
+						elementosFila[4] = new FilaExtElement("descargaLog", "descargarEejg","general.boton.descargarEejg",	SIGAConstants.ACCESS_READ);
 					break;
 				default:
 					break;
 				}
 			}else{
-				elementosFila[4] = new FilaExtElement("versolicitud", "solicitarEejg","solicitarEejg",	SIGAConstants.ACCESS_READ);
+				elementosFila[4] = new FilaExtElement("versolicitud", "solicitarEejg","general.boton.solicitarEejg",	SIGAConstants.ACCESS_READ);
 			}
 		}
 		this.setElementosFila(elementosFila);
@@ -653,6 +663,12 @@ import com.siga.tlds.FilaExtElement;
 	}
 	public void setDatosInforme(String datosInforme) {
 		this.datosInforme = datosInforme;
+	}
+	public String getIdXml() {
+		return idXml;
+	}
+	public void setIdXml(String idXml) {
+		this.idXml = idXml;
 	}
 	
 }

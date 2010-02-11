@@ -1,12 +1,12 @@
-<!-- listadoUnidadFamiliarEJ2G2.jsp -->
-<!-- CABECERA JSP -->
+<!-- listadoUnidadFamiliarEJ2G2-->
+
 <meta http-equiv="Expires" content="0">
-<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
+<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-15"%>
 <meta http-equiv="Cache-Control" content="no-cache">
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-15">
 
 <!-- TAGLIBS -->
+<%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 <%@taglib uri	=	"struts-bean.tld" 			prefix="bean" 		%>
 <%@taglib uri 	= 	"struts-html.tld" 			prefix="html" 		%>
 <%@taglib uri	= 	"libreria_SIGA.tld" 		prefix="siga"		%>
@@ -376,6 +376,7 @@
 	function accionDownload() {
 		var chkPersonas = document.getElementsByName("chkPersona");
 		datos = '';
+		sub();
 		for (i = 0; i < chkPersonas.length; i++) {
 			if(chkPersonas[i].checked){
 				var idPersonaJG = document.getElementById( 'oculto' + (i+1) + '_6');
@@ -394,6 +395,12 @@
  		   	}
 			
 		}
+		if(datos==''){
+			alert("<siga:Idioma key="general.message.seleccionar"/>");
+			fin();
+			return;
+		}
+		
 	   	document.DefinirUnidadFamiliarEJGForm.tablaDatosDinamicosD.value = datos;
 	   	document.DefinirUnidadFamiliarEJGForm.modo.value = "descargaEejgMasivo";
 		document.DefinirUnidadFamiliarEJGForm.submit();
@@ -412,6 +419,9 @@
    				chkPersonas[i].checked = chkGeneral.checked; 
    			}
    		}
+   	}
+   	function esperaEejg(){
+   		alert("<siga:Idioma key="general.boton.esperaEejg"/>");
    	}
 	
 	function refrescarLocal()

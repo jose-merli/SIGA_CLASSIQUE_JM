@@ -570,8 +570,9 @@ String datoTipoOrdinario[]={idordinario,idordinario};
 		    var dat = "";
 		    var datos = document.frames.resultado.document.getElementsByName("datosCarta");
 		    if (datos.length==0){
-		    fin();
-		    return false;
+		    	alert("<siga:Idioma key="general.message.seleccionar"/>");
+			    fin();
+			    return false;
 			}
 			for(i=0; i<datos.length; i++)
 			{
@@ -600,6 +601,7 @@ String datoTipoOrdinario[]={idordinario,idordinario};
 		    var dat = "";
 		    var datos = document.frames.resultado.document.getElementsByName("datosCarta");
 		    if (datos.length==0){
+		    	alert("<siga:Idioma key="general.message.seleccionar"/>");
 			    fin();
 			    return false;
 				}
