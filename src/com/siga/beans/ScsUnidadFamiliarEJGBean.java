@@ -19,8 +19,7 @@ public class ScsUnidadFamiliarEJGBean extends MasterBean{
 	ScsPersonaJGBean personaJG;
 	ScsParentescoBean parentesco;
 	ScsEejgPeticionesBean peticionEejg;
-	UsrBean usrBean;
-	
+	ScsEJGBean ejg ;
 	
 	private Integer idTipoEJG;
 	private Integer idInstitucion;
@@ -360,9 +359,13 @@ public class ScsUnidadFamiliarEJGBean extends MasterBean{
 		unidadFamiliarForm.setAnio(anio.toString());
 		unidadFamiliarForm.setIdTipoEJG(idTipoEJG.toString());
 		unidadFamiliarForm.setNumero(numero.toString());
-		unidadFamiliarForm.setIdPersona(idPersona.toString());
+		unidadFamiliarForm.setEjg(ejg);
+		if(idPersona!=null)
+			unidadFamiliarForm.setIdPersona(idPersona.toString());
+		
 		unidadFamiliarForm.setPersonaJG(personaJG);
-		unidadFamiliarForm.setSolicitante(solicitante.toString());
+		if(solicitante!=null)
+			unidadFamiliarForm.setSolicitante(solicitante.toString());
 		unidadFamiliarForm.setPeticionEejg(peticionEejg);
 		if(bienesMuebles!=null && !bienesMuebles.equals(""))
 			unidadFamiliarForm.setBienesMuebles(bienesMuebles);
@@ -420,12 +423,12 @@ public class ScsUnidadFamiliarEJGBean extends MasterBean{
 		this.peticionEejg = peticionEejg;
 	}
 
-	public UsrBean getUsrBean() {
-		return usrBean;
+	public ScsEJGBean getEjg() {
+		return ejg;
 	}
 
-	public void setUsrBean(UsrBean usrBean) {
-		this.usrBean = usrBean;
+	public void setEjg(ScsEJGBean ejg) {
+		this.ejg = ejg;
 	}
 	
 }

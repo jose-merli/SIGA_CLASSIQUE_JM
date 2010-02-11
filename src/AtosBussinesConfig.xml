@@ -4,8 +4,8 @@
 			<property name="TransactionTimeOut">100</property>
 			<property name="TransactionContext">javax.transaction.UserTransaction</property>
 		</transactionManager>
-	
 		<service interface="com.siga.gratuita.service.VolantesExpressService" implementation="com.siga.gratuita.service.impl.AtosVolantesExpressService"/>
+		<service interface="com.siga.gratuita.service.EejgService" implementation="com.siga.gratuita.service.impl.AtosEejgService"/>
 	</context>
 </configuration> 
 	
