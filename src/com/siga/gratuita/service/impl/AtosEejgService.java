@@ -17,6 +17,11 @@ import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
+import com.siga.beans.ScsPersonaJGAdm;
+import com.siga.beans.ScsPersonaJGBean;
+import com.siga.beans.ScsTelefonosPersonaBean;
+import com.siga.beans.ScsTelefonosPersonaJGAdm;
+import com.siga.beans.ScsTelefonosPersonaJGBean;
 import com.siga.beans.ScsUnidadFamiliarEJGAdm;
 import com.siga.beans.ScsUnidadFamiliarEJGBean;
 import com.siga.beans.eejg.ScsEejgPeticionesBean;
@@ -84,6 +89,8 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 		mapParameters.put("numEjg", ejg.getAnio()+"-"+ejg.getNumEJG());
 		mapParameters.put("idPersonaJG", unidadFamiliar.getPersonaJG().getIdPersona().toString());
 		mapParameters.put("institucion", institucion);
+		mapParameters.put("idInstitucion", usr.getLocation());
+		actualizaParametrosPersona(mapParameters,usr);
 		mapParameters.put("rutaLogoColegio", rutaLogoColegio);
 		mapParameters.put("idioma", unidadFamiliar.getPeticionEejg().getIdioma());
 		mapInformes.put(new Integer(unidadFamiliar.getPeticionEejg().getIdXml()), mapParameters);
@@ -148,6 +155,8 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 			mapParameters.put("idioma", unidadFamiliar.getPeticionEejg().getIdioma());
 			mapParameters.put("idPersonaJG", unidadFamiliar.getPersonaJG().getIdPersona().toString());
 			mapParameters.put("institucion", institucion);
+			mapParameters.put("idInstitucion", usr.getLocation());
+			actualizaParametrosPersona(mapParameters,usr);
 			mapParameters.put("rutaLogoColegio", rutaLogoColegio);
 			mapInformes.put(new Integer(unidadFamiliar.getPeticionEejg().getIdXml()), mapParameters);
 			
@@ -195,33 +204,7 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 			String numero= (String)datos.get("numero");
 			String idInstitucion= (String)datos.get("idinstitucion");
 			
-			StringBuffer keyEjgs = new StringBuffer();
-			keyEjgs.append(anio);
-			keyEjgs.append("||");
-			keyEjgs.append(numero);
-			keyEjgs.append("||");
-			keyEjgs.append(idTipoEJG);
-			keyEjgs.append("||");
-			keyEjgs.append(idInstitucion);
-			keyEjgs.append("||");
-			if(htEjgs.containsKey(keyEjgs)){
-				ejg = htEjgs.get(keyEjgs);
 			
-			}else{
-				Vector<ScsEJGBean> vEjg = null;
-				miHash = new Hashtable<String, Object>();
-				miHash.put("ANIO",anio);
-				miHash.put("NUMERO",numero);
-				miHash.put("IDTIPOEJG",idTipoEJG);
-				miHash.put("IDINSTITUCION",idInstitucion);
-				try {
-					vEjg = admEJG.selectByPK(miHash);
-				} catch (ClsExceptions e) {
-					throw new BusinessException(e.getMessage());
-				}
-				ejg = (ScsEJGBean)vEjg.get(0);
-			}
-			htEjgs.put(keyEjgs, ejg);
 			
 			unidadFamiliar = new ScsUnidadFamiliarEJGBean();
 			//miForm.setEjg(ejg);
@@ -229,6 +212,11 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 			unidadFamiliar.setIdTipoEJG(new Integer(idTipoEJG));
 			unidadFamiliar.setAnio(new Integer(anio));
 			unidadFamiliar.setNumero(new Integer(numero));
+			ejg = new ScsEJGBean();
+			ejg.setIdInstitucion(new Integer(idInstitucion));
+			ejg.setIdTipoEJG(new Integer(idTipoEJG));
+			ejg.setAnio(new Integer(anio));
+			ejg.setNumero(new Integer(numero));
 			unidadFamiliar.setEjg(ejg);
 			
 			//Sacaremmos solos las peticiones que esten finalizadas 
@@ -242,13 +230,44 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 				throw new BusinessException(e.getMessage());
 			}
 			if(alUnidadFamiliar!=null && alUnidadFamiliar.size()>0){
+				StringBuffer keyEjgs = new StringBuffer();
+				keyEjgs.append(anio);
+				keyEjgs.append("||");
+				keyEjgs.append(numero);
+				keyEjgs.append("||");
+				keyEjgs.append(idTipoEJG);
+				keyEjgs.append("||");
+				keyEjgs.append(idInstitucion);
+				keyEjgs.append("||");
+				if(htEjgs.containsKey(keyEjgs)){
+					ejg = htEjgs.get(keyEjgs);
+				
+				}else{
+					Vector<ScsEJGBean> vEjg = null;
+					miHash = new Hashtable<String, Object>();
+					miHash.put("ANIO",anio);
+					miHash.put("NUMERO",numero);
+					miHash.put("IDTIPOEJG",idTipoEJG);
+					miHash.put("IDINSTITUCION",idInstitucion);
+					try {
+						vEjg = admEJG.selectByPK(miHash);
+					} catch (ClsExceptions e) {
+						throw new BusinessException(e.getMessage());
+					}
+					ejg = (ScsEJGBean)vEjg.get(0);
+				}
+				htEjgs.put(keyEjgs, ejg);
+				
 				for(DefinirUnidadFamiliarEJGForm formUnidadFamiliar:alUnidadFamiliar){
 					
 					Map<String, String> mapParameters = new HashMap<String, String>();
 					mapParameters = actualizaParametrosComunes(mapParameters, usr);
 					mapParameters.put("numEjg", ejg.getAnio()+"-"+ejg.getNumEJG());
-					mapParameters.put("idPersonaJG",formUnidadFamiliar.getIdPersona() );
+					mapParameters.put("idPersonaJG",formUnidadFamiliar.getIdPersona());
 					mapParameters.put("institucion", institucion);
+					mapParameters.put("idInstitucion", usr.getLocation());
+					actualizaParametrosPersona(mapParameters,usr);
+					
 					mapParameters.put("rutaLogoColegio", rutaLogoColegio);
 					mapParameters.put("idioma", formUnidadFamiliar.getPeticionEejg().getIdioma());
 					mapInformes.put(formUnidadFamiliar.getPeticionEejg().getIdXml(), mapParameters);
@@ -275,6 +294,47 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 			throw new BusinessException(e.toString());
 		}
 		return fichero;
+	}
+	private Map<String, String> actualizaParametrosPersona(Map<String, String> mapParameters,UsrBean usr){
+		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String idInstitucion = mapParameters.get("idInstitucion");
+		String idPersonaJG = mapParameters.get("idPersonaJG");
+		ScsPersonaJGAdm admPersonaJG = new ScsPersonaJGAdm(usr);
+		
+		try {
+			ScsPersonaJGBean personaBean = admPersonaJG.getPersonaJG(new Long(idPersonaJG), new Integer(idInstitucion));
+			mapParameters.put("direccion",personaBean.getDireccion());
+			mapParameters.put("codigoPostal",personaBean.getCodigoPostal());
+			if(personaBean.getProvincia()!=null)
+				mapParameters.put("provincia",personaBean.getProvincia().getNombre());
+			else
+				mapParameters.put("provincia","");
+			if(personaBean.getPoblacion()!=null)
+				mapParameters.put("poblacion",personaBean.getPoblacion().getNombre());
+			else
+				mapParameters.put("poblacion","");
+			Vector<ScsTelefonosPersonaJGBean> vTelefonos = personaBean.getTelefonos();
+			if(vTelefonos!=null && vTelefonos.size()>0){
+				int i=0;
+				for(ScsTelefonosPersonaJGBean telefono:vTelefonos){
+					mapParameters.put("telefono"+i,telefono.getNumeroTelefono().toString());
+					i++;
+					
+				}
+				if(i<2)
+					mapParameters.put("telefono1","");
+			}else{
+				mapParameters.put("telefono0","");
+				mapParameters.put("telefono1","");
+				
+			}
+			
+		} catch (ClsExceptions e) {
+			throw new BusinessException(e.getMessage());
+			
+		}
+		return mapParameters;
+		
 	}
 	private Map<String, String> actualizaParametrosComunes(Map<String, String> mapParameters,UsrBean usr){
 		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);

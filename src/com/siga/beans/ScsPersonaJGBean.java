@@ -10,9 +10,16 @@
 
 package com.siga.beans;
 
+import java.util.Hashtable;
+import java.util.Vector;
+
 public class ScsPersonaJGBean extends MasterBean{
 	
 	/* Variables */ 
+	
+	CenPoblacionesBean poblacion;
+	CenProvinciaBean provincia;
+	Vector<ScsTelefonosPersonaJGBean> telefonos;
 	
 	private Integer	idPersona;
 	private String	nif;
@@ -440,6 +447,36 @@ public class ScsPersonaJGBean extends MasterBean{
 	 */
 	public String getSexo() {
 		return sexo;
+	}
+
+
+	public CenPoblacionesBean getPoblacion() {
+		return poblacion;
+	}
+
+
+	public void setPoblacion(CenPoblacionesBean poblacion) {
+		this.poblacion = poblacion;
+	}
+
+
+	public CenProvinciaBean getProvincia() {
+		return provincia;
+	}
+
+
+	public void setProvincia(CenProvinciaBean provincia) {
+		this.provincia = provincia;
+	}
+
+
+	public Vector<ScsTelefonosPersonaJGBean> getTelefonos() {
+		return telefonos;
+	}
+
+
+	public void setTelefonos(Vector<ScsTelefonosPersonaJGBean> telefonos) {
+		this.telefonos = telefonos;
 	}
 	
 	}

@@ -7,17 +7,22 @@
 
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ComodinBusquedas;
+import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.BusquedaPersonaJGForm;
+import com.siga.gratuita.vos.VolantesExpressVo;
 
 
 public class ScsPersonaJGAdm extends MasterBeanAdministrador {
@@ -235,7 +240,6 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			bean.setIdPoblacion(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_IDPOBLACION));
 			bean.setIdEstadoCivil(UtilidadesHash.getInteger(hash,ScsPersonaJGBean.C_ESTADOCIVIL));
 			bean.setRegimenConyugal(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_REGIMENCONYUGAL));						
-
 			bean.setTipo(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_TIPOPERSONAJG));						
 			bean.setTipoIdentificacion(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_IDTIPOIDENTIFICACION));						
 			bean.setEnCalidadDe(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_ENCALIDADDE));						
@@ -577,5 +581,65 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			existe=true;
 		return existe;
 	}
+	public ScsPersonaJGBean getPersonaJG(Long idPersonaJG, Integer idInstitucion)throws ClsExceptions{
+
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT PER.NOMBRE, PER.APELLIDO1,  PER.APELLIDO2, ");
+		sql.append(" PER.DIRECCION, PER.CODIGOPOSTAL, PER.IDPAIS, PER.IDPROVINCIA, ");
+		sql.append("  PER.NIF, PER.IDPOBLACION,POB.NOMBRE POBLACION,PRO.IDPROVINCIA, PRO.NOMBRE PROVINCIA ");
+		sql.append(" FROM SCS_PERSONAJG PER,CEN_POBLACIONES POB,CEN_PROVINCIAS PRO ");
+		sql.append(" WHERE  ");
+		sql.append(" PER.IDPOBLACION = POB.IDPOBLACION(+) ");
+		sql.append(" AND PER.IDPROVINCIA  = PRO.IDPROVINCIA(+) ");
+		sql.append(" AND IDPERSONA = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),idPersonaJG);
+		sql.append(" AND IDINSTITUCION = :");
+	    contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),idInstitucion);
+		
+		Hashtable<String, Object> htPKTelefonos = new Hashtable<String, Object>();
+		htPKTelefonos.put(ScsTelefonosPersonaBean.C_IDPERSONA, idPersonaJG);
+		htPKTelefonos.put(ScsTelefonosPersonaBean.C_IDINSTITUCION, idInstitucion);
+		
+		ScsPersonaJGBean personaJG = null;
+		ScsTelefonosPersonaJGAdm telefonosAdm = new ScsTelefonosPersonaJGAdm(usrbean);
+		try {
+			RowsContainer rc = new RowsContainer(); 
+												
+            if (rc.findBind(sql.toString(),htCodigos)) {
+            	
+            	
+    			
+        		Row fila = (Row) rc.get(0);
+        		Hashtable<String, Object> htFila=fila.getRow();
+        		personaJG = (ScsPersonaJGBean) this.hashTableToBean(htFila);
+        		if(UtilidadesHash.getString(htFila,"IDPOBLACION").equals("")){
+	        		CenPoblacionesBean poblacion = new CenPoblacionesBean();
+	        		personaJG.setPoblacion(poblacion);
+	        		poblacion.setNombre(UtilidadesHash.getString(htFila,"POBLACION"));
+        		}
+        		if(UtilidadesHash.getString(htFila,"IDPROVINCIA").equals("")){
+	        		CenProvinciaBean provincia = new CenProvinciaBean();
+	        		personaJG.setProvincia(provincia);
+	        		provincia.setNombre(UtilidadesHash.getString(htFila,"PROVINCIA"));
+        		}
+        		Vector<ScsTelefonosPersonaJGBean> vTelefonos = telefonosAdm.select(htPKTelefonos);
+        		personaJG.setTelefonos(vTelefonos);
+        		
+        		
+            	
+            } 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+       }
+       return personaJG;
+		
+	} 
+	
 
 }

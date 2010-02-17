@@ -467,7 +467,7 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 						importeOtrosBienes += unidadFamiliar.getImporteOtrosBienes().doubleValue();
 					if(unidadFamiliar.getIngresosAnuales()!=null)
 						importeIngresosAnuales += unidadFamiliar.getIngresosAnuales().doubleValue();
-					if(idSolicitante.compareTo(unidadFamiliar.getPersonaJG().getIdPersona())==0)
+					if(idSolicitante!=null && idSolicitante.compareTo(unidadFamiliar.getPersonaJG().getIdPersona())==0)
 						unidadFamiliarForm.setPersonaJG(unidadFamiliar.getPersonaJG());
 					DefinirUnidadFamiliarEJGForm unidad = unidadFamiliar.getUnidadFamiliarEjgForm();
 					unidad.setPermisoEejg(unidadFamiliarForm.getPermisoEejg());
