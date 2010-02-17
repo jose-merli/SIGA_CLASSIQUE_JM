@@ -132,6 +132,7 @@ public class TagBotonesAccion extends TagSupport {
 	private boolean informeRetencionIRPF;
 	private boolean generarExcels;
 	private boolean comunicar;
+	private boolean isDescargaEejg;
 	
 
 /**
@@ -446,6 +447,8 @@ public class TagBotonesAccion extends TagSupport {
 					respuestaFTP = true;					
 				}else if (tipo.equalsIgnoreCase("resolucionFTP")){
 					resolucionFTP = true;					
+				}else if (tipo.equalsIgnoreCase("dee")) {
+					isDescargaEejg=true;
 				}
 				
 			}
@@ -1169,6 +1172,14 @@ public class TagBotonesAccion extends TagSupport {
 				out.println("<td class=\"tdBotones\">");
 				out.print("<input type=\"button\" alt=\""+UtilidadesString.getMensajeIdioma(usrbean, "general.boton.resolucionFTP") +"\"  id=\"idButtonResolucionFTP\" onclick=\"return resolucionFTP(this);\" class=\"button\" value=\"");
 				out.print(UtilidadesString.getMensajeIdioma(usrbean,"general.boton.resolucionFTP"));
+				out.println("\">");
+				out.println("</td>");
+			}
+			
+			if (isDescargaEejg) {
+				out.println("<td class=\"tdBotones\">");
+				out.print("<input type=\"button\" alt=\""+UtilidadesString.getMensajeIdioma(usrbean, "general.boton.descargaEejg") +"\"  name=\"idButton\" id=\"idButtonDescargaEejg\" onclick=\"return descargaEejg(true);\" class=\"button\" value=\"");
+				out.print(UtilidadesString.getMensajeIdioma(usrbean,"general.boton.descargaEejg"));
 				out.println("\">");
 				out.println("</td>");
 			}

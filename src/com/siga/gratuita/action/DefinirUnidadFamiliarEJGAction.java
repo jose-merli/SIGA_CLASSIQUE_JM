@@ -21,6 +21,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.RowsContainer;
@@ -28,6 +29,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.administracion.SIGAConstants;
 import com.siga.beans.CerSolicitudCertificadosTextoBean;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsAsistenciasBean;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
@@ -46,6 +48,7 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinirUnidadFamiliarEJGForm;
+import com.siga.gratuita.schedulers.InformacionEconomicaEjg;
 import com.siga.gratuita.service.EejgService;
 import com.siga.gratuita.service.VolantesExpressService;
 import com.siga.informes.InformeEejg;
@@ -85,6 +88,8 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 					mapDestino = this.descargaEejgMasivo(mapping, miForm, request,response);
 				}else if(miForm.getModo().equalsIgnoreCase("descargaMultiplesEejg")){
 					mapDestino = this.descargaMultiplesEejg(mapping, miForm, request,response);
+				}else if(miForm.getModo().equalsIgnoreCase("simulaWebService")){
+					mapDestino = this.simulaWebService(mapping, miForm, request,response);
 				}
 				else{
 					return super.executeInternal(mapping,
@@ -579,6 +584,11 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 				miHash.put("IDTIPOEJG",miForm.getIdTipoEJG());
 				miHash.put("IDINSTITUCION",usr.getLocation());				
 			}
+			GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
+			String eejg = paramAdm.getValor (usr.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_EEJG, "");
+			Boolean isPermisoEejg = new Boolean((eejg!=null && eejg.equalsIgnoreCase(ClsConstants.DB_TRUE)));
+			miForm.setPermisoEejg(isPermisoEejg);
+			
 			Vector<ScsEJGBean> vEjg = admEJG.selectByPK(miHash);
 			ScsEJGBean ejg = vEjg.get(0);
 			miForm.setEjg(ejg);
@@ -604,12 +614,14 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 		String anio = (String) vCampos.get(3);
 		String numero = (String) vCampos.get(4);
 		String idXml = (String) vCampos.get(5);
+		String idioma = (String) vCampos.get(6);
 		miForm.setIdInstitucion(idInstitucionEJG);
 		miForm.setIdPersona(idPersonaJG);
 		miForm.setIdTipoEJG(idTipoEJG);
 		miForm.setAnio(anio);
 		miForm.setNumero(numero);
 		miForm.setIdXml(idXml);
+		miForm.setIdioma(idioma);
 		UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 		String salida = "";
 		try {
@@ -637,14 +649,22 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 		}				
 		return salida;
 	}
+	protected String simulaWebService(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		InformacionEconomicaEjg esto = new InformacionEconomicaEjg();
+		try {
+			esto.tratarSolicitudesEejg();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
+		return "inicio";
+	}
+	
+	
 	protected String descargaMultiplesEejg(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		DefinirUnidadFamiliarEJGForm miForm = (DefinirUnidadFamiliarEJGForm) formulario;
 		UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 		String salida = "";
 		try {
-			
-			
-			
 			BusinessManager bm = getBusinessManager();
 			EejgService eEjgS = (EejgService)bm.getService(EejgService.class);
 			Map<Integer, Map<String, String>> mapInformeEejg = eEjgS.getDatosInformeEejgMultiplesEjg(miForm.getDatosInforme(),usr);
@@ -682,6 +702,7 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 				String anio = (String) vCampos.get(3);
 				String numero = (String) vCampos.get(4);
 				String idXml = (String) vCampos.get(5);
+				String idioma = (String) vCampos.get(6);
 				DefinirUnidadFamiliarEJGForm unidadFamiliarForm = new DefinirUnidadFamiliarEJGForm();
 				unidadFamiliarForm.setIdInstitucion(idInstitucionEJG);
 				unidadFamiliarForm.setIdPersona(idPersonaJG);
@@ -689,6 +710,7 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 				unidadFamiliarForm.setAnio(anio);
 				unidadFamiliarForm.setNumero(numero);
 				unidadFamiliarForm.setIdXml(idXml);
+				unidadFamiliarForm.setIdioma(idioma);
 				alUnidadFamiliar.add(unidadFamiliarForm.getUnidadFamiliarEjgVo());
 				
 				
@@ -731,6 +753,7 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 		peticionEejg.setAnio(Integer.parseInt(anio));
 		peticionEejg.setNumero(Integer.parseInt(numero));
 		peticionEejg.setIdPersona(Long.parseLong(idPersonaJG));
+		peticionEejg.setIdioma(usr.getLanguage());
 		
 		ScsEejgPeticionesAdm admPeticionEejg = new ScsEejgPeticionesAdm(usr);
 		try {

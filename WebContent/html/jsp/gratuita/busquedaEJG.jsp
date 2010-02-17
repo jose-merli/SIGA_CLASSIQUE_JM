@@ -12,6 +12,7 @@
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 
 
+
 <!-- IMPORTS -->
 <%@ page import="java.util.*"%>
 <%@ page import="com.atos.utils.UsrBean"%>
@@ -167,6 +168,7 @@ String datoTipoOrdinario[]={idordinario,idordinario};
 </head>
 
 <body onLoad="inicio();ajusteAlto('resultado');" >
+<bean:define id="permisoEejg" scope="request" name="permisoEejg" type="java.lang.Boolean"/>
 
 	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="" style="display:none">
 		<input type="hidden" name="actionModal" value="">
@@ -407,8 +409,11 @@ String datoTipoOrdinario[]={idordinario,idordinario};
 	<!-- FIN: CAMPOS DE BUSQUEDA-->	
 	
 	<!-- INICIO: BOTONES BUSQUEDA -->	
-	
-	<siga:ConjBotonesBusqueda botones="C,N,B,DE"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
+	<%if(permisoEejg!=null && permisoEejg.booleanValue()){ %>
+	<siga:ConjBotonesBusqueda botones="C,N,B,DEE"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
+	<%}else{ %>
+	<siga:ConjBotonesBusqueda botones="C,N,B"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
+	<%} %>
 	
 	<!-- FIN: BOTONES BUSQUEDA -->
 	

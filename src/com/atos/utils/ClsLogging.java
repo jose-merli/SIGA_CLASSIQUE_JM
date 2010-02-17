@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.Category;
 
 import com.siga.Utilidades.SIGAReferences;
+import com.siga.gratuita.schedulers.SchedulerException;
 
 
 public class ClsLogging{
@@ -368,36 +369,56 @@ public class ClsLogging{
 
 				if (bConsole)
 				{
-					System.out.println(sdfLong.format(dat)+",***** ERROR *****,");
-					System.out.println(s+sError);
+					if(e instanceof SchedulerException){
+						System.out.println(sdfLong.format(dat)+",******AVISO******"+e.getMessage());
+					}else{
+						System.out.println(sdfLong.format(dat)+",***** ERROR *****,");
+						System.out.println(s+sError);
 						System.out.println(ExceptionManager.getCompleteMessageParaLogger(e,idInstitucion,idUsuario));
+					}
 						//System.out.println(sdfLong.format(dat)+",***** TRAZA *****,");
 						//e.printStackTrace(System.out);
 				}
 
 				if (bLog4j && logger!=null)
 				{
+					if(e instanceof SchedulerException){
+						logger.error(sdfLong.format(dat)+",******AVISO******"+e.getMessage());
+						
+					}else{
 						logger.error("***** ERROR *****,");
-					logger.error(s+sError);
+						logger.error(s+sError);
 						logger.error(ExceptionManager.getCompleteMessageParaLogger(e,"",""));
+					}
 						//logger.error(",***** TRAZA *****,",e);
 				}
 					//System.out.println("EXCEPTION:***************"+e.getClass().getName());
 					if (bLogXeMail && logXeMail!=null)
 					{
-						logXeMail.error("*****ERROR*****"+s+sError+ExceptionManager.getCompleteMessageParaLogger(e,idInstitucion,idUsuario),e);
+						if(e instanceof SchedulerException){
+							logXeMail.error(sdfLong.format(dat)+"******AVISO******"+e.getMessage());
+						}else{
+							logXeMail.error("*****ERROR*****"+s+sError+ExceptionManager.getCompleteMessageParaLogger(e,idInstitucion,idUsuario),e);
+						}
 					}
 				
 				if (bStoreFile)
 				{
-					printer = new PrintWriter(new BufferedWriter(new FileWriter(fileName+sdfShort.format(dat) +".out", true)));
-					printer.println(sdfLong.format(dat)+",***** ERROR *****,");
-					printer.println(s+sError);
-						printer.println(ExceptionManager.getCompleteMessageParaLogger(e,idInstitucion,idUsuario));
-						//printer.println(sdfLong.format(dat)+",***** TRAZA *****,");
-						//e.printStackTrace(printer);
-					printer.flush();
-					printer.close();
+					if(e instanceof SchedulerException){
+						printer = new PrintWriter(new BufferedWriter(new FileWriter(fileName+sdfShort.format(dat) +".out", true)));
+						printer.println(sdfLong.format(dat)+",******AVISO******"+e.getMessage());
+						printer.flush();
+						printer.close();
+					}else{
+						printer = new PrintWriter(new BufferedWriter(new FileWriter(fileName+sdfShort.format(dat) +".out", true)));
+						printer.println(sdfLong.format(dat)+",***** ERROR *****,");
+						printer.println(s+sError);
+							printer.println(ExceptionManager.getCompleteMessageParaLogger(e,idInstitucion,idUsuario));
+							//printer.println(sdfLong.format(dat)+",***** TRAZA *****,");
+							//e.printStackTrace(printer);
+						printer.flush();
+						printer.close();
+					}
 				} 
 				
 			}

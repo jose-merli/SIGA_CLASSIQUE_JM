@@ -8,8 +8,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences;
+import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
 import com.siga.beans.ScsUnidadFamiliarEJGAdm;
@@ -56,10 +61,31 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 		}
 		
 		ScsEJGBean ejg = vEjg.get(0);
+		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String directorioPlantillas = rp.returnProperty("sjcs.directorioFisicoPlantillaInformeEejg");
+		String directorioEspecificoInforme = rp.returnProperty("sjcs.directorioPlantillaInformeEejg");
+		String plantillaRuta   = directorioPlantillas + directorioEspecificoInforme + ClsConstants.FILE_SEP + usr.getLocation();
+		CenInstitucionAdm admInstitucion = new CenInstitucionAdm(usr);
+		String institucion = "";
+		try {
+			institucion = admInstitucion.getNombreInstitucion(usr.getLocation());
+		} catch (SIGAException e) {
+			throw new BusinessException(e.getMessage());
+		} catch (ClsExceptions e) {
+			throw new BusinessException(e.getMessage());
+		}
+		
+		String rutaLogoColegio = plantillaRuta+ClsConstants.FILE_SEP+"recursos"+ClsConstants.FILE_SEP+"Logo.jpg";
+		rutaLogoColegio = UtilidadesString.replaceAllIgnoreCase(rutaLogoColegio, "/","\\\\" );
+		
 		Map<Integer, Map<String, String>> mapInformes = new HashMap<Integer, Map<String,String>>();
 		Map<String, String> mapParameters = new HashMap<String, String>();
+		mapParameters = actualizaParametrosComunes(mapParameters, usr);
 		mapParameters.put("numEjg", ejg.getAnio()+"-"+ejg.getNumEJG());
 		mapParameters.put("idPersonaJG", unidadFamiliar.getPersonaJG().getIdPersona().toString());
+		mapParameters.put("institucion", institucion);
+		mapParameters.put("rutaLogoColegio", rutaLogoColegio);
+		mapParameters.put("idioma", unidadFamiliar.getPeticionEejg().getIdioma());
 		mapInformes.put(new Integer(unidadFamiliar.getPeticionEejg().getIdXml()), mapParameters);
 		
 		return mapInformes;
@@ -72,6 +98,22 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 		ScsEJGBean ejg = null;
 		
 		Hashtable<StringBuffer, ScsEJGBean> htEjgs = new Hashtable<StringBuffer, ScsEJGBean>();
+		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String directorioPlantillas = rp.returnProperty("sjcs.directorioFisicoPlantillaInformeEejg");
+		String directorioEspecificoInforme = rp.returnProperty("sjcs.directorioPlantillaInformeEejg");
+		String plantillaRuta   = directorioPlantillas + directorioEspecificoInforme + ClsConstants.FILE_SEP + usr.getLocation();
+		CenInstitucionAdm admInstitucion = new CenInstitucionAdm(usr);
+		String institucion = "";
+		try {
+			institucion = admInstitucion.getNombreInstitucion(usr.getLocation());
+		} catch (SIGAException e) {
+			throw new BusinessException(e.getMessage());
+		} catch (ClsExceptions e) {
+			throw new BusinessException(e.getMessage());
+		}
+		
+		String rutaLogoColegio = plantillaRuta+ClsConstants.FILE_SEP+"recursos"+ClsConstants.FILE_SEP+"Logo.jpg";
+		rutaLogoColegio = UtilidadesString.replaceAllIgnoreCase(rutaLogoColegio, "/","\\\\" );
 		for (ScsUnidadFamiliarEJGBean unidadFamiliar:lUnidadFamiliar) {
 			StringBuffer keyEjgs = new StringBuffer();
 			keyEjgs.append(unidadFamiliar.getAnio());
@@ -101,8 +143,12 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 			}
 			htEjgs.put(keyEjgs, ejg);
 			mapParameters = new HashMap<String, String>();
+			mapParameters = actualizaParametrosComunes(mapParameters, usr);
 			mapParameters.put("numEjg", ejg.getAnio()+"-"+ejg.getNumEJG());
+			mapParameters.put("idioma", unidadFamiliar.getPeticionEejg().getIdioma());
 			mapParameters.put("idPersonaJG", unidadFamiliar.getPersonaJG().getIdPersona().toString());
+			mapParameters.put("institucion", institucion);
+			mapParameters.put("rutaLogoColegio", rutaLogoColegio);
 			mapInformes.put(new Integer(unidadFamiliar.getPeticionEejg().getIdXml()), mapParameters);
 			
 		}
@@ -127,7 +173,22 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 		ScsEJGBean ejg = null;
 		ScsUnidadFamiliarEJGBean unidadFamiliar = null;
 		Hashtable<StringBuffer, ScsEJGBean> htEjgs = new Hashtable<StringBuffer, ScsEJGBean>();  
+		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String directorioPlantillas = rp.returnProperty("sjcs.directorioFisicoPlantillaInformeEejg");
+		String directorioEspecificoInforme = rp.returnProperty("sjcs.directorioPlantillaInformeEejg");
+		String plantillaRuta   = directorioPlantillas + directorioEspecificoInforme + ClsConstants.FILE_SEP + usr.getLocation();
+		CenInstitucionAdm admInstitucion = new CenInstitucionAdm(usr);
+		String institucion = "";
+		try {
+			institucion = admInstitucion.getNombreInstitucion(usr.getLocation());
+		} catch (SIGAException e) {
+			throw new BusinessException(e.getMessage());
+		} catch (ClsExceptions e) {
+			throw new BusinessException(e.getMessage());
+		}
 		
+		String rutaLogoColegio = plantillaRuta+ClsConstants.FILE_SEP+"recursos"+ClsConstants.FILE_SEP+"Logo.jpg";
+		rutaLogoColegio = UtilidadesString.replaceAllIgnoreCase(rutaLogoColegio, "/","\\\\" );
 		for(Hashtable<String, String> datos:vDatosMultiplesEjg){
 			String idTipoEJG= (String)datos.get("idtipo");
 			String anio= (String)datos.get("anio");
@@ -184,8 +245,12 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 				for(DefinirUnidadFamiliarEJGForm formUnidadFamiliar:alUnidadFamiliar){
 					
 					Map<String, String> mapParameters = new HashMap<String, String>();
+					mapParameters = actualizaParametrosComunes(mapParameters, usr);
 					mapParameters.put("numEjg", ejg.getAnio()+"-"+ejg.getNumEJG());
 					mapParameters.put("idPersonaJG",formUnidadFamiliar.getIdPersona() );
+					mapParameters.put("institucion", institucion);
+					mapParameters.put("rutaLogoColegio", rutaLogoColegio);
+					mapParameters.put("idioma", formUnidadFamiliar.getPeticionEejg().getIdioma());
 					mapInformes.put(formUnidadFamiliar.getPeticionEejg().getIdXml(), mapParameters);
 				}
 			}
@@ -210,6 +275,25 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 			throw new BusinessException(e.toString());
 		}
 		return fichero;
+	}
+	private Map<String, String> actualizaParametrosComunes(Map<String, String> mapParameters,UsrBean usr){
+		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String directorioPlantillas = rp.returnProperty("sjcs.directorioFisicoPlantillaInformeEejg");
+		String directorioEspecificoInforme = rp.returnProperty("sjcs.directorioPlantillaInformeEejg");
+		String plantillaRuta   = directorioPlantillas + directorioEspecificoInforme + ClsConstants.FILE_SEP + usr.getLocation();
+		String rutaLogoCGAE = plantillaRuta+ClsConstants.FILE_SEP+"recursos"+ClsConstants.FILE_SEP+"cgae.jpg";
+		rutaLogoCGAE = UtilidadesString.replaceAllIgnoreCase(rutaLogoCGAE, "//","\\" );
+		rutaLogoCGAE = UtilidadesString.replaceAllIgnoreCase(rutaLogoCGAE, "/","\\" );
+		mapParameters.put("rutaLogoCGAE", rutaLogoCGAE);
+		mapParameters.put("conveniosInicio", "El Consejo General de la Abogacía Española, de acuerdo con los convenios de colaboración que a continuación se detallan:");
+		mapParameters.put("convenio1", "Convenio de colaboración entre la Agencia Estatal de la Administración Tributaria y el Consejo General de la Abogacía Española para la cesión de información de carácter tributario en los procedimientos de Asistencia Jurídica Gratuita firmado con fecha 3 de julio de 2006");
+		mapParameters.put("convenio2", "Convenio de colaboración entre la Secretaria de Estado de Hacienda y Presupuestos (Dirección General del Catastro) y el Consejo General de la Abogacía Española, en materia de gestión catastral firmado el 7 de marzo de 2007");
+		mapParameters.put("convenio3", "Convenio de colaboración entre la Tesorería General de la Seguridad Social y Consejo General de la Abogacía Española en orden a obtener cierta información por vía telemática en	las solicitudes de justicia gratuita, firmado el 15 de octubre de 2007");
+		mapParameters.put("convenio4", "Convenio de colaboración entre el Servicio Público de Empleo Estatal y el Consejo General de la Abogacía Española en materia de transmisión de datos para la sustitución de certificados en papel en los procedimientos de asistencia jurídica gratuita firmado con fecha 20 de junio de 2007");
+		mapParameters.put("conveniosFin", "Certifica que el Ilustre Colegio de Consejo General de la Abogacía Española ha accedido de forma telemática a las Administraciones citadas y ha obtenido la siguiente información del solicitante de referencia");
+		mapParameters.put("avisoLegal", "La información contenida en el presente documento procede de cada una de las Administraciones Públicas que se indican, habiendo sido obtenida por medios electrónicos seguros y con el consentimiento de la persona solicitante del beneficio a la justicia gratuita recogida al amparo la ley 1/1996, de 10 de enero, de Asistencia jurídica Gratuita. Los presentes datos se imprimen para la utilización exclusiva de la Comisión de Asistencia Jurídica Gratuita a los fines previstos, y a su solicitud, y no podrán utilizarse para ninguna otra finalidad.");
+		return mapParameters;
+		
 	}
 	
 

@@ -146,7 +146,7 @@ public class TagBotonesBusqueda extends TagSupport {
 					listoParaEnviar=true;
 				}else if (tipo.equalsIgnoreCase("ar")) {
 					aniadirARemesa=true;
-				}else if (tipo.equalsIgnoreCase("de")) {
+				}else if (tipo.equalsIgnoreCase("dee")) {
 					isDescargaEejg=true;
 				}
 					
@@ -399,7 +399,7 @@ public class TagBotonesBusqueda extends TagSupport {
 			}
 			if (isDescargaEejg) {
 				out.println("<td class=\"tdBotones\">");
-				out.print("<input type=\"button\" alt=\""+UtilidadesString.getMensajeIdioma(usrbean, "general.boton.descargaEejg") +"\"  id=\"idButton\" onclick=\"return descargaEejg(true);\" class=\"button\" value=\"");
+				out.print("<input type=\"button\" alt=\""+UtilidadesString.getMensajeIdioma(usrbean, "general.boton.descargaEejg") +"\"  id=\"idButton\" name=\"idButton\" onclick=\"return descargaEejg(true);\" class=\"button\" value=\"");
 				out.print(UtilidadesString.getMensajeIdioma(usrbean,"general.boton.descargaEejg"));
 				out.println("\">");
 				out.println("</td>");

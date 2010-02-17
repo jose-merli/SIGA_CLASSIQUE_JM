@@ -126,6 +126,7 @@
 						<input type="hidden" name="oculto<%=index%>_9" value="${DefinirUnidadFamiliarEJGForm.anio}">
 						<input type="hidden" name="oculto<%=index%>_10" value="${DefinirUnidadFamiliarEJGForm.numero}">
 						<input type="hidden" name="oculto<%=index%>_11" value="${solicitante.peticionEejg.idXml}">
+						<input type="hidden" name="oculto<%=index%>_12" value="${solicitante.peticionEejg.idioma}">
 						
 						
 						
@@ -201,7 +202,7 @@
 						<input type="hidden" name="oculto<%=index%>_9" value="${DefinirUnidadFamiliarEJGForm.anio}">
 						<input type="hidden" name="oculto<%=index%>_10" value="${DefinirUnidadFamiliarEJGForm.numero}">
 						<input type="hidden" name="oculto<%=index%>_11" value="${solicitante.peticionEejg.idXml}">
-						
+						<input type="hidden" name="oculto<%=index%>_12" value="${solicitante.peticionEejg.idioma}">
 						
 						
 						<c:out value="${solicitante.parentesco.descripcion}"></c:out>
@@ -273,7 +274,15 @@
 
 </siga:TablaCabecerasFijas>
 <!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
-	<siga:ConjBotonesAccion botones="V,N,D" modo="${DefinirUnidadFamiliarEJGForm.modo}" clase="botonesDetalle" />
+<c:choose>
+	<c:when test="${DefinirUnidadFamiliarEJGForm.permisoEejg==true}">
+	<siga:ConjBotonesAccion botones="V,N,DEE,NR" modo="${DefinirUnidadFamiliarEJGForm.modo}" clase="botonesDetalle" />
+	</c:when>
+	<c:otherwise>
+	 <siga:ConjBotonesAccion botones="V,N,NR" modo="${DefinirUnidadFamiliarEJGForm.modo}" clase="botonesDetalle" />
+	</c:otherwise>
+</c:choose>
+
 	
 	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"	style="display: none"></iframe>
 	
@@ -339,6 +348,9 @@
 	   
 	} 
 	function solicitarEejg(fila) {
+		var isConfirmado = confirm('<siga:Idioma key="gratuita.eejg.message.confirmaSolicitud"/>');
+		if(!isConfirmado)
+			return;
 		var idPersonaJG = document.getElementById( 'oculto' + fila + '_6');
 		var idInstitucionEJG = document.getElementById( 'oculto' + fila + '_7');
 		var idTipoEJG = document.getElementById( 'oculto' + fila + '_8');
@@ -361,19 +373,21 @@
 		var anio = document.getElementById( 'oculto' + fila + '_9');
 		var numero = document.getElementById( 'oculto' + fila + '_10');
 		var idxml = document.getElementById( 'oculto' + fila + '_11');
+		var idioma = document.getElementById( 'oculto' + fila + '_12');
 		datos = idPersonaJG.value + 	','
 	   			+idInstitucionEJG.value + 	','
 	   			+idTipoEJG.value + 	','
 	   			+anio.value + 	','
 	   			+numero.value + ','
-				+idxml.value + 	'#';
+				+idxml.value + ','
+				+idioma.value + 	'#';
 		
 	   	document.DefinirUnidadFamiliarEJGForm.tablaDatosDinamicosD.value = datos;
 	   	document.DefinirUnidadFamiliarEJGForm.modo.value = "descargaEejg";
 		document.DefinirUnidadFamiliarEJGForm.submit();
 	
 	}
-	function accionDownload() {
+	function descargaEejg() {
 		var chkPersonas = document.getElementsByName("chkPersona");
 		datos = '';
 		sub();
@@ -385,12 +399,14 @@
 				var anio = document.getElementById( 'oculto' + (i+1) + '_9');
 				var numero = document.getElementById( 'oculto' + (i+1) + '_10');
 				var idxml = document.getElementById( 'oculto' + (i+1) + '_11');
+				var idioma = document.getElementById( 'oculto' + (i+1) + '_12');
 				datos = datos + idPersonaJG.value + 	','
 	   			+idInstitucionEJG.value + 	','
 	   			+idTipoEJG.value + 	','
 	   			+anio.value + 	','
 	   			+numero.value + ','
-				+idxml.value + 	'#';
+	   			+idxml.value + ','
+				+idioma.value + 	'#';
 	 		   
  		   	}
 			
@@ -420,6 +436,7 @@
    			}
    		}
    	}
+   	
    	function esperaEejg(){
    		alert("<siga:Idioma key="general.boton.esperaEejg"/>");
    	}
@@ -428,7 +445,11 @@
 	{	
 		buscar();
 	}
+	function accionNuevaRegularizacion(){
+		document.DefinirUnidadFamiliarEJGForm.modo.value = "simulaWebService";
+		document.DefinirUnidadFamiliarEJGForm.submit();
 	
+   	}
 	
 	</script>
 </html>

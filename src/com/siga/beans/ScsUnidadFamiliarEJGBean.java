@@ -360,6 +360,7 @@ public class ScsUnidadFamiliarEJGBean extends MasterBean{
 		unidadFamiliarForm.setIdTipoEJG(idTipoEJG.toString());
 		unidadFamiliarForm.setNumero(numero.toString());
 		unidadFamiliarForm.setEjg(ejg);
+		
 		if(idPersona!=null)
 			unidadFamiliarForm.setIdPersona(idPersona.toString());
 		

@@ -21,6 +21,7 @@ import javax.transaction.UserTransaction;
 
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.schedulers.SchedulerException;
 
 
 public class ExceptionManager implements Persistible {
@@ -361,7 +362,10 @@ public class ExceptionManager implements Persistible {
             b.append("\t\tLITERAL            --> " + ((SIGAException)e).getLiteral("ES")+"\n");
             b.append("\t\tSUBLITERAL         --> " + ((SIGAException)e).getSubLiteral("ES")+"\n");
             e=((SIGAException)e).getNextException();
-          } else {
+          }else if (e instanceof SchedulerException) {
+              last=null;
+
+            } else {
             b.append("\t\tEXCEPCION          --> " + e.getMessage() + "\n");
             e=null;
           }

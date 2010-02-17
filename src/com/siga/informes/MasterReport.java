@@ -580,9 +580,20 @@ public class MasterReport  {
 //			Setup XSLT
 			TransformerFactory factory = TransformerFactory.newInstance();
 			Transformer transformer = factory.newTransformer(new StreamSource(xslt));
+//			String[]pruebaEtiquetas = new String[3];
+//			pruebaEtiquetas[0]="Etiqueta 0";
+//			pruebaEtiquetas[1]="Etiqueta 1";
+//			pruebaEtiquetas[2]="Etiqueta 2";
 			for (Map.Entry<String, String> entrada:mapParameters.entrySet()){
+				
 				transformer.setParameter(entrada.getKey(), entrada.getValue());
 			}
+//			transformer.setParameter("etiquetas", pruebaEtiquetas);
+//			Prueba prueba = new Prueba();
+//			prueba.setNombre("Nombre prueba");
+//			prueba.setDescripcion("Descripcion prueba");
+//			transformer.setParameter("prueba", prueba);
+			
 //			Setup input for XSLT transformation
 			Source src = new StreamSource(xml);
 			
@@ -829,5 +840,29 @@ public class MasterReport  {
 		return ficZip;
 	}
 
-
+public class Prueba{
+	String nombre="";
+	String descripcion="";
+	public String getNombre() {
+		return nombre;
+	}
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+	public String getDescripcion() {
+		return descripcion;
+	}
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+	
 }
+	
+}
+
+	
+	
+	
+	
+	
+

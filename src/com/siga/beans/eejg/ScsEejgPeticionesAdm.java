@@ -311,15 +311,38 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 	 * Método que obtiene una lista de peticines pendientes de solicitar o en estado inicial
 	 */
 	public List<ScsEejgPeticionesBean> getPeticionesIniciadas() throws ClsExceptions {
-		
+		return select(getWherePeticionesIniciadas());		
+	}
+	public String getWherePeticionesIniciadas(){
 		ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 		String numeroReintentosSolicitud = rp.returnProperty("eejg.numeroReintentosSolicitud");
-				
+		int horasMaximasDeProceso = Integer.parseInt(rp.returnProperty("eejg.horasMaximasDeProceso"));
+		String horasMaximas = String.valueOf(horasMaximasDeProceso / 24);
+		
 		String where = " WHERE " + ScsEejgPeticionesBean.C_ESTADO  + " = " + ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL;
 		where += " AND " + ScsEejgPeticionesBean.C_IDSOLICITUD + " IS NULL";
 		where += " AND " + ScsEejgPeticionesBean.C_NUMEROINTENTOSSOLICITUD + " < " + numeroReintentosSolicitud;
+		where += " OR (" + ScsEejgPeticionesBean.C_ESTADO  + " = " + ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL_ESPERANDO;
+		where += " AND (SYSDATE - " + horasMaximas + ") >= " + ScsEejgPeticionesBean.C_FECHAMODIFICACION;
+		where += " )";
+		return where;
 		
-		return select(where);		
+	}
+	public void updatePeticionesIniciadas() throws ClsExceptions {
+		StringBuffer updateSql = new StringBuffer();
+		updateSql.append("UPDATE ");
+		updateSql.append(ScsEejgPeticionesBean.T_NOMBRETABLA);
+		updateSql.append(" SET ");
+		updateSql.append(ScsEejgPeticionesBean.C_ESTADO);
+		updateSql.append("=");
+		updateSql.append(ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL_ESPERANDO);
+		updateSql.append(" , ");
+		updateSql.append(ScsEejgPeticionesBean.C_FECHAMODIFICACION);
+		updateSql.append(" = SYSDATE ");
+		updateSql.append(" ");
+		updateSql.append(getWherePeticionesIniciadas());
+		boolean isUpdated = updateSQL(updateSql.toString());
+		
 	}
 
 
@@ -330,15 +353,45 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 */
 	public List<ScsEejgPeticionesBean> getSolicitudesPendientes(int horas) throws ClsExceptions {
+		return select(getWherePeticionesEnEspera(horas));
+	}
+	
+	public String getWherePeticionesEnEspera(int horas){
 		ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 		String numeroReintentosConsulta = rp.returnProperty("eejg.numeroReintentosConsulta");
+		int horasMaximasDeProceso = Integer.parseInt(rp.returnProperty("eejg.horasMaximasDeProceso"));
+		String horasMaximas = String.valueOf(horasMaximasDeProceso / 24);
 		
 		String horasSt = String.valueOf(horas / 24);//pasamos las horas a días 
 		String where = " WHERE " + ScsEejgPeticionesBean.C_ESTADO  + " = " + ScsEejgPeticionesBean.EEJG_ESTADO_ESPERA;
 		where += " AND (SYSDATE - " + horasSt + ") >= " + ScsEejgPeticionesBean.C_FECHASOLICITUD;
 		where += " AND " + ScsEejgPeticionesBean.C_IDSOLICITUD + " IS NOT NULL";
 		where += " AND " + ScsEejgPeticionesBean.C_NUMEROINTENTOSCONSULTA + " < " + numeroReintentosConsulta;
-		return select(where);
+		where += " AND (SYSDATE - " + horasMaximas + ") >= " + ScsEejgPeticionesBean.C_FECHAMODIFICACION;
+		where += " OR (" + ScsEejgPeticionesBean.C_ESTADO  + " = " + ScsEejgPeticionesBean.EEJG_ESTADO_ESPERA_ESPERANDO;
+		where += " AND (SYSDATE - " + horasMaximas + ") >= " + ScsEejgPeticionesBean.C_FECHAMODIFICACION;
+		where += " )";
+		
+		return where;
+		
 	}
+	public void updatePeticionesEnEspera(int horas) throws ClsExceptions {
+		StringBuffer updateSql = new StringBuffer();
+		updateSql.append("UPDATE ");
+		updateSql.append(ScsEejgPeticionesBean.T_NOMBRETABLA);
+		updateSql.append(" SET ");
+		updateSql.append(ScsEejgPeticionesBean.C_ESTADO);
+		updateSql.append("=");
+		updateSql.append(ScsEejgPeticionesBean.EEJG_ESTADO_ESPERA_ESPERANDO);
+		updateSql.append(" , ");
+		updateSql.append(ScsEejgPeticionesBean.C_FECHAMODIFICACION);
+		updateSql.append(" = SYSDATE ");
+		updateSql.append(" ");
+		updateSql.append(getWherePeticionesEnEspera(horas));
+		boolean isUpdated = updateSQL(updateSql.toString());
+		
+	}
+	
+	
 	
 }

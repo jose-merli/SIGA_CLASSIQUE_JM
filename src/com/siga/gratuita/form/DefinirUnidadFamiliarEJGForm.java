@@ -35,6 +35,9 @@ import com.siga.tlds.FilaExtElement;
 	FilaExtElement[] elementosFila;
 	String datosInforme;
 	private String idXml;
+	Boolean permisoEejg;
+	String idioma;
+	
 	
 	private String idParentesco;
 	
@@ -523,6 +526,8 @@ import com.siga.tlds.FilaExtElement;
 		personaJG.setIdPersona(unidadFamiliarVo.getIdPersona());
 		unidadFamiliarVo.setPersonaJG(personaJG);
 		unidadFamiliarVo.setPeticionEejg(peticionEejg);
+		peticionEejg.setIdioma(idioma);
+		
 		if(getSolicitante()!=null)
 			unidadFamiliarVo.setSolicitante(new Integer(getSolicitante()));
 		if(getBienesMuebles()!=null && !getBienesMuebles().equals(""))
@@ -606,26 +611,32 @@ import com.siga.tlds.FilaExtElement;
 		if (getModo().equalsIgnoreCase("ver")){
 			elementosFila = new FilaExtElement[3];
 		}else{
-			elementosFila = new FilaExtElement[5];
-			elementosFila[3] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
-			if(getPeticionEejg()!=null){
-				int	estado = getPeticionEejg().getEstado();
-					
-				switch (estado) {
-					case ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL:case ScsEejgPeticionesBean.EEJG_ESTADO_ESPERA:
-						elementosFila[4] = new FilaExtElement("denegar", "esperaEejg","general.boton.esperaEejg",SIGAConstants.ACCESS_DENY);
-					break;
-					case ScsEejgPeticionesBean.EEJG_ESTADO_ERROR_SOLICITUD:case ScsEejgPeticionesBean.EEJG_ESTADO_ERROR_CONSULTA_INFO:
-						elementosFila[4] = new FilaExtElement("solicitar", "solicitarEejg","general.boton.errorEejg",SIGAConstants.ACCESS_READ);
-					break;
-					case ScsEejgPeticionesBean.EEJG_ESTADO_FINALIZADO:
-						elementosFila[4] = new FilaExtElement("descargaLog", "descargarEejg","general.boton.descargarEejg",	SIGAConstants.ACCESS_READ);
-					break;
-				default:
-					break;
+			if(permisoEejg!=null && permisoEejg.booleanValue()){
+				elementosFila = new FilaExtElement[5];
+				elementosFila[3] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
+				if(getPeticionEejg()!=null){
+					int	estado = getPeticionEejg().getEstado();
+						
+					switch (estado) {
+						case ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL:case ScsEejgPeticionesBean.EEJG_ESTADO_ESPERA:
+							elementosFila[4] = new FilaExtElement("denegar", "esperaEejg","general.boton.esperaEejg",SIGAConstants.ACCESS_READ);
+						break;
+						case ScsEejgPeticionesBean.EEJG_ESTADO_ERROR_SOLICITUD:case ScsEejgPeticionesBean.EEJG_ESTADO_ERROR_CONSULTA_INFO:
+							elementosFila[4] = new FilaExtElement("solicitar", "solicitarEejg","general.boton.errorEejg",SIGAConstants.ACCESS_READ);
+						break;
+						case ScsEejgPeticionesBean.EEJG_ESTADO_FINALIZADO:
+							elementosFila[4] = new FilaExtElement("descargaLog", "descargarEejg","general.boton.descargarEejg",	SIGAConstants.ACCESS_READ);
+						break;
+					default:
+						break;
+					}
+				}else{
+					elementosFila[4] = new FilaExtElement("versolicitud", "solicitarEejg","general.boton.solicitarEejg",	SIGAConstants.ACCESS_READ);
 				}
 			}else{
-				elementosFila[4] = new FilaExtElement("versolicitud", "solicitarEejg","general.boton.solicitarEejg",	SIGAConstants.ACCESS_READ);
+				elementosFila = new FilaExtElement[4];
+				elementosFila[3] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
+				
 			}
 		}
 		this.setElementosFila(elementosFila);
@@ -669,6 +680,18 @@ import com.siga.tlds.FilaExtElement;
 	}
 	public void setIdXml(String idXml) {
 		this.idXml = idXml;
+	}
+	public Boolean getPermisoEejg() {
+		return permisoEejg;
+	}
+	public void setPermisoEejg(Boolean permisoEejg) {
+		this.permisoEejg = permisoEejg;
+	}
+	public String getIdioma() {
+		return idioma;
+	}
+	public void setIdioma(String idioma) {
+		this.idioma = idioma;
 	}
 	
 }

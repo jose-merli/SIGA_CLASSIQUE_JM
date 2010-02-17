@@ -1189,6 +1189,19 @@ public class DefinirEJGAction extends MasterAction
 		request.getSession().removeAttribute("DATABACKUP");
 		request.getSession().removeAttribute("accion");
 		request.getSession().removeAttribute("resultadoTelefonos");
+		try {
+			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+			GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
+			String eejg = paramAdm.getValor (usr.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_EEJG, "");
+			Boolean isPermisoEejg = new Boolean((eejg!=null && eejg.equalsIgnoreCase(ClsConstants.DB_TRUE)));
+			request.setAttribute("permisoEejg", isPermisoEejg);
+		}
+		catch (Exception e) 
+		{
+			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
+		} 
+		
+		
 		return "inicio";		
 	}
 
@@ -1205,6 +1218,7 @@ public class DefinirEJGAction extends MasterAction
 				String nombreColegiado = persona.obtenerNombreApellidos(new Long(usr.getIdPersona()).toString());
 				request.setAttribute("nColegiado",numeroColegiado);
 				request.setAttribute("nombreColegiado",nombreColegiado);
+				
 			}
 			catch (Exception e) 
 			{
@@ -1216,6 +1230,21 @@ public class DefinirEJGAction extends MasterAction
         request.getSession().removeAttribute("DATOSFORMULARIO");
         request.getSession().removeAttribute("DATABACKUP");
         request.getSession().removeAttribute("accion");
+        try {
+        	 GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
+     		String eejg = paramAdm.getValor (usr.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_EEJG, "");
+     		Boolean isPermisoEejg = new Boolean((eejg!=null && eejg.equalsIgnoreCase(ClsConstants.DB_TRUE)));
+     		request.setAttribute("permisoEejg", isPermisoEejg);
+			
+		}
+		catch (Exception e) 
+		{
+			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
+		} 
+       
+        
+		
+        
         return "inicio";           
     } 
 	

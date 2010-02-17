@@ -380,6 +380,7 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 		sql.append(" and parentesco.idparentesco=familia.idparentesco) PARENTESCO  ");
 		sql.append(" ,decode(ejg.idpersonajg,familia.IDPERSONA,1,0) orden ");
 		sql.append(" ,eejg.idpeticion , eejg.estado ,eejg.idxml ,eejg.idpeticion ");
+		sql.append(" ,eejg.idioma  ");
 		
 		sql.append(" FROM SCS_UNIDADFAMILIAREJG familia, SCS_PERSONAJG persona,scs_ejg ejg, scs_eejg_peticiones eejg ");
 		sql.append(" WHERE familia.IDINSTITUCION = :");
@@ -468,7 +469,8 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 						importeIngresosAnuales += unidadFamiliar.getIngresosAnuales().doubleValue();
 					if(idSolicitante.compareTo(unidadFamiliar.getPersonaJG().getIdPersona())==0)
 						unidadFamiliarForm.setPersonaJG(unidadFamiliar.getPersonaJG());
-					DefinirUnidadFamiliarEJGForm unidad = unidadFamiliar.getUnidadFamiliarEjgForm(); 
+					DefinirUnidadFamiliarEJGForm unidad = unidadFamiliar.getUnidadFamiliarEjgForm();
+					unidad.setPermisoEejg(unidadFamiliarForm.getPermisoEejg());
 					if(unidadFamiliarForm.getModo()!=null)
 						unidad.setModo(unidadFamiliarForm.getModo());
 					StringBuffer peticion = new StringBuffer();

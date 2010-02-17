@@ -11,7 +11,6 @@ import java.security.PrivateKey;
 import java.security.cert.Certificate;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -83,11 +82,13 @@ public class InformeEejg extends MasterReport
 		String numEjg = null;
 		String idInstitucion = getUsuario().getLocation();
 		String fecha = null;
+		
 		for (Map.Entry<Integer, Map<String, String>> entrada:mapInformes.entrySet()){
 			String xml = admXmlEejg.getEejgXml(entrada.getKey());
 			Map<String, String> mapParameters = entrada.getValue();
 			numEjg = mapParameters.get("numEjg") ;
 			file = generarInformeEejg(xml,mapParameters);
+			
 			if(mapInformes.entrySet().size()>1){
 				
 				if(file2zip==null){
@@ -144,7 +145,7 @@ public class InformeEejg extends MasterReport
 		File rutaTmp=null;
 		try {
 			UsrBean usr = this.getUsuario();
-			String idioma = usr.getLanguage();
+			String idioma = mapParameters.get("idioma");
 			String idInstitucion = usr.getLocation();
 	
 		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
@@ -158,15 +159,12 @@ public class InformeEejg extends MasterReport
 			String directorioPlantillas = rp.returnProperty("sjcs.directorioFisicoPlantillaInformeEejg");
 			String directorioEspecificoInforme = rp.returnProperty("sjcs.directorioPlantillaInformeEejg");
 			String directorioSalida = rp.returnProperty("sjcs.directorioFisicoSalidaInformeEejg");
-			
-
 			// Directorios y nombres de trabajo
 			String plantillaNombre = "InformeEejg_"   + idiomaExt + ".xsl";
 			String plantillaRuta   = directorioPlantillas + directorioEspecificoInforme + ClsConstants.FILE_SEP + idInstitucion;
 			String pdfNombre       = "eejg"+"_" + idInstitucion +"_"+mapParameters.get("numEjg")+ "_"+mapParameters.get("idPersonaJG") + "_" + fecha+".pdf";
 			String pdfRuta         = directorioSalida    + directorioEspecificoInforme + ClsConstants.FILE_SEP + idInstitucion;
 			
-			// obtener ruta almacen
 			File rutaPDF = new File(pdfRuta);
 			rutaPDF.mkdirs();
 			if(!rutaPDF.exists()){

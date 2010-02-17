@@ -534,6 +534,8 @@ MDB Microsoft Access Database
   public static String IDPROCESO_REGTEL_EJG="94U";
   public static String IDPROCESO_REGTEL_CENSO="222";
   
+  public static final String GEN_PARAM_EEJG="EEJG";
+  
   
   
   
