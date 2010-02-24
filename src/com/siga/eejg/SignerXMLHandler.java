@@ -21,6 +21,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import com.atos.utils.ClsLogging;
 import com.atos.utils.ReadProperties;
 import com.siga.Utilidades.FirmaXMLHelper;
 import com.siga.Utilidades.SIGAReferences;
@@ -35,14 +36,22 @@ public class SignerXMLHandler extends BasicHandler {
     			try {
     				Message message=firmar(messageContext.getRequestMessage().getSOAPEnvelope().getAsDocument(), messageContext);
     				messageContext.setRequestMessage(message);
-    			} catch (Exception e) {
-    				System.out.println("Error al firma el xml "+e);
+    			} catch (AxisFault e) {
+        			ClsLogging.writeFileLogError("Error al firmar el xml.", e, 3);
+    				throw e;
+            	} catch (Exception e){
+        			ClsLogging.writeFileLogError("Error al firmar el xml.", e, 3);
+    				throw new AxisFault("Error al firmar el xml.", e);
     			}
             } else {
             	try {
             		verificar(messageContext.getResponseMessage().getSOAPEnvelope().getAsDocument());
+            	} catch (AxisFault e){
+        			ClsLogging.writeFileLogError("Error verificando la firma.", e, 3);
+    				throw e;
             	} catch (Exception e){
-    				System.out.println("Error verificando firma "+e);
+        			ClsLogging.writeFileLogError("Error verificando la firma.", e, 3);
+    				throw new AxisFault("Error verificando firma.", e);
             	}
             }
         } else { // Es el servidor
@@ -50,14 +59,22 @@ public class SignerXMLHandler extends BasicHandler {
     			try {
     				Message message=firmar(messageContext.getResponseMessage().getSOAPEnvelope().getAsDocument(), messageContext);
     				messageContext.setResponseMessage(message);
-    			} catch (Exception e) {
-    				System.out.println("Error al firma el xml "+e);
+    			} catch (AxisFault e) {
+        			ClsLogging.writeFileLogError("Error al firmar el xml.", e, 3);
+    				throw e;
+            	} catch (Exception e){
+        			ClsLogging.writeFileLogError("Error al firmar el xml.", e, 3);
+    				throw new AxisFault("Error al firmar el xml.", e);
     			}
             } else {
             	try {
             		verificar(messageContext.getRequestMessage().getSOAPEnvelope().getAsDocument());
+            	} catch (AxisFault e){
+        			ClsLogging.writeFileLogError("Error verificando la firma.", e, 3);
+    				throw e;
             	} catch (Exception e){
-    				System.out.println("Error verificando firma "+e);
+        			ClsLogging.writeFileLogError("Error verificando la firma.", e, 3);
+    				throw new AxisFault("Error verificando firma.", e);
             	}
             }
         }
@@ -77,12 +94,12 @@ public class SignerXMLHandler extends BasicHandler {
 				return true;
 			}
 		} catch (Exception e) {
-			System.out.println("Error verificando firma "+e);
+			ClsLogging.writeFileLogError("Error verificando la firma.", e, 3);
 		}
 		return false;
 	}
 	
-	private Message firmar(Document doc, MessageContext messageContext) throws Exception {
+	private Message firmar(Document doc, MessageContext messageContext) throws AxisFault {
 		FirmaXMLHelper firmaXMLHelper = getFirmaXMLHelper();	
 
 		Element signedObject = (Element) ((Element) doc.getFirstChild()).getElementsByTagNameNS("*", "Body").item(0);
@@ -101,17 +118,25 @@ public class SignerXMLHandler extends BasicHandler {
 			signPlace.removeChild(node);
 		}
 
-		firmaXMLHelper.firmaCabecera(signedObject, signPlace);
+		try {
+			firmaXMLHelper.firmaCabecera(signedObject, signPlace);
+		} catch (Exception e){
+			throw new AxisFault("Error al firmar el mensaje.", e);
+		}
 
 		SOAPEnvelope soapEnvelope = new SOAPEnvelope();
 
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		TransformerFactory tf = TransformerFactory.newInstance();
-		Transformer transform = tf.newTransformer();
-		transform.transform(new DOMSource(doc), new StreamResult(out));
-		ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-        DeserializationContext dser = new DeserializationContext(new InputSource(in), messageContext, Message.REQUEST, soapEnvelope);
-        dser.parse();
+		try {
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			TransformerFactory tf = TransformerFactory.newInstance();
+			Transformer transform = tf.newTransformer();
+			transform.transform(new DOMSource(doc), new StreamResult(out));
+			ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+	        DeserializationContext dser = new DeserializationContext(new InputSource(in), messageContext, Message.REQUEST, soapEnvelope);
+	        dser.parse();
+		} catch (Exception e){
+			throw new AxisFault("Error al serializar el mensaje firmado.", e);
+		}
         
 		return new Message(soapEnvelope);
 	}

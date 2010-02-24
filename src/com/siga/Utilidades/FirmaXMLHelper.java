@@ -15,6 +15,8 @@ import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import com.atos.utils.ClsLogging;
+
 public class FirmaXMLHelper {
 	private String xmlSigNSPrefix;
 	private String keyStoreType;
@@ -43,7 +45,7 @@ public class FirmaXMLHelper {
 		try {
 			org.apache.xml.security.Init.init();
 		} catch (Exception e){
-			e.printStackTrace();
+			ClsLogging.writeFileLogError("Error al inicializar el API de seguridad.", e, 3);
 		}
 	}
 	
