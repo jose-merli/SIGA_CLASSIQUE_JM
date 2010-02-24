@@ -13,7 +13,10 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.Vector;
+
 import javax.servlet.http.HttpServletRequest;
+
+import es.satec.siga.util.SigaSequence;
 
 
 
@@ -2231,7 +2234,10 @@ public class Row implements Serializable
 				
 				else 
 				{
-					if (datatypes.get(fieldNames[i]).equals("STRING")) 
+					if (row.get(fieldNames[i]) instanceof SigaSequence) {
+						SigaSequence sigaSequence = (SigaSequence)row.get(fieldNames[i]);						
+						sqlValues.append(aux + sigaSequence.getNombreSecuencia() + ".NEXTVAL");
+					} else if (datatypes.get(fieldNames[i]).equals("STRING")) 
 					{
 						//sqlValues.append(aux + " '" + validateChars(row.get(fieldNames[i])) + "' ");
 						sqlValues.append(aux + ":"+new Integer(contador).toString()+" ");

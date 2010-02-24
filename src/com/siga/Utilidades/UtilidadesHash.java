@@ -15,6 +15,8 @@ import java.util.Vector;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 
+import es.satec.siga.util.SigaSequence;
+
 /**
  * @author daniel.campos
  *
@@ -50,7 +52,19 @@ public class UtilidadesHash {
 		}
 	}
 	
-	
+	public static SigaSequence getSigaSequence (SigaSequence sigaSequence, Hashtable hash, String key) {
+		try {
+			if (sigaSequence == null) {
+				sigaSequence = new SigaSequence(null);				
+			}
+			
+			sigaSequence.setValue(Integer.valueOf((String)hash.get(key)));
+			return sigaSequence;
+		} catch (Exception e) {
+			return null;
+		}
+		
+	}
 
 	static public Integer getInteger (Hashtable hash, String key){ // throws ClsExceptions {
 		try {
@@ -107,6 +121,16 @@ public class UtilidadesHash {
 		}
 		catch (Exception e) {
 			return new Boolean (false);
+		}
+	}
+	
+	static public void set (Hashtable hash, String key, SigaSequence valor) {
+		try {
+			if (key==null || valor==null) return;
+			hash.put (key, valor);
+		}
+		catch (Exception e) { 	
+		    return;
 		}
 	}
 
