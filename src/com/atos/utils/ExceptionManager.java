@@ -20,8 +20,8 @@ import javax.servlet.http.HttpSession;
 import javax.transaction.UserTransaction;
 
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.eejg.SchedulerException;
 import com.siga.general.SIGAException;
-import com.siga.gratuita.schedulers.SchedulerException;
 
 
 public class ExceptionManager implements Persistible {

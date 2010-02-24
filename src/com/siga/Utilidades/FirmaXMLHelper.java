@@ -1,10 +1,6 @@
-/**
- * 
- */
 package com.siga.Utilidades;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -19,32 +15,17 @@ import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import com.atos.utils.ReadProperties;
-
-/**
- * @author angelcpe
- *
- */
 public class FirmaXMLHelper {
-
 	private String xmlSigNSPrefix;
 	private String keyStoreType;
 	private String keyStoreFile;
 	private String keyStorePass;
-	
 	private String privateKeyAlias;
 	private String privateKeyPass;	
 	private String certificateAlias;	
+	private static PrivateKey privateKey;
+	private static X509Certificate cert;
 	
-	/**
-	 * @param xmlSigNSPrefix
-	 * @param keyStoreType
-	 * @param keyStoreFile
-	 * @param keyStorePass
-	 * @param privateKeyAlias
-	 * @param privateKeyPass
-	 * @param certificateAlias
-	 */
 	public FirmaXMLHelper(String xmlSigNSPrefix, String keyStoreType,
 			String keyStoreFile, String keyStorePass, String privateKeyAlias,
 			String privateKeyPass, String certificateAlias) {
@@ -59,50 +40,17 @@ public class FirmaXMLHelper {
 	}	
 	
 	static {
-		org.apache.xml.security.Init.init();
+		try {
+			org.apache.xml.security.Init.init();
+		} catch (Exception e){
+			e.printStackTrace();
+		}
 	}
 	
-	/**
-	 * 
-	 * @param signedObject
-	 * @param signPlace
-	 * @throws Exception
-	 */
-	public void firmaXML(Element signedObject, Element signPlace) throws Exception {
-						
-		Constants.setSignatureSpecNSprefix(xmlSigNSPrefix);
-		IdResolver.registerElementById(signedObject, "id");
-		
-		KeyStore ks = KeyStore.getInstance(keyStoreType);
-		
-		FileInputStream fis = new FileInputStream(SIGAReferences.getDirectoryReference(SIGAReferences.RESOURCE_FILES.PROPERTIES_DIR) + File.separator + keyStoreFile);
-		ks.load(fis, keyStorePass.toCharArray());
-		PrivateKey privateKey = (PrivateKey) ks.getKey(privateKeyAlias, privateKeyPass.toCharArray());
-
-		XMLSignature sig = new XMLSignature(signedObject.getOwnerDocument(), null, XMLSignature.ALGO_ID_SIGNATURE_DSA);
-		signPlace.appendChild(sig.getElement());
-		
-		Transforms transforms = new Transforms(signedObject.getOwnerDocument());
-		transforms.addTransform(Transforms.TRANSFORM_ENVELOPED_SIGNATURE);
-		transforms.addTransform(Transforms.TRANSFORM_C14N_WITH_COMMENTS);
-		sig.addDocument("#"+signedObject.getAttribute("id"), transforms, Constants.ALGO_ID_DIGEST_SHA1);
-
-		X509Certificate cert = (X509Certificate) ks.getCertificate(certificateAlias);
-		sig.addKeyInfo(cert);
-		sig.addKeyInfo(cert.getPublicKey());
-		sig.sign(privateKey);
-	}
-	
-	/**
-	 * 
-	 * @param entrada
-	 * @return
-	 * @throws Exception
-	 */
 	public boolean verificarXML(Document entrada) throws Exception {
-		Element nscontext = createDSctx(entrada, this.xmlSigNSPrefix, Constants.SignatureSpecNS);
-		Element sigElement = (Element) XPathAPI.selectSingleNode(entrada, "//ds:Signature", nscontext);
-		XMLSignature signature = new XMLSignature(sigElement, null);
+		Element nscontext = createDSctx(entrada, this.xmlSigNSPrefix, Constants.SignatureSpecNS);		
+		Element sigElement = (Element) XPathAPI.selectSingleNode(entrada, "//"+this.xmlSigNSPrefix+":Signature", nscontext);
+		XMLSignature signature = new XMLSignature(sigElement, "");
 
         KeyInfo ki = signature.getKeyInfo();
 		if (ki != null) {
@@ -122,14 +70,7 @@ public class FirmaXMLHelper {
 		}
 	}
 	
-	/**
-	 * 
-	 * @param doc
-	 * @param prefix
-	 * @param namespace
-	 * @return
-	 */
-    private static Element createDSctx(Document doc, String prefix, String namespace) {
+    private Element createDSctx(Document doc, String prefix, String namespace) {
 
 		if ((prefix == null) || (prefix.trim().length() == 0)) {
 			throw new IllegalArgumentException("You must supply a prefix");
@@ -141,4 +82,27 @@ public class FirmaXMLHelper {
 		return ctx;
 	}
     
+	public void firmaCabecera(Element signedObject, Element signPlace) throws Exception {
+		if (privateKey==null || cert==null){
+			KeyStore ks = KeyStore.getInstance(keyStoreType);
+			InputStream is = FirmaXMLHelper.class.getResourceAsStream(keyStoreFile);
+			ks.load(is, keyStorePass.toCharArray());
+			privateKey = (PrivateKey) ks.getKey(privateKeyAlias, privateKeyPass.toCharArray());
+			cert = (X509Certificate) ks.getCertificate(certificateAlias);
+		}
+		
+		Constants.setSignatureSpecNSprefix(xmlSigNSPrefix);
+		IdResolver.registerElementById(signedObject, "id");		
+
+		XMLSignature sig = new XMLSignature(signedObject.getOwnerDocument(), null, XMLSignature.ALGO_ID_SIGNATURE_RSA_SHA1);
+		signPlace.appendChild(sig.getElement());
+
+		Transforms transforms = new Transforms(signedObject.getOwnerDocument());
+		transforms.addTransform(Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS);
+		sig.addDocument("#"+signedObject.getAttribute("id"), transforms, Constants.ALGO_ID_DIGEST_SHA1);
+
+		sig.addKeyInfo(cert);
+		sig.addKeyInfo(cert.getPublicKey());
+		sig.sign(privateKey);
+	}
 }

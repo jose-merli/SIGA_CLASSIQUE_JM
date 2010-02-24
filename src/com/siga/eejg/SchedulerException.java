@@ -1,4 +1,4 @@
-package com.siga.gratuita.schedulers;
+package com.siga.eejg;
 
 import com.atos.utils.ClsConstants;
 import com.siga.Utilidades.UtilidadesString;

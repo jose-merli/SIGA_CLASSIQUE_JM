@@ -1,4 +1,4 @@
-package com.siga.gratuita.schedulers;
+package com.siga.eejg;
 
 import java.net.ConnectException;
 import java.util.List;
@@ -12,7 +12,6 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.beans.eejg.ScsEejgPeticionesAdm;
 import com.siga.beans.eejg.ScsEejgPeticionesBean;
-import com.siga.eejg.SolicitudesEEJG;
 import com.siga.general.SIGAException;
 
 public class InformacionEconomicaEjg {

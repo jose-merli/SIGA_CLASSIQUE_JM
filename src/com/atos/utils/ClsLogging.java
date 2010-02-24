@@ -26,7 +26,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.Category;
 
 import com.siga.Utilidades.SIGAReferences;
-import com.siga.gratuita.schedulers.SchedulerException;
+import com.siga.eejg.SchedulerException;
 
 
 public class ClsLogging{

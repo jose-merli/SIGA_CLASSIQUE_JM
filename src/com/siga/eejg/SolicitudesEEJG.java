@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.siga.eejg;
 
 import java.net.URL;
@@ -8,24 +5,17 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import org.apache.axis.EngineConfiguration;
-import org.apache.axis.Handler;
-import org.apache.axis.SimpleChain;
-import org.apache.axis.SimpleTargetedChain;
-import org.apache.axis.configuration.SimpleProvider;
-import org.apache.axis.handlers.SimpleSessionHandler;
-import org.apache.axis.transport.http.HTTPSender;
-import org.apache.axis.transport.http.HTTPTransport;
-import org.redabogacia.www.pjgpra.wspjgpra.ConsultaInfoAAPP.ConsultaInfoAAPP;
-import org.redabogacia.www.pjgpra.wspjgpra.ConsultaInfoAAPP.DatosConsultaInfoAAPP;
-import org.redabogacia.www.pjgpra.wspjgpra.RespuestaInfoConsultaInfoAAPP.RespuestaConsultaInfoAAPP;
-import org.redabogacia.www.pjgpra.wspjgpra.RespuestaSolicitudPeticionInfoAAPP.RespuestaSolicitudPeticionInfoAAPP;
-import org.redabogacia.www.pjgpra.wspjgpra.SolicitudPeticionInfoAAPP.DatosPeticionInfoAAPP;
-import org.redabogacia.www.pjgpra.wspjgpra.SolicitudPeticionInfoAAPP.FirmaInformacion;
-import org.redabogacia.www.pjgpra.wspjgpra.SolicitudPeticionInfoAAPP.Informacion;
-import org.redabogacia.www.pjgpra.wspjgpra.SolicitudPeticionInfoAAPP.SolicitudPeticionInfoAAPP;
+import org.apache.axis.configuration.FileProvider;
+import com.siga.eejg.ws.ConsultaInfoAAPP.ConsultaInfoAAPP;
+import com.siga.eejg.ws.ConsultaInfoAAPP.DatosConsultaInfoAAPP;
+import com.siga.eejg.ws.RespuestaInfoConsultaInfoAAPP.RespuestaConsultaInfoAAPP;
+import com.siga.eejg.ws.RespuestaSolicitudPeticionInfoAAPP.RespuestaSolicitudPeticionInfoAAPP;
+import com.siga.eejg.ws.SolicitudPeticionInfoAAPP.DatosPeticionInfoAAPP;
+import com.siga.eejg.ws.SolicitudPeticionInfoAAPP.Informacion;
+import com.siga.eejg.ws.SolicitudPeticionInfoAAPP.SolicitudPeticionInfoAAPP;
 
-import service.ServiciosJGExpediente.ServiciosJGExpedienteServiceLocator;
-import service.ServiciosJGExpediente.ServiciosJGExpedienteServiceSoapBindingStub;
+import com.siga.eejg.ws.ServiciosJGExpedienteServiceLocator;
+import com.siga.eejg.ws.ServiciosJGExpedienteServiceSoapBindingStub;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -42,13 +32,7 @@ import com.siga.beans.eejg.ScsEejgPeticionesBean;
 import com.siga.beans.eejg.ScsEejgXmlAdm;
 import com.siga.beans.eejg.ScsEejgXmlBean;
 
-/**
- * @author angelcpe
- *
- */
 public class SolicitudesEEJG {
-	
-	
 	private String urlWS;	
 
 	public SolicitudesEEJG() {
@@ -56,34 +40,15 @@ public class SolicitudesEEJG {
 		init();
 	}
 
-
 	private void init() {
 		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 		urlWS = rp.returnProperty("eejg.urlWS");		
 	}
 
 	private EngineConfiguration createClientConfig() { 
-      SimpleProvider clientConfig=new SimpleProvider(); 
-      Handler logHandler=(Handler)new LogHandler(); 
-      Handler sigHandler=(Handler)new SignerXMLHandler();
-      SimpleChain reqHandler=new SimpleChain(); 
-      SimpleChain respHandler=new SimpleChain(); 
-      reqHandler.addHandler(sigHandler); 
-      reqHandler.addHandler(logHandler);
-      respHandler.addHandler(logHandler); 
-      respHandler.addHandler(sigHandler);
-      Handler pivot=(Handler)new HTTPSender(); 
-      Handler transport=new SimpleTargetedChain(reqHandler, pivot, respHandler); 
-      clientConfig.deployTransport(HTTPTransport.DEFAULT_TRANSPORT_NAME,transport); 
+		return new FileProvider(SolicitudesEEJG.class.getResourceAsStream("/siga-eejg.wsdd"));
+	} 
 
-      return clientConfig;    
-    } 
-
-	/**
-	 * 
-	 * @param scsEejgPeticionesBean
-	 * @throws Exception
-	 */
 	public String solicitudPeticionInfoAAPP(ScsEejgPeticionesBean scsEejgPeticionesBean) throws Exception {
 		UsrBean usrBean = new UsrBean();
 		usrBean.setUserName(String.valueOf(ClsConstants.USUMODIFICACION_AUTOMATICO));
@@ -94,7 +59,6 @@ public class SolicitudesEEJG {
 		ServiciosJGExpedienteServiceSoapBindingStub stub = new ServiciosJGExpedienteServiceSoapBindingStub(url, locator);
 		
 		String idSolicitudImportada = null;
-		String id = "ID_PETI";
 		String idSistema = String.valueOf(scsEejgPeticionesBean.getIdPeticion());
 		if (scsEejgPeticionesBean.getIdInstitucion() == null) {
 			throw new IllegalArgumentException("La institucion o zona no puede ser nula");
@@ -110,10 +74,9 @@ public class SolicitudesEEJG {
 		String idioma = scsEejgPeticionesBean.getIdioma();
 		
 		DatosPeticionInfoAAPP datosPeticionInfoAAPP = new DatosPeticionInfoAAPP(idSistema, idSolicitudImportada, idZona, dNI_NIE_Tramitador, dNI_NIE_Solicitante, nombre, apellido1, apellido2, idioma);
-		Informacion informacion = new Informacion(datosPeticionInfoAAPP, id);
+		Informacion informacion = new Informacion(datosPeticionInfoAAPP);
 				
-		FirmaInformacion firmaInformacion = new FirmaInformacion();
-		SolicitudPeticionInfoAAPP solicitudPeticionInfoAAPP = new SolicitudPeticionInfoAAPP(informacion, firmaInformacion);
+		SolicitudPeticionInfoAAPP solicitudPeticionInfoAAPP = new SolicitudPeticionInfoAAPP(informacion);
 				
 		RespuestaSolicitudPeticionInfoAAPP respuestaSolicitudPeticionInfoAAPP =  stub.solicitudPeticionInfoAAPP(solicitudPeticionInfoAAPP);
 		
@@ -132,7 +95,6 @@ public class SolicitudesEEJG {
 		
 		return idPeticionInfoAAPP;
 	}
-	
 
 	private String getDNITramitador(UsrBean usrBean, ScsEejgPeticionesBean scsEejgPeticionesBean) throws ClsExceptions {
 		String nif = null;
@@ -148,14 +110,6 @@ public class SolicitudesEEJG {
 		return nif;
 	}
 
-
-	/**
-	 * 
-	 * @param usrBean
-	 * @param scsEejgPeticionesBean
-	 * @return
-	 * @throws ClsExceptions
-	 */
 	private ScsPersonaJGBean getDatosSolicitante(UsrBean usrBean, ScsEejgPeticionesBean scsEejgPeticionesBean) throws ClsExceptions {
 		ScsPersonaJGAdm scsPersonaJGAdm = new ScsPersonaJGAdm(usrBean);
 		ScsPersonaJGBean scsPersonaJGBean = null;
@@ -169,14 +123,7 @@ public class SolicitudesEEJG {
 		return scsPersonaJGBean;
 	}
 
-
-	/**
-	 * 
-	 * @param scsEejgPeticionesBean
-	 * @throws Exception
-	 */
 	public int consultaInfoAAPP(ScsEejgPeticionesBean scsEejgPeticionesBean) throws Exception {
-		
 		int idXML = -1;
 		ServiciosJGExpedienteServiceLocator locator = new ServiciosJGExpedienteServiceLocator(createClientConfig());
 		URL url = new URL(urlWS);		
@@ -187,10 +134,8 @@ public class SolicitudesEEJG {
 		String idioma = scsEejgPeticionesBean.getIdioma();
 		
 		DatosConsultaInfoAAPP datosConsultaInfoAAPP = new DatosConsultaInfoAAPP(idSistema, idPeticionInfoAAPP, idioma);
-		String id = "ID_INFO"; 
-		org.redabogacia.www.pjgpra.wspjgpra.ConsultaInfoAAPP.Informacion informacion = new org.redabogacia.www.pjgpra.wspjgpra.ConsultaInfoAAPP.Informacion(datosConsultaInfoAAPP, id);
-		org.redabogacia.www.pjgpra.wspjgpra.ConsultaInfoAAPP.FirmaInformacion firmaInformacion = new org.redabogacia.www.pjgpra.wspjgpra.ConsultaInfoAAPP.FirmaInformacion();
-		ConsultaInfoAAPP consultaInfoAAPP = new ConsultaInfoAAPP(informacion, firmaInformacion);
+		com.siga.eejg.ws.ConsultaInfoAAPP.Informacion informacion = new com.siga.eejg.ws.ConsultaInfoAAPP.Informacion(datosConsultaInfoAAPP);
+		ConsultaInfoAAPP consultaInfoAAPP = new ConsultaInfoAAPP(informacion);
 				
 		RespuestaConsultaInfoAAPP respuestaConsultaInfoAAPP = stub.consultaInfoAAPP(consultaInfoAAPP);		
 		
@@ -206,17 +151,9 @@ public class SolicitudesEEJG {
 		return idXML;
 	}
 
-
-	/**
-	 * 
-	 * @param scsEejgXmlAdm
-	 * @param scsEejgPeticionesBean
-	 * @param xml
-	 * @param envioRespuesta
-	 */
 	private int insertaLogBDD(ScsEejgXmlAdm scsEejgXmlAdm,	ScsEejgPeticionesBean scsEejgPeticionesBean, String xml, String envioRespuesta, int estado) {		
-
 		int idXml = -1;
+
 		try {
 			ScsEejgXmlBean scsEejgXmlBean = new ScsEejgXmlBean();
 			idXml = scsEejgXmlAdm.getNuevoIdXml();
@@ -232,5 +169,4 @@ public class SolicitudesEEJG {
 		}
 		return idXml;
 	}
-
 }
