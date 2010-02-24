@@ -26,7 +26,7 @@ public class GeneraConstantesXSD {
 		Class.forName("oracle.jdbc.driver.OracleDriver");
 		Connection conn = DriverManager.getConnection(url, props);
 
-		//CATALUÑA
+		//PCAJG
 		String[] vistas = new String[]{"V_PCAJG_EJG", "V_PCAJG_ABOGADOSDESIGNADOS", "V_PCAJG_CONTRARIOS", "V_PCAJG_DOCUMENTACIONEXP_F", "V_PCAJG_DOCUMENTACIONEXP_DS", "V_PCAJG_FAMILIARES", "V_PCAJG_MARCASEXPEDIENTES"};
 		
 		//PAMPLONA 2055

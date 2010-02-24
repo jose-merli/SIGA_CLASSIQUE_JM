@@ -1,5 +1,7 @@
 package com.siga.beans;
 
+import es.satec.siga.util.SigaSequence;
+
 /**
  * Implementa las operaciones sobre el bean de la tabla CAJG_RESPUESTA_EJGREMESA
  * 
@@ -11,7 +13,7 @@ public class CajgRespuestaEJGRemesaBean extends MasterBean{
 	
 	/*
 	 *  Variables */ 
-	private Integer idRespuesta;
+	private SigaSequence idRespuesta = new SigaSequence("SEQ_CAJG_RESPUESTA_EJGREMESA");
 	private Integer idEjgRemesa;
 	private String codigo;
 	private String descripcion;
@@ -34,18 +36,21 @@ public class CajgRespuestaEJGRemesaBean extends MasterBean{
 	static public final String C_DESCRIPCION = "DESCRIPCION"; 
 	static public final String C_ABREVIATURA = "ABREVIATURA";
 	static public final String C_FECHA = "FECHA";
-	/**
-	 * @return the idRespuesta
-	 */
-	public Integer getIdRespuesta() {
-		return idRespuesta;
-	}
-	/**
-	 * @param idRespuesta the idRespuesta to set
-	 */
-	public void setIdRespuesta(Integer idRespuesta) {
-		this.idRespuesta = idRespuesta;
-	}
+	 
+	
+//	
+//	/**
+//	 * @return the idRespuesta
+//	 */
+//	public Integer getIdRespuesta() {
+//		return this.idRespuesta.getValue();
+//	}
+//	/**
+//	 * @param idRespuesta the idRespuesta to set
+//	 */
+//	public void setIdRespuesta(Integer idRespuesta) {		
+//		this.idRespuesta.setValue(idRespuesta);
+//	}
 	/**
 	 * @return the idEjgRemesa
 	 */
@@ -105,6 +110,18 @@ public class CajgRespuestaEJGRemesaBean extends MasterBean{
 	 */
 	public void setFecha(String fecha) {
 		this.fecha = fecha;
+	}
+	/**
+	 * @return the idRespuesta
+	 */
+	public SigaSequence getIdRespuesta() {
+		return idRespuesta;
+	}
+	/**
+	 * @param idRespuesta the idRespuesta to set
+	 */
+	public void setIdRespuesta(SigaSequence idRespuesta) {
+		this.idRespuesta = idRespuesta;
 	}
 		
 	

@@ -1,6 +1,3 @@
-/**
- * NO MODIFICAR. Clase generada con GeneraConstantesXSD
- */
 package com.siga.ws.cat;
 
 /**
@@ -20,6 +17,7 @@ public interface PCAJGConstantes {
 	public final String IDTIPOEJG = "IDTIPOEJG";
 	public final String ANIO = "ANIO";
 	public final String NUMERO = "NUMERO";
+	public final String NUMEJG = "NUMEJG";
 	public final String TIPOINTERCAMBIO = "TIPOINTERCAMBIO";
 	public final String ORIGENINTERCAMBIO_CDA = "ORIGENINTERCAMBIO_CDA";
 	public final String DESTINOINTERCAMBIO_CDA = "DESTINOINTERCAMBIO_CDA";
@@ -169,6 +167,7 @@ public interface PCAJGConstantes {
 	public final String PD_AD_AD_NUMCOLEGIADOABOGADO = "PD_AD_AD_NUMCOLEGIADOABOGADO";
 	public final String PD_AD_AD_FECHADESIGNACIONABOGA = "PD_AD_AD_FECHADESIGNACIONABOGA";
 	public final String PD_AD_AD_NUMDESIGNACIONABOGADO = "PD_AD_AD_NUMDESIGNACIONABOGADO";
+	public final String PD_AD_AD_NOMBRECOMPLETOABO = "PD_AD_AD_NOMBRECOMPLETOABO";
 
 
      /***** CAMPOS DE LA VISTA V_PCAJG_CONTRARIOS ****/

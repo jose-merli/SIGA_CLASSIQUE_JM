@@ -19,55 +19,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import noNamespace.DatosDomicilio;
-import noNamespace.TipoAbogadoDesignado;
-import noNamespace.TipoDatosContacto;
-import noNamespace.TipoDatosPersona;
-import noNamespace.TipoDatosProcurador;
-import noNamespace.TipoDocumentacionExpediente;
-import noNamespace.TipoDomiciliosPersona;
-import noNamespace.TipoElementoTipificadoEstandar;
-import noNamespace.TipoElementoTipificadoIntercambio;
-import noNamespace.TipoExpediente;
-import noNamespace.TipoIdentificacionTramite;
-import noNamespace.DatosDomicilio.Municipio;
-import noNamespace.DatosDomicilio.Municipio.Municipio2;
-import noNamespace.ExpedientesDocument.Expedientes;
-import noNamespace.InformacionEJGDocument.InformacionEJG;
-import noNamespace.IntercambioDocument.Intercambio;
-import noNamespace.IntercambioDocument.Intercambio.InformacionIntercambio;
-import noNamespace.IntercambioDocument.Intercambio.InformacionIntercambio.IdentificacionIntercambio;
-import noNamespace.TipoDocumentacionExpediente.Documentacion;
-import noNamespace.TipoDocumentacionExpediente.Documentacion.DatosDocumento;
-import noNamespace.TipoExpediente.Contrarios;
-import noNamespace.TipoExpediente.DatosAsistenciaDetenido;
-import noNamespace.TipoExpediente.DatosDefensaJudicial;
-import noNamespace.TipoExpediente.DatosExpediente;
-import noNamespace.TipoExpediente.DatosRepresentante;
-import noNamespace.TipoExpediente.DatosSolicitante;
-import noNamespace.TipoExpediente.DatosTramitacionExpediente;
-import noNamespace.TipoExpediente.Familiares;
-import noNamespace.TipoExpediente.ProfesionalesDesignados;
-import noNamespace.TipoExpediente.Contrarios.Contrario;
-import noNamespace.TipoExpediente.DatosExpediente.CodigoExpediente;
-import noNamespace.TipoExpediente.DatosExpediente.CodigoExpedienteServicio;
-import noNamespace.TipoExpediente.DatosExpediente.MarcasExpediente;
-import noNamespace.TipoExpediente.DatosExpediente.MarcasExpediente.MarcaExpediente;
-import noNamespace.TipoExpediente.DatosSolicitante.DatosEconomicosPersona;
-import noNamespace.TipoExpediente.DatosSolicitante.DatosEconomicosPersona.Ingresos;
-import noNamespace.TipoExpediente.DatosSolicitante.DatosEconomicosPersona.PropiedadesBienesInmuebles;
-import noNamespace.TipoExpediente.DatosSolicitante.DatosEconomicosPersona.PropiedadesBienesMuebles;
-import noNamespace.TipoExpediente.DatosSolicitante.DatosEconomicosPersona.PropiedadesBienesOtros;
-import noNamespace.TipoExpediente.DatosTramitacionExpediente.TramiteArchivo;
-import noNamespace.TipoExpediente.DatosTramitacionExpediente.TramiteDictamen;
-import noNamespace.TipoExpediente.DatosTramitacionExpediente.TramiteResolucion;
-import noNamespace.TipoExpediente.DatosTramitacionExpediente.TramiteResolucion.PrestacionesResolucion;
-import noNamespace.TipoExpediente.Familiares.Familiar;
-import noNamespace.TipoExpediente.ProfesionalesDesignados.AbogadosDesignados;
-import noNamespace.TipoExpediente.ProfesionalesDesignados.ProcuradorDesignado;
-
-import org.apache.ws.axis2.EnviarIntercambioDocument;
-import org.apache.ws.axis2.EnviarIntercambioDocument.EnviarIntercambio;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.apache.xmlbeans.XmlError;
@@ -89,6 +40,53 @@ import com.siga.general.SIGAException;
 import com.siga.gratuita.action.DefinirRemesasCAJGAction;
 import com.siga.ws.SIGAWSClientAbstract;
 import com.siga.ws.SigaWSHelper;
+import com.siga.ws.pcajg.DatosDomicilio;
+import com.siga.ws.pcajg.IntercambioDocument;
+import com.siga.ws.pcajg.TipoAbogadoDesignado;
+import com.siga.ws.pcajg.TipoCodigoExpediente;
+import com.siga.ws.pcajg.TipoDatosContacto;
+import com.siga.ws.pcajg.TipoDatosPersona;
+import com.siga.ws.pcajg.TipoDatosProcurador;
+import com.siga.ws.pcajg.TipoDocumentacionExpediente;
+import com.siga.ws.pcajg.TipoDomiciliosPersona;
+import com.siga.ws.pcajg.TipoElementoTipificadoEstandar;
+import com.siga.ws.pcajg.TipoElementoTipificadoIntercambio;
+import com.siga.ws.pcajg.TipoExpediente;
+import com.siga.ws.pcajg.TipoIdentificacionIntercambio;
+import com.siga.ws.pcajg.TipoIdentificacionTramite;
+import com.siga.ws.pcajg.TipoInformacion;
+import com.siga.ws.pcajg.DatosDomicilio.Municipio;
+import com.siga.ws.pcajg.DatosDomicilio.Municipio.Municipio2;
+import com.siga.ws.pcajg.IntercambioDocument.Intercambio;
+import com.siga.ws.pcajg.IntercambioDocument.Intercambio.InformacionIntercambio;
+import com.siga.ws.pcajg.TipoDocumentacionExpediente.Documentacion;
+import com.siga.ws.pcajg.TipoDocumentacionExpediente.Documentacion.DatosDocumento;
+import com.siga.ws.pcajg.TipoExpediente.Contrarios;
+import com.siga.ws.pcajg.TipoExpediente.DatosAsistenciaDetenido;
+import com.siga.ws.pcajg.TipoExpediente.DatosDefensaJudicial;
+import com.siga.ws.pcajg.TipoExpediente.DatosExpediente;
+import com.siga.ws.pcajg.TipoExpediente.DatosRepresentante;
+import com.siga.ws.pcajg.TipoExpediente.DatosSolicitante;
+import com.siga.ws.pcajg.TipoExpediente.DatosTramitacionExpediente;
+import com.siga.ws.pcajg.TipoExpediente.Familiares;
+import com.siga.ws.pcajg.TipoExpediente.ProfesionalesDesignados;
+import com.siga.ws.pcajg.TipoExpediente.Contrarios.Contrario;
+import com.siga.ws.pcajg.TipoExpediente.DatosExpediente.CodigoExpedienteServicio;
+import com.siga.ws.pcajg.TipoExpediente.DatosExpediente.MarcasExpediente;
+import com.siga.ws.pcajg.TipoExpediente.DatosExpediente.MarcasExpediente.MarcaExpediente;
+import com.siga.ws.pcajg.TipoExpediente.DatosSolicitante.DatosEconomicosPersona;
+import com.siga.ws.pcajg.TipoExpediente.DatosSolicitante.DatosEconomicosPersona.Ingresos;
+import com.siga.ws.pcajg.TipoExpediente.DatosSolicitante.DatosEconomicosPersona.PropiedadesBienesInmuebles;
+import com.siga.ws.pcajg.TipoExpediente.DatosSolicitante.DatosEconomicosPersona.PropiedadesBienesMuebles;
+import com.siga.ws.pcajg.TipoExpediente.DatosSolicitante.DatosEconomicosPersona.PropiedadesBienesOtros;
+import com.siga.ws.pcajg.TipoExpediente.DatosTramitacionExpediente.TramiteArchivo;
+import com.siga.ws.pcajg.TipoExpediente.DatosTramitacionExpediente.TramiteDictamen;
+import com.siga.ws.pcajg.TipoExpediente.DatosTramitacionExpediente.TramiteResolucion;
+import com.siga.ws.pcajg.TipoExpediente.DatosTramitacionExpediente.TramiteResolucion.PrestacionesResolucion;
+import com.siga.ws.pcajg.TipoExpediente.Familiares.Familiar;
+import com.siga.ws.pcajg.TipoExpediente.ProfesionalesDesignados.AbogadosDesignados;
+import com.siga.ws.pcajg.TipoExpediente.ProfesionalesDesignados.ProcuradorDesignado;
+import com.siga.ws.pcajg.TipoInformacion.Expedientes;
 
 
 /**
@@ -105,6 +103,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	private String idTipoEJG;
 	private String anyo;
 	private String numero;
+	private String numejg;
 	
 	
 	private Map htFamiliares = new Hashtable();
@@ -147,7 +146,8 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		String tipoIntercambio = "";
 		Expedientes expedientes = null;
 		Intercambio intercambio = null;
-		InformacionEJG informacionEJG = null;
+		IntercambioDocument intercambioDocument = null;
+		TipoInformacion tipoInformacion = null;
 		int numDetalles = 0;
 		int sufijoIdIntercambio = 0;
 		
@@ -156,26 +156,28 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			
 			if (!tipoIntercambio.equals(ht.get(TIPOINTERCAMBIO))) {				
 				if (intercambio != null) {					
-					ficheros.add(creaFichero(dirFicheros, dirPlantilla, intercambio, informacionEJG, numDetalles));
+					ficheros.add(creaFichero(dirFicheros, dirPlantilla, intercambioDocument, intercambio, tipoInformacion, numDetalles));
 				}
 				numDetalles = 0;
-				intercambio = Intercambio.Factory.newInstance();
-				rellenaInformacionIntercambio(intercambio, ht, sufijoIdIntercambio++);
-				informacionEJG = InformacionEJG.Factory.newInstance();				
-				expedientes = informacionEJG.addNewExpedientes();										
+				intercambioDocument = IntercambioDocument.Factory.newInstance();
+				intercambio = intercambioDocument.addNewIntercambio();
+				InformacionIntercambio informacionIntercambio = rellenaInformacionIntercambio(intercambio, ht, sufijoIdIntercambio++);
+				
+				tipoInformacion = informacionIntercambio.addNewInformacion();				
+				expedientes = tipoInformacion.addNewExpedientes();										
 			}
 			tipoIntercambio = (String) ht.get(TIPOINTERCAMBIO);
 			addExpediente(expedientes, ht, tipoIntercambio);
 			numDetalles++;
 		}
 		if (intercambio != null) {			
-			ficheros.add(creaFichero(dirFicheros, dirPlantilla, intercambio, informacionEJG, numDetalles));
+			ficheros.add(creaFichero(dirFicheros, dirPlantilla, intercambioDocument, intercambio, tipoInformacion, numDetalles));
 		}
 						
 		return ficheros;
 	}
 	
-	private File creaFichero(String dirFicheros, String dirPlantilla, Intercambio intercambio, InformacionEJG informacionEJG, int numDetalles) throws Exception {
+	private File creaFichero(String dirFicheros, String dirPlantilla, IntercambioDocument intercambioDocument, Intercambio intercambio, TipoInformacion tipoInformacion, int numDetalles) throws Exception {
 		
 		File file = new File(dirFicheros);
 		file.mkdirs();
@@ -187,36 +189,31 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 				}
 			}
 		}*/
-		intercambio.getInformacionIntercambio().setInformacion(informacionEJG);
-		IdentificacionIntercambio identificacionIntercambio = intercambio.getInformacionIntercambio().getIdentificacionIntercambio();
-		identificacionIntercambio.setNumeroDetallesIntercambio(numDetalles);
+		//intercambio.getInformacionIntercambio().setInformacion(tipoInformacion);
+		TipoIdentificacionIntercambio tipoIdentificacionIntercambio = intercambio.getInformacionIntercambio().getIdentificacionIntercambio();
+		tipoIdentificacionIntercambio.setNumeroDetallesIntercambio(numDetalles);
 		
 		StringBuffer nombreFichero = new StringBuffer();
-		nombreFichero.append(identificacionIntercambio.getTipoIntercambio());
-		nombreFichero.append("_" + identificacionIntercambio.getOrigenIntercambio().getCodigo());
-		nombreFichero.append("_" + identificacionIntercambio.getDestinoIntercambio().getCodigo());
-		nombreFichero.append("_" + identificacionIntercambio.getIdentificadorIntercambio());
+		nombreFichero.append(tipoIdentificacionIntercambio.getTipoIntercambio());
+		nombreFichero.append("_" + tipoIdentificacionIntercambio.getOrigenIntercambio().getCodigo());
+		nombreFichero.append("_" + tipoIdentificacionIntercambio.getDestinoIntercambio().getCodigo());
+		nombreFichero.append("_" + tipoIdentificacionIntercambio.getIdentificadorIntercambio());
 		
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-		String fechaIntercambio = sdf.format(identificacionIntercambio.getFechaIntercambio().getTime());
+		String fechaIntercambio = sdf.format(tipoIdentificacionIntercambio.getFechaIntercambio().getTime());
 		nombreFichero.append("_" + fechaIntercambio);
-		nombreFichero.append("_" + identificacionIntercambio.getNumeroDetallesIntercambio());
+		nombreFichero.append("_" + tipoIdentificacionIntercambio.getNumeroDetallesIntercambio());
 		nombreFichero.append(".xml");
 		
 		file = new File(file, nombreFichero.toString());		
-		
-		SigaWSHelper.deleteEmptyNode(intercambio.getDomNode());
-		
-		EnviarIntercambioDocument doc = EnviarIntercambioDocument.Factory.newInstance();
-		EnviarIntercambio req = doc.addNewEnviarIntercambio();
-		req.setIntercambio(intercambio);
-		
+				
 		XmlOptions xmlOptions = new XmlOptions();
 		xmlOptions.setSavePrettyPrintIndent(4);
-		xmlOptions.setSavePrettyPrint();		
-						       
-		req.save(file, xmlOptions);
+		xmlOptions.setSavePrettyPrint();	
+		
+		SigaWSHelper.deleteEmptyNode(intercambio.getDomNode());
+		intercambioDocument.save(file, xmlOptions);
 				
 		File fileXSL = null;
 		File dirXSL = new File(dirPlantilla);
@@ -374,6 +371,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		idTipoEJG = (String)htEJGs.get(IDTIPOEJG);
 		anyo = (String)htEJGs.get(ANIO);
 		numero = (String)htEJGs.get(NUMERO);
+		numejg = (String)htEJGs.get(NUMEJG);
 		
 		datosExpediente(tipoExpediente, htEJGs);
 		profesionalesDesignados(tipoExpediente, htEJGs);
@@ -404,6 +402,11 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		if (!tipoIntercambio.equals(INTERCAMBIO_ALTA_PRESENTACION)) {
 			datosTramitacionExpediente(tipoExpediente, htEJGs, tipoIntercambio);
 		}
+		//NO VALIDAMOS PQ TIENEN OTRO XSD LA GENERALITAT!!!!!!!!
+		if(validate(tipoExpediente, anyo, numejg, numero, idTipoEJG)){
+			expedientes.removeExpediente(expedientes.sizeOfExpedienteArray()-1);			
+		}
+		
 		return tipoExpediente;
 	}
 	
@@ -559,6 +562,10 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		if (valueLong != null) {
 			tipoAbogadoDesignado.setNumDesignacionAbogado(valueLong.longValue());
 		}
+		String st  = (String)ht.get(PD_AD_AD_NOMBRECOMPLETOABO);
+		if (st != null) {
+			tipoAbogadoDesignado.setNombreCompletoAbogado(st);
+		}
 	}
 
 	
@@ -647,6 +654,8 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 				documentacionExpediente(tipoDocumentacionExpediente.addNewDocumentacion(), htDoc, F_F_DE_D_TIPODOCUMENTACION_CDA
 						, F_F_DE_D_DD_TIPODOCUMENTO_CDA, F_F_DE_D_DD_FECHAPRESENTACIDO, F_F_DE_D_DD_DESCRIPCIONAMPLIAD, F_F_DE_D_DD_PROCEDENTE);
 			}
+		} else {
+			tipoDocumentacionExpediente.getDomNode().getParentNode().removeChild(tipoDocumentacionExpediente.getDomNode());
 		}
 //		ver si hay que añadir geronimos al classpath
 	}
@@ -675,12 +684,14 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	 * @throws Exception
 	 */
 	private void datosRepresentante(TipoExpediente tipoExpediente, Hashtable htEJGs) throws Exception {
-		DatosRepresentante datosRepresentante = tipoExpediente.addNewDatosRepresentante();
-		datosPersona(datosRepresentante.addNewDatosPersona(), htEJGs, DR_DP_TIPOPERSONA_CDA, DR_DP_TIPOIDENTIFICACION_CDA, DR_DP_IDENTIFICACION, DR_DP_NOMBRE
+		String st = getString((String)htEJGs.get(DR_DP_TIPOPERSONA_CDA));
+		if (st != null) {
+			DatosRepresentante datosRepresentante = tipoExpediente.addNewDatosRepresentante();
+			datosPersona(datosRepresentante.addNewDatosPersona(), htEJGs, DR_DP_TIPOPERSONA_CDA, DR_DP_TIPOIDENTIFICACION_CDA, DR_DP_IDENTIFICACION, DR_DP_NOMBRE
 				, DR_DP_PRIMERAPELLIDO, DR_DP_SEGUNDOAPELLIDO, DR_DP_RAZONSOCIAL, DR_DP_FECHANACIMIENTO, DR_DP_NACIONALIDAD_CDA
 				, DR_DP_SITUACIONLABORAL_CDA, DR_DP_PROFESION_CDA, DR_DP_SEXO, DR_DP_IDIOMACOMUNICACION, DR_DP_ESTADOCIVIL_CDA
 				, DR_DP_REGIMENECONOMICO_CDA, DR_DP_NUMHIJOS, DR_DP_FECHAFORMALIZACION, DR_DP_TIPOPERSONAJURIDICA_CDA);
-		domiciliosPersona(datosRepresentante.addNewDomiciliosPersona(), htEJGs, DR_DP_TIPODOMICILIO_CDA
+			domiciliosPersona(datosRepresentante.addNewDomiciliosPersona(), htEJGs, DR_DP_TIPODOMICILIO_CDA
 				, DR_DP_DD_TIPOVIA_CDA
 				, DR_DP_DD_NOMBREVIA
 				, DR_DP_DD_NUMERODIRECCION
@@ -693,7 +704,8 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 				, DR_DP_DD_M_SUBCODIGOMUNICIPIO
 				, DR_DP_DD_CODIGOPOSTAL);
 		
-		datosContacto(datosRepresentante.addNewDatosContacto(), htEJGs, DR_DC_NUMEROTELEFONO1, DR_DC_NUMEROTELEFONO2, DR_DC_EMAIL);
+			datosContacto(datosRepresentante.addNewDatosContacto(), htEJGs, DR_DC_NUMEROTELEFONO1, DR_DC_NUMEROTELEFONO2, DR_DC_EMAIL);
+		}
 	}
 
 	/**
@@ -737,6 +749,8 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 				documentacionExpediente(tipoDocumentacionExpediente.addNewDocumentacion(), ht, DS_DE_D_TIPODOCUMENTACION_CDA, 
 						DS_DE_D_DD_TIPODOCUMENTO_CDA, DS_DE_D_DD_FECHAPRESENTACIONDO, DS_DE_D_DD_DESCRIPCIONAMPLIADA, DS_DE_D_DD_PROCEDENTE);
 			}
+		} else {
+			tipoDocumentacionExpediente.getDomNode().getParentNode().removeChild(tipoDocumentacionExpediente.getDomNode());
 		}
 		
 		DatosEconomicosPersona datosEconomicosPersona = datosSolicitante.addNewDatosEconomicosPersona();
@@ -882,7 +896,10 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		Municipio municipio = datosDomicilio.addNewMunicipio();
 		rellenaMunicipio(municipio.addNewMunicipio(), (String)htEJGs.get(dop_dd_m_municipio_cda));
 		municipio.setSubcodigoMunicipio((String)htEJGs.get(dop_dd_m_subcodigomunicipio));
-		datosDomicilio.setCodigoPostal((String)htEJGs.get(dop_dd_codigopostal));
+		String st = getString((String)htEJGs.get(dop_dd_codigopostal));
+		if (st != null) {
+			datosDomicilio.setCodigoPostal(st);
+		}
 	}
 
 	
@@ -1004,10 +1021,12 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	 * @param value
 	 */
 	private void rellenaTipoElementoTipificadoEstandar(TipoElementoTipificadoEstandar tipoElementoTipificadoEstandar, String value) {
+		boolean relleno = false;
 		if (value != null && !value.trim().equals("")) {
 			String[] array = value.split("##");
 			if (array != null && array.length > 0) {
 				tipoElementoTipificadoEstandar.setCodigo(array[0]);
+				relleno = true;
 				if (array.length > 1) {
 					tipoElementoTipificadoEstandar.setDescripcion(array[1]);
 				}
@@ -1015,7 +1034,10 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 					tipoElementoTipificadoEstandar.setAbreviatura(array[2]);
 				}
 			}
-		}		
+		}	
+		if (!relleno) {
+			tipoElementoTipificadoEstandar.getDomNode().getParentNode().removeChild(tipoElementoTipificadoEstandar.getDomNode());
+		}
 	}
 
 	
@@ -1036,7 +1058,8 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 					tipoElementoTipificadoIntercambio.setAbreviatura(array[2]);
 				}
 			}
-		}		
+		}
+		
 	}
 		
 	/**
@@ -1045,10 +1068,12 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	 * @param value
 	 */
 	private void rellenaMunicipio(Municipio2 municipio2, String value) {
+		boolean relleno = false;
 		if (value != null && !value.trim().equals("")) {
 			String[] array = value.split("##");
 			if (array != null && array.length > 0) {
 				municipio2.setCodigo(array[0]);
+				relleno = true;
 				if (array.length > 1) {
 					municipio2.setDescripcion(array[1]);
 				}
@@ -1056,7 +1081,10 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 					municipio2.setAbreviatura(array[2]);
 				}
 			}
-		}		
+		}
+		if (!relleno) {
+			municipio2.getDomNode().getParentNode().removeChild(municipio2.getDomNode());
+		}
 	}
 	
 	/**
@@ -1069,7 +1097,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	private void datosExpediente(TipoExpediente tipoExpediente, Hashtable htEJGs) throws Exception {
 		DatosExpediente datosExpediente = tipoExpediente.addNewDatosExpediente();
 		
-		CodigoExpediente codigoExpediente = datosExpediente.addNewCodigoExpediente();
+		TipoCodigoExpediente codigoExpediente = datosExpediente.addNewCodigoExpediente();
 		codigoExpediente.setColegioExpediente((String)htEJGs.get(DE_CE_COLEGIOEXPEDIENTE));
 		String numExpediente = UtilidadesString.formatea(htEJGs.get(DE_CE_NUMEXPEDIENTE), 8, true);
 		codigoExpediente.setNumExpediente(numExpediente);		
@@ -1114,11 +1142,14 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		
 		for (int i = 0; i < list.size(); i++) {
 			Hashtable ht = (Hashtable) list.get(i);
-			MarcasExpediente marcasExpediente = datosExpediente.addNewMarcasExpediente();
-			MarcaExpediente marcaExpediente = marcasExpediente.addNewMarcaExpediente();
+			String st = getString((String)ht.get(DE_ME_ME_VALORMARCAEXPEDIENTE));
+			if (st != null) {
+				MarcasExpediente marcasExpediente = datosExpediente.addNewMarcasExpediente();
+				MarcaExpediente marcaExpediente = marcasExpediente.addNewMarcaExpediente();
 			
-			rellenaTipoElementoTipificadoEstandar(marcaExpediente.addNewMarcaExpediente(), (String)ht.get(DE_ME_ME_MARCAEXPEDIENTE_CDA));
-			marcaExpediente.setValorMarcaExpediente((String)ht.get(DE_ME_ME_VALORMARCAEXPEDIENTE));
+				rellenaTipoElementoTipificadoEstandar(marcaExpediente.addNewMarcaExpediente(), (String)ht.get(DE_ME_ME_MARCAEXPEDIENTE_CDA));
+				marcaExpediente.setValorMarcaExpediente(st);
+			}
 		}
 		
 	}
@@ -1146,7 +1177,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	private InformacionIntercambio rellenaInformacionIntercambio(Intercambio intercambio, Hashtable ht, int sufijoIdIntercambio) throws SIGAException {
 				
 		InformacionIntercambio informacionIntercambio = intercambio.addNewInformacionIntercambio();
-		IdentificacionIntercambio identificacionIntercambio = informacionIntercambio.addNewIdentificacionIntercambio();
+		TipoIdentificacionIntercambio identificacionIntercambio = informacionIntercambio.addNewIdentificacionIntercambio();
 		
 		if (ht != null) {		
 			identificacionIntercambio.setTipoIntercambio((String)ht.get(TIPOINTERCAMBIO));

@@ -54,7 +54,7 @@ public class CajgRespuestaEJGRemesaAdm extends MasterBeanAdministrador {
 		CajgRespuestaEJGRemesaBean bean = null;
 		try{
 			bean = new CajgRespuestaEJGRemesaBean();
-			bean.setIdRespuesta(UtilidadesHash.getInteger(hash,CajgRespuestaEJGRemesaBean.C_IDRESPUESTA));
+			bean.setIdRespuesta(UtilidadesHash.getSigaSequence(bean.getIdRespuesta(),hash,CajgRespuestaEJGRemesaBean.C_IDRESPUESTA));
 			bean.setIdEjgRemesa(UtilidadesHash.getInteger(hash,CajgRespuestaEJGRemesaBean.C_IDEJGREMESA));
 			bean.setCodigo(UtilidadesHash.getString(hash,CajgRespuestaEJGRemesaBean.C_CODIGO));
 			bean.setDescripcion(UtilidadesHash.getString(hash,CajgRespuestaEJGRemesaBean.C_DESCRIPCION));
@@ -101,7 +101,7 @@ public class CajgRespuestaEJGRemesaAdm extends MasterBeanAdministrador {
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public int getNextVal() throws ClsExceptions {
+	public int getNextVal2() throws ClsExceptions {
 		int nextVal = -1;
 		String campo = CajgRespuestaEJGRemesaBean.C_IDRESPUESTA;
 		String tabla = CajgRespuestaEJGRemesaBean.T_NOMBRETABLA;
@@ -117,6 +117,42 @@ public class CajgRespuestaEJGRemesaAdm extends MasterBeanAdministrador {
 			nextVal++;
 		}
 		return nextVal;
+	}
+
+
+	/**
+	 * 
+	 * @param idInstitucion
+	 * @param idRemesa
+	 * @throws ClsExceptions 
+	 */
+	public void eliminaAnterioresErrores(int idInstitucion, int idRemesa) throws ClsExceptions {
+		deleteSQL("DELETE FROM " + CajgRespuestaEJGRemesaBean.T_NOMBRETABLA +
+				" WHERE " + CajgRespuestaEJGRemesaBean.C_IDEJGREMESA + " IN (SELECT " + CajgEJGRemesaBean.C_IDEJGREMESA +
+						" FROM " + CajgEJGRemesaBean.T_NOMBRETABLA +
+					    " WHERE " + CajgEJGRemesaBean.C_IDINSTITUCION + " = " + idInstitucion +
+					    " AND " + CajgEJGRemesaBean.C_IDREMESA + " = " + idRemesa + ")");		
+	}
+
+
+	/**
+	 * 
+	 * @param idInstitucion
+	 * @param idRemesa
+	 * @param usrBean 
+	 * @throws ClsExceptions 
+	 */
+	public void insertaErrorEJGnoEnviados(int idInstitucion, int idRemesa, UsrBean usrBean) throws ClsExceptions {
+		CajgRespuestaEJGRemesaBean cajgRespuestaEJGRemesaBean = new CajgRespuestaEJGRemesaBean();
+		String sql = "insert into cajg_respuesta_ejgremesa" +
+				" (idrespuesta, idejgremesa, codigo, descripcion, abreviatura, fecha, fechamodificacion, usumodificacion)" +
+				" SELECT " + cajgRespuestaEJGRemesaBean.getIdRespuesta().nextVal() + ", ER.IDEJGREMESA, '-1'," +
+				" 'El expediente no cumple las condiciones para ser enviado', null, sysdate, sysdate, " + usrBean.getUserName() +
+				" FROM CAJG_EJGREMESA ER" +
+				" WHERE ER.IDINSTITUCION = " + idInstitucion +
+				" AND ER.IDREMESA = " + idRemesa +
+				" AND ER.IDEJGREMESA NOT IN (SELECT V.IDEJGREMESA FROM V_WS_2055_EJG V)";
+		insertSQL(sql);		
 	}
 	
 }

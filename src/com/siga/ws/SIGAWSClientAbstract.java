@@ -8,13 +8,26 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
+import org.apache.xmlbeans.XmlObject;
+import org.apache.xmlbeans.XmlOptions;
+import org.apache.xmlbeans.XmlValidationError;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.SIGAReferences;
+import com.siga.beans.CajgEJGRemesaAdm;
+import com.siga.beans.CajgEJGRemesaBean;
+import com.siga.beans.CajgRespuestaEJGRemesaAdm;
+import com.siga.beans.CajgRespuestaEJGRemesaBean;
 
 /**
  * @author angelcpe
@@ -200,6 +213,80 @@ public abstract class SIGAWSClientAbstract {
 			} catch (IOException e) {
 				ClsLogging.writeFileLogError("Error al cerrar el fichero de LOG", e, 3);
 			}
+		}
+	}
+	
+	/**
+	 * 
+	 * @param xmlObject
+	 * @param usr
+	 * @param anio
+	 * @param numejg
+	 * @param numero
+	 * @param idTipoEJG
+	 * @throws Exception
+	 */
+	protected boolean validate(XmlObject xmlObject, String anio, String numejg, String numero, String idTipoEJG) throws Exception {
+		boolean valido = true;
+		XmlOptions xmlOptions = new XmlOptions();
+		List<XmlValidationError> errores = new ArrayList<XmlValidationError>();
+		xmlOptions.setErrorListener(errores);
+		if (!xmlObject.validate(xmlOptions)){
+			valido = false;
+			StringBuffer sb = new StringBuffer();
+			for (XmlValidationError error : errores) {
+				sb.append(error + "\n");
+			}
+			String descripcionError = "El expediente no ha sido validado correctamente para su envío";
+			escribeErrorExpediente(anio, numejg, numero, idTipoEJG, descripcionError);
+			ClsLogging.writeFileLog(sb.toString(), 3);
+		}
+		return valido;
+	}
+	
+	
+	/**
+	 * 
+	 * @param cajgEJGRemesaAdm
+	 * @param cajgRespuestaEJGRemesaAdm
+	 * @param anio
+	 * @param numEjg
+	 * @param numero
+	 * @param idTipoEJG
+	 * @param descripcionError
+	 * @throws IOException
+	 * @throws ClsExceptions
+	 */
+	protected void escribeErrorExpediente(String anio, String numEjg, String numero, String idTipoEJG, String descripcionError) throws IOException, ClsExceptions {		
+		
+		CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(getUsrBean());
+		CajgRespuestaEJGRemesaAdm cajgRespuestaEJGRemesaAdm = new CajgRespuestaEJGRemesaAdm(getUsrBean());
+		
+		Hashtable<String, Object> hashEjgRem = new Hashtable<String, Object>();
+		hashEjgRem.put(CajgEJGRemesaBean.C_IDINSTITUCION, getIdInstitucion());
+		hashEjgRem.put(CajgEJGRemesaBean.C_ANIO, anio);
+		hashEjgRem.put(CajgEJGRemesaBean.C_NUMERO, numero);
+		hashEjgRem.put(CajgEJGRemesaBean.C_IDTIPOEJG, idTipoEJG);
+		
+		hashEjgRem.put(CajgEJGRemesaBean.C_IDINSTITUCIONREMESA, getIdInstitucion());
+		hashEjgRem.put(CajgEJGRemesaBean.C_IDREMESA, getIdRemesa());
+		
+		Vector vectorRemesa = cajgEJGRemesaAdm.select(hashEjgRem);
+		if (vectorRemesa.size() == 0) {
+			escribeLogRemesa("No se ha encontrado el EJG año/número = " + anio + "/" + numEjg + " en la remesa " + getIdRemesa());							
+		} else if (vectorRemesa.size() > 1) {
+			escribeLogRemesa("Se ha encontrado más de un EJG año/número = " + anio + "/" + numEjg + " en la remesa " + getIdRemesa());							
+		} else {									
+		
+			CajgEJGRemesaBean cajgEJGRemesaBean = (CajgEJGRemesaBean) vectorRemesa.get(0);
+			
+			CajgRespuestaEJGRemesaBean cajgRespuestaEJGRemesaBean = new CajgRespuestaEJGRemesaBean();			
+			cajgRespuestaEJGRemesaBean.setIdEjgRemesa(cajgEJGRemesaBean.getIdEjgRemesa());
+			cajgRespuestaEJGRemesaBean.setCodigo("-1");
+			cajgRespuestaEJGRemesaBean.setDescripcion(descripcionError);
+			cajgRespuestaEJGRemesaBean.setFecha("SYSDATE");		
+			
+			cajgRespuestaEJGRemesaAdm.insert(cajgRespuestaEJGRemesaBean);
 		}
 	}
 

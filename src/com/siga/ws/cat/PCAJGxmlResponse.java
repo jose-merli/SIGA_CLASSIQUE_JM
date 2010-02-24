@@ -14,17 +14,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
 
-import noNamespace.IntercambioRespuestaDocument;
-import noNamespace.IntercambioRespuestaDocument.IntercambioRespuesta;
-import noNamespace.IntercambioRespuestaDocument.IntercambioRespuesta.InformacionIntercambio;
-import noNamespace.IntercambioRespuestaDocument.IntercambioRespuesta.InformacionIntercambio.IntercambioErroneo;
-import noNamespace.IntercambioRespuestaDocument.IntercambioRespuesta.InformacionIntercambio.IntercambioErroneo.DatosError;
-import noNamespace.IntercambioRespuestaDocument.IntercambioRespuesta.InformacionIntercambio.IntercambioErroneo.IdentificacionIntercambio;
-import noNamespace.IntercambioRespuestaDocument.IntercambioRespuesta.InformacionIntercambio.IntercambioErroneo.DatosError.ErrorContenido;
-import noNamespace.IntercambioRespuestaDocument.IntercambioRespuesta.InformacionIntercambio.IntercambioErroneo.DatosError.ErrorGeneral;
-import noNamespace.IntercambioRespuestaDocument.IntercambioRespuesta.InformacionIntercambio.IntercambioErroneo.DatosError.ErrorContenido.DetallError;
-import noNamespace.IntercambioRespuestaDocument.IntercambioRespuesta.InformacionIntercambio.IntercambioErroneo.DatosError.ErrorContenido.ExpedientError;
-
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
@@ -46,6 +35,17 @@ import com.siga.beans.CajgRespuestaEJGRemesaBean;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
 import com.siga.ws.SIGAWSClientAbstract;
+import com.siga.ws.cat.respuesta.IntercambioDocument;
+import com.siga.ws.cat.respuesta.IntercambioDocument.Intercambio;
+import com.siga.ws.cat.respuesta.IntercambioDocument.Intercambio.InformacionIntercambio;
+import com.siga.ws.cat.respuesta.IntercambioDocument.Intercambio.InformacionIntercambio.IntercambioErroneo;
+import com.siga.ws.cat.respuesta.IntercambioDocument.Intercambio.InformacionIntercambio.IntercambioErroneo.DatosError;
+import com.siga.ws.cat.respuesta.IntercambioDocument.Intercambio.InformacionIntercambio.IntercambioErroneo.IdentificacionIntercambio;
+import com.siga.ws.cat.respuesta.IntercambioDocument.Intercambio.InformacionIntercambio.IntercambioErroneo.DatosError.ErrorContenido;
+import com.siga.ws.cat.respuesta.IntercambioDocument.Intercambio.InformacionIntercambio.IntercambioErroneo.DatosError.ErrorGeneral;
+import com.siga.ws.cat.respuesta.IntercambioDocument.Intercambio.InformacionIntercambio.IntercambioErroneo.DatosError.ErrorContenido.CodigoExpedienteError;
+import com.siga.ws.cat.respuesta.IntercambioDocument.Intercambio.InformacionIntercambio.IntercambioErroneo.DatosError.ErrorContenido.DetalleError;
+
 
 
 /**
@@ -54,7 +54,7 @@ import com.siga.ws.SIGAWSClientAbstract;
  */
 public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConstantes {
 
-	private String namespace = IntercambioRespuestaDocument.type.getProperties()[0].getName().getNamespaceURI();//"rp.cat.ws.siga.com";
+	private String namespace = IntercambioDocument.type.getProperties()[0].getName().getNamespaceURI();//"rp.cat.ws.siga.com";
 	private String HIST = "HIST";
 	
 	
@@ -367,16 +367,16 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 				
 				
 				
-				IntercambioRespuestaDocument intercambioRespuestaDoc = IntercambioRespuestaDocument.Factory.parse(file, xmlOptions);
+				IntercambioDocument intercambioRespuestaDoc = IntercambioDocument.Factory.parse(file, xmlOptions);
 				
-				IntercambioRespuesta intercambioRespuesta = intercambioRespuestaDoc.getIntercambioRespuesta();
+				Intercambio intercambioRespuesta = intercambioRespuestaDoc.getIntercambio();
 				InformacionIntercambio informacionIntercambio = intercambioRespuesta.getInformacionIntercambio();
 				IntercambioErroneo intercambioErroneo = informacionIntercambio.getIntercambioErroneo();
 				
 				DatosError[] datosErrors = intercambioErroneo.getDatosErrorArray();
 				IdentificacionIntercambio identificacionIntercambio = intercambioErroneo.getIdentificacionIntercambio();
-				String idInstitucion = identificacionIntercambio.getCodOrigenIntercambio();
-				int idRemesa = (int)identificacionIntercambio.getIdentificadorIntercambio();
+				String idInstitucion = identificacionIntercambio.getCodOrigenIntercambio().getDomNode().getNodeValue();
+				int idRemesa = Integer.parseInt(identificacionIntercambio.getIdentificadorIntercambio().getDomNode().getNodeValue());
 				
 				if (!String.valueOf(getIdInstitucion()).equals(idInstitucion)) {
 					escribeLogRemesa("La institucion del fichero es nula o distinta a la del usuario de SIGA");
@@ -395,7 +395,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 				CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(getUsrBean());
 				ScsEJGAdm scsEJGAdm = new ScsEJGAdm(getUsrBean());
 				CajgRespuestaEJGRemesaAdm cajgRespuestaEJGRemesaAdm = new CajgRespuestaEJGRemesaAdm(getUsrBean());
-				int idRespuesta = cajgRespuestaEJGRemesaAdm.getNextVal();
+				
 				chan.rename(dirOUT + "/" + file.getName(), dirOUT + "/" + HIST + "/" + file.getName());
 				
 				for (DatosError datosError : datosErrors) {
@@ -406,9 +406,9 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 						escribeLogRemesa(errorGeneral.getDescErrorGen().toString());					
 					} else {
 						ErrorContenido[] erroresContenido = datosError.getErrorContenidoArray();
-						ExpedientError expedientError = null;
+						CodigoExpedienteError expedientError = null;
 						for (ErrorContenido errorContenido : erroresContenido){
-							expedientError = errorContenido.getExpedientError();
+							expedientError = errorContenido.getCodigoExpedienteError();
 							int anioExp = expedientError.getAnyoExpediente();
 							String numExp = expedientError.getNumExpediente();
 							if (numExp != null && numExp.trim().length() > 5) {
@@ -431,7 +431,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 								} else {
 									//EJG encontrado
 									ScsEJGBean scsEJGBean = (ScsEJGBean) vectorEJGs.get(0);
-									DetallError[] detallErrors = errorContenido.getDetallErrorArray();
+									DetalleError[] detallErrors = errorContenido.getDetalleErrorArray();
 	
 									Hashtable<String, Object> hashEjgRem = new Hashtable<String, Object>();
 									hashEjgRem.put(CajgEJGRemesaBean.C_IDINSTITUCION, idInstitucion);
@@ -450,23 +450,22 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 									} else {									
 										CajgEJGRemesaBean cajgEJGRemesaBean = (CajgEJGRemesaBean) vectorRemesa.get(0);
 										
-										for (DetallError detallError : detallErrors) {
+										for (DetalleError detallError : detallErrors) {
 											StringBuffer descripcion = new StringBuffer("<b>Campo:</b> " + detallError.getCampoError());
 											if (detallError.getDescError() != null) {
 												descripcion.append("<br>");
 												descripcion.append("<b>Error:</b> " + detallError.getDescError());
 											}
-											if (detallError.getAmpliacionError() != null) {
-												descripcion.append("<br>");
-												descripcion.append("<b>Más información:</b> " + detallError.getAmpliacionError());
-											}
-											CajgRespuestaEJGRemesaBean cajgRespuestaEJGRemesaBean = new CajgRespuestaEJGRemesaBean();
-											cajgRespuestaEJGRemesaBean.setIdRespuesta(idRespuesta);
+//											if (detallError.getAmpliacionError() != null) {
+//												descripcion.append("<br>");
+//												descripcion.append("<b>Más información:</b> " + detallError.getAmpliacionError());
+//											}
+											CajgRespuestaEJGRemesaBean cajgRespuestaEJGRemesaBean = new CajgRespuestaEJGRemesaBean();											
 											cajgRespuestaEJGRemesaBean.setIdEjgRemesa(cajgEJGRemesaBean.getIdEjgRemesa());
 											cajgRespuestaEJGRemesaBean.setCodigo("-1");
 											cajgRespuestaEJGRemesaBean.setDescripcion(descripcion.toString());
 											cajgRespuestaEJGRemesaBean.setFecha("SYSDATE");
-											idRespuesta++;
+											
 											
 											cajgRespuestaEJGRemesaAdm.insert(cajgRespuestaEJGRemesaBean);
 										}
