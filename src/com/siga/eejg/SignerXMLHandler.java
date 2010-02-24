@@ -110,7 +110,7 @@ public class SignerXMLHandler extends BasicHandler {
 			signedObject.setAttributeNode(attr);
 		}
         
-		Element signPlace = (Element)doc.createElementNS(signedObject.getNamespaceURI(), "Header");
+		Element signPlace = (Element)doc.createElementNS(signedObject.getNamespaceURI(), "soapenv:Header");
 		doc.getFirstChild().insertBefore(signPlace, signedObject);
 		NodeList nodeList = signPlace.getChildNodes();
 		for (int i = 0; i < nodeList.getLength(); i++) {
@@ -148,7 +148,7 @@ public class SignerXMLHandler extends BasicHandler {
 			String keyStoreType = rp.returnProperty("eejg.keyStoreType");
 			String keyStoreFile = rp.returnProperty("eejg.keyStoreFile");
 			String keyStorePass = rp.returnProperty("eejg.keyStorePass");
-			String privateKeyAlias = rp.returnProperty("eejg.privateKeyalias");
+			String privateKeyAlias = rp.returnProperty("eejg.privateKeyAlias");
 			String privateKeyPass = rp.returnProperty("eejg.privateKeyPass");
 			String certificateAlias = rp.returnProperty("eejg.certificateAlias");
 
