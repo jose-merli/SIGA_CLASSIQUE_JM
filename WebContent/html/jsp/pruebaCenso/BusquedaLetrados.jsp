@@ -71,7 +71,7 @@
 			<tr>
 				<td>
 					<display:table name="${CensoBusquedaLetradosBean.table}" uid="${CensoBusquedaLetradosBean.tableName}" id="${CensoBusquedaLetradosBean.tableName}" export="true" defaultsort="2" sort="external" 
-									defaultorder="ascending" pagesize="${CensoBusquedaLetradosBean.pageSize}" size="${CensoBusquedaLetradosBean.totalTableSize}" 
+									defaultorder="ascending" pagesize="${CensoBusquedaLetradosBean.pageSize}" size="CensoBusquedaLetradosBean.totalTableSize" 
 									partialList="true" requestURI="/CEN_BusquedaLetradosPruebas.do">
 						<display:setProperty name="decorator.media.html"  value="es.satec.siga.util.decorators.censo.HtmlActionsDecorator"/>
 						<display:setProperty name="decorator.media.csv"   value="es.satec.siga.util.decorators.CsvActionsDecorator"/>
