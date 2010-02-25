@@ -14,9 +14,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
@@ -42,6 +42,9 @@ import javax.mail.internet.MimeMultipart;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
+import service.ServiciosECOS.ServiciosECOSServiceSOAPStub;
+import service.ServiciosECOS.ServiciosECOSService_ServiceLocator;
+
 import com.aspose.words.Document;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -53,6 +56,9 @@ import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.ecos.ws.solicitarEnvio.DatosGrandeCuentaTO;
+import com.ecos.ws.solicitarEnvio.ResultadoSolicitudEnvio;
+import com.ecos.ws.solicitarEnvio.SolicitudEnvioSMS;
 import com.siga.Utilidades.Paginador;
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
@@ -64,13 +70,6 @@ import com.siga.envios.ZetaFax;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.SIGAException;
 import com.siga.informes.MasterWords;
-
-import java.net.URL;
-import com.ecos.ws.solicitarEnvio.ResultadoSolicitudEnvio;
-import com.ecos.ws.solicitarEnvio.SolicitudEnvioSMS;
-
-import service.ServiciosECOS.ServiciosECOSServiceSOAPStub;
-import service.ServiciosECOS.ServiciosECOSService_ServiceLocator;
 
 
 public class EnvEnviosAdm extends MasterBeanAdministrador {
@@ -4954,227 +4953,146 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 
 	public String enviarSMS(EnvEnviosBean envBean,  Vector vDestinatarios, Hashtable htErrores, boolean generarLog) 
 	throws SIGAException,ClsExceptions{
-    
-    boolean errores = false;
-    Transport tr = null;
-    
-    try{
 
-        // COMPROBACIÓN
-        /////////////////////////////////////
-        if (!envBean.getIdTipoEnvios().equals(Integer.valueOf(EnvTipoEnviosAdm.K_SMS))){
-            throw new ClsExceptions("Tipo de envio electrónico incorrecto");
-        }
-        
-        // OBTENCIÓN DE SERVIDOR DE CORREO
-        /////////////////////////////////////
-	    Context ctx = new InitialContext();
-	    Session sesion = (Session)javax.rmi.PortableRemoteObject.narrow(ctx.lookup("CorreoSIGA"), Session.class);
-	    ctx.close();
+		boolean errores = false;
 
-	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//		ReadProperties rp = new ReadProperties("SIGA.properties");	
-		
-	    // RGG autenticar SMTP
-	    sesion.getProperties().put("mail.smtp.auth", "true");
-	    tr = sesion.getTransport("smtp");
-	    tr.connect(rp.returnProperty("mail.smtp.host"),rp.returnProperty("mail.smtp.user"), rp.returnProperty("mail.smtp.pwd"));
-	   
+		try{
+
+			// COMPROBACIÓN
+			/////////////////////////////////////
+			if (!envBean.getIdTipoEnvios().equals(Integer.valueOf(EnvTipoEnviosAdm.K_SMS))){
+				throw new ClsExceptions("Tipo de envio electrónico incorrecto");
+			}
+
+			ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+
+			// BUCLE DE DESTINATARIOS
+			/////////////////////////////////////
+			if (vDestinatarios!=null) {
+				//ACUMULAMOS POBLACIONES, PAISES Y PROVINCIAS PARA EVITAR HACER QUERYS A LA BBDD
+				Hashtable htPoblaciones = new Hashtable();
+				Hashtable htProvincia = new Hashtable();
+				Hashtable htPaises = new Hashtable();
+				for (int l=0;l<vDestinatarios.size();l++) {
+
+					EnvDestinatariosBean destBean = (EnvDestinatariosBean) vDestinatarios.elementAt(l);
+					actualizaPaisDestinatario(destBean, htPaises);
+					actualizaPoblacionDestinatario(destBean, htPoblaciones);
+					actualizaProvincia(destBean, htProvincia);
+
+					boolean generado=false;
+					String sDirPdf = null;
+
+					try{
+						GenParametrosAdm paramAdm = new GenParametrosAdm(this.usrbean);
+						String url_locator = paramAdm.getValor(destBean.getIdInstitucion().toString(),"ENV","SMS_URL_LOCATOR","");
+						String url_service = paramAdm.getValor(destBean.getIdInstitucion().toString(),"ENV","SMS_URL_SERVICE","");
+						String idClienteECOS = paramAdm.getValor(destBean.getIdInstitucion().toString(),"ENV","SMS_CLIENTE_ECOS","");
+						if (url_locator.equals("") || url_service.equals("") || idClienteECOS.equals("")) {
+							throw new ClsExceptions("No existen datos de configuración en parámetros para envio SMS.");
+						}
+
+						String idPersona = String.valueOf(destBean.getIdPersona());
+						String consulta = envBean.getConsulta().equals("")?null:envBean.getConsulta();
+
+						// destinatario
+						String sTo = destBean.getMovil();
+						sTo = getNumeroConPrefijo(sTo);						
+						if (sTo==null || sTo.trim().equals("")) {
+							throw new ClsExceptions("No existe número de móvil para el destinatario.");
+						}
+
+						// texto
+						String sTexto = getTextoSMS(envBean,destBean, Long.valueOf(idPersona),consulta);
+						if (sTexto==null || "".equals(sTexto)){
+							throw new ClsExceptions("No existe texto del mensaje.");
+						}
+						if (sTexto.length()>LONGITUD_SMS) 
+							sTexto=sTexto.substring(LONGITUD_SMS-1);
+
+						ClsLogging.writeFileLog("locator: " + url_locator,10);
+						ClsLogging.writeFileLog("service: " + url_service,10);
+
+						ServiciosECOSService_ServiceLocator locator = new ServiciosECOSService_ServiceLocator();
+						ServiciosECOSServiceSOAPStub stub = new ServiciosECOSServiceSOAPStub(new URL(url_service),locator);
 
 
-
-
-
-//	    // OBTENCION DE REMITENTE 
-//        /////////////////////////////////////
-//        EnvRemitentesAdm remAdm = new EnvRemitentesAdm(this.usrbean);
-//	    Hashtable htPk = new Hashtable();
-//	    htPk.put(EnvEnviosBean.C_IDINSTITUCION,envBean.getIdInstitucion());
-//	    htPk.put(EnvEnviosBean.C_IDENVIO,envBean.getIdEnvio());
-//        Vector vRem = remAdm.select(htPk);
-//        String sFrom = "";
-//        if (vRem.size()>0){
-//        	// obtengo la primera de la lista
-//        	EnvRemitentesBean remBean = (EnvRemitentesBean) vRem.firstElement();
-//	        sFrom = remBean.getCorreoElectronico();
-//        }else{
-//        	// obtengo la de la institucion
-//            Row dirPref = getDireccionPreferenteInstitucion(envBean.getIdInstitucion(),TIPO_CORREO_ELECTRONICO);
-//            sFrom = dirPref.getString(EnvRemitentesBean.C_CORREOELECTRONICO);
-//        }
-
-        
-
-        
-        // BUCLE DE DESTINATARIOS
-        /////////////////////////////////////
-        if (vDestinatarios!=null) {
-        	 //ACUMULAMOS POBLACIONES, PAISES Y PROVINCIAS PARA EVITAR HACER QUERYS A LA BBDD
-    	    Hashtable htPoblaciones = new Hashtable();
-    	    Hashtable htProvincia = new Hashtable();
-    	    Hashtable htPaises = new Hashtable();
-	        for (int l=0;l<vDestinatarios.size();l++) {
-
-	        	EnvDestinatariosBean destBean = (EnvDestinatariosBean) vDestinatarios.elementAt(l);
-	        	 actualizaPaisDestinatario(destBean, htPaises);
-		            actualizaPoblacionDestinatario(destBean, htPoblaciones);
-		            actualizaProvincia(destBean, htProvincia);
-                
-                boolean generado=false;
-		        String sDirPdf = null;
-		        
-	            // ENVIO PARA CADA DESTINATARIO
-		        /////////////////////////////////////
-		        try{
-		        
-	        
-//		            String sTo = destBean.getCorreoElectronico();
-//		            
-//		            //Se crea un nuevo Mensaje.
-//		    	    MimeMessage mensaje = new MimeMessage(sesion);
-//		    	    
-//		    	    //Se especifica la dirección de origen.
-////		    	    mensaje.setFrom(new InternetAddress(sFrom));
-//		    	    
-//		    	    //Se especifica la dirección de destino.
-//		    	    mensaje.addRecipient(Message.RecipientType.TO, new InternetAddress(sTo));
-//		    	    
-//		    	    //Se especifica que el correo es MultiPart: texto + fichero.
-//		    	    MimeMultipart multipart = new MimeMultipart();
-//		    		
-//		    		//Documentos adjuntos
-//		    	    MimeBodyPart bodyPart = new MimeBodyPart();    	    
-//		    	    String sAttachment,sAttach;
-//		    	    String idPersona = String.valueOf(destBean.getIdPersona());
-//		    	    
-//		            // MENSAJE DE CORREO ELECTRONICO
-//			        /////////////////////////////////////
-//		    	    //Obtenemos asunto y cuerpo del correo
-//		    	    String consulta = envBean.getConsulta().equals("")?null:envBean.getConsulta();
-//			        Hashtable htCorreo = getCamposCorreoElectronico(envBean, Long.valueOf(idPersona),consulta);
-//			        String sAsunto = (htCorreo.get("asunto")==null)?"":(String)htCorreo.get("asunto");
-//			        String sCuerpo = (htCorreo.get("cuerpo")==null)?"":(String)htCorreo.get("cuerpo");
-//			        
-//			        //Se especifica el texto del correo.
-//		    	    bodyPart = new MimeBodyPart();
-//		    	    bodyPart.setText(sCuerpo,"ISO-8859-1");
-//		    	    multipart.addBodyPart(bodyPart);        	
-//		    		
-//		    	    //Se especifica el asunto del correo.
-//		    	    mensaje.setSubject(sAsunto,"ISO-8859-1");	    	
-//		    	    mensaje.setHeader("Content-Type","text/plain; charset=\"ISO-8859-1\"");
-//		    	    //Se anhade el contenido al fichero.
-//		    	    mensaje.setContent(multipart);
-//		    	    
-//		    	    // Se envía el correo.
-//		    	    //Transport.send(mensaje);
-//		    	    tr.sendMessage(mensaje, mensaje.getAllRecipients());
-
-//		            String url_locator = "http://10.60.3.80:7001/ecos/wsecos/services/";
-//		        	String url_service = "http://10.60.3.80:7001/ecos/wsecos/services/ServiciosECOSService.service";
-//		        	String idClienteECOS = "idclienteecos";
-
-		        	GenParametrosAdm paramAdm = new GenParametrosAdm(this.usrbean);
-		        	String url_locator = paramAdm.getValor(destBean.getIdInstitucion().toString(),"ENV","SMS_URL_LOCATOR","");
-		        	String url_service = paramAdm.getValor(destBean.getIdInstitucion().toString(),"ENV","SMS_URL_SERVICE","");
-		        	String idClienteECOS = paramAdm.getValor(destBean.getIdInstitucion().toString(),"ENV","SMS_CLIENTE_ECOS","");
-		        	if (url_locator.equals("") || url_service.equals("") || idClienteECOS.equals("")) {
-		        	    throw new ClsExceptions("No existen datos de configuración en parámetros para envio SMS.");
-		        	}
-		            
-		            String idPersona = String.valueOf(destBean.getIdPersona());
-		    	    String consulta = envBean.getConsulta().equals("")?null:envBean.getConsulta();
-
-		    	    // destinatario
-		    	    String sTo = destBean.getMovil();
-		    	    if (sTo==null || sTo.trim().equals("")) {
-		    	        throw new ClsExceptions("No existe número de móvil para el destinatario.");
-		    	    }
-		    	    
-		            // texto
-		    	    String sTexto = getTextoSMS(envBean,destBean, Long.valueOf(idPersona),consulta);
-		            if (sTexto==null) sTexto="";
-		            if (sTexto.length()>LONGITUD_SMS) sTexto=sTexto.substring(LONGITUD_SMS-1);
+						//SMS
+						SolicitudEnvioSMS sesms01 = new SolicitudEnvioSMS();
+						sesms01.setIdClienteECOS(idClienteECOS);
+						sesms01.setIdColegio(destBean.getIdInstitucion().toString());
+						sesms01.setListaTOs(new String[] {sTo});
+						sesms01.setTexto(sTexto);
+						sesms01.setIsProgramado(false);
+						sesms01.setIsSMSCertificado(false);
+						sesms01.setDatosGrandeCuenta(new DatosGrandeCuentaTO());
 						
-		            
-		            ClsLogging.writeFileLog("locator: " + url_locator,10);
-					ClsLogging.writeFileLog("service: " + url_service,10);
-					
-					ServiciosECOSService_ServiceLocator locator = new ServiciosECOSService_ServiceLocator(url_locator);
-					ServiciosECOSServiceSOAPStub stub = new ServiciosECOSServiceSOAPStub(new URL(url_service),locator);
-					 
-					
-					//SMS
-					SolicitudEnvioSMS sesms01 = new SolicitudEnvioSMS();
-					sesms01.setIdClienteECOS(idClienteECOS);
-					sesms01.setIdColegio(destBean.getIdInstitucion().toString());
-					sesms01.setListaTOs(new String[] {sTo});
-					sesms01.setTexto(sTexto);
-					
-					sesms01.setIsProgramado(false);
-					sesms01.setIsSMSCertificado(false);
+						
+//						//Configuracion SSL 
+//						System.setProperty("javax.net.ssl.keyStore", "C:\\bea92\\jdk150_10\\jre\\bin\\prueba.pfx");
+//						System.setProperty("javax.net.ssl.keyStorePassword", "1111");
+//						System.setProperty("javax.net.ssl.keyStoreType", "pkcs12");
+//						System.setProperty("javax.net.ssl.trustStore", "C:\\bea92\\jdk150_10\\jre\\bin\\truststore");
+//						System.setProperty("javax.net.ssl.trustStorePassword", "truststore");
+////						System.setProperty("javax.net.debug", "ssl" );
+////						System.setProperty( "java.protocol.handler.pkgs", "com.sun.net.ssl.internal.www.protocol" );
+////						Security.addProvider( new com.sun.net.ssl.internal.ssl.Provider() );
+						
+						Date ini = new Date();
+						ClsLogging.writeFileLog("Enviando solicitud SMS...",10);
+						ResultadoSolicitudEnvio response03 = stub.enviarSMS(sesms01);
+						Date fin = new Date();
+						ClsLogging.writeFileLog("Recibida respuesta SMS. TIEMPO: "+new Long((fin.getTime()-ini.getTime())).toString(),10);
 
-					Date ini = new Date();
-					ClsLogging.writeFileLog("Enviando solicitud SMS...",10);
-					ResultadoSolicitudEnvio response03 = stub.enviarSMS(sesms01);
-					Date fin = new Date();
-					ClsLogging.writeFileLog("Recibida respuesta SMS. TIEMPO: "+new Long((fin.getTime()-ini.getTime())).toString(),10);
-					
-					ClsLogging.writeFileLog("Resultado de la operación: " + response03.getResultado(),10);
-	    	        if (response03.getResultado().indexOf("KO")!=-1) {
-	    	        	// ERROR
-	    	        	throw new ClsExceptions("Error en el servicio ECOS. "+response03.getResultado());	
-	    	        }
+						ClsLogging.writeFileLog("Resultado de la operación: " + response03.getResultado(),10);
+						if (response03.getResultado().indexOf("KO")!=-1) {
+							// ERROR
+							throw new ClsExceptions("Error en el servicio ECOS. "+response03.getResultado());	
+						}
 
-					ClsLogging.writeFileLog("ID de solicitud: " + response03.getIdSolicitud(),10);
-					
-		    	    // RGG 08/06/2009 ESTADISTICA
-		    	    EnvEstatEnvioAdm admEstat = new EnvEstatEnvioAdm(this.usrbean);
-		    	    admEstat.insertarApunteExtra(envBean.getIdInstitucion(),envBean.getIdEnvio(),envBean.getIdTipoEnvios(),new Long(idPersona),sTo);
-		    	    
-		    	    
-		        } catch(UnsupportedClassVersionError e){
-		            ClsExceptions ex = new ClsExceptions("UnsupportedClassVersionError: "+e.toString());
-		            errores = true;
-	                insertarMensajeLogHT(destBean,htErrores, ex);
-	            } catch (Exception e){
-	                errores = true;
-	                insertarMensajeLogHT(destBean,htErrores, e);
-	            } catch (Throwable t){
-	                errores = true;
-	                t.printStackTrace();
-	                insertarMensajeLogHT(destBean,htErrores, new ClsExceptions("ERROR THROWABLE en envíos: "+t.toString()));
-	            }
+						ClsLogging.writeFileLog("ID de solicitud: " + response03.getIdSolicitud(),10);
 
-	        } // FOR
-        } // IF
+						// RGG 08/06/2009 ESTADISTICA
+						EnvEstatEnvioAdm admEstat = new EnvEstatEnvioAdm(this.usrbean);
+						admEstat.insertarApunteExtra(envBean.getIdInstitucion(),envBean.getIdEnvio(),envBean.getIdTipoEnvios(),new Long(idPersona),sTo);
 
 
-        // GENERAR EL LOG DEL ENVIO
-        /////////////////////////////////////
-        if (generarLog) {
-        	generarLogEnvioHT(vDestinatarios, htErrores, envBean);
-        }
-        
-        // HAN OCURRIDO ERRORES DE DESTINATARIO
-        /////////////////////////////////////
-        if (errores){
-        	return EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES;
-        } else {
-            return EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADO;
-        }
+					} catch(UnsupportedClassVersionError e){
+						ClsExceptions ex = new ClsExceptions("UnsupportedClassVersionError: "+e.toString());
+						errores = true;
+						insertarMensajeLogHT(destBean,htErrores, ex);
+					} catch (Exception e){
+						errores = true;
+						insertarMensajeLogHT(destBean,htErrores, e);
+					} catch (Throwable t){
+						errores = true;
+						t.printStackTrace();
+						insertarMensajeLogHT(destBean,htErrores, new ClsExceptions("ERROR THROWABLE en envíos: "+t.toString()));
+					}
 
-    } catch (SIGAException e) { 
-		throw e;
-    } catch(Exception e){
-        throw new ClsExceptions(e,"Error enviando correo electrónico");
-	} finally {
-        // cerramos el transport
-	    try {
-	    	tr.close();
-	    } catch (Exception e) {}
+				} // FOR
+			} // IF
 
-	}
+
+			// GENERAR EL LOG DEL ENVIO
+			/////////////////////////////////////
+			if (generarLog) {
+				generarLogEnvioHT(vDestinatarios, htErrores, envBean);
+			}
+
+			// HAN OCURRIDO ERRORES DE DESTINATARIO
+			/////////////////////////////////////
+			if (errores){
+				return EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES;
+			} else {
+				return EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADO;
+			}
+
+		} catch (SIGAException e) { 
+			throw e;
+		} catch(Exception e){
+			throw new ClsExceptions(e,"Error enviando correo electrónico");
+		} 
 	}
 	
 	public String enviarBuroSMS(EnvEnviosBean envBean,  Vector vDestinatarios, Hashtable htErrores, boolean generarLog) 
@@ -5303,19 +5221,25 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		            String idPersona = String.valueOf(destBean.getIdPersona());
 		    	    String consulta = envBean.getConsulta().equals("")?null:envBean.getConsulta();
 
-		    	    String sTo = destBean.getMovil();
-		    	    if (sTo==null || sTo.trim().equals("")) {
-		    	        throw new ClsExceptions("No existe número de móvil para el destinatario.");
-		    	    }
+					// destinatario
+					String sTo = destBean.getMovil();
+					sTo = getNumeroConPrefijo(sTo);						
+					if (sTo==null || sTo.trim().equals("")) {
+						throw new ClsExceptions("No existe número de móvil para el destinatario.");
+					}
+
 		            
 		    	    if (sFrom==null || sFrom.trim().equals("")) {
 		    	       throw new ClsExceptions("No existe número de email de remitente para la confiración.");
 		    	    }
 		    	    
-		            String sTexto = getTextoSMS(envBean,destBean, Long.valueOf(idPersona),consulta);
-		            if (sTexto==null) sTexto="";
-		            if (sTexto.length()>LONGITUD_SMS) sTexto=sTexto.substring(LONGITUD_SMS-1);
-						
+					// texto
+					String sTexto = getTextoSMS(envBean,destBean, Long.valueOf(idPersona),consulta);
+					if (sTexto==null || "".equals(sTexto)){
+						throw new ClsExceptions("No existe texto del mensaje.");
+					}
+					if (sTexto.length()>LONGITUD_SMS) 
+						sTexto=sTexto.substring(LONGITUD_SMS-1);						
 		            
 		            ClsLogging.writeFileLog("locator: " + url_locator,10);
 					ClsLogging.writeFileLog("service: " + url_service,10);
@@ -5330,10 +5254,10 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 					sesms01.setIdColegio(destBean.getIdInstitucion().toString());
 					sesms01.setListaTOs(new String[] {sTo});
 					sesms01.setTexto(sTexto);
-					
 					sesms01.setIsProgramado(false);
 					sesms01.setIsSMSCertificado(true);
 					sesms01.setEmail(sFrom);
+					sesms01.setDatosGrandeCuenta(new DatosGrandeCuentaTO());					
 
 					Date ini = new Date();
 					ClsLogging.writeFileLog("Enviando solicitud BuroSMS...",10);
@@ -5417,7 +5341,22 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	}
 
 	
-
+    /**
+     * Devuelve un numero de movil con el prefijo del pais entre parentesis.
+     * Si no tiene prefijo de pais se utiliza el de España
+     * @param numero
+     * @return
+     */
+	private String getNumeroConPrefijo(String numero) {
+    	String prefijo = "+34";
+    	if (numero.startsWith("+")){
+    		prefijo = numero.substring(0, 3);
+    		numero = numero.substring(3);
+    	}
+    	numero = "("+prefijo+")"+numero;
+    		
+    	return numero;
+    }
 
 
 }
