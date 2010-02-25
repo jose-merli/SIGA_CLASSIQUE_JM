@@ -167,8 +167,9 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 				expedientes = tipoInformacion.addNewExpedientes();										
 			}
 			tipoIntercambio = (String) ht.get(TIPOINTERCAMBIO);
-			addExpediente(expedientes, ht, tipoIntercambio);
-			numDetalles++;
+			if (addExpediente(expedientes, ht, tipoIntercambio)) {
+				numDetalles++;
+			}
 		}
 		if (intercambio != null) {			
 			ficheros.add(creaFichero(dirFicheros, dirPlantilla, intercambioDocument, intercambio, tipoInformacion, numDetalles));
@@ -365,7 +366,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	 * @return
 	 * @throws Exception
 	 */
-	private TipoExpediente addExpediente(Expedientes expedientes, Hashtable htEJGs, String tipoIntercambio) throws Exception {		
+	private boolean addExpediente(Expedientes expedientes, Hashtable htEJGs, String tipoIntercambio) throws Exception {		
 		
 		TipoExpediente tipoExpediente = expedientes.addNewExpediente();
 		idTipoEJG = (String)htEJGs.get(IDTIPOEJG);
@@ -404,10 +405,11 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		}
 		//NO VALIDAMOS PQ TIENEN OTRO XSD LA GENERALITAT!!!!!!!!
 		if(validate(tipoExpediente, anyo, numejg, numero, idTipoEJG)){
-			expedientes.removeExpediente(expedientes.sizeOfExpedienteArray()-1);			
+			expedientes.removeExpediente(expedientes.sizeOfExpedienteArray()-1);
+			return false;			
 		}
 		
-		return tipoExpediente;
+		return true;
 	}
 	
 	/**
