@@ -115,7 +115,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 					registrar_SolicitudXML_Solicitud.set_any(new MessageElement[]{messageElement});										
 					
 					
-					if (!validate(sigaAsignaDocument, anio, numejg, numero, idTipoEJG)){
+					if (!validateXML_EJG(sigaAsignaDocument, anio, numejg, numero, idTipoEJG)){
 						continue;
 					}
 					

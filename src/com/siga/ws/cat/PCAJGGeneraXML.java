@@ -404,7 +404,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			datosTramitacionExpediente(tipoExpediente, htEJGs, tipoIntercambio);
 		}
 		//NO VALIDAMOS PQ TIENEN OTRO XSD LA GENERALITAT!!!!!!!!
-		if(validate(tipoExpediente, anyo, numejg, numero, idTipoEJG)){
+		if(validateXML_EJG(tipoExpediente, anyo, numejg, numero, idTipoEJG)){
 			expedientes.removeExpediente(expedientes.sizeOfExpedienteArray()-1);
 			return false;			
 		}

@@ -226,7 +226,23 @@ public abstract class SIGAWSClientAbstract {
 	 * @param idTipoEJG
 	 * @throws Exception
 	 */
-	protected boolean validate(XmlObject xmlObject, String anio, String numejg, String numero, String idTipoEJG) throws Exception {
+	protected boolean validateXML_EJG(XmlObject xmlObject, String anio, String numejg, String numero, String idTipoEJG) throws Exception {
+		boolean valido = validate(xmlObject);
+		if (!valido) {
+			String descripcionError = "El expediente no ha sido validado correctamente para su envío";
+			escribeErrorExpediente(anio, numejg, numero, idTipoEJG, descripcionError);
+		}
+		return valido;
+	}
+	
+
+	/**
+	 * 
+	 * @param xmlObject
+	 * @return
+	 * @throws Exception
+	 */
+	protected boolean validate(XmlObject xmlObject) throws Exception {
 		boolean valido = true;
 		XmlOptions xmlOptions = new XmlOptions();
 		List<XmlValidationError> errores = new ArrayList<XmlValidationError>();
@@ -236,9 +252,7 @@ public abstract class SIGAWSClientAbstract {
 			StringBuffer sb = new StringBuffer();
 			for (XmlValidationError error : errores) {
 				sb.append(error + "\n");
-			}
-			String descripcionError = "El expediente no ha sido validado correctamente para su envío";
-			escribeErrorExpediente(anio, numejg, numero, idTipoEJG, descripcionError);
+			}			
 			ClsLogging.writeFileLog(sb.toString(), 3);
 		}
 		return valido;

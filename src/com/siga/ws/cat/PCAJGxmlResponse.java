@@ -11,11 +11,11 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Vector;
 
+import javax.transaction.UserTransaction;
+
 import org.apache.xmlbeans.XmlCursor;
-import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
 
@@ -23,7 +23,6 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ReadProperties;
 import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.ChannelSftp.LsEntry;
 import com.siga.Utilidades.SIGAReferences;
@@ -36,11 +35,11 @@ import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
 import com.siga.ws.SIGAWSClientAbstract;
 import com.siga.ws.cat.respuesta.IntercambioDocument;
+import com.siga.ws.cat.respuesta.TipoIdentificacionIntercambio;
 import com.siga.ws.cat.respuesta.IntercambioDocument.Intercambio;
 import com.siga.ws.cat.respuesta.IntercambioDocument.Intercambio.InformacionIntercambio;
 import com.siga.ws.cat.respuesta.IntercambioDocument.Intercambio.InformacionIntercambio.IntercambioErroneo;
 import com.siga.ws.cat.respuesta.IntercambioDocument.Intercambio.InformacionIntercambio.IntercambioErroneo.DatosError;
-import com.siga.ws.cat.respuesta.IntercambioDocument.Intercambio.InformacionIntercambio.IntercambioErroneo.IdentificacionIntercambio;
 import com.siga.ws.cat.respuesta.IntercambioDocument.Intercambio.InformacionIntercambio.IntercambioErroneo.DatosError.ErrorContenido;
 import com.siga.ws.cat.respuesta.IntercambioDocument.Intercambio.InformacionIntercambio.IntercambioErroneo.DatosError.ErrorGeneral;
 import com.siga.ws.cat.respuesta.IntercambioDocument.Intercambio.InformacionIntercambio.IntercambioErroneo.DatosError.ErrorContenido.CodigoExpedienteError;
@@ -184,7 +183,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 					if (xmlCursor.isContainer()) {
 						
 						if ("Expediente".equals(xmlCursor.getName().getLocalPart())) {
-							System.out.println(xmlCursor.getName().getLocalPart());
+							
 							XmlCursor xmlCursorExpediente = xmlCursor.getObject().newCursor();
 												
 							while (xmlCursorExpediente.hasNextToken()) {
@@ -262,16 +261,11 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 		CajgEJGRemesaBean cajgEJGRemesaBean = new CajgEJGRemesaBean();
 		String[] claves = new String[]{CajgEJGRemesaBean.C_IDINSTITUCION, CajgEJGRemesaBean.C_ANIO, CajgEJGRemesaBean.C_NUMERO, CajgEJGRemesaBean.C_IDTIPOEJG};
 		String[] campos = new String[]{CajgEJGRemesaBean.C_RECIBIDA};
-			
-		if (numExpediente != null && numExpediente.trim().length() > 5) {
-			numExpediente = numExpediente.trim();
-			numExpediente = numExpediente.substring(numExpediente.length() - 5);
-		}
-		
+				
 		Hashtable<String, Object> hash = new Hashtable<String, Object>();
 		hash.put(ScsEJGBean.C_IDINSTITUCION, getIdInstitucion());
 		hash.put(ScsEJGBean.C_ANIO, String.valueOf(anyoExpediente));
-		hash.put(ScsEJGBean.C_NUMEJG, numExpediente);							
+		hash.put(ScsEJGBean.C_NUMEJG, Integer.parseInt(numExpediente.trim()));							
 		Vector vectorEJGs = scsEJGAdm.select(hash);
 		if (vectorEJGs != null) {
 			if (vectorEJGs.size() == 0) {
@@ -284,61 +278,43 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 				//EJG encontrado
 				ScsEJGBean scsEJGBean = (ScsEJGBean) vectorEJGs.get(0);	
 				
-				/* NO COMPROBAMOS QUE SEA DE MI REMESA
-				Hashtable<String, Object> hashEjgRem = new Hashtable<String, Object>();
-				hashEjgRem.put(CajgEJGRemesaBean.C_IDINSTITUCION, getIdInstitucion());
-				hashEjgRem.put(CajgEJGRemesaBean.C_ANIO, scsEJGBean.getAnio());
-				hashEjgRem.put(CajgEJGRemesaBean.C_NUMERO, scsEJGBean.getNumero());
-				hashEjgRem.put(CajgEJGRemesaBean.C_IDTIPOEJG, scsEJGBean.getIdTipoEJG());
+				//El estado lo pone el trigger como resuelto
+				String observaciones = intervaloIngresosRecursos;
+				observaciones = observaciones==null?"":("Intervalo ingresos recursos: " + observaciones);
 				
-				hashEjgRem.put(CajgEJGRemesaBean.C_IDINSTITUCIONREMESA, getIdInstitucion());
-				hashEjgRem.put(CajgEJGRemesaBean.C_IDREMESA, getIdRemesa());
-				CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(getUsrBean());
+				if (tipoPrestacion != null){
+					observaciones += "\nPrestaciones:";
+					observaciones += tipoPrestacion;
+				}
 				
-				Vector vectorRemesa = cajgEJGRemesaAdm.select(hashEjgRem);
-				if (vectorRemesa.size() == 0) {
-					escribeLogRemesa("No se ha encontrado el EJG año/número = " + anyoExpediente + "/" + numExpediente + " en la remesa ");										
-				} else if (vectorRemesa.size() > 1) {
-					escribeLogRemesa("Se ha encontrado más de un EJG año/número = " + anyoExpediente + "/" + numExpediente + " en la remesa ");
-				} else {	*/				
-					
-					//El estado lo pone el trigger como resuelto
-					String observaciones = intervaloIngresosRecursos;
-					observaciones = observaciones==null?"":("Intervalo ingresos recursos: " + observaciones);
-					
-					if (tipoPrestacion != null){
-						observaciones += "\nPrestaciones:";
-						observaciones += tipoPrestacion;
-					}
-					
-					String update = "UPDATE " + ScsEJGBean.T_NOMBRETABLA + " SET " +
-							ScsEJGBean.C_IDTIPORATIFICACIONEJG + " = (SELECT PS.IDTIPORESOLUCION" +
-											" FROM PCAJG_TIPO_RESOLUCION P, PCAJG_TIPO_RESOLUCION_SCSTIPOR PS" +
-											" WHERE P.IDINSTITUCION = PS.IDINSTITUCION" +
-											" AND P.IDENTIFICADOR = PS.IDENTIFICADOR" +
-											" AND P.IDINSTITUCION = " + getIdInstitucion() +
-											" AND P.CODIGO = '" + codTipoResolucion + "')" +  //tipoResolucion
-							", " + ScsEJGBean.C_IDFUNDAMENTOJURIDICO + " = (SELECT T.IDFUNDAMENTO" +
-									" FROM SCS_TIPOFUNDAMENTOS T" +
-									" WHERE T.IDINSTITUCION = " + getIdInstitucion() +
-									" AND T.CODIGO = '" + codMotivoResolucion + "')" + //motivoResolucion
-							", " + ScsEJGBean.C_FECHARESOLUCIONCAJG + " = TO_DATE('" + fechaEstado + "', 'YYYY-MM-DD')" +
-							", " + ScsEJGBean.C_REFAUTO + " = '" + (identificadorResolucion==null?"":identificadorResolucion) + "'" +
-							", " + ScsEJGBean.C_RATIFICACIONDICTAMEN + " = '" + observaciones + "'" +
-							" WHERE " + ScsEJGBean.C_IDINSTITUCION + " = " + getIdInstitucion() +
-					        " AND " + ScsEJGBean.C_ANIO + " = " + scsEJGBean.getAnio() +
-					        " AND " + ScsEJGBean.C_NUMERO + " = " + scsEJGBean.getNumero() +
-					        " AND " + ScsEJGBean.C_IDTIPOEJG + " = " + scsEJGBean.getIdTipoEJG();							           
-					
-					scsEJGAdm.updateSQL(update);
-					
-					cajgEJGRemesaBean.setIdInstitucion(scsEJGBean.getIdInstitucion());
-					cajgEJGRemesaBean.setAnio(scsEJGBean.getAnio());
-					cajgEJGRemesaBean.setNumero(scsEJGBean.getNumero());
-					cajgEJGRemesaBean.setIdTipoEJG(scsEJGBean.getIdTipoEJG());
-					cajgEJGRemesaBean.setRecibida(Integer.valueOf(1));
-					
-					cajgEJGRemesaAdm.updateDirect(cajgEJGRemesaBean, claves, campos);
+				String update = "UPDATE " + ScsEJGBean.T_NOMBRETABLA + " SET " +
+						ScsEJGBean.C_IDTIPORATIFICACIONEJG + " = (SELECT PS.IDTIPORESOLUCION" +
+										" FROM PCAJG_TIPO_RESOLUCION P, PCAJG_TIPO_RESOLUCION_SCSTIPOR PS" +
+										" WHERE P.IDINSTITUCION = PS.IDINSTITUCION" +
+										" AND P.IDENTIFICADOR = PS.IDENTIFICADOR" +
+										" AND P.IDINSTITUCION = " + getIdInstitucion() +
+										" AND P.CODIGO = '" + codTipoResolucion + "')" +  //tipoResolucion
+						", " + ScsEJGBean.C_IDFUNDAMENTOJURIDICO + " = (SELECT T.IDFUNDAMENTO" +
+								" FROM SCS_TIPOFUNDAMENTOS T" +
+								" WHERE T.IDINSTITUCION = " + getIdInstitucion() +
+								" AND T.CODIGO = '" + codMotivoResolucion + "')" + //motivoResolucion
+						", " + ScsEJGBean.C_FECHARESOLUCIONCAJG + " = TO_DATE('" + fechaEstado + "', 'YYYY-MM-DD')" +
+						", " + ScsEJGBean.C_REFAUTO + " = '" + (identificadorResolucion==null?"":identificadorResolucion) + "'" +
+						", " + ScsEJGBean.C_RATIFICACIONDICTAMEN + " = '" + observaciones + "'" +
+						" WHERE " + ScsEJGBean.C_IDINSTITUCION + " = " + getIdInstitucion() +
+				        " AND " + ScsEJGBean.C_ANIO + " = " + scsEJGBean.getAnio() +
+				        " AND " + ScsEJGBean.C_NUMERO + " = " + scsEJGBean.getNumero() +
+				        " AND " + ScsEJGBean.C_IDTIPOEJG + " = " + scsEJGBean.getIdTipoEJG();							           
+				
+				scsEJGAdm.updateSQL(update);
+				
+				cajgEJGRemesaBean.setIdInstitucion(scsEJGBean.getIdInstitucion());
+				cajgEJGRemesaBean.setAnio(scsEJGBean.getAnio());
+				cajgEJGRemesaBean.setNumero(scsEJGBean.getNumero());
+				cajgEJGRemesaBean.setIdTipoEJG(scsEJGBean.getIdTipoEJG());
+				cajgEJGRemesaBean.setRecibida(Integer.valueOf(1));
+				
+				cajgEJGRemesaAdm.updateDirect(cajgEJGRemesaBean, claves, campos);
 				
 			}
 		}
@@ -355,28 +331,31 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 	 * @throws ClsExceptions
 	 */
 	private void procesaIEE(ChannelSftp chan, String dirOUT, File file) {
+		UserTransaction tx = null;
+		
 		try {			
 			
 			if (file != null) {	
-				escribeLogRemesa("Fichero de respuesta encontrado en el servidor FTP. Analizando respuesta.");
+				
 				ClsLogging.writeFileLog("Fichero copiado en el servidor. Ruta = " + file.getAbsolutePath(), 3);
 				XmlOptions xmlOptions = new XmlOptions();
 				Map<String, String> map = new HashMap<String, String>();
 				map.put("", namespace);
 				xmlOptions.setLoadSubstituteNamespaces(map);
 				
-				
-				
 				IntercambioDocument intercambioRespuestaDoc = IntercambioDocument.Factory.parse(file, xmlOptions);
+				if (!validate(intercambioRespuestaDoc)) {
+					throw new ClsExceptions("El xml " + file.getName() + " no es válido");
+				}			
 				
 				Intercambio intercambioRespuesta = intercambioRespuestaDoc.getIntercambio();
 				InformacionIntercambio informacionIntercambio = intercambioRespuesta.getInformacionIntercambio();
 				IntercambioErroneo intercambioErroneo = informacionIntercambio.getIntercambioErroneo();
 				
 				DatosError[] datosErrors = intercambioErroneo.getDatosErrorArray();
-				IdentificacionIntercambio identificacionIntercambio = intercambioErroneo.getIdentificacionIntercambio();
-				String idInstitucion = identificacionIntercambio.getCodOrigenIntercambio().getDomNode().getNodeValue();
-				int idRemesa = Integer.parseInt(identificacionIntercambio.getIdentificadorIntercambio().getDomNode().getNodeValue());
+				TipoIdentificacionIntercambio identificacionIntercambio = intercambioErroneo.getIdentificacionIntercambio();
+				String idInstitucion = identificacionIntercambio.getCodOrigenIntercambio();
+				int idRemesa = (int)identificacionIntercambio.getIdentificadorIntercambio();
 				
 				if (!String.valueOf(getIdInstitucion()).equals(idInstitucion)) {
 					escribeLogRemesa("La institucion del fichero es nula o distinta a la del usuario de SIGA");
@@ -389,14 +368,17 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 //					escribeLogRemesa("La remesa del fichero es distinta a la del usuario de SIGA");
 //					throw new ClsExceptions("La remesa del fichero es distinta a la del usuario de SIGA");
 				}
-							
-			    
+				
+				escribeLogRemesa("Fichero de respuesta " + file.getName() + " encontrado en el servidor FTP. Analizando respuesta.");
 				
 				CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(getUsrBean());
 				ScsEJGAdm scsEJGAdm = new ScsEJGAdm(getUsrBean());
 				CajgRespuestaEJGRemesaAdm cajgRespuestaEJGRemesaAdm = new CajgRespuestaEJGRemesaAdm(getUsrBean());
 				
-				chan.rename(dirOUT + "/" + file.getName(), dirOUT + "/" + HIST + "/" + file.getName());
+				tx = getUsrBean().getTransaction();
+				tx.begin();
+				
+				cajgRespuestaEJGRemesaAdm.eliminaAnterioresErrores(getIdInstitucion(), getIdRemesa());
 				
 				for (DatosError datosError : datosErrors) {
 					
@@ -411,15 +393,11 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 							expedientError = errorContenido.getCodigoExpedienteError();
 							int anioExp = expedientError.getAnyoExpediente();
 							String numExp = expedientError.getNumExpediente();
-							if (numExp != null && numExp.trim().length() > 5) {
-								numExp = numExp.trim();
-								numExp = numExp.substring(numExp.length() - 5);
-							}
-							
+														
 							Hashtable<String, Object> hash = new Hashtable<String, Object>();
 							hash.put(ScsEJGBean.C_IDINSTITUCION, idInstitucion);
 							hash.put(ScsEJGBean.C_ANIO, String.valueOf(anioExp));
-							hash.put(ScsEJGBean.C_NUMEJG, numExp);							
+							hash.put(ScsEJGBean.C_NUMEJG, Integer.parseInt(numExp.trim()));							
 							Vector vectorEJGs = scsEJGAdm.select(hash);
 							if (vectorEJGs != null) {
 								if (vectorEJGs.size() == 0) {
@@ -444,9 +422,9 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 									
 									Vector vectorRemesa = cajgEJGRemesaAdm.select(hashEjgRem);
 									if (vectorRemesa.size() == 0) {
-										escribeLogRemesa("No se ha encontrado el EJG año/número = " + anioExp + "/" + numExp + " en la remesa " + idRemesa);										
+										escribeLogRemesa("No se ha encontrado el EJG año/número = " + anioExp + "/" + numExp + " en la remesa");										
 									} else if (vectorRemesa.size() > 1) {
-										escribeLogRemesa("Se ha encontrado más de un EJG año/número = " + anioExp + "/" + numExp + " en la remesa " + idRemesa);
+										escribeLogRemesa("Se ha encontrado más de un EJG año/número = " + anioExp + "/" + numExp + " en la remesa");
 									} else {									
 										CajgEJGRemesaBean cajgEJGRemesaBean = (CajgEJGRemesaBean) vectorRemesa.get(0);
 										
@@ -477,21 +455,27 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 					
 				}
 				
+				ClsLogging.writeFileLog("Moviendo fichero a la carpeta " + HIST, 3);				
+				chan.rename(dirOUT + "/" + file.getName(), dirOUT + "/" + HIST + "/" + file.getName());
 				
-				
+				tx.commit();
 			} else {
 				escribeLogRemesa("No se ha encontrado el fichero de respuesta");
 				ClsLogging.writeFileLog("No se ha encontrado respuesta para institucion/remesa = " + getIdInstitucion() + "/" + getIdRemesa(), 3);
 			}
 
-		} catch (Exception e) {	
+		} catch (Exception e) {
+			
 			if (file != null) {
 				file.delete();
 			}
 			try {
-				escribeLogRemesa("Se ha producido un error al tratar la respuesta");
-			} catch (IOException e1) {
-				ClsLogging.writeFileLogError("Se ha producido un error al escribir en el log de la remesa " + getIdRemesa(), e1, 3);
+				if (tx != null) {
+					tx.rollback();
+				}
+				escribeLogRemesa("Se ha producido un error al tratar la respuesta");				
+			} catch (Exception e1) {
+				ClsLogging.writeFileLogError("Se ha producido un error al tratar la remesa " + getIdRemesa(), e1, 3);
 			}
 			ClsLogging.writeFileLogError("Se ha producido un error al tratar la respuesta en la remesa " + getIdRemesa(), e, 3);			
 		} finally {
@@ -499,99 +483,5 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 		}
 	}
 	
-
-	/**
-	 * @param args
-	 * @throws Exception 
-	 * @throws ClsExceptions 
-	 */
-	public static void main2(String[] args) throws Exception {
-		JSch jsch = new JSch();
-		com.jcraft.jsch.Session session = null;
-		ChannelSftp chan = null;		
-		
-		session = jsch.getSession("weblogic", "192.168.11.50", 22);
-		
-		session.setPassword("weblogic");
-		
-		// El SFTP requiere un intercambio de claves
-		// con esta propiedad le decimos que acepte la clave
-		// sin pedir confirmación
-		Properties prop = new Properties();
-		prop.put("StrictHostKeyChecking", "no");
-		session.setConfig(prop);
-		session.connect();
-
-		// Abrimos el canal de sftp y conectamos
-		chan = (ChannelSftp) session.openChannel("sftp");
-		chan.connect();
-		
-		chan.cd("/tmp");
-		
-		Vector<LsEntry> vectorFiles = chan.ls("/tmp");
-		for (LsEntry lsEntry : vectorFiles) {
-			String fileName = lsEntry.getFilename();
-			System.out.println(fileName);
-			if (fileName.startsWith("IEE_GEN_2047")){
-				System.out.println(fileName);
-			}
-		}
-		chan.disconnect();
-		session.disconnect();
-		System.out.println();
-	}
-
-	public static void main (String[] args) throws XmlException, IOException {
-		File file = new File("C:\\proyectos\\CAJG\\CATALUÑA\\IR_GEN_2047_2_20091112_Prueba.xml");
-		XmlObject xmlObject = XmlObject.Factory.parse(file);
-		
-		XmlCursor xmlCursor = xmlObject.newCursor();
-		
-		getDatos(xmlCursor, "Expediente");
-		
-		
-		
-		
-		
-		
-//		xmlObjects = xmlObject.selectChildren(DatosExpediente.type.getDocumentElementName());
-		/*for (XmlObject xmlo : xmlObjects) {
-			if (xmlo instanceof DatosExpediente) {
-				System.out.println("");
-			}
-			
-		}*/
-	}
-
-
-	private static void getDatos(XmlCursor xmlCursor, String string) {
-		
-		while (xmlCursor.hasNextToken()) {
-			xmlCursor.toNextToken();
-			if (xmlCursor.isContainer()) {
-				
-				if ("Expediente".equals(xmlCursor.getName().getLocalPart())) {
-					System.out.println(xmlCursor.getName().getLocalPart());
-					XmlCursor xmlCursorExpediente = xmlCursor.getObject().newCursor();
-										
-					while (xmlCursorExpediente.hasNextToken()) {
-						xmlCursorExpediente.toNextToken();
-						if (xmlCursorExpediente.isContainer()) {
-							if ("Expediente".equals(xmlCursorExpediente.getName().getLocalPart())) {
-								break;
-							} else if ("NumExpediente".equals(xmlCursorExpediente.getName().getLocalPart())){
-								System.out.println(xmlCursorExpediente.getTextValue());
-							} else if ("AnyoExpediente".equals(xmlCursorExpediente.getName().getLocalPart())){
-								System.out.println(xmlCursorExpediente.getTextValue());
-							} else if ("FechaEstado".equals(xmlCursorExpediente.getName().getLocalPart())){
-								System.out.println(xmlCursorExpediente.getTextValue());
-							}
-						}
-					}
-					
-				}				
-			}
-		}
-	}
 
 }
