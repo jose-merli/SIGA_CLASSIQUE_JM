@@ -114,6 +114,11 @@
   <!--<listener>
     <listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoContadores</listener-class>
   </listener>-->
+  
+  <listener>
+    <listener-class>com.siga.eejg.SolicitudEEJGListener</listener-class>    
+  </listener>
+  
  <servlet>
     <servlet-name>SIGASvlProcesoAutomaticoEnvios</servlet-name>
     <servlet-class>com.siga.servlets.SIGASvlProcesoAutomaticoEnvios</servlet-class>
