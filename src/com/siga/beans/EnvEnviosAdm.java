@@ -5047,7 +5047,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 						ClsLogging.writeFileLog("Resultado de la operación: " + response03.getResultado(),10);
 						if (response03.getResultado().indexOf("KO")!=-1) {
 							// ERROR
-							throw new ClsExceptions("Error en el servicio ECOS. "+response03.getResultado());	
+							String msg = "Comprobar destinos disponibles: España, Francia, Italia, Hungría y Rumanía";
+							throw new ClsExceptions("Error en el servicio ECOS. "+response03.getResultado() + ".\t" + msg);	
 						}
 
 						ClsLogging.writeFileLog("ID de solicitud: " + response03.getIdSolicitud(),10);
@@ -5268,7 +5269,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 					ClsLogging.writeFileLog("Resultado de la operación: " + response03.getResultado(),10);
 	    	        if (response03.getResultado().indexOf("KO")!=-1) {
 	    	        	// ERROR
-	    	        	throw new ClsExceptions("Error en el servicio ECOS. "+response03.getResultado());	
+						String msg = "Comprobar destinos disponibles: España, Francia, Italia, Hungría y Rumanía";
+						throw new ClsExceptions("Error en el servicio ECOS. "+response03.getResultado() + ".\t" + msg);	
 	    	        }
 
 					ClsLogging.writeFileLog("ID de solicitud: " + response03.getIdSolicitud(),10);
