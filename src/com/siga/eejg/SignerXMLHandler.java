@@ -109,8 +109,8 @@ public class SignerXMLHandler extends BasicHandler {
 			attr.setValue("Body");
 			signedObject.setAttributeNode(attr);
 		}
-        
-		Element signPlace = (Element)doc.createElementNS(signedObject.getNamespaceURI(), "soapenv:Header");
+		
+		Element signPlace = (Element)doc.createElementNS(signedObject.getNamespaceURI(), signedObject.getPrefix()+":Header");
 		doc.getFirstChild().insertBefore(signPlace, signedObject);
 		NodeList nodeList = signPlace.getChildNodes();
 		for (int i = 0; i < nodeList.getLength(); i++) {
