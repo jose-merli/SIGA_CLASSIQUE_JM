@@ -6,7 +6,6 @@ package com.siga.gratuita.action;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -24,13 +23,9 @@ import org.apache.struts.action.ActionMapping;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
-import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.SIGAReferences;
-import com.siga.administracion.SIGAConstants;
-import com.siga.beans.CerSolicitudCertificadosTextoBean;
 import com.siga.beans.GenParametrosAdm;
-import com.siga.beans.ScsAsistenciasBean;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
 import com.siga.beans.ScsPersonaJGAdm;
@@ -42,18 +37,12 @@ import com.siga.beans.ScsUnidadFamiliarEJGAdm;
 import com.siga.beans.ScsUnidadFamiliarEJGBean;
 import com.siga.beans.eejg.ScsEejgPeticionesAdm;
 import com.siga.beans.eejg.ScsEejgPeticionesBean;
-import com.siga.beans.eejg.ScsEejgXmlAdm;
-import com.siga.beans.eejg.ScsEejgXmlBean;
 import com.siga.eejg.InformacionEconomicaEjg;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinirUnidadFamiliarEJGForm;
 import com.siga.gratuita.service.EejgService;
-import com.siga.gratuita.service.VolantesExpressService;
-import com.siga.informes.InformeEejg;
-import com.siga.informes.InformeFacturasEmitidas;
-import com.siga.tlds.FilaExtElement;
 
 import es.satec.businessManager.BusinessManager;
 
@@ -753,8 +742,9 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 		peticionEejg.setAnio(Integer.parseInt(anio));
 		peticionEejg.setNumero(Integer.parseInt(numero));
 		peticionEejg.setIdPersona(Long.parseLong(idPersonaJG));
-		peticionEejg.setIdioma(usr.getLanguage());
-		
+		StringBuffer languaje = new StringBuffer(usr.getLanguageExt().toLowerCase());
+		languaje.append("_ES");
+		peticionEejg.setIdioma(languaje.toString());
 		ScsEejgPeticionesAdm admPeticionEejg = new ScsEejgPeticionesAdm(usr);
 		try {
 			admPeticionEejg.insertarPeticionEejg(peticionEejg);	

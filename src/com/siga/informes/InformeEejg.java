@@ -150,7 +150,7 @@ public class InformeEejg extends MasterReport
 	
 		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 			AdmLenguajesAdm a = new AdmLenguajesAdm(usr);
-			String idiomaExt = a.getLenguajeExt(idioma);
+			String idiomaExt = idioma.substring(0,2).toUpperCase();
 			String fecha = UtilidadesBDAdm.getFechaCompletaBD("formato_ingles");
 			fecha = fecha.replaceAll("/","");
 			fecha = fecha.replaceAll(":","");
