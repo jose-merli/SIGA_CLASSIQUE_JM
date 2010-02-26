@@ -931,16 +931,23 @@
 
 		 					<tr>	
 		   					<td class="labelText"><siga:Idioma key="censo.datosDireccion.literal.correo"/>&nbsp</td>		
-		   					<%if (!modo.equals("editar")) {%>		
-		   				    	<td nowrap><a href="mailto:<%=mail%>"><html:text name="consultaDireccionesForm" style="cursor:hand;color:blue;" property="correoElectronico" value="<%=mail%>" maxlength="100" size="50" styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text></a></td>	
+		   					<%if (!modo.equals("editar")) {%>
+		   						<% if (!mail.equalsIgnoreCase("")){ %>		
+		   				    		<td nowrap><a href="mailto:<%=mail%>"><html:text name="consultaDireccionesForm" style="cursor:hand;color:blue;" property="correoElectronico" value="<%=mail%>" maxlength="100" size="50" styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text></a></td>
+		   				    	<%}else{ %>
+		   				    		<td nowrap><html:text name="consultaDireccionesForm" property="correoElectronico" value="<%=mail%>" maxlength="100" size="50" styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text></td>
+		   				    	<%} %>	
      						<%}else{%>	
      						  <td nowrap><html:text name="consultaDireccionesForm" property="correoElectronico" value="<%=mail%>" maxlength="100" size="50" styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text></td>
      						<%}%>
 		  					<td class="labelText"><siga:Idioma key="censo.datosDireccion.literal.paginaWeb"/>&nbsp</td>
 		  					
 		  					<%if (!modo.equals("editar")) {%>
-		  					   <td><a href="<%=EnlaceWEb%>" target="_blank"><html:text name="consultaDireccionesForm" style="cursor:hand;color:blue;"  property="paginaWeb" value="<%=paginaWEB%>" maxlength="100" size="25" styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text></a></td>		  					   
-		  					   
+		  						<% if (!EnlaceWEb.equalsIgnoreCase("")){ %>
+	  					   			<td><a href="<%=EnlaceWEb%>" target="_blank"><html:text name="consultaDireccionesForm" style="cursor:hand;color:blue;"  property="paginaWeb" value="<%=paginaWEB%>" maxlength="100" size="25" styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text></a></td>
+	  					   		<%}else{ %>
+	  					   			<td><html:text name="consultaDireccionesForm" property="paginaWeb" value="<%=paginaWEB%>" maxlength="100" size="25" styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text></td>
+	  					   		<%} %>
 		  					 <%}else{%>		   					
 		   				    <td><html:text name="consultaDireccionesForm" property="paginaWeb" value="<%=paginaWEB%>" maxlength="100" size="25" styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text></td>
 		   				    <%}%>		
