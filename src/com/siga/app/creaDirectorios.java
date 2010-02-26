@@ -1288,6 +1288,19 @@ public class creaDirectorios {
 			 	if (hijoOrigen.exists()) {
 			 		recur(hijoOrigen, hijoDestino,idinstitucion,idinstitucion);
 			 	}
+				//carpeta.informe.eejg
+			 	pathDestino = rp.getString("sjcs.directorioFisicoPlantillaInformeEejg");
+				pathDestino += File.separator + rp.getString("sjcs.directorioPlantillaInformeEejg");
+				destino = new File(pathDestino);
+				destino.mkdirs();
+			 	carpeta = rp.getString("sjcs.directorioFisicoSalidaInformeEejg");
+				hijoOrigen = new File(origen.getAbsolutePath() + File.separator + carpeta);   
+			 	hijoDestino = new File(destino.getAbsolutePath());
+			 	hijoDestino.mkdirs();
+			 	if (hijoOrigen.exists()) {
+			 		recur(hijoOrigen, hijoDestino,idinstitucion,idinstitucion);
+			 	}
+			 	
 
 			 	//carpeta.informes.genericos
 			 	pathDestino = rp.getString("informes.directorioFisicoPlantillaInformesJava");
