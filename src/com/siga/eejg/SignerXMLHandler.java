@@ -2,6 +2,8 @@ package com.siga.eejg;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.security.KeyStore;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -21,10 +23,14 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ReadProperties;
+import com.atos.utils.UsrBean;
 import com.siga.Utilidades.FirmaXMLHelper;
 import com.siga.Utilidades.SIGAReferences;
+import com.siga.beans.GenParametrosAdm;
 
 public class SignerXMLHandler extends BasicHandler {
 	private static final long serialVersionUID = 4903930523115324378L;
@@ -80,7 +86,14 @@ public class SignerXMLHandler extends BasicHandler {
         }
 	}
 	
-	private boolean verificar(Document doc) throws AxisFault {
+	/**
+	 * 
+	 * @param doc
+	 * @return
+	 * @throws AxisFault
+	 * @throws ClsExceptions
+	 */
+	private boolean verificar(Document doc) throws AxisFault, ClsExceptions {
         FirmaXMLHelper firmaXMLHelper = getFirmaXMLHelper();	
 
 		try {
@@ -99,7 +112,15 @@ public class SignerXMLHandler extends BasicHandler {
 		return false;
 	}
 	
-	private Message firmar(Document doc, MessageContext messageContext) throws AxisFault {
+	/**
+	 * 
+	 * @param doc
+	 * @param messageContext
+	 * @return
+	 * @throws AxisFault
+	 * @throws ClsExceptions
+	 */
+	private Message firmar(Document doc, MessageContext messageContext) throws AxisFault, ClsExceptions {
 		FirmaXMLHelper firmaXMLHelper = getFirmaXMLHelper();	
 
 		Element signedObject = (Element) ((Element) doc.getFirstChild()).getElementsByTagNameNS("*", "Body").item(0);
@@ -141,18 +162,43 @@ public class SignerXMLHandler extends BasicHandler {
 		return new Message(soapEnvelope);
 	}
 
-	private FirmaXMLHelper getFirmaXMLHelper() {
+	/**
+	 * 
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	private FirmaXMLHelper getFirmaXMLHelper() throws ClsExceptions {
 		if (firmaXMLHelper==null){
-			ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-			String xmlSigNSPrefix = rp.returnProperty("eejg.xmlSigNSPrefix");
-			String keyStoreType = rp.returnProperty("eejg.keyStoreType");
-			String keyStoreFile = rp.returnProperty("eejg.keyStoreFile");
-			String keyStorePass = rp.returnProperty("eejg.keyStorePass");
-			String privateKeyAlias = rp.returnProperty("eejg.privateKeyAlias");
-			String privateKeyPass = rp.returnProperty("eejg.privateKeyPass");
-			String certificateAlias = rp.returnProperty("eejg.certificateAlias");
-
-			firmaXMLHelper = new FirmaXMLHelper(xmlSigNSPrefix, keyStoreType, keyStoreFile, keyStorePass, privateKeyAlias, privateKeyPass, certificateAlias);
+			try {
+				
+				ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+				String xmlSigNSPrefix = rp.returnProperty("eejg.xmlSigNSPrefix");
+				
+				UsrBean usrBean = new UsrBean();
+				usrBean.setUserName(String.valueOf(ClsConstants.USUMODIFICACION_AUTOMATICO));
+				
+				GenParametrosAdm admParametros = new GenParametrosAdm(usrBean);
+	            String sPathCertificadosDigitales = admParametros.getValor("0", "CER", "PATH_CERTIFICADOS_DIGITALES", "");
+	            String sNombreCertificadosDigitales = admParametros.getValor("0", "CER", "NOMBRE_CERTIFICADOS_DIGITALES", "");
+	            String keyStorePass = admParametros.getValor("0", "CER", "CLAVE_CERTIFICADOS_DIGITALES", "");
+	            
+	            String keyStoreFile = sPathCertificadosDigitales + "/" + sNombreCertificadosDigitales;
+	            String keyStoreType = rp.returnProperty("eejg.keyStoreType");
+	            
+	            FileInputStream fisID = new FileInputStream(keyStoreFile);
+		        KeyStore ks = KeyStore.getInstance(keyStoreType);
+		        ks.load(fisID, keyStorePass.toCharArray());
+		        fisID.close();
+		        String privateKeyAlias = (String)ks.aliases().nextElement();
+				
+				String privateKeyPass = keyStorePass;
+				String certificateAlias = privateKeyAlias;
+	
+				firmaXMLHelper = new FirmaXMLHelper(xmlSigNSPrefix, keyStoreType, keyStoreFile, keyStorePass, privateKeyAlias, privateKeyPass, certificateAlias);
+			
+	        } catch (Exception e) {
+				throw new ClsExceptions("Error al recuperar los parámetros");
+			}
 		}
 
 		return firmaXMLHelper;

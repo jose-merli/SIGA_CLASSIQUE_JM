@@ -1,5 +1,6 @@
 package com.siga.Utilidades;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.PrivateKey;
@@ -87,7 +88,8 @@ public class FirmaXMLHelper {
 	public void firmaCabecera(Element signedObject, Element signPlace) throws Exception {
 		if (privateKey==null || cert==null){
 			KeyStore ks = KeyStore.getInstance(keyStoreType);
-			InputStream is = FirmaXMLHelper.class.getResourceAsStream(keyStoreFile);
+//			InputStream is = FirmaXMLHelper.class.getResourceAsStream(keyStoreFile);
+			InputStream is = new FileInputStream(keyStoreFile);
 			ks.load(is, keyStorePass.toCharArray());
 			privateKey = (PrivateKey) ks.getKey(privateKeyAlias, privateKeyPass.toCharArray());
 			cert = (X509Certificate) ks.getCertificate(certificateAlias);

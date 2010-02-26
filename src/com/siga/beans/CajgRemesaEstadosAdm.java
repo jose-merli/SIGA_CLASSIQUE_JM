@@ -220,7 +220,10 @@ public class CajgRemesaEstadosAdm extends MasterBeanAdministrador {
 				" AND ER3.IDEJGREMESA IN (SELECT IDEJGREMESA FROM CAJG_RESPUESTA_EJGREMESA)) AS CON_ERRORES" +
 				" FROM CAJG_EJGREMESA ER) T" +
 				" WHERE T.TOTAL = (T.RECIBIDOS + T.CON_ERRORES)" +
-				" AND T.IDINSTITUCION = " + idInstitucion;
+				" AND T.IDINSTITUCION = " + idInstitucion +
+				//2=ESTADO ENVIADA
+				" AND 2 = (SELECT MAX(RE.IDESTADO) FROM CAJG_REMESAESTADOS RE" +
+				"		 WHERE RE.IDREMESA = T.IDREMESA AND RE.IDINSTITUCION = " + idInstitucion + ")";
 		RowsContainer rc = new RowsContainer(); 
 		rc = this.find(sql);
         if (rc!=null) {
