@@ -250,6 +250,11 @@
 				if ((f == null) || (f.equals(""))) {
 					iconos += ",E,B";
 				}
+				
+				String correo = "";
+				if(htData.get(CenDireccionesBean.C_CORREOELECTRONICO)!=null && !htData.get(CenDireccionesBean.C_CORREOELECTRONICO).toString().equalsIgnoreCase("")){
+					correo = htData.get(CenDireccionesBean.C_CORREOELECTRONICO).toString();
+				}
 	%> 						
 				<siga:FilaConIconos fila='<%=String.valueOf(i)%>' botones='<%=iconos%>' modo = '<%=accion%>' elementos='<%=elems%>' clase="listaNonEdit">
 					<td>
@@ -263,8 +268,12 @@
   				<td><%=UtilidadesString.mostrarDatoJSP(poblacionFinal)%></td>
   				<td><%=UtilidadesString.mostrarDatoJSP(htData.get(CenDireccionesBean.C_TELEFONO1))%></td>
   				<td><%=UtilidadesString.mostrarDatoJSP(htData.get(CenDireccionesBean.C_FAX1))%></td>
-  				<td><%=UtilidadesString.mostrarDatoJSP(htData.get(CenDireccionesBean.C_MOVIL))%></td>		
-  				<td nowrap><a href="mailto:<%=UtilidadesString.mostrarDatoJSP(htData.get(CenDireccionesBean.C_CORREOELECTRONICO))%>"><%=UtilidadesString.mostrarDatoJSP(htData.get(CenDireccionesBean.C_CORREOELECTRONICO))%></a></td>
+  				<td><%=UtilidadesString.mostrarDatoJSP(htData.get(CenDireccionesBean.C_MOVIL))%></td>
+  				<% if(!correo.equalsIgnoreCase("")){%>		
+  					<td nowrap><a href="mailto:<%=UtilidadesString.mostrarDatoJSP(htData.get(CenDireccionesBean.C_CORREOELECTRONICO))%>"><%=UtilidadesString.mostrarDatoJSP(htData.get(CenDireccionesBean.C_CORREOELECTRONICO))%></a></td>
+  				<%}else{ %>
+  					<td><%=UtilidadesString.mostrarDatoJSP(correo)%></td>
+  				<%} %>
   				<td><%=UtilidadesString.mostrarDatoJSP(preferente)%></td> 
   			   										
 				</siga:FilaConIconos>
