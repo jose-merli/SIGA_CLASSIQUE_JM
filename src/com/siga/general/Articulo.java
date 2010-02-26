@@ -55,6 +55,8 @@ public class Articulo
 	private Integer idTipoEnvios;
 	private Long idDireccion;
 	private Long idPeticion;
+	private Integer metodoSolicitud;
+	private String fechaSolicitud;
 	
 	//Fecha Efectiva Compra
 	private String fechaEfectiva;	
@@ -101,6 +103,8 @@ public class Articulo
 					this.setTipoCertificado(UtilidadesHash.getString(producto, PysProductosInstitucionBean.C_TIPOCERTIFICADO));
 					this.setIdTipoEnvios(UtilidadesHash.getInteger(producto, "IDTIPOENVIOS"));
 					this.setIdDireccion(UtilidadesHash.getLong(producto, "IDDIRECCION"));
+					this.setMetodoSolicitud(UtilidadesHash.getInteger(producto, "METODOSOLICITUD"));
+					this.setFechaSolicitud(UtilidadesHash.getString(producto, "FECHASOLICITUD"));
 				
 			}
 			
@@ -431,5 +435,21 @@ public class Articulo
 
 	public void setImporteAnticipado(Double importeAnticipado) {
 		this.importeAnticipado = importeAnticipado;
+	}
+	
+	public Integer getMetodoSolicitud() {
+		return metodoSolicitud;
+	}
+
+	public void setMetodoSolicitud(Integer metodoSolicitud) {
+		this.metodoSolicitud = metodoSolicitud;
+	}
+
+	public String getFechaSolicitud() {
+		return fechaSolicitud;
+	}
+
+	public void setFechaSolicitud(String fechaSolicitud) {
+		this.fechaSolicitud = fechaSolicitud;
 	}
 }

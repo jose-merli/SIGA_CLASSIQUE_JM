@@ -161,7 +161,7 @@
 							<siga:ConjCampos leyenda="gratuita.seleccionColegiadoJG.literal.titulo"> 
 								<table class="tablaCampos" border="0" >		
 									<tr id="mifila">
-										<td colspan="4" width="90%"> 
+										<td colspan="4"> 
 											<html:hidden  property="flagSalto" value=""></html:hidden>
 											<html:hidden  property="flagCompensacion" value=""></html:hidden>
 											<html:hidden  property="fecha" value="<%=fechaHoy%>"></html:hidden>
@@ -174,24 +174,72 @@
 										</td> 
 									</tr>
 									<tr>
-										<td class="labelText" width="17%">
+										<td class="labelText">
 											<siga:Idioma key='gratuita.busquedaEJG.literal.numeroColegidado'/>
 										</td>		
-										<td width="11%">
-											<input type="text" name="ncolegiado" class="boxConsulta" readOnly value="" style="width:'11%';">
+										<td>
+											<input type="text" name="ncolegiado" class="boxConsulta" readOnly value="" size="6">
 										</td>
-										<td class="labelText" width="25%">
+										<td class="labelText">
 											<siga:Idioma key='FactSJCS.listadoRetencionesJ.literal.nombreColegiado'/>
 										</td>
-										<td width="47%">
-											<input type="text" name="nomColegiado" class="boxConsulta" readOnly value="" style="width:'47%';">
+										<td>
+											<input type="text" name="nomColegiado" class="boxConsulta" readOnly value="" size="50">
 										</td>			
-									</tr>				
+									</tr>							
+									
+										
 								</table>
 							</siga:ConjCampos>		
 				
 			</td>
 		</tr>
+	
+	
+								<% if(origen.equalsIgnoreCase("CALENDARIOGUARDIAS")) { %>
+	    								<tr>			
+	     									<td>
+											<siga:ConjCampos leyenda="gratuita.modalConsulta_DefinirCalendarioGuardia.literal.motivosSolicitud">
+			  									<table class="tablaCampos" align="left" border="0" width="100%">
+												<tr>
+													<td class="labelText">
+										 				<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.motivos"/>*			
+													</td>
+													<td >
+														<html:textarea name="PermutasForm" property="comenSustitucion" onKeyDown="cuenta(this,250)" onChange="cuenta(this,250)" cols="80" rows="4" style="width:580"  styleClass="box" readOnly="false" ></html:textarea>
+													</td>	
+										
+												</tr>
+												</table>
+				
+		    								</siga:ConjCampos>	
+											</td>		
+									  </tr>	
+									  
+								<% }else {%>
+								
+								<tr>			
+	     									<td>
+											<siga:ConjCampos leyenda="gratuita.modalConsulta_DefinirCalendarioGuardia.literal.motivosSolicitud">
+			  									<table class="tablaCampos" align="left" border="0" width="100%">
+												<tr>
+													<td class="labelText">
+										 				<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.motivos"/>*			
+													</td>
+													<td >
+														<html:textarea name="DefinirGuardiasTurnosForm" property="comenSustitucion" onKeyDown="cuenta(this,250)" onChange="cuenta(this,250)" cols="80" rows="4" style="width:580"  styleClass="box" readOnly="false" ></html:textarea>
+													</td>	
+										
+												</tr>
+												</table>
+				
+		    								</siga:ConjCampos>	
+											</td>		
+									  </tr>	
+								
+								<% }%>
+								
+										
 	</table>
 
 
@@ -220,6 +268,13 @@
 			//Chequeo que ha seleccionado un valor de la lista:
 			//alert(document.forms[0].flagSalto.value);
 			//alert(document.forms[0].flagCompensacion.value);
+			
+			
+			
+				
+			
+			
+			
 			if(document.forms[0].idPersona.value == "") {
 				alert('<siga:Idioma key="gratuita.literal.sustitucionLetradoGuardia.selecSustituto"/>');
 				fin();
@@ -230,6 +285,17 @@
 					fin();
 					return false;
 			}
+			if(document.<%=nombreForm%>.comenSustitucion.value == "") {
+					alert('<siga:Idioma key="gratuita.literal.sustitucionLetradoGuardia.Motivos"/>');
+					fin();
+					return false;
+			}	
+				
+			if(document.<%=nombreForm%>.comenSustitucion.value == "") {
+					alert('<siga:Idioma key="gratuita.literal.sustitucionLetradoGuardia.Motivos"/>');
+					fin();
+					return false;
+			}			
 			else {
 					if(document.forms[0].salto.checked)
 						document.forms[0].checkSalto.value ="1";
@@ -244,6 +310,8 @@
 					document.forms[0].submit();	
 				
 			}
+			
+			
 		}
 
 		//Asociada al boton Cerrar -->

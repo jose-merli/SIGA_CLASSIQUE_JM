@@ -608,12 +608,9 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		
 		if(idPersona!=null && !idPersona.equalsIgnoreCase("")){
 			sql.append(" and dl.idpersona = :");
-			
-			
 			contador++;
 			codigos.put(new Integer(contador),idPersona);
 			sql.append(contador);
-			
 		}
 		
 		
@@ -629,8 +626,9 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		sql.append(" and aux.idturno = dl.idturno ");
 		sql.append(" and aux.anio = dl.anio ");
 		sql.append(" and aux.numero = dl.numero ");
-		//sql.append(" and aux.idpersona = dl.idpersona ");
-		
+		if(idPersona!=null && !idPersona.equalsIgnoreCase("")){
+			sql.append(" and aux.idpersona = dl.idpersona ");
+		}		
 		sql.append(" and trunc(aux.fechadesigna) <= trunc(sysdate))) ");
 		if (fechaDesde != null && !fechaDesde.equals("")) {
 			extra.append(" and trunc(d.fechaentrada) >= :");
@@ -843,6 +841,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 						registro.put("DOMICILIO_LETRADO",(String)primerRegistroPersona.get("DOMICILIO_LETRADO"));
 						registro.put("CP_LETRADO",(String)primerRegistroPersona.get("CP_LETRADO"));
 						registro.put("POBLACION_LETRADO",(String)primerRegistroPersona.get("POBLACION_LETRADO"));
+						registro.put("PROVINCIA_LETRADO",(String)primerRegistroPersona.get("PROVINCIA_LETRADO"));
 					}
 					
 				}
@@ -1034,12 +1033,14 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 				" f_siga_calculoncolegiado(c.idinstitucion, c.idpersona) as NCOLEGIADO, "+
 				" DIR.Domicilio DOMICILIO_LETRADO, "+
 				" dir.codigopostal CP_LETRADO, "+
-				" nvl(dir.poblacionextranjera, pob.nombre) POBLACION_LETRADO "+
+				" nvl(dir.poblacionextranjera, pob.nombre) POBLACION_LETRADO, "+
+				" pROV.nombre PROVINCIA_LETRADO "+
 				" from cen_cliente c,cen_persona p, "+
   
 				" CEN_DIRECCIONES             DIR, "+
 				" CEN_DIRECCION_TIPODIRECCION TIP, "+
-				" CEN_POBLACIONES             pob "+
+				" CEN_POBLACIONES             pob, "+
+				" CEN_PROVINCIAS              prov"+
 				" where  "+
 				" p.idpersona = c.idpersona "+
 				" and dir.idpersona = c.idpersona "+
@@ -1048,6 +1049,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 				" and dir.idpersona = tip.idpersona "+
 				" and dir.iddireccion = tip.iddireccion "+
 				" and dir.idpoblacion = pob.IDPOBLACION(+) "+
+				" and dir.idprovincia = prov.IDPROVINCIA(+) "+
 				" and tip.idtipodireccion = 2 "+
   
 			" and dir.fechabaja is null "+

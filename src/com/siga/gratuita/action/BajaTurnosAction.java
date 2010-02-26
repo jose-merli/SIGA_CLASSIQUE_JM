@@ -32,6 +32,7 @@ import com.siga.beans.ScsTurnoBean;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.InscripcionTurno;
 import com.siga.gratuita.form.BajaTurnosForm;
 import com.siga.gratuita.form.DefinirTurnosForm;
 
@@ -41,6 +42,8 @@ import com.siga.gratuita.form.DefinirTurnosForm;
  */
 
 public class BajaTurnosAction extends MasterAction {
+
+	private CenColegiadoBean miForm;
 
 	/**
 	 * Esta clase se encarga de validar los turnos de los letrados
@@ -208,26 +211,9 @@ public class BajaTurnosAction extends MasterAction {
 				Integer IDPERSONA		= miForm.getIdPersona();
 				String  FECHASOLICITUD	= miForm.getFechaSolicitud();
 				
-
-//				if (miForm.getConfirmacion() == null || miForm.getConfirmacion().equals("") || miForm.getConfirmacion().equals("0")) {
-//					
-//					// Devuelve el nivel de error:
-//					//	  0: NO hay error
-//					//	  1: Error, tiene guardias pendientes
-//					//	  2: Error, tiene designas pendientes
-//					//	  3: Excepcion
-//					CenClienteAdm admCliente = new CenClienteAdm(this.getUserBean(request)); 
-//					int error = admCliente.tieneTrabajosSJCSPendientes(new Long(IDPERSONA.longValue()), IDINSTITUCION, IDTURNO);
-//					if (error == 1)
-//						request.setAttribute("mensajeConfirmacion", UtilidadesString.getMensajeIdioma(usr, "error.message.bajaTurno.guardiasPendientes"));
-//					else if (error == 2)
-//						request.setAttribute("mensajeConfirmacion", UtilidadesString.getMensajeIdioma(usr, "error.message.bajaTurno.designasPendientes"));
-//					else if (error == 3)
-//						throw new SIGAException (admCliente.getError());
-//					return "confirmacion";
-//				}
-				
-				if (this.comprobarGuardiasDesignasPendientes(miForm, request, new Long(""+IDPERSONA), IDINSTITUCION, IDTURNO)) {
+				if (this.comprobarGuardiasDesignasPendientes(
+						miForm.getConfirmacion(), request, usr, 
+						Long.valueOf(String.valueOf(IDPERSONA)), IDINSTITUCION, IDTURNO)) {
 					return "confirmacion";
 				}
 
@@ -431,257 +417,183 @@ public class BajaTurnosAction extends MasterAction {
 		} 
 		return forward;
 	}
-
-	/* (non-Javadoc)
-	 * @see com.siga.general.MasterAction#modificar(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	
+	/**
+	 * Ordena la baja en un turno de un colegiado
 	 */
-	protected String modificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		BajaTurnosForm miForm = (BajaTurnosForm) formulario;			
-		ScsInscripcionTurnoAdm scsInscripcionTurnoAdm = new ScsInscripcionTurnoAdm(this.getUserBean(request));
-				
-		Hashtable miHash = new Hashtable();
-		Hashtable backup = new Hashtable();
-		String forward = "";
+	protected String modificar (ActionMapping mapping,
+								MasterForm formulario,
+								HttpServletRequest request,
+								HttpServletResponse response)
+		throws SIGAException
+	{
 		UserTransaction tx = null;
-		UsrBean usr;
-
+		String forward = "";
+		
 		try {
-			usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			ScsInscripcionTurnoAdm insturno = new ScsInscripcionTurnoAdm(this.getUserBean(request));
-			// Cambiar posteriormente
-			String sql = "Select * from "+ScsInscripcionTurnoBean.T_NOMBRETABLA+
-						" where "+ScsInscripcionTurnoBean.T_NOMBRETABLA+"."+ScsInscripcionTurnoBean.C_IDINSTITUCION+" = "+miForm.getIdInstitucion()+
-						" and "+ScsInscripcionTurnoBean.T_NOMBRETABLA+"."+ScsInscripcionTurnoBean.C_IDPERSONA+" = "+miForm.getIdPersona()+
-						" and "+ScsInscripcionTurnoBean.T_NOMBRETABLA+"."+ScsInscripcionTurnoBean.C_FECHASOLICITUD+" = TO_DATE('"+miForm.getFechaSolicitud()+"','YYYY/MM/DD hh24:mi:ss')"+
-						" and "+ScsInscripcionTurnoBean.T_NOMBRETABLA+"."+ScsInscripcionTurnoBean.C_IDTURNO+" = "+miForm.getIdTurno();
-			Vector vTurno = insturno.selectTabla(sql);
-			backup 	= (Hashtable)((Hashtable) vTurno.get(0)).clone();
-			miHash  = (Hashtable) vTurno.get(0);
+			//Controles generales
+			BajaTurnosForm miForm = (BajaTurnosForm) formulario;			
+			UsrBean usr = this.getUserBean(request);
 			
-			tx=usr.getTransaction();
-			if (usr == null)
-					throw new SIGAException("Sesion no válida.");
-			// Campos clave															
-			// Campos a modificar
-			if(miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equals(""))
-			{
-				miHash.put(ScsInscripcionTurnoBean.C_FECHABAJA,GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaBaja()));			
-				miHash.put(ScsInscripcionTurnoBean.C_OBSERVACIONESBAJA,miForm.getObservacionesBaja());
-			}
-			if(miForm.getFechaSolicitudBaja()!=null && !miForm.getFechaSolicitudBaja().equals(""))
-			{
-				miHash.put(ScsInscripcionTurnoBean.C_FECHASOLICITUDBAJA,GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaSolicitudBaja()));			
-				miHash.put(ScsInscripcionTurnoBean.C_OBSERVACIONESBAJA,miForm.getObservacionesBaja());
-			}
-			//Se obtienen los registros de la tabla de guardias.
-			ScsInscripcionGuardiaAdm scsInscripcionGuardiaAdm = new ScsInscripcionGuardiaAdm(this.getUserBean(request));
-			sql = "Select * from "+ScsInscripcionGuardiaBean.T_NOMBRETABLA+
-			" where "+ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_IDINSTITUCION+" = "+miForm.getIdInstitucion()+
-			" and "+ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_IDPERSONA+" = "+miForm.getIdPersona()+
-			" and "+ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_IDTURNO+" = "+miForm.getIdTurno();
-			Vector vGuardia = scsInscripcionGuardiaAdm.ejecutaSelect(sql);
-			//UPDATE (INICIO TRANSACCION)
-            tx.begin();                 
-			if (scsInscripcionTurnoAdm.update(miHash,backup))
-			{
-				// Si se ha realizado una baja, se deben de borrar las guardias correspondiente.
-				// Si la baja está validada.
-				if(miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equals(""))
-				{
-					
-//					//////////////////////////////
-//					// OJO esta validacion ya se hace en la funcion ver u ya se pregutna si se quiero o no
-//					// Se ha quitado por ahora se puede dar de baja aunq tengas guardias y/o desginas pendientes
-					// ca-sjcs-015
-//					CenClienteAdm admCliente = new CenClienteAdm(this.getUserBean(request));
-//					
-//					//Si tiene Actuaciones ó Designas pendientes (FECHA_FIN>=SYSDATE).
-//					int error = admCliente.tieneTrabajosSJCSPendientes(new Long(""+miForm.getIdPersona()), miForm.getIdInstitucion(), miForm.getIdTurno());
-//					if (error == 1)
-//						throw new SIGAException("error.message.turnoGuardiasPendientes");
-//					else if (error == 2)
-//						throw new SIGAException("error.message.turnoDesignasPendientes");
-//					else if (error == 3)
-//						throw new SIGAException (admCliente.getError());
-//					//////////////////////////////
-
-					String[] claves = {ScsInscripcionGuardiaBean.C_IDTURNO,
-							ScsInscripcionGuardiaBean.C_IDINSTITUCION, 
-							ScsInscripcionGuardiaBean.C_IDPERSONA,
-							ScsInscripcionGuardiaBean.C_IDGUARDIA,
-							ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};
-					String[] campos = {ScsInscripcionGuardiaBean.C_FECHABAJA,
-							ScsInscripcionGuardiaBean.C_OBSERVACIONESBAJA}; 
-					for(int x=0;x<vGuardia.size();x++)
-					{
-						miHash	= new Hashtable();
-						miHash  = (Hashtable) vGuardia.get(x);
-						// A modificar*/
-						miHash.put(ScsInscripcionGuardiaBean.C_FECHABAJA,GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaBaja()));
-						miHash.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESBAJA,miForm.getObservacionesBaja());
-						// Damos de baja (logica) las guardias.
-						scsInscripcionGuardiaAdm.updateDirect(miHash,claves,campos);
-					}
-					
-					//  Aqui se da fecha de cumplimentacion a las compensaciones y saltos para que no se tengan en cuenta a la hora de asignar
-					 
-					ScsSaltosCompensacionesAdm admSaltosYCompensaciones = new ScsSaltosCompensacionesAdm(this.getUserBean(request));
-					Hashtable registro = new Hashtable();
-					UtilidadesHash.set(registro,ScsSaltosCompensacionesBean.C_IDINSTITUCION, miForm.getIdInstitucion());
-					UtilidadesHash.set(registro,ScsSaltosCompensacionesBean.C_IDTURNO, miForm.getIdTurno());
-					UtilidadesHash.set(registro,ScsSaltosCompensacionesBean.C_IDPERSONA, miForm.getIdPersona());
-					UtilidadesHash.set(registro,ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO, (String)miForm.getFechaBaja());
-					UtilidadesHash.set(registro,ScsSaltosCompensacionesBean.C_MOTIVOS, 
-							UtilidadesString.getMensajeIdioma(this.getUserBean(request), "gratuita.modalMantenimiento_SaltosYCompensaciones.literal.letradoBaja"));
-					admSaltosYCompensaciones.updateCompensacionesSaltos(registro);
-				}
-				
-				request.setAttribute("mensaje","messages.updated.success");
-			}
-			else
-			{
-				request.setAttribute("mensaje","messages.updated.error");
-			}
+			//Variables generales
+			Long idPersona = Long.valueOf(String.valueOf(miForm.getIdPersona()));
+			Integer idInstitucion = miForm.getIdInstitucion();
+			Integer idTurno = miForm.getIdTurno();
+			
+			//obteniendo parametros de baja
+			String fechaBaja = GstDate.getApplicationFormatDate(
+					usr.getLanguage(), miForm.getFechaBaja());
+			String fechaSolicitudBaja = GstDate.getApplicationFormatDate(
+				usr.getLanguage(), miForm.getFechaSolicitudBaja());
+			String observaciones = miForm.getObservacionesBaja();
+			String fechaSolicitud = miForm.getFechaSolicitud();
+			
+			//iniciando transaccion
+			tx = usr.getTransaction();
+	        tx.begin();
+	        
+	        //dando de baja el turno
+			InscripcionTurno inscripcion = InscripcionTurno.getInscripcionTurno(
+					idInstitucion, idTurno, idPersona, fechaSolicitud, usr, true);
+			inscripcion.solicitarBaja(fechaSolicitudBaja, observaciones, usr);
+			if (fechaBaja != null && !fechaBaja.equals(""))
+				inscripcion.validarBaja(fechaBaja, observaciones, usr);
+			
+			//finalizando transaccion
 			tx.commit();
+			
+			
+			//Lo siguiente hay que integrarlo en la baja de la guardia
+			//Y supongo que tambien en la baja del turno
+			//
+			//  Aqui se da fecha de cumplimentacion a las compensaciones y saltos para que no se tengan en cuenta a la hora de asignar
+			/*
+			ScsSaltosCompensacionesAdm admSaltosYCompensaciones = new ScsSaltosCompensacionesAdm(this.getUserBean(request));
+			Hashtable registro = new Hashtable();
+			UtilidadesHash.set(registro,ScsSaltosCompensacionesBean.C_IDINSTITUCION, miForm.getIdInstitucion());
+			UtilidadesHash.set(registro,ScsSaltosCompensacionesBean.C_IDTURNO, miForm.getIdTurno());
+			UtilidadesHash.set(registro,ScsSaltosCompensacionesBean.C_IDPERSONA, miForm.getIdPersona());
+			UtilidadesHash.set(registro,ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO, (String)miForm.getFechaBaja());
+			UtilidadesHash.set(registro,ScsSaltosCompensacionesBean.C_MOTIVOS, 
+					UtilidadesString.getMensajeIdioma(this.getUserBean(request), "gratuita.modalMantenimiento_SaltosYCompensaciones.literal.letradoBaja"));
+			admSaltosYCompensaciones.updateCompensacionesSaltos(registro);
+			*/
+			
 			forward = "exito";
 	        request.setAttribute("modal", "1");
-
-		} 
+		}
 		catch (Exception e) 
 		{
 			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 
 		} 
-
-		return forward;
-	}
-	
-	
-	private boolean comprobarGuardiasDesignasPendientes (ActionForm formulario, HttpServletRequest request, Long idPersona, Integer idInstitucion, Integer idTurno) throws SIGAException 
-	{
-		BajaTurnosForm miForm = (BajaTurnosForm) formulario; 
 		
-		if (miForm.getConfirmacion() == null || miForm.getConfirmacion().equals("") || miForm.getConfirmacion().equals("0")) {
+		return forward;
+		
+	} //modificar()
+	
+	/**
+	 * Ordena la baja en todos los turnos de un colegiado
+	 */
+	protected String solicitarBajaEnTodosLosTurnos (ActionForm formulario,
+													HttpServletRequest request)
+		throws SIGAException 
+	{
+		UserTransaction tx = null;
+		
+		try {
+			//Controles generales
+			UsrBean usr = this.getUserBean(request);
+			Integer idInstitucion = this.getIDInstitucion(request);
+			String idInstitucionStr = String.valueOf(idInstitucion);
+			String idPersonaStr = (String) request.getSession().getAttribute("idPersonaTurno");
+			Long idPersona = Long.valueOf(idPersonaStr);
 			
+			//obteniendo parametros de baja
+			String fechaBaja          = "SYSDATE";
+			String fechaSolicitudBaja = "SYSDATE";
+			String observaciones      = UtilidadesString.getMensajeIdioma(
+					usr, "censo.sjcs.turnos.bajaEnTodosLosTurnos.observacion.literal");
+			
+			//obteniendo los turnos
+			Vector vTurno = new ScsTurnoAdm(usr).getTurnosLetrado(idInstitucionStr, idPersonaStr);
+			if (vTurno == null) 
+				return "exito";
+			
+			//comprobando si hay alguna guardia pendiente, si hay alguna pendiente avisamos
+			for (int i = 0; i < vTurno.size(); i++) {
+				Hashtable turnoHash = (Hashtable) vTurno.get(i);
+				Integer idTurno = UtilidadesHash.getInteger(turnoHash, "IDTURNO");
+				if (this.comprobarGuardiasDesignasPendientes(
+						((BajaTurnosForm) formulario).getConfirmacion(), 
+						request, usr, idPersona, idInstitucion, idTurno)) {
+					return "confirmacion";
+				}
+			}
+			
+			//iniciando transaccion
+			tx = usr.getTransaction();
+	        tx.begin();                 
+	        
+	        //dando de baja todos los turnos
+	        InscripcionTurno inscripcion;
+			for (int i = 0; i < vTurno.size(); i++) {
+				Hashtable turnoHash = (Hashtable)vTurno.get(i);
+
+				inscripcion = InscripcionTurno.getInscripcionTurno(
+						idInstitucion, 
+						Integer.valueOf((String) turnoHash.get("IDTURNO")), 
+						idPersona, 
+						(String) turnoHash.get("FECHASOLICITUD"), 
+						usr, true);
+				inscripcion.solicitarBaja(fechaSolicitudBaja, observaciones, usr);
+				if (!UtilidadesString.stringToBoolean((String)turnoHash.get("VALIDARINSCRIPCIONES")))
+					inscripcion.validarBaja(fechaBaja, observaciones, usr);
+			} //for
+			
+			//finalizando transaccion
+			tx.commit();
+		}
+		catch (Exception e) 
+		{
+			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx);
+		}
+		
+		return this.exitoRefresco("messages.updated.success", request);
+		
+	} //solicitarBajaEnTodosLosTurnos()
+	
+	private boolean comprobarGuardiasDesignasPendientes (String confirmacion,
+														 HttpServletRequest request,
+														 UsrBean usr,
+														 Long idPersona,
+														 Integer idInstitucion,
+														 Integer idTurno)
+		throws SIGAException 
+	{
+		if (confirmacion == null || confirmacion.equals("") || confirmacion.equals("0")) {
 			// Devuelve el nivel de error:
 			//	  0: NO hay nada pendiente
 			//	  1: Error, tiene guardias pendientes
 			//	  2: Error, tiene designas pendientes
 			//	  3: Excepcion
-			CenClienteAdm admCliente = new CenClienteAdm(this.getUserBean(request)); 
-			int error = admCliente.tieneTrabajosSJCSPendientes(idPersona, idInstitucion, idTurno);
-			if (error == 1)
-				request.setAttribute("mensajeConfirmacion", UtilidadesString.getMensajeIdioma(this.getUserBean(request), "error.message.bajaTurno.guardiasPendientes"));
-			else if (error == 2)
-				request.setAttribute("mensajeConfirmacion", UtilidadesString.getMensajeIdioma(this.getUserBean(request), "error.message.bajaTurno.designasPendientes"));
-			else if (error == 3)
-				throw new SIGAException (admCliente.getError());
-			
-			return true;
+			CenClienteAdm admCliente = new CenClienteAdm(usr);
+			switch (admCliente.tieneTrabajosSJCSPendientes(
+					idPersona, idInstitucion, idTurno))
+			{
+				case 1: request.setAttribute("mensajeConfirmacion", 
+								UtilidadesString.getMensajeIdioma(usr, 
+										"error.message.bajaTurno.guardiasPendientes"));
+						return true;
+				case 2:	request.setAttribute("mensajeConfirmacion", 
+								UtilidadesString.getMensajeIdioma(usr, 
+										"error.message.bajaTurno.designasPendientes"));
+						return true;
+				case 3: throw new SIGAException(admCliente.getError());
+				default: return true;
+			}
 		}
-		return false; // No hay nada pendiete
-	}
-	
-	
-	protected String solicitarBajaEnTodosLosTurnos(ActionForm formulario, HttpServletRequest request) throws SIGAException 
-	{
-		UserTransaction tx = null;
 		
-		try { 
-			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
-			String idPersona = (String)request.getSession().getAttribute("idPersonaTurno");
-			String idInstitucion = ""+this.getIDInstitucion(request);
-
-			ScsTurnoAdm turnoAdm = new ScsTurnoAdm (usr);
-			Vector vTurno = turnoAdm.getTurnosLetrado (""+this.getIDInstitucion(request), "" +idPersona);
-
-			if (vTurno == null) 
-				return "exito";
-			
-			// Comprobamos si hay algo pendiente, si hay alguna pendiente avisamos
-			for (int i = 0; i < vTurno.size(); i++) {
-				Hashtable turnoHash = (Hashtable)vTurno.get(i);
-				Integer idTurno = UtilidadesHash.getInteger(turnoHash, "IDTURNO");
-				if (this.comprobarGuardiasDesignasPendientes(formulario, request, new Long(idPersona), new Integer(idInstitucion), idTurno)) {
-					return "confirmacion";
-				}
-			}
-			
-			String fechaBaja          = "", 
-				   fechaSolicitudBaja = "SYSDATE",
-				   observaciones      = UtilidadesString.getMensajeIdioma(usr, "censo.sjcs.turnos.bajaEnTodosLosTurnos.observacion.literal");
-			
-			ScsInscripcionTurnoAdm insturnoAdm = new ScsInscripcionTurnoAdm(this.getUserBean(request));
-
-			tx=usr.getTransaction();
-	        tx.begin();                 
-
-	        // Para todos los turnos en los que esta inscrito, los damos de baja
-			for (int i = 0; i < vTurno.size(); i++) {
-				Hashtable turnoHash = (Hashtable)vTurno.get(i);
-
-				// Si no hay que validar la baja establecemos la fecha como sysdate
-				if (!UtilidadesString.stringToBoolean((String)turnoHash.get("VALIDARINSCRIPCIONES")))
-					fechaBaja = "SYSDATE";
-				else
-					fechaBaja = "";
-				
-				// Actualizamos los datos de ScsInscripcionTurno
-				Hashtable a = new Hashtable ();
-				UtilidadesHash.set(a, ScsInscripcionTurnoBean.C_IDINSTITUCION, idInstitucion);
-				UtilidadesHash.set(a, ScsInscripcionTurnoBean.C_IDPERSONA, idPersona);
-				UtilidadesHash.set(a, ScsInscripcionTurnoBean.C_FECHASOLICITUD, (String)turnoHash.get("FECHASOLICITUD"));
-				UtilidadesHash.set(a, ScsInscripcionTurnoBean.C_IDTURNO, (String)turnoHash.get("IDTURNO"));
-				Vector v = insturnoAdm.select(a);
-				if (v != null && v.size() == 1) {
-					ScsInscripcionTurnoBean insTurnoBean = (ScsInscripcionTurnoBean) v.get(0);
-					
-					if(!fechaBaja.equals(""))
-						insTurnoBean.setFechaBaja(fechaBaja);			
+		return false; // No hay nada pendiente
+	} //comprobarGuardiasDesignasPendientes()
 	
-					if(!fechaSolicitudBaja.equals(""))
-						insTurnoBean.setFechaSolicitudBaja(fechaSolicitudBaja);			
-					
-					insTurnoBean.setObservacionesBaja(observaciones);
-					if (!insturnoAdm.update(insTurnoBean))
-						throw new SIGAException ("Error al hacer el update");
-
-				}
-
-				// Si se ha realizado una baja, se deben de borrar las guardias correspondiente.
-				// Si la baja está validada.
-				if(!fechaBaja.equals("")) {
-					
-					//Se obtienen todas las guardias del turno
-					ScsInscripcionGuardiaAdm scsInscripcionGuardiaAdm = new ScsInscripcionGuardiaAdm(this.getUserBean(request));
-
-					String[] claves = {ScsInscripcionGuardiaBean.C_IDTURNO, 	ScsInscripcionGuardiaBean.C_IDINSTITUCION, 
-										ScsInscripcionGuardiaBean.C_IDPERSONA,	ScsInscripcionGuardiaBean.C_IDGUARDIA,
-										ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};
-					String[] campos = {ScsInscripcionGuardiaBean.C_FECHABAJA, ScsInscripcionGuardiaBean.C_OBSERVACIONESBAJA};
-
-					Hashtable b = new Hashtable();
-					UtilidadesHash.set(b, ScsInscripcionGuardiaBean.C_IDINSTITUCION, idInstitucion);
-					UtilidadesHash.set(b, ScsInscripcionGuardiaBean.C_IDPERSONA, idPersona);
-					UtilidadesHash.set(b, ScsInscripcionGuardiaBean.C_IDTURNO, (String)turnoHash.get("IDTURNO"));
-					Vector vGuardia = scsInscripcionGuardiaAdm.select(b);
-	
-					
-					// Damos de baja (logica) las guardias.
-					for (int x = 0; x < vGuardia.size(); x++) {
-						ScsInscripcionGuardiaBean c = (ScsInscripcionGuardiaBean) vGuardia.get(x);
-						c.setFechaBaja(fechaBaja);
-						c.setObservacionesBaja(observaciones);
-						if(!scsInscripcionGuardiaAdm.updateDirect(c,claves,campos))
-							throw new SIGAException ("Error al hacer el update");
-					}
-				}
-			}
-			tx.commit();
-		}
-		catch (Exception e) 
-		{
-			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 
-		}
-		return this.exitoRefresco("messages.updated.success", request);
-	}
 }

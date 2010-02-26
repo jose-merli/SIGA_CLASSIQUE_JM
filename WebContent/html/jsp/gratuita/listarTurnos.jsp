@@ -156,8 +156,8 @@
 		
 		//Entrada desde el menu de  SJCS:
 		if (entrada.equalsIgnoreCase("1")){
-			nC="gratuita.definirTurnosIndex.literal.abreviatura,censo.SolicitudIncorporacion.literal.nombre,gratuita.definirTurnosIndex.literal.area,gratuita.definirTurnosIndex.literal.materia,gratuita.definirTurnosIndex.literal.zona,gratuita.definirTurnosIndex.literal.subzona,gratuita.definirTurnosIndex.literal.grupoFacturacion,";
-			tC="10,20,10,20,10,10,10,10";
+			nC="gratuita.definirTurnosIndex.literal.abreviatura,censo.SolicitudIncorporacion.literal.nombre,gratuita.definirTurnosIndex.literal.area,gratuita.definirTurnosIndex.literal.materia,gratuita.definirTurnosIndex.literal.zona,gratuita.definirTurnosIndex.literal.subzona,gratuita.definirTurnosIndex.literal.grupoFacturacion,gratuita.listarTurnos.literal.letradosInscritos,";
+			tC="10,20,10,14,10,10,10,5,10";
 			botones="C,E,B";
 			alto="253";}
 		//Entrada desde el menu de Censo:
@@ -278,6 +278,9 @@
 					<td ><%if (registro.get("FECHAVALIDACION")!=null){%>&nbsp;<%=GstDate.getFormatedDateShort("",(String)registro.get("FECHAVALIDACION"))%><%}else{%>&nbsp;<%}%>&nbsp;</td>
 					<td ><%if (registro.get("FECHABAJA")!=null){%>&nbsp;<%=GstDate.getFormatedDateShort("",(String)registro.get("FECHABAJA"))%><%}else{%>&nbsp;<%}%>&nbsp;</td>
 				<% } %>
+				<% if (entrada.equalsIgnoreCase("1")){%>
+			  		<td align="right"><%=registro.get("NLETRADOS")%>&nbsp;</td>
+			  	<%} %>
 				</siga:FilaConIconos>
 			<!-- FIN REGISTRO -->
 <%
@@ -316,6 +319,7 @@
 								<input type="checkbox" name="bajaLogica" onclick="incluirRegBajaLogica(this);">
 							<% } %>
 						</td>
+							
 					</tr>
 				</table>
 			</div>

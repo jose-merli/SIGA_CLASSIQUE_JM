@@ -64,6 +64,15 @@ import com.atos.utils.*;
 			e.printStackTrace();
 		}
 	}
+	public void setFechaEstadoColegial(String dato) 	{ 
+		try {
+			dato = GstDate.getApplicationFormatDate("",dato);
+			this.datos.put(CenSolicitudIncorporacionBean.C_FECHAESTADOCOLEGIAL, dato);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	public void setNatural(String dato) 	{ 
 		this.datos.put(CenSolicitudIncorporacionBean.C_NATURALDE, dato);
 	}
@@ -140,6 +149,9 @@ import com.atos.utils.*;
  	}
 	public String getFechaNacimiento() 	{ 
  		return (String)this.datos.get(CenSolicitudIncorporacionBean.C_FECHANACIMIENTO);
+ 	}
+	public String getFechaEstadoColegial() 	{ 
+ 		return (String)this.datos.get(CenSolicitudIncorporacionBean.C_FECHAESTADOCOLEGIAL);
  	}
 	public String getNatural		() 	{ 
  		return (String)this.datos.get(CenSolicitudIncorporacionBean.C_NATURALDE);

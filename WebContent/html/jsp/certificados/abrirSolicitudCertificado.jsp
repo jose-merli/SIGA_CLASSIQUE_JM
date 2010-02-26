@@ -21,6 +21,7 @@
 <%@ page import="com.atos.utils.UsrBean,java.util.*,com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.siga.beans.CenClienteAdm"%>
 <%@ page import="com.siga.beans.CenClienteBean"%>
+<%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
 
 <!-- JSP -->
 <%  
@@ -43,9 +44,12 @@
 	ArrayList aInstitucion = new ArrayList();
 	aInstitucion.add(idInstitucion);
 
+	ArrayList aMetodoSol = new ArrayList();
+	aMetodoSol.add(3);
+	
 	String buscar = UtilidadesString.getMensajeIdioma(userBean, "general.search");
 
-	
+	String fechaSolicitud = UtilidadesBDAdm.getFechaBD("");
 	String [] parametro = {userBean.getLocation(),userBean.getLocation()};
 	
 	String consultaOrigen, consultaDestino = "";
@@ -75,6 +79,9 @@
 		<!-- Validaciones en Cliente -->
 	<html:javascript formName="SolicitudCertificadoForm" staticJavascript="false" />  
 	<script src="<%=app%>/html/js/validacionStrutsWithHidden.js" type="text/javascript"></script>
+	
+	<!-- Para el calendario -->
+	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
@@ -190,6 +197,26 @@
 		</td>				
 		<td>
 			<html:text name="SolicitudCertificadoForm" property="descripcion" styleClass="box" size="130" maxlength="200"></html:text>
+		</td>
+	</tr>
+	
+	</table>
+		
+	<table class="tablaCampos" align="center">
+
+	<tr>	
+		<td class="labelText" width="120">
+			<siga:Idioma key="certificados.solicitudes.literal.fechaSolicitud"/>
+		</td>				
+		<td>
+			<siga:Fecha nombreCampo="fechaSolicitud" valorInicial="<%=fechaSolicitud%>"></siga:Fecha>
+			&nbsp;<a onClick="return showCalendarGeneral(fechaSolicitud);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+		</td>
+		<td class="labelText" width="120">
+			<siga:Idioma key="certificados.solicitudes.literal.metodoSolicitud"/>
+		</td>				
+		<td>
+			<siga:ComboBD nombre="metodoSolicitud" tipo="comboMetodoSolicitud" obligatorio="false" parametro="<%=parametro%>" ElementoSel="<%=aMetodoSol%>" clase="boxCombo"/>
 		</td>
 	</tr>
 	

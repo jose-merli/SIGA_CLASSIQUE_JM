@@ -912,6 +912,11 @@
       <required>false</required>
       <rtexprvalue>true</rtexprvalue> 
     </attribute>
+     <attribute>
+      <name>anchoTextField</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
   </tag>  
   
   

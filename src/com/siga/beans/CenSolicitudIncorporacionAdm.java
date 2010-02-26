@@ -38,7 +38,8 @@ public class CenSolicitudIncorporacionAdm extends MasterBeanAdministrador {
 							CenSolicitudIncorporacionBean.C_NOMBRE,					CenSolicitudIncorporacionBean.C_NUMEROIDENTIFICADOR,
 							CenSolicitudIncorporacionBean.C_OBSERVACIONES,			CenSolicitudIncorporacionBean.C_TELEFONO1,			
 							CenSolicitudIncorporacionBean.C_TELEFONO2,				CenSolicitudIncorporacionBean.C_SEXO,
-							CenSolicitudIncorporacionBean.C_IDMODALIDADDOCUMENTACION, CenSolicitudIncorporacionBean.C_USUMODIFICACION};
+							CenSolicitudIncorporacionBean.C_IDMODALIDADDOCUMENTACION, CenSolicitudIncorporacionBean.C_USUMODIFICACION,
+							CenSolicitudIncorporacionBean.C_FECHAESTADOCOLEGIAL};
 		return campos;
 	}
 
@@ -88,6 +89,7 @@ public class CenSolicitudIncorporacionAdm extends MasterBeanAdministrador {
 			bean.setSexo(UtilidadesHash.getString(hash, CenSolicitudIncorporacionBean.C_SEXO));
 			bean.setIdModalidadDocumentacion(UtilidadesHash.getInteger(hash, CenSolicitudIncorporacionBean.C_IDMODALIDADDOCUMENTACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash, CenSolicitudIncorporacionBean.C_USUMODIFICACION));
+			bean.setFechaEstadoColegial(UtilidadesHash.getString(hash, CenSolicitudIncorporacionBean.C_FECHAESTADOCOLEGIAL));
 		}
 		catch (Exception e) { 
 			bean = null;
@@ -137,6 +139,7 @@ public class CenSolicitudIncorporacionAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, CenSolicitudIncorporacionBean.C_SEXO, b.getSexo());
 			UtilidadesHash.set(htData, CenSolicitudIncorporacionBean.C_IDMODALIDADDOCUMENTACION, b.getIdModalidadDocumentacion());
 			UtilidadesHash.set(htData, CenSolicitudIncorporacionBean.C_USUMODIFICACION, String.valueOf(b.getUsuMod()));
+			UtilidadesHash.set(htData, CenSolicitudIncorporacionBean.C_FECHAESTADOCOLEGIAL, String.valueOf(b.getFechaEstadoColegial()));
 		}
 		catch (Exception e) {
 			htData = null;

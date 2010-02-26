@@ -10,12 +10,21 @@
 <%@ taglib uri="struts-html.tld" prefix="html"%>
 <%@ taglib uri="struts-logic.tld" prefix="logic"%>
 
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
+
 <%
-	String idInstitucion = (String) request
-			.getAttribute("idInstitucion");
+	String app=request.getContextPath();
+	String idInstitucion = (String) request.getAttribute("idInstitucion");
 	String idPersonaX = (String) request.getAttribute("idPersonaX");
 	String idBoton = (String) request.getAttribute("idBoton");
 	String paramInstitucion[] = { idInstitucion };
+	
+	String fechaSolicitud = UtilidadesBDAdm.getFechaBD("");
+	
+	ArrayList aMetodoSol = new ArrayList();
+	aMetodoSol.add(1);
+	
 %>
 
 
@@ -23,6 +32,8 @@
 <head>
 <link id="default" rel="stylesheet" type="text/css"
 	href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>">
+	<!-- Para el calendario -->
+	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 
 <script src="<html:rewrite page="/html/js/SIGA.js"/>"
 	type="text/javascript"></script>
@@ -39,7 +50,6 @@
 		<!-- Asociada al boton Aceptar -->
 		function accionAceptar()
 		{
-			
 			var aux3=document.forms[0].idProductoCertificado.value;
 			if(aux3=="")
 			{
@@ -49,6 +59,8 @@
 			}
 			var a = new Array;
 			a[0]=aux3;
+			a[1]=document.forms[0].fechaSolicitud.value;
+			a[2]=document.forms[0].metodoSolicitud.value;
 			top.cierraConParametros(a);
 		}
 		</script>
@@ -75,6 +87,23 @@
 		<td><siga:ComboBD nombre="idProductoCertificado"
 			tipo="cmbCertificadosOrdinadios" clase="boxCombo"
 			parametro="<%=paramInstitucion %>" obligatorio="true" /></td>
+	</tr>
+		<tr>	
+		<td class="labelText">
+			<siga:Idioma key="certificados.solicitudes.literal.fechaSolicitud"/>
+		</td>				
+		<td>
+			<siga:Fecha nombreCampo="fechaSolicitud" valorInicial="<%=fechaSolicitud%>"></siga:Fecha>
+			&nbsp;<a onClick="return showCalendarGeneral(fechaSolicitud);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+		</td>
+	</tr>
+	<tr>
+		<td class="labelText">
+			<siga:Idioma key="certificados.solicitudes.literal.metodoSolicitud"/>
+		</td>				
+		<td>
+			<siga:ComboBD nombre="metodoSolicitud" tipo="comboMetodoSolicitud" obligatorio="false" ElementoSel="<%=aMetodoSol%>" clase="boxCombo"/>
+		</td>
 	</tr>
 	
 	

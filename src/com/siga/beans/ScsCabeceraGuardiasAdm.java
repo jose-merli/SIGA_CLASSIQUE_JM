@@ -6,6 +6,7 @@ import java.util.Vector;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.ClsMngBBDD;
@@ -560,5 +561,139 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 		}
 		
 	}
+	
+	
+	/** 
+	 * Devuelve un registro con los datos del colegiado de guardia o de reserva.
+	 * 
+	 * @param Hashtable miHash: identificadores de busqueda de la tabla SCS_GUARDIASCOLEGIADO
+	 * @return String con la consulta SQL.
+	 * @throws ClsExceptions
+	 */	
+	public String getDatosColegiadoFormateadoNombre(Hashtable miHash) throws ClsExceptions{
+		String consulta = "";
+		String idinstitucion="", idguardia="", idturno="", idcalendarioguardias="", reserva="", idpersona="";
+		
+		try {
+			idinstitucion = (String)miHash.get(ScsCabeceraGuardiasBean.C_IDINSTITUCION);
+			idguardia = (String)miHash.get(ScsCabeceraGuardiasBean.C_IDGUARDIA);
+			idturno = (String)miHash.get(ScsCabeceraGuardiasBean.C_IDTURNO);
+			idcalendarioguardias = (String)miHash.get(ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS);
+			idpersona = (String)miHash.get(ScsCabeceraGuardiasBean.C_IDPERSONA);
+
+			consulta = "SELECT guard.* ,";
+			consulta += " perso."+CenPersonaBean.C_APELLIDOS1+" || ' ' || perso."+CenPersonaBean.C_APELLIDOS2+" || ', ' || perso."+CenPersonaBean.C_NOMBRE+" NOMBRE,";
+			consulta += " F_SIGA_CALCULONCOLEGIADO(guard.IDINSTITUCION, guard.IDPERSONA) as "+CenColegiadoBean.C_NCOLEGIADO;
+			//consulta += " coleg."+CenColegiadoBean.C_NCOLEGIADO;
+			consulta += " FROM "+ScsCabeceraGuardiasBean.T_NOMBRETABLA+" guard,";
+			consulta += CenPersonaBean.T_NOMBRETABLA+" perso ";
+			//consulta += CenColegiadoBean.T_NOMBRETABLA+" coleg";
+			consulta += " WHERE ";
+			consulta += " guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+"="+idpersona;
+			consulta += " AND guard."+ScsCabeceraGuardiasBean.C_IDINSTITUCION+"="+idinstitucion;
+			consulta += " AND guard."+ScsCabeceraGuardiasBean.C_IDTURNO+"="+idturno;
+			consulta += " AND guard."+ScsCabeceraGuardiasBean.C_IDGUARDIA+"="+idguardia;
+			consulta += " AND guard."+ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS+"="+idcalendarioguardias;
+			//JOIN
+			//consulta += " AND coleg."+CenColegiadoBean.C_IDPERSONA+"=guard."+ScsCabeceraGuardiasBean.C_IDPERSONA;
+			//consulta += " AND coleg."+CenColegiadoBean.C_IDINSTITUCION+"=guard."+ScsCabeceraGuardiasBean.C_IDINSTITUCION;
+			consulta += " AND perso."+CenPersonaBean.C_IDPERSONA+"=guard."+ScsCabeceraGuardiasBean.C_IDPERSONA;
+			//ORDEN
+			consulta += " ORDER BY guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO;
+		}
+		catch (Exception e){
+			throw new ClsExceptions(e,"Excepcion en ScsCabeceraGuardiasAdm.getDatosColegiado(). Consulta SQL:"+consulta);
+		}
+		
+		return consulta;
+	}
+	
+	public String getDatosSustituto(Hashtable miHash) throws ClsExceptions{
+		
+		
+		String consulta = "";
+		String idinstitucion="", idguardia="", idturno="", idcalendarioguardias="", reserva="", idpersona="";
+		String fechainicio="";
+		
+		try {
+			idinstitucion = (String)miHash.get(ScsCabeceraGuardiasBean.C_IDINSTITUCION);
+			idguardia = (String)miHash.get(ScsCabeceraGuardiasBean.C_IDGUARDIA);
+			idturno = (String)miHash.get(ScsCabeceraGuardiasBean.C_IDTURNO);
+			idcalendarioguardias = (String)miHash.get(ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS);
+			idpersona = (String)miHash.get(ScsCabeceraGuardiasBean.C_IDPERSONA);
+			fechainicio=(String)miHash.get(ScsCabeceraGuardiasBean.C_FECHA_INICIO);
+			consulta ="SELECT C.COMENSUSTITUCION as COMENSUSTITUCION,trunc(C.FECHASUSTITUCION) as FECHASUSTITUCION,C.LETRADOSUSTITUIDO as LETRADOSUSTITUIDO FROM SCS_CABECERAGUARDIAS C" +
+					  " WHERE IDPERSONA = "+idpersona+
+					  "   AND FECHAINICIO =" +
+					  "       TO_DATE('"+fechainicio+"', 'DD/MM/YYYY')" +
+					  "   AND IDGUARDIA = "+idguardia+
+					  "   AND IDTURNO = "+idturno+
+					  "   AND IDINSTITUCION ="+idinstitucion+
+					  "   and IDCALENDARIOGUARDIAS="+idcalendarioguardias+
+					  " ORDER BY IDINSTITUCION," +
+					  "          IDTURNO," +
+					  "          IDGUARDIA," +
+					  "          IDCALENDARIOGUARDIAS," +
+					  "          IDPERSONA," +
+					  "          FECHAINICIO";
+			}
+			catch (Exception e){
+				throw new ClsExceptions(e,"Excepcion en ScsCabeceraGuardiasAdm.getDatosColegiado(). Consulta SQL:"+consulta);
+			}
+	
+			return consulta;
+			
+			
+	
+		}
+	
+	  public String getnombresustituto(String sustituto,String idIstititucion) throws ClsExceptions{
+		  
+		  String consulta="";
+		  try{
+		   consulta="select p.apellidos1||' '||p.apellidos2||', '|| p.nombre as NOMBRE, decode(c.comunitario,'1',c.ncomunitario,c.ncolegiado) as NCOLEGIADOSUSTITUTO from cen_persona p, cen_colegiado c where p.idpersona='"+sustituto+"'";
+		   
+			 consulta+= "and p.idpersona=c.idpersona and c.idinstitucion="+idIstititucion;	
+		  }
+		  catch (Exception e){
+			  throw new ClsExceptions(e,"Excepcion en ScsCabeceraGuardiasAdm.getDatosColegiado(). Consulta SQL:"+consulta);
+			}
+	
+			return consulta;
+			  
+		  }
+	
+	  
+	  public String getRangopermutas(Hashtable miHash) throws ClsExceptions{
+			String consulta = "";
+			String idinstitucion="", idguardia="", idturno="", fechainicio="", idcalendarioguardias="", reserva="", idpersona="";
+			
+			try {
+				idinstitucion = (String)miHash.get(ScsCabeceraGuardiasBean.C_IDINSTITUCION);
+				idguardia = (String)miHash.get(ScsCabeceraGuardiasBean.C_IDGUARDIA);
+				idturno = (String)miHash.get(ScsCabeceraGuardiasBean.C_IDTURNO);
+				idcalendarioguardias = (String)miHash.get(ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS);
+				idpersona = (String)miHash.get(ScsCabeceraGuardiasBean.C_IDPERSONA);
+				fechainicio= (String)miHash.get(ScsCabeceraGuardiasBean.C_FECHA_INICIO);
+				consulta = "SELECT guard."+ ScsCabeceraGuardiasBean.C_FECHA_INICIO+","+ ScsCabeceraGuardiasBean.C_FECHA_FIN;
+				consulta += " FROM "+ScsCabeceraGuardiasBean.T_NOMBRETABLA+" guard";					
+				consulta += " WHERE ";
+				consulta += " guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+"="+idpersona;
+				consulta += " AND guard."+ScsCabeceraGuardiasBean.C_IDINSTITUCION+"="+idinstitucion;
+				consulta += " AND guard."+ScsCabeceraGuardiasBean.C_IDTURNO+"="+idturno;
+				consulta += " AND guard."+ScsCabeceraGuardiasBean.C_IDGUARDIA+"="+idguardia;
+				consulta += " AND guard."+ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS+"="+idcalendarioguardias;
+				consulta += " AND guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+"= TO_DATE('"+fechainicio+"','DD/MM/YYYY')";
+				
+
+				
+			}
+			catch (Exception e){
+				throw new ClsExceptions(e,"Excepcion en ScsCabeceraGuardiasAdm.getDatosColegiado(). Consulta SQL:"+consulta);
+			}
+			
+			return consulta;
+		}
+	
 	
 }

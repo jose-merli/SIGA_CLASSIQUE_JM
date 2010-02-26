@@ -488,7 +488,7 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 		return false;
 	}
 	
-	public Vector buscarComisiones (String idInstitucion, BusquedaComisionesForm formulario/* , String language*/) throws ClsExceptions , SIGAException 
+	public Vector buscarComisiones (BusquedaComisionesForm formulario/* , String language*/) throws ClsExceptions , SIGAException 
 	{
 			
 		Vector registros = null;
@@ -528,11 +528,15 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 				       "    t."+CenDatosCVBean.C_IDTIPOCV+","+
 				       "    t."+CenDatosCVBean.C_FECHAINICIO+","+
 				       "    t."+CenDatosCVBean.C_FECHAFIN+
-				       "  from "+CenDatosCVBean.T_NOMBRETABLA+" t"+
-				       "  WHERE T."+CenDatosCVBean.C_IDINSTITUCION+"="+idInstitucion+
-				       "    AND T."+CenDatosCVBean.C_IDTIPOCV+"="+ClsConstants.TIPOCV_COMISIONES+
-			           "    AND T."+CenDatosCVBean.C_FECHABAJA+" IS NULL "; 
-			    
+				       "  from "+CenDatosCVBean.T_NOMBRETABLA+" t "+
+			           " where T."+CenDatosCVBean.C_IDTIPOCV+"="+ClsConstants.TIPOCV_COMISIONES+ "" +
+			           "   AND T."+CenDatosCVBean.C_FECHABAJA+" IS NULL "; 
+			           // Aqui metemos el if institucion no vacio
+			           if((formulario.getIdInstitucion()!=null)&&(!formulario.getIdInstitucion().trim().equals(""))){
+			        	    select+= "  and T."+CenDatosCVBean.C_IDINSTITUCION+"="+formulario.getIdInstitucion();
+			           }   
+			 
+			 
 			    if (formulario.getComision()!=null && !formulario.getComision().equals("")){
 			    	String[] datosCVSubtipo1;
 					  datosCVSubtipo1=formulario.getComision().toString().split("@");

@@ -57,7 +57,18 @@
 			
 			function accionGuardar() 
 			{	
-				sub();	
+				sub();
+				//JTA Esto comentado funciona si se desea evitar que existan envios ordinarios sin plantilla definida
+				//var insTipoEnvio = document.EnviosDatosGeneralesForm.idTipoEnvio.value;
+				//if (insTipoEnvio=='2') {
+					// if (document.EnviosDatosGeneralesForm.idPlantillaGeneracion.value==""){
+						// var campo = '<siga:Idioma key="envios.definir.literal.plantillageneracion"/>';
+  						// var msg = "<siga:Idioma key="errors.required"  arg0=' " + campo + "'/>";
+						// alert (msg);
+						// fin();
+						// return false;					
+					// } 
+				//}
 				EnviosDatosGeneralesForm.modo.value="Grabar";
 				EnviosDatosGeneralesForm.submit();
 			}
@@ -161,7 +172,7 @@
 <body onLoad="recargarCombos();mensaje();">
 <html:javascript formName="EnviosDatosGeneralesForm" staticJavascript="false" />
 
-			<html:form action="/ENV_Datos_Generales.do" method="POST" target="submitArea">
+			<html:form action="/ENV_Datos_Generales" method="POST" target="submitArea">
 				<html:hidden property = "modo" value = ""/>
 				<html:hidden property = "accion" value = ""/>
 

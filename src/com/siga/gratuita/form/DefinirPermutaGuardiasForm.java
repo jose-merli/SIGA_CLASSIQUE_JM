@@ -47,10 +47,11 @@ import com.siga.general.MasterForm;
  	public void setIdCalendarioGuardias (String valor)				{ this.datos.put("IDCALENDARIOGUARDIAS",valor); 			}
  	public void setFechaInicio (String valor)						{ this.datos.put("FECHAINICIO",valor); 	 					}
  	public void setFechaFin (String valor)							{ this.datos.put("FECHAFIN",valor); 	 					}
- 	public void setSustituta (String valor)							{ this.datos.put("SUSTITUTA",valor); 	 					}
- 	
+ 	public void setSustituta (String valor)							{ this.datos.put("SUSTITUTA",valor); 	 					} 	
  	public void setNombreColegiadoPestanha (String valor)			{ this.datos.put("NOMBRECOLEGIADOPESTAÑA",valor); 	 		}
  	public void setNumeroColegiadoPestanha (String valor)			{ this.datos.put("NUMEROCOLEGIADOPESTAÑA",valor); 	 		}
+ 	public void setComenSustitucion (String valor)					{ this.datos.put("COMENSUSTITUCION",valor); 	 					}
+ 	
  	/*public void setFlagSalto (String valor)							{ this.datos.put("FLAGSALTO",valor);							}
  	public void setFlagCompensacion (String valor)					{ this.datos.put("FLAGCOMPENSACION",valor);					}
  	public void setCheckSalto (String valor)								{ this.datos.put("SALTO",valor);							}
@@ -94,6 +95,7 @@ import com.siga.general.MasterForm;
  	
  	public String getNombreColegiadoPestanha ()		{ return ((String)this.datos.get("NOMBRECOLEGIADOPESTAÑA"));			} 		
  	public String getNumeroColegiadoPestanha ()		{ return ((String)this.datos.get("NUMEROCOLEGIADOPESTAÑA")); 			}
+ 	public String getComenSustitucion ()	        { return ((String)this.datos.get("COMENSUSTITUCION"));					}
  	/*public String getFlagSalto ()					{ return ((String)this.datos.get("FLAGASALTO")); 							}
  	public String getFlagCompensacion ()			{ return ((String)this.datos.get("FLAGCOMPENSACION")); 							}
  	public String getCheckSalto ()					{ return ((String)this.datos.get("SALTO")); 							}

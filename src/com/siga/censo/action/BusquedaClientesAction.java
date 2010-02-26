@@ -866,7 +866,7 @@ public class BusquedaClientesAction extends MasterAction {
 				}
 			}
 			
-			
+			CenClienteAdm cliente = new CenClienteAdm(user);
 			HashMap databackup = (HashMap) miFormulario.getDatosPaginador();
 			if (databackup!=null && databackup.get("paginador")!=null &&!isSeleccionarTodos){ 
 				PaginadorBind paginador = (PaginadorBind)databackup.get("paginador");
@@ -881,14 +881,13 @@ public class BusquedaClientesAction extends MasterAction {
 						datos = paginador.obtenerPagina((paginador.getPaginaActual()));
 					}
 				}	
-
+				datos = cliente.getTelefonosPaginador(datos);
 				databackup.put("paginador",paginador);
 				databackup.put("datos",datos);
 
 			}else{	
 
 				databackup=new HashMap();
-				CenClienteAdm cliente = new CenClienteAdm(user);
 				 			
 				PaginadorBind resultado = null;
 				Vector datos = null;
@@ -920,7 +919,7 @@ public class BusquedaClientesAction extends MasterAction {
 						miFormulario.setRegistrosSeleccionados(new ArrayList());
 						datos = resultado.obtenerPagina(1);
 					}
-						
+					datos = cliente.getTelefonosPaginador(datos);
 					databackup.put("datos",datos);
 					
 					

@@ -32,7 +32,7 @@ public class EjecucionPLs {
 	 * @return
 	 * @throws SIGAException
 	 */
-	public static Double ejecutarPL_PagoTurnosOficio (Integer idInstitucion, Integer idPago, Integer usuario) throws SIGAException
+	public static String[] ejecutarPL_PagoTurnosOficio (Integer idInstitucion, Integer idPago, Integer usuario) throws SIGAException
 	{
 		try {
 			Object[] paramIn = new Object[3];
@@ -47,7 +47,7 @@ public class EjecucionPLs {
 	    		throw new ClsExceptions ("Ha ocurrido un error al ejecutar el Pago de Turnos de Justicia Gratuita."+
 	    				"\nError en PL = "+(String)resultado[3]);
 	    	}
-	    	return new Double(resultado[0]);
+	    	return resultado;
 	    	
 		}catch (Exception e) {
 			throw new SIGAException ("error.messages.application",e);
@@ -61,7 +61,7 @@ public class EjecucionPLs {
 	 * @return
 	 * @throws SIGAException
 	 */
-	public static Double ejecutarPL_PagoGuardias (Integer idInstitucion, Integer idFacturacion, Integer usuario) throws SIGAException
+	public static String[] ejecutarPL_PagoGuardias (Integer idInstitucion, Integer idFacturacion, Integer usuario) throws SIGAException
 	{
 		try {
 			Object[] paramIn = new Object[3];
@@ -76,7 +76,7 @@ public class EjecucionPLs {
 	    		throw new ClsExceptions ("Ha ocurrido un error al ejecutar el Pago de Guardias de Justicia Gratuita"+
 	    				"\nError en PL = "+(String)resultado[3]);
 	    	}
-	    	return new Double(resultado[0]);
+	    	return resultado;
 	    	
 		}catch (Exception e) {
 			throw new SIGAException ("error.messages.application",e);
@@ -90,7 +90,7 @@ public class EjecucionPLs {
 	 * @return
 	 * @throws SIGAException
 	 */
-	public static Double ejecutarPL_PagoEJG (Integer idInstitucion, Integer idFacturacion, Integer usuario) throws SIGAException
+	public static String[] ejecutarPL_PagoEJG (Integer idInstitucion, Integer idFacturacion, Integer usuario) throws SIGAException
 	{
 		try {
 			Object[] paramIn = new Object[3];
@@ -106,7 +106,7 @@ public class EjecucionPLs {
 	    				"\nError en PL = "+(String)resultado[3]);
 	    	}
 	   	
-	    	return new Double(resultado[0]);
+	    	return resultado;
 		}catch (Exception e) {
 			throw new SIGAException ("error.messages.application",e);
 		}
@@ -119,7 +119,7 @@ public class EjecucionPLs {
 	 * @return
 	 * @throws SIGAException
 	 */
-	public static Double ejecutarPL_PagoSOJ (Integer idInstitucion, Integer idFacturacion, Integer usuario) throws SIGAException
+	public static String[] ejecutarPL_PagoSOJ (Integer idInstitucion, Integer idFacturacion, Integer usuario) throws SIGAException
 	{
 		try {
 			Object[] paramIn = new Object[3];
@@ -135,7 +135,7 @@ public class EjecucionPLs {
 	    				"\nError en PL = "+(String)resultado[3]);
 	    	}
 	   	
-	    	return new Double(resultado[0]);
+	    	return resultado;
 		}catch (Exception e) {
 			throw new SIGAException ("error.messages.application",e);
 		}
@@ -512,6 +512,7 @@ public class EjecucionPLs {
 	    //Resultado del PL        
 	    return resultado;
 	}
+	
 	/**
 	 * PL que almacena los letrados para hacer guardias en una tabla temporal con un indice posicion + idinstitucion.
 	 * @param idInstitucion
@@ -520,33 +521,68 @@ public class EjecucionPLs {
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public static String[] ejecutarPL_OrdenaColegiadosGuardia (Integer idInstitucion, Integer idTurno, Integer idGuardia) {
-
+	public static String[] ejecutarPL_OrdenaColegiadosGuardia (Integer idInstitucion,
+															   Integer idTurno,
+															   Integer idGuardia,
+															   Integer conSaltComp)
+	{
 		Object[] paramIn = new Object[4]; //Parametros de entrada del PL
 		String resultado[] = new String[3]; //Parametros de salida del PL
-	
+		
 		try {
-	 		// Parametros de entrada del PL
+	 		//Parametros de entrada del PL
 	        paramIn[0] = idInstitucion.toString();
 	        paramIn[1] = idTurno.toString();
 	        paramIn[2] = idGuardia.toString();
-
-	        // RGG 05/09/2008 No aplica saltos y compensaciones. Lo hace el algoritmo. 
-	        //paramIn[3] = "1"; // con saltos y compensaciones
-	        paramIn[3] = "0"; // con saltos y compensaciones
-
-	        // Ejecucion del PL pkg_siga_ordenacion.ordena_colegiados_guardia:
-			resultado = ClsMngBBDD.callPLProcedure("{call  pkg_siga_ordenacion.ordena_colegiados_guardia (?,?,?,?,?,?,?)}", 
-													3, 
-													paramIn);
-		} catch (Exception e) {
+	        paramIn[3] = conSaltComp.toString(); // con saltos y compensaciones
+	        
+	        //Ejecucion del PL
+			resultado = ClsMngBBDD.callPLProcedure(
+					"{call  pkg_siga_ordenacion.ordena_colegiados_guardia (?,?,?,?,?,?,?)}", 
+					3, paramIn);
+		}
+		catch (Exception e) {
 			resultado[0] = "0"; 	// P_CONTADOR
 	    	resultado[1] = "ERROR"; // ERROR P_DATOSERROR
 	    	resultado[2] = "ERROR"; // ERROR P_DATOSERROR
 		}
-	    //Resultado del PL        
+		
 	    return resultado;
-	}
+	} //ejecutarPL_OrdenaColegiadosGuardia()
+	/**
+	 * PL que almacena los letrados para hacer guardias en una tabla temporal con un indice posicion + idinstitucion.
+	 * @param idInstitucion
+	 * @param idPersona
+	 * @param usuario
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public static String[] ejecutarPL_OrdenaColegiadosTurno (Integer idInstitucion,
+															 Integer idTurno,
+															 Integer conSaltComp)
+	{
+		Object[] paramIn = new Object[3]; //Parametros de entrada del PL
+		String resultado[] = new String[3]; //Parametros de salida del PL
+		
+		try {
+	 		//Parametros de entrada del PL
+	        paramIn[0] = idInstitucion.toString();
+	        paramIn[1] = idTurno.toString();
+	        paramIn[2] = conSaltComp.toString(); // con saltos y compensaciones
+	        
+	        //Ejecucion del PL
+			resultado = ClsMngBBDD.callPLProcedure(
+					"{call  pkg_siga_ordenacion.ordena_colegiados_turno (?,?,?,?,?,?)}", 
+					3, paramIn);
+		}
+		catch (Exception e) {
+			resultado[0] = "0"; 	// P_CONTADOR
+	    	resultado[1] = "ERROR"; // ERROR P_DATOSERROR
+	    	resultado[2] = "ERROR"; // ERROR P_DATOSERROR
+		}
+		
+	    return resultado;
+	} //ejecutarPL_OrdenaColegiadosTurno()
 	
 	public static String[] ejecutarPLExportarTurnosOficio(String idInstitucion, String idFacturacion,String idPago, String idPersona, String pathFichero, String fichero, String cabeceras, String idioma) throws ClsExceptions{
 		Object[] param_in; //Parametros de entrada del PL

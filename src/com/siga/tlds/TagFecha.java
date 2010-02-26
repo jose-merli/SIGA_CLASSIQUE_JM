@@ -27,6 +27,7 @@ public class TagFecha extends TagSupport {
 	
 	private String nombreCampo = ""; 
 	private String valorInicial = ""; 
+	private String anchoTextField = "";
     private String necesario = ""; // Si fuese necesario no puede llevar el valor "" 
     
 	public void setValorInicial(String valorInicial) {
@@ -142,7 +143,11 @@ public class TagFecha extends TagSupport {
 			out.println(""); // Linea vacia por legibilidad del codigo
 			out.println("<input type=\"text\" name=\"" + this.nombreCampo + "\" ");
 			// out.println("	property=\"" + this.nombreCampo + "\" ");
-			out.println("	size=\"11\" maxlength=\"10\" class=\"box\" ");
+			if(anchoTextField!=null && !anchoTextField.equals("")){
+				out.println("	size=\""+anchoTextField+"\""+" maxlength=\"10\" class=\"box\" ");
+			}else{
+				out.println("	size=\"10\" maxlength=\"10\" class=\"box\" ");
+			}
 			if ((this.valorInicial != "")&&(this.valorInicial != null)){
 				out.println("		alert(this.valorInicial); ");
 				out.println("	value=\"" + this.valorInicial + "\" ");
@@ -153,5 +158,11 @@ public class TagFecha extends TagSupport {
 			e.printStackTrace();
 		}
 		return EVAL_BODY_INCLUDE;	 	 	
+	}
+	public String getAnchoTextField() {
+		return anchoTextField;
+	}
+	public void setAnchoTextField(String anchoTextField) {
+		this.anchoTextField = anchoTextField;
 	}
 }

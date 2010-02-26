@@ -73,7 +73,7 @@
 				<table class="tablaCampos" align="center">
 					<tr>
 						<td class="labelText"><siga:Idioma
-							key="gratuita.operarDatosBeneficiario.literal.telefonoUso" />&nbsp;(*)
+							key="gratuita.operarDatosBeneficiario.literal.telefonoUso" />
 						</td>
 						<td><html:text name="DefinirTelefonosJGForm"
 							property="nombreTelefonoJG" size="20" styleClass="box" value=""></html:text>

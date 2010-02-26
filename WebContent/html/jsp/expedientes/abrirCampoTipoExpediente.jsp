@@ -266,7 +266,8 @@
 										<html:checkbox name="camposForm" property="estado" onclick="faviso();" value="true" disabled="<%=bLectura%>"/>
 									</td>
 								</tr>
-								<tr>
+								<tr style="display=none;">
+									<!-- No vale para nada asi que mejor no mostrarlo, tampoco lo quito no vaya a ser ... -->
 									<td id="titulo" class="labelText">
 										<siga:Idioma key="expedientes.auditoria.literal.institucion"/> : 				    
 									</td>

@@ -66,6 +66,7 @@
 	ArrayList arraySel= new ArrayList();
 	String seguro="";
 	String cuentaSJCS="";
+	String numMutualista="";
 	if (request.getAttribute("DATSEGURO") != null){	
 		Enumeration enumSel = ((Vector)request.getAttribute("DATSEGURO")).elements();	
 		while (enumSel.hasMoreElements())
@@ -457,7 +458,7 @@
 								<td class="labelText">
 										<siga:Idioma key="censo.consultaDatosColegiales.literal.cuentaSJCS"/>&nbsp;
 								</td>
-								 <td  colspan="3">
+								 	<td  colspan="1">
 										<% cuentaSJCS=datosCol.getCuentaContableSJCS(); 
 										  if (modo.equalsIgnoreCase("consulta")||modo.equalsIgnoreCase("ver")){ 
 										    if (cuentaSJCS.equalsIgnoreCase("")){ %>
@@ -466,10 +467,24 @@
 												<html:text property="cuentaContableSJCS" size="20" styleClass="boxConsulta" value="<%=cuentaSJCS%>" readOnly="true"></html:text>											
 									     <% } %>
 									  <% } else { %>
-											<html:text property="cuentaContableSJCS" size="20" styleClass="box" value="<%=cuentaSJCS%>" ></html:text>
+											<html:text property="cuentaContableSJCS" size="20" maxlength="20" styleClass="box" value="<%=cuentaSJCS%>" ></html:text>
 										<%}%>	
-										
-									</td>			
+									</td>
+									<td class="labelText">
+										<siga:Idioma key="censo.consultaDatosColegiales.literal.nMutualista"/>&nbsp;
+									</td>
+									<td  colspan="2">
+										<% numMutualista=datosCol.getNMutualista(); 
+										  if (modo.equalsIgnoreCase("consulta")||modo.equalsIgnoreCase("ver")){ 
+										  	if (numMutualista.equalsIgnoreCase("")){ %>
+												<html:text property="NMutualista" size="20" styleClass="boxConsulta" value="" readOnly="true"></html:text>
+										     <% }else{ %>
+												<html:text property="NMutualista" size="20" styleClass="boxConsulta" value="<%=numMutualista%>" readOnly="true"></html:text>											
+										     <% } %>
+									  	<%} else { %>
+											<html:text property="NMutualista" size="20" maxlength="20" styleClass="box" value="<%=numMutualista%>" ></html:text>
+										<%}%>	
+									</td>	
 								</tr>
 							</table>								
 						<% } %>																				

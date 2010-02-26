@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.GstDate;
 import com.atos.utils.ReadProperties;
@@ -604,6 +605,10 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 				" FROM  "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"   " +
 				" WHERE "+CenColegiadoBean.C_IDPERSONA+" = "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDPERSONA+"  " +
 				" AND "+CenColegiadoBean.C_IDINSTITUCION+"= "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDINSTITUCION+" AND CEN_DATOSCOLEGIALESESTADO.FECHAESTADO <= SYSDATE)) AS ESTADOCOLEGIAL, " +*/
+				//jbd
+			    //"   F_SIGA_GETDIRECCIONCLIENTE(CEN_CLIENTE.IDINSTITUCION, CEN_CLIENTE.IDPERSONA,2, 11) as TELEFONO," +
+			    //"   F_SIGA_GETDIRECCIONCLIENTE(CEN_CLIENTE.IDINSTITUCION, CEN_CLIENTE.IDPERSONA,2, 13) as MOVIL," +
+			       
 				" "+CenColegiadoBean.C_SITUACIONRESIDENTE+" ";
 				//" F_SIGA_ESLETRADO("+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+", "+idInstitucion+") LETRADO";
 			
@@ -3170,6 +3175,9 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 					
 						beanCol.setIdPersona(beanPer.getIdPersona());
 						beanCol.setIdInstitucion(beanSolic.getIdInstitucion());
+						// jbd 04-02-2010 Se pone por defecto la situacion de residente a TRUE en vez de false porque asi lo pide ciudad real
+						// jbd 15-02-2010 Se vuelve a poner a false porque el TRUE tiene implicaciones, se dan de alta servicios
+						//					Se volvera a cambiar para que se pueda modificar al solicitar el alta
 						beanCol.setSituacionResidente(ClsConstants.DB_FALSE);
 						
 						if (beanSolic.getIdTipoColegiacion().intValue()==ClsConstants.TIPO_COLEGIACION_COMUNITARIO) {
@@ -3203,6 +3211,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 						
 						// preparo el estado para insertar tambien los datosColegialesEstado
 						int idEstado;
+						String fechaEstadoCol= beanSolic.getFechaEstadoColegial();
 						if (beanSolic.getIdTipoSolicitud().intValue()==ClsConstants.TIPO_SOLICITUD_EJERCIENTE_INCORPORACION) {
 							idEstado = ClsConstants.ESTADO_COLEGIAL_EJERCIENTE;
 						} else {
@@ -3210,7 +3219,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 						}
 						
 						// insertamos un nuevo colegiado
-						if (!admCol.insertConEstado(beanCol,idEstado)) {
+						if (!admCol.insertConEstado(beanCol,idEstado,fechaEstadoCol)) {
 							throw new SIGAException(admCol.getError());
 						}
 //						 Lo borramos de no colegiado
@@ -3267,7 +3276,9 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 				//rellenando el bean de colegiado para insertar
 				beanCol.setIdPersona (beanPer.getIdPersona ());
 				beanCol.setIdInstitucion (beanSolic.getIdInstitucion ());
-				beanCol.setSituacionResidente (ClsConstants.DB_FALSE);
+				// jbd 15-02-2010 Se vuelve a poner a false porque el TRUE tiene implicaciones, se dan de alta servicios
+				//					Se volvera a cambiar para que se pueda modificar al solicitar el alta
+				beanCol.setSituacionResidente(ClsConstants.DB_FALSE);
 				
 				if (idTipoColegiacion == ClsConstants.TIPO_COLEGIACION_ESPANHOL)
 					beanCol.setComunitario (ClsConstants.DB_FALSE);
@@ -3302,13 +3313,14 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 				
 				// preparo el estado para insertar tambien los datosColegialesEstado
 				int idEstado;
+				String fechaEstadoCol= beanSolic.getFechaEstadoColegial();
 				if (tipoSolicitud == ClsConstants.TIPO_SOLICITUD_EJERCIENTE_INCORPORACION)
 					idEstado = ClsConstants.ESTADO_COLEGIAL_EJERCIENTE;
 				else
 					idEstado = ClsConstants.ESTADO_COLEGIAL_SINEJERCER;
 				
 				//insertando nuevo colegiado
-				if (! admCol.insertConEstado (beanCol, idEstado))
+				if (! admCol.insertConEstado (beanCol, idEstado, fechaEstadoCol))
 					throw new SIGAException (admCol.getError ());
 				
 				//borrando no colegiado
@@ -4503,5 +4515,42 @@ public class CenClienteAdm extends MasterBeanAdmVisible
        }
        return v;                        
 	}
+ 	
+ 	public Vector getTelefonosPaginador(Vector datos){
+ 		for (int i=0; i<datos.size(); i++){
+ 			Row row = (Row)datos.get(i);
+ 			String idInstitucion = (String)row.getRow().get(CenClienteBean.C_IDINSTITUCION);
+ 			String idPersona = (String)row.getRow().get(CenClienteBean.C_IDPERSONA);
+ 			
+ 			Object[] paramIn = new Object[4]; //Parametros de entrada del PL
+ 			String resultado[] = new String[1]; //Parametros de salida del PL
+ 			try {
+ 				// Parametros de entrada del PL
+ 				paramIn[0] = idInstitucion.toString();
+ 				paramIn[1] = idPersona.toString();
+ 				paramIn[2] = "2";
+ 				paramIn[3] = "11"; // telefono
+
+ 				resultado = ClsMngBBDD.callPLFunction("{? = call f_siga_getdireccioncliente(?,?,?,?)}",0,paramIn);
+ 				if (resultado != null && resultado[0]!=null){
+ 					row.setValue("TELEFONO", resultado[0]);
+ 				}else{
+ 					row.setValue("TELEFONO", "");
+ 				}
+
+ 				paramIn[3] = "13"; // movil
+ 				resultado = ClsMngBBDD.callPLFunction("{? = call f_siga_getdireccioncliente(?,?,?,?)}",0,paramIn);
+ 	 			if (resultado != null && resultado[0]!=null){
+ 					row.setValue("MOVIL", resultado[0]);
+ 				}else{
+ 					row.setValue("MOVIL", "");
+ 				}
+ 			
+ 			} catch (Exception e) {
+ 					System.out.println(e);
+ 			}
+ 		}
+ 		return datos;
+ 	}
 
 }

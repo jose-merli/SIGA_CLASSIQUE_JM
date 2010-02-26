@@ -70,6 +70,7 @@ import com.siga.envios.ZetaFax;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.SIGAException;
 import com.siga.informes.MasterWords;
+import com.sun.mail.smtp.SMTPAddressFailedException;
 
 
 public class EnvEnviosAdm extends MasterBeanAdministrador {
@@ -3367,6 +3368,35 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	}		
 }
 */
+	public String getPathDescargaEnviosOrdinarios(EnvEnviosBean envBean) throws ClsExceptions{
+		SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
+        Calendar cal = Calendar.getInstance();
+		Date dat;
+        try {
+            dat = sdf.parse(envBean.getFechaCreacion());
+            
+        } catch (ParseException e1) {
+        	dat = new Date();
+            //throw new ClsExceptions();
+        }
+        cal.setTime(dat);
+        String anio = String.valueOf(cal.get(Calendar.YEAR));
+        String mes = String.valueOf(cal.get(Calendar.MONTH)+1);
+        String dia = String.valueOf(cal.get(Calendar.DAY_OF_MONTH));
+
+        // Obtengo el pathFTP
+        String pathFTP = "";
+        GenParametrosAdm paramAdm = new GenParametrosAdm(this.usrbean);
+    	pathFTP = paramAdm.getValor(envBean.getIdInstitucion().toString(),"ENV","PATH_DESCARGA_ENVIOS_ORDINARIOS","");
+        
+        Date hoy = new Date();
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMMdd_HHmm");
+        String sHoy = sdf2.format(hoy);
+        
+        String pathDestino = pathFTP + File.separator + envBean.getIdInstitucion().toString() + File.separator + anio + File.separator + mes + File.separator + dia + File.separator + envBean.getIdEnvio().toString() + File.separator + sHoy + File.separator;
+		return pathDestino;
+		
+	}
 	
 	public String enviarCorreoOrdinario(EnvEnviosBean envBean, Vector vDestinatarios, Hashtable htErrores, boolean generarLog) 
 	throws SIGAException,ClsExceptions{
@@ -3383,37 +3413,16 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	            throw new ClsExceptions("Tipo de envío ordinario incorrecto");
 		    }
 	
-	        SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
-	        Calendar cal = Calendar.getInstance();
-			Date dat;
-	        try {
-	            dat = sdf.parse(envBean.getFechaCreacion());
-	            cal.setTime(dat);
-	        } catch (ParseException e1) {
-	            throw e1;
-	        }
-	        String anio = String.valueOf(cal.get(Calendar.YEAR));
-	        String mes = String.valueOf(cal.get(Calendar.MONTH)+1);
-	        String dia = String.valueOf(cal.get(Calendar.DAY_OF_MONTH));
-	
-	        // Obtengo el pathFTP
-	        String pathFTP = "";
-	        GenParametrosAdm paramAdm = new GenParametrosAdm(this.usrbean);
-	    	pathFTP = paramAdm.getValor(envBean.getIdInstitucion().toString(),"ENV","PATH_DESCARGA_ENVIOS_ORDINARIOS","");
-	        
-	        Date hoy = new Date();
-	        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMMdd_HHmm");
-	        String sHoy = sdf2.format(hoy);
-	        
-	        String pathDestino = pathFTP + File.separator + envBean.getIdInstitucion().toString() + File.separator + anio + File.separator + mes + File.separator + dia + File.separator + envBean.getIdEnvio().toString() + File.separator + sHoy + File.separator;  
+	          
 	        
 	        // PLANTILLA DE GENERACION
 	        /////////////////////////////////////
 	        // Obtenemos el archivo con la plantilla
-	       
+		    String pathDestino = getPathDescargaEnviosOrdinarios(envBean);
 	        		    
 	        // BUCLE DE DESTINATARIOS
 	        //////////////////////////////////
+		    boolean existePlantilla = false;
 	        if (vDestinatarios!=null){
 	        	//Obtenemos el tipo de archivo de la plantilla y el archivo de la plantilla
 	        	String tipoArchivoPlantilla = null;
@@ -3456,7 +3465,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	            	String pathArchivoGenerado = null;
 			        String sDirPdf = null;
 			        if (envBean.getIdPlantilla()!=null && fPlantilla!=null){
-			        	
+			        	existePlantilla = true;
 			        	EnvCamposEnviosAdm admCampos = new EnvCamposEnviosAdm(this.usrbean);            
 			            Vector vCampos = admCampos.obtenerCamposEnvios(destBean.getIdInstitucion().toString(), destBean.getIdEnvio().toString(), "");
 			            EnvEnviosAdm admEnvio = new EnvEnviosAdm(this.usrbean);
@@ -3471,6 +3480,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 				            throw e;
 				        }
 				    }else{
+				    	
 		        		throw new SIGAException("envios.definir.literal.errorAlmacenarEnvio");
 				    }
 			        
@@ -3571,8 +3581,15 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		    	    
 		    	    
 	            } catch (Exception e){
-	                errores = true;
+	            	errores = true;
 	                insertarMensajeLogHT(destBean, htErrores, e);
+	                if(e instanceof SIGAException){
+	                	
+	                	SIGAException sigaException = (SIGAException)e;
+	                	if(sigaException.getLiteral().equals("envios.definir.literal.errorAlmacenarEnvio"))
+	                		break;
+	                	
+	                }
 	            }
 	    	
 	        } // FOR
@@ -3593,7 +3610,14 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	        }
 	        
 	        if (generarLog) {
-	        	this.generarLogEnvioHT(vDestinatarios, htErrores, envBean);
+	        	if(existePlantilla)
+	        		this.generarLogEnvioHT(vDestinatarios, htErrores, envBean);
+	        	else{
+	        		Vector unicoDestinatario = new Vector();
+	        		if(vDestinatarios!=null && vDestinatarios.size()>0)
+	        			unicoDestinatario.add((EnvDestinatariosBean)vDestinatarios.get(0));
+	        		this.generarLogEnvioHT(unicoDestinatario, htErrores, envBean);
+	        	}
 	        }
 	
     	   
@@ -3612,9 +3636,10 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			throw e;
 	    } catch(Exception e){
 	        this.generarLogEnvioExceptionHT(envBean, e);
-	        throw new ClsExceptions(e,"Error general en evnío ordinario");
+	        throw new ClsExceptions(e,"Error general en envío ordinario");
 		}		
 	}
+	
 
 	/** 
 	 * Genera un documento PDF con las etiquetas relacionadas con los parametros pasados
@@ -4738,11 +4763,13 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		    	    //Transport.send(mensaje);
 		    	    tr.sendMessage(mensaje, mensaje.getAllRecipients());
 		    	    
+		    	    
 		    	    // RGG 08/06/2009 ESTADISTICA
 		    	    EnvEstatEnvioAdm admEstat = new EnvEstatEnvioAdm(this.usrbean);
 		    	    admEstat.insertarApunteExtra(envBean.getIdInstitucion(),envBean.getIdEnvio(),envBean.getIdTipoEnvios(),new Long(idPersona),sTo);
-
-		    	    
+	            }catch (SMTPAddressFailedException e){
+	                errores = true;
+	                insertarMensajeLogHT(destBean,htErrores, e);
 	            } catch (Exception e){
 	                errores = true;
 	                insertarMensajeLogHT(destBean,htErrores, e);

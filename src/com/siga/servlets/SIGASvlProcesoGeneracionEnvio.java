@@ -62,53 +62,8 @@ public class SIGASvlProcesoGeneracionEnvio extends HttpServlet {
 
    		try
    		{
-			ClsLogging.writeFileLogWithoutSession(" ---------- INICIO ENVIOS PROGRAMADOS DE PAGOS A COLEGIADOS ", 3);
-   			EnvProgramPagosAdm admProgramPagos = new EnvProgramPagosAdm(new UsrBean()); // Este usrbean esta controlado que no se necesita el valor
-               
-   			
-   			// Sacamos los datos de los datos programados pendientes(ClsConstants.DB_FALSE) de
-   			//todas las instituciones(null)
-   			Vector vPagosProgramados = admProgramPagos.getPagosProgramados(ClsConstants.DB_FALSE, null);
-   			
-   			InformeColegiadosPagos informePagosColegiado = null;
-   			if (vPagosProgramados!=null && vPagosProgramados.size()>0)
-   			{
-   				ClsLogging.writeFileLogWithoutSession(" ---------- ENVIOS PROGRAMADOS DE PAGOS PENDIENTES:"+vPagosProgramados.size(), 3);
-   				EnvProgramPagosBean programPagoBean = null;
-   				informePagosColegiado = new InformeColegiadosPagos();
-   				for (int i=0; i<vPagosProgramados.size(); i++)
-   				{
-   					
-   					try {
-   						programPagoBean = (EnvProgramPagosBean)vPagosProgramados.get(i);
-   	   					UsrBean usr = UsrBean.UsrBeanAutomatico(programPagoBean.getIdInstitucion().toString());
-   	   					informePagosColegiado.enviarPagoColegiado(usr, programPagoBean, programPagoBean.getEnvioProgramado());
-   	   					
-   	   					programPagoBean.setOriginalHash(admProgramPagos.beanToHashTable(programPagoBean));
-   	   					programPagoBean.setEstado(ClsConstants.DB_TRUE);
-   	   					
-   	   					admProgramPagos.update(programPagoBean);
-   	   					
-   	   					ClsLogging.writeFileLogWithoutSession(" ---------- OK ENVIO DE PAGOS PENDIENTES IDPERSONA: "+programPagoBean.getIdPersona(), 3);
-
-					} catch (Exception e) {
-						if(programPagoBean != null && programPagoBean.getIdInstitucion()!=null){
-							ClsLogging.writeFileLogWithoutSession(" ----------ERROR ENVIO DE PAGOS PENDIENTES IDINSTITUCION: "+programPagoBean.getIdInstitucion(), 3);
-							if(programPagoBean.getIdPersona()!=null)
-								ClsLogging.writeFileLogWithoutSession(" ----------ERROR ENVIO DE PAGOS PENDIENTES IDPERSONA: "+programPagoBean.getIdPersona(), 3);
-						}
-						else
-							ClsLogging.writeFileLogWithoutSession(" ---------- ERROR ENVIO DE PAGOS PENDIENTES.", 3);
-					}
-   				}
-   			}
-   	        
-   			ClsLogging.writeFileLogWithoutSession(" FIN ENVIOS PROGRAMADOS DE PAGOS A COLEGIADOS ", 3);
-   			ClsLogging.writeFileLogWithoutSession(" ---------- INICIO ENVIOS PROGRAMADOS DE CERTIFICADOS IRPF A COLEGIADOS ", 3);
-   			EnvProgramIRPFAdm admProgramiRPF = new EnvProgramIRPFAdm(new UsrBean()); // Este usrbean esta controlado que no se necesita el valor
-               
-   			
-   			// Sacamos los datos de los datos programados pendientes(ClsConstants.DB_FALSE) de
+			EnvProgramIRPFAdm admProgramiRPF = new EnvProgramIRPFAdm(new UsrBean()); // Este usrbean esta controlado que no se necesita el valor
+            // Sacamos los datos de los datos programados pendientes(ClsConstants.DB_FALSE) de
    			//todas las instituciones(null)
    			Vector vCertificadosIRPFProgramados = admProgramiRPF.getCertificadosIRPFProgramados(ClsConstants.DB_FALSE, null);
    			

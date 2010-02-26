@@ -21,7 +21,9 @@ import com.siga.general.MasterForm;
 	 * Metodos SET
 	 */
  	
-
+	 String anioCAJG;
+	 String numeroCAJG;
+	 
  	public void setRefAuto 					(String refAuto)					{ this.datos.put(ScsEJGBean.C_REFAUTO, refAuto);									}
 	/**
 	 * Almacena en la Hashtable el anho del EJG 
@@ -849,5 +851,17 @@ import com.siga.general.MasterForm;
 		 */
 		public void setUrlDocumentacionDS(String urlDocumentacionDS) {
 			this.urlDocumentacionDS = urlDocumentacionDS;
+		}
+		public String getNumeroCAJG() {
+			return numeroCAJG;
+		}
+		public void setNumeroCAJG(String numeroCAJG) {
+			this.numeroCAJG = numeroCAJG;
+		}
+		public String getAnioCAJG() {
+			return anioCAJG;
+		}
+		public void setAnioCAJG(String anioCAJG) {
+			this.anioCAJG = anioCAJG;
 		}
 }

@@ -393,7 +393,14 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 				consulta +=
 				"   and pag."+FcsPagosJGBean.C_IDINSTITUCION+" IN ("+CenVisibilidad.getVisibilidadInstitucion (idInstitucionLocation)+") ";
 			}
-			
+
+			//Busqueda por idpago:
+			String idpagosjg = (String) criterios.get ("idPagosjg");
+			if (idpagosjg!=null && !idpagosjg.trim().equals("")) {
+				consulta +=
+				"   and pag."+FcsPagosJGBean.C_IDPAGOSJG+" = "+idpagosjg;
+			}
+
 			//Busqueda por estado:
 			String idEstado = (String) criterios.get ("idEstado");
 			if (idEstado!=null && !idEstado.trim().equals("")) {
@@ -478,14 +485,10 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		consulta += " P."+FcsPagosJGBean.C_IDINSTITUCION+" = "+idInstitucion;
 		consulta += " AND P."+FcsPagosJGBean.C_IDFACTURACION+" = "+idFacturacion;		
 		consulta += " AND ( ";
-				consulta += " select pagos."+FcsPagosEstadosPagosBean.C_IDESTADOPAGOSJG;
-				consulta += " from "+FcsPagosEstadosPagosBean.T_NOMBRETABLA+" pagos ";
-				consulta += " where pagos."+FcsPagosEstadosPagosBean.C_FECHAESTADO+" = ( ";
-						consulta += " select max(e."+FcsPagosEstadosPagosBean.C_FECHAESTADO+")";
-						consulta += " from "+FcsPagosEstadosPagosBean.T_NOMBRETABLA+" e";
-						consulta += " where e."+FcsPagosEstadosPagosBean.C_IDINSTITUCION+" = P."+FcsPagosJGBean.C_IDINSTITUCION;
-						consulta += " and e."+FcsPagosEstadosPagosBean.C_IDPAGOSJG+" = P."+FcsPagosJGBean.C_IDPAGOSJG;
-						consulta += " ) ";
+		consulta += " select max(e."+FcsPagosEstadosPagosBean.C_IDESTADOPAGOSJG+")";
+		consulta += " from "+FcsPagosEstadosPagosBean.T_NOMBRETABLA+" e ";
+		consulta += " where e."+FcsPagosEstadosPagosBean.C_IDINSTITUCION+" = P."+FcsPagosJGBean.C_IDINSTITUCION;
+		consulta += " and e."+FcsPagosEstadosPagosBean.C_IDPAGOSJG+" = P."+FcsPagosJGBean.C_IDPAGOSJG;
 		consulta += " ) <> "+ClsConstants.ESTADO_PAGO_CERRADO;
 		
 		//Obtengo los datos del primer registro que es el de fecha estado más reciente:
@@ -801,7 +804,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		return this.getImportePendienteGenerico(idInstitucion, idFacturacion, FcsPagosJGBean.C_IMPORTEEJG);
 	}
 	
-	public String getQueryDetallePago (MantenimientoInformesForm form,
+	private String getQueryDetallePago (MantenimientoInformesForm form,
 									   String idInstitucion, Hashtable codigos) 
 	{
 		//Variables
@@ -823,7 +826,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		}
 		
 		//Obtiene la consulta base
-		sql += getQueryDetallePagoColegiado(idInstitucion, form.getIdPago());
+		sql += getQueryDetallePagoColegiadoPaginador(idInstitucion, form.getIdPago(),null);
 
 		// no se genera carta de pagos si no tiene pagos de SJCS
 		sql += ") WHERE totalImporteSJCS > 0 ";
@@ -926,9 +929,9 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 	 * @param idPagosJg si es null se obtienen los datos de todos los pagos de la institucion.
 	 * @return
 	 */
-	public String getQueryDetallePagoColegiado (String idInstitucion, String idPagosJg) 
+	public String getQueryDetallePagoColegiado (String idInstitucion, String idPagosJg, boolean irpf) 
 	{
-		return getQueryDetallePagoColegiado(idInstitucion, idPagosJg, null);
+		return getQueryDetallePagoColegiado(idInstitucion, idPagosJg, null, irpf);
 	}	
 
 	/**
@@ -937,29 +940,52 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 	 * @param idPagosJg si es null se obtienen los datos de todos los pagos de la institucion.
 	 * @return
 	 */
-	public String getQueryDetallePagoColegiado (String idInstitucion, String idPagosJg, String idPersona) 
+	public String getQueryDetallePagoColegiado(String idInstitucion, String idPagosJg, String idPersona, boolean irpf) 
 	{
 		StringBuffer sql = new StringBuffer();
 
-		sql.append("select IDPERORIGEN as idpersonaSJCS,");
+		if (irpf)
+			sql.append("select decode(idperdestino,null,idperorigen,idperdestino) as idpersonaSJCS,");
+		else
+			sql.append("select IDPERORIGEN as idpersonaSJCS,");
 		sql.append(" idpagosjg as idpagos, ");		
 		sql.append(" sum(impOficio + impAsistencia + impEJG + impSOJ) as totalImporteSJCS,");
 		sql.append(" sum(impRet) as importeTotalRetenciones,");
 		sql.append(" sum(impMovVar) as importeTotalMovimientos,");
 		// jbd (1.41) Añadido round para que no haya incongruencias
 		sql.append(" -1*round(abs(sum(impOficio + impAsistencia + impEJG + impSOJ + impMovVar) * max(impirpf) / 100),2) as TOTALIMPORTEIRPF");
+		sql.append(" ,idinstitucion ");
 		sql.append(" from FCS_PAGO_COLEGIADO");
 		sql.append(" where IDINSTITUCION = ");	sql.append(idInstitucion);
 		sql.append(" and IDPAGOSJG = nvl("+idPagosJg+", IDPAGOSJG)");
 		sql.append(" and IDPERORIGEN = nvl("+idPersona+", IDPERORIGEN)");
-		sql.append(" group by IDPERORIGEN, IDPAGOSJG ");	
+		if (irpf)
+			sql.append(" and impirpf > 0 ");
+		sql.append(" group by IDPERORIGEN, IDPERDESTINO, IDPAGOSJG,IDINSTITUCION ");	
 
 		return sql.toString();
 	} 
+	
+	public String getQueryDetallePagoColegiadoPaginador(String idInstitucion, String idPagosJg, String idPersona) 
+	{
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT pagoAColegiados.*, ");
+		sql.append(" f_siga_calculoncolegiado(pagoAColegiados.idinstitucion, ");
+		sql.append(" pagoAColegiados.idpersonaSJCS) as NCOLEGIADO, ");
+		sql.append(" (select p.apellidos1 || ' ' || p.apellidos2 || ', ' || p.nombre ");
+	        
+		sql.append(" from cen_persona p, cen_cliente c ");
+		sql.append(" where p.idpersona = c.idpersona ");
+		sql.append(" and c.idinstitucion = pagoAColegiados.idinstitucion ");
+		sql.append(" and c.idpersona = pagoAColegiados.idpersonaSJCS)  as NOMBRE ");
+		sql.append(" FROM ( ");
+	        
+		sql.append(getQueryDetallePagoColegiado(idInstitucion, idPagosJg, idPersona, false));
 
+		sql.append(") pagoAColegiados ");
 
-
-
+		return sql.toString();
+	}
 	
 	public PaginadorCaseSensitiveBind  getPaginadorDetallePago(MantenimientoInformesForm form,String idInstitucion) throws ClsExceptions
 	{
@@ -1011,7 +1037,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 	throws ClsExceptions , Exception{
 		String sql = null;
 		try {
-			sql = getQueryDetallePagoColegiado(idInstitucion.toString(),idPago.toString());
+			sql = getQueryDetallePagoColegiado(idInstitucion.toString(),idPago.toString(),false);
 			
 			return selectGenerico(sql);
 		}
@@ -1056,7 +1082,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		consulta.append(" AND F.IDINSTITUCION = P.IDINSTITUCION");
 		consulta.append(" AND F.IDFACTURACION = P.IDFACTURACION");
 		if (sinPagosAbiertos){
-			consulta.append(" AND (SELECT max(ep.idestadopagosjg) FROM FCS_PAGOS_ESTADOSPAGOS EP WHERE EP.IDINSTITUCION = EP.idinstitucion AND EP.IDPAGOSJG = p.idpagosjg) > 10");
+			consulta.append(" AND (SELECT max(ep.idestadopagosjg) FROM FCS_PAGOS_ESTADOSPAGOS EP WHERE EP.IDINSTITUCION = "+idInstitucion.toString()+" AND EP.IDPAGOSJG = p.idpagosjg) > 10");
 		}
 		consulta.append(" ) aux");
 		

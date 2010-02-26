@@ -18,6 +18,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.Articulo;
 import com.siga.general.SIGAException;
 
@@ -58,7 +59,9 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 				PysProductosSolicitadosBean.C_IDDIRECCION,
 				PysProductosSolicitadosBean.C_FECHAMODIFICACION,
 				PysProductosSolicitadosBean.C_NOFACTURABLE,
-				PysProductosSolicitadosBean.C_USUMODIFICACION};
+				PysProductosSolicitadosBean.C_USUMODIFICACION,
+				PysProductosSolicitadosBean.C_METODOSOLICITUD,
+				PysProductosSolicitadosBean.C_FECHASOLICITUD};
 		return campos;
 	}
 
@@ -107,6 +110,8 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 			bean.setIdTipoEnvios(UtilidadesHash.getInteger(hash,PysProductosSolicitadosBean.C_IDTIPOENVIOS));
 			bean.setIdDireccion(UtilidadesHash.getLong(hash,PysProductosSolicitadosBean.C_IDDIRECCION));
 			bean.setFechaMod(UtilidadesHash.getString(hash,PysProductosSolicitadosBean.C_FECHAMODIFICACION));
+			bean.setMetodoSolicitud(UtilidadesHash.getInteger(hash,PysProductosSolicitadosBean.C_METODOSOLICITUD));
+			bean.setFechaSolicitud(UtilidadesHash.getString(hash,PysProductosSolicitadosBean.C_FECHASOLICITUD));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,PysProductosSolicitadosBean.C_USUMODIFICACION));
 			bean.setNoFacturable(UtilidadesHash.getString(hash,PysProductosSolicitadosBean.C_NOFACTURABLE));
 		}
@@ -143,6 +148,8 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDTIPOENVIOS, b.getIdTipoEnvios());
 			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDDIRECCION, b.getIdDireccion());
 			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_FECHAMODIFICACION, b.getFechaMod());
+			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_METODOSOLICITUD, b.getMetodoSolicitud());
+			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_FECHASOLICITUD, b.getFechaSolicitud());
 			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_USUMODIFICACION, b.getUsuMod());
 			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_NOFACTURABLE, b.getNoFacturable());
 		}
@@ -874,9 +881,10 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 	 * @param idPersona - identificador de la persona para la que se realiza la peticion 
 	 * @param usuario - identificador del usuario que realiza la peticion  
 	 * @return  Hashtable  contiene todos los datos sobre el producto que se ha insertado
+	 * @throws Exception 
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
-	public Hashtable insertProducto(Articulo a, Long idPeticion, Integer idInstitucionPresentador, Long idPersona) throws ClsExceptions {
+	public Hashtable insertProducto(Articulo a, Long idPeticion, Integer idInstitucionPresentador, Long idPersona) throws Exception {
 		Hashtable hash = new Hashtable();
 		PysProductosSolicitadosAdm adm = new PysProductosSolicitadosAdm(this.usrbean);
 		
@@ -907,8 +915,17 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 		}else{
 			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_NOFACTURABLE, "1");
 		}
-		
-		
+		if(a.getFechaSolicitud()!=null){
+			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_FECHASOLICITUD, UtilidadesString.formatoFecha(a.getFechaSolicitud(),"dd/MM/yyyy","yyyy/MM/dd hh:mm:ss"));
+		}else{
+			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_FECHASOLICITUD, "SYSDATE");
+		}
+		if(a.getMetodoSolicitud()!=null){
+			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_METODOSOLICITUD, a.getMetodoSolicitud());
+		}else{
+			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_METODOSOLICITUD, "");
+		}
+	
 		try {
 			if(adm.insert(hash)){
 				UtilidadesHash.set(hash, "DESCRIPCION_ARTICULO", a.getIdArticuloInstitucionDescripcion());	

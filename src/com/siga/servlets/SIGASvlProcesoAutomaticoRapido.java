@@ -35,7 +35,6 @@ public class SIGASvlProcesoAutomaticoRapido extends SIGAServletAdapter implement
 	private long lIntervalo = 1;
 	static private String sNombreProceso = "ProcesoAutomaticoRapido";
     private String urlSiga = "";
-    //static final public String procesoRapidoAutomatico = "procesoRapidoAutomatico";
     static final public String procesoRapido = "SIGASvlProcesoRapido";
     static final public String procesoGeneracionEnvio = "SIGASvlProcesoGeneracionEnvio";
     
@@ -43,13 +42,10 @@ public class SIGASvlProcesoAutomaticoRapido extends SIGAServletAdapter implement
 	public void init() throws ServletException {
 		super.init();
 
-		//ClsLogging.writeFileLogWithoutSession("", 3);
-		//ClsLogging.writeFileLogWithoutSession("", 3);
 		ClsLogging.writeFileLogWithoutSession("<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>", 3);
 		ClsLogging.writeFileLogWithoutSession(" Arrancando Notificaciones JMX.", 3);
 
 	    ReadProperties properties= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//		ReadProperties properties=new ReadProperties("SIGA.properties");
 		String sIntervaloAux = properties.returnProperty("facturacion.procesoRapido.tiempo.ciclo");
 		String sIntervalo = sIntervaloAux;
 
@@ -61,12 +57,14 @@ public class SIGASvlProcesoAutomaticoRapido extends SIGAServletAdapter implement
 		{
 			sIntervalo="0";
 		}
-
+		
 		if (sIntervalo.equals("0"))
 		{
-			ClsLogging.writeFileLogWithoutSession("    - Notificación \"" + sNombreProceso + "\" no arrancada.", 3);
+			ClsLogging.writeFileLogWithoutSession("    - Notificación \"" +
+					"" + sNombreProceso + "\" no arrancada. " +
+					"(Este proceso no requiere ser arrancado: requiere llamada directa desde la interfaz)", 3);
 		}
-
+		
 		else
 		{
 			//Al ser este un proceso automático "rápido" el intervalo se define como segundos
@@ -84,8 +82,6 @@ public class SIGASvlProcesoAutomaticoRapido extends SIGAServletAdapter implement
 
 		ClsLogging.writeFileLogWithoutSession(" Notificaciones JMX arrancadas.", 3);
 		ClsLogging.writeFileLogWithoutSession("<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>", 3);
-		//ClsLogging.writeFileLogWithoutSession("", 3);
-		//ClsLogging.writeFileLogWithoutSession("", 3);  	
 	}
 
 	/* (non-Javadoc)

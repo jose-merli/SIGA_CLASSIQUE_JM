@@ -32,7 +32,10 @@
 
 <!-- JSP -->
 <% 
-	String volver = request.getAttribute("volver")==null?"NO":(String)request.getAttribute("volver");
+	
+ActionMapping actionMapping = (ActionMapping)request.getAttribute("org.apache.struts.action.mapping.instance");
+String path = actionMapping.getPath();
+String volver = request.getAttribute("volver")==null?"NO":(String)request.getAttribute("volver");
 
 	String fecha="";
 	String app=request.getContextPath();
@@ -95,6 +98,7 @@
 
 %>	
 
+<%@page import="org.apache.struts.action.ActionMapping"%>
 <html>
 
 	<!-- HEAD -->
@@ -134,7 +138,7 @@
 
 	<body class="tablaCentralCampos">
 		
-		<html:form action="/FAC_AbonosLineas.do" method="POST" target="submitArea" style="display:none">
+		<html:form action="<%=path%>" method="POST" target="submitArea" style="display:none">
 				<html:hidden property ="modo" value = ""/>
 				<html:hidden property="idAbono" value="<%=idAbono%>"/> 				
 				<html:hidden property="idInstitucion" value="<%=idInstitucion%>"/>	

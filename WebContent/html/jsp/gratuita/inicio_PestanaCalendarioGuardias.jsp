@@ -377,7 +377,7 @@
 			document.forms[1].modo.value = "ver";
 			document.forms[1].accion.value = "modalConsultaCenso";
 			document.forms[1].submit();
-			var salida = ventaModalGeneral(document.forms[1].name,"P"); 			
+			var salida = ventaModalGeneral(document.forms[1].name,"M"); 			
 			if (salida == "MODIFICADO") 
 				windows.close();	
 		}

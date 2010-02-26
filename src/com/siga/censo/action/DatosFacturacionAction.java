@@ -1237,10 +1237,11 @@ public class DatosFacturacionAction extends MasterAction {
 				Hashtable criterios = new Hashtable();
 				criterios.put(PysServiciosSolicitadosBean.C_IDPERSONA,miform.getIdPersona());
 				criterios.put(PysPeticionCompraSuscripcionBean.C_TIPOPETICION,ClsConstants.TIPO_PETICION_COMPRA_ALTA);
-				if (!bIncluirRegistrosConBajaLogica){
+				// inc-6529 Los servicios deben salir todos, no solo 2 años
+				/*if (!bIncluirRegistrosConBajaLogica){
 				criterios.put("FECHA_DESDE", "SYSDATE-730"); // HACE DOS AÑO
 				criterios.put("FECHA_HASTA", "SYSDATE+1");
-				}
+				}*/
 				request.setAttribute("bIncluirRegistrosConBajaLogica", "" + bIncluirRegistrosConBajaLogica);
 				
 				if (!bIncluirRegistrosConBajaLogica){

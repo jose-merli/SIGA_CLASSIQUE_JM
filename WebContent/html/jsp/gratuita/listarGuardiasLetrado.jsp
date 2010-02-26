@@ -212,7 +212,7 @@
 			document.forms[0].modo.value = "sustituir";
 			//document.forms[0].target = "_blank";
 			//document.forms[0].submit();
-			var salida = ventaModalGeneral(document.forms[0].name,"P"); 			
+			var salida = ventaModalGeneral(document.forms[0].name,"M"); 			
 			if (salida == "MODIFICADO") 
 				refrescarLocal();			
 		}

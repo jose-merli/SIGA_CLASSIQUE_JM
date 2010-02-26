@@ -12,6 +12,7 @@ import java.util.Vector;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
@@ -19,6 +20,7 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.general.EjecucionPLs;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.vos.VolantesExpressVo;
 
@@ -1194,37 +1196,37 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 	public Vector selectLetradosEnCola (String institucion, String turno, String guardia)
 	{
 		Vector vResult = null;
-		//Parametros de entrada del PL
-		Object[] param_in = new Object[]{institucion,turno,guardia,"0"};// sin saltos ni compensaciones
-		String resultadoPl[] = new String[3];
-		try{
-			
+		try
+		{
 			//Ejecucion del PL
-			resultadoPl = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_ORDENACION.ORDENA_COLEGIADOS_GUARDIA (?,?,?,?,?,?,?)}", 3, param_in);
+			String [] resultadoPl = EjecucionPLs.ejecutarPL_OrdenaColegiadosGuardia (
+					Integer.valueOf(institucion), Integer.valueOf(turno),
+					Integer.valueOf(guardia), new Integer(0));
 			//Resultado del PL
 			String contador = resultadoPl[0];
 			
 			//Consulta en la tabla temporal la posicion para el letrado
 			String consultaTemp =
-				"select "+
-				"T."+GenClientesTemporalBean.C_IDPERSONA+", "+
-				"decode(C."+CenColegiadoBean.C_COMUNITARIO+",'"+ClsConstants.DB_TRUE+"',"+"C."+CenColegiadoBean.C_NCOMUNITARIO+","+CenColegiadoBean.C_NCOLEGIADO+") "+CenColegiadoBean.C_NCOLEGIADO+", "+
-				"P."+CenPersonaBean.C_IDPERSONA+", "+
-				"P."+CenPersonaBean.C_NOMBRE+", "+
-				"P."+CenPersonaBean.C_APELLIDOS1+", "+
-				"P."+CenPersonaBean.C_APELLIDOS2+
-				" from "+
-				GenClientesTemporalBean.T_NOMBRETABLA+" T, "+
-				CenColegiadoBean.T_NOMBRETABLA+" C, "+
-				CenPersonaBean.T_NOMBRETABLA+" P "+
-				" where "+
-				"T."+GenClientesTemporalBean.C_IDINSTITUCION+"=C."+CenColegiadoBean.C_IDINSTITUCION+" and "+
-				"T."+GenClientesTemporalBean.C_IDPERSONA+"=C."+CenColegiadoBean.C_IDPERSONA+" and "+
-				"T."+GenClientesTemporalBean.C_IDPERSONA+"=P."+CenPersonaBean.C_IDPERSONA+" and "+
-				"T."+GenClientesTemporalBean.C_CONTADOR+"="+contador+" and "+
-				"T."+GenClientesTemporalBean.C_SALTO+"<> 'S'"+
+				"select T."+GenClientesTemporalBean.C_IDPERSONA+", " +
+				"       decode(C."+CenColegiadoBean.C_COMUNITARIO+", '" +
+				"              "+ClsConstants.DB_TRUE+"', " +
+				"              C."+CenColegiadoBean.C_NCOMUNITARIO+", " +
+				"              C."+CenColegiadoBean.C_NCOLEGIADO+") " + CenColegiadoBean.C_NCOLEGIADO+", " +
+				"       P."+CenPersonaBean.C_IDPERSONA+", " +
+				"       P."+CenPersonaBean.C_NOMBRE+", " +
+				"       P."+CenPersonaBean.C_APELLIDOS1+", " +
+				"       P."+CenPersonaBean.C_APELLIDOS2+" " +
+				"  from "+GenClientesTemporalBean.T_NOMBRETABLA+" T, " +
+				"       "+CenColegiadoBean.T_NOMBRETABLA+" C, " +
+				"       "+CenPersonaBean.T_NOMBRETABLA+" P " +
+				" where T."+GenClientesTemporalBean.C_IDINSTITUCION+" = C."+CenColegiadoBean.C_IDINSTITUCION+" " +
+				"   and T."+GenClientesTemporalBean.C_IDPERSONA+" = C."+CenColegiadoBean.C_IDPERSONA+" " +
+				"   and T."+GenClientesTemporalBean.C_IDPERSONA+" = P."+CenPersonaBean.C_IDPERSONA+" " +
+				"   and T."+GenClientesTemporalBean.C_CONTADOR+" = "+contador+" " +
+				"   and T."+GenClientesTemporalBean.C_SALTO+" <> 'S'" +
 				" order by T."+GenClientesTemporalBean.C_POSICION;
-			vResult=this.find(consultaTemp).getAll();
+			
+			vResult = this.find(consultaTemp).getAll();
 			
 			//Borrar de la tabla temporal por el campo contador
 			String deleteTemp =
@@ -1232,9 +1234,11 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 				" where "+GenClientesTemporalBean.C_CONTADOR+"="+contador;
 			ClsMngBBDD.executeUpdate(deleteTemp);
 		}
-		catch(ClsExceptions e){
+		catch (ClsExceptions e)
+		{
 			e.printStackTrace();
 		}
+		
 		return vResult;
 	} //selectLetradosEnCola ()
 
@@ -1273,6 +1277,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 		            }
 	       		}
 	       } catch (Exception e) {
+	    	   
 	       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
 	       }
 	       return datos;                        
@@ -1288,8 +1293,9 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 		StringBuffer sql = new StringBuffer();
 				
 		if(volanteExpres.getFechaGuardia()!=null || volanteExpres.getIdColegiado()!=null){
-			sql.append(" SELECT GUA.IDGUARDIA,GUA.NOMBRE,GUA.IDTURNO,GUA.IDINSTITUCION ");
-			sql.append(" FROM SCS_GUARDIASTURNO GUA ");
+//		if(false){
+			sql.append(" SELECT GUA.IDGUARDIA, GUA.NOMBRE, GUA.IDTURNO, GUA.IDINSTITUCION ");
+			sql.append(" FROM SCS_GUARDIASTURNO GUA,SCS_CALENDARIOGUARDIAS GC ");
 			sql.append(" WHERE GUA.IDINSTITUCION = :");
 			contador ++;
 			sql.append(contador);
@@ -1298,32 +1304,20 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 			contador ++;
 			sql.append(contador);
 			htCodigos.put(new Integer(contador),volanteExpres.getIdTurno());
-			sql.append(" AND GUA.IDGUARDIA IN ");    
-			sql.append(" (SELECT GC.IDGUARDIA ");
-			sql.append(" FROM SCS_CALENDARIOGUARDIAS GC ");
-			sql.append(" WHERE GC.IDINSTITUCION = GUA.IDINSTITUCION ");
-			sql.append(" AND  GC.IDTURNO = GUA.IDTURNO ");
-			sql.append(" AND  GC.IDGUARDIA = GUA.IDGUARDIA ");
-
-			
-			sql.append(" AND :");
+			sql.append(" AND  GC.IDINSTITUCION = GUA.IDINSTITUCION ");
+			sql.append(" AND GC.IDTURNO = GUA.IDTURNO ");
+			sql.append(" AND GC.IDGUARDIA = GUA.IDGUARDIA ");
+			sql.append(" AND :"); 
 			contador ++;
 			String truncFechaGuardia = GstDate.getFormatedDateShort("", volanteExpres.getFechaGuardia());
 		    htCodigos.put(new Integer(contador),truncFechaGuardia);
 		    sql.append(contador);
 			sql.append(" BETWEEN TRUNC(GC.FECHAINICIO) AND ");
-			sql.append(" TRUNC(GC.FECHAFIN)) ");
-			/*if(volanteExpres.getIdColegiado() != null ){
-				sql.append(" AND GC.IDPERSONA = :");
-				contador ++;
-				sql.append(contador);
-				htCodigos.put(new Integer(contador),volanteExpres.getIdColegiado());
-			}*/
+			sql.append(" TRUNC(GC.FECHAFIN) ");
 			sql.append(" ORDER BY GUA.NOMBRE ");
 			
-			
 		}else{
-			sql.append(" SELECT IDGUARDIA, NOMBRE,IDINSTITUCION FROM SCS_GUARDIASTURNO ");
+			sql.append(" SELECT IDGUARDIA, NOMBRE,IDTURNO,IDINSTITUCION FROM SCS_GUARDIASTURNO ");
 			sql.append(" WHERE IDINSTITUCION =:");
 			contador ++;
 			sql.append(contador);
@@ -1343,10 +1337,13 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 												
             if (rc.findBind(sql.toString(),htCodigos)) {
             	alGuardias = new ArrayList<ScsGuardiasTurnoBean>();
-            	ScsGuardiasTurnoBean guardiaBean = new ScsGuardiasTurnoBean();
-            	guardiaBean.setIdGuardia(new Integer(-1));
-        		guardiaBean.setNombre(UtilidadesString.getMensajeIdioma(volanteExpres.getUsrBean(), "general.combo.seleccionar"));
-    			alGuardias.add(guardiaBean);
+            	ScsGuardiasTurnoBean guardiaBean = null;
+            	if(rc.size()>1){
+	            	guardiaBean = new ScsGuardiasTurnoBean();
+	            	guardiaBean.setIdGuardia(new Integer(-1));
+	        		guardiaBean.setNombre(UtilidadesString.getMensajeIdioma(volanteExpres.getUsrBean(), "general.combo.seleccionar"));
+	    			alGuardias.add(guardiaBean);
+            	}
             	for (int i = 0; i < rc.size(); i++){
             		Row fila = (Row) rc.get(i);
             		Hashtable<String, Object> htFila=fila.getRow();
@@ -1361,6 +1358,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
             	}
             } 
        } catch (Exception e) {
+    	   ClsLogging.writeFileLog("VOLANTES EXPRESS:Error Select Guardias"+e.toString(), 10);
        		throw new ClsExceptions (e, "Error al ejecutar consulta.");
        }
        return alGuardias;

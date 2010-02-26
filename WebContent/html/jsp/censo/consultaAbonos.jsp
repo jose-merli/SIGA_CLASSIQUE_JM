@@ -220,7 +220,7 @@
 						   borde="1"
 						   clase="tableTitle"
 						   nombreCol="facturacion.busquedaAbonos.literal.fecha,facturacion.busquedaAbonos.literal.numeroAbono,
-						   			  facturacion.altaAbonos.literal.motivos,facturacion.datosGeneralesAbonos.literal.importeNeto,
+						   			  facturacion.datosGenerales.literal.observaciones,facturacion.datosGeneralesAbonos.literal.importeNeto,
 						   			  facturacion.datosGeneralesAbonos.literal.importeIva,facturacion.abonosPagos.literal.importeTotalAbono,
 						   			  facturacion.abonosPagos.literal.totalAbonado,"
 						   tamanoCol="10,10,30,10,10,10,10,10"
@@ -261,7 +261,7 @@
 										<%=UtilidadesString.mostrarDatoJSP(row.getString(FacAbonoBean.C_NUMEROABONO))%>
 									</td>
 									<td>
-										<%=UtilidadesString.mostrarDatoJSP(row.getString(FacAbonoBean.C_MOTIVOS))%>
+										<%=UtilidadesString.mostrarDatoJSP(row.getString(FacAbonoBean.C_OBSERVACIONES))%>
 									</td>
 									<td>
 										<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea (new Double(row.getString("TOTALNETO")).doubleValue(), 2)).toString())%>&nbsp;&euro;

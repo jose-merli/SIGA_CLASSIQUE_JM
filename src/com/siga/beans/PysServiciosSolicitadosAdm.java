@@ -669,8 +669,10 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 				    if (!fechaEfectiva.equals("0")){// Solo comparamos la fecha efectiva con la de suscripcion cuando
 				    	                            // la fecha efectiva se ha introducido por pantalla.
 					    PysServiciosAdm psa = new PysServiciosAdm(this.usrbean);
-					    String sFechaFacMayor = psa.obtenerFechaMayorServicioFacturado(
-					    		idInstitucion.toString(), idTipoServicio.toString(), idServicio.toString(), idServicioInstitucion.toString() );
+					    // jbd Usamos obtenerFechaMayorServicioFacturadoPersona en vez de obtenerFechaMayorServicioFacturado
+					    //     para que no deniegue la fecha de baja a la persona si no esta en las facturaciones del servicio
+					    String sFechaFacMayor = psa.obtenerFechaMayorServicioFacturadoPersona(
+					    		idInstitucion.toString(), idTipoServicio.toString(), idServicio.toString(), idServicioInstitucion.toString(), suscripcionBean.getIdPersona().toString() );
 					    SimpleDateFormat formato = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
 					    if (sFechaFacMayor!=null && !sFechaFacMayor.equals("")){
 						    Date dFechaFacMayor = formato.parse(sFechaFacMayor);

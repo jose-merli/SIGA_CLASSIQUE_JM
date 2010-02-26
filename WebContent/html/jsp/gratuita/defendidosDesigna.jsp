@@ -59,7 +59,7 @@
 
 </head>
 
-<body onLoad="ajusteAltoBotones('resultado');" class="tablaCentralCampos">
+<body onLoad="ajusteAlto('resultado');" class="tablaCentralCampos">
 
 		<!-- INICIO: LISTA DE VALORES -->
 		<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista 
@@ -85,13 +85,9 @@
 		
 	
 <!-- INICIO: SUBMIT AREA -->
-<!-- Obligatoria en todas las páginas-->
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-<!-- FIN: SUBMIT AREA -->
 <script language="JavaScript">
 
-	
-		<!-- Asociada al boton Volver -->
+			<!-- Asociada al boton Volver -->
 		function accionVolver() 
 		{	
 			document.forms[0].target = "mainWorkArea";	
@@ -142,6 +138,11 @@
 			<input type="hidden" name="actionE" value="/JGR_DefendidosDesignasPerJG.do">
 			<input type="hidden" name="pantallaE" value="M">
 		</html:form>	
+		
+<!-- Obligatoria en todas las páginas-->
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+<!-- FIN: SUBMIT AREA -->
+
 	</body>
 </html>
 		  

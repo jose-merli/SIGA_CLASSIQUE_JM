@@ -91,7 +91,7 @@
 		   borde="2"
 		   clase="tableTitle"		   
 		   nombreCol="gratuita.operarDatosBeneficiario.literal.telefonoUso, gratuita.operarDatosBeneficiario.literal.numeroTelefono,"
-		   tamanoCol="57,30,13"
+		   tamanoCol="55,33,13"
 		   	alto="100%"  
 		   	ajusteBotonera="true"		
   	    >  	    

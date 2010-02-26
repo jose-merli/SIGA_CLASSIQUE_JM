@@ -21,6 +21,10 @@
 	UsrBean user=(UsrBean) ses.getAttribute("USRBEAN");
 	String idInstitucion[] = {user.getLocation()};
 	
+	String  pathFTPDescarga = (String)request.getAttribute("pathFTPDescarga");
+	if (pathFTPDescarga==null) pathFTPDescarga="";
+	
+	
 	// para saber hacia donde volver
 	String busquedaVolver = (String) request.getSession().getAttribute("EnvEdicionEnvio");
 	if (busquedaVolver==null) busquedaVolver="";
@@ -117,7 +121,6 @@
 			{		
 				ProgramacionForm.reset();
 			}
-			
 			function descargar() 
 			{
 				sub();
@@ -127,6 +130,21 @@
 				
 			   	//ProgramacionForm.submit();
 			   	//ProgramacionForm.modo.value = "modificar";
+			}
+			function descargar()
+			{
+				
+			   	var urlFTP='<%=pathFTPDescarga %>';
+			   	window.open(urlFTP,'FTPdownload','height=600,width=800,status=yes,toolbar=yes,menubar=no,location=no');
+			}
+			
+			function accionGenerarEtiquetas() 
+			{
+				sub();
+				ProgramacionForm.modo.value = "generarEtiquetas";
+				var fname = document.getElementById("ProgramacionForm").name;
+				document.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.wait';
+
 			}
 			
 		</script>
@@ -357,7 +375,7 @@
 		</html:form>
 
 		<!-- G Guardar, Y GuardaryCerrar, R Reestablecer, C Cerrar, X Cancelar -->
-			<siga:ConjBotonesAccion botones="V,R,G,EN" clase="botonesDetalle"  />
+			<siga:ConjBotonesAccion botones="V,GET,R,G,EN" clase="botonesDetalle"  />
 		
 		
 		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>

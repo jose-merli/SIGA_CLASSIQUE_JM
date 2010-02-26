@@ -19,7 +19,6 @@
 <%@ page import="com.siga.beans.FacFacturacionProgramadaBean"%>
 <%@ page import="com.siga.beans.FacSerieFacturacionBean"%>
 <%@ page import="com.siga.beans.CenColegiadoBean"%>
-<%@ page import="com.siga.beans.CenPersonaBean"%>
 <%@ page import="com.siga.beans.CenCuentasBancariasBean"%>
 <%@ page import="com.siga.Utilidades.UtilidadesHash"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
@@ -29,7 +28,10 @@
 
 <!-- JSP -->
 <% 
-		String volver = (String)request.getAttribute("volver");
+		
+ActionMapping actionMapping = (ActionMapping)request.getAttribute("org.apache.struts.action.mapping.instance");
+String path = actionMapping.getPath();
+	String volver = (String)request.getAttribute("volver");
 		
 
 
@@ -186,6 +188,7 @@
 
 <%@page import="java.util.Hashtable"%>
 <%@page import="com.siga.beans.FacAbonoBean"%>
+<%@page import="org.apache.struts.action.ActionMapping"%>
 <html>
 
 <!-- HEAD -->
@@ -253,7 +256,9 @@
 
 	<!-- INICIO: CAMPOS -->
 	<!-- Zona de campos de busqueda o filtro -->
-	<html:form action="/FAC_DatosGeneralesFactura.do" method="POST" target="submitArea">
+	
+	
+	<html:form action="<%=path%>" method="POST" target="submitArea">
 		<html:hidden property = "modo" value = ""/>
 		
 		<table class="tablaCampos" border="0">
@@ -303,7 +308,7 @@
 
 							<tr>
 								<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.FormaPago"/></td>
-								<td class="labelTextValor"><siga:Idioma key="<%=formaPago%>"/>
+								<td class="labelTextValor"><siga:Idioma key="<%=formaPago%>"/></td>
 
 								<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.NumeroCuenta"/></td>
 								<td class="labelTextValor" colspan="3"><%=codEntidad%><%=UtilidadesString.mostrarNumeroCuentaConAsteriscos(cuenta)%></td>

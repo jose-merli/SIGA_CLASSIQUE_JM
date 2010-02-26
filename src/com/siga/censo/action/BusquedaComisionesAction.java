@@ -2,6 +2,8 @@
 
 package com.siga.censo.action;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -11,10 +13,14 @@ import org.apache.struts.action.ActionMapping;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.beans.CenClienteAdm;
+import com.siga.beans.CenClienteBean;
+import com.siga.beans.CenComponentesBean;
 import com.siga.beans.CenDatosCVAdm;
 import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.CenSolicitModifDatosBasicosBean;
 
 import com.siga.censo.form.BusquedaComisionesForm;
+import com.siga.general.CenVisibilidad;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -27,10 +33,31 @@ import com.siga.general.SIGAException;
  */
 public class BusquedaComisionesAction extends MasterAction {
 
+			
+	/** 
+	 *  Funcion que atiende la accion abrir. Por defecto se abre el forward 'inicio'
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 * @exception  SIGAException  Errores de aplicación
+	 */
+	protected String abrir (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException 
+			{
+		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		String idInstitucion=user.getLocation();
+		
+		String visibilidad = CenVisibilidad.getVisibilidadInstitucion(idInstitucion);
+		request.setAttribute("CenInstitucionesVisibles",visibilidad);
+		
+		return "inicio";
+	}
 	
-	
-	
-
 		
 	/**
 	 * Metodo que implementa el modo buscar
@@ -45,13 +72,22 @@ public class BusquedaComisionesAction extends MasterAction {
 	{
 			
 		Vector registros = null;
+		BusquedaComisionesForm miFormulario = (BusquedaComisionesForm)formulario;
 		UsrBean user = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
-		String idInstitucion=user.getLocation();
+		boolean isSeleccionarTodos = miFormulario.getSeleccionarTodos()!=null 
+		&& !miFormulario.getSeleccionarTodos().equals("");
+		
+		
+		if(!isSeleccionarTodos){
+			ArrayList clavesRegSeleccinados = (ArrayList) miFormulario.getRegistrosSeleccionados();
+			String seleccionados = request.getParameter("Seleccion");
+		}
+		
 		
 		try 
 		{       CenDatosCVAdm datosComisionesCV= new CenDatosCVAdm(this.getUserBean(request));
-		        BusquedaComisionesForm miFormulario = (BusquedaComisionesForm)formulario;
-			    registros=datosComisionesCV.buscarComisiones(idInstitucion, miFormulario);
+		        
+			    registros=datosComisionesCV.buscarComisiones(miFormulario);
 			
 			request.setAttribute("COMISIONES", registros);
 	    } catch (Exception e) {

@@ -1,5 +1,6 @@
 package com.siga.gratuita.action;
 
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,7 +19,7 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.GstDate;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.AjaxCollectionXmlBuilder;
@@ -71,39 +72,50 @@ public class VolantesExpressAction extends MasterAction
 					String accion = miForm.getModo();
 					String modo = request.getParameter("modo");
 					
+					
 					if(modo!=null)
 						accion = modo;
-//					System.out.println("ACCION:"+accion);
+					ClsLogging.writeFileLog("VOLANTES EXPRESS:accion:"+accion, 10);
+					
 					if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
 						mapDestino = inicio (mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("getAjaxTurnos")){
+						ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxTurnos", 10);
 						getAjaxTurnos(mapping, miForm, request, response);
 						return null;
 					}else if ( accion.equalsIgnoreCase("getAjaxGuardias")){
+						ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxGuardias", 10);
 						getAjaxGuardias (mapping, miForm, request, response);
 						return null;
 						
 					}else if ( accion.equalsIgnoreCase("getAjaxColegiados")){
+						ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxColegiados", 10);
 						getAjaxColegiados(mapping, miForm, request, response);
 						return null;
 						
 					}else if ( accion.equalsIgnoreCase("getAjaxSustituidos")){
+						ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxSustituidos", 10);
 						getAjaxSustituidos(mapping, miForm, request, response);
 						return null;
 						
 					}else if ( accion.equalsIgnoreCase("getAjaxColegiado")){
+						ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxColegiado", 10);
 						getAjaxColegiado(mapping, miForm, request, response);
 						return null;
 					}else if ( accion.equalsIgnoreCase("getAjaxColegiadoGuardia")){
+						ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxColegiadoGuardia", 10);
 						getAjaxColegiadoGuardia(mapping, miForm, request, response);
 						return null;
 					}else if ( accion.equalsIgnoreCase("getAjaxBusquedaAsistencias")){
+						ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxBusquedaAsistencias", 10);
 						mapDestino = getAjaxBusquedaAsistencias (mapping, miForm, request, response);
 						
 					}else if ( accion.equalsIgnoreCase("getAjaxPrimeraAsistencia")){
+						ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxPrimeraAsistencia", 10);
 						mapDestino = getAjaxPrimeraAsistencia (mapping, miForm, request, response);
 						
 					}else if ( accion.equalsIgnoreCase("getAjaxGuardarAsistencias")){
+						ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxGuardarAsistencias", 10);
 						mapDestino = getAjaxGuardarAsistencias (mapping, miForm, request, response);
 					}
 					else {
@@ -113,13 +125,16 @@ public class VolantesExpressAction extends MasterAction
 			} while (false);
 			// Redireccionamos el flujo a la JSP correspondiente
 			if (mapDestino == null)	{ 
+				ClsLogging.writeFileLog("!!!!!!!!!!!!!!!ERROR EN VOLANTES EXPRES mapping nulo!", 10);
 				throw new ClsExceptions("El ActionMapping no puede ser nulo");
 			}
 			return mapping.findForward(mapDestino);
 		} 
 		catch (SIGAException es) {
+			ClsLogging.writeFileLog("!!!!!!!!!!!!!!!ERROR EN VOLANTES EXPRES siga exception"+es.getLiteral(), 10);
 			throw es;
 		} catch (Exception e) {
+			ClsLogging.writeFileLog("!!!!!!!!!!!!!!!ERROR EN VOLANTES EXPRES"+e.toString(), 10);
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
 		}
 	}
@@ -164,9 +179,9 @@ public class VolantesExpressAction extends MasterAction
 		
 
 		//Sacamos los turnos
-		ScsTurnoAdm admTurnos = new ScsTurnoAdm(miForm.getUsrBean());
-		List<ScsTurnoBean> turnos = admTurnos.getTurnos(miForm.getVolanteExpressVo());
-		miForm.setTurnos(turnos);
+//		ScsTurnoAdm admTurnos = new ScsTurnoAdm(miForm.getUsrBean());
+//		List<ScsTurnoBean> turnos = new ArrayList<ScsTurnoBean>();// admTurnos.getTurnos(miForm.getVolanteExpressVo());
+		miForm.setTurnos(new ArrayList<ScsTurnoBean>());
 		miForm.setGuardias(new ArrayList<ScsGuardiasTurnoBean>());
 		miForm.setColegiadosGuardia(new ArrayList<CenPersonaBean>());
 		miForm.setColegiadosSustituidos(new ArrayList<CenPersonaBean>());
@@ -194,50 +209,32 @@ public class VolantesExpressAction extends MasterAction
 		return "inicio";
 	}
 
-	protected String getTurnos (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException 
-			{
-		VolantesExpressForm miForm = (VolantesExpressForm) formulario;
-		//Sacamos los turnos
-		ScsTurnoAdm admTurnos = new ScsTurnoAdm(miForm.getUsrBean());
-		List<ScsTurnoBean> alTurnos = admTurnos.getTurnos(miForm.getVolanteExpressVo());
-		if(alTurnos==null){
-			alTurnos = new ArrayList<ScsTurnoBean>();
-			
-		}
-		miForm.setTurnos(alTurnos);
-		miForm.setGuardias(new ArrayList<ScsGuardiasTurnoBean>());
-		miForm.setColegiadosGuardia(new ArrayList<CenPersonaBean>());
-		miForm.setColegiadosSustituidos(new ArrayList<CenPersonaBean>());
-		
-		miForm.setIdTurno(null);
-		miForm.setIdGuardia(null);
-		miForm.setIdColegiado(null);
-		miForm.setIdColegiadoGuardia(null);
-		miForm.setIdColegiadoSustituido(null);
-		
-		return "inicio";
-	}
+	
 	protected void getAjaxTurnos (ActionMapping mapping, 		
 			MasterForm formulario, 
 			HttpServletRequest request, 
 			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception
 			{
 		
+		
 		VolantesExpressForm miForm = (VolantesExpressForm) formulario;
 		//Recogemos el parametro enviado por ajax
 		String fechaGuardia = request.getParameter("fechaGuardia");
 		miForm.setFechaGuardia(fechaGuardia);
+		ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxTurnos.fechaGuardia:"+fechaGuardia+"/", 10);
 		
 		//Sacamos los turnos
 		ScsTurnoAdm admTurnos = new ScsTurnoAdm(miForm.getUsrBean());
 		List<ScsTurnoBean> alTurnos = admTurnos.getTurnos(miForm.getVolanteExpressVo());
+		ClsLogging.writeFileLog("VOLANTES EXPRESS:Select Turnos", 10);
 		if(alTurnos==null){
 			alTurnos = new ArrayList<ScsTurnoBean>();
-			
+		}else{
+			for(ScsTurnoBean turno:alTurnos){
+				ClsLogging.writeFileLog("VOLANTES EXPRESS:turno:"+turno.getNombre(), 10);
+			}
 		}
+		ClsLogging.writeFileLog("VOLANTES EXPRESS:Fin Select Turnos", 10);
 	    respuestaAjax(new AjaxCollectionXmlBuilder<ScsTurnoBean>(), alTurnos,response);
 	    
 		
@@ -254,9 +251,12 @@ public class VolantesExpressAction extends MasterAction
 		miForm.setFechaGuardia(fechaGuardia);
 		String idTurno = request.getParameter("idTurno");
 		miForm.setIdTurno(idTurno);
+		ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxGuardias.fechaguardia:"+fechaGuardia+"/", 10);
+		ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxGuardias.idTurno:"+idTurno+"/", 10);
+		
 		//Sacamos las guardias si hay algo selccionado en el turno
 		List<ScsGuardiasTurnoBean> alGuardias = null;
-		
+		ClsLogging.writeFileLog("VOLANTES EXPRESS:Select Guardias", 10);
 		if(miForm.getIdTurno()!= null && !miForm.getIdTurno().equals("-1")&& !miForm.getIdTurno().equals("")){
 			ScsGuardiasTurnoAdm admGuardias = new ScsGuardiasTurnoAdm(miForm.getUsrBean());
 			alGuardias = admGuardias.getGuardiasTurnos(miForm.getVolanteExpressVo());
@@ -264,10 +264,15 @@ public class VolantesExpressAction extends MasterAction
 		if(alGuardias==null){
 			alGuardias = new ArrayList<ScsGuardiasTurnoBean>();
 			
+		}else{
+			for(ScsGuardiasTurnoBean guardia:alGuardias){
+				ClsLogging.writeFileLog("VOLANTES EXPRESS:guardia:"+guardia.getNombre(), 10);
+			}
+			
 		}
+		ClsLogging.writeFileLog("VOLANTES EXPRESS:Select Guardias", 10);
 		
 		respuestaAjax(new AjaxCollectionXmlBuilder<ScsGuardiasTurnoBean>(), alGuardias,response);
-		//respuestaAjax(new AjaxCollectionXmlBuilder<ScsComisariaBean>(), alComisarias,response);
 		
 	}
 	
@@ -309,21 +314,42 @@ public class VolantesExpressAction extends MasterAction
 		miForm.setIdTurno(idTurno);
 		String idGuardia = request.getParameter("idGuardia");
 		miForm.setIdGuardia(idGuardia);
-
+		
+		ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxColegiados.fechaguardia:"+fechaGuardia+"/", 10);
+		ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxColegiados.idTurno:"+idTurno+"/", 10);
+		ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxColegiados.idGuardia:"+idGuardia+"/", 10);
+		
+		
 		
 		//Sacamos las guardias si hay algo selccionado en el turno
 		List<CenPersonaBean> alColegiadosGuardias = null;
 		List<CenPersonaBean> alColegiadosSustituidos = null;
-		if(miForm.getIdGuardia()!= null && !miForm.getIdGuardia().equals("")&& !miForm.getIdGuardia().equals("-1")){
+		
+		if(miForm.getIdGuardia()!= null && !miForm.getIdGuardia().equals("")&& !miForm.getIdGuardia().equals("-1")&&miForm.getFechaGuardia()!= null && !miForm.getFechaGuardia().equals("")){
 			ScsGuardiasColegiadoAdm admGuardiasCol = new ScsGuardiasColegiadoAdm(miForm.getUsrBean());
+			ClsLogging.writeFileLog("VOLANTES EXPRESS:Select alColegiadosGuardias", 10);
 			alColegiadosGuardias = admGuardiasCol.getColegiadosGuardia(miForm.getVolanteExpressVo(),true);
+			ClsLogging.writeFileLog("VOLANTES EXPRESS:Select fin alColegiadosGuardias", 10);
+			ClsLogging.writeFileLog("VOLANTES EXPRESS:Select alColegiadosSustituidos", 10);
 			alColegiadosSustituidos = admGuardiasCol.getColegiadosGuardia(miForm.getVolanteExpressVo(),false);
+			ClsLogging.writeFileLog("VOLANTES EXPRESS:Select fin alColegiadosSustituidos", 10);
 		}
+		
 		if(alColegiadosGuardias==null){
 			alColegiadosGuardias = new ArrayList<CenPersonaBean>();
+		}else{
+			for(CenPersonaBean persona:alColegiadosGuardias){
+				ClsLogging.writeFileLog("VOLANTES EXPRESS:letrado guardia:"+persona.getNombre(), 10);
+			}
+			
 		}
 		if(alColegiadosSustituidos==null){
 			alColegiadosSustituidos = new ArrayList<CenPersonaBean>();
+		}else{
+			for(CenPersonaBean persona:alColegiadosSustituidos){
+				ClsLogging.writeFileLog("VOLANTES EXPRESS:letrado sustituido:"+persona.getNombre(), 10);
+			}
+			
 		}
 		miForm.setColegiadosGuardia(alColegiadosGuardias);
 		miForm.setColegiadosSustituidos(alColegiadosSustituidos);
@@ -332,7 +358,9 @@ public class VolantesExpressAction extends MasterAction
 		listaParametros.add(alColegiadosSustituidos);
 		
 		respuestaAjax(new AjaxMultipleCollectionXmlBuilder<CenPersonaBean>(), listaParametros,response);
-
+		
+		
+		
 	}
 	@SuppressWarnings("unchecked")
 	protected void getAjaxSustituidos (ActionMapping mapping, 		
@@ -349,6 +377,12 @@ public class VolantesExpressAction extends MasterAction
 		miForm.setIdTurno(idTurno);
 		String idGuardia = request.getParameter("idGuardia");
 		miForm.setIdGuardia(idGuardia);
+		
+		
+		ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxSustituidos.fechaguardia:"+fechaGuardia+"/", 10);
+		ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxSustituidos.idTurno:"+idTurno+"/", 10);
+		ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxSustituidos.idGuardia:"+idGuardia+"/", 10);
+		
 
 		
 		//Sacamos las guardias si hay algo selccionado en el turno
@@ -365,13 +399,7 @@ public class VolantesExpressAction extends MasterAction
 		}
 		
 		miForm.setColegiadosSustituidos(alColegiadosSustituidos);
-		
 		respuestaAjax(new AjaxCollectionXmlBuilder<CenPersonaBean>(), alColegiadosSustituidos,response);
-		//respuestaAjax(new AjaxCollectionXmlBuilder<CenPersonaBean>(), alColegiadosSustituidos,response);
-		
-		
-		
-//		
 
 	}
 	
@@ -386,6 +414,10 @@ public class VolantesExpressAction extends MasterAction
 		//Sacamos las guardias si hay algo selccionado en el turno
 		Hashtable<String, Object> htCliente = null;
 		String numeroColegiado = request.getParameter("numeroColegiado");
+		ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxColegiado.numeroColegiado:"+numeroColegiado+"/", 10);
+				
+		
+		
 		miForm.setNumeroColegiado(numeroColegiado);
 		
 		if(numeroColegiado!= null && !numeroColegiado.equals("")){
@@ -408,6 +440,8 @@ public class VolantesExpressAction extends MasterAction
 			
 		}
 		
+		ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxColegiado.nombreColegiado:"+nombreColegiado+"/", 10);
+		
 		List listaParametros = new ArrayList();
 		listaParametros.add(idColegiado);
 		listaParametros.add(numeroColegiado);
@@ -427,6 +461,7 @@ public class VolantesExpressAction extends MasterAction
 		//Sacamos las guardias si hay algo selccionado en el turno
 		Hashtable<String, Object> htCliente = null;
 		String idColegiadoGuardia = request.getParameter("idColegiadoGuardia");
+		ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxColegiadoGuardia.idColegiadoGuardia:"+idColegiadoGuardia+"/", 10);
 
 		if(idColegiadoGuardia!= null && !idColegiadoGuardia.equals("-1") && !idColegiadoGuardia.equals("")){
 			CenPersonaAdm admPer = new CenPersonaAdm(miForm.getUsrBean());
@@ -448,6 +483,7 @@ public class VolantesExpressAction extends MasterAction
 			
 		}
 		
+		ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxColegiadoGuardia.nombreColegiado:"+nombreColegiado+"/", 10);
 		miForm.setNumeroColegiado(numeroColegiado);
 		miForm.setNombreColegiado(nombreColegiado);
 		miForm.setIdColegiado(idColegiado);
@@ -575,6 +611,7 @@ public class VolantesExpressAction extends MasterAction
     		asistenciaBean.setAsistidoApellido1("");
     		asistenciaBean.setAsistidoApellido2("");
 			asistenciaBean.setDelitosImputados("");
+			asistenciaBean.setIdDelito(new Integer(-1));
 			asistenciaBean.setObservaciones("");
 			asistenciaBean.setComisaria(new Long(-1));
 			asistenciaBean.setJuzgado(new Long(-1));
@@ -664,5 +701,32 @@ public class VolantesExpressAction extends MasterAction
 	public static BusinessManager getBusinessManager() {
 		return businessManager;
 	}
+	protected String getTurnos (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException 
+			{
+		VolantesExpressForm miForm = (VolantesExpressForm) formulario;
+		//Sacamos los turnos
+		ScsTurnoAdm admTurnos = new ScsTurnoAdm(miForm.getUsrBean());
+		List<ScsTurnoBean> alTurnos = admTurnos.getTurnos(miForm.getVolanteExpressVo());
+		if(alTurnos==null){
+			alTurnos = new ArrayList<ScsTurnoBean>();
+			
+		}
+		miForm.setTurnos(alTurnos);
+		miForm.setGuardias(new ArrayList<ScsGuardiasTurnoBean>());
+		miForm.setColegiadosGuardia(new ArrayList<CenPersonaBean>());
+		miForm.setColegiadosSustituidos(new ArrayList<CenPersonaBean>());
+		
+		miForm.setIdTurno(null);
+		miForm.setIdGuardia(null);
+		miForm.setIdColegiado(null);
+		miForm.setIdColegiadoGuardia(null);
+		miForm.setIdColegiadoSustituido(null);
+		
+		return "inicio";
+	}
+	
 }
 

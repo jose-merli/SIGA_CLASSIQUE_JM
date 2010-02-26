@@ -25,7 +25,7 @@ import net.sourceforge.ajaxtags.helpers.JavaScript;
  * 
  * @author Darren Spurgeon
  * @author Jens Kapitza
- * @version $Revision: 1.1 $ $Date: 2009-12-02 12:47:35 $ $Author: jorge $
+ * @version $Revision: 1.2 $ $Date: 2010-02-26 08:58:12 $ $Author: jose $
  */
 public class AjaxUpdateFieldFromFieldTag extends BaseAjaxTag {
 

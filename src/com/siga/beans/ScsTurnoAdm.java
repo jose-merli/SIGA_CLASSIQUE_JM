@@ -10,6 +10,7 @@ import java.util.Vector;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
@@ -19,6 +20,7 @@ import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
+import com.siga.general.EjecucionPLs;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.vos.VolantesExpressVo;
@@ -110,7 +112,9 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 					ScsOrdenacionColasBean.T_NOMBRETABLA+"."+ScsOrdenacionColasBean.C_ALFABETICOAPELLIDOS+" ALFABETICOAPELLIDOS",
 					ScsOrdenacionColasBean.T_NOMBRETABLA+"."+ScsOrdenacionColasBean.C_FECHANACIMIENTO+" EDAD",
 					ScsOrdenacionColasBean.T_NOMBRETABLA+"."+ScsOrdenacionColasBean.C_NUMEROCOLEGIADO+" ANTIGUEDAD",
-					ScsOrdenacionColasBean.T_NOMBRETABLA+"."+ScsOrdenacionColasBean.C_ANTIGUEDADCOLA+" ANTIGUEDADENCOLA"};
+					ScsOrdenacionColasBean.T_NOMBRETABLA+"."+ScsOrdenacionColasBean.C_ANTIGUEDADCOLA+" ANTIGUEDADENCOLA",
+					//nuevo campo para contar el numero de letrados en cola
+					"(select count(*) from SCS_INSCRIPCIONTURNO INS where ins.fechabaja is null and ins.idinstitucion=turnos.idinstitucion and ins.idturno=turnos.idturno) as nLetrados"};
 			return campos;
 		}else{ 
 			String[] campos = {	ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDTURNO													+ " IDTURNO",								
@@ -520,15 +524,10 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 					Row fila = (Row) rc.get(i);
 					Hashtable registro = (Hashtable)fila.getRow(); 
 					
-					//Parametros de entrada del PL
-					institucion=(String)registro.get("INSTITUCION");
-					param_in[0] = institucion;			
-					param_in[1] = (String)registro.get("IDTURNO");
-					param_in[2] = "1"; // con saltos y compensaciones
-					//Ejecucion del PL
-					resultadoPl = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_ORDENACION.ORDENA_COLEGIADOS_TURNO (?,?,?,?,?,?)}", 3, param_in);
-					//Resultado del PL
-					contador = resultadoPl[0];
+					contador = EjecucionPLs.ejecutarPL_OrdenaColegiadosTurno(
+							Integer.valueOf((String) registro.get("INSTITUCION")), 
+							Integer.valueOf((String) registro.get("IDTURNO")), 
+							1)[0];
 					
 					//Consulta en la tabla temporal la posicion para el letrado
 					consultaTemp=	" where "+
@@ -570,15 +569,12 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 	 */
 	public Vector selectLetradosEnCola(String institucion, String turno){
 		Vector vResult = null;
-		//Parametros de entrada del PL
-		Object[] param_in = new Object[]{institucion,turno,"0"};// sin saltos ni compensaciones
-		String resultadoPl[] = new String[3];
 		try{
 			
-			//Ejecucion del PL
-			resultadoPl = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_ORDENACION.ORDENA_COLEGIADOS_TURNO (?,?,?,?,?,?)}", 3, param_in);
-			//Resultado del PL
-			String contador = resultadoPl[0];
+			String contador = EjecucionPLs.ejecutarPL_OrdenaColegiadosTurno(
+					Integer.valueOf(institucion), 
+					Integer.valueOf(turno), 
+					0)[0];
 			
 			//Consulta en la tabla temporal la posicion para el letrado
 			String consultaTemp =
@@ -771,26 +767,24 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 		int contador = 0;
 		StringBuffer sql = new StringBuffer();
 		if(volanteExpres.getFechaGuardia()!=null){
+//		if(false){
 			
-			sql.append(" SELECT IDINSTITUCION , IDTURNO ");
-			sql.append(" , NOMBRE FROM SCS_TURNO TURNO  ");
+			sql.append(" SELECT DISTINCT TURNO.IDINSTITUCION, TURNO.IDTURNO, TURNO.NOMBRE ");
+			sql.append(" FROM SCS_TURNO TURNO, SCS_CALENDARIOGUARDIAS GC ");
 			sql.append(" WHERE TURNO.IDINSTITUCION = :");
-		    contador ++;
+			contador ++;
 			sql.append(contador);
 			htCodigos.put(new Integer(contador),volanteExpres.getIdInstitucion());
-			sql.append(" AND TURNO.IDTURNO IN "); 
-			
-			sql.append(" (SELECT GC.IDTURNO ");
-			sql.append(" FROM SCS_CALENDARIOGUARDIAS GC ");
-			sql.append(" WHERE GC.IDINSTITUCION = TURNO.IDINSTITUCION ");
-			sql.append(" AND  GC.IDTURNO = TURNO.IDTURNO ");
-			sql.append(" AND :");
-			contador ++;
+			      
+			sql.append(" AND GC.IDINSTITUCION = TURNO.IDINSTITUCION ");
+			sql.append(" AND GC.IDTURNO = TURNO.IDTURNO ");
+			sql.append(" AND TO_DATE(:");
 			String truncFechaGuardia = GstDate.getFormatedDateShort("", volanteExpres.getFechaGuardia());
+			contador ++;
 		    htCodigos.put(new Integer(contador),truncFechaGuardia);
 		    sql.append(contador);
-			sql.append(" BETWEEN TRUNC(GC.FECHAINICIO) AND TRUNC(GC.FECHAFIN)) ");
-			sql.append(" ORDER BY TURNO.DESCRIPCION ");
+			sql.append(",'dd/MM/yyyy') BETWEEN TRUNC(GC.FECHAINICIO) AND TRUNC(GC.FECHAFIN) ");
+			sql.append(" ORDER BY TURNO.NOMBRE ");
 		}else{
 			sql.append(" SELECT IDINSTITUCION , IDTURNO ");
 			sql.append(" , NOMBRE FROM SCS_TURNO TURNO  ");
@@ -799,7 +793,7 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 			sql.append(contador);
 			htCodigos.put(new Integer(contador),volanteExpres.getIdInstitucion());
 			
-			sql.append(" ORDER BY TURNO.DESCRIPCION ");
+			sql.append(" ORDER BY TURNO.NOMBRE ");
 		}
 		List<ScsTurnoBean> alTurnos = null;
 		try {
@@ -807,10 +801,13 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 												
             if (rc.findBind(sql.toString(),htCodigos)) {
             	alTurnos = new ArrayList<ScsTurnoBean>();
-            	ScsTurnoBean turnoBean = new ScsTurnoBean();
-    			turnoBean.setNombre(UtilidadesString.getMensajeIdioma(volanteExpres.getUsrBean(), "general.combo.seleccionar"));
-    			turnoBean.setIdTurno(new Integer(-1));
-            	alTurnos.add(turnoBean);
+            	ScsTurnoBean turnoBean = null;
+            	if(rc.size()>1){
+            		turnoBean = new ScsTurnoBean();
+	    			turnoBean.setNombre(UtilidadesString.getMensajeIdioma(volanteExpres.getUsrBean(), "general.combo.seleccionar"));
+	    			turnoBean.setIdTurno(new Integer(-1));
+	            	alTurnos.add(turnoBean);
+            	}
     			for (int i = 0; i < rc.size(); i++){
             		Row fila = (Row) rc.get(i);
             		Hashtable<String, Object> htFila=fila.getRow();
@@ -824,6 +821,7 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
             	}
             } 
        } catch (Exception e) {
+    	   ClsLogging.writeFileLog("VOLANTES EXPRESS:Error Select Turnos"+e.toString(), 10);
        		throw new ClsExceptions (e, "Error al ejecutar consulta.");
        }
        return alTurnos;

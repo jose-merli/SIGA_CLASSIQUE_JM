@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.UserTransaction;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
@@ -24,6 +25,7 @@ import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.form.PCAJGListadoTablasMaestrasForm;
+import com.siga.general.EjecucionPLs;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.util.calendarioSJCS.CalendarioSJCS;
 import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
@@ -907,24 +909,11 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 	 * @throws ClsExceptions
 	 */
 	public String ejecutarPLGuardias(String idinstitucion, String idturno, String idguardia) {
-		String contador = "";
-
-		//Parametros de entrada del PL
-		Object[] param_in = new Object[3];
-		param_in[0] = idinstitucion;
-		param_in[1] = idturno;
-		param_in[2] = idguardia;
-		param_in[3] = "1"; // con saltos y compensaciones
-        String resultado[] = new String[3];
-
-        //Ejecucion del PL
-        try {
-        	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_ORDENACION.ORDENA_COLEGIADOS_GUARDIA (?,?,?,?,?,?,?)}", 3, param_in);
-            //Resultado del PL
-            contador = resultado[0];
-        } catch (Exception e) {
-        }
-		return contador;
+		return EjecucionPLs.ejecutarPL_OrdenaColegiadosGuardia(
+				Integer.valueOf(idinstitucion), 
+				Integer.valueOf(idturno), 
+				Integer.valueOf(idguardia), 
+				new Integer(0))[0];
 	}
 
 	//Comprueba antes de borrar un CALENDARIO de guardias que no exista ninguna guardia realizada. 
@@ -1081,7 +1070,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		
 	}
 	
-	public void sustitucionLetradoGuardiaPuntual(UsrBean usr,HttpServletRequest request,String idInstitucion, String idTurno,String idGuardia,String idCalendarioGuardias,String idPersonaSaliente,String fechaInicio,String fechaFin,String idPersonaEntrante,String salto,String compensacion,String sustituta) throws ClsExceptions
+	public void sustitucionLetradoGuardiaPuntual(UsrBean usr,HttpServletRequest request,String idInstitucion, String idTurno,String idGuardia,String idCalendarioGuardias,String idPersonaSaliente,String fechaInicio,String fechaFin,String idPersonaEntrante,String salto,String compensacion,String sustituta, String comenSustitucion) throws ClsExceptions
 	{
 		String mensaje = "OK";
 				 
@@ -1227,7 +1216,8 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		cabeceraGuarSal.setLetradoSustituido(Long.valueOf(idPersonaSaliente));
 		cabeceraGuarSal.setFechaSustitucion(GstDate.getApplicationFormatDate(usr.getLanguage(),UtilidadesBDAdm.getFechaBD(usr.getLanguage())));
 		if(sustituta.equalsIgnoreCase("NO")){
-			cabeceraGuarSal.setComenSustitucion(UtilidadesString.getMensajeIdioma(usr.getLanguage(),"gratuita.literal.letrado.añadido.sustitucion"));
+			//cabeceraGuarSal.setComenSustitucion(UtilidadesString.getMensajeIdioma(usr.getLanguage(),"gratuita.literal.letrado.añadido.sustitucion"));
+			  cabeceraGuarSal.setComenSustitucion(comenSustitucion);
 		}else{
 			cabeceraGuarSal.setComenSustitucion(UtilidadesString.getMensajeIdioma(usr.getLanguage(),"gratuita.literal.letrado.guardia.sustitucion"));
 		}
@@ -1479,12 +1469,11 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		if(!withAsistencias){
 			sql.append(" SELECT * from ( ");
 		}
-		sql.append(" SELECT DISTINCT IDPERSONA, ");
-		sql.append(" (SELECT CEN_PERSONA.NOMBRE || ' ' || CEN_PERSONA.APELLIDOS1 || ' ' || ");
-		sql.append(" CEN_PERSONA.APELLIDOS2 ");
-		sql.append(" FROM CEN_PERSONA ");
-		sql.append(" WHERE CEN_PERSONA.IDPERSONA = ");
-		sql.append(" GC.IDPERSONA) AS NOMBRE ");
+		
+		
+		sql.append(" SELECT DISTINCT PER.IDPERSONA,PER.NOMBRE || ' ' || ");
+		sql.append(" PER.APELLIDOS1 || ' ' || ");
+		sql.append(" PER.APELLIDOS2 AS NOMBRE");
 		if(!withAsistencias){
 			if(volanteExpres.getFechaGuardia()!=null){
 				truncFechaGuardia = GstDate.getFormatedDateShort("", volanteExpres.getFechaGuardia());
@@ -1501,17 +1490,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 				
 			}
 		}
-		
-		
-		
-//		sql.append(" ,(SELECT F_SIGA_CALCULONCOLEGIADO(SCS_GUARDIASCOLEGIADO.IDINSTITUCION, ");
-//		sql.append(" SCS_GUARDIASCOLEGIADO.IDPERSONA) ");
-//		sql.append(" FROM CEN_COLEGIADO ");
-//		sql.append(" WHERE CEN_COLEGIADO.IDINSTITUCION = ");
-//		sql.append(" SCS_GUARDIASCOLEGIADO.IDINSTITUCION ");
-//		sql.append(" AND CEN_COLEGIADO.IDPERSONA = ");
-//		sql.append(" SCS_GUARDIASCOLEGIADO.IDPERSONA) AS NCOLEGIADO ");
-		sql.append(" FROM SCS_GUARDIASCOLEGIADO GC");
+		sql.append(" FROM SCS_GUARDIASCOLEGIADO GC,CEN_PERSONA PER ");
 		sql.append(" WHERE GC.IDINSTITUCION = :");
 		contador ++;
 		sql.append(contador);
@@ -1524,6 +1503,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		contador ++;
 		sql.append(contador);
 		htCodigos.put(new Integer(contador),volanteExpres.getIdGuardia());
+	
 		if(volanteExpres.getFechaGuardia()!=null){
 			if(truncFechaGuardia==null)
 				truncFechaGuardia = GstDate.getFormatedDateShort("", volanteExpres.getFechaGuardia());
@@ -1534,7 +1514,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 			sql.append(" BETWEEN ");
 			sql.append(" TRUNC(GC.FECHAINICIO) AND TRUNC(GC.FECHAFIN) ");
 		}
-		
+		sql.append(" AND PER.IDPERSONA = GC.IDPERSONA ");
 		sql.append(" ORDER BY NOMBRE ");
 		if(!withAsistencias){
 			sql.append(" ) where NUMASISTENCIAS=0");
@@ -1561,6 +1541,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
             	}
             } 
        } catch (Exception e) {
+    	   ClsLogging.writeFileLog("VOLANTES EXPRESS:Error Select Colegiados"+e.toString(), 10);
        		throw new ClsExceptions (e, "Error al ejecutar consulta.");
        }
        return alColegiadosGuardias;
@@ -1678,7 +1659,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		}
 		else {
 			validarColegiadoEntrante(usr,idInstitucion.toString(), idTurno.toString(), idGuardia.toString(), idCalendarioGuardias, fechaInicio,fechaFin,idPersonaEntrante.toString());
-			sustitucionLetradoGuardiaPuntual(usr, null, idInstitucion.toString(), idTurno.toString(),idGuardia.toString(),idCalendarioGuardias,idPersonaSaliente.toString(),fechaInicio,fechaFin,idPersonaEntrante.toString(), salto, compensacion,"si");
+			sustitucionLetradoGuardiaPuntual(usr, null, idInstitucion.toString(), idTurno.toString(),idGuardia.toString(),idCalendarioGuardias,idPersonaSaliente.toString(),fechaInicio,fechaFin,idPersonaEntrante.toString(), salto, compensacion,"si","");
 		}
 
 

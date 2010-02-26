@@ -18,8 +18,8 @@
 
 package com.siga.general;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,6 +31,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -189,6 +190,10 @@ public abstract class MasterAction extends SIGAActionBase {
 				// AbrirAvanzada
 				if (accion.equalsIgnoreCase("abrirAvanzada")){
 					mapDestino = abrirAvanzada(mapping, miForm, request, response);
+					break;
+				}
+				if (accion.equalsIgnoreCase("descargaFicheroGlobal")){
+					mapDestino = descargaFicheroGlobal(mapping, miForm, request, response);
 					break;
 				}
 				
@@ -655,12 +660,17 @@ public abstract class MasterAction extends SIGAActionBase {
 	 * */
 	
 	private String testAccess(HttpServletRequest request) throws ClsExceptions, SIGAException{
+		String uri = request.getRequestURI();
+		String proceso=request.getParameter("process");
+		return testAccess(uri,proceso,request);
+	}
+	protected String testAccess(String uri,String proceso,HttpServletRequest request) throws ClsExceptions, SIGAException{
 		UsrBean usrbean=(UsrBean)request.getSession().getAttribute(ClsConstants.USERBEAN);
 //		UsrBean usrbean=(UsrBean)request.getSession().getAttribute("USRBEAN");
 		
 		// Si venimos por SolicitarIncorporacionAccesoDirectoAction no comprobamos el tipo de acceso porque 
 		// no vamos a entrar a la aplicacion, sola a una parte concreta: SolicitarIncorporacion 
-		String uri = request.getRequestURI();
+		
 		if (uri != null) {
 			if (uri.equals("/SIGA/SIN_SolicitudIncorporacion.do") 	&& 
 					usrbean.getUserName().equals("-1")					&&
@@ -670,17 +680,14 @@ public abstract class MasterAction extends SIGAActionBase {
 			}
 		}
 		////////////////
-		
 		if (usrbean==null) { 
 			ClsExceptions e=new ClsExceptions("Usuario inválido. Es necesario firmar antes de utilizar la aplicación");
 			e.setErrorCode("USERNOVALID");
 			throw e;
 		}
-		String proceso=request.getParameter("process");
 		String access=SIGAConstants.ACCESS_DENY;
 		
 		if (proceso==null) {
-			uri=request.getRequestURI();
 			if (uri==null) throw new ClsExceptions("URL no reconocida por SIGA");
 			int idexofdo=uri.indexOf(".do");
 			if (idexofdo==-1) throw new ClsExceptions("URL no reconocida por SIGA ("+uri+")");
@@ -960,35 +967,95 @@ public abstract class MasterAction extends SIGAActionBase {
 	}
 
 	protected void respuestaAjax(AjaxXmlBuilder ajaxXmlBuilder, List<String> list, HttpServletResponse response) throws IOException {
+		ajaxXmlBuilder.setEncoding("ISO-8859-15");
 		for (int i = 0; i < list.size(); i++) {
 			ajaxXmlBuilder.addItem((String)list.get(i));
 		}
 		
 		response.setContentType("text/xml");
 	    response.setHeader("Cache-Control", "no-cache");
-	    PrintWriter pw = response.getWriter();
-	    pw.write(ajaxXmlBuilder.toString());
-	    pw.close();
+	    /*PrintWriter pw = response.getWriter();
+	    String strBuilder = ajaxXmlBuilder.toString();
+	    ClsLogging.writeFileLog("VOLANTES EXPRESS:respuestaAjax.AjaxXmlBuilder"+strBuilder, 10);
+	    pw.write(strBuilder);
+	    pw.flush();
+	    pw.close();*/
+	    ServletOutputStream out = response.getOutputStream();
+	    String strBuilder = ajaxXmlBuilder.toString();
+	    ClsLogging.writeFileLog("VOLANTES EXPRESS:respuestaAjax.AjaxMultipleCollectionXmlBuilder"+strBuilder, 10);
+	    out.print(strBuilder);
+	    out.flush();
+	    out.close();
+
+	    
 	}
 	
 	@SuppressWarnings("unchecked")
 	protected void respuestaAjax(AjaxMultipleCollectionXmlBuilder builder, Collection<Collection> collection, HttpServletResponse response) throws IOException{
+		builder.setEncoding("ISO-8859-15");
 		builder.addItems(collection);
 		response.setContentType("text/xml");
 	    response.setHeader("Cache-Control", "no-cache");
-	    PrintWriter pw = response.getWriter();
-	    pw.write(builder.toString());
+	    /*PrintWriter pw = response.getWriter();
+	    
+	    String strBuilder = builder.toString();
+	    ClsLogging.writeFileLog("VOLANTES EXPRESS:respuestaAjax.AjaxMultipleCollectionXmlBuilder"+strBuilder, 10);
+	    pw.write(strBuilder);
+	    pw.flush();
 	    pw.close();
+	    */
+	    ServletOutputStream out = response.getOutputStream();
+	    String strBuilder = builder.toString();
+	    ClsLogging.writeFileLog("VOLANTES EXPRESS:respuestaAjax.AjaxMultipleCollectionXmlBuilder"+strBuilder, 10);
+	    out.print(strBuilder);
+	    out.flush();
+	    out.close();
 	}
 
 	@SuppressWarnings("unchecked")
 	protected void respuestaAjax(AjaxCollectionXmlBuilder builder, Collection collection, HttpServletResponse response) throws IOException{
+		builder.setEncoding("ISO-8859-15");
 		builder.addItems(collection);
 		response.setContentType("text/xml");
 	    response.setHeader("Cache-Control", "no-cache");
-	    PrintWriter pw = response.getWriter();
-	    pw.write(builder.toString());
-	    pw.close();
+	   /* PrintWriter pw = response.getWriter();
+	    String strBuilder = builder.toString();
+	    ClsLogging.writeFileLog("VOLANTES EXPRESS:respuestaAjax.AjaxCollectionXmlBuilder"+strBuilder, 10);
+	    pw.write(strBuilder);
+	    pw.flush();
+	    pw.close();*/
+	    ServletOutputStream out = response.getOutputStream();
+	    String strBuilder = builder.toString();
+	    ClsLogging.writeFileLog("VOLANTES EXPRESS:respuestaAjax.AjaxMultipleCollectionXmlBuilder"+strBuilder, 10);
+	    out.print(strBuilder);
+	    out.flush();
+	    out.close();
 		
+	}
+	protected String descargaFicheroGlobal (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) 
+	throws SIGAException{
+		
+		File fichero = null;
+		String rutaFichero = null;
+		MasterForm miform = null;
+		
+		try {
+			//Obtenemos el formulario y sus datos:
+			miform = (MasterForm)formulario;
+			rutaFichero = miform.getRutaFichero();
+			fichero = new File(rutaFichero);
+			if(fichero==null || !fichero.exists()){
+				throw new SIGAException("messages.general.error.ficheroNoExiste"); 
+			}
+			request.setAttribute("nombreFichero", fichero.getName());
+			request.setAttribute("rutaFichero", fichero.getPath());
+			request.setAttribute("borrarFichero","true");
+
+			
+		}
+		catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null);
+		}
+		return "descargaFicheroGlobal";	
 	}
 }

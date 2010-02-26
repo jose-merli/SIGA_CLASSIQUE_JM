@@ -132,7 +132,7 @@ String clase="boxConsulta";
 
 	<siga:ConjCampos leyenda="gratuita.maestroTurnos.literal.datosGenerales">
 		
-	<table width="100%" border=1>
+	<table width="100%" border=0>
 	<tr>
 		<td class="labelText" style="text-align:left">
 			<siga:Idioma key="gratuita.definirTurnosIndex.literal.abreviatura"/>

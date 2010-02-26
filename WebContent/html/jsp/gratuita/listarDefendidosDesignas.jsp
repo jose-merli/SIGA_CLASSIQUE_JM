@@ -167,8 +167,7 @@ function accionCerrar() {
 			   clase="tableTitle"
 			   nombreCol="gratuita.defendidosDesigna.literal.nif,gratuita.defendidosDesigna.literal.nombreApellidos,gratuita.defendidosDesigna.literal.representante,"
 			   tamanoCol="10,45,30,15"
-		   			alto="100%"
-		   			ajusteBotonera="true"	
+			   alto="100%"
 			   modal="G"
 			  >
 

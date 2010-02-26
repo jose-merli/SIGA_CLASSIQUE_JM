@@ -47,4 +47,18 @@ public class BotonesMenu {
 		return path;
 	}
 	
+	//Obtenemos el path para el boton Versiones del menu
+	public static String getPathVersiones(String idInstitucion){
+		String path = "";
+		if (idInstitucion==null) idInstitucion="2000";
+		
+		try {
+			GenParametrosAdm paramAdm = new GenParametrosAdm(UsrBean.UsrBeanAutomatico(idInstitucion));
+			path = paramAdm.getValor("" + idInstitucion, "GEN", "PATH_VERSIONES", "");
+		} catch (Exception e){
+			path = "";
+		}		
+		return path;
+	}
+	
 }

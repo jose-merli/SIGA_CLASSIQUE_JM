@@ -10,6 +10,7 @@ import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.siga.general.EjecucionPLs;
 import com.siga.general.SIGAException;
 
 
@@ -509,7 +510,8 @@ public class BusquedaClientesFiltrosAdm {
 				}
 			}
 			
-			contador = cargaTemporal(idInstitucion,idTurno,"0");
+			contador = EjecucionPLs.ejecutarPL_OrdenaColegiadosTurno(
+					Integer.valueOf(idInstitucion), Integer.valueOf(idTurno), 0)[0];
 			
 			String consultaTemp =
 				"select p."+CenPersonaBean.C_IDPERSONA+","+ 
@@ -864,24 +866,6 @@ public class BusquedaClientesFiltrosAdm {
 		return result;
 	}
 	
-	
-	/**
-	 * Llama a un PL que carga los colegiados del turno en una tabla temporal 
-	 * @param idInstitucion Identificador de la institucion
-	 * @param idTurno Identificador del turno
-	 * @return devuelve el contador que referencia a la lista de registros en la tabla temporal
-	 * @throws ClsExceptions Excepcion interna
-	 */	
-	protected String cargaTemporal(String idInstitucion, String idTurno, String saltosCompensacion)throws ClsExceptions{
-		//Parametros de entrada del PL
-		Object[] param_in = new Object[]{idInstitucion,idTurno,saltosCompensacion};// sin saltos ni compensaciones
-		String resultadoPl[] = 
-			ClsMngBBDD.callPLProcedure("{call PKG_SIGA_ORDENACION.ORDENA_COLEGIADOS_TURNO (?,?,?,?,?,?)}", 3, param_in);
-		//Resultado del PL (contador)
-		return resultadoPl[0];
-	}
-	
-	
 	/**
 	 * Borra de la tabla temporal los registros que referencia el contador
 	 * @param contador Referencia a la lista de registros en la tabla temporal
@@ -992,7 +976,8 @@ public class BusquedaClientesFiltrosAdm {
 	protected Vector buscaInternaLetradosDelTurno(String idInstitucion, String idTurno, int difRow, String salto)throws ClsExceptions{
 		Vector vResult = null;
 		try{
-			String contador = cargaTemporal(idInstitucion,idTurno,"1");
+			String contador = EjecucionPLs.ejecutarPL_OrdenaColegiadosTurno(
+					Integer.valueOf(idInstitucion), Integer.valueOf(idTurno), 1)[0];
 			
 			//Consulta en la tabla temporal la posicion para el letrado
 			String consultaTemp =

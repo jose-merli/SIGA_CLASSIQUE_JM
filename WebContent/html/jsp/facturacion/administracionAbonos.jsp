@@ -33,6 +33,9 @@
 
 	String leftPestanhas = "0";
 	String altoIframe = "465";
+	String pestanaId = "ABONOS";
+	if(request.getAttribute("pestanaId")!=null)
+		pestanaId = (String) request.getAttribute("pestanaId");
 	
 	Hashtable hashPestanas = (Hashtable) request.getAttribute("datosAbonos");
 	String volver = null;
@@ -81,7 +84,7 @@
 			String idInstitucion = (String)hashPestanas.get("idInstitucion");
 	%>
 	<siga:PestanasExt 
-			pestanaId="ABONOS" 
+			pestanaId="<%=pestanaId%>" 
 			target="mainPestanasNivel3"
 			parametros="datosAbonos"
 			elementoactivo="1"

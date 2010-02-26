@@ -193,6 +193,15 @@ public class MasterForm extends ActionForm {
 	public void setSeleccionarTodos(String seleccionarTodos) {
 		UtilidadesHash.set(this.datos,"seleccionarTodos", seleccionarTodos);
 	}
+	String rutaFichero;
+
+	public String getRutaFichero() {
+		return rutaFichero;
+	}
+	public void setRutaFichero(String rutaFichero) {
+		this.rutaFichero = rutaFichero;
+	}
+	
 	
 	
 	

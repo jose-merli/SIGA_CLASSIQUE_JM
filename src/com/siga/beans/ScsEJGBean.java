@@ -85,6 +85,7 @@ public class ScsEJGBean extends MasterBean{
 	private String identificadorDS;
 	private String idOrigenCAJG;
 	private String idPreceptivo;
+	private String idSituacion;
 	
 
 	
@@ -164,6 +165,7 @@ public class ScsEJGBean extends MasterBean{
 	static public final String C_IDENTIFICADORDS   = "IDENTIFICADORDS";
 	static public final String C_IDORIGENCAJG   = "IDORIGENCAJG";
 	static public final String C_PRECEPTIVO   = "IDPRECEPTIVO";
+	static public final String C_SITUACION   = "IDSITUACION";
 	
 	
 	
@@ -815,6 +817,12 @@ public class ScsEJGBean extends MasterBean{
 	}
 	public void setIdPreceptivo(String idPreceptivo) {
 		this.idPreceptivo = idPreceptivo;
+	}
+	public String getIdSituacion() {
+		return idSituacion;
+	}
+	public void setIdSituacion(String idSituacion) {
+		this.idSituacion = idSituacion;
 	}
 	public ScsPersonaJGBean getSolicitante() {
 		return solicitante;

@@ -54,6 +54,8 @@
 			<input type="hidden" name="descripcion" value="<%= form.getDescripcion() %>">
 			<input type="hidden" name="idInstitucion" value="<%= form.getIdInstitucion() %>">
 			<input type="hidden" name="idPersona" value="<%= form.getIdPersona() %>">
+			<input type="hidden" name="fechaSolicitud" value="<%= form.getFechaSolicitud() %>">
+			<input type="hidden" name="metodoSolicitud" value="<%= form.getMetodoSolicitud() %>">
 		</html:form>
 </body>
 </html:html>

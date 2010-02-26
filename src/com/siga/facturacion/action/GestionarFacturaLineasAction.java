@@ -155,31 +155,88 @@ public class GestionarFacturaLineasAction extends MasterAction
 		}				
 		return modo;
 	}
-
-	protected String modificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
-
-		UserTransaction t = this.getUserBean(request).getTransaction();
-		try{
+	
+	/**
+	 * Ejecuta la modificacion de una linea en BD
+	 */
+	protected String modificar (ActionMapping mapping,
+								MasterForm formulario,
+								HttpServletRequest request,
+								HttpServletResponse response)
+		throws ClsExceptions, SIGAException
+	{
+		//Variables generales
+		UserTransaction tx = null;
+		boolean actualizado = false;
+		
+		try {
+			//Controles generales
+			UsrBean usr = this.getUserBean(request);
 			GestionarFacturaForm miForm = (GestionarFacturaForm) formulario;			
-			FacLineaFacturaBean beanLinea = (FacLineaFacturaBean) request.getSession().getAttribute("DATABACKUP");
-			FacLineaFacturaAdm lineasAdm = new FacLineaFacturaAdm(this.getUserBean(request));
+			FacLineaFacturaAdm lineasAdm = new FacLineaFacturaAdm(usr);
+			FacFacturaAdm facturaAdm = new FacFacturaAdm(usr);
 			
+			tx = usr.getTransaction();
+			tx.begin();
+			actualizado = false;
+			
+			//actualizando linea factura
+			FacLineaFacturaBean beanLinea = (FacLineaFacturaBean) request.getSession().getAttribute("DATABACKUP");
 			beanLinea.setDescripcion(miForm.getDatosLineaDescripcion());
 			beanLinea.setPrecioUnitario(miForm.getDatosLineaPrecio());
 			beanLinea.setIva(miForm.getDatosLineaIVA());
-			t.begin();
-			if(lineasAdm.update(beanLinea)) {
-				t.commit();
-			}
-			else {
-				throwExcp("messages.updated.error",new String[] {"modulo.facturacion"},new ClsExceptions("messages.updated.error"),t); 
-			}
-		} 
+			if (lineasAdm.update(beanLinea))
+				actualizado = true;
+			
+			//actualizando total factura
+			String sql = 
+				"update fac_factura " +
+				"   set imptotalneto              = pkg_siga_totalesfactura.totalneto(idinstitucion, " +
+				"                                                                     idfactura), " +
+				"       imptotaliva               = pkg_siga_totalesfactura.totaliva(idinstitucion, " +
+				"                                                                    idfactura), " +
+				"       imptotal                  = pkg_siga_totalesfactura.total(idinstitucion, " +
+				"                                                                 idfactura), " +
+				"       imptotalanticipado        = pkg_siga_totalesfactura.totalanticipado(idinstitucion, " +
+				"                                                                           idfactura), " +
+				"       imptotalpagadoporcaja     = pkg_siga_totalesfactura.totalpagadoporcaja(idinstitucion, " +
+				"                                                                              idfactura), " +
+				"       imptotalpagadosolocaja    = pkg_siga_totalesfactura.totalpagadosolocaja(idinstitucion, " +
+				"                                                                               idfactura), " +
+				"       imptotalpagadosolotarjeta = pkg_siga_totalesfactura.totalpagadosolotarjeta(idinstitucion, " +
+				"                                                                                  idfactura), " +
+				"       imptotalpagadoporbanco    = pkg_siga_totalesfactura.totalpagadoporbanco(idinstitucion, " +
+				"                                                                               idfactura), " +
+				"       imptotalpagado            = pkg_siga_totalesfactura.totalpagado(idinstitucion, " +
+				"                                                                       idfactura), " +
+				"       imptotalporpagar          = pkg_siga_totalesfactura.pendienteporpagar(idinstitucion, " +
+				"                                                                             idfactura), " +
+				"       imptotalcompensado        = pkg_siga_totalesfactura.totalcompensado(idinstitucion, " +
+				"                                                                           idfactura), " +
+				"       fechamodificacion         = sysdate, " +
+				"       usumodificacion           = "+usr.getUserName()+" " +
+				" where idinstitucion = "+beanLinea.getIdInstitucion()+" " +
+				"   and idfactura = "+beanLinea.getIdFactura()+" ";
+			if (facturaAdm.updateSQL(sql))
+				actualizado = true;
+			
+			if (actualizado)
+				tx.commit();
+		}
 		catch (Exception e) { 
-			throwExcp("messages.general.error", new String[] {"modulo.facturacion"}, e, t); 
-		}				
+			throwExcp("messages.general.error", 
+					new String[] {"modulo.facturacion"}, 
+					e, tx); 
+		}
+		finally {
+			if (! actualizado)
+				throwExcp("messages.updated.error", 
+						new String[] {"modulo.facturacion"}, 
+						new ClsExceptions("messages.updated.error"), tx); 
+		}
+		
 		return exitoModal("messages.updated.success", request);
-	}
+	} //modificar()
 	
 	protected String ver(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		String modo = "";

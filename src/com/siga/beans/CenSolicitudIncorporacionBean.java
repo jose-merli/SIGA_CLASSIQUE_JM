@@ -28,7 +28,7 @@ public class CenSolicitudIncorporacionBean extends MasterBean {
 					numIdentificador, 	domicilio, 		codigoPostal, 		telef1, 
 					telef2, 			movil, 			fax1, 				fax2, 
 					correoElectronico, 	observaciones, 	naturalDe,			idPais,
-					idProvincia,		idPoblacion,	fechaSolicitud, 
+					idProvincia,		idPoblacion,	fechaSolicitud, 	fechaEstadoColegial,
 					fechaNacimiento, 	fechaEstado,	sexo, poblacionExtranjera;
 
 	/* Nombre tabla */
@@ -67,6 +67,7 @@ public class CenSolicitudIncorporacionBean extends MasterBean {
 	static public final String C_FECHAESTADO 			= "FECHAESTADO";
 	static public final String C_SEXO					= "SEXO";
 	static public final String C_IDMODALIDADDOCUMENTACION = "IDMODALIDADDOCUMENTACION";
+	static public final String C_FECHAESTADOCOLEGIAL	= "FECHAESTADOCOLEGIAL"; 
 
 	// Metodos SET
 	public void setIdSolicitud (Long id) 				{ this.idSolicitud = id; }
@@ -99,6 +100,7 @@ public class CenSolicitudIncorporacionBean extends MasterBean {
 	public void setFechaSolicitud (String f) 			{ this.fechaSolicitud = f ; }
 	public void setFechaNacimiento (String f) 			{ this.fechaNacimiento = f; }
 	public void setFechaEstado (String f) 				{ this.fechaEstado = f; }
+	public void setFechaEstadoColegial (String f) 		{ this.fechaEstadoColegial = f; }
 
 	// Metodos GET
 	public Long getIdSolicitud 				() 	{ return this.idSolicitud; }
@@ -127,10 +129,11 @@ public class CenSolicitudIncorporacionBean extends MasterBean {
 	public String getNaturalDe 				() 	{ return this.naturalDe; }
 	public String getIdProvincia  			() 	{ return this.idProvincia; }
 	public String getIdPoblacion  			() 	{ return this.idPoblacion; }
-	public String getPoblacionExtranjera  			() 	{ return this.poblacionExtranjera; }
+	public String getPoblacionExtranjera  	() 	{ return this.poblacionExtranjera; }
 	public String getFechaSolicitud 		() 	{ return this.fechaSolicitud; }
 	public String getFechaNacimiento 		() 	{ return this.fechaNacimiento; }
 	public String getFechaEstado	 		() 	{ return this.fechaEstado; }
+	public String getFechaEstadoColegial	() 	{ return this.fechaEstadoColegial; }
 
 	public String getSexo() {
 		return sexo;

@@ -136,7 +136,6 @@
 	else { //Venimos de Nuevo
 		idInstitucion = request.getAttribute("idInstitucionRegistro")==null?"":(String)request.getAttribute("idInstitucionRegistro");//Propia del registro
 	}
-
 	
 	importePendienteDePago = request.getAttribute("importePendienteDePago")==null?null:(Long)request.getAttribute("importePendienteDePago");
 	
@@ -362,10 +361,12 @@
 				document.getElementById("importe"+conceptos[i]).value = "0,00";
 				document.getElementById("porcentaje"+conceptos[i]).value = "0,00";
 				//inicializa el aspecto de los elementos
-				document.getElementById("porcentaje"+conceptos[i]).className  = "boxConsultaNumber";	
-				document.getElementById("porcentaje"+conceptos[i]).readOnly = true;
-				document.getElementById("importe"+conceptos[i]).readOnly = false;
-				document.getElementById("importe"+conceptos[i]).className  = "<%=estiloNumber%>";
+				document.getElementById("porcentaje"+conceptos[i]).className  = "<%=estiloNumber%>";	
+				document.getElementById("porcentaje"+conceptos[i]).readOnly = false;
+				document.getElementById("importe"+conceptos[i]).readOnly = true;
+				document.getElementById("importe"+conceptos[i]).className  = "boxConsultaNumber";
+				document.getElementById("radioImporte"+conceptos[i]).checked  = false;
+				document.getElementById("radioPorcentaje"+conceptos[i]).checked  = true;
 			}
 		}
 
@@ -377,6 +378,8 @@
 				//inicializa el valor de los elementos
 				document.getElementById("importe"+conceptos[i]).value = convertirAFormato(eval("importe"+conceptos[i])+"");
 				actualizaConcepto(conceptos[i], eval("total"+conceptos[i]), eval("importePend"+conceptos[i]), 0);
+				document.getElementsByName("radioAPagar"+conceptos[i])[1].checked=true;
+				cambiar(conceptos[i]);
 			}
 		}
 		
@@ -393,17 +396,17 @@
 				    totalEJG + " - " + importePagadoEJG + " - " + porcentajePagadoEJG + " - " + 
 			        totalSOJ + " - " + importePagadoSOJ + " - " + porcentajePagadoSOJ);*/
 			
-			importePendOficio = parseFloat(totalOficio) - parseFloat(importePagadoOficio);
-			porcentajePendOficio = parseFloat(100) - parseFloat(porcentajePagadoOficio);
+			importePendOficio = roundNumber(parseFloat(totalOficio) - parseFloat(importePagadoOficio), 2);
+			porcentajePendOficio = roundNumber(parseFloat(100) - parseFloat(porcentajePagadoOficio), 2);
 			
-			importePendGuardias = parseFloat(totalGuardias) - parseFloat(importePagadoGuardias);
-			porcentajePendGuardias = parseFloat(100) - parseFloat(porcentajePagadoGuardias);
+			importePendGuardias = roundNumber(parseFloat(totalGuardias) - parseFloat(importePagadoGuardias), 2);
+			porcentajePendGuardias = roundNumber(parseFloat(100) - parseFloat(porcentajePagadoGuardias), 2);
 
-			importePendEJG = parseFloat(totalEJG) - parseFloat(importePagadoEJG);
-			porcentajePendEJG = parseFloat(100) - parseFloat(porcentajePagadoEJG);
+			importePendEJG = roundNumber(parseFloat(totalEJG) - parseFloat(importePagadoEJG), 2);
+			porcentajePendEJG = roundNumber(parseFloat(100) - parseFloat(porcentajePagadoEJG), 2);
 
-			importePendSOJ = parseFloat(totalSOJ) - parseFloat(importePagadoSOJ);
-			porcentajePendSOJ = parseFloat(100) - parseFloat(porcentajePagadoSOJ);
+			importePendSOJ = roundNumber(parseFloat(totalSOJ) - parseFloat(importePagadoSOJ), 2);
+			porcentajePendSOJ = roundNumber(parseFloat(100) - parseFloat(porcentajePagadoSOJ), 2);
 		}
 		
 		/**
@@ -604,10 +607,10 @@
 					</td>
 					<td class="labelTextNum" >
 						<% if (esNuevo || (esEdicion && estadoAbierto)){ %>
-							<input name="radioAPagarOficio" value="importe" type="radio" onclick="cambiar('Oficio');" Checked/>
+							<input name="radioAPagarOficio" id="radioImporteOficio" value="importe" type="radio" onclick="cambiar('Oficio');" Checked/>
 							<input name="importeOficio" id="importeOficio" style="width:50%" class="<%=estiloNumber%>" onblur="actualizaConcepto('Oficio', totalOficio, importePendOficio, porcentajePendOficio);" onfocus="backup('importeOficio')" />						
 							<span style="vertical-align:40%">&euro;	&nbsp;</span>
-						  	<input name="radioApagarOficio" value="porcentaje" type="radio" onclick="cambiar('Oficio');" />
+						  	<input name="radioApagarOficio" id="radioPorcentajeOficio" value="porcentaje" type="radio" onclick="cambiar('Oficio');" />
 							<input name="porcentajeOficio" id="porcentajeOficio" style="width:15%" maxlength="5" class="boxConsultaNumber" readonly="true" onblur="actualizaConcepto('Oficio', totalOficio, importePendOficio, porcentajePendOficio);"	onfocus="backup('porcentajeOficio');" />						
 							<span style="vertical-align:40%">&#37;</span>
 						<% } else {%>
@@ -633,10 +636,10 @@
 					</td>
 					<td class="labelTextNum" >
 						<% if (esNuevo || (esEdicion && estadoAbierto)){ %>
-							<input name="radioAPagarGuardias" value="importe" type="radio" onclick="cambiar('Guardias');" Checked/>
+							<input name="radioAPagarGuardias" id="radioImporteGuardias" value="importe" type="radio" onclick="cambiar('Guardias');" Checked/>
 							<input name="importeGuardias" id="importeGuardias" style="width:50%" class="<%=estiloNumber%>" onblur="actualizaConcepto('Guardias', totalGuardias, importePendGuardias, porcentajePendGuardias);" onfocus="backup('importeGuardias');" />						
 							<span style="vertical-align:40%">&euro;	&nbsp;</span>
-						  	<input name="radioAPagarGuardias" value="porcentaje" type="radio" onclick="cambiar('Guardias');" />
+						  	<input name="radioAPagarGuardias" id="radioPorcentajeGuardias" value="porcentaje" type="radio" onclick="cambiar('Guardias');"/>
 							<input name="porcentajeGuardias" id="porcentajeGuardias" style="width:15%" maxlength="5" class="boxConsultaNumber" readonly="true"  									
 										onblur="actualizaConcepto('Guardias', totalGuardias, importePendGuardias, porcentajePendGuardias);"
 										onfocus="backup('porcentajeGuardias');" />						
@@ -664,10 +667,10 @@
 					</td>
 					<td class="labelTextNum" >
 						<% if (esNuevo || (esEdicion && estadoAbierto)){ %>
-							<input name="radioAPagarEJG" value="importe" type="radio" onclick="cambiar('EJG');" Checked/>
+							<input name="radioAPagarEJG" id="radioImporteEJG" value="importe" type="radio" onclick="cambiar('EJG');" Checked/>
 							<input name="importeEJG" id="importeEJG" style="width:50%" class="<%=estiloNumber%>" onblur="actualizaConcepto('EJG', totalEJG, importePendEJG, porcentajePendEJG);" onfocus="backup('importeEJG');" />						
 							<span style="vertical-align:40%">&euro;	&nbsp;</span>
-						  	<input name="radioAPagarEJG" value="porcentaje" type="radio" onclick="cambiar('EJG');" />
+						  	<input name="radioAPagarEJG" id="radioPorcentajeEJG" value="porcentaje" type="radio" onclick="cambiar('EJG');"/>
 							<input name="porcentajeEJG" id="porcentajeEJG" style="width:15%" maxlength="5" class="boxConsultaNumber" readonly="true" onblur="actualizaConcepto('EJG', totalEJG, importePendEJG, porcentajePendEJG);" onfocus="backup('porcentajeEJG');" />						
 							<span style="vertical-align:40%">&#37;</span>
 						<% } else {%>
@@ -693,10 +696,10 @@
 					</td>
 					<td class="labelTextNum" >
 						<% if (esNuevo || (esEdicion && estadoAbierto)){ %>
-							<input name="radioAPagarSOJ" value="importe" type="radio" onclick="cambiar('SOJ');" Checked/>
+							<input name="radioAPagarSOJ" id="radioImporteSOJ" value="importe" type="radio" onclick="cambiar('SOJ');" Checked/>
 							<input name="importeSOJ" id="importeSOJ" style="width:50%" class="<%=estiloNumber%>" onblur="actualizaConcepto('SOJ', totalSOJ, importePendSOJ, porcentajePendSOJ);" onfocus="backup('importeSOJ');" />						
 							<span style="vertical-align:40%">&euro;	&nbsp;</span>
-						  	<input name="radioAPagarSOJ" value="porcentaje" type="radio" onclick="cambiar('SOJ');" />
+						  	<input name="radioAPagarSOJ" id="radioPorcentajeSOJ" value="porcentaje" type="radio" onclick="cambiar('SOJ');"/>
 							<input name="porcentajeSOJ" id="porcentajeSOJ" style="width:15%" maxlength="5" class="boxConsultaNumber" readonly="true" onblur="actualizaConcepto('SOJ', totalSOJ, importePendSOJ, porcentajePendSOJ);" onfocus="backup('porcentajeSOJ');" />						
 							<span style="vertical-align:40%">&#37;</span>
 						<% } else {%>
@@ -981,7 +984,7 @@
 				return false;
 			}
 		}
-		
+
 
 		/**
 		 * Borra los datos del formulario

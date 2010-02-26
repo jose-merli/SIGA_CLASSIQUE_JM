@@ -58,6 +58,8 @@
 			.getAttribute(ClsConstants.USERBEAN);
 	String idioma = usrbean.getLanguage().toUpperCase();
 	String idInstitucionLocation = usrbean.getLocation();
+	int idInstitucionInt = Integer.parseInt(idInstitucionLocation);
+	boolean esColegio = (idInstitucionInt>2000 && idInstitucionInt<3000);
 
 	
 	CenClienteAdm admCen = new CenClienteAdm(usrbean);
@@ -253,9 +255,15 @@
 	String alto = "";
 	if (colegiado.equals(ClsConstants.DB_TRUE)) {//colegiado
 		// cliente colegiado
-		tamanosCol = "3,12,6,12,11,11,8,8,6,9,15";
-		nombresCol += "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,censo.busquedaClientesAvanzada.literal.nif,censo.busquedaClientesAvanzada.literal.nColegiado,gratuita.turnos.literal.apellidosSolo,censo.busquedaClientesAvanzada.literal.nombre,censo.busquedaClientesAvanzada.literal.fechaIngreso,censo.busquedaClientes.literal.institucion,censo.busquedaClientesAvanzada.literal.estadoColegial,censo.busquedaClientesAvanzada.literal.residente,censo.busquedaClientesAvanzada.literal.fechaNacimiento,";
-		alto = "200";
+		if (esColegio){
+			tamanosCol = "3,12,6,13,12,11,10,6,13,15";
+			nombresCol += "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,censo.busquedaClientesAvanzada.literal.nif,censo.busquedaClientesAvanzada.literal.nColegiado,gratuita.turnos.literal.apellidosSolo,censo.busquedaClientesAvanzada.literal.nombre,censo.busquedaClientesAvanzada.literal.fechaIngreso,censo.busquedaClientesAvanzada.literal.estadoColegial,censo.busquedaClientesAvanzada.literal.residente,censo.busquedaClientesAvanzada.literal.tlfn1movil,";
+			alto = "200";
+		}else{
+			tamanosCol = "3,12,6,12,11,11,8,8,6,9,15";
+			nombresCol += "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,censo.busquedaClientesAvanzada.literal.nif,censo.busquedaClientesAvanzada.literal.nColegiado,gratuita.turnos.literal.apellidosSolo,censo.busquedaClientesAvanzada.literal.nombre,censo.busquedaClientesAvanzada.literal.fechaIngreso,censo.busquedaClientes.literal.institucion,censo.busquedaClientesAvanzada.literal.estadoColegial,censo.busquedaClientesAvanzada.literal.residente,censo.busquedaClientesAvanzada.literal.fechaNacimiento,";
+			alto = "200";
+		}
 
 	} else {
 		if (colegiado.equals(ClsConstants.DB_FALSE)) {//no colegiado
@@ -415,7 +423,20 @@
 											usrbean.getLanguage(),
 											registro
 													.get(CenPersonaBean.C_FECHANACIMIENTO)));
-
+					String nTelefonos="";
+					String nTelef1="";
+					String nMovil="";
+					if (colegiado.equals(ClsConstants.DB_TRUE)) {//colegiado
+						nTelef1 = registro.get("TELEFONO").toString();
+						nMovil = registro.get("MOVIL").toString();
+						if(nTelef1!=null && !nTelef1.equalsIgnoreCase(""))
+							nTelefonos+= UtilidadesString.mostrarDatoJSP(registro.get("TELEFONO"));
+						if(nMovil!=null && !nMovil.equalsIgnoreCase("")){
+							if(!nTelefonos.equalsIgnoreCase("")) nTelefonos += " -";
+							nTelefonos+= UtilidadesString.mostrarDatoJSP(nMovil)+" (M)";
+						}
+						nTelefonos=UtilidadesString.mostrarDatoJSP(nTelefonos);
+					}
 					String ncomunitario = "";
 					String ncolegiado = "";
 					String fechaIncorporacion = "";
@@ -541,39 +562,37 @@
 							}
 							%>
 		</td>
-		<%
-			//Si es un colegiado:
-							if (colegiado.equals(ClsConstants.DB_TRUE)) {
-		%>
-		<td><!-- campos hidden --> <input type="hidden"
-			name="oculto<%=cont %>_1" value="<%=idPersona %>"> 
-		<input	type="hidden" name="oculto<%=cont %>_2" value="<%=idInstitucion %>">
-		  
+		<% //Si es un colegiado:
+		   if (colegiado.equals(ClsConstants.DB_TRUE)) { %>
+		<td><!-- campos hidden --> 
+		<input type="hidden" name="oculto<%=cont %>_1" value="<%=idPersona %>"> 
+		<input type="hidden" name="oculto<%=cont %>_2" value="<%=idInstitucion %>">
 		<input type="hidden" name="oculto<%=cont %>_3" value="NINGUNO">
 		<input type="hidden" name="oculto<%=cont %>_4" value="1"> <%=nif%>
 		</td>
-		
 		<td><%=ncolegiado%></td>
 		<td><%=apellido1 + " " + apellido2%></td>
 		<td><%=nombre%></td>
 		<td><%=fechaIncorporacion%></td>
-		<td><%=institucion%></td>
+		<%if (!esColegio){ %>
+			<td><%=institucion%></td>
+		<% } %>
 		<td>
-		<% 
-		   if (estadoColegial!=null && !estadoColegial.equals("&nbsp")){%>
+		<% if (estadoColegial!=null && !estadoColegial.equals("&nbsp")){%>
 		   <%=estadoColegial%>
 		<%}else{ // para colegiados sin estado colegial o con estado colegial a futuro %>
 		    <siga:Idioma key="censo.busquedaClientes.literal.sinEstadoColegial"/>
 		<%} %>   
 		</td>
-		<td><%=residente.equals("0") ? "No"
-										: "Si"%></td>
-		<td><%=fechaNacimiento%></td>
+		<td><%=residente.equals("0") ? "No" : "Si"%></td>
+		<%if (!esColegio){ %>
+			<td><%=fechaNacimiento%></td>
+		<% } else { %>
+			<td><%=nTelefonos%></td>
+		<% } %>
 
-		<%
-			} else {
-								if (colegiado.equals(ClsConstants.DB_FALSE)) {
-		%>
+		<% } else { 
+			 if (colegiado.equals(ClsConstants.DB_FALSE)) { %>
 
 		<td><!-- campos hidden --> <input type="hidden"
 			name="oculto<%=cont %>_1" value="<%=idPersona%>"> <input
@@ -582,26 +601,17 @@
 
 		<siga:Idioma key='<%=tipoaux %>' /></td>
 		<td><%=nif%></td>
-		<%
-			if (tipo != null && tipo != ""
-											&& !tipo.equals("1")) {
-		%>
+		<% if (tipo != null && tipo != "" && !tipo.equals("1")) { %>
 		<td>&nbsp;</td>
 		<td><%=nombre%></td>
-		<%
-			} else {
-		%>
+		<% } else { %>
 		<td><%=apellido1 + " "
 												+ apellido2%></td>
 		<td><%=nombre%></td>
-		<%
-			}
-		%>
+		<% } %>
 		<td><%=institucion%></td>
 		<td><%=fechaNacimiento%></td>
-		<%
-			} else {
-		%>
+		<% } else { %>
 		<td><!-- campos hidden --> <input type="hidden"
 			name="oculto<%=cont %>_1" value="<%=idPersona%>"> <input
 			type="hidden" name="oculto<%=cont %>_2" value="<%=idInstitucion%>">
@@ -612,27 +622,17 @@
 		<td><%=apellido1 + " " + apellido2%></td>
 		<td><%=nombre%></td>
 		<td><%=fechaNacimiento%></td>
-
-
-		<%
-			}
-		%>
-		<%
-			}
-		%>
+		<% } %>
+		<% } %>
 	</siga:FilaConIconos>
 
 
 	<!-- FIN REGISTRO -->
-	<%
-		} // del for
-	%>
+	<% } // del for %>
 
 	<!-- FIN: ZONA DE REGISTROS -->
 
-	<%
-		} // del if
-	%>
+	<% } // del if %>
 
 </siga:TablaCabecerasFijas>
 	<siga:ConjBotonesAccion botones="GX,COM" />

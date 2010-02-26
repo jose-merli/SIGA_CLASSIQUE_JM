@@ -304,8 +304,4 @@ public class VolantesExpressForm extends MasterForm
 	public void setColegiadosSustituidos(List<CenPersonaBean> colegiadosSustituidos) {
 		this.colegiadosSustituidos = colegiadosSustituidos;
 	}
-	
-
-	
-	
 }

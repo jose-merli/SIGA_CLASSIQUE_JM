@@ -50,7 +50,11 @@ public class DefinirTurnosForm extends MasterForm {
 		this.activarRestriccionActuacion = activarRestriccionActuacion;
 	}
 //metodos set de los campos del formulario
-
+    
+	public void setnLetrados (String valor){ 
+		this.datos.put("NLETRADOS", valor);
+	}
+	 
 	public void setDescripcion (String valor){ 
 		this.datos.put("DESCRIPCION", valor);
 	}
@@ -294,6 +298,11 @@ public class DefinirTurnosForm extends MasterForm {
 	
 	
 	//Metodos get
+	
+	
+	public String getnLetrados (){ 
+		return (String)this.datos.get("NLETRADOS");
+	}
 	
 	public String getModal(){
 		return (String)this.datos.get("MODAL");

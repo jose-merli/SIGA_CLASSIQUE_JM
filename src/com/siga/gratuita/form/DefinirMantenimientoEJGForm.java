@@ -16,7 +16,7 @@ import com.siga.general.MasterForm;
  {
 	String numeroDilegencia = "", numeroProcedimiento = "", comisaria = "", juzgado = "", 
 			designa_anio= "", designa_numero = "", designa_turno = "", designa_idInstitucion = "",
-	        idTurnoEJG="",idGuardiaEJG="",pretension="", idOrigenCAJG="", idPreceptivo="" ;
+	        idTurnoEJG="",idGuardiaEJG="",pretension="", idOrigenCAJG="", idPreceptivo="", idSituacion="" ;
 
 	public String getPretension() {
 		return pretension;
@@ -39,6 +39,12 @@ import com.siga.general.MasterForm;
 		this.idPreceptivo = idPreceptivo;
 	}
 
+	public String getIdSituacion() {
+		return idSituacion;
+	}
+	public void setIdSituacion(String idSituacion) {
+		this.idSituacion = idSituacion;
+	}
 
 	/*
 	 * Metodos SET

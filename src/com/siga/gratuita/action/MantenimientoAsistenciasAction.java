@@ -157,7 +157,7 @@ public class MantenimientoAsistenciasAction extends MasterAction
 //		A CON E
 		" A.IDINSTITUCION = E.IDINSTITUCION(+) AND A.IDPERSONAJG = E.IDPERSONA(+) AND"+
 //		A CON F
-		" A.IDINSTITUCION = F.IDINSTITUCION(+) AND A.EJGANIO = F.ANIO(+) AND A.EJGNUMERO = F.NUMERO(+) AND"+
+		" A.IDINSTITUCION = F.IDINSTITUCION(+) AND A.EJGANIO = F.ANIO(+) AND A.EJGNUMERO = F.NUMERO(+) AND A.EJGIDTIPOEJG = F.IDTIPOEJG(+) AND"+
 //		F CON G
 		" A.EJGIDTIPOEJG = G.IDTIPOEJG(+) AND "+
 //		A CON H
@@ -707,6 +707,7 @@ public class MantenimientoAsistenciasAction extends MasterAction
 				}else{
 					//NO HA CAMBIADO NADA
 					UtilidadesHash.set(hash, ScsAsistenciasBean.C_IDESTADOASISTENCIA, estado);
+					UtilidadesHash.set(hash, ScsAsistenciasBean.C_FECHAESTADOASISTENCIA, GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaEstadoAsistencia()));
 				}
 			}
 

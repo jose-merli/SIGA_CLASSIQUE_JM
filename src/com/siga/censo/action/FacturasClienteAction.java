@@ -18,12 +18,16 @@ import org.apache.struts.action.ActionMapping;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
-import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.*;
-import com.siga.censo.form.DatosFacturacionForm;
+import com.siga.beans.CenClienteAdm;
+import com.siga.beans.CenColegiadoAdm;
+import com.siga.beans.CenColegiadoBean;
+import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.FacFacturaAdm;
+import com.siga.beans.FacFacturaBean;
+import com.siga.beans.PysPeticionCompraSuscripcionBean;
 import com.siga.censo.form.FacturasClienteForm;
 import com.siga.facturacion.form.BusquedaFacturaForm;
 import com.siga.general.MasterAction;
@@ -175,7 +179,10 @@ public class FacturasClienteAction extends MasterAction {
 			UtilidadesHash.set(datosFac,"idFactura", idFactura);
 			UtilidadesHash.set(datosFac,"idInstitucion", idInstitucion);
 			UtilidadesHash.set(datosFac,"idPersona", idPersona);
-
+			
+			
+			request.setAttribute("pestanaId", "FACTCEN");
+			
 			// Paso de parametros a las pestanhas
 			request.setAttribute("datosFacturas", datosFac);		
 		} 

@@ -50,6 +50,7 @@
 
 	String pathInicio = BotonesMenu.getPathCerrarSesion(userBean.getLocation());
 	String pathAyuda = BotonesMenu.getPathAyuda(userBean.getLocation());
+	String pathVersiones = BotonesMenu.getPathVersiones(userBean.getLocation());
 	
 	CenInstitucionAdm admInstitucion = new CenInstitucionAdm(userBean);
 	String nombreInstitucion = admInstitucion.getNombreInstitucion(userBean.getLocation());
@@ -142,6 +143,16 @@
 								
 				return false;
 			}
+
+			function version()
+			{
+				MM_swapImage('AbrirAyuda','','<%=app%>/html/imagenes/botonAyuda_activo.gif',1);
+				
+				//COMENTADO TEMPORALMENTE: 
+				window.open('<%=pathVersiones%>', 'Versiones', 'width=800,height=600,scrollbars=no;resizable:no;top=100;left=100;Directories=no;Location=no;Menubar=no;Status=yes;Toolbar=no;');
+								
+				return false;
+			}
 			
 			function cerrarAplicacion()
 			{
@@ -196,7 +207,7 @@
 			<table border=0 cellspacing=0 cellpadding=0>
 			<tr>
 			<td width="300px">
-			<a href="javascript://"  class="imageLink" >
+			<a href="javascript://"  class="imageLink" onclick="return version();" >
 				<img src="<%=app%>/html/imagenes/botonVersion.gif" alt="<siga:Idioma key="general.icono.version"/>" align="middle" border="0">
 				&nbsp;<siga:Idioma key="general.icono.version"/>
 			</a>

@@ -17,13 +17,14 @@
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
 <%@ page import="com.atos.utils.*"%>
-<%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
 <%@ page import="java.util.Vector"%>
 
 
 <!-- JSP -->
 <% 
-		String volver = request.getAttribute("volver")==null?"NO":(String)request.getAttribute("volver");
+ActionMapping actionMapping = (ActionMapping)request.getAttribute("org.apache.struts.action.mapping.instance");
+String path = actionMapping.getPath();	
+String volver = request.getAttribute("volver")==null?"NO":(String)request.getAttribute("volver");
 		String botonesAccion = "";
 
 		// Gestion de Volver
@@ -58,6 +59,7 @@
 %>
 
 
+<%@page import="org.apache.struts.action.ActionMapping"%>
 <html>
 
 <!-- HEAD -->
@@ -86,7 +88,7 @@
 
 <body>
 
-		<html:form action="/FAC_LineasFactura.do" method="POST" target="submitArea" style="display:none">
+		<html:form action="<%=path%>" method="POST" target="submitArea" style="display:none">
 			<html:hidden property="modo" value = ""/>
 			<!-- RGG: cambio a formularios ligeros -->
 			<input type="hidden" name="tablaDatosDinamicosD">

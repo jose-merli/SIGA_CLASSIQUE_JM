@@ -20,6 +20,7 @@ import com.siga.beans.ScsDesignaBean;
 import com.siga.beans.ScsDesignasProcuradorAdm;
 import com.siga.beans.ScsDesignasProcuradorBean;
 import com.siga.beans.ScsProcuradorBean;
+import com.siga.beans.CajgConfiguracionAdm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -139,8 +140,14 @@ public class CambiosProcuradoresDesignasAction extends MasterAction {
 							HttpServletRequest request, 
 							HttpServletResponse response)throws ClsExceptions,SIGAException  {
 	
-		String result=ver(mapping, formulario,request, response);		
+		String result=ver(mapping, formulario,request, response);
+		
+		// jbd 01/02/2010 Pasamos el valor del pcajg del colegio
+		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+		int valorPcajgActivo=CajgConfiguracionAdm.getTipoCAJG(new Integer(usr.getLocation()));
+		request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
 		request.setAttribute("accion","editar");
+		
 		return result;
 	}
 
@@ -239,6 +246,11 @@ public class CambiosProcuradoresDesignasAction extends MasterAction {
 		String anio=(String)hash.get("ANIO");
 		String numero=(String)hash.get("NUMERO");
 		String turno=(String)hash.get("IDTURNO");
+		
+		// jbd 01/02/2010 Pasamos el valor del pcajg del colegio
+		int valorPcajgActivo=CajgConfiguracionAdm.getTipoCAJG(new Integer(usr.getLocation()));
+		request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
+		
 		try {
 			String consultaDesigna =
 				" select"+

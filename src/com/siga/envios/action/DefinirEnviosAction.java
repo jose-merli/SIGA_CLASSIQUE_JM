@@ -625,7 +625,17 @@ public class DefinirEnviosAction extends MasterAction {
 				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.genericos.censo.asunto");
 
 
-			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesExpedientes)){
+			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesPagoColegiados)){
+				idPersona = getIdPersonaUnica(form);
+				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
+				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")));
+				
+				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null));
+				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.sjcs.pagos.envio.asunto");
+
+
+			}
+			else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesExpedientes)){
 				idPersona = getIdColegiadoUnico(form);
 
 				request.setAttribute("isDescargar",new Boolean(idPersona!=null));
@@ -665,7 +675,7 @@ public class DefinirEnviosAction extends MasterAction {
 
 			//obtener idEnvio
 			EnvEnviosAdm envAdm = new EnvEnviosAdm(this.getUserBean(request));
-			idEnvio = String.valueOf(envAdm.getNewIdEnvio(idInstitucion));
+			//idEnvio = String.valueOf(envAdm.getNewIdEnvio(idInstitucion));
 
 
 			//obtener nombreyapellidos
@@ -711,7 +721,7 @@ public class DefinirEnviosAction extends MasterAction {
 			form.setFechaProgramada(fecha);
 
 
-			request.setAttribute(EnvEnviosBean.C_IDENVIO,idEnvio);
+			//request.setAttribute(EnvEnviosBean.C_IDENVIO,idEnvio);
 			request.setAttribute(CerSolicitudCertificadosBean.C_IDPERSONA_DES,idPersona);
 			request.setAttribute(CerSolicitudCertificadosBean.C_IDSOLICITUD,idSolicitud);
 			request.setAttribute(FacFacturaBean.C_IDFACTURA,idFactura);
@@ -814,6 +824,10 @@ public class DefinirEnviosAction extends MasterAction {
 
 			// obtener idEnvio
 			String idEnvio = form.getIdEnvio();
+			if (idEnvio.equalsIgnoreCase("")){
+				EnvEnviosAdm envAdm = new EnvEnviosAdm(this.getUserBean(request));
+				idEnvio = String.valueOf(envAdm.getNewIdEnvio(idInstitucion));
+			}
 
 
 			//***** Creamos bean de envio *****
@@ -990,8 +1004,16 @@ public class DefinirEnviosAction extends MasterAction {
 
 					throwExcp("facturacion.consultaMorosos.errorInformes", new String[] {"modulo.facturacion"}, e, null); 
 				}
+			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesPagoColegiados)){
+				try {
+					EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
+					envioInformesGenericos.gestionarComunicacionPagoColegiados(form,  request.getLocale(), userBean);
+					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
+				} catch (Exception e) {
+					throwExcp("facturacion.consultaMorosos.errorInformes", new String[] {"modulo.facturacion"}, e, null);
+				}
 
-			}else if (subModo!=null && subModo.equalsIgnoreCase("pagoColegiados")){
+			}/*else if (subModo!=null && subModo.equalsIgnoreCase("pagoColegiados")){
 
 
 				try {
@@ -1096,6 +1118,9 @@ public class DefinirEnviosAction extends MasterAction {
 							programPagos.setIdInstitucion(envioProgramado.getIdInstitucion());
 							programPagos.setIdPago(new Integer(idPago));
 							programPagos.setIdPersona(new Long(idPersona));
+							if(idioma==null)
+								idioma = userBean.getLanguage();
+									
 							programPagos.setIdioma(new Integer(idioma));
 							programPagos.setEstado(ClsConstants.DB_FALSE);
 
@@ -1118,7 +1143,7 @@ public class DefinirEnviosAction extends MasterAction {
 
 					throwExcp("facturacion.consultaMorosos.errorInformes", new String[] {"modulo.facturacion"}, e, null); 
 				}
-			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesCenso)){
+			}*/else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesCenso)){
 				
 				try {
 					EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();

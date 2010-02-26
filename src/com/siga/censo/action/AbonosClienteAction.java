@@ -397,6 +397,8 @@ public class AbonosClienteAction extends MasterAction {
 			datosAbonos.put("idAbono",ocultos.get(0));
 			datosAbonos.put("idInstitucion",ocultos.get(1));
 			
+			
+			request.setAttribute("pestanaId", "ABNCEN");
 			// Paso de parametros a las pestanhas
 			request.setAttribute("datosAbonos", datosAbonos);
 		} 

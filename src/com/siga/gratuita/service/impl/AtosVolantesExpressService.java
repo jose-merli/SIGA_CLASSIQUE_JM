@@ -115,13 +115,14 @@ public class AtosVolantesExpressService extends JtaBusinessServiceTemplate
 		return alAsistencias;
 	}
 	private List<ScsAsistenciasBean> getAsistencias(VolantesExpressVo volanteExpressVo) throws SIGAException, ClsExceptions {
-
+		if(volanteExpressVo.getDatosAsistencias()==null)
+			return new ArrayList<ScsAsistenciasBean>();
 		GstStringTokenizer st1 = new GstStringTokenizer(volanteExpressVo.getDatosAsistencias(), "%%%");
 		ScsAsistenciasBean asistencia = null;
 		List<ScsAsistenciasBean> alAsistencias = new ArrayList<ScsAsistenciasBean>();
 		
 		while (st1.hasMoreTokens()) {
-
+			
 			String fila = st1.nextToken();
 			
 			if (fila != null && !fila.equals("")) {
@@ -151,9 +152,15 @@ public class AtosVolantesExpressService extends JtaBusinessServiceTemplate
 						if(value!=null)
 							asistencia.setIdInstitucion(new Integer(value));	
 					}else if(key.equals("hora")){
-						asistencia.setHora(value);
+						if(value!=null)
+							asistencia.setHora(value);
+						else
+							asistencia.setHora("00");
 					}else if(key.equals("minuto")){
-						asistencia.setMinuto(value);
+						if(value!=null)
+							asistencia.setMinuto(value);
+						else
+							asistencia.setMinuto("00");
 					}else if(key.equals("comisaria")){
 						if(value!=null)
 							asistencia.setComisaria(new Long(value));
@@ -171,6 +178,8 @@ public class AtosVolantesExpressService extends JtaBusinessServiceTemplate
 							value = UtilidadesString.replaceAllIgnoreCase(value, "~",",");
 							value = UtilidadesString.replaceAllIgnoreCase(value,  "¬","=");
 							asistencia.setAsistidoNif(value);
+						}else{
+							asistencia.setAsistidoNif("");
 						}
 					}else if(key.equals("nombre")){
 						if(value!=null){
@@ -203,9 +212,12 @@ public class AtosVolantesExpressService extends JtaBusinessServiceTemplate
 							value = UtilidadesString.replaceAllIgnoreCase(value,  "¬","=");
 							asistencia.setObservaciones(value);
 						}
-					}else if(key.equals("idDelito")){
+					}else if(key.equals("delitosImputados")){
 						if(value!=null)
 							asistencia.setDelitosImputados(value);
+					}else if(key.equals("idDelito")){
+						if(value!=null)
+							asistencia.setIdDelito(new Integer(value));
 					}else if(key.equals("ejgNumero")){
 						if(value!=null)
 							asistencia.setEjgNumero(new Long(value));

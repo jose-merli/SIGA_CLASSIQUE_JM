@@ -17,23 +17,14 @@
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 
 <!-- IMPORTS -->
-<%@ page import="com.siga.administracion.SIGAConstants"%>
-<%@ page import="com.atos.utils.ClsConstants"%>
-<%@ page import="com.siga.beans.ExpTipoExpedienteBean"%>
-<%@ page import="com.siga.general.CenVisibilidad"%>
 <%@ page import="com.atos.utils.UsrBean"%>
-<%@ page import="com.siga.Utilidades.*"%>
-<%@ page import="java.util.Properties"%>
+
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	UsrBean user=(UsrBean) ses.getAttribute("USRBEAN");
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
 	String idInstitucion[] = {user.getLocation()};
-	
-	String plantGeneracion = UtilidadesString.getMensajeIdioma(user,"envios.definir.literal.plantillageneracion");	
-	String obligatorio = UtilidadesString.getMensajeIdioma(user,"messages.campoObligatorio.error");
 
 %>	
 <html>
@@ -70,7 +61,7 @@
 	</table>	
 
 
-	<html:form action="/ENV_DefinirEnvios.do" method="POST" target="submitArea">
+	<html:form action="/ENV_DefinirEnvios" method="POST" target="submitArea">
 	<html:hidden property = "hiddenFrame" value = "1"/>
 	<html:hidden property = "modo" value = "Insertar"/>
 
@@ -78,7 +69,7 @@
 		<fieldset>
 		<table class="tablaCampos" align="center">
 			<html:hidden name="DefinirEnviosForm" property="idEnvio"/>
-			<input type="hidden" name="idEnvioBuscar" value=""/>
+			<html:hidden name="DefinirEnviosForm" property="idEnvioBuscar" value=""/>
 			<tr>	
 				<td class="labelText">
 					<siga:Idioma key="envios.definir.literal.nombre"/>&nbsp;(*)
@@ -94,7 +85,7 @@
 				<td>	
 					<siga:ComboBD nombre = "comboTipoEnvio" tipo="cmbTipoEnviosInstGen" clase="boxCombo" obligatorio="true" parametro="<%=idInstitucion%>" accion="Hijo:comboPlantillaEnvio"/>						
 				</td>
-				</td>
+				
 			</tr>
 			<tr>	
 				<td class="labelText">
@@ -103,7 +94,7 @@
 				<td>	
 					<siga:ComboBD nombre = "comboPlantillaEnvio" tipo="cmbPlantillaEnvios2" clase="boxCombo" obligatorio="true" hijo="t" accion="Hijo:idPlantillaGeneracion"/>
 				</td>
-				</td>
+				
 			</tr>
 			<tr>
 				<td class="labelText">
@@ -146,17 +137,18 @@
 		{		
 			sub();
 			if (validateDefinirEnviosForm(document.DefinirEnviosForm)){
-				var insTipoEnvio = document.forms[0].comboTipoEnvio.value;
-				var opcion_array=insTipoEnvio.split(",");
-				/*if (opcion_array[1]=='2') {
-					if (document.forms[0].idPlantillaGeneracion.value==""){
-						alert("< %=plantGeneracion%>"+" "+"< %=obligatorio%>");					
-					} else {
-						DefinirEnviosForm.submit();
-					}
-				} else {
-					DefinirEnviosForm.submit();
-				}*/
+				//JTA Esto comentado funciona si se desea evitar que existan envios ordinarios sin plantilla definida
+				//var insTipoEnvio = document.forms[0].comboTipoEnvio.value;
+				//var opcion_array=insTipoEnvio.split(",");
+				//if (opcion_array[1]=='2') {
+					//if (document.forms[0].idPlantillaGeneracion.value==""){
+						//var campo = '<siga:Idioma key="envios.definir.literal.plantillageneracion"/>';
+  						//var msg = "<siga:Idioma key="errors.required"  arg0=' " + campo + "'/>";
+						//alert (msg);
+						//fin();
+						//return false;					
+					//} 
+				//}
 				DefinirEnviosForm.submit();
 			}else{
 				fin();

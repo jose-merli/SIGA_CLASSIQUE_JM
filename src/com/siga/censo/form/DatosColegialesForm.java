@@ -112,6 +112,9 @@ public class DatosColegialesForm extends MasterForm{
 		datos.put(CenDatosColegialesEstadoBean.C_IDESTADO,id);
 	}	
 		
+	public void setNMutualista(String id){
+		datos.put(CenColegiadoBean.C_NMUTUALISTA, id);
+	}
 	
 	// Metodos get	
 	
@@ -209,4 +212,8 @@ public class DatosColegialesForm extends MasterForm{
 	public void setUrlDocumentacionDS(String urlDocumentacionDS){
 		this.urlDocumentacionDS=urlDocumentacionDS;
 	}
+	
+	public String getNMutualista(){
+		return (String)datos.get(CenColegiadoBean.C_NMUTUALISTA);
+	}	
 }

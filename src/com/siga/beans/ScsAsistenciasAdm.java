@@ -1472,8 +1472,7 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 	 }
 
 	
-	
-	public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo volanteExpres) 
+public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo volanteExpres) 
 		throws ClsExceptions{
 			
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
@@ -1626,14 +1625,15 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 	            		asistenciaBean.setAsistidoApellido1((String)htFila.get("APELLIDO1"));
 	            		asistenciaBean.setAsistidoApellido2((String)htFila.get("APELLIDO2"));
 	            		asistenciaBean.setObservaciones((String)htFila.get("OBSERVACIONES"));
+	            		asistenciaBean.setDelitosImputados((String)htFila.get("DELITOSIMPUTADOS"));
 	            		Vector vDelitos = delitoAsisAdm.getDelitosAsitencia(asistenciaBean.getIdInstitucion()
 								,asistenciaBean.getAnio(),asistenciaBean.getNumero(),null);
 						if(vDelitos!=null && vDelitos.size()>0){
 							Hashtable htDelitoAsistencia = (Hashtable)vDelitos.get(0);
-							asistenciaBean.setDelitosImputados((String)htDelitoAsistencia.get("IDDELITO"));
+							asistenciaBean.setIdDelito(new Integer((String)htDelitoAsistencia.get("IDDELITO")));
 							
 						}else{
-							asistenciaBean.setDelitosImputados("");
+							asistenciaBean.setIdDelito(null);
 							
 						}
 						
@@ -1694,7 +1694,7 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 				personaAdm.insert(p);
 				asistencia.setIdPersonaJG(p.getIdPersona());
 			}
-
+			
 			if (isInsertar){
 				String truncFechaGuardia = GstDate.getFormatedDateShort("",volantesExpressVo.getFechaGuardia());
 				String anio = truncFechaGuardia.split("/")[2];
@@ -1706,9 +1706,9 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 				this.updateDirect(asistencia);
 			}
 			ScsDelitosAsistenciaBean delitoAsistencia = null;
-			if(asistencia.getDelitosImputados()!=null){
+			if(asistencia.getIdDelito()!=null){
 				delitoAsistencia = new ScsDelitosAsistenciaBean();
-				delitoAsistencia.setIdDelito(new Integer(asistencia.getDelitosImputados()));
+				delitoAsistencia.setIdDelito(asistencia.getIdDelito());
 				delitoAsistencia.setIdInstitucion(asistencia.getIdInstitucion());
 				delitoAsistencia.setNumero(asistencia.getNumero());
 				delitoAsistencia.setAnio(asistencia.getAnio());
@@ -1892,6 +1892,4 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 		delitosAsistenciaAdm.borrarDelitosAsitencia(idInstitucion,anio,numero);
 		ScsAsistenciasAdm asistenciaAdm = new ScsAsistenciasAdm (usr);
 		asistenciaAdm.delete(claves);
-	}
-	
-}
+	}}

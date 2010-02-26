@@ -195,12 +195,12 @@
 										<td>	
 										
 										<% if (nextModo.equalsIgnoreCase("insertar")){ %>
- 												<html:textarea cols="50" rows="5" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" property="observaciones" styleClass="box"></html:textarea> 
+ 												<html:textarea cols="50" rows="5" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" property="observaciones" styleClass="box"></html:textarea> 
 										<% } else { %>
 					  						<% if (nextModo.equalsIgnoreCase("modificar")){%>
-  					  						       <html:textarea cols="50" rows="5" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" property="observaciones" styleClass="box" value="<%=observacion%>"></html:textarea> 
+  					  						       <html:textarea cols="50" rows="5" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" property="observaciones" styleClass="box" value="<%=observacion%>"></html:textarea> 
 				  							 	<% } else{ %>
-   				  							 	   <html:textarea cols="50" rows="5" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" property="observaciones" styleClass="boxConsulta" value="<%=observacion%>" readOnly="true" ></html:textarea> 
+   				  							 	   <html:textarea cols="50" rows="5" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" property="observaciones" styleClass="boxConsulta" value="<%=observacion%>" readOnly="true" ></html:textarea> 
 												<% } %>				  					 				  					 				  					 
 							  	    	<% } %>				
 																						

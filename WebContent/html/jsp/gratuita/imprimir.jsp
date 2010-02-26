@@ -18,28 +18,18 @@
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 
 <!-- IMPORTS -->
-<%@ page import="com.siga.administracion.SIGAConstants"%>
-<%@ page import="com.siga.informes.form.MantenimientoInformesForm "%>
-<%@ page import="com.atos.utils.ClsConstants"%>
-<%@ page import="com.atos.utils.UsrBean"%>
-<%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
-<%@ page import="com.siga.Utilidades.UtilidadesString"%>
-
 
 <!-- JSP -->
 <%  
 	String app=request.getContextPath();
-	HttpSession ses=request.getSession();
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
-	UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);
 	String generacionOK = (String)request.getAttribute("generacionOK");
 	String avisoFicherosNoGenerado = (String)request.getAttribute("avisoFicherosNoGenerado");
 	String rutaFichero = (String)request.getAttribute("rutaFichero");
 	String borrarFichero = (String)request.getAttribute("borrarFichero");
 	String borrarDirectorio = (String)request.getAttribute("borrarDirectorio");
+	
 %>	
-
-<%@page import="java.util.Properties"%>
+<%@page import="org.apache.struts.action.ActionMapping"%>
 <html>
 
 <!-- HEAD -->
@@ -56,7 +46,7 @@
 			alert('<siga:Idioma key="messages.informes.listaErrorGeneracion"/>'+'\n\n\n'+'<%=avisoFicherosNoGenerado.trim()%>');
 		<%}%>
 		
-		document.forms[0].modo.value="descargar";
+		// document.forms[0].modo.value="descargar";
 		document.forms[0].submit();
 	<% } else { %>
 	 	alert('<siga:Idioma key="messages.informes.errorGeneracion"/>');
@@ -68,11 +58,14 @@
 
 
 <body onload="init();">
-
-
-	<html:form action="/INF_FichaPago.do" method="POST" target="submitArea22">
-	<html:hidden name="mantenimientoInformesForm" property = "modo" value = "descargar"/>
-	<html:hidden name="mantenimientoInformesForm" property = "rutaFichero" value = "<%=rutaFichero%>"/>
+	<% 
+	ActionMapping actionMapping = (ActionMapping)request.getAttribute("org.apache.struts.action.mapping.instance");
+	String path = actionMapping.getPath();
+	String formulario = actionMapping.getName();
+	%>
+	<html:form action="<%=path%>" method="POST" target="submitArea22">
+	<html:hidden name="<%=formulario%>" property = "modo" value = "descargaFicheroGlobal"/>
+	<html:hidden name="<%=formulario%>" property = "rutaFichero" value = "<%=rutaFichero%>"/>
 	<%if(borrarFichero!=null){%>
 	<html:hidden property = "borrarFichero" value = "<%=borrarFichero%>"/>
 	<%}%>
@@ -87,7 +80,6 @@
 <!-- FIN: SUBMIT AREA -->
 
 <script>
-	
 	fin(window.parent.parent.document);
 </script>
 </body>

@@ -8,9 +8,19 @@ import com.siga.general.MasterForm;
 
 public class AsistenciasForm extends MasterForm 
 {
-	String numeroDilegencia = "", numeroProcedimiento = "", estadoAsintecia = "", estadoAsinteciaAnterior = "", 
-			ejg_anio= "", ejg_numero = "", ejg_idTipoEJG = "", ejg_idInstitucion = "",
-			designa_anio= "", designa_numero = "", designa_turno = "", designa_idInstitucion = ""	;
+	String 	numeroDilegencia = "", 
+			numeroProcedimiento = "", 
+			estadoAsintecia = "",
+			fechaEstadoAsistencia = "",
+			estadoAsinteciaAnterior = "", 
+			ejg_anio= "", 
+			ejg_numero = "", 
+			ejg_idTipoEJG = "", 
+			ejg_idInstitucion = "",
+			designa_anio= "", 
+			designa_numero = "", 
+			designa_turno = "", 
+			designa_idInstitucion = ""	;
 
 	
 	private String modoPestanha=null;
@@ -135,6 +145,7 @@ public class AsistenciasForm extends MasterForm
 	public void    setIdDelito          		 (String	valor)	{ this.datos.put(this.idDelito, valor);}
 	public void    setAsunto          		 (String	valor)	{ this.datos.put(this.asunto, valor);}
 	public void    setEstado          		 (String	valor)	{ this.datos.put(this.estado, valor);}	
+	public void    setFechaEstado      		 (String	valor)	{ this.datos.put(this.fechaEstadoAsistencia, valor);}
 	public void    setIdInstitucion          (String	valor)	{ this.datos.put(this.idInstitucion, valor);}
 	public void    setIdTipoEJG		         (String	valor)	{ this.datos.put(this.idTipoEJG, valor);}
 	public void    setFechaHora              (String	valor)	{ this.datos.put(this.fechaHora, valor);}
@@ -230,7 +241,8 @@ public class AsistenciasForm extends MasterForm
 	
 	
 	public String getAsunto 	            ()	{return (String)this.datos.get(this.asunto);}
-	public String getEstado 	            ()	{return (String)this.datos.get(this.estado);}	
+	public String getEstado 	            ()	{return (String)this.datos.get(this.estado);}
+	public String getFechaEstado 	        ()	{return (String)this.datos.get(this.fechaEstadoAsistencia);}
 	public String getIdInstitucion          ()	{return (String)this.datos.get(this.idInstitucion);}
 	public String getIdTipoEJG	            ()	{return (String)this.datos.get(this.idTipoEJG);}
 	public String getFechaHora              ()	{return (String)this.datos.get(this.fechaHora);}
@@ -420,6 +432,12 @@ public class AsistenciasForm extends MasterForm
 	}
 	public String getEstadoAsinteciaAnterior() {
 		return estadoAsinteciaAnterior;
+	}
+	public void setFechaEstadoAsistencia(String fechaEstado) {
+		this.fechaEstadoAsistencia = fechaEstado;
+	}
+	public String getFechaEstadoAsistencia() {
+		return fechaEstadoAsistencia;
 	}
 	public void setEstadoAsinteciaAnterior(String estadoAsinteciaAnterior) {
 		this.estadoAsinteciaAnterior = estadoAsinteciaAnterior;

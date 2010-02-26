@@ -3,9 +3,9 @@
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache">
-<%@ page pageEncoding="ISO-8859-1"%>
+<%@ page pageEncoding="ISO-8859-15"%>
 <meta http-equiv="Cache-Control" content="no-cache">
-<meta http-equiv="Conte nt-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Conte nt-Type" content="text/html; charset=ISO-8859-15">
 <%@ page contentType="text/html" language="java"
 	errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
@@ -56,6 +56,7 @@
 				<input type="hidden" id="ejgAnio_<bean:write name='index'/>" value="<bean:write name="asistencia" property="ejgAnio" />">
 				<input type="hidden" id="ejgTipo_<bean:write name='index'/>" value="<bean:write name="asistencia" property="ejgIdTipoEjg" />">
 				<input type="hidden" id="designaNumero_<bean:write name='index'/>" value="<bean:write name="asistencia" property="designaNumero" />">
+				<input type="hidden" id="delitosImputados_<bean:write name='index'/>" value="<bean:write name="asistencia" property="delitosImputados" />">
 				
 			<tr id="fila_<bean:write name='index'/>">
 				<td align='center' width='5%'>
@@ -151,7 +152,7 @@
 				
 				<c:if test="${VolantesExpressForm.delito==true}">
 					<input type="hidden" id="observaciones_<bean:write name='index'/>" value="">
-					<select class="boxCombo" id="idDelito_<bean:write name='index'/>" style="width:230px;margin-top:2px;" name="idDelito_<bean:write name='index'/>" > 
+					<select class="boxCombo" id="idDelito_<bean:write name='index'/>" style="width:247px;margin-top:2px;" name="idDelito_<bean:write name='index'/>" > 
 						<bean:define id="delitos" name="VolantesExpressForm" property="delitos" type="java.util.List" />
 							<logic:iterate id="delito" name="delitos">
 								<option value='<bean:write name="delito" property="idDelito"/>' >
@@ -162,8 +163,8 @@
 					</select>
 					<script>
 					
-						if(${asistencia.delitosImputados!=null} && ${asistencia.delitosImputados!='-1'})
-							document.getElementById("idDelito_<bean:write name='index'/>").value ='<bean:write name="asistencia" property="delitosImputados"/>'; 
+						if(${asistencia.idDelito!=null})
+							document.getElementById("idDelito_<bean:write name='index'/>").value ='<bean:write name="asistencia" property="idDelito"/>'; 
 						</script>
 					
 				</c:if>
@@ -216,8 +217,8 @@
 	</logic:notEmpty>
 </table>
 	<script type="text/javascript">
-		var messageError="${VolantesExpressForm.msgError}";
-		var messageAviso="${VolantesExpressForm.msgAviso}";
+		var messageError='${VolantesExpressForm.msgError}';
+		var messageAviso='${VolantesExpressForm.msgAviso}';
 		if (messageAviso)
 			alert(messageAviso);
 		if (messageError)

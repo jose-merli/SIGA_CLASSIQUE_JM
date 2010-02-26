@@ -38,8 +38,11 @@ import com.atos.utils.*;
 import com.siga.envios.form.DefinirEnviosForm;
 import com.siga.general.SIGAException;
 import com.siga.informes.form.InformesGenericosForm;
+import com.siga.Utilidades.SIGAReferences;
+import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmInformeAdm;
+import com.siga.beans.AdmInformeBean;
 import com.siga.beans.AdmLenguajesAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.certificados.Plantilla;
@@ -253,7 +256,7 @@ public class MasterReport  {
 	
 	
 	// OBTENCION DE LA PLANTILLA FO:
-	public String obtenerContenidoPlantilla(String rutaServidorPlantillas, String nombrePlantilla)throws Exception{
+	public String obtenerContenidoPlantilla(String rutaServidorPlantillas, String nombrePlantilla) throws SIGAException, ClsExceptions{
 		ClsLogging.writeFileLog("*************** PLANTILLA : " + rutaServidorPlantillas+ClsConstants.FILE_SEP+nombrePlantilla,10);
 		String barraPlantilla="";
 		if (rutaServidorPlantillas.indexOf("/") > -1){
@@ -669,6 +672,33 @@ public class MasterReport  {
 		}
 		return ficheroPDF;
 	}
+	public File getInformeGenericoFo (AdmInformeBean beanInforme,
+			Hashtable htDatosInforme, String idiomaExt, String nombreFileOut,
+			UsrBean usr) throws SIGAException, ClsExceptions{
+		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String rutaPlantilla = rp.returnProperty("informes.directorioFisicoPlantillaInformesJava")
+			+ rp.returnProperty("informes.directorioPlantillaInformesJava");
+		String rutaAlmacen = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")
+			+ rp.returnProperty("informes.directorioPlantillaInformesJava");
+
+// MODELO DE TIPO FO:
+
+		String rutaPlantillaInstitucion = rutaPlantilla + ClsConstants.FILE_SEP
+			+ usr.getLocation() + ClsConstants.FILE_SEP
+				+ beanInforme.getDirectorio() + ClsConstants.FILE_SEP;
+		String nombrePlantilla = beanInforme.getNombreFisico() + "_"
+			+ idiomaExt + ".fo";
+		String rutaAlm = rutaAlmacen + ClsConstants.FILE_SEP
+			+ usr.getLocation() + ClsConstants.FILE_SEP
+				+ beanInforme.getDirectorio();
+
+		UtilidadesHash.set(htDatosInforme,"RUTA_LOGO",rutaPlantillaInstitucion+ClsConstants.FILE_SEP+"recursos"+ClsConstants.FILE_SEP+"Logo.jpg");
+		String contenidoPlantilla = obtenerContenidoPlantilla(rutaPlantillaInstitucion,nombrePlantilla);
+		File fPdf = generarInforme(usr,htDatosInforme,rutaAlm,contenidoPlantilla,rutaAlm,nombreFileOut);
+		return fPdf;
+
+	}
+	
 	
 	/**
 	 * Este método se debe sobreescribir para reemplazar los valores en las plantillas FO

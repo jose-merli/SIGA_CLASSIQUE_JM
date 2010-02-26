@@ -501,9 +501,9 @@
 			</td>
 			<td colspan="5">	
 			<%if(!modo.equals("consulta")){%>
-			    <input type="text" name="codigoExtComisaria" class="box" size="8"  style="margin-top:3px;" maxlength="10" onBlur="obtenerComisaria();" />			
+			    <input type="text" name="codigoExtComisaria" class="box" size="8" maxlength="10" onBlur="obtenerComisaria();" />			
 			<%}%>	
-				<siga:ComboBD ancho="<%=comboSize%>" nombre="comisaria" tipo="comboComisariasTurno" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=dato%>"  elementoSel="<%=comisariaSel%>"  />
+				<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" ancho="680" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=dato%>"  elementoSel="<%=comisariaSel%>"  />
 			</td>
 		</tr>
 		<tr nowrap>			
@@ -517,9 +517,9 @@
 				
 			<td colspan="5">	
 			   <%if(!modo.equals("consulta")){%>
-			   <input type="text" name="codigoExtJuzgado" class="box" size="8"  style="margin-top:0px;" maxlength="10" onBlur="obtenerJuzgado();" />
+			   <input type="text" name="codigoExtJuzgado" class="box" size="8" maxlength="10" onBlur="obtenerJuzgado();" />
 			   <%}%>
-				<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" ancho="<%=comboSize%>" obligatorio="false" parametro="<%=dato%>" parametro="<%=dato%>" clase="<%=estiloCombo%>" elementoSel="<%=juzgadoSel%>"   readOnly="<%=readOnlyCombo%>"/>
+				<siga:ComboBD nombre="juzgado" ancho="680" tipo="comboJuzgadosTurno" obligatorio="false" parametro="<%=dato%>" parametro="<%=dato%>" clase="<%=estiloCombo%>" elementoSel="<%=juzgadoSel%>"   readOnly="<%=readOnlyCombo%>"/>
 			</td>
 		</tr>
 		<tr>

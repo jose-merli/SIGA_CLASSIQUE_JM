@@ -109,9 +109,9 @@
 		</td>	
 		<td class="labelText">	
 			<% if (modo.equalsIgnoreCase("EDITAR")) {%>
-				<html:text name="DefinirListaGuardiasForm" property="listaGuardias" size="50" styleClass="<%=clase%>" value="<%=nombre%>" readOnly="<%=desactivado%>"></html:text>
+				<html:text name="DefinirListaGuardiasForm" property="listaGuardias" size="50" maxlength="100" styleClass="<%=clase%>" value="<%=nombre%>" readOnly="<%=desactivado%>"></html:text>
 			<% } else { %>
-				<html:text name="DefinirListaGuardiasForm" property="listaGuardias" size="50" styleClass="<%=clase%>" value="<%=nombre%>" readOnly="<%=desactivado%>"></html:text>			
+				<html:text name="DefinirListaGuardiasForm" property="listaGuardias" size="50" maxlength="100" styleClass="<%=clase%>" value="<%=nombre%>" readOnly="<%=desactivado%>"></html:text>			
 			<% } %>
 		</td>
 	</tr>

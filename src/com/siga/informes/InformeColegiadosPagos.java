@@ -20,16 +20,21 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
+import weblogic.servlet.internal.CompEnv;
+
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.AdmInformeBean;
 import com.siga.beans.AdmLenguajesAdm;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenColegiadoAdm;
@@ -54,314 +59,12 @@ public class InformeColegiadosPagos extends MasterReport {
 	
 	protected String formatoImportes="999,999,999,999,990.00";
 	
-	/**
-	 * Metodo que implementa el modo generarPago
-	 * @param  mapping - Mapeo de los struts
-	 * @param  formulario -  Action Form asociado a este Action
-	 * @param  request - objeto llamada HTTP 
-	 * @param  response - objeto respuesta HTTP
-	 * @return  String  Destino del action  
-	 * @exception  ClsExceptions  En cualquier caso de error
-	 */
-	public String generarColegiadoPago (ActionMapping mapping,ActionForm formulario,
-			HttpServletRequest request, HttpServletResponse response) throws ClsExceptions {
-
-		String resultado="exito";
-		 
-		MantenimientoInformesForm miform = (MantenimientoInformesForm)formulario;
-		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
-		String institucion =usr.getLocation();
-		
-		ArrayList ficherosPDF= new ArrayList();
-		File rutaFin=null;
-		File rutaTmp=null;
-		int numeroCarta=0;
-			
-		try {
-			//obtener plantilla
-			GenParametrosAdm admParametros = new GenParametrosAdm(usr);
-			CenColegiadoAdm admColegiado=new CenColegiadoAdm(usr);
-			String rutaPlantilla = 
-				admParametros.getValor(institucion, "INF", "PATH_INFORMES_PLANTILLA", "")+
-				ClsConstants.FILE_SEP+institucion;
-
-		    
-		    //obtener la ruta de descarga
-			String rutaServidor = 
-				admParametros.getValor(institucion, "INF", "PATH_INFORMES_DESCARGA", "")+
-				ClsConstants.FILE_SEP+institucion;
-			rutaFin=new File(rutaServidor);
-			if (!rutaFin.exists()){
-				if(!rutaFin.mkdirs()){
-					throw new SIGAException("facturacion.nuevoFichero.literal.errorAcceso");					
-				}
-			}    
-			String rutaServidorTmp=rutaServidor+ClsConstants.FILE_SEP+"tmp_ColegiadoPago_"+System.currentTimeMillis();
-			rutaTmp=new File(rutaServidorTmp);
-			if(!rutaTmp.mkdirs()){
-				throw new SIGAException("facturacion.nuevoFichero.literal.errorAcceso");					
-			}
-			
-			
-			// TRATAMIENTO POR CADA COLEGIADO
-			/////////////////////////////////
-			String idPago = miform.getIdPago();
-
-			Vector vColegiados = null;
-			if(miform.getIdPersona()!=null && !miform.getIdPersona().trim().equals("")){
-				vColegiados = new Vector();
-				Hashtable registro = new Hashtable(); 
-				registro.put("IDPERSONA_SJCS", miform.getIdPersona());
-				vColegiados.add(registro);
-			}else{
-				FcsPagosJGAdm pagosAdm = new FcsPagosJGAdm(usr);
-				vColegiados = pagosAdm.getColegiadosInformeCartaPago(institucion,idPago);
-			}
-			
-			File fPdf = null;
-			if (vColegiados!=null && !vColegiados.isEmpty()){
-				boolean correcto=true;
-				Enumeration lista=vColegiados.elements();
-	    		
-				while(correcto && lista.hasMoreElements()){
-					Hashtable datosBase=(Hashtable)lista.nextElement();
-					
-					// Obtener el idioma del colegiado
-					AdmLenguajesAdm lenguajesAdm = new AdmLenguajesAdm(usr);
-					CenClienteAdm clienteAdm = new CenClienteAdm(usr);
-					String idiomaExt;
-					String idpersona = datosBase.get("IDPERSONA_SJCS").toString();
-					idiomaExt = lenguajesAdm.getCodigoExt(
-								clienteAdm.getLenguaje(miform.getIdInstitucion(), idpersona));
-				
-					//Obtiene la plantilla segun el idioma
-				    String nombrePlantilla=ClsConstants.PLANTILLA_FO_COLEGIADOPAGO+"_"+idiomaExt+".fo";
-				    String contenidoPlantilla = this.obtenerContenidoPlantilla(rutaPlantilla,nombrePlantilla);
-					
-					
-					String ncolegiado=admColegiado.getIdentificadorColegiado(
-							admColegiado.getDatosColegiales(UtilidadesHash.getLong(datosBase,"IDPERSONA_SJCS"),new Integer(usr.getLocation())));
-					if (ncolegiado==null){
-						ncolegiado="";
-					}
-					
-				    //Los datos comunes son los mismos datos para todos los 
-					//colegiados pero puede variar el idioma.
-				    Hashtable datosComunes= this.obtenerDatosComunes(usr,idiomaExt);
-				    datosComunes.put("IDPAGO",idPago);				    
-					datosBase.putAll(datosComunes);
-					
-					
-					fPdf = this.generarInforme(usr,datosBase,rutaServidorTmp,contenidoPlantilla,rutaServidorTmp,ncolegiado+"-"+"colegiadoPago_" +numeroCarta);
-					correcto=(fPdf!=null);
-					if(correcto){
-						ficherosPDF.add(fPdf);
-						numeroCarta++;
-					}
-				}
-				
-				if(correcto){
-					// Ubicacion de la carpeta donde se crean los ficheros PDF:
-					String nombreFicheroPDF="colegiadoPago_" +UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","").replaceAll(":","").replaceAll(" ","");
-					String rutaServidorDescargasZip=rutaServidor + ClsConstants.FILE_SEP;
-					if(ficherosPDF.size()>1){
-						Plantilla.doZip(rutaServidorDescargasZip,nombreFicheroPDF,ficherosPDF);
-						request.setAttribute("nombreFichero", nombreFicheroPDF + ".zip");
-						request.setAttribute("rutaFichero", rutaServidorDescargasZip+nombreFicheroPDF + ".zip");			
-						request.setAttribute("borrarFichero", "true");
-						if(rutaTmp!=null){
-							Plantilla.borrarDirectorio(rutaTmp);
-						}
-					}else{
-						//una vez se descargue el fichero, hay que borrar el directorio
-						request.setAttribute("borrarDirectorio","true");
-						request.setAttribute("nombreFichero", fPdf.getName());
-						request.setAttribute("rutaFichero", fPdf.getPath());			
-					}
-					
-					//resultado = "descargaFichero";				
-					request.setAttribute("generacionOK","OK");
-					resultado = "descarga";
-				}else{
-					request.setAttribute("generacionOK","ERROR");			
-					resultado = "descarga";
-				}
-				
-			}else{
-				resultado = "error";//exitoModalSinRefresco("gratuita.retenciones.noResultados",request);
-			}
-			
-		}catch (Exception e) {
-			throw new ClsExceptions(e,"Error al generar el informe");
-		} 
-		
-        return resultado;
-	}
-	
-	
-	
-	public String getPathInformePagoColegiadoAEnviar (UsrBean usr,	String idPago,String idPersona,
-			String idioma,String idInstitucion) throws ClsExceptions {
-
-		String resultado="exito";
-		 
-		AdmLenguajesAdm a = new AdmLenguajesAdm(usr);
-		String idiomaExt = "es";
-		try {
-			idiomaExt = a.getLenguajeExt(idioma).toUpperCase();
-		} catch (Exception e) {
-			
-		}
-		
-		
-		ArrayList ficherosPDF= new ArrayList();
-		File rutaFin=null;
-		File rutaTmp=null;
-		int numeroCarta=0;
-		String pathFicheroGenerado = null;
-			
-		try {
-			//obtener plantilla
-			GenParametrosAdm admParametros = new GenParametrosAdm(usr);
-			CenColegiadoAdm admColegiado=new CenColegiadoAdm(usr);
-			String rutaPlantilla = 
-				admParametros.getValor(idInstitucion, "INF", "PATH_INFORMES_PLANTILLA", "")+
-				ClsConstants.FILE_SEP+idInstitucion;
-
-		    
-		    String nombrePlantilla=ClsConstants.PLANTILLA_FO_COLEGIADOPAGO+"_"+idiomaExt+".fo";
-		    
-		    String contenidoPlantilla = this.obtenerContenidoPlantilla(rutaPlantilla,nombrePlantilla);
-			
-		    //obtener la ruta de descarga
-			String rutaServidor = 
-				admParametros.getValor(idInstitucion, "INF", "PATH_INFORMES_DESCARGA", "")+
-				ClsConstants.FILE_SEP+idInstitucion;
-			rutaFin=new File(rutaServidor);
-			if (!rutaFin.exists()){
-				if(!rutaFin.mkdirs()){
-					throw new SIGAException("facturacion.nuevoFichero.literal.errorAcceso");					
-				}
-			}    
-			String rutaServidorTmp=rutaServidor+ClsConstants.FILE_SEP+"tmp_ColegiadoPago_"+System.currentTimeMillis();
-			rutaTmp=new File(rutaServidorTmp);
-			if(!rutaTmp.mkdirs()){
-				throw new SIGAException("facturacion.nuevoFichero.literal.errorAcceso");					
-			}
-			
-		    //obtener los datos comunes
-		    Hashtable datosComunes= this.obtenerDatosComunes(usr,idiomaExt);
-			
-			// TRATAMIENTO POR CADA COLEGIADO
-			/////////////////////////////////
-			
-			datosComunes.put("IDPAGO",idPago);
-			Vector vColegiados = null;
-			if(idPersona!=null && !idPersona.trim().equals("")){
-				vColegiados = new Vector();
-				Hashtable registro = new Hashtable(); 
-				registro.put("IDPERSONA_SJCS", idPersona);
-					
-				vColegiados.add(registro);
-			}else{
-				FcsPagosJGAdm pagosAdm = new FcsPagosJGAdm(usr);
-				vColegiados = pagosAdm.getColegiadosAPagar(idInstitucion,idPago);
-				
-			}
-			
-			File fPdf = null;
-			if (vColegiados!=null && !vColegiados.isEmpty()){
-				boolean correcto=true;
-				Enumeration lista=vColegiados.elements();
-	    		
-				while(correcto && lista.hasMoreElements()){
-					
-					Hashtable datosBase=(Hashtable)lista.nextElement();
-					String ncolegiado=admColegiado.getIdentificadorColegiado(admColegiado.getDatosColegiales((UtilidadesHash.getLong(datosBase,"IDPERSONA_SJCS")),new Integer(usr.getLocation())));
-					if (ncolegiado==null){
-						ncolegiado="";
-					}
-					datosBase.putAll(datosComunes);
-					fPdf = this.generarInforme(usr,datosBase,rutaPlantilla,contenidoPlantilla,rutaPlantilla,ncolegiado+"-"+"colegiadoPago_" +numeroCarta);
-					correcto=(fPdf!=null);
-					if(correcto){
-						ficherosPDF.add(fPdf);
-						numeroCarta++;
-					}
-				}
-				
-				if(correcto){
-					// Ubicacion de la carpeta donde se crean los ficheros PDF:
-					String nombreFicheroPDF="colegiadoPago_" +UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","").replaceAll(":","").replaceAll(" ","");
-					String rutaServidorDescargasZip=rutaServidor + ClsConstants.FILE_SEP;
-					if(ficherosPDF.size()>1){
-						Plantilla.doZip(rutaServidorDescargasZip,nombreFicheroPDF,ficherosPDF);
-						pathFicheroGenerado = rutaServidorDescargasZip+nombreFicheroPDF + ".zip";
-
-					}else{
-
-						pathFicheroGenerado = fPdf.getPath();
-									
-						
-						
-					}
-					
-					
-				}else{
-					throw new ClsExceptions("Error al generar el informe");
-				}
-				
-			}
-			
-		}catch (Exception e) {
-			throw new ClsExceptions(e,"Error al generar el informe");
-		} finally{
-			if(rutaTmp!=null){
-				Plantilla.borrarDirectorio(rutaTmp);
-			}
-		}
-        return pathFicheroGenerado;
-	}
-	
-	
-	/**
-	 * Este método busca los valores comunes de los informes
-	 * @param request Objeto HTTPRequest
-	 * @param plantillaFO Plantilla FO con parametros 
-	 * @return Plantilla FO en donde se han reemplazado los parámetros
-	 * @throws ClsExceptions
-	 */
-	protected Hashtable obtenerDatosComunes(UsrBean usr, String lenguaje) throws ClsExceptions{
-		
-		String institucion =usr.getLocation();
-		//String idioma = usr.getLanguageExt().toUpperCase();
-				
-		Hashtable datos= new Hashtable();
-		GenParametrosAdm admParametros = new GenParametrosAdm(usr);
-	    String rutaPlantilla =
-	    	//"\\\\SG00582\\datos\\plantillas\\informes_fact_sjcs"+
-	    	admParametros.getValor(institucion, "INF", "PATH_INFORMES_PLANTILLA", "")+
-	    	ClsConstants.FILE_SEP+institucion;
-		UtilidadesHash.set(datos,"RUTA_LOGO",rutaPlantilla+ClsConstants.FILE_SEP+"recursos"+ClsConstants.FILE_SEP+"Logo.jpg");
-		UtilidadesHash.set(datos,"FECHA",UtilidadesBDAdm.getFechaEscritaBD(lenguaje));
-		return datos;
-	 }
-	 
-	 /**
-	  * Este método se debe sobreescribir para reemplazar los valores en las plantillas FO
-	  * @param request Objeto HTTPRequest
-	  * @param plantillaFO Plantilla FO con parametros 
-	  * @return Plantilla FO en donde se han reemplazado los parámetros
-	  * @throws ClsExceptions
-	  */
-	protected String reemplazarDatos(UsrBean usr, String plantillaFO, Hashtable datosBase) throws ClsExceptions, SIGAException{
-		Hashtable htDatos=(Hashtable)datosBase.clone();
-		
+	public Hashtable getDatosInformeColegiado(UsrBean usr, Hashtable htDatos) throws ClsExceptions, SIGAException{
+		UtilidadesHash.set(htDatos,"FECHA",UtilidadesBDAdm.getFechaEscritaBD((String)htDatos.get("idiomaExt")));
 		String idioma = usr.getLanguage().toUpperCase();
 		String institucion =usr.getLocation();
-		String idPagos =(String)datosBase.get("IDPAGO");
+		String idPagos =(String)htDatos.get("idPago");
 		Hashtable htAux=null;
-		
 		//firmas
 		htDatos.put("SECRETARIO","XXXXXXX XXXXXXXXXXXXXXX XXXXXXXXXX");
 		htDatos.put("FIRMA","xxxxxxxxx xxxxxxxxx xxxxxxxx");
@@ -373,17 +76,18 @@ public class InformeColegiadosPagos extends MasterReport {
 		if(nombreInstit!=null)htDatos.put("NOMBRE_INSTITUCION",nombreInstit);
 		
 		//datos cabecera
-		String idPersona=(String) htDatos.get("IDPERSONA_SJCS");
+		String idPersona=(String) htDatos.get("idPersona");
 		
 		//Datos Cabecera
 		htAux=this.obtenerDatosPersonaSociedad(institucion,idPersona,usr);
+		
 		
 		String cuenta=(String)htAux.get("CUENTA_CORRIENTE");
 		if (cuenta==null || cuenta.equals("")) {
 			String delimIni=CTR+"INI_TODO_CUENTA"+CTR;
 			String delimFin=CTR+"FIN_TODO_CUENTA"+CTR;
 			String sAux="";
-			plantillaFO=UtilidadesString.reemplazaEntreMarcasCon(plantillaFO, delimIni, delimFin,sAux);
+			//plantillaFO=UtilidadesString.reemplazaEntreMarcasCon(plantillaFO, delimIni, delimFin,sAux);
 		}else{
 			// JBD 03/02/2009 Si hemos obtenido una cuenta debemos ocultar el numero con asteriscos (INC-5635)
 			// Nos aseguramos de que el numero de cuenta este completo
@@ -395,21 +99,53 @@ public class InformeColegiadosPagos extends MasterReport {
 				// Volvemos a unir la cuenta
 				cuenta = cuenta.substring(0, 13) + numero + cuenta.substring(23);
 				htAux.put("CUENTA_CORRIENTE", cuenta);
+				// 
+				htAux.put("NUMERO_CUENTA_CORRIENTE", cuenta.substring(0, 23));
 			}
 		}
 		htDatos.putAll(htAux);
 		
 		//Datos de las Asistencias
 		Vector datosAsistencias=this.obtenerDatosAsistencia(institucion, idPersona, idPagos, idioma);
-		plantillaFO = this.reemplazaRegistros(plantillaFO,datosAsistencias,htDatos,"ASISTENCIA");
+		htDatos.put("VASISTENCIAS", datosAsistencias);
+		
+		//plantillaFO = this.reemplazaRegistros(plantillaFO,datosAsistencias,htDatos,"ASISTENCIA");
 		
 		//Datos de los Oficios
 		Vector datosOficios=this.obtenerDatosOficio(institucion,idPersona, idPagos);
-		plantillaFO = this.reemplazaRegistros(plantillaFO,datosOficios,htDatos,"OFICIOS");
+		htDatos.put("VOFICIOS", datosOficios);
+		
+		//plantillaFO = this.reemplazaRegistros(plantillaFO,datosOficios,htDatos,"OFICIOS");
 		
 		//Datos del Pago y Totales
 		htAux=this.obtenerDatosPago(institucion, idPersona, idPagos, usr);
-		String total2=(htAux.get("TOTAL_MOVIMIENTOS")!=null)?(String)htAux.get("TOTAL_MOVIMIENTOS"):"0";
+		htDatos.putAll(htAux);
+		
+		return htDatos;
+	}
+	
+	
+	protected String reemplazarDatos(UsrBean usr, String plantillaFO, Hashtable htDatos) throws ClsExceptions, SIGAException{
+		
+		String cuenta=(String)htDatos.get("CUENTA_CORRIENTE");
+		if (cuenta==null || cuenta.equals("")) {
+			String delimIni=CTR+"INI_TODO_CUENTA"+CTR;
+			String delimFin=CTR+"FIN_TODO_CUENTA"+CTR;
+			String sAux="";
+			plantillaFO=UtilidadesString.reemplazaEntreMarcasCon(plantillaFO, delimIni, delimFin,sAux);
+		}
+		
+		
+		//Datos de las Asistencias
+		Vector datosAsistencias = (Vector)htDatos.get("VASISTENCIAS");
+		plantillaFO = this.reemplazaRegistros(plantillaFO,datosAsistencias,htDatos,"ASISTENCIA");
+		
+		//Datos de los Oficios
+		Vector datosOficios = (Vector)htDatos.get("VOFICIOS");
+		plantillaFO = this.reemplazaRegistros(plantillaFO,datosOficios,htDatos,"OFICIOS");
+		
+		//Datos del Pago y Totales
+		String total2=(htDatos.get("TOTAL_MOVIMIENTOS")!=null)?(String)htDatos.get("TOTAL_MOVIMIENTOS"):"0";
 		if (total2.length()>2) total2=total2.substring(0,total2.length()-2);
 		if (total2.equals("0")) {
 			String delimIni=CTR+"INI_TODO_MOVIMIENTOS"+CTR;
@@ -417,7 +153,7 @@ public class InformeColegiadosPagos extends MasterReport {
 			String sAux="";
 			plantillaFO=UtilidadesString.reemplazaEntreMarcasCon(plantillaFO, delimIni, delimFin,sAux);
 		}
-		total2=(htAux.get("TOTAL_RETENCIONES")!=null)?(String)htAux.get("TOTAL_RETENCIONES"):"0";
+		total2=(htDatos.get("TOTAL_RETENCIONES")!=null)?(String)htDatos.get("TOTAL_RETENCIONES"):"0";
 		if (total2.length()>2) total2=total2.substring(0,total2.length()-2);
 		if (total2.equals("0")) {
 			String delimIni=CTR+"INI_TODO_RETENCIONES"+CTR;
@@ -425,10 +161,12 @@ public class InformeColegiadosPagos extends MasterReport {
 			String sAux="";
 			plantillaFO=UtilidadesString.reemplazaEntreMarcasCon(plantillaFO, delimIni, delimFin,sAux);
 		}
-		htDatos.putAll(htAux);
 		
 		return this.reemplazaVariables(htDatos,plantillaFO);
 	} //reemplazarDatos()
+	
+	
+	
 	
 	/**
 	 * Obtienes nombre y direccion del letrado o Sociedad
@@ -601,17 +339,27 @@ public class InformeColegiadosPagos extends MasterReport {
 		
 		try {
 			StringBuffer sql1 = new StringBuffer();
-			sql1.append("select to_char(pag.fechadesde, 'DD/MM/YYYY') FECHADESDE, ");
-			sql1.append(" to_char(pag.fechahasta, 'DD/MM/YYYY') FECHAHASTA, ");
+			sql1.append("select to_char(fa.fechainicio, 'DD/MM/YYYY') FECHADESDE, ");
+			sql1.append(" to_char(fa.fechainicio, 'DD/MM/YYYY') FECHAHASTA, ");
+			sql1.append(" (select to_char(max(cab.fecha_fin), 'DD/MM/YYYY') ");
+			sql1.append(" from SCS_CABECERAGUARDIAS cab ");
+			sql1.append(" where cab.idturno = gu.idturno ");
+			sql1.append(" and cab.idinstitucion = gu.idinstitucion ");
+			sql1.append(" and cab.idguardia = gu.idguardia ");
+			sql1.append(" and cab.idcalendarioguardias = fa.idcalendarioguardias ");
+			sql1.append(" and cab.idpersona = col.idperorigen ");
+			sql1.append(" group by cab.idinstitucion, cab.idguardia, cab.idcalendarioguardias, cab.idpersona) FECHAFIN, ");
 			sql1.append("TU.NOMBRE TURNO, ");
+			sql1.append(" tu.abreviatura ABREVIATURA_TURNO, ");
 			sql1.append("f_siga_formatonumero(col.impasistencia, 2) IMPORTEPAGADO, ");
 			sql1.append("pag.IDFACTURACION, ");
 			sql1.append("fa.IDTURNO, ");
 			sql1.append("fa.IDGUARDIA, ");
 			sql1.append("fa.IDCALENDARIOGUARDIAS, ");
 			sql1.append("f_siga_formatonumero(fa.precioaplicado, 2) IMPORTE_ACTUACION, ");
-			sql1.append("fa.IDAPUNTE ");
-			sql1.append("from FCS_PAGO_COLEGIADO col, fcs_pagosjg pag, fcs_fact_apunte fa, SCS_TURNO TU ");
+			sql1.append("fa.IDAPUNTE, ");
+			sql1.append("gu.nombre as NOMBRE_GUARDIA ");
+			sql1.append("from FCS_PAGO_COLEGIADO col, fcs_pagosjg pag, fcs_fact_apunte fa, SCS_TURNO TU, scs_guardiasturno gu ");
 			contador++;
 			codigo.put(new Integer(contador),idInstitucion);
 			sql1.append(" where COL.IDINSTITUCION = :"+contador);
@@ -628,7 +376,11 @@ public class InformeColegiadosPagos extends MasterReport {
 			sql1.append("   and COL.IDPERORIGEN = FA.IDPERSONA ");
 			sql1.append("   and FA.IDTURNO = TU.IDTURNO ");
 			sql1.append("   and FA.IDINSTITUCION = TU.IDINSTITUCION ");
-			sql1.append(" order by PAG.FECHADESDE, TU.NOMBRE, FA.IDAPUNTE");
+			sql1.append("   and gu.idinstitucion = tu.idinstitucion");
+			sql1.append("   and gu.idturno = tu.idturno");
+			sql1.append("   and gu.idguardia = fa.idguardia");
+			sql1.append("   and fa.precioaplicado >0.0 "); // Eliminamos las asistencias de importe 0
+			sql1.append(" order by fa.fechainicio, GU.NOMBRE, TU.NOMBRE, FA.IDAPUNTE");
 	 
 			RowsContainer rc=new RowsContainer();
 			rc.findBind(sql1.toString(),codigo);
@@ -647,15 +399,26 @@ public class InformeColegiadosPagos extends MasterReport {
 					String idCalendarioGuardias=r1.getString("IDCALENDARIOGUARDIAS");
 					String idFacturacion=r1.getString("IDFACTURACION");
 					String fechaDesde=r1.getString("FECHADESDE");
-					String fechaHasta=r1.getString("FECHAHASTA");
 					String idApunte=r1.getString("IDAPUNTE");
 					
 					String sql2=
-						"select AAS.ANIO||'/'||AAS.NUMERO ACTUACION," +//+ (aas.descripcionbreve o aas.idactuacion
-						"       PJG.NOMBRE||' '||PJG.APELLIDO1||' '||PJG.APELLIDO2 NOMBRE_ASISTIDO, to_char(AAS.FECHA,'DD/MM/YYYY') FECHA_ACTUACION" +
+						"select AAS.ANIO || '/' || AAS.NUMERO || '-' || AAS.IDACTUACION ACTUACION," +//+ (aas.descripcionbreve o aas.idactuacion
+						"       PJG.NOMBRE||' '||PJG.APELLIDO1||' '||PJG.APELLIDO2 NOMBRE_ASISTIDO, to_char(AAS.FECHA,'DD/MM/YYYY') FECHA_ACTUACION, " +
+						"       DECODE(FAAS.PRECIOAPLICADO,0,NULL,FAAS.PRECIOAPLICADO) AS PRECIO_ACTUACION," +
+						"		f_siga_getrecurso(COS.DESCRIPCION, "+ idioma +" ) AS TIPO_DESPLAZAMIENTO," +
+						"		TACTCOS.IMPORTE AS IMPORTE_DESPLAZAMIENTO, " +
+						"		(case when instr(f_siga_getrecurso(COS.DESCRIPCION, 1),' 5 km') > 0 then '5 km' " +
+						"		when instr(f_siga_getrecurso(COS.DESCRIPCION, 1),' 25 km') > 0 then '25 km' " +
+						"		when instr(f_siga_getrecurso(COS.DESCRIPCION, 1),' 50 km') > 0 then '50 km' " +
+						"		else f_siga_getrecurso(COS.DESCRIPCION, "+ idioma+" ) " +
+						"       end ) ABREVIATURA_DESPLAZAMIENTO " +
 						"  from FCS_FACT_APUNTE FAP, FCS_FACT_ACTUACIONASISTENCIA FAAS," +
 						"		SCS_ACTUACIONASISTENCIA AAS," +
-						"		SCS_ASISTENCIA ASI, SCS_PERSONAJG PJG" +
+						"		SCS_ASISTENCIA ASI," +
+						"		SCS_PERSONAJG PJG," +
+						"		SCS_ACTUACIONASISTCOSTEFIJO  ACTCOS," +
+						"		SCS_TIPOACTUACIONCOSTEFIJO   TACTCOS," +
+						"		SCS_COSTEFIJO                COS" +
 						" where FAP.IDINSTITUCION = FAAS.IDINSTITUCION " +
 						"   and FAP.IDFACTURACION = FAAS.IDFACTURACION " +
 						"   and FAP.IDAPUNTE = FAAS.IDAPUNTE " +
@@ -665,7 +428,7 @@ public class InformeColegiadosPagos extends MasterReport {
 						"   and FAP.IDTURNO ="+idTurno +
 						"   and FAP.IDGUARDIA = "+idGuardia +
 						"   and FAP.IDCALENDARIOGUARDIAS = "+idCalendarioGuardias +
-						"   and FAP.FECHAINICIO between to_date('"+fechaDesde+"', 'DD/MM/YYYY') and to_date('"+fechaHasta+"', 'DD/MM/YYYY') "+
+						"   and trunc(FAP.FECHAINICIO)= '"+fechaDesde+"' "+
 						"   and FAP.Idpersona = "+idPersona+" "+
 						"   and FAP.IdApunte = "+idApunte+" "+
 						"   and FAAS.IDINSTITUCION = AAS.IDINSTITUCION (+)" +
@@ -677,7 +440,18 @@ public class InformeColegiadosPagos extends MasterReport {
 						"   and FAAS.ANIO = ASI.ANIO (+)" +
 						"   and ASI.IDPERSONAJG = PJG.IDPERSONA(+)" +
 						"   and ASI.IDINSTITUCION = PJG.IDINSTITUCION(+)" +
-						" order by ACTUACION, NOMBRE_ASISTIDO";
+						// Cruzamos con tablas nuevas para sacar los desplazamientos 
+						" 	and ACTCOS.IDINSTITUCION(+) = AAS.IDINSTITUCION " +
+						"	and ACTCOS.ANIO(+) = AAS.ANIO" +
+						" 	and ACTCOS.NUMERO(+) = AAS.NUMERO" +
+						" 	and ACTCOS.IDACTUACION(+) = AAS.IDACTUACION" +
+						" 	and TACTCOS.IDINSTITUCION(+) = ACTCOS.IDINSTITUCION " +       
+						" 	and TACTCOS.IDTIPOASISTENCIA(+) = ACTCOS.IDTIPOASISTENCIA " + 
+						" 	and TACTCOS.IDTIPOACTUACION(+) = ACTCOS.IDTIPOACTUACION " +   
+						" 	and TACTCOS.IDCOSTEFIJO(+) = ACTCOS.IDCOSTEFIJO  " +          
+						" 	and COS.IDINSTITUCION(+)= ACTCOS.IDINSTITUCION " +            
+						" 	and COS.IDCOSTEFIJO(+)=ACTCOS.IDCOSTEFIJO " +      
+						" order by AAS.ANIO, AAS.NUMERO, AAS.IDACTUACION, NOMBRE_ASISTIDO";
 
 					RowsContainer rc2 = new RowsContainer();
 					rc2.find(sql2);
@@ -722,19 +496,26 @@ public class InformeColegiadosPagos extends MasterReport {
 		
 		try {
 			StringBuffer sql = new StringBuffer();
-			sql.append(" select distinct AD.FECHA, to_char(AD.FECHA,'DD/MM/YYYY') FECHA_OFICIO,  PRO.NOMBRE PROCEDIMIENTO, ");
+			// jbd He quitado el distinct que impedia que ocultaba procedimientos del mismo dia
+			// sql.append(" select distinct AD.FECHA, to_char(AD.FECHA,'DD/MM/YYYY') FECHA_OFICIO,  PRO.NOMBRE PROCEDIMIENTO, ");
+			sql.append(" select AD.FECHA, to_char(AD.FECHA,'DD/MM/YYYY') FECHA_OFICIO,  PRO.NOMBRE PROCEDIMIENTO, ");
 			sql.append(" f_siga_formatonumero(COL.IMPOFICIO,2)  IMPORTEPAGADO, ");
 			sql.append(" DES.ANIO || '/' || DES.CODIGO  ASIOFI, ");
 			sql.append(" f_siga_getdefendidosdesigna(DES.IDINSTITUCION, des.anio, des.idturno, des.numero,0) NOMBRE_SOLICITANTE, ");
 			sql.append(" f_siga_formatonumero(fact.precioaplicado,2) IMPORTE_PROCEDIMIENTO, ");
-			sql.append(" f_siga_formatonumero(fact.precioaplicado*fact.porcentajefacturado/100,2) IMPORTE_OFICIO ");
+			sql.append(" f_siga_formatonumero(fact.precioaplicado*fact.porcentajefacturado/100,2) IMPORTE_OFICIO, ");
+			sql.append(" acreprod.porcentaje as PORCENTAJE_PAGADO,");
+			sql.append(" acre.descripcion as ACREDITACION, ");
+			sql.append(" ad.numeroasunto as NUMEROASUNTO ");
 			sql.append(" from FCS_PAGO_COLEGIADO   COL, ");
 			sql.append(" SCS_ACTUACIONDESIGNA      AD, ");
 			sql.append(" SCS_PROCEDIMIENTOS        PRO, ");
 			sql.append(" SCS_DESIGNA               DES, ");
 			sql.append(" FCS_FACT_ACTUACIONDESIGNA fact, ");
 			sql.append(" FCS_PAGOSJG               pag, ");
-			sql.append(" FCS_FACTURACIONJG         fac ");
+			sql.append(" FCS_FACTURACIONJG         fac, ");      
+	       	sql.append(" SCS_ACREDITACIONPROCEDIMIENTO acreprod, ");
+	       	sql.append(" SCS_ACREDITACION acre ");
 
 			sql.append(" where DES.IDINSTITUCION = AD.IDINSTITUCION ");
 			sql.append("    AND DES.IDTURNO = AD.IDTURNO ");
@@ -754,7 +535,6 @@ public class InformeColegiadosPagos extends MasterReport {
 			sql.append("    and COL.idperorigen = fact.idpersona ");
 			  
 			sql.append("    and ad.idinstitucion = fact.idinstitucion ");
-			sql.append("    and ad.idfacturacion = fact.idfacturacion ");
 			sql.append("    and ad.idpersonacolegiado = fact.idpersona ");
 			sql.append("    and ad.NUMEROASUNTO = fact.NUMEROASUNTO ");
 			sql.append("    and ad.NUMERO = fact.NUMERO ");
@@ -766,7 +546,14 @@ public class InformeColegiadosPagos extends MasterReport {
 			  
 			sql.append("    and fac.idinstitucion = fact.idinstitucion ");
 			sql.append("    and fac.idfacturacion = fact.idfacturacion ");
-			sql.append(" order by AD.FECHA");
+			
+			// Relacionamos las nuevas tablas para sacar la forma de pago
+			sql.append(" and acreprod.idprocedimiento = ad.idprocedimiento ");
+			sql.append(" and acreprod.idinstitucion = ad.idinstitucion_proc ");
+			sql.append(" and acreprod.idacreditacion = ad.idacreditacion ");
+			sql.append(" and acre.idacreditacion = acreprod.idacreditacion ");
+	          
+			sql.append(" order by AD.FECHA, ASIOFI, NUMEROASUNTO, PROCEDIMIENTO");
 			
 			RowsContainer rc=new RowsContainer();
 			rc.find(sql.toString());
@@ -826,8 +613,10 @@ public class InformeColegiadosPagos extends MasterReport {
 		double dTotalFactAsistencia=0;
 		double dTotalOficio=0;
 		double dTotalFactOficio=0;
+		double dCompensadoCaja=0;
 		String pcAsistencia=null;
 		String pcOficio=null;
+		String fechaPago=null;
 		
 		int IRPF = 0;
 		
@@ -852,10 +641,31 @@ public class InformeColegiadosPagos extends MasterReport {
 				pcOficio=(String)r.getString("PORCENTAJE_TURNOS");
 			}
 
+			
+			//Obtiene el importe del compensado o pagado por caja
+			buf0 = new StringBuffer();
+			buf0.append("select sum(efe.importe) as COMPENSADO_CAJA");
+			buf0.append(" from FAC_ABONO ABO, FAC_PAGOABONOEFECTIVO EFE");
+			buf0.append(" where abo.idinstitucion = efe.idinstitucion");
+			buf0.append(" and abo.idabono = efe.idabono");
+			buf0.append(" and abo.idpagosjg is not null");
+			buf0.append(" and abo.idpersona = " + idPersona);
+			buf0.append(" and abo.idpagosjg = " +idPago);
+			buf0.append(" and abo.idinstitucion = " + idInstitucion);
+			rc = new RowsContainer();
+			rc.find(buf0.toString());
+			if(rc!=null && rc.size()>0){
+				Row r=(Row)rc.get(0);
+				result.putAll(r.getRow());
+				if(!r.getString("COMPENSADO_CAJA").equalsIgnoreCase("")){
+					dCompensadoCaja= Double.parseDouble(r.getString("COMPENSADO_CAJA"));
+				}else dCompensadoCaja=0.0;
+				result.put("COMPENSADO_CAJA",UtilidadesString.formatoImporte(dCompensadoCaja)+ClsConstants.CODIGO_EURO);
+			}
 
 			//Se reutiliza la query del detalle de pagos para recuperar importes
 			FcsPagosJGAdm pagosAdm = new FcsPagosJGAdm(usr);
-			String sql = pagosAdm.getQueryDetallePagoColegiado(idInstitucion, idPago, idPersona);
+			String sql = pagosAdm.getQueryDetallePagoColegiado(idInstitucion, idPago, idPersona, false);
 			
 			rc = new RowsContainer();
 			rc.find(sql);
@@ -868,7 +678,7 @@ public class InformeColegiadosPagos extends MasterReport {
 				result.put("TOTAL_GENERAL",UtilidadesNumero.formatoCartaPago(sTotalGeneral)+ClsConstants.CODIGO_EURO);
 					
 				String sTotalIRPF=r.getString("TOTALIMPORTEIRPF");
-				result.put("TOTAL_IRPF",UtilidadesNumero.round(sTotalIRPF,2)+ClsConstants.CODIGO_EURO);
+				result.put("TOTAL_IRPF",UtilidadesNumero.formatoCartaPago(sTotalIRPF)+ClsConstants.CODIGO_EURO);
 				
 				String sTotalMovimientos=r.getString("IMPORTETOTALMOVIMIENTOS");
 				result.put("TOTAL_MOVIMIENTOS",UtilidadesNumero.formatoCartaPago(sTotalMovimientos)+ClsConstants.CODIGO_EURO);
@@ -876,17 +686,26 @@ public class InformeColegiadosPagos extends MasterReport {
 				String sTotalRetenciones=r.getString("IMPORTETOTALRETENCIONES");
 				result.put("TOTAL_RETENCIONES",UtilidadesNumero.formatoCartaPago(sTotalRetenciones)+ClsConstants.CODIGO_EURO);
 				
+				// Añadimos el total bruto
+				Double dTotalBruto=	Double.parseDouble(sTotalGeneral) + Double.parseDouble(sTotalMovimientos);
+				result.put("TOTAL_BRUTO",UtilidadesNumero.formatoCartaPago(dTotalBruto.toString())+ClsConstants.CODIGO_EURO);
+				
+				// Añadimos el total neto
+				Double dTotalNeto=	dTotalBruto + Double.parseDouble(sTotalIRPF);
+				result.put("TOTAL_NETO",UtilidadesNumero.formatoCartaPago(dTotalNeto.toString())+ClsConstants.CODIGO_EURO);
+				
 				Double dTotalLiquidacion =  Double.parseDouble(sTotalGeneral) + 
 											Double.parseDouble(sTotalRetenciones) + 
 											Double.parseDouble(sTotalIRPF) + 
-											Double.parseDouble(sTotalMovimientos); 
+											Double.parseDouble(sTotalMovimientos)-
+											dCompensadoCaja; // Restamos lo compensado
 				result.put("TOTAL_LIQUIDACION",UtilidadesNumero.formatoCartaPago(dTotalLiquidacion.toString())+ClsConstants.CODIGO_EURO);
 			}
 			
 			//Obtiene el IRPF,los totales y facturados de oficios
 			buf0 = new StringBuffer();
-			buf0.append("SELECT NVL(SUM(col.impoficio), 0) TOTAL_OFICIO, ");
-			buf0.append("NVL(SUM(act.PRECIOAPLICADO), 0) TOTAL_FACTURADO_OFICIO ");
+			buf0.append("SELECT NVL(col.impoficio, 0) TOTAL_OFICIO, ");
+			buf0.append("NVL(SUM(act.PRECIOAPLICADO*act.porcentajefacturado/100), 0) TOTAL_FACTURADO_OFICIO ");
 			buf0.append("FROM FCS_PAGO_COLEGIADO col, FCS_PAGOSJG pag, FCS_FACTURACIONJG fac, FCS_FACT_ACTUACIONDESIGNA act ");
 			buf0.append("WHERE col.IDPAGOSJG = "+idPago);
 			buf0.append(" and col.idinstitucion = "+idInstitucion);
@@ -897,7 +716,8 @@ public class InformeColegiadosPagos extends MasterReport {
 			buf0.append(" and pag.idfacturacion = act.idfacturacion ");
 			buf0.append(" and fac.idinstitucion = act.idinstitucion ");
 			buf0.append(" and fac.idfacturacion = act.idfacturacion ");
-			buf0.append(" and col.idperorigen = act .idpersona ");
+			buf0.append(" and col.idperorigen = act.idpersona ");
+			buf0.append(" group by col.impoficio ");
 
 			rc = new RowsContainer();
 			rc.find(buf0.toString());
@@ -911,9 +731,13 @@ public class InformeColegiadosPagos extends MasterReport {
 				result.put("CPC_OFICIOS", UtilidadesString.formatoImporte(dTotalFactOficio)+ClsConstants.CODIGO_EURO);
 			}
 			
+			
+			
+			
+			
 			//Obtiene el IRPF,los totales y facturados de asistencias
 			buf0 = new StringBuffer();
-			buf0.append("SELECT NVL(SUM(col.impasistencia), 0) TOTAL_ASISTENCIA, ");
+			buf0.append("SELECT NVL(col.impasistencia, 0) TOTAL_ASISTENCIA, ");
 			buf0.append("NVL(SUM(apu.PRECIOAPLICADO + apu.preciocostesfijos), 0) TOTAL_FACTURADO ");
 			buf0.append("FROM FCS_PAGO_COLEGIADO col, FCS_PAGOSJG pag, FCS_FACTURACIONJG fac, FCS_FACT_APUNTE apu ");
 			buf0.append("WHERE col.IDPAGOSJG = "+idPago);
@@ -926,6 +750,7 @@ public class InformeColegiadosPagos extends MasterReport {
 			buf0.append(" and fac.idinstitucion = apu.idinstitucion ");
 			buf0.append(" and fac.idfacturacion = apu.idfacturacion ");
 			buf0.append(" and col.idperorigen = apu.idpersona ");
+			buf0.append(" group by col.impasistencia ");
 
 			rc = new RowsContainer();
 			rc.find(buf0.toString());
@@ -943,6 +768,21 @@ public class InformeColegiadosPagos extends MasterReport {
 			FcsPagoColegiadoAdm pagoAdm = new FcsPagoColegiadoAdm(usr);
 			String irpf = pagoAdm.getIrpf(idInstitucion, idPago, idPersona);		
 			result.put("IRPF",irpf);
+			
+			// jbd 18/2/2010 inc-6868 Sacamos la fecha del pago para que la usen en vez de sysdate
+			buf0 = new StringBuffer();
+			buf0.append("SELECT TO_CHAR(PEP.FECHAESTADO, 'DD/MM/YYYY') FECHAESTADO FROM FCS_PAGOS_ESTADOSPAGOS PEP WHERE PEP.IDESTADOPAGOSJG = 30 ");
+			buf0.append(" AND PEP.IDINSTITUCION = " + idInstitucion);
+			buf0.append(" AND IDPAGOSJG= " + idPago);
+			rc = new RowsContainer();
+			rc.find(buf0.toString());
+			if(rc!=null && rc.size()>0){
+				Row r=(Row)rc.get(0);
+				result.putAll(r.getRow());
+				
+				fechaPago = r.getString("FECHAESTADO");
+				result.put("FECHA_PAGO",UtilidadesString.getFechaEscrita(fechaPago,"dd/MM/yyyy",usr.getLanguage()));
+			}
 				
 		} catch (Exception e) {
 			throw new ClsExceptions(e,"Error al generar el informe");
@@ -987,45 +827,6 @@ public class InformeColegiadosPagos extends MasterReport {
 	      
 	       return sql;                        
 	    }
-	public void enviarPagoColegiado(UsrBean usrBean, EnvProgramPagosBean programPagoBean, 
-			EnvEnvioProgramadoBean envioProgramadoBean)throws ClsExceptions,SIGAException{
-		
-		Envio envio = new Envio(usrBean,envioProgramadoBean.getNombre());
-
-		// Bean envio
-		EnvEnviosBean enviosBean = envio.getEnviosBean();
-		enviosBean.setDescripcion(enviosBean.getIdEnvio()+" "+enviosBean.getDescripcion());
-		// trunco la descripción
-		if (enviosBean.getDescripcion().length()>200)  enviosBean.setDescripcion(enviosBean.getDescripcion().substring(0,99));
-
-		// Preferencia del tipo de envio si el usuario tiene uno:
-		enviosBean.setIdTipoEnvios(envioProgramadoBean.getIdTipoEnvios());
-
-		enviosBean.setIdPlantillaEnvios(envioProgramadoBean.getIdPlantillaEnvios());
-		if (envioProgramadoBean.getIdPlantilla()!=null && !envioProgramadoBean.getIdPlantilla().equals("")) {
-			enviosBean.setIdPlantilla(envioProgramadoBean.getIdPlantilla());
-		} else {
-			enviosBean.setIdPlantilla(null);
-		}
-		
-		String pathDocumento=getPathInformePagoColegiadoAEnviar(usrBean,
-				programPagoBean.getIdPago().toString(),programPagoBean.getIdPersona().toString(),
-				programPagoBean.getIdiomaCodigoExt(),programPagoBean.getIdInstitucion().toString());
-		
-		// Creacion documentos
-		int indice = pathDocumento.lastIndexOf(ClsConstants.FILE_SEP);
-		String descDocumento = "";
-		if(indice >0)
-			descDocumento = pathDocumento.substring(indice+1);
-		
-		
-		Documento documento = new Documento(pathDocumento,descDocumento);
-		Vector vDocumentos = new Vector();
-		vDocumentos.add(documento);
 	
-		// Genera el envio:
-		envio.generarEnvio(programPagoBean.getIdPersona().toString(),vDocumentos);
-		
-	} 
 	
 }

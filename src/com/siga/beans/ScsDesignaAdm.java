@@ -128,23 +128,26 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 									" p." + CenPersonaBean.C_NOMBRE + " || ' ' || p." + CenPersonaBean.C_APELLIDOS1 + " || ' ' ||  p." + CenPersonaBean.C_APELLIDOS2 + " as nombre"+
 							" from " + ScsDesignasLetradoBean.T_NOMBRETABLA + " des, " + CenPersonaBean.T_NOMBRETABLA + " p"+
 							" where  p." + CenPersonaBean.C_IDPERSONA + " = des." + ScsDesignasLetradoBean.C_IDPERSONA +
+								" and des." + ScsDesignasLetradoBean.C_IDPERSONA + " = F_SIGA_GETIDLETRADO_DESIGNA(des.idInstitucion,des.idTurno,des.anio,des.NUMERO)" +
+							
 								" and  des." + ScsDesignasLetradoBean.C_IDINSTITUCION + " = " + idInstitucion+
 								" and des." + ScsDesignasLetradoBean.C_IDTURNO + " = " + idTurno +
 								" and des." + ScsDesignasLetradoBean.C_ANIO + " = " + anio +
 								" and des." + ScsDesignasLetradoBean.C_NUMERO + " = "+  numero +
+								" and rownum = 1";
 								//" and trunc( des."+  ScsDesignasLetradoBean.C_FECHADESIGNA +") <= trunc(sysdate)"+ 
 								// Se comenta esta condición porque el sistema permite crear designas posteriores al sysdate 
 								// y con esta condicion la consulta nunca devuelve valor
 								//" and ( des." +  ScsDesignasLetradoBean.C_FECHARENUNCIA + " is  null or trunc( des."+ ScsDesignasLetradoBean.C_FECHARENUNCIA +") < trunc(sysdate))";
-								
+								/*
 								" and des."+ScsDesignasLetradoBean.C_FECHADESIGNA+" =(select max(d."+ScsDesignasLetradoBean.C_FECHADESIGNA+")"+
 		                                                                             " from  "+ScsDesignasLetradoBean.T_NOMBRETABLA+" d "+
 		                                                                             " where d."+ScsDesignasLetradoBean.C_IDINSTITUCION + " = " + idInstitucion+
 		                                             								 " and d." + ScsDesignasLetradoBean.C_IDTURNO + " = " + idTurno +
 																					 " and d." + ScsDesignasLetradoBean.C_ANIO + " = " + anio +
-																					 " and d." + ScsDesignasLetradoBean.C_NUMERO + " = "+  numero +
+																					 " and d." + ScsDesignasLetradoBean.C_NUMERO + " = "+  numero + ")" +
 		                                                                             " and trunc(d."+ScsDesignasLetradoBean.C_FECHADESIGNA+") <=trunc(sysdate))"+
-		                        " and rownum=1";                   
+		                        " and rownum=1";              */     
 								
 			
 			
@@ -1784,6 +1787,9 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					registro.put("PROVINCIA_JUZGADO", " ");
 				}
 				
+				//Sacamos el tipo ejg colegio (@cat)
+				helperInformes.completarHashSalida(registro, getTipoEJGColegioDesigna(idTurno, numeroDesigna, anioDesigna, idInstitucion, usrbean.getLanguage().toString()));
+				
 				//Sacamos los datos de la ultima Actuacion
 				helperInformes.completarHashSalida(registro,getUltimaActuacionDesignaSalida(idInstitucion,numeroDesigna,idTurno,anioDesigna));
 				if(registro.containsKey("NUMASUNTO_UA") && registro.get("NUMASUNTO_UA")!=null && !((String)registro.get("NUMASUNTO_UA")).trim().equals("")){
@@ -1875,7 +1881,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			" DES.OBSERVACIONES AS OBSERVACIONES,"+
 			" DES.NUMPROCEDIMIENTO AS AUTOS,"+
 			" TO_CHAR(DES.FECHAJUICIO, 'dd/MM/yyyy') AS FECHA_JUICIO,"+
-			" TO_CHAR(DES.FECHAJUICIO, 'HH24:MM') AS HORA_JUICIO,"+
+			" TO_CHAR(DES.FECHAJUICIO, 'HH24:MI') AS HORA_JUICIO,"+
 			" DES.ANIO AS ANIO_DESIGNA,"+
 			" DES.CODIGO AS CODIGO,"+
 			" DES.RESUMENASUNTO AS ASUNTO,"+
@@ -1927,17 +1933,20 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			" AND DES.ANIO = LET.ANIO(+)"+
 			" AND DES.NUMERO = LET.NUMERO(+)"+
 			" AND (LET.FECHADESIGNA IS NULL OR"+
-			" LET.FECHADESIGNA = (SELECT MAX(LET2.FECHADESIGNA)"+
+			" let.idpersona = F_SIGA_GETIDLETRADO_DESIGNA(:2,des.idTurno,des.anio,des.NUMERO))" +
+			/*" LET.FECHADESIGNA = (SELECT MAX(LET2.FECHADESIGNA)"+
 			" FROM SCS_DESIGNASLETRADO LET2"+
 			" WHERE :2 = LET2.IDINSTITUCION"+
 			" AND LET.IDTURNO = LET2.IDTURNO"+
 			" AND LET.ANIO = LET2.ANIO"+
 			" AND LET.NUMERO = LET2.NUMERO"+
-			" AND TRUNC(LET2.FECHADESIGNA) <= TRUNC(SYSDATE)))"+
+			" AND TRUNC(LET2.FECHADESIGNA) <= TRUNC(SYSDATE)))"+*/
 			" AND des.IDINSTITUCION = :3"+
 			" AND des.IDTURNO = :4" +
 			" AND des.ANIO = :5" +
-			" AND des.NUMERO = :6";
+			" AND des.NUMERO = :6" ;
+			
+
 			//" AND des.CODIGO = :4";
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
 			return helperInformes.ejecutaConsultaBind(sql, h);
@@ -2269,6 +2278,38 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		return h;
 	}
 	
-	
+	public Vector getTipoEJGColegioDesigna(String idturno, String numero, String anio, String idinstitucion, String idioma) throws ClsExceptions{
+		Vector datos=new Vector();
+	       try {
+	            RowsContainer rc = new RowsContainer();
+		        StringBuffer sql = new StringBuffer();
+		        
+		        sql.append("select F_SIGA_GETRECURSO(tec.descripcion, "+idioma+") as TIPO_EJG_COLEGIO");
+		        sql.append(" from scs_designa des, scs_ejg ejg, scs_ejgdesigna edes, scs_tipoejgcolegio tec ");
+		        sql.append(" where des.idinstitucion = ejg.idinstitucion ");
+		        sql.append(" and des.idinstitucion=edes.idinstitucion ");
+		        sql.append(" and des.idinstitucion = " + idinstitucion);
+		        sql.append(" and des.anio = " + anio);
+		        sql.append(" and des.idturno = " + idturno);
+		        sql.append(" and des.numero = " + numero);
+		        sql.append(" and des.numero = edes.numerodesigna ");
+		        sql.append(" and des.idturno = edes.idturno ");
+		        sql.append(" and ejg.numero = edes.numeroejg ");
+		        sql.append(" and ejg.idtipoejg = edes.idtipoejg ");
+		        sql.append(" and tec.idinstitucion = ejg.idinstitucion ");
+		        sql.append(" and tec.idtipoejgcolegio=ejg.idtipoejgcolegio");
+		        if (rc.find(sql.toString())) {
+		               for (int i = 0; i < rc.size(); i++){
+		                  Row fila = (Row) rc.get(i);
+		                  Hashtable resultado=fila.getRow();	                  
+		                  datos.add(resultado);
+		               }
+		            } 
+		       }
+		       catch (Exception e) {
+		       		throw new ClsExceptions (e, "Error al obtener la informacion sobre el tipo ejg colegio de una designa.");
+		       }
+		       return datos;      
+	}
 	
 }

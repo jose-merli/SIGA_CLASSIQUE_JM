@@ -129,7 +129,10 @@ public class SIGASolicitudCertificadoAction extends MasterAction{
             solicitudAdm.insertarSolicitudCertificado(form.getIdPersona(),
             								          form.getIdInstitucionOrigen(),
             								          form.getIdInstitucionDestino(),
-            								          form.getDescripcion(),userBean);
+            								          form.getDescripcion(),
+            								          form.getFechaSolicitud(),
+            								          form.getMetodoSolicitud(),
+            								          userBean);
             tx.commit();
 	    }
 		catch (Exception e) { 

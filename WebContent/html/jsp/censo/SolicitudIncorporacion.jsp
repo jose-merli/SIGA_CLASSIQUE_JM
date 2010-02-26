@@ -34,6 +34,7 @@
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
    
     String fechaSol = (String) request.getAttribute("fechaSol");
+    String fechaEstadoColegial = "";
     int tipoIdenNIF = ClsConstants.TIPO_IDENTIFICACION_NIF;
     int tipoIdenCIF = ClsConstants.TIPO_IDENTIFICACION_CIF;
 	int tipoIdenNIE = ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE;
@@ -558,45 +559,56 @@ function str_replace(search, replace, subject) {
 
 	<!-- SUBCONJUNTO DE DATOS -->
 	<table align="center">
-
-		<tr>				
-			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.solicitudDe"/>&nbsp;(*)</td>
-			<td><siga:ComboBD nombre = "tipoSolicitud" tipo="solicitud" clase="boxCombo" obligatorio="true"/></td>
-		
-			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.tipoColegiacion"/>&nbsp;(*)</td>
-			<td><siga:ComboBD nombre = "tipoColegiacion" tipo="colegiacion" clase="boxCombo"  obligatorio="true"/></td>
-
-<!-- -->	<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.fechaSolicitud"/></td>
-			<td><input value="<%=fechaSol%>" type="text" name="fechaSolicitud" class="boxConsulta" readonly="true"></td>
+	
+		<tr>
+			<td class="labelText">&nbsp;</td>
+			<td>&nbsp;</td>
 		</tr>
 
+		<tr>				
+			<td class="labelText" width="19%"><siga:Idioma key="censo.SolicitudIncorporacion.literal.solicitudDe"/>&nbsp;(*)</td>
+			<td width="27%"><siga:ComboBD nombre = "tipoSolicitud" tipo="solicitud" clase="boxCombo" obligatorio="true"/></td>
+
+			<td class="labelText" width="19%"><siga:Idioma key="censo.SolicitudIncorporacion.literal.fechaSolicitud"/></td>
+			<td width="35%"><input value="<%=fechaSol%>" type="text" name="fechaSolicitud" class="boxConsulta" readonly="true"></td>
+		</tr>
+		<tr>
+			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.tipoColegiacion"/>&nbsp;(*)</td>
+			<td><siga:ComboBD nombre = "tipoColegiacion" tipo="colegiacion" clase="boxCombo"  obligatorio="true"/></td> 	
+			
+			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.fechaEstadoColegial"/></td>
+			<!-- <td><input value="<%=fechaSol%>" type="text" name="fechaSolicitud" class="boxConsulta" readonly="true"></td> -->
+			<td>
+				<siga:Fecha nombreCampo="fechaEstadoColegial" valorInicial="<%=fechaEstadoColegial%>"></siga:Fecha>
+				<a href='javascript://'onClick="return showCalendarGeneral(fechaEstadoColegial);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
+			</td>
+		</tr>
+
+		<tr>
+			<td class="labelText">&nbsp;</td>
+			<td>&nbsp;</td>
+		</tr>
+		
 		<tr>
 			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.tipoIdentificacion"/>&nbsp;(*)</td>
 			<td><siga:ComboBD nombre = "tipoIdentificacion" tipo="identificacionSolicitud" clase="boxCombo" obligatorio="true" ElementoSel="<%=selTipoIdentificacion%>" accion="comprobarApellido2Asterisco();"/> </td>
 
 			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.nifcif"/>&nbsp;(*)</td>
-			<td><input name="NIFCIF" type="text" class="box" size="20" maxlength="20" onBlur="formatearDocumento();"></td>
-			<td colspan="2"><input type="button" name="idButton" value='<siga:Idioma key="censo.nif.letra.letranif" />' onclick="generarLetra();" style="align:right" class="button" onBlur="formatearDocumento();"></td> 
-		</tr>
-		
-		<tr>
-			<td class="labelText"><siga:Idioma key="censo.consultaDatosGenerales.literal.sexo"/>&nbsp;(*)</td>
 			<td>
-				<html:select name="SolicitudIncorporacionForm" property="sexo" style = "null" styleClass = "box" readonly="false" >
-			        <html:option value="0" >&nbsp;</html:option>
-					<html:option value="<%=ClsConstants.TIPO_SEXO_HOMBRE%>"><siga:Idioma key="censo.sexo.hombre"/></html:option>
-					<html:option value="<%=ClsConstants.TIPO_SEXO_MUJER%>"><siga:Idioma key="censo.sexo.mujer"/></html:option>
-				</html:select>									
-			</td>
-			
+				<input name="NIFCIF" type="text" class="box" size="20" maxlength="20" onBlur="formatearDocumento();">
+				<input type="button" name="idButton" value='<siga:Idioma key="censo.nif.letra.letranif" />' onclick="generarLetra();" style="align:right" class="button" onBlur="formatearDocumento();">
+			</td> 
+		</tr>
+
+		<tr>
 			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.tratamiento"/>&nbsp;(*)</td>
-			<td colspan="3">	<siga:ComboBD nombre="tipoDon" tipo="tratamiento" clase="boxCombo"  obligatorio="true"/></td>			
+			<td><siga:ComboBD nombre="tipoDon" tipo="tratamiento" clase="boxCombo"  obligatorio="true"/></td>
+			
+			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.nombre"/>&nbsp;(*)</td>
+			<td><input type="text" name="nombre" maxlength="100" class="box"></td>
 		</tr>
 	
 		<tr>
-			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.nombre"/>&nbsp;(*)</td>
-			<td><input type="text" name="nombre" maxlength="100" class="box"></td>
-
 			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.apellido1"/>&nbsp;(*)</td>
 			<td><input type="text" name="apellido1"  maxlength="100" class="box"></td>
 
@@ -608,46 +620,61 @@ function str_replace(search, replace, subject) {
 		<tr>
 			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.estadoCivil"/></td>
 			<td><siga:ComboBD nombre = "estadoCivil" tipo="estadoCivil" clase="boxCombo"/></td>
-
+			
+			<td class="labelText"><siga:Idioma key="censo.consultaDatosGenerales.literal.sexo"/>&nbsp;(*)</td>
+			<td>
+				<html:select name="SolicitudIncorporacionForm" property="sexo" style = "null" styleClass = "box" readonly="false" >
+			        <html:option value="0" >&nbsp;</html:option>
+					<html:option value="<%=ClsConstants.TIPO_SEXO_HOMBRE%>"><siga:Idioma key="censo.sexo.hombre"/></html:option>
+					<html:option value="<%=ClsConstants.TIPO_SEXO_MUJER%>"><siga:Idioma key="censo.sexo.mujer"/></html:option>
+				</html:select>									
+			</td>
+		</tr>
+		
+		<tr>
 			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.fechaNacimiento"/>&nbsp;(*)</td>
-<!-- -->	<td><input type="text" name="fechaNacimiento" maxlength="10" class="box" readonly="true"><a href='javascript://'onClick="return showCalendarGeneral(fechaNacimiento);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a></td>
+			<td><siga:Fecha nombreCampo="fechaNacimiento" necesario="true"></siga:Fecha><a href='javascript://'onClick="return showCalendarGeneral(fechaNacimiento);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a></td>
 
 			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.naturalDe"/></td>
 			<td><input type="text" name="natural" maxlength="100" class="box"></td>
 		</tr>
 		
 		<tr>
+			<td class="labelText">&nbsp;</td>
+			<td>&nbsp;</td>
+		</tr>
+		
+		<tr>
 			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.domicilio"/>&nbsp;(*)</td>
-			<td><input type="text" name="domicilio" maxlength="100" class="box"></td>
+			<td><input type="text" name="domicilio" size="30" maxlength="100" class="box"></td>
+			
+			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.codigoPostal"/>&nbsp;(*)</td>
+			<td><input type="text" name="CP" class="box" maxlength="5"></td>
+		</tr>
 
+		<tr>
+			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.provincia"/>&nbsp;(*)</td>
+			<td ><siga:ComboBD nombre = "provincia" tipo="provincia" clase="boxCombo" obligatorio="true" accion="Hijo:poblacion"/></td>
+			
+			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.poblacion"/> &nbsp;(*)</td>
+			<td id="poblacionEspanola">
+				<siga:ComboBD nombre = "poblacion" tipo="poblacion" clase="boxCombo" obligatorio="true" hijo="t" ancho="335"/> 
+			</td>				
+			<td class="ocultar" class="ocultar" id="poblacionExtranjera">
+					<input type="text" name="poblacionExt" value='' size="30" maxlength="100" class="boxCombo"></input>
+			</td>		
+		</tr>
+		
+		<tr>
 			<td class="labelText"><siga:Idioma key="censo.datosDireccion.literal.pais2"/>&nbsp;</td>
 			<td colspan="3">
 				<siga:ComboBD nombre="pais" tipo="pais" clase="boxCombo" obligatorio="false" elementoSel="<%=idPais%>" accion="selPais(this.value);"/>
 			</td>
-
-		</tr>
-
-		<tr>
-			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.codigoPostal"/>&nbsp;(*)</td>
-			<td><input type="text" name="CP" class="box" maxlength="5"></td>
-
-			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.provincia"/>&nbsp;(*)</td>
-			<td colspan="3"><siga:ComboBD nombre = "provincia" tipo="provincia" clase="boxCombo" obligatorio="true" accion="Hijo:poblacion"/></td>
-
 		</tr>
 		
 		<tr>
 			<td class="labelText">&nbsp;</td>
 			<td>&nbsp;</td>
-
-			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.poblacion"/> &nbsp;(*)</td>
-			<td id="poblacionEspanola" colspan="3">
-				<siga:ComboBD nombre = "poblacion" tipo="poblacion" clase="boxCombo" obligatorio="true" hijo="t" ancho="335"/> 
-			</td>				
-			<td class="ocultar" class="ocultar"  colspan="3" id="poblacionExtranjera">
-					<input type="text" name="poblacionExt" value='' size="30" maxlength="100" class="boxCombo"></input>
-			</td>
-
 		</tr>
 		
 		<tr>
@@ -656,10 +683,6 @@ function str_replace(search, replace, subject) {
 
 			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono2"/></td>
 			<td><input type="text" name="telefono2" maxlength="20" class="box" ></td>
-
-			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono3"/></td>
-			<td><input type="text" name="telefono3" maxlength="20" class="box" ></td>
-
 		</tr>
 		
 		<tr>
@@ -668,19 +691,29 @@ function str_replace(search, replace, subject) {
 
 			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.fax2"/></td>
 			<td><input type="text" name="fax2" maxlength="20" class="box"></td>
-
+		</tr>
+		
+		<tr>
+			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono3"/></td>
+			<td><input type="text" name="telefono3" maxlength="20" class="box" ></td>
+			
 			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.email"/>&nbsp;(*)</td>
 			<td><input type="text" name="mail" maxlength="100" class="box"></td>
 		</tr>
 		
 		<tr>
-			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.observaciones"/></td>
-			<td colspan="3"><textarea cols="120" rows="4" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" name="observaciones" style="overflow:hidden" class="box"></textarea></td>
-
+			<td class="labelText">&nbsp;</td>
+			<td>&nbsp;</td>
+		</tr>
+		
+		<tr>
 			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.documentacion"/>&nbsp;(*)</td>
-			<td colspan="">
+			<td>
 				<siga:ComboBD nombre = "tipoModalidadDocumentacion" tipo="modalidadDocumentacion" clase="boxCombo" obligatorio="true" parametro="<%=modalidadParam%>" />
 			</td>
+			
+			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.observaciones"/></td>
+			<td><textarea cols="120" rows="4" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" name="observaciones" style="overflow:hidden" class="box"></textarea></td>
 		</tr>
 
 	</table>

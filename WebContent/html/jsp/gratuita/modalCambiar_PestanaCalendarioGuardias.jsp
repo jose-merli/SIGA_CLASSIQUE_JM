@@ -154,7 +154,7 @@
 				<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.motivos"/>&nbsp;(*)
 			</td>
 			<td class="labelText" colspan="3">
-				<html:textarea name="PermutasForm" property="motivosSolicitante" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" cols="80" rows="2" style="overflow:auto" styleClass="boxCombo" value="" readOnly="false" ></html:textarea>
+				<html:textarea name="PermutasForm" property="motivosSolicitante" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" cols="80" rows="2" style="width:545" styleClass="boxCombo" value="" readOnly="false" ></html:textarea>
 			</td>		
 		</tr>		
 		</table>

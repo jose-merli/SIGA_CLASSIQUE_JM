@@ -107,40 +107,34 @@
 		<input type="hidden" name="botonBuscarPulsado" value="">
 	<!-- FILA -->
 	<tr>				
+		<td class="labelText">
+			<siga:Idioma key="factSJCS.datosMovimientos.literal.nifCif"/>
+		</td>				
+		<td>
+			<html:text name="MantenimientoMovimientosForm" property="nif" maxlength="20" styleClass="box" readonly="false"/>
+		</td>
+		<td class="labelText">
+			<siga:Idioma key="factSJCS.datosMovimientos.literal.nColegiado"/>
+		</td>				
+		<td>
+			<html:text name="MantenimientoMovimientosForm" property="ncolegiado" maxlength="20" styleClass="box" readonly="false"/>
+		</td>
 
-
-	<td class="labelText">
-		<siga:Idioma key="factSJCS.datosMovimientos.literal.nifCif"/>
-	</td>				
-	<td class="labelText">
-		<html:text name="MantenimientoMovimientosForm" property="nif" maxlength="20" styleClass="box" readonly="false"/>
-	</td>
-	<td class="labelText">
-		<siga:Idioma key="factSJCS.datosMovimientos.literal.nColegiado"/>
-	</td>				
-	<td class="labelText">
-		<html:text name="MantenimientoMovimientosForm" property="ncolegiado" maxlength="20" styleClass="box" readonly="false"/>
-	</td>
-	
-
+			
 	</tr>
-	<!-- FILA -->
-	<tr>				
-
-	<td class="labelText">
-		<siga:Idioma key="factSJCS.datosFacturacion.literal.nombre"/>
-	</td>
-	<td class="labelText">
-		<html:text name="MantenimientoMovimientosForm" property="nombre" maxlength="100" styleClass="box" readonly="false"/>
-	</td>
-
-	<td class="labelText">
-		<siga:Idioma key="factSJCS.datosMovimientos.literal.pago"/>
-	</td>				
-	<td class="labelText">
-		<siga:ComboBD nombre = "pagoAsociado" tipo="cmbPagoAsociado" clase="boxCombo" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=pagoA%>"/>
-	</td>
-
+	<tr>
+		<td class="labelText">
+			<siga:Idioma key="factSJCS.datosFacturacion.literal.nombre"/>
+		</td>
+		<td>
+			<html:text name="MantenimientoMovimientosForm" property="nombre" maxlength="100" styleClass="box" readonly="false"/>
+		</td>
+		<td class="labelText">
+			<siga:Idioma key="factSJCS.datosMovimientos.literal.pago"/>
+		</td>
+		<td>
+			<siga:ComboBD nombre = "pagoAsociado" tipo="cmbPagoAsociado" clase="boxCombo" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=pagoA%>"/>
+		</td>
 	</tr>
 	<!-- FILA -->
 

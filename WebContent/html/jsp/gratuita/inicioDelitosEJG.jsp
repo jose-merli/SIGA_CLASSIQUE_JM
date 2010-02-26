@@ -30,12 +30,15 @@
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
 	String profile[]=usr.getProfile();
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	/* Quito la forma de trabajar de Pilar para usar la nueva de PersonaJG
 	Integer PCAJG_ACTIVADO =(Integer) (request.getAttribute("PCAJG_ACTIVO"));
 	String pintarAsterisco="";
 	if (PCAJG_ACTIVADO!=null && PCAJG_ACTIVADO.intValue()>1){
 		pintarAsterisco="&nbsp;(*)";
 		
-	}
+	}*/
+	
+	
 	String modopestanha = request.getSession().getAttribute("accion")==null?"":(String)request.getSession().getAttribute("accion");
 	
 	ArrayList estadoSel    = new ArrayList();
@@ -43,13 +46,14 @@
 	ArrayList comisariaSel = new ArrayList();
 	ArrayList pretensionesSel = new ArrayList();
 	ArrayList preceptivoSel = new ArrayList();
+	ArrayList situacionSel = new ArrayList();
 
 	//ScsEJGAdm adm = new ScsEJGAdm (usr);
 	
 	String OBSERVACIONES = "", DELITOS = "", PROCURADOR = "", PROCURADORNECESARIO ="",idProcurador="", idInstitucionProcurador="", calidad="", FECHAPROCURADOR="",  
 		   procuradorNombreCompleto = "", procuradorNumColegiado = "", procuradorSel = "",idTurno = "", nombreCompleto="";	
    	String numeroDiligenciaAsi    = "",numeroProcedimientoAsi = "", juzgadoAsi="", juzgadoInstitucionAsi="", comisariaAsi="", comisariaInstitucionAsi="";
-   	String idPretension    = "", idPretensionInstitucion="",pretension="", idPreceptivo="";
+   	String idPretension    = "", idPretensionInstitucion="",pretension="", idPreceptivo="", idSituacion="";
    	
 	Hashtable hash = (Hashtable)ses.getAttribute("DATABACKUP");
 	
@@ -64,6 +68,7 @@
 
 		if (hash.containsKey("IDPRETENSION")) idPretension			  				=  hash.get("IDPRETENSION").toString(); 		
 		if (hash.containsKey("IDPRECEPTIVO")) idPreceptivo			  				=  hash.get("IDPRECEPTIVO").toString();
+		if (hash.containsKey("IDSITUACION")) idSituacion			  				=  hash.get("IDSITUACION").toString();
 
 		if (hash.containsKey("IDTURNO")) idTurno					  			=  hash.get("IDTURNO").toString(); 		
 		if (hash.containsKey("CALIDAD")) calidad					  			=  hash.get("CALIDAD").toString();
@@ -115,11 +120,35 @@
 	
 	if (idPreceptivo!=null)
 		preceptivoSel.add(0,idPreceptivo);	
+	
+	if (idSituacion!=null)
+		situacionSel.add(0,idSituacion);
 
 	String estilo = "box", readOnly="false", estiloCombo="boxCombo";
 	String[] datos={usr.getLocation(),idTurno};		
 	String[] datos2={usr.getLocation(),usr.getLanguage()};	
 	
+	String asterisco = "&nbsp(*)&nbsp";
+	int pcajgActivo = 0;
+	if (request.getAttribute("PCAJG_ACTIVO")!=null){
+		pcajgActivo = Integer.parseInt(request.getAttribute("PCAJG_ACTIVO").toString());
+	}
+	boolean obligatorioPreceptivo = false;
+	boolean obligatorioNumProcedimiento = false;
+	boolean obligatorioProcurador = false;
+	boolean validarProcedimiento = false;
+	if (pcajgActivo==1){
+		
+	}else if (pcajgActivo==2){
+		obligatorioPreceptivo = true;
+	}else if (pcajgActivo==3){
+		obligatorioPreceptivo = true;
+	}else if (pcajgActivo==4){
+		validarProcedimiento = true;
+	}else if (pcajgActivo==5){
+		validarProcedimiento = true;
+		obligatorioNumProcedimiento = true;
+	}
 %>
 
 <%@page import="java.util.Properties"%>
@@ -173,6 +202,7 @@
 		<html:hidden property = "delitos" value="<%=DELITOS%>"/>
 		<html:hidden property = "pretension" value=""/>
 		<html:hidden property = "idPreceptivo" value="<%=idPreceptivo%>"/>
+		<html:hidden property = "idSituacion" value="<%=idSituacion%>"/>
 		<html:hidden property = "fechaProc" value=""/>
 	</html:form>
 	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="submitArea" type=""  style="display:none">
@@ -225,7 +255,10 @@
 				<table width="100%" style="table-layout:fixed" border=0>
 				   <tr>
 						<td  class="labelText" colspan="3">
-						   <siga:Idioma key='gratuita.operarEJG.literal.Preceptivo'/><%=pintarAsterisco%>
+						   <siga:Idioma key='gratuita.operarEJG.literal.Preceptivo'/>
+							<%if (obligatorioPreceptivo) {%>
+								<%=asterisco %> 
+							<%}%>		
 					    </td> 
 						<td colspan="20" >
 						 <%if(modopestanha.equals("editar")){%>
@@ -236,9 +269,10 @@
 						 <%}%>						
 						</td>
 					 </tr>
+					 
 					<tr>
 						<td colspan="3" class="labelText" ><siga:Idioma key='gratuita.mantAsistencias.literal.numeroDiligenciasolo'/></td>
-							<td colspan="2" width="100">
+							<td colspan="3" width="100">
 							<%if(modopestanha.equals("editar")){%>
 							<input name="numeroDilegencia2" size="10" maxlength="20" type="text" value="<%=numeroDiligenciaAsi%>" class="<%=estilo%>" />
 							<%}else{%>
@@ -246,18 +280,22 @@
 							<%}%>								
 						</td> 
 						<td colspan="3" class="labelText" ><siga:Idioma key='gratuita.mantAsistencias.literal.c.Detencion'/></td>
-							<td colspan="15">
+							<td colspan="14">
 							<%if(modopestanha.equals("editar")){%>
 							 	<input type="text" name="codigoExtComisaria" class="box" size="3"  style="margin-top:3px;" maxlength="10"/>
-								<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" ancho="585" obligatorio="false" parametro="<%=datos%>" elementoSel="<%=comisariaSel%>" clase="<%=estilo%>" hijo="t" readonly="false"/>
+								<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" ancho="505" obligatorio="false" parametro="<%=datos%>" elementoSel="<%=comisariaSel%>" clase="<%=estilo%>" hijo="t" readonly="false"/>
 							<%}else{%>
-									<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" ancho="625" obligatorio="false" parametro="<%=datos%>" elementoSel="<%=comisariaSel%>" clase="boxConsulta" hijo="t" readonly="true"/>
+									<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" ancho="555" obligatorio="false" parametro="<%=datos%>" elementoSel="<%=comisariaSel%>" clase="boxConsulta" hijo="t" readonly="true"/>
 							<%}%>							
 						</td>
 					 </tr>
 					<tr>
-						<td colspan="3" class="labelText"><siga:Idioma key='gratuita.mantAsistencias.literal.numeroProced'/></td>
-						<td colspan="2"> 
+						<td colspan="3" class="labelText"><siga:Idioma key='gratuita.mantAsistencias.literal.numeroProced'/>
+						<%if (obligatorioNumProcedimiento) {%>
+							<%= asterisco %> 
+						<%}%>
+						</td>
+						<td colspan="3"> 
 							<%if(modopestanha.equals("editar")){%>
 							 	<input name="numeroProcedimiento2" size="10" type="text" value="<%=numeroProcedimientoAsi%>" class="<%=estilo%>" maxlength="20"/>
 							<%}else{%>
@@ -265,12 +303,12 @@
 							<%}%>						
 						</td>
 						<td colspan="3" class="labelText"><siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado"/></td>	 
-						<td colspan="15">	
+						<td colspan="14">	
 							<%if(modopestanha.equals("editar")){%>
 							 	  <input type="text" name="codigoExtJuzgado" class="box" size="3"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado();" />
-							 	  <siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" ancho="585" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=juzgadoSel%>" hijo="t" readonly="false"/>           	   
+							 	  <siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" ancho="505" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=juzgadoSel%>" hijo="t" readonly="false"/>           	   
 							<%}else{%>
-									<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" ancho="625" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=juzgadoSel%>" hijo="t" readonly="true"/>           	   
+									<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" ancho="555" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=juzgadoSel%>" hijo="t" readonly="true"/>           	   
 							<%}%>							
 						</td>	
 					</tr>
@@ -316,7 +354,7 @@
 						
 						</td>	
 						<td colspan="4" class="labelText">	
-							<siga:Idioma key='gratuita.actuacionesDesigna.literal.pretensiones'/><%=pintarAsterisco%>
+							<siga:Idioma key='gratuita.actuacionesDesigna.literal.pretensiones'/><%=asterisco%>
 						</td>	
 						<td  colspan="8">
 							<%if(modopestanha.equals("editar")){%>
@@ -327,12 +365,29 @@
 						</td>
 					</tr>
 					<tr>
+						<td colspan="11"></td>
+						<td  class="labelText" colspan="4">
+						   <siga:Idioma key='gratuita.operarEJG.literal.situacion'/>
+					    </td> 
+						<td colspan="8" >
+						 <%if(modopestanha.equals("editar")){%>
+						 
+							<siga:ComboBD nombre="situacion" tipo="comboSituacion" ancho="250" clase="<%=estiloCombo%>" filasMostrar="1"  seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=situacionSel%>"  readonly="false"/> 
+						 <%}else{%>
+							<siga:ComboBD nombre="situacion" tipo="comboSituacion" ancho="250" clase="boxConsulta" filasMostrar="1"  seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=situacionSel%>"  readonly="true"/>          	   
+						 <%}%>						
+						</td>
+					 </tr>
+					<tr>
 						<td colspan="23"> 
 							<siga:ConjCampos leyenda="gratuita.datosProcurador.literal.procurador">
 								<table  width="100%" border="0">
 									<tr>
 										<td class="labelText">
 											<siga:Idioma key="gratuita.busquedaSOJ.literal.numeroColegidado"/>
+											<%if (obligatorioProcurador) {%>
+												<%=asterisco %> 
+											<%}%>
 										</td>
 										<td >
 											<html:hidden name = "DefinirMantenimientoEJGForm" property = "procurador" value="<%=procuradorSel%>"/>
@@ -372,10 +427,12 @@
 											<%}%>
 										</td>
 									</tr>
+									
 								</table>
 							</siga:ConjCampos>				
 						</td>			
 					</tr>
+					
 				</table>
 			</siga:ConjCampos>
 		  </td></tr>
@@ -462,17 +519,25 @@
 		 
 			sub();
 			var observaciones = document.getElementById("observaciones").value;
-			<%if (PCAJG_ACTIVADO!=null && PCAJG_ACTIVADO.intValue()>1){%>
-		   		if (document.getElementById("preceptivo2").value==""){
-		    		fin();
-		    		alert('<siga:Idioma key="gratuita.operarEJG.message.requeridoPreceptivo"/>');
-		    		return false;
-		   		}
-		   		if (document.getElementById("pretensiones2").value==""){
-		    		fin();
-		    		alert('<siga:Idioma key="gratuita.operarEJG.message.requeridoProcedimientos"/>');
-		    		return false;
-		   		}
+			<%if (pcajgActivo>0){%>
+				var error = "";
+		   		if (<%=obligatorioPreceptivo%> && document.getElementById("preceptivo2").value=="")
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.operarEJG.literal.Preceptivo'/>"+ '\n';
+				if (<%=obligatorioNumProcedimiento%> && document.getElementById("numeroProcedimiento2").value=="")
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.mantAsistencias.literal.numeroProced'/>"+ '\n';
+				if (document.getElementById("pretensiones2").value=="")
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesDesigna.literal.pretensiones'/>"+ '\n';
+				if (<%=obligatorioProcurador%> && document.getElementById("nColegiadoProcurador").value=="")
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.datosProcurador.literal.procurador'/>"+ '\n';
+				if(<%=validarProcedimiento%>){
+					if(!validaProcedimiento(document.getElementById("numeroProcedimiento2").value))
+					error += "<siga:Idioma key='gratuita.procedimientos.numero.formato'/>"+ '\n';
+				}
+				if(error!=""){
+					alert(error);
+					fin();
+					return false;
+				}
 		 	<%}%> 
 			if (observaciones.length <= 1024) {
 				document.DefinirMantenimientoEJGForm.modo.value = "modificarDefensa";
@@ -480,6 +545,7 @@
 				
 				document.DefinirMantenimientoEJGForm.procurador.value				=	document.getElementById("procurador").value	;
 				document.DefinirMantenimientoEJGForm.idPreceptivo.value				=	document.getElementById("preceptivo2").value	;
+				document.DefinirMantenimientoEJGForm.idSituacion.value				=	document.getElementById("situacion").value	;
 				document.DefinirMantenimientoEJGForm.calidad.value					=	document.getElementById("calidad2").value	;
 				document.DefinirMantenimientoEJGForm.comisaria.value				=	document.getElementById("comisaria").value	;
 				document.DefinirMantenimientoEJGForm.juzgado.value					=	document.getElementById("juzgado").value	;				
@@ -521,7 +587,16 @@
 				
 		
 		
-		}	
+		}
+
+		<!-- Valida el numero de procedimiento (n/aaaa) -->
+		function validaProcedimiento( strValue ) 
+		{
+			var objRegExp  = /^([0-9]+\/[0-9]{4})?$/;
+			return objRegExp.test(strValue);
+		}
+
+			
 		function buscarProcurador() 
 		{
 			var resultado = ventaModalGeneral("busquedaClientesModalForm","G");

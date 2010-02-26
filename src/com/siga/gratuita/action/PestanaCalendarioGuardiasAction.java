@@ -88,10 +88,11 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 		String idPersonaSaliente = permutasForm.getIdPersonaSolicitante();
 		String fechaInicio = permutasForm.getFechaInicio();
 		String fechaFin = permutasForm.getFechaFin();
-		String idPersonaEntrante = permutasForm.getIdPersona();
+		String idPersonaEntrante = permutasForm.getIdPersona();		
 		String salto = request.getParameter("checkSalto");
 		String compensacion = request.getParameter("checkCompensacion");
 		String sustituta = permutasForm.getSustituta(); //nos indica si el letrado proviene de una guardia de sustitucion
+		String comenSustitucion = permutasForm.getComenSustitucion();
 		UserTransaction tx = null;
 
 		try {
@@ -109,7 +110,7 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			else
 			{
 				tx.begin();
-				guardiasColegiadoAdm.sustitucionLetradoGuardiaPuntual(usr, request,idInstitucion, idTurno,idGuardia,idCalendarioGuardias,idPersonaSaliente,fechaInicio,fechaFin,idPersonaEntrante,salto,compensacion,sustituta);
+				guardiasColegiadoAdm.sustitucionLetradoGuardiaPuntual(usr, request,idInstitucion, idTurno,idGuardia,idCalendarioGuardias,idPersonaSaliente,fechaInicio,fechaFin,idPersonaEntrante,salto,compensacion,sustituta,comenSustitucion);
 				tx.commit();
 			}
 			

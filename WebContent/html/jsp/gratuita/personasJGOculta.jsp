@@ -77,6 +77,7 @@
 		aux[14]="<%=myBean.getIdProfesion()%>";
 		aux[15]="<%=myBean.getIdRepresentanteJG()%>";
 		aux[18]="<%=myBean.getHijos()%>";
+		aux[19]="<%=myBean.getSexo()%>";
 		<% 
 		String nom = (String) request.getAttribute("nombreRepresentante");
 		if (nom==null) nom="";

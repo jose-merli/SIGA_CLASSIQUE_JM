@@ -1346,6 +1346,9 @@ public class Plantilla {
 			}else
 				if (etiqueta.equalsIgnoreCase("TEXTO_FAX2")){
 					resultado=UtilidadesString.getMensajeIdioma(idioma,"informes.listaGuardias.fax2");
+			}else
+			if (etiqueta.equalsIgnoreCase("TEXTO_NCOLEGIADO")){
+				resultado=UtilidadesString.getMensajeIdioma(idioma,"informes.listaGuardias.nColegiado");
 			}
 			
 			resultado=UtilidadesString.formato_ISO_8859_1(resultado);
@@ -1511,7 +1514,8 @@ public class Plantilla {
 						resultado="                                	"+(String)linea.get("GUARDIA");
 					}
 					else{
-						resultado="                                	"+((String)linea.get("GUARDIA")).substring(0,20);
+						//resultado="                                	"+((String)linea.get("GUARDIA")).substring(0,20);
+						resultado="                                	"+(String)linea.get("GUARDIA");
 					}					
 				}
 			}
@@ -1576,6 +1580,11 @@ public class Plantilla {
 			if (etiqueta.equalsIgnoreCase("FAX2")){
 				if (linea.get("FAX2")!=null){
 					resultado="                                	"+(String)linea.get("FAX2");					
+				}
+			}
+			if (etiqueta.equalsIgnoreCase("NCOLEGIADO")){
+				if (linea.get("NCOLEGIADO")!=null){
+					resultado="                                	"+(String)linea.get("NCOLEGIADO");					
 				}
 			}
 			resultado=UtilidadesString.formato_ISO_8859_1(resultado);

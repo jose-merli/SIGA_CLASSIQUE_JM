@@ -107,7 +107,7 @@
 	<html:hidden property = "SOJNumero" value = "<%=numeroSOJ%>"/>
 	<html:hidden property = "SOJAnio" value = "<%=anioSOJ%>"/>
 	<html:hidden property = "SOJIdTipoSOJ" value = "<%=idTipoSOJ%>"/>
-	<html:hidden property = "origenApertura" value = "M"/>
+	<html:hidden property = "origenApertura" value = "S"/>
 	<html:hidden property = "tipoLetrado" value = "M"/>	
 	<html:hidden property = "idInstitucion" value ="<%=usr.getLocation()%>"/>
 	<html:hidden property = "usuMod" value = "<%=usr.getUserName()%>"/>

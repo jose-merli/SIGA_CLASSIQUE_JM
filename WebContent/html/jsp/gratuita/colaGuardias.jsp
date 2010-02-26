@@ -204,12 +204,15 @@
 <!-------------------------------------------------------------------------------------------------->	
 <!---------- Letrados en Cola ---------------------------------------------------------------------->	
 <!-------------------------------------------------------------------------------------------------->	
-
+<%	Vector resultado1 = (Vector) request.getAttribute("vLetradosEnCola");
+     int re=resultado1.size();
+    %>
+     
 
 		<table id="tituloTablaLetrados" border='1' width='98.43%' cellspacing='0' cellpadding='0' style="border-bottom:none">
 		  <tr class = 'tableTitle'>
 			<td align='center' width='69%'>
-				<siga:Idioma key="gratuita.turnos.literal.colaLetrados"/>
+				<siga:Idioma key="gratuita.colaGuardia.literal.letradosInscritos"/>:&nbsp;&nbsp;<%=re%>
 			</td>
 			<td align='center' width='31%'>
 				<input id="buscarLetrado" type="text" class="box" size="10" value="<%=literalNColegiado%>" onfocus="limpiarTexto(this, 1);" onblur="limpiarTexto(this, 0);buscarLetradoEnColaLetrado();">
@@ -231,7 +234,8 @@
 			<!-- INICIO: ZONA DE REGISTROS -->
 			<!-- Aqui se iteran los diferentes registros de la lista -->
 		
-<%	Vector resultado = (Vector) request.getAttribute("vLetradosEnCola");
+
+	<% Vector resultado = (Vector) request.getAttribute("vLetradosEnCola");
 	if (resultado==null || resultado.size()==0) { %>			
 	 		<tr>
 	 		

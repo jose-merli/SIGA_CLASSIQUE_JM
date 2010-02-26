@@ -170,6 +170,8 @@ public class InformeCertificadosEspeciales extends MasterReport
 		UtilidadesHash.set(hDatosFijos, "PROVINCIA_DESPACHO", UtilidadesHash.getString(registro,"PROVINCIA_DESPACHO"));
 		UtilidadesHash.set(hDatosFijos, "PAIS_DESPACHO", UtilidadesHash.getString(registro,"PAIS_DESPACHO"));
 		UtilidadesHash.set(hDatosFijos, "TELEFONO_DESPACHO", UtilidadesHash.getString(registro,"TELEFONO_DESPACHO"));
+		UtilidadesHash.set(hDatosFijos, "MOVIL_DESPACHO", UtilidadesHash.getString(registro,"MOVIL_DESPACHO"));
+		UtilidadesHash.set(hDatosFijos, "FAX_DESPACHO", UtilidadesHash.getString(registro,"FAX_DESPACHO"));
 		
 		
 		
@@ -351,6 +353,8 @@ public class InformeCertificadosEspeciales extends MasterReport
 	                  " where c.idpais=d.idpais  ) AS PAIS_DESPACHO,"+
 	                  " s.comentario AS OBSERVACIONES,"+
 	                  " d.telefono1 AS TELEFONO_DESPACHO,"+
+	                  " d.movil AS MOVIL_DESPACHO,"+
+	                  " d.fax1 AS FAX_DESPACHO,"+
 	                  " decode ((select 1 "+
 	                  "          from dual "+
 	                  "          where nvl(d.fechacarga,D.FECHAMODIFICACION)<D.FECHAMODIFICACION),1,d.fechacarga,D.FECHAMODIFICACION) AS FECHAALTA_DESPACHO,"+
@@ -495,7 +499,15 @@ public class InformeCertificadosEspeciales extends MasterReport
 		       "F_SIGA_GETDIRECCIONDESPACHO(@idinstitucion@, " +
 		       "                            @idpersona@, " +
 		       "                            @idioma@, " +
-		       "                            6) AS TELEFONO_DESPACHO, " ;
+		       "                            6) AS TELEFONO_DESPACHO, " +
+		       "F_SIGA_GETDIRECCIONDESPACHO(@idinstitucion@, " +
+		       "                            @idpersona@, " +
+		       "                            @idioma@, " +
+		       "                            7) AS MOVIL_DESPACHO, " +
+		       "F_SIGA_GETDIRECCIONDESPACHO(@idinstitucion@, " +
+		       "                            @idpersona@, " +
+		       "                            @idioma@, " +
+		       "                            8) AS F_DESPACHO, " ;
 			} 
 			sql+=	" (select f_siga_getrecurso(es.descripcion, @idioma@) "+
 				" from cen_estadocolegial es  " +

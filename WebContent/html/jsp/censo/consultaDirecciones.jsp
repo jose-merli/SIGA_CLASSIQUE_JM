@@ -263,8 +263,8 @@
   				<td><%=UtilidadesString.mostrarDatoJSP(poblacionFinal)%></td>
   				<td><%=UtilidadesString.mostrarDatoJSP(htData.get(CenDireccionesBean.C_TELEFONO1))%></td>
   				<td><%=UtilidadesString.mostrarDatoJSP(htData.get(CenDireccionesBean.C_FAX1))%></td>
-  				<td><%=UtilidadesString.mostrarDatoJSP(htData.get(CenDireccionesBean.C_MOVIL))%></td>
-  				<td><%=UtilidadesString.mostrarDatoJSP(htData.get(CenDireccionesBean.C_CORREOELECTRONICO))%></td>
+  				<td><%=UtilidadesString.mostrarDatoJSP(htData.get(CenDireccionesBean.C_MOVIL))%></td>		
+  				<td nowrap><a href="mailto:<%=UtilidadesString.mostrarDatoJSP(htData.get(CenDireccionesBean.C_CORREOELECTRONICO))%>"><%=UtilidadesString.mostrarDatoJSP(htData.get(CenDireccionesBean.C_CORREOELECTRONICO))%></a></td>
   				<td><%=UtilidadesString.mostrarDatoJSP(preferente)%></td> 
   			   										
 				</siga:FilaConIconos>

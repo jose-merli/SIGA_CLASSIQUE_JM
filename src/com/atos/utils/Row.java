@@ -1305,7 +1305,7 @@ public class Row implements Serializable
 				if (!row.containsKey(updatableFields[i])) continue;
 				sql += aux + updatableFields[i] + " = ";
 				
-				if (row.get(updatableFields[i]) == null || row.get(updatableFields[i]).equals("") || row.get(updatableFields[i]).equals("null") || row.get(updatableFields[i]).equals("NULL")) {
+				if (row.get(updatableFields[i]) == null || row.get(updatableFields[i]).equals("") || row.get(updatableFields[i]).toString().equalsIgnoreCase("null")) {
 					sql += " NULL ";
 				} else {
 					if (dataTypes.get(updatableFields[i]).equals("STRING")) {
@@ -2394,7 +2394,7 @@ public class Row implements Serializable
 				{
 					sqlWhere.append(aux + keyfields[i] + " IS NULL ");
 				} 
-				else if (row.get(keyfields[i]).toString().trim().equals("") || row.get(keyfields[i]).equals("null") || row.get(keyfields[i]).equals("NULL")) 
+				else if (row.get(keyfields[i]).toString().trim().equals("") || row.get(keyfields[i]).toString().equalsIgnoreCase("null")) 
 				{
 					sqlWhere.append(aux + keyfields[i] + " IS NULL ");
 				}

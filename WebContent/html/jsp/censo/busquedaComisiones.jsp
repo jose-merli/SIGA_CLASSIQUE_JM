@@ -21,18 +21,38 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="com.siga.administracion.SIGAMasterTable"%>
+<%@ page import="com.siga.censo.form.BusquedaClientesForm"%>
+<%@ page import="com.atos.utils.ClsConstants"%>
+<%@ page import="com.siga.beans.CenInstitucionAdm"%>
 
 <!-- JSP -->
 
-<% 	String app=request.getContextPath();
+<% 	
+	
+	
+	// para ver si tengo que buscar tras mostrar la pantalla
+	String buscar = (String)request.getAttribute("buscar");
+	String app=request.getContextPath();
+	
+		
+	// institucionesVisibles
+	String institucionesVisibles = (String) request.getAttribute("CenInstitucionesVisibles");
+	if (institucionesVisibles==null) institucionesVisibles="";
+	
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 	HttpSession ses=request.getSession();
 	String parametro[] = new String[2];
-
 	parametro[0] = (String)usr.getLocation();
 	parametro[1] = (String)usr.getLanguage().toUpperCase();
 	
-
+	String institucionAcceso=usr.getLocation();
+	String nombreInstitucionAcceso="";
+	if (institucionAcceso.equalsIgnoreCase(institucionesVisibles)){
+		CenInstitucionAdm institucionAdm = new CenInstitucionAdm(usr);
+		nombreInstitucionAcceso=institucionAdm.getNombreInstitucion(institucionAcceso);
+	}
+	
+	
 
 %>
 
@@ -65,10 +85,25 @@
 	<html:form action="/CEN_GestionarComisiones.do" method="POST" target="resultado">
 	<html:hidden property = "modo" value = "inicio"/>
 	
-	
-	<input type="hidden" name="limpiarFilaSeleccionada" value="">
-  		
-	<tr>
+	<!-- FILA -->
+	<tr>				
+	<td class="labelText">
+		<siga:Idioma key="censo.busquedaClientes.literal.colegio"/>
+	</td>				
+	<td colspan="4">
+			<% if (institucionAcceso.equalsIgnoreCase(institucionesVisibles)){%>
+				<html:text property="nombreInstitucion" styleClass="boxConsulta" size="80" value='<%=nombreInstitucionAcceso%>' readOnly="true"></html:text>
+				<html:hidden property="idInstitucion"  value='<%=institucionAcceso%>'></html:hidden>
+			
+			<% }else{%>
+				<siga:ComboBD nombre = "idInstitucion" tipo="cmbNombreColegiosTodos" parametro="<%=parametro %>" clase="boxCombo" obligatorio="false"/>
+			<% } %>
+			
+	</td>
+	</tr>
+	<!-- FILA -->
+	<tr>				
+	<tr>				
 	<td class="labelText">
 		<siga:Idioma key="censo.busquedaComisiones.literal.comision"/>
 	</td>

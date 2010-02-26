@@ -198,7 +198,7 @@
 	<html:hidden property = "asistenciaNumero" value = "<%=numeroAsistencia%>"/>
 	<html:hidden property = "idPersonaJG" value = "<%=idPersonaJG%>"/>
 	<html:hidden property = "asistenciaAnio" value = "<%=anioAsistencia%>"/>
-	<html:hidden property = "origenApertura" value = "M"/>
+	<html:hidden property = "origenApertura" value = "A"/>
 	<html:hidden property = "tipoLetrado" value = "M"/>	
 	<html:hidden property = "idInstitucion" value ="<%=idInstitucion%>"/>
 	<html:hidden property = "usuMod" value = "<%=usr.getUserName()%>"/>

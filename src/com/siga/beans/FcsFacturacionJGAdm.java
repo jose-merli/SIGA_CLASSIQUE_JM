@@ -972,14 +972,12 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			
 			
 			//select a ejecutar: obtener pagos cerrados en el anho de entrada
-			consulta1 =	" SELECT P."+FcsPagosJGBean.C_IDPAGOSJG+
-                        " FROM   "+FcsPagosJGBean.T_NOMBRETABLA+" P, "+FcsPagosEstadosPagosBean.T_NOMBRETABLA+" E" +
-                		" WHERE  P."+FcsPagosJGBean.C_IDINSTITUCION+" = " + idInstitucion + 
-                		" AND    P."+FcsPagosJGBean.C_IDINSTITUCION+" = E."+FcsPagosEstadosPagosBean.C_IDINSTITUCION +
-                		" AND    P."+FcsPagosJGBean.C_IDPAGOSJG+" = E."+FcsPagosEstadosPagosBean.C_IDPAGOSJG +
-                		" AND    E."+FcsPagosEstadosPagosBean.C_IDESTADOPAGOSJG +" >= " + ClsConstants.ESTADO_PAGO_CERRADO + 
-                		" AND    E."+FcsPagosEstadosPagosBean.C_FECHAESTADO +" >= TO_DATE('01/01/"+ anio +"','DD/MM/YYYY')" +
-                		" AND    E."+FcsPagosEstadosPagosBean.C_FECHAESTADO +" <= TO_DATE('31/12/"+ anio +"','DD/MM/YYYY')";
+			consulta1 =
+				"SELECT distinct IDPAGOSJG " +
+				"  FROM FAC_ABONO " +
+				" WHERE FAC_ABONO.IDINSTITUCION = "+ idInstitucion +" " +
+				"   AND to_char(FAC_ABONO.FECHA, 'YYYY') = "+ anio +" " +
+				"   AND FAC_ABONO.IDPAGOSJG is not null";
 
 			//ejecutamos la consulta
 			resultado1 = (Vector)this.selectGenerico(consulta1);
@@ -994,11 +992,11 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		
 				StringBuffer select = new StringBuffer();
 				select.append(" SELECT NVL (" + FcsPagoColegiadoBean.C_IDPERDESTINO + ", " + FcsPagoColegiadoBean.C_IDPERORIGEN + ") AS IDPERSONAIMPRESO, ");
-				select.append(" round( SUM ( (" + FcsPagoColegiadoBean.C_IMPOFICIO + " + ");
+				select.append(" SUM ( round ( (" + FcsPagoColegiadoBean.C_IMPOFICIO + " + ");
 				select.append(                  FcsPagoColegiadoBean.C_IMPASISTENCIA + " + ");
 				select.append(                  FcsPagoColegiadoBean.C_IMPEJG + " + ");
 				select.append(                  FcsPagoColegiadoBean.C_IMPSOJ + " + ");
-				select.append(                  FcsPagoColegiadoBean.C_IMPMOVVAR + ") * " + FcsPagoColegiadoBean.C_IMPIRPF + " / 100 ), 2) AS TOTALIMPORTEIRPF, ");
+				select.append(                  FcsPagoColegiadoBean.C_IMPMOVVAR + ") * " + FcsPagoColegiadoBean.C_IMPIRPF + " / 100, 2 )) AS TOTALIMPORTEIRPF, ");
 				select.append("        SUM (" + FcsPagoColegiadoBean.C_IMPOFICIO + " + ");
 				select.append(                  FcsPagoColegiadoBean.C_IMPASISTENCIA + " + ");
 				select.append(                  FcsPagoColegiadoBean.C_IMPEJG + " + ");
@@ -1305,6 +1303,12 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			linea += relleno(" ",62); // relleno
 			linea += relleno(" ",13); // espacio para la firma electronica
 			
+			// jbd Adaptamos el informe 190 al 2010
+			//linea += relleno (" ",236);// espacios 251-487
+			// Faltaba uno
+			linea += relleno (" ",237);// espacios 251-487
+			linea += relleno (" ",13);// sello electronico
+			
 			// escribo
 			// cambio a formato DOS
 			linea += "\r\n";
@@ -1392,6 +1396,13 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 					linea += relleno("0",1); // situacion familiar
 					linea += relleno(" ",9); // nif conyuge
 					linea += relleno("0",84); // resto datos adicionales
+					
+					// jbd Adaptamos el modelo 190 al 2010, hay que completar hasta 500
+					linea += relleno("0", 3); // nº de hijos
+					linea += relleno("0", 1); // prestamo vivienda. Al ser tipo G no aplica
+					//linea += relleno(" ", 245); // blancos
+					// Faltaba uno
+					linea += relleno(" ", 246); // blancos 
 					
 					//Fin de linea:
 					//linea += "\n";
@@ -3261,13 +3272,19 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"  from (select 0              as SUBCANTIDAD, " +
 				"               hit.preciohito as SUBPRECIO, " +
 				"               0              as SUBIMPORTE_NUM " +
-				"          from SCS_HITOFACTURABLEGUARDIA HIT, SCS_GUARDIASTURNO GUATUR " +
+				"          from SCS_HITOFACTURABLEGUARDIA HIT, SCS_GUARDIASTURNO GUATUR, FCS_FACT_GRUPOFACT_HITO GHITO, SCS_TURNO TUR " +
 				"         where guatur.idinstitucion = hit.idinstitucion " +
 				"           and guatur.idturno = hit.idturno " +
 				"           and guatur.idguardia = hit.idguardia " +
 				"           and hit.idhito in (1, 44) /*GAs, GAc*/ " +
 				"           and guatur.idinstitucion = "+idInstitucion+" " +
 				"           and nvl(guatur.esviolenciagenero, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
+	            "		    and ghito.idfacturacion in  (" + facturaciones + ")" +
+				"		    and ghito.idinstitucion = hit.idinstitucion " +
+				"		    and ghito.idgrupofacturacion = tur.idgrupofacturacion " +
+				"		    and ghito.idinstitucion = tur.idinstitucion " +
+				"		    and tur.idinstitucion = guatur.idinstitucion " +
+				"		    and tur.idturno = guatur.idturno " +
 				"         " +
 				"        union " +
 				"         " +
@@ -3347,7 +3364,8 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and nvl(guatur.esviolenciagenero, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 				"         group by fuc.precioaplicado) " +
 				" " +
-				" group by subprecio";
+				" group by subprecio " +
+				" having subprecio > 0";
 		}
 		else if (region.startsWith ("GuardiasDobladas_")) {
 			sql = 
@@ -3360,13 +3378,19 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"  from (select 0              as SUBCANTIDAD, " +
 				"               hit.preciohito as SUBPRECIO, " +
 				"               0              as SUBIMPORTE_NUM " +
-				"          from SCS_HITOFACTURABLEGUARDIA HIT, SCS_GUARDIASTURNO GUATUR " +
+				"          from SCS_HITOFACTURABLEGUARDIA HIT, SCS_GUARDIASTURNO GUATUR, FCS_FACT_GRUPOFACT_HITO GHITO, SCS_TURNO TUR " +
 				"         where guatur.idinstitucion = hit.idinstitucion " +
 				"           and guatur.idturno = hit.idturno " +
 				"           and guatur.idguardia = hit.idguardia " +
 				"           and hit.idhito in (2, 4) /*GDAs, GDAc*/ " +
 				"           and guatur.idinstitucion = "+idInstitucion+" " +
 				"           and nvl(guatur.esviolenciagenero, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
+	            "		    and ghito.idfacturacion in  (" + facturaciones + ")" +
+				"		    and ghito.idinstitucion = hit.idinstitucion " +
+				"		    and ghito.idgrupofacturacion = tur.idgrupofacturacion " +
+				"		    and ghito.idinstitucion = tur.idinstitucion " +
+				"		    and tur.idinstitucion = guatur.idinstitucion " +
+				"		    and tur.idturno = guatur.idturno " +
 				"         " +
 				"        union " +
 				"         " +
@@ -3396,7 +3420,8 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and nvl(guatur.esviolenciagenero, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 				"         group by fuc.precioaplicado) " +
 				" " +
-				" group by subprecio";
+				" group by subprecio " +
+				" having subprecio > 0";
 		}
 		else if (region.startsWith ("MaximosPorAsistencias_")) {
 			sql = 
@@ -3409,13 +3434,19 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"  from (select 0              as SUBCANTIDAD, " +
 				"               hit.preciohito as SUBPRECIO, " +
 				"               0              as SUBIMPORTE_NUM " +
-				"          from SCS_HITOFACTURABLEGUARDIA HIT, SCS_GUARDIASTURNO GUATUR " +
+				"          from SCS_HITOFACTURABLEGUARDIA HIT, SCS_GUARDIASTURNO GUATUR, FCS_FACT_GRUPOFACT_HITO GHITO, SCS_TURNO TUR " +
 				"         where guatur.idinstitucion = hit.idinstitucion " +
 				"           and guatur.idturno = hit.idturno " +
 				"           and guatur.idguardia = hit.idguardia " +
 				"           and hit.idhito in (3) /*AsMax*/ " +
 				"           and guatur.idinstitucion = "+idInstitucion+" " +
 				"           and nvl(guatur.esviolenciagenero, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
+	            "		    and ghito.idfacturacion in  (" + facturaciones + ")" +
+				"		    and ghito.idinstitucion = hit.idinstitucion " +
+				"		    and ghito.idgrupofacturacion = tur.idgrupofacturacion " +
+				"		    and ghito.idinstitucion = tur.idinstitucion " +
+				"		    and tur.idinstitucion = guatur.idinstitucion " +
+				"		    and tur.idturno = guatur.idturno " +
 				"         " +
 				"        union " +
 				"         " +
@@ -3437,7 +3468,8 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and nvl(guatur.esviolenciagenero, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 				"         group by fuc.precioaplicado) " +
 				" " +
-				" group by subprecio";
+				" group by subprecio " +
+				" having subprecio > 0";
 		}
 		else if (region.startsWith ("MaximosPorActuaciones_")) {
 			sql = 
@@ -3450,13 +3482,19 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"  from (select 0              as SUBCANTIDAD, " +
 				"               hit.preciohito as SUBPRECIO, " +
 				"               0              as SUBIMPORTE_NUM " +
-				"          from SCS_HITOFACTURABLEGUARDIA HIT, SCS_GUARDIASTURNO GUATUR " +
+				"          from SCS_HITOFACTURABLEGUARDIA HIT, SCS_GUARDIASTURNO GUATUR, FCS_FACT_GRUPOFACT_HITO GHITO, SCS_TURNO TUR " +
 				"         where guatur.idinstitucion = hit.idinstitucion " +
 				"           and guatur.idturno = hit.idturno " +
 				"           and guatur.idguardia = hit.idguardia " +
 				"           and hit.idhito in (8) /*AcMax*/ " +
 				"           and guatur.idinstitucion = "+idInstitucion+" " +
 				"           and nvl(guatur.esviolenciagenero, '0') <> '1' " +
+	            "		    and ghito.idfacturacion in  (" + facturaciones + ")" +
+				"		    and ghito.idinstitucion = hit.idinstitucion " +
+				"		    and ghito.idgrupofacturacion = tur.idgrupofacturacion " +
+				"		    and ghito.idinstitucion = tur.idinstitucion " +
+				"		    and tur.idinstitucion = guatur.idinstitucion " +
+				"		    and tur.idturno = guatur.idturno " +
 				"         " +
 				"        union " +
 				"         " +
@@ -3478,7 +3516,8 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and nvl(guatur.esviolenciagenero, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 				"         group by fuc.precioaplicado) " +
 				" " +
-				" group by subprecio";
+				" group by subprecio " +
+				" having subprecio > 0";
 		}
 		else if (region.startsWith ("Asistencias_")) {
 			sql = 
@@ -3491,13 +3530,19 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"  from (select 0              as SUBCANTIDAD, " +
 				"               hit.preciohito as SUBPRECIO, " +
 				"               0              as SUBIMPORTE_NUM " +
-				"          from SCS_HITOFACTURABLEGUARDIA HIT, SCS_GUARDIASTURNO GUATUR " +
+				"          from SCS_HITOFACTURABLEGUARDIA HIT, SCS_GUARDIASTURNO GUATUR, FCS_FACT_GRUPOFACT_HITO GHITO, SCS_TURNO TUR " +
 				"         where guatur.idinstitucion = hit.idinstitucion " +
 				"           and guatur.idturno = hit.idturno " +
 				"           and guatur.idguardia = hit.idguardia " +
 				"           and hit.idhito in (5) /*As*/ " +
 				"           and guatur.idinstitucion = "+idInstitucion+" " +
 				"           and nvl(guatur.esviolenciagenero, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
+	            "		    and ghito.idfacturacion in  (" + facturaciones + ")" +
+				"		    and ghito.idinstitucion = hit.idinstitucion " +
+				"		    and ghito.idgrupofacturacion = tur.idgrupofacturacion " +
+				"		    and ghito.idinstitucion = tur.idinstitucion " +
+				"		    and tur.idinstitucion = guatur.idinstitucion " +
+				"		    and tur.idturno = guatur.idturno " +
 				"         " +
 				"        union " +
 				"         " +
@@ -3541,7 +3586,8 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and nvl(guatur.esviolenciagenero, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 				"         group by fas.precioaplicado) " +
 				" " +
-				" group by subprecio";
+				" group by subprecio " +
+				" having subprecio > 0";
 		}
 		else if (region.startsWith ("Actuaciones_")) {
 			sql = 
@@ -3554,13 +3600,19 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"  from (select 0              as SUBCANTIDAD, " +
 				"               hit.preciohito as SUBPRECIO, " +
 				"               0              as SUBIMPORTE_NUM " +
-				"          from SCS_HITOFACTURABLEGUARDIA HIT, SCS_GUARDIASTURNO GUATUR " +
+				"          from SCS_HITOFACTURABLEGUARDIA HIT, SCS_GUARDIASTURNO GUATUR, FCS_FACT_GRUPOFACT_HITO GHITO, SCS_TURNO TUR " +
 				"         where guatur.idinstitucion = hit.idinstitucion " +
 				"           and guatur.idturno = hit.idturno " +
 				"           and guatur.idguardia = hit.idguardia " +
 				"           and hit.idhito in (7) /*Ac*/ " +
 				"           and guatur.idinstitucion = "+idInstitucion+" " +
 				"           and nvl(guatur.esviolenciagenero, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
+	            "		    and ghito.idfacturacion in  (" + facturaciones + ")" +
+				"		    and ghito.idinstitucion = hit.idinstitucion " +
+				"		    and ghito.idgrupofacturacion = tur.idgrupofacturacion " +
+				"		    and ghito.idinstitucion = tur.idinstitucion " +
+				"		    and tur.idinstitucion = guatur.idinstitucion " +
+				"		    and tur.idturno = guatur.idturno " +
 				"         " +
 				"        union " +
 				"         " +
@@ -3609,7 +3661,8 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and nvl(guatur.esviolenciagenero, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 				"         group by fac.precioaplicado) " +
 				" " +
-				" group by subprecio";
+				" group by subprecio " +
+				" having subprecio > 0";
 		}
 		else if (region.startsWith ("ActuacionesFG_")) {
 			sql =
@@ -3622,13 +3675,19 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"  from (select 0              as SUBCANTIDAD, " +
 				"               hit.preciohito as SUBPRECIO, " +
 				"               0              as SUBIMPORTE_NUM " +
-				"          from SCS_HITOFACTURABLEGUARDIA HIT, SCS_GUARDIASTURNO GUATUR " +
+				"          from SCS_HITOFACTURABLEGUARDIA HIT, SCS_GUARDIASTURNO GUATUR, FCS_FACT_GRUPOFACT_HITO GHITO, SCS_TURNO TUR " +
 				"         where guatur.idinstitucion = hit.idinstitucion " +
 				"           and guatur.idturno = hit.idturno " +
 				"           and guatur.idguardia = hit.idguardia " +
 				"           and hit.idhito in (9) /*AcFG*/ " +
 				"           and guatur.idinstitucion = "+idInstitucion+" " +
 				"           and nvl(guatur.esviolenciagenero, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
+	            "		    and ghito.idfacturacion in  (" + facturaciones + ")" +
+				"		    and ghito.idinstitucion = hit.idinstitucion " +
+				"		    and ghito.idgrupofacturacion = tur.idgrupofacturacion " +
+				"		    and ghito.idinstitucion = tur.idinstitucion " +
+				"		    and tur.idinstitucion = guatur.idinstitucion " +
+				"		    and tur.idturno = guatur.idturno " +
 				"         " +
 				"        union " +
 				"         " +
@@ -3653,7 +3712,8 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and nvl(guatur.esviolenciagenero, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 				"         group by hitgua.preciohito) " +
 				" " +
-				" group by subprecio";
+				" group by subprecio " +
+				" having subprecio > 0";
 		}
 		else if (region.startsWith ("GuardiasDobladas+Maximos_")) {
 			sql = 
@@ -3666,13 +3726,19 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"  from (select 0              as SUBCANTIDAD, " +
 				"               hit.preciohito as SUBPRECIO, " +
 				"               0              as SUBIMPORTE_NUM " +
-				"          from SCS_HITOFACTURABLEGUARDIA HIT, SCS_GUARDIASTURNO GUATUR " +
+				"          from SCS_HITOFACTURABLEGUARDIA HIT, SCS_GUARDIASTURNO GUATUR, FCS_FACT_GRUPOFACT_HITO GHITO, SCS_TURNO TUR " +
 				"         where guatur.idinstitucion = hit.idinstitucion " +
 				"           and guatur.idturno = hit.idturno " +
 				"           and guatur.idguardia = hit.idguardia " +
 				"           and hit.idhito in (2, 4, 3, 8) " +
 				"           and guatur.idinstitucion = "+idInstitucion+" " +
 				"           and nvl(guatur.esviolenciagenero, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
+	            "		    and ghito.idfacturacion in  (" + facturaciones + ")" +
+				"		    and ghito.idinstitucion = hit.idinstitucion " +
+				"		    and ghito.idgrupofacturacion = tur.idgrupofacturacion " +
+				"		    and ghito.idinstitucion = tur.idinstitucion " +
+				"		    and tur.idinstitucion = guatur.idinstitucion " +
+				"		    and tur.idturno = guatur.idturno " +
 				"         " +
 				"        union " +
 				"         " +
@@ -3742,7 +3808,8 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and nvl(guatur.esviolenciagenero, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 				"         group by fuc.precioaplicado) " +
 				" " +
-				" group by subprecio";
+				" group by subprecio " +
+				" having subprecio > 0";
 		}
 		else if (region.startsWith ("Actuac+ActuacFG_")) {
 			sql = 
@@ -3755,13 +3822,19 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"  from (select 0              as SUBCANTIDAD, " +
 				"               hit.preciohito as SUBPRECIO, " +
 				"               0              as SUBIMPORTE_NUM " +
-				"          from SCS_HITOFACTURABLEGUARDIA HIT, SCS_GUARDIASTURNO GUATUR " +
+				"          from SCS_HITOFACTURABLEGUARDIA HIT, SCS_GUARDIASTURNO GUATUR, FCS_FACT_GRUPOFACT_HITO GHITO, SCS_TURNO TUR " +
 				"         where guatur.idinstitucion = hit.idinstitucion " +
 				"           and guatur.idturno = hit.idturno " +
 				"           and guatur.idguardia = hit.idguardia " +
 				"           and hit.idhito in (7, 9) " +
 				"           and guatur.idinstitucion = "+idInstitucion+" " +
 				"           and nvl(guatur.esviolenciagenero, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
+	            "		    and ghito.idfacturacion in  (" + facturaciones + ")" +
+				"		    and ghito.idinstitucion = hit.idinstitucion " +
+				"		    and ghito.idgrupofacturacion = tur.idgrupofacturacion " +
+				"		    and ghito.idinstitucion = tur.idinstitucion " +
+				"		    and tur.idinstitucion = guatur.idinstitucion " +
+				"		    and tur.idturno = guatur.idturno " +
 				"         " +
 				"        union " +
 				"         " +
@@ -3833,7 +3906,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and nvl(guatur.esviolenciagenero, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 				"         group by hitgua.preciohito) " +
 				" " +
-				" group by subprecio";
+				" group by subprecio ";
 		}
 		
 		return this.selectGenerico (sql);

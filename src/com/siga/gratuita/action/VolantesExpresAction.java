@@ -842,7 +842,7 @@ public class VolantesExpresAction extends MasterAction
 			}
 			else {
 				guardiasColegiadoAdm.validarColegiadoEntrante(usr,idInstitucion, idTurno, idGuardia, idCalendarioGuardias, fechaInicio,fechaFin,idPersonaEntrante);
-				guardiasColegiadoAdm.sustitucionLetradoGuardiaPuntual(usr, null, idInstitucion, idTurno,idGuardia,idCalendarioGuardias,idPersonaSaliente,fechaInicio,fechaFin,idPersonaEntrante, salto, compensacion,"si");
+				guardiasColegiadoAdm.sustitucionLetradoGuardiaPuntual(usr, null, idInstitucion, idTurno,idGuardia,idCalendarioGuardias,idPersonaSaliente,fechaInicio,fechaFin,idPersonaEntrante, salto, compensacion,"si", null);
 			}
 		}
 		catch (Exception e) {

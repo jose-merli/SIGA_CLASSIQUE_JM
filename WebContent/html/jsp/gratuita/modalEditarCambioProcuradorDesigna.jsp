@@ -24,6 +24,18 @@
 <!-- JSP -->
 <%	String app=request.getContextPath();
 	String accion =(String) request.getAttribute("accion");	%>
+
+<%	/*Lo del pcajg*/
+	String asterisco = "&nbsp(*)&nbsp";
+	int pcajgActivo = 0;
+	if (request.getAttribute("PCAJG_ACTIVO")!=null){
+		pcajgActivo = Integer.parseInt(request.getAttribute("PCAJG_ACTIVO").toString());
+	}
+	boolean obligatorioDesignacion = false;
+	if (pcajgActivo==5){
+		obligatorioDesignacion = true;
+	}
+	%>
 <html>
 
 <!-- HEAD -->
@@ -102,12 +114,15 @@
 	<tr>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.literal.numeroDesigna"/>
+			<% if (obligatorioDesignacion){ %>
+				<%= asterisco %>
+			<%} %>
 		</td>
 		<td>
 		<%if (accion.equalsIgnoreCase("ver")){%>
-			<html:text name="CambiosProcuradoresDesignasForm" property="numeroDesigna" size="20" maxlength="10" styleClass="boxConsulta" readonly="true"></html:text>
+			<html:text name="CambiosProcuradoresDesignasForm" property="numeroDesigna" size="13" maxlength="10" styleClass="boxConsulta" readonly="true"></html:text>
 		<%} else {%>
-			<html:text name="CambiosProcuradoresDesignasForm" property="numeroDesigna" size="20" maxlength="10" styleClass="box"></html:text>
+			<html:text name="CambiosProcuradoresDesignasForm" property="numeroDesigna" size="13" maxlength="10" styleClass="box"></html:text>
 		<%}%>
 		</td>
 		<td class="labelText">
@@ -123,14 +138,14 @@
 		</td>
 		<td>
 		<%if (accion.equalsIgnoreCase("ver")){%>
-			<html:text name="CambiosProcuradoresDesignasForm" property="fechaRenunciaSolicita" size="10" maxlength="10" styleClass="boxConsulta" readonly="true" readonly="true" ></html:text>
+			<html:text name="CambiosProcuradoresDesignasForm" property="fechaRenunciaSolicita" size="13" maxlength="10" styleClass="boxConsulta" readonly="true" readonly="true" ></html:text>
 		<%} else {%>
 	<logic:notEmpty name="CambiosProcuradoresDesignasForm" property="fechaRenunciaSolicita">
-			<html:text name="CambiosProcuradoresDesignasForm" property="fechaRenunciaSolicita" size="15" maxlength="15" styleClass="boxConsulta" readonly="true"></html:text>
+			<html:text name="CambiosProcuradoresDesignasForm" property="fechaRenunciaSolicita" size="13" maxlength="13" styleClass="boxConsulta" readonly="true"></html:text>
 
 	</logic:notEmpty>
 	<logic:empty name="CambiosProcuradoresDesignasForm" property="fechaRenunciaSolicita">
-			<html:text name="CambiosProcuradoresDesignasForm" property="fechaRenunciaSolicita" size="15" maxlength="15" styleClass="box" readonly="true"></html:text>
+			<html:text name="CambiosProcuradoresDesignasForm" property="fechaRenunciaSolicita" size="13" maxlength="15" styleClass="box" readonly="true"></html:text>
 			&nbsp;<a onClick="return showCalendarGeneral(fechaRenunciaSolicita);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
 	</logic:empty>
 		<%}%>
@@ -205,6 +220,17 @@
 		//Asociada al boton GuardarCerrar -->
 		function accionGuardarCerrar() 
 		{	
+			// jbd 01-02-2010 Añadida comprobacion de numero desginacion inc-6788
+			<%if (pcajgActivo>0){%>
+			var error = "";
+	   		if (<%= obligatorioDesignacion %> && document.getElementById("numeroDesigna").value=="")
+				error += "<siga:Idioma key='errors.required' arg0='gratuita.cambiosProcuradoresDesigna.literal.numeroDesigna'/>"+ '\n';
+			if(error!=""){
+				alert(error);
+				fin();
+				return false;
+			}
+	 		<%}%> 
 			var f=document.forms[0];
 			sub();
 			if (validateCambiosProcuradoresDesignasForm(f)) 		

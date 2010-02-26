@@ -978,6 +978,7 @@ public class PersonaJGAction extends MasterAction {
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_ENCALIDADDE,perBean.getEnCalidadDe());
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_OBSERVACIONES,perBean.getObservaciones());
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDREPRESENTANTEJG,perBean.getIdRepresentanteJG());
+				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_SEXO,perBean.getSexo());
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_HIJOS,perBean.getHijos());
 				
 				// cuelgo el anterior
@@ -2399,7 +2400,7 @@ public class PersonaJGAction extends MasterAction {
 				throw new ClsExceptions("Falta de parámetro obligatorio (concepto)");
 			} else {
 				if (miform.getConceptoE().equals(PersonaJGAction.EJG_CONTRARIOS) ) {
-					// jbd 9.1.2009 INC_CAT_8
+					//  9.1.2009 INC_CAT_8
 					if (miform.getIdPersonaJG()!=null) {
 
 						hash = new Hashtable();
@@ -2464,7 +2465,7 @@ public class PersonaJGAction extends MasterAction {
 							dataBackup.put(ScsDefendidosDesignaBean.T_NOMBRETABLA,hash);						
 					
 							
-							miform.setObservaciones(ufBean.getObservaciones());
+							//miform.setObservaciones(ufBean.getObservaciones());
 							miform.setCalidad(ufBean.getCalidad());
 						} else {
 							dataBackup.remove(ScsDefendidosDesignaBean.T_NOMBRETABLA);
@@ -2609,11 +2610,13 @@ public class PersonaJGAction extends MasterAction {
 					}
 					//jbd 19/10/2009 Recuperamos el estado de activacion PCAJG
 					int tipoCAJG = CajgConfiguracionAdm.getTipoCAJG(new Integer(miform.getIdInstitucionEJG()));
-					if (tipoCAJG>1){
+					//jbd 19/01/2010 Ahora debe ser numerico para distinguir entre los distintos tipos de CAJG 
+					/*if (tipoCAJG>1){
 						request.setAttribute("pcajgActivo","true");
 					}else{
 						request.setAttribute("pcajgActivo","false");
-					}
+					}*/
+					request.setAttribute("pcajgActivo", tipoCAJG);
 
 				} else
 					if (miform.getConceptoE().equals(PersonaJGAction.SOJ)) {

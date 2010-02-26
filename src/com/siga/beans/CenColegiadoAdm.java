@@ -54,7 +54,8 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 							CenColegiadoBean.C_NCOMUNITARIO, 		CenColegiadoBean.C_OTROSCOLEGIOS,
 							CenColegiadoBean.C_SITUACIONEJERCICIO, 	CenColegiadoBean.C_SITUACIONEMPRESA,
 							CenColegiadoBean.C_SITUACIONRESIDENTE,	CenColegiadoBean.C_USUMODIFICACION,
-							CenColegiadoBean.C_CUENTACONTABLESJCS,  CenColegiadoBean.C_IDENTIFICADORDS};
+							CenColegiadoBean.C_CUENTACONTABLESJCS,  CenColegiadoBean.C_IDENTIFICADORDS,
+							CenColegiadoBean.C_NMUTUALISTA};
 		return campos;
 	}
 
@@ -91,6 +92,7 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,CenColegiadoBean.C_USUMODIFICACION));
 			bean.setCuentaContableSJCS(UtilidadesHash.getString(hash,CenColegiadoBean.C_CUENTACONTABLESJCS));
 			bean.setIdentificadorDS(UtilidadesHash.getString(hash,CenColegiadoBean.C_IDENTIFICADORDS));
+			bean.setNMutualista(UtilidadesHash.getString(hash,CenColegiadoBean.C_NMUTUALISTA));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -128,6 +130,7 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 			UtilidadesHash.set(htData, CenColegiadoBean.C_USUMODIFICACION, 		b.getUsuMod());
 			UtilidadesHash.set(htData, CenColegiadoBean.C_CUENTACONTABLESJCS, 	b.getCuentaContableSJCS());
 			UtilidadesHash.set(htData, CenColegiadoBean.C_IDENTIFICADORDS,      b.getIdentificadorDS());
+			UtilidadesHash.set(htData, CenColegiadoBean.C_NMUTUALISTA,      	b.getNMutualista());
 		}
 		catch (Exception e) {
 			htData = null;
@@ -161,7 +164,7 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 			}
 		}
 		catch (Exception e) {
-			throw new ClsExceptions (e, "Error al recueperar los datos");
+			throw new ClsExceptions (e, "Error al recuperar los datos");
 		}
 		return null;
 	}
@@ -363,6 +366,7 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 			UtilidadesHash.set(htData, CenColegiadoBean.C_SITUACIONEMPRESA,bean.getSituacionEmpresa());
 			UtilidadesHash.set(htData, CenColegiadoBean.C_SITUACIONRESIDENTE,bean.getSituacionResidente());
 			UtilidadesHash.set(htData, CenColegiadoBean.C_CUENTACONTABLESJCS,bean.getCuentaContableSJCS());
+			UtilidadesHash.set(htData, CenColegiadoBean.C_NMUTUALISTA,bean.getNMutualista());
 		}
 		catch (Exception e) {
 			htData = null;
@@ -537,7 +541,7 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 	 * @return boolean con el resultado
 	 * @throws SIGAException con la excepcion de aplicación
 	 */
-	public boolean insertConEstado (CenColegiadoBean beanCol, int idEstado) throws SIGAException 
+	public boolean insertConEstado (CenColegiadoBean beanCol, int idEstado, String fechaEstado) throws SIGAException 
 	{
 		try {
 			CenDatosColegialesEstadoAdm admDCE = new CenDatosColegialesEstadoAdm(this.usrbean);
@@ -549,7 +553,11 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 				beanDCE.setIdPersona(beanCol.getIdPersona());
 				beanDCE.setIdInstitucion(beanCol.getIdInstitucion());
 				beanDCE.setIdEstado(new Integer(idEstado));
-				beanDCE.setFechaEstado("SYSDATE");
+				// jbd 08-02-2010 Añadimos una fecha manualmente, si no se pone nada se usa sysdate
+				if(fechaEstado.equalsIgnoreCase(""))
+					beanDCE.setFechaEstado("SYSDATE");
+				else
+					beanDCE.setFechaEstado(fechaEstado);
 				if (!admDCE.insert(beanDCE)) {
 					throw new ClsExceptions(admDCE.getError());
 				}

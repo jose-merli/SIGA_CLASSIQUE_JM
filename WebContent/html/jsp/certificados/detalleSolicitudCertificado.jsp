@@ -61,6 +61,9 @@
 		idInstitucionPresentador.add(beanInstitucionOrigen
 				.getIdInstitucion().toString());
 	}
+	
+	ArrayList aMetodoSol = new ArrayList();
+	aMetodoSol.add(beanSolicitud.getMetodoSolicitud());
 
 	ArrayList idInstitucionDestino = new ArrayList();
 	if (beanInstitucionDestino != null) {
@@ -302,31 +305,33 @@
 				leyenda="certificados.solicitudes.ventanaEdicion.datosSolicitud">
 				<table class="tablaCampos" align="center">
 					<tr>
-						<td class="labelText" width="150"><siga:Idioma
+						<td class="labelText" ><siga:Idioma
 							key="certificados.solicitudes.literal.numeroSolicitud" /></td>
 						<td class="labelTextValor"><%=numSolicitud%></td>
-						<td class="labelText" width="150"><siga:Idioma
+						<td class="labelText" ><siga:Idioma
 							key="certificados.solicitudes.literal.numeroCertificado" /></td>
 						<td class="labelTextValor"><%=codigo%></td>
 						<td class="labelText"><siga:Idioma
 							key="certificados.solicitudes.literal.fechaSolicitud" /></td>
-						<td class="labelTextValor"><%=UtilidadesString.mostrarDatoJSP(GstDate
-									.getFormatedDateShort(userBean
-											.getLanguage(), beanSolicitud
-											.getFechaSolicitud()))%>
+						<td class="labelTextValor"><%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(userBean.getLanguage(), beanSolicitud.getFechaSolicitud()))%>
 						</td>
 					</tr>
-					<%
-						if (sIdCompra != null) {
-					%>
 					<tr>
+					<% if (sIdCompra != null) { %>
 						<td class="labelText"><siga:Idioma
 							key="certificados.solicitudes.literal.idSolicitudCompra" /></td>
 						<td class="labelTextValor"><%=sIdCompra%></td>
+						<td colspan="2"></td>
+					<%}else{%>
+						<td colspan="4"></td>
+					<% } %>
+						<td class="labelText">
+							<siga:Idioma key="certificados.solicitudes.literal.metodoSolicitud"/>
+						</td>
+						<td>
+							<siga:ComboBD nombre="metodoSolicitud" tipo="comboMetodoSolicitud" obligatorio="false" parametro="<%=parametros%>" ElementoSel="<%=aMetodoSol%>" clase="boxCombo"/>
+						</td>
 					</tr>
-					<%
-						}
-					%>
 					<tr>
 						<td class="labelText"><siga:Idioma
 							key="certificados.solicitudes.literal.colegioOrigen" />&nbsp;(*)
@@ -375,7 +380,6 @@
  	}
  %>
 						</td>
-
 					</tr>
 					<tr>
 
@@ -386,6 +390,7 @@
 										<td colspan="3">
 											<html:textarea property="valor" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" value="<%=beanSolicitud.getDescripcion()%>" styleClass="boxConsulta" cols="100" rows="4" value="<%=beanSolicitud.getDescripcion()%>" readonly="true"/>
 										</td>
+										
 					</tr>
 				</table>
 			</siga:ConjCampos> <siga:ConjCampos

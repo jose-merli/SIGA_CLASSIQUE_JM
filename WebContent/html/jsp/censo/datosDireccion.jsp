@@ -83,7 +83,7 @@
 	ArrayList idTipoDireccionArrayList = new ArrayList();
 	String fechaModificacion= "", fechaBaja = "";
 	String ididPais="";
-
+ 
 	String modo=(String)request.getAttribute("modoConsulta");
 	if (modo!=null && modo.equals("editar")){
 		botones+=",GAH";
@@ -105,7 +105,7 @@
 			fax1 = String.valueOf(htData.get(CenDireccionesBean.C_FAX1));
 			fax2 = String.valueOf(htData.get(CenDireccionesBean.C_FAX2));
 			mail = String.valueOf(htData.get(CenDireccionesBean.C_CORREOELECTRONICO));
-			paginaWEB = String.valueOf(htData.get(CenDireccionesBean.C_PAGINAWEB));
+			paginaWEB = String.valueOf(htData.get(CenDireccionesBean.C_PAGINAWEB));			
 			idDireccion  = String.valueOf(htData.get(CenDireccionesBean.C_IDDIRECCION));
 			fechaModificacion = String.valueOf(htData.get(CenDireccionesBean.C_FECHAMODIFICACION));
 			if (fechaModificacion != null)
@@ -171,6 +171,36 @@
 			idInstitucion = String.valueOf((Integer)request.getAttribute("idInstitucion"));
 		}
 	}
+	
+		    
+	//Se ha añadido para crear bien la dirección del enlace la pagina web
+	String EnlaceWEb="";
+	String quitar;
+	String lista = "";
+	
+	if (!paginaWEB.equals("")){	
+
+		 lista = paginaWEB.substring(0, 7);		 
+		 if(lista.equals("http://")){				
+				EnlaceWEb=paginaWEB;
+	     }
+		 
+		 if(!lista.equals("http://")&&(!lista.equals("http:\\\\"))){				
+			 EnlaceWEb="http://" + paginaWEB;
+		 } 		
+		
+		 if(lista.equalsIgnoreCase("http:\\\\")){			
+			 quitar= paginaWEB.substring(7);			
+			EnlaceWEb="http://" + quitar;			
+	      }
+				 
+		
+	}			  
+
+	
+	
+	
+	
 %>
 
 <style>
@@ -900,11 +930,20 @@
 		  				</tr>
 
 		 					<tr>	
-		   					<td class="labelText"><siga:Idioma key="censo.datosDireccion.literal.correo"/>&nbsp</td>				
-		   					<td nowrap><html:text name="consultaDireccionesForm" property="correoElectronico" value="<%=mail%>" maxlength="100" size="50" styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text></td>	
-
+		   					<td class="labelText"><siga:Idioma key="censo.datosDireccion.literal.correo"/>&nbsp</td>		
+		   					<%if (!modo.equals("editar")) {%>		
+		   				    	<td nowrap><a href="mailto:<%=mail%>"><html:text name="consultaDireccionesForm" style="cursor:hand;color:blue;" property="correoElectronico" value="<%=mail%>" maxlength="100" size="50" styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text></a></td>	
+     						<%}else{%>	
+     						  <td nowrap><html:text name="consultaDireccionesForm" property="correoElectronico" value="<%=mail%>" maxlength="100" size="50" styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text></td>
+     						<%}%>
 		  					<td class="labelText"><siga:Idioma key="censo.datosDireccion.literal.paginaWeb"/>&nbsp</td>
-		   					<td><html:text name="consultaDireccionesForm" property="paginaWeb" value="<%=paginaWEB%>" maxlength="100" size="25" styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text></td>
+		  					
+		  					<%if (!modo.equals("editar")) {%>
+		  					   <td><a href="<%=EnlaceWEb%>" target="_blank"><html:text name="consultaDireccionesForm" style="cursor:hand;color:blue;"  property="paginaWeb" value="<%=paginaWEB%>" maxlength="100" size="25" styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text></a></td>		  					   
+		  					   
+		  					 <%}else{%>		   					
+		   				    <td><html:text name="consultaDireccionesForm" property="paginaWeb" value="<%=paginaWEB%>" maxlength="100" size="25" styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text></td>
+		   				    <%}%>		
 		  				</tr>
 
 						  <tr>
@@ -922,11 +961,11 @@
 
 				</td>
 			</tr>
-		</html:form>
+	
 		
 		
 		</table>	
-
+	</html:form>
 <script>	
 	<%if (editarCampos){%>
 		rellenarCampos();	

@@ -20,6 +20,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -1030,6 +1031,28 @@ public class UtilidadesString {
 			
 			return fechaout;
 		}
+		
+	/**
+	 * Devuelve una fecha escrita en el idioma indicado
+	 * @param fecha La fecha que queremos recibir escrita
+	 * @param formatoIn El formato de la fecha de entrada (dd/mm/yyyy)
+	 * @param lang El identificador del idioma en el que devuelve la fecha
+	 * @return la fecha escrita
+	 * @throws ClsExceptions
+	 */ 
+	static public String getFechaEscrita(String fecha, String formatoIn, String lang) throws ClsExceptions {
+		String sFecha= fecha;
+		try {
+			Locale loc= new Locale(lang);
+			SimpleDateFormat sdf1 = new SimpleDateFormat(formatoIn); 
+			SimpleDateFormat sdf2 = new SimpleDateFormat("d 'de' MMMM 'de' yyyy",loc); 
+			Date date = sdf1.parse(sFecha);
+			sFecha = sdf2.format(date);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return sFecha;
+	}
 		
 		// vector con el signo, la parte entera y la parte decimal para el impreso 190
 		public static Vector<String> desdoblarDouble (Double valor) throws ClsExceptions {

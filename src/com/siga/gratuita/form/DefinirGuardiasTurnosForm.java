@@ -48,6 +48,7 @@ public class DefinirGuardiasTurnosForm extends MasterForm
 	private String idTurno="";
 	private String idGuardia="";
 	private String checkGuardiaDeSustitucion="", guardiaDeSustitucion ="";
+	private String comenSustitucion;
 	
 	//Ordenacion
 	private ArrayList ordenacion = new ArrayList();
@@ -490,5 +491,11 @@ public class DefinirGuardiasTurnosForm extends MasterForm
 	}
 	public void setHayDiasASeparar(String hayDiasASeparar) {
 		this.hayDiasASeparar = hayDiasASeparar;
+	}
+	public String getComenSustitucion() {
+		return comenSustitucion;
+	}
+	public void setComenSustitucion(String comenSustitucion) {
+		this.comenSustitucion = comenSustitucion;
 	}
 }

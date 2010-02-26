@@ -126,7 +126,7 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 			
 			
 			if(result != null && result.size() > 0)
-			{
+			  {
 				tx.begin();
 				
 				for(int j=0;j<result.size();j++)
@@ -146,14 +146,16 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 					fechaFin = GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin);
 					
 					
+					
 					String mensaje = guardiasColegiadoAdm.validacionesSustitucionGuardia(usr, idInstitucion, idTurno, idGuardia, idCalendarioGuardias, fechaInicio,fechaFin,idPersonaEntrante,idPersonaSaliente);
 					if(!mensaje.equalsIgnoreCase("OK"))
 					{
 						return exito(mensaje,request);
 					}
 					else
-					{                       
-						guardiasColegiadoAdm.sustitucionLetradoGuardiaPuntual(usr, request,idInstitucion, idTurno,idGuardia,idCalendarioGuardias,idPersonaSaliente,fechaInicio,fechaFin,idPersonaEntrante,salto,compensacion,sustituta);
+					{     
+						String comenSustitucion = guardiasForm.getComenSustitucion();
+						guardiasColegiadoAdm.sustitucionLetradoGuardiaPuntual(usr, request,idInstitucion, idTurno,idGuardia,idCalendarioGuardias,idPersonaSaliente,fechaInicio,fechaFin,idPersonaEntrante,salto,compensacion,sustituta,comenSustitucion);
 						
 					}
 						

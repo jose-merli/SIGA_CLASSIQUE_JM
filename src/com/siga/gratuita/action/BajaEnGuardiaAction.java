@@ -1,5 +1,6 @@
 package com.siga.gratuita.action;
 
+import java.text.SimpleDateFormat;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -11,7 +12,6 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.beans.CenClienteAdm;
@@ -22,6 +22,7 @@ import com.siga.beans.ScsInscripcionGuardiaBean;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.InscripcionGuardia;
 import com.siga.gratuita.form.DefinirGuardiasTurnosForm;
 
 /**
@@ -269,71 +270,43 @@ public class BajaEnGuardiaAction extends MasterAction
 		request.setAttribute("modal","1");
 		return "exito";
 	}
-					
-		
 	
-	protected String modificar(	ActionMapping mapping, 
-								MasterForm formulario, 
-								HttpServletRequest request, 
-								HttpServletResponse response) throws SIGAException {
+	protected String modificar (ActionMapping mapping, 
+								MasterForm formulario,
+								HttpServletRequest request,
+								HttpServletResponse response)
+		throws SIGAException
+	{
+		UserTransaction tx = null;
 		
-		String forward="exception";
 		try
 		{
-			UsrBean usr 	= (UsrBean)request.getSession().getAttribute("USRBEAN");
-			DefinirGuardiasTurnosForm miForm = (DefinirGuardiasTurnosForm)formulario;
-			ScsInscripcionGuardiaAdm inscripcionGuardia = new ScsInscripcionGuardiaAdm(this.getUserBean(request));
-			Hashtable hash = new Hashtable();
-			//claves
-			hash.put(ScsInscripcionGuardiaBean.C_IDINSTITUCION,usr.getLocation());
-			hash.put(ScsInscripcionGuardiaBean.C_IDPERSONA,request.getSession().getAttribute("idPersonaTurno"));
-			hash.put(ScsInscripcionGuardiaBean.C_IDTURNO,request.getSession().getAttribute("IDTURNO"));
-			//campos modificable
-			hash.put(ScsInscripcionGuardiaBean.C_FECHABAJA,GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaBaja()));
-			hash.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESBAJA,miForm.getObservacionesBaja());
-			hash.put(ScsInscripcionGuardiaBean.C_FECHAMODIFICACION,"sysdate");
-			hash.put(ScsInscripcionGuardiaBean.C_USUMODIFICACION,usr.getUserName());
-			// preparamos el update
-			String campos[] = {ScsInscripcionGuardiaBean.C_FECHABAJA,
-					ScsInscripcionGuardiaBean.C_OBSERVACIONESBAJA,
-					ScsInscripcionGuardiaBean.C_FECHAMODIFICACION,
-					ScsInscripcionGuardiaBean.C_USUMODIFICACION};
-
-			boolean result = false;
-			String guardias = (String) request.getSession().getAttribute("GUARDIAS"); 
-			if(guardias.equals("2"))
-			{
-				String claves[] = {ScsInscripcionGuardiaBean.C_IDINSTITUCION,
-						ScsInscripcionGuardiaBean.C_IDPERSONA,
-						ScsInscripcionGuardiaBean.C_IDTURNO,
-						ScsInscripcionGuardiaBean.C_IDGUARDIA,
-						ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};
-				hash.put(ScsInscripcionGuardiaBean.C_IDGUARDIA,miForm.getGuardia());
-				hash.put(ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION,request.getSession().getAttribute("FECHASUSCRIPCION"));
-				result = inscripcionGuardia.updateDirect(hash,claves,campos);
-			}
-			else
-			{
-				String claves[] = {ScsInscripcionGuardiaBean.C_IDINSTITUCION,
-						ScsInscripcionGuardiaBean.C_IDPERSONA,
-						ScsInscripcionGuardiaBean.C_IDTURNO};
-				result = inscripcionGuardia.updateDirect(hash,claves,campos);
-			}
+			//obteniendo controles
+			UsrBean usr = this.getUserBean(request);
+			DefinirGuardiasTurnosForm miForm = (DefinirGuardiasTurnosForm) formulario;
 			
-			if(result)
-				forward = this.exitoModal("messages.updated.success",request);
-			else
-				throw new ClsExceptions("Error al realizar la inscripcion en la guardia");
+			InscripcionGuardia ins = InscripcionGuardia.getInscripcionGuardia (
+					Integer.valueOf(usr.getLocation()), 
+					Integer.valueOf((String) request.getSession().getAttribute("IDTURNO")), 
+					Integer.valueOf(miForm.getGuardia()), 
+					(Long) request.getSession().getAttribute("IDPERSONA"), 
+					(String) request.getSession().getAttribute("FECHASUSCRIPCION"), 
+					usr, false);
 			
-			
-		} 
-		catch (Exception e) 
-		{
-			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
-		} 
-
-		request.setAttribute("modal","1");
-		return forward;
-	}
-
+			tx = usr.getTransaction();
+			tx.begin();
+			ins.solicitarBaja(
+					GstDate.getApplicationFormatDate(usr.getLanguage(), miForm.getFechaBaja()), 
+					miForm.getObservacionesBaja(), usr);
+			tx.commit();
+		}
+		catch (Exception e) {
+			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx);
+		}
+		
+		request.setAttribute("modal", "1");
+		return this.exitoModal("messages.updated.success", request);
+		
+	} //modificar()
+	
 }

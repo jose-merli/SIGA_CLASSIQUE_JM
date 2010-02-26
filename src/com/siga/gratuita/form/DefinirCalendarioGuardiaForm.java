@@ -1,6 +1,7 @@
 package com.siga.gratuita.form;
 
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.beans.ScsPermutaGuardiasBean;
 import com.siga.general.MasterForm;
 
 
@@ -12,6 +13,11 @@ import com.siga.general.MasterForm;
  * @version 1.0
  */
  public class DefinirCalendarioGuardiaForm extends MasterForm{	
+	
+	 
+	 DefinirPermutaGuardiasForm permutaGuardias;
+	 
+	 
 	
 	// Metodos Set para escribir en una tabla hash datos los campos del formulario.
  	// Hay 1 metodo set por cada campo del formulario.
@@ -47,6 +53,27 @@ import com.siga.general.MasterForm;
  	public void setBuscarFechaDesde (String d) 			{UtilidadesHash.set(datos, "FECHA_DESDE", d);		}
 	public void setBuscarFechaHasta (String  d) 		{UtilidadesHash.set(datos, "FECHA_HASTA", d); 		}
 	public void setBuscarColegiado (String d) 			{UtilidadesHash.set(datos, "BUSCARCOLEGIADO", d);	}
+	public void setMotivosSolicitante (String valor)	{ this.datos.put("MOTIVOSSOLICITANTE",valor); 	}	
+	public void setNombrePermutado (String valor)	{ this.datos.put("NOMBREPERMUTADO",valor); 	}
+	public void setNumeroPermutado (String valor)	{ this.datos.put("NCOLEGIADOSPERMUTADO",valor); 	}
+	public void setFechaConfirmacion (String valor)	{ this.datos.put("FECHACONFIRMADOR",valor); 	}
+	public void setNombreSolicitante (String valor)	{ this.datos.put("NOMBRESOLICITANTE",valor); 	}
+	public void setNcolegiadoSolicitante(String valor)	{ this.datos.put("NCOLEGIADOSOLICITANTE",valor); 	}
+	public void setNombreSustituto(String valor) { this.datos.put("NOMBRESUSTITUTO",valor); 	}
+	public void setNcolegiadoSustituto(String valor) { this.datos.put("NCOLEGIADOSUSTITUTO",valor); 	}
+	public void setComentarioSustituto(String valor) { this.datos.put("COMENTARIOSUSTITUTO",valor); 	}
+	public void setFechaSustituto(String valor) { this.datos.put("FECHASUSTITUTO",valor); 	}
+	public void setPeriodoPermuta(String valor) { this.datos.put("PERIODOPERMUTA",valor); 	}
+	public void setDatosPersPermutada(String valor) { this.datos.put("DATOSPERSPERMUTADA",valor); 	}
+	public void setDatosPersSustituto(String valor) { this.datos.put("DATOSPERSSUSTITUTO",valor); 	}
+	public void setDatosPersSolicitante(String valor) { this.datos.put("DATOSPERSSOLICITANTE",valor); 	}
+	public void setFechaSolicitud(String valor)	{ this.datos.put("FECHASOLICITUD",valor); 	}
+	
+	
+	
+	
+	
+	
 	
  	
 	// Metodos Get para leer de la tabla hash datos los campos del formulario.
@@ -83,5 +110,26 @@ import com.siga.general.MasterForm;
  	public String getBuscarFechaDesde () 		{return UtilidadesHash.getString(datos, "FECHA_DESDE");	}
 	public String getBuscarFechaHasta () 		{return UtilidadesHash.getString(datos, "FECHA_HASTA");	}
 	public String getBuscarColegiado () 		{return UtilidadesHash.getString(datos, "BUSCARCOLEGIADO");	 	}
- 	
+	public String getMotivosSolicitante ()			{ return ((String)this.datos.get("MOTIVOSSOLICITANTE")); 				}
+	public String getNombrePermutado ()			{ return ((String)this.datos.get("NOMBREPERMUTADO")); 		}
+	public String getNumeroPermutado ()			{ return ((String)this.datos.get("NCOLEGIADOSPERMUTADO")); 		}
+	public String getFechaConfirmacion ()	{ return ((String)this.datos.get("FECHACONFIRMADOR")); 	}
+	public String getNombreSolicitante ()	{ return ((String)this.datos.get("NOMBRESOLICITANTE")); 	}
+	public String getNcolegiadoSolicitante ()	{ return ((String)this.datos.get("NCOLEGIADOSOLICITANTE")); 	}
+	public String getNombreSustituto ()	{ return ((String)this.datos.get("NOMBRESUSTITUTO")); 	}
+	public String getNcolegiadoSustituto ()	{ return ((String)this.datos.get("NCOLEGIADOSUSTITUTO")); 	}
+	public String getComentarioSustituto ()	{ return ((String)this.datos.get("COMENTARIOSUSTITUTO")); 	}
+	public String getFechaSustituto ()	{ return ((String)this.datos.get("FECHASUSTITUTO")); 	}
+	public String getPeriodoPermuta ()	{ return ((String)this.datos.get("PERIODOPERMUTA")); 	}
+	public String getDatosPersPermutada ()	{ return ((String)this.datos.get("DATOSPERSPERMUTADA")); 	}
+	public String getDatosPersSustituto ()	{ return ((String)this.datos.get("DATOSPERSSUSTITUTO")); 	}
+	public String getDatosPersSolicitante ()	{ return ((String)this.datos.get("DATOSPERSSOLICITANTE")); 	}
+	public String getFechaSolicitud ()	{ return ((String)this.datos.get("FECHASOLICITUD")); 	}
+	
+	public DefinirPermutaGuardiasForm getPermutaGuardias() {
+		return permutaGuardias;
+	}
+	public void setPermutaGuardias(DefinirPermutaGuardiasForm permutaGuardias) {
+		this.permutaGuardias = permutaGuardias;
+	}
 }

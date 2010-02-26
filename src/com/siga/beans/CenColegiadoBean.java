@@ -22,7 +22,7 @@ public class CenColegiadoBean extends MasterBean {
 	private String 	nColegiado, 		comunitario, 		nComunitario, 		indTitulacion,		otrosColegios, 
 					jubilacionCuota, 	situacionEjercicio, situacionResidente, situacionEmpresa,  	fechaPresentacion, 
 					fechaIncorporacion, fechaJura,			fechaTitulacion, 	fechaDeontologia, 	fechaMovimiento,
-					cuentacontableSJCS;
+					cuentacontableSJCS,	nMutualista;
 
 	private String identificadorDS;
 	
@@ -52,6 +52,7 @@ public class CenColegiadoBean extends MasterBean {
 	static public final String C_COMUNITARIO		= "COMUNITARIO";
 	static public final String C_CUENTACONTABLESJCS = "CUENTACONTABLESJCS";
 	static public final String C_IDENTIFICADORDS    = "IDENTIFICADORDS";
+	static public final String C_NMUTUALISTA    	= "NMUTUALISTA";
 
 	// Metodos SET
 	public void setIdPersona (Long id) 			{ this.idPersona = id; }
@@ -74,6 +75,7 @@ public class CenColegiadoBean extends MasterBean {
 	public void setFechaMovimiento (String f) 		{ this.fechaMovimiento = f; }
 	public void setCuentaContableSJCS (String f) 	{ this.cuentacontableSJCS = f; }
 	public void setIdentificadorDS (String f) 		{ this.identificadorDS = f; }
+	public void setNMutualista (String f) 			{ this.nMutualista = f; }
 
 	// Metodos GET
 	public Long getIdPersona 		()	{ return this.idPersona; }
@@ -96,5 +98,5 @@ public class CenColegiadoBean extends MasterBean {
 	public String getFechaMovimiento 	()	{ return this.fechaMovimiento;}
 	public String getCuentaContableSJCS ()	{ return this.cuentacontableSJCS;}
 	public String getIdentificadorDS    () 	{ return this.identificadorDS; }
-	
+	public String getNMutualista    	() 	{ return this.nMutualista; }
 }

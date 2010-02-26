@@ -12,6 +12,7 @@ import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.general.EjecucionPLs;
 
 /**
  * Implementa las operaciones sobre la base de datos, es decir: select, insert, update... a la tabla SCS_SALTOSCOMPENSACIONES
@@ -509,14 +510,7 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 	        Hashtable temporalBean = new Hashtable(), temporalBean2 = new Hashtable();		        
 	        GenClientesTemporalAdm temporalAdm = new GenClientesTemporalAdm(this.usrbean);	        
 	        ScsSaltosCompensacionesAdm saltosAdm = new ScsSaltosCompensacionesAdm(this.usrbean);
-	        Vector resultado = new Vector(); 
-			param_in[0] = idInstitucion.toString();			
-			param_in[1] = idTurno.toString();
-			param_in[2] = "1"; 		// con saltos y compensaciones
-	
-			//Ejecucion del PL
-			resultadoPl = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_ORDENACION.ORDENA_COLEGIADOS_TURNO (?,?,?,?,?,?)}", 3, param_in);
-	        contador = resultadoPl[0];
+	        contador = EjecucionPLs.ejecutarPL_OrdenaColegiadosTurno(idInstitucion, idTurno, 1) [0];
 	        
 	        // Consulta en la tabla temporal la posicion para el letrado
 	        consultaTemp =	" select cli.posicion posicion,cli.idpersona  idpersona"+
@@ -530,7 +524,7 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 							" where cli2.idinstitucion 	= " + idInstitucion +
 							" and cli2.contador			= " + contador+ ")";		        
 	        
-	        resultado = ((Vector)temporalAdm.ejecutaSelect(consultaTemp));
+	        Vector resultado = ((Vector)temporalAdm.ejecutaSelect(consultaTemp));
 	        
 	        if (!resultado.isEmpty()){
 	        	temporalBean = (Hashtable)resultado.get(0);

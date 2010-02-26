@@ -60,6 +60,10 @@
 	<input type="hidden" name="limpiarFilaSeleccionada" value="">
 	<html:hidden property="letrado"/>
 	<html:hidden property="idioma"/>
+	<html:hidden property="registrosSeleccionados" />
+			<html:hidden property="datosPaginador" />
+			<html:hidden property="seleccionarTodos" />
+			
 	
 
 
@@ -159,7 +163,7 @@
 <script language="JavaScript">
 		
 		<!-- Funcion asociada a boton buscar -->
-		function buscar() 
+		function buscar(modo) 
 		{
 			sub();	
 			var f=document.getElementById("mantenimientoInformesForm");
@@ -173,15 +177,13 @@
 			}
 				
 		}
-		
-		
-       function buscarPaginador() 
+		function buscarPaginador() 
 		{
 			sub();	
 			var f=document.getElementById("mantenimientoInformesForm");
 		    if (validateMantenimientoInformesForm(f)) {
 			
-				document.forms[0].modo.value="buscar";
+				document.forms[0].modo.value="buscarPor";
 				document.forms[0].target="resultado";	
 				document.forms[0].submit();
 			}else{
@@ -189,6 +191,17 @@
 			}
 				
 		}
+		function seleccionarTodos(pagina) 
+		{
+				document.forms[0].seleccionarTodos.value = pagina;
+				document.forms[0].modo.value="buscarPor";
+				document.forms[0].target="resultado";	
+				document.forms[0].submit();
+				
+		}
+		
+		
+       
 			
 	</script>
 <!-- FIN: SCRIPTS BOTONES BUSQUEDA -->

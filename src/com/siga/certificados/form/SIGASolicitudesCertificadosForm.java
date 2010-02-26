@@ -46,6 +46,7 @@ public class SIGASolicitudesCertificadosForm extends MasterForm
     private String idTipoProducto="";
     private String idProducto="";
     private String idProductoInstitucion="";
+    private String metodoSolicitud="";
     
         
 	public String getIdTipoProducto() {
@@ -401,7 +402,11 @@ public class SIGASolicitudesCertificadosForm extends MasterForm
 	public void setIdInstitucionSolicitud(String idInstitucionSolicitud) {
 		this.idInstitucionSolicitud = idInstitucionSolicitud;
 	}
-	
-	
+    public String getMetodoSolicitud() {
+    	return metodoSolicitud;
+    }
+	public void setMetodoSolicitud(String metodo) {
+        this.metodoSolicitud = metodo;
+    }
 	
 }

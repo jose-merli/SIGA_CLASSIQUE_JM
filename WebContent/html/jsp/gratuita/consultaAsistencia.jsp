@@ -56,16 +56,18 @@
 				leyenda="gratuita.mantAsistencias.literal.titulo">
 				<table width="100%" border="0" style="table-layout: fixed">
 					<tr>
-						<td class="labelText" width="12%"><siga:Idioma key='gratuita.mantAsistencias.literal.anio' /> / <siga:Idioma
-							key='gratuita.mantAsistencias.literal.numero' /></td>
-						<td class="labelTextValor" width="17%"><c:out value="${asistencia.anio}"></c:out>/ <c:out value="${asistencia.numero}"></c:out></td>
+						<td class="labelText" width="20%">
+							<siga:Idioma key='gratuita.mantAsistencias.literal.anio' /> / 
+							<siga:Idioma key='gratuita.mantAsistencias.literal.numero' /></td>
+						<td class="labelTextValor" width="20%"><c:out value="${asistencia.anio}"></c:out>/ <c:out value="${asistencia.numero}"></c:out></td>
 						<td class="labelText" style="width: 70px"><siga:Idioma
 							key='gratuita.mantAsistencias.literal.turno' /></td>
-						<td class="labelTextValor" style="width: 200px"><c:out value="${asistencia.turno.nombre}"></c:out></td>
-						<td class="labelText" style="width: 70px"><siga:Idioma
-							key='gratuita.mantAsistencias.literal.guardia' /></td>
-						<td class="labelTextValor" style="width: 200px"><c:out value="${asistencia.guardia.nombre}"></c:out></td>
-
+						<td class="labelTextValor" style="width: 300px"><c:out value="${asistencia.turno.nombre}"></c:out></td>
+					</tr>
+						<td class="labelText" style="width: 70px"><siga:Idioma key='gratuita.mantAsistencias.literal.guardia' /></td>
+						<td class="labelTextValor" style="width: 300px"><c:out value="${asistencia.guardia.nombre}"></c:out></td>
+					<tr>
+					
 					</tr>
 				</table>
 			</siga:ConjCampos></td>
@@ -130,12 +132,12 @@
 						
 							<table width="100%" border="0" style="table-layout: fixed">
 								<tr>
-									<td class="labelText" width="80"><siga:Idioma
+									<td class="labelText" width="90"><siga:Idioma
 										key='gratuita.mantAsistencias.literal.ejg' /></td>
-									<td class="labelText" width="60"><siga:Idioma
+									<td class="labelText" width="70"><siga:Idioma
 										key='gratuita.mantAsistencias.literal.tipo' /></td>
 									<td class="labelTextValor" width="200"><c:out value="${asistencia.ejg.tipoEjg.descripcion}"></c:out></td>
-									<td class="labelTextValue" width="300"><c:out value="${asistencia.ejg.anio}"></c:out>/<c:out value="${asistencia.ejg.numEJG}"></c:out> -
+									<td class="labelTextValue" width="280"><c:out value="${asistencia.ejg.anio}"></c:out>/<c:out value="${asistencia.ejg.numEJG}"></c:out> -
 									<c:out value="${asistencia.ejg.solicitante.nombre}"></c:out>&nbsp;<c:out value="${asistencia.ejg.solicitante.apellido1}"></c:out>&nbsp;<c:out value="${asistencia.ejg.solicitante.apellido2}"></c:out>
 									</td>
 	
@@ -149,12 +151,12 @@
 						<c:if test="${asistencia.designa!=null}">
 						<table width="100%" border="0" style="table-layout: fixed">
 							<tr>
-								<td class="labelText" width="80"><siga:Idioma
+								<td class="labelText" width="90"><siga:Idioma
 									key='gratuita.mantAsistencias.literal.designa' /></td>
-								<td class="labelText" width="60"><siga:Idioma
+								<td class="labelText" width="70"><siga:Idioma
 									key='gratuita.mantAsistencias.literal.turno' /></td>
 								<td class="labelTextValor" width="200"><c:out value="${asistencia.designa.turno.nombre}"></c:out></td>
-								<td class="labelTextValue" width="300"><c:out value="${asistencia.designa.anio}"></c:out>/<c:out value="${asistencia.designa.codigo}"> </c:out> -
+								<td class="labelTextValue" width="280"><c:out value="${asistencia.designa.anio}"></c:out>/<c:out value="${asistencia.designa.codigo}"> </c:out> -
 								<c:out value="${asistencia.designa.colegiadoDesignado.nombre}"></c:out>&nbsp;<c:out value="${asistencia.designa.colegiadoDesignado.apellido1}"></c:out>&nbsp;<c:out value="${asistencia.designa.colegiadoDesignado.apellido2}"></c:out>
 								</td>
 							</tr>
@@ -183,8 +185,19 @@
 
 
 </html:form>
+	<!-- INICIO: BOTONES REGISTRO -->
+	<siga:ConjBotonesAccion botones="C" modal="M"/>
+	<!-- FIN: BOTONES REGISTRO -->
 </body>
 
+<script>
+				
+		function accionCerrar() 
+		{		
+			top.cierraConParametros("NORMAL");
+		}		
+					
+</script>
 
 
 </html>

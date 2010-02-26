@@ -341,7 +341,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							ScsEJGBean.C_JUZGADO,					ScsEJGBean.C_JUZGADOIDINSTITUCION,
 							ScsEJGBean.C_IDPRETENSION,				ScsEJGBean.C_IDPRETENSIONINSTITUCION,
 							ScsEJGBean.C_IDDICTAMEN,				ScsEJGBean.C_REFAUTO,
-							ScsEJGBean.C_FECHADESIGPROC,			ScsEJGBean.C_IDENTIFICADORDS};
+							ScsEJGBean.C_FECHADESIGPROC,			ScsEJGBean.C_IDENTIFICADORDS,
+							ScsEJGBean.C_SITUACION};
 		return campos;
 	}
 	
@@ -429,6 +430,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			bean.setRefAuto(UtilidadesHash.getString(hash,ScsEJGBean.C_REFAUTO));
 			bean.setFechaProc(UtilidadesHash.getString(hash,ScsEJGBean.C_FECHADESIGPROC));
 			bean.setIdentificadorDS(UtilidadesHash.getString(hash,ScsEJGBean.C_IDENTIFICADORDS));
+			bean.setIdSituacion(UtilidadesHash.getString(hash,ScsEJGBean.C_SITUACION));
 		}
 		catch (Exception e){
 			throw new ClsExceptions(e,"EXCEPCION EN TRANSFORMAR HASHTABLE A BEAN");
@@ -511,6 +513,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, ScsEJGBean.C_REFAUTO, b.getRefAuto());
 			UtilidadesHash.set(htData,ScsEJGBean.C_FECHADESIGPROC, b.getFechaProc());
 			UtilidadesHash.set(htData,ScsEJGBean.C_IDENTIFICADORDS, b.getIdentificadorDS());
+			UtilidadesHash.set(htData,ScsEJGBean.C_SITUACION, b.getIdSituacion());
 		}
 		catch (Exception e){
 			 throw new ClsExceptions(e,"EXCEPCION EN TRANSFORMAR EL BEAN A HASHTABLE");
@@ -2106,7 +2109,16 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			" NOT IN (7, 8, 9, 10, 11) OR f_siga_get_idultimoestadoejg(ejg.idinstitucion,ejg.idtipoejg, ejg.anio, ejg.numero) IS NULL) ";			
 		}
 		
-		
+		if (miForm.getNumeroCAJG()!=null && !miForm.getNumeroCAJG().trim().equalsIgnoreCase("")) {
+			contador++;
+			codigos.put(new Integer(contador),miForm.getNumeroCAJG());
+			consulta += " and ejg.Numero_Cajg = :" + contador;
+		}
+		if (miForm.getAnioCAJG()!=null && !miForm.getAnioCAJG().trim().equalsIgnoreCase("")) {
+			contador++;
+			codigos.put(new Integer(contador),miForm.getAnioCAJG());
+			consulta += " and ejg.Aniocajg = :" + contador;
+		}
 
 
 //		Y ahora concatenamos los criterios de búsqueda
@@ -2146,7 +2158,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				consulta += " and ejg.ANIO = :" + contador;
 			}
 
-			if ((miHash.containsKey("CREADODESDE")) && (!miHash.get("CREADODESDE").toString().equals(""))) {
+			/*if ((miHash.containsKey("CREADODESDE")) && (!miHash.get("CREADODESDE").toString().equals(""))) {
 				if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("A")) consulta += "  and (0<(SELECT COUNT(*) FROM SCS_ASISTENCIA WHERE IDINSTITUCION=EJG.IDINSTITUCION AND EJGNUMERO=EJG.NUMERO AND EJGANIO=EJG.ANIO AND ejgidtipoejg=EJG.IDTIPOEJG))";
 				else if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("D")){
 
@@ -2163,7 +2175,40 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				else {
 					consulta+= " and (0<(SELECT COUNT(*) FROM SCS_ASISTENCIA WHERE IDINSTITUCION=EJG.IDINSTITUCION AND EJGNUMERO IS NULL)) and (0<(SELECT COUNT(*) FROM SCS_SOJ WHERE IDINSTITUCION=EJG.IDINSTITUCION AND EJGNUMERO IS NULL))"; 
 				}
-			};
+			}*/
+			
+			if ((miHash.containsKey("CREADODESDE")) && (!miHash.get("CREADODESDE").toString().equals(""))) {
+				if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("A")) 
+					consulta += "  and (0<(SELECT COUNT(*) FROM SCS_ASISTENCIA WHERE IDINSTITUCION=EJG.IDINSTITUCION AND EJGNUMERO=EJG.NUMERO AND EJGANIO=EJG.ANIO AND ejgidtipoejg=EJG.IDTIPOEJG))";
+				else if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("D")){			
+					consulta += " and (select count(1)";
+					consulta += " from scs_ejgdesigna edes";
+					consulta += " where ejg.idinstitucion = edes.idinstitucion";
+					consulta += " and ejg.numero = edes.numeroejg";
+					consulta +=  " and ejg.anio = edes.anioejg";
+					consulta += " and ejg.idtipoejg = edes.idtipoejg) > 0";
+				}     
+				else if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("S")) {
+					consulta += " and (0<(SELECT COUNT(*) FROM SCS_SOJ WHERE IDINSTITUCION=EJG.IDINSTITUCION AND EJGNUMERO=EJG.NUMERO AND EJGANIO=EJG.ANIO AND ejgidtipoejg=EJG.IDTIPOEJG))";
+				}
+				else {
+					consulta+= " and (0<(SELECT COUNT(*) FROM SCS_ASISTENCIA WHERE IDINSTITUCION=EJG.IDINSTITUCION AND EJGNUMERO IS NULL)) and (0<(SELECT COUNT(*) FROM SCS_SOJ WHERE IDINSTITUCION=EJG.IDINSTITUCION AND EJGNUMERO IS NULL))"; 
+				}
+			}
+			
+			/* 
+			 * jbd Deberia ser asi pero Antonia queria los relacionados no los creados desde
+			 * 
+			 * if ((miHash.containsKey("CREADODESDE")) && (!miHash.get("CREADODESDE").toString().equals(""))) {
+				if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("A"))
+					consulta += " and ejg.origenapertura = 'A'"; 
+				else if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("S"))
+					consulta += " and ejg.origenapertura = 'S' ";
+				else if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("D"))
+					consulta += " and ejg.origenapertura = 'O' ";
+				else
+					consulta += " and ejg.origenapertura = 'M' ";
+			}*/
 
 			if ((miHash.containsKey("GUARDIATURNO_IDTURNO")) && (!miHash.get("GUARDIATURNO_IDTURNO").toString().equals(""))) {
 				contador++;
@@ -2464,7 +2509,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"ANIO"));
 				consulta += " and ejg.ANIO = :" + contador;
 			}
-			if ((miHash.containsKey("CREADODESDE")) && (!miHash.get("CREADODESDE").toString().equals(""))) {
+			
+			/*if ((miHash.containsKey("CREADODESDE")) && (!miHash.get("CREADODESDE").toString().equals(""))) {
 				if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("A")) {
 					consulta += "  and (0<(SELECT COUNT(*) FROM SCS_ASISTENCIA WHERE IDINSTITUCION=EJG.IDINSTITUCION AND EJGNUMERO=EJG.NUMERO AND EJGANIO=EJG.ANIO AND ejgidtipoejg=EJG.IDTIPOEJG))";
 				}
@@ -2480,7 +2526,41 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				else {
 					consulta+= " and (0<(SELECT COUNT(*) FROM SCS_ASISTENCIA WHERE IDINSTITUCION=EJG.IDINSTITUCION AND EJGNUMERO IS NULL)) and (0<(SELECT COUNT(*) FROM SCS_SOJ WHERE IDINSTITUCION=EJG.IDINSTITUCION AND EJGNUMERO IS NULL))"; 
 				}
-			};
+			}*/
+			
+			/*
+			 * jbd Deberia ser asi pero Antonia queria los relacionados no los creados desde
+			 * 
+			if ((miHash.containsKey("CREADODESDE")) && (!miHash.get("CREADODESDE").toString().equals(""))) {
+				if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("A"))
+					consulta += " and ejg.origenapertura = 'A'"; 
+				else if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("S"))
+					consulta += " and ejg.origenapertura = 'S' ";
+				else if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("D"))
+					consulta += " and ejg.origenapertura = 'O' ";
+				else
+					consulta += " and ejg.origenapertura = 'M' ";
+			}*/
+			if ((miHash.containsKey("CREADODESDE")) && (!miHash.get("CREADODESDE").toString().equals(""))) {
+				if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("A")) 
+					consulta += "  and (0<(SELECT COUNT(*) FROM SCS_ASISTENCIA WHERE IDINSTITUCION=EJG.IDINSTITUCION AND EJGNUMERO=EJG.NUMERO AND EJGANIO=EJG.ANIO AND ejgidtipoejg=EJG.IDTIPOEJG))";
+				else if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("D")){			
+					consulta += " and (select count(1)";
+					consulta += " from scs_ejgdesigna edes";
+					consulta += " where ejg.idinstitucion = edes.idinstitucion";
+					consulta += " and ejg.numero = edes.numeroejg";
+					consulta +=  " and ejg.anio = edes.anioejg";
+					consulta += " and ejg.idtipoejg = edes.idtipoejg) > 0";
+				}     
+				else if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("S")) {
+					consulta += " and (0<(SELECT COUNT(*) FROM SCS_SOJ WHERE IDINSTITUCION=EJG.IDINSTITUCION AND EJGNUMERO=EJG.NUMERO AND EJGANIO=EJG.ANIO AND ejgidtipoejg=EJG.IDTIPOEJG))";
+				}
+				else {
+					consulta+= " and (0<(SELECT COUNT(*) FROM SCS_ASISTENCIA WHERE IDINSTITUCION=EJG.IDINSTITUCION AND EJGNUMERO IS NULL)) and (0<(SELECT COUNT(*) FROM SCS_SOJ WHERE IDINSTITUCION=EJG.IDINSTITUCION AND EJGNUMERO IS NULL))"; 
+				}
+			}
+			
+			
 
 			if ((miHash.containsKey("GUARDIATURNO_IDTURNO")) && (!miHash.get("GUARDIATURNO_IDTURNO").toString().equals(""))) {
 				contador++;
@@ -3264,12 +3344,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			
 		
 			StringBuffer sql = new StringBuffer();
-			sql.append(" ");
-			sql.append(" select JUZDF.NOMBRE AS JUZGADO_DEFENSA_JURIDICA ");
-			sql.append(" from SCS_JUZGADO             JUZDF ");
-			
+			sql.append(" select JUZDF.NOMBRE AS JUZGADO_DEFENSA_JURIDICA, POB.NOMBRE AS POBLACION_JUZGADO, PROV.NOMBRE AS PROVINCIA_JUZGADO ");
+			sql.append(" from SCS_JUZGADO JUZDF, CEN_POBLACIONES POB, CEN_PROVINCIAS PROV ");
 			sql.append(" WHERE ");
-			
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucion);
@@ -3280,7 +3357,10 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			htCodigos.put(new Integer(keyContador), idJuzgado);
 			sql.append(" AND JUZDF.IDJUZGADO  = :");
 			sql.append(keyContador);
-			
+	
+			sql.append(" AND JUZDF.Idpoblacion = pob.idpoblacion ");
+			sql.append(" AND JUZDF.Idprovincia = prov.Idprovincia ");
+		
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
 			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
 			
@@ -3517,8 +3597,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			
 			//Aniadimos el Juzgado
 			String idJuzgado = (String)registro.get("IDJUZGADO");
-			helperInformes.completarHashSalida(registro,getJuzgadoEjgSalida(idInstitucion, 
-					idJuzgado));
+			helperInformes.completarHashSalida(registro,getJuzgadoEjgSalida(idInstitucion, idJuzgado));
 			
 			
 	
@@ -3676,9 +3755,11 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			
 			sql.append(" ,TO_CHAR(EJG.FECHAPRESENTACION, 'dd-mm-yyyy') as FECHAPRESENTACION");
 			sql.append(" ,TO_CHAR(EJG.FECHALIMITEPRESENTACION, 'dd-mm-yyyy') as FECHALIMITEPRESENTACION");
-			
-			sql.append(" FROM SCS_EJG                       EJG, ");
-			sql.append(" SCS_EJGDESIGNA EJGD ");
+
+			sql.append(" ,to_char(EASI.FECHAHORA, 'dd/mm/yyyy') AS FECHA_ASISTENCIA ");
+			sql.append(" ,  (select nombre ||' '||apellidos1||' '|| apellidos2 from cen_persona where idpersona = EASI.IDPERSONACOLEGIADO) AS NOMBRE_LETRADO_ASISTENCIA");
+		       
+			sql.append(" FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGD, SCS_ASISTENCIA EASI ");
 			sql.append(" WHERE  ");
 
    
@@ -3686,6 +3767,11 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" AND EJG.IDTIPOEJG = EJGD.IDTIPOEJG(+) ");
 			sql.append(" AND EJG.ANIO = EJGD.ANIOEJG(+) ");
 			sql.append(" AND EJG.NUMERO = EJGD.NUMEROEJG (+) ");
+			
+			sql.append(" and EJG.IDTIPOEJG = EASI.EJGIDTIPOEJG(+) ");
+			sql.append(" AND EJG.NUMERO = EASI.EJGNUMERO(+) ");
+			sql.append(" AND EJG.IDINSTITUCION = EASI.IDINSTITUCION(+) ");
+			sql.append(" AND EJG.ANIO = EASI.EJGANIO(+) ");
 
      		sql.append(" AND  ");
 			
@@ -3925,7 +4011,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" DES.IDINSTITUCION_JUZG IDINSTITUCION_JUZGDESIGNA ,DES.IDJUZGADO IDJUZGADODESIGNA, ");
 			sql.append(" DES.NUMPROCEDIMIENTO AS AUTOS, ");
 			sql.append(" TO_CHAR(DES.FECHAJUICIO, 'dd/MM/yyyy') AS FECHA_JUICIO, ");
-			sql.append(" TO_CHAR(DES.FECHAJUICIO, 'HH24:MM') AS HORA_JUICIO, ");
+			sql.append(" TO_CHAR(DES.FECHAJUICIO, 'HH24:MI') AS HORA_JUICIO, ");
 			sql.append(" DES.IDPROCEDIMIENTO  AS IDPROCEDIMIENTO,");
 		   
 			
@@ -4337,6 +4423,20 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				}
 				
 				
+				// Datos de la asistencia asociada
+				String fechaAsistencia = (String)registro.get("FECHA_ASISTENCIA");
+				if(fechaAsistencia!=null && !fechaAsistencia.trim().equalsIgnoreCase("")){
+					registro.put("FECHA_ASISTENCIA", registro.get("FECHA_ASISTENCIA"));
+				}else{
+					registro.put("FECHA_ASISTENCIA", "");
+				} 
+				String letradoAsistencia = (String)registro.get("NOMBRE_LETRADO_ASISTENCIA");
+				if(letradoAsistencia!=null && !fechaAsistencia.trim().equalsIgnoreCase("")){
+					registro.put("NOMBRE_LETRADO_ASISTENCIA", letradoAsistencia);
+					
+				}else{
+					registro.put("NOMBRE_LETRADO_ASISTENCIA", "");
+				} 
 				
 				
 				String idTipoResolAuto = (String)registro.get("IDTIPORESOLAUTO");
@@ -4452,7 +4552,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 					helperInformes.completarHashSalida(registro,getFisrtAsistencia(htFuncion,"FECHA_ACTUACION"));
 					UtilidadesHash.set(registro, "FECHA_ASISTENCIA", (String)registro.get("FECHA_ACTUACION")); 
 	
-					htFuncion.put(new Integer(5), "hh:MM:ss");
+					htFuncion.put(new Integer(5), "hh:MI:ss");
 	
 					helperInformes.completarHashSalida(registro,getFisrtAsistencia(htFuncion,"HORA_ACTUACION"));
 	
@@ -4584,7 +4684,6 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 					
 					UtilidadesHash.set(registro, "LISTA_ACTUACIONES_DESIGNA", "");
 					UtilidadesHash.set(registro, "FECHA_ACTUACION", "");
-					UtilidadesHash.set(registro, "FECHA_ASISTENCIA", "");
 					UtilidadesHash.set(registro, "HORA_ACTUACION", "");
 					UtilidadesHash.set(registro, "LISTA_INTERESADOS_DESIGNA", "");
 

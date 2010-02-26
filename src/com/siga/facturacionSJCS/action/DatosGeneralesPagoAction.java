@@ -526,12 +526,6 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			Integer idInstitucion = UtilidadesHash.getInteger(registroSesion, FcsPagosJGBean.C_IDINSTITUCION),
 					idFacturacion = UtilidadesHash.getInteger(registroSesion, FcsPagosJGBean.C_IDFACTURACION);
 
-			double  importeTotal = 0;
-			Double  importeOficio = null, 
-					importeGuardia = null, 
-					importeSOJ = null,  
-					importeEJG = null; 
-
 			// crea el bean de pago colegiado e inicializa los datos comunes 
 			Integer idPagoJG = new Integer(miform.getIdPagosJG());
 			Integer idPersona = new Integer(usr.getUserName());
@@ -539,24 +533,13 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			//Se llama a los paquetes que ejecutan los pagos para cada concepto
 			//Estas funciones sólo actualizan los importes de los conceptos 
 			//del registro creado anteriormente
-			importeOficio = EjecucionPLs.ejecutarPL_PagoTurnosOficio(idInstitucion, idPagoJG, idPersona);
-			importeTotal += importeOficio.doubleValue();
-			
-			importeGuardia = EjecucionPLs.ejecutarPL_PagoGuardias(idInstitucion, idPagoJG, idPersona);
-			importeTotal += importeGuardia.doubleValue();
-			
-			importeSOJ = EjecucionPLs.ejecutarPL_PagoSOJ(idInstitucion, idPagoJG, idPersona);
-			importeTotal += importeSOJ.doubleValue();
-			
-			importeEJG = EjecucionPLs.ejecutarPL_PagoEJG(idInstitucion, idPagoJG, idPersona);
-			importeTotal += importeEJG.doubleValue();
-			
-			// Calcula y actualiza IRPF, retenciones, movimientos varios y personaSociedad (idperdestino)
-			
+			EjecucionPLs.ejecutarPL_PagoTurnosOficio(idInstitucion, idPagoJG, idPersona);
+			EjecucionPLs.ejecutarPL_PagoGuardias(idInstitucion, idPagoJG, idPersona);
+			EjecucionPLs.ejecutarPL_PagoSOJ(idInstitucion, idPagoJG, idPersona);
+			EjecucionPLs.ejecutarPL_PagoEJG(idInstitucion, idPagoJG, idPersona);
 			
 			tx.commit();
 
-		
 			// Exportacion de datos a EXCEL
 			UtilidadesFacturacionSJCS.exportarDatosPagos(idInstitucion, idFacturacion, idPagoJG, null, usr);
 			
@@ -1016,7 +999,9 @@ public class DatosGeneralesPagoAction extends MasterAction {
 
 			//obtiene el porcentajeIRPF del colegiado para utilizarlo al aplicar 
 			//los movimientos varios y calcular el IRPF del importe bruto.
-			porcentajeIRPF = obtenerIrpf(idInstitucion, idPersona, !idPersonaSociedad.equals(""));
+			porcentajeIRPF = obtenerIrpf(idInstitucion, 
+					!idPersonaSociedad.equals("") ? idPersonaSociedad: idPersona, 
+				    !idPersonaSociedad.equals(""));
 
 			// 2. Aplicar los movimientos varios
 			// Asocia todos los movimientos sin idpago al pago actual.
@@ -1028,8 +1013,9 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			// 3. Obtener importe bruto como la suma de los movimientos varios y el total SJCS
 			double importeBruto = importeSJCS + importeMovimientos;
 
-			// 4. Obtener el importe neto aplicando el IRPF	
-			importeIrpfTotal = -1 * (importeBruto * porcentajeIRPF / 100);
+			// 4. Obtener el importe neto aplicando el IRPF
+			// (hay que redondear el importeIrpf porque es un importe que se ha de presentar) 
+			importeIrpfTotal = UtilidadesNumero.round(String.valueOf(-1 * (importeBruto * porcentajeIRPF / 100)), 2);
 			double importeNeto = importeBruto + importeIrpfTotal;
 
 			// 5. Aplicar retenciones judiciales y no judiciales
@@ -1452,9 +1438,9 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			String motivoPago = UtilidadesString.getMensajeIdioma((String)usr.getLanguage(),"factSJCS.abonos.literal.motivo");
 			CenPersonaBean sociedadBean = personaAdm.getIdentificador(new Long(idPersonaSoc));
 			sociedadPago = sociedadBean.getNombre();
-			CenPersonaBean personaBean = personaAdm.getIdentificador(new Long(idPersonaSoc));
+			CenPersonaBean personaBean = personaAdm.getIdentificador(new Long(idPersonaSJCS));
 			personaPago = personaBean.getNombre()+" "+personaBean.getApellido1()+" "+personaBean.getApellido2();
-			if (idPersonaSJCS.equalsIgnoreCase(idPersonaSJCS)){
+			if (idPersonaSJCS.equalsIgnoreCase(idPersonaSoc)){
 				// Si coinciden idPersonaSJCS e idPersonaSoc el pago es a una persona 
 				motivoPago += " " + personaPago;
 			}else{
@@ -1485,8 +1471,8 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			
 			// Recuperamos el nombre del pago si esta disponible y lo metemos en las observaciones
 			Hashtable criterios = new Hashtable();
-			criterios.put(FcsPagosJGBean.C_IDPAGOSJG, idPago);
-			criterios.put(FcsPagosJGBean.C_IDINSTITUCION, (String)usr.getLocation());
+			criterios.put("idPagosjg", idPago);
+			criterios.put("idInstitucion", (String)usr.getLocation());
 			pagos = pagosAdm.getPagosParaCerrar(criterios, (String)usr.getLocation());
 			if(!pagos.isEmpty()){
 				//pagosBean = (FcsPagosJGBean)pagos.get(0);

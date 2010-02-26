@@ -27,6 +27,7 @@ import com.siga.beans.ScsTipoDesignaColegioAdm;
 import com.siga.beans.ScsTipoDesignaColegioBean;
 import com.siga.beans.ScsTurnoAdm;
 import com.siga.beans.ScsTurnoBean;
+import com.siga.beans.CajgConfiguracionAdm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -100,6 +101,10 @@ public class MaestroDesignasAction extends MasterAction {
 			UtilidadesHash.set(resultado,ScsDesignaBean.C_NUMERO, 				(String)request.getParameter("NUMERO"));
 			UtilidadesHash.set(resultado,ScsDesignaBean.C_IDINSTITUCION,		(String)usr.getLocation());
 			UtilidadesHash.set(resultado,ScsDesignaBean.C_IDTURNO,				(String)request.getParameter("IDTURNO"));	
+			
+			// jbd 01/02/2010 Pasamos el valor del pcajg del colegio
+			int valorPcajgActivo=CajgConfiguracionAdm.getTipoCAJG(new Integer(usr.getLocation()));
+			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
 			
 			// Consulto la designa:
 					

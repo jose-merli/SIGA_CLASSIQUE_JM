@@ -83,6 +83,8 @@ public class creaDirectorios {
 	private static boolean bActualiza = false;
 	/** si es el usuario Personaliza */
 	private static boolean bPersonaliza = false;
+	/** si es el usuario Personaliza */
+	private static boolean bCopiaAInformesGenericos = false;
 
 	private static ResultSet rs = null; 
 
@@ -114,6 +116,7 @@ public class creaDirectorios {
 		 			System.out.println(" plantillas  .- Copia y por lo tanto reescribe todas las plantillas para las institucion configuradas en propiedades.");
 		 			System.out.println(" actualiza   .- Copia y por lo tanto machaca para todas las instituciones creadas las plantillas entregadas como modificadas en el directorio /plantillas_modificadas/.");
 		 			System.out.println(" personaliza .- Copia y por lo tanto machaca las plantillas entregadas como personalizadas en el directorio /plantillas_personalizadas/. Estas plantillas ya van creadas para cada institucion por lo que no se duplican en las instituciones.");
+		 			System.out.println(" copiaAInformesGenericos .- Mueve directorios que no son informes genericos a la estrucura de informes genericos. No elimina la antigua ubicación. Necesita dos argumentos mas que es el nombre del directorio origen y el nombre del directorio donde se ubican los informesgenericos");
 		 			System.out.println(" ");
 		 			System.exit(0);
 		 		} else {
@@ -148,23 +151,31 @@ public class creaDirectorios {
 			 	System.out.println(" Crea todos los directorios necesarios para las instituciones configuradas en propiedades. ");
 			 	System.out.println(" ");
 
-		 	} else
-		 		if (argumento.equals("plantillas")) {
+		 	} else	if (argumento.equals("plantillas")) {
 			 		bPlantillas = true;
 				 	System.out.println(" Copia y por lo tanto reescribe todas las plantillas para las institucion configuradas en propiedades. ");
 				 	System.out.println(" ");
-		 	} else
-		 		if (argumento.equals("actualiza")) {
+		 	} else if (argumento.equals("actualiza")) {
 			 		bActualiza = true;
 				 	System.out.println(" Copia y por lo tanto machaca para todas las instituciones creadas las plantillas entregadas como modificadas en el directorio /plantillas_modificadas/. ");
 				 	System.out.println(" ");
-		 	} else
-		 		if (argumento.equals("personaliza")) {
+		 	} else	if (argumento.equals("personaliza")) {
 			 		bPersonaliza = true;
 				 	System.out.println(" Copia y por lo tanto machaca las plantillas entregadas como personalizadas en el directorio /plantillas_personalizadas/. Estas plantillas ya van creadas para cada institucion por lo que no se duplican en las instituciones. ");
 				 	System.out.println(" ");
+		 	}else	if (argumento.equals("copiaAInformesGenericos")) {
+		 		bCopiaAInformesGenericos = true;
+		 		String directorioOrigen = args[1].trim();
+		 		String directotioDestino = args[2].trim();
+			 	System.out.println(" Mueve las plantillas del directorio pasado como arg 1 al directotio pasado com arg 2 ");
+			 	if(directorioOrigen==null)
+			 		System.out.println("Falta del directorio Origen");
+			 	if(directotioDestino==null)
+			 		System.out.println("Falta del directorio donde se ubican los informes genericos");
+			 	if(directorioOrigen==null || directotioDestino==null)
+			 		throw new Exception("Es necesario indicar uno de los parametro posibles. Consule la ayuda con parámetro ?.");
 		 	} else {
-		 		throw new Exception("Es necesario indicar uno de los parametro posibles. consule la ayuda con parámetro ?.");
+		 		throw new Exception("Es necesario indicar uno de los parametro posibles. Consule la ayuda con parámetro ?.");
 		 	}
 
 		 	StringTokenizer tokenizer = new StringTokenizer(auxInstitucion,",");
@@ -228,6 +239,14 @@ public class creaDirectorios {
 						copiaRecursivoModificadas(pathOrigenPlantillas+pathPersonalizadas,insti.getIdInstitucion().toString());
 					}
 				}
+			}
+			if(bCopiaAInformesGenericos){
+				String directorioOrigen = args[1].trim();
+		 		String directotioDestino = args[2].trim();
+		 		copiaRecursivo(directorioOrigen,directotioDestino,institucionesAlta);
+		 		
+				//
+				
 			}
 			
 			System.out.println(" ");
@@ -1058,6 +1077,70 @@ public class creaDirectorios {
 		}
 		
 	}
+	private static void copiaRecursivo (String directorioOrigen, String directorioDestino, Vector institucionesAux) throws Exception {
+
+
+		ResourceBundle rp=ResourceBundle.getBundle("SIGA");
+		String pathPlantillas = rp.getString("informes.directorioFisicoPlantillaInformesJava");
+		
+		String pathDirectorioOrigen = pathPlantillas +File.separator+directorioOrigen;
+		
+		File origen = new File(pathDirectorioOrigen);
+		File hijoOrigen = null;
+		File hijoDestino = null;
+		
+		System.out.println("copiando plantillas...");
+	
+		if (origen.exists()) {
+			if (origen.isDirectory()) {
+
+				for (int i=0;i<institucionesAux.size();i++) {
+
+					// busco el destino por institucion
+					// repitiré el proceso por cada una.
+					CenInstitucionBean insti = (CenInstitucionBean) institucionesAux.get(i);
+					System.out.println("... Institucion " + insti.getIdInstitucion().toString());
+					String pathDirectorioInstitucionOrigen = pathDirectorioOrigen+ File.separator+ insti.getIdInstitucion().toString();
+					// plantilla factura
+					String pathDirectorioDestino = pathPlantillas+File.separator+directorioDestino+File.separator+insti.getIdInstitucion().toString();
+					File directorioDestinoInstitucion = new File(pathDirectorioDestino);
+					if(!directorioDestinoInstitucion.exists())
+						directorioDestinoInstitucion.mkdir();
+					
+					String pathDestinoFinal = directorioDestinoInstitucion+File.separator+directorioOrigen;
+					hijoDestino = new File(pathDestinoFinal);
+					if(!hijoDestino.exists())
+						hijoDestino.mkdir();
+					
+					hijoOrigen = new File(pathDirectorioInstitucionOrigen);   
+				 	//hijoDestino = new File(destino.getAbsolutePath());
+				 	if (hijoOrigen.exists()) {
+				 		recur(hijoOrigen, hijoDestino,insti.getIdInstitucion().toString(),institucionDefecto);
+				 	}
+				 	//Cpoiamos tambien los recursos de las plantillas
+				 	String pathRecursosOrigen =  pathDirectorioInstitucionOrigen+File.separator+"recursos";
+				 	String pathRecursosDestino =  pathDestinoFinal+File.separator+"recursos";
+				 	hijoDestino = new File(pathRecursosDestino);
+				 	if(!hijoDestino.exists())
+						hijoDestino.mkdir();
+				 	hijoOrigen = new File(pathRecursosOrigen);
+				 	if (hijoOrigen.exists()) {
+				 		recur(hijoOrigen, hijoDestino,insti.getIdInstitucion().toString(),institucionDefecto);
+				 	}
+				 	
+				 	
+					
+				}
+		
+			} else {
+				throw new Exception("El path origen no es un directorio.");
+			}
+		} else {
+			throw new Exception("No existe el path origen de plantillas.");
+		}
+		
+	}
+	
 
 	private static void copiaRecursivoModificadas (String pathOrigen, String idinstitucion) throws Exception {
 

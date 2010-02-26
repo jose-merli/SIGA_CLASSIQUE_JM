@@ -2378,11 +2378,13 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    } else {
 		    	bean.setComentario(null);
 		    }
+		    
+		    if (!form.getMetodoSolicitud().equals("")) {
+		    	bean.setMetodoSolicitud(form.getMetodoSolicitud());
+		    } else {
+		    	bean.setMetodoSolicitud(null);
+		    }
 
-		    
-		    
-		    
-		    
 		    bean.setFechaMod("sysdate");
 		    if (!admSolicitud.updateDirect(bean)) {
 		    	throw new ClsExceptions("Error al actualizar solicitud: "+admSolicitud.getError());

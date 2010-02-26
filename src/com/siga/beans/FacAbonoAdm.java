@@ -461,10 +461,10 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 							" FROM " + FacAbonoBean.T_NOMBRETABLA;
 				            contador++;
 							codigos.put(new Integer(contador),abono);
-							sql += " WHERE " + FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDABONO + "=:" + abono;
+							sql += " WHERE " + FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDABONO + "=:" + contador;
 							contador++;
 							codigos.put(new Integer(contador),institucion);
-							sql +=" AND " + FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDINSTITUCION + "=:" + institucion;
+							sql +=" AND " + FacAbonoBean.T_NOMBRETABLA +"."+ FacAbonoBean.C_IDINSTITUCION + "=:" + contador;
 										
 				if (rc.findBind(sql,codigos)) {
 	               for (int i = 0; i < rc.size(); i++){
@@ -1352,7 +1352,7 @@ public Vector getRetencionesIRPF (String idInstitucion, String idPersona,String 
 	            sql.append(" FROM (");
 	            
 	            FcsPagosJGAdm pagosAdm = new FcsPagosJGAdm(usrbean);
-	            sql.append(pagosAdm.getQueryDetallePagoColegiado(idInstitucion,null));
+	            sql.append(pagosAdm.getQueryDetallePagoColegiado(idInstitucion,null,true));
 	            
 	            sql.append(") WHERE ");
 	            if(idPersona !=null){

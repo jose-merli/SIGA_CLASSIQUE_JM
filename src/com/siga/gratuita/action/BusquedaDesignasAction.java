@@ -69,6 +69,7 @@ import com.siga.beans.ScsJuzgadoBean;
 import com.siga.beans.ScsSaltosCompensacionesBean;
 import com.siga.certificados.Plantilla;
 import com.siga.facturacion.form.ConsultaMorososForm;
+import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -202,88 +203,82 @@ public class BusquedaDesignasAction extends MasterAction {
 			}
 		}		
 		return "inicio";
-			}
-
-	/* (non-Javadoc)
-	 * @see com.siga.general.MasterAction#abrirAvanzada(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	}
+	
+	/**
+	 * Obtiene el siguiente letrado seleccionado automaticamente de la cola del turno
 	 */
-	protected String abrirAvanzada(ActionMapping mapping,
-			MasterForm formulario, HttpServletRequest request,
-			HttpServletResponse response) throws ClsExceptions, SIGAException {
-
+	protected String abrirAvanzada (ActionMapping mapping,
+									MasterForm formulario,
+									HttpServletRequest request,
+									HttpServletResponse response)
+		throws ClsExceptions, SIGAException
+	{
 		//en la modal se ha elegido buscar el letrado automaticamente
-		//Variables para llamar al PL
-		BuscarDesignasForm miForm = (BuscarDesignasForm)formulario;
-		Hashtable hash = (Hashtable) miForm.getDatos();
-		request.getSession().setAttribute("formularioAvanzada",hash);
-		Object[] param_in = new Object[3];
-		String resultadoPl[] = new String[3];
-		String institucion,contador,consultaTemp="";
-		GenClientesTemporalAdm temporalAdm = new GenClientesTemporalAdm(this.getUserBean(request));
-		Hashtable temporalBean = new Hashtable();
-		try{
-			//Parametros de entrada del PL
-			HttpSession ses = (HttpSession)request.getSession();
-			UsrBean usr = (UsrBean)ses.getAttribute("USRBEAN");
-			institucion = usr.getLocation();
-			param_in[0] = institucion;			
-			param_in[1] = (String)miForm.getIdTurno();
-			param_in[2] = "1"; // con saltos y compensaciones
-			//Ejecucion del PL
-			resultadoPl = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_ORDENACION.ORDENA_COLEGIADOS_TURNO (?,?,?,?,?,?)}", 3, param_in);
-			//Resultado del PL
-			contador = resultadoPl[0];
-
-			//Consulta en la tabla temporal la posicion para el letrado
-			consultaTemp =	" select cli.posicion posicion,cli.idpersona  idpersona "+
-			" from gen_clientestemporal cli"+
-			" where cli.idinstitucion =" + (String)usr.getLocation()+ 
-			" and cli.contador      ="+ contador+
-			" and cli.salto         <> 'S'"+
-			" and cli.posicion      ="+	//el primero de la posicion para el turno
-			" (select min(cli2.posicion)"+
-			" from gen_clientestemporal cli2"+
-			" where cli2.idinstitucion 	="+ (String)usr.getLocation()+
-			" and cli2.contador			="+contador+")";
-
-			try{
-				temporalBean = (Hashtable)((Vector)temporalAdm.ejecutaSelect(consultaTemp)).get(0);
-				//Tenemos el idPersona, ahora hay que buscar el nColegiado del colegiado con ese idPersona
-				CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm(this.getUserBean(request));
-				CenColegiadoBean colegiadoElegido = colegiadoAdm.getDatosColegiales(new Long((String)temporalBean.get("IDPERSONA")),new Integer(usr.getLocation()) );
-				miForm.setNcolegiado(colegiadoAdm.getIdentificadorColegiado(colegiadoElegido));
-				miForm.setIdPersona(colegiadoElegido.getIdPersona().toString());
-			}catch (Exception e){
-				miForm.setNcolegiado("");
-				miForm.setIdPersona("");
-			}
-			//ahora se borra de la tabla temporal
-			if (!contador.equals("0")) {
-				Hashtable miHash = new Hashtable();
-				miHash.put("IDINSTITUCION",usr.getLocation());
-				miHash.put("CONTADOR",contador);
+		//Controles generales
+		UsrBean usr = this.getUserBean(request);
+		BuscarDesignasForm miForm = (BuscarDesignasForm) formulario;
+		GenClientesTemporalAdm temporalAdm = new GenClientesTemporalAdm(usr);
+		String institucion = usr.getLocation();
+		String contador = null;
+		
+		try {
+			//guardando datos sesion
+			request.getSession().setAttribute("formularioAvanzada", 
+					(Hashtable<String, Object>) miForm.getDatos());
+			
+			//solicitando ordenacion de la cola de turno
+			contador = EjecucionPLs.ejecutarPL_OrdenaColegiadosTurno(
+					Integer.valueOf(institucion), 
+					Integer.valueOf((String) miForm.getIdTurno()), 
+					1)[0];
+			
+			//consultando primero en la cola
+			String consultaTemp =
+				" select cli.posicion posicion," +
+				"        cli.idpersona idpersona " +
+				"   from gen_clientestemporal cli " +
+				"  where cli.idinstitucion = "+institucion+" " +
+				"    and cli.contador = "+contador+" " +
+				"    and cli.salto <> 'S' " +
+				"    and cli.posicion = " +	//el primero de la posicion para el turno
+				"        (select min(cli2.posicion) " +
+				"           from gen_clientestemporal cli2 " +
+				"          where cli2.idinstitucion = "+institucion+" " +
+				"            and cli2.contador = "+contador+") ";
+			Hashtable<String, Object> temporalBean = (Hashtable<String, Object>) (
+					(Vector) temporalAdm.ejecutaSelect(consultaTemp)).get(0);
+			
+			//buscando nColegiado primero de la cola
+			CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm(usr);
+			CenColegiadoBean colegiadoElegido = colegiadoAdm.getDatosColegiales(
+					new Long((String) temporalBean.get("IDPERSONA")), new Integer(institucion));
+			
+			//guardando datos respuesta
+			miForm.setNcolegiado(colegiadoAdm.getIdentificadorColegiado(colegiadoElegido));
+			miForm.setIdPersona(colegiadoElegido.getIdPersona().toString());
+			request.setAttribute("datosEntrada", miForm);       
+			request.setAttribute("hayDatos", "si");
+		}
+		catch (Exception e) {
+			miForm.setNcolegiado("");
+			miForm.setIdPersona("");
+			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, null);
+		}
+		finally {
+			//borrando la tabla temporal
+			if (contador!= null && !contador.equals("0")) {
+				Hashtable<String, Object> miHash = new Hashtable<String, Object>();
+				miHash.put("IDINSTITUCION", institucion);
+				miHash.put("CONTADOR", contador);
 				temporalAdm.delete(miHash);
 			}
-
-		}catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
 		}
-		request.setAttribute("datosEntrada",miForm);       
-		request.setAttribute("hayDatos","si");
 
 		return "nuevoRecarga";
-
-	}
-
-	/**Funcion que transforma los datos de entrada para poder hacer la insercion a BBDD
-	 * 
-	 * @param formulario con los datos recogidos en el formulario de entrada
-	 * @return formulario con los datos que se necesitan meter en BBDD
-	 */
-	protected Hashtable prepararHash (Hashtable datos){
-		return datos;
-	}
-
+		
+	} //abrirAvanzada()
+	
 	/**Funcion que transforma los datos de entrada para poder hacer la consulta a BBDD
 	 * 
 	 * @param formulario con los datos recogidos en el formulario de entrada
@@ -1807,8 +1802,6 @@ public class BusquedaDesignasAction extends MasterAction {
 			// Parametros de entrada del PL
 			paramIn[0] = idInstitucion.toString();
 
-
-			// Ejecucion del PL pkg_siga_ordenacion.ordena_colegiados_guardia:
 			resultado = ClsMngBBDD.callPLProcedure("{call proc_OBTENERCODIGODESIGNA(?,?,?)}", 
 					2, 
 					paramIn);

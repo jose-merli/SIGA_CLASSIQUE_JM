@@ -1,4 +1,5 @@
 <!-- asignarPlantillaCertificado.jsp -->
+<!-- Certificado nueva incorporacion -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -17,6 +18,7 @@
 <%@ page import = "com.siga.general.*"%>
 <%@ page import="java.util.Properties"%>
 <%@ page import="java.util.ArrayList"%>
+<%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
 <%
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
@@ -36,6 +38,11 @@
 	
 	String porDefecto=(String)request.getAttribute("porDefecto");
 	
+	String fechaSolicitud = UtilidadesBDAdm.getFechaBD("");
+	
+	ArrayList aMetodoSol = new ArrayList();
+	aMetodoSol.add(1);
+	
 %>
 
 <html>
@@ -43,6 +50,8 @@
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 
 		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<!-- Para el calendario -->
+		<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 
 		<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 		<script language="JavaScript">
@@ -58,6 +67,8 @@
 		{
 			//var aux=document.forms[0].idPlantilla.value;
 			var aux2=document.forms[0].idInstitucionPresentador.value;
+			var metodo = document.forms[0].metodoSolicitud.value;
+			var fecha = document.forms[0].fechaSolicitud.value;
 
 			/*
 			if(aux=="")
@@ -77,6 +88,8 @@
 			var a = new Array;
 			//a[0]=aux;
 			a[0]=aux2;
+			a[1]=metodo;
+			a[2]=fecha;
 			
 			top.cierraConParametros(a);
 		}
@@ -118,17 +131,29 @@
 				</tr>
 -->				
 				<tr>
-								<td class="labelText">
-									<siga:Idioma key="pys.solicitudCompra.literal.presentador"/>&nbsp;(*)
-								</td>
-								<td>
-									<siga:ComboBD nombre="idInstitucionPresentador" 
-														tipo="cmbInstitucionesAbreviadas" 
-														clase="boxCombo"
-														readonly="false"
-														obligatorio="true"
-														/>									
-								</td>
+					<td class="labelText" width="200px">
+						<siga:Idioma key="pys.solicitudCompra.literal.presentador"/>&nbsp;(*)
+					</td>
+					<td>
+						<siga:ComboBD nombre="idInstitucionPresentador"  tipo="cmbInstitucionesAbreviadas" clase="boxCombo" readonly="false" obligatorio="true"/>									
+					</td>
+				</tr>
+				<tr>	
+					<td class="labelText">
+						<siga:Idioma key="certificados.solicitudes.literal.fechaSolicitud"/>
+					</td>				
+					<td>
+						<siga:Fecha nombreCampo="fechaSolicitud" valorInicial="<%=fechaSolicitud%>"></siga:Fecha>
+						&nbsp;<a onClick="return showCalendarGeneral(fechaSolicitud);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+					</td>
+				</tr>
+				<tr>
+					<td class="labelText">
+						<siga:Idioma key="certificados.solicitudes.literal.metodoSolicitud"/>
+					</td>				
+					<td>
+						<siga:ComboBD nombre="metodoSolicitud" tipo="comboMetodoSolicitud" obligatorio="false" parametro="<%=parametro%>" ElementoSel="<%=aMetodoSol%>" clase="boxCombo"/>
+					</td>
 				</tr>
 				</form>		
 			</table>

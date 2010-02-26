@@ -14,6 +14,8 @@ public class SIGASolicitudCertificadoForm extends MasterForm
     private String idInstitucionOrigen;
     private String idInstitucionDestino;
     private String descripcion;
+    private String fechaSolicitud;
+    private String metodoSolicitud;
     
 
 
@@ -76,6 +78,19 @@ public class SIGASolicitudCertificadoForm extends MasterForm
     }
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+    public void setFechaSolicitud(String fecha) {
+        this.fechaSolicitud = fecha;
+    }
+    public void setMetodoSolicitud(String metodo) {
+        this.metodoSolicitud = metodo;
+    }
+    
+    public String getFechaSolicitud() {
+        return fechaSolicitud;
+    }
+    public String getMetodoSolicitud() {
+    	return metodoSolicitud;
     }
    
 }

@@ -335,5 +335,61 @@ public class PysServiciosAdm extends MasterBeanAdministrador {
 		return null;
 	}	
 	
-
+	/**
+	 * Obtiene la fecha de generación mayor de todas las facturaciones programadas generadas 
+	 * de las series de facturación que contienen un determinado servicio y persona
+	 * @param bean
+	 * @return
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
+	public String obtenerFechaMayorServicioFacturadoPersona (
+			String idInstitucion,String idTipoServicios,String idServicios,String idServiciosInstitucion, String idPersona)throws ClsExceptions, SIGAException 
+	{
+		RowsContainer rc = null;
+		
+		try { rc = new RowsContainer(); }
+		catch(Exception e) { e.printStackTrace(); }
+		
+		try {		
+			String sql = "SELECT trunc(max(FP."+FacFacturacionProgramadaBean.C_FECHAFINSERVICIOS+")) AS FECHA " + 
+						 "	FROM "+FacFacturacionProgramadaBean.T_NOMBRETABLA + " FP , " + FacFacturaBean.T_NOMBRETABLA + " F, " +FacFacturacionSuscripcionBean.T_NOMBRETABLA +" FS " +
+						 " WHERE F." + FacFacturaBean.C_IDINSTITUCION + "=FS." + FacFacturacionSuscripcionBean.C_IDINSTITUCION +
+						 "   AND F." + FacFacturaBean.C_IDFACTURA + "=FS." + FacFacturacionSuscripcionBean.C_IDFACTURA +
+						 
+						 "   AND FP." + FacFacturacionProgramadaBean.C_IDINSTITUCION + "=F." + FacFacturaBean.C_IDINSTITUCION +
+						 "   AND FP." + FacFacturacionProgramadaBean.C_IDPROGRAMACION + "=F." + FacFacturaBean.C_IDPROGRAMACION +
+						 "   AND FP." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + "=F." + FacFacturaBean.C_IDSERIEFACTURACION +
+						 
+						 "   AND FS." + FacFacturacionSuscripcionBean.C_IDINSTITUCION + "=" + idInstitucion +
+						 "   AND FS." + FacFacturacionSuscripcionBean.C_IDTIPOSERVICIOS + "=" + idTipoServicios +
+						 "   AND FS." + FacFacturacionSuscripcionBean.C_IDSERVICIO + "=" + idServicios +
+						 "   AND F." + FacFacturaBean.C_IDPERSONA + "=" + idPersona +
+						 "   AND FS." + FacFacturacionSuscripcionBean.C_IDSERVICIOSINSTITUCION + "=" + idServiciosInstitucion +
+				         
+						 "   AND FP."+FacFacturacionProgramadaBean.C_FECHAREALGENERACION+" IS NOT NULL ";
+		
+			
+			if (rc.findForUpdate(sql)) {
+				Row fila = (Row) rc.get(0);
+				Hashtable prueba = fila.getRow();
+				return UtilidadesHash.getString(prueba, "FECHA");							
+			}
+		}	
+	    catch (Exception e) {
+       		if (e instanceof SIGAException){
+       			throw (SIGAException)e;
+       		}
+       		else{
+           		if (e instanceof ClsExceptions){
+           			throw (ClsExceptions)e;
+           		}
+           		else {
+           			throw new ClsExceptions(e,"Error al ejecutar el 'obtenerFechaMayorServicioFacturado' de servicio.");
+           		}
+       		}	
+	    }
+		return null;
+	}	
+	
 }

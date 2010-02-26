@@ -377,40 +377,48 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 
 	<table width="100%" border="0" style="table-layout:fixed">
 		<tr>
-			<td class="labelText" width="200px"><siga:Idioma key='gratuita.mantAsistencias.literal.numeroDiligencia'/></td>
-			<td width="200px">
+			<!-- Busqueda automatica de juzgados-->
+			<td colspan="4">
+	<siga:ConjCampos leyenda="gratuita.mantAsistencias.literal.centroDetencion"> 
+		   <table width="100%">
+		   	<tr>
+		   		<td class="labelText" style="vertical-align:text-top;"><siga:Idioma key='gratuita.mantAsistencias.literal.numeroDiligencia'/>
+		   		&nbsp;
 				<input name="numeroDilegencia" type="text" value="<%=numeroDiligenciaAsi%>" class="<%=estilo%>" maxLength="20" />
 			</td> 
-			<td class="labelText" width="208px"><siga:Idioma key='gratuita.mantAsistencias.literal.centroDetencion'/></td>
-			<td align="left">
-			  <% if(!modo.equals("ver")){%>
-			    <input type="text" name="codigoExtComisaria" class="box" size="6"  style="margin-top:3px;" maxlength="10" onBlur="obtenerComisaria();" />
-			  <%}%>	
-				<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" ancho="290" obligatorio="false" parametro="<%=parametroJuzgado%>" elementoSel="<%=comisariaSel%>" clase="<%=estilo%>" readonly="<%=readOnly%>"/>
+			<% if(!modo.equals("ver")){%>
+			<td class="labelText" style="vertical-align:text-top;text-align: right">
+			<siga:Idioma key='gratuita.mantenimientoTablasMaestra.literal.codigoext'/>
+			&nbsp;
+			<input type="text" name="codigoExtComisaria" class="box" size="8"  maxlength="10" onBlur="obtenerComisaria();" />
+			<%}%>
+			<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" ancho="420" obligatorio="false" parametro="<%=parametroJuzgado%>" elementoSel="<%=comisariaSel%>" clase="<%=estilo%>" readonly="<%=readOnly%>"/>
 			</td>
+			</tr>
+		</table>
+	</siga:ConjCampos> 
+		</td>
+<!------------------>
+		
 		</tr>
 		<tr>
-			<td class="labelText" style="vertical-align:text-top;"><siga:Idioma key='gratuita.mantAsistencias.literal.numeroProcedimiento'/></td>
-			<td>
-				<input name="numeroProcedimiento" maxlength="20" type="text" value="<%=numeroProcedimientoAsi%>" class="<%=estilo%>"/>
-			</td>
 			<!-- Busqueda automatica de juzgados-->
-			<td colspan="2">
+			<td colspan="4">
 		<siga:ConjCampos leyenda="gratuita.mantenimientoTablasMaestra.literal.juzgado"> 
 
-			   <table width="100%" >
-			   	<tr>
+		   <table width="100%">
+		   	<tr>
+		   	<td class="labelText" style="vertical-align:text-top;"><siga:Idioma key='gratuita.mantAsistencias.literal.numeroProcedimiento'/>
+		   	&nbsp;
+		   	<input name="numeroProcedimiento" maxlength="20" type="text" value="<%=numeroProcedimientoAsi%>" class="<%=estilo%>"/>
+			</td>
 			<% if(!modo.equals("ver")){%>	
-			<td class="labelText" width="10%">	
+			<td class="labelText" style="vertical-align:text-top;text-align: right">	
 			   <siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.codigoext"/>
-			</td>	 
-			<td class="labelText" width="10%" >	
-			   <input type="text" name="codigoExtJuzgado" class="box" size="8" maxlength="10" onBlur="obtenerJuzgado();"/>&nbsp;
-			</td>	 
+			   &nbsp;
+			   <input type="text" name="codigoExtJuzgado" class="box" size="8" maxlength="10" onBlur="obtenerJuzgado();"/>
 			<%}%>
-			<td> &nbsp;</td>	
-			<td>
-			   <siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" ancho="<%=comboSize%>" obligatorio="false" parametro="<%=parametroJuzgado%>" elementoSel="<%=juzgadoSel%>" clase="<%=estilo%>" readonly="<%=readOnly%>" />
+			<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" ancho="420" obligatorio="false" parametro="<%=parametroJuzgado%>" elementoSel="<%=juzgadoSel%>" clase="<%=estilo%>" readonly="<%=readOnly%>" />
 			</td>   
 				
 				</tr>
@@ -453,7 +461,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 				<siga:Idioma key="gratuita.mantAsistencias.literal.fechaEstado"/>
 			</td>
 			<td class="labelTextValor" >
-				<input type="text" value="<%=fechaEstado%>" class="boxConsulta" > 
+				<html:textarea name="AsistenciasForm" property="fechaEstadoAsistencia" styleClass="boxConsulta" value="<%=fechaEstado%>" readOnly="true"></html:textarea>
 			</td>
 			
 		</tr>

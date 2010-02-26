@@ -45,6 +45,7 @@
 		<form-bean name="AbonosClienteForm" type="com.siga.censo.form.AbonosClienteForm"/>
 		<form-bean name="facturasClienteForm" type="com.siga.censo.form.FacturasClienteForm"/>
 		<form-bean name="SancionesLetradoForm" type="com.siga.censo.form.SancionesLetradoForm"/>
+		<form-bean name="MantenimientoDuplicadosForm" type="com.siga.censo.form.MantenimientoDuplicadosForm"/>
 
 
 		<!-- ************************** FORMS FACTURACIÓN ************************* -->
@@ -299,6 +300,7 @@
 		<forward name="serieFacturacionNoExiste" path="/html/jsp/facturacion/serieFacturacionNoExiste.jsp"/>
 		<forward name="inicioGlobal" path="/html/jsp/general/inicioSesion.jsp"/>
 		<forward name="descargaFichero" path="/ServletDescargaFichero.svrl"/>
+		<forward name="descargaFicheroGlobal" path="/ServletDescargaFichero.svrl"/>
 		<forward name="descargaFicheroPrevio" path="/html/jsp/gratuita/descargarFichero.jsp"/>
 		<forward name="descarga" path="/html/jsp/gratuita/imprimir.jsp"/>
     </global-forwards>
@@ -701,7 +703,7 @@
 		<!-- ***** Censo / Ver Datos Expedientes ***** -->
 		<action path="/CEN_Expedientes" type="com.siga.censo.action.ExpedientesAction" name="expedientesForm" scope="request">
 			<forward name="inicio" path="/html/jsp/censo/consultaExpedientes.jsp"/>
-			<forward name="solicitarModificacion" path="/EXP_SolicitarBorradodeAnotaciones.do"/>
+			<forward name="solicitarModificacion" path="/html/jsp/censo/solicitudModificacionExpedientes.jsp"/>
 		</action>
 
 		<!-- ***** Expedientes / Borrar Anotaciones ***** -->
@@ -728,7 +730,25 @@
 		<action path="/CEN_FacturasCliente" type="com.siga.censo.action.FacturasClienteAction" name="facturasClienteForm" scope="request">
 			<forward name="inicio" path="/html/jsp/censo/consultaFacturas.jsp"/>
 			<forward name="ver" path="/html/jsp/facturacion/facturaAdministracionPestanas.jsp"/>
+
 		</action>
+		
+		<action path="/CEN_DatosGeneralesFacturasCliente" type="com.siga.facturacion.action.GestionarFacturaDatosGeneralesAction" name="GestionarFacturaForm" scope="request">
+			<forward name="inicio" path="/html/jsp/facturacion/facturaDatosGenerales.jsp"/>
+			<forward name="ValidarDireccion" path="/html/jsp/facturacion/preguntaValidacionDireccion.jsp"/>
+		</action>		
+		
+		<action path="/CEN_PagosFacturaFacturasCliente" type="com.siga.facturacion.action.GestionarFacturaPagosAction" name="GestionarFacturaForm" scope="request">
+			<forward name="inicio" path="/html/jsp/facturacion/facturaPagos.jsp"/>
+			<forward name="ver" path="/html/jsp/facturacion/facturaPagosComprobante.jsp"/>
+		</action>
+
+		<!-- ***** Facturación / Mantenimiento Factura / Lineas ***** -->
+		<action path="/CEN_LineasFacturaFacturasCliente" type="com.siga.facturacion.action.GestionarFacturaLineasAction" name="GestionarFacturaForm" scope="request">
+			<forward name="inicio" path="/html/jsp/facturacion/facturaLineas.jsp"/>
+			<forward name="ver" path="/html/jsp/facturacion/facturaLineasDatos.jsp"/>
+		</action>
+
 
 		<action path="/CEN_SancionesLetrado" type="com.siga.censo.action.SancionesLetradoAction" name="SancionesLetradoForm" scope="request">
 			<forward name="inicio" path="/html/jsp/censo/busquedaSancionLetrado.jsp"/>
@@ -740,6 +760,25 @@
 			<forward name="abrir" path="/html/jsp/censo/consultaAbonos.jsp"/>
 			<forward name="ver" path="/html/jsp/facturacion/administracionAbonos.jsp"/>
 		</action>
+		
+		<action path="/CEN_DatosGeneralesAbonosCliente" type="com.siga.facturacion.action.AbonosDatosGeneralesAction" name="AbonosDatosGeneralesForm" scope="request">
+			<forward name="abrir" path="/html/jsp/facturacion/consultaDatosGeneralesAbonos.jsp"/>
+		</action>
+
+		<action path="/CEN_LineasFacturaAbonosCliente" type="com.siga.facturacion.action.AbonosLineasAction" name="AbonosLineasForm" scope="request">
+			<forward name="abrir" path="/html/jsp/facturacion/consultaAbonosLineas.jsp"/>
+			<forward name="editar" path="/html/jsp/facturacion/datosLineaAbono.jsp"/>
+			<forward name="nuevo" path="/html/jsp/facturacion/datosLineaAbono.jsp"/>
+		</action>
+
+		<action path="/CEN_PagosFacturaAbonosCliente" type="com.siga.facturacion.action.AbonosPagosAction" name="AbonosPagosForm" scope="request">
+			<forward name="abrir" path="/html/jsp/facturacion/consultaPagosAbonos.jsp"/>
+			<forward name="datosImpresion" path="/html/jsp/facturacion/datosImpresionAbono.jsp"/>
+			<forward name="mostrarDatosFactura" path="/html/jsp/facturacion/mostrarDatosFacturaCompensadora.jsp" />
+		</action>
+		
+		
+		
 
 		<action path="/CEN_ProductosCliente" forward="/CEN_Facturacion.do?modo=abrirProductosPaginados" >
 			<forward name="abrirProductos" path="/html/jsp/censo/consultaProductos.jsp"/>
@@ -1842,7 +1881,6 @@
 		</action>
 		<action path="/INF_CertificadoIRPF" type="com.siga.informes.action.MantenimientoInformesAction" name="mantenimientoInformesForm" scope="request">
             <forward name="inicio" path="/html/jsp/gratuita/dialogoInformeIRPF.jsp"/>
-            <forward name="descargas" path="/html/jsp/informes/descargaInformes.jsp"/>
         </action>
 
 		<action path="/JGR_PestanaCalendarioGuardias" type="com.siga.gratuita.action.PestanaCalendarioGuardiasAction" name="PermutasForm" scope="request">
@@ -2654,7 +2692,6 @@
 		 <!-- ***** SJCS / Mantenimiento de Informes de Pagos ***** -->
 		<action path="/INF_FichaPago" type="com.siga.informes.action.MantenimientoInformesAction" name="mantenimientoInformesForm" scope="request">
 			<forward name="inicio" path="/html/jsp/informes/informeFichaPago.jsp"/>
-			<forward name="descargas" path="/html/jsp/informes/descargaInformes.jsp"/>
 		</action>
 		
 		
@@ -2662,7 +2699,6 @@
 		<!-- ***** SJCS / Mantenimiento de Informes de Facturaciones ***** -->
 		<action path="/INF_FichaFacturacion" type="com.siga.informes.action.MantenimientoInformesAction" name="mantenimientoInformesForm" scope="request">
 			<forward name="inicio" path="/html/jsp/informes/informeFichaFacturacion.jsp"/>
-			<forward name="descargas" path="/html/jsp/informes/descargaInformes.jsp"/>
 		</action>
 
         <!-- ***** Facturacion SJCS / mantenimiento de Informes de Facturaciones ***** -->
@@ -2671,7 +2707,7 @@
             <forward name="descargas" path="/html/jsp/informes/descargaInformes.jsp"/>
         </action>
          -->
-        <action path="/INF_CartaPago" type="com.siga.informes.action.InformePagosColegiadoAction" name="mantenimientoInformesForm" validate="true" scope="request">
+        <action path="/INF_CartaPago" type="com.siga.informes.action.InformePagosColegiadoAction" name="mantenimientoInformesForm" validate="true" scope="session">
 			<forward name="inicio" path="/html/jsp/informes/consultaPagoColegiados.jsp"/>
 			<forward name="resultado" path="/html/jsp/informes/listadoPagoColegiados.jsp"/>
 			<forward name="detallePagoColegiado" path="/html/jsp/informes/detallePagoColegiado.jsp"/>
@@ -2683,13 +2719,11 @@
         <!-- ***** Facturacion SJCS / mantenimiento de Informes de Facturaciones ***** -->
         <action path="/INF_CertificadoPago" type="com.siga.informes.action.MantenimientoInformesAction" name="mantenimientoInformesForm" scope="request">
             <forward name="inicio" path="/html/jsp/informes/informeFichaCertificados.jsp"/>
-            <forward name="descargas" path="/html/jsp/informes/descargaInformes.jsp"/>
         </action>
 
         <!-- ***** Facturacion SJCS / mantenimiento de Informes de Facturaciones ***** -->
         <action path="/INF_InformeFacturacion" type="com.siga.informes.action.MantenimientoInformesAction" name="mantenimientoInformesForm" scope="request">
             <forward name="inicio" path="/html/jsp/informes/informeFacturacion.jsp"/>
-            <forward name="descargas" path="/html/jsp/informes/descargaInformes.jsp"/>
         </action>
 
 

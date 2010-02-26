@@ -240,18 +240,19 @@ public class InformeJustificacionAction extends MasterAction {
 						String direccion = "";
 						String codPostal = "";
 						String pobLetrado = "";
+						String provLetrado = "";
 						
 						if (htRow!=null && htRow.size()>0) {
 							codPostal = (String)htRow.get("CP_LETRADO");
 							pobLetrado = (String)htRow.get("POBLACION_LETRADO");
 							direccion = (String)htRow.get("DOMICILIO_LETRADO");
-							
+							provLetrado = (String)htRow.get("PROVINCIA_LETRADO");
 						}
 												
 						htCabeceraInforme.put("DIRECCION",direccion);
 						htCabeceraInforme.put("CP",codPostal);
-						htCabeceraInforme.put("PROVINCIA",pobLetrado);
-						
+						htCabeceraInforme.put("POBLACION",pobLetrado);
+						htCabeceraInforme.put("PROVINCIA",provLetrado);
 						htCabeceraInforme.put("CRONOLOGICO",nColegiado);
 
 						Document doc=words.nuevoDocumento();

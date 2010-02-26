@@ -17,8 +17,8 @@
 <%@ page import="java.util.*"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.beans.ScsEJGBean"%>
-<%@ page import="com.siga.beans.ScsEJGAdm"%>
-<%@ page import="com.siga.beans.*"%>
+
+
 <%@ page import="com.siga.beans.ScsEstadoEJGBean"%>
 <%@ page import="com.siga.beans.ScsPersonaJGBean"%>
 <%@ page import="com.siga.beans.ScsTurnoBean"%>
@@ -26,103 +26,129 @@
 <%@ page import="com.siga.beans.ScsTipoEJGBean"%>
 <%@ page import="com.siga.beans.ScsTipoEJGColegioBean"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
-<%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
-<%@ page import="com.siga.administracion.SIGAMasterTable"%>
+
+
 <%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
-<%@ page import="com.siga.Utilidades.*"%>
+
 
 <!-- JSP -->
 
-<% 
-	String app=request.getContextPath();
-	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
-	HttpSession ses=request.getSession();
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+<%
+	String app = request.getContextPath();
+	UsrBean usr = (UsrBean) request.getSession()
+			.getAttribute("USRBEAN");
+	HttpSession ses = request.getSession();
+	Properties src = (Properties) ses
+			.getAttribute(SIGAConstants.STYLESHEET_REF);
 
-	String anio="", numero="", numEJG="", fechaApertura="", fechaAperturaHasta="", fechaEstadoDesde="", fechaEstadoHasta="", fechaDictamenDesde="", fechaDictamenHasta="", fechaLimiteDesde="",fechaLimiteHasta="", estado="", busquedaRealizada="", nif="", nombre="", apellido1="", apellido2="", idPersona="", creadoDesde="";
-	String idPersonaDefensa="";
-    // fechaApertura=UtilidadesBDAdm.getFechaBD("");
-	String nColegiado =  request.getAttribute("nColegiado")==null?"":(String)request.getAttribute("nColegiado");
-	String nombreColegiado =  request.getAttribute("nombreColegiado")==null?"":(String)request.getAttribute("nombreColegiado");
+	String anio = "", numero = "", numEJG = "", fechaApertura = "", fechaAperturaHasta = "", fechaEstadoDesde = "", fechaEstadoHasta = "", fechaDictamenDesde = "", fechaDictamenHasta = "", fechaLimiteDesde = "", fechaLimiteHasta = "", estado = "", busquedaRealizada = "", nif = "", nombre = "", apellido1 = "", apellido2 = "", idPersona = "", creadoDesde = "";
+	String idPersonaDefensa = "";
+	// fechaApertura=UtilidadesBDAdm.getFechaBD("");
+	String nColegiado = request.getAttribute("nColegiado") == null ? ""
+			: (String) request.getAttribute("nColegiado");
+	String nombreColegiado = request.getAttribute("nombreColegiado") == null ? ""
+			: (String) request.getAttribute("nombreColegiado");
 
-	Hashtable miHash = (Hashtable)ses.getAttribute("DATOSFORMULARIO");
+	Hashtable miHash = (Hashtable) ses.getAttribute("DATOSFORMULARIO");
 	ses.removeAttribute("DATOSFORMULARIO");
 	anio = UtilidadesBDAdm.getYearBD("");
 
-	String anio2="";
-	
-	String calidad="", procedimiento="", asunto="";
-	ArrayList juzgado=new ArrayList();
-  	ArrayList idTurno = new ArrayList(), idGuardia = new ArrayList(), idTipoEJG = new ArrayList(), idTipoEJGColegio = new ArrayList(), idEstado = new ArrayList();
-  	
-  	
+	String anio2 = "";
+
+	String calidad = "", procedimiento = "", asunto = "";
+	ArrayList juzgado = new ArrayList();
+	ArrayList idTurno = new ArrayList(), idGuardia = new ArrayList(), idTipoEJG = new ArrayList(), idTipoEJGColegio = new ArrayList(), idEstado = new ArrayList();
+	String cajgAnio="", cajgNumero ="";
+
 	try {
-		
+
 		busquedaRealizada = miHash.get("BUSQUEDAREALIZADA").toString();
-		
-		if (busquedaRealizada!=null){
-			if (miHash.get(ScsEJGBean.C_ANIO)!=null){
-				anio2=miHash.get(ScsEJGBean.C_ANIO).toString();
+
+		if (busquedaRealizada != null) {
+			if (miHash.get(ScsEJGBean.C_ANIO) != null) {
+				anio2 = miHash.get(ScsEJGBean.C_ANIO).toString();
 				anio = anio2;
 			}
-			if (miHash.get(ScsEJGBean.C_NUMEJG)!=null)
+			if (miHash.get(ScsEJGBean.C_NUMEJG) != null)
 				numEJG = miHash.get(ScsEJGBean.C_NUMEJG).toString();
-			if (miHash.get(ScsEJGBean.C_NUMERO)!=null)
+			if (miHash.get(ScsEJGBean.C_NUMERO) != null)
 				numero = miHash.get(ScsEJGBean.C_NUMERO).toString();
-			if (miHash.get(ScsEJGBean.C_FECHAAPERTURA)!=null){
-				fechaApertura = miHash.get(ScsEJGBean.C_FECHAAPERTURA).toString();
+			if (miHash.get(ScsEJGBean.C_FECHAAPERTURA) != null) {
+				fechaApertura = miHash.get(ScsEJGBean.C_FECHAAPERTURA)
+						.toString();
 			}
-			if (miHash.get(ScsEstadoEJGBean.C_IDESTADOEJG)!=null)
-				estado = miHash.get(ScsEstadoEJGBean.C_IDESTADOEJG).toString();
-			if (miHash.get(ScsEJGBean.C_IDPERSONA)!=null)
-				idPersona = miHash.get(ScsEJGBean.C_IDPERSONA).toString();	
-			if (miHash.get(ScsPersonaJGBean.C_NIF)!=null)
-				nif = miHash.get(ScsPersonaJGBean.C_NIF).toString();	
-			if (miHash.get(ScsPersonaJGBean.C_NOMBRE)!=null)
-				nombre = miHash.get(ScsPersonaJGBean.C_NOMBRE).toString();	
-			if (miHash.get(ScsPersonaJGBean.C_APELLIDO1)!=null)
-				apellido1 = miHash.get(ScsPersonaJGBean.C_APELLIDO1).toString();	
-			if (miHash.get(ScsPersonaJGBean.C_APELLIDO2)!=null)
-				apellido2 = miHash.get(ScsPersonaJGBean.C_APELLIDO2).toString();
-			if (miHash.get("CREADODESDE")!=null)
+			if (miHash.get(ScsEstadoEJGBean.C_IDESTADOEJG) != null)
+				estado = miHash.get(ScsEstadoEJGBean.C_IDESTADOEJG)
+						.toString();
+			if (miHash.get(ScsEJGBean.C_IDPERSONA) != null)
+				idPersona = miHash.get(ScsEJGBean.C_IDPERSONA)
+						.toString();
+			if (miHash.get(ScsPersonaJGBean.C_NIF) != null)
+				nif = miHash.get(ScsPersonaJGBean.C_NIF).toString();
+			if (miHash.get(ScsPersonaJGBean.C_NOMBRE) != null)
+				nombre = miHash.get(ScsPersonaJGBean.C_NOMBRE)
+						.toString();
+			if (miHash.get(ScsPersonaJGBean.C_APELLIDO1) != null)
+				apellido1 = miHash.get(ScsPersonaJGBean.C_APELLIDO1)
+						.toString();
+			if (miHash.get(ScsPersonaJGBean.C_APELLIDO2) != null)
+				apellido2 = miHash.get(ScsPersonaJGBean.C_APELLIDO2)
+						.toString();
+			if (miHash.get("CREADODESDE") != null)
 				creadoDesde = miHash.get("CREADODESDE").toString();
-			if (miHash.get("CALIDAD")!=null)	
+			if (miHash.get("CALIDAD") != null)
 				calidad = miHash.get("CALIDAD").toString();
-			if (miHash.get("JUZGADO")!=null){
+			if (miHash.get("JUZGADO") != null) {
 				juzgado.add(miHash.get("JUZGADO").toString());
-				
-			}	
-			if (miHash.get("PROCEDIMIENTO")!=null)
-				procedimiento = miHash.get("PROCEDIMIENTO").toString();
-			if (miHash.get("ASUNTO")!=null)
-				asunto = miHash.get("ASUNTO").toString();		
 
-			if (miHash.get(ScsTurnoBean.C_IDTURNO)!=null){
-				idTurno.add(miHash.get(ScsTurnoBean.C_IDTURNO).toString());
-					
-			}	
+			}
+			if (miHash.get("PROCEDIMIENTO") != null)
+				procedimiento = miHash.get("PROCEDIMIENTO").toString();
+			if (miHash.get("ASUNTO") != null)
+				asunto = miHash.get("ASUNTO").toString();
+
+			if (miHash.get(ScsTurnoBean.C_IDTURNO) != null) {
+				idTurno.add(miHash.get(ScsTurnoBean.C_IDTURNO)
+						.toString());
+
+			}
+			if (miHash.get(ScsEJGBean.C_ANIO_CAJG) != null) {
+				cajgAnio=miHash.get(ScsEJGBean.C_ANIO_CAJG).toString();
+			}
+			if (miHash.get(ScsEJGBean.C_NUMERO_CAJG) != null) {
+				cajgNumero=miHash.get(ScsEJGBean.C_NUMERO_CAJG).toString();
+			}
 		}
-	}catch (Exception e){					};
-	
+	} catch (Exception e) {
+	}
+	;
+
 	//String idTurnos = new String("");
 
-	
 	try {
 		idTurno.add(miHash.get(ScsTurnoBean.C_IDTURNO).toString());
-		
-		idGuardia.add(miHash.get(ScsGuardiasTurnoBean.C_IDGUARDIA).toString());
-		idTipoEJG.add(miHash.get(ScsTipoEJGBean.C_IDTIPOEJG).toString());
-		idTipoEJGColegio.add(miHash.get(ScsTipoEJGColegioBean.C_IDTIPOEJGCOLEGIO).toString());
-		idEstado.add(miHash.get(ScsEstadoEJGBean.C_IDESTADOEJG).toString());
-	} catch (Exception e) {};
-	
-java.util.ResourceBundle rp=java.util.ResourceBundle.getBundle("SIGA");
-String idordinario = rp.getString("codigo.general.scstipoejg.ordinarios");
-String datoTipoOrdinario[]={idordinario,idordinario};	
 
-	String[] datos={usr.getLocation()};	
-	ArrayList juzgadoSel   = new ArrayList();
-	String dato[] = {(String)usr.getLocation()};
+		idGuardia.add(miHash.get(ScsGuardiasTurnoBean.C_IDGUARDIA)
+				.toString());
+		idTipoEJG
+				.add(miHash.get(ScsTipoEJGBean.C_IDTIPOEJG).toString());
+		idTipoEJGColegio.add(miHash.get(
+				ScsTipoEJGColegioBean.C_IDTIPOEJGCOLEGIO).toString());
+		idEstado.add(miHash.get(ScsEstadoEJGBean.C_IDESTADOEJG)
+				.toString());
+	} catch (Exception e) {
+	}
+	;
+
+	java.util.ResourceBundle rp = java.util.ResourceBundle
+			.getBundle("SIGA");
+	String idordinario = rp
+			.getString("codigo.general.scstipoejg.ordinarios");
+	String datoTipoOrdinario[] = { idordinario, idordinario };
+
+	String[] datos = { usr.getLocation() };
+	ArrayList juzgadoSel = new ArrayList();
+	String dato[] = { (String) usr.getLocation() };
 %>
 
 <html>
@@ -185,215 +211,378 @@ String datoTipoOrdinario[]={idordinario,idordinario};
 		<input type="hidden" name="limpiarFilaSeleccionada" value="">
 		<html:hidden name="DefinirEJGForm" property="idPersona" value=""></html:hidden>
 		<html:hidden property = "numero" value = ""/>
+<table align="center" width="100%" border="0">
+<tr>
+	<td>
 
-		
 
-	<fieldset name="fieldset2" id="fieldset2" style="display:none">
-	<legend>
-		<span class="boxConsulta" onclick="ocultarConjunto(0);">
-			<siga:Idioma key="gratuita.busquedaEJG.literal.EJG"/>
-		</span>
-	</legend>
-	</fieldset>
+	<siga:ConjCampos leyenda="gratuita.busquedaEJG.literal.EJG">
 
-	<fieldset name="fieldset1" id="fieldset1">
-	<legend>
-		<span  class="boxConsulta" onclick="ocultarConjunto(1);">
-			<siga:Idioma key="gratuita.busquedaEJG.literal.EJG"/>
-		</span>
-	</legend>
+		<table align="center" width="100%" border="0">
+			<tr>
+				<td class="labelText" style="width:12%"><siga:Idioma
+					key="gratuita.busquedaEJG.literal.anyo" />/<siga:Idioma
+					key="gratuita.busquedaEJG.literal.codigo" /></td>
+				
+				<td class="labelText" style="width:13%">
+					<html:text name="DefinirEJGForm" styleClass="box" property="anio"  value="<%=anio%>" size="2"
+								maxlength="4"></html:text>&nbsp;/&nbsp;<html:text name="DefinirEJGForm" styleClass="box" property="numEJG"
+								value="<%=numEJG%>" size="8" maxlength="10">
+					</html:text>
+				</td>
+				<td colspan="4"  style="width:35%">
+					<table width="100%" >
+						<tr>
+							<td class="labelText" ><siga:Idioma key="gratuita.busquedaEJG.literal.tipoEJG" />
+							</td>
+							<td class="labelText" ><siga:ComboBD nombre="idTipoEJG" tipo="tipoEJG"
+								parametro="<%=datoTipoOrdinario%>" ancho="210" clase="boxCombo"
+								obligatorio="false" elementoSel="<%=idTipoEJG%>" />
+							</td>
+						</tr>
+					</table>
+				</td>
+					
+				<td class="labelText" style="width:15%"><siga:Idioma key="gratuita.busquedaEJG.literal.EJGColegio" />
+				</td>
+				<td class="labelText"style="width:25%" ><siga:ComboBD nombre="idTipoEJGColegio"
+					tipo="tipoEJGColegio" clase="boxCombo" obligatorio="false"
+					parametro="<%=dato%>" elementoSel="<%=idTipoEJGColegio%>"
+					ancho="225" />
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="labelText"><siga:Idioma
+					key="gratuita.busquedaSOJ.literal.creadoDesde" />
+				</td>
+				<td colspan="4" class="labelText"><select name="creadoDesde" class="box">
+					<option value=""></option>
+					<option value="A" <%if (creadoDesde.startsWith("A")) {%> selected
+						<%}%>>ASISTENCIA</option>
+					<option value="D" <%if (creadoDesde.startsWith("D")) {%> selected
+						<%}%>>DESIGNA</option>
+					<option value="S" <%if (creadoDesde.startsWith("S")) {%> selected
+						<%}%>>SOJ</option>
+					<option value="M" <%if (creadoDesde.startsWith("M")) {%> selected
+						<%}%>>MANUAL</option>
+					</select>
+				</td>
+				
+				<td colspan="3">
+					<table width="100%" >
+						<tr>				
+					<td class="labelText" style="left;width=146"><siga:Idioma
+						key="gratuita.busquedaEJG.literal.fechaAperturaDesde" />
+					</td>
+					<td ><siga:Fecha nombreCampo="fechaAperturaDesde"
+						valorInicial="<%=fechaApertura%>" /> <a
+						onClick="return showCalendarGeneral(fechaAperturaDesde);"
+						onMouseOut="MM_swapImgRestore();"
+						onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img
+						src="<%=app%>/html/imagenes/calendar.gif"
+						alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"
+						border="0" valign="bottom" anchoTextField="9"></a>
+					</td>
+					<td class="labelText"><siga:Idioma
+						key="gratuita.inicio_SaltosYCompensaciones.literal.hasta" />
+					</td>
+					<td ><siga:Fecha
+						nombreCampo="fechaAperturaHasta"
+						valorInicial="<%=fechaAperturaHasta%>" /> <a
+						onClick="return showCalendarGeneral(fechaAperturaHasta);"
+						onMouseOut="MM_swapImgRestore();"
+						onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img
+						src="<%=app%>/html/imagenes/calendar.gif"
+						alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"
+						border="0" valign="bottom" anchoTextField="9"></a></td>
+					</tr>
+				</table>
+				</td>
+			</tr>
+			<tr>
+				<td class="labelText"><siga:Idioma
+					key="gratuita.busquedaEJG.literal.estadoEJG" /></td>
+				<td colspan="4" class="labelText"><siga:ComboBD nombre="estadoEJG"
+					tipo="estadosEJG" clase="boxCombo" obligatorio="false"
+					parametro="<%=dato%>" elementoSel="<%=idEstado%>" /></td>
+				<td colspan="3">
+					<table width="100%" >
+						<tr>	
+						<td class="labelText" style="width=146"><siga:Idioma
+							key="gratuita.busquedaEJG.literal.fechaEstadoDesde" /></td>
+						<td><siga:Fecha nombreCampo="fechaEstadoDesde"
+							valorInicial="<%=fechaEstadoDesde%>" /> <a
+							onClick="return showCalendarGeneral(fechaEstadoDesde);"
+							onMouseOut="MM_swapImgRestore();"
+							onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img
+							src="<%=app%>/html/imagenes/calendar.gif"
+							alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"
+							border="0" valign="bottom" anchoTextField="9"></a></td>
+						<td class="labelText"><siga:Idioma
+							key="gratuita.inicio_SaltosYCompensaciones.literal.hasta" />
+						</td>
+						<td ><siga:Fecha nombreCampo="fechaEstadoHasta"
+							valorInicial="<%=fechaEstadoHasta%>" /> <a
+							onClick="return showCalendarGeneral(fechaEstadoHasta);"
+							onMouseOut="MM_swapImgRestore();"
+							onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img
+							src="<%=app%>/html/imagenes/calendar.gif"
+							alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"
+							border="0" valign="bottom" anchoTextField="9"></a>
+						</td>
+					</tr>
+				</table>
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="labelText"><siga:Idioma
+					key="gratuita.busquedaEJG.literal.dictaminado" />
+				</td>
+				<td colspan="4" >
+					<table width="100%" >
+						<tr>
+							<td class="labelText" style="align:left">
+							
+							<select name="dictaminado" class="box">
+					
+								<option value="S" ><siga:Idioma key="gratuita.busquedaSOJ.literal.si" /></option>
+								<option value="N"><siga:Idioma key="gratuita.busquedaSOJ.literal.no" /></option>
+								<option value="I" selected><siga:Idioma key="gratuita.busquedaSOJ.literal.indiferente" /></option>
+					
+								</select>
+							
+							
+								
+							</td>
+							<td class="labelText">
+								<siga:Idioma key="gratuita.busquedaEJG.dictamen"/>
+							</td>
+							<td > 
+							<siga:ComboBD nombre="idTipoDictamenEJG" tipo="dictamenEJG"
+								clase="boxCombo" filasMostrar="1" seleccionMultiple="false"
+								obligatorio="false" parametro="<%=dato%>" obligatorio="false"
+								ancho="140" />
+							</td>
+						</tr>
+					</table>
+				</td>
+				<td colspan="3">
+					<table width="100%" >
+						<tr>	
+							<td class="labelText" style="width=146"><siga:Idioma
+								key="gratuita.busquedaEJG.literal.fechaDictamenDesde" /></td>
+							<td><siga:Fecha nombreCampo="fechaDictamenDesde"
+								valorInicial="<%=fechaDictamenDesde%>" /> <a
+								onClick="return showCalendarGeneral(fechaDictamenDesde);"
+								onMouseOut="MM_swapImgRestore();"
+								onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img
+								src="<%=app%>/html/imagenes/calendar.gif"
+								alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"
+								border="0" valign="bottom" anchoTextField="9" ></a>
+							</td>
+							<td class="labelText">
+								<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.hasta" />
+							</td>
+							<td> <siga:Fecha
+								nombreCampo="fechaDictamenHasta"
+								valorInicial="<%=fechaDictamenHasta%>" /> <a
+								onClick="return showCalendarGeneral(fechaDictamenHasta);"
+								onMouseOut="MM_swapImgRestore();"
+								onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img
+								src="<%=app%>/html/imagenes/calendar.gif"
+								alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"
+								border="0" valign="bottom" anchoTextField="9"></a>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+
+			<tr>
+				<td class="labelText"><siga:Idioma key='gratuita.operarEJG.literal.CAJG'/> <siga:Idioma key='gratuita.operarEJG.literal.anio'/>/<siga:Idioma key='gratuita.busquedaEJG.literal.codigo'/></td>
+				
+				<td class="labelText" colspan="4">
+					<html:text name="DefinirEJGForm" styleClass="box" property="anioCAJG"  size="2" maxlength="4" value="<%=cajgAnio%>"></html:text>&nbsp;/&nbsp;
+					<html:text name="DefinirEJGForm" styleClass="box" property="numeroCAJG" value="<%=cajgNumero%>" size="8" maxlength="10">
+					</html:text>
+				</td>
+				
+						
+						<td colspan="3">
+							<table width="100%">
+								<tr>
+									<td class="labelText" style="text-align: left;;width=146"><siga:Idioma
+										key="gratuita.busquedaEJG.literal.fechaLimiteDesde" />
+									</td>
 	
-	<table align="center" width="100%" border="0">
-	<tr>	
-	<td class="labelText">
-		<siga:Idioma key="gratuita.busquedaEJG.literal.anyo"/> / <siga:Idioma key="gratuita.busquedaEJG.literal.codigo"/>
+									<td><siga:Fecha nombreCampo="fechaLimitePresentacionDesde"
+										valorInicial="<%=fechaLimiteDesde%>" /> <a
+										onClick="return showCalendarGeneral(fechaLimitePresentacionDesde);"
+										onMouseOut="MM_swapImgRestore();"
+										onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img
+										src="<%=app%>/html/imagenes/calendar.gif"
+										alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"
+										border="0" valign="bottom" anchoTextField="9"></a>
+									</td>
+									<td class="labelText"><siga:Idioma
+										key="gratuita.inicio_SaltosYCompensaciones.literal.hasta" />
+									</td>
+									<td><siga:Fecha nombreCampo="fechaLimitePresentacionHasta"
+										valorInicial="<%=fechaLimiteHasta%>" /> <a
+										onClick="return showCalendarGeneral(fechaLimitePresentacionHasta);"
+										onMouseOut="MM_swapImgRestore();"
+										onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img
+										src="<%=app%>/html/imagenes/calendar.gif"
+										alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"
+										border="0" valign="bottom" anchoTextField="9"></a>
+									</td>
+								</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+	</siga:ConjCampos>
 	</td>
-	<td class="labelText" colspan="4">
-		<html:text name="DefinirEJGForm" property="anio" size="4" maxlength="4" styleClass="box"  value="<%=anio%>"></html:text> / <html:text name="DefinirEJGForm" property="numEJG" size="10" maxlength="10" styleClass="box"  value="<%=numEJG%>"></html:text>
-		&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-		<siga:Idioma key="gratuita.busquedaEJG.literal.tipoEJG"/>
-		<siga:ComboBD nombre="idTipoEJG" tipo="tipoEJG" parametro="<%=datoTipoOrdinario%>" ancho="225" clase="boxCombo" obligatorio="false" elementoSel="<%=idTipoEJG%>"/>
-		&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-		<siga:Idioma key="gratuita.busquedaEJG.literal.EJGColegio"/>
-		<siga:ComboBD nombre="idTipoEJGColegio" tipo="tipoEJGColegio" clase="boxCombo" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=idTipoEJGColegio%>" ancho="225"/>
-	</td>
-	</tr>
-	<tr>
-	<td class="labelText" nowrap>  
-		<siga:Idioma key="gratuita.busquedaSOJ.literal.creadoDesde"/>
-	</td>
-	<td class="labelText">	
-		<select name="creadoDesde" class="box">
-			<option value=""></option>
-			<option value="A" <%if (creadoDesde.startsWith("A")) {%>selected<%}%>>ASISTENCIA</option>
-			<option value="D" <%if (creadoDesde.startsWith("D")) {%>selected<%}%>>DESIGNA</option>
-			<option value="S" <%if (creadoDesde.startsWith("S")) {%>selected<%}%>>SOJ</option>
-			<option value="M" <%if (creadoDesde.startsWith("M")) {%>selected<%}%>>MANUAL</option>
-		</select>
-	</td>
-	<td class="labelText" colspan="3" style="text-align: right" nowrap>
-		<siga:Idioma key="gratuita.busquedaEJG.literal.fechaAperturaDesde"/>
-		<siga:Fecha nombreCampo="fechaAperturaDesde" valorInicial="<%=fechaApertura%>" />
-		<a onClick="return showCalendarGeneral(fechaAperturaDesde);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
-		<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.hasta"/>
-		<siga:Fecha nombreCampo="fechaAperturaHasta" valorInicial="<%=fechaAperturaHasta%>" />
-		<a onClick="return showCalendarGeneral(fechaAperturaHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
-	</td>
-	</tr>
-	<tr>
-	<td class="labelText">	
-		<siga:Idioma key="gratuita.busquedaEJG.literal.estadoEJG"/>
-	</td>
-	<td class="labelText"> 	
-		<siga:ComboBD nombre="estadoEJG" tipo="estadosEJG" clase="boxCombo" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=idEstado%>" />
-	</td>
-	<td class="labelText" colspan="3" style="text-align: right" nowrap>
-		<siga:Idioma key="gratuita.busquedaEJG.literal.fechaEstadoDesde"/>
-		<siga:Fecha nombreCampo="fechaEstadoDesde" valorInicial="<%=fechaEstadoDesde%>" />
-		<a onClick="return showCalendarGeneral(fechaEstadoDesde);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
-		<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.hasta"/>
-		<siga:Fecha nombreCampo="fechaEstadoHasta" valorInicial="<%=fechaEstadoHasta%>" />
-		<a onClick="return showCalendarGeneral(fechaEstadoHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
-	</td>
-	</tr>
-	<tr>
-	<td class="labelText">
-				<siga:Idioma key="gratuita.busquedaEJG.literal.dictaminado"/>	
-			</td>
-			<td class="labelText" colspan="3">
-					<html:select styleClass="boxCombo" property="dictaminado" value="I">
-					<html:option value="S"><siga:Idioma key="gratuita.busquedaSOJ.literal.si"/></html:option>
-					<html:option value="N"><siga:Idioma key="gratuita.busquedaSOJ.literal.no"/></html:option>
-					<html:option value="I"><siga:Idioma key="gratuita.busquedaSOJ.literal.indiferente"/></html:option>
-				</html:select>
-				<siga:Idioma key="gratuita.busquedaEJG.dictamen" />
-				<siga:ComboBD nombre="idTipoDictamenEJG" tipo="dictamenEJG" clase="boxCombo"
-				filasMostrar="1" seleccionMultiple="false" obligatorio="false"
-				parametro="<%=dato%>" obligatorio="false" ancho="165"/></td>
-				<td class="labelText" style="text-align: right">
-				<siga:Idioma key="gratuita.busquedaEJG.literal.fechaDictamenDesde"/>
-				<siga:Fecha nombreCampo="fechaDictamenDesde" valorInicial="<%=fechaDictamenDesde%>" />
-				<a onClick="return showCalendarGeneral(fechaDictamenDesde);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
-				<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.hasta"/>
-				<siga:Fecha nombreCampo="fechaDictamenHasta" valorInicial="<%=fechaDictamenHasta%>" />
-				<a onClick="return showCalendarGeneral(fechaDictamenHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
-			</td>
-		</tr>		
-	<tr>
-		<td class="labelText" colspan="6" style="text-align: right" nowrap>
-				<siga:Idioma key="gratuita.busquedaEJG.literal.fechaLimiteDesde"/>
-				<siga:Fecha nombreCampo="fechaLimitePresentacionDesde" valorInicial="<%=fechaLimiteDesde%>" />
-		<a onClick="return showCalendarGeneral(fechaLimitePresentacionDesde);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
-				<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.hasta"/>
-				<siga:Fecha nombreCampo="fechaLimitePresentacionHasta" valorInicial="<%=fechaLimiteHasta%>" />
-		<a onClick="return showCalendarGeneral(fechaLimitePresentacionHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
-		</td>
-	</tr>
-	</table>
-
-<siga:ConjCampos leyenda="gratuita.seleccionColegiadoJG.literal.tituloTramitador">
-	<table border="0">
-	<tr>
-	<td class="labelText">
-		<siga:Idioma key="gratuita.busquedaEJG.literal.turno"/>
-		&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-		<siga:ComboBD nombre = "identificador" tipo="turnos" clase="boxCombo" obligatorio="false" accion="Hijo:guardiaTurnoIdGuardia" parametro="<%=dato%>" elementoSel="<%=idTurno%>" ancho="355" />
-	</td>
-	<td class="labelText">	
-		<siga:Idioma key="gratuita.busquedaEJG.literal.guardia"/>
-	</td>
-	<td class="labelText">
-		<siga:ComboBD nombre = "guardiaTurnoIdGuardia" tipo="guardias" clase="boxCombo" obligatorio="false" hijo="t" elementoSel="<%=idGuardia%>" ancho="355"/>
-	</td>
-	</tr>
-	<tr>
-	<td colspan="3">
-	<siga:BusquedaPersona tipo="colegiado" idPersona="idPersona">
-	</td>
-	</tr>
-	</table>
-	</siga:BusquedaPersona>
-</siga:ConjCampos>
+</tr>
 
 
-	</fieldset>
+
+<tr>
+	<td>
+	<siga:ConjCampos
+			leyenda="gratuita.seleccionColegiadoJG.literal.tituloTramitador">
+			<table border="0">
+				<tr>
+					<td class="labelText"><siga:Idioma
+						key="gratuita.busquedaEJG.literal.turno" />
+					&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp <siga:ComboBD
+						nombre="identificador" tipo="turnos" clase="boxCombo"
+						obligatorio="false" accion="Hijo:guardiaTurnoIdGuardia"
+						parametro="<%=dato%>" elementoSel="<%=idTurno%>" ancho="355" /></td>
+					<td class="labelText"><siga:Idioma
+						key="gratuita.busquedaEJG.literal.guardia" /></td>
+					<td class="labelText"><siga:ComboBD
+						nombre="guardiaTurnoIdGuardia" tipo="guardias" clase="boxCombo"
+						obligatorio="false" hijo="t" elementoSel="<%=idGuardia%>"
+						ancho="355" /></td>
+				</tr>
+				<tr>
+					<td colspan="3"><siga:BusquedaPersona tipo="colegiado"
+						idPersona="idPersona"></td>
+				</tr>
+			</table>
+			</siga:BusquedaPersona>
+		</siga:ConjCampos>
+</td>
+</tr>
+<tr>
+	<td>
+	
 	<siga:ConjCampos leyenda="gratuita.busquedaEJG.literal.defensa">
-		<table  border="0" align="center" width="100%">
-		<tr>
-		<td class="labelText" colspan="1">
-			<siga:Idioma key="gratuita.personaJG.literal.calidad"/>
-		</td>
-		<td class="labelText" colspan="1">
-			<Select name="calidad" class="boxCombo">
-				<%if(!calidad.equals("")){%>
-					<%if(calidad.equals("D")){%>			
-						<option value=""></option>
-						<option value="D" selected><siga:Idioma key="gratuita.personaJG.calidad.literal.demandante"/></option>
-						<option value="O"><siga:Idioma key="gratuita.personaJG.calidad.literal.demandado"/></option>
-					<%}%>
-					<%if(calidad.equals("O")){%>
-						<option value=""></option>
-						<option value="D"><siga:Idioma key="gratuita.personaJG.calidad.literal.demandante"/></option>
-						<option value="O" selected><siga:Idioma key="gratuita.personaJG.calidad.literal.demandado"/></option>
-					<%}%>
-				<%}else{%>	
+		<table border="0" align="center" width="100%">
+			<tr>
+				<td class="labelText" colspan="1"><siga:Idioma
+					key="gratuita.personaJG.literal.calidad" /></td>
+				<td class="labelText" colspan="1"><Select name="calidad"
+					class="boxCombo">
+					<%
+						if (!calidad.equals("")) {
+					%>
+					<%
+						if (calidad.equals("D")) {
+					%>
+					<option value=""></option>
+					<option value="D" selected><siga:Idioma
+						key="gratuita.personaJG.calidad.literal.demandante" /></option>
+					<option value="O"><siga:Idioma
+						key="gratuita.personaJG.calidad.literal.demandado" /></option>
+					<%
+						}
+					%>
+					<%
+						if (calidad.equals("O")) {
+					%>
+					<option value=""></option>
+					<option value="D"><siga:Idioma
+						key="gratuita.personaJG.calidad.literal.demandante" /></option>
+					<option value="O" selected><siga:Idioma
+						key="gratuita.personaJG.calidad.literal.demandado" /></option>
+					<%
+						}
+					%>
+					<%
+						} else {
+					%>
 					<option value="" selected></option>
-					<option value="D"><siga:Idioma key="gratuita.personaJG.calidad.literal.demandante"/></option>
-					<option value="O"><siga:Idioma key="gratuita.personaJG.calidad.literal.demandado"/></option>
-				<%}%>					
-			</Select>		
-		</td> 
-		
-		<td class="labelText" >
-			<siga:Idioma key="gratuita.mantAsistencias.literal.juzgado"/>
-		</td>
-		
-		<td class="labelText" >
-	
-			<input type="text" name="codigoExtJuzgado" class="box" size="7"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado();" />
-			<siga:ComboBD nombre="juzgado" tipo="comboJuzgados" ancho="555" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  hijo="t" elementoSel="<%=juzgado%>" parametro="<%=datos%>"/>           	   
-		</td>
-		</tr><tr>
-		<td class="labelText">
-			<siga:Idioma key="informes.cartaAsistencia.procedimiento"/>
-		</td>
-		<td class="labelText">
-			<html:text name="DefinirEJGForm" property="procedimiento" size="14" maxlength="100" styleClass="box"  value="<%=procedimiento%>"></html:text>
-		</td>
-		<td class="labelText">	
-			<siga:Idioma key="informes.cartaAsistencia.asunto"/>
-		</td>	
-		<td class="labelText">
-			<html:text name="DefinirEJGForm" property="asunto" size="100" maxlength="100" styleClass="box"  value="<%=asunto%>"></html:text>
-		</td>
-		</tr>
+					<option value="D"><siga:Idioma
+						key="gratuita.personaJG.calidad.literal.demandante" /></option>
+					<option value="O"><siga:Idioma
+						key="gratuita.personaJG.calidad.literal.demandado" /></option>
+					<%
+						}
+					%>
+				</Select></td>
+
+				<td class="labelText"><siga:Idioma
+					key="gratuita.mantAsistencias.literal.juzgado" /></td>
+
+				<td class="labelText"><input type="text"
+					name="codigoExtJuzgado" class="box" size="7"
+					style="margin-top: 3px;" maxlength="10" onBlur="obtenerJuzgado();" />
+				<siga:ComboBD nombre="juzgado" tipo="comboJuzgados" ancho="500"
+					clase="boxCombo" filasMostrar="1" seleccionMultiple="false"
+					obligatorio="false" hijo="t" elementoSel="<%=juzgado%>"
+					parametro="<%=datos%>" /></td>
+			</tr>
+			<tr>
+				<td class="labelText"><siga:Idioma
+					key="informes.cartaAsistencia.procedimiento" /></td>
+				<td class="labelText"><html:text name="DefinirEJGForm"
+					property="procedimiento" size="14" maxlength="100" styleClass="box"
+					value="<%=procedimiento%>"></html:text></td>
+				<td class="labelText"><siga:Idioma
+					key="informes.cartaAsistencia.asunto" /></td>
+				<td class="labelText"><html:text name="DefinirEJGForm"
+					property="asunto" size="100" maxlength="100" styleClass="box"
+					value="<%=asunto%>"></html:text></td>
+			</tr>
 		</table>
 	</siga:ConjCampos>
+</td>
+</tr>
+<tr>
+	<td>
 	<siga:ConjCampos leyenda="gratuita.busquedaEJG.literal.solicitante">
-	<table  align="center" width="100%">
-	<tr>
-	<td class="labelText">
-		<siga:Idioma key="gratuita.busquedaEJG.literal.nif"/>		
-	</td>
-	<td class="labelText">
-		<html:text name="DefinirEJGForm" property="nif" size="10" maxlength="20" styleClass="box"  value="<%=nif%>"></html:text>
-	</td>
-	<td class="labelText">
-		<siga:Idioma key="gratuita.busquedaEJG.literal.nombre"/>
-		<html:text name="DefinirEJGForm" property="nombre" size="26" maxlength="100" styleClass="box"  value="<%=nombre%>"></html:text>
-	</td>
-	<td class="labelText">	
-		<siga:Idioma key="gratuita.busquedaAsistencias.literal.apellido1"/>
-		<html:text name="DefinirEJGForm" property="apellido1" size="26" maxlength="100" styleClass="box"  value="<%=apellido1%>"></html:text>
-	</td>
-	<td class="labelText">
-		<siga:Idioma key="gratuita.busquedaAsistencias.literal.apellido2"/>
-		<html:text name="DefinirEJGForm" property="apellido2" size="26" maxlength="100" styleClass="box"  value="<%=apellido2%>"></html:text>
-	</td>	
-	</tr>	
-	</table>
+		<table align="center" width="100%">
+			<tr>
+				<td class="labelText"><siga:Idioma
+					key="gratuita.busquedaEJG.literal.nif" /></td>
+				<td class="labelText"><html:text name="DefinirEJGForm"
+					property="nif" size="10" maxlength="20" styleClass="box"
+					value="<%=nif%>"></html:text></td>
+				<td class="labelText"><siga:Idioma
+					key="gratuita.busquedaEJG.literal.nombre" /> <html:text
+					name="DefinirEJGForm" property="nombre" size="26" maxlength="100"
+					styleClass="box" value="<%=nombre%>"></html:text></td>
+				<td class="labelText"><siga:Idioma
+					key="gratuita.busquedaAsistencias.literal.apellido1" /> <html:text
+					name="DefinirEJGForm" property="apellido1" size="26"
+					maxlength="100" styleClass="box" value="<%=apellido1%>"></html:text>
+				</td>
+				<td class="labelText"><siga:Idioma
+					key="gratuita.busquedaAsistencias.literal.apellido2" /> <html:text
+					name="DefinirEJGForm" property="apellido2" size="26"
+					maxlength="100" styleClass="box" value="<%=apellido2%>"></html:text>
+				</td>
+			</tr>
+		</table>
 	</siga:ConjCampos>
-	</html:form>
+</td>
+</tr>
+
+</html:form>
 	
 	<html:form action = "/JGR_MantenimientoJuzgados.do" method="POST" target="submitArea21">
 		<input type="hidden" name="modo"        value="buscarJuzgado">
@@ -496,6 +685,10 @@ String datoTipoOrdinario[]={idordinario,idordinario};
 			
 			if ( !validarObjetoAnio(document.getElementById("anio")) ){
 				alert("<siga:Idioma key="fecha.error.anio"/>");
+				return false;
+			}
+			if ( !validarObjetoAnio(document.getElementById("anioCAJG")) ){
+				alert("<siga:Idioma key='gratuita.operarEJG.literal.CAJG'/> <siga:Idioma key="fecha.error.anio"/>");
 				return false;
 			}
 

@@ -82,11 +82,14 @@
 	<!-- TAG DE CONJUNTO DE PESTANAS -->
 	<%
 		// Hash de pestanhas:
+		String pestanaId = "FACTURAS";
+		if(request.getAttribute("pestanaId")!=null)
+			pestanaId = (String) request.getAttribute("pestanaId");
 		if (hashPestanas!=null) {
 			String idInstitucion = (String)hashPestanas.get("idInstitucion");
 	%>
 	<siga:PestanasExt 
-			pestanaId="FACTURAS" 
+			pestanaId="<%=pestanaId%>" 
 			target="mainPestanasNivel3"
 			parametros="datosFacturas"
 			elementoactivo="1"

@@ -23,8 +23,7 @@
 	String borrarFichero = (String)request.getAttribute("borrarFichero");
 	
 %>	
-
-<%@page import="java.util.Properties"%>
+<%@page import="org.apache.struts.action.ActionMapping"%>
 <html>
 
 <!-- HEAD -->
@@ -41,9 +40,13 @@
 
 
 <body onload="init();">
-
-	<html:form action="/FCS_DatosGeneralesFacturacion.do" method="POST" target="submitArea22">
-		<html:hidden property = "accion" value = "descargarFichero"/>
+<% 
+	ActionMapping actionMapping = (ActionMapping)request.getAttribute("org.apache.struts.action.mapping.instance");
+	String path = actionMapping.getPath();
+	
+	%>
+	<html:form action="<%=path%>" method="POST" target="submitArea22">
+		<html:hidden property = "accion" value = "descargaFicheroGlobal"/>
 		<html:hidden property = "nombreFichero" value = "<%=nombreFichero%>"/>
 		<html:hidden property = "rutaFichero" value = "<%=rutaFichero%>"/>
 		<%if(borrarFichero!=null){%>

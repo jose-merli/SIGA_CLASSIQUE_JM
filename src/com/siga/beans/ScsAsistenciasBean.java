@@ -68,6 +68,7 @@ public class ScsAsistenciasBean extends MasterBean{
 	private String asistidoNombre;
 	private String asistidoApellido1;
 	private String asistidoApellido2;
+	private Integer idDelito;
 
 	
 	/*
@@ -327,6 +328,12 @@ public class ScsAsistenciasBean extends MasterBean{
 	}
 	public void setAsistidoApellido2(String asistidoApellido2) {
 		this.asistidoApellido2 = asistidoApellido2;
+	}
+	public void setIdDelito(Integer idDelito) {
+		this.idDelito = idDelito;
+	}
+	public Integer getIdDelito() {
+		return idDelito;
 	}
 	public String getAsistidoNif() {
 		return asistidoNif;

@@ -7,6 +7,7 @@
 
 package com.siga.censo.form;
 
+import com.siga.Utilidades.UtilidadesHash;
 import com.siga.general.MasterForm;
 
 public class BusquedaComisionesForm extends MasterForm{
@@ -15,6 +16,7 @@ public class BusquedaComisionesForm extends MasterForm{
 	private String comision="";
 	private String cargos="";	
 	private String fechaCargo="";
+	private String idInstitucion;
 
 	// Metodos get y set
 	
@@ -58,4 +60,36 @@ public class BusquedaComisionesForm extends MasterForm{
 	public void setFechaCargo(String fechaCargo) {
 		this.fechaCargo = fechaCargo;
 	}
+	/**
+	 * @param fechaCargo The Colegiado to set.
+	 */
+	public void setColegiado (String dato) { 
+ 		try {
+ 			UtilidadesHash.set(this.datos,"Colegiado", dato);
+ 		} catch (Exception e) {
+ 			// escribimos la traza de momento
+ 			e.printStackTrace();
+ 		}
+ 	}
+	/**
+	 * @return Returns the Colegiado.
+	 */
+	public String getColegiado	() 	{ 
+ 		return UtilidadesHash.getString(this.datos, "Colegiado");		
+ 	}
+	
+	 public void setChkBusqueda(String valor){
+		 	UtilidadesHash.set(this.datos, "ChkBusqueda", valor);
+		 }
+	 
+	 public String  getChkBusqueda(){
+	 		return UtilidadesHash.getString(this.datos, "ChkBusqueda");
+	 	}
+	
+	 public String getIdInstitucion() {
+			return idInstitucion;
+		}
+		public void setIdInstitucion(String idInstitucion) {
+			this.idInstitucion = idInstitucion;
+		}
 }

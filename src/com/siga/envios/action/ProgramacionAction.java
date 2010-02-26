@@ -32,6 +32,7 @@ import com.siga.beans.EnvEnviosBean;
 import com.siga.beans.EnvEstadoEnvioAdm;
 import com.siga.beans.EnvTipoEnviosAdm;
 import com.siga.beans.EnvTipoEnviosBean;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.envios.Envio;
 import com.siga.envios.form.ProgramacionForm;
 import com.siga.general.MasterAction;
@@ -69,6 +70,9 @@ public class ProgramacionAction extends MasterAction {
 	            else if (modo.equalsIgnoreCase("descargar"))
 	            {
 	                mapDestino = descargar(mapping, miForm, request, response);
+	            }else if (modo.equalsIgnoreCase("generarEtiquetas"))
+	            {
+	                mapDestino = generarEtiquetas(mapping, miForm, request, response);
 	            } 
 	            else if (modo.equalsIgnoreCase("procesarEnvio"))
 	            {
@@ -130,8 +134,37 @@ public class ProgramacionAction extends MasterAction {
         Vector envio, tipo;
         EnvEnviosBean envioBean = null;
         try {
-            envio = envioAdm.selectByPK(htPk);        
+            envio = envioAdm.selectByPK(htPk);   
+           
+         // Obtengo el pathFTP
+    		
+            
+            
 	        envioBean = (EnvEnviosBean)envio.firstElement();
+	        if(envioBean.getIdTipoEnvios()!=null && envioBean.getIdTipoEnvios().intValue()==EnvEnviosAdm.TIPO_CORREO_ORDINARIO){
+		        String pathFTP = "";
+	    		GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request));
+	    		try {
+	    			pathFTP = paramAdm.getValor(userBean.getLocation(),"ENV","URL_FTP_DESCARGA_ENVIOS_ORDINARIOS","");
+	    		} catch (Exception e) {
+	    			//
+	    		}
+	    		
+				idEnvio = envioBean.getIdEnvio().toString();
+			    String fechaCreacion = envioBean.getFechaCreacion();
+				SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
+			    Calendar cal = Calendar.getInstance();
+				Date d = sdf.parse(fechaCreacion);
+		        cal.setTime(d);
+			    String anio = String.valueOf(cal.get(Calendar.YEAR));
+				String mes = String.valueOf(cal.get(Calendar.MONTH)+1);		
+				String dia = String.valueOf(cal.get(Calendar.DAY_OF_MONTH));		
+				String directorioFicheros = "/" + anio + "/" + mes + "/" + dia + "/" + idEnvio + "/" ;						
+	    		
+				request.setAttribute("pathFTPDescarga",pathFTP+directorioFicheros);
+				
+	    		
+	        }
         } catch (Exception e) {
             throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
         }    
@@ -368,6 +401,31 @@ public class ProgramacionAction extends MasterAction {
 		}
 		request.setAttribute("rutaFichero", ruta);
 		request.setAttribute("generacionOK","OK");
+		return "descarga";
+	}
+	protected String generarEtiquetas(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException
+	{
+	    UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
+	    
+        ProgramacionForm form = (ProgramacionForm)formulario;
+        
+	    String idInstitucion = userBean.getLocation();
+	    String idEnvio = form.getIdEnvio();
+		EnvEnviosAdm enviosAdm = new EnvEnviosAdm(this.getUserBean(request));
+		// Obtengo las claves
+		Hashtable htPk = new Hashtable();
+		htPk.put(EnvEnviosBean.C_IDINSTITUCION,idInstitucion);
+		htPk.put(EnvEnviosBean.C_IDENVIO,idEnvio);
+		//obtengo el envio
+		EnvEnviosBean envBean = (EnvEnviosBean)enviosAdm.selectByPK(htPk).firstElement();
+		// OBTENCION DE DESTINATARIOS 
+        /////////////////////////////////////
+		EnvEnviosAdm envAdm = new EnvEnviosAdm(this.getUserBean(request));
+		Vector vDestinatarios =  envAdm.getDestinatarios(envBean.getIdInstitucion().toString(), envBean.getIdEnvio().toString(), envBean.getIdTipoEnvios().toString());			
+		String ruta =  enviosAdm.generarEtiquetas(String.valueOf(envBean.getIdInstitucion()),String.valueOf(envBean.getIdEnvio()),enviosAdm.getPathDescargaEnviosOrdinarios(envBean),vDestinatarios);
+		request.setAttribute("rutaFichero", ruta);
+		request.setAttribute("generacionOK","OK");
+		
 		return "descarga";
 	}
 	

@@ -1,5 +1,8 @@
 package com.siga.beans;
 
+import com.siga.consultas.action.Permutacion;
+import com.siga.gratuita.form.DefinirPermutaGuardiasForm;
+
 /**
  * Implementa las operaciones sobre el bean de la tabla SCS_PERMUTAGUARDIAS
  * 
@@ -30,6 +33,7 @@ public class ScsPermutaGuardiasBean extends MasterBean{
 	private String 		fechaInicio_Confirmador;
 	private String 		motivos_Confirmador;
 	private String 		fechaConfirmacion;
+	private String      nombrePermutaConfirmador;
 	
 
 	
@@ -59,6 +63,7 @@ public class ScsPermutaGuardiasBean extends MasterBean{
 	static public final String 	C_FECHACONFIRMACION =				"FECHACONFIRMACION";
 	
 	
+	
 	/* Metodos SET */
 	
 	public void setIdInstitucion (Integer valor) 					{ this.idInstitucion = valor;}
@@ -78,6 +83,7 @@ public class ScsPermutaGuardiasBean extends MasterBean{
 	public void setMotivosConfirmador (String  valor)				{ this.motivos_Confirmador = valor;}
 	public void setIdPersonaConfirmador (Integer valor) 			{ this.idPersona_Confirmador = valor;}
 	public void setFechaConfirmacion (String  valor)				{ this.fechaConfirmacion = valor;}
+	
 
 	
 	/* Metodos GET */
@@ -99,5 +105,57 @@ public class ScsPermutaGuardiasBean extends MasterBean{
 	public String  getMotivosConfirmador ()				{ return this.motivos_Confirmador;}
 	public Integer getIdPersonaConfirmador () 			{ return this.idPersona_Confirmador;}
 	public String  getFechaConfirmacion ()				{ return this.fechaConfirmacion;}
+	
+	public DefinirPermutaGuardiasForm getPermutaGuardiasForm(){
+		DefinirPermutaGuardiasForm permutaForm = new DefinirPermutaGuardiasForm();
+		
+		if(idInstitucion!=null)
+			permutaForm.setIdInstitucion(idInstitucion.toString());
+		if (numero!= null)
+			permutaForm.setNumero(numero.toString());
+		if (anulada!=null)
+			permutaForm.setAnulada(anulada.toString());
+		if (idTurno_Solicitante!=null)
+			permutaForm.setIdTurnoSolicitante(idTurno_Solicitante.toString());
+		if (idGuardia_Solicitante!=null)
+			permutaForm.setIdGuardiaSolicitante(idGuardia_Solicitante.toString());
+
+		if (idCalendarioGuardias_Solicitan!=null)
+	        permutaForm.setIdCalendarioGuardiasSolicitante(idCalendarioGuardias_Solicitan.toString());
+		
+		if (fechaInicio_Solicitante!=null)
+			permutaForm.setFechaFinSolicitante(fechaInicio_Solicitante);
+		if (motivos_Solicitante!=null)
+			permutaForm.setMotivosSolicitante(motivos_Solicitante);
+		if (idPersona_Solicitante!=null)
+			permutaForm.setIdPersonaSolicitante(idPersona_Solicitante.toString());
+			
+		if (fechaSolicitud!=null)
+			permutaForm.setFechaSolicitud(fechaSolicitud);
+		
+		if (idTurno_Confirmador!=null)
+			permutaForm.setIdTurnoConfirmador(idTurno_Confirmador.toString());
+		
+		if (idGuardia_Confirmador!=null)
+	        permutaForm.setIdGuardiaConfirmador(idGuardia_Confirmador.toString());
+		
+		if (idCalendarioGuardias_Confirmad!=null)
+			permutaForm.setIdCalendarioGuardiasConfirmador(idCalendarioGuardias_Confirmad.toString());
+ 
+		if (fechaInicio_Confirmador!=null)
+			permutaForm.setFechaInicioConfirmador(fechaInicio_Confirmador.toString());
+		
+		if (motivos_Confirmador!=null)
+			permutaForm.setMotivosConfirmador(motivos_Confirmador);
+		
+		if (idPersona_Confirmador!=null)
+			permutaForm.setIdPersonaConfirmador(idPersona_Confirmador.toString());
+		
+			
+		return permutaForm;
+		
+		
+	}
+	
 	
 }

@@ -42,10 +42,13 @@
 		esFichaColegial = true;
 	}
 	
-	boolean pcajgActivo = false;
-	String sEsPcajgActivo = (String)request.getAttribute("pcajgActivo");
-	if ((sEsPcajgActivo!=null) && (sEsPcajgActivo.equalsIgnoreCase("true"))){
-		pcajgActivo = true;
+	int pcajgActivo = 0;
+	/*String sEsPcajgActivo = (String)request.getAttribute("pcajgActivo");
+	if ((sEsPcajgActivo!=null) && (!sEsPcajgActivo.equalsIgnoreCase(""))){
+		pcajgActivo = Integer.parseInt(sEsPcajgActivo);
+	}*/
+	if (request.getAttribute("pcajgActivo")!=null){
+		pcajgActivo = Integer.parseInt(request.getAttribute("pcajgActivo").toString());
 	}
 	
 
@@ -103,14 +106,76 @@
 	String solicitaInfoJG = miform.getChkSolicitaInfoJG();
 	String checkSolicitante = miform.getSolicitante();
 	
-	String asterisco="";
+	String asterisco="&nbsp(*)&nbsp";
+	
+	
 	// Ponemos astericos en los campos obligatorios para el pcajg activo
-	if ((pcajgActivo) && 
+	// jbd 19/01/2010 Hay que cambiar esto porque ahora pcajgActivo es un numero en vez de boolean
+	/*if ((pcajgActivo) && 
 			(( conceptoE.equals(PersonaJGAction.EJG)
 			|| conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR) 
 			|| conceptoE.equals(PersonaJGAction.PERSONAJG) ))){
 		asterisco="&nbsp(*)&nbsp";
+	}*/
+	/*  Creamos una variable booleana por cada campo que dependa del tipo de pcjag del colegio.
+		Estas variables luego nos serviran para colocar el asterisco en el campo y validar que tenga valor. */
+	boolean obligatorioParentesco = false;
+	boolean obligatorioDireccion = false;
+	boolean obligatorioPoblacion = false;
+	boolean obligatorioCodigoPostal = false;
+	boolean obligatorioTipoIdentificador = true;
+	boolean obligatorioIdentificador = false;
+	boolean obligatorioNacionalidad = false;
+	boolean obligatorioTipoIngreso = false;
+	if ((pcajgActivo==1)&& 
+			(( conceptoE.equals(PersonaJGAction.EJG)
+			|| conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR) 
+			/*|| conceptoE.equals(PersonaJGAction.PERSONAJG)*/ ))){
+		obligatorioDireccion 			= true;
+		obligatorioTipoIdentificador 	= true;
+		obligatorioIdentificador 		= true;
+		if(conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) 
+			obligatorioParentesco 	= true;
+	}else if ((pcajgActivo==2)&& 
+			(( conceptoE.equals(PersonaJGAction.EJG)
+			|| conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR) 
+			/*|| conceptoE.equals(PersonaJGAction.PERSONAJG)*/ ))){
+		obligatorioDireccion 			= true;
+		obligatorioTipoIdentificador 	= true;
+		obligatorioIdentificador 		= true;
+		obligatorioTipoIngreso			= true;
+		if(conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) 
+			obligatorioParentesco 	= true;
+	}else if ((pcajgActivo==3)&& 
+			(( conceptoE.equals(PersonaJGAction.EJG)
+			|| conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR) 
+			/*|| conceptoE.equals(PersonaJGAction.PERSONAJG)*/ ))){
+		obligatorioDireccion 			= true;
+		obligatorioTipoIdentificador 	= true;
+		obligatorioIdentificador		= true;
+		obligatorioTipoIngreso			= true;
+		if(conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) 
+			obligatorioParentesco 	= true;
+	}else if ((pcajgActivo==4)&& 
+			(( conceptoE.equals(PersonaJGAction.EJG)
+			|| conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR) 
+			/*|| conceptoE.equals(PersonaJGAction.PERSONAJG)*/ ))){
+		obligatorioDireccion 	= true;
+		obligatorioPoblacion 	= true;
+		obligatorioCodigoPostal = true;
+		if(conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) 
+			obligatorioParentesco 	= true;
+	}else if ((pcajgActivo==5)&& 
+			(( conceptoE.equals(PersonaJGAction.EJG)
+			|| conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR) 
+			/*|| conceptoE.equals(PersonaJGAction.PERSONAJG)*/ ))){
+		obligatorioDireccion 	= true;
+		obligatorioPoblacion 	= true;
+		obligatorioParentesco 	= true;
+		obligatorioNacionalidad = true;
+		obligatorioCodigoPostal = true;
 	}
+	System.out.println(conceptoE);
 %>	
 
 
@@ -216,14 +281,6 @@
 
 			function traspasoDatos(resultado,bNuevo) 
 			{
-			
-/*			
-			alert (resultado[0] + "," + resultado[1] + "," + resultado[2] + "," + resultado[3] + "," + resultado[4] + "," + resultado[5] + "," + resultado[6] + "," + resultado[7] + "," + resultado[8] + "," + resultado[9] + "," + resultado[10] + "," + resultado[11] + "," + resultado[12] + "," + resultado[13] + "," + resultado[14] + "," + resultado[15] + "," + resultado[16] + "," + resultado[17]); 
-			return ;
-*/			
-			
-			
-
 				document.forms[0].nuevo.value = bNuevo;	
 			  if (bNuevo=="1"){// sólo cargamos los datos de la persona si esta ya estaba dada de alta en personaJG
 				if (trim(resultado[1])!="") {
@@ -261,6 +318,9 @@
 				//Profesion:
 				document.forms[0].profesion.value = resultado[14];
 				document.forms[0].profesion.onchange();
+
+				//Sexo:
+				document.forms[0].sexo.value = resultado[19];
 				
          <%	if (conceptoE.equals(PersonaJGAction.ASISTENCIA_ASISTIDO) || conceptoE.equals(PersonaJGAction.SOJ)) { %> 
             	document.forms[0].hijos.value = resultado[18]; 
@@ -768,6 +828,15 @@ function str_replace(search, replace, subject) {
 			 }	 
 			
 			}
+
+			function validaImportes(){
+				var ingAnuales = document.forms[0].importeIngresosAnuales.value;
+				var bienInm = document.forms[0].importeBienesInmuebles.value;
+				var impInm = document.forms[0].importeBienesMuebles.value;
+				var impOtros = document.forms[0].importeOtrosBienes.value;
+				//if (ingAnuales > 99999999.99)
+					
+			}
 					
 			function addOption(combo,text, value) {
 				var comboBox = document.getElementById(combo);
@@ -1082,8 +1151,8 @@ function str_replace(search, replace, subject) {
 		<%}	%>		
 		<td class="labelText">
 			<siga:Idioma key="gratuita.personaJG.literal.tipoIdentificacion"/>
-			<%if (!conceptoE.equals(PersonaJGAction.PERSONAJG)) {%>
-			<%=asterisco %> 
+			<%if (obligatorioTipoIdentificador) {%>
+				<%=asterisco %> 
 			<%}%>
 		</td>
 		<td colspan="3">
@@ -1092,6 +1161,7 @@ function str_replace(search, replace, subject) {
 				tipoIdentificacionSel.add(miform.getTipoId());
 			}
 		%>
+			
 		  <%if (accion.equalsIgnoreCase("ver")) {
 		  				String tipoIdent = (String) request
 		  						.getAttribute("identificacion");
@@ -1140,18 +1210,24 @@ function str_replace(search, replace, subject) {
 	</table>
 	</siga:ConjCampos>
 
-	<siga:ConjCampos>
+	<siga:ConjCampos leyenda="gratuita.personaJG.literal.direccion">
 
 	<table  align="center" width="100%">
 	<tr>
 		<td class="labelText">
-			<siga:Idioma key="gratuita.personaJG.literal.direccion"/><%=asterisco%>		
+			<siga:Idioma key="gratuita.personaJG.literal.direccion"/>
+			<%if (obligatorioDireccion) {%>
+				<%=asterisco %> 
+			<%}%>
 		</td>
 		<td>
 			<html:text name="PersonaJGForm" property="direccion" maxlength="100" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:340" ></html:text>
 		</td>
 		<td class="labelText">
-			<siga:Idioma key="gratuita.personaJG.literal.cp"/>		
+			<siga:Idioma key="gratuita.personaJG.literal.cp"/>	
+			<%if (obligatorioCodigoPostal) {%>
+				<%=asterisco %> 
+			<%}%>		
 		</td>
 		<td colspan="2">
 			<html:text name="PersonaJGForm" property="cp" size="5" maxlength="5" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"></html:text>
@@ -1159,7 +1235,10 @@ function str_replace(search, replace, subject) {
 	</tr>
 	<tr>
 		<td class="labelText">
-			<siga:Idioma key="gratuita.personaJG.literal.provincia"/>		
+			<siga:Idioma key="gratuita.personaJG.literal.provincia"/>	
+			<%if (obligatorioPoblacion) {%>
+				<%=asterisco %> 
+			<%}%>		
 		</td>
 		<td>
 			<%
@@ -1193,7 +1272,10 @@ function str_replace(search, replace, subject) {
 		 
 		</td>
 		<td class="labelText">
- 			<siga:Idioma key="gratuita.personaJG.literal.poblacion"/>		
+ 			<siga:Idioma key="gratuita.personaJG.literal.poblacion"/>	
+ 			<%if (obligatorioPoblacion) {%>
+				<%=asterisco %> 
+			<%}%>	
 		</td>
 		<td colspan="2">
 			<%
@@ -1218,7 +1300,10 @@ function str_replace(search, replace, subject) {
 	<table   align="center" width="100%" border="0">
 	<tr>
 		<td class="labelText">
-			<siga:Idioma key="gratuita.personaJG.literal.nacionalidad"/>		
+			<siga:Idioma key="gratuita.personaJG.literal.nacionalidad"/>	
+			<%if (obligatorioNacionalidad) {%>
+				<%=asterisco %> 
+			<%}%>		
 		</td>
 		<td width="20%">
 			<%
@@ -1436,7 +1521,10 @@ function str_replace(search, replace, subject) {
 	} else if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {
 %>
 		<td class="labelText">
-			<siga:Idioma key="gratuita.personaJG.literal.parentescoNormalizado"/><%=asterisco%>			
+			<siga:Idioma key="gratuita.personaJG.literal.parentescoNormalizado"/>
+			<%if (obligatorioParentesco) {%>
+				<%=asterisco %> 
+			<%}%>			
 		</td>
 		<td  style="display:none">
 			<html:text name="PersonaJGForm" property="enCalidadDeLibre" size="10" maxlength="20" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"></html:text>
@@ -1818,6 +1906,9 @@ function str_replace(search, replace, subject) {
 	<tr>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.operarInteresado.literal.tipoIngresos"/>
+			<%if (obligatorioTipoIngreso) {%>
+				<%=asterisco %> 
+			<%}%>
 		</td>
 
 		<td>
@@ -1968,7 +2059,7 @@ function str_replace(search, replace, subject) {
 			if((tipoIdent!="")&&(numId!="")){
 							
 			}else if(!((tipoIdent=="")&&(numId==""))||((tipoIdent!="")&&(numId!=""))){
-					document.forms[0].tipoId.value="";
+					//document.forms[0].tipoId.value="";
 					document.forms[0].NIdentificacion.value="";
 					
 			}
@@ -1990,28 +2081,32 @@ function str_replace(search, replace, subject) {
 				return false;
 			}
 			var envio=1;
-				if (isNaN(document.forms[0].importeIngresosAnuales.value)){
+				if (isNaN(document.forms[0].importeIngresosAnuales.value)||
+						document.forms[0].importeIngresosAnuales.value>99999999.99){
 					alert("<siga:Idioma key="gratuita.personaJG.messages.IngresosAnuales"/>");
 					envio=-1;
 					fin();
 					return false;
 					
 				}
-				if (isNaN(document.forms[0].importeBienesInmuebles.value)){
+				if (isNaN(document.forms[0].importeBienesInmuebles.value)||
+						document.forms[0].importeBienesInmuebles.value>99999999.99){
 					alert("<siga:Idioma key="gratuita.personaJG.messages.BienesInmuebles"/>");
 					envio=-1;
 					fin();
 					return false;
 					
 				}
-					if (isNaN(document.forms[0].importeBienesMuebles.value)){
+					if (isNaN(document.forms[0].importeBienesMuebles.value)||
+							document.forms[0].importeBienesMuebles.value>99999999.99){
 					alert("<siga:Idioma key="gratuita.personaJG.messages.BienesMuebles"/>");
 					envio=-1;
 					fin();
 					return false;
 					
 				}
-				if (isNaN(document.forms[0].importeOtrosBienes.value)){
+				if (isNaN(document.forms[0].importeOtrosBienes.value)||
+						document.forms[0].importeOtrosBienes.value>99999999.99){
 					alert("<siga:Idioma key="gratuita.personaJG.messages.OtrosBienes"/>");
 					envio=-1;
 					fin();
@@ -2029,17 +2124,30 @@ function str_replace(search, replace, subject) {
 					fin();
 					return false;
 				} else
-					if (validatePersonaJGForm(document.forms[0]) ){
+					if (validatePersonaJGForm(document.forms[0])){
 								
 					// jbd: comprobaciones adicionales para el pcajg
-					if(<%=pcajgActivo%>){
+					if(<%=pcajgActivo>0%>){
 						var error = "";
-						if (document.forms[0].tipoId.value=="")
-							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.tipoIdentificacion'/>"+ '\n';
-						if (document.forms[0].NIdentificacion.value=="")
-							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nIdentificacion'/>"+ '\n';
-						if (document.forms[0].direccion.value.length<1)
+						if (<%=obligatorioTipoIdentificador%>){
+							if( document.forms[0].tipoId.value=="")
+								error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.tipoIdentificacion'/>"+ '\n';
+							if ((document.forms[0].tipoId.value=="<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>" || 
+								document.forms[0].tipoId.value=="<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>" ||
+								document.forms[0].tipoId.value=="<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")&&
+								document.forms[0].NIdentificacion.value=="")
+								error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nIdentificacion'/>"+ '\n';
+						}
+						if (<%=obligatorioDireccion%> && document.forms[0].direccion.value.length<1)
 							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
+						if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value=="")
+							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
+						if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value=="")
+							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+						if (<%=obligatorioNacionalidad%> && document.forms[0].nacionalidad.value =="")
+							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nacionalidad'/>"+ '\n';
+						if (<%=obligatorioTipoIngreso%> && document.forms[0].tipoIngreso.value =="")
+							error += "<siga:Idioma key='errors.required' arg0='gratuita.operarInteresado.literal.tipoIngresos'/>"+ '\n';
 						if(error!=""){
 							alert(error);
 							fin();
@@ -2071,7 +2179,7 @@ function str_replace(search, replace, subject) {
 			if((tipoIdent!="")&&(numId!="")){
 							
 			}else if(!((tipoIdent=="")&&(numId==""))||((tipoIdent!="")&&(numId!=""))){
-					document.forms[0].tipoId.value="";
+					//document.forms[0].tipoId.value="";
 					document.forms[0].NIdentificacion.value="";
 					
 			}
@@ -2140,14 +2248,29 @@ function str_replace(search, replace, subject) {
 			} else if (validatePersonaJGForm(document.forms[0])){
 			
 				// jbd: comprobaciones adicionales para el pcajg
-				if(<%=pcajgActivo%>){
+				if(<%=pcajgActivo>0%>){
 					var error = "";
-					if (document.forms[0].tipoId.value=="")
-						error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.tipoIdentificacion'/>"+ '\n';
-					if (document.forms[0].NIdentificacion.value=="")
+					if (<%=obligatorioTipoIdentificador%>){
+						if( document.forms[0].tipoId.value=="")
+							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.tipoIdentificacion'/>"+ '\n';
+						if ((document.forms[0].tipoId.value=="<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>" || 
+							document.forms[0].tipoId.value=="<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")&&
+							document.forms[0].NIdentificacion.value=="")
 							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nIdentificacion'/>"+ '\n';
-					if (document.forms[0].parentesco.value=="")
-						error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.parentescoNormalizado'/>"+ '\n';;
+					}
+					if (<%=obligatorioDireccion%> && document.forms[0].direccion.value.length<1)
+						error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
+					if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value=="")
+						error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
+					if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value=="")
+						error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+					if (<%=obligatorioNacionalidad%> && document.forms[0].nacionalidad.value =="")
+						error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nacionalidad'/>"+ '\n';
+					if (<%=obligatorioParentesco%> && document.forms[0].parentesco.value=="")
+						error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.parentescoNormalizado'/>"+ '\n';
+					if (<%=obligatorioTipoIngreso%> && document.forms[0].tipoIngreso.value =="")
+						error += "<siga:Idioma key='errors.required' arg0='gratuita.operarInteresado.literal.tipoIngresos'/>"+ '\n';
+					
 					if(error!=""){
 						alert(error);
 						fin();
@@ -2195,7 +2318,7 @@ function str_replace(search, replace, subject) {
 			if((tipoIdent!="")&&(numId!="")){
 							
 			}else if(!((tipoIdent=="")&&(numId==""))||((tipoIdent!="")&&(numId!=""))){
-					document.forms[0].tipoId.value="";
+					//document.forms[0].tipoId.value="";
 					document.forms[0].NIdentificacion.value="";
 					
 			}
@@ -2264,7 +2387,7 @@ function str_replace(search, replace, subject) {
 			if((tipoIdent!="")&&(numId!="")){
 							
 			}else if(!((tipoIdent=="")&&(numId==""))||((tipoIdent!="")&&(numId!=""))){
-					document.forms[0].tipoId.value="";
+					//document.forms[0].tipoId.value="";
 					document.forms[0].NIdentificacion.value="";
 					
 			}
@@ -2321,7 +2444,7 @@ function str_replace(search, replace, subject) {
 			if((tipoIdent!="")&&(numId!="")){
 							
 			}else if(!((tipoIdent=="")&&(numId==""))||((tipoIdent!="")&&(numId!=""))){
-					document.forms[0].tipoId.value="";
+					//document.forms[0].tipoId.value="";
 					document.forms[0].NIdentificacion.value="";
 					
 			}
@@ -2380,7 +2503,7 @@ if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) { %>
 			if((tipoIdent!="")&&(numId!="")){
 							
 			}else if(!((tipoIdent=="")&&(numId==""))||((tipoIdent!="")&&(numId!=""))){
-					document.forms[0].tipoId.value="";
+					//document.forms[0].tipoId.value="";
 					document.forms[0].NIdentificacion.value="";
 					
 			}
@@ -2433,7 +2556,7 @@ if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) { %>
 			if((tipoIdent!="")&&(numId!="")){
 							
 			}else if(!((tipoIdent=="")&&(numId==""))||((tipoIdent!="")&&(numId!=""))){
-					document.forms[0].tipoId.value="";
+					//document.forms[0].tipoId.value="";
 					document.forms[0].NIdentificacion.value="";
 					
 			}
@@ -2462,10 +2585,16 @@ if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) { %>
 				} else{
 					if (validatePersonaJGForm(document.forms[0])){
 						// jbd: comprobaciones adicionales para el pcajg
-						if(<%=pcajgActivo%>){
+						if(<%=pcajgActivo>0%>){
 							var error = "";
-							if (document.forms[0].direccion.value.length<1)
-								error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';;
+							if (<%=obligatorioTipoIdentificador%>){
+								if( document.forms[0].tipoId.value=="")
+									error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.tipoIdentificacion'/>"+ '\n';
+								if ((document.forms[0].tipoId.value=="<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>" || 
+									document.forms[0].tipoId.value=="<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")&&
+									document.forms[0].NIdentificacion.value=="")
+									error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nIdentificacion'/>"+ '\n';
+							}
 							if(error!=""){
 								alert(error);
 								fin();
@@ -2507,7 +2636,7 @@ if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) { %>
 			if((tipoIdent!="")&&(numId!="")){
 							
 			}else if(!((tipoIdent=="")&&(numId==""))||((tipoIdent!="")&&(numId!=""))){
-					document.forms[0].tipoId.value="";
+					//document.forms[0].tipoId.value="";
 					document.forms[0].NIdentificacion.value="";
 					
 			}

@@ -101,10 +101,10 @@
 									<!-- FILA -->
 									<tr>				
 										<td class="labelText">
-											<siga:Idioma key="informes.listaGuardias.desde"/>&nbsp;
+											<siga:Idioma key="informes.listaGuardias.desde"/>&nbsp;(*)
 										</td>				
 										<td>	
-											<html:text property="fechaInicio" size="10" styleClass="box" readOnly="true"></html:text>
+											<siga:Fecha nombreCampo="fechaInicio"></siga:Fecha>
 											<a href='javascript://' onClick="return showCalendarGeneral(fechaInicio);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
 												<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0">
 											</a>
@@ -112,10 +112,10 @@
 									</tr>
 									<tr>
 										<td class="labelText">
-											<siga:Idioma key="informes.listaGuardias.hasta"/>&nbsp;
+											<siga:Idioma key="informes.listaGuardias.hasta"/>&nbsp;(*)
 										</td>				
 										<td>	
-											<html:text property="fechaFin" size="10" styleClass="box" readOnly="true"></html:text>
+											<siga:Fecha nombreCampo="fechaFin"></siga:Fecha>
 											<a href='javascript://' onClick="return showCalendarGeneral(fechaFin);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
 												<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0">
 											</a>

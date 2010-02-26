@@ -26,6 +26,18 @@
 	%>
 <%  ArrayList idCeroValue=new ArrayList();
 	idCeroValue.add("0");%>
+	
+<%	/*Lo del pcajg*/
+	String asterisco = "&nbsp(*)&nbsp";
+	int pcajgActivo = 0;
+	if (request.getAttribute("PCAJG_ACTIVO")!=null){
+		pcajgActivo = Integer.parseInt(request.getAttribute("PCAJG_ACTIVO").toString());
+	}
+	boolean obligatorioDesignacion = false;
+	if (pcajgActivo==5){
+		obligatorioDesignacion = true;
+	}
+	%>
 <html>
 
 <!-- HEAD -->
@@ -112,7 +124,7 @@
 	<siga:ConjCampos leyenda="gratuita.cambiosProcuradoresDesigna.literal.procuradorActual">
 	<table  width="100%">
 	<tr>				
-		<td class="labelText" width="140">
+		<td class="labelText" width="200">
 			<siga:Idioma key="gratuita.busquedaSOJ.literal.numeroColegidado"/>
 		</td>
 		<td colspan="3" class="boxConsulta">
@@ -140,7 +152,7 @@
 			<table  width="100%" border="0">
 				<tr>
 					<td class="labelText">
-						<siga:Idioma key="gratuita.busquedaSOJ.literal.numeroColegidado"/>
+						<siga:Idioma key="gratuita.busquedaSOJ.literal.numeroColegidado"/> (*)
 					</td>
 					<td colspan="1">
 						<input type="text" name="nColegiado" id="nColegiado" size="50" maxlength="100" class="boxConsulta" />
@@ -167,16 +179,19 @@
 	<tr>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.literal.numeroDesigna"/>
+			<% if (obligatorioDesignacion){ %>
+				<%= asterisco %>
+			<%} %>
 		</td>
 		<td>
-			<html:text name="CambiosProcuradoresDesignasForm" property="numeroDesigna" size="20" maxlength="10" styleClass="box"></html:text>
+			<html:text name="CambiosProcuradoresDesignasForm" property="numeroDesigna" size="13" maxlength="10" styleClass="box"></html:text>
 		</td>
 		<td class="labelText">
 			<!--siga:Idioma key="gratuita.modalCambioLetradoDesigna.literal.fechaCambio"/-->
 			<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.literal.fechaDesigna"/>&nbsp;(*)
 		</td>
 		<td>
-			<html:text name="CambiosProcuradoresDesignasForm" property="fechaDesigna" size="15" maxlength="15" styleClass="box" readonly="true" value="<%=fecha%>"></html:text>
+			<html:text name="CambiosProcuradoresDesignasForm" property="fechaDesigna" size="13" maxlength="13" styleClass="box" readonly="true" value="<%=fecha%>"></html:text>
 			&nbsp;<a onClick="return showCalendarGeneral(fechaDesigna);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
 
 		</td>
@@ -240,6 +255,17 @@
 		//Asociada al boton GuardarCerrar
 		function accionGuardarCerrar() 
 		{
+			// jbd 01-02-2010 Añadida comprobacion de numero desginacion inc-6788
+			<%if (pcajgActivo>0){%>
+			var error = "";
+	   		if (<%= obligatorioDesignacion %> && document.getElementById("numeroDesigna").value=="")
+				error += "<siga:Idioma key='errors.required' arg0='gratuita.cambiosProcuradoresDesigna.literal.numeroDesigna'/>"+ '\n';
+			if(error!=""){
+				alert(error);
+				fin();
+				return false;
+			}
+	 		<%}%> 
 			// JBD 23-1-2009 Añadida comprobacion de seleccionadoProcurador INC-5643
 			if(seleccionadoProc){	
 				sub();

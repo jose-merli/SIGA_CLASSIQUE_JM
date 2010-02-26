@@ -199,6 +199,21 @@
 
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
+
+			function disableEnterKey(e)
+			{
+				
+			     if(window.event.keyCode == 13){
+			    	 if (document.getElementById("nombreProducto").value!=""){
+			    		 buscarProducto();
+			    	 }else{
+			          	return false;
+			    	 }
+			     }else{
+			          return true;				
+				}
+			}
+			
 		    function ocultarCombosProducto(){
 			    document.getElementById("tipoProducto1").style.display="none";
 				document.getElementById("categoriaProducto1").style.display="none";
@@ -521,6 +536,7 @@
 			 
 			 
 			 }	
+			 fin();
 			}
 			
 		function desactivar(valor){
@@ -560,7 +576,7 @@
 
 </head>
 
-<body onload="cargarCombos();">
+<body onload="cargarCombos();ajusteAlto('resultado');">
 
 <!-- INICIO ******* CAPA DE PRESENTACION ****** -->
 
@@ -757,6 +773,7 @@
 					</td>
 
 
+
 					<td align=left id="solicitarProducto1"><html:button
 						property="idButton" onclick="return solicitar('Producto');"
 						styleClass="button">
@@ -781,12 +798,14 @@
 
 					<td id="nombreProducto"><html:text name="solicitudCompraForm"
 						property="nombreProducto" size="25" maxlength="100"
-						styleClass="box" readonly="false" /></td>
+						styleClass="box" readonly="false" onKeyPress="return disableEnterKey(event)"/></td>
 					<td align=left id="solicitarServicio1"><html:button
 						property="idButton" onclick="return buscarProducto();"
 						styleClass="button">
 						<siga:Idioma key="general.boton.search" />
-					</html:button></td>
+						</html:button>
+					</td>
+					
 
 
 
@@ -811,7 +830,7 @@
 						frameborder="0"
 						marginheight="0"
 						marginwidth="0"
-						style="position:relative;height:290px;width:100%;"			 
+						style="position:relative;height:45%;width:100%;"			 
 						>					
 		</iframe>
 
@@ -825,7 +844,7 @@
 						frameborder="0"
 						marginheight="0"
 						marginwidth="0";					 
-						style="position:relative;height:170px;width:100%;"
+						style="position:relative;width:100%;"
 						>					
 		</iframe>
 

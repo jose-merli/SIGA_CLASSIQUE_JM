@@ -397,7 +397,7 @@ public class ClsLogging{
 					{
 						if(e instanceof SchedulerException){
 							logXeMail.error(sdfLong.format(dat)+"******AVISO******"+e.getMessage());
-						}else{
+						}else if(!(e  instanceof com.sun.mail.smtp.SMTPAddressFailedException)){
 							logXeMail.error("*****ERROR*****"+s+sError+ExceptionManager.getCompleteMessageParaLogger(e,idInstitucion,idUsuario),e);
 						}
 					}

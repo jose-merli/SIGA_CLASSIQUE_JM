@@ -233,6 +233,7 @@ public class SolicitudIncorporacionAction extends MasterAction
 			bean.setFax1(miFormulario.getFax1());
 			bean.setFax2(miFormulario.getFax2());
 			bean.setFechaEstado("sysdate");
+			bean.setFechaEstadoColegial(miFormulario.getFechaEstadoColegial());
 			bean.setFechaNacimiento(miFormulario.getFechaNacimiento());
 			bean.setFechaSolicitud("sysdate");
 			bean.setIdEstado(estadoSolicitud);			

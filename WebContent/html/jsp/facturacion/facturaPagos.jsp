@@ -17,13 +17,14 @@
 <%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.beans.ConsPLFacturacion"%>
-<%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
 <%@ page import="java.util.Vector"%>
 <%@ page import="java.util.Hashtable"%>
 
 <!-- JSP -->
 <% 
-		String volver = request.getAttribute("volver")==null?"NO":(String)request.getAttribute("volver");
+ActionMapping actionMapping = (ActionMapping)request.getAttribute("org.apache.struts.action.mapping.instance");
+String path = actionMapping.getPath();		
+String volver = request.getAttribute("volver")==null?"NO":(String)request.getAttribute("volver");
 		String botonesAccion = "";
 
 		// Gestion de Volver
@@ -150,6 +151,7 @@
 %>
 
 
+<%@page import="org.apache.struts.action.ActionMapping"%>
 <html>
 
 <!-- HEAD -->
@@ -166,8 +168,11 @@
 		}
 
 		//Asociada al boton Pago por caja -->
-		function pagoPorCaja() { 
+		function pagoPorCaja() {
+			document.GestionarFacturaForm.action = "<%=app%>"+"/FAC_PagosFactura.do";
+		 
 			document.GestionarFacturaForm.modo.value = "pagoPorCaja";
+			
 			rc = ventaModalGeneral(document.GestionarFacturaForm.name, "P");
 			if (rc == "MODIFICADO") refrescarLocal();
 		}	
@@ -182,6 +187,7 @@
 
 		//Asociada al boton Renegociar -->
 		function botonRenegociar(){ 
+			document.GestionarFacturaForm.action = "<%=app%>"+"/FAC_PagosFactura.do";
 			document.GestionarFacturaForm.modo.value = "pagoRenegociar";
 			rc = ventaModalGeneral(document.GestionarFacturaForm.name, "M");
 			if (rc == "MODIFICADO") refrescarLocal();
@@ -200,7 +206,7 @@
 
 
 	<!-- INICIO: CAMPOS -->
-		<html:form action="/FAC_PagosFactura.do" method="POST" target="submitArea" style="display:none">
+		<html:form action="<%=path%>" method="POST" target="submitArea" style="display:none">
 			<html:hidden property = "modo" 					value = ""/>
 			<html:hidden property = "idFactura" 		value = "<%=idFactura%>"/>
 			<html:hidden property = "idInstitucion" value = "<%=String.valueOf(idInstitucion)%>"/>

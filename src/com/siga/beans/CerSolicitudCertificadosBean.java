@@ -21,6 +21,7 @@ public class CerSolicitudCertificadosBean extends MasterBean
 	private Integer idTipoEnvios;
 	private Integer idInstitucionOrigen;
 	private Integer idInstitucionDestino;
+	private String 	metodoSolicitud;
 	private Long idPeticionProducto;
 
 	private String contadorCer;
@@ -63,6 +64,7 @@ public class CerSolicitudCertificadosBean extends MasterBean
 	static public final String C_FECHAENVIO = "FECHAENVIO";
 	static public final String C_COMENTARIO = "COMENTARIO";
 	static public final String C_FECHAENTREGAINFO = "FECHAENTREGAINFO";
+	static public final String C_IDMETODOSOLICITUD = "IDMETODOSOLICITUD";
 
 	static public final String T_NOMBRETABLA = "CER_SOLICITUDCERTIFICADOS";
 
@@ -304,5 +306,11 @@ public class CerSolicitudCertificadosBean extends MasterBean
 	}
 	public void setFechaEntregaInfo(String fechaFechaEntregaInfo) {
 		this.fechaEntregaInfo = fechaFechaEntregaInfo;
+	}
+	public String getMetodoSolicitud() {
+		return metodoSolicitud;
+	}
+	public void setMetodoSolicitud(String metodoSolicitud) {
+		this.metodoSolicitud = metodoSolicitud;
 	}
 }

@@ -133,6 +133,7 @@ public class TagBotonesAccion extends TagSupport {
 	private boolean generarExcels;
 	private boolean comunicar;
 	private boolean isDescargaEejg;
+	private boolean generarEtiquetas;
 	
 
 /**
@@ -191,6 +192,7 @@ public class TagBotonesAccion extends TagSupport {
 			cerrarPago=false;
 			definirCriterio=false;
 			generarImpreso190=false;
+			generarEtiquetas = false;
 			download=false;
 			aceptar=false;
 			descargas=false;
@@ -346,6 +348,8 @@ public class TagBotonesAccion extends TagSupport {
 				}
 				else if (tipo.equalsIgnoreCase("gi")) {
 					generarImpreso190=true;
+				}else if (tipo.equalsIgnoreCase("get")) {
+					generarEtiquetas=true;
 				}
 				else if (tipo.equalsIgnoreCase("d")) {
 					download=true;
@@ -1002,6 +1006,13 @@ public class TagBotonesAccion extends TagSupport {
 				out.println("<td class=\"tdBotones\">");
 				out.print("<input type=\"button\" alt=\""+UtilidadesString.getMensajeIdioma(usrbean, "general.boton.generarImpreso") +"\"  id=\"idButton\" onclick=\"return accionGenerarImpreso();\" class=\"button\" value=\"");
 				out.print(UtilidadesString.getMensajeIdioma(usrbean,"general.boton.generarImpreso"));
+				out.println("\">");
+				out.println("</td>");
+			}
+			if (generarEtiquetas && tipoAcceso.equalsIgnoreCase(SIGAPTConstants.ACCESS_FULL) && this.valoresEdicion.contains(this.modo)) {
+				out.println("<td class=\"tdBotones\">");
+				out.print("<input type=\"button\" alt=\""+UtilidadesString.getMensajeIdioma(usrbean, "general.boton.generarEtiquetas") +"\"  id=\"idButton\" onclick=\"return accionGenerarEtiquetas();\" class=\"button\" value=\"");
+				out.print(UtilidadesString.getMensajeIdioma(usrbean,"general.boton.generarEtiquetas"));
 				out.println("\">");
 				out.println("</td>");
 			}

@@ -194,7 +194,7 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 			
 			// Select tabla factura en disco
 			String select2 = " SELECT 'FACTURA_EN_DISCO' AS TABLA, " + 
-							   FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_FECHADEVOLUCION + " AS FECHA, " +
+							   FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_FECHACREACION + " AS FECHA, "+							   
 							   FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_IMPORTE + " AS IMPORTE, " +
 							   FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_DEVUELTA + " AS DEVUELTA, " +
 							   "'' AS TARJETA, " +
@@ -208,9 +208,11 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
                                " and  cuenta."+CenCuentasBancariasBean.C_IDPERSONA+"="+idPersona+
                                " and cuenta."+CenCuentasBancariasBean.C_IDCUENTA+"="+FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA+"."+ FacFacturaIncluidaEnDisqueteBean.C_IDCUENTA+") as NOMBREBANCO";
 
-			String from2 = 	" FROM " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA; 
+			String from2 = 	" FROM " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "," +  FacDisqueteCargosBean.T_NOMBRETABLA;
 
-			String where2 = " WHERE " + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = " + idInstitucion + 
+			String where2 = " WHERE "  + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = " +  FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDINSTITUCION +
+	                        " AND "+ FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_IDDISQUETECARGOS + " = " +  FacDisqueteCargosBean.T_NOMBRETABLA + "." + FacDisqueteCargosBean.C_IDDISQUETECARGOS+
+				            " AND "+ FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_IDINSTITUCION + " = " + idInstitucion + 
 							" AND "   + FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_IDFACTURA + " = '" + idFactura + "'";
 
 			String consulta2 = select2 + from2 + where2;

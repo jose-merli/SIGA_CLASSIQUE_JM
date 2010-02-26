@@ -15,9 +15,9 @@ package com.siga.beans;
 public class PysProductosSolicitadosBean extends MasterBean{
 
 	/* Variables */
-	private Integer idInstitucion, idInstitucionOrigen, idTipoProducto, idCuenta, idFormaPago, cantidad, idTipoEnvios;
+	private Integer idInstitucion, idInstitucionOrigen, idTipoProducto, idCuenta, idFormaPago, cantidad, idTipoEnvios, metodoSolicitud;
 	private Long 	idProducto, idProductoInstitucion, idPeticion, idPersona, idDireccion;
-	private String 	aceptado,noFacturable;	
+	private String 	aceptado,noFacturable, fechaSolicitud;	
 	private Double 	valor;
 	private Float 	iva;
 	
@@ -27,7 +27,7 @@ public class PysProductosSolicitadosBean extends MasterBean{
 	
 	/* Nombre campos de la tabla */
 	static public final String C_IDINSTITUCION        	= "IDINSTITUCION";
-	static public final String C_IDINSTITUCIONORIGEN       	= "IDINSTITUCIONORIGEN";
+	static public final String C_IDINSTITUCIONORIGEN	= "IDINSTITUCIONORIGEN";
 	static public final String C_IDTIPOPRODUCTO			= "IDTIPOPRODUCTO";
 	static public final String C_IDPRODUCTO				= "IDPRODUCTO";
 	static public final String C_IDPRODUCTOINSTITUCION	= "IDPRODUCTOINSTITUCION";
@@ -42,6 +42,8 @@ public class PysProductosSolicitadosBean extends MasterBean{
 	static public final String C_IDTIPOENVIOS			= "IDTIPOENVIOS";
 	static public final String C_IDDIRECCION			= "IDDIRECCION";
 	static public final String C_NOFACTURABLE			= "NOFACTURABLE";
+	static public final String C_FECHASOLICITUD			= "FECHARECEPCIONSOLICITUD";
+	static public final String C_METODOSOLICITUD		= "METODORECEPCIONSOLICITUD";
 	
 	// Metodos SET	
 	public void setNoFacturable(String noFacturable) 		{this.noFacturable = noFacturable;}
@@ -60,6 +62,8 @@ public class PysProductosSolicitadosBean extends MasterBean{
 	public void setPorcentajeIVA(Float iva)					{this.iva = iva;}
 	public void setIdTipoEnvios(Integer tipoEnvios)			{this.idTipoEnvios = tipoEnvios;}	
 	public void setIdDireccion(Long direccion)				{this.idDireccion = direccion;}
+	public void setMetodoSolicitud(Integer metodoSolicitud)	{this.metodoSolicitud = metodoSolicitud;}	
+	public void setFechaSolicitud(String fechaSolicitud)	{this.fechaSolicitud = fechaSolicitud;}
 	
 	// Metodos GET
 	
@@ -69,7 +73,7 @@ public class PysProductosSolicitadosBean extends MasterBean{
 	public Integer getIdCuenta() 			{return idCuenta;}
 	public Integer getIdFormaPago() 		{return idFormaPago;}
 	public Integer getIdInstitucion() 		{return idInstitucion;}
-	public Integer getIdInstitucionOrigen() 		{return idInstitucionOrigen;}
+	public Integer getIdInstitucionOrigen() {return idInstitucionOrigen;}
 	public Long getIdPersona() 				{return idPersona;}
 	public Long getIdPeticion() 			{return idPeticion;}
 	public Long getIdProducto() 			{return idProducto;}
@@ -79,4 +83,6 @@ public class PysProductosSolicitadosBean extends MasterBean{
 	public Float getPorcentajeIVA()			{return iva;}
 	public Integer getIdTipoEnvios()		{return this.idTipoEnvios;}	
 	public Long getIdDireccion()			{return this.idDireccion;}
+	public String getFechaSolicitud()		{return this.fechaSolicitud;}	
+	public Integer getMetodoSolicitud()		{return this.metodoSolicitud;}
 }

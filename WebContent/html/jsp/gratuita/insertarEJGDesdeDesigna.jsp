@@ -163,7 +163,7 @@
 	<html:hidden property = "designaNumero" value = "<%=numeroDesigna%>"/>
 	<html:hidden property = "designaAnio" value = "<%=anioDesigna%>"/>
 	<html:hidden property = "designaIdTurno" value = "<%=designaIdTurno%>"/>
-	<html:hidden property = "origenApertura" value = "M"/>
+	<html:hidden property = "origenApertura" value = "O"/>
 	<html:hidden property = "tipoLetrado" value = "M"/>	
 	<html:hidden property = "idInstitucion" value ="<%=usr.getLocation()%>"/>
 	<html:hidden property = "usuMod" value = "<%=usr.getUserName()%>"/>

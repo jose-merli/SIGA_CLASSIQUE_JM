@@ -295,7 +295,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 	 * @param ActionMapping mapping Mapeador de las acciones.
 	 * @param MasterForm formulario: formulario del que se recoge la información.
 	 * @param HttpServletRequest request: información de entrada de la pagina original.
-	 * @param HttpServletResponse response: información de salida para la pagina destino. 
+	 * @param HttpServletResponse response: información de salida opara la pagina destino. 
 	 * 
 	 * @return String que indicará la siguiente acción a llevar a cabo. 
 	 */
@@ -303,6 +303,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 		DefinirCalendarioGuardiaForm miForm = (DefinirCalendarioGuardiaForm) formulario;
 		ScsGuardiasColegiadoAdm admGuardiasColegiado = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
 		ScsCabeceraGuardiasAdm cabecerasAdm = new ScsCabeceraGuardiasAdm(this.getUserBean(request));
+		ScsPermutaGuardiasAdm  permutasAdm= new ScsPermutaGuardiasAdm (this.getUserBean(request));
 
 		String forward = "",nombre="";
 		Vector visibles = new Vector();
@@ -311,7 +312,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 		Vector temporal = new Vector();
 		Vector letradoSustituido = new Vector();
 		String fechaInicio="", fechaFin="", numeroColegiado="";
-
+	
 		try {
 			if (miForm.getAccion()!=null && (miForm.getAccion().equals("modalReserva")||miForm.getAccion().equals("modalGuardia")||miForm.getAccion().equals("modalGuardiaVolantes")||miForm.getAccion().equals("modalConsultaCenso"))) {		
 
@@ -346,10 +347,10 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 				}else if(miForm.getAccion().equals("modalConsultaCenso")){
 					fechaInicio = (String)ocultos.get(3);
 					fechaInicio=GstDate.getFormatedDateShort(this.getUserBean(request).getLanguage(),fechaInicio);
-
+					fechaFin = (String)visibles.get(1);		
 					//Almacenamos los datos necesarios en el request
 					miForm.setFechaInicio(fechaInicio);
-
+					miForm.setFechaFin(fechaFin);
 					//Datos para consultar las guardias:			
 					idCalendario = (String)ocultos.get(0);
 					idTurno = (String)ocultos.get(1);
@@ -389,40 +390,6 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 					idPersona = (String)ocultos.get(4);
 				}
 
-
-				String sql ="SELECT C.COMENSUSTITUCION as COMENSUSTITUCION,trunc(C.FECHASUSTITUCION) as FECHASUSTITUCION,C.LETRADOSUSTITUIDO as LETRADOSUSTITUIDO FROM SCS_CABECERAGUARDIAS C" +
-				" WHERE IDPERSONA = "+idPersona+
-				"   AND FECHAINICIO =" +
-				"       TO_DATE('"+GstDate.getApplicationFormatDate(this.getUserBean(request).getLanguage(),fechaInicio)+"', 'YYYY/MM/DD HH24:MI:SS')" +
-				"   AND IDGUARDIA = "+idGuardia+
-				"   AND IDTURNO = "+idTurno+
-				"   AND IDINSTITUCION ="+idInstitucion+
-				"   and IDCALENDARIOGUARDIAS="+idCalendario+
-				" ORDER BY IDINSTITUCION," +
-				"          IDTURNO," +
-				"          IDGUARDIA," +
-				"          IDCALENDARIOGUARDIAS," +
-				"          IDPERSONA," +
-				"          FECHAINICIO";					
-
-				cabecera=cabecerasAdm.selectGenerico(sql);
-				if(cabecera!=null || cabecera.size()>0){
-					if((String)((Hashtable)cabecera.get(0)).get("LETRADOSUSTITUIDO")!=null && !((String)((Hashtable)cabecera.get(0)).get("LETRADOSUSTITUIDO")).equals("")){
-						String consulta="select p.nombre||' '||p.apellidos1||' '||p.apellidos2 as NOMBRE from cen_persona p where p.idpersona="+(String)((Hashtable)cabecera.get(0)).get("LETRADOSUSTITUIDO");
-						letradoSustituido=cabecerasAdm.selectGenerico(consulta);
-						if(letradoSustituido!=null  || letradoSustituido.size()>0){
-							nombre=(String)(((Hashtable)(letradoSustituido.get(0))).get("NOMBRE"));
-							request.setAttribute("LETRADOSUSTITUIDO",nombre);
-						}else{
-							request.setAttribute("LETRADOSUSTITUIDO","-");
-						}
-					}else{
-						request.setAttribute("LETRADOSUSTITUIDO","-");
-					}
-					request.setAttribute("COMENTARIO",(String)((Hashtable)cabecera.get(0)).get("COMENSUSTITUCION"));
-					request.setAttribute("FECHASUSTITUCION",GstDate.getFormatedDateShort(this.getLenguaje(request),(String)((Hashtable)cabecera.get(0)).get("FECHASUSTITUCION")));
-				}
-
 				//Consulto las guardias del periodo:
 				StringBuffer where = new StringBuffer();
 				where.append(" WHERE "+ScsGuardiasColegiadoBean.C_IDINSTITUCION+"="+idInstitucion);
@@ -447,6 +414,149 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 					i++;
 				}
 				miForm.setGuardiasPeriodo(guardiasPeriodo.toString());
+				
+			
+				//Datos necesarios para sacar el letrado sustituido, el letrado permutado, ademas de el letrado que sustituye.
+				//Datos del Solicitante
+				Hashtable solicitanteHash = new Hashtable();	
+				Hashtable solicitupermutaHash = new Hashtable();
+				Vector registros = new Vector();	
+				Vector registroPermuta = new Vector();
+				String nombresustituto="";
+				String ncolegiadoSustituto="";
+				String comesustitutucion="";
+				String fechaSustitucion="";
+				String idletradoConfir="";
+				Vector idletradoconfirmador = new Vector();
+				
+				solicitanteHash.put("IDINSTITUCION",idInstitucion);
+				solicitanteHash.put("IDTURNO",idTurno);
+				solicitanteHash.put("IDGUARDIA",idGuardia);
+				solicitanteHash.put("IDCALENDARIOGUARDIAS",idCalendario);
+				solicitanteHash.put("IDPERSONA",idPersona);
+				solicitanteHash.put("FECHAINICIO",fechaInicio);				
+				registros.clear();	
+				//busco los datos del solicitante
+				registros = cabecerasAdm.selectGenerico(cabecerasAdm.getDatosColegiadoFormateadoNombre(solicitanteHash));
+				solicitanteHash.put("NOMBREYAPELLIDOS",UtilidadesHash.getString((Hashtable)registros.get(0),"NOMBRE"));
+				solicitanteHash.put("NUMEROCOLEGIADO",UtilidadesHash.getString((Hashtable)registros.get(0),CenColegiadoBean.C_NCOLEGIADO));				
+				request.setAttribute("SOLICITANTE",solicitanteHash);
+				String nombreSolicitante=UtilidadesHash.getString((Hashtable)registros.get(0),"NOMBRE");
+				String ncolegiadoSolicitante=UtilidadesHash.getString((Hashtable)registros.get(0),CenColegiadoBean.C_NCOLEGIADO);
+				String datosSolicitante = ncolegiadoSolicitante+"  "+ nombreSolicitante;
+				
+				if ((nombreSolicitante!=null)&&(ncolegiadoSolicitante!=null)){
+						miForm.setDatosPersSolicitante(datosSolicitante);				
+				 }else 
+					miForm.setDatosPersSolicitante(" ");				
+				
+				//letrado sustituido
+				registros = cabecerasAdm.selectGenerico(cabecerasAdm.getDatosSustituto(solicitanteHash));
+				if(registros!=null || registros.size()>0){
+					if((String)((Hashtable)registros.get(0)).get("LETRADOSUSTITUIDO")!=null && !((String)((Hashtable)registros.get(0)).get("LETRADOSUSTITUIDO")).equals("")){					
+						String nombresustitucion=UtilidadesHash.getString((Hashtable)registros.get(0),"LETRADOSUSTITUIDO");						                       
+						 letradoSustituido= cabecerasAdm.selectGenerico(cabecerasAdm.getnombresustituto(nombresustitucion, idInstitucion));						
+						if(letradoSustituido!=null  || letradoSustituido.size()>0){
+							nombresustituto=(String)(((Hashtable)(letradoSustituido.get(0))).get("NOMBRE"));
+							ncolegiadoSustituto=(String)(((Hashtable)(letradoSustituido.get(0))).get("NCOLEGIADOSUSTITUTO"));
+							request.setAttribute("LETRADOSUSTITUIDO",nombresustituto);							
+						}else{
+							request.setAttribute("LETRADOSUSTITUIDO","-");
+						}
+					}else{
+						request.setAttribute("LETRADOSUSTITUIDO","-");
+					}
+					request.setAttribute("COMENTARIO",(String)((Hashtable)registros.get(0)).get("COMENSUSTITUCION"));
+					request.setAttribute("FECHASUSTITUCION",GstDate.getFormatedDateShort(this.getLenguaje(request),(String)((Hashtable)registros.get(0)).get("FECHASUSTITUCION")));				
+					comesustitutucion=UtilidadesHash.getString((Hashtable)registros.get(0),"COMENSUSTITUCION");
+					fechaSustitucion=UtilidadesHash.getString((Hashtable)registros.get(0),"FECHASUSTITUCION");
+					fechaSustitucion=GstDate.getFormatedDateShort(this.getLenguaje(request),fechaSustitucion);
+					
+				}				
+				//Aqui guardamos en nuestro formulario los datos que necesitamos que salga en nuestra jsp.	
+				//Ademas verificamos si es una PERMUTA o si es una sustitución
+				if (comesustitutucion.equals("Permuta")){
+					miForm.setDatosPersSustituto(" ");
+					miForm.setComentarioSustituto(" ");
+					miForm.setFechaSustituto("-");					
+				}else{
+					String datosSustituto="";
+					datosSustituto+=ncolegiadoSustituto+"  "+nombresustituto;
+					miForm.setDatosPersSustituto(datosSustituto);										
+					miForm.setComentarioSustituto(comesustitutucion);
+					miForm.setFechaSustituto(fechaSustitucion);
+				}
+				
+				//informacion de letrado sustituido.				
+				Hashtable<String, Object> htPermutas = permutasAdm.buscarPermutaConfirmadorSolicitante(idInstitucion,idTurno,idPersona,idGuardia, idCalendario, fechaInicio);				
+				ScsPermutaGuardiasBean permutaBean = (ScsPermutaGuardiasBean) permutasAdm.hashTableToBean(htPermutas);
+				miForm.setPermutaGuardias(permutaBean.getPermutaGuardiasForm());
+				//Datos del formulario
+				String comunitario = UtilidadesHash.getString(htPermutas,"COMUNITARIO");	
+				String nombrePermutado = UtilidadesHash.getString(htPermutas,"NOMBRECONFIRMADOR");				
+				String motivoConfirmador = UtilidadesHash.getString(htPermutas,"MOTIVOSCONFIRMADOR");
+				String numeroConfirmador = UtilidadesHash.getString(htPermutas,"NUMEROCONFIRMADOR");
+				String fechaInicioConfirmador=UtilidadesHash.getString(htPermutas,"FECHAINICIO_CONFIRMADOR");
+				String fechaConfirmacion=UtilidadesHash.getString(htPermutas,"FECHACONFIRMACION");
+				String fechaSolicitud=UtilidadesHash.getString(htPermutas,"FECHASOLICITUD");
+				fechaInicioConfirmador = GstDate.getFormatedDateShort(this.getLenguaje(request),fechaInicioConfirmador); 
+				fechaConfirmacion=GstDate.getFormatedDateShort(this.getLenguaje(request),fechaConfirmacion);
+				fechaSolicitud=GstDate.getFormatedDateShort(this.getLenguaje(request),fechaSolicitud);
+				idletradoConfir=UtilidadesHash.getString(htPermutas,"IDPERSONA");
+				//IDconfirmador, se necesita para saber el rango que tiene permutado.
+				if (comunitario!=null){					
+					solicitupermutaHash.put("IDINSTITUCION",idInstitucion);
+					solicitupermutaHash.put("IDTURNO",idTurno);
+					solicitupermutaHash.put("IDGUARDIA",idGuardia);
+					solicitupermutaHash.put("IDCALENDARIOGUARDIAS",idCalendario);
+					solicitupermutaHash.put("IDPERSONA",idletradoConfir);
+					solicitupermutaHash.put("FECHAINICIO",fechaInicioConfirmador);				
+					registroPermuta.clear();				
+					registroPermuta= cabecerasAdm.selectGenerico(cabecerasAdm.getRangopermutas(solicitupermutaHash));					
+					if (registroPermuta.size()>0){
+						String fechainiciopermuta= GstDate.getFormatedDateShort(this.getLenguaje(request),UtilidadesHash.getString((Hashtable)registroPermuta.get(0),"FECHAINICIO"));
+						String fechafinpermuta= GstDate.getFormatedDateShort(this.getLenguaje(request),UtilidadesHash.getString((Hashtable)registroPermuta.get(0),"FECHA_FIN"));				
+						String fechas=fechainiciopermuta+" - " + fechafinpermuta;				
+						miForm.setPeriodoPermuta(fechas);
+					}else 
+						miForm.setPeriodoPermuta(" ");					
+				}else
+					miForm.setPeriodoPermuta(" ");
+				
+				
+
+				
+				if ((fechaInicio!=null)&&(fechaFin!=null)){
+					String fechaguardia=fechaInicio+" - " +fechaFin;				
+					miForm.setPeriodos(fechaguardia);	
+				}else 
+					miForm.setPeriodos(" ");
+				
+				if (fechaSolicitud!=""){
+					miForm.setFechaSolicitud(fechaSolicitud);
+				}else
+					miForm.setFechaSolicitud("-");
+				
+				if (fechaInicioConfirmador!=""){
+					miForm.setFechaConfirmacion(fechaConfirmacion);
+				}else
+					miForm.setFechaConfirmacion("");
+				
+				
+				if ((numeroConfirmador!=null)&&(nombrePermutado!=null)){
+					String datosConfirmador="";
+					       datosConfirmador+=numeroConfirmador+"  "+ nombrePermutado;
+					miForm.setDatosPersPermutada(datosConfirmador);
+				}else 
+					miForm.setDatosPersPermutada(" ");
+				
+				if (motivoConfirmador!=null){
+					miForm.setMotivosSolicitante(motivoConfirmador);
+				}else 
+            	   miForm.setMotivosSolicitante(" ");				
+			
+				request.setAttribute("permutaGuardias", permutaBean);				
+			
 				forward = "modalConsulta";
 			} else
 				forward = this.editar(mapping,formulario,request,response);

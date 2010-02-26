@@ -1,4 +1,5 @@
 <!-- asignarPlantillaCertificado2.jsp -->
+<!-- Certificado ordinario -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -16,6 +17,7 @@
 <%@ page import = "com.atos.utils.*"%>
 <%@ page import = "com.siga.general.*"%>
 <%@ page import="java.util.Properties"%>
+<%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
 <%
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
@@ -29,6 +31,11 @@
 	String idBoton=(String)request.getAttribute("idBoton");
 
 	String paramInstitucion[] = {idInstitucion};
+	
+	String fechaSolicitud = UtilidadesBDAdm.getFechaBD("");
+	
+	ArrayList aMetodoSol = new ArrayList();
+	aMetodoSol.add(1);
 %>
 
 <html>
@@ -36,6 +43,8 @@
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 
 		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<!-- Para el calendario -->
+		<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 
 		<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 		<script language="JavaScript">
@@ -52,6 +61,8 @@
 			//var aux=document.forms[0].idPlantilla.value;
 			var aux2=document.forms[0].idInstitucionPresentador.value;
 			var aux3=document.forms[0].idProductoCertificado.value;
+			var metodo = document.forms[0].metodoSolicitud.value;
+			var fecha = document.forms[0].fechaSolicitud.value;
 			if(aux3=="")
 			{
 				var mensaje = "<siga:Idioma key="certificados.mantenimiento.literal.productoCertificado"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
@@ -77,6 +88,8 @@
 			//a[0]=aux;
 			a[0]=aux2;
 			a[1]=aux3;
+			a[2]=metodo;
+			a[3]=fecha;
 
 			top.cierraConParametros(a);
 		}
@@ -98,35 +111,37 @@
 			<table class="tablaCentralCamposPeque" align="center">
 				<form name="x">
 				<tr>
-								<td class="labelText">
-									<siga:Idioma key="certificados.mantenimiento.literal.productoCertificado"/>&nbsp(*)
-								</td>
-								<td>
-									<siga:ComboBD nombre="idProductoCertificado" tipo="cmbCertificadosOrdinadios" clase="boxCombo" parametro="<%=paramInstitucion %>" obligatorio="true"/>
-								</td>
+					<td class="labelText">
+						<siga:Idioma key="certificados.mantenimiento.literal.productoCertificado"/>&nbsp(*)
+					</td>
+					<td>
+						<siga:ComboBD nombre="idProductoCertificado" tipo="cmbCertificadosOrdinadios" clase="boxCombo" parametro="<%=paramInstitucion %>" obligatorio="true"/>
+					</td>
 				</tr>
-<!--				
 				<tr>
-								<td class="labelText">
-									<siga:Idioma key="certificados.mantenimiento.literal.plantilla"/>&nbsp(*)
-								</td>
-								<td>
-									<siga:ComboBD nombre="idPlantilla" tipo="cmbCerPlantillasCompuesto" clase="boxCombo" obligatorio="true" hijo="t"/>
-								</td>
+					<td class="labelText">
+						<siga:Idioma key="pys.solicitudCompra.literal.presentador"/>&nbsp;(*)
+					</td>
+					<td>
+						<siga:ComboBD nombre="idInstitucionPresentador" tipo="cmbInstitucionesAbreviadas" clase="boxCombo" readonly="false" obligatorio="true" />									
+					</td>
 				</tr>
--->				
+				<tr>	
+					<td class="labelText">
+						<siga:Idioma key="certificados.solicitudes.literal.fechaSolicitud"/>
+					</td>				
+					<td>
+						<siga:Fecha nombreCampo="fechaSolicitud" valorInicial="<%=fechaSolicitud%>"></siga:Fecha>&nbsp;
+						<a onClick="return showCalendarGeneral(fechaSolicitud);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+					</td>
+				</tr>
 				<tr>
-								<td class="labelText">
-									<siga:Idioma key="pys.solicitudCompra.literal.presentador"/>&nbsp;(*)
-								</td>
-								<td>
-									<siga:ComboBD nombre="idInstitucionPresentador" 
-														tipo="cmbInstitucionesAbreviadas" 
-														clase="boxCombo"
-														readonly="false"
-														obligatorio="true"
-														/>									
-								</td>
+					<td class="labelText">
+						<siga:Idioma key="certificados.solicitudes.literal.metodoSolicitud"/>
+					</td>				
+					<td>
+						<siga:ComboBD nombre="metodoSolicitud" tipo="comboMetodoSolicitud" obligatorio="false" ElementoSel="<%=aMetodoSol%>" clase="boxCombo"/>
+					</td>
 				</tr>
 				</form>		
 			</table>

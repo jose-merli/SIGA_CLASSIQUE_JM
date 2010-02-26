@@ -23,6 +23,8 @@
 	String idInstitucionX=(String)request.getAttribute("idInstitucionX");
 	String idPersonaX=(String)request.getAttribute("idPersonaX");
 	String idBoton=(String)request.getAttribute("idBoton");
+	String metodoSolicitud=(String)request.getAttribute("metodoSolicitud");
+	String fechaSolicitud=(String)request.getAttribute("fechaSolicitud");
 
 	
 	
@@ -37,6 +39,12 @@
 			
 			if (ret[0]!=undefined) {
 				document.DummyForm.idProductoCertificado.value=ret[0];
+			}
+			if (ret[2]!=undefined) {
+				document.DummyForm.metodoSolicitud.value=ret[2];
+			}
+			if (ret[1]!=undefined) {
+				document.DummyForm.fechaSolicitud.value=ret[1];
 			}
 			document.DummyForm.modo.value="insertarCompraColegio";
 			document.DummyForm.submit();
@@ -55,6 +63,9 @@
 	<input type="hidden" name="idBoton" value="<%=idBoton %>">
 	<input type="hidden" name="idPersona" value="<%=idPersonaX%>">
 	<input type="hidden" name="idInstitucion" value="<%=idInstitucionX%>">
+	<!-- Añadidos para el cambio 6361,6362 -->
+	<input type="hidden" name="fechaSolicitud" value="<%=fechaSolicitud%>">
+	<input type="hidden" name="metodoSolicitud" value="<%=metodoSolicitud%>">
 </html:form>
 
 </body>

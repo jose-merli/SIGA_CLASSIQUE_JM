@@ -156,7 +156,10 @@ public class GenClientesTemporalAdm extends MasterBeanAdministrador {
 			//LLamo al PL que me inserta en una tabla temporal los letrados para hacer las guardias con un indice posicion + idinstitucion
 		    String resultado[] = new String[3];
 		    //Ejecucion del PL
-		    resultado = EjecucionPLs.ejecutarPL_OrdenaColegiadosGuardia(idInstitucion, idTurno, idGuardia);
+		    if (idGuardia == null)
+			    resultado = EjecucionPLs.ejecutarPL_OrdenaColegiadosTurno(idInstitucion, idTurno, new Integer(0));
+		    else
+		    	resultado = EjecucionPLs.ejecutarPL_OrdenaColegiadosGuardia(idInstitucion, idTurno, idGuardia, new Integer(0));
 		
 		    //Si el resultado del segundo parametro es 0 todo ha ido bien: guardo la posicion.
 		    if (resultado[1]!=null && resultado[1].equals("0")) {

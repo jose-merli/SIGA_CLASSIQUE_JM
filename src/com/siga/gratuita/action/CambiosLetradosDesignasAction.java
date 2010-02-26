@@ -291,168 +291,185 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 		return "nuevo";
 
 		}
-
+	
 	/** 
-	 *  Funcion que atiende la accion insertar
-	 * @param  mapping - Mapeo de los struts
-	 * @param  formulario -  Action Form asociado a este Action
-	 * @param  request - objeto llamada HTTP 
-	 * @param  response - objeto respuesta HTTP
-	 * @return  String  Destino del action  
-	 * @exception  ClsExceptions,SIGAException   En cualquier caso de error
+	 * Atiende la accion insertar: inserta el cambio de letrado y 
+	 * realiza todas las operaciones asociadas
 	 */
-	protected synchronized String insertar(	ActionMapping mapping, MasterForm formulario,
-			HttpServletRequest request, HttpServletResponse response)
-	throws ClsExceptions,SIGAException  {
-		
+	protected synchronized String insertar (ActionMapping mapping,
+											MasterForm formulario,
+											HttpServletRequest request,
+											HttpServletResponse response)
+		throws ClsExceptions, SIGAException
+	{
+		//Controles generales
 		HttpSession ses = request.getSession();
-		UsrBean usr = (UsrBean)ses.getAttribute("USRBEAN");
-		CambiosLetradosDesignasForm miform = (CambiosLetradosDesignasForm)formulario;
-		UserTransaction tx=null;
-		boolean ok=false;
+		UsrBean usr = this.getUserBean(request);
+		ScsDesignasLetradoAdm designaAdm = new ScsDesignasLetradoAdm(usr);
+		BusquedaClientesFiltrosAdm admFiltros = new BusquedaClientesFiltrosAdm(usr);
 		
-		String nombreApellidos = null;
-		String numColegiadoAutomatico = null;
+		//Variables de salida
+		String nombreColAutomatico = null;
+		String numeroColAutomatico = null;		
+		String mensaje = "";
 		
-		Integer user=this.getUserName(request);
-		String instit=usr.getLocation();
-		String anio=miform.getAnio();
-		String numero=miform.getNumero();
-		String turno=miform.getIdTurno();
-		String idPersona=miform.getIdPersona();
-		String fCambio=miform.getAplFechaDesigna();
-		String motivo=miform.getIdTipoMotivo();
-		String observ=miform.getObservaciones();
-		String idPersonaSaliente="";
-		String compensacion = null;
+		//Variables generales
+		UserTransaction tx = null;
 		
-		//Obtención parametros de la busqueda SJCS 
-		String flagSalto = 			request.getParameter("flagSalto");
-		String compensacionActual = request.getParameter("compensacionActual");
-		boolean bCompensacion  = UtilidadesString.stringToBoolean(compensacionActual);
-		if (bCompensacion){
-			compensacionActual=ClsConstants.DB_TRUE;
-		}else{
-			compensacionActual=ClsConstants.DB_FALSE;
-		}
-		
-		String flagCompensacion = 	request.getParameter("flagCompensacion");
-		String checkSalto = 		request.getParameter("checkSalto");
-		
-		String msgOrigen = 			UtilidadesString.getMensajeIdioma(usr,"gratuita.modalCambioLetradoDesigna.titulo"); 
-		String motivoSalto = 		UtilidadesString.getMensajeIdioma(usr,"gratuita.literal.insertarSaltoPor") +
-									" "+msgOrigen;
-		String motivoCompensacion=	UtilidadesString.getMensajeIdioma(usr,"gratuita.literal.insertarCompensacionPor") +
-									" "+msgOrigen;
-		String cambioMismoDia=request.getParameter("cambioMismoDia");
-		
-		try{
+		try {
+			//Datos de entrada
+			CambiosLetradosDesignasForm miform = (CambiosLetradosDesignasForm) formulario;
+			String idInstitucion = usr.getLocation();
+			String anio = miform.getAnio();
+			String numero = miform.getNumero();
+			String idTurno = miform.getIdTurno();
+			String idPersona = miform.getIdPersona();
+			String fCambio = miform.getAplFechaDesigna();
+			String motivo = miform.getIdTipoMotivo();
+			String observaciones = miform.getObservaciones();
+			String idPersonaSaliente = "";
+			String compensacion = null;
+			String flagSalto = request.getParameter("flagSalto");
+			String compensacionActual = UtilidadesString
+					.stringToBoolean(request.getParameter("compensacionActual")) ?
+							ClsConstants.DB_TRUE :
+							ClsConstants.DB_FALSE;
+			String flagCompensacion = request.getParameter("flagCompensacion");
+			String checkSalto = request.getParameter("checkSalto");
+			String msgOrigen = UtilidadesString.getMensajeIdioma(usr,
+					"gratuita.modalCambioLetradoDesigna.titulo");
+			String motivoSalto = UtilidadesString.getMensajeIdioma(usr,
+					"gratuita.literal.insertarSaltoPor")
+					+ " " + msgOrigen;
+			String motivoCompensacion = UtilidadesString.getMensajeIdioma(usr,
+					"gratuita.literal.insertarCompensacionPor")
+					+ " " + msgOrigen;
+			String cambioMismoDia = request.getParameter("cambioMismoDia");
 			
-			tx=usr.getTransaction();
+			
+			//iniciando transaccion
+			tx = usr.getTransaction();
 			tx.begin();
-			BusquedaClientesFiltrosAdm admFiltros = new BusquedaClientesFiltrosAdm(this.getUserBean(request));
+			
+			
+			//calculando letrado automatico si no ha sido seleccionado manualmente
 			if (idPersona == null || idPersona.trim().equals("")) {
-				BusquedaClientesFiltrosAdm busquedaClientesFiltrosAdm= new BusquedaClientesFiltrosAdm();
-				Row row = busquedaClientesFiltrosAdm.gestionaDesignacionesAutomaticas(usr.getLocation(), miform.getIdTurno());
-				idPersona = (String)row.getValue(ScsDesignasLetradoBean.C_IDPERSONA);
-				compensacion = (String)row.getValue(ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION);
-				numColegiadoAutomatico = (String)row.getValue(CenColegiadoBean.C_NCOLEGIADO);
-				nombreApellidos = (String)row.getValue(CenPersonaBean.C_NOMBRE);
-				String apellido1 = (String)row.getValue(CenPersonaBean.C_APELLIDOS1);
-				if (apellido1 != null) {
-					nombreApellidos += " " + apellido1;	
-				}
-				
-				String apellido2 = (String)row.getValue(CenPersonaBean.C_APELLIDOS2);
+				Row row = new BusquedaClientesFiltrosAdm()
+						.gestionaDesignacionesAutomaticas(idInstitucion, idTurno);
+				idPersona = (String) row.getValue(ScsDesignasLetradoBean.C_IDPERSONA);
+				compensacion = (String) row.getValue(ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION);
+				String nombre = (String) row.getValue(CenPersonaBean.C_NOMBRE);
+				String apellido1 = (String) row.getValue(CenPersonaBean.C_APELLIDOS1);
+				String apellido2 = (String) row.getValue(CenPersonaBean.C_APELLIDOS2);
+
+				numeroColAutomatico = (String) row.getValue(CenColegiadoBean.C_NCOLEGIADO);
+				if (apellido1 != null)
+					nombreColAutomatico = apellido1;
 				if (apellido2 != null) {
-					nombreApellidos += " " + apellido2;	
+					if (nombreColAutomatico != null)
+						nombreColAutomatico += " ";
+					nombreColAutomatico += apellido2;
+				}
+				if (nombre != null) {
+					if (nombreColAutomatico != null)
+						nombreColAutomatico += ", ";
+					nombreColAutomatico += nombre;
 				}
 			}
 			
-			
-			ScsDesignasLetradoAdm designaAdm = new ScsDesignasLetradoAdm(this.getUserBean(request));
-			Hashtable datos=(Hashtable)ses.getAttribute("DATABACKUP_CLD");
-			if(datos!=null){
-				idPersonaSaliente=(String)datos.get(ScsDesignasLetradoBean.C_IDPERSONA);
-				
-				// HASH DE MODIFICACION para el que actualmente estaba asignado
-				Hashtable designaActual= (Hashtable)datos.clone();
-				designaActual.put(ScsDesignasLetradoBean.C_FECHARENUNCIA,fCambio);
-				if (cambioMismoDia!=null && cambioMismoDia.equalsIgnoreCase("1") ){
-					//admFiltros.crearSalto(instit,turno,null,idPersonaSaliente,"1", "Salto por cambio de Letrado en el mismo día (Registro Automático)");
-					ScsSaltosCompensacionesAdm adm = new ScsSaltosCompensacionesAdm(this.getUserBean(request));
-					Hashtable hash = new Hashtable();
+			//modificando designacion letrado anterior
+			Hashtable<String, Object> datos = (Hashtable<String, Object>) ses
+					.getAttribute("DATABACKUP_CLD");
+			if (datos != null) {
+				idPersonaSaliente = (String) datos.get(ScsDesignasLetradoBean.C_IDPERSONA);
+				Hashtable<String, Object> designaActual = (Hashtable<String, Object>) datos.clone();
+				designaActual.put(ScsDesignasLetradoBean.C_FECHARENUNCIA, fCambio);
+				if (cambioMismoDia != null && cambioMismoDia.equalsIgnoreCase("1")) {
+					ScsSaltosCompensacionesAdm saltosCompenAdm = new ScsSaltosCompensacionesAdm(usr);
+					Hashtable<String, Object> saltosCompenHash = new Hashtable<String, Object>();
 					String fecha = UtilidadesBDAdm.getFechaBD("");
-					String motivos = UtilidadesString.getMensajeIdioma(this.getUserBean(request), "gratuita.inicio_SaltosYCompensaciones.literal.motivo")+" "+fecha;
-					hash.put(ScsSaltosCompensacionesBean.C_IDINSTITUCION,usr.getLocation());
-					hash.put(ScsSaltosCompensacionesBean.C_IDTURNO,miform.getIdTurno());
-					hash.put(ScsSaltosCompensacionesBean.C_MOTIVOS,motivos);
-					hash.put(ScsSaltosCompensacionesBean.C_IDPERSONA,idPersonaSaliente);
-					hash.put(ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION,ClsConstants.SALTOS);
-					hash.put(ScsSaltosCompensacionesBean.C_IDSALTOSTURNO,adm.getNuevoIdSaltosTurno(usr.getLocation(),miform.getIdTurno()));
-					hash.put(ScsSaltosCompensacionesBean.C_FECHA,fCambio);
-					hash.put(ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO,fCambio);
-					if (!adm.insert(hash)) {
-						throw new ClsExceptions("Error insertando salto: "+ adm.getError());
-					}
-					ok=designaAdm.delete(designaActual); 			
-				}else{
-				  ok=designaAdm.updateDirect(designaActual, designaAdm.getClavesBean(), new String[]{ScsDesignasLetradoBean.C_FECHARENUNCIA});
+					String motivos = UtilidadesString.getMensajeIdioma(usr,
+							"gratuita.inicio_SaltosYCompensaciones.literal.motivo")
+							+ " " + fecha;
+					saltosCompenHash.put(ScsSaltosCompensacionesBean.C_IDINSTITUCION, idInstitucion);
+					saltosCompenHash.put(ScsSaltosCompensacionesBean.C_IDTURNO, idTurno);
+					saltosCompenHash.put(ScsSaltosCompensacionesBean.C_MOTIVOS, motivos);
+					saltosCompenHash.put(ScsSaltosCompensacionesBean.C_IDPERSONA, idPersonaSaliente);
+					saltosCompenHash.put(ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION, ClsConstants.SALTOS);
+					saltosCompenHash.put(ScsSaltosCompensacionesBean.C_IDSALTOSTURNO,
+							saltosCompenAdm.getNuevoIdSaltosTurno(idInstitucion, idTurno));
+					saltosCompenHash.put(ScsSaltosCompensacionesBean.C_FECHA, fCambio);
+					saltosCompenHash.put(ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO, fCambio);
+					if (!saltosCompenAdm.insert(saltosCompenHash))
+						throw new ClsExceptions("Error insertando salto: " + saltosCompenAdm.getError());
+					if (!designaAdm.delete(designaActual))
+						throw new ClsExceptions(designaAdm.getError());
 				}
-				if (!ok) throw new ClsExceptions(designaAdm.getError());
-			
+				else {
+					if (!designaAdm.updateDirect(
+								designaActual,
+								designaAdm.getClavesBean(),
+								new String[] { ScsDesignasLetradoBean.C_FECHARENUNCIA }))
+						throw new ClsExceptions(designaAdm.getError());
+				}
 			}
 			
-			// HASH DE INSERCION para el nuevo
-			Hashtable designaNueva = new Hashtable();
-			designaNueva.put(ScsDesignasLetradoBean.C_IDINSTITUCION,instit);
-			designaNueva.put(ScsDesignasLetradoBean.C_IDTURNO,turno);
-			designaNueva.put(ScsDesignasLetradoBean.C_NUMERO,numero);
-			designaNueva.put(ScsDesignasLetradoBean.C_ANIO,anio);
-			designaNueva.put(ScsDesignasLetradoBean.C_IDPERSONA,idPersona);
-			designaNueva.put(ScsDesignasLetradoBean.C_FECHADESIGNA, fCambio);			
-			designaNueva.put(ScsDesignasLetradoBean.C_IDTIPOMOTIVO,motivo);
-			designaNueva.put(ScsDesignasLetradoBean.C_MANUAL,ClsConstants.DB_FALSE);
-			designaNueva.put(ScsDesignasLetradoBean.C_LETRADODELTURNO,ClsConstants.DB_FALSE);
-			designaNueva.put(ScsDesignasLetradoBean.C_OBSERVACIONES,observ);
+			//insertando designacion letrado nuevo
+			Hashtable<String, Object> designaNueva = new Hashtable<String, Object>();
+			designaNueva.put(ScsDesignasLetradoBean.C_IDINSTITUCION, idInstitucion);
+			designaNueva.put(ScsDesignasLetradoBean.C_IDTURNO, idTurno);
+			designaNueva.put(ScsDesignasLetradoBean.C_NUMERO, numero);
+			designaNueva.put(ScsDesignasLetradoBean.C_ANIO, anio);
+			designaNueva.put(ScsDesignasLetradoBean.C_IDPERSONA, idPersona);
+			designaNueva.put(ScsDesignasLetradoBean.C_FECHADESIGNA, fCambio);
+			designaNueva.put(ScsDesignasLetradoBean.C_IDTIPOMOTIVO, motivo);
+			designaNueva.put(ScsDesignasLetradoBean.C_MANUAL, ClsConstants.DB_FALSE);
+			designaNueva.put(ScsDesignasLetradoBean.C_LETRADODELTURNO, ClsConstants.DB_FALSE);
+			designaNueva.put(ScsDesignasLetradoBean.C_OBSERVACIONES, observaciones);
+			if (!designaAdm.insert(designaNueva))
+				throw new ClsExceptions(designaAdm.getError());
 			
-			ok=designaAdm.insert(designaNueva);
-			if (!ok) throw new ClsExceptions(designaAdm.getError());
+			//actualizando si ha sido un cambio manual o automatico
+			admFiltros.actualizaManualDesigna(idInstitucion, idTurno,
+					idPersona, anio, numero, flagSalto, flagCompensacion);
 			
-			 
-
-			//Primero: Actualiza si ha sido automático o manual (Designaciones)
-			admFiltros.actualizaManualDesigna(instit,turno,idPersona,anio, numero, flagSalto,flagCompensacion);
-
-			if (compensacion == null || !compensacion.trim().equals(ClsConstants.COMPENSACIONES)) { // si no es por compensacion tratamos ultimo
-				//Segundo: Tratamiento de último (Designaciones)
-				admFiltros.tratamientoUltimo(instit,turno,idPersona,flagSalto,flagCompensacion);
+			//cambiando el orden de la cola si no es por compensacion
+			//y solo si el cambio es automatico
+			if ((compensacion == null || !compensacion.trim().equals(ClsConstants.COMPENSACIONES))
+					&& numeroColAutomatico != null) {
+				admFiltros.tratamientoUltimo(idInstitucion, idTurno, idPersona,
+						flagSalto, flagCompensacion);
 			}
 			
-			//Tercero: Generación de salto (Designaciones y asistencias)
-			admFiltros.crearSalto(instit,turno,null,idPersona,checkSalto, motivoSalto);
+			//generando salto
+			admFiltros.crearSalto(idInstitucion, idTurno, null, idPersona,
+					checkSalto, motivoSalto);
 			
-			//Cuarto: Generación de compensación (Designaciones NO ALTAS)
-			admFiltros.crearCompensacion(instit,turno,null,idPersonaSaliente,compensacionActual,motivoCompensacion);
+			//generando compensacion
+			admFiltros.crearCompensacion(idInstitucion, idTurno, null,
+					idPersonaSaliente, compensacionActual, motivoCompensacion);			
 			
-
-			// Se cierra la transacción
+			//finalizando transaccion
 			tx.commit();		
 			
-		}catch(Exception e){
+			
+			//preparando mensaje de salida
+			mensaje = "messages.updated.success";
+			if (numeroColAutomatico != null) {
+				mensaje = UtilidadesString.getMensajeIdioma(usr, mensaje);
+				mensaje += "\r\n"
+						+ UtilidadesString.getMensajeIdioma(
+								usr,
+								"messages.nuevaDesigna.seleccionAutomaticaLetrado",
+								new String[] { numeroColAutomatico,	nombreColAutomatico });
+			}
+		}
+		catch (Exception e) {
 			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 
 		}
 		
-		String mensaje = "messages.updated.success";
-		
-		if (numColegiadoAutomatico != null) {
-			mensaje = UtilidadesString.getMensajeIdioma(this.getUserBean(request), mensaje);
-			mensaje += "\r\n" + UtilidadesString.getMensajeIdioma(getUserBean(request), "messages.nuevaDesigna.seleccionAutomaticaLetrado", new String[]{numColegiadoAutomatico, nombreApellidos});
-		}
-		
 		return exitoModal(mensaje, request);
-		
-	}
+	} //insertar()
 	
 	/** 
 	 *  Funcion que atiende la accion modificar

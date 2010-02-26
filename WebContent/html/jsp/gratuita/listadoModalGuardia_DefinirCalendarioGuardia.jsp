@@ -193,7 +193,7 @@
 			   tamanoCol="14,14,18,23,15,16"
 		   			alto="100%"
 
-			   modal="P"
+			   modal="M"
 		>
 				<%
 				int recordNumber=1;

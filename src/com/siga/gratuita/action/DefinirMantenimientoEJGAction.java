@@ -377,7 +377,8 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 								   ScsEJGBean.C_JUZGADO, 					ScsEJGBean.C_JUZGADOIDINSTITUCION,
 								   ScsEJGBean.C_COMISARIA, 					ScsEJGBean.C_COMISARIAIDINSTITUCION,
 								   ScsEJGBean.C_NUMEROPROCEDIMIENTO, 		ScsEJGBean.C_NUMERODILIGENCIA,
-								   ScsEJGBean.C_FECHADESIGPROC,             ScsEJGBean.C_PRECEPTIVO};
+								   ScsEJGBean.C_FECHADESIGPROC,             ScsEJGBean.C_PRECEPTIVO,
+								   ScsEJGBean.C_SITUACION};
 
 				// Campos a modificar
 				hash = miForm.getDatos();
@@ -439,6 +440,12 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 					UtilidadesHash.set(hash, ScsEJGBean.C_PRECEPTIVO, miForm.getIdPreceptivo());
 				}else{
 					UtilidadesHash.set(hash, ScsEJGBean.C_PRECEPTIVO, "");
+				}
+				String idSituacion=miForm.getIdSituacion();
+				if (idSituacion != null && !idSituacion.equals("")) {
+					UtilidadesHash.set(hash, ScsEJGBean.C_SITUACION, miForm.getIdSituacion());
+				}else{
+					UtilidadesHash.set(hash, ScsEJGBean.C_SITUACION, "");
 				}
 				tx.begin();
 				ejgAdm.updateDirect(hash,null,campos);

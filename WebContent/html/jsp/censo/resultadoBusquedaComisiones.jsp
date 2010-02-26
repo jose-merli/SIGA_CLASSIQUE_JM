@@ -13,6 +13,7 @@
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 
 <!-- IMPORTS -->
+<%@ page import="com.siga.general.CenVisibilidad"%>
 <%@ page import="java.util.*"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.beans.CenDatosCVBean"%>
@@ -36,7 +37,9 @@
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
 	Vector vDatos = (Vector)request.getAttribute("COMISIONES");
 	String idioma=usr.getLanguage().toUpperCase();
+	Vector resultado = null;
 	
+		
 %>
 
 <html>
@@ -76,8 +79,8 @@
   				borde="2"
   				estilo=""
 	   			clase="tableTitle"
-  				nombreCol="censo.busquedaClientes.literal.apellidos,censo.busquedaClientes.literal.nombre,censo.busquedaClientes.literal.nColegiado,censo.datosCV.literal.comision,censo.datosCV.literal.cargo,FactSJCS.mantRetencionesJ.literal.fechaInicio,gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.fechafin,"  
-   				tamanoCol="25,15,8,15,12,10,10,5"
+  				nombreCol="censo.busquedaClientes.literal.apellidos,censo.busquedaClientes.literal.nombre,censo.busquedaClientes.literal.nColegiado,censo.busquedaClientes.literal.institucion,censo.datosCV.literal.comision,censo.datosCV.literal.cargo,FactSJCS.mantRetencionesJ.literal.fechaInicio,gratuita.modalConfirmar_PestanaCalendarioGuardias.literal.fechafin,"  
+   				tamanoCol="20,15,8,8,10,12,10,10,5"
 	   			ajusteBotonera="true"
 				modal="M" 
 		   		activarFilaSel="true" >
@@ -87,11 +90,14 @@
 					
  			  									
 			for (int i=0;i<vDatos.size();i++) {
-			//Hashtable registro = (Hashtable) resultado.get(i);
-			
 			Hashtable b = (Hashtable) vDatos.get(i);
 			String c_subTipo1= "";
-			String c_subTipo2= "";
+			String c_subTipo2= "";		
+			String idInstitucion = (b
+					.get(CenDatosCVBean.C_IDINSTITUCION) == null || ((String) b
+					.get(CenDatosCVBean.C_IDINSTITUCION))
+					.equals("")) ? "&nbsp;" : (String) b
+					.get(CenDatosCVBean.C_IDINSTITUCION);
 				if (b.get(CenDatosCVBean.C_IDTIPOCVSUBTIPO1)==null || b.get(CenDatosCVBean.C_IDTIPOCVSUBTIPO1).equals("")){
 				 c_subTipo1=" ";
 				}else{
@@ -102,10 +108,8 @@
 				}else{
 				 c_subTipo2=(String)b.get(CenDatosCVBean.C_IDTIPOCVSUBTIPO2);
 				}
-
-						
-						String botones = "C";
-						
+				String botones = "C";
+				String institucion = CenVisibilidad.getAbreviaturaInstitucion(idInstitucion);
 						
 						
 			 %>   		
@@ -119,7 +123,7 @@
 						 <input type="hidden" name="oculto<%=i+1%>_5" value="<%=(c_subTipo1)%>"> 
 						 <input type="hidden" name="oculto<%=i+1%>_6" value="<%=(c_subTipo2)%>"> 
 						 <input type="hidden" name="oculto<%=i+1%>_7" value="<%=UtilidadesString.mostrarDatoJSP(b.get("NCOLEGIADO"))%>">
-						 
+						 						 
 						<%=UtilidadesString.mostrarDatoJSP(b.get("APELLIDOS"))%>
 					</td>				
 					<td>
@@ -127,6 +131,9 @@
 					</td>
 					<td>
 						<%=UtilidadesString.mostrarDatoJSP(b.get("NCOLEGIADO"))%>
+					</td>
+					<td>
+						<%=UtilidadesString.mostrarDatoJSP(institucion)%>
 					</td>
 					<td>
 						<%=UtilidadesString.mostrarDatoJSP(b.get("COMISION"))%>

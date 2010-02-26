@@ -73,7 +73,7 @@ public class MantenimientoInformesAction extends MasterAction {
 					InformeFichaFacturacion inf=new InformeFichaFacturacion();
 					mapDestino=inf.generarInformeFacturacion(mapping,formulario,request,response);
 					return mapping.findForward(mapDestino); 
-				} else if (modo.equalsIgnoreCase("generarColegiadoPago")){
+				} /*else if (modo.equalsIgnoreCase("generarColegiadoPago")){
 					//mapDestino = generarColegiadoPago(mapping, miForm, request, response);
 					InformeColegiadosPagos inf=new InformeColegiadosPagos();
 					mapDestino=inf.generarColegiadoPago(mapping,formulario,request,response);
@@ -81,7 +81,7 @@ public class MantenimientoInformesAction extends MasterAction {
 					if (mapDestino.equals("error"))
 						mapDestino = exitoModalSinRefresco("gratuita.retenciones.noResultados",request);
 					return mapping.findForward(mapDestino);
-				} else if (modo.equalsIgnoreCase("generarCertificadoPago")){
+				} */else if (modo.equalsIgnoreCase("generarCertificadoPago")){
 					//mapDestino = generarCertificadoPago(mapping, miForm, request, response);
 					InformeCertificadoPago inf=new InformeCertificadoPago();
 					mapDestino=inf.generarCertificadoPago(mapping,formulario,request,response);
