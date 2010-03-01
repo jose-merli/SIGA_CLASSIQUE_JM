@@ -203,7 +203,7 @@
 			  									<table class="tablaCampos" align="left" border="0" width="100%">
 												<tr>
 													<td class="labelText">
-										 				<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.motivos"/>*			
+										 				<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.motivos"/> (*)			
 													</td>
 													<td >
 														<html:textarea name="PermutasForm" property="comenSustitucion" onKeyDown="cuenta(this,250)" onChange="cuenta(this,250)" cols="80" rows="4" style="width:580"  styleClass="box" readOnly="false" ></html:textarea>
@@ -224,7 +224,7 @@
 			  									<table class="tablaCampos" align="left" border="0" width="100%">
 												<tr>
 													<td class="labelText">
-										 				<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.motivos"/>*			
+										 				<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.motivos"/> (*)			
 													</td>
 													<td >
 														<html:textarea name="DefinirGuardiasTurnosForm" property="comenSustitucion" onKeyDown="cuenta(this,250)" onChange="cuenta(this,250)" cols="80" rows="4" style="width:580"  styleClass="box" readOnly="false" ></html:textarea>
