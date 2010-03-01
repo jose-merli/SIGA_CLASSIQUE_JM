@@ -3,14 +3,12 @@
  */
 package com.siga.ws.i2055;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -26,13 +24,12 @@ import org.apache.axis.configuration.SimpleProvider;
 import org.apache.axis.message.MessageElement;
 import org.apache.axis.transport.http.HTTPSender;
 import org.apache.axis.transport.http.HTTPTransport;
-import org.apache.xmlbeans.XmlOptions;
-import org.apache.xmlbeans.XmlValidationError;
 import org.w3c.dom.Element;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
+import com.siga.Utilidades.LogHandler;
 import com.siga.beans.CajgEJGRemesaAdm;
 import com.siga.beans.CajgEJGRemesaBean;
 import com.siga.beans.CajgRemesaEstadosAdm;
@@ -224,7 +221,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 	 */
 	private EngineConfiguration createClientConfig() {
 		SimpleProvider clientConfig = new SimpleProvider();
-		Handler logSIGAasignaHandler = (Handler) new LogSIGAAsignaHandler();		
+		Handler logSIGAasignaHandler = (Handler) new LogHandler();		
 		SimpleChain reqHandler = new SimpleChain();
 		SimpleChain respHandler = new SimpleChain();		
 		reqHandler.addHandler(logSIGAasignaHandler);
