@@ -317,7 +317,9 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			miHash.put(ScsPermutaGuardiasBean.C_IDTURNO_SOLICITANTE,miForm.getIdTurnoSolicitante());
 			miHash.put(ScsPermutaGuardiasBean.C_IDGUARDIA_SOLICITANTE,miForm.getIdGuardiaSolicitante());
 			miHash.put(ScsPermutaGuardiasBean.C_IDCALENDARIOGUARDIAS_SOLICITAN,miForm.getIdCalendarioSolicitante());
-			miHash.put(ScsPermutaGuardiasBean.C_IDPERSONA_SOLICITANTE,miForm.getIdPersonaSolicitante());
+			miHash.put(ScsPermutaGuardiasBean.C_IDPERSONA_SOLICITANTE,miForm.getIdPersonaSolicitante());			
+			
+			
 			if (usr.isLetrado()){
 				
 			miHash.put(ScsPermutaGuardiasBean.C_FECHAINICIO_SOLICITANTE,GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaInicioSolicitante()));
@@ -360,7 +362,9 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			if (usr.isLetrado()){
 			miHash.put(ScsPermutaGuardiasBean.C_MOTIVOS_CONFIRMADOR,"");
 			}else{
-			miHash.put(ScsPermutaGuardiasBean.C_MOTIVOS_CONFIRMADOR,"Permuta validada por un Agente");	
+			//miHash.put(ScsPermutaGuardiasBean.C_MOTIVOS_CONFIRMADOR,"Permuta validada por un Agente");	
+		    //Esto es para que aparezca con el motivo del solicitante
+			  miHash.put(ScsPermutaGuardiasBean.C_MOTIVOS_CONFIRMADOR,miForm.getMotivosSolicitante());
 			}
 			
 			confirmadorGuardiaHash.put(ScsGuardiasColegiadoBean.C_IDINSTITUCION,miForm.getIdInstitucion());
@@ -546,11 +550,13 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 				cabecerasGuarSol.setLetradoSustituido(new Long(miForm.getIdPersonaSolicitante()));
 				cabecerasGuarSol.setFechaSustitucion(GstDate.getApplicationFormatDate(usr.getLanguage(),UtilidadesBDAdm.getFechaBD(usr.getLanguage())));
 				cabecerasGuarSol.setComenSustitucion(UtilidadesString.getMensajeIdioma(usr.getLanguage(),"gratuita.literal.letrado.permuta"));
+		
 				
 				cabecerasGuarConf.setIdPersona(new Long(miForm.getIdPersonaSolicitante()));
 				cabecerasGuarConf.setLetradoSustituido(new Long(miForm.getIdPersonaConfirmador()));
 				cabecerasGuarConf.setFechaSustitucion(GstDate.getApplicationFormatDate(usr.getLanguage(),UtilidadesBDAdm.getFechaBD(usr.getLanguage())));
 				cabecerasGuarConf.setComenSustitucion(UtilidadesString.getMensajeIdioma(usr.getLanguage(),"gratuita.literal.letrado.permuta"));
+				
 
 				
 				if(!admCabeceraGuardias.insert((cabecerasGuarSol)))
