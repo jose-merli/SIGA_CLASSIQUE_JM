@@ -183,7 +183,7 @@
    			estilo=""
 		   	clase="tableTitle"
 		  	nombreCol=",censo.consultaDatosBancarios.literal.titular,censo.consultaDatosBancarios.literal.tipoCuenta,censo.datosCuentaBancaria.literal.abonoSJCS,censo.consultaDatosBancarios.literal.sociedad,censo.consultaDatosBancarios.literal.cuenta,censo.consultaDatosBancarios.literal.fechaBaja,"
-		  	tamanoCol="30,9,9,9,19,8,10"
+		  	tamanoCol="28,9,9,9,19,8,12"
 		    alto="100%"
 		    ajuste="70"		
 		    modal="M"> 
