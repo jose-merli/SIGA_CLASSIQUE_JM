@@ -1219,7 +1219,8 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 			//cabeceraGuarSal.setComenSustitucion(UtilidadesString.getMensajeIdioma(usr.getLanguage(),"gratuita.literal.letrado.añadido.sustitucion"));
 			  cabeceraGuarSal.setComenSustitucion(comenSustitucion);
 		}else{
-			cabeceraGuarSal.setComenSustitucion(UtilidadesString.getMensajeIdioma(usr.getLanguage(),"gratuita.literal.letrado.guardia.sustitucion"));
+			//cabeceraGuarSal.setComenSustitucion(UtilidadesString.getMensajeIdioma(usr.getLanguage(),"gratuita.literal.letrado.guardia.sustitucion"));
+			cabeceraGuarSal.setComenSustitucion(comenSustitucion);
 		}
 		if(!cabeceraGuardiasAdm.insert((cabeceraGuarSal)))
 			throw new ClsExceptions(cabeceraGuardiasAdm.getError());
