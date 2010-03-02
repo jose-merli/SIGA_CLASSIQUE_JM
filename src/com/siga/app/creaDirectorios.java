@@ -664,6 +664,16 @@ public class creaDirectorios {
 				}
 			}
 			
+			path = rp.getString("sjcs.directorioFisicoPlantillaInformeEejg");
+			path += File.separator + rp.getString("sjcs.directorioPlantillaInformeEejg");
+			if (instituciones!=null && instituciones.size()>0) {
+				for (int j=0;j<instituciones.size();j++) {
+					CenInstitucionBean insti = (CenInstitucionBean) instituciones.get(j); 
+					if (path!=null) salida.add(path + File.separator + insti.getIdInstitucion().toString());
+				}
+			}
+			
+			
 
 		}
 /*
@@ -1014,6 +1024,18 @@ public class creaDirectorios {
 					destino = new File(pathDestino);
 					destino.mkdirs();
 					carpeta = rp.getString("directorios.carpeta.cajg");
+					hijoOrigen = new File(origen.getAbsolutePath() + File.separator + carpeta);   
+				 	hijoDestino = new File(destino.getAbsolutePath());
+				 	hijoDestino.mkdirs();
+				 	if (hijoOrigen.exists()) {
+				 		recur(hijoOrigen, hijoDestino,insti.getIdInstitucion().toString(),institucionDefecto);
+				 	}
+				 	
+				 	pathDestino = rp.getString("sjcs.directorioFisicoPlantillaInformeEejg");
+					pathDestino += File.separator + rp.getString("informes.directorioPlantillaInformeEejg");
+					destino = new File(pathDestino);
+					destino.mkdirs();
+				 	carpeta = rp.getString("directorios.carpeta.informe.eejg");
 					hijoOrigen = new File(origen.getAbsolutePath() + File.separator + carpeta);   
 				 	hijoDestino = new File(destino.getAbsolutePath());
 				 	hijoDestino.mkdirs();

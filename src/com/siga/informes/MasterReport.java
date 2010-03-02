@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -19,6 +20,7 @@ import java.util.zip.ZipOutputStream;
 
 import javax.imageio.stream.FileImageInputStream;
 import javax.servlet.http.*;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -33,6 +35,7 @@ import org.apache.avalon.framework.logger.Logger;
 import org.apache.fop.apps.Driver;
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.messaging.MessageHandler;
+import org.xml.sax.XMLReader;
 
 import com.atos.utils.*;
 import com.siga.envios.form.DefinirEnviosForm;
@@ -500,7 +503,8 @@ public class MasterReport  {
 	}
 	protected File convertXML2PDF(InputStream xml, File xslt, File pdf,Map<String, String> mapParameters)
 	throws IOException, FOPException, TransformerException {
-		return convertXML2PDF(xml, new FileInputStream(xslt),pdf,mapParameters);
+		InputStream inputXslt = new FileInputStream(xslt);
+		return convertXML2PDF(xml,inputXslt ,pdf,mapParameters);
 		
 	}
 	
@@ -535,8 +539,6 @@ public class MasterReport  {
 //			Setup XSLT
 			TransformerFactory factory = TransformerFactory.newInstance();
 			Transformer transformer = factory.newTransformer(new StreamSource(xslt));
-			transformer.setParameter("eejg", "2009/654");
-
 //			Setup input for XSLT transformation
 			Source src = new StreamSource(xml);
 			
@@ -570,16 +572,17 @@ public class MasterReport  {
 //		Setup logger
 		Logger logger = new ConsoleLogger(ConsoleLogger.LEVEL_INFO);
 		driver.setLogger(logger);
+//		driver.getContentHandler().
+		
 		MessageHandler.setScreenLogger(logger);
 
 //		Setup Renderer (output format)        
 		driver.setRenderer(Driver.RENDER_PDF);
-
 //		Setup output
 		OutputStream out = new java.io.FileOutputStream(pdf);
 		try {
+			
 			driver.setOutputStream(out);
-
 //			Setup XSLT
 			TransformerFactory factory = TransformerFactory.newInstance();
 			Transformer transformer = factory.newTransformer(new StreamSource(xslt));
@@ -600,12 +603,25 @@ public class MasterReport  {
 //			Setup input for XSLT transformation
 			Source src = new StreamSource(xml);
 			
-
 //			Resulting SAX events (the generated FO) must be piped through to FOP
 			Result res = new SAXResult(driver.getContentHandler());
-
+			
 //			Start XSLT transformation and FOP processing
-			transformer.transform(src, res);
+			transformer.setOutputProperty(OutputKeys.ENCODING,"ISO-8859-15");
+			
+			javax.xml.transform.Source xmlSource =
+				new javax.xml.transform.stream.StreamSource(new InputStreamReader(xml, "ISO-8859-15"));
+
+			
+			
+//			transformer.transform(src, res);
+			transformer.transform(xmlSource, res);
+			
+			
+			
+			
+			
+			
 		} finally {
 			out.close();
 		}

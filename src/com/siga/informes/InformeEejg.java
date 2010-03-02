@@ -40,38 +40,7 @@ public class InformeEejg extends MasterReport
 	public InformeEejg(UsrBean usuario) {
 		super(usuario);
 	}
-	
-//	public File generarInformeEejg (List<Integer> listIdsXml) throws ClsExceptions,SIGAException, UnsupportedEncodingException 
-//	{
-//		List<File> file2zip = new ArrayList<File>();
-//		
-//		String idInstitucion = getUsuario().getLocation();
-//		String fecha = UtilidadesBDAdm.getFechaCompletaBD("formato_ingles");
-//		fecha = fecha.replaceAll("/","");
-//		fecha = fecha.replaceAll(":","");
-//		fecha = fecha.replaceAll(" ","_");
-//		String nombreZip = "listFactEmitidas"  + "_" + idInstitucion + "_" + getUsuario().getUserName() + "_" + fecha+".zip";
-//		
-//		for(Integer idXml:listIdsXml){
-//			ScsEejgXmlAdm admXmlEejg = new ScsEejgXmlAdm(super.getUsuario());
-//			String xml = admXmlEejg.getEejgXml(new Integer(idXml));
-//			Map<String, String> mapParameters = new HashMap<String, String>();
-//			File file = generarInformeEejg(xml,mapParameters); 
-//			file2zip.add(file);
-//			
-//		}
-//		File zip = MasterReport.doZip(file2zip, nombreZip);
-//		return zip;
-//	}
-	
-	
-//	public File generarInformeEejg (Integer idXml) throws ClsExceptions,SIGAException, UnsupportedEncodingException 
-//	{
-//		ScsEejgXmlAdm admXmlEejg = new ScsEejgXmlAdm(super.getUsuario());
-//		String xml = admXmlEejg.getEejgXml(new Integer(idXml));
-//		Map<String, String> mapParameters = new HashMap<String, String>();
-//		return generarInformeEejg(xml,mapParameters);
-//	}
+
 	public File generarInformeEejg (Map<Integer, Map<String, String>> mapInformes) throws ClsExceptions,SIGAException, UnsupportedEncodingException 
 	{
 		File file = null;
@@ -122,8 +91,9 @@ public class InformeEejg extends MasterReport
 	
 	}
 	
-	public File generarInformeEejg (String strXml,Map<String, String> mapParameters) throws ClsExceptions,SIGAException, UnsupportedEncodingException 
+	private File generarInformeEejg (String strXml,Map<String, String> mapParameters) throws ClsExceptions,SIGAException, UnsupportedEncodingException 
 	{
+//		InputStream inputXml = new ByteArrayInputStream(strXml.getBytes("ISO-8859-15"));
 		InputStream inputXml = new ByteArrayInputStream(strXml.getBytes("ISO-8859-15"));
 		return generarInformeEejg(inputXml,mapParameters);
 	}

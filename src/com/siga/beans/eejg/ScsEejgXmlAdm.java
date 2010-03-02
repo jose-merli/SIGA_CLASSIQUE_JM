@@ -1,5 +1,6 @@
 package com.siga.beans.eejg;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -148,7 +149,7 @@ public class ScsEejgXmlAdm extends MasterBeanAdministrador {
 		}
 		return nuevoId;
 	}
-	public String getEejgXml(Integer idXml) throws ClsExceptions{
+	public String getEejgXml(Integer idXml) throws ClsExceptions, UnsupportedEncodingException{
 		RowsContainer rows=new RowsContainer();
 		StringBuffer query = new StringBuffer();
 		query.append("SELECT ");

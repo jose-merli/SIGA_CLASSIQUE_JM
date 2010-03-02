@@ -14,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 //import java.io.StringBufferInputStream;
 import java.sql.BatchUpdateException;
 import java.sql.Connection;
@@ -871,15 +872,22 @@ public class RowsContainer implements Serializable {
 	 * @param nombreCampo
 	 * @param texto
 	 * @throws ClsExceptions
+     * @throws UnsupportedEncodingException 
 	 */
-	public String getClob (String tableName, String nombreCampo, String select) throws ClsExceptions {
+	public String getClob (String tableName, String nombreCampo, String select) throws ClsExceptions, UnsupportedEncodingException {
 	    Connection con = null;
 	    ByteArrayOutputStream os = null;
 	    String salida ="";
 	   try{
 	   	  con = ClsMngBBDD.getConnection();
 	      os = MngClob.getClobToStream(con,nombreCampo,select);
-		  salida = os.toString();
+		  try {
+			salida = os.toString("ISO-8859-15");
+		} catch (UnsupportedEncodingException e) {
+			
+			e.printStackTrace();
+			throw e;
+		}
 	    }catch (ClsExceptions ex){
 	      throw ex;
 	    }finally{
