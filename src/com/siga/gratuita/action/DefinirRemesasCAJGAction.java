@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -1756,6 +1757,9 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 						cs.setString(3, idRemesa);					    	
 				    	cs.execute();
 				    	fila_consulta = cs.getString(1);
+					} catch (SQLException e) {					
+						ClsLogging.writeFileLogError("Error al ejecutar la función o procedimiento " + funcion, e, 3);
+						throw e;
 				    } finally {
 				    	if (con != null) {
 				    		ClsMngBBDD.closeConnection(con);
@@ -1849,6 +1853,8 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				CajgRemesaEstadosAdm cajgRemesaEstadosAdm = new CajgRemesaEstadosAdm(usr);				
 				cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIDInstitucion(request), Integer.valueOf(form.getIdRemesa()), Integer.valueOf("1"));
 				tx.commit();
+			} else {
+				mensaje = new StringBuffer("No se ha generado ningún fichero");				
 			}
 			
 		} catch (Exception e) {
