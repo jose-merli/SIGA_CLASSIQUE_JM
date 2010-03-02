@@ -313,8 +313,12 @@ public class DefinirEJGAction extends MasterAction
 		  // En "DATOSFORMULARIO" almacenamos el identificador del letrado			 			 
 		  miHash.put("BUSQUEDAREALIZADA","1");
 		  // Pasamos los datos del cajg para devolverlos en la busqueda
-		  miHash.put(ScsEJGBean.C_ANIO_CAJG, miForm.getAnioCAJG());
-		  miHash.put(ScsEJGBean.C_NUMERO_CAJG, miForm.getNumeroCAJG());
+		  if(miForm.getAnioCAJG()!=null){
+			  miHash.put(ScsEJGBean.C_ANIO_CAJG, miForm.getAnioCAJG());
+		  }
+		  if(miForm.getNumeroCAJG()!=null){
+			  miHash.put(ScsEJGBean.C_NUMERO_CAJG, miForm.getNumeroCAJG());
+		  }
 		  
 		  request.getSession().setAttribute("DATOSFORMULARIO",miHash);			
 			
