@@ -276,10 +276,10 @@
 <!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 <c:choose>
 	<c:when test="${DefinirUnidadFamiliarEJGForm.permisoEejg==true}">
-	<siga:ConjBotonesAccion botones="V,N,DEE,NR" modo="${DefinirUnidadFamiliarEJGForm.modo}" clase="botonesDetalle" />
+	<siga:ConjBotonesAccion botones="V,N,DEE" modo="${DefinirUnidadFamiliarEJGForm.modo}" clase="botonesDetalle" />
 	</c:when>
 	<c:otherwise>
-	 <siga:ConjBotonesAccion botones="V,N,NR" modo="${DefinirUnidadFamiliarEJGForm.modo}" clase="botonesDetalle" />
+	 <siga:ConjBotonesAccion botones="V,N" modo="${DefinirUnidadFamiliarEJGForm.modo}" clase="botonesDetalle" />
 	</c:otherwise>
 </c:choose>
 
