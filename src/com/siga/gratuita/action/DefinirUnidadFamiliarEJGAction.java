@@ -25,9 +25,12 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.SIGAReferences;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
+import com.siga.beans.ScsParentescoAdm;
+import com.siga.beans.ScsParentescoBean;
 import com.siga.beans.ScsPersonaJGAdm;
 import com.siga.beans.ScsPersonaJGBean;
 import com.siga.beans.ScsTelefonosPersonaBean;
@@ -611,9 +614,39 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 		miForm.setNumero(numero);
 		miForm.setIdXml(idXml);
 		miForm.setIdioma(idioma);
+		
+		
 		UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 		String salida = "";
 		try {
+			ScsUnidadFamiliarEJGAdm admUnidadFam = new ScsUnidadFamiliarEJGAdm(usr);
+			Hashtable<String, Object> htPK = new Hashtable<String, Object>();
+			htPK.put(ScsUnidadFamiliarEJGBean.C_IDPERSONA,idPersonaJG );
+			htPK.put(ScsUnidadFamiliarEJGBean.C_ANIO, anio);
+			htPK.put(ScsUnidadFamiliarEJGBean.C_NUMERO, numero);
+			htPK.put(ScsUnidadFamiliarEJGBean.C_IDINSTITUCION,idInstitucionEJG );
+			htPK.put(ScsUnidadFamiliarEJGBean.C_IDTIPOEJG,idTipoEJG );
+			Vector vUF = admUnidadFam.selectByPK(htPK);
+			ScsUnidadFamiliarEJGBean auxUnidadFamiliarVo = (ScsUnidadFamiliarEJGBean) vUF.get(0);
+			ScsParentescoBean parentesco = null;
+			if(auxUnidadFamiliarVo.getIdParentesco()!=null){
+				ScsParentescoAdm admParentesco = new ScsParentescoAdm(usr);
+				htPK = new Hashtable<String, Object>();
+				htPK.put(ScsParentescoBean.C_IDINSTITUCION,idInstitucionEJG );
+				htPK.put(ScsParentescoBean.C_IDPARENTESCO, auxUnidadFamiliarVo.getIdParentesco());
+				parentesco = admParentesco.getParentesco(htPK,usr.getLanguage());
+				
+			}else{
+				parentesco = new ScsParentescoBean();
+				String literalSolicitante = UtilidadesString.getMensajeIdioma(usr,"gratuita.busquedaEJG.literal.solicitante");
+				parentesco.setDescripcion(literalSolicitante);
+				
+				
+			}
+			miForm.setParentesco(parentesco);
+			
+			
+			
 			if(idXml==null ||idXml.equals(""))
 				throw new SIGAException("messages.general.error");
 			
@@ -683,6 +716,7 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 		try {
 			List<ScsUnidadFamiliarEJGBean> alUnidadFamiliar = new ArrayList<ScsUnidadFamiliarEJGBean>();
 			int lengthDatosTabla = miForm.getDatosTabla().size();
+			Hashtable<String, Object> htPK = null;
 			for (int i = 0; i < lengthDatosTabla ; i++) {
 				Vector vCampos = miForm.getDatosTablaOcultos(i);
 				String idPersonaJG = (String) vCampos.get(0);
@@ -692,15 +726,53 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 				String numero = (String) vCampos.get(4);
 				String idXml = (String) vCampos.get(5);
 				String idioma = (String) vCampos.get(6);
-				DefinirUnidadFamiliarEJGForm unidadFamiliarForm = new DefinirUnidadFamiliarEJGForm();
+				
+				/*DefinirUnidadFamiliarEJGForm unidadFamiliarForm = new DefinirUnidadFamiliarEJGForm();
 				unidadFamiliarForm.setIdInstitucion(idInstitucionEJG);
 				unidadFamiliarForm.setIdPersona(idPersonaJG);
 				unidadFamiliarForm.setIdTipoEJG(idTipoEJG);
 				unidadFamiliarForm.setAnio(anio);
 				unidadFamiliarForm.setNumero(numero);
 				unidadFamiliarForm.setIdXml(idXml);
-				unidadFamiliarForm.setIdioma(idioma);
-				alUnidadFamiliar.add(unidadFamiliarForm.getUnidadFamiliarEjgVo());
+				unidadFamiliarForm.setIdioma(idioma);*/
+				
+				ScsUnidadFamiliarEJGAdm admUnidadFam = new ScsUnidadFamiliarEJGAdm(usr);
+				htPK = new Hashtable<String, Object>();
+				htPK.put(ScsUnidadFamiliarEJGBean.C_IDPERSONA,idPersonaJG );
+				htPK.put(ScsUnidadFamiliarEJGBean.C_ANIO, anio);
+				htPK.put(ScsUnidadFamiliarEJGBean.C_NUMERO, numero);
+				htPK.put(ScsUnidadFamiliarEJGBean.C_IDINSTITUCION,idInstitucionEJG );
+				htPK.put(ScsUnidadFamiliarEJGBean.C_IDTIPOEJG,idTipoEJG );
+				Vector vUF = admUnidadFam.selectByPK(htPK);
+				ScsUnidadFamiliarEJGBean unidadFamiliarVo = (ScsUnidadFamiliarEJGBean) vUF.get(0);
+				ScsParentescoBean parentesco = null;
+				if(unidadFamiliarVo.getIdParentesco()!=null){
+					ScsParentescoAdm admParentesco = new ScsParentescoAdm(usr);
+					htPK = new Hashtable<String, Object>();
+					htPK.put(ScsParentescoBean.C_IDINSTITUCION,idInstitucionEJG );
+					htPK.put(ScsParentescoBean.C_IDPARENTESCO, unidadFamiliarVo.getIdParentesco());
+					parentesco = admParentesco.getParentesco(htPK,usr.getLanguage());
+					
+				}else{
+					parentesco = new ScsParentescoBean();
+					String literalSolicitante = UtilidadesString.getMensajeIdioma(usr,"gratuita.busquedaEJG.literal.solicitante");
+					parentesco.setDescripcion(literalSolicitante);
+					
+					
+				}
+				unidadFamiliarVo.setParentesco(parentesco);
+				ScsEejgPeticionesBean peticionEejg = new ScsEejgPeticionesBean();
+				peticionEejg.setIdXml(new Integer(idXml));
+				peticionEejg.setIdioma(idioma);
+				unidadFamiliarVo.setPeticionEejg(peticionEejg);
+				
+				ScsPersonaJGBean personaJG = new ScsPersonaJGBean();
+				personaJG.setIdPersona(unidadFamiliarVo.getIdPersona());
+				unidadFamiliarVo.setPersonaJG(personaJG);
+				
+				
+				alUnidadFamiliar.add(unidadFamiliarVo);
+//				alUnidadFamiliar.add(unidadFamiliarForm.getUnidadFamiliarEjgVo());
 				
 				
 			}

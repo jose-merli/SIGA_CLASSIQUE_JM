@@ -90,6 +90,8 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 		mapParameters.put("idPersonaJG", unidadFamiliar.getPersonaJG().getIdPersona().toString());
 		mapParameters.put("institucion", institucion);
 		mapParameters.put("idInstitucion", usr.getLocation());
+		if(unidadFamiliar.getParentesco()!=null)
+			mapParameters.put("declaranteEs", unidadFamiliar.getParentesco().getDescripcion().toString());
 		actualizaParametrosPersona(mapParameters,usr);
 		mapParameters.put("rutaLogoColegio", rutaLogoColegio);
 		mapParameters.put("idioma", unidadFamiliar.getPeticionEejg().getIdioma());
@@ -156,6 +158,9 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 			mapParameters.put("idPersonaJG", unidadFamiliar.getPersonaJG().getIdPersona().toString());
 			mapParameters.put("institucion", institucion);
 			mapParameters.put("idInstitucion", usr.getLocation());
+			if(unidadFamiliar.getParentesco()!=null)
+				mapParameters.put("declaranteEs", unidadFamiliar.getParentesco().getDescripcion().toString());
+			
 			actualizaParametrosPersona(mapParameters,usr);
 			mapParameters.put("rutaLogoColegio", rutaLogoColegio);
 			mapInformes.put(new Integer(unidadFamiliar.getPeticionEejg().getIdXml()), mapParameters);
@@ -266,6 +271,8 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 					mapParameters.put("idPersonaJG",formUnidadFamiliar.getIdPersona());
 					mapParameters.put("institucion", institucion);
 					mapParameters.put("idInstitucion", usr.getLocation());
+					if(formUnidadFamiliar.getParentesco()!=null)
+						mapParameters.put("declaranteEs", formUnidadFamiliar.getParentesco().getDescripcion().toString());
 					actualizaParametrosPersona(mapParameters,usr);
 					
 					mapParameters.put("rutaLogoColegio", rutaLogoColegio);
@@ -314,16 +321,29 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 			else
 				mapParameters.put("poblacion","");
 			Vector<ScsTelefonosPersonaJGBean> vTelefonos = personaBean.getTelefonos();
+			
 			if(vTelefonos!=null && vTelefonos.size()>0){
 				int i=0;
 				for(ScsTelefonosPersonaJGBean telefono:vTelefonos){
+					StringBuffer tfno = new StringBuffer();
+					tfno.append(UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.solicitante.telefono0"));
+					if(telefono.getNombreTelefono()!=null){
+						tfno.append(" ");
+						tfno.append(telefono.getNombreTelefono());
+					}
+					
+					mapParameters.put("textosFijosSolicitanteTelefono"+i,tfno.toString() );	
 					mapParameters.put("telefono"+i,telefono.getNumeroTelefono().toString());
 					i++;
 					
 				}
-				if(i<2)
+				if(i<2){
+					mapParameters.put("textosFijosSolicitanteTelefono1","");
 					mapParameters.put("telefono1","");
+				}
 			}else{
+				mapParameters.put("textosFijosSolicitanteTelefono0","");
+				mapParameters.put("textosFijosSolicitanteTelefono1","");
 				mapParameters.put("telefono0","");
 				mapParameters.put("telefono1","");
 				
@@ -345,7 +365,7 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 		rutaLogoCGAE = UtilidadesString.replaceAllIgnoreCase(rutaLogoCGAE, "//","\\" );
 		rutaLogoCGAE = UtilidadesString.replaceAllIgnoreCase(rutaLogoCGAE, "/","\\" );
 		mapParameters.put("rutaLogoCGAE", rutaLogoCGAE);
-		
+				
 		mapParameters.put("conveniosInicio", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.conveniosInicio"));
 		mapParameters.put("convenio1", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.convenio1"));
 		mapParameters.put("convenio2", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.convenio2"));
@@ -353,6 +373,34 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 		mapParameters.put("convenio4",  UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.convenio4"));
 		mapParameters.put("conveniosFin",  UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.conveniosFin"));
 		mapParameters.put("avisoLegal", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.avisoLegal"));
+		
+		
+		
+		mapParameters.put("textosFijosPagina", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.pagina"));
+		mapParameters.put("textosFijosDe", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.de"));
+	
+		
+		mapParameters.put("textosFijosExpediente", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.expediente"));
+		mapParameters.put("textosFijosSolicitanteTitulo", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.solicitante.titulo"));
+		mapParameters.put("textosFijosSolicitanteNombre", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.solicitante.nombre"));
+		mapParameters.put("textosFijosSolicitanteApellido1", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.solicitante.apellido1"));
+		mapParameters.put("textosFijosSolicitanteApellido2", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.solicitante.apellido2"));
+		mapParameters.put("textosFijosSolicitanteNif", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.solicitante.nif"));
+		mapParameters.put("textosFijosSolicitanteDireccion", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.solicitante.direccion"));
+		mapParameters.put("textosFijosSolicitanteCodigoPostal", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.solicitante.codigoPostal"));
+		mapParameters.put("textosFijosSolicitantePoblacion", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.solicitante.poblacion"));
+		mapParameters.put("textosFijosSolicitanteProvincia", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.solicitante.provincia"));
+		
+		mapParameters.put("textosFijosSolicitudTitulo", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.solicitud.titulo"));
+		mapParameters.put("textosFijosFechaDatosCorrectos", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.fechaDatosCorrectos"));
+		mapParameters.put("textosFijosPeticionTitulo", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.peticion.titulo"));
+		mapParameters.put("textosFijosNombrePdfTitulo", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.nombrePdf.titulo"));
+		mapParameters.put("textosFijosFicheroPdfTitulo", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.ficheroPdf.titulo"));
+		mapParameters.put("textosFijosConveniosTitulo", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.convenios.titulo"));
+		mapParameters.put("textosFijosAvisoLegalTitulo", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.avisoLegal.titulo"));
+
+		mapParameters.put("textosFijosDeclaranteEs", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.declaranteEs"));
+		
 		return mapParameters;
 		
 	}

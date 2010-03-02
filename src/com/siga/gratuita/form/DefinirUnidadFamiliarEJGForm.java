@@ -556,6 +556,9 @@ import com.siga.tlds.FilaExtElement;
 			parentesco.setIdParentesco(unidadFamiliarVo.getIdParentesco());
 			unidadFamiliarVo.setParentesco(parentesco);
 			
+		}else if(getParentesco()!=null){
+			unidadFamiliarVo.setParentesco(getParentesco());
+			
 		}
 		
 		if(getObservaciones()!=null && !getObservaciones().equals(""))
