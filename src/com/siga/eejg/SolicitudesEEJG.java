@@ -34,6 +34,7 @@ import com.siga.beans.eejg.ScsEejgXmlBean;
 
 public class SolicitudesEEJG {
 	private String urlWS;	
+	private String idSistema;
 
 	public SolicitudesEEJG() {
 		super();
@@ -42,7 +43,8 @@ public class SolicitudesEEJG {
 
 	private void init() {
 		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		urlWS = rp.returnProperty("eejg.urlWS");		
+		urlWS = rp.returnProperty("eejg.urlWS");	
+		idSistema = rp.returnProperty("eejg.idSistema");
 	}
 
 	private EngineConfiguration createClientConfig() { 
@@ -59,7 +61,7 @@ public class SolicitudesEEJG {
 		ServiciosJGExpedienteServiceSoapBindingStub stub = new ServiciosJGExpedienteServiceSoapBindingStub(url, locator);
 		
 		String idSolicitudImportada = null;
-		String idSistema = String.valueOf(scsEejgPeticionesBean.getIdPeticion());
+		
 		if (scsEejgPeticionesBean.getIdInstitucion() == null) {
 			throw new IllegalArgumentException("La institucion o zona no puede ser nula");
 		}
@@ -128,8 +130,7 @@ public class SolicitudesEEJG {
 		ServiciosJGExpedienteServiceLocator locator = new ServiciosJGExpedienteServiceLocator(createClientConfig());
 		URL url = new URL(urlWS);		
 		ServiciosJGExpedienteServiceSoapBindingStub stub = new ServiciosJGExpedienteServiceSoapBindingStub(url, locator);
-		
-		String idSistema = String.valueOf(scsEejgPeticionesBean.getIdPeticion());
+				
 		String idPeticionInfoAAPP = scsEejgPeticionesBean.getIdSolicitud();
 		String idioma = scsEejgPeticionesBean.getIdioma();
 		
