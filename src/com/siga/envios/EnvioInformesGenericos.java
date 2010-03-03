@@ -2746,7 +2746,6 @@ public class EnvioInformesGenericos extends MasterReport {
 			}
 		}
 	}
-
 	private void setNadieEjecutando(){
 		synchronized(EnvioInformesGenericos.alguienEjecutando){
 			EnvioInformesGenericos.alguienEjecutando=Boolean.FALSE;
