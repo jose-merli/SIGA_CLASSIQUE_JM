@@ -1032,7 +1032,7 @@ public class creaDirectorios {
 				 	}
 				 	
 				 	pathDestino = rp.getString("sjcs.directorioFisicoPlantillaInformeEejg");
-					pathDestino += File.separator + rp.getString("informes.directorioPlantillaInformeEejg");
+					pathDestino += File.separator + rp.getString("sjcs.directorioPlantillaInformeEejg");
 					destino = new File(pathDestino);
 					destino.mkdirs();
 				 	carpeta = rp.getString("directorios.carpeta.informe.eejg");
