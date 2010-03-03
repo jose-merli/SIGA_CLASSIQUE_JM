@@ -88,9 +88,9 @@ private static Boolean alguienEjecutando=Boolean.FALSE;
 					} else {
 						ClsLogging.writeFileLogError("Error con el servidor", e, 3);
 					}
-				}catch (Throwable e) {
+				}catch (Throwable e) {					
 					numeroErrores++;
-					ClsLogging.writeFileLogError("Error No esperado",new SIGAException("messages.general.error"), 3);
+					ClsLogging.writeFileLogError("Error No esperado", new Exception(e), 3);
 					//e.printStackTrace();
 					
 				} finally {
