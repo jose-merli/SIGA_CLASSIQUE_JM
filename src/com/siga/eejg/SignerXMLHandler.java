@@ -197,7 +197,7 @@ public class SignerXMLHandler extends BasicHandler {
 				firmaXMLHelper = new FirmaXMLHelper(xmlSigNSPrefix, keyStoreType, keyStoreFile, keyStorePass, privateKeyAlias, privateKeyPass, certificateAlias);
 			
 	        } catch (Exception e) {
-				throw new ClsExceptions("Error al recuperar los parámetros");
+				throw new ClsExceptions(e, "Error al recuperar los parámetros");
 			}
 		}
 
