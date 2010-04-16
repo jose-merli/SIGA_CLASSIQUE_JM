@@ -1,6 +1,7 @@
 package com.atos.utils;
 
 import java.io.Serializable;
+import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
@@ -327,7 +328,9 @@ public class Row implements Serializable
 						rs.getObject(key) instanceof java.sql.Time) 
 					{
 						val = formatDate(rs.getTimestamp(key));
-					} else	{
+					} else	if (rs.getObject(key) instanceof Clob){
+						val = getClob(rs.getClob(key));
+					}else	{
 						val = rs.getObject(key).toString();
 					}
 				}
@@ -3216,5 +3219,16 @@ public class Row implements Serializable
 		}
 		
 		return vectOut;
+	}
+	public String getClob(Object key) 
+	{
+		if (this.row == null)
+		{
+			return null;
+		}
+		else
+		{ 
+			return String.valueOf(this.row.get(key));
+		}
 	}
 }
