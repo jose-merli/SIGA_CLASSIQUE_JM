@@ -513,7 +513,19 @@ public class MaestroDesignasAction extends MasterAction {
 						}else{
 							 UtilidadesHash.set(designaNueva, ScsDesignaBean.C_IDPRETENSION, "");
 						}
-						
+						// jbd 8/3/2010 inc-6876
+						if (miform.getFechaOficioJuzgado()!= null && !miform.getFechaOficioJuzgado().equalsIgnoreCase("")){
+							String fechaOficioJuzgado = GstDate.getApplicationFormatDate("",miform.getFechaOficioJuzgado());
+							designaNueva.put(ScsDesignaBean.C_FECHAOFICIOJUZGADO,fechaOficioJuzgado);		
+						}else{
+							designaNueva.put(ScsDesignaBean.C_FECHAOFICIOJUZGADO,"");
+						}
+						if (miform.getFechaRecepcionColegio()!= null && !miform.getFechaRecepcionColegio().equalsIgnoreCase("")){
+							String fechaRecepcionColegio = GstDate.getApplicationFormatDate("",miform.getFechaRecepcionColegio());
+							designaNueva.put(ScsDesignaBean.C_FECHARECEPCIONCOLEGIO,fechaRecepcionColegio);		
+						}else{
+							designaNueva.put(ScsDesignaBean.C_FECHARECEPCIONCOLEGIO,"");
+						}
 						tx.begin();
 						
 						designaAdm.update(designaNueva,designaAntigua.getOriginalHash());
@@ -551,7 +563,7 @@ public class MaestroDesignasAction extends MasterAction {
 			
 		HttpSession ses = request.getSession();
 		UsrBean usr = (UsrBean)ses.getAttribute("USRBEAN");
-		MaestroDesignasForm miform = (MaestroDesignasForm)formulario;
+		MaestroDesignasForm miform = (MaestroDesignasForm)formulario;		
 		Vector ocultos = (Vector)miform.getDatosTablaOcultos(0);
 		Vector visibles = (Vector)miform.getDatosTablaVisibles(0);
 		Hashtable hash = new Hashtable();
@@ -568,20 +580,32 @@ public class MaestroDesignasAction extends MasterAction {
         " and "+ScsDesignasLetradoBean.C_IDINSTITUCION+"="+usr.getLocation()+
         " and "+ScsDesignasLetradoBean.C_IDTURNO+"="+(String)ocultos.get(0);
        
+		
+		//recoger la designa actual, los datos que hacen falta, para la llamada de la funcion donde introduce los 
+		// datos en la tabla SCS_SALTOSCOMPENSACIONES
+		String anio=(String)ocultos.get(3);
+		String numero=(String)ocultos.get(2);
+		String idinstitucion=usr.getLocation();
+		String idTurno=(String)ocultos.get(0);
+		String codigo= (String)visibles.get(3);		
+	
 		try{
 			ScsDesignaAdm designaAdm = new ScsDesignaAdm (this.getUserBean(request));
 			ScsDesignasLetradoAdm desletAdm = new ScsDesignasLetradoAdm(this.getUserBean(request));
 			tx=usr.getTransaction();
-			tx.begin();
-			
+			tx.begin();						  
+			// Comprobamos que se quiera compensar o no por el borrado de la designacion
+			String compensar = request.getParameter("compensar");
+			if (compensar.equalsIgnoreCase("1")){//En caso de que SI se quiera compensar al letrado
+				designaAdm.compensacionDesigna(request,anio,codigo, numero, idTurno, idinstitucion);						
+			}								
 			if (!desletAdm.deleteSQL(sqlDel)){
 			    throw new ClsExceptions("Error al borrar designas letrado: "+desletAdm.getError());
 			}
 			if (!designaAdm.delete(hash)) {
 			    throw new ClsExceptions("Error al borrar designas: "+designaAdm.getError());
-			}
-			
-			tx.commit();
+			}			
+			tx.commit();			
 		}catch(Exception e){
 			throwExcp("gratuita.listadoDesignas.message.error1",new String[] {"modulo.gratuita"},e,tx);
 		}

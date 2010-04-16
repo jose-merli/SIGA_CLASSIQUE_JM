@@ -45,6 +45,9 @@
 	ArrayList juzgadoSel = new ArrayList();
 	ArrayList tipoActuacionSel = new ArrayList();
 	ArrayList tipoCosteActuacionSel = new ArrayList();
+	ArrayList prisionSel = new ArrayList();
+	
+	
 
 	//Claves de los combos:
 	String idDeclaracion=null;
@@ -98,6 +101,8 @@
 	String facturada="";
 	String fechaRatificacion = "";
 	String fechaNotificacion= "";
+	String acIdPrision="";
+	String acIdInstitucionPrision="";
 	
 	
 	/*try {
@@ -189,6 +194,11 @@
 		descripcionCosteFijo= hash.get("DESCRIPCIONCOSTEFIJO") == null?"":(String)hash.get("DESCRIPCIONCOSTEFIJO");
 		
 		facturada = hash.get("FACTURADA") == null? "0":(String)hash.get("FACTURADA");
+		
+		acIdPrision =  (String)hash.get("IDPRISION");
+	 	acIdInstitucionPrision =  (String)hash.get("IDINSTITUCION_PRIS");
+		if (acIdPrision!=null && acIdInstitucionPrision!=null)
+			prisionSel.add(0,acIdPrision+","+acIdInstitucionPrision);
 
 	}
 	//Construyo los parametros del combo de tipos:
@@ -298,7 +308,7 @@
 			<td class="labelText">	
 				<siga:Idioma key='gratuita.mantActuacion.literal.turno'/>
 			</td>
-			<td class="labelTextValor" width="20%">	
+			<td class="labelTextValor">	
 				<%=TNOMBRE%>
 			</td>
 			<td class="labelText">	
@@ -321,40 +331,38 @@
 			</td>
 		</tr>
 	</table>
-	<table width="100%">
-		<tr>
-			<td class="labelText">	
-				<siga:Idioma key='gratuita.mantActuacion.literal.asistido'/>
-			</td>
-			<td class="labelText">	
-				<siga:Idioma key='gratuita.mantActuacion.literal.nif'/>
-			</td>
-			<td class="labelTextValor">	
-				<%=PJGNIF%>
-			</td>
-			<td class="labelText">	
-				<siga:Idioma key='gratuita.mantActuacion.literal.nombre'/>
-			</td>
-			<td class="labelTextValor">	
-				<%=PJGNOMBRE%>
-			</td>
-			<td class="labelText">	
-				<siga:Idioma key='gratuita.mantActuacion.literal.apellidos1'/>
-			</td>
-			<td class="labelTextValor">	
-				<%=PJGAPELLIDO1%>
-			</td>
-			<td class="labelText">	
-				<siga:Idioma key='gratuita.mantActuacion.literal.apellidos2'/>
-			</td>
-			<td class="labelTextValor">	
-				<%=PJGAPELLIDO2%>
-			</td>
-		</tr>
-	</table>
+	<siga:ConjCampos leyenda='gratuita.mantActuacion.literal.asistido'>
+		<table width="100%">
+			<tr>
+				<td class="labelText">	
+					<siga:Idioma key='gratuita.mantActuacion.literal.nif'/>
+				</td>
+				<td class="labelTextValor">	
+					<%=PJGNIF%>
+				</td>
+				<td class="labelText">	
+					<siga:Idioma key='gratuita.mantActuacion.literal.nombre'/>
+				</td>
+				<td class="labelTextValor">	
+					<%=PJGNOMBRE%>
+				</td>
+				<td class="labelText">	
+					<siga:Idioma key='gratuita.mantActuacion.literal.apellidos1'/>
+				</td>
+				<td class="labelTextValor">	
+					<%=PJGAPELLIDO1%>
+				</td>
+				<td class="labelText">	
+					<siga:Idioma key='gratuita.mantActuacion.literal.apellidos2'/>
+				</td>
+				<td class="labelTextValor">	
+					<%=PJGAPELLIDO2%>
+				</td>
+			</tr>
+		</table>
 	</siga:ConjCampos>
 	<siga:ConjCampos leyenda="gratuita.busquedaDesignas.literal.letrado">
-	<table width="100%">
+		<table width="100%">
 		<tr>
 			<td class="labelText">	
 				<siga:Idioma key='gratuita.mantActuacion.literal.ncolegiado'/>
@@ -382,6 +390,7 @@
 			</td>
 		</tr>
 	</table>
+	</siga:ConjCampos>
 	</siga:ConjCampos>
 	<siga:ConjCampos leyenda="gratuita.mantActuacion.literal.actuacion">
 	<table width="100%" border="0">
@@ -496,42 +505,48 @@
 	</table>
 	<table width="100%" border="0">
 		<tr>
-			<td class="labelText" width="190">
+			<td class="labelText">
 				<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.comisaria"/>
 			</td>
-			<td colspan="5">	
+			<td colspan="3">	
 			<%if(!modo.equals("consulta")){%>
 			    <input type="text" name="codigoExtComisaria" class="box" size="8" maxlength="10" onBlur="obtenerComisaria();" />			
 			<%}%>	
-				<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" ancho="680" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=dato%>"  elementoSel="<%=comisariaSel%>"  />
+				<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" ancho="680" clase="<%=estiloCombo%>" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=dato%>"  elementoSel="<%=comisariaSel%>"  />
 			</td>
 		</tr>
-		<tr nowrap>			
+		<tr>			
 			
-			<td class="labelText" >	
+			<td class="labelText">	
 				 <siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado"/>
 				 <%if(!modo.equals("consulta")){%>
 				    &nbsp;/&nbsp;<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.codigoext"/>
 				 <%}%>
 			  </td>	 
 				
-			<td colspan="5">	
+			<td colspan="3">	
 			   <%if(!modo.equals("consulta")){%>
 			   <input type="text" name="codigoExtJuzgado" class="box" size="8" maxlength="10" onBlur="obtenerJuzgado();" />
 			   <%}%>
-				<siga:ComboBD nombre="juzgado" ancho="680" tipo="comboJuzgadosTurno" obligatorio="false" parametro="<%=dato%>" parametro="<%=dato%>" clase="<%=estiloCombo%>" elementoSel="<%=juzgadoSel%>"   readOnly="<%=readOnlyCombo%>"/>
+				<siga:ComboBD nombre="juzgado" ancho="680" tipo="comboJuzgadosTurno" obligatorio="false" parametro="<%=dato%>" clase="<%=estiloCombo%>" elementoSel="<%=juzgadoSel%>"   readOnly="<%=readOnlyCombo%>"/>
 			</td>
 		</tr>
 		<tr>
+			<td class="labelText">
+				<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.prision"/>
+			</td>
+			<td >
+				<siga:ComboBD  ancho="300" nombre="acIdPrision" tipo="comboPrisiones" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=dato%>" elementoSel="<%=prisionSel%>" />
+			</td>
 			<td class="labelText" >	
 				<siga:Idioma key='gratuita.mantActuacion.literal.observaciones'/>
 			</td>
 			<%if(modo.equals("consulta")) {%>
-			<td class="labelTextValor" colspan="4">	
-				<%=ACOBSERVACIONES%>
+			<td >	
+				<html:textarea name="AsistenciasForm" property="acobservaciones" cols="190" rows="3" style="overflow:auto" styleClass="boxConsulta" value="<%=ACOBSERVACIONES%>"></html:textarea>
 			</td>
 			<%}else{%>
-			<td  colspan="4">	
+			<td>	
 				<html:textarea name="AsistenciasForm" property="acobservaciones" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" cols="190" rows="3" style="overflow:auto" styleClass="boxCombo" value="<%=ACOBSERVACIONES%>"></html:textarea>
 			</td>
 			<%}%>

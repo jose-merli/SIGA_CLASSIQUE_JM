@@ -13,12 +13,26 @@ package com.siga.tlds;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class FilaExtElement {
+	protected String label=null;
+	protected String width=null;
 	protected String iconName=null;
 	protected String note=null;
 	protected String alt=null;
 	protected String accion=null;
 	protected String accesoMin=null;
-
+	
+	public FilaExtElement(String _iconName,  String _action, String _alt, String _accesoMin,String label, String size) {
+		iconName=_iconName;
+		note=_action;
+		accion=_action;
+		accesoMin=_accesoMin;
+		alt=_alt;
+		this.label = label;
+		this.width = width;
+	
+	}
+	
+	
 	public FilaExtElement(String _iconName,  String _action, String _alt, String _accesoMin) {
 		this(_iconName,  _action, _accesoMin);
 		if (alt != null && !alt.equals("")) {
@@ -53,5 +67,11 @@ public class FilaExtElement {
 	String getAlt() {
 		return alt;
 	}	
+	String getLabel() {
+		return label;
+	}
+	String getWidth() {
+		return width;
+	}
 
 }

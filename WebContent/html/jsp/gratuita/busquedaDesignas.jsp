@@ -173,8 +173,8 @@
 		<td class="labelText">
 			<siga:Idioma key="gratuita.busquedaSOJ.literal.anyo"/> / <siga:Idioma key="gratuita.busquedaSOJ.literal.codigo"/>
 		</td>
-		<td class="labelText" >	
-			<html:text name="BuscarDesignasForm" property="anio" size="4" maxlength="4" styleClass="box" value="<%=anio%>"></html:text> / <html:text name="BuscarDesignasForm" property="codigo" size="5" maxlength="10" styleClass="box" value="<%=codigo%>"></html:text> 
+		<td>	
+			<html:text name="BuscarDesignasForm" property="anio"  style="width:40" maxlength="4" styleClass="box" value="<%=anio%>"></html:text> / <html:text name="BuscarDesignasForm" property="codigo" size="5" maxlength="10" styleClass="box" value="<%=codigo%>"></html:text> 
 		</td>
 		<td class="labelText">
 			&nbsp;
@@ -283,7 +283,7 @@
 	</tr>
 	</table>
 
-	<siga:ConjCampos leyenda="gratuita.busquedaEJG.literal.defensa">
+	<siga:ConjCampos leyenda="gratuita.busquedaEJG.literal.defensa" desplegable="true" oculto="true">
 		<table  border="0" align="center" width="100%">
 		<tr>
 		<td class="labelText" colspan="1">
@@ -337,7 +337,7 @@
 		</table>
 	</siga:ConjCampos>
 
-	<siga:ConjCampos leyenda="pestana.justiciagratuitadesigna.actuaciones">
+	<siga:ConjCampos leyenda="pestana.justiciagratuitadesigna.actuaciones" desplegable="true" oculto="true">
 		<table  border="0" align="center" width="100%">
 		<tr>
 		<td class="labelText" colspan="1">	
@@ -367,7 +367,7 @@
 		</table>
 	</siga:ConjCampos>
 
-	<siga:ConjCampos leyenda="gratuita.busquedaDesignas.literal.defendido">
+	<siga:ConjCampos leyenda="gratuita.busquedaDesignas.literal.defendido" desplegable="true" oculto="true">
 	<table width="100%">
 	<tr>
 		<td class="labelText">	

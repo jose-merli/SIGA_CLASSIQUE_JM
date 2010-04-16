@@ -9,6 +9,7 @@ import javax.servlet.http.*;
 import javax.transaction.UserTransaction;
 
 import com.siga.envios.form.*;
+
 import org.apache.struts.action.*;
 
 public class SIGAPlantillasEnviosCorreoElectronicoAction extends MasterAction
@@ -16,33 +17,37 @@ public class SIGAPlantillasEnviosCorreoElectronicoAction extends MasterAction
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions
 	{
 	    SIGAPlantillasEnviosCorreoElectronicoForm form = (SIGAPlantillasEnviosCorreoElectronicoForm)formulario;
-	    EnvCamposPlantillaAdm admProducto = new EnvCamposPlantillaAdm(this.getUserBean(request));
 
-	    String idInstitucion = form.getIdInstitucion();
-	    String idTipoEnvio = form.getIdTipoEnvio();
-	    String idPlantillaEnvios = form.getIdPlantillaEnvios();
+
+//	    String idInstitucion = form.getIdInstitucion();
+//	    String idTipoEnvio = form.getIdTipoEnvio();
+//	    String idPlantillaEnvios = form.getIdPlantillaEnvios();
+//	    
+//	    String sEditable = form.getEditable();
 	    
-	    String sEditable = form.getEditable();
+		form.setIdInstitucion(request.getParameter("idInstitucion").toString());
+		form.setIdTipoEnvios(request.getParameter("idTipoEnvio").toString());
+		form.setIdPlantillaEnvios(request.getParameter("idPlantillaEnvios").toString());
+		String editable = request.getParameter("editable").toString();
+		String nombrePlantilla = request.getParameter("plantilla").toString();
 	    
-	    //Obtenemos el nombre de plantilla por si se ha modificado
-	    EnvPlantillasEnviosAdm plantAdm = new EnvPlantillasEnviosAdm(this.getUserBean(request));
-	    Hashtable htPk = new Hashtable();
-	    htPk.put(EnvCamposPlantillaBean.C_IDINSTITUCION,idInstitucion);
-	    htPk.put(EnvCamposPlantillaBean.C_IDTIPOENVIOS,idTipoEnvio);
-	    htPk.put(EnvCamposPlantillaBean.C_IDPLANTILLAENVIOS,idPlantillaEnvios);
-	    Vector vPlant = plantAdm.selectByPK(htPk);	    
-	    EnvPlantillasEnviosBean plantBean = (EnvPlantillasEnviosBean)vPlant.firstElement();
-	    String plantilla = plantBean.getNombre();
 	    
-	    String descPlantilla = form.getDescripcionPlantilla();
-	    String idTipoEnvios = form.getIdTipoEnvios();
 	    
-	    Vector vDatos = admProducto.obtenerCampos(idInstitucion, idTipoEnvio, idPlantillaEnvios, "E");
+	    
+	    	    
+		SIGAPlantillasEnviosForm plantForm = new SIGAPlantillasEnviosForm();
+		plantForm.setDescripcionPlantilla(nombrePlantilla);
+		form.setPlantillaEnvios(plantForm);
+
+	    
+	    EnvCamposPlantillaAdm admProducto = new EnvCamposPlantillaAdm(this.getUserBean(request));	    
+	    Vector vDatos = admProducto.obtenerCampos(form.getIdInstitucion(), form.getIdTipoEnvios(), form.getIdPlantillaEnvios(), "E");
 	    
 	    if (vDatos!=null && vDatos.size()==0)
 	    {
-	        request.setAttribute("asunto","");
-	        request.setAttribute("cuerpo","");
+	    	form.setAsunto("");
+	    	form.setCuerpo("");
+	        
 	    }
 	    
 	    else
@@ -52,29 +57,16 @@ public class SIGAPlantillasEnviosCorreoElectronicoAction extends MasterAction
 		    
 		    if (ht1.get(EnvCamposBean.C_IDCAMPO).equals(EnvCamposPlantillaAdm.K_IDCAMPO_ASUNTO))
 		    {
-		        request.setAttribute("asunto", ht1.get(EnvCamposPlantillaBean.C_VALOR));
-		        request.setAttribute("cuerpo", ht2.get(EnvCamposPlantillaBean.C_VALOR));
+		    	form.setAsunto((String)ht1.get(EnvCamposPlantillaBean.C_VALOR));
+		    	form.setCuerpo((String)ht2.get(EnvCamposPlantillaBean.C_VALOR));
+		      
 		    }
 		    else
-		    {
-		        request.setAttribute("asunto", ht2.get(EnvCamposPlantillaBean.C_VALOR));
-		        request.setAttribute("cuerpo", ht1.get(EnvCamposPlantillaBean.C_VALOR));
+		    {	form.setAsunto((String)ht2.get(EnvCamposPlantillaBean.C_VALOR));
+	    		form.setCuerpo((String)ht1.get(EnvCamposPlantillaBean.C_VALOR));
+		        
 		    }
 	    }
-	    
-	    request.setAttribute("idInstitucion", idInstitucion);
-	    request.setAttribute("idTipoEnvio", idTipoEnvio);
-	    request.setAttribute("idPlantillaEnvios", idPlantillaEnvios);
-	    
-	    request.setAttribute("editable", sEditable);
-	    
-	    request.setAttribute("plantilla", plantilla);
-	    
-	    request.setAttribute("descripcionPlantilla", descPlantilla);
-	    request.setAttribute("idTipoEnvios", idTipoEnvios);
-	    
-	    request.setAttribute("datos", vDatos);
-	    
 		return "abrir";
 	}
 

@@ -124,8 +124,8 @@
 			   nombre="tablaDatos"
 			   borde="1"
 			   clase="tableTitle"
-			   nombreCol="gratuita.defendidosDesigna.literal.nif,gratuita.defendidosDesigna.literal.nombreApellidos,gratuita.defendidosDesigna.literal.representante,"
-			   tamanoCol="10,45,30,15"
+			   nombreCol="gratuita.defendidosDesigna.literal.nif,gratuita.defendidosDesigna.literal.nombreApellidos,envios.etiquetas.tipoCliente.abogado,gratuita.personaJG.literal.procurador,"
+			   tamanoCol="10,30,25,25,15"
 		   			alto="100%"
 			   modal="G"
 			  >
@@ -144,8 +144,7 @@
 			 	%>	
 				  	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="E,C,B" clase="listaNonEdit" modo="<%=modo%>">
 						<td>
-<!--						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=hash.get("IDPERSONA")%>'> -->
-						
+<!--						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=hash.get("IDPERSONA")%>'> -->				
 
 					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=PersonaJGAction.DESIGNACION_CONTRARIOS%>">
 					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="gratuita.contrariosDesigna.literal.titulo">
@@ -156,11 +155,11 @@
 					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_7" value="<%=usr.getLocation()%>">
 					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_8" value="<%=idturno %>">
 					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_9" value="<%=anio %>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_10" value="<%=numero %>">
-						
-						&nbsp;<%=hash.get("NIF")%></td>
-						<td>&nbsp;<%=hash.get("NOMBRE")%></td>
-						<td>&nbsp;<%=(String)hash.get("REPRESENTANTE")%></td>
+					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_10" value="<%=numero %>">						
+					&nbsp;<%=hash.get("NIF")%></td>
+						<td>&nbsp;<%=hash.get("NOMBRE")%></td>						
+						<td>&nbsp;<%=(String)hash.get("NOMBREABOGADOCONTRARIO")%></td>
+						<td>&nbsp;<%=(String)hash.get("PROCURADOR")%></td>
 					</siga:FilaConIconos>	
 				<%recordNumber++;%>
 				<%}%>	

@@ -100,6 +100,7 @@
 			<!-- RGG: cambio a formularios ligeros -->
 			<input type="hidden" name="tablaDatosDinamicosD">
 			<input type="hidden" name="actionModal" value="">
+			<html:hidden name="ActuacionesDesignasForm"  property ="filaSelD"/>
 		</html:form>
 			<!-- Campo obligatorio -->
 			<siga:TablaCabecerasFijas 
@@ -112,6 +113,7 @@
 			   alto="100%"
 			   modal="G"
 			   ajusteBotonera="true"
+			   activarFilaSel="true"	
 			   
 			   
 		   	   

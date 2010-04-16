@@ -82,6 +82,8 @@
 	<html:hidden name="CambiosLetradosDesignasForm" property = "anio"/>
 	<html:hidden name="CambiosLetradosDesignasForm" property = "numero"/>
 	<html:hidden name="CambiosLetradosDesignasForm" property = "idTurno"/>
+	<html:hidden name="CambiosLetradosDesignasForm" property = "codigo"/>
+	<html:hidden name="CambiosLetradosDesignasForm" property = "sufijo"/>
 	<html:hidden property = "idPersona" value = ""/>
 	
 	<html:hidden property = "flagSalto" value=""/>
@@ -218,7 +220,7 @@
 			
 			if(personaActual!='' && personaActual==document.forms[0].idPersona.value)
 			{	//ha seleccionado al mismo
-				alert("<siga:Idioma key="gratuita.busquedaSJCS.alert2"/>");
+				alert("<siga:Idioma key='gratuita.busquedaSJCS.alert2'/>");
 				fin();
 			    return false;
 			}else if (validateCambiosLetradosDesignasForm(document.forms[0])) {
@@ -238,8 +240,8 @@
 					}
 				}else{
 				  if (!isAfter(document.forms[0].fechaDesigna.value,fechaActual)){
-				       alert("<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.literal.fechaDesigna"/> "+
-					  	  "<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.alert2"/>"+fechaActual);
+				       alert("<siga:Idioma key='gratuita.cambiosProcuradoresDesigna.literal.fechaDesigna'/> "+
+					  	  "<siga:Idioma key='gratuita.cambiosProcuradoresDesigna.alert2'/>"+fechaActual);
 					  	  fin();
 					  	  return false;
 				  }else{

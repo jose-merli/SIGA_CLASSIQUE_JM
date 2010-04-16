@@ -42,7 +42,9 @@
 	String[] datoJuzgado = new String[2];
 	String tipo = "", estado = "", fecha = "", procurador = "", asunto = "", observaciones = "", delitos = "", fechaAnulacion = "", fechaEstado = "";
 	String fechaApertura = "";
-
+	String fechaOficioJuzgado = "";
+	String fechaRecepcionColegio = "";
+	
 	//Hastable letrado= new Hastable();
 	ScsDesignaAdm clase = new ScsDesignaAdm(usr);
 
@@ -83,6 +85,7 @@
 	String auxJuicio = "";
 	String sHorasJuicio = "";
 	String sMinutosJuicio = "";
+
 	
 	String estilo = "box", readOnly="false", estiloCombo="boxCombo";
 	String idPretension = "",pretension="";
@@ -170,6 +173,8 @@
 		
 		// FECHA DE APERTURA
 		fechaApertura = GstDate.getFormatedDateShort("",beanDesigna.getFechaEntrada());		
+		fechaOficioJuzgado = GstDate.getFormatedDateShort("",beanDesigna.getFechaOficioJuzgado());
+		fechaRecepcionColegio = GstDate.getFormatedDateShort("",beanDesigna.getFechaRecepcionColegio());
 
 		// TRATAMIENTO DE LA FECHA DE ANULACIÓN
 
@@ -211,7 +216,7 @@
 	}
 	boolean validarProcedimiento = false;
 	boolean obligatorioProcedimiento = false;
-	if (pcajgActivo==2 || pcajgActivo==3){
+	if (pcajgActivo==2 || pcajgActivo==3 || pcajgActivo==5){
 		obligatorioProcedimiento = true;
 	}
 	if (pcajgActivo==4 || pcajgActivo==5){
@@ -769,6 +774,23 @@ function accionCerrar() {
 				leyenda="gratuita.busquedaDesignas.literal.observaciones">
 				<table class="tablaCampos" align="center" cellpadding="0"
 					cellpadding="0" width="100%">
+					<tr>
+					<td class="labelText">
+						<siga:Idioma key="gratuita.editarDesigna.literal.fechaOficioJuzgado"/></td>
+					<td>
+						<siga:Fecha nombreCampo="fechaOficioJuzgado" valorInicial="<%=fechaOficioJuzgado%>"></siga:Fecha>
+						<a onClick="return showCalendarGeneral(fechaOficioJuzgado);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
+							<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>" border="0"></a>
+					</td>
+					<td class="labelText">
+						<siga:Idioma key="gratuita.editarDesigna.literal.fechaRecepcionColegio"/>
+					</td>
+					<td>
+						<siga:Fecha nombreCampo="fechaRecepcionColegio" valorInicial="<%=fechaRecepcionColegio%>"></siga:Fecha>
+						<a onClick="return showCalendarGeneral(fechaRecepcionColegio);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
+							<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>" border="0"></a>
+					</td>
+					</tr>
 					<tr>
 						<td class="labelText"><siga:Idioma
 							key="gratuita.editarDesigna.literal.observaciones" />

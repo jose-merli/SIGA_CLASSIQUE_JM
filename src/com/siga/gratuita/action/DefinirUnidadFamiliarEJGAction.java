@@ -24,7 +24,6 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsEJGAdm;
@@ -41,6 +40,7 @@ import com.siga.beans.ScsUnidadFamiliarEJGBean;
 import com.siga.beans.eejg.ScsEejgPeticionesAdm;
 import com.siga.beans.eejg.ScsEejgPeticionesBean;
 import com.siga.eejg.InformacionEconomicaEjg;
+import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -53,7 +53,7 @@ import es.satec.businessManager.BusinessManager;
 * Maneja las acciones que se pueden realizar sobre la tabla SCS_SOJ
 */
 public class DefinirUnidadFamiliarEJGAction extends MasterAction {	
-	private static BusinessManager businessManager=null;
+//	private static BusinessManager businessManager=null;
 	protected ActionForward executeInternal(ActionMapping mapping,
 		      ActionForm formulario,
 		      HttpServletRequest request, 
@@ -63,9 +63,9 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 		String mapDestino =null;
 		miForm = (MasterForm) formulario;
 		try{
-			if(getBusinessManager()==null)
-				businessManager = BusinessManager.getInstance(SIGAReferences.getInputReference(SIGAReferences.RESOURCE_FILES.ATOS_BUSINESS_CONFIG));
-			
+//			if(getBusinessManager()==null)
+//				businessManager = BusinessManager.getInstance(SIGAReferences.getInputReference(SIGAReferences.RESOURCE_FILES.ATOS_BUSINESS_CONFIG));
+//			
 			if((miForm == null)||(miForm.getModo()==null)||(miForm.getModo().equals(""))){
 				return mapping.findForward(this.abrir(mapping, miForm, request, response));
 				
@@ -583,6 +583,23 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 			
 			Vector<ScsEJGBean> vEjg = admEJG.selectByPK(miHash);
 			ScsEJGBean ejg = vEjg.get(0);
+//			P_INSTITUCION IN SCS_EJG.IDINSTITUCION%type,
+//            P_IDTIPOEJG   IN SCS_EJG.IDTIPOEJG%type,
+//            P_ANIO        IN SCS_EJG.ANIO%type,
+//            P_NUMERO
+			Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+			htCodigos.put(new Integer(1),miForm.getIdInstitucion());
+			htCodigos.put(new Integer(2),miForm.getIdTipoEJG());
+			htCodigos.put(new Integer(3),miForm.getAnio());
+			htCodigos.put(new Integer(4),miForm.getNumero());
+			try {
+				String idEstadoEjg = EjecucionPLs.ejecutarFuncion(htCodigos, "F_SIGA_GET_IDULTIMOESTADOEJG");
+				if(idEstadoEjg!=null)
+					ejg.setIdEstadoEjg(Short.valueOf(idEstadoEjg));	
+			} catch (Exception e) {
+				ejg.setIdEstadoEjg(null);
+			}
+			
 			miForm.setEjg(ejg);
 			if (ejg.getIdPersonaJG()!=null ){
 				ScsUnidadFamiliarEJGAdm admUnidadFamiliar = new ScsUnidadFamiliarEJGAdm(usr);;
@@ -605,22 +622,31 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 		String idTipoEJG = (String) vCampos.get(2);
 		String anio = (String) vCampos.get(3);
 		String numero = (String) vCampos.get(4);
-		String idXml = (String) vCampos.get(5);
-		String idioma = (String) vCampos.get(6);
+//		String idXml = (String) vCampos.get(5);
+//		String idioma = (String) vCampos.get(6);
+		String idPeticion = (String) vCampos.get(5);
 		miForm.setIdInstitucion(idInstitucionEJG);
 		miForm.setIdPersona(idPersonaJG);
 		miForm.setIdTipoEJG(idTipoEJG);
 		miForm.setAnio(anio);
 		miForm.setNumero(numero);
-		miForm.setIdXml(idXml);
-		miForm.setIdioma(idioma);
+		
 		
 		
 		UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 		String salida = "";
 		try {
-			ScsUnidadFamiliarEJGAdm admUnidadFam = new ScsUnidadFamiliarEJGAdm(usr);
+			ScsEejgPeticionesAdm admPeticionEejg = new ScsEejgPeticionesAdm(usr);
 			Hashtable<String, Object> htPK = new Hashtable<String, Object>();
+			htPK.put(ScsEejgPeticionesBean.C_IDPETICION, idPeticion);
+			Vector vPeticionEejg = admPeticionEejg.selectByPK(htPK);
+			ScsEejgPeticionesBean peticionEejg = (ScsEejgPeticionesBean) vPeticionEejg.get(0);
+			if(peticionEejg.getIdXml()!=null && !peticionEejg.getIdXml().equals(""))
+				miForm.setIdXml(peticionEejg.getIdXml().toString());
+			miForm.setIdioma(peticionEejg.getIdioma());
+			
+			ScsUnidadFamiliarEJGAdm admUnidadFam = new ScsUnidadFamiliarEJGAdm(usr);
+			htPK.clear();
 			htPK.put(ScsUnidadFamiliarEJGBean.C_IDPERSONA,idPersonaJG );
 			htPK.put(ScsUnidadFamiliarEJGBean.C_ANIO, anio);
 			htPK.put(ScsUnidadFamiliarEJGBean.C_NUMERO, numero);
@@ -647,18 +673,19 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 			
 			
 			
-			if(idXml==null ||idXml.equals(""))
+			if(miForm.getIdXml()==null ||miForm.getIdXml().equals(""))
 				throw new SIGAException("messages.general.error");
 			
 			BusinessManager bm = getBusinessManager();
 			EejgService eEjgS = (EejgService)bm.getService(EejgService.class);
 			ScsUnidadFamiliarEJGBean unidadFamiliarVo  = miForm.getUnidadFamiliarEjgVo();
+			unidadFamiliarVo.setPeticionEejg(peticionEejg);
 			Map<Integer, Map<String, String>> mapInformeEejg = eEjgS.getDatosInformeEejg(unidadFamiliarVo,usr);
 			File fichero = eEjgS.getInformeEejg(mapInformeEejg, usr);
 			if(fichero!= null){
 				request.setAttribute("nombreFichero", fichero.getName());
 				request.setAttribute("rutaFichero", fichero.getAbsolutePath());			
-				request.setAttribute("borrarFichero", "false");			
+				request.setAttribute("borrarFichero", "true");			
 				request.setAttribute("generacionOK","OK");
 				salida= "descarga";
 			}
@@ -690,17 +717,21 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 			BusinessManager bm = getBusinessManager();
 			EejgService eEjgS = (EejgService)bm.getService(EejgService.class);
 			Map<Integer, Map<String, String>> mapInformeEejg = eEjgS.getDatosInformeEejgMultiplesEjg(miForm.getDatosInforme(),usr);
-			File fichero = eEjgS.getInformeEejg(mapInformeEejg, usr);
-			
-			if(fichero!= null){
-				request.setAttribute("nombreFichero", fichero.getName());
-				request.setAttribute("rutaFichero", fichero.getAbsolutePath());			
-				request.setAttribute("borrarFichero", "false");			
-				request.setAttribute("generacionOK","OK");
-				salida= "descarga";
-			}
-			else{
-				return exitoModalSinRefresco("facturacion.informes.facturasEmitidas.generarInforme.error", request);
+			if(mapInformeEejg==null || mapInformeEejg.size()==0){
+				return exitoModalSinRefresco("gratuita.eejg.message.ningunInforme", request);
+			}else{
+				File fichero = eEjgS.getInformeEejg(mapInformeEejg, usr);
+				
+				if(fichero!= null){
+					request.setAttribute("nombreFichero", fichero.getName());
+					request.setAttribute("rutaFichero", fichero.getAbsolutePath());			
+					request.setAttribute("borrarFichero", "true");			
+					request.setAttribute("generacionOK","OK");
+					salida= "descarga";
+				}
+				else{
+					return exitoModalSinRefresco("facturacion.informes.facturasEmitidas.generarInforme.error", request);
+				}
 			}
 		}
 		catch (Exception e) { 
@@ -724,19 +755,19 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 				String idTipoEJG = (String) vCampos.get(2);
 				String anio = (String) vCampos.get(3);
 				String numero = (String) vCampos.get(4);
-				String idXml = (String) vCampos.get(5);
-				String idioma = (String) vCampos.get(6);
+				String idPeticion = (String) vCampos.get(5);
 				
-				/*DefinirUnidadFamiliarEJGForm unidadFamiliarForm = new DefinirUnidadFamiliarEJGForm();
-				unidadFamiliarForm.setIdInstitucion(idInstitucionEJG);
-				unidadFamiliarForm.setIdPersona(idPersonaJG);
-				unidadFamiliarForm.setIdTipoEJG(idTipoEJG);
-				unidadFamiliarForm.setAnio(anio);
-				unidadFamiliarForm.setNumero(numero);
-				unidadFamiliarForm.setIdXml(idXml);
-				unidadFamiliarForm.setIdioma(idioma);*/
+				ScsEejgPeticionesAdm admPeticionEejg = new ScsEejgPeticionesAdm(usr);
+				htPK = new Hashtable<String, Object>();
+				htPK.put(ScsEejgPeticionesBean.C_IDPETICION, idPeticion);
+				Vector vPeticionEejg = admPeticionEejg.selectByPK(htPK);
+				ScsEejgPeticionesBean peticionEejg = (ScsEejgPeticionesBean) vPeticionEejg.get(0);
+				if(peticionEejg.getIdXml()!=null && !peticionEejg.getIdXml().equals(""))
+					miForm.setIdXml(peticionEejg.getIdXml().toString());
+				miForm.setIdioma(peticionEejg.getIdioma());
 				
 				ScsUnidadFamiliarEJGAdm admUnidadFam = new ScsUnidadFamiliarEJGAdm(usr);
+				htPK.clear();
 				htPK = new Hashtable<String, Object>();
 				htPK.put(ScsUnidadFamiliarEJGBean.C_IDPERSONA,idPersonaJG );
 				htPK.put(ScsUnidadFamiliarEJGBean.C_ANIO, anio);
@@ -761,9 +792,6 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 					
 				}
 				unidadFamiliarVo.setParentesco(parentesco);
-				ScsEejgPeticionesBean peticionEejg = new ScsEejgPeticionesBean();
-				peticionEejg.setIdXml(new Integer(idXml));
-				peticionEejg.setIdioma(idioma);
 				unidadFamiliarVo.setPeticionEejg(peticionEejg);
 				
 				ScsPersonaJGBean personaJG = new ScsPersonaJGBean();
@@ -785,7 +813,7 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 			if(fichero!= null){
 				request.setAttribute("nombreFichero", fichero.getName());
 				request.setAttribute("rutaFichero", fichero.getAbsolutePath());			
-				request.setAttribute("borrarFichero", "false");			
+				request.setAttribute("borrarFichero", "true");			
 				request.setAttribute("generacionOK","OK");
 				salida= "descarga";
 			}
@@ -833,7 +861,7 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 		
 		return null;
 	}
-	public static BusinessManager getBusinessManager() {
-		return businessManager;
-	}
+//	public static BusinessManager getBusinessManager() {
+//		return businessManager;
+//	}
 }

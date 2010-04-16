@@ -62,7 +62,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 						    ScsDesignaBean.C_FECHAJUICIO,			ScsDesignaBean.C_IDPRETENSION,
 							ScsDesignaBean.C_CODIGO, 				ScsDesignaBean.C_NUMPROCEDIMIENTO,
 							ScsDesignaBean.C_IDPROCEDIMIENTO,       ScsDesignaBean.C_FECHAESTADO,
-							ScsDesignaBean.C_SUFIJO};
+							ScsDesignaBean.C_SUFIJO,				ScsDesignaBean.C_FECHAOFICIOJUZGADO,
+							ScsDesignaBean.C_FECHARECEPCIONCOLEGIO};
 		return campos;
 	}
 	/** Funcion getClavesBean ()
@@ -111,6 +112,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			bean.setProcedimiento(UtilidadesHash.getString(hash,ScsDesignaBean.C_IDPROCEDIMIENTO));
 			bean.setFechaEstado(UtilidadesHash.getString(hash,ScsDesignaBean.C_FECHAESTADO));
 			bean.setIdPretension(UtilidadesHash.getInteger(hash,ScsDesignaBean.C_IDPRETENSION));
+			bean.setFechaRecepcionColegio(UtilidadesHash.getString(hash,ScsDesignaBean.C_FECHARECEPCIONCOLEGIO));
+			bean.setFechaOficioJuzgado(UtilidadesHash.getString(hash,ScsDesignaBean.C_FECHAOFICIOJUZGADO));
 		}
 		catch(Exception e){
 			bean = null;
@@ -210,6 +213,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, ScsDesignaBean.C_IDPROCEDIMIENTO,b.getProcedimiento());
 			UtilidadesHash.set(hash, ScsDesignaBean.C_FECHAESTADO,b.getFechaEstado());
 			UtilidadesHash.set(hash, ScsDesignaBean.C_IDPRETENSION,b.getIdPretension());
+			UtilidadesHash.set(hash, ScsDesignaBean.C_FECHAOFICIOJUZGADO,b.getFechaOficioJuzgado());
+			UtilidadesHash.set(hash, ScsDesignaBean.C_FECHARECEPCIONCOLEGIO,b.getFechaRecepcionColegio());
 			return hash;
 		}
 		catch (Exception e){
@@ -1693,6 +1698,12 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				//metemos los contrarios
 				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETCONTRARIOS_DESIGNA", "CONTRARIOS"));
 				
+				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETABOGADOCONTRARIO_DES", "ABOGADOS_CONTRARIOS"));
+				
+				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETREPRESENTANTE_DES", "REPRESENTANTES_CONTRARIOS"));
+				
+				
+				
 				
 				htCodigo.put(new Integer(2), anioDesigna);
 				htCodigo.put(new Integer(3), idTurno);
@@ -1786,7 +1797,6 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				} else {
 					registro.put("PROVINCIA_JUZGADO", " ");
 				}
-				
 				//Sacamos el tipo ejg colegio (@cat)
 				helperInformes.completarHashSalida(registro, getTipoEJGColegioDesigna(idTurno, numeroDesigna, anioDesigna, idInstitucion, usrbean.getLanguage().toString()));
 				
@@ -1892,8 +1902,9 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			" TO_CHAR(SYSDATE, 'MONTH', 'NLS_DATE_LANGUAGE = SPANISH') AS MES_ACTUAL,"+
 			" TO_CHAR(SYSDATE, 'yyyy') AS ANIO_ACTUAL"+
 			
-			" ,DES.idtipodesignacolegio AS IDTIPODESIGNACOLEGIO "+
-			
+			" ,DES.idtipodesignacolegio AS IDTIPODESIGNACOLEGIO, "+
+			" TO_CHAR(DES.FECHARECEPCIONCOLEGIO, 'dd/MM/yyyy') AS FECHA_RECEPCION_COLEGIO,"+
+			" TO_CHAR(DES.FECHAOFICIOJUZGADO, 'dd/MM/yyyy') AS FECHA_OFICIO_JUZGADO "+
 		    
 		    //-- campos calculados en el recorrido
 		    
@@ -2055,7 +2066,15 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			String idTurno = (String)datosEntrada.get("IDTURNO");
 			String fechaAnulacion = "SYSDATE";
 			String idInstitucion = usr.getLocation();	
-				
+			String Codigo= (String)datosEntrada.get("CODIGO");	
+			String Sufijo= (String)datosEntrada.get("SUFIJO");	
+			String contador="";
+			 if (Sufijo!=null && !Sufijo.equals("")){ 
+					 contador=Codigo+"-"+Sufijo;
+			 }else{
+				 	 contador=Codigo;
+			 }
+						
 			
 			// Obtenemos las actuaciones para esa designa. Con cada una comprobaremos si no esta facturada ni
 			// anulada. Si es asi la anularemos			
@@ -2094,7 +2113,11 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				compensacionBean.setIdSaltosTurno(Long.valueOf(compensacionAdm.getNuevoIdSaltosTurno(idInstitucion, idTurno)));
 				compensacionBean.setFecha("SYSDATE");
 				compensacionBean.setIdPersona(new Long(idLetrado));
-				compensacionBean.setMotivos(UtilidadesString.getMensajeIdioma((String)usr.getLanguage(),"gratuita.compensacion.motivo"));
+				String mensaje=UtilidadesString.getMensajeIdioma((String)usr.getLanguage(),"gratuita.compensacion.motivo");
+				 mensaje=mensaje+".\n"+ UtilidadesString.getMensajeIdioma(usr,
+					"gratuita.literal.numeroDesignacion")+": "+ contador; 
+				//compensacionBean.setMotivos(UtilidadesString.getMensajeIdioma((String)usr.getLanguage(),"gratuita.compensacion.motivo"));
+				 compensacionBean.setMotivos(mensaje);
 				compensacionBean.setSaltoCompensacion("C");
 				compensacionBean.setUsuMod(this.usuModificacion);
 				compensacionBean.setFechaMod("SYSDATE");
@@ -2311,5 +2334,46 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		       }
 		       return datos;      
 	}
+	
+	
+	  public void compensacionDesigna(HttpServletRequest request, String anio,String codigo, String numero, String idTurno, String idinstitucion) throws ClsExceptions, SIGAException{
+		// TODO Auto-generated method stub
+		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+		HttpSession ses = request.getSession();   
+		
+		try {	
+		
+			// Comprobamos que se quiera compensar o no por la anulacion de la designacion
+			  String compensar = request.getParameter("compensar");			
+				ScsSaltosCompensacionesAdm  compensacionAdm  = new ScsSaltosCompensacionesAdm(this.usrbean);
+				ScsSaltosCompensacionesBean compensacionBean = new ScsSaltosCompensacionesBean();				
+				// Obetenemos el letrado asociado a la designa
+				String idLetrado = getIDLetradoDesig(idinstitucion, idTurno, anio, numero);				
+				// Asignamos los datos al bean de la compensacion
+				compensacionBean.setIdInstitucion(Integer.valueOf(idinstitucion));
+				compensacionBean.setIdTurno(Integer.valueOf(idTurno));
+				compensacionBean.setIdSaltosTurno(Long.valueOf(compensacionAdm.getNuevoIdSaltosTurno(idinstitucion, idTurno)));
+				compensacionBean.setFecha("SYSDATE");
+				compensacionBean.setIdPersona(new Long(idLetrado));
+				String mensaje=UtilidadesString.getMensajeIdioma((String)usr.getLanguage(),"gratuita.compensacion.motivoDesignacion");
+				mensaje=mensaje+".\n"+ UtilidadesString.getMensajeIdioma(usr,
+					"gratuita.literal.numeroDesignacion")+": "+ codigo;
+				compensacionBean.setMotivos(mensaje);
+				//compensacionBean.setMotivos(UtilidadesString.getMensajeIdioma((String)usr.getLanguage(),"gratuita.compensacion.motivoDesignacion"));
+				compensacionBean.setSaltoCompensacion("C");
+				compensacionBean.setUsuMod(this.usuModificacion);
+				compensacionBean.setFechaMod("SYSDATE");				
+				// Insertamos la nueva compensacion en la base de datos
+				if (!compensacionAdm.insert(compensacionBean)){
+					throw new ClsExceptions(compensacionAdm.getError());
+				}				
+			
+		} catch(ClsExceptions e){
+			throw e; 
+		} catch(Exception e){
+			throw new ClsExceptions(e,e.toString()); 
+		}		
+		
+	  }
 	
 }

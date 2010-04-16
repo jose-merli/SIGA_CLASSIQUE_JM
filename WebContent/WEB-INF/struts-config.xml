@@ -145,6 +145,9 @@
 		<form-bean name="PlantillasEnviosCamposForm" type="com.siga.envios.form.SIGAPlantillasEnviosCamposForm"/>
 		<form-bean name="PlantillasEnviosPlantillasForm" type="com.siga.envios.form.SIGAPlantillasEnviosPlantillasForm"/>
 		<form-bean name="PlantillasEnviosCorreoElectronicoForm" type="com.siga.envios.form.SIGAPlantillasEnviosCorreoElectronicoForm"/>
+		<form-bean name="ImagenPlantillaForm" type="com.siga.envios.form.ImagenPlantillaForm"/>
+		
+		
 		<form-bean name="RemitentesPlantillasForm" type="com.siga.envios.form.RemitentesPlantillasForm"/>
 		<form-bean name="EnviosDatosGeneralesForm" type="com.siga.envios.form.SIGAEnviosDatosGeneralesForm"/>
 		<form-bean name="EnviosCorreoElectronicoForm" type="com.siga.envios.form.SIGAEnviosCorreoElectronicoForm"/>
@@ -1538,6 +1541,15 @@
 			<forward name="abrir" path="/html/jsp/envios/pestanaPlantillas.jsp"/>
 			<forward name="mostrar" path="/html/jsp/envios/detalleRegistroPlantillasEnvios.jsp"/>
 		</action>
+		<action path="/ENV_ImagenesPlantilla" type="com.siga.envios.action.ImagenPlantillaAction" name="ImagenPlantillaForm" scope="request">
+			<forward name="abrir" path="/html/jsp/envios/pestanaImagenes.jsp"/>
+			<forward name="mostrar" path="/html/jsp/envios/detalleImagenPlantilla.jsp"/>
+		</action>
+		
+		<action path="/ENV_ImagenesEnvio" type="com.siga.envios.action.ImagenPlantillaAction" name="ImagenPlantillaForm" scope="request">
+			<forward name="abrir" path="/html/jsp/envios/pestanaImagenes.jsp"/>
+			<forward name="mostrar" path="/html/jsp/envios/detalleImagenPlantilla.jsp"/>
+		</action>
 
 		<!-- ***** Envíos a Grupos / Seleccionar Remitentes ***** -->
 		<action path="/ENV_RemitentesPlantilla" type="com.siga.envios.action.RemitentesPlantillasAction" name="RemitentesPlantillasForm" scope="request">
@@ -2289,7 +2301,7 @@
 
 		<!-- ***** Justicia Gratuita / Configurar Turnos / EJG ***** -->
 		<action path="/JGR_EJG" type="com.siga.gratuita.action.DefinirEJGAction" name="DefinirEJGForm" scope="request">
-			<forward name="inicio" path="/html/jsp/gratuita/busquedaEJG.jsp"/>
+			<forward name="inicio" path="/html/jsp/gratuita/busquedaEJG.jsp?ventanaCajg=0"/>
 			<forward name="insertarEJG" path="/html/jsp/gratuita/insertarEJG.jsp"/>
 			<forward name="busquedaAutomatica" path="/html/jsp/gratuita/recargarModalInsercionEJG.jsp"/>
 			<forward name="listarEJG" path="/html/jsp/gratuita/listadoEJG.jsp"/>
@@ -2475,7 +2487,7 @@
 		
 		<!-- ***** Justicia Gratuita / e_comunicaciones / Seleccion ***** -->
 		<action path="/JGR_E-Comunicaciones_Seleccion" type="com.siga.gratuita.action.DefinirCAJGAction" name="BusquedaCAJG_EJGForm" scope="request">
-			<forward name="inicio" path="/html/jsp/gratuita/busquedaEJG_CAJG.jsp"/>
+			<forward name="inicio" path="/html/jsp/gratuita/busquedaEJG.jsp?ventanaCajg=1"/>
 			<forward name="insertarEJG" path="/html/jsp/gratuita/insertarEJG.jsp"/>
 			<forward name="busquedaAutomatica" path="/html/jsp/gratuita/recargarModalInsercionEJG.jsp"/>
 			<forward name="listarEJG" path="/html/jsp/gratuita/listadoCAJG_EJG.jsp"/>
@@ -2496,7 +2508,7 @@
 			<forward name="exitoRemesa" path="/html/jsp/gratuita/exitoRemesa.jsp"/>
 			<forward name="listarEJG" path="/html/jsp/gratuita/listadoEJG_Remesa.jsp"/>
 			<forward name="listarEJGListos" path="/html/jsp/gratuita/listadoEJG_RemesaListos.jsp"/>
-			<forward name="aniadirBusqueda" path="/html/jsp/gratuita/busquedaEJG_Listos.jsp"/>
+			<forward name="aniadirBusqueda" path="/html/jsp/gratuita/busquedaEJG.jsp?ventanaCajg=2"/>
 			<forward name="export" path="/SIGASvlVectorToClientFileConExtension.svrl"/>
 			<forward name="erroresResultadoCAJG" path="/html/jsp/gratuita/erroresResultadoCAJG.jsp"/>
 		</action>

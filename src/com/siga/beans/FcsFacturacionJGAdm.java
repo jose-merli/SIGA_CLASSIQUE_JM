@@ -2835,6 +2835,15 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"                   and apu.idinstitucion = facgua.idinstitucion " +
 				"                   and apu.idfacturacion = facgua.idfacturacion " +
 				"                   and apu.idapunte = facgua.idapunte) " +
+				"           and not exists (select * " +
+				"                  from FCS_FACT_APUNTE APU " +
+				"                 where gua.idinstitucion = apu.idinstitucion " +
+				"                   and gua.idturno = apu.idturno " +
+				"                   and gua.idguardia = apu.idguardia " +
+				"                   and apu.idinstitucion = facgua.idinstitucion " +
+				"                   and apu.idfacturacion = facgua.idfacturacion " +
+				"                   and apu.idapunte = facgua.idapunte" +
+				"                   and apu.motivo like '%+') " +
 				"           and facgua.idhito = hit.idhito " +
 				"           and upper(facgua.motivo) like '%TP%' " +
 				"           and not exists " +
@@ -3692,7 +3701,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"        union " +
 				"         " +
 				"        /*Actuaciones FG*/ " +
-				"        select sum(apu.precioaplicado) / hitgua.preciohito as SUBCANTIDAD, " +
+				"        select sum(apu.precioaplicado) / decode(hitgua.preciohito, null, 1, 0, 1, hitgua.preciohito) as SUBCANTIDAD, " +
 				"               hitgua.preciohito as SUBPRECIO, " +
 				"               sum(apu.precioaplicado) as SUBIMPORTE_NUM " +
 				"          from FCS_FACT_APUNTE           APU, " +
@@ -3886,7 +3895,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"        union " +
 				"         " +
 				"        /*Actuaciones FG*/ " +
-				"        select sum(apu.precioaplicado) / hitgua.preciohito as SUBCANTIDAD, " +
+				"        select sum(apu.precioaplicado) / decode(hitgua.preciohito, null, 1, 0, 1, hitgua.preciohito) as SUBCANTIDAD, " +
 				"               hitgua.preciohito as SUBPRECIO, " +
 				"               sum(apu.precioaplicado) as SUBIMPORTE_NUM " +
 				"          from FCS_FACT_APUNTE           APU, " +
@@ -3906,7 +3915,8 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and nvl(guatur.esviolenciagenero, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 				"         group by hitgua.preciohito) " +
 				" " +
-				" group by subprecio ";
+				" group by subprecio " +
+				" having subprecio > 0";
 		}
 		
 		return this.selectGenerico (sql);

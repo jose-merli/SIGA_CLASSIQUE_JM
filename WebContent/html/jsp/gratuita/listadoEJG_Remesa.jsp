@@ -86,12 +86,14 @@
 	
 	String buttons="";	
 	
+	boolean isPCajgTXT = cajgConfig < 2 || cajgConfig == 5;
+	
 	if (modo.equals("consultar")) {
 		buttons="";			
 	} else if (idEstado == 0) {
 		if (cajgConfig != 0) {
 			buttons="g,ae";//guardar y añadir expedientes
-			if (cajgConfig < 2) {
+			if (isPCajgTXT) {
 				buttons+=",gf";//generar fichero txt
 			} else if (cajgConfig == 2) {
 				buttons+=",ftp";//envio ftp
@@ -104,14 +106,14 @@
 	} else if (idEstado == 1) {
 		if (cajgConfig != 0) {
 			buttons="g";//guardar
-			if (cajgConfig < 2) {
+			if (isPCajgTXT) {
 				buttons+=",d";//descargar
 			}
 		}
 	} else if (idEstado == 2) {//enviada
 		if (cajgConfig != 0) {
 			buttons="g";//guardar
-			if (cajgConfig < 2) {
+			if (isPCajgTXT) {
 				buttons+=",d";
 			} else if (cajgConfig == 2 && !SIGAWSClientAbstract.isRespondida(idInstitucion, Integer.parseInt(idremesa))) {
 				buttons+=",respFTP";//obtener respuesta

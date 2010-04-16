@@ -227,10 +227,13 @@ public abstract class SIGAWSClientAbstract {
 	 * @throws Exception
 	 */
 	protected boolean validateXML_EJG(XmlObject xmlObject, String anio, String numejg, String numero, String idTipoEJG) throws Exception {
-		boolean valido = validate(xmlObject);
-		if (!valido) {
-			String descripcionError = "El expediente no ha sido validado correctamente para su envío";
-			escribeErrorExpediente(anio, numejg, numero, idTipoEJG, descripcionError);
+		boolean valido = true;
+		List<String> list = validate(xmlObject);
+		if (list.size() > 0) {
+			valido = false;
+			for (String st : list) {
+				escribeErrorExpediente(anio, numejg, numero, idTipoEJG, st);
+			}
 		}
 		return valido;
 	}
@@ -242,20 +245,28 @@ public abstract class SIGAWSClientAbstract {
 	 * @return
 	 * @throws Exception
 	 */
-	protected boolean validate(XmlObject xmlObject) throws Exception {
-		boolean valido = true;
+	protected List<String> validate(XmlObject xmlObject) throws Exception {
+		
+		List<String> list = new ArrayList<String>();
 		XmlOptions xmlOptions = new XmlOptions();
 		List<XmlValidationError> errores = new ArrayList<XmlValidationError>();
 		xmlOptions.setErrorListener(errores);
+				
 		if (!xmlObject.validate(xmlOptions)){
-			valido = false;
-			StringBuffer sb = new StringBuffer();
-			for (XmlValidationError error : errores) {
-				sb.append(error + "\n");
-			}			
-			ClsLogging.writeFileLog(sb.toString(), 3);
+				
+			String st = null;
+			for (XmlValidationError error : errores) {				
+				if (error.getErrorType() == XmlValidationError.INCORRECT_ELEMENT) {
+					st = "Debe rellenar el campo o los campos " + error.getExpectedQNames() + " en el apartado " + error.getFieldQName();					 
+				} else {				
+					st = "Error de validación: " + error;
+				}
+				list.add(st);
+				ClsLogging.writeFileLog(st, 3);
+			}		
+			
 		}
-		return valido;
+		return list;
 	}
 	
 	

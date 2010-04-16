@@ -36,8 +36,29 @@ public class ActuacionesDesignasForm extends MasterForm {
 	private String actuacionValidada = "ACTUACION_VALIDADA";
 	private final String IDPERSONA = "IDPERSONA";
 	protected String pretension = "PRETENSION";
-		
+	protected String talonario = "TALONARIO";
+	protected String talon = "TALON";
 	
+	
+		/**
+	 * Almacena en la Hashtablla el nombre del talon de la Designa 
+	 * 
+	 * @param talon 
+	 * @return void 
+	 */
+	public void setTalon(String valor) {
+		this.datos.put(this.talon, valor); 
+	}
+	
+	/**
+	 * Almacena en la Hashtablla el nombre del talonario de la Designa 
+	 * 
+	 * @param talonario
+	 * @return void 
+	 */
+	public void setTalonario(String valor) {
+		this.datos.put(this.talonario, valor);
+	}
 	//Metodos set de los campos del formulario
 	/**
 	 * Almacena en la Hashtablela fecha de la Designa 
@@ -214,7 +235,27 @@ public class ActuacionesDesignasForm extends MasterForm {
 	
 	//	Metodos get de los campos del formulario
 
-
+	/**
+	 * Recupera Hashtable el campo designa Talonario de la designa 
+	 * 
+	 * @param Anio  
+	 * @return  
+	 */
+	public String getTalonario() {
+	  return (String)this.datos.get(this.talonario);	
+	}
+		
+	/**
+	 * Recupera Hashtable el campo designa Talon de la designa 
+	 * 
+	 * @param Anio  
+	 * @return  
+	 */
+	public String getTalon() {
+		return (String)this.datos.get(this.talon);
+	}
+	
+	
 	/**
 	 * Recupera Hashtable el campo designa juridica de la designa 
 	 * 

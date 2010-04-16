@@ -17,9 +17,12 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	public static final int EEJG_ESTADO_INICIAL_ESPERANDO = 15;
 	public static final int EEJG_ESTADO_ESPERA = 20;
 	public static final int EEJG_ESTADO_ESPERA_ESPERANDO = 25;
+	public static final int EEJG_ESTADO_PENDIENTE_INFO = 23;
 	public static final int EEJG_ESTADO_FINALIZADO = 30;
 	public static final int EEJG_ESTADO_ERROR_SOLICITUD = 40;
 	public static final int EEJG_ESTADO_ERROR_CONSULTA_INFO = 50;
+	
+	public static final String INSTITUCION_PARAMETROS_EEJG = "2000";
 	
 	Long idPeticion;
 	Integer idUsuarioPeticion;
@@ -37,6 +40,7 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	ScsUnidadFamiliarEJGBean unidadFamiliar;
 	Integer numeroIntentosSolicitud;
 	Integer numeroIntentosConsulta;
+	Integer numeroIntentosPendienteInfo;
 	Integer idXml;
 	ScsEejgXmlBean xmlPeticionEejg = null;
 	
@@ -61,6 +65,8 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	static public final String 	C_IDPERSONA = "IDPERSONA";
 	static public final String 	C_NUMEROINTENTOSSOLICITUD = "NUMEROINTENTOSSOLICITUD";
 	static public final String 	C_NUMEROINTENTOSCONSULTA = "NUMEROINTENTOSCONSULTA";
+	static public final String 	C_NUMEROINTENTOSPENDIENTEINFO = "NUMEROINTENTOSPENDIENTEINFO";
+	
 	static public final String 	C_IDXML = "IDXML";
 	static public final String 	C_IDIOMA = "IDIOMA";
 	static public final String 	C_FECHACONSULTA = "FECHACONSULTA";
@@ -209,6 +215,18 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	 */
 	public void setIdioma(String idioma) {
 		this.idioma = idioma;
+	}
+	/**
+	 * @return the numeroIntentosPendienteInfo
+	 */
+	public Integer getNumeroIntentosPendienteInfo() {
+		return numeroIntentosPendienteInfo;
+	}
+	/**
+	 * @param numeroIntentosPendienteInfo the numeroIntentosPendienteInfo to set
+	 */
+	public void setNumeroIntentosPendienteInfo(Integer numeroIntentosPendienteInfo) {
+		this.numeroIntentosPendienteInfo = numeroIntentosPendienteInfo;
 	}
 	
 	

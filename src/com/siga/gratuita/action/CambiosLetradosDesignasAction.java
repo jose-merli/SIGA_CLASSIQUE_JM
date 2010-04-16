@@ -247,6 +247,8 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 		try {
 			String consultaDesigna =
 				" select"+
+				" sd."+ ScsDesignaBean.C_CODIGO+","+
+				" sd."+ ScsDesignaBean.C_SUFIJO+","+
 				" p."+CenPersonaBean.C_NOMBRE+","+
 				" p."+CenPersonaBean.C_APELLIDOS1+","+
 				" p."+CenPersonaBean.C_APELLIDOS2+","+
@@ -258,7 +260,8 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 				" dp."+ ScsDesignasLetradoBean.C_IDPERSONA+","+
 				" dp."+ ScsDesignasLetradoBean.C_FECHADESIGNA+
 				" from "+ 
-				ScsDesignasLetradoBean.T_NOMBRETABLA+" dp,"+
+				ScsDesignasLetradoBean.T_NOMBRETABLA+" dp, "+
+				ScsDesignaBean.T_NOMBRETABLA+" sd, "+				
 				CenPersonaBean.T_NOMBRETABLA+" p,"+
 				CenColegiadoBean.T_NOMBRETABLA+" c "+
 				" where dp."+ScsDesignasLetradoBean.C_IDINSTITUCION+"="+instit+
@@ -268,7 +271,11 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 				" and dp."+ScsDesignasLetradoBean.C_ANIO+"="+anio+
 				" and dp."+ScsDesignasLetradoBean.C_NUMERO+"="+numero+
 				" and dp."+ScsDesignasLetradoBean.C_IDTURNO+"="+turno+
-				" and dp."+ScsDesignasLetradoBean.C_FECHARENUNCIA+" is null ";
+				" and dp."+ScsDesignasLetradoBean.C_FECHARENUNCIA+" is null "+
+			    " and dp."+ScsDesignasLetradoBean.C_IDINSTITUCION+"=sd."+ScsDesignaBean.C_IDINSTITUCION+
+			    " and dp."+ScsDesignasLetradoBean.C_IDTURNO+"=sd."+ScsDesignaBean.C_IDTURNO+
+			    " and dp."+ScsDesignasLetradoBean.C_ANIO+"=sd."+ScsDesignaBean.C_ANIO+
+			    " and dp."+ScsDesignasLetradoBean.C_NUMERO+"=sd."+ScsDesignaBean.C_NUMERO;
 			
 			ScsDesignasLetradoAdm designaAdm = new ScsDesignasLetradoAdm (this.getUserBean(request));
 			Vector vDesigna=(Vector)designaAdm.selectGenerico(consultaDesigna);
@@ -326,7 +333,16 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 			String idPersona = miform.getIdPersona();
 			String fCambio = miform.getAplFechaDesigna();
 			String motivo = miform.getIdTipoMotivo();
+		
 			String observaciones = miform.getObservaciones();
+			String codigo =miform.getCodigo();	
+			String sufijo =miform.getsufijo();	
+			String mensajes="";
+			 if (sufijo!=null && !sufijo.equals("")){ 
+					 mensajes=codigo+"-"+sufijo;
+			 }else{
+				 	 mensajes=codigo;
+			 }			
 			String idPersonaSaliente = "";
 			String compensacion = null;
 			String flagSalto = request.getParameter("flagSalto");
@@ -340,12 +356,14 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 					"gratuita.modalCambioLetradoDesigna.titulo");
 			String motivoSalto = UtilidadesString.getMensajeIdioma(usr,
 					"gratuita.literal.insertarSaltoPor")
-					+ " " + msgOrigen;
+					+ " " + msgOrigen+".\n"+UtilidadesString.getMensajeIdioma(usr,
+					"gratuita.literal.numeroDesignacion")+": "+ mensajes;
 			String motivoCompensacion = UtilidadesString.getMensajeIdioma(usr,
 					"gratuita.literal.insertarCompensacionPor")
-					+ " " + msgOrigen;
+					+ " " + msgOrigen+".\n"+UtilidadesString.getMensajeIdioma(usr,
+					"gratuita.literal.numeroDesignacion")+": "+ mensajes;
 			String cambioMismoDia = request.getParameter("cambioMismoDia");
-			
+			//gratuita.literal.numeroDesignacion
 			
 			//iniciando transaccion
 			tx = usr.getTransaction();
@@ -390,7 +408,8 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 					String fecha = UtilidadesBDAdm.getFechaBD("");
 					String motivos = UtilidadesString.getMensajeIdioma(usr,
 							"gratuita.inicio_SaltosYCompensaciones.literal.motivo")
-							+ " " + fecha;
+							+ " " + fecha+".\n"+UtilidadesString.getMensajeIdioma(usr,
+					"gratuita.literal.numeroDesignacion")+": "+mensajes;
 					saltosCompenHash.put(ScsSaltosCompensacionesBean.C_IDINSTITUCION, idInstitucion);
 					saltosCompenHash.put(ScsSaltosCompensacionesBean.C_IDTURNO, idTurno);
 					saltosCompenHash.put(ScsSaltosCompensacionesBean.C_MOTIVOS, motivos);

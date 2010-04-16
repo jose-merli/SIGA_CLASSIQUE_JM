@@ -136,7 +136,7 @@
 				<siga:Idioma key="envios.definir.literal.identificador"/>
 			</td>
 			<td width="7%">
-				<html:text name="DefinirEnviosForm" property="idEnvioBuscar" size="5" maxlength="8" styleClass="box"></html:text>
+				<html:text name="DefinirEnviosForm" property="idEnvioBuscar" size="8" maxlength="12" styleClass="box"></html:text>
 			</td>
 			
 			<td class="labelText" width="10%">

@@ -118,87 +118,66 @@ public class DatosDetalleFacturacionAction extends MasterAction {
 	}
 	
 	/** 
-	 *  Funcion que atiende la accion abrir.
-	 * @param  mapping - Mapeo de los struts
-	 * @param  formulario -  Action Form asociado a este Action
-	 * @param  request - objeto llamada HTTP 
-	 * @param  response - objeto respuesta HTTP
-	 * @return  String  Destino del action  
-	 * @exception  SIGAException  En cualquier caso de error
+	 *  Funcion que devuelve los datos para mostrar en la pestanya de Detalle de guardias
 	 */
-	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	protected String abrir (ActionMapping mapping,
+							MasterForm formulario,
+							HttpServletRequest request,
+							HttpServletResponse response)
+		throws SIGAException
+	{
+		//Controles generales
+		UsrBean usr = this.getUserBean(request);
 		
-		String forward="inicio";
-		//Recuperamos el USRBEAN
-		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+		//Datos de entrada
+		String idInstitucion = (String)request.getParameter("idInstitucion"); //idinstitucionforward
+		String idFacturacion = (String)request.getParameter("idFacturacion"); //idfacturacion actual
 		
-		//Recogemos los parámetros de las pestanhas 
-		String idInstitucion = (String)request.getParameter("idInstitucion");
-		String idFacturacion = (String)request.getParameter("idFacturacion");
-		String accion = (String)request.getParameter("accion");
-		
-		//Si estamos en abrir depues de haber insertado las pestanhas no nos pasa el modo
-		if (accion==null){
-			accion = "Edicion";
-		}
-		
-		//vector que pasaremos como resultado a la jsp
-		Vector resultado = new Vector();
-		
-		//vector con el nombre de los hitos generales
+		//Datos de salida
+		Vector resultado = new Vector(); //datos a mostrar
 		Vector hitos = new Vector();
 		Hashtable h=new Hashtable();
-		
-		//variable para recoger el nombre del colegio
+		boolean hayDetalle = false;
 		String nombreInstitucion = "";
 		
-		//Creamos una clausula where que nos servirá para consultar por idFacturacion e idInstitucion
-		String consultaFact = " where idInstitucion = " + idInstitucion +" and idFacturacion =" + idFacturacion + " ";
 		
-		//variable para saber si la factura está en estado abierta, con lo que no habria detalle
-		boolean abierta = false;
-		
-		//comprobamos que el estado no sea ABIERTO
-		Hashtable hash = new Hashtable();
+		//obteniendo nombre del colegio
 		try{
-			FcsFacturacionJGAdm facturaAdm = new FcsFacturacionJGAdm (this.getUserBean(request));
-			if (!idFacturacion.equals(""))
-				hash = (Hashtable)facturaAdm.getEstadoFacturacion(idInstitucion,idFacturacion);
-			else
-				hash = new Hashtable();
-			if (((String)hash.get(FcsEstadosFacturacionBean.C_IDESTADOFACTURACION)).equalsIgnoreCase("10"))
-				abierta = true;
-		}catch(Exception e){
-			hash = new Hashtable();	
+			CenInstitucionAdm institucionAdm = new CenInstitucionAdm(usr);
+			nombreInstitucion = (String)institucionAdm.getNombreInstitucion(idInstitucion);
 		}
-		
-		try{
-			//Consultamos el nombre de la institucion
-			CenInstitucionAdm institucionAdm = new CenInstitucionAdm(this.getUserBean(request));
-			//nombreInstitucion = (String)institucionAdm.getNombreInstitucion(usr.getLocation().toString());
-			//INC-3098: se le estaba pasando la institucion del CGAE en lugar de la del colegio que se quiere visualizar los datos.
-			nombreInstitucion = (String)institucionAdm.getNombreInstitucion(idInstitucion.toString());
-		}catch(ClsExceptions e){
+		catch(ClsExceptions e){
 			ClsLogging.writeFileLogError("Error: No se ha podido recuperar el nombre del Colegio", e,3);
 		}
 		
-		if (!abierta){
+		//comprobando el estado de la facturacion
+		try {
+			String estado = (String) ((Hashtable) (new FcsFacturacionJGAdm(usr))
+					.getEstadoFacturacion(idInstitucion, idFacturacion))
+					.get(FcsEstadosFacturacionBean.C_IDESTADOFACTURACION);
+			
+			if (estado.equals("20") || estado.equals("30"))
+				hayDetalle = true;
+			else
+				hayDetalle = false;
+		}
+		catch (Exception e) {
+			hayDetalle = false;
+		}
+		
+		if (hayDetalle){
 			try 
 			{
-				//Recuperamos los importes de la facturacion
-				//resultado = (Vector)this.getDetalleFacturacion(usr.getLocation(),idFacturacion , request);
-//				  INC-3098: se le estaba pasando la institucion del CGAE en lugar de la del colegio que se quiere visualizar los datos.
-				resultado = (Vector)this.getDetalleFacturacion(idInstitucion,idFacturacion , request);
-				// obtenemos la descripcion de los hitos
-				FcsHitoGeneralAdm hitosAdm=new FcsHitoGeneralAdm(this.getUserBean(request));
-				hitos = (Vector)hitosAdm.select();
+				//obteniendo los detalles de la facturacion
+				resultado = (Vector) this.getDetalleFacturacion(idInstitucion, idFacturacion, request);
+				
+				//obteniendo la descripcion de los hitos
+				hitos = (Vector)(new FcsHitoGeneralAdm(usr)).select();
 				for(int i=0;i<hitos.size();i++)
 				{
 					FcsHitoGeneralBean bean=(FcsHitoGeneralBean)hitos.elementAt(i);
 					h.put(bean.getIdHitoGeneral().toString(),bean.getDescripcion());
 				}
-				
-					
 			}
 			catch(ClsExceptions e){
 				ClsLogging.writeFileLogError("Error: DatosDetalleFacturacionAction"+e.getMessage(),e,3);
@@ -213,16 +192,18 @@ public class DatosDetalleFacturacionAction extends MasterAction {
 			//pasamos el resultado por la request, y tambien el nombre de la institución, y 
 			request.setAttribute("resultado",resultado);
 			request.setAttribute("hitos",h);
-		}else{
-			//si esta en estado abierta no se ha consultado el detalle
-			request.setAttribute("estado","abierta");
+			request.setAttribute("hayDetalle","1");
 		}
-		//pasamos los identificadores de la facturacion y la institucion
+		else {
+			request.setAttribute("hayDetalle","0");
+		}
+		
+		//devolviendo los datos para mostrar
 		request.setAttribute("idFacturacion",idFacturacion);
 		request.setAttribute("idInstitucion",idInstitucion);
 		request.setAttribute("nombreInstitucion",nombreInstitucion);
-		return forward;
-	}
+		return "inicio";
+	} //abrir()
 
 	
 	

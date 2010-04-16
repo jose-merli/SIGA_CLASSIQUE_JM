@@ -2080,8 +2080,10 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 					" CODSUCURSAL AS CODIGO_SUCURSAL, "+
 					" DIGCONTROL AS DIGITO_CONTROL, "+
 					" NUMCUENTA AS NUMERO_CUENTA, "+
-					CenColegiadoBean.C_NCOLEGIADO+",NOMBRE,"+CenPersonaBean.C_NIFCIF+", CONCEPTO_DESCSERIEFACT, MOTIVO_DEVOLUCION"+
-					" FROM (SELECT " + 
+					CenColegiadoBean.C_NCOLEGIADO+",NOMBRE,"+CenPersonaBean.C_NIFCIF+", CONCEPTO_DESCSERIEFACT" ;
+					if(isInforme)
+						select+=", MOTIVO_DEVOLUCION";
+					select+=" FROM (SELECT " + 
 							"F." + FacFacturaBean.C_FECHAEMISION + ", " +
 							"F." + FacFacturaBean.C_NUMEROFACTURA	+ ", " +
 							"F." + FacFacturaBean.C_IDFACTURA	+ ", " +
@@ -2134,14 +2136,14 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 						                  " and N." + FacFacturacionProgramadaBean.C_IDPROGRAMACION + " = F." + FacFacturaBean.C_IDPROGRAMACION +
 						                  " and S." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + " = F." + FacFacturaBean.C_IDSERIEFACTURACION +
 						                  " and F." + FacFacturaBean.C_IDSERIEFACTURACION + " = N." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION +
-						                  ") as CONCEPTO_DESCSERIEFACT, ";
-							select+= " DEV.DESCRIPCIONMOTIVOS as MOTIVO_DEVOLUCION ";
+						                  ") as CONCEPTO_DESCSERIEFACT ";
+							if(isInforme)
+								select+= " ,F_SIGA_GETULTIMOMOTIVODEVFACT(F.IDINSTITUCION,F.idfactura,F.IDPERSONA) as MOTIVO_DEVOLUCION ";
 							
 			String from = 	" FROM " + 
 							FacFacturaBean.T_NOMBRETABLA +" F, "+ CenPersonaBean.T_NOMBRETABLA+" P," +
-							CenCuentasBancariasBean.T_NOMBRETABLA+" C, "+CenBancosBean.T_NOMBRETABLA+" B," +
-							FacLineaDevoluDisqBancoBean.T_NOMBRETABLA+" DEV, "+ FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA+" DISC ";
-			
+							CenCuentasBancariasBean.T_NOMBRETABLA+" C, "+CenBancosBean.T_NOMBRETABLA+" B";
+
 			contador++;
 			codigos.put(new Integer(contador),idInstitucion);
 				
@@ -2153,15 +2155,6 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			where+= " AND F."+FacFacturaBean.C_IDCUENTA+" = C."+CenCuentasBancariasBean.C_IDCUENTA+"(+) ";
 			where+= " AND F."+FacFacturaBean.C_IDPERSONA+" = C."+CenCuentasBancariasBean.C_IDPERSONA+"(+) ";
 			where+= " AND C."+CenCuentasBancariasBean.C_CBO_CODIGO+"=B."+CenBancosBean.C_CODIGO+" (+)";
-			
-			//INC_06847_SIGA etiqueta MOTIVO_DEVOLUCION
-			where+= " and DEV.idinstitucion=DISC.idinstitucion ";
-			where+= " and DEV.idrecibo=DISC.idrecibo ";
-			where+= " and DEV.iddisquetecargos=DISC.iddisquetecargos ";
-			where+= " and DEV.idfacturaincluidaendisquete=DISC.idfacturaincluidaendisquete ";
-			where+= " and DEV.idinstitucion=F.IDINSTITUCION ";
-			where+= " and DISC.idfactura = F.idfactura ";
-			where+= " and DISC.idpersona=F.idpersona ";
 			
 			if(idPersona!=null){
 				contador++;

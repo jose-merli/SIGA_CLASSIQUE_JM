@@ -3,6 +3,9 @@
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta http-equiv="Conte nt-Type" content="text/html; charset=ISO-8859-1">
+
+
+
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <%@ taglib uri = "libreria_SIGA.tld" prefix="siga"%>
@@ -46,7 +49,23 @@
 
 		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
 		<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
+<script type="text/javascript" src="<html:rewrite page='/html/js/tiny_mce/tiny_mce.js'/>"></script>
+<script type="text/javascript">
+	tinyMCE.init({
+		mode : "textareas",
+		theme : "advanced",
+		plugins : "pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,inlinepopups",
 
+		// Theme options
+		theme_advanced_buttons1 : "newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,fontselect,fontsizeselect,|,hr",
+			theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,image,cleanup,code,|,insertdate,inserttime,preview,|,forecolor,backcolor",
+			theme_advanced_buttons3 :"",
+			theme_advanced_toolbar_location : "top",
+			theme_advanced_toolbar_align : "left",
+			theme_advanced_statusbar_location : "bottom"
+		
+	});
+</script>
 		<script language="JavaScript">
 			function accionGuardar()
 			{
@@ -103,11 +122,15 @@
 %>
 				<table class="tablaCampos" align="center" border="0">
 					<tr>
-						<td class="labelText">
+						<td class="labelText" width="15%">
 							<siga:Idioma key="envios.plantillas.literal.asunto"/>
 						</td>
-						<td>
+						<td width="70%">
 							<html:text property="asunto" value="<%=sAsunto%>" styleClass="boxCombo" size="80" value="<%=sAsunto%>" readonly="<%=bReadOnly%>"/>
+						</td>
+						<td width="15%">
+			 			 <a href="javascript:abrirAyuda();"><img border=0 src="<html:rewrite page='/html/imagenes/help.gif'/>"  alt="<siga:Idioma key="general.ayuda.normativa"/>"></a>
+			 			 
 						</td>
 					</tr>
 					<tr>
@@ -115,7 +138,7 @@
 							<siga:Idioma key="envios.plantillas.literal.cuerpo"/>
 						</td>
 						<td>
-							<html:textarea property="cuerpo" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" value="<%=sCuerpo%>" styleClass="box"  style="width:580" cols="500" rows="25" value="<%=sCuerpo%>" readonly="<%=bReadOnly%>"/>
+							<html:textarea property="cuerpo" rows="35" value="<%=sCuerpo%>" styleClass="box"  style="width:580" readonly="<%=bReadOnly%>"/>
 						</td>
 					</tr>
 				</table>

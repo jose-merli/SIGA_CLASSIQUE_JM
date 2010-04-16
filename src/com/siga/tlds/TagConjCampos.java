@@ -16,6 +16,8 @@ public class TagConjCampos extends TagSupport {
 
 	/** Leyenda a mostrar en la caja */
 	String leyenda;
+	boolean desplegable;
+	boolean oculto;
 	
 /**
  * Da valor al atributo 
@@ -24,6 +26,30 @@ public class TagConjCampos extends TagSupport {
  */
 	public void setLeyenda(String dato) {
 		this.leyenda=dato;
+	}
+	
+	/**
+	 * Da valor al atributo 
+	 * @author jose.barrientos 9-12-09
+	 * @param dato 
+	 */
+	public void setDesplegable(String dato) {
+		if ((dato!=null)&&(dato.equalsIgnoreCase("true")))
+			this.desplegable=true;
+		else
+			this.desplegable=false;
+	}
+
+	/**
+	 * Da valor al atributo 
+	 * @author jose.barrientos 9-12-09
+	 * @param dato 
+	 */
+	public void setOculto(String dato) {
+		if ((dato!=null)&&(dato.equalsIgnoreCase("true")))
+			this.oculto=true;
+		else
+			this.oculto=false;
 	}
 	
 /**
@@ -38,14 +64,41 @@ public class TagConjCampos extends TagSupport {
 			HttpSession session = pageContext.getSession();
 			UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);
 			PrintWriter out = pageContext.getResponse().getWriter();
-
+			String app= ((HttpServletRequest)pageContext.getRequest()).getContextPath();
 			
 			out.println("	<!-- SUBCONJUNTO DE DATOS -->");
-			out.println("<fieldset>");
+			if (oculto){
+				out.println("<fieldset class=\"legendNoBorder\">");
+			}else{
+				out.println("<fieldset>");
+			}
 			if (this.leyenda!=null) {
-				out.println("<legend>");
-				out.println(UtilidadesString.getMensajeIdioma(usrbean, this.leyenda));
+				
+				String identificador = UtilidadesString.replaceAllIgnoreCase(this.leyenda, ".", "");
+					
+				if (desplegable){	
+					out.println("<legend style=\"cursor:hand;\"> ");
+					out.println("<a onclick=\"ocultarDIV('"+ identificador +"');\">");
+					if (oculto){
+						out.println("<img id=\"" +identificador + "ImMas\" src=\""+app+"/html/imagenes/simboloMas.gif\"style=\"display:inline\">");
+						out.println("<img id=\"" +identificador + "ImMenos\" src=\""+app+"/html/imagenes/simboloMenos.gif\"style=\"display:none\">");
+					}else{
+						out.println("<img id=\"" +identificador + "ImMas\" src=\""+app+"/html/imagenes/simboloMas.gif\"style=\"display:none\">");
+						out.println("<img id=\"" +identificador + "ImMenos\" src=\""+app+"/html/imagenes/simboloMenos.gif\"style=\"display:inline\">" );
+					}
+					out.println(UtilidadesString.getMensajeIdioma(usrbean, this.leyenda)+ "</a>");
+				}else{
+					out.println("<legend>");
+					out.println(" " + UtilidadesString.getMensajeIdioma(usrbean, this.leyenda));
+				}
+				
 				out.println("</legend>");
+				
+				if(oculto){
+					out.println("<div style=\"display: none\" id=\""+ identificador + "\">");
+				}else{
+					out.println("<div style=\"display: inline\" id=\""+ identificador + "\">");
+				}
 			}
 
 		}
@@ -68,7 +121,9 @@ public class TagConjCampos extends TagSupport {
 			String aux = "";
 			pageContext.getResponse().setContentType("text/html");
 			PrintWriter out = pageContext.getResponse().getWriter();
-
+			if (this.leyenda!=null) {
+				out.println("</div>");
+			}
 			out.println("</fieldset>");
 		}
 		catch (Exception e)

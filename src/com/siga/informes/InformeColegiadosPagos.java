@@ -402,7 +402,7 @@ public class InformeColegiadosPagos extends MasterReport {
 					String idApunte=r1.getString("IDAPUNTE");
 					
 					String sql2=
-						"select AAS.ANIO || '/' || AAS.NUMERO || '-' || AAS.IDACTUACION ACTUACION," +//+ (aas.descripcionbreve o aas.idactuacion
+						"select f_siga_getrecurso(TA.descripcion, "+ idioma +" ) TIPOACTUACION, AAS.ANIO || '/' || AAS.NUMERO || '-' || AAS.IDACTUACION ACTUACION," +//+ (aas.descripcionbreve o aas.idactuacion
 						"       PJG.NOMBRE||' '||PJG.APELLIDO1||' '||PJG.APELLIDO2 NOMBRE_ASISTIDO, to_char(AAS.FECHA,'DD/MM/YYYY') FECHA_ACTUACION, " +
 						"       DECODE(FAAS.PRECIOAPLICADO,0,NULL,FAAS.PRECIOAPLICADO) AS PRECIO_ACTUACION," +
 						"		f_siga_getrecurso(COS.DESCRIPCION, "+ idioma +" ) AS TIPO_DESPLAZAMIENTO," +
@@ -418,7 +418,8 @@ public class InformeColegiadosPagos extends MasterReport {
 						"		SCS_PERSONAJG PJG," +
 						"		SCS_ACTUACIONASISTCOSTEFIJO  ACTCOS," +
 						"		SCS_TIPOACTUACIONCOSTEFIJO   TACTCOS," +
-						"		SCS_COSTEFIJO                COS" +
+						"		SCS_COSTEFIJO                COS," +
+						"       SCS_TIPOACTUACION            TA "+
 						" where FAP.IDINSTITUCION = FAAS.IDINSTITUCION " +
 						"   and FAP.IDFACTURACION = FAAS.IDFACTURACION " +
 						"   and FAP.IDAPUNTE = FAAS.IDAPUNTE " +
@@ -451,6 +452,10 @@ public class InformeColegiadosPagos extends MasterReport {
 						" 	and TACTCOS.IDCOSTEFIJO(+) = ACTCOS.IDCOSTEFIJO  " +          
 						" 	and COS.IDINSTITUCION(+)= ACTCOS.IDINSTITUCION " +            
 						" 	and COS.IDCOSTEFIJO(+)=ACTCOS.IDCOSTEFIJO " +      
+						 //Relacionamos la tabla  SCS_TIPORACTUACION  TA, SCS_ACTUACIONASISTENCIA AAS
+						"   and TA.idinstitucion = AAS.idinstitucion " +
+						"   and TA.idtipoasistencia= AAS.idtipoasistencia "+
+						"   and TA.idtipoactuacion = AAS.idtipoactuacion " +	
 						" order by AAS.ANIO, AAS.NUMERO, AAS.IDACTUACION, NOMBRE_ASISTIDO";
 
 					RowsContainer rc2 = new RowsContainer();
@@ -498,7 +503,7 @@ public class InformeColegiadosPagos extends MasterReport {
 			StringBuffer sql = new StringBuffer();
 			// jbd He quitado el distinct que impedia que ocultaba procedimientos del mismo dia
 			// sql.append(" select distinct AD.FECHA, to_char(AD.FECHA,'DD/MM/YYYY') FECHA_OFICIO,  PRO.NOMBRE PROCEDIMIENTO, ");
-			sql.append(" select AD.FECHA, to_char(AD.FECHA,'DD/MM/YYYY') FECHA_OFICIO,  PRO.NOMBRE PROCEDIMIENTO, ");
+			sql.append(" select ejg.numejg NUMEROEJG, decode(cole.comunitario,'1',cole.ncomunitario,cole.ncolegiado) as NUMERO_COLEGIADO, AD.FECHA, to_char(AD.FECHA,'DD/MM/YYYY') FECHA_OFICIO,  PRO.NOMBRE PROCEDIMIENTO, ");
 			sql.append(" f_siga_formatonumero(COL.IMPOFICIO,2)  IMPORTEPAGADO, ");
 			sql.append(" DES.ANIO || '/' || DES.CODIGO  ASIOFI, ");
 			sql.append(" f_siga_getdefendidosdesigna(DES.IDINSTITUCION, des.anio, des.idturno, des.numero,0) NOMBRE_SOLICITANTE, ");
@@ -515,7 +520,10 @@ public class InformeColegiadosPagos extends MasterReport {
 			sql.append(" FCS_PAGOSJG               pag, ");
 			sql.append(" FCS_FACTURACIONJG         fac, ");      
 	       	sql.append(" SCS_ACREDITACIONPROCEDIMIENTO acreprod, ");
-	       	sql.append(" SCS_ACREDITACION acre ");
+	       	sql.append(" SCS_ACREDITACION acre, ");
+	       	sql.append(" SCS_EJG ejg, ");
+	       	sql.append(" SCS_EJGDESIGNA ejgdes, ");
+	       	sql.append(" CEN_COLEGIADO cole ");	      
 
 			sql.append(" where DES.IDINSTITUCION = AD.IDINSTITUCION ");
 			sql.append("    AND DES.IDTURNO = AD.IDTURNO ");
@@ -552,6 +560,24 @@ public class InformeColegiadosPagos extends MasterReport {
 			sql.append(" and acreprod.idinstitucion = ad.idinstitucion_proc ");
 			sql.append(" and acreprod.idacreditacion = ad.idacreditacion ");
 			sql.append(" and acre.idacreditacion = acreprod.idacreditacion ");
+			
+			// Relacionamos las tablas de SCS_DESIGNA   DES, SCS_EJGDESIGNA ejgdes 
+			sql.append(" and  DES.idinstitucion = ejgdes.idinstitucion(+) ");
+			sql.append(" and  DES.idturno = ejgdes.idturno(+) ");
+			sql.append(" and  DES.anio = ejgdes.aniodesigna(+) ");
+			sql.append(" and  DES.numero = ejgdes.numerodesigna(+) ");
+			
+			//// Relacionamos las tablas de SCS_EJGDESIGNA ejgdes  SCS_EJG ejg
+			sql.append(" and  ejgdes.idinstitucion= ejg.idinstitucion(+) ");
+			sql.append(" and  ejgdes.idtipoejg= ejg.idtipoejg(+) ");
+			sql.append(" and  ejgdes.anioejg= ejg.anio(+) ");
+			sql.append(" and  ejgdes.numeroejg= ejg.numero(+) ");			
+				
+   
+   
+			//Relacioamos la tabla SCS_ACTUACIONDESIGNA AD, CEN_COLEGIADO cole 
+			sql.append(" and  AD.idinstitucion= cole.idinstitucion ");	
+			sql.append(" and  AD.idpersonacolegiado= cole.idpersona ");			
 	          
 			sql.append(" order by AD.FECHA, ASIOFI, NUMEROASUNTO, PROCEDIMIENTO");
 			

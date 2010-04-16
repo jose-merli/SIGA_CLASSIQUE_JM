@@ -1,6 +1,5 @@
 package com.siga.gratuita.action;
 
-import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -57,14 +56,13 @@ import es.satec.businessManager.BusinessManager;
 
 public class VolantesExpressAction extends MasterAction 
 {
-	private static BusinessManager businessManager=null;
+	
 	protected ActionForward executeInternal(ActionMapping mapping,ActionForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
 	{
 		String mapDestino = "exception";
 		MasterForm miForm = null;
 		try { 
-			if(getBusinessManager()==null)
-				businessManager = BusinessManager.getInstance(SIGAReferences.getInputReference(SIGAReferences.RESOURCE_FILES.ATOS_BUSINESS_CONFIG));
+			
 			
 			do {
 				miForm = (MasterForm) formulario;
@@ -698,9 +696,7 @@ public class VolantesExpressAction extends MasterAction
 		return "listadoAsistencias";
 	}
 
-	public static BusinessManager getBusinessManager() {
-		return businessManager;
-	}
+	
 	protected String getTurnos (ActionMapping mapping, 		
 			MasterForm formulario, 
 			HttpServletRequest request, 

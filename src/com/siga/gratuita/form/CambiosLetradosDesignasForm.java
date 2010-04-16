@@ -22,8 +22,20 @@ public class CambiosLetradosDesignasForm extends MasterForm {
 	protected String fechaRenunciaSolicita =ScsDesignasLetradoBean.C_FECHARENUNCIASOLICITA;
 	protected String idTipoMotivo=ScsDesignasLetradoBean.C_IDTIPOMOTIVO;
 	protected String observaciones =ScsDesignasLetradoBean.C_OBSERVACIONES;
+	protected String codigo ="CODIGO";
+	protected String sufijo ="SUFIJO";
+	
+	
+	
+	
 	
 	//Metodos get de los campos del formulario
+	public String getsufijo() {
+		return UtilidadesHash.getString(datos,sufijo);
+	}
+	public String getCodigo() {
+		return UtilidadesHash.getString(datos,codigo);
+	}
 	public String getAnio() {
 		return UtilidadesHash.getString(datos,anio);
 	}
@@ -75,6 +87,12 @@ public class CambiosLetradosDesignasForm extends MasterForm {
 	
 	
 	//Metodos set de los campos del formulario
+	public void setsufijo(String sufijo) {
+		UtilidadesHash.set(datos,this.sufijo,sufijo);
+	}	
+	public void setCodigo(String codigo) {
+		UtilidadesHash.set(datos,this.codigo,codigo);
+	}
 	public void setAnio(String anio) {
 		UtilidadesHash.set(datos,this.anio,anio);
 	}

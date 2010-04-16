@@ -148,6 +148,8 @@ public class ActuacionesAsistenciaAction extends MasterAction {
             " OBSERVACIONES,"+
             " FACTURADO,      " +
             " NUMEROASUNTO," +
+            " IDPRISION," +
+            " IDINSTITUCION_PRIS," +
             " (Select f_siga_getrecurso(ta.descripcion, "+usr.getLanguage()+")" +
             "  from scs_tipoactuacion ta" +
             " where ta.idtipoactuacion = "+ScsActuacionAsistenciaBean.T_NOMBRETABLA+"."+ScsActuacionAsistenciaBean.C_IDTIPOACTUACION +
@@ -661,6 +663,16 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 				hash.put(ScsActuacionAsistenciaBean.C_IDJUZGADO, "");
 				hash.put(ScsActuacionAsistenciaBean.C_IDINSTITUCIONJUZGADO, "");
 			}
+			
+			//Para el combo Prision:
+			if (miForm.getAcIdPrision()!=null && !miForm.getAcIdPrision().equals("")) {
+				String prision = miForm.getAcIdPrision();				
+				hash.put(ScsActuacionAsistenciaBean.C_IDPRISION, prision.substring(0,prision.indexOf(",")));
+				hash.put(ScsActuacionAsistenciaBean.C_IDINSTITUCIONPRISION, prision.substring(prision.indexOf(",")+1));
+			} else {
+				hash.put(ScsActuacionAsistenciaBean.C_IDPRISION, "");
+				hash.put(ScsActuacionAsistenciaBean.C_IDINSTITUCIONPRISION, "");
+			}
 
 			//Para el combo tipo Actuacion:
 			hash.put(ScsActuacionAsistenciaBean.C_IDTIPOACTUACION, idTipoActuacion);
@@ -829,6 +841,16 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 			} else {
 				hash.put(ScsActuacionAsistenciaBean.C_IDJUZGADO, "");
 				hash.put(ScsActuacionAsistenciaBean.C_IDINSTITUCIONJUZGADO, "");
+			}
+			
+			//Para el combo Prision:
+			if (miForm.getAcIdPrision()!=null && !miForm.getAcIdPrision().equals("")) {
+				String prision = miForm.getAcIdPrision();				
+				hash.put(ScsActuacionAsistenciaBean.C_IDPRISION, prision.substring(0,prision.indexOf(",")));
+				hash.put(ScsActuacionAsistenciaBean.C_IDINSTITUCIONPRISION, prision.substring(prision.indexOf(",")+1));
+			} else {
+				hash.put(ScsActuacionAsistenciaBean.C_IDPRISION, "");
+				hash.put(ScsActuacionAsistenciaBean.C_IDINSTITUCIONPRISION, "");
 			}
 
 			//Para el combo tipo Actuacion:

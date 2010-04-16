@@ -1,10 +1,8 @@
 package com.siga.gratuita.service;
 
 import java.io.File;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import com.atos.utils.UsrBean;
 import com.siga.beans.ScsUnidadFamiliarEJGBean;

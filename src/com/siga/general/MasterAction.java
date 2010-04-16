@@ -18,6 +18,8 @@
 
 package com.siga.general;
 
+
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -55,9 +57,11 @@ import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.SIGAConstants;
 
+import es.satec.businessManager.BusinessManager;
+
 
 public abstract class MasterAction extends SIGAActionBase {
-	
+	private static BusinessManager businessManager=null;
 	/** Constante con el mapping "notImplemented" */
 	public static final String mapSinDesarrollar = "notImplemented";
 	public final String paginador = "DATAPAGINADOR";
@@ -126,6 +130,8 @@ public abstract class MasterAction extends SIGAActionBase {
 		}
 		try {
 			//ClsLogging.writeFileLog("MasterAction modo="+((MasterForm)formulario).getModo(),10);
+			if(getBusinessManager()==null)
+				businessManager = BusinessManager.getInstance(SIGAReferences.getInputReference(SIGAReferences.RESOURCE_FILES.ATOS_BUSINESS_CONFIG));
 			
 			MasterForm miForm = (MasterForm) formulario;
 			if (miForm != null) {
@@ -1057,5 +1063,8 @@ public abstract class MasterAction extends SIGAActionBase {
 			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null);
 		}
 		return "descargaFicheroGlobal";	
+	}
+	public static BusinessManager getBusinessManager() {
+		return businessManager;
 	}
 }

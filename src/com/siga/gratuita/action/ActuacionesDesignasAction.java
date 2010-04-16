@@ -431,7 +431,9 @@ public class ActuacionesDesignasAction extends MasterAction {
 									" ,act.facturado FACTURADO "+
 									" ,act.idpersonacolegiado IDPERSONACOLEGIADO, "+
 									" per.nombre nombre, per.apellidos1 apellido1, per.apellidos2 apellido2,"+
-									" col.ncolegiado ncolegiado "+
+									" col.ncolegiado ncolegiado, "+
+									" act."+ScsActuacionDesignaBean.C_TALONARIO+
+									" ,act."+ScsActuacionDesignaBean.C_TALON+
 									//FROM y WHERE:
 									" FROM SCS_ACTUACIONDESIGNA act, scs_procedimientos pro , scs_turno tur, scs_acreditacion acred, scs_juzgado juzgado, cen_colegiado col, cen_persona per"+
 									" WHERE act.IDINSTITUCION =  "+ usr.getLocation()+
@@ -478,6 +480,13 @@ public class ActuacionesDesignasAction extends MasterAction {
 			request.setAttribute("hashDesigna",hashDesigna);
 			request.setAttribute("hashActuacionActual",hashActuacion);
 			ses.setAttribute("hashActuacionAntigua",actuacionAntigua.getOriginalHash());
+			
+			String talonario=((String)hashActuacion.get("TALONARIO"));
+		    miform.setTalonario(talonario);
+			
+		    String talon=((String)hashActuacion.get("TALON"));
+		    miform.setTalon(talon);
+			
 		} catch(Exception e){
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
 		}
@@ -649,11 +658,27 @@ public class ActuacionesDesignasAction extends MasterAction {
 				hash.put(ScsActuacionDesignaBean.C_IDPRETENSION, "");
 				
 			}
+			
+			String talonario= miform.getTalonario();
+		    	
+			if (talonario!=null && !talonario.equals("")){
+					hash.put(ScsActuacionDesignaBean.C_TALONARIO, talonario);
+			}else{
+				hash.put(ScsActuacionDesignaBean.C_TALONARIO, "");
+			}
+			
+			String talon= miform.getTalon();
+			if (talonario!=null && !talon.equals("")){
+					hash.put(ScsActuacionDesignaBean.C_TALON, talon);
+			}else{
+				hash.put(ScsActuacionDesignaBean.C_TALON, "");
+			}
 
 			// Obtengo el idJuzgado y la idInstitucion del Juzgado:
 			Long idJuzgado=null;
 			Integer idInstitucionJuzgado;
 			String juzgado = miform.getJuzgado();
+			
 			if (juzgado!=null && !juzgado.equals("")){
 				idJuzgado = new Long(juzgado.substring(0,juzgado.indexOf(",")));
 				idInstitucionJuzgado = new Integer(juzgado.substring(juzgado.indexOf(",")+1));
@@ -663,6 +688,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 				hash.put(ScsActuacionDesignaBean.C_IDJUZGADO, "");
 				hash.put(ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO, "");
 			}
+		
 			
 			// Obtengo el idProcedimiento y la idInstitucion del Procedimiento:
 			Integer idProcedimiento = null, idInstitucionProcedimiento = null;
@@ -893,6 +919,24 @@ public class ActuacionesDesignasAction extends MasterAction {
 				
 			} else {
 				actuacionModificada.put(ScsActuacionDesignaBean.C_IDPRETENSION, "");
+				
+			}
+			
+			String talonario = miform.getTalonario();
+			if (talonario!=null && !talonario.equals("")){
+				actuacionModificada.put(ScsActuacionDesignaBean.C_TALONARIO, talonario);
+				
+			} else {
+				actuacionModificada.put(ScsActuacionDesignaBean.C_TALONARIO, "");
+				
+			}
+			
+			String talon = miform.getTalon();
+			if (talon!=null && !talon.equals("")){
+				actuacionModificada.put(ScsActuacionDesignaBean.C_TALON, talon);
+				
+			} else {
+				actuacionModificada.put(ScsActuacionDesignaBean.C_TALON, "");
 				
 			}
 

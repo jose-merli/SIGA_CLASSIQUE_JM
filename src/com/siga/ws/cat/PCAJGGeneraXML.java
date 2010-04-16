@@ -21,7 +21,6 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
-import org.apache.xmlbeans.XmlError;
 import org.apache.xmlbeans.XmlOptions;
 import org.w3c.dom.Document;
 
@@ -36,6 +35,7 @@ import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CajgEJGRemesaAdm;
 import com.siga.beans.CajgRemesaEstadosAdm;
+import com.siga.beans.CajgRespuestaEJGRemesaAdm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.action.DefinirRemesasCAJGAction;
 import com.siga.ws.SIGAWSClientAbstract;
@@ -167,8 +167,12 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 				expedientes = tipoInformacion.addNewExpedientes();										
 			}
 			tipoIntercambio = (String) ht.get(TIPOINTERCAMBIO);
-			if (addExpediente(expedientes, ht, tipoIntercambio)) {
-				numDetalles++;
+			try {
+				if (addExpediente(expedientes, ht, tipoIntercambio)) {
+					numDetalles++;
+				}
+			} catch (IllegalArgumentException e) {
+				escribeErrorExpediente(anyo, numejg, numero, idTipoEJG, e.getMessage());
 			}
 		}
 		if (intercambio != null) {			
@@ -229,17 +233,14 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			
 			if (fileXSL != null) { //si tiene xsl lo transformo
 				File xmlTrans = new File(file.getParentFile(), "T" + file.getName());
+				file.renameTo(xmlTrans);
 				TransformerFactory tFactory = TransformerFactory.newInstance();
 				Transformer transformer = tFactory.newTransformer(new StreamSource(fileXSL));							
-				transformer.transform(new StreamSource(file), new StreamResult(xmlTrans));
-				
-				file.delete();
-				xmlTrans.renameTo(file);
-				
+				transformer.transform(new StreamSource(xmlTrans), new StreamResult(file));
+								
 				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 				DocumentBuilder builder = factory.newDocumentBuilder();
 				Document xmldoc = builder.parse(file);
-//				Node node = xmldoc.getFirstChild();
 				
 				FileOutputStream fos = new FileOutputStream(file);		
 				OutputFormat of = new OutputFormat("XML", "ISO-8859-15", true);				
@@ -258,28 +259,6 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		
 		return file;
 		
-	}
-
-	/**
-	 * 
-	 * @param intercambio
-	 */
-	private void validateXML(Intercambio intercambio) {
-
-		List listaErrores = new ArrayList();		
-		if (!intercambio.validate(new XmlOptions().setErrorListener(listaErrores))) {
-			int errorLevel = 10;
-			ClsLogging.writeFileLog("ERRORES DE VALIDACION XML DEL CAJG:", errorLevel);
-
-			for (int i = 0; i < listaErrores.size(); i++) {
-				XmlError error = (XmlError) listaErrores.get(i);
-				ClsLogging.writeFileLog(error.getMessage(), errorLevel);
-				if (error.getObjectLocation() != null) {
-					ClsLogging.writeFileLog(error.getObjectLocation().toString(), errorLevel);
-				}
-			}
-
-		}		
 	}
 
 	
@@ -403,8 +382,8 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		if (!tipoIntercambio.equals(INTERCAMBIO_ALTA_PRESENTACION)) {
 			datosTramitacionExpediente(tipoExpediente, htEJGs, tipoIntercambio);
 		}
-		//NO VALIDAMOS PQ TIENEN OTRO XSD LA GENERALITAT!!!!!!!!
-		if(validateXML_EJG(tipoExpediente, anyo, numejg, numero, idTipoEJG)){
+		
+		if(!validateXML_EJG(tipoExpediente, anyo, numejg, numero, idTipoEJG)){
 			expedientes.removeExpediente(expedientes.sizeOfExpedienteArray()-1);
 			return false;			
 		}
@@ -416,6 +395,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	 * Añade profesionales designados a tu fichero xml
 	 * @param expedienteType
 	 * @param htEJGs
+	 * @throws Exception 
 	 * @throws Exception
 	 */
 	private void profesionalesDesignados(TipoExpediente tipoExpediente, Hashtable htEJGs) throws Exception {
@@ -434,14 +414,14 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		
 		
 		ProcuradorDesignado procuradorDesignado = profesionalesDesignados.addNewProcuradorDesignado();		
-		Integer valueInt = getInteger((String)htEJGs.get(PD_PD_BAJAPROCURADORDESIGNADO));
+		Integer valueInt = getInteger("baja procurador designado", (String)htEJGs.get(PD_PD_BAJAPROCURADORDESIGNADO));
 		if (valueInt != null) {
 			procuradorDesignado.setBajaProcuradorDesignado(valueInt.intValue());
 		}
 				
 		TipoDatosProcurador datosProcurador = procuradorDesignado.addNewDatosProcurador();
 		datosProcurador.setColegioProcurador((String)htEJGs.get(PD_PD_DP_COLEGIOPROCURADOR));
-		Integer valueInteger = getInteger((String)htEJGs.get(PD_PD_DP_NUMCOLEGIADOPROCURADO));
+		Integer valueInteger = getInteger("número de colegiado del procurador", (String)htEJGs.get(PD_PD_DP_NUMCOLEGIADOPROCURADO));
 		if (valueInteger != null) {
 			datosProcurador.setNumColegiadoProcurador(valueInteger.intValue());
 		}
@@ -451,7 +431,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		if (cal != null) {
 			procuradorDesignado.setFechaDesignacionProcurador(cal);
 		}
-		valueInteger = getInteger((String)htEJGs.get(PD_PD_NUMDESIGNACIONPROCURADOR));
+		valueInteger = getInteger("número de designación del procurador", (String)htEJGs.get(PD_PD_NUMDESIGNACIONPROCURADOR));
 		if (valueInteger != null) {
 			procuradorDesignado.setNumDesignacionProcurador(valueInteger.intValue());
 		}
@@ -464,12 +444,13 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	 * @throws Exception
 	 */
 	private void datosTramitacionExpediente(TipoExpediente tipoExpediente, Hashtable htEJGs, String tipoIntercambio) throws Exception {
-		DatosTramitacionExpediente datosTramitacionExpediente = tipoExpediente.addNewDatosTramitacionExpediente();
-		
+		DatosTramitacionExpediente datosTramitacionExpediente = null;
 		if (tipoIntercambio.equals(INTERCAMBIO_EXPEDIENTES_ARCHIVADOS)) {
+			datosTramitacionExpediente = tipoExpediente.addNewDatosTramitacionExpediente();
 			TramiteArchivo tramiteArchivo = datosTramitacionExpediente.addNewTramiteArchivo();
 			identificacionTramite(tramiteArchivo.addNewIdentificacionTramite(), htEJGs, DTE_TA_IT_ESTADOEXPEDIENTE_CDA, DTE_TA_IT_FECHAESTADO);
 		} else if (tipoIntercambio.equals(INTERCAMBIO_EXPEDIENTES_DICTAMINADOS)) {		
+			datosTramitacionExpediente = tipoExpediente.addNewDatosTramitacionExpediente();
 			TramiteDictamen tramiteDictamen = datosTramitacionExpediente.addNewTramiteDictamen();
 			identificacionTramite(tramiteDictamen.addNewIdentificacionTramite(), htEJGs, DTE_TD_IT_ESTADOEXPEDIENTE_CDA, DTE_TD_IT_FECHAESTADO);
 			rellenaTipoElementoTipificadoEstandar(tramiteDictamen.addNewTipoDictamen(), (String)htEJGs.get(DTE_TD_TIPODICTAMEN_CDA));
@@ -477,6 +458,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			tramiteDictamen.setIntervaloIngresosRecursos((String)htEJGs.get(DTE_TD_INTERVALOINGRESOSRECURS));
 			tramiteDictamen.setObservacionesDictamen((String)htEJGs.get(DTE_TD_OBSERVACIONESDICTAMEN));
 		} else if (tipoIntercambio.equals(INTERCAMBIO_RESOLUCIONES)) {		
+			datosTramitacionExpediente = tipoExpediente.addNewDatosTramitacionExpediente();
 			TramiteResolucion tramiteResolucion = datosTramitacionExpediente.addNewTramiteResolucion();
 			identificacionTramite(tramiteResolucion.addNewIdentificacionTramite(), htEJGs, DTE_TR_IT_ESTADOEXPEDIENTE_CDA, DTE_TR_IT_FECHAESTADO);
 			tramiteResolucion.setIdentificadorResolucion((String)htEJGs.get(DTE_TR_IDENTIFICADORRESOLUCION));
@@ -550,7 +532,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	
 		TipoAbogadoDesignado tipoAbogadoDesignado = abogadosDesignados.addNewAbogadoDesignado();
 		
-		Integer valueInt = getInteger((String)ht.get(PD_AD_AD_BAJAABOGADODESIGNADO));
+		Integer valueInt = getInteger("baja abogado designado", (String)ht.get(PD_AD_AD_BAJAABOGADODESIGNADO));
 		if (valueInt != null) {
 			tipoAbogadoDesignado.setBajaAbogadoDesignado(valueInt.intValue());
 		}
@@ -593,7 +575,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		if (b != null) {
 			datosDefensaJudicial.setRenunciaHonorarios(b.booleanValue());
 		}
-		Integer value = getInteger((String)htEJGs.get(DDJ_DEMANDADODEMANDANTE));
+		Integer value = getInteger("demandante o demandado", (String)htEJGs.get(DDJ_DEMANDADODEMANDANTE));
 		if (value != null) {
 			datosDefensaJudicial.setDemandadoDemandante(value.intValue());
 		}
@@ -616,7 +598,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		
 		TipoDatosProcurador datosProcurador = contrario.addNewDatosProcurador();
 		datosProcurador.setColegioProcurador((String)htEJGs.get(C_C_DP_COLEGIOPROCURADOR));
-		Integer valueInteger = getInteger((String)htEJGs.get(C_C_DP_NUMCOLEGIADOPROCURADOR));
+		Integer valueInteger = getInteger("número de colegiado del procurador", (String)htEJGs.get(C_C_DP_NUMCOLEGIADOPROCURADOR));
 		if (valueInteger != null) {
 			datosProcurador.setNumColegiadoProcurador(valueInteger.intValue());
 		}
@@ -765,7 +747,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		if (value != null) {
 			ingresos.setImporteBruto(value.floatValue());
 		}
-		Integer valueInt = getInteger((String) htEJGs.get(DS_DEP_I_ACUMULABLE));
+		Integer valueInt = getInteger("acumulable de los ingresos", (String) htEJGs.get(DS_DEP_I_ACUMULABLE));
 		if (valueInt != null) {
 			ingresos.setAcumulable(valueInt.intValue());
 		}
@@ -779,7 +761,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		if (value != null) {
 			propiedadesBienesInmuebles.setValoracionEconomica(value.floatValue());
 		}
-		valueInt = getInteger((String) htEJGs.get(DS_DEP_PBI_ACUMULABLE));
+		valueInt = getInteger("acumulable de los bienes inmuebles", (String) htEJGs.get(DS_DEP_PBI_ACUMULABLE));
 		if (valueInt != null) {
 			propiedadesBienesInmuebles.setAcumulable(valueInt.intValue());
 		}
@@ -791,7 +773,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		if (value != null) {
 			propiedadesBienesMuebles.setValoracionEconomica(value.floatValue());
 		}
-		valueInt = getInteger((String) htEJGs.get(DS_DEP_PBM_ACUMULABLE));
+		valueInt = getInteger("acumulable de los bienes muebles", (String) htEJGs.get(DS_DEP_PBM_ACUMULABLE));
 		if (valueInt != null) {
 			propiedadesBienesMuebles.setAcumulable(valueInt.intValue());
 		}
@@ -805,7 +787,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			propiedadesBienesOtros.setValoracionEconomica(value.floatValue());
 		}
 
-		valueInt = getInteger((String) htEJGs.get(DS_DEP_PBO_ACUMULABLE));
+		valueInt = getInteger("acumulable de bienes otros",(String) htEJGs.get(DS_DEP_PBO_ACUMULABLE));
 		if (valueInt != null) {
 			propiedadesBienesOtros.setAcumulable(valueInt.intValue());
 		}
@@ -839,7 +821,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			datosDocumento.setFechaPresentacionDocumento(cal);
 		}
 		datosDocumento.setDescripcionAmpliadaDocumento((String)htDocumentacion.get(de_dd_descripcionampliadadocumento));
-		Integer valueInt = getInteger((String)htDocumentacion.get(de_dd_procedente));
+		Integer valueInt = getInteger("procedente de la documentación", (String)htDocumentacion.get(de_dd_procedente));
 		if (valueInt != null) {
 			datosDocumento.setProcedente(valueInt.intValue());
 		}
@@ -993,9 +975,13 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	 * @param value
 	 * @return
 	 */
-	private Integer getInteger(String value) {
-		if (value != null && !value.trim().equals("")) {
-			return Integer.valueOf(value);
+	private Integer getInteger(String campo, String value) {
+		try {
+			if (value != null && !value.trim().equals("")) {
+				return Integer.valueOf(value);
+			}
+		} catch (NumberFormatException e) {
+			throw new IllegalArgumentException("El campo \"" + campo + "\" debe ser un número y se ha obtenido \"" + value + "\"");
 		}
 		return null;
 	}
@@ -1005,6 +991,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	 * @param fecha
 	 * @return
 	 * @throws Exception
+	 * 
 	 */
 	private Calendar getCalendar(String fecha) throws Exception {		
 		Calendar cal = null;		
@@ -1213,10 +1200,17 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		String dirFicheros = pathFichero + File.separator + getIdInstitucion()  + File.separator + getIdRemesa() + File.separator + "xml";
 		String dirPlantillas = pathPlantillas + File.separator + getIdInstitucion();
 
+		UserTransaction tx = usr.getTransaction();
+		
 		//si no queremos generar el fichero txt ademas del xml hay que cometar solamente esta línea
 		generaTXT(dirFicheros);
 		
 		try {
+			
+			tx.begin();
+			
+			CajgRespuestaEJGRemesaAdm cajgRespuestaEJGRemesaAdm = new CajgRespuestaEJGRemesaAdm(usr);
+			cajgRespuestaEJGRemesaAdm.eliminaAnterioresErrores(getIdInstitucion(), getIdRemesa());
 			
 			List<File> files = generaFicherosXML(dirFicheros, dirPlantillas);	
 				
@@ -1235,11 +1229,11 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 				escribeLogRemesa("El archivo se ha subido correctamente al servidor FTP");
 			}			
 			
-			UserTransaction tx = usr.getTransaction();
+			
 			CajgRemesaEstadosAdm cajgRemesaEstadosAdm = new CajgRemesaEstadosAdm(usr);
 			CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(usr);
 			
-			tx.begin();
+			
 			// Marcar como generada
 			cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIdInstitucion(), getIdRemesa(), Integer.valueOf("1"));
 

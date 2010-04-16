@@ -250,32 +250,25 @@
 
 		<tr>
 			<td class="labelText">	
-			<siga:Idioma key="gratuita.busquedaAsistencias.literal.anyo"/> / <siga:Idioma key="gratuita.busquedaAsistencias.literal.numero"/>
+				<siga:Idioma key="gratuita.busquedaAsistencias.literal.anyo"/> / <siga:Idioma key="gratuita.busquedaAsistencias.literal.numero"/>
 			</td>
-		<td class="labelText">
-			<html:text name="AsistenciasForm" property="anio" size="4" maxlength="4" styleClass="box" value="<%=anio%>"></html:text> / <html:text name="AsistenciasForm" property="numero" size="10" maxlength="10" styleClass="box" value="<%=numero%>"></html:text>
+			<td>
+				<html:text name="AsistenciasForm" property="anio"  style="width:40" maxlength="4" styleClass="box" value="<%=anio%>"></html:text> / <html:text name="AsistenciasForm" property="numero" size="10" maxlength="10" styleClass="box" value="<%=numero%>"></html:text>
 			</td>
-			<td class="labelText">
-			&nbsp;
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td class="labelText">	
+				<siga:Idioma key="gratuita.busquedaAsistencias.literal.fechaAsistencia"/>&nbsp; <siga:Idioma key="gratuita.busquedaAsistencias.literal.entre"/>
 			</td>
-		<td class="labelText" >	
-			&nbsp;
+			<td>
+				<siga:Fecha nombreCampo="fechaDesde" valorInicial="<%=fechaDesde%>" />&nbsp;<a onClick="return showCalendarGeneral(fechaDesde);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
 			</td>
 			<td class="labelText">	
-				<siga:Idioma key="gratuita.busquedaAsistencias.literal.fechaAsistencia"/>
-			 &nbsp; <siga:Idioma key="gratuita.busquedaAsistencias.literal.entre"/>
+				<siga:Idioma key="gratuita.busquedaAsistencias.literal.y"/>
 			</td>
-		<td>
-			<siga:Fecha nombreCampo="fechaDesde" valorInicial="<%=fechaDesde%>" />
-			&nbsp;<a onClick="return showCalendarGeneral(fechaDesde);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+			<td>	
+				<siga:Fecha nombreCampo="fechaHasta" valorInicial="<%=fechaHasta%>" />&nbsp;<a onClick="return showCalendarGeneral(fechaHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
 			</td>
-		<td class="labelText">	
-			<siga:Idioma key="gratuita.busquedaAsistencias.literal.y"/>
-		</td>
-		<td>	
-			<siga:Fecha nombreCampo="fechaHasta" valorInicial="<%=fechaHasta%>" />
-			&nbsp;<a onClick="return showCalendarGeneral(fechaHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
-		</td>
 		</tr>
 		<tr>
 			<td class="labelText">
@@ -293,8 +286,7 @@
 		</tr>
 		
 		<tr>
-		
-		<td class="labelText">
+			<td class="labelText">
 				<siga:Idioma key="gratuita.mantAsistencias.literal.estado"/>
 			</td>
 			<td colspan="3">	
@@ -303,24 +295,28 @@
 			<td class="labelText">
 				<siga:Idioma key="gratuita.busquedaAsistencias.literal.actuacionesValidadas"/>
 			</td>	
-		<td colspan="3">	
-			<Select name="actuacionesPendientes" class="boxCombo">
-					<option value=''  selected ></option>
-					<option value='No' ><siga:Idioma key="general.no"/></option>
-					<option value='Si' ><siga:Idioma key="general.yes"/></option>
-					<option value='SinActuaciones' ><siga:Idioma key="gratuita.busquedaAsistencias.literal.sinActuaciones"/></option>
-			</Select>
-		</td>
-		
-			
-		
+			<td colspan="3">	
+				<Select name="actuacionesPendientes" class="boxCombo">
+						<option value=''  selected ></option>
+						<option value='No' ><siga:Idioma key="general.no"/></option>
+						<option value='Si' ><siga:Idioma key="general.yes"/></option>
+						<option value='SinActuaciones' ><siga:Idioma key="gratuita.busquedaAsistencias.literal.sinActuaciones"/></option>
+				</Select>
+			</td>
 		</tr>
-		
+		<tr >
+			<td class="labelText" >
+				<siga:Idioma key="gratuita.busquedaAsistencias.literal.tipoAsistenciaColegio"/>
+			</td>
+			<td colspan="7">
+				<siga:ComboBD ancho="660" nombre="idTipoAsistenciaColegio" tipo="scstipoasistenciacolegio" estilo="true" clase="boxCombo" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=tAsistenciaColegioA%>" />
+			</td>	
+		</tr>		
 		<tr><td colspan="8">
 			<siga:BusquedaPersona tipo="colegiado" titulo="gratuita.seleccionColegiadoJG.literal.titulo" idPersona="colegiado">
 			</siga:BusquedaPersona>
 		</td></tr>
-		<tr>
+		<tr style="display: none">
 
 			<td class="labelText">
 				<siga:Idioma key="gratuita.busquedaAsistencias.literal.tipoAsistencia"/>
@@ -329,19 +325,11 @@
 				<siga:ComboBD  ancho="660" nombre="idTipoAsistencia" tipo="scstipoasistencia" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=tAsistenciaA%>" />
 			</td>	
 		</tr>
-		<tr>
 
-			<td class="labelText" >
-				<siga:Idioma key="gratuita.busquedaAsistencias.literal.tipoAsistenciaColegio"/>
-			</td>
-			<td colspan="7">
-				<siga:ComboBD ancho="660" nombre="idTipoAsistenciaColegio" tipo="scstipoasistenciacolegio" estilo="true" clase="boxCombo" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=tAsistenciaColegioA%>" />
-			</td>	
-		</tr>
 	</table>
 	</siga:ConjCampos>
 
-	<siga:ConjCampos leyenda="gratuita.busquedaAsistencias.literal.asistido">
+	<siga:ConjCampos leyenda="gratuita.busquedaAsistencias.literal.asistido" desplegable="true" oculto="true">
 	<table width="100%">
 	<tr>
 		<td class="labelText">	
@@ -372,7 +360,7 @@
 	</table>
 	</siga:ConjCampos>
 	
-	<siga:ConjCampos leyenda="pestana.justiciagratuitadesigna.actuaciones">
+	<siga:ConjCampos leyenda="pestana.justiciagratuitadesigna.actuaciones" desplegable="true" oculto="true">
 		<table  border="0" align="center" width="100%">
 			<tr>
 				<td class="labelText" colspan="1">	

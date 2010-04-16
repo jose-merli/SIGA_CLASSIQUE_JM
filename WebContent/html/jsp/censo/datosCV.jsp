@@ -141,12 +141,12 @@
          var v_subTipo1;
 		 var v_subTipo2;
 		
-		<!-- Asociada al boton Volver -->
+		//Asociada al boton Volver 
 		function accionCerrar(){ 		
 			window.close();
 		}	
 		
-		<!-- Asociada al boton Restablecer -->
+		// Asociada al boton Restablecer 
 		function accionRestablecer(){		
 			if(confirm('<siga:Idioma key="messages.confirm.cancel"/>')) {
 				document.all.datosCVForm.reset();
@@ -154,7 +154,7 @@
 			}
 		}			
 
-		<!-- Asociada al boton GuardarCerrar -->
+		// Asociada al boton GuardarCerrar
 		function accionGuardarCerrar() {
       		sub();
 			// Validamos los errores ///////////
@@ -164,7 +164,7 @@
 			}
 			
 			
-		   if ((!v_subTipo1.disabled && !v_subTipo2.disabled) && (document.datosCVForm.tipoApunte.value=="" || document.datosCVForm.idTipoCVSubtipo1.value=="" || document.datosCVForm.idTipoCVSubtipo2.value=="")){	
+		 if ((!v_subTipo1.disabled && !v_subTipo2.disabled) && (document.datosCVForm.tipoApunte.value=="" || document.datosCVForm.idTipoCVSubtipo1.value=="" || document.datosCVForm.idTipoCVSubtipo2.value=="")){	
 		        aux = '<siga:Idioma key="censo.datosCV.literal.tipoApunte"/>'
 				alert(aux);
 				fin();
@@ -234,7 +234,7 @@
 			}
 		}		
 		
-		<!-- Selecciona los valores de los campos check y combo dependiendo de los valores del Hashtable -->
+		// Selecciona los valores de los campos check y combo dependiendo de los valores del Hashtable 
 		function rellenarCampos(){
 				// Obtenemos los valores para el check certificado.
 				certificado="<%=certificado%>"
@@ -437,7 +437,7 @@
 							<tr>
 								<td class="labelText" ><siga:Idioma key="censo.datosCV.literal.descripcion"/>&nbsp(*)</td>
 									<td colspan="3">
-										<textarea cols="70" rows="4" name="descripcion" onKeyDown="cuenta(this,100)" onChange="cuenta(this,100)" class="<%=clase%>" style="overflow:hidden"><%=descripcion%></textarea>
+										<textarea cols="70" rows="7" name="descripcion" onKeyDown="cuenta(this,500)" onChange="cuenta(this,500)" class="<%=clase%>" style="width:550"><%=descripcion%></textarea>
 									</td>			   	
 							</tr>
 						</table>

@@ -20,6 +20,7 @@ import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.ScsGuardiasTurnoBean;
+import com.siga.beans.ScsInscripcionTurnoAdm;
 import com.siga.beans.ScsSaltosCompensacionesAdm;
 import com.siga.beans.ScsTurnoAdm;
 import com.siga.beans.ScsTurnoBean;
@@ -105,6 +106,7 @@ public class ColaOficiosAction extends MasterAction {
 		Integer usuario=this.getUserName(request);
 		String institucion =usr.getLocation();
 		String turno =(String)turnoElegido.get("IDTURNO");
+		
 		ScsTurnoAdm turnoAdm = new ScsTurnoAdm(this.getUserBean(request));
 		ScsSaltosCompensacionesAdm saltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(this.getUserBean(request));
 		
@@ -114,7 +116,20 @@ public class ColaOficiosAction extends MasterAction {
 		//Cargar listado de letrados en cola
 		Vector vLetradosEnCola=turnoAdm.selectLetradosEnCola(institucion,turno);
 		if(vLetradosEnCola!=null && !vLetradosEnCola.isEmpty()){
-			request.setAttribute("vLetradosEnCola",vLetradosEnCola);
+			request.setAttribute("vLetradosEnCola",vLetradosEnCola);			
+			
+		ScsInscripcionTurnoAdm InscripcionTurnoAdm = new ScsInscripcionTurnoAdm(this.getUserBean(request));
+		Vector letradosinscritos = new Vector();
+		String NLETRADOSTURNO="";
+		 letradosinscritos= InscripcionTurnoAdm.selectGenerico(InscripcionTurnoAdm.getnumeroColegiadosTurnos(institucion, turno));
+		 if( letradosinscritos!=null  ||  letradosinscritos.size()>0){			 
+			NLETRADOSTURNO=(String)(((Hashtable)(letradosinscritos.get(0))).get("NLETRADOSTURNO"));
+			request.setAttribute("NLETRADOSTURNO",NLETRADOSTURNO);	
+		 }else{			
+			request.setAttribute("NLETRADOSTURNO",NLETRADOSTURNO);	
+		 }
+			
+					
 		}
 		
 		//Cargar listado de compensaciones
@@ -127,6 +142,8 @@ public class ColaOficiosAction extends MasterAction {
 		if(vSaltos!=null && !vSaltos.isEmpty()){
 			request.setAttribute("vSaltos",vSaltos);
 		}
+		
+		
 		
 		return "ver";
 	}

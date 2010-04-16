@@ -430,7 +430,9 @@ public class BusquedaAsistenciasLetradoAction extends MasterAction {
 		
 		
 		AsistenciasForm miForm =(AsistenciasForm)formulario;
-		
+		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String tipoAsistenciaDefecto = rp.returnProperty("codigo.general.scs_tipoasistencia.tipoGeneral");
+		request.setAttribute("tipoAsistencia",tipoAsistenciaDefecto);
 			String nColegiado = (String)request.getParameter("nColegiado");
 		if(nColegiado!=null)
 			request.setAttribute("nColegiado",""+nColegiado);

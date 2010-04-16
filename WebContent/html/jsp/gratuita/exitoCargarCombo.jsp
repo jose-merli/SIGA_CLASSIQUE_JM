@@ -1,3 +1,4 @@
+<!-- exitoCargarCombo.jsp -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -8,12 +9,8 @@
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
-
-<%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="java.util.*"%>
-<%@ page import="com.siga.Utilidades.UtilidadesString"%>
-
 <html:html>
 <head>
 <%
@@ -41,7 +38,7 @@
 		for (int i=0;v!=null&&i<v.size();i++) {
 			Hashtable ht= (Hashtable) v.get(i);
 		%>
-		  elem = new Option('<%=(String)ht.get("DESCRIPCION")%>','<%=(String)ht.get("ID")%>');
+		  elem = new Option("<%=(String)ht.get("DESCRIPCION")%>","<%=(String)ht.get("ID")%>");
 		  obj.options[<%=i%>] = elem;
 		  parent.document.ncolegiado[<%=i%>] = '<%=(String)ht.get("NCOLEGIADO")%>'
 		<% 

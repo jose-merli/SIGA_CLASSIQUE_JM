@@ -14,6 +14,10 @@ import com.siga.Utilidades.UtilidadesHash;
 public class PersonaJGForm extends MasterForm {
 			
 	// Datos de entrada de la ventana
+	public void setNcolegiadoContrario(String dato) {
+		UtilidadesHash.set(this.datos,"NcolegiadoContrario",dato);
+	}
+	
 	public void setConceptoE(String dato) {
 		UtilidadesHash.set(this.datos,"ConceptoE",dato);
 	}
@@ -367,6 +371,14 @@ public class PersonaJGForm extends MasterForm {
 	public String getIdRepresentanteJG() {
 		return UtilidadesHash.getString(this.datos,"IdRepresentanteJG");
 	}
+	
+	// para el agogado Contrario EJG
+	public void setIdAbogadoContrarioEJG(String dato) {
+		UtilidadesHash.set(this.datos,"IdAbogadoContrarioEJG",dato);
+	}
+	public String getIdAbogadoContrarioEJG() {
+		return UtilidadesHash.getString(this.datos,"IdAbogadoContrarioEJG");
+	}
 	// praa el representante legal (letrado del censo, idpersona)
 	public void setIdPersonaRepresentante(String dato) {
 		UtilidadesHash.set(this.datos,"IdPersonaRepresentante",dato);
@@ -377,10 +389,33 @@ public class PersonaJGForm extends MasterForm {
 	// Nombre del representante en ambos casos
 	public void setRepresentante(String dato) {
 		UtilidadesHash.set(this.datos,"Representante",dato);
-	}
+	}	
+	
 	public String getRepresentante() {
 		return UtilidadesHash.getString(this.datos,"Representante");
+	}	
+	// Nombre del Abogado contrario en ambos casos
+	public void setAbogadoContrario(String dato) {
+		UtilidadesHash.set(this.datos,"AbogadoContrario",dato);
 	}
+	public String getAbogadoContrario() {
+		return UtilidadesHash.getString(this.datos,"AbogadoContrario");
+	}
+	// Nombre del Abogado contrario De EJG
+	public void setAbogadoContrarioEJG(String dato) {
+		UtilidadesHash.set(this.datos,"AbogadoContrarioEJG",dato);
+	}
+	public String getAbogadoContrarioEJG() {
+		return UtilidadesHash.getString(this.datos,"AbogadoContrarioEJG");
+	}
+//	// praa el Abogado contrario(letrado del censo, idpersona)
+	public void setIdPersonaContrario(String dato) {
+		UtilidadesHash.set(this.datos,"IdPersonaContrario",dato);
+	}
+	public String getIdPersonaContrario() {
+		return UtilidadesHash.getString(this.datos,"IdPersonaContrario");
+	}
+	
 	public void setSolicitante(String dato) {
 		UtilidadesHash.set(this.datos,"Solicitante",dato);
 	}
@@ -502,5 +537,21 @@ public class PersonaJGForm extends MasterForm {
 	public void setTipoIngreso	(String dato) 	{ 
  		UtilidadesHash.set(this.datos, "TIPO_INGRESO" , dato);		
  	}
+	
+	
+	public String getNcolegiadoContrario	() 	{ 
+ 		return UtilidadesHash.getString(this.datos, "NcolegiadoContrario");		
+ 	}
+	
+	public String getNcolegiadoRepresentante	() 	{ 
+ 		return UtilidadesHash.getString(this.datos, "NcolegiadoRepresentante");		
+ 	}
+	
+	
+	public void setNcolegiadoRepresentante(String dato) {
+		UtilidadesHash.set(this.datos,"NcolegiadoRepresentante",dato);
+	}
+	
+	
 
 }

@@ -199,6 +199,7 @@
 			<html:hidden name="datosFacturacionForm" property = "idPersona" value = "<%=idPersona %>" />
 			<html:hidden name="datosFacturacionForm" property = "idInstitucion" value = "<%=idInstitucion %>" />
 			<!-- RGG: cambio a formularios ligeros -->
+			<html:hidden name="datosFacturacionForm"  property ="filaSelD"/>
 			<input type="hidden" name="tablaDatosDinamicosD">
 			<input type="hidden" name="actionModal" value="">
 			<input type="hidden" name="incluirRegistrosConBajaLogica" value="<%=bIncluirBajaLogica%>">
@@ -256,6 +257,7 @@
 		   alto="350"		   
 		   ajuste="80"
 		   modal="P"
+		   activarFilaSel="true"	
 		>
 
 		
@@ -277,7 +279,7 @@
 				FilaExtElement[] elems = new FilaExtElement[2];
 				FilaExtElement[] elems2 = new FilaExtElement[1];
 				Row fila = (Row)resultado.elementAt(i);
-				Hashtable registro = (Hashtable) fila.getRow();
+				Hashtable registro = (Hashtable) fila.getRow(); 
 				
 				
 				

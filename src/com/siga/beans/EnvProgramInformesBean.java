@@ -25,6 +25,8 @@ private ArrayList plantillasInformes;
 	static public final String C_CLAVES = "CLAVES";
 	static public final String T_NOMBRETABLA = "ENV_PROGRAMINFORMES";
 	
+	static public final String SEQ_ENV_PROGRAMINFORMES = "SEQ_ENV_PROGRAMINFORMES";
+	
 	public String getClaves() {
 		return claves;
 	}

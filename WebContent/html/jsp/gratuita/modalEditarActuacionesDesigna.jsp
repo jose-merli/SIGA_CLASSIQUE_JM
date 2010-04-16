@@ -373,21 +373,22 @@
 					</td>
 				<tr>
 				
-              <td class="labelText"  width="15%">	
+              <td class="labelText"  width="17%">	
 				 <siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado"/>
 				 <%if(!modoAnterior.equalsIgnoreCase("VER")){%>
 				    &nbsp;/&nbsp;<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.codigoext"/>
 				 <%}%>
+				 &nbsp;(*)
 			  </td>	 
 		
 			<% if (esLetrado||modoAnterior.equalsIgnoreCase("VER")){%>
 					<td colspan="8" >
-							<siga:ComboBD nombre="juzgado" ancho="820" tipo="comboJuzgadosTurno" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=param%>"  elementoSel="<%=juzgadoSel%>" accion="Hijo:procedimiento" />
+							<siga:ComboBD nombre="juzgado" ancho="800" tipo="comboJuzgadosTurno" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=param%>"  elementoSel="<%=juzgadoSel%>" accion="Hijo:procedimiento" />
 					</td>
 					<%}else{%>
 					  <td colspan="7" >
 							<input type="text" name="codigoExtJuzgado" class="box" size="8"  style="margin-top:0px;" maxlength="10" onBlur="obtenerJuzgado();" />
-							<siga:ComboBD nombre="juzgado" ancho="740" tipo="comboJuzgadosTurno" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=param%>"  elementoSel="<%=juzgadoSel%>"  accion="Hijo:procedimiento" />
+							<siga:ComboBD nombre="juzgado" ancho="700" tipo="comboJuzgadosTurno" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=param%>"  elementoSel="<%=juzgadoSel%>"  accion="Hijo:procedimiento" />
 					</td>
 			<%}%>
 				
@@ -395,7 +396,7 @@
 				<tr>
 				
 					<td class="labelText">
-						<siga:Idioma key="gratuita.actuacionesDesigna.literal.modulo"/>
+						<siga:Idioma key="gratuita.actuacionesDesigna.literal.modulo"/>&nbsp;(*)
 					</td>
 					<% if (esLetrado||modoAnterior.equalsIgnoreCase("VER")){%>
 					<td colspan="7">
@@ -463,10 +464,30 @@
 						<% } else { %>
 							<textarea class="boxConsulta" scroll="none" name="observaciones" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" rows="2" cols="150" readonly="true"><%=observaciones%></textarea>
 						<%}%>
+						<font class="labelText">
+						&nbsp;&nbsp;&nbsp;<siga:Idioma key="gratuita.actuacionesDesigna.literal.talonario"/>&nbsp;/&nbsp;
+					    <siga:Idioma key="gratuita.actuacionesDesigna.literal.talon"/>					     
+						</font>
+						
+						 <%if(!modoAnterior.equalsIgnoreCase("VER")){%>
+						 <font class="labelTextValor">	
+							<html:text name="ActuacionesDesignasForm" property="talonario" size="20" maxlength="20" styleClass="box" ></html:text>
+							&nbsp;/&nbsp;
+					     	<html:text name="ActuacionesDesignasForm" property="talon" size="20"  maxlength="20" styleClass="box"></html:text>
+					     </font>
+					     <%}else{%>	
+					    	 <font class="labelTextValor">
+					     		<html:text name="ActuacionesDesignasForm" property="talonario" size="20" styleClass="boxConsulta" />
+					     		&nbsp;/&nbsp;
+					     		<html:text name="ActuacionesDesignasForm" property="talon" size="20" styleClass="boxConsulta" />
+					    	 </font>	
+					     <%}%>	
+					     
 					</td>
+					
 				</tr>
-				</siga:ConjCampos>			
 				</table>
+				</siga:ConjCampos>			
 			</td>
 		</tr>
 		<tr>
@@ -600,18 +621,28 @@
 					document.forms[0].actuacionValidada.value="1";
 					document.forms[0].estadoActuacion.value='<siga:Idioma key='gratuita.mantActuacion.literal.actuacionValidada'/>';
 				}
+				if (document.forms[0].juzgado.value=='') {
+					alert('<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado"/> <siga:Idioma key="messages.campoObligatorio.error" />');
+					fin();
+					return false;	
+				}
+				if (document.forms[0].procedimiento.value=='') {
+					alert('<siga:Idioma key="gratuita.actuacionesDesigna.literal.modulo"/> <siga:Idioma key="messages.campoObligatorio.error" />');
+					fin();
+					return false;	
+				}
 				if (document.forms[0].acreditacion.value=='') {
 					alert('<siga:Idioma key="gratuita.procedimientos.literal.acreditacion"/> <siga:Idioma key="messages.campoObligatorio.error" />');
 					fin();
-					return false;					
-				}else {
-					<% if (modoAnterior.equalsIgnoreCase("EDITAR")) { %>
-					document.forms[0].modo.value="modificar";
-					<% } else { %>
-					document.forms[0].modo.value="insertar";
-					<% } %>
-					document.forms[0].submit();
-				}
+					return false;
+				}					
+				<% if (modoAnterior.equalsIgnoreCase("EDITAR")) { %>
+				document.forms[0].modo.value="modificar";
+				<% } else { %>
+				document.forms[0].modo.value="insertar";
+				<% } %>
+				document.forms[0].submit();
+
 			}else{
 			
 				fin();

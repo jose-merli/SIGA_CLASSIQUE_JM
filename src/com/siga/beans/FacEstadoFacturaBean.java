@@ -13,6 +13,7 @@ package com.siga.beans;
 
 public class FacEstadoFacturaBean extends MasterBean{
 
+	static public final String ID_ESTADO_PAGADA		= "1";
 	/* Variables */
 	private Integer idEstado;
 	private String 	descripcion;

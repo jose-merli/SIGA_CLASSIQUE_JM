@@ -604,7 +604,8 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 									CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_APELLIDOS2 + " || ', ' || " +
 									CenPersonaBean.T_NOMBRETABLA + "." + CenPersonaBean.C_NOMBRE + ") AS LETRADO," +
 					    			ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_NOMBRE + " AS GUARDIA," +
-	                                " guardias2.idpersona IDPERSONA,  guardias2.idcalendarioguardias IDCALENDARIOGUARDIAS,  "+ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_NOMBRE+"	 TURNO, "+ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDTURNO+" IDTURNO, ";
+	                                " guardias2.idpersona IDPERSONA,  guardias2.idcalendarioguardias IDCALENDARIOGUARDIAS,  "+ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_NOMBRE+"	 TURNO, "+ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDTURNO+" IDTURNO, " +
+	            					" decode(cen_colegiado.ncolegiado,null,cen_colegiado.ncomunitario,cen_colegiado.ncolegiado) NCOLEGIADO, " ;
 	            //guardias2.fechainicio FECHA_INICIO, guardias2.fecha_fin FECHA_FIN,
 					    			contador++;
 	            					codigos.put(new Integer(contador),institucion);
@@ -647,10 +648,26 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
         					
         					sql += " F_SIGA_FECHAINISOLICITANTE(:"+contador+","+ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDTURNO+","+ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDGUARDIA+","+
 	                                         "guardias2.idpersona, guardias2.fechainicio, guardias2.idcalendarioguardias)) AS FECHA_INICIO, ";
-							sql+=	ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_NOMBRE+"	 TURNO, ";
+        					contador++;
+        					codigos.put(new Integer(contador),institucion);
+							sql += " to_char(decode(F_SIGA_FECHAINISOLICITANTE(:"+contador+","+ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDTURNO+","+ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDGUARDIA+","+
+	                                         "guardias2.idpersona, guardias2.fechainicio, guardias2.idcalendarioguardias),";
+         					contador++;
+        					codigos.put(new Integer(contador),institucion);
+        					sql += " '', decode(F_SIGA_FECHAINICONFIRMADOR(:"+contador+","+ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDTURNO+","+ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDGUARDIA+","+
+	                                         "guardias2.idpersona, guardias2.fechainicio, guardias2.idcalendarioguardias),";
+        					contador++;
+        					codigos.put(new Integer(contador),institucion);
+        					sql += " '', guardias2.fechainicio, F_SIGA_FECHAINICONFIRMADOR(:"+contador+","+ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDTURNO+","+ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDGUARDIA+","+
+	                                         "guardias2.idpersona, guardias2.fechainicio, guardias2.idcalendarioguardias)),";
+        					contador++;
+        					codigos.put(new Integer(contador),institucion);
+        					sql += " F_SIGA_FECHAINISOLICITANTE(:"+contador+","+ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDTURNO+","+ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDGUARDIA+","+
+	                                         "guardias2.idpersona, guardias2.fechainicio, guardias2.idcalendarioguardias)), 'Day') AS DIA_FECHA_INICIO, ";
+        					sql+=	ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_NOMBRE+"	 TURNO, ";
 							
-	            					contador++;
-	            					codigos.put(new Integer(contador),institucion);
+        					contador++;
+        					codigos.put(new Integer(contador),institucion);
 	            					
 	            		     sql += "decode(F_SIGA_FECHAFINSOLICITANTE(:"+contador+","+ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDTURNO+","+ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDGUARDIA+","+
 	                                         "guardias2.idpersona, guardias2.fechainicio, guardias2.idcalendarioguardias),";
@@ -1208,8 +1225,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 			//Consulta en la tabla temporal la posicion para el letrado
 			String consultaTemp =
 				"select T."+GenClientesTemporalBean.C_IDPERSONA+", " +
-				"       decode(C."+CenColegiadoBean.C_COMUNITARIO+", '" +
-				"              "+ClsConstants.DB_TRUE+"', " +
+				"       decode(C."+CenColegiadoBean.C_COMUNITARIO+", '"+ClsConstants.DB_TRUE+"', " +
 				"              C."+CenColegiadoBean.C_NCOMUNITARIO+", " +
 				"              C."+CenColegiadoBean.C_NCOLEGIADO+") " + CenColegiadoBean.C_NCOLEGIADO+", " +
 				"       P."+CenPersonaBean.C_IDPERSONA+", " +

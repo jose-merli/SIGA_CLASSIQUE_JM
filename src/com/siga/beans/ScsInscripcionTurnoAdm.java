@@ -336,8 +336,30 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 			return true;
 		}
 	}
+	
+	
+ public String getnumeroColegiadosTurnos(String institucion, String turno) throws ClsExceptions{
+		  
+		  String consulta="";
+		  
+		  try{			
 
+		   consulta=" select count(*)  as NLETRADOSTURNO"+
+		            " from "+ScsInscripcionTurnoBean.T_NOMBRETABLA+ " ins , "+ ScsTurnoBean.T_NOMBRETABLA+" turno"	+	             
+		            " where ins.fechabaja is null" +
+		            " and ins.idinstitucion =" + institucion +
+		            " and ins.idturno ="+ turno+
+		            " and ins.idinstitucion=turno.idinstitucion "+
+		            " and ins.idturno=turno.idturno";
+		           
+              }
+		  catch (Exception e){
+			  throw new ClsExceptions(e,"Excepcion en ScsInscripcionTurnoAdm.getnumeroColegiadosTurnos() Consulta SQL:"+consulta);
+			}
+	
+			return consulta;
+			  
+		  }
 	 
-
 	
 }

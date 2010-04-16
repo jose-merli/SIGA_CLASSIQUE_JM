@@ -441,6 +441,7 @@
 					String ncolegiado = "";
 					String fechaIncorporacion = "";
 					String estadoColegial = "";
+					String fechaEstadoColegial = "";
 					String residente = "";
 					String SociedaSJ = (String) registro
 							.get(CenNoColegiadoBean.C_SOCIEDADSJ);
@@ -482,34 +483,20 @@
 						tipo = "NINGUNO";
 
 					if (colegiado.equals(ClsConstants.DB_TRUE)) {
-						ncomunitario = UtilidadesString
-								.mostrarDatoJSP(registro
-										.get(CenColegiadoBean.C_NCOMUNITARIO));
-						ncolegiado = UtilidadesString
-								.mostrarDatoJSP(registro
-										.get(CenColegiadoBean.C_NCOLEGIADO));
-						fechaIncorporacion = UtilidadesString
-								.mostrarDatoJSP(GstDate
-										.getFormatedDateShort(
-												usrbean.getLanguage(),
-												registro
-														.get(CenColegiadoBean.C_FECHAINCORPORACION)));
+						ncomunitario = UtilidadesString.mostrarDatoJSP(registro.get(CenColegiadoBean.C_NCOMUNITARIO));
+						ncolegiado = UtilidadesString.mostrarDatoJSP(registro.get(CenColegiadoBean.C_NCOLEGIADO));
+						fechaIncorporacion = UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usrbean.getLanguage(),
+												registro.get(CenColegiadoBean.C_FECHAINCORPORACION)));
 						//estadoColegial = UtilidadesString.mostrarDatoJSP(UtilidadesMultidioma.getDatoMaestroIdioma((String)registro.get("ESTADOCOLEGIAL"),usrbean));
-						estadoColegial = UtilidadesString
-								.mostrarDatoJSP(admCen
-										.getEstadoColegial(
-												registro
-														.get(
-																CenColegiadoBean.C_IDPERSONA)
-														.toString(),
-												registro
-														.get(
-																CenColegiadoBean.C_IDINSTITUCION)
-														.toString()));
+						estadoColegial = UtilidadesString.mostrarDatoJSP(admCen.getEstadoColegial(
+												registro.get(CenColegiadoBean.C_IDPERSONA).toString(),
+												registro.get(CenColegiadoBean.C_IDINSTITUCION).toString()));
+						fechaEstadoColegial = UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usrbean.getLanguage(),
+												admCen.getFechaEstadoColegial(
+													registro.get(CenColegiadoBean.C_IDPERSONA).toString(),
+													registro.get(CenColegiadoBean.C_IDINSTITUCION).toString())));
 						//				
-						residente = UtilidadesString
-								.mostrarDatoJSP(registro
-										.get(CenColegiadoBean.C_SITUACIONRESIDENTE));
+						residente = UtilidadesString.mostrarDatoJSP(registro.get(CenColegiadoBean.C_SITUACIONRESIDENTE));
 					}
 					String institucion = CenVisibilidad
 							.getAbreviaturaInstitucion(idInstitucion);
@@ -579,7 +566,7 @@
 		<% } %>
 		<td>
 		<% if (estadoColegial!=null && !estadoColegial.equals("&nbsp")){%>
-		   <%=estadoColegial%>
+		   <%=estadoColegial%>  (<%=fechaEstadoColegial%>)  
 		<%}else{ // para colegiados sin estado colegial o con estado colegial a futuro %>
 		    <siga:Idioma key="censo.busquedaClientes.literal.sinEstadoColegial"/>
 		<%} %>   

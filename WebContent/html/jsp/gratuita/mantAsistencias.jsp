@@ -300,6 +300,33 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 		</tr>
 	</table>
 	<table width="100%" border="0" style="table-layout:fixed">
+		<tr style="display:none">
+			<td class="labelText" width="20%">
+				<siga:Idioma key='gratuita.mantAsistencias.literal.tipo'/>
+			</td>
+			<td class="labelTextValor" width="80%">	
+			<% if(modo.equals("ver")){%>
+				<%=TIPOASISTENCIASELDESC%>
+			<%}else{%>
+				<siga:ComboBD ancho="600" nombre="idTipoAsistencia" tipo="scstipoasistencia" estilo="true" clase="boxCombo" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorioSinTextoSeleccionar="true"  elementoSel="<%=TIPOASISTENCIASEL%>"/>
+			<%}%>
+			</td>	
+		</tr>
+
+		<tr>
+			<td class="labelText" width="20%">
+				<siga:Idioma key='gratuita.mantAsistencias.literal.tasiscolegio'/>&nbsp;(*)
+			</td>
+			<td class="labelTextValor" width="80%">	
+			<% if(modo.equals("ver")){%>
+				<%=TIPOASISTENCIACOLEGIODESC%>
+			<%}else{%>
+				<siga:ComboBD ancho="700" nombre="idTipoAsistenciaColegio" tipo="scstipoasistenciacolegio" estilo="true" clase="boxCombo" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorioSinTextoSeleccionar="true" obligatorio="false" elementoSel="<%=TIPOASISTENCIACOLEGIOSEL%>" />
+			<%}%>
+			</td>	
+		</tr>
+	</table>
+	<table width="100%" border="0" style="table-layout:fixed">
 		<tr>
 			<td width="50%">	
 			<siga:ConjCampos leyenda="gratuita.mantAsistencias.literal.asistido">
@@ -347,33 +374,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 			</td>
 		</tr>
 	</table>
-	<table width="100%" border="0" style="table-layout:fixed">
-		<tr>
-			<td class="labelText" width="14%">
-				<siga:Idioma key='gratuita.mantAsistencias.literal.tipo'/>
-			</td>
-			<td class="labelTextValor" width="65%">	
-			<% if(modo.equals("ver")){%>
-				<%=TIPOASISTENCIASELDESC%>
-			<%}else{%>
-				<siga:ComboBD ancho="600" nombre="idTipoAsistencia" tipo="scstipoasistencia" estilo="true" clase="boxCombo" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorioSinTextoSeleccionar="true"  elementoSel="<%=TIPOASISTENCIASEL%>"/>
-			<%}%>
-			</td>	
-		</tr>
 
-		<tr>
-			<td class="labelText" width="14%">
-				<siga:Idioma key='gratuita.mantAsistencias.literal.tasiscolegio'/>
-			</td>
-			<td class="labelTextValor" width="65%">	
-			<% if(modo.equals("ver")){%>
-				<%=TIPOASISTENCIACOLEGIODESC%>
-			<%}else{%>
-				<siga:ComboBD ancho="600" nombre="idTipoAsistenciaColegio" tipo="scstipoasistenciacolegio" estilo="true" clase="boxCombo" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorioSinTextoSeleccionar="true" obligatorio="false" elementoSel="<%=TIPOASISTENCIACOLEGIOSEL%>" />
-			<%}%>
-			</td>	
-		</tr>
-	</table>
 
 	<table width="100%" border="0" style="table-layout:fixed">
 		<tr>
@@ -798,6 +799,12 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 			if(document.forms[0].idTipoAsistencia.value == "")
 			{
 				alert("<siga:Idioma key='gratuita.mantAsistencias.mensaje.alert2'/>");
+				fin();
+				return false;
+			}
+			if(document.forms[0].idTipoAsistenciaColegio.value == "")
+			{
+				alert("<siga:Idioma key='gratuita.nuevaAsistencia.mensaje.alert8' />");
 				fin();
 				return false;
 			}

@@ -12,7 +12,7 @@ import com.siga.general.MasterForm;
 
 
 
- public class DefinicionRemesas_CAJG_Form extends MasterForm{
+ public class DefinicionRemesas_CAJG_Form extends DefinirEJGForm{
  	
 	 	public String getIdIncidenciasEnvio() {
 			return UtilidadesHash.getString(this.datos,"idIncidenciasEnvio");			

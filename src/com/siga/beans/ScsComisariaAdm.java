@@ -446,7 +446,7 @@ public class ScsComisariaAdm extends MasterBeanAdministrador {
 		contador ++;
 		sql.append(contador);
 		htCodigos.put(new Integer(contador),volanteExpres.getIdTurno());
-		sql.append(" ORDER BY DESCRIPCION ");
+		sql.append(" ORDER BY NOMBRE ");
 		
 		List<ScsComisariaBean> alComisarias = null;
 		try {

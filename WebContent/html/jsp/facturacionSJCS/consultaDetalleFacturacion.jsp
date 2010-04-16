@@ -40,11 +40,13 @@
 	String nombreColegiado ="", importe="", ncolegiado="", idPersona="";
 
 	//estado de la factura
-	String estado = (String)request.getAttribute("estado");
-	boolean abierta = false;
-	try{
-		if (estado.equalsIgnoreCase("abierta"))abierta = true;
-	}catch(Exception e){}
+	boolean hayDetalle = false;
+	try {
+		hayDetalle = ((String)request.getAttribute("hayDetalle")).equals ("1");
+	}
+	catch(Exception e) {
+		hayDetalle = false;
+	}
 
 	//campos ocultos
 	String idInstitucion ="", idFacturacion="";
@@ -132,7 +134,7 @@
 		
 			<!-- Formulario de la lista de detalle multiregistro -->
 
-<% if (abierta) { %>
+<% if (! hayDetalle) { %>
 	<br>
 	<p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.factSJCS.error.noExisteDetalleFacturacion"/></p>
 	<br>
@@ -222,7 +224,7 @@
 
 <%
 	String bot = "V";
-	if (!abierta) {
+	if (hayDetalle) {
 		bot += ",DF";
 	}
 %>

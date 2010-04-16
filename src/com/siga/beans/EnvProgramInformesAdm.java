@@ -4,6 +4,8 @@
 */
 package com.siga.beans;
  
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -139,27 +141,15 @@ public class EnvProgramInformesAdm extends MasterBeanAdministrador {
 
 		return htData;
 	}
-
-    public Integer getNewIdProgramInformes(UsrBean usr) throws ClsExceptions{
-    	return getNewIdProgramInformes(usr.getLocation());
+    public Integer getNewIdProgramInformes(String idInstitucion) throws ClsExceptions{
+    	
+        Long idEnvio = getSecuenciaNextVal(EnvProgramInformesBean.SEQ_ENV_PROGRAMINFORMES);
+        SimpleDateFormat formato = new SimpleDateFormat("yyyy");
+        return new Integer(formato.format(new Date())+idEnvio);
     }
 
-    public Integer getNewIdProgramInformes(String idInstitucion) throws ClsExceptions{
-        RowsContainer rows=new RowsContainer();
-        String sql="SELECT MAX(" + EnvProgramInformesBean.C_IDPROGRAM +
-        		") AS MAXVALOR FROM " + EnvProgramInformesBean.T_NOMBRETABLA +
-        		" WHERE " + EnvProgramInformesBean.C_IDINSTITUCION + "="+ idInstitucion;
-        int valor=1; // Si no hay registros, es el valor que tomará
-        if(rows.find(sql)){
-            Hashtable htRow=((Row)rows.get(0)).getRow();
-            // El valor devuelto será "" Si no hay registros
-            if(!((String)htRow.get("MAXVALOR")).equals("")) {
-                Integer valorInt=Integer.valueOf((String)htRow.get("MAXVALOR"));
-                valor=valorInt.intValue();
-                valor++;
-            }
-        }
-        return new Integer(valor);
+    public Integer getNewIdProgramInformes(UsrBean usrBean) throws ClsExceptions{
+    	return getNewIdProgramInformes(usrBean.getLocation());
     }
     /**
      * 

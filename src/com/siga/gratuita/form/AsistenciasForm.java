@@ -20,7 +20,7 @@ public class AsistenciasForm extends MasterForm
 			designa_anio= "", 
 			designa_numero = "", 
 			designa_turno = "", 
-			designa_idInstitucion = ""	;
+			designa_idInstitucion = "";
 
 	
 	private String modoPestanha=null;
@@ -137,12 +137,14 @@ public class AsistenciasForm extends MasterForm
 	private String comisaria = "comisaria";
 	private String juzgado = "juzgado";
 	private String idDelito = "idDelito";
+	private String acIdPrision = "acIdPrision";
+	private String acIdInstitucionPrision = "acIdInstitucionPrision";
 	private ScsAsistenciasBean asistenciaBean;
 	
 	/*
 	 * Metodos SET y GET 
 	 */
-	public void    setIdDelito          		 (String	valor)	{ this.datos.put(this.idDelito, valor);}
+	public void    setIdDelito          	 (String	valor)	{ this.datos.put(this.idDelito, valor);}
 	public void    setAsunto          		 (String	valor)	{ this.datos.put(this.asunto, valor);}
 	public void    setEstado          		 (String	valor)	{ this.datos.put(this.estado, valor);}	
 	public void    setFechaEstado      		 (String	valor)	{ this.datos.put(this.fechaEstadoAsistencia, valor);}
@@ -238,7 +240,8 @@ public class AsistenciasForm extends MasterForm
 	public void setTipoActuacion (String	valor)	{ this.datos.put("TIPOACTUACION", valor);}
 	public void setIdCosteFijo (String	valor)		{ this.datos.put("IDCOSTEFIJO", valor);}
 	public void setIdTipoActuacion (String	valor)	{ this.datos.put("IDTIPOACTUACION", valor);}
-	
+	public void setAcIdPrision (String	valor)		{ this.datos.put(this.acIdPrision, valor);}
+	public void setAcIdInstitucionPrision (String	valor)	{ this.datos.put(this.acIdInstitucionPrision, valor);}
 	
 	public String getAsunto 	            ()	{return (String)this.datos.get(this.asunto);}
 	public String getEstado 	            ()	{return (String)this.datos.get(this.estado);}
@@ -329,6 +332,8 @@ public class AsistenciasForm extends MasterForm
 	public String getAcojustificacion ()	{return (String)this.datos.get(this.acojustificacion);}
 	public String getComisaria ()			{return (String)this.datos.get(this.comisaria);}
 	public String getJuzgado ()				{return (String)this.datos.get(this.juzgado);}
+	public String getAcIdPrision ()			{return (String)this.datos.get(this.acIdPrision);}
+	public String getAcIdInstitucionPrision()	{return (String)this.datos.get(this.acIdInstitucionPrision);}
 	
 	public String getTipoActuacion ()		{return (String)this.datos.get("TIPOACTUACION");}
 	public String getIdCosteFijo ()			{return (String)this.datos.get("IDCOSTEFIJO");}
@@ -498,7 +503,4 @@ public class AsistenciasForm extends MasterForm
 	public void setAsistenciaBean(ScsAsistenciasBean asistenciaBean) {
 		this.asistenciaBean = asistenciaBean;
 	}
-	
-
-
 }

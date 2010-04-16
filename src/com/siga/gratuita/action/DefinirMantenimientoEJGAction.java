@@ -592,6 +592,9 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 			// Y por último filtramos por la clave principal de ejg
 			consulta += " ejg.idtipoejg = " + miHash.get("IDTIPOEJG") + " and ejg.idinstitucion = " + miHash.get("IDINSTITUCION") + " and ejg.anio = " + miHash.get("ANIO") + " and ejg.numero = " + miHash.get("NUMERO");
 			
+			// jbd inc-6803 Ordenamos para quedarnos solo con la mas moderna
+			consulta += " order by designa.fechaentrada desc";
+			
 			
 			// Volvemos a obtener de base de datos la información, para que se la más actúal que hay en la base de datos			
 			Vector resultado = admBean.selectGenerico(consulta);

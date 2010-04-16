@@ -14,6 +14,8 @@ public class ScsEJGBean extends MasterBean{
 	ScsPersonaJGBean solicitante;
 	ScsTipoEJGBean tipoEjg;
 	
+	private Short idEstadoEjg;
+	
 	private Integer	anio;
 	private Integer numero;
 	private String	fechaApertura;
@@ -836,4 +838,11 @@ public class ScsEJGBean extends MasterBean{
 	public void setTipoEjg(ScsTipoEJGBean tipoEjg) {
 		this.tipoEjg = tipoEjg;
 	}
+	public Short getIdEstadoEjg() {
+		return idEstadoEjg;
+	}
+	public void setIdEstadoEjg(Short idEstadoEjg) {
+		this.idEstadoEjg = idEstadoEjg;
+	}
+	
 }

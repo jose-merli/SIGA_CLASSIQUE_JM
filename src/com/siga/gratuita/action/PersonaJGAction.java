@@ -915,10 +915,20 @@ public class PersonaJGAction extends MasterAction {
 			
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 	     	PersonaJGForm miform = (PersonaJGForm)formulario;
-	     	if (request.getSession().getAttribute("DATABACKUP") == null)
-	     		request.getSession().setAttribute("DATABACKUP", new Hashtable());
-			Hashtable dataBackup = (Hashtable) request.getSession().getAttribute("DATABACKUP");
-			if (dataBackup == null) dataBackup = new Hashtable();
+	     	Object objDataBackup =  request.getSession().getAttribute("DATABACKUP");
+	     	Hashtable dataBackup = null;
+	     	if(objDataBackup!=null){
+		     	if(objDataBackup instanceof Hashtable){
+		     		dataBackup =  (Hashtable)objDataBackup;
+		     	}else{
+		     		dataBackup = new Hashtable();
+		     		request.getSession().setAttribute("DATABACKUP", dataBackup);
+		     	}
+	     	}else{
+	     		dataBackup = new Hashtable();
+	     		request.getSession().setAttribute("DATABACKUP", dataBackup);
+	     	}
+     		
 
 	     	// recupero el idpersona anterior
 	     	Hashtable hashAnt = null;
@@ -1037,27 +1047,38 @@ public class PersonaJGAction extends MasterAction {
 			
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 	     	PersonaJGForm miform = (PersonaJGForm)formulario;
+	     	String accion = request.getParameter("accionE");
 
 	     	// clave del EJG
 			String idInstitucionEJG=miform.getIdInstitucionEJG();
 			String idTipoEJG=miform.getIdTipoEJG();
 			String anioEJG=miform.getAnioEJG();
 			String numeroEJG=miform.getNumeroEJG();
-			boolean nuevaRel = false; 
+			boolean nuevaPersona = false;
 	     	// Datos Persona
 			Hashtable persona= new Hashtable();
 			ScsPersonaJGAdm perAdm = new ScsPersonaJGAdm(this.getUserBean(request));
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDINSTITUCION,user.getLocation());
-			if (miform.getNuevo().equals("1")) {
+
+			// jbd 08/04/2010 Despues de varios errores de que si se borra o no se borra, que si se actualiza ...
+			//				  y despues de analizar los diferentes casos, paso a desarrollar y documentar este
+			//				  metodo.
+			// CVS 1.3.2.5
+			
+
+			// Si tenemos el idPersona es porque ya existia la persona asi que la actualizamos,
+			// si no creamos una nueva
+			if (miform.getIdPersonaJG()!=null && !miform.getIdPersonaJG().equalsIgnoreCase("")){
 				UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPERSONA,miform.getIdPersonaJG().toString());
 			} else {
-				// obtengo el nuevo idpersona
+				nuevaPersona = true;
 				persona = perAdm.prepararInsert(persona);
 				miform.setIdPersonaJG((String)persona.get(ScsPersonaJGBean.C_IDPERSONA));
 			}
 			boolean checkSolicitante  = UtilidadesString.stringToBoolean(miform.getSolicitante());
 			
 			
+			// DATOS DE LA PERSONAJG
 			// OJO, utilizo los set, porque siempre tengo datos, aunque sean blancos, que es lo que me interesa
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_NIF,miform.getNIdentificacion().toString());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_NOMBRE,miform.getNombre());
@@ -1080,14 +1101,8 @@ public class PersonaJGAction extends MasterAction {
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_SEXO,miform.getSexo());
 		    UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDIOMA,miform.getIdioma());
 		    
-		 
 
-			ScsUnidadFamiliarEJGAdm unidadFamiliarAdm = new ScsUnidadFamiliarEJGAdm(this.getUserBean(request));
-			
-			// ATENCION!! SE IGNORA LA TABLA SCS_CONTRARIOS_EJG
-
-			// CREAR SCS_UNIDADFAMILAREJG
-			
+			// DATOS DE LA UNIDADFAMILAREJG
 			Hashtable unidadFamiliarBean = new Hashtable();
 			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_IDINSTITUCION,miform.getIdInstitucionJG());
 			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_ANIO,miform.getAnioEJG());
@@ -1097,16 +1112,6 @@ public class PersonaJGAction extends MasterAction {
 			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_OBSERVACIONES,miform.getUnidadObservaciones());
 			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_ENCALIDADDE,miform.getEnCalidadDeLibre());
 			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_IDPARENTESCO,miform.getParentesco());
-			if (miform.getConceptoE().equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {
-			if (checkSolicitante){
-				UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_SOLICITANTE,"1");
-			}else{
-				UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_SOLICITANTE,"0");
-			}
-			}else{
-				UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_SOLICITANTE,"1");
-			}
-			
 			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_TIPOINGRESO,miform.getTipoIngreso());
 			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_DESCRIPCIONINGRESOSANUALES,miform.getIngresosAnuales());
 			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_IMPORTEINGRESOSANUALES,miform.getImporteIngresosAnuales());
@@ -1117,7 +1122,17 @@ public class PersonaJGAction extends MasterAction {
 			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_OTROSBIENES,miform.getOtrosBienes());
 			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_IMPORTEOTROSBIENES,miform.getImporteOtrosBienes());						 
 			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_IMPORTEOTROSBIENES,miform.getImporteOtrosBienes());	
-			 UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_TIPOGRUPOLAB,miform.getTipoGrupoLaboral());
+			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_TIPOGRUPOLAB,miform.getTipoGrupoLaboral());
+			if (miform.getConceptoE().equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {
+				if (checkSolicitante){
+					UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_SOLICITANTE,"1");
+				}else{
+					UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_SOLICITANTE,"0");
+				}
+			}else{
+				UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_SOLICITANTE,"1");
+			}
+			
 			
 			// Comienzo control de transacciones 
 			tx = user.getTransaction();			
@@ -1125,9 +1140,10 @@ public class PersonaJGAction extends MasterAction {
 	     	
 			// recojo el databackup
 			Hashtable dataBackup = (Hashtable) request.getSession().getAttribute("DATABACKUP");
+			
 			// INSERTAR PERSONA JG SI PROCEDE
-			if (miform.getNuevo().equals("1")) {
-				// Ya existia
+			if (!nuevaPersona){
+				// YA existia
 				// Update Persona
 				Hashtable oldPer = (Hashtable) dataBackup.get(ScsPersonaJGBean.T_NOMBRETABLA);
 				if (!perAdm.update(persona, oldPer)) {
@@ -1142,7 +1158,6 @@ public class PersonaJGAction extends MasterAction {
 			}
 			
 			// RELACIONARLO CON EL EJG (UPDATE NORMAL)
-			// Si el concepto es EJG solamente
 			ScsEJGAdm admEJG = new ScsEJGAdm(this.getUserBean(request));
 			String idPersonaAnterior = "";
 			Hashtable ht = new Hashtable();
@@ -1151,21 +1166,19 @@ public class PersonaJGAction extends MasterAction {
 			ht.put(ScsEJGBean.C_ANIO,anioEJG);
 			ht.put(ScsEJGBean.C_NUMERO,numeroEJG);
 			Vector v = admEJG.selectByPK(ht);
+			// Recupero el EJG y compruebo sus datos
 			if (v!=null && v.size()>0) {
-				nuevaRel = true; 
 				ScsEJGBean beanEJG = (ScsEJGBean) v.get(0);
 				if (miform.getConceptoE().equals(PersonaJGAction.EJG)) {
 					// compruebo si ha cambiado el id persona para la relacion
-					if (beanEJG.getIdPersonaJG()!=null && !beanEJG.getIdPersonaJG().equals(new Integer(miform.getIdPersonaJG()))) {
+					if (beanEJG.getIdPersonaJG()!=null && !beanEJG.getIdPersonaJG().toString().equalsIgnoreCase("")) {
 						// guardo el idpersona anterior para buscar las relaciones y actualizarlas
 						idPersonaAnterior = beanEJG.getIdPersonaJG().toString();
-					} else {
-						// si no el que borrare sera el mismo, el actual
-						idPersonaAnterior = miform.getIdPersonaJG();
+					}else{
+						idPersonaAnterior = null;
 					}
-				} else 
-				if (miform.getConceptoE().equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {
-					// en este caso lo cojo del databackup de unidad familiar, si esxiste
+				}else if (miform.getConceptoE().equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {
+					// en este caso lo cojo del databackup de unidad familiar, si existe
 					Hashtable oldUF = (Hashtable) dataBackup.get(ScsUnidadFamiliarEJGBean.T_NOMBRETABLA);
 					if (oldUF!=null) {
 						idPersonaAnterior = (String) oldUF.get(ScsUnidadFamiliarEJGBean.C_IDPERSONA);
@@ -1182,12 +1195,16 @@ public class PersonaJGAction extends MasterAction {
 					}
 				}
 			}
+			// Hasta aqui nos hemos asegurado que la persona existe, y si es el interesado lo hemos
+			// actualizado en el EJG
 			
 			// INSERTAR O ACTUALIZAR UNIDAD FAMILIAR EJG (RELACIONADO)
 			ScsUnidadFamiliarEJGAdm ufAdm = new ScsUnidadFamiliarEJGAdm(this.getUserBean(request));
-			// Hay que actualizarla. La borro con la clave adecuada
-			// anterior para el caso de que haya cambiado
-			if (idPersonaAnterior!=null) {
+			// Si tenemos una persona anterior es porque estamos actualizando a alguien
+			// si no hay persona anterior hacemos un insert de la nueva
+			if ((idPersonaAnterior!=null)&&(!idPersonaAnterior.equalsIgnoreCase(""))) {
+
+				// Si existe una persona anterior la vamos a borrar
 				Hashtable borrar = new Hashtable();
 				borrar.put(ScsUnidadFamiliarEJGBean.C_IDINSTITUCION,miform.getIdInstitucionEJG());
 				borrar.put(ScsUnidadFamiliarEJGBean.C_IDTIPOEJG,miform.getIdTipoEJG());
@@ -1196,15 +1213,9 @@ public class PersonaJGAction extends MasterAction {
 				borrar.put(ScsUnidadFamiliarEJGBean.C_IDPERSONA,idPersonaAnterior);
 								
 				ScsDocumentacionEJGAdm scsDocumentacionEJGAdm = new ScsDocumentacionEJGAdm(getUserBean(request));
-//				scsDocumentacionEJGAdm.deleteDocumentacionPresentador(miform.getIdInstitucionEJG(), miform.getIdTipoEJG(), miform.getAnioEJG(), miform.getNumeroEJG(), idPersonaAnterior);
-//				if (!ufAdm.delete(borrar)) {
-//					//throw new ClsExceptions("Error en delete unidad familiar. " + ufAdm.getError());
-//				}
 
-				// Insert unidad familiar con los nuevos valores
-				// RGG 10/02/2009 Es posible que la persona existiera pero no tuviera unidad familiar previa. En tal caso hay que insertarla en lugar de modificarla.
-				
 				Vector vuf = ufAdm.selectByPK(unidadFamiliarBean);
+				// Comprobamos que la persona tenga una relacion existente con el ejg para actualizar o insertar/borrar
 				if (vuf!=null && vuf.size()>0) {
 				    // UPDATE
 				    if (!ufAdm.updateDirect(unidadFamiliarBean,null,ufAdm.getCamposBean())) {
@@ -1212,8 +1223,12 @@ public class PersonaJGAction extends MasterAction {
 					}
 				} else {
 				    // INSERT
+					// Insertamos el nuevo y borramos el viejo
 				    if (!ufAdm.insert(unidadFamiliarBean)) {
 						throw new ClsExceptions("Error en insert unidad familiar. " + ufAdm.getError());
+					}
+				    if (!ufAdm.delete(borrar)) {
+						throw new ClsExceptions("Error en delete unidad familiar. " + ufAdm.getError());
 					}
 				}
 			} else {
@@ -1504,7 +1519,9 @@ public class PersonaJGAction extends MasterAction {
 				UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_IDTURNO,miform.getIdTurnoDES());				
 				UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_IDPERSONA,miform.getIdPersonaJG());
 				//pdm
-				UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_IDREPRESENTANTELEGAL,miform.getRepresentante());
+				//UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_IDREPRESENTANTELEGAL,miform.getRepresentante());
+				UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_NOMBREABOGADOCONTRARIO,miform.getAbogadoContrario());
+				UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_IDABOGADOCONTRARIO,miform.getIdPersonaContrario());
 				// separar el valor del procurador y su institucion
 				if (miform.getIdProcurador()!=null && !miform.getIdProcurador().trim().equals("")) {
 					String id_proc = miform.getIdProcurador().substring(0,miform.getIdProcurador().indexOf(","));
@@ -1853,7 +1870,13 @@ public class PersonaJGAction extends MasterAction {
 					// EXISTE
 					if (miform.getAccionE().equals("editar")) {
 						// hay que comprobar si el antiguo no es el mismo, en ese caso se actualiza
-						String  idPersonaAnt = (String) dataBackup.get("idPersonaAnt");
+						String  idPersonaAnt = "";
+						Hashtable oldUF = (Hashtable) dataBackup.get(ScsContrariosAsistenciaBean.T_NOMBRETABLA);
+						if (oldUF!=null) {
+							idPersonaAnt = (String) oldUF.get(ScsContrariosAsistenciaBean.C_IDPERSONA);
+						} else {
+							idPersonaAnt = null;
+						}
 						if (idPersonaAnt!=null && idPersonaAnt.equals(miform.getIdPersonaJG())) { 
 							// estamos tocando el mismo registro, se actualiza
 							if (!adm.updateDirect(contrarioAsistenciaHash,null,null)) {
@@ -2004,6 +2027,11 @@ public class PersonaJGAction extends MasterAction {
 					UtilidadesHash.set(contrarioEjgHash,ScsContrariosEJGBean.C_IDPROCURADOR,id_proc);
 				}
 			    
+			    UtilidadesHash.set(contrarioEjgHash,ScsContrariosEJGBean.C_IDABOGADOCONTRARIOEJG,miform.getIdAbogadoContrarioEJG());
+				UtilidadesHash.set(contrarioEjgHash,ScsContrariosEJGBean.C_NOMBREABOGADOCONTRARIOEJG,miform.getAbogadoContrarioEJG());
+				
+			    UtilidadesHash.set(contrarioEjgHash,ScsContrariosEJGBean.C_IDREPRESENTANTEEJG,miform.getIdRepresentanteJG());
+				UtilidadesHash.set(contrarioEjgHash,ScsContrariosEJGBean.C_NOMBREREPRESENTANTEEJG,miform.getRepresentante());
 			
 			// Comienzo control de transacciones 
 			tx = user.getTransaction();			
@@ -2422,8 +2450,38 @@ public class PersonaJGAction extends MasterAction {
 							UtilidadesHash.setForCompare(hash, ScsContrariosEJGBean.C_OBSERVACIONES,ufBean.getObservaciones());
 							UtilidadesHash.setForCompare(hash, ScsContrariosEJGBean.C_USUMODIFICACION,ufBean.getUsuMod());
 							UtilidadesHash.setForCompare(hash, ScsContrariosEJGBean.C_IDINSTITUCION_PROCU,ufBean.getIdInstitucionProcurador());
-							UtilidadesHash.setForCompare(hash, ScsContrariosEJGBean.C_IDPROCURADOR,ufBean.getIdProcurador());																	
+							UtilidadesHash.setForCompare(hash, ScsContrariosEJGBean.C_IDPROCURADOR,ufBean.getIdProcurador());	
+							UtilidadesHash.setForCompare(hash, ScsContrariosEJGBean.C_IDABOGADOCONTRARIOEJG,ufBean.getIdAbogadoContrarioEjg());
+							UtilidadesHash.setForCompare(hash, ScsContrariosEJGBean.C_NOMBREABOGADOCONTRARIOEJG,ufBean.getNombreAbogadoContrarioEjg());
+							UtilidadesHash.setForCompare(hash, ScsContrariosEJGBean.C_IDREPRESENTANTEEJG,ufBean.getIdRepresentanteEjg());
+							UtilidadesHash.setForCompare(hash, ScsContrariosEJGBean.C_NOMBREREPRESENTANTEEJG,ufBean.getNombreRepresentanteEjg());
+							UtilidadesHash.setForCompare(hash, ScsContrariosEJGBean.C_IDREPRESENTANTEEJG,ufBean.getIdRepresentanteEjg());
+							UtilidadesHash.setForCompare(hash, ScsContrariosEJGBean.C_NOMBREREPRESENTANTEEJG,ufBean.getNombreRepresentanteEjg());							
 							dataBackup.put(ScsContrariosEJGBean.T_NOMBRETABLA,hash);						
+							
+							
+							if (ufBean.getIdAbogadoContrarioEjg()!=null && !ufBean.getIdAbogadoContrarioEjg().equals("")) {								
+								miform.setIdAbogadoContrarioEJG(ufBean.getIdAbogadoContrarioEjg());
+								Vector numeroColegiado = new Vector();
+								ScsContrariosEJGAdm contrariosEjgAdm = new ScsContrariosEJGAdm(this.getUserBean(request));
+								numeroColegiado= contrariosEjgAdm.selectGenerico(contrariosEjgAdm.getNcolegiadoAbogado(ufBean.getIdAbogadoContrarioEjg()));
+								if (numeroColegiado.size()>0){
+									String numeroColegiadoAbogado= UtilidadesHash.getString((Hashtable)numeroColegiado.get(0),"NCOLEGIADOABOGADO");										
+									miform.setNcolegiadoContrario(numeroColegiadoAbogado);
+								}
+							}else{
+							    miform.setIdAbogadoContrarioEJG("");
+							    miform.setNcolegiadoContrario(" ");
+							    }	
+							
+							if (ufBean.getNombreAbogadoContrarioEjg()!=null && !ufBean.getNombreAbogadoContrarioEjg().equals("")) {								
+									miform.setAbogadoContrarioEJG(ufBean.getNombreAbogadoContrarioEjg());
+							}else{
+							     miform.setAbogadoContrarioEJG("");
+							    }
+							
+							miform.setIdRepresentanteJG(ufBean.getIdRepresentanteEjg());
+							miform.setRepresentante(ufBean.getNombreRepresentanteEjg());
 							
 							
 							miform.setObservaciones(ufBean.getObservaciones());
@@ -2498,7 +2556,9 @@ public class PersonaJGAction extends MasterAction {
 								UtilidadesHash.setForCompare(hash, ScsContrariosDesignaBean.C_IDPERSONA,ufBean.getIdPersona());
 								UtilidadesHash.setForCompare(hash, ScsContrariosDesignaBean.C_USUMODIFICACION,ufBean.getUsuMod());
 								UtilidadesHash.setForCompare(hash, ScsContrariosDesignaBean.C_IDINSTITUCIONPROCURADOR,ufBean.getIdInstitucionProcurador());
-								UtilidadesHash.setForCompare(hash, ScsContrariosDesignaBean.C_IDPROCURADOR,ufBean.getIdProcurador());																	
+								UtilidadesHash.setForCompare(hash, ScsContrariosDesignaBean.C_IDPROCURADOR,ufBean.getIdProcurador());
+								UtilidadesHash.setForCompare(hash, ScsContrariosDesignaBean.C_NOMBREABOGADOCONTRARIO,ufBean.getnombreAbogadoContrario());	
+								UtilidadesHash.setForCompare(hash, ScsContrariosDesignaBean.C_IDABOGADOCONTRARIO,ufBean.getIdAbogadoContrario());	
 								dataBackup.put(ScsContrariosDesignaBean.T_NOMBRETABLA,hash);						
 								
 								
@@ -2510,8 +2570,33 @@ public class PersonaJGAction extends MasterAction {
 								if (ufBean.getIdRepresentanteLegal()!=null && !ufBean.getIdRepresentanteLegal().equals("")) {
 									CenPersonaAdm adm = new CenPersonaAdm(this.getUserBean(request));
 									miform.setRepresentante(adm.obtenerNombreApellidos(ufBean.getIdRepresentanteLegal()));
+									Vector nColegiadoRepresentante = new Vector();
+									ScsContrariosDesignaAdm AbogadoReresententeAdm = new ScsContrariosDesignaAdm (this.getUserBean(request));									
+									nColegiadoRepresentante= AbogadoReresententeAdm.selectGenerico(AbogadoReresententeAdm.getNcolegiadoRepresentante(ufBean.getIdRepresentanteLegal()));
+									if (nColegiadoRepresentante.size()>0){
+										String numeroColegiadoRepresentante= UtilidadesHash.getString((Hashtable)nColegiadoRepresentante.get(0),"NCOLEGIADOABOGADO");										
+										miform.setNcolegiadoRepresentante(numeroColegiadoRepresentante);
+									}
 								} else {
-									miform.setRepresentante(ufBean.getNombreRepresentante());
+										miform.setRepresentante(" ");
+										miform.setNcolegiadoRepresentante("");
+									  }
+									
+								if (ufBean.getIdAbogadoContrario()!=null && !ufBean.getIdAbogadoContrario().equals("")) {
+									CenPersonaAdm adm = new CenPersonaAdm(this.getUserBean(request));
+									miform.setAbogadoContrario(adm.obtenerNombreApellidos(ufBean.getIdAbogadoContrario()));
+									miform.setIdPersonaContrario(ufBean.getIdAbogadoContrario());
+									Vector numeroColegiado = new Vector();
+									ScsContrariosEJGAdm contrariosEjgAdm = new ScsContrariosEJGAdm(this.getUserBean(request));
+									numeroColegiado= contrariosEjgAdm.selectGenerico(contrariosEjgAdm.getNcolegiadoAbogado(ufBean.getIdAbogadoContrario()));
+									if (numeroColegiado.size()>0){
+										String numeroColegiadoAbogado= UtilidadesHash.getString((Hashtable)numeroColegiado.get(0),"NCOLEGIADOABOGADO");										
+										miform.setNcolegiadoContrario(numeroColegiadoAbogado);
+									}									
+								} else {
+									miform.setAbogadoContrario("");
+									miform.setNcolegiadoContrario(" ");
+									miform.setIdPersonaContrario("");
 								}
 							} else {
 								dataBackup.remove(ScsContrariosDesignaBean.T_NOMBRETABLA);
@@ -2659,6 +2744,7 @@ public class PersonaJGAction extends MasterAction {
 								UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_ENCALIDADDE,perBean.getEnCalidadDe());
 								UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_OBSERVACIONES,perBean.getObservaciones());
 								UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDREPRESENTANTEJG,perBean.getIdRepresentanteJG());		
+								
 								
 								idRepresentanteJG=perBean.getIdRepresentanteJG();
 								// cuando viene de personaJG hay que guardarlo en otro sitio en el databackup

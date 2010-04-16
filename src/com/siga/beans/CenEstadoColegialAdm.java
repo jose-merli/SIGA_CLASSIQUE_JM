@@ -151,7 +151,7 @@ public class CenEstadoColegialAdm extends MasterBeanAdministrador {
 			sql.append(" select d.idestado ,f_siga_getrecurso(e.descripcion,:");
 			sql.append(keyContador);
 			sql.append(") ESTADO_COLEGIAL ");
-			
+			sql.append(", TO_CHAR(d.fechaestado, 'dd-mm-yyyy') FECHA_ESTADO_COLEGIAL ");
 			sql.append(" from cen_datoscolegialesestado d,cen_estadocolegial e ");
 			sql.append(" where d.idestado = e.idestado ");
 			keyContador++;

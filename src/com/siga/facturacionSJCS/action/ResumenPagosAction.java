@@ -144,16 +144,21 @@ public class ResumenPagosAction extends MasterAction{
 		return "abrir";
 	}
 	
-	private String descargaFicheros(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException{
+	private String descargaFicheros (ActionMapping mapping,
+									 MasterForm formulario,
+									 HttpServletRequest request,
+									 HttpServletResponse response)
+	throws SIGAException
+	{
 		String result = "error";
 		UsrBean user = this.getUserBean(request);
+		
 		try {
 			ResumenPagosForm miForm = (ResumenPagosForm) formulario;
-			StringTokenizer st = new StringTokenizer(miForm.getFacturacion(),",");
+			StringTokenizer st = new StringTokenizer(miForm.getFacturacion(), ",");
 			String [] valor = new String[2];
 			int i=0;
-			while(st.hasMoreTokens())
-			{
+			while (st.hasMoreTokens()) {
 				valor[i] = (String)st.nextElement();
 				i++;
 			}
@@ -161,48 +166,16 @@ public class ResumenPagosAction extends MasterAction{
 			miForm.setPago(miForm.getPago());
 			Long idPersona = miForm.getIdPersona();
 			miForm.setIdPersona(idPersona);
-			Hashtable nombresFichero = UtilidadesFacturacionSJCS.getNombreFicherosPago(new Integer(user.getLocation()), new Integer(miForm.getFacturacion()), new Integer(miForm.getPago()), idPersona, user);
-			
-			GenParametrosAdm paramAdm = new GenParametrosAdm(user);
-			String pathFichero = paramAdm.getValor("" + user.getLocation(), "FCS", "PATH_PREVISIONES_BD", null);
 			
 			// Llamada a los pl's que exportan los ficheros de turnos de oficio, guardias, soj y ejg
-			
-			// TURNOS DE OFICIO
-			String nombreFichero = UtilidadesHash.getString(nombresFichero, "" + ClsConstants.HITO_GENERAL_TURNO);
-			String cabecera = UtilidadesFacturacionSJCS.getCabecerasFicheros(ClsConstants.HITO_GENERAL_TURNO, ClsConstants.PAGOS_SJCS,user);
-			String resultadoPl[] = EjecucionPLs.ejecutarPLExportarTurnosOficio(user.getLocation(),miForm.getFacturacion(),miForm.getPago(), String.valueOf(idPersona), pathFichero, nombreFichero,cabecera,user.getLanguageInstitucion());
-			if(!resultadoPl[0].equals("0"))
-				throw new ClsExceptions("Error al ejecutar el pl PROC_FCS_EXPORTAR_TURNOS_OFI :"+ resultadoPl[1]);
-			
-			// GUARDIAS
-			nombreFichero = UtilidadesHash.getString(nombresFichero, "" + ClsConstants.HITO_GENERAL_GUARDIA);
-			cabecera = UtilidadesFacturacionSJCS.getCabecerasFicheros(ClsConstants.HITO_GENERAL_GUARDIA, ClsConstants.PAGOS_SJCS,user);
-			String resultadoPl2[] = EjecucionPLs.ejecutarPLExportarGuardias(idPersona.toString(), user.getLocation(),miForm.getFacturacion(), miForm.getPago(), pathFichero, nombreFichero,cabecera, user.getLanguageInstitucion());
-			if(!resultadoPl2[0].equals("0"))
-				throw new ClsExceptions("Error al ejecutar el pl PROC_FCS_EXPORTAR_GUARDIAS :"+ resultadoPl2[1]);
-			
-			//SOJ
-			nombreFichero = UtilidadesHash.getString(nombresFichero, "" + ClsConstants.HITO_GENERAL_SOJ);
-			cabecera = UtilidadesFacturacionSJCS.getCabecerasFicheros(ClsConstants.HITO_GENERAL_SOJ, ClsConstants.PAGOS_SJCS,user);
-			String resultadoPl3[] = EjecucionPLs.ejecutarPLExportarSoj(user.getLocation(),miForm.getFacturacion(),miForm.getPago(), String.valueOf(idPersona), pathFichero, nombreFichero,cabecera);
-			if(!resultadoPl3[0].equals("0"))
-				throw new ClsExceptions("Error al ejecutar el pl PROC_FCS_EXPORTAR_SOJ :"+ resultadoPl3[1]);
-			
-			//EJG
-			nombreFichero = UtilidadesHash.getString(nombresFichero, "" + ClsConstants.HITO_GENERAL_EJG);
-			cabecera = UtilidadesFacturacionSJCS.getCabecerasFicheros(ClsConstants.HITO_GENERAL_EJG, ClsConstants.PAGOS_SJCS,user);
-			String resultadoPl4[] = EjecucionPLs.ejecutarPLExportarEjg(user.getLocation(),miForm.getFacturacion(),miForm.getPago(), String.valueOf(idPersona), pathFichero, nombreFichero,cabecera);
-			if(!resultadoPl4[0].equals("0"))
-				throw new ClsExceptions("Error al ejecutar el pl PROC_FCS_EXPORTAR_EJG :"+ resultadoPl4[1]);
-			
+			UtilidadesFacturacionSJCS.exportarDatosPagos(new Integer(user.getLocation()), new Integer(miForm.getFacturacion()), new Integer(miForm.getPago()), idPersona, user);
 			
 			result = "onLoadDescargas";
-		 } 	
-		 catch (Exception e) {
+		} 	
+		catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null);
-	   	 }
-		 return result;
+	   	}
+		return result;
 	}
 			
 	private String onloadDescargaFicheros(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException{

@@ -24,6 +24,7 @@ import com.lowagie.text.pdf.PdfSignatureAppearance;
 import com.lowagie.text.pdf.PdfStamper;
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmLenguajesAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.eejg.ScsEejgXmlAdm;
@@ -67,7 +68,7 @@ public class InformeEejg extends MasterReport
 					fecha = fecha.replaceAll(" ","_");
 					lNumEjg = new ArrayList<String>();
 					file2zip = new ArrayList<File>();
-					
+					numEjg = UtilidadesString.replaceAllIgnoreCase(numEjg, "/", "-");
 					nombreZip = "eejg"+ "_" + idInstitucion + "_" +numEjg + "_" + fecha;
 					if(!lNumEjg.contains(numEjg)){
 						lNumEjg.add(numEjg);
@@ -80,9 +81,14 @@ public class InformeEejg extends MasterReport
 			
 		}
 		if(file2zip!=null){
+			ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			String directorioEspecificoInforme = rp.returnProperty("sjcs.directorioPlantillaInformeEejg");
+			String directorioSalida = rp.returnProperty("sjcs.directorioFisicoSalidaInformeEejg");
 			if(lNumEjg.size()>1)
 				nombreZip = "eejg"+ "_" + idInstitucion + "_"+ fecha;
-			File zip = MasterReport.doZip(file2zip, nombreZip);
+			
+			String rutaZip = directorioSalida    + directorioEspecificoInforme + ClsConstants.FILE_SEP + idInstitucion+ ClsConstants.FILE_SEP+nombreZip;
+			File zip = MasterReport.doZip(file2zip, rutaZip);
 			return zip;
 		}else{
 			return file;
@@ -132,7 +138,11 @@ public class InformeEejg extends MasterReport
 			// Directorios y nombres de trabajo
 			String plantillaNombre = "InformeEejg_"   + idiomaExt + ".xsl";
 			String plantillaRuta   = directorioPlantillas + directorioEspecificoInforme + ClsConstants.FILE_SEP + idInstitucion;
-			String pdfNombre       = "eejg"+"_" + idInstitucion +"_"+mapParameters.get("numEjg")+ "_"+mapParameters.get("idPersonaJG") + "_" + fecha+".pdf";
+			String numEjg = mapParameters.get("numEjg");
+			String numEjgListado = UtilidadesString.replaceAllIgnoreCase(numEjg, "-", "/");
+			mapParameters.put("numEjg", numEjgListado);
+			
+			String pdfNombre       = "eejg"+"_" + idInstitucion +"_"+numEjg+ "_"+mapParameters.get("idPersonaJG") + "_" + fecha+".pdf";
 			String pdfRuta         = directorioSalida    + directorioEspecificoInforme + ClsConstants.FILE_SEP + idInstitucion;
 			
 			File rutaPDF = new File(pdfRuta);

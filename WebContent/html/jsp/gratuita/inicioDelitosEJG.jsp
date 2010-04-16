@@ -137,24 +137,29 @@
 	boolean obligatorioNumProcedimiento = false;
 	boolean obligatorioProcurador = false;
 	boolean validarProcedimiento = false;
+	boolean obligatorioPretension = false;
+	
 	if (pcajgActivo==1){
 		
 	}else if (pcajgActivo==2){
 		obligatorioPreceptivo = true;
+		obligatorioPretension = true;
 	}else if (pcajgActivo==3){
 		obligatorioPreceptivo = true;
+		obligatorioPretension = true;
 	}else if (pcajgActivo==4){
 		validarProcedimiento = true;
 	}else if (pcajgActivo==5){
 		validarProcedimiento = true;
-		obligatorioNumProcedimiento = true;
+		obligatorioPretension = true;
 	}
 %>
 
 <%@page import="java.util.Properties"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Hashtable"%>
-<html>
+
+<%@page import="utils.system"%><html>
 
 <!-- HEAD -->
 <head>
@@ -173,7 +178,7 @@
 	
 </head>
 
-<body onload="refrescarLocal()">
+<body onload="refrescarLocal();ajusteAlto('resultado1');">
 	
 		<table class="tablaTitulo" cellspacing="0" heigth="38">
 
@@ -260,14 +265,26 @@
 								<%=asterisco %> 
 							<%}%>		
 					    </td> 
-						<td colspan="20" >
+						<td colspan="8">
 						 <%if(modopestanha.equals("editar")){%>
 						 
 							<siga:ComboBD nombre="preceptivo2" tipo="comboPreceptivo" ancho="250" clase="<%=estiloCombo%>" filasMostrar="1"  seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=preceptivoSel%>"  readonly="false"/> 
 						 <%}else{%>
 							<siga:ComboBD nombre="preceptivo2" tipo="comboPreceptivo" ancho="250" clase="boxConsulta" filasMostrar="1"  seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=preceptivoSel%>"  readonly="true"/>          	   
 						 <%}%>						
+						</td>					
+						<td  class="labelText" colspan="4">
+						   <siga:Idioma key='gratuita.operarEJG.literal.situacion'/>
+					    </td> 
+						<td colspan="8" >
+						 <%if(modopestanha.equals("editar")){%>
+						 
+							<siga:ComboBD nombre="situacion" tipo="comboSituacion" ancho="250" clase="<%=estiloCombo%>" filasMostrar="1"  seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=situacionSel%>"  readonly="false"/> 
+						 <%}else{%>
+							<siga:ComboBD nombre="situacion" tipo="comboSituacion" ancho="250" clase="boxConsulta" filasMostrar="1"  seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=situacionSel%>"  readonly="true"/>          	   
+						 <%}%>						
 						</td>
+						
 					 </tr>
 					 
 					<tr>
@@ -354,7 +371,10 @@
 						
 						</td>	
 						<td colspan="4" class="labelText">	
-							<siga:Idioma key='gratuita.actuacionesDesigna.literal.pretensiones'/><%=asterisco%>
+							<siga:Idioma key='gratuita.actuacionesDesigna.literal.pretensiones'/>							
+							<%if (obligatorioPretension) {%>
+								<%=asterisco %> 
+							<%}%>	
 						</td>	
 						<td  colspan="8">
 							<%if(modopestanha.equals("editar")){%>
@@ -364,20 +384,7 @@
 							<%}%>
 						</td>
 					</tr>
-					<tr>
-						<td colspan="11"></td>
-						<td  class="labelText" colspan="4">
-						   <siga:Idioma key='gratuita.operarEJG.literal.situacion'/>
-					    </td> 
-						<td colspan="8" >
-						 <%if(modopestanha.equals("editar")){%>
-						 
-							<siga:ComboBD nombre="situacion" tipo="comboSituacion" ancho="250" clase="<%=estiloCombo%>" filasMostrar="1"  seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=situacionSel%>"  readonly="false"/> 
-						 <%}else{%>
-							<siga:ComboBD nombre="situacion" tipo="comboSituacion" ancho="250" clase="boxConsulta" filasMostrar="1"  seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=situacionSel%>"  readonly="true"/>          	   
-						 <%}%>						
-						</td>
-					 </tr>
+					
 					<tr>
 						<td colspan="23"> 
 							<siga:ConjCampos leyenda="gratuita.datosProcurador.literal.procurador">
@@ -446,11 +453,6 @@
 
 
 	<!-- INICIO: IFRAME LISTA RESULTADOS -->
-<table border="0" width="100%"  height="52%">
-<tr >
-
-<td width="50%" > 
-
 
 <iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
 					id="resultado"
@@ -459,12 +461,12 @@
 					frameborder="0"
 					marginheight="0"
 					marginwidth="0";					 
-					class="frameGeneral"
-					style="width:100%; height:100%;"	>
-	</iframe>
+					class="frameGeneral"					
+					style="position:relative;height:20%;width:100%;"	
+					>
+</iframe>
 
-</td>
-<td width="50%" >
+
 <iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
 					id="resultado1"
 					name="resultado1" 
@@ -473,11 +475,10 @@
 					marginheight="0"
 					marginwidth="0";					 
 					class="frameGeneral"
-					style="width:100%; height:100%;">
+					style="position:relative;width:100%;"
+						>
 	</iframe>
-</td>		
-</tr>
-</table>
+
 	
 	
 	<!-- FIN: IFRAME LISTA RESULTADOS -->
@@ -487,18 +488,19 @@
 	<!-- INICIO: SCRIPTS BOTONES ACCION -->
 	<script language="JavaScript">
 
-		<!-- Funcion asociada a boton buscar -->
+		// Funcion asociada a boton buscar
 		function refrescarLocal() 
 		{ 
 			document.forms[0].target = 'resultado';		
 			document.forms[0].modo.value = "buscar";
 			document.forms[0].submit();
+			 
 				
 		    document.forms[3].target = 'resultado1';		
 			document.forms[3].modo.value = "";
 			document.forms[3].submit();
        }
-		<!-- Funcion asociada a boton Nuevo -->
+		// Funcion asociada a boton Nuevo 
 		/*function accionNuevo() 
 		{		
 			document.forms[0].modo.value = "nuevo";
@@ -507,7 +509,7 @@
 				refrescarLocal();
 		}*/
 		
-		<!-- Asociada al boton Volver -->
+		// Asociada al boton Volver 
 		function accionVolver()
 		{
 			document.forms[0].action="./JGR_EJG.do";	
@@ -525,7 +527,7 @@
 					error += "<siga:Idioma key='errors.required' arg0='gratuita.operarEJG.literal.Preceptivo'/>"+ '\n';
 				if (<%=obligatorioNumProcedimiento%> && document.getElementById("numeroProcedimiento2").value=="")
 					error += "<siga:Idioma key='errors.required' arg0='gratuita.mantAsistencias.literal.numeroProced'/>"+ '\n';
-				if (document.getElementById("pretensiones2").value=="")
+				if ( <%=obligatorioPretension%> && document.getElementById("pretensiones2").value=="")
 					error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesDesigna.literal.pretensiones'/>"+ '\n';
 				if (<%=obligatorioProcurador%> && document.getElementById("nColegiadoProcurador").value=="")
 					error += "<siga:Idioma key='errors.required' arg0='gratuita.datosProcurador.literal.procurador'/>"+ '\n';
@@ -583,13 +585,12 @@
 			document.getElementById("procurador").value = '';
 			document.getElementById("fechaProc1").value = '';
 			
-			
 				
 		
 		
 		}
 
-		<!-- Valida el numero de procedimiento (n/aaaa) -->
+		// <!-- Valida el numero de procedimiento (n/aaaa) -->
 		function validaProcedimiento( strValue ) 
 		{
 			var objRegExp  = /^([0-9]+\/[0-9]{4})?$/;
@@ -637,9 +638,11 @@
 		function traspasoDatos(resultado){
 		  seleccionComboSiga("juzgado",resultado[0]);
 		}	
+		
 		function traspasoDatosComisaria(resultado){
 		 seleccionComboSiga("comisaria",resultado[0]);
-		}		
+		}
+				
 	</script>
 	<!-- FIN: SCRIPTS BOTONES ACCION -->
 	

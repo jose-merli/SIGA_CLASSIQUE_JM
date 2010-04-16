@@ -21,6 +21,7 @@ import com.siga.beans.ScsContrariosDesignaBean;
 import com.siga.beans.ScsDesignaBean;
 import com.siga.beans.ScsPersonaJGAdm;
 import com.siga.beans.ScsPersonaJGBean;
+import com.siga.beans.ScsProcuradorBean;
 import com.siga.beans.ScsTelefonosPersonaBean;
 import com.siga.beans.ScsTelefonosPersonaJGAdm;
 import com.siga.beans.ScsTelefonosPersonaJGBean;
@@ -95,7 +96,11 @@ public class ContrariosDesignasAction extends MasterAction {
 		}
 		
 		ScsContrariosDesignaAdm contrariosAdm = new ScsContrariosDesignaAdm(this.getUserBean(request));
-		String consultaContrarios = " select def.idpersona idpersona, per.nif nif, (per.nombre||' '|| per.apellido1 ||' '|| per.apellido2) nombre, def.nombrerepresentante representante"+
+		String consultaContrarios = " select def.idpersona idpersona, per.nif nif, (per.nombre||' '|| per.apellido1 ||' '|| per.apellido2) nombre, def.nombrerepresentante representante,"+
+		 							" def.idabogadocontrario, def.nombreabogadocontrario,"+
+		 							"(select  pro.nombre || ' ' || pro.apellidos1 || ' ' || pro.apellidos2  from "+ ScsProcuradorBean.T_NOMBRETABLA+  " pro"+
+		 								" where  pro."+ScsProcuradorBean.C_IDINSTITUCION+"= def."+ScsContrariosDesignaBean.C_IDINSTITUCIONPROCURADOR+
+		 								" and pro."+ScsProcuradorBean.C_IDPROCURADOR+"= def."+ScsContrariosDesignaBean.C_IDPROCURADOR+") PROCURADOR"+
 									" from "+ScsContrariosDesignaBean.T_NOMBRETABLA+" def, scs_personajg per "+
 									" where def." + ScsContrariosDesignaBean.C_ANIO +"="+ ((hayDatos)?(String)request.getParameter("ANIO"):anio)+
 									" and def." + ScsContrariosDesignaBean.C_NUMERO + " = " + ((hayDatos)?(String)request.getParameter("NUMERO"):numero)+
@@ -423,6 +428,7 @@ public class ContrariosDesignasAction extends MasterAction {
 			request.getSession().removeAttribute("DATABACKUP");
 			
 			String consultaPersona = " where idinstitucion="+(String)usr.getLocation()+" and idpersona="+(String)hashBkp.get("IDPERSONA")+" ";
+			
 			
 			String consultaContrario = " where "+ScsContrariosDesignaBean.C_IDINSTITUCION +"="+ (String)usr.getLocation()+
 										" and anio ="+(String)designaActual.get("ANIO")+

@@ -37,6 +37,12 @@ public class InformeCertificadosEspeciales extends MasterReport
 		idioma = usuario.getLanguage();
 	}
 
+
+	public InformeCertificadosEspeciales() {
+
+	}
+
+
 	protected String reemplazarDatos(HttpServletRequest request, String plantillaFO, Hashtable datosBase) throws ClsExceptions, SIGAException 
 	{
 		String institucion = this.getUsuario().getLocation();
@@ -124,6 +130,7 @@ public class InformeCertificadosEspeciales extends MasterReport
 		
 		String apellido1 =UtilidadesHash.getString(registro,"APELLIDO1");
 		String apellido2 = UtilidadesHash.getString(registro,"APELLIDO2");
+		String o_a = UtilidadesHash.getString(registro,"O_A");
 		String SITUACIONRESIDENTE = UtilidadesHash.getString(registro,"RESIDENTE");
 		String nif = UtilidadesHash.getString(registro,"CIFNIF");
 		String fechaEmisionCert = UtilidadesHash.getString(registro,"FECHAEMISIONCERTIFICADO");
@@ -136,12 +143,11 @@ public class InformeCertificadosEspeciales extends MasterReport
 		String valor6 = UtilidadesHash.getString(registro,"VALOR6");
 		
 		
-		
-		
 		UtilidadesHash.set(hDatosFijos, "CIFNIF", nif);
 		UtilidadesHash.set(hDatosFijos, "NOMBRE", nombre);
 		UtilidadesHash.set(hDatosFijos, "APELLIDO1", apellido1);
 		UtilidadesHash.set(hDatosFijos, "APELLIDO2", apellido2);
+		UtilidadesHash.set(hDatosFijos, "O_A", o_a);
 		UtilidadesHash.set(hDatosFijos, "FECHAEMISIONCERTIFICADO", fechaEmisionCert);
 		UtilidadesHash.set(hDatosFijos, "RESIDENTE", SITUACIONRESIDENTE);
 		UtilidadesHash.set(hDatosFijos, "FECHAINCORPORACION", fechaIncorporacionCert);
@@ -440,79 +446,83 @@ public class InformeCertificadosEspeciales extends MasterReport
 
 	}
 
-	
+	public String getSqlCamposGeneral(){
+		return getSqlCamposGeneral(null) + getSqlFromGeneral() + getSqlWhereGeneral();
+	}
 	public String getSqlCamposGeneral(String tipoCert){
-		String sql="";
-		 sql=" SELECT SYSDATE AS FECHAACTUAL, "+
-			    " f_siga_getrecurso(t.DESCRIPCION, @idioma@) as TRATAMIENTO, "+
-				  " p.nifcif AS CIFNIF, "+
-				  " p.nombre AS NOMBRE,"+
-				  "	p.apellidos1 AS APELLIDO1,"+
-				  "	p.apellidos2 AS APELLIDO2,"+
-				  "	s.FECHAEMISIONCERTIFICADO,"+
-				  " f_siga_getrecurso_etiqueta(decode(l.SITUACIONRESIDENTE,1,'censo.consultaDatosColegiales.literal.residente','censo.consultaDatosColegiales.literal.noResidente'),@IDIOMA@) as RESIDENTE,"+
-				  " (SELECT nombre"+
-				  " FROM CEN_INSTITUCION"+
-			    " WHERE IDINSTITUCION = s.idinstitucionorigen) as INSTITUCIONORIGEN,"+
-			    " (SELECT nombre"+
-			    " FROM CEN_INSTITUCION"+
-			    " WHERE IDINSTITUCION = s.idinstituciondestino) as INSTITUCIONDESTINO,"+
-				  "	S.PREFIJO_CER,"+
-				  " S.CONTADOR_CER,"+
-				  " S.SUFIJO_CER,"+
-			    " s.ppn_idtipoproducto as idtipopro, "+
-			    " s.ppn_idproducto as idpro, "+
-			    " s.ppn_idproductoinstitucion as idproinsti, "+
-				  " l.fechapresentacion as FECHAPRESENTACION,"+
-				  " l.fechaincorporacion as FECHAINCORPORACION,"+
-				  " decode(l.comunitario, 1, l.ncomunitario, l.ncolegiado) AS NCOLEGIADO,"+
-				  " (SELECT f_siga_getrecurso(DESCRIPCION, @idioma@) as DESCRIPCION"+
-			    "  FROM CEN_TIPOIDENTIFICACION"+
-			    "  WHERE IDTIPOIDENTIFICACION = p.Idtipoidentificacion) AS TIPOIDENTIFICACION,"+
-			    " P.NATURALDE AS NATURALDE, ";
-			if (!tipoCert.equals(Certificado.CERT_TIPO_DESPACHO1)&&!tipoCert.equals(Certificado.CERT_TIPO_DESPACHO2)){	
-			  sql+=  "  F_SIGA_GETDIRECCIONDESPACHO(@idinstitucion@, " +
-                " 					@idpersona@, " +
-                "                   @idioma@, " +
-                "                   null) AS DIRECCION_DESPACHO, " +
-		       "F_SIGA_GETDIRECCIONDESPACHO(@idinstitucion@, " +
-		       "                            @idpersona@, " +
-		       "                            @idioma@, " +
-		       "                            1) AS DOMICILIO_DESPACHO, " +
-		       "F_SIGA_GETDIRECCIONDESPACHO(@idinstitucion@, " +
-		       "                            @idpersona@, " +
-		       "                            @idioma@, " +
-		       "                            2) AS CODIGOPOSTAL_DESPACHO, " +
-		       "F_SIGA_GETDIRECCIONDESPACHO(@idinstitucion@, " +
-		       "                            @idpersona@, " +
-		       "                            @idioma@, " +
-		       "                            3) AS POBLACION_DESPACHO, " +
-		       "F_SIGA_GETDIRECCIONDESPACHO(@idinstitucion@, " +
-		       "                            @idpersona@, " +
-		       "                            @idioma@, " +
-		       "                            4) AS PROVINCIA_DESPACHO, " +
-		       "F_SIGA_GETDIRECCIONDESPACHO(@idinstitucion@, " +
-		       "                            @idpersona@, " +
-		       "                            @idioma@, " +
-		       "                            5) AS PAIS_DESPACHO, " +
-		       "s.comentario AS OBSERVACIONES, " +
-		       "F_SIGA_GETDIRECCIONDESPACHO(@idinstitucion@, " +
-		       "                            @idpersona@, " +
-		       "                            @idioma@, " +
-		       "                            6) AS TELEFONO_DESPACHO, " +
-		       "F_SIGA_GETDIRECCIONDESPACHO(@idinstitucion@, " +
-		       "                            @idpersona@, " +
-		       "                            @idioma@, " +
-		       "                            7) AS MOVIL_DESPACHO, " +
-		       "F_SIGA_GETDIRECCIONDESPACHO(@idinstitucion@, " +
-		       "                            @idpersona@, " +
-		       "                            @idioma@, " +
-		       "                            8) AS F_DESPACHO, " ;
+		StringBuffer sql= new StringBuffer();
+		sql.append(" SELECT SYSDATE AS FECHAACTUAL, ");
+		sql.append(" f_siga_getrecurso(t.DESCRIPCION, @idioma@) as TRATAMIENTO, ");
+		sql.append(" p.nifcif AS CIFNIF, ");
+		sql.append(" p.nombre AS NOMBRE,");
+		sql.append("	p.apellidos1 AS APELLIDO1,");
+		sql.append("	p.apellidos2 AS APELLIDO2,");
+		sql.append("	decode(p.sexo,'H','o','a') as O_A,");
+		sql.append("	s.FECHAEMISIONCERTIFICADO,");
+		sql.append(" f_siga_getrecurso_etiqueta(decode(l.SITUACIONRESIDENTE,1,'censo.consultaDatosColegiales.literal.residente','censo.consultaDatosColegiales.literal.noResidente'),@IDIOMA@) as RESIDENTE,");
+		sql.append(" (SELECT nombre");
+		sql.append(" FROM CEN_INSTITUCION");
+		sql.append(" WHERE IDINSTITUCION = s.idinstitucionorigen) as INSTITUCIONORIGEN,");
+		sql.append(" (SELECT nombre");
+		sql.append(" FROM CEN_INSTITUCION");
+		sql.append(" WHERE IDINSTITUCION = s.idinstituciondestino) as INSTITUCIONDESTINO,");
+		sql.append("	S.PREFIJO_CER,");
+		sql.append(" S.CONTADOR_CER,");
+		sql.append(" S.SUFIJO_CER,");
+		sql.append(" s.ppn_idtipoproducto as idtipopro, ");
+		sql.append(" s.ppn_idproducto as idpro, ");
+		sql.append(" s.ppn_idproductoinstitucion as idproinsti, ");
+		sql.append(" l.fechapresentacion as FECHAPRESENTACION,");
+		sql.append(" l.fechaincorporacion as FECHAINCORPORACION,");
+		sql.append(" decode(l.comunitario, 1, l.ncomunitario, l.ncolegiado) AS NCOLEGIADO,");
+		sql.append(" (SELECT f_siga_getrecurso(DESCRIPCION, @idioma@) as DESCRIPCION");
+		sql.append("  FROM CEN_TIPOIDENTIFICACION");
+		sql.append("  WHERE IDTIPOIDENTIFICACION = p.Idtipoidentificacion) AS TIPOIDENTIFICACION,");
+		sql.append(" P.NATURALDE AS NATURALDE, ");
+			if (!Certificado.CERT_TIPO_DESPACHO1.equals(tipoCert) && 
+				!Certificado.CERT_TIPO_DESPACHO2.equals(tipoCert)){	
+				sql.append("  F_SIGA_GETDIRECCIONDESPACHO(@idinstitucion@, " );
+				sql.append(" 					@idpersona@, " );
+				sql.append("                   @idioma@, " );
+				sql.append("                   null) AS DIRECCION_DESPACHO, " );
+				sql.append("F_SIGA_GETDIRECCIONDESPACHO(@idinstitucion@, " );
+				sql.append("                            @idpersona@, " );
+				sql.append("                            @idioma@, " );
+				sql.append("                            1) AS DOMICILIO_DESPACHO, " );
+				sql.append("F_SIGA_GETDIRECCIONDESPACHO(@idinstitucion@, " );
+				sql.append("                            @idpersona@, " );
+				sql.append("                            @idioma@, " );
+				sql.append("                            2) AS CODIGOPOSTAL_DESPACHO, " );
+				sql.append("F_SIGA_GETDIRECCIONDESPACHO(@idinstitucion@, " );
+				sql.append("                            @idpersona@, " );
+				sql.append("                            @idioma@, " );
+				sql.append("                            3) AS POBLACION_DESPACHO, " );
+				sql.append("F_SIGA_GETDIRECCIONDESPACHO(@idinstitucion@, " );
+				sql.append("                            @idpersona@, " );
+				sql.append("                            @idioma@, " );
+				sql.append("                            4) AS PROVINCIA_DESPACHO, " );
+				sql.append("F_SIGA_GETDIRECCIONDESPACHO(@idinstitucion@, " );
+				sql.append("                            @idpersona@, " );
+				sql.append("                            @idioma@, " );
+				sql.append("                            5) AS PAIS_DESPACHO, " );
+				sql.append("s.comentario AS OBSERVACIONES, " );
+				sql.append("F_SIGA_GETDIRECCIONDESPACHO(@idinstitucion@, " );
+				sql.append("                            @idpersona@, " );
+				sql.append("                            @idioma@, " );
+				sql.append("                            6) AS TELEFONO_DESPACHO, " );
+				sql.append("F_SIGA_GETDIRECCIONDESPACHO(@idinstitucion@, " );
+				sql.append("                            @idpersona@, " );
+				sql.append("                            @idioma@, " );
+				sql.append("                            7) AS MOVIL_DESPACHO, " );
+				sql.append("F_SIGA_GETDIRECCIONDESPACHO(@idinstitucion@, " );
+				sql.append("                            @idpersona@, " );
+				sql.append("                            @idioma@, " );
+				sql.append("                            8) AS F_DESPACHO, ");
 			} 
-			sql+=	" (select f_siga_getrecurso(es.descripcion, @idioma@) "+
-				" from cen_estadocolegial es  " +
-				" where es.idestado=f_siga_gettipocliente(@idpersona@,@idinstitucion@,sysdate)) AS ESTADO_COLEGIAL";
-			return sql;
+			sql.append(" (select f_siga_getrecurso(es.descripcion, @idioma@) ");
+			sql.append(" from cen_estadocolegial es  " );
+			sql.append(" where es.idestado=f_siga_gettipocliente(@idpersona@,@idinstitucion@,sysdate)) AS ESTADO_COLEGIAL");
+			return sql.toString();
 	}
 	
 	public String getSqlFromGeneral(){

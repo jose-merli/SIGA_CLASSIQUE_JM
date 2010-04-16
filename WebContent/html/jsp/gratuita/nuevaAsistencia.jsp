@@ -19,27 +19,33 @@
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="java.util.*"%>
 <%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
-<% 
-	String app=request.getContextPath(); 
-	HttpSession ses=request.getSession(true);
-	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
-	String mensaje = "";	
+<%
+	String app = request.getContextPath();
+	HttpSession ses = request.getSession(true);
+	UsrBean usr = (UsrBean) ses.getAttribute("USRBEAN");
+	Properties src = (Properties) ses
+			.getAttribute(SIGAConstants.STYLESHEET_REF);
+	String mensaje = "";
 
-	String nColegiado =  request.getAttribute("nColegiado")==null?"":(String)request.getAttribute("nColegiado");
-	String[] dato = {usr.getLocation()};
+	String nColegiado = request.getAttribute("nColegiado") == null ? ""
+			: (String) request.getAttribute("nColegiado");
+	String[] dato = { usr.getLocation() };
 
-	AsistenciasForm miForm = (AsistenciasForm) request.getAttribute("miForm");
-	ArrayList idTurno 				= new ArrayList();
-	ArrayList idGuardia 			= new ArrayList();
-	ArrayList tAsistencia 			= new ArrayList();
-	ArrayList tAsistenciaColegio 	= new ArrayList();
+	AsistenciasForm miForm = (AsistenciasForm) request
+			.getAttribute("miForm");
+	ArrayList idTurno = new ArrayList();
+	ArrayList idGuardia = new ArrayList();
+	ArrayList tAsistencia = new ArrayList();
+	ArrayList tAsistenciaColegio = new ArrayList();
+	String nTipo = request.getAttribute("tipoAsistencia") == null ? ""
+			: (String) request.getAttribute("tipoAsistencia");
+	tAsistencia.add(nTipo);
 
 	String fecha = UtilidadesBDAdm.getFechaBD("");
-	
-	boolean bEsFichaColegial = request.getParameter("esFichaColegial")!=null && ((String)request.getParameter("esFichaColegial")).equals("1")?true:false;
-	
 
+	boolean bEsFichaColegial = request.getParameter("esFichaColegial") != null
+			&& ((String) request.getParameter("esFichaColegial"))
+					.equals("1") ? true : false;
 %>
 <!-- JSP -->
 <script>
@@ -102,18 +108,23 @@
 	<input type="hidden" name = "esFichaColegial" value="<%=bEsFichaColegial%>"/>
 		
 
-	<fieldset>
 	<table  class="tablaCentralCamposMedia"  align="center" border="0">
 		<tr>
-			<td class="labelText" width="190">
+			<td class="labelText" width="220">
 				<siga:Idioma key="gratuita.nuevaAsistencia.literal.turno"/>&nbsp;(*)
 			</td>	
-			<td colspan="2">
-				<% if (bEsFichaColegial) { %>
-					<siga:ComboBD nombre ="turnos" tipo ="turnosLetradoAsistencia" clase="boxCombo"  ancho="500"  obligatorio="false" accion="Hijo:guardias"  parametro="<%=dato%>" ElementoSel="<%=idTurno%>" />
-				<% } else { %>
-					<siga:ComboBD nombre ="turnos" tipo ="turnos" clase="boxCombo" obligatorio="false"  ancho="500"  accion="Hijo:guardias"  parametro="<%=dato%>" ElementoSel="<%=idTurno%>" />
-				<% }%>
+			<td colspan="2" width="480">
+				<%
+					if (bEsFichaColegial) {
+				%>
+					<siga:ComboBD nombre ="turnos" tipo ="turnosLetradoAsistencia" clase="boxCombo"  ancho="480"  obligatorio="false" accion="Hijo:guardias"  parametro="<%=dato%>" ElementoSel="<%=idTurno%>" />
+				<%
+					} else {
+				%>
+					<siga:ComboBD nombre ="turnos" tipo ="turnos" clase="boxCombo" obligatorio="false"  ancho="480"  accion="Hijo:guardias"  parametro="<%=dato%>" ElementoSel="<%=idTurno%>" />
+				<%
+					}
+				%>
 			</td>	
 		</tr>
 		<tr>
@@ -121,23 +132,23 @@
 				<siga:Idioma key="gratuita.nuevaAsistencia.literal.guardia"/>&nbsp;(*)
 			</td>	
 			<td colspan="2">
-				<siga:ComboBD nombre = "guardias" tipo="guardias" clase="boxCombo" hijo="t"  ancho="500"  accion="parent.rellenarComboGuardia();" ElementoSel="<%=idGuardia%>" />
+				<siga:ComboBD nombre = "guardias" tipo="guardias" clase="boxCombo" hijo="t"  ancho="480"  accion="parent.rellenarComboGuardia();" ElementoSel="<%=idGuardia%>" />
 			</td>	
 		</tr>
-		<tr>
+		<tr style="display:none">
 			<td class="labelText">
 				<siga:Idioma key='gratuita.nuevaAsistencia.literal.tasistencia'/>&nbsp;(*)
 			</td>	
 			<td colspan="2">
-				<siga:ComboBD nombre="idTipoAsistencia" tipo="scstipoasistencia" estilo="true" clase="boxCombo" ancho="500" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  ElementoSel="<%=tAsistencia%>" />
+				<siga:ComboBD nombre="idTipoAsistencia" tipo="scstipoasistencia" estilo="true" clase="boxCombo" ancho="480" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  ElementoSel="<%=tAsistencia%>" />
 			</td>	
 		</tr>
 		<tr>
 			<td class="labelText">
-				<siga:Idioma key='gratuita.nuevaAsistencia.literal.tasistenciacolegio'/>
+				<siga:Idioma key='gratuita.nuevaAsistencia.literal.tasistenciacolegio'/>&nbsp;(*)
 			</td>	
 			<td colspan="2">
-				<siga:ComboBD nombre="idTipoAsistenciaColegio" tipo="scstipoasistenciacolegio" estilo="true"  clase="boxCombo" ancho="500" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" elementoSel="<%=tAsistenciaColegio%>" />
+				<siga:ComboBD nombre="idTipoAsistenciaColegio" tipo="scstipoasistenciacolegio" estilo="true"  clase="boxCombo" ancho="480" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" elementoSel="<%=tAsistenciaColegio%>" />
 			</td>	
 		</tr>
 		<tr>
@@ -148,7 +159,9 @@
 				<html:text name="AsistenciasForm" property="fechaHora" size="10" maxlength="10" styleClass="box" value="<%=fecha%>"  readOnly="true"></html:text>&nbsp;&nbsp;<a onClick="showCalendarGeneral(fechaHora);rellenarComboGuardia();" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
 			</td>
 		</tr>
-<%	if (bEsFichaColegial) {%>
+<%
+	if (bEsFichaColegial) {
+%>
 <script>
 function rellenarComboGuardia(){
 	//Cuando es de ficha colegial no crea las funciones javascript
@@ -164,46 +177,48 @@ function rellenarComboGuardia(){
 				<html:text name="AsistenciasForm" property="colegiado" size="10" maxlength="10" styleClass="boxConsulta" value="<%=nColegiado%>" readOnly="true"></html:text>			
 			</td>
 		</tr>
-<%} else {%>
+<%
+	} else {
+%>
 		<tr>
 			<!--<html:hidden name="AsistenciasForm" property="colegiado" value="< %=nColegiado%>" ></html:hidden>			-->
-			<td colspan="3">
-	<siga:ConjCampos leyenda="gratuita.seleccionColegiadoJG.literal.titulo">	
-		<table width="100%" border="0">
-			
-			<tr>
-				<td colspan="5">			
-					<siga:BusquedaSJCS nombre="AsistenciasForm" propiedad="buscaLetrado"
-		 				   concepto="asistencia" operacion="Asignacion" 
-						   campoTurno="turnos" campoGuardia="guardias" campoFecha="fechaHora"
-						   campoPersona="idPersona" campoColegiado="colegiado"  
-						   campoFlagSalto="flagSalto" campoFlagCompensacion="flagCompensacion" campoSalto="salto" campoCompensacion="compensacion"
-						   campoNombreColegiado="nomColegiado"
-						   diaGuardia="true"
-						   modo="editar"/>
-				</td>
-			</tr>
-			<tr>
-				<td class="labelText">
-					<siga:Idioma key='gratuita.busquedaEJG.literal.numeroColegidado'/>
-				</td>		
-				<td>
-					<input type="text" name="colegiado" class="boxConsulta" readOnly value="" style="width:'100px';">
-				</td>
-				<td class="labelText">
-					<siga:Idioma key='FactSJCS.listadoRetencionesJ.literal.nombreColegiado'/>
-				</td>
-				<td colspan="2">
-					<input type="text" name="nomColegiado" class="boxConsulta" readOnly value="" style="width:'240px';">
-				</td>			
-			</tr>							   
-		</table>
-	</siga:ConjCampos>			   
+			<td colspan="3" width="700">
+				<siga:ConjCampos
+					leyenda="gratuita.seleccionColegiadoJG.literal.titulo">
+					<table width="100%" border="0">
+
+					<tr>
+						<td colspan="5"><siga:BusquedaSJCS nombre="AsistenciasForm"
+							propiedad="buscaLetrado" concepto="asistencia"
+							operacion="Asignacion" campoTurno="turnos"
+							campoGuardia="guardias" campoFecha="fechaHora"
+							campoPersona="idPersona" campoColegiado="colegiado"
+							campoFlagSalto="flagSalto"
+							campoFlagCompensacion="flagCompensacion" campoSalto="salto"
+							campoCompensacion="compensacion"
+							campoNombreColegiado="nomColegiado" diaGuardia="true"
+							modo="editar" /></td>
+					</tr>
+					<tr>
+						<td class="labelText"><siga:Idioma
+							key='gratuita.nuevaAsistencia.literal.ncolegiado' /></td>
+						<td><input type="text" name="colegiado" class="boxConsulta"
+							readOnly value="" style="width:'100px';"></td>
+						<td class="labelText"><siga:Idioma
+							key='censo.colegiacion.colegiado' /></td>
+						<td colspan="2"><input type="text" name="nomColegiado"
+							class="boxConsulta" readOnly value="" style="width:'240px';">
+						</td>
+					</tr>
+				</table>
+				</siga:ConjCampos>
 			</td>
 		</tr>
-<%}%>
+		<%
+			}
+		%>
+		
 	</table>
-	</fieldset>
 	</html:form>
 
 	<!-- FIN: CAMPOS DE BUSQUEDA-->	
@@ -235,17 +250,19 @@ function rellenarComboGuardia(){
 				fin();
 				return false;
 			}
+			/* jbd Tras la incidencia 6502 el tipo asistencia desaparece y el tipo asistencia colegio pasa a ser obligatorio
 			if(document.forms[1].idTipoAsistencia.value == "")
 			{
 				alert("<siga:Idioma key='gratuita.nuevaAsistencia.mensaje.alert6' />");
 				fin();
 				return false;
-			}
-			/*if(document.forms[1].idTipoAsistenciaColegio.value == "")//Se le quita la obligatoriedad al campo
+			}*/
+			if(document.forms[1].idTipoAsistenciaColegio.value == "")
 			{
 				alert("<siga:Idioma key='gratuita.nuevaAsistencia.mensaje.alert8' />");
+				fin();
 				return false;
-			}*/
+			}
 			if(document.forms[1].fechaHora.value == "")
 			{
 				alert("<siga:Idioma key='gratuita.busquedaAsistencias.literal.fechaAsistencia' />"+" "+"<siga:Idioma key='messages.campoObligatorio.error' />");

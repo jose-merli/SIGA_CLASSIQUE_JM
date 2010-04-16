@@ -28,6 +28,8 @@
 	HttpSession ses=request.getSession();
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
 	UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);
+	String nListad =request.getAttribute("NLETRADOSTURNO") != null?(String)request.getAttribute("NLETRADOSTURNO"):"";
+	
 
 	String buscarLetrado             = UtilidadesString.getMensajeIdioma(usrbean, "gratuita.turnos.literal.buscarLetrado");
 	String literalNColegiado         = UtilidadesString.getMensajeIdioma(usrbean, "gratuita.turnos.literal.nColegiado");
@@ -46,7 +48,7 @@
 		<siga:Titulo titulo="pestana.justiciagratuitaturno.colaOficio" localizacion="gratuita.turnos.localizacion.colaTurno.manteniento"/>
 		<script>
 		
-		<!-- Asociada al boton Volver -->
+		// Asociada al boton Volver 
 		function accionVolver() {	
 			with(document.forms[1]){	
 		   <% String entrada = (String)ses.getAttribute("entrada");
@@ -64,7 +66,7 @@
 			}
 		}
 		
-		<!-- Asociada al boton Imprimir -->
+		//Asociada al boton Imprimir 
 		function accionImprimir() {	
 			sub();
 			var f=document.forms[0];
@@ -234,14 +236,11 @@
 <!-------------------------------------------------------------------------------------------------->	
 <!---------- Letrados en Cola ---------------------------------------------------------------------->	
 <!-------------------------------------------------------------------------------------------------->	
-		<%	Vector resultado1 = (Vector) request.getAttribute("vLetradosEnCola");
-    		 int re=resultado1.size();
-   		 %>
-		
+	
 		<table id='tituloTablaLetrados' border='1' width='100%' cellspacing='0' cellpadding='0' style="border-bottom:none">
 		  <tr class = 'tableTitle'>
 			<td align='center' width='69%'>
-				<siga:Idioma key="gratuita.colaOficio.literal.letradosInscritos"/>:&nbsp;&nbsp;<%=re%> 
+				<siga:Idioma key="gratuita.colaOficio.literal.letradosInscritos"/>:&nbsp;&nbsp;<%=nListad%> 
 			</td>
 			<td align='center' width='31%'>
 				<input id="buscarLetrado" type="text" class="box" size="10" value="<%=literalNColegiado%>"  

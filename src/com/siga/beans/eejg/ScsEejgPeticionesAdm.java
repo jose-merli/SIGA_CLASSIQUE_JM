@@ -8,13 +8,13 @@ import java.util.Vector;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.MasterBean;
 import com.siga.beans.MasterBeanAdministrador;
 /**
@@ -57,6 +57,7 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 				ScsEejgPeticionesBean.C_IDPERSONA,
 				ScsEejgPeticionesBean.C_NUMEROINTENTOSSOLICITUD,
 				ScsEejgPeticionesBean.C_NUMEROINTENTOSCONSULTA,
+				ScsEejgPeticionesBean.C_NUMEROINTENTOSPENDIENTEINFO,
 				ScsEejgPeticionesBean.C_IDXML,
 				ScsEejgPeticionesBean.C_IDIOMA,
 				ScsEejgPeticionesBean.C_USUMODIFICACION,
@@ -112,6 +113,7 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 			bean.setNumero(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_NUMERO));
 			bean.setNumeroIntentosConsulta(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_NUMEROINTENTOSCONSULTA));
 			bean.setNumeroIntentosSolicitud(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_NUMEROINTENTOSSOLICITUD));
+			bean.setNumeroIntentosPendienteInfo(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_NUMEROINTENTOSPENDIENTEINFO));
 			bean.setIdioma(UtilidadesHash.getString(hash,ScsEejgPeticionesBean.C_IDIOMA));
 			
 			bean.setFechaMod(UtilidadesHash.getString(hash, ScsEejgPeticionesBean.C_FECHAMODIFICACION));
@@ -150,6 +152,7 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_NUMERO, b.getNumero());
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_NUMEROINTENTOSCONSULTA, b.getNumeroIntentosConsulta());
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_NUMEROINTENTOSSOLICITUD, b.getNumeroIntentosSolicitud());
+			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_NUMEROINTENTOSPENDIENTEINFO, b.getNumeroIntentosPendienteInfo());
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_IDIOMA, b.getIdioma());
 			
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_USUMODIFICACION, String.valueOf(b.getUsuMod()));
@@ -172,6 +175,14 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		return vector;
 	}
 	
+	/**
+	 * 
+	 * @param peticionEejg
+	 * @throws ClsExceptions
+	 * @throws IllegalStateException
+	 * @throws SecurityException
+	 * @throws SystemException
+	 */
 	public void insertarPeticionEejg(ScsEejgPeticionesBean peticionEejg) throws ClsExceptions, IllegalStateException, SecurityException, SystemException{
 	
 		UserTransaction tx = null;
@@ -185,6 +196,7 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 			peticionEejg.setFechaPeticion("sysdate");
 			peticionEejg.setNumeroIntentosSolicitud(0);
 			peticionEejg.setNumeroIntentosConsulta(0);
+			peticionEejg.setNumeroIntentosPendienteInfo(0);
 			peticionEejg.setEstado(ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL);
 			insert(peticionEejg);
 			tx.commit();
@@ -195,8 +207,12 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		
 	}
 
-	
-
+	/**
+	 * 
+	 * @param idInstitucion
+	 * @return
+	 * @throws ClsExceptions
+	 */
 	public Long getNuevoPeticionEejg(Integer idInstitucion) throws ClsExceptions {
 		String select = null;
 		Long nuevoId;
@@ -220,6 +236,12 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		return nuevoId;
 	}
 
+	/**
+	 * 
+	 * @param peticionEejg
+	 * @return
+	 * @throws ClsExceptions
+	 */
 	public List<ScsEejgPeticionesBean> getPeticionesEejg(ScsEejgPeticionesBean peticionEejg)throws ClsExceptions{
 
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
@@ -229,8 +251,8 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		sql.append(" SELECT PET.IDPETICION,  PET.IDUSUARIOPETICION,	PET.FECHAPETICION , ");
 		sql.append(" PET.ESTADO,  PET.IDSOLICITUD, PET.IDINSTITUCION , PET.IDTIPOEJG, ");
 		sql.append(" PET.ANIO,PET.NUMERO, PET.IDPERSONA, PET.NUMEROINTENTOSSOLICITUD, ");
-		sql.append(" PET.NUMEROINTENTOSCONSULTA, PET.IDXML, PET.FECHAMODIFICACION,  PET.USUMODIFICACION, ");
-		sql.append(" XML.ESTADO XML_ESTADO, XML.IDXML XML_IDXML, XML.ENVÍORESPUESTA XML_ENVÍORESPUESTA, ");
+		sql.append(" PET.NUMEROINTENTOSCONSULTA, PET.NUMEROINTENTOSPENDIENTEINFO, PET.IDXML, PET.FECHAMODIFICACION,  PET.USUMODIFICACION, ");
+		sql.append(" XML.ESTADO XML_ESTADO, XML.IDXML XML_IDXML, XML.ENVIORESPUESTA XML_ENVIORESPUESTA, ");
 		sql.append(" XML.XML XML_XML ");
 		sql.append(" FROM SCS_EEJG_PETICIONES PET, SCS_EEJG_XML XML ");
 		sql.append(" WHERE PET.IDPETICION = XML.IDPETICION ");
@@ -313,21 +335,36 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 	public List<ScsEejgPeticionesBean> getPeticionesIniciadas() throws ClsExceptions {
 		return select(getWherePeticionesIniciadas());		
 	}
-	public String getWherePeticionesIniciadas(){
-		ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		String numeroReintentosSolicitud = rp.returnProperty("eejg.numeroReintentosSolicitud");
-		int horasMaximasDeProceso = Integer.parseInt(rp.returnProperty("eejg.horasMaximasDeProceso"));
-		String horasMaximas = String.valueOf(horasMaximasDeProceso / 24);
+	
+	/**
+	 * 
+	 * @return
+	 * @throws ClsExceptions 
+	 */
+	public String getWherePeticionesIniciadas() throws ClsExceptions{
+		UsrBean usrBean = new UsrBean();
+		usrBean.setUserName(String.valueOf(ClsConstants.USUMODIFICACION_AUTOMATICO));		
+		GenParametrosAdm admParametros = new GenParametrosAdm(usrBean);
+				
+		String numeroReintentosSolicitud = admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, "SCS", "EEJG_NUMERO_REINTENTOS_SOLICITUD", "");		
+		double horasMaximasDeProceso = Double.parseDouble(admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, "SCS", "EEJG_HORAS_MAXIMAS_DE_PROCESO", ""));
+		String horasMaximas = String.valueOf(horasMaximasDeProceso / 24.0);
 		
-		String where = " WHERE " + ScsEejgPeticionesBean.C_ESTADO  + " = " + ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL;
-		where += " AND " + ScsEejgPeticionesBean.C_IDSOLICITUD + " IS NULL";
-		where += " AND " + ScsEejgPeticionesBean.C_NUMEROINTENTOSSOLICITUD + " < " + numeroReintentosSolicitud;
-		where += " OR (" + ScsEejgPeticionesBean.C_ESTADO  + " = " + ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL_ESPERANDO;
-		where += " AND (SYSDATE - " + horasMaximas + ") >= " + ScsEejgPeticionesBean.C_FECHAMODIFICACION;
-		where += " )";
-		return where;
+		StringBuffer where = new StringBuffer(" WHERE " + ScsEejgPeticionesBean.C_IDSOLICITUD + " IS NULL");
+		where.append(" AND " + ScsEejgPeticionesBean.C_NUMEROINTENTOSSOLICITUD + " < " + numeroReintentosSolicitud);
+		where.append(" AND (" + ScsEejgPeticionesBean.C_ESTADO  + " = " + ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL);
+		where.append(" OR (" + ScsEejgPeticionesBean.C_ESTADO  + " = " + ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL_ESPERANDO);
+		where.append(" AND (SYSDATE - " + horasMaximas + ") >= " + ScsEejgPeticionesBean.C_FECHAMODIFICACION);
+		where.append(" ))");
+		return where.toString();
 		
 	}
+	
+	
+	/**
+	 * 
+	 * @throws ClsExceptions
+	 */
 	public void updatePeticionesIniciadas() throws ClsExceptions {
 		StringBuffer updateSql = new StringBuffer();
 		updateSql.append("UPDATE ");
@@ -352,30 +389,45 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public List<ScsEejgPeticionesBean> getSolicitudesPendientes(int horas) throws ClsExceptions {
+	public List<ScsEejgPeticionesBean> getSolicitudesPendientes(double horas) throws ClsExceptions {
 		return select(getWherePeticionesEnEspera(horas));
 	}
 	
-	public String getWherePeticionesEnEspera(int horas){
-		ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		String numeroReintentosConsulta = rp.returnProperty("eejg.numeroReintentosConsulta");
-		int horasMaximasDeProceso = Integer.parseInt(rp.returnProperty("eejg.horasMaximasDeProceso"));
-		String horasMaximas = String.valueOf(horasMaximasDeProceso / 24);
+	
+	/**
+	 * 
+	 * @param horas
+	 * @return
+	 * @throws ClsExceptions 
+	 * @throws  
+	 */
+	public String getWherePeticionesEnEspera(double horas) throws ClsExceptions{
+		UsrBean usrBean = new UsrBean();
+		usrBean.setUserName(String.valueOf(ClsConstants.USUMODIFICACION_AUTOMATICO));		
+		GenParametrosAdm admParametros = new GenParametrosAdm(usrBean);
 		
-		String horasSt = String.valueOf(horas / 24);//pasamos las horas a días 
-		String where = " WHERE " + ScsEejgPeticionesBean.C_ESTADO  + " = " + ScsEejgPeticionesBean.EEJG_ESTADO_ESPERA;
-		where += " AND (SYSDATE - " + horasSt + ") >= " + ScsEejgPeticionesBean.C_FECHASOLICITUD;
-		where += " AND " + ScsEejgPeticionesBean.C_IDSOLICITUD + " IS NOT NULL";
-		where += " AND " + ScsEejgPeticionesBean.C_NUMEROINTENTOSCONSULTA + " < " + numeroReintentosConsulta;
-		where += " AND (SYSDATE - " + horasMaximas + ") >= " + ScsEejgPeticionesBean.C_FECHAMODIFICACION;
-		where += " OR (" + ScsEejgPeticionesBean.C_ESTADO  + " = " + ScsEejgPeticionesBean.EEJG_ESTADO_ESPERA_ESPERANDO;
-		where += " AND (SYSDATE - " + horasMaximas + ") >= " + ScsEejgPeticionesBean.C_FECHAMODIFICACION;
-		where += " )";
+		String numeroReintentosConsulta = admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, "SCS", "EEJG_NUMERO_REINTENTOS_CONSULTA", "");
+		String numeroReintentosPendienteInfo = admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, "SCS", "EEJG_NUMERO_REINTENTOS_PENDIENTE_INFO", "");
 		
-		return where;
+		double horasMaximasDeProceso = Double.parseDouble(admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, "SCS", "EEJG_HORAS_MAXIMAS_DE_PROCESO", ""));
+		double horasReintentoPendienteInfo = Double.parseDouble(admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, "SCS", "EEJG_HORAS_REINTENTO_PENDIENTE_INFO", ""));
+		String horasMaximas = String.valueOf(horasMaximasDeProceso / 24.0);
+		
+		String horasSt = String.valueOf(horas / 24.0);//pasamos las horas a días 
+		StringBuffer where = new StringBuffer(" WHERE (SYSDATE - " + horasSt + ") >= " + ScsEejgPeticionesBean.C_FECHASOLICITUD);
+		where.append(" AND " + ScsEejgPeticionesBean.C_NUMEROINTENTOSCONSULTA + " < " + numeroReintentosConsulta);
+		where.append(" AND " + ScsEejgPeticionesBean.C_NUMEROINTENTOSPENDIENTEINFO + " < " + numeroReintentosPendienteInfo);
+		
+		where.append(" AND (" + ScsEejgPeticionesBean.C_ESTADO  + " = " + ScsEejgPeticionesBean.EEJG_ESTADO_ESPERA);
+		where.append(" 		OR (" + ScsEejgPeticionesBean.C_ESTADO  + " = " + ScsEejgPeticionesBean.EEJG_ESTADO_ESPERA_ESPERANDO);
+		where.append(" 			AND (SYSDATE - " + horasMaximas + ") >= " + ScsEejgPeticionesBean.C_FECHAMODIFICACION + ")");
+		where.append(" 		OR (" + ScsEejgPeticionesBean.C_ESTADO  + " = " + ScsEejgPeticionesBean.EEJG_ESTADO_PENDIENTE_INFO);
+		where.append(" 			AND (SYSDATE - " + (horasReintentoPendienteInfo/24.0) + ") >= " + ScsEejgPeticionesBean.C_FECHAMODIFICACION + "))");
+		
+		return where.toString();
 		
 	}
-	public void updatePeticionesEnEspera(int horas) throws ClsExceptions {
+	public void updatePeticionesEnEspera(double horas) throws ClsExceptions {
 		StringBuffer updateSql = new StringBuffer();
 		updateSql.append("UPDATE ");
 		updateSql.append(ScsEejgPeticionesBean.T_NOMBRETABLA);

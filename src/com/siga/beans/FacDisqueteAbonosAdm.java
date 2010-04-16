@@ -156,7 +156,7 @@ public class FacDisqueteAbonosAdm  extends MasterBeanAdministrador {
 			+ " = " + FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_IDDISQUETEABONO + ") AS IMPORTE ";
 			
 			selectPrincipal = " SELECT " + FacDisqueteAbonosBean.C_FECHA + ", " +
-			FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_COD_BANCO + " || ' - ' || substr(" + CenBancosBean.T_NOMBRETABLA + "." + CenBancosBean.C_NOMBRE + ",1,30) AS BANCO, " + 
+			FacBancoInstitucionBean.T_NOMBRETABLA + "." + FacBancoInstitucionBean.C_COD_BANCO + " || ' - ' || " + CenBancosBean.T_NOMBRETABLA + "." + CenBancosBean.C_NOMBRE + " AS BANCO, " + 
 			FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_IDDISQUETEABONO + ", " +
 			FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_NOMBREFICHERO + ", " +
 			FacDisqueteAbonosBean.T_NOMBRETABLA + "." + FacDisqueteAbonosBean.C_NOMBREFICHERO + ", "; 

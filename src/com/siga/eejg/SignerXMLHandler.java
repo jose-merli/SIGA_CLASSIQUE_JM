@@ -26,15 +26,13 @@ import org.xml.sax.InputSource;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
-import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.FirmaXMLHelper;
-import com.siga.Utilidades.SIGAReferences;
 import com.siga.beans.GenParametrosAdm;
 
 public class SignerXMLHandler extends BasicHandler {
 	private static final long serialVersionUID = 4903930523115324378L;
-	private static FirmaXMLHelper firmaXMLHelper;
+	private FirmaXMLHelper firmaXMLHelper;
 
 	public void invoke(MessageContext messageContext) throws AxisFault {
         if (messageContext.isClient()) { // Es el cliente
@@ -168,12 +166,9 @@ public class SignerXMLHandler extends BasicHandler {
 	 * @throws ClsExceptions
 	 */
 	private FirmaXMLHelper getFirmaXMLHelper() throws ClsExceptions {
+				
 		if (firmaXMLHelper==null){
 			try {
-				
-				ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-				String xmlSigNSPrefix = rp.returnProperty("eejg.xmlSigNSPrefix");
-				
 				UsrBean usrBean = new UsrBean();
 				usrBean.setUserName(String.valueOf(ClsConstants.USUMODIFICACION_AUTOMATICO));
 				
@@ -181,9 +176,11 @@ public class SignerXMLHandler extends BasicHandler {
 	            String sPathCertificadosDigitales = admParametros.getValor("0", "CER", "PATH_CERTIFICADOS_DIGITALES", "");
 	            String sNombreCertificadosDigitales = admParametros.getValor("0", "CER", "NOMBRE_CERTIFICADOS_DIGITALES", "");
 	            String keyStorePass = admParametros.getValor("0", "CER", "CLAVE_CERTIFICADOS_DIGITALES", "");
+	            	            
+	            String xmlSigNSPrefix = admParametros.getValor("0", "CER", "EEJG_FIRMA_XMLSIGNSPREFIX", "");
 	            
-	            String keyStoreFile = sPathCertificadosDigitales + "/" + sNombreCertificadosDigitales;
-	            String keyStoreType = rp.returnProperty("eejg.keyStoreType");
+	            String keyStoreFile = sPathCertificadosDigitales + "/" + sNombreCertificadosDigitales;	            
+	            String keyStoreType = admParametros.getValor("0", "CER", "EEJG_FIRMA_KEYSTORETYPE", "");
 	            
 	            FileInputStream fisID = new FileInputStream(keyStoreFile);
 		        KeyStore ks = KeyStore.getInstance(keyStoreType);

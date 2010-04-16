@@ -121,27 +121,6 @@ public class EnvDestProgramInformesAdm extends MasterBeanAdministrador {
 		return htData;
 	}
 
-    public Integer getNewIdProgramInformes(UsrBean usr) throws ClsExceptions{
-    	return getNewIdProgramInformes(usr.getLocation());
-    }
-
-    public Integer getNewIdProgramInformes(String idInstitucion) throws ClsExceptions{
-        RowsContainer rows=new RowsContainer();
-        String sql="SELECT MAX(" + EnvDestProgramInformesBean.C_IDPROGRAM +
-        		") AS MAXVALOR FROM " + EnvDestProgramInformesBean.T_NOMBRETABLA +
-        		" WHERE " + EnvDestProgramInformesBean.C_IDINSTITUCION + "="+ idInstitucion;
-        int valor=1; // Si no hay registros, es el valor que tomará
-        if(rows.find(sql)){
-            Hashtable htRow=((Row)rows.get(0)).getRow();
-            // El valor devuelto será "" Si no hay registros
-            if(!((String)htRow.get("MAXVALOR")).equals("")) {
-                Integer valorInt=Integer.valueOf((String)htRow.get("MAXVALOR"));
-                valor=valorInt.intValue();
-                valor++;
-            }
-        }
-        return new Integer(valor);
-    }
     /**
      * 
      * @param estado 1 ó 0. Sera uno cuando se quieran los pagos ya enviados.0 con los pagos pendienmtes de enviar

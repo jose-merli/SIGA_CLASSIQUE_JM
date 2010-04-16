@@ -273,7 +273,7 @@
 					<siga:Idioma key="gratuita.busquedaSOJ.literal.turno"/>&nbsp;(*)
 				</td>
 				<td class="labelText" colspan="3">
-					<siga:ComboBD nombre="idTurno" tipo="turnos" estilo="true" ancho="500" clase="<%=claseComboTurno%>" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" elementoSel="<%=elementoSelTurno%>" accion="Hijo:juzgado" readOnly="<%=sreadonly%>" ancho="500"/>
+					<siga:ComboBD nombre="idTurno" tipo="turnos" estilo="true" ancho="480" clase="<%=claseComboTurno%>" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" elementoSel="<%=elementoSelTurno%>" accion="Hijo:juzgado" readOnly="<%=sreadonly%>" ancho="500"/>
 				</td>
 			</tr>
 			<tr>
@@ -291,7 +291,7 @@
 					</td>	 
 					<td> &nbsp;</td>	
 					<td>
-					   <siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" ancho="480" estilo="true"  clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  parametro="<%=datoJuzgado%>" elementoSel="<%=elementoSelJuzgado%>" hijo="t"/>
+					   <siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" ancho="460" estilo="true"  clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  parametro="<%=datoJuzgado%>" elementoSel="<%=elementoSelJuzgado%>" hijo="t"/>
 					</td>   
 				</tr>
 			</table>

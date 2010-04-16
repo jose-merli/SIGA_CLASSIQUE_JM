@@ -6,45 +6,49 @@ import java.util.Vector;
 
 import org.apache.axis.EngineConfiguration;
 import org.apache.axis.configuration.FileProvider;
-import com.siga.eejg.ws.ConsultaInfoAAPP.ConsultaInfoAAPP;
-import com.siga.eejg.ws.ConsultaInfoAAPP.DatosConsultaInfoAAPP;
-import com.siga.eejg.ws.RespuestaInfoConsultaInfoAAPP.RespuestaConsultaInfoAAPP;
-import com.siga.eejg.ws.RespuestaSolicitudPeticionInfoAAPP.RespuestaSolicitudPeticionInfoAAPP;
-import com.siga.eejg.ws.SolicitudPeticionInfoAAPP.DatosPeticionInfoAAPP;
-import com.siga.eejg.ws.SolicitudPeticionInfoAAPP.Informacion;
-import com.siga.eejg.ws.SolicitudPeticionInfoAAPP.SolicitudPeticionInfoAAPP;
-
-import com.siga.eejg.ws.ServiciosJGExpedienteServiceLocator;
-import com.siga.eejg.ws.ServiciosJGExpedienteServiceSoapBindingStub;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
-import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.AxisObjectSerializerDeserializer;
-import com.siga.Utilidades.SIGAReferences;
 import com.siga.beans.AdmUsuariosAdm;
 import com.siga.beans.AdmUsuariosBean;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsPersonaJGAdm;
 import com.siga.beans.ScsPersonaJGBean;
 import com.siga.beans.eejg.ScsEejgPeticionesBean;
 import com.siga.beans.eejg.ScsEejgXmlAdm;
 import com.siga.beans.eejg.ScsEejgXmlBean;
+import com.siga.eejg.ws.ServiciosJGExpedienteServiceLocator;
+import com.siga.eejg.ws.ServiciosJGExpedienteServiceSoapBindingStub;
+import com.siga.eejg.ws.ConsultaInfoAAPP.ConsultaInfoAAPP;
+import com.siga.eejg.ws.ConsultaInfoAAPP.DatosConsultaInfoAAPP;
+import com.siga.eejg.ws.RespuestaInfoConsultaInfoAAPP.Administracion;
+import com.siga.eejg.ws.RespuestaInfoConsultaInfoAAPP.DatosInfoAAPP;
+import com.siga.eejg.ws.RespuestaInfoConsultaInfoAAPP.RespuestaConsultaInfoAAPP;
+import com.siga.eejg.ws.RespuestaSolicitudPeticionInfoAAPP.Respuesta;
+import com.siga.eejg.ws.RespuestaSolicitudPeticionInfoAAPP.RespuestaSolicitudPeticionInfoAAPP;
+import com.siga.eejg.ws.SolicitudPeticionInfoAAPP.DatosPeticionInfoAAPP;
+import com.siga.eejg.ws.SolicitudPeticionInfoAAPP.Informacion;
+import com.siga.eejg.ws.SolicitudPeticionInfoAAPP.SolicitudPeticionInfoAAPP;
 
 public class SolicitudesEEJG {
 	private String urlWS;	
 	private String idSistema;
 
-	public SolicitudesEEJG() {
+	public SolicitudesEEJG() throws ClsExceptions {
 		super();
 		init();
 	}
 
-	private void init() {
-		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		urlWS = rp.returnProperty("eejg.urlWS");	
-		idSistema = rp.returnProperty("eejg.idSistema");
+	private void init() throws ClsExceptions {
+		UsrBean usrBean = new UsrBean();
+		usrBean.setUserName(String.valueOf(ClsConstants.USUMODIFICACION_AUTOMATICO));
+		
+		GenParametrosAdm admParametros = new GenParametrosAdm(usrBean);
+		urlWS = admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, "SCS", "EEJG_URLWS", "");
+		idSistema = admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, "SCS", "EEJG_IDSISTEMA", "");
 	}
 
 	private EngineConfiguration createClientConfig() { 
@@ -84,16 +88,17 @@ public class SolicitudesEEJG {
 		
 		if (respuestaSolicitudPeticionInfoAAPP != null) {
 			if (respuestaSolicitudPeticionInfoAAPP.getInformacion() != null){
-				if (respuestaSolicitudPeticionInfoAAPP.getInformacion().getRespuestaPeticionInfoAAPP() != null) {
-					idPeticionInfoAAPP = respuestaSolicitudPeticionInfoAAPP.getInformacion().getRespuestaPeticionInfoAAPP().getIdPeticionInfoAAPP();					
+				Respuesta respuesta = respuestaSolicitudPeticionInfoAAPP.getInformacion().getRespuestaPeticionInfoAAPP();
+				if (respuesta != null) {
+					if ((respuesta.getTipoError() != null && !respuesta.getTipoError().trim().equals("")) || (respuesta.getDescripcionError() != null && !respuesta.getDescripcionError().trim().equals(""))) {
+						String error = respuesta.getTipoError() + ": " + respuesta.getDescripcionError();
+						throw new ClsExceptions("IdPetición: " + scsEejgPeticionesBean.getIdPeticion() + ". Se ha obtenido el siguiente mensaje de error como respuesta del webservice para el colegio " + idZona + " y DNI/NIE solicitado \"" + dNI_NIE_Solicitante + "\": " + error);
+					} else {
+						idPeticionInfoAAPP = respuestaSolicitudPeticionInfoAAPP.getInformacion().getRespuestaPeticionInfoAAPP().getIdPeticionInfoAAPP();
+					}
 				}
 			}
 		}
-//		if (idPeticionInfoAAPP == null) {
-//			insertaLogBDD(scsEejgXmlAdm, scsEejgPeticionesBean, AxisObjectSerializerDeserializer.serializeAxisObject(respuestaSolicitudPeticionInfoAAPP, false, false), ScsEejgXmlBean.RESPUESTA, ScsEejgPeticionesBean.EEJG_ESTADO_ERROR);
-//		} else {
-//			insertaLogBDD(scsEejgXmlAdm, scsEejgPeticionesBean, AxisObjectSerializerDeserializer.serializeAxisObject(respuestaSolicitudPeticionInfoAAPP, false, false), ScsEejgXmlBean.RESPUESTA, ScsEejgPeticionesBean.EEJG_ESTADO_ESPERA);
-//		}
 		
 		return idPeticionInfoAAPP;
 	}
@@ -125,6 +130,13 @@ public class SolicitudesEEJG {
 		return scsPersonaJGBean;
 	}
 
+	
+	/**
+	 * 
+	 * @param scsEejgPeticionesBean
+	 * @return
+	 * @throws Exception
+	 */
 	public int consultaInfoAAPP(ScsEejgPeticionesBean scsEejgPeticionesBean) throws Exception {
 		int idXML = -1;
 		ServiciosJGExpedienteServiceLocator locator = new ServiciosJGExpedienteServiceLocator(createClientConfig());
@@ -140,18 +152,63 @@ public class SolicitudesEEJG {
 				
 		RespuestaConsultaInfoAAPP respuestaConsultaInfoAAPP = stub.consultaInfoAAPP(consultaInfoAAPP);		
 		
-		if (respuestaConsultaInfoAAPP != null) {			
-			UsrBean usrBean = new UsrBean();
-			usrBean.setUserName(String.valueOf(ClsConstants.USUMODIFICACION_AUTOMATICO));
-			ScsEejgXmlAdm scsEejgXmlAdm = new ScsEejgXmlAdm(usrBean);			
-			idXML = insertaLogBDD(scsEejgXmlAdm, scsEejgPeticionesBean, 
-					AxisObjectSerializerDeserializer.serializeAxisObject(respuestaConsultaInfoAAPP, false, false), 
-					ScsEejgXmlBean.RESPUESTA, ScsEejgPeticionesBean.EEJG_ESTADO_FINALIZADO);			
+		if (respuestaConsultaInfoAAPP != null) {
+			if (respuestaConsultaInfoAAPP.getInformacion() != null){
+				com.siga.eejg.ws.RespuestaInfoConsultaInfoAAPP.ConsultaInfoAAPP respuestaConsultaInfo = respuestaConsultaInfoAAPP.getInformacion().getConsultaInfoAAPP();
+				if (respuestaConsultaInfo != null) {
+					if ((respuestaConsultaInfo.getTipoError() != null && !respuestaConsultaInfo.getTipoError().trim().equals("")) || (respuestaConsultaInfo.getDescripcionError() != null && !respuestaConsultaInfo.getDescripcionError().trim().equals(""))) {
+						String error = respuestaConsultaInfo.getTipoError() + ": " + respuestaConsultaInfo.getDescripcionError();
+						throw new ClsExceptions("IdPetición: " + scsEejgPeticionesBean.getIdPeticion() + ". Se ha obtenido el siguiente mensaje de error como respuesta del webservice para el idSolicitud \"" + idPeticionInfoAAPP + "\": " + error);
+					}
+					UsrBean usrBean = new UsrBean();
+					usrBean.setUserName(String.valueOf(ClsConstants.USUMODIFICACION_AUTOMATICO));
+					ScsEejgXmlAdm scsEejgXmlAdm = new ScsEejgXmlAdm(usrBean);			
+					idXML = insertaLogBDD(scsEejgXmlAdm, scsEejgPeticionesBean, 
+							AxisObjectSerializerDeserializer.serializeAxisObject(respuestaConsultaInfoAAPP, false, false), 
+							ScsEejgXmlBean.RESPUESTA, ScsEejgPeticionesBean.EEJG_ESTADO_FINALIZADO);
+					
+					if (isPendiente(respuestaConsultaInfo.getDatosInfoAAPP())) {
+						scsEejgPeticionesBean.setEstado(ScsEejgPeticionesBean.EEJG_ESTADO_PENDIENTE_INFO);
+					} else {
+						scsEejgPeticionesBean.setEstado(ScsEejgPeticionesBean.EEJG_ESTADO_FINALIZADO);
+					}
+					
+				}
+			}				
+						
 		}
 				
 		return idXML;
 	}
 
+	/**
+	 * 
+	 * @param datosInfoAAPP
+	 * @return
+	 */
+	private boolean isPendiente(DatosInfoAAPP datosInfoAAPP) {
+		boolean pendiente = false;
+		if (datosInfoAAPP != null) {
+			Administracion[] administracions = datosInfoAAPP.getAdministracion();
+			for (Administracion administracion : administracions) {
+				if (administracion.getFecha_Respuesta() == null || administracion.getFecha_Respuesta().trim().equals("")) {
+					pendiente = true;
+					break;
+				}
+			}
+		}
+		return pendiente;
+	}
+
+	/**
+	 * 
+	 * @param scsEejgXmlAdm
+	 * @param scsEejgPeticionesBean
+	 * @param xml
+	 * @param envioRespuesta
+	 * @param estado
+	 * @return
+	 */
 	private int insertaLogBDD(ScsEejgXmlAdm scsEejgXmlAdm,	ScsEejgPeticionesBean scsEejgPeticionesBean, String xml, String envioRespuesta, int estado) {		
 		int idXml = -1;
 

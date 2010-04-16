@@ -21,6 +21,7 @@ import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
+import com.siga.beans.ScsInscripcionGuardiaAdm;
 import com.siga.beans.ScsSaltosCompensacionesAdm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -131,6 +132,17 @@ public class ColaGuardiasAction extends MasterAction {
 		}
 
 		request.setAttribute("idGuardia", guardia);
+		
+		ScsInscripcionGuardiaAdm InscripcionGuardiaAdm = new ScsInscripcionGuardiaAdm(this.getUserBean(request));
+		Vector letradosinscritos = new Vector();
+		String NLetradosInscritos="";
+		 letradosinscritos= InscripcionGuardiaAdm.selectGenerico(InscripcionGuardiaAdm.getnumeroColegiadosIncritos(institucion, turno, guardia));
+		 if( letradosinscritos!=null  ||  letradosinscritos.size()>0){			 
+			NLetradosInscritos=(String)(((Hashtable)(letradosinscritos.get(0))).get("NLETRADOSINSCRITOS"));
+			request.setAttribute("NLETRADOSINSCRITOS",NLetradosInscritos);	
+		 }else{			
+			request.setAttribute("NLETRADOSINSCRITOS",NLetradosInscritos);	
+		 }
 
 		return "ver";
 	}

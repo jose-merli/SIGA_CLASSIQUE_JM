@@ -138,12 +138,12 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 
-		<!-- Asociada al boton Volver -->
+		//Asociada al boton Volver
 		function accionCerrar(){ 		
 			window.close();
 		}	
 		
-		<!-- Asociada al boton Restablecer -->
+		// Asociada al boton Restablecer 
 		function accionRestablecer(){		
 			if(confirm('<siga:Idioma key="messages.confirm.cancel"/>')) {
 				document.all.datosCVForm.reset();
@@ -151,7 +151,7 @@
 			}
 		}			
 
-		<!-- Asociada al boton GuardarCerrar -->
+		// Asociada al boton GuardarCerrar 
 		function accionGuardarCerrar() {
 			sub();
 			// Validamos los errores ///////////
@@ -193,7 +193,7 @@
 			}
 		}		
 		
-		<!-- Selecciona los valores de los campos check y combo dependiendo de los valores del Hashtable -->
+		//Selecciona los valores de los campos check y combo dependiendo de los valores del Hashtable 
 		function rellenarCampos(){
 				// Obtenemos los valores para el check certificado.
 				certificado="<%=certificado%>"
@@ -324,7 +324,7 @@
 							<tr>
 								<td class="labelText" ><siga:Idioma key="censo.datosCV.literal.descripcion"/>&nbsp(*)</td>
 									<td colspan="3">
-										<textarea cols="70" rows="4" name="descripcion" class="<%=clase%>" style="overflow:hidden" readOnly="<%=desactivado%>"><%=descripcion%></textarea>
+										<textarea cols="70" rows="5" name="descripcion" class="<%=clase%>" style="width:550" readOnly="<%=desactivado%>"><%=descripcion%></textarea>
 									</td>			   	
 							</tr>
 						</table>

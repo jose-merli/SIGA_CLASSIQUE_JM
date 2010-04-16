@@ -35,16 +35,18 @@
 	if (bEditable)
 		sModo="editar";
 
-	String[] lista = new String[2];
+	String[] lista = new String[3];
 	if (idTipoEnvio.equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO)) {
 		lista[0] = "74e";
 	} else 
 	if (idTipoEnvio.equals(EnvTipoEnviosAdm.K_SMS) || idTipoEnvio.equals(EnvTipoEnviosAdm.K_BUROSMS)) {
 		lista[0] = "74c";
 		lista[1] = "74b";
+		lista[2] = "74f";
 	} else {
 		lista[0] = "74c";
 		lista[1] = "74e";
+		lista[2] = "74f";
 	} 
 	
 %>

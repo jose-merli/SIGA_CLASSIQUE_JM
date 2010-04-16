@@ -13,12 +13,14 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import javax.transaction.UserTransaction;
-
+import com.aspose.words.Document;
+import com.siga.informes.MasterWords;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.GstDate;
+import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -27,6 +29,7 @@ import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.expedientes.form.BusquedaExpedientesForm;
 import com.siga.general.SIGAException;
+import com.siga.Utilidades.SIGAReferences;
 
 /**
  * Administrador del bean de expedientes
@@ -2066,7 +2069,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 
 			StringBuffer sql = new StringBuffer();
 			sql.append(" ");
-			sql.append(" SELECT EXP.IDINSTITUCION, ");
+			sql.append(" SELECT  TO_CHAR(SYSDATE, 'dd-mm-yyyy') AS FECHAACTUAL, EXP.IDINSTITUCION, ");
 			sql.append(" EXP.IDINSTITUCION_TIPOEXPEDIENTE, ");
 			sql.append(" EXP.IDTIPOEXPEDIENTE, ");
 			sql.append(" EXP.ANIOEXPEDIENTE, ");
@@ -2093,7 +2096,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			sql.append(" TO_CHAR(EXP.FECHARESOLUCION, 'dd-mm-yyyy') AS FECHARESOLUCION, ");
 			sql.append(" TO_CHAR(EXP.FECHACADUCIDAD, 'dd-mm-yyyy') AS FECHACADUCIDAD, ");
 			sql.append(" EXP.OBSERVACIONES, ");
-			sql.append(" EXP.MINUTA, ");
+			sql.append(" EXP.MINUTA,EXP.PORCENTAJEIVA,EXP.IMPORTEIVA,EXP.IMPORTETOTAL,");
 			sql.append(" EXP.IMPORTETOTAL, ");
 			sql.append(" EXP.IMPORTEIVA, ");
 			sql.append(" EXP.PORCENTAJEIVA, ");
@@ -2182,18 +2185,20 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			// Nombres implicados separados por comas
 			datos = helperInformes.getNombresImplicadosExpediente(datos,idInstitucion,idInstitucionTipoExp,idTipoExp,anio, numero, idPersona);
 			// Nombres de partes separados por comas
-			datos = helperInformes.getNombresPartesExpediente(datos,idInstitucion,idInstitucionTipoExp,idTipoExp,anio, numero, idPersona, this.usrbean.getLanguage());
+			datos = helperInformes.getNombresPartesExpediente(datos,idInstitucion,idInstitucionTipoExp,idTipoExp,anio, numero, idPersona, this.usrbean.getLanguage());			
 			// Implicados y direcciones
-			datos = helperInformes.getImplicadosDireccionesExpediente(datos,idInstitucion,idInstitucionTipoExp,idTipoExp,anio, numero, idPersona, this.usrbean.getLanguage(), isASolicitantes);
-			
+			datos = helperInformes.getImplicadosDireccionesExpediente(datos,idInstitucion,idInstitucionTipoExp,idTipoExp,anio, numero, idPersona, this.usrbean.getLanguage(), isASolicitantes);		
+	
 		}
 		catch (Exception e) {
 			throw new ClsExceptions (e, "Error ExpExpedienteAdm.getDatosInformeExpediente.");
 		}
 		return datos;
 	}
-	/*
-*/
+	
+	
+	
+	
 	
 	
 }

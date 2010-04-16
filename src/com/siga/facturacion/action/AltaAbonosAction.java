@@ -258,9 +258,11 @@ public class AltaAbonosAction extends MasterAction {
 					CenCuentasBancariasAdm cbAdm = new CenCuentasBancariasAdm(usr);
 					ArrayList alCuentas = cbAdm.getCuentasAbono(new Long(idPersona), new Integer(miForm.getIdInstitucion()));
 					//si no es cuenta de abono es porque el array de cuentas de abono no lo contiene
-					//Por lo tano cogemos la primea cuentade abono
-					if(!alCuentas.contains(idCuenta))
+					//Por lo tanto cogemos la primera cuenta de abono
+					if(alCuentas!=null && alCuentas.size()>0 && !alCuentas.contains(idCuenta))
 						idCuenta = String.valueOf((Integer)alCuentas.get(0));
+					else
+						throw new SIGAException("messages.abonos.domiciliacionSinCuenta");
 					
 					hash.put(FacAbonoBean.C_IDCUENTA,idCuenta);
 					

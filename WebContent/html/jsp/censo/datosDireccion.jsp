@@ -178,14 +178,14 @@
 	String quitar;
 	String lista = "";
 	
-	if (!paginaWEB.equals("")){	
+	if (!paginaWEB.equals("")&&paginaWEB.length()>=7){	
 
 		 lista = paginaWEB.substring(0, 7);		 
-		 if(lista.equals("http://")){				
+		 if(lista.equalsIgnoreCase("http://")){				
 				EnlaceWEb=paginaWEB;
 	     }
 		 
-		 if(!lista.equals("http://")&&(!lista.equals("http:\\\\"))){				
+		 if(!lista.equalsIgnoreCase("http://")&&(!lista.equalsIgnoreCase("http:\\\\"))){				
 			 EnlaceWEb="http://" + paginaWEB;
 		 } 		
 		

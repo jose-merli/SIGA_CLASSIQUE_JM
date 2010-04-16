@@ -40,7 +40,9 @@ public class ScsContrariosEJGAdm extends MasterBeanAdministrador {
 							ScsContrariosEJGBean.C_ANIO,					ScsContrariosEJGBean.C_NUMERO,
 							ScsContrariosEJGBean.C_FECHAMODIFICACION,		ScsContrariosEJGBean.C_USUMODIFICACION,
 							ScsContrariosEJGBean.C_IDPERSONA,				ScsContrariosEJGBean.C_OBSERVACIONES,
-							ScsContrariosEJGBean.C_IDINSTITUCION_PROCU,		ScsContrariosEJGBean.C_IDPROCURADOR};
+							ScsContrariosEJGBean.C_IDINSTITUCION_PROCU,		ScsContrariosEJGBean.C_IDPROCURADOR,
+							ScsContrariosEJGBean.C_IDABOGADOCONTRARIOEJG,	ScsContrariosEJGBean.C_NOMBREABOGADOCONTRARIOEJG,
+							ScsContrariosEJGBean.C_IDREPRESENTANTEEJG,  	ScsContrariosEJGBean.C_NOMBREREPRESENTANTEEJG};
 		return campos;
 	}
 	/** Funcion getClavesBean ()
@@ -74,6 +76,10 @@ public class ScsContrariosEJGAdm extends MasterBeanAdministrador {
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,ScsContrariosEJGBean.C_USUMODIFICACION));
 			bean.setIdProcurador(UtilidadesHash.getLong(hash,ScsContrariosEJGBean.C_IDPROCURADOR));
 			bean.setIdInstitucionProcurador(UtilidadesHash.getInteger(hash,ScsContrariosEJGBean.C_IDINSTITUCION_PROCU));
+			bean.setIdAbogadoContrarioEjg(UtilidadesHash.getString(hash,ScsContrariosEJGBean.C_IDABOGADOCONTRARIOEJG));
+			bean.setNombreAbogadoContrarioEjg(UtilidadesHash.getString(hash,ScsContrariosEJGBean.C_NOMBREABOGADOCONTRARIOEJG));
+			bean.setIdRepresentanteEjg(UtilidadesHash.getString(hash,ScsContrariosEJGBean.C_IDREPRESENTANTEEJG));
+			bean.setNombreRepresentanteEjg(UtilidadesHash.getString(hash,ScsContrariosEJGBean.C_NOMBREREPRESENTANTEEJG));
 		}
 		catch(Exception e){
 			bean = null;
@@ -110,6 +116,10 @@ public class ScsContrariosEJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, ScsContrariosEJGBean.C_USUMODIFICACION,String.valueOf(b.getUsuMod()));
 			UtilidadesHash.set(hash, ScsContrariosEJGBean.C_IDINSTITUCION_PROCU,String.valueOf(b.getIdInstitucionProcurador()));
 			UtilidadesHash.set(hash, ScsContrariosEJGBean.C_IDPROCURADOR,String.valueOf(b.getIdProcurador()));
+			UtilidadesHash.set(hash, ScsContrariosEJGBean.C_IDABOGADOCONTRARIOEJG,String.valueOf(b.getIdAbogadoContrarioEjg()));
+			UtilidadesHash.set(hash, ScsContrariosEJGBean.C_NOMBREABOGADOCONTRARIOEJG,String.valueOf(b.getNombreAbogadoContrarioEjg()));
+			UtilidadesHash.set(hash, ScsContrariosEJGBean.C_IDREPRESENTANTEEJG,String.valueOf(b.getIdRepresentanteEjg()));
+			UtilidadesHash.set(hash, ScsContrariosEJGBean.C_NOMBREREPRESENTANTEEJG,String.valueOf(b.getNombreRepresentanteEjg()));
 																		
 		}
 		catch (Exception e){
@@ -178,8 +188,10 @@ public class ScsContrariosEJGAdm extends MasterBeanAdministrador {
 							" from " +ScsPersonaJGBean.T_NOMBRETABLA+" p1 "+
 							" where p1."+ ScsPersonaJGBean.C_IDPERSONA+"=p."+ ScsPersonaJGBean.C_IDREPRESENTANTEJG+
 							" and p1."+ ScsPersonaJGBean.C_IDINSTITUCION+"=p."+ ScsPersonaJGBean.C_IDINSTITUCION+") REPRESENTANTE, "+
-							" p."+ScsPersonaJGBean.C_IDPERSONA+" IDPERSONA "+
-			    			
+							" p."+ScsPersonaJGBean.C_IDPERSONA+" IDPERSONA," +ScsContrariosEJGBean.C_NOMBREABOGADOCONTRARIOEJG+" NOMBREABOGADOCONTRARIOEJG,"+
+							"(select  pro.nombre || ' ' || pro.apellidos1 || ' ' || pro.apellidos2  from "+ ScsProcuradorBean.T_NOMBRETABLA+  " pro"+
+							" where  pro."+ScsProcuradorBean.C_IDINSTITUCION+"="+ScsContrariosEJGBean.T_NOMBRETABLA +"."+ScsContrariosEJGBean.C_IDINSTITUCION_PROCU+
+							" and pro."+ScsProcuradorBean.C_IDPROCURADOR+"="+ScsContrariosEJGBean.T_NOMBRETABLA +"."+ScsContrariosEJGBean.C_IDPROCURADOR+") PROCURADOR"+			    			
 							" FROM " + ScsContrariosEJGBean.T_NOMBRETABLA + "," + ScsPersonaJGBean.T_NOMBRETABLA +" p "+ 
 							" WHERE " +
 							ScsContrariosEJGBean.T_NOMBRETABLA +"."+ ScsContrariosEJGBean.C_IDINSTITUCION + "=p." + ScsPersonaJGBean.C_IDINSTITUCION +
@@ -201,6 +213,26 @@ public class ScsContrariosEJGAdm extends MasterBeanAdministrador {
 	       }
 	       return vContrarios;                        
 	    }
+	
+	
+	public String getNcolegiadoAbogado( String idPersona) throws ClsExceptions {
+		String consulta = "";
+		
+			try {
+				consulta ="select ncolegiado as NCOLEGIADOABOGADO from  CEN_COLEGIADO where idpersona="+idPersona;
+		   
+	         }
+			catch (Exception e){
+				//throw new ClsExceptions(e,"Excepcion en ScsContrariosEJGAdm.getNcolegiadoAbogado(). Consulta SQL:"+consulta);
+				return consulta;
+			}
+			
+			return consulta;
+	
+	}
+	
+	
+	
 	
 	
 }

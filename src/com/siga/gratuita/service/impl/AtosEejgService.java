@@ -2,14 +2,18 @@ package com.siga.gratuita.service.impl;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Vector;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.SIGAReferences;
@@ -19,8 +23,6 @@ import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
 import com.siga.beans.ScsPersonaJGAdm;
 import com.siga.beans.ScsPersonaJGBean;
-import com.siga.beans.ScsTelefonosPersonaBean;
-import com.siga.beans.ScsTelefonosPersonaJGAdm;
 import com.siga.beans.ScsTelefonosPersonaJGBean;
 import com.siga.beans.ScsUnidadFamiliarEJGAdm;
 import com.siga.beans.ScsUnidadFamiliarEJGBean;
@@ -80,11 +82,17 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 			throw new BusinessException(e.getMessage());
 		}
 		
-		String rutaLogoColegio = plantillaRuta+ClsConstants.FILE_SEP+"recursos"+ClsConstants.FILE_SEP+"Logo.jpg";
+		String rutaLogoColegio = plantillaRuta+ClsConstants.FILE_SEP+"recursos"+ClsConstants.FILE_SEP+"Logo.GIF";
 		rutaLogoColegio = UtilidadesString.replaceAllIgnoreCase(rutaLogoColegio, "/","\\\\" );
 		
 		Map<Integer, Map<String, String>> mapInformes = new HashMap<Integer, Map<String,String>>();
 		Map<String, String> mapParameters = new HashMap<String, String>();
+		try {
+			mapParameters.put("fechaConsulta", GstDate.getFormatedDateShort("", unidadFamiliar.getPeticionEejg().getFechaConsulta()));
+		}catch (ClsExceptions e) {
+			throw new BusinessException(e.getMessage());
+		}
+		
 		mapParameters = actualizaParametrosComunes(mapParameters, usr);
 		mapParameters.put("numEjg", ejg.getAnio()+"-"+ejg.getNumEJG());
 		mapParameters.put("idPersonaJG", unidadFamiliar.getPersonaJG().getIdPersona().toString());
@@ -121,7 +129,7 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 			throw new BusinessException(e.getMessage());
 		}
 		
-		String rutaLogoColegio = plantillaRuta+ClsConstants.FILE_SEP+"recursos"+ClsConstants.FILE_SEP+"Logo.jpg";
+		String rutaLogoColegio = plantillaRuta+ClsConstants.FILE_SEP+"recursos"+ClsConstants.FILE_SEP+"Logo.GIF";
 		rutaLogoColegio = UtilidadesString.replaceAllIgnoreCase(rutaLogoColegio, "/","\\\\" );
 		for (ScsUnidadFamiliarEJGBean unidadFamiliar:lUnidadFamiliar) {
 			StringBuffer keyEjgs = new StringBuffer();
@@ -152,6 +160,11 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 			}
 			htEjgs.put(keyEjgs, ejg);
 			mapParameters = new HashMap<String, String>();
+			try {
+				mapParameters.put("fechaConsulta", GstDate.getFormatedDateShort("", unidadFamiliar.getPeticionEejg().getFechaConsulta()));
+			}catch (ClsExceptions e) {
+				throw new BusinessException(e.getMessage());
+			}
 			mapParameters = actualizaParametrosComunes(mapParameters, usr);
 			mapParameters.put("numEjg", ejg.getAnio()+"-"+ejg.getNumEJG());
 			mapParameters.put("idioma", unidadFamiliar.getPeticionEejg().getIdioma());
@@ -201,7 +214,7 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 			throw new BusinessException(e.getMessage());
 		}
 		
-		String rutaLogoColegio = plantillaRuta+ClsConstants.FILE_SEP+"recursos"+ClsConstants.FILE_SEP+"Logo.jpg";
+		String rutaLogoColegio = plantillaRuta+ClsConstants.FILE_SEP+"recursos"+ClsConstants.FILE_SEP+"Logo.GIF";
 		rutaLogoColegio = UtilidadesString.replaceAllIgnoreCase(rutaLogoColegio, "/","\\\\" );
 		for(Hashtable<String, String> datos:vDatosMultiplesEjg){
 			String idTipoEJG= (String)datos.get("idtipo");
@@ -266,6 +279,11 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 				for(DefinirUnidadFamiliarEJGForm formUnidadFamiliar:alUnidadFamiliar){
 					
 					Map<String, String> mapParameters = new HashMap<String, String>();
+					try {
+						mapParameters.put("fechaConsulta", GstDate.getFormatedDateShort("", formUnidadFamiliar.getPeticionEejg().getFechaConsulta()));
+					}catch (ClsExceptions e) {
+						throw new BusinessException(e.getMessage());
+					}
 					mapParameters = actualizaParametrosComunes(mapParameters, usr);
 					mapParameters.put("numEjg", ejg.getAnio()+"-"+ejg.getNumEJG());
 					mapParameters.put("idPersonaJG",formUnidadFamiliar.getIdPersona());
@@ -361,9 +379,8 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 		String directorioPlantillas = rp.returnProperty("sjcs.directorioFisicoPlantillaInformeEejg");
 		String directorioEspecificoInforme = rp.returnProperty("sjcs.directorioPlantillaInformeEejg");
 		String plantillaRuta   = directorioPlantillas + directorioEspecificoInforme + ClsConstants.FILE_SEP + usr.getLocation();
-		String rutaLogoCGAE = plantillaRuta+ClsConstants.FILE_SEP+"recursos"+ClsConstants.FILE_SEP+"cgae.jpg";
-		rutaLogoCGAE = UtilidadesString.replaceAllIgnoreCase(rutaLogoCGAE, "//","\\" );
-		rutaLogoCGAE = UtilidadesString.replaceAllIgnoreCase(rutaLogoCGAE, "/","\\" );
+		String rutaLogoCGAE = plantillaRuta+ClsConstants.FILE_SEP+"recursos"+ClsConstants.FILE_SEP+"cgae.GIF";
+		
 		mapParameters.put("rutaLogoCGAE", rutaLogoCGAE);
 				
 		mapParameters.put("conveniosInicio", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.conveniosInicio"));
@@ -393,6 +410,10 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 		
 		mapParameters.put("textosFijosSolicitudTitulo", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.solicitud.titulo"));
 		mapParameters.put("textosFijosFechaDatosCorrectos", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.fechaDatosCorrectos"));
+		mapParameters.put("textosFijosFechaDatosPendientesInicio", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.textosFijosFechaDatosPendientesInicio"));
+		mapParameters.put("textosFijosFechaDatosPendientesFin", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.textosFijosFechaDatosPendientesFin"));
+		
+		
 		mapParameters.put("textosFijosPeticionTitulo", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.peticion.titulo"));
 		mapParameters.put("textosFijosNombrePdfTitulo", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.nombrePdf.titulo"));
 		mapParameters.put("textosFijosFicheroPdfTitulo", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.ficheroPdf.titulo"));
@@ -400,6 +421,13 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 		mapParameters.put("textosFijosAvisoLegalTitulo", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.avisoLegal.titulo"));
 
 		mapParameters.put("textosFijosDeclaranteEs", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.declaranteEs"));
+		
+		mapParameters.put("textosFijosFechaDatos", UtilidadesString.getMensajeIdioma(usr, "eejg.textosFijos.textosFijosFechaDatos"));
+		
+		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy",new Locale("es_ES"));
+		mapParameters.put("fechaDescargaInforme",format.format(new Date()));	
+	
+		
 		
 		return mapParameters;
 		

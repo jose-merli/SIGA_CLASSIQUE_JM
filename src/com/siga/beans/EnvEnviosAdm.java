@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
@@ -32,13 +33,15 @@ import java.util.regex.Pattern;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
-import javax.mail.Message;
+import javax.mail.BodyPart;
+
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.MimePart;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
@@ -67,6 +70,7 @@ import com.siga.certificados.Plantilla;
 import com.siga.consultas.CriterioDinamico;
 import com.siga.envios.UsuarioFax;
 import com.siga.envios.ZetaFax;
+import com.siga.envios.form.ImagenPlantillaForm;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.SIGAException;
 import com.siga.informes.MasterWords;
@@ -75,6 +79,7 @@ import com.sun.mail.smtp.SMTPAddressFailedException;
 
 public class EnvEnviosAdm extends MasterBeanAdministrador {
 
+  
   public final static int ESTADO_INICIAL = 1;
   public final static int ESTADO_PROCESADO = 2;
   public final static int ESTADO_PROCESADO_ERRORES= 3;
@@ -219,40 +224,14 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		return htData;
 	}
 
-    public Integer getNewIdEnvio(UsrBean _usr) throws ClsExceptions{
-        RowsContainer rows=new RowsContainer();
-        String sql="SELECT MAX(" + EnvEnviosBean.C_IDENVIO +
-        		") AS MAXVALOR FROM " + EnvEnviosBean.T_NOMBRETABLA +
-        		" WHERE " + EnvEnviosBean.C_IDINSTITUCION + "="+ _usr.getLocation();
-        int valor=1; // Si no hay registros, es el valor que tomará
-        if(rows.find(sql)){
-            Hashtable htRow=((Row)rows.get(0)).getRow();
-            // El valor devuelto será "" Si no hay registros
-            if(!((String)htRow.get("MAXVALOR")).equals("")) {
-                Integer valorInt=Integer.valueOf((String)htRow.get("MAXVALOR"));
-                valor=valorInt.intValue();
-                valor++;
-            }
-        }
-        return new Integer(valor);
+    public Integer getNewIdEnvio(String idInstitucion) throws ClsExceptions{
+        Long idEnvio = getSecuenciaNextVal(EnvEnviosBean.SEQ_ENV_ENVIOS);
+        SimpleDateFormat formato = new SimpleDateFormat("yyyy");
+        return new Integer(formato.format(new Date())+idEnvio);
     }
 
-    public Integer getNewIdEnvio(String idInstitucion) throws ClsExceptions{
-        RowsContainer rows=new RowsContainer();
-        String sql="SELECT MAX(" + EnvEnviosBean.C_IDENVIO +
-        		") AS MAXVALOR FROM " + EnvEnviosBean.T_NOMBRETABLA +
-        		" WHERE " + EnvEnviosBean.C_IDINSTITUCION + "="+ idInstitucion;
-        int valor=1; // Si no hay registros, es el valor que tomará
-        if(rows.find(sql)){
-            Hashtable htRow=((Row)rows.get(0)).getRow();
-            // El valor devuelto será "" Si no hay registros
-            if(!((String)htRow.get("MAXVALOR")).equals("")) {
-                Integer valorInt=Integer.valueOf((String)htRow.get("MAXVALOR"));
-                valor=valorInt.intValue();
-                valor++;
-            }
-        }
-        return new Integer(valor);
+    public Integer getNewIdEnvio(UsrBean usrBean) throws ClsExceptions{
+    	return getNewIdEnvio(usrBean.getLocation());
     }
 
 /**
@@ -663,52 +642,98 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
  		catch (Exception e) {
  		    tipo = -1;
  		}
-
+ 		boolean foundPrimeraPreferente = false;
  		switch (tipo) {
         case TIPO_CORREO_ELECTRONICO:
             for (int i=0;i<direcciones.size();i++){
      		    Hashtable htDir = (Hashtable)direcciones.get(i);
-     		    String correoElectronico = (String)htDir.get(EnvDestinatariosBean.C_CORREOELECTRONICO);
+     		    String correoElectronico = (String)htDir.get(CenDireccionesBean.C_CORREOELECTRONICO);
                 if (correoElectronico!=null && !correoElectronico.equals("")){
-     		        direccionesTipo.add(htDir);
+                	String preferente = (String)htDir.get(CenDireccionesBean.C_PREFERENTE); 
+         		    if(preferente!=null){
+         		    	if(preferente.contains(ClsConstants.TIPO_PREFERENTE_CORREOELECTRONICO)&&!foundPrimeraPreferente){
+         		    		foundPrimeraPreferente = true;
+         		    		direccionesTipo.add(0,htDir);
+         		    	}else{
+         		    		direccionesTipo.add(htDir);
+         		    		
+         		    	}
+         		    	
+         		    	
+         		    }else{
+         		    	direccionesTipo.add(htDir);
+         		    }
      		    }
      		}
             break;
         case TIPO_CORREO_ORDINARIO:
             for (int i=0;i<direcciones.size();i++){
                 Hashtable htDir = (Hashtable)direcciones.get(i);
-     		    String direccion = (String)htDir.get(EnvDestinatariosBean.C_DOMICILIO);
-     		    String idPoblacion = (String)htDir.get(EnvDestinatariosBean.C_IDPOBLACION);
-     		    String cp = (String)htDir.get(EnvDestinatariosBean.C_CODIGOPOSTAL);
-                if (
-                    (direccion!=null && !direccion.equals(""))
-        		  && (
-        		       (idPoblacion!=null && !idPoblacion.equals(""))
-        		  		|| (cp!=null && !cp.equals(""))
-        		   	   )
-        		   ){
-     		        direccionesTipo.add(htDir);
-     		    }
+     		    String direccion = (String)htDir.get(CenDireccionesBean.C_DOMICILIO);
+     		    String idPoblacion = (String)htDir.get(CenDireccionesBean.C_IDPOBLACION);
+     		    String cp = (String)htDir.get(CenDireccionesBean.C_CODIGOPOSTAL);
+                if ((direccion != null && !direccion.equals(""))
+						&& ((idPoblacion != null && !idPoblacion.equals("")) || (cp != null && !cp.equals("")))) {
+                	String preferente = (String)htDir.get(CenDireccionesBean.C_PREFERENTE);
+                	if(preferente!=null){
+         		    	if(preferente.contains(ClsConstants.TIPO_PREFERENTE_CORREO)&&!foundPrimeraPreferente){
+         		    		foundPrimeraPreferente = true;
+         		    		direccionesTipo.add(0,htDir);
+         		    	}else{
+         		    		direccionesTipo.add(htDir);
+         		    		
+         		    	}
+         		    	
+         		    }else{
+         		    	direccionesTipo.add(htDir);
+         		    }
+                	
+                	
+				}
      		}
             break;
         case TIPO_SMS:
         case TIPO_BUROSMS:
             for (int i=0;i<direcciones.size();i++){
                 Hashtable htDir = (Hashtable)direcciones.get(i);
-                String movil = (String)htDir.get(EnvDestinatariosBean.C_MOVIL);
+                String movil = (String)htDir.get(CenDireccionesBean.C_MOVIL);
                 if (movil!=null && !movil.equals("")){
-     		        direccionesTipo.add(htDir);
+                	String preferente = (String)htDir.get(CenDireccionesBean.C_PREFERENTE);
+                	if(preferente!=null){
+         		    	if(preferente.contains(ClsConstants.TIPO_PREFERENTE_SMS)&&!foundPrimeraPreferente){
+         		    		foundPrimeraPreferente = true;
+         		    		direccionesTipo.add(0,htDir);
+         		    	}else{
+         		    		direccionesTipo.add(htDir);
+         		    		
+         		    	}
+         		    	
+         		    }else{
+         		    	direccionesTipo.add(htDir);
+         		    }
      		    }
      		}
             break;
         case TIPO_FAX:
             for (int i=0;i<direcciones.size();i++){
                 Hashtable htDir = (Hashtable)direcciones.get(i);
-     		    String fax1 = (String)htDir.get(EnvDestinatariosBean.C_FAX1);
-     		    String fax2 = (String)htDir.get(EnvDestinatariosBean.C_FAX2);
+     		    String fax1 = (String)htDir.get(CenDireccionesBean.C_FAX1);
+     		    String fax2 = (String)htDir.get(CenDireccionesBean.C_FAX2);
      		    if ((fax1!=null && !fax1.equals(""))||
      		        (fax2!=null && !fax2.equals(""))){
-     		        direccionesTipo.add(htDir);
+     		    	String preferente = (String)htDir.get(CenDireccionesBean.C_PREFERENTE);
+                	if(preferente!=null){
+         		    	if(preferente.contains(ClsConstants.TIPO_PREFERENTE_FAX)&&!foundPrimeraPreferente){
+         		    		foundPrimeraPreferente = true;
+         		    		direccionesTipo.add(0,htDir);
+         		    	}else{
+         		    		direccionesTipo.add(htDir);
+         		    		
+         		    	}
+         		    	
+         		    }else{
+         		    	direccionesTipo.add(htDir);
+         		    }
      		    }
      		}
             break;
@@ -724,13 +749,13 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
      * Copia los campos de la plantilla a la tabla EnvCamposEnvios
      *
      * @param idInstitucion
-     * @param idEnvio
+     * @param id
      * @param idTipoEnvio
      * @param idPlantilla
      * @param tipoCampo
      * @throws ClsExceptions
      */
-    public void copiarCamposPlantilla(Integer idInstitucion, Integer idEnvio, Integer idTipoEnvio, Integer idPlantilla) throws ClsExceptions 
+    public void copiarCamposPlantilla(Integer idInstitucion, Integer id, Integer idTipoEnvio, Integer idPlantilla) throws ClsExceptions 
 	{
         EnvCamposPlantillaAdm cpAdm = new EnvCamposPlantillaAdm(this.usrbean);
         EnvCamposEnviosAdm ceAdm = new EnvCamposEnviosAdm(this.usrbean);
@@ -738,7 +763,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
         //Borramos los campos de un envío
         Hashtable ht = new Hashtable();
         ht.put(EnvCamposEnviosBean.C_IDINSTITUCION,idInstitucion);
-        ht.put(EnvCamposEnviosBean.C_IDENVIO,idEnvio);
+        ht.put(EnvCamposEnviosBean.C_IDENVIO,id);
         String[] campos = {EnvCamposEnviosBean.C_IDINSTITUCION,
                 			EnvCamposEnviosBean.C_IDENVIO};
         ceAdm.deleteDirect(ht,campos);
@@ -754,7 +779,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	            EnvCamposPlantillaBean cpBean = (EnvCamposPlantillaBean) vCamposPlantilla.elementAt(i);
 	            EnvCamposEnviosBean ceBean = new EnvCamposEnviosBean();
 
-	            ceBean.setIdEnvio(idEnvio);
+	            ceBean.setIdEnvio(id);
 	            ceBean.setIdInstitucion(idInstitucion);
 	            ceBean.setIdCampo(cpBean.getIdCampo());
 	            ceBean.setIdFormato(cpBean.getIdFormato());
@@ -767,7 +792,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 
         // Copiamos los remitentes de la plantilla
         try {
-        	this.copiarRemitentesDesdePlantilla(idInstitucion, idEnvio, idTipoEnvio, idPlantilla);
+        	this.copiarRemitentesDesdePlantilla(idInstitucion, id, idTipoEnvio, idPlantilla);
         }
         catch (Exception e) {
         	throw new ClsExceptions(e, "Error al copiar remitentes en el envio");
@@ -1255,6 +1280,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
     public Hashtable getDatosEnvio(EnvDestinatariosBean beanDestinatario, String consulta) throws SIGAException, ClsExceptions
 	{
     	Hashtable htDatos = getDatosEnvio(beanDestinatario.getIdInstitucion(), beanDestinatario.getIdEnvio(), beanDestinatario.getIdPersona(), consulta);
+    	    	
     	if(beanDestinatario.getDomicilio()!=null)
     		htDatos.put("DIRECCION", beanDestinatario.getDomicilio());
     	else
@@ -2129,7 +2155,20 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    if (!envBean.getIdTipoEnvios().equals(Integer.valueOf(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))){
 	        throw new ClsExceptions("Tipo de envío electrónico incorrecto");
 	    }
-	    
+	    List<ImagenPlantillaForm> lImagenes = (List<ImagenPlantillaForm>) htDatosEnvio.get("imagenesPlantilla");
+	    if(lImagenes!=null){
+		    for(ImagenPlantillaForm imagenPlantilla:lImagenes){
+		    	EnvImagenPlantillaBean imagenPlantillaBean = imagenPlantilla.getImagenPlantillaBean();
+		    	if(imagenPlantillaBean.isEmbebed()){
+		    		htDatosEnvio.put(imagenPlantillaBean.getNombreParseo(), imagenPlantillaBean.getImagenSrcEmbebida("/"));
+		    		
+		    	}else{
+		    		htDatosEnvio.put(imagenPlantillaBean.getNombreParseo(), imagenPlantillaBean.getImagenSrcExterna("/"));
+		    		lImagenes.remove(imagenPlantillaBean);
+		    	}
+		    }
+		    htDatosEnvio.remove("imagenesPlantilla");
+	    }
 	    Hashtable htPk = new Hashtable();
 	    htPk.put(EnvCamposEnviosBean.C_IDINSTITUCION,envBean.getIdInstitucion());
 	    htPk.put(EnvCamposEnviosBean.C_IDENVIO,envBean.getIdEnvio());
@@ -4596,12 +4635,14 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
         	//Obtenemos el tipo de archivo de la plantilla y el archivo de la plantilla
         	String tipoArchivoPlantilla = null;
         	File fPlantilla = null;
+        	
         	if(envBean.getIdPlantilla()!=null){
         		EnvPlantillaGeneracionAdm admPlantilla = new EnvPlantillaGeneracionAdm(this.usrbean);
                 fPlantilla = admPlantilla.obtenerPlantilla(""+envBean.getIdInstitucion(), 
                         										""+envBean.getIdTipoEnvios(), 
                         										""+envBean.getIdPlantillaEnvios(), 
                         										""+envBean.getIdPlantilla());
+                
                 
         		
 	        	Hashtable htPkPlantillaGeneracion = new Hashtable();
@@ -4612,9 +4653,22 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	        	
 	            
 	            Vector vPlant = admPlantilla.selectByPK(htPkPlantillaGeneracion);	    
-	    	    EnvPlantillaGeneracionBean plantBean = (EnvPlantillaGeneracionBean)vPlant.firstElement();
+	            EnvPlantillaGeneracionBean plantBean = (EnvPlantillaGeneracionBean)vPlant.firstElement();
 	    	    tipoArchivoPlantilla = plantBean.getTipoArchivo();
+	    	    
+	    	    
+
+	    	    
+	    	    
         	}
+        	EnvImagenPlantillaBean beanImagenes = new EnvImagenPlantillaBean();
+        	beanImagenes.setIdInstitucion(envBean.getIdInstitucion());
+        	beanImagenes.setIdTipoEnvios(envBean.getIdTipoEnvios());
+        	beanImagenes.setIdPlantillaEnvios(envBean.getIdPlantillaEnvios());
+        	EnvImagenPlantillaAdm admImagenPlantilla = new EnvImagenPlantillaAdm(this.usrbean);
+    	    List<ImagenPlantillaForm> lImagenes = admImagenPlantilla.getImagenes(beanImagenes);
+        	
+        	
         	//ACUMULAMOS POBLACIONES, PAISES Y PROVINCIAS PARA EVITAR HACER QUERYS A LA BBDD
         	Hashtable htPoblaciones = new Hashtable();
     	    Hashtable htProvincia = new Hashtable();
@@ -4658,77 +4712,17 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		    	    
 		    	    //Se especifica la dirección de origen.
 		    	    mensaje.setFrom(new InternetAddress(sFrom));
-		    	    
-		    	    //Se especifica la dirección de destino.
-		    	    mensaje.addRecipient(Message.RecipientType.TO, new InternetAddress(sTo));
-		    	    
-		    	    //Se especifica que el correo es MultiPart: texto + fichero.
-		    	    MimeMultipart multipart = new MimeMultipart();
-		    		
-		    		//Documentos adjuntos
-		    	    MimeBodyPart bodyPart = new MimeBodyPart();    	    
-		    	    String sAttachment,sAttach;
-		    	    String idPersona = String.valueOf(destBean.getIdPersona());
-		    	    
-		            // ADJUNTAR EL PDF DEL ENVIO
-			        /////////////////////////////////////
-		    	    /* archivo pdf: [idPersona].pdf */
-		    	    if (pathArchivoGenerado!=null){
-		    	    	sAttachment = pathArchivoGenerado;
-			    	    sAttach = pathArchivoGenerado.substring(pathArchivoGenerado.lastIndexOf(File.separator)+1);
-//		    	        sAttachment = sDirPdf + File.separator + idPersona + ".pdf";
-//			    	    sAttach = idPersona + ".pdf";
-			    	    DataSource source = new FileDataSource(sAttachment);				    
-			    	    bodyPart.setDataHandler(new DataHandler(source));
-			    	    bodyPart.setFileName(sAttach);
-			    	    multipart.addBodyPart(bodyPart);
-		    	    }
-		    	    
-		            // DOCUMENTOS ADJUNTOS
-			        /////////////////////////////////////
-		    	    /* documentos adjuntos de envío*/
-		    	    EnvDocumentosAdm docAdm = new EnvDocumentosAdm(this.usrbean);
-		    	    Vector vDocs = docAdm.select(htPk);
-		    	    for (int d=0;d<vDocs.size();d++){
-		    	        EnvDocumentosBean docBean = (EnvDocumentosBean)vDocs.elementAt(d);
-		    	        String idDoc = String.valueOf(docBean.getIdDocumento());
-		    	        File fDoc = docAdm.getFile(envBean,idDoc);
-		    	        sAttachment = fDoc.getPath();
-		    	        sAttach = docBean.getPathDocumento();
-		    	        
-		    	        DataSource source = new FileDataSource(sAttachment);
-		    	        bodyPart = new MimeBodyPart();    	    
-		        	    bodyPart.setDataHandler(new DataHandler(source));
-		        	    bodyPart.setFileName(sAttach);
-		        	    multipart.addBodyPart(bodyPart);
-		    	    }
-		    	    
+			    	 // Acuse de recibo
+		    	    if(false)
+		    	    	mensaje.addHeader("Disposition-Notification-To",sFrom);
 
-		            // DOCUMENTOS ADJUNTOS DE DESTINATARIO
-			        /////////////////////////////////////
 		    	    
-		    	    // RGG Atencion, estos documentos no se usan, queda comentado el codigo.
-	    	    	/*
-		    	    EnvDocumentosDestinatariosAdm docDestAdm = new EnvDocumentosDestinatariosAdm(this.usrbean);
-		    	    Hashtable htPkD = (Hashtable)htPk.clone();
-		    	    htPkD.put(EnvDocumentosDestinatariosBean.C_IDPERSONA,idPersona);
-		    	    Vector vDocsDest = docDestAdm.select(htPkD);
-		    	    for (int dd=0;dd<vDocsDest.size();dd++){
-		    	        EnvDocumentosDestinatariosBean docDestBean = (EnvDocumentosDestinatariosBean)vDocsDest.elementAt(dd);
-		    	        String idDoc = String.valueOf(docDestBean.getIdDocumento());
-		    	        File fDoc = docDestAdm.getFile(String.valueOf(idInstitucion),
-		    	                					String.valueOf(idEnvio),idDoc, idPersona);
-		    	        sAttachment = fDoc.getPath();
-		    	        //sAttach = fDoc.getName();
-		    	        sAttach = docDestBean.getPathDocumento();
-		    	        
-		    	        DataSource source = new FileDataSource(sAttachment);
-		    	        bodyPart = new MimeBodyPart();    	    
-		        	    bodyPart.setDataHandler(new DataHandler(source));
-		        	    bodyPart.setFileName(sAttach);
-		        	    multipart.addBodyPart(bodyPart);^
-		    	    }
-	        	    */
+		    	    InternetAddress toInternetAddress = new InternetAddress(sTo);
+		    	    //Se especifica la dirección de destino.
+		    	    mensaje.addRecipient(MimeMessage.RecipientType.TO,toInternetAddress );
+		    	    
+		    	    
+		    	    String idPersona = String.valueOf(destBean.getIdPersona());
 		    	    
 		            // MENSAJE DE CORREO ELECTRONICO
 			        /////////////////////////////////////
@@ -4744,29 +4738,97 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		    	    	
 		    	    }
 		    	    
+		    	    if(lImagenes!= null && lImagenes.size()>0)
+		    	    	htDatos.put("imagenesPlantilla", lImagenes);
 			        Hashtable htCorreo = getCamposCorreoElectronico(envBean, destBean,Long.valueOf(idPersona),consulta,htDatos);
 			        String sAsunto = (htCorreo.get("asunto")==null)?"":(String)htCorreo.get("asunto");
-			        String sCuerpo = (htCorreo.get("cuerpo")==null)?"":(String)htCorreo.get("cuerpo");
+			        
 			        
 			        //Se especifica el texto del correo.
-		    	    bodyPart = new MimeBodyPart();
-		    	    bodyPart.setText(sCuerpo,"ISO-8859-1");
-		    	    multipart.addBodyPart(bodyPart);        	
-		    		
-		    	    //Se especifica el asunto del correo.
-		    	    mensaje.setSubject(sAsunto,"ISO-8859-1");	    	
-		    	    mensaje.setHeader("Content-Type","text/plain; charset=\"ISO-8859-1\"");
-		    	    //Se anhade el contenido al fichero.
-		    	    mensaje.setContent(multipart);
+
+			        //Se especifica el asunto del correo.
+		    	    mensaje.setSubject(sAsunto,"ISO-8859-1");
+		    	    mensaje.setHeader("Content-Type","text/html; charset=\"ISO-8859-1\"");
 		    	    
-		    	    // Se envía el correo.
-		    	    //Transport.send(mensaje);
+		    	    
+		   
+		    	    
+		    	    
+		    	    // Create your new message part
+		    	    // Se especifica que el correo es MultiPart: texto + fichero.
+		    	    // MimeMultipart multipart = new MimeMultipart("related");
+//		    	    MimeMultipart multipart = new MimeMultipart();
+		    	    
+		    	    String sCuerpo = (htCorreo.get("cuerpo")==null)?"":(String)htCorreo.get("cuerpo");
+		    	    
+		    	    MimeMultipart multipartRoot = new MimeMultipart("related");
+		    	    MimeBodyPart contentRoot = new MimeBodyPart();
+		    	    MimeMultipart multipartAlt = new MimeMultipart("alternative");
+
+		    	    //alternative message
+		    	    addContentToMultipart(multipartAlt,sCuerpo);
+
+		    	    //Hierarchy
+		    	    contentRoot.setContent(multipartAlt);
+		    	    multipartRoot.addBodyPart(contentRoot);
+
+		    	    //add a part for the image
+		    	    
+		    	    if (lImagenes!=null && lImagenes.size()>0){
+			    	    
+			    	    for(ImagenPlantillaForm imagenPlantilla:lImagenes){
+			    	    	EnvImagenPlantillaBean imagenPlantillaBean = imagenPlantilla.getImagenPlantillaBean();
+			    	    	if(imagenPlantillaBean.isEmbebed()){
+				    	    	addCIDToMultipart(multipartRoot,imagenPlantillaBean.getPathImagen(null,File.separator),imagenPlantillaBean.getNombre());
+			    	    	}
+			    	    }
+			    	    
+		    	    }
+		    	    
+		    	    
+
+		    	    //attach a pdf
+		    	  //Documentos adjuntos
+		    	    MimeBodyPart bodyPart = new MimeBodyPart();    	    
+		    	    String sAttachment,sAttach;
+		    	   
+		    	    
+		            // ADJUNTAR EL PDF DEL ENVIO
+			        /////////////////////////////////////
+		    	    /* archivo pdf: [idPersona].pdf */
+		    	    if (pathArchivoGenerado!=null){
+		    	    	sAttachment = pathArchivoGenerado;
+			    	    sAttach = pathArchivoGenerado.substring(pathArchivoGenerado.lastIndexOf(File.separator)+1);
+			    	    addAttachToMultipart(multipartRoot, pathArchivoGenerado, sAttach);
+		    	    }
+		    	    
+		            // DOCUMENTOS ADJUNTOS
+			        /////////////////////////////////////
+		    	    /* documentos adjuntos de envío*/
+		    	    EnvDocumentosAdm docAdm = new EnvDocumentosAdm(this.usrbean);
+		    	    Vector vDocs = docAdm.select(htPk);
+		    	    for (int d=0;d<vDocs.size();d++){
+		    	        EnvDocumentosBean docBean = (EnvDocumentosBean)vDocs.elementAt(d);
+		    	        String idDoc = String.valueOf(docBean.getIdDocumento());
+		    	        File fDoc = docAdm.getFile(envBean,idDoc);
+		    	        sAttachment = fDoc.getPath();
+		    	        sAttach = docBean.getPathDocumento();
+		    	        addAttachToMultipart(multipartRoot, fDoc.getPath(), docBean.getPathDocumento());
+		    	      
+		    	    }
+		    	    
+		    	  
+		    	    
+		    	    
+		    	    // Associate multi-part with message
+		    	    mensaje.setContent(multipartRoot);
 		    	    tr.sendMessage(mensaje, mensaje.getAllRecipients());
 		    	    
-		    	    
-		    	    // RGG 08/06/2009 ESTADISTICA
 		    	    EnvEstatEnvioAdm admEstat = new EnvEstatEnvioAdm(this.usrbean);
-		    	    admEstat.insertarApunteExtra(envBean.getIdInstitucion(),envBean.getIdEnvio(),envBean.getIdTipoEnvios(),new Long(idPersona),sTo);
+		    	    admEstat.insertarApunteExtra(envBean.getIdInstitucion(),envBean.getIdEnvio(),envBean.getIdTipoEnvios(),new Long(idPersona),sTo);		    	    
+		    	    ////////////////////////////////////////////////////////////////////////////////
+		    	    // RGG 08/06/2009 ESTADISTICA
+		    	    
 	            }catch (SMTPAddressFailedException e){
 	                errores = true;
 	                insertarMensajeLogHT(destBean,htErrores, e);
@@ -4807,6 +4869,48 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
     
 	
 }
+	public void addContentToMultipart(MimeMultipart multipart,String htmlText) throws Exception
+	{
+	// first part (the html)
+		BodyPart messageBodyPart = new MimeBodyPart();
+		messageBodyPart.setContent(htmlText, "text/html");
+		// add it
+		multipart.addBodyPart(messageBodyPart);
+	}
+	
+	// -----
+	/**
+	* Añade al mensaje un cid:name utilizado para guardar las imagenes referenciadas en el HTML de la forma <img src=cid:name />
+	* @param cidname identificador que se le da a la imagen. suele ser un string generado aleatoriamente.
+	* @param pathname ruta del fichero que almacena la imagen
+	* @throws Exception excepcion levantada en caso de error
+	*/
+	public void addCIDToMultipart(MimeMultipart multipart,String pathname,String cidname) throws Exception
+	{
+		DataSource fds = new FileDataSource(pathname);
+		BodyPart messageBodyPart = new MimeBodyPart();
+		messageBodyPart.setDataHandler(new DataHandler(fds));
+		messageBodyPart.setHeader("Content-ID","<"+cidname+">");
+		multipart.addBodyPart(messageBodyPart);
+	}
+	// ----
+	/**
+	* Añade un attachement al mensaje de email
+	* @param pathname ruta del fichero
+	* @throws Exception excepcion levantada en caso de error
+	*/
+	public void addAttachToMultipart(MimeMultipart multipart,String pathname,String name) throws Exception
+	{
+		File file = new File(pathname);
+		BodyPart messageBodyPart = new MimeBodyPart();
+		DataSource ds = new FileDataSource(file);
+		messageBodyPart.setDataHandler(new DataHandler(ds));
+		messageBodyPart.setFileName(name);
+		messageBodyPart.setDisposition(MimePart.ATTACHMENT);
+		
+		multipart.addBodyPart(messageBodyPart);
+	}
+	
 	private void actualizaPoblacionDestinatario(EnvDestinatariosBean destinatarioBean,Hashtable htPoblaciones) throws ClsExceptions, SIGAException{
 		String descPoblacion = null;
 		if (destinatarioBean.getIdPais().equals("") || destinatarioBean.getIdPais().equals(ClsConstants.ID_PAIS_ESPANA)) {

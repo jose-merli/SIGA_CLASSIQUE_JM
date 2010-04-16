@@ -1132,6 +1132,28 @@ public abstract class MasterBeanAdministrador {
         rc.findNLS(sql);
        	return rc;
 	}
+	
+	public Long	getSecuenciaNextVal(String nombreSecuencia)throws ClsExceptions {
+		int contador = 0;
+		Long id=null;
+		
+		RowsContainer rc = new RowsContainer(); 
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT ");
+		sql.append(nombreSecuencia);
+		sql.append(".NEXTVAL from DUAL");
+		try {		
+			if (rc.findForUpdate(sql.toString())) {	
+				Row fila = (Row) rc.get(0);
+				id = Long.valueOf((String)fila.getRow().get("NEXTVAL"));														
+			}
+		}	
+		catch (ClsExceptions e) {		
+			throw new ClsExceptions (e, "Error al ejecutar el 'getNuevoId' en BBDD");		
+		}		
+		return id;
+	}
+	
 
 
 }

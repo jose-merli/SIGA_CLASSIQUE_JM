@@ -1,5 +1,9 @@
 package com.siga.beans;
 
+import java.util.List;
+
+import com.siga.envios.form.ImagenPlantillaForm;
+
 public class EnvPlantillaGeneracionBean extends MasterBean
 {
 	/* Variables */
@@ -10,6 +14,7 @@ public class EnvPlantillaGeneracionBean extends MasterBean
 	private String descripcion;
 	private String porDefecto;
 	private String tipoArchivo;
+	List<ImagenPlantillaForm> imagenes; 
 
 	/* Nombre campos de la tabla */
 	static public final String C_IDINSTITUCION = "IDINSTITUCION";
@@ -89,5 +94,13 @@ public class EnvPlantillaGeneracionBean extends MasterBean
 
 	public void setTipoArchivo(String tipoArchivo) {
 		this.tipoArchivo = tipoArchivo;
+	}
+
+	public List<ImagenPlantillaForm> getImagenes() {
+		return imagenes;
+	}
+
+	public void setImagenes(List<ImagenPlantillaForm> imagenes) {
+		this.imagenes = imagenes;
 	}
 }

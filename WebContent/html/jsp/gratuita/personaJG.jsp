@@ -33,34 +33,37 @@
 	UsrBean usr = (UsrBean) ses.getAttribute("USRBEAN");
 	Properties src = (Properties) ses
 			.getAttribute(SIGAConstants.STYLESHEET_REF);
-	String dato[] = { (String) usr.getLocation() };
+	String dato[] = {(String) usr.getLocation()};
 	boolean esFichaColegial = false;
 
-	String sEsFichaColegial = (String) request.getAttribute("esFichaColegial");
-	if ((sEsFichaColegial != null)&&
-			((sEsFichaColegial.equalsIgnoreCase("1"))||(sEsFichaColegial.equalsIgnoreCase("true")))) {
+	
+	String sEsFichaColegial = (String) request
+			.getAttribute("esFichaColegial");
+	if ((sEsFichaColegial != null)
+			&& ((sEsFichaColegial.equalsIgnoreCase("1")) || (sEsFichaColegial
+					.equalsIgnoreCase("true")))) {
 		esFichaColegial = true;
 	}
-	
+
 	int pcajgActivo = 0;
 	/*String sEsPcajgActivo = (String)request.getAttribute("pcajgActivo");
 	if ((sEsPcajgActivo!=null) && (!sEsPcajgActivo.equalsIgnoreCase(""))){
 		pcajgActivo = Integer.parseInt(sEsPcajgActivo);
 	}*/
-	if (request.getAttribute("pcajgActivo")!=null){
-		pcajgActivo = Integer.parseInt(request.getAttribute("pcajgActivo").toString());
+	if (request.getAttribute("pcajgActivo") != null) {
+		pcajgActivo = Integer.parseInt(request.getAttribute(
+				"pcajgActivo").toString());
 	}
-	
 
 	// RGG 23-03-2006  cambios de personaJG
 
 	PersonaJGForm miform = (PersonaJGForm) request
 			.getAttribute("PersonaJGForm");
-    String importeBienesInmuebles=miform.getImporteBienesInmuebles();
-    String importeOtrosBienes=miform.getImporteOtrosBienes();
-    String importeIngresosAnuales=miform.getImporteIngresosAnuales();
-    String importeBienesMuebles=miform.getImporteBienesMuebles();
-    
+	String importeBienesInmuebles = miform.getImporteBienesInmuebles();
+	String importeOtrosBienes = miform.getImporteOtrosBienes();
+	String importeIngresosAnuales = miform.getImporteIngresosAnuales();
+	String importeBienesMuebles = miform.getImporteBienesMuebles();
+
 	String estiloBox = "box";
 	String estiloBoxNumber = "boxNumber";
 	String classCombo = "box";
@@ -91,12 +94,13 @@
 	String pantalla = miform.getPantalla();
 	String idPersona = miform.getIdPersonaJG();
 	String actionE = miform.getActionE();
-	String bPestana = (pantalla != null && pantalla.equals("P")) ? "true"
+	String bPestana = (pantalla != null && pantalla.equals("P"))
+			? "true"
 			: "false";
 	String nuevo = miform.getNuevo();
 	String sexo = "";
 	String idioma = "";
-	String nHijos = "" ;
+	String nHijos = "";
 
 	String tipoConoce = "", tipoGrupoLaboral = "", numVecesSOJ = "";
 	/*idTipoConoce.add(miHash.get(ScsSOJBean.C_IDTIPOCONOCE).toString());
@@ -105,10 +109,9 @@
 	String pideJG = miform.getChkPideJG();
 	String solicitaInfoJG = miform.getChkSolicitaInfoJG();
 	String checkSolicitante = miform.getSolicitante();
-	
-	String asterisco="&nbsp(*)&nbsp";
-	
-	
+
+	String asterisco = "&nbsp(*)&nbsp";
+
 	// Ponemos astericos en los campos obligatorios para el pcajg activo
 	// jbd 19/01/2010 Hay que cambiar esto porque ahora pcajgActivo es un numero en vez de boolean
 	/*if ((pcajgActivo) && 
@@ -123,59 +126,61 @@
 	boolean obligatorioDireccion = false;
 	boolean obligatorioPoblacion = false;
 	boolean obligatorioCodigoPostal = false;
-	boolean obligatorioTipoIdentificador = true;
+	boolean obligatorioTipoIdentificador = false;
 	boolean obligatorioIdentificador = false;
 	boolean obligatorioNacionalidad = false;
 	boolean obligatorioTipoIngreso = false;
-	if ((pcajgActivo==1)&& 
-			(( conceptoE.equals(PersonaJGAction.EJG)
-			|| conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR) 
-			/*|| conceptoE.equals(PersonaJGAction.PERSONAJG)*/ ))){
-		obligatorioDireccion 			= true;
-		obligatorioTipoIdentificador 	= true;
-		obligatorioIdentificador 		= true;
-		if(conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) 
-			obligatorioParentesco 	= true;
-	}else if ((pcajgActivo==2)&& 
-			(( conceptoE.equals(PersonaJGAction.EJG)
-			|| conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR) 
-			/*|| conceptoE.equals(PersonaJGAction.PERSONAJG)*/ ))){
-		obligatorioDireccion 			= true;
-		obligatorioTipoIdentificador 	= true;
-		obligatorioIdentificador 		= true;
-		obligatorioTipoIngreso			= true;
-		if(conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) 
-			obligatorioParentesco 	= true;
-	}else if ((pcajgActivo==3)&& 
-			(( conceptoE.equals(PersonaJGAction.EJG)
-			|| conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR) 
-			/*|| conceptoE.equals(PersonaJGAction.PERSONAJG)*/ ))){
-		obligatorioDireccion 			= true;
-		obligatorioTipoIdentificador 	= true;
-		obligatorioIdentificador		= true;
-		obligatorioTipoIngreso			= true;
-		if(conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) 
-			obligatorioParentesco 	= true;
-	}else if ((pcajgActivo==4)&& 
-			(( conceptoE.equals(PersonaJGAction.EJG)
-			|| conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR) 
-			/*|| conceptoE.equals(PersonaJGAction.PERSONAJG)*/ ))){
-		obligatorioDireccion 	= true;
-		obligatorioPoblacion 	= true;
+	if ((pcajgActivo == 1)
+			&& ((conceptoE.equals(PersonaJGAction.EJG) || conceptoE
+					.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)
+			/*|| conceptoE.equals(PersonaJGAction.PERSONAJG)*/))) {
+		obligatorioDireccion = true;
+		obligatorioTipoIdentificador = true;
+		obligatorioIdentificador = true;
+		if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR))
+			obligatorioParentesco = true;
+	} else if ((pcajgActivo == 2)
+			&& ((conceptoE.equals(PersonaJGAction.EJG) || conceptoE
+					.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)
+			/*|| conceptoE.equals(PersonaJGAction.PERSONAJG)*/))) {
+		obligatorioDireccion = true;
+		obligatorioTipoIdentificador = true;
+		obligatorioIdentificador = true;
+		obligatorioTipoIngreso = true;
+		if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR))
+			obligatorioParentesco = true;
+	} else if ((pcajgActivo == 3)
+			&& ((conceptoE.equals(PersonaJGAction.EJG) || conceptoE
+					.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)
+			/*|| conceptoE.equals(PersonaJGAction.PERSONAJG)*/))) {
+		obligatorioDireccion = true;
+		obligatorioTipoIdentificador = true;
+		obligatorioIdentificador = true;
+		obligatorioTipoIngreso = true;
+		if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR))
+			obligatorioParentesco = true;
+	} else if ((pcajgActivo == 4)
+			&& ((conceptoE.equals(PersonaJGAction.EJG) || conceptoE
+					.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)
+			/*|| conceptoE.equals(PersonaJGAction.PERSONAJG)*/))) {
+		obligatorioDireccion = true;
+		obligatorioPoblacion = true;
 		obligatorioCodigoPostal = true;
-		if(conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) 
-			obligatorioParentesco 	= true;
-	}else if ((pcajgActivo==5)&& 
-			(( conceptoE.equals(PersonaJGAction.EJG)
-			|| conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR) 
-			/*|| conceptoE.equals(PersonaJGAction.PERSONAJG)*/ ))){
-		obligatorioDireccion 	= true;
-		obligatorioPoblacion 	= true;
-		obligatorioParentesco 	= true;
+		if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR))
+			obligatorioParentesco = true;
+	} else if ((pcajgActivo == 5)
+			&& ((conceptoE.equals(PersonaJGAction.EJG) || conceptoE
+					.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)
+			/*|| conceptoE.equals(PersonaJGAction.PERSONAJG)*/))) {
+		obligatorioDireccion = true;
+		obligatorioPoblacion = true;
+		obligatorioParentesco = true;
 		obligatorioNacionalidad = true;
 		obligatorioCodigoPostal = true;
+		obligatorioTipoIdentificador = true;
 	}
-	System.out.println(conceptoE);
+	System.out.println(pcajgActivo);
+	System.out.println(obligatorioTipoIdentificador);
 %>	
 
 
@@ -195,7 +200,7 @@
 		
 		function validarCampoPoblacion()	{				
 			if(document.forms[0].poblacion.value == "") {
-				var msg = "<siga:Idioma key="errors.required"  arg0="" />" + "<siga:Idioma key="gratuita.personaJG.literal.poblacion"/>";
+				var msg = "<siga:Idioma key='errors.required'  arg0="" />" + "<siga:Idioma key='gratuita.personaJG.literal.poblacion'/>";
 				alert (msg);
 				return false;
 			}
@@ -203,7 +208,7 @@
 		}
 		
 	function recargar(){
-			<%if (!accion.equalsIgnoreCase("ver")){%>
+			<%if (!accion.equalsIgnoreCase("ver")) {%>
 /*< %				if (esFichaColegial) {%>
 			  < %} else { %>*/
 				var tmp1 = document.getElementsByName("provincia");
@@ -213,7 +218,7 @@
 				} 
 /*< %			   }%>*/
 		 <%}%>
-<% if (conceptoE.equals(PersonaJGAction.DESIGNACION_REPRESENTANTE))  { %>			
+<%if (conceptoE.equals(PersonaJGAction.DESIGNACION_REPRESENTANTE)) {%>			
 		var nombre = document.forms[0].representante;
 		if (document.forms[0].idPersonaRepresentante.value=="") {
 			// se puede modificar
@@ -224,25 +229,23 @@
 			nombre.className="boxConsulta";
 			nombre.readOnly=true;
 		}
-<% } %>			
+<%}%>			
 
-  <% if (conceptoE.equals(PersonaJGAction.SOJ))  { 
-	    if (pideJG!=null && pideJG.equals("1")){%>
+  <%if (conceptoE.equals(PersonaJGAction.SOJ)) {
+				if (pideJG != null && pideJG.equals("1")) {%>
 		  document.forms[0].chkPideJG.checked=true;
 	     
-	  <%}else{%>
+	  <%} else {%>
 	      document.forms[0].chkPideJG.checked=false;
 	  <%}
-	  
-	    if (solicitaInfoJG!=null && solicitaInfoJG.equals("1")){
-		
-		%>
+
+				if (solicitaInfoJG != null && solicitaInfoJG.equals("1")) {%>
 		 
 		  document.forms[0].chkSolicitaInfoJG.checked=true;
 		 
 		  
 	     
-	   <%}else{%>
+	   <%} else {%>
 	    
 	      document.forms[0].chkSolicitaInfoJG.checked=false;
 	   <%}%>
@@ -253,20 +256,18 @@
 	 <%}%>
 	 
 	 
-	<% if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR))  { %> 
-	<%   if (checkSolicitante!=null && checkSolicitante.equals("1")){
-		
-		%>
+	<%if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {%> 
+	<%if (checkSolicitante != null && checkSolicitante.equals("1")) {%>
 		 
 		    document.forms[0].solicitante.checked=true;
 		 
 		  
 	     
-	   <%}else{%>
+	   <%} else {%>
 	    
 	        document.forms[0].solicitante.checked=false;
 	   <%}
-	   }%>
+			}%>
 		}
 	</script>
 
@@ -322,24 +323,24 @@
 				//Sexo:
 				document.forms[0].sexo.value = resultado[19];
 				
-         <%	if (conceptoE.equals(PersonaJGAction.ASISTENCIA_ASISTIDO) || conceptoE.equals(PersonaJGAction.SOJ)) { %> 
+         <%if (conceptoE.equals(PersonaJGAction.ASISTENCIA_ASISTIDO)
+					|| conceptoE.equals(PersonaJGAction.SOJ)) {%> 
             	document.forms[0].hijos.value = resultado[18]; 
-         <% } %>
+         <%}%>
 
-<% 	if (!conceptoE.equals(PersonaJGAction.PERSONAJG) && !conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS)) { %> 
+<%if (!conceptoE.equals(PersonaJGAction.PERSONAJG)
+					&& !conceptoE
+							.equals(PersonaJGAction.DESIGNACION_CONTRARIOS)) {%> 
 	
 				//Representante Tutor:
 				document.forms[0].idRepresentanteJG.value = resultado[15];
 				
 				document.forms[0].representante.value=resultado[16];
 				
-<% 
-	}
-%>
+<%}%>
 
-<% 
-	if (conceptoE.equals(PersonaJGAction.EJG) || conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) { 
-%>
+<%if (conceptoE.equals(PersonaJGAction.EJG)
+					|| conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {%>
 				document.forms[0].ingresosAnuales.value = "";
 				document.forms[0].importeIngresosAnuales.value = "";
 				document.forms[0].bienesMuebles.value = "";
@@ -349,9 +350,7 @@
 				document.forms[0].otrosBienes.value = "";
 				document.forms[0].importeOtrosBienes.value = "";
 				document.forms[0].unidadObservaciones.value = "";
-<% 
-	} 
-%>
+<%}%>
 
 				//Poblacion:				
 				poblacionSeleccionada = resultado[10];
@@ -372,123 +371,95 @@
 				}
  			}
 		 }	
-			function recargarComboHijo() {
-			  
-				var acceso = poblacionFrame.document.getElementsByTagName("select");
-				acceso[0].value = poblacionSeleccionada;
-				document.forms[0].poblacion.value = poblacionSeleccionada;
-			}
-			
-				
-			
-			function obtenerNif(){
-				if((document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")&&(document.forms[0].NIdentificacion.value!="")) {
-					var sNIF = document.forms[0].NIdentificacion.value;
-					document.forms[0].NIdentificacion.value = formateaNIFLocal(sNIF);
-				 } else if((document.forms[0].tipoId.value == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>")){
-				   var sNIE = document.forms[0].NIdentificacion.value;
-				   document.forms[0].NIdentificacion.value =formateaNIELocal(sNIE);
-	   			}
-					   			
-				//LMSP En lugar de abrir la ventana modal, se manda al frame oculto, y éste se encarga de todo :)
-				if(generarLetra()){
-					document.forms[0].modo.value="buscarNIF";
-					document.forms[0].target="submitArea2";
-					document.forms[0].submit();
-			  	}
-			}
-
-			function formateaNIFLocal(valorX) {
-	    		var longitud=9;
-	    		var salida='';
-	    		
-	    		if(isNumero(valorX)==true)
-	    			longitud=8;
-	    		
-	    		
-      		    if(valorX.length==8 && isNumero(valorX)==true)
-	    			return valorX;
-    		
-				if (valorX==null) {
-					salida = relleno("0",longitud);  
-				} else {
-					
-					if (valorX.length==0) {
-					 
-						
-							salida = relleno("0",longitud);  
-						
-					} else{
-					   if (valorX.length > longitud) {
-						// mayor
-						alert('<siga:Idioma key="messages.nif.comprobacion.digitos.error"/>');
-						return false;
-						}else{
-					     if (valorX.length < longitud) {//menor
-						 
-						   salida = relleno('0',longitud - valorX.length) + valorX; 
-						  
-						   
-						 }else{//igual
-						  
-						   salida = valorX;
-						 }
-					   }
-					}   
-					  
-				}
-		  		return salida; 
+		function recargarComboHijo() {
+			var acceso = poblacionFrame.document.getElementsByTagName("select");
+			acceso[0].value = poblacionSeleccionada;
+			document.forms[0].poblacion.value = poblacionSeleccionada;
 		}
-		
-	function formateaNIELocal(valorX) {
-		
-    		var longitud=8;
-    		var salida='';
-    		
-    		if( isNumero(valorX)==true){
-    			if(valorX.length==8)
-    				return valorX;
-    		}else{
-    			if(valorX.length==9)
-    				return valorX;
-    			//else
-    				//longitud=9;
-    		
-    		}
-    		
-    		
-			if (valorX==null) {
-				//salida = relleno("0",longitud);
-			} else {
-				
-				if (valorX.length==0) {
-				 
-					
-						//salida = relleno("0",longitud);
-					
-				} else{
-				   if (valorX.length > longitud) {
-					// mayor
-					alert('<siga:Idioma key="messages.nie.comprobacion.digitos.error"/>');
-					return false;
-				   }else{
-				     if (valorX.length < longitud) {//menor
-					   valorX1 = valorX.substring(1);
-					   salida = valorX.substring(0,1)+relleno('0',longitud - valorX1.length-1) + valorX1; 
-					   
-					   
-					 }else{//igual
-					  
-					   salida = valorX;
-					 }
-				   }
-				}   
-				  
+
+		// Comprueba el tipo de ident y pinta el boton de generar letra nif si fuese necesario
+		function comprobarTipoIdent(){
+			// Solo se genera el NIF o CIF de la persona
+			if((document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")||
+				(document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>")){
+				document.getElementById("idButtonNif").style.visibility="visible";
+			}	else{
+				document.getElementById("idButtonNif").style.visibility="hidden";
 			}
-  // alert("Salida formateaNIFMio:"+salida);
-	return salida; 
-	
-}
+		}				
+
+		
+		function obtenerNif(){
+			if((document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")&&(document.forms[0].NIdentificacion.value!="")) {
+				document.forms[0].NIdentificacion.value = formateaNIFLocal(document.forms[0].NIdentificacion.value);
+			} else if((document.forms[0].tipoId.value == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>")){
+				document.forms[0].NIdentificacion.value = formateaNIELocal(document.forms[0].NIdentificacion.value);
+   			}
+			//LMSP En lugar de abrir la ventana modal, se manda al frame oculto, y éste se encarga de todo :)
+			if(generarLetra()){
+				rellenarFormulario();
+		  	}
+		}
+
+		function rellenarFormulario(){
+			document.forms[0].modo.value="buscarNIF";
+			document.forms[0].target="submitArea2";
+			document.forms[0].submit();
+		}
+
+		function formateaNIFLocal(valorX) {
+    		var longitud=9;
+    		var salida='';
+    		if(isNumero(valorX)==true)
+    			longitud=8;
+    		if(valorX.length==8 && isNumero(valorX)==true)
+    			return valorX;
+			if (valorX==null) { // El nif está vacío
+				salida = relleno("0",longitud);  
+			} else {
+				if (valorX.length==0) { // El nif tiene longitud 0
+					salida = relleno("0",longitud);
+				}else{
+				   	if (valorX.length > longitud) { // El nif es mas largo de lo debido
+						//alert('<siga:Idioma key="messages.nif.comprobacion.digitos.error"/>');
+						return valorX.substr(0,8);; // Devolvemos el valor original
+					}else{
+				     	if (valorX.length < longitud) {// El nif es mas corto asi que rellenamos con 0 por la izq
+					   			salida = relleno('0',longitud - valorX.length) + valorX; 
+						 	}else{ // El nif esta bien de longitud
+					   			salida = valorX;
+					 	}
+				   	}
+				}   
+			}
+	  		return salida; 
+		}
+
+		
+		function formateaNIELocal(valorX) {
+    		var longitud=8;
+    		var dnie = valorX.substring(1,valorX.length-1);
+    		var primeraCifra=valorX.substring(0,1);
+    		var ultimaCifra =valorX.substring(valorX.length-1, valorX.length);
+    		var salida='';
+    		if(isNumero(primeraCifra)){
+        		 dnie = primeraCifra + dnie;
+        		 primeraCifra='X';
+    		}
+    		if(isNumero(ultimaCifra)){
+        		 dnie = dnie + ultimaCifra;
+        		 ultimaCifra ='';
+    		} 
+    		if(dnie.length<=7){
+        		salida = primeraCifra + relleno('0',longitud - dnie.length-1) + dnie + ultimaCifra;
+    		}else if (dnie.length>7){
+        		salida = primeraCifra + dnie.substring(0,7) + ultimaCifra;
+    		} else{
+        		salida = valorX;
+    		}// Ya tenemos el numero completo de 7 cifras o el original otra vez
+    		
+			return salida; 
+		}
 
 	
 		
@@ -499,10 +470,9 @@
 		if(numId.length==0){
 			return false;		
 		}
-		
 		if( (tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")){
 			if(isNumero(numId)==true){
-					if(numId.length==8){
+				if(numId.length==8){
 				 	numero = numId;
 				 	numero = numero % 23;
 				 	letra=letra.substring(numero,numero+1);
@@ -510,14 +480,14 @@
 						 				 		
 				}else{
 					
-				 	numero = numId.substr(0,numId.length-1);
+				 	//numero = numId.substr(0,numId.length-1);
+				 	numero = numId.substr(0,8);
 				 	numero = numero % 23;
 				 	let = numId.substr(numId.length-1,1);
 				 	letra=letra.substring(numero,numero+1);
 	 			 	//if (letra.tolowercase()!=let.tolowercase())
 			 		//alert('DNI Erroneo. Ponemos el correcto');
 					PersonaJGForm.NIdentificacion.value = numId.substring(0,8)+letra;
-							
 				 } 	
 			}else{
 				rc = validarNIFCIF(tipoIdentificacion, numId);
@@ -549,7 +519,6 @@
 					PersonaJGForm.NIdentificacion.value = numero;
 					
 				}else{
-					
 					//Miramos que solo sea letra el primer caracter. si no lo es no hacemos nada
 					if(isNumero(numId.substring(1))==false){
 					}
@@ -582,217 +551,19 @@
 				if(rc==undefined){
 					return rc;
 				}else if(rc==false){
-				
 					return rc;
 				}	
 			}
 			
 		}
-		
 		// Caso1: Se han realizado las modificaciones necesarias sin encontrar errores 
 		// Caso2: no es nif ni nie no hay generacion de letra
 
 		return true;
 	}
-	
 
-	
-	
-	function validarNIE(a) 
-	{
-		
-		var temp=a.toUpperCase();
-		var cadenadni="TRWAGMYFPDXBNJZSQVHLCKE";
- 		
- 		alert("comp1");
-			
-		//comprobacion de NIEs
-		//T
-		if (/^[T]{1}/.test(temp))
-		{
-			
-			if (a[8] == /^[T]{1}[A-Z0-9]{8}$/.test(temp))
-			{
-				
-				return 3;
-				
-			}
-			else
-			{
-				
-				return -3;
-				
-			}
-		}
- 
-		//XYZ
-		if (/^[XYZ]{1}/.test(temp))
-		{
-			alert("comp");
-			pos = str_replace(['X', 'Y', 'Z'], ['0','1','2'], temp).substring(0, 8) % 23;
-			alert("comp1"+a[8]);
-			alert("comp10"+cadenadni.substring(pos, pos + 1));
-			if (a[8] == cadenadni.substring(pos, pos + 1))
-			
-			{
-				alert("comp2");
-				return 3;
-			}
-			else
-			{
-				alert("comp3");
-				return -3;
-			}
-		}
-		alert("comp4");
-		return 0;
-	} 		
-		
-	
-	
-	function nif(a) 
-{
-	var a = PersonaJGForm.NIdentificacion.value;
-	var temp=a.toUpperCase();
-	var cadenadni="TRWAGMYFPDXBNJZSQVHLCKE";
- 
-	if (temp!==''){
-		//si no tiene un formato valido devuelve error
-		if ((!/^[A-Z]{1}[0-9]{7}[A-Z0-9]{1}$/.test(temp) && !/^[T]{1}[A-Z0-9]{8}$/.test(temp)) && !/^[0-9]{8}[A-Z]{1}$/.test(temp))
-		{
-			return 0;
-		}
- 
-		//comprobacion de NIFs estandar
-		if (/^[0-9]{8}[A-Z]{1}$/.test(temp))
-		{
-			posicion = a.substring(8,0) % 23;
-			letra = cadenadni.charAt(posicion);
-			var letradni=temp.charAt(8);
-			if (letra == letradni)
-			{
-			   	return 1;
-			}
-			else
-			{
-				return -1;
-			}
-		}
- 
-		//algoritmo para comprobacion de codigos tipo CIF
-		suma = parseInt(a[2])+parseInt(a[4])+parseInt(a[6]);
-		for (i = 1; i < 8; i += 2)
-		{
-			temp1 = 2 * parseInt(a[i]);
-			temp1 += '';
-			temp1 = temp1.substring(0,1);
-			temp2 = 2 * parseInt(a[i]);
-			temp2 += '';
-			temp2 = temp2.substring(1,2);
-			if (temp2 == '')
-			{
-				temp2 = '0';
-			}
-			
-			suma += (parseInt(temp1) + parseInt(temp2));
-		}
-			
-		suma += '';
-		n = 10 - parseInt(suma.substring(suma.length-1, suma.length));
- 
-		//comprobacion de NIFs especiales (se calculan como CIFs)
-		if (/^[KLM]{1}/.test(temp))
-		{
-			if (a[8] == String.fromCharCode(64 + n))
-			{
-				return 1;
-			}
-			else
-			{
-				return -1;
-			}
-		}
- 
-		//comprobacion de CIFs
-		if (/^[ABCDEFGHJNPQRSUVW]{1}/.test(temp))
-		{
-			temp = n + '';
-			if (a[8] == String.fromCharCode(64 + n) || a[8] == parseInt(temp.substring(temp.length-1, temp.length)))
-			{
-				return 2;
-			}
-			else
-			{
-				return -2;
-			}
-		}
- 
-		//comprobacion de NIEs
-		//T
-		if (/^[T]{1}/.test(temp))
-		{
-			if (a[8] == /^[T]{1}[A-Z0-9]{8}$/.test(temp))
-			{
-				return 3;
-			}
-			else
-			{
-				return -3;
-			}
-		}
- 
-		//XYZ
-		if (/^[XYZ]{1}/.test(temp))
-		{
-			pos = str_replace(['X', 'Y', 'Z'], ['0','1','2'], temp).substring(0, 8) % 23;
-			if (a[8] == cadenadni.substring(pos, pos + 1))
-			{
-				return 3;
-			}
-			else
-			{
-				return -3;
-			}
-		}
-	}
- 
-	return 0;
-}
-
-function str_replace(search, replace, subject) {
-    // http://kevin.vanzonneveld.net
-    // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-    // +   improved by: Gabriel Paderni
-    // +   improved by: Philip Peterson
-    // +   improved by: Simon Willison (http://simonwillison.net)
-    // +    revised by: Jonas Raoni Soares Silva (http://www.jsfromhell.com)
-    // +   bugfixed by: Anton Ongson
-    // +      input by: Onno Marsman
-    // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-    // +    tweaked by: Onno Marsman
-    // *     example 1: str_replace(' ', '.', 'Kevin van Zonneveld');
-    // *     returns 1: 'Kevin.van.Zonneveld'
-    // *     example 2: str_replace(['{name}', 'l'], ['hello', 'm'], '{name}, lars');
-    // *     returns 2: 'hemmo, mars'
- 
-    var f = search, r = replace, s = subject;
-    var ra = r instanceof Array, sa = s instanceof Array, f = [].concat(f), r = [].concat(r), i = (s = [].concat(s)).length;
- 
-    while (j = 0, i--) {
-        if (s[i]) {
-            while (s[i] = s[i].split(f[j]).join(ra ? r[j] || "" : r[0]), ++j in f){};
-        }
-    };
- 
-    return sa ? s : s[0];
-} 			  			
-				
-				
-				
-			
-					
-			function validaNumeroIdentificacion () 
-			{ if (document.forms[0].NIdentificacion.value!=""){
+	function validaNumeroIdentificacion (){ 
+		if (document.forms[0].NIdentificacion.value!=""){
 				document.forms[0].NIdentificacion.value = (document.forms[0].NIdentificacion.value).toUpperCase();
 				var a = (document.forms[0].NIdentificacion.value);
 				if((document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")&&(document.forms[0].NIdentificacion.value!="")) {
@@ -824,7 +595,13 @@ function str_replace(search, replace, subject) {
 				 return true;
 				}
 			 }else{
-			   return true;
+				 if((document.forms[0].tipoId.value == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") || 
+					(document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")){
+					alert("<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nIdentificacion'/>"); 
+					 return false;
+				 }else{
+			   		return true;
+				 }
 			 }	 
 			
 			}
@@ -889,7 +666,7 @@ function str_replace(search, replace, subject) {
 	if (pantalla.equals("P")) {
 %>
 
-<body class="tablaCentralCampos" onload="recargar();">
+<body class="tablaCentralCampos" onload="recargar();comprobarTipoIdent();">
 
 <!-- capa principal -->
 <div id="camposRegistro"  align="center">
@@ -934,6 +711,7 @@ function str_replace(search, replace, subject) {
 	<html:hidden name="PersonaJGForm" property = "tituloE" />
 	<html:hidden name="PersonaJGForm" property = "conceptoE" />
 	
+	
 <%
 		if (conceptoE.equals(PersonaJGAction.EJG)
 					|| conceptoE.equals(PersonaJGAction.EJG_REPRESENTANTE)
@@ -944,6 +722,7 @@ function str_replace(search, replace, subject) {
 	<html:hidden name="PersonaJGForm" property = "idTipoEJG" />
 	<html:hidden name="PersonaJGForm" property = "anioEJG" />
 	<html:hidden name="PersonaJGForm" property = "numeroEJG" />
+	<html:hidden property = "actionModal" value = ""/>
 <%
 	} else if (conceptoE.equals(PersonaJGAction.SOJ)
 				|| conceptoE.equals(PersonaJGAction.SOJ_REPRESENTANTE)) {
@@ -974,7 +753,8 @@ function str_replace(search, replace, subject) {
 	<html:hidden name="PersonaJGForm" property = "idInstitucionDES" />
 	<html:hidden name="PersonaJGForm" property = "idTurnoDES" />
 	<html:hidden name="PersonaJGForm" property = "anioDES" />
-	<html:hidden name="PersonaJGForm" property = "numeroDES" />
+	<html:hidden name="PersonaJGForm" property = "numeroDES" />	
+	
 <%
 	} else if (conceptoE.equals(PersonaJGAction.PERSONAJG)) {
 %>
@@ -1076,8 +856,7 @@ function str_replace(search, replace, subject) {
 			<td id="titulo" class="titulitosDatos">
 	
 					<%
-							String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "", t_tipoEJG = "";
-									;
+							String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "", t_tipoEJG = "";;
 									ScsEJGAdm adm = new ScsEJGAdm(usr);
 
 									Hashtable hTitulo = adm.getTituloPantallaEJG(miform
@@ -1115,62 +894,91 @@ function str_replace(search, replace, subject) {
 	<table  align="center" width="100%" border="0" >
 	<tr >
 	
-	<%if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {%> 
+	<%
+			if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {
+		%> 
         <td class="labelText">
 			<siga:Idioma key="gratuita.busquedaSOJ.literal.solicitante"/>&nbsp;	
 		 	<html:checkbox  name="PersonaJGForm" property="solicitante" disabled="<%=scheck%>" />
 		</td>
-	<%} %>
+	<%
+		}
+	%>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.personaJG.literal.tipo"/>		
 		</td>
 
 	
 		<td>
-			<%if (accion.equalsIgnoreCase("ver")) {
-					String tip = "";
-					if (miform.getTipo() != null
-							&& miform.getTipo().equalsIgnoreCase("F")) {
-						tip = UtilidadesString.getMensajeIdioma(usr,
-								"gratuita.personaJG.literal.tipoFisica");
-					} else if (miform.getTipo() != null) {
-						tip = UtilidadesString.getMensajeIdioma(usr,
-								"gratuita.personaJG.literal.tipoJuridica");
-			}%>
+			<%
+				if (accion.equalsIgnoreCase("ver")) {
+							String tip = "";
+							if (miform.getTipo() != null
+									&& miform.getTipo().equalsIgnoreCase("F")) {
+								tip = UtilidadesString.getMensajeIdioma(usr,
+										"gratuita.personaJG.literal.tipoFisica");
+							} else if (miform.getTipo() != null) {
+								tip = UtilidadesString.getMensajeIdioma(usr,
+										"gratuita.personaJG.literal.tipoJuridica");
+							}
+			%>
 			<html:text property="tipo" value="<%=tip%>" size="5" styleClass="boxConsulta" readonly="true"></html:text>
-			<%} else {%>
+			<%
+				} else {
+			%>
 			<html:select styleClass="boxCombo" name="PersonaJGForm" property="tipo"   readOnly="false">
 				<html:option value="F"><siga:Idioma key="gratuita.personaJG.literal.tipoFisica"/></html:option>
 				<html:option value="J"><siga:Idioma key="gratuita.personaJG.literal.tipoJuridica"/></html:option>
 			</html:select>
-			<%}%>
+			<%
+				}
+			%>
 		</td>
 
-		<%if (!conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {%> 
+		<%
+			if (!conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {
+		%> 
 		<td></td>
-		<%}	%>		
+		<%
+			}
+		%>		
 		<td class="labelText">
 			<siga:Idioma key="gratuita.personaJG.literal.tipoIdentificacion"/>
-			<%if (obligatorioTipoIdentificador) {%>
-				<%=asterisco %> 
+			<%if (obligatorioTipoIdentificador) { %>
+				<%=asterisco%> 
 			<%}%>
 		</td>
 		<td colspan="3">
-		<%	ArrayList tipoIdentificacionSel = new ArrayList();
-			if (miform.getNIdentificacion() != null) {
-				tipoIdentificacionSel.add(miform.getTipoId());
-			}
+		<%
+			ArrayList tipoIdentificacionSel = new ArrayList();
+					if (miform.getNIdentificacion() != null) {
+						tipoIdentificacionSel.add(miform.getTipoId());
+					}
 		%>
 			
-		  <%if (accion.equalsIgnoreCase("ver")) {
-		  				String tipoIdent = (String) request
-		  						.getAttribute("identificacion");
+		  <%
+					  	if (accion.equalsIgnoreCase("ver")) {
+					  				String tipoIdent = (String) request
+					  						.getAttribute("identificacion");
+					  %>
+		   	<siga:ComboBD nombre = "tipoId" tipo="cmbTipoIdentificacion" elementoSel="<%=tipoIdentificacionSel%>" clase="boxConsulta" obligatorio="true"  readonly="<%=sreadonly%>"/>
+		  <%
+		  	} else {
 		  %>
-		   	<html:text property="tipoId" value="<%=tipoIdent%>" size="10" styleClass="boxConsulta" readonly="true"></html:text>
-		  <%}else{%>
-		   	<siga:ComboBD nombre = "tipoId" tipo="cmbTipoIdentificacion" elementoSel="<%=tipoIdentificacionSel%>" clase="<%=classCombo %>" obligatorio="true"  readonly="<%=sreadonly%>"/>
+		   	<siga:ComboBD nombre = "tipoId" tipo="cmbTipoIdentificacion" elementoSel="<%=tipoIdentificacionSel%>" clase="<%=classCombo %>" obligatorio="true"  readonly="<%=sreadonly%>" accion="comprobarTipoIdent();"/>
+		   <%
+		   	}
+		   %>
+		   <html:text name="PersonaJGForm" property="NIdentificacion" size="10" maxlength="20" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>" onblur="rellenarFormulario()"></html:text>
+		   <%if (!accion.equalsIgnoreCase("ver")) {%>
+		   		<%if (miform.getTipoId()!=null &&
+		   					((miform.getTipoId().equalsIgnoreCase("10"))
+		   					|| (miform.getTipoId().equalsIgnoreCase("40")))) {%>
+		   			<input type="button" id="idButtonNif" name="idButton" value='<siga:Idioma key="censo.nif.letra.letranif" />' onclick="obtenerNif();" style="align:right" class="button" style="display:inline;">
+		   		<%} else {%>
+		   			<input type="button" id="idButtonNif" name="idButton" value='<siga:Idioma key="censo.nif.letra.letranif" />' onclick="obtenerNif();" style="align:right" class="button" style="display:inline;visibility: hidden;">
+		   		<%}%>
 		   <%}%>
-		   <html:text name="PersonaJGForm" property="NIdentificacion" size="10" maxlength="20" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>"  onBlur="obtenerNif();"></html:text>
 		</td>
 	</tr>
 	<tr>
@@ -1216,18 +1024,26 @@ function str_replace(search, replace, subject) {
 	<tr>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.personaJG.literal.direccion"/>
-			<%if (obligatorioDireccion) {%>
-				<%=asterisco %> 
-			<%}%>
+			<%
+				if (obligatorioDireccion) {
+			%>
+				<%=asterisco%> 
+			<%
+ 				}
+ 			%>
 		</td>
 		<td>
 			<html:text name="PersonaJGForm" property="direccion" maxlength="100" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>" style="width:340" ></html:text>
 		</td>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.personaJG.literal.cp"/>	
-			<%if (obligatorioCodigoPostal) {%>
-				<%=asterisco %> 
-			<%}%>		
+			<%
+					if (obligatorioCodigoPostal) {
+				%>
+				<%=asterisco%> 
+			<%
+ 				}
+ 			%>		
 		</td>
 		<td colspan="2">
 			<html:text name="PersonaJGForm" property="cp" size="5" maxlength="5" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"></html:text>
@@ -1236,9 +1052,13 @@ function str_replace(search, replace, subject) {
 	<tr>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.personaJG.literal.provincia"/>	
-			<%if (obligatorioPoblacion) {%>
-				<%=asterisco %> 
-			<%}%>		
+			<%
+					if (obligatorioPoblacion) {
+				%>
+				<%=asterisco%> 
+			<%
+ 				}
+ 			%>		
 		</td>
 		<td>
 			<%
@@ -1273,9 +1093,13 @@ function str_replace(search, replace, subject) {
 		</td>
 		<td class="labelText">
  			<siga:Idioma key="gratuita.personaJG.literal.poblacion"/>	
- 			<%if (obligatorioPoblacion) {%>
-				<%=asterisco %> 
-			<%}%>	
+ 			<%
+	 				if (obligatorioPoblacion) {
+	 			%>
+				<%=asterisco%> 
+			<%
+ 				}
+ 			%>	
 		</td>
 		<td colspan="2">
 			<%
@@ -1288,9 +1112,13 @@ function str_replace(search, replace, subject) {
 									.getAttribute("poblacion");
 			%>
 		   		<html:text property="poblacion" value="<%=poblacion%>" maxlength="100" styleClass="boxConsulta" readonly="true" style="width:220"></html:text>
-		   <%} else {%>
+		   <%
+		   	} else {
+		   %>
 				<siga:ComboBD pestana="<%=bPestana%>" nombre="poblacion" tipo="poblacion" elementoSel="<%=selPoblacion%>" clase="<%=classCombo%>" obligatorio="true" hijo="t" readOnly="<%=sreadonly%>" obligatorioSinTextoSeleccionar="false" />
-		   <%}%>
+		   <%
+		   	}
+		   %>
 		</td>
 	</tr>
 	</table>
@@ -1301,9 +1129,13 @@ function str_replace(search, replace, subject) {
 	<tr>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.personaJG.literal.nacionalidad"/>	
-			<%if (obligatorioNacionalidad) {%>
-				<%=asterisco %> 
-			<%}%>		
+			<%
+					if (obligatorioNacionalidad) {
+				%>
+				<%=asterisco%> 
+			<%
+ 				}
+ 			%>		
 		</td>
 		<td width="20%">
 			<%
@@ -1426,12 +1258,16 @@ function str_replace(search, replace, subject) {
 	  	       %>	
      	</td>
      	<html:hidden name="PersonaJGForm" value ="<%=nHijos %>" property="hijos"/>
-		<% } else if (conceptoE.equals(PersonaJGAction.ASISTENCIA_ASISTIDO)||conceptoE.equals(PersonaJGAction.SOJ)){ %>
-		<% 
-			
-			if((miform.getHijos()!=null)&&(!miform.getHijos().equalsIgnoreCase(""))){
-				nHijos = miform.getHijos(); 
-			}
+		<%
+			} else if (conceptoE
+							.equals(PersonaJGAction.ASISTENCIA_ASISTIDO)
+							|| conceptoE.equals(PersonaJGAction.SOJ)) {
+		%>
+		<%
+			if ((miform.getHijos() != null)
+								&& (!miform.getHijos().equalsIgnoreCase(""))) {
+							nHijos = miform.getHijos();
+						}
 		%>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.busquedaSOJ.literal.nHijos"/>	
@@ -1439,9 +1275,13 @@ function str_replace(search, replace, subject) {
 		<td>
 			<html:text name="PersonaJGForm" value ="<%=nHijos %>" property="hijos" size="3" styleClass="<%=estiloBox %>"/>
 		</td>
-		<% }else{ %>
+		<%
+			} else {
+		%>
 			<html:hidden name="PersonaJGForm" value ="<%=nHijos %>" property="hijos"/>
-		<% } %>
+		<%
+			}
+		%>
 	</tr>
 	
 	<tr>
@@ -1453,18 +1293,22 @@ function str_replace(search, replace, subject) {
 				if (accion.equalsIgnoreCase("ver")) {
 							String regimen = "";
 							if (miform.getRegimenConyugal() != null) {
-								if (miform.getRegimenConyugal().equalsIgnoreCase("G")) {
+								if (miform.getRegimenConyugal().equalsIgnoreCase(
+										"G")) {
 									regimen = UtilidadesString
 											.getMensajeIdioma(usr,
 													"gratuita.personaJG.regimen.literal.gananciales");
 								}
-								if (miform.getRegimenConyugal().equalsIgnoreCase("I")) {
+								if (miform.getRegimenConyugal().equalsIgnoreCase(
+										"I")) {
 									regimen = UtilidadesString
 											.getMensajeIdioma(usr,
 													"gratuita.personaJG.regimen.literal.indeterminado");
 								}
-								if (miform.getRegimenConyugal().equalsIgnoreCase("S")) {
-									regimen = UtilidadesString.getMensajeIdioma(usr,
+								if (miform.getRegimenConyugal().equalsIgnoreCase(
+										"S")) {
+									regimen = UtilidadesString
+											.getMensajeIdioma(usr,
 													"gratuita.personaJG.regimen.literal.separacion");
 								}
 							}
@@ -1506,10 +1350,14 @@ function str_replace(search, replace, subject) {
 		</td>
 	 
 <%
-	 	if (conceptoE.equals(PersonaJGAction.ASISTENCIA_REPRESENTANTE)
-	 					|| conceptoE.equals(PersonaJGAction.DESIGNACION_REPRESENTANTE)
-	 					|| conceptoE.equals(PersonaJGAction.EJG_REPRESENTANTE)
-	 					|| conceptoE.equals(PersonaJGAction.SOJ_REPRESENTANTE)) {
+	 	if (conceptoE
+	 					.equals(PersonaJGAction.ASISTENCIA_REPRESENTANTE)
+	 					|| conceptoE
+	 							.equals(PersonaJGAction.DESIGNACION_REPRESENTANTE)
+	 					|| conceptoE
+	 							.equals(PersonaJGAction.EJG_REPRESENTANTE)
+	 					|| conceptoE
+	 							.equals(PersonaJGAction.SOJ_REPRESENTANTE)) {
 	 %>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.personaJG.literal.enCalidadDe"/>		
@@ -1518,13 +1366,18 @@ function str_replace(search, replace, subject) {
 			<siga:ComboBD nombre = "enCalidadDe" tipo="cmbEnCalidadDe" clase="<%=estiloBox%>" readOnly="<%=sreadonly%>"/>
 		</td>
 <%
-	} else if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {
+	} else if (conceptoE
+					.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {
 %>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.personaJG.literal.parentescoNormalizado"/>
-			<%if (obligatorioParentesco) {%>
-				<%=asterisco %> 
-			<%}%>			
+			<%
+				if (obligatorioParentesco) {
+			%>
+				<%=asterisco%> 
+			<%
+ 				}
+ 			%>			
 		</td>
 		<td  style="display:none">
 			<html:text name="PersonaJGForm" property="enCalidadDeLibre" size="10" maxlength="20" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"></html:text>
@@ -1534,24 +1387,9 @@ function str_replace(search, replace, subject) {
 			ArrayList selParentesco = new ArrayList();
 						if (miform.getParentesco() != null)
 							selParentesco.add(miform.getParentesco());
-						String paramParentesco[] = { usr.getLocation() };
+						String paramParentesco[] = {usr.getLocation()};
 		%>
 			<siga:ComboBD  nombre="parentesco" tipo="cmbParentesco" elementoSel="<%=selParentesco %>" parametro="<%=paramParentesco%>" clase="<%=classCombo %>" obligatorio="false" readOnly="<%=sreadonly%>" obligatorioSinTextoSeleccionar="false"/>
-		</td>
-<%
-	} else if (conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS)) {
-%>
-		<td class="labelText">
-			<siga:Idioma key="gratuita.personaJG.literal.procurador"/>		
-		</td>
-		<td>
-			<%
-				ArrayList selProcu = new ArrayList();
-							if (miform.getIdProcurador() != null)
-								selProcu.add(miform.getIdProcurador());
-							String paramProcu[] = { usr.getLocation() };
-			%>
-			<siga:ComboBD nombre = "idProcurador" tipo="comboProcuradores" ancho="150" clase="<%=classCombo%>" elementoSel="<%=selProcu%>" parametro="<%=paramProcu%>" readOnly="<%=sreadonly%>"/>
 		</td>
 <%
 	} else if (conceptoE
@@ -1600,58 +1438,77 @@ function str_replace(search, replace, subject) {
 %> 
 	<!-- REPRESENTANTE LEGAL -->
 <script>
+	
 	function limpiarPersona() {
-		document.forms[0].idPersonaRepresentante.value="";
-		document.forms[0].representante.value="";
-		var nombre = document.forms[0].representante;
-		// se puede modificar
-		nombre.className="box";
-		nombre.readOnly=false;
+		document.PersonaJGForm.idPersonaRepresentante.value ="";
+		document.PersonaJGForm.ncolegiadoRepresentante.value="";
+		document.PersonaJGForm.representante.value="";
 		
-		return false;
+		
+		return false;		
 	}
-	function buscarPersona() {
+		
+	
+	
+function buscarPersona() {		
+		
 		var resultado = ventaModalGeneral("busquedaClientesModalForm","G");			
 		if (resultado != null && resultado[0]!=null)
-		{
-			document.forms[0].idPersonaRepresentante.value = resultado[0];
-		}
-		if (resultado != null && resultado[4]!=null && resultado[5]!=null && resultado[6]!=null)
-		{
-			document.forms[0].representante.value = resultado[4] + " " + resultado[5] + " " + resultado[6];
-		}
-		var nombre = document.forms[0].representante;
-		// no se puede modificar
-		nombre.className="boxConsulta";
-		nombre.readOnly=true;
-
+		{			
+			document.PersonaJGForm.idPersonaRepresentante.value       = resultado[0];
+			document.PersonaJGForm.ncolegiadoRepresentante.value    = resultado[2];
+			document.PersonaJGForm.representante.value   = resultado[4]+' '+resultado[5]+' '+resultado[6];			 
+	   }
+		
 	}
+
+	
+
+function buscarPersonaContrario() {		
+		
+		var resultado = ventaModalGeneral("busquedaClientesModalForm","G");			
+		if (resultado != null && resultado[0]!=null)
+		{			
+			document.PersonaJGForm.idPersonaContrario.value       = resultado[0];
+			document.PersonaJGForm.ncolegiadoContrario.value    = resultado[2];
+			document.PersonaJGForm.abogadoContrario.value   = resultado[4]+' '+resultado[5]+' '+resultado[6];
+	   }
+	}
+
+	
+function limpiarPersonaContrario() {
+	document.PersonaJGForm.idPersonaContrario.value="";
+	document.PersonaJGForm.ncolegiadoContrario.value="";
+	document.PersonaJGForm.abogadoContrario.value="";
+	
+	return false;		
+}
+
+
+	
 </script>
-	<siga:ConjCampos leyenda="gratuita.personaJG.literal.representanteLegal">
+	<siga:ConjCampos leyenda="gratuita.personaJG.literal.representantes">
 	<table   align="center" width="100%">
 	<tr>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.personaJG.literal.representanteLegal"/>		
 		</td>
 		<td>
- 			<html:hidden name="PersonaJGForm" property="idPersonaRepresentante" ></html:hidden>
- 			<%
- 				if (accion.equalsIgnoreCase("ver")) {
- 			%>
-			<html:text name="PersonaJGForm" property="representante" size="50" maxlength="200" styleClass="boxConsulta"  readOnly="true"></html:text>
-			<%
-				} else {
-			%>
-			<html:text name="PersonaJGForm" property="representante" size="50" maxlength="200" styleClass="box"  readOnly="false"></html:text>			
-			<%
-							}
-						%>
+ 			
+ 					
+ 					<html:hidden  name="PersonaJGForm" property="ncolegiadoRepresentante"  styleClass="boxConsulta"  readOnly="false" size="10" maxlength="10" ></html:hidden> 	
+		 			 <html:hidden  name="PersonaJGForm" property="idPersonaRepresentante" styleClass="boxConsulta"  readOnly="false" size="10" maxlength="10"></html:hidden>
+		 			 <html:text  name="PersonaJGForm" property="representante" size="70" maxlength="200" styleClass="boxConsulta"  readOnly="false"></html:text>
+ 			         		 			 
+			
+			
 		</td>
+		
 		<td width="100">
 			<%
 				if (!accion.equalsIgnoreCase("ver")) {
-			%>
-			<input type="button" alt="<siga:Idioma key="gratuita.personaJG.literal.seleccionar"/>" name="idButton" onclick="return buscarPersona();" class="button" value="<siga:Idioma key="gratuita.personaJG.literal.seleccionar"/>">
+			%>			
+			<input type="button" class="button" id="idButton" name="Buscar" value="<siga:Idioma key="general.boton.search" />" onClick="buscarPersona();">
 			<%
 				}
 			%>
@@ -1663,8 +1520,75 @@ function str_replace(search, replace, subject) {
 			<input type="button" alt="<siga:Idioma key="gratuita.personaJG.literal.limpiar"/>" name="idButton"  onclick="return limpiarPersona();" class="button" value="<siga:Idioma key="gratuita.personaJG.literal.limpiar"/>">
 			<%
 				}
-			%>
+			%>						
+		</td>		
+		
+		
+	</tr>
+	
+	
+	
+	<tr>
+	
+	<td class="labelText">
+			<siga:Idioma key="envios.etiquetas.tipoCliente.abogado"/>	
 		</td>
+		<td>	
+		       
+					<html:hidden  name="PersonaJGForm" property="ncolegiadoContrario" styleClass="boxConsulta"  readOnly="false" size="10" maxlength="10" ></html:hidden> 	
+		 			<html:hidden  name="PersonaJGForm" property="idPersonaContrario" styleClass="box"  readOnly="true" size="10" maxlength="10"></html:hidden>
+		 			<html:text  name="PersonaJGForm" property="abogadoContrario" size="70" maxlength="200" styleClass="boxConsulta"  readOnly="false"></html:text>
+					
+							
+		</td>		
+		<td> 
+		<%
+				if (!accion.equalsIgnoreCase("ver")) {
+			%>
+		  	<input type="button" class="button" id="idButton" name="Buscar" value="<siga:Idioma key="general.boton.search" />" onClick="buscarPersonaContrario();">
+			<%
+				}
+			%>
+			
+		</td>
+		<td>	
+		<%
+				if (!accion.equalsIgnoreCase("ver")) {
+			%>
+		 	  <input type="button" alt="<siga:Idioma key="gratuita.personaJG.literal.limpiar"/>" name="idButton"  onclick="return limpiarPersonaContrario();" class="button" value="<siga:Idioma key="gratuita.personaJG.literal.limpiar"/>">
+			<%
+				}
+			%>
+		 
+		</td>
+				
+		
+	
+	</tr>
+	
+	
+	<tr>
+	<%if (conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS)) {
+         %>
+		<td class="labelText">
+			<siga:Idioma key="gratuita.personaJG.literal.procurador"/>		
+		</td>
+		<td>
+			<%
+				ArrayList selProcu = new ArrayList();
+							if (miform.getIdProcurador() != null)
+								selProcu.add(miform.getIdProcurador());
+							String paramProcu[] = { usr.getLocation() };
+			%>
+			
+			<%
+				if (!accion.equalsIgnoreCase("ver")) {%>
+					<siga:ComboBD nombre = "idProcurador" tipo="comboProcuradores"  clase="<%=classCombo%>" elementoSel="<%=selProcu%>" parametro="<%=paramProcu%>" readOnly="<%=sreadonly%>"/>
+			<%}else{%>		
+			        <siga:ComboBD nombre = "idProcurador"  ancho="500" tipo="comboProcuradores"  clase="<%=classCombo%>" elementoSel="<%=selProcu%>" parametro="<%=paramProcu%>" readOnly="<%=sreadonly%>"/>
+			<%}%>			
+		</td>
+		<%}%>
 	</tr>
 	</table>
 	</siga:ConjCampos>
@@ -1694,9 +1618,36 @@ function str_replace(search, replace, subject) {
 		if (resultado != null && resultado[0]!=null  && resultado[1]!=null)
 		{
 			document.forms[0].idRepresentanteJG.value = resultado[0];
-			document.forms[0].representante.value = resultado[1];		
+			document.forms[0].representante.value = resultado[1];	
+			
 		}		
 	}
+
+	function buscarEJGPersonaContrario() {	
+			
+		var resultado = ventaModalGeneral("busquedaClientesModalForm","G");	
+					
+		if (resultado != null && resultado[0]!=null)
+		{			
+			document.PersonaJGForm.idAbogadoContrarioEJG.value = resultado[0];
+			document.PersonaJGForm.ncolegiadoContrario.value   = resultado[2];
+			document.PersonaJGForm.abogadoContrarioEJG.value   = resultado[4]+' '+resultado[5]+' '+resultado[6];
+	   }
+	}
+
+
+
+	function limpiarAbogadoEjg() {
+		document.forms[0].ncolegiadoContrario.value="";
+		document.forms[0].abogadoContrarioEJG.value="";
+		document.PersonaJGForm.idAbogadoContrarioEJG.value="";
+		return false;		
+	}
+
+	
+	
+	
+	
 </script>
    <%
    	if (conceptoE.equals(PersonaJGAction.SOJ)) {
@@ -1825,11 +1776,11 @@ function str_replace(search, replace, subject) {
    <%
    	}
    %>
-	<siga:ConjCampos leyenda="gratuita.personaJG.literal.representante">
+	<siga:ConjCampos leyenda="gratuita.personaJG.literal.representantes">
 	<table  align="center" width="100%">
 	<tr>
 		<td class="labelText">
-			<siga:Idioma key="gratuita.personaJG.literal.representante"/>		
+			<siga:Idioma key="gratuita.personaJG.literal.representanteLegal"/>		
 		</td>
 		<td>
 			<html:text name="PersonaJGForm" property="representante" maxlength="200" styleClass="boxConsulta"  readOnly="true" value="<%= nomRep %>" style="width:600"></html:text>
@@ -1839,7 +1790,7 @@ function str_replace(search, replace, subject) {
 			<%
 				if (!accion.equalsIgnoreCase("ver")) {
 			%>
-			<input type="button" alt="<siga:Idioma key="gratuita.personaJG.literal.seleccionar"/>" name="idButton" onclick="return buscarTutor();" class="button" value="<siga:Idioma key="gratuita.personaJG.literal.seleccionar"/>">
+			<input type="button" alt="<siga:Idioma key="general.boton.search"/>" name="idButton" onclick="return buscarTutor();" class="button" value="<siga:Idioma key="general.boton.search"/>">
 			<%
 				}
 			%>
@@ -1854,6 +1805,65 @@ function str_replace(search, replace, subject) {
 			%>
 		</td>
 	</tr>
+	<%if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) { %>
+	<tr>
+		<td class="labelText">
+			<siga:Idioma key="envios.etiquetas.tipoCliente.abogado"/>	
+		</td>
+		<td>	
+		    	<html:hidden  name="PersonaJGForm" property="ncolegiadoContrario" styleClass="boxConsulta"  readOnly="false" size="10" maxlength="10" ></html:hidden> 	
+		 		<html:hidden  name="PersonaJGForm" property="idAbogadoContrarioEJG" styleClass="box"  readOnly="false" size="10" maxlength="10"></html:hidden>
+		 		<html:text  name="PersonaJGForm" property="abogadoContrarioEJG" size="70" maxlength="200" styleClass="boxConsulta"  readOnly="false"></html:text>
+					
+			 			
+		</td>		
+		
+		<td> 
+		<%	if (!accion.equalsIgnoreCase("ver")) {
+			%>
+		  	<input type="button" alt="<siga:Idioma key="general.boton.search"/>" name="idButton" onclick="return buscarEJGPersonaContrario();" class="button" value="<siga:Idioma key="general.boton.search"/>">
+			<%
+				}
+			%>
+			
+		</td>
+		<td>	
+		<%
+				if (!accion.equalsIgnoreCase("ver")) {
+			%>
+		 	  <input type="button" alt="<siga:Idioma key="gratuita.personaJG.literal.limpiar"/>" name="idButton"  onclick="return limpiarAbogadoEjg();" class="button" value="<siga:Idioma key="gratuita.personaJG.literal.limpiar"/>">
+			<%
+				}
+			%>
+		 
+		</td>
+											
+		</tr>	
+	<tr>
+	
+	<td class="labelText">
+			<siga:Idioma key="gratuita.personaJG.literal.procurador"/>		
+		</td>
+		<td>
+			<%
+				ArrayList selProcu = new ArrayList();
+							if (miform.getIdProcurador() != null)
+								selProcu.add(miform.getIdProcurador());
+							String paramProcu[] = { usr.getLocation() };
+			%>	
+			<%
+				if (!accion.equalsIgnoreCase("ver")) {%>
+					<siga:ComboBD nombre = "idProcurador" tipo="comboProcuradores"  clase="<%=classCombo%>" elementoSel="<%=selProcu%>" parametro="<%=paramProcu%>" readOnly="<%=sreadonly%>"/>
+			<%}else{%>		
+			        <siga:ComboBD nombre = "idProcurador"  ancho="500" tipo="comboProcuradores"  clase="<%=classCombo%>" elementoSel="<%=selProcu%>" parametro="<%=paramProcu%>" readOnly="<%=sreadonly%>"/>
+			<%}%>			
+		</td>
+	
+	</tr>
+	
+	
+	<%}%>
+	
 	</table>
 	</siga:ConjCampos>
 
@@ -1891,32 +1901,42 @@ function str_replace(search, replace, subject) {
 %> 
 
 	<%
-		String tipoIngreso;
-		if (miform.getTipoIngreso() != null) {
-			tipoIngreso = miform.getTipoIngreso();
-		} else {
-			tipoIngreso = "";
-		}
-		ArrayList selTipoIngreso = new ArrayList();
-		selTipoIngreso.add(tipoIngreso);
-	%>
+ 		String tipoIngreso;
+ 				if (miform.getTipoIngreso() != null) {
+ 					tipoIngreso = miform.getTipoIngreso();
+ 				} else {
+ 					tipoIngreso = "";
+ 				}
+ 				ArrayList selTipoIngreso = new ArrayList();
+ 				selTipoIngreso.add(tipoIngreso);
+ 	%>
 <!-- para datos financieros -->
  	<siga:ConjCampos leyenda="gratuita.personaJG.literal.datosFinancieros">
 	<table width="100%" >
 	<tr>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.operarInteresado.literal.tipoIngresos"/>
-			<%if (obligatorioTipoIngreso) {%>
-				<%=asterisco %> 
-			<%}%>
+			<%
+				if (obligatorioTipoIngreso) {
+			%>
+				<%=asterisco%> 
+			<%
+ 				}
+ 			%>
 		</td>
 
 		<td>
-		<%if (!accion.equalsIgnoreCase("ver")) {%>
+		<%
+			if (!accion.equalsIgnoreCase("ver")) {
+		%>
 			<siga:ComboBD nombre = "tipoIngreso" tipo="tipoIngreso" clase="boxCombo" elementoSel="<%=selTipoIngreso%>"/>
-		<%}else{%>
+		<%
+			} else {
+		%>
 			<siga:ComboBD nombre = "tipoIngreso" tipo="tipoIngreso" clase="boxComboConsulta" elementoSel="<%=selTipoIngreso%>" readonly="true"/>
-		<%}%>
+		<%
+			}
+		%>
 		</td>
 	</tr>
 	<tr>
@@ -1998,7 +2018,8 @@ function str_replace(search, replace, subject) {
 
 
 <%
-	String sClasePestanas = esFichaColegial ? "botonesDetalle3"
+	String sClasePestanas = esFichaColegial
+			? "botonesDetalle3"
 			: "botonesDetalle";
 %>
 
@@ -2008,18 +2029,16 @@ function str_replace(search, replace, subject) {
 	String sBoton = null;
 	if (pantalla.equals("P")) {
 
-		
 		if (conceptoE.equals(PersonaJGAction.EJG))
 			sBoton = esFichaColegial ? "G,R" : "V,G,R";
 		else
 			sBoton = esFichaColegial ? "G,R" : "V,G,R";
-	
 
 	} else {
 		// BOTONES PARA MODAL
-			
+
 		if (conceptoE.equals(PersonaJGAction.EJG))
-			sBoton ="Y,C";
+			sBoton = "Y,C";
 		else
 			sBoton = "Y,C";
 
@@ -2038,9 +2057,8 @@ function str_replace(search, replace, subject) {
 
 
 	
-<% 
-	// VOLVER PARA CADA CASO
-	if (conceptoE.equals(PersonaJGAction.EJG)) { %>
+<%// VOLVER PARA CADA CASO
+			if (conceptoE.equals(PersonaJGAction.EJG)) {%>
 	
 		//Asociada al boton Volver -->
 		function accionVolver()   
@@ -2068,7 +2086,7 @@ function str_replace(search, replace, subject) {
 			document.forms[0].importeBienesInmuebles.value=document.forms[0].importeBienesInmuebles.value.replace(/,/,".");
 			document.forms[0].importeBienesMuebles.value=document.forms[0].importeBienesMuebles.value.replace(/,/,".");
 			document.forms[0].importeOtrosBienes.value=document.forms[0].importeOtrosBienes.value.replace(/,/,".");
-		 	document.forms[0].action="<%=app+actionE%>";	
+		 	document.forms[0].action="<%=app + actionE%>";	
 			document.forms[0].modo.value='guardarEJG';
 			document.forms[0].target="submitArea2";
 			var tipo = document.forms[0].tipo.value;
@@ -2083,7 +2101,7 @@ function str_replace(search, replace, subject) {
 			var envio=1;
 				if (isNaN(document.forms[0].importeIngresosAnuales.value)||
 						document.forms[0].importeIngresosAnuales.value>99999999.99){
-					alert("<siga:Idioma key="gratuita.personaJG.messages.IngresosAnuales"/>");
+					alert("<siga:Idioma key='gratuita.personaJG.messages.IngresosAnuales'/>");
 					envio=-1;
 					fin();
 					return false;
@@ -2127,7 +2145,7 @@ function str_replace(search, replace, subject) {
 					if (validatePersonaJGForm(document.forms[0])){
 								
 					// jbd: comprobaciones adicionales para el pcajg
-					if(<%=pcajgActivo>0%>){
+					if(<%=pcajgActivo > 0%>){
 						var error = "";
 						if (<%=obligatorioTipoIdentificador%>){
 							if( document.forms[0].tipoId.value=="")
@@ -2167,9 +2185,9 @@ function str_replace(search, replace, subject) {
 			window.location=window.location;
 		}
 
-<% } else 
-	// VOLVER PARA CADA CASO
-	if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) { %>
+<%} else
+			// VOLVER PARA CADA CASO
+			if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {%>
 	
 		//Asociada al boton Guardar -->
 		function accionGuardarCerrar()	{	
@@ -2188,7 +2206,7 @@ function str_replace(search, replace, subject) {
 			document.forms[0].importeBienesInmuebles.value=document.forms[0].importeBienesInmuebles.value.replace(/,/,".");
 			document.forms[0].importeBienesMuebles.value=document.forms[0].importeBienesMuebles.value.replace(/,/,".");
 			document.forms[0].importeOtrosBienes.value=document.forms[0].importeOtrosBienes.value.replace(/,/,".");
-		 	document.forms[0].action="<%=app+actionE%>";	
+		 	document.forms[0].action="<%=app + actionE%>";	
 			document.forms[0].modo.value='guardarEJG';
 			document.forms[0].target="submitArea2";
 			var tipo = document.forms[0].tipo.value;
@@ -2248,7 +2266,7 @@ function str_replace(search, replace, subject) {
 			} else if (validatePersonaJGForm(document.forms[0])){
 			
 				// jbd: comprobaciones adicionales para el pcajg
-				if(<%=pcajgActivo>0%>){
+				if(<%=pcajgActivo > 0%>){
 					var error = "";
 					if (<%=obligatorioTipoIdentificador%>){
 						if( document.forms[0].tipoId.value=="")
@@ -2279,7 +2297,7 @@ function str_replace(search, replace, subject) {
 				}
 			   
 				//angelcorral: enviamos el formulario si es nuevo o no ha cambiado de persona o confirma la pregunta
-				if (<%=idPersona==null%> || (document.PersonaJGForm.idPersonaJG.value == '<%=idPersona%>') || confirm('<siga:Idioma key="gratuita.personaJG.messages.cambioPersona"/>')) {
+				if (<%=idPersona == null%> || (document.PersonaJGForm.idPersonaJG.value == '<%=idPersona%>') || confirm('<siga:Idioma key="gratuita.personaJG.messages.cambioPersona"/>')) {
 					document.forms[0].submit();			
 				}else{
 					fin();
@@ -2300,7 +2318,7 @@ function str_replace(search, replace, subject) {
 		function refrescarLocal() {
 			window.location=window.location;
 		}
-<% } else if (conceptoE.equals(PersonaJGAction.SOJ)) { %>
+<%} else if (conceptoE.equals(PersonaJGAction.SOJ)) {%>
 
 		//Asociada al boton Volver -->
 		function accionVolver()   
@@ -2329,7 +2347,7 @@ function str_replace(search, replace, subject) {
 			}
 			
 			
-			document.forms[0].action="<%=app+actionE%>";	
+			document.forms[0].action="<%=app + actionE%>";	
 			document.forms[0].modo.value='guardarSOJ';
 			document.forms[0].target="submitArea2";
 			var tipo = document.forms[0].tipo.value;
@@ -2360,18 +2378,15 @@ function str_replace(search, replace, subject) {
 			window.location=window.location;
 		}
 		
-<% } else 
-   if (conceptoE.equals(PersonaJGAction.ASISTENCIA_ASISTIDO)) { %>
+<%} else if (conceptoE.equals(PersonaJGAction.ASISTENCIA_ASISTIDO)) {%>
 
 		function accionVolver()
 		{
-<%
-			String sAction = esFichaColegial ? "JGR_AsistenciasLetrado.do" : "JGR_Asistencia.do";
-%>
-			<%
-			// indicamos que es boton volver
-			ses.setAttribute("esVolver","1");
-			%>
+<%String sAction = esFichaColegial
+						? "JGR_AsistenciasLetrado.do"
+						: "JGR_Asistencia.do";%>
+			<%// indicamos que es boton volver
+				ses.setAttribute("esVolver", "1");%>
 			document.forms[0].target="mainWorkArea"; 
 			document.forms[0].action 	= "<%=sAction%>";
 			document.forms[0].modo.value= "abrir";
@@ -2397,7 +2412,7 @@ function str_replace(search, replace, subject) {
 				return false;
 			}
 
-		 	document.forms[0].action="<%=app+actionE%>";	
+		 	document.forms[0].action="<%=app + actionE%>";	
 			document.forms[0].modo.value='guardarAsistencia';
 			document.forms[0].target="submitArea2";
 			var tipo = document.forms[0].tipo.value;
@@ -2427,8 +2442,7 @@ function str_replace(search, replace, subject) {
 		function refrescarLocal() {
 			window.location=window.location;
 		}			
-<% } else 
-   if (conceptoE.equals(PersonaJGAction.ASISTENCIA_CONTRARIOS)) { %>
+<%} else if (conceptoE.equals(PersonaJGAction.ASISTENCIA_CONTRARIOS)) {%>
 
 		//Asociada al boton Cerrar -->
 		function accionCerrar()   
@@ -2454,7 +2468,7 @@ function str_replace(search, replace, subject) {
 				return false;
 			}
 
-		 	document.forms[0].action="<%=app+actionE%>";	
+		 	document.forms[0].action="<%=app + actionE%>";	
 			document.forms[0].modo.value='guardarAsistencia';
 			document.forms[0].target="submitArea2";
 			var tipo = document.forms[0].tipo.value;
@@ -2485,10 +2499,11 @@ function str_replace(search, replace, subject) {
 			window.location=window.location;
 		}
 					
-<% } else
- 
-if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) { %>
+<%} else
 
+			if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) {%>
+
+		
 		// Asociada al boton Cerrar -->
 		function accionCerrar()   
 		{	
@@ -2513,7 +2528,7 @@ if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) { %>
 				return false;
 			}
            
-		 	document.forms[0].action="<%=app+actionE%>";	
+		 	document.forms[0].action="<%=app + actionE%>";	
 			document.forms[0].modo.value='guardarContrariosEjg';
 			document.forms[0].target="submitArea2";
 			var tipo = document.forms[0].tipo.value;
@@ -2544,8 +2559,7 @@ if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) { %>
 			window.location=window.location;
 		}
 					
-<% } else 
-   if (conceptoE.equals(PersonaJGAction.PERSONAJG)) { %>
+<%} else if (conceptoE.equals(PersonaJGAction.PERSONAJG)) {%>
 
 		//Asociada al boton Guardar -->
 		function accionGuardarCerrar()	{	
@@ -2566,7 +2580,7 @@ if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) { %>
 				return false;
 			}
 
-		 	document.forms[0].action="<%=app+actionE%>";	
+		 	document.forms[0].action="<%=app + actionE%>";	
 			document.forms[0].modo.value='guardarPersona';
 			document.forms[0].target="submitArea2";
 			var tipo = document.forms[0].tipo.value;
@@ -2585,7 +2599,7 @@ if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) { %>
 				} else{
 					if (validatePersonaJGForm(document.forms[0])){
 						// jbd: comprobaciones adicionales para el pcajg
-						if(<%=pcajgActivo>0%>){
+						if(<%=pcajgActivo > 0%>){
 							var error = "";
 							if (<%=obligatorioTipoIdentificador%>){
 								if( document.forms[0].tipoId.value=="")
@@ -2620,8 +2634,8 @@ if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) { %>
 			window.location=window.location;
 		}
 
-<% } else 
-   if (conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS) || conceptoE.equals(PersonaJGAction.DESIGNACION_INTERESADO)) { %>
+<%} else if (conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS)
+					|| conceptoE.equals(PersonaJGAction.DESIGNACION_INTERESADO)) {%>
 		//Asociada al boton Cerrar -->
 		function accionCerrar()   
 		{	
@@ -2630,6 +2644,8 @@ if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) { %>
 
 		//Asociada al boton Guardar -->
 		function accionGuardarCerrar()	{	
+			
+			
 			sub();
 			var tipoIdent=document.forms[0].tipoId.value;
 			var numId=document.forms[0].NIdentificacion.value;
@@ -2646,7 +2662,7 @@ if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) { %>
 				return false;
 			}
 
-		 	document.forms[0].action="<%=app+actionE%>";	
+		 	document.forms[0].action="<%=app + actionE%>";	
 			document.forms[0].modo.value='guardarDesigna';
 			
 			document.forms[0].target="submitArea2";
@@ -2673,7 +2689,7 @@ if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) { %>
 				}
 			}
 		}
-<% } %>
+<%}%>
 
 		function buscar() 
 		{		
@@ -2695,9 +2711,19 @@ if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) { %>
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
 
-<%
-	if (conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS)) {
-%> 
+
+
+<%if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) {
+	%> 
+	<!-- formulario para seleccionar representante Legal, del censo -->
+	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="">
+		<input type="hidden" name="actionModal" value="">
+		<input type="hidden" name="modo" value="abrirBusquedaModal">
+	</html:form>
+	<!-- FIN formulario para seleccionar representante Legal, del censo -->
+<%}
+	
+	if (conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS)) {%> 
 	<!-- formulario para seleccionar representante Legal, del censo -->
 	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="">
 		<input type="hidden" name="actionModal" value="">
@@ -2711,17 +2737,17 @@ if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) { %>
 	<form name="representanteTutor" action="<%=app + actionE%>" method="post">
 		<input type="hidden" name="actionModal" value="">
 		<input type="hidden" name="modo" value="abrirPestana">
-		<input type="hidden" name="idInstitucionJG" value="<%=usr.getLocation() %>">
-		<input type="hidden" name="idPersonaJG" value="<%=miform.getIdRepresentanteJG() %>">
-		<input type="hidden" name="idInstitucionPER" value="<%=usr.getLocation() %>">
-		<input type="hidden" name="idPersonaPER" value="<%=miform.getIdPersonaJG() %>">
-		<input type="hidden" name="conceptoE" value="<%=PersonaJGAction.PERSONAJG %>">
+		<input type="hidden" name="idInstitucionJG" value="<%=usr.getLocation()%>">
+		<input type="hidden" name="idPersonaJG" value="<%=miform.getIdRepresentanteJG()%>">
+		<input type="hidden" name="idInstitucionPER" value="<%=usr.getLocation()%>">
+		<input type="hidden" name="idPersonaPER" value="<%=miform.getIdPersonaJG()%>">
+		<input type="hidden" name="conceptoE" value="<%=PersonaJGAction.PERSONAJG%>">
 		<input type="hidden" name="tituloE" value="gratuita.personaJG.literal.representante">
 		<input type="hidden" name="localizacionE" value="">
 		<input type="hidden" name="accionE" value="editar">
-		<input type="hidden" name="actionE" value="<%=actionE %>">
+		<input type="hidden" name="actionE" value="<%=actionE%>">
 		<input type="hidden" name="pantallaE" value="M">
-		<input type="hidden" name="repPCAJG" value="<%=pcajgActivo %>">
+		<input type="hidden" name="repPCAJG" value="<%=pcajgActivo%>">
 	</form>
 	<!-- FIN formulario para seleccionar representante -->
 <%
@@ -2732,7 +2758,7 @@ if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) { %>
 	<html:form action="/JGR_BusquedaPersonaJG.do" method="POST" target="submitArea">
 		<input type="hidden" name="actionModal" value="">
 		<input type="hidden" name="modo" value="abrir">
-		<input type="hidden" name="conceptoE" value="<%=conceptoE %>">
+		<input type="hidden" name="conceptoE" value="<%=conceptoE%>">
 	</html:form>
 	<!-- FIN formulario para buscar personaJG-->
 	

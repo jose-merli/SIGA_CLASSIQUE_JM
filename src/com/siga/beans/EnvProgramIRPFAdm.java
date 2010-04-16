@@ -4,6 +4,8 @@
 */
 package com.siga.beans;
  
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -137,42 +139,17 @@ public class EnvProgramIRPFAdm extends MasterBeanAdministrador {
 
 		return htData;
 	}
-
-    public Integer getNewIdProgramIrpf(UsrBean _usr) throws ClsExceptions{
-        RowsContainer rows=new RowsContainer();
-        String sql="SELECT MAX(" + EnvProgramIRPFBean.C_IDPROGRAM +
-        		") AS MAXVALOR FROM " + EnvProgramIRPFBean.T_NOMBRETABLA +
-        		" WHERE " + EnvProgramIRPFBean.C_IDINSTITUCION + "="+ _usr.getLocation();
-        int valor=1; // Si no hay registros, es el valor que tomará
-        if(rows.find(sql)){
-            Hashtable htRow=((Row)rows.get(0)).getRow();
-            // El valor devuelto será "" Si no hay registros
-            if(!((String)htRow.get("MAXVALOR")).equals("")) {
-                Integer valorInt=Integer.valueOf((String)htRow.get("MAXVALOR"));
-                valor=valorInt.intValue();
-                valor++;
-            }
-        }
-        return new Integer(valor);
-    }
-
     public Integer getNewIdProgramIrpf(String idInstitucion) throws ClsExceptions{
-        RowsContainer rows=new RowsContainer();
-        String sql="SELECT MAX(" + EnvProgramIRPFBean.C_IDPROGRAM +
-        		") AS MAXVALOR FROM " + EnvProgramIRPFBean.T_NOMBRETABLA +
-        		" WHERE " + EnvProgramIRPFBean.C_IDINSTITUCION + "="+ idInstitucion;
-        int valor=1; // Si no hay registros, es el valor que tomará
-        if(rows.find(sql)){
-            Hashtable htRow=((Row)rows.get(0)).getRow();
-            // El valor devuelto será "" Si no hay registros
-            if(!((String)htRow.get("MAXVALOR")).equals("")) {
-                Integer valorInt=Integer.valueOf((String)htRow.get("MAXVALOR"));
-                valor=valorInt.intValue();
-                valor++;
-            }
-        }
-        return new Integer(valor);
+    	
+        Long idEnvio = getSecuenciaNextVal(EnvProgramInformesBean.SEQ_ENV_PROGRAMINFORMES);
+        SimpleDateFormat formato = new SimpleDateFormat("yyyy");
+        return new Integer(formato.format(new Date())+idEnvio);
     }
+
+    public Integer getNewIdProgramIrpf(UsrBean usrBean) throws ClsExceptions{
+    	return getNewIdProgramIrpf(usrBean.getLocation());
+    }
+    
     /**
      * 
      * @param estado 1 ó 0. Sera uno cuando se quieran los pagos ya enviados.0 con los pagos pendienmtes de enviar

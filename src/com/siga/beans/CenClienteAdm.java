@@ -31,6 +31,7 @@ import com.siga.censo.form.BusquedaClientesForm;
 import com.siga.general.CenVisibilidad;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.SIGAException;
+import com.siga.informes.InformeCertificadosEspeciales;
 
 
 /**
@@ -3445,10 +3446,8 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	        Hashtable htDatos1 = new Hashtable();
 	        
 		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//	        ReadProperties rp = new ReadProperties("SIGA.properties");
 	        
-	        String sSQL = rp.returnProperty("certificados.consultacliente");
-	        
+	        String sSQL = new InformeCertificadosEspeciales().getSqlCamposGeneral();
 	  
 	        htDatos=this.getEtiquetasComunesCertificados(ht,idInstitucion);
 	        Enumeration enumHash = ht.keys();
@@ -4350,6 +4349,38 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	   			}
 	   			else {
 	   				throw new ClsExceptions(e, "Error al obtener el nombre del estado.");
+	   			}
+	   		}	
+	    }
+		return null;
+	}
+
+     public String getFechaEstadoColegial (String idPersona, String idInstitucion) throws ClsExceptions,SIGAException {
+	    Hashtable codigos = new Hashtable();
+	    try {
+	        codigos.put(new Integer(1),idPersona);
+	        codigos.put(new Integer(2),idInstitucion);
+	        String select = "select max(fechaestado) as FECHAESTADO FROM CEN_DATOSCOLEGIALESESTADO "+
+	        				" WHERE IDPERSONA = :1 "+
+	        				" AND IDINSTITUCION = :2 "+ 
+	        				" order by fechaestado desc";
+			RowsContainer rc = new RowsContainer(); 
+			if (rc.queryBind(select, codigos)) {
+				Hashtable aux = (Hashtable)((Row) rc.get(0)).getRow();
+				String fecha = UtilidadesHash.getString(aux, "FECHAESTADO");
+				return fecha;
+			}
+		}
+	    catch (Exception e) {
+	   		if (e instanceof SIGAException){
+	   			throw (SIGAException)e;
+	   		}
+	   		else {
+	   			if (e instanceof ClsExceptions){
+	   				throw (ClsExceptions)e;
+	   			}
+	   			else {
+	   				throw new ClsExceptions(e, "Error al obtener la fecha de estado colegial");
 	   			}
 	   		}	
 	    }

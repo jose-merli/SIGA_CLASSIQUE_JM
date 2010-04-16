@@ -132,6 +132,7 @@ public class DatosFacturacionAction extends MasterAction {
 					mapDestino = editarCambiarFecha(mapping, miForm, request, response);
 					break;
 				} else if (accion.equalsIgnoreCase("grabarCambiarFecha")){
+					borrarPaginador(request, paginadorPenstania);
 					mapDestino = grabarCambiarFecha(mapping, miForm, request, response);
 					break;
 				} else {
@@ -511,7 +512,7 @@ public class DatosFacturacionAction extends MasterAction {
 				/* Se incluye tambien el idPeticion porque si no le estamos cambiando la fecha efectiva a todas las personas que tengan el servicio 
 				 seleccionado*/
 				ht.put(PysSuscripcionBean.C_IDPETICION,request.getParameter("idPeticionSel")); 
-				
+								
 				
 				Vector v = admSS.select(ht);
 				if (v!=null && v.size()>0) {
@@ -597,7 +598,7 @@ public class DatosFacturacionAction extends MasterAction {
 //						        throw new SIGAException("messages.Servicios.GestionSolicitudes.FechaEfectivaMal");
 //						    }
 				    	beanPS.setFecha(fecha);
-				    	beanPCS.setFecha(fecha);
+				    	//beanPCS.setFecha(fecha);
 //					    }
 //					    
 					   if (!admPeticionCompra.updateDirect(beanPCS)) {

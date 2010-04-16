@@ -44,7 +44,9 @@ public class TagFilaExt extends TagFila {
 		if (elementos!=null) {
 			for (int i=0;i<elementos.length;i++) {
 				if (elementos[i]==null) continue;
-				pintaImagenExt(out,
+				String label = elementos[i].getLabel();
+				if(label==null){
+					pintaImagenExt(out,
 						pathAplicacion,
 						elementos[i].getAction(),
 						checkAcceso(tipoAcceso,elementos[i].getAccesoMin()),
@@ -52,6 +54,17 @@ public class TagFilaExt extends TagFila {
 						elementos[i].getIconName(),
 						elementos[i].getNote(),
 						elementos[i].getAlt());
+				}else{
+					pintaButtonExt(out,
+							elementos[i].getAction(),
+							checkAcceso(tipoAcceso,elementos[i].getAccesoMin()),
+							usrBean,
+							elementos[i].getAlt(),
+							label,
+							elementos[i].getWidth());
+					
+					
+				}
 			}
 		}
 	}
@@ -68,63 +81,73 @@ public class TagFilaExt extends TagFila {
 			return false;
 		}
 	}
-	
 	protected void pintaImagenExt(PrintWriter out, 
 			String path, 
 			String accion, 
 			boolean permitido, 
 			UsrBean usrBean,
 			String icono,
-			String name,
-			String alt) 
+			String namet,
+			String alt
+			) 
 	{
 		String aux = "";
 		
 		if (permitido) {
-			/* LMS (04/01/2005) */
-		    /* En lugar de poner una imagen dentro de un enlace, se pone únicamente la imagen. */
-			/*aux = "<a href='javascript://' " +
-				  "onClick=\"selectRow(" + this.fila + "); "+ accion + "(" + this.fila + ");\" " +
+			//Si trae label es que quiere poner un boton con texto
+			aux = "<img id=\"iconoboton_"+ accion + this.fila + "\" src=\"" + path + "/html/imagenes/b" + icono + "_off.gif\" " +
+				  "style=\"cursor:hand;\" " +
+				  "alt=\"" + UtilidadesString.getMensajeIdioma(usrBean, alt) + "\" " +
+				  "name=\"iconoFila\" " +
+				  "border=\"0\" " +
+				  "onClick=\" selectRow(" + this.fila + "); "+ accion + "(" + this.fila + "); \" " +
 				  "onMouseOut=\"MM_swapImgRestore()\" " +
 				  "onMouseOver=\"MM_swapImage('" + accion + "_" + this.fila + "','','" + path + "/html/imagenes/b" + icono + "_on.gif',1)\">";
-	
-			aux += "<img src=\"" + path + "/html/imagenes/b" + icono + "_off.gif\" " +
-				  "alt=\"" + UtilidadesString.getMensajeIdioma(usrBean, "general.boton." + accion) + "\" " +
-				  "name=\"" + accion + "_" + this.fila + "\" " +
-//				  "width='26' " +
-//				  "height='27' " +
-				  "border=\"0\"" +
-				  ">";
-			
-			aux += "</a>";*/
-		aux = "<img id=\"iconoboton_"+ accion + this.fila + "\" src=\"" + path + "/html/imagenes/b" + icono + "_off.gif\" " +
-			  "style=\"cursor:hand;\" " +
-			  "alt=\"" + UtilidadesString.getMensajeIdioma(usrBean, alt) + "\" " +
-			  //"name=\"" + accion + "_" + this.fila + "\" " +
-			  "name=\"iconoFila\" " +
-//			  "width='26' " +
-//			  "height='27' " +
-			  "border=\"0\" " +
-			  //"onClick=\"selectRow(" + this.fila + "); "+ accion + "(" + this.fila + "); parent.buscar();\" " +
-			  //"onClick=\"deshabilitariconos('iconoFila');selectRow(" + this.fila + "); "+ accion + "(" + this.fila + ");habilitariconos('iconoFila'); \" " +
-			  "onClick=\" selectRow(" + this.fila + "); "+ accion + "(" + this.fila + "); \" " +
-			  
-			  "onMouseOut=\"MM_swapImgRestore()\" " +
-			  "onMouseOver=\"MM_swapImage('" + accion + "_" + this.fila + "','','" + path + "/html/imagenes/b" + icono + "_on.gif',1)\">";
-
 			out.println(aux);
 		}
 		else {
 			aux = "<img id=\"iconoboton_"+ accion + this.fila + "\"  src=\"" + path + "/html/imagenes/b" + icono + "_disable.gif\" " +
 				  "alt=\"" + UtilidadesString.getMensajeIdioma(usrBean, alt) + "\" " +
-				  //"name=\"iconoFila\" " +
 				  "name=\"" + accion + "_" + this.fila + "\" " +
-//				  "width='26' " +
-//				  "height='27' " +
 				  "border=\"0\"" +
 				  ">";
+			
+			
 			out.println(aux);
 		}
 	}
+	protected void pintaButtonExt(PrintWriter out, 
+			String accion, 
+			boolean permitido, 
+			UsrBean usrBean,
+			String alt,
+			String label, String width) 
+	{
+		String aux = "";
+		
+		if (permitido) {
+			
+			//Si trae label es que quiere poner un boton con texto
+			
+				aux = "<input type=\"button\"  id = \"idButton\" " +
+					"value=\"" + UtilidadesString.getMensajeIdioma(usrBean, label) + "\" " +
+					"alt=\"" + UtilidadesString.getMensajeIdioma(usrBean, alt) + "\" " +
+					"class=\"buttonEnTabla\" " +
+					" style=\"width:"+width+ "\" " +
+					
+					"onclick=\"selectRow(" + this.fila + "); "+ accion + "(" + this.fila + "); \"\"/>";
+			out.println(aux);
+		}
+		else {
+				aux = "<input type=\"button\"  id = \"idButton\" " +
+					"value=\"" + UtilidadesString.getMensajeIdioma(usrBean, label) + "\" " +
+					"alt=\"" + UtilidadesString.getMensajeIdioma(usrBean, alt) + "\" " +
+					"class=\"buttonEnTabla\" " +
+					" style=\"width:"+width+ "\" " +
+					">";
+			out.println(aux);
+		}
+	}
+	
 	
 }

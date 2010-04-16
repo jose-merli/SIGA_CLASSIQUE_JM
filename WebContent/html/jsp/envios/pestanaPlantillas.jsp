@@ -201,7 +201,7 @@
 		   		  borde="1"
 		   		  clase="tableTitle"
 		   		  nombreCol="certificados.mantenimiento.literal.plantilla,certificados.mantenimiento.literal.pordefecto,certificados.mantenimiento.literal.tipoArchivo,"
-		   		  tamanoCol="60,15,6,19"
+		   		 tamanoCol="50,15,10,19"
 		   			alto="100%"
 		   			ajusteBotonera="true"		
 

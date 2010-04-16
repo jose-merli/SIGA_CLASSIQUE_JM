@@ -474,6 +474,9 @@ public class BusquedaAsistenciasAction extends MasterAction {
 							throws ClsExceptions,SIGAException  {
 		//si el usuario logado es letrado consultar en BBDD el nColegiado para mostrar en la jsp
 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String tipoAsistenciaDefecto = rp.returnProperty("codigo.general.scs_tipoasistencia.tipoGeneral");
+		request.setAttribute("tipoAsistencia",tipoAsistenciaDefecto);
 		if (usr.isLetrado()){
 			CenColegiadoAdm colegiado = new CenColegiadoAdm(this.getUserBean(request));
 			try {

@@ -49,7 +49,8 @@ public class ScsActuacionDesignaBean extends MasterBean{
 	static public final String  C_VALIDADA 					  = "VALIDADA";
 	static public final String  C_IDPERSONACOLEGIADO 		  = "IDPERSONACOLEGIADO";
 	static public final String  C_IDPRETENSION      		  = "IDPRETENSION";
-	
+	static public final String  C_TALONARIO  	     		  = "TALONARIO";
+	static public final String  C_TALON      	     		  = "TALON";
 	
 	
 	/*
@@ -82,6 +83,38 @@ public class ScsActuacionDesignaBean extends MasterBean{
 	private String  validada;
 	private Long    idPersonaColegiado;
 	private Integer idPretension;
+	private String   talonario;
+    private String   talon;
+	
+    /**
+	 * @return Returns the getTalonario.
+	 */
+    public String getTalonario() {
+		return talonario;
+	}
+    
+    /**
+	 * @param acuerdoExtraJudicial The Talonario to set.
+	 */
+	public void setTalonario(String talonario) {
+		this.talonario = talonario;
+	}
+	
+	 /**
+	 * @return Returns the getTalon.
+	 */
+	public String getTalon() {
+		return talon;
+	}
+	
+	 /**
+	 * @param acuerdoExtraJudicial The Talon to set.
+	 */
+	
+	public void setTalon(String talon) {
+		this.talon = talon;
+	}
+	
 
 	
 	/**

@@ -10,44 +10,35 @@
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 
-<%@ page import="com.atos.utils.*"%>
-<%@ page import="com.siga.beans.*"%>
-<%@ page import="com.siga.Utilidades.*"%>
-<%@ page import="com.siga.administracion.*"%>
-<%@ page import="java.util.Properties" %>
-<%@ page import="java.util.Vector" %>
+<%@ taglib uri="c.tld" prefix="c"%>
 
-<% 
-	String app=request.getContextPath();
-	HttpSession ses=request.getSession();
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
-	Vector vDatos = (Vector)request.getAttribute("datos");
-	
-	String sIdInstitucion = (String)request.getAttribute("idInstitucion");
-	String sIdTipoEnvio = (String)request.getAttribute("idTipoEnvio");
-	String sIdPlantillaEnvios = (String)request.getAttribute("idPlantillaEnvios");
-	
-	String sAsunto=(String)request.getAttribute("asunto");
-	if (sAsunto==null) sAsunto="";	
-	String sCuerpo=(String)request.getAttribute("cuerpo");
-	if (sCuerpo==null) sCuerpo="";	
-	
-	String plantilla = (String)request.getAttribute("plantilla");
-	boolean bEditable = ((String)request.getAttribute("editable")).equals("1");
-	
-	String descripcionPlantilla = (String)request.getAttribute("descripcionPlantilla");
-	String idTipoEnvios = (String)request.getAttribute("idTipoEnvios");
 
-	UsrBean userBean = (UsrBean)request.getSession().getAttribute("USRBEAN");
-%>	
 
 <html>
 	<head>
-		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
+	
+	<link id="default" rel="stylesheet" type="text/css"	href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>">
+		<script src="<html:rewrite page='/html/js/SIGA.js'/>" type="text/javascript"></script>
+		<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>" type="text/javascript"></script>
 		
-		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
-		<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/tiny_mce/tiny_mce.js'/>"></script>
+	<script type="text/javascript">
+		tinyMCE.init({
+			mode : "textareas",
+			theme : "advanced",
+			plugins : "pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,inlinepopups",
+	
+			// Theme options
+			theme_advanced_buttons1 : "newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,fontselect,fontsizeselect,|,hr",
+			theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,image,cleanup,code,|,insertdate,inserttime,preview,|,forecolor,backcolor",
+			theme_advanced_buttons3 :"",
+			theme_advanced_toolbar_location : "top",
+			theme_advanced_toolbar_align : "left",
+			theme_advanced_statusbar_location : "bottom"
 		
+		
+		});
+	</script>
 		<!-- INICIO: SCRIPTS BOTONES -->
 		<script language="JavaScript">
 			<!-- Asociada al boton Volver -->
@@ -72,7 +63,20 @@
 			{
 				parent.buscar();
 			}
-
+			function abrirAyuda() {
+				
+		
+				var alto = 580, ancho = 800;
+					  
+		 		var posX = (screen.width - ancho) / 2;
+     		var posY = (screen.height - alto) / 2;
+     		var medidasWin = "height=" + alto + ", width=" + ancho + ", top=" + posY + ", left=" + posX;
+ 			
+				w = window.open ("/SIGA/html/jsp/envios/paginaAyuda.jsp",
+						   				   "", 
+										     "status=0, toolbar=0, location=0, menubar=0, resizable=1," + medidasWin);
+		}	
+	
 		</script>
 		<!-- FIN: SCRIPTS BOTONES -->
 		<siga:Titulo
@@ -86,51 +90,55 @@
 				<table class="tablaTitulo" align="center" cellspacing="0">
 					<tr>
 						<td id="titulo" class="titulitosDatos">
-							<siga:Idioma key="envios.plantillas.literal.plantilla"/>:&nbsp;<%=plantilla%>
+							<siga:Idioma key="envios.plantillas.literal.plantilla"/>:&nbsp;
+							<c:out value="${PlantillasEnviosCorreoElectronicoForm.plantillaEnvios.descripcionPlantilla}"></c:out>
 						</td>
 					</tr>
 				</table>
 	
-		<html:form action="/ENV_Campos_Correoe.do" method="POST">
+		<html:form action="/ENV_Campos_Correoe" method="POST">
 			<html:hidden property="modo" value=""/>
 
-			<html:hidden property="idInstitucion" value="<%=sIdInstitucion%>"/>
-			<html:hidden property="idTipoEnvio" value="<%=sIdTipoEnvio%>"/>
-			<html:hidden property="idPlantillaEnvios" value="<%=sIdPlantillaEnvios%>"/>
-			
-			<html:hidden property="descripcionPlantilla" value="<%=descripcionPlantilla%>"/>
-			<html:hidden property="idTipoEnvios" value="<%=idTipoEnvios%>"/>
-
-
-
-<%
-				boolean bReadOnly=bEditable ? false : true;
-%>
-				<table class="tablaCampos" align="center">
+			<html:hidden property="idInstitucion"/>
+			<html:hidden property="idTipoEnvio"/>
+			<html:hidden property="idPlantillaEnvios"/>
+			<bean:define id="botones" name="PlantillasEnviosCorreoElectronicoForm" property="botones" type="java.lang.String"/>
+				<table class="tablaCampos" align="center" width="100%">
 					<tr>
-						<td class="labelText">
+						<td class="labelText" width="15%">
 							<siga:Idioma key="envios.plantillas.literal.asunto"/>
 						</td>
-						<td>
-							<html:text property="asunto" value="<%=sAsunto%>" styleClass="boxCombo" size="80" value="<%=sAsunto%>" readonly="<%=bReadOnly%>"/>
+						<td width="70%">
+							<html:text property="asunto"  styleClass="boxCombo" size="80" readonly="${!PlantillasEnviosCorreoElectronicoForm.editable}"/>
 						</td>
+						<td width="15%">
+			 			 <a href="javascript:abrirAyuda();"><img border=0 src="<html:rewrite page='/html/imagenes/help.gif'/>"  alt="<siga:Idioma key="general.ayuda.normativa"/>"></a>
+			 			 
+						</td>
+						
+						
 					</tr>
 					<tr>				
 						<td class="labelText">
 							<siga:Idioma key="envios.plantillas.literal.cuerpo"/>
 						</td>
-						<td>
-							<html:textarea property="cuerpo" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" value="<%=sCuerpo%>" styleClass="boxCombo" cols="210" rows="25"  value="<%=sCuerpo%>" readonly="<%=bReadOnly%>"/>
+						<td colspan="2">
+							<html:textarea property="cuerpo" rows="35" readonly="${!PlantillasEnviosCorreoElectronicoForm.editable}"/>
 						</td>
+						
+						
 					</tr>
 				</table>
+				
+				
+		
+
+
+		<siga:ConjBotonesAccion botones="<%=botones%>" clase="botonesDetalle"/>
 		</html:form>
 
-<%
-		String sBotones2 = bEditable ? "V,G" : "V";
-%>
-		<siga:ConjBotonesAccion botones="<%=sBotones2%>" clase="botonesDetalle"/>
-
-		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+		<iframe name="submitArea"
+				src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"
+				style="display: none"></iframe>
 	</body>
 </html>

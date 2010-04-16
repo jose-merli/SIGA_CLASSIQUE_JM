@@ -1005,16 +1005,16 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		
 		Vector vFechaFin = new Vector();
 		boolean encontrado = false;
-		
+		StringBuffer sql = null; 
 		try {
 			Iterator iterDiasGuardia = arrayDiasGuardia.iterator ();
 			String fechaGuardia;
 			while (iterDiasGuardia.hasNext () && !encontrado) {
+				sql = new StringBuffer(consulta);
 				fechaGuardia = (String) iterDiasGuardia.next ();
-				consulta.append (" and abs (gc."+ScsGuardiasColegiadoBean.C_FECHAFIN+" - to_date('"+fechaGuardia+"', 'DD/MM/YYYY')) ");
-				consulta.append (" <= g_incompatibles."+ScsIncompatibilidadGuardiasBean.C_DIASSEPARACIONGUARDIAS+" ");
-				
-				vFechaFin = this.selectGenerico (consulta.toString ());
+				sql.append (" and abs (gc."+ScsGuardiasColegiadoBean.C_FECHAFIN+" - to_date('"+fechaGuardia+"', 'DD/MM/YYYY')) ");
+				sql.append (" <= g_incompatibles."+ScsIncompatibilidadGuardiasBean.C_DIASSEPARACIONGUARDIAS+" ");
+				vFechaFin = this.selectGenerico (sql.toString ());
 				if (! vFechaFin.isEmpty ())
 					encontrado = true;
 			}

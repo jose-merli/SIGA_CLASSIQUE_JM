@@ -35,6 +35,8 @@
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
 	Vector obj = (Vector)request.getSession().getAttribute("resultado");
 	Hashtable turno =(Hashtable)request.getSession().getAttribute("turnoElegido");
+	String NLETRADOSINSCRITOS =(String)request.getAttribute("NLETRADOSINSCRITOS");
+	
 	Vector ocultos = (Vector)ses.getAttribute("ocultos");
 	Vector campos = (Vector)ses.getAttribute("campos");
 	String accionTurno = (String)request.getSession().getAttribute("accionTurno");
@@ -203,15 +205,16 @@
 				String consulta="";
 				String fI = "";
 				String fB = "";
-					consulta="select count(DISTINCT IDPERSONA) LETRADOSINSCRITOS from scs_inscripcionguardia"+
-								" where idinstitucion="+(String)hash.get("IDINSTITUCION")+
-								" and idturno = "+hash.get("IDTURNO")+
-								" and idguardia ="+hash.get("IDGUARDIA")+
-								" and FECHABAJA IS NULL ";
-								
-					ScsInscripcionGuardiaAdm inscripcion = new ScsInscripcionGuardiaAdm(usr);
-					inscrG = (Vector)inscripcion.ejecutaSelect(consulta);
-					
+			     				
+				  ScsInscripcionGuardiaAdm InscripcionGuardiaAdm = new ScsInscripcionGuardiaAdm(usr);
+		          Vector letradosinscritos = new Vector();
+		          String NLetradosInscritos="";
+				  letradosinscritos= InscripcionGuardiaAdm.selectGenerico(InscripcionGuardiaAdm.getnumeroColegiadosIncritos((String)hash.get("IDINSTITUCION"),(String)hash.get("IDTURNO"),(String)hash.get("IDGUARDIA")));
+				if( letradosinscritos!=null  ||  letradosinscritos.size()>0){			 
+					NLetradosInscritos=(String)(((Hashtable)(letradosinscritos.get(0))).get("NLETRADOSINSCRITOS"));
+				
+				}						
+									
 				String tipoDia = (String)hash.get("TIPODIASGUARDIA");
 				String literalDuracion ="gratuita.altaTurnos_2.literal.dias";
 				if(tipoDia.equalsIgnoreCase("D"))
@@ -232,7 +235,8 @@
 				<td><%=hash.get("DURACION")%>&nbsp;<siga:Idioma key="<%=literalDuracion%>"/></td>
 				<td><%=hash.get("NUMEROLETRADOS")%></td>
 				<td><%=hash.get("VALIDARJUSTIFICACIONES")%></td>
-				<td><%=((Hashtable)inscrG.get(0)).get("LETRADOSINSCRITOS")%></td>
+				<td><%=NLetradosInscritos %></td>
+			
 			</siga:FilaConIconos>	
 		
 		<%

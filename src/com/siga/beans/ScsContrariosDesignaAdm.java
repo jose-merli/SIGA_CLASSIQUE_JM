@@ -38,7 +38,8 @@ public class ScsContrariosDesignaAdm extends MasterBeanAdministrador {
 							ScsContrariosDesignaBean.C_FECHAMODIFICACION,		ScsContrariosDesignaBean.C_USUMODIFICACION,
 							ScsContrariosDesignaBean.C_IDPERSONA,				ScsContrariosDesignaBean.C_OBSERVACIONES,
 							ScsContrariosDesignaBean.C_IDINSTITUCIONPROCURADOR,	ScsContrariosDesignaBean.C_IDPROCURADOR,
-							ScsContrariosDesignaBean.C_NOMBREREPRESENTANTE, ScsContrariosDesignaBean.C_IDREPRESENTANTELEGAL};
+							ScsContrariosDesignaBean.C_NOMBREREPRESENTANTE,     ScsContrariosDesignaBean.C_IDREPRESENTANTELEGAL,
+							ScsContrariosDesignaBean.C_NOMBREABOGADOCONTRARIO,  ScsContrariosDesignaBean.C_IDABOGADOCONTRARIO};
 		return campos;
 	}
 	/** Funcion getClavesBean ()
@@ -74,6 +75,8 @@ public class ScsContrariosDesignaAdm extends MasterBeanAdministrador {
 			bean.setIdRepresentanteLegal(UtilidadesHash.getString(hash,ScsContrariosDesignaBean.C_IDREPRESENTANTELEGAL));
 			bean.setNombreRepresentante(UtilidadesHash.getString(hash,ScsContrariosDesignaBean.C_NOMBREREPRESENTANTE));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,ScsContrariosDesignaBean.C_USUMODIFICACION));
+			bean.setnombreAbogadoContrario(UtilidadesHash.getString(hash,ScsContrariosDesignaBean.C_NOMBREABOGADOCONTRARIO));
+			bean.setIdAbogadoContrario(UtilidadesHash.getString(hash,ScsContrariosDesignaBean.C_IDABOGADOCONTRARIO));
 		}
 		catch(Exception e){
 			bean = null;
@@ -103,7 +106,10 @@ public class ScsContrariosDesignaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, ScsContrariosDesignaBean.C_IDPERSONA,b.getIdPersona());
 			UtilidadesHash.set(hash, ScsContrariosDesignaBean.C_USUMODIFICACION,b.getUsuMod());
 			UtilidadesHash.set(hash, ScsContrariosDesignaBean.C_IDINSTITUCIONPROCURADOR,b.getIdInstitucionProcurador());
-			UtilidadesHash.set(hash, ScsContrariosDesignaBean.C_IDPROCURADOR,b.getIdProcurador());																	
+			UtilidadesHash.set(hash, ScsContrariosDesignaBean.C_IDPROCURADOR,b.getIdProcurador());	
+			UtilidadesHash.set(hash, ScsContrariosDesignaBean.C_NOMBREABOGADOCONTRARIO,b.getnombreAbogadoContrario());	
+			UtilidadesHash.set(hash, ScsContrariosDesignaBean.C_IDABOGADOCONTRARIO,b.getIdAbogadoContrario());	
+			
 		}
 		catch (Exception e){
 			hash = null;
@@ -195,5 +201,21 @@ public class ScsContrariosDesignaAdm extends MasterBeanAdministrador {
 	       }
 	       return datos;                        
 	    }
+	
+	public String getNcolegiadoRepresentante( String idPersona) throws ClsExceptions {
+		String consulta = "";
+		
+			try {
+				consulta ="select ncolegiado as NCOLEGIADOABOGADO from  CEN_COLEGIADO where idpersona="+idPersona;
+		   
+	         }
+			catch (Exception e){
+				//throw new ClsExceptions(e,"Excepcion en ScsContrariosEJGAdm.getNcolegiadoAbogado(). Consulta SQL:"+consulta);
+				return consulta;
+			}
+			
+			return consulta;
+	
+	}
 		
 }

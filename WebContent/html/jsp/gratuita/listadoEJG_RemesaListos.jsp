@@ -18,7 +18,11 @@
 <%@ page import="com.siga.beans.ScsEJGAdm"%>
 <%@ page import="com.siga.administracion.SIGAMasterTable"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
-<%@ page import="com.siga.Utilidades.Paginador"%>
+<%@ page import="com.siga.Utilidades.PaginadorBind"%>
+<%@ page import="com.siga.Utilidades.UtilidadesMultidioma"%>
+<%@page import="com.siga.beans.ScsTurnoAdm"%>
+<%@page import="com.siga.beans.ScsGuardiasTurnoAdm"%>
+
 <%@ page import="com.atos.utils.*"%>
 
 <%@ page import="java.util.*"%>
@@ -64,7 +68,7 @@
 	 if ( hm.get("datos")!=null && !hm.get("datos").equals("")){
 	  	resultado = (Vector)hm.get("datos");
 		
-	    Paginador paginador = (Paginador)hm.get("paginador");
+	  	PaginadorBind paginador = (PaginadorBind)hm.get("paginador");
 		paginaSeleccionada = String.valueOf(paginador.getPaginaActual());
 	
 	 	totalRegistros = String.valueOf(paginador.getNumeroTotalRegistros());
@@ -199,8 +203,8 @@
 						%>
 						
 					</td>
-					<td><%=(String)registro.get("TURNO")%>&nbsp;</td>
-					<td><%=(String)registro.get("GUARDIA")%>&nbsp;</td>
+					<td><%=UtilidadesMultidioma.getDatoMaestroIdioma(ScsTurnoAdm.getNombreTurnoJSP(usr.getLocation(),(String)registro.get("GUARDIATURNO_IDTURNO")),usr) %>&nbsp;</td>
+					<td><%=UtilidadesMultidioma.getDatoMaestroIdioma(ScsGuardiasTurnoAdm.getNombreGuardiaJSP(usr.getLocation(),(String)registro.get("GUARDIATURNO_IDTURNO"),(String)registro.get("GUARDIATURNO_IDGUARDIA")),usr) %>&nbsp;</td>
 					<td>
 					
 					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=registro.get(ScsEJGBean.C_IDTIPOEJG)%>">
@@ -211,10 +215,10 @@
 					
 					<%=registro.get(ScsEJGBean.C_ANIO)%></td>
 					<td><%=CODIGO%></td>
-					<td><%=registro.get("TIPOEJG")%></td>
+					<td><%=UtilidadesMultidioma.getDatoMaestroIdioma((String)registro.get("TIPOEJG"),usr)%></td>
 					<td><%=GstDate.getFormatedDateShort("",registro.get(ScsEJGBean.C_FECHAAPERTURA))%>&nbsp;</td>
-					<td><%=(String)registro.get("ESTADO")%>&nbsp;</td>
-					<td><%=(String)registro.get(ScsPersonaJGBean.C_NOMBRE) + " " + (String)registro.get(ScsPersonaJGBean.C_APELLIDO1) + " " + (String)registro.get(ScsPersonaJGBean.C_APELLIDO2)%>&nbsp;</td>
+					<td><%=UtilidadesMultidioma.getDatoMaestroIdioma((String)registro.get("DESC_ESTADO"), usr) %>&nbsp;</td>
+					<td><%=ScsEJGAdm.getUnidadEJG(usr.getLocation(),(String)registro.get(ScsEJGBean.C_IDTIPOEJG),(String)registro.get(ScsEJGBean.C_ANIO),(String)registro.get(ScsEJGBean.C_NUMERO)) %>&nbsp;</td>
 			</tr>
 			<% 	recordNumber++;		   
 			} %>

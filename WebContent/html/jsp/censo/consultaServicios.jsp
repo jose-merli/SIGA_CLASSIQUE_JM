@@ -190,7 +190,7 @@ String app = request.getContextPath();
 	}
 	</script>
 	<script>	
-		function refrescarLocal() {
+		function refrescarLocal() {			
 			parent.pulsarId("pestana.fichaCliente.datosServicios","mainPestanas");
 		}
 	</script>	
@@ -248,6 +248,7 @@ String app = request.getContextPath();
 		<html:hidden name="datosFacturacionForm" property = "idPersona" value = "<%=idPersona %>" />
 		<html:hidden name="datosFacturacionForm" property = "idInstitucion" value = "<%=idInstitucion %>" />
 			<!-- RGG: cambio a formularios ligeros -->
+			<html:hidden name="datosFacturacionForm"  property ="filaSelD"/>
 			<input type="hidden" name="tablaDatosDinamicosD">
 			<input type="hidden" name="actionModal" value="">
 			
@@ -264,7 +265,7 @@ String app = request.getContextPath();
 		nombresCol="cen.consultaProductos.literal.fecha,cen.consultaProductos.literal.idPeticion,cen.consultaProductos.literal.concepto,cen.consultaProductos.literal.formaPago,cen.consultaProductos.literal.nCuenta,cen.consultaProductos.literal.cantidad,cen.consultaProductos.literal.precio,cen.consultaProductos.literal.estadoPago,cen.consultaProductos.literal.estadoProducto,pys.solicitarBaja.literal.fechaEfectiva,";
 %>
 
-		<siga:TablaCabecerasFijas 
+		<siga:TablaCabecerasFijas 	 
 		   nombre="tablaDatos"
 		   borde="1"
 		   clase="tableTitle"
@@ -273,6 +274,7 @@ String app = request.getContextPath();
 		   alto="350"		   
 		   ajuste="80"
 		   modal="P"
+		   activarFilaSel="true"		   
 		>
 
 			<!-- INICIO: ZONA DE REGISTROS -->
@@ -393,7 +395,7 @@ String app = request.getContextPath();
 
 <% if (boton) { %>
 
-			<siga:FilaConIconos fila="<%=cont %>" botones="<%=botones %>" modo="<%=modo %>" elementos="<%=elems%>"  visibleEdicion="no" visibleBorrado="no" visibleConsulta="no" clase="listaNonEdit" pintarEspacio="false">
+			<siga:FilaConIconos fila="<%=cont %>"  botones="<%=botones %>" modo="<%=modo %>" elementos="<%=elems%>"  visibleEdicion="no" visibleBorrado="no" visibleConsulta="no" clase="listaNonEdit" pintarEspacio="false" >
 
 				<!-- campos hidden  -->
 				<input type="hidden" name="oculto<%=cont %>_1" value="<%=identificadorCuenta %>">
@@ -509,9 +511,11 @@ String app = request.getContextPath();
 <%		} // del for %>			
 
 
-<%	} // del if %>			
+<%	} // del if %>
+			
 
 		</siga:TablaCabecerasFijas>
+		
 		<%if ( hm.get("datos")!=null && !hm.get("datos").equals("")){%>
 	  
 	  						

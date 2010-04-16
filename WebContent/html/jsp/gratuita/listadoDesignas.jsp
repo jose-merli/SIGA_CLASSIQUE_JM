@@ -117,6 +117,7 @@
 			<input type="hidden" name="filaSelD">
 			<input type="hidden" name="tablaDatosDinamicosD">
 			<input type="hidden" name="actionModal" value="">
+			<html:hidden property="compensar" value="" />
 		</html:form>
 		
 		<html:form action="/JGR_Designas" method="POST" target="resultado" style="display:none">			
@@ -352,7 +353,7 @@
 	}
 	function cargarChecksTodos(o){
   	   if (document.getElementById('registrosSeleccionadosPaginador')){ 	
-  		var conf = confirm("<siga:Idioma key="paginador.message.marcarDesmarcar"/>"); 
+  		var conf = confirm("<siga:Idioma key='paginador.message.marcarDesmarcar'/>"); 
 	   	 
 	   	if (conf){
 			ObjArray = new Array();
@@ -496,10 +497,56 @@
       	    					
 					
 				
-		}		
-		function accionCerrar() {
-		
 		}
+			
+		function accionCerrar() {		
+		}
+
+
+		
+		function borrar(fila) {
+			   var datos;
+			   if (confirm('¿Está seguro de que desea eliminar el registro?')){
+				   if (confirm("<siga:Idioma key='gratuita.compensacion.confirmacion'/>")) // y desea compensar al letrado ...
+					{
+							document.forms[0].compensar.value = "1";
+						}else{
+							document.forms[0].compensar.value = "0";
+						}
+			   	datos = document.getElementById('tablaDatosDinamicosD');
+			       datos.value = ""; 
+			   	var i, j;
+			   	for (i = 0; i < 10; i++) {
+			      		var tabla;
+			      		tabla = document.getElementById('tablaDatos');
+			      		if (i == 0) {
+			        		var flag = true;
+			        		j = 1;
+			        		while (flag) {
+			          			var aux = 'oculto' + fila + '_' + j;
+			          			var oculto = document.getElementById(aux);
+			          			if (oculto == null)  { flag = false; }
+			          else { 
+			          if(oculto.value=='')       		oculto.value=' ';
+						datos.value = datos.value + oculto.value + ','; }
+			          			j++;
+			        		}
+			        		datos.value = datos.value + "%"
+			      		} else { j = 2; }
+			      		if ((tabla.rows[fila].cells)[i].innerText == "")
+			        		datos.value = datos.value + (tabla.rows[fila].cells)[i].all[j-2].value + ',';
+			      		else
+			        		datos.value = datos.value + (tabla.rows[fila].cells)[i].innerText + ',';
+			   	}
+			   	var auxTarget = document.forms[0].target;
+			   	document.forms[0].target="submitArea";
+			   	document.forms[0].modo.value = "Borrar";
+			   	document.forms[0].submit();
+			   	document.forms[0].target=auxTarget;
+			 	}
+			 }
+		
+		
 </script>
 	</body>
 </html>

@@ -135,41 +135,6 @@ public class EnvProgramPagosAdm extends MasterBeanAdministrador {
 		return htData;
 	}
 
-    public Integer getNewIdProgramPagos(UsrBean _usr) throws ClsExceptions{
-        RowsContainer rows=new RowsContainer();
-        String sql="SELECT MAX(" + EnvProgramPagosBean.C_IDPROGRAM +
-        		") AS MAXVALOR FROM " + EnvProgramPagosBean.T_NOMBRETABLA +
-        		" WHERE " + EnvProgramPagosBean.C_IDINSTITUCION + "="+ _usr.getLocation();
-        int valor=1; // Si no hay registros, es el valor que tomará
-        if(rows.find(sql)){
-            Hashtable htRow=((Row)rows.get(0)).getRow();
-            // El valor devuelto será "" Si no hay registros
-            if(!((String)htRow.get("MAXVALOR")).equals("")) {
-                Integer valorInt=Integer.valueOf((String)htRow.get("MAXVALOR"));
-                valor=valorInt.intValue();
-                valor++;
-            }
-        }
-        return new Integer(valor);
-    }
-
-    public Integer getNewIdProgramPagos(String idInstitucion) throws ClsExceptions{
-        RowsContainer rows=new RowsContainer();
-        String sql="SELECT MAX(" + EnvProgramPagosBean.C_IDPROGRAM +
-        		") AS MAXVALOR FROM " + EnvProgramPagosBean.T_NOMBRETABLA +
-        		" WHERE " + EnvProgramPagosBean.C_IDINSTITUCION + "="+ idInstitucion;
-        int valor=1; // Si no hay registros, es el valor que tomará
-        if(rows.find(sql)){
-            Hashtable htRow=((Row)rows.get(0)).getRow();
-            // El valor devuelto será "" Si no hay registros
-            if(!((String)htRow.get("MAXVALOR")).equals("")) {
-                Integer valorInt=Integer.valueOf((String)htRow.get("MAXVALOR"));
-                valor=valorInt.intValue();
-                valor++;
-            }
-        }
-        return new Integer(valor);
-    }
     /**
      * 
      * @param estado 1 ó 0. Sera uno cuando se quieran los pagos ya enviados.0 con los pagos pendienmtes de enviar

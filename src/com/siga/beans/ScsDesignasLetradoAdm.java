@@ -168,7 +168,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		PaginadorBind paginador=null;
 		try {
 			Hashtable codigos = new Hashtable();
-			StringBuffer sql = new StringBuffer(getQueryDesignasLetrado(idInstitucion, idPersona, fechaDesde, 
+			StringBuffer sql = new StringBuffer(getQueryDesignasLetradoSinBroza(idInstitucion, idPersona, fechaDesde, 
 					fechaHasta, mostrarTodas, interesadoNombre,
 					interesadoApellidos, anio, isInforme,codigos));
 			
@@ -184,6 +184,18 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 	
 
 	
+	private String getQueryDesignasLetradoSinBroza(Integer idInstitucion, String idPersona, String fechaDesde, 
+			String fechaHasta, String mostrarTodas, String interesadoNombre,
+			String interesadoApellidos, String anio, boolean isInforme,Hashtable codigos)throws ClsExceptions{
+		StringBuffer sql = new StringBuffer();
+		sql.append("select * from (");
+		sql.append(getQueryDesignasLetrado(idInstitucion, idPersona, fechaDesde, fechaHasta, mostrarTodas, 
+								interesadoNombre, interesadoApellidos, anio, isInforme,codigos));
+		sql.append(" ) where fechaRenuncia is null  or fechaActuacionIni is not null");
+		return sql.toString();
+		
+	}
+
 	private String getQueryDesignasLetrado(Integer idInstitucion, String idPersona, String fechaDesde, 
 			String fechaHasta, String mostrarTodas, String interesadoNombre,
 			String interesadoApellidos, String anio, boolean isInforme,Hashtable codigos)throws ClsExceptions{
@@ -242,6 +254,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		sql.append(" d.RESUMENASUNTO RESUMENASUNTO, ");//ahora lo aniadimos porque lo pide Baleares
 		//
 		sql.append(" dl.idpersona, ");
+		sql.append(" dl.fecharenuncia, ");
 		//sql.append(" F_SIGA_GETEJG_DESIGNA(d.idinstitucion, d.idturno, d.anio, d.numero) as expedientes, ");
 		//sql.append(" f_siga_getdefendidosdesigna(d.idinstitucion, d.anio, d.idturno, d.numero,1) as cliente, ");
 		sql.append(" d.idprocedimiento idprocedimiento, ");
@@ -253,6 +266,86 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		sql.append("||");
 		sql.append("d.codigo");
 		sql.append(" designacion,");
+		
+		
+		//Obtiene el numero de actuaciones del letrado en la designa
+		//junto con la fechaRenuncia sirve para habilitar o deshabilitar campos
+		sql.append(" (select count(1) ");
+		sql.append(" from scs_actuaciondesigna actini, scs_acreditacionprocedimiento acp, scs_acreditacion ac ");       
+		sql.append(" where actini.idinstitucion = ");
+		
+		contador++;
+		codigos.put(new Integer(contador),idInstitucion.toString());
+		sql.append(":"+contador);
+		
+		sql.append(" and   actini.idpersonacolegiado = dl.idpersona ");
+		sql.append(" and   actini.idturno = d.idturno ");
+		sql.append(" and   actini.anio = d.anio ");
+		sql.append(" and   actini.numero = d.numero ");
+		
+		sql.append(" and   acp.idinstitucion = ");
+		
+		//ultima modificacion
+		sql.append(" actini.idinstitucion_proc");
+		//sql.append(idInstitucion);
+		
+		sql.append(" and   acp.idprocedimiento = actini.idprocedimiento ");
+		sql.append(" and   acp.idacreditacion = actini.idacreditacion ");
+		sql.append(" and   acp.idacreditacion = ac.idacreditacion ");
+		sql.append(" and   actini.validada=1 ");
+		sql.append(" and   (ac.idtipoacreditacion=");
+		
+		contador++;
+		codigos.put(new Integer(contador),TIPO_ACREDIT_INI);
+		sql.append(":"+contador);
+		
+		sql.append(" or   ac.idtipoacreditacion=");
+
+		contador++;
+		codigos.put(new Integer(contador),TIPO_ACREDIT_INIFIN);
+		sql.append(":"+contador);
+		
+		sql.append(")");
+		//acreditacion de inicio normal ");        
+		//para penal la acreditacion es 2 cuando la mayor entre fechadesigna y fechaactuacion es > 2005, si no es 10 ");
+		sql.append(" and   ac.idacreditacion  ");
+		
+		//lo de arriba lo sustituyo por estp
+		sql.append(" in (");
+
+		contador++;
+		codigos.put(new Integer(contador),INI_DESPUES_2005);
+		sql.append(":"+contador);
+		
+		sql.append(",");
+
+		contador++;
+		codigos.put(new Integer(contador),INI_ANTES_2005);
+		sql.append(":"+contador);
+		
+		sql.append(",");
+
+		contador++;
+		codigos.put(new Integer(contador),INI_FIN);
+		sql.append(":"+contador);
+		
+		sql.append(",");
+
+		contador++;
+		codigos.put(new Integer(contador),INCOMPARECENCIA);
+		sql.append(":"+contador);
+		
+		sql.append(",");
+
+		contador++;
+		codigos.put(new Integer(contador),TRANS_EXTRAJUDICIAL);
+		sql.append(":"+contador);
+		
+		sql.append(")");
+		//Me quedo con la primera, se presupone que solo hay una ");
+		sql.append(") as NActuaciones, ");
+
+		
 		
 		if(isInforme){
 			sql.append(" (select nvl(to_char(actini.fechajustificacion, 'DD/mm/YYYY'),' ')");
@@ -332,6 +425,8 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		sql.append(")");
 		//Me quedo con la primera, se presupone que solo hay una ");
 		sql.append(" and rownum<2) as acreditacion_ini, ");
+		
+		
 		if(isInforme){
 			sql.append(" (select nvl(to_char(actfin.fechajustificacion, 'DD/mm/YYYY'),' ') ");
 			sql.append("||'||'||acpfin.porcentaje");

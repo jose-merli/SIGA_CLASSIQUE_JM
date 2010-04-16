@@ -31,6 +31,7 @@ public class ClsConstants {
 	// Configuración Interfaz
 	public static final String RELATIVE_PATH_IMAGES="html/imagenes";
 	public static final String RELATIVE_PATH_LOGOS="logos";
+	public static final String PATH_ACCESO_DIRECTO_IMAGENES="imagenes";
 
 	public static final String SEPARADOR = "	";
 	// RGG 26/01/2005 Para fotografias de clientes
@@ -534,8 +535,12 @@ MDB Microsoft Access Database
   public static String IDPROCESO_REGTEL_EJG="94U";
   public static String IDPROCESO_REGTEL_CENSO="222";
   
-  public static final String GEN_PARAM_EEJG="EEJG";
+  //public static final String GEN_PARAM_EEJG="EEJG";
+  // Cambiado por la inc-6980
+  public static final String GEN_PARAM_EEJG="ACTIVAR_SOLICITUD_EXP_ECONOMICO_JG";
   
+  
+  public static int MAX_SIZE_IMAGE_EMBEBED=100000;
   
   
   

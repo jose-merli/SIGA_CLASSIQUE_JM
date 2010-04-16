@@ -34,6 +34,7 @@ public class EnvEnvioProgramadoBean extends MasterBean {
 	static public final String C_NOMBRE = "NOMBRE";	
 	static public final String C_FECHAPROGRAMADA = "FECHAPROGRAMADA";	
 	
+	static public final String SEQ_ENV_ENVIOPROGRAMADO = "SEQ_ENV_ENVIOPROGRAMADO";
 	
 	static public final String T_NOMBRETABLA = "ENV_ENVIOPROGRAMADO";
 

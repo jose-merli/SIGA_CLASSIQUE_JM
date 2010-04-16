@@ -7,22 +7,18 @@
 
 package com.siga.beans;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Vector;
+
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ComodinBusquedas;
-import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.BusquedaPersonaJGForm;
-import com.siga.gratuita.vos.VolantesExpressVo;
 
 
 public class ScsPersonaJGAdm extends MasterBeanAdministrador {
@@ -618,12 +614,12 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
         		Row fila = (Row) rc.get(0);
         		Hashtable<String, Object> htFila=fila.getRow();
         		personaJG = (ScsPersonaJGBean) this.hashTableToBean(htFila);
-        		if(UtilidadesHash.getString(htFila,"IDPOBLACION").equals("")){
+        		if(!UtilidadesHash.getString(htFila,"IDPOBLACION").equals("")){
 	        		CenPoblacionesBean poblacion = new CenPoblacionesBean();
 	        		personaJG.setPoblacion(poblacion);
 	        		poblacion.setNombre(UtilidadesHash.getString(htFila,"POBLACION"));
         		}
-        		if(UtilidadesHash.getString(htFila,"IDPROVINCIA").equals("")){
+        		if(!UtilidadesHash.getString(htFila,"IDPROVINCIA").equals("")){
 	        		CenProvinciaBean provincia = new CenProvinciaBean();
 	        		personaJG.setProvincia(provincia);
 	        		provincia.setNombre(UtilidadesHash.getString(htFila,"PROVINCIA"));

@@ -7,12 +7,10 @@ import org.apache.axis.AxisFault;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsLogging;
-import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.SIGAReferences;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.eejg.ScsEejgPeticionesAdm;
 import com.siga.beans.eejg.ScsEejgPeticionesBean;
-import com.siga.general.SIGAException;
 
 public class InformacionEconomicaEjg {
 	
@@ -56,14 +54,17 @@ private static Boolean alguienEjecutando=Boolean.FALSE;
 
 	private void trataPeticionesIniciadas(UsrBean usrBean) throws Exception {
 		
-		ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		int NUM_ERROR_CONEXION = Integer.parseInt(rp.returnProperty("eejg.numeroErroresConexion"));
-		int NUMERO_REINTENTOS_SOLICITUD = Integer.parseInt(rp.returnProperty("eejg.numeroReintentosSolicitud"));
 		ScsEejgPeticionesAdm scsPeticionesAdm = new ScsEejgPeticionesAdm(usrBean);
 		List<ScsEejgPeticionesBean> listaPeticiones = scsPeticionesAdm.getPeticionesIniciadas();
 		
 		int numeroErrores = 0;
 		if (listaPeticiones != null && listaPeticiones.size()>0 ) {
+						
+			GenParametrosAdm admParametros = new GenParametrosAdm(usrBean);
+			
+			int NUM_ERROR_CONEXION = Integer.parseInt(admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, "SCS", "EEJG_NUMERO_ERRORES_CONEXION", ""));
+			int NUMERO_REINTENTOS_SOLICITUD = Integer.parseInt(admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, "SCS", "EEJG_NUMERO_REINTENTOS_SOLICITUD", ""));
+			
 			//Iniciamos cambiando a estado pendiente
 			scsPeticionesAdm.updatePeticionesIniciadas();
 			SolicitudesEEJG solicitudesEEJG = new SolicitudesEEJG();
@@ -112,17 +113,19 @@ private static Boolean alguienEjecutando=Boolean.FALSE;
 	 * @throws Exception 
 	 */
 	private void trataSolicitudesPendientes(UsrBean usrBean) throws Exception {
-		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		int horas = Integer.parseInt(rp.returnProperty("eejg.horasPeticionConsulta"));
-		int NUM_ERROR_CONEXION = Integer.parseInt(rp.returnProperty("eejg.numeroErroresConexion"));
-		int NUMERO_REINTENTOS_CONSULTA = Integer.parseInt(rp.returnProperty("eejg.numeroReintentosConsulta"));
+		GenParametrosAdm admParametros = new GenParametrosAdm(usrBean);		
+		double horas = Double.parseDouble(admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, "SCS", "EEJG_HORAS_PETICION_CONSULTA", ""));		
 		
-		ScsEejgPeticionesAdm scsPeticionesAdm = new ScsEejgPeticionesAdm(usrBean);
-		
+		ScsEejgPeticionesAdm scsPeticionesAdm = new ScsEejgPeticionesAdm(usrBean);		
 		List<ScsEejgPeticionesBean> listaPeticiones = scsPeticionesAdm.getSolicitudesPendientes(horas);
 		int numeroErrores = 0;
 		
 		if (listaPeticiones != null && listaPeticiones.size()>0 ) {
+			
+			int NUM_ERROR_CONEXION = Integer.parseInt(admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, "SCS", "EEJG_NUMERO_ERRORES_CONEXION", ""));
+			int NUMERO_REINTENTOS_CONSULTA = Integer.parseInt(admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, "SCS", "EEJG_NUMERO_REINTENTOS_CONSULTA", ""));
+			int NUMERO_REINTENTOS_PENDIENTEINFO = Integer.parseInt(admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, "SCS", "EEJG_NUMERO_REINTENTOS_PENDIENTE_INFO", ""));
+			
 			//Iniciamos cambiando a estado pendiente
 			scsPeticionesAdm.updatePeticionesIniciadas();
 			SolicitudesEEJG solicitudesEEJG = new SolicitudesEEJG();		
@@ -131,12 +134,7 @@ private static Boolean alguienEjecutando=Boolean.FALSE;
 				idXML = -1;
 				try {					
 					if (numeroErrores < NUM_ERROR_CONEXION) {
-						idXML = solicitudesEEJG.consultaInfoAAPP(scsEejgPeticionesBean); 
-						if (idXML > -1) {		
-							scsEejgPeticionesBean.setIdXml(idXML);
-							scsEejgPeticionesBean.setEstado(ScsEejgPeticionesBean.EEJG_ESTADO_FINALIZADO);
-							scsEejgPeticionesBean.setFechaConsulta("SYSDATE");
-						}
+						idXML = solicitudesEEJG.consultaInfoAAPP(scsEejgPeticionesBean);
 					}	
 				} catch (AxisFault e) {								
 					numeroErrores++;
@@ -147,13 +145,23 @@ private static Boolean alguienEjecutando=Boolean.FALSE;
 					}
 				} catch (Throwable e) {
 					numeroErrores++;
-					ClsLogging.writeFileLogError("Error No esperado",new SIGAException("messages.general.error"), 3);
-					//e.printStackTrace();
-					
+					ClsLogging.writeFileLogError("Error No esperado", new Exception(e), 3);
 				} finally {
-					scsEejgPeticionesBean.setNumeroIntentosConsulta(scsEejgPeticionesBean.getNumeroIntentosConsulta() + 1);
-					if (idXML == -1 && scsEejgPeticionesBean.getNumeroIntentosConsulta() >= NUMERO_REINTENTOS_CONSULTA) {
-						scsEejgPeticionesBean.setEstado(ScsEejgPeticionesBean.EEJG_ESTADO_ERROR_CONSULTA_INFO);
+					//si ya tenía respuesta incrementamos el contador de pendienteInfo y si no el de Intentos consulta
+					if (scsEejgPeticionesBean.getIdXml() != null) {
+						scsEejgPeticionesBean.setNumeroIntentosPendienteInfo(scsEejgPeticionesBean.getNumeroIntentosPendienteInfo() + 1);
+					} else {
+						scsEejgPeticionesBean.setNumeroIntentosConsulta(scsEejgPeticionesBean.getNumeroIntentosConsulta() + 1);
+					}
+					if (idXML > -1) {	
+						//el estado lo pone el método consultaInfoAAPP
+						scsEejgPeticionesBean.setIdXml(idXML);
+						scsEejgPeticionesBean.setFechaConsulta("SYSDATE");
+					} else {
+						if (scsEejgPeticionesBean.getNumeroIntentosConsulta() >= NUMERO_REINTENTOS_CONSULTA ||
+								scsEejgPeticionesBean.getNumeroIntentosPendienteInfo() >= NUMERO_REINTENTOS_PENDIENTEINFO) {					
+							scsEejgPeticionesBean.setEstado(ScsEejgPeticionesBean.EEJG_ESTADO_ERROR_CONSULTA_INFO);
+						}
 					}
 					scsPeticionesAdm.updateDirect(scsEejgPeticionesBean);
 				}
@@ -162,5 +170,4 @@ private static Boolean alguienEjecutando=Boolean.FALSE;
 		}
 	}
 	
-
 }

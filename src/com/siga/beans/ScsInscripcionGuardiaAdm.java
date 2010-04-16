@@ -165,4 +165,22 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 		return datos;
 	}
 	
+	
+	 public String getnumeroColegiadosIncritos(String institucion, String turno, String idguardia) throws ClsExceptions{
+		  
+		  String consulta="";
+		  try{
+		   consulta=" select count(*) as NLETRADOSINSCRITOS from "+ScsInscripcionGuardiaBean.T_NOMBRETABLA +
+		            " where idinstitucion =" + institucion +
+		            " and idturno="+ turno+
+		            " and idguardia="+idguardia+" and FECHABAJA IS NULL"; 
+		  }
+		  catch (Exception e){
+			  throw new ClsExceptions(e,"Excepcion en ScsInscripcionGuardiaAdm.getnumeroColegiadosIncritos() Consulta SQL:"+consulta);
+			}
+	
+			return consulta;
+			  
+		  }
+	
 }

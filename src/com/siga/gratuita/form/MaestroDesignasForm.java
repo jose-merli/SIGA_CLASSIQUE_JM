@@ -30,8 +30,8 @@ public class MaestroDesignasForm extends MasterForm {
 	private String IDPROCEDIMIENTO="IDPROCEDIMIENTO";
 	private String FECHAESTADO="FECHAESTADO";
 	private String IDPRETENSION="IDPRETENSION";
-	
-	
+	private String FECHARECEPCIONCOLEGIO = 	"FECHARECEPCIONCOLEGIO";
+	private String FECHAOFICIOJUZGADO 	= 	"FECHAOFICIOJUZGADO";	
 	
 	
 	
@@ -420,6 +420,18 @@ public class MaestroDesignasForm extends MasterForm {
 		UtilidadesHash.set(this.datos, this.IDPRETENSION, idpretension);
 	}
 	
+	public String getFechaRecepcionColegio() {
+		return UtilidadesHash.getString(this.datos, this.FECHARECEPCIONCOLEGIO);
+	}
+	public void setFechaRecepcionColegio(String fechaRecepcionColegio) {
+		UtilidadesHash.set(this.datos, this.FECHARECEPCIONCOLEGIO, fechaRecepcionColegio);
+	}
+	public String getFechaOficioJuzgado() {
+		return UtilidadesHash.getString(this.datos, this.FECHAOFICIOJUZGADO);
+	}
+	public void setFechaOficioJuzgado(String fechaOficioJuzgado) {
+		UtilidadesHash.set(this.datos, this.FECHAOFICIOJUZGADO, fechaOficioJuzgado);
+	}
 	
 	
 }

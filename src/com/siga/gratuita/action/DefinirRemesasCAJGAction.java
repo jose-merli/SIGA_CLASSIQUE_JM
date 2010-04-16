@@ -42,11 +42,13 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.GestorContadores;
 import com.siga.Utilidades.Paginador;
+import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.PaginadorCaseSensitive;
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CajgConfiguracionAdm;
 import com.siga.beans.CajgConfiguracionBean;
 import com.siga.beans.CajgEJGRemesaAdm;
@@ -744,21 +746,49 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 
 	}
 
+	/**
+	 * 
+	 * @param request
+	 * @param idRemesa
+	 * @return
+	 */
 	private boolean eliminaFicheroGenerado(HttpServletRequest request, String idRemesa) {
 		boolean eliminado = false;
 		
-		File file = getFichero(this.getIDInstitucion(request).toString(), idRemesa);
-		if (file != null) {
-			eliminado = file.delete();
+		File file = null;
+	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String rutaAlmacen = rp.returnProperty("cajg.directorioFisicoCAJG") + rp.returnProperty("cajg.directorioCAJGJava");
+			
+		rutaAlmacen += File.separator + getIDInstitucion(request);
+		rutaAlmacen += File.separator + idRemesa;
+		
+		File dir = new File(rutaAlmacen);
+		if (dir.exists()) {
+			if (dir.listFiles() != null && dir.listFiles().length > 0) {
+				int numFicheros = 0;
+				for (int i = 0; i < dir.listFiles().length ; i++) {
+					file = dir.listFiles()[i];
+					if (file.isFile() && file.getName().endsWith(".zip")){
+						eliminado = eliminado && file.delete();
+					}
+				}
+			}
 		}
+		
 
 		return eliminado;
 	}
 	
-	public static File getFichero(String idInstitucion, String idRemesa) {
+	/**
+	 * 
+	 * @param idInstitucion
+	 * @param idRemesa
+	 * @return
+	 * @throws SIGAException
+	 */
+	public static File getFichero(String idInstitucion, String idRemesa) throws SIGAException {
 		File file = null;
 	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//		ReadProperties rp = new ReadProperties("SIGA.properties");
 		String rutaAlmacen = rp.returnProperty("cajg.directorioFisicoCAJG") + rp.returnProperty("cajg.directorioCAJGJava");
 			
 		rutaAlmacen += File.separator + idInstitucion;
@@ -776,7 +806,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				}
 									
 				if (numFicheros > 1) {
-//					throw new SIGAException("Existe más de un fichero zip");
+					throw new SIGAException("cajg.error.masDe1zip");
 				}
 			}
 		}
@@ -973,9 +1003,9 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				numRemesa += (sufijo != null && !sufijo.trim().equals("")) ? (sufijo) : "";
 				
 				int numeroIntercambio = cajgEJGRemesaAdm.getNextNumeroIntercambio(getIDInstitucion(request));
+				numeroIntercambio--;
 				int nextIdEjgRemesa = cajgEJGRemesaAdm.getNextVal();
-				nextIdEjgRemesa--;
-				
+				nextIdEjgRemesa--;				
 				
 				StringBuffer sqlInsertEJGRemesa = new StringBuffer("insert into cajg_ejgremesa" +
 						" (idinstitucion, anio, numero, idtipoejg, idinstitucionremesa, idremesa, fechamodificacion" +
@@ -989,33 +1019,37 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				
 				String sqlMaxIdEstadoPorEJG = "SELECT NVL(MAX(IDESTADOPOREJG), 0) + 1" +
 						" FROM SCS_ESTADOEJG E" +
-						" WHERE E.IDINSTITUCION = ER.IDINSTITUCION" +
-						" AND E.ANIO = ER.ANIO" +
-						" AND E.NUMERO = ER.NUMERO" +
-						" AND E.IDTIPOEJG = ER.IDTIPOEJG";
-				String sqlInsertEstadoEJG = "insert into scs_estadoejg (idinstitucion, idtipoejg, anio, numero, idestadoejg" +
+						" WHERE E.IDINSTITUCION = EJG.IDINSTITUCION" +
+						" AND E.ANIO = EJG.ANIO" +
+						" AND E.NUMERO = EJG.NUMERO" +
+						" AND E.IDTIPOEJG = EJG.IDTIPOEJG";
+				
+				StringBuffer sqlInsertEstadoEJG = new StringBuffer("insert into scs_estadoejg (idinstitucion, idtipoejg, anio, numero, idestadoejg" +
 						", fechainicio, fechamodificacion, usumodificacion, observaciones, idestadoporejg, automatico)" +
-						" SELECT ER.IDINSTITUCION, ER.IDTIPOEJG, ER.ANIO, ER.NUMERO, '" + ClsConstants.GENERADO_EN_REMESA + "'" +
+						" SELECT EJG.IDINSTITUCION, EJG.IDTIPOEJG, EJG.ANIO, EJG.NUMERO, '" + ClsConstants.GENERADO_EN_REMESA + "'" +
 						", SYSDATE, SYSDATE, " + getUserBean(request).getUserName() + ", '" + numRemesa + "', (" + sqlMaxIdEstadoPorEJG + "), 1" +
-						" FROM CAJG_EJGREMESA ER" +
-						" WHERE ER.IDINSTITUCION = " + getIDInstitucion(request) +
-						" AND ER.IDREMESA = " + miForm.getIdRemesa();
+						" FROM CAJG_EJGREMESA EJG" +
+						" WHERE EJG.IDINSTITUCION = " + getIDInstitucion(request) +
+						" AND EJG.IDREMESA = " + miForm.getIdRemesa() +
+						" AND (1 = 0");
 
 				for (int i = 0; i < v_seleccionadosSesion.size(); i++) {
-
 					Hashtable miHashaux = new Hashtable();
 					miHashaux = (Hashtable) v_seleccionadosSesion.get(i);
 					String seleccionado = (String) miHashaux.get("SELECCIONADO");
 					if (seleccionado.equals("1")) {
-						sqlInsertEJGRemesa.append(" OR (EJG.ANIO = " + miHashaux.get(ScsEJGBean.C_ANIO) +
+						String sql = " OR (EJG.ANIO = " + miHashaux.get(ScsEJGBean.C_ANIO) +
 								" AND EJG.NUMERO = " + miHashaux.get(ScsEJGBean.C_NUMERO) +
-								" AND EJG.IDTIPOEJG = " + miHashaux.get(ScsEJGBean.C_IDTIPOEJG) + ")");
+								" AND EJG.IDTIPOEJG = " + miHashaux.get(ScsEJGBean.C_IDTIPOEJG) + ")";
+						sqlInsertEJGRemesa.append(sql);
+						sqlInsertEstadoEJG.append(sql);
 					}
-
 				}
+				
 				sqlInsertEJGRemesa.append(")");
+				sqlInsertEstadoEJG.append(")");
 				cajgEJGRemesaAdm.insertSQL(sqlInsertEJGRemesa.toString());
-				estadoEJGAdm.insertSQL(sqlInsertEstadoEJG);
+				estadoEJGAdm.insertSQL(sqlInsertEstadoEJG.toString());
 				tx.commit();
 				exitoRefresco("messages.inserted.success", request);
 				Hashtable miHash = new Hashtable();
@@ -1247,7 +1281,6 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		ScsEJGAdm admBean;
 		Vector v = new Vector();
 		Hashtable miHash = new Hashtable();
-		String consulta = "";
 
 		try {
 
@@ -1270,7 +1303,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 
 			if (request.getSession().getAttribute("DATAPAGINADOR") != null) {
 				databackup = (HashMap) request.getSession().getAttribute("DATAPAGINADOR");
-				Paginador paginador = (Paginador) databackup.get("paginador");
+				PaginadorBind paginador = (PaginadorBind)databackup.get("paginador");
 				Vector datos = new Vector();
 
 				// Si no es la primera llamada, obtengo la página del request y
@@ -1296,292 +1329,13 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				// obtengo datos de la consulta
 				
 				Vector datos = null;
-
-				consulta = "select ejg."
-						+ ScsEJGBean.C_ANIO
-						+ ", ejg."
-						+ ScsEJGBean.C_IDINSTITUCION
-						+ ", ejg."
-						+ ScsEJGBean.C_IDTIPOEJG
-						+ ", ejg."
-						+ ScsEJGBean.C_IDFACTURACION
-						+ ", ejg. "
-						+ ScsEJGBean.C_FECHARATIFICACION
-						+
-
-						",  "
-						+ UtilidadesMultidioma.getCampoMultidiomaSimple("tipoejg." + ScsTipoEJGBean.C_DESCRIPCION, this.getUserBean(request).getLanguage())
-						+ " as TIPOEJG, ejg."
-						+ ScsEJGBean.C_NUMEJG
-						+ ", ejg."
-						+ ScsEJGBean.C_FECHAAPERTURA
-						+
-
-						", f_siga_getnombreturno( ejg."
-						+ ScsEJGBean.C_IDINSTITUCION
-						+ ", ejg."
-						+ ScsEJGBean.C_GUARDIATURNO_IDTURNO
-						+ ") as TURNO, ejg."
-						+ ScsEJGBean.C_GUARDIATURNO_IDTURNO
-						+ ", guardia."
-						+ ScsGuardiasTurnoBean.C_NOMBRE
-						+
-
-						" as GUARDIA, f_siga_getunidadejg(ejg.idinstitucion,ejg.anio,ejg.numero,ejg.idtipoejg) AS NOMBRE, '' AS APELLIDO1,'' AS APELLIDO2"
-						+
-
-//						", (select "
-//						+ UtilidadesMultidioma.getCampoMultidioma("maestroes." + ScsMaestroEstadosEJGBean.C_DESCRIPCION, this.getUserBean(request)
-//								.getLanguage()) + " from " + ScsEstadoEJGBean.T_NOMBRETABLA + " estadoejg," + ScsMaestroEstadosEJGBean.T_NOMBRETABLA
-//						+ " maestroes WHERE estadoejg." + ScsEstadoEJGBean.C_IDINSTITUCION +
-//
-//						" = ejg." + ScsEJGBean.C_IDINSTITUCION + " and estadoejg." + ScsEstadoEJGBean.C_IDTIPOEJG + " = ejg." + ScsEJGBean.C_IDTIPOEJG
-//						+ " and estadoejg." + ScsEstadoEJGBean.C_ANIO + " = ejg." + ScsEJGBean.C_ANIO + " and estadoejg." +
-//
-//						ScsEstadoEJGBean.C_NUMERO + " = ejg." + ScsEJGBean.C_NUMERO + " and maestroes." + ScsMaestroEstadosEJGBean.C_IDESTADOEJG
-//						+ " = estadoejg." + ScsEstadoEJGBean.C_IDESTADOEJG + " and estadoejg." + ScsEstadoEJGBean.C_IDESTADOPOREJG +
-//
-//						" = (SELECT MAX(ultimoestado." + ScsEstadoEJGBean.C_IDESTADOPOREJG + ") from " + ScsEstadoEJGBean.T_NOMBRETABLA
-//						+ " ultimoestado where ultimoestado." + ScsEstadoEJGBean.C_IDINSTITUCION + " = estadoejg." + ScsEstadoEJGBean.C_IDINSTITUCION +
-//
-//						" and ultimoestado." + ScsEstadoEJGBean.C_IDTIPOEJG + " = estadoejg." + ScsEstadoEJGBean.C_IDTIPOEJG + " and ultimoestado."
-//						+ ScsEstadoEJGBean.C_ANIO + " = estadoejg." + ScsEstadoEJGBean.C_ANIO + " and ultimoestado." +
-//
-//						ScsEstadoEJGBean.C_NUMERO + " = estadoejg." + ScsEstadoEJGBean.C_NUMERO + ") and rownum=1) as estado" +
-						
-						", f_siga_getrecurso(F_SIGA_GET_ULTIMOESTADOEJG(ejg." + ScsEJGBean.C_IDINSTITUCION + ", ejg." + ScsEJGBean.C_IDTIPOEJG +
-						", ejg." + ScsEJGBean.C_ANIO + ", ejg." + ScsEJGBean.C_NUMERO + "), " + this.getLenguaje(request) + ") AS estado " +
-								
-						", ejg." + ScsEJGBean.C_NUMERO
-						+ ",ejg." + ScsEJGBean.C_FECHAMODIFICACION + "";
-
-				String from = " from " + ScsEJGBean.T_NOMBRETABLA + " ejg," + ScsGuardiasTurnoBean.T_NOMBRETABLA +
-
-				" guardia," + ScsTipoEJGBean.T_NOMBRETABLA + " tipoejg," + CenColegiadoBean.T_NOMBRETABLA + " colegiado";
-
-				consulta += from;
-
-				/* realizamos la join con de las tablas que necesitamos */
-
-				consulta += " where ejg."
-						+ ScsEJGBean.C_IDTIPOEJG
-						+ " = tipoejg."
-						+ ScsTipoEJGBean.C_IDTIPOEJG
-						+ " and "
-						+
-
-						" ejg."
-						+ ScsEJGBean.C_IDINSTITUCION
-						+ " = guardia."
-						+ ScsGuardiasTurnoBean.C_IDINSTITUCION
-						+ "(+) and "
-						+
-
-						" ejg."
-						+ ScsEJGBean.C_GUARDIATURNO_IDTURNO
-						+ " = guardia."
-						+ ScsGuardiasTurnoBean.C_IDTURNO
-						+ "(+) and "
-						+
-
-						" ejg."
-						+ ScsEJGBean.C_GUARDIATURNO_IDGUARDIA
-						+ " = guardia."
-						+ ScsGuardiasTurnoBean.C_IDGUARDIA
-						+ "(+) and "
-						+
-
-						" ejg."
-						+ ScsEJGBean.C_IDINSTITUCION
-						+ " = colegiado."
-						+ CenColegiadoBean.C_IDINSTITUCION
-						+ "(+) and "
-						+
-
-						" ejg."
-						+ ScsEJGBean.C_IDPERSONA
-						+ " = colegiado."
-						+ CenColegiadoBean.C_IDPERSONA
-						+ "(+) and "
-						+ ClsConstants.ESTADO_LISTO_COMISION + " = F_SIGA_GET_IDULTIMOESTADOEJG(ejg." + ScsEJGBean.C_IDINSTITUCION + ", ejg." + ScsEJGBean.C_IDTIPOEJG +
-				", ejg." + ScsEJGBean.C_ANIO + ", ejg." + ScsEJGBean.C_NUMERO + ")";
-				;
-
-				// Y ahora concatenamos los criterios de búsqueda
-
-				if ((miForm.getFechaAperturaDesde() != null && !miForm.getFechaAperturaDesde().equals("")) ||
-
-				(miForm.getFechaAperturaHasta() != null && !miForm.getFechaAperturaHasta().equals("")))
-
-					consulta += " and "
-							+ GstDate.dateBetweenDesdeAndHasta("ejg.FECHAAPERTURA", GstDate.getApplicationFormatDate("", miForm.getFechaAperturaDesde()),
-									GstDate.getApplicationFormatDate("", miForm.getFechaAperturaHasta()));
-
-				if ((miForm.getFechaLimitePresentacionDesde() != null && !miForm.getFechaLimitePresentacionDesde().equals("")) ||
-
-				(miForm.getFechaLimitePresentacionHasta() != null && !miForm.getFechaLimitePresentacionHasta().equals("")))
-
-					consulta += " and "
-							+ GstDate.dateBetweenDesdeAndHasta("ejg." + ScsEJGBean.C_FECHALIMITEPRESENTACION, GstDate.getApplicationFormatDate("", miForm
-									.getFechaLimitePresentacionDesde()), GstDate.getApplicationFormatDate("", miForm.getFechaLimitePresentacionHasta()));
-
-				if ((miHash.containsKey("IDTIPOEJG")) && (!miHash.get("IDTIPOEJG").toString().equals("")))
-					consulta += " and ejg. " + ScsEJGBean.C_IDTIPOEJG + " = " + miHash.get("IDTIPOEJG") + " ";
-
-				if ((miHash.containsKey("ANIO")) && (!miHash.get("ANIO").toString().equals("")))
-					consulta += " and ejg.ANIO = " + miHash.get("ANIO");
-
-				if ((miHash.containsKey("CREADODESDE")) && (!miHash.get("CREADODESDE").toString().equals(""))) {
-
-					if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("A"))
-						consulta += "  and (0<(SELECT COUNT(*) FROM SCS_ASISTENCIA WHERE IDINSTITUCION=EJG.IDINSTITUCION AND EJGNUMERO=EJG.NUMERO AND EJGANIO=EJG.ANIO AND ejgidtipoejg=EJG.IDTIPOEJG))";
-
-					else if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("D"))
-						consulta += "  and (ejg.idinstitucion, ejg.anio, ejg.numero, ejg.idtipoejg) in (select ed.idinstitucion, ed.anioejg, ed.numeroejg, ed.idtipoejg "
-								+
-
-								" from scs_ejgdesigna ed " +
-
-								" where ed.idinstitucion = ejg.IDINSTITUCION " +
-
-								" group by ed.idinstitucion, ed.anioejg, ed.numeroejg, ed.idtipoejg)";
-
-					else if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("S"))
-						consulta += " and (0<(SELECT COUNT(*) FROM SCS_SOJ WHERE IDINSTITUCION=EJG.IDINSTITUCION AND EJGNUMERO=EJG.NUMERO AND EJGANIO=EJG.ANIO AND ejgidtipoejg=EJG.IDTIPOEJG))";
-
-					else
-						consulta += " and (0<(SELECT COUNT(*) FROM SCS_ASISTENCIA WHERE IDINSTITUCION=EJG.IDINSTITUCION AND EJGNUMERO IS NULL)) and (0<(SELECT COUNT(*) FROM SCS_SOJ WHERE IDINSTITUCION=EJG.IDINSTITUCION AND EJGNUMERO IS NULL))";
-
-				}
-				;
-
-				if ((miHash.containsKey("GUARDIATURNO_IDTURNO")) && (!miHash.get("GUARDIATURNO_IDTURNO").toString().equals("")))
-					consulta += " and ejg.GUARDIATURNO_IDTURNO = " + miHash.get("GUARDIATURNO_IDTURNO");
-
-				if ((miHash.containsKey("GUARDIATURNO_IDGUARDIA")) && (!miHash.get("GUARDIATURNO_IDGUARDIA").toString().equals("")))
-					consulta += " and ejg.GUARDIATURNO_IDGUARDIA = " + miHash.get("GUARDIATURNO_IDGUARDIA");
-
-				if ((miHash.containsKey("IDPERSONA")) && (!miHash.get("IDPERSONA").toString().equals("")))
-					consulta += " and colegiado.idpersona = " + miHash.get("IDPERSONA");
-
-				if ((miHash.containsKey("DICTAMINADO")) && (!miHash.get("DICTAMINADO").toString().equals(""))) {
-
-					if (miHash.get("DICTAMINADO").toString().equalsIgnoreCase("S"))
-						consulta += " and ejg.FECHADICTAMEN IS NOT NULL";
-
-					else if (miHash.get("DICTAMINADO").toString().equalsIgnoreCase("N"))
-						consulta += " and ejg.FECHADICTAMEN IS NULL";
-
-				}
-
-				if (UtilidadesHash.getString(miHash, "NUMEJG") != null && !UtilidadesHash.getString(miHash, "NUMEJG").equalsIgnoreCase("")) {
-
-					if (ComodinBusquedas.hasComodin(UtilidadesHash.getString(miHash, "NUMEJG")))
-
-						consulta += " AND "
-								+ ComodinBusquedas.prepararSentenciaCompleta(( UtilidadesHash.getString(miHash, "NUMEJG")).trim(), "ejg.NUMEJG");
-
-					else
-
-					if (UtilidadesHash.getInteger(miHash, "NUMEJG") != null) {
-
-						consulta += " AND ejg.NUMEJG  = " + UtilidadesHash.getString(miHash, "NUMEJG");
-
-					} else {
-
-						consulta += " AND ejg.NUMEJG  = '" + UtilidadesHash.getString(miHash, "NUMEJG") + "' ";
-
-					}
-
-				}
-
-				if ((miHash.containsKey("IDTIPOEJGCOLEGIO")) && (!miHash.get("IDTIPOEJGCOLEGIO").toString().equals("")))
-					consulta += " and ejg.IDTIPOEJGCOLEGIO = " + miHash.get("IDTIPOEJGCOLEGIO");
-
-				if ((miHash.containsKey("IDINSTITUCION")) && (!miHash.get("IDINSTITUCION").toString().equals("")))
-					consulta += " and ejg.IDINSTITUCION = " + miHash.get("IDINSTITUCION");
-
-				// Consulta sobre el campo NIF/CIF, si el usuario mete comodines
-				// la búsqueda es como se hacía siempre, en el caso
-
-				// de no meter comodines se ha creado un nuevo metodo
-				// ComodinBusquedas.preparaCadenaNIFSinComodin para que monte
-
-				// la consulta adecuada.
-
-				if ((miHash.containsKey("NIF")) && (!miHash.get("NIF").toString().equals(""))) {
-
-					consulta += " and UPPER (f_siga_getnifunidadejg(ejg.idinstitucion, ejg.anio, ejg.numero,ejg.idtipoejg))LIKE UPPER('%"
-							+ ((String) miHash.get("NIF")).trim() + "%')";
-
-				}
-
-				if (
-
-				(miHash.containsKey("NOMBRE")) && (!miHash.get("NOMBRE").toString().equals("")) ||
-
-				(miHash.containsKey("APELLIDO1")) && (!miHash.get("APELLIDO1").toString().equals("")) ||
-
-				(miHash.containsKey("APELLIDO2")) && (!miHash.get("APELLIDO2").toString().equals(""))) {
-
-					String vDatosSolicitante = "";
-
-					if ((miHash.containsKey("NOMBRE")) && (!miHash.get("NOMBRE").toString().equals(""))) {
-
-						vDatosSolicitante += " " + ((String) miHash.get("NOMBRE")).trim();
-
-					}
-
-					if ((miHash.containsKey("APELLIDO1")) && (!miHash.get("APELLIDO1").toString().equals(""))) {
-
-						vDatosSolicitante += " " + ((String) miHash.get("APELLIDO1")).trim();
-
-					}
-
-					if ((miHash.containsKey("APELLIDO2")) && (!miHash.get("APELLIDO2").toString().equals(""))) {
-
-						vDatosSolicitante += " " + ((String) miHash.get("APELLIDO2")).trim();
-
-					}
-
-					consulta += " and UPPER (f_siga_getunidadejg(ejg.idinstitucion, ejg.anio, ejg.numero,ejg.idtipoejg))LIKE UPPER('%"
-							+ vDatosSolicitante.trim() + "%')";
-
-				}
-
-				if ((miHash.containsKey("JUZGADO")) && (!miHash.get("JUZGADO").toString().equals(""))) {
-
-					String a[] = ((String) miHash.get("JUZGADO")).split(",");
-
-					consulta += " and " + ComodinBusquedas.prepararSentenciaCompleta(a[0].trim(), "ejg.JUZGADO");
-
-				}
-
-				if ((miHash.containsKey("ASUNTO")) && (!miHash.get("ASUNTO").toString().equals("")))
-
-					consulta += " and " + ComodinBusquedas.prepararSentenciaCompleta(((String) miHash.get("ASUNTO")).trim(), "ejg.numerodiligencia");
-
-				if ((miHash.containsKey("PROCEDIMIENTO")) && (!miHash.get("PROCEDIMIENTO").toString().equals("")))
-
-					consulta += " and " + ComodinBusquedas.prepararSentenciaCompleta(((String) miHash.get("PROCEDIMIENTO")).trim(), "ejg.numeroprocedimiento");
-
-				if ((miHash.containsKey("CALIDAD")) && (!miHash.get("CALIDAD").toString().equals("")))
-
-					consulta += " and ejg.calidad  = '" + UtilidadesHash.getString(miHash, "CALIDAD") + "' ";
-
-				// Criterio de ordenación
-
-				// consulta += " ORDER BY ejg." + ScsEJGBean.C_FECHAAPERTURA + "
-				// DESC";
-
-				consulta += " ORDER BY " + ScsEJGBean.C_ANIO + ", to_number(" + ScsEJGBean.C_NUMEJG + ") desc";
-
-				v = admBean.selectGenerico(consulta);
+				Hashtable htConsultaBind  = admBean.getBindBusquedaMantenimientoEJG(miHash,  miForm, ScsEJGAdm.TipoVentana.BUSQUEDA_ANIADIR_REMESA);
+				v = admBean.getBusquedaMantenimientoEJG(htConsultaBind);
 
 				// Rellena un vector de Hastable con la claves primarias de la
 				// tabla scs_ejg para llevar el control de los check
 				claves = sacarClavesEJG(v);
-				Paginador paginador = new Paginador(consulta);
+				PaginadorBind paginador = admBean.getPaginadorBusquedaMantenimientoEJG(htConsultaBind);
 				int totalRegistros = paginador.getNumeroTotalRegistros();
 
 				if (totalRegistros == 0) {
@@ -1803,7 +1557,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				// no devuelve ningun resultado la consulta
 				if (numeroEJGs != null && Integer.parseInt(numeroEJGs) > 0) {
 					mensaje.delete(0, mensaje.length());
-					mensaje.append("No se ha generado ningún fichero. Revise su configuración.");
+					mensaje.append("cajg.error.noFicheroGenerado");
 				}
 				//throw new SIGAException("messages.cajg.error.nodatos");
 			}
@@ -1841,7 +1595,8 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		String nombreFicheroPorDefecto = form.getPrefijo() + form.getNumero() + form.getSufijo() + "_" + idInstitucion;
 		
 		StringBuffer mensaje = new StringBuffer();
-		mensaje.append("El fichero se ha generado correctamente.");
+		String mensajeCorrecto = UtilidadesString.getMensajeIdioma(usr, "cajg.mensaje.ficheroCorrecto");
+		mensaje.append(mensajeCorrecto);
 		
 		try {		
 			File fileZIP = generaFicherosTXT(idInstitucion, form.getIdRemesa(), nombreFicheroPorDefecto, mensaje, null);
@@ -1854,7 +1609,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIDInstitucion(request), Integer.valueOf(form.getIdRemesa()), Integer.valueOf("1"));
 				tx.commit();
 			} else {
-				mensaje = new StringBuffer("No se ha generado ningún fichero");				
+				mensaje = new StringBuffer("cajg.mensaje.ficheroNoGenerado");				
 			}
 			
 		} catch (Exception e) {
@@ -2097,9 +1852,9 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		out.close();
 		
 		if (numeroEJGs != null) {
-			if (!numeroEJGs.trim().equals(String.valueOf(numeroDatos))) {
-				mensaje.append("\nEn el fichero " + nombreFichero + " se ha generado información de " + numeroDatos + " expedientes y en la remesa existen " + numeroEJGs + ". Revise la información obtenida.");				
-			}
+//			if (!numeroEJGs.trim().equals(String.valueOf(numeroDatos))) {				
+			mensaje.append("\n - " + nombreFichero + "." + extension + ": " + numeroDatos + " registros.");				
+//			}
 		}
 		
 

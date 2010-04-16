@@ -1362,14 +1362,15 @@ public class EnvioInformesGenericos extends MasterReport {
 							datoReal.put("plantillas", (String) datosInforme.get("plantillas"));
 							datoReal.put("aSolicitantes", (aSolicitantes)?"S":"N");
 							
-							if (idPersonaReal!=null && !idPersonaReal.trim().equals("")) {
+							// inc-6975 No es obligatorio que tenga direccion para meterlo en el zip
+							//if (idPersonaReal!=null && !idPersonaReal.trim().equals("")) {
 								Vector vDocumentos = new Vector();
 								vDocumentos.addAll(this.getDocumentosAEnviar(
 										datoReal, vPlantillas, usr,
 										EnvioInformesGenericos.docFile,
 										EnvioInformesGenericos.comunicacionesExpedientes));
 								informesRes.addAll(vDocumentos);
-							}
+							//}
 						}
 						
 					//Otros Informes de comunicaciones
@@ -1715,7 +1716,9 @@ public class EnvioInformesGenericos extends MasterReport {
 		if(isEnvioUnico){
 			//String idEnvio = form.getIdEnvio();
 			//enviosBean.setIdEnvio(Integer.valueOf(form.getIdEnvio()));
-			enviosBean.setIdEnvio(envioAdm.getNewIdEnvio(idInstitucion));
+			Integer idEnvio = envioAdm.getNewIdEnvio(idInstitucion);
+			enviosBean.setIdEnvio(idEnvio);
+			form.setIdEnvio(idEnvio.toString());
 		}
 
 

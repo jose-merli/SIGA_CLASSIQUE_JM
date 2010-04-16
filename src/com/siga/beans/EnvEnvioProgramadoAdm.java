@@ -4,6 +4,8 @@
 */
 package com.siga.beans;
  
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Hashtable;
 
 import com.atos.utils.ClsExceptions;
@@ -132,42 +134,19 @@ public class EnvEnvioProgramadoAdm extends MasterBeanAdministrador {
 
 		return htData;
 	}
-
-    public Integer getNewIdEnvio(UsrBean _usr) throws ClsExceptions{
-        RowsContainer rows=new RowsContainer();
-        String sql="SELECT MAX(" + EnvEnvioProgramadoBean.C_IDENVIO +
-        		") AS MAXVALOR FROM " + EnvEnvioProgramadoBean.T_NOMBRETABLA +
-        		" WHERE " + EnvEnvioProgramadoBean.C_IDINSTITUCION + "="+ _usr.getLocation();
-        int valor=1; // Si no hay registros, es el valor que tomará
-        if(rows.find(sql)){
-            Hashtable htRow=((Row)rows.get(0)).getRow();
-            // El valor devuelto será "" Si no hay registros
-            if(!((String)htRow.get("MAXVALOR")).equals("")) {
-                Integer valorInt=Integer.valueOf((String)htRow.get("MAXVALOR"));
-                valor=valorInt.intValue();
-                valor++;
-            }
-        }
-        return new Integer(valor);
-    }
-
     public Integer getNewIdEnvio(String idInstitucion) throws ClsExceptions{
-        RowsContainer rows=new RowsContainer();
-        String sql="SELECT MAX(" + EnvEnvioProgramadoBean.C_IDENVIO +
-        		") AS MAXVALOR FROM " + EnvEnvioProgramadoBean.T_NOMBRETABLA +
-        		" WHERE " + EnvEnvioProgramadoBean.C_IDINSTITUCION + "="+ idInstitucion;
-        int valor=1; // Si no hay registros, es el valor que tomará
-        if(rows.find(sql)){
-            Hashtable htRow=((Row)rows.get(0)).getRow();
-            // El valor devuelto será "" Si no hay registros
-            if(!((String)htRow.get("MAXVALOR")).equals("")) {
-                Integer valorInt=Integer.valueOf((String)htRow.get("MAXVALOR"));
-                valor=valorInt.intValue();
-                valor++;
-            }
-        }
-        return new Integer(valor);
+    	
+        Long idEnvio = getSecuenciaNextVal(EnvEnvioProgramadoBean.SEQ_ENV_ENVIOPROGRAMADO);
+        SimpleDateFormat formato = new SimpleDateFormat("yyyy");
+        return new Integer(formato.format(new Date())+idEnvio);
     }
+
+    public Integer getNewIdEnvio(UsrBean usrBean) throws ClsExceptions{
+    	return getNewIdEnvio(usrBean.getLocation());
+    }
+    
+    
+    
 
 
 }

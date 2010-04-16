@@ -51,7 +51,8 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 							ScsActuacionDesignaBean.C_IDCOMISARIA,				    ScsActuacionDesignaBean.C_IDINSTITUCIONCOMISARIA,
 							ScsActuacionDesignaBean.C_IDPRISION,				    ScsActuacionDesignaBean.C_IDINSTITUCIONPRISION,
 							ScsActuacionDesignaBean.C_IDACREDITACION,				ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO,
-							ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO,			ScsActuacionDesignaBean.C_IDPRETENSION};
+							ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO,			ScsActuacionDesignaBean.C_IDPRETENSION,
+		    				ScsActuacionDesignaBean.C_TALONARIO,					ScsActuacionDesignaBean.C_TALON};
 		return campos;
 	}
 	/** Funcion getClavesBean ()
@@ -102,6 +103,8 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 			bean.setValidada(UtilidadesHash.getString(hash, ScsActuacionDesignaBean.C_VALIDADA));
 			bean.setFacturado(UtilidadesHash.getString(hash, ScsActuacionDesignaBean.C_FACTURADO));
 			bean.setIdPretension(UtilidadesHash.getInteger(hash, ScsActuacionDesignaBean.C_IDPRETENSION));
+		    bean.setIdPretension(UtilidadesHash.getInteger(hash, ScsActuacionDesignaBean.C_TALONARIO));
+		    bean.setIdPretension(UtilidadesHash.getInteger(hash, ScsActuacionDesignaBean.C_TALON));
 		}
 		catch(Exception e){
 			bean = null;
@@ -150,6 +153,8 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO, String.valueOf(b.getIdPersonaColegiado()));
 			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_VALIDADA, b.getValidada());
 			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_IDPRETENSION, String.valueOf(b.getIdPretension()));
+			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_TALONARIO,b.getTalonario());
+			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_TALON,b.getTalon());
 		}
 		catch (Exception e){
 			hash = null;

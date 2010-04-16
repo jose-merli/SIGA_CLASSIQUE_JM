@@ -1462,8 +1462,13 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 			Hashtable htFuncion = new Hashtable();
 			htFuncion.put(new Integer(1), idInstitucion);
 			htFuncion.put(new Integer(2), idPersona);
-			htFuncion.put(new Integer(3), idTipoEnvio);
-			Vector vSalida = helperInformes.ejecutaFuncionSalida(htFuncion, "F_SIGA_GETDIRECCION", "IDDIRECCIONPREFERENTE");
+			// jbd inc-6812 Si llamamos a una funcion de envios solo funcionara para direcciones con ese campo
+			// Este metodo solo se llama desde los getInformeX (letrado, colegiado y no colegiado)
+			//htFuncion.put(new Integer(3), idTipoEnvio);
+			//Vector vSalida = helperInformes.ejecutaFuncionSalida(htFuncion, "F_SIGA_GETDIRECCION", "IDDIRECCIONPREFERENTE");
+			htFuncion.put(new Integer(3), "2"); // Preferiblemente la de despacho
+			htFuncion.put(new Integer(4), "3"); // Si no la de censo
+			Vector vSalida = helperInformes.ejecutaFuncionSalida(htFuncion, "F_SIGA_GETIDDIRECCION_TIPOPRE2", "IDDIRECCIONPREFERENTE");
 			Hashtable registro = (Hashtable) vSalida.get(0);
 			String idDireccionPreferente = (String)registro.get("IDDIRECCIONPREFERENTE");
 			

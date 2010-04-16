@@ -1,13 +1,13 @@
 package com.siga.envios.form;
 
 import java.util.StringTokenizer;
+
+import com.siga.beans.EnvPlantillasEnviosBean;
 import com.siga.general.MasterForm;
 
 public class SIGAPlantillasEnviosCorreoElectronicoForm extends MasterForm
 {
 //    private String modo="";
-    private String editable="";
-
     private String idInstitucion="";
     private String idTipoEnvio="";
     private String idPlantillaEnvios="";
@@ -20,17 +20,29 @@ public class SIGAPlantillasEnviosCorreoElectronicoForm extends MasterForm
     
     private String descripcionPlantilla="";
     private String idTipoEnvios="";
-
-//    public String getModo() 
-//    {
-//        return modo;
-//    }
-//    
-//    public void setModo(String modo) 
-//    {
-//        this.modo = modo;
-//    }
     
+    SIGAPlantillasEnviosForm plantillaEnvios;
+    boolean editable;
+    
+    private String botones;
+    public String getBotones() {
+		
+		if (isEditable()){
+			this.botones = "V,G";
+		}else{
+			this.botones = "V";	
+			
+		}
+		
+		return this.botones;
+	}
+    public boolean isEditable() {
+		return editable;
+	}
+
+	public void setEditable(boolean editable) {
+		this.editable = editable;
+	}
     public String getIdTipoEnvios()
     {
     	return idTipoEnvios;
@@ -40,17 +52,7 @@ public class SIGAPlantillasEnviosCorreoElectronicoForm extends MasterForm
     {
     	this.idTipoEnvios=idTipoEnvios;
     }
-
-    public String getEditable()
-    {
-    	return editable;
-    }
-    
-    public void setEditable(String editable)
-    {
-    	this.editable=editable;
-    }
-
+   
     public String getIdInstitucion()
     {
     	return idInstitucion;
@@ -192,4 +194,12 @@ public class SIGAPlantillasEnviosCorreoElectronicoForm extends MasterForm
     {
     	this.plantilla=plantilla;
     }
+
+	public SIGAPlantillasEnviosForm getPlantillaEnvios() {
+		return plantillaEnvios;
+	}
+
+	public void setPlantillaEnvios(SIGAPlantillasEnviosForm plantillaEnvios) {
+		this.plantillaEnvios = plantillaEnvios;
+	}
 }

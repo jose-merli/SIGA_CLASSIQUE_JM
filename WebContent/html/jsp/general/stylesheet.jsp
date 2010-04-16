@@ -132,6 +132,15 @@ legend {
 	font-weight: normal;
 	padding-top:0px;
 	margin-top:0px;
+	cursor:default;
+}
+
+.legendNoBorder {
+	border-top:1px solid;
+	border-right:1px solid;
+	border-left:1px solid;
+	border-bottom:0px solid;
+	padding-right:0px;
 }
 
 .valorTop {
@@ -217,6 +226,7 @@ legend {
 	padding-bottom: 1px;
 	vertical-align: top;
 	font-weight: bold;
+	cursor:default;
 
 }
 
@@ -535,12 +545,12 @@ legend {
 	height:22px;
 }
 .buttonEnTabla {
-	font-family: <%=src.get("font.style")%>;
-	color: #<%=src.get("color.button.font")%>;
-	background-color: #<%=src.get("color.button.BG")%>;
-	border: thin solid #<%=src.get("color.button.border")%>;
+	font-family:  <%=src.get("font.style")%>;
+	color: white;
+	background-color: #444444;
+	border: thin solid white;
 	font-size: <%=fontSize %>;
-	font-weight: normal;
+	font-weight: bold;
 	cursor: hand;
 	clear: right;
 	margin:0px;
@@ -548,6 +558,7 @@ legend {
 	padding-top: 1px;
 	padding-bottom: 0px;
 	vertical-align: top;
+	height:22px;
 }
 
 
@@ -580,7 +591,7 @@ legend {
 	border-top-style: none;
 	border-bottom-style: none;
 	height: 25px;
-	
+	cursor: default;
 }
 
 .titulosPeq {

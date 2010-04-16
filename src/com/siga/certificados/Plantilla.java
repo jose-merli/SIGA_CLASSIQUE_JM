@@ -1533,6 +1533,11 @@ public class Plantilla {
 					}					
 				}	
 			}
+			if (etiqueta.equalsIgnoreCase("DIA_FECHA_INICIO")){
+				if (linea.get("DIA_FECHA_INICIO")!=null){
+					resultado="                                	"+(String)linea.get("DIA_FECHA_INICIO");					
+				}
+			}
 			if (etiqueta.equalsIgnoreCase("FECHA_FIN")){
 				if (linea.get("FECHA_FIN")!=null){
 					String fecha=(String)linea.get("FECHA_FIN");

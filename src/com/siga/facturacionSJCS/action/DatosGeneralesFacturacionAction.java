@@ -95,7 +95,9 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			if ((accion != null)&&(accion.equalsIgnoreCase("descargarFichero"))){
 				return mapping.findForward(this.descargarFichero(mapping, miForm, request, response));
 			}
-			
+			if ((accion != null)&&(accion.equalsIgnoreCase("descargaFicheroGlobal"))){
+				return mapping.findForward(this.descargarFichero(mapping, miForm, request, response));
+			}
 
 			return super.executeInternal(mapping, formulario, request, response);
 		}

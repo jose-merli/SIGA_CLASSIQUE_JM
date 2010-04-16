@@ -510,10 +510,10 @@ public class ClsLogging{
 				logger.info(s);
 			}
 
-			if (bLogXeMail && logXeMail!=null)
-			{
-				logXeMail.info(s);
-			}
+//			if (bLogXeMail && logXeMail!=null)
+//			{
+//				logXeMail.info(s);
+//			}
 
 			if(bStoreFile)
 			{

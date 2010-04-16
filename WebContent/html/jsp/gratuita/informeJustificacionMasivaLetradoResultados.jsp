@@ -152,7 +152,7 @@
 					String clase = "";
 					String idPersona = "";
 					String numJustificaciones = "";
-					String idInstitucion = " ", idTurno = " ", anio = " ", numero = " ", idJuzgado = " ",idInstJuzgado=" ", 
+					String idInstitucion = " ", idTurno = " ", anio = " ", numero = " ", idJuzgado = " ", fechaRenuncia="", nActuaciones="", idInstJuzgado=" ", 
 					       fDesigna=" ",fFinAct=" ", fIniAct=" ", estado=" ", cliente=" ",expedientes=" ", 
 					       codigoDesigna=" ", asunto=" ", categoria=" ",idJurisdiccion="",idProcedimiento=" ",descJuzgado = " ", validarJustificaciones="",
 					       fechaActuacionIni="", fechaActuacionFin="";;
@@ -167,6 +167,8 @@
 						idTurno = UtilidadesHash.getString(hash, "IDTURNO");
 						idInstitucion = UtilidadesHash.getString(hash, "IDINSTITUCION");
 						idJuzgado = UtilidadesHash.getString(hash, "IDJUZGADO");
+						fechaRenuncia = UtilidadesHash.getString(hash, "FECHARENUNCIA");
+						nActuaciones = UtilidadesHash.getString(hash, "NACTUACIONES");
 						descJuzgado = UtilidadesHash.getString(hash, "DESC_JUZGADO");
 						idInstJuzgado = UtilidadesHash.getString(hash, "IDINSTITUCION_JUZG");
 						fDesigna = UtilidadesHash.getString(hash, "FECHADESIGNA");
@@ -196,25 +198,25 @@
 						clase = "filaTablaPar";
 					else 
 						clase = "filaTablaImpar";
-						
+					
 			 	%>	
 
 		  		<tr class="<%=clase%>">
 					<td>
-						<input type="hidden" name="modificado<%=i%>"   value="false">
-						<input type="hidden" name="idInstitucion<%=i%>" value="<%=idInstitucion%>">
-						<input type="hidden" name="idTurno<%=i%>"      value="<%=idTurno%>">
-						<input type="hidden" name="anio<%=i%>"         value="<%=anio%>">
-						<input type="hidden" name="numero<%=i%>"       value="<%=numero%>">
-						<input type="hidden" name="idProcedimiento<%=i%>"  value="<%=idProcedimiento%>">
-						<input type="hidden" name="idJuzgado<%=i%>"  value="<%=idJuzgado%>">
-						<input type="hidden" name="idInstJuzgado<%=i%>"  value="<%=idInstJuzgado%>">
-						<input type="hidden" name="fIniAct<%=i%>" value="<%=GstDate.getFormatedDateShort("",fIniAct)%>">
-						<input type="hidden" name="idJurisdiccion<%=i%>"  value="<%=idJurisdiccion%>">
-						<input type="hidden" name="idPersona<%=i%>"  value="<%=idPersona%>">
-						<input type="hidden" name="codigoDesigna<%=i%>"  value="<%=codigoDesigna%>">
-						<input type="hidden" name="numJustificaciones<%=i%>"  value="<%=numJustificaciones%>">
-						<input type="hidden" name="validarJustificaciones<%=i%>"  value="<%=validarJustificaciones%>">
+						<input type="hidden" name="modificado<%=i%>"   				value="false">
+						<input type="hidden" name="idInstitucion<%=i%>" 			value="<%=idInstitucion%>">
+						<input type="hidden" name="idTurno<%=i%>"      				value="<%=idTurno%>">
+						<input type="hidden" name="anio<%=i%>"         				value="<%=anio%>">
+						<input type="hidden" name="numero<%=i%>"       				value="<%=numero%>">
+						<input type="hidden" name="idProcedimiento<%=i%>"  			value="<%=idProcedimiento%>">
+						<input type="hidden" name="idJuzgado<%=i%>"  				value="<%=idJuzgado%>">
+						<input type="hidden" name="idInstJuzgado<%=i%>"  			value="<%=idInstJuzgado%>">
+						<input type="hidden" name="fIniAct<%=i%>" 					value="<%=GstDate.getFormatedDateShort("",fIniAct)%>">
+						<input type="hidden" name="idJurisdiccion<%=i%>"  			value="<%=idJurisdiccion%>">
+						<input type="hidden" name="idPersona<%=i%>"  				value="<%=idPersona%>">
+						<input type="hidden" name="codigoDesigna<%=i%>"  			value="<%=codigoDesigna%>">
+						<input type="hidden" name="numJustificaciones<%=i%>"  		value="<%=numJustificaciones%>">
+						<input type="hidden" name="validarJustificaciones<%=i%>"  	value="<%=validarJustificaciones%>">
 						
 						<%=UtilidadesString.mostrarDatoJSP(codigoDesigna)%>
 					</td>
@@ -246,7 +248,9 @@
 						<%=UtilidadesString.mostrarDatoJSP(categoria)%>
 					</td>
 					
-					<% if (idJuzgado == null ||  idJuzgado.equals("")) {%>
+					<% 
+						String visibilidad = "";
+						if (idJuzgado == null ||  idJuzgado.equals("")) {%>
 						<td colspan="2" align="center">
 							<siga:Idioma key="gratuita.informeJustificacionMasiva.aviso.sinJuzgado"/>
 						</td>
@@ -256,49 +260,68 @@
 						</td>
 					 
 					<%	}else {%> 
+					
+					<%
+					   //define la visibilidad de los checks
+					   if ((fechaRenuncia != null && !"".equals(fechaRenuncia))||
+						   (estado != null && estado.equals("F")) || 
+						   (!puedeLetradoJustificar && checkreadonly)){
+						   visibilidad = "disabled ";
+					   }
+						
+					   boolean mostrarCheck = false;
+					   if (usr.isLetrado() && 
+						   (validarJustificaciones!=null && validarJustificaciones.equals("S")) && 
+						   (fechaActuacionIni!=null && !fechaActuacionIni.equals(""))){
+						   mostrarCheck=true;
+					   }
+					%>
+						   
 					<td align="center">
-						<% if (fIniAct != null && !fIniAct.equals("")) { %> 
+						<% if (nActuaciones.equals("0") && 
+							   (fechaRenuncia == null || "".equals(fechaRenuncia)) &&
+							   (fIniAct != null && !fIniAct.equals("")) ){ %>
+							&nbsp;
+						<%}else if (fIniAct != null && !fIniAct.equals("") ) { %> 
 							&nbsp;<%=GstDate.getFormatedDateShort("",fIniAct)%>
-						<% }  else { 
-						     if (usr.isLetrado() && (validarJustificaciones!=null && validarJustificaciones.equals("S")) && (fechaActuacionIni!=null && !fechaActuacionIni.equals("")) ){%>
-						    	<siga:Idioma key="gratuita.informeJustificacionMasiva.aviso.actPendVal"/>
-						    	<input style="display:none" type="checkBox" name="checkFechaIni<%=i%>" value="checkFechaIni" onClick="accionCheckInicio('<%=i%>');"  <% if (estado != null && estado.equals("F")) out.print("disabled "); else{ if(!puedeLetradoJustificar && checkreadonly)out.print("disabled ");}%>> 
-						    	 
-						     <%}else{%>
-						
-						
-						
-							<input type="checkBox" name="checkFechaIni<%=i%>" value="checkFechaIni" onClick="accionCheckInicio('<%=i%>');"  <% if (estado != null && estado.equals("F")) out.print("disabled "); else{ if(!puedeLetradoJustificar && checkreadonly)out.print("disabled ");}%>>
-							<% }}%>
+						<%}else if (mostrarCheck){%>
+						    <siga:Idioma key="gratuita.informeJustificacionMasiva.aviso.actPendVal"/>
+						    <input style="display:none" type="checkBox" name="checkFechaIni<%=i%>" value="checkFechaIni" onClick="accionCheckInicio('<%=i%>');" <%=visibilidad %> > 
+						<%}else{%>
+							<input type="checkBox" name="checkFechaIni<%=i%>" value="checkFechaIni" onClick="accionCheckInicio('<%=i%>');"  <%=visibilidad %> >
+						<%}%>
 					</td>
 
 					<td align="center" >
-						<% if (fFinAct != null && !fFinAct.equals("")) { %> 
+						<% if (nActuaciones.equals("0") && 
+							   (fechaRenuncia == null || "".equals(fechaRenuncia)) &&
+							   (fFinAct != null && !fFinAct.equals("")) ){ %>
+							&nbsp;
+						<%}else if(fFinAct != null && !fFinAct.equals("")&& 
+							   !nActuaciones.equals("0")) { %> 
 							&nbsp;<%=GstDate.getFormatedDateShort("",fFinAct)%>
-						<% }  else {
-							if (usr.isLetrado() && (validarJustificaciones!=null && validarJustificaciones.equals("S")) && (fechaActuacionFin!=null && !fechaActuacionFin.equals("")) ){%>
+						<%}else if(mostrarCheck){%>
 					    	<siga:Idioma key="gratuita.informeJustificacionMasiva.aviso.actPendVal"/>
-					    	<input style="display:none" type="checkBox" name="checkFechaFin<%=i%>" value="checkFechaFin" onClick="accionCheckFin('<%=i%>');"   <% if (estado != null && estado.equals("F")) out.print("disabled "); else{ if(!puedeLetradoJustificar && checkreadonly)out.print("disabled ");}%>> 
-					     <% }else{%>
-							<input type="checkBox" name="checkFechaFin<%=i%>" value="checkFechaFin" onClick="accionCheckFin('<%=i%>');"   <% if (estado != null && estado.equals("F")) out.print("disabled "); else{ if(!puedeLetradoJustificar && checkreadonly)out.print("disabled ");}%>>
-						<%  }
-						  }%>
+					    	<input style="display:none" type="checkBox" name="checkFechaFin<%=i%>" value="checkFechaFin" onClick="accionCheckFin('<%=i%>');" <%=visibilidad %> > 
+					    <%}else{%>
+							<input type="checkBox" name="checkFechaFin<%=i%>" value="checkFechaFin" onClick="accionCheckFin('<%=i%>');" <%=visibilidad %> >
+						<%}%>
 					</td>
-					<%}
-					if(!isPermitidoGuardar){
-						
-						if((estado != null && !estado.equals("F"))&&(puedeLetradoJustificar||!checkreadonly))
+					<%
+						if(!isPermitidoGuardar && 
+							(estado != null && !estado.equals("F")) && 
+							(puedeLetradoJustificar||!checkreadonly)){
 							isPermitidoGuardar = true;
+						}
 					}
-					
 					%>
 					<td align="center">
-						<input type="checkBox" name="baja<%=i%>" value="baja"  onclick="accionCheckBaja('<%=i%>');" <% if (estado != null && estado.equals("F")) out.print("checked disabled "); else{ if(!puedeLetradoJustificar && checkreadonly)out.print("disabled ");}%>>
+						<input type="checkBox" name="baja<%=i%>" value="baja"  onclick="accionCheckBaja('<%=i%>');" <%=visibilidad %> >
 					</td>
 				</tr>
 					
-			<% 	} // for%>	
-		<%}%>
+			<% 	}
+		}%>	
 
 	</siga:TablaCabecerasFijas>
 	<%if ( hm.get("datos")!=null && !hm.get("datos").equals("")){%>

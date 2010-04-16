@@ -16,6 +16,8 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesFicheros;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.AdmLenguajesAdm;
+import com.siga.beans.AdmLenguajesBean;
 import com.siga.beans.FcsFacturacionJGAdm;
 import com.siga.beans.FcsFacturacionJGBean;
 import com.siga.beans.GenParametrosAdm;
@@ -215,7 +217,7 @@ public class UtilidadesFacturacionSJCS
 					"#" +
 					UtilidadesFacturacionSJCS.construirCabeceraPago(usuario);
 			}
-			else if (concepto == ClsConstants.HITO_GENERAL_GUARDIA)
+			else if (concepto == ClsConstants.HITO_GENERAL_GUARDIA && !tipoCabecera.equalsIgnoreCase("3001"))
 			{
 				cabecera =
 					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.numColLetrado") 			+ "#" +
@@ -253,6 +255,34 @@ public class UtilidadesFacturacionSJCS
 					cabecera +=
 					"#" +
 					UtilidadesFacturacionSJCS.construirCabeceraPagoGuardias(usuario);
+			}
+			else if (concepto == ClsConstants.HITO_GENERAL_GUARDIA && tipoCabecera.equalsIgnoreCase("3001"))
+			{
+				cabecera =
+					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.numColLetrado") 			+ "#" +
+					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.letrado") 					+ "#" +
+					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.turno") 					+ "#" +
+					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.guardia") 					+ "#" +
+					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.tipoApunte")				+ "#" +
+					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.fechainicio") 				+ "#" +
+					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.fechafin") 					+ "#" +
+					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.fechaActuacion")			+ "#" +
+					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.fechaJustificacion")		+ "#" +
+					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.nAsist")					+ "#" +
+					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.nAct")						+ "#" +
+					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.numActuacionesFacturadas") 	+ "#" +
+					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.numActuacFGFacturadas") 	+ "#" +
+					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.numActuacionesTotales") 	+ "#" +
+					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.numActuacFGTotales")	 	+ "#" +
+					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.importeGuardia")		 	+ "#" +
+					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.costesFijos")				+ "#" +
+					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.totalGuardia")				+ "#" +
+					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.separadorOtrosCampos")		+ "#" +
+					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.numDocAsistido")			+ "#" +
+					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.asistido")					+ "#" +
+					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.delitos") 					+ "#" +
+					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.lugar") 					+ "#" +
+					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.localidad");
 			}
 			else if (concepto == ClsConstants.HITO_GENERAL_SOJ)
 			{
@@ -358,6 +388,13 @@ public class UtilidadesFacturacionSJCS
 				tipoP=ClsConstants.PAGOS_SJCS;
 			}
 			
+			//El lenguaje de los informes es el de la institucion a la que pertenecen las
+			//facturaciones, no tiene que ver con el usuario que la genera. Ademas si es un
+			//proceso automatica el userBean Automatico tiene por defecto el idioma
+			//español que seria un error para lo colegios con otro idioma.
+			//Por lo tanto accedemos al idioma de cada institucion
+			AdmLenguajesAdm admLen = new AdmLenguajesAdm(usuario);
+			AdmLenguajesBean beanLenguajeIntitucion = admLen.getLenguajeInstitucion(idInstitucion.toString());
 
 			// TURNOS DE OFICIO
 			Object[] param_in_turno = new Object[8];
@@ -368,7 +405,7 @@ public class UtilidadesFacturacionSJCS
 			param_in_turno[4] = pathFicheros;									// PATH_FICHEROS 
 			param_in_turno[5] = UtilidadesHash.getString(nombreFicheros, "" + ClsConstants.HITO_GENERAL_TURNO);
 			param_in_turno[6] = UtilidadesFacturacionSJCS.getCabecerasFicheros(ClsConstants.HITO_GENERAL_TURNO,tipoP, usuario);
-			param_in_turno[7] = usuario.getLanguageInstitucion();				// IDOMA 
+			param_in_turno[7] = beanLenguajeIntitucion.getIdLenguaje();				// IDOMA 
 			String resultado[] = new String[2];
 	    	resultado = /*EjecucionPLs.ejecutarPLExportarTurnosOficio()*/ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION_SJCS.PROC_FCS_EXPORTAR_TURNOS_OFI (?,?,?,?,?,?,?,?,?,?)}", 2, param_in_turno);
 	    	if (!resultado[0].equalsIgnoreCase("0")) {
@@ -408,9 +445,23 @@ public class UtilidadesFacturacionSJCS
 			param_in1[2] = (idPago    == null?"":idPago.toString()); 	// IDPAGO
 			param_in1[3] = (idPersona == null?"":idPersona.toString()); 	// IDPERSONA
 			param_in1[4] = pathFicheros;									// PATH_FICHEROS 
-			param_in1[7] = usuario.getLanguageInstitucion();				// IDOMA 
+			param_in1[7] = beanLenguajeIntitucion.getIdLenguaje();				// IDOMA 
 			param_in1[5] = UtilidadesHash.getString(nombreFicheros, "" + ClsConstants.HITO_GENERAL_GUARDIA);
-			param_in1[6] = UtilidadesFacturacionSJCS.getCabecerasFicheros(ClsConstants.HITO_GENERAL_GUARDIA, tipoP,usuario);
+			param_in1[6] = UtilidadesFacturacionSJCS.getCabecerasFicheros(ClsConstants.HITO_GENERAL_GUARDIA, 
+					(idInstitucion.intValue() == 2012 ||
+					idInstitucion.intValue() == 2026 ||
+					idInstitucion.intValue() == 2028 ||
+					idInstitucion.intValue() == 2030 ||
+					idInstitucion.intValue() == 2041 ||
+					idInstitucion.intValue() == 2047 ||
+					idInstitucion.intValue() == 2048 ||
+					idInstitucion.intValue() == 2057 ||
+					idInstitucion.intValue() == 2059 ||
+					idInstitucion.intValue() == 2061 ||
+					idInstitucion.intValue() == 2071 ||
+					idInstitucion.intValue() == 2072 ||
+					idInstitucion.intValue() == 2075 ||
+					idInstitucion.intValue() == 2079 ? "3001":tipoP),usuario);
 	    	resultado = new String[2];
 	    	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION_SJCS.proc_fcs_exportar_guardias (?,?,?,?,?,?,?,?,?,?)}", 2, param_in1);
 	    	if (!resultado[0].equalsIgnoreCase("0")) {
@@ -433,79 +484,149 @@ public class UtilidadesFacturacionSJCS
 	 * @param usuario
 	 * @throws SIGAException
 	 */
-	static public void generarFicherosFacturacionMultiple (Integer idInstitucion, Integer idFacturacionIni, Integer idFacturacionFin, UsrBean usuario) throws SIGAException
+	public static void generarFicherosFacturacionMultiple(Integer idInstitucion,
+														  Integer idFacturacionIni,
+														  Integer idFacturacionFin,
+														  UsrBean usuario)
+			throws SIGAException
 	{
 		try {
 			GenParametrosAdm paramAdm = new GenParametrosAdm(usuario);
-			String pathFicheros = paramAdm.getValor("" + idInstitucion, "FCS", "PATH_PREVISIONES_BD", null);
+			String pathFicheros = paramAdm.getValor("" + idInstitucion, "FCS",
+					"PATH_PREVISIONES_BD", null);
 
-			String sNombreFichero = pathFicheros + File.separator + "FACTURACION_";						
-			String extensionFichero = "_" + idInstitucion + "_" + idFacturacionIni + "-" + idFacturacionFin;
+			String nombreFichConRuta = pathFicheros + File.separator
+					+ "FACTURACION_";
+			String nombreFich = "FACTURACION_";
+			String extensionFichero = "_" + idInstitucion + "_"
+					+ idFacturacionIni + "-" + idFacturacionFin;
 			extensionFichero += ".XLS";
-	
-			String sFacturaciones = EjecucionPLs.ejecutarFuncFacturacionesIntervalo(
-					idInstitucion.toString(), idFacturacionIni.toString(), idFacturacionFin.toString());
-			String[] lFacturaciones = sFacturaciones.replaceAll(" ", "").split(",");
+
+			String sFacturaciones = EjecucionPLs
+					.ejecutarFuncFacturacionesIntervalo(idInstitucion
+							.toString(), idFacturacionIni.toString(),
+							idFacturacionFin.toString());
+			String[] lFacturaciones = sFacturaciones.replaceAll(" ", "").split(
+					",");
 			int nFact = lFacturaciones.length;
-			ArrayList lFacturacionesTurno = new ArrayList();
-			ArrayList lFacturacionesEJG = new ArrayList();
-			ArrayList lFacturacionesSOJ = new ArrayList();
-			ArrayList lFacturacionesGuardias = new ArrayList();
-			
-			//Solo se pasan a la funcion de concatenacion de ficheros, aquellos que existen
-			for(int i = 0; i < nFact; i++){
-				String ext = "_" + idInstitucion + "_" + lFacturaciones[i] + ".XLS";
-				String aux = sNombreFichero + "TURNOSOFICIO" + ext;
-				if (new File(aux).exists()){
+			ArrayList<String> lFacturacionesTurno = new ArrayList<String>();
+			ArrayList<String> lFacturacionesEJG = new ArrayList<String>();
+			ArrayList<String> lFacturacionesSOJ = new ArrayList<String>();
+			ArrayList<String> lFacturacionesGuardias = new ArrayList<String>();
+
+			// Solo se pasan a la funcion de concatenacion de ficheros, aquellos
+			// que existen
+			for (int i = 0; i < nFact; i++) {
+				String ext = "_" + idInstitucion + "_" + lFacturaciones[i]
+						+ ".XLS";
+				String aux = nombreFichConRuta + "TURNOSOFICIO" + ext;
+				if (new File(aux).exists()) {
 					lFacturacionesTurno.add(aux);
 				}
-				aux = sNombreFichero + "EJG" + ext;
-				if (new File(aux).exists()){
+				aux = nombreFichConRuta + "EJG" + ext;
+				if (new File(aux).exists()) {
 					lFacturacionesEJG.add(aux);
 				}
-				aux = sNombreFichero + "SOJ" + ext;
-				if (new File(aux).exists()){
+				aux = nombreFichConRuta + "SOJ" + ext;
+				if (new File(aux).exists()) {
 					lFacturacionesSOJ.add(aux);
 				}
-				aux = sNombreFichero + "GUARDIAS" + ext;
-				if (new File(aux).exists()){
+				aux = nombreFichConRuta + "GUARDIAS" + ext;
+				if (new File(aux).exists()) {
 					lFacturacionesGuardias.add(aux);
 				}
 			}
-			
+
 			ListOfFiles lFicheros = null;
-			
+
 			// TURNOS DE OFICIO
-			if (!lFacturacionesTurno.isEmpty()){
-				String sFicheroTurnos = sNombreFichero + "TURNOSOFICIO" + extensionFichero;
-				lFicheros = new ListOfFiles((String[])lFacturacionesTurno.toArray(new String[lFacturacionesTurno.size()]));
-				UtilidadesFicheros.concatenarFicheros(lFicheros, sFicheroTurnos);
+			if (!lFacturacionesTurno.isEmpty()) {
+				String sFicheroTurnos = nombreFichConRuta + "TURNOSOFICIO"
+						+ extensionFichero;
+				lFicheros = new ListOfFiles((String[]) lFacturacionesTurno
+						.toArray(new String[lFacturacionesTurno.size()]));
+				UtilidadesFicheros
+						.concatenarFicheros(lFicheros, sFicheroTurnos);
 			}
 
 			// EJG
-			if (!lFacturacionesEJG.isEmpty()){
-				String sFicheroEJG = sNombreFichero + "EJG" + extensionFichero;
-				lFicheros = new ListOfFiles((String[])lFacturacionesEJG.toArray(new String[lFacturacionesEJG.size()]));
+			if (!lFacturacionesEJG.isEmpty()) {
+				String sFicheroEJG = nombreFichConRuta + "EJG"
+						+ extensionFichero;
+				lFicheros = new ListOfFiles((String[]) lFacturacionesEJG
+						.toArray(new String[lFacturacionesEJG.size()]));
 				UtilidadesFicheros.concatenarFicheros(lFicheros, sFicheroEJG);
 			}
 
 			// SOJ
-			if (!lFacturacionesSOJ.isEmpty()){
-				String sFicheroSOJ = sNombreFichero + "SOJ" + extensionFichero;
-				lFicheros = new ListOfFiles((String[])lFacturacionesSOJ.toArray(new String[lFacturacionesSOJ.size()]));
+			if (!lFacturacionesSOJ.isEmpty()) {
+				String sFicheroSOJ = nombreFichConRuta + "SOJ"
+						+ extensionFichero;
+				lFicheros = new ListOfFiles((String[]) lFacturacionesSOJ
+						.toArray(new String[lFacturacionesSOJ.size()]));
 				UtilidadesFicheros.concatenarFicheros(lFicheros, sFicheroSOJ);
 			}
-
+			//El lenguaje de los informes es el de la institucion a la que pertenecen las
+			//facturaciones, no tiene que ver con el usuario que la genera. Ademas si es un
+			//proceso automatica el userBean Automatico tiene por defecto el idioma
+			//español que seria un error para lo colegios con otro idioma.
+			//Por lo tanto accedemos al idioma de cada institucion
+			AdmLenguajesAdm admLen = new AdmLenguajesAdm(usuario);
+			AdmLenguajesBean beanLenguajeIntitucion = admLen.getLenguajeInstitucion(idInstitucion.toString());
+			
 			// GUARDIAS
-			if (!lFacturacionesGuardias.isEmpty()){
-				String sFicheroGuardias = sNombreFichero + "GUARDIAS" + extensionFichero;
-				lFicheros = new ListOfFiles((String[])lFacturacionesGuardias.toArray(new String[lFacturacionesGuardias.size()]));
-				UtilidadesFicheros.concatenarFicheros(lFicheros, sFicheroGuardias);
+			if (idInstitucion.intValue() == 2012 ||
+				idInstitucion.intValue() == 2026 ||
+				idInstitucion.intValue() == 2028 ||
+				idInstitucion.intValue() == 2030 ||
+				idInstitucion.intValue() == 2041 ||
+				idInstitucion.intValue() == 2047 ||
+				idInstitucion.intValue() == 2048 ||
+				idInstitucion.intValue() == 2057 ||
+				idInstitucion.intValue() == 2059 ||
+				idInstitucion.intValue() == 2061 ||
+				idInstitucion.intValue() == 2071 ||
+				idInstitucion.intValue() == 2072 ||
+				idInstitucion.intValue() == 2075 ||
+				idInstitucion.intValue() == 2079) {
+				// GUARDIAS Solo se pasa el idioma cuando exportamos
+				// guardias
+				Object[] param_in1 = new Object[7];
+				param_in1[0] = idInstitucion.toString(); // IDINSTITUCION
+				param_in1[1] = idFacturacionIni.toString(); // IDFACTURACION
+				param_in1[2] = (idFacturacionFin == null ? ""
+						: idFacturacionFin.toString()); // IDPAGO
+				param_in1[3] = pathFicheros; // PATH_FICHEROS
+				param_in1[4] = nombreFich + "GUARDIAS" + extensionFichero;
+				param_in1[5] = UtilidadesFacturacionSJCS
+						.getCabecerasFicheros(
+								ClsConstants.HITO_GENERAL_GUARDIA,
+								"3001", usuario);
+				param_in1[6] = beanLenguajeIntitucion.getIdLenguaje(); // IDOMA
+				String[] resultado = new String[2];
+				resultado = ClsMngBBDD
+						.callPLProcedure(
+								"{call PKG_SIGA_FACTURACION_SJCS.proc_exportar_guardias_3001 (?,?,?,?,?,?,?,?,?)}",
+								2, param_in1);
+				if (!resultado[0].equalsIgnoreCase("0")) {
+					ClsLogging.writeFileLog("Error en PL = "
+							+ (String) resultado[1], 3);
+				}
 			}
+			else if (!lFacturacionesGuardias.isEmpty()) {
+				String sFicheroGuardias = nombreFichConRuta + "GUARDIAS"
+						+ extensionFichero;
+				lFicheros = new ListOfFiles(
+						(String[]) lFacturacionesGuardias
+								.toArray(new String[lFacturacionesGuardias
+										.size()]));
+				UtilidadesFicheros.concatenarFicheros(lFicheros,
+						sFicheroGuardias);
+			}
+		} catch (Exception e) {
+			throw new SIGAException("Error al exportar datos: "
+					+ e.getMessage());
 		}
-		catch (Exception e) {
-    		throw new SIGAException ("Error al exportar datos: " + e.getMessage());			
-		}
-	}
+	} // generarFicherosFacturacionMultiple()
 
 }

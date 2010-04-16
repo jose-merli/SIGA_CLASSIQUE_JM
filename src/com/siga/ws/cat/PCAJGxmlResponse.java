@@ -18,6 +18,7 @@ import java.util.Vector;
 import javax.transaction.UserTransaction;
 
 import org.apache.xmlbeans.XmlCursor;
+import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
 
@@ -179,7 +180,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 				xmlOptions.setLoadSubstituteNamespaces(map);
 				
 				IntercambioDocument intercambioIRDoc = IntercambioDocument.Factory.parse(file, xmlOptions);
-				if (!validate(intercambioIRDoc)) {
+				if (validate(intercambioIRDoc).size() > 0) {
 					throw new ClsExceptions("El xml " + file.getName() + " no es válido");
 				}			
 				
@@ -360,9 +361,14 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 				Map<String, String> map = new HashMap<String, String>();
 				map.put("", namespace);
 				xmlOptions.setLoadSubstituteNamespaces(map);
-				
-				IntercambioDocument intercambioRespuestaDoc = IntercambioDocument.Factory.parse(file, xmlOptions);
-				if (!validate(intercambioRespuestaDoc)) {
+				IntercambioDocument intercambioRespuestaDoc = null;
+				try {
+					intercambioRespuestaDoc = IntercambioDocument.Factory.parse(file, xmlOptions);
+				} catch (XmlException e) {
+					escribeLogRemesa("El xml " + file.getName() + " no es un fichero de \"Intercambio\" válido.");
+					throw e;
+				}	
+				if (validate(intercambioRespuestaDoc).size() > 0) {
 					throw new ClsExceptions("El xml " + file.getName() + " no es válido");
 				}			
 				

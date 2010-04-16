@@ -68,12 +68,17 @@
 		function refrescarLocal(){
 			parent.refrescarLocal();
 		}
+
+		
+					
 function accionNuevo() 
 		{   document.forms[0].modo.value = "nuevo";
 			var salida = ventaModalGeneral(document.forms[0].name,"G"); 			
 			if (salida == "MODIFICADO") 
 				refrescarLocal();
 		}
+
+
 	</script>
 </head>
 
@@ -115,8 +120,8 @@ function accionNuevo()
 			   nombre="listadoInicial"
 			   borde="2"
 			   clase="tableTitle"		   
-			   nombreCol="gratuita.mantenimientoTablasMaestra.literal.nif,gratuita.mantenimientoTablasMaestra.literal.nombreyapellidos,gratuita.mantenimientoTablasMaestra.literal.representante,"
-			   tamanoCol="20,30,30,20"
+			   nombreCol="gratuita.mantenimientoTablasMaestra.literal.nif,gratuita.mantenimientoTablasMaestra.literal.nombreyapellidos,envios.etiquetas.tipoCliente.abogado,gratuita.personaJG.literal.procurador,"
+			   tamanoCol="10,30,25,25,15"
 			   alto="60%"
 			   modal="G"
 		>
@@ -127,23 +132,35 @@ function accionNuevo()
 				String representante="";
 				String idPersona="";
 				int recordNumber=1;
+				String abogadoContrario="";
+				String procurador="";
 				while ((recordNumber) <= vContrariosEJG.size())
 				{
 					
 					Hashtable hashContrariosEJG = (Hashtable)vContrariosEJG.get(recordNumber-1);
 					nif = UtilidadesString.mostrarDatoJSP(hashContrariosEJG.get("NIF"));
-					descripcion = (String)hashContrariosEJG.get("DATOS_CONTRARIO");
-					representante = UtilidadesString.mostrarDatoJSP(hashContrariosEJG.get("REPRESENTANTE"));
+					descripcion = (String)hashContrariosEJG.get("DATOS_CONTRARIO");					
 					idPersona=(String)hashContrariosEJG.get("IDPERSONA");
+					abogadoContrario=(String)hashContrariosEJG.get("NOMBREABOGADOCONTRARIOEJG");
+					procurador=(String)hashContrariosEJG.get("PROCURADOR");
+					if (abogadoContrario != null && !"".equals(abogadoContrario)){
+						abogadoContrario=(String)hashContrariosEJG.get("NOMBREABOGADOCONTRARIOEJG");
+					}
+					else 
+						//se agrega un espacio de esta forma porque es la unica forma para que no de error al borrar o editar, si el campo esta vacio o a null.
+					   abogadoContrario="&nbsp";
 					
-					
+					if (procurador != null && !"".equals(procurador)){
+						procurador=(String)hashContrariosEJG.get("PROCURADOR");
+					}
+					else 
+						//se agrega un espacio de esta forma porque es la unica forma para que no de error al borrar o editar, si el campo esta vacio o a null.
+					    procurador="&nbsp";
 			%>
 			
 	
 	       	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="B,E,C"  clase="listaNonEdit" modo="<%=modopestanha%>" >
 				<td>
-						
-						
 					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=PersonaJGAction.EJG_CONTRARIOS%>">
 					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="gratuita.contrariosAsistencia.literal.titulo">
 					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="gratuita.contrariosAsistencia.literal.titulo">
@@ -161,8 +178,11 @@ function accionNuevo()
 						<%=descripcion%>
 				</td>
 				<td>
+						 <%=abogadoContrario%>
 						
-						<%=representante%>
+				</td>
+				<td>
+				  	 <%=procurador%>
 				</td>
 			</siga:FilaConIconos>
 				<% 		recordNumber++; %>
@@ -172,10 +192,7 @@ function accionNuevo()
 	   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
 	 		<br>
 	<% } %>
-	</siga:TablaCabecerasFijas>
- 
-	
-	
+	</siga:TablaCabecerasFijas> 
 	
 	
 	

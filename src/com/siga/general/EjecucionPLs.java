@@ -4,6 +4,7 @@
 package com.siga.general;
 
 import java.util.Hashtable;
+import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsMngBBDD;
@@ -584,33 +585,6 @@ public class EjecucionPLs {
 	    return resultado;
 	} //ejecutarPL_OrdenaColegiadosTurno()
 	
-	public static String[] ejecutarPLExportarTurnosOficio(String idInstitucion, String idFacturacion,String idPago, String idPersona, String pathFichero, String fichero, String cabeceras, String idioma) throws ClsExceptions{
-		Object[] param_in; //Parametros de entrada del PL
-		String resultado[] = null; //Parametros de salida del PL
-	
-		try {
-			resultado = new String[2];
-			param_in = new Object[8];
-			param_in[0] = idInstitucion;
-			param_in[1] = idFacturacion;
-			param_in[2] = (idPago == null?"":idPago); 		// IDPAGO
-			param_in[3] = (idPersona == null?"":idPersona); // IDPERSONA
-			param_in[4] = pathFichero;
-			param_in[5] = fichero;
-			param_in[6] = cabeceras;
-			param_in[7] = idioma;
-		        
-			//Ejecucion del PL
-		    resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION_SJCS.PROC_FCS_EXPORTAR_TURNOS_OFI (?,?,?,?,?,?,?,?,?,?)}", 2, param_in);
-			
-		} catch (Exception e){
-			resultado[0] = "1"; //ERROR P_CODRETORNO
-	    	resultado[1] = "ERROR"; //ERROR P_DATOSERROR        	
-		}
-	    
-	    //Resultado del PL        
-	    return resultado;
-	}
 	
 	public static String[] ejecutarPLExportarGuardias(String idPersona, String idInstitucion, String idFacturacion, 
 			String idPago, String pathFicheros, String nombreFichero, String cabeceras, String idioma) throws ClsExceptions{
@@ -979,6 +953,40 @@ public static String[] ejecutarF_SIGA_COMPROBAR_ANTICIPAR (
 			miHash = fila.getRow();            
 			resultado = (String)miHash.get("FACTURACIONES");            
 		}
+	
+		return resultado;
+	}
+	
+	public static String ejecutarFuncion (Hashtable<Integer,Object> htCodigos, 
+			String funcion) throws ClsExceptions{
+		RowsContainer rc  = new RowsContainer(); 
+		
+		String resultado = null;
+	
+		StringBuffer sql = new StringBuffer("SELECT ");
+		sql.append(funcion);
+		sql.append("(");
+		for(Integer codigo:htCodigos.keySet()){
+			sql.append(":");
+			sql.append(codigo);
+			sql.append(",");
+			
+		}
+		//QUITAMOS LA ULTIMA ,
+		sql = new StringBuffer(sql.substring(0,sql.length()-1));
+		sql.append(")");
+		sql.append(" AS RESULTADO FROM DUAL");
+		
+	
+		
+			if (rc.queryBind(sql.toString(),htCodigos)) {
+				Row fila = (Row) rc.get(0);
+				Hashtable miHash = fila.getRow();            
+				resultado = (String)miHash.get("RESULTADO");            
+			}
+		
+		
+		
 	
 		return resultado;
 	}

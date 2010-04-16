@@ -260,7 +260,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 
 			request.setAttribute("nombreFichero", sNombreFichero);
 			request.setAttribute("rutaFichero", sRutaTemporal+sNombreFichero);
-			request.setAttribute("borrarFichero", "true");
+//			request.setAttribute("borrarFichero", "true");
 		}catch(SIGAException e){	
 			throw e;
 		} catch (Exception e) {

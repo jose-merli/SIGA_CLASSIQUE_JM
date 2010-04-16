@@ -1,4 +1,4 @@
-<!-- listadoUnidadFamiliarEJ2G2-->
+<!-- listadoUnidadFamiliarEJG-->
 
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-15"%>
@@ -79,7 +79,7 @@
 		   borde="2"
 		   clase="tableTitle"		   
 		   nombreCol="<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='checkTodos()'/> ,gratuita.personaJG.literal.parentescoNormalizado,gratuita.busquedaEJG.literal.nif,gratuita.busquedaEJG.literal.nombre,gratuita.operarInteresado.literal.ingresosAnuales,gratuita.operarInteresado.literal.bienesMobiliarios,gratuita.operarInteresado.literal.bienesInmuebles,gratuita.operarInteresado.literal.otrosBienes,"
-		   tamanoCol="5,10,9,25,9,9,9,9,16"
+		   tamanoCol="5,10,9,21,7,7,7,7,28"
 		   alto="100%"
 		   ajusteBotonera="true"		
 		   mensajeBorrado="gratuita.ejg.unidadFamiliar.borrado"
@@ -125,15 +125,20 @@
 						<input type="hidden" name="oculto<%=index%>_8" value="${DefinirUnidadFamiliarEJGForm.idTipoEJG}">
 						<input type="hidden" name="oculto<%=index%>_9" value="${DefinirUnidadFamiliarEJGForm.anio}">
 						<input type="hidden" name="oculto<%=index%>_10" value="${DefinirUnidadFamiliarEJGForm.numero}">
-						<input type="hidden" name="oculto<%=index%>_11" value="${solicitante.peticionEejg.idXml}">
-						<input type="hidden" name="oculto<%=index%>_12" value="${solicitante.peticionEejg.idioma}">
-						
-						
-						
+						<input type="hidden" name="oculto<%=index%>_11" value="${solicitante.peticionEejg.idPeticion}">
 						<c:out value="${solicitante.parentesco.descripcion}"></c:out>
 					
 					</td>
-					<td ><c:out value="${solicitante.personaJG.nif}"></c:out></td>
+					<td>
+						<c:choose>
+							<c:when test="${solicitante.personaJG.nif!=''}">
+								<c:out value="${solicitante.personaJG.nif}"></c:out>
+							</c:when>
+							<c:otherwise>
+							  &nbsp;
+							</c:otherwise>
+						</c:choose>
+					</td>
 					<td><c:out value="${solicitante.personaJG.nombre}"></c:out>&nbsp;
 					<c:out value="${solicitante.personaJG.apellido1}"></c:out>&nbsp;
 					<c:out value="${solicitante.personaJG.apellido2}"></c:out>
@@ -201,14 +206,21 @@
 						<input type="hidden" name="oculto<%=index%>_8" value="${DefinirUnidadFamiliarEJGForm.idTipoEJG}">
 						<input type="hidden" name="oculto<%=index%>_9" value="${DefinirUnidadFamiliarEJGForm.anio}">
 						<input type="hidden" name="oculto<%=index%>_10" value="${DefinirUnidadFamiliarEJGForm.numero}">
-						<input type="hidden" name="oculto<%=index%>_11" value="${solicitante.peticionEejg.idXml}">
-						<input type="hidden" name="oculto<%=index%>_12" value="${solicitante.peticionEejg.idioma}">
+						<c:choose>
+							<c:when test="${solicitante.peticionEejg.idPeticion!=null}">
+							<input type="hidden" name="oculto<%=index%>_11" value="${solicitante.peticionEejg.idPeticion}">
+							</c:when>
+							<c:otherwise>
+							  <input type="hidden" name="oculto<%=index%>_11" value=" ">
+							</c:otherwise>
+						</c:choose>
+						
 						
 						
 						<c:out value="${solicitante.parentesco.descripcion}"></c:out>
 					
 					</td>
-					<td><c:out value="${solicitante.personaJG.nif}"></c:out></td>
+					<td><c:out value="${solicitante.personaJG.nif}"></c:out>&nbsp;</td>
 					<td><c:out value="${solicitante.personaJG.nombre}"></c:out>&nbsp;
 					<c:out value="${solicitante.personaJG.apellido1}"></c:out>&nbsp;
 					<c:out value="${solicitante.personaJG.apellido2}"></c:out>
@@ -372,15 +384,15 @@
 		var idTipoEJG = document.getElementById( 'oculto' + fila + '_8');
 		var anio = document.getElementById( 'oculto' + fila + '_9');
 		var numero = document.getElementById( 'oculto' + fila + '_10');
-		var idxml = document.getElementById( 'oculto' + fila + '_11');
-		var idioma = document.getElementById( 'oculto' + fila + '_12');
+		var idPeticion = document.getElementById( 'oculto' + fila + '_11');
+		
 		datos = idPersonaJG.value + 	','
 	   			+idInstitucionEJG.value + 	','
 	   			+idTipoEJG.value + 	','
 	   			+anio.value + 	','
 	   			+numero.value + ','
-				+idxml.value + ','
-				+idioma.value + 	'#';
+				+idPeticion.value + ''
+				'#';
 		
 	   	document.DefinirUnidadFamiliarEJGForm.tablaDatosDinamicosD.value = datos;
 	   	document.DefinirUnidadFamiliarEJGForm.modo.value = "descargaEejg";
@@ -398,15 +410,15 @@
 				var idTipoEJG = document.getElementById( 'oculto' + (i+1) + '_8');
 				var anio = document.getElementById( 'oculto' + (i+1) + '_9');
 				var numero = document.getElementById( 'oculto' + (i+1) + '_10');
-				var idxml = document.getElementById( 'oculto' + (i+1) + '_11');
-				var idioma = document.getElementById( 'oculto' + (i+1) + '_12');
+				
+				var idPeticion = document.getElementById( 'oculto' + (i+1) + '_11');
 				datos = datos + idPersonaJG.value + 	','
 	   			+idInstitucionEJG.value + 	','
 	   			+idTipoEJG.value + 	','
 	   			+anio.value + 	','
 	   			+numero.value + ','
-	   			+idxml.value + ','
-				+idioma.value + 	'#';
+	   			
+				+idPeticion.value + 	'#';
 	 		   
  		   	}
 			
@@ -440,6 +452,30 @@
    	function esperaEejg(){
    		alert("<siga:Idioma key="general.boton.esperaEejg"/>");
    	}
+   	function errorEejg(){
+   		alert("<siga:Idioma key="general.boton.errorEejg"/>");
+   	}
+   	
+   	function esperaInfoEejg(fila){
+   		var confirmar = confirm("<siga:Idioma key='gratuita.eejg.message.avisoEsperaInfo'/>");
+   		if(confirmar){
+   			return descargarEejg(fila);
+   		}
+   		
+   	}
+   	function avisoEsperaInfoEejg(){
+   		
+   		alert("<siga:Idioma key="general.boton.esperaInfoEejg"/>");
+   		
+   		
+   	}
+   	
+   	function esperaAdministracionesEejg(){
+   		
+   		alert("<siga:Idioma key="general.boton.esperaAdministracionesEejg"/>");
+   		
+   		
+   	}
 	
 	function refrescarLocal()
 	{	
@@ -450,6 +486,7 @@
 		document.DefinirUnidadFamiliarEJGForm.submit();
 	
    	}
+   	
 	
 	</script>
 </html>

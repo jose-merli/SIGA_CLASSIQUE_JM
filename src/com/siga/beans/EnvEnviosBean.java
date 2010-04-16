@@ -37,6 +37,8 @@ public class EnvEnviosBean extends MasterBean {
 	static public final String C_IDTIPOENVIOS = "IDTIPOENVIOS";
 	static public final String C_CONSULTA = "CONSULTA";
 	
+	static public final String SEQ_ENV_ENVIOS = "SEQ_ENV_ENVIOS";
+	
 	static public final String T_NOMBRETABLA = "ENV_ENVIOS";	
 
     public String getDescripcion() {

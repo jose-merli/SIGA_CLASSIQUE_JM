@@ -134,18 +134,21 @@
 	<siga:ConjCampos leyenda="gratuita.busquedaSOJ.literal.expedientesSOJ">
 	<table  align="center" width="100%" border="0">  		
 	<tr>	
-	<td class="labelText"  width="200" >
+	<td class="labelText"  width="100" >
 		<siga:Idioma key="gratuita.busquedaSOJ.literal.anyo"/> / <siga:Idioma key="gratuita.busquedaSOJ.literal.codigo"/>	
 	</td>
-	<td class="labelText" colspan="2">		
+	<td colspan="3">		
 		<html:text name="DefinirSOJForm" property="anio" size="4" maxlength="4" styleClass="box"  value="<%=anio%>"></html:text> / <html:text name="DefinirSOJForm" property="numSOJ" size="5" maxlength="10" styleClass="box"  value="<%=numSOJ%>"></html:text>
 	</td>
-	<td class="labelText" colspan="6" style="text-align: right">
+	<td class="labelText" width="160">		
 		<siga:Idioma key="gratuita.busquedaSOJ.literal.fechaApertura"/>&nbsp;<siga:Idioma key="gratuita.busquedaSOJ.literal.desde"/>
-		<html:text name="DefinirSOJForm" property="fechaAperturaSOJDesde" size="10" maxlength="10" styleClass="box"  value="<%=fechaAperturaDesde%>" readOnly="true"></html:text>
+	</td>	
+		
+	<td class="labelText" colspan="3" style="text-align: left">
+		<siga:Fecha nombreCampo="fechaAperturaSOJDesde" valorInicial="<%=fechaAperturaDesde%>"></siga:Fecha>
 		<a onClick="return showCalendarGeneral(fechaAperturaSOJDesde);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
 		<siga:Idioma key="gratuita.busquedaSOJ.literal.hasta"/>
-		<html:text name="DefinirSOJForm" property="fechaAperturaSOJHasta" size="10" maxlength="10" styleClass="box"  value="<%=fechaAperturaHasta%>" readOnly="true"></html:text>
+		<siga:Fecha nombreCampo="fechaAperturaSOJHasta" valorInicial="<%=fechaAperturaHasta%>"></siga:Fecha>
 		<a onClick="return showCalendarGeneral(fechaAperturaSOJHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
 	</td>
 	</tr>
@@ -153,7 +156,7 @@
 	<td class="labelText">	
 		<siga:Idioma key="gratuita.busquedaSOJ.literal.estadoSOJ"/>
 	</td>
-	<td class="labelText">		
+	<td>		
 		<select name="estadoSOJ" class="box">
 			<option value=""></option>
 			<option value="A" <%if (estadoSOJ.startsWith("A")) {%>selected<%}%>><siga:Idioma key="gratuita.SOJ.estado.abierto"/></option>
@@ -161,33 +164,33 @@
 			<option value="C" <%if (estadoSOJ.startsWith("C")) {%>selected<%}%>><siga:Idioma key="gratuita.SOJ.estado.cerrado"/></option>
 		</select>
 	</td>
-	<td class="labelText">	
+	<td class="labelText" width="80">	
 		<siga:Idioma key="gratuita.busquedaSOJ.literal.tipoSOJ"/>
 	</td>	
-	<td class="labelText">	
+	<td>	
 		<siga:ComboBD nombre="idTipoSOJ" tipo="tipoSOJ" clase="boxCombo" obligatorio="false" elementoSel="<%=idTipoSOJ%>"/>
 	</td>
-	<td class="labelText"  width="300">	
+	<td class="labelText">	
 		<siga:Idioma key="gratuita.busquedaSOJ.literal.SOJColegio"/>
 	</td>
-	<td class="labelText" colspan="4">
+	<td class="labelText" colspan="3">
 		<siga:ComboBD nombre="idTipoSOJColegio" tipo="tipoSOJColegio" clase="boxCombo" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=idTipoSOJColegio%>"/>
 	</td>	
 	</tr>
 	
 	<tr>
-	<td class="labelText">
-		<siga:Idioma key="gratuita.busquedaSOJ.literal.turno"/>
-	</td>
-	<td class="labelText" colspan="3">
-		<siga:ComboBD nombre = "idTurno" tipo="turnos"  ancho="350"  clase="boxCombo" obligatorio="false" accion="Hijo:idGuardia" parametro="<%=dato%>" elementoSel="<%=idTurno%>"/>
-	</td>
-	<td class="labelText" width="300">	
-		<siga:Idioma key="gratuita.busquedaSOJ.literal.guardia"/>
-	</td>
-	<td class="labelText" colspan="5">
-		<siga:ComboBD nombre = "idGuardia" tipo="guardias"  ancho="250" clase="boxCombo" obligatorio="false" hijo="t" elementoSel="<%=idGuardia%>"/>
-	</td>	
+		<td class="labelText">
+			<siga:Idioma key="gratuita.busquedaSOJ.literal.turno"/>
+		</td>
+		<td colspan="3">
+			<siga:ComboBD nombre = "idTurno" tipo="turnos"  ancho="350"  clase="boxCombo" obligatorio="false" accion="Hijo:idGuardia" parametro="<%=dato%>" elementoSel="<%=idTurno%>"/>
+		</td>
+		<td class="labelText">	
+			<siga:Idioma key="gratuita.busquedaSOJ.literal.guardia"/>
+		</td>
+		<td class="labelText" colspan="3">
+			<siga:ComboBD nombre = "idGuardia" tipo="guardias"  ancho="250" clase="boxCombo" obligatorio="false" hijo="t" elementoSel="<%=idGuardia%>"/>
+		</td>	
 	
 	
 	</tr>

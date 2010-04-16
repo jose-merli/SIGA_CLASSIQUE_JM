@@ -1188,16 +1188,11 @@ public class InformesGenericosAction extends MasterAction {
 				for (Iterator iter=datosconsulta.iterator(); iter.hasNext(); ){
 					Hashtable hash = (Hashtable)iter.next();
 					String valor = UtilidadesNumero.formato((String)hash.get("VALOR_NUM"));
-					if (valor.equals("0,00")){
-						iter.remove();
-					}
-					else{
-						hash.put("VALOR", valor);
-						hash.put("VALOR_EXTRAJUD", UtilidadesNumero.formato((String)hash.get("VALOR_NUM_EXTRAJUD")));
-						hash.put("VALOR_NORMALYEXTRAJUD", UtilidadesNumero.formato (UtilidadesNumero.redondea (
-								Double.parseDouble((String)hash.get("VALOR_NUM")) + 
-								Double.parseDouble((String)hash.get("VALOR_NUM_EXTRAJUD")), 2)));
-					}
+					hash.put("VALOR", valor);
+					hash.put("VALOR_EXTRAJUD", UtilidadesNumero.formato((String)hash.get("VALOR_NUM_EXTRAJUD")));
+					hash.put("VALOR_NORMALYEXTRAJUD", UtilidadesNumero.formato (UtilidadesNumero.redondea (
+							Double.parseDouble((String)hash.get("VALOR_NUM")) + 
+							Double.parseDouble((String)hash.get("VALOR_NUM_EXTRAJUD")), 2)));
 				}
 			}
 

@@ -328,6 +328,7 @@ public class UtilidadesString {
 	    sSalida = sCadena.replaceAll("\t", " ");
 	    sSalida = sSalida.replaceAll("\n\r", " ");
 	    sSalida = sSalida.replaceAll("\n", " ");
+	    sSalida = sSalida.replaceAll("\r", " ");
 	    return sSalida;
 	  }
 

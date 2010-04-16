@@ -18,10 +18,16 @@ public class ScsContrariosEJGBean extends MasterBean{
 	private String	observaciones;
 	private Long	idProcurador;
 	private Integer	idInstitucionProcurador;	
+	private String	nombreRepresentanteEjg;
+	private String  idRepresentanteEjg;
+	private String  idAbogadoContrarioEjg;
+	private String  nombreAbogadoContrarioEjg;
 			
 	
 	/* Nombre de Tabla*/
 	
+	
+
 	static public String T_NOMBRETABLA = "SCS_CONTRARIOSEJG";
 	
 	
@@ -35,6 +41,10 @@ public class ScsContrariosEJGBean extends MasterBean{
 	static public final String	C_OBSERVACIONES		=				"OBSERVACIONES";
 	static public final String 	C_IDINSTITUCION_PROCU = 			"IDINSTITUCION_PROCU";
 	static public final String	C_IDPROCURADOR		=				"IDPROCURADOR";
+	static public final String	C_IDABOGADOCONTRARIOEJG	 =	    	"IDABOGADOCONTRARIOEJG";
+	static public final String	C_NOMBREABOGADOCONTRARIOEJG	 =	    "NOMBREABOGADOCONTRARIOEJG";
+	static public final String	C_IDREPRESENTANTEEJG =	    	    "IDREPRESENTANTEEJG";
+	static public final String	C_NOMBREREPRESENTANTEEJG=	        "NOMBREREPRESENTANTEEJG";
 
 		
 	
@@ -107,6 +117,47 @@ public class ScsContrariosEJGBean extends MasterBean{
 		this.idInstitucionProcurador = valor;
 	}
 	
+	/**
+	 * Almacena en el Bean del Idrepresentante de un EJG
+	 * 
+	 * @param valor IdRepresentante 
+	 * @return void 
+	 */
+		
+	public void setIdRepresentanteEjg(String idRepresentanteEjg) {
+		this.idRepresentanteEjg = idRepresentanteEjg;
+	}
+	/**
+	 * Almacena en el Bean del idAbogadocontrario de un EJG
+	 * 
+	 * @param valor IdAbogadoContrarioEjg
+	 * @return void 
+	 */
+		
+	public void setIdAbogadoContrarioEjg(String idAbogadoContrarioEjg) {
+		this.idAbogadoContrarioEjg = idAbogadoContrarioEjg;
+	}
+	/**
+	 * Almacena en el Bean del NombreAbogadoContrarioEjg de un EJG
+	 * 
+	 * @param valor NombreAbogadoContrarioEjg
+	 * @return void 
+	 */
+	public void setNombreAbogadoContrarioEjg(String nombreAbogadoContrarioEjg) {
+		this.nombreAbogadoContrarioEjg = nombreAbogadoContrarioEjg;
+	}
+	
+	/**
+	 * Almacena en el Bean del NombreRepresentante de un EJG
+	 * 
+	 * @param valor NombreRepresentanteEJG
+	 * @return void 
+	 */
+	
+	public void setNombreRepresentanteEjg(String nombreRepresentanteEjg) {
+		this.nombreRepresentanteEjg = nombreRepresentanteEjg;
+	}
+	
 	/*Metodos GET*/
 	
 
@@ -160,6 +211,44 @@ public class ScsContrariosEJGBean extends MasterBean{
 	 */
 	public Integer getIdInstitucionProcurador() { return idInstitucionProcurador; }
 
+	
+	
+	/**
+	 * Recupera del Bean el nombre del representante EJG 
+	 * @return Integer
+	 */
+	public String getNombreRepresentanteEjg() {
+		return nombreRepresentanteEjg;
+	}	
+
+	/**
+	 * Recupera del Bean el id del representante de un EJG 
+	 * @return Integer
+	 */
+	public String getIdRepresentanteEjg() {
+		return idRepresentanteEjg;
+	}	
+	
+	
+	/**
+	 * Recupera del Bean el abogado contrario de un EJG 
+	 * @return Integer
+	 */
+
+	public String getIdAbogadoContrarioEjg() {
+		return idAbogadoContrarioEjg;
+	}
+	
+	
+	/**
+	 * Recupera del Bean el nombre del abogado contrario de un EJG 
+	 * @return Integer
+	 */
+
+	
+	public String getNombreAbogadoContrarioEjg() {
+		return nombreAbogadoContrarioEjg;
+	}
 	
 	
 
