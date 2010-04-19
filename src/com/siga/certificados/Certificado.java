@@ -20,10 +20,13 @@ public class Certificado
 	public static final String CERT_TIPO_CURSO 		= "NOMBRECURSO"; 
 	public static final String CERT_TIPO_TURNO 		= "NOMBRE_TURNO"; 
 	public static final String CERT_TIPO_PASANTIA 	= "LETRADOPASANTIAS"; 
-	public static final String CERT_TIPO_DESPACHO1 	= "DOMICILIO_DESPACHO";
-	public static final String CERT_TIPO_DESPACHO2 	= "DIRECCION_DESPACHO";
+	public static final String CERT_TIPO_DESPACHO1 	= "HISTORICO_DESPACHOS";
+	public static final String CERT_TIPO_DESPACHO2 	= "HISTORICO_DESPACHOS";	
 	public static final String CERT_TIPO_BANCO	 	= "CUENTA";	
 	public static final String CERT_TIPO_DIRECCION	= "HISTORICO_DIRECCIONES";
+	public static final String CERT_TIPO_COMPONENTES= "COMPONENTES";
+	public static final String INI= "INI_";
+
 	
 	
     public static void generarCertificadoPDF(String idTipoProducto,
@@ -95,7 +98,8 @@ public class Certificado
 								  Certificado.CERT_TIPO_DESPACHO1,
 								  Certificado.CERT_TIPO_DESPACHO2,
 								  Certificado.CERT_TIPO_BANCO,
-								  Certificado.CERT_TIPO_DIRECCION};	
+								  Certificado.CERT_TIPO_DIRECCION,
+								  Certificado.CERT_TIPO_COMPONENTES};	
 			//Leo el fichero y lo paso a un string
 			//Reader rArchivo = new FileReader(this.archivo);
 			BufferedReader rArchivo = null;
@@ -128,7 +132,7 @@ public class Certificado
 	        String sArchivo = sb.toString();
 	        
 	        for (int i = 0; i < etiquetas.length; i++) {
-		        if (sArchivo.indexOf (etiquetas[i]) >= 0) {
+		        if (sArchivo.indexOf (Certificado.INI+etiquetas[i]) >= 0) {
 		        	return etiquetas[i];
 		        }
 	        }
