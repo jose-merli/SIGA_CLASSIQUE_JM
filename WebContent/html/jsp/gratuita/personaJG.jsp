@@ -370,6 +370,7 @@
 					document.forms[0].modo.value="editar";
 				}
  			}
+			 comprobarTipoIdent();
 		 }	
 		function recargarComboHijo() {
 			var acceso = poblacionFrame.document.getElementsByTagName("select");
@@ -389,17 +390,7 @@
 		}				
 
 		
-		function obtenerNif(){
-			if((document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")&&(document.forms[0].NIdentificacion.value!="")) {
-				document.forms[0].NIdentificacion.value = formateaNIFLocal(document.forms[0].NIdentificacion.value);
-			} else if((document.forms[0].tipoId.value == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>")){
-				document.forms[0].NIdentificacion.value = formateaNIELocal(document.forms[0].NIdentificacion.value);
-   			}
-			//LMSP En lugar de abrir la ventana modal, se manda al frame oculto, y éste se encarga de todo :)
-			if(generarLetra()){
-				rellenarFormulario();
-		  	}
-		}
+
 
 		function rellenarFormulario(){
 			document.forms[0].modo.value="buscarNIF";
@@ -407,58 +398,22 @@
 			document.forms[0].submit();
 		}
 
+		function obtenerNif(){
+			PersonaJGForm.NIdentificacion.value=PersonaJGForm.NIdentificacion.value.toUpperCase();
+			//LMSP En lugar de abrir la ventana modal, se manda al frame oculto, y éste se encarga de todo :)
+			if(generarLetra()){
+				rellenarFormulario();
+				comprobarTipoIdent();
+		  	}
+		}
+		
 		function formateaNIFLocal(valorX) {
-    		var longitud=9;
-    		var salida='';
-    		if(isNumero(valorX)==true)
-    			longitud=8;
-    		if(valorX.length==8 && isNumero(valorX)==true)
-    			return valorX;
-			if (valorX==null) { // El nif está vacío
-				salida = relleno("0",longitud);  
-			} else {
-				if (valorX.length==0) { // El nif tiene longitud 0
-					salida = relleno("0",longitud);
-				}else{
-				   	if (valorX.length > longitud) { // El nif es mas largo de lo debido
-						//alert('<siga:Idioma key="messages.nif.comprobacion.digitos.error"/>');
-						return valorX.substr(0,8);; // Devolvemos el valor original
-					}else{
-				     	if (valorX.length < longitud) {// El nif es mas corto asi que rellenamos con 0 por la izq
-					   			salida = relleno('0',longitud - valorX.length) + valorX; 
-						 	}else{ // El nif esta bien de longitud
-					   			salida = valorX;
-					 	}
-				   	}
-				}   
-			}
-	  		return salida; 
+			return valorX.toUpperCase(); 
 		}
 
 		
 		function formateaNIELocal(valorX) {
-    		var longitud=8;
-    		var dnie = valorX.substring(1,valorX.length-1);
-    		var primeraCifra=valorX.substring(0,1);
-    		var ultimaCifra =valorX.substring(valorX.length-1, valorX.length);
-    		var salida='';
-    		if(isNumero(primeraCifra)){
-        		 dnie = primeraCifra + dnie;
-        		 primeraCifra='X';
-    		}
-    		if(isNumero(ultimaCifra)){
-        		 dnie = dnie + ultimaCifra;
-        		 ultimaCifra ='';
-    		} 
-    		if(dnie.length<=7){
-        		salida = primeraCifra + relleno('0',longitud - dnie.length-1) + dnie + ultimaCifra;
-    		}else if (dnie.length>7){
-        		salida = primeraCifra + dnie.substring(0,7) + ultimaCifra;
-    		} else{
-        		salida = valorX;
-    		}// Ya tenemos el numero completo de 7 cifras o el original otra vez
-    		
-			return salida; 
+			return valorX.toUpperCase(); 
 		}
 
 	
@@ -471,83 +426,37 @@
 			return false;		
 		}
 		if( (tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")){
-			if(isNumero(numId)==true){
-				if(numId.length==8){
+			if(numId.length==8){
+				if(isNumero(numId)==true){
 				 	numero = numId;
 				 	numero = numero % 23;
 				 	letra=letra.substring(numero,numero+1);
 				 	PersonaJGForm.NIdentificacion.value =numId+letra;
-						 				 		
 				}else{
-					
-				 	//numero = numId.substr(0,numId.length-1);
-				 	numero = numId.substr(0,8);
-				 	numero = numero % 23;
-				 	let = numId.substr(numId.length-1,1);
-				 	letra=letra.substring(numero,numero+1);
-	 			 	//if (letra.tolowercase()!=let.tolowercase())
-			 		//alert('DNI Erroneo. Ponemos el correcto');
-					PersonaJGForm.NIdentificacion.value = numId.substring(0,8)+letra;
-				 } 	
+					return false;
+				}
 			}else{
-				rc = validarNIFCIF(tipoIdentificacion, numId);
+				rc = validaNumeroIdentificacion(tipoIdentificacion, numId);
 				if(rc==false){
 				    return rc;
 				}	
 			}
 		} else	if((tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") ){
 			if(numId.length==8){
-				if(isNumero(numId)==true){
-					numero = numId;
-					//Buscamo la letra derecha. Aplicamos algoritmo de letra derecha
-					var numero_23 = numero % 23;
-					letra=letra.substring(numero_23,numero_23+1);
-					//Sustituimos primer numero por letra
-					primerNumero = numId.substring(0,1);
-				 	if(primerNumero==0)
-				 		primerNumero = 'X';
-				 	else if  (primerNumero==1)
-				 		primerNumero = 'Y';
-				 	else if  (primerNumero==2)
-				 		primerNumero = 'Z';
-				 	
-				 	numero = primerNumero+numId.substring(1);
-				 	
-				 	//añadimos la letra derecha
-				 	numero = numero + letra;
-				 	
+				var dnie = document.forms[0].NIdentificacion.value;
+				letIni = numId.substring(0,1);
+				num = numId.substring(1,8);
+				if(letIni.match('[X|Y|Z]') && isNumero(num)){
+					var posicion = num % 23;
+					letras='TRWAGMYFPDXBNJZSQVHLCKET';
+					var letra=letras.substring(posicion,posicion+1);
+					numero = dnie + letra;
 					PersonaJGForm.NIdentificacion.value = numero;
-					
 				}else{
-					//Miramos que solo sea letra el primer caracter. si no lo es no hacemos nada
-					if(isNumero(numId.substring(1))==false){
-					}
-					else{
-					//Sustituimos primera letra por numero para aplicar algoritmo para buscar la letra derecha
-				  		primeraLetra = numId.substring(0,1);
-				    	if(primeraLetra.toUpperCase()=='X')
-					 		primeraLetra = '0';
-					 	else if  (primeraLetra.toUpperCase()=='Y')
-					 		primeraLetra = '1';
-					 	else if  (primeraLetra.toUpperCase()=='Z')
-					 		primeraLetra = '2';
-				 		else{
-				 			//Si no es X o Y o Z no hacemos nada 
-				 			return true;
-				 		}
-				 	//Sistituimos la letra por el numero
-				 	numero = primeraLetra+numId.substring(1);
-				 	//Aplicamos algoritmo de letra derecha
-				 	var numero_23 = numero % 23;
-					letra=letra.substring(numero_23,numero_23+1);
-					
-					//Le ponemos la letra derecha al alfanumerico inicial					
-					numero = numId +letra;
-					PersonaJGForm.NIdentificacion.value = numero;
-					}
+					return false;
 				}	
 			}else{
-				rc = validarNIFCIF(tipoIdentificacion, numId);
+				rc = validaNumeroIdentificacion(tipoIdentificacion, numId);
 				if(rc==undefined){
 					return rc;
 				}else if(rc==false){
@@ -562,49 +471,53 @@
 		return true;
 	}
 
-	function validaNumeroIdentificacion (){ 
-		if (document.forms[0].NIdentificacion.value!=""){
-				document.forms[0].NIdentificacion.value = (document.forms[0].NIdentificacion.value).toUpperCase();
-				var a = (document.forms[0].NIdentificacion.value);
-				if((document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")&&(document.forms[0].NIdentificacion.value!="")) {
-					var sNIF = document.forms[0].NIdentificacion.value;
-					var aux1=formateaNIFLocal(sNIF); 
-					if(aux1!=false){
-						document.forms[0].NIdentificacion.value = aux1;
-					}else{
-						return;
-					}
-					if (!isNaN(document.forms[0].NIdentificacion.value)){
-					alert('<siga:Idioma key="messages.nif.comprobacion.digitos.error"/>');
-					return false;
-					}
-									
-			    } else if((document.forms[0].tipoId.value == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>")){
-			    	var sNIE = document.forms[0].NIdentificacion.value;
-		   	   		var aux2=formateaNIELocal(sNIE);
-		   	   		if(aux2!=false){
-		   	   			document.forms[0].NIdentificacion.value = aux2;
-					}else{
-						return false;
-					}
-										
-				}if(!generarLetra()){
-				  return false;
-				}else{
-				
-				 return true;
+	function validaNumeroIdentificacion (){
+		var errorNIE = false;
+		var errorNIF = false;
+		var valido = true;
+
+		if(document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>"){
+			var numero = document.forms[0].NIdentificacion.value;
+			if(numero.length==9){
+				letIn = numero.substring(8,9);
+				num = numero.substring(0,8);
+				var posicion = num % 23;
+				letras='TRWAGMYFPDXBNJZSQVHLCKET';
+				var letra=letras.substring(posicion,posicion+1);
+				if (letra!=letIn) {
+					errorNIF=true;
 				}
-			 }else{
-				 if((document.forms[0].tipoId.value == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") || 
-					(document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")){
-					alert("<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nIdentificacion'/>"); 
-					 return false;
-				 }else{
-			   		return true;
-				 }
-			 }	 
-			
+			}else{
+				errorNIF=true;
 			}
+		}
+		if(document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>"){
+			var dnie = document.forms[0].NIdentificacion.value;
+			if(dnie.length==9){
+				letIni = dnie.substring(0,1);
+				num = dnie.substring(1,8);
+				letFin = dnie.substring(8,9);
+				var posicion = num % 23;
+				letras='TRWAGMYFPDXBNJZSQVHLCKET';
+				var letra=letras.substring(posicion,posicion+1);
+				if (!letIni.match('[X|Y|Z]')||letra!=letFin) {
+					errorNIE=true;
+				}
+			}else{
+				errorNIE=true;
+			}
+		}
+		if (errorNIF){
+			valido = false;
+			alert("<siga:Idioma key="messages.nif.comprobacion.digitos.error"/>");
+		}
+		if (errorNIE){
+			valido = false;
+			alert("<siga:Idioma key="messages.nie.comprobacion.digitos.error"/>");
+		}
+		return valido;
+	}
+		
 
 			function validaImportes(){
 				var ingAnuales = document.forms[0].importeIngresosAnuales.value;
@@ -2093,7 +2006,7 @@ function limpiarPersonaContrario() {
 			var tipoId = document.forms[0].tipoId.value;
 			var msg1="<siga:Idioma key="gratuita.personaJG.messages.alertTipo1"/>";
 			var msg2="<siga:Idioma key="gratuita.personaJG.messages.alertTipo2"/>";
-												
+
 			if (!validaNumeroIdentificacion()) {
 				fin();
 				return false;
@@ -2574,7 +2487,6 @@ function limpiarPersonaContrario() {
 					document.forms[0].NIdentificacion.value="";
 					
 			}
-			
 			if (!validaNumeroIdentificacion()) {
 				fin();
 				return false;
