@@ -53,8 +53,8 @@
 	<script language="JavaScript">
 		function cambiar(){
 		
-			var oper_aux= operador.value.split(",");
-			if ((oper_aux[0]==<%=ClsConstants.ESVACIO_ALFANUMERICO%>) || (oper_aux[0]==<%=ClsConstants.ESVACIO_NUMERICO%>) ){;
+			var oper_aux= operador.value.split(",");			
+			if ((oper_aux[0]==<%=ClsConstants.ESVACIO_ALFANUMERICO%>) || (oper_aux[0]==<%=ClsConstants.ESVACIO_NUMERICO%>)||(oper_aux[0]==<%=ClsConstants.ESVACIO_FECHA%>) ){;
 				if (document.getElementById('caja')){
 					document.getElementById('comb').style.visibility='visible';
 					document.getElementById('caja').style.visibility='hidden';
@@ -62,15 +62,13 @@
 					pasarvalor();
 					
 				}
-				if (document.getElementById('cmbvalor') ){
-				
+				if (document.getElementById('cmbvalor') ){				
 					document.getElementById('comb').style.visibility='visible';
 					document.getElementById('cmbvalor').style.visibility='hidden';
 					document.getElementById('cmbvalor').style.width='0px';
-					pasarvalorcombo();
-					
+					pasarvalorcombo();					
 				}
-				
+
 			}else{
 				
 				if (document.getElementById('caja')){
@@ -87,6 +85,9 @@
 					document.getElementById('cmbvalor').style.width='220px';
 				}
 			}
+
+
+        			
 			
 		}
 		
@@ -212,9 +213,8 @@
 					</select>	
 				<%}else{%>		
 				<%if (fecha){%>
-					<input type="text" name="valor" class="box" readonly="true" size="10"></input><a href='javascript://'onClick="return showCalendarGeneral(valor);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
-				<%}else{%>
-					
+				<input type="text" name="valor"  class="box" readonly="true" size="10"></input><a href='javascript://'onClick="return showCalendarGeneral(valor);"><img id="imagen" src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>										
+				<%}else{%>					
 					<input type="text" name="valor" id="caja" class="box" width="300px"></input>
 					<select name = "valor1" id="comb"  class = "boxCombo"  onchange="pasarvalor();">
 						<option value="1">SI</option>
