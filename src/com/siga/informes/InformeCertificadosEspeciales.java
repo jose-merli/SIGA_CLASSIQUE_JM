@@ -113,6 +113,9 @@ public class InformeCertificadosEspeciales extends MasterReport
 			else if (tipoCert!=null && (tipoCert.equals(Certificado.CERT_TIPO_DIRECCION))) {
 	        	vIteracion = "HISTORICO_DIRECCIONES";
 	        }
+				else if (tipoCert!=null && (tipoCert.equals(Certificado.CERT_TIPO_COMPONENTES))) {
+	        	vIteracion = "COMPONENTES";
+	        }
 
 			plantillaFO = this.reemplazaRegistros(plantillaFO, vDatosFormato, null,vIteracion);
 		}	
@@ -178,6 +181,17 @@ public class InformeCertificadosEspeciales extends MasterReport
 		UtilidadesHash.set(hDatosFijos, "TELEFONO_DESPACHO", UtilidadesHash.getString(registro,"TELEFONO_DESPACHO"));
 		UtilidadesHash.set(hDatosFijos, "MOVIL_DESPACHO", UtilidadesHash.getString(registro,"MOVIL_DESPACHO"));
 		UtilidadesHash.set(hDatosFijos, "FAX_DESPACHO", UtilidadesHash.getString(registro,"FAX_DESPACHO"));
+		UtilidadesHash.set(hDatosFijos, "NUMEROREGISTRO", UtilidadesHash.getString(registro,"NUMEROREGISTRO"));
+		UtilidadesHash.set(hDatosFijos, "TIPO", UtilidadesHash.getString(registro,"TIPO"));
+		UtilidadesHash.set(hDatosFijos, "FECHACONSTITUCION", UtilidadesHash.getString(registro,"FECHACONSTITUCION"));
+		UtilidadesHash.set(hDatosFijos, "FECHAFIN_SOCIEDAD", UtilidadesHash.getString(registro,"FECHAFIN_SOCIEDAD"));
+		UtilidadesHash.set(hDatosFijos, "RESENA_SOCIEDAD", UtilidadesHash.getString(registro,"RESENA_SOCIEDAD"));
+		UtilidadesHash.set(hDatosFijos, "OBJETOSOCIAL", UtilidadesHash.getString(registro,"OBJETOSOCIAL"));
+		UtilidadesHash.set(hDatosFijos, "NOMBRENOTARIO", UtilidadesHash.getString(registro,"NOMBRENOTARIO"));
+		UtilidadesHash.set(hDatosFijos, "APELLIDOS1_NOTARIO", UtilidadesHash.getString(registro,"APELLIDOS1_NOTARIO"));
+		UtilidadesHash.set(hDatosFijos, "APELLIDOS2_NOTARIO", UtilidadesHash.getString(registro,"APELLIDOS2_NOTARIO"));
+		UtilidadesHash.set(hDatosFijos, "NIFCIF_NOTARIO", UtilidadesHash.getString(registro,"NIFCIF_NOTARIO"));
+		UtilidadesHash.set(hDatosFijos, "TIDENTIFICACION_NOTARIO", UtilidadesHash.getString(registro,"TIDENTIFICACION_NOTARIO"));		
 		
 		
 		
@@ -255,6 +269,9 @@ public class InformeCertificadosEspeciales extends MasterReport
 	        }
 	        else if (tipoCert!=null && tipoCert.equals(Certificado.CERT_TIPO_DIRECCION)) {
 	        	sSQL = getSqlDirecciones(tipoCert);
+	        }
+	            else if (tipoCert!=null && tipoCert.equals(Certificado.CERT_TIPO_COMPONENTES)) {
+	        	sSQL = getSqlComponentes(tipoCert);
 	        }
 	        
 	        Enumeration enumHash = ht.keys();
@@ -392,7 +409,7 @@ public class InformeCertificadosEspeciales extends MasterReport
 		" cb.CUENTACONTABLE as CUENTACONTABLE_BANCO, " +
 		" (select nombre from cen_bancos where codigo = cb.CBO_CODIGO) as NOMBRE_BANCO, " +
 		" decode(cb.ABONOSJCS,'0',F_SIGA_GETRECURSO_ETIQUETA('general.no',1),F_SIGA_GETRECURSO_ETIQUETA('general.yes',1)) as SJCS_BANCO, " +
-		" decode(cb.IDPERSONA,'2040000024',F_SIGA_GETRECURSO_ETIQUETA('general.no',1),F_SIGA_GETRECURSO_ETIQUETA('general.yes',1)) as SOCIEDAD_BANCO  " +       
+		" decode(cb.IDPERSONA,@idpersona@,F_SIGA_GETRECURSO_ETIQUETA('general.no',1),F_SIGA_GETRECURSO_ETIQUETA('general.yes',1)) as SOCIEDAD_BANCO  " +       
 		getSqlFromGeneral()+",  cen_cuentasbancarias cb "+
 		getSqlWhereGeneral()+
 		" and cb.idinstitucion(+)=c.idinstitucion "+
@@ -411,6 +428,25 @@ public class InformeCertificadosEspeciales extends MasterReport
 		return sSQL;
 	}
 
+	
+	public String getSqlComponentes(String tipoCert){
+		String sSQL =getSqlCamposGeneral(tipoCert)+
+		",  cp.NUMCOLEGIADO as NUMCOLEG_COMPONENTE, " +      
+		" 	N.NIFCIF as NIFCIF_COMPONENTE, "+
+        "   N.NOMBRE AS NOMBRE_COMPONENTE, "+
+        "   N.APELLIDOS1 AS APELLIDO1_COMPONENTE, "+
+        "   N.APELLIDOS2 AS APELLIDO2_COMPONENTE "+  
+        getSqlFromGeneral()+",  CEN_COMPONENTES cp,CEN_PERSONA N  "+
+        getSqlWhereGeneral()+     
+        " and cp.CEN_CLIENTE_IDPERSONA = N.IDPERSONA  "+
+        " and cp.IDPERSONA =@idpersona@ "+
+		" and cp.IDINSTITUCION = @idinstitucion@ "+
+		" AND no.idinstitucion=cp.IDINSTITUCION "+
+        " AND no.idpersona=cp.IDPERSONA "+
+		" ORDER BY p.NIFCIF ";
+		return sSQL;
+		
+	}
 	
 	public String getSqlDirecciones(String tipoCert){
 		String sSQL = getSqlCamposGeneral(tipoCert)+", "+
@@ -452,6 +488,16 @@ public class InformeCertificadosEspeciales extends MasterReport
 	public String getSqlCamposGeneral(String tipoCert){
 		StringBuffer sql= new StringBuffer();
 		sql.append(" SELECT SYSDATE AS FECHAACTUAL, ");
+		sql.append(" p.fechanacimiento FECHACONSTITUCION, ");  
+		sql.append(" no.OBJETOSOCIAL as OBJETOSOCIAL, ");
+		sql.append(" no.RESENA as RESENA_SOCIEDAD, ");
+		sql.append(" no.fechafin as FECHAFIN_SOCIEDAD, ");		
+		sql.append(" decode(no.prefijo_numsspp,null,no.prefijo_numreg)|| decode(no.CONTADOR_NUMSSPP,null,no.CONTADOR_NUMREG) || decode(no.SUFIJO_NUMSSPP,null,no.SUFIJO_NUMREG) as NUMEROREGISTRO, ");    
+		sql.append(" (select pe.nombre from cen_persona pe where pe.idpersona= no.idpersonanotario) AS NOMBRENOTARIO, ");
+		sql.append(" (select pe.apellidos1 from cen_persona pe where pe.idpersona= no.idpersonanotario) AS APELLIDOS1_NOTARIO, ");
+		sql.append(" (select pe.apellidos2 from cen_persona pe where pe.idpersona= no.idpersonanotario) AS APELLIDOS2_NOTARIO, ");
+		sql.append(" (select pe.nifcif from cen_persona pe where pe.idpersona= no.idpersonanotario) AS NIFCIF_NOTARIO, ");
+		sql.append(" (select f_siga_getrecurso(CT.DESCRIPCION, @idioma@) from cen_persona pe, CEN_TIPOIDENTIFICACION CT where pe.idpersona = no.idpersonanotario and CT.IDTIPOIDENTIFICACION = pe.Idtipoidentificacion ) AS TIDENTIFICACION_NOTARIO, ");		
 		sql.append(" f_siga_getrecurso(t.DESCRIPCION, @idioma@) as TRATAMIENTO, ");
 		sql.append(" p.nifcif AS CIFNIF, ");
 		sql.append(" p.nombre AS NOMBRE,");
@@ -530,7 +576,8 @@ public class InformeCertificadosEspeciales extends MasterReport
 		        " cen_persona               p,"+
 			      " cen_tratamiento           t,"+
 			      " cer_solicitudcertificados s,"+
-			      " cen_colegiado             l ";
+			      " cen_colegiado             l, "+
+		          " cen_nocolegiado          no ";
 				  
 	}
 	
@@ -544,7 +591,9 @@ public class InformeCertificadosEspeciales extends MasterReport
 				  "  AND l.idpersona(+) = c.idpersona"+
 				  "  AND l.idinstitucion(+) = c.idinstitucion"+
 				  "  AND (c.idinstitucion = s.idinstitucionorigen or"+
-				  "      c.idinstitucion = s.idinstitucion)";
+				  "      c.idinstitucion = s.idinstitucion)"+
+		 		  "  AND no.idinstitucion(+)=c.idinstitucion "+
+				  "  AND no.idpersona(+)=c.idpersona ";
                   
 	}
 	
