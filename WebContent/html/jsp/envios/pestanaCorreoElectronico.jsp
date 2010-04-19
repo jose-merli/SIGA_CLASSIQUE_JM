@@ -109,9 +109,9 @@
 							<siga:Idioma key="envios.plantillas.literal.asunto"/>
 						</td>
 						<td width="70%">
-							<html:text property="asunto"  styleClass="boxCombo" size="80" readonly="${!PlantillasEnviosCorreoElectronicoForm.editable}"/>
+							<html:text property="asunto"  styleClass="boxCombo" style="width:640" readonly="${!PlantillasEnviosCorreoElectronicoForm.editable}"/>
 						</td>
-						<td width="15%">
+						<td width="15%" align="left">
 			 			 <a href="javascript:abrirAyuda();"><img border=0 src="<html:rewrite page='/html/imagenes/help.gif'/>"  alt="<siga:Idioma key="general.ayuda.normativa"/>"></a>
 			 			 
 						</td>
@@ -123,7 +123,7 @@
 							<siga:Idioma key="envios.plantillas.literal.cuerpo"/>
 						</td>
 						<td colspan="2">
-							<html:textarea property="cuerpo" rows="35" readonly="${!PlantillasEnviosCorreoElectronicoForm.editable}"/>
+							<html:textarea property="cuerpo" rows="35" style="width:640" readonly="${!PlantillasEnviosCorreoElectronicoForm.editable}"/>
 						</td>
 						
 						

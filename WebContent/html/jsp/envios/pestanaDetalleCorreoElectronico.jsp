@@ -86,6 +86,19 @@
 			{
 				document.location.reload();
 			}
+			function abrirAyuda() {
+				
+		
+				var alto = 580, ancho = 800;
+					  
+		 		var posX = (screen.width - ancho) / 2;
+     		var posY = (screen.height - alto) / 2;
+     		var medidasWin = "height=" + alto + ", width=" + ancho + ", top=" + posY + ", left=" + posX;
+ 			
+				w = window.open ("/SIGA/html/jsp/envios/paginaAyuda.jsp",
+						   				   "", 
+										     "status=0, toolbar=0, location=0, menubar=0, resizable=1," + medidasWin);
+		}	
 		</script>
 
 		<%@ include file="/html/jsp/envios/includeVolver.jspf" %>
@@ -126,9 +139,9 @@
 							<siga:Idioma key="envios.plantillas.literal.asunto"/>
 						</td>
 						<td width="70%">
-							<html:text property="asunto" value="<%=sAsunto%>" styleClass="boxCombo" size="80" value="<%=sAsunto%>" readonly="<%=bReadOnly%>"/>
+							<html:text property="asunto" value="<%=sAsunto%>" styleClass="boxCombo" style="width:640" value="<%=sAsunto%>" readonly="<%=bReadOnly%>"/>
 						</td>
-						<td width="15%">
+						<td width="15%" align="left">
 			 			 <a href="javascript:abrirAyuda();"><img border=0 src="<html:rewrite page='/html/imagenes/help.gif'/>"  alt="<siga:Idioma key="general.ayuda.normativa"/>"></a>
 			 			 
 						</td>
@@ -138,7 +151,7 @@
 							<siga:Idioma key="envios.plantillas.literal.cuerpo"/>
 						</td>
 						<td>
-							<html:textarea property="cuerpo" rows="35" value="<%=sCuerpo%>" styleClass="box"  style="width:580" readonly="<%=bReadOnly%>"/>
+							<html:textarea property="cuerpo" rows="35" value="<%=sCuerpo%>" styleClass="box"  style="width:640" readonly="<%=bReadOnly%>"/>
 						</td>
 					</tr>
 				</table>
