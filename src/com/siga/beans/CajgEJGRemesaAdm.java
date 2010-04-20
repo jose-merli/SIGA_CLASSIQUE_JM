@@ -17,7 +17,7 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.general.SIGAException;
-import com.siga.ws.cat.PCAJGConstantes;
+import com.siga.ws.PCAJGConstantes;
 
 /**
  * @author angel corral

@@ -27,7 +27,6 @@ import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmLenguajesAdm;
 import com.siga.beans.BusquedaClientesFiltrosAdm;
-import com.siga.beans.CajgConfiguracionAdm;
 import com.siga.beans.ScsAsistenciasAdm;
 import com.siga.beans.ScsAsistenciasBean;
 import com.siga.beans.ScsContrariosDesignaAdm;
@@ -57,6 +56,7 @@ import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinirEJGForm;
 import com.siga.gratuita.form.DefinirMantenimientoEJGForm;
 import com.siga.informes.InformeDefinirMantenimientoEJG;
+import com.siga.ws.CajgConfiguracion;
 
 
 /**
@@ -508,7 +508,7 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 			String nombreTurnoAsistencia="", nombreGuardiaAsistencia="", consultaTurnoAsistencia="", consultaGuardiaAsistencia="";
 			ScsEJGAdm admBean =  new ScsEJGAdm(this.getUserBean(request));
 			
-			int valorPcajgActivo=CajgConfiguracionAdm.getTipoCAJG(new Integer(usr.getLocation()));
+			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
 			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
 			// Recuperamos los datos de la clave del EJG. Pueden venir de la request si accedemos por primera vez a esa pestanha
 			try {

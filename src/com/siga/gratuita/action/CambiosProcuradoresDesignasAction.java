@@ -20,11 +20,11 @@ import com.siga.beans.ScsDesignaBean;
 import com.siga.beans.ScsDesignasProcuradorAdm;
 import com.siga.beans.ScsDesignasProcuradorBean;
 import com.siga.beans.ScsProcuradorBean;
-import com.siga.beans.CajgConfiguracionAdm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.CambiosProcuradoresDesignasForm;
+import com.siga.ws.CajgConfiguracion;
 
 
 /**
@@ -144,7 +144,7 @@ public class CambiosProcuradoresDesignasAction extends MasterAction {
 		
 		// jbd 01/02/2010 Pasamos el valor del pcajg del colegio
 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
-		int valorPcajgActivo=CajgConfiguracionAdm.getTipoCAJG(new Integer(usr.getLocation()));
+		int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
 		request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
 		request.setAttribute("accion","editar");
 		
@@ -248,7 +248,7 @@ public class CambiosProcuradoresDesignasAction extends MasterAction {
 		String turno=(String)hash.get("IDTURNO");
 		
 		// jbd 01/02/2010 Pasamos el valor del pcajg del colegio
-		int valorPcajgActivo=CajgConfiguracionAdm.getTipoCAJG(new Integer(usr.getLocation()));
+		int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
 		request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
 		
 		try {
