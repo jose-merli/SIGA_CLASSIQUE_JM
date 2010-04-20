@@ -3436,249 +3436,212 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		return pathDestino;
 		
 	}
-	
+	/**
+	 * 
+	 * @param envBean. Bean del envio definido. Tendra la plantilla del envio y la plantilla de generacion. 
+	 * @param vDestinatarios
+	 * @param htErrores
+	 * @param generarLog
+	 * @return
+	 * @throws SIGAException
+	 * @throws ClsExceptions
+	 */
 	public String enviarCorreoOrdinario(EnvEnviosBean envBean, Vector vDestinatarios, Hashtable htErrores, boolean generarLog) 
 	throws SIGAException,ClsExceptions{
-    
-	    boolean errores = false;
-	    String nombreFicheroXX="";
-	    String nombreDestinatarioXX="";
-	
-	    try{
-	    	
-	    	// PREPARACION
-	        //////////////////////////////////
-		    if (!envBean.getIdTipoEnvios().equals(Integer.valueOf(EnvTipoEnviosAdm.K_CORREO_ORDINARIO))){
-	            throw new ClsExceptions("Tipo de envío ordinario incorrecto");
-		    }
-	
-	          
-	        
-	        // PLANTILLA DE GENERACION
-	        /////////////////////////////////////
-	        // Obtenemos el archivo con la plantilla
-		    String pathDestino = getPathDescargaEnviosOrdinarios(envBean);
-	        		    
-	        // BUCLE DE DESTINATARIOS
-	        //////////////////////////////////
-		    boolean existePlantilla = false;
-	        if (vDestinatarios!=null){
-	        	//Obtenemos el tipo de archivo de la plantilla y el archivo de la plantilla
-	        	String tipoArchivoPlantilla = null;
-	        	File fPlantilla = null;
-	        	if(envBean.getIdPlantilla()!=null){
-	        		EnvPlantillaGeneracionAdm admPlantilla = new EnvPlantillaGeneracionAdm(this.usrbean);
-	                fPlantilla = admPlantilla.obtenerPlantilla(""+envBean.getIdInstitucion(), 
-	                        										""+envBean.getIdTipoEnvios(), 
-	                        										""+envBean.getIdPlantillaEnvios(), 
-	                        										""+envBean.getIdPlantilla());
-	                
-	        		
-		        	Hashtable htPkPlantillaGeneracion = new Hashtable();
-		            htPkPlantillaGeneracion.put(EnvPlantillaGeneracionBean.C_IDINSTITUCION,envBean.getIdInstitucion());
-		            htPkPlantillaGeneracion.put(EnvPlantillaGeneracionBean.C_IDTIPOENVIOS,envBean.getIdTipoEnvios());
-		            htPkPlantillaGeneracion.put(EnvPlantillaGeneracionBean.C_IDPLANTILLAENVIOS,envBean.getIdPlantillaEnvios());
-		            htPkPlantillaGeneracion.put(EnvPlantillaGeneracionBean.C_IDPLANTILLA,envBean.getIdPlantilla());
-		        	
-		            
-		            Vector vPlant = admPlantilla.selectByPK(htPkPlantillaGeneracion);	    
-		    	    EnvPlantillaGeneracionBean plantBean = (EnvPlantillaGeneracionBean)vPlant.firstElement();
-		    	    tipoArchivoPlantilla = plantBean.getTipoArchivo();
-	        	}
-	        	
-	        	
-	        	//ACUMULAMOS POBLACIONES, PAISES Y PROVINCIAS PARA EVITAR HACER QUERYS A LA BBDD
-	    	    Hashtable htPoblaciones = new Hashtable();
-	    	    Hashtable htProvincia = new Hashtable();
-	    	    Hashtable htPaises = new Hashtable();
-	        for (int l=0;l<vDestinatarios.size();l++){
-	            
-	        	EnvDestinatariosBean destBean = (EnvDestinatariosBean) vDestinatarios.elementAt(l);
-	        	actualizaPaisDestinatario(destBean, htPaises);
-		        actualizaPoblacionDestinatario(destBean, htPoblaciones);
-		        actualizaProvincia(destBean, htProvincia);
-	            try {
 
-	            	//GENERAMOS EL PDF
-			        //////////////////////////////////
-	            	String pathArchivoGenerado = null;
-			        String sDirPdf = null;
-			        if (envBean.getIdPlantilla()!=null && fPlantilla!=null){
-			        	existePlantilla = true;
-			        	EnvCamposEnviosAdm admCampos = new EnvCamposEnviosAdm(this.usrbean);            
-			            Vector vCampos = admCampos.obtenerCamposEnvios(destBean.getIdInstitucion().toString(), destBean.getIdEnvio().toString(), "");
-			            EnvEnviosAdm admEnvio = new EnvEnviosAdm(this.usrbean);
-			            Hashtable htDatos = admEnvio.getDatosEnvio(destBean, null);
-			            
-						htDatos = admEnvio.darFormatoCampos(destBean.getIdInstitucion(), destBean.getIdEnvio(), this.usrbean.getLanguage(), htDatos,vCampos);
-			        	pathArchivoGenerado = generarDocumentoEnvioPDFDestinatario(envBean,destBean,fPlantilla,tipoArchivoPlantilla,htDatos);
-			            //Ruta donde guardamos los pdf
-				        try {
-				        	sDirPdf = getPathEnvio(envBean)+ File.separator + "documentosdest";
-				        } catch (Exception e) {
-				            throw e;
-				        }
-				    }else{
-				    	
-		        		throw new SIGAException("envios.definir.literal.errorAlmacenarEnvio");
-				    }
-			        
-			        // CREACION DEL ENVIO
-			        //////////////////////////////////
-			        String idPersona = String.valueOf(destBean.getIdPersona());
-			    	    	    		
-		            // NOMBRE DEL FICHERO
-			    	CenPersonaAdm perAdm = new CenPersonaAdm(this.usrbean);
-				    Hashtable htPk2 = new Hashtable();
-				    htPk2.put(CenPersonaBean.C_IDPERSONA,idPersona);
-				    CenPersonaBean perBean = null;
-				    String nifcif = "";
-		
-				    perBean = (CenPersonaBean)perAdm.selectByPK(htPk2).firstElement();
-			        nifcif = perBean.getNIFCIF().trim();
-	    	        nombreDestinatarioXX=perBean.getNombre() + " " + perBean.getApellido1() + " " + perBean.getApellido2();
-		
-			        String sIdEnvio = envBean.getIdEnvio().toString();
-			        if (sIdEnvio.length()<8) {
-			        	sIdEnvio = UtilidadesString.formatea(sIdEnvio,8,true);
-			        }
-			        String nombre = envBean.getIdInstitucion().toString() + "_" + sIdEnvio + "_" + nifcif + "_";
-			        int contadorFicheros = 1;
-			            
-		    		//DOCUMENTOS ADJUNTOS
-			        //////////////////////////////////
-		    	    /* archivo pdf: [idPersona].pdf */
-		            if (pathArchivoGenerado!=null){
-//		    	        String sGenerado = sDirPdf + File.separator + idPersona + ".pdf";
-		            	String tipoArchivo = pathArchivoGenerado.substring(pathArchivoGenerado.lastIndexOf("."));
-		    	        String sCopiado = pathDestino + File.separator + nombre + UtilidadesString.formatea(new Integer(contadorFicheros).toString(),4,true) + tipoArchivo;
-		    	        // DAVID: NOMBRE DEL FICHERO
-		    	        nombreFicheroXX=nombre + UtilidadesString.formatea(new Integer(contadorFicheros).toString(),4,true) + tipoArchivo;
-		    	        contadorFicheros++;
-		    	        
-		    	        File fGenerado = new File(pathArchivoGenerado);
-		    	        File fCopiado = new File(sCopiado);
-		    	        fCopiado.getParentFile().mkdirs();
-		    	        if (fGenerado.exists()) {
-	    	        		copiarFichero(fGenerado,fCopiado);
-		    	        }
-		            }
-		    	    
-		    	    /* documentos adjuntos de envío*/
-		    	    EnvDocumentosAdm docAdm = new EnvDocumentosAdm(this.usrbean);
-		    	    Hashtable ht = new Hashtable();
-		    	    ht.put(EnvDocumentosBean.C_IDINSTITUCION,envBean.getIdInstitucion());
-		    	    ht.put(EnvDocumentosBean.C_IDENVIO,envBean.getIdEnvio());
-		    	    Vector vDocs = docAdm.select(ht);
-		    	    if (vDocs!=null)
-		    	    for (int d=0;d<vDocs.size();d++){
-		    	        EnvDocumentosBean docBean = (EnvDocumentosBean)vDocs.elementAt(d);
-		    	        String tipoArchivo = docBean.getPathDocumento().substring( docBean.getPathDocumento().lastIndexOf("."));
-		    	        String idDoc = String.valueOf(docBean.getIdDocumento());
-		    	        File fDoc = docAdm.getFile(envBean,idDoc);
-		    	        // RGG 14-07-2005 COPIO CADA DOCUMENTO ADJUNTO A LA CARPETA DE CADA IDPERSONA
-		    	        String sAdjunto = fDoc.getPath();
-		    	        File fAdjunto = new File(sAdjunto);
-		    	        String sCopiadoAdjunto = pathDestino + File.separator + nombre + UtilidadesString.formatea(new Integer(contadorFicheros).toString(),4,true) + tipoArchivo;
-		    	        nombreFicheroXX=nombre + UtilidadesString.formatea(new Integer(contadorFicheros).toString(),4,true);
-		    	        contadorFicheros++;
-		    	        File fCopiadoAdjunto = new File(sCopiadoAdjunto);
-		    	        fCopiadoAdjunto.getParentFile().mkdirs();
-		    	        if (fAdjunto.exists()) {
-		    	        	copiarFichero(fAdjunto,fCopiadoAdjunto);
-		    	        }
-		    	    }
-	    	    
-		    	    // RGG Atencion, estos documentos no se usan, queda comentado el codigo.
-	    	    	/*
-		    	    EnvDocumentosDestinatariosAdm docDestAdm = new EnvDocumentosDestinatariosAdm(this.usrbean);
-		    	    Hashtable htD = (Hashtable)ht.clone();
-		    	    htD.put(EnvDocumentosDestinatariosBean.C_IDPERSONA,idPersona);
-		    	    Vector vDocsDest = docDestAdm.select(htD);
-		    	    if (vDocsDest!=null)
-		    	    for (int dd=0;dd<vDocsDest.size();dd++){
-		    	        EnvDocumentosDestinatariosBean docDestBean = (EnvDocumentosDestinatariosBean)vDocsDest.elementAt(dd);
-		    	        String idDoc = String.valueOf(docDestBean.getIdDocumento());
-		    	        File fDoc = docDestAdm.getFile(envBean,idDoc, idPersona);
-		    	        String sAdjuntoDest = fDoc.getPath();
-		    	        File fAdjuntoDest = new File(sAdjuntoDest);
-		    	        String sCopiadoAdjuntoDest = pathDestino + File.separator + nombre + UtilidadesString.formatea(new Integer(contadorFicheros).toString(),4,true) + ".pdf";
-		    	        // DAVID: NOMBRE DEL FICHERO
-		    	        nombreFicheroXX=nombre + UtilidadesString.formatea(new Integer(contadorFicheros).toString(),4,true);
-		    	        contadorFicheros++;
-		    	        File fCopiadoAdjuntoDest = new File(sCopiadoAdjuntoDest);
-		    	        fCopiadoAdjuntoDest.getParentFile().mkdirs();
-		    	        if (fAdjuntoDest.exists()) {
-		    	        	copiarFichero(fAdjuntoDest,fCopiadoAdjuntoDest);
-		    	        }
-		    	    }
-		    	    */
-		    	    
-		    	    // RGG 08/06/2009 ESTADISTICA
-		    	    EnvEstatEnvioAdm admEstat = new EnvEstatEnvioAdm(this.usrbean);
-		    	    admEstat.insertarApunte(envBean.getIdInstitucion(),envBean.getIdEnvio(),envBean.getIdTipoEnvios(),new Long(idPersona));
-		    	    
-		    	    
-	            } catch (Exception e){
-	            	errores = true;
-	                insertarMensajeLogHT(destBean, htErrores, e);
-	                if(e instanceof SIGAException){
-	                	
-	                	SIGAException sigaException = (SIGAException)e;
-	                	if(sigaException.getLiteral().equals("envios.definir.literal.errorAlmacenarEnvio"))
-	                		break;
-	                	
-	                }
-	            }
-	    	
-	        } // FOR
-	    }
-	
-	        //Despues de todo el proceso, generamos/imprimimos las etiquetas
-	        String sEtiquetas = envBean.getImprimirEtiquetas();
-	        if (sEtiquetas.equals(EnvEnviosAdm.GENERAR_ETIQUETAS)){
-	            String sRutaEtiquetas = generarEtiquetas(String.valueOf(envBean.getIdInstitucion()),String.valueOf(envBean.getIdEnvio()),pathDestino,vDestinatarios);
-	        }else if (sEtiquetas.equals(EnvEnviosAdm.IMPRIMIR_ETIQUETAS)){
-	            /*
+		boolean errores = false;
+		String nombreFicheroXX="";
+		String nombreDestinatarioXX="";
+
+		try{
+
+			// PREPARACION
+			//////////////////////////////////
+			if (!envBean.getIdTipoEnvios().equals(Integer.valueOf(EnvTipoEnviosAdm.K_CORREO_ORDINARIO))){
+				throw new ClsExceptions("Tipo de envío ordinario incorrecto");
+			}
+			// PLANTILLA DE GENERACION. 
+			//Con esta plantilla se genera un documento que se generara por cada envio y cada destinatario. 
+			//Luego se movera al lugar ftp especificado en por el pathDestino 
+			String pathDestino = getPathDescargaEnviosOrdinarios(envBean);
+			// BUCLE DE DESTINATARIOS
+			//////////////////////////////////
+			boolean existePlantilla = false;
+			if (vDestinatarios!=null){
+				//Obtenemos el tipo de archivo de la plantilla y el archivo de la plantilla
+				String tipoArchivoPlantilla = null;
+				File fPlantillaGeneracion = null;
+				if(envBean.getIdPlantilla()!=null){
+					EnvPlantillaGeneracionAdm admPlantilla = new EnvPlantillaGeneracionAdm(this.usrbean);
+					fPlantillaGeneracion = admPlantilla.obtenerPlantilla(""+envBean.getIdInstitucion(), 
+							""+envBean.getIdTipoEnvios(), 
+							""+envBean.getIdPlantillaEnvios(), 
+							""+envBean.getIdPlantilla());
+
+					Hashtable htPkPlantillaGeneracion = new Hashtable();
+					htPkPlantillaGeneracion.put(EnvPlantillaGeneracionBean.C_IDINSTITUCION,envBean.getIdInstitucion());
+					htPkPlantillaGeneracion.put(EnvPlantillaGeneracionBean.C_IDTIPOENVIOS,envBean.getIdTipoEnvios());
+					htPkPlantillaGeneracion.put(EnvPlantillaGeneracionBean.C_IDPLANTILLAENVIOS,envBean.getIdPlantillaEnvios());
+					htPkPlantillaGeneracion.put(EnvPlantillaGeneracionBean.C_IDPLANTILLA,envBean.getIdPlantilla());
+
+					Vector vPlant = admPlantilla.selectByPK(htPkPlantillaGeneracion);	    
+					EnvPlantillaGeneracionBean plantBean = (EnvPlantillaGeneracionBean)vPlant.firstElement();
+					tipoArchivoPlantilla = plantBean.getTipoArchivo();
+				}
+
+				//ACUMULAMOS POBLACIONES, PAISES Y PROVINCIAS PARA EVITAR HACER QUERYS A LA BBDD
+				Hashtable htPoblaciones = new Hashtable();
+				Hashtable htProvincia = new Hashtable();
+				Hashtable htPaises = new Hashtable();
+				for (int l=0;l<vDestinatarios.size();l++){
+
+					EnvDestinatariosBean destBean = (EnvDestinatariosBean) vDestinatarios.elementAt(l);
+					actualizaPaisDestinatario(destBean, htPaises);
+					actualizaPoblacionDestinatario(destBean, htPoblaciones);
+					actualizaProvincia(destBean, htProvincia);
+					try {
+
+						//GENERAMOS EL PDF
+						//////////////////////////////////
+						String pathArchivoGenerado = null;
+						if (envBean.getIdPlantilla()!=null && fPlantillaGeneracion!=null){
+							existePlantilla = true;
+							EnvCamposEnviosAdm admCampos = new EnvCamposEnviosAdm(this.usrbean);            
+							Vector vCampos = admCampos.obtenerCamposEnvios(destBean.getIdInstitucion().toString(), destBean.getIdEnvio().toString(), "");
+							EnvEnviosAdm admEnvio = new EnvEnviosAdm(this.usrbean);
+							Hashtable htDatos = admEnvio.getDatosEnvio(destBean, null);
+							htDatos = admEnvio.darFormatoCampos(destBean.getIdInstitucion(), destBean.getIdEnvio(), this.usrbean.getLanguage(), htDatos,vCampos);
+							pathArchivoGenerado = generarDocumentoEnvioPDFDestinatario(envBean,destBean,fPlantillaGeneracion,tipoArchivoPlantilla,htDatos);
+
+						}
+						// CREACION DEL ENVIO
+						//////////////////////////////////
+						String idPersona = String.valueOf(destBean.getIdPersona());
+
+						// NOMBRE DEL FICHERO
+						CenPersonaAdm perAdm = new CenPersonaAdm(this.usrbean);
+						Hashtable htPk2 = new Hashtable();
+						htPk2.put(CenPersonaBean.C_IDPERSONA,idPersona);
+						CenPersonaBean perBean = null;
+						String nifcif = "";
+
+						perBean = (CenPersonaBean)perAdm.selectByPK(htPk2).firstElement();
+						nifcif = perBean.getNIFCIF().trim();
+						nombreDestinatarioXX=perBean.getNombre() + " " + perBean.getApellido1() + " " + perBean.getApellido2();
+
+						String sIdEnvio = envBean.getIdEnvio().toString();
+						if (sIdEnvio.length()<8) {
+							sIdEnvio = UtilidadesString.formatea(sIdEnvio,8,true);
+						}
+						String nombre = envBean.getIdInstitucion().toString() + "_" + sIdEnvio + "_" + nifcif + "_";
+						int contadorFicheros = 1;
+
+						//DOCUMENTOS ADJUNTOS
+						//////////////////////////////////
+						/* archivo pdf: [idPersona].pdf */
+						if (pathArchivoGenerado!=null){
+//							String sGenerado = sDirPdf + File.separator + idPersona + ".pdf";
+							String tipoArchivo = pathArchivoGenerado.substring(pathArchivoGenerado.lastIndexOf("."));
+							String sCopiado = pathDestino + File.separator + nombre + UtilidadesString.formatea(new Integer(contadorFicheros).toString(),4,true) + tipoArchivo;
+							// DAVID: NOMBRE DEL FICHERO
+							nombreFicheroXX=nombre + UtilidadesString.formatea(new Integer(contadorFicheros).toString(),4,true) + tipoArchivo;
+							contadorFicheros++;
+
+							File fGenerado = new File(pathArchivoGenerado);
+							File fCopiado = new File(sCopiado);
+							fCopiado.getParentFile().mkdirs();
+							if (fGenerado.exists()) {
+								copiarFichero(fGenerado,fCopiado);
+							}
+						}
+
+						/* documentos adjuntos de envío*/
+						EnvDocumentosAdm docAdm = new EnvDocumentosAdm(this.usrbean);
+						Hashtable ht = new Hashtable();
+						ht.put(EnvDocumentosBean.C_IDINSTITUCION,envBean.getIdInstitucion());
+						ht.put(EnvDocumentosBean.C_IDENVIO,envBean.getIdEnvio());
+						Vector vDocs = docAdm.select(ht);
+						if (vDocs!=null){
+							for (int d=0;d<vDocs.size();d++){
+								EnvDocumentosBean docBean = (EnvDocumentosBean)vDocs.elementAt(d);
+								String tipoArchivo = docBean.getPathDocumento().substring( docBean.getPathDocumento().lastIndexOf("."));
+								String idDoc = String.valueOf(docBean.getIdDocumento());
+								File fDoc = docAdm.getFile(envBean,idDoc);
+								// RGG 14-07-2005 COPIO CADA DOCUMENTO ADJUNTO A LA CARPETA DE CADA IDPERSONA
+								String sAdjunto = fDoc.getPath();
+								File fAdjunto = new File(sAdjunto);
+								String sCopiadoAdjunto = pathDestino + File.separator + nombre + UtilidadesString.formatea(new Integer(contadorFicheros).toString(),4,true) + tipoArchivo;
+								nombreFicheroXX=nombre + UtilidadesString.formatea(new Integer(contadorFicheros).toString(),4,true);
+								contadorFicheros++;
+								File fCopiadoAdjunto = new File(sCopiadoAdjunto);
+								fCopiadoAdjunto.getParentFile().mkdirs();
+								if (fAdjunto.exists()) {
+									copiarFichero(fAdjunto,fCopiadoAdjunto);
+								}
+							}
+						}
+						// RGG 08/06/2009 ESTADISTICA
+						EnvEstatEnvioAdm admEstat = new EnvEstatEnvioAdm(this.usrbean);
+						admEstat.insertarApunte(envBean.getIdInstitucion(),envBean.getIdEnvio(),envBean.getIdTipoEnvios(),new Long(idPersona));
+					}catch (Exception e){
+						errores = true;
+						insertarMensajeLogHT(destBean, htErrores, e);
+						if(e instanceof SIGAException){
+							SIGAException sigaException = (SIGAException)e;
+							if(sigaException.getLiteral().equals("envios.definir.literal.errorAlmacenarEnvio"))
+								break;
+
+						}
+					}
+
+				} // FOR
+			}
+
+			//Despues de todo el proceso, generamos/imprimimos las etiquetas
+			String sEtiquetas = envBean.getImprimirEtiquetas();
+			if (sEtiquetas.equals(EnvEnviosAdm.GENERAR_ETIQUETAS)){
+				String sRutaEtiquetas = generarEtiquetas(String.valueOf(envBean.getIdInstitucion()),String.valueOf(envBean.getIdEnvio()),pathDestino,vDestinatarios);
+			}else if (sEtiquetas.equals(EnvEnviosAdm.IMPRIMIR_ETIQUETAS)){
+				/*
 	        	if (aux.exists()) 
 	            {
 		            String sRutaEtiquetas = generarEtiquetas(String.valueOf(idInstitucion),String.valueOf(envBean.getIdEnvio()));
 			        Process p = Runtime.getRuntime().exec(comandoShell + " " + idImpresora + " " + sRutaEtiquetas);	            
 	            }
-	            */
-	        }
-	        
-	        if (generarLog) {
-	        	if(existePlantilla)
-	        		this.generarLogEnvioHT(vDestinatarios, htErrores, envBean);
-	        	else{
-	        		Vector unicoDestinatario = new Vector();
-	        		if(vDestinatarios!=null && vDestinatarios.size()>0)
-	        			unicoDestinatario.add((EnvDestinatariosBean)vDestinatarios.get(0));
-	        		this.generarLogEnvioHT(unicoDestinatario, htErrores, envBean);
-	        	}
-	        }
-	
-    	   
+				 */
+			}
 
-	        
-	        // RGG Esto son errores de destinatario, se resuelven poniendo estado malo
-	        if (errores){
-	        	return EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES;
-	        } else {
-	            return EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADO;
-	        }
-	        
-	        
+			if (generarLog) {
+				if(existePlantilla)
+					this.generarLogEnvioHT(vDestinatarios, htErrores, envBean);
+				else{
+					Vector unicoDestinatario = new Vector();
+					if(vDestinatarios!=null && vDestinatarios.size()>0)
+						unicoDestinatario.add((EnvDestinatariosBean)vDestinatarios.get(0));
+					this.generarLogEnvioHT(unicoDestinatario, htErrores, envBean);
+				}
+			}
+
+
+
+
+			// RGG Esto son errores de destinatario, se resuelven poniendo estado malo
+			if (errores){
+				return EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES;
+			} else {
+				return EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADO;
+			}
+
+
 		} catch (SIGAException e) {
-	        this.generarLogEnvioExceptionHT(envBean, e);
+			this.generarLogEnvioExceptionHT(envBean, e);
 			throw e;
-	    } catch(Exception e){
-	        this.generarLogEnvioExceptionHT(envBean, e);
-	        throw new ClsExceptions(e,"Error general en envío ordinario");
+		} catch(Exception e){
+			this.generarLogEnvioExceptionHT(envBean, e);
+			throw new ClsExceptions(e,"Error general en envío ordinario");
 		}		
 	}
-	
+
 
 	/** 
 	 * Genera un documento PDF con las etiquetas relacionadas con los parametros pasados
