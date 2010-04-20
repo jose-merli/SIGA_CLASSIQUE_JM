@@ -55,35 +55,63 @@
 		
 			var oper_aux= operador.value.split(",");			
 			if ((oper_aux[0]==<%=ClsConstants.ESVACIO_ALFANUMERICO%>) || (oper_aux[0]==<%=ClsConstants.ESVACIO_NUMERICO%>)||(oper_aux[0]==<%=ClsConstants.ESVACIO_FECHA%>) ){;
-				if (document.getElementById('caja')){
-					document.getElementById('comb').style.visibility='visible';
-					document.getElementById('caja').style.visibility='hidden';
-					document.getElementById('caja').style.width='0px';
-					pasarvalor();
-					
-				}
-				if (document.getElementById('cmbvalor') ){				
-					document.getElementById('comb').style.visibility='visible';
-					document.getElementById('cmbvalor').style.visibility='hidden';
-					document.getElementById('cmbvalor').style.width='0px';
-					pasarvalorcombo();					
-				}
-
-			}else{
 				
+
+					if (document.getElementById('caja')){
+						document.getElementById('comb').style.visibility='visible';
+						document.getElementById('caja').style.visibility='hidden';
+						document.getElementById('caja').style.width='0px';
+						pasarvalor();
+					}
+
+					if (document.getElementById('cmbvalor') ){				
+						document.getElementById('comb').style.visibility='visible';
+						document.getElementById('cmbvalor').style.visibility='hidden';
+						document.getElementById('cmbvalor').style.width='0px';
+						pasarvalorcombo();					
+					}
+						
+					if (document.getElementById('valor') ){						 								
+					 	document.getElementById('comb').style.visibility='visible';
+				 	 	if (document.getElementById('caja')){
+					 	 	document.getElementById('caja').style.visibility='hidden';
+				 	 	}
+				 	 	if (document.getElementById('imagen')){ 				  		  	
+				 	 		document.getElementById('imagen').style.visibility='hidden';	
+				 	 	}		
+				 	 	pasarvalor();	
+				   }	
+
+			}else{		
+
+				if (oper_aux[0]==<%=ClsConstants.ESVACIO_FECHA%>){
+					
+					if (document.getElementById('valor') ){		
+						document.getElementById('comb').value="";					
+						 document.getElementById('comb').style.visibility='hidden';
+						 document.getElementById('caja').style.visibility='visible';	
+						 if (document.getElementById('imagen')){ 			  		  	
+					     	document.getElementById('imagen').style.visibility='visible';
+						 }		
+					     		
+					   }		
+					}
+				else{		
 				if (document.getElementById('caja')){
 					valor.value="";
 					document.getElementById('comb').style.visibility='hidden';
 					document.getElementById('caja').style.visibility='visible';
 					document.getElementById('caja').style.width='120px';
-				}
-				if (document.getElementById('cmbvalor') ){
-					
+					}
+				if (document.getElementById('cmbvalor') ){					
 					quitarvalorcombo();
 					document.getElementById('comb').style.visibility='hidden';
 					document.getElementById('cmbvalor').style.visibility='visible';
 					document.getElementById('cmbvalor').style.width='220px';
+					}
 				}
+				
+				
 			}
 
 
@@ -102,6 +130,7 @@
 			
 			
 		}
+		
 		function pasarvalorcombo(){
 			
 		 	var tiene_0=false;
@@ -213,7 +242,10 @@
 					</select>	
 				<%}else{%>		
 				<%if (fecha){%>
-				<input type="text" name="valor"  class="box" readonly="true" size="10"></input><a href='javascript://'onClick="return showCalendarGeneral(valor);"><img id="imagen" src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>										
+					<input type="text" name="valor"  id="caja" class="box" readonly="true" size="10"></input><a href='javascript://'onClick="return showCalendarGeneral(valor);"><img id="imagen" src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>														
+					<select name = "valor1" id="comb"  class = "boxCombo"  onchange="pasarvalor();">
+						<option value="SI">SI</option>
+						<option value="NO">NO</option>
 				<%}else{%>					
 					<input type="text" name="valor" id="caja" class="box" width="300px"></input>
 					<select name = "valor1" id="comb"  class = "boxCombo"  onchange="pasarvalor();">

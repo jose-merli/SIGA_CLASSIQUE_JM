@@ -1516,9 +1516,27 @@ public class MantenimientoServiciosAction extends MasterAction {
 				formato = (String)campoBean.getFormato();
 
 				//Chequeo:
-				//if (!simbolo.equals("is null")){
+			
+				    //si el valor es de tipo fecha
 					if (tipoCampo.equalsIgnoreCase(SIGAConstants.TYPE_DATE)){
-						idValor=GstDate.getApplicationFormatDate(this.getLenguaje(request),idValor);
+						 //si el valor es de tipo fecha y el simbolo es null es necesario para añadir si is null o is not null para la sentencia.
+						if(simbolo.equals("is null")){							
+								if((valor.equals("SI"))||(valor.equals("1"))){
+									idValor="1";
+									valor="SI";
+								}
+								else if ((valor.equals("NO"))||(valor.equals("0"))){
+									simbolo = "is not null";
+									valor="NO";
+									idValor="0"; 
+								}
+								}else if (!valor.equals(""))
+										idValor=GstDate.getApplicationFormatDate(this.getLenguaje(request),idValor);	
+									  else
+										  //este error se muestra si el campo valor es vacio este no puede ser vacio.
+										  throwExcp("messages.general.error.tipoDatos", new String[] {campo}, new Exception(),null);
+						
+						//idValor=GstDate.getApplicationFormatDate(this.getLenguaje(request),idValor);
 					}else if (tipoCampo.equalsIgnoreCase(SIGAConstants.TYPE_ALPHANUMERIC)){
 						idValor = "'" + idValor + "'";
 					} else {
@@ -1545,14 +1563,21 @@ public class MantenimientoServiciosAction extends MasterAction {
 							}
 					}
 					
-					//valor = UtilidadesProductosServicios.reemplazaString("%%FORMATO%%", valor, formato);
+				
 					if (valor.equals(""))valor="NULL";
 					if (simbolo.equalsIgnoreCase("IS "))valor="NULL";
 					else {if (valor.equalsIgnoreCase("NULL")) 
 							throwExcp("messages.general.error.tipoDatos", new String[] {campo}, new Exception(),null);
 					}
-					if (idValor.indexOf("$")==-1) {
+					
+					if ((!idValor.equals("1"))&&(!idValor.equals("0"))){						
+						if (idValor.indexOf("$")==-1) {
+							//dando formato si el campo idvalor tiene un valor distinto de 1 o 0 que son simbolos de null de la sentencia.
 						idValor = UtilidadesProductosServicios.reemplazaString("%%FORMATO%%", idValor, formato);
+						}
+					}
+					if((idValor.equals("0"))&&(tipoCampo.equalsIgnoreCase(SIGAConstants.TYPE_DATE))){
+						idValor="";
 					}
 				//}
 				//construimos la hash con el criterios
