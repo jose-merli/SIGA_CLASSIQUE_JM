@@ -512,6 +512,22 @@ public class EnvioInformesGenericos extends MasterReport {
 					//Para las comunicacion con plantilla Fo hay que tiene clase propia de generacion
 					//Por lo que ¿Deberiamos haberlo metido en genericos?
 					if(tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesPagoColegiados)){
+						String nColegiado = (String) datosInforme.get("NCOLEGIADO");
+						String idPago = (String) datosInforme.get("IDPAGOS");
+//						String idTipoInforme = (String) datosInforme.get("idTipoInforme");
+						identificador = new StringBuffer();
+						identificador.append(nColegiado);
+						identificador.append("_");
+						identificador.append(idInstitucion);
+						identificador.append("_");
+						identificador.append(idPersona);
+						identificador.append("_");
+						identificador.append(idPago);
+						identificador.append("_");
+						identificador.append(i);
+						identificador.append("_");
+						String hoy = UtilidadesString.formatoFecha(new Date(),"yyyyMMddhhmmssSSS");
+						identificador.append(hoy);
 						fileDocumento = getInformeGenerico(beanInforme,
 								htDatosInformeFinal, idiomaExt, identificador.toString(), usrBean,tipoPlantillaFo);
 					}else{

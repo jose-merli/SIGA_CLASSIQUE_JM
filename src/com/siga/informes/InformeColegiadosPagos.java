@@ -40,6 +40,8 @@ import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenDireccionTipoDireccionBean;
 import com.siga.beans.CenInstitucionAdm;
+import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.CenPersonaBean;
 import com.siga.beans.EnvEnvioProgramadoBean;
 import com.siga.beans.EnvEnviosBean;
 import com.siga.beans.EnvProgramPagosBean;
@@ -77,6 +79,12 @@ public class InformeColegiadosPagos extends MasterReport {
 		
 		//datos cabecera
 		String idPersona=(String) htDatos.get("idPersona");
+		
+		//Datos Persona
+		CenPersonaAdm perAdm = new CenPersonaAdm(usr);
+		CenPersonaBean beanPersona = perAdm.getPersonaColegiado(new Long(idPersona), new Integer(institucion));
+		htDatos.put("NCOLEGIADO", beanPersona.getColegiado().getNColegiado());
+		
 		
 		//Datos Cabecera
 		htAux=this.obtenerDatosPersonaSociedad(institucion,idPersona,usr);
