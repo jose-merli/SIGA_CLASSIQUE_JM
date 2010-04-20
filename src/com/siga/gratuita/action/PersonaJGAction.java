@@ -22,7 +22,6 @@ import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.CajgConfiguracionAdm;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPoblacionesAdm;
 import com.siga.beans.CenPoblacionesBean;
@@ -53,6 +52,7 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.PersonaJGForm;
+import com.siga.ws.CajgConfiguracion;
 
 public class PersonaJGAction extends MasterAction {
 	
@@ -2694,7 +2694,7 @@ public class PersonaJGAction extends MasterAction {
 						}
 					}
 					//jbd 19/10/2009 Recuperamos el estado de activacion PCAJG
-					int tipoCAJG = CajgConfiguracionAdm.getTipoCAJG(new Integer(miform.getIdInstitucionEJG()));
+					int tipoCAJG = CajgConfiguracion.getTipoCAJG(new Integer(miform.getIdInstitucionEJG()));
 					//jbd 19/01/2010 Ahora debe ser numerico para distinguir entre los distintos tipos de CAJG 
 					/*if (tipoCAJG>1){
 						request.setAttribute("pcajgActivo","true");

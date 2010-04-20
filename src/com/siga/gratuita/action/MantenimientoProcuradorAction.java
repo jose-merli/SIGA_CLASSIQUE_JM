@@ -12,13 +12,13 @@ import org.apache.struts.action.ActionMapping;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.beans.CajgConfiguracionAdm;
 import com.siga.beans.ScsProcuradorAdm;
 import com.siga.beans.ScsProcuradorBean;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.MantenimientoProcuradorForm;
+import com.siga.ws.CajgConfiguracion;
 
 /**
  * @author david.sanchez
@@ -60,7 +60,7 @@ public class MantenimientoProcuradorAction extends MasterAction {
 		try {
 			MantenimientoProcuradorForm miForm = (MantenimientoProcuradorForm) formulario;
 			
-			int valorPcajgActivo=CajgConfiguracionAdm.getTipoCAJG(new Integer(this.getUserBean(request).getLocation()));
+			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(this.getUserBean(request).getLocation()));
 			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
 			String	idInstitucionProcurador = (String)miForm.getDatosTablaOcultos(0).get(0);
 			String	idProcurador = (String)miForm.getDatosTablaOcultos(0).get(1);
@@ -153,7 +153,7 @@ public class MantenimientoProcuradorAction extends MasterAction {
 		String modo = "nuevo";
 		try {
 			MantenimientoProcuradorForm miForm = (MantenimientoProcuradorForm) formulario;
-			int valorPcajgActivo=CajgConfiguracionAdm.getTipoCAJG(new Integer(this.getUserBean(request).getLocation()));
+			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(this.getUserBean(request).getLocation()));
 			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
 			miForm.setApellido1("");
 			miForm.setApellido2("");
