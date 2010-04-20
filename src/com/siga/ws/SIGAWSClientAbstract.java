@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 import java.util.Vector;
 
 import org.apache.xmlbeans.XmlObject;
@@ -44,6 +43,8 @@ public abstract class SIGAWSClientAbstract {
 	private int idInstitucion;
 	private int idRemesa;	
 	private String urlWS;
+	private boolean generaTXT;
+	private boolean firmarXML;
 	
 			
 	public abstract void execute() throws Exception;
@@ -314,5 +315,38 @@ public abstract class SIGAWSClientAbstract {
 			cajgRespuestaEJGRemesaAdm.insert(cajgRespuestaEJGRemesaBean);
 		}
 	}
+
+
+	/**
+	 * @return the generaTXT
+	 */
+	public boolean isGeneraTXT() {
+		return generaTXT;
+	}
+
+
+	/**
+	 * @param generaTXT the generaTXT to set
+	 */
+	public void setGeneraTXT(boolean generaTXT) {
+		this.generaTXT = generaTXT;
+	}
+
+
+	/**
+	 * @return the firmarXML
+	 */
+	public boolean isFirmarXML() {
+		return firmarXML;
+	}
+
+
+	/**
+	 * @param firmarXML the firmarXML to set
+	 */
+	public void setFirmarXML(boolean firmarXML) {
+		this.firmarXML = firmarXML;
+	}
+
 
 }

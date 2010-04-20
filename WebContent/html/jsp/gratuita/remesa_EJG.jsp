@@ -12,7 +12,7 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.beans.CajgRemesaEstadosAdm"%>
 <%@ page import="com.siga.ws.SIGAWSClientAbstract"%>
-<%@ page import="com.siga.beans.CajgConfiguracionAdm"%>
+<%@ page import="com.siga.ws.CajgConfiguracion"%>
 
 
 
@@ -82,7 +82,7 @@
 		estilocaja = "box";		
 	}
 	
-	int cajgConfig = CajgConfiguracionAdm.getTipoCAJG(Integer.parseInt(usr.getLocation()));
+	int cajgConfig = CajgConfiguracion.getTipoCAJG(Integer.parseInt(usr.getLocation()));
 	
 %>
 

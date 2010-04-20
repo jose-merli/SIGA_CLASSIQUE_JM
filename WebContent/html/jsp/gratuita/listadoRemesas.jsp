@@ -18,7 +18,7 @@
 <%@ page import="com.siga.beans.ScsMaestroEstadosEJGBean"%>
 <%@ page import="com.siga.beans.ScsEJGAdm"%>
 <%@ page import="com.siga.beans.CajgRemesaEstadosAdm"%>
-<%@ page import="com.siga.beans.CajgConfiguracionAdm"%>
+<%@ page import="com.siga.ws.CajgConfiguracion"%>
 <%@ page import="com.siga.administracion.SIGAMasterTable"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.Utilidades.PaginadorCaseSensitive"%>
@@ -96,7 +96,7 @@
 
     
     Integer idInstitucion = new Integer(usr.getLocation());
-	int cajgConfig = CajgConfiguracionAdm.getTipoCAJG(idInstitucion);
+	int cajgConfig = CajgConfiguracion.getTipoCAJG(idInstitucion);
 	
 %>
 

@@ -12,7 +12,6 @@ import org.apache.struts.action.ActionMapping;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.beans.CajgConfiguracionAdm;
 import com.siga.beans.ScsDelitosEJGAdm;
 import com.siga.beans.ScsDelitosEJGBean;
 import com.siga.beans.ScsEJGAdm;
@@ -23,6 +22,7 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.PestanaDelitoEJGForm;
+import com.siga.ws.CajgConfiguracion;
 
 /**
  * @author david.sanchez
@@ -45,7 +45,7 @@ public class PestanaDelitoEJGAction extends MasterAction {
 			UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 			ScsEJGAdm admBean =  new ScsEJGAdm(this.getUserBean(request));
 			request.getSession().removeAttribute("DATABACKUP");
-			int valorPcajgActivo=CajgConfiguracionAdm.getTipoCAJG(new Integer(usr.getLocation()));
+			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
 			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
 			
 			

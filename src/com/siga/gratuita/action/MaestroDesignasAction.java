@@ -27,12 +27,12 @@ import com.siga.beans.ScsTipoDesignaColegioAdm;
 import com.siga.beans.ScsTipoDesignaColegioBean;
 import com.siga.beans.ScsTurnoAdm;
 import com.siga.beans.ScsTurnoBean;
-import com.siga.beans.CajgConfiguracionAdm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.BuscarDesignasForm;
 import com.siga.gratuita.form.MaestroDesignasForm;
+import com.siga.ws.CajgConfiguracion;
 
 
 /**
@@ -103,7 +103,7 @@ public class MaestroDesignasAction extends MasterAction {
 			UtilidadesHash.set(resultado,ScsDesignaBean.C_IDTURNO,				(String)request.getParameter("IDTURNO"));	
 			
 			// jbd 01/02/2010 Pasamos el valor del pcajg del colegio
-			int valorPcajgActivo=CajgConfiguracionAdm.getTipoCAJG(new Integer(usr.getLocation()));
+			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
 			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
 			
 			// Consulto la designa:

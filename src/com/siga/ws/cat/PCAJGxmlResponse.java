@@ -5,7 +5,6 @@ package com.siga.ws.cat;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -17,9 +16,7 @@ import java.util.Vector;
 
 import javax.transaction.UserTransaction;
 
-import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlException;
-import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
 
 import com.atos.utils.ClsExceptions;
@@ -36,6 +33,7 @@ import com.siga.beans.CajgRespuestaEJGRemesaAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaBean;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
+import com.siga.ws.PCAJGConstantes;
 import com.siga.ws.SIGAWSClientAbstract;
 import com.siga.ws.cat.respuesta.IntercambioDocument;
 import com.siga.ws.cat.respuesta.TipoIdentificacionIntercambio;
@@ -386,7 +384,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 					throw new ClsExceptions("La institucion del fichero es distinta a la del usuario de SIGA");
 				}
 				
-				if (getIdRemesa() != idRemesa) {
+				if (getIdRemesa() != idRemesa/10) {
 					//si es distinta remesa ya lo tratará su remesa
 					return;
 //					escribeLogRemesa("La remesa del fichero es distinta a la del usuario de SIGA");
@@ -402,7 +400,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 				tx = getUsrBean().getTransaction();
 				tx.begin();
 				
-				cajgRespuestaEJGRemesaAdm.eliminaAnterioresErrores(getIdInstitucion(), getIdRemesa());
+				//cajgRespuestaEJGRemesaAdm.eliminaAnterioresErrores(getIdInstitucion(), getIdRemesa());
 				
 				for (DatosError datosError : datosErrors) {
 					
@@ -417,12 +415,12 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 							expedientError = errorContenido.getCodigoExpedienteError();
 							int anioExp = expedientError.getAnyoExpediente();
 							String numExp = expedientError.getNumExpediente();
-														
-							Hashtable<String, Object> hash = new Hashtable<String, Object>();
-							hash.put(ScsEJGBean.C_IDINSTITUCION, idInstitucion);
-							hash.put(ScsEJGBean.C_ANIO, String.valueOf(anioExp));
-							hash.put(ScsEJGBean.C_NUMEJG, Integer.parseInt(numExp.trim()));							
-							Vector vectorEJGs = scsEJGAdm.select(hash);
+								
+							String where = " WHERE " + ScsEJGBean.C_IDINSTITUCION + " = " + idInstitucion +
+								" AND " + ScsEJGBean.C_ANIO + " = " + String.valueOf(anioExp) +
+								" AND TO_NUMBER(" +  ScsEJGBean.C_NUMEJG + ") = " + Integer.parseInt(numExp.trim());
+							
+							Vector vectorEJGs = scsEJGAdm.select(where);
 							if (vectorEJGs != null) {
 								if (vectorEJGs.size() == 0) {
 									//EJG no encontrado
@@ -442,7 +440,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 									hashEjgRem.put(CajgEJGRemesaBean.C_IDTIPOEJG, scsEJGBean.getIdTipoEJG());
 									
 									hashEjgRem.put(CajgEJGRemesaBean.C_IDINSTITUCIONREMESA, idInstitucion);
-									hashEjgRem.put(CajgEJGRemesaBean.C_IDREMESA, idRemesa);
+									hashEjgRem.put(CajgEJGRemesaBean.C_IDREMESA, getIdRemesa());
 									
 									Vector vectorRemesa = cajgEJGRemesaAdm.select(hashEjgRem);
 									if (vectorRemesa.size() == 0) {

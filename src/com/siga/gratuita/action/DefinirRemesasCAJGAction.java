@@ -49,8 +49,6 @@ import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.CajgConfiguracionAdm;
-import com.siga.beans.CajgConfiguracionBean;
 import com.siga.beans.CajgEJGRemesaAdm;
 import com.siga.beans.CajgEJGRemesaBean;
 import com.siga.beans.CajgProcedimientoRemesaBean;
@@ -62,6 +60,7 @@ import com.siga.beans.CajgRespuestaEJGRemesaAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaBean;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.GenClientesTemporalBean;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
 import com.siga.beans.ScsEstadoEJGAdm;
@@ -75,6 +74,7 @@ import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinicionRemesas_CAJG_Form;
 import com.siga.gratuita.form.DefinirEJGForm;
 import com.siga.informes.MasterWords;
+import com.siga.ws.CajgConfiguracion;
 import com.siga.ws.SIGAWSClientAbstract;
 import com.siga.ws.SIGAWSListener;
 
@@ -1657,36 +1657,26 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		Integer idInstitucion = getIDInstitucion(request);
 		UsrBean usrBean = getUserBean(request);
 					
-		String idRemesa = form.getIdRemesa();
-		
-		CajgConfiguracionAdm cajgConfiguracionAdm = new CajgConfiguracionAdm(getUserBean(request));
-		
-		Hashtable<String, Integer> hash = new Hashtable<String, Integer>();
-		hash.put(CajgConfiguracionBean.C_IDINSTITUCION, idInstitucion);
-		Vector vector = cajgConfiguracionAdm.selectByPK(hash);
-		if (vector == null || vector.size() != 1) {
-			throw new ClsExceptions("No se ha encontrado la configuración para este colegio");
-		}		
-		CajgConfiguracionBean cajgConfiguracionBean = (CajgConfiguracionBean) vector.get(0);
-		String clase = cajgConfiguracionBean.getWsClass();
-		if (clase == null || clase.trim().equals("")) {
-			throw new ClsExceptions("No esta definido el campo clase de la tabla de configuración.");
-		}
-		String[] clases = clase.split(";");
-		
-		if (indexClass >= clases.length) {
-			throw new ClsExceptions("Faltan nombres en el campo clase de la tabla de configuración.");
-		}
-		
-		SIGAWSClientAbstract sigaWSClient = SIGAWSClientAbstract.getInstance(clases[indexClass]);
+		String idRemesa = form.getIdRemesa();		
+
+		SIGAWSClientAbstract sigaWSClient = CajgConfiguracion.getSIGAWSClientAbstract(idInstitucion, indexClass);
 				
 		if (sigaWSClient == null) {
 			throw new ClsExceptions("El colegio no tiene implementado el WebService");
 		}
-		sigaWSClient.setIdInstitucion(getIDInstitucion(request));
+		sigaWSClient.setIdInstitucion(idInstitucion);
 		sigaWSClient.setUsrBean(usrBean);
 		sigaWSClient.setIdRemesa(Integer.parseInt(idRemesa));
-		sigaWSClient.setUrlWS(cajgConfiguracionBean.getWsURL());
+		
+		GenParametrosAdm admParametros = new GenParametrosAdm(usrBean);		
+		String urlWS = admParametros.getValor(idInstitucion.toString(), "SCS", "PCAJG_WS_URL", "");
+		String generaTXT = admParametros.getValor(idInstitucion.toString(), "SCS", "PCAJG_GENERA_TXT_ANTIGUO", "");
+		String firmarXML = admParametros.getValor(idInstitucion.toString(), "SCS", "PCAJG_FIRMAR_XML", "");
+		
+		sigaWSClient.setUrlWS(urlWS);
+		sigaWSClient.setGeneraTXT(generaTXT.trim().equals("1"));
+		sigaWSClient.setFirmarXML(firmarXML.trim().equals("1"));
+		
 				
 		SIGAWSListener sigaWSListener = new SIGAWSListener();
 		Timer timer = new Timer();

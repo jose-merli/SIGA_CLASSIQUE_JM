@@ -14,7 +14,7 @@
 <%@ page import="com.siga.beans.ScsEJGAdm"%>
 <%@ page import="com.siga.Utilidades.Paginador"%>
 <%@ page import="com.siga.beans.CajgRemesaEstadosAdm"%>
-<%@ page import="com.siga.beans.CajgConfiguracionAdm"%>
+<%@ page import="com.siga.ws.CajgConfiguracion"%>
 <%@ page import="com.atos.utils.*"%>
 <%@page import="com.siga.beans.CajgEJGRemesaBean"%>
 <%@page import="com.siga.tlds.FilaExtElement"%>
@@ -82,7 +82,7 @@
 	int idEstado = admBean.UltimoEstadoRemesa(usr.getLocation(), idremesa);
 	
 	Integer idInstitucion = new Integer(usr.getLocation());
-	int cajgConfig = CajgConfiguracionAdm.getTipoCAJG(idInstitucion);	
+	int cajgConfig = CajgConfiguracion.getTipoCAJG(idInstitucion);	
 	
 	String buttons="";	
 	

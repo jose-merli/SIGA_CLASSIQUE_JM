@@ -1,4 +1,4 @@
-package com.siga.ws.cat;
+package com.siga.ws;
 
 /**
  * NO MODIFICAR. Clase generada con GeneraConstantesXSD

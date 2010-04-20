@@ -38,6 +38,7 @@ import com.siga.beans.CajgRemesaEstadosAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaAdm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.action.DefinirRemesasCAJGAction;
+import com.siga.ws.PCAJGConstantes;
 import com.siga.ws.SIGAWSClientAbstract;
 import com.siga.ws.SigaWSHelper;
 import com.siga.ws.pcajg.DatosDomicilio;
@@ -1129,15 +1130,16 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		String key = getKey(new Object[]{getIdInstitucion(), anyo, numero, idTipoEJG});
 		List list = (List) htMarcasExpediente.get(key);
 		
-		for (int i = 0; i < list.size(); i++) {
-			Hashtable ht = (Hashtable) list.get(i);
-			String st = getString((String)ht.get(DE_ME_ME_VALORMARCAEXPEDIENTE));
-			if (st != null) {
-				MarcasExpediente marcasExpediente = datosExpediente.addNewMarcasExpediente();
-				MarcaExpediente marcaExpediente = marcasExpediente.addNewMarcaExpediente();
-			
-				rellenaTipoElementoTipificadoEstandar(marcaExpediente.addNewMarcaExpediente(), (String)ht.get(DE_ME_ME_MARCAEXPEDIENTE_CDA));
-				marcaExpediente.setValorMarcaExpediente(st);
+		if (list != null) {
+			MarcasExpediente marcasExpediente = datosExpediente.addNewMarcasExpediente();
+			for (int i = 0; i < list.size(); i++) {
+				Hashtable ht = (Hashtable) list.get(i);
+				String st = getString((String)ht.get(DE_ME_ME_VALORMARCAEXPEDIENTE));
+				if (st != null) {					
+					MarcaExpediente marcaExpediente = marcasExpediente.addNewMarcaExpediente();				
+					rellenaTipoElementoTipificadoEstandar(marcaExpediente.addNewMarcaExpediente(), (String)ht.get(DE_ME_ME_MARCAEXPEDIENTE_CDA));
+					marcaExpediente.setValorMarcaExpediente(st);
+				}
 			}
 		}
 		
@@ -1203,7 +1205,9 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		UserTransaction tx = usr.getTransaction();
 		
 		//si no queremos generar el fichero txt ademas del xml hay que cometar solamente esta línea
-		generaTXT(dirFicheros);
+		if (isGeneraTXT()) {
+			generaTXT(dirFicheros);
+		}
 		
 		try {
 			
@@ -1212,7 +1216,10 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			CajgRespuestaEJGRemesaAdm cajgRespuestaEJGRemesaAdm = new CajgRespuestaEJGRemesaAdm(usr);
 			cajgRespuestaEJGRemesaAdm.eliminaAnterioresErrores(getIdInstitucion(), getIdRemesa());
 			
-			List<File> files = generaFicherosXML(dirFicheros, dirPlantillas);	
+			List<File> files = generaFicherosXML(dirFicheros, dirPlantillas);
+			//hacemos commit por los posibles errores de validación del xml con el xsd
+			tx.commit();
+			tx.begin();
 				
 			sftp = new SFTPmanager(usr, String.valueOf(getIdInstitucion()));
 						
@@ -1245,8 +1252,12 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			tx.commit();
 
 		} catch (JSchException e) {
+			tx.rollback();
 			escribeLogRemesa("Se ha producido un error de conexión con el servidor FTP");
 			ClsLogging.writeFileLogError("Error en el envío FTP", e, 3);			
+		} catch (Exception e) {
+			tx.rollback();
+			throw e;
 		} finally {			
 			if (sftp != null) {
 				sftp.disconnect();
