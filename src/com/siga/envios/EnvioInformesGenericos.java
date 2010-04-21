@@ -513,8 +513,8 @@ public class EnvioInformesGenericos extends MasterReport {
 					//Por lo que ¿Deberiamos haberlo metido en genericos?
 					if(tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesPagoColegiados)){
 						String nColegiado = (String) datosInforme.get("NCOLEGIADO");
-						String idPago = (String) datosInforme.get("IDPAGOS");
-//						String idTipoInforme = (String) datosInforme.get("idTipoInforme");
+//						String idPago = (String) datosInforme.get("IDPAGOS");
+						String idTipoInforme = (String) datosInforme.get("idTipoInforme");
 						identificador = new StringBuffer();
 						identificador.append(nColegiado);
 						identificador.append("_");
@@ -522,15 +522,31 @@ public class EnvioInformesGenericos extends MasterReport {
 						identificador.append("_");
 						identificador.append(idPersona);
 						identificador.append("_");
-						identificador.append(idPago);
-						identificador.append("_");
-						identificador.append(i);
-						identificador.append("_");
 						String hoy = UtilidadesString.formatoFecha(new Date(),"yyyyMMddhhmmssSSS");
 						identificador.append(hoy);
 						fileDocumento = getInformeGenerico(beanInforme,
 								htDatosInformeFinal, idiomaExt, identificador.toString(), usrBean,tipoPlantillaFo);
 					}else{
+						if(tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesMorosos)){
+							if(htDatosInformeFinal.get("region")!=null){
+								Vector v = (Vector)htDatosInformeFinal.get("region"); 
+								if(v.get(0)!=null){
+									Hashtable htV = (Hashtable)v.get(0);
+									String nColegiado = (String)htV.get("NCOLEGIADO");
+									identificador = new StringBuffer();
+									if(nColegiado!=null){
+										identificador.append(nColegiado);
+										identificador.append("_");
+									}
+								}
+							}
+							identificador.append(idInstitucion);
+							identificador.append("_");
+							identificador.append(idPersona);
+							identificador.append("_");
+							String hoy = UtilidadesString.formatoFecha(new Date(),"yyyyMMddhhmmssSSS");
+							identificador.append(hoy);
+						}
 						fileDocumento = getInformeGenerico(beanInforme,
 								htDatosInformeFinal, idiomaExt, identificador.toString(), usrBean,tipoPlantillaWord);
 					}

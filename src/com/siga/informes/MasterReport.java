@@ -710,7 +710,7 @@ public class MasterReport  {
 
 		UtilidadesHash.set(htDatosInforme,"RUTA_LOGO",rutaPlantillaInstitucion+ClsConstants.FILE_SEP+"recursos"+ClsConstants.FILE_SEP+"Logo.jpg");
 		String contenidoPlantilla = obtenerContenidoPlantilla(rutaPlantillaInstitucion,nombrePlantilla);
-		File fPdf = generarInforme(usr,htDatosInforme,rutaAlm,contenidoPlantilla,rutaAlm,nombreFileOut);
+		File fPdf = generarInforme(usr,htDatosInforme,rutaAlm,contenidoPlantilla,rutaAlm,beanInforme.getNombreSalida()+"_"+nombreFileOut);
 		return fPdf;
 
 	}
