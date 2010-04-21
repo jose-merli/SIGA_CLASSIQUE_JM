@@ -1285,20 +1285,20 @@ public class Envio
         
 
         try {
-	        if (crearDestinatario){
+	        if (crearDestinatario ||crearCertificado){
 		        //***** Insertamos Destinatario *******
 		        
 		        EnvDestinatariosAdm destAdm = new EnvDestinatariosAdm(this.usrBean);
 		        //EnvEnviosAdm enviosAdm = new EnvEnviosAdm(idUsuario);
 		        int tipo = enviosBean.getIdTipoEnvios().intValue();
 		        
-		        if (crearCertificado || comprobarDireccion(tipo,destBean)){
+//		        if (crearCertificado || comprobarDireccion(tipo,destBean)){
 		            try {
 		                destAdm.insert(destBean);
 		            } catch (ClsExceptions e) {
 		                throw new SIGAException("messages.general.error",e);
 		            }
-		        }
+//		        }
 	        }
 	
 	        //******** Insertamos Documentos *********//
