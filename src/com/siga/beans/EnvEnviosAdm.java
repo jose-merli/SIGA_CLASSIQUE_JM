@@ -2899,7 +2899,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    }
 	    
 	    final String separador = ClsConstants.SEPARADOR; 
-        String sLineaCabecera = "NIF/CIF"+separador+"NOMBRE"+separador+"APELLIDO 1"+separador+"APELLIDO 2"+separador+"FAX 1"+separador+"FAX 2"+separador+"MOVIL"+separador+"CORREO ELECTRONICO"+separador+"DOMICILIO"+separador+"PROVINCIA"+separador+"POBLACION"+separador+"PAIS"+separador+"MENSAJE"+separador;
+        String sLineaCabecera = "IDENVIO"+separador+"NIF/CIF"+separador+"NOMBRE"+separador+"APELLIDO 1"+separador+"APELLIDO 2"+separador+"FAX 1"+separador+"FAX 2"+separador+"MOVIL"+separador+"CORREO ELECTRONICO"+separador+"DOMICILIO"+separador+"PROVINCIA"+separador+"POBLACION"+separador+"PAIS"+separador+"MENSAJE"+separador;
         CenPersonaAdm admPer = new CenPersonaAdm(this.usrbean);
         CenPoblacionesAdm admPob = new CenPoblacionesAdm(this.usrbean);
         CenProvinciaAdm admPro = new CenProvinciaAdm(this.usrbean);
@@ -2927,7 +2927,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 				if (v!=null && v.size()>0) {
 					bean = (CenPersonaBean) v.get(0);
 				}
-				
+				sLinea += sIdEnvio + separador;
 				sLinea += bean.getNIFCIF() + separador;
 				sLinea += bean.getNombre() + separador;
 				sLinea += bean.getApellido1() + separador;
