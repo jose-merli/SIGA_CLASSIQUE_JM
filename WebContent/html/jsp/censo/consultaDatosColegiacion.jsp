@@ -283,6 +283,7 @@
 			<html:hidden property = "modo" value = ""/>
 			<html:hidden property="idPersona" value="<%=idPersona.toString()%>"/> 				
 			<html:hidden property="idInstitucion" value="<%=idInstitucion%>"/> 
+			<html:hidden name="DatosColegiacionForm" property="id"/> 
 			<input type="hidden" name="activar" value="<%=activar%>">
 			<input type="hidden" name="nombre" value="<%=nombre%>">
 			<input type="hidden" name="numero" value="<%=numero%>">

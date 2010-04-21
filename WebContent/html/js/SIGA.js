@@ -673,7 +673,7 @@ function ajusteAltoMain(nObj, menos)
 			//alert("Padre body="+cont.id + " : " + cont.nodeName + " : " + hCont);
 			var hij=cont.children;
 			for(x=0;x<hij.length;x++){
-				if (hij(x).nodeName!='INPUT' && hij(x).nodeName!='#comment' && hij(x).offsetHeight!=0) {
+				if (hij(x).nodeName!='SCRIPT' && hij(x).nodeName!='INPUT' && hij(x).nodeName!='#comment' && hij(x).offsetHeight!=0) {
 				    if (hij(x).id!=nObj ) {
 						//alert("hijo menos="+hij(x).id+" : "+hij(x).nodeName + " : " +hij(x).offsetHeight );
 						hCont = hCont - hij(x).offsetHeight;
@@ -869,44 +869,257 @@ function roundNumber(num, dec) {
 }
 
 /**
- * Muestra un DIV o lo oculta
- * @param ident El identificador del DIV que vamos a ocultar/mostrar
+ * Devuelve el objeto padre mas cercano de tipo <code>type</code> del elemento <code>element</code>. 
+ * @param element Elemento del cual se quiere obtener su padre. 
+ * @param type Tipo del elemento padre.
+ * @return el elemento padre de tipo <code>type</code> mas cercano a <code>element</code> o <code>undefined</code> 
+ * si no lo encuentra.
+ */
+function getParentOfType(element, type){
+	var parent = element.parentNode;
+	while (parent!=null && parent!=undefined && 
+		   parent.nodeName.toUpperCase() != type.toUpperCase()){
+		parent = parent.parentNode;
+	}
+
+	return parent;
+}
+
+/**
+ * Devuelve el form que contiene al elemento.
+ * @param element elemento del cual se quiere obtener el form que lo contiene.
+ */
+function getParentForm(element){
+	return getParentOfType(element, "FORM");
+}
+
+/**
+ * Devuelve la celda <code>cellId</code> de la fila con identificador/PK igual a <code>idValue</code> 
+ * de la tabla <code>tableId</code> donde <code>idIndex</code> es la columna que contiene el identificador.
+ * @param tableId Identificador de la tabla.
+ * @param idValue Valor del identificador del registro que se desea seleccionar.
+ * @param idIndex Columna de la tabla que contiene el identificador.
+ * @param cellId  Indice de la celda, dentro de la fila, que se quiere devolver.
+ */
+
+function getCellValue(tableId, idValue, IdIndex, cellId){
+	return getRowById(tableId, idValue, IdIndex).cells[cellId].innerHTML;
+}
+
+/**
+ * Devuelve la fila con identificador/PK igual a <code>idValue</code> en la tabla <code>tableId</code> donde 
+ * <code>idIndex</code> es la columna que contiene el identificador.
+ * @param tableId Identificador de la tabla.
+ * @param idValue Valor del identificador del registro que se desea seleccionar.
+ * @param idIndex Columna de la tabla que contiene el identificador.
+ */
+function getRowById(tableId, idValue, idIndex){
+	try {
+		var table = document.getElementById(tableId);
+		var rowCount = table.rows.length;
+
+		for(var i=0; i<rowCount; i++) {
+			var row = table.rows[i];
+
+			var cellCount = row.cells.length;
+			for(var j=0; j<cellCount; j++) {
+				var cell = row.cells[idIndex];
+				if (cell.innerHTML == idValue){
+					return row;
+				}
+			}
+		}
+	}catch(e) {
+		alert(e);
+	}
+}
+
+/**
+ * Selecciona la fila con identificador/PK igual a <code>idValue</code> en la tabla <code>tableId</code>.
+ * <code>idIndex</code> es la columna que contiene el identificador.
+ * @param tableId Identificador de la tabla.
+ * @param idValue Valor del identificador del registro que se desea seleccionar.
+ * @param idIndex Columna de la tabla que contiene el identificador.
+ */
+function selectRow(tableId, idValue, idIndex) {
+	var table = document.getElementById(tableId);
+	if(table==null)
+		return;
+
+	var rowCount = table.rows.length;
+
+	for(var i=0; i<rowCount; i++) {
+		var row = table.rows[i];
+		var cell = row.cells[idIndex];
+		if (cell.innerHTML == idValue){
+			row.style.backgroundColor =  getStyle('backgroundColor', 'listaNonEditSelected', 'stylesheet2');
+		}
+		else{
+			if (i%2 == 0){ 
+				row.style.backgroundColor =  getStyle('backgroundColor', 'even', 'stylesheet2');
+			}
+			else{
+				row.style.backgroundColor =  getStyle('backgroundColor', 'odd', 'stylesheet2');
+			}
+		}
+	}
+}
+
+/**
+ * Comprueba si existe algun registro seleccionado en el formulario <code>formName</code>
+ * @param formName nombre del formulario sobre el que se va a comprobar si existe algun registro seleccionado.
+ * @return <code>true</code> si existe algun registro seleccionado, <code>false</code> en caso contrario.
+ */
+function existsSelected(formName){
+	var elements = document.getElementById(formName).elements;
+	for (i=0; i<elements.length; i++){
+		if(elements[i].type == "checkbox" && elements[i].checked)
+			return true;
+	}
+	return false;
+}
+
+/**
+ * Funcion generica para llamar al metodo de un action pasandole una accion a realizar
+ * @param formName Nombre del formulario  
+ * @param id PK del registro sobre el que se va a realizar la accion
+ * @param accion Nombre del metodo del action
  * @return
  */
-function ocultarDIV(ident){
-	if(document.getElementById(ident).style.display == "none" ) {
-		document.getElementById(ident).style.display = "inline";
-		document.getElementById(ident).parentElement.className='legend';
-		document.getElementById(ident+"ImMas").style.display = "none"
-		document.getElementById(ident+"ImMenos").style.display = "inline-block"
-	}else {
-		document.getElementById(ident).style.display = "none";
-		document.getElementById(ident).parentElement.className='legendNoBorder';
-		document.getElementById(ident+"ImMenos").style.display = "none"
-		document.getElementById(ident+"ImMas").style.display = "inline-block"
-	}
-	ajusteAltoPaginador('resultado');
-	//ajusteAlto();
-	ajusteAlto('resultado');
-	ajusteAlto('mainWorkarea');
-	return true;
+function submitItemAction(id, formName, accion) {
+	var form = document.getElementById(formName);
+	form.id.value = id;
+	form.accion.value = accion;
+	form.submit();
 }
-function isAllDigits(argvalue) {
-         argvalue = argvalue.toString();
-         var validChars = "0123456789";
-         var startFrom = 0;
-         if (argvalue.substring(0, 2) == "0x") {
-            validChars = "0123456789abcdefABCDEF";
-            startFrom = 2;
-         } else if (argvalue.charAt(0) == "0") {
-            validChars = "01234567";
-            startFrom = 1;
-         } else if (argvalue.charAt(0) == "-") {
-             startFrom = 1;
-         }
-         
-         for (var n = startFrom; n < argvalue.length; n++) {
-             if (validChars.indexOf(argvalue.substring(n, n+1)) == -1) return false;
-         }
-         return true;
+
+/**
+ * Funcion generica de consulta de un registro
+ * @param formName Nombre del formulario  
+ * @param id PK del registro sobre el que se va a realizar la accion
+ */
+function consultar(id, formName) {
+	submitItemAction(id, formName, "ver");
+}
+
+/**
+ * Funcion generica de edicion de un registro 
+ * @param formName Nombre del formulario  
+ * @param id PK del registro sobre el que se va a realizar la accion
+*/
+function editar(id, formName) {
+	submitItemAction(id, formName, "editar");
+}
+
+/**
+ * Funcion generica de consulta de un registro
+ * @param formName Nombre del formulario  
+ * @param id PK del registro sobre el que se va a realizar la accion
+ */
+function consultar(id, formName) {
+	submitItemAction(id, formName, "ver");
+}
+
+/**
+ * Funcion generica de edicion de un registro 
+ * @param formName Nombre del formulario  
+ * @param id PK del registro sobre el que se va a realizar la accion
+*/
+function informacionLetrado(id, formName) {
+	submitItemAction(id, formName, "informacionLetrado");
+}
+
+/**
+ * Obtiene el valor de un artibuto de una clase de una hoja de estilo
+ */
+function getStyle(atributo, clase, css){
+	var theRules = new Array();
+	var theCss;
+	var theStyle;
+	
+	for(i=0; i<document.styleSheets.length; i++){
+		if(document.styleSheets[i].href.match(css)){
+			theCss = document.styleSheets[i];
+			break;
+		}
+	}
+	
+	if (theCss.cssRules) // Comprobación de reglas de Estilos en Firefox
+	{
+		theRules = theCss.cssRules;
+	}
+	else
+	{
+		if (theCss.rules) // Comprobación de reglas de Estilos en Internet Explorer
+		{
+			theRules = theCss.rules;
+		}
+	}
+
+	for(elem in theRules) // Recorro las reglas de estilos CSS
+	{
+		if(typeof theRules[elem] == "object") // si el elemento que estoy recorriendo es un Objeto..
+		{
+			for(elem2 in theRules[elem]) // Recorro el objeto
+			{
+				if(theRules[elem].selectorText == "." + clase) // Si la clase que estoy recorriendo es la que deseo buscar... 
+				{
+					if(elem2 == "style") // Si dentro de la clase estoy en el objeto STYLE
+					{
+						foundedClass = true;
+						theStyle = theRules[elem][elem2];
+					}
+				}
+			}
+		}
+	}
+	return eval("theStyle."+atributo);
+}
+
+/**
+ * Ajusta el height de un elemento al maximo del espacio que quede por ocupar 
+ * @param nObj
+ */
+function ajusteAltoDisplayTag(nObj)
+{
+	var obj=document.getElementById(nObj);
+	if (obj) {
+		var ventana = window.parent;
+		if (ventana.name != "mainWorkArea")
+			ventana = window.parent.document.getElementById("MainWorkArea");
+		var padre = obj.parentNode;
+		var hermanos = obj.parentNode.childNodes;
+		var contHermanos = 0;
+//		alert(ventana.offsetHeight +" "+ obj.offsetTop);
+		for(x=0;x<hermanos.length;x++){
+//			alert(hermanos(x).id + " : " + hermanos(x).nodeName + " : " + hermanos(x).offsetHeight );
+			if (hermanos(x).nodeName!='SCRIPT' &&  
+				hermanos(x).nodeName!='#comment' && hermanos(x).offsetHeight!=0 &&
+					hermanos(x)!=obj && hermanos(x).offsetHeight) {
+				contHermanos = contHermanos + hermanos(x).offsetHeight;
+			}
+		}
+
+		//el 5 es un ajuste que me saco de la manga, mas o menos, habrá que
+		//terminar de calcular bien el tamanyo, teneiendo en cuenta
+		//los margenes, paddings y demas
+		var cont = ventana.offsetHeight - obj.offsetTop - (2*contHermanos) - 5;
+//		alert(ventana.offsetHeight +" "+ obj.offsetTop +" "+ contHermanos + " " + cont);
+		obj.style.pixelHeight=cont;
+	}
+}
+
+/**
+ * Borra los valores de los elementos input y select de un formulario
+ * @param form
+ */
+function limpiarForm(form){
+	var inputs = form.getElementsByTagName("input");
+	for(var i=0;i<inputs.length;i++){
+		inputs[i].value = "";
+	}
+	var selects = form.getElementsByTagName("select");
+	for(var i=0;i<selects.length;i++){
+		selects[i].value = "";
+	}
 }

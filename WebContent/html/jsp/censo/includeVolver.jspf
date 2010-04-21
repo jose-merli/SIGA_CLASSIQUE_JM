@@ -1,5 +1,6 @@
 <!-- includeVolver.jsp -->
 <%@ taglib uri = "libreria_SIGA.tld" prefix="siga"%>
+<%@ page import="com.siga.comun.action.SessionForms"%>
 
 <%
 	// includeVolver.jsp
@@ -61,13 +62,24 @@
 
 <% 		} else if (busquedaVolver.equals("NADA")) {  /* ficha colegial*/ %>
 <% 		
-			} else if (busquedaVolver.equals("P")) {
+		} else if (busquedaVolver.equals("P")) {
 %>
 <% 		} else if (busquedaVolver.equals("GS")) {  %>
 			<html:form  action="/CER_GestionSolicitudes.do" method="POST" target="mainWorkArea">
 				<html:hidden property="modo" value="abrir"/>
 			</html:form>
-			
+<% 		} else if (busquedaVolver.equals("BUSQUEDA_LETRADO")) {  %>
+			<html:form  action="/CEN_BusquedaLetradosNew.do" method="POST" target="mainWorkArea">
+				<html:hidden property="accion" value="buscar"/>
+				<html:hidden property="deleteForm" value="true"/>
+				<html:hidden property="id" value=""/>
+			</html:form>
+<% 		} else if (busquedaVolver.equals("BUSQUEDA_COLEGIADO") || busquedaVolver.equals("BUSQUEDA_COLEGIADO_AV")) {  %>
+			<html:form  action="/CEN_BusquedaColegiados.do" method="POST" target="mainWorkArea">
+				<html:hidden property="accion" value="buscar"/>
+				<html:hidden property="deleteForm" value="true"/>
+				<html:hidden property="id" value=""/>
+			</html:form>
 <% 		} else { %>
 			<html:form  action="/CEN_BusquedaClientes.do" method="POST" target="mainWorkArea">
 			<html:hidden  name="busquedaClientesForm" property="modo"/>
@@ -138,6 +150,20 @@
 					document.solicitudCompraForm.action = "<%=app%>/PYS_GenerarSolicitudes.do" + "?noReset=true";
 					document.solicitudCompraForm.modo.value="abrir";	
 					document.solicitudCompraForm.submit();	
+<% 				} else if (busquedaVolver.equals("BUSQUEDA_LETRADO")) {	%>
+					document.BusquedaLetradosForm.action = document.BusquedaLetradosForm.action + "?" + "<%=SessionForms.getForm(request,"/CEN_BusquedaLetradosNew.do","buscar")%>";
+					document.BusquedaLetradosForm.id.value = document.forms[0].id.value;
+					document.BusquedaLetradosForm.submit();	
+<% 				} else if (busquedaVolver.equals("BUSQUEDA_COLEGIADO")) {	%>
+					document.BusquedaColegiadosForm.action = document.BusquedaColegiadosForm.action + "?" + "<%=SessionForms.getForm(request,"/CEN_BusquedaColegiados.do","buscar")%>";
+					document.BusquedaColegiadosForm.id.value = document.forms[0].id.value;
+					document.BusquedaColegiadosForm.submit();	
+					document.BusquedaLetradosForm.submit();	
+<% 				} else if (busquedaVolver.equals("BUSQUEDA_COLEGIADO_AV")) {	%>
+					document.BusquedaColegiadosForm.action = document.BusquedaColegiadosForm.action + "?" + "<%=SessionForms.getForm(request,"/CEN_BusquedaColegiados.do","buscarAvanzada")%>";
+					document.BusquedaColegiadosForm.id.value = document.forms[0].id.value;
+					document.BusquedaColegiadosForm.accion.value = "buscarAvanzada";
+					document.BusquedaColegiadosForm.submit();	
 <% 				} else if (busquedaVolver.equals("GS")) {	%>
 					document.SolicitudesCertificadosForm.action = "<%=app%>/CER_GestionSolicitudes.do" + "?noReset=true&buscar=true";
 					document.SolicitudesCertificadosForm.submit();

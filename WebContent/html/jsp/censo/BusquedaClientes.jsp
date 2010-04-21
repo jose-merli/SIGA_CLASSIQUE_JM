@@ -7,7 +7,7 @@
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- TAGLIBS -->
-<%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
+<%@ taglib uri = "libreria_SIGA.tld" prefix="siga"%>
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
@@ -155,20 +155,13 @@
 	</td>				
 	<td colspan="4">
 		<!-- MAV 14/7/05 Mostrar combo solo para aquellos colegios que permitan busquedas en más de una institucion -->
-		<% if (institucionAcceso.equalsIgnoreCase(institucionesVisibles)){ 
-		    
-			%>
+		<% if (institucionAcceso.equalsIgnoreCase(institucionesVisibles)){	%>
 			<html:hidden name="busquedaClientesForm" property = "nombreInstitucion" value = "<%=institucionAcceso%>"/>
 			<html:text property="" styleClass="boxConsulta" size="80" value='<%=nombreInstitucionAcceso%>' readOnly="true"></html:text>
-		<% }else{ 
-		   
-		%>
-		     	<% if (colegiado.equals(ClsConstants.DB_TRUE)) { %>
-		     	  <siga:ComboBD nombre = "nombreInstitucion" tipo="cmbNombreColegiosTodos" parametro="<%=parametro %>" clase="boxCombo" obligatorio="false" elementoSel="<%=colegioSel %>"/>
-				<% }else{ %>
-					<siga:ComboBD nombre = "nombreInstitucion" tipo="cmbInstitucion" parametro="<%=parametro %>" clase="boxCombo" obligatorio="false" elementoSel="<%=colegioSel %>"/>	
-				<% } %>
-			
+		<% }else if (colegiado.equals(ClsConstants.DB_TRUE)) { %>
+		    <siga:ComboBD nombre = "nombreInstitucion" tipo="cmbNombreColegiosTodos" parametro="<%=parametro %>" clase="boxCombo" obligatorio="false" elementoSel="<%=colegioSel %>"/>
+		<% }else{ %>
+			<siga:ComboBD nombre = "nombreInstitucion" tipo="cmbInstitucion" parametro="<%=parametro %>" clase="boxCombo" obligatorio="false" elementoSel="<%=colegioSel %>"/>	
 		<% } %>
 	</td>
 	</tr>

@@ -2419,7 +2419,7 @@ Element.Methods = {
     var parent = null;
     if (Element.getStyle(element, 'position') == 'absolute') {
       parent = Element.getOffsetParent(element);
-      delta = Element.viewportOffset(parent);
+      delta = Element.nodeName != 'HTML' ? Element.viewportOffset() : delta;
     }
 
     if (parent == document.body) {

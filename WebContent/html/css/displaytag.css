@@ -129,3 +129,11 @@ span.pagelinks {
 	margin-bottom: 5px;
 }
 
+tbody{
+	display: block;
+	height: 50px;
+	overflow-x: auto;
+	overflow-y: auto;
+	width: 100%;
+}
+

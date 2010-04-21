@@ -49,7 +49,9 @@
 <bean:define id="registrosSeleccionados" name="busquedaClientesForm" property="registrosSeleccionados" type="java.util.ArrayList"/>
 <bean:define id="datosPaginador" name="busquedaClientesForm" property="datosPaginador" type="java.util.HashMap"/>
 <bean:define id="colegiado" name="busquedaClientesForm" property="colegiado" type="java.lang.String"/>
+
 <%
+try{
 	String app = request.getContextPath();
 	HttpSession ses = request.getSession();
 	Properties src = (Properties) ses
@@ -320,98 +322,76 @@
 					String permisos = "C,E";
 					String select = "";
 					FilaExtElement[] elems = null;
-					if (idInstitucionLocation.equals("2000")
-							|| idInstitucionLocation.substring(0, 1)
-									.equals("3")) {
+					//Comprueba si la institucion conectada es un Consejo
+					if (idInstitucionLocation.equals("2000") || idInstitucionLocation.substring(0, 1).equals("3")) {
+						//SI ES COLEGIADO
 						if (colegiado.equals(ClsConstants.DB_TRUE)) {
-							valor = CenClienteAdm.getEsLetrado(idPersona,
-									user.getLocation());
+							valor = CenClienteAdm.getEsLetrado(idPersona, user.getLocation());
 							if (isAplicarLOPD) {
 								elems = new FilaExtElement[2];
-								elems[1] = new FilaExtElement("lopd",
-										"lopd", SIGAConstants.ACCESS_READ);
+								elems[1] = new FilaExtElement("lopd","lopd", SIGAConstants.ACCESS_READ);
 								if (valor != null && valor.equals("1")) {
-
-									elems[0] = new FilaExtElement(
-											"informacionLetrado",
-											"informacionLetrado",
-											SIGAConstants.ACCESS_READ);
-								} else {
-
-									elems[0] = new FilaExtElement(
-											"informacionLetrado",
-											"informacionLetrado",
-											SIGAConstants.ACCESS_SIGAENPRODUCCION);
+									elems[0] = new FilaExtElement("informacionLetrado","informacionLetrado",SIGAConstants.ACCESS_READ);
+								} 
+								else {
+									elems[0] = new FilaExtElement("informacionLetrado","informacionLetrado",SIGAConstants.ACCESS_SIGAENPRODUCCION);
 								}
-							} else {
-
+							} 
+							else {
 								elems = new FilaExtElement[2];
 								if (valor != null && valor.equals("1")) {
-									elems[0] = new FilaExtElement(
-											"informacionLetrado",
-											"informacionLetrado",
-											SIGAConstants.ACCESS_READ);
+									elems[0] = new FilaExtElement("informacionLetrado","informacionLetrado",SIGAConstants.ACCESS_READ);
 									elems[1]=new FilaExtElement("enviar","comunicar",SIGAConstants.ACCESS_READ);
-								} else {
-									elems[0] = new FilaExtElement(
-											"informacionLetrado",
-											"informacionLetrado",
-											SIGAConstants.ACCESS_SIGAENPRODUCCION);
+								} 
+								else {
+									elems[0] = new FilaExtElement("informacionLetrado","informacionLetrado",SIGAConstants.ACCESS_SIGAENPRODUCCION);
 									elems[1]=new FilaExtElement("enviar","comunicar",SIGAConstants.ACCESS_SIGAENPRODUCCION);
-									
 								}
 							}
-						} else {
+						} 
+						// LETRADO O NO COLEGIADO
+						else {
 							if (isAplicarLOPD) {
 								elems = new FilaExtElement[1];
-								elems[0] = new FilaExtElement("lopd",
-										"lopd", SIGAConstants.ACCESS_READ);
+								elems[0] = new FilaExtElement("lopd","lopd", SIGAConstants.ACCESS_READ);
 
 							}else{
 								elems = new FilaExtElement[1];
 								elems[0]=new FilaExtElement("enviar","comunicar",SIGAConstants.ACCESS_READ);
-								
 							}
-
 						}
-					} else {
+					}
+					else {
 						if (isAplicarLOPD) {
 							elems = new FilaExtElement[1];
-							elems[0] = new FilaExtElement("lopd", "lopd",
-									SIGAConstants.ACCESS_READ);
+							elems[0] = new FilaExtElement("lopd", "lopd",SIGAConstants.ACCESS_READ);
 
 						}else{
 							elems = new FilaExtElement[1];
 							elems[0]=new FilaExtElement("enviar","comunicar",SIGAConstants.ACCESS_READ);
-							
 						}
-
 					}
+
 					String modo = "";
-					String idInstitucion = (registro
-							.get(CenColegiadoBean.C_IDINSTITUCION) == null || ((String) registro
-							.get(CenColegiadoBean.C_IDINSTITUCION))
-							.equals("")) ? "&nbsp;" : (String) registro
-							.get(CenColegiadoBean.C_IDINSTITUCION);
+					String idInstitucion = (registro.get(CenColegiadoBean.C_IDINSTITUCION) == null || 
+								((String) registro.get(CenColegiadoBean.C_IDINSTITUCION)).
+									equals("")) ? "&nbsp;" : (String) registro.get(CenColegiadoBean.C_IDINSTITUCION);
 
 					if (user.getLocation().equals(idInstitucion)) {
 						modo = "edicion";
 					} else {
 						modo = "consulta";
 					}
-					if (!colegiado.equals(ClsConstants.DB_TRUE)
-							&& !colegiado.equals("2")) {
+
+					//No colegiado
+					if (!colegiado.equals(ClsConstants.DB_TRUE) && !colegiado.equals("2")) {
 						permisos += ",B";
 					}
 
 					// calculo de campos
 
-					String apellido1 = UtilidadesString
-							.mostrarDatoJSP(registro
-									.get(CenPersonaBean.C_APELLIDOS1));
-					String apellido2 = UtilidadesString
-							.mostrarDatoJSP(registro
-									.get(CenPersonaBean.C_APELLIDOS2));
+					String apellido1 = UtilidadesString	.mostrarDatoJSP(registro.get(CenPersonaBean.C_APELLIDOS1));					String apellido2 = UtilidadesString
+							.mostrarDatoJSP(registro.get(CenPersonaBean.C_APELLIDOS2));
 					String nombre = UtilidadesString
 							.mostrarDatoJSP(registro
 									.get(CenPersonaBean.C_NOMBRE));
@@ -443,8 +423,7 @@
 					String estadoColegial = "";
 					String fechaEstadoColegial = "";
 					String residente = "";
-					String SociedaSJ = (String) registro
-							.get(CenNoColegiadoBean.C_SOCIEDADSJ);
+					String SociedaSJ = (String) registro.get(CenNoColegiadoBean.C_SOCIEDADSJ);
 
 					//Campo que indica que si va a ir a el jsp para no colegiados para sociedades o nif de tipo no personal
 					String tipo = (String) registro
@@ -498,8 +477,7 @@
 						//				
 						residente = UtilidadesString.mostrarDatoJSP(registro.get(CenColegiadoBean.C_SITUACIONRESIDENTE));
 					}
-					String institucion = CenVisibilidad
-							.getAbreviaturaInstitucion(idInstitucion);
+					String institucion = CenVisibilidad.getAbreviaturaInstitucion(idInstitucion);
 	%>
 	<!-- REGISTRO  -->
 	<!-- Esto es un ejemplo de dos columnas de datos, lo que significa
@@ -940,3 +918,5 @@
 
 </body>
 </html>
+
+<%}catch(Exception e){e.printStackTrace();}%>

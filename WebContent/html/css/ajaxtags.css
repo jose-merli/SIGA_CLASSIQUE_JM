@@ -15,13 +15,13 @@
  * the License.
  */
 .autocomplete {
-	position: absolute;
+	position: relative;
 	color: #333;
 	background-color: #fff;
 	border: 1px solid #666;
 	font-family: Arial;
-/**	overflow-y: auto;
-**/	height: 100px;
+	overflow-y: auto;
+	height: 100px;
 }
 .autocomplete ul {
 	padding: 0;

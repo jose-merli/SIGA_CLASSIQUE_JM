@@ -177,6 +177,7 @@
 				<html:hidden property="motivo" value=""/> 				
 				<html:hidden property="idPersona" value="<%=idPersona.toString()%>"/> 				
 				<html:hidden property="idInstitucion" value="<%=idInstitucion%>"/> 
+				<html:hidden name="DatosColegialesForm" property="id"/> 					
 				<html:hidden property="nombre" value="<%=nombre%>"/> 	
 				<html:hidden property="numero" value="<%=numero%>"/>
 				 <input type="hidden" name="pestanaSituacion" value="<%=request.getAttribute("PESTANASITUACION")%>">											
