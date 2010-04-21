@@ -678,7 +678,7 @@
 				<%
           	   					//}else{
           	   				%>
-				<siga:ComboBD nombre="vistaJuzgado" tipo="comboJuzgadosTurno" ancho="480" clase="boxComboConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=juzgadoSel%>" hijo="t" readonly="true"/>          	   
+				<siga:ComboBD nombre="vistaJuzgado" tipo="comboJuzgadosTurno" ancho="480"  filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=juzgadoSel%>" hijo="t" />          	   
 				<%
           	   					//}
           	   				%>
