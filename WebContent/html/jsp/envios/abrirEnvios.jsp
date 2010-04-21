@@ -206,7 +206,16 @@
 		}
 		function buscar() 
 		{
-			sub();	
+			sub();
+			if(document.forms[0].idEnvioBuscar.value!=''){ 
+				if (!isAllDigits(document.forms[0].idEnvioBuscar.value)) {
+					var mensaje = "<siga:Idioma key="envios.definir.literal.identificador"/> <siga:Idioma key="messages.campoNumerico.error"/>";
+			 		alert (mensaje);
+			 		fin();
+			 		return;
+					
+		        }	
+	        }
 			document.forms[0].modo.value="buscarInicio";
 			document.forms[0].target="resultado";	
 			document.forms[0].submit();	
