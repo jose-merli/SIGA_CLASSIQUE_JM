@@ -14,6 +14,8 @@ package com.siga.censo.form;
 
 import com.siga.general.MasterForm;
 import com.siga.beans.*;
+import com.siga.censo.vos.ColegiadoVO;
+import com.siga.comun.vos.Vo;
 	
 
 public class DatosColegialesForm extends MasterForm{
@@ -215,5 +217,10 @@ public class DatosColegialesForm extends MasterForm{
 	
 	public String getNMutualista(){
 		return (String)datos.get(CenColegiadoBean.C_NMUTUALISTA);
-	}	
+	}
+	
+	public String getId() {
+		return getIdPersona() + Vo.PK_SEPARATOR + getIdInstitucion();
+	}
+
 }

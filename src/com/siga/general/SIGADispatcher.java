@@ -163,7 +163,8 @@ public class SIGADispatcher extends SIGAActionBase {
 //	solucion original    return new ActionForward("/" + transaction_aux + ".do");
 
 		// solucion 2
-	    return new ActionForward("/" + llamada + ".do"+parametros);  
+		ActionForward af = new ActionForward("/" + llamada + ".do"+parametros); 
+	    return af;   
 
 /* solucion 3
 	    try {

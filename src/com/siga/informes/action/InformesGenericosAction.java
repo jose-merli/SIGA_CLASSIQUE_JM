@@ -72,7 +72,7 @@ import com.siga.informes.form.InformesGenericosForm;
  */
 public class InformesGenericosAction extends MasterAction {
 	
-	protected ActionForward executeInternal(ActionMapping mapping,
+	public ActionForward executeInternal(ActionMapping mapping,
 			ActionForm formulario, HttpServletRequest request,
 			HttpServletResponse response) throws SIGAException {
 		String mapDestino = "exception";
@@ -135,38 +135,21 @@ public class InformesGenericosAction extends MasterAction {
 			String aSolicitantes =  miForm.getAsolicitantes();
 			String enviar =  miForm.getEnviar();
 
-
-
 			String idPersonaJG = null;
 			String idinstitucion = null;
 			String idPK = null;
 			String anio = null;
 			String numero = null;
 
-			if(aSolicitantes!=null && aSolicitantes.equalsIgnoreCase("S")){
-				if(idTipoInforme.equals("OFICIOLD")){
-					if(miForm.getDatosTabla()!=null && miForm.getDatosTabla().size()>0){
-						Vector vCampos = miForm.getDatosTablaOcultos(0);
-						idPersonaJG = (String) vCampos.get(0);
-						idinstitucion = (String) vCampos.get(1);
-						idPK = (String) vCampos.get(2);
-						anio = (String) vCampos.get(3);
-						numero = (String) vCampos.get(4);
-
-					}
-				}else if(idTipoInforme.equals("EJG")){
-					if(miForm.getDatosTabla()!=null && miForm.getDatosTabla().size()>0){
-						Vector vCampos = miForm.getDatosTablaOcultos(0);
-						idPersonaJG = (String) vCampos.get(0);
-						idinstitucion = (String) vCampos.get(1);
-						idPK = (String) vCampos.get(2);
-						anio = (String) vCampos.get(3);
-						numero = (String) vCampos.get(4);
-
-					}
-
-
-				}
+			if((aSolicitantes!=null && aSolicitantes.equalsIgnoreCase("S")) &&
+					(miForm.getDatosTabla()!=null && miForm.getDatosTabla().size()>0) &&
+					(idTipoInforme.equals("OFICIOLD") || idTipoInforme.equals("EJG"))){
+				Vector vCampos = miForm.getDatosTablaOcultos(0);
+				idPersonaJG = (String) vCampos.get(0);
+				idinstitucion = (String) vCampos.get(1);
+				idPK = (String) vCampos.get(2);
+				anio = (String) vCampos.get(3);
+				numero = (String) vCampos.get(4);
 			}
 
 			AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
@@ -178,8 +161,6 @@ public class InformesGenericosAction extends MasterAction {
 				request.setAttribute("plantillas",infs);
 				return mapping.findForward("seleccionPlantillasModal");
 			}
-			
-			
 			
 
 			if (idTipoInforme.equals("") && idInforme.equals("")) {

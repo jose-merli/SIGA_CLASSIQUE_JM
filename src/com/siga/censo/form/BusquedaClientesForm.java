@@ -25,6 +25,7 @@ import com.siga.general.MasterForm;
  	String permitirAniadirNuevo= "N";
  	String idPersona=  null;
  	String idInstitucion;
+ 	private String verFichaLetrado;
 
 	
 
@@ -560,5 +561,12 @@ import com.siga.general.MasterForm;
 	}
 	public void setIdInstitucion(String idInstitucion) {
 		this.idInstitucion = idInstitucion;
+	}
+	
+	public String getVerFichaLetrado(){
+		return this.verFichaLetrado;
+	}
+	public void setVerFichaLetrado(String verFichaLetrado){
+		this.verFichaLetrado = verFichaLetrado;
 	}
 }

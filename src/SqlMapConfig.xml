@@ -17,7 +17,7 @@
 
 	<transactionManager type="JDBC">
 		<dataSource type="JNDI">
-			<property name="DataSource" value="DataSourceSIGA_RW"/>
+			<property name="DataSource" value="DataSourceSIGA_RW_NLS"/>
 		</dataSource>
 	</transactionManager>
 

@@ -128,4 +128,13 @@ public class UtilidadesNumero {
 		return bd.doubleValue();
 	}
 
+	public static Integer parseInt(String nColegiado) {
+		try{
+			return Integer.parseInt(nColegiado);
+		}
+		catch(Exception e){
+			return null;
+		}
+	}
+
 }

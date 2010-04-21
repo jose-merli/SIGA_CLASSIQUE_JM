@@ -1033,6 +1033,15 @@ public class UtilidadesString {
 			return fechaout;
 		}
 		
+		public static String formatoFecha(Date fecha, String formatout, String defaultValue)  {
+			try{
+				return formatoFecha(fecha,formatout);
+			}
+			catch(Exception e){
+				return null;
+			}
+		}
+				
 	/**
 	 * Devuelve una fecha escrita en el idioma indicado
 	 * @param fecha La fecha que queremos recibir escrita

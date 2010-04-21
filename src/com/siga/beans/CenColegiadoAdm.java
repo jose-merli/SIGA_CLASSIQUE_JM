@@ -1293,7 +1293,7 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 
 		}
 		catch (Exception e) {
-			throw new ClsExceptions (e, "Error ScsEJGAdm.getInformeColegiado.");
+			throw new ClsExceptions (e, "Error CenColegiadoAdm.getDatosInformeLetrado.");
 		}
 		return datos;
 	}

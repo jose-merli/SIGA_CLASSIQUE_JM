@@ -24,12 +24,12 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.comun.form.AuxForm;
 
-public class MasterForm extends ActionForm {
+public class MasterForm extends AuxForm  {
 
 	protected Hashtable datos = new Hashtable();
 

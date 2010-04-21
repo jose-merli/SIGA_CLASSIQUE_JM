@@ -15,6 +15,8 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.siga.Utilidades.UtilidadesString;
 
+import es.satec.businessManager.BusinessException;
+
 /**
  * @author 
  *
@@ -199,7 +201,8 @@ public class SIGAException extends ClsExcBase  {
 					ClsLogging.writeFileLog("******SQLState : " + state,3);
 					cod=SIGAExcConstants.getErrorDescription(state);
 					setLiteral(cod);
-				} else {
+				}
+				else {
 					cod = mensaje;
 				}
 
@@ -218,9 +221,13 @@ public class SIGAException extends ClsExcBase  {
 					break;
 				}
 		    } 
-			if (el instanceof ClsExcBase) {
+			else if (el instanceof ClsExcBase) {
 				el=((ClsExcBase)el).getNextException();
-			} else {
+			} 
+			else if (el instanceof BusinessException){
+				ClsLogging.writeFileLog(e.getMessage(),3);
+			}
+			else {
 				el=null;
 			}
 		}

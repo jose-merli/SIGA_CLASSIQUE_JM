@@ -1,60 +1,563 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
-<sqlMap namespace="Pruebas">
+<sqlMap namespace="Censo">
 
-	<typeAlias alias="letrado" type="es.satec.siga.util.vos.impl.LetradoVo"/>
+	<typeAlias alias="ClsConstants" type="com.atos.utils.ClsConstants" />
+	<typeAlias alias="letrado" type="com.siga.censo.vos.LetradoVO" />
+	<typeAlias alias="colegiado" type="com.siga.censo.vos.ColegiadoVO" />
+	<typeAlias alias="institucion" type="com.siga.comun.vos.InstitucionVO" />
+	<typeAlias alias="valueKey" type="com.siga.comun.vos.ValueKeyVO" />
+
+	<resultMap id="letradoResult" class="letrado">
+		<result property="idPersona" column="idpersona" />
+		<result property="idInstitucion" column="idinstitucion" />
+		<result property="nif" column="nifcif" />
+		<result property="nombre" column="nombre" />
+		<result property="apellidos1" column="apellidos1" />
+		<result property="apellidos2" column="apellidos2" />
+		<result property="fechaNacimiento" column="fechanacimiento" />
+		<result property="noAparecerRedAbogacia" column="noAparecerRedAbogacia" />
+	</resultMap>
 
 	<sql id="letradosFromWhere">
 		FROM CEN_PERSONA p, CEN_CLIENTE c
-		WHERE p.IDPERSONA=c.IDPERSONA
-		<dynamic prepend="AND">
-			<isNotNull prepend="AND" property="letrado.idInstitucion">
-				c.IDINSTITUCION=#letrado.idInstitucion#
-			</isNotNull>
-			<isNotEmpty prepend="AND" property="letrado.nombre">
-				p.nombre=#letrado.nombre#
+		<dynamic>
+			<isNotEmpty property="letrado.residencia">
+				, CEN_COLEGIADO col
 			</isNotEmpty>
-			<isNotEmpty prepend="AND" property="letrado.apellidos1">
-				p.apellidos1=#letrado.apellidos1#
-			</isNotEmpty>
-			<isNotEmpty prepend="AND" property="letrado.apellidos2">
-				p.apellidos2=#letrado.apellidos2#
-			</isNotEmpty>
-			<isNotEmpty prepend="AND" property="letrado.nifCif">
-				p.nifcif=#letrado.nifCif#
+			WHERE p.idpersona=c.idpersona
+			and c.letrado=1
+
+			<isEqual property="letrado.busquedaExacta" compareValue="true">
+				<isNotEmpty prepend="AND" property="letrado.idInstitucion">
+					c.idinstitucion=#letrado.idInstitucion#
+				</isNotEmpty>
+				<isNotEmpty prepend="AND" property="letrado.nombre">
+					p.nombre=#letrado.nombre#
+				</isNotEmpty>
+
+				<!-- APELLIDOS -->
+				<isNotEmpty prepend="AND" property="letrado.apellidos1">
+					(p.apellidos1=#letrado.apellidos1#
+					<isNotEmpty prepend="OR" property="letrado.apellidos2">
+						(p.apellidos1=#letrado.apellidos1# AND
+						p.apellidos2=#letrado.apellidos2#)
+					</isNotEmpty>
+					)
+				</isNotEmpty>
+				<isEmpty property="letrado.apellidos1">
+					<isNotEmpty prepend="AND" property="letrado.apellidos2">
+						(p.apellidos2=#letrado.apellidos2# OR regexp_like(p.apellidos1,#letrado.apellidos2#))
+					</isNotEmpty>
+				</isEmpty>
+
+				<isNotEmpty prepend="AND" property="letrado.nif">
+					p.nifcif=#letrado.nif#
+				</isNotEmpty>
+			</isEqual>
+			<isNotEqual property="letrado.busquedaExacta" compareValue="true">
+				<isNotEmpty prepend="AND" property="letrado.idInstitucion">
+					c.idinstitucion=#letrado.idInstitucion#
+				</isNotEmpty>
+				<isNotEmpty prepend="AND" property="letrado.nombre">
+					regexp_like(p.nombre,#letrado.nombre#)
+				</isNotEmpty>
+
+				<!-- APELLIDOS -->
+				<isNotEmpty prepend="AND" property="letrado.apellidos1">
+					(
+					regexp_like(p.apellidos1,#letrado.apellidos1#)
+					<isNotEmpty prepend="OR" property="letrado.apellidos2">
+						(
+						regexp_like(p.apellidos1,#letrado.apellidos1#)
+						AND
+						regexp_like(p.apellidos2,#letrado.apellidos2#)
+						)
+					</isNotEmpty>
+					)
+				</isNotEmpty>
+				<isEmpty property="letrado.apellidos1">
+					<isNotEmpty prepend="AND" property="letrado.apellidos2">
+						regexp_like(p.apellidos2,#letrado.apellidos2#)
+					</isNotEmpty>
+				</isEmpty>
+
+				<isNotEmpty prepend="AND" property="letrado.nif">
+					regexp_like(p.nifcif,#letrado.nif#)
+				</isNotEmpty>
+			</isNotEqual>
+
+			<isNotEmpty prepend="AND" property="letrado.residencia">
+				col.idpersona = p.idpersona
+				<isEqual prepend="HAVING" property="letrado.residencia" compareValue="S">
+					sum(col.situacionresidente) = 0					
+				</isEqual>
+				<isEqual prepend="HAVING" property="letrado.residencia" compareValue="M">
+					sum(col.situacionresidente) > 1					
+				</isEqual>
+				group by
+				p.nifcif,p.nombre,p.apellidos1,p.apellidos2,p.fechanacimiento,
+				p.idpersona,c.idinstitucion,c.noaparecerredabogacia
 			</isNotEmpty>
 		</dynamic>
 	</sql>
-	
+
 	<sql id="ordenacion">
 		<dynamic prepend="ORDER BY">
-			<iterate prepend="," property="ordenacion.criteria">
-			    $ordenacion.criteria[].key$ $ordenacion.criteria[].value$
+			<iterate conjunction="," property="ordenacion.criteria">
+				$ordenacion.criteria[].key$ $ordenacion.criteria[].value$
 			</iterate>
- 		</dynamic>
+		</dynamic>
 	</sql>
 
 	<select id="numeroLetrados" parameterClass="java.util.Map" resultClass="Integer">
-		SELECT count(*)
-		<include refid="Pruebas.letradosFromWhere"/>
+		<isNotEmpty property="letrado.residencia">
+			SELECT count(1) from(
+				SELECT count(1)
+				<include refid="Censo.letradosFromWhere" />
+			)
+		</isNotEmpty>
+		<isEmpty property="letrado.residencia">
+			SELECT count(1)
+			<include refid="Censo.letradosFromWhere" />
+		</isEmpty>
 	</select>
 
 	<sql id="selectLetrados">
-		SELECT p.NIFCIF, p.NOMBRE, p.APELLIDOS1, p.APELLIDOS2, p.FECHANACIMIENTO, p.IDPERSONA, c.IDINSTITUCION, c.NOAPARECERREDABOGACIA
-		<include refid="Pruebas.letradosFromWhere"/>
+		SELECT p.idpersona, p.NIFCIF, p.NOMBRE, p.APELLIDOS1, p.APELLIDOS2,
+		p.FECHANACIMIENTO, c.IDINSTITUCION, c.NOAPARECERREDABOGACIA
+		<include refid="Censo.letradosFromWhere" />
 	</sql>
 
-	<select id="listadoLetrados" parameterClass="java.util.Map" resultClass="letrado">
-		<include refid="Pruebas.selectLetrados"/>
-		<include refid="Pruebas.ordenacion"/>
+	<select id="listadoLetrados" parameterClass="java.util.Map"	resultClass="letrado">
+		<include refid="Censo.selectLetrados" />
+		<include refid="Censo.ordenacion" />
+	</select>
+	
+	<select id="getAllLetrados" parameterClass="java.util.Map" resultClass="letrado">
+		<include refid="Censo.selectLetrados" />
 	</select>
 
-	<select id="paginaLetrados" parameterClass="java.util.Map" resultClass="letrado">
-		select * 
+	<select id="paginaLetrados" parameterClass="java.util.Map"
+		resultMap="letradoResult">
+		select *
 		from (select a.*, rownum rnum
-				from (<include refid="Pruebas.selectLetrados"/>
-					  <include refid="Pruebas.ordenacion"/>) a
-				where rownum &lt;= #paginador.lastRecord#)
-		where rnum &gt;= #paginador.firstRecord#
+		from (
+		<include refid="Censo.selectLetrados" />
+		<include refid="Censo.ordenacion" />
+		)a 
+		where rownum &lt;= #paginador.lastRecord#
+		)
+		where rnum &gt;=
+		#paginador.firstRecord#
 	</select>
+	
+	
+	
+	
+	
+	<resultMap id="colegiadoResult" class="colegiado">
+		<result property="idPersona" column="idpersona" />
+		<result property="idInstitucion" column="idinstitucion" />
+		<result property="nombreInstitucion" column="abreviatura" />
+		<result property="nif" column="nifcif" />
+		<result property="nColegiado" column="nColegiado" />
+		<result property="nombre" column="nombre" />
+		<result property="apellidos1" column="apellidos1" />
+		<result property="apellidos2" column="apellidos2" />
+		<result property="fechaNacimiento" column="fechaNacimiento" />
+		<result property="fechaIncorporacionDesde" column="fechaIncorporacion" />
+		<result property="noAparecerRedAbogacia" column="noAparecerRedAbogacia" />
+		<result property="residente" column="situacionResidente" />
+		<result property="letrado" column="letrado" />
+	</resultMap>
+
+	<resultMap id="institucionResult" class="institucion">
+		<result property="id" column="id" />
+		<result property="nombre" column="nombre" />
+	</resultMap>
+
+	<resultMap id="valueKeyResult" class="valueKey">
+		<result property="key" column="key" />
+		<result property="value" column="value" />
+	</resultMap>
+	
+	<sql id="esLetrado">
+	    SELECT nvl(cli.letrado,0)  
+	      FROM cen_cliente cli
+	     WHERE cli.idpersona = c.idpersona
+	       AND cli.idinstitucion = #idInstitucion#           
+	</sql>
+	
+	<sql id="colegiosDeConsejo">
+		select idinstitucion as ID 
+		  from cen_institucion 
+    	connect by prior idinstitucion=cen_inst_idinstitucion start with idinstitucion=#colegiado.idInstitucion# 
+	</sql>
+	
+	<select id="selectEstadoColegial" resultClass="String">
+		SELECT f_siga_getrecurso(cen_estadocolegial.descripcion, #idioma#) estadoColegial
+          FROM cen_estadocolegial
+         WHERE cen_estadocolegial.idestado = f_siga_gettipocliente(#idPersona#, #idInstitucion#, SYSDATE)            
+	</select>
+
+	<select id="selectColegiosNoConsejo" resultMap="institucionResult">
+		SELECT idinstitucion as ID, abreviatura as nombre 
+	  	  FROM cen_institucion where idinstitucion!=2000 and idinstitucion &lt; 3000 
+	   CONNECT BY PRIOR idinstitucion=cen_inst_idinstitucion start with idinstitucion=#idInstitucion#
+	     ORDER BY nombre
+	</select>
+	
+	<select id="selectColegiosDeConsejo" resultMap="institucionResult">
+		SELECT idinstitucion as ID, abreviatura as nombre 
+		  FROM cen_institucion 
+    	CONNECT BY PRIOR idinstitucion=cen_inst_idinstitucion start with idinstitucion=#idInstitucion# 
+    	ORDER BY nombre
+	</select>	
+	
+	<sql id="colegiadosFromWhere">
+		FROM CEN_PERSONA p, CEN_CLIENTE c, CEN_COLEGIADO col, CEN_INSTITUCION INS
+       WHERE p.idpersona=c.idpersona
+		 AND col.idpersona=p.idpersona
+   		 AND c.idinstitucion=col.idInstitucion
+		 AND c.idinstitucion=ins.idInstitucion
+		<dynamic>
+			<isEqual property="colegiado.busquedaExacta" compareValue="true">
+				<isNotEmpty prepend="AND" property="colegiado.idInstitucion">
+					c.idinstitucion in (<include refid="Censo.colegiosDeConsejo" />)
+				</isNotEmpty>
+				<isNotEmpty prepend="AND" property="colegiado.nombre">
+					p.nombre=#colegiado.nombre#
+				</isNotEmpty>
+
+				<!-- APELLIDOS -->
+				<isNotEmpty prepend="AND" property="colegiado.apellidos1">
+					(p.apellidos1=#colegiado.apellidos1#
+					<isNotEmpty prepend="OR" property="colegiado.apellidos2">
+						(p.apellidos1=#colegiado.apellidos1# AND
+						p.apellidos2=#colegiado.apellidos2#)
+					</isNotEmpty>
+					)
+				</isNotEmpty>
+				<isEmpty property="colegiado.apellidos1">
+					<isNotEmpty prepend="AND" property="colegiado.apellidos2">
+						(p.apellidos2=#colegiado.apellidos2# OR regexp_like(p.apellidos1,#colegiado.apellidos2#))
+					</isNotEmpty>
+				</isEmpty>
+
+				<isNotEmpty prepend="AND" property="colegiado.nif">
+					p.nifcif=#colegiado.nif#
+				</isNotEmpty>
+
+				<isNotEmpty prepend="AND" property="colegiado.nColegiado">
+           			LTRIM(DECODE(col.COMUNITARIO, 
+           						 '1',
+                            	 col.NCOMUNITARIO,
+                            	 col.NCOLEGIADO), '0') = LTRIM(#colegiado.nColegiado#, '0')
+                </isNotEmpty>
+			</isEqual>
+
+			<isNotEqual property="colegiado.busquedaExacta" compareValue="true">
+				<isNotEmpty prepend="AND" property="colegiado.idInstitucion">
+					c.idinstitucion in (<include refid="Censo.colegiosDeConsejo" />)
+				</isNotEmpty>
+				<isNotEmpty prepend="AND" property="colegiado.nombre">
+					regexp_like(p.nombre,#colegiado.nombre#)
+				</isNotEmpty>
+
+				<!-- APELLIDOS -->
+				<isNotEmpty prepend="AND" property="colegiado.apellidos1">
+					(
+					regexp_like(p.apellidos1,#colegiado.apellidos1#)
+					<isNotEmpty prepend="OR" property="colegiado.apellidos2">
+						(
+						regexp_like(p.apellidos1,#colegiado.apellidos1#)
+						AND
+						regexp_like(p.apellidos2,#colegiado.apellidos2#)
+						)
+					</isNotEmpty>
+					)
+				</isNotEmpty>
+				<isEmpty property="colegiado.apellidos1">
+					<isNotEmpty prepend="AND" property="colegiado.apellidos2">
+						regexp_like(p.apellidos2,#colegiado.apellidos2#)
+					</isNotEmpty>
+				</isEmpty>
+
+				<isNotEmpty prepend="AND" property="colegiado.nif">
+					regexp_like(p.nifcif,#colegiado.nif#)
+				</isNotEmpty>
+
+				<isNotEmpty prepend="AND" property="colegiado.nColegiado">
+           			LTRIM(DECODE(col.COMUNITARIO, 
+           						 '1',
+                            	 col.NCOMUNITARIO,
+                            	 col.NCOLEGIADO), '0') = LTRIM(#colegiado.nColegiado#, '0')
+                </isNotEmpty>
+
+				<isNotEmpty prepend="AND" property="colegiado.gruposFijosIdGrupo">
+					EXISTS
+	         		(SELECT 1
+	                  FROM CEN_GRUPOSCLIENTE_CLIENTE
+	                 WHERE CEN_GRUPOSCLIENTE_CLIENTE.IDPERSONA = c.IDPERSONA
+	                   AND CEN_GRUPOSCLIENTE_CLIENTE.IDINSTITUCION = c.IDINSTITUCION
+	                   AND CEN_GRUPOSCLIENTE_CLIENTE.IDGRUPO = #colegiado.gruposFijosIdGrupo#
+	                   AND CEN_GRUPOSCLIENTE_CLIENTE.IDINSTITUCION_GRUPO = #colegiado.gruposFijosIdInstitucion#)
+				</isNotEmpty>
+
+				<isNotEmpty prepend="AND" property="colegiado.sexo">
+					regexp_like(p.sexo,#colegiado.sexo#)
+				</isNotEmpty>
+
+				<isNotEmpty prepend="AND" property="colegiado.ejerciente">
+					col.SITUACIONEJERCICIO = #colegiado.ejerciente#
+				</isNotEmpty>
+
+				<isNotEmpty prepend="AND" property="colegiado.residente">
+					col.SITUACIONRESIDENTE = #colegiado.residente#
+				</isNotEmpty>
+				
+				<isNotEmpty prepend="AND" property="colegiado.comunitario">
+					col.COMUNITARIO = #colegiado.comunitario#
+				</isNotEmpty>
+				
+				<isNotEmpty prepend="AND" property="colegiado.fechaIncorporacionDesde">
+		        	trunc(col.FECHAINCORPORACION) &gt;= trunc(#colegiado.fechaIncorporacionDesde#)
+				</isNotEmpty>
+
+				<isNotEmpty prepend="AND" property="colegiado.fechaIncorporacionHasta">
+           			trunc(col.FECHAINCORPORACION) &lt;= trunc(#colegiado.fechaIncorporacionHasta#)
+				</isNotEmpty>
+
+				<isNotEmpty prepend="AND" property="colegiado.domicilio">
+		        	EXISTS
+		         		(SELECT CEN_DIRECCIONES.DOMICILIO
+		               	  FROM CEN_DIRECCIONES
+		                 WHERE CEN_DIRECCIONES.IDINSTITUCION = c.IDINSTITUCION
+		                   AND CEN_DIRECCIONES.IDPERSONA = c.IDPERSONA
+		                   AND CEN_DIRECCIONES.FECHABAJA is null
+		                   AND regexp_like(CEN_DIRECCIONES.DOMICILIO, '#colegiado.domicilio#'))
+				</isNotEmpty>
+				<isNotEmpty prepend="AND" property="colegiado.codigoPostal">
+		        	EXISTS
+		         		(SELECT CEN_DIRECCIONES.CODIGOPOSTAL
+		                  FROM CEN_DIRECCIONES
+		                 WHERE CEN_DIRECCIONES.IDINSTITUCION = c.IDINSTITUCION
+		                   AND CEN_DIRECCIONES.IDPERSONA = c.IDPERSONA
+		                   AND CEN_DIRECCIONES.FECHABAJA is null
+		                   AND CEN_DIRECCIONES.CODIGOPOSTAL = #colegiado.codigoPostal#)
+				</isNotEmpty>
+				<isNotEmpty prepend="AND" property="colegiado.telefono">
+					EXISTS
+						(SELECT 1
+		                  FROM CEN_DIRECCIONES
+		                 WHERE CEN_DIRECCIONES.IDINSTITUCION = c.IDINSTITUCION
+		                   AND CEN_DIRECCIONES.IDPERSONA = c.IDPERSONA
+		                   AND CEN_DIRECCIONES.FECHABAJA is null
+		                   AND (regexp_like(CEN_DIRECCIONES.TELEFONO1, #colegiado.telefono#) OR
+		                       regexp_like(CEN_DIRECCIONES.TELEFONO2, #colegiado.telefono#) OR
+		                       regexp_like(CEN_DIRECCIONES.MOVIL, #colegiado.telefono#)))
+				</isNotEmpty>
+				<isNotEmpty prepend="AND" property="colegiado.fax">
+					EXISTS
+			         (SELECT 1
+		                  FROM CEN_DIRECCIONES
+		                 WHERE CEN_DIRECCIONES.IDINSTITUCION = c.IDINSTITUCION
+		                   AND CEN_DIRECCIONES.IDPERSONA = c.IDPERSONA
+		                   AND CEN_DIRECCIONES.FECHABAJA is null
+		                   AND (regexp_like(CEN_DIRECCIONES.FAX1, #colegiado.fax#) OR
+		                       regexp_like(CEN_DIRECCIONES.FAX2, #colegiado.fax#)))
+				</isNotEmpty>
+				<isNotEmpty prepend="AND" property="colegiado.correoElectronico">
+					EXISTS
+                 	(SELECT 1
+                       FROM CEN_DIRECCIONES
+                      WHERE CEN_DIRECCIONES.IDINSTITUCION = c.IDINSTITUCION
+                        AND CEN_DIRECCIONES.IDPERSONA = c.IDPERSONA
+                        AND CEN_DIRECCIONES.FECHABAJA is null
+                        AND regexp_like(CEN_DIRECCIONES.CORREOELECTRONICO,#colegiado.correoElectronico#))
+                </isNotEmpty>
+				<isNotEmpty prepend="AND" property="colegiado.factFechaAltaDesde">
+					EXISTS
+		         		(SELECT 1
+		                  FROM FAC_FACTURA
+		                 WHERE FAC_FACTURA.IDPERSONA = c.IDPERSONA
+		                   AND FAC_FACTURA.IDINSTITUCION = c.IDINSTITUCION
+		                   AND trunc(FAC_FACTURA.FECHAEMISION) &gt;=  trunc(#colegiado.factFechaAltaDesde#)
+						<isNotEmpty prepend="AND" property="colegiado.factFechaAltaHasta">
+		                   trunc(FAC_FACTURA.FECHAEMISION) &lt;= trunc(#colegiado.factFechaAltaHasta#)
+						</isNotEmpty>
+						)
+				</isNotEmpty>
+				<isEmpty property="colegiado.factFechaAltaDesde">
+					<isNotEmpty prepend="AND" property="colegiado.factFechaAltaHasta">
+					EXISTS
+		         		(SELECT 1
+		                  FROM FAC_FACTURA
+		                 WHERE FAC_FACTURA.IDPERSONA = c.IDPERSONA
+		                   AND FAC_FACTURA.IDINSTITUCION = c.IDINSTITUCION
+		                   AND trunc(FAC_FACTURA.FECHAEMISION) &lt;= trunc(#colegiado.factFechaAltaHasta#))
+					</isNotEmpty>
+				</isEmpty>
+				<isNotEmpty prepend="AND" property="colegiado.fechaNacimientoDesde">
+		        	trunc(p.FECHANACIMIENTO) &gt;= trunc(#colegiado.fechaNacimientoDesde#)
+				</isNotEmpty>
+
+				<isNotEmpty prepend="AND" property="colegiado.fechaNacimientoHasta">
+           			trunc(p.FECHANACIMIENTO) &lt;= trunc(#colegiado.fechaNacimientoHasta#)
+				</isNotEmpty>				
+				<isNotEmpty prepend="AND" property="colegiado.tipoApunteCV">
+		            EXISTS
+			        (SELECT 1
+	                  FROM CEN_DATOSCV
+	                 WHERE c.IDPERSONA = CEN_DATOSCV.IDPERSONA
+	                   AND c.IDINSTITUCION = CEN_DATOSCV.IDINSTITUCION
+	                   AND CEN_DATOSCV.IDTIPOCV = #colegiado.tipoApunteCV#
+	                   AND CEN_DATOSCV.FECHABAJA IS NULL)
+				</isNotEmpty>				
+				<isNotEmpty prepend="AND" property="colegiado.idTipoApunteCVSubtipo1">
+           			EXISTS
+        			(SELECT 1
+	                  FROM CEN_DATOSCV
+	                 WHERE c.IDPERSONA = CEN_DATOSCV.IDPERSONA
+	                   AND c.IDINSTITUCION = CEN_DATOSCV.IDINSTITUCION
+	                   AND CEN_DATOSCV.IDTIPOCV = #colegiado.tipoApunteCV#
+	                   AND CEN_DATOSCV.IDTIPOCVSUBTIPO1 = #colegiado.idTipoApunteCVSubtipo1#
+	                   AND CEN_DATOSCV.IDINSTITUCION_SUBT1 = #colegiado.tipoApunteCVSubtipo1IdInstitucion#
+	                   AND CEN_DATOSCV.FECHABAJA IS NULL)
+				</isNotEmpty>				
+				<isNotEmpty prepend="AND" property="colegiado.idTipoApunteCVSubtipo2">
+		           EXISTS
+			       (SELECT 1
+	                  FROM CEN_DATOSCV
+	                 WHERE c.IDPERSONA = CEN_DATOSCV.IDPERSONA
+	                   AND c.IDINSTITUCION = CEN_DATOSCV.IDINSTITUCION
+	                   AND CEN_DATOSCV.IDTIPOCV = #colegiado.tipoApunteCV#
+	                   AND CEN_DATOSCV.IDTIPOCVSUBTIPO2 = #colegiado.idTipoApunteCVSubtipo2#
+	                   AND CEN_DATOSCV.IDINSTITUCION_SUBT2 = #colegiado.tipoApunteCVSubtipo2IdInstitucion#
+	                   AND CEN_DATOSCV.FECHABAJA IS NULL)
+				</isNotEmpty>	
+				<isNotEmpty property="colegiado.estadoColegial">
+           			AND 1 in (select 1
+                       from CEN_DATOSCOLEGIALESESTADO
+                      where CEN_DATOSCOLEGIALESESTADO.IDINSTITUCION = c.IDINSTITUCION
+                        and CEN_DATOSCOLEGIALESESTADO.IDPERSONA = c.IDPERSONA
+                        and FECHAESTADO =
+                            (select max(FECHAESTADO)
+                               from CEN_DATOSCOLEGIALESESTADO
+                              where IDINSTITUCION = c.IDINSTITUCION
+                                and IDPERSONA = c.IDPERSONA
+                                and FECHAESTADO &lt;= sysdate)
+                	<isEqual property="colegiado.estadoColegial" compareValue="1020">
+                        and IDESTADO in (20, 10))	
+                    </isEqual>
+                	<isNotEqual property="colegiado.estadoColegial" compareValue="1020">
+                        and IDESTADO in (#colegiado.estadoColegial#))	
+                    </isNotEqual>
+                </isNotEmpty>				
+							
+			</isNotEqual>
+		</dynamic>
+	</sql>
+
+
+	<select id="numeroColegiados" parameterClass="java.util.Map" resultClass="Integer">
+		SELECT count(1)
+		<include refid="Censo.colegiadosFromWhere" />
+	</select>
+
+	<sql id="selectColegiados">
+		SELECT 
+ 			p.nifcif,
+            nvl(c.noaparecerredabogacia, '0') noaparecerredabogacia,
+            DECODE(col.comunitario,'1',col.ncomunitario,col.ncolegiado) AS ncolegiado,
+            p.nombre,
+            p.apellidos1,
+            p.apellidos2,
+            p.fechanacimiento,
+            col.fechaincorporacion,
+            col.idpersona,
+            col.idinstitucion,
+            ins.abreviatura,
+            col.situacionresidente,
+            (<include refid="Censo.esLetrado" />) as letrado
+            
+		<include refid="Censo.colegiadosFromWhere" />
+	</sql>
+
+	<select id="getAllColegiados" parameterClass="java.util.Map" resultClass="colegiado">
+		<include refid="Censo.selectColegiados" />
+	</select>
+
+	<select id="listadoColegiados" parameterClass="java.util.Map" resultClass="colegiado">
+		<include refid="Censo.selectColegiados" />
+		<include refid="Censo.ordenacion" />
+	</select>
+
+	<select id="gruposFijos" resultMap="valueKeyResult">
+		SELECT IDGRUPO || '@@@' || IDINSTITUCION AS key,
+		       F_SIGA_GETRECURSO(NOMBRE, #idioma#) as value
+		  FROM CEN_GRUPOSCLIENTE
+		 WHERE IDINSTITUCION IN
+		       (SELECT IDINSTITUCION
+		          FROM CEN_INSTITUCION
+		         START WITH IDINSTITUCION = #idInstitucion#
+		       CONNECT BY PRIOR CEN_INST_IDINSTITUCION = IDINSTITUCION)
+      ORDER BY value
+	</select>
+
+	<select id="tipoColegiacion" resultMap="valueKeyResult">
+		Select IDESTADO as key,
+		       F_SIGA_GETRECURSO(DESCRIPCION, #idioma#) as value
+		  From CEN_ESTADOCOLEGIAL
+		 WHERE CEN_ESTADOCOLEGIAL.IDESTADO NOT IN (20, 10)
+		UNION
+		Select 1020 as key,
+		       f_siga_getrecurso_etiqueta('censo.busquedaClientesAvanzada.literal.alta',
+		                                  #idioma#) as value
+		  From DUAL
+		 ORDER BY value
+	</select>
+
+	<select id="tiposCV" resultMap="valueKeyResult">
+		SELECT idTipoCv AS key,
+		       f_siga_getrecurso(descripcion, 1) AS value
+		  FROM Cen_TiposCv
+		 ORDER BY value
+	</select>
+	
+
+	<select id="comisiones" resultMap="valueKeyResult">
+		SELECT (idtipocvsubtipo1 || '@@@' || idinstitucion) AS key,
+		       F_SIGA_GETRECURSO(descripcion, #idioma#) AS value
+		  FROM cen_tiposcvsubtipo1
+		 WHERE IDTIPOCV = #idTipoCV#
+		   AND idinstitucion IN (2000, #idInstitucion#)
+		 ORDER BY value
+	</select>
+	
+	<select id="cargos" resultMap="valueKeyResult">
+		SELECT (idtipocvsubtipo2 || '@@@' || idinstitucion) AS key,
+		       F_SIGA_GETRECURSO(descripcion,  #idioma#) AS value
+		  FROM cen_tiposcvsubtipo2
+		 WHERE IDTIPOCV = #idTipoCV#
+		   AND idinstitucion IN (2000, #idInstitucion#)
+		 ORDER BY value
+	</select>
+	
+	<select id="paginaColegiados" parameterClass="java.util.Map" resultMap="colegiadoResult">
+		select *
+		from (select a.*, rownum rnum
+		from (
+		<include refid="Censo.selectColegiados" />
+		<include refid="Censo.ordenacion" />
+		)a 
+		where rownum &lt;= #paginador.lastRecord#
+		)
+		where rnum &gt;=
+		#paginador.firstRecord#
+	</select>
+	
+	
+	
 </sqlMap>

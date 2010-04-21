@@ -18,51 +18,25 @@
 
 package com.siga.general;
 
-
-
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
-import java.util.Vector;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.transaction.UserTransaction;
-
-import net.sourceforge.ajaxtags.xml.AjaxXmlBuilder;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.ClsLogging;
-import com.atos.utils.ReadProperties;
-import com.atos.utils.RowsContainer;
-import com.atos.utils.UsrBean;
-import com.siga.Utilidades.AjaxCollectionXmlBuilder;
-import com.siga.Utilidades.AjaxMultipleCollectionXmlBuilder;
-import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.administracion.SIGAConstants;
-
-import es.satec.businessManager.BusinessManager;
 
 
-public abstract class MasterAction extends SIGAActionBase {
-	private static BusinessManager businessManager=null;
-	/** Constante con el mapping "notImplemented" */
+public abstract class MasterAction extends SIGAAuxAction {
+	
+	/* Constante con el mapping "notImplemented" */
 	public static final String mapSinDesarrollar = "notImplemented";
 	public final String paginador = "DATAPAGINADOR";
 	public final String paginadorModal = "DATAPAGINADORMODAL";
@@ -70,106 +44,8 @@ public abstract class MasterAction extends SIGAActionBase {
 	protected final String separador = "||";
 	//public final String sPrefijoDownload = "download:/";
 	
-	/** 
-	 *  Funcion que atiende a las peticiones. Segun el valor del parametro modo del formulario ejecuta distintas acciones
-	 * @param  mapping - Mapeo de los struts
-	 * @param  formulario -  Action Form asociado a este Action
-	 * @param  request - objeto llamada HTTP 
-	 * @param  response - objeto respuesta HTTP
-	 * @return  String  Destino del action  
-	 */
 	
-	public final ActionForward execute (ActionMapping mapping,
-			ActionForm formulario,
-			HttpServletRequest request, 
-			HttpServletResponse response) {
-
-		Date ini = new Date();
-		String sali = "";
-		UsrBean usrbean=null;
-		String aux = "";
-		try {
-			// RGG 03-03-2005 cambio para controlar la sesion
-			try {
-				testSession(request,response,this.getServlet());
-			} catch (ClsExceptions e) {
-
-				ClsLogging.writeFileLog("USRBEAN nulo",request,5);
-				return mapping.findForward("inicioGlobal");
-			}
-			
-			String access=testAccess(request);
-			if (!access.equals(SIGAConstants.ACCESS_READ) && 
-					!access.equals(SIGAConstants.ACCESS_FULL)) {
-				ClsLogging.writeFileLog("Acceso denegado",request,3);
-				return mapping.findForward("accesodenegado");
-			}
-			
-			HttpSession ses = request.getSession();
-			if (ses.isNew())
-			{
-				ClsLogging.writeFileLogError("Sesión nueva",request,3);
-				return mapping.findForward("inicioGlobal");
-			}
-			usrbean=(UsrBean)ses.getAttribute("USRBEAN");
-			if (usrbean==null)
-			{
-				ClsLogging.writeFileLog("USRBEAN nulo",request,5);
-		        return mapping.findForward("inicioGlobal");
-			}
-			// RGG 03-03-2005 FIN CAMBIO 
-			
-		} catch(ClsExceptions e)		{
-			SIGAException ce = new SIGAException(e);
-			ce.prepare(request);
-			return mapping.findForward("exception");
-		} catch (Exception e) { 
-			SIGAException ce = new SIGAException(e);
-			ce.prepare(request);
-			return mapping.findForward("exception");
-		}
-		try {
-			//ClsLogging.writeFileLog("MasterAction modo="+((MasterForm)formulario).getModo(),10);
-			if(getBusinessManager()==null)
-				businessManager = BusinessManager.getInstance(SIGAReferences.getInputReference(SIGAReferences.RESOURCE_FILES.ATOS_BUSINESS_CONFIG));
-			
-			MasterForm miForm = (MasterForm) formulario;
-			if (miForm != null) {
-				String accion = miForm.getModo();
-				aux=accion;
-				sali = " URL:" +request.getRequestURL() + "?" + accion + " +  usuario:" + usrbean.getUserName()  + " " + usrbean.getUserDescription() + " + idPersona:" + usrbean.getIdPersona() + " +  Transaccion:" + usrbean.getStrutsTrans() + " + sesionID:" +request.getSession().getId();
-				ClsLogging.writeFileLog("++++++TRANSACCION++++++++  " + sali,10);
-				// RGG 21/09/2007 Muestra la informacion de la session
-				// SOLAMENTE CUANDO DEGUB LEVEL DE clog.properties A 11
-				informacionSesion(request);
-				
-			}
-
-			// Comprueba la utilizacion de la fila seleccionada en la tablas
-			this.compruebaFilaSeleccionada(miForm, request);
-
-			return executeInternal(mapping,formulario,request,response);
-			
-		} catch (SIGAException se) {
-			//ClsLogging.writeFileLogError(se.getMessage(),se,3);
-			if (formulario!=null && "TRUE".equalsIgnoreCase(((MasterForm)formulario).getModal()))  {
-				request.setAttribute("exceptionTarget", "parent.modal");
-			}
-			se.prepare(request);
-			return mapping.findForward("exception");
-		} finally {
-			Date fin = new Date();
-			ClsLogging.writeFileLog("++++++    FIN    ++++++++  TIEMPO:" +new Long((fin.getTime()-ini.getTime())).toString() + " milisegundos. + " + sali,10);
-			// Control de transacciones largas
-			if ((fin.getTime()-ini.getTime())>3000) {
-			    Date dat = Calendar.getInstance().getTime();
-			    SimpleDateFormat sdfLong = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); 
-			    String fecha = sdfLong.format(dat);
-			    ClsLogging.writeFileLog(fecha + ",==> SIGA: Control de tiempo de transacciones (>3 seg.)," +request.getRequestURL() + "?" + aux +  "," + usrbean.getLocation() + "," + usrbean.getUserName() +","+new Long((fin.getTime()-ini.getTime())).toString(),10);
-			}
-		}
-	}
-	
+		
 	protected ActionForward executeInternal(ActionMapping mapping,
 			ActionForm formulario,
 			HttpServletRequest request, 
@@ -177,12 +53,16 @@ public abstract class MasterAction extends SIGAActionBase {
 		
 		String mapDestino = "exception";
 		MasterForm miForm = null;
+		
+
 		try {
 			do {
 				miForm = (MasterForm) formulario;
 				if (miForm == null) {
 					break;
 				}
+				
+				compruebaFilaSeleccionada(miForm, request);
 				
 				String accion = miForm.getModo();
 				
@@ -533,42 +413,7 @@ public abstract class MasterAction extends SIGAActionBase {
 		return mapSinDesarrollar;
 	}
 	
-	/** 
-	 *  Funcion que recupera el userName
-	 *  @param HttpServletRequest
-	 *  @return Integer con el userName
-	 */
-	protected Integer getUserName(HttpServletRequest request) {
-		return new Integer (this.getUserBean(request).getUserName());
-	}
-	
-	/** 
-	 *  Funcion que recupera el perfil
-	 *  @param HttpServletRequest
-	 *  @return String con el perfil
-	 */
-	/*	protected String getProfileName(HttpServletRequest request) {
-	 return (String) this.getUserBean(request).getProfile();
-	 } */
-	
-	/** 
-	 *  Funcion que recupera la institucion
-	 *  @param HttpServletRequest
-	 *  @return Integer con el ID de la institucion
-	 */
-	protected Integer getIDInstitucion(HttpServletRequest request) {
-		return new Integer(this.getUserBean(request).getLocation());
-	}
-	
-	/** 
-	 *  Funcion que recupera el idioma
-	 *  @param HttpServletRequest
-	 *  @return String con el idioma
-	 * 
-	 */
-	protected String getLenguaje(HttpServletRequest request) {
-		return (String) this.getUserBean(request).getLanguage();
-	}
+
 	
 	/** 
 	 *  Funcion que prepara la salida en caso de error
@@ -657,81 +502,13 @@ public abstract class MasterAction extends SIGAActionBase {
 		return "exito"; 
 	}
 	
-	/** Funcion testAccess
-	 *  Comprueba los derechos de acceso sobre procesos del usuario 
-	 *   Devuelve el acceso sobre el proceso invocado 
-	 *  @param HttpServletRequest
-	 *  @exception ClsException 
-	 * @exception  SIGAException  Errores de aplicación
-	 * */
-	
-	private String testAccess(HttpServletRequest request) throws ClsExceptions, SIGAException{
-		String uri = request.getRequestURI();
-		String proceso=request.getParameter("process");
-		return testAccess(uri,proceso,request);
-	}
-	protected String testAccess(String uri,String proceso,HttpServletRequest request) throws ClsExceptions, SIGAException{
-		UsrBean usrbean=(UsrBean)request.getSession().getAttribute(ClsConstants.USERBEAN);
-//		UsrBean usrbean=(UsrBean)request.getSession().getAttribute("USRBEAN");
-		
-		// Si venimos por SolicitarIncorporacionAccesoDirectoAction no comprobamos el tipo de acceso porque 
-		// no vamos a entrar a la aplicacion, sola a una parte concreta: SolicitarIncorporacion 
-		
-		if (uri != null) {
-			if (uri.equals("/SIGA/SIN_SolicitudIncorporacion.do") 	&& 
-					usrbean.getUserName().equals("-1")					&&
-					usrbean.getUserDescription().equals("NUEVO_USUARIO")) {
-				usrbean.setAccessType(SIGAConstants.ACCESS_FULL);
-				return SIGAConstants.ACCESS_FULL;
-			}
-		}
-		////////////////
-		if (usrbean==null) { 
-			ClsExceptions e=new ClsExceptions("Usuario inválido. Es necesario firmar antes de utilizar la aplicación");
-			e.setErrorCode("USERNOVALID");
-			throw e;
-		}
-		String access=SIGAConstants.ACCESS_DENY;
-		
-		if (proceso==null) {
-			if (uri==null) throw new ClsExceptions("URL no reconocida por SIGA");
-			int idexofdo=uri.indexOf(".do");
-			if (idexofdo==-1) throw new ClsExceptions("URL no reconocida por SIGA ("+uri+")");
-			int indexofslash=uri.indexOf("/",1);
-			if (indexofslash==-1) throw new ClsExceptions("URL no reconocida por SIGA ("+uri+")");
-			proceso=uri.substring(indexofslash+1,idexofdo);
-			access=usrbean.getAccessForProcessName(proceso);
-		} else {
-			access=usrbean.getAccessForProcessNumber(proceso);
-		}
-		return access;
-	}
 	
 	
 	protected void throwExcp(String mensaje, Exception e, UserTransaction tx) throws SIGAException {
 		throwExcp(mensaje, null,e, tx);	
 	}
 	
-	protected void throwExcp(String mensaje, String[] params, 
-			Exception e, UserTransaction tx) throws SIGAException {
-		try {
-			if (tx!=null) {
-				tx.rollback();
-			}
-		} catch (Exception el) {
-			//el.printStackTrace();
-		}
-		if (e!=null && e instanceof SIGAException) {
-			((SIGAException)e).setParams(params);
-			throw (SIGAException)e; 
-		}
-		if (e!=null) {
-			SIGAException se = new SIGAException(mensaje,e,params);
-			// RGG Indico que es clsExceptions para  mostrar el codigo de error  
-			se.setClsException(true);
-			throw se;
-		}
-	}
+
 	
 	protected void throwExcpNoAlert(String mensaje, Exception e, UserTransaction tx) throws SIGAException {
 		throwExcpNoAlert(mensaje, null,e, tx);	
@@ -803,92 +580,6 @@ public abstract class MasterAction extends SIGAActionBase {
 	}
 
 
-	private void informacionSesion (HttpServletRequest request) 
-	{
-	    int loglevel = 10;
-		try {
-		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//			ReadProperties rp=new ReadProperties("SIGA.properties");
-			try
-			{
-			    // Obtenemos el loglevel de properties
-				loglevel = Integer.parseInt(rp.returnProperty("LOG.level").trim());
-			} catch (Exception nfe){ }
-			
-			// Si el loglevel es 11 entonces muestra el valor de la session
-			if (loglevel>=11) {
-			    HttpSession ses = request.getSession();
-			    Enumeration enum1 = ses.getAttributeNames();
-			    System.out.println("-----------------------------------");
-			    System.out.println("-------- datos de sesion ----------");
-			    while (enum1.hasMoreElements()) {
-			        String clave =(String) enum1.nextElement();
-			        Object valor = ses.getAttribute(clave);
-			        if (valor instanceof String) {
-			            System.out.println(clave + ": " + valor.toString());
-			        } else 
-			        if (valor instanceof Integer) {
-			            System.out.println(clave + ": " + ((Integer)valor).toString());
-			        } else 
-			        if (valor instanceof Long) {
-			            System.out.println(clave + ": " + ((Long)valor).toString());
-			        } else 
-			        if (valor instanceof Double) {
-			            System.out.println(clave + ": " + ((Double)valor).toString());
-			        } else 
-			        if (valor instanceof Hashtable) {
-			            Hashtable ht = (Hashtable)valor;
-			            System.out.println(clave + " (Hashtable)");
-					    Enumeration enum2 = ht.keys();
-					    while (enum2.hasMoreElements()) {
-					        String clave2 =(String) enum2.nextElement();
-					        Object valor2 = ht.get(clave2);
-					        System.out.println("  - "+clave2 + ": " + valor2.toString() + "(" + valor2.getClass().getName()+")");
-					    }
-					} else 
-			        if (valor instanceof RowsContainer) {
-			            RowsContainer rc = (RowsContainer)valor;
-			            System.out.println(clave + " (RowsContainer)");
-			            Vector v = rc.getAll();
-			            for (int i=0;i<v.size();i++) {
-				            System.out.println("  - "+v.get(i).toString());
-			            }
-			        } else 
-			        if (valor instanceof Vector) {
-			            Vector v = (Vector)valor;
-			            System.out.println(clave + " (Vector)");
-			            for (int i=0;i<v.size();i++) {
-				            System.out.println("  - "+v.get(i).toString()  + "(" + v.get(i).getClass().getName()+")");
-			            }
-			        } else 
-			        if (valor instanceof ArrayList) {
-			            ArrayList v = (ArrayList)valor;
-			            System.out.println(clave + " (ArrayList)");
-			            for (int i=0;i<v.size();i++) {
-				            System.out.println("  - "+v.get(i).toString()  + "(" + v.get(i).getClass().getName()+")");
-			            }
-			        } else 
-			        if (valor instanceof UsrBean) {
-			            UsrBean u = (UsrBean)valor;
-			            System.out.println(clave + " (UsrBean)");
-			        } else 
-			        if (valor instanceof MasterForm) {
-			            System.out.println(clave + ": "+ "(" + valor.getClass().getName()+")");
-			        } else {
-			            System.out.println(clave + ": "+ "(" + valor.getClass().getName()+")");
-			        }
-
-			        System.out.println(". . . . . ");
-			        
-			    }
-			    System.out.println("-----------------------------------");
-			    
-			}
-		}
-		catch (Exception e){ 
-		    
-		}
-	}
 	protected String getIdPaginador(String tipoPaginador,String nameClass){
 		StringBuffer idPaginador = new StringBuffer();
 		idPaginador.append(tipoPaginador);
@@ -948,7 +639,6 @@ public abstract class MasterAction extends SIGAActionBase {
 			aSeleccionados = seleccionados.split(",");
 		}
 
-	    	
 	    	if( aSeleccionados!=null){
 		    	for (int i = 0; i < aSeleccionados.length; i++) {
 		    		String registro = aSeleccionados[i];
@@ -962,109 +652,10 @@ public abstract class MasterAction extends SIGAActionBase {
 		    		aniadeClaveBusqueda(clavesBusqueda, registroBusqueda);
 		    		if(!alClaves.contains(registroBusqueda))
 		    			alClaves.add(registroBusqueda);
-		    		
-		    		
-		    		
 				}
 	    	}
-
     	
     	return alClaves;
 	}
 
-	protected void respuestaAjax(AjaxXmlBuilder ajaxXmlBuilder, List<String> list, HttpServletResponse response) throws IOException {
-		ajaxXmlBuilder.setEncoding("ISO-8859-15");
-		for (int i = 0; i < list.size(); i++) {
-			ajaxXmlBuilder.addItem((String)list.get(i));
-		}
-		
-		response.setContentType("text/xml");
-	    response.setHeader("Cache-Control", "no-cache");
-	    /*PrintWriter pw = response.getWriter();
-	    String strBuilder = ajaxXmlBuilder.toString();
-	    ClsLogging.writeFileLog("VOLANTES EXPRESS:respuestaAjax.AjaxXmlBuilder"+strBuilder, 10);
-	    pw.write(strBuilder);
-	    pw.flush();
-	    pw.close();*/
-	    ServletOutputStream out = response.getOutputStream();
-	    String strBuilder = ajaxXmlBuilder.toString();
-	    ClsLogging.writeFileLog("VOLANTES EXPRESS:respuestaAjax.AjaxMultipleCollectionXmlBuilder"+strBuilder, 10);
-	    out.print(strBuilder);
-	    out.flush();
-	    out.close();
-
-	    
-	}
-	
-	@SuppressWarnings("unchecked")
-	protected void respuestaAjax(AjaxMultipleCollectionXmlBuilder builder, Collection<Collection> collection, HttpServletResponse response) throws IOException{
-		builder.setEncoding("ISO-8859-15");
-		builder.addItems(collection);
-		response.setContentType("text/xml");
-	    response.setHeader("Cache-Control", "no-cache");
-	    /*PrintWriter pw = response.getWriter();
-	    
-	    String strBuilder = builder.toString();
-	    ClsLogging.writeFileLog("VOLANTES EXPRESS:respuestaAjax.AjaxMultipleCollectionXmlBuilder"+strBuilder, 10);
-	    pw.write(strBuilder);
-	    pw.flush();
-	    pw.close();
-	    */
-	    ServletOutputStream out = response.getOutputStream();
-	    String strBuilder = builder.toString();
-	    ClsLogging.writeFileLog("VOLANTES EXPRESS:respuestaAjax.AjaxMultipleCollectionXmlBuilder"+strBuilder, 10);
-	    out.print(strBuilder);
-	    out.flush();
-	    out.close();
-	}
-
-	@SuppressWarnings("unchecked")
-	protected void respuestaAjax(AjaxCollectionXmlBuilder builder, Collection collection, HttpServletResponse response) throws IOException{
-		builder.setEncoding("ISO-8859-15");
-		builder.addItems(collection);
-		response.setContentType("text/xml");
-	    response.setHeader("Cache-Control", "no-cache");
-	   /* PrintWriter pw = response.getWriter();
-	    String strBuilder = builder.toString();
-	    ClsLogging.writeFileLog("VOLANTES EXPRESS:respuestaAjax.AjaxCollectionXmlBuilder"+strBuilder, 10);
-	    pw.write(strBuilder);
-	    pw.flush();
-	    pw.close();*/
-	    ServletOutputStream out = response.getOutputStream();
-	    String strBuilder = builder.toString();
-	    ClsLogging.writeFileLog("VOLANTES EXPRESS:respuestaAjax.AjaxMultipleCollectionXmlBuilder"+strBuilder, 10);
-	    out.print(strBuilder);
-	    out.flush();
-	    out.close();
-		
-	}
-	protected String descargaFicheroGlobal (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) 
-	throws SIGAException{
-		
-		File fichero = null;
-		String rutaFichero = null;
-		MasterForm miform = null;
-		
-		try {
-			//Obtenemos el formulario y sus datos:
-			miform = (MasterForm)formulario;
-			rutaFichero = miform.getRutaFichero();
-			fichero = new File(rutaFichero);
-			if(fichero==null || !fichero.exists()){
-				throw new SIGAException("messages.general.error.ficheroNoExiste"); 
-			}
-			request.setAttribute("nombreFichero", fichero.getName());
-			request.setAttribute("rutaFichero", fichero.getPath());
-			request.setAttribute("borrarFichero","true");
-
-			
-		}
-		catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null);
-		}
-		return "descargaFicheroGlobal";	
-	}
-	public static BusinessManager getBusinessManager() {
-		return businessManager;
-	}
 }

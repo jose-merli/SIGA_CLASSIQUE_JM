@@ -4,6 +4,8 @@
 		<transactionManager type="SQLMAP">
 			<property name="SqlMapConfigResource" value="SqlMapConfig.xml"/>
 		</transactionManager>
-   		<dao interface="es.satec.siga.util.daos.LetradoDao" implementation="es.satec.siga.util.daos.impl.IbatisLetradoDao"/>
+   		<dao interface="com.siga.censo.dao.LetradoDao" 	 implementation="com.siga.censo.dao.impl.IbatisLetradoDao"/>
+   		<dao interface="com.siga.censo.dao.ColegiadoDao" implementation="com.siga.censo.dao.impl.IbatisColegiadoDao"/>
+   		<dao interface="com.siga.censo.dao.CensoDao" 	 implementation="com.siga.censo.dao.impl.IbatisCensoDao"/>
 	</context>
 </daoConfig>

@@ -12,6 +12,8 @@ import org.apache.struts.upload.FormFile;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.general.MasterForm;
 import com.siga.beans.*;
+import com.siga.censo.vos.ColegiadoVO;
+import com.siga.comun.vos.Vo;
 
 /**
  * Clase action form del caso de uso DATOS GENERALES
@@ -796,6 +798,12 @@ import com.siga.beans.*;
 		this.numColegiado = numColegiado;
 	}
 	
+	public String getId() {
+		ColegiadoVO colegiado = new ColegiadoVO();
+		colegiado.setIdInstitucion(getIdInstitucion());
+		colegiado.setIdPersona(getIdPersona());
+		return colegiado.getId();
+	}
 	
 	
 		

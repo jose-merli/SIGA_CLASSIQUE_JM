@@ -15,6 +15,8 @@ package com.siga.censo.form;
 import com.atos.utils.GstDate;
 import com.siga.general.MasterForm;
 import com.siga.beans.*;
+import com.siga.censo.vos.ColegiadoVO;
+import com.siga.comun.vos.Vo;
 	
 
 public class DatosColegiacionForm extends MasterForm
@@ -106,4 +108,9 @@ public class DatosColegiacionForm extends MasterForm
 	public void setNumero(String numero) {
 		this.numero = numero;
 	}
+	
+	public String getId() {
+		return getIdPersona() + Vo.PK_SEPARATOR + getIdInstitucion();
+	}
+
 }

@@ -74,13 +74,11 @@ public class MasterReport  {
 	
 	    
 	    try {
-	        GstStringTokenizer st1 = new GstStringTokenizer(datosInforme,"%%%");
-		    while (st1.hasMoreTokens()) {
+	        String[] st1 = datosInforme.split("%%%");
+		    for (String registro: st1) {
 		        Hashtable ht = new Hashtable();
-		        String registro = st1.nextToken();
-		        GstStringTokenizer st = new GstStringTokenizer(registro,"##");
-			    while (st.hasMoreTokens()) {
-			        String dupla = st.nextToken();
+		        String[] registro2 = registro.split("##");
+			    for (String dupla: registro2) {
 			        String d[]= dupla.split("==");
 			        //Cuando no vienen datos completos es porque hay alguna funcionalidad que no requiere estos datos
 			        //ejemplo:idPersona del Certificado de IRPF. cuando se saca individulamente
