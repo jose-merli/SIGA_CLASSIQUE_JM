@@ -1705,10 +1705,6 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				
 				
 				
-				htCodigo.put(new Integer(2), anioDesigna);
-				htCodigo.put(new Integer(3), idTurno);
-				htCodigo.put(new Integer(4), numeroDesigna);
-
 				
 				//metemos la lista actuaciones 
 				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETACTUACIONESDESIGNA", "LISTA_ACTUACIONES_DESIGNA"));
@@ -1716,6 +1712,13 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				
 				
 				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETFIRSTASISDESIGNA", "FECHA_ASISTENCIA"));
+				
+				//Muestra la lista de los anioCaj/numeroCaj de los EJG, relacionados con la designa.
+				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETANIONUMEROCAJ", "LISTAANIONUMEROCAJ"));
+				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETNUMEROANIOCAJ", "LISTANUMEROANIOCAJ"));
+				
+				
+				
 				
 				
 				//metemos los interesados de la designa
@@ -2016,8 +2019,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				"INTERESADO.ANIOEJG || '/' || INTERESADO.NUMEJG)) AS NUMERO_EJG,"+
 				" INTERESADO.NOMBRE || ' ' || INTERESADO.APELLIDO1 || ' ' ||"+
 				" INTERESADO.APELLIDO2 AS NOMBRE_DEFENDIDO,"+
-				" INTERESADO.NIF AS NIF_DEFENDIDO,"+
-				
+				" INTERESADO.NIF AS NIF_DEFENDIDO,"+				
 				" INTERESADO.DIRECCION AS DOMICILIO_DEFENDIDO,"+
 				" INTERESADO.CODIGOPOSTAL AS CP_DEFENDIDO,"+
 				" INTERESADO.NOMBRE_POB AS POBLACION_DEFENDIDO,"+
@@ -2033,8 +2035,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				" INTERESADO.OBSERVACIONES AS OBS_INTERESADO,"+
 				" INTERESADO.OBSERVACIONES AS OBS_DEFENDIDO,"+
 				" F_SIGA_GETCODIDIOMA(INTERESADO.IDLENGUAJE) AS CODIGOLENGUAJE,"+
-				" INTERESADO.FECHARESOLUCIONCAJG AS FECHARESOLUCIONCAJG"+
-
+				" INTERESADO.FECHARESOLUCIONCAJG AS FECHARESOLUCIONCAJG"+			
 				"   FROM V_SIGA_INTERESADOS_DESIGNA    INTERESADO"+
 				" WHERE INTERESADO.IDINSTITUCION = :11"+
 				" and INTERESADO.ANIO = :12"+
