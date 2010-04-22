@@ -45,6 +45,7 @@ import com.siga.beans.EnvProgramIRPFBean;
 import com.siga.beans.EnvProgramInformesAdm;
 import com.siga.beans.EnvProgramInformesBean;
 import com.siga.beans.EnvTipoEnviosAdm;
+import com.siga.beans.EnvTipoEnviosBean;
 import com.siga.beans.EnvValorCampoClaveAdm;
 import com.siga.beans.EnvValorCampoClaveBean;
 import com.siga.beans.ExpExpedienteAdm;
@@ -603,7 +604,9 @@ public class EnvioInformesGenericos extends MasterReport {
 			SIGAException {
 
 		Envio envio = new Envio(usrBean, envioProgramadoBean.getNombre());
-
+		if(envio.getEnviosBean()!=null)			
+			envio.getEnviosBean().setIdEstado(new Integer(EnvEnviosAdm.ESTADO_INICIAL));
+		
 		// Bean envio
 		EnvEnviosBean enviosBean = envio.getEnviosBean();
 		enviosBean.setDescripcion(enviosBean.getIdEnvio() + " "
@@ -863,6 +866,9 @@ public class EnvioInformesGenericos extends MasterReport {
 		if (enviosBean.getDescripcion().length()>200)  enviosBean.setDescripcion(enviosBean.getDescripcion().substring(0,99));
 		// Preferencia del tipo de envio si el usuario tiene uno:
 		enviosBean.setIdTipoEnvios(envioProgramadoBean.getIdTipoEnvios());
+		if(envioProgramadoBean.getIdTipoEnvios()!=null && envioProgramadoBean.getIdTipoEnvios()!=null &&!envioProgramadoBean.getIdTipoEnvios().toString().equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))			
+			envio.getEnviosBean().setIdEstado(new Integer(EnvEnviosAdm.ESTADO_INICIAL));
+		
 		enviosBean.setFechaProgramada(envioProgramadoBean.getFechaProgramada());
 		enviosBean.setIdPlantillaEnvios(envioProgramadoBean
 				.getIdPlantillaEnvios());
