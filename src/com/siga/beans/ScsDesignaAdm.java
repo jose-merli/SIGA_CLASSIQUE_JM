@@ -2324,9 +2324,11 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		        sql.append(" and des.numero = edes.numerodesigna ");
 		        sql.append(" and des.idturno = edes.idturno ");
 		        sql.append(" and ejg.numero = edes.numeroejg ");
-		        sql.append(" and ejg.idtipoejg = edes.idtipoejg ");
+		        sql.append(" and ejg.idtipoejg = edes.idtipoejg ");		       
+		        sql.append(" and ejg.anio=edes.anioejg ");
+		        sql.append(" and ejg.idinstitucion=edes.idinstitucion ");
 		        sql.append(" and tec.idinstitucion = ejg.idinstitucion ");
-		        sql.append(" and tec.idtipoejgcolegio=ejg.idtipoejgcolegio");
+		        sql.append(" and tec.idtipoejgcolegio=ejg.idtipoejgcolegio");		       
 		        if (rc.find(sql.toString())) {
 		               for (int i = 0; i < rc.size(); i++){
 		                  Row fila = (Row) rc.get(i);
