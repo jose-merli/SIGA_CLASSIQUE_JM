@@ -555,6 +555,11 @@
     <tag-class>com.siga.tlds.TagBotonesAccion</tag-class>
     <body-content>jsp</body-content>
     <attribute>
+      <name>botonera</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
       <name>botones</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
@@ -603,6 +608,11 @@
     <body-content>jsp</body-content>
     <attribute>
       <name>botones</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+   <attribute>
+      <name>botonera</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
@@ -956,6 +966,17 @@
       <rtexprvalue>true</rtexprvalue>
     </attribute>
   </tag>  
-  
+
+  <!-- Etiqueta SI/NO-->
+  <tag>
+    <name>SINO</name>
+    <tag-class>com.siga.tlds.TagSiNo</tag-class>
+    <body-content>jsp</body-content>
+    <attribute>
+      <name>value</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>  
   
 </taglib>

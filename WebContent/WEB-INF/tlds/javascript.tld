@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+    version="2.0">
+  <description>Javascript library</description>
+  <display-name>Javascript library</display-name>
+  <tlib-version>1.0</tlib-version>
+  <short-name>js</short-name>
+  <uri>http://localhost/js</uri>
+
+  <tag>
+    <description>
+        Genera el codigo para importara en las jsp los ficheros js especificados.
+    </description>
+    <name>javascript</name>
+    <tag-class>com.siga.tlds.TagJavascript</tag-class>
+    <body-content>JSP</body-content>
+    <attribute>
+        <description>
+        	Lista de ficheros a importar separados por comas.
+        </description>
+        <name>files</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+   <attribute>
+        <description>
+        	Path relativo
+        </description>
+        <name>relativePath</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+</taglib>

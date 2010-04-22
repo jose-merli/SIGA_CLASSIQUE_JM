@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+    version="2.0">
+  <description>CSS para scroll en Displaytag</description>
+  <display-name>displaytagScroll library</display-name>
+  <tlib-version>1.0</tlib-version>
+  <short-name>dts</short-name>
+  <uri>http://localhost/dts</uri>
+
+  <tag>
+    <description>
+        Genera el codigo para importara en las jsp los ficheros js especificados.
+    </description>
+    <name>css</name>
+    <tag-class>com.siga.tlds.TagDisplaytagScroll</tag-class>
+    <body-content>JSP</body-content>
+    <attribute>
+        <description>
+        	height del tbody
+        </description>
+        <name>height</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+</taglib>
