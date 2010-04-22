@@ -29,6 +29,8 @@
 		<form-bean name="DatosRegistralesForm" type="com.siga.censo.form.DatosRegistralesForm"/>
 		<form-bean name="ActividadProfesionalForm" type="com.siga.censo.form.ActividadProfesionalForm"/>
 		<form-bean name="AnticiposClienteForm" type="com.siga.censo.form.AnticiposClienteForm"/>
+		<form-bean name="BusquedaLetradosForm" type="com.siga.censo.form.BusquedaLetradosForm"/>
+		<form-bean name="BusquedaColegiadosForm" type="com.siga.censo.form.BusquedaColegiadosForm"/>
 		
 		<!-- PDM Mantenimiento de Grupos Fijos-->
 		<form-bean name="MantenimientoGruposFijosForm" type="com.siga.censo.form.MantenimientoGruposFijosForm"/>
@@ -146,8 +148,6 @@
 		<form-bean name="PlantillasEnviosPlantillasForm" type="com.siga.envios.form.SIGAPlantillasEnviosPlantillasForm"/>
 		<form-bean name="PlantillasEnviosCorreoElectronicoForm" type="com.siga.envios.form.SIGAPlantillasEnviosCorreoElectronicoForm"/>
 		<form-bean name="ImagenPlantillaForm" type="com.siga.envios.form.ImagenPlantillaForm"/>
-		
-		
 		<form-bean name="RemitentesPlantillasForm" type="com.siga.envios.form.RemitentesPlantillasForm"/>
 		<form-bean name="EnviosDatosGeneralesForm" type="com.siga.envios.form.SIGAEnviosDatosGeneralesForm"/>
 		<form-bean name="EnviosCorreoElectronicoForm" type="com.siga.envios.form.SIGAEnviosCorreoElectronicoForm"/>
@@ -306,6 +306,11 @@
 		<forward name="descargaFicheroGlobal" path="/ServletDescargaFichero.svrl"/>
 		<forward name="descargaFicheroPrevio" path="/html/jsp/gratuita/descargarFichero.jsp"/>
 		<forward name="descarga" path="/html/jsp/gratuita/imprimir.jsp"/>
+		<forward name="seleccionPlantillas" path="/html/jsp/informes/seleccionPlantillas.jsp"/>
+		<forward name="seleccionPlantillasNew" path="/html/jsp/informes/seleccionPlantillasNew.jsp"/>
+		<forward name="seleccionPlantillasModal" path="/html/jsp/informes/seleccionPlantillasModal.jsp"/>
+		<forward name="seleccionPlantillasModalNew" path="/html/jsp/informes/seleccionPlantillasModalNew.jsp"/>
+		<forward name="definirEnvios" path="/html/jsp/envios/redirigeDefinicionEnvios.jsp"/>
     </global-forwards>
 
 
@@ -346,6 +351,10 @@
 			<forward name="topMenu" path="/openMainFrameset.do"/>
 			<forward name="leftMenu" path="/openMainFrameset2.do"/>
 		</action>
+		
+		<action path="/reloadBM" type="com.siga.comun.action.ReloadBM">
+		</action>
+		
 
 		<!-- /*#############################################################################*/ -->
 		<!-- /**********INICIO TEMPORAL PARA EL ACCESO DE DESARROLLO ************************/ -->
@@ -406,6 +415,13 @@
 			<forward name="administracion" path="/html/jsp/censo/AdministracionClientes.jsp"/>
 			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>
 		</action>
+		<action path="/CEN_BusquedaColegiados" type="com.siga.censo.action.ColegiadoAction" name="BusquedaColegiadosForm" scope="request">
+			<forward name="inicio" path="/html/jsp/censo/BusquedaColegiados.jsp"/>
+			<forward name="avanzada" path="/html/jsp/censo/BusquedaAvanzadaColegiados.jsp"/>
+			<forward name="resBusqAvanzada" path="/html/jsp/censo/ResultadoBusquedaAvanzadaColegiados.jsp"/>
+			<forward name="administracion" path="/html/jsp/censo/AdministracionClientes.jsp"/>
+			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>		
+		</action>
 
 		<action path="/CEN_BusquedaClientesNoColegiados" forward="/CEN_BusquedaClientes.do?colegiado=0">
 			<forward name="inicio" path="/html/jsp/censo/BusquedaClientes.jsp"/>
@@ -424,6 +440,13 @@
 			<forward name="administracion" path="/html/jsp/censo/AdministracionClientes.jsp"/>
 			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>
 		</action>
+		
+		<action path="/CEN_BusquedaLetradosNew" type="com.siga.censo.action.LetradoAction" name="BusquedaLetradosForm" scope="request">
+			<forward name="inicio" path="/html/jsp/censo/BusquedaLetrados.jsp"/>
+			<forward name="administracion" path="/html/jsp/censo/AdministracionClientes.jsp"/>
+			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>		
+		</action>
+
 
 		<action path="/CEN_BusquedaClientesAvanzada" type="com.siga.censo.action.BusquedaClientesAction" name="busquedaClientesAvanzadaForm" scope="session">
 			<forward name="inicio" path="/html/jsp/censo/BusquedaClientes.jsp"/>
@@ -562,7 +585,6 @@
 			<forward name="seleccionPlantillas" path="/html/jsp/informes/seleccionPlantillas.jsp"/>
 			<forward name="seleccionPlantillasModal" path="/html/jsp/informes/seleccionPlantillasModal.jsp"/>
 			<forward name="definirEnvios" path="/html/jsp/envios/redirigeDefinicionEnvios.jsp"/>
-			
 		</action>
 
 		<action path="/INF_InformesMultiples" type="com.siga.informes.action.InformesFacturacionMultipleAction" name="InformesFacturacionMultipleForm" scope="request">
