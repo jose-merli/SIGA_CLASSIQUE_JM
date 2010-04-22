@@ -23,7 +23,7 @@ public enum SearchButtonsConstants {
 	LISTO_PARA_ENVIAR ("le","gratuita.busquedaEJG_CAJG.listoParaEnviar","accionListoParaEnviar()"),
 	ANIADIR_A_REMESA ("ar","general.boton.aniadirARemesa","aniadirARemesa(true)"),
 	VOLVER ("v","general.boton.volver","accionVolver()"),
-	DESCARGA_EJG ("de","general.boton.descargaEejg","descargaEejg(true)"),
+	DESCARGA_EJG ("dee","general.boton.descargaEejg","descargaEejg(true)"),
 	GENERA_EXCEL ("ge","general.boton.exportarExcel","generaExcel()");
 	
     private final String valor;   
