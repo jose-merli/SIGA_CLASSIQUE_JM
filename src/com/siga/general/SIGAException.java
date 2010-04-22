@@ -225,7 +225,8 @@ public class SIGAException extends ClsExcBase  {
 				el=((ClsExcBase)el).getNextException();
 			} 
 			else if (el instanceof BusinessException){
-				ClsLogging.writeFileLog(e.getMessage(),3);
+				setLiteral(el.getMessage());
+				break;
 			}
 			else {
 				el=null;
