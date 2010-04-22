@@ -3488,7 +3488,6 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 					EnvPlantillaGeneracionBean plantBean = (EnvPlantillaGeneracionBean)vPlant.firstElement();
 					tipoArchivoPlantilla = plantBean.getTipoArchivo();
 				}
-
 				//ACUMULAMOS POBLACIONES, PAISES Y PROVINCIAS PARA EVITAR HACER QUERYS A LA BBDD
 				Hashtable htPoblaciones = new Hashtable();
 				Hashtable htProvincia = new Hashtable();
@@ -4272,9 +4271,6 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 						htDatos = admEnvio.darFormatoCampos(destBean.getIdInstitucion(), destBean.getIdEnvio(), this.usrbean.getLanguage(), htDatos,vCampos);
 			        	pathArchivoGenerado = generarDocumentoEnvioPDFDestinatario(envBean,destBean,fPlantilla,tipoArchivoPlantilla,htDatos);
 		            	sDirPdf = getPathEnvio(envBean)+  File.separator + "documentosdest";
-				    }else{
-				    	throw new SIGAException("envios.definir.literal.errorAlmacenarEnvio");
-				    	
 				    }
 		        
 		    	    ficherosFax = new Vector(); 
