@@ -329,7 +329,11 @@ public class BusquedaClientesAction extends MasterAction {
 			
 			
 			CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserBean(request));
-			if (request.getParameter("verFichaLetrado")!=null && request.getParameter("verFichaLetrado").equals("1")){
+			String verFichaLetrado = request.getParameter("verFichaLetrado");
+			if (verFichaLetrado == null){
+				verFichaLetrado = miform.getVerFichaLetrado();
+			}
+			if (verFichaLetrado!=null && verFichaLetrado.equals("1")){
 				tipoAcceso = new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_LETRADO);
 				elementoActivo="3";
 				
