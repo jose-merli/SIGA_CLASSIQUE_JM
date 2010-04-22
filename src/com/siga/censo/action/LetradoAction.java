@@ -16,9 +16,7 @@ import com.atos.utils.ActionButtonsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.SearchButtonsConstants;
 import com.siga.censo.form.BusquedaClientesForm;
-import com.siga.censo.form.BusquedaColegiadosForm;
 import com.siga.censo.form.BusquedaLetradosForm;
-import com.siga.censo.service.ColegiadoService;
 import com.siga.censo.service.LetradoService;
 import com.siga.censo.vos.LetradoVO;
 import com.siga.censo.vos.NombreVO;
@@ -181,7 +179,7 @@ public class LetradoAction extends PagedSortedAction {
 		request.setAttribute("descargar",informesForm.getDescargar());
 		request.setAttribute("tipoPersonas",informesForm.getTipoPersonas());
 		request.setAttribute("clavesIteracion",informesForm.getClavesIteracion());
-		request.setAttribute("action","/CEN_BusquedaLetrados.do");
+		request.setAttribute("action","/CEN_BusquedaLetradosNew.do");
 		request.setAttribute("form","BusquedaLetradosForm");
 		request.setAttribute("accion","comunicar");
 
