@@ -59,6 +59,7 @@ import com.siga.beans.EnvProgramIRPFAdm;
 import com.siga.beans.EnvProgramIRPFBean;
 import com.siga.beans.EnvProgramPagosAdm;
 import com.siga.beans.EnvProgramPagosBean;
+import com.siga.beans.EnvTipoEnviosAdm;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
 import com.siga.beans.GenParametrosAdm;
@@ -864,8 +865,12 @@ public class DefinirEnviosAction extends MasterAction {
 			enviosBean.setImprimirEtiquetas(paramAdm.getValor(idInstitucion,"ENV","IMPRIMIR_ETIQUETAS_ENVIO","1"));
 			if (fechaProgramada==null || fechaProgramada.equals(""))
 				enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_INICIAL));
-			else
-				enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_PENDIENTE_AUTOMATICO));
+			else{
+				if(idTipoEnvio!=null &&!idTipoEnvio.equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))			
+					enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_INICIAL));
+				else
+					enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_PENDIENTE_AUTOMATICO));
+			}
 			
 
 
@@ -1457,9 +1462,13 @@ public class DefinirEnviosAction extends MasterAction {
 					if (fechaProgramada == null || fechaProgramada.equals(""))
 						enviosBean.setIdEstado(new Integer(
 								EnvEnviosAdm.ESTADO_INICIAL));
-					else
-						enviosBean.setIdEstado(new Integer(
+					else{
+						if(idTipoEnvio!=null &&!idTipoEnvio.equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))			
+							enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_INICIAL));
+						else
+							enviosBean.setIdEstado(new Integer(
 								EnvEnviosAdm.ESTADO_PENDIENTE_AUTOMATICO));
+					}
 					Envio envio = new Envio(enviosBean, userBean);
 
 					// El vector vDocs se rellenará en función del subModo.

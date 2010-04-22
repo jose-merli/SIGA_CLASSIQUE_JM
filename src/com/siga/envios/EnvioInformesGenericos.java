@@ -866,7 +866,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		if (enviosBean.getDescripcion().length()>200)  enviosBean.setDescripcion(enviosBean.getDescripcion().substring(0,99));
 		// Preferencia del tipo de envio si el usuario tiene uno:
 		enviosBean.setIdTipoEnvios(envioProgramadoBean.getIdTipoEnvios());
-		if(envioProgramadoBean.getIdTipoEnvios()!=null && envioProgramadoBean.getIdTipoEnvios()!=null &&!envioProgramadoBean.getIdTipoEnvios().toString().equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))			
+		if(envioProgramadoBean!=null && envioProgramadoBean.getIdTipoEnvios()!=null &&!envioProgramadoBean.getIdTipoEnvios().toString().equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))			
 			envio.getEnviosBean().setIdEstado(new Integer(EnvEnviosAdm.ESTADO_INICIAL));
 		
 		enviosBean.setFechaProgramada(envioProgramadoBean.getFechaProgramada());
@@ -1777,8 +1777,12 @@ public class EnvioInformesGenericos extends MasterReport {
 		enviosBean.setImprimirEtiquetas(paramAdm.getValor(idInstitucion,"ENV","IMPRIMIR_ETIQUETAS_ENVIO","1"));
 		if (fechaProgramada==null || fechaProgramada.equals(""))
 			enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_INICIAL));
-		else
-			enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_PENDIENTE_AUTOMATICO));
+		else{
+			if(idTipoEnvio!=null &&!idTipoEnvio.equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))			
+				enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_INICIAL));
+			else
+				enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_PENDIENTE_AUTOMATICO));
+		}
 
 
 		// trunco la descripción
@@ -2090,7 +2094,10 @@ public class EnvioInformesGenericos extends MasterReport {
 
 
 			Vector vCampos = this.obtenerDatosFormulario(form);
-			String claveIterante = form.getClavesIteracion();
+//			String claveIterante = form.getClavesIteracion();
+			String claveIterante = "idFactura";
+			form.setClavesIteracion(claveIterante);
+				
 			if(claveIterante!=null){
 				vCampos = this.setCamposIterantes(vCampos,claveIterante);
 			}
