@@ -1900,11 +1900,16 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			" TO_CHAR(DES.FECHAENTRADA, 'dd-mm-yyyy') AS FECHA_DESIGNA,"+
 			" TO_CHAR(SYSDATE, 'dd') AS DIA_ACTUAL,"+
 			" TO_CHAR(SYSDATE, 'MONTH', 'NLS_DATE_LANGUAGE = SPANISH') AS MES_ACTUAL,"+
-			" TO_CHAR(SYSDATE, 'yyyy') AS ANIO_ACTUAL"+
-			
+			" TO_CHAR(SYSDATE, 'yyyy') AS ANIO_ACTUAL"+			
 			" ,DES.idtipodesignacolegio AS IDTIPODESIGNACOLEGIO, "+
 			" TO_CHAR(DES.FECHARECEPCIONCOLEGIO, 'dd/MM/yyyy') AS FECHA_RECEPCION_COLEGIO,"+
-			" TO_CHAR(DES.FECHAOFICIOJUZGADO, 'dd/MM/yyyy') AS FECHA_OFICIO_JUZGADO "+
+			" TO_CHAR(DES.FECHAOFICIOJUZGADO, 'dd/MM/yyyy') AS FECHA_OFICIO_JUZGADO, "+
+			" f_siga_getletrado_designa(LET.idinstitucion, LET.idturno, LET.anio, LET.numero) LETRADO_ACTUAL, "+
+		    " f_siga_getletrado_SUSTITUIDO(LET.idinstitucion, LET.idturno, LET.anio, LET.numero) ULTIMO_LETRADO_SUSTITUIDO, "+
+		    " fecharenuncia FECHARENUNCIA, "+
+		    " pkg_siga_fecha_en_letra.F_SIGA_FECHAcompletaENLETRA(fecharenuncia,'m',1) FECHARENUNCIA_ENLETRA, "+
+            " fecharenunciasolicita FECHA_SOLICITUDRENUNCIA, "+
+            " pkg_siga_fecha_en_letra.F_SIGA_FECHAcompletaENLETRA(fecharenunciasolicita,'m',1) FECHA_SOLICITUDRENUNCIA_LETRA "+
 		    
 		    //-- campos calculados en el recorrido
 		    
@@ -2115,7 +2120,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				compensacionBean.setIdPersona(new Long(idLetrado));
 				String mensaje=UtilidadesString.getMensajeIdioma((String)usr.getLanguage(),"gratuita.compensacion.motivo");
 				 mensaje=mensaje+".\n"+ UtilidadesString.getMensajeIdioma(usr,
-					"gratuita.literal.numeroDesignacion")+": "+ contador; 
+					"gratuita.literal.numeroDesignacion")+": "+ anio+"/"+ contador; 
 				//compensacionBean.setMotivos(UtilidadesString.getMensajeIdioma((String)usr.getLanguage(),"gratuita.compensacion.motivo"));
 				 compensacionBean.setMotivos(mensaje);
 				compensacionBean.setSaltoCompensacion("C");
@@ -2357,7 +2362,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				compensacionBean.setIdPersona(new Long(idLetrado));
 				String mensaje=UtilidadesString.getMensajeIdioma((String)usr.getLanguage(),"gratuita.compensacion.motivoDesignacion");
 				mensaje=mensaje+".\n"+ UtilidadesString.getMensajeIdioma(usr,
-					"gratuita.literal.numeroDesignacion")+": "+ codigo;
+					"gratuita.literal.numeroDesignacion")+": "+  anio+"/"+codigo;
 				compensacionBean.setMotivos(mensaje);
 				//compensacionBean.setMotivos(UtilidadesString.getMensajeIdioma((String)usr.getLanguage(),"gratuita.compensacion.motivoDesignacion"));
 				compensacionBean.setSaltoCompensacion("C");
