@@ -1000,6 +1000,11 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 			"decode(p."+CenPersonaBean.C_SEXO+",'H','"+hombre+"','M','"+mujer+"','') SEXO_LETRADO,"+
 			"F_SIGA_CALCULONCOLEGIADO(c."+CenColegiadoBean.C_IDINSTITUCION+",c."+CenColegiadoBean.C_IDPERSONA+") NCOLEGIADO_LETRADO,"+
 			"p."+CenPersonaBean.C_APELLIDOS1+"||' '||p."+CenPersonaBean.C_APELLIDOS2+"||', '|| p."+CenPersonaBean.C_NOMBRE+" NOMBRE_LETRADO,"+
+			"p."+CenPersonaBean.C_APELLIDOS1+ " APELLIDO1_LETRADO,"+
+			"p."+CenPersonaBean.C_APELLIDOS2+ " APELLIDO2_LETRADO,"+
+			"p."+CenPersonaBean.C_NOMBRE+ " N_LETRADO,"+
+			" F_SIGA_GETRECURSO(tra."+CenTratamientoBean.C_DESCRIPCION +", 1) TRATAMIENTO, "+
+			"tra."+CenTratamientoBean.C_IDTRATAMIENTO +" IDTRATAMIENTO,"+
 			"d2.*,"+
 			"d6."+CenDireccionesBean.C_TELEFONO1+" TELEFONO1_LETRADO,"+
 			"d6."+CenDireccionesBean.C_TELEFONO2+" TELEFONO2_LETRADO,"+
@@ -1008,6 +1013,7 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 			CenPersonaBean.T_NOMBRETABLA+" p,"+
 			CenColegiadoBean.T_NOMBRETABLA+" c,"+
 			CenClienteBean.T_NOMBRETABLA+" cl,"+
+			CenTratamientoBean.T_NOMBRETABLA+" tra,"+		
 			"(select d."+CenDireccionesBean.C_IDPERSONA+", d."+CenDireccionesBean.C_DOMICILIO+"||' '||d."+CenDireccionesBean.C_CODIGOPOSTAL+"||' '||pb."+CenPoblacionesBean.C_NOMBRE+" DIRECCION_LETRADO,"+
 			"d.DOMICILIO DIRECCION_LETR," +
 			"d.CODIGOPOSTAL CP_LETR," +
@@ -1041,6 +1047,7 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 			"  and p."+CenPersonaBean.C_IDPERSONA+"=cl."+CenClienteBean.C_IDPERSONA+
 			"  and p."+CenPersonaBean.C_IDPERSONA+"=d2."+CenDireccionesBean.C_IDPERSONA+"(+)"+
 			"  and p."+CenPersonaBean.C_IDPERSONA+"=d6."+CenDireccionesBean.C_IDPERSONA+"(+)"+
+			"  and cl."+ CenClienteBean.C_IDTRATAMIENTO+"= tra."+CenTratamientoBean.C_IDTRATAMIENTO+
 			"  and rownum <2";
 		
 		RowsContainer rc = this.findBind(consultaLetrado,codigos);
