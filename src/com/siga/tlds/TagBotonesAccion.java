@@ -298,6 +298,7 @@ public class TagBotonesAccion extends TagSupport {
 							}
 						} // del while 
 					}
+					break;
 				default: 
 					if (tipoAcceso.equalsIgnoreCase(SIGAPTConstants.ACCESS_FULL) && 
 							this.valoresEdicion.contains(this.modo)) {  
