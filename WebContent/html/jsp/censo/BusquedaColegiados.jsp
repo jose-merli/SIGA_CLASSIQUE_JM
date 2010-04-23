@@ -124,10 +124,5 @@
 
 </html:html>
 
-<script language="javaScript">
-function refrescarLocal() {
-}
-function vueltaEnvio() {
-}
-</script>
+
 

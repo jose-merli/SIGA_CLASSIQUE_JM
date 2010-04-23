@@ -159,12 +159,16 @@ public abstract class SIGAAuxAction extends SIGAActionBase{
 	}
 
 	private boolean isBaseForm(ActionForm formulario) {
+		if (formulario == null)
+			return false;
+		
 		Class<?> superClass = formulario.getClass().getSuperclass();
 		while (superClass != AuxForm.class) {
 			if (superClass.equals(BaseForm.class))
 				return true;
 			superClass = superClass.getSuperclass();
 		}
+		
 		return false;
 	}
 

@@ -65,8 +65,6 @@
 		document.BusquedaColegiadosForm.action = document.BusquedaColegiadosForm.action + "?" + "<%=SessionForms.getForm(request,"/CEN_BusquedaColegiados.do","buscarAvanzada")%>";
 		document.BusquedaColegiadosForm.submit();	
 	}
-	function refrescarLocal(){
-	}
 </script>
 
 

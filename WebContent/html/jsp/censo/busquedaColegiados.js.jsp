@@ -2,9 +2,13 @@
 	<%@ taglib uri="struts-bean.tld" 	prefix="bean"%>
 	
 	function refrescarLocal() {
-		buscar();
 	}
-
+	function vueltaEnvio() {
+	}
+	function accionVolver() {
+	}
+	function accionCerrar() {
+	}
 	function buscar(){
 		sub();
 		document.forms[0].appendChild(document.createElement("<input type='hidden' name='backupForm' value='true'>"));
