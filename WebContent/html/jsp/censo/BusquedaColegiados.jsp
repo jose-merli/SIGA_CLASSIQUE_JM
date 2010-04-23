@@ -18,11 +18,12 @@
 <!-- BusquedaColegiados.jsp -->
 <html:html>
 <head>
-	<siga:Titulo titulo="censo.busquedaClientes.colegiados.titulo" localizacion="censo.busquedaClientes.localizacion" />
+	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
 	<meta http-equiv="Content-Type" 	content="text/html; charset=ISO-8859-1">
 	<meta http-equiv="Expires" 			content="0">
 	<meta http-equiv="Pragma" 			content="no-cache">
 	<meta http-equiv="Cache-Control" 	content="no-cache">
+	<siga:Titulo titulo="censo.busquedaClientes.colegiados.titulo" localizacion="censo.busquedaClientes.localizacion" />
 	<css:css 		relativePath="/html/jsp/general/" 		files="stylesheet2.jsp" />
 	<css:css 		relativePath="/html/css/" 				files="ajaxtags.css" />
 	<css:css 	   	relativePath="/html/css/themes/" 		files="default.css,mac_os_x.css" />
