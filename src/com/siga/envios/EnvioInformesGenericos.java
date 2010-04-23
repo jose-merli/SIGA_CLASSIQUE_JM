@@ -239,7 +239,37 @@ public class EnvioInformesGenericos extends MasterReport {
 			if (htCol != null && htCol.size() > 0) {
 				nombre = (String) htCol.get("NOMBRE_LETRADO");
 			}
-			htCabeceraInforme.put("NOMBRE", nombre);
+			//recuperando el apellido1 del letrado
+			String apellido1letrado= "";
+			if (htCol != null && htCol.size() > 0) {
+				apellido1letrado = (String) htCol.get("APELLIDO1_LETRADO");
+			}
+			
+			String apellido2letrado= "";
+			if (htCol != null && htCol.size() > 0) {
+				apellido2letrado = (String) htCol.get("APELLIDO2_LETRADO");
+			}
+			
+			String nombreletrado= "";
+			if (htCol != null && htCol.size() > 0) {
+				nombreletrado = (String) htCol.get("N_LETRADO");
+			}
+			
+			String tratamiento= "";
+			if (htCol != null && htCol.size() > 0) {
+				tratamiento = (String) htCol.get("TRATAMIENTO");
+			}
+			
+			String idtratamiento= "";
+			if (htCol != null && htCol.size() > 0) {
+				idtratamiento = (String) htCol.get("IDTRATAMIENTO");
+			}
+			htCabeceraInforme.put("NOMBRE", nombre);			
+			htCabeceraInforme.put("APELLIDO1_LETRADO",apellido1letrado);
+			htCabeceraInforme.put("APELLIDO2_LETRADO",apellido2letrado);
+			htCabeceraInforme.put("NOMBRE_LETRADO",nombreletrado);
+			htCabeceraInforme.put("TRATAMIENTO",tratamiento);
+			htCabeceraInforme.put("IDTRATAMIENTO",idtratamiento);
 			HelperInformesAdm helperInformes = new HelperInformesAdm();
 			htCabeceraInforme.put("FECHA", sHoy);
 			Hashtable htFuncion = new Hashtable();
