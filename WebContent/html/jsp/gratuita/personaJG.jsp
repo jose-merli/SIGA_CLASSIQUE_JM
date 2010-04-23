@@ -445,8 +445,16 @@
 			if(numId.length==8){
 				var dnie = document.forms[0].NIdentificacion.value;
 				letIni = numId.substring(0,1);
-				num = numId.substring(1,8);
-				if(letIni.match('[X|Y|Z]') && isNumero(num)){
+				primeraLetra = letIni;
+				if  (letIni.toUpperCase()=='Y')
+			 		letIni = '1';
+			 	else if  (letIni.toUpperCase()=='Z')
+			 		letIni = '2';
+			 	else{
+			 		letIni = '0';
+			 	}
+				num = letIni+numId.substring(1,8);
+				if(primeraLetra.match('[X|Y|Z]') && isNumero(num)){
 					var posicion = num % 23;
 					letras='TRWAGMYFPDXBNJZSQVHLCKET';
 					var letra=letras.substring(posicion,posicion+1);
@@ -495,12 +503,20 @@
 			var dnie = document.forms[0].NIdentificacion.value;
 			if(dnie.length==9){
 				letIni = dnie.substring(0,1);
-				num = dnie.substring(1,8);
+				primera=letIni;
+				if  (letIni.toUpperCase()=='Y')
+			 		letIni = '1';
+			 	else if  (letIni.toUpperCase()=='Z')
+			 		letIni = '2';
+			 	else{
+			 		letIni = '0';
+			 	}
+				num = letIni + dnie.substring(1,8);
 				letFin = dnie.substring(8,9);
 				var posicion = num % 23;
 				letras='TRWAGMYFPDXBNJZSQVHLCKET';
 				var letra=letras.substring(posicion,posicion+1);
-				if (!letIni.match('[X|Y|Z]')||letra!=letFin) {
+				if (!primera.match('[X|Y|Z]')||letra!=letFin) {
 					errorNIE=true;
 				}
 			}else{
