@@ -1084,9 +1084,13 @@ function ajusteAltoDisplayTag(nObj)
 {
 	var obj=document.getElementById(nObj);
 	if (obj) {
-		var ventana = window.parent;
-		if (ventana.name != "mainWorkArea")
-			ventana = window.parent.document.getElementById("MainWorkArea");
+		var height;
+		if (window.name == "mainWorkArea"){
+			height = window.document.documentElement.offsetHeight;
+		}
+		else if (window.parent.name != "mainWorkArea"){
+			height = window.parent.document.getElementById("MainWorkArea").offsetHeight;
+		}
 		var padre = obj.parentNode;
 		var hermanos = obj.parentNode.childNodes;
 		var contHermanos = 0;
@@ -1103,7 +1107,7 @@ function ajusteAltoDisplayTag(nObj)
 		//el 5 es un ajuste que me saco de la manga, mas o menos, habrá que
 		//terminar de calcular bien el tamanyo, teneiendo en cuenta
 		//los margenes, paddings y demas
-		var cont = ventana.offsetHeight - obj.offsetTop - (2*contHermanos) - 5;
+		var cont = height - obj.offsetTop - (2*contHermanos) - 5;
 //		alert(ventana.offsetHeight +" "+ obj.offsetTop +" "+ contHermanos + " " + cont);
 		obj.style.pixelHeight=cont;
 	}
