@@ -146,7 +146,6 @@
 	if(request.getAttribute("permisoEejg")!=null){
 		permisoEejg = Boolean.parseBoolean(request.getAttribute("permisoEejg").toString());
 	}
-	System.out.println("permisoEejg " + permisoEejg);
 	String idremesa = "";
 	if(request.getAttribute("idremesa")!=null)
 		idremesa =(String) request.getAttribute("idremesa");
