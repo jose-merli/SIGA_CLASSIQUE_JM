@@ -340,28 +340,29 @@
 	<siga:ConjCampos leyenda="pestana.justiciagratuitadesigna.actuaciones" desplegable="true" oculto="true">
 		<table  border="0" align="center" width="100%">
 		<tr>
-		<td class="labelText" colspan="1">	
-			<siga:Idioma key="gratuita.actuacionesDesigna.literal.modulo"/>
-		</td>	
-		<td class="labelText" colspan="2">
-			<siga:ComboBD nombre="modulo" tipo="comboTiposProcedimientos" ancho="200" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" elementoSel="<%=modulo%>" parametro="<%=dato%>" />           	   
-		</td>
-		<td class="labelText" >
-			<siga:Idioma key="gratuita.mantAsistencias.literal.juzgado"/>
-		</td>
-		<td class="labelText" >
-	
-			<input type="text" name="codigoExtJuzgadoActu" class="box" size="8"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado2();" />
-			<siga:ComboBD nombre="juzgadoActu" tipo="comboJuzgados" ancho="383" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  hijo="t" elementoSel="<%=juzgadoActu%>" parametro="<%=dato%>"/>           	   
-		</td>
-		</tr><tr>
-	
-		<td class="labelText" colspan="1">
-			<siga:Idioma key="gratuita.procedimientos.literal.acreditacion"/>
-		</td>
-		<td class="labelText" colspan="2">
-			<siga:ComboBD nombre="acreditacion" tipo="acreditacionSCJS" ancho="300" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" elementoSel="<%=acreditacion%>" obligatorio="false"  />           	   
-		</td>
+			<td class="labelText" colspan="1">	
+				<siga:Idioma key="gratuita.actuacionesDesigna.literal.modulo"/>
+			</td>	
+			<td class="labelText" colspan="2">
+				<siga:ComboBD nombre="modulo" tipo="comboTiposProcedimientos" ancho="740" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" elementoSel="<%=modulo%>" parametro="<%=dato%>" />           	   
+			</td>
+		</tr>
+		<tr>
+			<td class="labelText" colspan="1">
+				<siga:Idioma key="gratuita.procedimientos.literal.acreditacion"/>
+			</td>
+			<td class="labelText" colspan="2">
+				<siga:ComboBD nombre="acreditacion" tipo="acreditacionSCJS" ancho="740" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" elementoSel="<%=acreditacion%>" obligatorio="false"  />           	   
+			</td>
+		</tr>
+		<tr>
+			<td class="labelText" >
+				<siga:Idioma key="gratuita.mantAsistencias.literal.juzgado"/>
+			</td>
+			<td class="labelText" >
+				<input type="text" name="codigoExtJuzgadoActu" class="box" size="8"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado2();" />
+				<siga:ComboBD nombre="juzgadoActu" tipo="comboJuzgados" ancho="680" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  hijo="t" elementoSel="<%=juzgadoActu%>" parametro="<%=dato%>"/>           	   
+			</td>
 		</tr>
 		
 		</table>

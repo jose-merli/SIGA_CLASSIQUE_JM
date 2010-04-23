@@ -366,29 +366,33 @@
 				<td class="labelText" colspan="1">	
 					<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.comisaria"/>
 				</td>	
-				<td class="labelText" colspan="1">
-					<siga:ComboBD nombre="comisaria" tipo="comboComisarias" ancho="300" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=comisariaSel%>" clase="boxCombo"/>
+				<td class="labelText" colspan="3">
+					<siga:ComboBD nombre="comisaria" tipo="comboComisarias" ancho="740" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=comisariaSel%>" clase="boxCombo"/>
 				</td>
+			</tr>
+			<tr>
+				<td class="labelText" colspan="1">
+					<siga:Idioma key="informes.cartaOficio.tipoActuacionLista"/>
+				</td>
+				<td class="labelText" colspan="3">
+				<siga:ComboBD ancho="740" nombre="tipoActuacion" tipo="comboTipoActuacionesGenerico" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorioSinTextoSeleccionar="no" elementoSel="<%=tipoActuacionSel%>" parametro="<%=parametroTipoActuacion%>" />
+				</td>
+			</tr>
+			<tr>
 				<td class="labelText" >
 					<siga:Idioma key="gratuita.mantAsistencias.literal.juzgado"/>
 				</td>
-				<td class="labelText" colspan="2">
+				<td class="labelText" colspan="3">
 					<input type="text" name="codigoExtJuzgadoActu" class="box" size="5"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado();" />
-					<siga:ComboBD nombre="juzgado" tipo="comboJuzgados" ancho="383" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  hijo="t" elementoSel="<%=juzgadoActu%>" parametro="<%=dato%>" />           	   
+					<siga:ComboBD nombre="juzgado" tipo="comboJuzgados" ancho="680" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  hijo="t" elementoSel="<%=juzgadoActu%>" parametro="<%=dato%>" />           	   
 				</td>
 			</tr>
 			<tr>
 				<td class="labelText" colspan="1">	
 					<siga:Idioma key="informes.cartaAsistencia.asunto"/>
 				</td>	
-				<td class="labelText" colspan="1">
-					<html:text name="AsistenciasForm" property="asunto" size="44" maxlength="40" styleClass="box" value="<%=asunto%>"></html:text>					
-				</td>
-				<td class="labelText" colspan="1">
-					<siga:Idioma key="informes.cartaOficio.tipoActuacionLista"/>
-				</td>
-				<td class="labelText" colspan="2">
-				<siga:ComboBD ancho="450" nombre="tipoActuacion" tipo="comboTipoActuacionesGenerico" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorioSinTextoSeleccionar="no" elementoSel="<%=tipoActuacionSel%>" parametro="<%=parametroTipoActuacion%>" />
+				<td class="labelText" colspan="3">
+					<html:text name="AsistenciasForm" property="asunto" size="100" maxlength="40" styleClass="box" value="<%=asunto%>"></html:text>					
 				</td>
 			</tr>
 		</table>
