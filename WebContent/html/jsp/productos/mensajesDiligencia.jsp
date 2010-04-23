@@ -45,6 +45,12 @@
 			if (ret[2]!=undefined) {
 				document.DummyForm.descripcion.value=ret[2];
 			}
+			if (ret[3]!=undefined) {
+				document.DummyForm.fechaSolicitud.value=ret[3];
+			}
+			if (ret[4]!=undefined) {
+				document.DummyForm.metodoSolicitud.value=ret[4];
+			}
 			document.DummyForm.modo.value="insertarDiligencia";
 			document.DummyForm.target="submitArea";
 			document.DummyForm.submit();
@@ -65,6 +71,8 @@
 	<input type="hidden" name="idBoton" value="<%=idBoton %>">
 	<input type="hidden" name="idPersona" value="<%=idPersonaX%>">
 	<input type="hidden" name="idInstitucion" value="<%=idInstitucionX%>">
+	<input type="hidden" name="fechaSolicitud" value="">
+	<input type="hidden" name="metodoSolicitud" value="">
 </html:form>
 
 </body>

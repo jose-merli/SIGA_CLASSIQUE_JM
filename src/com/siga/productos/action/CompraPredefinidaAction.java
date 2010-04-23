@@ -317,6 +317,8 @@ public class CompraPredefinidaAction extends MasterAction {
 			String idInstitucionOrigen=request.getParameter("idInstitucionOrigen");
 			String idInstitucionDestino=request.getParameter("idInstitucionDestino");
 			String descripcion=request.getParameter("descripcion");
+			String fechaSolicitud = request.getParameter("fechaSolicitud");
+			String metodoSolicitud = request.getParameter("metodoSolicitud");
 		    
 			// cosas
 		    CerSolicitudCertificadosAdm solicitudAdm = new CerSolicitudCertificadosAdm(this.getUserBean(request));
@@ -334,7 +336,8 @@ public class CompraPredefinidaAction extends MasterAction {
             								          idInstitucionOrigen,
             								          idInstitucionDestino,
             								          descripcion,
-            								          "","", // Fecha y metodo de solicitud
+            								          fechaSolicitud,
+            								          metodoSolicitud,
             								          user);
 			
             tx.commit();

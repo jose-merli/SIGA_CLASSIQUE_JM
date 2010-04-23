@@ -15,6 +15,7 @@
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants,java.lang.*"%>
 <%@ page import="com.atos.utils.UsrBean,java.util.*,com.siga.Utilidades.UtilidadesString"%>
+<%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
 
 <!-- JSP -->
 <%  
@@ -29,6 +30,12 @@
 	String idBoton = (String)request.getAttribute("idBoton");
 	ArrayList aInstitucion = new ArrayList();
 	aInstitucion.add(idInstitucion);
+	
+	ArrayList aMetodoSol = new ArrayList();
+	aMetodoSol.add(3);
+	String [] parametro = {userBean.getLocation(),userBean.getLocation()};
+	
+	String fechaSolicitud = UtilidadesBDAdm.getFechaBD("");
 %>	
 
 <html>
@@ -38,6 +45,7 @@
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
 
 
 </head>
@@ -94,6 +102,28 @@
 	</siga:ConjCampos>
 	
 	<siga:ConjCampos>
+	<table class="tablaCampos" align="center">
+		<tr>	
+		<td class="labelText" width="30%">
+			<siga:Idioma key="certificados.solicitudes.literal.fechaSolicitud"/>
+		</td>				
+		<td>
+			<siga:Fecha nombreCampo="fechaSolicitud" valorInicial="<%=fechaSolicitud%>"></siga:Fecha>
+			&nbsp;<a onClick="return showCalendarGeneral(fechaSolicitud);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+		</td>
+		</tr>
+		<tr>
+		<td class="labelText" width="120">
+			<siga:Idioma key="certificados.solicitudes.literal.metodoSolicitud"/>
+		</td>				
+		<td>
+			<siga:ComboBD nombre="metodoSolicitud" tipo="comboMetodoSolicitud" obligatorio="false" parametro="<%=parametro%>" ElementoSel="<%=aMetodoSol%>" clase="boxCombo"/>
+		</td>
+		</tr>
+	</table>
+	</siga:ConjCampos>
+	
+	<siga:ConjCampos>
 
 	<table class="tablaCampos" align="center">
 
@@ -102,13 +132,16 @@
 			<siga:Idioma key="certificados.solicitudes.literal.descripcion"/>
 		</td>				
 		<td>
-			<input type="text" name="descripcion" class="box" size="55" maxlength="4000">
+			<!-- input type="text" name="descripcion" class="box" size="55" maxlength="4000"-->
+			<textarea COLS=80 ROWS=4 NAME="descripcion" class="box" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)"></textarea>
 		</td>
 	</tr>
 	
 	</table>
 		
 	</siga:ConjCampos>
+	
+	
 	
 	</td>
 	</tr>
@@ -153,6 +186,8 @@
 					a[0]=formu.idInstitucionOrigen.value;
 					a[1]=formu.idInstitucionDestino.value;
 					a[2]=formu.descripcion.value;
+					a[3]=formu.fechaSolicitud.value;
+					a[4]=formu.metodoSolicitud.value;
 					top.cierraConParametros(a);			
 				} 
 		}
