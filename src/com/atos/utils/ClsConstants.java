@@ -524,6 +524,8 @@ MDB Microsoft Access Database
   public static final String GEN_PARAM_FACT_JA_2005="FACT_JA_2005";
   public static final String GEN_PARAM_DELITOS_VE="DELITOS_VOLANTE_EXPRES";
   
+  //Parametro que permite validar las guardias por parte de los colegiados desde la ficha colegial
+  public static final String GEN_PARAM_VALIDA_GUARDIAS_COLEGIADO="VALIDA_GUARDIAS_COLEGIADO";
   
   public static final String PERMITIR_FACTURA_CERTIFICADO="PERMITIR_FACTURA_CERTIFICADO";
   
