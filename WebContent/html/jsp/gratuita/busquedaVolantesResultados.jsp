@@ -1,3 +1,4 @@
+<!-- busquedaVolantesResultados.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -179,6 +180,11 @@
 					<!-- checkbox -->
 					
 					<input type="checkbox" name="chkVal" value="<%=idinstitucion+"@@"+idturno+"@@"+idguardia+"@@"+idcalendarioguardias+"@@"+idpersona+"@@"+fechaInicio+"@@"+fechaInicioPK %>" <%=(validado.equals("1"))?"checked":""%>  <%=(numActuacionesValidadas>0 || esModificable.equals("0"))?"disabled":""%> >
+					<input type="checkbox" name="chkValOld" value="<%=idinstitucion+"@@"+idturno+"@@"+idguardia+"@@"+idcalendarioguardias+"@@"+idpersona+"@@"+fechaInicio+"@@"+fechaInicio %>" <%=(validado.equals("1"))?"checked":""%>  disabled style="display:none">
+					
+						
+					
+					
 				</td>
 				<td><%=nomTurno%></td>								
 				<td><%=nomGuardia%></td>								

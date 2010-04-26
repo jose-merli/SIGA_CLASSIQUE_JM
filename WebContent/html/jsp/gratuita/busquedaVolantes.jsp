@@ -1,3 +1,4 @@
+<!-- busquedaVolantes.jsp -->
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -206,13 +207,18 @@
 			var datosvalidar="";
 			var datosborrar="";
 			var checks = document.resultadoModal.document.getElementsByName("chkVal");
+			var checksOld = document.resultadoModal.document.getElementsByName("chkValOld");
 			if (checks.type != 'checkbox') {
 				for (i = 0; i < checks.length; i++){
 					if (checks[i].disabled==false && checks[i].checked==true) {
-						datosvalidar += checks[i].value + "##";		
+						if (checksOld[i].checked==false) {
+							datosvalidar += checks[i].value + "##";
+						}		
 					}
 					if (checks[i].disabled==false && checks[i].checked==false) {
-						datosborrar += checks[i].value + "##";		
+						if (checksOld[i].checked==true) {
+							datosborrar += checks[i].value + "##";
+						}		
 					}
 				}	
 			}
