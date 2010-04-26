@@ -1146,3 +1146,28 @@ function isAllDigits(argvalue) {
          }
          return true;
 }
+
+
+/**
+ * Muestra un DIV o lo oculta
+ * @param ident El identificador del DIV que vamos a ocultar/mostrar
+ * @return
+ */
+function ocultarDIV(ident){
+	if(document.getElementById(ident).style.display == "none" ) {
+		document.getElementById(ident).style.display = "inline";
+		document.getElementById(ident).parentElement.className='legend';
+		document.getElementById(ident+"ImMas").style.display = "none"
+		document.getElementById(ident+"ImMenos").style.display = "inline-block"
+	}else {
+		document.getElementById(ident).style.display = "none";
+		document.getElementById(ident).parentElement.className='legendNoBorder';
+		document.getElementById(ident+"ImMenos").style.display = "none"
+		document.getElementById(ident+"ImMas").style.display = "inline-block"
+	}
+	ajusteAltoPaginador('resultado');
+	//ajusteAlto();
+	ajusteAlto('resultado');
+	ajusteAlto('mainWorkarea');
+	return true;
+}
