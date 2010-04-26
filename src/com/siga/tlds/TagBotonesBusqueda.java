@@ -143,36 +143,43 @@ public class TagBotonesBusqueda extends TagSupport {
 			out.println("</td>");
 			
 			for (SearchButtonsConstants sbc: botonera){
-				switch(sbc){
-				case BUSCAR: 
-							out.println("<td class=\"tdBotones\">");
-							
-							out.println("   <script language='JavaScript'>");
-							out.println("     function setFilaSeleccionadaD (valor) {");
-							out.println("       a = document.getElementById('limpiarFilaSeleccionada')");
-							out.println("       if (a == undefined) return;");
-							out.println("       a.value = valor;");
-							out.println("       return;");
-							out.println("     }");
-							
-							out.println("     registrarEnterFormularios ();");
-							
-							out.println("   </script>");
-		
-							out.print("<input type=\"button\" alt=\""+UtilidadesString.getMensajeIdioma(usrbean, sbc.getLabel()) +"\" id=\"idButton\"  onclick=\"setFilaSeleccionadaD('true'); "+ sbc.getAccion() +"; setFilaSeleccionadaD('false');\" class=\"button\" value=\"");
-							out.print(UtilidadesString.getMensajeIdioma(usrbean, sbc.getLabel()));
-							out.println("\">");
-							out.println("</td>");
-							break;
-
-				case NUEVO:	if (tipoAcceso.equalsIgnoreCase(SIGAPTConstants.ACCESS_FULL) &&
-								this.valoresEdicion.contains(this.modo)){
-								printButton(usrbean, out, sbc);
-							}
-							break;
-							
-				default:	printButton(usrbean, out, sbc);
-							break;
+				if(sbc==null){
+					out.println("<td class=\"tdBotones\">");
+					out.println("</td>");
+				}else{
+				
+					switch(sbc){
+				
+					case BUSCAR: 
+								out.println("<td class=\"tdBotones\">");
+								
+								out.println("   <script language='JavaScript'>");
+								out.println("     function setFilaSeleccionadaD (valor) {");
+								out.println("       a = document.getElementById('limpiarFilaSeleccionada')");
+								out.println("       if (a == undefined) return;");
+								out.println("       a.value = valor;");
+								out.println("       return;");
+								out.println("     }");
+								
+								out.println("     registrarEnterFormularios ();");
+								
+								out.println("   </script>");
+			
+								out.print("<input type=\"button\" alt=\""+UtilidadesString.getMensajeIdioma(usrbean, sbc.getLabel()) +"\" id=\"idButton\"  onclick=\"setFilaSeleccionadaD('true'); "+ sbc.getAccion() +"; setFilaSeleccionadaD('false');\" class=\"button\" value=\"");
+								out.print(UtilidadesString.getMensajeIdioma(usrbean, sbc.getLabel()));
+								out.println("\">");
+								out.println("</td>");
+								break;
+	
+					case NUEVO:	if (tipoAcceso.equalsIgnoreCase(SIGAPTConstants.ACCESS_FULL) &&
+									this.valoresEdicion.contains(this.modo)){
+									printButton(usrbean, out, sbc);
+								}
+								break;
+								
+					default:	printButton(usrbean, out, sbc);
+								break;
+					}
 				}
 			}
 			
