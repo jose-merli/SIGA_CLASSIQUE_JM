@@ -12,6 +12,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
@@ -21,6 +22,7 @@ import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsCabeceraGuardiasAdm;
 import com.siga.beans.ScsGuardiasColegiadoAdm;
 import com.siga.beans.ScsGuardiasColegiadoBean;
@@ -223,7 +225,17 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 				//DATOS SOLICITANTE
 				//------------------
 				//Hago la busqueda de los datos necesarios de esa guardia, los guardo en la hash mando en request:
-				registros.clear();				
+				
+				
+				
+				registros.clear();
+				
+				//Miramos si los colegiados tienen permiso para confirmar cabecera de guardias
+				GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
+				//Haria falta meter los parametros en con ClsConstants
+				String validaGuardiasColegiado = paramAdm.getValor (usr.getLocation (), "SCS", ClsConstants.GEN_PARAM_VALIDA_GUARDIAS_COLEGIADO, "");
+				miForm.setValidaGuardiasColegiado(validaGuardiasColegiado);
+				
 				registros = admPermuta.selectGenerico(admPermuta.buscarSolicitantesPermuta(idInstitucion,idPersona,orden,usr));
 				//Almaceno en el request el vector con los datos de la tabla:
 				request.setAttribute("resultados",registros);

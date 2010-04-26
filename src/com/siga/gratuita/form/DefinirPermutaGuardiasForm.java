@@ -1,5 +1,6 @@
 package com.siga.gratuita.form;
 
+import com.atos.utils.ClsConstants;
 import com.siga.general.MasterForm;
 
 
@@ -96,9 +97,20 @@ import com.siga.general.MasterForm;
  	public String getNombreColegiadoPestanha ()		{ return ((String)this.datos.get("NOMBRECOLEGIADOPESTAÑA"));			} 		
  	public String getNumeroColegiadoPestanha ()		{ return ((String)this.datos.get("NUMEROCOLEGIADOPESTAÑA")); 			}
  	public String getComenSustitucion ()	        { return ((String)this.datos.get("COMENSUSTITUCION"));					}
+ 	
+ 	public String validaGuardiasColegiado;
  	/*public String getFlagSalto ()					{ return ((String)this.datos.get("FLAGASALTO")); 							}
  	public String getFlagCompensacion ()			{ return ((String)this.datos.get("FLAGCOMPENSACION")); 							}
  	public String getCheckSalto ()					{ return ((String)this.datos.get("SALTO")); 							}
  	public String getCheckCompensacion ()			{ return ((String)this.datos.get("COMPENSACION")); 							}*/
+
+	public String getValidaGuardiasColegiado() {
+		if(validaGuardiasColegiado==null)
+			validaGuardiasColegiado=ClsConstants.DB_FALSE;
+		return validaGuardiasColegiado;
+	}
+	public void setValidaGuardiasColegiado(String validaGuardiasColegiado) {
+		this.validaGuardiasColegiado = validaGuardiasColegiado;
+	}
  	
 }
