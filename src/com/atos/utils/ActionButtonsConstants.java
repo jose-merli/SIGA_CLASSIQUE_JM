@@ -116,7 +116,9 @@ public enum ActionButtonsConstants {
 		List<ActionButtonsConstants> list = new ArrayList<ActionButtonsConstants>();
 		String [] datos = value.replaceAll(" ","").split(separator);
 		for (String tipo : datos) {
-			list.add(ActionButtonsConstants.getEnum(tipo));
+			ActionButtonsConstants acb = ActionButtonsConstants.getEnum(tipo);
+			if (acb!=null)
+				list.add(acb);
 		}
 		return list;
 	}
