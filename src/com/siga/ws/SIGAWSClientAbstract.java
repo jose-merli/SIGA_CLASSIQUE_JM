@@ -14,6 +14,8 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
+import javax.xml.namespace.QName;
+
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
 import org.apache.xmlbeans.XmlValidationError;
@@ -258,7 +260,20 @@ public abstract class SIGAWSClientAbstract {
 			String st = null;
 			for (XmlValidationError error : errores) {				
 				if (error.getErrorType() == XmlValidationError.INCORRECT_ELEMENT) {
-					st = "Debe rellenar el campo o los campos " + error.getExpectedQNames() + " en el apartado " + error.getFieldQName();					 
+					String campos = "";
+					if (error.getExpectedQNames() != null) {
+						for (int i = 0; i < error.getExpectedQNames().size(); i++) {
+							QName qName = (QName) error.getExpectedQNames().get(i);
+							if (qName != null) {
+								if (i == 0){
+									campos += qName.getLocalPart();
+								} else {
+									campos += ", " + qName.getLocalPart();
+								}
+							}
+						}
+					}
+					st = "Debe rellenar el campo o los campos " + campos + " en el apartado " + error.getFieldQName().getLocalPart();					 
 				} else {				
 					st = "Error de validación: " + error;
 				}

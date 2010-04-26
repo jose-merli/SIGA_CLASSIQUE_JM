@@ -6,6 +6,7 @@ import com.atos.utils.UsrBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.ws.cat.PCAJGGeneraXML;
 import com.siga.ws.cat.PCAJGxmlResponse;
+import com.siga.ws.i2055.SIGAWSClient;
 
 /**
  * @author angel.corral
@@ -24,6 +25,8 @@ public class CajgConfiguracion  {
 			}
 		} else if (tipoCAJG == 3) {
 			obj = new PCAJG();
+		} else if (tipoCAJG == 4) {
+			obj = new SIGAWSClient();
 		}
 		return obj;
 	}
