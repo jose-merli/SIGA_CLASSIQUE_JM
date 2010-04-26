@@ -445,7 +445,10 @@ public class ScsPermutaGuardiasAdm extends MasterBeanAdministrador {
 				"          CABECERAGUARDIAS."+ScsCabeceraGuardiasBean.C_IDPERSONA+"," +
 				"          CABECERAGUARDIAS."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+"" +
 				"         ) AS ESTADO" +
-				"" +
+				"       ,CABECERAGUARDIAS."+ScsCabeceraGuardiasBean.C_FACTURADO+
+			     "  ,CABECERAGUARDIAS.VALIDADO,"+
+			      " F_SIGA_TIENE_ACTS_VALIDADAS(CABECERAGUARDIAS.IDINSTITUCION,  CABECERAGUARDIAS.IDTURNO, CABECERAGUARDIAS.IDGUARDIA,"+
+			       "CABECERAGUARDIAS.IDCALENDARIOGUARDIAS,  CABECERAGUARDIAS.IDPERSONA, CABECERAGUARDIAS.FECHAINICIO) AS ACT_VALIDADAS"+
 				"  FROM "+ScsCabeceraGuardiasBean.T_NOMBRETABLA+" CABECERAGUARDIAS," +
 				"       "+ScsGuardiasTurnoBean.T_NOMBRETABLA+ " GUARDIA," +
 				"       "+ScsTurnoBean.T_NOMBRETABLA +" TURNO" +
