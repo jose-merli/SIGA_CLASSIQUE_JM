@@ -1,6 +1,7 @@
 package com.siga.censo.dao.impl;
 
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,6 +90,16 @@ public class IbatisColegiadoDao extends SqlMapDaoTemplate implements ColegiadoDa
 			return getSqlMapExecutor().queryForList("Censo.getAllColegiados", params);
 		} catch (SQLException se) {
 			throw new DaoException ("Error al obtener los colegiados.", se);
+		}
+	}
+	public Date getFechaEstadoColegial(Vo colegiado){
+		Map params=new HashMap();
+		params.put("colegiado", colegiado);
+		
+		try {
+			return (Date)getSqlMapExecutor().queryForObject("Censo.fechaEstadoColegial", params);
+		} catch (SQLException se) {
+			throw new DaoException ("Error al obtener la fecha de estado coelgial.", se);
 		}
 	}
 }

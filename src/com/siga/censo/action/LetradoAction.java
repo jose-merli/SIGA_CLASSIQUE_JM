@@ -130,19 +130,33 @@ public class LetradoAction extends PagedSortedAction {
 	public String generaExcel(ActionMapping mapping, BusquedaLetradosForm formulario, HttpServletRequest request, HttpServletResponse response) 
 	 throws ClsExceptions, SIGAException  {
 
-		StringBuffer datos = new StringBuffer();
+		StringBuffer datosBuf = new StringBuffer();
 		LetradoVO letrado = new LetradoVO();
-		for(String pk: formulario.getSelectedElements()){
-			letrado.setId(pk);
-			datos.append(letrado.getIdPersona());
-			datos.append(",");
-			datos.append(letrado.getIdInstitucion());
-			datos.append(",");
-			datos.append("2");
-			datos.append("#");
+		if (BusquedaLetradosForm.SELECT_ALL_TRUE.equals(formulario.getSelectAll())){
+			List<Vo> lista = getAllPk(formulario, request);
+			for(Vo vo: lista){
+				letrado = (LetradoVO)vo; 
+				datosBuf.append(letrado.getIdPersona());
+				datosBuf.append(",");
+				datosBuf.append(letrado.getIdInstitucion());
+				datosBuf.append(",");
+				datosBuf.append("2");
+				datosBuf.append("#");
+			}				
+		}
+		else{
+			for(String pk: formulario.getSelectedElements()){
+				letrado.setId(pk);
+				datosBuf.append(letrado.getIdPersona());
+				datosBuf.append(",");
+				datosBuf.append(letrado.getIdInstitucion());
+				datosBuf.append(",");
+				datosBuf.append("2");
+				datosBuf.append("#");
+			}
 		}
 		BusquedaClientesForm clientesForm = new BusquedaClientesForm();
-		clientesForm.setTablaDatosDinamicosD(datos.toString());
+		clientesForm.setTablaDatosDinamicosD(datosBuf.toString());
 		
 		return new BusquedaClientesAction().generaExcel(mapping, clientesForm, request, response);
 	}

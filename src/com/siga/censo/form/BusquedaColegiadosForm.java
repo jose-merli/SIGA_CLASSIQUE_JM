@@ -37,6 +37,8 @@ public class BusquedaColegiadosForm extends PagedSortedForm{
 	//Campos de la busqueda simple
 	private List<InstitucionVO> instituciones;
 	private String idInstitucion;
+	private String nombreInstitucion;
+
 	private String nColegiado;
 	private String apellidos1;
 	private String apellidos2;
@@ -61,16 +63,25 @@ public class BusquedaColegiadosForm extends PagedSortedForm{
 	private String sexo;
 	private String correoElectronico;
 	private String telefono;
+	private String movil;
 	private String residente;
 	private String ejerciente;
 	private String comunitario;
 	private String fechaIncorporacionDesde;
 	private String fechaIncorporacionHasta;
+	private String fechaEstadoColegial;
 	private String gruposFijos;
 	private List<ValueKeyVO> listaGruposFijos;
 	private String tipoColegiacion;
 	private List<ValueKeyVO> listaTipoColegiacion;
 	
+	public String getNombreInstitucion() {
+		return nombreInstitucion;
+	}
+	
+	public void setNombreInstitucion(String nombreInstitucion) {
+		this.nombreInstitucion = nombreInstitucion;
+	}
 	
 	public String getIdInstitucion() {
 		return idInstitucion;
@@ -239,6 +250,22 @@ public class BusquedaColegiadosForm extends PagedSortedForm{
 	public void setTelefono(String telefono) {
 		this.telefono = telefono;
 	}
+	public String getMovil() {
+		return movil;
+	}
+	public String getTelefonoFijoMovil() {
+		String telefonoFijoMovil = getMovil();
+		if (telefonoFijoMovil!=null){
+			if (getTelefono()!=null){
+				telefonoFijoMovil = getTelefono() + " - " + telefonoFijoMovil;
+			}
+		}
+		return telefonoFijoMovil;
+	}
+	
+	public void setMovil(String movil) {
+		this.movil = movil;
+	}
 
 	public String getResidente() {
 		return residente;
@@ -278,6 +305,14 @@ public class BusquedaColegiadosForm extends PagedSortedForm{
 
 	public void setFechaIncorporacionHasta(String fechaIncorporacionHasta) {
 		this.fechaIncorporacionHasta = fechaIncorporacionHasta;
+	}
+
+	public String getFechaEstadoColegial() {
+		return fechaEstadoColegial;
+	}
+
+	public void setFechaEstadoColegial(String fechaEstadoColegial) {
+		this.fechaEstadoColegial = fechaEstadoColegial;
 	}
 
 	public String getGruposFijos() {
@@ -370,6 +405,7 @@ public class BusquedaColegiadosForm extends PagedSortedForm{
 		vo.setFechaIncorporacionHasta(UtilidadesFecha.getDate(fechaIncorporacionHasta,UtilidadesFecha.FORMATO_FECHA_ES,null));
 		vo.setFechaNacimientoDesde(UtilidadesFecha.getDate(fechaNacimientoDesde,UtilidadesFecha.FORMATO_FECHA_ES,null));
 		vo.setFechaNacimientoHasta(UtilidadesFecha.getDate(fechaNacimientoHasta,UtilidadesFecha.FORMATO_FECHA_ES,null));
+		vo.setFechaEstadoColegial(UtilidadesFecha.getDate(fechaEstadoColegial,UtilidadesFecha.FORMATO_FECHA_ES,null));
 		vo.setResidente(residente);
 		vo.setSexo(sexo);
 		vo.setTelefono(telefono);
@@ -414,6 +450,7 @@ public class BusquedaColegiadosForm extends PagedSortedForm{
 		setFechaIncorporacionHasta(UtilidadesString.formatoFecha(colegiado.getFechaIncorporacionHasta(),UtilidadesFecha.FORMATO_FECHA_ES,null));
 		setFechaNacimientoDesde(UtilidadesString.formatoFecha(colegiado.getFechaNacimientoDesde(),UtilidadesFecha.FORMATO_FECHA_ES,null));
 		setFechaNacimientoHasta(UtilidadesString.formatoFecha(colegiado.getFechaNacimientoHasta(),UtilidadesFecha.FORMATO_FECHA_ES,null));
+		setFechaEstadoColegial(UtilidadesString.formatoFecha(colegiado.getFechaEstadoColegial(),UtilidadesFecha.FORMATO_FECHA_ES,null));
 		setResidente(colegiado.getResidente());
 		setSexo(colegiado.getSexo());
 		setTelefono(colegiado.getTelefono());

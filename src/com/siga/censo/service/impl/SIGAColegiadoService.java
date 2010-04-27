@@ -1,9 +1,12 @@
 package com.siga.censo.service.impl;
 
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsMngBBDD;
 import com.ibatis.dao.client.DaoException;
 import com.siga.censo.dao.ColegiadoDao;
 import com.siga.censo.service.ColegiadoService;
@@ -162,4 +165,41 @@ extends DaoBusinessServiceTemplate implements ColegiadoService {
 		return lista;
 	}
 
+	
+	public void updateTelefonosColegiados(List<Vo> lista) throws ClsExceptions{
+		for (Vo vo:lista){
+			ColegiadoVO colegiado = (ColegiadoVO)vo;
+
+			Object[] paramIn = new Object[4]; //Parametros de entrada del PL
+			String resultado[] = new String[1]; //Parametros de salida del PL
+				// Parametros de entrada del PL
+				paramIn[0] = colegiado.getIdInstitucion();
+				paramIn[1] = colegiado.getIdPersona();
+				paramIn[2] = "2";
+				paramIn[3] = "11"; // telefono
+
+				resultado = ClsMngBBDD.callPLFunction("{? = call f_siga_getdireccioncliente(?,?,?,?)}",0,paramIn);
+				if (resultado != null && resultado[0]!=null){
+					colegiado.setTelefono(resultado[0]);
+				}
+
+				paramIn[3] = "13"; // movil
+				resultado = ClsMngBBDD.callPLFunction("{? = call f_siga_getdireccioncliente(?,?,?,?)}",0,paramIn);
+				if (resultado != null && resultado[0]!=null){
+					colegiado.setMovil(resultado[0]);
+				}
+		}
+	}
+	
+	public Date getFechaEstadoColegial(Vo colegiado) throws SIGAException{
+		Date fecha = null;
+
+		ColegiadoDao dao = (ColegiadoDao)getDaoManager().getDao(ColegiadoDao.class);
+		try {
+			fecha = (Date)dao.getFechaEstadoColegial(colegiado);
+		} catch (DaoException de){
+			throw new SIGAException (de);
+		}
+		return fecha;
+	}
 }

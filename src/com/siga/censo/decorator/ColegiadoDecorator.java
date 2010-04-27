@@ -3,17 +3,25 @@ package com.siga.censo.decorator;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.time.FastDateFormat;
+
 import com.atos.utils.AccessConstants;
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ModoConstants;
 import com.atos.utils.RowButton;
 import com.atos.utils.RowButtonsConstants;
+import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.censo.vos.ColegiadoVO;
 import com.siga.comun.decorator.HtmlActionsDecorator;
 import com.siga.comun.vos.Vo;
 
-public class ColegiadoActionsDecorator extends HtmlActionsDecorator {
+public class ColegiadoDecorator extends HtmlActionsDecorator {
 
+	private static String SIN_ESTADO = "censo.busquedaClientes.literal.sinEstadoColegial";
+	private static FastDateFormat dateFormat = FastDateFormat.getInstance("dd/MM/yyyy");
 
 	public String getActions(){
 		ColegiadoVO vo = (ColegiadoVO)getCurrentRowObject();
@@ -34,7 +42,37 @@ public class ColegiadoActionsDecorator extends HtmlActionsDecorator {
 		return printButtons(id, botones);
 	}
 
+	public String getEstadoFechaColegial(){
+		ColegiadoVO colegiado = (ColegiadoVO)getCurrentRowObject();
+		String value = null;
+		HttpSession session = getPageContext().getSession();
+		UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);
+		if (null == colegiado.getDescEstadoColegial()){
+			return UtilidadesString.getMensajeIdioma(usrbean.getLanguage(), SIN_ESTADO);
+		}
+		else{
+			value = colegiado.getDescEstadoColegial();
+	        if (null == colegiado.getFechaEstadoColegial())
+	        	return value;
+	        else
+	        	return value += "(" + dateFormat.format(colegiado.getFechaEstadoColegial()) + ")";
+		}
+	}
 
+	public String getTelefonoFijoMovil(){
+		ColegiadoVO colegiado = (ColegiadoVO)getCurrentRowObject();
+		String value = colegiado.getTelefono();
+		if (null == value ){
+			if(colegiado.getMovil() != null){
+				return colegiado.getMovil() + "(M)";
+			}
+		}
+		else if(colegiado.getMovil() != null) {
+			value += " - " + colegiado.getMovil() + "(M)";
+		}
+		return value;
+	}
+	
 	private List<RowButton> getBotones(Vo vo, ModoConstants modo) {
 		List<RowButton> botones = new ArrayList<RowButton> ();
 		ColegiadoVO colegiado = (ColegiadoVO) vo;

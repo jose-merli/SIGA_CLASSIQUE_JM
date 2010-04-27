@@ -3,6 +3,7 @@ package com.siga.censo.action;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,11 +13,16 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ActionButtonsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsMngBBDD;
+import com.atos.utils.Row;
 import com.atos.utils.SearchButtonsConstants;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.AjaxMultipleCollectionXmlBuilder;
+import com.siga.beans.CenClienteBean;
+import com.siga.beans.CenInstitucionAdm;
 import com.siga.censo.form.BusquedaClientesForm;
 import com.siga.censo.form.BusquedaColegiadosForm;
+import com.siga.censo.form.BusquedaLetradosForm;
 import com.siga.censo.service.CensoService;
 import com.siga.censo.service.ColegiadoService;
 import com.siga.censo.vos.ColegiadoVO;
@@ -47,9 +53,15 @@ public class ColegiadoAction extends PagedSortedAction {
 	 * @param request
 	 * @param formulario
 	 * @param mapping
+	 * @throws ClsExceptions 
 	 */
 	public String inicio(ActionMapping mapping, BusquedaColegiadosForm formulario, HttpServletRequest request, HttpServletResponse response)   
-	throws SIGAException {
+	throws SIGAException, ClsExceptions {
+		CenInstitucionAdm institucionAdm = new CenInstitucionAdm(getUserBean(request));
+		String nombreInstitucionAcceso=institucionAdm.getNombreInstitucion(getUserBean(request).getLocation());
+		formulario.setNombreInstitucion(nombreInstitucionAcceso);
+		formulario.setIdInstitucion(getUserBean(request).getLocation());
+
 		formulario.setInstituciones(getColegiosDependientes(getUserBean(request).getLocation()));
 		formulario.setBusquedaExacta(true);
 		formulario.setBotonesBusqueda(
@@ -66,10 +78,16 @@ public class ColegiadoAction extends PagedSortedAction {
 	 * @param request
 	 * @param formulario
 	 * @param mapping
+	 * @throws ClsExceptions 
 	 */
 	public String abrirAvanzada(ActionMapping mapping, BusquedaColegiadosForm formulario, HttpServletRequest request, HttpServletResponse response)   
-	throws SIGAException {
+	throws SIGAException, ClsExceptions {
 
+		CenInstitucionAdm institucionAdm = new CenInstitucionAdm(getUserBean(request));
+		String nombreInstitucionAcceso=institucionAdm.getNombreInstitucion(getUserBean(request).getLocation());
+		formulario.setNombreInstitucion(nombreInstitucionAcceso);
+		formulario.setIdInstitucion(getUserBean(request).getLocation());
+		
 		formulario.setInstituciones(getColegiosDependientes(getUserBean(request).getLocation()));
 		formulario.setListaGruposFijos(getListaGruposFijos(getUserBean(request)));
 		formulario.setListaTipoColegiacion(getListaTipoColegiacion(getUserBean(request)));
@@ -101,6 +119,8 @@ public class ColegiadoAction extends PagedSortedAction {
 		formulario.fromPagedVo(pagedVo);
 		formulario.fromSortedVo(sortedVo);
 
+		service.updateTelefonosColegiados(lista);
+		actualizaFechaEstadoColegial(lista);
 		formulario.setInstituciones(getColegiosDependientes(getUserBean(request).getLocation()));
 		formulario.setBotonesBusqueda(
 				SearchButtonsConstants.BUSCAR,SearchButtonsConstants.LIMPIAR,SearchButtonsConstants.AVANZADA);
@@ -110,6 +130,15 @@ public class ColegiadoAction extends PagedSortedAction {
 		formulario.setTipoBusqueda(SIMPLE);
 
 		return INICIO_FORWARD;
+	}
+
+
+	private void actualizaFechaEstadoColegial(List<Vo> lista) throws SIGAException {
+		ColegiadoService service = (ColegiadoService) getBusinessManager().getService(ColegiadoService.class);
+		for (Vo vo : lista){
+			ColegiadoVO colegiado = (ColegiadoVO) vo;
+			colegiado.setFechaEstadoColegial(service.getFechaEstadoColegial(vo));
+		}
 	}
 
 	public String buscarAvanzada(ActionMapping mapping, BusquedaColegiadosForm formulario, HttpServletRequest request, HttpServletResponse response)   
@@ -221,19 +250,34 @@ public class ColegiadoAction extends PagedSortedAction {
 	public String generaExcel(ActionMapping mapping, BusquedaColegiadosForm formulario, HttpServletRequest request, HttpServletResponse response) 
 	throws ClsExceptions, SIGAException  {
 
-		StringBuffer datos = new StringBuffer();
+		StringBuffer datosBuf = new StringBuffer();
 		ColegiadoVO colegiado = new ColegiadoVO();
-		for(String pk: formulario.getSelectedElements()){
-			colegiado.setId(pk);
-			datos.append(colegiado.getIdPersona());
-			datos.append(",");
-			datos.append(colegiado.getIdInstitucion());
-			datos.append(",");
-			datos.append("2");
-			datos.append("#");
+		if (BusquedaLetradosForm.SELECT_ALL_TRUE.equals(formulario.getSelectAll())){
+			List<Vo> lista = getAllPk(formulario, request);
+			for(Vo vo: lista){
+				colegiado = (ColegiadoVO)vo; 
+				datosBuf.append(colegiado.getIdPersona());
+				datosBuf.append(",");
+				datosBuf.append(colegiado.getIdInstitucion());
+				datosBuf.append(",");
+				datosBuf.append("2");
+				datosBuf.append("#");
+			}				
 		}
+		else{
+			for(String pk: formulario.getSelectedElements()){
+				colegiado.setId(pk);
+				datosBuf.append(colegiado.getIdPersona());
+				datosBuf.append(",");
+				datosBuf.append(colegiado.getIdInstitucion());
+				datosBuf.append(",");
+				datosBuf.append("2");
+				datosBuf.append("#");
+			}
+		}
+
 		BusquedaClientesForm clientesForm = new BusquedaClientesForm();
-		clientesForm.setTablaDatosDinamicosD(datos.toString());
+		clientesForm.setTablaDatosDinamicosD(datosBuf.toString());
 
 		return new BusquedaClientesAction().generaExcel(mapping, clientesForm, request, response);
 	}
