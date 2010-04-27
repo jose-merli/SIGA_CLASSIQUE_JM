@@ -58,7 +58,7 @@
 		</logic:notEmpty>
 		
 		<display:column property="estadoFechaColegial" titleKey="censo.busquedaClientesAvanzada.literal.estadoColegial" 
-			sortable="true" nulls="false" style="width:95px; white-space: nowrap;" />
+			sortable="false" nulls="false" style="width:95px; white-space: nowrap;" />
 		
 		<display:column property="residente" titleKey="censo.busquedaClientesAvanzada.literal.residente" 
 				sortable="false" nulls="false" style="width:70px; white-space: nowrap;" 
