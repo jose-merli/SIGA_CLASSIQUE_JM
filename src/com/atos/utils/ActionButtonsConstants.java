@@ -54,7 +54,7 @@ public enum ActionButtonsConstants {
 	GENERAR_PDFS ("gps","general.boton.generarPDFS","accionGenerarPDFS()"),
 	CREAR_EJG ("ce","general.boton.crearEJG","accionCrearEJG()"),
 	CREAR_DESIGNACION ("cd","general.boton.crearDesignacion","accionCrearDesignacion()"),
-	DESCARGAR_EJG ("dee","general.boton.descargaEejg","descargaEejg(true)"),
+	DESCARGAR_EJG ("dee","general.boton.descargaEejg","descargaEejg(true)", "idButtonDescargaEejg"),
 	RELACIONAR_EJG ("re","general.boton.relacionarEJG","relacionarConEJG()"),
 	RELACIONAR_SOJ ("rs","general.boton.relacionarSOJ","relacionarConSOJ()"),
 	RELACIONAR_DESIGNACION ("rd","general.boton.relacionarDesigna","relacionarConDesigna()"),
@@ -70,27 +70,32 @@ public enum ActionButtonsConstants {
 	BAJA_EN_TODOS_LOS_TURNOS ("bajaEnTodosLosTurnos","general.boton.bajaEnTodosLosTurnos","darDeBajaEnTodosLosTurnos(true)"),
 	ALTA_EN_TURNOS_SEL ("altaEnTurnosSel","general.boton.altaEnTurnosSel","darDeAltaEnTurnosSel(true)"),
 	GENERAR_CARTA ("cg","general.boton.cartaInteresados","generarCarta()"),
-	ANYADIR_EXPEDIENTES ("ae","general.boton.aniadirExpedientes","aniadirExpedientes(true)"),
+	ANYADIR_EXPEDIENTES ("ae","general.boton.aniadirExpedientes","aniadirExpedientes(true)", "idButtonAniadirExpedientes"),
 	GENERAR_FICHERO ("gf","general.boton.generarFichero","generarFichero(true)"),
 	GENERAR_XML ("gxml","general.boton.generaXML","generaXML()"),
 	GENERAR_ETIQUETAS ("get","general.boton.generarEtiquetas","accionGenerarEtiquetas()"),
 	INFORME_RETENCIONES_IRPF ("iri","general.boton.informeRetencionesIRPF","accionInformeRetencionesIRPF()"),
 	LOG_FACTURACION ("lf","general.boton.descargaLogFacturacion","descargaLogFacturacion()"),
-	ENVIO_FTP ("ftp","general.boton.envioFTP","envioFTP(this)"),
-	ENVIO_WS ("ws","general.boton.envioWS","envioWS(this)"),
-	RESPUESTA_FTP ("respFTP","general.boton.respuestaFTP","respuestaFTP(this)"),
-	RESOLUCION_FTP ("resolucionFTP","general.boton.resolucionFTP","resolucionFTP(this)");
+	ENVIO_FTP ("ftp","general.boton.envioFTP","envioFTP(this)", "idButtonEnvioFTP"),
+	ENVIO_WS ("ws","general.boton.envioWS","envioWS(this)", "idButtonEnvioWS"),
+	RESPUESTA_FTP ("respFTP","general.boton.respuestaFTP","respuestaFTP(this)", "idButtonRespuestaFTP"),
+	RESOLUCION_FTP ("resolucionFTP","general.boton.resolucionFTP","resolucionFTP(this)", "idButtonResolucionFTP");
 
     private final String valor;   
 	private final String label;   
-    private final String accion;   
+    private final String accion;
+    private final String idBoton; 
     
     ActionButtonsConstants(String valor, String label, String accion) {
+        this(valor, label, accion, "idButton");
+    }
+
+    ActionButtonsConstants(String valor, String label, String accion, String idBoton) {
         this.valor = valor;
         this.label = label;
         this.accion = accion;
+        this.idBoton = idBoton;
     }
-
     public String getValor() {
 		return valor;
 	}
@@ -101,6 +106,10 @@ public enum ActionButtonsConstants {
 	
 	public String getAccion() {
 		return accion;
+	}
+	
+	public String getIdBoton() {
+		return idBoton;
 	}
 	
 	public static ActionButtonsConstants getEnum(String value){
