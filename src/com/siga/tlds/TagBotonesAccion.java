@@ -324,7 +324,7 @@ public class TagBotonesAccion extends TagSupport {
 	
 	private void printButton(UsrBean usrbean, PrintWriter out, ActionButtonsConstants abc) {
 		out.println("<td class=\"tdBotones\">");
-		out.print("<input type=\"button\" alt=\""+UtilidadesString.getMensajeIdioma(usrbean, abc.getLabel()) +"\"  id=\"idButton\" onclick=\"return "+abc.getAccion()+";\" class=\"button\" value=\"");
+		out.print("<input type=\"button\" alt=\""+UtilidadesString.getMensajeIdioma(usrbean, abc.getLabel()) +"\"  id=\"" + abc.getIdBoton() +"\" onclick=\"return "+abc.getAccion()+";\" class=\"button\" name=\"idButton\" value=\"");
 		out.print(UtilidadesString.getMensajeIdioma(usrbean,abc.getLabel()));
 		out.println("\">");
 		out.println("</td>");
