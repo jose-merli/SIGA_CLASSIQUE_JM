@@ -279,8 +279,8 @@ public abstract class SIGAWSClientAbstract {
 				}
 				if (!list.contains(st)) {
 					list.add(st);
-				}
-				ClsLogging.writeFileLog(st, 3);
+					ClsLogging.writeFileLog(st, 3);
+				}				
 			}		
 			
 		}
