@@ -220,14 +220,13 @@ public class SIGAException extends ClsExcBase  {
 					setLiteral(cod);
 					break;
 				}
-		    } 
-			else if (el instanceof ClsExcBase) {
-				el=((ClsExcBase)el).getNextException();
-			} 
-			else if (el instanceof BusinessException){
+		    }else if (el instanceof BusinessException){
 				setLiteral(el.getMessage());
 				break;
-			}
+			} 
+			if (el instanceof ClsExcBase) {
+				el=((ClsExcBase)el).getNextException();
+			} 
 			else {
 				el=null;
 			}
