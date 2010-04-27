@@ -11,11 +11,11 @@
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 
-<%@ page import="com.atos.utils.*"%>
+<%@ page import="com.atos.utils.ClsExcBase"%>
+<%@ page import="com.atos.utils.ExceptionManager"%>
 <%@ page import="com.siga.administracion.*"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
-<%  
-String app=request.getContextPath(); %>
+<%  String app=request.getContextPath(); %>
 <html>
 	<head>
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
@@ -32,7 +32,7 @@ String app=request.getContextPath(); %>
 	   			msg=UtilidadesString.escape(mgr.getSigaErrMsg());
 		   	}
 		  } catch (Exception e) {
-		    e.printStackTrace();
+		    //e.printStackTrace();
 		  }
 	%>
 
@@ -168,12 +168,12 @@ String app=request.getContextPath(); %>
 	%>
     	<pre>
 	<%
-    if (exc != null)
-    {
-    	out.println(exc.getMessage());
-    }
+	    if (exc != null)
+	    {
+	    	out.println(exc.getMessage());
+	    }
     } catch (Exception e) {
-    e.printStackTrace();
+    	//e.printStackTrace();
     }
 	%>
 		</pre>

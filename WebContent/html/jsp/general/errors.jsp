@@ -8,10 +8,8 @@
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 <%@ taglib uri = "libreria_SIGA.tld" prefix="siga"%>
-
-<%@ page import="com.atos.utils.*"%>
-<%@ page import="com.siga.administracion.*"%>
-
+<%@ page import="com.atos.utils.ClsExcBase"%>
+<%@ page import="com.atos.utils.ExceptionManager"%>
 <% String app=request.getContextPath(); %>
 <html>
 	<head>
@@ -149,7 +147,7 @@
     	out.println(exc.getMessage());
     }
     } catch (Exception e) {
-    e.printStackTrace();
+    	//System.out.println(e.toString());
     }
 	%>
 		</pre>
