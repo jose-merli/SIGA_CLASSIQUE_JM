@@ -694,7 +694,7 @@ public class InformeColegiadosPagos extends MasterReport {
 				if(!r.getString("COMPENSADO_CAJA").equalsIgnoreCase("")){
 					dCompensadoCaja= Double.parseDouble(r.getString("COMPENSADO_CAJA"));
 				}else dCompensadoCaja=0.0;
-				result.put("COMPENSADO_CAJA",UtilidadesString.formatoImporte(dCompensadoCaja)+ClsConstants.CODIGO_EURO);
+//				result.put("COMPENSADO_CAJA",UtilidadesString.formatoImporte(dCompensadoCaja)+ClsConstants.CODIGO_EURO);
 			}
 
 			//Se reutiliza la query del detalle de pagos para recuperar importes
@@ -817,8 +817,28 @@ public class InformeColegiadosPagos extends MasterReport {
 				fechaPago = r.getString("FECHAESTADO");
 				result.put("FECHA_PAGO",UtilidadesString.getFechaEscrita(fechaPago,"dd/MM/yyyy",usr.getLanguage()));
 			}
-				
-		} catch (Exception e) {
+		
+			//fecha de abono del disco bancario
+			
+			buf0 = new StringBuffer();
+			buf0.append("SELECT TO_CHAR(fd.fecha, 'DD/MM/YYYY') FECHAABONODISCOBANCO FROM FAC_ABONO fa, FCS_PAGOSJG fp,fac_abonoincluidoendisquete fi, fac_disqueteabonos fd ");
+			buf0.append(" where fa.idinstitucion =" + idInstitucion);
+			buf0.append(" and fa.idpagosjg= " + idPago);
+			buf0.append(" and fa.idpersona="+ idPersona);
+			buf0.append(" AND fa.idinstitucion = fa.idinstitucion ");
+			buf0.append(" AND fa.idpagosjg = fp.idpagosjg ");
+			buf0.append(" and fi.idinstitucion= fa.idinstitucion ");
+			buf0.append(" and fi.idabono = fa.idabono ");
+			buf0.append(" and fi.idinstitucion= fd.idinstitucion ");
+			buf0.append(" and fi.iddisqueteabono= fd.iddisqueteabono ");			
+			rc = new RowsContainer();
+			rc.find(buf0.toString());
+			if(rc!=null && rc.size()>0){
+				Row r=(Row)rc.get(0);
+				result.putAll(r.getRow());
+				result.put("FECHAABONODISCOBANCO",r.getString("FECHAABONODISCOBANCO"));
+			}			
+		}catch (Exception e) {
 			throw new ClsExceptions(e,"Error al generar el informe");
 		}		
 		return result;
