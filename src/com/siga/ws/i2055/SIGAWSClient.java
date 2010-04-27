@@ -143,16 +143,19 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 						escribeLogRemesa("No se ha obtenido respuesta para el expediente " + anio + "/" + numejg);						
 						continue;
 					}
+										
+					BigInteger idTipoError = respuesta.getIdTipoError();
+					if (idTipoError != null && idTipoError.intValue() != 0) {//si tiene un error definido. TODO habrá que enviar un texto !!!
+						String descripcionError = idTipoError.toString();
+						escribeErrorExpediente(anio, numejg, numero, idTipoEJG, descripcionError);
+						continue;
+					}
+					
 					if (!sigaAsigna.getDtExpedientes().getIDExpedienteSIGA().equals(respuesta.getIDExpedienteSIGA())) {
 						escribeLogRemesa("El identificador SIGA no se corresponde con el enviado para el expediente " + anio + "/" + numejg);						
 						continue;
 					}
 					
-					BigInteger idTipoError = respuesta.getIdTipoError();
-					if (idTipoError != null && idTipoError.intValue() != 0) {//si tiene un error definido. TODO habrá que enviar un texto !!!
-						String descripcionError = idTipoError.toString();
-						escribeErrorExpediente(anio, numejg, numero, idTipoEJG, descripcionError);						
-					}
 					correctos++;
 					
 				} catch (Exception e) {
