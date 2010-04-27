@@ -21,12 +21,14 @@ public class ClienteVO extends PersonaVO {
 	private String sexo;
 	private String correoElectronico;
 	private String telefono;
+	private String movil;
 	private String idInstitucion;
 	private Date fechaIncorporacionDesde;
 	private String nombreInstitucion;
 	private Integer estadoColegial;
 	private String descEstadoColegial;
-	
+	private Date fechaEstadoColegial;
+
 	public ClienteVO(){
 	}
 
@@ -207,5 +209,19 @@ public class ClienteVO extends PersonaVO {
 		return descEstadoColegial;
 	}
 
-	
+	public void setMovil(String movil) {
+		this.movil = movil;
+	}
+
+	public String getMovil() {
+		return movil;
+	}
+
+	public Date getFechaEstadoColegial() {
+		return fechaEstadoColegial;
+	}
+
+	public void setFechaEstadoColegial(Date fechaEstadoColegial) {
+		this.fechaEstadoColegial = fechaEstadoColegial;
+	}	
 }
