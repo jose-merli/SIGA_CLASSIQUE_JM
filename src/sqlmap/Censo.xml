@@ -535,6 +535,14 @@
 		   AND idinstitucion IN (2000, #idInstitucion#)
 		 ORDER BY value
 	</select>
+
+	<select id="fechaEstadoColegial" resultClass="Date">
+		SELECT max(fechaestado) as FECHAESTADO 
+		  FROM CEN_DATOSCOLEGIALESESTADO  
+		 WHERE IDPERSONA =  #colegiado.idPersona#  
+		   AND IDINSTITUCION =  #colegiado.idInstitucion#  
+	  ORDER BY fechaestado desc 
+	</select>
 	
 	<select id="cargos" resultMap="valueKeyResult">
 		SELECT (idtipocvsubtipo2 || '@@@' || idinstitucion) AS key,
@@ -545,6 +553,7 @@
 		 ORDER BY value
 	</select>
 	
+
 	<select id="paginaColegiados" parameterClass="java.util.Map" resultMap="colegiadoResult">
 		select *
 		from (select a.*, rownum rnum
