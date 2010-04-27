@@ -277,7 +277,9 @@ public abstract class SIGAWSClientAbstract {
 				} else {				
 					st = "Error de validación: " + error;
 				}
-				list.add(st);
+				if (!list.contains(st)) {
+					list.add(st);
+				}
 				ClsLogging.writeFileLog(st, 3);
 			}		
 			
