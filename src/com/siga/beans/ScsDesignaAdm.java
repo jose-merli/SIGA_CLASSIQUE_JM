@@ -1568,6 +1568,9 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error al obtener la informacion sobre getDireccionLetrado");
 		}
 	}
+	
+	
+	
 	public Vector getDireccionPersonalLetradoSalidaOficio(String idPersona,String idInstitucion) throws ClsExceptions  
 	{
 		try {
@@ -1587,6 +1590,25 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			" and dir.idpersona = :2 "+
 			" and rownum = 1 ";
 
+			HelperInformesAdm helperInformes = new HelperInformesAdm();	
+			return helperInformes.ejecutaConsultaBind(sql, h);
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la informacion sobre las getDireccionPersonalLetrado");
+		}
+	}
+	
+	
+	public Vector getListadoTelefonosInteresadoSalidaOficio(String idPersonaJG,String idInstitucion) throws ClsExceptions  
+	{
+		try {
+			Hashtable h = new Hashtable();	
+			h.put(new Integer(1), idInstitucion);
+			h.put(new Integer(2), idPersonaJG);
+			
+			String sql="SELECT st.nombretelefono as NOMBRETELEFONO,st.numerotelefono  as NUMEROTELEFONO "+
+			" FROM SCS_TELEFONOSPERSONA st "+
+			" WHERE st.IDINSTITUCION = :1 AND st.IDPERSONA = :2 ";			
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
 			return helperInformes.ejecutaConsultaBind(sql, h);
 		}
@@ -1717,8 +1739,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETANIONUMEROCAJ", "LISTAANIONUMEROCAJ"));
 				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETNUMEROANIOCAJ", "LISTANUMEROANIOCAJ"));
 				
-				
-				
+				//String idPersona  = (String)registro.get("IDPERSONA");
+			//	String idPersona1  = (String)registro.get("IDPERSONA");idPersona
 				
 				
 				//metemos los interesados de la designa
@@ -1749,6 +1771,16 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					
 					
 				}
+				//Listado de Telefonos de interesados de Designas
+				Vector aux = getListadoTelefonosInteresadoSalidaOficio(idPersonaJG,idInstitucion);
+				String tInteresado = "";				
+				for (int i=0;i<aux.size();i++) {
+					Hashtable reg = (Hashtable) aux.get(i);
+	             	tInteresado+= (String) reg.get("NOMBRETELEFONO") + ": ";	
+					tInteresado+= (String) reg.get("NUMEROTELEFONO") + "; ";						 
+				}
+				if (tInteresado.length()>0) tInteresado = tInteresado.substring(0,tInteresado.length()-2);
+				registro.put("LISTA_TELEFONOS_INTERESADO", tInteresado);
 				
 				helperInformes.completarHashSalida(registro,getActuacionDesignaSalidaOficio(idInstitucion,numeroDesigna,idTurno,anioDesigna));
 				
