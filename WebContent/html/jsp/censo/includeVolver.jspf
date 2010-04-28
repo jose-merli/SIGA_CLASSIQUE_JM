@@ -157,8 +157,7 @@
 <% 				} else if (busquedaVolver.equals("BUSQUEDA_COLEGIADO")) {	%>
 					document.BusquedaColegiadosForm.action = document.BusquedaColegiadosForm.action + "?" + "<%=SessionForms.getForm(request,"/CEN_BusquedaColegiados.do","buscar")%>";
 					document.BusquedaColegiadosForm.id.value = document.forms[0].id.value;
-					document.BusquedaColegiadosForm.submit();	
-					document.BusquedaLetradosForm.submit();	
+					document.BusquedaColegiadosForm.submit();					
 <% 				} else if (busquedaVolver.equals("BUSQUEDA_COLEGIADO_AV")) {	%>
 					document.BusquedaColegiadosForm.action = document.BusquedaColegiadosForm.action + "?" + "<%=SessionForms.getForm(request,"/CEN_BusquedaColegiados.do","buscarAvanzada")%>";
 					document.BusquedaColegiadosForm.id.value = document.forms[0].id.value;
