@@ -26,7 +26,6 @@
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
-	System.out.println(usr.getLocation());
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
 	Colegio cole = (Colegio)ses.getAttribute("colegio");
 	String elTarget = "mainWorkArea";
