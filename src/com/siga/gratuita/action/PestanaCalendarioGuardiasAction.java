@@ -328,7 +328,10 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			//Datos del solicitante:
 			miHash.put(ScsPermutaGuardiasBean.C_IDTURNO_SOLICITANTE,miForm.getIdTurnoSolicitante());
 			miHash.put(ScsPermutaGuardiasBean.C_IDGUARDIA_SOLICITANTE,miForm.getIdGuardiaSolicitante());
-			miHash.put(ScsPermutaGuardiasBean.C_IDCALENDARIOGUARDIAS_SOLICITAN,miForm.getIdCalendarioSolicitante());
+			//(@FEMI) Estaba mal. Cuando solo se permutaban guardias del mismo calendario
+			//no pasa nada ya que es el mismo. Cuando se puede permutar por otro calendario diferente esl calendario de guardiasd del
+			//solicitante ahora es el del confirmador
+			miHash.put(ScsPermutaGuardiasBean.C_IDCALENDARIOGUARDIAS_SOLICITAN,miForm.getIdCalendarioConfirmador());
 			miHash.put(ScsPermutaGuardiasBean.C_IDPERSONA_SOLICITANTE,miForm.getIdPersonaSolicitante());			
 			
 			
@@ -364,7 +367,10 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			//Datos del confirmador:			
 			miHash.put(ScsPermutaGuardiasBean.C_IDTURNO_CONFIRMADOR,miForm.getIdTurnoConfirmador());
 			miHash.put(ScsPermutaGuardiasBean.C_IDGUARDIA_CONFIRMADOR,miForm.getIdGuardiaConfirmador());
-			miHash.put(ScsPermutaGuardiasBean.C_IDCALENDARIOGUARDIAS_CONFIRMAD,miForm.getIdCalendarioConfirmador());
+			//(@FEMI) Estaba mal. Cuando solo se permutaban guardias del mismo calendario
+			//no pasa nada ya que es el mismo. Cuando se puede permutar por otro calendario diferente esl calendario de guardiasd del
+			//confirmador ahora es el del solicitante  
+			miHash.put(ScsPermutaGuardiasBean.C_IDCALENDARIOGUARDIAS_CONFIRMAD,miForm.getIdCalendarioSolicitante());
 			miHash.put(ScsPermutaGuardiasBean.C_IDPERSONA_CONFIRMADOR,miForm.getIdPersonaConfirmador());
 		    if (usr.isLetrado()){
 			    miHash.put(ScsPermutaGuardiasBean.C_FECHAINICIO_CONFIRMADOR,GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaInicioConfirmador()));

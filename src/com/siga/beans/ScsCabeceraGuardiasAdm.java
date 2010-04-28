@@ -214,7 +214,8 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 			consulta += " guard."+ScsCabeceraGuardiasBean.C_IDINSTITUCION+"="+idinstitucion;
 			consulta += " AND guard."+ScsCabeceraGuardiasBean.C_IDTURNO+"="+idturno;
 			consulta += " AND guard."+ScsCabeceraGuardiasBean.C_IDGUARDIA+"="+idguardia;
-			consulta += " AND guard."+ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS+"="+idcalendarioguardias;
+			//(@FEMI)Permitimos que se pueda permutar por calendarios diferentes al inicial
+			//consulta += " AND guard."+ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS+"="+idcalendarioguardias;
 			consulta += " AND guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+"<>'"+idpersona+"'";			
 			//JOIN
 			consulta += " AND perso."+CenPersonaBean.C_IDPERSONA+"=guard."+ScsCabeceraGuardiasBean.C_IDPERSONA;
