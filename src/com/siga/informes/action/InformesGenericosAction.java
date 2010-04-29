@@ -1009,10 +1009,8 @@ public class InformesGenericosAction extends MasterAction {
 							idioma, doc, words, datoscomunes);
 					
 					//comprobacion de importe de Guardias
-/*					Object objImporteGuardia = datoscomunes.get ("IMPORTEGUARDIA");
-					String strImporteGuardia = ((String) (objImporteGuardia == null ? "0" : objImporteGuardia));
-					double importeGuardia = Double.parseDouble (strImporteGuardia.equals ("") ? "0" : strImporteGuardia);
-*/					double importeGuardia = UtilidadesHash.getDouble ((Hashtable) datoscomunes, "IMPORTEGUARDIA");
+					Double importeGuardiaAux = UtilidadesHash.getDouble ((Hashtable) datoscomunes, "IMPORTEGUARDIA");
+					double importeGuardia = importeGuardiaAux == null ? 0 : importeGuardiaAux;
 					if (totalGA != importeGuardia) {
 						GenRecursosAdm recAdm = new GenRecursosAdm (usr);
 						Vector recursos = recAdm.select (
