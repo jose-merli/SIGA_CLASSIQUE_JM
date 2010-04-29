@@ -730,10 +730,10 @@
 	<%
 		String botones = "V";
 		if (accion.equalsIgnoreCase("nuevo")) 
-			botones = "V,G,R";
+			botones = "V,G";
 		else {
 			if (accion.equalsIgnoreCase("edicion")) {
-				if (idEstadoPagosJG.equals(String.valueOf(ClsConstants.ESTADO_PAGO_ABIERTO))) botones += ",EF,G,R";
+				if (idEstadoPagosJG.equals(String.valueOf(ClsConstants.ESTADO_PAGO_ABIERTO))) botones += ",EF,G";
 				if (idEstadoPagosJG.equals(String.valueOf(ClsConstants.ESTADO_PAGO_EJECUTADO))) botones += ",CP";
 			}
 			botones += ",VC";
