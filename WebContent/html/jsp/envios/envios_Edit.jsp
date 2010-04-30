@@ -132,7 +132,7 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 
-		<!-- Asociada al boton GuardarCerrar -->
+		//<!-- Asociada al boton GuardarCerrar -->
 		function accionGuardarCerrar() 
 		{		
 			sub();
@@ -155,7 +155,7 @@
 			}
 		}
 
-		<!-- Asociada al boton Cerrar -->
+		//<!-- Asociada al boton Cerrar -->
 		function accionCerrar() 
 		{		
 			window.close();
