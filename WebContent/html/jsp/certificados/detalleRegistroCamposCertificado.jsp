@@ -160,7 +160,7 @@
 										if (bNuevo)
 										{
 %>
-											<siga:ComboBD nombre="cmbCampo" tipo="certificados.mantenimiento.campos.campo" parametro="<%=parametros%>" clase="boxCombo" accion="Hijo:cmbFormato; comprobarCapturarDatos();"/>
+											<siga:ComboBD nombre="cmbCampo" tipo="certificados.mantenimiento.campos.campo" parametro="<%=parametros%>" ancho="300" clase="boxCombo" accion="Hijo:cmbFormato; comprobarCapturarDatos();"/>
 <%
 										}
 										
@@ -168,14 +168,14 @@
 										{
 %>
 											<%=sDescCampo%>
-											<input type="hidden" id="cmbCampo" value="<%=sIdCampo%>">
+											<input type="hidden" id="cmbCampo" ancho="300" value="<%=sIdCampo%>">
 <%
 										}
 %>
 										</td>
 									</tr>
 									<tr>				
-										<td class="labelText">
+										<td class="labelText">										
 											<siga:Idioma key="certificados.mantenimiento.literal.formato"/>
 										</td>				
 										<td class="boxConsulta">
@@ -183,7 +183,7 @@
 										if (bNuevo)
 										{
 %>
-											<siga:ComboBD nombre="cmbFormato" tipo="certificados.mantenimiento.campos.formato" clase="boxCombo" accion="" hijo="true"/>
+											<siga:ComboBD nombre="cmbFormato" tipo="certificados.mantenimiento.campos.formato" clase="boxCombo" ancho="300" accion="" hijo="true"/>
 <%
 										}
 										
@@ -197,7 +197,7 @@
 												ArrayList al = new ArrayList();
 												al.add(sIdFormato + "," + sTipoCampo);
 %>
-											<siga:ComboBD nombre="cmbFormato" tipo="certificados.mantenimiento.campos.formato" parametro="<%=parametros%>" elementoSel="<%=al%>" clase="boxCombo" accion="" hijo="true"/>
+											<siga:ComboBD nombre="cmbFormato" tipo="certificados.mantenimiento.campos.formato" parametro="<%=parametros%>" ancho="300" elementoSel="<%=al%>" clase="boxCombo" accion="" hijo="true"/>
 <%
 											}
 											
