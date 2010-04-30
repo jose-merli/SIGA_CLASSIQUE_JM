@@ -154,7 +154,7 @@
 											ArrayList al = new ArrayList();
 											al.add(sIdFormato + "," + sTipoCampo);
 %>
-											<siga:ComboBD nombre="cmbFormato" tipo="certificados.mantenimiento.campos.formato" parametro="<%=parametros%>" elementoSel="<%=al%>" clase="boxCombo" accion="" hijo="true"/>
+											<siga:ComboBD nombre="cmbFormato" tipo="certificados.mantenimiento.campos.formato" parametro="<%=parametros%>" ancho="300" elementoSel="<%=al%>" clase="boxCombo" accion="" hijo="true"/>
 <%
 											}
 											
