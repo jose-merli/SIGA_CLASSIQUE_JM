@@ -217,30 +217,9 @@
 										</td>				
 										<td>
 <%
-										boolean bReadOnly=sCapturarDatos.equals("S") ? bEditable ? false : true : true;	
+											boolean bReadOnly=sCapturarDatos.equals("S") ? bEditable ? false : true : true;
 %>
-										
-<%
-											if ((bNuevo)||(bEditable))
-											{
-%>											
-
-												<html:textarea property="valor" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" value="" styleClass="boxCombo" cols="125" rows="12" maxlength="4000" value="<%=sValor%>"/>
-<%												
-											}
-											
-											else
-											
-											{
-%>											
-											<html:textarea property="valor" value="" styleClass="boxComboConsulta" cols="125" rows="12" maxlength="4000" value="<%=sValor%>" readonly="<%=bReadOnly%>"/>	
-<%											
-											
-											}
-%>												
-
-											
-											
+											<html:textarea property="valor" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" value="" styleClass="boxCombo" cols="125" rows="12" value="<%=sValor%>" readonly="<%=bReadOnly%>"/>
 										</td>
 									</tr>
 								</table>
