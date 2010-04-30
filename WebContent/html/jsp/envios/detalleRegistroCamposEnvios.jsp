@@ -50,13 +50,13 @@
 
 		<!-- INICIO: SCRIPTS BOTONES -->
 		<script language="JavaScript">
-			<!-- Asociada al boton GuardarCerrar -->
+			//<!-- Asociada al boton GuardarCerrar -->
 			function accionGuardarCerrar() 
 			{
 				sub();
 				if(PlantillasEnviosCamposForm.cmbCampo.value=="")
 				{
-					var mensaje = "<siga:Idioma key="certificados.mantenimiento.literal.campo"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
+					var mensaje = "<siga:Idioma key='certificados.mantenimiento.literal.campo'/> <siga:Idioma key='messages.campoObligatorio.error'/>";
 	
 					alert (mensaje);
 					fin();
@@ -79,7 +79,7 @@
 				//window.returnValue="MODIFICADO";
 			}
 			
-			<!-- Asociada al boton Cerrar -->
+			//<!-- Asociada al boton Cerrar -->
 			function accionCerrar() 
 			{		
 				window.close();
@@ -162,7 +162,7 @@
 										if (bNuevo)
 										{
 %>
-											<siga:ComboBD nombre="cmbCampo" tipo="envios.plantillas.campos.campo" parametro="<%=parametros%>" clase="boxCombo" accion="Hijo:cmbFormato; comprobarCapturarDatos();"/>
+											<siga:ComboBD nombre="cmbCampo" tipo="envios.plantillas.campos.campo" parametro="<%=parametros%>" ancho="300" clase="boxCombo" accion="Hijo:cmbFormato; comprobarCapturarDatos();"/>
 <%
 										}
 										
@@ -170,7 +170,7 @@
 										{
 %>
 											<%=sDescCampo%>
-											<input type="hidden" id="cmbCampo" value="<%=sIdCampo%>">
+											<input type="hidden" id="cmbCampo" ancho="300" value="<%=sIdCampo%>">
 <%
 										}
 %>
@@ -185,7 +185,7 @@
 										if (bNuevo)
 										{
 %>
-											<siga:ComboBD nombre="cmbFormato" tipo="certificados.mantenimiento.campos.formato" clase="boxCombo" accion="" hijo="true"/>
+											<siga:ComboBD nombre="cmbFormato" tipo="certificados.mantenimiento.campos.formato" clase="boxCombo" ancho="300" accion="" hijo="true"/>
 <%
 										}
 										
@@ -199,7 +199,7 @@
 												ArrayList al = new ArrayList();
 												al.add(sIdFormato + "," + sTipoCampo);
 %>
-											<siga:ComboBD nombre="cmbFormato" tipo="certificados.mantenimiento.campos.formato" parametro="<%=parametros%>" elementoSel="<%=al%>" clase="boxCombo" accion="" hijo="true"/>
+											<siga:ComboBD nombre="cmbFormato" tipo="certificados.mantenimiento.campos.formato" parametro="<%=parametros%>" ancho="300" elementoSel="<%=al%>" clase="boxCombo" accion="" hijo="true"/>
 <%
 											}
 											
