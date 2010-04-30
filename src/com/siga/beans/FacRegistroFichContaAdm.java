@@ -419,11 +419,6 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 					UtilidadesString.getMensajeIdioma("1","general.literal.cabeceraAsiento.contrapartida") + "\n");
 			/////////////////////////
 			
-			// Actualizamos la fechaHasta al final del dia
-			fechaHasta = fechaHasta+" 23:59:59";
-			// Tipos de asientos.
-
-			
 			//le cambio el estado a en proceso
 			tx.begin();
 			beanContab.setEstado(new Integer(FacRegistroFichContaBean.ESTADO_ENPROCESO));
