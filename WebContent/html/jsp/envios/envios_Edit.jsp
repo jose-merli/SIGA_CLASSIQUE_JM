@@ -83,7 +83,7 @@
 						<siga:Idioma key="envios.definir.literal.tipoenvio"/>&nbsp;(*)
 				</td>
 				<td>	
-					<siga:ComboBD nombre = "comboTipoEnvio" tipo="cmbTipoEnviosInstGen" clase="boxCombo" obligatorio="true" parametro="<%=idInstitucion%>" accion="Hijo:comboPlantillaEnvio"/>						
+					<siga:ComboBD nombre = "comboTipoEnvio" tipo="cmbTipoEnviosInstGen" clase="boxCombo" obligatorio="true" ancho="330" parametro="<%=idInstitucion%>" accion="Hijo:comboPlantillaEnvio"/>						
 				</td>
 				
 			</tr>
@@ -92,7 +92,7 @@
 						<siga:Idioma key="envios.plantillas.literal.plantilla"/>&nbsp;(*)
 				</td>
 				<td>	
-					<siga:ComboBD nombre = "comboPlantillaEnvio" tipo="cmbPlantillaEnvios2" clase="boxCombo" obligatorio="true" hijo="t" accion="Hijo:idPlantillaGeneracion"/>
+					<siga:ComboBD nombre = "comboPlantillaEnvio" tipo="cmbPlantillaEnvios2" clase="boxCombo" obligatorio="true" hijo="t" ancho="330" accion="Hijo:idPlantillaGeneracion"/>
 				</td>
 				
 			</tr>
@@ -101,7 +101,7 @@
 					<siga:Idioma key="envios.definir.literal.plantillageneracion"/>
 				</td>
 				<td>
-					<siga:ComboBD nombre="idPlantillaGeneracion" tipo="cmbPlantillaGeneracion" clase="boxCombo" obligatorio="false" hijo="t" pestana="true"/>
+					<siga:ComboBD nombre="idPlantillaGeneracion" tipo="cmbPlantillaGeneracion" clase="boxCombo" ancho="330" obligatorio="false" hijo="t" pestana="true"/>
 				</td>
 			</tr>
 
