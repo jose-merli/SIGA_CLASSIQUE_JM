@@ -178,7 +178,7 @@
 
 		<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 		<script language="JavaScript">
-			<!-- Funcion asociada a boton buscar -->
+			//<!-- Funcion asociada a boton buscar -->
 			function buscarPag() {
 				sub();
 				if (!validateBusquedaAlertaForm(document.busquedaAlertaForm)){
@@ -190,13 +190,20 @@
 				document.forms[0].submit();	
 			}
 
-			<!-- Funcion asociada a boton buscar -->
+			//<!-- Funcion asociada a boton buscar -->
 			function buscar() {
 				sub();
 				if (!validateBusquedaAlertaForm(document.busquedaAlertaForm)){
 					fin();
 					return false;
-				}		
+				}	
+				var numero = document.getElementById('numeroExpediente').value;
+				var anio = document.getElementById('anioExpediente').value;
+				
+				if (((numero !="") && isNaN(numero)) || ((anio !="") && isNaN(anio))) {
+					alert('<siga:Idioma key="expedientes.busquedaExpedientes.literal.errorNumeroExpediente"/>');
+				}
+								
 				document.forms[0].modo.value="buscarIni";
 				document.forms[0].target="resultado";	
 				document.forms[0].submit();	
