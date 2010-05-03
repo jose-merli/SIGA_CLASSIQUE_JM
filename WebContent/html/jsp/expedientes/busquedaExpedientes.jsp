@@ -361,7 +361,7 @@
 			}
 		}
 	
-		<!-- Funcion asociada al check -->
+		//<!-- Funcion asociada al check -->
 		
 				function marked() 
 		{		
@@ -402,15 +402,31 @@
 		}
 		
 		
-		<!-- Funcion asociada a boton buscar -->
+		//<!-- Funcion asociada a boton buscar -->
 		function buscar(modo) 
 		{	
+			
 			sub();	
 			if(modo)
 				document.forms[0].modo.value = modo;
 			else			
 				document.forms[0].modo.value="buscarInit";
+
+			var numero = document.getElementById('numeroExpediente').value;
+			var anio = document.getElementById('anioExpediente').value;
+			var numeroExpDis = document.getElementById('numeroExpDisciplinario').value;
+			var anioExpDis = document.getElementById('anioExpDisciplinario').value;
 			
+
+			
+			if (((numero !="") && isNaN(numero))||((anio !="") && isNaN(anio))) {
+				alert('<siga:Idioma key="expedientes.busquedaExpedientes.literal.errorNumeroExpediente"/>');
+			}
+
+			if (((numeroExpDis !="") && isNaN(numeroExpDis)) || ((anioExpDis !="") && isNaN(anioExpDis))) {
+				alert('<siga:Idioma key="expedientes.busquedaExpedientes.literal.errorNumeroExpDisciplinario"/>');				
+			}
+
 			document.forms[0].avanzada.value="<%=ClsConstants.DB_FALSE%>";
 			document.forms[0].target="resultado";
 			document.forms[0].submit();
@@ -422,20 +438,18 @@
 			document.forms[0].seleccionarTodos.value = pagina;
 			buscar('buscarPor');
 				
-		}		
+		}				
 		
-		
-		<!-- Funcion asociada a boton busqueda avanzada -->
+		//<!-- Funcion asociada a boton busqueda avanzada -->
 		function buscarAvanzada() 
-		{
-				
+		{				
 			document.forms[0].modo.value="abrirAvanzada";
 			document.forms[0].avanzada.value="<%=ClsConstants.DB_TRUE %>";			
 			document.forms[0].target="mainWorkArea";	
 			document.forms[0].submit();	
 		}
 			
-		<!-- Funcion asociada a boton Nuevo -->
+		//<!-- Funcion asociada a boton Nuevo -->
 		function nuevo() 
 		{					
 			document.forms[1].submit();
