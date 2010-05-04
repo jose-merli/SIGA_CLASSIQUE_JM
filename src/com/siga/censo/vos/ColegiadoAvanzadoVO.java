@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class ColegiadoAvanzadoVO extends ClienteVO {
 
-	private int tipoColegiación;
+	private int tipoColegiacion;
 	private String residente;
 	private String ejerciente;
 	private String comunitario;
@@ -23,12 +23,12 @@ public class ColegiadoAvanzadoVO extends ClienteVO {
 		setIdInstitucion(values[1]);
 	}
 	
-	public int getTipoColegiación() {
-		return tipoColegiación;
+	public int getTipoColegiacion() {
+		return tipoColegiacion;
 	}
 
-	public void setTipoColegiación(int tipoColegiación) {
-		this.tipoColegiación = tipoColegiación;
+	public void setTipoColegiacion(int tipoColegiacion) {
+		this.tipoColegiacion = tipoColegiacion;
 	}
 
 	public String getResidente() {
