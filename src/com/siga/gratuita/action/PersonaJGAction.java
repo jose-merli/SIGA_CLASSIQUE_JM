@@ -1578,7 +1578,7 @@ public class PersonaJGAction extends MasterAction {
 						
 						
 						// hay que comprobar si el antiguo no es el mismo, en ese caso se actualiza
-						String  idPersonaAnt = (String) dataBackup.get("idPersonaAnt");
+						String  idPersonaAnt = miform.getIdPersonaJG();//(String) dataBackup.get("idPersonaAnt");
 						if (idPersonaAnt!=null) {
 							if (idPersonaAnt.equals(miform.getIdPersonaJG())) {
 								// estamos tocando el mismo registro, se actualiza
