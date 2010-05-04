@@ -73,6 +73,15 @@ public class ColegiadoDecorator extends HtmlActionsDecorator {
 		return value;
 	}
 	
+	public String getnColegiado(){
+		ColegiadoVO colegiado = (ColegiadoVO)getCurrentRowObject();
+		String value = colegiado.getnColegiado();
+		if (value!=null){
+			value = value.replaceFirst("^[0]+", ""); 
+		}
+		return value;
+	}
+	
 	private List<RowButton> getBotones(Vo vo, ModoConstants modo) {
 		List<RowButton> botones = new ArrayList<RowButton> ();
 		ColegiadoVO colegiado = (ColegiadoVO) vo;

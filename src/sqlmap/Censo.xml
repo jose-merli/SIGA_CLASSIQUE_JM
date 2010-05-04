@@ -470,7 +470,7 @@
 		SELECT 
  			p.nifcif,
             nvl(c.noaparecerredabogacia, '0') noaparecerredabogacia,
-            DECODE(col.comunitario,'1',col.ncomunitario,col.ncolegiado) AS ncolegiado,
+            LPAD(DECODE(col.comunitario,'1',col.ncomunitario,col.ncolegiado),20,'0') AS ncolegiado,
             p.nombre,
             p.apellidos1,
             p.apellidos2,

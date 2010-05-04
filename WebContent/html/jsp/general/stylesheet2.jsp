@@ -1237,11 +1237,11 @@ th.sortable a {
 }
 
 th.order1 a {
-	background-image: url('/SIGA/html/imagenes/arrow_down.png');
+	background-image: url('/SIGA/html/imagenes/arrow_up.png');
 }
 
 th.order2 a {
-	background-image: url('/SIGA/html/imagenes/arrow_up.png');
+	background-image: url('/SIGA/html/imagenes/arrow_down.png');
 }
 
 th.sorted {
