@@ -313,8 +313,7 @@
 			var selCol = document.getElementById("tipoColegiacion");
 			var strCol = <%=datosPersonales.getIdTipoColegiacion()%>;
 			if((selMod.value!=strMod)||(selCol.value!=strCol)||(selSol.value!=strSol)){
-				//if(!confirm("Es necesario modificar la documentación. Se perderan los documentos actuales.")){
-				if(!confirm("Ha realizado cambios que afectan a la documentación requerida.\nAl guardar se cargará la nueva lista de documentos.")){
+				if(!confirm('<siga:Idioma key="messages.confirm.cambioModalidad"/>')){
 					for (i=0; i<selMod.options.length; i++) {
 						if (selMod.options[i].value == strMod) {
 							selMod.selectedIndex = i;
