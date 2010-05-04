@@ -6,7 +6,7 @@ import com.atos.utils.SearchButtonsConstants;
 public class SearchButtonComparator implements Comparator<SearchButtonsConstants>{
 
 	public int compare(SearchButtonsConstants o1, SearchButtonsConstants o2) {
-		return o1.getOrden()<o2.getOrden()?-1:1;
+		return o1.compareTo(o2);
 	}
 
 }
