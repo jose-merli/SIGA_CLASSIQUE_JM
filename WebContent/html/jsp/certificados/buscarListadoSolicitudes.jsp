@@ -555,6 +555,7 @@
 		   		  borde="1"
 		   		  clase="tableTitle"
 		   		  nombreCol="&nbsp;,
+		   		  			certificados.solicitudes.literal.idsolicitud,
 		   		  			certificados.solicitudes.literal.fechaEstado,
 		   		  			certificados.solicitudes.literal.estadosolicitud,
 		   		  			certificados.solicitudes.literal.apellidosynombre,
@@ -562,7 +563,7 @@
 		   		  			certificados.solicitudes.literal.institucionOrigenLista,
 		   		  			certificados.solicitudes.literal.institucionDestino,
 		   		  			certificados.solicitudes.literal.estadocertificado,"
-		   		   tamanoCol="3,7,10,13,9,10,10,10,28"
+		   		   tamanoCol="3,7,7,8,13,10,10,10,8,24"
 		   		  alto="100%"
 		   		  modal="G"
 	   		  	  activarFilaSel="true" 
@@ -807,6 +808,7 @@
 					}
 %>
 					</td>
+					<td><%=fila.getString("IDSOLICITUD")%></td>
 					<td><%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(userBean.getLanguage(), fila.getString("FECHAESTADO")))%></td>
 					<td><%=UtilidadesMultidioma.getDatoMaestroIdioma(fila.getString("ESTADOSOLICITUD"),userBean)%></td>
 					<td><%=fila.getString("CLIENTE")%></td>

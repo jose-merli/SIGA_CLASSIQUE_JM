@@ -173,7 +173,9 @@
 				
 				for (i=0; i<aDatos.length; i++)
 				{
-					SolicitudesCertificadosForm.idsParaGenerarFicherosPDF.value += ";" + aDatos[i];
+					SolicitudesCertificadosForm.idsParaGenerarFicherosPDF.value = aDatos[i] + ";" +
+						SolicitudesCertificadosForm.idsParaGenerarFicherosPDF.value;
+						//ordenado al reves para que se generen los certificados en orden
 				}
 
 				if (SolicitudesCertificadosForm.idsParaGenerarFicherosPDF.value=="")

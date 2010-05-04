@@ -362,305 +362,379 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
     {
         return getRutaCertificadoDirectorio(solicitud, sRutaBD) + File.separator + solicitud.getIdSolicitud() + ".pdf";
     }
-    
-    public PaginadorBind buscarSolicitudes(String idInstitucion, String fechaDesde, String fechaHasta, String estadoSolicitud,
-            						String tipoCertificado, String numeroColegiado, String CIFNIF, String nombre,
-            						String apellido1, String idInstitucionOrigen, String idInstitucionDestino,
-									String idSolicitud, String numeroCertificado) throws ClsExceptions , SIGAException
-    {
-        Vector vDatos = null;
-        
-        try
-        {
-            RowsContainer rc = new RowsContainer();
-            
-            String preSubSelect = " (select ";
-        	
-            Hashtable codigos = new Hashtable();
-		    int contador=0;
-		    int totalRegistros=0;
-		    
-        								  
-        	String postSubSelect = " from pys_peticioncomprasuscripcion pet, pys_compra com " +
-										 " where pet.idinstitucion=com.idinstitucion " +
-									   	   " and pet.idpeticion = com.idpeticion " +
-										   " and com.idtipoproducto = SOL.ppn_idtipoproducto " +
-										   " and com.idproducto = SOL.ppn_idproducto " +
-										   " and com.idproductoinstitucion = SOL.ppn_idproductoinstitucion " +
-										   " and pet.idinstitucion=SOL.idinstitucion " +
-										   " and pet.idpeticion=SOL.idpeticionproducto)";
-        	
-        	String subSelectIdFactura = preSubSelect + "com.idfactura" + postSubSelect;
 
-// ANTES  04/11/2008          String sSQL = " SELECT     DECODE(CLI." + CenClienteBean.C_IDPERSONA + ",null,'N','S') AS ESCLIENTE, " +
-            String sSQL = " SELECT     " +
-							"SOL." + CerSolicitudCertificadosBean.C_FECHASOLICITUD + " AS FECHA, " +
-							"SOL." + CerSolicitudCertificadosBean.C_FECHAESTADO+ " AS FECHAESTADO, " +
+	public PaginadorBind buscarSolicitudes(String idInstitucion,
+			String fechaDesde, String fechaHasta, String estadoSolicitud,
+			String tipoCertificado, String numeroColegiado, String CIFNIF,
+			String nombre, String apellido1, String idInstitucionOrigen,
+			String idInstitucionDestino, String idSolicitud,
+			String numeroCertificado) throws ClsExceptions, SIGAException {
 
-							// RGG 25/11/2007 subselect para obtener si esta facturada
-							// ANTES  04/11/2008 subSelectIdFactura + " as IDFACTURACOMPRA, " +
-							
-							// Fecha confirmacion
-							/* ANTES  04/11/2008   
-							 
-							 "( select fa.NUMEROFACTURA " +
-							  " from fac_facturacionprogramada f, fac_factura fa " +
-							 " where f.idinstitucion = fa.idinstitucion " +
-							   " and f.idseriefacturacion = fa.idseriefacturacion " +
-							   " and f.idprogramacion = fa.idprogramacion " +
-							   " and fa.idinstitucion = SOL.IDINSTITUCION" +
-							   " and fa.idfactura = " + subSelectIdFactura + " ) NUMEROFACTURA, "+
-							
-							// Fecha confirmacion
-							"( select f.fechaconfirmacion " +
-							  " from fac_facturacionprogramada f, fac_factura fa " +
-							 " where f.idinstitucion = fa.idinstitucion " +
-							   " and f.idseriefacturacion = fa.idseriefacturacion " +
-							   " and f.idprogramacion = fa.idprogramacion " +
-							   " and fa.idinstitucion = SOL.IDINSTITUCION" +
-							   " and fa.idfactura = " + subSelectIdFactura + " ) FECHA_CONFIRMACION, "+
+		try {
+			Hashtable codigos = new Hashtable();
+			int contador = 0;
+			int totalRegistros = 0;
 
-							// Estado PDF
-							"( select f.idestadopdf " +
-							  " from fac_facturacionprogramada f, fac_factura fa " +
-							 " where f.idinstitucion = fa.idinstitucion " +
-							   " and f.idseriefacturacion = fa.idseriefacturacion " +
-							   " and f.idprogramacion = fa.idprogramacion " +
-							   " and fa.idinstitucion = SOL.IDINSTITUCION" +
-							   " and fa.idfactura = " + subSelectIdFactura + " ) ESTADO_PDF, "+
-							   	*/
-							
-							
-							"SOL." + CerSolicitudCertificadosBean.C_FECHADESCARGA+ " AS FECHADESCARGA, " +
-							"SOL." + CerSolicitudCertificadosBean.C_FECHACOBRO+ " AS FECHACOBRO, " +
-							"SOL." + CerSolicitudCertificadosBean.C_FECHAENVIO+ " AS FECHAENVIO, " +
-						   "SOL." + CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO+ " AS FECHAEMISION, " +
-						   "SOL." + CerSolicitudCertificadosBean.C_IDINSTITUCION + ", " +
-						   "SOL." + CerSolicitudCertificadosBean.C_IDINSTITUCIONDESTINO + ", " +
-                           "SOL." + CerSolicitudCertificadosBean.C_IDSOLICITUD + ", " + 
-                           "SOL." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO + ", " +
-                           "SOL." + CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO + ", " +
-                           "SOL." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION + ", " +
-                           "PR." + PysProductosInstitucionBean.C_TIPOCERTIFICADO + " AS TIPOCERTIFICADO2, " +
-                           "SOL." + CerSolicitudCertificadosBean.C_IDINSTITUCIONORIGEN + ", " +
-                           "PR." + PysProductosInstitucionBean.C_DESCRIPCION + " AS TIPOCERTIFICADO, " +
-                           // ANTES  04/11/2008 "PER." + CenPersonaBean.C_IDPERSONA + ", " +
-                           "PER." + CenPersonaBean.C_APELLIDOS1 + "||' '||PER." + CenPersonaBean.C_APELLIDOS2 + "||', '||PER." + CenPersonaBean.C_NOMBRE + " AS CLIENTE, " +
-                           "SOL." + CerSolicitudCertificadosBean.C_IDPERSONA_DES + " AS IDPERSONA, " +
-                           "INSO." + CenInstitucionBean.C_ABREVIATURA + " AS INSTITUCIONORIGEN, " + 
-                           "INSD." + CenInstitucionBean.C_ABREVIATURA + " AS INSTITUCIONDESTINO, " + 
-                           //"CLI." + CenClienteBean.C_LETRADO + " AS LETRADO, " + 
-//  ANTES  04/11/2008                                      "ES." + CerEstadoSoliCertifiBean.C_IDESTADOSOLICITUDCERTIFICADO + ", " +
-//                                       UtilidadesMultidioma.getCampoMultidiomaSimple("ES." + CerEstadoSoliCertifiBean.C_DESCRIPCION, this.usrbean.getLanguage()) +" AS ESTADOSOLICITUD, " +
-//                                       "EC." + CerEstadoCertificadoBean.C_IDESTADOCERTIFICADO + ", " +
-//                                       UtilidadesMultidioma.getCampoMultidiomaSimple("EC." + CerEstadoCertificadoBean.C_DESCRIPCION, this.usrbean.getLanguage()) +" AS ESTADOCERTIFICADO, " +
-                           "SOL." + CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO + ", " +
-                           "ES." + CerEstadoSoliCertifiBean.C_DESCRIPCION + " AS ESTADOSOLICITUD, " +
-                           "SOL." + CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO + ", " +
-                           "EC." + CerEstadoCertificadoBean.C_DESCRIPCION + " AS ESTADOCERTIFICADO, " +
-                           
-						   "SOL." + CerSolicitudCertificadosBean.C_IDPETICIONPRODUCTO+ " AS IDPETICION"+
-						   ",SOL." + CerSolicitudCertificadosBean.C_IDINSTITUCION_SOL+ " AS IDINSTITUCION_SOL ";
+			String sSQL = " SELECT     " + "SOL."
+					+ CerSolicitudCertificadosBean.C_FECHASOLICITUD
+					+ " AS FECHA, "
+					+ "SOL."
+					+ CerSolicitudCertificadosBean.C_FECHAESTADO
+					+ " AS FECHAESTADO, "
+					+ "SOL."
+					+ CerSolicitudCertificadosBean.C_FECHADESCARGA
+					+ " AS FECHADESCARGA, "
+					+ "SOL."
+					+ CerSolicitudCertificadosBean.C_FECHACOBRO
+					+ " AS FECHACOBRO, "
+					+ "SOL."
+					+ CerSolicitudCertificadosBean.C_FECHAENVIO
+					+ " AS FECHAENVIO, "
+					+ "SOL."
+					+ CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO
+					+ " AS FECHAEMISION, "
+					+ "SOL."
+					+ CerSolicitudCertificadosBean.C_IDINSTITUCION
+					+ ", "
+					+ "SOL."
+					+ CerSolicitudCertificadosBean.C_IDINSTITUCIONDESTINO
+					+ ", "
+					+ "SOL."
+					+ CerSolicitudCertificadosBean.C_IDSOLICITUD
+					+ ", "
+					+ "SOL."
+					+ CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO
+					+ ", "
+					+ "SOL."
+					+ CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO
+					+ ", "
+					+ "SOL."
+					+ CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION
+					+ ", "
+					+ "PR."
+					+ PysProductosInstitucionBean.C_TIPOCERTIFICADO
+					+ " AS TIPOCERTIFICADO2, "
+					+ "SOL."
+					+ CerSolicitudCertificadosBean.C_IDINSTITUCIONORIGEN
+					+ ", "
+					+ "PR."
+					+ PysProductosInstitucionBean.C_DESCRIPCION
+					+ " AS TIPOCERTIFICADO, "
+					+ "PER."
+					+ CenPersonaBean.C_APELLIDOS1
+					+ "||' '||PER."
+					+ CenPersonaBean.C_APELLIDOS2
+					+ "||', '||PER."
+					+ CenPersonaBean.C_NOMBRE
+					+ " AS CLIENTE, "
+					+ "SOL."
+					+ CerSolicitudCertificadosBean.C_IDPERSONA_DES
+					+ " AS IDPERSONA, "
+					+ "INSO."
+					+ CenInstitucionBean.C_ABREVIATURA
+					+ " AS INSTITUCIONORIGEN, "
+					+ "INSD."
+					+ CenInstitucionBean.C_ABREVIATURA
+					+ " AS INSTITUCIONDESTINO, "
+					+ "SOL."
+					+ CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO
+					+ ", " + "ES." + CerEstadoSoliCertifiBean.C_DESCRIPCION
+					+ " AS ESTADOSOLICITUD, " + "SOL."
+					+ CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO + ", "
+					+ "EC." + CerEstadoCertificadoBean.C_DESCRIPCION
+					+ " AS ESTADOCERTIFICADO, " +
 
+					"SOL." + CerSolicitudCertificadosBean.C_IDPETICIONPRODUCTO
+					+ " AS IDPETICION" + ",SOL."
+					+ CerSolicitudCertificadosBean.C_IDINSTITUCION_SOL
+					+ " AS IDINSTITUCION_SOL ";
 
-              
-			sSQL+= " FROM " + // ANTES  04/11/2008  CenClienteBean.T_NOMBRETABLA+ " CLI, " +
-              			 CerSolicitudCertificadosBean.T_NOMBRETABLA + " SOL, " +
-                         PysProductosInstitucionBean.T_NOMBRETABLA + " PR, " +
-                         CenPersonaBean.T_NOMBRETABLA + " PER, " +
-                         CenInstitucionBean.T_NOMBRETABLA + " INSO, " +
-                         CenInstitucionBean.T_NOMBRETABLA + " INSD, " +
-                         CerEstadoCertificadoBean.T_NOMBRETABLA + " EC, " +
-                         CerEstadoSoliCertifiBean.T_NOMBRETABLA + " ES ";
-                         
-                         if (numeroColegiado!=null && !numeroColegiado.equals("")) {
-                             sSQL+= ", " + CenColegiadoBean.T_NOMBRETABLA + " COL ";
-                         }
-                         
-// ANTES  04/11/2008                          " WHERE " + "SOL." + CerSolicitudCertificadosBean.C_IDINSTITUCION + "=" + "CLI." +CenClienteBean.C_IDINSTITUCION+ "(+) AND " +
-//                          			  "SOL." + CerSolicitudCertificadosBean.C_IDPERSONA_DES + "=" + "CLI." +CenClienteBean.C_IDPERSONA+ "(+) AND " +
-                   sSQL+= " WHERE ";
-                  			contador++;
-                  			codigos.put(new Integer(contador),idInstitucion);
-			       sSQL+= "SOL." + CerSolicitudCertificadosBean.C_IDINSTITUCION + "=:" + contador + " AND "+
-                          "SOL." + CerSolicitudCertificadosBean.C_IDPERSONA_DES + "=PER." + CenPersonaBean.C_IDPERSONA + " AND " +
-                          "SOL." + CerSolicitudCertificadosBean.C_IDINSTITUCION + "=PR." + PysProductosInstitucionBean.C_IDINSTITUCION + " AND " +
-                          "SOL." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO + "=PR." + PysProductosInstitucionBean.C_IDPRODUCTO + " AND " +
-                          "SOL." + CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO + "=PR." + PysProductosInstitucionBean.C_IDTIPOPRODUCTO + " AND " +
-                          "SOL." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION + "=PR." + PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION + " AND " +
-                          "SOL." + CerSolicitudCertificadosBean.C_IDINSTITUCIONORIGEN + "=INSO." + CenInstitucionBean.C_IDINSTITUCION + "(+) AND " +
-                          "SOL." + CerSolicitudCertificadosBean.C_IDINSTITUCIONDESTINO + "=INSD." + CenInstitucionBean.C_IDINSTITUCION + "(+) AND " +
-                          "SOL." + CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO + "=ES." + CerEstadoSoliCertifiBean.C_IDESTADOSOLICITUDCERTIFICADO + " AND " +
-                          "SOL." + CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO + "=EC." + CerEstadoCertificadoBean.C_IDESTADOCERTIFICADO;
+			sSQL += " FROM " + CerSolicitudCertificadosBean.T_NOMBRETABLA
+					+ " SOL, " + PysProductosInstitucionBean.T_NOMBRETABLA
+					+ " PR, " + CenPersonaBean.T_NOMBRETABLA + " PER, "
+					+ CenInstitucionBean.T_NOMBRETABLA + " INSO, "
+					+ CenInstitucionBean.T_NOMBRETABLA + " INSD, "
+					+ CerEstadoCertificadoBean.T_NOMBRETABLA + " EC, "
+					+ CerEstadoSoliCertifiBean.T_NOMBRETABLA + " ES ";
 
-	        if (fechaDesde!=null && !fechaDesde.equals("") || fechaHasta!=null && !fechaHasta.equals("")) {
-	             // -------------- dateBetweenDesdeAndHastaBind
-		         Vector v = GstDate.dateBetweenDesdeAndHastaBind(CerSolicitudCertificadosBean.C_FECHAESTADO, fechaDesde!=null && !fechaDesde.equals("") ? GstDate.getApplicationFormatDate("", fechaDesde) : null, fechaHasta!=null && !fechaHasta.equals("") ? GstDate.getApplicationFormatDate("", fechaHasta) : null,contador, codigos);
-		         Integer in = (Integer)v.get(0);
-		         String st = (String)v.get(1);
-		         contador = in.intValue();
-		         // --------------
-		         
-	            sSQL +=" AND " + st;
-	        }
-	        if ((estadoSolicitud!=null && !estadoSolicitud.equals("") && !estadoSolicitud.equals("99"))) {
-	            contador++;
-      			codigos.put(new Integer(contador),estadoSolicitud);
-      			sSQL += " AND SOL." + CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO + "=:" + contador;
-	        }
-	        if ((estadoSolicitud!=null && !estadoSolicitud.equals("") && estadoSolicitud.equals("99"))) {
-	            sSQL += " AND SOL." + CerSolicitudCertificadosBean.C_FECHAENVIO + " IS NULL";
-	        }
-	
-	
-	
-	
-	
-	        // RGG CAMBIO PAR BUSCAR POR ID PRODUCTO
-	        if (tipoCertificado!=null && !tipoCertificado.equals("")) {
-	            
-	        	String idTipoProducto = "";
-	            String idProducto = "";
-	            String idProductoInstitucion = "";
-	            String codigo=tipoCertificado;
-	            StringTokenizer st = new StringTokenizer(codigo,",");
-	            if (st.hasMoreElements()) {
-	            	idTipoProducto=(String)st.nextElement();
-	            	idProducto=(String)st.nextElement();
-	            	idProductoInstitucion=(String)st.nextElement();
-	            }
-	            contador++;
-      			codigos.put(new Integer(contador),idTipoProducto);
-	            sSQL += " AND (SOL." + CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO + "=:" + contador ;
-      			contador++;
-      			codigos.put(new Integer(contador),idProducto);
-      			sSQL+= " AND SOL." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO + "=:" + contador ;
-      			contador++;
-      			codigos.put(new Integer(contador),idProductoInstitucion);
-      			sSQL+= " AND SOL." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION + "=:" + contador +") ";
-	        }
-	
-	        if (numeroColegiado!=null && !numeroColegiado.equals("")) {
-	            sSQL += " AND "+ComodinBusquedas.tratarNumeroColegiado(numeroColegiado,"COL." + CenColegiadoBean.C_NCOLEGIADO ) +
-					 " AND SOL." + CerSolicitudCertificadosBean.C_IDINSTITUCION + "=COL." + CenColegiadoBean.C_IDINSTITUCION +
-					 " AND SOL." + CerSolicitudCertificadosBean.C_IDPERSONA_DES + "=COL." + CenColegiadoBean.C_IDPERSONA;
-	        }
-		        
-            
-//			Consulta sobre el campo NIF/CIF, si el usuario mete comodines la búsqueda es como se hacía siempre, en el caso
-			   // de no meter comodines se ha creado un nuevo metodo ComodinBusquedas.preparaCadenaNIFSinComodin para que monte 
-			   // la consulta adecuada.	            
-            if(CIFNIF!=null && !CIFNIF.equals("")){ 
-              if (ComodinBusquedas.hasComodin(CIFNIF)){	
-                contador++;
-            	sSQL +=" AND "+ComodinBusquedas.prepararSentenciaCompletaBind(CIFNIF.trim(),"PER." + CenPersonaBean.C_NIFCIF,contador, codigos);
-              }else{
-                contador++;
-              	sSQL +=" AND "+ComodinBusquedas.prepararSentenciaNIFBind(CIFNIF,"PER." + CenPersonaBean.C_NIFCIF, contador, codigos);
-              }
-            }	
-            
-            if (nombre!=null && !nombre.equals("")) {
-                contador++;
-                sSQL +=  " AND "+ComodinBusquedas.prepararSentenciaCompletaBind(nombre.trim(),"PER." + CenPersonaBean.C_NOMBRE, contador, codigos );
-            }
-            
-            // cambio en criterios de busqueda (Apellidos1 representa a los dos apellidos)
-            if (apellido1!=null && !apellido1.equals("")) {
-                contador++;
-                sSQL += " AND EXISTS (SELECT 'X' FROM cen_persona per1 where  per.idpersona = per1.idpersona AND ( " ;
-                sSQL += ComodinBusquedas.prepararSentenciaCompletaBind(apellido1.trim(),"per1." + CenPersonaBean.C_APELLIDOS1,contador, codigos);
-                contador++;
-                sSQL += " OR "+ComodinBusquedas.prepararSentenciaCompletaBind(apellido1.trim(),"per1." + CenPersonaBean.C_APELLIDOS2,contador, codigos);
-                contador++;
-                sSQL += " OR "+ComodinBusquedas.prepararSentenciaCompletaBind(apellido1.replaceAll(" ",""),"replace(per1."+ CenPersonaBean.C_APELLIDOS1+",' ','')||replace(per1."+ CenPersonaBean.C_APELLIDOS2+ ",' ','')",contador, codigos);
-                sSQL += "))";
-                
-                
-                
-                
-                
-                
-                
-                /*
-                sSQL += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(apellido1.trim(),"PER." + CenPersonaBean.C_APELLIDOS1,contador, codigos);
-                contador++;
-                sSQL += " OR "+ComodinBusquedas.prepararSentenciaCompletaBind(apellido1.trim(),"PER." + CenPersonaBean.C_APELLIDOS2,contador, codigos);
-                contador++;
-                sSQL += " OR "+ComodinBusquedas.prepararSentenciaCompletaBind(apellido1.replaceAll(" ",""),"replace(PER."+ CenPersonaBean.C_APELLIDOS1+",' ','')||replace(PER."+ CenPersonaBean.C_APELLIDOS2+ ",' ','')",contador, codigos);
-                sSQL += ")";*/
-                /*(regexp_like(PER.APELLIDOS1,'combarros') 
-                 * OR regexp_like(PER.APELLIDOS2,'combarros') 
-                 * OR regexp_like(replace(PER.APELLIDOS1,' ','')||replace(PER.APELLIDOS2,' ',''),'combarros')*/
-                
-               /* (SELECT COUNT(*) FROM cen_persona per1 where 
-                        per.idpersona = per1.idpersona AND (   REGEXP_LIKE (per1.apellidos1, 'MARTIN SANTO')                        
-                        OR REGEXP_LIKE (per1.apellidos2, 'MARTIN SANTO')                      
-                        OR REGEXP_LIKE (   REPLACE (per1.apellidos1,' ', '')|| REPLACE (per1.apellidos2,' ',''),'MARTIN SANTO')                                                  
-                                       ))!=0*/  
-            }
-            
-            if (idSolicitud!=null && !idSolicitud.equals("")) {
-                contador++;
-      			codigos.put(new Integer(contador),idSolicitud);
-	            sSQL += " AND SOL." + CerSolicitudCertificadosBean.C_IDSOLICITUD + "=:" + contador;
+			if (numeroColegiado != null && !numeroColegiado.equals("")) {
+				sSQL += ", " + CenColegiadoBean.T_NOMBRETABLA + " COL ";
+			}
 
-            }
-            
-            if (idInstitucionOrigen!=null && !idInstitucionOrigen.equals("")) {
-                contador++;
-      			codigos.put(new Integer(contador),idInstitucionOrigen);
-                sSQL += " AND SOL." + CerSolicitudCertificadosBean.C_IDINSTITUCIONORIGEN + "=:" + contador;
-                
-            }
-            
-            if (idInstitucionDestino!=null && !idInstitucionDestino.equals(""))  {
-                contador++;
-      			codigos.put(new Integer(contador),idInstitucionDestino);
-                sSQL +=  " AND SOL." + CerSolicitudCertificadosBean.C_IDINSTITUCIONDESTINO+ "=:" + contador;
-            }
-            
-            // El contador busca concatenando los tres campos del contador, sin formatear.x
-            if (numeroCertificado!=null && !numeroCertificado.equals("")) {
-                contador++;
-                sSQL += " AND ( (" +ComodinBusquedas.prepararSentenciaCompletaBind(numeroCertificado.trim(),"(NVL(SOL." + CerSolicitudCertificadosBean.C_PREFIJO_CER+ ",'') || NVL(SOL." + CerSolicitudCertificadosBean.C_CONTADOR_CER+ ",'') || NVL(SOL." + CerSolicitudCertificadosBean.C_SUFIJO_CER+ ",''))",contador, codigos);
-                sSQL += ") ";
-                contador++;
-                sSQL += " OR (" +ComodinBusquedas.prepararSentenciaCompletaBind(numeroCertificado.trim(),"(NVL(SOL." + CerSolicitudCertificadosBean.C_PREFIJO_CER+ ",'') || NVL(LPAD (SOL." + CerSolicitudCertificadosBean.C_CONTADOR_CER+ ",(select nvl(" + AdmContadorBean.C_LONGITUDCONTADOR + ", 1) FROM " + AdmContadorBean.T_NOMBRETABLA + " WHERE PR." + PysProductosInstitucionBean.C_IDCONTADOR + " = " + AdmContadorBean.C_IDCONTADOR + " AND PR." + PysProductosInstitucionBean.C_IDINSTITUCION + " = " + AdmContadorBean.C_IDINSTITUCION + ") , '0'),'') || NVL(SOL." + CerSolicitudCertificadosBean.C_SUFIJO_CER+ ",''))",contador, codigos);
-                sSQL += ") " + " )";
-            }
+			sSQL += " WHERE ";
+			contador++;
+			codigos.put(new Integer(contador), idInstitucion);
+			sSQL += "SOL."
+					+ CerSolicitudCertificadosBean.C_IDINSTITUCION
+					+ "=:"
+					+ contador
+					+ " AND "
+					+ "SOL."
+					+ CerSolicitudCertificadosBean.C_IDPERSONA_DES
+					+ "=PER."
+					+ CenPersonaBean.C_IDPERSONA
+					+ " AND "
+					+ "SOL."
+					+ CerSolicitudCertificadosBean.C_IDINSTITUCION
+					+ "=PR."
+					+ PysProductosInstitucionBean.C_IDINSTITUCION
+					+ " AND "
+					+ "SOL."
+					+ CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO
+					+ "=PR."
+					+ PysProductosInstitucionBean.C_IDPRODUCTO
+					+ " AND "
+					+ "SOL."
+					+ CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO
+					+ "=PR."
+					+ PysProductosInstitucionBean.C_IDTIPOPRODUCTO
+					+ " AND "
+					+ "SOL."
+					+ CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION
+					+ "=PR."
+					+ PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION
+					+ " AND "
+					+ "SOL."
+					+ CerSolicitudCertificadosBean.C_IDINSTITUCIONORIGEN
+					+ "=INSO."
+					+ CenInstitucionBean.C_IDINSTITUCION
+					+ "(+) AND "
+					+ "SOL."
+					+ CerSolicitudCertificadosBean.C_IDINSTITUCIONDESTINO
+					+ "=INSD."
+					+ CenInstitucionBean.C_IDINSTITUCION
+					+ "(+) AND "
+					+ "SOL."
+					+ CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO
+					+ "=ES."
+					+ CerEstadoSoliCertifiBean.C_IDESTADOSOLICITUDCERTIFICADO
+					+ " AND " + "SOL."
+					+ CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO
+					+ "=EC." + CerEstadoCertificadoBean.C_IDESTADOCERTIFICADO;
 
-            // RGG cambio de orden
-            sSQL +=  " ORDER BY " + CerSolicitudCertificadosBean.C_FECHASOLICITUD + " DESC ";
+			if (fechaDesde != null && !fechaDesde.equals("")
+					|| fechaHasta != null && !fechaHasta.equals("")) {
+				// -------------- dateBetweenDesdeAndHastaBind
+				Vector v = GstDate.dateBetweenDesdeAndHastaBind(
+						CerSolicitudCertificadosBean.C_FECHAESTADO,
+						fechaDesde != null && !fechaDesde.equals("") ? GstDate
+								.getApplicationFormatDate("", fechaDesde)
+								: null, fechaHasta != null
+								&& !fechaHasta.equals("") ? GstDate
+								.getApplicationFormatDate("", fechaHasta)
+								: null, contador, codigos);
+				Integer in = (Integer) v.get(0);
+				String st = (String) v.get(1);
+				contador = in.intValue();
+				// --------------
 
-            //ClsLogging.writeFileLogWithoutSession("SQL Solicitud Certificados: " + sSQL, 3);
-           // rc.findNLSBind(sSQL, codigos);
-            
-            //vDatos = rc.getAll();
-            
-            PaginadorBind paginador = new PaginadorBind(sSQL,codigos);
-            totalRegistros = paginador.getNumeroTotalRegistros();
-     		
-     		if (totalRegistros==0){					
-     			paginador =null;
-     		}
-          
-    		
-           
-    		
-    		return paginador;
-    		 
-            
-        }
-        
-        catch(Exception e)
-        {
-        	throw new ClsExceptions(e,"Error obteniendo clientes colegiados"); 
-        }
-        
-      
-    }
-    
+				sSQL += " AND " + st;
+			}
+			if ((estadoSolicitud != null && !estadoSolicitud.equals("") && !estadoSolicitud
+					.equals("99"))) {
+				contador++;
+				codigos.put(new Integer(contador), estadoSolicitud);
+				sSQL += " AND SOL."
+						+ CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO
+						+ "=:" + contador;
+			}
+			if ((estadoSolicitud != null && !estadoSolicitud.equals("") && estadoSolicitud
+					.equals("99"))) {
+				sSQL += " AND SOL." + CerSolicitudCertificadosBean.C_FECHAENVIO
+						+ " IS NULL";
+			}
+
+			// RGG CAMBIO PAR BUSCAR POR ID PRODUCTO
+			if (tipoCertificado != null && !tipoCertificado.equals("")) {
+
+				String idTipoProducto = "";
+				String idProducto = "";
+				String idProductoInstitucion = "";
+				String codigo = tipoCertificado;
+				StringTokenizer st = new StringTokenizer(codigo, ",");
+				if (st.hasMoreElements()) {
+					idTipoProducto = (String) st.nextElement();
+					idProducto = (String) st.nextElement();
+					idProductoInstitucion = (String) st.nextElement();
+				}
+				contador++;
+				codigos.put(new Integer(contador), idTipoProducto);
+				sSQL += " AND (SOL."
+						+ CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO
+						+ "=:" + contador;
+				contador++;
+				codigos.put(new Integer(contador), idProducto);
+				sSQL += " AND SOL."
+						+ CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO + "=:"
+						+ contador;
+				contador++;
+				codigos.put(new Integer(contador), idProductoInstitucion);
+				sSQL += " AND SOL."
+						+ CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION
+						+ "=:" + contador + ") ";
+			}
+
+			if (numeroColegiado != null && !numeroColegiado.equals("")) {
+				sSQL += " AND "
+						+ ComodinBusquedas.tratarNumeroColegiado(
+								numeroColegiado, "COL."
+										+ CenColegiadoBean.C_NCOLEGIADO)
+						+ " AND SOL."
+						+ CerSolicitudCertificadosBean.C_IDINSTITUCION
+						+ "=COL." + CenColegiadoBean.C_IDINSTITUCION
+						+ " AND SOL."
+						+ CerSolicitudCertificadosBean.C_IDPERSONA_DES
+						+ "=COL." + CenColegiadoBean.C_IDPERSONA;
+			}
+
+			// Consulta sobre el campo NIF/CIF, si el usuario mete comodines la
+			// búsqueda es como se hacía siempre, en el caso
+			// de no meter comodines se ha creado un nuevo metodo
+			// ComodinBusquedas.preparaCadenaNIFSinComodin para que monte
+			// la consulta adecuada.
+			if (CIFNIF != null && !CIFNIF.equals("")) {
+				if (ComodinBusquedas.hasComodin(CIFNIF)) {
+					contador++;
+					sSQL += " AND "
+							+ ComodinBusquedas.prepararSentenciaCompletaBind(
+									CIFNIF.trim(), "PER."
+											+ CenPersonaBean.C_NIFCIF,
+									contador, codigos);
+				} else {
+					contador++;
+					sSQL += " AND "
+							+ ComodinBusquedas.prepararSentenciaNIFBind(CIFNIF,
+									"PER." + CenPersonaBean.C_NIFCIF, contador,
+									codigos);
+				}
+			}
+
+			if (nombre != null && !nombre.equals("")) {
+				contador++;
+				sSQL += " AND "
+						+ ComodinBusquedas.prepararSentenciaCompletaBind(nombre
+								.trim(), "PER." + CenPersonaBean.C_NOMBRE,
+								contador, codigos);
+			}
+
+			// cambio en criterios de busqueda (Apellidos1 representa a los dos
+			// apellidos)
+			if (apellido1 != null && !apellido1.equals("")) {
+				contador++;
+				sSQL += " AND EXISTS (SELECT 'X' FROM cen_persona per1 where  per.idpersona = per1.idpersona AND ( ";
+				sSQL += ComodinBusquedas.prepararSentenciaCompletaBind(
+						apellido1.trim(),
+						"per1." + CenPersonaBean.C_APELLIDOS1, contador,
+						codigos);
+				contador++;
+				sSQL += " OR "
+						+ ComodinBusquedas.prepararSentenciaCompletaBind(
+								apellido1.trim(), "per1."
+										+ CenPersonaBean.C_APELLIDOS2,
+								contador, codigos);
+				contador++;
+				sSQL += " OR "
+						+ ComodinBusquedas.prepararSentenciaCompletaBind(
+								apellido1.replaceAll(" ", ""), "replace(per1."
+										+ CenPersonaBean.C_APELLIDOS1
+										+ ",' ','')||replace(per1."
+										+ CenPersonaBean.C_APELLIDOS2
+										+ ",' ','')", contador, codigos);
+				sSQL += "))";
+
+			}
+
+			if (idSolicitud != null && !idSolicitud.equals("")) {
+				contador++;
+				codigos.put(new Integer(contador), idSolicitud);
+				sSQL += " AND SOL."
+						+ CerSolicitudCertificadosBean.C_IDSOLICITUD + "=:"
+						+ contador;
+
+			}
+
+			if (idInstitucionOrigen != null && !idInstitucionOrigen.equals("")) {
+				contador++;
+				codigos.put(new Integer(contador), idInstitucionOrigen);
+				sSQL += " AND SOL."
+						+ CerSolicitudCertificadosBean.C_IDINSTITUCIONORIGEN
+						+ "=:" + contador;
+
+			}
+
+			if (idInstitucionDestino != null
+					&& !idInstitucionDestino.equals("")) {
+				contador++;
+				codigos.put(new Integer(contador), idInstitucionDestino);
+				sSQL += " AND SOL."
+						+ CerSolicitudCertificadosBean.C_IDINSTITUCIONDESTINO
+						+ "=:" + contador;
+			}
+
+			// El contador busca concatenando los tres campos del contador, sin
+			// formatear.x
+			if (numeroCertificado != null && !numeroCertificado.equals("")) {
+				contador++;
+				sSQL += " AND ( ("
+						+ ComodinBusquedas
+								.prepararSentenciaCompletaBind(
+										numeroCertificado.trim(),
+										"(NVL(SOL."
+												+ CerSolicitudCertificadosBean.C_PREFIJO_CER
+												+ ",'') || NVL(SOL."
+												+ CerSolicitudCertificadosBean.C_CONTADOR_CER
+												+ ",'') || NVL(SOL."
+												+ CerSolicitudCertificadosBean.C_SUFIJO_CER
+												+ ",''))", contador, codigos);
+				sSQL += ") ";
+				contador++;
+				sSQL += " OR ("
+						+ ComodinBusquedas
+								.prepararSentenciaCompletaBind(
+										numeroCertificado.trim(),
+										"(NVL(SOL."
+												+ CerSolicitudCertificadosBean.C_PREFIJO_CER
+												+ ",'') || NVL(LPAD (SOL."
+												+ CerSolicitudCertificadosBean.C_CONTADOR_CER
+												+ ",(select nvl("
+												+ AdmContadorBean.C_LONGITUDCONTADOR
+												+ ", 1) FROM "
+												+ AdmContadorBean.T_NOMBRETABLA
+												+ " WHERE PR."
+												+ PysProductosInstitucionBean.C_IDCONTADOR
+												+ " = "
+												+ AdmContadorBean.C_IDCONTADOR
+												+ " AND PR."
+												+ PysProductosInstitucionBean.C_IDINSTITUCION
+												+ " = "
+												+ AdmContadorBean.C_IDINSTITUCION
+												+ ") , '0'),'') || NVL(SOL."
+												+ CerSolicitudCertificadosBean.C_SUFIJO_CER
+												+ ",''))", contador, codigos);
+				sSQL += ") " + " )";
+			}
+
+			// RGG cambio de orden
+			sSQL += " ORDER BY "
+					+ CerSolicitudCertificadosBean.C_IDSOLICITUD + " DESC ";
+
+			PaginadorBind paginador = new PaginadorBind(sSQL, codigos);
+			totalRegistros = paginador.getNumeroTotalRegistros();
+
+			if (totalRegistros == 0) {
+				paginador = null;
+			}
+
+			return paginador;
+
+		}
+
+		catch (Exception e) {
+			throw new ClsExceptions(e, "Error obteniendo clientes colegiados");
+		}
+
+	} // buscarSolicitudes()
+
     /**
      * Función que inserta solicitudes de certificado 
      * @param idPersona
@@ -671,162 +745,205 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
      * @throws SIGAException
      * @throws ClsExceptions
      */
-    public CerSolicitudCertificadosBean insertarSolicitudCertificado(String idPersona, 
-    		String idInstOrigen, 
-    		String idInstDestino, 
-    		String descripcion, 
-    		String fechaSolicitud,
-    		String metodoSolicitud,
-    		UsrBean user)
-    throws SIGAException,ClsExceptions{
+	public CerSolicitudCertificadosBean insertarSolicitudCertificado(
+			String idPersona, String idInstOrigen, String idInstDestino,
+			String descripcion, String fechaSolicitud, String metodoSolicitud,
+			UsrBean user) throws SIGAException, ClsExceptions {
 
+		// RGG 28/05/2007 Obtencion de parametro para ver si se envian
+		// comunicados
+		GenParametrosAdm admParam = new GenParametrosAdm(this.usrbean);
+		String sCom = admParam.getValor(user.getLocation(), "CER",
+				"GENERAR_COMUNICADOS", "1");
+		boolean comunicado = (sCom.equals("1")) ? true : false;
 
-    	// RGG 28/05/2007 Obtencion de parametro para ver si se envian comunicados
-    	GenParametrosAdm admParam = new GenParametrosAdm(this.usrbean);
-    	String sCom=admParam.getValor(user.getLocation(),"CER","GENERAR_COMUNICADOS","1");
-    	boolean comunicado = (sCom.equals("1"))?true:false;
+		CerSolicitudCertificadosBean solicConsejoBean = null;
+		String idInstitucion = user.getLocation();
+		CenInstitucionAdm instAdm = new CenInstitucionAdm(this.usrbean);
+		String idInstPadre = String.valueOf(instAdm.getInstitucionPadre(Integer
+				.valueOf(idInstOrigen)));
+		boolean instCorrecta = idInstitucion
+				.equals(CerSolicitudCertificadosAdm.IDCGAE)
+				|| idInstitucion.equals(idInstOrigen)
+				|| idInstitucion.equals(idInstDestino)
+				|| idInstitucion.equals(idInstPadre);
+		if (instCorrecta) {
+			PysProductosInstitucionAdm pysAdm = new PysProductosInstitucionAdm(
+					this.usrbean);
+			Vector diligenciasConsejo, comunicacionesColegio;
+			PysProductosInstitucionBean pysDilBean = null, pysComBean = null;
 
-    	CerSolicitudCertificadosBean solicConsejoBean = null;
-    	String idInstitucion = user.getLocation();
-    	CenInstitucionAdm instAdm = new CenInstitucionAdm(this.usrbean);
-    	String idInstPadre = String.valueOf(instAdm.getInstitucionPadre(Integer.valueOf(idInstOrigen)));
-    	boolean instCorrecta = idInstitucion.equals(CerSolicitudCertificadosAdm.IDCGAE)||
-    	idInstitucion.equals(idInstOrigen)||
-    	idInstitucion.equals(idInstDestino)||
-    	idInstitucion.equals(idInstPadre);
-    	if (instCorrecta){
-    		PysProductosInstitucionAdm pysAdm = new PysProductosInstitucionAdm(this.usrbean);
-    		Vector diligenciasConsejo, comunicacionesColegio;
-    		PysProductosInstitucionBean pysDilBean = null, pysComBean = null;
+			try {
 
-    		try {
+				// RGG 06/05/2009 Ahora en lugar de crearse la diligencia para
+				// CGAE ç
+				// se crea para el consjeo que lo está haciendo sea CGAE o
+				// autonómico.
 
-    			// RGG 06/05/2009 Ahora en lugar de crearse la diligencia para CGAE ç
-    			// se crea para el consjeo que lo está haciendo sea CGAE o autonómico.
+				// Petición para el CGAE
+				try {
+					diligenciasConsejo = pysAdm
+							.getDiligenciasConsejo(idInstitucion);
+				} catch (ClsExceptions e) {
+					throw e;
+				}
+				if (diligenciasConsejo.size() > 0) {
+					pysDilBean = (PysProductosInstitucionBean) diligenciasConsejo
+							.firstElement();
+				} else {
+					throw new SIGAException(
+							"messages.certificados.error.nodiligenciacgae");
+				}
 
-    			//Petición para el CGAE
-    			try {
-    				diligenciasConsejo = pysAdm.getDiligenciasConsejo(idInstitucion);
-    			} catch (ClsExceptions e) {
-    				throw e;
-    			}
-    			if (diligenciasConsejo.size()>0){
-    				pysDilBean = (PysProductosInstitucionBean)diligenciasConsejo.firstElement();
-    			}else{
-    				throw new SIGAException("messages.certificados.error.nodiligenciacgae");
-    			}
+				solicConsejoBean = new CerSolicitudCertificadosBean();
+				solicConsejoBean.setIdSolicitud(this
+						.getNewIdSolicitudCertificado(idInstitucion));
 
-    			solicConsejoBean = new CerSolicitudCertificadosBean();
-    			solicConsejoBean.setIdSolicitud(this.getNewIdSolicitudCertificado(idInstitucion));
+				solicConsejoBean.setIdInstitucion(Integer
+						.valueOf(idInstitucion));
+				solicConsejoBean.setPpn_IdTipoProducto(pysDilBean
+						.getIdTipoProducto());
+				solicConsejoBean.setPpn_IdProductoInstitucion(pysDilBean
+						.getIdProductoInstitucion());
+				solicConsejoBean.setPpn_IdProducto(pysDilBean.getIdProducto());
 
-    			solicConsejoBean.setIdInstitucion(Integer.valueOf(idInstitucion));
-    			solicConsejoBean.setPpn_IdTipoProducto(pysDilBean.getIdTipoProducto());
-    			solicConsejoBean.setPpn_IdProductoInstitucion(pysDilBean.getIdProductoInstitucion());
-    			solicConsejoBean.setPpn_IdProducto(pysDilBean.getIdProducto());
+				solicConsejoBean.setIdPersona_Des(Long.valueOf(idPersona));
+				solicConsejoBean.setIdInstitucionOrigen(Integer
+						.valueOf(idInstOrigen));
+				solicConsejoBean.setIdInstitucionDestino(Integer
+						.valueOf(idInstDestino));
+				solicConsejoBean
+						.setIdEstadoSolicitudCertificado(Integer
+								.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND));
+				solicConsejoBean.setDescripcion(descripcion);
+				if (fechaSolicitud.equalsIgnoreCase("")) {
+					solicConsejoBean.setFechaSolicitud("SYSDATE");
+				} else {
+					solicConsejoBean.setFechaSolicitud(GstDate
+							.getApplicationFormatDate("", GstDate
+									.anyadeHora(fechaSolicitud)));
+				}
+				if (!metodoSolicitud.equalsIgnoreCase("")) {
+					solicConsejoBean.setMetodoSolicitud(metodoSolicitud);
+				}
+				solicConsejoBean.setFechaEstado("SYSDATE");
+				solicConsejoBean.setIdInstitucion_Sol(Integer
+						.valueOf(idInstitucion));
+				solicConsejoBean
+						.setIdEstadoCertificado(Integer
+								.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_CER_INICIAL));
 
-    			solicConsejoBean.setIdPersona_Des(Long.valueOf(idPersona));
-    			solicConsejoBean.setIdInstitucionOrigen(Integer.valueOf(idInstOrigen));
-    			solicConsejoBean.setIdInstitucionDestino(Integer.valueOf(idInstDestino));
-    			solicConsejoBean.setIdEstadoSolicitudCertificado(Integer.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND));
-    			solicConsejoBean.setDescripcion(descripcion);
-    			if(fechaSolicitud.equalsIgnoreCase("")){
-    				solicConsejoBean.setFechaSolicitud("SYSDATE");
-    			}else{
-    				solicConsejoBean.setFechaSolicitud(GstDate.getApplicationFormatDate("",fechaSolicitud));
-    			}
-    			if(!metodoSolicitud.equalsIgnoreCase("")){
-    				solicConsejoBean.setMetodoSolicitud(metodoSolicitud);
-    			}
-    			solicConsejoBean.setFechaEstado("SYSDATE");
-    			///////////////////////////////////
-    			// Decision Melanie  2007.10.25
-    			// solicCGAEBean.setFechaEmisionCertificado("SYSDATE");
-    			///////////////////////////////////
-    			solicConsejoBean.setIdInstitucion_Sol(Integer.valueOf(idInstitucion));                
-    			solicConsejoBean.setIdEstadoCertificado(Integer.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_CER_INICIAL));                
+				this.insert(solicConsejoBean);
 
-    			this.insert(solicConsejoBean);
+				if (comunicado) {
 
-    			if (comunicado) {
+					// Petición para el colegio
+					if (instAdm.tieneSIGA(Integer.valueOf(idInstOrigen))) {
+						try {
+							comunicacionesColegio = pysAdm
+									.getComunicacionesInst(Integer
+											.valueOf(idInstOrigen));
+						} catch (ClsExceptions e) {
+							throw e;
+						}
+						if (comunicacionesColegio.size() > 0) {
+							pysComBean = (PysProductosInstitucionBean) comunicacionesColegio
+									.firstElement();
+						} else {
+							throw new SIGAException(
+									"messages.certificados.error.nocomunicacion");
+						}
+						CerSolicitudCertificadosBean solicColegioBean = new CerSolicitudCertificadosBean();
+						solicColegioBean.setIdSolicitud(this
+								.getNewIdSolicitudCertificado(idInstOrigen));
 
-    				//Petición para el colegio
-    				if (instAdm.tieneSIGA(Integer.valueOf(idInstOrigen))){
-    					try {
-    						comunicacionesColegio = pysAdm.getComunicacionesInst(Integer.valueOf(idInstOrigen));
-    					} catch (ClsExceptions e) {
-    						throw e;
-    					}
-    					if (comunicacionesColegio.size()>0){
-    						pysComBean = (PysProductosInstitucionBean)comunicacionesColegio.firstElement();                    
-    					}else{
-    						throw new SIGAException("messages.certificados.error.nocomunicacion");
-    					}
-    					CerSolicitudCertificadosBean solicColegioBean = new CerSolicitudCertificadosBean();                
-    					solicColegioBean.setIdSolicitud(this.getNewIdSolicitudCertificado(idInstOrigen));
+						solicColegioBean.setIdInstitucion(Integer
+								.valueOf(idInstOrigen));
+						solicColegioBean.setPpn_IdTipoProducto(pysComBean
+								.getIdTipoProducto());
+						solicColegioBean
+								.setPpn_IdProductoInstitucion(pysComBean
+										.getIdProductoInstitucion());
+						solicColegioBean.setPpn_IdProducto(pysComBean
+								.getIdProducto());
 
-    					solicColegioBean.setIdInstitucion(Integer.valueOf(idInstOrigen));
-    					solicColegioBean.setPpn_IdTipoProducto(pysComBean.getIdTipoProducto());
-    					solicColegioBean.setPpn_IdProductoInstitucion(pysComBean.getIdProductoInstitucion());
-    					solicColegioBean.setPpn_IdProducto(pysComBean.getIdProducto());
+						solicColegioBean.setIdPersona_Des(Long
+								.valueOf(idPersona));
+						solicColegioBean.setIdInstitucionOrigen(Integer
+								.valueOf(idInstOrigen));
+						solicColegioBean.setIdInstitucionDestino(Integer
+								.valueOf(idInstDestino));
+						solicColegioBean
+								.setIdEstadoSolicitudCertificado(Integer
+										.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND));
+						solicColegioBean.setDescripcion(descripcion);
+						solicColegioBean.setFechaSolicitud("SYSDATE");
+						solicColegioBean.setFechaEstado("SYSDATE");
+						solicColegioBean.setIdInstitucion_Sol(Integer
+								.valueOf(idInstitucion));
+						solicColegioBean
+								.setIdEstadoCertificado(Integer
+										.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_CER_INICIAL));
 
-    					solicColegioBean.setIdPersona_Des(Long.valueOf(idPersona));
-    					solicColegioBean.setIdInstitucionOrigen(Integer.valueOf(idInstOrigen));
-    					solicColegioBean.setIdInstitucionDestino(Integer.valueOf(idInstDestino));
-    					solicColegioBean.setIdEstadoSolicitudCertificado(Integer.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND));
-    					solicColegioBean.setDescripcion(descripcion);
-    					solicColegioBean.setFechaSolicitud("SYSDATE");
-    					solicColegioBean.setFechaEstado("SYSDATE");
-    					solicColegioBean.setIdInstitucion_Sol(Integer.valueOf(idInstitucion));                
-    					solicColegioBean.setIdEstadoCertificado(Integer.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_CER_INICIAL));                
+						this.insert(solicColegioBean);
+					}
 
-    					this.insert(solicColegioBean);
-    				}
+					// Si el colegio origen es distinto del actual...
+					if (!idInstitucion.equals(idInstOrigen)
+							&& !idInstitucion
+									.equals(CerSolicitudCertificadosAdm.IDCGAE)) {
+						CerSolicitudCertificadosBean solicBean = new CerSolicitudCertificadosBean();
+						solicBean.setIdSolicitud(this
+								.getNewIdSolicitudCertificado(idInstitucion));
 
-    				//Si el colegio origen es distinto del actual...
-    				if (!idInstitucion.equals(idInstOrigen)&&!idInstitucion.equals(CerSolicitudCertificadosAdm.IDCGAE)){
-    					CerSolicitudCertificadosBean solicBean = new CerSolicitudCertificadosBean();                
-    					solicBean.setIdSolicitud(this.getNewIdSolicitudCertificado(idInstitucion));
+						solicBean.setIdInstitucion(Integer
+								.valueOf(idInstitucion));
+						solicBean.setIdPersona_Des(Long.valueOf(idPersona));
+						solicBean.setIdInstitucionOrigen(Integer
+								.valueOf(idInstOrigen));
+						solicBean.setIdInstitucionDestino(Integer
+								.valueOf(idInstDestino));
+						solicBean.setDescripcion(descripcion);
+						String estado = instAdm.tieneSIGA(Integer
+								.valueOf(idInstOrigen)) ? CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO
+								: CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND;
+						solicBean.setIdEstadoSolicitudCertificado(Integer
+								.valueOf(estado));
+						solicBean.setFechaSolicitud("SYSDATE");
+						solicBean.setFechaEstado("SYSDATE");
+						solicBean.setIdInstitucion_Sol(Integer
+								.valueOf(idInstitucion));
+						solicBean
+								.setIdEstadoCertificado(Integer
+										.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_CER_INICIAL));
 
-    					solicBean.setIdInstitucion(Integer.valueOf(idInstitucion));                
-    					solicBean.setIdPersona_Des(Long.valueOf(idPersona));
-    					solicBean.setIdInstitucionOrigen(Integer.valueOf(idInstOrigen));
-    					solicBean.setIdInstitucionDestino(Integer.valueOf(idInstDestino));
-    					solicBean.setDescripcion(descripcion);
-    					String estado = instAdm.tieneSIGA(Integer.valueOf(idInstOrigen))?CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO:CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND;
-    					solicBean.setIdEstadoSolicitudCertificado(Integer.valueOf(estado));
-    					solicBean.setFechaSolicitud("SYSDATE");
-    					solicBean.setFechaEstado("SYSDATE");
-    					solicBean.setIdInstitucion_Sol(Integer.valueOf(idInstitucion));                
-    					solicBean.setIdEstadoCertificado(Integer.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_CER_INICIAL));                
+						this.insert(solicBean);
+					}
+				}
 
-    					this.insert(solicBean);
-    				}	            
-    			}
+			} catch (Exception e1) {
 
-    		} catch (Exception e1) {
+				if (!e1.getClass().getName().equals(
+						"com.siga.general.SIGAException")) {
+					SIGAException se = new SIGAException(
+							"messages.general.error");
+					String params[] = { "modulo.certificados" };
+					se.setParams(params);
+					throw se;
+				} else {
+					SIGAException se = (SIGAException) e1;
+					throw se;
+				}
+			}
+		} else {
 
-
-    			if (!e1.getClass().getName().equals("com.siga.general.SIGAException")){
-    				SIGAException se = new SIGAException("messages.general.error");
-    				String params[]={"modulo.certificados"};
-    				se.setParams(params);
-    				throw se;
-    			} else {
-    				SIGAException se = (SIGAException) e1;
-    				throw se;
-    			}                
-    		}            
-    	}else{
-    		//LMS 21/08/2006
-    		//Cambio por el nuevo uso de subLiteral en SIGAException.
-    		//SIGAException exc = new SIGAException("messages.certificados.error.institucionnoadecuada");
-    		//exc.setSubLiteral("messages.certificados.subliteral.institucionnoadecuada");
-
-    		SIGAException exc = new SIGAException("messages.certificados.error.institucionnoadecuada");
-    		throw exc;
-    	}
-    	return solicConsejoBean;
-    }
+			SIGAException exc = new SIGAException(
+					"messages.certificados.error.institucionnoadecuada");
+			throw exc;
+		}
+		return solicConsejoBean;
+		
+	} //insertarSolicitudCertificado()
     
     public Long getNewIdSolicitudCertificado(String idInstitucion) throws ClsExceptions{
     	

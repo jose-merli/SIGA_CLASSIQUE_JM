@@ -637,6 +637,19 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    int contador=0;
 		    int contadorErrores=0;
 		    
+		    // AVISO: El orden de las solicitudes esta definido por como salen 
+		    //en la pantalla (ver metodo que devuelve las solicitudes).
+		    // Hasta el momento (2010-05-04), el orden es idsolicitud desc.
+		    // Pero desde la JSP 'abrirListadoSolicitudes.jsp' se manda el
+		    //listado de solicitudes (para generar los PDFs) en orden inverso,
+		    //para que la generacion de los certificados (numero de certificado) 
+		    //se haga en orden asc.
+		    /** TODO
+		     *  Habria que cambiar la comunicacion entre la JSP y el Action: 
+		     * la JSP solo deberia enviar los idsolicitud 
+		     * (o los filtros de busqueda, por ejemplo)
+		     * y el Action calcularia todo lo demas
+		     */
 		    StringTokenizer st = null;
 		    int contadorReg=1;
 		    String tok=form.getIdsParaGenerarFicherosPDF();
@@ -674,29 +687,6 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		        // RGG obtengo la plantilla por defecto para cada certificado
 		        String idPlantilla = admPlantillas.obtenerPlantillaDefecto(idInstitucion,idTipoProducto,idProducto, idProductoInstitucion);	
 
-/*		        
-		        // RGG 23/06/2005 Comprobar que es colegiadoEnOrigen solamente
-		        // en los casos de comunicaciones o diligencias. Resto de casos
-		        // exception con mensaje
-		        PysProductosInstitucionAdm pysAdm = new PysProductosInstitucionAdm(this.getUserBean(request));
-		        Hashtable aux = pysAdm.getProducto(new Integer(idInstitucion),new Long(idProducto), new Long(idProductoInstitucion),new Integer(idTipoProducto));
-		        String tipoCertificado = null;
-		        tipoCertificado = (String) aux.get(PysProductosInstitucionBean.C_TIPOCERTIFICADO);
-		        boolean colegiadoEnOrigen = true;
-		        if (tipoCertificado.equals(PysProductosInstitucionAdm.TIPO_CERTIFICADO_COMUNICACION) || tipoCertificado.equals(PysProductosInstitucionAdm.TIPO_CERTIFICADO_DILIGENCIA)) {
-		        	// es comunicacion o diligencia
-		        	CenColegiadoAdm colAdm = new CenColegiadoAdm(this.getUserBean(request));
-		        	CenColegiadoBean colBean = colAdm.getDatosColegiales(new Long(idPersona),new Integer(idInstitucionOrigen));
-		        	colegiadoEnOrigen = true;
-		        	if (colBean==null) {
-		        		//no es colegiadoEnOrigen
-		        		//throw new SIGAException("messages.error.solicitud.clienteEsColegiado");
-		        		// SI NO ES colegiadoEnOrigen ENTONCES colegiadoEnOrigen = TRUE
-		        		colegiadoEnOrigen=false;
-		        	}
-		        }
-*/
-		        
 		        // RGG 28/03/2007 CAMBIO FINAL PARA OBTENER LA PERSONA DEL CERTIFICADO
 		        boolean usarIdInstitucion = false;
 				boolean colegiadoEnOrigen = true;
@@ -721,23 +711,8 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 					usarIdInstitucion=true;
 				} else {
 					// Es una diligencia
-					// Compruebo si está en origen. Si no lanzo mensaje e impido seguir. Ya que no puedo preguntar
-					// ANTES: colegiadoEnOrigen = admCer.existePersonaCertificado(idInstitucion, idSolicitud);
-					// RGG como se ve abajo, finalmente siempre se toma colegiado en origen (Se evita esta consulta)
-					// Ademas, siempre se usa la institucion (Se fuerza)
-					// AHORA:
 					colegiadoEnOrigen = true;
 					usarIdInstitucion=true;
-					/* ANTES:
-					if (!colegiadoEnOrigen) {
-						colegiadoEnOrigen=true;
-						usarIdInstitucion=true;
-					} else {
-						//usarIdInstitucion=false;
-						// aunque este colegiado en origen se utiliza la institucion del CGAE
-						usarIdInstitucion=true;
-					}
-					*/
 				}
 		        
 		        String sEstadoCertificado = null;
@@ -757,7 +732,6 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			            throw new ClsExceptions("No se ha encontrado el parámetro PATH_PLANTILLAS en la BD");
 			        }
 			        sRutaPlantillas += File.separator + idInstitucion;
-			        //////
 		
 			        String sAux = idInstitucion + "_" + idSolicitud;
 			        
@@ -927,7 +901,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    	String[] datos = {""+contador,""+contadorErrores};
 		    	mensaje = UtilidadesString.getMensaje("certificados.solicitudes.mensaje.generacionCertificadosPDF", datos, userBean.getLanguage());
 		    }
-			request.setAttribute("mensaje",mensaje);	
+			request.setAttribute("mensaje",mensaje);
 		} 
 		catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.certificados"},e,tx); 
