@@ -25,6 +25,7 @@
 package com.siga.tlds;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -35,7 +36,9 @@ import javax.servlet.jsp.tagext.TagSupport;
 import com.atos.utils.ActionButtonsConstants;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.SearchButtonsConstants;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.ActionButtonComparator;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmBotonAccionAdm;
 import com.siga.beans.AdmBotonAccionBean;
@@ -217,6 +220,8 @@ public class TagBotonesAccion extends TagSupport {
 			out.println("<td  style=\"width:900px;\">");
 			out.println("&nbsp;");
 			out.println("</td>");
+			
+			Collections.sort(botonera, new ActionButtonComparator());
 
 			for (ActionButtonsConstants abc: botonera){
 

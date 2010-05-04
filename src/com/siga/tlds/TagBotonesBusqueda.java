@@ -8,6 +8,7 @@
 package com.siga.tlds;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -16,6 +17,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.SearchButtonsConstants;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SearchButtonComparator;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.gui.processTree.SIGAPTConstants;
 
@@ -52,6 +54,7 @@ public class TagBotonesBusqueda extends TagSupport {
 	public void setBotonera (ArrayList lista){
 		botonera = lista;
 	}
+	
 	/**
 	 * Rellena la lista de botones 
 	 * @param dato - Contiene una lista de claves separados por comas de los botones a mostrar
@@ -141,6 +144,8 @@ public class TagBotonesBusqueda extends TagSupport {
 				out.println("&nbsp;");
 			}
 			out.println("</td>");
+			
+			Collections.sort(botonera, new SearchButtonComparator());
 			
 			for (SearchButtonsConstants sbc: botonera){
 				if(sbc==null){

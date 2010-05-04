@@ -5,35 +5,37 @@ import java.util.List;
 
 public enum SearchButtonsConstants {
 
-	BUSCAR ("b","general.search","buscar()"),
-	AVANZADA ("a","general.searchAvanzada","buscarAvanzada()"),
-	SIMPLE ("s","general.boton.searchSimple","buscarSimple()"),
-	NUEVO ("n","general.new","nuevo()"),
-	LIMPIAR ("l","general.boton.clear","limpiar()"),
-	BORRARLOG ("r","administracion.auditoria.borrarlog","borrarLog()"),
-	NUEVA_REGULARIZACION ("nr","general.boton.nuevaRegularizacion","nuevaRegularizacion()"),
-	GENERAR_PDF ("p","general.boton.generarPDF","generarPDF()"),
-	GENERAR_PDFS ("gps","general.boton.generarPDFmostrados","generarPDFMostrados()"),
-	ANADIR_POB ("an","general.boton.anadirPoblaciones","anadirPob()"),
-	GENERAR_CARTA ("c","gratuita.EJG.botonComunicaciones","generarCarta()"),
-	NUEVA_SOCIEDAD ("ns","general.boton.nuevaSociedad","nuevaSociedad()"),
-	GENERAR_RECURSOS ("gr","general.boton.generarRecursos","generarRecursos()"),
-	VALIDAR_VOLANTE ("vol","general.boton.validarVolante","validarVolante()"),
-	INFORME_JUSTIFICACION ("ij","general.boton.informeJustificacion","informeJustificacion()"),
-	LISTO_PARA_ENVIAR ("le","gratuita.busquedaEJG_CAJG.listoParaEnviar","accionListoParaEnviar()"),
-	ANIADIR_A_REMESA ("ar","general.boton.aniadirARemesa","aniadirARemesa(true)"),
-	VOLVER ("v","general.boton.volver","accionVolver()"),
-	DESCARGA_EJG ("dee","general.boton.descargaEejg","descargaEejg(true)"),
-	GENERA_EXCEL ("ge","general.boton.exportarExcel","generaExcel()");
+	BUSCAR ("b","general.search","buscar()",1),
+	AVANZADA ("a","general.searchAvanzada","buscarAvanzada()",2),
+	SIMPLE ("s","general.boton.searchSimple","buscarSimple()",3),
+	NUEVO ("n","general.new","nuevo()",4),
+	LIMPIAR ("l","general.boton.clear","limpiar()",5),
+	BORRARLOG ("r","administracion.auditoria.borrarlog","borrarLog()",6),
+	NUEVA_REGULARIZACION ("nr","general.boton.nuevaRegularizacion","nuevaRegularizacion()",7),
+	NUEVA_SOCIEDAD ("ns","general.boton.nuevaSociedad","nuevaSociedad()",8),
+	GENERAR_PDF ("p","general.boton.generarPDF","generarPDF()",9),
+	GENERAR_PDFS ("gps","general.boton.generarPDFmostrados","generarPDFMostrados()",10),
+	GENERA_EXCEL ("ge","general.boton.exportarExcel","generaExcel()",11),
+	VALIDAR_VOLANTE ("vol","general.boton.validarVolante","validarVolante()",12),
+	INFORME_JUSTIFICACION ("ij","general.boton.informeJustificacion","informeJustificacion()",13),
+	GENERAR_CARTA ("c","gratuita.EJG.botonComunicaciones","generarCarta()",14),
+	ANADIR_POB ("an","general.boton.anadirPoblaciones","anadirPob()",15),
+	VOLVER ("v","general.boton.volver","accionVolver()",16),
+	GENERAR_RECURSOS ("gr","general.boton.generarRecursos","generarRecursos()",17),
+	LISTO_PARA_ENVIAR ("le","gratuita.busquedaEJG_CAJG.listoParaEnviar","accionListoParaEnviar()",18),
+	ANIADIR_A_REMESA ("ar","general.boton.aniadirARemesa","aniadirARemesa(true)",19),
+	DESCARGA_EJG ("dee","general.boton.descargaEejg","descargaEejg(true)",20);
 	
     private final String valor;   
 	private final String label;   
     private final String accion;   
+    private final int	 orden;
     
-    SearchButtonsConstants(String valor, String label, String accion) {
-        this.valor = valor;
-        this.label = label;
+    SearchButtonsConstants(String valor, String label, String accion, int orden) {
+        this.valor 	= valor;
+        this.label 	= label;
         this.accion = accion;
+        this.orden 	= orden;
     }
 
     public String getValor() {
@@ -48,6 +50,10 @@ public enum SearchButtonsConstants {
 		return accion;
 	}
 
+	public int getOrden(){
+		return orden;
+	}
+	
 	public static SearchButtonsConstants getEnum(String value){
 		for(SearchButtonsConstants bc : values()){
 			if (bc.getValor().equalsIgnoreCase(value)){
@@ -65,5 +71,6 @@ public enum SearchButtonsConstants {
 		}
 		return list;
 	}
+	
 	
 }
