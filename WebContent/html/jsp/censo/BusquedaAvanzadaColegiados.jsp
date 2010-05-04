@@ -53,10 +53,17 @@
 			<tr>
 				<td class="labelText"><siga:Idioma key="censo.busquedaClientes.literal.colegio" /></td>
 				<td align="left" colspan="3">
+				<!-- Si la lista de instituciones esta vacia significa que estamos en un colegio -->
+				<logic:empty property="instituciones" name="BusquedaColegiadosForm">
+					<html:hidden property="idInstitucion" name="BusquedaColegiadosForm"  />
+					<html:text property="nombreInstitucion" name="BusquedaColegiadosForm" size="70" styleClass="boxComboConsulta" readonly="true"/>
+				</logic:empty>
+				<logic:notEmpty property="instituciones" name="BusquedaColegiadosForm">
 					<html:select property="idInstitucion" name="BusquedaColegiadosForm" styleClass="boxCombo">
 						<html:option value="">&nbsp;</html:option>
 						<html:optionsCollection name="BusquedaColegiadosForm" property="instituciones" value="id" label="nombre"></html:optionsCollection>
 					</html:select>
+				</logic:notEmpty>
 				</td>
 			</tr>
 			<tr>
