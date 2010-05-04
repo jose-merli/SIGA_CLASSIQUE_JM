@@ -1357,7 +1357,7 @@
 								<html:option value="O"><siga:Idioma key="gratuita.personaJG.calidad.literal.demandado"/></html:option>
 							</html:select>
 						<%}else{%>
-							<html:select styleClass="boxCombo" name="PersonaJGForm" property="calidad" value="D" readOnly="false">
+							<html:select styleClass="boxCombo" name="PersonaJGForm" property="calidad" value="O" readOnly="false">
 								<html:option  value="">&nbsp; </html:option>				   
 								<html:option value="D"> <siga:Idioma key="gratuita.personaJG.calidad.literal.demandante"/></html:option>
 							<html:option value="O"><siga:Idioma key="gratuita.personaJG.calidad.literal.demandado"/></html:option>
