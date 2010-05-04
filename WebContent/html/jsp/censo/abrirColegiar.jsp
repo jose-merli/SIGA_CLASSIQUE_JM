@@ -18,8 +18,10 @@
 <%@ page import="com.siga.beans.CenInstitucionAdm"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
- <%@ page import="java.util.Properties" %>
- <%@ page import="java.util.Date"%>
+<%@ page import="java.util.Properties" %>
+<%@ page import="java.util.Date"%>
+<%@ page import="com.atos.utils.UsrBean,java.util.*" %>
+<%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
 <!-- JSP -->
 <%
 	String app=request.getContextPath();
@@ -47,6 +49,12 @@
 		java.text.SimpleDateFormat formador = new java.text.SimpleDateFormat("dd/MM/yyyy");
 		fecha = formador.format(new Date());
 	}
+	
+	ArrayList aMetodoSol = new ArrayList();
+	aMetodoSol.add(3);
+	String [] parametro = {user.getLocation(),user.getLocation()};
+	
+	String fechaSolicitud = UtilidadesBDAdm.getFechaBD("");
 	
 %>	
 
@@ -141,18 +149,16 @@
 
 <div id="camposRegistro" class="posicionModalPeque" align="center">
 
-
-	<table class="tablaCentralCamposPeque" cellspacing="0" cellpadding="0" align="center" width="100%">
-				<html:form action="/Cen_BotonesAccion.do" method="POST" target="_self">
-	            <input type="hidden" name="modo" value="editar">
-				<input type="hidden" name="idPersonaX" value="<%=idPersonaX%>">
-				
-		
+	<html:form action="/Cen_BotonesAccion.do" method="POST" target="_self">
+    <input type="hidden" name="modo" value="editar">
+	<input type="hidden" name="idPersonaX" value="<%=idPersonaX%>">
+		<siga:ConjCampos>
+			<table class="tablaCampos"align="center" width="100%">
 				<tr >
-						<td class="labelText" width="20%">
+						<td class="labelText" width="35%">
 							<siga:Idioma key="censo.colegiarNoColegiado.literal.colegio"/>&nbsp;(*)
 						</td>
-						<td >
+						<td colspan="2">
 						  <siga:ComboBD nombre="nombreColegios" 
 							    		tipo="cmbNombreColegios" 
 										clase="boxCombo"
@@ -161,61 +167,73 @@
 										parametro="<%=idInstitucion%>"
 						  />									
 						</td>
-						<td class="labelText" width="20%">
-					       <siga:Idioma key="censo.consultaDatosColegiales.literal.residente"/>
-				       </td>
-		               <td>
-			                <input type="checkbox" name="situacionResidente">
-		               </td>
 				</tr>
 				<tr>
-				       <td class="labelText" width="20%">
+				       <td class="labelText">
 					       <siga:Idioma key="censo.busquedaClientesAvanzada.literal.nColegiado"/>&nbsp;(*)
 				       </td>
-		               <td>
+		               <td colspan="2">
 			                <input type="text" name="numeroColegiado" size="10" maxlength="20" class="box" value="">
 		               </td>
-					   <td class="labelText" width="20%">
-					       <siga:Idioma key="censo.consultaDatosGenerales.literal.comunitario"/>
-				       </td>
-		               <td>
-			                <input type="checkbox" name="comunitario">
-		               </td>
-				</tr>
-				<tr>
-				       
 					   
-		
-					  <td class="labelText">
-						<siga:Idioma key="censo.colegiarNoColegiados.literal.estado"/>&nbsp;(*)
-					  </td>
-					  <td>
-							<siga:ComboBD nombre="estadoColegial" 
-							    		tipo="cmbEstadoColegial" 
-										clase="boxCombo"
-										readonly="false"
-										obligatorio="true"
-						  />	
-		              </td>
-					  <td class="labelText">
-							<siga:Idioma key="certificados.solicitudes.literal.fechaEstado"/>&nbsp;(*)
-  				      </td>
-				      <td>
-					    <input type="text" name="fechaEstado" maxlength="10" size="9" value="<%=fecha%>" readonly="readonly" class="box">
-					    <a href='javascript://'onClick="return showCalendarGeneral(fechaEstado);"><img src="/SIGA/html/imagenes/calendar.gif" border="0"></a>
-				      </td>
 				</tr>
 				<tr>
-				     <td class="labelText" width="20%" >
+					<td class="labelText">
+						<siga:Idioma key="censo.colegiarNoColegiados.literal.estado"/>&nbsp;(*)
+					</td>
+					<td>
+					<siga:ComboBD nombre="estadoColegial" 
+					    		tipo="cmbEstadoColegial" 
+								clase="boxCombo"
+								readonly="false"
+								obligatorio="true" />	
+	              	</td>
+	            </tr>
+				<tr>
+					<td class="labelText">
+						<siga:Idioma key="certificados.solicitudes.literal.fechaEstado"/>&nbsp;(*)
+				    </td>
+					<td>
+						<siga:Fecha nombreCampo="fechaEstado" valorInicial="<%=fecha%>"></siga:Fecha>
+						<a href='javascript://'onClick="return showCalendarGeneral(fechaEstado);"><img src="/SIGA/html/imagenes/calendar.gif" border="0"></a>
+					</td>
+				</tr>
+	             </table>
+	             <table class="tablaCampos"align="center" width="100%">
+	             <tr>
+					<td class="labelText" width="20%">
+						<label for="checkComunitario">
+				       	<siga:Idioma key="censo.consultaDatosGenerales.literal.comunitario"/>
+				       	</label>
+				   </td>
+			       <td width="10%">
+		                <input id="checkComunitario" type="checkbox" name="comunitario">
+	               </td>
+	               <td class="labelText" width="20%">
+	               		<label for="checkResidente">
+	               		<siga:Idioma key="censo.consultaDatosColegiales.literal.residente"/>
+	               		</label>
+			       	</td>
+			       	<td width="10%">
+	                	<input id="checkResidente" type="checkbox" name="situacionResidente">
+	               </td>
+	               <td></td>
+				</tr>
+			</table>
+		</siga:ConjCampos>
+		<siga:ConjCampos>
+			<table class="tablaCampos"align="center" width="100%">
+				<tr>
+				     <td class="labelText" width="55">
 					       <siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.observaciones"/>
    			         </td>
 		             <td colspan="3">
-			                <textarea COLS=80 ROWS=8 NAME="observaciones" class="box" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)"></textarea>  
+			                <textarea COLS=80 ROWS=4 NAME="observaciones" class="box" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)"></textarea>  
 		             </td>
 				</tr>
-				</html:form>
 			</table>
-
+		</siga:ConjCampos>
+			</html:form>
 			<siga:ConjBotonesAccion botones="A,C" modal="P"/>
 		</div>
 

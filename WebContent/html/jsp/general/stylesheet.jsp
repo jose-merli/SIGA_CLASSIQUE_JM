@@ -385,11 +385,10 @@ legend {
 	font-family: <%=src.get("font.style")%>;
 	font-size: <%=fontSize%>;
 	left: 25px;
-	color:#<%=src.get("color.labelText")%>;
-//	background-color:  #<%=src.get("color.button.BG")%>;
 	vertical-align: top;
-	margin-top: -3px;
+	margin-top: 0px;
 	margin-left: 0px;
+	color:#<%=src.get("color.labelText")%>;
 	background-color: #<%=src.get("color.background")%>;
 	border: 1px solid #<%=src.get("color.button.border")%>;
 	padding-top: 2px;

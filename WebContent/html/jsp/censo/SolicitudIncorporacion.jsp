@@ -44,12 +44,15 @@
 
 	String pais="";
 	ArrayList idPais=new ArrayList();
-//  Lo dejamos en blanco para Cataluña (pero se inserta españa si en blanco)
-//	idPais.add(ClsConstants.ID_PAIS_ESPANA);
 
 	UsrBean user = (UsrBean) ses.getAttribute("USRBEAN");
 	String [] modalidadParam = new String[1];
 	modalidadParam[0] = user.getLocation();
+	
+	String estiloBox = "box";
+	String estiloCombo = "boxCombo";
+	String readonly = "false";
+	boolean residente = true;
 
 	
 %>
@@ -82,468 +85,228 @@
 	<siga:Titulo titulo="censo.solicitudIncorporacion.cabecera2" 
 							 localizacion="censo.solicitudIncorporacion.localizacion"/>
 	<!-- FIN: TITULO Y LOCALIZACION -->
+	
 
 <script>
 
-		var idEspana='<%=ClsConstants.ID_PAIS_ESPANA%>';
-		
-		//refrescarLocal -->
-		function refrescarLocal() 
-		{		
-			document.SolicitudIncorporacionForm.modo.value="abrirAvanzada";
-			document.SolicitudIncorporacionForm.target="mainWorkArea";
-			document.SolicitudIncorporacionForm.submit();
-		}
-		
-		function formatearDocumento()
-	{
-	   if((document.forms[0].tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")&&(document.forms[0].NIFCIF.value!="")) {
-			var sNIF = document.forms[0].NIFCIF.value;
-			document.forms[0].NIFCIF.value = formateaNIF(sNIF);
-	   }else if((document.forms[0].tipoIdentificacion.value == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>")){
-	   
-	   		var sNIE = document.forms[0].NIFCIF.value;
-			document.forms[0].NIFCIF.value = formateaNIE(sNIE);
-	   }
-	   	
-}
-		
-		
-	    function selPais(valor) {                                                                   
-		   if (valor!="" && valor!=idEspana) {
-		   		document.getElementById("poblacion").value="";
-		   		document.getElementById("provincia").value="";
-			   	document.getElementById("provincia").disabled=true;
-				document.getElementById("poblacionEspanola").className="ocultar";
-				document.getElementById("poblacionExtranjera").className="";
-	       } else {
-		   		document.getElementById("poblacionExt").value="";
-				document.getElementById("provincia").disabled=false;
-				document.getElementById("poblacionEspanola").className="";
-				document.getElementById("poblacionExtranjera").className="ocultar";
-	       }
-	    }
-		
-		function validarTelef(numero){
-		 alert(numero.value);
-		}
-		
-		function comprobarApellido2Asterisco(){
-		 
-		  var checkNIF = false;
-			if (document.SolicitudIncorporacionForm.tipoIdentificacion)
-			
-			if (document.SolicitudIncorporacionForm.tipoIdentificacion.options) {
-			
-			  for(i = 0; i < document.SolicitudIncorporacionForm.tipoIdentificacion.options.length; i++){  			
-				if(document.SolicitudIncorporacionForm.tipoIdentificacion.options[i].selected) {
-			
-					if(document.SolicitudIncorporacionForm.tipoIdentificacion.options[i].value == 10)
-						checkNIF = true;
-				}
- 			  }
-			}
-			
-			if(checkNIF) {
-				document.getElementById("apellidoSinAsterisco").className="ocultar";
-				document.getElementById("apellidoConAsterisco").className="labelText";
-			}
-			else {
-				document.getElementById("apellidoSinAsterisco").className="labelText";
-				document.getElementById("apellidoConAsterisco").className="ocultar";
-	    	}
-		}
-		
-		function formateaNIF(valorX) {
-    		var longitud=9;
-    		var salida='';
-    		
-    		if(isNumero(valorX)==true)
-    			longitud=8;
-    		
-    		
-    		if(valorX.length==8 && isNumero(valorX)==true)
-    			return valorX;
-    		
-			if (valorX==null) {
-				salida = relleno("0",longitud);  
-			} else {
-				
-				if (valorX.length==0) {
-				 
-					
-						salida = relleno("0",longitud);  
-					
-				} else{
-				   if (valorX.length > longitud) {
-					// mayor
-					
-					alert ("<siga:Idioma key="messages.nif.comprobacion.digitos.erroneo"/>");
-					return valorX;
-				   }else{
-				     if (valorX.length < longitud) {//menor
-					 
-					   salida = relleno('0',longitud - valorX.length) + valorX; 
-					  
-					   
-					 }else{//igual
-					  
-					   salida = valorX;
-					 }
-				   }
-				}   
-				  
-			}
-  // alert("Salida formateaNIFMio:"+salida);
-	return salida; 
-	
-}
-	function formateaNIE(valorX) {
-		
-    		var longitud=8;
-    		var salida='';
-    		
-    		if( isNumero(valorX)==true){
-    			if(valorX.length==8)
-    				return valorX;
-    		}else{
-    			if(valorX.length==9)
-    				return valorX;
-    			//else
-    				//longitud=9;
-    		
-    		}
-    		
-    		
-			if (valorX==null) {
-				//salida = relleno("0",longitud); 
-				 
-			} else {
-				
-				if (valorX.length==0) {
-				 
-					
-						//salida = relleno("0",longitud);
-				  
-					
-				} else{
-				   if (valorX.length > longitud) {
-					// mayor
-					
-					alert ("<siga:Idioma key="messages.nie.comprobacion.digitos.erroneo"/>");
-					return valorX;  
-				   }else{
-				     if (valorX.length < longitud) {//menor
-					   valorX1 = valorX.substring(1);
-					   salida = valorX.substring(0,1)+relleno('0',longitud - valorX1.length-1) + valorX1; 
-					   
-					   
-					 }else{//igual
-					  
-					   salida = valorX;
-					 }
-				   }
-				}   
-				  
-			}
-  // alert("Salida formateaNIFMio:"+salida);
-	return salida; 
-	
-}
+	function refrescarLocal() 
+	{		
+		document.SolicitudIncorporacionForm.modo.value="abrirAvanzada";
+		document.SolicitudIncorporacionForm.target="mainWorkArea";
+		document.SolicitudIncorporacionForm.submit();
+	}
 
+	function cargaPais(valor) {      
+	   if (valor!=null && valor!="" && valor!=<%=ClsConstants.ID_PAIS_ESPANA%>) {
+		    document.getElementById("poblacion").value="";
+	   		document.getElementById("provincia").value="";
+		   	document.getElementById("provincia").disabled=true;
+			document.getElementById("poblacionEspanola").className="ocultar";
+			document.getElementById("poblacionExtranjera").className="";
+       } else {
+	   		document.getElementById("poblacionExt").value="";
+			document.getElementById("provincia").disabled=false;
+			document.getElementById("poblacionEspanola").className="";
+			document.getElementById("poblacionExtranjera").className="ocultar";
+       }
+	}
+		
+	function datosValidos(){
+		var errores = "";
 	
-		
-		
-		
-		
-		
+		if(validaNumeroIdentificacion()){
+	
+			if(document.SolicitudIncorporacionForm.tipoIdentificacion.value==""){
+				errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.nifcif'/>"+ '\n';
+			}
+			if(document.SolicitudIncorporacionForm.tipoDon.value==""){
+				errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.tratamiento'/>" + '\n';
+			}
+			if(document.SolicitudIncorporacionForm.nombre.value==""){
+				errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.nombre'/>" + '\n';
+			}
+			if(document.SolicitudIncorporacionForm.apellido1.value==""){
+				errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.apellido1'/>" + '\n';
+			}
+			if(document.SolicitudIncorporacionForm.fechaNacimiento.value==""){
+				errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.fechaNacimiento'/>" + '\n';
+			}
+			if(document.SolicitudIncorporacionForm.sexo.value=="0"){
+				errores += "<siga:Idioma key='errors.required' arg0='censo.consultaDatosGenerales.literal.sexo'/>" + '\n';
+			}
+			if (document.SolicitudIncorporacionForm.pais.value == "" || document.SolicitudIncorporacionForm.pais.value == "<%=ClsConstants.ID_PAIS_ESPANA%>") {
+		   		if (document.SolicitudIncorporacionForm.provincia.value == "") {
+		   			errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.provincia'/>" + '\n';
+		       	}
+		   		if (document.SolicitudIncorporacionForm.poblacion.value == "") {
+		   			errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.poblacion'/>" + '\n';
+		       	}
+		    } else {
+		   		if (document.SolicitudIncorporacionForm.poblacionExt.value == "") {
+		   			errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.poblacion'/>" + '\n';
+		       	}
+			}
+			if(document.SolicitudIncorporacionForm.domicilio.value==""){
+				errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.domicilio'/>" + '\n';
+			}
+			if(document.SolicitudIncorporacionForm.CP.value==""){
+				errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.codigoPostal'/>" + '\n';
+			}
+			if(document.SolicitudIncorporacionForm.telefono1.value==""){
+				errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.telefono1'/>" + '\n';
+			}
+			if(document.SolicitudIncorporacionForm.mail.value==""){
+				errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.email'/>" + '\n';
+			}
+			
+			if (errores != ""){
+				alert(errores);
+			}else{
+				if(validateSolicitudIncorporacionForm(document.SolicitudIncorporacionForm))
+					return true;
+			}
+		}
+		return false;
+	}
+
+	function comprobarTipoIdent(){
+		// Solo se genera el NIF o CIF de la persona
+		if((SolicitudIncorporacionForm.tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")||
+			(SolicitudIncorporacionForm.tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>")){
+			document.getElementById("idButtonNif").style.visibility="visible";
+		}	else{
+			document.getElementById("idButtonNif").style.visibility="hidden";
+		}
+	}	
+
+	function validaNumeroIdentificacion(){
+		var errorNIE = false;
+		var errorNIF = false;
+		var valido = true;
+
+		if(SolicitudIncorporacionForm.tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>"){
+			var numero = SolicitudIncorporacionForm.NIFCIF.value;
+			if(numero.length==9){
+				letIn = numero.substring(8,9);
+				num = numero.substring(0,8);
+				var posicion = num % 23;
+				letras='TRWAGMYFPDXBNJZSQVHLCKET';
+				var letra=letras.substring(posicion,posicion+1);
+				if (letra!=letIn) {
+					errorNIF=true;
+				}
+			}else{
+				errorNIF=true;
+			}
+		}
+		if(SolicitudIncorporacionForm.tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>"){
+			var dnie = SolicitudIncorporacionForm.NIFCIF.value;
+			if(dnie.length==9){
+				letIni = dnie.substring(0,1);
+				primera=letIni;
+				if  (letIni.toUpperCase()=='Y')
+			 		letIni = '1';
+			 	else if  (letIni.toUpperCase()=='Z')
+			 		letIni = '2';
+			 	else{
+			 		letIni = '0';
+			 	}
+				num = letIni + dnie.substring(1,8);
+				letFin = dnie.substring(8,9);
+				var posicion = num % 23;
+				letras='TRWAGMYFPDXBNJZSQVHLCKET';
+				var letra=letras.substring(posicion,posicion+1);
+				if (!primera.match('[X|Y|Z]')||letra!=letFin) {
+					errorNIE=true;
+				}
+			}else{
+				errorNIE=true;
+			}
+		}
+		if (errorNIF){
+			valido = false;
+			alert("<siga:Idioma key='messages.nif.comprobacion.digitos.error'/>");
+		}
+		if (errorNIE){
+			valido = false;
+			alert("<siga:Idioma key='messages.nie.comprobacion.digitos.error'/>");
+		}
+		return valido;
+	}
+
+	function obtenerLetra(){
+		generarLetra();
+		/*if (!generarLetra()){
+			validaNumeroIdentificacion
+		}*/
+	}
+
 	function generarLetra() {
 		var numId = SolicitudIncorporacionForm.NIFCIF.value;
 		var tipoIdentificacion = SolicitudIncorporacionForm.tipoIdentificacion.value;
 	  	var letra='TRWAGMYFPDXBNJZSQVHLCKET';
-		if( (tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")){
 		if(numId.length==0){
-		
-			return false;
-		
-		}if(isNumero(numId)==true){
-				if(numId.length==8){
+			return false;		
+		}
+		if( (tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")){
+			if(numId.length==8){
+				if(isNumero(numId)==true){
 				 	numero = numId;
 				 	numero = numero % 23;
 				 	letra=letra.substring(numero,numero+1);
 				 	SolicitudIncorporacionForm.NIFCIF.value =numId+letra;
-				 		
 				}else{
-				 	numero = numId.substr(0,numId.length-1);
-				 	numero = numero % 23;
-				 	let = numId.substr(numId.length-1,1);
-				 	letra=letra.substring(numero,numero+1);
-		 			//if (letra.tolowercase()!=let.tolowercase())
-				 	//alert('DNI Erroneo. Ponemos el correcto');
-					SolicitudIncorporacionForm.NIFCIF.value = numId.substring(0,8)+letra;
-					
-				 } 	
-				 	
+					return validaNumeroIdentificacion(tipoIdentificacion, numId);
+				}
 			}else{
-				rc = validarNIFCIF(tipoIdentificacion, numId);
-				 
-				if(rc==true)
-					alert('<siga:Idioma key="messages.nifcif.comprobacion.correcto"/>');
-				
+				rc = validaNumeroIdentificacion(tipoIdentificacion, numId);
+				if(rc==false){
+				    return rc;
+				}	
 			}
 		} else	if((tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") ){
 			if(numId.length==8){
-				if(isNumero(numId)==true){
-					numero = numId;
-					//Buscamo la letra derecha. Aplicamos algoritmo de letra derecha
-					var numero_23 = numero % 23;
-					letra=letra.substring(numero_23,numero_23+1);
-					//Sustituimos primer numero por letra
-					primerNumero = numId.substring(0,1);
-				 	if(primerNumero==0)
-				 		primerNumero = 'X';
-				 	else if  (primerNumero==1)
-				 		primerNumero = 'Y';
-				 	else if  (primerNumero==2)
-				 		primerNumero = 'Z';
-				 	
-				 	numero = primerNumero+numId.substring(1);
-				 	
-				 	//añadimos la letra derecha
-				 	numero = numero + letra;
-				 	
+				var dnie = SolicitudIncorporacionForm.NIFCIF.value;
+				letIni = numId.substring(0,1);
+				primeraLetra = letIni;
+				if  (letIni.toUpperCase()=='Y')
+			 		letIni = '1';
+			 	else if  (letIni.toUpperCase()=='Z')
+			 		letIni = '2';
+			 	else{
+			 		letIni = '0';
+			 	}
+				num = letIni+numId.substring(1,8);
+				if(primeraLetra.match('[X|Y|Z]') && isNumero(num)){
+					var posicion = num % 23;
+					letras='TRWAGMYFPDXBNJZSQVHLCKET';
+					var letra=letras.substring(posicion,posicion+1);
+					numero = dnie + letra;
 					SolicitudIncorporacionForm.NIFCIF.value = numero;
-					 	
-					 	
-					 	
-					
 				}else{
-					//Miramos que solo sea letra el primer caracter. si no lo es no hacemos nada
-					if(isNumero(numId.substring(1))==false){
-						return false;
-					
-					}
-					//Sustituimos primera letra por numero para aplicar algoritmo para buscar la letra derecha
-					
-				  		primeraLetra = numId.substring(0,1);
-				    	if(primeraLetra.toUpperCase()=='X')
-				 		primeraLetra = '0';
-				 	else if  (primeraLetra.toUpperCase()=='Y')
-				 		primeraLetra = '1';
-				 	else if  (primeraLetra.toUpperCase()=='Z')
-				 		primeraLetra = '2';
-				 	else{
-				 		//Si no es X o Y o Z no hacemos nada 
-				 		return false;
-				 	}
-				 	//Sistituimos la letra por el numero
-				 	numero = primeraLetra+numId.substring(1);
-				 	//Aplicamos algoritmo de letra derecha
-				 	var numero_23 = numero % 23;
-					letra=letra.substring(numero_23,numero_23+1);
-					
-					//Le ponemos la letra derecha al alfanumerico inicial					
-					numero = numId +letra;
-					SolicitudIncorporacionForm.NIFCIF.value = numero;
-				  	
-				  	
+					return validaNumeroIdentificacion(tipoIdentificacion, numId);
 				}	
 			}else{
-				rc = validaNIE(numId);
-				 
-				if(rc==true)
-					alert('<siga:Idioma key="messages.nifcif.comprobacion.correcto"/>');
+				rc = validaNumeroIdentificacion(tipoIdentificacion, numId);
+				if(rc==undefined){
+					return rc;
+				}else if(rc==false){
+					return rc;
+				}	
 			}
 			
-		}else {
-			//Si no es nif ni nie no hay generacion de letra
-			return true;
 		}
-	}
-	
-	function validarNIE(a) 
-	{
-		var temp=a.toUpperCase();
-		var cadenadni="TRWAGMYFPDXBNJZSQVHLCKE";
- 
- 
-		//comprobacion de NIEs
-		//T
-		if (/^[T]{1}/.test(temp))
-		{
-			if (a[8] == /^[T]{1}[A-Z0-9]{8}$/.test(temp))
-			{
-				return 3;
-			}
-			else
-			{
-				return -3;
-			}
-		}
- 
-		//XYZ
-		if (/^[XYZ]{1}/.test(temp))
-		{
-			pos = str_replace(['X', 'Y', 'Z'], ['0','1','2'], temp).substring(0, 8) % 23;
-			if (a[8] == cadenadni.substring(pos, pos + 1))
-			{
-				return 3;
-			}
-			else
-			{
-				return -3;
-			}
-		}
-		return 0;
-	} 		
-		
-	
-	
-	function nif(a) 
-{
-	var a = SolicitudIncorporacionForm.tipoIdentificacion.value;
-	var temp=a.toUpperCase();
-	var cadenadni="TRWAGMYFPDXBNJZSQVHLCKE";
- 
-	if (temp!==''){
-		//si no tiene un formato valido devuelve error
-		if ((!/^[A-Z]{1}[0-9]{7}[A-Z0-9]{1}$/.test(temp) && !/^[T]{1}[A-Z0-9]{8}$/.test(temp)) && !/^[0-9]{8}[A-Z]{1}$/.test(temp))
-		{
-			return 0;
-		}
- 
-		//comprobacion de NIFs estandar
-		if (/^[0-9]{8}[A-Z]{1}$/.test(temp))
-		{
-			posicion = a.substring(8,0) % 23;
-			letra = cadenadni.charAt(posicion);
-			var letradni=temp.charAt(8);
-			if (letra == letradni)
-			{
-			   	return 1;
-			}
-			else
-			{
-				return -1;
-			}
-		}
- 
-		//algoritmo para comprobacion de codigos tipo CIF
-		suma = parseInt(a[2])+parseInt(a[4])+parseInt(a[6]);
-		for (i = 1; i < 8; i += 2)
-		{
-			temp1 = 2 * parseInt(a[i]);
-			temp1 += '';
-			temp1 = temp1.substring(0,1);
-			temp2 = 2 * parseInt(a[i]);
-			temp2 += '';
-			temp2 = temp2.substring(1,2);
-			if (temp2 == '')
-			{
-				temp2 = '0';
-			}
-			alert("comp");
-			suma += (parseInt(temp1) + parseInt(temp2));
-		}
-			
-		suma += '';
-		n = 10 - parseInt(suma.substring(suma.length-1, suma.length));
- 
-		//comprobacion de NIFs especiales (se calculan como CIFs)
-		if (/^[KLM]{1}/.test(temp))
-		{
-			if (a[8] == String.fromCharCode(64 + n))
-			{
-				return 1;
-			}
-			else
-			{
-				return -1;
-			}
-		}
- 
-		//comprobacion de CIFs
-		if (/^[ABCDEFGHJNPQRSUVW]{1}/.test(temp))
-		{
-			temp = n + '';
-			if (a[8] == String.fromCharCode(64 + n) || a[8] == parseInt(temp.substring(temp.length-1, temp.length)))
-			{
-				return 2;
-			}
-			else
-			{
-				return -2;
-			}
-		}
- 
-		//comprobacion de NIEs
-		//T
-		if (/^[T]{1}/.test(temp))
-		{
-			if (a[8] == /^[T]{1}[A-Z0-9]{8}$/.test(temp))
-			{
-				return 3;
-			}
-			else
-			{
-				return -3;
-			}
-		}
- 
-		//XYZ
-		if (/^[XYZ]{1}/.test(temp))
-		{
-			pos = str_replace(['X', 'Y', 'Z'], ['0','1','2'], temp).substring(0, 8) % 23;
-			if (a[8] == cadenadni.substring(pos, pos + 1))
-			{
-				return 3;
-			}
-			else
-			{
-				return -3;
-			}
-		}
-	}
- 
-	return 0;
-} 
+		// Caso1: Se han realizado las modificaciones necesarias sin encontrar errores 
+		// Caso2: no es nif ni nie no hay generacion de letra
 
-function str_replace(search, replace, subject) {
-    // http://kevin.vanzonneveld.net
-    // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-    // +   improved by: Gabriel Paderni
-    // +   improved by: Philip Peterson
-    // +   improved by: Simon Willison (http://simonwillison.net)
-    // +    revised by: Jonas Raoni Soares Silva (http://www.jsfromhell.com)
-    // +   bugfixed by: Anton Ongson
-    // +      input by: Onno Marsman
-    // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-    // +    tweaked by: Onno Marsman
-    // *     example 1: str_replace(' ', '.', 'Kevin van Zonneveld');
-    // *     returns 1: 'Kevin.van.Zonneveld'
-    // *     example 2: str_replace(['{name}', 'l'], ['hello', 'm'], '{name}, lars');
-    // *     returns 2: 'hemmo, mars'
- 
-    var f = search, r = replace, s = subject;
-    var ra = r instanceof Array, sa = s instanceof Array, f = [].concat(f), r = [].concat(r), i = (s = [].concat(s)).length;
- 
-    while (j = 0, i--) {
-        if (s[i]) {
-            while (s[i] = s[i].split(f[j]).join(ra ? r[j] || "" : r[0]), ++j in f){};
-        }
-    };
- 
-    return sa ? s : s[0];
-} 			  					  		
-		
-
-		
+		return true;
+	}
 			
 </script>
 			
 </head>
 
-<body onload="comprobarApellido2Asterisco()">
+<body >
 
 	<!-- INICIO: CAMPOS DEL REGISTRO -->
 
@@ -554,172 +317,170 @@ function str_replace(search, replace, subject) {
 
 	<html:hidden property = "modo" value = ""/>
 
-
 	<siga:ConjCampos leyenda="censo.SolicitudIncorporacionDatos.titulo">
 
-	<!-- SUBCONJUNTO DE DATOS -->
-	<table align="center">
-	
-		<tr>
-			<td class="labelText">&nbsp;</td>
-			<td>&nbsp;</td>
-		</tr>
+	<table width="100%" border="0" >
 
-		<tr>				
-			<td class="labelText" width="19%"><siga:Idioma key="censo.SolicitudIncorporacion.literal.solicitudDe"/>&nbsp;(*)</td>
-			<td width="27%"><siga:ComboBD nombre = "tipoSolicitud" tipo="solicitud" clase="boxCombo" obligatorio="true"/></td>
+		<html:hidden property = "editarIdSolicitud" value = ""/>
+		<html:hidden property = "continuarAprobacion" value = ""/>
+		<html:hidden property = "continuarInsercionColegiado" value = ""/>
+		<html:hidden property = "numeroColegiado" value = ""/>
 
-			<td class="labelText" width="19%"><siga:Idioma key="censo.SolicitudIncorporacion.literal.fechaSolicitud"/></td>
-			<td width="35%"><input value="<%=fechaSol%>" type="text" name="fechaSolicitud" class="boxConsulta" readonly="true"></td>
-		</tr>
+
 		<tr>
-			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.tipoColegiacion"/>&nbsp;(*)</td>
-			<td><siga:ComboBD nombre = "tipoColegiacion" tipo="colegiacion" clase="boxCombo"  obligatorio="true"/></td> 	
+			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.solicitudDe"/>&nbsp;(*)</td>
+			<td><siga:ComboBD nombre = "tipoSolicitud" tipo="solicitud" clase="boxCombo" obligatorio="true"/></td>
+
+			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.tipoColegiacion"/>&nbsp;(*)</td>
+			<td><siga:ComboBD nombre = "tipoColegiacion" ancho="100" tipo="colegiacion" clase="boxCombo" obligatorio="true"/></td>
 			
-			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.fechaEstadoColegial"/></td>
-			<!-- <td><input value="<%=fechaSol%>" type="text" name="fechaSolicitud" class="boxConsulta" readonly="true"></td> -->
+			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.documentacion"/>&nbsp;(*)</td>
+			<td><siga:ComboBD nombre = "tipoModalidadDocumentacion" tipo="modalidadDocumentacion" clase="boxCombo" obligatorio="true" parametro="<%=modalidadParam%>"/></td>
+		</tr>
+		<tr>
+			<td class="labelText"><siga:Idioma key="censo.busquedaClientesAvanzada.literal.fechaIncorporacion"/></td>
 			<td>
-				<siga:Fecha nombreCampo="fechaEstadoColegial" valorInicial="<%=fechaEstadoColegial%>"></siga:Fecha>
+				<siga:Fecha nombreCampo="fechaEstadoColegial"></siga:Fecha>
 				<a href='javascript://'onClick="return showCalendarGeneral(fechaEstadoColegial);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
 			</td>
-		</tr>
 
-		<tr>
-			<td class="labelText">&nbsp;</td>
-			<td>&nbsp;</td>
-		</tr>
+			
+			<td class="labelText"><siga:Idioma key="censo.consultaDatosColegiacion.literal.residente"/></td>
+			<td><input type="checkbox" name="residente" checked></td>
 		
-		<tr>
-			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.tipoIdentificacion"/>&nbsp;(*)</td>
-			<td><siga:ComboBD nombre = "tipoIdentificacion" tipo="identificacionSolicitud" clase="boxCombo" obligatorio="true" ElementoSel="<%=selTipoIdentificacion%>" accion="comprobarApellido2Asterisco();"/> </td>
+			<td class="labelText" width="19%"><siga:Idioma key="censo.SolicitudIncorporacion.literal.fechaSolicitud"/></td>
+			<td><input value="<%=fechaSol%>" type="text" name="fechaSolicitud" class="boxConsulta" readonly="true"></td>
 
-			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.nifcif"/>&nbsp;(*)</td>
-			<td>
-				<input name="NIFCIF" type="text" class="box" size="20" maxlength="20" onBlur="formatearDocumento();">
-				<input type="button" name="idButton" value='<siga:Idioma key="censo.nif.letra.letranif" />' onclick="generarLetra();" style="align:right" class="button" onBlur="formatearDocumento();">
-			</td> 
 		</tr>
-
+	</table>
+	</siga:ConjCampos>
+	<siga:ConjCampos>
+	<table>
 		<tr>
+			<td class="labelText" width="10%"><siga:Idioma key="censo.SolicitudIncorporacion.literal.nifcif"/>&nbsp;(*)</td>
+				<td>
+					<siga:ComboBD nombre = "tipoIdentificacion" tipo="identificacionSolicitud"  ancho="80" clase="<%=estiloCombo%>" obligatorio="true" accion="comprobarTipoIdent();"/>
+					<html:text property="NIFCIF" value="" styleClass="box" size="8" maxlength="20"></html:text>
+					<img id="idButtonNif" src="<%=app%>/html/imagenes/comprobar.gif" border="0" onclick="obtenerLetra();" style="cursor:hand;align:left" style="display:inline;visibility: hidden;">
+				</td>
+
+			
+			<td class="labelText"><siga:Idioma key="censo.consultaDatosGenerales.literal.sexo"/>&nbsp;(*)
+			</td>
+			<td>
+			<html:select name="SolicitudIncorporacionForm" property="sexo" style = "null"  styleClass = "box" >
+		        <html:option value="0" >&nbsp;</html:option>
+				<html:option value="<%=ClsConstants.TIPO_SEXO_HOMBRE%>"><siga:Idioma key="censo.sexo.hombre"/></html:option>
+				<html:option value="<%=ClsConstants.TIPO_SEXO_MUJER%>"><siga:Idioma key="censo.sexo.mujer"/></html:option>
+			</html:select>	
+			</td>
+			
 			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.tratamiento"/>&nbsp;(*)</td>
-			<td><siga:ComboBD nombre="tipoDon" tipo="tratamiento" clase="boxCombo"  obligatorio="true"/></td>
-			
+			<td><siga:ComboBD nombre="tipoDon" tipo="tratamiento" clase="<%=estiloCombo%>" obligatorio="true"/></td>
+		</tr>
+		<tr>
+		
 			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.nombre"/>&nbsp;(*)</td>
-			<td><input type="text" name="nombre" maxlength="100" class="box"></td>
-		</tr>
-	
-		<tr>
-			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.apellido1"/>&nbsp;(*)</td>
-			<td><input type="text" name="apellido1"  maxlength="100" class="box"></td>
+			<td><html:text property="nombre" value="" style="width:180" maxlength="120" styleClass="<%=estiloBox%>"   ></html:text></td>
 
-			<td class="labelText" id="apellidoSinAsterisco"><siga:Idioma key="censo.SolicitudIncorporacion.literal.apellido2"/>&nbsp;</td>
-			<td class="ocultar" id="apellidoConAsterisco"><siga:Idioma key="censo.SolicitudIncorporacion.literal.apellido2"/>&nbsp;(*)</td>
-			<td ><input type="text" name="apellido2"  maxlength="100" class="box"></td>
-		</tr>
-		
-		<tr>
-			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.estadoCivil"/></td>
-			<td><siga:ComboBD nombre = "estadoCivil" tipo="estadoCivil" clase="boxCombo"/></td>
+			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.apellido1"/>&nbsp;(*)</td>
+			<td><html:text property="apellido1"  value="" style="width:180" maxlength="100" styleClass="<%=estiloBox%>"  ></html:text></td>
 			
-			<td class="labelText"><siga:Idioma key="censo.consultaDatosGenerales.literal.sexo"/>&nbsp;(*)</td>
+			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.apellido2"/></td>
+			<td><html:text property="apellido2"  value="" style="width:180" maxlength="100" styleClass="<%=estiloBox%>"   ></html:text></td>
+		</tr>
+		<tr>
+			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.fechaNacimiento"/>&nbsp;(*)</td>
 			<td>
-				<html:select name="SolicitudIncorporacionForm" property="sexo" style = "null" styleClass = "box" readonly="false" >
-			        <html:option value="0" >&nbsp;</html:option>
-					<html:option value="<%=ClsConstants.TIPO_SEXO_HOMBRE%>"><siga:Idioma key="censo.sexo.hombre"/></html:option>
-					<html:option value="<%=ClsConstants.TIPO_SEXO_MUJER%>"><siga:Idioma key="censo.sexo.mujer"/></html:option>
-				</html:select>									
+				<siga:Fecha nombreCampo="fechaNacimiento" valorInicial=""></siga:Fecha>
+				<a href='javascript://'onClick="return showCalendarGeneral(fechaNacimiento);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
 			</td>
-		</tr>
-		
-		<tr>
-			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.fechaNacimiento"/>&nbsp;(*)</td>
-			<td><siga:Fecha nombreCampo="fechaNacimiento" necesario="true"></siga:Fecha><a href='javascript://'onClick="return showCalendarGeneral(fechaNacimiento);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a></td>
 
-			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.naturalDe"/></td>
-			<td><input type="text" name="natural" maxlength="100" class="box"></td>
-		</tr>
-		
-		<tr>
-			<td class="labelText">&nbsp;</td>
-			<td>&nbsp;</td>
-		</tr>
-		
-		<tr>
-			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.domicilio"/>&nbsp;(*)</td>
-			<td><input type="text" name="domicilio" size="30" maxlength="100" class="box"></td>
 			
-			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.codigoPostal"/>&nbsp;(*)</td>
-			<td><input type="text" name="CP" class="box" maxlength="5"></td>
+			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.naturalDe"/></td>
+			<td><html:text property="natural" style="width:180" maxlength="100" styleClass="<%=estiloBox%>" value=""></html:text></td>
+			
+			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.estadoCivil"/></td>
+			<td><siga:ComboBD nombre = "estadoCivil" tipo="estadoCivil" clase="<%=estiloCombo%>"/></td>
 		</tr>
+		<tr>
+			
+		</tr>
+	</table>
+	</siga:ConjCampos>
+	<siga:ConjCampos>
+	<table>
+		<tr>
+			<td class="labelText" ><siga:Idioma key="censo.datosDireccion.literal.pais2"/></td>
+			<td colspan="2"><siga:ComboBD nombre="pais" tipo="pais" ancho="300" clase="<%=estiloCombo%>" obligatorio="false" accion="cargaPais(this.value);"/></td>
 
-		<tr>
-			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.provincia"/>&nbsp;(*)</td>
-			<td ><siga:ComboBD nombre = "provincia" tipo="provincia" clase="boxCombo" obligatorio="true" accion="Hijo:poblacion"/></td>
-			
-			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.poblacion"/> &nbsp;(*)</td>
-			<td id="poblacionEspanola">
-				<siga:ComboBD nombre = "poblacion" tipo="poblacion" clase="boxCombo" obligatorio="true" hijo="t" ancho="335"/> 
-			</td>				
-			<td class="ocultar" class="ocultar" id="poblacionExtranjera">
-					<input type="text" name="poblacionExt" value='' size="30" maxlength="100" class="boxCombo"></input>
-			</td>		
+			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.provincia"/>&nbsp;(*)</td>
+			<td colspan="2"><siga:ComboBD nombre="provincia" tipo="provincia" clase="<%=estiloCombo%>" obligatorio="true" accion="Hijo:poblacion"/></td>
+
 		</tr>
-		
 		<tr>
-			<td class="labelText"><siga:Idioma key="censo.datosDireccion.literal.pais2"/>&nbsp;</td>
-			<td colspan="3">
-				<siga:ComboBD nombre="pais" tipo="pais" clase="boxCombo" obligatorio="false" elementoSel="<%=idPais%>" accion="selPais(this.value);"/>
+
+			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.poblacion"/>&nbsp;(*)</td>
+			<td id="poblacionEspanola" colspan="2">
+				<siga:ComboBD nombre="poblacion" tipo="poblacion" clase="<%=estiloCombo%>" obligatorio="true" hijo="t" ancho="300"/>
+			</td> 
+			
+			<td class="ocultar" colspan="2" id="poblacionExtranjera">
+				<html:text property="poblacionExt" style="width:300" maxlength="100" styleClass="<%=estiloBox%>"></html:text>
 			</td>
-		</tr>
-		
-		<tr>
-			<td class="labelText">&nbsp;</td>
-			<td>&nbsp;</td>
-		</tr>
-		
-		<tr>
-			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono1"/>&nbsp;(*)</td>
-			<td><input type="text" name="telefono1" maxlength="20" class="box" ></td>
-
-			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono2"/></td>
-			<td><input type="text" name="telefono2" maxlength="20" class="box" ></td>
-		</tr>
-		
-		<tr>
-			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.fax1"/></td>
-			<td><input type="text" name="fax1" maxlength="20" class="box"></td>
-
-			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.fax2"/></td>
-			<td><input type="text" name="fax2" maxlength="20" class="box"></td>
-		</tr>
-		
-		<tr>
-			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono3"/></td>
-			<td><input type="text" name="telefono3" maxlength="20" class="box" ></td>
+				
+			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.domicilio"/>&nbsp;(*)</td>
+			<td><html:text property="domicilio" value="" size="30" maxlength="100" styleClass="<%=estiloBox%>"></html:text></td>
 			
-			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.email"/>&nbsp;(*)</td>
-			<td><input type="text" name="mail" maxlength="100" class="box"></td>
+			<td class="labelText" >CP&nbsp;(*)
+			<html:text property="CP" value="" styleClass="<%=estiloBox%>" size="5" maxlength="5"></html:text></td>
 		</tr>
-		
 		<tr>
-			<td class="labelText">&nbsp;</td>
-			<td>&nbsp;</td>
-		</tr>
-		
-		<tr>
-			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.documentacion"/>&nbsp;(*)</td>
-			<td>
-				<siga:ComboBD nombre = "tipoModalidadDocumentacion" tipo="modalidadDocumentacion" clase="boxCombo" obligatorio="true" parametro="<%=modalidadParam%>" />
-			</td>
 			
-			<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.observaciones"/></td>
-			<td><textarea cols="120" rows="4" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" name="observaciones" style="overflow:hidden" class="box"></textarea></td>
 		</tr>
+		<tr>
+			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono1"/>&nbsp;(*)</td>
+			<td><html:text property="telefono1" maxlength="20" styleClass="<%=estiloBox%>" value="" ></html:text></td>
+			
+			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono2"/></td>
+			<td><html:text property="telefono2" maxlength="20" styleClass="<%=estiloBox%>" value=""></html:text></td>
+			
+			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.telefono3"/></td>
+			<td><html:text property="telefono3" maxlength="20" styleClass="<%=estiloBox%>" value=""></html:text></td>
+			
+		</tr>
+		<tr>
+			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.fax1"/></td>
+			<td><html:text property="fax1" maxlength="20" styleClass="<%=estiloBox%>"></html:text></td>
+			
+			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.fax2"/></td>
+			<td><html:text property="fax2" maxlength="20" styleClass="<%=estiloBox%>"></html:text></td>
+					
+			<td class="labelText" ><siga:Idioma key="censo.SolicitudIncorporacion.literal.email"/>&nbsp;(*)</td>
+			<td><html:text property="mail" value="" maxlength="100" styleClass="<%=estiloBox%>"></html:text></td>
+		</tr>
+		
+		
+			<!-- RGG: cambio a formularios ligeros -->
+			<input type="hidden" name="tablaDatosDinamicosD">
+			<input type="hidden" name="actionModal" value="">
 
 	</table>
-
+	
 	</siga:ConjCampos>
+	
 
+	<siga:ConjCampos>
+		<table>
+			<tr>
+
+				<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.observaciones"/></td>
+				<td><textarea cols="120" rows="2" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" name="observaciones" style="overflow:hidden" class="box" ></textarea></td>
+
+			</tr>
+		</table>
+	</siga:ConjCampos>
+	<!-- TABLA -->
 	</html:form>
 
 	<!-- FIN: CAMPOS DEL REGISTRO -->
@@ -756,85 +517,24 @@ function str_replace(search, replace, subject) {
 			if(confirm('<siga:Idioma key="messages.confirm.cancel"/>')) {
 				document.SolicitudIncorporacionForm.modo.value="";
 				document.SolicitudIncorporacionForm.reset();
+				cargaPais("");
 				document.SolicitudIncorporacionForm.provincia.onchange();
 			}
 		}
+
 		
 		//Asociada al boton Guardar -->
-		function accionGuardar() 
-		{   sub();
-		
-			var numeroATratar=trim(SolicitudIncorporacionForm.telefono1.value);
-			SolicitudIncorporacionForm.telefono1.value=eliminarBlancos(numeroATratar);
-			
-			var numeroATratar2=trim(SolicitudIncorporacionForm.telefono2.value);
-			SolicitudIncorporacionForm.telefono2.value=eliminarBlancos(numeroATratar2);
-			
-			if (validateSolicitudIncorporacionForm(document.SolicitudIncorporacionForm)) 
-			{  
-				if(isAfter(SolicitudIncorporacionForm.fechaNacimiento.value,SolicitudIncorporacionForm.fechaSolicitud.value)) { 
-					alert('<siga:Idioma key="censo.SolicitudIncorporacion.literal.nacimiento"/>');
-					fin(); 
-			     	return false;
-				}			
-			    if (document.SolicitudIncorporacionForm.sexo.value=='0'){
-		          alert ('<siga:Idioma key="censo.fichaCliente.literal.sexo"/>');
-		          fin();
-     		      return false;
-     		    }
-				if (trim(SolicitudIncorporacionForm.pais.value)=="" || SolicitudIncorporacionForm.pais.value==idEspana) {
-			   		if (document.SolicitudIncorporacionForm.provincia.value == "") {
-		     	    	alert('<siga:Idioma key="messages.campoObligatorio.error"/> <siga:Idioma key="censo.SolicitudIncorporacion.literal.provincia"/>');
-		     	    	fin();
-			     	    return false;
-			       	}
-			   		if (document.SolicitudIncorporacionForm.poblacion.value == "") {
-		     	    	alert('<siga:Idioma key="messages.campoObligatorio.error"/> <siga:Idioma key="censo.SolicitudIncorporacion.literal.poblacion"/>');
-		     	    	fin();
-			     	    return false;
-			       	}
-			    } else {
-			   		if (document.SolicitudIncorporacionForm.poblacionExt.value == "") {
-			   		
-		     	    	alert('<siga:Idioma key="messages.campoObligatorio.error"/> <siga:Idioma key="censo.SolicitudIncorporacion.literal.poblacion"/>');
-		     	    	fin();
-			     	    return false;
-			       	}
- 			    }				       	
-
-				var rc	= true;
-				var tipoIden = document.SolicitudIncorporacionForm.tipoIdentificacion.value;
-				if ((tipoIden == <%=tipoIdenNIF%>)){
-					rc = validarNIFCIF(tipoIden, document.SolicitudIncorporacionForm.NIFCIF.value);
-					
-					
-					//Valido si todo ha ido bien y es tipo NIF que el segundo apellido es obligatorio:
-					if (rc && (tipoIden == <%=tipoIdenNIF%>) && (trim(document.SolicitudIncorporacionForm.apellido2.value)=='')){
-						alert('<siga:Idioma key="censo.SolicitudIncorporacion.literal.apellido2"/> <siga:Idioma key="messages.campoObligatorio.error"/>');
-						fin();
-						return false;
-					}
-				}else if(tipoIden == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>"){
-					rc=validaNIE(document.SolicitudIncorporacionForm.NIFCIF.value);
-					
-					
-					
-				}
-			
-				if (rc) {
-					document.SolicitudIncorporacionForm.modo.value="insertar";
-					document.SolicitudIncorporacionForm.target="submitArea";
-					document.SolicitudIncorporacionForm.submit();
-				}else{
-					fin();
-					return false;
-				}
+	function accionGuardar(){
+			sub();
+			if(datosValidos()){
+				document.SolicitudIncorporacionForm.modo.value = "insertar";
+				document.SolicitudIncorporacionForm.target = "submitArea";
+				document.SolicitudIncorporacionForm.submit();
 			}else{
 				fin();
 				return false;
-			
 			}
-		}
+	}
 		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->

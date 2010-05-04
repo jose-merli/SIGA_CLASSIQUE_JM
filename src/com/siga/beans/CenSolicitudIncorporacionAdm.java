@@ -39,7 +39,11 @@ public class CenSolicitudIncorporacionAdm extends MasterBeanAdministrador {
 							CenSolicitudIncorporacionBean.C_OBSERVACIONES,			CenSolicitudIncorporacionBean.C_TELEFONO1,			
 							CenSolicitudIncorporacionBean.C_TELEFONO2,				CenSolicitudIncorporacionBean.C_SEXO,
 							CenSolicitudIncorporacionBean.C_IDMODALIDADDOCUMENTACION, CenSolicitudIncorporacionBean.C_USUMODIFICACION,
-							CenSolicitudIncorporacionBean.C_FECHAESTADOCOLEGIAL};
+							CenSolicitudIncorporacionBean.C_FECHAESTADOCOLEGIAL,   	CenSolicitudIncorporacionBean.C_ABONOCARGO,
+							CenSolicitudIncorporacionBean.C_ABONOSJCS,				CenSolicitudIncorporacionBean.C_CBO_CODIGO,
+							CenSolicitudIncorporacionBean.C_CODIGOSUCURSAL,			CenSolicitudIncorporacionBean.C_DIGITOCONTROL,
+							CenSolicitudIncorporacionBean.C_NUMEROCUENTA,			CenSolicitudIncorporacionBean.C_TITULAR,
+							CenSolicitudIncorporacionBean.C_RESIDENTE};
 		return campos;
 	}
 
@@ -90,6 +94,14 @@ public class CenSolicitudIncorporacionAdm extends MasterBeanAdministrador {
 			bean.setIdModalidadDocumentacion(UtilidadesHash.getInteger(hash, CenSolicitudIncorporacionBean.C_IDMODALIDADDOCUMENTACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash, CenSolicitudIncorporacionBean.C_USUMODIFICACION));
 			bean.setFechaEstadoColegial(UtilidadesHash.getString(hash, CenSolicitudIncorporacionBean.C_FECHAESTADOCOLEGIAL));
+			bean.setAbonoCargo(UtilidadesHash.getString(hash, CenSolicitudIncorporacionBean.C_ABONOCARGO));
+			bean.setAbonoSJCS(UtilidadesHash.getString(hash, CenSolicitudIncorporacionBean.C_ABONOSJCS));
+			bean.setCbo_Codigo(UtilidadesHash.getString(hash, CenSolicitudIncorporacionBean.C_CBO_CODIGO));
+			bean.setCodigoSucursal(UtilidadesHash.getString(hash, CenSolicitudIncorporacionBean.C_CODIGOSUCURSAL));
+			bean.setDigitoControl(UtilidadesHash.getString(hash, CenSolicitudIncorporacionBean.C_DIGITOCONTROL));
+			bean.setNumeroCuenta(UtilidadesHash.getString(hash, CenSolicitudIncorporacionBean.C_NUMEROCUENTA));
+			bean.setTitular(UtilidadesHash.getString(hash, CenSolicitudIncorporacionBean.C_TITULAR));
+			bean.setResidente(UtilidadesHash.getString(hash, CenSolicitudIncorporacionBean.C_RESIDENTE).equalsIgnoreCase("1"));
 		}
 		catch (Exception e) { 
 			bean = null;
@@ -140,6 +152,14 @@ public class CenSolicitudIncorporacionAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, CenSolicitudIncorporacionBean.C_IDMODALIDADDOCUMENTACION, b.getIdModalidadDocumentacion());
 			UtilidadesHash.set(htData, CenSolicitudIncorporacionBean.C_USUMODIFICACION, String.valueOf(b.getUsuMod()));
 			UtilidadesHash.set(htData, CenSolicitudIncorporacionBean.C_FECHAESTADOCOLEGIAL, String.valueOf(b.getFechaEstadoColegial()));
+			UtilidadesHash.set(htData, CenSolicitudIncorporacionBean.C_ABONOCARGO, String.valueOf(b.getAbonoCargo()));   
+			UtilidadesHash.set(htData, CenSolicitudIncorporacionBean.C_ABONOSJCS, String.valueOf(b.getAbonoSJCS()));   
+			UtilidadesHash.set(htData, CenSolicitudIncorporacionBean.C_CBO_CODIGO, String.valueOf(b.getCbo_Codigo()));   
+			UtilidadesHash.set(htData, CenSolicitudIncorporacionBean.C_CODIGOSUCURSAL, String.valueOf(b.getCodigoSucursal()));   
+			UtilidadesHash.set(htData, CenSolicitudIncorporacionBean.C_DIGITOCONTROL, String.valueOf(b.getDigitoControl()));   
+			UtilidadesHash.set(htData, CenSolicitudIncorporacionBean.C_NUMEROCUENTA, String.valueOf(b.getNumeroCuenta()));   
+			UtilidadesHash.set(htData, CenSolicitudIncorporacionBean.C_TITULAR, String.valueOf(b.getTitular())); 
+			UtilidadesHash.set(htData, CenSolicitudIncorporacionBean.C_RESIDENTE, b.getResidente()?"1":"0");
 		}
 		catch (Exception e) {
 			htData = null;

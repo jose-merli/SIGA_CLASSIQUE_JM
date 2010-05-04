@@ -11,6 +11,8 @@ import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionMapping;
 
+import utils.system;
+
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
@@ -24,6 +26,8 @@ import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenClienteBean;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
+import com.siga.beans.CenCuentasBancariasAdm;
+import com.siga.beans.CenCuentasBancariasBean;
 import com.siga.beans.CenDocumentacionModalidadAdm;
 import com.siga.beans.CenDocumentacionModalidadBean;
 import com.siga.beans.CenDocumentacionPresentadaAdm;
@@ -94,7 +98,12 @@ public class SolicitudIncorporacionAction extends MasterAction
 			CenSolicitudIncorporacionAdm solicitudAdm = new CenSolicitudIncorporacionAdm (this.getUserBean(request));
 			
 			// Si es una consulta por Solicitud de incorporacion
-			Long idSolicitud = new Long((String) miFormulario.getDatosTablaOcultos(0).get(0));
+			Long idSolicitud;
+			if(miFormulario.getDatosTablaOcultos(0)!=null){
+				idSolicitud = new Long((String) miFormulario.getDatosTablaOcultos(0).get(0));
+			}else{
+				idSolicitud = miFormulario.getEditarIdSolicitud();
+			}
 			UtilidadesHash.set(hash, CenSolicitudIncorporacionBean.C_IDSOLICITUD, idSolicitud);
 			Vector datosSelect = solicitudAdm.selectByPK(hash);
 			if ((datosSelect != null) && (datosSelect.size() > 0)) {
@@ -274,6 +283,9 @@ public class SolicitudIncorporacionAction extends MasterAction
 			// Modificado el 27/12/2005 para incluir este nuevo campo:
 			bean.setSexo(miFormulario.getSexo());
 			bean.setIdModalidadDocumentacion(miFormulario.getTipoModalidadDocumentacion());
+			// Ponemos por defecto el tipo de cuenta a Cargo
+			bean.setAbonoCargo("C");
+			bean.setResidente(miFormulario.getResidente());
 			
 			request.getSession().setAttribute("idSolicitud",numeroSolicitud.toString());
 			
@@ -374,31 +386,63 @@ public class SolicitudIncorporacionAction extends MasterAction
 			Hashtable hashOriginal = (Hashtable) ((CenSolicitudIncorporacionBean) vDatosSolicitud.get (0)).getOriginalHash (); 
 			Hashtable hashModificado = (Hashtable) hashOriginal.clone ();
 			
-			//si estan todos los documentos entregados -> estado = Pendiente de Aprobar
-			/*if (numDocumentosPresentados == miFormulario.getDatosTabla ().size() && 
-				UtilidadesHash.getInteger (hashOriginal, CenSolicitudIncorporacionBean.C_IDESTADO).intValue() == 
-						ClsConstants.ESTADO_SOLICITUD_PENDIENTE_DOC)
-			{
-				/*UtilidadesHash.set (hashModificado, CenSolicitudIncorporacionBean.C_IDESTADO, 
-						new Integer (ClsConstants.ESTADO_SOLICITUD_PENDIENTE_APROBAR));*/
-				
-			/*}
-			/*else
-			{
-				
-		
-		
-		
-				if (modificarFechaEstado)
-					UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_FECHAESTADO, 
-							"SYSDATE");*/
-			
-			
 			if (modificarFechaEstado)
 				UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_FECHAESTADO, 
 						"SYSDATE");
 			UtilidadesHash.set (hashModificado, CenSolicitudIncorporacionBean.C_IDESTADO, 
 					idTipoSolicitudNuevo);
+			
+			// jbd inc-6526 Escribimos los datos nuevos que haya metido el usuario
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_IDTIPOIDENTIFICACION, miFormulario.getTipoIdentificacion());
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_NUMEROIDENTIFICADOR, miFormulario.getNIFCIF());
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_NCOLEGIADO, miFormulario.getNumeroColegiado());
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_IDTRATAMIENTO, miFormulario.getTipoDon());
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_APELLIDO1, miFormulario.getApellido1());
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_APELLIDO2, miFormulario.getApellido2());
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_NOMBRE, miFormulario.getNombre());
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_SEXO, miFormulario.getSexo());
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_NATURALDE, miFormulario.getNatural());
+			if(miFormulario.getEstadoCivil()>0)
+				UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_IDESTADOCIVIL, miFormulario.getEstadoCivil());
+			else
+				UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_IDESTADOCIVIL, "");
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_FECHANACIMIENTO, miFormulario.getFechaNacimiento());
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_DOMICILIO, miFormulario.getDomicilio());
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_CODIGOPOSTAL, miFormulario.getCP());
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_IDPAIS, miFormulario.getPais());
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_IDPROVINCIA, miFormulario.getProvincia());
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_IDPOBLACION, miFormulario.getPoblacion());
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_POBLACIONEXTRANJERA, miFormulario.getPoblacionExt());
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_TELEFONO1, miFormulario.getTelefono1());
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_TELEFONO2, miFormulario.getTelefono2());
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_MOVIL, miFormulario.getTelefono3());
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_FAX1, miFormulario.getFax1());
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_FAX2, miFormulario.getFax2());
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_CORREOELECTRONICO, miFormulario.getMail());
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_OBSERVACIONES, miFormulario.getObservaciones());
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_FECHASOLICITUD, miFormulario.getFechaSolicitud());
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_IDTIPOCOLEGIACION, miFormulario.getTipoColegiacion());
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_FECHAESTADOCOLEGIAL, miFormulario.getFechaEstadoColegial());
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_IDMODALIDADDOCUMENTACION, miFormulario.getTipoModalidadDocumentacion());
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_IDTIPOSOLICITUD, miFormulario.getTipoSolicitud());
+			if(miFormulario.getResidente()){
+				UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_RESIDENTE, ClsConstants.DB_TRUE);
+			}else{								
+				UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_RESIDENTE, ClsConstants.DB_FALSE);
+			}
+			// La cuenta bancaria
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_ABONOCARGO, this.validarTipoCuenta(miFormulario.getCuentaAbono(), miFormulario.getCuentaCargo()));   
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_ABONOSJCS, miFormulario.getAbonoSJCS());   
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_CBO_CODIGO, miFormulario.getCbo_Codigo());   
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_CODIGOSUCURSAL, miFormulario.getCodigoSucursal());   
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_DIGITOCONTROL, miFormulario.getDigitoControl());   
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_NUMEROCUENTA, miFormulario.getNumeroCuenta());   
+			UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_TITULAR, miFormulario.getTitular());
+			if(miFormulario.getAbonoSJCS().booleanValue()){
+				UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_ABONOSJCS, ClsConstants.DB_TRUE);
+			}else{								
+				UtilidadesHash.set(hashModificado, CenSolicitudIncorporacionBean.C_ABONOSJCS, ClsConstants.DB_FALSE);
+			}
 			
 			//iniciando la modificacion de datos en BD
 			t = user.getTransactionPesada ();
@@ -452,6 +496,22 @@ public class SolicitudIncorporacionAction extends MasterAction
 				CenClienteAdm admCli = new CenClienteAdm (user);
 				//insertando persona, cliente, colegiado y datos colegiales
 				// (cada una de las cosas solo si hace falta)
+				
+				// Aqui vamos a comprobar que no exista, pero antes miramos el continuarInsercion 
+				// para ver si la pregunta ya se ha hecho 
+				String continuar = request.getParameter ("continuarInsercionColegiado");
+				if(!(continuar!=null && continuar.equalsIgnoreCase("1"))){
+					CenColegiadoAdm admCol = new CenColegiadoAdm (user);
+					if( admCol.existeNColegiado(beanSolic.getNColegiado(), 
+												beanSolic.getIdInstitucion(),
+												beanSolic.getIdTipoColegiacion())){
+						String msj = UtilidadesString.getMensajeIdioma (user, "messages.censo.errorColegiadoDuplicado");
+						request.setAttribute ("msj", msj);
+						forward = "continuarInsercionColegiado";
+						t.rollback ();
+						return forward;
+					}
+				}
 				CenClienteBean beanCli = admCli.altaColegial 
 						(beanSolic, request.getParameter ("continuarAprobacion"));
 				
@@ -486,6 +546,31 @@ public class SolicitudIncorporacionAction extends MasterAction
 				if ((resultado == null) || (!resultado[0].equals("0")))
 					throw new ClsExceptions ("Error al ejecutar el PL " +
 							"PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO");
+
+				// Comprobamos que se den las condiciones idoneas para crear la cuenta
+
+				//Creamos la cuenta bancaria
+				CenCuentasBancariasAdm cuentaAdm = new CenCuentasBancariasAdm(user);
+				CenCuentasBancariasBean cuentaBean = new CenCuentasBancariasBean();
+				cuentaBean.setIdPersona(beanCli.getIdPersona());
+				cuentaBean.setIdInstitucion(beanCli.getIdInstitucion());
+				cuentaBean.setIdCuenta(cuentaAdm.getNuevoID(cuentaBean));
+				cuentaBean.setTitular(miFormulario.getTitular());
+				cuentaBean.setCbo_Codigo(miFormulario.getCbo_Codigo());
+				cuentaBean.setCodigoSucursal(miFormulario.getCodigoSucursal());
+				cuentaBean.setDigitoControl(miFormulario.getDigitoControl());
+				cuentaBean.setNumeroCuenta(miFormulario.getNumeroCuenta());
+				if(miFormulario.getAbonoSJCS().booleanValue())cuentaBean.setAbonoSJCS(ClsConstants.DB_TRUE);			
+				else cuentaBean.setAbonoSJCS(ClsConstants.DB_FALSE);
+				cuentaBean.setAbonoCargo(this.validarTipoCuenta(miFormulario.getCuentaAbono(), miFormulario.getCuentaCargo()));
+				// Solo hacemos el insert si tenemos los datos obligatorios
+				if(	!cuentaBean.getCbo_Codigo().equalsIgnoreCase("") &&
+					!cuentaBean.getCodigoSucursal().equalsIgnoreCase("") &&
+					!cuentaBean.getDigitoControl().equalsIgnoreCase("") &&
+					!cuentaBean.getNumeroCuenta().equalsIgnoreCase("") &&
+					!cuentaBean.getTitular().equalsIgnoreCase(""))
+						cuentaAdm.insert(cuentaBean);
+
 				
 				//cargando la peticion para el reenvio
 				request.setAttribute ("mensaje", mensInformacion);
@@ -503,7 +588,7 @@ public class SolicitudIncorporacionAction extends MasterAction
 			if (fichaColegial)
 				forward = "exitoInsercion";			
 			else
-				forward = exitoModal ("messages.updated.success", request);
+				forward = exitoGuardar("messages.updated.success", request);
 		}
 		catch (Exception e) {
 			throwExcp ("messages.general.error", new String[] {"modulo.censo"}, e, t);
@@ -802,6 +887,11 @@ public class SolicitudIncorporacionAction extends MasterAction
 			bean.setFechaEstado(GstDate.getFormatedDateShort("", bean.getFechaEstado()));
 			bean.setFechaNacimiento(GstDate.getFormatedDateShort("", bean.getFechaNacimiento()));
 			bean.setFechaSolicitud(GstDate.getFormatedDateShort("", bean.getFechaSolicitud()));
+			if(bean.getFechaEstadoColegial()!=null){
+				bean.setFechaEstadoColegial(GstDate.getFormatedDateShort("", bean.getFechaEstadoColegial()));
+			}else{
+				bean.setFechaEstadoColegial("");
+			}
 			request.setAttribute("datosPersonales", bean);
 			
 			hash.clear();
@@ -1086,4 +1176,26 @@ public class SolicitudIncorporacionAction extends MasterAction
 		}
 	} //obtenerDatosPersona()
 	
+	private String validarTipoCuenta (Boolean abono, Boolean cargo) throws SIGAException{
+		try {
+			String tipoCuenta = "";
+			if (abono.booleanValue()) tipoCuenta = ClsConstants.TIPO_CUENTA_ABONO;
+			if (cargo.booleanValue()) tipoCuenta = ClsConstants.TIPO_CUENTA_CARGO;
+			if (abono.booleanValue() && cargo.booleanValue()) tipoCuenta = ClsConstants.TIPO_CUENTA_ABONO_CARGO;
+			return tipoCuenta;
+		}
+		catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, null);
+		}
+		return null;
+	}
+	
+	protected String exitoGuardar(String mensaje, HttpServletRequest request) 
+	{
+		if (mensaje!=null && !mensaje.equals("")) {
+			request.setAttribute("mensaje",mensaje);
+		}
+		request.setAttribute("modal","editar");
+		return "exitoGuardar"; 
+	}
 }

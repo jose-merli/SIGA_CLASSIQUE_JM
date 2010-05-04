@@ -2966,7 +2966,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			throw new ClsExceptions (e, "Error al consultar datos en B.D.");
 		}
 	}
-
+	
 	public String getLenguaje (String idInstitucion, String idPersona) throws ClsExceptions, SIGAException 
 	{
 		try {
@@ -3179,12 +3179,25 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 						// jbd 04-02-2010 Se pone por defecto la situacion de residente a TRUE en vez de false porque asi lo pide ciudad real
 						// jbd 15-02-2010 Se vuelve a poner a false porque el TRUE tiene implicaciones, se dan de alta servicios
 						//					Se volvera a cambiar para que se pueda modificar al solicitar el alta
-						beanCol.setSituacionResidente(ClsConstants.DB_FALSE);
-						
-						if (beanSolic.getIdTipoColegiacion().intValue()==ClsConstants.TIPO_COLEGIACION_COMUNITARIO) {
-							beanCol.setNComunitario(admCol.getNColegiado_NComunitario(beanSolic.getIdInstitucion(), ClsConstants.TIPO_COLEGIACION_COMUNITARIO));	
+						// jbd 22-04-2010 Como ahora se puede fijar el check de residente en la pantalla de solicitud pues copiamos ese valor
+						if (beanSolic.getResidente()){
+							beanCol.setSituacionResidente(ClsConstants.DB_TRUE);
 						} else {
-							beanCol.setNColegiado(admCol.getNColegiado_NComunitario(beanSolic.getIdInstitucion(), ClsConstants.TIPO_COLEGIACION_ESPANHOL));
+							beanCol.setSituacionResidente(ClsConstants.DB_FALSE);
+						}
+						
+						int idTipoColegiacion = beanSolic.getIdTipoColegiacion ().intValue ();
+						if(beanSolic.getNColegiado()==null || beanSolic.getNColegiado().equalsIgnoreCase("")){
+							if (beanSolic.getIdTipoColegiacion().intValue()==ClsConstants.TIPO_COLEGIACION_COMUNITARIO) {
+								beanCol.setNComunitario(admCol.getNColegiado_NComunitario(beanSolic.getIdInstitucion(), ClsConstants.TIPO_COLEGIACION_COMUNITARIO));	
+							} else {
+								beanCol.setNColegiado(admCol.getNColegiado_NComunitario(beanSolic.getIdInstitucion(), ClsConstants.TIPO_COLEGIACION_ESPANHOL));
+							}
+						}else{
+							if (idTipoColegiacion == ClsConstants.TIPO_COLEGIACION_COMUNITARIO)
+								beanCol.setNComunitario(beanSolic.getNColegiado());
+							else
+								beanCol.setNColegiado(beanSolic.getNColegiado());
 						}
 						
 						beanCol.setFechaIncorporacion("SYSDATE");
@@ -3279,21 +3292,33 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 				beanCol.setIdInstitucion (beanSolic.getIdInstitucion ());
 				// jbd 15-02-2010 Se vuelve a poner a false porque el TRUE tiene implicaciones, se dan de alta servicios
 				//					Se volvera a cambiar para que se pueda modificar al solicitar el alta
-				beanCol.setSituacionResidente(ClsConstants.DB_FALSE);
+				// jbd 22-04-2010 Como ahora se puede fijar el check de residente en la pantalla de solicitud pues copiamos ese valor
+				if (beanSolic.getResidente()){
+					beanCol.setSituacionResidente(ClsConstants.DB_TRUE);
+				} else {
+					beanCol.setSituacionResidente(ClsConstants.DB_FALSE);
+				}
 				
 				if (idTipoColegiacion == ClsConstants.TIPO_COLEGIACION_ESPANHOL)
 					beanCol.setComunitario (ClsConstants.DB_FALSE);
 				else
 					beanCol.setComunitario (ClsConstants.DB_TRUE);
 				
-				if (idTipoColegiacion == ClsConstants.TIPO_COLEGIACION_COMUNITARIO)
-					beanCol.setNComunitario (admCol.getNColegiado_NComunitario 
-							(beanSolic.getIdInstitucion (), 
-							ClsConstants.TIPO_COLEGIACION_COMUNITARIO));	
-				else
-					beanCol.setNColegiado (admCol.getNColegiado_NComunitario 
-							(beanSolic.getIdInstitucion (), 
-							ClsConstants.TIPO_COLEGIACION_ESPANHOL));
+				if(beanSolic.getNColegiado()==null || beanSolic.getNColegiado().equalsIgnoreCase("")){
+					if (idTipoColegiacion == ClsConstants.TIPO_COLEGIACION_COMUNITARIO)
+						beanCol.setNComunitario (admCol.getNColegiado_NComunitario 
+								(beanSolic.getIdInstitucion (), 
+								ClsConstants.TIPO_COLEGIACION_COMUNITARIO));	
+					else
+						beanCol.setNColegiado (admCol.getNColegiado_NComunitario 
+								(beanSolic.getIdInstitucion (), 
+								ClsConstants.TIPO_COLEGIACION_ESPANHOL));
+				}else{
+					if (idTipoColegiacion == ClsConstants.TIPO_COLEGIACION_COMUNITARIO)
+						beanCol.setNComunitario(beanSolic.getNColegiado());
+					else
+						beanCol.setNColegiado(beanSolic.getNColegiado());
+				}
 				
 				beanCol.setFechaIncorporacion ("SYSDATE");
 				beanCol.setFechaPresentacion ("SYSDATE");

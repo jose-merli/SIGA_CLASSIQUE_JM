@@ -66,6 +66,7 @@ import com.atos.utils.*;
 	}
 	public void setFechaEstadoColegial(String dato) 	{ 
 		try {
+			if (!dato.trim().equals("")) 
 			dato = GstDate.getApplicationFormatDate("",dato);
 			this.datos.put(CenSolicitudIncorporacionBean.C_FECHAESTADOCOLEGIAL, dato);
 		}
@@ -199,7 +200,9 @@ import com.atos.utils.*;
  		return (String)this.datos.get(CenSolicitudIncorporacionBean.C_IDPAIS);
  	}
 
-	
+	public boolean getResidente() {
+		return UtilidadesHash.getBoolean(this.datos, CenSolicitudIncorporacionBean.C_RESIDENTE);
+	}
 	
 	// Ventana de validacion  /////////////////////////////////////////////
 	public void setClave	(String dato) 	{	
@@ -312,5 +315,105 @@ import com.atos.utils.*;
 	public Integer getTipoModalidadDocumentacion() { 
  		return UtilidadesHash.getInteger(this.datos, "TIPO_MODALIDAD_DOCUMENTACION");		
  	}
+	
+	public String getNumeroColegiado(){
+		return (String)this.datos.get(CenSolicitudIncorporacionBean.C_NCOLEGIADO);
+	}
+	public void setNumeroColegiado(String dato){
+		UtilidadesHash.set(this.datos, CenSolicitudIncorporacionBean.C_NCOLEGIADO, dato);
+	}
+	
+	
+	//////////////////////////////// Metemos los datos bancarios para no obligar a hacerlo luego
+	
+	public void setCuentaAbono(Boolean dato) {
+		UtilidadesHash.set(this.datos, "CUENTA_ABONO", dato);
+	}
+	
+	public void setCuentaCargo(Boolean dato) {
+		UtilidadesHash.set(this.datos, "CUENTA_CARGO", dato);
+	}
+	
+	public void setTitular(String titular) {	
+		this.datos.put(CenCuentasBancariasBean.C_TITULAR, titular);
+	}
+	
+	public void setAbonoCargo(Boolean abonoCargo) {		
+		UtilidadesHash.set(this.datos, CenCuentasBancariasBean.C_ABONOCARGO, abonoCargo); 
+	}
+	
+	public void setAbonoSJCS(Boolean abonoSJCS) {
+		UtilidadesHash.set(this.datos, CenCuentasBancariasBean.C_ABONOSJCS, abonoSJCS);
+	}
+	
+	public void setCuentaContable(String cuentaContable) {
+		this.datos.put(CenCuentasBancariasBean.C_CUENTACONTABLE, cuentaContable);
+	}
+	
+	public void setCbo_Codigo(String cbo_Codigo) {
+		this.datos.put(CenCuentasBancariasBean.C_CBO_CODIGO, cbo_Codigo);
+	}
+	
+	public void setCodigoSucursal(String codigoSucursal) {
+		this.datos.put(CenCuentasBancariasBean.C_CODIGOSUCURSAL, codigoSucursal);
+	}
+	
+	public void setDigitoControl(String digitoControl) {
+		this.datos.put(CenCuentasBancariasBean.C_DIGITOCONTROL, digitoControl);
+	}
+	
+	public void setNumeroCuenta(String numeroCuenta) {
+		this.datos.put(CenCuentasBancariasBean.C_NUMEROCUENTA, numeroCuenta);
+	}
+	
+	public void setResidente(boolean residente) {
+		this.datos.put(CenSolicitudIncorporacionBean.C_RESIDENTE, residente);
+	}
+	
+	
+
+	
+//	metodos get de los campos del formulario
+	public Boolean getCuentaAbono() {
+		return UtilidadesHash.getBoolean(this.datos, "CUENTA_ABONO");
+	}
+	
+	public Boolean getCuentaCargo() {
+		return UtilidadesHash.getBoolean(this.datos, "CUENTA_CARGO");
+	}
+	
+	public String getTitular() {
+		return (String)this.datos.get(CenCuentasBancariasBean.C_TITULAR);
+	}
+	
+	public Boolean getAbonoCargo() {
+		return UtilidadesHash.getBoolean(this.datos, CenCuentasBancariasBean.C_ABONOCARGO);
+	}	
+
+	public Boolean getAbonoSJCS() {
+		return UtilidadesHash.getBoolean(this.datos, CenCuentasBancariasBean.C_ABONOSJCS);
+	}
+			
+	public String getCuentaContable() {
+		return (String)this.datos.get(CenCuentasBancariasBean.C_CUENTACONTABLE);
+	}
+	
+	public String getCbo_Codigo() {
+		return (String)this.datos.get(CenCuentasBancariasBean.C_CBO_CODIGO);
+	}	
+	
+	public String getCodigoSucursal() {
+		return (String)this.datos.get(CenCuentasBancariasBean.C_CODIGOSUCURSAL);
+	}
+	
+	public String getDigitoControl() {
+		return (String)this.datos.get(CenCuentasBancariasBean.C_DIGITOCONTROL);
+	}
+	
+	public String getNumeroCuenta() {
+		return (String)this.datos.get(CenCuentasBancariasBean.C_NUMEROCUENTA);
+	}
+
+	
 	
 }

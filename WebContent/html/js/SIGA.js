@@ -1118,14 +1118,45 @@ function ajusteAltoDisplayTag(nObj)
  * @param form
  */
 function limpiarForm(form){
-	var inputs = form.getElementsByTagName("input");
-	for(var i=0;i<inputs.length;i++){
-		inputs[i].value = "";
-	}
-	var selects = form.getElementsByTagName("select");
-	for(var i=0;i<selects.length;i++){
-		selects[i].value = "";
-	}
+	var frm_elements = form.elements;
+	for(i=0; i<frm_elements.length; i++) {
+
+		field_type = frm_elements[i].type;
+		if (field_type){
+			field_type=field_type.toLowerCase();
+			switch(field_type) {
+	
+			case "text":
+			case "password":
+			case "textarea":
+			case "hidden":
+	
+				frm_elements[i].value = "";
+				break;
+	
+			case "radio":
+			case "checkbox":
+	
+				if (frm_elements[i].checked) {
+	
+					frm_elements[i].checked = false;
+	
+				}
+				break;
+	
+			case "select-one":
+			case "select-multi":
+	
+				frm_elements[i].selectedIndex = -1;
+				break;
+	
+			default:
+				break;
+	
+			}
+		}
+
+	} 
 }
 function isAllDigits(argvalue) {
          argvalue = argvalue.toString();

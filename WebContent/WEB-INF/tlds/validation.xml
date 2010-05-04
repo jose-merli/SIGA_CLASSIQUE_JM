@@ -96,7 +96,7 @@
 				                <var-value>${telefonoSIGA}</var-value>
 				            </var>
 				</field>
-				<field 	property = "mail" 						depends = "required, email"><arg0 key="censo.SolicitudIncorporacion.literal.email"/>						</field>
+				<field 	property = "mail" depends = "required, email"><arg0 key="censo.SolicitudIncorporacion.literal.email"/>						</field>
 				<field 	property = "observaciones" 		depends = "maxlength">			
 						<arg0 key="censo.SolicitudIncorporacion.literal.observaciones"/>			
 						<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
@@ -104,6 +104,14 @@
 							<var-name>maxlength</var-name>
 							<var-value>255</var-value>
 						</var>
+				</field>
+				
+				<field 	property = "numeroColegiado" depends = "mask">
+					<arg0 key="censo.SolicitudIncorporacionDatos.literal.nColegiado"/>					
+					<var>
+						<var-name>mask</var-name>
+						<var-value>^[0-9]*$</var-value>
+		            </var>
 				</field>
 
 				<field 	property="tipoModalidadDocumentacion" depends="required"> <arg0 key="censo.SolicitudIncorporacion.literal.documentacion"/>	</field>

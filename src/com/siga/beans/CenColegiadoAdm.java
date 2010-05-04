@@ -950,6 +950,40 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 	} //existeColegiado ()
 	
 	/**
+	 * Comprueba si existe un colegiado
+	 * 
+	 * @param idPersona Long
+	 * @param idInstitucion Integer
+	 * @return CenColegiadoBean o null
+	 */
+	public boolean existeNColegiado (String nColegiado, 
+									 int idInstitucion,
+									 int idTipoCol)
+			throws ClsExceptions, SIGAException
+	{
+		try
+		{
+			CenColegiadoBean salida = null;
+			Hashtable codigos = new Hashtable();
+            codigos.put(new Integer(1),nColegiado);
+            codigos.put(new Integer(2),idInstitucion);
+            Vector v;
+            if (idTipoCol == ClsConstants.TIPO_COLEGIACION_ESPANHOL){
+            	v = this.selectBind(" WHERE NCOLEGIADO = :1 AND IDINSTITUCION = :2" ,codigos);
+            }else{
+            	v = this.selectBind(" WHERE NCOMUNITARIO = :1 AND IDINSTITUCION = :2" ,codigos);
+            }
+			if (v != null && v.size () > 0)
+				return true;
+			else
+				return false;
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al consultar datos en B.D.");
+		}
+	} //existeColegiado ()
+	
+	/**
 	 * Comprueba si existe un colegiado a traves de idpersona para una
 	 * institucion diferente a la pasada como parametro
 	 * 

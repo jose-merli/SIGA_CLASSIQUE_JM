@@ -30,6 +30,10 @@ public class CenSolicitudIncorporacionBean extends MasterBean {
 					correoElectronico, 	observaciones, 	naturalDe,			idPais,
 					idProvincia,		idPoblacion,	fechaSolicitud, 	fechaEstadoColegial,
 					fechaNacimiento, 	fechaEstado,	sexo, poblacionExtranjera;
+	
+	private String 	abonoCargo, abonoSJCS, cbo_Codigo, codigoSucursal, digitoControl, numeroCuenta,
+					titular, cuentaContable, residente;	
+
 
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "CEN_SOLICITUDINCORPORACION";
@@ -67,8 +71,18 @@ public class CenSolicitudIncorporacionBean extends MasterBean {
 	static public final String C_FECHAESTADO 			= "FECHAESTADO";
 	static public final String C_SEXO					= "SEXO";
 	static public final String C_IDMODALIDADDOCUMENTACION = "IDMODALIDADDOCUMENTACION";
-	static public final String C_FECHAESTADOCOLEGIAL	= "FECHAESTADOCOLEGIAL"; 
+	static public final String C_FECHAESTADOCOLEGIAL	= "FECHAESTADOCOLEGIAL";
+	
+	static public final String C_RESIDENTE			= "RESIDENTE";
 
+	static public final String C_ABONOCARGO			= "ABONOCARGO";
+	static public final String C_ABONOSJCS			= "ABONOSJCS";
+	static public final String C_CBO_CODIGO			= "CBO_CODIGO";
+	static public final String C_CODIGOSUCURSAL		= "CODIGOSUCURSAL";
+	static public final String C_DIGITOCONTROL		= "DIGITOCONTROL";
+	static public final String C_NUMEROCUENTA		= "NUMEROCUENTA";
+	static public final String C_TITULAR			= "TITULAR";	
+	
 	// Metodos SET
 	public void setIdSolicitud (Long id) 				{ this.idSolicitud = id; }
 	public void setIdTratamiento (Integer id) 			{ this.idTratamiento = id; }
@@ -96,11 +110,21 @@ public class CenSolicitudIncorporacionBean extends MasterBean {
 	public void setNaturalDe (String s) 				{ this.naturalDe = s; }
 	public void setIdProvincia  (String id) 			{ this.idProvincia = id; }
 	public void setIdPoblacion  (String id) 			{ this.idPoblacion = id; }
-	public void setPoblacionExtranjera  (String id) 			{ this.poblacionExtranjera = id; }
+	public void setPoblacionExtranjera  (String id) 	{ this.poblacionExtranjera = id; }
 	public void setFechaSolicitud (String f) 			{ this.fechaSolicitud = f ; }
 	public void setFechaNacimiento (String f) 			{ this.fechaNacimiento = f; }
 	public void setFechaEstado (String f) 				{ this.fechaEstado = f; }
 	public void setFechaEstadoColegial (String f) 		{ this.fechaEstadoColegial = f; }
+	public void setAbonoCargo(String abonoCargo) 		{ this.abonoCargo = abonoCargo;}
+	public void setCbo_Codigo(String cbo_Codigo) 		{ this.cbo_Codigo = cbo_Codigo;}
+	public void setCodigoSucursal(String codigoSucursal){ this.codigoSucursal = codigoSucursal;}
+	public void setDigitoControl(String digitoControl) 	{ this.digitoControl = digitoControl;}
+	public void setNumeroCuenta(String numeroCuenta) 	{ this.numeroCuenta = numeroCuenta;}
+	public void setAbonoSJCS(String abonoSJCS) 			{ this.abonoSJCS = abonoSJCS;}
+	public void setTitular(String titular) 				{ this.titular = titular;}
+	public void setSexo(String sexo) 					{ this.sexo = sexo;}
+	public void setIdModalidadDocumentacion(Integer idModalidadDocumentacion) {this.idModalidadDocumentacion = idModalidadDocumentacion;}
+	public void setResidente(boolean residente) 		{ this.residente = residente?"1":"0";}
 
 	// Metodos GET
 	public Long getIdSolicitud 				() 	{ return this.idSolicitud; }
@@ -134,18 +158,14 @@ public class CenSolicitudIncorporacionBean extends MasterBean {
 	public String getFechaNacimiento 		() 	{ return this.fechaNacimiento; }
 	public String getFechaEstado	 		() 	{ return this.fechaEstado; }
 	public String getFechaEstadoColegial	() 	{ return this.fechaEstadoColegial; }
-
-	public String getSexo() {
-		return sexo;
-	}
-	public void setSexo(String sexo) {
-		this.sexo = sexo;
-	}
-	
-	public Integer getIdModalidadDocumentacion() {
-		return this.idModalidadDocumentacion;
-	}
-	public void setIdModalidadDocumentacion(Integer idModalidadDocumentacion) {
-		this.idModalidadDocumentacion = idModalidadDocumentacion;
-	}
+	public String getAbonoCargo				() 	{ return this.abonoCargo;}
+	public String getCbo_Codigo				() 	{ return this.cbo_Codigo;}
+	public String getCodigoSucursal			() 	{ return this.codigoSucursal;}
+	public String getDigitoControl			() 	{ return this.digitoControl;}
+	public String getNumeroCuenta			() 	{ return this.numeroCuenta;}
+	public String getAbonoSJCS				() 	{ return this.abonoSJCS;}
+	public String getTitular				() 	{ return this.titular;}
+	public String getSexo					()  { return sexo; }
+	public Integer getIdModalidadDocumentacion(){return this.idModalidadDocumentacion;	}
+	public boolean getResidente				()  { return residente.equalsIgnoreCase("1")?true:false; }
 }

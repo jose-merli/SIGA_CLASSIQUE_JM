@@ -496,6 +496,8 @@
 			<forward name="SolicitudIncorporacionDatos" path="/html/jsp/censo/SolicitudIncorporacionDatos.jsp"/>
 			<forward name="exitoInsercion" path="/html/jsp/censo/exitoInsercionIncorporacion.jsp"/>
 			<forward name="continuarAprobacion" path="/html/jsp/censo/continuarAprobacionSolicitud.jsp"/>
+			<forward name="continuarInsercionColegiado" path="/html/jsp/censo/continuarInsercionColegiado.jsp"/>
+			<forward name="exitoGuardar" path="/html/jsp/censo/exitoSolicitudIncorporacionDatos.jsp"/>
 		</action>
 
 		<!-- ***** Censo / Ver Solicitudes Modificación / Solicitudes Genéricas ***** -->
@@ -1408,7 +1410,7 @@
 			<forward name="SolicitudIncorporacionDesestimada" path="/html/jsp/censo/SolicitudIncorporacionDesestimada.jsp"/>
 			<forward name="SolicitudIncorporacionDatos" path="/html/jsp/censo/SolicitudIncorporacionDatos.jsp"/>
 			<forward name="SolicitudIncorporacionError" path="/html/jsp/censo/SolicitudIncorporacionError.jsp"/>
-			
+		
 		</action>
 
 		<!-- ***** Catálogo de Cursos ***** -->
