@@ -525,11 +525,11 @@
 		}
 		if (errorNIF){
 			valido = false;
-			alert("<siga:Idioma key="messages.nif.comprobacion.digitos.error"/>");
+			aler("<siga:Idioma key='messages.nif.comprobacion.digitos.error'/>");
 		}
 		if (errorNIE){
 			valido = false;
-			alert("<siga:Idioma key="messages.nie.comprobacion.digitos.error"/>");
+			alert("<siga:Idioma key='messages.nie.comprobacion.digitos.error'/>");
 		}
 		return valido;
 	}
@@ -1338,19 +1338,32 @@
 											.getMensajeIdioma(usr,
 													"gratuita.personaJG.calidad.literal.demandante");
 								} else {
+									if (miform.getCalidad() != null
+										&& miform.getCalidad()
+												.equalsIgnoreCase("O")) {
 									calid = UtilidadesString
 											.getMensajeIdioma(usr,
 													"gratuita.personaJG.calidad.literal.demandado");
+									}
 								}
 			%>
 				<html:text property="calidad" value="<%=calid%>" size="20" styleClass="boxConsulta" readonly="true"></html:text>
 			<%
 				} else {
-			%>
-				<html:select styleClass="boxCombo" name="PersonaJGForm" property="calidad"   readOnly="false">
-					<html:option value="D"><siga:Idioma key="gratuita.personaJG.calidad.literal.demandante"/></html:option>
-					<html:option value="O"><siga:Idioma key="gratuita.personaJG.calidad.literal.demandado"/></html:option>
-				</html:select>
+			          	if (accion.equalsIgnoreCase("editar")) {%>
+							<html:select styleClass="boxCombo" name="PersonaJGForm" property="calidad"  readOnly="false">
+								<html:option value=""> &nbsp;</html:option>				   
+								<html:option value="D"> <siga:Idioma key="gratuita.personaJG.calidad.literal.demandante"/></html:option>
+								<html:option value="O"><siga:Idioma key="gratuita.personaJG.calidad.literal.demandado"/></html:option>
+							</html:select>
+						<%}else{%>
+							<html:select styleClass="boxCombo" name="PersonaJGForm" property="calidad" value="D" readOnly="false">
+								<html:option  value="">&nbsp; </html:option>				   
+								<html:option value="D"> <siga:Idioma key="gratuita.personaJG.calidad.literal.demandante"/></html:option>
+							<html:option value="O"><siga:Idioma key="gratuita.personaJG.calidad.literal.demandado"/></html:option>
+							</html:select>
+						<%}%>
+					
 			<%
 				}
 			%>
@@ -2038,7 +2051,7 @@ function limpiarPersonaContrario() {
 				}
 				if (isNaN(document.forms[0].importeBienesInmuebles.value)||
 						document.forms[0].importeBienesInmuebles.value>99999999.99){
-					alert("<siga:Idioma key="gratuita.personaJG.messages.BienesInmuebles"/>");
+					alert("<siga:Idioma key='gratuita.personaJG.messages.BienesInmuebles'/>");
 					envio=-1;
 					fin();
 					return false;
@@ -2046,7 +2059,7 @@ function limpiarPersonaContrario() {
 				}
 					if (isNaN(document.forms[0].importeBienesMuebles.value)||
 							document.forms[0].importeBienesMuebles.value>99999999.99){
-					alert("<siga:Idioma key="gratuita.personaJG.messages.BienesMuebles"/>");
+					alert("<siga:Idioma key='gratuita.personaJG.messages.BienesMuebles'/>");
 					envio=-1;
 					fin();
 					return false;
@@ -2054,7 +2067,7 @@ function limpiarPersonaContrario() {
 				}
 				if (isNaN(document.forms[0].importeOtrosBienes.value)||
 						document.forms[0].importeOtrosBienes.value>99999999.99){
-					alert("<siga:Idioma key="gratuita.personaJG.messages.OtrosBienes"/>");
+					alert("<siga:Idioma key='gratuita.personaJG.messages.OtrosBienes'/>");
 					envio=-1;
 					fin();
 					return false;
@@ -2129,8 +2142,8 @@ function limpiarPersonaContrario() {
 					//document.forms[0].tipoId.value="";
 					document.forms[0].NIdentificacion.value="";
 					
-			}
- 	  					
+			}			
+				
 			document.forms[0].importeIngresosAnuales.value=document.forms[0].importeIngresosAnuales.value.replace(/,/,".");
 			document.forms[0].importeBienesInmuebles.value=document.forms[0].importeBienesInmuebles.value.replace(/,/,".");
 			document.forms[0].importeBienesMuebles.value=document.forms[0].importeBienesMuebles.value.replace(/,/,".");
@@ -2151,7 +2164,7 @@ function limpiarPersonaContrario() {
 			var envio=1;
 				if (isNaN(document.forms[0].importeIngresosAnuales.value)){
 				 
-					alert("<siga:Idioma key="gratuita.personaJG.messages.IngresosAnuales"/>");
+					alert("<siga:Idioma key='gratuita.personaJG.messages.IngresosAnuales'/>");
 					envio=-1;
 					fin();
 					return false;
@@ -2159,7 +2172,7 @@ function limpiarPersonaContrario() {
 				}
 				if (isNaN(document.forms[0].importeBienesInmuebles.value)){
 				 
-					alert("<siga:Idioma key="gratuita.personaJG.messages.BienesInmuebles"/>");
+					alert("<siga:Idioma key='gratuita.personaJG.messages.BienesInmuebles'/>");
 					envio=-1;
 					fin();
 					return false;
@@ -2167,7 +2180,7 @@ function limpiarPersonaContrario() {
 				}
 					if (isNaN(document.forms[0].importeBienesMuebles.value)){
 					
-					alert("<siga:Idioma key="gratuita.personaJG.messages.BienesMuebles"/>");
+					alert("<siga:Idioma key='gratuita.personaJG.messages.BienesMuebles'/>");
 					envio=-1;
 					fin();
 					return false;
@@ -2175,7 +2188,7 @@ function limpiarPersonaContrario() {
 				}
 				if (isNaN(document.forms[0].importeOtrosBienes.value)){
 				
-					alert("<siga:Idioma key="gratuita.personaJG.messages.OtrosBienes"/>");
+					alert("<siga:Idioma key='gratuita.personaJG.messages.OtrosBienes'/>");
 					envio=-1;
 					fin();
 					return false;
@@ -2397,6 +2410,11 @@ function limpiarPersonaContrario() {
 				return false;
 			}
 
+			
+
+			
+			
+
 		 	document.forms[0].action="<%=app + actionE%>";	
 			document.forms[0].modo.value='guardarAsistencia';
 			document.forms[0].target="submitArea2";
@@ -2451,7 +2469,8 @@ function limpiarPersonaContrario() {
 					document.forms[0].NIdentificacion.value="";
 					
 			}
-            
+		
+			
 			if (!validaNumeroIdentificacion()) {
 				fin();
 				return false;
@@ -2584,11 +2603,23 @@ function limpiarPersonaContrario() {
 					document.forms[0].NIdentificacion.value="";
 					
 			}
-			
+
+			if (document.getElementById('calidad'))
+			{
+				var calidad=document.forms[0].calidad.value;    
+
+			 
+				if (calidad==""){				
+					alert("<siga:Idioma key='gratuita.personaJG.literal.mensajecalidad'/>");
+					fin();
+					return false;				
+				}
+			}
 			if (!validaNumeroIdentificacion()) {
 				fin();
 				return false;
 			}
+			
 
 		 	document.forms[0].action="<%=app + actionE%>";	
 			document.forms[0].modo.value='guardarDesigna';
@@ -2598,6 +2629,7 @@ function limpiarPersonaContrario() {
 			var tipoId = document.forms[0].tipoId.value;
 			var msg1="<siga:Idioma key="gratuita.personaJG.messages.alertTipo1"/>";
 			var msg2="<siga:Idioma key="gratuita.personaJG.messages.alertTipo2"/>";
+			
 			if (tipo=="F" && (tipoId!="" && tipoId!="50" && tipoId!="10" && tipoId!="30" && tipoId!="40")) {
 				alert(msg1);
 				fin();
@@ -2608,7 +2640,7 @@ function limpiarPersonaContrario() {
 					fin();
 					return false;
 				} else {
-					if (validatePersonaJGForm(document.forms[0]) ){
+					if (validatePersonaJGForm(document.forms[0]) ){						
 						document.forms[0].submit();
 					}else{
 						fin();
@@ -2616,6 +2648,7 @@ function limpiarPersonaContrario() {
 					}
 				}
 			}
+			
 		}
 <%}%>
 
