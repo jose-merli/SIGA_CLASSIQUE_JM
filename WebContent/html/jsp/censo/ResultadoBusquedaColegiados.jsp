@@ -1,7 +1,14 @@
-<logic:empty property="table" name="BusquedaColegiadosForm">	
-	<div id="empty" style="font-weight:bold; text-align:center; vertical-align:bottom; height:50px;">
-		<siga:Idioma key="messages.noRecordFound" />
-	</div>
+<logic:empty property="table" name="BusquedaColegiadosForm">
+	<logic:equal property="accion" value="buscar" name="BusquedaColegiadosForm">	
+		<div class="labelText" id="empty" style="font-weight:bold; text-align:center; vertical-align:bottom; height:150px; margin-top:50px">
+			<siga:Idioma key="messages.noRecordFound" />
+		</div>
+	</logic:equal>
+	<logic:equal property="accion" value="buscarAvanzada" name="BusquedaColegiadosForm">	
+		<div class="labelText" id="empty" style="font-weight:bold; text-align:center; vertical-align:bottom; height:150px; margin-top:50px;">
+			<siga:Idioma key="messages.noRecordFound" />
+		</div>
+	</logic:equal>
 </logic:empty>
 
 <logic:notEmpty property="table" name="BusquedaColegiadosForm">

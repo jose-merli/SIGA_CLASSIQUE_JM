@@ -66,7 +66,8 @@ public class ColegiadoAction extends PagedSortedAction {
 		formulario.setBusquedaExacta(true);
 		formulario.setBotonesBusqueda(
 				SearchButtonsConstants.BUSCAR,SearchButtonsConstants.LIMPIAR,SearchButtonsConstants.AVANZADA);
-		formulario.setBotonesAccion(ActionButtonsConstants.GENERAR_EXCELS,ActionButtonsConstants.COMUNICAR);
+		// jbd Quito los botones de accion para que no aparezcan al principio
+		// formulario.setBotonesAccion(ActionButtonsConstants.GENERAR_EXCELS,ActionButtonsConstants.COMUNICAR);
 		formulario.setTipoBusqueda(SIMPLE);
 
 		return INICIO_FORWARD;

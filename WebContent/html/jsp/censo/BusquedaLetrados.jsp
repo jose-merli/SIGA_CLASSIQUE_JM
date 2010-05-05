@@ -105,9 +105,11 @@
 	titulo="censo.busquedaClientes.letrados.titulo" />
 
 <logic:empty property="table" name="BusquedaLetradosForm">	
-	<div id="empty" style="font-weight:bold; text-align:center; vertical-align:bottom; height:50px;">
-		<siga:Idioma key="messages.noRecordFound" />
-	</div>
+	<logic:equal property="accion" value="buscar" name="BusquedaLetradosForm">
+		<div class="labelText" id="empty" style="font-weight:bold; text-align:center; vertical-align:bottom; height:150px; margin-top:50px;">
+			<siga:Idioma key="messages.noRecordFound" />
+		</div>
+	</logic:equal>
 </logic:empty>
 
 <logic:notEmpty property="table" name="BusquedaLetradosForm">
@@ -254,79 +256,5 @@
 		return seleccionados + seleccionados2;
 	}
 	
- 	/*
-  	function comunicar(idValue)
-	{
-  		
-		var id= idValue.split('---');
-		//var idInstPersona = getCellValue("<bean:write scope='request' name='BusquedaLetradosForm' property='tableName'/>",idValue,0,7);
-	   	datos = "idPersona=="+id[0]+ "##idInstitucion==" +id[1] ; 
-
-		var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='/SIGA/INF_InformesGenericos.do' target='submitArea'>");
-		formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<bean:write scope='session' name='USRBEAN' property='location'/>'>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='CENSO'>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value='0'>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='enviar' value='1'>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='descargar' value='1'>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='tipoPersonas' value='2'>"));
-		document.appendChild(formu);
-		formu.datosInforme.value=datos;
-		formu.submit();
-	}
-	
-	function accionComunicar(){
-  		if (!existsSelected("displ")){
-   			alert ('<siga:Idioma key="general.message.seleccionar"/>');
-   			return;
-   		}
-   		
-  		sub();  		
-
-  		var datos="";
-  		var cont=0;
-  		//recupera los datos de los registros seleccionados de otras paginas
-		var seleccionados = document.getElementById("backupSelected").value;
-		if (seleccionados != ""){
-			var lista = seleccionados.split(',');
-	  		for (i = 0; i < lista.length; i++) {
-		  		var lista2 = lista[0].split('---');
-	 		   	datos = datos +"idPersona=="+lista2[0] + "##idInstitucion==" +lista2[1] + "%%%";
-	 		   	cont++;
-			}
-		}
-		//recupera los datos de los registros seleccionados en la pagina actual
-		var elements = document.getElementsByName("_chk");
-		for (i=0; i<elements.length; i++){
-			if(elements[i].type == "checkbox" && elements[i].checked){
-				var lista = elements[i].value.split('---');
-	 		   	datos = datos +"idPersona=="+lista[0] + "##idInstitucion==" +lista[1] + "%%%";
-	 		   	cont++;
-			}
-		}
-
-		var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='/SIGA/INF_InformesGenericos.do' target='submitArea'>");
-		formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<bean:write scope='session' name='USRBEAN' property='location'/>'>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='CENSO'>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value='0'>"));
-		formu.appendChild(document.createElement("<input type='hidden' name='enviar' value='1'>"));
-		if(cont>50){
-			formu.appendChild(document.createElement("<input type='hidden' name='descargar' value='0'>"));
-		}
-		else{
-			formu.appendChild(document.createElement("<input type='hidden' name='descargar' value='1'>"));
-		}
-		formu.appendChild(document.createElement("<input type='hidden' name='tipoPersonas' value='2'>"));
-		
-		document.appendChild(formu);
-		formu.datosInforme.value=datos;
-		formu.submit();
-
-   		fin();
-	}
-	*/
 
 </script>

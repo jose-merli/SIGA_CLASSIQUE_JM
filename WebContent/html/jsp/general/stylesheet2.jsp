@@ -1356,7 +1356,7 @@ table.dataScroll th{
 	background-color: #<%=src.get("color.labelTable")%>;
 	padding-top: 0px;
 	margin-top: 0px;
-	border-top: 0px;
+	border-top: 1px;
 }
 
 .hidden{
