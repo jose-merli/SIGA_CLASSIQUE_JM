@@ -611,10 +611,10 @@
 			<td>
 			<%if(!readonly && (nColegiado==null || nColegiado.equalsIgnoreCase(""))){%>
 				<html:text styleId="numColBox" property="numeroColegiado" style="width:100" maxlength="20" styleClass="boxDisabled" disabled="true"></html:text>
-				<img id="botonNCol" src="<%=app%>/html/imagenes/candado.gif" border="0" onclick="editarNColegiado()" style="cursor:hand;align:left" style="display:inline;" title="Desbloquea el Número de Colegiado para hacerlo editable">
+				<img id="botonNCol" src="<%=app%>/html/imagenes/candado.gif" border="0" onclick="editarNColegiado()" style="cursor:hand;align:left" style="display:inline;" title="<siga:Idioma key='censo.SolicitudIncorporacion.message.desbloqueoNcolegiado'/>">
 			<%}else{%>
 				<html:text styleId="numColBox" property="numeroColegiado" style="width:100" maxlength="20" styleClass="<%=estiloBox%>" value="<%=nColegiado%>"  readOnly="<%=readonly%>" ></html:text>
-				<img id="botonNCol" src="<%=app%>/html/imagenes/candado.gif" border="0" onclick="editarNColegiado()" style="cursor:hand;align:left" style="visibility:hidden;display:inline;" title="Desbloquea el Número de Colegiado para hacerlo editable">
+				<img id="botonNCol" src="<%=app%>/html/imagenes/candado.gif" border="0" onclick="editarNColegiado()" style="cursor:hand;align:left" style="visibility:hidden;display:inline;" title="<siga:Idioma key='censo.SolicitudIncorporacion.message.desbloqueoNcolegiado'/>">
 			<%}%>
 			</td>
 
