@@ -135,7 +135,8 @@ function actualizaValoresSel(nombre, sele) {
 			}
 		}
 		var aux = parent.document.getElementById(nombre);
-		aux.value=lista;				
+		if(aux)
+			aux.value=lista;				
 	}
 }
 
