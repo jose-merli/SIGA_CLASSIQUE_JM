@@ -344,13 +344,13 @@
 				<a href='javascript://'onClick="return showCalendarGeneral(fechaEstadoColegial);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a>
 			</td>
 
-			
-			<td class="labelText"><siga:Idioma key="censo.consultaDatosColegiacion.literal.residente"/></td>
-			<td><input type="checkbox" name="residente" checked></td>
-		
 			<td class="labelText" width="19%"><siga:Idioma key="censo.SolicitudIncorporacion.literal.fechaSolicitud"/></td>
 			<td><input value="<%=fechaSol%>" type="text" name="fechaSolicitud" class="boxConsulta" readonly="true"></td>
 
+			<td style="visibility:hidden;">
+				<siga:Idioma key="censo.consultaDatosColegiacion.literal.residente"/>
+				<input type="checkbox" name="residente" checked>
+			</td>
 		</tr>
 	</table>
 	</siga:ConjCampos>
