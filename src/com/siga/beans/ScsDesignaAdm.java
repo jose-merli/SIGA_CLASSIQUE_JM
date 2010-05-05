@@ -1876,7 +1876,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 									tInteresado+= (String) reg.get("NUMEROTELEFONO") + "; ";						 
 								}
 								if (tInteresado.length()>0) tInteresado = tInteresado.substring(0,tInteresado.length()-2);
-								registro.put("LISTA_TELEFONOS_INTERESADO", tInteresado);
+								registroDefendido.put("LISTA_TELEFONOS_INTERESADO", tInteresado);
 							}
 							clone.putAll(registroDefendido);
 							
