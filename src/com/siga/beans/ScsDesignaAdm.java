@@ -1851,14 +1851,6 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					registro.put("POBLACION_JUZGADO_UA", " ");
 					registro.put("IDPROCEDIMIENTO_UA", " ");
 					registro.put("PROCEDIMIENTO_UA", " ");
-					
-					
-
-
-					
-					
-
-					
 				}
 				if(isSolicitantes){
 					Vector vDefendidos = getDefendidosDesignaSalidaOficio(idInstitucion,numeroDesigna,idTurno,anioDesigna,idPersonaJG);
