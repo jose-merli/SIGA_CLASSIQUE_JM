@@ -1304,9 +1304,13 @@ span.pagelinks {
 	padding: 2px 5px 2px 5px;
 	COLOR: #<%=src.get("color.tableTitle.font")%>; 
 	FONT-FAMILY: <%=src.get("font.style")%>;
-	font-weight: bold;
 	padding-right:10px;
 }
+
+span.pagelinks a{
+	COLOR: #<%=src.get("color.tableTitle.font")%>; 
+}
+
 
 div.exportlinks {
 	border: 1px dotted #999;
