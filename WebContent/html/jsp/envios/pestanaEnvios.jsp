@@ -87,17 +87,19 @@
 	/>--%>
 
 <%
-	String[] lista = new String[2];
+	String[] lista = new String[3];
 	if (idTipoEnvio.equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO)) {
 		lista[0] = "73i";
-	} else 
-	if (idTipoEnvio.equals(EnvTipoEnviosAdm.K_SMS) || idTipoEnvio.equals(EnvTipoEnviosAdm.K_BUROSMS)) {
-		lista[0] = "73h";
-		lista[1] = "73g";
 	} else {
-		lista[0] = "73h";
-		lista[1] = "73i";
-	} 
+		lista[0] = "73j";
+		if (idTipoEnvio.equals(EnvTipoEnviosAdm.K_SMS) || idTipoEnvio.equals(EnvTipoEnviosAdm.K_BUROSMS)) {
+			lista[1] = "73h";
+			lista[2] = "73g";
+		} else {
+			lista[1] = "73h";
+			lista[2] = "73i";
+		} 
+	}
 	
 	
 %>
