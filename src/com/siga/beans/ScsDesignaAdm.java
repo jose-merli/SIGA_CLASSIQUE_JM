@@ -1771,6 +1771,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					
 					
 				}
+				
+				/** TODO Esto hay que hacerlo bien
 				//Listado de Telefonos de interesados de Designas
 				Vector aux = getListadoTelefonosInteresadoSalidaOficio(idPersonaJG,idInstitucion);
 				String tInteresado = "";				
@@ -1781,6 +1783,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				}
 				if (tInteresado.length()>0) tInteresado = tInteresado.substring(0,tInteresado.length()-2);
 				registro.put("LISTA_TELEFONOS_INTERESADO", tInteresado);
+				*/
 				
 				helperInformes.completarHashSalida(registro,getActuacionDesignaSalidaOficio(idInstitucion,numeroDesigna,idTurno,anioDesigna));
 				
