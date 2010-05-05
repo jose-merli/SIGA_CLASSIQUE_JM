@@ -1771,19 +1771,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					
 					
 				}
-				
-				/** TODO Esto hay que hacerlo bien
-				//Listado de Telefonos de interesados de Designas
-				Vector aux = getListadoTelefonosInteresadoSalidaOficio(idPersonaJG,idInstitucion);
-				String tInteresado = "";				
-				for (int i=0;i<aux.size();i++) {
-					Hashtable reg = (Hashtable) aux.get(i);
-	             	tInteresado+= (String) reg.get("NOMBRETELEFONO") + ": ";	
-					tInteresado+= (String) reg.get("NUMEROTELEFONO") + "; ";						 
-				}
-				if (tInteresado.length()>0) tInteresado = tInteresado.substring(0,tInteresado.length()-2);
-				registro.put("LISTA_TELEFONOS_INTERESADO", tInteresado);
-				*/
+
 				
 				helperInformes.completarHashSalida(registro,getActuacionDesignaSalidaOficio(idInstitucion,numeroDesigna,idTurno,anioDesigna));
 				
@@ -1872,17 +1860,26 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 
 					
 				}
-				
-				
-				
-				
 				if(isSolicitantes){
 					Vector vDefendidos = getDefendidosDesignaSalidaOficio(idInstitucion,numeroDesigna,idTurno,anioDesigna,idPersonaJG);
 					if(vDefendidos!=null && vDefendidos.size()>0){
 						for (int k = 0; k < vDefendidos.size(); k++) {
 							Hashtable clone = (Hashtable) registro.clone();
 							Hashtable registroDefendido = (Hashtable) vDefendidos.get(k);
+							//Listado de Telefonos de interesados de Designas
+							if((String)registroDefendido.get("IDPERSONAINTERESADO")!=null && !((String)registroDefendido.get("IDPERSONAINTERESADO")).trim().equals("")){
+								Vector aux = getListadoTelefonosInteresadoSalidaOficio((String)registroDefendido.get("IDPERSONAINTERESADO"),idInstitucion);
+								String tInteresado = "";				
+								for (int i=0;i<aux.size();i++) {
+									Hashtable reg = (Hashtable) aux.get(i);
+					             	tInteresado+= (String) reg.get("NOMBRETELEFONO") + ": ";	
+									tInteresado+= (String) reg.get("NUMEROTELEFONO") + "; ";						 
+								}
+								if (tInteresado.length()>0) tInteresado = tInteresado.substring(0,tInteresado.length()-2);
+								registro.put("LISTA_TELEFONOS_INTERESADO", tInteresado);
+							}
 							clone.putAll(registroDefendido);
+							
 							vSalida.add(clone);
 						}
 					}else{
@@ -2033,7 +2030,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			if (idPersonaJG!=null && !idPersonaJG.trim().equals("")) {
 				h.put(new Integer(15), idPersonaJG);
 			}
-			String sql = "SELECT INTERESADO.IDINSTITUCION,"+
+			String sql = "SELECT INTERESADO.IDPERSONAJG IDPERSONAINTERESADO,INTERESADO.IDINSTITUCION,"+
 				" INTERESADO.IDTURNO,   INTERESADO.ANIO,   INTERESADO.NUMERO,"+
 				" DECODE((select count(EJGDES1.idinstitucion) from SCS_EJGDESIGNA EJGDES1"+
 				" where EJGDES1.IDINSTITUCION = :1"+
