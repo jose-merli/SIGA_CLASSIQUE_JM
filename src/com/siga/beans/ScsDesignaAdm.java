@@ -1851,6 +1851,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					registro.put("POBLACION_JUZGADO_UA", " ");
 					registro.put("IDPROCEDIMIENTO_UA", " ");
 					registro.put("PROCEDIMIENTO_UA", " ");
+				
 				}
 				if(isSolicitantes){
 					Vector vDefendidos = getDefendidosDesignaSalidaOficio(idInstitucion,numeroDesigna,idTurno,anioDesigna,idPersonaJG);
@@ -1869,18 +1870,22 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 								}
 								if (tInteresado.length()>0) tInteresado = tInteresado.substring(0,tInteresado.length()-2);
 								registroDefendido.put("LISTA_TELEFONOS_INTERESADO", tInteresado);
-							}
+							}else
+								registroDefendido.put("LISTA_TELEFONOS_INTERESADO", "");
+								
 							clone.putAll(registroDefendido);
 							
 							vSalida.add(clone);
 						}
 					}else{
+						registro.put("LISTA_TELEFONOS_INTERESADO", "");
 						vSalida.add(registro);
+						
 						
 					}	
 				
 				}else{
-					
+					registro.put("LISTA_TELEFONOS_INTERESADO", "");
 					vSalida.add(registro);
 				}
 				
