@@ -48,7 +48,7 @@
 <!--				<field 	property = "poblacion" 			   depends = "required"> 			<arg0 key="censo.SolicitudIncorporacion.literal.poblacion"/> 				</field> -->
 <!--				<field 	property = "provincia" 			   depends = "required"> 			<arg0 key="censo.SolicitudIncorporacion.literal.provincia"/> 					</field> -->
 				<!-- RGG 20-10-2005 <field 	property = "estadoCivil" 			   depends = "required"> 			<arg0 key="censo.SolicitudIncorporacion.literal.estadoCivil"/> 					</field> -->
-				<field 	property = "CP" depends = "required,maxlength,integer"> 	
+				<field 	property = "CP" depends = "required,maxlength"> 	
 					<arg0 key="censo.SolicitudIncorporacion.literal.codigoPostal"/>
 					<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
 					<var>
@@ -2062,10 +2062,6 @@
                     </var>              
                         </field>
             
-            <field property = "codigoPostal" depends = "integer">
-                <arg0 key="gratuita.operarDatosBeneficiario.literal.codigoPostal"/>            
-            </field>
-            
             <field property = "direccion" depends = "maxlength">
                 <arg0 key="gratuita.operarDatosBeneficiario.literal.direccion"/>
                 <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
@@ -2174,9 +2170,6 @@
 				</var>
 			</field>
 		
-			<field property="cp" depends="integer">
-				<arg0 key="gratuita.personaJG.literal.cp" />
-			</field>
 		
 			<field property="direccion" depends="maxlength">
 				<arg0 key="gratuita.personaJG.literal.direccion" />
@@ -2369,9 +2362,6 @@
                     </var>              
                         </field>
             
-            <field property = "codigoPostal" depends = "integer">
-                <arg0 key="gratuita.operarDatosBeneficiario.literal.codigoPostal"/>            
-            </field>
             
             <field property = "direccion" depends = "maxlength">
                 <arg0 key="gratuita.operarDatosBeneficiario.literal.direccion"/>            
@@ -2557,9 +2547,6 @@
                     </var>              
                         </field>
             
-            <field property = "codigoPostal" depends = "integer">
-                <arg0 key="gratuita.operarDatosBeneficiario.literal.codigoPostal"/>            
-            </field>
             
             <field property = "direccion" depends = "maxlength">
                 <arg0 key="gratuita.operarDatosBeneficiario.literal.direccion"/>
