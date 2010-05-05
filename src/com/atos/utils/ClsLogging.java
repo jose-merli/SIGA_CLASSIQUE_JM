@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -27,6 +28,7 @@ import org.apache.log4j.Category;
 
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.eejg.SchedulerException;
+import com.sun.mail.smtp.SMTPAddressFailedException;
 
 
 public class ClsLogging{
@@ -538,10 +540,13 @@ public class ClsLogging{
 			return false;
 		}
 		else if(e instanceof SocketException){ 
-			//System.out.println("SocketException");
 			return false;
 		}else if (e.getMessage()!=null && e.getMessage().toUpperCase().indexOf("BROKEN PIPE")>0){
-		 return false;
+			return false;
+		}else if(e instanceof SMTPAddressFailedException){ 
+			return false;
+		}else if(e instanceof ServletException){ 
+			return false;
 		}
 		
 		
