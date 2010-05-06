@@ -35,6 +35,7 @@ import javax.activation.DataSource;
 import javax.activation.FileDataSource;
 import javax.mail.BodyPart;
 
+import javax.mail.SendFailedException;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
@@ -4709,7 +4710,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		    	    mensaje.setSubject(sAsunto,"ISO-8859-1");
 		    	    mensaje.setHeader("Content-Type","text/html; charset=\"ISO-8859-1\"");
 		    	    
-		    	    
+
 		   
 		    	    
 		    	    
@@ -4720,16 +4721,30 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		    	    
 		    	    String sCuerpo = (htCorreo.get("cuerpo")==null)?"":(String)htCorreo.get("cuerpo");
 		    	    
-		    	    MimeMultipart multipartRoot = new MimeMultipart("related");
-		    	    MimeBodyPart contentRoot = new MimeBodyPart();
-		    	    MimeMultipart multipartAlt = new MimeMultipart("alternative");
 
+		    	    MimeMultipart mixedMultipart = new MimeMultipart("mixed");
+		    	    MimeBodyPart mixedBodyPart = new MimeBodyPart();
+		    	    
+		    	    MimeMultipart relatedMultipart = new MimeMultipart("related");
+		    	    MimeBodyPart relatedBodyPart = new MimeBodyPart();
+		    	    
+		    	    
+//		    	    MimeMultipart alternativeMultipart = new MimeMultipart("alternative");
+//		    	    MimeBodyPart alternativeBodyPart = new MimeBodyPart();
+//		    	    alternativeBodyPart.setContent(relatedMultipart);
+
+		    	    
 		    	    //alternative message
-		    	    addContentToMultipart(multipartAlt,sCuerpo);
+		    	    addContentToMultipart(relatedMultipart,sCuerpo);
 
 		    	    //Hierarchy
-		    	    contentRoot.setContent(multipartAlt);
-		    	    multipartRoot.addBodyPart(contentRoot);
+		    	    mixedBodyPart.setContent(relatedMultipart);
+		    	    
+		    	    mixedMultipart.addBodyPart(mixedBodyPart);
+//		    	    mixedMultipart.addBodyPart(relatedBodyPart);
+//		    	    mixedMultipart.addBodyPart(alternativeBodyPart);
+//		    	    multipartRoot.a
+		    	    
 
 		    	    //add a part for the image
 		    	    
@@ -4738,17 +4753,13 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			    	    for(ImagenPlantillaForm imagenPlantilla:lImagenes){
 			    	    	EnvImagenPlantillaBean imagenPlantillaBean = imagenPlantilla.getImagenPlantillaBean();
 			    	    	if(imagenPlantillaBean.isEmbebed()){
-				    	    	addCIDToMultipart(multipartRoot,imagenPlantillaBean.getPathImagen(null,File.separator),imagenPlantillaBean.getNombre());
+				    	    	addCIDToMultipart(relatedMultipart,imagenPlantillaBean.getPathImagen(null,File.separator),imagenPlantillaBean.getNombre());
 			    	    	}
 			    	    }
 			    	    
 		    	    }
-		    	    
-		    	    
-
 		    	    //attach a pdf
 		    	  //Documentos adjuntos
-		    	    MimeBodyPart bodyPart = new MimeBodyPart();    	    
 		    	    String sAttachment,sAttach;
 		    	   
 		    	    
@@ -4758,7 +4769,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		    	    if (pathArchivoGenerado!=null){
 		    	    	sAttachment = pathArchivoGenerado;
 			    	    sAttach = pathArchivoGenerado.substring(pathArchivoGenerado.lastIndexOf(File.separator)+1);
-			    	    addAttachToMultipart(multipartRoot, pathArchivoGenerado, sAttach);
+			    	    addAttachToMultipart(mixedMultipart, pathArchivoGenerado, sAttach);
 		    	    }
 		    	    
 		            // DOCUMENTOS ADJUNTOS
@@ -4772,7 +4783,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		    	        File fDoc = docAdm.getFile(envBean,idDoc);
 		    	        sAttachment = fDoc.getPath();
 		    	        sAttach = docBean.getPathDocumento();
-		    	        addAttachToMultipart(multipartRoot, fDoc.getPath(), docBean.getPathDocumento());
+		    	        addAttachToMultipart(mixedMultipart, fDoc.getPath(), docBean.getPathDocumento());
 		    	      
 		    	    }
 		    	    
@@ -4780,7 +4791,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		    	    
 		    	    
 		    	    // Associate multi-part with message
-		    	    mensaje.setContent(multipartRoot);
+		    	    mensaje.setContent(mixedMultipart);
+		    	   
 		    	    tr.sendMessage(mensaje, mensaje.getAllRecipients());
 		    	    
 		    	    EnvEstatEnvioAdm admEstat = new EnvEstatEnvioAdm(this.usrbean);
@@ -4791,7 +4803,11 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	            }catch (SMTPAddressFailedException e){
 	                errores = true;
 	                insertarMensajeLogHT(destBean,htErrores, e);
+	            }catch (SendFailedException e){
+	                errores = true;
+	                insertarMensajeLogHT(destBean,htErrores, e);
 	            } catch (Exception e){
+	            	
 	                errores = true;
 	                insertarMensajeLogHT(destBean,htErrores, e);
 	            }
