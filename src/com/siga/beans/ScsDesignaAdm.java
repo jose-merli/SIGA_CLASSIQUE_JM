@@ -1724,7 +1724,14 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				
 				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETREPRESENTANTE_DES", "REPRESENTANTES_CONTRARIOS"));
 				
+				//Muestra la lista de los anioCaj/numeroCaj de los EJG, relacionados con la designa.
+				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETANIONUMEROCAJ", "LISTAANIONUMEROCAJ"));
+				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETNUMEROANIOCAJ", "LISTANUMEROANIOCAJ"));
 				
+				
+				htCodigo.put(new Integer(2), anioDesigna);
+				htCodigo.put(new Integer(3), idTurno);
+				htCodigo.put(new Integer(4), numeroDesigna);
 				
 				
 				
@@ -1735,9 +1742,6 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				
 				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETFIRSTASISDESIGNA", "FECHA_ASISTENCIA"));
 				
-				//Muestra la lista de los anioCaj/numeroCaj de los EJG, relacionados con la designa.
-				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETANIONUMEROCAJ", "LISTAANIONUMEROCAJ"));
-				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETNUMEROANIOCAJ", "LISTANUMEROANIOCAJ"));
 				
 				//String idPersona  = (String)registro.get("IDPERSONA");
 			//	String idPersona1  = (String)registro.get("IDPERSONA");idPersona
