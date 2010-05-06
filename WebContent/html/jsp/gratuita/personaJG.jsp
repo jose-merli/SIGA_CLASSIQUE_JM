@@ -525,7 +525,7 @@
 		}
 		if (errorNIF){
 			valido = false;
-			aler("<siga:Idioma key='messages.nif.comprobacion.digitos.error'/>");
+			alert("<siga:Idioma key='messages.nif.comprobacion.digitos.error'/>");
 		}
 		if (errorNIE){
 			valido = false;
