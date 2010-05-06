@@ -379,6 +379,7 @@
 
 		// Comprueba el tipo de ident y pinta el boton de generar letra nif si fuese necesario
 		function comprobarTipoIdent(){
+			<%if (!accion.equalsIgnoreCase("ver")) {%>
 			// Solo se genera el NIF o CIF de la persona
 			if((document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")||
 				(document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>")){
@@ -386,6 +387,7 @@
 			}	else{
 				document.getElementById("idButtonNif").style.visibility="hidden";
 			}
+			<%}%>
 		}				
 
 		
