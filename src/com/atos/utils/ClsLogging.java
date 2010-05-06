@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.mail.SendFailedException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -399,7 +400,7 @@ public class ClsLogging{
 					{
 						if(e instanceof SchedulerException){
 							logXeMail.error(sdfLong.format(dat)+"******AVISO******"+e.getMessage());
-						}else if(!(e  instanceof com.sun.mail.smtp.SMTPAddressFailedException)){
+						}else if(!(e  instanceof SMTPAddressFailedException && e instanceof SendFailedException)){
 							logXeMail.error("*****ERROR*****"+s+sError+ExceptionManager.getCompleteMessageParaLogger(e,idInstitucion,idUsuario),e);
 						}
 					}
@@ -545,7 +546,10 @@ public class ClsLogging{
 			return false;
 		}else if(e instanceof SMTPAddressFailedException){ 
 			return false;
-		}else if(e instanceof ServletException){ 
+		}else if(e instanceof SendFailedException){ 
+			return false;
+		}
+		else if(e instanceof ServletException){ 
 			return false;
 		}
 		
