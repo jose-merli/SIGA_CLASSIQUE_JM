@@ -724,7 +724,7 @@ public class DatosDetallePagoAction extends MasterAction {
 			
 			// Obtenemos los datos de los detalles de los pagos
 			FcsPagosJGAdm pagoAdm = new FcsPagosJGAdm (this.getUserBean(request));
-			Vector pagos = pagoAdm.getDetallePago(new Integer(idInstitucion), new Integer(idPago));
+			Vector pagos = pagoAdm.getDetallePago(new Integer(idInstitucion), new Integer(idPago));			
 			
 			// Obtenemos el nombre de las personas del pago
 			FcsFacturacionJGAdm facturacionAdm = new FcsFacturacionJGAdm (this.getUserBean(request));
@@ -741,7 +741,7 @@ public class DatosDetallePagoAction extends MasterAction {
 							String numColegiado = cAdm.getIdentificadorColegiado(cBean);
 							
 							UtilidadesHash.set(a, "NCOLEGIADO", numColegiado);
-							UtilidadesHash.set(a, "NOMBREPERSONA", UtilidadesHash.getString(p, "NOMBREPERSONA"));
+							UtilidadesHash.set(a, "NOMBREPERSONA", UtilidadesHash.getString(p, "NOMBREPERSONA"));							
 							pagos.setElementAt(a, i);
 						}
 					}
@@ -1543,7 +1543,8 @@ public class DatosDetallePagoAction extends MasterAction {
 			UtilidadesString.getMensajeIdioma(usuario, "factSJCS.datosFacturacion.literal.importeBruto") + "\t" +
 			UtilidadesString.getMensajeIdioma(usuario, "factSJCS.detalleFacturacion.literal.importeIRPF") + "\t" +
 			UtilidadesString.getMensajeIdioma(usuario, "factSJCS.datosPagos.literal.importeRetenciones") + "\t" +
-			UtilidadesString.getMensajeIdioma(usuario, "factSJCS.detalleFacturacion.literal.importe");
+			UtilidadesString.getMensajeIdioma(usuario, "factSJCS.detalleFacturacion.literal.importe")+ "\t" +
+			UtilidadesString.getMensajeIdioma(usuario, "factSJCS.detalleFacturacion.literal.formadepago");
 			
 			// cambio a formato DOS
 			cadena += "\r\n";
@@ -1558,11 +1559,12 @@ public class DatosDetallePagoAction extends MasterAction {
 				for (int i = 0; i < resultado.size(); i++) {
 					Hashtable fila = (Hashtable) resultado.get(i);
 					String nombreColegiado = UtilidadesHash.getString(fila, "NOMBREPERSONA");
-					String ncolegiado      = UtilidadesHash.getString(fila, "NCOLEGIADO");
+					String ncolegiado      = UtilidadesHash.getString(fila, "NCOLEGIADO");					
 					String irpf            = UtilidadesNumero.redondea(UtilidadesHash.getString(fila, "TOTALIMPORTEIRPF"),2);
 					String importeRetenciones = UtilidadesNumero.redondea(UtilidadesHash.getString(fila, "IMPORTETOTALRETENCIONES"),2);
 					String importeTotalSJCS   = UtilidadesNumero.redondea(UtilidadesHash.getString(fila, "TOTALIMPORTESJCS"),2);
 					String importeTotalMovimientoVarios = UtilidadesNumero.redondea(UtilidadesHash.getString(fila, "IMPORTETOTALMOVIMIENTOS"),2);
+					String formaPago    = UtilidadesHash.getString(fila, "FORMADEPAGO");
 					float totalBrutos = Float.parseFloat(importeTotalSJCS) + Float.parseFloat(importeTotalMovimientoVarios);
 					if (totalBrutos<0) totalBrutos=0; 
 					float totalTotal = Float.parseFloat(importeTotalSJCS) + Float.parseFloat(importeTotalMovimientoVarios)+Float.parseFloat(irpf)+Float.parseFloat(importeRetenciones);
@@ -1571,7 +1573,7 @@ public class DatosDetallePagoAction extends MasterAction {
 					
 					
 					/*cadena = ncolegiado + "\t" + nombreColegiado + "\t" + importeTotalSJCS + " € \t" + importeTotalMovimientoVarios + " € \t" + importeRetenciones + " € \t" + totalBrutos + " € \t" + irpf + " € \n";*/
-					cadena = ncolegiado + "\t" + nombreColegiado + "\t" + importeTotalSJCS.replace('.',',') + "\t" + importeTotalMovimientoVarios.replace('.',',') + "\t" + UtilidadesNumero.redondea(String.valueOf(totalBrutos),2).replace('.',',') + "\t" + irpf.replace('.',',') + "\t" + importeRetenciones.replace('.',',') + "\t" + UtilidadesNumero.redondea(String.valueOf(totalTotal),2).replace('.',',') + "\t" ;
+					cadena = ncolegiado + "\t" + nombreColegiado + "\t" + importeTotalSJCS.replace('.',',') + "\t" + importeTotalMovimientoVarios.replace('.',',') + "\t" + UtilidadesNumero.redondea(String.valueOf(totalBrutos),2).replace('.',',') + "\t" + irpf.replace('.',',') + "\t" + importeRetenciones.replace('.',',') + "\t" + UtilidadesNumero.redondea(String.valueOf(totalTotal),2).replace('.',',') +"\t" + formaPago + "\t" ;
 					// cambio a formato DOS
 					cadena += "\r\n";
 					
