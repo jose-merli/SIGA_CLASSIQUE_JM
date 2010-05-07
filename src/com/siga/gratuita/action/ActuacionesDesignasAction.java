@@ -727,7 +727,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 			ScsDesignasLetradoAdm sdla = new ScsDesignasLetradoAdm(usr);
 			Integer idPersonaActuacion = sdla.obtenerColegiadoDesignadoEnFecha(sdb,miform.getFechaActuacion());
 			if (idPersonaActuacion == null)
-				idPersonaActuacion = new Integer(miform.getIdPersona());
+				return exitoModal("messages.error.designacion.sinLetradoAsignado", request); 
 			hash.put(ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO, idPersonaActuacion);
 			boolean cambiaLetradoDesigna = !miform.getIdPersona().equals(idPersonaActuacion.toString());
 					
@@ -991,7 +991,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 			ScsDesignasLetradoAdm sdla = new ScsDesignasLetradoAdm(usr);
 			Integer idPersonaActuacion = sdla.obtenerColegiadoDesignadoEnFecha(sdb,miform.getFechaActuacion());
 			if (idPersonaActuacion == null)
-				idPersonaActuacion = new Integer(miform.getIdPersona());
+				return exitoModal("messages.error.designacion.sinLetradoAsignado", request); 
 			actuacionModificada.put(ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO, idPersonaActuacion);
 			boolean cambiaLetradoDesigna = !actuacionAntigua.get(ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO).equals(idPersonaActuacion.toString());
 
