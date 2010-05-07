@@ -1572,8 +1572,7 @@ public class DatosGeneralesAction extends MasterAction {
 				hash.put(CenPersonaBean.C_APELLIDOS1,"#NA");
 			}
 			
-			//hash.put(CenPersonaBean.C_FECHANACIMIENTO,GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaConstitucion()));
-
+			//hash.put(CenPersonaBean.C_FECHANACIMIENTO,GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaConstitucion()));           
 			CenClienteBean beanCli = adminCli.insertNoColegiado(hash, request);
 			String mensInformacion = "messages.inserted.success"; 
 			if (!adminCli.getError().equals("")) {
@@ -1889,6 +1888,10 @@ public class DatosGeneralesAction extends MasterAction {
 			}else{
 				hash.put(CenPersonaBean.C_APELLIDOS1,"#NA");
 			}
+			
+			if ((miForm.getSociedadSP()!=null && miForm.getSociedadSP().equals("1"))||((miForm.getSociedadSJ()!=null && miForm.getSociedadSJ().equals("1")))){
+				hash.put(CenClienteBean.C_CARACTER,"S");
+			}	
 			//hash.put(CenPersonaBean.C_FECHANACIMIENTO,miForm.getFechaConstitucion());
 			
 			
