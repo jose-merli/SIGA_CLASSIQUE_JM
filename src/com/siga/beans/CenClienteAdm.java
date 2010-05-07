@@ -2820,9 +2820,16 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 		try {
 			// obtengo los beasn de cliente y persona del mismo hash
 			
-			CenClienteBean beanCli = (CenClienteBean) hashTableToBean(hashDatosGenerales);
-			beanCli.setCaracter("P");
-						
+			CenClienteBean beanCli = (CenClienteBean) hashTableToBean(hashDatosGenerales);						
+			
+			String sociedadSJ = (String)request.getParameter("sociedadSJ");  
+			String sociedadSP = (String)request.getParameter("sociedadSP");
+			
+			if 	((sociedadSJ!=null && sociedadSJ.equals("1"))||(sociedadSP!=null && sociedadSP.equals("1")))
+				beanCli.setCaracter("S");
+			else
+				beanCli.setCaracter("P");
+			
 			CenPersonaAdm admPer = new CenPersonaAdm(this.usrbean);
 			CenPersonaBean beanPer = (CenPersonaBean) admPer.hashTableToBean(hashDatosGenerales);
 			return insertNoColegiado(beanPer, beanCli, request, request.getParameter("continuarAprobacion"));
