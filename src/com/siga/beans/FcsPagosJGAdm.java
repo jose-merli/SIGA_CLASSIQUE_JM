@@ -933,7 +933,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 	{
 		return getQueryDetallePagoColegiado(idInstitucion, idPagosJg, null, irpf);
 	}	
-
+	
 	/**
 	 * 
 	 * @param idInstitucion
@@ -947,24 +947,29 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		if (irpf)
 			sql.append("select decode(idperdestino,null,idperorigen,idperdestino) as idpersonaSJCS,");
 		else
-			sql.append("select IDPERORIGEN as idpersonaSJCS,");
-		sql.append(" idpagosjg as idpagos, ");		
-		sql.append(" sum(impOficio + impAsistencia + impEJG + impSOJ) as totalImporteSJCS,");
-		sql.append(" sum(impRet) as importeTotalRetenciones,");
-		sql.append(" sum(impMovVar) as importeTotalMovimientos,");
+			sql.append("select pc.IDPERORIGEN as idpersonaSJCS,");
+		sql.append(" pc.idpagosjg as idpagos, ");		
+		sql.append(" sum(pc.impOficio + pc.impAsistencia + pc.impEJG + pc.impSOJ) as totalImporteSJCS,");
+		sql.append(" sum(pc.impRet) as importeTotalRetenciones,");
+		sql.append(" sum(pc.impMovVar) as importeTotalMovimientos,");
 		// jbd (1.41) Añadido round para que no haya incongruencias
-		sql.append(" -1*round(abs(sum(impOficio + impAsistencia + impEJG + impSOJ + impMovVar) * max(impirpf) / 100),2) as TOTALIMPORTEIRPF");
-		sql.append(" ,idinstitucion ");
-		sql.append(" from FCS_PAGO_COLEGIADO");
-		sql.append(" where IDINSTITUCION = ");	sql.append(idInstitucion);
-		sql.append(" and IDPAGOSJG = nvl("+idPagosJg+", IDPAGOSJG)");
-		sql.append(" and IDPERORIGEN = nvl("+idPersona+", IDPERORIGEN)");
+		sql.append(" -1*round(abs(sum(pc.impOficio + pc.impAsistencia + pc.impEJG + pc.impSOJ + pc.impMovVar) * max(pc.impirpf) / 100),2) as TOTALIMPORTEIRPF");
+		sql.append(" ,pc.idinstitucion");
+		sql.append(" ,decode(a.idcuenta, null, 'Pago por Caja', 'Pago por Banco') as  FORMADEPAGO");
+		sql.append(" from FCS_PAGO_COLEGIADO pc , fac_abono a");
+		sql.append(" where pc.IDINSTITUCION = ");	sql.append(idInstitucion);
+		sql.append(" and pc.IDPAGOSJG = nvl("+idPagosJg+", pc.IDPAGOSJG)");
+		sql.append(" and pc.IDPERORIGEN = nvl("+idPersona+", pc.IDPERORIGEN)");
+		sql.append(" and a.idpersona(+) = pc.idperorigen ");
+		sql.append(" and a.idinstitucion(+) = pc.idinstitucion ");
+		sql.append(" and a.idpagosjg(+) = pc.idpagosjg ");		
 		if (irpf)
 			sql.append(" and impirpf > 0 ");
-		sql.append(" group by IDPERORIGEN, IDPERDESTINO, IDPAGOSJG,IDINSTITUCION ");	
+		sql.append(" group by pc.IDPERORIGEN, pc.IDPAGOSJG,pc.IDINSTITUCION , decode(a.idcuenta, null, 'Pago por Caja', 'Pago por Banco'),  pc.IDPERDESTINO ");	
 
 		return sql.toString();
-	} 
+	} 	
+	
 	
 	public String getQueryDetallePagoColegiadoPaginador(String idInstitucion, String idPagosJg, String idPersona) 
 	{
@@ -1045,7 +1050,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e,"Error en FcsPAgosJG.getDetallePago()" + sql);
 		}
 	}
-	
+			
 	
 	
 	/**
