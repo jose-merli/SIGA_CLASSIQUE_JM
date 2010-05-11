@@ -121,7 +121,7 @@
 				<%
 					} else {
 				%>
-					<siga:ComboBD nombre ="turnos" tipo ="turnos" clase="boxCombo" obligatorio="false"  ancho="480"  accion="Hijo:guardias"  parametro="<%=dato%>" ElementoSel="<%=idTurno%>" />
+					<siga:ComboBD nombre ="turnos" tipo ="turnosAsistencia" clase="boxCombo" obligatorio="false"  ancho="480"  accion="Hijo:guardias"  parametro="<%=dato%>" ElementoSel="<%=idTurno%>" />
 				<%
 					}
 				%>
