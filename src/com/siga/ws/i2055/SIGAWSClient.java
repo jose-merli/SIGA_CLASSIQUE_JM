@@ -146,7 +146,10 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 										
 					BigInteger idTipoError = respuesta.getIdTipoError();
 					if (idTipoError != null && idTipoError.intValue() != 0) {//si tiene un error definido. TODO habrá que enviar un texto !!!
-						String descripcionError = idTipoError.toString();
+						String descripcionError = "Error tras el envío: [" + idTipoError.toString() + "]";
+						if (respuesta.getDescripcionError() != null) {
+							descripcionError += " " + respuesta.getDescripcionError(); 
+						}
 						escribeErrorExpediente(anio, numejg, numero, idTipoEJG, descripcionError);
 						continue;
 					}

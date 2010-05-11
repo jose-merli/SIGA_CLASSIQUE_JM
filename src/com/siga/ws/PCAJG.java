@@ -55,55 +55,56 @@ import com.siga.beans.ScsEJGBean;
 import com.siga.eejg.SignerXMLHandler;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.action.DefinirRemesasCAJGAction;
-import com.siga.pcajg.ws.DatosDomicilio;
-import com.siga.pcajg.ws.DatosDomicilioMunicipio;
-import com.siga.pcajg.ws.DatosDomicilioMunicipioMunicipio;
-import com.siga.pcajg.ws.Intercambio;
-import com.siga.pcajg.ws.IntercambioInformacionIntercambio;
+import com.siga.pcajg.ws.PCAJGBindingStub;
 import com.siga.pcajg.ws.PCAJGLocator;
-import com.siga.pcajg.ws.PCAJGSoap11BindingStub;
-import com.siga.pcajg.ws.TipoAbogadoDesignado;
-import com.siga.pcajg.ws.TipoCodigoExpediente;
-import com.siga.pcajg.ws.TipoDatosContacto;
-import com.siga.pcajg.ws.TipoDatosPersona;
-import com.siga.pcajg.ws.TipoDatosProcurador;
-import com.siga.pcajg.ws.TipoDocumentacionExpedienteDocumentacion;
-import com.siga.pcajg.ws.TipoDocumentacionExpedienteDocumentacionDatosDocumento;
-import com.siga.pcajg.ws.TipoDomiciliosPersona;
-import com.siga.pcajg.ws.TipoElementoTipificadoEstandar;
-import com.siga.pcajg.ws.TipoElementoTipificadoIntercambio;
-import com.siga.pcajg.ws.TipoExpediente;
-import com.siga.pcajg.ws.TipoExpedienteContrariosContrario;
-import com.siga.pcajg.ws.TipoExpedienteDatosAsistenciaDetenido;
-import com.siga.pcajg.ws.TipoExpedienteDatosAsistenciaDetenidoAbogadoAsistencia;
-import com.siga.pcajg.ws.TipoExpedienteDatosDefensaJudicial;
-import com.siga.pcajg.ws.TipoExpedienteDatosExpediente;
-import com.siga.pcajg.ws.TipoExpedienteDatosExpedienteCodigoExpedienteServicio;
-import com.siga.pcajg.ws.TipoExpedienteDatosExpedienteMarcasExpedienteMarcaExpediente;
-import com.siga.pcajg.ws.TipoExpedienteDatosRepresentante;
-import com.siga.pcajg.ws.TipoExpedienteDatosSolicitante;
-import com.siga.pcajg.ws.TipoExpedienteDatosSolicitanteDatosEconomicosPersona;
-import com.siga.pcajg.ws.TipoExpedienteDatosSolicitanteDatosEconomicosPersonaIngresos;
-import com.siga.pcajg.ws.TipoExpedienteDatosSolicitanteDatosEconomicosPersonaPropiedadesBienesInmuebles;
-import com.siga.pcajg.ws.TipoExpedienteDatosSolicitanteDatosEconomicosPersonaPropiedadesBienesMuebles;
-import com.siga.pcajg.ws.TipoExpedienteDatosSolicitanteDatosEconomicosPersonaPropiedadesBienesOtros;
-import com.siga.pcajg.ws.TipoExpedienteDatosTramitacionExpediente;
-import com.siga.pcajg.ws.TipoExpedienteDatosTramitacionExpedienteTramiteArchivo;
-import com.siga.pcajg.ws.TipoExpedienteDatosTramitacionExpedienteTramiteDictamen;
-import com.siga.pcajg.ws.TipoExpedienteDatosTramitacionExpedienteTramiteResolucion;
-import com.siga.pcajg.ws.TipoExpedienteDatosTramitacionExpedienteTramiteResolucionPrestacionesResolucion;
-import com.siga.pcajg.ws.TipoExpedienteFamiliaresFamiliar;
-import com.siga.pcajg.ws.TipoExpedienteProfesionalesDesignados;
-import com.siga.pcajg.ws.TipoExpedienteProfesionalesDesignadosAbogadosDesignados;
-import com.siga.pcajg.ws.TipoExpedienteProfesionalesDesignadosProcuradorDesignado;
-import com.siga.pcajg.ws.TipoIdentificacionIntercambio;
-import com.siga.pcajg.ws.TipoIdentificacionTramite;
-import com.siga.pcajg.ws.TipoInformacion;
-import com.siga.pcajg.ws.TipoInformacionRespuesta;
-import com.siga.pcajg.ws.TipoInformacionRespuestaResultado;
-import com.siga.pcajg.ws.TipoInformacionRespuestaResultadoDatosError;
-import com.siga.pcajg.ws.TipoInformacionRespuestaResultadoDatosErrorErrorContenido;
-import com.siga.pcajg.ws.TipoInformacionRespuestaResultadoDatosErrorErrorContenidoDetalleError;
+import com.siga.pcajg.ws.xsd.ContrarioType;
+import com.siga.pcajg.ws.xsd.DatosDomicilio;
+import com.siga.pcajg.ws.xsd.DatosDomicilioMunicipio;
+import com.siga.pcajg.ws.xsd.DatosDomicilioMunicipioMunicipio;
+import com.siga.pcajg.ws.xsd.DocumentacionType;
+import com.siga.pcajg.ws.xsd.DocumentacionTypeDatosDocumento;
+import com.siga.pcajg.ws.xsd.FamiliarType;
+import com.siga.pcajg.ws.xsd.IntercambioTipo;
+import com.siga.pcajg.ws.xsd.IntercambioTipoInformacionIntercambio;
+import com.siga.pcajg.ws.xsd.MarcaExpedienteType;
+import com.siga.pcajg.ws.xsd.TipoAbogadoDesignado;
+import com.siga.pcajg.ws.xsd.TipoCodigoExpediente;
+import com.siga.pcajg.ws.xsd.TipoDatosContacto;
+import com.siga.pcajg.ws.xsd.TipoDatosPersona;
+import com.siga.pcajg.ws.xsd.TipoDatosProcurador;
+import com.siga.pcajg.ws.xsd.TipoDomiciliosPersona;
+import com.siga.pcajg.ws.xsd.TipoElementoTipificadoEstandar;
+import com.siga.pcajg.ws.xsd.TipoElementoTipificadoIntercambio;
+import com.siga.pcajg.ws.xsd.TipoExpediente;
+import com.siga.pcajg.ws.xsd.TipoExpedienteDatosAsistenciaDetenido;
+import com.siga.pcajg.ws.xsd.TipoExpedienteDatosAsistenciaDetenidoAbogadoAsistencia;
+import com.siga.pcajg.ws.xsd.TipoExpedienteDatosDefensaJudicial;
+import com.siga.pcajg.ws.xsd.TipoExpedienteDatosExpediente;
+import com.siga.pcajg.ws.xsd.TipoExpedienteDatosExpedienteCodigoExpedienteServicio;
+import com.siga.pcajg.ws.xsd.TipoExpedienteDatosRepresentante;
+import com.siga.pcajg.ws.xsd.TipoExpedienteDatosSolicitante;
+import com.siga.pcajg.ws.xsd.TipoExpedienteDatosSolicitanteDatosEconomicosPersona;
+import com.siga.pcajg.ws.xsd.TipoExpedienteDatosSolicitanteDatosEconomicosPersonaIngresos;
+import com.siga.pcajg.ws.xsd.TipoExpedienteDatosSolicitanteDatosEconomicosPersonaPropiedadesBienesInmuebles;
+import com.siga.pcajg.ws.xsd.TipoExpedienteDatosSolicitanteDatosEconomicosPersonaPropiedadesBienesMuebles;
+import com.siga.pcajg.ws.xsd.TipoExpedienteDatosSolicitanteDatosEconomicosPersonaPropiedadesBienesOtros;
+import com.siga.pcajg.ws.xsd.TipoExpedienteDatosTramitacionExpediente;
+import com.siga.pcajg.ws.xsd.TipoExpedienteDatosTramitacionExpedienteTramiteArchivo;
+import com.siga.pcajg.ws.xsd.TipoExpedienteDatosTramitacionExpedienteTramiteDictamen;
+import com.siga.pcajg.ws.xsd.TipoExpedienteDatosTramitacionExpedienteTramiteResolucion;
+import com.siga.pcajg.ws.xsd.TipoExpedienteDatosTramitacionExpedienteTramiteResolucionPrestacionesResolucion;
+import com.siga.pcajg.ws.xsd.TipoExpedienteProfesionalesDesignados;
+import com.siga.pcajg.ws.xsd.TipoExpedienteProfesionalesDesignadosAbogadosDesignados;
+import com.siga.pcajg.ws.xsd.TipoExpedienteProfesionalesDesignadosProcuradorDesignado;
+import com.siga.pcajg.ws.xsd.TipoIdentificacionIntercambio;
+import com.siga.pcajg.ws.xsd.TipoIdentificacionTramite;
+import com.siga.pcajg.ws.xsd.TipoInformacion;
+import com.siga.pcajg.ws.xsd.TipoInformacionRespuesta;
+import com.siga.pcajg.ws.xsd.TipoInformacionRespuestaResultado;
+import com.siga.pcajg.ws.xsd.TipoInformacionRespuestaResultadoDatosError;
+import com.siga.pcajg.ws.xsd.TipoInformacionRespuestaResultadoDatosErrorErrorContenido;
+import com.siga.pcajg.ws.xsd.TipoInformacionRespuestaResultadoDatosErrorErrorContenidoDetalleError;
+
 
 
 
@@ -164,7 +165,7 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 		Hashtable ht = null;
 		String tipoIntercambio = "";
 		
-		Intercambio intercambio = null;
+		IntercambioTipo intercambio = null;
 		List<TipoExpediente> expedientes = null;
 		
 		TipoInformacion tipoInformacion = null;
@@ -179,9 +180,9 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 					ficheros.add(creaFichero(dirFicheros, dirPlantilla, intercambio, tipoInformacion, expedientes));
 				}
 				expedientes = new ArrayList<TipoExpediente>();
-				intercambio = new Intercambio();
+				intercambio = new IntercambioTipo();
 				
-				IntercambioInformacionIntercambio informacionIntercambio = rellenaInformacionIntercambio(ht, sufijoIdIntercambio++);
+				IntercambioTipoInformacionIntercambio informacionIntercambio = rellenaInformacionIntercambio(ht, sufijoIdIntercambio++);
 				intercambio.setInformacionIntercambio(informacionIntercambio);
 				tipoInformacion = new TipoInformacion();
 				informacionIntercambio.setInformacion(tipoInformacion);				
@@ -201,7 +202,7 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 		return ficheros;
 	}
 	
-	private File creaFichero(String dirFicheros, String dirPlantilla, Intercambio intercambio, TipoInformacion tipoInformacion, List<TipoExpediente> expedientes) throws Exception {
+	private File creaFichero(String dirFicheros, String dirPlantilla, IntercambioTipo intercambio, TipoInformacion tipoInformacion, List<TipoExpediente> expedientes) throws Exception {
 		
 		File file = new File(dirFicheros);
 		file.mkdirs();
@@ -253,8 +254,8 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 			
 			PCAJGLocator locator = new PCAJGLocator(createClientConfig());
 			URL url = new URL(getUrlWS());	
-			PCAJGSoap11BindingStub stub = new PCAJGSoap11BindingStub(url, locator);
-			Intercambio intercambioRespuesta = null;
+			PCAJGBindingStub stub = new PCAJGBindingStub(url, locator);
+			IntercambioTipo intercambioRespuesta = null;
 			try {
 				intercambioRespuesta = stub.enviarIntercambio(intercambio);			
 			} catch (Exception e) {
@@ -270,15 +271,17 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 					e.printStackTrace();
 					ClsLogging.writeFileLogError("Error al tratar la respuesta webservice", e, 3);
 				}
-			}	
+			} else {
+				ClsLogging.writeFileLog("Se ha obtenido un objeto null como respuesta webservice", 3);
+			}
 		}
 		return file;
 		
 	}
 	
-	private void trataRespuesta(Intercambio intercambioRespuesta) throws Exception {
+	private void trataRespuesta(IntercambioTipo intercambioRespuesta) throws Exception {
 		
-		IntercambioInformacionIntercambio informacionIntercambio = intercambioRespuesta.getInformacionIntercambio();
+		IntercambioTipoInformacionIntercambio informacionIntercambio = intercambioRespuesta.getInformacionIntercambio();
 		TipoInformacionRespuesta informacionRespuesta = informacionIntercambio.getInformacion().getRespuesta();
 		TipoInformacionRespuestaResultado intercambioErroneo = informacionRespuesta.getResultado();
 		
@@ -505,8 +508,9 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 		
 		String key = getKey(new Object[]{getIdInstitucion(), anyo, numero, idTipoEJG});
 		List list = (List) htFamiliares.get(key);
-		if (list != null && list.size() > 0) {						
-			TipoExpedienteFamiliaresFamiliar[] tipoExpedienteFamiliaresFamiliars = new TipoExpedienteFamiliaresFamiliar[list.size()];
+		if (list != null && list.size() > 0) {	
+			
+			FamiliarType[] tipoExpedienteFamiliaresFamiliars = new FamiliarType[list.size()];
 			
 			for (int i = 0; i < list.size(); i++) {
 				Hashtable ht = (Hashtable) list.get(i);			
@@ -517,7 +521,7 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 				
 		list = (List)htContrarios.get(key);		
 		if (list != null && list.size() > 0) {
-			TipoExpedienteContrariosContrario[] tipoExpedienteContrariosContrarios = new TipoExpedienteContrariosContrario[list.size()];
+			ContrarioType[] tipoExpedienteContrariosContrarios = new ContrarioType[list.size()];
 			
 			for (int i = 0; i < list.size(); i++) {
 				Hashtable ht = (Hashtable) list.get(i);
@@ -867,8 +871,8 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 	 * @param htEJGs
 	 * @throws Exception
 	 */
-	private TipoExpedienteContrariosContrario datosContrario(Hashtable htEJGs) throws Exception {
-		TipoExpedienteContrariosContrario tipoExpedienteContrariosContrario = new TipoExpedienteContrariosContrario();
+	private ContrarioType datosContrario(Hashtable htEJGs) throws Exception {
+		ContrarioType tipoExpedienteContrariosContrario = new ContrarioType();
 		
 		TipoDatosPersona tipoDatosPersona = datosPersona(htEJGs, C_C_DP_TIPOPERSONA_CDA, C_C_DP_TIPOIDENTIFICACION_CDA, C_C_DP_IDENTIFICACION, C_C_DP_NOMBRE
 				, C_C_DP_PRIMERAPELLIDO, C_C_DP_SEGUNDOAPELLIDO, C_C_DP_RAZONSOCIAL, C_C_DP_FECHANACIMIENTO, C_C_DP_NACIONALIDAD_CDA
@@ -898,9 +902,9 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 	 * @param htEJGs
 	 * @throws Exception
 	 */
-	private TipoExpedienteFamiliaresFamiliar datosFamiliares(Hashtable htFam) throws Exception {
+	private FamiliarType datosFamiliares(Hashtable htFam) throws Exception {
 		
-		TipoExpedienteFamiliaresFamiliar tipoExpedienteFamiliaresFamiliar = new TipoExpedienteFamiliaresFamiliar();
+		FamiliarType tipoExpedienteFamiliaresFamiliar = new FamiliarType();
 		TipoElementoTipificadoEstandar tipoElementoTipificadoEstandar = rellenaTipoElementoTipificadoEstandar((String)htFam.get(F_F_PARENTESCO_CDA));
 		
 		if (tipoElementoTipificadoEstandar != null) {
@@ -928,7 +932,8 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 		List list = (List) htDocumentacionExpediente.get(key);		
 		
 		if (list != null && list.size() > 0) {
-			TipoDocumentacionExpedienteDocumentacion[] documentacionExpediente = new TipoDocumentacionExpedienteDocumentacion[list.size()];
+			
+			DocumentacionType[] documentacionExpediente = new DocumentacionType[list.size()];
 			for (int i = 0; i < list.size(); i++) {
 				Hashtable htDoc = (Hashtable)list.get(i);	
 				documentacionExpediente[i] = documentacionExpediente(htDoc, F_F_DE_D_TIPODOCUMENTACION_CDA
@@ -1034,8 +1039,8 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 		String key = getKey(new Object[]{getIdInstitucion(), anyo, numero, idTipoEJG, idPersona});
 		List list = (List) htDocumentacionExpediente.get(key);
 		
-		if (list != null && list.size() > 0) {
-			TipoDocumentacionExpedienteDocumentacion documentacionExpediente[] = new TipoDocumentacionExpedienteDocumentacion[list.size()]; 
+		if (list != null && list.size() > 0) {			
+			DocumentacionType documentacionExpediente[] = new DocumentacionType[list.size()]; 
 			for (int i = 0; i < list.size(); i++) {
 				Hashtable ht = (Hashtable)list.get(i);
 				documentacionExpediente[i] = documentacionExpediente(ht, DS_DE_D_TIPODOCUMENTACION_CDA, 
@@ -1202,13 +1207,13 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 	 * @param de_dd_procedente
 	 * @throws Exception
 	 */
-	private TipoDocumentacionExpedienteDocumentacion documentacionExpediente(Hashtable htDocumentacion, String de_tipodocumentacion_cda,
+	private DocumentacionType documentacionExpediente(Hashtable htDocumentacion, String de_tipodocumentacion_cda,
 			String de_dd_tipodocumento_cda, String de_dd_fechapresentaciondocumento, String de_dd_descripcionampliadadocumento,
 			String de_dd_procedente) throws Exception {
 		
 		TipoElementoTipificadoEstandar tipoDocumentacion = rellenaTipoElementoTipificadoEstandar((String)htDocumentacion.get(de_tipodocumentacion_cda));
 		
-		TipoDocumentacionExpedienteDocumentacionDatosDocumento datosDocumento = new TipoDocumentacionExpedienteDocumentacionDatosDocumento();
+		DocumentacionTypeDatosDocumento datosDocumento = new DocumentacionTypeDatosDocumento();
 		
 		TipoElementoTipificadoEstandar tipoElementoTipificadoEstandar = rellenaTipoElementoTipificadoEstandar((String)htDocumentacion.get(de_dd_tipodocumento_cda));
 		if (tipoElementoTipificadoEstandar != null) {
@@ -1225,7 +1230,7 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 			datosDocumento.setProcedente(valueInt.intValue());
 		}
 		
-		TipoDocumentacionExpedienteDocumentacion tipoDocumentacionExpedienteDocumentacion = new TipoDocumentacionExpedienteDocumentacion();
+		DocumentacionType tipoDocumentacionExpedienteDocumentacion = new DocumentacionType();
 		if (tipoDocumentacion != null) {
 			tipoDocumentacionExpedienteDocumentacion.setTipoDocumentacion(tipoDocumentacion);
 		}
@@ -1634,17 +1639,18 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 		List list = (List) htMarcasExpediente.get(key);
 		
 		if (list != null && list.size() > 0) {
-			List<TipoExpedienteDatosExpedienteMarcasExpedienteMarcaExpediente> marcasExpediente = new ArrayList<TipoExpedienteDatosExpedienteMarcasExpedienteMarcaExpediente>();			
+			
+			List<MarcaExpedienteType> marcasExpediente = new ArrayList<MarcaExpedienteType>();			
 			for (int i = 0; i < list.size(); i++) {
 				Hashtable ht = (Hashtable) list.get(i);
 				TipoElementoTipificadoEstandar tipoElementoTipificadoEstandar = rellenaTipoElementoTipificadoEstandar((String)ht.get(DE_ME_ME_MARCAEXPEDIENTE_CDA));
 				if (tipoElementoTipificadoEstandar != null) {
 					String st = getString((String)ht.get(DE_ME_ME_VALORMARCAEXPEDIENTE));
-					marcasExpediente.add(new TipoExpedienteDatosExpedienteMarcasExpedienteMarcaExpediente(tipoElementoTipificadoEstandar, st));	
+					marcasExpediente.add(new MarcaExpedienteType(tipoElementoTipificadoEstandar, st));	
 				}				
 			}
 			if (marcasExpediente.size() > 0) {
-				datosExpediente.setMarcasExpediente(marcasExpediente.toArray(new TipoExpedienteDatosExpedienteMarcasExpedienteMarcaExpediente[]{}));
+				datosExpediente.setMarcasExpediente(marcasExpediente.toArray(new MarcaExpedienteType[]{}));
 			}
 		}
 		
@@ -1672,9 +1678,9 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 	 * @param numDetalles
 	 * @return
 	 */
-	private IntercambioInformacionIntercambio rellenaInformacionIntercambio(Hashtable ht, int sufijoIdIntercambio) throws SIGAException {
+	private IntercambioTipoInformacionIntercambio rellenaInformacionIntercambio(Hashtable ht, int sufijoIdIntercambio) throws SIGAException {
 				
-		IntercambioInformacionIntercambio informacionIntercambio = new IntercambioInformacionIntercambio();
+		IntercambioTipoInformacionIntercambio informacionIntercambio = new IntercambioTipoInformacionIntercambio();
 		TipoIdentificacionIntercambio identificacionIntercambio = new TipoIdentificacionIntercambio();
 		
 		if (ht != null) {		
