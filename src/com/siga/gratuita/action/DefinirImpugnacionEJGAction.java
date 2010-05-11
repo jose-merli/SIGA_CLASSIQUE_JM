@@ -51,6 +51,8 @@ public class DefinirImpugnacionEJGAction extends MasterAction {
 	 */
 	protected String modificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 	
+		
+		
 		Hashtable nuevos = new Hashtable();
 		UserTransaction tx=null;		
 		UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
@@ -58,6 +60,7 @@ public class DefinirImpugnacionEJGAction extends MasterAction {
 		nuevos = miForm.getDatos();
 		ScsEJGAdm admEJG = new ScsEJGAdm(this.getUserBean(request));
 		
+			
 		try {
 			// Ponemos la fecha en el formato correcto
 			nuevos.put("FECHAAUTO", GstDate.getApplicationFormatDate("",nuevos.get("FECHAAUTO").toString()));
@@ -75,7 +78,7 @@ public class DefinirImpugnacionEJGAction extends MasterAction {
 			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 
 		}
 		
-		return exitoRefresco("messages.updated.success",request);
+		return exitoRefresco("messages.updated.impugnacion",request);
 	}
 
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
