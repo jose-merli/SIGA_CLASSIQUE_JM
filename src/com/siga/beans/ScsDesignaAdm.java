@@ -1653,7 +1653,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 	}
 	
 	
-	public Vector getDatosSalidaOficio (String idInstitucion, String idturno, String anio, String numero, String codigoDesigna, boolean isSolicitantes, String idPersonaJG) throws ClsExceptions  
+	public Vector getDatosSalidaOficio (String idInstitucion, String idturno, String anio, String numero, String codigoDesigna, boolean isSolicitantes, String idPersonaJG, String idioma) throws ClsExceptions  
 	{	 
 		Vector vSalida = null;
 		HelperInformesAdm helperInformes = new HelperInformesAdm();	
@@ -1683,7 +1683,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				else
 					registro.put("DESC_TIPODESIGNA", " ");
 				
-
+                
 				
 				//metemos el numero de colegiado
 				if(registro.containsKey("IDPERSONA") && registro.get("IDPERSONA")!=null && !((String)registro.get("IDPERSONA")).trim().equals("")){
@@ -1704,10 +1704,10 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				htCodigo.put(new Integer(3), idTurno);
 				htCodigo.put(new Integer(4), anioDesigna);
 				
-				htCodigo.put(new Integer(5), "1");
+				//htCodigo.put(new Integer(5), idioma);
 				//metemos los delitos
-				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETDELITOS_DESIGNA", "DELITOS"));
-				htCodigo.remove(new Integer(5));
+				//helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETDELITOS_DESIGNA", "DELITOS"));
+				//htCodigo.remove(new Integer(5));
 				
 				
 				htCodigo.put(new Integer(2), idTurno);
@@ -1863,10 +1863,31 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 						for (int k = 0; k < vDefendidos.size(); k++) {
 							Hashtable clone = (Hashtable) registro.clone();
 							Hashtable registroDefendido = (Hashtable) vDefendidos.get(k);
+
+							/****
+							  	Se modifica para que salgan los informes de los interesados en el idioma que tenga dicho interesado, 
+								si no tiene idioma se imprime en el idioma del usuario. y los delitos también salen en el idioma del interesado.								
+							***/
+							
+							String idLenguaje="";							
+							if ((((String)registroDefendido.get("IDLENGUAJE_DEFENDIDO")).trim().equals(""))&&((String)registroDefendido.get("IDPERSONAINTERESADO")!=null))
+								idLenguaje=idioma;
+							else
+								idLenguaje=(String)registroDefendido.get("IDLENGUAJE_DEFENDIDO");
+				               		
+							htCodigo = new Hashtable();
+							htCodigo.put(new Integer(1), idInstitucion);
+							htCodigo.put(new Integer(2), numeroDesigna);
+							htCodigo.put(new Integer(3), idTurno);
+							htCodigo.put(new Integer(4), anioDesigna);
+				            htCodigo.put(new Integer(5),idLenguaje);				                								
+				            helperInformes.completarHashSalida(registroDefendido,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETDELITOS_DESIGNA", "DELITOS"));
+							htCodigo.remove(new Integer(5));
+								
 							//Listado de Telefonos de interesados de Designas
 							if((String)registroDefendido.get("IDPERSONAINTERESADO")!=null && !((String)registroDefendido.get("IDPERSONAINTERESADO")).trim().equals("")){
 								Vector aux = getListadoTelefonosInteresadoSalidaOficio((String)registroDefendido.get("IDPERSONAINTERESADO"),idInstitucion);
-								String tInteresado = "";				
+								String tInteresado = "";								
 								for (int i=0;i<aux.size();i++) {
 									Hashtable reg = (Hashtable) aux.get(i);
 					             	tInteresado+= (String) reg.get("NOMBRETELEFONO") + ": ";	
@@ -1877,21 +1898,40 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 							}else
 								registroDefendido.put("LISTA_TELEFONOS_INTERESADO", "");
 								
-							clone.putAll(registroDefendido);
+							clone.putAll(registroDefendido);							
 							
 							vSalida.add(clone);
 						}
 					}else{
 						registro.put("LISTA_TELEFONOS_INTERESADO", "");
+						htCodigo = new Hashtable();
+						htCodigo.put(new Integer(1), idInstitucion);
+						htCodigo.put(new Integer(2), numeroDesigna);
+						htCodigo.put(new Integer(3), idTurno);
+						htCodigo.put(new Integer(4), anioDesigna);
+				        htCodigo.put(new Integer(5), idioma);				                									
+				        helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETDELITOS_DESIGNA", "DELITOS"));
+						htCodigo.remove(new Integer(5));
 						vSalida.add(registro);
-						
-						
 					}	
 				
 				}else{
-					registro.put("LISTA_TELEFONOS_INTERESADO", "");
+					registro.put("LISTA_TELEFONOS_INTERESADO", "");		
+					htCodigo = new Hashtable();
+						htCodigo.put(new Integer(1), idInstitucion);
+						htCodigo.put(new Integer(2), numeroDesigna);
+						htCodigo.put(new Integer(3), idTurno);
+						htCodigo.put(new Integer(4), anioDesigna);
+				        htCodigo.put(new Integer(5), idioma);				                									
+				        helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETDELITOS_DESIGNA", "DELITOS"));
+						htCodigo.remove(new Integer(5));
 					vSalida.add(registro);
 				}
+				
+				//nuevo
+				
+			
+				
 				
 			}
 			
