@@ -214,6 +214,10 @@ public class EnvioInformesGenericos extends MasterReport {
 
 			Hashtable htCol = admCol.obtenerDatosColegiado(idInstitucion
 					.toString(), idPersona, usrBean.getLanguage());
+			//se añade esta linea para que recupere todos los campos de la select que esta en la función obtenerDatosColegiado(..)
+			//y posteriormente utilizarla en las plantillas.
+			htCabeceraInforme.putAll(htCol);
+			
 			String direccion = "";
 			if (htCol != null && htCol.size() > 0) {
 				direccion = (String) htCol.get("DIRECCION_LETR");
@@ -238,38 +242,8 @@ public class EnvioInformesGenericos extends MasterReport {
 			String nombre = "";
 			if (htCol != null && htCol.size() > 0) {
 				nombre = (String) htCol.get("NOMBRE_LETRADO");
-			}
-			//recuperando el apellido1 del letrado
-			String apellido1letrado= "";
-			if (htCol != null && htCol.size() > 0) {
-				apellido1letrado = (String) htCol.get("APELLIDO1_LETRADO");
-			}
-			
-			String apellido2letrado= "";
-			if (htCol != null && htCol.size() > 0) {
-				apellido2letrado = (String) htCol.get("APELLIDO2_LETRADO");
-			}
-			
-			String nombreletrado= "";
-			if (htCol != null && htCol.size() > 0) {
-				nombreletrado = (String) htCol.get("N_LETRADO");
-			}
-			
-			String tratamiento= "";
-			if (htCol != null && htCol.size() > 0) {
-				tratamiento = (String) htCol.get("TRATAMIENTO");
-			}
-			
-			String idtratamiento= "";
-			if (htCol != null && htCol.size() > 0) {
-				idtratamiento = (String) htCol.get("IDTRATAMIENTO");
-			}
+			}			
 			htCabeceraInforme.put("NOMBRE", nombre);			
-			htCabeceraInforme.put("APELLIDO1_LETRADO",apellido1letrado);
-			htCabeceraInforme.put("APELLIDO2_LETRADO",apellido2letrado);
-			htCabeceraInforme.put("NOMBRE_LETRADO",nombreletrado);
-			htCabeceraInforme.put("TRATAMIENTO",tratamiento);
-			htCabeceraInforme.put("IDTRATAMIENTO",idtratamiento);
 			HelperInformesAdm helperInformes = new HelperInformesAdm();
 			htCabeceraInforme.put("FECHA", sHoy);
 			Hashtable htFuncion = new Hashtable();
@@ -321,8 +295,6 @@ public class EnvioInformesGenericos extends MasterReport {
 
 			}
 			
-			
-			
 			htCabeceraInforme.put("BRUTO", UtilidadesNumero
 					.formatoCampo(UtilidadesNumero.redondea(importeTotal, 2)));
 			htCabeceraInforme.put("LIQUIDO", UtilidadesNumero
@@ -343,7 +315,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 			boolean isSolicitantes = aSolicitantes!=null && aSolicitantes.equalsIgnoreCase("S");
 
-			Vector datosconsulta= scsDesignaAdm.getDatosSalidaOficio(idinstitucion,idTurno,anio,numero,null,isSolicitantes,idPersonaJG);
+			Vector datosconsulta= scsDesignaAdm.getDatosSalidaOficio(idinstitucion,idTurno,anio,numero,null,isSolicitantes,idPersonaJG, idioma);
 			htDatosInforme.put("row", datosconsulta);
 
 
@@ -398,7 +370,8 @@ public class EnvioInformesGenericos extends MasterReport {
 
 		String idioma = (String) datosInforme.get("idioma");
 		if (idioma == null || idioma.equals(""))
-			idioma = usrBean.getLanguage();
+			idioma = usrBean.getLanguage();		
+		
 		datosInforme.put("idioma", idioma);
 		String idPersona = (String) datosInforme.get("idPersona");
 		String idInstitucion = (String) datosInforme.get("idInstitucion");
@@ -443,15 +416,24 @@ public class EnvioInformesGenericos extends MasterReport {
 					Hashtable htDatosInforme = new Hashtable();
 					htDatosInforme.put("row", datosInformeK);
 					String codigo = (String) datosInformeK.get("CODIGO");
-					String ncolegiado ="" ;
+					String ncolegiado ="" ;				
 					if (datosInformeK.get("NCOLEGIADO_LETRADO")!=null){
 						ncolegiado=(String)UtilidadesHash.getString(datosInformeK,"NCOLEGIADO_LETRADO");
 					}else{
 						if(datosInformeK.get("")!=null)
 							ncolegiado=((String)datosInformeK.get("")).split(" - ")[0];
 
-
-					}
+					}				
+						/**
+						 * De las comunicaciones a interesados hay que usar el idioma del interesado para que salgan los datos por defecto,
+						 * en el idioma de los interesados, si este no tiene idiomas se debe imprimir en el idioma del Ususario.						 
+						 **/
+					
+					if ((((String)datosInformeK.get("CODIGOLENGUAJE")).trim().equals(""))&&((String)datosInformeK.get("CODIGOLENGUAJE")!=null)){
+						idiomaExt=(String) datosInforme.get("idiomaExt");
+					}else 
+						idiomaExt=(String)UtilidadesHash.getString(datosInformeK,"CODIGOLENGUAJE");
+					
 					identificador= new StringBuffer();
 					identificador.append(ncolegiado);
 					identificador.append("-");
@@ -471,9 +453,6 @@ public class EnvioInformesGenericos extends MasterReport {
 					identificador.append("_");
 					String hoy = UtilidadesString.formatoFecha(new Date(),"yyyyMMddhhmmssSSS");
 					identificador.append(hoy);
-					
-
-					
 					
 					File fileDocumento = getInformeGenerico(beanInforme,
 							htDatosInforme, idiomaExt, identificador.toString(), usrBean,tipoPlantillaWord);
