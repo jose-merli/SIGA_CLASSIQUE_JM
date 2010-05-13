@@ -1336,7 +1336,7 @@
 					.equals(PersonaJGAction.DESIGNACION_INTERESADO)) {
 %>
 		<td class="labelText">
-			<siga:Idioma key="gratuita.personaJG.literal.calidad"/>		
+			<siga:Idioma key="gratuita.personaJG.literal.calidad"/>&nbsp;(*)			
 		</td>
 		<td>
 			<%
