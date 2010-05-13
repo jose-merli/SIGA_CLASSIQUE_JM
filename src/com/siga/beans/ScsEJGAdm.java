@@ -3333,7 +3333,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" TO_CHAR(SYSDATE, 'dd/mm/yyyy') AS MES_ACTUAL, ");
 			sql.append(" TO_CHAR(SYSDATE, 'yyyy') AS ANIO_ACTUAL, ");
 
-			sql.append(" EJG.IDTIPOEJG, EJG.ANIO, EJG.NUMERO, (EJG.ANIO || '/' || EJG.NUMEJG) as NUMERO_EJG , EJG.IDPERSONA, ");
+			sql.append(" EJG.IDTIPOEJG, EJG.ANIO,EJG.NUMEJG as NUMERO, (EJG.ANIO || '/' || EJG.NUMEJG) as NUMERO_EJG , EJG.IDPERSONA, ");
 			
 			sql.append(" ejg.CALIDAD, ");
 			
