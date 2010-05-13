@@ -427,13 +427,13 @@ public class EnvioInformesGenericos extends MasterReport {
 						/**
 						 * De las comunicaciones a interesados hay que usar el idioma del interesado para que salgan los datos por defecto,
 						 * en el idioma de los interesados, si este no tiene idiomas se debe imprimir en el idioma del Ususario.						 
-						 **/
-					
-					if ((((String)datosInformeK.get("CODIGOLENGUAJE")).trim().equals(""))&&((String)datosInformeK.get("CODIGOLENGUAJE")!=null)){
-						idiomaExt=(String) datosInforme.get("idiomaExt");
-					}else 
-						idiomaExt=(String)UtilidadesHash.getString(datosInformeK,"CODIGOLENGUAJE");
-					
+						 **/					
+					 String idiomainteresado= (String) datosInformeK.get("CODIGOLENGUAJE");
+					 if (idiomainteresado!=null && !idiomainteresado.trim().equals("")){												
+							idiomaExt=(String)UtilidadesHash.getString(datosInformeK,"CODIGOLENGUAJE");
+						}else
+							idiomaExt= (String) datosInforme.get("idiomaExt");
+					 
 					identificador= new StringBuffer();
 					identificador.append(ncolegiado);
 					identificador.append("-");
