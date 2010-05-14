@@ -4,6 +4,8 @@
 
 package com.siga.gratuita.action;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -40,8 +42,7 @@ import com.siga.gratuita.form.DefinirSOJForm;
 /**
 * Maneja las acciones que se pueden realizar sobre la tabla SCS_SOJ
 */
-public class DefinirExpedientesSOJAction extends MasterAction {	
-	
+public class DefinirExpedientesSOJAction extends MasterAction {		
 	
 	protected ActionForward executeInternal(ActionMapping mapping, ActionForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
 	{
@@ -95,64 +96,44 @@ public class DefinirExpedientesSOJAction extends MasterAction {
 		Hashtable miHash = new Hashtable();
 		miHash = miForm.getDatos();	
 		HashMap databackup=new HashMap();
-		
-	    if (request.getSession().getAttribute("DATAPAGINADOR")!=null){ 
-		 		databackup = (HashMap)request.getSession().getAttribute("DATAPAGINADOR");
+
+		//Realiza la recuperación de los datos.
+	   if ((request.getSession().getAttribute("DATAPAGINADOR")!=null)||(request.getSession().getAttribute("DATAPAGINADOR")==null)){		   
+	 	/*databackup = (HashMap)request.getSession().getAttribute("DATAPAGINADOR");
 			     PaginadorBind paginador = (PaginadorBind)databackup.get("paginador");
 			     Vector datos=new Vector();
+			     //Si no es la primera llamada, obtengo la página del request y la busco con el paginador
+			     String pagina = (String)request.getParameter("pagina");
 			
-			
-			//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
-			String pagina = (String)request.getParameter("pagina");
-			
-			 
-			
-		 if (paginador!=null){	
-			if (pagina!=null){
-				datos = paginador.obtenerPagina(Integer.parseInt(pagina));
-			}else{// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
-				datos = paginador.obtenerPagina((paginador.getPaginaActual()));
-			}
-		 }	
-			
-			
-			
-			databackup.put("paginador",paginador);
-			databackup.put("datos",datos);
-			
-				
-			
-			
-	  }else{	
-			
+			     if (paginador!=null){	
+			    	 if (pagina!=null)
+			    		 datos = paginador.obtenerPagina(Integer.parseInt(pagina));
+			    	 else// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
+			    		 datos = paginador.obtenerPagina((paginador.getPaginaActual()));			    	 
+			     }	
+			     databackup.put("paginador",paginador);
+			     databackup.put("datos",datos);	   
+			     
+	 
+	   } else {*/				
 	  	    databackup=new HashMap();
-			
 			//obtengo datos de la consulta 			
-		PaginadorBind resultado = null;
-		Vector datos = null;
-		
-        ScsDefinirSOJAdm sojAdm=new ScsDefinirSOJAdm(this.getUserBean(request));
-		resultado=sojAdm.getBusquedaSOJ((String)usr.getLocation(),miHash);
-		
-		
-			
-		
-		databackup.put("paginador",resultado);
-		if (resultado!=null){ 
-		   datos = resultado.obtenerPagina(1);
-		   databackup.put("datos",datos);
-		   request.getSession().setAttribute("DATAPAGINADOR",databackup);
-		} 
-		
-		
-	
-		
-				
+	  	    PaginadorBind resultado = null;
+	  	    Vector datos = null;		
+	  	    ScsDefinirSOJAdm sojAdm=new ScsDefinirSOJAdm(this.getUserBean(request));
+	  	    resultado=sojAdm.getBusquedaSOJ((String)usr.getLocation(),miHash);
+		    databackup.put("paginador",resultado);
+	  	    
+		    if (resultado!=null){ 
+	  	    	datos = resultado.obtenerPagina(1);
+	  	    	databackup.put("datos",datos);
+	  	    	request.getSession().setAttribute("DATAPAGINADOR",databackup);
+	  	    } 
 	  }
+	   
 //	  En "DATOSFORMULARIO" almacenamos el identificador del letrado			 			 
 		miHash.put("BUSQUEDAREALIZADA","1");
-		request.getSession().setAttribute("DATOSFORMULARIO",miHash);
-		
+		request.getSession().setAttribute("DATOSFORMULARIO",miHash);		
 	} catch (SIGAException e1) {
 		// Excepcion procedente de obtenerPagina cuando se han borrado datos
 		 borrarPaginador(request, paginadorPenstania);
@@ -653,8 +634,6 @@ public class DefinirExpedientesSOJAction extends MasterAction {
 		request.getSession().removeAttribute("accion");
 		request.getSession().removeAttribute("resultadoTelefonos");
 		return "inicio";
-	}
-	
-	
+	}	
 
 }
