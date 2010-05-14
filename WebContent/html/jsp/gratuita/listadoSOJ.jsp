@@ -119,8 +119,8 @@
 		   nombre="listadoSOJ"
 		   borde="2"
 		   clase="tableTitle"		   
-		   nombreCol="gratuita.busquedaSOJ.literal.apertura, gratuita.busquedaSOJ.literal.turno, gratuita.busquedaSOJ.literal.guardia, gratuita.busquedaSOJ.literal.anyo, gratuita.busquedaSOJ.literal.codigo, gratuita.busquedaSOJ.literal.tipoSOJ, gratuita.busquedaSOJ.literal.SOJColegio, gratuita.busquedaSOJ.literal.estadoSOJ, "
-		   tamanoCol="10,17,17,4,7,11,12,10,11"
+		   nombreCol="gratuita.busquedaSOJ.literal.apertura, gratuita.busquedaSOJ.literal.turno, gratuita.busquedaSOJ.literal.guardia, gratuita.busquedaSOJ.literal.nombreSolicitante,gratuita.busquedaSOJ.literal.anyo, gratuita.busquedaSOJ.literal.codigo, gratuita.busquedaSOJ.literal.tipoSOJ, gratuita.busquedaSOJ.literal.SOJColegio,gratuita.busquedaSOJ.literal.estadoSOJ,"
+		   tamanoCol="7,16,16,16,4,5,9,9,8"
 		   alto="258" 
 		   activarFilaSel="true" 
 		   ajustePaginador="true">
@@ -139,7 +139,7 @@
 				//Hashtable fila = (Hashtable)obj.get(recordNumber-1);
 				// Comprobamos el estado del idfacturacion
 				String idFacturacion =  (String)registro.get("IDFACTURACION");;
-				
+				String nombre=  (String)registro.get("NOMBRE");
 				if(idFacturacion==null||idFacturacion.equals("")) botones = "C,E,B";
 				else botones = "C,B";
 				
@@ -191,11 +191,12 @@
 					<%=GstDate.getFormatedDateShort("",registro.get(ScsSOJBean.C_FECHAAPERTURA).toString())%>&nbsp;</td>
 					<td><%=UtilidadesString.mostrarDatoJSP(nombreTurno)%></td>
 					<td><%=UtilidadesString.mostrarDatoJSP(nombreGuardia)%></td>
+					<td><%=UtilidadesString.mostrarDatoJSP(nombre)%></td>
 					<td><%=UtilidadesString.mostrarDatoJSP(registro.get(ScsSOJBean.C_ANIO))%></td>
 					<td><%=CODIGO%></td>
 					<td><%=UtilidadesString.mostrarDatoJSP(descTipoSoj)%></td>
 					<td><%=UtilidadesString.mostrarDatoJSP(descTipoSojColegio)%></td>
-					<td><%if (registro.get(ScsSOJBean.C_ESTADO).toString().equalsIgnoreCase("A")) {%><siga:Idioma key="gratuita.SOJ.estado.abierto"/><%} else if (registro.get(ScsSOJBean.C_ESTADO).toString().equalsIgnoreCase("P")){%><siga:Idioma key="gratuita.SOJ.estado.pendiente"/><%} else {%><siga:Idioma key="gratuita.SOJ.estado.cerrado"/><%}%></td>
+					<td><%if (registro.get(ScsSOJBean.C_ESTADO).toString().equalsIgnoreCase("A")) {%><siga:Idioma key="gratuita.SOJ.estado.abierto"/><%} else if (registro.get(ScsSOJBean.C_ESTADO).toString().equalsIgnoreCase("P")){%><siga:Idioma key="gratuita.SOJ.estado.pendiente"/><%} else {%><siga:Idioma key="gratuita.SOJ.estado.cerrado"/><%}%></td>					
 				</siga:FilaConIconos>		
 			<% 	recordNumber++;		   
 			} %>
