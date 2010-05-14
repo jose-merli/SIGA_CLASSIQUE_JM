@@ -409,7 +409,8 @@ public class ScsDefinirSOJAdm extends MasterBeanAdministrador {
 		   " soj.IDGUARDIA,"+
 		  
 		   " soj.IDTIPOSOJCOLEGIO, "+
-		   " soj.SUFIJO"+
+		   " soj.SUFIJO,"+
+		   " (cenper.nombre || ', ' || cenper.apellidos1||' '|| cenper.apellidos2) as nombre"+
 		   //" guardia.IDGUARDIA," +
 	       //" guardia.NOMBRE AS NOMBREGUARDIA," +
 	       //" tiposoj.DESCRIPCION AS DESCRIPCION," +
@@ -418,7 +419,8 @@ public class ScsDefinirSOJAdm extends MasterBeanAdministrador {
 	 // " SCS_TURNO          turno," +
 	  //     " SCS_GUARDIASTURNO  guardia," +
 	       " CEN_COLEGIADO      letrado," +
-	       " SCS_PERSONAJG      persona" +
+	       " SCS_PERSONAJG      persona," +
+	       " cen_persona        cenper"+
 	  //     " SCS_TIPOSOJ        tiposoj," +
 	  //     " SCS_TIPOSOJCOLEGIO tiposojcolegio" +
 	       " where " +
@@ -434,7 +436,9 @@ public class ScsDefinirSOJAdm extends MasterBeanAdministrador {
 	  // "    and soj.IDINSTITUCION = tiposojcolegio.IDINSTITUCION(+)" +
 	  // "    and soj.IDTIPOSOJCOLEGIO = tiposojcolegio.IDTIPOSOJCOLEGIO(+)" +
 	   " and soj.IDINSTITUCION = letrado.IDINSTITUCION (+)" +
-	   " and soj.IDPERSONA = letrado.IDPERSONA (+)" ;
+	   " and soj.IDPERSONA = letrado.IDPERSONA (+)" +
+	   " and soj.idpersona = cenper.idpersona(+)";
+			
 	   contador++;
 	   codigosBind.put(new Integer(contador),idInstitucion);		
 	   consulta+=" and soj.IDINSTITUCION=:"+contador;
