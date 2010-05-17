@@ -48,13 +48,17 @@
 <!--				<field 	property = "poblacion" 			   depends = "required"> 			<arg0 key="censo.SolicitudIncorporacion.literal.poblacion"/> 				</field> -->
 <!--				<field 	property = "provincia" 			   depends = "required"> 			<arg0 key="censo.SolicitudIncorporacion.literal.provincia"/> 					</field> -->
 				<!-- RGG 20-10-2005 <field 	property = "estadoCivil" 			   depends = "required"> 			<arg0 key="censo.SolicitudIncorporacion.literal.estadoCivil"/> 					</field> -->
-				<field 	property = "CP" depends = "required,maxlength"> 	
+				<field 	property = "CP" depends = "required,maxlength,mask"> 	
 					<arg0 key="censo.SolicitudIncorporacion.literal.codigoPostal"/>
 					<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
 					<var>
 						<var-name>maxlength</var-name>
 						<var-value>5</var-value>
 					</var>
+					<var>
+						<var-name>mask</var-name>
+						<var-value>^[0-9]*$</var-value>
+		            </var>
 				</field>
 				<field 	property = "telefono1" 				depends = "required,  mask"> 
 						<msg name="mask" key="errors.telefono"/>		
@@ -2062,7 +2066,19 @@
                     </var>              
                         </field>
             
-            <field property = "direccion" depends = "maxlength">
+			<field 	property = "codigoPostal" depends = "maxlength,mask"> 	
+					<arg0 key="gratuita.operarDatosBeneficiario.literal.codigoPostal"/>
+					<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+					<var>
+						<var-name>maxlength</var-name>
+						<var-value>5</var-value>
+					</var>
+					<var>
+						<var-name>mask</var-name>
+						<var-value>^[0-9]*$</var-value>
+		            </var>
+			</field>
+			<field property = "direccion" depends = "maxlength">
                 <arg0 key="gratuita.operarDatosBeneficiario.literal.direccion"/>
                 <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
                 <var>
@@ -2170,7 +2186,18 @@
 				</var>
 			</field>
 		
-		
+			<field 	property = "cp" depends = "maxlength,mask"> 	
+					<arg0 key="gratuita.personaJG.literal.cp"/>
+					<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+					<var>
+						<var-name>maxlength</var-name>
+						<var-value>5</var-value>
+					</var>
+					<var>
+						<var-name>mask</var-name>
+						<var-value>^[0-9]*$</var-value>
+		            </var>
+			</field>		
 			<field property="direccion" depends="maxlength">
 				<arg0 key="gratuita.personaJG.literal.direccion" />
 				<arg1 key="${var:maxlength}" name="maxlength" resource="false" />
@@ -2362,7 +2389,18 @@
                     </var>              
                         </field>
             
-            
+           <field 	property = "codigoPostal" depends = "maxlength,mask"> 	
+					<arg0 key="gratuita.operarDatosBeneficiario.literal.codigoPostal"/>
+					<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+					<var>
+						<var-name>maxlength</var-name>
+						<var-value>5</var-value>
+					</var>
+					<var>
+						<var-name>mask</var-name>
+						<var-value>^[0-9]*$</var-value>
+		            </var>
+			</field>
             <field property = "direccion" depends = "maxlength">
                 <arg0 key="gratuita.operarDatosBeneficiario.literal.direccion"/>            
                 <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
@@ -2547,7 +2585,18 @@
                     </var>              
                         </field>
             
-            
+            <field 	property = "codigoPostal" depends = "maxlength,mask"> 	
+					<arg0 key="gratuita.operarDatosBeneficiario.literal.codigoPostal"/>
+					<arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+					<var>
+						<var-name>maxlength</var-name>
+						<var-value>5</var-value>
+					</var>
+					<var>
+						<var-name>mask</var-name>
+						<var-value>^[0-9]*$</var-value>
+		            </var>
+			</field>
             <field property = "direccion" depends = "maxlength">
                 <arg0 key="gratuita.operarDatosBeneficiario.literal.direccion"/>
                 <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
