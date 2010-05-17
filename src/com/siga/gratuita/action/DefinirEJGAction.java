@@ -394,7 +394,8 @@ public class DefinirEJGAction extends MasterAction
 			miHash.put("numeroEJG", miHash.get(ScsEJGBean.C_NUMERO));
 			
 			// titulo
-			miHash.put("tituloE","gratuita.busquedaEJG.interesado");
+			//miHash.put("tituloE","gratuita.busquedaEJG.interesado");
+			miHash.put("tituloE","pestana.justiciagratuitaejg.solicitante");
 			miHash.put("localizacionE","gratuita.busquedaEJG.localizacion");
 			// accion
 			miHash.put("accionE","editar");

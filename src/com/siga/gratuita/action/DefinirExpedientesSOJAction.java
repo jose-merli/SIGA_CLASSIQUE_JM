@@ -276,7 +276,7 @@ public class DefinirExpedientesSOJAction extends MasterAction {
 		miHash.put("anioSOJ",anio);
 		miHash.put("numeroSOJ",numero);
 		// titulo
-		miHash.put("tituloE","gratuita.busquedaSOJ.beneficiarios");
+		miHash.put("tituloE","pestana.justiciagratuitasoj.solicitante");
 		miHash.put("localizacionE","gratuita.busquedaSOJ.localizacion");
 		// accion
 		miHash.put("accionE","editar");
@@ -380,7 +380,7 @@ public class DefinirExpedientesSOJAction extends MasterAction {
 		miHash.put("anioSOJ",anio);
 		miHash.put("numeroSOJ",numero);
 		// titulo
-		miHash.put("tituloE","gratuita.busquedaSOJ.beneficiarios");
+		miHash.put("tituloE","pestana.justiciagratuitasoj.solicitante");
 		miHash.put("localizacionE","gratuita.busquedaSOJ.localizacion");
 		// accion
 		miHash.put("accionE","ver");
