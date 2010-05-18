@@ -106,14 +106,14 @@
 	} else if (idEstado == 1) {
 		if (cajgConfig != 0) {
 			buttons="g";//guardar
-			if (isPCajgTXT) {
+			if (isPCajgTXT || cajgConfig == 2) {//QUITAR EL == 2 CUANDO SEA DEFINITIVO EL ENVIO XML
 				buttons+=",d";//descargar
 			}
 		}
 	} else if (idEstado == 2) {//enviada
 		if (cajgConfig != 0) {
 			buttons="g";//guardar
-			if (isPCajgTXT) {
+			if (isPCajgTXT || cajgConfig == 2) {//QUITAR EL == 2 CUANDO SEA DEFINITIVO EL ENVIO XML
 				buttons+=",d";
 			} else if (cajgConfig == 2 && !SIGAWSClientAbstract.isRespondida(idInstitucion, Integer.parseInt(idremesa))) {
 				buttons+=",respFTP";//obtener respuesta

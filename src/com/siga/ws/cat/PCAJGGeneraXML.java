@@ -1199,7 +1199,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		String pathFichero = p.returnProperty(keyPathFicheros) + p.returnProperty(keyPath2);
 		String pathPlantillas = p.returnProperty(keyPathPlantillas) + p.returnProperty(keyPath2);
 		
-		String dirFicheros = pathFichero + File.separator + getIdInstitucion()  + File.separator + getIdRemesa() + File.separator + "xml";
+		String dirFicheros = pathFichero + File.separator + getIdInstitucion()  + File.separator + getIdRemesa();
 		String dirPlantillas = pathPlantillas + File.separator + getIdInstitucion();
 
 		UserTransaction tx = usr.getTransaction();
@@ -1208,6 +1208,8 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		if (isGeneraTXT()) {
 			generaTXT(dirFicheros);
 		}
+		
+		dirFicheros = dirFicheros + File.separator + "xml";
 		
 		try {
 			
@@ -1274,7 +1276,8 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	 */
 	private void generaTXT(String pathFichero) {
 		
-		String nombreFichero = getIdInstitucion() + "_" + getIdRemesa() + "_TXT_BackupXML";
+		String nombreFichero = getIdInstitucion() + "_" + getIdRemesa() + "_TXT";		
+		
 		StringBuffer mensaje = new StringBuffer();		
 		DefinirRemesasCAJGAction definirRemesasCAJGAction = new DefinirRemesasCAJGAction();
 		try {
