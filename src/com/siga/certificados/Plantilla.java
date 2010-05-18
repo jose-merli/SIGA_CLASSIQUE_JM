@@ -1978,8 +1978,10 @@ public class Plantilla {
 			    					else{
 					    				if (etiqueta.equalsIgnoreCase("DESGLOSE_GUARDIAS")){
 					    					
-					    					// Genero lineas de desglose
-					    					Enumeration listaLineas=datos.elements();
+					    					// Genero lineas de desglose					    					
+					    					Vector listaLineas= new Vector();
+					    					listaLineas=datos;
+					    					
 					    					// Abro el fichero con las plantillas de las lineas
 				    						File plantillaLinea = new File(rutaPlantilla+"plantillaLineaListaGuardias.fo");
 				    					    if (!plantillaLinea.exists()){
@@ -1993,8 +1995,9 @@ public class Plantilla {
 				    						    }
 				    						    else{			    						    	
 							    					int j=0;
-							    					while ((listaLineas.hasMoreElements())&&(j<numeroLineas)){
-							    						Hashtable lineaGuardia=(Hashtable)listaLineas.nextElement();
+							    					
+							    					for (j=0; j<listaLineas.size(); j++){		    						
+							    					   Hashtable lineaGuardia=(Hashtable)listaLineas.get(j);
 							    						// Aplicacion de la plantilla de lineas en las facturas
 					    								bufferLecturaLinea = new BufferedReader(new FileReader(plantillaLinea));
 					    								linea=bufferLecturaLinea.readLine();
@@ -2002,12 +2005,11 @@ public class Plantilla {
 					    						    		Vector detectadasLinea=new Vector();				    						    		
 					    						    		detectadasLinea=plantilla.deteccionEtiquetas(linea);
 					    						    		if (!detectadasLinea.isEmpty()){
-					    						    			Enumeration listaEtiquetasLinea=detectadasLinea.elements();
-					    						    			while (listaEtiquetasLinea.hasMoreElements()){
-					    						    				
-					    						    				
-					    						    				String etiquetaLinea=(String)listaEtiquetasLinea.nextElement();
-					    					    					linea=sustitucionEtiquetaDesgloseGuardias(lineaGuardia,etiquetaLinea,inicioPeriodo,finPeriodo);
+					    						    			Vector listaEtiquetasLinea= new Vector();
+					    						    			listaEtiquetasLinea=detectadasLinea;
+					    						    				for (int i=0; i<listaEtiquetasLinea.size(); i++){
+					    						    				String etiquetaLinea=(String)listaEtiquetasLinea.get(i);
+					    						    				linea=sustitucionEtiquetaDesgloseGuardias(lineaGuardia,etiquetaLinea,inicioPeriodo,finPeriodo);
 					    							    			printer.println(linea);
 					    						    			}
 					    						    		}
@@ -2016,8 +2018,7 @@ public class Plantilla {
 					    						    		}
 						    								linea=bufferLecturaLinea.readLine();
 					    						    	}
-					    						    	bufferLecturaLinea.close();
-							    					    j++;
+					    						    	bufferLecturaLinea.close();							    					 
 							    					}
 				    						    }
 				    					    }
