@@ -574,7 +574,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 	 * @return  Vector - Filas seleccionadas  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	public Vector getDatosListaGuardias (String institucion,
+	public Vector getDatosListaGuardias (String institucion,String idlista,
 										 Vector guardias,
 										 String fechaInicio,
 										 String fechaFin)
@@ -685,13 +685,13 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
         					codigos.put(new Integer(contador),institucion);
         					
         					sql += " F_SIGA_FECHAFINSOLICITANTE(:"+contador+","+ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDTURNO+","+ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDGUARDIA+","+
-	                                         "guardias2.idpersona, guardias2.fechainicio, guardias2.idcalendarioguardias)) AS FECHA_FIN";	
+	                                         "guardias2.idpersona, guardias2.fechainicio, guardias2.idcalendarioguardias)) AS FECHA_FIN,  SCS_INCLUSIONGUARDIASENLISTAS.ORDEN";	
 											
 					   
 	                                         
 							sql+=		" FROM " + ScsGuardiasTurnoBean.T_NOMBRETABLA + "," + CenPersonaBean.T_NOMBRETABLA + "," +  
 											  	   ScsCabeceraGuardiasBean.T_NOMBRETABLA + " guardias2, " +ScsTurnoBean.T_NOMBRETABLA+ 
-											  	   ", "+CenColegiadoBean.T_NOMBRETABLA+
+											  	   ", "+CenColegiadoBean.T_NOMBRETABLA+ ","+ ScsInclusionGuardiasEnListasBean.T_NOMBRETABLA+
 											   
 									" WHERE " +
 									ScsGuardiasTurnoBean.T_NOMBRETABLA +"."+ ScsGuardiasTurnoBean.C_IDINSTITUCION + "=guardias2." +ScsCabeceraGuardiasBean.C_IDINSTITUCION +
@@ -753,19 +753,16 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 	         	               }
 	         	               sql += aux + ")";
 	         	            }
-	         	           
-	         	     
-//								
-									
+	         	            sql += " AND " +ScsGuardiasTurnoBean.T_NOMBRETABLA +"."+ ScsGuardiasTurnoBean.C_IDINSTITUCION +"="+ScsInclusionGuardiasEnListasBean.T_NOMBRETABLA+"."+ScsInclusionGuardiasEnListasBean.C_IDINSTITUCION+
+	         	             " AND " +ScsGuardiasTurnoBean.T_NOMBRETABLA +"."+ ScsGuardiasTurnoBean.C_IDTURNO+"="+ScsInclusionGuardiasEnListasBean.T_NOMBRETABLA+"."+ScsInclusionGuardiasEnListasBean.C_IDTURNO+
+	         	             " AND " +ScsGuardiasTurnoBean.T_NOMBRETABLA +"."+ ScsGuardiasTurnoBean.C_IDGUARDIA+"="+ScsInclusionGuardiasEnListasBean.T_NOMBRETABLA+"."+ScsInclusionGuardiasEnListasBean.C_IDGUARDIA+	         	          
+	         	             " AND SCS_INCLUSIONGUARDIASENLISTAS.IDLISTA ="+idlista;
+	         						
 							/*  sql += "GROUP BY TURNO, GUARDIA, LETRADO, FECHA_INICIO,FECHA_FIN" +
 							  		",OFICINA1, OFICINA2, RESIDENCIA, MOVIL,  FAX1,  FAX2 " +
 							  " ORDER BY FECHA_INICIO,FECHA_FIN, TURNO, GUARDIA, LETRADO";*/
 							
-
-							  
-				  
-							  
-	            if (rc.findBind(sql,codigos)) {
+			    if (rc.findBind(sql,codigos)) {
 	               for (int i = 0; i < rc.size(); i++){
 	                  Row fila = (Row) rc.get(i);
 	                  Hashtable resultado=fila.getRow();	
@@ -777,6 +774,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 						idguardia = (String)resultado.get(ScsGuardiasTurnoBean.C_IDGUARDIA);
 						idpersona = (String)resultado.get("IDPERSONA");
 						idcalendarioguardias = (String)resultado.get("IDCALENDARIOGUARDIAS");
+						String orden = (String)resultado.get("ORDEN"); 
 						String fechaInicioPK = (String)resultado.get("FECHA_INICIO");
 						String fechaFinPK = (String)resultado.get("FECHA_FIN");
 
@@ -876,11 +874,9 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 						resultado.put("FECHA_FIN", fFin);*/
 				  
 						
-						String keyTreeMap = fechaInicioPK+fechaFinPK+turno+guardia+letrado.toLowerCase();
+						String keyTreeMap = fechaInicioPK+orden+turno+guardia+letrado.toLowerCase();
 						tmListaGuardias.put(keyTreeMap, resultado);
-						
-						
-	                 
+													                 
 	               }
 	               Iterator iteLista = tmListaGuardias.keySet().iterator();
 					while (iteLista.hasNext()) {

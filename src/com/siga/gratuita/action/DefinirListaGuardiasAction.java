@@ -738,7 +738,9 @@ public class DefinirListaGuardiasAction extends MasterAction {
 			paramBusqueda.put(ScsInclusionGuardiasEnListasBean.C_IDINSTITUCION,miForm.getIdInstitucion());
 			paramBusqueda.put(ScsInclusionGuardiasEnListasBean.C_IDLISTA,miForm.getIdLista());
 			Vector listasIncluidas=admIGL.select(paramBusqueda);
+			String idlista=miForm.getIdLista();
 							
+			
 			Enumeration listaResultados=listasIncluidas.elements();
 			
 			// Generacion de cartas propiamente dichas
@@ -821,7 +823,7 @@ public class DefinirListaGuardiasAction extends MasterAction {
 				}
 
 				// RGG
-				datos = admGT.getDatosListaGuardias(institucion,guardias,fechaInicio,fechaFin);  
+				datos = admGT.getDatosListaGuardias(institucion,idlista,guardias,fechaInicio,fechaFin);  
 				
 				
 //				 Comentado por PDM
