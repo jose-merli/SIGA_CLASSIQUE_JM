@@ -134,11 +134,7 @@
 			&& ((conceptoE.equals(PersonaJGAction.EJG) || conceptoE
 					.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)
 			/*|| conceptoE.equals(PersonaJGAction.PERSONAJG)*/))) {
-		obligatorioDireccion = true;
-		obligatorioTipoIdentificador = true;
-		obligatorioIdentificador = true;
-		if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR))
-			obligatorioParentesco = true;
+		// Nada de momento
 	} else if ((pcajgActivo == 2)
 			&& ((conceptoE.equals(PersonaJGAction.EJG) || conceptoE
 					.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)
