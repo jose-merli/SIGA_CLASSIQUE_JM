@@ -2900,7 +2900,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    }
 	    
 	    final String separador = ClsConstants.SEPARADOR; 
-        String sLineaCabecera = "IDENVIO"+separador+"NIF/CIF"+separador+"NOMBRE"+separador+"APELLIDO 1"+separador+"APELLIDO 2"+separador+"FAX 1"+separador+"FAX 2"+separador+"MOVIL"+separador+"CORREO ELECTRONICO"+separador+"DOMICILIO"+separador+"PROVINCIA"+separador+"POBLACION"+separador+"PAIS"+separador+"MENSAJE"+separador;
+        String sLineaCabecera = "ENVIO"+separador+"NIF/CIF"+separador+"NOMBRE"+separador+"APELLIDO 1"+separador+"APELLIDO 2"+separador+"FAX 1"+separador+"FAX 2"+separador+"MOVIL"+separador+"CORREO ELECTRONICO"+separador+"DOMICILIO"+separador+"PROVINCIA"+separador+"POBLACION"+separador+"PAIS"+separador+"MENSAJE"+separador;
         CenPersonaAdm admPer = new CenPersonaAdm(this.usrbean);
         CenPoblacionesAdm admPob = new CenPoblacionesAdm(this.usrbean);
         CenProvinciaAdm admPro = new CenProvinciaAdm(this.usrbean);
