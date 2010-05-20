@@ -4666,6 +4666,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 				    }
 	        
 		            String sTo = destBean.getCorreoElectronico();
+		            if(sTo==null ||sTo.trim().equals(""))
+		            	throw new SIGAException("messages.envios.errorSinEmail");
 		            
 		            //Se crea un nuevo Mensaje.
 		    	    MimeMessage mensaje = new MimeMessage(sesion);
