@@ -536,17 +536,7 @@ public class SolicitudIncorporacionAction extends MasterAction
 					mensInformacion = admCli.getError();
 				mensInformacion = mensInformacion.equals ("") ? "messages.updated.success" : mensInformacion;
 				
-				//lanzando el proceso de revision de suscripciones del letrado 
-				String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado
-						(beanCli.getIdInstitucion ().toString (), 
-						beanCli.getIdPersona ().toString(), 
-						"", 
-						""+this.getUserName (request));
 				
-				if ((resultado == null) || (!resultado[0].equals("0")))
-					throw new ClsExceptions ("Error al ejecutar el PL " +
-							"PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO");
-
 				// Comprobamos que se den las condiciones idoneas para crear la cuenta
 
 				//Creamos la cuenta bancaria
@@ -570,6 +560,20 @@ public class SolicitudIncorporacionAction extends MasterAction
 					!cuentaBean.getNumeroCuenta().equalsIgnoreCase("") &&
 					!cuentaBean.getTitular().equalsIgnoreCase(""))
 						cuentaAdm.insert(cuentaBean);
+				
+				
+				//lanzando el proceso de revision de suscripciones del letrado 
+				String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado
+						(beanCli.getIdInstitucion ().toString (), 
+						beanCli.getIdPersona ().toString(), 
+						"", 
+						""+this.getUserName (request));
+				
+				if ((resultado == null) || (!resultado[0].equals("0")))
+					throw new ClsExceptions ("Error al ejecutar el PL " +
+							"PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO");
+
+				
 
 				
 				//cargando la peticion para el reenvio
