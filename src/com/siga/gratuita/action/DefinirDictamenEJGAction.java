@@ -113,11 +113,12 @@ public class DefinirDictamenEJGAction extends MasterAction {
 			// Actualizamos en la base de datos
 			tx=usr.getTransaction();
 			tx.begin();
-			admEJG.update(nuevos,(Hashtable)request.getSession().getAttribute("DATABACKUP"));
+			Hashtable old = (Hashtable)request.getSession().getAttribute("DATABACKUPDICT");
+			admEJG.update(nuevos,old);
 			tx.commit();
 			// En DATABACKUP almacenamos los datos más recientes por si se vuelve a actualizar seguidamente
 			nuevos.put("FECHAMODIFICACION", "sysdate");
-			request.getSession().setAttribute("DATABACKUP",nuevos);			
+			request.getSession().setAttribute("DATABACKUPDICT",nuevos);			
 		} catch (Exception e) {
 			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 
 		}
@@ -145,7 +146,7 @@ public class DefinirDictamenEJGAction extends MasterAction {
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		
 		/* "DATABACKUP" se usa habitualmente así que en primer lugar borramos esta variable */		
-		request.getSession().removeAttribute("DATABACKUP");
+		//request.getSession().removeAttribute("DATABACKUPDICT");
 		
 		
 		Vector v = new Vector ();
@@ -161,7 +162,7 @@ public class DefinirDictamenEJGAction extends MasterAction {
 		
 		try {			
 			v = admEJG.selectPorClave(miHash);
-			request.getSession().setAttribute("DATABACKUP",admEJG.beanToHashTable((ScsEJGBean)v.get(0)));			
+			request.getSession().setAttribute("DATABACKUPDICT",admEJG.beanToHashTable((ScsEJGBean)v.get(0)));			
 		} catch (Exception e) {
 			   throwExcp("messages.general.error",e,null);
 		}

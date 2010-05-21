@@ -26,7 +26,7 @@
 	HttpSession ses=request.getSession();
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");	
 	
-	Hashtable miHash = (Hashtable)ses.getAttribute("DATABACKUP");
+	Hashtable miHash = (Hashtable)ses.getAttribute("DATABACKUPDICT");
 	String accion = (String)ses.getAttribute("accion");
 	String modo = (String)request.getAttribute("MODO");
 	String dato[] = {(String)usr.getLocation()};
