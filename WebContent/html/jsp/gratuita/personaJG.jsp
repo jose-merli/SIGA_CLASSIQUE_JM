@@ -191,7 +191,10 @@
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>	
 
 	<script type="text/javascript">
-		
+
+	String.prototype.trim = function() {
+		return this.replace(/^\s+|\s+$/g,"");
+	}
 		
 		function validarCampoPoblacion()	{				
 			if(document.forms[0].poblacion.value == "") {
@@ -2024,10 +2027,10 @@ function limpiarPersonaContrario() {
 			var tipoIdent=document.forms[0].tipoId.value;
 			var numId=document.forms[0].NIdentificacion.value;
 						
-			document.forms[0].importeIngresosAnuales.value=document.forms[0].importeIngresosAnuales.value.replace(/,/,".");
-			document.forms[0].importeBienesInmuebles.value=document.forms[0].importeBienesInmuebles.value.replace(/,/,".");
-			document.forms[0].importeBienesMuebles.value=document.forms[0].importeBienesMuebles.value.replace(/,/,".");
-			document.forms[0].importeOtrosBienes.value=document.forms[0].importeOtrosBienes.value.replace(/,/,".");
+			document.forms[0].importeIngresosAnuales.value=document.forms[0].importeIngresosAnuales.value.replace(/,/,".").trim();
+			document.forms[0].importeBienesInmuebles.value=document.forms[0].importeBienesInmuebles.value.replace(/,/,".").trim();
+			document.forms[0].importeBienesMuebles.value=document.forms[0].importeBienesMuebles.value.replace(/,/,".").trim();
+			document.forms[0].importeOtrosBienes.value=document.forms[0].importeOtrosBienes.value.replace(/,/,".").trim();
 		 	document.forms[0].action="<%=app + actionE%>";	
 			document.forms[0].modo.value='guardarEJG';
 			document.forms[0].target="submitArea2";
@@ -2138,11 +2141,11 @@ function limpiarPersonaContrario() {
 		   	var tipoIdent=document.forms[0].tipoId.value;
 			var numId=document.forms[0].NIdentificacion.value;
 				
-			document.forms[0].importeIngresosAnuales.value=document.forms[0].importeIngresosAnuales.value.replace(/,/,".");
-			document.forms[0].importeBienesInmuebles.value=document.forms[0].importeBienesInmuebles.value.replace(/,/,".");
-			document.forms[0].importeBienesMuebles.value=document.forms[0].importeBienesMuebles.value.replace(/,/,".");
-			document.forms[0].importeOtrosBienes.value=document.forms[0].importeOtrosBienes.value.replace(/,/,".");
-		 	document.forms[0].action="<%=app + actionE%>";	
+			document.forms[0].importeIngresosAnuales.value=document.forms[0].importeIngresosAnuales.value.replace(/,/,".").trim();
+			document.forms[0].importeBienesInmuebles.value=document.forms[0].importeBienesInmuebles.value.replace(/,/,".").trim();
+			document.forms[0].importeBienesMuebles.value=document.forms[0].importeBienesMuebles.value.replace(/,/,".").trim();
+			document.forms[0].importeOtrosBienes.value=document.forms[0].importeOtrosBienes.value.replace(/,/,".").trim();
+			document.forms[0].action="<%=app + actionE%>";	
 			document.forms[0].modo.value='guardarEJG';
 			document.forms[0].target="submitArea2";
 			var tipo = document.forms[0].tipo.value;
@@ -2156,38 +2159,34 @@ function limpiarPersonaContrario() {
 			}
 			if(document.forms[0].NIdentificacion.value=="") document.forms[0].tipoId.value = "";
 			
-			var envio=1;
-				if (isNaN(document.forms[0].importeIngresosAnuales.value)){
-				 
+				var envio=1;
+				if (isNaN(document.forms[0].importeIngresosAnuales.value)||
+						document.forms[0].importeIngresosAnuales.value>99999999.99){
 					alert("<siga:Idioma key='gratuita.personaJG.messages.IngresosAnuales'/>");
 					envio=-1;
 					fin();
 					return false;
-					
 				}
-				if (isNaN(document.forms[0].importeBienesInmuebles.value)){
-				 
+				if (isNaN(document.forms[0].importeBienesInmuebles.value)||
+						document.forms[0].importeBienesInmuebles.value>99999999.99){
 					alert("<siga:Idioma key='gratuita.personaJG.messages.BienesInmuebles'/>");
 					envio=-1;
 					fin();
 					return false;
-					
 				}
-					if (isNaN(document.forms[0].importeBienesMuebles.value)){
-					
+					if (isNaN(document.forms[0].importeBienesMuebles.value)||
+							document.forms[0].importeBienesMuebles.value>99999999.99){
 					alert("<siga:Idioma key='gratuita.personaJG.messages.BienesMuebles'/>");
 					envio=-1;
 					fin();
 					return false;
-					
 				}
-				if (isNaN(document.forms[0].importeOtrosBienes.value)){
-				
+				if (isNaN(document.forms[0].importeOtrosBienes.value)||
+						document.forms[0].importeOtrosBienes.value>99999999.99){
 					alert("<siga:Idioma key='gratuita.personaJG.messages.OtrosBienes'/>");
 					envio=-1;
 					fin();
 					return false;
-					
 				}
 												
 			if (tipo=="F" && (tipoId!="" && tipoId!="50" && tipoId!="10" && tipoId!="30" && tipoId!="40")) {
