@@ -173,7 +173,6 @@
 		obligatorioParentesco = true;
 		obligatorioNacionalidad = true;
 		obligatorioCodigoPostal = true;
-		obligatorioTipoIdentificador = true;
 	}
 
 %>	
