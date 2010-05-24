@@ -1130,12 +1130,15 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		String key = getKey(new Object[]{getIdInstitucion(), anyo, numero, idTipoEJG});
 		List list = (List) htMarcasExpediente.get(key);
 		
-		if (list != null) {
-			MarcasExpediente marcasExpediente = datosExpediente.addNewMarcasExpediente();
+		if (list != null && list.size() > 0) {
+			MarcasExpediente marcasExpediente = null;
 			for (int i = 0; i < list.size(); i++) {
 				Hashtable ht = (Hashtable) list.get(i);
 				String st = getString((String)ht.get(DE_ME_ME_VALORMARCAEXPEDIENTE));
 				if (st != null) {					
+					if (marcasExpediente == null) {
+						marcasExpediente = datosExpediente.addNewMarcasExpediente();
+					}
 					MarcaExpediente marcaExpediente = marcasExpediente.addNewMarcaExpediente();				
 					rellenaTipoElementoTipificadoEstandar(marcaExpediente.addNewMarcaExpediente(), (String)ht.get(DE_ME_ME_MARCAEXPEDIENTE_CDA));
 					marcaExpediente.setValorMarcaExpediente(st);
