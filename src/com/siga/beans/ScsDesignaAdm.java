@@ -1858,7 +1858,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				
 				}
 				if(isSolicitantes){
-					Vector vDefendidos = getDefendidosDesignaSalidaOficio(idInstitucion,numeroDesigna,idTurno,anioDesigna,idPersonaJG);
+					Vector vDefendidos = getDefendidosDesignaSalidaOficio(idInstitucion,numeroDesigna,idTurno,anioDesigna,idPersonaJG, idioma);
 					if(vDefendidos!=null && vDefendidos.size()>0){
 						for (int k = 0; k < vDefendidos.size(); k++) {
 							Hashtable clone = (Hashtable) registro.clone();
@@ -2050,7 +2050,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 	}
 	
 	public Vector getDefendidosDesignaSalidaOficio (String idInstitucion, String numero, 
-			String idTurno, String anio, String idPersonaJG) throws ClsExceptions  
+			String idTurno, String anio, String idPersonaJG, String idioma) throws ClsExceptions  
 	{
 		try {
 			Hashtable h = new Hashtable();
@@ -2064,12 +2064,13 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			h.put(new Integer(8), numero);
 			h.put(new Integer(9), this.usrbean.getLanguage());
 			h.put(new Integer(10), this.usrbean.getLanguage());
-			h.put(new Integer(11), idInstitucion);
-			h.put(new Integer(12), anio);
-			h.put(new Integer(13), idTurno);
-			h.put(new Integer(14), numero);
+			h.put(new Integer(11), idioma);
+			h.put(new Integer(12), idInstitucion);
+			h.put(new Integer(13), anio);
+			h.put(new Integer(14), idTurno);
+			h.put(new Integer(15), numero);
 			if (idPersonaJG!=null && !idPersonaJG.trim().equals("")) {
-				h.put(new Integer(15), idPersonaJG);
+				h.put(new Integer(16), idPersonaJG);
 			}
 			String sql = "SELECT INTERESADO.IDPERSONAJG IDPERSONAINTERESADO,INTERESADO.IDINSTITUCION,"+
 				" INTERESADO.IDTURNO,   INTERESADO.ANIO,   INTERESADO.NUMERO,"+
@@ -2108,14 +2109,15 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				" INTERESADO.OBSERVACIONES AS OBS_INTERESADO,"+
 				" INTERESADO.OBSERVACIONES AS OBS_DEFENDIDO,"+
 				" F_SIGA_GETCODIDIOMA(INTERESADO.IDLENGUAJE) AS CODIGOLENGUAJE,"+
-				" INTERESADO.FECHARESOLUCIONCAJG AS FECHARESOLUCIONCAJG"+			
+				" to_char(INTERESADO.FECHARESOLUCIONCAJG,'dd/mm/yyyy') AS FECHARESOLUCIONCAJG, "+
+				" pkg_siga_fecha_en_letra.F_SIGA_FECHACOMPLETAENLETRA(INTERESADO.FECHARESOLUCIONCAJG,'dma',:11) AS FECHARESOLUCIONCAJGLETRA "+
 				"   FROM V_SIGA_INTERESADOS_DESIGNA    INTERESADO"+
-				" WHERE INTERESADO.IDINSTITUCION = :11"+
-				" and INTERESADO.ANIO = :12"+
-				" and INTERESADO.IDTURNO = :13"+
-				" and INTERESADO.NUMERO = :14";
+				" WHERE INTERESADO.IDINSTITUCION = :12"+
+				" and INTERESADO.ANIO = :13"+
+				" and INTERESADO.IDTURNO = :14"+
+				" and INTERESADO.NUMERO = :15";
 				if (idPersonaJG!=null && !idPersonaJG.trim().equals("")) {
-					sql+= " and INTERESADO.IDPERSONAJG = :15";
+					sql+= " and INTERESADO.IDPERSONAJG = :16";
 				}
 				HelperInformesAdm helperInformes = new HelperInformesAdm();	
 				return helperInformes.ejecutaConsultaBind(sql, h);
