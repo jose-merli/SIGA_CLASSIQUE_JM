@@ -2144,7 +2144,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				"           and ejgdes.NUMERODESIGNA = :18), "+
 				"       DECODE(INTERESADO.FECHARESOLUCIONCAJG, "+
 				"              NULL, "+
-				"              '0', "+
+				"              '', "+
 				"              INTERESADO.FECHARESOLUCIONCAJG)), 'dd/mm/yyyy') AS FECHARESOLUCIONCAJG, "+
 				" pkg_siga_fecha_en_letra.F_SIGA_FECHACOMPLETAENLETRA(DECODE( " +
 				" (select count(EJGDES1.idinstitucion) " +
@@ -2171,7 +2171,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				"       and ejgdes.NUMERODESIGNA = :26), " +
 				"   DECODE(INTERESADO.FECHARESOLUCIONCAJG, " +
 				"          NULL, " +
-				"          '0', " +
+				"          '', " +
 				"          INTERESADO.FECHARESOLUCIONCAJG)), " +
 				" 'dma',  :27) AS FECHARESOLUCIONCAJGLETRA " +
 				"   FROM V_SIGA_INTERESADOS_DESIGNA    INTERESADO"+
