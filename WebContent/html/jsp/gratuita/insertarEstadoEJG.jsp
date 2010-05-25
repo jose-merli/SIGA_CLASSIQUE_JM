@@ -64,17 +64,6 @@
 	      estiloCombo="boxConsulta";
 	      bReadOnly=true;
 		  }
-		   
-		  /*}
-	}else{
-	 estilo="box";
-	 estiloCombo="boxCombo";
-	 bReadOnly=false;
-	 
-	}*/
-		
-		
-		
 	}
 	catch(Exception e){};
 	String dato[] = {(String)usr.getLocation()};	
@@ -85,10 +74,9 @@
 <head>
 	<html:javascript formName="DefinirEstadosEJGForm" staticJavascript="false" />  
   	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
-	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>	
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
-	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 	
 </head>
 
@@ -135,9 +123,9 @@
 		<siga:Idioma key="gratuita.operarEJG.literal.fecha"/>&nbsp;(*)
 	</td>
 	<td>
-		<siga:Fecha nombreCampo="fechaInicio" valorInicial="<%=fechaInicio%>" />
+		<html:textarea property="fechaInicio" styleclass="box" style="width:100;overflow:hidden" rows="1" value="<%=fechaInicio%>" readOnly="true"/>
 		<%if (automatico!=null && !automatico.equals("1")){%>
-		<a onClick="return showCalendarGeneral(fechaInicio);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+			<a onClick="return showCalendarGeneral(fechaInicio);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
 		<%}%>
 		
 	</td>
@@ -207,6 +195,8 @@
 			if (validateDefinirEstadosEJGForm(document.forms[0])){
 			  <%if (modo!=null && modo.equals("editar")){%>
 			    document.forms[0].modo.value="Modificar";
+			  <%}else{%>
+			  document.forms[0].modo.value="Insertar";
 			  <%}%>
 		       	document.forms[0].submit();
 				window.returnValue="MODIFICADO";
