@@ -2064,13 +2064,29 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			h.put(new Integer(8), numero);
 			h.put(new Integer(9), this.usrbean.getLanguage());
 			h.put(new Integer(10), this.usrbean.getLanguage());
-			h.put(new Integer(11), idioma);
-			h.put(new Integer(12), idInstitucion);
-			h.put(new Integer(13), anio);
-			h.put(new Integer(14), idTurno);
-			h.put(new Integer(15), numero);
+			h.put(new Integer(11), idInstitucion);
+			h.put(new Integer(12), anio);
+			h.put(new Integer(13), idTurno);
+			h.put(new Integer(14), numero);
+			h.put(new Integer(15), idInstitucion);
+			h.put(new Integer(16), anio);
+			h.put(new Integer(17), idTurno);
+			h.put(new Integer(18), numero);
+			h.put(new Integer(19), idInstitucion);
+			h.put(new Integer(20), anio);
+			h.put(new Integer(21), idTurno);
+			h.put(new Integer(22), numero);
+			h.put(new Integer(23), idInstitucion);
+			h.put(new Integer(24), anio);
+			h.put(new Integer(25), idTurno);
+			h.put(new Integer(26), numero);
+			h.put(new Integer(27), idioma);
+			h.put(new Integer(28), idInstitucion);
+			h.put(new Integer(29), anio);
+			h.put(new Integer(30), idTurno);
+			h.put(new Integer(31), numero);
 			if (idPersonaJG!=null && !idPersonaJG.trim().equals("")) {
-				h.put(new Integer(16), idPersonaJG);
+				h.put(new Integer(32), idPersonaJG);
 			}
 			String sql = "SELECT INTERESADO.IDPERSONAJG IDPERSONAINTERESADO,INTERESADO.IDINSTITUCION,"+
 				" INTERESADO.IDTURNO,   INTERESADO.ANIO,   INTERESADO.NUMERO,"+
@@ -2109,15 +2125,62 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				" INTERESADO.OBSERVACIONES AS OBS_INTERESADO,"+
 				" INTERESADO.OBSERVACIONES AS OBS_DEFENDIDO,"+
 				" F_SIGA_GETCODIDIOMA(INTERESADO.IDLENGUAJE) AS CODIGOLENGUAJE,"+
-				" to_char(INTERESADO.FECHARESOLUCIONCAJG,'dd/mm/yyyy') AS FECHARESOLUCIONCAJG, "+
-				" pkg_siga_fecha_en_letra.F_SIGA_FECHACOMPLETAENLETRA(INTERESADO.FECHARESOLUCIONCAJG,'dma',:11) AS FECHARESOLUCIONCAJGLETRA "+
+				"to_char(DECODE((select count(EJGDES1.idinstitucion) "+
+				"         from SCS_EJGDESIGNA EJGDES1 "+
+				"        where EJGDES1.IDINSTITUCION = :11 "+
+				"          and EJGDES1.ANIODESIGNA = :12 "+
+				"          and EJGDES1.IDTURNO = :13 "+
+				"          and EJGDES1.NUMERODESIGNA = :14), "+
+				"       1, "+
+				"       (select EJG.FECHARESOLUCIONCAJG "+
+				"          from scs_ejg ejg, scs_ejgdesigna ejgdes "+
+				"         where ejg.anio = ejgdes.anioejg "+
+				"           and ejg.numero = ejgdes.numeroejg "+
+				"           and ejg.idinstitucion = ejgdes.idinstitucion "+
+				"           and ejg.idtipoejg = ejgdes.idtipoejg "+
+				"           AND ejgdes.IDINSTITUCION = :15 "+
+				"           and ejgdes.ANIODESIGNA = :16 "+
+				"           and ejgdes.IDTURNO = :17 "+
+				"           and ejgdes.NUMERODESIGNA = :18), "+
+				"       DECODE(INTERESADO.FECHARESOLUCIONCAJG, "+
+				"              NULL, "+
+				"              '0', "+
+				"              INTERESADO.FECHARESOLUCIONCAJG)), 'dd/mm/yyyy') AS FECHARESOLUCIONCAJG, "+
+				" pkg_siga_fecha_en_letra.F_SIGA_FECHACOMPLETAENLETRA(DECODE( " +
+				" (select count(EJGDES1.idinstitucion) " +
+				"     from SCS_EJGDESIGNA EJGDES1 " +
+				"    where EJGDES1.IDINSTITUCION = :19 " +
+				"      and EJGDES1.ANIODESIGNA = :20 " +
+				"      and EJGDES1.IDTURNO = :21 " +
+				"      and EJGDES1.NUMERODESIGNA = :22), " +
+				"   1, " +
+				"   (select EJG.FECHARESOLUCIONCAJG " +
+				"      from scs_ejg        ejg, " +
+				"           scs_ejgdesigna ejgdes " +
+				"     where ejg.anio = " +
+				"           ejgdes.anioejg " +
+				"       and ejg.numero = " +
+				"           ejgdes.numeroejg " +
+				"       and ejg.idinstitucion = " +
+				"           ejgdes.idinstitucion " +
+				"       and ejg.idtipoejg = " +
+				"           ejgdes.idtipoejg " +
+				"       AND ejgdes.IDINSTITUCION = :23 " +
+				"       and ejgdes.ANIODESIGNA = :24 " +
+				"       and ejgdes.IDTURNO = :25 " +
+				"       and ejgdes.NUMERODESIGNA = :26), " +
+				"   DECODE(INTERESADO.FECHARESOLUCIONCAJG, " +
+				"          NULL, " +
+				"          '0', " +
+				"          INTERESADO.FECHARESOLUCIONCAJG)), " +
+				" 'dma',  :27) AS FECHARESOLUCIONCAJGLETRA " +
 				"   FROM V_SIGA_INTERESADOS_DESIGNA    INTERESADO"+
-				" WHERE INTERESADO.IDINSTITUCION = :12"+
-				" and INTERESADO.ANIO = :13"+
-				" and INTERESADO.IDTURNO = :14"+
-				" and INTERESADO.NUMERO = :15";
+				" WHERE INTERESADO.IDINSTITUCION = :28"+
+				" and INTERESADO.ANIO = :29"+
+				" and INTERESADO.IDTURNO = :30"+
+				" and INTERESADO.NUMERO = :31";
 				if (idPersonaJG!=null && !idPersonaJG.trim().equals("")) {
-					sql+= " and INTERESADO.IDPERSONAJG = :16";
+					sql+= " and INTERESADO.IDPERSONAJG = :32";
 				}
 				HelperInformesAdm helperInformes = new HelperInformesAdm();	
 				return helperInformes.ejecutaConsultaBind(sql, h);
