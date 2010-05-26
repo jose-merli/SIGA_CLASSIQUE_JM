@@ -31,8 +31,8 @@
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
 	
 	String totalAnticipado = (String) request.getAttribute("totalAnticipado");
-	String precioSolicitud = (String) request.getAttribute("precioSolicitud");
-
+	String precioSolicitud = UtilidadesNumero.formato(UtilidadesNumero.redondea( (String) request.getAttribute("precioSolicitud"),2));
+	
 	String idTipoClave = (String) request.getAttribute("idTipoClave");
 	String idClave = (String) request.getAttribute("idClave");
 	String idClaveInstitucion = (String) request.getAttribute("idClaveInstitucion");
@@ -45,7 +45,8 @@
 	String	botones="Y";
 %>	
 
-<html>
+
+<%@page import="com.siga.Utilidades.UtilidadesNumero"%><html>
 <!-- HEAD -->
 	<head>
 
