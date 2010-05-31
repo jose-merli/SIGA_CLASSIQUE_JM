@@ -1,6 +1,8 @@
 package com.siga.gratuita.action;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +18,7 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinirTelefonosJGForm;
+import com.siga.beans.ScsTelefonosPersonaJGAdm;
 
 /* 
  * Clase para crear nuevos telefonosJG 
@@ -43,7 +46,7 @@ public class DefinirTelefonosJGAction extends MasterAction {
 										
 			miHash.put(ScsTelefonosPersonaJGBean.C_IDINSTITUCION, miForm.getIdInstitucion());
 			miHash.put(ScsTelefonosPersonaJGBean.C_IDPERSONA, miForm.getIdPersona());
-			miHash.put(ScsTelefonosPersonaJGBean.C_NOMBRETELEFONO, miForm.getNombreTelefonoJG());
+			miHash.put(ScsTelefonosPersonaJGBean.C_NOMBRETELEFONO, miForm.getNombreTelefonoJG());			
 			miHash.put(ScsTelefonosPersonaJGBean.C_NUMEROTELEFONO, miForm.getNumeroTelefonoJG());
 			miHash.put(ScsTelefonosPersonaJGBean.C_FECHAMODIFICACION, "sysdate");
 			miHash.put(ScsTelefonosPersonaJGBean.C_USUMODIFICACION, usr.getUserName());
@@ -80,7 +83,6 @@ public class DefinirTelefonosJGAction extends MasterAction {
 			miHash.put(ScsTelefonosPersonaJGBean.C_IDINSTITUCION,(ocultos.get(0)));			
 			miHash.put(ScsTelefonosPersonaJGBean.C_IDPERSONA,(ocultos.get(1)));
 			miHash.put(ScsTelefonosPersonaJGBean.C_IDTELEFONO,(ocultos.get(2)));
-
 			tx.begin();
 			if (admBean.delete(miHash)) {
 				tx.commit();			
@@ -112,15 +114,29 @@ public class DefinirTelefonosJGAction extends MasterAction {
 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 		
 		String sql = " SELECT * FROM " + ScsTelefonosPersonaJGBean.T_NOMBRETABLA + 
-					 " WHERE " + ScsTelefonosPersonaJGBean.C_IDINSTITUCION + " = " + idInstitucion+
+					 " WHERE " + ScsTelefonosPersonaJGBean.C_IDINSTITUCION + " = " + idInstitucion+					 
 					 " AND " + ScsTelefonosPersonaJGBean.C_IDPERSONA + " = " + idPersona;
+		
+		ScsTelefonosPersonaJGAdm admTelefonosJG1 = new ScsTelefonosPersonaJGAdm(this.getUserBean(request));
+		
 		try {
-			if (idPersona!=null && !idPersona.equals("") )
-				vTelefonosJG = admTelefonosJG.selectGenerico(sql);
-			else
-				vTelefonosJG = null;	
+			if (idPersona!=null && !idPersona.equals("") ){
+				//Se recupara una lista de los telefonos de la personajg									
+						
+								List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG1.getListadoTelefonosPersonaJG(idPersona, idInstitucion);
+								if(listaTelefonos==null){
+									listaTelefonos = new ArrayList<ScsTelefonosPersonaJGBean>();			
+								}								
+								miForm.setTelefonos(listaTelefonos);
+			}		
+				//vTelefonosJG = admTelefonosJG.selectGenerico(sql);
+			else{
+				vTelefonosJG = null;
+				miForm.setTelefonos(null);
+			}
 		} catch(Exception e) {
 			vTelefonosJG = null;
+			miForm.setTelefonos(null);
 		}
 		miForm.setIdPersona(idPersona);
 		miForm.setIdInstitucion(idInstitucion);
