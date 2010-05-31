@@ -5,8 +5,11 @@
  */
 package com.siga.gratuita.action;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,6 +22,7 @@ import org.apache.struts.action.ActionMapping;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
+import com.atos.utils.GstStringTokenizer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
@@ -46,6 +50,8 @@ import com.siga.beans.ScsEJGBean;
 import com.siga.beans.ScsPersonaJGAdm;
 import com.siga.beans.ScsPersonaJGBean;
 import com.siga.beans.ScsSOJBean;
+import com.siga.beans.ScsTelefonosPersonaJGAdm;
+import com.siga.beans.ScsTelefonosPersonaJGBean;
 import com.siga.beans.ScsUnidadFamiliarEJGAdm;
 import com.siga.beans.ScsUnidadFamiliarEJGBean;
 import com.siga.general.MasterAction;
@@ -1100,6 +1106,8 @@ public class PersonaJGAction extends MasterAction {
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDREPRESENTANTEJG,miform.getIdRepresentanteJG());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_SEXO,miform.getSexo());
 		    UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDIOMA,miform.getIdioma());
+		    UtilidadesHash.set(persona,ScsPersonaJGBean.C_FAX,miform.getFax());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_CORREOELECTRONICO,miform.getCorreoElectronico());
 		    
 
 			// DATOS DE LA UNIDADFAMILAREJG
@@ -1156,6 +1164,112 @@ public class PersonaJGAction extends MasterAction {
 					throw new ClsExceptions("Error en insert persona. " + perAdm.getError());
 				}
 			}
+			
+			/** Inicio se añade numeros de telefonos para una personaJG.**/
+				String lTelefonos="";
+			try {  /*se añade numeros de telefonos para una personaJG.*/
+								ScsTelefonosPersonaJGAdm admTelefonosJG =  new ScsTelefonosPersonaJGAdm(this.getUserBean(request));								
+								Hashtable miHash =	new Hashtable();					
+								miHash.put(ScsTelefonosPersonaJGBean.C_IDINSTITUCION, miform.getIdInstitucionEJG());
+								miHash.put(ScsTelefonosPersonaJGBean.C_IDPERSONA, miform.getIdPersonaJG());								
+								lTelefonos=miform.getlNumerosTelefonos();
+								
+								/* Comprobamos que la lista de telefonos no venga vacia del formularo.*/								 
+								if (!lTelefonos.equals("")){									
+									List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), miform.getIdInstitucionEJG().toString());
+									  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
+									   * la lTelefonos que ha insertado el usuario.*/
+									if(listaTelefonos!=null){
+										try {											
+												String sql=admTelefonosJG.deleteTelefonos(miHash);
+												admTelefonosJG.deleteSQL(sql);												
+											} catch (Exception e) {
+												   throwExcp("messages.deleted.error",e,tx);
+											} 
+									}				
+									//Recorremos la lista de los telefonos para posteriormente guardar los telefonos.
+									GstStringTokenizer tokens = new GstStringTokenizer(lTelefonos,"%%%");  
+								    while(tokens.hasMoreTokens()){  
+								    	String fila = tokens.nextToken();								    	
+								    	if (fila != null && !fila.equals("")) {
+								    		
+								    		StringTokenizer celdas = new StringTokenizer(fila, "$$~");
+								    		String nombreTelefono="";
+											String numeroTelefono="";
+											String preferenteSms="";
+								    		for (int j = 0; celdas.hasMoreElements(); j++) {
+								    			String celda = celdas.nextToken();									    			
+								    			String[] registro = celda.split("=");
+								    			String key = registro[0];
+												String value = null;
+												
+												if(registro.length==2)
+													value = registro[1];
+												  
+												if(key.equals("nombreTelefonoJG")){						
+														if(value!=null)
+															 nombreTelefono=value;
+												}
+												else if(key.equals("numeroTelefonoJG")){
+														if(value!=null)
+															 numeroTelefono=value;
+														else
+															this.exitoModalSinRefresco("el numero",request);
+												
+												}else if(key.equals("preferenteSms")){
+													if(value!=null)
+														 preferenteSms=value;
+												}
+												
+								    		}								    		
+								    		miHash.put(ScsTelefonosPersonaJGBean.C_NOMBRETELEFONO, nombreTelefono);
+								    		miHash.put(ScsTelefonosPersonaJGBean.C_NUMEROTELEFONO, numeroTelefono);
+								    		miHash.put(ScsTelefonosPersonaJGBean.C_FECHAMODIFICACION, "sysdate");
+								    		miHash.put(ScsTelefonosPersonaJGBean.C_USUMODIFICACION, user.getUserName());
+								    		miHash.put(ScsTelefonosPersonaJGBean.C_PREFERENTESMS, preferenteSms);
+								    		
+								    		//se comprueba el idtelefono para verificar y poner el maximo idtelefono al insertar.
+								    		Hashtable htCol = admTelefonosJG.prepararInsert(miHash);	
+								    		String maximo = (String)htCol.get("IDTELEFONO");								    		
+								    		if (maximo.equals("1")){
+								    			miHash.put(ScsTelefonosPersonaJGBean.C_IDTELEFONO,"1");
+								    			
+								    		}else
+								    			miHash.put(ScsTelefonosPersonaJGBean.C_IDTELEFONO,maximo);
+								    		//se insertan los telefonos que tenga personajg
+								    		
+								    		if((!nombreTelefono.trim().equals(""))&&(!nombreTelefono.trim().equals(""))){
+								    		if (!admTelefonosJG.insert(miHash)) {
+									    			throw new ClsExceptions("Error en insert telefonopersona. " + admTelefonosJG.getError());								    			
+									    	}
+								    		}
+								    		
+								    	}
+								    	 
+								     }  
+								} else 
+								{
+									if (lTelefonos.equals("")){
+										List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), miform.getIdInstitucionEJG().toString());
+									  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
+									   * la lTelefonos que ha insertado el usuario.*/
+									if(listaTelefonos!=null){
+										try {											
+												String sql=admTelefonosJG.deleteTelefonos(miHash);
+												admTelefonosJG.deleteSQL(sql);												
+											} catch (Exception e) {
+												   throwExcp("messages.deleted.error",e,tx);
+											} 
+									}				
+								}
+								}
+								
+						} catch (Exception e) {
+								throw new ClsExceptions(e, "Excepcion en insertTelefono.");
+						}				
+			 
+			 
+			/**Fin se añade numeros de telefonos para una personaJG.**/
 			
 			// RELACIONARLO CON EL EJG (UPDATE NORMAL)
 			ScsEJGAdm admEJG = new ScsEJGAdm(this.getUserBean(request));
@@ -1315,6 +1429,9 @@ public class PersonaJGAction extends MasterAction {
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_SEXO,miform.getSexo());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDIOMA,miform.getIdioma());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_HIJOS,miform.getHijos());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_FAX,miform.getFax());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_CORREOELECTRONICO,miform.getCorreoElectronico());
+		    
 
 	     	// Comienzo control de transacciones 
 			tx = user.getTransaction();			
@@ -1330,7 +1447,7 @@ public class PersonaJGAction extends MasterAction {
 				Hashtable oldPer = (Hashtable) dataBackup.get(ScsPersonaJGBean.T_NOMBRETABLA);
 				if (!perAdm.update(persona, oldPer)) {
 					throw new ClsExceptions("Error en update persona. " + perAdm.getError());
-				}
+				}			
 				
 				Hashtable htBeneficiario = new Hashtable();
 				htBeneficiario.put(ScsBeneficiarioSOJBean.C_IDINSTITUCION,idInstitucionSOJ);
@@ -1401,6 +1518,113 @@ public class PersonaJGAction extends MasterAction {
 					throw new ClsExceptions("Error en insert BeneficiarioSOJ. " + admBenefSOJ.getError());
 				}
 			}
+			
+			
+				/** Inicio se añade numeros de telefonos para una personaJG.**/
+				String lTelefonos="";
+			try {  /*se añade numeros de telefonos para una personaJG.*/
+								ScsTelefonosPersonaJGAdm admTelefonosJG =  new ScsTelefonosPersonaJGAdm(this.getUserBean(request));								
+								Hashtable miHash =	new Hashtable();					
+								miHash.put(ScsTelefonosPersonaJGBean.C_IDINSTITUCION, miform.getIdInstitucionSOJ());
+								miHash.put(ScsTelefonosPersonaJGBean.C_IDPERSONA, miform.getIdPersonaJG());								
+								lTelefonos=miform.getlNumerosTelefonos();
+								
+								/* Comprobamos que la lista de telefonos no venga vacia del formularo.*/								 
+								if (!lTelefonos.equals("")){									
+									List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), miform.getIdInstitucionSOJ().toString());
+									  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
+									   * la lTelefonos que ha insertado el usuario.*/
+									if(listaTelefonos!=null){
+										try {											
+												String sql=admTelefonosJG.deleteTelefonos(miHash);
+												admTelefonosJG.deleteSQL(sql);												
+											} catch (Exception e) {
+												   throwExcp("messages.deleted.error",e,tx);
+											} 
+									}				
+									//Recorremos la lista de los telefonos para posteriormente guardar los telefonos.
+									GstStringTokenizer tokens = new GstStringTokenizer(lTelefonos,"%%%");  
+								    while(tokens.hasMoreTokens()){  
+								    	String fila = tokens.nextToken();								    	
+								    	if (fila != null && !fila.equals("")) {
+								    		
+								    		StringTokenizer celdas = new StringTokenizer(fila, "$$~");
+								    		String nombreTelefono="";
+											String numeroTelefono="";
+											String preferenteSms="";
+								    		for (int j = 0; celdas.hasMoreElements(); j++) {
+								    			String celda = celdas.nextToken();									    			
+								    			String[] registro = celda.split("=");
+								    			String key = registro[0];
+												String value = null;
+												
+												if(registro.length==2)
+													value = registro[1];
+												  
+												if(key.equals("nombreTelefonoJG")){						
+														if(value!=null)
+															 nombreTelefono=value;
+												}
+												else if(key.equals("numeroTelefonoJG")){
+														if(value!=null)
+															 numeroTelefono=value;
+														else
+															this.exitoModalSinRefresco("el numero",request);
+												
+												}else if(key.equals("preferenteSms")){
+													if(value!=null)
+														 preferenteSms=value;
+												}
+												
+								    		}								    		
+								    		miHash.put(ScsTelefonosPersonaJGBean.C_NOMBRETELEFONO, nombreTelefono);
+								    		miHash.put(ScsTelefonosPersonaJGBean.C_NUMEROTELEFONO, numeroTelefono);
+								    		miHash.put(ScsTelefonosPersonaJGBean.C_FECHAMODIFICACION, "sysdate");
+								    		miHash.put(ScsTelefonosPersonaJGBean.C_USUMODIFICACION, user.getUserName());
+								    		miHash.put(ScsTelefonosPersonaJGBean.C_PREFERENTESMS, preferenteSms);
+								    		
+								    		//se comprueba el idtelefono para verificar y poner el maximo idtelefono al insertar.
+								    		Hashtable htCol = admTelefonosJG.prepararInsert(miHash);	
+								    		String maximo = (String)htCol.get("IDTELEFONO");								    		
+								    		if (maximo.equals("1")){
+								    			miHash.put(ScsTelefonosPersonaJGBean.C_IDTELEFONO,"1");
+								    			
+								    		}else
+								    			miHash.put(ScsTelefonosPersonaJGBean.C_IDTELEFONO,maximo);
+								    		//se insertan los telefonos que tenga personajg
+								    		
+								    		if((!nombreTelefono.trim().equals(""))&&(!nombreTelefono.trim().equals(""))){
+								    		if (!admTelefonosJG.insert(miHash)) {
+									    			throw new ClsExceptions("Error en insert telefonopersona. " + admTelefonosJG.getError());								    			
+									    	}
+								    		}
+								    		
+								    	}
+								    	 
+								     }  
+								} else 
+								{
+									if (lTelefonos.equals("")){
+										List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), miform.getIdInstitucionSOJ().toString());
+									  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
+									   * la lTelefonos que ha insertado el usuario.*/
+									if(listaTelefonos!=null){
+										try {											
+												String sql=admTelefonosJG.deleteTelefonos(miHash);
+												admTelefonosJG.deleteSQL(sql);												
+											} catch (Exception e) {
+												   throwExcp("messages.deleted.error",e,tx);
+											} 
+									}				
+								}
+								}
+								
+						} catch (Exception e) {
+								throw new ClsExceptions(e, "Excepcion en insertTelefono.");
+						}				
+			 
+			 
+			/**Fin se añade numeros de telefonos para una personaJG.**/
 			
 			// RELACIONARLO CON EL SOJ (UPDATE NORMAL)
 			ScsDefinirSOJAdm admSOJ= new ScsDefinirSOJAdm(this.getUserBean(request));
@@ -1492,6 +1716,8 @@ public class PersonaJGAction extends MasterAction {
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDREPRESENTANTEJG,miform.getIdRepresentanteJG());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_SEXO,miform.getSexo());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDIOMA,miform.getIdioma());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_FAX,miform.getFax());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_CORREOELECTRONICO,miform.getCorreoElectronico());
 
 			ScsDefendidosDesignaAdm defendidosDesAdm= new ScsDefendidosDesignaAdm(this.getUserBean(request));
 			Hashtable defendidosDesignaHash = new Hashtable();
@@ -1536,6 +1762,7 @@ public class PersonaJGAction extends MasterAction {
 
 			}
 			
+			String lTelefonos="";
 			// Comienzo control de transacciones 
 			tx = user.getTransaction();			
 			tx.begin();
@@ -1549,7 +1776,8 @@ public class PersonaJGAction extends MasterAction {
 				Hashtable oldPer = (Hashtable) dataBackup.get(ScsPersonaJGBean.T_NOMBRETABLA);
 				if (!perAdm.update(persona, oldPer)) {
 					throw new ClsExceptions("Error en update persona. " + perAdm.getError());
-				}
+					
+				}			
 			} else {
 				// NO existia
 				// Insert Persona
@@ -1557,6 +1785,111 @@ public class PersonaJGAction extends MasterAction {
 					throw new ClsExceptions("Error en insert persona. " + perAdm.getError());
 				}
 			}
+			
+			/** Inicio se añade numeros de telefonos para una personaJG.**/
+			try {  /*se añade numeros de telefonos para una personaJG.*/
+								ScsTelefonosPersonaJGAdm admTelefonosJG =  new ScsTelefonosPersonaJGAdm(this.getUserBean(request));								
+								Hashtable miHash =	new Hashtable();					
+								miHash.put(ScsTelefonosPersonaJGBean.C_IDINSTITUCION, miform.getIdInstitucionDES());
+								miHash.put(ScsTelefonosPersonaJGBean.C_IDPERSONA, miform.getIdPersonaJG());								
+								lTelefonos=miform.getlNumerosTelefonos();
+								
+								/* Comprobamos que la lista de telefonos no venga vacia del formularo.*/								 
+								if (!lTelefonos.equals("")){									
+									List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), miform.getIdInstitucionDES().toString());
+									  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
+									   * la lTelefonos que ha insertado el usuario.*/
+									if(listaTelefonos!=null){
+										try {											
+												String sql=admTelefonosJG.deleteTelefonos(miHash);
+												admTelefonosJG.deleteSQL(sql);												
+											} catch (Exception e) {
+												   throwExcp("messages.deleted.error",e,tx);
+											} 
+									}				
+									//Recorremos la lista de los telefonos para posteriormente guardar los telefonos.
+									GstStringTokenizer tokens = new GstStringTokenizer(lTelefonos,"%%%");  
+								    while(tokens.hasMoreTokens()){  
+								    	String fila = tokens.nextToken();								    	
+								    	if (fila != null && !fila.equals("")) {
+								    		
+								    		StringTokenizer celdas = new StringTokenizer(fila, "$$~");
+								    		String nombreTelefono="";
+											String numeroTelefono="";
+											String preferenteSms="";
+								    		for (int j = 0; celdas.hasMoreElements(); j++) {
+								    			String celda = celdas.nextToken();									    			
+								    			String[] registro = celda.split("=");
+								    			String key = registro[0];
+												String value = null;
+												
+												if(registro.length==2)
+													value = registro[1];
+												  
+												if(key.equals("nombreTelefonoJG")){						
+														if(value!=null)
+															 nombreTelefono=value;
+												}
+												else if(key.equals("numeroTelefonoJG")){
+														if(value!=null)
+															 numeroTelefono=value;
+														else
+															this.exitoModalSinRefresco("el numero",request);
+												
+												}else if(key.equals("preferenteSms")){
+													if(value!=null)
+														 preferenteSms=value;
+												}
+												
+								    		}								    		
+								    		miHash.put(ScsTelefonosPersonaJGBean.C_NOMBRETELEFONO, nombreTelefono);
+								    		miHash.put(ScsTelefonosPersonaJGBean.C_NUMEROTELEFONO, numeroTelefono);
+								    		miHash.put(ScsTelefonosPersonaJGBean.C_FECHAMODIFICACION, "sysdate");
+								    		miHash.put(ScsTelefonosPersonaJGBean.C_USUMODIFICACION, user.getUserName());
+								    		miHash.put(ScsTelefonosPersonaJGBean.C_PREFERENTESMS, preferenteSms);
+								    		
+								    		//se comprueba el idtelefono para verificar y poner el maximo idtelefono al insertar.
+								    		Hashtable htCol = admTelefonosJG.prepararInsert(miHash);	
+								    		String maximo = (String)htCol.get("IDTELEFONO");								    		
+								    		if (maximo.equals("1")){
+								    			miHash.put(ScsTelefonosPersonaJGBean.C_IDTELEFONO,"1");
+								    			
+								    		}else
+								    			miHash.put(ScsTelefonosPersonaJGBean.C_IDTELEFONO,maximo);
+								    		//se insertan los telefonos que tenga personajg
+								    		
+								    		if((!nombreTelefono.trim().equals(""))&&(!nombreTelefono.trim().equals(""))){
+								    		if (!admTelefonosJG.insert(miHash)) {
+									    			throw new ClsExceptions("Error en insert telefonopersona. " + admTelefonosJG.getError());								    			
+									    	}
+								    		}
+								    		
+								    	}
+								    	 
+								     }  
+								} else 
+								{
+									if (lTelefonos.equals("")){
+										List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), miform.getIdInstitucionDES().toString());
+									  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
+									   * la lTelefonos que ha insertado el usuario.*/
+									if(listaTelefonos!=null){
+										try {											
+												String sql=admTelefonosJG.deleteTelefonos(miHash);
+												admTelefonosJG.deleteSQL(sql);												
+											} catch (Exception e) {
+												   throwExcp("messages.deleted.error",e,tx);
+											} 
+									}				
+								}
+								}
+								
+						} catch (Exception e) {
+								throw new ClsExceptions(e, "Excepcion en insertTelefono.");
+						}				
+			 
+			 
+			/**Fin se añade numeros de telefonos para una personaJG.**/
 			
 			if(miform.getConceptoE().equals(PersonaJGAction.DESIGNACION_INTERESADO)) {
 				// INSERTAR O ACTUALIZAR INTERESADOS DESIGNA SI PROCEDE (RELACIONADO)
@@ -1594,6 +1927,7 @@ public class PersonaJGAction extends MasterAction {
 						// ya existe el elemento
 						throw new SIGAException("gratuita.personaJG.mensaje.yaExiste");
 					}
+					
 				} else {
 					// NO EXISTE
 					// si no existe y estamos en editar, entonces se esta actualizando la persona en el 
@@ -1611,6 +1945,7 @@ public class PersonaJGAction extends MasterAction {
 					if (!adm.insert(defendidosDesignaHash)) {
 						throw new ClsExceptions("Error en insert. " + adm.getError());
 					}
+					
 				}
 			}
 			
@@ -1648,6 +1983,7 @@ public class PersonaJGAction extends MasterAction {
 						// ya existe el elemento
 						throw new SIGAException("gratuita.personaJG.mensaje.yaExiste");
 					}
+					
 				} else {
 					// NO EXISTE
 					// si no existe y estamos en editar, entonces se esta actualizando la persona en el 
@@ -1665,6 +2001,7 @@ public class PersonaJGAction extends MasterAction {
 					if (!adm.insert(contrariosDesignaHash)) {
 						throw new ClsExceptions("Error en insert. " + adm.getError());
 					}
+					
 				}
 /*
 				if (v!=null && v.size()>0) {
@@ -1771,6 +2108,8 @@ public class PersonaJGAction extends MasterAction {
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_SEXO,miform.getSexo());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDIOMA,miform.getIdioma());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_HIJOS,miform.getHijos());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_FAX,miform.getFax());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_CORREOELECTRONICO,miform.getCorreoElectronico());
 
 			
 			
@@ -1811,6 +2150,114 @@ public class PersonaJGAction extends MasterAction {
 					throw new ClsExceptions("Error en insert persona. " + perAdm.getError());
 				}
 			}
+			
+				/** Inicio se añade numeros de telefonos para una personaJG.**/
+			try {  /*se añade numeros de telefonos para una personaJG.*/
+								String lTelefonos="";
+								ScsTelefonosPersonaJGAdm admTelefonosJG =  new ScsTelefonosPersonaJGAdm(this.getUserBean(request));								
+								Hashtable miHash =	new Hashtable();					
+								miHash.put(ScsTelefonosPersonaJGBean.C_IDINSTITUCION, miform.getIdInstitucionASI());
+								miHash.put(ScsTelefonosPersonaJGBean.C_IDPERSONA, miform.getIdPersonaJG());								
+								lTelefonos=miform.getlNumerosTelefonos();
+								
+								/* Comprobamos que la lista de telefonos no venga vacia del formularo.*/								 
+								if (!lTelefonos.equals("")){									
+									List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), miform.getIdInstitucionASI().toString());
+									  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
+									   * la lTelefonos que ha insertado el usuario.*/
+									if(listaTelefonos!=null){
+										try {											
+												String sql=admTelefonosJG.deleteTelefonos(miHash);
+												admTelefonosJG.deleteSQL(sql);												
+											} catch (Exception e) {
+												   throwExcp("messages.deleted.error",e,tx);
+											} 
+									}				
+									//Recorremos la lista de los telefonos para posteriormente guardar los telefonos.
+									GstStringTokenizer tokens = new GstStringTokenizer(lTelefonos,"%%%");  
+								    while(tokens.hasMoreTokens()){  
+								    	String fila = tokens.nextToken();								    	
+								    	if (fila != null && !fila.equals("")) {
+								    		
+								    		StringTokenizer celdas = new StringTokenizer(fila, "$$~");
+								    		String nombreTelefono="";
+											String numeroTelefono="";
+											String preferenteSms="";
+								    		for (int j = 0; celdas.hasMoreElements(); j++) {
+								    			String celda = celdas.nextToken();									    			
+								    			String[] registro = celda.split("=");
+								    			String key = registro[0];
+												String value = null;
+												
+												if(registro.length==2)
+													value = registro[1];
+												  
+												if(key.equals("nombreTelefonoJG")){						
+														if(value!=null)
+															 nombreTelefono=value;
+												}
+												else if(key.equals("numeroTelefonoJG")){
+														if(value!=null)
+															 numeroTelefono=value;
+														else
+															this.exitoModalSinRefresco("el numero",request);
+												
+												}else if(key.equals("preferenteSms")){
+													if(value!=null)
+														 preferenteSms=value;
+												}
+												
+								    		}								    		
+								    		miHash.put(ScsTelefonosPersonaJGBean.C_NOMBRETELEFONO, nombreTelefono);
+								    		miHash.put(ScsTelefonosPersonaJGBean.C_NUMEROTELEFONO, numeroTelefono);
+								    		miHash.put(ScsTelefonosPersonaJGBean.C_FECHAMODIFICACION, "sysdate");
+								    		miHash.put(ScsTelefonosPersonaJGBean.C_USUMODIFICACION, user.getUserName());
+								    		miHash.put(ScsTelefonosPersonaJGBean.C_PREFERENTESMS, preferenteSms);
+								    		
+								    		//se comprueba el idtelefono para verificar y poner el maximo idtelefono al insertar.
+								    		Hashtable htCol = admTelefonosJG.prepararInsert(miHash);	
+								    		String maximo = (String)htCol.get("IDTELEFONO");								    		
+								    		if (maximo.equals("1")){
+								    			miHash.put(ScsTelefonosPersonaJGBean.C_IDTELEFONO,"1");
+								    			
+								    		}else
+								    			miHash.put(ScsTelefonosPersonaJGBean.C_IDTELEFONO,maximo);
+								    		//se insertan los telefonos que tenga personajg
+								    		
+								    		if((!nombreTelefono.trim().equals(""))&&(!nombreTelefono.trim().equals(""))){
+								    		if (!admTelefonosJG.insert(miHash)) {
+									    			throw new ClsExceptions("Error en insert telefonopersona. " + admTelefonosJG.getError());								    			
+									    	}
+								    		}
+								    		
+								    	}
+								    	 
+								     }  
+								} else 
+								{
+									if (lTelefonos.equals("")){
+										List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), miform.getIdInstitucionASI().toString());
+									  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
+									   * la lTelefonos que ha insertado el usuario.*/
+									if(listaTelefonos!=null){
+										try {											
+												String sql=admTelefonosJG.deleteTelefonos(miHash);
+												admTelefonosJG.deleteSQL(sql);												
+											} catch (Exception e) {
+												   throwExcp("messages.deleted.error",e,tx);
+											} 
+									}				
+								}
+								}
+								
+						} catch (Exception e) {
+								throw new ClsExceptions(e, "Excepcion en insertTelefono.");
+						}				
+			 
+			 
+			/**Fin se añade numeros de telefonos para una personaJG.**/
+			
+			
 
 			// RELACIONARLO CON LA ASISTENCIA (UPDATE NORMAL)
 			ScsAsistenciasAdm admASI= new ScsAsistenciasAdm(this.getUserBean(request));
@@ -2333,7 +2780,8 @@ public class PersonaJGAction extends MasterAction {
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_SEXO,perBean.getSexo());
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDIOMA,perBean.getIdioma());
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_HIJOS,perBean.getHijos());
-					
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_FAX,perBean.getFax());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_CORREOELECTRONICO,perBean.getCorreoElectronico());					
 					idRepresentanteJG=perBean.getIdRepresentanteJG();
 					
 				// pdm recuperamos la descripcion del tipo de identificacion y de la poblacion porque no se pintaban
@@ -2405,6 +2853,20 @@ public class PersonaJGAction extends MasterAction {
 						}
 					}
 					miform.setObservaciones(perBean.getObservaciones());
+					
+					
+					//Se recupara una lista de los telefonos de la personajg
+					
+					ScsTelefonosPersonaJGAdm admTelefonosJG = new ScsTelefonosPersonaJGAdm(this.getUserBean(request));					
+						if(perBean.getIdPersona()!=null){
+								List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(perBean.getIdPersona().toString(), perBean.getIdInstitucion().toString());
+								if(listaTelefonos==null){
+									listaTelefonos = new ArrayList<ScsTelefonosPersonaJGBean>();			
+								}								
+								miform.setTelefonos(listaTelefonos);
+							}
+						miform.setFax(perBean.getFax());	
+					    miform.setCorreoElectronico(perBean.getCorreoElectronico().trim());	
 				}
 
 				if (!miform.getConceptoE().equals(PersonaJGAction.DESIGNACION_CONTRARIOS) && !miform.getConceptoE().equals(PersonaJGAction.PERSONAJG)) {
