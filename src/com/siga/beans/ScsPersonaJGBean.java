@@ -47,6 +47,8 @@ public class ScsPersonaJGBean extends MasterBean{
 	private String sexo;
 	private String idioma;
 	private String hijos;
+	private String fax;
+	private String correoElectronico;
 	
 	
 	
@@ -61,6 +63,9 @@ public class ScsPersonaJGBean extends MasterBean{
 	
 	/*Nombre de campos de la tabla*/
 	
+
+
+
 	static public final	String	C_IDPERSONA			=				"IDPERSONA";
 	static public final String 	C_NIF				=				"NIF";
 	static public final String 	C_NOMBRE			=				"NOMBRE";
@@ -87,11 +92,26 @@ public class ScsPersonaJGBean extends MasterBean{
 	static public final String  C_TIPOGRUPOLAB    =			        "IDTIPOGRUPOLAB";
 	static public final String  C_NUMVECES		  =			        "NUMVECES";
 	static public final String  C_HIJOS		      =			        "NUMEROHIJOS";
+	static public final String  C_FAX		      =			        "FAX";
+	static public final String  C_CORREOELECTRONICO     =	        "CORREOELECTRONICO";
+	
 	
 		
 	
 	/*Metodos SET*/
+	/**
+	 * @param Correoelectronico The Correoelectronico to set.
+	 */
 	
+	public void setCorreoElectronico(String correoElectronico) {
+		this.correoElectronico = correoElectronico;
+	}
+	/**
+	 * @param Fax The fax to set.
+	 */
+	public void setFax(String fax) {
+		this.fax = fax;
+	}
 	
 	/**
 	 * @param idioma The idioma to set.
@@ -294,6 +314,19 @@ public class ScsPersonaJGBean extends MasterBean{
 		this.sexo = sexo;
 	}
 	/*Metodos GET*/
+	
+	/**
+	 * @return Returns the getCorreoelectronico
+	 */
+	public String getCorreoElectronico() {
+		return correoElectronico;
+	}
+	/**
+	 * @return Returns the fax
+	 */
+		public String getFax() {
+		return fax;
+	}
 	
 	/**
 	 * @return Returns the idioma.
