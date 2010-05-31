@@ -320,6 +320,7 @@
 				//Sexo:
 				document.forms[0].sexo.value = resultado[19];
 				
+				
          <%if (conceptoE.equals(PersonaJGAction.ASISTENCIA_ASISTIDO)
 					|| conceptoE.equals(PersonaJGAction.SOJ)) {%> 
             	document.forms[0].hijos.value = resultado[18]; 
@@ -356,12 +357,12 @@
 				window.setTimeout("recargarComboHijo()",1000,"Javascript");
 
 				if (resultado!=null && resultado[1]!="") {
-					var p1 = document.getElementById("resultado");
+					var p1 = document.getElementById("resultado");					
 					p1.src = "JGR_TelefonosPersonasJG.do?accion=<%=accion%>&idPersona="+resultado[1]+"&idInstitucion=<%=usr.getLocation()%>";
 					document.forms[0].target="mainPestanas";				
 					document.forms[0].modo.value="editar";
 				} else {
-					var p1 = document.getElementById("resultado");
+					var p1 = document.getElementById("resultado");					
 					p1.src = "JGR_TelefonosPersonasJG.do?accion=<%=accion%>&idPersona=&idInstitucion=<%=usr.getLocation()%>";
 					document.forms[0].target="mainPestanas";				
 					document.forms[0].modo.value="editar";
@@ -648,6 +649,7 @@
 	<html:hidden name="PersonaJGForm" property = "localizacionE" />
 	<html:hidden name="PersonaJGForm" property = "tituloE" />
 	<html:hidden name="PersonaJGForm" property = "conceptoE" />
+	<html:hidden name="PersonaJGForm" property = "lNumerosTelefonos" />
 	
 	
 <%
@@ -1838,10 +1840,10 @@ function limpiarPersonaContrario() {
 %> 
 <!-- para observaciones -->
 	<siga:ConjCampos leyenda="gratuita.personaJG.literal.observaciones">
-	<table width="100%">
+	<table width="100%" >
 	<tr>
-		<td>
-			<html:textarea name="PersonaJGForm" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" property="observaciones" cols="60" rows="3" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>"></html:textarea>
+		<td height="156px">
+			<html:textarea name="PersonaJGForm" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" property="observaciones" cols="60" rows="7" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>"></html:textarea>
 		</td>
 	</tr>
 	</table>
@@ -1948,21 +1950,51 @@ function limpiarPersonaContrario() {
 	</siga:ConjCampos>
 <%
 	}
+
 %>
 
 </td>
+
+	
 		<td valign="top"><!-- para Telefonos --> <siga:ConjCampos
-			leyenda="gratuita.personaJG.literal.telefonos">
+			leyenda="gratuita.personaJG.literal.Contacto">
 			<table width="100%" border="0" cellpadding="0" cellspacing="0">
+						<tr height="10px">
+							<td class="labelText" >
+								<siga:Idioma key="censo.SolicitudIncorporacion.literal.email"/>								
+							</td>	
+													
+							<td class="labelTextValor">													
+								<html:text name="PersonaJGForm" property="correoElectronico" maxlength="50" style="width:310px"  styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"></html:text>
+							</td>
+									
+						</tr>
+				
+						<tr height="10px">
+							<td class="labelText" >
+								<siga:Idioma key="censo.preferente.fax"/>								
+							</td >
+							<td class="labelTextValor" >
+								<html:text name="PersonaJGForm" property="fax" maxlength="100" style="width:150px" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"></html:text>
+								
+							</td>
+					
+						</tr>
+			
 				<tr>
-					<td><iframe align="center"
+					<td colspan="2"><siga:ConjCampos
+						leyenda="gratuita.personaJG.literal.telefonos">
+					<iframe align="center"
 						src="<%=app%>/JGR_TelefonosPersonasJG.do?accion=<%=accion%>&idPersona=<%=idPersona%>&idInstitucion=<%=usr.getLocation()%>&esFichaColegial=<%=sEsFichaColegial%>"
 						id="resultado" name="resultado" scrolling="no" frameborder="0"
 						marginheight="0" marginwidth="0"
-						style="width: 400px; height: 90px;"> </iframe></td>
+						style="width: 350px; height:90px;"> </iframe></siga:ConjCampos></td>
 				</tr>
 			</table>
-		</siga:ConjCampos></td>
+		</siga:ConjCampos>
+		    </iframe>
+								
+		</td>
 	</tr>
 </html:form>
 </table>
@@ -2004,7 +2036,7 @@ function limpiarPersonaContrario() {
 
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
-	<script language="JavaScript">
+<script language="JavaScript">
 
 
 	
@@ -2021,7 +2053,12 @@ function limpiarPersonaContrario() {
 		}
 		
 		//Asociada al boton Guardar -->
-		function accionGuardar()	{	
+		function accionGuardar()	{
+			var lNumerosTelefonos=getDatos();				
+			if (!lNumerosTelefonos){
+                 fin();
+                 return false;
+			}			
 			sub();
 			var tipoIdent=document.forms[0].tipoId.value;
 			var numId=document.forms[0].NIdentificacion.value;
@@ -2135,7 +2172,13 @@ function limpiarPersonaContrario() {
 			if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {%>
 	
 		//Asociada al boton Guardar -->
-		function accionGuardarCerrar()	{	
+		function accionGuardarCerrar()	{
+			var lNumerosTelefonos=getDatos();			
+			if (!lNumerosTelefonos){
+                 fin();
+                 return false;
+			}		
+				
 		   	sub();
 		   	var tipoIdent=document.forms[0].tipoId.value;
 			var numId=document.forms[0].NIdentificacion.value;
@@ -2265,6 +2308,12 @@ function limpiarPersonaContrario() {
 		}
 		//Asociada al boton Guardar -->
 		function accionGuardar()	{
+			var lNumerosTelefonos=getDatos();	
+			
+			if (!lNumerosTelefonos){
+                 fin();
+                 return false;
+			}		
 			sub();
 			var tipoIdent=document.forms[0].tipoId.value;
 			var numId=document.forms[0].NIdentificacion.value;
@@ -2323,7 +2372,14 @@ function limpiarPersonaContrario() {
 		
 
 		//Asociada al boton Guardar -->
-		function accionGuardar()	{		
+		function accionGuardar()	{	
+
+			var lNumerosTelefonos=getDatos();	
+					
+			if (!lNumerosTelefonos){
+                 fin();
+                 return false;
+			}		
 			sub();
 			var tipoIdent=document.forms[0].tipoId.value;
 			var numId=document.forms[0].NIdentificacion.value;
@@ -2372,7 +2428,14 @@ function limpiarPersonaContrario() {
 		}
 
 		//Asociada al boton Guardar -->
-		function accionGuardarCerrar()	{				
+		function accionGuardarCerrar()	{	
+			
+			var lNumerosTelefonos=getDatos();						
+			if (!lNumerosTelefonos){
+                 fin();
+                 return false;
+			}				
+					
             sub();
             var tipoIdent=document.forms[0].tipoId.value;
 			var numId=document.forms[0].NIdentificacion.value;
@@ -2426,7 +2489,8 @@ function limpiarPersonaContrario() {
 		}
 
 		//Asociada al boton Guardar -->
-		function accionGuardarCerrar()	{				
+		function accionGuardarCerrar()	{					
+							
             sub();
             var tipoIdent=document.forms[0].tipoId.value;
 			var numId=document.forms[0].NIdentificacion.value;
@@ -2548,6 +2612,12 @@ function limpiarPersonaContrario() {
 		//Asociada al boton Guardar -->
 		function accionGuardarCerrar()	{	
 			
+			var lNumerosTelefonos=getDatos();					
+			if (!lNumerosTelefonos){
+                 fin();
+                 return false;
+			}				
+
 			
 			sub();
 			var tipoIdent=document.forms[0].tipoId.value;
@@ -2601,20 +2671,148 @@ function limpiarPersonaContrario() {
 		}
 <%}%>
 
-		function buscar() 
-		{		
-			var resultado = ventaModalGeneral("BusquedaPersonaJGForm","G");			
-			if (resultado != null && resultado[1]!=null)
-			{
-				traspasoDatos(resultado,resultado[17]);
-			}
-		}
 
-		//Asociada al boton Restablecer -->
-		function accionRestablecer() 
-		{		
-			document.forms[0].reset();
+
+function buscar() 
+{		
+	var resultado = ventaModalGeneral("BusquedaPersonaJGForm","G");			
+	if (resultado != null && resultado[1]!=null)
+	{
+		traspasoDatos(resultado,resultado[17]);
+	}
+}
+//función para obtener los valores de los telefonos para una persona
+function getDatos() 
+{	        
+	table = resultado.document.getElementById("tablaTelefono");
+	filas = table.rows.length;
+	// Datos Lista de Telefonos.	
+	
+	var datos = "";
+	var accion = "";
+
+	 if(filas!=0){  
+			
+		for (a = 0; a < filas ; a++) {
+
+			i = table.rows[a].id.split("_")[1];
+
+			var validado = validarDatosFila (i);            
+			if (!validado) {			
+				fin();				
+				return false;
+			} 
+			
+			nombreTelefonoJG = resultado.document.getElementById("nombreTelefonoJG_" + i).value;
+			if(nombreTelefonoJG=='-1')
+				nombreTelefonoJG ="";				
+			datos += 'nombreTelefonoJG='+nombreTelefonoJG;
+			datos += '$$~';
+			
+			numeroTelefonoJG = resultado.document.getElementById("numeroTelefonoJG_" + i).value;
+			if(numeroTelefonoJG=='-1')
+				numeroTelefonoJG ="";			
+			datos += 'numeroTelefonoJG='+numeroTelefonoJG;
+			datos += '$$~';
+			
+			preferenteSms= resultado.document.getElementById("preferenteSms_" + i).value;
+			if(preferenteSms=='-1')
+				preferenteSms ="";		
+			datos += 'preferenteSms='+preferenteSms;		
+			datos += "%%%";
+			
+					
 		}
+	 }else return true;
+	document.PersonaJGForm.lNumerosTelefonos.value = datos;	 	
+	
+	return datos;
+}
+
+
+
+function validarDatosFila (fila)  
+{
+	var campo = "";
+	var obligatorio = "<siga:Idioma key='messages.campoObligatorio.error'/>";
+	
+	    if (resultado.document.getElementById("nombreTelefonoJG_"+fila).value=='-1' || resultado.document.getElementById("nombreTelefonoJG_"+fila).value=='') {
+			campo = "<siga:Idioma key='gratuita.personaJG.literal.nombreTelefono'/>" ;
+			alert ( campo + " "+ obligatorio);			
+			return false;
+		}
+	    if (resultado.document.getElementById("numeroTelefonoJG_"+fila).value=='-1' || resultado.document.getElementById("numeroTelefonoJG_"+fila).value=='') {
+			campo = "<siga:Idioma key='gratuita.personaJG.literal.numeroTelefono'/>" ;
+			alert ( campo + " "+ obligatorio);			
+			return false;
+		}	 
+	    valor=validartelefono(resultado.document.getElementById("numeroTelefonoJG_"+fila).value);
+	    if(!valor){
+	    	campo = "<siga:Idioma key='gratuita.personaJG.literal.errors.telefono'/>" ;
+			alert (campo);			
+		 return false;
+		}
+	  //compruebo que el numero de telefono sea un movil
+	 //   chkpreferenteSms= resultado.document.getElementById("preferenteSms_" + fila).checked;
+	  //  if(chkpreferenteSms){
+	   // 	movil=resultado.document.getElementById("numeroTelefonoJG_"+fila).value;           
+	   // 	comprobar=comprobarmovil(movil);	    	
+	   // 	if(!comprobar){
+	   // 		campo = "<siga:Idioma key='gratuita.personaJG.literal.errors.movilSms'/>" ;
+		//		alert (campo);			
+	//			 return false;
+		//    	}
+		//  }
+		  
+ return true;	    
+}
+
+function validartelefono(valor){	
+	if( !(/^\d{9}$/.test(valor)) ) {
+		if(!(/^\+\d{2,3}\d{9}$/.test(valor))){			
+			return false;			
+		}else return true;		
+	}else return true;
+}
+
+function valorprimerdigito(valor){	
+	var premerdigito = valor.substring(0, 1);	
+	if(premerdigito!="6")			
+		return false;
+	else return true;		
+}
+
+function comprobarmovil(valor){	
+
+	var contar=valor.length;	
+ 	if(contar=="9"){	
+ 		digito=valorprimerdigito(valor);
+ 		if(!digito){
+ 			return false;
+ 	 	}else return true;
+ 		 		 
+ 	 }else if (contar==12){
+	    	cadena = valor.substring(3);
+	    	digito=valorprimerdigito(cadena);
+	 		if(!digito){
+	 			return false;
+	 	 	}else return true;	    	
+	     }else if(contar==13){
+		    	cadena = valor.substring(4);
+		    	digito=valorprimerdigito(cadena);
+		 		if(!digito){
+		 			return false;
+		 	 	}else return true;
+		       }			
+}
+
+
+
+//Asociada al boton Restablecer -->
+function accionRestablecer() 
+{		
+	document.forms[0].reset();
+}
 		
 		
 		
