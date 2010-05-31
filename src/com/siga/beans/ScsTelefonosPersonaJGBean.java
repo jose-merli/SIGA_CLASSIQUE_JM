@@ -6,6 +6,8 @@
 
 package com.siga.beans;
 
+import com.siga.gratuita.form.DefinirTelefonosJGForm;
+
 public class ScsTelefonosPersonaJGBean extends MasterBean{
 	
 	/* Variables */ 
@@ -15,6 +17,7 @@ public class ScsTelefonosPersonaJGBean extends MasterBean{
 	private Integer idTelefono;
 	private String  nombreTelefono;
 	private String  numeroTelefono;	
+	private String  preferentesms;
 
 	
 	/* Nombre de Tabla*/
@@ -28,10 +31,20 @@ public class ScsTelefonosPersonaJGBean extends MasterBean{
 	static public final String  C_IDTELEFONO = 					"IDTELEFONO";
 	static public final String  C_NOMBRETELEFONO = 				"NOMBRETELEFONO";
 	static public final String  C_NUMEROTELEFONO = 				"NUMEROTELEFONO";
-	
+	static public final String  C_PREFERENTESMS= 				"PREFERENTESMS";	
 		
 	
 	/*Metodos SET*/	
+	
+	/**
+	 * Almacena en el Bean el sms del solicitante.
+	 * 
+	 * @param valor preferenteSms solicitante
+	 * @return void 
+	 */
+		public void setpreferenteSms			(String valor)	{ this.preferentesms = valor;}
+	
+	
 	/**
 	 * Almacena en el Bean el identificador del solicitante del SOJ
 	 * 
@@ -73,7 +86,14 @@ public class ScsTelefonosPersonaJGBean extends MasterBean{
 	public void setNumeroTelefono	 		(String valor) { this.numeroTelefono = valor;}
 	
 	
-	/*Metodos GET*/		
+	/*Metodos GET*/	
+	
+	/**
+	 * Recupera del Bean el sms de la persona 
+	 * @return Integer
+	 */
+	public String getpreferenteSms	()	{ return this.preferentesms;}
+	
 	/**
 	 * Recupera del Bean el identificador de la persona 
 	 * @return Integer
@@ -103,4 +123,15 @@ public class ScsTelefonosPersonaJGBean extends MasterBean{
 	 * @return String 
 	 */
 	public String  getNumeroTelefono	() { return this.numeroTelefono;}
+	
+	public DefinirTelefonosJGForm getDefinirTelefonosJGForm(){
+		DefinirTelefonosJGForm definirTelefono = new DefinirTelefonosJGForm();
+		definirTelefono.setNombreTelefonoJG(this.nombreTelefono);
+		definirTelefono.setNumeroTelefonoJG(this.numeroTelefono);	
+		definirTelefono.setPreferenteSms(this.preferentesms);
+		return 	definirTelefono;
+		
+	}
+	
+	
 }
