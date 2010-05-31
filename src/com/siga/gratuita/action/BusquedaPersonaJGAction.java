@@ -6,8 +6,10 @@
 */
 package com.siga.gratuita.action;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +25,8 @@ import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.ScsPersonaJGAdm;
 import com.siga.beans.ScsPersonaJGBean;
+import com.siga.beans.ScsTelefonosPersonaJGAdm;
+import com.siga.beans.ScsTelefonosPersonaJGBean;
 import com.siga.gratuita.form.BusquedaPersonaJGForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -235,7 +239,8 @@ public class BusquedaPersonaJGAction extends MasterAction {
 				ScsPersonaJGBean bean = (ScsPersonaJGBean) v.get(0);
 				if (bean.getIdRepresentanteJG()!=null) {
 					request.setAttribute("nombreRepresentante",personaJG.getNombreApellidos(bean.getIdRepresentanteJG().toString(),bean.getIdInstitucion().toString()));
-				}
+				}	
+	
 				request.setAttribute("datosPersonaJGModal", bean);		
 
 				
@@ -265,7 +270,10 @@ public class BusquedaPersonaJGAction extends MasterAction {
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_ENCALIDADDE,bean.getEnCalidadDe());
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_OBSERVACIONES,bean.getObservaciones());
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDREPRESENTANTEJG,bean.getIdRepresentanteJG());
-				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_HIJOS,bean.getHijos());	
+				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_HIJOS,bean.getHijos());
+				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_FAX,bean.getFax());
+				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_CORREOELECTRONICO,bean.getCorreoElectronico().trim());
+				
 				//dataBackup.put(ScsPersonaJGBean.T_NOMBRETABLA,hash);
 				if (miFormulario.getConceptoE().equals(PersonaJGAction.PERSONAJG)) {
 					dataBackup.put("PERSONAPERSONA",hash);
