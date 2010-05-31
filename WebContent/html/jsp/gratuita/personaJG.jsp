@@ -319,6 +319,11 @@
 
 				//Sexo:
 				document.forms[0].sexo.value = resultado[19];
+
+				//Fax	
+				document.forms[0].fax.value = resultado[20];
+				//correoElectronico	
+				document.forms[0].correoElectronico.value = resultado[21];
 				
 				
          <%if (conceptoE.equals(PersonaJGAction.ASISTENCIA_ASISTIDO)
