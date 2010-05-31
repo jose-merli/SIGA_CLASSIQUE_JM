@@ -2166,7 +2166,8 @@
 				<var-name>maxlength</var-name>
 				<var-value>100</var-value>
 			</var>
-		</field>
+		</field>		
+		
 		
 			<field property="apellido1" depends="maxlength, required">
 				<arg0 key="gratuita.personaJG.literal.apellido1Abre" />
@@ -2220,6 +2221,23 @@
 					<var-name>max</var-name>
 					<var-value>99</var-value>
 				</var>
+			</field>
+			
+			 <field property = "correoElectronico" depends = "maxlength,email">
+         		 <arg0 key="censo.datosDireccion.literal.correo"/>
+          		 <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+          		<var>
+            		<var-name>maxlength</var-name> <var-value>100</var-value>
+          		</var>
+        	</field>
+        
+       		 <field property = "fax" depends = "mask"> 
+		       		<msg name="mask" key="errors.telefono"/>		
+					<arg0 key="censo.preferente.fax"/>					
+					<var>
+		                <var-name>mask</var-name>
+		                <var-value>${telefonoSIGA}</var-value>
+		            </var>
 			</field>
 		
 			<!--field property="importeIngresosAnuales" depends="float,floatRange">
