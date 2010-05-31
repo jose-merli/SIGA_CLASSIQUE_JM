@@ -67,13 +67,29 @@
 		function refrescarLocal(){
 			buscarTelefonos();
 		}		
+
+
+		
+		function accionInsertarTelefonoTabla () 
+		{
+			var validado = validarDatosMinimos (); 
+			if(!validado){
+				return;
+			}
+			
+			crearFila();
+		} 
+		
 	</script>
 	
 </head>
 
 <body>
+
 	
 	<!-- CAMPOS DEL REGISTRO -->
+	
+	 	
 	<html:form action="/JGR_TelefonosPersonasJG" method="POST" target="submitArea" style="display:none">
 		<html:hidden property = "modo" value = ""/>
 		
@@ -83,41 +99,82 @@
 			<!-- RGG: cambio a formularios ligeros -->
 			<input type="hidden" name="tablaDatosDinamicosD">
 			<input type="hidden" name="actionModal" value="">
-		</html:form>	
+	</html:form>	
+			
+			 <div style="position:absolute;top:0px;z-index:3;left:0px;width:350px;height:60px;" >		
+			
+					<table width="100%"  border="0"  height="60px"  cellpadding="0" cellspacing="0">
+						<tr>
+								<td class = 'labelText'>													
+								 <div>								
+									<table id='tabTelefonosCabeceras'  border='1' width='100%' cellspacing='0' cellpadding='0' style='table-layout:fixed'>
+									<tr class = 'tableTitle'>
+										<td align='center' width='29%' ><siga:Idioma key="gratuita.operarDatosBeneficiario.literal.telefonoUso"/></td>
+										<td align='center' width='29%'><siga:Idioma key="gratuita.operarDatosBeneficiario.literal.numeroTelefono"/></td>
+										<td align='center' width='11%' ><siga:Idioma key="censo.preferente.sms"/></td>			
+										<%
+											if (!accion.equalsIgnoreCase("ver")) {												
+										%>
+										<td align='center' width='20%' >				
+											<input type='button'  id = 'idInsertarTelefonos' class="button" name='idButtoninsertar' value='<siga:Idioma key="general.boton.insertar"/>' alt='<siga:Idioma key="general.boton.insertar"/>' onclick="accioninsertar();">	
+										</td>
+										<%}%>
+										
+										
+									</tr>
+									
+								 </table>
+							 	</div> 	
+								<div id="divAsistencias" style='height:60px;position:absolute;width:100%; overflow-y:auto' >						
+									<table id='tablaTelefono' border='1' align='center'  width='100%' cellspacing='0' cellpadding='0' style='overflow-y:auto' >
+								
+										<logic:notEmpty name="DefinirTelefonosJGForm"	property="telefonos">
+										<logic:iterate name="DefinirTelefonosJGForm" property="telefonos" id="telefono" indexId="index">									
+										<bean:define id="telefonosJGForm" name="telefono" property="definirTelefonosJGForm" ></bean:define>
+										
+										<tr id="fila_<bean:write name='index'/>" >	
+															
+											<%
+											if (!accion.equalsIgnoreCase("ver")) {												
+											%>																		
+											<td width='19%' align="center"><input type="text" id="nombreTelefonoJG_<bean:write name='index'/>" class="box" style="width:100;margin-top:4px;text-align:center;" maxLength="20" value="<bean:write name="telefonosJGForm" property="nombreTelefonoJG" />"  /></td>										
+											<td width='19%' align ="center"><input type="text" id="numeroTelefonoJG_<bean:write name='index'/>" class="box" style="width:95;margin-top:4px;text-align:center;" maxLength="13" value="<bean:write name="telefonosJGForm" property="numeroTelefonoJG" />"  /></td>
+											<bean:define id="preferenteSms" name="telefono" property="preferenteSms" ></bean:define>																										
+											<td width='7%' align ="center"><input type="checkbox" id="preferenteSms" name="preferenteSms_<bean:write name='index'/>" value="<bean:write name="telefonosJGForm" property="preferenteSms"/>" onClick="checkSms()"<%=(preferenteSms.equals("1"))?"checked":""%>/></td>								
+											<td width='9%'>									
+													<img src="/SIGA/html/imagenes/bborrar_off.gif"
+													style="cursor: hand;"
+													alt="<siga:Idioma key="general.borrar"/>"
+													name="" border="0" onclick="borrarFila('fila_<bean:write name='index'/>')"/>										
+											</td>	
+											<%}else{%>
+											<td width='14%' align="center" class="labelTextValor"><input type="text" readonly="si" id="nombreTelefonoJG_<bean:write name='index'/>" class="boxConsulta" style="width:100;margin-top:4px;text-align:center;" maxLength="20" value="<bean:write name="telefonosJGForm" property="nombreTelefonoJG" />"  /></td>										
+											<td width='14%' align ="center" class="labelTextValor"><input type="text" readonly="si" id="numeroTelefonoJG_<bean:write name='index'/>" class="boxConsulta" style="width:95;margin-top:4px;text-align:center;" maxLength="13" value="<bean:write name="telefonosJGForm" property="numeroTelefonoJG" />"  /></td>
+											<bean:define id="preferenteSms" name="telefono" property="preferenteSms" ></bean:define>																										
+											<td width='5%' align ="center"><input type="checkbox" disabled="disabled" id="preferenteSms" name="preferenteSms_<bean:write name='index'/>" value="<bean:write name="telefonosJGForm"   property="preferenteSms"/>" onClick="checkSms()"<%=(preferenteSms.equals("1"))?"checked":""%>/></td>							
+										<%}%>								
+										</tr>
+										</logic:iterate>
+										</logic:notEmpty>	
+															
+								</table>
+								
+								</div>
+									
+							
+					
+				</td>
+			</tr>
+				
+			</table>
 		
- <div style="position:absolute;top:0px;z-index:3;left:0px;width:330px;height:130px;" >	
-	<siga:TablaCabecerasFijas 		   
-		   nombre="listadoTelefonos"
-		   borde="2"
-		   clase="tableTitle"		   
-		   nombreCol="gratuita.operarDatosBeneficiario.literal.telefonoUso, gratuita.operarDatosBeneficiario.literal.numeroTelefono,"
-		   tamanoCol="55,33,13"
-		   	alto="100%"  
-		   	ajusteBotonera="true"		
-  	    >  	    
-  			<%
-	    	int recordNumber=1;
-	    	ScsTelefonosPersonaJGAdm adm = new ScsTelefonosPersonaJGAdm(usr);
-	    	Hashtable miHash = new Hashtable();
-	    	while (vTelefonosJG!=null && recordNumber-1 < vTelefonosJG.size()) {
-					miHash = (Hashtable) vTelefonosJG.get(recordNumber-1);
-			%>
-				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="B" pintarEspacio="no" visibleEdicion="no" visibleConsulta="no" clase="listaNonEdit" modo="<%=accion%>">
-						<td><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=miHash.get(ScsTelefonosPersonaJGBean.C_IDINSTITUCION)%>">
-								<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=miHash.get(ScsTelefonosPersonaJGBean.C_IDPERSONA)%>">
-								<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=miHash.get(ScsTelefonosPersonaJGBean.C_IDTELEFONO)%>">
-								<%=miHash.get(ScsTelefonosPersonaJGBean.C_NOMBRETELEFONO)%>
-						</td>
-						<td><%=miHash.get(ScsTelefonosPersonaJGBean.C_NUMEROTELEFONO)%></td>
-				</siga:FilaConIconos>		
-			<%  
-				recordNumber++; 
-			}
-			%>
-	</siga:TablaCabecerasFijas>	
-	
-	</div>
+		
+		</div>	
+			
 
+	
+
+	
 	
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">
@@ -128,32 +185,84 @@
 			document.forms[0].submit();
 		}
 
+
+		//función que inserta una fila para introducir un numero de telefono
+		function accioninsertar()	{
+			
+				table = document.getElementById("tablaTelefono");		
+				numFila = table.rows.length;
+				tr = table.insertRow();
+				tr.id = "fila_" + numFila;
+				td = tr.insertCell();
+				td.setAttribute("width", "19%");
+				td.align="center";
+				td.className = "";
+				td.innerText="";
+				td.innerHTML = '<input type="text" id="nombreTelefonoJG_'   + numFila + '" class="box" style="width:100;margin-top:4px;text-align:center;" maxLength="20" value="" />';
+
+
+				// numero de telefono
+				td = tr.insertCell(); 
+				td.setAttribute("width", "19%");
+				td.align="center";
+				td.className = "";
+				td.innerText="";
+				td.innerHTML ='<input type="text" id="numeroTelefonoJG_' + numFila + '" class="box" style="width:95;margin-top:4px;text-align:center;" maxLength="13" value="" />';
+
+				//sms				
+				td = tr.insertCell(); 
+				td.setAttribute("width", "7%");
+				td.align="center";
+				td.className = "";
+				td.innerText="";
+				td.innerHTML ='<input type="checkbox" id="preferenteSms" name="preferenteSms_' + numFila + '" value=""  onClick="checkSms()"/>';					
+				
+
+				//imagen de borrar
+				td = tr.insertCell(); 
+				td.setAttribute("width", "9%");
+				td.className = "";
+				td.innerText="";				
+				td.innerHTML = '<img src="/SIGA/html/imagenes/bborrar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='general.boton.borrar'/>" name="" border="0" onclick="borrarFila(\''+ tr.id +'\')">';
+				tr.scrollIntoView(true);
+				
+			
+		}
+
 		
-		//Asociada al boton Guardar -->
-		function accionNuevo()	{
-		 
-			<%	
-			if (!accion.equalsIgnoreCase("nuevo") && formulario.getIdPersona()!=null && !formulario.getIdPersona().trim().equals("")) { %>
-				document.forms[0].modo.value = "nuevo";
-				var resultado=ventaModalGeneral(document.forms[0].name,"P");
-				if (resultado=='MODIFICADO') 
-					buscarTelefonos();
-			<% } else {
-				%>
-				alert('<siga:Idioma key="gratuita.insertarTelefono.literal.errorIntroducirDatosPrevios"/>');
-			<% } %>
-		}			
-		
-		
-	</script>
-	   <!-- FIN: SCRIPTS BOTONES -->
-	<% if (!accion.equalsIgnoreCase("Ver")) { %>
-		<div style="position:absolute;bottom:50px;z-index:3;right:5px">		
-			<input type="button" class="button" value="<siga:Idioma key="general.boton.new"/>" onClick="accionNuevo()">
-		</div>
-		
-	<% } %>
+//funcion de marcar un telefono para enviar sms
+	function checkSms(){
+		var chkpreferenteSms = document.getElementsByName("preferenteSms");
+		//var chkpreferenteSms = document.getElementById("preferenteSms");	
+	  	for (i = 0; i < chkpreferenteSms.length; i++) {
+	  		if(chkpreferenteSms[i].checked){	   			
+	   				if(chkpreferenteSms[i].value=="1"){
+	   					chkpreferenteSms[i].value="0";
+	   					chkpreferenteSms[i].checked=false;
+		   				}else chkpreferenteSms[i].value="1";	   				
+	   		}else chkpreferenteSms[i].value="0";
+   		}
+   	}
+
 	
+		//borrar un telefono se borra la fila.		
+			function  borrarFila (idFila) 			{ 				
+				t = document.getElementById("tablaTelefono");
+				for (i = 0; i < t.rows.length; i++) {					
+					if (t.rows[i].id == idFila) 
+					{	
+						fila = idFila.split("_")[1];			
+						t.deleteRow (i);	
+						return;					
+						
+					}
+					}
+			}
+		
+    	
+		
+				
+	</script>	
 	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 	
 <!-- INICIO: SUBMIT AREA -->
