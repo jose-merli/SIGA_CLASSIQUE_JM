@@ -5,7 +5,9 @@
  * Window - Preferences - Java - Code Style - Code Templates
  */
 package com.siga.gratuita.form;
+import java.util.List;
 
+import com.siga.beans.ScsTelefonosPersonaJGBean;
 
 /**
  * @author A203486
@@ -15,8 +17,28 @@ package com.siga.gratuita.form;
  */
 public class DefinirTelefonosJGForm extends com.siga.general.MasterForm {
 
-	String idPersona=null, numeroTelefonoJG=null, nombreTelefonoJG=null, accion=null, idTelefono=null, idInstitucion=null;
+	String idPersona=null; 
+	String numeroTelefonoJG=null;
+	String nombreTelefonoJG=null;
+	String accion=null; 
+	String idTelefono=null;
+	String idInstitucion=null;
+	String preferenteSms=null;
 	
+	
+	
+	/**
+	 * @return Returns the preferenteSms.
+	 */
+	public String getPreferenteSms() {
+		return preferenteSms;
+	}
+	/**
+	 * @param preferenteSms The preferenteSms to set.
+	 */
+	public void setPreferenteSms(String preferenteSms) {
+		this.preferenteSms = preferenteSms;
+	}
 	/**
 	 * @return Returns the accion.
 	 */
@@ -89,4 +111,16 @@ public class DefinirTelefonosJGForm extends com.siga.general.MasterForm {
 	public void setIdInstitucion(String idInstitucion) {
 		this.idInstitucion = idInstitucion;
 	}
+	
+	
+	
+	List<ScsTelefonosPersonaJGBean> telefonos; 
+	public List<ScsTelefonosPersonaJGBean> getTelefonos() {
+		return telefonos;
+	}
+
+	public void setTelefonos(List<ScsTelefonosPersonaJGBean> telefonos) {
+		this.telefonos = telefonos;
+	}
+
 }
