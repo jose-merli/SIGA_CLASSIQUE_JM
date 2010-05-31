@@ -5,6 +5,10 @@
  */
 package com.siga.gratuita.form;
 
+import java.util.List;
+
+
+import com.siga.beans.ScsTelefonosPersonaJGBean;
 import com.siga.general.MasterForm;
 import com.siga.Utilidades.UtilidadesHash;
 
@@ -53,5 +57,17 @@ public class BusquedaPersonaJGForm extends MasterForm {
 	public String getConceptoE() {
 		return UtilidadesHash.getString(this.datos,"ConceptoE");
 	}
+	
+	List<ScsTelefonosPersonaJGBean> telefonos; 
+	public List<ScsTelefonosPersonaJGBean> getTelefonos() {
+		return telefonos;
+	}
+
+	public void setTelefonos(List<ScsTelefonosPersonaJGBean> telefonos) {
+		this.telefonos = telefonos;
+	}
+
+	
+	
 	
 }
