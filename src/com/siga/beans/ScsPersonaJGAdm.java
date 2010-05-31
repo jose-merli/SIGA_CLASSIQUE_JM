@@ -196,7 +196,8 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 							ScsPersonaJGBean.C_ENCALIDADDE,	        ScsPersonaJGBean.C_OBSERVACIONES,
 							ScsPersonaJGBean.C_NIF,                 ScsPersonaJGBean.C_IDREPRESENTANTEJG,
 							ScsPersonaJGBean.C_SEXO,                ScsPersonaJGBean.C_IDIOMA,
-							ScsPersonaJGBean.C_HIJOS
+							ScsPersonaJGBean.C_HIJOS, 				ScsPersonaJGBean.C_FAX,
+							ScsPersonaJGBean.C_CORREOELECTRONICO
 							
 						};
 
@@ -244,6 +245,8 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			bean.setSexo(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_SEXO));
 			bean.setIdioma(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_IDIOMA));
 			bean.setHijos(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_HIJOS));
+			bean.setFax(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_FAX));
+			bean.setCorreoElectronico(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_CORREOELECTRONICO));
 			
 			
 			
@@ -291,6 +294,8 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_IDIOMA,miBean.getIdioma());
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_IDPROFESION,miBean.getIdProfesion());
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_HIJOS,miBean.getHijos());
+			UtilidadesHash.set(hash,ScsPersonaJGBean.C_FAX,miBean.getFax());
+			UtilidadesHash.set(hash,ScsPersonaJGBean.C_CORREOELECTRONICO,miBean.getCorreoElectronico());
 			
 			
 		
