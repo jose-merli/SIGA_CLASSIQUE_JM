@@ -7,9 +7,15 @@
 
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
+
+import javax.transaction.UserTransaction;
+
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -155,7 +161,7 @@ public class ScsTelefonosPersonaJGAdm extends MasterBeanAdministrador {
 		String[] campos = {	ScsTelefonosPersonaJGBean.C_IDINSTITUCION,		ScsTelefonosPersonaJGBean.C_IDPERSONA,
 							ScsTelefonosPersonaJGBean.C_IDTELEFONO,			ScsTelefonosPersonaJGBean.C_NOMBRETELEFONO,
 							ScsTelefonosPersonaJGBean.C_NUMEROTELEFONO, 	ScsTelefonosPersonaJGBean.C_FECHAMODIFICACION,
-							ScsTelefonosPersonaJGBean.C_USUMODIFICACION							
+							ScsTelefonosPersonaJGBean.C_USUMODIFICACION,    ScsTelefonosPersonaJGBean.C_PREFERENTESMS							
 						  };
 
 		return campos;
@@ -279,5 +285,62 @@ public class ScsTelefonosPersonaJGAdm extends MasterBeanAdministrador {
 	       }
 	       return numero;                        
 	    }
+	
+	
+		public List<ScsTelefonosPersonaJGBean> getListadoTelefonosPersonaJG(String idPersonaJG,String idInstitucion) throws ClsExceptions  
+	{
+			StringBuffer sql = new StringBuffer();			
+			Hashtable h = new Hashtable();	
+			h.put(new Integer(1), idInstitucion);
+			h.put(new Integer(2), idPersonaJG);
+			
+		    sql.append(" SELECT * FROM SCS_TELEFONOSPERSONA st WHERE st.IDINSTITUCION = :1 AND st.IDPERSONA = :2");
+			
+			List<ScsTelefonosPersonaJGBean> telefonos = null;			
+			try {
+				RowsContainer rc = new RowsContainer(); 
+				if (rc.findBind(sql.toString(),h)) {
+					 telefonos = new ArrayList<ScsTelefonosPersonaJGBean>();
+					 	ScsTelefonosPersonaJGBean telefonosBean = null;
+					 
+					 	for (int i = 0; i < rc.size(); i++){
+					 		Row fila = (Row) rc.get(i);
+					 		Hashtable<String, Object> htFila=fila.getRow();           		
+					 		telefonosBean = new ScsTelefonosPersonaJGBean();
+		            		telefonosBean.setNombreTelefono(UtilidadesHash.getString(htFila,ScsTelefonosPersonaJGBean.C_NOMBRETELEFONO));
+		            		telefonosBean.setNumeroTelefono(UtilidadesHash.getString(htFila,ScsTelefonosPersonaJGBean.C_NUMEROTELEFONO));
+		            		telefonosBean.setpreferenteSms(UtilidadesHash.getString(htFila,ScsTelefonosPersonaJGBean.C_PREFERENTESMS));
+		            		telefonos.add(telefonosBean);
+            	}
+			}
+		} catch (Exception e) {
+    	   ClsLogging.writeFileLog("Telefonos :Error Select getListadoTelefonosPersonaJG"+e.toString(), 10);
+       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+       }			
+		return telefonos;
+	
+	}
+		
+		
+		
+		public String deleteTelefonos(Hashtable entrada) throws ClsExceptions,SIGAException {
+		    StringBuffer sqlInsertTelefono= new StringBuffer();			
+			
+	       try {	    	   	    	   
+	    	   sqlInsertTelefono.append(" DELETE SCS_TELEFONOSPERSONA");
+	    	   sqlInsertTelefono.append(" WHERE IDINSTITUCION ="+entrada.get(ScsTelefonosPersonaJGBean.C_IDINSTITUCION)+"  AND IDPERSONA = "+entrada.get(ScsTelefonosPersonaJGBean.C_IDPERSONA));	    	   
+	    	   
+	    	  
+			
+			} catch (Exception e) {
+				throw new ClsExceptions(e, "Excepcion en insertTelefono.");
+			}			
+			 return sqlInsertTelefono.toString();
+
+		}
+		
+		
+		
+	
 	
 }
