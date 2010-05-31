@@ -6,7 +6,10 @@
  */
 package com.siga.gratuita.form;
 
+import java.util.List;
+
 import com.siga.beans.CenPersonaBean;
+import com.siga.beans.ScsTelefonosPersonaJGBean;
 import com.siga.general.MasterForm;
 import com.siga.Utilidades.UtilidadesHash;
 
@@ -552,6 +555,46 @@ public class PersonaJGForm extends MasterForm {
 		UtilidadesHash.set(this.datos,"NcolegiadoRepresentante",dato);
 	}
 	
+	//Para el correoElectronico de la personajg
+	
+	String correoElectronico=null;
+	String fax=null;	
+	String lNumerosTelefonos;
+	
+	public String getFax() {
+		return fax;
+	}
+
+	public void setFax(String fax) {
+		this.fax = fax;
+	}
+	public String getCorreoElectronico() {
+		return correoElectronico;
+	}
+
+	public void setCorreoElectronico(String correoElectronico) {
+		this.correoElectronico = correoElectronico;
+	}
+
+	List<ScsTelefonosPersonaJGBean> telefonos; 
+	public List<ScsTelefonosPersonaJGBean> getTelefonos() {
+		return telefonos;
+	}
+
+	public void setTelefonos(List<ScsTelefonosPersonaJGBean> telefonos) {
+		this.telefonos = telefonos;
+	}
+	
+	public String getlNumerosTelefonos() {
+		return lNumerosTelefonos;
+	}
+
+	public void setlNumerosTelefonos(String lNumerosTelefonos) {
+		this.lNumerosTelefonos = lNumerosTelefonos;
+	}
+
+
+
 	
 
 }
