@@ -131,5 +131,13 @@ public class InformesGenericosForm extends MasterForm {
 	public void setClavesIteracion(String clavesIteracion) {
 		this.datos.put("clavesIteracion",clavesIteracion);
 	}
-
+	public String getDestinatarios() {
+		return (String) this.datos.get("destinatarios");
+	}
+	public void setDestinatarios(String destinatarios) {
+		if (destinatarios!=null)
+			this.datos.put("destinatarios",destinatarios);
+		else
+			this.datos.put("destinatarios","CJS");
+	}
 }

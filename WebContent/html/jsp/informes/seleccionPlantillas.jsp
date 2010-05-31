@@ -57,7 +57,8 @@
 	<html:hidden property="descargar"/>
 	<html:hidden property="tipoPersonas"/>
 	<html:hidden property="clavesIteracion"/>	
-	<html:hidden property="seleccionados" value="3"/>	
+	<html:hidden property="seleccionados" value="3"/>
+	<html:hidden property="destinatarios"/>	
 </html:form>
 
 <iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>

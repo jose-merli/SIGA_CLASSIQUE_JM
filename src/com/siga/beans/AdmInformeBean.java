@@ -15,7 +15,7 @@ package com.siga.beans;
 public class AdmInformeBean extends MasterBean {
 
 	/* Variables */	
-	private String idPlantilla, descripcion, alias, nombreFisico, directorio, idTipoInforme,  visible,  nombreSalida, preseleccionado,aSolicitantes;
+	private String idPlantilla, descripcion, alias, nombreFisico, directorio, idTipoInforme,  visible,  nombreSalida, preseleccionado,aSolicitantes,destinatarios;
 	private Integer idInstitucion;
 	
 	
@@ -37,6 +37,7 @@ public class AdmInformeBean extends MasterBean {
 	static public final String C_IDINSTITUCION = "IDINSTITUCION";
 	static public final String C_PRESELECCIONADO = "PRESELECCIONADO";
 	static public final String C_ASOLICITANTES = "ASOLICITANTES";
+	static public final String C_DESTINATARIOS = "DESTINATARIOS";
 
 	// Metodos SET
 	public void setIdPlantilla(String valor) {this.idPlantilla = valor;}	
@@ -48,7 +49,8 @@ public class AdmInformeBean extends MasterBean {
 	public void setVisible(String valor) {this.visible = valor;}	
 	public void setNombreSalida(String valor) {this.nombreSalida = valor;}	
 	public void setIdInstitucion(Integer valor) {this.idInstitucion = valor;}	
-	public void setPreseleccionado(String valor) {this.preseleccionado = valor;}	
+	public void setPreseleccionado(String valor) {this.preseleccionado = valor;}
+	public void setDestinatarios(String valor) {this.destinatarios = valor;}
 	
 	
 	//Metodos GET
@@ -61,13 +63,10 @@ public class AdmInformeBean extends MasterBean {
 	public String getVisible() {return this.visible;}	
 	public String getNombreSalida() {return this.nombreSalida;}	
 	public String getPreseleccionado() {return this.preseleccionado;}	
+	public String getDestinatarios() {return this.destinatarios;}
 	public Integer getIdInstitucion() {return this.idInstitucion;}
-	public String getASolicitantes() {
-		return aSolicitantes;
-	}
-	public void setASolicitantes(String solicitantes) {
-		aSolicitantes = solicitantes;
-	}	
+	public String getASolicitantes() {return aSolicitantes;}
+	public void setASolicitantes(String solicitantes) {aSolicitantes = solicitantes;}	
 	
 }
 

@@ -85,7 +85,7 @@
 			formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
 			formu.appendChild(document.createElement("<input type='hidden' name='enviar' value='1'>"));
 			formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value='0'>"));
-				
+			formu.appendChild(document.createElement("<input type='hidden' name='destinatarios' value='S'>"));	
 			formu.appendChild(document.createElement("<input type='hidden' name='descargar' value='1'>"));
 			
 			

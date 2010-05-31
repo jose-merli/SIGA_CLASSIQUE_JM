@@ -38,7 +38,8 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 				AdmInformeBean.C_USUMODIFICACION,
 				AdmInformeBean.C_PRESELECCIONADO,
 				AdmInformeBean.C_VISIBLE,
-				AdmInformeBean.C_ASOLICITANTES
+				AdmInformeBean.C_ASOLICITANTES,
+				AdmInformeBean.C_DESTINATARIOS
 		};
 		return campos;
 	} //getCamposBean()
@@ -77,6 +78,7 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 			bean.setVisible			(UtilidadesHash.getString(hash, AdmInformeBean.C_VISIBLE));
 			bean.setPreseleccionado	(UtilidadesHash.getString(hash, AdmInformeBean.C_PRESELECCIONADO));
 			bean.setASolicitantes	(UtilidadesHash.getString(hash, AdmInformeBean.C_ASOLICITANTES));
+			bean.setDestinatarios	(UtilidadesHash.getString(hash, AdmInformeBean.C_DESTINATARIOS));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -104,6 +106,7 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(htData, AdmInformeBean.C_VISIBLE, 			b.getVisible());
 			UtilidadesHash.set(htData, AdmInformeBean.C_PRESELECCIONADO, 	b.getPreseleccionado());
 			UtilidadesHash.set(htData, AdmInformeBean.C_ASOLICITANTES, 		b.getASolicitantes());
+			UtilidadesHash.set(htData, AdmInformeBean.C_DESTINATARIOS, 		b.getDestinatarios());
 		}
 		catch (Exception e) {
 			htData = null;
@@ -141,6 +144,7 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 				"       "+AdmInformeBean.C_PRESELECCIONADO+", " +
 				"       "+AdmInformeBean.C_VISIBLE+"," +
 				"       "+AdmInformeBean.C_ASOLICITANTES+" " +
+				"       "+AdmInformeBean.C_DESTINATARIOS+" " +
 				"  FROM "+AdmInformeBean.T_NOMBRETABLA+" " +
 				" WHERE "+AdmInformeBean.C_IDPLANTILLA+" = '"+idInforme+"' " +
 				"   AND "+AdmInformeBean.C_VISIBLE+" = 'S' " +
@@ -165,6 +169,7 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 				salida.setPreseleccionado	((String)ht.get(AdmInformeBean.C_PRESELECCIONADO));
 				salida.setVisible			((String)ht.get(AdmInformeBean.C_VISIBLE));
 				salida.setASolicitantes		((String)ht.get(AdmInformeBean.C_ASOLICITANTES));
+				salida.setDestinatarios		((String)ht.get(AdmInformeBean.C_DESTINATARIOS));
 			}
 		}
 		catch (ClsExceptions e) {
@@ -185,7 +190,8 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 	 */
 	public Vector obtenerInformesTipo (String idInstitucion,
 									   String idTipoInforme,
-									   String aSolicitantes)
+									   String aSolicitantes,
+									   String destinatarios)
 			throws ClsExceptions
 	{
 		Vector salida = new Vector();
@@ -198,6 +204,11 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 			if (aSolicitantes!=null && aSolicitantes.equals("S")) {
 				where.append (
 					"  AND ASOLICITANTES = 'S'");
+			}
+			
+			if (destinatarios!=null && !destinatarios.equals("")) {
+				where.append (
+					"  AND DESTINATARIOS like '%" + destinatarios +"%'");
 			}
 			
 			salida = this.select (where.toString());

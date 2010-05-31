@@ -133,6 +133,7 @@ public class InformesGenericosAction extends MasterAction {
 			String idInstitucion = miForm.getIdInstitucion();
 			String seleccionados = miForm.getSeleccionados();
 			String aSolicitantes =  miForm.getAsolicitantes();
+			String destinatarios =  miForm.getDestinatarios();
 			String enviar =  miForm.getEnviar();
 
 			String idPersonaJG = null;
@@ -157,7 +158,7 @@ public class InformesGenericosAction extends MasterAction {
 
 			if (seleccionados!=null && seleccionados.equals("3")) {
 				// mostramos la ventana con la pregunta
-				Vector infs=adm.obtenerInformesTipo(idInstitucion,idTipoInforme,aSolicitantes);
+				Vector infs=adm.obtenerInformesTipo(idInstitucion,idTipoInforme,aSolicitantes, destinatarios);
 				request.setAttribute("plantillas",infs);
 				return mapping.findForward("seleccionPlantillasModal");
 			}
@@ -171,7 +172,7 @@ public class InformesGenericosAction extends MasterAction {
 					idTipoInforme = adm.obtenerInforme(idInstitucion,idInforme).getIdTipoInforme();
 				} else	if (!idTipoInforme.equals("") && seleccionados.equals("0")) {
 					// Si existes varios informes para el mismo tipo
-					Vector infs=adm.obtenerInformesTipo(idInstitucion,idTipoInforme,aSolicitantes);
+					Vector infs=adm.obtenerInformesTipo(idInstitucion,idTipoInforme,aSolicitantes, destinatarios);
 					if (infs!=null) {
 						//añadimos al final de los datos del informe a la persona seleccionada si la hubiera
 						
@@ -933,9 +934,7 @@ public class InformesGenericosAction extends MasterAction {
 			usr = this.getUserBean (request);
 			miform = (InformesGenericosForm) formulario;
 			infAdm = new AdmInformeAdm (usr);
-			plantillas = infAdm.obtenerInformesTipo 
-			(idinstitucion, miform.getIdTipoInforme(),
-					miform.getAsolicitantes());
+			plantillas = infAdm.obtenerInformesTipo(idinstitucion, miform.getIdTipoInforme(), miform.getAsolicitantes(), miform.getDestinatarios());
 			// del merge (revisar)
 			datos = this.obtenerDatosFormulario (miform);
 			//idfacturacion = "";

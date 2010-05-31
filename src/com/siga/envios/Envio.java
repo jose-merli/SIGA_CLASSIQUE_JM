@@ -222,6 +222,7 @@ public class Envio
 			        destBean.setCorreoElectronico((String)htDir.get(CenDireccionesBean.C_CORREOELECTRONICO));
 			        destBean.setFax1((String)htDir.get(CenDireccionesBean.C_FAX1));
 			        destBean.setFax2((String)htDir.get(CenDireccionesBean.C_FAX2));
+			        destBean.setMovil((String)htDir.get(CenDireccionesBean.C_MOVIL));
 		        }
 			    crearDestinatario=true;
 
@@ -286,6 +287,7 @@ public class Envio
 			        destBean.setCorreoElectronico((String)htDir.get(CenDireccionesBean.C_CORREOELECTRONICO));
 			        destBean.setFax1((String)htDir.get(CenDireccionesBean.C_FAX1));
 			        destBean.setFax2((String)htDir.get(CenDireccionesBean.C_FAX2));
+			        destBean.setMovil((String)htDir.get(CenDireccionesBean.C_MOVIL));
 		        }
 			    crearDestinatario=true;
 
