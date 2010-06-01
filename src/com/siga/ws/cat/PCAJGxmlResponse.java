@@ -22,9 +22,7 @@ import org.apache.xmlbeans.XmlOptions;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ReadProperties;
-import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.ChannelSftp.LsEntry;
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.beans.CajgEJGRemesaAdm;
 import com.siga.beans.CajgEJGRemesaBean;
@@ -35,6 +33,8 @@ import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
 import com.siga.ws.PCAJGConstantes;
 import com.siga.ws.SIGAWSClientAbstract;
+import com.siga.ws.cat.ftp.FtpPcajgAbstract;
+import com.siga.ws.cat.ftp.FtpPcajgFactory;
 import com.siga.ws.cat.respuesta.IntercambioDocument;
 import com.siga.ws.cat.respuesta.TipoIdentificacionIntercambio;
 import com.siga.ws.cat.respuesta.IntercambioDocument.Intercambio;
@@ -61,9 +61,7 @@ import com.siga.ws.cat.respuesta.IntercambioDocument.Intercambio.InformacionInte
 public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConstantes {
 
 	private String namespace = IntercambioDocument.type.getProperties()[0].getName().getNamespaceURI();//"rp.cat.ws.siga.com";
-	private String HIST = "HIST";
-	
-	
+		
 	/**
 	 * 
 	 * @param idInstitucion
@@ -88,33 +86,29 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 	
 	@Override
 	public void execute() throws Exception {
-				
-		SFTPmanager sftpManager = null;
-		
-					
+			
+		FtpPcajgAbstract ftpPcajgAbstract = null;
+							
 		try {
 			
 			ClsLogging.writeFileLog("Ejecutando la clase " + this.getClass(), 3);					
 			String comienzoFicheroIEE_GEN = "IEE_GEN_" + getIdInstitucion() + "_";			
 			String comienzoFicheroIR_GEN = "IR_GEN_" + getIdInstitucion() + "_";
 			
-			sftpManager = new SFTPmanager(getUsrBean(), String.valueOf(getIdInstitucion()));	
+			ftpPcajgAbstract = FtpPcajgFactory.getInstance(getUsrBean(), String.valueOf(getIdInstitucion()));
 			escribeLogRemesa("Conectando con el servidor FTP");
-			ChannelSftp chan = sftpManager.connect();	
+			ftpPcajgAbstract.connect();	
 			
-			Vector<LsEntry> vectorFiles = chan.ls(sftpManager.getFtpDirectorioOUT());
+			List<String> vectorFiles = ftpPcajgAbstract.ls();
 			List<File> filesIEE = new ArrayList<File>();			
 			List<File> filesIR = new ArrayList<File>();
 			
 			FileOutputStream fileOutputStream = null;
 			
-			for (LsEntry lsEntry : vectorFiles) {
-				String fileName = lsEntry.getFilename();				
-				if (fileName.startsWith(comienzoFicheroIEE_GEN) || fileName.startsWith(comienzoFicheroIR_GEN)){
+			for (String fileName : vectorFiles) {								
+				if (fileName.startsWith(comienzoFicheroIEE_GEN) || fileName.startsWith(comienzoFicheroIR_GEN)){					
+					ClsLogging.writeFileLog("Encontrado fichero " + fileName, 3);					
 					
-					ClsLogging.writeFileLog("Encontrado fichero " + fileName, 3);
-					
-					chan.cd(sftpManager.getFtpDirectorioIN());
 					if (fileName.startsWith(comienzoFicheroIEE_GEN)) {
 						File fileIEE = getRespuestaFile(getIdInstitucion(), getIdRemesa(), fileName);					
 						fileOutputStream = new FileOutputStream(fileIEE);
@@ -125,7 +119,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 						filesIR.add(fileIR);
 					}
 					
-					chan.get(sftpManager.getFtpDirectorioOUT() + "/" + fileName, fileOutputStream);
+					ftpPcajgAbstract.download(fileName, fileOutputStream);
 					fileOutputStream.flush();
 					fileOutputStream.close();
 					//break; no hacemos break pq si esta la respuesta y las resoluciones tratamos primero la respuesta
@@ -135,11 +129,11 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 			if (filesIEE.size() > 0 || filesIR.size() > 0) {
 
 				for (File file : filesIEE) {
-					procesaIEE(chan, sftpManager.getFtpDirectorioOUT(),  file);//fichero de respuesta					
+					procesaIEE(ftpPcajgAbstract,  file);//fichero de respuesta					
 				}				
 			
 				for (File file : filesIR) {
-					procesaIR(chan, sftpManager.getFtpDirectorioOUT(), file);//fichero de resoluciones					
+					procesaIR(ftpPcajgAbstract, file);//fichero de resoluciones					
 				}
 			} else {
 				escribeLogRemesa("No se ha encontrado el fichero en el servidor FTP");
@@ -148,8 +142,8 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 			escribeLogRemesa("Se ha producido un error de conexión con el servidor FTP");
 			ClsLogging.writeFileLogError("Error en el envío FTP", e, 3);		
 		} finally {
-			if (sftpManager != null) {
-				sftpManager.disconnect();
+			if (ftpPcajgAbstract != null) {
+				ftpPcajgAbstract.disconnect();
 			}
 		}
 		
@@ -163,7 +157,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 	 * @param dirOUT
 	 * @param file
 	 */
-	private void procesaIR(ChannelSftp chan, String dirOUT, File file) {
+	private void procesaIR(FtpPcajgAbstract ftpPcajgAbstract, File file) {
 		
 		UserTransaction tx = null;
 		
@@ -235,7 +229,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 					}
 				}
 				
-				chan.rename(dirOUT + "/" + file.getName(), dirOUT + "/" + HIST + "/" + file.getName());
+				ftpPcajgAbstract.moveToHIST(file.getName());
 				
 				tx.commit();
 				
@@ -347,7 +341,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 	 * @param file
 	 * @throws ClsExceptions
 	 */
-	private void procesaIEE(ChannelSftp chan, String dirOUT, File file) {
+	private void procesaIEE(FtpPcajgAbstract ftpPcajgAbstract, File file) {
 		UserTransaction tx = null;
 		
 		try {			
@@ -477,8 +471,8 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 					
 				}
 				
-				ClsLogging.writeFileLog("Moviendo fichero a la carpeta " + HIST, 3);				
-				chan.rename(dirOUT + "/" + file.getName(), dirOUT + "/" + HIST + "/" + file.getName());
+				ClsLogging.writeFileLog("Moviendo fichero a la carpeta de histórico", 3);
+				ftpPcajgAbstract.moveToHIST(file.getName());
 				
 				tx.commit();
 			} else {

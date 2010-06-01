@@ -29,7 +29,6 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
-import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesString;
@@ -41,6 +40,8 @@ import com.siga.gratuita.action.DefinirRemesasCAJGAction;
 import com.siga.ws.PCAJGConstantes;
 import com.siga.ws.SIGAWSClientAbstract;
 import com.siga.ws.SigaWSHelper;
+import com.siga.ws.cat.ftp.FtpPcajgAbstract;
+import com.siga.ws.cat.ftp.FtpPcajgFactory;
 import com.siga.ws.pcajg.DatosDomicilio;
 import com.siga.ws.pcajg.IntercambioDocument;
 import com.siga.ws.pcajg.TipoAbogadoDesignado;
@@ -1189,8 +1190,6 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 
 	@Override
 	public void execute() throws Exception {
-				
-		SFTPmanager sftp = null;
 		
 		UsrBean usr = getUsrBean();
 		
@@ -1206,13 +1205,17 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		String dirPlantillas = pathPlantillas + File.separator + getIdInstitucion();
 
 		UserTransaction tx = usr.getTransaction();
+		dirFicheros = dirFicheros + File.separator + "xml";
+		
+		//si se ha hecho una remesa txt previa hay que borrarla previamente
+		DefinirRemesasCAJGAction.eliminaFicheroTXTGenerado(String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()));//por si se estan regenerando...
 		
 		//si no queremos generar el fichero txt ademas del xml hay que cometar solamente esta línea
 		if (isGeneraTXT()) {
 			generaTXT(dirFicheros);
 		}
-		
-		dirFicheros = dirFicheros + File.separator + "xml";
+				
+		FtpPcajgAbstract ftpPcajgAbstract = null;
 		
 		try {
 			
@@ -1226,17 +1229,16 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			tx.commit();
 			tx.begin();
 				
-			sftp = new SFTPmanager(usr, String.valueOf(getIdInstitucion()));
+			ftpPcajgAbstract = FtpPcajgFactory.getInstance(usr, String.valueOf(getIdInstitucion()));			
 						
 			escribeLogRemesa("Conectando al servidor FTP");
 			
-			ChannelSftp chan = sftp.connect();
-			chan.cd(sftp.getFtpDirectorioIN());
-			
+			ftpPcajgAbstract.connect();
+						
 			for (File file : files) {
 				FileInputStream fis = new FileInputStream(file);
 				escribeLogRemesa("Subiendo XML generado al servidor FTP");
-				chan.put(fis, file.getName());
+				ftpPcajgAbstract.upload(file.getName(), fis);				
 				fis.close();				
 				escribeLogRemesa("El archivo se ha subido correctamente al servidor FTP");
 			}			
@@ -1264,8 +1266,8 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			tx.rollback();
 			throw e;
 		} finally {			
-			if (sftp != null) {
-				sftp.disconnect();
+			if (ftpPcajgAbstract != null) {
+				ftpPcajgAbstract.disconnect();
 			}
 		}
 		

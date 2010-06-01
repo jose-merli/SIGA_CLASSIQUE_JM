@@ -21,6 +21,7 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.ws.SIGAWSListener"%>
 <%@ page import="com.siga.ws.SIGAWSClientAbstract"%>
+<%@ page import="com.siga.gratuita.action.DefinirRemesasCAJGAction"%>
 
 
 
@@ -87,6 +88,9 @@
 	String buttons="";	
 	
 	boolean isPCajgTXT = cajgConfig < 2 || cajgConfig == 5;
+	boolean tieneTXT = DefinirRemesasCAJGAction.getFichero(usr.getLocation(), idremesa) != null;
+	boolean ejecutandose = SIGAWSListener.isEjecutandose(idInstitucion.intValue(), Integer.parseInt(idremesa));
+	
 	
 	if (modo.equals("consultar")) {
 		buttons="";			
@@ -96,7 +100,11 @@
 			if (isPCajgTXT) {
 				buttons+=",gf";//generar fichero txt
 			} else if (cajgConfig == 2) {
-				buttons+=",ftp";//envio ftp
+				if (ejecutandose) {
+					buttons+=",ftp";//genera fichero txt, envio ftp
+				} else {
+					buttons+=",gf,ftp";//genera fichero txt, envio ftp
+				}
 			} else if (cajgConfig == 3) {
 				buttons+=",ws";//envio WebService
 			} else if (cajgConfig == 4) {
@@ -113,17 +121,25 @@
 	} else if (idEstado == 2) {//enviada
 		if (cajgConfig != 0) {
 			buttons="g";//guardar
-			if (isPCajgTXT || cajgConfig == 2) {//QUITAR EL == 2 CUANDO SEA DEFINITIVO EL ENVIO XML
-				buttons+=",d";
+			if (isPCajgTXT) {
+				buttons+=",d";//descargar
 			} else if (cajgConfig == 2 && !SIGAWSClientAbstract.isRespondida(idInstitucion, Integer.parseInt(idremesa))) {
-				buttons+=",respFTP";//obtener respuesta
+				if (tieneTXT){
+					buttons+=",d";//descargar //QUITAR EL d y el tieneTXT CUANDO SEA DEFINITIVO EL ENVIO XML	
+				} else {
+					buttons+=",respFTP";//obtener respuesta
+				}				
 			} else if (cajgConfig == 2 && SIGAWSClientAbstract.isRespondida(idInstitucion, Integer.parseInt(idremesa))) {
-				buttons+=",resolucionFTP";//obtener resoluciones
+				if (tieneTXT){
+					buttons+=",d";//descargar //QUITAR EL d y el tieneTXT CUANDO SEA DEFINITIVO EL ENVIO XML	
+				} else {
+					buttons+=",resolucionFTP";//obtener resoluciones
+				}
 			}
 		}
 	}
 	
-	boolean ejecutandose = SIGAWSListener.isEjecutandose(idInstitucion.intValue(), Integer.parseInt(idremesa));
+	
 	
 	
     /**************/
@@ -165,6 +181,7 @@
 		
 		function generarFichero(){
 			sub();
+			deshabilitaTodos();
 			parent.generarFichero();	
 		}
 		
@@ -174,11 +191,12 @@
 		}
 
 		function envioFTP(obj) {
+			sub();
 			deshabilitaTodos();						
 			parent.envioFTP();	
 		}
 		
-		function envioWS(obj){
+		function envioWS(obj){		
 			deshabilitaTodos();
 			parent.envioWS();	
 		}
@@ -215,7 +233,7 @@
 			}
 		}
 		
-		function deshabilitaTodos(){
+		function deshabilitaTodos() {
 			deshabilita(document.getElementById('idButtonEnvioFTP'));
 			deshabilita(document.getElementById('idButtonEnvioWS'));
 			deshabilita(document.getElementById('idButtonRespuestaFTP'));
