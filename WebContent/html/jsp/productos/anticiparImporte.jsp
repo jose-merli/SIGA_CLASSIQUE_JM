@@ -113,7 +113,7 @@
 												<siga:Idioma key="pys.mantenimientoServicios.literal.precioSolicitud"/>
 											</td>
 											<td class="labelTextNum">	
-												<%=precioSolicitud%>&nbsp;&euro;
+												<%=precioSolicitud.replace('.',',')%>&nbsp;&euro;
 											</td>
 										</tr>
 										<tr>
