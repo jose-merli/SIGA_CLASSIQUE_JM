@@ -31,7 +31,7 @@
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
 	
 	String totalAnticipado = (String) request.getAttribute("totalAnticipado");
-	String precioSolicitud = UtilidadesNumero.formato(UtilidadesNumero.redondea( (String) request.getAttribute("precioSolicitud"),2));
+	String precioSolicitud = UtilidadesNumero.formato(UtilidadesNumero.redondea( (String) request.getAttribute("precioSolicitud"),2)).replace(',','.');
 	
 	String idTipoClave = (String) request.getAttribute("idTipoClave");
 	String idClave = (String) request.getAttribute("idClave");
