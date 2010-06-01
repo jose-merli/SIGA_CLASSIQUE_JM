@@ -400,7 +400,7 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 		String sqlInsertEstadoEJG = "insert into scs_estadoejg (idinstitucion, idtipoejg, anio, numero, idestadoejg" +
 				", fechainicio, fechamodificacion, usumodificacion, observaciones, idestadoporejg, automatico)" +
 				" SELECT ER.IDINSTITUCION, ER.IDTIPOEJG, ER.ANIO, ER.NUMERO, '" + idEstado + "'" +
-				", SYSDATE, SYSDATE, " + usr.getUserName() + ", NULL, (" + sqlMaxIdEstadoPorEJG + "), 1" +
+				", TRUNC(SYSDATE), SYSDATE, " + usr.getUserName() + ", NULL, (" + sqlMaxIdEstadoPorEJG + "), 1" +
 				" FROM CAJG_EJGREMESA ER" +
 				" WHERE ER.IDINSTITUCION = " + idInstitucion +
 				" AND ER.IDREMESA = " + idRemesa;
