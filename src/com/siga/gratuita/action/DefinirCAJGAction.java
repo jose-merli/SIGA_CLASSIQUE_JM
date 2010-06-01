@@ -22,25 +22,21 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.GstDate;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.GestorContadores;
-import com.siga.Utilidades.Paginador;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.PaginadorSQLBind;
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmLenguajesAdm;
 import com.siga.beans.BusquedaClientesFiltrosAdm;
 import com.siga.beans.CenColegiadoAdm;
-import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.GenClientesTemporalBean;
 import com.siga.beans.ScsAsistenciasAdm;
@@ -73,16 +69,12 @@ import com.siga.beans.ScsEJGBean;
 import com.siga.beans.ScsEJGDESIGNAAdm;
 import com.siga.beans.ScsEJGDESIGNABean;
 import com.siga.beans.ScsEstadoEJGAdm;
-import com.siga.beans.ScsEstadoEJGBean;
 import com.siga.beans.ScsGuardiasColegiadoAdm;
-import com.siga.beans.ScsGuardiasTurnoBean;
-import com.siga.beans.ScsMaestroEstadosEJGBean;
 import com.siga.beans.ScsPersonaJGAdm;
 import com.siga.beans.ScsPersonaJGBean;
 import com.siga.beans.ScsSOJBean;
 import com.siga.beans.ScsSaltosCompensacionesAdm;
 import com.siga.beans.ScsSaltosCompensacionesBean;
-import com.siga.beans.ScsTipoEJGBean;
 import com.siga.beans.ScsUnidadFamiliarEJGAdm;
 import com.siga.beans.ScsUnidadFamiliarEJGBean;
 import com.siga.certificados.Plantilla;
@@ -98,8 +90,8 @@ import com.siga.informes.InformeDefinirEJG;
 /**
 * Maneja las acciones que se pueden realizar sobre la tabla SCS_EJG
 */
-public class DefinirCAJGAction extends MasterAction 
-{
+public class DefinirCAJGAction extends MasterAction {	
+
 
 	/** 
 	 *  Funcion que atiende a las peticiones. Segun el valor del parametro modo del formulario ejecuta distintas acciones
@@ -1534,14 +1526,17 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
 						" AND E.NUMERO = EJG.NUMERO" +
 						" AND E.IDTIPOEJG = EJG.IDTIPOEJG";
 				
-				StringBuffer sqlInsertEstadoEJG = new StringBuffer("insert into scs_estadoejg (idinstitucion, idtipoejg, anio, numero, idestadoejg" +
+				String sqlInsertEstadoEJG = new String("insert into scs_estadoejg (idinstitucion, idtipoejg, anio, numero, idestadoejg" +
 						", fechainicio, fechamodificacion, usumodificacion, observaciones, idestadoporejg, automatico)" +
 						" SELECT EJG.IDINSTITUCION, EJG.IDTIPOEJG, EJG.ANIO, EJG.NUMERO, '" + ClsConstants.ESTADO_LISTO_COMISION + "'" +
-						", SYSDATE, SYSDATE, " + getUserBean(request).getUserName() + ", NULL, (" + sqlMaxIdEstadoPorEJG + "), 0" +
+						", TRUNC(SYSDATE), SYSDATE, " + getUserBean(request).getUserName() + ", NULL, (" + sqlMaxIdEstadoPorEJG + "), 0" +
 						" FROM SCS_EJG EJG" +
 						" WHERE EJG.IDINSTITUCION = " + getIDInstitucion(request) + 
 						" AND (1 = 0");
 				
+				
+				int cuenta = 0;
+				StringBuffer sb = new StringBuffer();
 				
 				for (int i = 0; i < v_seleccionadosSesion.size(); i++) {
 
@@ -1550,18 +1545,18 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
 					String seleccionado = (String) miHashaux.get("SELECCIONADO");
 
 					if (seleccionado.equals("1")) {
-						
-						sqlInsertEstadoEJG.append(" OR (EJG.ANIO = " + miHashaux.get(ScsEJGBean.C_ANIO) +
+						cuenta++;
+						sb.append(" OR (EJG.ANIO = " + miHashaux.get(ScsEJGBean.C_ANIO) +
 								" AND EJG.NUMERO = " + miHashaux.get(ScsEJGBean.C_NUMERO) +
 								" AND EJG.IDTIPOEJG = " + miHashaux.get(ScsEJGBean.C_IDTIPOEJG) + ")");
-
-
+						if ((cuenta % 500) == 0) {							
+							admBean.insertSQL(sqlInsertEstadoEJG + sb.toString() + ")");
+							sb = new StringBuffer();							
+						}
 					}
 
 				}
-				sqlInsertEstadoEJG.append(")");
-				admBean.insertSQL(sqlInsertEstadoEJG.toString());
-				
+				admBean.insertSQL(sqlInsertEstadoEJG + sb.toString() + ")");
 				tx.commit();
 				
 				return exitoRefresco(mensaje, request);

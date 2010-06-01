@@ -707,13 +707,14 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 					Hashtable ejg = (Hashtable) datos.get(i);
 					gestionaEstadoEJG(request, ejg);
 				}
+				String idInstitucion = getIDInstitucion(request).toString();
 				Hashtable hashRemesa = new Hashtable();
-				hashRemesa.put("IDINSTITUCION", this.getIDInstitucion(request).toString());
+				hashRemesa.put("IDINSTITUCION", idInstitucion);
 				hashRemesa.put("IDREMESA", miForm.getIdRemesa());
 				CajgRemesaAdm admRemesa = new CajgRemesaAdm(this.getUserBean(request));
 				admRemesa.delete(hashRemesa);
 
-				eliminaFicheroGenerado(request, miForm.getIdRemesa());
+				eliminaFicheroTXTGenerado(idInstitucion, miForm.getIdRemesa());
 
 				tx.commit();
 			} else {// tiene estado enviado o recibido y no se puede enviar
@@ -752,31 +753,32 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 	 * @param idRemesa
 	 * @return
 	 */
-	private boolean eliminaFicheroGenerado(HttpServletRequest request, String idRemesa) {
-		boolean eliminado = false;
-		
+	public static boolean eliminaFicheroTXTGenerado(String idInstitucion, String idRemesa) {
+				
+		int numFicheros = 0;
 		File file = null;
 	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 		String rutaAlmacen = rp.returnProperty("cajg.directorioFisicoCAJG") + rp.returnProperty("cajg.directorioCAJGJava");
 			
-		rutaAlmacen += File.separator + getIDInstitucion(request);
+		rutaAlmacen += File.separator + idInstitucion;
 		rutaAlmacen += File.separator + idRemesa;
 		
 		File dir = new File(rutaAlmacen);
 		if (dir.exists()) {
 			if (dir.listFiles() != null && dir.listFiles().length > 0) {
-				int numFicheros = 0;
+				
 				for (int i = 0; i < dir.listFiles().length ; i++) {
 					file = dir.listFiles()[i];
 					if (file.isFile() && file.getName().endsWith(".zip")){
-						eliminado = eliminado && file.delete();
+						if (file.delete()) {
+							numFicheros++;
+						}
 					}
 				}
 			}
 		}
-		
 
-		return eliminado;
+		return numFicheros>0;
 	}
 	
 	/**
@@ -806,7 +808,9 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				}
 									
 				if (numFicheros > 1) {
-					throw new SIGAException("cajg.error.masDe1zip");
+					SIGAException e = new SIGAException("cajg.error.masDe1zip");
+					ClsLogging.writeFileLogError("Existe mas de un fichero zip para la remesa " + idRemesa + " del colegio " + idInstitucion, e, 3);
+//					throw e;
 				}
 			}
 		}
@@ -1007,15 +1011,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				int nextIdEjgRemesa = cajgEJGRemesaAdm.getNextVal();
 				nextIdEjgRemesa--;				
 				
-				StringBuffer sqlInsertEJGRemesa = new StringBuffer("insert into cajg_ejgremesa" +
-						" (idinstitucion, anio, numero, idtipoejg, idinstitucionremesa, idremesa, fechamodificacion" +
-						" , usumodificacion, numerointercambio, idejgremesa)" +
-						" SELECT EJG.IDINSTITUCION, EJG.ANIO, EJG.NUMERO, EJG.IDTIPOEJG, " + getIDInstitucion(request) +
-								", " + miForm.getIdRemesa() + ", SYSDATE, " + getUserBean(request).getUserName() +
-							    ", " + numeroIntercambio + " + ROWNUM, " + nextIdEjgRemesa + " + ROWNUM" +
-						" FROM SCS_EJG EJG" +
-						" WHERE EJG.IDINSTITUCION = " + getIDInstitucion(request) + 
-						" AND (1 = 0");
+				String sqlInsertEJGRemesa = getInsertCajgRemesa(request, miForm.getIdRemesa(), numeroIntercambio, nextIdEjgRemesa);
 				
 				String sqlMaxIdEstadoPorEJG = "SELECT NVL(MAX(IDESTADOPOREJG), 0) + 1" +
 						" FROM SCS_ESTADOEJG E" +
@@ -1024,32 +1020,46 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 						" AND E.NUMERO = EJG.NUMERO" +
 						" AND E.IDTIPOEJG = EJG.IDTIPOEJG";
 				
-				StringBuffer sqlInsertEstadoEJG = new StringBuffer("insert into scs_estadoejg (idinstitucion, idtipoejg, anio, numero, idestadoejg" +
+				String sqlInsertEstadoEJG = new String("insert into scs_estadoejg (idinstitucion, idtipoejg, anio, numero, idestadoejg" +
 						", fechainicio, fechamodificacion, usumodificacion, observaciones, idestadoporejg, automatico)" +
 						" SELECT EJG.IDINSTITUCION, EJG.IDTIPOEJG, EJG.ANIO, EJG.NUMERO, '" + ClsConstants.GENERADO_EN_REMESA + "'" +
-						", SYSDATE, SYSDATE, " + getUserBean(request).getUserName() + ", '" + numRemesa + "', (" + sqlMaxIdEstadoPorEJG + "), 1" +
+						", TRUNC(SYSDATE), SYSDATE, " + getUserBean(request).getUserName() + ", '" + numRemesa + "', (" + sqlMaxIdEstadoPorEJG + "), 1" +
 						" FROM CAJG_EJGREMESA EJG" +
 						" WHERE EJG.IDINSTITUCION = " + getIDInstitucion(request) +
 						" AND EJG.IDREMESA = " + miForm.getIdRemesa() +
 						" AND (1 = 0");
 
+				StringBuffer sbsqlInsertEJGRemesa = new StringBuffer();
+				StringBuffer sbsqlInsertEstadoEJG = new StringBuffer();
+				int cuenta = 0;
+				int numeroMaximoExpedientesInsert = 500;
 				for (int i = 0; i < v_seleccionadosSesion.size(); i++) {
 					Hashtable miHashaux = new Hashtable();
 					miHashaux = (Hashtable) v_seleccionadosSesion.get(i);
 					String seleccionado = (String) miHashaux.get("SELECCIONADO");
 					if (seleccionado.equals("1")) {
+						cuenta++;
 						String sql = " OR (EJG.ANIO = " + miHashaux.get(ScsEJGBean.C_ANIO) +
 								" AND EJG.NUMERO = " + miHashaux.get(ScsEJGBean.C_NUMERO) +
 								" AND EJG.IDTIPOEJG = " + miHashaux.get(ScsEJGBean.C_IDTIPOEJG) + ")";
-						sqlInsertEJGRemesa.append(sql);
-						sqlInsertEstadoEJG.append(sql);
+						
+						sbsqlInsertEJGRemesa.append(sql);
+						sbsqlInsertEstadoEJG.append(sql);
+						
+						if ((cuenta % numeroMaximoExpedientesInsert) == 0) {							
+							cajgEJGRemesaAdm.insertSQL(sqlInsertEJGRemesa + sbsqlInsertEJGRemesa.toString() + ")");
+							estadoEJGAdm.insertSQL(sqlInsertEstadoEJG + sbsqlInsertEstadoEJG.toString() + ")");
+							sbsqlInsertEJGRemesa = new StringBuffer();
+							sbsqlInsertEstadoEJG = new StringBuffer();	
+							numeroIntercambio += numeroMaximoExpedientesInsert;
+							nextIdEjgRemesa += numeroMaximoExpedientesInsert;
+							sqlInsertEJGRemesa = getInsertCajgRemesa(request, miForm.getIdRemesa(), numeroIntercambio, nextIdEjgRemesa);
+						}
 					}
 				}
 				
-				sqlInsertEJGRemesa.append(")");
-				sqlInsertEstadoEJG.append(")");
-				cajgEJGRemesaAdm.insertSQL(sqlInsertEJGRemesa.toString());
-				estadoEJGAdm.insertSQL(sqlInsertEstadoEJG.toString());
+				cajgEJGRemesaAdm.insertSQL(sqlInsertEJGRemesa + sbsqlInsertEJGRemesa.toString() + ")");
+				estadoEJGAdm.insertSQL(sqlInsertEstadoEJG + sbsqlInsertEstadoEJG.toString() + ")");
 				tx.commit();
 				exitoRefresco("messages.inserted.success", request);
 				Hashtable miHash = new Hashtable();
@@ -1077,6 +1087,18 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 
 		}
 		return exito("messages.cajg.error.listos", request);
+	}
+
+	private String getInsertCajgRemesa(HttpServletRequest request, String idRemesa, int numeroIntercambio, int nextIdEjgRemesa) {
+		return ("insert into cajg_ejgremesa" +
+				" (idinstitucion, anio, numero, idtipoejg, idinstitucionremesa, idremesa, fechamodificacion" +
+				" , usumodificacion, numerointercambio, idejgremesa)" +
+				" SELECT EJG.IDINSTITUCION, EJG.ANIO, EJG.NUMERO, EJG.IDTIPOEJG, " + getIDInstitucion(request) +
+						", " + idRemesa + ", SYSDATE, " + getUserBean(request).getUserName() +
+					    ", " + numeroIntercambio + " + ROWNUM, " + nextIdEjgRemesa + " + ROWNUM" +
+				" FROM SCS_EJG EJG" +
+				" WHERE EJG.IDINSTITUCION = " + getIDInstitucion(request) + 
+				" AND (1 = 0");
 	}
 
 	protected String consultaMaximaFechaModificacionEJG(Hashtable ht, ScsEstadoEJGAdm admBean) throws SIGAException {
@@ -1599,6 +1621,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		mensaje.append(mensajeCorrecto);
 		
 		try {		
+			eliminaFicheroTXTGenerado(idInstitucion, form.getIdRemesa());//por si se estan regenerando...
 			File fileZIP = generaFicherosTXT(idInstitucion, form.getIdRemesa(), nombreFicheroPorDefecto, mensaje, null);
 				
 			if (fileZIP != null) {
@@ -1715,7 +1738,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 	 */
 	private String envioFTP(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws Exception {				
 		ejecutaBackground(formulario, request, 0);		
-		return exito("messages.cajg.envioFTP.correcto", request);
+		return exitoRefresco("messages.cajg.envioFTP.correcto", request);
 	}
 
 
