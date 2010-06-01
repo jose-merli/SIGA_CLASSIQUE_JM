@@ -207,8 +207,13 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 			}
 			
 			if (destinatarios!=null && !destinatarios.equals("")) {
-				where.append (
-					"  AND DESTINATARIOS like '%" + destinatarios +"%'");
+				where.append(" AND (");
+				for(int i=0;i<destinatarios.length();i++){
+					where.append (" DESTINATARIOS like '%" + destinatarios.charAt(i) +"%'");
+					if(i<destinatarios.length()-1)
+						where.append(" OR ");
+				}
+				where.append(" ) ");
 			}
 			
 			salida = this.select (where.toString());
