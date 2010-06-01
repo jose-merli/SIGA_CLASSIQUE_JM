@@ -98,7 +98,7 @@ public class DefinirExpedientesSOJAction extends MasterAction {
 		HashMap databackup=new HashMap();
 
 		//Realiza la recuperación de los datos.
-	   if ((request.getSession().getAttribute("DATAPAGINADOR")!=null)||(request.getSession().getAttribute("DATAPAGINADOR")==null)){		   
+	   if ((request.getSession().getAttribute("DATAPAGINADOR")!=null)){		   
 	 	databackup = (HashMap)request.getSession().getAttribute("DATAPAGINADOR");
 			     PaginadorBind paginador = (PaginadorBind)databackup.get("paginador");
 			     Vector datos=new Vector();
