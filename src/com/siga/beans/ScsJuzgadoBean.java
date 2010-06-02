@@ -12,7 +12,7 @@ public class ScsJuzgadoBean extends MasterBean{
 	
 	private Integer	idInstitucion, idJuzgado ;
 	private String	nombre=null, direccion=null, codigoPostal=null, idProvincia=null, idPoblacion=null, 
-					telefono1=null, telefono2=null, fax1=null,codProcurador="", visible="";
+					telefono1=null, telefono2=null, fax1=null,codProcurador="", visible="", movil="";
 	
 	/* Nombre de Tabla*/
 	
@@ -34,6 +34,7 @@ public class ScsJuzgadoBean extends MasterBean{
 	static public final String 	C_FAX1 = 					"FAX1";
 	static public final String 	C_CODPROCURADOR = 			"CODIGOPROCURADOR";
 	static public final String 	C_VISIBLE =      			"VISIBLE";
+	static public final String 	C_MOVIL =      			"MOVIL";
 	/* cambio para codigo ext */
 	private String codigoExt;
 	static public final String C_CODIGOEXT = "CODIGOEXT";
@@ -188,5 +189,17 @@ public class ScsJuzgadoBean extends MasterBean{
 	 */
 	public void setVisible(String visible) {
 		this.visible = visible;
+	}
+		/**
+	 * @return Returns the codigoPostal.
+	 */
+	public String getMovil() {
+		return movil;
+	}
+	/**
+	 * @param codigoPostal The codigoPostal to set.
+	 */
+	public void setMovil(String movil) {
+		this.movil = movil;
 	}
 }

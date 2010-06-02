@@ -77,6 +77,9 @@ public class MantenimientoJuzgadoForm extends MasterForm {
 	public void setNombreObjetoDestino(String dato) {
 		UtilidadesHash.set(this.datos, "NOMBRE_OBJETO_DESTINOP" , dato);
 	}
+	public void setMovil(String dato) {
+		UtilidadesHash.set(this.datos, ScsJuzgadoBean.C_MOVIL, dato);
+	}
 	
 	
 	// METODOS GET	
@@ -142,5 +145,8 @@ public class MantenimientoJuzgadoForm extends MasterForm {
 	}
 	public String getNombreObjetoDestino() {
 		return UtilidadesHash.getString(this.datos, "NOMBRE_OBJETO_DESTINOP");
+	}
+	public String getMovil() {
+		return UtilidadesHash.getString(this.datos, ScsJuzgadoBean.C_MOVIL);
 	}
 }

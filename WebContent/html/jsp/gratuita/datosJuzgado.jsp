@@ -144,6 +144,7 @@
 		  document.MantenimientoJuzgadoForm.telefono1.value=eliminarBlancos(trim(document.MantenimientoJuzgadoForm.telefono1.value));
 		  document.MantenimientoJuzgadoForm.telefono2.value=eliminarBlancos(trim(document.MantenimientoJuzgadoForm.telefono2.value));
 		  document.MantenimientoJuzgadoForm.fax1.value=eliminarBlancos(trim(document.MantenimientoJuzgadoForm.fax1.value));
+		  document.MantenimientoJuzgadoForm.movil.value=eliminarBlancos(trim(document.MantenimientoJuzgadoForm.movil.value));
 		  idPoblacion=document.MantenimientoJuzgadoForm.idPoblacion.value;
 				
 			if (validateMantenimientoJuzgadoForm(document.MantenimientoJuzgadoForm)){
@@ -318,11 +319,17 @@
 								</td>
 							</tr>
 							<tr>
-							<td class="labelText">
+								<td class="labelText">
 									<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.fax1"/>
 								</td>
 								<td class="labelText">
 									<html:text name="MantenimientoJuzgadoForm" property="fax1" size="20" maxlength="20"  readonly="<%=desactivado %>" styleClass="<%=estilo%>"></html:text>
+								</td>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.movil"/>
+								</td>
+								<td class="labelText">
+									<html:text name="MantenimientoJuzgadoForm" property="movil" size="20" maxlength="20"  readonly="<%=desactivado %>" styleClass="<%=estilo%>"></html:text>
 								</td>
 							</tr>
 					</table>

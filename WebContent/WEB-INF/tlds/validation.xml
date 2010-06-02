@@ -3914,6 +3914,14 @@
 	                <var-value>${telefonoSIGA}</var-value>
 	            </var>
 			</field>
+			<field 	property = "movil" 	depends = "mask"> 
+				<msg name="mask" key="errors.telefono"/>
+				<arg0 key="gratuita.mantenimientoTablasMaestra.literal.movil"/>					
+				<var>
+					<var-name>mask</var-name>
+					<var-value>${telefonoSIGA}</var-value>
+		        </var>
+			</field>
 			<field 	property = "codProcurador" 	
 						depends = "maxlength"> 			
         				<arg0 key="gratuita.mantenimientoTablasMaestra.literal.errorCodProcurador"/>

@@ -297,6 +297,7 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 			beanJuzgado.setFax1(miForm.getFax1());			
 			beanJuzgado.setIdJuzgado(juzgadoAdm.getNuevoIdJuzgado(idInstitucion));
 			beanJuzgado.setVisible(miForm.getVisible());
+			beanJuzgado.setMovil(miForm.getMovil());
 			
 			ScsJuzgadoAdm admJuz = new ScsJuzgadoAdm(this.getUserBean(request));
 //			if (!codigoExt.trim().equals("") && admJuz.comprobarCodigoExt(idInstitucion,null,codigoExt)) {
