@@ -25,7 +25,13 @@
 	HttpSession ses=request.getSession();
 	UsrBean user=(UsrBean) ses.getAttribute("USRBEAN");
 	String idInstitucion[] = {user.getLocation()};
-
+	String envioSms = (String)request.getAttribute("smsHabilitado");
+	String consultaPlantillas="";
+	if (envioSms!=null && envioSms.equalsIgnoreCase("S")){
+		consultaPlantillas = "cmbTipoEnviosInstSms";
+	}else{
+		consultaPlantillas = "cmbTipoEnviosInst";
+	}
 %>	
 <html>
 
@@ -83,7 +89,7 @@
 						<siga:Idioma key="envios.definir.literal.tipoenvio"/>&nbsp;(*)
 				</td>
 				<td>	
-					<siga:ComboBD nombre = "comboTipoEnvio" tipo="cmbTipoEnviosInstGen" clase="boxCombo" obligatorio="true" ancho="330" parametro="<%=idInstitucion%>" accion="Hijo:comboPlantillaEnvio"/>						
+					<siga:ComboBD nombre = "comboTipoEnvio" tipo="<%=consultaPlantillas%>" clase="boxCombo" obligatorio="true" ancho="330" parametro="<%=idInstitucion%>" accion="Hijo:comboPlantillaEnvio"/>						
 				</td>
 				
 			</tr>

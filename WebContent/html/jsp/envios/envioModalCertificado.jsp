@@ -37,6 +37,14 @@
 	String fecha = UtilidadesString.getMensajeIdioma(user,"envios.definir.literal.fechaprogramada");
 	String obligatorio = UtilidadesString.getMensajeIdioma(user,"messages.campoObligatorio.error");
 	
+	String envioSms = (String)request.getAttribute("smsHabilitado");
+	String consultaPlantillas="";
+	if (envioSms!=null && envioSms.equalsIgnoreCase("S")){
+		consultaPlantillas = "cmbTipoEnviosInstSms";
+	}else{
+		consultaPlantillas = "cmbTipoEnviosInst";
+	}
+	
 	
 %>	
 <html>
@@ -126,7 +134,7 @@
 						<siga:Idioma key="envios.definir.literal.tipoenvio"/>&nbsp;(*)
 				</td>
 				<td>
-						<siga:ComboBD nombre = "comboTipoEnvio" tipo="cmbTipoEnviosInst" clase="boxCombo" obligatorio="true" parametro="<%=idInstitucion%>"  accion="Hijo:comboPlantillaEnvio"/>
+						<siga:ComboBD nombre = "comboTipoEnvio" tipo="<%=consultaPlantillas%>" clase="boxCombo" obligatorio="true" parametro="<%=idInstitucion%>"  accion="Hijo:comboPlantillaEnvio"/>
 				</td>				
 			</tr>
 			

@@ -30,7 +30,7 @@
 	String tipo = UtilidadesMultidioma.getDatoMaestroIdioma((String)request.getAttribute("tipo"),user);
 	String idTipoEnvio =((Integer)request.getAttribute("idTipoEnvio")).toString();
 	String idEnvio = (String)request.getParameter("idEnvio");
-	
+	String botonesFila;
 	request.removeAttribute("datos");	
 %>	
 
@@ -167,10 +167,18 @@
 			   		{
 				  		Row fila = (Row)vDatos.elementAt(i);
 %>
-	  			<siga:FilaConIconos fila='<%=""+(i+1)%>' botones='C,E,B' clase="listaNonEdit" visibleConsulta="no" visibleEdicion="no">
-						<input type="hidden" name="oculto<%=""+(i+1)%>_1" value="<%=fila.getString("IDPERSONA")%>"/>
-						<input type="hidden" name="oculto<%=""+(i+1)%>_2" value="<%=idEnvio%>"/>
-						<input type="hidden" name="oculto<%=""+(i+1)%>_3" value="<%=idTipoEnvio%>"/>
+			<% if(fila.getString("TIPODESTINATARIO").equalsIgnoreCase("CEN_PERSONA")){
+				botonesFila="C,E,B"; 
+			}else{
+				botonesFila="C,B";
+			}
+			System.out.println(fila.getString("TIPODESTINATARIO"));
+			%>
+	  		
+	  			<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="<%=botonesFila %>" clase="listaNonEdit" visibleConsulta="no">
+					<input type="hidden" name="oculto<%=""+(i+1)%>_1" value="<%=fila.getString("IDPERSONA")%>"/>
+					<input type="hidden" name="oculto<%=""+(i+1)%>_2" value="<%=idEnvio%>"/>
+					<input type="hidden" name="oculto<%=""+(i+1)%>_3" value="<%=idTipoEnvio%>"/>
 					<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("NOMBREYAPELLIDOS"))%></td>
 					<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("NCOLEGIADO"))%></td>
 					<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("NIFCIF"))%></td>

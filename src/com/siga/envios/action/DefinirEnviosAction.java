@@ -239,12 +239,18 @@ public class DefinirEnviosAction extends MasterAction {
 	protected String nuevo(ActionMapping mapping, MasterForm formulario,
 			HttpServletRequest request, HttpServletResponse response)
 	throws SIGAException {	    
-
+		UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
 		DefinirEnviosForm form = (DefinirEnviosForm) formulario;
 		form.setNombre("");	   
 
 		//Para volver correctamente desde envios:
 		request.getSession().removeAttribute("EnvEdicionEnvio");		
+		GenParametrosAdm param = new GenParametrosAdm(userBean);
+		try {
+			request.setAttribute("smsHabilitado",param.getValor(userBean.getLocation(), "ENV", "HABILITAR_SMS_BUROSMS", "N"));
+		} catch (Exception e) {
+			// Si no se mete este parametro se controla en la jsp
+		}
 
 		return "nuevo";
 	}
@@ -728,9 +734,8 @@ public class DefinirEnviosAction extends MasterAction {
 			request.setAttribute(FacFacturaBean.C_IDFACTURA,idFactura);
 			request.setAttribute("subModo",subModo);
 			request.setAttribute("datosEnvios",datosEnvios);
-
-
-
+			GenParametrosAdm param = new GenParametrosAdm(userBean);
+			request.setAttribute("smsHabilitado",param.getValor(idInstitucion, "ENV", "HABILITAR_SMS_BUROSMS", "N"));
 
 		} catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
@@ -742,7 +747,7 @@ public class DefinirEnviosAction extends MasterAction {
 	throws SIGAException{
 
 		DefinirEnviosForm form = (DefinirEnviosForm)formulario;
-
+		UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN"))); 
 
 		try {
 			//SOLICITUD CERTIFICADO:
@@ -755,6 +760,8 @@ public class DefinirEnviosAction extends MasterAction {
 			String fecha;
 			fecha = sdf.format(cal.getTime()).toString();
 			form.setFechaProgramada(fecha);
+			GenParametrosAdm param = new GenParametrosAdm(userBean);
+			request.setAttribute("smsHabilitado",param.getValor(userBean.getLocation(), "ENV", "HABILITAR_SMS_BUROSMS", "N"));
 
 		} catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);

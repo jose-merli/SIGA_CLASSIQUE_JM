@@ -40,6 +40,7 @@
 	String subModo = (String)request.getAttribute("subModo");
 	String datosEnvios = (String)request.getAttribute("datosEnvios");
 	String clavesIteracion = (String)request.getAttribute("clavesIteracion");
+	String envioSms = (String)request.getAttribute("smsHabilitado");
 	
 	
 	ArrayList comboTipoEnvio = (ArrayList) request.getAttribute("comboTipoEnvio");
@@ -60,6 +61,13 @@
 	
 	Boolean descargar = (Boolean)request.getAttribute("isDescargar");
 	boolean  isDescargar = descargar!=null && descargar.booleanValue();
+	
+	String consultaPlantillas="";
+	if (envioSms!=null && envioSms.equalsIgnoreCase("S")){
+		consultaPlantillas = "cmbTipoEnviosInstSms";
+	}else{
+		consultaPlantillas = "cmbTipoEnviosInst";
+	}
 	
 	
 	String obligatorio = UtilidadesString.getMensajeIdioma(user,"messages.campoObligatorio.error");
@@ -143,7 +151,7 @@
 						<siga:Idioma key="envios.definir.literal.tipoenvio"/>&nbsp;(*)
 				</td>
 				<td class="labelText">
-						<siga:ComboBD nombre = "comboTipoEnvio" tipo="cmbTipoEnviosInst" clase="boxCombo" obligatorio="true" parametro="<%=idInstitucion%>" elementoSel="<%=comboTipoEnvio%>" accion="Hijo:comboPlantillaEnvio"/>
+						<siga:ComboBD nombre = "comboTipoEnvio" tipo="<%=consultaPlantillas %>" clase="boxCombo" obligatorio="true" parametro="<%=idInstitucion%>" elementoSel="<%=comboTipoEnvio%>" accion="Hijo:comboPlantillaEnvio"/>
 				</td>				
 			</tr>
 			

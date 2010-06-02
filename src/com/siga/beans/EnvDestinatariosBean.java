@@ -49,6 +49,7 @@ public class EnvDestinatariosBean extends MasterBean {
 	static public final String C_APELLIDOS2	= "APELLIDOS2";
 	static public final String C_NIFCIF = "NIFCIF";
 	static public final String C_MOVIL = "MOVIL";
+	static public final String C_TIPODESTINATARIO = "TIPODESTINATARIO";
 	
 	static public final String T_NOMBRETABLA = "ENV_DESTINATARIOS";	
 

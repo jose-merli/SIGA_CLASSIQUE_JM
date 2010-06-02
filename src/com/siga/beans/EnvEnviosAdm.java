@@ -391,6 +391,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		String D_APELLIDO1 = "D." + EnvDestinatariosBean.C_APELLIDOS1;
 		String D_APELLIDO2 = "D." + EnvDestinatariosBean.C_APELLIDOS2;
 		String D_NIFCIF = "D." + EnvDestinatariosBean.C_NIFCIF;
+		String D_TIPODESTINATARIO = "D." + EnvDestinatariosBean.C_TIPODESTINATARIO;
 
 		//Tabla cen_persona
 		String P_IDPERSONA = "P." + CenPersonaBean.C_IDPERSONA;
@@ -417,7 +418,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 				P_NOMBRE + "||' '|| " + P_APELLIDO1 + "||' '|| " + P_APELLIDO2 + ") AS NOMBREYAPELLIDOS, "+
 				C_NCOLEGIADO + ", "+
 				"DECODE("+P_IDPERSONA+",-1,"+  D_NIFCIF + ", "+  P_NIFCIF + ") NIFCIF, "+
-				P_IDPERSONA+
+				P_IDPERSONA+ ", " + D_TIPODESTINATARIO + 
 				
 				" FROM "+T_ENV_DESTINATARIOS + ", "+ T_CEN_PERSONA + ", "+ T_CEN_COLEGIADO+
 				
