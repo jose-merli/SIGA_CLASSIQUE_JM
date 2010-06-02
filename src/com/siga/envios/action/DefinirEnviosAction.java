@@ -615,11 +615,11 @@ public class DefinirEnviosAction extends MasterAction {
 
 			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesDesigna)){
 
-				idPersona = getIdColegiadoUnicoDesignas(form,userBean);
+				//idPersona = getIdColegiadoUnicoDesignas(form,userBean);
 
 				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")));
 				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
-				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null));
+				request.setAttribute("isEditarEnvio",Boolean.valueOf(false));
 				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.genericos.designas.asunto");
 
 
@@ -990,7 +990,7 @@ public class DefinirEnviosAction extends MasterAction {
 				dest.setIdEnvio(Integer.valueOf(idEnvio));
 				//Generamos el envío de la solicitud de incorporacion:
 				Envio envio = new Envio(enviosBean,userBean);
-				envio.generarEnvio(idPersona,vDocs);
+				envio.generarEnvio(idPersona, EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA, vDocs);
 				envio.addDestinatarioIndividualDocAdjuntos(dest,null,true);
 				// RGG envio.addDestinatarioIndividual(dest,null,true);
 			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesMorosos)){
@@ -1115,7 +1115,7 @@ public class DefinirEnviosAction extends MasterAction {
 						//Vector vDocumentos = (Vector) htDocumentosPersona.get(idPersona);
 
 						// Genera el envio:
-						envio.generarEnvio(idPersona,vDocumentos);
+						envio.generarEnvio(idPersona, EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA,vDocumentos);
 
 
 
@@ -1187,7 +1187,7 @@ public class DefinirEnviosAction extends MasterAction {
 			else {
 				//Generamos el envío
 				Envio envio = new Envio(enviosBean,userBean);
-				envio.generarEnvio(idPersona,null);
+				envio.generarEnvio(idPersona, EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA,null);
 			}
 
 			if (!tieneDireccion) {

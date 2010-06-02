@@ -81,8 +81,8 @@
 		   	      nombre="tablaDatos"
 		   		  borde="1"
 		   		  clase="tableTitle"
-		   		  nombreCol="infomes.seleccionPlantillas.literal.sel,infomes.seleccionPlantillas.literal.descripcion"
-		   		   tamanoCol="10,90"
+		   		  nombreCol="infomes.seleccionPlantillas.literal.sel,infomes.seleccionPlantillas.literal.descripcion,A solicitantes,destinatarios"
+		   		   tamanoCol="10,70,10,10"
 		   		  alto="100%"
 		   		  modal="G"
 	   		  	  activarFilaSel="true" 
@@ -102,11 +102,18 @@
 				  		AdmInformeBean bean = (AdmInformeBean)plantillas.elementAt(i);
 %>
 			  			<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="" visibleConsulta="false" visibleEdicion="false" visibleBorrado="false" pintarEspacio="no" clase="listaNonEdit">
+							<input type="hidden" name='<%="destinatario_"+(i)%>' value='<%=UtilidadesString.mostrarDatoJSP(bean.getDestinatarios()) %>'/>
 							<td>
 								<input type="checkbox" value="<%=bean.getIdPlantilla()%>" name="chkPL" <%=(bean.getPreseleccionado().equals("S"))?"checked":"" %> >
 							</td>
 							<td>
 								<%=UtilidadesString.mostrarDatoJSP(bean.getDescripcion()) %>
+							</td>
+							<td>
+								<%=UtilidadesString.mostrarDatoJSP(bean.getASolicitantes()) %>
+							</td>
+							<td>
+								<%=UtilidadesString.mostrarDatoJSP(bean.getDestinatarios()) %>
 							</td>
 			  			</siga:FilaConIconos>
 <%
@@ -140,9 +147,15 @@
 							var dato1 = aDatos[j];
 							var dato2 = oCheck[i].value;
 						}
-						aDatos[j] = oCheck[i].value;
+						destinat = 'destinatario_'+i;
+						var destinatario = document.getElementById(destinat).value;
+						if(!destinatario)
+							destinatario='';
+							 
+						aDatos[j] = oCheck[i].value+","+destinatario;
 					}
 				}
+				
 				var auxi = "";
 				for (i=0; i<aDatos.length; i++)
 				{

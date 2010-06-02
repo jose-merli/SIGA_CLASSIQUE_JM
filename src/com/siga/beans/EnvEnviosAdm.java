@@ -410,30 +410,49 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		try {
 			rc = new RowsContainer();
 
-			String sql = 
-				"SELECT "+
+			StringBuffer sql = new StringBuffer();
+			sql.append("( ");
+			sql.append("(SELECT ");
+			sql.append("DECODE("+P_IDPERSONA+",-1,");  
+			sql.append(D_NOMBRE + "||' '|| " + D_APELLIDO1 + "||' '|| " + D_APELLIDO2+",");
+			sql.append(P_NOMBRE + "||' '|| " + P_APELLIDO1 + "||' '|| " + P_APELLIDO2 + ") AS NOMBREYAPELLIDOS, ");
+			sql.append(C_NCOLEGIADO + ", ");
+			sql.append("DECODE("+P_IDPERSONA+",-1,"+  D_NIFCIF + ", "+  P_NIFCIF + ") NIFCIF, ");
+			sql.append(P_IDPERSONA);
+			sql.append(", " + D_TIPODESTINATARIO );
 				
-				"DECODE("+P_IDPERSONA+",-1,"+  
-				D_NOMBRE + "||' '|| " + D_APELLIDO1 + "||' '|| " + D_APELLIDO2+","+
-				P_NOMBRE + "||' '|| " + P_APELLIDO1 + "||' '|| " + P_APELLIDO2 + ") AS NOMBREYAPELLIDOS, "+
-				C_NCOLEGIADO + ", "+
-				"DECODE("+P_IDPERSONA+",-1,"+  D_NIFCIF + ", "+  P_NIFCIF + ") NIFCIF, "+
-				P_IDPERSONA+ ", " + D_TIPODESTINATARIO + 
+			sql.append(" FROM "+T_ENV_DESTINATARIOS + ", "+ T_CEN_PERSONA + ", "+ T_CEN_COLEGIADO);
 				
-				" FROM "+T_ENV_DESTINATARIOS + ", "+ T_CEN_PERSONA + ", "+ T_CEN_COLEGIADO+
-				
-				" WHERE "+
-				D_IDINSTITUCION + " = " + idInstitucion+
-				" AND " + D_IDENVIO + " = " + idEnvio+
-				" AND " + D_IDPERSONA + " = " + P_IDPERSONA+
-				" AND " + D_IDINSTITUCION + " = " + C_IDINSTITUCION + "(+)"+
-				" AND " + D_IDPERSONA + " = " + C_IDPERSONA + "(+)"+
-				
-				" ORDER BY NOMBREYAPELLIDOS";
-
-			ClsLogging.writeFileLog("EnvEnviosAdm.getDestinatariosManuales -> QUERY: "+sql,3);
+			sql.append(" WHERE ");
+			sql.append(D_IDINSTITUCION + " = " + idInstitucion);
+			sql.append(" AND " + D_IDENVIO + " = " + idEnvio);
+			sql.append(" AND " + D_IDPERSONA + " = " + P_IDPERSONA);
+			sql.append(" AND " + D_IDINSTITUCION + " = " + C_IDINSTITUCION + "(+)");
+			sql.append(" AND " + D_IDPERSONA + " = " + C_IDPERSONA + "(+) "); 
+			sql.append(" AND D.Tipodestinatario ='");
+			sql.append(EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA);
+			sql.append("' ) ");
 			
-			if (rc.query(sql)) {
+			sql.append(" UNION ");
+			sql.append(" (SELECT  D.NOMBRE || ' ' || D.APELLIDOS1 || ' ' || D.APELLIDOS2 AS NOMBREYAPELLIDOS,D.NIFCIF,null,D.IDPERSONA ");
+			sql.append(" FROM ENV_DESTINATARIOS D ");
+			sql.append(" WHERE D.IDINSTITUCION = ");
+			sql.append(idInstitucion);
+			sql.append(" AND D.IDENVIO = ");
+			sql.append(idEnvio);
+			sql.append(" AND D.Tipodestinatario ='");
+			sql.append(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG);
+			sql.append("') ");
+			sql.append(") ORDER BY NOMBREYAPELLIDOS ");   
+			
+			// TODO AÑADIR UNION PARA JUZGADOS
+//			sql.append(EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO);
+			
+			
+
+			//ClsLogging.writeFileLog("EnvEnviosAdm.getDestinatariosManuales -> QUERY: "+sql,3);
+			
+			if (rc.query(sql.toString())) {
 				for (int i = 0; i < rc.size(); i++)	{
 					Row fila = (Row) rc.get(i);
 					datos.add(fila);
@@ -1279,9 +1298,9 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    }
 	}
 
-    public Hashtable getDatosEnvio(EnvDestinatariosBean beanDestinatario, String consulta) throws SIGAException, ClsExceptions
+    private Hashtable getDatosEnvio(EnvDestinatariosBean beanDestinatario, String consulta) throws SIGAException, ClsExceptions
 	{
-    	Hashtable htDatos = getDatosEnvio(beanDestinatario.getIdInstitucion(), beanDestinatario.getIdEnvio(), beanDestinatario.getIdPersona(), consulta);
+    	Hashtable htDatos = getDatosEnvio(beanDestinatario.getIdInstitucion(), beanDestinatario.getIdEnvio(), beanDestinatario.getIdPersona(), consulta,beanDestinatario.getTipoDestinatario());
     	    	
     	if(beanDestinatario.getDomicilio()!=null)
     		htDatos.put("DIRECCION", beanDestinatario.getDomicilio());
@@ -1333,7 +1352,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
     	
     	return htDatos;
 	}
-	private Hashtable getDatosEnvio(Integer idInstitucion, Integer idEnvio, Long idPersona, String consulta) throws SIGAException, ClsExceptions
+	private Hashtable getDatosEnvio(Integer idInstitucion, Integer idEnvio, Long idPersona, String consulta,String tipoDestinatario) throws SIGAException, ClsExceptions
 	{
 		try
 		{
@@ -1347,7 +1366,12 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 				if(CenPersonaAdm.K_PERSONA_GENERICA.equals(idPersona)){
 		        	sSQL = rp.returnProperty("envios.consulta.sinPersona");
 				}else{
-		        	sSQL = rp.returnProperty("envios.consulta.conPersona");
+					if(tipoDestinatario!=null&&tipoDestinatario.equals(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG)){
+						sSQL = rp.returnProperty("envios.consulta.conPersonaJG");
+					}else{
+						sSQL = rp.returnProperty("envios.consulta.conPersona");
+					}
+					//TODO scs_JUAZGADO
 				}
 			}
 			else
@@ -1573,7 +1597,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    Hashtable htPk = new Hashtable();
 	    htPk.put(EnvDestinatariosBean.C_IDINSTITUCION,idInstitucion);
 	    htPk.put(EnvDestinatariosBean.C_IDENVIO,idEnvio);
-	    
+	  //FIXME  AQUI SE LLAMA 1
 	    EnvDestinatariosAdm destAdm = new EnvDestinatariosAdm(this.usrbean);
 	    try {
             vDestManuales = destAdm.select(htPk);
@@ -1908,10 +1932,15 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 				    EnvDestinatariosBean destMan = null;
 				    for (int y=0;y<vDestListaNoDinamicaBeans.size();y++){
 				        destMan = (EnvDestinatariosBean)vDestManuales.elementAt(x);
-				        EnvDestinatariosBean destLista = (EnvDestinatariosBean)vDestListaNoDinamicaBeans.elementAt(y);
-				        if (destMan.getIdPersona().equals(destLista.getIdPersona())){
-				            existe = true;
-				            break;
+				        if((destMan.getTipoDestinatario()!=null && destMan.getTipoDestinatario().equalsIgnoreCase(EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA)|| destMan.getTipoDestinatario()==null))
+				        {
+				        	EnvDestinatariosBean destLista = (EnvDestinatariosBean)vDestListaNoDinamicaBeans.elementAt(y);
+					        if (destMan.getIdPersona().equals(destLista.getIdPersona())){
+					            existe = true;
+					            break;
+					        }
+				        }else{
+				        	break;
 				        }
 				    }
 				    if (!existe) vDestListaNoDinamicaBeans.add(destMan);
@@ -2042,10 +2071,15 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 				    EnvDestinatariosBean destMan = null;
 				    for (int y=0;y<vDestDin.size();y++){
 				        destMan = (EnvDestinatariosBean)vManNoDin.elementAt(x);
-				        EnvDestinatariosBean destLista = (EnvDestinatariosBean)vDestDin.elementAt(y);
-				        if (destMan.getIdPersona().equals(destLista.getIdPersona())){
-				            existe = true;
-				            break;
+				        if((destMan.getTipoDestinatario()!=null && destMan.getTipoDestinatario().equalsIgnoreCase(EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA)|| destMan.getTipoDestinatario()==null))
+					       {
+				        	EnvDestinatariosBean destLista = (EnvDestinatariosBean)vDestDin.elementAt(y);
+					        if (destMan.getIdPersona().equals(destLista.getIdPersona())){
+					            existe = true;
+					            break;
+					        }
+				        }else{
+				        	break;
 				        }
 				    }
 				    if (!existe) vDestDin.add(destMan);
@@ -2226,7 +2260,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    return htCorreo;        
 	}
 	
-	public String getTextoSMS(EnvEnviosBean envBean,EnvDestinatariosBean beanDestinatario, Long idPersona, String consulta) 
+	private String getTextoSMS(EnvEnviosBean envBean,EnvDestinatariosBean beanDestinatario, Long idPersona, String consulta) 
 	throws SIGAException,ClsExceptions {
     
 	    if (!envBean.getIdTipoEnvios().equals(Integer.valueOf(EnvTipoEnviosAdm.K_SMS)) && !envBean.getIdTipoEnvios().equals(Integer.valueOf(EnvTipoEnviosAdm.K_BUROSMS))){
@@ -2902,7 +2936,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    
 	    final String separador = ClsConstants.SEPARADOR; 
         String sLineaCabecera = "ENVIO"+separador+"NIF/CIF"+separador+"NOMBRE"+separador+"APELLIDO 1"+separador+"APELLIDO 2"+separador+"FAX 1"+separador+"FAX 2"+separador+"MOVIL"+separador+"CORREO ELECTRONICO"+separador+"DOMICILIO"+separador+"PROVINCIA"+separador+"POBLACION"+separador+"PAIS"+separador+"MENSAJE"+separador;
-        CenPersonaAdm admPer = new CenPersonaAdm(this.usrbean);
+        
         CenPoblacionesAdm admPob = new CenPoblacionesAdm(this.usrbean);
         CenProvinciaAdm admPro = new CenProvinciaAdm(this.usrbean);
         CenPaisAdm admPais = new CenPaisAdm(this.usrbean);
@@ -2922,18 +2956,37 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	            }
 	            sLineaCabecera = sLineaCabecera + "MENSAJE" + separador;
 	            */
-	            Hashtable htPer = new Hashtable();
-				htPer.put(CenPersonaBean.C_IDPERSONA,destBean.getIdPersona());
-				Vector v = admPer.selectByPK(htPer);
-				CenPersonaBean bean = null;
-				if (v!=null && v.size()>0) {
-					bean = (CenPersonaBean) v.get(0);
-				}
-				sLinea += sIdEnvio + separador;
-				sLinea += bean.getNIFCIF() + separador;
-				sLinea += bean.getNombre() + separador;
-				sLinea += bean.getApellido1() + separador;
-				sLinea += bean.getApellido2() + separador;
+	            sLinea += sIdEnvio + separador;
+	            if(destBean.getTipoDestinatario()!=null && destBean.getTipoDestinatario().equalsIgnoreCase(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG)){
+	            	Hashtable htPer = new Hashtable();
+					htPer.put(ScsPersonaJGBean.C_IDPERSONA,destBean.getIdPersona());
+					htPer.put(ScsPersonaJGBean.C_IDINSTITUCION,destBean.getIdInstitucion());
+					ScsPersonaJGAdm admPerJG = new ScsPersonaJGAdm(this.usrbean);
+					Vector v = admPerJG.selectByPK(htPer);
+					ScsPersonaJGBean beanPersonaJG = null;
+					if (v!=null && v.size()>0) {
+						beanPersonaJG = (ScsPersonaJGBean) v.get(0);
+					}
+					
+					sLinea += beanPersonaJG.getNif() + separador;
+					sLinea += beanPersonaJG.getNombre() + separador;
+					sLinea += beanPersonaJG.getApellido1() + separador;
+					sLinea += beanPersonaJG.getApellido2() + separador;
+	            }else{
+	            	CenPersonaAdm admPer = new CenPersonaAdm(this.usrbean);
+		            Hashtable htPer = new Hashtable();
+					htPer.put(CenPersonaBean.C_IDPERSONA,destBean.getIdPersona());
+					Vector v = admPer.selectByPK(htPer);
+					CenPersonaBean beanPersona = null;
+					if (v!=null && v.size()>0) {
+						beanPersona = (CenPersonaBean) v.get(0);
+					}
+					
+					sLinea += beanPersona.getNIFCIF() + separador;
+					sLinea += beanPersona.getNombre() + separador;
+					sLinea += beanPersona.getApellido1() + separador;
+					sLinea += beanPersona.getApellido2() + separador;
+	            }
 	            sLinea += destBean.getFax1() + separador;
 	            sLinea += destBean.getFax2() + separador;
 	            sLinea += destBean.getMovil() + separador;
@@ -3659,7 +3712,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			
 		try {
 			
-			EnvTempDestinatariosAdm admEnviosTemp =  new EnvTempDestinatariosAdm(this.usrbean);
+//			EnvTempDestinatariosAdm admEnvfiosTemp =  new EnvTempDestinatariosAdm(this.usrbean);
 			//Vector datos=admEnviosTemp.getDatosEtiquetas(institucion, envio);
 
 			if (!datos.isEmpty()){
@@ -4667,8 +4720,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 				    }
 	        
 		            String sTo = destBean.getCorreoElectronico();
-                    if(sTo==null ||sTo.trim().equals(""))
-                        throw new SMTPAddressFailedException(new InternetAddress(sFrom),null,0,UtilidadesString.getMensajeIdioma(usrbean,"messages.envios.errorSinEmail"));
+		            if(sTo==null ||sTo.trim().equals(""))
+		            	throw new SMTPAddressFailedException(new InternetAddress(sFrom),null,0,UtilidadesString.getMensajeIdioma(usrbean,"messages.envios.errorSinEmail"));
 		            
 		            //Se crea un nuevo Mensaje.
 		    	    MimeMessage mensaje = new MimeMessage(sesion);

@@ -14,7 +14,6 @@ private String idPlantilla;
 
 	static public final String C_IDPLANTILLA = "IDPLANTILLA";
 	
-	
 	static public final String T_NOMBRETABLA = "ENV_INFORMESGENERICOS";
 	
 
@@ -25,8 +24,5 @@ private String idPlantilla;
 	public void setIdPlantilla(String idPlantilla) {
 		this.idPlantilla = idPlantilla;
 	}
-
-	
-
 
 }

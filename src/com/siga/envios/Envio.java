@@ -22,6 +22,7 @@ import com.atos.utils.UsrBean;
 import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.CenPersonaBean;
 import com.siga.beans.CerSolicitudCertificadosAdm;
 import com.siga.beans.CerSolicitudCertificadosBean;
 import com.siga.beans.EnvCamposEnviosAdm;
@@ -43,6 +44,9 @@ import com.siga.beans.ExpAnotacionAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.PysProductosInstitucionAdm;
 import com.siga.beans.PysProductosInstitucionBean;
+import com.siga.beans.ScsPersonaJGAdm;
+import com.siga.beans.ScsPersonaJGBean;
+import com.siga.beans.ScsTelefonosPersonaJGBean;
 import com.siga.certificados.Plantilla;
 import com.siga.general.SIGAException;
 
@@ -183,47 +187,91 @@ public class Envio
      * @param documentos Vector de objetos Documento
      * @throws SIGAException
      */
-    public void addDocumentosDestinatario(String idPersona, Vector documentos) throws SIGAException{
+    public void addDocumentosDestinatario(String idPersona,String tipoDestinatario, Vector documentos ) throws SIGAException{
         
         try{
             EnvDestinatariosAdm destAdm = new EnvDestinatariosAdm(this.usrBean);
             EnvDestinatariosBean destBean = null;
 	        boolean crearDestinatario;
+	        //FIXME  AQUI SE LLAMA 2
             if (!destAdm.existeDestinatario(String.valueOf(enviosBean.getIdEnvio()),
                     						String.valueOf(enviosBean.getIdInstitucion()),
                     						idPersona)){                
             
-	            EnvEnviosAdm enviosAdm = new EnvEnviosAdm(this.usrBean);
-	            Vector direcciones = enviosAdm.getDirecciones(String.valueOf(enviosBean.getIdInstitucion()),
-	                    									  idPersona,
-	                    									  String.valueOf(enviosBean.getIdTipoEnvios()));
 	            
-                destBean = new EnvDestinatariosBean();
+	            destBean = new EnvDestinatariosBean();
 		        destBean.setIdEnvio(enviosBean.getIdEnvio());
 		        destBean.setIdInstitucion(enviosBean.getIdInstitucion());
 		        destBean.setIdPersona(Long.valueOf(idPersona));
-				CenPersonaAdm personaAdm = new CenPersonaAdm(this.usrBean);			
-				String nombre = personaAdm.obtenerNombre(String.valueOf(idPersona));
-				String apellidos1 = personaAdm.obtenerApellidos1(String.valueOf(idPersona));
-				String apellidos2 = personaAdm.obtenerApellidos2(String.valueOf(idPersona));
-				destBean.setApellidos1(apellidos1);
-		        destBean.setApellidos2(apellidos2);
-		        destBean.setNombre(nombre);
-				
-		        if (direcciones!=null && direcciones.size()>0) {
-	            	Hashtable htDir = (Hashtable)direcciones.firstElement();
-			        destBean.setDomicilio((String)htDir.get(CenDireccionesBean.C_DOMICILIO));
-			        destBean.setIdPoblacion((String)htDir.get(CenDireccionesBean.C_IDPOBLACION));
-			        destBean.setPoblacionExtranjera((String)htDir.get(CenDireccionesBean.C_POBLACIONEXTRANJERA));
-			        destBean.setIdProvincia((String)htDir.get(CenDireccionesBean.C_IDPROVINCIA));
-			        destBean.setIdPais((String)htDir.get(CenDireccionesBean.C_IDPAIS));
+		        destBean.setTipoDestinatario(tipoDestinatario);
+		        
+	            Vector direcciones = null;
+	            if(tipoDestinatario.equals(EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA)){
+	            	EnvEnviosAdm enviosAdm = new EnvEnviosAdm(this.usrBean);
+	            	direcciones = enviosAdm.getDirecciones(String.valueOf(enviosBean.getIdInstitucion()),
+							  idPersona,
+							  String.valueOf(enviosBean.getIdTipoEnvios()));
+	            	
+					CenPersonaAdm personaAdm = new CenPersonaAdm(this.usrBean);
+					Hashtable htPersona = new Hashtable();
+					htPersona.put(CenPersonaBean.C_IDPERSONA, idPersona);
+					CenPersonaBean persona= (CenPersonaBean) ((Vector)personaAdm.selectByPK(htPersona)).get(0);
+					destBean.setApellidos1(persona.getApellido1());
+			        destBean.setApellidos2(persona.getApellido2());
+			        destBean.setNombre(persona.getNombre());
+			        
+					
+			        if (direcciones!=null && direcciones.size()>0) {
+		            	Hashtable htDir = (Hashtable)direcciones.firstElement();
+				        destBean.setDomicilio((String)htDir.get(CenDireccionesBean.C_DOMICILIO));
+				        destBean.setIdPoblacion((String)htDir.get(CenDireccionesBean.C_IDPOBLACION));
+				        destBean.setPoblacionExtranjera((String)htDir.get(CenDireccionesBean.C_POBLACIONEXTRANJERA));
+				        destBean.setIdProvincia((String)htDir.get(CenDireccionesBean.C_IDPROVINCIA));
+				        destBean.setIdPais((String)htDir.get(CenDireccionesBean.C_IDPAIS));
+				        if (destBean.getIdPais().equals("")) destBean.setIdPais(ClsConstants.ID_PAIS_ESPANA); 
+				        destBean.setCodigoPostal((String)htDir.get(CenDireccionesBean.C_CODIGOPOSTAL));
+				        destBean.setCorreoElectronico((String)htDir.get(CenDireccionesBean.C_CORREOELECTRONICO));
+				        destBean.setFax1((String)htDir.get(CenDireccionesBean.C_FAX1));
+				        destBean.setFax2((String)htDir.get(CenDireccionesBean.C_FAX2));
+				        destBean.setMovil((String)htDir.get(CenDireccionesBean.C_MOVIL));
+			        }
+
+	    			
+	    		}else if(tipoDestinatario.equals(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG)){
+	    			ScsPersonaJGAdm personaJGAdm = new ScsPersonaJGAdm(this.usrBean);
+	    			ScsPersonaJGBean personaJGBean =  personaJGAdm.getPersonaJG(new Long(idPersona),enviosBean.getIdInstitucion());
+
+					destBean.setApellidos1(personaJGBean.getApellido1());
+			        destBean.setApellidos2(personaJGBean.getApellido2());
+			        destBean.setNombre(personaJGBean.getNombre());
+			        destBean.setNifcif(personaJGBean.getNif());
+			        
+			        destBean.setDomicilio(personaJGBean.getDireccion());
+			        destBean.setIdPoblacion(personaJGBean.getIdPoblacion());
+			        destBean.setIdProvincia(personaJGBean.getIdProvincia());
+			        destBean.setIdPais(personaJGBean.getIdPais());
 			        if (destBean.getIdPais().equals("")) destBean.setIdPais(ClsConstants.ID_PAIS_ESPANA); 
-			        destBean.setCodigoPostal((String)htDir.get(CenDireccionesBean.C_CODIGOPOSTAL));
-			        destBean.setCorreoElectronico((String)htDir.get(CenDireccionesBean.C_CORREOELECTRONICO));
-			        destBean.setFax1((String)htDir.get(CenDireccionesBean.C_FAX1));
-			        destBean.setFax2((String)htDir.get(CenDireccionesBean.C_FAX2));
-			        destBean.setMovil((String)htDir.get(CenDireccionesBean.C_MOVIL));
-		        }
+			        destBean.setCodigoPostal(personaJGBean.getCodigoPostal());
+			        destBean.setCorreoElectronico(personaJGBean.getCorreoElectronico());
+			        destBean.setFax1(personaJGBean.getFax());
+			        Vector vTelefonos = personaJGBean.getTelefonos();
+			        if(vTelefonos!=null && vTelefonos.size()>1){
+				        for (int i = 0; i < vTelefonos.size(); i++) {
+				        	ScsTelefonosPersonaJGBean telefono = (ScsTelefonosPersonaJGBean)vTelefonos.get(i);
+				        	if(telefono.getpreferenteSms()!=null && telefono.getpreferenteSms().equals("1")){
+				        		destBean.setMovil(telefono.getNumeroTelefono());
+				        		break;
+				        	}
+						}
+			        }
+			        
+	    			
+	    			
+	    			
+	    		}else if(tipoDestinatario.equals(EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO)){
+	    			//TODO SCS_JUZGADOS
+	    		}
+	            
 			    crearDestinatario=true;
 
             } else {
@@ -249,6 +297,7 @@ public class Envio
     public void addDocumentosDestinatarioDireccionEspecifica(String idPersona, String idDireccion, Vector documentos) throws SIGAException{
         
         try{
+        	//FIXME  AQUI SE LLAMA 3
             EnvDestinatariosAdm destAdm = new EnvDestinatariosAdm(this.usrBean);
             EnvDestinatariosBean destBean = null;
 	        boolean crearDestinatario;
@@ -321,7 +370,7 @@ public class Envio
      * @param vDocumentos Vector de objetos Documento
      * @throws SIGAException
      */
-    public void addDestinatarios(Vector vPersonas, Vector vDocumentos) throws SIGAException{
+    public void addDestinatarios(Vector vPersonas,String tipoDestinatario, Vector vDocumentos) throws SIGAException{
         
         if (vPersonas!=null && vPersonas.size()>0){
             for (int i=0;i<vPersonas.size();i++){
@@ -329,7 +378,7 @@ public class Envio
                 Documento doc = (Documento)vDocumentos.elementAt(i);
                 Vector vDocumento = new Vector(1);
                 vDocumento.add(doc);
-                addDocumentosDestinatario(idPersona,vDocumento);
+                addDocumentosDestinatario(idPersona,tipoDestinatario,vDocumento);
             }
         }
     }
@@ -343,7 +392,7 @@ public class Envio
      * @param documentos Vector de objetos Documento para el destinatario
      * @throws SIGAException
      */
-    public void generarEnvio(String idPersona, Vector documentos) throws SIGAException,ClsExceptions
+    public void generarEnvio(String idPersona,String tipoDestinatario, Vector documentos) throws SIGAException,ClsExceptions
 	{
         EnvEnviosAdm envAdm = new EnvEnviosAdm(this.usrBean);
         envAdm.insert(enviosBean);
@@ -355,7 +404,7 @@ public class Envio
 				enviosBean.getIdPlantillaEnvios());
 
         if (idPersona!=null) 
-        	addDocumentosDestinatario(idPersona,documentos);        
+        	addDocumentosDestinatario(idPersona,tipoDestinatario,documentos);        
     }
 
     public void generarEnvioDireccionEspecifica(String idPersona, String idDireccion, Vector documentos) throws SIGAException,ClsExceptions
@@ -396,7 +445,7 @@ public class Envio
         while (itePersona.hasNext()) {
 			String idPersona = (String) itePersona.next();
 			Vector documentos = (Vector)htPersonas.get(idPersona);
-			addDocumentosDestinatario(idPersona,documentos);
+			addDocumentosDestinatario(idPersona,EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA,documentos);
 			
 		}
        
@@ -737,6 +786,7 @@ public class Envio
         if (crearDestinatario){
 	        //***** Insertamos Destinatario *******
 	        
+        	//FIXME  AQUI SE LLAMA 4
 	        EnvDestinatariosAdm destAdm = new EnvDestinatariosAdm(this.usrBean);
 	        int tipo = enviosBean.getIdTipoEnvios().intValue();
 	        
@@ -1289,7 +1339,7 @@ public class Envio
         try {
 	        if (crearDestinatario ||crearCertificado){
 		        //***** Insertamos Destinatario *******
-		        
+	        	//FIXME  AQUI SE LLAMA 5
 		        EnvDestinatariosAdm destAdm = new EnvDestinatariosAdm(this.usrBean);
 		        //EnvEnviosAdm enviosAdm = new EnvEnviosAdm(idUsuario);
 		        int tipo = enviosBean.getIdTipoEnvios().intValue();

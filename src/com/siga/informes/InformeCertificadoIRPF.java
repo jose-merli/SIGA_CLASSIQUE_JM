@@ -33,6 +33,7 @@ import com.siga.beans.AdmTipoInformeAdm;
 import com.siga.beans.AdmTipoInformeBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
+import com.siga.beans.EnvDestinatariosBean;
 import com.siga.beans.EnvEnvioProgramadoBean;
 import com.siga.beans.EnvEnviosBean;
 import com.siga.beans.EnvProgramIRPFBean;
@@ -386,7 +387,7 @@ public class InformeCertificadoIRPF extends MasterReport {
 		
 	
 		// Genera el envio:
-		envio.generarEnvio(programIRPFBean.getIdPersona().toString(),vDocumentos);
+		envio.generarEnvio(programIRPFBean.getIdPersona().toString(), EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA,vDocumentos);
 		
 	} 
 	private Vector getPlantillas(String plantillas, String idInstitucion,UsrBean usr)

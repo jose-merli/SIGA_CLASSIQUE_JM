@@ -6,7 +6,10 @@
 package com.siga.beans;
 
 public class EnvDestinatariosBean extends MasterBean {
-    
+	static public final String TIPODESTINATARIO_CENPERSONA = "CEN_PERSONA";
+	static public final String TIPODESTINATARIO_SCSPERSONAJG = "SCS_PERSONAJG";
+	static public final String TIPODESTINATARIO_SCSJUZGADO = "SCS_JUZGADO";
+	
 	//Variables
     private Integer idEnvio;
     private Long idPersona;
@@ -28,6 +31,7 @@ public class EnvDestinatariosBean extends MasterBean {
 	private String pais;
 	private String provincia;
 	private String poblacion;
+	private String tipoDestinatario;
 	
 	
 	
@@ -50,6 +54,8 @@ public class EnvDestinatariosBean extends MasterBean {
 	static public final String C_NIFCIF = "NIFCIF";
 	static public final String C_MOVIL = "MOVIL";
 	static public final String C_TIPODESTINATARIO = "TIPODESTINATARIO";
+	
+	
 	
 	static public final String T_NOMBRETABLA = "ENV_DESTINATARIOS";	
 
@@ -176,5 +182,11 @@ public class EnvDestinatariosBean extends MasterBean {
 	}
 	public void setPoblacion(String poblacion) {
 		this.poblacion = poblacion;
+	}
+	public String getTipoDestinatario() {
+		return tipoDestinatario;
+	}
+	public void setTipoDestinatario(String tipoDestinatario) {
+		this.tipoDestinatario = tipoDestinatario;
 	}
 }

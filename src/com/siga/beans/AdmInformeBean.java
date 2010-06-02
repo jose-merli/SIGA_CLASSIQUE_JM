@@ -17,7 +17,9 @@ public class AdmInformeBean extends MasterBean {
 	/* Variables */	
 	private String idPlantilla, descripcion, alias, nombreFisico, directorio, idTipoInforme,  visible,  nombreSalida, preseleccionado,aSolicitantes,destinatarios;
 	private Integer idInstitucion;
-	
+	static public final String TIPODESTINATARIO_CENPERSONA = "C";
+	static public final String TIPODESTINATARIO_SCSPERSONAJG = "S";
+	static public final String TIPODESTINATARIO_SCSJUZGADO = "J";
 	
 	
 	/* Nombre tabla */

@@ -222,6 +222,7 @@ public class EnvInformesGenericosAdm extends MasterBeanAdministrador {
 					salida.setPreseleccionado	((String)ht.get(AdmInformeBean.C_PRESELECCIONADO));
 					salida.setVisible			((String)ht.get(AdmInformeBean.C_VISIBLE));
 					salida.setASolicitantes		((String)ht.get(AdmInformeBean.C_ASOLICITANTES));	
+					salida.setDestinatarios((String)ht.get(AdmInformeBean.C_DESTINATARIOS));
 					vSalida.add(salida);
 				}
 				

@@ -36,6 +36,7 @@ import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CerSolicitudCertificadosAdm;
+import com.siga.beans.EnvDestinatariosBean;
 import com.siga.beans.EnvEnviosAdm;
 import com.siga.beans.EnvEnviosBean;
 import com.siga.beans.EnvPlantillasEnviosAdm;
@@ -2283,7 +2284,7 @@ public class Facturacion {
 		        				documentos.add(documento);
 		        				
 		        				// Genera el envio:
-	        					envio.generarEnvio((String)facturaHash.get(FacFacturaBean.C_IDPERSONA),documentos);
+	        					envio.generarEnvio((String)facturaHash.get(FacFacturaBean.C_IDPERSONA), EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA,documentos);
 	    	    				ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> ENVIO GENERADO OK",10);
 
 		    				}

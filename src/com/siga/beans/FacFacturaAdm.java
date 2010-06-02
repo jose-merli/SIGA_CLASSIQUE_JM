@@ -1589,7 +1589,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 		        				documentos.add(documento);
 		        				
 		        				// Genera el envio:
-	        					envio.generarEnvio((String)facturaHash.get(FacFacturaBean.C_IDPERSONA),documentos);
+	        					envio.generarEnvio((String)facturaHash.get(FacFacturaBean.C_IDPERSONA), EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA,documentos);
 	    	    				ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> ENVIO GENERADO OK",10);
 
 		    				}

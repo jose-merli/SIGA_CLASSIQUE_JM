@@ -242,5 +242,36 @@ public class ScsDefendidosDesignaAdm extends MasterBeanAdministrador {
 		}
 		return datos;                        
 	}
-	
+	public Vector getDefendidosDesigna(Integer institucion, Integer anio, Integer numero, Integer turno) throws ClsExceptions,SIGAException {
+		Vector datos=new Vector();
+		try {
+			
+			StringBuffer sql = new StringBuffer();
+			sql.append(" select def.idpersona  ");
+			sql.append(" from SCS_DEFENDIDOSDESIGNA def  ");
+ 
+			sql.append(" WHERE def.idinstitucion = ");
+			sql.append(institucion);
+			sql.append(" AND def.ANIO = ");
+			sql.append(anio);
+			sql.append(" and def.NUMERO =  ");
+			sql.append(numero);
+			
+			sql.append(" and def.IDTURNO = ");
+			sql.append(turno);
+			RowsContainer rc = new RowsContainer(); 
+			if (rc.find(sql.toString())) {
+				for (int i = 0; i < rc.size(); i++){
+					Row fila = (Row) rc.get(i);
+					Hashtable resultado=fila.getRow();	                  
+					datos.add(resultado);
+				}
+			} 
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la informacion sobre los defendidos de una designa.");
+		}
+		return datos;                        
+	}
+
 }

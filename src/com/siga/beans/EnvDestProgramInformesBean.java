@@ -12,12 +12,13 @@ public class EnvDestProgramInformesBean extends EnvProgramInformesBean {
 	//Variables
     
 private Long idPersona;
-
+private String tipoDestinatario=EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA;
 private Integer idInstitucionPersona;
 ArrayList clavesDestinatario;
 	
 	static public final String T_NOMBRETABLA = "ENV_DESTPROGRAMINFORMES";
 	static public final String C_IDPERSONA = "IDPERSONA";
+	static public final String C_TIPODESTINATARIO = "TIPODESTINATARIO";
 	//static public final String C_CLAVES = "CLAVES";
 	static public final String C_IDINSTITUCION_PERSONA = "IDINSTITUCION_PERSONA";
 	
@@ -38,6 +39,12 @@ ArrayList clavesDestinatario;
 	}
 	public void setClavesDestinatario(ArrayList clavesDestinatario) {
 		this.clavesDestinatario = clavesDestinatario;
+	}
+	public String getTipoDestinatario() {
+		return tipoDestinatario;
+	}
+	public void setTipoDestinatario(String tipoDestinatario) {
+		this.tipoDestinatario = tipoDestinatario;
 	}
 	
 	

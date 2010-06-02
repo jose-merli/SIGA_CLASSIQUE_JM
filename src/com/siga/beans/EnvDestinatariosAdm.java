@@ -45,7 +45,8 @@ public class EnvDestinatariosAdm extends MasterBeanAdministrador {
             	EnvDestinatariosBean.C_NIFCIF,
             	EnvDestinatariosBean.C_MOVIL,
             	EnvDestinatariosBean.C_FECHAMODIFICACION,
-            	EnvDestinatariosBean.C_USUMODIFICACION            	
+            	EnvDestinatariosBean.C_USUMODIFICACION,
+            	EnvDestinatariosBean.C_TIPODESTINATARIO,
 				};
 
 		return campos;
@@ -98,6 +99,7 @@ public class EnvDestinatariosAdm extends MasterBeanAdministrador {
 			bean.setApellidos2(UtilidadesHash.getString(hash, EnvDestinatariosBean.C_APELLIDOS2));
 			bean.setNifcif(UtilidadesHash.getString(hash, EnvDestinatariosBean.C_NIFCIF));
 			bean.setMovil(UtilidadesHash.getString(hash, EnvDestinatariosBean.C_MOVIL));
+			bean.setTipoDestinatario(UtilidadesHash.getString(hash, EnvDestinatariosBean.C_TIPODESTINATARIO));
 			
 		}
 
@@ -139,6 +141,7 @@ public class EnvDestinatariosAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, EnvDestinatariosBean.C_APELLIDOS2, b.getApellidos2());
 			UtilidadesHash.set(htData, EnvDestinatariosBean.C_NIFCIF, b.getNifcif());
 			UtilidadesHash.set(htData, EnvDestinatariosBean.C_MOVIL, b.getMovil());
+			UtilidadesHash.set(htData, EnvDestinatariosBean.C_TIPODESTINATARIO, b.getTipoDestinatario());
 			
 		}
 

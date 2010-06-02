@@ -34,7 +34,8 @@ public class EnvDestProgramInformesAdm extends MasterBeanAdministrador {
                 EnvDestProgramInformesBean.C_IDPROGRAM,
                 EnvDestProgramInformesBean.C_IDPERSONA,
                 EnvDestProgramInformesBean.C_IDINSTITUCION_PERSONA,
-                
+                EnvDestProgramInformesBean.C_TIPODESTINATARIO,
+
             	EnvDestProgramInformesBean.C_FECHAMODIFICACION,
             	EnvDestProgramInformesBean.C_USUMODIFICACION
 				};
@@ -75,6 +76,7 @@ public class EnvDestProgramInformesAdm extends MasterBeanAdministrador {
 			bean.setIdProgram(UtilidadesHash.getInteger(hash, EnvDestProgramInformesBean.C_IDPROGRAM));
 			bean.setIdPersona(UtilidadesHash.getLong(hash, EnvDestProgramInformesBean.C_IDPERSONA));
 			bean.setIdInstitucionPersona(UtilidadesHash.getInteger(hash, EnvDestProgramInformesBean.C_IDINSTITUCION_PERSONA));
+			bean.setTipoDestinatario(UtilidadesHash.getString(hash, EnvDestProgramInformesBean.C_TIPODESTINATARIO));
 			
 
 		}
@@ -105,6 +107,7 @@ public class EnvDestProgramInformesAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, EnvDestProgramInformesBean.C_IDPROGRAM, b.getIdProgram());
 			UtilidadesHash.set(htData, EnvDestProgramInformesBean.C_IDPERSONA, b.getIdPersona());
 			UtilidadesHash.set(htData, EnvDestProgramInformesBean.C_IDINSTITUCION_PERSONA, b.getIdInstitucionPersona());
+			UtilidadesHash.set(htData, EnvDestProgramInformesBean.C_TIPODESTINATARIO, b.getTipoDestinatario());
 						
 
 			
@@ -135,7 +138,7 @@ public class EnvDestProgramInformesAdm extends MasterBeanAdministrador {
 		
 		StringBuffer sql = new StringBuffer();
 		sql.append(" SELECT EPI.IDPROGRAM,EPI.IDENVIO,EPI.IDINSTITUCION, ");
-		sql.append(" EPI.IDPERSONA, EPI.IDINSTITUCION_PERSONA   ");
+		sql.append(" EPI.IDPERSONA, EPI.IDINSTITUCION_PERSONA , EPI.TIPODESTINATARIO  ");
 		
 		sql.append(" FROM ENV_DESTPROGRAMINFORMES EPI  ");
 		Hashtable htCodigos = new Hashtable();
@@ -176,6 +179,7 @@ public class EnvDestProgramInformesAdm extends MasterBeanAdministrador {
 					
 					destInfGenerico.setIdPersona(UtilidadesHash.getLong(htFila, EnvDestProgramInformesBean.C_IDPERSONA));
 					destInfGenerico.setIdInstitucionPersona(UtilidadesHash.getInteger(htFila, EnvDestProgramInformesBean.C_IDINSTITUCION_PERSONA));
+					destInfGenerico.setTipoDestinatario(UtilidadesHash.getString(htFila, EnvDestProgramInformesBean.C_TIPODESTINATARIO));
 					ArrayList alValores = (ArrayList) valorCampoClaveAdm.getValoresClavesCampos(destInfGenerico);
 					destInfGenerico.setClavesDestinatario(alValores);
 					
