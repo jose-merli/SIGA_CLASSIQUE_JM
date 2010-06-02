@@ -4667,7 +4667,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	        
 		            String sTo = destBean.getCorreoElectronico();
                     if(sTo==null ||sTo.trim().equals(""))
-                        throw new SMTPAddressFailedException(new InternetAddress(""),null,0,UtilidadesString.getMensajeIdioma(usrbean,"messages.envios.errorSinEmail"));
+                        throw new SMTPAddressFailedException(new InternetAddress(sFrom),null,0,UtilidadesString.getMensajeIdioma(usrbean,"messages.envios.errorSinEmail"));
 		            
 		            //Se crea un nuevo Mensaje.
 		    	    MimeMessage mensaje = new MimeMessage(sesion);
