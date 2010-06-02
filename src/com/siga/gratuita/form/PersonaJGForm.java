@@ -7,6 +7,7 @@
 package com.siga.gratuita.form;
 
 import java.util.List;
+import java.util.Vector;
 
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.ScsTelefonosPersonaJGBean;
@@ -576,7 +577,11 @@ public class PersonaJGForm extends MasterForm {
 		this.correoElectronico = correoElectronico;
 	}
 
-	List<ScsTelefonosPersonaJGBean> telefonos; 
+	List<ScsTelefonosPersonaJGBean> telefonos;
+	private Vector asuntos;
+	private String modoGuardar;
+	private String accionGuardar;
+	private String nombreAnterior; 
 	public List<ScsTelefonosPersonaJGBean> getTelefonos() {
 		return telefonos;
 	}
@@ -594,7 +599,38 @@ public class PersonaJGForm extends MasterForm {
 	}
 
 
-
+	public void setAsuntos(Vector datos){
+		this.asuntos = datos;
+	}
+	
+	public Vector getAsuntos(){
+		return this.asuntos;
+	}
+	
+	public void setModoGuardar(String modo){
+		this.modoGuardar = modo;
+	}
+	
+	public String getModoGuardar(){
+		return this.modoGuardar;
+	}
+	
+	public void setAccionGuardar(String accion){
+		this.accionGuardar = accion;
+	}
+	
+	public String getAccionGuardar(){
+		return this.accionGuardar;
+	}
+	
+	public String getNombreAnterior(){
+		return this.nombreAnterior;
+	}
+	
+	public void setNombreAnterior(String nom){
+		this.nombreAnterior = nom;
+	}
+	
 	
 
 }

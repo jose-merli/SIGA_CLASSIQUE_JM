@@ -1825,7 +1825,9 @@
 		<action path="/JGR_DefendidosDesignasPerJG" type="com.siga.gratuita.action.PersonaJGAction" name="PersonaJGForm" scope="request">
 			<forward name="personaJG" path="/html/jsp/gratuita/personaJG.jsp"/>
 			<forward name="buscarNIF" path="/html/jsp/gratuita/personasJGOculta.jsp"/>			
-			<forward name="seleccionPersonaJG" path="/html/jsp/gratuita/seleccionPersonaJG.jsp"/>			
+			<forward name="seleccionPersonaJG" path="/html/jsp/gratuita/seleccionPersonaJG.jsp"/>
+			<forward name="asuntosPersonaJG" path="/html/jsp/gratuita/asuntosPersonaJG.jsp"/>
+			<forward name="asuntosPersonaJGModal" path="/html/jsp/gratuita/asuntosPersonaJGModal.jsp"/>				
 		</action>
 
 		<action path="/JGR_ContrariosDesignas" type="com.siga.gratuita.action.ContrariosDesignasAction" name="ContrariosDesignasForm">
@@ -1845,6 +1847,8 @@
 			<forward name="personaJG" path="/html/jsp/gratuita/personaJG.jsp?esFichaColegial=0"/>
 			<forward name="buscarNIF" path="/html/jsp/gratuita/personasJGOculta.jsp?esFichaColegial=0"/>
 			<forward name="seleccionPersonaJG" path="/html/jsp/gratuita/seleccionPersonaJG.jsp?esFichaColegial=0"/>
+			<forward name="asuntosPersonaJG" path="/html/jsp/gratuita/asuntosPersonaJG.jsp"/>
+			<forward name="asuntosPersonaJGModal" path="/html/jsp/gratuita/asuntosPersonaJGModal.jsp"/>	
 		</action>
 		
 		
@@ -1852,7 +1856,9 @@
 		<action path="/JGR_ContrariosDesignasPerJG" type="com.siga.gratuita.action.PersonaJGAction" name="PersonaJGForm" scope="request">
 			<forward name="personaJG" path="/html/jsp/gratuita/personaJG.jsp"/>
 			<forward name="buscarNIF" path="/html/jsp/gratuita/personasJGOculta.jsp"/>			
-			<forward name="seleccionPersonaJG" path="/html/jsp/gratuita/seleccionPersonaJG.jsp"/>			
+			<forward name="seleccionPersonaJG" path="/html/jsp/gratuita/seleccionPersonaJG.jsp"/>
+			<forward name="asuntosPersonaJG" path="/html/jsp/gratuita/asuntosPersonaJG.jsp"/>
+			<forward name="asuntosPersonaJGModal" path="/html/jsp/gratuita/asuntosPersonaJGModal.jsp"/>				
 		</action>
 
 		<action path="/JGR_CambiosLetradosDesigna" type="com.siga.gratuita.action.CambiosLetradosDesignasAction" name="CambiosLetradosDesignasForm">
@@ -2021,12 +2027,16 @@
 			<forward name="personaJG" path="/html/jsp/gratuita/personaJG.jsp?esFichaColegial=0"/>
 			<forward name="buscarNIF" path="/html/jsp/gratuita/personasJGOculta.jsp?esFichaColegial=0"/>
 			<forward name="seleccionPersonaJG" path="/html/jsp/gratuita/seleccionPersonaJG.jsp?esFichaColegial=0"/>
+			<forward name="asuntosPersonaJG" path="/html/jsp/gratuita/asuntosPersonaJG.jsp"/>
+			<forward name="asuntosPersonaJGModal" path="/html/jsp/gratuita/asuntosPersonaJGModal.jsp"/>	
 		</action>
 
 		<action path="/JGR_AsistidoAsistenciaLetrado" type="com.siga.gratuita.action.PersonaJGAction" name="PersonaJGForm" scope="request">
 			<forward name="personaJG" path="/html/jsp/gratuita/personaJG.jsp?esFichaColegial=1"/>
 			<forward name="buscarNIF" path="/html/jsp/gratuita/personasJGOculta.jsp?esFichaColegial=1"/>
 			<forward name="seleccionPersonaJG" path="/html/jsp/gratuita/seleccionPersonaJG.jsp?esFichaColegial=1"/>
+			<forward name="asuntosPersonaJG" path="/html/jsp/gratuita/asuntosPersonaJG.jsp"/>
+			<forward name="asuntosPersonaJGModal" path="/html/jsp/gratuita/asuntosPersonaJGModal.jsp"/>	
 		</action>
   
 		<!-- ***** Justicia Gratuita / Turnos / Cola Guardias ***** -->
@@ -2234,7 +2244,9 @@
 		<action path="/JGR_PersonaJG" type="com.siga.gratuita.action.PersonaJGAction" name="PersonaJGForm" scope="request">
 			<forward name="personaJG" path="/html/jsp/gratuita/personaJG.jsp"/>
 			<forward name="buscarNIF" path="/html/jsp/gratuita/personasJGOculta.jsp"/>			
-			<forward name="seleccionPersonaJG" path="/html/jsp/gratuita/seleccionPersonaJG.jsp"/>			
+			<forward name="seleccionPersonaJG" path="/html/jsp/gratuita/seleccionPersonaJG.jsp"/>
+			<forward name="asuntosPersonaJG" path="/html/jsp/gratuita/asuntosPersonaJG.jsp"/>
+			<forward name="asuntosPersonaJGModal" path="/html/jsp/gratuita/asuntosPersonaJGModal.jsp"/>
 		</action>
 
 		<action path="/JGR_BusquedaPersonaJG" type="com.siga.gratuita.action.BusquedaPersonaJGAction" name="BusquedaPersonaJGForm" scope="request">
@@ -2312,7 +2324,9 @@
 		<action path="/JGR_PestanaSOJBeneficiarios" type="com.siga.gratuita.action.PersonaJGAction" name="PersonaJGForm" scope="request">
 			<forward name="personaJG" path="/html/jsp/gratuita/personaJG.jsp"/>
 			<forward name="buscarNIF" path="/html/jsp/gratuita/personasJGOculta.jsp"/>			
-			<forward name="seleccionPersonaJG" path="/html/jsp/gratuita/seleccionPersonaJG.jsp"/>			
+			<forward name="seleccionPersonaJG" path="/html/jsp/gratuita/seleccionPersonaJG.jsp"/>
+			<forward name="asuntosPersonaJG" path="/html/jsp/gratuita/asuntosPersonaJG.jsp"/>
+			<forward name="asuntosPersonaJGModal" path="/html/jsp/gratuita/asuntosPersonaJGModal.jsp"/>				
 		</action>
 		
 
@@ -2365,7 +2379,9 @@
 		<action path="/JGR_UnidadFamiliarPerJG" type="com.siga.gratuita.action.PersonaJGAction" name="PersonaJGForm" scope="request">
 			<forward name="personaJG" path="/html/jsp/gratuita/personaJG.jsp"/>
 			<forward name="buscarNIF" path="/html/jsp/gratuita/personasJGOculta.jsp"/>			
-			<forward name="seleccionPersonaJG" path="/html/jsp/gratuita/seleccionPersonaJG.jsp"/>			
+			<forward name="seleccionPersonaJG" path="/html/jsp/gratuita/seleccionPersonaJG.jsp"/>
+			<forward name="asuntosPersonaJG" path="/html/jsp/gratuita/asuntosPersonaJG.jsp"/>
+			<forward name="asuntosPersonaJGModal" path="/html/jsp/gratuita/asuntosPersonaJGModal.jsp"/>			
 		</action>
 		
 <!--
@@ -2376,8 +2392,12 @@
 		<action path="/JGR_InteresadoEJG" type="com.siga.gratuita.action.PersonaJGAction" name="PersonaJGForm" scope="request">
 			<forward name="personaJG" path="/html/jsp/gratuita/personaJG.jsp"/>
 			<forward name="buscarNIF" path="/html/jsp/gratuita/personasJGOculta.jsp"/>			
-			<forward name="seleccionPersonaJG" path="/html/jsp/gratuita/seleccionPersonaJG.jsp"/>			
+			<forward name="seleccionPersonaJG" path="/html/jsp/gratuita/seleccionPersonaJG.jsp"/>
+			<forward name="asuntosPersonaJG" path="/html/jsp/gratuita/asuntosPersonaJG.jsp"/>
+			<forward name="asuntosPersonaJGModal" path="/html/jsp/gratuita/asuntosPersonaJGModal.jsp"/>			
 		</action>
+		
+		<action path="/JGR_AsuntosPersonaJG" forward="/html/jsp/gratuita/asuntosPersonaJGModal.jsp"/>
 
 		<action path="/JGR_RatificacionEJG" type="com.siga.gratuita.action.DefinirRatificacionEJGAction" name="DefinirEJGForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/operarRatificacionEJG.jsp"/>
@@ -2839,12 +2859,16 @@
 			<forward name="personaJG" path="/html/jsp/gratuita/personaJG.jsp?esFichaColegial=0"/>
 			<forward name="buscarNIF" path="/html/jsp/gratuita/personasJGOculta.jsp?esFichaColegial=0"/>
 			<forward name="seleccionPersonaJG" path="/html/jsp/gratuita/seleccionPersonaJG.jsp?esFichaColegial=0"/>
+			<forward name="asuntosPersonaJG" path="/html/jsp/gratuita/asuntosPersonaJG.jsp"/>
+			<forward name="asuntosPersonaJGModal" path="/html/jsp/gratuita/asuntosPersonaJGModal.jsp"/>	
 		</action>
 
 		<action path="/JGR_ContrariosAsistenciaPerJGLetrado" type="com.siga.gratuita.action.PersonaJGAction" name="PersonaJGForm" scope="request">
 			<forward name="personaJG" path="/html/jsp/gratuita/personaJG.jsp?esFichaColegial=1"/>
 			<forward name="buscarNIF" path="/html/jsp/gratuita/personasJGOculta.jsp?esFichaColegial=1"/>
 			<forward name="seleccionPersonaJG" path="/html/jsp/gratuita/seleccionPersonaJG.jsp?esFichaColegial=1"/>
+			<forward name="asuntosPersonaJG" path="/html/jsp/gratuita/asuntosPersonaJG.jsp"/>
+			<forward name="asuntosPersonaJGModal" path="/html/jsp/gratuita/asuntosPersonaJGModal.jsp"/>	
 		</action>
 
 		<action path="/JGR_MantenimientoDestinatariosRetenciones"  type="com.siga.gratuita.action.MantenimientoDestinatariosRetencionesAction" name="MantenimientoDestinatariosRetencionesForm" scope="request">

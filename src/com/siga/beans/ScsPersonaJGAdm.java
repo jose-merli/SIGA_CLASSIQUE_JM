@@ -642,5 +642,138 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 		
 	} 
 	
+	/**
+	 * Devuelve un vector con las relaciones de
+	 * @param idInstitucion
+	 * @param idPersona
+	 * @return
+	 * @throws ClsExceptions 
+	 */
+	public Vector getRelacionesPersonaJG(String idPersona, String idInstitucion,
+			String asuntoActual, String tipo, String anioActual, String numeroActual) throws ClsExceptions{
+		Vector resultado=new Vector();
+		StringBuffer sql = new StringBuffer();
+		
+				sql.append(" select 'gratuita.operarEJG.literal.EJG' as asunto, e.anio as anio, lpad(e.numeJG,5,'0') as numero");
+				sql.append("   from scs_ejg e, scs_personajg per, scs_unidadfamiliarejg uf ");
+				sql.append("  where per.idinstitucion = " + idInstitucion + " ");
+				sql.append("    and (per.idpersona = " + idPersona + " or per.idrepresentantejg = " + idPersona + ")");
+				sql.append("    and e.idinstitucion = per.idinstitucion ");
+				sql.append("    and uf.anio = e.anio ");
+				sql.append("    and uf.idinstitucion = e.idinstitucion ");
+				sql.append("    and uf.numero = e.numero ");
+				sql.append("    and uf.idtipoejg = e.idtipoejg ");
+				sql.append("    and uf.idpersona = per.idpersona ");
+				sql.append(" ");
+				sql.append(" union ");
+				sql.append(" ");
+				sql.append(" select 'gratuita.operarEJG.literal.EJG' as asunto, e.anio as anio, lpad(e.numeJG,5,'0') as numero");
+				sql.append("   from scs_ejg e, scs_personajg per, scs_contrariosejg cont ");
+				sql.append("  where per.idinstitucion = " + idInstitucion + " ");
+				sql.append("    and (per.idpersona = " + idPersona + " or per.idrepresentantejg = " + idPersona + ")");
+				sql.append("    and e.idinstitucion = per.idinstitucion ");
+				sql.append("    and cont.anio = e.anio ");
+				sql.append("    and cont.idinstitucion = e.idinstitucion ");
+				sql.append("    and cont.numero = e.numero ");
+				sql.append("    and cont.idtipoejg = e.idtipoejg ");
+				sql.append("    and cont.idpersona = per.idpersona ");
+				sql.append(" ");
+				sql.append(" union ");
+				sql.append(" ");
+				sql.append(" select 'gratuita.operarEJG.literal.designa' as asunto, d.anio as anio, lpad(d.codigo,5,'0') as numero");
+				sql.append("   from scs_designa d, scs_personajg per, scs_defendidosdesigna def ");
+				sql.append("  where per.idinstitucion = " + idInstitucion + " ");
+				sql.append("    and (per.idpersona = " + idPersona + " or per.idrepresentantejg = " + idPersona + ")");
+				sql.append("    and d.idinstitucion = per.idinstitucion ");
+				sql.append("    and def.anio = d.anio ");
+				sql.append("    and def.idinstitucion = d.idinstitucion ");
+				sql.append("    and def.numero = d.numero ");
+				sql.append("    and def.idturno = d.idturno ");
+				sql.append("    and def.idpersona = per.idpersona ");
+				sql.append(" ");
+				sql.append(" union ");
+				sql.append(" ");
+				sql.append(" select 'gratuita.operarEJG.literal.designa' as asunto, d.anio as anio, lpad(d.codigo,5,'0') as numero");
+				sql.append("   from scs_designa d, scs_personajg per, scs_contrariosdesigna cont ");
+				sql.append("  where per.idinstitucion = " + idInstitucion + " ");
+				sql.append("    and (per.idpersona = " + idPersona + " or per.idrepresentantejg = " + idPersona + ")");
+				sql.append("    and d.idinstitucion = per.idinstitucion ");
+				sql.append("    and cont.anio = d.anio ");
+				sql.append("    and cont.idinstitucion = d.idinstitucion ");
+				sql.append("    and cont.numero = d.numero ");
+				sql.append("    and cont.idturno = d.idturno ");
+				sql.append("    and cont.idpersona = per.idpersona ");
+				sql.append(" ");
+				sql.append(" union ");
+				sql.append(" ");
+				sql.append(" select 'gratuita.operarEJG.literal.asistencia' as asunto, a.anio as anio, lpad(to_char(a.numero),5,'0') as numero");
+				sql.append("   from scs_asistencia a, scs_personajg per ");
+				sql.append("  where per.idinstitucion = " + idInstitucion + " ");
+				sql.append("    and (per.idpersona = " + idPersona + " or per.idrepresentantejg = " + idPersona + ")");
+				sql.append("    and a.idinstitucion = per.idinstitucion ");
+				sql.append("    and a.idpersonajg = per.idpersona ");
+				sql.append(" ");
+				sql.append(" union ");
+				sql.append(" ");
+				sql.append(" select 'gratuita.operarEJG.literal.asistencia' as asunto, a.anio as anio, lpad(to_char(a.numero),5,'0') as numero");
+				sql.append("   from scs_asistencia a, scs_personajg per, scs_contrariosdesigna cont ");
+				sql.append("  where per.idinstitucion = " + idInstitucion + " ");
+				sql.append("    and (per.idpersona = " + idPersona + " or per.idrepresentantejg = " + idPersona + ")");
+				sql.append("    and a.idinstitucion = per.idinstitucion ");
+				sql.append("    and cont.anio = a.anio ");
+				sql.append("    and cont.idinstitucion = a.idinstitucion ");
+				sql.append("    and cont.numero = a.numero ");
+				sql.append("    and cont.idturno = a.idturno ");
+				sql.append("    and cont.idpersona = per.idpersona ");
+				sql.append(" ");
+				sql.append(" union ");
+				sql.append(" ");
+				sql.append(" select 'gratuita.operarEJG.literal.SOJ' as asunto, s.anio as anio, lpad(s.numsoj,5,'0') as numero");
+				sql.append("   from scs_soj s, scs_personajg per ");
+				sql.append("  where per.idinstitucion = " + idInstitucion + " ");
+				sql.append("    and (per.idpersona = " + idPersona + " or per.idrepresentantejg = " + idPersona + ")");
+				sql.append("    and s.idinstitucion = per.idinstitucion ");
+				sql.append("    and s.idpersonajg = per.idpersona ");
+				sql.append(" ");
+				
+				if(asuntoActual.equalsIgnoreCase("guardarEJG")){
+					sql.append(" minus ");
+					sql.append(" ");
+					sql.append(" select 'gratuita.operarEJG.literal.EJG' as asunto, e.anio as anio, lpad(e.numeJG,5,'0') as numero");
+					sql.append("   from scs_ejg e ");
+					sql.append("   where e.idinstitucion= " + idInstitucion + " and e.anio=" + anioActual + " and e.numero =" + numeroActual + " and e.idtipoejg= "+tipo  );
+				}else if(asuntoActual.equalsIgnoreCase("guardarSOJ")){
+					sql.append(" minus ");
+					sql.append(" ");
+					sql.append(" select 'gratuita.operarEJG.literal.SOJ' as asunto, s.anio as anio, lpad(s.numsoj,5,'0') as numero");
+					sql.append("   from scs_soj s");
+					sql.append("   where s.idinstitucion= " + idInstitucion + " and s.anio=" + anioActual + " and s.numero =" + numeroActual + " and s.idtiposoj= "+tipo  );
+				}else if(asuntoActual.equalsIgnoreCase("guardarDesigna")){
+					sql.append(" minus ");
+					sql.append(" ");
+					sql.append(" select 'gratuita.operarEJG.literal.designa' as asunto, d.anio as anio, lpad(d.codigo,5,'0') as numero");
+					sql.append("   from scs_designa d");
+					sql.append("   where d.idinstitucion= " + idInstitucion + " and d.anio=" + anioActual + " and d.numero =" + numeroActual + " and d.idturno= "+tipo  );
+				}else if(asuntoActual.equalsIgnoreCase("guardarAsistencia")){
+					sql.append(" minus ");
+					sql.append(" ");
+					sql.append(" select 'gratuita.operarEJG.literal.asistencia' as asunto, a.anio as anio, lpad(to_char(a.numero),5,'0') as numero");
+					sql.append("   from scs_asistencia a");
+					sql.append("   where a.idinstitucion= " + idInstitucion + " and a.anio=" + anioActual + " and a.numero =" + numeroActual );
+				} 
+				
+				sql.append("    order by asunto, anio desc, numero desc ");
+				Vector<String> prueba = new Vector<String>();
+				try {
+					resultado=selectGenerico(sql.toString());
+
+				} catch (ClsExceptions e) {
+
+					throw new ClsExceptions (e, "Error al consultar relaciones de personaJG");
+				}
+				
+		return resultado;
+	}
+	
 
 }

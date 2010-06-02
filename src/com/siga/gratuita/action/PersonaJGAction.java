@@ -131,22 +131,19 @@ public class PersonaJGAction extends MasterAction {
 						mapDestino = Borrar(mapping, miForm, request, response);
 					} else if (accion.equalsIgnoreCase("abrirModal")){
 						mapDestino = abrirModal(mapping, miForm, request, response);
+					} else if (accion.equalsIgnoreCase("abrirModalAsuntos")){
+						mapDestino = abrirModalAsuntos(mapping, miForm, request, response);
 					} else if (accion.equalsIgnoreCase("abrirPestana")){
 						mapDestino = abrirPestana(mapping, miForm, request, response);
 					} else if (accion.equalsIgnoreCase("buscarNIF")){
 						mapDestino = buscarNIF(mapping, miForm, request, response);
-					} else if (accion.equalsIgnoreCase("guardarEJG")){
-						mapDestino = guardarEJG(mapping, miForm, request, response);
-					} else if (accion.equalsIgnoreCase("guardarSOJ")){
-						mapDestino = guardarSOJ(mapping, miForm, request, response);
-					} else if (accion.equalsIgnoreCase("guardarDesigna")){
-						mapDestino = guardarDesigna(mapping, miForm, request, response);
-					} else if (accion.equalsIgnoreCase("guardarAsistencia")){
-						mapDestino = guardarAsistencia(mapping, miForm, request, response);
-					} else if (accion.equalsIgnoreCase("guardarContrariosEjg")){
-						mapDestino = guardarContrariosEjg(mapping, miForm, request, response);	
-					} else if (accion.equalsIgnoreCase("guardarPersona")){
-						mapDestino = guardarPersona(mapping, miForm, request, response);
+					} else if ( accion.equalsIgnoreCase("guardarEJG") ||
+								accion.equalsIgnoreCase("guardarSOJ") ||
+								accion.equalsIgnoreCase("guardarDesigna") ||
+								accion.equalsIgnoreCase("guardarAsistencia") ||
+								accion.equalsIgnoreCase("guardarContrariosEjg")||
+								accion.equalsIgnoreCase("guardarPersona")){
+						mapDestino = guardarPersonaJG(mapping, miForm, request, response);
 					} else {
 						return super.executeInternal(mapping,formulario,request,response);
 					}
@@ -1034,1901 +1031,6 @@ public class PersonaJGAction extends MasterAction {
 	}
 
 	/**
-	 * Metodo que implementa el modo guardarEJG
-	 * @param  mapping - Mapeo de los struts
-	 * @param  formulario -  Action Form asociado a este Action
-	 * @param  request - objeto llamada HTTP 
-	 * @param  response - objeto respuesta HTTP
-	 * @return  String  Destino del action  
-	 * @exception  ClsExceptions  En cualquier caso de error
-	 */
-	protected String guardarEJG (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws SIGAException 
-	{
-		String result = "";
-		UserTransaction tx = null;
-		try {
-			
-			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
-	     	PersonaJGForm miform = (PersonaJGForm)formulario;
-	     	String accion = request.getParameter("accionE");
-
-	     	// clave del EJG
-			String idInstitucionEJG=miform.getIdInstitucionEJG();
-			String idTipoEJG=miform.getIdTipoEJG();
-			String anioEJG=miform.getAnioEJG();
-			String numeroEJG=miform.getNumeroEJG();
-			boolean nuevaPersona = false;
-	     	// Datos Persona
-			Hashtable persona= new Hashtable();
-			ScsPersonaJGAdm perAdm = new ScsPersonaJGAdm(this.getUserBean(request));
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDINSTITUCION,user.getLocation());
-
-			// jbd 08/04/2010 Despues de varios errores de que si se borra o no se borra, que si se actualiza ...
-			//				  y despues de analizar los diferentes casos, paso a desarrollar y documentar este
-			//				  metodo.
-			// CVS 1.3.2.5
-			
-
-			// Si tenemos el idPersona es porque ya existia la persona asi que la actualizamos,
-			// si no creamos una nueva
-			if (miform.getIdPersonaJG()!=null && !miform.getIdPersonaJG().equalsIgnoreCase("")){
-				UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPERSONA,miform.getIdPersonaJG().toString());
-			} else {
-				nuevaPersona = true;
-				persona = perAdm.prepararInsert(persona);
-				miform.setIdPersonaJG((String)persona.get(ScsPersonaJGBean.C_IDPERSONA));
-			}
-			boolean checkSolicitante  = UtilidadesString.stringToBoolean(miform.getSolicitante());
-			
-			
-			// DATOS DE LA PERSONAJG
-			// OJO, utilizo los set, porque siempre tengo datos, aunque sean blancos, que es lo que me interesa
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_NIF,miform.getNIdentificacion().toString());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_NOMBRE,miform.getNombre());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_APELLIDO1,miform.getApellido1());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_APELLIDO2,miform.getApellido2());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_DIRECCION,miform.getDireccion());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_CODIGOPOSTAL,miform.getCp());						
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_FECHANACIMIENTO,GstDate.getApplicationFormatDate("",miform.getFechaNac()));			
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPROFESION,miform.getProfesion());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPAIS,miform.getNacionalidad());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPROVINCIA,miform.getProvincia());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPOBLACION,miform.getPoblacion());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_ESTADOCIVIL,miform.getEstadoCivil());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_REGIMENCONYUGAL,miform.getRegimenConyugal());			 
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_TIPOPERSONAJG,miform.getTipo());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDTIPOIDENTIFICACION,miform.getTipoId());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_ENCALIDADDE,miform.getEnCalidadDe());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_OBSERVACIONES,miform.getObservaciones());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDREPRESENTANTEJG,miform.getIdRepresentanteJG());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_SEXO,miform.getSexo());
-		    UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDIOMA,miform.getIdioma());
-		    UtilidadesHash.set(persona,ScsPersonaJGBean.C_FAX,miform.getFax());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_CORREOELECTRONICO,miform.getCorreoElectronico());
-		    
-
-			// DATOS DE LA UNIDADFAMILAREJG
-			Hashtable unidadFamiliarBean = new Hashtable();
-			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_IDINSTITUCION,miform.getIdInstitucionJG());
-			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_ANIO,miform.getAnioEJG());
-			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_NUMERO,miform.getNumeroEJG());
-			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_IDTIPOEJG,miform.getIdTipoEJG());				
-			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_IDPERSONA,miform.getIdPersonaJG());
-			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_OBSERVACIONES,miform.getUnidadObservaciones());
-			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_ENCALIDADDE,miform.getEnCalidadDeLibre());
-			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_IDPARENTESCO,miform.getParentesco());
-			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_TIPOINGRESO,miform.getTipoIngreso());
-			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_DESCRIPCIONINGRESOSANUALES,miform.getIngresosAnuales());
-			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_IMPORTEINGRESOSANUALES,miform.getImporteIngresosAnuales());
-			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_BIENESINMUEBLES,miform.getBienesInmuebles());
-			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_IMPORTEBIENESINMUEBLES,miform.getImporteBienesInmuebles());
-			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_BIENESMUEBLES,miform.getBienesMuebles());
-			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_IMPORTEBIENESMUEBLES,miform.getImporteBienesMuebles());
-			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_OTROSBIENES,miform.getOtrosBienes());
-			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_IMPORTEOTROSBIENES,miform.getImporteOtrosBienes());						 
-			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_IMPORTEOTROSBIENES,miform.getImporteOtrosBienes());	
-			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_TIPOGRUPOLAB,miform.getTipoGrupoLaboral());
-			if (miform.getConceptoE().equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {
-				if (checkSolicitante){
-					UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_SOLICITANTE,"1");
-				}else{
-					UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_SOLICITANTE,"0");
-				}
-			}else{
-				UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_SOLICITANTE,"1");
-			}
-			
-			
-			// Comienzo control de transacciones 
-			tx = user.getTransaction();			
-			tx.begin();
-	     	
-			// recojo el databackup
-			Hashtable dataBackup = (Hashtable) request.getSession().getAttribute("DATABACKUP");
-			
-			// INSERTAR PERSONA JG SI PROCEDE
-			if (!nuevaPersona){
-				// YA existia
-				// Update Persona
-				Hashtable oldPer = (Hashtable) dataBackup.get(ScsPersonaJGBean.T_NOMBRETABLA);
-				if (!perAdm.update(persona, oldPer)) {
-					throw new ClsExceptions("Error en update persona. " + perAdm.getError());
-				}
-			} else {
-				// NO existia
-				// Insert Persona
-				if (!perAdm.insert(persona)) {
-					throw new ClsExceptions("Error en insert persona. " + perAdm.getError());
-				}
-			}
-			
-			/** Inicio se añade numeros de telefonos para una personaJG.**/
-				String lTelefonos="";
-			try {  /*se añade numeros de telefonos para una personaJG.*/
-								ScsTelefonosPersonaJGAdm admTelefonosJG =  new ScsTelefonosPersonaJGAdm(this.getUserBean(request));								
-								Hashtable miHash =	new Hashtable();					
-								miHash.put(ScsTelefonosPersonaJGBean.C_IDINSTITUCION, user.getLocation());
-								miHash.put(ScsTelefonosPersonaJGBean.C_IDPERSONA, miform.getIdPersonaJG());								
-								lTelefonos=miform.getlNumerosTelefonos();
-								
-								/* Comprobamos que la lista de telefonos no venga vacia del formularo.*/								 
-								if (!lTelefonos.equals("")){									
-									List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), user.getLocation().toString());
-									  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
-									   * la lTelefonos que ha insertado el usuario.*/
-									if(listaTelefonos!=null){
-										try {											
-												String sql=admTelefonosJG.deleteTelefonos(miHash);
-												admTelefonosJG.deleteSQL(sql);												
-											} catch (Exception e) {
-												   throwExcp("messages.deleted.error",e,tx);
-											} 
-									}				
-									//Recorremos la lista de los telefonos para posteriormente guardar los telefonos.
-									GstStringTokenizer tokens = new GstStringTokenizer(lTelefonos,"%%%");  
-								    while(tokens.hasMoreTokens()){  
-								    	String fila = tokens.nextToken();								    	
-								    	if (fila != null && !fila.equals("")) {
-								    		
-								    		StringTokenizer celdas = new StringTokenizer(fila, "$$~");
-								    		String nombreTelefono="";
-											String numeroTelefono="";
-											String preferenteSms="";
-								    		for (int j = 0; celdas.hasMoreElements(); j++) {
-								    			String celda = celdas.nextToken();									    			
-								    			String[] registro = celda.split("=");
-								    			String key = registro[0];
-												String value = null;
-												
-												if(registro.length==2)
-													value = registro[1];
-												  
-												if(key.equals("nombreTelefonoJG")){						
-														if(value!=null)
-															 nombreTelefono=value;
-												}
-												else if(key.equals("numeroTelefonoJG")){
-														if(value!=null)
-															 numeroTelefono=value;
-														else
-															this.exitoModalSinRefresco("el numero",request);
-												
-												}else if(key.equals("preferenteSms")){
-													if(value!=null)
-														 preferenteSms=value;
-												}
-												
-								    		}								    		
-								    		miHash.put(ScsTelefonosPersonaJGBean.C_NOMBRETELEFONO, nombreTelefono);
-								    		miHash.put(ScsTelefonosPersonaJGBean.C_NUMEROTELEFONO, numeroTelefono);
-								    		miHash.put(ScsTelefonosPersonaJGBean.C_FECHAMODIFICACION, "sysdate");
-								    		miHash.put(ScsTelefonosPersonaJGBean.C_USUMODIFICACION, user.getUserName());
-								    		miHash.put(ScsTelefonosPersonaJGBean.C_PREFERENTESMS, preferenteSms);
-								    		
-								    		//se comprueba el idtelefono para verificar y poner el maximo idtelefono al insertar.
-								    		Hashtable htCol = admTelefonosJG.prepararInsert(miHash);	
-								    		String maximo = (String)htCol.get("IDTELEFONO");								    		
-								    		if (maximo.equals("1")){
-								    			miHash.put(ScsTelefonosPersonaJGBean.C_IDTELEFONO,"1");
-								    			
-								    		}else
-								    			miHash.put(ScsTelefonosPersonaJGBean.C_IDTELEFONO,maximo);
-								    		//se insertan los telefonos que tenga personajg
-								    		
-								    		if((!nombreTelefono.trim().equals(""))&&(!nombreTelefono.trim().equals(""))){
-								    		if (!admTelefonosJG.insert(miHash)) {
-									    			throw new ClsExceptions("Error en insert telefonopersona. " + admTelefonosJG.getError());								    			
-									    	}
-								    		}
-								    		
-								    	}
-								    	 
-								     }  
-								} else 
-								{
-									if (lTelefonos.equals("")){
-										List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), user.getLocation().toString());
-									  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
-									   * la lTelefonos que ha insertado el usuario.*/
-									if(listaTelefonos!=null){
-										try {											
-												String sql=admTelefonosJG.deleteTelefonos(miHash);
-												admTelefonosJG.deleteSQL(sql);												
-											} catch (Exception e) {
-												   throwExcp("messages.deleted.error",e,tx);
-											} 
-									}				
-								}
-								}
-								
-						} catch (Exception e) {
-								throw new ClsExceptions(e, "Excepcion en insertTelefono.");
-						}				
-			 
-			 
-			/**Fin se añade numeros de telefonos para una personaJG.**/
-			
-			// RELACIONARLO CON EL EJG (UPDATE NORMAL)
-			ScsEJGAdm admEJG = new ScsEJGAdm(this.getUserBean(request));
-			String idPersonaAnterior = "";
-			Hashtable ht = new Hashtable();
-			ht.put(ScsEJGBean.C_IDINSTITUCION,idInstitucionEJG);
-			ht.put(ScsEJGBean.C_IDTIPOEJG,idTipoEJG);
-			ht.put(ScsEJGBean.C_ANIO,anioEJG);
-			ht.put(ScsEJGBean.C_NUMERO,numeroEJG);
-			Vector v = admEJG.selectByPK(ht);
-			// Recupero el EJG y compruebo sus datos
-			if (v!=null && v.size()>0) {
-				ScsEJGBean beanEJG = (ScsEJGBean) v.get(0);
-				if (miform.getConceptoE().equals(PersonaJGAction.EJG)) {
-					// compruebo si ha cambiado el id persona para la relacion
-					if (beanEJG.getIdPersonaJG()!=null && !beanEJG.getIdPersonaJG().toString().equalsIgnoreCase("")) {
-						// guardo el idpersona anterior para buscar las relaciones y actualizarlas
-						idPersonaAnterior = beanEJG.getIdPersonaJG().toString();
-					}else{
-						idPersonaAnterior = null;
-					}
-				}else if (miform.getConceptoE().equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {
-					// en este caso lo cojo del databackup de unidad familiar, si existe
-					Hashtable oldUF = (Hashtable) dataBackup.get(ScsUnidadFamiliarEJGBean.T_NOMBRETABLA);
-					if (oldUF!=null) {
-						idPersonaAnterior = (String) oldUF.get(ScsUnidadFamiliarEJGBean.C_IDPERSONA);
-					} else {
-						idPersonaAnterior = null;
-					}
-				}
-				// RGG solamente para el interesado
-				if (miform.getConceptoE().equals(PersonaJGAction.EJG)) {
-					// actualizo la personaJG, que sera el interesado en este caso. 
-					beanEJG.setIdPersonaJG(new Integer(miform.getIdPersonaJG()));
-					if (!admEJG.updateDirect(beanEJG)) {
-						throw new ClsExceptions("Error en updateEJG. " + admEJG.getError());
-					}
-				}
-			}
-			// Hasta aqui nos hemos asegurado que la persona existe, y si es el interesado lo hemos
-			// actualizado en el EJG
-			
-			// INSERTAR O ACTUALIZAR UNIDAD FAMILIAR EJG (RELACIONADO)
-			ScsUnidadFamiliarEJGAdm ufAdm = new ScsUnidadFamiliarEJGAdm(this.getUserBean(request));
-			// Si tenemos una persona anterior es porque estamos actualizando a alguien
-			// si no hay persona anterior hacemos un insert de la nueva
-			if ((idPersonaAnterior!=null)&&(!idPersonaAnterior.equalsIgnoreCase(""))) {
-
-				// Si existe una persona anterior la vamos a borrar
-				Hashtable borrar = new Hashtable();
-				borrar.put(ScsUnidadFamiliarEJGBean.C_IDINSTITUCION,miform.getIdInstitucionEJG());
-				borrar.put(ScsUnidadFamiliarEJGBean.C_IDTIPOEJG,miform.getIdTipoEJG());
-				borrar.put(ScsUnidadFamiliarEJGBean.C_ANIO,miform.getAnioEJG());
-				borrar.put(ScsUnidadFamiliarEJGBean.C_NUMERO,miform.getNumeroEJG());
-				borrar.put(ScsUnidadFamiliarEJGBean.C_IDPERSONA,idPersonaAnterior);
-								
-				ScsDocumentacionEJGAdm scsDocumentacionEJGAdm = new ScsDocumentacionEJGAdm(getUserBean(request));
-
-				Vector vuf = ufAdm.selectByPK(unidadFamiliarBean);
-				// Comprobamos que la persona tenga una relacion existente con el ejg para actualizar o insertar/borrar
-				if (vuf!=null && vuf.size()>0) {
-				    // UPDATE
-				    if (!ufAdm.updateDirect(unidadFamiliarBean,null,ufAdm.getCamposBean())) {
-						throw new ClsExceptions("Error en update unidad familiar. " + ufAdm.getError());
-					}
-				} else {
-				    // INSERT
-					// Insertamos el nuevo y borramos el viejo
-				    if (!ufAdm.insert(unidadFamiliarBean)) {
-						throw new ClsExceptions("Error en insert unidad familiar. " + ufAdm.getError());
-					}
-				    if (!ufAdm.delete(borrar)) {
-						throw new ClsExceptions("Error en delete unidad familiar. " + ufAdm.getError());
-					}
-				}
-			} else {
-				// Insert unidad familiar con los nuevos valores
-				if (!ufAdm.insert(unidadFamiliarBean)) {
-					throw new ClsExceptions("Error en insert unidad familiar. " + ufAdm.getError());
-				}
-			    
-			}
-	     	
-			// fin de la transaccion
-			tx.commit();
-			if (miform.getConceptoE().equals(PersonaJGAction.EJG)) {
-				result = this.exitoRefresco("messages.updated.success",request);
-			} else {
-				result = this.exitoModal("messages.updated.success",request);
-			}
-	     	
-		}
-		catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,tx);
-		}
-		return result;
-	}
-
-	/**
-	 * Metodo que implementa el modo guardarSOJ
-	 * @param  mapping - Mapeo de los struts
-	 * @param  formulario -  Action Form asociado a este Action
-	 * @param  request - objeto llamada HTTP 
-	 * @param  response - objeto respuesta HTTP
-	 * @return  String  Destino del action  
-	 * @exception  ClsExceptions  En cualquier caso de error
-	 */
-	protected String guardarSOJ (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws SIGAException 
-	{
-		String result = "";
-		UserTransaction tx = null;
-		try {
-			
-			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
-	     	PersonaJGForm miform = (PersonaJGForm)formulario;
-
-	     	// clave del SOJ
-			String idInstitucionSOJ=miform.getIdInstitucionSOJ();
-			String idTipoSOJ=miform.getIdTipoSOJ();
-			String anioSOJ=miform.getAnioSOJ();
-			String numeroSOJ=miform.getNumeroSOJ();
-			boolean nuevaRel = false;
-			
-	     	// Datos Persona
-			Hashtable persona= new Hashtable();
-			ScsPersonaJGAdm perAdm = new ScsPersonaJGAdm(this.getUserBean(request));
-			
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDINSTITUCION,user.getLocation());
-			if (miform.getNuevo().equals("1")) {
-				UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPERSONA,miform.getIdPersonaJG().toString());
-			} else {
-				// obtengo el nuevo idpersona
-				persona = perAdm.prepararInsert(persona);
-				miform.setIdPersonaJG((String)persona.get(ScsPersonaJGBean.C_IDPERSONA));
-			}
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_NIF,miform.getNIdentificacion().toString());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_NOMBRE,miform.getNombre());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_APELLIDO1,miform.getApellido1());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_APELLIDO2,miform.getApellido2());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_DIRECCION,miform.getDireccion());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_CODIGOPOSTAL,miform.getCp());						
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_FECHANACIMIENTO,GstDate.getApplicationFormatDate("",miform.getFechaNac()));			
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPROFESION,miform.getProfesion());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPAIS,miform.getNacionalidad());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPROVINCIA,miform.getProvincia());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPOBLACION,miform.getPoblacion());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_ESTADOCIVIL,miform.getEstadoCivil());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_REGIMENCONYUGAL,miform.getRegimenConyugal());			 
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_TIPOPERSONAJG,miform.getTipo());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDTIPOIDENTIFICACION,miform.getTipoId());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_ENCALIDADDE,miform.getEnCalidadDe());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_OBSERVACIONES,miform.getObservaciones());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDREPRESENTANTEJG,miform.getIdRepresentanteJG());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_SEXO,miform.getSexo());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDIOMA,miform.getIdioma());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_HIJOS,miform.getHijos());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_FAX,miform.getFax());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_CORREOELECTRONICO,miform.getCorreoElectronico());
-		    
-
-	     	// Comienzo control de transacciones 
-			tx = user.getTransaction();			
-			tx.begin();
-	     	
-
-			// recojo el databackup
-			Hashtable dataBackup = (Hashtable) request.getSession().getAttribute("DATABACKUP");
-			// INSERTAR PERSONA JG SI PROCEDE
-			if (miform.getNuevo().equals("1")) {
-				// Ya existia
-				// Update Persona
-				Hashtable oldPer = (Hashtable) dataBackup.get(ScsPersonaJGBean.T_NOMBRETABLA);
-				if (!perAdm.update(persona, oldPer)) {
-					throw new ClsExceptions("Error en update persona. " + perAdm.getError());
-				}			
-				
-				Hashtable htBeneficiario = new Hashtable();
-				htBeneficiario.put(ScsBeneficiarioSOJBean.C_IDINSTITUCION,idInstitucionSOJ);
-				htBeneficiario.put(ScsBeneficiarioSOJBean.C_IDPERSONA,miform.getIdPersonaJG());
-				htBeneficiario.put(ScsBeneficiarioSOJBean.C_IDTIPOCONOCE,miform.getTipoConoce());
-				htBeneficiario.put(ScsBeneficiarioSOJBean.C_IDTIPOGRUPOLAB,miform.getTipoGrupoLaboral());
-				htBeneficiario.put(ScsBeneficiarioSOJBean.C_NUMVECESSOJ,miform.getNumVecesSOJ());
-				
-				ScsBeneficiarioSOJAdm admBenefSOJ = new ScsBeneficiarioSOJAdm(this.getUserBean(request));
-				boolean bPideJG  = UtilidadesString.stringToBoolean(miform.getChkPideJG());
-				boolean bsolicitaInfoJG  = UtilidadesString.stringToBoolean(miform.getChkSolicitaInfoJG());
-				if (bPideJG){
-					htBeneficiario.put(ScsBeneficiarioSOJBean.C_SOLICITAJG,ClsConstants.DB_TRUE);
-				}else{
-					htBeneficiario.put(ScsBeneficiarioSOJBean.C_SOLICITAJG,ClsConstants.DB_FALSE);
-				}
-				
-				boolean bSolicitaInfoJG  = UtilidadesString.stringToBoolean(miform.getChkSolicitaInfoJG());
-				if (bsolicitaInfoJG){
-					htBeneficiario.put(ScsBeneficiarioSOJBean.C_SOLICITAINFOJG,ClsConstants.DB_TRUE);
-				}else{
-					htBeneficiario.put(ScsBeneficiarioSOJBean.C_SOLICITAINFOJG,ClsConstants.DB_FALSE);
-				}
-				
-				String campos[] = {ScsBeneficiarioSOJBean.C_IDTIPOCONOCE,
-						           ScsBeneficiarioSOJBean.C_IDTIPOGRUPOLAB,
-								   ScsBeneficiarioSOJBean.C_NUMVECESSOJ,
-								   ScsBeneficiarioSOJBean.C_SOLICITAJG,
-								   ScsBeneficiarioSOJBean.C_SOLICITAINFOJG};
-				if (!admBenefSOJ.delete(htBeneficiario)) {
-					;
-				} 	
-			  	if (!admBenefSOJ.insert(htBeneficiario)) {
-					throw new ClsExceptions("Error al actuar BeneficiarioSOJ. " + admBenefSOJ.getError());
-				}
-				
-			} else {
-				// NO existia
-				// Insert Persona
-				if (!perAdm.insert(persona)) {
-					throw new ClsExceptions("Error en insert persona. " + perAdm.getError());
-				}
-				
-				Hashtable htBeneficiario = new Hashtable();
-				htBeneficiario.put(ScsBeneficiarioSOJBean.C_IDINSTITUCION,idInstitucionSOJ);
-				htBeneficiario.put(ScsBeneficiarioSOJBean.C_IDPERSONA,miform.getIdPersonaJG());
-				htBeneficiario.put(ScsBeneficiarioSOJBean.C_IDTIPOCONOCE,miform.getTipoConoce());
-				htBeneficiario.put(ScsBeneficiarioSOJBean.C_IDTIPOGRUPOLAB,miform.getTipoGrupoLaboral());
-				htBeneficiario.put(ScsBeneficiarioSOJBean.C_NUMVECESSOJ,miform.getNumVecesSOJ());
-				
-				ScsBeneficiarioSOJAdm admBenefSOJ = new ScsBeneficiarioSOJAdm(this.getUserBean(request));
-				boolean bPideJG  = UtilidadesString.stringToBoolean(miform.getChkPideJG());
-				boolean bsolicitaInfoJG  = UtilidadesString.stringToBoolean(miform.getChkSolicitaInfoJG());
-				if (bPideJG){
-					htBeneficiario.put(ScsBeneficiarioSOJBean.C_SOLICITAJG,ClsConstants.DB_TRUE);
-				}else{
-					htBeneficiario.put(ScsBeneficiarioSOJBean.C_SOLICITAJG,ClsConstants.DB_FALSE);
-				}
-				
-				boolean bSolicitaInfoJG  = UtilidadesString.stringToBoolean(miform.getChkSolicitaInfoJG());
-				if (bsolicitaInfoJG){
-					htBeneficiario.put(ScsBeneficiarioSOJBean.C_SOLICITAINFOJG,ClsConstants.DB_TRUE);
-				}else{
-					htBeneficiario.put(ScsBeneficiarioSOJBean.C_SOLICITAINFOJG,ClsConstants.DB_FALSE);
-				}
-				
-				if (!admBenefSOJ.insert(htBeneficiario)) {
-					throw new ClsExceptions("Error en insert BeneficiarioSOJ. " + admBenefSOJ.getError());
-				}
-			}
-			
-			
-				/** Inicio se añade numeros de telefonos para una personaJG.**/
-				String lTelefonos="";
-			try {  /*se añade numeros de telefonos para una personaJG.*/
-								ScsTelefonosPersonaJGAdm admTelefonosJG =  new ScsTelefonosPersonaJGAdm(this.getUserBean(request));								
-								Hashtable miHash =	new Hashtable();					
-								miHash.put(ScsTelefonosPersonaJGBean.C_IDINSTITUCION, user.getLocation());
-								miHash.put(ScsTelefonosPersonaJGBean.C_IDPERSONA, miform.getIdPersonaJG());								
-								lTelefonos=miform.getlNumerosTelefonos();
-								
-								/* Comprobamos que la lista de telefonos no venga vacia del formularo.*/								 
-								if (!lTelefonos.equals("")){									
-									List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(),user.getLocation().toString());
-									  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
-									   * la lTelefonos que ha insertado el usuario.*/
-									if(listaTelefonos!=null){
-										try {											
-												String sql=admTelefonosJG.deleteTelefonos(miHash);
-												admTelefonosJG.deleteSQL(sql);												
-											} catch (Exception e) {
-												   throwExcp("messages.deleted.error",e,tx);
-											} 
-									}				
-									//Recorremos la lista de los telefonos para posteriormente guardar los telefonos.
-									GstStringTokenizer tokens = new GstStringTokenizer(lTelefonos,"%%%");  
-								    while(tokens.hasMoreTokens()){  
-								    	String fila = tokens.nextToken();								    	
-								    	if (fila != null && !fila.equals("")) {
-								    		
-								    		StringTokenizer celdas = new StringTokenizer(fila, "$$~");
-								    		String nombreTelefono="";
-											String numeroTelefono="";
-											String preferenteSms="";
-								    		for (int j = 0; celdas.hasMoreElements(); j++) {
-								    			String celda = celdas.nextToken();									    			
-								    			String[] registro = celda.split("=");
-								    			String key = registro[0];
-												String value = null;
-												
-												if(registro.length==2)
-													value = registro[1];
-												  
-												if(key.equals("nombreTelefonoJG")){						
-														if(value!=null)
-															 nombreTelefono=value;
-												}
-												else if(key.equals("numeroTelefonoJG")){
-														if(value!=null)
-															 numeroTelefono=value;
-														else
-															this.exitoModalSinRefresco("el numero",request);
-												
-												}else if(key.equals("preferenteSms")){
-													if(value!=null)
-														 preferenteSms=value;
-												}
-												
-								    		}								    		
-								    		miHash.put(ScsTelefonosPersonaJGBean.C_NOMBRETELEFONO, nombreTelefono);
-								    		miHash.put(ScsTelefonosPersonaJGBean.C_NUMEROTELEFONO, numeroTelefono);
-								    		miHash.put(ScsTelefonosPersonaJGBean.C_FECHAMODIFICACION, "sysdate");
-								    		miHash.put(ScsTelefonosPersonaJGBean.C_USUMODIFICACION, user.getUserName());
-								    		miHash.put(ScsTelefonosPersonaJGBean.C_PREFERENTESMS, preferenteSms);
-								    		
-								    		//se comprueba el idtelefono para verificar y poner el maximo idtelefono al insertar.
-								    		Hashtable htCol = admTelefonosJG.prepararInsert(miHash);	
-								    		String maximo = (String)htCol.get("IDTELEFONO");								    		
-								    		if (maximo.equals("1")){
-								    			miHash.put(ScsTelefonosPersonaJGBean.C_IDTELEFONO,"1");
-								    			
-								    		}else
-								    			miHash.put(ScsTelefonosPersonaJGBean.C_IDTELEFONO,maximo);
-								    		//se insertan los telefonos que tenga personajg
-								    		
-								    		if((!nombreTelefono.trim().equals(""))&&(!nombreTelefono.trim().equals(""))){
-								    		if (!admTelefonosJG.insert(miHash)) {
-									    			throw new ClsExceptions("Error en insert telefonopersona. " + admTelefonosJG.getError());								    			
-									    	}
-								    		}
-								    		
-								    	}
-								    	 
-								     }  
-								} else 
-								{
-									if (lTelefonos.equals("")){
-										List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(),user.getLocation().toString());
-									  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
-									   * la lTelefonos que ha insertado el usuario.*/
-									if(listaTelefonos!=null){
-										try {											
-												String sql=admTelefonosJG.deleteTelefonos(miHash);
-												admTelefonosJG.deleteSQL(sql);												
-											} catch (Exception e) {
-												   throwExcp("messages.deleted.error",e,tx);
-											} 
-									}				
-								}
-								}
-								
-						} catch (Exception e) {
-								throw new ClsExceptions(e, "Excepcion en insertTelefono.");
-						}				
-			 
-			 
-			/**Fin se añade numeros de telefonos para una personaJG.**/
-			
-			// RELACIONARLO CON EL SOJ (UPDATE NORMAL)
-			ScsDefinirSOJAdm admSOJ= new ScsDefinirSOJAdm(this.getUserBean(request));
-			String idPersonaAnterior = "";
-			Hashtable ht = new Hashtable();
-			ht.put(ScsSOJBean.C_IDINSTITUCION,idInstitucionSOJ);
-			ht.put(ScsSOJBean.C_IDTIPOSOJ,idTipoSOJ);
-			ht.put(ScsSOJBean.C_ANIO,anioSOJ);
-			ht.put(ScsSOJBean.C_NUMERO,numeroSOJ);
-			Vector v = admSOJ.selectByPK(ht);
-			if (v!=null && v.size()>0) {
-				ScsSOJBean beanSOJ= (ScsSOJBean) v.get(0);
-				// actualizo la personaJG, que sera el interesado en este caso. 
-				beanSOJ.setIdPersonaJG(new Integer(miform.getIdPersonaJG()));
-				if (!admSOJ.updateDirect(beanSOJ)) {
-					throw new ClsExceptions("Error en update SOJ. " + admSOJ.getError());
-				}
-			}
-			//Insertamos los campos del Beneficiario
-			
-			
-			// fin de la transaccion
-			tx.commit();
-		    result = this.exitoRefresco("messages.updated.success",request);
-	     	
-		}
-		catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,tx);
-		}
-		return result;
-	}
-
-
-	/**
-	 * Metodo que implementa el modo guardarDesigna
-	 * @param  mapping - Mapeo de los struts
-	 * @param  formulario -  Action Form asociado a este Action
-	 * @param  request - objeto llamada HTTP 
-	 * @param  response - objeto respuesta HTTP
-	 * @return  String  Destino del action  
-	 * @exception  ClsExceptions  En cualquier caso de error
-	 */
-	protected String guardarDesigna (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws SIGAException 
-	{
-		String result = "";
-		UserTransaction tx = null;
-		try {
-			
-			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
-	     	PersonaJGForm miform = (PersonaJGForm)formulario;
-
-	     	// clave de la designa
-			String idInstitucionDES=miform.getIdInstitucionDES();
-			String idTurnoDES=miform.getIdTurnoDES();
-			String anioDES=miform.getAnioDES();
-			String numeroDES=miform.getNumeroDES();
-
-	     	// Datos Persona
-			Hashtable persona= new Hashtable();
-			ScsPersonaJGAdm perAdm = new ScsPersonaJGAdm(this.getUserBean(request));
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDINSTITUCION,user.getLocation());
-			if (miform.getNuevo().equals("1")) {
-				UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPERSONA,miform.getIdPersonaJG().toString());
-			} else {
-				// obtengo el nuevo idpersona
-				persona = perAdm.prepararInsert(persona);
-				miform.setIdPersonaJG((String)persona.get(ScsPersonaJGBean.C_IDPERSONA));
-			}
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_NIF,miform.getNIdentificacion().toString());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_NOMBRE,miform.getNombre());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_APELLIDO1,miform.getApellido1());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_APELLIDO2,miform.getApellido2());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_DIRECCION,miform.getDireccion());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_CODIGOPOSTAL,miform.getCp());						
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_FECHANACIMIENTO,GstDate.getApplicationFormatDate("",miform.getFechaNac()));			
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPROFESION,miform.getProfesion());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPAIS,miform.getNacionalidad());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPROVINCIA,miform.getProvincia());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPOBLACION,miform.getPoblacion());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_ESTADOCIVIL,miform.getEstadoCivil());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_REGIMENCONYUGAL,miform.getRegimenConyugal());			 
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_TIPOPERSONAJG,miform.getTipo());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDTIPOIDENTIFICACION,miform.getTipoId());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_ENCALIDADDE,miform.getEnCalidadDe());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_OBSERVACIONES,miform.getObservaciones());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDREPRESENTANTEJG,miform.getIdRepresentanteJG());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_SEXO,miform.getSexo());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDIOMA,miform.getIdioma());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_FAX,miform.getFax());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_CORREOELECTRONICO,miform.getCorreoElectronico());
-
-			ScsDefendidosDesignaAdm defendidosDesAdm= new ScsDefendidosDesignaAdm(this.getUserBean(request));
-			Hashtable defendidosDesignaHash = new Hashtable();
-			if(miform.getConceptoE().equals(PersonaJGAction.DESIGNACION_INTERESADO)) {
-				
-				// CREAR SCS_DEFENDIDOSDESIGNA
-				UtilidadesHash.set(defendidosDesignaHash,ScsDefendidosDesignaBean.C_IDINSTITUCION,miform.getIdInstitucionDES());
-				UtilidadesHash.set(defendidosDesignaHash,ScsDefendidosDesignaBean.C_ANIO,miform.getAnioDES());
-				UtilidadesHash.set(defendidosDesignaHash,ScsDefendidosDesignaBean.C_NUMERO,miform.getNumeroDES());
-				UtilidadesHash.set(defendidosDesignaHash,ScsDefendidosDesignaBean.C_IDTURNO,miform.getIdTurnoDES());				
-				UtilidadesHash.set(defendidosDesignaHash,ScsDefendidosDesignaBean.C_IDPERSONA,miform.getIdPersonaJG());
-				UtilidadesHash.set(defendidosDesignaHash,ScsDefendidosDesignaBean.C_CALIDAD,miform.getCalidad());
-				UtilidadesHash.set(defendidosDesignaHash,ScsDefendidosDesignaBean.C_NOMBREREPRESENTANTE,miform.getRepresentante());
-				UtilidadesHash.set(defendidosDesignaHash,ScsDefendidosDesignaBean.C_OBSERVACIONES,miform.getObservaciones());
-			}
-			
-			ScsContrariosDesignaAdm contrariosDesAdm= new ScsContrariosDesignaAdm(this.getUserBean(request));
-			Hashtable contrariosDesignaHash = new Hashtable();
-			if(miform.getConceptoE().equals(PersonaJGAction.DESIGNACION_CONTRARIOS)) {
-				
-				// CREAR SCS_CONTRARIOSDESIGNA
-				UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_IDINSTITUCION,miform.getIdInstitucionDES());
-				UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_ANIO,miform.getAnioDES());
-				UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_NUMERO,miform.getNumeroDES());
-				UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_IDTURNO,miform.getIdTurnoDES());				
-				UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_IDPERSONA,miform.getIdPersonaJG());
-				//pdm
-				//UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_IDREPRESENTANTELEGAL,miform.getRepresentante());
-				UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_NOMBREABOGADOCONTRARIO,miform.getAbogadoContrario());
-				UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_IDABOGADOCONTRARIO,miform.getIdPersonaContrario());
-				// separar el valor del procurador y su institucion
-				if (miform.getIdProcurador()!=null && !miform.getIdProcurador().trim().equals("")) {
-					String id_proc = miform.getIdProcurador().substring(0,miform.getIdProcurador().indexOf(","));
-					String institucion_proc = miform.getIdProcurador().substring(miform.getIdProcurador().indexOf(",")+1,miform.getIdProcurador().length());
-				
-					UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_IDINSTITUCIONPROCURADOR,institucion_proc);
-					UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_IDPROCURADOR,id_proc);
-				}
- 				UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_IDREPRESENTANTELEGAL,miform.getIdPersonaRepresentante());
-				UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_NOMBREREPRESENTANTE,miform.getRepresentante());
-				UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_OBSERVACIONES,miform.getObservaciones());
-
-			}
-			
-			String lTelefonos="";
-			// Comienzo control de transacciones 
-			tx = user.getTransaction();			
-			tx.begin();
-	     	
-			// recojo el databackup
-			Hashtable dataBackup = (Hashtable) request.getSession().getAttribute("DATABACKUP");
-			// INSERTAR O ACTUALIZAR PERSONA JG SI PROCEDE
-			if (miform.getNuevo().equals("1")) {
-				// Ya existia
-				// Update Persona
-				Hashtable oldPer = (Hashtable) dataBackup.get(ScsPersonaJGBean.T_NOMBRETABLA);
-				if (!perAdm.update(persona, oldPer)) {
-					throw new ClsExceptions("Error en update persona. " + perAdm.getError());
-					
-				}			
-			} else {
-				// NO existia
-				// Insert Persona
-				if (!perAdm.insert(persona)) {
-					throw new ClsExceptions("Error en insert persona. " + perAdm.getError());
-				}
-			}
-			
-			/** Inicio se añade numeros de telefonos para una personaJG.**/
-			try {  /*se añade numeros de telefonos para una personaJG.*/
-								ScsTelefonosPersonaJGAdm admTelefonosJG =  new ScsTelefonosPersonaJGAdm(this.getUserBean(request));								
-								Hashtable miHash =	new Hashtable();					
-								miHash.put(ScsTelefonosPersonaJGBean.C_IDINSTITUCION, user.getLocation());
-								miHash.put(ScsTelefonosPersonaJGBean.C_IDPERSONA, miform.getIdPersonaJG());								
-								lTelefonos=miform.getlNumerosTelefonos();
-								
-								/* Comprobamos que la lista de telefonos no venga vacia del formularo.*/								 
-								if (!lTelefonos.equals("")){									
-									List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(),user.getLocation().toString());
-									  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
-									   * la lTelefonos que ha insertado el usuario.*/
-									if(listaTelefonos!=null){
-										try {											
-												String sql=admTelefonosJG.deleteTelefonos(miHash);
-												admTelefonosJG.deleteSQL(sql);												
-											} catch (Exception e) {
-												   throwExcp("messages.deleted.error",e,tx);
-											} 
-									}				
-									//Recorremos la lista de los telefonos para posteriormente guardar los telefonos.
-									GstStringTokenizer tokens = new GstStringTokenizer(lTelefonos,"%%%");  
-								    while(tokens.hasMoreTokens()){  
-								    	String fila = tokens.nextToken();								    	
-								    	if (fila != null && !fila.equals("")) {
-								    		
-								    		StringTokenizer celdas = new StringTokenizer(fila, "$$~");
-								    		String nombreTelefono="";
-											String numeroTelefono="";
-											String preferenteSms="";
-								    		for (int j = 0; celdas.hasMoreElements(); j++) {
-								    			String celda = celdas.nextToken();									    			
-								    			String[] registro = celda.split("=");
-								    			String key = registro[0];
-												String value = null;
-												
-												if(registro.length==2)
-													value = registro[1];
-												  
-												if(key.equals("nombreTelefonoJG")){						
-														if(value!=null)
-															 nombreTelefono=value;
-												}
-												else if(key.equals("numeroTelefonoJG")){
-														if(value!=null)
-															 numeroTelefono=value;
-														else
-															this.exitoModalSinRefresco("el numero",request);
-												
-												}else if(key.equals("preferenteSms")){
-													if(value!=null)
-														 preferenteSms=value;
-												}
-												
-								    		}								    		
-								    		miHash.put(ScsTelefonosPersonaJGBean.C_NOMBRETELEFONO, nombreTelefono);
-								    		miHash.put(ScsTelefonosPersonaJGBean.C_NUMEROTELEFONO, numeroTelefono);
-								    		miHash.put(ScsTelefonosPersonaJGBean.C_FECHAMODIFICACION, "sysdate");
-								    		miHash.put(ScsTelefonosPersonaJGBean.C_USUMODIFICACION, user.getUserName());
-								    		miHash.put(ScsTelefonosPersonaJGBean.C_PREFERENTESMS, preferenteSms);
-								    		
-								    		//se comprueba el idtelefono para verificar y poner el maximo idtelefono al insertar.
-								    		Hashtable htCol = admTelefonosJG.prepararInsert(miHash);	
-								    		String maximo = (String)htCol.get("IDTELEFONO");								    		
-								    		if (maximo.equals("1")){
-								    			miHash.put(ScsTelefonosPersonaJGBean.C_IDTELEFONO,"1");
-								    			
-								    		}else
-								    			miHash.put(ScsTelefonosPersonaJGBean.C_IDTELEFONO,maximo);
-								    		//se insertan los telefonos que tenga personajg
-								    		
-								    		if((!nombreTelefono.trim().equals(""))&&(!nombreTelefono.trim().equals(""))){
-								    		if (!admTelefonosJG.insert(miHash)) {
-									    			throw new ClsExceptions("Error en insert telefonopersona. " + admTelefonosJG.getError());								    			
-									    	}
-								    		}
-								    		
-								    	}
-								    	 
-								     }  
-								} else 
-								{
-									if (lTelefonos.equals("")){
-										List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), user.getLocation().toString());
-									  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
-									   * la lTelefonos que ha insertado el usuario.*/
-									if(listaTelefonos!=null){
-										try {											
-												String sql=admTelefonosJG.deleteTelefonos(miHash);
-												admTelefonosJG.deleteSQL(sql);												
-											} catch (Exception e) {
-												   throwExcp("messages.deleted.error",e,tx);
-											} 
-									}				
-								}
-								}
-								
-						} catch (Exception e) {
-								throw new ClsExceptions(e, "Excepcion en insertTelefono.");
-						}				
-			 
-			 
-			/**Fin se añade numeros de telefonos para una personaJG.**/
-			
-			if(miform.getConceptoE().equals(PersonaJGAction.DESIGNACION_INTERESADO)) {
-				// INSERTAR O ACTUALIZAR INTERESADOS DESIGNA SI PROCEDE (RELACIONADO)
-				ScsDefendidosDesignaAdm adm = new ScsDefendidosDesignaAdm(this.getUserBean(request));
-				// busco si era nueva con el idpersona anterior del databackup																																	
-				Hashtable buscar = new Hashtable();
-				buscar.put(ScsDefendidosDesignaBean.C_IDINSTITUCION,miform.getIdInstitucionDES());
-				buscar.put(ScsDefendidosDesignaBean.C_IDTURNO,miform.getIdTurnoDES());
-				buscar.put(ScsDefendidosDesignaBean.C_ANIO,miform.getAnioDES());
-				buscar.put(ScsDefendidosDesignaBean.C_NUMERO,miform.getNumeroDES());
-				buscar.put(ScsDefendidosDesignaBean.C_IDPERSONA,miform.getIdPersonaJG());
-				
-				//Hashtable oldPer = (Hashtable) dataBackup.get(ScsPersonaJGBean.T_NOMBRETABLA);
-				//buscar.put(ScsDefendidosDesignaBean.C_IDPERSONA,oldPer.get(ScsPersonaJGBean.C_IDPERSONA));
-				Vector v = adm.selectByPK(buscar);
-				if (v!=null && v.size()>0) {
-					// EXISTE
-					if (miform.getAccionE().equals("editar")) {
-						
-						
-						// hay que comprobar si el antiguo no es el mismo, en ese caso se actualiza
-						String  idPersonaAnt = miform.getIdPersonaJG();//(String) dataBackup.get("idPersonaAnt");
-						if (idPersonaAnt!=null) {
-							if (idPersonaAnt.equals(miform.getIdPersonaJG())) {
-								// estamos tocando el mismo registro, se actualiza
-								if (!adm.updateDirect(defendidosDesignaHash,null,null)) {
-									throw new ClsExceptions("Error en update SOJ. " + adm.getError());
-								}
-							} else {
-								// ya existe el elemento
-								throw new SIGAException("gratuita.personaJG.mensaje.yaExiste");
-							}
-						}
-					} else {
-						// ya existe el elemento
-						throw new SIGAException("gratuita.personaJG.mensaje.yaExiste");
-					}
-					
-				} else {
-					// NO EXISTE
-					// si no existe y estamos en editar, entonces se esta actualizando la persona en el 
-					// defendido por lo que se actualiza
-					if (miform.getAccionE().equals("editar")) {
-						// primero borro el anterior y luego inserto el nuevo
-						Hashtable old = (Hashtable) dataBackup.get(ScsDefendidosDesignaBean.T_NOMBRETABLA);
-						if (old!=null) {
-							if (!adm.delete(old)) {
-								throw new ClsExceptions("Error en borrar. " + adm.getError());
-							}
-						} 
-					}
-					// Insert con los nuevos valores
-					if (!adm.insert(defendidosDesignaHash)) {
-						throw new ClsExceptions("Error en insert. " + adm.getError());
-					}
-					
-				}
-			}
-			
-			if(miform.getConceptoE().equals(PersonaJGAction.DESIGNACION_CONTRARIOS)) {
-				// INSERTAR O ACTUALIZAR INTERESADOS DESIGNA SI PROCEDE (RELACIONADO)
-				ScsContrariosDesignaAdm adm = new ScsContrariosDesignaAdm(this.getUserBean(request));
-				// busco si era nueva con el idpersona anterior del databackup																																	
-				Hashtable buscar = new Hashtable();
-				buscar.put(ScsContrariosDesignaBean.C_IDINSTITUCION,miform.getIdInstitucionDES());
-				buscar.put(ScsContrariosDesignaBean.C_IDTURNO,miform.getIdTurnoDES());
-				buscar.put(ScsContrariosDesignaBean.C_ANIO,miform.getAnioDES());
-				buscar.put(ScsContrariosDesignaBean.C_NUMERO,miform.getNumeroDES());
-				buscar.put(ScsContrariosDesignaBean.C_IDPERSONA,miform.getIdPersonaJG());
-				//Hashtable oldPer = (Hashtable) dataBackup.get(ScsPersonaJGBean.T_NOMBRETABLA);
-				//buscar.put(ScsContrariosDesignaBean.C_IDPERSONA,oldPer.get(ScsPersonaJGBean.C_IDPERSONA));
-				Vector v = adm.selectByPK(buscar);
-				if (v!=null && v.size()>0) {
-					// EXISTE
-					if (miform.getAccionE().equals("editar")) {
-						
-						// hay que comprobar si el antiguo no es el mismo, en ese caso se actualiza
-					/*	String  idPersonaAnt = (String) dataBackup.get("idPersonaAnt");
-					 if (idPersonaAnt!=null){
-						if (idPersonaAnt.equals(miform.getIdPersonaJG())) {*/
-							// estamos tocando el mismo registro, se actualiza
-							if (!adm.updateDirect(contrariosDesignaHash,null,null)) {
-								throw new ClsExceptions("Error en update SOJ. " + adm.getError());
-							}
-						/*} else {
-							// ya existe el elemento
-							throw new SIGAException("gratuita.personaJG.mensaje.yaExiste");
-						}
-					 }	*/
-					} else {
-						// ya existe el elemento
-						throw new SIGAException("gratuita.personaJG.mensaje.yaExiste");
-					}
-					
-				} else {
-					// NO EXISTE
-					// si no existe y estamos en editar, entonces se esta actualizando la persona en el 
-					// defendido por lo que se actualiza
-					if (miform.getAccionE().equals("editar")) {
-						// primero borro el anterior y luego inserto el nuevo
-						Hashtable old = (Hashtable) dataBackup.get(ScsContrariosDesignaBean.T_NOMBRETABLA);
-						if (old!=null) {
-							if (!adm.delete(old)) {
-								throw new ClsExceptions("Error en borrar. " + adm.getError());
-							}
-						} 
-					}
-					// Insert con los nuevos valores
-					if (!adm.insert(contrariosDesignaHash)) {
-						throw new ClsExceptions("Error en insert. " + adm.getError());
-					}
-					
-				}
-/*
-				if (v!=null && v.size()>0) {
-					// EXISTE
-					// actualizo con los nuevos valores
-					Hashtable old = (Hashtable) dataBackup.get(ScsContrariosDesignaBean.T_NOMBRETABLA);
-					if (old==null) {
-						// ya existe el elemento
-						throw new SIGAException("gratuita.personaJG.mensaje.yaExiste");
-					} else
-						if (!adm.update(contrariosDesignaHash,old)) {
-							throw new ClsExceptions("Error en update. " + adm.getError());
-					}
-				} else {
-					// NO EXISTE
-					// si no existe y estamos en editar, entonces se esta actualizando la persona en el 
-					// defendido por lo que se actualiza
-					if (miform.getAccionE().equals("editar")) {
-						// primero borro el anterior y luego inserto el nuevo
-						Hashtable old = (Hashtable) dataBackup.get(ScsContrariosDesignaBean.T_NOMBRETABLA);
-						if (old==null) {
-							if (!adm.delete(old)) {
-								throw new ClsExceptions("Error en borrar. " + adm.getError());
-							}
-						} 
-					}
-					if (!adm.insert(contrariosDesignaHash)) {
-						throw new ClsExceptions("Error en update. " + adm.getError());
-					}
-				}
-*/				
-			}			
-	     	
-			// fin de la transaccion
-			tx.commit();
-		    result = this.exitoModal("messages.updated.success",request);
-	     	
-		}
-		catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,tx);
-			//PDM
-			//result = this.exitoModal("messages.updated.success",request);
-		}
-		return result;
-	}
-
-
-	/**
-	 * Metodo que implementa el modo guardarAsistencia
-	 * @param  mapping - Mapeo de los struts
-	 * @param  formulario -  Action Form asociado a este Action
-	 * @param  request - objeto llamada HTTP 
-	 * @param  response - objeto respuesta HTTP
-	 * @return  String  Destino del action  
-	 * @exception  ClsExceptions  En cualquier caso de error
-	 */
-	protected String guardarAsistencia (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws SIGAException 
-	{
-		String result = "";
-		UserTransaction tx = null;
-		try {
-			
-			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
-	     	PersonaJGForm miform = (PersonaJGForm)formulario;
-
-	     	// clave de la asistencia
-			String idInstitucionASI=miform.getIdInstitucionASI();
-			String anioASI=miform.getAnioASI();
-			String numeroASI=miform.getNumeroASI();
-			boolean nuevaRel = false;
-
-	     	// Datos Persona
-			Hashtable persona= new Hashtable();
-			ScsPersonaJGAdm perAdm = new ScsPersonaJGAdm(this.getUserBean(request));
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDINSTITUCION,user.getLocation());
-			if (miform.getNuevo().equals("1")) {
-				UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPERSONA,miform.getIdPersonaJG().toString());
-			} else {
-				// obtengo el nuevo idpersona
-				persona = perAdm.prepararInsert(persona);
-				miform.setIdPersonaJG((String)persona.get(ScsPersonaJGBean.C_IDPERSONA));
-			}
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_NIF,miform.getNIdentificacion().toString());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_NOMBRE,miform.getNombre());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_APELLIDO1,miform.getApellido1());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_APELLIDO2,miform.getApellido2());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_DIRECCION,miform.getDireccion());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_CODIGOPOSTAL,miform.getCp());						
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_FECHANACIMIENTO,GstDate.getApplicationFormatDate("",miform.getFechaNac()));			
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPROFESION,miform.getProfesion());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPAIS,miform.getNacionalidad());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPROVINCIA,miform.getProvincia());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPOBLACION,miform.getPoblacion());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_ESTADOCIVIL,miform.getEstadoCivil());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_REGIMENCONYUGAL,miform.getRegimenConyugal());			 
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_TIPOPERSONAJG,miform.getTipo());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDTIPOIDENTIFICACION,miform.getTipoId());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_ENCALIDADDE,miform.getEnCalidadDe());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_OBSERVACIONES,miform.getObservaciones());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDREPRESENTANTEJG,miform.getIdRepresentanteJG());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_SEXO,miform.getSexo());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDIOMA,miform.getIdioma());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_HIJOS,miform.getHijos());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_FAX,miform.getFax());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_CORREOELECTRONICO,miform.getCorreoElectronico());
-
-			
-			
-			
-			ScsContrariosAsistenciaAdm contrariosAsistenciaAdm= new ScsContrariosAsistenciaAdm(this.getUserBean(request));
-			Hashtable contrarioAsistenciaHash = new Hashtable();
-			if(miform.getConceptoE().equals(PersonaJGAction.ASISTENCIA_CONTRARIOS)) {
-				
-				// CREAR SCS_CONTRARIOSASISTENCIA
-				UtilidadesHash.set(contrarioAsistenciaHash,ScsContrariosAsistenciaBean.C_IDINSTITUCION,miform.getIdInstitucionASI());
-				UtilidadesHash.set(contrarioAsistenciaHash,ScsContrariosAsistenciaBean.C_ANIO,miform.getAnioASI());
-				UtilidadesHash.set(contrarioAsistenciaHash,ScsContrariosAsistenciaBean.C_NUMERO,miform.getNumeroASI());
-				UtilidadesHash.set(contrarioAsistenciaHash,ScsContrariosAsistenciaBean.C_IDPERSONA,miform.getIdPersonaJG());
-				UtilidadesHash.set(contrarioAsistenciaHash,ScsContrariosAsistenciaBean.C_OBSERVACIONES,miform.getObservaciones());
-
-			}
-
-			
-			// Comienzo control de transacciones 
-			tx = user.getTransaction();			
-			tx.begin();
-	     	
-
-			// recojo el databackup
-			Hashtable dataBackup = (Hashtable) request.getSession().getAttribute("DATABACKUP");
-			// INSERTAR O ACTUALIZAR PERSONA JG SI PROCEDE
-			if (miform.getNuevo().equals("1")) {
-				// Ya existia
-				// Update Persona
-				Hashtable oldPer = (Hashtable) dataBackup.get(ScsPersonaJGBean.T_NOMBRETABLA);
-				if (!perAdm.update(persona, oldPer)) {
-					throw new ClsExceptions("Error en update persona. " + perAdm.getError());
-				}
-			} else {
-				// NO existia
-				// Insert Persona
-				if (!perAdm.insert(persona)) {
-					throw new ClsExceptions("Error en insert persona. " + perAdm.getError());
-				}
-			}
-			
-				/** Inicio se añade numeros de telefonos para una personaJG.**/
-			try {  /*se añade numeros de telefonos para una personaJG.*/
-								String lTelefonos="";
-								ScsTelefonosPersonaJGAdm admTelefonosJG =  new ScsTelefonosPersonaJGAdm(this.getUserBean(request));								
-								Hashtable miHash =	new Hashtable();					
-								miHash.put(ScsTelefonosPersonaJGBean.C_IDINSTITUCION, user.getLocation());
-								miHash.put(ScsTelefonosPersonaJGBean.C_IDPERSONA, miform.getIdPersonaJG());								
-								lTelefonos=miform.getlNumerosTelefonos();
-								
-								/* Comprobamos que la lista de telefonos no venga vacia del formularo.*/								 
-								if (!lTelefonos.equals("")){									
-									List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), user.getLocation().toString());
-									  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
-									   * la lTelefonos que ha insertado el usuario.*/
-									if(listaTelefonos!=null){
-										try {											
-												String sql=admTelefonosJG.deleteTelefonos(miHash);
-												admTelefonosJG.deleteSQL(sql);												
-											} catch (Exception e) {
-												   throwExcp("messages.deleted.error",e,tx);
-											} 
-									}				
-									//Recorremos la lista de los telefonos para posteriormente guardar los telefonos.
-									GstStringTokenizer tokens = new GstStringTokenizer(lTelefonos,"%%%");  
-								    while(tokens.hasMoreTokens()){  
-								    	String fila = tokens.nextToken();								    	
-								    	if (fila != null && !fila.equals("")) {
-								    		
-								    		StringTokenizer celdas = new StringTokenizer(fila, "$$~");
-								    		String nombreTelefono="";
-											String numeroTelefono="";
-											String preferenteSms="";
-								    		for (int j = 0; celdas.hasMoreElements(); j++) {
-								    			String celda = celdas.nextToken();									    			
-								    			String[] registro = celda.split("=");
-								    			String key = registro[0];
-												String value = null;
-												
-												if(registro.length==2)
-													value = registro[1];
-												  
-												if(key.equals("nombreTelefonoJG")){						
-														if(value!=null)
-															 nombreTelefono=value;
-												}
-												else if(key.equals("numeroTelefonoJG")){
-														if(value!=null)
-															 numeroTelefono=value;
-														else
-															this.exitoModalSinRefresco("el numero",request);
-												
-												}else if(key.equals("preferenteSms")){
-													if(value!=null)
-														 preferenteSms=value;
-												}
-												
-								    		}								    		
-								    		miHash.put(ScsTelefonosPersonaJGBean.C_NOMBRETELEFONO, nombreTelefono);
-								    		miHash.put(ScsTelefonosPersonaJGBean.C_NUMEROTELEFONO, numeroTelefono);
-								    		miHash.put(ScsTelefonosPersonaJGBean.C_FECHAMODIFICACION, "sysdate");
-								    		miHash.put(ScsTelefonosPersonaJGBean.C_USUMODIFICACION, user.getUserName());
-								    		miHash.put(ScsTelefonosPersonaJGBean.C_PREFERENTESMS, preferenteSms);
-								    		
-								    		//se comprueba el idtelefono para verificar y poner el maximo idtelefono al insertar.
-								    		Hashtable htCol = admTelefonosJG.prepararInsert(miHash);	
-								    		String maximo = (String)htCol.get("IDTELEFONO");								    		
-								    		if (maximo.equals("1")){
-								    			miHash.put(ScsTelefonosPersonaJGBean.C_IDTELEFONO,"1");
-								    			
-								    		}else
-								    			miHash.put(ScsTelefonosPersonaJGBean.C_IDTELEFONO,maximo);
-								    		//se insertan los telefonos que tenga personajg
-								    		
-								    		if((!nombreTelefono.trim().equals(""))&&(!nombreTelefono.trim().equals(""))){
-								    		if (!admTelefonosJG.insert(miHash)) {
-									    			throw new ClsExceptions("Error en insert telefonopersona. " + admTelefonosJG.getError());								    			
-									    	}
-								    		}
-								    		
-								    	}
-								    	 
-								     }  
-								} else 
-								{
-									if (lTelefonos.equals("")){
-										List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), user.getLocation().toString());
-									  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
-									   * la lTelefonos que ha insertado el usuario.*/
-									if(listaTelefonos!=null){
-										try {											
-												String sql=admTelefonosJG.deleteTelefonos(miHash);
-												admTelefonosJG.deleteSQL(sql);												
-											} catch (Exception e) {
-												   throwExcp("messages.deleted.error",e,tx);
-											} 
-									}				
-								}
-								}
-								
-						} catch (Exception e) {
-								throw new ClsExceptions(e, "Excepcion en insertTelefono.");
-						}				
-			 
-			 
-			/**Fin se añade numeros de telefonos para una personaJG.**/
-			
-			
-
-			// RELACIONARLO CON LA ASISTENCIA (UPDATE NORMAL)
-			ScsAsistenciasAdm admASI= new ScsAsistenciasAdm(this.getUserBean(request));
-			String idPersonaAnterior = "";
-			Hashtable ht = new Hashtable();
-			ht.put(ScsAsistenciasBean.C_IDINSTITUCION,idInstitucionASI);
-			ht.put(ScsAsistenciasBean.C_ANIO,anioASI);
-			ht.put(ScsAsistenciasBean.C_NUMERO,numeroASI);
-			Vector v = admASI.selectByPK(ht);
-			if (v!=null && v.size()>0) {
-				nuevaRel = true; 
-				ScsAsistenciasBean beanASI= (ScsAsistenciasBean) v.get(0);
-				if (miform.getConceptoE().equals(PersonaJGAction.ASISTENCIA_ASISTIDO)) {
-					// compruebo si ha cambiado el id persona para la relacion
-					if (beanASI.getIdPersonaJG()!=null && !beanASI.getIdPersonaJG().equals(new Integer(miform.getIdPersonaJG()))) {
-						// guardo el idpersona anterior para buscar las relaciones y actualizarlas
-						idPersonaAnterior = beanASI.getIdPersonaJG().toString();
-					} else {
-						// si no el que borrare sera el mismo, el actual
-						idPersonaAnterior = miform.getIdPersonaJG();
-					}
-				} else 
-				if (miform.getConceptoE().equals(PersonaJGAction.ASISTENCIA_CONTRARIOS)) {
-					// en este caso lo cojo del databackup de asistenciacontrario, si esxiste
-					Hashtable oldUF = (Hashtable) dataBackup.get(ScsContrariosAsistenciaBean.T_NOMBRETABLA);
-					if (oldUF!=null) {
-						idPersonaAnterior = (String) oldUF.get(ScsContrariosAsistenciaBean.C_IDPERSONA);
-					} else {
-						idPersonaAnterior = null;
-					}
-				}
-				
-				
-				if (miform.getConceptoE().equals(PersonaJGAction.ASISTENCIA_ASISTIDO)) {
-					// actualizo la personaJG, que sera el interesado en este caso. 
-					beanASI.setIdPersonaJG(new Integer(miform.getIdPersonaJG()));
-					if (!admASI.updateDirect(beanASI)) {
-						throw new ClsExceptions("Error en update Asistencia. " + admASI.getError());
-					}
-				}
-			}
-			
-			
-			if(miform.getConceptoE().equals(PersonaJGAction.ASISTENCIA_CONTRARIOS)) {
-
-				// INSERTAR O ACTUALIZAR INTERESADOS DESIGNA SI PROCEDE (RELACIONADO)
-				ScsContrariosAsistenciaAdm adm = new ScsContrariosAsistenciaAdm (this.getUserBean(request));
-				// busco si era nueva con el idpersona anterior del databackup																																	
-				Hashtable buscar = new Hashtable();
-				buscar.put(ScsContrariosAsistenciaBean.C_IDINSTITUCION,miform.getIdInstitucionASI());
-				buscar.put(ScsContrariosAsistenciaBean.C_ANIO,miform.getAnioASI());
-				buscar.put(ScsContrariosAsistenciaBean.C_NUMERO,miform.getNumeroASI());
-				buscar.put(ScsContrariosAsistenciaBean.C_IDPERSONA,miform.getIdPersonaJG());
-				
-				Vector v2= adm.selectByPK(buscar);
-				if (v2!=null && v2.size()>0) { 
-					// EXISTE
-					if (miform.getAccionE().equals("editar")) {
-						// hay que comprobar si el antiguo no es el mismo, en ese caso se actualiza
-						String  idPersonaAnt = "";
-						Hashtable oldUF = (Hashtable) dataBackup.get(ScsContrariosAsistenciaBean.T_NOMBRETABLA);
-						if (oldUF!=null) {
-							idPersonaAnt = (String) oldUF.get(ScsContrariosAsistenciaBean.C_IDPERSONA);
-						} else {
-							idPersonaAnt = null;
-						}
-						if (idPersonaAnt!=null && idPersonaAnt.equals(miform.getIdPersonaJG())) { 
-							// estamos tocando el mismo registro, se actualiza
-							if (!adm.updateDirect(contrarioAsistenciaHash,null,null)) {
-								throw new ClsExceptions("Error en update SOJ. " + adm.getError());
-							}
-						} else {
-							// ya existe el elemento
-							throw new SIGAException("gratuita.personaJG.mensaje.yaExiste");
-						}
-					} else {
-						// ya existe el elemento
-						throw new SIGAException("gratuita.personaJG.mensaje.yaExiste");
-					}
-				} else {
-					// NO EXISTE
-					// si no existe y estamos en editar, entonces se esta actualizando la persona en el 
-					// defendido por lo que se actualiza
-					if (miform.getAccionE().equals("editar")) {
-						// primero borro el anterior y luego inserto el nuevo
-						
-						
-						Hashtable  old = (Hashtable) dataBackup.get(ScsContrariosAsistenciaBean.T_NOMBRETABLA);
-						
-						if (old!=null) {
-							if (!adm.delete(old)) {
-								throw new ClsExceptions("Error en borrar. " + adm.getError());
-							}
-						} 
-					}
-					// Insert con los nuevos valores
-					if (!adm.insert(contrarioAsistenciaHash)) {
-						throw new ClsExceptions("Error en insert. " + adm.getError());
-					}
-				}
-/*				
-				// INSERTAR O ACTUALIZAR CONTRARIOS ASISTENCIA (RELACIONADO)
-				ScsContrariosAsistenciaAdm adm = new ScsContrariosAsistenciaAdm(this.getUserBean(request));
-				if (idPersonaAnterior!=null) {
-					// busco si era nueva con el idpersona anterior del databackup																																	
-					Hashtable buscar = new Hashtable();
-					buscar.put(ScsContrariosAsistenciaBean.C_IDINSTITUCION,miform.getIdInstitucionASI());
-					buscar.put(ScsContrariosAsistenciaBean.C_ANIO,miform.getAnioASI());
-					buscar.put(ScsContrariosAsistenciaBean.C_NUMERO,miform.getNumeroASI());
-					Hashtable oldPer = (Hashtable) dataBackup.get(ScsPersonaJGBean.T_NOMBRETABLA);
-					buscar.put(ScsContrariosAsistenciaBean.C_IDPERSONA,idPersonaAnterior);
-					Vector v2 = adm.selectByPK(buscar);
-					if (v2!=null && v.size()>0) {
-						// EXISTE
-						if (!adm.delete(contrarioAsistenciaHash)) {
-							//throw new ClsExceptions("Error en delete. " + adm.getError());
-						}
-					}
-				}
-				
-				// Insert contrarios asistencia
-				if (!adm.insert(contrarioAsistenciaHash)) {
-					throw new ClsExceptions("Error en insert. " + adm.getError());
-				}
-*/				
-			}			
-
-			// fin de la transaccion
-			tx.commit();
-			if(miform.getConceptoE().equals(PersonaJGAction.ASISTENCIA_CONTRARIOS)) {
-				result = this.exitoModal("messages.updated.success",request);
-			} else {
-				result = this.exitoRefresco("messages.updated.success",request);
-			}
-		}
-		catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,tx);
-		}
-		return result;
-	}
-
-	
-	protected String guardarContrariosEjg (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws SIGAException 
-	{
-		String result = "";
-		UserTransaction tx = null;
-		try {
-			
-			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
-	     	PersonaJGForm miform = (PersonaJGForm)formulario;
-
-	     	// clave de la asistencia
-			String idInstitucionEJG=miform.getIdInstitucionEJG();
-			String anioEJG=miform.getAnioEJG();
-			String numeroEJG=miform.getNumeroEJG();
-			boolean nuevaRel = false;
-
-	     	// Datos Persona
-			Hashtable persona= new Hashtable();
-			ScsPersonaJGAdm perAdm = new ScsPersonaJGAdm(this.getUserBean(request));
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDINSTITUCION,user.getLocation());
-			if (miform.getNuevo().equals("1")) {
-				UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPERSONA,miform.getIdPersonaJG().toString());
-			} else {
-				// obtengo el nuevo idpersona
-				persona = perAdm.prepararInsert(persona);
-				miform.setIdPersonaJG((String)persona.get(ScsPersonaJGBean.C_IDPERSONA));
-			}
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_NIF,miform.getNIdentificacion().toString());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_NOMBRE,miform.getNombre());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_APELLIDO1,miform.getApellido1());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_APELLIDO2,miform.getApellido2());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_DIRECCION,miform.getDireccion());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_CODIGOPOSTAL,miform.getCp());						
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_FECHANACIMIENTO,GstDate.getApplicationFormatDate("",miform.getFechaNac()));			
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPROFESION,miform.getProfesion());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPAIS,miform.getNacionalidad());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPROVINCIA,miform.getProvincia());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPOBLACION,miform.getPoblacion());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_ESTADOCIVIL,miform.getEstadoCivil());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_REGIMENCONYUGAL,miform.getRegimenConyugal());			 
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_TIPOPERSONAJG,miform.getTipo());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDTIPOIDENTIFICACION,miform.getTipoId());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_ENCALIDADDE,miform.getEnCalidadDe());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_OBSERVACIONES,miform.getObservaciones());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDREPRESENTANTEJG,miform.getIdRepresentanteJG());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_SEXO,miform.getSexo());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDIOMA,miform.getIdioma());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_FAX,miform.getFax());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_CORREOELECTRONICO,miform.getCorreoElectronico());
-
-			
-			
-			
-			ScsContrariosEJGAdm contrariosejgAdm= new ScsContrariosEJGAdm(this.getUserBean(request));
-			Hashtable contrarioEjgHash = new Hashtable();
-			
-				
-				// CREAR SCS_CONTRARIOSASISTENCIA
-				UtilidadesHash.set(contrarioEjgHash,ScsContrariosEJGBean.C_IDINSTITUCION,miform.getIdInstitucionEJG());
-				UtilidadesHash.set(contrarioEjgHash,ScsContrariosEJGBean.C_ANIO,miform.getAnioEJG());
-				UtilidadesHash.set(contrarioEjgHash,ScsContrariosEJGBean.C_NUMERO,miform.getNumeroEJG());
-				UtilidadesHash.set(contrarioEjgHash,ScsContrariosEJGBean.C_IDTIPOEJG,miform.getIdTipoEJG());
-				UtilidadesHash.set(contrarioEjgHash,ScsContrariosEJGBean.C_IDPERSONA,miform.getIdPersonaJG());
-				UtilidadesHash.set(contrarioEjgHash,ScsContrariosEJGBean.C_OBSERVACIONES,miform.getObservaciones());
-
-				// jbd 9.1.2009 INC_CAT_8
-			    if (miform.getIdProcurador()!=null && !miform.getIdProcurador().trim().equals("")) {
-					String id_proc = miform.getIdProcurador().substring(0,miform.getIdProcurador().indexOf(","));
-					String institucion_proc = miform.getIdProcurador().substring(miform.getIdProcurador().indexOf(",")+1,miform.getIdProcurador().length());
-				
-					UtilidadesHash.set(contrarioEjgHash,ScsContrariosEJGBean.C_IDINSTITUCION_PROCU,institucion_proc);
-					UtilidadesHash.set(contrarioEjgHash,ScsContrariosEJGBean.C_IDPROCURADOR,id_proc);
-				}
-			    
-			    UtilidadesHash.set(contrarioEjgHash,ScsContrariosEJGBean.C_IDABOGADOCONTRARIOEJG,miform.getIdAbogadoContrarioEJG());
-				UtilidadesHash.set(contrarioEjgHash,ScsContrariosEJGBean.C_NOMBREABOGADOCONTRARIOEJG,miform.getAbogadoContrarioEJG());
-				
-			    UtilidadesHash.set(contrarioEjgHash,ScsContrariosEJGBean.C_IDREPRESENTANTEEJG,miform.getIdRepresentanteJG());
-				UtilidadesHash.set(contrarioEjgHash,ScsContrariosEJGBean.C_NOMBREREPRESENTANTEEJG,miform.getRepresentante());
-			
-			// Comienzo control de transacciones 
-			tx = user.getTransaction();			
-			tx.begin();
-	     	
-
-			// recojo el databackup
-			Hashtable dataBackup = (Hashtable) request.getSession().getAttribute("DATABACKUP");
-			// INSERTAR O ACTUALIZAR PERSONA JG SI PROCEDE
-			if (miform.getNuevo().equals("1")) {
-				// Ya existia
-				// Update Persona
-				Hashtable oldPer = (Hashtable) dataBackup.get(ScsPersonaJGBean.T_NOMBRETABLA);
-				if (!perAdm.update(persona, oldPer)) {
-					throw new ClsExceptions("Error en update persona. " + perAdm.getError());
-				}
-			} else {
-				// NO existia
-				// Insert Persona
-				if (!perAdm.insert(persona)) {
-					throw new ClsExceptions("Error en insert persona. " + perAdm.getError());
-				}
-			}
-
-			/** Inicio se añade numeros de telefonos para una personaJG.**/
-				String lTelefonos="";
-			try {  /*se añade numeros de telefonos para una personaJG.*/
-								ScsTelefonosPersonaJGAdm admTelefonosJG =  new ScsTelefonosPersonaJGAdm(this.getUserBean(request));								
-								Hashtable miHash =	new Hashtable();					
-								miHash.put(ScsTelefonosPersonaJGBean.C_IDINSTITUCION, user.getLocation());
-								miHash.put(ScsTelefonosPersonaJGBean.C_IDPERSONA, miform.getIdPersonaJG());								
-								lTelefonos=miform.getlNumerosTelefonos();
-								
-								/* Comprobamos que la lista de telefonos no venga vacia del formularo.*/								 
-								if (!lTelefonos.equals("")){									
-									List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), user.getLocation().toString());
-									  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
-									   * la lTelefonos que ha insertado el usuario.*/
-									if(listaTelefonos!=null){
-										try {											
-												String sql=admTelefonosJG.deleteTelefonos(miHash);
-												admTelefonosJG.deleteSQL(sql);												
-											} catch (Exception e) {
-												   throwExcp("messages.deleted.error",e,tx);
-											} 
-									}				
-									//Recorremos la lista de los telefonos para posteriormente guardar los telefonos.
-									GstStringTokenizer tokens = new GstStringTokenizer(lTelefonos,"%%%");  
-								    while(tokens.hasMoreTokens()){  
-								    	String fila = tokens.nextToken();								    	
-								    	if (fila != null && !fila.equals("")) {
-								    		
-								    		StringTokenizer celdas = new StringTokenizer(fila, "$$~");
-								    		String nombreTelefono="";
-											String numeroTelefono="";
-											String preferenteSms="";
-								    		for (int j = 0; celdas.hasMoreElements(); j++) {
-								    			String celda = celdas.nextToken();									    			
-								    			String[] registro = celda.split("=");
-								    			String key = registro[0];
-												String value = null;
-												
-												if(registro.length==2)
-													value = registro[1];
-												  
-												if(key.equals("nombreTelefonoJG")){						
-														if(value!=null)
-															 nombreTelefono=value;
-												}
-												else if(key.equals("numeroTelefonoJG")){
-														if(value!=null)
-															 numeroTelefono=value;
-														else
-															this.exitoModalSinRefresco("el numero",request);
-												
-												}else if(key.equals("preferenteSms")){
-													if(value!=null)
-														 preferenteSms=value;
-												}
-												
-								    		}								    		
-								    		miHash.put(ScsTelefonosPersonaJGBean.C_NOMBRETELEFONO, nombreTelefono);
-								    		miHash.put(ScsTelefonosPersonaJGBean.C_NUMEROTELEFONO, numeroTelefono);
-								    		miHash.put(ScsTelefonosPersonaJGBean.C_FECHAMODIFICACION, "sysdate");
-								    		miHash.put(ScsTelefonosPersonaJGBean.C_USUMODIFICACION, user.getUserName());
-								    		miHash.put(ScsTelefonosPersonaJGBean.C_PREFERENTESMS, preferenteSms);
-								    		
-								    		//se comprueba el idtelefono para verificar y poner el maximo idtelefono al insertar.
-								    		Hashtable htCol = admTelefonosJG.prepararInsert(miHash);	
-								    		String maximo = (String)htCol.get("IDTELEFONO");								    		
-								    		if (maximo.equals("1")){
-								    			miHash.put(ScsTelefonosPersonaJGBean.C_IDTELEFONO,"1");
-								    			
-								    		}else
-								    			miHash.put(ScsTelefonosPersonaJGBean.C_IDTELEFONO,maximo);
-								    		//se insertan los telefonos que tenga personajg
-								    		
-								    		if((!nombreTelefono.trim().equals(""))&&(!nombreTelefono.trim().equals(""))){
-								    		if (!admTelefonosJG.insert(miHash)) {
-									    			throw new ClsExceptions("Error en insert telefonopersona. " + admTelefonosJG.getError());								    			
-									    	}
-								    		}
-								    		
-								    	}
-								    	 
-								     }  
-								} else 
-								{
-									if (lTelefonos.equals("")){
-										List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), user.getLocation().toString());
-									  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
-									   * la lTelefonos que ha insertado el usuario.*/
-									if(listaTelefonos!=null){
-										try {											
-												String sql=admTelefonosJG.deleteTelefonos(miHash);
-												admTelefonosJG.deleteSQL(sql);												
-											} catch (Exception e) {
-												   throwExcp("messages.deleted.error",e,tx);
-											} 
-									}				
-								}
-								}
-								
-						} catch (Exception e) {
-								throw new ClsExceptions(e, "Excepcion en insertTelefono.");
-						}				
-			 
-			 
-			/**Fin se añade numeros de telefonos para una personaJG.**/
-			
-			
-		
-
-				// INSERTAR O ACTUALIZAR INTERESADOS DESIGNA SI PROCEDE (RELACIONADO)
-				ScsContrariosEJGAdm adm = new ScsContrariosEJGAdm (this.getUserBean(request));
-				// busco si era nueva con el idpersona anterior del databackup																																	
-				Hashtable buscar = new Hashtable();
-				buscar.put(ScsContrariosEJGBean.C_IDINSTITUCION,miform.getIdInstitucionEJG());
-				buscar.put(ScsContrariosEJGBean.C_ANIO,miform.getAnioEJG());
-				buscar.put(ScsContrariosEJGBean.C_NUMERO,miform.getNumeroEJG());
-				buscar.put(ScsContrariosEJGBean.C_IDTIPOEJG,miform.getIdTipoEJG());
-				buscar.put(ScsContrariosAsistenciaBean.C_IDPERSONA,miform.getIdPersonaJG());
-				
-				Vector v2= adm.selectByPK(buscar);
-				if (v2!=null && v2.size()>0) { 
-					// EXISTE
-					if (miform.getAccionE().equals("editar")) {
-						// hay que comprobar si el antiguo no es el mismo, en ese caso se actualiza
-						String  idPersonaAnt = (String) dataBackup.get("idPersonaAnt");
-						if (idPersonaAnt==null || (idPersonaAnt!=null && idPersonaAnt.equals(miform.getIdPersonaJG()))) { 
-							// estamos tocando el mismo registro, se actualiza
-							if (!adm.updateDirect(contrarioEjgHash,null,null)) {
-								throw new ClsExceptions("Error en update SOJ. " + adm.getError());
-							}
-						} else {
-							// ya existe el elemento
-							throw new SIGAException("gratuita.personaJG.mensaje.yaExiste");
-						}
-					} else {
-						// ya existe el elemento
-						throw new SIGAException("gratuita.personaJG.mensaje.yaExiste");
-					}
-				} else {
-					// NO EXISTE
-					// si no existe y estamos en editar, entonces se esta actualizando la persona en el 
-					// defendido por lo que se actualiza
-					if (miform.getAccionE().equals("editar")) {
-						// primero borro el anterior y luego inserto el nuevo
-						
-						
-						Hashtable  old = (Hashtable) dataBackup.get(ScsContrariosEJGBean.T_NOMBRETABLA);
-						
-						if (old!=null) {
-							if (!adm.delete(old)) {
-								throw new ClsExceptions("Error en borrar. " + adm.getError());
-							}
-						} 
-					}
-					// Insert con los nuevos valores
-					if (!adm.insert(contrarioEjgHash)) {
-						throw new ClsExceptions("Error en insert. " + adm.getError());
-					}
-				}
-
-				
-					
-
-			// fin de la transaccion
-			tx.commit();
-			
-			result = this.exitoModal("messages.updated.success",request);
-			
-		}
-		catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,tx);
-		}
-		return result;
-	}
-	/**
-	 * Metodo que implementa el modo guardarPersona
-	 * @param  mapping - Mapeo de los struts
-	 * @param  formulario -  Action Form asociado a este Action
-	 * @param  request - objeto llamada HTTP 
-	 * @param  response - objeto respuesta HTTP
-	 * @return  String  Destino del action  
-	 * @exception  ClsExceptions  En cualquier caso de error
-	 */
-	protected String guardarPersona (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws SIGAException 
-	{
-		String result = "";
-		UserTransaction tx = null;
-		try {
-			
-			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
-	     	PersonaJGForm miform = (PersonaJGForm)formulario;
-
-	     	// clave de la persona padre
-	     	// hay que crear en el form las claves de la persona padre.
-			String idInstitucionPER=miform.getIdInstitucionPER();
-			String idPersonaPER=miform.getIdPersonaPER();
-			boolean nuevaRel = false;
-	     	
-	     	// Datos Persona
-			Hashtable persona= new Hashtable();
-			ScsPersonaJGAdm perAdm = new ScsPersonaJGAdm(this.getUserBean(request));
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDINSTITUCION,user.getLocation());
-			if (miform.getNuevo().equals("1")) {
-				UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPERSONA,miform.getIdPersonaJG().toString());
-			} else {
-				// obtengo el nuevo idpersona
-				persona = perAdm.prepararInsert(persona);
-				miform.setIdPersonaJG((String)persona.get(ScsPersonaJGBean.C_IDPERSONA));
-			}
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_NIF,miform.getNIdentificacion().toString());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_NOMBRE,miform.getNombre());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_APELLIDO1,miform.getApellido1());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_APELLIDO2,miform.getApellido2());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_DIRECCION,miform.getDireccion());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_CODIGOPOSTAL,miform.getCp());						
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_FECHANACIMIENTO,GstDate.getApplicationFormatDate("",miform.getFechaNac()));			
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPROFESION,miform.getProfesion());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPAIS,miform.getNacionalidad());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPROVINCIA,miform.getProvincia());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPOBLACION,miform.getPoblacion());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_ESTADOCIVIL,miform.getEstadoCivil());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_REGIMENCONYUGAL,miform.getRegimenConyugal());			 
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_TIPOPERSONAJG,miform.getTipo());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDTIPOIDENTIFICACION,miform.getTipoId());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_ENCALIDADDE,miform.getEnCalidadDe());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_OBSERVACIONES,miform.getObservaciones());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDREPRESENTANTEJG,miform.getIdRepresentanteJG());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_FAX,miform.getFax());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_CORREOELECTRONICO,miform.getCorreoElectronico());		
-
-
-			
-			// Comienzo control de transacciones 
-			tx = user.getTransaction();			
-			tx.begin();
-
-			// insertar si procede la persona.
-			// con el idpersonaJG del form
-			// recojo el databackup
-			Hashtable dataBackup = (Hashtable) request.getSession().getAttribute("DATABACKUP");
-			// lo cojo de personapersona porque es  actualizar personajg
-			Hashtable oldPer = (Hashtable) dataBackup.get("PERSONAPERSONA");
-			// INSERTAR O ACTUALIZAR PERSONA JG SI PROCEDE
-			if (miform.getNuevo().equals("1")) {
-				// Ya existia
-				// Update Persona
-				if (oldPer!=null){
-				if (!perAdm.update(persona, oldPer)) {
-					throw new ClsExceptions("Error en update persona. " + perAdm.getError());
-				}
-				}
-			} else {
-				// NO existia
-				// Insert Persona
-				if (!perAdm.insert(persona)) {
-					throw new ClsExceptions("Error en insert persona. " + perAdm.getError());
-				}
-			}
-			
-			
-			/** Inicio se añade numeros de telefonos para una personaJG.**/
-				String lTelefonos="";
-			try {  /*se añade numeros de telefonos para una personaJG.*/
-								ScsTelefonosPersonaJGAdm admTelefonosJG =  new ScsTelefonosPersonaJGAdm(this.getUserBean(request));								
-								Hashtable miHash =	new Hashtable();					
-								miHash.put(ScsTelefonosPersonaJGBean.C_IDINSTITUCION, user.getLocation());
-								miHash.put(ScsTelefonosPersonaJGBean.C_IDPERSONA, miform.getIdPersonaJG());								
-								lTelefonos=miform.getlNumerosTelefonos();
-								
-								/* Comprobamos que la lista de telefonos no venga vacia del formularo.*/								 
-								if (!lTelefonos.equals("")){									
-									List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), user.getLocation().toString());
-									  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
-									   * la lTelefonos que ha insertado el usuario.*/
-									if(listaTelefonos!=null){
-										try {											
-												String sql=admTelefonosJG.deleteTelefonos(miHash);
-												admTelefonosJG.deleteSQL(sql);												
-											} catch (Exception e) {
-												   throwExcp("messages.deleted.error",e,tx);
-											} 
-									}				
-									//Recorremos la lista de los telefonos para posteriormente guardar los telefonos.
-									GstStringTokenizer tokens = new GstStringTokenizer(lTelefonos,"%%%");  
-								    while(tokens.hasMoreTokens()){  
-								    	String fila = tokens.nextToken();								    	
-								    	if (fila != null && !fila.equals("")) {
-								    		
-								    		StringTokenizer celdas = new StringTokenizer(fila, "$$~");
-								    		String nombreTelefono="";
-											String numeroTelefono="";
-											String preferenteSms="";
-								    		for (int j = 0; celdas.hasMoreElements(); j++) {
-								    			String celda = celdas.nextToken();									    			
-								    			String[] registro = celda.split("=");
-								    			String key = registro[0];
-												String value = null;
-												
-												if(registro.length==2)
-													value = registro[1];
-												  
-												if(key.equals("nombreTelefonoJG")){						
-														if(value!=null)
-															 nombreTelefono=value;
-												}
-												else if(key.equals("numeroTelefonoJG")){
-														if(value!=null)
-															 numeroTelefono=value;
-														else
-															this.exitoModalSinRefresco("el numero",request);
-												
-												}else if(key.equals("preferenteSms")){
-													if(value!=null)
-														 preferenteSms=value;
-												}
-												
-								    		}								    		
-								    		miHash.put(ScsTelefonosPersonaJGBean.C_NOMBRETELEFONO, nombreTelefono);
-								    		miHash.put(ScsTelefonosPersonaJGBean.C_NUMEROTELEFONO, numeroTelefono);
-								    		miHash.put(ScsTelefonosPersonaJGBean.C_FECHAMODIFICACION, "sysdate");
-								    		miHash.put(ScsTelefonosPersonaJGBean.C_USUMODIFICACION, user.getUserName());
-								    		miHash.put(ScsTelefonosPersonaJGBean.C_PREFERENTESMS, preferenteSms);
-								    		
-								    		//se comprueba el idtelefono para verificar y poner el maximo idtelefono al insertar.
-								    		Hashtable htCol = admTelefonosJG.prepararInsert(miHash);	
-								    		String maximo = (String)htCol.get("IDTELEFONO");								    		
-								    		if (maximo.equals("1")){
-								    			miHash.put(ScsTelefonosPersonaJGBean.C_IDTELEFONO,"1");
-								    			
-								    		}else
-								    			miHash.put(ScsTelefonosPersonaJGBean.C_IDTELEFONO,maximo);
-								    		//se insertan los telefonos que tenga personajg
-								    		
-								    		if((!nombreTelefono.trim().equals(""))&&(!nombreTelefono.trim().equals(""))){
-								    		if (!admTelefonosJG.insert(miHash)) {
-									    			throw new ClsExceptions("Error en insert telefonopersona. " + admTelefonosJG.getError());								    			
-									    	}
-								    		}
-								    		
-								    	}
-								    	 
-								     }  
-								} else 
-								{
-									if (lTelefonos.equals("")){
-										List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), user.getLocation().toString());
-									  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
-									   * la lTelefonos que ha insertado el usuario.*/
-									if(listaTelefonos!=null){
-										try {											
-												String sql=admTelefonosJG.deleteTelefonos(miHash);
-												admTelefonosJG.deleteSQL(sql);												
-											} catch (Exception e) {
-												   throwExcp("messages.deleted.error",e,tx);
-											} 
-									}				
-								}
-								}
-								
-						} catch (Exception e) {
-								throw new ClsExceptions(e, "Excepcion en insertTelefono.");
-						}				
-			 
-			 
-			/**Fin se añade numeros de telefonos para una personaJG.**/
-			
-			
-			// relacionarla con la otra persona. (UPDATE NORMAL)
-	     	// relacionarla con idPersonaJGRel, que es el de la ventana hija.
-			ScsPersonaJGAdm admPer = new ScsPersonaJGAdm(this.getUserBean(request));
-			String idPersonaAnterior = "";
-			Hashtable ht = new Hashtable();
-			ht.put(ScsPersonaJGBean.C_IDINSTITUCION,idInstitucionPER);
-			ht.put(ScsPersonaJGBean.C_IDPERSONA,idPersonaPER);
-			Vector v = admPer.selectByPK(ht);
-			if (v!=null && v.size()>0) {
-				nuevaRel = true; 
-				ScsPersonaJGBean beanPer = (ScsPersonaJGBean) v.get(0);
-				// actualizo la personaJG, que sera el interesado en este caso. 
-				beanPer.setIdRepresentanteJG(new Integer(miform.getIdPersonaJG()));
-				if (!admPer.updateDirect(beanPer)) {
-					throw new ClsExceptions("Error en update persona. " + admPer.getError());
-				}
-				// Actualizamos el databackup de la persona padre
-				// lo cojo de personaJG porque es  actualizar el padre
-				//Hashtable oldPer2 = (Hashtable) dataBackup.get(ScsPersonaJGBean.T_NOMBRETABLA);
-				Hashtable oldPer2 = (Hashtable) dataBackup.get(ScsPersonaJGBean.T_NOMBRETABLA);
-				
-				if (oldPer2!=null){
-				
-				}else{
-					 oldPer2=new Hashtable();	
-				}
-				oldPer2.put(ScsPersonaJGBean.C_IDREPRESENTANTEJG,beanPer.getIdRepresentanteJG());
-				dataBackup.put(ScsPersonaJGBean.T_NOMBRETABLA,oldPer2);
-				request.getSession().setAttribute("DATABACKUP",dataBackup);
-				
-					
-			}
-			
-			
-			// fin de la transaccion
-			tx.commit();
-			
-			// OJO, aqui debe ir una ventana que devuelva los valores de la persona.
-			request.setAttribute("mensaje","messages.updated.success");
-			request.setAttribute("modal","");
-			
-			// debe devolver los datos y hacer que la ventana se refresque para que vuelva a coger los datos del form
-			// de la ventana de abajo.
-			request.setAttribute("idPersonaSeleccionado",miform.getIdPersonaJG());
-			request.setAttribute("nombrePersonaSeleccionado",miform.getNombre() + " " + miform.getApellido1() + " " + miform.getApellido2());
-			
-		} 
-		catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,tx);
-		}
-		return "seleccionPersonaJG";
-	}
-
-	/**
 	 * Metodo que carga los datos del formulario segun las claves que se les pase
 	 * @param  formulario -  Action Form asociado a este Action
 	 * @return  formulario  
@@ -2999,6 +1101,7 @@ public class PersonaJGAction extends MasterAction {
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_HIJOS,perBean.getHijos());
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_FAX,perBean.getFax());
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_CORREOELECTRONICO,perBean.getCorreoElectronico());					
+					
 					idRepresentanteJG=perBean.getIdRepresentanteJG();
 					
 				// pdm recuperamos la descripcion del tipo de identificacion y de la poblacion porque no se pintaban
@@ -3071,19 +1174,20 @@ public class PersonaJGAction extends MasterAction {
 					}
 					miform.setObservaciones(perBean.getObservaciones());
 					
-					
+										
 					//Se recupara una lista de los telefonos de la personajg
 					
 					ScsTelefonosPersonaJGAdm admTelefonosJG = new ScsTelefonosPersonaJGAdm(this.getUserBean(request));					
-						if(perBean.getIdPersona()!=null){
-								List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(perBean.getIdPersona().toString(), perBean.getIdInstitucion().toString());
-								if(listaTelefonos==null){
-									listaTelefonos = new ArrayList<ScsTelefonosPersonaJGBean>();			
-								}								
-								miform.setTelefonos(listaTelefonos);
-							}
-						miform.setFax(perBean.getFax());	
-					    miform.setCorreoElectronico(perBean.getCorreoElectronico().trim());	
+					if(perBean.getIdPersona()!=null){
+							List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(perBean.getIdPersona().toString(), perBean.getIdInstitucion().toString());
+							if(listaTelefonos==null){
+								listaTelefonos = new ArrayList<ScsTelefonosPersonaJGBean>();			
+							}								
+							miform.setTelefonos(listaTelefonos);
+						}
+					miform.setFax(perBean.getFax());	
+				    miform.setCorreoElectronico(perBean.getCorreoElectronico().trim());	
+					    
 				}
 
 				if (!miform.getConceptoE().equals(PersonaJGAction.DESIGNACION_CONTRARIOS) && !miform.getConceptoE().equals(PersonaJGAction.PERSONAJG)) {
@@ -3477,4 +1581,1136 @@ public class PersonaJGAction extends MasterAction {
 	}
 
 	
+	
+	/**
+	 * Metodo que implementa el guardado de una persona para luego crear la relacion pertinente
+	 * con un asunto (ejg, soj,...)
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */
+	protected String guardarPersonaJG (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws SIGAException 
+	{
+		UserTransaction tx = null;
+		String mapDestino = ""; // La salida del metodo de la relacion
+		try {
+			
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+	     	PersonaJGForm miform = (PersonaJGForm)formulario;
+	     	MasterForm form = (MasterForm)formulario;
+	     	String accion = request.getParameter("accionE");
+	     	String relacion = form.getModo();
+
+	     	boolean nuevaPersona = false;
+	     	// Datos Persona
+			Hashtable persona= new Hashtable();
+			ScsPersonaJGAdm perAdm = new ScsPersonaJGAdm(this.getUserBean(request));
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDINSTITUCION,user.getLocation());
+
+			// Si tenemos el idPersona es porque ya existia la persona asi que la actualizamos,
+			// si no creamos una nueva
+			if (miform.getIdPersonaJG()!=null && !miform.getIdPersonaJG().equalsIgnoreCase("")){
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPERSONA,miform.getIdPersonaJG().toString());
+			} else {
+				nuevaPersona = true;
+				persona = perAdm.prepararInsert(persona);
+				miform.setIdPersonaJG((String)persona.get(ScsPersonaJGBean.C_IDPERSONA));
+			}
+			
+			// DATOS DE LA PERSONAJG
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDINSTITUCION,user.getLocation());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPERSONA,miform.getIdPersonaJG().toString());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_NIF,miform.getNIdentificacion());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_NOMBRE,miform.getNombre());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_APELLIDO1,miform.getApellido1());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_APELLIDO2,miform.getApellido2());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_DIRECCION,miform.getDireccion());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_CODIGOPOSTAL,miform.getCp());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_FECHANACIMIENTO,GstDate.getApplicationFormatDate("",miform.getFechaNac()));
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPROFESION,miform.getProfesion());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPAIS,miform.getNacionalidad());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPROVINCIA,miform.getProvincia());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPOBLACION,miform.getPoblacion());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_ESTADOCIVIL,miform.getEstadoCivil());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_REGIMENCONYUGAL,miform.getRegimenConyugal());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_TIPOPERSONAJG,miform.getTipo());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDTIPOIDENTIFICACION,miform.getTipoId());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_ENCALIDADDE,miform.getEnCalidadDe());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_OBSERVACIONES,miform.getObservaciones());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDREPRESENTANTEJG,miform.getIdRepresentanteJG());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_SEXO,miform.getSexo());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDIOMA,miform.getIdioma());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_HIJOS,miform.getHijos());
+		    UtilidadesHash.set(persona,ScsPersonaJGBean.C_FAX,miform.getFax());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_CORREOELECTRONICO,miform.getCorreoElectronico());
+			
+	     	
+			// recojo el databackup
+			Hashtable dataBackup = (Hashtable) request.getSession().getAttribute("DATABACKUP");
+			String anio="";
+			String numero="";
+			String tipo="";
+			if(miform.getAccionGuardar()==null || miform.getAccionGuardar().equalsIgnoreCase("")){
+				if (relacion.equalsIgnoreCase("guardarEJG")||
+					relacion.equalsIgnoreCase("guardarContrariosEjg")){
+					anio = miform.getAnioEJG();
+					numero = miform.getNumeroEJG();
+					tipo = miform.getIdTipoEJG();
+				} else if (relacion.equalsIgnoreCase("guardarSOJ")){
+					anio = miform.getAnioSOJ();
+					numero = miform.getNumeroSOJ();
+					tipo = miform.getIdTipoSOJ();
+				} else if (relacion.equalsIgnoreCase("guardarDesigna")){
+					anio = miform.getAnioDES();
+					numero = miform.getNumeroDES();
+					tipo = miform.getIdTurnoDES();
+				} else if (relacion.equalsIgnoreCase("guardarAsistencia")){
+					anio = miform.getAnioASI();
+					numero = miform.getNumeroASI();
+					tipo = "";
+				}
+				Vector relaciones = perAdm.getRelacionesPersonaJG(miform.getIdPersonaJG(), user.getLocation(), relacion, tipo, anio, numero);
+				if(relaciones!=null && relaciones.size()>0){
+					miform.setModoGuardar(miform.getModo());
+					miform.setAccionGuardar("-");
+					return  "asuntosPersonaJG";
+				}
+			}else if(miform.getAccionGuardar().equalsIgnoreCase("insert")){
+				nuevaPersona = true;
+				persona = perAdm.prepararInsert(persona);
+				miform.setIdPersonaJG((String)persona.get(ScsPersonaJGBean.C_IDPERSONA));
+			} // continuamos para update
+			
+			// Comienzo control de transacciones 
+			tx = user.getTransaction();			
+			tx.begin();
+			
+			// INSERTAR PERSONA JG SI PROCEDE
+			request.setAttribute("nuevaPersona", nuevaPersona);
+			if (!nuevaPersona){
+				// YA existia // Update Persona
+				Hashtable oldPer = (Hashtable) dataBackup.get(ScsPersonaJGBean.T_NOMBRETABLA);
+				// Esto es solo para relacionar personas con personas (representante y esas cosas)
+				if(oldPer==null){
+					oldPer = (Hashtable) dataBackup.get("PERSONAPERSONA");
+				}
+				if (!perAdm.update(persona, oldPer)) {
+					throw new ClsExceptions("Error en update persona. " + perAdm.getError());
+				}
+			} else {
+				// NO existia // Insert Persona
+				if (!perAdm.insert(persona)) {
+					throw new ClsExceptions("Error en insert persona. " + perAdm.getError());
+				}
+			}
+			
+			/** Inicio se añade numeros de telefonos para una personaJG.**/
+			String lTelefonos="";
+			try {  /*se añade numeros de telefonos para una personaJG.*/
+					ScsTelefonosPersonaJGAdm admTelefonosJG =  new ScsTelefonosPersonaJGAdm(this.getUserBean(request));								
+					Hashtable miHash =	new Hashtable();					
+					miHash.put(ScsTelefonosPersonaJGBean.C_IDINSTITUCION, user.getLocation());
+					miHash.put(ScsTelefonosPersonaJGBean.C_IDPERSONA, miform.getIdPersonaJG());								
+					lTelefonos=miform.getlNumerosTelefonos();
+					
+					/* Comprobamos que la lista de telefonos no venga vacia del formularo.*/								 
+					if (!lTelefonos.equals("")){									
+						List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), miform.getIdInstitucionEJG().toString());
+						  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
+						   * la lTelefonos que ha insertado el usuario.*/
+						if(listaTelefonos!=null){
+							try {											
+									String sql=admTelefonosJG.deleteTelefonos(miHash);
+									admTelefonosJG.deleteSQL(sql);												
+								} catch (Exception e) {
+									   throwExcp("messages.deleted.error",e,tx);
+								} 
+						}				
+						//Recorremos la lista de los telefonos para posteriormente guardar los telefonos.
+						GstStringTokenizer tokens = new GstStringTokenizer(lTelefonos,"%%%");  
+					    while(tokens.hasMoreTokens()){  
+					    	String fila = tokens.nextToken();								    	
+					    	if (fila != null && !fila.equals("")) {
+					    		
+					    		StringTokenizer celdas = new StringTokenizer(fila, "$$~");
+					    		String nombreTelefono="";
+								String numeroTelefono="";
+								String preferenteSms="";
+					    		for (int j = 0; celdas.hasMoreElements(); j++) {
+					    			String celda = celdas.nextToken();									    			
+					    			String[] registro = celda.split("=");
+					    			String key = registro[0];
+									String value = null;
+									
+									if(registro.length==2)
+										value = registro[1];
+									  
+									if(key.equals("nombreTelefonoJG")){						
+											if(value!=null)
+												 nombreTelefono=value;
+									}
+									else if(key.equals("numeroTelefonoJG")){
+											if(value!=null)
+												 numeroTelefono=value;
+											else
+												this.exitoModalSinRefresco("el numero",request);
+									
+									}else if(key.equals("preferenteSms")){
+										if(value!=null)
+											 preferenteSms=value;
+									}
+									
+					    		}								    		
+					    		miHash.put(ScsTelefonosPersonaJGBean.C_NOMBRETELEFONO, nombreTelefono);
+					    		miHash.put(ScsTelefonosPersonaJGBean.C_NUMEROTELEFONO, numeroTelefono);
+					    		miHash.put(ScsTelefonosPersonaJGBean.C_FECHAMODIFICACION, "sysdate");
+					    		miHash.put(ScsTelefonosPersonaJGBean.C_USUMODIFICACION, user.getUserName());
+					    		miHash.put(ScsTelefonosPersonaJGBean.C_PREFERENTESMS, preferenteSms);
+					    		
+					    		//se comprueba el idtelefono para verificar y poner el maximo idtelefono al insertar.
+					    		Hashtable htCol = admTelefonosJG.prepararInsert(miHash);	
+					    		String maximo = (String)htCol.get("IDTELEFONO");								    		
+					    		if (maximo.equals("1")){
+					    			miHash.put(ScsTelefonosPersonaJGBean.C_IDTELEFONO,"1");
+					    			
+					    		}else
+					    			miHash.put(ScsTelefonosPersonaJGBean.C_IDTELEFONO,maximo);
+					    		//se insertan los telefonos que tenga personajg
+					    		
+					    		if((!nombreTelefono.trim().equals(""))&&(!nombreTelefono.trim().equals(""))){
+					    		if (!admTelefonosJG.insert(miHash)) {
+						    			throw new ClsExceptions("Error en insert telefonopersona. " + admTelefonosJG.getError());								    			
+						    	}
+					    		}
+					    		
+					    	}
+					    	 
+					     }  
+					} else 
+					{
+						if (lTelefonos.equals("")){
+							List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), miform.getIdInstitucionEJG().toString());
+						  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
+						   * la lTelefonos que ha insertado el usuario.*/
+						if(listaTelefonos!=null){
+							try {											
+									String sql=admTelefonosJG.deleteTelefonos(miHash);
+									admTelefonosJG.deleteSQL(sql);												
+								} catch (Exception e) {
+									   throwExcp("messages.deleted.error",e,tx);
+								} 
+						}				
+					}
+					}
+					
+				} catch (Exception e) {
+					throw new ClsExceptions(e, "Excepcion en insertTelefono.");
+			}				
+ 
+ 
+			/**Fin se añade numeros de telefonos para una personaJG.**/
+			
+			
+			// Una vez hecho esto continuaremos con el resto de acciones que depende
+			// del tipo de relacion que estemos guardando
+			
+			if (relacion.equalsIgnoreCase("guardarEJG")){
+				mapDestino = guardarRelacionEJG(mapping, form, request, response);
+			} else if (relacion.equalsIgnoreCase("guardarSOJ")){
+				mapDestino = guardarRelacionSOJ(mapping, form, request, response);
+			} else if (relacion.equalsIgnoreCase("guardarDesigna")){
+				mapDestino = guardarRelacionDesigna(mapping, form, request, response);
+			} else if (relacion.equalsIgnoreCase("guardarAsistencia")){
+				mapDestino = guardarRelacionAsistencia(mapping, form, request, response);
+			} else if (relacion.equalsIgnoreCase("guardarContrariosEjg")){
+				mapDestino = guardarRelacionContrariosEjg(mapping, form, request, response);	
+			} else if (relacion.equalsIgnoreCase("guardarPersona")){
+				mapDestino = guardarRelacionPersona(mapping, form, request, response);
+			}
+	     	
+			// fin de la transaccion
+			tx.commit();
+		}
+		catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,tx);
+		}
+		return mapDestino;
+		//return this.exitoModal("messages.updated.success",request);
+	}
+
+	/**
+	 * Guarda la relacion de una personaJG con un EJG, creando la relacion directa con el EJG
+	 * y a traves de la unidad familiar
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */
+	protected String guardarRelacionEJG (
+			ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws SIGAException 
+	{
+		String result = "";
+		UserTransaction tx = null;
+		try {
+			
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+	     	PersonaJGForm miform = (PersonaJGForm)formulario;
+	     	String accion = request.getParameter("accionE");
+	     	
+
+	     	// Creamos la clave del EJG
+			String idInstitucionEJG=miform.getIdInstitucionEJG();
+			String idTipoEJG=miform.getIdTipoEJG();
+			String anioEJG=miform.getAnioEJG();
+			String numeroEJG=miform.getNumeroEJG();
+			
+			boolean nuevaPersona = UtilidadesString.stringToBoolean(request.getAttribute("nuevaPersona").toString());
+
+			// Colocamos los datos de la Unidad Familiar
+			Hashtable unidadFamiliarBean = new Hashtable();
+			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_IDINSTITUCION,miform.getIdInstitucionJG());
+			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_ANIO,miform.getAnioEJG());
+			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_NUMERO,miform.getNumeroEJG());
+			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_IDTIPOEJG,miform.getIdTipoEJG());				
+			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_IDPERSONA,miform.getIdPersonaJG());
+			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_OBSERVACIONES,miform.getUnidadObservaciones());
+			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_ENCALIDADDE,miform.getEnCalidadDeLibre());
+			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_IDPARENTESCO,miform.getParentesco());
+			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_TIPOINGRESO,miform.getTipoIngreso());
+			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_DESCRIPCIONINGRESOSANUALES,miform.getIngresosAnuales());
+			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_IMPORTEINGRESOSANUALES,miform.getImporteIngresosAnuales());
+			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_BIENESINMUEBLES,miform.getBienesInmuebles());
+			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_IMPORTEBIENESINMUEBLES,miform.getImporteBienesInmuebles());
+			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_BIENESMUEBLES,miform.getBienesMuebles());
+			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_IMPORTEBIENESMUEBLES,miform.getImporteBienesMuebles());
+			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_OTROSBIENES,miform.getOtrosBienes());
+			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_IMPORTEOTROSBIENES,miform.getImporteOtrosBienes());						 
+			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_IMPORTEOTROSBIENES,miform.getImporteOtrosBienes());	
+			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_TIPOGRUPOLAB,miform.getTipoGrupoLaboral());
+			if (miform.getConceptoE().equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {
+				boolean checkSolicitante  = UtilidadesString.stringToBoolean(miform.getSolicitante());
+				if (checkSolicitante){
+					UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_SOLICITANTE,"1");
+				}else{
+					UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_SOLICITANTE,"0");
+				}
+			}else{
+				UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_SOLICITANTE,"1");
+			}
+
+	     	
+			// recojo el databackup
+			Hashtable dataBackup = (Hashtable) request.getSession().getAttribute("DATABACKUP");
+			
+			// RELACIONARLO CON EL EJG (UPDATE NORMAL)
+			ScsEJGAdm admEJG = new ScsEJGAdm(this.getUserBean(request));
+			String idPersonaAnterior = "";
+			Hashtable ht = new Hashtable();
+			ht.put(ScsEJGBean.C_IDINSTITUCION,idInstitucionEJG);
+			ht.put(ScsEJGBean.C_IDTIPOEJG,idTipoEJG);
+			ht.put(ScsEJGBean.C_ANIO,anioEJG);
+			ht.put(ScsEJGBean.C_NUMERO,numeroEJG);
+			Vector v = admEJG.selectByPK(ht);
+			
+			// Recupero el EJG y compruebo sus datos
+			// Lo que hacemos es recuperar el idpersona anterior o dejarlo a null
+			if (v!=null && v.size()>0) {
+				ScsEJGBean beanEJG = (ScsEJGBean) v.get(0);
+				// Interesado
+				if (miform.getConceptoE().equals(PersonaJGAction.EJG)) {
+					// compruebo si ha cambiado el id persona para la relacion
+					if (beanEJG.getIdPersonaJG()!=null && !beanEJG.getIdPersonaJG().toString().equalsIgnoreCase("")) {
+						// guardo el idpersona anterior para buscar las relaciones y actualizarlas
+						idPersonaAnterior = beanEJG.getIdPersonaJG().toString();
+					}else{
+						idPersonaAnterior = null;
+					}
+				// Unidad familiar
+				}else if (miform.getConceptoE().equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {
+					// en este caso lo cojo del databackup de unidad familiar, si existe
+					Hashtable oldUF = (Hashtable) dataBackup.get(ScsUnidadFamiliarEJGBean.T_NOMBRETABLA);
+					if (oldUF!=null) {
+						idPersonaAnterior = (String) oldUF.get(ScsUnidadFamiliarEJGBean.C_IDPERSONA);
+					} else {
+						idPersonaAnterior = null;
+					}
+				}
+				// Solamente para el interesado se actualiza el EJG
+				if (miform.getConceptoE().equals(PersonaJGAction.EJG)) {
+					// actualizo la personaJG, que sera el interesado en este caso. 
+					beanEJG.setIdPersonaJG(new Integer(miform.getIdPersonaJG()));
+					if (!admEJG.updateDirect(beanEJG)) {
+						throw new ClsExceptions("Error en updateEJG. " + admEJG.getError());
+					}
+				}
+			}
+			
+			// INSERTAR O ACTUALIZAR UNIDAD FAMILIAR EJG (RELACIONADO)
+			ScsUnidadFamiliarEJGAdm ufAdm = new ScsUnidadFamiliarEJGAdm(this.getUserBean(request));
+			// Si tenemos una persona anterior es porque estamos actualizando a alguien
+			// si no hay persona anterior hacemos un insert de la nueva
+			if ((idPersonaAnterior!=null)&&(!idPersonaAnterior.equalsIgnoreCase(""))) {
+
+				// Si existe una persona anterior la vamos a borrar
+				Hashtable borrar = new Hashtable();
+				borrar.put(ScsUnidadFamiliarEJGBean.C_IDINSTITUCION,miform.getIdInstitucionEJG());
+				borrar.put(ScsUnidadFamiliarEJGBean.C_IDTIPOEJG,miform.getIdTipoEJG());
+				borrar.put(ScsUnidadFamiliarEJGBean.C_ANIO,miform.getAnioEJG());
+				borrar.put(ScsUnidadFamiliarEJGBean.C_NUMERO,miform.getNumeroEJG());
+				borrar.put(ScsUnidadFamiliarEJGBean.C_IDPERSONA,idPersonaAnterior);
+								
+				ScsDocumentacionEJGAdm scsDocumentacionEJGAdm = new ScsDocumentacionEJGAdm(getUserBean(request));
+
+				Vector vuf = ufAdm.selectByPK(unidadFamiliarBean);
+				// Comprobamos que la persona tenga una relacion existente con el ejg para actualizar o insertar/borrar
+				if (vuf!=null && vuf.size()>0) {
+				    // UPDATE
+				    if (!ufAdm.updateDirect(unidadFamiliarBean,null,ufAdm.getCamposBean())) {
+						throw new ClsExceptions("Error en update unidad familiar. " + ufAdm.getError());
+					}
+				} else {
+				    // INSERT
+					// Insertamos el nuevo y borramos el viejo
+				    if (!ufAdm.insert(unidadFamiliarBean)) {
+						throw new ClsExceptions("Error en insert unidad familiar. " + ufAdm.getError());
+					}
+				    if (!ufAdm.delete(borrar)) {
+						throw new ClsExceptions("Error en delete unidad familiar. " + ufAdm.getError());
+					}
+				}
+			} else {
+				// Insert unidad familiar con los nuevos valores
+				if (!ufAdm.insert(unidadFamiliarBean)) {
+					throw new ClsExceptions("Error en insert unidad familiar. " + ufAdm.getError());
+				}
+			    
+			}
+
+			if (miform.getConceptoE().equals(PersonaJGAction.EJG)) {
+				result = this.exitoRefresco("messages.updated.success",request);
+			} else {
+				result = this.exitoModal("messages.updated.success",request);
+			}
+	     	
+		}
+		catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,tx);
+		}
+		return result;
+	}	
+	
+	/**
+	 * 
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */
+	protected String guardarRelacionSOJ (
+			ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws SIGAException 
+	{
+		String result = "";
+		UserTransaction tx = null;
+		try {
+			
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+	     	PersonaJGForm miform = (PersonaJGForm)formulario;
+
+	     	// clave del SOJ
+			String idInstitucionSOJ=miform.getIdInstitucionSOJ();
+			String idTipoSOJ=miform.getIdTipoSOJ();
+			String anioSOJ=miform.getAnioSOJ();
+			String numeroSOJ=miform.getNumeroSOJ(); 	
+
+			boolean nuevaPersona = UtilidadesString.stringToBoolean(request.getAttribute("nuevaPersona").toString());
+
+			if (nuevaPersona) {
+				
+				Hashtable htBeneficiario = new Hashtable();
+				htBeneficiario.put(ScsBeneficiarioSOJBean.C_IDINSTITUCION,idInstitucionSOJ);
+				htBeneficiario.put(ScsBeneficiarioSOJBean.C_IDPERSONA,miform.getIdPersonaJG());
+				htBeneficiario.put(ScsBeneficiarioSOJBean.C_IDTIPOCONOCE,miform.getTipoConoce());
+				htBeneficiario.put(ScsBeneficiarioSOJBean.C_IDTIPOGRUPOLAB,miform.getTipoGrupoLaboral());
+				htBeneficiario.put(ScsBeneficiarioSOJBean.C_NUMVECESSOJ,miform.getNumVecesSOJ());
+				
+				ScsBeneficiarioSOJAdm admBenefSOJ = new ScsBeneficiarioSOJAdm(this.getUserBean(request));
+				boolean bPideJG  = UtilidadesString.stringToBoolean(miform.getChkPideJG());
+				boolean bsolicitaInfoJG  = UtilidadesString.stringToBoolean(miform.getChkSolicitaInfoJG());
+				if (bPideJG){
+					htBeneficiario.put(ScsBeneficiarioSOJBean.C_SOLICITAJG,ClsConstants.DB_TRUE);
+				}else{
+					htBeneficiario.put(ScsBeneficiarioSOJBean.C_SOLICITAJG,ClsConstants.DB_FALSE);
+				}
+				
+				boolean bSolicitaInfoJG  = UtilidadesString.stringToBoolean(miform.getChkSolicitaInfoJG());
+				if (bsolicitaInfoJG){
+					htBeneficiario.put(ScsBeneficiarioSOJBean.C_SOLICITAINFOJG,ClsConstants.DB_TRUE);
+				}else{
+					htBeneficiario.put(ScsBeneficiarioSOJBean.C_SOLICITAINFOJG,ClsConstants.DB_FALSE);
+				}
+				
+				if (!admBenefSOJ.insert(htBeneficiario)) {
+					throw new ClsExceptions("Error en insert BeneficiarioSOJ. " + admBenefSOJ.getError());
+				}
+				
+			} else {
+				
+				Hashtable htBeneficiario = new Hashtable();
+				htBeneficiario.put(ScsBeneficiarioSOJBean.C_IDINSTITUCION,idInstitucionSOJ);
+				htBeneficiario.put(ScsBeneficiarioSOJBean.C_IDPERSONA,miform.getIdPersonaJG());
+				UtilidadesHash.set(htBeneficiario,ScsBeneficiarioSOJBean.C_IDTIPOCONOCE,miform.getTipoConoce());
+				UtilidadesHash.set(htBeneficiario,ScsBeneficiarioSOJBean.C_IDTIPOGRUPOLAB,miform.getTipoGrupoLaboral());
+				UtilidadesHash.set(htBeneficiario,ScsBeneficiarioSOJBean.C_NUMVECESSOJ,miform.getNumVecesSOJ());
+				
+				ScsBeneficiarioSOJAdm admBenefSOJ = new ScsBeneficiarioSOJAdm(this.getUserBean(request));
+				boolean bPideJG  = UtilidadesString.stringToBoolean(miform.getChkPideJG());
+				boolean bsolicitaInfoJG  = UtilidadesString.stringToBoolean(miform.getChkSolicitaInfoJG());
+				if (bPideJG){
+					htBeneficiario.put(ScsBeneficiarioSOJBean.C_SOLICITAJG,ClsConstants.DB_TRUE);
+				}else{
+					htBeneficiario.put(ScsBeneficiarioSOJBean.C_SOLICITAJG,ClsConstants.DB_FALSE);
+				}
+				
+				boolean bSolicitaInfoJG  = UtilidadesString.stringToBoolean(miform.getChkSolicitaInfoJG());
+				if (bsolicitaInfoJG){
+					htBeneficiario.put(ScsBeneficiarioSOJBean.C_SOLICITAINFOJG,ClsConstants.DB_TRUE);
+				}else{
+					htBeneficiario.put(ScsBeneficiarioSOJBean.C_SOLICITAINFOJG,ClsConstants.DB_FALSE);
+				}
+				
+				String campos[] = {ScsBeneficiarioSOJBean.C_IDTIPOCONOCE,
+						ScsBeneficiarioSOJBean.C_IDTIPOGRUPOLAB,
+						ScsBeneficiarioSOJBean.C_NUMVECESSOJ,
+						ScsBeneficiarioSOJBean.C_SOLICITAJG,
+						ScsBeneficiarioSOJBean.C_SOLICITAINFOJG};
+				if (!admBenefSOJ.delete(htBeneficiario)) {
+					;
+				} 	
+				if (!admBenefSOJ.insert(htBeneficiario)) {
+					throw new ClsExceptions("Error al actuar BeneficiarioSOJ. " + admBenefSOJ.getError());
+				}
+
+			}
+			
+			// RELACIONARLO CON EL SOJ (UPDATE NORMAL)
+			ScsDefinirSOJAdm admSOJ= new ScsDefinirSOJAdm(this.getUserBean(request));
+			String idPersonaAnterior = "";
+			Hashtable ht = new Hashtable();
+			ht.put(ScsSOJBean.C_IDINSTITUCION,idInstitucionSOJ);
+			ht.put(ScsSOJBean.C_IDTIPOSOJ,idTipoSOJ);
+			ht.put(ScsSOJBean.C_ANIO,anioSOJ);
+			ht.put(ScsSOJBean.C_NUMERO,numeroSOJ);
+			Vector v = admSOJ.selectByPK(ht);
+			if (v!=null && v.size()>0) {
+				ScsSOJBean beanSOJ= (ScsSOJBean) v.get(0);
+				// actualizo la personaJG, que sera el interesado en este caso. 
+				beanSOJ.setIdPersonaJG(new Integer(miform.getIdPersonaJG()));
+				if (!admSOJ.updateDirect(beanSOJ)) {
+					throw new ClsExceptions("Error en update SOJ. " + admSOJ.getError());
+				}
+			}
+
+		    result = this.exitoRefresco("messages.updated.success",request);
+	     	
+		}
+		catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,tx);
+		}
+		return result;
+	}	
+	
+	/**
+	 * 
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */
+	protected String guardarRelacionDesigna (
+			ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws SIGAException 
+	{
+		UserTransaction tx = null;
+		String result = "";
+		try {
+			
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+	     	PersonaJGForm miform = (PersonaJGForm)formulario;
+
+	     	// clave de la designa
+			String idInstitucionDES=miform.getIdInstitucionDES();
+			String idTurnoDES=miform.getIdTurnoDES();
+			String anioDES=miform.getAnioDES();
+			String numeroDES=miform.getNumeroDES();
+
+			Hashtable defendidosDesignaHash = new Hashtable();
+			if(miform.getConceptoE().equals(PersonaJGAction.DESIGNACION_INTERESADO)) {
+				
+				// CREAR SCS_DEFENDIDOSDESIGNA
+				UtilidadesHash.set(defendidosDesignaHash,ScsDefendidosDesignaBean.C_IDINSTITUCION,miform.getIdInstitucionDES());
+				UtilidadesHash.set(defendidosDesignaHash,ScsDefendidosDesignaBean.C_ANIO,miform.getAnioDES());
+				UtilidadesHash.set(defendidosDesignaHash,ScsDefendidosDesignaBean.C_NUMERO,miform.getNumeroDES());
+				UtilidadesHash.set(defendidosDesignaHash,ScsDefendidosDesignaBean.C_IDTURNO,miform.getIdTurnoDES());				
+				UtilidadesHash.set(defendidosDesignaHash,ScsDefendidosDesignaBean.C_IDPERSONA,miform.getIdPersonaJG());
+				UtilidadesHash.set(defendidosDesignaHash,ScsDefendidosDesignaBean.C_CALIDAD,miform.getCalidad());
+				UtilidadesHash.set(defendidosDesignaHash,ScsDefendidosDesignaBean.C_NOMBREREPRESENTANTE,miform.getRepresentante());
+				UtilidadesHash.set(defendidosDesignaHash,ScsDefendidosDesignaBean.C_OBSERVACIONES,miform.getObservaciones());
+			}
+			
+			Hashtable contrariosDesignaHash = new Hashtable();
+			if(miform.getConceptoE().equals(PersonaJGAction.DESIGNACION_CONTRARIOS)) {
+				
+				// CREAR SCS_CONTRARIOSDESIGNA
+				UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_IDINSTITUCION,miform.getIdInstitucionDES());
+				UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_ANIO,miform.getAnioDES());
+				UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_NUMERO,miform.getNumeroDES());
+				UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_IDTURNO,miform.getIdTurnoDES());				
+				UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_IDPERSONA,miform.getIdPersonaJG());
+				UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_NOMBREABOGADOCONTRARIO,miform.getAbogadoContrario());
+				UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_IDABOGADOCONTRARIO,miform.getIdPersonaContrario());
+				// separar el valor del procurador y su institucion
+				if (miform.getIdProcurador()!=null && !miform.getIdProcurador().trim().equals("")) {
+					String id_proc = miform.getIdProcurador().substring(0,miform.getIdProcurador().indexOf(","));
+					String institucion_proc = miform.getIdProcurador().substring(miform.getIdProcurador().indexOf(",")+1,miform.getIdProcurador().length());
+				
+					UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_IDINSTITUCIONPROCURADOR,institucion_proc);
+					UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_IDPROCURADOR,id_proc);
+				}
+ 				UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_IDREPRESENTANTELEGAL,miform.getIdPersonaRepresentante());
+				UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_NOMBREREPRESENTANTE,miform.getRepresentante());
+				UtilidadesHash.set(contrariosDesignaHash,ScsContrariosDesignaBean.C_OBSERVACIONES,miform.getObservaciones());
+
+			}
+			     	
+			// recojo el databackup
+			Hashtable dataBackup = (Hashtable) request.getSession().getAttribute("DATABACKUP");
+			
+			if(miform.getConceptoE().equals(PersonaJGAction.DESIGNACION_INTERESADO)) {
+				// INSERTAR O ACTUALIZAR INTERESADOS DESIGNA SI PROCEDE (RELACIONADO)
+				ScsDefendidosDesignaAdm adm = new ScsDefendidosDesignaAdm(this.getUserBean(request));
+				// busco si era nueva con el idpersona anterior del databackup																																	
+				Hashtable buscar = new Hashtable();
+				buscar.put(ScsDefendidosDesignaBean.C_IDINSTITUCION,miform.getIdInstitucionDES());
+				buscar.put(ScsDefendidosDesignaBean.C_IDTURNO,miform.getIdTurnoDES());
+				buscar.put(ScsDefendidosDesignaBean.C_ANIO,miform.getAnioDES());
+				buscar.put(ScsDefendidosDesignaBean.C_NUMERO,miform.getNumeroDES());
+				buscar.put(ScsDefendidosDesignaBean.C_IDPERSONA,miform.getIdPersonaJG());
+				
+				//Hashtable oldPer = (Hashtable) dataBackup.get(ScsPersonaJGBean.T_NOMBRETABLA);
+				//buscar.put(ScsDefendidosDesignaBean.C_IDPERSONA,oldPer.get(ScsPersonaJGBean.C_IDPERSONA));
+				Vector v = adm.selectByPK(buscar);
+				if (v!=null && v.size()>0) {
+					// EXISTE
+					if (miform.getAccionE().equals("editar")) {
+						
+						
+						// hay que comprobar si el antiguo no es el mismo, en ese caso se actualiza
+						String  idPersonaAnt = miform.getIdPersonaJG();//(String) dataBackup.get("idPersonaAnt");
+						if (idPersonaAnt!=null) {
+							if (idPersonaAnt.equals(miform.getIdPersonaJG())) {
+								// estamos tocando el mismo registro, se actualiza
+								if (!adm.updateDirect(defendidosDesignaHash,null,null)) {
+									throw new ClsExceptions("Error en update SOJ. " + adm.getError());
+								}
+							} else {
+								// ya existe el elemento
+								throw new SIGAException("gratuita.personaJG.mensaje.yaExiste");
+							}
+						}
+					} else {
+						// ya existe el elemento
+						throw new SIGAException("gratuita.personaJG.mensaje.yaExiste");
+					}
+				} else {
+					// NO EXISTE
+					// si no existe y estamos en editar, entonces se esta actualizando la persona en el 
+					// defendido por lo que se actualiza
+					if (miform.getAccionE().equals("editar")) {
+						// primero borro el anterior y luego inserto el nuevo
+						Hashtable old = (Hashtable) dataBackup.get(ScsDefendidosDesignaBean.T_NOMBRETABLA);
+						if (old!=null) {
+							if (!adm.delete(old)) {
+								throw new ClsExceptions("Error en borrar. " + adm.getError());
+							}
+						} 
+					}
+					// Insert con los nuevos valores
+					if (!adm.insert(defendidosDesignaHash)) {
+						throw new ClsExceptions("Error en insert. " + adm.getError());
+					}
+				}
+			}
+			
+			if(miform.getConceptoE().equals(PersonaJGAction.DESIGNACION_CONTRARIOS)) {
+				// INSERTAR O ACTUALIZAR INTERESADOS DESIGNA SI PROCEDE (RELACIONADO)
+				ScsContrariosDesignaAdm adm = new ScsContrariosDesignaAdm(this.getUserBean(request));
+				// busco si era nueva con el idpersona anterior del databackup																																	
+				Hashtable buscar = new Hashtable();
+				buscar.put(ScsContrariosDesignaBean.C_IDINSTITUCION,miform.getIdInstitucionDES());
+				buscar.put(ScsContrariosDesignaBean.C_IDTURNO,miform.getIdTurnoDES());
+				buscar.put(ScsContrariosDesignaBean.C_ANIO,miform.getAnioDES());
+				buscar.put(ScsContrariosDesignaBean.C_NUMERO,miform.getNumeroDES());
+				buscar.put(ScsContrariosDesignaBean.C_IDPERSONA,miform.getIdPersonaJG());
+				Vector v = adm.selectByPK(buscar);
+				if (v!=null && v.size()>0) {
+					// EXISTE
+					if (miform.getAccionE().equals("editar")) {
+							// estamos tocando el mismo registro, se actualiza
+							if (!adm.updateDirect(contrariosDesignaHash,null,null)) {
+								throw new ClsExceptions("Error en update SOJ. " + adm.getError());
+							}
+					} else {
+						// ya existe el elemento
+						throw new SIGAException("gratuita.personaJG.mensaje.yaExiste");
+					}
+				} else {
+					// NO EXISTE
+					// si no existe y estamos en editar, entonces se esta actualizando la persona en el 
+					// defendido por lo que se actualiza
+					if (miform.getAccionE().equals("editar")) {
+						// primero borro el anterior y luego inserto el nuevo
+						Hashtable old = (Hashtable) dataBackup.get(ScsContrariosDesignaBean.T_NOMBRETABLA);
+						if (old!=null) {
+							if (!adm.delete(old)) {
+								throw new ClsExceptions("Error en borrar. " + adm.getError());
+							}
+						} 
+					}
+					// Insert con los nuevos valores
+					if (!adm.insert(contrariosDesignaHash)) {
+						throw new ClsExceptions("Error en insert. " + adm.getError());
+					}
+				}
+			}			 
+			result = this.exitoModal("messages.updated.success",request);
+		}
+		catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,tx);
+		}
+		return result;
+	}	
+	
+	/**
+	 * 
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */
+	protected String guardarRelacionAsistencia (
+			ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws SIGAException 
+	{
+			String result = "";
+		UserTransaction tx = null;
+		try {
+			
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+	     	PersonaJGForm miform = (PersonaJGForm)formulario;
+
+	     	// clave de la asistencia
+			String idInstitucionASI=miform.getIdInstitucionASI();
+			String anioASI=miform.getAnioASI();
+			String numeroASI=miform.getNumeroASI();
+
+	     	// Datos Persona
+			Hashtable persona= new Hashtable();
+			
+			ScsContrariosAsistenciaAdm contrariosAsistenciaAdm= new ScsContrariosAsistenciaAdm(this.getUserBean(request));
+			Hashtable contrarioAsistenciaHash = new Hashtable();
+			if(miform.getConceptoE().equals(PersonaJGAction.ASISTENCIA_CONTRARIOS)) {
+				
+				// CREAR SCS_CONTRARIOSASISTENCIA
+				UtilidadesHash.set(contrarioAsistenciaHash,ScsContrariosAsistenciaBean.C_IDINSTITUCION,miform.getIdInstitucionASI());
+				UtilidadesHash.set(contrarioAsistenciaHash,ScsContrariosAsistenciaBean.C_ANIO,miform.getAnioASI());
+				UtilidadesHash.set(contrarioAsistenciaHash,ScsContrariosAsistenciaBean.C_NUMERO,miform.getNumeroASI());
+				UtilidadesHash.set(contrarioAsistenciaHash,ScsContrariosAsistenciaBean.C_IDPERSONA,miform.getIdPersonaJG());
+				UtilidadesHash.set(contrarioAsistenciaHash,ScsContrariosAsistenciaBean.C_OBSERVACIONES,miform.getObservaciones());
+
+			}	     	
+
+			// recojo el databackup
+			Hashtable dataBackup = (Hashtable) request.getSession().getAttribute("DATABACKUP");
+
+			// RELACIONARLO CON LA ASISTENCIA (UPDATE NORMAL)
+			ScsAsistenciasAdm admASI= new ScsAsistenciasAdm(this.getUserBean(request));
+			String idPersonaAnterior = "";
+			Hashtable ht = new Hashtable();
+			ht.put(ScsAsistenciasBean.C_IDINSTITUCION,idInstitucionASI);
+			ht.put(ScsAsistenciasBean.C_ANIO,anioASI);
+			ht.put(ScsAsistenciasBean.C_NUMERO,numeroASI);
+			Vector v = admASI.selectByPK(ht);
+			if (v!=null && v.size()>0) {
+				ScsAsistenciasBean beanASI= (ScsAsistenciasBean) v.get(0);
+				if (miform.getConceptoE().equals(PersonaJGAction.ASISTENCIA_ASISTIDO)) {
+					// compruebo si ha cambiado el id persona para la relacion
+					if (beanASI.getIdPersonaJG()!=null && !beanASI.getIdPersonaJG().equals(new Integer(miform.getIdPersonaJG()))) {
+						// guardo el idpersona anterior para buscar las relaciones y actualizarlas
+						idPersonaAnterior = beanASI.getIdPersonaJG().toString();
+					} else {
+						// si no el que borrare sera el mismo, el actual
+						idPersonaAnterior = miform.getIdPersonaJG();
+					}
+				} else 
+				if (miform.getConceptoE().equals(PersonaJGAction.ASISTENCIA_CONTRARIOS)) {
+					// en este caso lo cojo del databackup de asistenciacontrario, si esxiste
+					Hashtable oldUF = (Hashtable) dataBackup.get(ScsContrariosAsistenciaBean.T_NOMBRETABLA);
+					if (oldUF!=null) {
+						idPersonaAnterior = (String) oldUF.get(ScsContrariosAsistenciaBean.C_IDPERSONA);
+					} else {
+						idPersonaAnterior = null;
+					}
+				}
+				
+				
+				if (miform.getConceptoE().equals(PersonaJGAction.ASISTENCIA_ASISTIDO)) {
+					// actualizo la personaJG, que sera el interesado en este caso. 
+					beanASI.setIdPersonaJG(new Integer(miform.getIdPersonaJG()));
+					if (!admASI.updateDirect(beanASI)) {
+						throw new ClsExceptions("Error en update Asistencia. " + admASI.getError());
+					}
+				}
+			}
+			
+			
+			if(miform.getConceptoE().equals(PersonaJGAction.ASISTENCIA_CONTRARIOS)) {
+
+				// INSERTAR O ACTUALIZAR INTERESADOS DESIGNA SI PROCEDE (RELACIONADO)
+				ScsContrariosAsistenciaAdm adm = new ScsContrariosAsistenciaAdm (this.getUserBean(request));
+				// busco si era nueva con el idpersona anterior del databackup																																	
+				Hashtable buscar = new Hashtable();
+				buscar.put(ScsContrariosAsistenciaBean.C_IDINSTITUCION,miform.getIdInstitucionASI());
+				buscar.put(ScsContrariosAsistenciaBean.C_ANIO,miform.getAnioASI());
+				buscar.put(ScsContrariosAsistenciaBean.C_NUMERO,miform.getNumeroASI());
+				buscar.put(ScsContrariosAsistenciaBean.C_IDPERSONA,miform.getIdPersonaJG());
+				
+				Vector v2= adm.selectByPK(buscar);
+				if (v2!=null && v2.size()>0) { 
+					// EXISTE
+					if (miform.getAccionE().equals("editar")) {
+						// hay que comprobar si el antiguo no es el mismo, en ese caso se actualiza
+						String  idPersonaAnt = "";
+						Hashtable oldUF = (Hashtable) dataBackup.get(ScsContrariosAsistenciaBean.T_NOMBRETABLA);
+						if (oldUF!=null) {
+							idPersonaAnt = (String) oldUF.get(ScsContrariosAsistenciaBean.C_IDPERSONA);
+						} else {
+							idPersonaAnt = null;
+						}
+						if (idPersonaAnt!=null && idPersonaAnt.equals(miform.getIdPersonaJG())) { 
+							// estamos tocando el mismo registro, se actualiza
+							if (!adm.updateDirect(contrarioAsistenciaHash,null,null)) {
+								throw new ClsExceptions("Error en update SOJ. " + adm.getError());
+							}
+						} else {
+							// ya existe el elemento
+							throw new SIGAException("gratuita.personaJG.mensaje.yaExiste");
+						}
+					} else {
+						// ya existe el elemento
+						throw new SIGAException("gratuita.personaJG.mensaje.yaExiste");
+					}
+				} else {
+					// NO EXISTE
+					// si no existe y estamos en editar, entonces se esta actualizando la persona en el 
+					// defendido por lo que se actualiza
+					if (miform.getAccionE().equals("editar")) {
+						// primero borro el anterior y luego inserto el nuevo
+						
+						
+						Hashtable  old = (Hashtable) dataBackup.get(ScsContrariosAsistenciaBean.T_NOMBRETABLA);
+						
+						if (old!=null) {
+							if (!adm.delete(old)) {
+								throw new ClsExceptions("Error en borrar. " + adm.getError());
+							}
+						} 
+					}
+					// Insert con los nuevos valores
+					if (!adm.insert(contrarioAsistenciaHash)) {
+						throw new ClsExceptions("Error en insert. " + adm.getError());
+					}
+				}
+			}			
+
+			if(miform.getConceptoE().equals(PersonaJGAction.ASISTENCIA_CONTRARIOS)) {
+				result = this.exitoModal("messages.updated.success",request);
+			} else {
+				result = this.exitoModal("messages.updated.success",request);
+				//result = this.exitoRefresco("messages.updated.success",request);
+			}
+		}
+		catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,tx);
+		}
+		return result;
+	}
+	
+	/**
+	 * 
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */
+	protected String guardarRelacionContrariosEjg (
+			ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws SIGAException 
+	{
+			String result = "";
+		UserTransaction tx = null;
+		try {
+			
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+	     	PersonaJGForm miform = (PersonaJGForm)formulario;
+
+	     	// clave de la asistencia
+			String idInstitucionEJG=miform.getIdInstitucionEJG();
+			String anioEJG=miform.getAnioEJG();
+			String numeroEJG=miform.getNumeroEJG();
+			
+			ScsContrariosEJGAdm contrariosejgAdm= new ScsContrariosEJGAdm(this.getUserBean(request));
+			Hashtable contrarioEjgHash = new Hashtable();
+			
+				
+				// CREAR SCS_CONTRARIOSASISTENCIA
+				UtilidadesHash.set(contrarioEjgHash,ScsContrariosEJGBean.C_IDINSTITUCION,miform.getIdInstitucionEJG());
+				UtilidadesHash.set(contrarioEjgHash,ScsContrariosEJGBean.C_ANIO,miform.getAnioEJG());
+				UtilidadesHash.set(contrarioEjgHash,ScsContrariosEJGBean.C_NUMERO,miform.getNumeroEJG());
+				UtilidadesHash.set(contrarioEjgHash,ScsContrariosEJGBean.C_IDTIPOEJG,miform.getIdTipoEJG());
+				UtilidadesHash.set(contrarioEjgHash,ScsContrariosEJGBean.C_IDPERSONA,miform.getIdPersonaJG());
+				UtilidadesHash.set(contrarioEjgHash,ScsContrariosEJGBean.C_OBSERVACIONES,miform.getObservaciones());
+
+				// jbd 9.1.2009 INC_CAT_8
+			    if (miform.getIdProcurador()!=null && !miform.getIdProcurador().trim().equals("")) {
+					String id_proc = miform.getIdProcurador().substring(0,miform.getIdProcurador().indexOf(","));
+					String institucion_proc = miform.getIdProcurador().substring(miform.getIdProcurador().indexOf(",")+1,miform.getIdProcurador().length());
+				
+					UtilidadesHash.set(contrarioEjgHash,ScsContrariosEJGBean.C_IDINSTITUCION_PROCU,institucion_proc);
+					UtilidadesHash.set(contrarioEjgHash,ScsContrariosEJGBean.C_IDPROCURADOR,id_proc);
+				}
+			    
+			    UtilidadesHash.set(contrarioEjgHash,ScsContrariosEJGBean.C_IDABOGADOCONTRARIOEJG,miform.getIdAbogadoContrarioEJG());
+				UtilidadesHash.set(contrarioEjgHash,ScsContrariosEJGBean.C_NOMBREABOGADOCONTRARIOEJG,miform.getAbogadoContrarioEJG());
+				
+			    UtilidadesHash.set(contrarioEjgHash,ScsContrariosEJGBean.C_IDREPRESENTANTEEJG,miform.getIdRepresentanteJG());
+				UtilidadesHash.set(contrarioEjgHash,ScsContrariosEJGBean.C_NOMBREREPRESENTANTEEJG,miform.getRepresentante());
+
+			// recojo el databackup
+			Hashtable dataBackup = (Hashtable) request.getSession().getAttribute("DATABACKUP");
+
+			// INSERTAR O ACTUALIZAR INTERESADOS DESIGNA SI PROCEDE (RELACIONADO)
+				ScsContrariosEJGAdm adm = new ScsContrariosEJGAdm (this.getUserBean(request));
+				// busco si era nueva con el idpersona anterior del databackup																																	
+				Hashtable buscar = new Hashtable();
+				buscar.put(ScsContrariosEJGBean.C_IDINSTITUCION,miform.getIdInstitucionEJG());
+				buscar.put(ScsContrariosEJGBean.C_ANIO,miform.getAnioEJG());
+				buscar.put(ScsContrariosEJGBean.C_NUMERO,miform.getNumeroEJG());
+				buscar.put(ScsContrariosEJGBean.C_IDTIPOEJG,miform.getIdTipoEJG());
+				buscar.put(ScsContrariosAsistenciaBean.C_IDPERSONA,miform.getIdPersonaJG());
+				
+				Vector v2= adm.selectByPK(buscar);
+				if (v2!=null && v2.size()>0) { 
+					// EXISTE
+					if (miform.getAccionE().equals("editar")) {
+						// hay que comprobar si el antiguo no es el mismo, en ese caso se actualiza
+						String  idPersonaAnt = (String) dataBackup.get("idPersonaAnt");
+						if (idPersonaAnt==null || (idPersonaAnt!=null && idPersonaAnt.equals(miform.getIdPersonaJG()))) { 
+							// estamos tocando el mismo registro, se actualiza
+							if (!adm.updateDirect(contrarioEjgHash,null,null)) {
+								throw new ClsExceptions("Error en update SOJ. " + adm.getError());
+							}
+						} else {
+							// ya existe el elemento
+							throw new SIGAException("gratuita.personaJG.mensaje.yaExiste");
+						}
+					} else {
+						// ya existe el elemento
+						throw new SIGAException("gratuita.personaJG.mensaje.yaExiste");
+					}
+				} else {
+					// NO EXISTE
+					// si no existe y estamos en editar, entonces se esta actualizando la persona en el 
+					// defendido por lo que se actualiza
+					if (miform.getAccionE().equals("editar")) {
+						// primero borro el anterior y luego inserto el nuevo
+						
+						
+						Hashtable  old = (Hashtable) dataBackup.get(ScsContrariosEJGBean.T_NOMBRETABLA);
+						
+						if (old!=null) {
+							if (!adm.delete(old)) {
+								throw new ClsExceptions("Error en borrar. " + adm.getError());
+							}
+						} 
+					}
+					// Insert con los nuevos valores
+					if (!adm.insert(contrarioEjgHash)) {
+						throw new ClsExceptions("Error en insert. " + adm.getError());
+					}
+				}
+
+			result = this.exitoModal("messages.updated.success",request);
+			
+		}
+		catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,tx);
+		}
+		return result;
+	}
+
+	/**
+	 * 
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */
+	protected String guardarRelacionPersona (
+			ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws SIGAException 
+	{
+		String result = "";
+		UserTransaction tx = null;
+		try {
+			
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+	     	PersonaJGForm miform = (PersonaJGForm)formulario;
+
+	     	// clave de la persona padre
+	     	// hay que crear en el form las claves de la persona padre.
+			String idInstitucionPER=miform.getIdInstitucionPER();
+			String idPersonaPER=miform.getIdPersonaPER();
+
+			// recojo el databackup
+			Hashtable dataBackup = (Hashtable) request.getSession().getAttribute("DATABACKUP");
+			// lo cojo de personapersona porque es  actualizar personajg
+			Hashtable oldPer = (Hashtable) dataBackup.get("PERSONAPERSONA");
+		
+			// relacionarla con la otra persona. (UPDATE NORMAL)
+	     	// relacionarla con idPersonaJGRel, que es el de la ventana hija.
+			ScsPersonaJGAdm admPer = new ScsPersonaJGAdm(this.getUserBean(request));
+			String idPersonaAnterior = "";
+			Hashtable ht = new Hashtable();
+			ht.put(ScsPersonaJGBean.C_IDINSTITUCION,idInstitucionPER);
+			ht.put(ScsPersonaJGBean.C_IDPERSONA,idPersonaPER);
+			Vector v = admPer.selectByPK(ht);
+			if (v!=null && v.size()>0) {
+				ScsPersonaJGBean beanPer = (ScsPersonaJGBean) v.get(0);
+				// actualizo la personaJG, que sera el interesado en este caso. 
+				beanPer.setIdRepresentanteJG(new Integer(miform.getIdPersonaJG()));
+				if (!admPer.updateDirect(beanPer)) {
+					throw new ClsExceptions("Error en update persona. " + admPer.getError());
+				}
+				// Actualizamos el databackup de la persona padre
+				// lo cojo de personaJG porque es  actualizar el padre
+				//Hashtable oldPer2 = (Hashtable) dataBackup.get(ScsPersonaJGBean.T_NOMBRETABLA);
+				Hashtable oldPer2 = (Hashtable) dataBackup.get(ScsPersonaJGBean.T_NOMBRETABLA);
+				
+				if (oldPer2!=null){
+				
+				}else{
+					 oldPer2=new Hashtable();	
+				}
+				oldPer2.put(ScsPersonaJGBean.C_IDREPRESENTANTEJG,beanPer.getIdRepresentanteJG());
+				dataBackup.put(ScsPersonaJGBean.T_NOMBRETABLA,oldPer2);
+				request.getSession().setAttribute("DATABACKUP",dataBackup);
+			
+			}
+			
+			// OJO, aqui debe ir una ventana que devuelva los valores de la persona.
+			request.setAttribute("mensaje","messages.updated.success");
+			request.setAttribute("modal","");
+			
+			// debe devolver los datos y hacer que la ventana se refresque para que vuelva a coger los datos del form
+			// de la ventana de abajo.
+			request.setAttribute("idPersonaSeleccionado",miform.getIdPersonaJG());
+			request.setAttribute("nombrePersonaSeleccionado",miform.getNombre() + " " + miform.getApellido1() + " " + miform.getApellido2());
+			
+		} 
+		catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,tx);
+		}
+		return "seleccionPersonaJG";
+	}
+			
+	protected String abrirModalAsuntos (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws SIGAException 
+	{
+		ScsPersonaJGAdm perAdm = new ScsPersonaJGAdm(this.getUserBean(request));
+		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		PersonaJGForm miform = (PersonaJGForm)formulario;
+		Vector relaciones=new Vector();
+		String nombreAnterior="";
+		String relacion= miform.getModoGuardar();
+		try {
+			String anio="";
+			String numero="";
+			String tipo="";
+			if (relacion.equalsIgnoreCase("guardarEJG")||
+				relacion.equalsIgnoreCase("guardarContrariosEjg")){
+				anio = miform.getAnioEJG();
+				numero = miform.getNumeroEJG();
+				tipo = miform.getIdTipoEJG();
+			} else if (relacion.equalsIgnoreCase("guardarSOJ")){
+				anio = miform.getAnioSOJ();
+				numero = miform.getNumeroSOJ();
+				tipo = miform.getIdTipoSOJ();
+			} else if (relacion.equalsIgnoreCase("guardarDesigna")){
+				anio = miform.getAnioDES();
+				numero = miform.getNumeroDES();
+				tipo = miform.getIdTurnoDES();
+			} else if (relacion.equalsIgnoreCase("guardarAsistencia")){
+				anio = miform.getAnioASI();
+				numero = miform.getNumeroASI();
+				tipo = "";
+			}
+			relaciones = perAdm.getRelacionesPersonaJG(miform.getIdPersonaJG(), user.getLocation(), relacion, tipo, anio, numero);
+			nombreAnterior = perAdm.getNombreApellidos(miform.getIdPersonaJG(), user.getLocation());
+		} catch (ClsExceptions e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(relaciones!=null && relaciones.size()>0){
+			// TODO return Nuevo parametro para mostrar la modal esa rara
+			//System.out.println("Tiene " +relaciones.size()+ " relaciones");
+			miform.setAsuntos(relaciones);
+			miform.setNombreAnterior(nombreAnterior);
+		}
+		return "asuntosPersonaJGModal";
+	}
+
 }
