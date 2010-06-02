@@ -2495,7 +2495,13 @@ function limpiarPersonaContrario() {
 
 		//Asociada al boton Guardar -->
 		function accionGuardarCerrar()	{					
-							
+
+			var lNumerosTelefonos=getDatos();						
+			if (!lNumerosTelefonos){
+                 fin();
+                 return false;
+			}				
+						
             sub();
             var tipoIdent=document.forms[0].tipoId.value;
 			var numId=document.forms[0].NIdentificacion.value;
