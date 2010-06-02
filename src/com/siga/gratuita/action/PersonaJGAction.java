@@ -1170,13 +1170,13 @@ public class PersonaJGAction extends MasterAction {
 			try {  /*se añade numeros de telefonos para una personaJG.*/
 								ScsTelefonosPersonaJGAdm admTelefonosJG =  new ScsTelefonosPersonaJGAdm(this.getUserBean(request));								
 								Hashtable miHash =	new Hashtable();					
-								miHash.put(ScsTelefonosPersonaJGBean.C_IDINSTITUCION, miform.getIdInstitucionEJG());
+								miHash.put(ScsTelefonosPersonaJGBean.C_IDINSTITUCION, user.getLocation());
 								miHash.put(ScsTelefonosPersonaJGBean.C_IDPERSONA, miform.getIdPersonaJG());								
 								lTelefonos=miform.getlNumerosTelefonos();
 								
 								/* Comprobamos que la lista de telefonos no venga vacia del formularo.*/								 
 								if (!lTelefonos.equals("")){									
-									List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), miform.getIdInstitucionEJG().toString());
+									List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), user.getLocation().toString());
 									  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
 									   * la lTelefonos que ha insertado el usuario.*/
 									if(listaTelefonos!=null){
@@ -1250,7 +1250,7 @@ public class PersonaJGAction extends MasterAction {
 								} else 
 								{
 									if (lTelefonos.equals("")){
-										List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), miform.getIdInstitucionEJG().toString());
+										List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), user.getLocation().toString());
 									  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
 									   * la lTelefonos que ha insertado el usuario.*/
 									if(listaTelefonos!=null){
@@ -1525,13 +1525,13 @@ public class PersonaJGAction extends MasterAction {
 			try {  /*se añade numeros de telefonos para una personaJG.*/
 								ScsTelefonosPersonaJGAdm admTelefonosJG =  new ScsTelefonosPersonaJGAdm(this.getUserBean(request));								
 								Hashtable miHash =	new Hashtable();					
-								miHash.put(ScsTelefonosPersonaJGBean.C_IDINSTITUCION, miform.getIdInstitucionSOJ());
+								miHash.put(ScsTelefonosPersonaJGBean.C_IDINSTITUCION, user.getLocation());
 								miHash.put(ScsTelefonosPersonaJGBean.C_IDPERSONA, miform.getIdPersonaJG());								
 								lTelefonos=miform.getlNumerosTelefonos();
 								
 								/* Comprobamos que la lista de telefonos no venga vacia del formularo.*/								 
 								if (!lTelefonos.equals("")){									
-									List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), miform.getIdInstitucionSOJ().toString());
+									List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(),user.getLocation().toString());
 									  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
 									   * la lTelefonos que ha insertado el usuario.*/
 									if(listaTelefonos!=null){
@@ -1605,7 +1605,7 @@ public class PersonaJGAction extends MasterAction {
 								} else 
 								{
 									if (lTelefonos.equals("")){
-										List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), miform.getIdInstitucionSOJ().toString());
+										List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(),user.getLocation().toString());
 									  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
 									   * la lTelefonos que ha insertado el usuario.*/
 									if(listaTelefonos!=null){
@@ -1790,13 +1790,13 @@ public class PersonaJGAction extends MasterAction {
 			try {  /*se añade numeros de telefonos para una personaJG.*/
 								ScsTelefonosPersonaJGAdm admTelefonosJG =  new ScsTelefonosPersonaJGAdm(this.getUserBean(request));								
 								Hashtable miHash =	new Hashtable();					
-								miHash.put(ScsTelefonosPersonaJGBean.C_IDINSTITUCION, miform.getIdInstitucionDES());
+								miHash.put(ScsTelefonosPersonaJGBean.C_IDINSTITUCION, user.getLocation());
 								miHash.put(ScsTelefonosPersonaJGBean.C_IDPERSONA, miform.getIdPersonaJG());								
 								lTelefonos=miform.getlNumerosTelefonos();
 								
 								/* Comprobamos que la lista de telefonos no venga vacia del formularo.*/								 
 								if (!lTelefonos.equals("")){									
-									List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), miform.getIdInstitucionDES().toString());
+									List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(),user.getLocation().toString());
 									  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
 									   * la lTelefonos que ha insertado el usuario.*/
 									if(listaTelefonos!=null){
@@ -1870,7 +1870,7 @@ public class PersonaJGAction extends MasterAction {
 								} else 
 								{
 									if (lTelefonos.equals("")){
-										List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), miform.getIdInstitucionDES().toString());
+										List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), user.getLocation().toString());
 									  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
 									   * la lTelefonos que ha insertado el usuario.*/
 									if(listaTelefonos!=null){
@@ -2156,13 +2156,13 @@ public class PersonaJGAction extends MasterAction {
 								String lTelefonos="";
 								ScsTelefonosPersonaJGAdm admTelefonosJG =  new ScsTelefonosPersonaJGAdm(this.getUserBean(request));								
 								Hashtable miHash =	new Hashtable();					
-								miHash.put(ScsTelefonosPersonaJGBean.C_IDINSTITUCION, miform.getIdInstitucionASI());
+								miHash.put(ScsTelefonosPersonaJGBean.C_IDINSTITUCION, user.getLocation());
 								miHash.put(ScsTelefonosPersonaJGBean.C_IDPERSONA, miform.getIdPersonaJG());								
 								lTelefonos=miform.getlNumerosTelefonos();
 								
 								/* Comprobamos que la lista de telefonos no venga vacia del formularo.*/								 
 								if (!lTelefonos.equals("")){									
-									List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), miform.getIdInstitucionASI().toString());
+									List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), user.getLocation().toString());
 									  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
 									   * la lTelefonos que ha insertado el usuario.*/
 									if(listaTelefonos!=null){
@@ -2236,7 +2236,7 @@ public class PersonaJGAction extends MasterAction {
 								} else 
 								{
 									if (lTelefonos.equals("")){
-										List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), miform.getIdInstitucionASI().toString());
+										List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), user.getLocation().toString());
 									  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
 									   * la lTelefonos que ha insertado el usuario.*/
 									if(listaTelefonos!=null){
@@ -2510,13 +2510,13 @@ public class PersonaJGAction extends MasterAction {
 			try {  /*se añade numeros de telefonos para una personaJG.*/
 								ScsTelefonosPersonaJGAdm admTelefonosJG =  new ScsTelefonosPersonaJGAdm(this.getUserBean(request));								
 								Hashtable miHash =	new Hashtable();					
-								miHash.put(ScsTelefonosPersonaJGBean.C_IDINSTITUCION, miform.getIdInstitucionEJG());
+								miHash.put(ScsTelefonosPersonaJGBean.C_IDINSTITUCION, user.getLocation());
 								miHash.put(ScsTelefonosPersonaJGBean.C_IDPERSONA, miform.getIdPersonaJG());								
 								lTelefonos=miform.getlNumerosTelefonos();
 								
 								/* Comprobamos que la lista de telefonos no venga vacia del formularo.*/								 
 								if (!lTelefonos.equals("")){									
-									List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), miform.getIdInstitucionEJG().toString());
+									List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), user.getLocation().toString());
 									  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
 									   * la lTelefonos que ha insertado el usuario.*/
 									if(listaTelefonos!=null){
@@ -2590,7 +2590,7 @@ public class PersonaJGAction extends MasterAction {
 								} else 
 								{
 									if (lTelefonos.equals("")){
-										List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), miform.getIdInstitucionEJG().toString());
+										List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), user.getLocation().toString());
 									  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
 									   * la lTelefonos que ha insertado el usuario.*/
 									if(listaTelefonos!=null){
@@ -2773,13 +2773,13 @@ public class PersonaJGAction extends MasterAction {
 			try {  /*se añade numeros de telefonos para una personaJG.*/
 								ScsTelefonosPersonaJGAdm admTelefonosJG =  new ScsTelefonosPersonaJGAdm(this.getUserBean(request));								
 								Hashtable miHash =	new Hashtable();					
-								miHash.put(ScsTelefonosPersonaJGBean.C_IDINSTITUCION, miform.getIdInstitucionJG());
+								miHash.put(ScsTelefonosPersonaJGBean.C_IDINSTITUCION, user.getLocation());
 								miHash.put(ScsTelefonosPersonaJGBean.C_IDPERSONA, miform.getIdPersonaJG());								
 								lTelefonos=miform.getlNumerosTelefonos();
 								
 								/* Comprobamos que la lista de telefonos no venga vacia del formularo.*/								 
 								if (!lTelefonos.equals("")){									
-									List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), miform.getIdInstitucionJG().toString());
+									List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), user.getLocation().toString());
 									  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
 									   * la lTelefonos que ha insertado el usuario.*/
 									if(listaTelefonos!=null){
@@ -2853,7 +2853,7 @@ public class PersonaJGAction extends MasterAction {
 								} else 
 								{
 									if (lTelefonos.equals("")){
-										List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), miform.getIdInstitucionJG().toString());
+										List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), user.getLocation().toString());
 									  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
 									   * la lTelefonos que ha insertado el usuario.*/
 									if(listaTelefonos!=null){
