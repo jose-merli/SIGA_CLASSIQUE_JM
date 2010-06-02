@@ -142,7 +142,7 @@ public class EnvEstatEnvioAdm extends MasterBeanAdministrador {
 			    fechaIsNull = " AND env.fechaprogramada is not null";
 			}
 			
-		    String sql = "  select e.idinstitucion, e.idpersona, p.nombre, p.apellidos1, p.apellidos2, " +
+		 /* String sql = "  select e.idinstitucion, e.idpersona, p.nombre, p.apellidos1, p.apellidos2, " +
 	        " (select count(*) from env_estat_envio s where s.idinstitucion = e.idinstitucion and s.idpersona = e.idpersona and s.idtipoenvios=1) as NUM_ELECTRONICO, " +
 	        " (select count(*) from env_estat_envio s where s.idinstitucion = e.idinstitucion and s.idpersona = e.idpersona and s.idtipoenvios=2) as NUM_ORDINARIO, " +
 	        " (select count(*) from env_estat_envio s where s.idinstitucion = e.idinstitucion and s.idpersona = e.idpersona and s.idtipoenvios=3) as NUM_FAX, " +
@@ -151,12 +151,25 @@ public class EnvEstatEnvioAdm extends MasterBeanAdministrador {
 	        " from env_estat_envio e, cen_persona p, env_envios env " +
 	        " where e.idpersona=p.idpersona " +
 	        " and   e.idinstitucion = env.idinstitucion " +
-	        " and   e.idenvio = env.idenvio ";
+	        " and   e.idenvio = env.idenvio ";*/
 	    
-	    	// condiciones de filtro del form
+			String sql="select * from ((select e.idinstitucion, e.idpersona,p.nombre,p.apellido1 as apellidos1,p.apellido2 as apellidos2 , "+
+			" (select count(*) from env_estat_envio s where s.idinstitucion = e.idinstitucion and s.idpersona = e.idpersona and s.idtipoenvios = 1) as NUM_ELECTRONICO, " +
+		    " (select count(*) from env_estat_envio s where s.idinstitucion = e.idinstitucion and s.idpersona = e.idpersona and s.idtipoenvios = 2) as NUM_ORDINARIO, " +
+			" (select count(*) from env_estat_envio s where s.idinstitucion = e.idinstitucion and s.idpersona = e.idpersona and s.idtipoenvios = 3) as NUM_FAX, "+
+			" (select count(*) from env_estat_envio s where s.idinstitucion = e.idinstitucion and s.idpersona = e.idpersona and s.idtipoenvios = 4) as NUM_SMS, "+
+			" (select count(*) from env_estat_envio s where s.idinstitucion = e.idinstitucion and s.idpersona = e.idpersona and s.idtipoenvios = 5) as NUM_BUROSMS "+
+			" from env_estat_envio e, scs_personajg p,env_envios env, env_destinatarios envdest "+
+			" where e.idpersona = p.idpersona "+
+			" and e.idinstitucion=p.idinstitucion "+
+            " and e.idinstitucion = env.idinstitucion "+
+            " and e.idenvio = env.idenvio "+
+            " and env.idinstitucion = "+idInstitucion;
+                     
+			// condiciones de filtro del form
 	    	contador++;
-	    	codigos.put(new Integer(contador),idInstitucion);
-	    	sql += " and env.idinstitucion=:"+contador;
+	    //	codigos.put(new Integer(contador),idInstitucion);
+	    	//sql += " and env.idinstitucion=:"+contador;
 	    
 	    	sql += (nombre!=null && !nombre.equals("")) ? " AND "+ComodinBusquedas.prepararSentenciaCompleta(nombre.trim(),"env.descripcion" ) : "";
 			if (dFechaDesde!=null || dFechaHasta!=null) {
@@ -168,10 +181,57 @@ public class EnvEstatEnvioAdm extends MasterBeanAdministrador {
 			
 			sql += (idEnvio!=null && !idEnvio.equals("")) ? " AND env.idenvio = "+ idEnvio : "";
 
-			sql += fechaIsNull;	    	
-	    	
-	        sql +=" group by  e.idinstitucion, e.idpersona, p.nombre, p.apellidos1, p.apellidos2 " +
-	        " order by  p.apellidos1, p.apellidos2, p.nombre";
+			sql += fechaIsNull;	  
+			
+			sql += " and envdest.idinstitucion=env.idinstitucion "+
+			       " and envdest.idenvio=env.idenvio "+
+			       " and envdest.tipodestinatario='CEN_PERSONA' "+
+			       " group by e.idinstitucion, "+
+                   " e.idpersona, "+
+                   " p.nombre, "+
+                   " p.apellido1, "+
+                   " p.apellido2) "+  
+			       " UNION "+
+			       " (select e.idinstitucion,e.idpersona,p.nombre,p.apellido1 as apellidos1, p.apellido2 as apellidos2,"+
+			       " (select count(*) from env_estat_envio s where s.idinstitucion = e.idinstitucion and s.idpersona = e.idpersona and s.idtipoenvios = 1) as NUM_ELECTRONICO, "+
+			       " (select count(*) from env_estat_envio s where s.idinstitucion = e.idinstitucion and s.idpersona = e.idpersona and s.idtipoenvios = 2) as NUM_ORDINARIO, "+			       
+			       " (select count(*) from env_estat_envio s where s.idinstitucion = e.idinstitucion and s.idpersona = e.idpersona and s.idtipoenvios = 3) as NUM_FAX, "+ 
+			       " (select count(*) from env_estat_envio s where s.idinstitucion = e.idinstitucion and s.idpersona = e.idpersona and s.idtipoenvios = 4) as NUM_SMS, "+
+			       " (select count(*) from env_estat_envio s where s.idinstitucion = e.idinstitucion and s.idpersona = e.idpersona and s.idtipoenvios = 5) as NUM_BUROSMS "+
+			       " from env_estat_envio e, scs_personajg p,env_envios env, env_destinatarios envdest "+
+			       " where e.idpersona = p.idpersona "+         
+                   " and e.idinstitucion=p.idinstitucion "+
+                   " and e.idinstitucion = env.idinstitucion "+
+                   " and e.idenvio = env.idenvio "+
+                   " and env.idinstitucion = "+idInstitucion;
+			
+            //       codigos.put(new Integer(contador),idInstitucion);
+	    	//sql += " and env.idinstitucion=:"+contador;
+	    
+	    	sql += (nombre!=null && !nombre.equals("")) ? " AND "+ComodinBusquedas.prepararSentenciaCompleta(nombre.trim(),"env.descripcion" ) : "";
+			if (dFechaDesde!=null || dFechaHasta!=null) {
+			    sql += " AND " + GstDate.dateBetweenDesdeAndHasta(fecha,dFechaDesde,dFechaHasta);
+			}
+			sql += (idEstado!=null && !idEstado.equals("")) ? " AND env.idestado = "+ idEstado : "";
+			
+			sql += (idTipoEnvio!=null && !idTipoEnvio.equals("")) ? " AND env.idtipoenvios = "+ idTipoEnvio : "";
+			
+			sql += (idEnvio!=null && !idEnvio.equals("")) ? " AND env.idenvio = "+ idEnvio : "";
+
+			sql += fechaIsNull;	  
+			
+			sql += " and envdest.idinstitucion=env.idinstitucion "+
+                   " and envdest.idenvio=env.idenvio "+
+                   " and envdest.tipodestinatario='SCS_PERSONAJG' "+ 
+                   " group by e.idinstitucion, "+
+                   " e.idpersona, "+
+                   " p.nombre,"+
+                   " p.apellido1,"+
+                   " p.apellido2)) "+       
+                   " order by  apellidos1, apellidos2, nombre";
+			       
+	        //sql +=" group by  e.idinstitucion, e.idpersona, p.nombre, p.apellidos1, p.apellidos2 " +
+	        //" order by  p.apellidos1, p.apellidos2, p.nombre";
 	
 	        salida.add(sql);
 	        salida.add(codigos);
