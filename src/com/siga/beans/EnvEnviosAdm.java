@@ -435,6 +435,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			
 			sql.append(" UNION ");
 			sql.append(" (SELECT  D.NOMBRE || ' ' || D.APELLIDOS1 || ' ' || D.APELLIDOS2 AS NOMBREYAPELLIDOS,D.NIFCIF,null,D.IDPERSONA ");
+			sql.append(", D.TIPODESTINATARIO");
 			sql.append(" FROM ENV_DESTINATARIOS D ");
 			sql.append(" WHERE D.IDINSTITUCION = ");
 			sql.append(idInstitucion);
