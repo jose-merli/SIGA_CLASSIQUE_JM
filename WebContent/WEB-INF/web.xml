@@ -94,51 +94,51 @@
 
 	<!--************ Seguridad de Certificados FIN ************-->
 
-  <!--<listener>
+<!--
+  <listener>
     <listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoCenso</listener-class>
-  </listener>-->
-  <!--listener>
+  </listener>
+  <listener>
     <listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoServicios</listener-class>
-  </listener-->
-<!--<listener>
+  </listener>
+  <listener>
     <listener-class>com.siga.servlets.SIGASvlInicializacionesSecundarias</listener-class>
-  </listener>-->
-<!-- <listener>
+  </listener>
+  <listener>
     <listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoExpedientes</listener-class>
   </listener>
- -->
-  <!--listener>
+  <listener>
     <listener-class>com.siga.servlets.SIGASvlProcesoColaDatosLetrado</listener-class>
-  </listener-->
-
-  <!--<listener>
+  </listener>
+  <listener>
     <listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoContadores</listener-class>
-  </listener>-->
-  
+  </listener>
   <listener>
     <listener-class>com.siga.eejg.SolicitudEEJGListener</listener-class>    
   </listener>
-  
- <servlet>
+-->
+  <servlet>
     <servlet-name>SIGASvlProcesoAutomaticoEnvios</servlet-name>
     <servlet-class>com.siga.servlets.SIGASvlProcesoAutomaticoEnvios</servlet-class>
    	<load-on-startup>3</load-on-startup>
   </servlet>
+
+  <servlet>
+    <servlet-name>SIGASvlProcesoEnvios</servlet-name>
+    <servlet-class>com.siga.servlets.SIGASvlProcesoEnvios</servlet-class>
+  </servlet>
+
   <servlet>
     <servlet-name>SIGATest</servlet-name>
     <servlet-class>com.siga.servlets.SIGASvlConectarBaseDatos</servlet-class>
   </servlet>
   
   <servlet>
-    <servlet-name>SIGASvlProcesoEnvios</servlet-name>
-    <servlet-class>com.siga.servlets.SIGASvlProcesoEnvios</servlet-class>
-  </servlet>
- 
-  <!--<servlet>
     <servlet-name>SIGASvlProcesoAutomaticoFacturacion</servlet-name>
     <servlet-class>com.siga.servlets.SIGASvlProcesoAutomaticoFacturacion</servlet-class>
    	<load-on-startup>4</load-on-startup>
-  </servlet>-->
+  </servlet>
+
   <servlet>
     <servlet-name>SIGASvlProcesoFacturacion</servlet-name>
     <servlet-class>com.siga.servlets.SIGASvlProcesoFacturacion</servlet-class>
@@ -157,6 +157,7 @@
     <servlet-name>SIGASvlProcesoGeneracionEnvio</servlet-name>
     <servlet-class>com.siga.servlets.SIGASvlProcesoGeneracionEnvio</servlet-class>
   </servlet>
+
   
   <servlet>
     <servlet-name>SIGASvlVectorToClientFileConExtension</servlet-name>
