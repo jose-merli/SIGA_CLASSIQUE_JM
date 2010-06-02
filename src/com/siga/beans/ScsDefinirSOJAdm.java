@@ -545,7 +545,7 @@ public class ScsDefinirSOJAdm extends MasterBeanAdministrador {
 				consulta += " and "+ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("APELLIDO2")).trim(),"persona." + ScsPersonaJGBean.C_APELLIDO2,contador,codigosBind);
 			}	
 			
-			consulta += " ORDER BY soj." + ScsSOJBean.C_ANIO + ", to_number(soj." + ScsSOJBean.C_NUMSOJ+") desc";
+			consulta += " ORDER BY soj." + ScsSOJBean.C_ANIO + " DESC , to_number(soj." + ScsSOJBean.C_NUMSOJ+") desc";
 		
       // No utilizamos la clase Paginador para la busqueda de letrados porque al filtrar por residencia la consulta no devolvia bien los 
       //  datos que eran de tipo varchar (devolvía n veces el mismo resultado), utilizamos el paginador PaginadorCaseSensitive
