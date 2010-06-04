@@ -2455,6 +2455,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" ejg.idprocurador IDPROCURADOR, ");
 			
 			sql.append(" nvl(ejg.numejg || '/' || substr(ejg.anio, 3, 2), '-') as NUM_SOLICITUD, ");
+			sql.append(" ejg.numejg as NUMERO_EJG, ejg.anio as ANIO_EJG, ");
+			
 			sql.append(" nvl(to_char(ejg.fechaapertura, 'DD/mm/YYYY'), '-') as FECHA_SOLICITUD, ");
 			//sql.append(" ' ' as SITUACION_LABORAL, ");
 			
