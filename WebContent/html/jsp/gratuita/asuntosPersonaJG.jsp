@@ -129,6 +129,8 @@
 			<html:hidden property="idioma"/>
 			<html:hidden property="nombreAnterior"/>
 			<html:hidden property="lNumerosTelefonos"/>
+			<html:hidden property="correoElectronico"/>
+			<html:hidden property="fax"/>			
 			<input type="hidden" name="actionModal" value="">
 		</html:form>
 
