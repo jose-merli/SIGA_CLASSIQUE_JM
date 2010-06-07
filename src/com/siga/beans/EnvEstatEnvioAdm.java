@@ -140,19 +140,8 @@ public class EnvEstatEnvioAdm extends MasterBeanAdministrador {
 			} else {
 			    fecha = "env.fechaprogramada";
 			    fechaIsNull = " AND env.fechaprogramada is not null";
-			}
-			
-		 /* String sql = "  select e.idinstitucion, e.idpersona, p.nombre, p.apellidos1, p.apellidos2, " +
-	        " (select count(*) from env_estat_envio s where s.idinstitucion = e.idinstitucion and s.idpersona = e.idpersona and s.idtipoenvios=1) as NUM_ELECTRONICO, " +
-	        " (select count(*) from env_estat_envio s where s.idinstitucion = e.idinstitucion and s.idpersona = e.idpersona and s.idtipoenvios=2) as NUM_ORDINARIO, " +
-	        " (select count(*) from env_estat_envio s where s.idinstitucion = e.idinstitucion and s.idpersona = e.idpersona and s.idtipoenvios=3) as NUM_FAX, " +
-	        " (select count(*) from env_estat_envio s where s.idinstitucion = e.idinstitucion and s.idpersona = e.idpersona and s.idtipoenvios=4) as NUM_SMS, " +
-	        " (select count(*) from env_estat_envio s where s.idinstitucion = e.idinstitucion and s.idpersona = e.idpersona and s.idtipoenvios=5) as NUM_BUROSMS " +
-	        " from env_estat_envio e, cen_persona p, env_envios env " +
-	        " where e.idpersona=p.idpersona " +
-	        " and   e.idinstitucion = env.idinstitucion " +
-	        " and   e.idenvio = env.idenvio ";*/
-	    
+			}			
+		
 			String sql="select * from ((select e.idinstitucion, e.idpersona,p.nombre,p.apellido1 as apellidos1,p.apellido2 as apellidos2 , "+
 			" (select count(*) from env_estat_envio s where s.idinstitucion = e.idinstitucion and s.idpersona = e.idpersona and s.idtipoenvios = 1) as NUM_ELECTRONICO, " +
 		    " (select count(*) from env_estat_envio s where s.idinstitucion = e.idinstitucion and s.idpersona = e.idpersona and s.idtipoenvios = 2) as NUM_ORDINARIO, " +
@@ -185,7 +174,7 @@ public class EnvEstatEnvioAdm extends MasterBeanAdministrador {
 			
 			sql += " and envdest.idinstitucion=env.idinstitucion "+
 			       " and envdest.idenvio=env.idenvio "+
-			       " and envdest.tipodestinatario='CEN_PERSONA' "+
+			       " and envdest.tipodestinatario="+ "'"+EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA +"'"+
 			       " group by e.idinstitucion, "+
                    " e.idpersona, "+
                    " p.nombre, "+
@@ -222,7 +211,7 @@ public class EnvEstatEnvioAdm extends MasterBeanAdministrador {
 			
 			sql += " and envdest.idinstitucion=env.idinstitucion "+
                    " and envdest.idenvio=env.idenvio "+
-                   " and envdest.tipodestinatario='SCS_PERSONAJG' "+ 
+                   " and envdest.tipodestinatario="+ "'" +EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG+ "'" + 
                    " group by e.idinstitucion, "+
                    " e.idpersona, "+
                    " p.nombre,"+
