@@ -1721,7 +1721,7 @@ public class PersonaJGAction extends MasterAction {
 					
 					/* Comprobamos que la lista de telefonos no venga vacia del formularo.*/								 
 					if (!lTelefonos.equals("")){									
-						List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), miform.getIdInstitucionEJG().toString());
+						List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), user.getLocation().toString());
 						  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
 						   * la lTelefonos que ha insertado el usuario.*/
 						if(listaTelefonos!=null){
@@ -1795,7 +1795,7 @@ public class PersonaJGAction extends MasterAction {
 					} else 
 					{
 						if (lTelefonos.equals("")){
-							List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), miform.getIdInstitucionEJG().toString());
+							List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(),user.getLocation().toString());
 						  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
 						   * la lTelefonos que ha insertado el usuario.*/
 						if(listaTelefonos!=null){
