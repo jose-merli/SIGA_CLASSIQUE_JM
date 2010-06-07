@@ -174,112 +174,29 @@ public class EnvDestinatariosAdm extends MasterBeanAdministrador {
            							  String idPersona)
    	throws ClsExceptions{
        
-       Vector datos = new Vector();
-		
-		//NOMBRES TABLAS PARA LA JOIN
-		String T_ENV_DESTINATARIOS = EnvDestinatariosBean.T_NOMBRETABLA + " DES";
-		String T_CEN_PERSONA = CenPersonaBean.T_NOMBRETABLA + " PER";
-		String T_CEN_COLEGIADO = CenColegiadoBean.T_NOMBRETABLA + " COL";
-		String T_CEN_PAIS = CenPaisBean.T_NOMBRETABLA + " PA";
-		String T_CEN_PROVINCIA = CenProvinciaBean.T_NOMBRETABLA + " PR";
-		String T_CEN_POBLACION = CenPoblacionesBean.T_NOMBRETABLA + " PO";
-		
-		String DES_IDINSTITUCION = "DES." + EnvDestinatariosBean.C_IDINSTITUCION;
-		String DES_IDENVIO = "DES." + EnvDestinatariosBean.C_IDENVIO;
-		String DES_IDPERSONA = "DES." + EnvDestinatariosBean.C_IDPERSONA;
-		String DES_IDPAIS = "DES." + EnvDestinatariosBean.C_IDPAIS;
-		String DES_IDPROVINCIA = "DES." + EnvDestinatariosBean.C_IDPROVINCIA;
-		String DES_IDPOBLACION = "DES." + EnvDestinatariosBean.C_IDPOBLACION;		
-		String DES_POBLACIONEXTRANJERA = "DES." + EnvDestinatariosBean.C_POBLACIONEXTRANJERA;		
-		String DES_DOMICILIO = "DES." + EnvDestinatariosBean.C_DOMICILIO;		
-		String DES_CODIGOPOSTAL = "DES." + EnvDestinatariosBean.C_CODIGOPOSTAL;
-		String DES_FAX1 = "DES." + EnvDestinatariosBean.C_FAX1;
-		String DES_FAX2 = "DES." + EnvDestinatariosBean.C_FAX2;		
-		String DES_CORREOELECTRONICO = "DES." + EnvDestinatariosBean.C_CORREOELECTRONICO;		
-		String DES_NOMBRE = "DES." + EnvDestinatariosBean.C_NOMBRE;
-		String DES_APELLIDOS1 = "DES." + EnvDestinatariosBean.C_APELLIDOS1;
-		String DES_APELLIDOS2 = "DES." + EnvDestinatariosBean.C_APELLIDOS2;
-		String DES_NIFCIF = "DES." + EnvDestinatariosBean.C_NIFCIF;
-		String DES_MOVIL = "DES." + EnvDestinatariosBean.C_MOVIL;
-		
-		String PER_IDPERSONA = "PER." + CenPersonaBean.C_IDPERSONA;
-		String PER_NOMBRE = "PER." + CenPersonaBean.C_NOMBRE;
-		String PER_APELLIDOS1 = "PER." + CenPersonaBean.C_APELLIDOS1;
-		String PER_APELLIDOS2 = "PER." + CenPersonaBean.C_APELLIDOS2;
-		String PER_NIFCIF = "PER." + CenPersonaBean.C_NIFCIF;
-		
-		String COL_IDINSTITUCION = "COL." + CenColegiadoBean.C_IDINSTITUCION + "(+)";
-		String COL_IDPERSONA = "COL." + CenColegiadoBean.C_IDPERSONA + "(+)";
-		String COL_NCOLEGIADO = "COL." + CenColegiadoBean.C_NCOLEGIADO;
-		
-		String PA_IDPAIS = "PA." + CenPaisBean.C_IDPAIS + "(+)";
-		String PA_NOMBRE = UtilidadesMultidioma.getCampoMultidiomaSimple("PA." + CenPaisBean.C_NOMBRE, this.usrbean.getLanguage()) + " AS PAIS";
-		
-		String PR_IDPROVINCIA = "PR." + CenProvinciaBean.C_IDPROVINCIA + "(+)";
-		String PR_NOMBRE = "PR." + CenProvinciaBean.C_NOMBRE + " AS PROVINCIA";
-		
-		String PO_IDPOBLACION = "PO." + CenPoblacionesBean.C_IDPOBLACION + "(+)";
-		String PO_NOMBRE = "PO." + CenPoblacionesBean.C_NOMBRE + " AS POBLACION";
-		
-		boolean fromPersona= !"-1".equals(idPersona);
-			
-		// Acceso a BBDD
-		RowsContainer rc = null;
+       Vector datos = new Vector(); 
+    
+       RowsContainer rc = null;
 		try { 
 			rc = new RowsContainer(); 
 			
 			StringBuffer sb= new StringBuffer();
-			sb.append("SELECT ");	        
-		    
-			sb.append( DES_IDINSTITUCION + ", ");	
-			sb.append(DES_IDPERSONA + ", ");		    
-			sb.append( DES_DOMICILIO + ", ");	
-			sb.append( DES_POBLACIONEXTRANJERA + ", ");	
-			sb.append(DES_CODIGOPOSTAL + ", ");	
-			sb.append( DES_FAX1 + ", ");		    
-			sb.append( DES_FAX2 + ", ");	
-			sb.append( DES_MOVIL + ", ");	
-			sb.append( DES_CORREOELECTRONICO + ", ");	
-		    if(fromPersona){
-			    sb.append( PER_NOMBRE + ", ");	
-			    sb.append(PER_APELLIDOS1 + ", ");		    
-			    sb.append( PER_APELLIDOS2 + ", ");	
-			    sb.append( PER_NIFCIF + ", ");	
-			    sb.append(COL_NCOLEGIADO + ", ");
-		    }else{
-			    sb.append( DES_NOMBRE + ", ");	
-			    sb.append( DES_APELLIDOS1 + ", ");		    
-			    sb.append( DES_APELLIDOS2 + ", ");	
-			    sb.append( DES_NIFCIF + ", ");	
-		    }
-		    
-		    sb.append(PA_NOMBRE + ", ");	
-		    sb.append(PR_NOMBRE + ", ");	
-		    sb.append(PO_NOMBRE);	
-		    
-		    sb.append(" FROM ");
-		    sb.append(T_ENV_DESTINATARIOS + ", " ); 
-		    if(fromPersona){
-		    	sb.append(T_CEN_COLEGIADO + ", " );
-		    	sb.append(T_CEN_PERSONA + ", " );
-		    }
-		    sb.append(T_CEN_PAIS + ", " );
-		    sb.append( T_CEN_PROVINCIA + ", " );
-		    sb.append( T_CEN_POBLACION);
-		    
-		    sb.append(" WHERE ");
-		    sb.append( DES_IDINSTITUCION + " = " + idInstitucion);
-		    sb.append(" AND " + DES_IDENVIO + " = " + idEnvio);
-		    sb.append(" AND " + DES_IDPERSONA + " = " + idPersona);
-		    
-		    if(fromPersona){
-		    	sb.append(" AND " + DES_IDPERSONA + " = " + PER_IDPERSONA);
-		    	sb.append(" AND " + DES_IDINSTITUCION + " = " + COL_IDINSTITUCION);
-		    	sb.append(" AND " + DES_IDPERSONA + " = " + COL_IDPERSONA);
-		    }
-		    sb.append(" AND " + DES_IDPAIS + " = " + PA_IDPAIS);
-		    sb.append(" AND " + DES_IDPROVINCIA + " = " + PR_IDPROVINCIA);
-		    sb.append(" AND " + DES_IDPOBLACION + " = " + PO_IDPOBLACION);
+			sb.append(" SELECT DES.IDINSTITUCION,  DES.IDPERSONA,    DES.DOMICILIO,  DES.POBLACIONEXTRANJERA,   DES.CODIGOPOSTAL,   DES.FAX1,");
+            sb.append(" DES.FAX2,  DES.MOVIL,  DES.CORREOELECTRONICO,  PER.NOMBRE,  PER.APELLIDOS1,  PER.APELLIDOS2,  PER.NIFCIF,  COL.NCOLEGIADO,");
+            sb.append(" F_SIGA_GETRECURSO(PA.NOMBRE, 1) AS PAIS,  PR.NOMBRE AS PROVINCIA, PO.NOMBRE AS POBLACION");
+            sb.append(" FROM ENV_DESTINATARIOS DES,   CEN_COLEGIADO COL, CEN_PERSONA PER, CEN_PAIS PA,CEN_PROVINCIAS PR,CEN_POBLACIONES   PO");
+            sb.append(" WHERE DES.IDINSTITUCION ="+idInstitucion +" AND DES.IDENVIO ="+idEnvio+ " AND DES.IDPERSONA ="+idPersona+" AND DES.IDPERSONA = PER.IDPERSONA");
+            sb.append(" AND DES.IDINSTITUCION = COL.IDINSTITUCION(+)  AND DES.IDPERSONA = COL.IDPERSONA(+) AND DES.IDPAIS = PA.IDPAIS(+) AND DES.IDPROVINCIA = PR.IDPROVINCIA(+)");
+            sb.append(" AND DES.IDPOBLACION = PO.IDPOBLACION(+) and DES.TIPODESTINATARIO='CEN_PERSONA'");
+            sb.append(" UNION "); 
+            sb.append(" SELECT DES.IDINSTITUCION, DES.IDPERSONA,  DES.DOMICILIO, DES.POBLACIONEXTRANJERA, DES.CODIGOPOSTAL, DES.FAX1, DES.FAX2, DES.MOVIL,");
+            sb.append(" DES.CORREOELECTRONICO, PER.NOMBRE,  PER.APELLIDO1,  PER.APELLIDO2, PER.nif, COL.NCOLEGIADO, F_SIGA_GETRECURSO(PA.NOMBRE, 1) AS PAIS,");
+            sb.append(" PR.NOMBRE AS PROVINCIA, PO.NOMBRE AS POBLACION FROM ENV_DESTINATARIOS DES, CEN_COLEGIADO     COL, SCS_PERSONAJG     PER,");
+            sb.append(" CEN_PAIS  PA, CEN_PROVINCIAS  PR, CEN_POBLACIONES   PO  WHERE DES.IDINSTITUCION ="+idInstitucion+"  AND DES.IDENVIO ="+idEnvio+ " AND DES.IDPERSONA ="+idPersona);
+            sb.append(" AND DES.IDPERSONA = PER.IDPERSONA  AND DES.IDINSTITUCION = COL.IDINSTITUCION(+) AND DES.IDPERSONA = COL.IDPERSONA(+) AND DES.IDPAIS = PA.IDPAIS(+)");
+            sb.append(" AND DES.IDPROVINCIA = PR.IDPROVINCIA(+) AND DES.IDPOBLACION = PO.IDPOBLACION(+) and DES.TIPODESTINATARIO='SCS_PERSONAJG'");
+            sb.append(" AND PER.IDINSTITUCION="+idInstitucion);
+  
 
 			if (rc.query(sb.toString())) {
 				for (int i = 0; i < rc.size(); i++)	{
