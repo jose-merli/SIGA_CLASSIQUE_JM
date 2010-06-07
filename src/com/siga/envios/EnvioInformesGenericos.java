@@ -2496,6 +2496,7 @@ public class EnvioInformesGenericos extends MasterReport {
 //			vCampos = this.setCamposIterantes(vCampos,alClavesDesigna,"idDesignas");
 			
 			//Ponemos esta lista para comprobar que no se ha insertado el destinatario
+			
 			List<String> lPersonas = new ArrayList<String>();
 			for (int i = 0; i < vCampos.size(); i++) {
 				Hashtable ht = (Hashtable) vCampos.get(i); 
@@ -2507,8 +2508,9 @@ public class EnvioInformesGenericos extends MasterReport {
 //				ArrayList alDesignas = (ArrayList) ht.get("idDesignas");
 				plantillas = (String) ht.get("plantillas");
 
-				
+
 				List<EnvDestProgramInformesBean> lDestinatarios = new ArrayList<EnvDestProgramInformesBean>();
+				List<String> lDestPersonas = new ArrayList<String>();
 				if(!isInformeProgramado){
 					programInformes = new EnvProgramInformesBean();
 					programInformes.setIdProgram(programInformesAdm.getNewIdProgramInformes(idInstitucion));
@@ -2536,8 +2538,6 @@ public class EnvioInformesGenericos extends MasterReport {
 						String idPlantilla = strPlantilla[0]; 
 						String tiposDestinatario = strPlantilla[1];
 						informesBean.setIdPlantilla(idPlantilla);
-						
-						
 						informesGenericoAdm.insert(informesBean);
 						
 					}
@@ -2575,7 +2575,12 @@ public class EnvioInformesGenericos extends MasterReport {
 							if(!lPersonas.contains(idPersona)){
 								destProgramInformesAdm.insert(destProgramInformes);
 								lPersonas.add(idPersona);
+								
+							}
+							if(!lDestPersonas.contains(idPersona)){
 								lDestinatarios.add(destProgramInformes);
+								lDestPersonas.add(idPersona);
+								
 							}
 							
 							
@@ -2590,13 +2595,17 @@ public class EnvioInformesGenericos extends MasterReport {
 								destProgramInformes.setIdPersona(new Long(idPersonaJG));
 								destProgramInformes.setIdInstitucionPersona(new Integer(idInstitucion));
 								destProgramInformes.setTipoDestinatario(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG);
+								
 								if(!lPersonas.contains(idPersonaJG)){
 									destProgramInformesAdm.insert(destProgramInformes);
 									lPersonas.add(idPersonaJG);
-									lDestinatarios.add(destProgramInformes);
 								}
 								
-								
+								if(!lDestPersonas.contains(idPersonaJG)){
+									lDestinatarios.add(destProgramInformes);
+									lDestPersonas.add(idPersonaJG);
+									
+								}
 								
 								
 							}
