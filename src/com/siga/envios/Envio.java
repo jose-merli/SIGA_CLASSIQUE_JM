@@ -255,7 +255,7 @@ public class Envio
 			        destBean.setCorreoElectronico(personaJGBean.getCorreoElectronico());
 			        destBean.setFax1(personaJGBean.getFax());
 			        Vector vTelefonos = personaJGBean.getTelefonos();
-			        if(vTelefonos!=null && vTelefonos.size()>1){
+			        if(vTelefonos!=null && vTelefonos.size()>0){
 				        for (int i = 0; i < vTelefonos.size(); i++) {
 				        	ScsTelefonosPersonaJGBean telefono = (ScsTelefonosPersonaJGBean)vTelefonos.get(i);
 				        	if(telefono.getpreferenteSms()!=null && telefono.getpreferenteSms().equals("1")){

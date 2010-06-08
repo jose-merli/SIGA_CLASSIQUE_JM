@@ -1991,7 +1991,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 			}
 
-			Vector vPlantillas = this.getDatosSeparados(plantillas, "@@");
+			Vector vPlantillas = this.getPlantillas(plantillas,programInformes.getIdInstitucion().toString(),userBean);
 			informesBean = new EnvInformesGenericosBean();
 			informesBean.setIdProgram(programInformes.getIdProgram());
 			informesBean.setIdEnvio(programInformes.getIdEnvio());
@@ -1999,8 +1999,8 @@ public class EnvioInformesGenericos extends MasterReport {
 
 
 			for (int j = 0; j < vPlantillas.size(); j++) {
-				String idPlantillaInforme = (String)vPlantillas.get(j);
-				informesBean.setIdPlantilla(idPlantillaInforme);
+				AdmInformeBean beanInforme = (AdmInformeBean)vPlantillas.get(j);
+				informesBean.setIdPlantilla(beanInforme.getIdPlantilla());
 				informesGenericoAdm.insert(informesBean);
 			}
 
@@ -2316,7 +2316,7 @@ public class EnvioInformesGenericos extends MasterReport {
 				}
 			}
 
-			Vector vPlantillas = this.getDatosSeparados(plantillas,"@@");
+			Vector vPlantillas = this.getPlantillas(plantillas,programInformes.getIdInstitucion().toString(),userBean);
 			informesBean = new EnvInformesGenericosBean();
 			informesBean.setIdProgram(programInformes.getIdProgram());
 			informesBean.setIdEnvio(programInformes.getIdEnvio());
@@ -2324,8 +2324,9 @@ public class EnvioInformesGenericos extends MasterReport {
 
 
 			for (int j = 0; j < vPlantillas.size(); j++) {
-				String idPlantillaInforme = (String)vPlantillas.get(j);
-				informesBean.setIdPlantilla(idPlantillaInforme);
+				
+				AdmInformeBean beanInforme = (AdmInformeBean)vPlantillas.get(j);
+				informesBean.setIdPlantilla(beanInforme.getIdPlantilla());
 				informesGenericoAdm.insert(informesBean);
 			}
 			setEnvioBatch(true);
@@ -2935,7 +2936,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 			}
 
-			Vector vPlantillas = this.getDatosSeparados(plantillas,"@@");
+			Vector vPlantillas = this.getPlantillas(plantillas,programInformes.getIdInstitucion().toString(),userBean);
 			informesBean = new EnvInformesGenericosBean();
 			informesBean.setIdProgram(programInformes.getIdProgram());
 			informesBean.setIdEnvio(programInformes.getIdEnvio());
@@ -2943,8 +2944,8 @@ public class EnvioInformesGenericos extends MasterReport {
 
 
 			for (int j = 0; j < vPlantillas.size(); j++) {
-				String idPlantillaInforme = (String)vPlantillas.get(j);
-				informesBean.setIdPlantilla(idPlantillaInforme);
+				AdmInformeBean beanInforme = (AdmInformeBean)vPlantillas.get(j);
+				informesBean.setIdPlantilla(beanInforme.getIdPlantilla());
 				informesGenericoAdm.insert(informesBean);
 			}
 			setEnvioBatch(true);

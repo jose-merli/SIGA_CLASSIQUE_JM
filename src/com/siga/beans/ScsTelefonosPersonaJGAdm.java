@@ -190,6 +190,7 @@ public class ScsTelefonosPersonaJGAdm extends MasterBeanAdministrador {
 			bean.setIdTelefono(UtilidadesHash.getInteger(hash,ScsTelefonosPersonaJGBean.C_IDTELEFONO));
 			bean.setNumeroTelefono(UtilidadesHash.getString(hash,ScsTelefonosPersonaJGBean.C_NUMEROTELEFONO));
 			bean.setNombreTelefono(UtilidadesHash.getString(hash,ScsTelefonosPersonaJGBean.C_NOMBRETELEFONO));
+			bean.setpreferenteSms(UtilidadesHash.getString(hash,ScsTelefonosPersonaJGBean.C_PREFERENTESMS));
 									
 		}
 		catch(Exception e){
@@ -212,8 +213,9 @@ public class ScsTelefonosPersonaJGAdm extends MasterBeanAdministrador {
 			if (miBean.getIdInstitucion() != null) UtilidadesHash.set(hash,ScsTelefonosPersonaJGBean.C_IDINSTITUCION,miBean.getIdInstitucion().toString());
 			UtilidadesHash.set(hash,ScsTelefonosPersonaJGBean.C_IDPERSONA,miBean.getIdPersona().toString());
 			UtilidadesHash.set(hash,ScsTelefonosPersonaJGBean.C_IDTELEFONO,miBean.getIdTelefono().toString());
-			UtilidadesHash.set(hash,ScsTelefonosPersonaJGBean.C_NUMEROTELEFONO,miBean.getNumeroTelefono().toString());
-			UtilidadesHash.set(hash,ScsTelefonosPersonaJGBean.C_NOMBRETELEFONO,miBean.getNombreTelefono().toString());						 
+			UtilidadesHash.set(hash,ScsTelefonosPersonaJGBean.C_NUMEROTELEFONO,miBean.getNumeroTelefono());
+			UtilidadesHash.set(hash,ScsTelefonosPersonaJGBean.C_NOMBRETELEFONO,miBean.getNombreTelefono());						 
+			UtilidadesHash.set(hash,ScsTelefonosPersonaJGBean.C_PREFERENTESMS,miBean.getpreferenteSms());
 		}
 		catch (Exception e){
 			hash = null;

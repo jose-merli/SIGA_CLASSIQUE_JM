@@ -5519,7 +5519,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
     		numero = numero.substring(3);
     	}
     	numero = "("+prefijo+")"+numero;
-    		
+    	ClsLogging.writeFileLog("NUMERO DE MOVIL:" + numero,10);    		
     	return numero;
     }
 
