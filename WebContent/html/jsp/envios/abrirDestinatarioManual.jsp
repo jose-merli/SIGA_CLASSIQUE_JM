@@ -172,7 +172,7 @@
 			}else{
 				botonesFila="C,B";
 			}
-			System.out.println(fila.getString("TIPODESTINATARIO"));
+			
 			%>
 	  		
 	  			<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="<%=botonesFila %>" clase="listaNonEdit" visibleConsulta="no">
