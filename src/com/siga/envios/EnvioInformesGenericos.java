@@ -2451,114 +2451,148 @@ public class EnvioInformesGenericos extends MasterReport {
 			envio.generarEnvio(idPersona, EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA,vDocumentos);
 
 		}else{*/
-			//vCampos = this.obtenerDatosFormulario(form);
-			String idioma = null;
-			String idTipoInforme = null;
-			String plantillas = null;
-			EnvEnvioProgramadoAdm envioProgramadoAdm  = new EnvEnvioProgramadoAdm(userBean);
-			EnvProgramInformesAdm programInformesAdm = new EnvProgramInformesAdm(userBean);
-			EnvDestProgramInformesAdm destProgramInformesAdm = new EnvDestProgramInformesAdm(userBean);
-			EnvInformesGenericosAdm informesGenericoAdm = new EnvInformesGenericosAdm(userBean);
-			EnvEnvioProgramadoBean envioProgramado = null;
-			EnvProgramInformesBean programInformes = null;
-			EnvDestProgramInformesBean destProgramInformes = null;
-			EnvInformesGenericosBean informesBean = null;
+		//vCampos = this.obtenerDatosFormulario(form);
+		String idioma = null;
+		String idTipoInforme = null;
+		String plantillas = null;
+		EnvEnvioProgramadoAdm envioProgramadoAdm  = new EnvEnvioProgramadoAdm(userBean);
+		EnvProgramInformesAdm programInformesAdm = new EnvProgramInformesAdm(userBean);
+		EnvDestProgramInformesAdm destProgramInformesAdm = new EnvDestProgramInformesAdm(userBean);
+		EnvInformesGenericosAdm informesGenericoAdm = new EnvInformesGenericosAdm(userBean);
+		EnvEnvioProgramadoBean envioProgramado = null;
+		EnvProgramInformesBean programInformes = null;
+		EnvDestProgramInformesBean destProgramInformes = null;
+		EnvInformesGenericosBean informesBean = null;
 
-			EnvValorCampoClaveAdm valorCampoClaveAdm = new EnvValorCampoClaveAdm(userBean);
+		EnvValorCampoClaveAdm valorCampoClaveAdm = new EnvValorCampoClaveAdm(userBean);
 
-			envioProgramado = new EnvEnvioProgramadoBean();
-			envioProgramado.setIdEnvio(envioProgramadoAdm.getNewIdEnvio(idInstitucion));
-			envioProgramado.setIdInstitucion(new Integer(idInstitucion));
-			envioProgramado.setIdTipoEnvios(new Integer(form.getIdTipoEnvio()));
-			envioProgramado.setIdPlantillaEnvios(Integer.valueOf(form.getIdPlantillaEnvios()));
-			if (form.getIdPlantillaGeneracion()!=null && !form.getIdPlantillaGeneracion().equals("")) {
-				envioProgramado.setIdPlantilla(Integer.valueOf(form.getIdPlantillaGeneracion()));
-			} else {
-				envioProgramado.setIdPlantilla(null);
-			}
+		envioProgramado = new EnvEnvioProgramadoBean();
+		envioProgramado.setIdEnvio(envioProgramadoAdm.getNewIdEnvio(idInstitucion));
+		envioProgramado.setIdInstitucion(new Integer(idInstitucion));
+		envioProgramado.setIdTipoEnvios(new Integer(form.getIdTipoEnvio()));
+		envioProgramado.setIdPlantillaEnvios(Integer.valueOf(form.getIdPlantillaEnvios()));
+		if (form.getIdPlantillaGeneracion()!=null && !form.getIdPlantillaGeneracion().equals("")) {
+			envioProgramado.setIdPlantilla(Integer.valueOf(form.getIdPlantillaGeneracion()));
+		} else {
+			envioProgramado.setIdPlantilla(null);
+		}
 
-			envioProgramado.setNombre(form.getNombre());
-			envioProgramado.setEstado(ClsConstants.DB_FALSE);
-			envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(), locale, userBean));
+		envioProgramado.setNombre(form.getNombre());
+		envioProgramado.setEstado(ClsConstants.DB_FALSE);
+		envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(), locale, userBean));
 
-			envioProgramadoAdm.insert(envioProgramado);
+		envioProgramadoAdm.insert(envioProgramado);
 
-			boolean isInformeProgramado = false;
-			boolean isInformesInsertados = false;
-			ArrayList alClavesDesigna = new ArrayList();
-			alClavesDesigna.add("idInstitucion");
-			alClavesDesigna.add("anio");
-			alClavesDesigna.add("idTurno");
-			alClavesDesigna.add("numero");
-			
+		boolean isInformeProgramado = false;
+		boolean isInformesInsertados = false;
+		ArrayList alClavesDesigna = new ArrayList();
+		alClavesDesigna.add("idInstitucion");
+		alClavesDesigna.add("anio");
+		alClavesDesigna.add("idTurno");
+		alClavesDesigna.add("numero");
 
-//			vCampos = this.setCamposIterantes(vCampos,alClavesDesigna,"idDesignas");
-			
-			//Ponemos esta lista para comprobar que no se ha insertado el destinatario
-			
-			List<String> lPersonas = new ArrayList<String>();
-			Vector vPlantillas = null;
-			for (int i = 0; i < vCampos.size(); i++) {
-				Hashtable ht = (Hashtable) vCampos.get(i); 
-				String idPersona = (String) ht.get("idPersona");
-				Vector vDefendifosDesigna = (Vector)ht.get("defendidosDesigna");
-				String idJuzgado = (String) ht.get("idJuzgado");
-				idInstitucion = (String) ht.get("idInstitucion");
-				idTipoInforme = (String) ht.get("idTipoInforme");
-//				ArrayList alDesignas = (ArrayList) ht.get("idDesignas");
-				plantillas = (String) ht.get("plantillas");
-				
 
-				List<EnvDestProgramInformesBean> lDestinatarios = new ArrayList<EnvDestProgramInformesBean>();
-				List<String> lDestPersonas = new ArrayList<String>();
-				if(!isInformeProgramado){
-					programInformes = new EnvProgramInformesBean();
-					programInformes.setIdProgram(programInformesAdm.getNewIdProgramInformes(idInstitucion));
-					programInformes.setIdEnvio(envioProgramado.getIdEnvio());
-					programInformes.setIdInstitucion(envioProgramado.getIdInstitucion());
-					idioma = userBean.getLanguage();
-					programInformes.setIdioma(new Integer(idioma));
-					programInformes.setEstado(ClsConstants.DB_FALSE);
-					programInformes.setPlantillas(plantillas);
-					programInformes.setIdTipoInforme(idTipoInforme);
+//		vCampos = this.setCamposIterantes(vCampos,alClavesDesigna,"idDesignas");
 
-					programInformesAdm.insert(programInformes);
-					
-					informesBean = new EnvInformesGenericosBean();
-					informesBean.setIdProgram(programInformes.getIdProgram());
-					informesBean.setIdEnvio(programInformes.getIdEnvio());
-					informesBean.setIdInstitucion(programInformes.getIdInstitucion());
-					
-					vPlantillas = getPlantillasInforme(plantillas, idInstitucion, userBean);
-					
+		//Ponemos esta lista para comprobar que no se ha insertado el destinatario
 
-					for (int j = 0; j < vPlantillas.size(); j++) {
-						AdmInformeBean informeBean = (AdmInformeBean)vPlantillas.get(j);
-						informesBean.setIdPlantilla(informeBean.getIdPlantilla());
-						informesGenericoAdm.insert(informesBean);
-						
-					}
-					
-					
-					
-					isInformeProgramado = true;
-					
-					
-					
-				}
-				
-			
+		List<String> lPersonas = new ArrayList<String>();
+		Vector vPlantillas = null;
+		for (int i = 0; i < vCampos.size(); i++) {
+			Hashtable ht = (Hashtable) vCampos.get(i); 
+			String idPersona = (String) ht.get("idPersona");
+			Vector vDefendifosDesigna = (Vector)ht.get("defendidosDesigna");
+			String idJuzgado = (String) ht.get("idJuzgado");
+			idInstitucion = (String) ht.get("idInstitucion");
+			idTipoInforme = (String) ht.get("idTipoInforme");
+//			ArrayList alDesignas = (ArrayList) ht.get("idDesignas");
+			plantillas = (String) ht.get("plantillas");
+			String idSolicitanteJG = (String) ht.get("idPersonaJG");
+
+			List<EnvDestProgramInformesBean> lDestinatarios = new ArrayList<EnvDestProgramInformesBean>();
+			List<String> lDestPersonas = new ArrayList<String>();
+			if(!isInformeProgramado){
+				programInformes = new EnvProgramInformesBean();
+				programInformes.setIdProgram(programInformesAdm.getNewIdProgramInformes(idInstitucion));
+				programInformes.setIdEnvio(envioProgramado.getIdEnvio());
+				programInformes.setIdInstitucion(envioProgramado.getIdInstitucion());
+				idioma = userBean.getLanguage();
+				programInformes.setIdioma(new Integer(idioma));
+				programInformes.setEstado(ClsConstants.DB_FALSE);
+				programInformes.setPlantillas(plantillas);
+				programInformes.setIdTipoInforme(idTipoInforme);
+
+				programInformesAdm.insert(programInformes);
+
+				informesBean = new EnvInformesGenericosBean();
+				informesBean.setIdProgram(programInformes.getIdProgram());
+				informesBean.setIdEnvio(programInformes.getIdEnvio());
+				informesBean.setIdInstitucion(programInformes.getIdInstitucion());
+
+				vPlantillas = getPlantillasInforme(plantillas, idInstitucion, userBean);
+
 
 				for (int j = 0; j < vPlantillas.size(); j++) {
 					AdmInformeBean informeBean = (AdmInformeBean)vPlantillas.get(j);
-
-
-
-					String tiposDestinatario = informeBean.getDestinatarios();
 					informesBean.setIdPlantilla(informeBean.getIdPlantilla());
-					if(tiposDestinatario!=null){
-						char[] tipoDestinatario = tiposDestinatario.toCharArray();
-						for (int k = 0; k < tipoDestinatario.length; k++) {
+					informesGenericoAdm.insert(informesBean);
+
+				}
+
+
+
+				isInformeProgramado = true;
+
+
+
+			}
+
+
+
+			for (int j = 0; j < vPlantillas.size(); j++) {
+				AdmInformeBean informeBean = (AdmInformeBean)vPlantillas.get(j);
+
+
+
+				String tiposDestinatario = informeBean.getDestinatarios();
+				informesBean.setIdPlantilla(informeBean.getIdPlantilla());
+				if(tiposDestinatario!=null){
+					char[] tipoDestinatario = tiposDestinatario.toCharArray();
+					for (int k = 0; k < tipoDestinatario.length; k++) {
+						if(idSolicitanteJG!=null && !idSolicitanteJG.equals("")){
+
+							if(String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG)){
+								for (int jta = 0; jta< vDefendifosDesigna.size(); jta++) {
+									Hashtable htDefendido = (Hashtable)vDefendifosDesigna.get(jta);
+									String idPersonaJG = (String) htDefendido.get(ScsDefendidosDesignaBean.C_IDPERSONA);
+									if(idPersonaJG.equals(idSolicitanteJG)){
+										destProgramInformes = new EnvDestProgramInformesBean();
+										destProgramInformes.setIdProgram(programInformes.getIdProgram());
+										destProgramInformes.setIdEnvio(programInformes.getIdEnvio());
+										destProgramInformes.setIdInstitucion(programInformes.getIdInstitucion());
+										destProgramInformes.setIdPersona(new Long(idPersonaJG));
+										destProgramInformes.setIdInstitucionPersona(new Integer(idInstitucion));
+										destProgramInformes.setTipoDestinatario(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG);
+
+										if(!lPersonas.contains(idPersonaJG)){
+											destProgramInformesAdm.insert(destProgramInformes);
+											lPersonas.add(idPersonaJG);
+										}
+
+										if(!lDestPersonas.contains(idPersonaJG)){
+											lDestinatarios.add(destProgramInformes);
+											lDestPersonas.add(idPersonaJG);
+
+										}
+									}
+
+
+								}
+							}
+
+
+
+						}else{
 							if(String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_CENPERSONA)){
 								destProgramInformes = new EnvDestProgramInformesBean();
 								destProgramInformes.setIdProgram(programInformes.getIdProgram());
@@ -2606,46 +2640,48 @@ public class EnvioInformesGenericos extends MasterReport {
 								}
 							}else if(String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSJUZGADO)){
 								//TODO SCS_JUZGADOSJG
-							} 
-
+							}
 						}
+
 					}
 
 				}
 
-
-
-				
-				EnvValorCampoClaveBean valorCampoClave = null;
-				
-				
-					//Iterator itClave = htClaves.keySet().iterator();
-					valorCampoClave = new EnvValorCampoClaveBean();
-					for (int k = 0; k < lDestinatarios.size(); k++) {
-						destProgramInformes = (EnvDestProgramInformesBean) lDestinatarios.get(k);  
-					
-						valorCampoClave.setIdValor(valorCampoClaveAdm.getNewIdEnvio());
-						for (int j = 0; j < alClavesDesigna.size(); j++) {
-							String  clave = (String)alClavesDesigna.get(j);
-							String valorClave = (String)ht.get(clave);
-							valorCampoClave.setIdProgram(destProgramInformes.getIdProgram());
-							valorCampoClave.setIdEnvio(destProgramInformes.getIdEnvio());
-							valorCampoClave.setIdInstitucion(destProgramInformes.getIdInstitucion());
-							valorCampoClave.setIdPersona(destProgramInformes.getIdPersona());
-							valorCampoClave.setIdInstitucionPersona(destProgramInformes.getIdInstitucionPersona());
-							
-							valorCampoClave.setIdTipoInforme(idTipoInforme);
-							valorCampoClave.setClave("idDesignas");
-							valorCampoClave.setCampo(clave);
-							valorCampoClave.setValor(valorClave);
-							valorCampoClaveAdm.insert(valorCampoClave);
-							
-						}
-					}
-
 			}
 
-			setEnvioBatch(true);
+
+
+
+			EnvValorCampoClaveBean valorCampoClave = null;
+
+
+			//Iterator itClave = htClaves.keySet().iterator();
+			valorCampoClave = new EnvValorCampoClaveBean();
+			for (int k = 0; k < lDestinatarios.size(); k++) {
+				destProgramInformes = (EnvDestProgramInformesBean) lDestinatarios.get(k);  
+
+				valorCampoClave.setIdValor(valorCampoClaveAdm.getNewIdEnvio());
+				for (int j = 0; j < alClavesDesigna.size(); j++) {
+					String  clave = (String)alClavesDesigna.get(j);
+					String valorClave = (String)ht.get(clave);
+					valorCampoClave.setIdProgram(destProgramInformes.getIdProgram());
+					valorCampoClave.setIdEnvio(destProgramInformes.getIdEnvio());
+					valorCampoClave.setIdInstitucion(destProgramInformes.getIdInstitucion());
+					valorCampoClave.setIdPersona(destProgramInformes.getIdPersona());
+					valorCampoClave.setIdInstitucionPersona(destProgramInformes.getIdInstitucionPersona());
+
+					valorCampoClave.setIdTipoInforme(idTipoInforme);
+					valorCampoClave.setClave("idDesignas");
+					valorCampoClave.setCampo(clave);
+					valorCampoClave.setValor(valorClave);
+					valorCampoClaveAdm.insert(valorCampoClave);
+
+				}
+			}
+
+		}
+
+		setEnvioBatch(true);
 
 		//}
 		//return isEnvioBatch;
