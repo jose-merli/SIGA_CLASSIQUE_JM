@@ -6,11 +6,14 @@ package com.siga.general;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.siga.Utilidades.UtilidadesBDAdm;
+import com.siga.Utilidades.UtilidadesHash;
 
 
 /**
@@ -586,34 +589,75 @@ public class EjecucionPLs {
 	} //ejecutarPL_OrdenaColegiadosTurno()
 	
 	
-	public static String[] ejecutarPLExportarGuardias(String idPersona, String idInstitucion, String idFacturacion, 
-			String idPago, String pathFicheros, String nombreFichero, String cabeceras, String idioma) throws ClsExceptions{
-		Object[] param_in; //Parametros de entrada del PL
-		String resultado[] = null; //Parametros de salida del PL
-	
-		try {
-			resultado = new String[2];
-			param_in = new Object[8];
-			param_in[0] = idInstitucion; 					// IDINSTITUCION
-			param_in[1] = idFacturacion; 					// IDFACTURACION
-			param_in[2] = (idPago == null?"":idPago); 		// IDPAGO
-			param_in[3] = (idPersona == null?"":idPersona); // IDPERSONA
-			param_in[4] = pathFicheros;						// PATH_FICHEROS 
-			param_in[5] = nombreFichero;
-			param_in[6] = cabeceras;
-			param_in[7] = idioma;
+	public static String ejecutarPLExportarTurno(String idInstitucion,
+			String idFacturacionDesde, String idFacturacionHasta, String idPersona,
+			String pathFichero, String fichero, String idioma)
+			throws ClsExceptions
+	{
+		Object[] param_in; // Parametros de entrada del PL
+		String resultado[] = null; // Parametros de salida del PL
 
-			//Ejecucion del PL
-		    resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION_SJCS.proc_fcs_exportar_guardias (?,?,?,?,?,?,?,?,?,?)}", 2, param_in);
-			
-		} catch (Exception e){
-			resultado[0] = "1"; //ERROR P_CODRETORNO
-	    	resultado[1] = "ERROR"; //ERROR P_DATOSERROR        	
+		try {
+	    	param_in = new Object[7];
+			param_in[0] = idInstitucion;
+			param_in[1] = idFacturacionDesde;
+			param_in[2] = (idFacturacionHasta == null ? "" : idFacturacionHasta);
+			param_in[3] = (idPersona == null ? "" : idPersona);
+			param_in[4] = pathFichero;
+			param_in[5] = fichero;
+			param_in[6] = idioma;
+
+			// Ejecucion del PL
+			resultado = ClsMngBBDD
+					.callPLProcedure(
+							"{call PKG_SIGA_FACTURACION_SJCS.PROC_FCS_EXPORTAR_TURNOS_OFI (?,?,?,?,?,?,?,?,?)}",
+							2, param_in);
+	    	if (!resultado[0].equalsIgnoreCase("0")) {
+	    		ClsLogging.writeFileLog("Error en PL = "+(String)resultado[1],3);
+	    	}
+
+		} catch (Exception e) {
+    		throw new ClsExceptions ("Error al exportar datos: " + e.getMessage());			
 		}
-	    
-	    //Resultado del PL        
-	    return resultado;
-	}
+
+		// Resultado del PL
+		return resultado[0];
+	} // ejecutarPLExportarTurno()
+	
+	public static String ejecutarPLExportarGuardias(String idInstitucion,
+			String idFacturacionDesde, String idFacturacionHasta, String idPersona,
+			String pathFichero, String fichero, String idioma)
+			throws ClsExceptions
+	{
+		Object[] param_in; // Parametros de entrada del PL
+		String resultado[] = null; // Parametros de salida del PL
+
+		try {
+	    	param_in = new Object[7];
+			param_in[0] = idInstitucion;
+			param_in[1] = idFacturacionDesde;
+			param_in[2] = (idFacturacionHasta == null ? "" : idFacturacionHasta);
+			param_in[3] = (idPersona == null ? "" : idPersona);
+			param_in[4] = pathFichero;
+			param_in[5] = fichero;
+			param_in[6] = idioma;
+
+			// Ejecucion del PL
+			resultado = ClsMngBBDD
+					.callPLProcedure(
+							"{call PKG_SIGA_FACTURACION_SJCS.PROC_FCS_EXPORTAR_GUARDIAS (?,?,?,?,?,?,?,?,?)}",
+							2, param_in);
+	    	if (!resultado[0].equalsIgnoreCase("0")) {
+	    		ClsLogging.writeFileLog("Error en PL = "+(String)resultado[1],3);
+	    	}
+
+		} catch (Exception e) {
+    		throw new ClsExceptions ("Error al exportar datos: " + e.getMessage());			
+		}
+
+		// Resultado del PL
+		return resultado[0];
+	} // ejecutarPLExportarGuardias()
 	
 	public static String[] ejecutarPLExportarSoj(String idInstitucion, String idFacturacion,String idPago, String idPersona, String pathFichero, String fichero, String cabeceras) throws ClsExceptions{
 		Object[] param_in; //Parametros de entrada del PL

@@ -180,111 +180,7 @@ public class UtilidadesFacturacionSJCS
 		
 		try
 		{
-			if (concepto == ClsConstants.HITO_GENERAL_TURNO)
-			{
-				cabecera =
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.numColLetrado") 			+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.letrado") 					+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.turno") 					+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.fecha") 					+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.fechaActuacion")			+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.fechaJustificacion") 		+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.nDesigna") 					+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.nAct") 						+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.codigoProc") 				+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.procedimientoActuacion")	+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.pretension")	 			+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.importeProcedimiento") 		+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.tipoAcreditacion") 			+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.importe") 					+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.separadorOtrosCampos")		+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.nProcedimiento") 			+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.numDocAsistido")			+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.Litigante") 				+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.juzgado") 					+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.localidad") 				+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.turnoAsistencia")			+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.guardiaAsistencia")			+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.nAsist")	 				+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.nExpEJG") 					+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.nExpCAJG") 					+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.totalLetrado") 				+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.totalAcumulado");
-				
-				// Si es un pago
-				if (tipoCabecera.equalsIgnoreCase(ClsConstants.PAGOS_SJCS))
-					cabecera +=
-					"#" +
-					UtilidadesFacturacionSJCS.construirCabeceraPago(usuario);
-			}
-			else if (concepto == ClsConstants.HITO_GENERAL_GUARDIA && !tipoCabecera.equalsIgnoreCase("3001"))
-			{
-				cabecera =
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.numColLetrado") 			+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.letrado") 					+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.turno") 					+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.guardia") 					+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.tipoApunte")				+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.fechainicio") 				+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.fechafin") 					+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.fechaActuacion")			+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.fechaJustificacion")		+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.nAsist")					+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.nAct")						+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.motivo") 					+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.numActuacionesFacturadas") 	+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.numActuacFGFacturadas") 	+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.numAsistenciasFacturadas") 	+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.numActuacionesTotales") 	+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.numActuacFGTotales")	 	+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.numAsistenciasTotales") 	+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.importe") 					+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.costesFijos") 				+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.total")             		+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.separadorOtrosCampos")		+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.numDocAsistido")			+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.asistido")					+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.delitos") 					+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.lugar") 					+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.localidad") 				+ "#" +
-					
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.totalLetrado");
-				
-				// Si es un pago
-				if (tipoCabecera.equalsIgnoreCase(ClsConstants.PAGOS_SJCS))
-					cabecera +=
-					"#" +
-					UtilidadesFacturacionSJCS.construirCabeceraPagoGuardias(usuario);
-			}
-			else if (concepto == ClsConstants.HITO_GENERAL_GUARDIA && tipoCabecera.equalsIgnoreCase("3001"))
-			{
-				cabecera =
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.numColLetrado") 			+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.letrado") 					+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.turno") 					+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.guardia") 					+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.tipoApunte")				+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.fechainicio") 				+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.fechafin") 					+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.fechaActuacion")			+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.fechaJustificacion")		+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.nAsist")					+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.nAct")						+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.numActuacionesFacturadas") 	+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.numActuacFGFacturadas") 	+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.numActuacionesTotales") 	+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.numActuacFGTotales")	 	+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.importeGuardia")		 	+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.costesFijos")				+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.totalGuardia")				+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.separadorOtrosCampos")		+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.numDocAsistido")			+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.asistido")					+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.delitos") 					+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.lugar") 					+ "#" +
-					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.localidad");
-			}
-			else if (concepto == ClsConstants.HITO_GENERAL_SOJ)
+			if (concepto == ClsConstants.HITO_GENERAL_SOJ)
 			{
 				cabecera =
 					UtilidadesString.getMensajeIdioma(usuario, "fcs.ficheroFacturacion.cabecera.tramitador") 				+ "#" +
@@ -397,23 +293,19 @@ public class UtilidadesFacturacionSJCS
 			AdmLenguajesBean beanLenguajeIntitucion = admLen.getLenguajeInstitucion(idInstitucion.toString());
 
 			// TURNOS DE OFICIO
-			Object[] param_in_turno = new Object[8];
-			param_in_turno[0] = idInstitucion.toString(); 					// IDINSTITUCION
-			param_in_turno[1] = idFacturacion.toString(); 					// IDFACTURACION
-			param_in_turno[2] = (idPago    == null?"":idPago.toString()); 	// IDPAGO
-			param_in_turno[3] = (idPersona == null?"":idPersona.toString()); 	// IDPERSONA
-			param_in_turno[4] = pathFicheros;									// PATH_FICHEROS 
-			param_in_turno[5] = UtilidadesHash.getString(nombreFicheros, "" + ClsConstants.HITO_GENERAL_TURNO);
-			param_in_turno[6] = UtilidadesFacturacionSJCS.getCabecerasFicheros(ClsConstants.HITO_GENERAL_TURNO,tipoP, usuario);
-			param_in_turno[7] = beanLenguajeIntitucion.getIdLenguaje();				// IDOMA 
-			String resultado[] = new String[2];
-	    	resultado = /*EjecucionPLs.ejecutarPLExportarTurnosOficio()*/ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION_SJCS.PROC_FCS_EXPORTAR_TURNOS_OFI (?,?,?,?,?,?,?,?,?,?)}", 2, param_in_turno);
-	    	if (!resultado[0].equalsIgnoreCase("0")) {
-	    		ClsLogging.writeFileLog("Error en PL = "+(String)resultado[1],3);
-	    	}
+	    	EjecucionPLs.ejecutarPLExportarTurno(
+	    			idInstitucion.toString(),
+	    			idFacturacion.toString(), 
+	    			null, 
+	    			(idPersona == null ? "" : idPersona.toString()), 
+	    			pathFicheros, 
+	    			UtilidadesHash.getString(nombreFicheros, "" + 
+	    					ClsConstants.HITO_GENERAL_TURNO), 
+	    			beanLenguajeIntitucion.getIdLenguaje());
 
 
-			Object[] param_in = new Object[7];	    	
+			Object[] param_in = new Object[7];
+			String[] resultado;
 			param_in[0] = idInstitucion.toString(); 					// IDINSTITUCION
 			param_in[1] = idFacturacion.toString(); 					// IDFACTURACION
 			param_in[2] = (idPago    == null?"":idPago.toString()); 	// IDPAGO
@@ -438,35 +330,16 @@ public class UtilidadesFacturacionSJCS
 	    		ClsLogging.writeFileLog("Error en PL = "+(String)resultado[1],3);
 	    	}
 
-	    	// GUARDIAS Solo se pasa el idioma cuando exportamos guardias
-	    	Object[] param_in1 = new Object[8];
-			param_in1[0] = idInstitucion.toString(); 					// IDINSTITUCION
-			param_in1[1] = idFacturacion.toString(); 					// IDFACTURACION
-			param_in1[2] = (idPago    == null?"":idPago.toString()); 	// IDPAGO
-			param_in1[3] = (idPersona == null?"":idPersona.toString()); 	// IDPERSONA
-			param_in1[4] = pathFicheros;									// PATH_FICHEROS 
-			param_in1[7] = beanLenguajeIntitucion.getIdLenguaje();				// IDOMA 
-			param_in1[5] = UtilidadesHash.getString(nombreFicheros, "" + ClsConstants.HITO_GENERAL_GUARDIA);
-			param_in1[6] = UtilidadesFacturacionSJCS.getCabecerasFicheros(ClsConstants.HITO_GENERAL_GUARDIA, 
-					(idInstitucion.intValue() == 2012 ||
-					idInstitucion.intValue() == 2026 ||
-					idInstitucion.intValue() == 2028 ||
-					idInstitucion.intValue() == 2030 ||
-					idInstitucion.intValue() == 2041 ||
-					idInstitucion.intValue() == 2047 ||
-					idInstitucion.intValue() == 2048 ||
-					idInstitucion.intValue() == 2057 ||
-					idInstitucion.intValue() == 2059 ||
-					idInstitucion.intValue() == 2061 ||
-					idInstitucion.intValue() == 2071 ||
-					idInstitucion.intValue() == 2072 ||
-					idInstitucion.intValue() == 2075 ||
-					idInstitucion.intValue() == 2079 ? "3001":tipoP),usuario);
-	    	resultado = new String[2];
-	    	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION_SJCS.proc_fcs_exportar_guardias (?,?,?,?,?,?,?,?,?,?)}", 2, param_in1);
-	    	if (!resultado[0].equalsIgnoreCase("0")) {
-	    		ClsLogging.writeFileLog("Error en PL = "+(String)resultado[1],3);
-	    	}
+	    	// GUARDIAS
+	    	EjecucionPLs.ejecutarPLExportarGuardias(
+	    			idInstitucion.toString(),
+	    			idFacturacion.toString(), 
+	    			null, 
+	    			(idPersona == null ? "" : idPersona.toString()), 
+	    			pathFicheros, 
+	    			UtilidadesHash.getString(nombreFicheros, "" + 
+	    					ClsConstants.HITO_GENERAL_GUARDIA), 
+	    			beanLenguajeIntitucion.getIdLenguaje());
 		}
 		catch (Exception e) {
     		throw new SIGAException ("Error al exportar datos: " + e.getMessage());			
@@ -536,11 +409,43 @@ public class UtilidadesFacturacionSJCS
 					lFacturacionesGuardias.add(aux);
 				}
 			}
+			
+			//El lenguaje de los informes es el de la institucion a la que pertenecen las
+			//facturaciones, no tiene que ver con el usuario que la genera. Ademas si es un
+			//proceso automatica el userBean Automatico tiene por defecto el idioma
+			//español que seria un error para lo colegios con otro idioma.
+			//Por lo tanto accedemos al idioma de cada institucion
+			AdmLenguajesAdm admLen = new AdmLenguajesAdm(usuario);
+			AdmLenguajesBean beanLenguajeIntitucion = admLen.getLenguajeInstitucion(idInstitucion.toString());
 
 			ListOfFiles lFicheros = null;
 
 			// TURNOS DE OFICIO
-			if (!lFacturacionesTurno.isEmpty()) {
+			if (idInstitucion.intValue() == 2012 ||
+				idInstitucion.intValue() == 2026 ||
+				idInstitucion.intValue() == 2028 ||
+				idInstitucion.intValue() == 2030 ||
+				idInstitucion.intValue() == 2041 ||
+				idInstitucion.intValue() == 2047 ||
+				idInstitucion.intValue() == 2048 ||
+				idInstitucion.intValue() == 2057 ||
+				idInstitucion.intValue() == 2059 ||
+				idInstitucion.intValue() == 2061 ||
+				idInstitucion.intValue() == 2071 ||
+				idInstitucion.intValue() == 2072 ||
+				idInstitucion.intValue() == 2075 ||
+				idInstitucion.intValue() == 2079)
+			{
+		    	EjecucionPLs.ejecutarPLExportarTurno(
+		    			idInstitucion.toString(),
+		    			idFacturacionIni.toString(), 
+		    			(idFacturacionFin == null ? "" : idFacturacionFin.toString()), 
+		    			null, 
+		    			pathFicheros, 
+		    			nombreFich + "TURNOSOFICIO" + extensionFichero, 
+		    			beanLenguajeIntitucion.getIdLenguaje());
+			}
+			else if (!lFacturacionesGuardias.isEmpty()) {
 				String sFicheroTurnos = nombreFichConRuta + "TURNOSOFICIO"
 						+ extensionFichero;
 				lFicheros = new ListOfFiles((String[]) lFacturacionesTurno
@@ -566,13 +471,6 @@ public class UtilidadesFacturacionSJCS
 						.toArray(new String[lFacturacionesSOJ.size()]));
 				UtilidadesFicheros.concatenarFicheros(lFicheros, sFicheroSOJ);
 			}
-			//El lenguaje de los informes es el de la institucion a la que pertenecen las
-			//facturaciones, no tiene que ver con el usuario que la genera. Ademas si es un
-			//proceso automatica el userBean Automatico tiene por defecto el idioma
-			//español que seria un error para lo colegios con otro idioma.
-			//Por lo tanto accedemos al idioma de cada institucion
-			AdmLenguajesAdm admLen = new AdmLenguajesAdm(usuario);
-			AdmLenguajesBean beanLenguajeIntitucion = admLen.getLenguajeInstitucion(idInstitucion.toString());
 			
 			// GUARDIAS
 			if (idInstitucion.intValue() == 2012 ||
@@ -588,30 +486,16 @@ public class UtilidadesFacturacionSJCS
 				idInstitucion.intValue() == 2071 ||
 				idInstitucion.intValue() == 2072 ||
 				idInstitucion.intValue() == 2075 ||
-				idInstitucion.intValue() == 2079) {
-				// GUARDIAS Solo se pasa el idioma cuando exportamos
-				// guardias
-				Object[] param_in1 = new Object[7];
-				param_in1[0] = idInstitucion.toString(); // IDINSTITUCION
-				param_in1[1] = idFacturacionIni.toString(); // IDFACTURACION
-				param_in1[2] = (idFacturacionFin == null ? ""
-						: idFacturacionFin.toString()); // IDPAGO
-				param_in1[3] = pathFicheros; // PATH_FICHEROS
-				param_in1[4] = nombreFich + "GUARDIAS" + extensionFichero;
-				param_in1[5] = UtilidadesFacturacionSJCS
-						.getCabecerasFicheros(
-								ClsConstants.HITO_GENERAL_GUARDIA,
-								"3001", usuario);
-				param_in1[6] = beanLenguajeIntitucion.getIdLenguaje(); // IDOMA
-				String[] resultado = new String[2];
-				resultado = ClsMngBBDD
-						.callPLProcedure(
-								"{call PKG_SIGA_FACTURACION_SJCS.proc_exportar_guardias_3001 (?,?,?,?,?,?,?,?,?)}",
-								2, param_in1);
-				if (!resultado[0].equalsIgnoreCase("0")) {
-					ClsLogging.writeFileLog("Error en PL = "
-							+ (String) resultado[1], 3);
-				}
+				idInstitucion.intValue() == 2079)
+			{
+		    	EjecucionPLs.ejecutarPLExportarGuardias(
+		    			idInstitucion.toString(),
+		    			idFacturacionIni.toString(), 
+		    			(idFacturacionFin == null ? "" : idFacturacionFin.toString()), 
+		    			null, 
+		    			pathFicheros, 
+		    			nombreFich + "GUARDIAS" + extensionFichero, 
+		    			beanLenguajeIntitucion.getIdLenguaje());
 			}
 			else if (!lFacturacionesGuardias.isEmpty()) {
 				String sFicheroGuardias = nombreFichConRuta + "GUARDIAS"
