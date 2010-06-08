@@ -1236,7 +1236,7 @@ public class EnvioInformesGenericos extends MasterReport {
 	 * @throws SIGAException
 	 */
 
-	public Vector getPlantillas(String plantillas, String idInstitucion,
+	public Vector getPlantillasInforme(String plantillas, String idInstitucion,
 			UsrBean usr) throws ClsExceptions, SIGAException {
 
 		String d[] = plantillas.split("@@");
@@ -1244,9 +1244,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		AdmInformeAdm admInforme = new AdmInformeAdm(usr);
 
 		for (int i = 0; i < d.length; i++) {
-			String plantilla = d[i];
-			String strPlantilla[] = plantilla.split(",");
-			String idPlantilla = strPlantilla[0]; 
+			String idPlantilla = d[i];
 			AdmInformeBean beanInforme = admInforme.obtenerInforme(
 					idInstitucion, idPlantilla);
 			vPlantillas.add(beanInforme);
@@ -1411,7 +1409,7 @@ public class EnvioInformesGenericos extends MasterReport {
 				if (datosInforme != null) {
 					//cargando plantillas una sola vez
 					if (vPlantillas == null) {
-						vPlantillas = getPlantillas((String) datosInforme.get("plantillas"), usr
+						vPlantillas = getPlantillasInforme((String) datosInforme.get("plantillas"), usr
 								.getLocation(), usr);
 					}
 					
@@ -1897,7 +1895,7 @@ public class EnvioInformesGenericos extends MasterReport {
 				if(vPlantillas==null){
 					String plantillas = (String) datosInforme.get("plantillas");
 
-					vPlantillas = this.getPlantillas(plantillas,userBean.getLocation(),userBean);
+					vPlantillas = this.getPlantillasInforme(plantillas,userBean.getLocation(),userBean);
 				}
 				vDocumentos.addAll(this.getDocumentosAEnviar(datosInforme,vPlantillas, userBean,EnvioInformesGenericos.docDocument,EnvioInformesGenericos.comunicacionesCenso));							
 
@@ -1991,7 +1989,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 			}
 
-			Vector vPlantillas = this.getPlantillas(plantillas,programInformes.getIdInstitucion().toString(),userBean);
+			Vector vPlantillas = this.getPlantillasInforme(plantillas,programInformes.getIdInstitucion().toString(),userBean);
 			informesBean = new EnvInformesGenericosBean();
 			informesBean.setIdProgram(programInformes.getIdProgram());
 			informesBean.setIdEnvio(programInformes.getIdEnvio());
@@ -2025,7 +2023,7 @@ public class EnvioInformesGenericos extends MasterReport {
 				if(vPlantillas==null){
 					String plantillas = (String) datosInforme.get("plantillas");
 
-					vPlantillas = this.getPlantillas(plantillas,userBean.getLocation(),userBean);
+					vPlantillas = this.getPlantillasInforme(plantillas,userBean.getLocation(),userBean);
 				}
 				vDocumentos.addAll(this.getDocumentosAEnviar(datosInforme,vPlantillas, userBean,EnvioInformesGenericos.docDocument,EnvioInformesGenericos.comunicacionesPagoColegiados));							
 
@@ -2182,7 +2180,7 @@ public class EnvioInformesGenericos extends MasterReport {
 				if(vPlantillas==null){
 					String plantillas = (String) datosInforme.get("plantillas");
 
-					vPlantillas = this.getPlantillas(plantillas,userBean.getLocation(),userBean);
+					vPlantillas = this.getPlantillasInforme(plantillas,userBean.getLocation(),userBean);
 				}
 				//en el metodo getDatosInformeFinal metemos la key definitiva idFacturas en el datosInforme
 				vDocumentos.addAll(this.getDocumentosAEnviar(datosInforme,vPlantillas, userBean,EnvioInformesGenericos.docDocument,EnvioInformesGenericos.comunicacionesMorosos));
@@ -2316,7 +2314,7 @@ public class EnvioInformesGenericos extends MasterReport {
 				}
 			}
 
-			Vector vPlantillas = this.getPlantillas(plantillas,programInformes.getIdInstitucion().toString(),userBean);
+			Vector vPlantillas = this.getPlantillasInforme(plantillas,programInformes.getIdInstitucion().toString(),userBean);
 			informesBean = new EnvInformesGenericosBean();
 			informesBean.setIdProgram(programInformes.getIdProgram());
 			informesBean.setIdEnvio(programInformes.getIdEnvio());
@@ -2499,6 +2497,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			//Ponemos esta lista para comprobar que no se ha insertado el destinatario
 			
 			List<String> lPersonas = new ArrayList<String>();
+			Vector vPlantillas = null;
 			for (int i = 0; i < vCampos.size(); i++) {
 				Hashtable ht = (Hashtable) vCampos.get(i); 
 				String idPersona = (String) ht.get("idPersona");
@@ -2508,7 +2507,7 @@ public class EnvioInformesGenericos extends MasterReport {
 				idTipoInforme = (String) ht.get("idTipoInforme");
 //				ArrayList alDesignas = (ArrayList) ht.get("idDesignas");
 				plantillas = (String) ht.get("plantillas");
-
+				
 
 				List<EnvDestProgramInformesBean> lDestinatarios = new ArrayList<EnvDestProgramInformesBean>();
 				List<String> lDestPersonas = new ArrayList<String>();
@@ -2529,16 +2528,13 @@ public class EnvioInformesGenericos extends MasterReport {
 					informesBean.setIdProgram(programInformes.getIdProgram());
 					informesBean.setIdEnvio(programInformes.getIdEnvio());
 					informesBean.setIdInstitucion(programInformes.getIdInstitucion());
+					
+					vPlantillas = getPlantillasInforme(plantillas, idInstitucion, userBean);
+					
 
-					String d[] = plantillas.split("@@");
-					AdmInformeAdm admInforme = new AdmInformeAdm(userBean);
-					for (int j = 0; j < d.length; j++) {
-						
-						String plantilla = d[j];
-						String strPlantilla[] = plantilla.split(",");
-						String idPlantilla = strPlantilla[0]; 
-						String tiposDestinatario = strPlantilla[1];
-						informesBean.setIdPlantilla(idPlantilla);
+					for (int j = 0; j < vPlantillas.size(); j++) {
+						AdmInformeBean informeBean = (AdmInformeBean)vPlantillas.get(j);
+						informesBean.setIdPlantilla(informeBean.getIdPlantilla());
 						informesGenericoAdm.insert(informesBean);
 						
 					}
@@ -2553,72 +2549,71 @@ public class EnvioInformesGenericos extends MasterReport {
 				
 			
 
-				String d[] = plantillas.split("@@");
-				AdmInformeAdm admInforme = new AdmInformeAdm(userBean);
-				for (int j = 0; j < d.length; j++) {
-					
-					String plantilla = d[j];
-					String strPlantilla[] = plantilla.split(",");
-					String idPlantilla = strPlantilla[0]; 
-					String tiposDestinatario = strPlantilla[1];
-					informesBean.setIdPlantilla(idPlantilla);
-					
-					char[] tipoDestinatario = tiposDestinatario.toCharArray();
-					for (int k = 0; k < tipoDestinatario.length; k++) {
-						if(String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_CENPERSONA)){
-							destProgramInformes = new EnvDestProgramInformesBean();
-							destProgramInformes.setIdProgram(programInformes.getIdProgram());
-							destProgramInformes.setIdEnvio(programInformes.getIdEnvio());
-							destProgramInformes.setIdInstitucion(programInformes.getIdInstitucion());
-							destProgramInformes.setIdPersona(new Long(idPersona));
-							destProgramInformes.setIdInstitucionPersona(new Integer(idInstitucion));
-							destProgramInformes.setTipoDestinatario(EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA);
-							if(!lPersonas.contains(idPersona)){
-								destProgramInformesAdm.insert(destProgramInformes);
-								lPersonas.add(idPersona);
-								
-							}
-							if(!lDestPersonas.contains(idPersona)){
-								lDestinatarios.add(destProgramInformes);
-								lDestPersonas.add(idPersona);
-								
-							}
-							
-							
-						}else if(String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG)){
-							for (int jta = 0; jta< vDefendifosDesigna.size(); jta++) {
-								Hashtable htDefendido = (Hashtable)vDefendifosDesigna.get(jta);
-								String idPersonaJG = (String) htDefendido.get(ScsDefendidosDesignaBean.C_IDPERSONA);
+				for (int j = 0; j < vPlantillas.size(); j++) {
+					AdmInformeBean informeBean = (AdmInformeBean)vPlantillas.get(j);
+
+
+
+					String tiposDestinatario = informeBean.getDestinatarios();
+					informesBean.setIdPlantilla(informeBean.getIdPlantilla());
+					if(tiposDestinatario!=null){
+						char[] tipoDestinatario = tiposDestinatario.toCharArray();
+						for (int k = 0; k < tipoDestinatario.length; k++) {
+							if(String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_CENPERSONA)){
 								destProgramInformes = new EnvDestProgramInformesBean();
 								destProgramInformes.setIdProgram(programInformes.getIdProgram());
 								destProgramInformes.setIdEnvio(programInformes.getIdEnvio());
 								destProgramInformes.setIdInstitucion(programInformes.getIdInstitucion());
-								destProgramInformes.setIdPersona(new Long(idPersonaJG));
+								destProgramInformes.setIdPersona(new Long(idPersona));
 								destProgramInformes.setIdInstitucionPersona(new Integer(idInstitucion));
-								destProgramInformes.setTipoDestinatario(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG);
-								
-								if(!lPersonas.contains(idPersonaJG)){
+								destProgramInformes.setTipoDestinatario(EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA);
+								if(!lPersonas.contains(idPersona)){
 									destProgramInformesAdm.insert(destProgramInformes);
-									lPersonas.add(idPersonaJG);
+									lPersonas.add(idPersona);
+
 								}
-								
-								if(!lDestPersonas.contains(idPersonaJG)){
+								if(!lDestPersonas.contains(idPersona)){
 									lDestinatarios.add(destProgramInformes);
-									lDestPersonas.add(idPersonaJG);
-									
+									lDestPersonas.add(idPersona);
+
 								}
-								
-								
-							}
-						}else if(String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSJUZGADO)){
-							//TODO SCS_JUZGADOSJG
-						} 
-						
+
+
+							}else if(String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG)){
+								for (int jta = 0; jta< vDefendifosDesigna.size(); jta++) {
+									Hashtable htDefendido = (Hashtable)vDefendifosDesigna.get(jta);
+									String idPersonaJG = (String) htDefendido.get(ScsDefendidosDesignaBean.C_IDPERSONA);
+									destProgramInformes = new EnvDestProgramInformesBean();
+									destProgramInformes.setIdProgram(programInformes.getIdProgram());
+									destProgramInformes.setIdEnvio(programInformes.getIdEnvio());
+									destProgramInformes.setIdInstitucion(programInformes.getIdInstitucion());
+									destProgramInformes.setIdPersona(new Long(idPersonaJG));
+									destProgramInformes.setIdInstitucionPersona(new Integer(idInstitucion));
+									destProgramInformes.setTipoDestinatario(EnvDestinatariosBean.TIPODESTINATARIO_SCSPERSONAJG);
+
+									if(!lPersonas.contains(idPersonaJG)){
+										destProgramInformesAdm.insert(destProgramInformes);
+										lPersonas.add(idPersonaJG);
+									}
+
+									if(!lDestPersonas.contains(idPersonaJG)){
+										lDestinatarios.add(destProgramInformes);
+										lDestPersonas.add(idPersonaJG);
+
+									}
+
+
+								}
+							}else if(String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSJUZGADO)){
+								//TODO SCS_JUZGADOSJG
+							} 
+
+						}
 					}
-					
+
 				}
-				
-				
+
+
 
 				
 				EnvValorCampoClaveBean valorCampoClave = null;
@@ -2707,7 +2702,7 @@ public class EnvioInformesGenericos extends MasterReport {
 				// Obtengo las plantillas afectadas
 				if(vPlantillas==null){
 					String plantillas = (String) datosInforme.get("plantillas");
-					vPlantillas = this.getPlantillas(plantillas,userBean.getLocation(),userBean);
+					vPlantillas = this.getPlantillasInforme(plantillas,userBean.getLocation(),userBean);
 				}
 				// voy a mirar si alguno de los informes es asolicitantes
 				boolean aSolicitantes = this.esAlgunaASolicitantes(vPlantillas);
@@ -2936,7 +2931,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 			}
 
-			Vector vPlantillas = this.getPlantillas(plantillas,programInformes.getIdInstitucion().toString(),userBean);
+			Vector vPlantillas = this.getPlantillasInforme(plantillas,programInformes.getIdInstitucion().toString(),userBean);
 			informesBean = new EnvInformesGenericosBean();
 			informesBean.setIdProgram(programInformes.getIdProgram());
 			informesBean.setIdEnvio(programInformes.getIdEnvio());

@@ -368,7 +368,7 @@ public class InformeCertificadoIRPF extends MasterReport {
 
 		// Bean envio
 		EnvEnviosBean enviosBean = envio.getEnviosBean();
-		enviosBean.setDescripcion(enviosBean.getIdEnvio()+" "+enviosBean.getDescripcion());
+		enviosBean.setDescripcion(enviosBean.getDescripcion());
 		// trunco la descripción
 		if (enviosBean.getDescripcion().length()>200)  enviosBean.setDescripcion(enviosBean.getDescripcion().substring(0,99));
 
@@ -390,25 +390,25 @@ public class InformeCertificadoIRPF extends MasterReport {
 		envio.generarEnvio(programIRPFBean.getIdPersona().toString(), EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA,vDocumentos);
 		
 	} 
-	public Vector getPlantillas(String plantillas, String idInstitucion,
-			UsrBean usr) throws ClsExceptions, SIGAException {
-
-		String d[] = plantillas.split("@@");
-		Vector vPlantillas = new Vector();
-		AdmInformeAdm admInforme = new AdmInformeAdm(usr);
-
-		for (int i = 0; i < d.length; i++) {
-			String plantilla = d[i];
-			String strPlantilla[] = plantilla.split(",");
-			String idPlantilla = strPlantilla[0]; 
-			AdmInformeBean beanInforme = admInforme.obtenerInforme(
-					idInstitucion, idPlantilla);
-			vPlantillas.add(beanInforme);
-
+	private Vector getPlantillas(String plantillas, String idInstitucion,UsrBean usr)
+	throws ClsExceptions,SIGAException{
+		    
+        String d[]= plantillas.split("@@");
+        Vector vPlantillas = new Vector(); 
+        AdmInformeAdm admInforme = new AdmInformeAdm(usr);
+        
+        for (int i = 0; i < d.length; i++) {
+        	String idPlantilla = d[i];
+        	AdmInformeBean beanInforme = admInforme.obtenerInforme(idInstitucion, idPlantilla);
+        	vPlantillas.add(beanInforme);
+			
 		}
-		return vPlantillas;
-
-	}
+            
+        return vPlantillas;
+    
+		
+		
+	} 
 	
 	
 	

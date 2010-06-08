@@ -657,7 +657,7 @@ public class DefinirEnviosAction extends MasterAction {
 					datosInforme = (Hashtable) vCampos.get(0);
 				}
 				String plantillas = (String) datosInforme.get("plantillas");
-				Vector vPlantillas = informesAdm.getPlantillas(plantillas,userBean.getLocation(),userBean);
+				Vector vPlantillas = informesAdm.getPlantillasInforme(plantillas,userBean.getLocation(),userBean);
 				boolean aSolicitantes = informesAdm.esAlgunaASolicitantes(vPlantillas);
 
 				request.setAttribute("isEditarEnvio",new Boolean(idPersona!=null && !aSolicitantes));
