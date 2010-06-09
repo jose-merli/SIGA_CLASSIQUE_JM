@@ -87,7 +87,7 @@ public class InformeColegiadosPagos extends MasterReport {
 		
 		
 		//Datos Cabecera
-		htAux=this.obtenerDatosPersonaSociedad(institucion,idPersona,usr);
+		htAux=this.obtenerDatosPersonaSociedad(institucion,idPersona,usr, idPagos);
 		
 		
 		String cuenta=(String)htAux.get("CUENTA_CORRIENTE");
@@ -183,7 +183,7 @@ public class InformeColegiadosPagos extends MasterReport {
 	 * @return
 	 * @throws SIGAException
 	 */	
-	protected Hashtable obtenerDatosPersonaSociedad(String idInstitucion, String idPersona, UsrBean user) throws ClsExceptions {
+	protected Hashtable obtenerDatosPersonaSociedad(String idInstitucion, String idPersona, UsrBean user, String idPagos) throws ClsExceptions {
 		Hashtable result= new Hashtable();
 		RowsContainer rc=null;
 		
@@ -303,10 +303,39 @@ public class InformeColegiadosPagos extends MasterReport {
 				 	}
 				 }
 				
-				 
+			String sql1 = "select * from fac_abono where idpersona="+idSociedad +"and idinstitucion="+idInstitucion+" and idpagosjg ="+idPagos;
+			RowsContainer rc1=new RowsContainer();
+			rc1.find(sql1);
+			String idCuenta="";
+			if(rc1!=null && rc1.size()>0){
+				int size=rc1.size();
+				for(int i=0;i<size;i++){
+					Row r1=(Row)rc1.get(i);
+					Hashtable htAux=r1.getRow();
+					 idCuenta=r1.getString("IDCUENTA");
+				}
+			}	
+			
+			if (!(idCuenta.equals(""))){
+				// Datos Bancarios de la sociedad o persona
+		    sql=
+		    	"SELECT DECODE(CUEN.NUMEROCUENTA,NULL,'',CUEN.CBO_CODIGO||' '||CUEN.CODIGOSUCURSAL||' '||CUEN.DIGITOCONTROL||' '||CUEN.NUMEROCUENTA||' '|| substr(BAN.NOMBRE,6)) CUENTA_CORRIENTE" +
+		    	"  FROM CEN_CUENTASBANCARIAS CUEN, CEN_BANCOS BAN" +
+		    	" WHERE BAN.CODIGO = CUEN.CBO_CODIGO " +
+		    	"   AND CUEN.FECHABAJA IS NULL " +
+		    	"   AND CUEN.Idcuenta = "+idCuenta +
+		    	"   AND CUEN.IDINSTITUCION = "+idInstitucion+
+		    	"   AND CUEN.IDPERSONA = " +idSociedad;
+			rc = new RowsContainer();
+			rc.find(sql);
+			if(rc!=null && rc.size()>0){
+				Row r=(Row)rc.get(0);
+				result.putAll(r.getRow());
+			}
+			}else result.put("CUENTA_CORRIENTE","");
 
 			// Datos Bancarios de la sociedad o persona
-		    sql=
+		 /*  sql=
 		    	"SELECT DECODE(CUEN.NUMEROCUENTA,NULL,'',CUEN.CBO_CODIGO||' '||CUEN.CODIGOSUCURSAL||' '||CUEN.DIGITOCONTROL||' '||CUEN.NUMEROCUENTA||' '|| substr(BAN.NOMBRE,6)) CUENTA_CORRIENTE" +
 		    	"  FROM CEN_CUENTASBANCARIAS CUEN, CEN_BANCOS BAN" +
 		    	" WHERE BAN.CODIGO = CUEN.CBO_CODIGO " +
@@ -319,7 +348,7 @@ public class InformeColegiadosPagos extends MasterReport {
 			if(rc!=null && rc.size()>0){
 				Row r=(Row)rc.get(0);
 				result.putAll(r.getRow());
-			}
+			}*/
 			
 		} catch (Exception e) {
 			throw new ClsExceptions(e,"Error al generar el informe");
