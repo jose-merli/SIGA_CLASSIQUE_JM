@@ -1993,7 +1993,7 @@ function limpiarPersonaContrario() {
 						src="<%=app%>/JGR_TelefonosPersonasJG.do?accion=<%=accion%>&idPersona=<%=idPersona%>&idInstitucion=<%=usr.getLocation()%>&esFichaColegial=<%=sEsFichaColegial%>"
 						id="resultado" name="resultado" scrolling="no" frameborder="0"
 						marginheight="0" marginwidth="0"
-						style="width: 350px; height:90px;"> </iframe></siga:ConjCampos></td>
+						style="width: 400px; height:90px;"> </iframe></siga:ConjCampos></td>
 				</tr>
 			</table>
 		</siga:ConjCampos>
@@ -2760,8 +2760,8 @@ function validarDatosFila (fila)
 			campo = "<siga:Idioma key='gratuita.personaJG.literal.numeroTelefono'/>" ;
 			alert ( campo + " "+ obligatorio);			
 			return false;
-		}	 
-	    valor=validartelefono(resultado.document.getElementById("numeroTelefonoJG_"+fila).value);
+		}    
+	    valor=validartelefono(resultado.document.getElementById("numeroTelefonoJG_"+fila).value);	 
 	    if(!valor){
 	    	campo = "<siga:Idioma key='gratuita.personaJG.literal.errors.telefono'/>" ;
 			alert (campo);			
@@ -2783,8 +2783,8 @@ function validarDatosFila (fila)
 }
 
 function validartelefono(valor){	
-	if( !(/^\d{9}$/.test(valor)) ) {
-		if(!(/^\+\d{2,3}\d{9}$/.test(valor))){			
+	if( !(/^\d{9}$/.test(valor)) ) {		
+		if(!(/^\+\d{2,4}\d{9}$/.test(valor))){					
 			return false;			
 		}else return true;		
 	}else return true;
