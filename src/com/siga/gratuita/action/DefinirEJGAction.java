@@ -255,6 +255,9 @@ public class DefinirEJGAction extends MasterAction
 			miHash = miForm.getDatos();
 			
 			HashMap databackup=new HashMap();
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			String idInstitucion= user.getLocation();		
+			
 			
 		    if (request.getSession().getAttribute("DATAPAGINADOR")!=null){ 
 			 		databackup = (HashMap)request.getSession().getAttribute("DATAPAGINADOR");
@@ -289,7 +292,7 @@ public class DefinirEJGAction extends MasterAction
 				
 				//v = admBean.selectGenerico(consulta);
 	 			//	PaginadorBind paginador = new PaginadorBind(consulta);				
-				PaginadorBind paginador = admBean.getPaginadorBusquedaMantenimientoEJG(miHash, miForm);
+				PaginadorBind paginador = admBean.getPaginadorBusquedaMantenimientoEJG(miHash, miForm,idInstitucion);
 				int totalRegistros = paginador.getNumeroTotalRegistros();
 				
 				if (totalRegistros==0){					
