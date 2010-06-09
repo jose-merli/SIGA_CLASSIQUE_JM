@@ -1313,6 +1313,10 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			HashMap databackup = new HashMap();
 			Vector claves = new Vector();
 			String seleccionados = request.getParameter("Seleccion");
+			
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			String idInstitucion= user.getLocation();
+			
 
 			claves = (Vector) request.getSession().getAttribute("EJG_SELECCIONADOS");
 			Vector v_seleccionadosSesion = new Vector();
@@ -1351,7 +1355,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				// obtengo datos de la consulta
 				
 				Vector datos = null;
-				Hashtable htConsultaBind  = admBean.getBindBusquedaMantenimientoEJG(miHash,  miForm, ScsEJGAdm.TipoVentana.BUSQUEDA_ANIADIR_REMESA);
+				Hashtable htConsultaBind  = admBean.getBindBusquedaMantenimientoEJG(miHash,  miForm, ScsEJGAdm.TipoVentana.BUSQUEDA_ANIADIR_REMESA, idInstitucion);
 				v = admBean.getBusquedaMantenimientoEJG(htConsultaBind);
 
 				// Rellena un vector de Hastable con la claves primarias de la

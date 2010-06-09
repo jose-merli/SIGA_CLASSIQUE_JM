@@ -176,6 +176,8 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
 			admBean =  new ScsEJGAdm(this.getUserBean(request));				
 			miHash = miForm.getDatos();
 			
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			String idInstitucion= user.getLocation();		
 			HashMap databackup=new HashMap();
 			
 			claves = (Vector) request.getSession().getAttribute("EJG_SELECCIONADOS");
@@ -206,21 +208,16 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
 				}
 			 }	
 				
-				
-				
 				databackup.put("paginador",paginador);
 				databackup.put("datos",datos);
-				
-					
-				
-				
+			
 		  }else{	
 				
 			  	databackup=new HashMap();
 					
 				//obtengo datos de la consulta 			
 				Vector datos = null;
-				Hashtable htConsultaBind  = admBean.getBindBusquedaMantenimientoEJG(miHash,  miForm, ScsEJGAdm.TipoVentana.BUSQUEDA_PREPARACION_CAJG);
+				Hashtable htConsultaBind  = admBean.getBindBusquedaMantenimientoEJG(miHash,  miForm, ScsEJGAdm.TipoVentana.BUSQUEDA_PREPARACION_CAJG, idInstitucion);
 				Vector v = admBean.getBusquedaMantenimientoEJG(htConsultaBind);
 				claves = sacarClavesEJG(v, getIDInstitucion(request));
 
@@ -252,7 +249,10 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
 		  request.getSession().setAttribute("DATOSFORMULARIO",miHash);	
 		  request.getSession().setAttribute("HORABUSQUEDA", UtilidadesBDAdm.getFechaCompletaBD("es"));
 			
-		}catch (SIGAException e1) {
+		}catch (ClsExceptions e){
+			throwExcp(e.getMessage(),e,null);
+		}
+		catch (SIGAException e1) {
 			// Excepcion procedente de obtenerPagina cuando se han borrado datos
 			 return exitoRefresco("error.messages.obtenerPagina",request);
 		} catch (Exception e) {
