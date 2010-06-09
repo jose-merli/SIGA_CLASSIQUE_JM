@@ -31,7 +31,7 @@ public class EnvDestinatariosBean extends MasterBean {
 	private String pais;
 	private String provincia;
 	private String poblacion;
-	private String tipoDestinatario;
+	private String tipoDestinatario=TIPODESTINATARIO_CENPERSONA;
 	
 	
 	
