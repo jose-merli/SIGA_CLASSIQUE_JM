@@ -142,15 +142,14 @@ public class EnvEstatEnvioAdm extends MasterBeanAdministrador {
 			    fechaIsNull = " AND env.fechaprogramada is not null";
 			}			
 		
-			String sql="select * from ((select e.idinstitucion, e.idpersona,p.nombre,p.apellido1 as apellidos1,p.apellido2 as apellidos2 , "+
+			String sql="select * from ((select e.idinstitucion, e.idpersona,p.nombre,p.apellidos1,p.apellidos2  , "+
 			" (select count(*) from env_estat_envio s where s.idinstitucion = e.idinstitucion and s.idpersona = e.idpersona and s.idtipoenvios = 1) as NUM_ELECTRONICO, " +
 		    " (select count(*) from env_estat_envio s where s.idinstitucion = e.idinstitucion and s.idpersona = e.idpersona and s.idtipoenvios = 2) as NUM_ORDINARIO, " +
 			" (select count(*) from env_estat_envio s where s.idinstitucion = e.idinstitucion and s.idpersona = e.idpersona and s.idtipoenvios = 3) as NUM_FAX, "+
 			" (select count(*) from env_estat_envio s where s.idinstitucion = e.idinstitucion and s.idpersona = e.idpersona and s.idtipoenvios = 4) as NUM_SMS, "+
 			" (select count(*) from env_estat_envio s where s.idinstitucion = e.idinstitucion and s.idpersona = e.idpersona and s.idtipoenvios = 5) as NUM_BUROSMS "+
-			" from env_estat_envio e, scs_personajg p,env_envios env, env_destinatarios envdest "+
-			" where e.idpersona = p.idpersona "+
-			" and e.idinstitucion=p.idinstitucion "+
+			" from env_estat_envio e, cen_persona p,env_envios env, env_destinatarios envdest "+
+			" where e.idpersona = p.idpersona "+			
             " and e.idinstitucion = env.idinstitucion "+
             " and e.idenvio = env.idenvio "+
             " and env.idinstitucion = "+idInstitucion;
@@ -178,8 +177,8 @@ public class EnvEstatEnvioAdm extends MasterBeanAdministrador {
 			       " group by e.idinstitucion, "+
                    " e.idpersona, "+
                    " p.nombre, "+
-                   " p.apellido1, "+
-                   " p.apellido2) "+  
+                   " p.apellidos1, "+
+                   " p.apellidos2) "+  
 			       " UNION "+
 			       " (select e.idinstitucion,e.idpersona,p.nombre,p.apellido1 as apellidos1, p.apellido2 as apellidos2,"+
 			       " (select count(*) from env_estat_envio s where s.idinstitucion = e.idinstitucion and s.idpersona = e.idpersona and s.idtipoenvios = 1) as NUM_ELECTRONICO, "+
