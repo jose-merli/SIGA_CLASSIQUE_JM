@@ -103,19 +103,19 @@
 			
 			 <div style="position:absolute;top:0px;z-index:3;left:0px;width:350px;height:60px;" >		
 			
-					<table width="100%"  border="0"  height="60px"  cellpadding="0" cellspacing="0">
+					<table width="140%"  border="0"  height="60px"  cellpadding="0" cellspacing="0">
 						<tr>
 								<td class = 'labelText'>													
 								 <div>								
-									<table id='tabTelefonosCabeceras'  border='1' width='100%' cellspacing='0' cellpadding='0' style='table-layout:fixed'>
+									<table id='tabTelefonosCabeceras'  border='1' width='80%' cellspacing='0' cellpadding='0' style='table-layout:fixed'>
 									<tr class = 'tableTitle'>
-										<td align='center' width='29%' ><siga:Idioma key="gratuita.operarDatosBeneficiario.literal.telefonoUso"/></td>
-										<td align='center' width='29%'><siga:Idioma key="gratuita.operarDatosBeneficiario.literal.numeroTelefono"/></td>
-										<td align='center' width='11%' ><siga:Idioma key="censo.preferente.sms"/></td>			
+										<td align='center' width='6%' ><siga:Idioma key="gratuita.operarDatosBeneficiario.literal.telefonoUso"/></td>
+										<td align='center' width='6%'><siga:Idioma key="gratuita.operarDatosBeneficiario.literal.numeroTelefono"/></td>
+										<td align='center' width='2%' ><siga:Idioma key="censo.preferente.sms"/></td>			
 										<%
 											if (!accion.equalsIgnoreCase("ver")) {												
 										%>
-										<td align='center' width='20%' >				
+										<td align='center' width='3%' >				
 											<input type='button'  id = 'idInsertarTelefonos' class="button" name='idButtoninsertar' value='<siga:Idioma key="general.boton.insertar"/>' alt='<siga:Idioma key="general.boton.insertar"/>' onclick="accioninsertar();">	
 										</td>
 										<%}%>
@@ -125,7 +125,7 @@
 									
 								 </table>
 							 	</div> 	
-								<div id="divAsistencias" style='height:60px;position:absolute;width:100%; overflow-y:auto' >						
+								<div id="divtelefono" style='height:60px;position:absolute;width:80%; overflow-y:auto' >						
 									<table id='tablaTelefono' border='1' align='center'  width='100%' cellspacing='0' cellpadding='0' style='overflow-y:auto' >
 								
 										<logic:notEmpty name="DefinirTelefonosJGForm"	property="telefonos">
@@ -137,21 +137,21 @@
 											<%
 											if (!accion.equalsIgnoreCase("ver")) {												
 											%>																		
-											<td width='19%' align="center"><input type="text" id="nombreTelefonoJG_<bean:write name='index'/>" class="box" style="width:100;margin-top:4px;text-align:center;" maxLength="20" value="<bean:write name="telefonosJGForm" property="nombreTelefonoJG" />"  /></td>										
-											<td width='19%' align ="center"><input type="text" id="numeroTelefonoJG_<bean:write name='index'/>" class="box" style="width:95;margin-top:4px;text-align:center;" maxLength="13" value="<bean:write name="telefonosJGForm" property="numeroTelefonoJG" />"  /></td>
+											<td width='6%' align="center"><input type="text" id="nombreTelefonoJG_<bean:write name='index'/>" class="box" style="width:120;margin-top:4px;text-align:center;" maxLength="20" value="<bean:write name="telefonosJGForm" property="nombreTelefonoJG" />"  /></td>										
+											<td width='6%' align ="center"><input type="text" id="numeroTelefonoJG_<bean:write name='index'/>" class="box" style="width:120;margin-top:4px;text-align:center;" maxLength="20" value="<bean:write name="telefonosJGForm" property="numeroTelefonoJG" />"  /></td>
 											<bean:define id="preferenteSms" name="telefono" property="preferenteSms" ></bean:define>																										
-											<td width='7%' align ="center"><input type="checkbox" id="preferenteSms" name="preferenteSms_<bean:write name='index'/>" value="<bean:write name="telefonosJGForm" property="preferenteSms"/>" onClick="checkSms()"<%=(preferenteSms.equals("1"))?"checked":""%>/></td>								
-											<td width='9%'>									
+											<td width='2%' align ="center"><input type="checkbox" id="preferenteSms" name="preferenteSms_<bean:write name='index'/>" value="<bean:write name="telefonosJGForm" property="preferenteSms"/>" onClick="checkSms()"<%=(preferenteSms.equals("1"))?"checked":""%>/></td>								
+											<td width='3%'>									
 													<img src="/SIGA/html/imagenes/bborrar_off.gif"
 													style="cursor: hand;"
 													alt="<siga:Idioma key="general.borrar"/>"
 													name="" border="0" onclick="borrarFila('fila_<bean:write name='index'/>')"/>										
 											</td>	
 											<%}else{%>
-											<td width='14%' align="center" class="labelTextValor"><input type="text" readonly="si" id="nombreTelefonoJG_<bean:write name='index'/>" class="boxConsulta" style="width:100;margin-top:4px;text-align:center;" maxLength="20" value="<bean:write name="telefonosJGForm" property="nombreTelefonoJG" />"  /></td>										
-											<td width='14%' align ="center" class="labelTextValor"><input type="text" readonly="si" id="numeroTelefonoJG_<bean:write name='index'/>" class="boxConsulta" style="width:95;margin-top:4px;text-align:center;" maxLength="13" value="<bean:write name="telefonosJGForm" property="numeroTelefonoJG" />"  /></td>
+											<td width='6%' align="center" class="labelTextValor"><input type="text" readonly="si" id="nombreTelefonoJG_<bean:write name='index'/>" class="boxConsulta" style="width:120;margin-top:4px;text-align:center;" maxLength="20" value="<bean:write name="telefonosJGForm" property="nombreTelefonoJG" />"  /></td>										
+											<td width='6%' align ="center" class="labelTextValor"><input type="text" readonly="si" id="numeroTelefonoJG_<bean:write name='index'/>" class="boxConsulta" style="width:120;margin-top:4px;text-align:center;" maxLength="20" value="<bean:write name="telefonosJGForm" property="numeroTelefonoJG" />"  /></td>
 											<bean:define id="preferenteSms" name="telefono" property="preferenteSms" ></bean:define>																										
-											<td width='5%' align ="center"><input type="checkbox" disabled="disabled" id="preferenteSms" name="preferenteSms_<bean:write name='index'/>" value="<bean:write name="telefonosJGForm"   property="preferenteSms"/>" onClick="checkSms()"<%=(preferenteSms.equals("1"))?"checked":""%>/></td>							
+											<td width='2%' align ="center"><input type="checkbox" disabled="disabled" id="preferenteSms" name="preferenteSms_<bean:write name='index'/>" value="<bean:write name="telefonosJGForm"   property="preferenteSms"/>" onClick="checkSms()"<%=(preferenteSms.equals("1"))?"checked":""%>/></td>							
 										<%}%>								
 										</tr>
 										</logic:iterate>
@@ -194,24 +194,24 @@
 				tr = table.insertRow();
 				tr.id = "fila_" + numFila;
 				td = tr.insertCell();
-				td.setAttribute("width", "19%");
+				td.setAttribute("width", "6%");
 				td.align="center";
 				td.className = "";
 				td.innerText="";
-				td.innerHTML = '<input type="text" id="nombreTelefonoJG_'   + numFila + '" class="box" style="width:100;margin-top:4px;text-align:center;" maxLength="20" value="" />';
+				td.innerHTML = '<input type="text" id="nombreTelefonoJG_'   + numFila + '" class="box" style="width:120;margin-top:4px;text-align:center;" maxLength="20" value="" />';
 
 
 				// numero de telefono
 				td = tr.insertCell(); 
-				td.setAttribute("width", "19%");
+				td.setAttribute("width", "6%");
 				td.align="center";
 				td.className = "";
 				td.innerText="";
-				td.innerHTML ='<input type="text" id="numeroTelefonoJG_' + numFila + '" class="box" style="width:95;margin-top:4px;text-align:center;" maxLength="13" value="" />';
+				td.innerHTML ='<input type="text" id="numeroTelefonoJG_' + numFila + '" class="box" style="width:120;margin-top:4px;text-align:center;" maxLength="20" value="" />';
 
 				//sms				
 				td = tr.insertCell(); 
-				td.setAttribute("width", "7%");
+				td.setAttribute("width", "2%");
 				td.align="center";
 				td.className = "";
 				td.innerText="";
@@ -220,15 +220,25 @@
 
 				//imagen de borrar
 				td = tr.insertCell(); 
-				td.setAttribute("width", "9%");
+				td.setAttribute("width", "3%");
 				td.className = "";
 				td.innerText="";				
 				td.innerHTML = '<img src="/SIGA/html/imagenes/bborrar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='general.boton.borrar'/>" name="" border="0" onclick="borrarFila(\''+ tr.id +'\')">';
 				tr.scrollIntoView(true);
-				
+
+				validarAnchoTabla ()
 			
 		}
 
+		function validarAnchoTabla () 
+		{
+			if (document.all.tablaTelefono.clientHeight < document.all.divtelefono.clientHeight) {
+				document.all.tabTelefonosCabeceras.width='80%';
+			}
+			else {
+				document.all.tabTelefonosCabeceras.width='76.30%';				
+			}
+		}
 		
 //funcion de marcar un telefono para enviar sms
 	function checkSms(){
@@ -252,7 +262,8 @@
 					if (t.rows[i].id == idFila) 
 					{	
 						fila = idFila.split("_")[1];			
-						t.deleteRow (i);	
+						t.deleteRow (i);
+						validarAnchoTabla ();	
 						return;					
 						
 					}
