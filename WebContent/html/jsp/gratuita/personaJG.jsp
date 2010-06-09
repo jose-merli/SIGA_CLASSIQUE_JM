@@ -2767,27 +2767,18 @@ function validarDatosFila (fila)
 			alert (campo);			
 		 return false;
 		}
-	  //compruebo que el numero de telefono sea un movil
-	 //   chkpreferenteSms= resultado.document.getElementById("preferenteSms_" + fila).checked;
-	  //  if(chkpreferenteSms){
-	   // 	movil=resultado.document.getElementById("numeroTelefonoJG_"+fila).value;           
-	   // 	comprobar=comprobarmovil(movil);	    	
-	   // 	if(!comprobar){
-	   // 		campo = "<siga:Idioma key='gratuita.personaJG.literal.errors.movilSms'/>" ;
-		//		alert (campo);			
-	//			 return false;
-		//    	}
-		//  }
+	 
 		  
  return true;	    
 }
 
-function validartelefono(valor){	
-	if( !(/^\d{9}$/.test(valor)) ) {		
-		if(!(/^\+\d{2,4}\d{9}$/.test(valor))){					
-			return false;			
-		}else return true;		
-	}else return true;
+function validartelefono(valor){
+	if((/^\+\d+$/.test(valor)))					
+		return true;
+	if((/^\d+$/.test(valor)))					
+		return true;	
+	//otherwise
+	return false;
 }
 
 function valorprimerdigito(valor){	
