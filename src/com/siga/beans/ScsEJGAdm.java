@@ -2023,10 +2023,10 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 
 	}		*/
 	
-	public PaginadorBind getPaginadorBusquedaMantenimientoEJG(Hashtable miHash, DefinirEJGForm miForm)throws ClsExceptions,SIGAException {
+	public PaginadorBind getPaginadorBusquedaMantenimientoEJG(Hashtable miHash, DefinirEJGForm miForm, String idInstitucion)throws ClsExceptions,SIGAException {
 	    	    PaginadorBind paginador=null;
 	       try {
-	            Hashtable htConsultaBind  = getBindBusquedaMantenimientoEJG(miHash,  miForm, TipoVentana.BUSQUEDA_EJG);
+	            Hashtable htConsultaBind  = getBindBusquedaMantenimientoEJG(miHash,  miForm, TipoVentana.BUSQUEDA_EJG, idInstitucion);
 	            String consulta = (String) htConsultaBind.get(keyBindConsulta);
 	            Hashtable codigos = (Hashtable) htConsultaBind.get(keyBindCodigos);
 						
@@ -2068,7 +2068,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		return vDatos;
 	}
 	
-	public Hashtable getBindBusquedaMantenimientoEJG(Hashtable miHash, DefinirEJGForm miForm, TipoVentana tipoVentana) throws ClsExceptions{
+	public Hashtable getBindBusquedaMantenimientoEJG(Hashtable miHash, DefinirEJGForm miForm, TipoVentana tipoVentana, String idInstitucion) throws ClsExceptions,SIGAException{
 		
 		// A raiz de la INC_07042_SIGA se revisan los criterios de busqueda eliminado el codigo comentado.
 		// Estamos a 08/04/2010 version 1.4.2.3 del CVS
@@ -2232,13 +2232,19 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"IDTIPOEJGCOLEGIO"));
 			consulta += " and ejg.IDTIPOEJGCOLEGIO = :" + contador;
 		}
-		
+				
 		if ((miHash.containsKey("IDINSTITUCION")) && (!miHash.get("IDINSTITUCION").toString().equals(""))) {
 			contador++;
 			codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"IDINSTITUCION"));
-			consulta += " and ejg.IDINSTITUCION = :" + contador;
-		}
-
+			consulta += " and ejg.IDINSTITUCION = :"+ contador;
+		}else{	
+			idInstitucion="";
+			if (idInstitucion.equals("")){			
+			  throw new ClsExceptions("messages.comprueba.noidInstitucion");			
+			}else			
+				consulta += " and ejg.IDINSTITUCION =" + idInstitucion;			
+		   }				
+		
 		if ((miHash.containsKey("NIF")) && (!miHash.get("NIF").toString().equals(""))){
 			contador++;
 			codigos.put(new Integer(contador),((String)miHash.get("NIF")).trim()+"%");
