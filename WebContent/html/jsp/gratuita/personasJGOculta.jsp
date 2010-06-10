@@ -78,6 +78,8 @@
 		aux[15]="<%=myBean.getIdRepresentanteJG()%>";
 		aux[18]="<%=myBean.getHijos()%>";
 		aux[19]="<%=myBean.getSexo()%>";
+		aux[20]="<%=myBean.getFax()%>";	
+		aux[21]="<%=myBean.getCorreoElectronico().trim()%>";
 		<% 
 		String nom = (String) request.getAttribute("nombreRepresentante");
 		if (nom==null) nom="";

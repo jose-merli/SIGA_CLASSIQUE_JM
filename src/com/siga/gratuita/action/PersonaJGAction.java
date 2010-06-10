@@ -993,6 +993,8 @@ public class PersonaJGAction extends MasterAction {
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDREPRESENTANTEJG,perBean.getIdRepresentanteJG());
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_SEXO,perBean.getSexo());
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_HIJOS,perBean.getHijos());
+				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_FAX,perBean.getFax());
+				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_CORREOELECTRONICO,perBean.getCorreoElectronico());	
 				
 				// cuelgo el anterior
 				if (hashAnt!=null) {
@@ -1011,9 +1013,9 @@ public class PersonaJGAction extends MasterAction {
 				//dataBackup.remove(ScsDefendidosDesignaBean.T_NOMBRETABLA);
 				//dataBackup.remove(ScsContrariosDesignaBean.T_NOMBRETABLA);
 				//dataBackup.remove(ScsContrariosAsistenciaBean.T_NOMBRETABLA);
-				//dataBackup.remove(ScsUnidadFamiliarEJGBean.T_NOMBRETABLA);
-
+				//dataBackup.remove(ScsUnidadFamiliarEJGBean.T_NOMBRETABLA);			
 				request.getSession().setAttribute("DATABACKUP",dataBackup);
+			
 			}
 			
 			
@@ -1023,6 +1025,8 @@ public class PersonaJGAction extends MasterAction {
 			if (miform.getNombreObjetoDestino() != null) {
 				request.setAttribute("NombreObjetoDestino", miform.getNombreObjetoDestino());
 			}
+			
+				
 		}
 		catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
