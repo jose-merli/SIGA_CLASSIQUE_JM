@@ -234,7 +234,7 @@ public class InformeCertificadoIRPF extends MasterReport {
 		
 		FacAbonoAdm admFacAbono = new FacAbonoAdm(usr);
 		
-		Vector vDatosInforme = admFacAbono.getRetencionesIRPF(idInstitucion, idPersona, anyoInformeIRPF);
+		Vector vDatosInforme = admFacAbono.getRetencionesIRPF(idInstitucion, idPersona, anyoInformeIRPF, usr.getLanguage());
 		
 		Hashtable htDatosComunesInforme = new Hashtable();
 		htDatosComunesInforme.put("ANIO_E", anyoInformeIRPF);
@@ -280,7 +280,7 @@ public class InformeCertificadoIRPF extends MasterReport {
 		
 		FacAbonoAdm admFacAbono = new FacAbonoAdm(usr);
 		
-		Vector vDatosInforme = admFacAbono.getRetencionesIRPF(idInstitucion, idPersona, anyoInformeIRPF);
+		Vector vDatosInforme = admFacAbono.getRetencionesIRPF(idInstitucion, idPersona, anyoInformeIRPF, usr.getLanguage());
 		
 		StringBuffer datosAEnviar = new StringBuffer();
 		StringBuffer plantillas = new StringBuffer();

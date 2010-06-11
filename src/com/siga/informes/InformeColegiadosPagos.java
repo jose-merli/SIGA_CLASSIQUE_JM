@@ -728,7 +728,7 @@ public class InformeColegiadosPagos extends MasterReport {
 
 			//Se reutiliza la query del detalle de pagos para recuperar importes
 			FcsPagosJGAdm pagosAdm = new FcsPagosJGAdm(usr);
-			String sql = pagosAdm.getQueryDetallePagoColegiado(idInstitucion, idPago, idPersona, false);
+			String sql = pagosAdm.getQueryDetallePagoColegiado(idInstitucion, idPago, idPersona, false, usr.getLanguage());
 			
 			rc = new RowsContainer();
 			rc.find(sql);

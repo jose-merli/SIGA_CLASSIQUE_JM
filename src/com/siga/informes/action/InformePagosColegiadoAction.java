@@ -198,7 +198,7 @@ public class InformePagosColegiadoAction extends MasterAction {
 				FcsPagosJGAdm pagosAdm = new FcsPagosJGAdm(user);
 				
 				resultado = pagosAdm.getPaginadorDetallePago(miFormulario,
-						idInstitucion);
+						idInstitucion, user.getLanguage());
 				
 				
 				databackup.put("paginador",resultado);
@@ -300,7 +300,7 @@ public class InformePagosColegiadoAction extends MasterAction {
 				FcsPagosJGAdm pagosAdm = new FcsPagosJGAdm(user);
 
 				resultado = pagosAdm.getPaginadorDetallePago(form,
-						idInstitucion);
+						idInstitucion, user.getLanguage());
 				// resultado = facAdm.selectMorosos(user,form);
 
 				// Paso de parametros empleando la sesion
@@ -355,7 +355,7 @@ public class InformePagosColegiadoAction extends MasterAction {
 			form.setLetrado(form.getIdPersona());
 			FcsPagosJGAdm pagosAdm = new FcsPagosJGAdm(user);
 
-			Vector datos = pagosAdm.getDetallePago(form);
+			Vector datos = pagosAdm.getDetallePago(form, user.getLanguage());
 			Hashtable filaDetalle = (Hashtable) datos.get(0);
 			String importeSjcs = UtilidadesNumero.redondea(UtilidadesHash.getString(filaDetalle,
 				"TOTALIMPORTESJCS"),2);

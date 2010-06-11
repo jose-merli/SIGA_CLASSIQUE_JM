@@ -805,7 +805,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 	}
 	
 	private String getQueryDetallePago (MantenimientoInformesForm form,
-									   String idInstitucion, Hashtable codigos) 
+									   String idInstitucion, Hashtable codigos, String idioma) 
 	{
 		//Variables
 		int contador = 0;
@@ -826,7 +826,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		}
 		
 		//Obtiene la consulta base
-		sql += getQueryDetallePagoColegiadoPaginador(idInstitucion, form.getIdPago(),null);
+		sql += getQueryDetallePagoColegiadoPaginador(idInstitucion, form.getIdPago(),null, idioma);
 
 		// no se genera carta de pagos si no tiene pagos de SJCS
 		sql += ") WHERE totalImporteSJCS > 0 ";
@@ -922,144 +922,138 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		
 	} //getQueryDetallePago()
 	
+	public String getQueryDetallePagoColegiado(String idInstitucion,
+											   String idPagosJg,
+											   boolean irpf,
+											   String idioma) 
+	{
+		return getQueryDetallePagoColegiado(idInstitucion, idPagosJg, null, irpf, idioma);
+	} //getQueryDetallePagoColegiado()
 	
 	/**
-	 * 
-	 * @param idInstitucion
-	 * @param idPagosJg si es null se obtienen los datos de todos los pagos de la institucion.
-	 * @return
+	 * Obtiene los datos de Detalle de Pago:
+	 * usado en el Excel de Detalle de Letrado, por ejemplo 
 	 */
-	public String getQueryDetallePagoColegiado (String idInstitucion, String idPagosJg, boolean irpf) 
-	{
-		return getQueryDetallePagoColegiado(idInstitucion, idPagosJg, null, irpf);
-	}	
-	
-	/**
-	 * 
-	 * @param idInstitucion
-	 * @param idPagosJg si es null se obtienen los datos de todos los pagos de la institucion.
-	 * @return
-	 */
-	public String getQueryDetallePagoColegiado(String idInstitucion, String idPagosJg, String idPersona, boolean irpf) 
+	public String getQueryDetallePagoColegiado(String idInstitucion,
+											   String idPagosJg, 
+											   String idPersona, 
+											   boolean irpf,
+											   String idioma)
 	{
 		StringBuffer sql = new StringBuffer();
-
-		if (irpf)
-			sql.append("select decode(idperdestino,null,idperorigen,idperdestino) as idpersonaSJCS,");
-		else
-			sql.append("select pc.IDPERORIGEN as idpersonaSJCS,");
-		sql.append(" pc.idpagosjg as idpagos, ");		
-		sql.append(" sum(pc.impOficio + pc.impAsistencia + pc.impEJG + pc.impSOJ) as totalImporteSJCS,");
-		sql.append(" sum(pc.impRet) as importeTotalRetenciones,");
-		sql.append(" sum(pc.impMovVar) as importeTotalMovimientos,");
-		// jbd (1.41) Añadido round para que no haya incongruencias
-		sql.append(" -1*round(abs(sum(pc.impOficio + pc.impAsistencia + pc.impEJG + pc.impSOJ + pc.impMovVar) * max(pc.impirpf) / 100),2) as TOTALIMPORTEIRPF");
-		sql.append(" ,pc.idinstitucion");
-		sql.append(" ,decode(a.idcuenta, null, 'Pago por Caja', 'Pago por Banco') as  FORMADEPAGO");
-		sql.append(" from FCS_PAGO_COLEGIADO pc , fac_abono a");
-		sql.append(" where pc.IDINSTITUCION = ");	sql.append(idInstitucion);
-		sql.append(" and pc.IDPAGOSJG = nvl("+idPagosJg+", pc.IDPAGOSJG)");
-		sql.append(" and pc.IDPERORIGEN = nvl("+idPersona+", pc.IDPERORIGEN)");
-		sql.append(" and a.idpersona(+) = pc.idperorigen ");
-		sql.append(" and a.idinstitucion(+) = pc.idinstitucion ");
-		sql.append(" and a.idpagosjg(+) = pc.idpagosjg ");		
-		if (irpf)
-			sql.append(" and impirpf > 0 ");
-		sql.append(" group by pc.IDPERORIGEN, pc.IDPAGOSJG,pc.IDINSTITUCION , decode(a.idcuenta, null, 'Pago por Caja', 'Pago por Banco'),  pc.IDPERDESTINO ");	
-
-		return sql.toString();
-	} 	
-	
-	
-	public String getQueryDetallePagoColegiadoPaginador(String idInstitucion, String idPagosJg, String idPersona) 
-	{
-		StringBuffer sql = new StringBuffer();
-		sql.append(" SELECT pagoAColegiados.*, ");
-		sql.append(" f_siga_calculoncolegiado(pagoAColegiados.idinstitucion, ");
-		sql.append(" pagoAColegiados.idpersonaSJCS) as NCOLEGIADO, ");
-		sql.append(" (select p.apellidos1 || ' ' || p.apellidos2 || ', ' || p.nombre ");
-	        
-		sql.append(" from cen_persona p, cen_cliente c ");
-		sql.append(" where p.idpersona = c.idpersona ");
-		sql.append(" and c.idinstitucion = pagoAColegiados.idinstitucion ");
-		sql.append(" and c.idpersona = pagoAColegiados.idpersonaSJCS)  as NOMBRE ");
-		sql.append(" FROM ( ");
-	        
-		sql.append(getQueryDetallePagoColegiado(idInstitucion, idPagosJg, idPersona, false));
-
-		sql.append(") pagoAColegiados ");
-
-		return sql.toString();
-	}
-	
-	public PaginadorCaseSensitiveBind  getPaginadorDetallePago(MantenimientoInformesForm form,String idInstitucion) throws ClsExceptions
-	{
-			            
-        Hashtable codigos = new Hashtable();
-		// select a ejecutar
-		String sql = getQueryDetallePago(form, idInstitucion,  codigos);
-							
-		try
-		{
-			PaginadorCaseSensitiveBind paginador = new PaginadorCaseSensitiveBind(sql,codigos);				
-			int totalRegistros = paginador.getNumeroTotalRegistros();
-			
-			if (totalRegistros==0){					
-				paginador =null;
-			}
-			return paginador;
-		}
-		catch(Exception e)
-		{
-			throw new ClsExceptions (e,"Error en FcsPAgosJG.getPaginadorDetallePago()" + sql);
-		}
 		
-	}
-	public Vector getDetallePago (MantenimientoInformesForm form) 
-	throws ClsExceptions , Exception{
-		String sql = "";
+		sql.append("select ");
+		if (irpf)
+			sql.append("   nvl(idperdestino, idperorigen) as idpersonaSJCS, ");
+		else
+			sql.append("   pc.IDPERORIGEN as idpersonaSJCS, ");
+		
+		sql.append("       pc.idpagosjg as idpagos, ");
+		sql.append("       sum(pc.impOficio + pc.impAsistencia + pc.impEJG + pc.impSOJ) as totalImporteSJCS, ");
+		sql.append("       sum(pc.impRet) as importeTotalRetenciones, ");
+		sql.append("       sum(pc.impMovVar) as importeTotalMovimientos, ");
+		sql.append("       -1*round(abs(sum(pc.impOficio + pc.impAsistencia + pc.impEJG + pc.impSOJ + pc.impMovVar) * max(pc.impirpf) / 100), 2) as TOTALIMPORTEIRPF, ");
+		sql.append("       pc.idinstitucion, ");
+		sql.append("       f_siga_getrecurso_etiqueta(decode(a.idcuenta, null, 'gratuita.pagos.porCaja', 'gratuita.pagos.porBanco'), "+idioma+") as  FORMADEPAGO ");
+		
+		sql.append("  from FCS_PAGO_COLEGIADO pc, fac_abono a ");
+		sql.append(" where nvl(idperdestino, idperorigen) = a.idpersona(+) ");
+		sql.append("   and pc.idinstitucion = a.idinstitucion(+) ");
+		sql.append("   and pc.idpagosjg = a.idpagosjg(+) ");
+		
+		sql.append("   and pc.IDINSTITUCION = "+idInstitucion+" ");
+		sql.append("   and pc.IDPAGOSJG = nvl("+idPagosJg+", pc.IDPAGOSJG) ");
+		sql.append("   and pc.IDPERORIGEN = nvl("+idPersona+", pc.IDPERORIGEN) ");
+		if (irpf)
+			sql.append(
+					"  and impirpf > 0 ");
+		
+		sql.append(" group by pc.IDPERORIGEN, pc.IDPERDESTINO, pc.IDPAGOSJG, pc.IDINSTITUCION, f_siga_getrecurso_etiqueta(decode(a.idcuenta, null, 'gratuita.pagos.porCaja', 'gratuita.pagos.porBanco'), "+idioma+") ");
+		
+		return sql.toString();
+	} //getQueryDetallePagoColegiado()
+	
+	public String getQueryDetallePagoColegiadoPaginador(String idInstitucion,
+														String idPagosJg,
+														String idPersona,
+														String idioma)
+	{
+		StringBuffer sql = new StringBuffer();
+		sql.append(" select pagoAColegiados.*, ");
+		sql.append("        f_siga_calculoncolegiado(pagoAColegiados.idinstitucion, pagoAColegiados.idpersonaSJCS) as NCOLEGIADO, ");
+		sql.append("        (select p.apellidos1 || ' ' || p.apellidos2 || ', ' || p.nombre ");
+		sql.append("           from cen_persona p, cen_cliente c ");
+		sql.append("          where p.idpersona = c.idpersona ");
+		sql.append("            and c.idinstitucion = pagoAColegiados.idinstitucion ");
+		sql.append("            and c.idpersona = pagoAColegiados.idpersonaSJCS) as NOMBRE ");
+		sql.append("   from ( ");
+		
+		sql.append(getQueryDetallePagoColegiado(idInstitucion, idPagosJg, idPersona, false, idioma));
+		
+		sql.append("        ) pagoAColegiados ");
+		
+		return sql.toString();
+	} // getQueryDetallePagoColegiadoPaginador()
+	
+	public PaginadorCaseSensitiveBind getPaginadorDetallePago(MantenimientoInformesForm form,
+															  String idInstitucion,
+															  String idioma)
+			throws ClsExceptions
+	{
+		Hashtable codigos = new Hashtable();
+		String sql = getQueryDetallePago(form, idInstitucion, codigos, idioma);
+		
 		try {
+			PaginadorCaseSensitiveBind paginador = new PaginadorCaseSensitiveBind(
+					sql, codigos);
+			int totalRegistros = paginador.getNumeroTotalRegistros();
+			if (totalRegistros == 0)
+				paginador = null;
 			
-			Hashtable htCodigos = new Hashtable();
-			sql = getQueryDetallePago(form, form.getIdInstitucion(),htCodigos);
+			return paginador;
 			
-
-			return this.selectGenericoBind(sql, htCodigos);
+		} catch (Exception e) {
+			throw new ClsExceptions(e,
+					"Error en FcsPAgosJG.getPaginadorDetallePago()" + sql);
 		}
-		catch (Exception e) {
-			throw new ClsExceptions (e,"Error en FcsPAgosJG.getDetallePago()" + sql);
+	} //getPaginadorDetallePago()
+	
+	public Vector getDetallePago(MantenimientoInformesForm form, String idioma)
+			throws ClsExceptions, Exception
+	{
+		String sql = "";
+		Hashtable htCodigos = new Hashtable();
+		
+		try {
+			sql = getQueryDetallePago(form, form.getIdInstitucion(), htCodigos,
+					idioma);
+			return selectGenericoBind(sql, htCodigos);
+			
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error en FcsPAgosJG.getDetallePago()"
+					+ sql);
 		}
-	}
-	
-	
+	} //getDetallePago()
 	/**
 	 * Devuelve los datos del pago <code>idpago</code> para cada colegiado incluido en el pago.
-	 * @param idInstitucion
-	 * @param idPago
-	 * @return
 	 */
-	public Vector getDetallePago (Integer idInstitucion, Integer idPago) 
-	throws ClsExceptions , Exception{
-		String sql = null;
+	public Vector getDetallePago(Integer idInstitucion, Integer idPago, String idioma)
+			throws ClsExceptions, Exception
+	{
+		String sql = "";
 		try {
-			sql = getQueryDetallePagoColegiado(idInstitucion.toString(),idPago.toString(),false);
-			
+			sql = getQueryDetallePagoColegiado(idInstitucion.toString(), idPago
+					.toString(), false, idioma);
 			return selectGenerico(sql);
-		}
-		catch (Exception e) {
-			throw new ClsExceptions (e,"Error en FcsPAgosJG.getDetallePago()" + sql);
-		}
-	}
 			
-	
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error en FcsPAgosJG.getDetallePago()"
+					+ sql);
+		}
+	} //getDetallePago()
 	
 	/**
 	 * Obtiene el importe total y los importes y porcentajes pendientes para cada concepto de la facturacion.
-	 * @param Integer: idInstitucion
-	 * @param Integer: idPago
-	 * @param boolean: sinPagosAbiertos
-	 * 
-	 * @return Hashtable: 
 	 */
 	public Hashtable getConceptosPendientesYTotal(Integer idInstitucion, Integer idFacturacion, boolean sinPagosAbiertos) throws ClsExceptions{
 
