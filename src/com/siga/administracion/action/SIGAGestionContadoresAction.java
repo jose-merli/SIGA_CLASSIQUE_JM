@@ -11,203 +11,154 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
-//import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.form.SIGAGestionContadoresForm;
-//import com.siga.administracion.form.SIGAListadoUsuariosForm;
 import com.siga.beans.AdmContadorAdm;
 import com.siga.beans.AdmContadorBean;
-//import com.siga.beans.AdmUsuariosBean;
-//import com.siga.beans.GenParametrosAdm;
-//import com.siga.beans.GenParametrosBean;
-//import com.siga.general.CenVisibilidad;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 
-/**
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
-public class SIGAGestionContadoresAction extends MasterAction 
+public class SIGAGestionContadoresAction extends MasterAction
 {
-	/*protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response)	throws ClsExceptions, SIGAException
-	{
-		return super.abrir(mapping, formulario, request, response);
-	}*/
-	
-	protected String buscar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response)	throws ClsExceptions, SIGAException 
-	{
-		SIGAGestionContadoresForm form= (SIGAGestionContadoresForm) formulario;
-		
-		AdmContadorAdm admContador = new AdmContadorAdm (this.getUserBean(request));
-		
-		Vector v = admContador.getContadores(this.getIDInstitucion(request), form.getIdModulo(),form.getCodigo(),form.getNombreContador(),form.getDescripcionContador());
-		
-        request.setAttribute("resultados", v);
-       
+
+	protected String buscar(ActionMapping mapping, MasterForm formulario,
+			HttpServletRequest request, HttpServletResponse response)
+			throws ClsExceptions, SIGAException {
+		SIGAGestionContadoresForm form = (SIGAGestionContadoresForm) formulario;
+
+		AdmContadorAdm admContador = new AdmContadorAdm(this
+				.getUserBean(request));
+
+		Vector v = admContador.getContadores(this.getIDInstitucion(request),
+				form.getIdModulo(), form.getCodigo(), form.getNombreContador(),
+				form.getDescripcionContador());
+
+		request.setAttribute("resultados", v);
+
 		return "resultado";
 	}
-	
-	protected String modificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException 
-	{
-        UserTransaction tx = this.getUserBean(request).getTransaction();
-        UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
-        AdmContadorBean beanOld =new AdmContadorBean();
+
+	protected String modificar(ActionMapping mapping, MasterForm formulario,
+			HttpServletRequest request, HttpServletResponse response)
+			throws ClsExceptions, SIGAException {
+		UserTransaction tx = this.getUserBean(request).getTransaction();
+		UsrBean userBean = ((UsrBean) request.getSession().getAttribute(
+				("USRBEAN")));
+		AdmContadorBean beanOld = new AdmContadorBean();
 
 		try {
 			SIGAGestionContadoresForm form = (SIGAGestionContadoresForm) formulario;
-			
+
 			tx.begin();
-			
-			AdmContadorAdm adm = new AdmContadorAdm (this.getUserBean(request));
-			/* * Recuperamos los datos antiguos del contador seleccionado**/
-			    Hashtable datosContadorHash=new Hashtable();
-		        datosContadorHash.put(AdmContadorBean.C_IDCONTADOR,form.getCodigo());
-		        datosContadorHash.put(AdmContadorBean.C_IDINSTITUCION,userBean.getLocation());
-		        Vector vDatosContador=adm.selectByPK(datosContadorHash);
-		        if (vDatosContador.size()>0){
-		        	beanOld = (AdmContadorBean)vDatosContador.elementAt(0);
-		        }	
-		     /******************************************************************/
-		        
-		        
-		    /* **** Datos actuales del contador modificado***************/    
-			    AdmContadorBean bean = new AdmContadorBean ();
-			    bean.setIdContador(form.getCodigo());
-			    bean.setIdinstitucion(new Integer(userBean.getLocation()));
-				bean.setDescripcion(form.getDescripcionContador());
-				if (form.getFechaReconfiguracion()!=null && !form.getFechaReconfiguracion().equals("")){
-				  bean.setFechaReconfiguracion(GstDate.getApplicationFormatDate("EN",form.getFechaReconfiguracion()));
-				}else{
-					bean.setFechaReconfiguracion("");
-				}
-				bean.setContador(new Long(form.getContador()));
-				bean.setPrefijo(form.getPrefijo());
-				bean.setSufijo(form.getSufijo());
-				bean.setLongitudContador(new Integer(form.getLongitud()));
-				bean.setNombre(form.getNombreContador());
-				
-				bean.setReconfiguracionContador((form.getReconfiguracionContador()==null || form.getReconfiguracionContador().equals(""))?"0":form.getReconfiguracionContador());
-				bean.setReconfiguracionPrefijo(form.getReconfiguracionPrefijo());
-				bean.setReconfiguracionSufijo(form.getReconfiguracionSufijo());
-				bean.setModoContador(new Integer(form.getModoContador()));
-				boolean bModificable  = UtilidadesString.stringToBoolean(form.getModificable());
-				if (bModificable){
-					bean.setModificableContador(ClsConstants.DB_TRUE);
-				}else{
-					bean.setModificableContador(ClsConstants.DB_FALSE);
-				}
-             /* *******************************************************************/
-			  
-				if (!adm.update(bean,beanOld)) {
-							throw new ClsExceptions ("messages.updated.error");
-				}
-				
-			
+
+			AdmContadorAdm adm = new AdmContadorAdm(this.getUserBean(request));
+			/*    * Recuperamos los datos antiguos del contador seleccionado* */
+			Hashtable datosContadorHash = new Hashtable();
+			datosContadorHash.put(AdmContadorBean.C_IDCONTADOR, form
+					.getCodigo());
+			datosContadorHash.put(AdmContadorBean.C_IDINSTITUCION, userBean
+					.getLocation());
+			Vector vDatosContador = adm.selectByPK(datosContadorHash);
+			if (vDatosContador.size() > 0) {
+				beanOld = (AdmContadorBean) vDatosContador.elementAt(0);
+			}
+			/******************************************************************/
+
+			/*    **** Datos actuales del contador modificado************** */
+			AdmContadorBean bean = new AdmContadorBean();
+			bean.setIdContador(form.getCodigo());
+			bean.setIdinstitucion(new Integer(userBean.getLocation()));
+			bean.setDescripcion(form.getDescripcionContador());
+			if (form.getFechaReconfiguracion() != null
+					&& !form.getFechaReconfiguracion().equals("")) {
+				bean.setFechaReconfiguracion(GstDate.getApplicationFormatDate(
+						"EN", form.getFechaReconfiguracion()));
+			} else {
+				bean.setFechaReconfiguracion("");
+			}
+			bean.setContador(new Long(form.getContador()));
+			bean.setPrefijo(form.getPrefijo());
+			bean.setSufijo(form.getSufijo());
+			bean.setLongitudContador(new Integer(form.getLongitud()));
+			bean.setNombre(form.getNombreContador());
+
+			bean
+					.setReconfiguracionContador((form
+							.getReconfiguracionContador() == null || form
+							.getReconfiguracionContador().equals("")) ? "0"
+							: form.getReconfiguracionContador());
+			bean.setReconfiguracionPrefijo(form.getReconfiguracionPrefijo());
+			bean.setReconfiguracionSufijo(form.getReconfiguracionSufijo());
+			bean.setModoContador(new Integer(form.getModoContador()));
+			boolean bModificable = UtilidadesString.stringToBoolean(form
+					.getModificable());
+			if (bModificable) {
+				bean.setModificableContador(ClsConstants.DB_TRUE);
+			} else {
+				bean.setModificableContador(ClsConstants.DB_FALSE);
+			}
+
+			if (!adm.update(bean, beanOld)) {
+				throw new ClsExceptions("messages.updated.error");
+			}
+
 			tx.commit();
+		} catch (Exception e) {
+			throwExcp("messages.updated.error", e, tx);
 		}
-		catch (Exception e) 
-		{
-			throwExcp("messages.updated.error",e,tx);
-        }
-		request.setAttribute("modal","1");
+		request.setAttribute("modal", "1");
 		return this.exitoRefresco("messages.updated.success", request);
 	}
-	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions 
-	{
-	     mostrarRegistro(mapping, formulario, request, response, true);
-	     request.setAttribute("modo", "editar");
-	     return "mostrar";
+
+	protected String editar(ActionMapping mapping, MasterForm formulario,
+			HttpServletRequest request, HttpServletResponse response)
+			throws ClsExceptions {
+		mostrarRegistro(mapping, formulario, request, response, true);
+		request.setAttribute("modo", "editar");
+		return "mostrar";
 	}
-	protected String ver(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions 
-	{
-	     mostrarRegistro(mapping, formulario, request, response, true);
-	     request.setAttribute("modo", "ver");
-	     return "ver";
+
+	protected String ver(ActionMapping mapping, MasterForm formulario,
+			HttpServletRequest request, HttpServletResponse response)
+			throws ClsExceptions {
+		mostrarRegistro(mapping, formulario, request, response, true);
+		request.setAttribute("modo", "ver");
+		return "ver";
 	}
-	
-	
-	protected void mostrarRegistro(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response, boolean bEditable) throws ClsExceptions
-	{
-        SIGAGestionContadoresForm form = (SIGAGestionContadoresForm)formulario;
-        UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
-        
-        //AdmContadorBean contadorBean = new AdmContadorBean();
-        
-		Vector vVisibles = form.getDatosTablaVisibles(0);
-		Vector vOcultos = form.getDatosTablaOcultos(0);		
 
-        String idCodigo = (String)vOcultos.elementAt(0);
-       // String nombre = (String)vOcultos.elementAt(1);
-       // String descripcion = (String)vOcultos.elementAt(2);
-        //String prefijo = (String)vOcultos.elementAt(3);
-        //String contador = (String)vOcultos.elementAt(4);
-        //String sufijo = (String)vOcultos.elementAt(5);
-       
-        AdmContadorAdm contadorAdm = new AdmContadorAdm(this.getUserBean(request));
-        Hashtable datosContadorHash=new Hashtable();
-        datosContadorHash.put(AdmContadorBean.C_IDCONTADOR,idCodigo);
-        datosContadorHash.put(AdmContadorBean.C_IDINSTITUCION,userBean.getLocation());
-        Vector vDatosContador=contadorAdm.selectByPK(datosContadorHash);
-        AdmContadorBean bean = null;
-        if (vDatosContador.size()>0){
-        	 bean = (AdmContadorBean)vDatosContador.elementAt(0);
-        	 /*contadorBean.setModificableContador(bean.getModificableContador());
-        	 contadorBean.setModoContador(bean.getModoContador());
-        	 contadorBean.setLongitudContador(bean.getLongitudContador());
-        	 contadorBean.setFechaReconfiguracion(bean.getFechaReconfiguracion());
-        	 contadorBean.setReconfiguracionContador(bean.getReconfiguracionContador());
-        	 contadorBean.setReconfiguracionSufijo(bean.getReconfiguracionSufijo());
-        	 contadorBean.setNombre(bean.getNombre());
-        	 contadorBean.setReconfiguracionPrefijo(bean.getReconfiguracionPrefijo());*/
-        	
-        }
-        /*
-        contadorBean.setIdContador(idCodigo);
-        contadorBean.setDescripcion(descripcion);
-        contadorBean.setPrefijo(prefijo);
-        contadorBean.setContador(new Long(contador));
-        contadorBean.setSufijo(sufijo);
-       */
-     
-       
+	protected void mostrarRegistro(ActionMapping mapping,
+			MasterForm formulario, HttpServletRequest request,
+			HttpServletResponse response, boolean bEditable)
+			throws ClsExceptions {
+		SIGAGestionContadoresForm form = (SIGAGestionContadoresForm) formulario;
+		UsrBean userBean = ((UsrBean) request.getSession().getAttribute(
+				("USRBEAN")));
 
-        Vector datos = new Vector();
-        datos.add(bean);
-       
-       
-        request.setAttribute("datos", datos);
-     
-        
-        
+		Vector vOcultos = form.getDatosTablaOcultos(0);
 
-		
+		String idCodigo = (String) vOcultos.elementAt(0);
+
+		AdmContadorAdm contadorAdm = new AdmContadorAdm(this
+				.getUserBean(request));
+		Hashtable datosContadorHash = new Hashtable();
+		datosContadorHash.put(AdmContadorBean.C_IDCONTADOR, idCodigo);
+		datosContadorHash.put(AdmContadorBean.C_IDINSTITUCION, userBean
+				.getLocation());
+		Vector vDatosContador = contadorAdm.selectByPK(datosContadorHash);
+		AdmContadorBean bean = null;
+		if (vDatosContador.size() > 0)
+			bean = (AdmContadorBean) vDatosContador.elementAt(0);
+
+		Vector datos = new Vector();
+		datos.add(bean);
+
+		request.setAttribute("datos", datos);
 	}
-	
-	protected String borrar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException
-	{
-		/*ParametrosGeneralesForm form = (ParametrosGeneralesForm) formulario;
-		Vector ocultos = form.getDatosTablaOcultos(0);
-		String modulo        = (String) ocultos.get(0); // Modulo
-		String idInstitucion = (String) ocultos.get(1); // Institucion
-		String parametro     = (String) ocultos.get(2); // Parametro
 
-		// No se pueden eliminar parametros de la institucion '0'
-		if (idInstitucion.equals("0")) {
-			return this.exitoModalSinRefresco("messages.deleted.error", request);
-		}
-		
-		Hashtable h = new Hashtable();
-		UtilidadesHash.set (h, GenParametrosBean.C_IDINSTITUCION, idInstitucion);
-		UtilidadesHash.set (h, GenParametrosBean.C_MODULO, modulo);
-		UtilidadesHash.set (h, GenParametrosBean.C_PARAMETRO, parametro);
-		
-		GenParametrosAdm adm = new GenParametrosAdm (this.getUserBean(request));
-		if (!adm.delete(h))
-			return this.exitoModalSinRefresco("messages.deleted.error", request);*/
-		
+	protected String borrar(ActionMapping mapping, MasterForm formulario,
+			HttpServletRequest request, HttpServletResponse response)
+			throws ClsExceptions, SIGAException {
 		return this.exitoRefresco("messages.deleted.success", request);
 	}
 }
- 
