@@ -233,10 +233,11 @@
 		function validarAnchoTabla () 
 		{
 			if (document.all.tablaTelefono.clientHeight < document.all.divtelefono.clientHeight) {
-				document.all.tabTelefonosCabeceras.width='80%';
+				document.all.tabTelefonosCabeceras.width='80%';				
 			}
 			else {
-				document.all.tabTelefonosCabeceras.width='76.30%';				
+				document.all.tabTelefonosCabeceras.width='76.30%';	
+									
 			}
 		}
 		

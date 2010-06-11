@@ -745,7 +745,7 @@
 										t_anio = (String) hTitulo
 												.get(ScsAsistenciasBean.C_ANIO);
 										t_numero = (String) hTitulo
-												.get(ScsAsistenciasBean.C_NUMERO);
+												.get(ScsAsistenciasBean.C_NUMERO);										
 									}
 						%>
 					<%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%> 
@@ -887,13 +887,11 @@
 		<%
 			}
 		%>		
-		<td class="labelText">
-			<siga:Idioma key="gratuita.personaJG.literal.tipoIdentificacion"/>
+		
+		<td colspan="3">
 			<%if (obligatorioTipoIdentificador) { %>
 				<%=asterisco%> 
 			<%}%>
-		</td>
-		<td colspan="3">
 		<%
 			ArrayList tipoIdentificacionSel = new ArrayList();
 					if (miform.getNIdentificacion() != null) {
@@ -924,19 +922,17 @@
 		   			<input type="button" id="idButtonNif" name="idButton" value='<siga:Idioma key="censo.nif.letra.letranif" />' onclick="obtenerNif();" style="align:right" class="button" style="display:inline;visibility: hidden;">
 		   		<%}%>
 		   <%}%>
+		  	
 		</td>
-	</tr>
-	<tr>
-		<td class="labelText" colspan="3">
-			<siga:Idioma key="gratuita.personaJG.literal.nombreDeno"/>&nbsp;(*)		
+		<td class="labelText" align="left" >
+			<siga:Idioma key="gratuita.personaJG.literal.nombreDeno"/>&nbsp;(*)					
 		</td>
-		<td colspan="6" >
-			<html:text name="PersonaJGForm" property="nombre" maxlength="100" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>" style="width:600"></html:text>
-		</td>
-		<td>
+		<td align="left">
+			<html:text name="PersonaJGForm" property="nombre" maxlength="100" styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>" style="width:200"></html:text>
 		</td>
 		
 	</tr>
+	
 	<tr>
 		<td class="labelText" colspan="3">
 			<siga:Idioma key="gratuita.personaJG.literal.apellido1Abre"/>&nbsp;(*)		
@@ -1610,127 +1606,38 @@ function limpiarPersonaContrario() {
    <%
    	if (conceptoE.equals(PersonaJGAction.SOJ)) {
    %>
-   <siga:ConjCampos leyenda="gratuita.personaJG.literal.estadisticaSOJ">
-    <table   align="center" width="100%" border="0">
-     <tr>	
-	<td class="labelText" >
-		<siga:Idioma key="gratuita.busquedaSOJ.literal.tipoConoce"/>
-	</td>			
-	<%
-					if (miform.getTipoConoce() != null) {
-											tipoConoce = miform.getTipoConoce();
-										} else {
-											tipoConoce = "";
-										}
-										ArrayList selTipoConoce = new ArrayList();
-										selTipoConoce.add(tipoConoce);
-				%>
-			   
-	<td width="30%">
-	<%
-		if (!accion.equalsIgnoreCase("ver")) {
-	%>
-		<siga:ComboBD nombre = "tipoConoce" tipo="cmbTipoConoce" clase="boxCombo"  parametro="<%=dato%>" elementoSel="<%=selTipoConoce%>" />
-	<%
-		} else {
-	%>
-	   <siga:ComboBD nombre = "tipoConoce" tipo="cmbTipoConoce" clase="boxComboConsulta"  readonly="true" parametro="<%=dato%>" elementoSel="<%=selTipoConoce%>" />
-	<%
-		}
-	%>	
-	</td>
-	<td class="labelText"width="30%">
-		<siga:Idioma key="gratuita.busquedaSOJ.literal.solicitaInfoJG"/>
-	</td>				
-	<td align="left">
-	 <%
-	 	if (!accion.equalsIgnoreCase("ver")) {
-	 %>
-	  <html:checkbox  name="PersonaJGForm" property="chkSolicitaInfoJG"  />	
-	  <%
-		  	} else {
-		  %>
-	   <html:checkbox  name="PersonaJGForm" disabled="true" property="chkSolicitaInfoJG"  />	
-	  <%
-		  	}
-		  %>	
-	</td>
-	</tr>
-	<tr>
-	<td class="labelText">
-		<siga:Idioma key="gratuita.busquedaSOJ.literal.grupoLaboral"/>
-	</td>		
-	<%
-				if (miform.getTipoGrupoLaboral() != null) {
-										tipoGrupoLaboral = miform
-												.getTipoGrupoLaboral();
-									} else {
-										tipoGrupoLaboral = "";
-									}
-									ArrayList selTipoGrupoLaboral = new ArrayList();
-									selTipoGrupoLaboral.add(tipoGrupoLaboral);
-			%>		
-	<td>
-	  <%
-	  	if (!accion.equalsIgnoreCase("ver")) {
-	  %>
-		<siga:ComboBD nombre = "tipoGrupoLaboral" tipo="cmbTipoGrupoLaboral" clase="boxCombo"   parametro="<%=dato%>" elementoSel="<%=selTipoGrupoLaboral%>" />	
-	 <%
-		 	} else {
-		 %>	
-	   <siga:ComboBD nombre = "tipoGrupoLaboral" tipo="cmbTipoGrupoLaboral" readonly="true" clase="boxComboConsulta"  parametro="<%=dato%>" elementoSel="<%=selTipoGrupoLaboral%>" ancho="150"/>	
-	 <%
-		 	}
-		 %>	
-	</td>
-	<td class="labelText">
-	
-		<siga:Idioma key="gratuita.busquedaSOJ.literal.pideJG" />
-	
-	</td>				
-	<td align="left">
-	 <%
-	 	if (!accion.equalsIgnoreCase("ver")) {
-	 %>
-	   <html:checkbox  name="PersonaJGForm" property="chkPideJG"  />	
-	  <%
-		  	} else {
-		  %>	
-	   <html:checkbox  name="PersonaJGForm" disabled="true" property="chkPideJG"  />
-	  <%
-	  	}
-	  %>	 	
-	</td>
-	</tr>
-	<tr>
-	<td class="labelText">
-		<siga:Idioma key="gratuita.busquedaSOJ.literal.NsolicitaInfoJG"/>
-	</td>			
-	<%
-					if (miform.getNumVecesSOJ() != null) {
-											numVecesSOJ = miform.getNumVecesSOJ();
-										} else {
-											numVecesSOJ = "";
-										}
-										ArrayList selNumVecesSOJ = new ArrayList();
-										selNumVecesSOJ.add(numVecesSOJ);
-				%>		
-	<td colspan="3">
-	 <%
-	 	if (!accion.equalsIgnoreCase("ver")) {
-	 %>
-		<siga:ComboBD nombre = "numVecesSOJ" tipo="cmbNumVecesSOJ" clase="boxCombo"  parametro="<%=dato%>" elementoSel="<%=selNumVecesSOJ%>" />	
-	<%
-			} else {
-		%>		
-	   <siga:ComboBD nombre = "numVecesSOJ" tipo="cmbNumVecesSOJ" clase="boxComboConsulta" readonly="true" parametro="<%=dato%>" elementoSel="<%=selNumVecesSOJ%>" />	
-	<%
-			}
-		%>	 	
-	</td>
-	</tr>
-	</table>
-	</siga:ConjCampos>
+  	 <siga:ConjCampos
+			leyenda="gratuita.personaJG.literal.Contacto">
+			<table width="100%" border="0" cellpadding="0" cellspacing="0">
+						<tr >
+							<td class="labelText" >
+								<siga:Idioma key="censo.SolicitudIncorporacion.literal.email"/>								
+							</td>										
+							<td class="labelTextValor">													
+								<html:text name="PersonaJGForm" property="correoElectronico" maxlength="50" style="width:310px"  styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"></html:text>
+							</td>	
+							<td rowspan=2><siga:ConjCampos
+								leyenda="gratuita.personaJG.literal.telefonos"><iframe align="top"
+								src="<%=app%>/JGR_TelefonosPersonasJG.do?accion=<%=accion%>&idPersona=<%=idPersona%>&idInstitucion=<%=usr.getLocation()%>&esFichaColegial=<%=sEsFichaColegial%>"
+								id="resultado" name="resultado" scrolling="no" frameborder="0"
+								marginheight="0" marginwidth="0"
+								style="width: 400px; height:85px;"> </iframe></siga:ConjCampos></td>							
+						</tr>				
+						<tr >
+							<td class="labelText" colspan="1" align="center">
+								<siga:Idioma key="censo.preferente.fax"/>								
+							</td >
+							<td class="labelTextValor" >
+								<html:text name="PersonaJGForm" property="fax" maxlength="20" style="width:150px" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"></html:text>								
+							</td>	
+						</tr>
+						
+						
+											
+								
+			</table>
+		</siga:ConjCampos>   
+		
    <%
    	}
    %>
@@ -1960,7 +1867,7 @@ function limpiarPersonaContrario() {
 
 </td>
 
-	
+	<%if (!(conceptoE.equals(PersonaJGAction.SOJ))) {%>
 		<td valign="top"><!-- para Telefonos --> <siga:ConjCampos
 			leyenda="gratuita.personaJG.literal.Contacto">
 			<table width="100%" border="0" cellpadding="0" cellspacing="0">
@@ -1980,7 +1887,7 @@ function limpiarPersonaContrario() {
 								<siga:Idioma key="censo.preferente.fax"/>								
 							</td >
 							<td class="labelTextValor" >
-								<html:text name="PersonaJGForm" property="fax" maxlength="100" style="width:150px" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"></html:text>
+								<html:text name="PersonaJGForm" property="fax" maxlength="20" style="width:150px" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"></html:text>
 								
 							</td>
 					
@@ -1997,9 +1904,136 @@ function limpiarPersonaContrario() {
 				</tr>
 			</table>
 		</siga:ConjCampos>
-		    </iframe>
+		    
 								
 		</td>
+		
+		 <%} else{%>
+		 
+	<td> 
+		   <siga:ConjCampos leyenda="gratuita.personaJG.literal.estadisticaSOJ">
+    <table   align="center" width="100%" border="0">
+     <tr>	
+	<td class="labelText" >
+		<siga:Idioma key="gratuita.busquedaSOJ.literal.tipoConoce"/>
+	</td>			
+	<%
+					if (miform.getTipoConoce() != null) {
+											tipoConoce = miform.getTipoConoce();
+										} else {
+											tipoConoce = "";
+										}
+										ArrayList selTipoConoce = new ArrayList();
+										selTipoConoce.add(tipoConoce);
+				%>
+			   
+	<td width="30%">
+	<%
+		if (!accion.equalsIgnoreCase("ver")) {
+	%>
+		<siga:ComboBD nombre = "tipoConoce" tipo="cmbTipoConoce" clase="boxCombo"  parametro="<%=dato%>" elementoSel="<%=selTipoConoce%>" />
+	<%
+		} else {
+	%>
+	   <siga:ComboBD nombre = "tipoConoce" tipo="cmbTipoConoce" clase="boxComboConsulta"  readonly="true" parametro="<%=dato%>" elementoSel="<%=selTipoConoce%>" />
+	<%
+		}
+	%>	
+	</td>
+	<td class="labelText"width="30%">
+		<siga:Idioma key="gratuita.busquedaSOJ.literal.solicitaInfoJG"/>
+	</td>				
+	<td align="left">
+	 <%
+	 	if (!accion.equalsIgnoreCase("ver")) {
+	 %>
+	  <html:checkbox  name="PersonaJGForm" property="chkSolicitaInfoJG"  />	
+	  <%
+		  	} else {
+		  %>
+	   <html:checkbox  name="PersonaJGForm" disabled="true" property="chkSolicitaInfoJG"  />	
+	  <%
+		  	}
+		  %>	
+	</td>
+	</tr>
+	<tr>
+	<td class="labelText">
+		<siga:Idioma key="gratuita.busquedaSOJ.literal.grupoLaboral"/>
+	</td>		
+	<%
+				if (miform.getTipoGrupoLaboral() != null) {
+										tipoGrupoLaboral = miform
+												.getTipoGrupoLaboral();
+									} else {
+										tipoGrupoLaboral = "";
+									}
+									ArrayList selTipoGrupoLaboral = new ArrayList();
+									selTipoGrupoLaboral.add(tipoGrupoLaboral);
+			%>		
+	<td>
+	  <%
+	  	if (!accion.equalsIgnoreCase("ver")) {
+	  %>
+		<siga:ComboBD nombre = "tipoGrupoLaboral" tipo="cmbTipoGrupoLaboral" clase="boxCombo"   parametro="<%=dato%>" elementoSel="<%=selTipoGrupoLaboral%>" />	
+	 <%
+		 	} else {
+		 %>	
+	   <siga:ComboBD nombre = "tipoGrupoLaboral" tipo="cmbTipoGrupoLaboral" readonly="true" clase="boxComboConsulta"  parametro="<%=dato%>" elementoSel="<%=selTipoGrupoLaboral%>" ancho="150"/>	
+	 <%
+		 	}
+		 %>	
+	</td>
+	<td class="labelText">
+	
+		<siga:Idioma key="gratuita.busquedaSOJ.literal.pideJG" />
+	
+	</td>				
+	<td align="left">
+	 <%
+	 	if (!accion.equalsIgnoreCase("ver")) {
+	 %>
+	   <html:checkbox  name="PersonaJGForm" property="chkPideJG"  />	
+	  <%
+		  	} else {
+		  %>	
+	   <html:checkbox  name="PersonaJGForm" disabled="true" property="chkPideJG"  />
+	  <%
+	  	}
+	  %>	 	
+	</td>
+	</tr>
+	<tr>
+	<td class="labelText">
+		<siga:Idioma key="gratuita.busquedaSOJ.literal.NsolicitaInfoJG"/>
+	</td>			
+	<%
+					if (miform.getNumVecesSOJ() != null) {
+											numVecesSOJ = miform.getNumVecesSOJ();
+										} else {
+											numVecesSOJ = "";
+										}
+										ArrayList selNumVecesSOJ = new ArrayList();
+										selNumVecesSOJ.add(numVecesSOJ);
+				%>		
+	<td colspan="3">
+	 <%
+	 	if (!accion.equalsIgnoreCase("ver")) {
+	 %>
+		<siga:ComboBD nombre = "numVecesSOJ" tipo="cmbNumVecesSOJ" clase="boxCombo"  parametro="<%=dato%>" elementoSel="<%=selNumVecesSOJ%>" />	
+	<%
+			} else {
+		%>		
+	   <siga:ComboBD nombre = "numVecesSOJ" tipo="cmbNumVecesSOJ" clase="boxComboConsulta" readonly="true" parametro="<%=dato%>" elementoSel="<%=selNumVecesSOJ%>" />	
+	<%
+			}
+		%>	 	
+	</td>
+	</tr>
+	</table>
+	</siga:ConjCampos>
+	</td>
+		<%}%>	
 	</tr>
 </html:form>
 </table>
