@@ -1989,6 +1989,8 @@ public class PersonaJGAction extends MasterAction {
 				    if (!ufAdm.insert(unidadFamiliarBean)) {
 						throw new ClsExceptions("Error en insert unidad familiar. " + ufAdm.getError());
 					}
+				    // Update de la documentacion de la persona antigua a la nueva
+					scsDocumentacionEJGAdm.copiaDocumentacionPresentador(idInstitucionEJG, idTipoEJG, miform.getAnioEJG(), miform.getNumeroEJG(), idPersonaAnterior, miform.getIdPersonaJG());
 				    if (!ufAdm.delete(borrar)) {
 						throw new ClsExceptions("Error en delete unidad familiar. " + ufAdm.getError());
 					}

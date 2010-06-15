@@ -458,4 +458,20 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 			return null;
 		}
 	}
+	
+	public int copiaDocumentacionPresentador(String idInstitucionEJG, String idTipoEJG, String anioEJG,
+		String numeroEJG, String presentadorAnterior, String presentadorNuevo) throws ClsExceptions {
+		
+		String sqlUpdate = "update scs_documentacionejg set presentador = " + presentadorNuevo +
+			" WHERE " + ScsDocumentacionEJGBean.C_IDINSTITUCION + " = " + idInstitucionEJG +
+			" AND " + ScsDocumentacionEJGBean.C_IDTIPOEJG + " = " + idTipoEJG +
+			" AND " + ScsDocumentacionEJGBean.C_ANIO + " = " + anioEJG +
+			" AND " + ScsDocumentacionEJGBean.C_NUMERO + " = " + numeroEJG +
+			" AND " + ScsDocumentacionEJGBean.C_PRESENTADOR + " = " + presentadorAnterior;
+
+		Row row = new Row();
+		int copiados =  row.updateSQL(sqlUpdate);
+		ClsLogging.writeFileLog("Registros de " + ScsDocumentacionEJGBean.T_NOMBRETABLA + " copiados = " + copiados, 10);
+		return copiados;
+	}
 }
