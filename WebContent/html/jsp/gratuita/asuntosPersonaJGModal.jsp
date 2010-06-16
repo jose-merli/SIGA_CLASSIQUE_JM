@@ -66,14 +66,14 @@
 		</td>
 		</tr>
 		</table>
-		<div style="height:165px">
+		<div style="height:150px">
 		<siga:TablaCabecerasFijas 		   
 		   nombre="listadoAsuntos"
 		   borde="2"
 		   clase="tableTitle"		   
 		   nombreCol="Asunto, Año, Numero"
 		   tamanoCol="40,30,30"
-		   ajusteBotonera="true">
+		   ajusteBotonera="false">
 		   	<%if (vAsuntos!= null && !vAsuntos.isEmpty()) { %>
 				<%String numero="", anio="", asunto="";
 				
