@@ -48,7 +48,7 @@
 		<!-- INICIO: SCRIPTS BOTONES -->
 		<script language="JavaScript">
 			
-			<!-- Asociada al boton Nuevo -->
+			// Asociada al boton Nuevo
 			function accionNuevo()
 			{
 				DocumentosForm.modo.value="nuevo";
@@ -68,6 +68,21 @@
 				document.location.reload();
 			}
 
+			function accionDownload() 
+			{		
+
+				DocumentosForm.idEnvio.value="<%=idEnvio%>";
+				DocumentosForm.idInstitucion.value="<%=idInstitucion%>";
+  			    document.forms[0].target = "submitArea";
+				document.forms[0].modo.value = "descargarEnv";
+				document.forms[0].submit();
+				document.forms[0].target = "mainWorkArea";
+			
+			
+		}
+					
+			
+			
 			function download(fila)
 			{
 				var datos;
@@ -195,8 +210,10 @@
 %>
 			</siga:TablaCabecerasFijas>
 
-
-		<siga:ConjBotonesAccion botones="V,N" clase="botonesDetalle"/>
+								
+				  									
+											
+		<siga:ConjBotonesAccion botones="V,N,D" clase="botonesDetalle"/>
 
 		<%@ include file="/html/jsp/envios/includeVolver.jspf" %>
 
