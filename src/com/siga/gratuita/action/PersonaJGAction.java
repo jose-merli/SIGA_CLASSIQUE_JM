@@ -1610,6 +1610,7 @@ public class PersonaJGAction extends MasterAction {
 	     	MasterForm form = (MasterForm)formulario;
 	     	String accion = request.getParameter("accionE");
 	     	String relacion = form.getModo();
+	     	String action = (String)request.getServletPath();
 
 	     	boolean nuevaPersona = false;
 	     	// Datos Persona
@@ -1660,7 +1661,24 @@ public class PersonaJGAction extends MasterAction {
 			String anio="";
 			String numero="";
 			String tipo="";
-			if(miform.getAccionGuardar()==null || miform.getAccionGuardar().equalsIgnoreCase("")){
+			if((action.equalsIgnoreCase("/JGR_AsistidoAsistenciaLetrado.do"))){
+				// Caso especial para el asistido desde la ficha colegial 
+				anio = miform.getAnioASI();
+				numero = miform.getNumeroASI();
+				// Recuperamos las relaciones con otros asuntos
+				Vector relaciones = perAdm.getRelacionesPersonaJGAsistencia(miform.getIdPersonaJG(), user.getLocation(), tipo, anio, numero);
+				// La busqueda es distinta porque no queremos que salgan los asuntos relacionados con la asistencia
+				if(relaciones!=null && relaciones.size()>0){
+					// Si encontramos alguna relacion tendremos que crear una persona nueva para no machacar los datos de la antigua
+					nuevaPersona = true;
+					persona = perAdm.prepararInsert(persona);
+					miform.setIdPersonaJG((String)persona.get(ScsPersonaJGBean.C_IDPERSONA));
+				}// Si no hay mas relaciones continuamos para update
+			}else if((miform.getAccionGuardar()!=null && miform.getAccionGuardar().equalsIgnoreCase("insert"))){
+				nuevaPersona = true;
+				persona = perAdm.prepararInsert(persona);
+				miform.setIdPersonaJG((String)persona.get(ScsPersonaJGBean.C_IDPERSONA));		
+			}else if(miform.getAccionGuardar()==null || miform.getAccionGuardar().equalsIgnoreCase("")){
 				if (relacion.equalsIgnoreCase("guardarEJG")||
 					relacion.equalsIgnoreCase("guardarContrariosEjg")){
 					anio = miform.getAnioEJG();
@@ -1685,11 +1703,7 @@ public class PersonaJGAction extends MasterAction {
 					miform.setAccionGuardar("-");
 					return  "asuntosPersonaJG";
 				}
-			}else if(miform.getAccionGuardar().equalsIgnoreCase("insert")){
-				nuevaPersona = true;
-				persona = perAdm.prepararInsert(persona);
-				miform.setIdPersonaJG((String)persona.get(ScsPersonaJGBean.C_IDPERSONA));
-			} // continuamos para update
+			}// continuamos para update
 			
 			// Comienzo control de transacciones 
 			tx = user.getTransaction();			

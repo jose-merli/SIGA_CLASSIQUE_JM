@@ -29,6 +29,7 @@
 	String nombre = form.getNombreAnterior()!=null?form.getNombreAnterior():"";
 	String modoGuardar = form.getModoGuardar();
 	String accionGuardar = form.getAccionGuardar();
+	String action = (String)request.getAttribute("javax.servlet.forward.servlet_path");
 %>
 
 
@@ -51,7 +52,7 @@
 </head>
 
 <body>
-		<html:form action="/JGR_InteresadoEJG.do" method="POST" target="_self">
+		<html:form action="<%=action%>" method="POST" target="_self">
 			<html:hidden property="modo"/>
 
 			<html:hidden property="modoGuardar"/>

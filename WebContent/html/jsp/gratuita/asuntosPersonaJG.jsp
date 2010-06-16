@@ -27,6 +27,9 @@
 	PersonaJGForm form = (PersonaJGForm)request.getAttribute("PersonaJGForm");
 	String modoGuardar = form.getModoGuardar();
 	String accionGuardar = form.getAccionGuardar();
+	
+	String action = (String)request.getAttribute("javax.servlet.forward.servlet_path");
+	
 %>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
@@ -46,7 +49,7 @@
 
 <body onload="reloadPage();">
 
-		<html:form action="/JGR_InteresadoEJG.do" method="POST" target="_self">
+		<html:form action="<%=action%>" method="POST" target="_self">
 			<html:hidden property = "modo" value = "abrirModalAsuntos"/>
 			<html:hidden property="ncolegiadoContrario"/>
 			<html:hidden property="conceptoE"/>
