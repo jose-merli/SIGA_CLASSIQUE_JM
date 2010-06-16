@@ -675,8 +675,11 @@ public class VolantesExpressAction extends MasterAction
 		VolantesExpressVo volantesExpressVo = miForm.getVolanteExpressVo();
 		ArrayList<ScsAsistenciasBean> alAsistenciaOld =  (ArrayList<ScsAsistenciasBean>)volantesExpressVo.getAsistencias(); 
 		try {
+		ClsLogging.writeFileLog("getAjaxGuardarAsistencias:Antes de BusinessManager:", 10);
 			BusinessManager bm = getBusinessManager();
+			ClsLogging.writeFileLog("getAjaxGuardarAsistencias:Antes de obtener servicio:", 10);
 			VolantesExpressService ves = (VolantesExpressService)bm.getService(VolantesExpressService.class);
+			ClsLogging.writeFileLog("getAjaxGuardarAsistencias:Antes de ejecutar servicio:", 10);
 			ArrayList<ScsAsistenciasBean> alAsistencias = (ArrayList<ScsAsistenciasBean>) ves.executeService(volantesExpressVo);
 			miForm.setAsistencias(alAsistencias);
 			miForm.setMsgAviso(UtilidadesString.getMensajeIdioma(volantesExpressVo.getUsrBean(),"messages.updated.success"));
@@ -689,6 +692,7 @@ public class VolantesExpressAction extends MasterAction
 			String error = UtilidadesString.getMensajeIdioma(volantesExpressVo.getUsrBean(),e.getMsg());
 			miForm.setMsgError(error);
 		}catch (Exception e){
+			ClsLogging.writeFileLog("ERRRR VOLANTES EXPRESS:getAjaxGuardarAsistencias:"+e.toString()+"/", 10);
 			miForm.setAsistencias(alAsistenciaOld);
 			String error = UtilidadesString.getMensajeIdioma(volantesExpressVo.getUsrBean(),"messages.general.errorExcepcion");
 			miForm.setMsgError(error);			
