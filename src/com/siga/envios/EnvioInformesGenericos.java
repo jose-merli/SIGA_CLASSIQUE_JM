@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Vector;
-
 import com.aspose.words.Document;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -2398,6 +2397,39 @@ public class EnvioInformesGenericos extends MasterReport {
 		}	
 
 	}
+	
+	
+	private List getSolicitantesDesignas(Vector vCampos,UsrBean userBean)throws ClsExceptions,SIGAException{
+		ScsDesignaAdm desigAdm = new ScsDesignaAdm(userBean);
+		ScsDefendidosDesignaAdm defendidosAdm = new ScsDefendidosDesignaAdm(userBean);
+		
+		String idPersonaJG = null;
+		String idTurno  = null;
+		String idInstitucion  = null;
+		String anio  = null;
+		String numero  = null;
+		boolean isSolicitanteUnicoDesignas = true;
+		List alSolicitantes = new ArrayList();  
+		for (int i = 0; i < vCampos.size(); i++) {
+			Hashtable ht = (Hashtable) vCampos.get(i); 
+			idInstitucion = (String) ht.get("idInstitucion");
+			anio = (String)ht.get("anio");
+			idTurno = (String) ht.get("idTurno");
+			numero = (String)ht.get("numero");
+			Vector vDefendidos = defendidosAdm.getDefendidosDesigna(new Integer(idInstitucion), new Integer(anio),new Integer(numero), new Integer(idTurno));
+			if(vDefendidos!=null)
+				alSolicitantes.addAll(vDefendidos);
+			if(alSolicitantes.size()>1){
+				break;
+			}
+
+
+		}	
+		return alSolicitantes;
+
+	}
+	
+	
 	/**
 	 * Metodo que gestiona el envio y comunicacion de Designaciones
 	 * @param form
@@ -2416,22 +2448,57 @@ public class EnvioInformesGenericos extends MasterReport {
 		//paginador(¡¡¡¡Esta persona se obtiene en la jsp!!!!)
 		setPersonasDesignas(vCampos,userBean); 
 
-//		String idPersona = getIdColegiadoUnico(vCampos);
+		String idPersonaUnica = getIdColegiadoUnico(vCampos);
+		
 
 
 		String idInstitucion = userBean.getLocation();
+		
+		
+		
+		//si la persona es null es que hay mas de un colegiado de las distintas designas
+		//si solo hay uno comprobaremos que si hay mas de un solicitante(siempre y cuando algun informe sea
+		// de tipo solicitante)
+		boolean isPersonaUnica = idPersonaUnica!=null;
+		
+		boolean isASolicitantes = false;
+		if(isPersonaUnica){
+			
+			
+			Hashtable ht = (Hashtable) vCampos.get(0); 
+			String plantillas = (String)ht.get("plantillas");
+			EnvioInformesGenericos informesAdm = new EnvioInformesGenericos();
+			Vector vPlantillas = informesAdm.getPlantillasInforme(plantillas, idInstitucion, userBean);
+			
+			for (int j = 0; j < vPlantillas.size(); j++) {
+				AdmInformeBean informeBean = (AdmInformeBean)vPlantillas.get(j);
+				
+				String tiposDestinatario = informeBean.getDestinatarios();
+				if(tiposDestinatario!=null){
+					char[] tipoDestinatario = tiposDestinatario.toCharArray();
+					for (int k = 0; k < tipoDestinatario.length; k++) {
+						
+						if(String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG)){
+							isASolicitantes = true;
+							break;
+						}
+					}
 
+				}
+				//Comprbamos que al ser a solicitantes haya una persona unica
+				
+				
+			}
+			
+			
+			
+		}
 
-		/*if(idPersona!=null){
-
-
-
+		if(isPersonaUnica&&!isASolicitantes){
 			//String claveIterante = this.getClaveIterante(vCampos);
 			//if(claveIterante!=null){
 			//vCampos = this.setCamposIterantes(vCampos,"idPersona");
 			//}
-
-
 			Vector vDocumentos = new Vector();
 			Vector vPlantillas = null;
 			for (int i = 0; i < vCampos.size(); i++) {
@@ -2439,7 +2506,7 @@ public class EnvioInformesGenericos extends MasterReport {
 				if(vPlantillas==null){
 					String plantillas = (String) datosInforme.get("plantillas");
 
-					vPlantillas = this.getPlantillas(plantillas,userBean.getLocation(),userBean);
+					vPlantillas = getPlantillasInforme(plantillas, idInstitucion, userBean);
 				}
 				vDocumentos.addAll(this.getDocumentosAEnviar(datosInforme,vPlantillas, userBean,EnvioInformesGenericos.docDocument,EnvioInformesGenericos.comunicacionesDesigna));							
 
@@ -2448,9 +2515,9 @@ public class EnvioInformesGenericos extends MasterReport {
 
 
 			// Genera el envio:
-			envio.generarEnvio(idPersona, EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA,vDocumentos);
+			envio.generarEnvio(idPersonaUnica, EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA,vDocumentos);
 
-		}else{*/
+		}else{
 		//vCampos = this.obtenerDatosFormulario(form);
 		String idioma = null;
 		String idTipoInforme = null;
@@ -2683,7 +2750,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 		setEnvioBatch(true);
 
-		//}
+		}
 		//return isEnvioBatch;
 
 	}

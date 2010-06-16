@@ -34,6 +34,7 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.Paginador;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.AdmInformeBean;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenClienteBean;
 import com.siga.beans.CenColegiadoAdm;
@@ -46,7 +47,6 @@ import com.siga.beans.CenSolicitudIncorporacionAdm;
 import com.siga.beans.CenSolicitudIncorporacionBean;
 import com.siga.beans.CerSolicitudCertificadosAdm;
 import com.siga.beans.CerSolicitudCertificadosBean;
-import com.siga.beans.ConConsultaBean;
 import com.siga.beans.EnvComunicacionMorososAdm;
 import com.siga.beans.EnvDestinatariosBean;
 import com.siga.beans.EnvEnvioProgramadoAdm;
@@ -57,14 +57,13 @@ import com.siga.beans.EnvEstadoEnvioAdm;
 import com.siga.beans.EnvEstatEnvioAdm;
 import com.siga.beans.EnvProgramIRPFAdm;
 import com.siga.beans.EnvProgramIRPFBean;
-import com.siga.beans.EnvProgramPagosAdm;
-import com.siga.beans.EnvProgramPagosBean;
 import com.siga.beans.EnvTipoEnviosAdm;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.PysProductosInstitucionAdm;
 import com.siga.beans.PysProductosInstitucionBean;
+import com.siga.beans.ScsDefendidosDesignaAdm;
 import com.siga.beans.ScsDesignaAdm;
 import com.siga.envios.Documento;
 import com.siga.envios.Envio;
@@ -74,7 +73,6 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.informes.InformeCertificadoIRPF;
-import com.siga.informes.InformeColegiadosPagos;
 import com.siga.informes.InformeFactura;
 import com.siga.informes.MasterReport;
 import com.siga.servlets.SIGASvlProcesoAutomaticoRapido;
@@ -614,12 +612,101 @@ public class DefinirEnviosAction extends MasterAction {
 				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "facturacion.consultamorosos.mail.asunto");
 
 			}else if (subModo!=null && subModo.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesDesigna)){
+				MasterReport masterReport = new  MasterReport(); 
+				Vector vCampos = masterReport.obtenerDatosFormulario(form);
+				idPersona = getIdColegiadoUnicoDesignas(vCampos,userBean);
+				//si la persona es null es que hay mas de un colegiado de las distintas designas
+				//si solo hay uno comprobaremos que si hay mas de un solicitante(siempre y cuando algun informe sea
+				// de tipo solicitante)
+				boolean isPersonaUnica = idPersona!=null;
+				//Vamos a permitir editar cuando sea solo a colegiados
+				
+				
+				/*
+				 //ESTO FUNCIONARIA EL PROBLEMA ES AL ENVIARLOS
+				if(isPersonaUnica){
+					
+					
+						Hashtable ht = (Hashtable) vCampos.get(0); 
+						String plantillas = (String)ht.get("plantillas");
+						EnvioInformesGenericos informesAdm = new EnvioInformesGenericos();
+						Vector vPlantillas = informesAdm.getPlantillasInforme(plantillas, idInstitucion, userBean);
+						
+						int numSolicitantes = 0;
+						for (int j = 0; j < vPlantillas.size(); j++) {
+							AdmInformeBean informeBean = (AdmInformeBean)vPlantillas.get(j);
+							boolean isASolicitantes = false;
+							boolean isAColegiados = false;
+							String tiposDestinatario = informeBean.getDestinatarios();
+							if(tiposDestinatario!=null){
+								char[] tipoDestinatario = tiposDestinatario.toCharArray();
+								for (int k = 0; k < tipoDestinatario.length; k++) {
+									
+									if(String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_CENPERSONA)){
+										isAColegiados = true;
+									}else if(String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG)){
+										isASolicitantes = true;
+									}else if(String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSJUZGADO)){
+										//TODO SCS_JUZGADOSJG
+									}
+								}
 
-				//idPersona = getIdColegiadoUnicoDesignas(form,userBean);
+							}
+							//Comprbamos que al ser a solicitantes haya una persona unica
+							
+							if(isASolicitantes)
+								numSolicitantes += getNumSolicitantesDesignas(vCampos, userBean);
+							//si es solicitante unica comprbamos que no vaya a colegiados tambien
+							if(numSolicitantes>1){
+								isPersonaUnica = false;
+								break;
+							}
+							isPersonaUnica = numSolicitantes+1==1; 
+							if(!isPersonaUnica){
+								break;
+							}
 
+						}
+						
+						
+					}
+					*/
+				boolean isASolicitantes = false;
+				if(isPersonaUnica){
+					
+					
+					Hashtable ht = (Hashtable) vCampos.get(0); 
+					String plantillas = (String)ht.get("plantillas");
+					EnvioInformesGenericos informesAdm = new EnvioInformesGenericos();
+					Vector vPlantillas = informesAdm.getPlantillasInforme(plantillas, idInstitucion, userBean);
+					
+					for (int j = 0; j < vPlantillas.size(); j++) {
+						AdmInformeBean informeBean = (AdmInformeBean)vPlantillas.get(j);
+						
+						String tiposDestinatario = informeBean.getDestinatarios();
+						if(tiposDestinatario!=null){
+							char[] tipoDestinatario = tiposDestinatario.toCharArray();
+							for (int k = 0; k < tipoDestinatario.length; k++) {
+								
+								if(String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG)){
+									isASolicitantes = true;
+									break;
+								}
+							}
+
+						}
+						//Comprbamos que al ser a solicitantes haya una persona unica
+						
+						
+					}
+					
+					
+					
+				}
+				
 				request.setAttribute("isDescargar",new Boolean(descargar!=null &&descargar.equals("1")));
 				//ATENCION. Se habilitara siempre y cuando solo haya el envio a una unicaPersona.
-				request.setAttribute("isEditarEnvio",Boolean.valueOf(false));
+				request.setAttribute("isEditarEnvio",Boolean.valueOf(isPersonaUnica&&!isASolicitantes));
 				desc = UtilidadesString.getMensajeIdioma(userBean.getLanguage(), "informes.genericos.designas.asunto");
 
 
@@ -1825,19 +1912,12 @@ public class DefinirEnviosAction extends MasterAction {
 
 			}
 
-
-
 		}
-
-
 		return idPersona;
-
-
 	}
-	private String getIdColegiadoUnicoDesignas(DefinirEnviosForm form,UsrBean userBean)throws ClsExceptions,SIGAException{
+	private String getIdColegiadoUnicoDesignas(Vector vCampos,UsrBean userBean)throws ClsExceptions,SIGAException{
 
-		MasterReport masterReport = new  MasterReport(); 
-		Vector vCampos = masterReport.obtenerDatosFormulario(form);
+		
 		ScsDesignaAdm desigAdm = new ScsDesignaAdm(userBean);
 		String idPersona  = null;
 		String idTurno  = null;
@@ -1863,19 +1943,42 @@ public class DefinirEnviosAction extends MasterAction {
 				alPersonas.add(key);
 
 			}
-
-
-
 		}
-
-
 		return idPersona;
 
+	}
+	private int getNumSolicitantesDesignas(Vector vCampos,UsrBean userBean)throws ClsExceptions,SIGAException{
+		ScsDesignaAdm desigAdm = new ScsDesignaAdm(userBean);
+		ScsDefendidosDesignaAdm defendidosAdm = new ScsDefendidosDesignaAdm(userBean);
+		
+		String idPersonaJG = null;
+		String idTurno  = null;
+		String idInstitucion  = null;
+		String anio  = null;
+		String numero  = null;
+		boolean isSolicitanteUnicoDesignas = true;
+		int numSolicitantes = 0;
+		for (int i = 0; i < vCampos.size(); i++) {
+			Hashtable ht = (Hashtable) vCampos.get(i); 
+			idInstitucion = (String) ht.get("idInstitucion");
+			anio = (String)ht.get("anio");
+			idTurno = (String) ht.get("idTurno");
+			numero = (String)ht.get("numero");
+			Vector vDefendidos = defendidosAdm.getDefendidosDesigna(new Integer(idInstitucion), new Integer(anio),new Integer(numero), new Integer(idTurno));
+			if(vDefendidos!=null)
+				numSolicitantes += vDefendidos.size();
+			if(numSolicitantes>1){
+				break;
+			}
 
 
+		}	
+		
+		
+		
+		return numSolicitantes;
 
 	}
-
 
 
 	/** 
