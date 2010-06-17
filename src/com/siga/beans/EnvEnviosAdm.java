@@ -17,6 +17,7 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
@@ -65,6 +66,7 @@ import com.ecos.ws.solicitarEnvio.ResultadoSolicitudEnvio;
 import com.ecos.ws.solicitarEnvio.SolicitudEnvioSMS;
 import com.siga.Utilidades.Paginador;
 import com.siga.Utilidades.SIGAReferences;
+import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.certificados.Plantilla;
@@ -3508,8 +3510,20 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		boolean errores = false;
 		String nombreFicheroXX="";
 		String nombreDestinatarioXX="";
-
+		String idenvio=envBean.getIdEnvio().toString();
+		String idInstitucion=envBean.getIdInstitucion().toString();
+		String pathDocumentosAdjuntos="";
+		EnvEnviosAdm envioAdm = new EnvEnviosAdm(this.usrbean);	
+			
 		try{
+			
+			/**PathDocumentosAdjuntos, que es la dirección donde se guarda en local
+			 *  o la carpeta que se designe los archivos**/			
+			try {
+				   pathDocumentosAdjuntos = envioAdm.getPathEnvio(idInstitucion,idenvio);
+				} catch (Exception e) {
+					 		new ClsExceptions (e, "Error al recuperar el envio");
+			   	}
 
 			// PREPARACION
 			//////////////////////////////////
@@ -3548,6 +3562,11 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 				Hashtable htPoblaciones = new Hashtable();
 				Hashtable htProvincia = new Hashtable();
 				Hashtable htPaises = new Hashtable();
+				List listaParaZip = new ArrayList();
+				File fDocumento = null;
+				String nombreFicheroZIP="FicheroEnvio_" +UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","").replaceAll(":","").replaceAll(" ","");
+			
+				
 				for (int l=0;l<vDestinatarios.size();l++){
 
 					EnvDestinatariosBean destBean = (EnvDestinatariosBean) vDestinatarios.elementAt(l);
@@ -3597,20 +3616,32 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 						if (pathArchivoGenerado!=null){
 //							String sGenerado = sDirPdf + File.separator + idPersona + ".pdf";
 							String tipoArchivo = pathArchivoGenerado.substring(pathArchivoGenerado.lastIndexOf("."));
-							String sCopiado = pathDestino + File.separator + nombre + UtilidadesString.formatea(new Integer(contadorFicheros).toString(),4,true) + tipoArchivo;
-							// DAVID: NOMBRE DEL FICHERO
+							String sCopiado = pathDestino  + nombre + UtilidadesString.formatea(new Integer(contadorFicheros).toString(),4,true) + tipoArchivo;
+							// DAVID: NOMBRE DEL FICHERO SI TIENEN UNA PLANTILLA ASOCIADA.
 							nombreFicheroXX=nombre + UtilidadesString.formatea(new Integer(contadorFicheros).toString(),4,true) + tipoArchivo;
-							contadorFicheros++;
-
+							contadorFicheros++;							
 							File fGenerado = new File(pathArchivoGenerado);
 							File fCopiado = new File(sCopiado);
 							fCopiado.getParentFile().mkdirs();
 							if (fGenerado.exists()) {
 								copiarFichero(fGenerado,fCopiado);
-							}
+							}						
+							
+							String path = envioAdm.getPathEnvio(envBean) + File.separator + "documentosdest" +File.separator +nombreFicheroXX;					
+							File fpath= new File(path);
+							if(fGenerado==null || !fGenerado.exists()){					    	
+									 if(!fpath.exists()){
+										 throw new SIGAException("messages.general.error.ficheroNoExiste");
+									 }
+								 }	
+							/**Renombramos el fGenerado con el nombre que tiene el fpath que es el fichero que tiene
+							 *  el nombre que le daremos al fichero fGenerado**/
+							fGenerado.renameTo(fpath);
+							/**Se guarda en el vector de listaParaZip para guardar los diferentes ficheros, para guardarlo despues en un zip**/
+							listaParaZip.add(fpath);
 						}
-
-						/* documentos adjuntos de envío*/
+						if(l==0){
+						/** documentos adjuntos de envío**/
 						EnvDocumentosAdm docAdm = new EnvDocumentosAdm(this.usrbean);
 						Hashtable ht = new Hashtable();
 						ht.put(EnvDocumentosBean.C_IDINSTITUCION,envBean.getIdInstitucion());
@@ -3621,20 +3652,44 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 								EnvDocumentosBean docBean = (EnvDocumentosBean)vDocs.elementAt(d);
 								String tipoArchivo = docBean.getPathDocumento().substring( docBean.getPathDocumento().lastIndexOf("."));
 								String idDoc = String.valueOf(docBean.getIdDocumento());
-								File fDoc = docAdm.getFile(envBean,idDoc);
+								String Descripcion= (String)docBean.getDescripcion();						
+								String Pathdocumento= (String) docBean.getPathDocumento();								
+								File fDoc = docAdm.getFile(idInstitucion,idenvio,idDoc);
+								String rutaAlm = pathDocumentosAdjuntos + ClsConstants.FILE_SEP;					
+								String direccionPlantilla=fDoc.getPath();	
+								String direccionPlantilla1=rutaAlm+ Pathdocumento;	 							  	
+								File archivo = new 	File(direccionPlantilla);	
+								File f2 = new File(direccionPlantilla1);								
 								// RGG 14-07-2005 COPIO CADA DOCUMENTO ADJUNTO A LA CARPETA DE CADA IDPERSONA
-								String sAdjunto = fDoc.getPath();
-								File fAdjunto = new File(sAdjunto);
-								String sCopiadoAdjunto = pathDestino + File.separator + nombre + UtilidadesString.formatea(new Integer(contadorFicheros).toString(),4,true) + tipoArchivo;
-								nombreFicheroXX=nombre + UtilidadesString.formatea(new Integer(contadorFicheros).toString(),4,true);
-								contadorFicheros++;
+								if(archivo==null || !archivo.exists()){					    	
+									 if(!f2.exists()){
+										 throw new SIGAException("messages.general.error.ficheroNoExiste");
+									 }
+								 }									   
+								/**Renombramos el archivo con el nombre que tiene el f2**/
+								archivo.renameTo(f2);
+								/**Se guarda en el vector de listaParaZip los datos de los diferentes archivos**/
+								listaParaZip.add(f2);							
+							
+								/** RGG 14-07-2005 COPIO CADA DOCUMENTO ADJUNTO A LA CARPETA DE CADA IDPERSONA**/								
+								File fAdjunto = new File(direccionPlantilla);
+								String sCopiadoAdjunto = pathDestino + Pathdocumento;
 								File fCopiadoAdjunto = new File(sCopiadoAdjunto);
 								fCopiadoAdjunto.getParentFile().mkdirs();
-								if (fAdjunto.exists()) {
-									copiarFichero(fAdjunto,fCopiadoAdjunto);
+								if (!fAdjunto.exists()) {								
+									if(f2.exists()){
+										/**Renombramos el fichero fAdjunto con el nombre del fichero f2 
+										 * que contiene el nombre que le queremos dar al fichero, posteriormente copiamos al ftp.**/
+										fAdjunto.renameTo(f2);
+										copiarFichero(f2,fCopiadoAdjunto);
+									 }else
+										  throw new SIGAException("messages.general.error.ficheroNoExiste");
 								}
+								
 							}
 						}
+					}
+						
 						// RGG 08/06/2009 ESTADISTICA
 						EnvEstatEnvioAdm admEstat = new EnvEstatEnvioAdm(this.usrbean);
 						admEstat.insertarApunte(envBean.getIdInstitucion(),envBean.getIdEnvio(),envBean.getIdTipoEnvios(),new Long(idPersona));
@@ -3649,7 +3704,37 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 						}
 					}
 
-				} // FOR
+				}// FOR
+				
+				/**Aqui zippeamos lo que tiene listaParaZip y lo movemos al ftp**/				
+				String sCopiadoAdjunto = pathDestino; 
+				File ficheroSalida = null;
+				String rutaServidorDescargasZip = pathDocumentosAdjuntos;
+				rutaServidorDescargasZip += ClsConstants.FILE_SEP+idInstitucion+ClsConstants.FILE_SEP+"temp"+ File.separator;
+				File ruta = new File(rutaServidorDescargasZip);					
+				if(!ruta.exists()){
+						ruta.mkdirs();
+				}				
+				if (listaParaZip.size()!=0) {
+					ArrayList ficherosPDF= new ArrayList();
+					for (int i=0;i<listaParaZip.size();i++){								
+						File f = (File) listaParaZip.get(i);							 
+					    ficherosPDF.add(f);							
+					}					
+					Plantilla.doZip(rutaServidorDescargasZip,nombreFicheroZIP,ficherosPDF, false);				
+					ficheroSalida = new File(rutaServidorDescargasZip + nombreFicheroZIP + ".zip");
+				 }
+				 Date hoy = new Date();
+				 SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMMdd_HHmm");
+				 String sHoy = sdf2.format(hoy);		
+				 nombreFicheroZIP= sHoy;				 
+				 File fCopiadoAdjunto = new File(sCopiadoAdjunto+nombreFicheroZIP+".zip");
+				 fCopiadoAdjunto.getParentFile().mkdirs();
+				 if (ficheroSalida.exists()) {					
+						copiarFichero(ficheroSalida,fCopiadoAdjunto);						
+						borrarDirectorio(ruta);
+				 }				
+				
 			}
 
 			//Despues de todo el proceso, generamos/imprimimos las etiquetas
