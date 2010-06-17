@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +36,8 @@ import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmLenguajesAdm;
 import com.siga.beans.BusquedaClientesFiltrosAdm;
+import com.siga.beans.CenBajasTemporalesAdm;
+import com.siga.beans.CenBajasTemporalesBean;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
@@ -737,7 +741,7 @@ public class BusquedaDesignasAction extends MasterAction {
 		String idPersonaSel = miform.getIdPersona();
 
 		try{
-
+			
 			tx = usr.getTransaction();
 			tx.begin();	
 			// Obtenemos el idPersona
@@ -752,10 +756,15 @@ public class BusquedaDesignasAction extends MasterAction {
 						tx.rollback();
 						return exitoModalSinRefresco("gratuita.modalDefinirDesignas.errorNumero",request);
 					}
+					CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(usr);
+					//comprobamos que el confirmador no esta de vacaciones la fecha que del solicitante
+					Map<String,CenBajasTemporalesBean> mBajasTemporalesConfirmador =  bajasTemporalescioneAdm.getDiasBajaTemporal(new Long(idPersonaSel), new Integer(usr.getLocation()));
+					if(mBajasTemporalesConfirmador.containsKey(hash.get("FECHAENTRADAINICIO")))
+						throw new SIGAException("censo.bajastemporales.messages.colegiadoEnVacaciones");
 				} else {
 					//busqueda automatica
-					BusquedaClientesFiltrosAdm busquedaClientesFiltrosAdm= new BusquedaClientesFiltrosAdm();
-					Row row = busquedaClientesFiltrosAdm.gestionaDesignacionesAutomaticas(usr.getLocation(), miform.getIdTurno());
+					BusquedaClientesFiltrosAdm busquedaClientesFiltrosAdm= new BusquedaClientesFiltrosAdm(usr);
+					Row row = busquedaClientesFiltrosAdm.gestionaDesignacionesAutomaticas(usr.getLocation(), miform.getIdTurno(),(String)hash.get("FECHAENTRADAINICIO"));
 					idPersonaSel = (String)row.getValue(CenPersonaBean.C_IDPERSONA);					
 					numColegiadoAutomatico = (String)row.getValue(CenColegiadoBean.C_NCOLEGIADO);
 					nombreApellidos = (String)row.getValue(CenPersonaBean.C_NOMBRE);
@@ -770,6 +779,12 @@ public class BusquedaDesignasAction extends MasterAction {
 						nombreApellidos += " " + apellido2;	
 					}				
 				}
+			}else{
+				CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(usr);
+				//comprobamos que el confirmador no esta de vacaciones la fecha que del solicitante
+				Map<String,CenBajasTemporalesBean> mBajasTemporalesConfirmador =  bajasTemporalescioneAdm.getDiasBajaTemporal(new Long(idPersonaSel), new Integer(usr.getLocation()));
+				if(mBajasTemporalesConfirmador.containsKey(hash.get("FECHAENTRADAINICIO")))
+					throw new SIGAException("censo.bajastemporales.messages.colegiadoEnVacaciones");
 			}
 
 			hash.put(ScsDesignasLetradoBean.C_IDPERSONA,idPersonaSel);
@@ -938,6 +953,9 @@ public class BusquedaDesignasAction extends MasterAction {
 			request.setAttribute("IDTURNO",idTurnoSJCS);
 			request.setAttribute("INSTITUCION",idInstitucionSJCS);
 			request.setAttribute("ANIO",anioSJCS);
+		}catch (SIGAException e) {
+			request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr,e.getLiteral()));	
+			return "errorConAviso"; 
 		} 
 		catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,tx);

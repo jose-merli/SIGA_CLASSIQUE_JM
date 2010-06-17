@@ -2,6 +2,8 @@ package com.siga.gratuita.action;
 
 
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +21,8 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.CenBajasTemporalesAdm;
+import com.siga.beans.CenBajasTemporalesBean;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
@@ -96,9 +100,17 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 		String sustituta = permutasForm.getSustituta(); //nos indica si el letrado proviene de una guardia de sustitucion
 		String comenSustitucion = permutasForm.getComenSustitucion();
 		UserTransaction tx = null;
-
+		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 		try {
-			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			
+			CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(usr);
+			Map<String,CenBajasTemporalesBean> mBajasTemporales =  bajasTemporalescioneAdm.getDiasBajaTemporal(new Long(idPersonaEntrante), new Integer(idInstitucion));
+			if(mBajasTemporales.containsKey(fechaInicio))
+				throw new SIGAException("censo.bajastemporales.messages.colegiadoEnVacaciones");
+				
+			
+			
+			
 			tx=usr.getTransaction();
 			
 			ScsGuardiasColegiadoAdm guardiasColegiadoAdm = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
@@ -116,6 +128,9 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 				tx.commit();
 			}
 			
+		}catch (SIGAException e) {
+			request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr,e.getLiteral()));	
+			return "errorConAviso"; 
 		}
 		catch (Exception e) {
 			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 
@@ -300,7 +315,7 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 		ScsCabeceraGuardiasAdm admCabeceraGuardias = new ScsCabeceraGuardiasAdm(this.getUserBean(request));
 		
 		String forward = "exito";
-		UsrBean usr;
+		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 		UserTransaction tx = null;
 		Hashtable miHash = new Hashtable();
 		Hashtable solicitanteGuardiaHash = new Hashtable();
@@ -316,9 +331,18 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 				
 		try {
 			//Control del usuario:
-			usr = (UsrBean) request.getSession().getAttribute("USRBEAN");			
+						
 			tx=usr.getTransaction();
-
+			CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(usr);
+			//comprobamos que el solicitante no esta de vacaciones la fecha que del confirmador
+			Map<String,CenBajasTemporalesBean> mBajasTemporalesSolicitante =  bajasTemporalescioneAdm.getDiasBajaTemporal(new Long(miForm.getIdPersonaSolicitante()), new Integer(miForm.getIdInstitucion()));
+			if( mBajasTemporalesSolicitante.containsKey(miForm.getFechaInicioConfirmador()))
+				throw new SIGAException("censo.bajastemporales.messages.colegiadoEnVacaciones");
+			//comprobamos que el confirmador no esta de vacaciones la fecha que del solicitante
+			Map<String,CenBajasTemporalesBean> mBajasTemporalesConfirmador =  bajasTemporalescioneAdm.getDiasBajaTemporal(new Long(miForm.getIdPersonaConfirmador()), new Integer(miForm.getIdInstitucion()));
+			if(mBajasTemporalesConfirmador.containsKey(miForm.getFechaInicioSolicitante()))
+				throw new SIGAException("censo.bajastemporales.messages.colegiadoEnVacaciones");
+			
 			//Calculamos el nuevo identificador numero de la tabla scs_permutaguardias:
 			numero = admPermutas.getNuevoNumero(miForm.getIdInstitucion());
 
@@ -619,6 +643,9 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			//-----------------------------------------------------------------
 			//Fin de la transaccion
 			//-----------------------------------------------------------------
+		}catch (SIGAException e) {
+			request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr,e.getLiteral()));	
+			return "errorConAviso"; 
 		}
 		catch (Exception e){
 			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 

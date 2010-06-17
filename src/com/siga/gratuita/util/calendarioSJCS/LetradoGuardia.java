@@ -7,6 +7,9 @@
 package com.siga.gratuita.util.calendarioSJCS;
 
 import java.util.ArrayList;
+import java.util.Map;
+
+import com.siga.beans.CenBajasTemporalesBean;
 
 /**
  * @author A203486
@@ -20,6 +23,7 @@ public class LetradoGuardia implements Cloneable {
 	private Long idPersona;
 	private Integer idInstitucion, idTurno, idGuardia;
 	private ArrayList periodoGuardias;
+	private Map<String,CenBajasTemporalesBean> bajasTemporales;
 	
 
 	public Object clone() throws CloneNotSupportedException {
@@ -125,5 +129,14 @@ public class LetradoGuardia implements Cloneable {
 	 */
 	public void setSaltoCompensacion(String saltoCompensacion) {
 		this.saltoCompensacion = saltoCompensacion;
+	}
+
+	public Map<String, CenBajasTemporalesBean> getBajasTemporales() {
+		return bajasTemporales;
+	}
+
+	public void setBajasTemporales(
+			Map<String, CenBajasTemporalesBean> bajasTemporales) {
+		this.bajasTemporales = bajasTemporales;
 	}
 }

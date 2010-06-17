@@ -1,12 +1,15 @@
 package com.siga.beans;
 
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.ComodinBusquedas;
+import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -486,7 +489,7 @@ public class BusquedaClientesFiltrosAdm {
 	}
 	
 			
-	public synchronized Row gestionaDesignacionesAutomaticas(String idInstitucion, String idTurno)throws ClsExceptions, SIGAException{
+	public synchronized Row gestionaDesignacionesAutomaticas(String idInstitucion, String idTurno, String fecha)throws ClsExceptions, SIGAException{
 		
 		String contador = null;
 		Row row = null;
@@ -495,16 +498,38 @@ public class BusquedaClientesFiltrosAdm {
 		String idPersona;
 		
 		try{
-			//busco las compensaciones y saltos
+			//busco las compensaciones
 			Vector compensacionesSaltos = compensacionesSaltos(idInstitucion, idTurno);
 			
 			if (compensacionesSaltos != null) {
 				for (int i = 0; i < compensacionesSaltos.size();i++){
 					row = (Row)compensacionesSaltos.get(i);
 					saltoocompensacion = row.getString(ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION);					
+
 					if (ClsConstants.COMPENSACIONES.equals(saltoocompensacion)) {
 						idSaltosTurno = row.getString(ScsSaltosCompensacionesBean.C_IDSALTOSTURNO);
+						
+						
+						
+						
+						CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(usrbean);
+						//comprobamos que el confirmador no esta de vacaciones la fecha que del solicitante
+						Map<String,CenBajasTemporalesBean> mBajasTemporales =  bajasTemporalescioneAdm.getDiasBajaTemporal(new Long(row.getString(ScsSaltosCompensacionesBean.C_IDPERSONA)), new Integer(idInstitucion));
+						if(mBajasTemporales.containsKey(fecha)){
+							ScsSaltosCompensacionesBean salto = new ScsSaltosCompensacionesBean(
+								new Integer(idInstitucion),new Integer(idTurno),new Long(row.getString(ScsSaltosCompensacionesBean.C_IDPERSONA)),ClsConstants.SALTOS,"sysdate");
+							ScsSaltosCompensacionesAdm scsSaltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(this.usrbean);
+							CenBajasTemporalesBean bajaTemporal= (CenBajasTemporalesBean)mBajasTemporales.get(fecha);
+							//bajaTemporal.setDescripcion(bajaTemporal.getDescripcion()+" al crear designa para el "+fecha+" ");
+							scsSaltosCompensacionesAdm.insertarSaltoPorBajaTemporal(bajaTemporal,salto);
+							continue;
+							
+						}
+						
+						
+
 						updateCompensacion(idInstitucion, idTurno, idSaltosTurno);
+						
 						return row;
 					}
 				}
@@ -536,19 +561,43 @@ public class BusquedaClientesFiltrosAdm {
 				"   and ct."+GenClientesTemporalBean.C_IDPERSONA+"=c."+CenColegiadoBean.C_IDPERSONA+
 				" order by ct."+GenClientesTemporalBean.C_SALTO+",ct."+GenClientesTemporalBean.C_POSICION;		
 			
+			
+			
 			row = null;
 			Vector vResult = find(consultaTemp);
 			if(vResult != null && vResult.size() > 0) {	
 				int i = 0;
 				while ((row = (Row)vResult.get(i)) != null) {
 					idPersona = row.getString(GenClientesTemporalBean.C_IDPERSONA);
+					
+					CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(usrbean);
+					//comprobamos que el letrado no esta de vacaciones 
+					Map<String,CenBajasTemporalesBean> mBajasTemporales =  bajasTemporalescioneAdm.getDiasBajaTemporal(new Long(idPersona), new Integer(idInstitucion));
+					if(mBajasTemporales.containsKey(fecha)){
+						ScsSaltosCompensacionesBean salto = new ScsSaltosCompensacionesBean(
+							new Integer(idInstitucion),new Integer(idTurno),new Long(row.getString(ScsSaltosCompensacionesBean.C_IDPERSONA)),ClsConstants.SALTOS,"sysdate");
+						ScsSaltosCompensacionesAdm scsSaltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(this.usrbean);
+						CenBajasTemporalesBean bajaTemporal= (CenBajasTemporalesBean)mBajasTemporales.get(fecha);
+						//bajaTemporal.setDescripcion(bajaTemporal.getDescripcion()+" al crear designa para el "+fecha+" ");
+						scsSaltosCompensacionesAdm.insertarSaltoPorBajaTemporal(bajaTemporal,salto);
+						i++;
+						continue;
+					}
+					
 					idSaltosTurno = getIdSaltoTurno(compensacionesSaltos, idPersona);
+					//se buscan los saltos
 					if (idSaltosTurno != null) {
+						
 						updateCompensacion(idInstitucion, idTurno, idSaltosTurno);						
 					} else {
 						break;
-					}	
-					i = (i+1)%vResult.size();
+					}
+					
+					if (i==vResult.size()-1)
+						//Se ha de repetir el bucle hasta que encontremos a alguien sin saltos.
+						i = 0;
+					else
+						i++;
 				}
 			}
 			

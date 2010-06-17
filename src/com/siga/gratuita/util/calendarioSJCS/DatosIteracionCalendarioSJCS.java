@@ -7,6 +7,8 @@
 package com.siga.gratuita.util.calendarioSJCS;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author A203486
@@ -36,6 +38,7 @@ public class DatosIteracionCalendarioSJCS {
 	//Lista de letrados pendientes:
 	private ArrayList arrayListaLetradosPendientes;
 	
+	private List<LetradoGuardia> compensacionesBajaTemporal;
 
 	public DatosIteracionCalendarioSJCS() {
 		this.error = 0;
@@ -109,4 +112,27 @@ public class DatosIteracionCalendarioSJCS {
 	public void setError(int error) {
 		this.error = error;
 	}
+
+
+
+	public List<LetradoGuardia> getCompensacionesBajaTemporal() {
+		return compensacionesBajaTemporal;
+	}
+
+
+
+	public void setCompensacionesBajaTemporal(List<LetradoGuardia> compensacionesBajaTemporal) {
+		this.compensacionesBajaTemporal = compensacionesBajaTemporal;
+	}
+
+
+
+	
+	
+
+
+	
+
+
+	
 }

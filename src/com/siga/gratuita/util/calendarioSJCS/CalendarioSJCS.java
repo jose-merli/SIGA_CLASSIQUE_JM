@@ -10,9 +10,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import com.atos.utils.ClsConstants;
@@ -25,6 +27,8 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
 
+import com.siga.beans.CenBajasTemporalesAdm;
+import com.siga.beans.CenBajasTemporalesBean;
 import com.siga.beans.GenClientesTemporalAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsCabeceraGuardiasAdm;
@@ -668,71 +672,80 @@ public class CalendarioSJCS {
 			throw new ClsExceptions(e, "Excepcion en insertarCompensacionesBBDD.");
 		}
 	}
-
-	//Recorro el array de letrados mientras haya saltos y los marco como "N" en la lista y en BBDD.
-	//Devuelvo un int con el puntero de letrados actualizado.
-	private DatosIteracionCalendarioSJCS recorrerSaltos(int punteroListaLetrados, ArrayList arrayListaLetrados, LetradoGuardia letradoSeleccionado) throws ClsExceptions {
+	/**
+	 * Metodo que nos devuelve el siguiente letrado de la cola. Para ello tendra en cuenta primero si
+	 * existen compensaciones. en tal caso estas son las primera que van en la cola de turno. 	No obstantes, si
+	 * el letrado a efectuar la compensacion esta de vacaciones, esta no se hara efectiva hasta el primer periodo 
+	 * en el que no esta de vacaciones. Esto es que iremos acuemulando las compensaciones no cumplidas por vacaciones, 
+	 * para añadirlas en el siguiente periodo y que siga el mismo proceso
+	 * @param punteroListaLetrados
+	 * @param arrayListaLetrados
+	 * @param letradoSeleccionado
+	 * @param periodoDiasGuardia
+	 * @param alCompensaciones
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	private DatosIteracionCalendarioSJCS getSiguienteLetrado(int punteroListaLetrados, ArrayList arrayListaLetrados, LetradoGuardia letradoSeleccionado, ArrayList periodoDiasGuardia,List<LetradoGuardia> alCompensaciones) throws ClsExceptions {
 		DatosIteracionCalendarioSJCS salida = new DatosIteracionCalendarioSJCS();
 		
 		try {
-			//INICIO Bucle mientras haya Saltos en la lista de letrados
-			boolean haySaltos = true;			
-			
-//			Lo que debo hacer es:
-//		    - Buscar un letrado con compensacion y sin saltos para devolverlo (letradoSeleccionado = dameCompensacion() a medio hacer)
-//		    - Marcar la compensacion como cumplida --> this.marcarSaltoCompensacionBBDD(letradoSeleccionado, "C");
-//			- Si no es el ultimo decremento el contador del puntero. (NO ESTOY SEGURO, revisar bien que hacer)
-//			//				if (indiceActual != (arrayListaLetrados.size()-1))  
-//			//				punteroListaLetrados--;
-//			- No continuar con el while de los saltos
-//			- devolver el personaje
-
-			// RGG 05/09/2008
-			letradoSeleccionado = dameCompensacion();
-			if (letradoSeleccionado!=null) {
-			    this.marcarSaltoCompensacionBBDD(letradoSeleccionado, "C");
-			    //if (indiceActual != (arrayListaLetrados.size()-1))  
-			    //    punteroListaLetrados--;
-			    
-			} else {
-			
-				while (haySaltos && !arrayListaLetrados.isEmpty()) {				
-					//Selecciono letrados de la lista de letrados en funcion del puntero
-					//Nota: debo controlar que no se quede en un bucle infinito.
-					letradoSeleccionado = (LetradoGuardia)arrayListaLetrados.get(punteroListaLetrados);
-					
-					//Incremento el puntero:		
-					punteroListaLetrados = (punteroListaLetrados + 1) % arrayListaLetrados.size(); 
-												
-					//SI es SALTO
-					haySaltos = this.esSalto(letradoSeleccionado);
-					if (haySaltos) {
-						//Marco como NO SALTO en la lista de letrados:
-						
-					    // RGG 05/09/2008 this.marcarNoSalto(letradoSeleccionado, arrayListaLetrados);
-						
-						//Compenso el SALTO en BBDD:
-						this.marcarSaltoCompensacionBBDD(letradoSeleccionado, "S");								
+			List<LetradoGuardia> compensacionesBajaTemporal = new ArrayList<LetradoGuardia>();
+			//Vamos a recorrer las compensaciones
+			if(alCompensaciones!=null && alCompensaciones.size()>0){
+				for(LetradoGuardia auxLetradoSeleccionado:alCompensaciones){
+					//Miramos si es la primera vez que se accede a las vacaciones del letrado(esto se hace para
+					//evitar acceso que ya se hicieron a BBDD)
+					if(auxLetradoSeleccionado.getBajasTemporales()==null){
+						//si esta de vacaciones meto salto y que continue
+						CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(this.usrBean);
+						Map<String,CenBajasTemporalesBean> mBajasTemporales =  bajasTemporalescioneAdm.getDiasBajaTemporal(auxLetradoSeleccionado.getIdPersona(), auxLetradoSeleccionado.getIdInstitucion());
+						auxLetradoSeleccionado.setBajasTemporales(mBajasTemporales);
 					}
-				}//FIN bucle que avanza el puntero mientras haya saltos en la lista de letrados.
+					
+//					Ahora comprobamos que no esta de vacaciones ningun dia del periodo de la guardia. Si es asi
+//					truncamos insertamos el salto por baja temporal y buscamos el siguiente 
+					CenBajasTemporalesBean bajaTemporal = null;
+					if(auxLetradoSeleccionado.getBajasTemporales()!=null && auxLetradoSeleccionado.getBajasTemporales().size()>0){
+						for (int i = 0; i < periodoDiasGuardia.size(); i++) {
+							String fechaPeriodo = (String)periodoDiasGuardia.get(i);
+						    if( auxLetradoSeleccionado.getBajasTemporales().containsKey(fechaPeriodo)){
+						    	bajaTemporal = auxLetradoSeleccionado.getBajasTemporales().get(fechaPeriodo);
+						    	break;
+						    }
+						}
+					}
+					//SI ESTA DE BAJA TEMPORAL INSERTAMOS UN SALTO Y NO HACEMOS EFECTIVA LA COMPENSACION
+					if(bajaTemporal!=null){
+						ScsSaltosCompensacionesBean salto = new ScsSaltosCompensacionesBean(
+								new Integer(idInstitucion),new Integer(idTurno),auxLetradoSeleccionado.getIdPersona(),ClsConstants.SALTOS,"sysdate");
+							ScsSaltosCompensacionesAdm scsSaltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(this.usrBean);
+							salto.setIdGuardia(idGuardia);
+							salto.setIdCalendarioGuardiasCreacion(idCalendarioGuardias);
+							//bajaTemporal.setDescripcion(bajaTemporal.getDescripcion()+" al crear designa para el "+fecha+" ");
+							scsSaltosCompensacionesAdm.insertarSaltoPorBajaTemporal(bajaTemporal,salto);
+						compensacionesBajaTemporal.add(auxLetradoSeleccionado);
+					}else{
+						this.marcarSaltoCompensacionBBDD(auxLetradoSeleccionado, "C");
+						alCompensaciones.remove(auxLetradoSeleccionado);
+						letradoSeleccionado = auxLetradoSeleccionado;
+						break;
+					}
+				}
+				alCompensaciones.removeAll(compensacionesBajaTemporal);
+			    
+			}else{
+				// sino hay compensaciones cogemos el siguiente letrado y aumnetamos el contador
+				if(!arrayListaLetrados.isEmpty()){
+					letradoSeleccionado = (LetradoGuardia)arrayListaLetrados.get(punteroListaLetrados);
+					//Incremento el puntero:		
+					punteroListaLetrados = (punteroListaLetrados + 1) % arrayListaLetrados.size();
+				}
 				
-			} // fin else
-			
-			//SI es COMPENSACION
-//			if (this.esCompensacion(letradoSeleccionado)) {
-//				//Actualizo el puntero de letrados:
-//				int indiceActual = arrayListaLetrados.indexOf(letradoSeleccionado);
-//				//Si no es el ultimo decremento el contador del puntero.
-//				if (indiceActual != (arrayListaLetrados.size()-1))  
-//					punteroListaLetrados--;
-//				//Lo elimino de la lista de letrados:									
-//				arrayListaLetrados.remove(indiceActual);
-//				
-//				//Marco la compensacion como cumplida en BBDD:
-//				this.marcarSaltoCompensacionBBDD(letradoSeleccionado, "C");
-//			}		
-			
-			//Actualizo la salida:
+			} 
+			// seteamos las compensaciones que no se han hecho efectivas para usarlas en el siguiente periodo
+//			que el letrado no este de vacaciones
+			salida.setCompensacionesBajaTemporal(compensacionesBajaTemporal);
 			salida.setLetradoSeleccionado(letradoSeleccionado);
 			salida.setArrayListaLetrados(arrayListaLetrados);
 			salida.setPunteroListaLetrados(punteroListaLetrados);			
@@ -741,6 +754,36 @@ public class CalendarioSJCS {
 		}
 		return salida;
 	}
+	private boolean isSaltoLetrado(int punteroListaLetrados, ArrayList arrayListaLetrados, LetradoGuardia letradoSeleccionado, ArrayList periodoDiasGuardia,HashMap<Long, List<LetradoGuardia>> hmPersonasConSaltos) throws ClsExceptions {
+
+		boolean isSaltoLetrado = false;
+		try {
+			//tiene salto para algun dia del periodo
+//			HashMap<Long, List<LetradoGuardia>> saltosBajaTemporal = new HashMap<Long, List<LetradoGuardia>>();
+			//eso es que tiene saltos
+			if(hmPersonasConSaltos.containsKey(letradoSeleccionado.getIdPersona())){
+				List<LetradoGuardia> alSaltos = hmPersonasConSaltos.get(letradoSeleccionado.getIdPersona());
+				if(alSaltos!=null && alSaltos.size()>0){
+					this.marcarSaltoCompensacionBBDD(letradoSeleccionado, "S");
+					isSaltoLetrado = true;
+					alSaltos.remove(0);
+					if(alSaltos.size()==0)
+						hmPersonasConSaltos.remove(letradoSeleccionado.getIdPersona());
+
+				}
+
+			}
+
+
+
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Excepcion al realizar el bucle que recorre los letrados con Salto en el metodo recorrerSatos.");
+		}
+		return isSaltoLetrado;
+	}
+	
+	
+	
 
 	//Obtiene el letrado a partir de la lista de letrados, la lista de letrados pendiente y el periodo.
 	//Devuelve un objeto con los datos de los parametros de entrada modificados:
@@ -754,11 +797,11 @@ public class CalendarioSJCS {
 	//-Letrado
 	//-ArrayList letrados
 	//-ArrayList letrados pendientes	
-	private DatosIteracionCalendarioSJCS obtenerLetrado(ArrayList arrayListaLetrados, ArrayList arrayListaLetradosPendientes, int punteroListaLetrados, ArrayList periodoDiasGuardia, ArrayList letradosInsertadosEnPeriodo) {
+	private DatosIteracionCalendarioSJCS obtenerLetrado(ArrayList arrayListaLetrados, ArrayList arrayListaLetradosPendientes, int punteroListaLetrados, ArrayList periodoDiasGuardia, ArrayList letradosInsertadosEnPeriodo, List<LetradoGuardia> alCompensaciones,HashMap<Long, List<LetradoGuardia>> hmPersonasConSaltos) {
 		LetradoGuardia letradoSeleccionado = new LetradoGuardia();
 		//En estos objetos guardo los datos de los parametros modificados por otros metodos y usados en este:
 		DatosIteracionCalendarioSJCS salida = new DatosIteracionCalendarioSJCS();
-		DatosIteracionCalendarioSJCS salidaRecorrerSaltos = new DatosIteracionCalendarioSJCS();
+		DatosIteracionCalendarioSJCS salidaRecorrerCompensaciones = new DatosIteracionCalendarioSJCS();
 		
 		int error = 4;				
 		boolean hayIncompatibilidad = true;
@@ -774,6 +817,8 @@ public class CalendarioSJCS {
 			
 			//Inicializo la lista de letrados pendientes Temporal (contiene aquellos letrados que por la causa que sea para este periodo no pueden hacer la guardia):
 			ArrayList arrayListaLetradosPendientesTemporal = new ArrayList();
+			
+			List<LetradoGuardia> compensacionesBajaTemporal = new ArrayList<LetradoGuardia>(); 
 					
 			//Bucle para recorrerlo mientras:
 			//1.-Haya suficientes letrados en la lista de letrados o en la lista de letrados temporal
@@ -786,21 +831,114 @@ public class CalendarioSJCS {
 					//Selecciono el primero de la lista de pendientes:
 					letradoSeleccionado = (LetradoGuardia)((LetradoGuardia)arrayListaLetradosPendientes.get(0)).clone();
 					
-					//Lo elimino de la lista de pendientes:
-					arrayListaLetradosPendientes.remove(0);					
+					//Miramos si el letrado seleccionado tiene vacaciones
+					if(letradoSeleccionado.getBajasTemporales()==null){
+						//si esta de vacaciones meto salto y que continue
+						CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(this.usrBean);
+						Map<String,CenBajasTemporalesBean> mBajasTemporales =  bajasTemporalescioneAdm.getDiasBajaTemporal(letradoSeleccionado.getIdPersona(), letradoSeleccionado.getIdInstitucion());
+						letradoSeleccionado.setBajasTemporales(mBajasTemporales);
+					}
+					CenBajasTemporalesBean bajaTemporal= null;
+					for (int i = 0; i < periodoDiasGuardia.size(); i++) {
+						String fechaPeriodo = (String)periodoDiasGuardia.get(i);
+					    if( letradoSeleccionado.getBajasTemporales().containsKey(fechaPeriodo)){
+					    	bajaTemporal = letradoSeleccionado.getBajasTemporales().get(fechaPeriodo);
+					    	break;
+					    }
+					}
+					if(bajaTemporal!=null){
+						ScsSaltosCompensacionesBean salto = new ScsSaltosCompensacionesBean(
+								new Integer(idInstitucion),new Integer(idTurno),letradoSeleccionado.getIdPersona(),ClsConstants.SALTOS,"sysdate");
+							ScsSaltosCompensacionesAdm scsSaltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(this.usrBean);
+							salto.setIdGuardia(idGuardia);
+							salto.setIdCalendarioGuardiasCreacion(idCalendarioGuardias);
+							//bajaTemporal.setDescripcion(bajaTemporal.getDescripcion()+" al crear designa para el "+fecha+" ");
+							scsSaltosCompensacionesAdm.insertarSaltoPorBajaTemporal(bajaTemporal,salto);
+							arrayListaLetradosPendientes.remove(0);
+						continue;
+					}else{
+					
+					//Lo elimino de la lista de pendientes ya que no esta de vacaciones
+						arrayListaLetradosPendientes.remove(0);
+					}
+					
+					
+					
+					
+					
 				//NO HAY LETRADOS EN LISTA PENDIENTES
 				} else {
-					//Recorro el array de letrados mientras haya saltos y los marco como "N" en la lista y en BBDD.
-					salidaRecorrerSaltos = this.recorrerSaltos(punteroListaLetrados, arrayListaLetrados, letradoSeleccionado);
+//					ATENCION EN ESTE METODO NOS DEVUELVE EL SIGUIENTE LETRADO. SI EXISTEN COMPENSACIONES NOS DARA EL PRIMERO COMPENSADO
+					salidaRecorrerCompensaciones = this.getSiguienteLetrado(punteroListaLetrados, arrayListaLetrados, letradoSeleccionado,periodoDiasGuardia ,alCompensaciones);
+					
+					//
+					if(salidaRecorrerCompensaciones.getCompensacionesBajaTemporal()!=null && salidaRecorrerCompensaciones.getCompensacionesBajaTemporal().size()>0){
+						compensacionesBajaTemporal.addAll(salidaRecorrerCompensaciones.getCompensacionesBajaTemporal());
+						//Si estoy en la primera vuelta y el puntero vuelve al inicio ya he dado una vuelta entera:
+						if (esPrimeraIteracionBucle && punteroListaLetrados==0)
+							esPrimeraIteracionBucle = false;
+						haySuficientesLetrados = hayLetradosSuficientes(arrayListaLetrados, esPrimeraIteracionBucle, punteroListaLetrados);
+						if(!haySuficientesLetrados)
+							break;
+						continue;
+					}
 					//Actualizo los valores devueltos:
-					punteroListaLetrados = salidaRecorrerSaltos.getPunteroListaLetrados();
-					arrayListaLetrados = salidaRecorrerSaltos.getArrayListaLetrados();
-					letradoSeleccionado = salidaRecorrerSaltos.getLetradoSeleccionado();
+					punteroListaLetrados = salidaRecorrerCompensaciones.getPunteroListaLetrados();
+					arrayListaLetrados = salidaRecorrerCompensaciones.getArrayListaLetrados();
+					letradoSeleccionado = salidaRecorrerCompensaciones.getLetradoSeleccionado();
+					
+					
+					//Miramos si el letrado seleccionado tiene vacaciones
+					if(letradoSeleccionado.getBajasTemporales()==null){
+						//si esta de vacaciones meto salto y que continue
+						CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(this.usrBean);
+						Map<String,CenBajasTemporalesBean> mBajasTemporales =  bajasTemporalescioneAdm.getDiasBajaTemporal(letradoSeleccionado.getIdPersona(), letradoSeleccionado.getIdInstitucion());
+						letradoSeleccionado.setBajasTemporales(mBajasTemporales);
+					}
+					if(letradoSeleccionado.getBajasTemporales()!=null && letradoSeleccionado.getBajasTemporales().size()>0){
+						CenBajasTemporalesBean bajaTemporal= null;
+						for (int i = 0; i < periodoDiasGuardia.size(); i++) {
+							String fechaPeriodo = (String)periodoDiasGuardia.get(i);
+						    if( letradoSeleccionado.getBajasTemporales().containsKey(fechaPeriodo)){
+						    	bajaTemporal = letradoSeleccionado.getBajasTemporales().get(fechaPeriodo);
+						    	break;
+						    }
+						}
+						if(bajaTemporal!=null){
+							ScsSaltosCompensacionesBean salto = new ScsSaltosCompensacionesBean(
+									new Integer(idInstitucion),new Integer(idTurno),letradoSeleccionado.getIdPersona(),ClsConstants.SALTOS,"sysdate");
+								ScsSaltosCompensacionesAdm scsSaltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(this.usrBean);
+								salto.setIdGuardia(idGuardia);
+								salto.setIdCalendarioGuardiasCreacion(idCalendarioGuardias);
+								//bajaTemporal.setDescripcion(bajaTemporal.getDescripcion()+" al crear designa para el "+fecha+" ");
+								scsSaltosCompensacionesAdm.insertarSaltoPorBajaTemporal(bajaTemporal,salto);
+								//Si estoy en la primera vuelta y el puntero vuelve al inicio ya he dado una vuelta entera:
+								if (esPrimeraIteracionBucle && punteroListaLetrados==0)
+									esPrimeraIteracionBucle = false;
+								haySuficientesLetrados = hayLetradosSuficientes(arrayListaLetrados, esPrimeraIteracionBucle, punteroListaLetrados);
+								if(!haySuficientesLetrados)
+									break;
+							continue;
+						}
+					}
+					boolean isSaltoLetrado =  isSaltoLetrado(punteroListaLetrados, arrayListaLetrados, letradoSeleccionado,periodoDiasGuardia,hmPersonasConSaltos);
+					if(isSaltoLetrado){
+						//Si estoy en la primera vuelta y el puntero vuelve al inicio ya he dado una vuelta entera:
+						if (esPrimeraIteracionBucle && punteroListaLetrados==0)
+							esPrimeraIteracionBucle = false;
+						haySuficientesLetrados = hayLetradosSuficientes(arrayListaLetrados, esPrimeraIteracionBucle, punteroListaLetrados);
+						if(!haySuficientesLetrados)
+							break;
+						continue;
+					}
 
+					//Actualizo los valores devueltos:
 					//Si estoy en la primera vuelta y el puntero vuelve al inicio ya he dado una vuelta entera:
 					if (esPrimeraIteracionBucle && punteroListaLetrados==0)
 						esPrimeraIteracionBucle = false;				
 				}
+				//if()
+				
 				
 				//Parte comun con el letrado obtenido: "letradoSeleccionado"
 				//COMPRUEBO QUE PARA ESTE PERIODO NO TENGO REPETIDO EL LETRADO:
@@ -842,7 +980,7 @@ public class CalendarioSJCS {
 				// Se ha modificado la busqueda de letradosSuficientes separando el caso de un solo letrado en la lista o mas de un letrado en la lista
 				// porque cuando sólo habia un letrado no se cumplían nunca las condiciones de salida del bucle 
 				if (arrayListaLetrados.size()>1){//Si tenemos mas de un letrado en la lista 
-				  haySuficientesLetrados = hayLetradosSuficientes(arrayListaLetrados, esPrimeraIteracionBucle, punteroListaLetrados);
+				  //haySuficientesLetrados = hayLetradosSuficientes(arrayListaLetrados, esPrimeraIteracionBucle, punteroListaLetrados);
 				}else{// si solo hay un letrado en la lista
 					if (!haySuficientesLetrados)
 						error = 1; 
@@ -881,6 +1019,7 @@ public class CalendarioSJCS {
 					error = 0;	
 			}
 			
+			salida.setCompensacionesBajaTemporal(compensacionesBajaTemporal);
 			//Actualizo la salida:
 			salida.setLetradoSeleccionado(letradoSeleccionado);
 			salida.setArrayListaLetrados(arrayListaLetrados);
@@ -1000,11 +1139,14 @@ public class CalendarioSJCS {
 		DatosIteracionCalendarioSJCS salidaObtenerLetrado = new DatosIteracionCalendarioSJCS();
 		
 		ScsCabeceraGuardiasAdm admCabecera=new ScsCabeceraGuardiasAdm(this.usrBean); 
-		GenClientesTemporalAdm admClientesTmp = new GenClientesTemporalAdm(this.usrBean); 		
+		GenClientesTemporalAdm admClientesTmp = new GenClientesTemporalAdm(this.usrBean);
+		CenBajasTemporalesAdm bajasTemporalescionesAdm = new CenBajasTemporalesAdm(this.usrBean);
 		ArrayList arrayListaLetrados;
 		ArrayList arrayListaLetradosPendientes;
 		ArrayList periodoDiasGuardia; //Periodo obtenido de la lista de periodos del algoritmo del CGAE 
 		ArrayList arrayLetrados; //lista de letrados para cada periodo
+		List alCompensacionesBajaTemporal;
+		
 		LetradoGuardia letradoSeleccionado = new LetradoGuardia();
 		
 		LetradoGuardia letrado;
@@ -1021,7 +1163,11 @@ public class CalendarioSJCS {
 			punteroListaLetrados = 0;
 
 			//Inicializo la lista de letrados pendientes:
-			arrayListaLetradosPendientes = new ArrayList();			
+			arrayListaLetradosPendientes = new ArrayList();		
+			// Inicializao la lista de letrados sin compensar `por estar de vacaciones
+			alCompensacionesBajaTemporal = new ArrayList();
+			
+			
 									
 			//Hay suficientes letrados mientras haya letrados en la lista de letrados y en la temporal:
 			//Nota: inicialmente solo hay letrados en la lista de letrados.
@@ -1042,15 +1188,28 @@ public class CalendarioSJCS {
 			//Bucle que recorre los periodos para este calendario e intenta asignarles letrados.
 			//Nota: en caso de no poder seguir termina la ejecucion.
 			//
+			
+			
+			//Obtengo las compensaciones:
+			List<LetradoGuardia> alCompensaciones = getCompensaciones(this.idInstitucion, this.idTurno, this.idGuardia);
+			
+			HashMap<Long, List<LetradoGuardia>> hmPersonasConSaltos = getSaltos(this.idInstitucion, this.idTurno, this.idGuardia);
+			
 			for (int i=0;  (salidaCalcularMatrizLetradosGuardia==0) && (i<this.arrayPeriodosDiasGuardiaSJCS.size()); i++) {
 				//Obtengo un periodo del array de periodos inicial:
 				//Nota: cada periodo es un arraylist de fechas (String en formato de fecha corto DD/MM/YYYY).
 				periodoDiasGuardia = (ArrayList)this.arrayPeriodosDiasGuardiaSJCS.get(i);
-
+				
+				
 				//Controlo inicialmente que  hay sufientes letrados sin compensaciones para hacer el periodo:
 				totalLetradosSinCompensaciones = contarLetradosSinCompensaciones(arrayListaLetrados);
-				if (totalLetradosSinCompensaciones < this.beanGuardiasTurno.getNumeroLetradosGuardia().intValue())
-					salidaCalcularMatrizLetradosGuardia = 1; //ERROR: No hay letrados suficientes
+				int totalLetradosEnVacaciones = bajasTemporalescionesAdm.getNumLetradosConBajaTemporal(arrayListaLetrados,periodoDiasGuardia);
+				if (totalLetradosSinCompensaciones-totalLetradosEnVacaciones < this.beanGuardiasTurno.getNumeroLetradosGuardia().intValue())
+						salidaCalcularMatrizLetradosGuardia = 1; //ERROR: No hay letrados suficientes
+				
+				
+				alCompensaciones.addAll(0, alCompensacionesBajaTemporal);
+				alCompensacionesBajaTemporal = new ArrayList();
 				
 				
 				//////////////////////////////////////////////////////////////////////
@@ -1065,8 +1224,26 @@ public class CalendarioSJCS {
 					//-arrayListaLetrados
 					//-arrayListaLetradosPendientes
 					//-error
-					salidaObtenerLetrado = obtenerLetrado(arrayListaLetrados, arrayListaLetradosPendientes, punteroListaLetrados, periodoDiasGuardia, arrayLetrados);
+					salidaObtenerLetrado = obtenerLetrado(arrayListaLetrados, arrayListaLetradosPendientes, punteroListaLetrados, periodoDiasGuardia, arrayLetrados,alCompensaciones,hmPersonasConSaltos);
+					if(salidaObtenerLetrado.getCompensacionesBajaTemporal()!=null && salidaObtenerLetrado.getCompensacionesBajaTemporal().size()>0)
+						alCompensacionesBajaTemporal.addAll(salidaObtenerLetrado.getCompensacionesBajaTemporal());
 					
+//					if(salidaObtenerLetrado.getSaltosBajaTemporal()!=null){
+//						List<LetradoGuardia> alSaltosTemporales = null;
+//						for(Long idPersona :salidaObtenerLetrado.getSaltosBajaTemporal().keySet()){
+//							if(hmPersonasConSaltosTemporal.containsKey(idPersona)){
+//								alSaltosTemporales = hmPersonasConSaltosTemporal.get(idPersona);
+//								if(alSaltosTemporales==null)
+//									alSaltosTemporales = new ArrayList<LetradoGuardia>();
+//							}else{
+//								alSaltosTemporales = new ArrayList<LetradoGuardia>();
+//								
+//							}
+//							alSaltosTemporales.addAll(salidaObtenerLetrado.getSaltosBajaTemporal().get(idPersona));
+//							hmPersonasConSaltosTemporal.put(idPersona, alSaltosTemporales);	
+//						}
+//					
+//					}
 					//Actualizo los valores devueltos:
 					punteroListaLetrados = salidaObtenerLetrado.getPunteroListaLetrados();
 					arrayListaLetrados = salidaObtenerLetrado.getArrayListaLetrados();
@@ -1077,7 +1254,7 @@ public class CalendarioSJCS {
 					
 					//Almaceno la asignacion de guardia si todo ha ido bien:
 					if (salidaCalcularMatrizLetradosGuardia == 0) {
-						//Relleno el periodo para este letrado:
+//						//Relleno el periodo para este letrado:
 						letradoSeleccionado.setPeriodoGuardias(periodoDiasGuardia);
 						//Anhado el letrado a la lista de letrados
 						arrayLetrados.add(letradoSeleccionado.clone());
@@ -1237,6 +1414,108 @@ public class CalendarioSJCS {
 		
 		
 		
+	}
+	private HashMap<Long, List<LetradoGuardia>> getSaltos (Integer idInstitucion,Integer idTurno,Integer idGuardia) throws ClsExceptions {
+	    RowsContainer rc = new RowsContainer();
+	    LetradoGuardia letradoSeleccionado = null;
+	    HashMap<Long, List<LetradoGuardia>> hmPersonasConSaltos = null;
+		// voy a comprobar si existe un salto en base de datos
+		try {
+
+		    String sql = " select * from scs_saltoscompensaciones s "+
+						 " where s.idinstitucion="+idInstitucion+
+						// " and   s.idpersona="+letradoSeleccionado.getIdPersona()+
+						 " and   s.idturno="+idTurno+
+						 " and   s.idguardia="+idGuardia+
+						 " and   s.saltoocompensacion='S' "+
+						 " and   s.fechacumplimiento is null ";
+	
+			ScsSaltosCompensacionesAdm adm = new ScsSaltosCompensacionesAdm(this.usrBean);
+			rc = adm.find(sql);
+			hmPersonasConSaltos = new HashMap<Long, List<LetradoGuardia>>();
+			List<LetradoGuardia> alLetradosSaltados = null; 
+			for (int i = 0; i < rc.size(); i++){
+			    letradoSeleccionado = new LetradoGuardia();
+			    letradoSeleccionado.setIdInstitucion(this.getIdInstitucion());
+			    letradoSeleccionado.setIdTurno(this.getIdTurno());
+			    letradoSeleccionado.setIdGuardia(this.getIdGuardia());
+			    letradoSeleccionado.setSaltoCompensacion("C");
+			    
+			    Row fila = (Row) rc.get(i);
+				Hashtable hFila = fila.getRow();
+				Long idPersona = new Long((String)hFila.get(ScsSaltosCompensacionesBean.C_IDPERSONA));
+				letradoSeleccionado.setIdPersona(idPersona);
+				if(hmPersonasConSaltos.containsKey(idPersona)){
+					alLetradosSaltados = (List)hmPersonasConSaltos.get(idPersona);
+					
+				}else{
+					alLetradosSaltados = new ArrayList<LetradoGuardia>();
+					
+				}
+				
+				alLetradosSaltados.add(letradoSeleccionado);
+				hmPersonasConSaltos.put(idPersona, alLetradosSaltados);
+			    //letradoSeleccionado
+			}
+		} catch (Exception e) {
+		    throw new ClsExceptions(e,"Error al comporbar si hay salto en BD.");
+		}
+		
+		return hmPersonasConSaltos;
+	}
+	
+	private List<LetradoGuardia> getCompensaciones (Integer idInstitucion,Integer idTurno,Integer idGuardia) throws ClsExceptions {
+	    RowsContainer rc = new RowsContainer();
+	    LetradoGuardia letradoSeleccionado = null;
+	    List<LetradoGuardia> alLetradosCompensados = null;
+		try {
+			//obtiene las compesaciones de letrados que no estén de baja en la guardia
+		    String sql = " select * from scs_saltoscompensaciones s, scs_inscripcionguardia g "+
+						 " where s.idinstitucion="+idInstitucion+
+						 " and   s.idturno="+idTurno+
+						 " and   s.idguardia="+idGuardia+
+						 " and   s.saltoocompensacion='C' "+
+						 " and   s.fechacumplimiento is null "+
+						 " and s.idinstitucion = g.idinstitucion "+
+					     " and s.idturno = g.idturno "+
+					     " and s.idguardia = g.idguardia "+
+					     " and s.idpersona = g.idpersona "+
+					     " and g.fechasuscripcion = "+
+					     "     (select max(i.fechasuscripcion) "+
+					     "        from scs_inscripcionguardia i "+
+					     "       where i.idinstitucion = g.idinstitucion "+
+					     "         and i.idturno = g.idturno "+
+					     "         and i.idguardia = g.idguardia "+
+					     "         and i.idpersona = g.idpersona "+
+					     "      ) "+
+					     " and g.fechabaja is null";
+	
+			ScsSaltosCompensacionesAdm adm = new ScsSaltosCompensacionesAdm(this.usrBean);
+			rc = adm.find(sql);
+			alLetradosCompensados = new ArrayList<LetradoGuardia>();
+			
+			
+    			
+			
+			
+			for (int i = 0; i < rc.size(); i++){
+			    letradoSeleccionado = new LetradoGuardia();
+			    letradoSeleccionado.setIdInstitucion(this.getIdInstitucion());
+			    letradoSeleccionado.setIdTurno(this.getIdTurno());
+			    letradoSeleccionado.setIdGuardia(this.getIdGuardia());
+			    letradoSeleccionado.setSaltoCompensacion("C");
+			    
+			    Row fila = (Row) rc.get(i);
+				Hashtable hFila = fila.getRow();
+				letradoSeleccionado.setIdPersona(new Long((String)hFila.get(ScsSaltosCompensacionesBean.C_IDPERSONA)));
+				alLetradosCompensados.add(letradoSeleccionado);
+			    //letradoSeleccionado
+			}
+		} catch (Exception e) {
+		    throw new ClsExceptions(e,"Error al obtener letrados compensados  en BD.");
+		}
+		
+		return alLetradosCompensados;
 	}
 	
 }

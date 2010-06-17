@@ -319,6 +319,10 @@
 		{		
 			top.cierraConParametros("NORMAL");
 		}		
+		function refrescarLocal() 
+		{		
+			top.cierraConParametros("NORMAL");
+		}
 
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->

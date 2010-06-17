@@ -1,6 +1,8 @@
 package com.siga.gratuita.action;
 
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,12 +16,15 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.BusquedaClientesFiltrosAdm;
+import com.siga.beans.CenBajasTemporalesAdm;
+import com.siga.beans.CenBajasTemporalesBean;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.ScsDesignaBean;
@@ -331,7 +336,15 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 			String numero = miform.getNumero();
 			String idTurno = miform.getIdTurno();
 			String idPersona = miform.getIdPersona();
+		
 			String fCambio = miform.getAplFechaDesigna();
+			
+			CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(usr);
+			//comprobamos que el confirmador no esta de vacaciones la fecha que del solicitante
+			Map<String,CenBajasTemporalesBean> mBajasTemporalesConfirmador =  bajasTemporalescioneAdm.getDiasBajaTemporal(new Long(idPersona), new Integer(idInstitucion));
+			if(mBajasTemporalesConfirmador.containsKey(GstDate.getFormatedDateShort("", miform.getAplFechaDesigna()) ))
+				throw new SIGAException("censo.bajastemporales.messages.colegiadoEnVacaciones");
+			
 			String motivo = miform.getIdTipoMotivo();
 		
 			String observaciones = miform.getObservaciones();
@@ -372,8 +385,7 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 			
 			//calculando letrado automatico si no ha sido seleccionado manualmente
 			if (idPersona == null || idPersona.trim().equals("")) {
-				Row row = new BusquedaClientesFiltrosAdm()
-						.gestionaDesignacionesAutomaticas(idInstitucion, idTurno);
+				Row row = new BusquedaClientesFiltrosAdm().gestionaDesignacionesAutomaticas(idInstitucion, idTurno, GstDate.getFormatedDateShort("", miform.getAplFechaDesigna()));
 				idPersona = (String) row.getValue(ScsDesignasLetradoBean.C_IDPERSONA);
 				compensacion = (String) row.getValue(ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION);
 				String nombre = (String) row.getValue(CenPersonaBean.C_NOMBRE);
@@ -482,6 +494,9 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 								"messages.nuevaDesigna.seleccionAutomaticaLetrado",
 								new String[] { numeroColAutomatico,	nombreColAutomatico });
 			}
+		}catch (SIGAException e) {
+			request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr,e.getLiteral()));	
+			return "errorConAviso"; 
 		}
 		catch (Exception e) {
 			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 

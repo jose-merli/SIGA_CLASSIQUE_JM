@@ -9,7 +9,18 @@ package com.siga.beans;
  */
 
 public class ScsSaltosCompensacionesBean extends MasterBean{
-	
+	public ScsSaltosCompensacionesBean(Integer idInstitucion, Integer idTurno,
+			Long idPersona, String saltoCompensacion, String fecha) {
+		super();
+		this.idInstitucion = idInstitucion;
+		this.idTurno = idTurno;
+		this.idPersona = idPersona;
+		this.saltoCompensacion = saltoCompensacion;
+		this.fecha = fecha;
+	}
+	public ScsSaltosCompensacionesBean() {
+		super();
+	}
 	/**
 	 *  Variables */ 
 	
@@ -35,6 +46,7 @@ public class ScsSaltosCompensacionesBean extends MasterBean{
 	
 	/**
 	 * Nombre de campos de la tabla*/
+
 	
 	static public final String	C_IDINSTITUCION	=		"IDINSTITUCION";
 	static public final String 	C_IDTURNO	=			"IDTURNO";
@@ -203,4 +215,6 @@ public class ScsSaltosCompensacionesBean extends MasterBean{
 	public void setIdCalendarioGuardiasCreacion(Integer idCalendarioGuardiasCreacion) {
 		this.idCalendarioGuardiasCreacion = idCalendarioGuardiasCreacion;
 	}
+	
+	
 }

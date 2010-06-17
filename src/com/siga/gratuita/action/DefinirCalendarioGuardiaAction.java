@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,12 +15,16 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.CenBajasTemporalesAdm;
+import com.siga.beans.CenBajasTemporalesBean;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.HelperInformesAdm;
@@ -34,6 +39,7 @@ import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsPermutaGuardiasAdm;
 import com.siga.beans.ScsPermutaGuardiasBean;
 import com.siga.beans.ScsSaltosCompensacionesAdm;
+import com.siga.beans.ScsSaltosCompensacionesBean;
 import com.siga.beans.ScsTurnoAdm;
 import com.siga.beans.ScsTurnoBean;
 import com.siga.general.MasterAction;
@@ -1845,10 +1851,10 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 		//Valores necesariamente externos
 		tx = null;
 		forward = exitoModal("messages.inserted.success", request);
-
+		usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 		try {
 			//Controles globales
-			usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			
 			admGuardiasColegiado = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
 
 			//Valores obtenidos del formulario
@@ -1861,6 +1867,15 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 			//Periodo:
 			fechaInicio = miForm.getFechaInicio();
 			fechaFin = miForm.getFechaFin();
+
+			CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(usr);
+			//comprobamos que el confirmador no esta de vacaciones la fecha que del solicitante
+			Map<String,CenBajasTemporalesBean> mBajasTemporalesConfirmador =  bajasTemporalescioneAdm.getDiasBajaTemporal(new Long(idPersona), new Integer(usr.getLocation()));
+			if(mBajasTemporalesConfirmador.containsKey(fechaInicio))
+				throw new SIGAException("censo.bajastemporales.messages.colegiadoEnVacaciones");
+			
+			
+			
 			indicePeriodo = Integer.parseInt(miForm.getIndicePeriodo());
 
 			//Calculo los periodos de guardias:
@@ -1939,7 +1954,10 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 				default:forward = exito("gratuita.modalRegistro_DefinirCalendarioGuardia.literal.seleccioneFecha" ,request);break;
 				}
 			}
-		}
+		}catch (SIGAException e) {
+			request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr,e.getLiteral()));	
+			return "errorConAviso"; 
+		} 
 		catch (Exception e){
 			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 
 		}		

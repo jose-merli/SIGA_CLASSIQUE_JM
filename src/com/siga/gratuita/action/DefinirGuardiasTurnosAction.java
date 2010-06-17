@@ -2,6 +2,7 @@ package com.siga.gratuita.action;
 
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +18,8 @@ import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.CenBajasTemporalesAdm;
+import com.siga.beans.CenBajasTemporalesBean;
 import com.siga.beans.ScsCabeceraGuardiasAdm;
 import com.siga.beans.ScsCabeceraGuardiasBean;
 import com.siga.beans.ScsGuardiasColegiadoAdm;
@@ -99,9 +102,9 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 		
 		
 		UserTransaction tx = null;
-		
+		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 		try {
-			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			
 			tx=usr.getTransaction();
 			UsrBean user = this.getUserBean(request);
 			ScsCabeceraGuardiasAdm admCabeceraGuardias = new ScsCabeceraGuardiasAdm(user);
@@ -154,6 +157,12 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 					}
 					else
 					{     
+						CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(usr);
+						//comprobamos que el confirmador no esta de vacaciones la fecha que del solicitante
+						Map<String,CenBajasTemporalesBean> mBajasTemporalesConfirmador =  bajasTemporalescioneAdm.getDiasBajaTemporal(new Long(idPersonaEntrante), new Integer(idInstitucion));
+						if(mBajasTemporalesConfirmador.containsKey(fechaInicio))
+							throw new SIGAException("censo.bajastemporales.messages.colegiadoEnVacaciones");
+
 						String comenSustitucion = guardiasForm.getComenSustitucion();
 						guardiasColegiadoAdm.sustitucionLetradoGuardiaPuntual(usr, request,idInstitucion, idTurno,idGuardia,idCalendarioGuardias,idPersonaSaliente,fechaInicio,fechaFin,idPersonaEntrante,salto,compensacion,sustituta,comenSustitucion);
 						
@@ -166,6 +175,9 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 			
 			
 			
+		}catch (SIGAException e) {
+			request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr,e.getLiteral()));	
+			return "errorConAviso"; 
 		}
 		catch (Exception e) {
 			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 

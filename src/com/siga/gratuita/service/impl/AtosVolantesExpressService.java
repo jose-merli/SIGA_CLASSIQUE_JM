@@ -13,6 +13,8 @@ import com.atos.utils.GstDate;
 import com.atos.utils.GstStringTokenizer;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.CenBajasTemporalesAdm;
+import com.siga.beans.CenBajasTemporalesBean;
 import com.siga.beans.MasterBean;
 import com.siga.beans.ScsAsistenciasAdm;
 import com.siga.beans.ScsAsistenciasBean;
@@ -61,6 +63,13 @@ public class AtosVolantesExpressService extends JtaBusinessServiceTemplate
 			ScsGuardiasColegiadoAdm guardiasColegiadoAdm = new ScsGuardiasColegiadoAdm(volantesExpressVo.getUsrBean());
 			String truncFechaGuardia = GstDate.getFormatedDateShort("", volantesExpressVo.getFechaGuardia());
 			if (volantesExpressVo.getIdColegiadoSustituido()!=null) {
+				CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(volantesExpressVo.getUsrBean());
+				//comprobamos que el letrado no esta de vacaciones 
+				Map<String,CenBajasTemporalesBean> mBajasTemporales =  bajasTemporalescioneAdm.getDiasBajaTemporal(volantesExpressVo.getIdColegiado(), volantesExpressVo.getIdInstitucion());
+				if( mBajasTemporales.containsKey(truncFechaGuardia))
+					throw new SIGAException("censo.bajastemporales.messages.colegiadoEnVacaciones");
+				
+				
 				//Si el colegiado sustituye a otro colegiado de la guardia
 				guardiasColegiadoAdm.aplicarSustitucion(volantesExpressVo.getIdInstitucion(), volantesExpressVo.getIdTurno(),
 							volantesExpressVo.getIdGuardia(), volantesExpressVo.getIdColegiadoSustituido(), 
@@ -84,6 +93,13 @@ public class AtosVolantesExpressService extends JtaBusinessServiceTemplate
 				
 				if (vGuardias == null || vGuardias.size()<1 ){
 					try {
+						CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(volantesExpressVo.getUsrBean());
+						//comprobamos que el letrado no esta de vacaciones 
+						Map<String,CenBajasTemporalesBean> mBajasTemporales =  bajasTemporalescioneAdm.getDiasBajaTemporal(volantesExpressVo.getIdColegiado(), volantesExpressVo.getIdInstitucion());
+						if( mBajasTemporales.containsKey(truncFechaGuardia))
+							throw new SIGAException("censo.bajastemporales.messages.colegiadoEnVacaciones");
+						
+						
 						guardiasColegiadoAdm.insertarGuardiaManual(volantesExpressVo.getIdInstitucion().toString(), volantesExpressVo.getIdTurno().toString(),
 								volantesExpressVo.getIdGuardia().toString(), volantesExpressVo.getIdColegiado().toString(),  
 								truncFechaGuardia, volantesExpressVo.getUsrBean());

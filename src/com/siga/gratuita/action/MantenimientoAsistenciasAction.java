@@ -1,6 +1,8 @@
 package com.siga.gratuita.action;
 
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +22,8 @@ import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.BusquedaClientesFiltrosAdm;
+import com.siga.beans.CenBajasTemporalesAdm;
+import com.siga.beans.CenBajasTemporalesBean;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.ScsActuacionAsistenciaAdm;
@@ -497,7 +501,18 @@ public class MantenimientoAsistenciasAction extends MasterAction
 			guardia.put(ScsGuardiasColegiadoBean.C_FECHAFIN,fecha);
 			
 			 v = guardiasAdm.select(guardia);
-			
+			 //lo pongo esto aqui porque todavia no me ha abioerto la transaccion
+			 if((v == null || v.isEmpty())&&!esFichaColegial){
+				 CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(usr);
+					//comprobamos que el confirmador no esta de vacaciones la fecha que del solicitante
+				 Map<String,CenBajasTemporalesBean> mBajasTemporalesConfirmador =  bajasTemporalescioneAdm.getDiasBajaTemporal(new Long(idPersona), new Integer(usr.getLocation()));
+					if(mBajasTemporalesConfirmador.containsKey(miForm.getFechaHora()))
+						throw new SIGAException("censo.bajastemporales.messages.colegiadoEnVacaciones");
+						
+					
+				 
+			 }
+				
 			tx.begin();
 			
 			if(v == null || v.isEmpty())
@@ -505,6 +520,8 @@ public class MantenimientoAsistenciasAction extends MasterAction
 				if (!esFichaColegial){
 				// EL ASISTENTE NO ESTÁ DE GUARDIA ESE DÍA. 
 				
+					
+					
 				//----------------------------------------------------------------------------------------------------------------------------------
 				// Tenemos que inscribirle en la guardia.Primero intentamos obtener registros de 
 				// ScsGuardiasColegiado en los que fechafin sea la fecha de asistencia. Si existe algun registro, obtenemos la cabecera de guardia
@@ -553,6 +570,8 @@ public class MantenimientoAsistenciasAction extends MasterAction
 					
 					// INSERTAMOS 
 					//cabeceraGuardiasModelo.setLetradoSustituido(cabeceraGuardiasModelo.getIdPersona());
+
+					
 					cabeceraGuardiasModelo.setIdPersona(new Long(idPersona));
 					cabeceraGuardiasModelo.setComenSustitucion(UtilidadesString.getMensajeIdioma(usr.getLanguage(),"gratuita.literal.letrado.refuerzo.asistencias"));
 					cabeceraGuardiasModelo.setSustituto("1");
@@ -594,6 +613,9 @@ public class MantenimientoAsistenciasAction extends MasterAction
 			
 			tx.commit();
 
+		}catch (SIGAException e) {
+			request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr,e.getLiteral()));	
+			return "errorConAviso"; 
 		}
 		catch (Exception e){
 			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 

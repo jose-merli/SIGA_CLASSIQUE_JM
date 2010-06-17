@@ -12,6 +12,7 @@ import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.EjecucionPLs;
 
 /**
@@ -926,4 +927,27 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 		}
 		return salida;
 	}
+	public void insertarSaltoPorBajaTemporal(CenBajasTemporalesBean bajaTemporaBean,ScsSaltosCompensacionesBean salto) throws ClsExceptions{
+		StringBuffer descripcion = new StringBuffer();
+		if(bajaTemporaBean.getTipo().equals(CenBajasTemporalesBean.TIPO_COD_VACACION)){
+			descripcion.append(UtilidadesString.getMensajeIdioma(this.usrbean, CenBajasTemporalesBean.TIPO_DESC_VACACION));
+			
+		}else if(bajaTemporaBean.getTipo().equals(CenBajasTemporalesBean.TIPO_COD_BAJA)){
+			descripcion.append(UtilidadesString.getMensajeIdioma(this.usrbean, CenBajasTemporalesBean.TIPO_DESC_BAJA));
+			
+		}
+		descripcion.append(" ");
+		descripcion.append(bajaTemporaBean.getDescripcion());
+		salto.setMotivos(descripcion.toString());
+		salto.setFechaCumplimiento("sysdate");
+		salto.setUsuMod(this.usuModificacion);
+		salto.setFechaMod("sysdate");
+		
+		Long idSaltosTurno = Long.valueOf(getNuevoIdSaltosTurno(salto.getIdInstitucion().toString(),salto.getIdTurno().toString()));
+		salto.setIdSaltosTurno(idSaltosTurno);
+		this.insert(salto);
+		
+		
+	}
+	
 }

@@ -152,6 +152,7 @@
 			{
 				colegiado.value=resultado[2];
 				idPersona.value=resultado[0];
+				alert("idPersona:"+idPersona);
 			}
 		}
 		
@@ -176,7 +177,10 @@
 			
 //			document.getElementById("idTurno").onchange(); 
 		}
-	
+		function refrescarLocal() 
+		{		
+			fin();
+		}
 	    function obtenerJuzgado() 
 			{ 
 			

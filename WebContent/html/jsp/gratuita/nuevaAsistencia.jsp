@@ -232,7 +232,10 @@ function rellenarComboGuardia(){
 		{		
 			window.close();
 		}
-
+		function refrescarLocal() 
+		{		
+		
+		}
 		//Funcion asociada a boton Nuevo -->
 		function accionGuardarCerrar() 
 		{	

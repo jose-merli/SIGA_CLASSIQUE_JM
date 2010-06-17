@@ -264,6 +264,10 @@
 			}
 		}
 		
+		function refrescarLocal() 
+		{		
+			fin();
+		}
 		
 		//Asociada al boton Cerrar
 		function accionCerrar() 
