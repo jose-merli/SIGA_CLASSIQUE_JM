@@ -954,21 +954,25 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		sql.append("       sum(pc.impMovVar) as importeTotalMovimientos, ");
 		sql.append("       -1*round(abs(sum(pc.impOficio + pc.impAsistencia + pc.impEJG + pc.impSOJ + pc.impMovVar) * max(pc.impirpf) / 100), 2) as TOTALIMPORTEIRPF, ");
 		sql.append("       pc.idinstitucion, ");
-		sql.append("       f_siga_getrecurso_etiqueta(decode(a.idcuenta, null, 'gratuita.pagos.porCaja', 'gratuita.pagos.porBanco'), "+idioma+") as  FORMADEPAGO ");
+		sql.append("       f_siga_getrecurso_etiqueta(decode(");
+		sql.append("       (select a.idcuenta ");
+		sql.append("          from FAC_ABONO A ");
+		sql.append("         where nvl(idperdestino, idperorigen) = a.idpersona ");
+		sql.append("           and pc.idinstitucion = a.idinstitucion ");
+		sql.append("           and pc.idpagosjg = a.idpagosjg ");
+		sql.append("           and rownum = 1), ");
+		sql.append("       null, 'gratuita.pagos.porCaja', 'gratuita.pagos.porBanco'), "+idioma+") ");
+		sql.append("       as FORMADEPAGO ");
 		
-		sql.append("  from FCS_PAGO_COLEGIADO pc, fac_abono a ");
-		sql.append(" where nvl(idperdestino, idperorigen) = a.idpersona(+) ");
-		sql.append("   and pc.idinstitucion = a.idinstitucion(+) ");
-		sql.append("   and pc.idpagosjg = a.idpagosjg(+) ");
-		
-		sql.append("   and pc.IDINSTITUCION = "+idInstitucion+" ");
+		sql.append("  from FCS_PAGO_COLEGIADO pc ");
+		sql.append(" where pc.IDINSTITUCION = "+idInstitucion+" ");
 		sql.append("   and pc.IDPAGOSJG = nvl("+idPagosJg+", pc.IDPAGOSJG) ");
 		sql.append("   and pc.IDPERORIGEN = nvl("+idPersona+", pc.IDPERORIGEN) ");
 		if (irpf)
 			sql.append(
 					"  and impirpf > 0 ");
 		
-		sql.append(" group by pc.IDPERORIGEN, pc.IDPERDESTINO, pc.IDPAGOSJG, pc.IDINSTITUCION, f_siga_getrecurso_etiqueta(decode(a.idcuenta, null, 'gratuita.pagos.porCaja', 'gratuita.pagos.porBanco'), "+idioma+") ");
+		sql.append(" group by pc.IDPERORIGEN, pc.IDPERDESTINO, pc.IDPAGOSJG, pc.IDINSTITUCION ");
 		
 		return sql.toString();
 	} //getQueryDetallePagoColegiado()
