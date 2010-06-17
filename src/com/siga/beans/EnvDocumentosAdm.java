@@ -306,5 +306,26 @@ public class EnvDocumentosAdm extends MasterBeanAdministrador {
 		}
 		
 		
+		 public File getFile(String idInstitucion, 
+			String idEnvio, 
+			Integer idDocumento) throws ClsExceptions{
+
+    	File fDocumento = null;
+
+    	EnvEnviosAdm envioAdm = new EnvEnviosAdm(this.usrbean);		
+
+    	String pathDocumentosAdjuntos = "";
+    	try {
+    		pathDocumentosAdjuntos = envioAdm.getPathEnvio(idInstitucion,idEnvio);
+    	} catch (Exception e) {
+    		new ClsExceptions (e, "Error al recuperar el envio");
+    	}
+    	String pathCompleto = pathDocumentosAdjuntos + File.separator + 
+    	idInstitucion + "_" + idEnvio + "_" + idDocumento;
+
+    	fDocumento = new File(pathCompleto);
+    	return fDocumento;
+}
+
 		
 }
