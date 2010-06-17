@@ -298,6 +298,7 @@
 		<forward name="notImplemented" path="/notImplemented.do"/>
 		<forward name="exito" path="/html/jsp/general/exito.jsp"/>
 		<forward name="exitoConString" path="/html/jsp/general/exitoConString.jsp"/>
+		<forward name="errorConAviso" path="/html/jsp/general/errorConAviso.jsp"/>
 		<forward name="accesodenegado" path="/html/jsp/general/accesoDenegado.jsp"/>
 		<forward name="clienteNoExiste" path="/html/jsp/censo/clienteNoExiste.jsp"/>
 		<forward name="serieFacturacionNoExiste" path="/html/jsp/facturacion/serieFacturacionNoExiste.jsp"/>
