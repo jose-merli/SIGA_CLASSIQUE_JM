@@ -18,11 +18,11 @@ import com.siga.informes.InformeCertificadosEspeciales;
 public class Certificado
 {
 	public static final String CERT_TIPO_CURSO 		= "NOMBRECURSO"; 
-	public static final String CERT_TIPO_TURNO 		= "NOMBRE_TURNO"; 
+	public static final String CERT_TIPO_TURNO 		= "TURNOS"; 
 	public static final String CERT_TIPO_PASANTIA 	= "LETRADOPASANTIAS"; 
 	public static final String CERT_TIPO_DESPACHO1 	= "HISTORICO_DESPACHOS";
 	public static final String CERT_TIPO_DESPACHO2 	= "HISTORICO_DESPACHOS";	
-	public static final String CERT_TIPO_BANCO	 	= "CUENTA";	
+	public static final String CERT_TIPO_BANCO	 	= "BANCOS";	
 	public static final String CERT_TIPO_DIRECCION	= "HISTORICO_DIRECCIONES";
 	public static final String CERT_TIPO_COMPONENTES= "COMPONENTES";
 	public static final String INI= "INI_";
