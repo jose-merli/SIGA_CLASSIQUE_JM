@@ -88,6 +88,9 @@ public class InformeCertificadosEspeciales extends MasterReport
 		      if (tipoCert!=null && (tipoCert.equals(Certificado.CERT_TIPO_TURNO)||tipoCert.equals(Certificado.CERT_TIPO_PASANTIA)||tipoCert.equals(Certificado.CERT_TIPO_DESPACHO1)||tipoCert.equals(Certificado.CERT_TIPO_DESPACHO2))) {
 			   UtilidadesHash.set(htDatos,"NEXO_AL",UtilidadesHash.getString(haux,"NEXO_AL"));
 		      } 
+		      if (tipoCert.equals(Certificado.CERT_TIPO_PASANTIA)){
+		    	  UtilidadesHash.set(htDatos,"DESCRIPCIONPASANTIA",UtilidadesHash.getString(haux,"DESCRIPCIONPASANTIA"));
+		      }
 			 
 		      if (htDatos.get("FECHAFINPASANTIAS")==null || htDatos.get("FECHAFINPASANTIAS").equals("")){
 		      	String vMensaje=UtilidadesString.getMensajeIdioma(this.getUsuario().getLanguage(),"messages.certificado.texto.fechaFin");
@@ -99,7 +102,7 @@ public class InformeCertificadosEspeciales extends MasterReport
 				vIteracion = "SEMINARIOS_CURSOS";
 	        }
 			else if (tipoCert!=null && tipoCert.equals(Certificado.CERT_TIPO_TURNO)) {
-	        	vIteracion="TURNOS";	
+	        	vIteracion="TURNOS";
 	        }
 			else if (tipoCert!=null && tipoCert.equals(Certificado.CERT_TIPO_PASANTIA)) {
 	        	vIteracion = "PASANTIAS";
