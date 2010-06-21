@@ -479,7 +479,7 @@ public class DocumentosAction extends MasterAction
 					try{	/*Se verifica que exista el fichero y si existe se saca por pantalla ya que solo es un archivo.*/
 						for (int i=0;i<vDocs.size();i++){			
 						 EnvDocumentosBean docBean = (EnvDocumentosBean)vDocs.elementAt(i);
-						 Integer idDocumento = (Integer) docBean.getIdDocumento();							
+						 String idDocumento = (String)docBean.getIdDocumento().toString();							
 						 String Descripcion= (String) docBean.getDescripcion();	
 						 String Pathdocumento= (String) docBean.getPathDocumento();
 						 
@@ -513,8 +513,8 @@ public class DocumentosAction extends MasterAction
 						for (int i=0;i<vDocs.size();i++){			
 						EnvDocumentosBean docBean = (EnvDocumentosBean)vDocs.elementAt(i);		
 					 	String Descripcion= (String)docBean.getDescripcion();
-						Integer idDocumento = (Integer) docBean.getIdDocumento();
-						 String Pathdocumento= (String) docBean.getPathDocumento();
+						String idDocumento = (String) docBean.getIdDocumento().toString();
+						String Pathdocumento= (String) docBean.getPathDocumento();
 						String nombrePlantilla=idInstitucion+"_"+idEnvio+"_"+idDocumento;
 						String rutaAlm = pathDocumentosAdjuntos + ClsConstants.FILE_SEP;					
 						String direccionPlantilla=rutaAlm+nombrePlantilla;		
