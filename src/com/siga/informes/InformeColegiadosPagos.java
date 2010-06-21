@@ -538,31 +538,38 @@ public class InformeColegiadosPagos extends MasterReport {
 		
 		try {
 			StringBuffer sql = new StringBuffer();
-			// jbd He quitado el distinct que impedia que ocultaba procedimientos del mismo dia
-			// sql.append(" select distinct AD.FECHA, to_char(AD.FECHA,'DD/MM/YYYY') FECHA_OFICIO,  PRO.NOMBRE PROCEDIMIENTO, ");
-			sql.append(" select ejg.numejg NUMEROEJG, decode(cole.comunitario,'1',cole.ncomunitario,cole.ncolegiado) as NUMERO_COLEGIADO, AD.FECHA, to_char(AD.FECHA,'DD/MM/YYYY') FECHA_OFICIO,  PRO.NOMBRE PROCEDIMIENTO, ");
-			sql.append(" f_siga_formatonumero(COL.IMPOFICIO,2)  IMPORTEPAGADO, ");
-			sql.append(" DES.ANIO || '/' || DES.CODIGO  ASIOFI, ");
-			sql.append(" f_siga_getdefendidosdesigna(DES.IDINSTITUCION, des.anio, des.idturno, des.numero,0) NOMBRE_SOLICITANTE, ");
-			sql.append(" f_siga_formatonumero(fact.precioaplicado,2) IMPORTE_PROCEDIMIENTO, ");
-			sql.append(" f_siga_formatonumero(fact.precioaplicado*fact.porcentajefacturado/100,2) IMPORTE_OFICIO, ");
-			sql.append(" acreprod.porcentaje as PORCENTAJE_PAGADO,");
-			sql.append(" acre.descripcion as ACREDITACION, ");
-			sql.append(" ad.numeroasunto as NUMEROASUNTO ");
-			sql.append(" from FCS_PAGO_COLEGIADO   COL, ");
-			sql.append(" SCS_ACTUACIONDESIGNA      AD, ");
-			sql.append(" SCS_PROCEDIMIENTOS        PRO, ");
-			sql.append(" SCS_DESIGNA               DES, ");
-			sql.append(" FCS_FACT_ACTUACIONDESIGNA fact, ");
-			sql.append(" FCS_PAGOSJG               pag, ");
-			sql.append(" FCS_FACTURACIONJG         fac, ");      
-	       	sql.append(" SCS_ACREDITACIONPROCEDIMIENTO acreprod, ");
-	       	sql.append(" SCS_ACREDITACION acre, ");
-	       	sql.append(" SCS_EJG ejg, ");
-	       	sql.append(" SCS_EJGDESIGNA ejgdes, ");
-	       	sql.append(" CEN_COLEGIADO cole ");	      
-
-			sql.append(" where DES.IDINSTITUCION = AD.IDINSTITUCION ");
+			
+			sql.append(" Select (Select Ejg.Numejg ");
+			sql.append("           From Scs_Ejg Ejg, Scs_Ejgdesigna Ejgdes ");
+			sql.append("          Where Des.Idinstitucion = Ejgdes.Idinstitucion ");
+			sql.append("            And Des.Idturno = Ejgdes.Idturno ");
+			sql.append("            And Des.Anio = Ejgdes.Aniodesigna ");
+			sql.append("            And Des.Numero = Ejgdes.Numerodesigna ");
+			sql.append("            And Ejgdes.Idinstitucion = Ejg.Idinstitucion ");
+			sql.append("            And Ejgdes.Idtipoejg = Ejg.Idtipoejg ");
+			sql.append("            And Ejgdes.Anioejg = Ejg.Anio ");
+			sql.append("            And Ejgdes.Numeroejg = Ejg.Numero ");
+			sql.append("            And Rownum = 1) Numeroejg, ");
+			sql.append("        decode(cole.comunitario,'1',cole.ncomunitario,cole.ncolegiado) as NUMERO_COLEGIADO, AD.FECHA, to_char(AD.FECHA,'DD/MM/YYYY') FECHA_OFICIO,  PRO.NOMBRE PROCEDIMIENTO, ");
+			sql.append("        f_siga_formatonumero(COL.IMPOFICIO,2)  IMPORTEPAGADO, ");
+			sql.append("        DES.ANIO || '/' || DES.CODIGO  ASIOFI, ");
+			sql.append("        f_siga_getdefendidosdesigna(DES.IDINSTITUCION, des.anio, des.idturno, des.numero,0) NOMBRE_SOLICITANTE, ");
+			sql.append("        f_siga_formatonumero(fact.precioaplicado,2) IMPORTE_PROCEDIMIENTO, ");
+			sql.append("        f_siga_formatonumero(fact.precioaplicado*fact.porcentajefacturado/100,2) IMPORTE_OFICIO, ");
+			sql.append("        acreprod.porcentaje as PORCENTAJE_PAGADO,");
+			sql.append("        acre.descripcion as ACREDITACION, ");
+			sql.append("        ad.numeroasunto as NUMEROASUNTO ");
+			sql.append("   from FCS_PAGO_COLEGIADO   COL, ");
+			sql.append("        SCS_ACTUACIONDESIGNA      AD, ");
+			sql.append("        SCS_PROCEDIMIENTOS        PRO, ");
+			sql.append("        SCS_DESIGNA               DES, ");
+			sql.append("        FCS_FACT_ACTUACIONDESIGNA fact, ");
+			sql.append("        FCS_PAGOSJG               pag, ");
+			sql.append("        FCS_FACTURACIONJG         fac, ");      
+	       	sql.append("        SCS_ACREDITACIONPROCEDIMIENTO acreprod, ");
+	       	sql.append("        SCS_ACREDITACION acre, ");
+	       	sql.append("        CEN_COLEGIADO cole ");	      
+			sql.append("  where DES.IDINSTITUCION = AD.IDINSTITUCION ");
 			sql.append("    AND DES.IDTURNO = AD.IDTURNO ");
 			sql.append("    AND DES.ANIO = AD.ANIO ");
 			sql.append("    AND DES.NUMERO = AD.NUMERO ");
@@ -598,20 +605,6 @@ public class InformeColegiadosPagos extends MasterReport {
 			sql.append(" and acreprod.idacreditacion = ad.idacreditacion ");
 			sql.append(" and acre.idacreditacion = acreprod.idacreditacion ");
 			
-			// Relacionamos las tablas de SCS_DESIGNA   DES, SCS_EJGDESIGNA ejgdes 
-			sql.append(" and  DES.idinstitucion = ejgdes.idinstitucion(+) ");
-			sql.append(" and  DES.idturno = ejgdes.idturno(+) ");
-			sql.append(" and  DES.anio = ejgdes.aniodesigna(+) ");
-			sql.append(" and  DES.numero = ejgdes.numerodesigna(+) ");
-			
-			//// Relacionamos las tablas de SCS_EJGDESIGNA ejgdes  SCS_EJG ejg
-			sql.append(" and  ejgdes.idinstitucion= ejg.idinstitucion(+) ");
-			sql.append(" and  ejgdes.idtipoejg= ejg.idtipoejg(+) ");
-			sql.append(" and  ejgdes.anioejg= ejg.anio(+) ");
-			sql.append(" and  ejgdes.numeroejg= ejg.numero(+) ");			
-				
-   
-   
 			//Relacioamos la tabla SCS_ACTUACIONDESIGNA AD, CEN_COLEGIADO cole 
 			sql.append(" and  AD.idinstitucion= cole.idinstitucion ");	
 			sql.append(" and  AD.idpersonacolegiado= cole.idpersona ");			
