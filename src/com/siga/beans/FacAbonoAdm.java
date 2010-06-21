@@ -1308,9 +1308,10 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 			    			FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDCUENTA + "=" + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDCUENTA +
 							" AND " +
 							FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IDPERSONA + "=" + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDPERSONA +
-							" AND " +
+							" AND " +							
 							FcsPagosJGBean.T_NOMBRETABLA + "." + FcsPagosJGBean.C_BANCOS_CODIGO + "='" + codigoBanco +"'"+
-							" ORDER BY "+ 								
+							" AND " + FacAbonoBean.T_NOMBRETABLA + "." + FacAbonoBean.C_IMPPENDIENTEPORABONAR +"<>" +0.00+
+							" ORDER BY " + 				
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CBO_CODIGO + "," +
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_CODIGOSUCURSAL + "," +
 							CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_NUMEROCUENTA;
