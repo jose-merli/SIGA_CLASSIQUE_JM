@@ -303,7 +303,7 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 							String nif=admPersona.obtenerNIF((String)temporal.get(FacAbonoBean.C_IDPERSONA));
 							receptor.setConcepto((String)temporal.get(FcsPagosJGBean.C_CONCEPTO));
 							receptor.setDni(nif);
-							receptor.setImporte(new Double((String)temporal.get("IMPORTE")));
+							receptor.setImporte(new Double((String)temporal.get("IMPORTE")));							
 							nombre=admPersona.obtenerNombreApellidos((String)temporal.get(FacAbonoBean.C_IDPERSONA));
 							receptor.setNombre(nombre);
 							// jbd 09/12/2008 INC_05507_SIGA >>>
@@ -375,8 +375,9 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 										        bAbono.setEstado(new Integer(6));
 									        }
 									    }
-									    if (!adminAbono.update(bAbono)){
-										    throw new ClsExceptions("Error al actualizar estado e importes del abono: "+adminAbono.getError());
+									    
+									   if (!adminAbono.update(bAbono)){
+										   throw new ClsExceptions("Error al actualizar estado e importes del abono: "+adminAbono.getError());
 										}
 
 									} else {
@@ -630,9 +631,12 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 											        bAbono.setEstado(new Integer(6));
 										        }
 										    }
-										    if (!adminAbono.update(bAbono)){
+										    
+										   
+										     if (!adminAbono.update(bAbono)){
 											    throw new ClsExceptions("Error al actualizar estado e importes del abono: "+adminAbono.getError());
-											}
+											  }
+										   
 
 										} else {
 										    new ClsExceptions("Error al insertar el abono en el disquete: "+admAbonoDisquete.getError());
