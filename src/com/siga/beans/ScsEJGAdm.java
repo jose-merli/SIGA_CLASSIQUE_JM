@@ -4071,9 +4071,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				
 				
 				// Datos de la asistencia asociada
-				String fechaAsistencia = (String)registro.get("FECHA_ASISTENCIA");
-				if(fechaAsistencia!=null && !fechaAsistencia.trim().equalsIgnoreCase("")){
-					registro.put("FECHA_ASISTENCIA", registro.get("FECHA_ASISTENCIA"));
+				String fechaAsistencia = (String)registro.get("FECHA_ASISTENCIA");				
+				if(fechaAsistencia!=null && !fechaAsistencia.trim().equalsIgnoreCase("")){					
+					registro.put("FECHA_ASISTENCIA", registro.get("FECHA_ASISTENCIA"));									 
 				}else{
 					registro.put("FECHA_ASISTENCIA", "");
 				} 
@@ -4193,12 +4193,11 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							htFuncion, "F_SIGA_GETACTUACIONESDESIGNA", "LISTA_ACTUACIONES_DESIGNA"));
 	
 	
-					htFuncion.put(new Integer(5), "dd-mm-yyyy");
+					htFuncion.put(new Integer(5), "dd-mm-yyyy");					
 					
+					helperInformes.completarHashSalida(registro,getFisrtAsistencia(htFuncion,"FECHA_ACTUACION"));				
+					UtilidadesHash.set(registro, "FECHA_ACTUACION", (String)registro.get("FECHA_ACTUACION")); 
 					
-					helperInformes.completarHashSalida(registro,getFisrtAsistencia(htFuncion,"FECHA_ACTUACION"));
-					UtilidadesHash.set(registro, "FECHA_ASISTENCIA", (String)registro.get("FECHA_ACTUACION")); 
-	
 					htFuncion.put(new Integer(5), "hh:MI:ss");
 	
 					helperInformes.completarHashSalida(registro,getFisrtAsistencia(htFuncion,"HORA_ACTUACION"));
