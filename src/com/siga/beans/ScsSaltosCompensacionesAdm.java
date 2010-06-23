@@ -748,6 +748,34 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 	}
 	
 	/**
+	 * Borra los saltos creados en el caledario pasado como parametro
+	 */
+	public boolean deleteSaltosCreadosEnCalendario(Hashtable hash) throws ClsExceptions {
+		boolean salida;
+		
+		try {
+			String idinstitucion = (String)hash.get(ScsCalendarioGuardiasBean.C_IDINSTITUCION);
+			String idcalendarioguardias = (String)hash.get(ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS);
+			String idturno = (String)hash.get(ScsCalendarioGuardiasBean.C_IDTURNO);
+			String idguardia = (String)hash.get(ScsCalendarioGuardiasBean.C_IDGUARDIA);			
+			
+			StringBuffer sql = new StringBuffer();
+			sql.append(" delete from "+ScsSaltosCompensacionesBean.T_NOMBRETABLA);
+			sql.append("  where "+ScsSaltosCompensacionesBean.C_IDINSTITUCION+"="+idinstitucion);
+			sql.append("    and "+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIASCREACION+"="+idcalendarioguardias);
+			sql.append("    and "+ScsSaltosCompensacionesBean.C_IDTURNO+"="+idturno);
+			sql.append("    and "+ScsSaltosCompensacionesBean.C_IDGUARDIA+"="+idguardia);
+			sql.append("    and "+ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION+"= 'S'");
+			
+			deleteSQL(sql.toString());		
+			salida = true;
+		} catch (Exception e) {
+			salida = false;
+		}
+		return salida;
+	} //deleteSaltosCreadosEnCalendario()
+	
+	/**
 	 * A la hora de borrar un calendario hay 3 pasos posteriores:
 	 * Paso3: Eliminar compensaciones NO cumplidas en este calendario.
 	 * Las compensaciones creadas en este calendario que aún no están cumplidas o 
