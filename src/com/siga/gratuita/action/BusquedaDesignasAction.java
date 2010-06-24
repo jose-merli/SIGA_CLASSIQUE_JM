@@ -756,11 +756,6 @@ public class BusquedaDesignasAction extends MasterAction {
 						tx.rollback();
 						return exitoModalSinRefresco("gratuita.modalDefinirDesignas.errorNumero",request);
 					}
-					CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(usr);
-					//comprobamos que el confirmador no esta de vacaciones la fecha que del solicitante
-					Map<String,CenBajasTemporalesBean> mBajasTemporalesConfirmador =  bajasTemporalescioneAdm.getDiasBajaTemporal(new Long(idPersonaSel), new Integer(usr.getLocation()));
-					if(mBajasTemporalesConfirmador.containsKey(hash.get("FECHAENTRADAINICIO")))
-						throw new SIGAException("censo.bajastemporales.messages.colegiadoEnVacaciones");
 				} else {
 					//busqueda automatica
 					BusquedaClientesFiltrosAdm busquedaClientesFiltrosAdm= new BusquedaClientesFiltrosAdm(usr);
@@ -779,13 +774,13 @@ public class BusquedaDesignasAction extends MasterAction {
 						nombreApellidos += " " + apellido2;	
 					}				
 				}
-			}else{
-				CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(usr);
-				//comprobamos que el confirmador no esta de vacaciones la fecha que del solicitante
-				Map<String,CenBajasTemporalesBean> mBajasTemporalesConfirmador =  bajasTemporalescioneAdm.getDiasBajaTemporal(new Long(idPersonaSel), new Integer(usr.getLocation()));
-				if(mBajasTemporalesConfirmador.containsKey(hash.get("FECHAENTRADAINICIO")))
-					throw new SIGAException("censo.bajastemporales.messages.colegiadoEnVacaciones");
 			}
+
+			//comprobamos que el confirmador no esta de vacaciones la fecha que del solicitante
+			CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(usr);
+			Map<String,CenBajasTemporalesBean> mBajasTemporalesConfirmador =  bajasTemporalescioneAdm.getDiasBajaTemporal(new Long(idPersonaSel), new Integer(usr.getLocation()));
+			if(mBajasTemporalesConfirmador.containsKey(hash.get("FECHAENTRADAINICIO")))
+				throw new SIGAException("censo.bajastemporales.messages.colegiadoEnVacaciones");
 
 			hash.put(ScsDesignasLetradoBean.C_IDPERSONA,idPersonaSel);
 

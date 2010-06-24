@@ -339,12 +339,6 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 		
 			String fCambio = miform.getAplFechaDesigna();
 			
-			CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(usr);
-			//comprobamos que el confirmador no esta de vacaciones la fecha que del solicitante
-			Map<String,CenBajasTemporalesBean> mBajasTemporalesConfirmador =  bajasTemporalescioneAdm.getDiasBajaTemporal(new Long(idPersona), new Integer(idInstitucion));
-			if(mBajasTemporalesConfirmador.containsKey(GstDate.getFormatedDateShort("", miform.getAplFechaDesigna()) ))
-				throw new SIGAException("censo.bajastemporales.messages.colegiadoEnVacaciones");
-			
 			String motivo = miform.getIdTipoMotivo();
 		
 			String observaciones = miform.getObservaciones();
@@ -406,6 +400,12 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 					nombreColAutomatico += nombre;
 				}
 			}
+			
+			//comprobamos que el confirmador no esta de vacaciones la fecha que del solicitante
+			CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(usr);
+			Map<String,CenBajasTemporalesBean> mBajasTemporalesConfirmador =  bajasTemporalescioneAdm.getDiasBajaTemporal(new Long(idPersona), new Integer(idInstitucion));
+			if(mBajasTemporalesConfirmador.containsKey(GstDate.getFormatedDateShort("", miform.getAplFechaDesigna()) ))
+				throw new SIGAException("censo.bajastemporales.messages.colegiadoEnVacaciones");
 			
 			//modificando designacion letrado anterior
 			Hashtable<String, Object> datos = (Hashtable<String, Object>) ses
