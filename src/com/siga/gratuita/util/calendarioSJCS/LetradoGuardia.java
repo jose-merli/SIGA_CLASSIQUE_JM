@@ -24,7 +24,15 @@ public class LetradoGuardia implements Cloneable {
 	private Integer idInstitucion, idTurno, idGuardia;
 	private ArrayList periodoGuardias;
 	private Map<String,CenBajasTemporalesBean> bajasTemporales;
-	
+	CenBajasTemporalesBean bajaTemporal;
+
+	public CenBajasTemporalesBean getBajaTemporal() {
+		return bajaTemporal;
+	}
+
+	public void setBajaTemporal(CenBajasTemporalesBean bajaTemporal) {
+		this.bajaTemporal = bajaTemporal;
+	}
 
 	public Object clone() throws CloneNotSupportedException {
 		LetradoGuardia  obj = null;
