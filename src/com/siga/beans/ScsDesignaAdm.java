@@ -1982,8 +1982,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			" TO_CHAR(DES.FECHAOFICIOJUZGADO, 'dd/MM/yyyy') AS FECHA_OFICIO_JUZGADO, "+
 			" f_siga_getletrado_designa(LET.idinstitucion, LET.idturno, LET.anio, LET.numero) LETRADO_ACTUAL, "+
 		    " f_siga_getletrado_SUSTITUIDO(LET.idinstitucion, LET.idturno, LET.anio, LET.numero) ULTIMO_LETRADO_SUSTITUIDO, "+
-		    " fecharenuncia FECHARENUNCIA, "+
-		    " pkg_siga_fecha_en_letra.F_SIGA_FECHAcompletaENLETRA(fecharenuncia,'m',1) FECHARENUNCIA_ENLETRA, "+
+		    " F_SIGA_GETFECHARENUNCIALETRADO(LET.idinstitucion, LET.idturno, LET.anio, LET.numero) FECHARENUNCIA, "+
+		    " pkg_siga_fecha_en_letra.F_SIGA_FECHAcompletaENLETRA(F_SIGA_GETFECHARENUNCIALETRADO(LET.idinstitucion, LET.idturno, LET.anio, LET.numero),'m',1) FECHARENUNCIA_ENLETRA, "+
             " fecharenunciasolicita FECHA_SOLICITUDRENUNCIA, "+
             " pkg_siga_fecha_en_letra.F_SIGA_FECHAcompletaENLETRA(fecharenunciasolicita,'m',1) FECHA_SOLICITUDRENUNCIA_LETRA "+
 		    
