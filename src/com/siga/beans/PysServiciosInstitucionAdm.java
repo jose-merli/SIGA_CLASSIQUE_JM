@@ -271,7 +271,7 @@ public class PysServiciosInstitucionAdm extends MasterBeanAdministrador {
 							PysTipoIvaBean.T_NOMBRETABLA +
 							" ON "+
 								PysServiciosInstitucionBean.T_NOMBRETABLA +"."+ PysServiciosInstitucionBean.C_PORCENTAJEIVA + "=" +
-								PysTipoIvaBean.T_NOMBRETABLA +"."+ PysTipoIvaBean.C_VALOR;
+								PysTipoIvaBean.T_NOMBRETABLA +"."+ PysTipoIvaBean.C_IDTIPOIVA;
 	            
 	    			// Si se empleo la forma de pago como parametro de busqueda
 					if (!pago.trim().equalsIgnoreCase("")){
