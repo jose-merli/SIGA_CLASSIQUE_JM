@@ -13,6 +13,7 @@ import javax.transaction.UserTransaction;
 
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
+import com.siga.general.SIGAException;
 
 /**
  * @author A203486
@@ -63,11 +64,18 @@ public class EjecutarCalendarioAutomatico {
 			
 			ClsLogging.writeFileLog("",3);
 			ClsLogging.writeFileLog("--> Obtengo la matriz de letrados de Guardia para los periodos calculados...",3);
-			int salidaError = calendarioSJCS.calcularMatrizLetradosGuardia(lDiasASeparar);
+			try {
+				calendarioSJCS.calcularMatrizLetradosGuardia(lDiasASeparar);
+				tx.commit();
+			} catch (SIGAException e) {
+				tx.rollback();
+				ClsLogging.writeFileLog(e.getLiteral(),3);
+			}
+			 
 			
 			ClsLogging.writeFileLog("",3);
 			ClsLogging.writeFileLog("--> Salida del resultado de ejecutar CalcularMatrizLetradosGuardia:",3);
-			calendarioSJCS.pintarSalidaCalcularMatrizLetradosGuardia(salidaError);
+//			calendarioSJCS.pintarSalidaCalcularMatrizLetradosGuardia(salidaError);
 
 			ClsLogging.writeFileLog("--> Salida del resultado de ejecutar pintarMatrizPeriodosLetrados:",3);
 			calendarioSJCS.pintarMatrizPeriodosLetrados();
@@ -77,10 +85,10 @@ public class EjecutarCalendarioAutomatico {
 			ClsLogging.writeFileLog("",3);
 
 			//Controlo si debo hacer un rollback en caso de cualquier error:
-			if (salidaError == 0)
-				tx.commit();
-			else
-				tx.rollback();
+			
+			
+			
+				
 		} catch (Exception e){
 			ClsLogging.writeFileLog("ERROR en ejecutarPruebaCalendario.",3);
 			try {

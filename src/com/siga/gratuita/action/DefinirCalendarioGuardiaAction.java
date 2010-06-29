@@ -1703,7 +1703,18 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 										//Obtenemos los dias a Separar
 										List lDiasASeparar = calendarioSJCS.getDiasASeparar(new Integer(idInstitucion), new Integer(idTurno), new Integer(idGuardia) , usr);
 										//Obtengo la matriz de letrados de Guardia para los periodos calculados:
-										salidaError = calendarioSJCS.calcularMatrizLetradosGuardia(lDiasASeparar);
+										try {
+											calendarioSJCS.calcularMatrizLetradosGuardia(lDiasASeparar);
+											tx.commit();
+											forward = exitoRefresco("gratuita.modalRegistro_DefinirCalendarioGuardia.literal.calendarioGenerado",request);
+										} catch (SIGAException e) {
+											tx.rollback();
+											forward = exitoRefresco(e.getLiteral(),request);
+										}catch (ClsExceptions e) {
+											tx.rollback();
+											throw e;
+										}
+										
 
 										//Salida del resultado de ejecutar CalcularMatrizLetradosGuardia:
 										//calendarioSJCS.pintarSalidaCalcularMatrizLetradosGuardia(salidaError);
@@ -1711,25 +1722,6 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 										//				
 										//FIN DEL CALENDARIO
 										//
-
-										//Controlo si debo hacer un rollback en caso de cualquier error:
-										if (salidaError == 0)
-											tx.commit();
-										else
-											tx.rollback();
-
-										switch(salidaError) {
-											//- 0: Todo Correcto
-											case 0: forward = exitoRefresco("gratuita.modalRegistro_DefinirCalendarioGuardia.literal.calendarioGenerado",request); break;
-											//- 1: NO Hay Suficientes Letrados
-											case 1: forward = exito("gratuita.modalRegistro_DefinirCalendarioGuardia.literal.errorLetradosSuficientes",request); break;
-											//- 2: Hay Incompatibilidad de Guardias
-											case 2: forward = exito("gratuita.modalRegistro_DefinirCalendarioGuardia.literal.errorIncompatibilidad",request); break;
-											//- 3: NO hay Separacion suficiente
-											case 3: forward = exito("gratuita.modalRegistro_DefinirCalendarioGuardia.literal.errorSeparacion",request); break;
-											//- 4: Error al provocarse una excepcion en el desarrollo del metodo.				
-											case 4: forward = exito("messages.inserted.error",request); break;
-										}
 									}
 								}	
 							}	
