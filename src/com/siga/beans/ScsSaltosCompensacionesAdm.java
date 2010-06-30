@@ -14,6 +14,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.EjecucionPLs;
+import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
 
 /**
  * Implementa las operaciones sobre la base de datos, es decir: select, insert, update... a la tabla SCS_SALTOSCOMPENSACIONES
@@ -967,7 +968,6 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 		descripcion.append(" ");
 		descripcion.append(bajaTemporaBean.getDescripcion());
 		salto.setMotivos(descripcion.toString());
-		salto.setFechaCumplimiento("sysdate");
 		salto.setUsuMod(this.usuModificacion);
 		salto.setFechaMod("sysdate");
 		
@@ -977,5 +977,30 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 		
 		
 	}
+	public void marcarSaltoCompensacionGuardia(ScsSaltosCompensacionesBean saltoCompensacion) throws ClsExceptions {
+		try {
+			String sql = " UPDATE "+ScsSaltosCompensacionesBean.T_NOMBRETABLA+
+				" SET "+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+" = '" + saltoCompensacion.getFechaCumplimiento() + "',"+
+				ScsSaltosCompensacionesBean.C_USUMODIFICACION+" = "+this.usrbean.getUserName()+","+
+				ScsSaltosCompensacionesBean.C_FECHAMODIFICACION+" = SYSDATE "+","+
+				ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS+" = "+saltoCompensacion.getIdCalendarioGuardias();
+				if(saltoCompensacion.getMotivos()!=null && !saltoCompensacion.getMotivos().equals(""))
+					sql+=","+ScsSaltosCompensacionesBean.C_MOTIVOS+" = '"+saltoCompensacion.getMotivos()+"'";
+				if(saltoCompensacion.getIdCalendarioGuardiasCreacion()!=null && !saltoCompensacion.getIdCalendarioGuardiasCreacion().equals(""))
+					sql+=","+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIASCREACION+" = "+saltoCompensacion.getIdCalendarioGuardiasCreacion();
+				sql+=" WHERE "+ScsSaltosCompensacionesBean.C_IDINSTITUCION+" = "+saltoCompensacion.getIdInstitucion()+
+				" AND "+ScsSaltosCompensacionesBean.C_IDTURNO+" = "+saltoCompensacion.getIdTurno()+
+				" AND "+ScsSaltosCompensacionesBean.C_IDGUARDIA+" = "+saltoCompensacion.getIdGuardia()+
+				" AND "+ScsSaltosCompensacionesBean.C_IDPERSONA+" = "+saltoCompensacion.getIdPersona()+
+				" AND "+ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION+" = '"+saltoCompensacion.getSaltoCompensacion()+"'"+
+				" AND "+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+" IS NULL"+
+				" AND ROWNUM < 2";
+				ClsMngBBDD.executeUpdate(sql);
+ 
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Excepcion en marcarSaltoCompensacionBBDD."+e.toString());
+		}
+	}
+	
 	
 }
