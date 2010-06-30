@@ -742,14 +742,14 @@ public class CalendarioSJCS {
 			ScsSaltosCompensacionesAdm scsSaltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(this.usrBean);
 			salto.setIdGuardia(idGuardia);
 			salto.setIdCalendarioGuardiasCreacion(idCalendarioGuardias);
-			//bajaTemporal.setDescripcion(bajaTemporal.getDescripcion()+" al crear designa para el "+fecha+" ");
+			letradoGuardia.getBajaTemporal().setDescripcion(letradoGuardia.getBajaTemporal().getDescripcion()+" - "+diasGuardia.get(0)+"-"+diasGuardia.get(0)+" ");
 			scsSaltosCompensacionesAdm.insertarSaltoPorBajaTemporal(letradoGuardia.getBajaTemporal(),salto);
 			return false;
 			
 		}
 
 		if(isIncompatible(letradoGuardia, diasGuardia)){
-//			TODO aaaaaaaaa ATENCION!!! HAY QUWE INSERTAR COMPENSACIONES
+			//TODO Estaria bien insertar compensaciones
 			return false;
 			
 		}
@@ -916,100 +916,84 @@ public class CalendarioSJCS {
 		}
 	}
 
-	//Rellena el arraylist de la clase "arrayPeriodosLetradosSJCS" con los periodos rellenados cada uno con su letrado y el arralist de fechas que comprende el periodo.
-	//Nota: previamente se ha calculado mediante el metodo "calcularMatrizPeriodosDiasGuardia()" el arraylist de periodos de dias factibles con las caracteristicas de la guardia.
-	//
-	//Devuelve un int con el nivel de error:
-//case 1: forward = exito("gratuita.modalRegistro_DefinirCalendarioGuardia.literal.errorLetradosSuficientes",request); break;
-////- 2: Hay Incompatibilidad de Guardias
-//case 2: forward = exito("gratuita.modalRegistro_DefinirCalendarioGuardia.literal.errorIncompatibilidad",request); break;
-////- 3: NO hay Separacion suficiente
-//case 3: forward = exito("gratuita.modalRegistro_DefinirCalendarioGuardia.literal.errorSeparacion",request); break;
-////- 4: Error al provocarse una excepcion en el desarrollo del metodo.				
-//case 4: forward = exito("messages.inserted.error",request); break;
-
-	public void calcularMatrizLetradosGuardia(List lDiasASeparar) throws SIGAException ,ClsExceptions {		
-		//En este objeto guardo los datos de los parametros modificados por otros metodos y usados en este:
-		
-		ScsCabeceraGuardiasAdm admCabecera=new ScsCabeceraGuardiasAdm(this.usrBean); 
+	/**
+	 * Rellena el arraylist de la clase "arrayPeriodosLetradosSJCS" con los periodos rellenados cada uno con su letrado y el arralist de fechas que comprende el periodo.
+	 * Nota: previamente se ha calculado mediante el metodo "calcularMatrizPeriodosDiasGuardia()" el arraylist de periodos de dias factibles con las caracteristicas de la guardia.
+	 */
+	public void calcularMatrizLetradosGuardia(List lDiasASeparar) throws SIGAException ,ClsExceptions
+	{		
+		//Controles generales
 		GenClientesTemporalAdm admClientesTmp = new GenClientesTemporalAdm(this.usrBean);
-		CenBajasTemporalesAdm bajasTemporalescionesAdm = new CenBajasTemporalesAdm(this.usrBean);
 		ArrayList alLetradosOrdenados;
 		ArrayList diasGuardia; //Periodo obtenido de la lista de periodos del algoritmo del CGAE 
 		ArrayList alLetradosInsertar; //lista de letrados para cada periodo
 		Puntero punteroListaLetrados = new Puntero();
-
+		
 		try {
-
+			//obteniendo cola de letrados
 			alLetradosOrdenados = admClientesTmp.obtenerLetradosPosiblesPL(this.idInstitucion, this.idTurno, this.idGuardia);
 			punteroListaLetrados.setValor(0);
-
-			if (alLetradosOrdenados == null ||alLetradosOrdenados.size()==0)
-				throw new SIGAException("No existe cola de letrados de guardia");//return (salidaCalcularMatrizLetradosGuardia = 1);
 			
+			if (alLetradosOrdenados == null || alLetradosOrdenados.size()==0)
+				throw new SIGAException("No existe cola de letrados de guardia");
 			
-			//Bucle que recorre los periodos para este calendario e intenta asignarles letrados.
-			//Nota: en caso de no poder seguir termina la ejecucion.
-
-			//Obtengo las compensaciones:
+			//obteniendo las compensaciones
 			List<LetradoGuardia> alCompensaciones = getCompensaciones(this.idInstitucion, this.idTurno, this.idGuardia);
-			//Obtengo los saltos
+			
+			//obteniendo los saltos
 			HashMap<Long, List<LetradoGuardia>> hmPersonasConSaltos = getSaltos(this.idInstitucion, this.idTurno, this.idGuardia);
 			
-			for (int i=0;   i<this.arrayPeriodosDiasGuardiaSJCS.size(); i++) {
-				//Obtengo un periodo del array de periodos inicial:
+			
+			//Para cada dia o conjunto de dias:
+			for (int i=0; i<this.arrayPeriodosDiasGuardiaSJCS.size(); i++) {
+				//obteniendo conjunto de dias
 				//Nota: cada periodo es un arraylist de fechas (String en formato de fecha corto DD/MM/YYYY).
-				diasGuardia = (ArrayList)this.arrayPeriodosDiasGuardiaSJCS.get(i);
+				diasGuardia = (ArrayList) this.arrayPeriodosDiasGuardiaSJCS.get(i);
 
-				//INICIO: Bucle por el numero total de letrados por periodo de guardia
-				//////////////////////////////////////////////////////////////////////
+				//Para cada plaza que hay que ocupar en dia/conjunto de dias:
 				int letradosInsertados = 0;
-				alLetradosInsertar = new ArrayList();//ArrayList con los letrados para este periodo.
-				for (int k=0; (k<this.beanGuardiasTurno.getNumeroLetradosGuardia().intValue()) ; k++) {								
-					//TODO AAAAAAAAAAAAAAA AAAAAAAAAAAAAAAAAAA AQUI
-					LetradoGuardia letradoGuardia =  getSiguienteLetrado(alCompensaciones ,alLetradosOrdenados,punteroListaLetrados,diasGuardia, hmPersonasConSaltos);
+				for (int k=0; k<this.beanGuardiasTurno.getNumeroLetradosGuardia().intValue(); k++) {								
+					//obteniendo el letrado a asignar.
+					//ATENCION: este metodo es el nucleo del proceso
+					LetradoGuardia letradoGuardia = getSiguienteLetrado(alCompensaciones, alLetradosOrdenados, punteroListaLetrados, diasGuardia, hmPersonasConSaltos);
 					
-					//Almaceno la asignacion de guardia si todo ha ido bien:
-					if (letradoGuardia!=null) {
-//						//Relleno el periodo para este letrado:
+					//guardando la asignacion de guardia si se encontro letrado
+					if (letradoGuardia != null) {
+						alLetradosInsertar = new ArrayList();
 						letradoGuardia.setPeriodoGuardias(diasGuardia);
-						//Anhado el letrado a la lista de letrados
 						alLetradosInsertar.add(letradoGuardia.clone());
+						this.arrayPeriodosLetradosSJCS.add(alLetradosInsertar.clone());
 						letradosInsertados++;
-					}else{
+						
+						this.almacenarAsignacionGuardia(alLetradosInsertar, diasGuardia, lDiasASeparar, UtilidadesString.getMensajeIdioma(this.usrBean,"gratuita.literal.comentario.sustitucion"));
+					}
+					else {
 						throw new SIGAException("gratuita.modalRegistro_DefinirCalendarioGuardia.literal.errorLetradosSuficientes");
 					}					
-				}
-
-				//Almaceno la asignacion de guardia en BBDD si todo ha ido bien:
-				this.almacenarAsignacionGuardia(alLetradosInsertar, diasGuardia,lDiasASeparar, UtilidadesString.getMensajeIdioma(this.usrBean,"gratuita.literal.comentario.sustitucion"));
-					
-				this.arrayPeriodosLetradosSJCS.add(alLetradosInsertar.clone());
-				//Controlo que he insertado tantos letrados como numero de Guardias y todo ha ido bien:
-				if ((letradosInsertados != this.beanGuardiasTurno.getNumeroLetradosGuardia().intValue()) )
-					throw new SIGAException("gratuita.modalRegistro_DefinirCalendarioGuardia.literal.errorLetradosSuficientes"); //No hay suficientes letrados				
+				} //FIN Para cada plaza que hay que ocupar en dia/conjunto de dias
+				
+				//controlando que se insertaron tantos letrados como hacian falta
+				if ((letradosInsertados != this.beanGuardiasTurno.getNumeroLetradosGuardia().intValue()))
+					throw new SIGAException("gratuita.modalRegistro_DefinirCalendarioGuardia.literal.errorLetradosSuficientes");
+				
+			}//FIN Para cada dia o conjunto de dias
 			
-			}//FIN del bucle que busca un rellenar los periodos con letrados
+			//actualizando el ultimo letrado en la guardia
+			int punteroUltimo = 0;
+			if (punteroListaLetrados.getValor() == 0)
+				punteroUltimo = alLetradosOrdenados.size()-1;
+			else
+				punteroUltimo = punteroListaLetrados.getValor()-1;
+			this.actualizarUltimoLetradoGuardiaBBDD((LetradoGuardia) alLetradosOrdenados.get(punteroUltimo));
 			
-			//Si todo ha ido bien actualizo el ultimo letrado para la llamada al PL y realizo las compensaciones oportunas:
-			
-				//Actualizo el ultimo de la guardia por el puntero de letrados:
-				int punteroUltimo = 0;
-				if (punteroListaLetrados.getValor() == 0)
-					punteroUltimo = alLetradosOrdenados.size()-1;
-				else
-					punteroUltimo = punteroListaLetrados.getValor()-1;
-				this.actualizarUltimoLetradoGuardiaBBDD((LetradoGuardia)alLetradosOrdenados.get(punteroUltimo));
-
-			 
-		} catch (Exception e){
+		} catch (SIGAException e){
+			throw e;
+		} catch (Exception e) {
 			e.printStackTrace();
 			this.arrayPeriodosLetradosSJCS = null;
 			throw new ClsExceptions("");
 		}
-		//Devuelvo el nivel del error:
-
-	}
+	} //calcularMatrizLetradosGuardia()
 	
 	//Mira si un letrado pertenece a un array de letrados por el idpersona
 	private boolean hayLetradoRepetido (ArrayList arrayLetradosInsertados, LetradoGuardia letrado) {
