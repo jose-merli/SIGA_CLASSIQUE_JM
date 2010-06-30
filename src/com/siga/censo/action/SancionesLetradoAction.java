@@ -50,7 +50,12 @@ public class SancionesLetradoAction extends MasterAction
 		try {
 			SancionesLetradoForm miform = (SancionesLetradoForm)formulario;
 			user = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			
+		    String idinstitucion= user.getLocation();
+            String idrol= user.getIdRol();
+            String username=user.getUserName();
+			CenSancionAdm admSancion=new CenSancionAdm(this.getUserBean(request));
+            String tienepermisoArchivo= admSancion.getTienePermisoArchivación(idinstitucion,idrol);							
+			request.setAttribute("tienepermiso",tienepermisoArchivo);
 			miform.reset(mapping,request);
 
 
@@ -157,8 +162,15 @@ public class SancionesLetradoAction extends MasterAction
 			Paginador resultado = null;
 			Vector datos = null;
 			
+			String tipobusqueda = miform.getMostrarSanciones();
 			
-			 resultado = admSancion.getSancionesBuscar(miform, user.getLocation());
+			if (tipobusqueda.equals("1")){//buscar sin archivar				
+				resultado = admSancion.getSancionesBuscarSinArchivar(miform, user.getLocation());
+			}else{
+				if(tipobusqueda.equals("2")){//buscar archivadas.				
+				resultado = admSancion.getSancionesBuscarArchivada(miform, user.getLocation());
+				}
+			}		
 			 databackup.put("paginador",resultado);
 				if (resultado!=null){ 
 				   datos = resultado.obtenerPagina(1);
@@ -195,12 +207,15 @@ public class SancionesLetradoAction extends MasterAction
 		try {		
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			CenSancionAdm admSancion=new CenSancionAdm(this.getUserBean(request));
- 			
+			String idinstitucion= usr.getLocation();
+            String idrol= usr.getIdRol();
+            String username=usr.getUserName();
+			CenSancionAdm admSancion=new CenSancionAdm(this.getUserBean(request));			
 			// Obtengo los datos del formulario
 			SancionesLetradoForm miForm = (SancionesLetradoForm)formulario;
-			boolean checkFirmeza  = UtilidadesString.stringToBoolean(miForm.getChkFirmeza());
+			boolean checkFirmeza  = UtilidadesString.stringToBoolean(miForm.getChkFirmeza());			
 			boolean checkRehabilitado  = UtilidadesString.stringToBoolean(miForm.getChkRehabilitado());
+			boolean checkArchivada  = UtilidadesString.stringToBoolean(miForm.getChkArchivada());
 		    
 			// Cargo la tabla hash con los valores del formulario para insertar en la BBDD
 			/*
@@ -229,7 +244,22 @@ public class SancionesLetradoAction extends MasterAction
 			UtilidadesHash.set(hash,CenSancionBean.C_OBSERVACIONES, miForm.getObservaciones());						
 			UtilidadesHash.set(hash,CenSancionBean.C_REFCGAE, miForm.getRefCGAE());						
 			UtilidadesHash.set(hash,CenSancionBean.C_REFCOLEGIO, miForm.getRefColegio());						
-			UtilidadesHash.set(hash,CenSancionBean.C_TEXTO, miForm.getTexto());	
+			UtilidadesHash.set(hash,CenSancionBean.C_TEXTO, miForm.getTexto());
+			
+			String tienepermisoArchivo=admSancion.getTienePermisoArchivación(idinstitucion,idrol);
+			
+			if (tienepermisoArchivo.equals("1")){
+				boolean checkArchivada1  = UtilidadesString.stringToBoolean(miForm.getChkArchivada());
+				UtilidadesHash.set(hash,CenSancionBean.C_FECHAARCHIVADA, GstDate.getApplicationFormatDate(usr.getLanguage(), miForm.getFechaArchivada()));
+				if  (checkArchivada1){
+					UtilidadesHash.set(hash,CenSancionBean.C_CHKARCHIVADA,"1");	
+				}else{
+					UtilidadesHash.set(hash,CenSancionBean.C_CHKARCHIVADA,"0");
+				}
+			}
+			
+			
+			
 			
 			if (checkFirmeza){
 				UtilidadesHash.set(hash,CenSancionBean.C_CHKFIRMEZA,"1");	
@@ -241,6 +271,8 @@ public class SancionesLetradoAction extends MasterAction
 			}else{
 				UtilidadesHash.set(hash,CenSancionBean.C_CHKREHABILITADO,"0");
 			}
+			
+			
 
 			// Cargo una hastable con los valores originales del registro sobre el que se realizará la modificacion						
 			hashOriginal=(Hashtable)request.getSession().getAttribute("DATABACKUP");
@@ -287,12 +319,16 @@ public class SancionesLetradoAction extends MasterAction
 		try {		
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			String idinstitucion= usr.getLocation();
+            String idrol= usr.getIdRol();
+            String username=usr.getUserName();
+
 			CenSancionAdm admSancion=new CenSancionAdm(this.getUserBean(request));
- 			
 			// Obtengo los datos del formulario
 			SancionesLetradoForm miForm = (SancionesLetradoForm)formulario;
 			boolean checkFirmeza  = UtilidadesString.stringToBoolean(miForm.getChkFirmeza());
 			boolean checkRehabilitado  = UtilidadesString.stringToBoolean(miForm.getChkRehabilitado());
+			
 			// Cargo la tabla hash con los valores del formulario para insertar en la BBDD
 			Hashtable hash = new Hashtable();
 			UtilidadesHash.set(hash,CenSancionBean.C_IDSANCION, admSancion.getNuevoId(usr.getLocation()));						
@@ -312,6 +348,19 @@ public class SancionesLetradoAction extends MasterAction
 			UtilidadesHash.set(hash,CenSancionBean.C_REFCOLEGIO, miForm.getRefColegio());	
 			UtilidadesHash.set(hash,CenSancionBean.C_TEXTO, miForm.getTexto());	
 			
+			String tienepermisoArchivo=admSancion.getTienePermisoArchivación(idinstitucion,idrol);
+			
+			if (tienepermisoArchivo.equals("1")){
+				boolean checkArchivada  = UtilidadesString.stringToBoolean(miForm.getChkArchivada());
+				UtilidadesHash.set(hash,CenSancionBean.C_FECHAARCHIVADA, GstDate.getApplicationFormatDate(usr.getLanguage(), miForm.getFechaArchivada()));
+				if  (checkArchivada){
+					UtilidadesHash.set(hash,CenSancionBean.C_CHKARCHIVADA,"1");	
+				}else{
+					UtilidadesHash.set(hash,CenSancionBean.C_CHKARCHIVADA,"0");
+				}
+			}
+			
+			
 			if (checkFirmeza){
 				UtilidadesHash.set(hash,CenSancionBean.C_CHKFIRMEZA,"1");	
 			}else{
@@ -322,6 +371,7 @@ public class SancionesLetradoAction extends MasterAction
 			}else{
 				UtilidadesHash.set(hash,CenSancionBean.C_CHKREHABILITADO,"0");
 			}
+			
 				
 			
 
@@ -420,11 +470,16 @@ public class SancionesLetradoAction extends MasterAction
 		try {
 			SancionesLetradoForm miform = (SancionesLetradoForm)formulario;
 			user = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			
+			String idinstitucion= user.getLocation();
+            String idrol= user.getIdRol();
+            String username=user.getUserName();
+			CenSancionAdm admSancion=new CenSancionAdm(this.getUserBean(request));
+            String tienepermisoArchivo= admSancion.getTienePermisoArchivación(idinstitucion,idrol);
 			// RGG indico si estamos en pestaña de datos de colegiacion o no
 			request.setAttribute("pestanaColegiacion",request.getParameter("pestanaColegiacion"));
 			request.setAttribute("personaColegiacion",request.getParameter("personaColegiacion"));
-			request.setAttribute("institucionColegiacion",request.getParameter("institucionColegiacion"));
+			request.setAttribute("institucionColegiacion",request.getParameter("institucionColegiacion"));							
+			request.setAttribute("tienepermiso",tienepermisoArchivo);
 			
 	    } catch (Exception e) {
 	    	throwExcp("messages.general.error",new String[] {"modulo.censo"},e,tx);
@@ -453,7 +508,9 @@ public class SancionesLetradoAction extends MasterAction
 		try {
 			SancionesLetradoForm miform = (SancionesLetradoForm)formulario;
 			user = (UsrBean) request.getSession().getAttribute("USRBEAN");
-
+            String idinstitucion= user.getLocation();
+            String idrol= user.getIdRol();
+            String username=user.getUserName();
 			CenSancionAdm admSancion=new CenSancionAdm(this.getUserBean(request));
 			
 			// Cargo la tabla hash con los valores del formulario para insertar en la BBDD
@@ -482,11 +539,13 @@ public class SancionesLetradoAction extends MasterAction
 				UtilidadesHash.set(hash,CenSancionBean.C_CHKFIRMEZA, b.getChkFirmeza());
 				UtilidadesHash.set(hash,CenSancionBean.C_CHKREHABILITADO, b.getChkRehabilitado());
 				UtilidadesHash.set(hash,CenSancionBean.C_TEXTO, b.getTexto());
-				UtilidadesHash.set(hash,CenSancionBean.C_OBSERVACIONES, b.getObservaciones());
+				UtilidadesHash.set(hash,CenSancionBean.C_OBSERVACIONES, b.getObservaciones());				
+				UtilidadesHash.set(hash,CenSancionBean.C_CHKARCHIVADA, b.getChkArchivada());
+				UtilidadesHash.set(hash,CenSancionBean.C_FECHAARCHIVADA, b.getFechaArchivada());
 				
-				request.getSession().setAttribute("DATABACKUP",hash);
-
-				
+				String tienepermisoArchivo= admSancion.getTienePermisoArchivación(idinstitucion,idrol);				
+				request.getSession().setAttribute("DATABACKUP",hash);				
+				request.setAttribute("tienepermiso",tienepermisoArchivo);
 				request.setAttribute("registro",hash);
 			} else {
 				throw new ClsExceptions("Error al obtener el elemento para borrarlo: NO EXISTE");
@@ -520,6 +579,9 @@ public class SancionesLetradoAction extends MasterAction
 		try {
 			SancionesLetradoForm miform = (SancionesLetradoForm)formulario;
 			user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			 String idinstitucion= user.getLocation();
+            String idrol= user.getIdRol();
+            String username=user.getUserName();
 
 			CenSancionAdm admSancion=new CenSancionAdm(this.getUserBean(request));
 			
@@ -548,6 +610,13 @@ public class SancionesLetradoAction extends MasterAction
 				UtilidadesHash.set(hash,CenSancionBean.C_FECHAIMPOSICION, b.getFechaImposicion());
 				UtilidadesHash.set(hash,CenSancionBean.C_TEXTO, b.getTexto());
 				UtilidadesHash.set(hash,CenSancionBean.C_OBSERVACIONES, b.getObservaciones());
+				UtilidadesHash.set(hash,CenSancionBean.C_CHKARCHIVADA, b.getChkArchivada());
+				UtilidadesHash.set(hash,CenSancionBean.C_FECHAARCHIVADA, b.getFechaArchivada());
+				UtilidadesHash.set(hash,CenSancionBean.C_CHKFIRMEZA, b.getChkFirmeza());
+				UtilidadesHash.set(hash,CenSancionBean.C_CHKREHABILITADO, b.getChkRehabilitado());
+				
+				String tienepermisoArchivo= admSancion.getTienePermisoArchivación(idinstitucion,idrol);							
+				request.setAttribute("tienepermiso",tienepermisoArchivo);
 				
 				request.setAttribute("registro",hash);
 			} else {

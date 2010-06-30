@@ -53,6 +53,8 @@
 	}	
 	
 	Hashtable registro = (Hashtable) request.getAttribute("registro");
+	String tienepermisoArchivo = (String) request.getAttribute("tienepermiso");
+	
 	if (registro==null) registro = new Hashtable();	
 	
 	// miro si estamos en la pestaña de datos de colegiacion
@@ -112,6 +114,8 @@
 	String chkFirmeza=(registro.get("CHKFIRMEZA")!=null)?(String)registro.get("CHKFIRMEZA"):"";
 	String chkRehabilitado=(registro.get("CHKREHABILITADO")!=null)?(String)registro.get("CHKREHABILITADO"):"";
 	String observaciones=(registro.get("OBSERVACIONES")!=null)?(String)registro.get("OBSERVACIONES"):"";
+	String chkArchivada=(registro.get("CHKARCHIVADA")!=null)?(String)registro.get("CHKARCHIVADA"):"";
+	String fechaArchivada=(registro.get("FECHAARCHIVADA")!=null)?GstDate.getFormatedDateShort(idioma,(String)registro.get("FECHAARCHIVADA")):"";
 
 	String modo="modificar";
 	if (formulario.getModo().equals("nuevo")) {
@@ -167,7 +171,8 @@
 			}
 		}	
 		
- 	
+
+	 	
 		function checkRehabilitado() {
 			var v = document.getElementById('rehabilitado');
 			var c = document.getElementById('chkRehabilitado');
@@ -181,7 +186,25 @@
 			if (v.value!='') {
 				c.checked=true;
 			}
-		}			
+		}	
+
+		function checkArchivada() {
+			var v = document.getElementById('fechaArchivada');
+			var c = document.getElementById('chkArchivada');
+			if (v.value!='') {
+				c.checked=true;
+			}
+		}				
+
+		function fechaArchivo() {
+			var v = document.getElementById('fechaArchivada');
+			var c = document.getElementById('chkArchivada');			
+			if (c.checked!=true) {
+				v.value='';
+				
+			}
+		}
+		
 		function fechaRehabilitado() {
 			var v = document.getElementById('rehabilitado');
 			var c = document.getElementById('chkRehabilitado');
@@ -195,7 +218,11 @@
 			if (c.checked!=true) {
 				v.value='';
 			}
-		}			
+		}
+			
+		
+		
+				
 	</script>	
 
 	<!-- INICIO: TITULO Y LOCALIZACION 	-->	
@@ -333,6 +360,7 @@
 								<% } %>
 							</td>
 						</tr>
+											
 						<tr>
 							<td class="labelText" colspan="2">
 								<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.texto"/>
@@ -376,23 +404,48 @@
 								<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.firmeza"/>
 							</td>
 							<td >
+								<% if (!formulario.getModo().equals("Ver")) { %>
 								<input type="checkbox" name="chkFirmeza" value="1" onclick="return fechaFirmeza();"  <%=(chkFirmeza.equals("1"))?"checked":""%> />
 								<html:text name="SancionesLetradoForm" property="firmeza" size="10" styleClass="<%=estiloCaja%>" value="<%=fechaFirmeza%>" readOnly="true"></html:text>
-								<% if (!formulario.getModo().equals("Ver")) { %>
-									&nbsp;&nbsp;<a onClick="showCalendarGeneral(firmeza);return checkFirmeza();" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
-								<% } %>
+								 &nbsp;&nbsp;<a onClick="showCalendarGeneral(firmeza);return checkFirmeza();" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+								<% }else {%>
+								<input type="checkbox" disabled="disabled" name="chkFirmeza" value="1" onclick="return fechaFirmeza();"  <%=(chkFirmeza.equals("1"))?"checked":""%> />
+								<html:text name="SancionesLetradoForm" property="firmeza" size="10" styleClass="<%=estiloCaja%>" value="<%=fechaFirmeza%>" readOnly="true"></html:text>
+								<%} %>
+								
 							</td>
 							<td class="labelText">
 								<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.rehabilitado"/>
 							</td>
 							<td >
-								<input type="checkbox" name="chkRehabilitado" value="1" onclick="return fechaRehabilitado();"  <%=(chkRehabilitado.equals("1"))?"checked":""%> />
-								<html:text name="SancionesLetradoForm" property="rehabilitado" size="10" styleClass="<%=estiloCaja%>" value="<%=fechaRehabilitado%>" readOnly="true"></html:text>
 								<% if (!formulario.getModo().equals("Ver")) { %>
+									<input type="checkbox" name="chkRehabilitado" value="1" onclick="return fechaRehabilitado();"  <%=(chkRehabilitado.equals("1"))?"checked":""%> />
+									<html:text name="SancionesLetradoForm" property="rehabilitado" size="10" styleClass="<%=estiloCaja%>" value="<%=fechaRehabilitado%>" readOnly="true"></html:text>								
 									&nbsp;&nbsp;<a onClick="showCalendarGeneral(rehabilitado);return checkRehabilitado();" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
-								<% } %>
+								<% }else {%>	
+									<input type="checkbox" disabled="disabled"  name="chkRehabilitado" value="1" onclick="return fechaRehabilitado();"  <%=(chkRehabilitado.equals("1"))?"checked":""%> />
+									<html:text name="SancionesLetradoForm" property="rehabilitado" size="10" styleClass="<%=estiloCaja%>" value="<%=fechaRehabilitado%>" readOnly="true"></html:text>								
+								<%}%>
 							</td>
 						</tr>
+						<% if(tienepermisoArchivo.equals("1")){%>
+						<tr>
+						<td class="labelText">
+								<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.fArchivada"/>
+							</td>
+							<td >					
+								
+								<% if (!formulario.getModo().equals("Ver")) { %>
+									<input type="checkbox" name="chkArchivada" value="1" onclick="return fechaArchivo();" <%=(chkArchivada.equals("1"))?"checked":""%> />
+									<html:text name="SancionesLetradoForm" property="fechaArchivada" size="10" styleClass="<%=estiloCaja%>" value="<%=fechaArchivada%>" readOnly="true"></html:text>
+									&nbsp;&nbsp;<a onClick="showCalendarGeneral(fechaArchivada);return checkArchivada();" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+								<% }else {%>														
+									<input type="checkbox" disabled="disabled"  name="chkArchivada" value="1" onclick="return fechaArchivo();" <%=(chkArchivada.equals("1"))?"checked":""%> />
+									<html:text name="SancionesLetradoForm" property="fechaArchivada" size="10" styleClass="<%=estiloCaja%>" value="<%=fechaArchivada%>" readOnly="true"></html:text>
+								<%}%>
+							</td>							
+					   </tr>	
+					   <%}%>
 		   		</table>
 				</siga:ConjCampos>
 			</td>

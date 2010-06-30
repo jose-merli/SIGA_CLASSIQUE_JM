@@ -545,6 +545,11 @@ MDB Microsoft Access Database
   public static int MAX_SIZE_IMAGE_EMBEBED=100000;
   
   
+
+  public static final String COMBO_MOSTRAR_SINARCHIVAR = "1";
+  public static final String COMBO_MOSTRAR_ARCHIVADAS = "2";  
+  
+  
   
   public ClsConstants() {
   }

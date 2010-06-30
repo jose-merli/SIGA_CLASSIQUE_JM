@@ -174,13 +174,13 @@
 		   borde="1"
 		   clase="tableTitle"
 		   nombreCol="censo.busquedaSancionesLetrado.literal.colegio,
-						censo.busquedaSancionesLetrado.literal.ncolegiado,
-						censo.busquedaSancionesLetrado.literal.tipoSancion,
-						censo.BusquedaSancionesLetrado.literal.refCGAE,
-						gratuita.BusquedaSancionesLetrado.literal.fechaInicio,
-						gratuita.BusquedaSancionesLetrado.literal.fechaFin,
-						gratuita.BusquedaSancionesLetrado.literal.rehabilitado,
-						gratuita.BusquedaSancionesLetrado.literal.firmeza,"
+				      censo.busquedaSancionesLetrado.literal.ncolegiado,
+					  censo.busquedaSancionesLetrado.literal.tipoSancion,
+					  censo.BusquedaSancionesLetrado.literal.refCGAE,
+					  gratuita.BusquedaSancionesLetrado.literal.fechaInicio,
+					  gratuita.BusquedaSancionesLetrado.literal.fechaFin,
+					  gratuita.BusquedaSancionesLetrado.literal.rehabilitado,
+					  gratuita.BusquedaSancionesLetrado.literal.firmeza,"
 		   tamanoCol="8,28,12,6,8,8,10,10,10"
 		   alto="100%"
 		   ajusteBotonera="<%=botones%>"		
@@ -232,7 +232,8 @@
 			String fechaFirmeza=(String)registro.get("FECHAFIRMEZA");
 			String chkRehabilitado=(((String)registro.get("CHKREHABILITADO")).equals("1"))?"gratuita.operarEJG.literal.si":"gratuita.operarEJG.literal.no";
 			String chkFirmeza=(((String)registro.get("CHKFIRMEZA")).equals("1"))?"gratuita.operarEJG.literal.si":"gratuita.operarEJG.literal.no";
-			String refCGAE=(String)registro.get("REFCGAE");
+			String refCGAE=(String)registro.get("REFCGAE");   
+			
 			
 			String cont = new Integer(i+1).toString();
 %>
@@ -250,7 +251,7 @@
 					<input type="hidden" name="oculto<%=cont %>_2" value="<%=idSancion %>">
 
 					<%=UtilidadesString.mostrarDatoJSP(institucion) %>
-
+					
 				</td>
 				
 				<td>

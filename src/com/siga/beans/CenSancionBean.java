@@ -26,7 +26,9 @@ public class CenSancionBean extends MasterBean{
 	private String	chkRehabilitado;
 	private String	texto;
 	private String	observaciones;
-	private Integer	idInstitucionSancion;
+	private Integer	idInstitucionSancion;	
+	private String	fechaArchivada;
+	private String	chkArchivada;
 
 	/* Nombre de Tabla*/
 	static public String T_NOMBRETABLA = "CEN_SANCION";
@@ -50,7 +52,8 @@ public class CenSancionBean extends MasterBean{
 	static public final String  C_OBSERVACIONES = "OBSERVACIONES";
 	static public final String  C_IDINSTITUCION = "IDINSTITUCION";
 	static public final String  C_IDINSTITUCIONSANCION = "IDINSTITUCIONSANCION";
-
+	static public final String  C_CHKARCHIVADA = "CHKARCHIVADA";
+	static public final String  C_FECHAARCHIVADA = "FECHAARCHIVADA"; 
 
 	/**
 	 * @return 
@@ -283,5 +286,33 @@ public class CenSancionBean extends MasterBean{
 		this.observaciones = descripcion;
 	}
 	
+	/**
+	 * @param 
+	 */
+	public String getFechaArchivada() {
+		return fechaArchivada;
+	}
+	
+	/**
+	 * @param 
+	 */
+	public void setFechaArchivada(String fechaArchivada) {
+		this.fechaArchivada = fechaArchivada;
+	}
+	
+	/**
+	 * @param 
+	 */
+	
+	public String getChkArchivada() {
+		return chkArchivada;
+	}
+	
+	/**
+	 * @param 
+	 */
+	public void setChkArchivada(String chkArchivada) {
+		this.chkArchivada = chkArchivada;
+	}
 	
 }

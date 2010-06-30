@@ -24,6 +24,8 @@
 	HttpSession ses=request.getSession();
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
 	UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");
+	String tienepermisoArchivo = (String) request.getAttribute("tienepermiso");
+	
 %>	
 	
 <%  
@@ -179,6 +181,25 @@
 			<html:text name="SancionesLetradoForm" property="fechaImposicionHastaBuscar" size="10" styleClass="box" value="" readOnly="true"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaImposicionHastaBuscar);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
 		</td>
 	</tr>
+		<% if(tienepermisoArchivo.equals("1")){%>
+	<tr>
+	   <td class="labelText" width="125">
+			<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.mostrarSanciones"/>
+		</td>
+		<td>
+		
+		<html:select name="SancionesLetradoForm" property="mostrarSanciones" styleClass="boxCombo">
+				<html:option value="<%=ClsConstants.COMBO_MOSTRAR_SINARCHIVAR%>" ><siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.sinArchivar"/></html:option>				
+				<html:option value="<%=ClsConstants.COMBO_MOSTRAR_ARCHIVADAS%>" ><siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.archivadas"/></html:option>
+		</html:select>		
+		
+	</td>
+	
+	</tr>
+	<%}else{%>
+	    <html:hidden name="SancionesLetradoForm" property="mostrarSanciones" size="8" maxlength="80" styleClass="boxConsulta" value="<%=ClsConstants.COMBO_MOSTRAR_SINARCHIVAR%>" readOnly="true"></html:hidden>
+	
+	<%}%>
 
 	</html:form>
 	</table>
@@ -224,7 +245,7 @@
 			}
 		}
 				
-		<!-- Funcion asociada a boton limpiar -->
+		//<!-- Funcion asociada a boton limpiar -->
 		function limpiar() 
 		{		
 			document.forms[0].reset();

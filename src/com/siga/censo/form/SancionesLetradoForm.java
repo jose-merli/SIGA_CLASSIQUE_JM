@@ -8,7 +8,12 @@ import com.siga.general.MasterForm;
  */
 public class SancionesLetradoForm extends MasterForm{
 
-//	metodos set de los campos del formulario
+	private String FechaArchivada;
+	private String ChkArchivada;
+	private String MostrarSanciones;
+	
+	
+	//	metodos set de los campos del formulario
 	public void setNombreInstitucionBuscar(String valor) {
 		UtilidadesHash.set(this.datos, "NombreInstitucionBuscar", valor);
 	}
@@ -117,6 +122,18 @@ public class SancionesLetradoForm extends MasterForm{
 		UtilidadesHash.set(this.datos, "ChkFirmeza", valor); 
 	}
 	
+	public void setFechaArchivada(String fechaArchivada) {
+		FechaArchivada = fechaArchivada;
+	}	
+
+	public void setChkArchivada(String chkArchivada) {
+		ChkArchivada = chkArchivada;
+	}
+	
+	public void setMostrarSanciones(String mostrarSanciones) {
+		MostrarSanciones = mostrarSanciones;
+	}
+
 
 	
 //	metodos get de los campos del formulario
@@ -228,4 +245,16 @@ public class SancionesLetradoForm extends MasterForm{
 		return UtilidadesHash.getString(this.datos, "ChkFirmeza"); 
 	}
 	
+	public String getFechaArchivada() {
+		return FechaArchivada;
+	}
+	
+	public String getChkArchivada() {
+		return ChkArchivada;
+	}
+	
+	public String getMostrarSanciones() {
+		return MostrarSanciones;
+	}
+
 }
