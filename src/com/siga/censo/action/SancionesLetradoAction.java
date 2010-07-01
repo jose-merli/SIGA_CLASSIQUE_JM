@@ -51,10 +51,9 @@ public class SancionesLetradoAction extends MasterAction
 			SancionesLetradoForm miform = (SancionesLetradoForm)formulario;
 			user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 		    String idinstitucion= user.getLocation();
-            String idrol= user.getIdRol();
             String username=user.getUserName();
 			CenSancionAdm admSancion=new CenSancionAdm(this.getUserBean(request));
-            String tienepermisoArchivo= admSancion.getTienePermisoArchivación(idinstitucion,idrol);							
+            String tienepermisoArchivo= admSancion.getTienePermisoArchivación(idinstitucion,username);							
 			request.setAttribute("tienepermiso",tienepermisoArchivo);
 			miform.reset(mapping,request);
 
