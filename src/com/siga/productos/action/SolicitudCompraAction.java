@@ -987,7 +987,7 @@ public class SolicitudCompraAction extends MasterAction{
 						pagoConTarjeta = "S";
 						//Calculo el importe TOTAL del pago con Tarjeta:
 						precio = articulo.getPrecio().doubleValue();
-						iva = articulo.getIva().doubleValue();
+						iva = articulo.getValorIva().doubleValue();
 						varIvaTotalTarjeta = (double)articulo.getCantidad() * ((precio / 100)) * iva;
 						varPrecioTotalTarjeta = (double)articulo.getCantidad() * precio;
 						importe += varIvaTotalTarjeta + varPrecioTotalTarjeta;
@@ -1380,7 +1380,8 @@ public class SolicitudCompraAction extends MasterAction{
 				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDPERSONA, carro.getIdPersona());
 				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDCUENTA, articulo.getIdCuenta());
 				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDFORMAPAGO, articulo.getIdFormaPago());
-				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_PORCENTAJEIVA, articulo.getIva());
+				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_PORCENTAJEIVA, articulo.getIdIva());
+				UtilidadesHash.set(hash, "VALORIVA", articulo.getValorIva());
 				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_CANTIDAD, new Integer(articulo.getCantidad()));
 				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_ACEPTADO, ClsConstants.PRODUCTO_PENDIENTE);
 				UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_VALOR, articulo.getPrecio());
@@ -1421,7 +1422,8 @@ public class SolicitudCompraAction extends MasterAction{
 				UtilidadesHash.set(hash, "IMPORTEANTICIPADO", articulo.getImporteAnticipado());
 
 				// MAV 24/08/2005 Obtención del IVA para mostrar en comprobante
-				UtilidadesHash.set(hash, PysServiciosInstitucionBean.C_PORCENTAJEIVA , articulo.getIva());
+				UtilidadesHash.set(hash, PysServiciosInstitucionBean.C_PORCENTAJEIVA , articulo.getIdIva());
+				UtilidadesHash.set(hash, "VALORIVA", articulo.getValorIva());
 				//Otros datos:
 				UtilidadesHash.set(hash, "DESCRIPCION_ARTICULO", articulo.getIdArticuloInstitucionDescripcion());
 				
@@ -1436,7 +1438,7 @@ public class SolicitudCompraAction extends MasterAction{
 				//UtilidadesHash.set(hash, "DESCRIPCION_FORMAPAGO", articulo.getFormaPago());	
 				UtilidadesHash.set(hash, "DESCRIPCION_CUENTA", articulo.getNumeroCuenta());									     
 				UtilidadesHash.set(hash, "PRECIOSSERVICIOS", articulo.getPrecio()); 
-				UtilidadesHash.set(hash, "IVA" , articulo.getIva());		
+				UtilidadesHash.set(hash, "IVA" , articulo.getIdIva());		
 				UtilidadesHash.set(hash, "PERIODICIDAD" , articulo.getPeriodicidad());
 				vServicios.add(hash);
 
@@ -1560,8 +1562,8 @@ public class SolicitudCompraAction extends MasterAction{
 		            throw new SIGAException("messages.facturacionRapidaCompra.noElementosFacturables");
 		        }
 		        
-		        PysCompraBean b = (PysCompraBean) compras.get(0);
-		if (b.getIdFactura()==null ||b.getIdFactura().equals("")){// Si despues de hacer la facturacion se vuelve a pulsar el boton, mostrará la factura asociada 
+		        PysCompraBean pysCompraBean = (PysCompraBean) compras.get(0);
+		if (pysCompraBean.getIdFactura()==null ||pysCompraBean.getIdFactura().equals("")){// Si despues de hacer la facturacion se vuelve a pulsar el boton, mostrará la factura asociada 
 		        String serieSeleccionada = request.getParameter("serieSeleccionada");
 		        if (serieSeleccionada==null || serieSeleccionada.equals("")) {
 				    Vector series =  admSerie.obtenerSeriesAdecuadas(compras);
@@ -1618,11 +1620,11 @@ public class SolicitudCompraAction extends MasterAction{
 				FacFacturaAdm admF1 = new FacFacturaAdm(this.getUserBean(request));
 				FacFacturaBean facturaFinal=null;
 				Hashtable factHash=new Hashtable();
-				factHash.put(FacFacturaBean.C_IDINSTITUCION, b.getIdInstitucion());
-				factHash.put(FacFacturaBean.C_IDFACTURA, b.getIdFactura());
+				factHash.put(FacFacturaBean.C_IDINSTITUCION, pysCompraBean.getIdInstitucion());
+				factHash.put(FacFacturaBean.C_IDFACTURA, pysCompraBean.getIdFactura());
 				CenColegiadoAdm admCol = new CenColegiadoAdm(this.getUserBean(request));
 				
-	  			Hashtable htCol = admCol.obtenerDatosColegiado(this.getUserBean(request).getLocation(),b.getIdPersona().toString(),this.getUserBean(request).getLanguage());
+	  			Hashtable htCol = admCol.obtenerDatosColegiado(this.getUserBean(request).getLocation(),pysCompraBean.getIdPersona().toString(),this.getUserBean(request).getLanguage());
 	  			String nColegiado = "";
 	  			if (htCol!=null && htCol.size()>0) {
 	  			    nColegiado = (String)htCol.get("NCOLEGIADO_LETRADO");
@@ -1963,7 +1965,7 @@ public class SolicitudCompraAction extends MasterAction{
 							tipo, 
 							a.getIdPeticion().toString(),
 							carro.getIdPersona().toString(),
-							a.getPrecio().toString() + "#" + a.getIva().toString());
+							a.getPrecio().toString() + "#" + a.getValorIva().toString());
 					if (aux != null){
 						a.setAnticipar(Boolean.valueOf("1".equals(aux[0])));
 						a.setImporteAnticipado(Double.valueOf(aux[1]));

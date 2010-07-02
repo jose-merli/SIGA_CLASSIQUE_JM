@@ -404,11 +404,12 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_NOFACTURABLE + "," +
 	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_SUFIJO + "," +
 	            			PysProductosBean.T_NOMBRETABLA + "." + PysProductosBean.C_DESCRIPCION + " AS CATEGORIA," +
+	            			PysTipoIvaBean.T_NOMBRETABLA + "." + PysTipoIvaBean.C_VALOR + " AS VALORIVA," +
 	            			UtilidadesMultidioma.getCampoMultidiomaSimple(PysTiposProductosBean.T_NOMBRETABLA + "." + PysTiposProductosBean.C_DESCRIPCION,this.usrbean.getLanguage()) + " AS TIPO, " +
 							/*PDM: INC-2763, no se recuperaba el tipo de certificado (comisión bancaria ...)*/
 	            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_TIPOCERTIFICADO +
 							/**/
-							" FROM " + PysProductosInstitucionBean.T_NOMBRETABLA + "," + PysProductosBean.T_NOMBRETABLA + "," +PysTiposProductosBean.T_NOMBRETABLA + 
+							" FROM " + PysProductosInstitucionBean.T_NOMBRETABLA + "," + PysProductosBean.T_NOMBRETABLA + "," +PysTiposProductosBean.T_NOMBRETABLA +  "," +PysTipoIvaBean.T_NOMBRETABLA +
 							" WHERE " +
 							PysProductosInstitucionBean.T_NOMBRETABLA +"."+ PysProductosInstitucionBean.C_IDTIPOPRODUCTO + "=" + PysProductosBean.T_NOMBRETABLA +"."+ PysProductosBean.C_IDTIPOPRODUCTO +
 							" AND " +
@@ -426,8 +427,8 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 	            			" AND " +
 	            			PysProductosInstitucionBean.T_NOMBRETABLA +"."+ PysProductosInstitucionBean.C_IDPRODUCTO + "=" + idProd +
 	            			" AND " +
-	            			PysProductosInstitucionBean.T_NOMBRETABLA +"."+ PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION + "=" + idProdInst;
-							
+	            			PysProductosInstitucionBean.T_NOMBRETABLA +"."+ PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION + "=" + idProdInst
+	            			+" AND "+PysTipoIvaBean.T_NOMBRETABLA+".IDTIPOIVA = "+ PysProductosInstitucionBean.T_NOMBRETABLA + "." +PysProductosInstitucionBean.C_PORCENTAJEIVA;
 							// Ordenado por...						
 							sql += " ORDER BY " + PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_DESCRIPCION; 
 							
@@ -599,12 +600,14 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 						//PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_NOFACTURABLE + ", " +
 						PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDCONTADOR + ", " +
 						PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_PORCENTAJEIVA + ", " +
+						PysTipoIvaBean.T_NOMBRETABLA + "." + PysTipoIvaBean.C_VALOR + " AS VALORIVA," +
+						
 						PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_MOMENTOCARGO + ", " +
 						PysProductosInstitucionBean.T_NOMBRETABLA +"." + PysProductosInstitucionBean.C_FECHABAJA + ", " +
 						PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_TIPOCERTIFICADO;
 
 			String from = " FROM " + 
-						PysProductosInstitucionBean.T_NOMBRETABLA + ", " + PysProductosBean.T_NOMBRETABLA + ", " + PysTiposProductosBean.T_NOMBRETABLA;
+						PysProductosInstitucionBean.T_NOMBRETABLA + ", " + PysProductosBean.T_NOMBRETABLA + ", " + PysTiposProductosBean.T_NOMBRETABLA +  "," +PysTipoIvaBean.T_NOMBRETABLA ;
 		
 			String where = " WHERE " + 
 						PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDINSTITUCION + " = " + idInstitucion + " AND " +
@@ -616,7 +619,9 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 						
 						PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDINSTITUCION + " = " + PysProductosBean.T_NOMBRETABLA + "." + PysProductosBean.C_IDINSTITUCION + " AND " +
 						
-						PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDTIPOPRODUCTO + " = " + PysTiposProductosBean.T_NOMBRETABLA + "." +  PysTiposProductosBean.C_IDTIPOPRODUCTO;
+						PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_IDTIPOPRODUCTO + " = " + PysTiposProductosBean.T_NOMBRETABLA + "." +  PysTiposProductosBean.C_IDTIPOPRODUCTO
+						+" AND "+PysTipoIvaBean.T_NOMBRETABLA+".IDTIPOIVA = "+ PysProductosInstitucionBean.T_NOMBRETABLA + "." +PysProductosInstitucionBean.C_PORCENTAJEIVA;
+			
 		
 			RowsContainer rc = null;
 			rc = new RowsContainer(); 

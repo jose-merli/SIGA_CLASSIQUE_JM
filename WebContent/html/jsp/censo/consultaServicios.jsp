@@ -323,7 +323,8 @@ String app = request.getContextPath();
 			}
 			String cantidad = UtilidadesString.mostrarDatoJSP((String) registro.get("CANTIDAD"));
 			String precio = (String) registro.get("VALOR");
-			String iva = ((String) registro.get("PORCENTAJEIVA"))==null?"0":(String) registro.get("PORCENTAJEIVA");
+			//String iva = ((String) registro.get("PORCENTAJEIVA"))==null?"0":(String) registro.get("PORCENTAJEIVA");
+			String iva = ((String) registro.get("VALORIVA"))==null?"0":(String) registro.get("VALORIVA");
 			String estadoPago = UtilidadesString.mostrarDatoJSP((String) registro.get("ESTADOPAGO"));
 			/*estadoPago = UtilidadesProductosServicios.getEstadoPago(estadoPago);*/
 			estadoPago = UtilidadesString.getMensajeIdioma(usr, estadoPago);

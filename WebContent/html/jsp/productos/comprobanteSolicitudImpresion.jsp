@@ -136,7 +136,8 @@
 							String cuenta=UtilidadesString.mostrarDatoJSP(UtilidadesHash.getString(hash, "DESCRIPCION_CUENTA"));
 														
 							double precio = UtilidadesHash.getDouble(hash, PysProductosSolicitadosBean.C_VALOR).doubleValue();
-							float iva = UtilidadesHash.getFloat(hash, PysProductosSolicitadosBean.C_PORCENTAJEIVA).floatValue();
+							//float iva = UtilidadesHash.getFloat(hash, PysProductosSolicitadosBean.C_PORCENTAJEIVA).floatValue();
+							float iva = UtilidadesHash.getFloat(hash, "VALORIVA").floatValue();
 							int cantidad = UtilidadesHash.getInteger(hash, PysProductosSolicitadosBean.C_CANTIDAD).intValue();
 							varIvaTotal = varIvaTotal +  (cantidad * ((float)(precio / 100)) * iva);
 							varPrecioTotal = varPrecioTotal + (cantidad * (precio * (1 + (iva / 100))));
@@ -184,7 +185,8 @@
 							double precio = UtilidadesHash.getDouble(hash, "PRECIOSSERVICIOS").doubleValue();
 							// Modificacion MAV 24/08/2005 muestra correctamente el IVA
 							// float iva = 1;//UtilidadesHash.getFloat(hash, "IVA").floatValue();
-							float iva = UtilidadesHash.getFloat(hash, PysServiciosInstitucionBean.C_PORCENTAJEIVA).floatValue();
+							//float iva = UtilidadesHash.getFloat(hash, PysServiciosInstitucionBean.C_PORCENTAJEIVA).floatValue();
+							float iva = UtilidadesHash.getFloat(hash, "VALORIVA").floatValue();
 							int cantidad = UtilidadesHash.getInteger(hash, PysServiciosSolicitadosBean.C_CANTIDAD).intValue();
 							varIvaTotal = varIvaTotal +  (cantidad * ((float)(precio / 100)) * iva);
 							varPrecioTotal = varPrecioTotal + (cantidad * (precio * (1 + (iva / 100))));						

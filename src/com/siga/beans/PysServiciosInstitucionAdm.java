@@ -181,12 +181,14 @@ public class PysServiciosInstitucionAdm extends MasterBeanAdministrador {
 						PysServiciosBean.T_NOMBRETABLA + "." + PysServiciosBean.C_DESCRIPCION + " AS DESCRIPCION_SERVICIO, " +
 						PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_DESCRIPCION + " AS DESCRIPCION_S_INSTITUCION, " +
 						PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_PORCENTAJEIVA + ", " +
+						PysTipoIvaBean.T_NOMBRETABLA + "." + PysTipoIvaBean.C_VALOR + " AS VALORIVA," +
+						
 						PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_FECHABAJA + ", " +
 						PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_FACTURACIONPONDERADA + ", " +
 						PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_MOMENTOCARGO;
 
 			String from = " FROM " + 
-						PysServiciosInstitucionBean.T_NOMBRETABLA + ", " + PysServiciosBean.T_NOMBRETABLA + ", " + PysTipoServiciosBean.T_NOMBRETABLA;
+						PysServiciosInstitucionBean.T_NOMBRETABLA + ", " + PysServiciosBean.T_NOMBRETABLA + ", " + PysTipoServiciosBean.T_NOMBRETABLA+   "," +PysTipoIvaBean.T_NOMBRETABLA ;
 		
 			String where = " WHERE " + 
 			PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_IDINSTITUCION + " = " + idInstitucion + " AND " +
@@ -198,7 +200,9 @@ public class PysServiciosInstitucionAdm extends MasterBeanAdministrador {
 			
 			PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_IDINSTITUCION + " = " + PysServiciosBean.T_NOMBRETABLA + "." + PysServiciosBean.C_IDINSTITUCION + " AND " +
 			
-			PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_IDTIPOSERVICIOS + " = " + PysTipoServiciosBean.T_NOMBRETABLA + "." +  PysTipoServiciosBean.C_IDTIPOSERVICIOS;
+			PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_IDTIPOSERVICIOS + " = " + PysTipoServiciosBean.T_NOMBRETABLA + "." +  PysTipoServiciosBean.C_IDTIPOSERVICIOS+
+			" AND "+PysTipoIvaBean.T_NOMBRETABLA+".IDTIPOIVA = "+ PysServiciosInstitucionBean.T_NOMBRETABLA + "." +PysServiciosInstitucionBean.C_PORCENTAJEIVA;
+			
 		
 			RowsContainer rc = null;
 			rc = new RowsContainer(); 
@@ -382,8 +386,9 @@ public class PysServiciosInstitucionAdm extends MasterBeanAdministrador {
 	            			PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_CRITERIOS + "," +
 	            			PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_FACTURACIONPONDERADA + "," +
 	            			PysServiciosBean.T_NOMBRETABLA + "." + PysServiciosBean.C_DESCRIPCION + " AS CATEGORIA," +
+	            			PysTipoIvaBean.T_NOMBRETABLA + "." + PysTipoIvaBean.C_VALOR + " AS VALORIVA," +
 	            			UtilidadesMultidioma.getCampoMultidiomaSimple(PysTipoServiciosBean.T_NOMBRETABLA + "." + PysTipoServiciosBean.C_DESCRIPCION ,this.usrbean.getLanguage())+" AS TIPO " +							
-							" FROM " + PysServiciosInstitucionBean.T_NOMBRETABLA + "," + PysServiciosBean.T_NOMBRETABLA + "," +PysTipoServiciosBean.T_NOMBRETABLA + 
+							" FROM " + PysServiciosInstitucionBean.T_NOMBRETABLA + "," + PysServiciosBean.T_NOMBRETABLA + "," +PysTipoServiciosBean.T_NOMBRETABLA +   "," +PysTipoIvaBean.T_NOMBRETABLA + 
 							" WHERE " +
 							PysServiciosInstitucionBean.T_NOMBRETABLA +"."+ PysServiciosInstitucionBean.C_IDTIPOSERVICIOS + "=" + PysServiciosBean.T_NOMBRETABLA +"."+ PysServiciosBean.C_IDTIPOSERVICIOS +
 							" AND " +
@@ -401,7 +406,8 @@ public class PysServiciosInstitucionAdm extends MasterBeanAdministrador {
 	            			" AND " +
 	            			PysServiciosInstitucionBean.T_NOMBRETABLA +"."+ PysServiciosInstitucionBean.C_IDSERVICIO + "=" + idServ +
 	            			" AND " +
-	            			PysServiciosInstitucionBean.T_NOMBRETABLA +"."+ PysServiciosInstitucionBean.C_IDSERVICIOSINSTITUCION + "=" + idServInst;
+	            			PysServiciosInstitucionBean.T_NOMBRETABLA +"."+ PysServiciosInstitucionBean.C_IDSERVICIOSINSTITUCION + "=" + idServInst+
+	            			" AND "+PysTipoIvaBean.T_NOMBRETABLA+".IDTIPOIVA = "+ PysServiciosInstitucionBean.T_NOMBRETABLA + "." +PysServiciosInstitucionBean.C_PORCENTAJEIVA;
 							
 							// Ordenado por...						
 							sql += " ORDER BY " + PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_DESCRIPCION; 

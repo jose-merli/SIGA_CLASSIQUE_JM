@@ -387,7 +387,8 @@
 										cantidad = UtilidadesHash.getInteger (productoServicio, PysProductosSolicitadosBean.C_CANTIDAD).intValue();
 										if (UtilidadesHash.getDouble (productoServicio, PysProductosSolicitadosBean.C_VALOR)!=null){
 											precio = UtilidadesHash.getDouble (productoServicio, PysProductosSolicitadosBean.C_VALOR).doubleValue();
-											iva = UtilidadesHash.getFloat (productoServicio, PysProductosSolicitadosBean.C_PORCENTAJEIVA).floatValue();
+											//iva = UtilidadesHash.getFloat (productoServicio, PysProductosSolicitadosBean.C_PORCENTAJEIVA).floatValue();
+											iva = UtilidadesHash.getFloat (productoServicio, "VALORIVA").floatValue();
 											existePrecio="1";
 										}
 										else{

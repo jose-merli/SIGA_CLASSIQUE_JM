@@ -36,7 +36,8 @@ public class Articulo
 	private String idArticuloInstitucionDescripcion;
 	
 	private Double precio; // VALOR
-	private Float iva;
+	private Float valorIva;
+	private Float idIva;
 	private int cantidad;
 	private Integer idFormaPago;
 	private String formaPago;
@@ -95,7 +96,8 @@ public class Articulo
 				this.setIdTipoDescripcion(UtilidadesHash.getString(producto, "DESCRIPCION_TIPO"));
 				this.setIdArticuloInstitucionDescripcion(UtilidadesHash.getString(producto, "DESCRIPCION_P_INSTITUCION"));
 				this.setPrecio(UtilidadesHash.getDouble(producto, PysProductosInstitucionBean.C_VALOR));
-				this.setIva(UtilidadesHash.getFloat(producto, PysProductosInstitucionBean.C_PORCENTAJEIVA));
+				this.setValorIva(UtilidadesHash.getFloat(producto, "VALORIVA"));
+				this.setIdIva(UtilidadesHash.getFloat(producto, PysProductosInstitucionBean.C_PORCENTAJEIVA));
 				this.setMomentoCargo(UtilidadesHash.getString(producto, PysProductosInstitucionBean.C_MOMENTOCARGO));
 								
 				// UNICAMENTE PARA PRODUCTOS QUE SON CERTIFICADOS
@@ -114,7 +116,8 @@ public class Articulo
 				this.setIdArticuloDescripcion(UtilidadesHash.getString(servicio, "DESCRIPCION_SERVICIO"));
 				this.setIdTipoDescripcion(UtilidadesHash.getString(servicio, "DESCRIPCION_TIPO"));
 				this.setIdArticuloInstitucionDescripcion(UtilidadesHash.getString(servicio, "DESCRIPCION_S_INSTITUCION"));
-				this.setIva(UtilidadesHash.getFloat(servicio, PysServiciosInstitucionBean.C_PORCENTAJEIVA));
+				this.setValorIva(UtilidadesHash.getFloat(servicio, "VALORIVA"));
+				this.setIdIva(UtilidadesHash.getFloat(servicio, PysServiciosInstitucionBean.C_PORCENTAJEIVA));
 				this.setMomentoCargo(UtilidadesHash.getString(servicio, PysServiciosInstitucionBean.C_MOMENTOCARGO));
 			}
 		}
@@ -312,15 +315,7 @@ public class Articulo
 	/**
 	 * @return Returns the iva.
 	 */
-	public Float getIva() {
-		return iva;
-	}
-	/**
-	 * @param iva The iva to set.
-	 */
-	public void setIva(Float iva) {
-		this.iva = iva;
-	}
+	
 	/**
 	 * @return Returns the numeroCuenta.
 	 */
@@ -451,5 +446,21 @@ public class Articulo
 
 	public void setFechaSolicitud(String fechaSolicitud) {
 		this.fechaSolicitud = fechaSolicitud;
+	}
+
+	public Float getValorIva() {
+		return valorIva;
+	}
+
+	public void setValorIva(Float valorIva) {
+		this.valorIva = valorIva;
+	}
+
+	public Float getIdIva() {
+		return idIva;
+	}
+
+	public void setIdIva(Float idIva) {
+		this.idIva = idIva;
 	}
 }

@@ -323,9 +323,8 @@
 								.get("CANTIDAD"));
 				String precio = UtilidadesString
 						.mostrarDatoJSP((String) registro.get("VALOR"));
-				String iva = UtilidadesString
-						.mostrarDatoJSP((String) registro
-								.get("PORCENTAJEIVA"));
+				//String iva = UtilidadesString.mostrarDatoJSP((String) registro.get("PORCENTAJEIVA"));
+				String iva = UtilidadesString.mostrarDatoJSP((String) registro.get("VALORIVA"));
 
 				//Calculo el precio con iva y lo redondeo:
 				double precioDouble = 0;

@@ -626,9 +626,9 @@
 								desactivado = "";
 							}
 
-							if(a.getIva()!=null){
-								iva = (float)a.getIva().floatValue();
-								sIva = a.getIva().toString();
+							if(a.getValorIva()!=null){
+								iva = (float)a.getValorIva().floatValue();
+								sIva = a.getValorIva().toString();
 							}
     				
 							Vector datos=pysproductosinstitucion.obtenerInfoProducto(String.valueOf(idInstitucion),String.valueOf((Integer)a.getIdTipo()),String.valueOf((Long)a.getIdArticulo()),String.valueOf((Long)a.getIdArticuloInstitucion()));   							

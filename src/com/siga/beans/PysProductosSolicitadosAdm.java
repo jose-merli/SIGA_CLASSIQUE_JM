@@ -346,6 +346,9 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 									PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_CANTIDAD + ", " +
 									PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_VALOR 	+ ", " +
 									PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_PORCENTAJEIVA + ", " +
+									//INC_07291_SIGA Porcentajes de IVA.
+								       "PYS_TIPOIVA.VALOR VALORIVA,"+
+									
 									PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_ACEPTADO + ", " +
 									PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_TIPOPETICION + ", " +
 									PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_FECHA + ", " +
@@ -443,12 +446,12 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 							        "            PYS_PRODUCTOSSOLICITADOS.VALOR || '#' || PYS_PRODUCTOSSOLICITADOS.PORCENTAJEIVA"+
 							        "           ) AS ANTICIPAR ";
 										
-			String from  =  " FROM " + PysProductosSolicitadosBean.T_NOMBRETABLA + ", " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA;
+			String from  =  " FROM " + PysProductosSolicitadosBean.T_NOMBRETABLA + ", " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA+", PYS_TIPOIVA ";
 			
 			String where =  " WHERE " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = " + idInstitucion +
 							" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDPETICION + 
-							" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION;
-
+							" AND " + PysProductosSolicitadosBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDINSTITUCION + " = " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysPeticionCompraSuscripcionBean.C_IDINSTITUCION+
+							" AND PYS_TIPOIVA.IDTIPOIVA = PYS_PRODUCTOSSOLICITADOS.PORCENTAJEIVA ";
 			if (idPeticion != null) {
 				where += " AND " + PysPeticionCompraSuscripcionBean.T_NOMBRETABLA + "." + PysProductosSolicitadosBean.C_IDPETICION + " = " + idPeticion;
 			}
@@ -904,7 +907,8 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDCUENTA, a.getIdCuenta());
 		}
 		UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDFORMAPAGO, a.getIdFormaPago());
-		UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_PORCENTAJEIVA, a.getIva());
+		//INC_07291_SIGA Porcentajes de IVA.
+		UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_PORCENTAJEIVA, a.getIdIva());
 		UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_CANTIDAD, new Integer(a.getCantidad()));
 		UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_ACEPTADO, ClsConstants.PRODUCTO_PENDIENTE);
 		UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_VALOR, a.getPrecio());		
@@ -1075,6 +1079,12 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 		select.append(".");
 		select.append(PysProductosSolicitadosBean.C_PORCENTAJEIVA);
 		select.append(", ");
+		//INC_07291_SIGA Porcentajes de IVA.
+		select.append(PysTipoIvaBean.T_NOMBRETABLA);
+		select.append(".");
+		select.append(PysTipoIvaBean.C_VALOR);
+		select.append(" VALORIVA, ");
+		
 		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
 		select.append(".");
 		select.append(PysProductosSolicitadosBean.C_ACEPTADO);
@@ -1322,6 +1332,10 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 		select.append(", ");
 		select.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
 		select.append(" ");
+		//INC_07291_SIGA Porcentajes de IVA.
+		select.append(", ");
+		select.append(PysTipoIvaBean.T_NOMBRETABLA);
+		select.append(" ");
 
 		select.append(" WHERE ");
 		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
@@ -1345,6 +1359,15 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 		select.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
 		select.append(".");
 		select.append(PysPeticionCompraSuscripcionBean.C_IDINSTITUCION);
+		
+		select.append(" AND ");
+		select.append(PysProductosSolicitadosBean.T_NOMBRETABLA);
+		select.append(".");
+		select.append(PysProductosSolicitadosBean.C_PORCENTAJEIVA);
+		select.append(" = ");
+		select.append(PysTipoIvaBean.T_NOMBRETABLA);
+		select.append(".");
+		select.append(PysTipoIvaBean.C_IDTIPOIVA);
 
 		if (idPeticion != null) {
 			select.append(" AND ");

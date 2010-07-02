@@ -893,7 +893,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 				UtilidadesHash.set(hash, "DESCRIPCION_FORMAPAGO", a.getFormaPago());	
 				UtilidadesHash.set(hash, "DESCRIPCION_CUENTA", a.getNumeroCuenta());
 				UtilidadesHash.set(hash, PysServiciosSolicitadosBean.C_IDPRECIOSSERVICIOS, a.getPrecio());
-				UtilidadesHash.set(hash, "IVA" , a.getIva());		
+				UtilidadesHash.set(hash, "IVA" , a.getIdIva());		
 				UtilidadesHash.set(hash, "PERIODICIDAD" , a.getPeriodicidad());
 			} else {
 				return null;

@@ -1047,6 +1047,8 @@ public class DatosFacturacionAction extends MasterAction {
 				diezgg = diezgg.replaceAll(",",".");
 
 				UtilidadesHash.set(registro, "PORCENTAJEIVA", new Float(diezgg));
+				UtilidadesHash.set(registro, "VALORIVA", new Float(diezgg));
+				
 
 				UtilidadesHash.set(registro, "SERVICIO_IDPRECIOSSERVICIOS", new Integer(datosPrecio[2]));
 				UtilidadesHash.set(registro, "SERVICIO_IDPERIODICIDAD", new Integer(datosPrecio[3]));
