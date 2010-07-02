@@ -207,7 +207,6 @@ public class SancionesLetradoAction extends MasterAction
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			String idinstitucion= usr.getLocation();
-            String idrol= usr.getIdRol();
             String username=usr.getUserName();
 			CenSancionAdm admSancion=new CenSancionAdm(this.getUserBean(request));			
 			// Obtengo los datos del formulario
@@ -245,7 +244,7 @@ public class SancionesLetradoAction extends MasterAction
 			UtilidadesHash.set(hash,CenSancionBean.C_REFCOLEGIO, miForm.getRefColegio());						
 			UtilidadesHash.set(hash,CenSancionBean.C_TEXTO, miForm.getTexto());
 			
-			String tienepermisoArchivo=admSancion.getTienePermisoArchivación(idinstitucion,idrol);
+			String tienepermisoArchivo=admSancion.getTienePermisoArchivación(idinstitucion,username);
 			
 			if (tienepermisoArchivo.equals("1")){
 				boolean checkArchivada1  = UtilidadesString.stringToBoolean(miForm.getChkArchivada());
@@ -319,7 +318,6 @@ public class SancionesLetradoAction extends MasterAction
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			String idinstitucion= usr.getLocation();
-            String idrol= usr.getIdRol();
             String username=usr.getUserName();
 
 			CenSancionAdm admSancion=new CenSancionAdm(this.getUserBean(request));
@@ -347,7 +345,7 @@ public class SancionesLetradoAction extends MasterAction
 			UtilidadesHash.set(hash,CenSancionBean.C_REFCOLEGIO, miForm.getRefColegio());	
 			UtilidadesHash.set(hash,CenSancionBean.C_TEXTO, miForm.getTexto());	
 			
-			String tienepermisoArchivo=admSancion.getTienePermisoArchivación(idinstitucion,idrol);
+			String tienepermisoArchivo=admSancion.getTienePermisoArchivación(idinstitucion,username);
 			
 			if (tienepermisoArchivo.equals("1")){
 				boolean checkArchivada  = UtilidadesString.stringToBoolean(miForm.getChkArchivada());
@@ -470,10 +468,9 @@ public class SancionesLetradoAction extends MasterAction
 			SancionesLetradoForm miform = (SancionesLetradoForm)formulario;
 			user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			String idinstitucion= user.getLocation();
-            String idrol= user.getIdRol();
             String username=user.getUserName();
 			CenSancionAdm admSancion=new CenSancionAdm(this.getUserBean(request));
-            String tienepermisoArchivo= admSancion.getTienePermisoArchivación(idinstitucion,idrol);
+            String tienepermisoArchivo= admSancion.getTienePermisoArchivación(idinstitucion,username);
 			// RGG indico si estamos en pestaña de datos de colegiacion o no
 			request.setAttribute("pestanaColegiacion",request.getParameter("pestanaColegiacion"));
 			request.setAttribute("personaColegiacion",request.getParameter("personaColegiacion"));
@@ -508,7 +505,6 @@ public class SancionesLetradoAction extends MasterAction
 			SancionesLetradoForm miform = (SancionesLetradoForm)formulario;
 			user = (UsrBean) request.getSession().getAttribute("USRBEAN");
             String idinstitucion= user.getLocation();
-            String idrol= user.getIdRol();
             String username=user.getUserName();
 			CenSancionAdm admSancion=new CenSancionAdm(this.getUserBean(request));
 			
@@ -542,7 +538,7 @@ public class SancionesLetradoAction extends MasterAction
 				UtilidadesHash.set(hash,CenSancionBean.C_CHKARCHIVADA, b.getChkArchivada());
 				UtilidadesHash.set(hash,CenSancionBean.C_FECHAARCHIVADA, b.getFechaArchivada());
 				
-				String tienepermisoArchivo= admSancion.getTienePermisoArchivación(idinstitucion,idrol);				
+				String tienepermisoArchivo= admSancion.getTienePermisoArchivación(idinstitucion,username);				
 				request.getSession().setAttribute("DATABACKUP",hash);				
 				request.setAttribute("tienepermiso",tienepermisoArchivo);
 				request.setAttribute("registro",hash);
@@ -579,7 +575,6 @@ public class SancionesLetradoAction extends MasterAction
 			SancionesLetradoForm miform = (SancionesLetradoForm)formulario;
 			user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			 String idinstitucion= user.getLocation();
-            String idrol= user.getIdRol();
             String username=user.getUserName();
 
 			CenSancionAdm admSancion=new CenSancionAdm(this.getUserBean(request));
@@ -614,7 +609,7 @@ public class SancionesLetradoAction extends MasterAction
 				UtilidadesHash.set(hash,CenSancionBean.C_CHKFIRMEZA, b.getChkFirmeza());
 				UtilidadesHash.set(hash,CenSancionBean.C_CHKREHABILITADO, b.getChkRehabilitado());
 				
-				String tienepermisoArchivo= admSancion.getTienePermisoArchivación(idinstitucion,idrol);							
+				String tienepermisoArchivo= admSancion.getTienePermisoArchivación(idinstitucion,username);							
 				request.setAttribute("tienepermiso",tienepermisoArchivo);
 				
 				request.setAttribute("registro",hash);
