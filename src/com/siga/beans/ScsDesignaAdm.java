@@ -1947,107 +1947,106 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 	}
 	
 	
-	public Vector getDesignaSalidaOficio (String idInstitucion, String idturno, String anio, String numero, String codigoDesigna) throws ClsExceptions  
+	public Vector getDesignaSalidaOficio (String idInstitucion,
+										  String idturno,
+										  String anio,
+										  String numero,
+										  String codigoDesigna)
+		throws ClsExceptions  
 	{
 		try {
 			Hashtable h = new Hashtable();
 			
 			h.put(new Integer(1), idInstitucion);
-			h.put(new Integer(2), idInstitucion);
-			h.put(new Integer(3), idInstitucion);
-			//h.put(new Integer(4), codigoDesigna);
-			h.put(new Integer(4), idturno);
-			h.put(new Integer(5), anio);
-			h.put(new Integer(6), numero);
+			h.put(new Integer(2), idturno);
+			h.put(new Integer(3), anio);
+			h.put(new Integer(4), numero);
 
-			String sql = "SELECT "+
-
-			" DES.IDINSTITUCION, DES.IDTURNO,  DES.ANIO, DES.NUMERO,"+
-			" LET.IDPERSONA, DES.IDINSTITUCION_JUZG, DES.IDJUZGADO,"+
-			" DES.OBSERVACIONES AS OBSERVACIONES,"+
-			" DES.NUMPROCEDIMIENTO AS AUTOS,"+
-			" TO_CHAR(DES.FECHAJUICIO, 'dd/MM/yyyy') AS FECHA_JUICIO,"+
-			" TO_CHAR(DES.FECHAJUICIO, 'HH24:MI') AS HORA_JUICIO,"+
-			" DES.ANIO AS ANIO_DESIGNA,"+
-			" DES.CODIGO AS CODIGO,"+
-			" DES.RESUMENASUNTO AS ASUNTO,"+
-			" DES.IDPROCEDIMIENTO  AS IDPROCEDIMIENTO,"+
-			" DES.ANIO || '/' || DES.CODIGO AS NOFICIO,"+
-			" TO_CHAR(DES.FECHAENTRADA, 'dd-mm-yyyy') AS FECHA_DESIGNA,"+
-			" TO_CHAR(SYSDATE, 'dd') AS DIA_ACTUAL,"+
-			" TO_CHAR(SYSDATE, 'MONTH', 'NLS_DATE_LANGUAGE = SPANISH') AS MES_ACTUAL,"+
-			" TO_CHAR(SYSDATE, 'yyyy') AS ANIO_ACTUAL"+			
-			" ,DES.idtipodesignacolegio AS IDTIPODESIGNACOLEGIO, "+
-			" TO_CHAR(DES.FECHARECEPCIONCOLEGIO, 'dd/MM/yyyy') AS FECHA_RECEPCION_COLEGIO,"+
-			" TO_CHAR(DES.FECHAOFICIOJUZGADO, 'dd/MM/yyyy') AS FECHA_OFICIO_JUZGADO, "+
-			" f_siga_getletrado_designa(LET.idinstitucion, LET.idturno, LET.anio, LET.numero) LETRADO_ACTUAL, "+
-		    " f_siga_getletrado_SUSTITUIDO(LET.idinstitucion, LET.idturno, LET.anio, LET.numero) ULTIMO_LETRADO_SUSTITUIDO, "+
-		    " F_SIGA_GETFECHARENUNCIALETRADO(LET.idinstitucion, LET.idturno, LET.anio, LET.numero) FECHARENUNCIA, "+
-		    " pkg_siga_fecha_en_letra.F_SIGA_FECHAcompletaENLETRA(F_SIGA_GETFECHARENUNCIALETRADO(LET.idinstitucion, LET.idturno, LET.anio, LET.numero),'m',1) FECHARENUNCIA_ENLETRA, "+
-            " fecharenunciasolicita FECHA_SOLICITUDRENUNCIA, "+
-            " pkg_siga_fecha_en_letra.F_SIGA_FECHAcompletaENLETRA(fecharenunciasolicita,'m',1) FECHA_SOLICITUDRENUNCIA_LETRA "+
-		    
-		    //-- campos calculados en el recorrido
-		    
-		    //--DES.TURNO_DESCRIPCION AS DESCRIPCION_TURNO,
-		    //--DES.ABREV_TURNO AS ABREV_TURNO,       
-		    //--F_SIGA_NOMBRE_PARTIDO(DES.IDTURNO, DES.IDINSTITUCION) as NOMBRE_PARTIDO,
-		    /*F_SIGA_GETDELITOS_DESIGNA(DES.IDINSTITUCION,
-		                                       DES.NUMERO,
-		                                       DES.IDTURNO,
-		                                       DES.ANIO,
-		                                       1) AS DELITOS,*/
-		    /*F_SIGA_GETCONTRARIOS_DESIGNA(DES.IDINSTITUCION,
-		                                          DES.IDTURNO,
-		                                          DES.ANIO,
-		                                          DES.NUMERO) AS CONTRARIOS,
-		      F_SIGA_GETPROCURADORCONT_DESIG(DES.IDINSTITUCION,
-		                                            DES.IDTURNO,
-		                                            DES.ANIO,
-		                                            DES.NUMERO) AS PROCURADOR_CONTRARIOS,*/  
-		    /*F_SIGA_GETINTERESADOSDESIGNA(DES.IDINSTITUCION,
-		                                          DES.ANIO,
-		                                          DES.IDTURNO,
-		                                          DES.NUMERO,
-		                                          0) LISTA_INTERESADOS_DESIGNA,
-		             F_SIGA_GETACTUACIONESDESIGNA(DES.IDINSTITUCION,
-		                                          DES.ANIO,
-		                                          DES.IDTURNO,
-		                                          DES.NUMERO) LISTA_ACTUACIONES_DESIGNA,*/
-		     /* F_SIGA_GETFIRSTASISDESIGNA(DES.IDINSTITUCION,
-		                                        DES.ANIO,
-		                                        DES.IDTURNO,
-		                                        DES.NUMERO) AS FECHA_ASISTENCIA*/                                                                                     
-
-			" FROM SCS_DESIGNA DES, SCS_DESIGNASLETRADO LET"+
-			" WHERE :1 = LET.IDINSTITUCION(+)"+
-			" AND DES.IDTURNO = LET.IDTURNO(+)"+
-			" AND DES.ANIO = LET.ANIO(+)"+
-			" AND DES.NUMERO = LET.NUMERO(+)"+
-			" AND (LET.FECHADESIGNA IS NULL OR"+
-			" let.idpersona = F_SIGA_GETIDLETRADO_DESIGNA(:2,des.idTurno,des.anio,des.NUMERO))" +
-			/*" LET.FECHADESIGNA = (SELECT MAX(LET2.FECHADESIGNA)"+
-			" FROM SCS_DESIGNASLETRADO LET2"+
-			" WHERE :2 = LET2.IDINSTITUCION"+
-			" AND LET.IDTURNO = LET2.IDTURNO"+
-			" AND LET.ANIO = LET2.ANIO"+
-			" AND LET.NUMERO = LET2.NUMERO"+
-			" AND TRUNC(LET2.FECHADESIGNA) <= TRUNC(SYSDATE)))"+*/
-			" AND des.IDINSTITUCION = :3"+
-			" AND des.IDTURNO = :4" +
-			" AND des.ANIO = :5" +
-			" AND des.NUMERO = :6" ;
+			String sql = 
+				"Select Des.Idinstitucion, " +
+				"       Des.Idturno, " +
+				"       Des.Anio, " +
+				"       Des.Numero, " +
+				"       Let.Idpersona, " +
+				"       Des.Idinstitucion_Juzg, " +
+				"       Des.Idjuzgado, " +
+				"       Des.Observaciones As Observaciones, " +
+				"       Des.Numprocedimiento As Autos, " +
+				"       To_Char(Des.Fechajuicio, 'dd/MM/yyyy') As Fecha_Juicio, " +
+				"       To_Char(Des.Fechajuicio, 'HH24:MI') As Hora_Juicio, " +
+				"       Des.Anio As Anio_Designa, " +
+				"       Des.Codigo As Codigo, " +
+				"       Des.Resumenasunto As Asunto, " +
+				"       Des.Idprocedimiento As Idprocedimiento, " +
+				"       Des.Anio || '/' || Des.Codigo As Noficio, " +
+				"       To_Char(Des.Fechaentrada, 'dd-mm-yyyy') As Fecha_Designa, " +
+				"       To_Char(Sysdate, 'dd') As Dia_Actual, " +
+				"       To_Char(Sysdate, 'MONTH', 'NLS_DATE_LANGUAGE = SPANISH') As Mes_Actual, " +
+				"       To_Char(Sysdate, 'yyyy') As Anio_Actual, " +
+				"       Des.Idtipodesignacolegio As Idtipodesignacolegio, " +
+				"       To_Char(Des.Fecharecepcioncolegio, 'dd/MM/yyyy') As Fecha_Recepcion_Colegio, " +
+				"       To_Char(Des.Fechaoficiojuzgado, 'dd/MM/yyyy') As Fecha_Oficio_Juzgado, " +
+				"        " +
+				"       p.Nombre || ' ' || p.Apellidos1 || " +
+				"       Decode(p.Apellidos2, Null, '', ' ' || p.Apellidos2) || ' ' || " +
+				"       f_Siga_Calculoncolegiado(Let.Idinstitucion, Let.Idpersona) Letrado_Actual, " +
+				"        " +
+				"       Pant.Nombre || ' ' || Pant.Apellidos1 || " +
+				"       Decode(Pant.Apellidos2, Null, '', ' ' || Pant.Apellidos2) || ' ' || " +
+				"       f_Siga_Calculoncolegiado(Letant.Idinstitucion, Letant.Idpersona) Ultimo_Letrado_Sustituido, " +
+				"        " +
+				"       Letant.Fecharenuncia Fecharenuncia, " +
+				"       Decode(Letant.Fecharenuncia, " +
+				"              Null, " +
+				"              '', " +
+				"              Pkg_Siga_Fecha_En_Letra.f_Siga_Fechacompletaenletra(Letant.Fecharenuncia, " +
+				"                                                                  'm', " +
+				"                                                                  1)) Fecharenuncia_Enletra, " +
+				"       Letant.Fecharenunciasolicita Fecha_Solicitudrenuncia, " +
+				"       Decode(Letant.Fecharenunciasolicita, " +
+				"              Null, " +
+				"              '', " +
+				"              Pkg_Siga_Fecha_En_Letra.f_Siga_Fechacompletaenletra(Letant.Fecharenunciasolicita, " +
+				"                                                                  'm', " +
+				"                                                                  1)) Fecha_Solicitudrenuncia_Letra " +
+				"  From Scs_Designa         Des, " +
+				"       Scs_Designasletrado Let, " +
+				"       Cen_Persona         p, " +
+				"       Scs_Designasletrado Letant, " +
+				"       Cen_Persona         Pant " +
+				" Where Des.Idinstitucion = Let.Idinstitucion(+) " +
+				"   And Des.Idturno = Let.Idturno(+) " +
+				"   And Des.Anio = Let.Anio(+) " +
+				"   And Des.Numero = Let.Numero(+) " +
+				"   And Let.Idpersona = p.Idpersona(+) " +
+				"   And Let.Fechadesigna(+) = " +
+				"       f_Siga_Getfecha_Letradodesigna(Des.Idinstitucion, " +
+				"                                      Des.Idturno, " +
+				"                                      Des.Anio, " +
+				"                                      Des.Numero) " +
+				"   And Des.Idinstitucion = Letant.Idinstitucion(+) " +
+				"   And Des.Idturno = Letant.Idturno(+) " +
+				"   And Des.Anio = Letant.Anio(+) " +
+				"   And Des.Numero = Letant.Numero(+) " +
+				"   And Letant.Idpersona = Pant.Idpersona(+) " +
+				"   And Letant.Fechadesigna(+) = " +
+				"       f_Siga_Getfecha_Let_Antdesigna(Des.Idinstitucion, " +
+				"                                      Des.Idturno, " +
+				"                                      Des.Anio, " +
+				"                                      Des.Numero) " +
+				"   " +
+				"   And Des.Idinstitucion = :1 " +
+				"   And Des.Idturno = :2 " +
+				"   And Des.Anio = :3 " +
+				"   And Des.Numero = :4";
 			
-
-			//" AND des.CODIGO = :4";
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
 			return helperInformes.ejecutaConsultaBind(sql, h);
-			//return this.selectGenericoBind(sql, h);
 		}
 		catch (Exception e) {
-			throw new ClsExceptions (e, "Error al obtener la informacion sobre las relaciones de procuradores.");
+			throw new ClsExceptions (e, "Error al obtener la informacion sobre el letrado designado.");
 		}
-	}
+	} //getDesignaSalidaOficio()
 	
 	public Vector getDefendidosDesignaSalidaOficio (String idInstitucion, String numero, 
 			String idTurno, String anio, String idPersonaJG, String idioma) throws ClsExceptions  
