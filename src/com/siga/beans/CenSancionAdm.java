@@ -583,48 +583,43 @@ public class CenSancionAdm extends MasterBeanAdministrador {
 		return nuevoId;
 	}
 	
-	
-	public String getTienePermisoArchivación(String idInstitucion, String usuario) throws ClsExceptions{
-		String permiso="";
-		Hashtable hash=null;
-		RowsContainer rc = new RowsContainer(); 
-		try{
-		 /*String sql = "select COUNT(*) AS TIENEPERMISO"+
-						" from adm_tiposacceso t, gen_procesos p, ADM_USUARIOS_EFECTIVOS_PERFIL UEP "+
-						" where t.idproceso = p.idproceso "+
-						" and t.idperfil = uep.idperfil " +
-						" and t.idinstitucion = uep.idinstitucion "+
-						" and uep.idusuario="+usuario +
-						" and uep.idinstitucion="+ idInstitucion+
-						" and t.IDPROCESO = '56a'";*/ 
-			
-			String sql = "select COUNT(*) AS TIENEPERMISO  from adm_tiposacceso  t,"+      
-						  " ADM_USUARIOS_EFECTIVOS_PERFIL UEP "+
-						  " where t.idperfil = uep.idperfil "+
-						  " and t.idinstitucion = uep.idinstitucion "+
-						  " and uep.idusuario =" +usuario +
-                          " and uep.idinstitucion ="+ idInstitucion+
-                          " and t.IDPROCESO = '56a'"+
-                          " and t.derechoacceso = '3'"+
-                          " and not exists (select * from adm_tiposacceso ac"+
-                          " where t.idproceso = ac.idproceso "+
-                          " and t.idperfil = ac.idperfil "+
-                          " and t.idinstitucion = ac.idinstitucion "+
-                          " and t.derechoacceso = '1')"; 
-			
-            if (rc.find(sql)) {
-               for (int i = 0; i < rc.size(); i++){
-                  Row fila = (Row) rc.get(i);
-                  Hashtable resultado=fila.getRow();	                  
-                 permiso = (String)resultado.get("TIENEPERMISO");
-               }
-            } 
-       } catch (Exception e) {
-       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
-       }
+	public String getTienePermisoArchivación(String idInstitucion,
+			String usuario) throws ClsExceptions {
+		String permiso = "";
+		RowsContainer rc = new RowsContainer();
+		try {
+			String sql =
+				"Select Count(*) As Tienepermiso " +
+				"  From Adm_Tiposacceso Tip, Adm_Usuarios_Efectivos_Perfil Usu " +
+				" Where Tip.Idperfil = Usu.Idperfil " +
+				"   And Tip.Idinstitucion = Usu.Idinstitucion " +
+				"    " +
+				"   And Usu.Idusuario = "+usuario+" " +
+				"   And Usu.Idinstitucion = "+idInstitucion+" " +
+				"   And Tip.Idproceso = '56a' " +
+				"   And Tip.Derechoacceso = '3' " +
+				"   And Not Exists " +
+				" (Select * " +
+				"          From Adm_Tiposacceso Tip2, Adm_Usuarios_Efectivos_Perfil Usu2 " +
+				"         Where Tip2.Idperfil = Usu2.Idperfil " +
+				"           And Tip2.Idinstitucion = Usu2.Idinstitucion " +
+				"            " +
+				"           And Usu2.Idinstitucion = Usu.Idinstitucion " +
+				"           And Usu2.Idusuario = Usu.Idusuario " +
+				"           And Tip2.Derechoacceso = '1') ";
+
+			if (rc.find(sql)) {
+				for (int i = 0; i < rc.size(); i++) {
+					Row fila = (Row) rc.get(i);
+					Hashtable resultado = fila.getRow();
+					permiso = (String) resultado.get("TIENEPERMISO");
+				}
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al ejecutar consulta.");
+		}
 		return permiso;
-	}
-	
+	} // getTienePermisoArchivación()
 	
 	
 }
