@@ -547,7 +547,8 @@ MDB Microsoft Access Database
   
 
   public static final String COMBO_MOSTRAR_SINARCHIVAR = "1";
-  public static final String COMBO_MOSTRAR_ARCHIVADAS = "2";  
+  public static final String COMBO_MOSTRAR_ARCHIVADAS = "2";
+  public static final String PERMISO_ARCHIVARSANCIONES = "56a";  
   
   
   

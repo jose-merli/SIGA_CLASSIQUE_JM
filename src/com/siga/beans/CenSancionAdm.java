@@ -3,6 +3,7 @@ package com.siga.beans;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.Row;
@@ -596,7 +597,7 @@ public String getTienePermisoArchivación(String idInstitucion,
 				"    " +
 				"   And Usu.Idusuario = "+usuario+" " +
 				"   And Usu.Idinstitucion = "+idInstitucion+" " +
-				"   And Tip.Idproceso = '56a' " +
+				"   And Tip.Idproceso ="+ "'"+ClsConstants.PERMISO_ARCHIVARSANCIONES+ "'"+
 				"   And Tip.Derechoacceso = '3' " +
 				"   And Not Exists " +
 				" (Select * " +
