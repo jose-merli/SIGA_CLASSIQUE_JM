@@ -213,6 +213,7 @@ public class CenSancionAdm extends MasterBeanAdministrador {
 			sql += " AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDINSTITUCION+ "=" + idInstitucionAlta;				 										
             // filtro por persona mia
 			sql += " AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDPERSONA+ "=" + idPersona;						 										
+			sql += " AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_CHKARCHIVADA+ "=0";
 			
             rc = this.find(sql);
  			if (rc!=null) {
@@ -582,8 +583,7 @@ public class CenSancionAdm extends MasterBeanAdministrador {
 		}
 		return nuevoId;
 	}
-	
-	public String getTienePermisoArchivación(String idInstitucion,
+public String getTienePermisoArchivación(String idInstitucion,
 			String usuario) throws ClsExceptions {
 		String permiso = "";
 		RowsContainer rc = new RowsContainer();
