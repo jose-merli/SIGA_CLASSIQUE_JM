@@ -214,7 +214,12 @@ public class CenSancionAdm extends MasterBeanAdministrador {
 			sql += " AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDINSTITUCION+ "=" + idInstitucionAlta;				 										
             // filtro por persona mia
 			sql += " AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDPERSONA+ "=" + idPersona;						 										
-			sql += " AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_CHKARCHIVADA+ "=0";
+			sql += " AND (nvl (" + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_CHKARCHIVADA+ ",0)=0";
+			sql += " OR (nvl (" + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_CHKARCHIVADA+",0)=1";
+			sql += " AND "+ CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAARCHIVADA+" IS NOT NULL";
+			sql += " AND "+ CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAARCHIVADA+" > sysdate))";
+			//sql += " AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_CHKARCHIVADA+ "=0";
+            
 			
             rc = this.find(sql);
  			if (rc!=null) {
@@ -239,9 +244,13 @@ public class CenSancionAdm extends MasterBeanAdministrador {
 	 * @return Vector de Hashtables con los resultados
 	 * @throws ClsExceptions
 	 */
-	public Paginador getSancionesBuscar(SancionesLetradoForm form, String idInstitucionAlta) throws ClsExceptions{
+	public Paginador getSancionesBuscar(SancionesLetradoForm form, String idInstitucionAlta, String tipobusqueda) throws ClsExceptions{
 		Vector salida = new Vector();
 		Hashtable hash=null;
+		String chkRehabilitado="";
+		String tipofecha="";
+		String fechainicioarchivada="";
+		String fechafinarchivada="";
 		RowsContainer rc = new RowsContainer(); 
 		try{
 			
@@ -272,8 +281,27 @@ public class CenSancionAdm extends MasterBeanAdministrador {
 			CenInstitucionBean.T_NOMBRETABLA + " " + 
 			" WHERE " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDINSTITUCIONSANCION+ "=" + CenInstitucionBean.T_NOMBRETABLA +"."+ CenInstitucionBean.C_IDINSTITUCION +  						 										
 			" AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDPERSONA+ "=" + CenPersonaBean.T_NOMBRETABLA +"."+ CenPersonaBean.C_IDPERSONA + 
-			" AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDTIPOSANCION+ "=" + CenTipoSancionBean.T_NOMBRETABLA +"."+ CenTipoSancionBean.C_IDTIPOSANCION; 
+			" AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDTIPOSANCION+ "=" + CenTipoSancionBean.T_NOMBRETABLA +"."+ CenTipoSancionBean.C_IDTIPOSANCION;
             
+            if (tipobusqueda.equals("1")){//buscar sin archivar            
+            // sql+= " AND (nvl(" + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_CHKARCHIVADA+ "=0" ;             
+             	sql += " AND (nvl (" + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_CHKARCHIVADA+ ",0)=0";
+             	sql += " OR (nvl (" + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_CHKARCHIVADA+",0)=1";
+             	sql += " AND "+ CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAARCHIVADA+" IS NOT NULL";
+             	sql += " AND "+ CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAARCHIVADA+" > sysdate))";            
+            }
+            
+             if (tipobusqueda.equals("2")){//buscar archivados            
+            	 sql+= " AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_CHKARCHIVADA+ "=1";          
+              	
+              	if ((form.getFechaInicioArchivada().trim().equals("")) && (form.getFechaFinArchivada().trim().equals("")) ) {              		
+              		sql+= " AND (CEN_SANCION.FECHAARCHIVADA <=sysdate OR CEN_SANCION.FECHAARCHIVADA is null)";
+              	}else{
+              		sql += " AND TO_DATE(TO_CHAR(" + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAARCHIVADA+ ",'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('" + form.getFechaInicioArchivada()+"','DD/MM/YYYY')"+
+				       " AND TO_DATE(TO_CHAR(" + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAARCHIVADA+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaFinArchivada()+"', 'DD/MM/YYYY')";			
+              		}
+              
+             }
 
             // filtro por institucion mia
 			sql += " AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDINSTITUCION+ "=" + idInstitucionAlta;				 										
@@ -289,44 +317,73 @@ public class CenSancionAdm extends MasterBeanAdministrador {
 			if (!form.getTipoSancionBuscar().trim().equals("")) {
 				sql += " AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDTIPOSANCION+ "=" + form.getTipoSancionBuscar();						 										
 			}
-			// TRANSFORMACION DE FECHAS PARA OBVIAR LAS HORAS.
-			if (!form.getFechaInicioBuscar().trim().equals("") && (form.getFechaFinBuscar().trim()==null ||form.getFechaFinBuscar().trim().equals("")) ) {
-				//sql += " AND TO_DATE(TO_CHAR(" + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAINICIO+ ",'DD/MM/YYYY'),'DD/MM/YYYY')=TO_DATE('" + form.getFechaInicioBuscar()+"','DD/MM/YYYY')";
-				sql += " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAINICIO+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaInicioBuscar()+"', 'DD/MM/YYYY')";
-			}else{
-			  if (!form.getFechaFinBuscar().trim().equals("")&& (form.getFechaInicioBuscar().trim()==null ||form.getFechaInicioBuscar().trim().equals("")) ) {
-				//sql += " AND TO_DATE(TO_CHAR(" + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAFIN+ ",'DD/MM/YYYY'),'DD/MM/YYYY')=TO_DATE('" + form.getFechaFinBuscar()+"','DD/MM/YYYY')";
-			  	sql += " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAFIN+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaFinBuscar()+"', 'DD/MM/YYYY') ";
-			  }else{
-			  	if (!form.getFechaFinBuscar().trim().equals("")&& !form.getFechaInicioBuscar().trim().equals("") ) { 
-			  		sql += " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAINICIO+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaInicioBuscar().trim()+"', 'DD/MM/YYYY')"+
-                           " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAFIN+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaFinBuscar()+"', 'DD/MM/YYYY')";	
-			  	}
-			  }
-			}  
-			// TRANSFORMACION DE FECHAS PARA OBVIAR LAS HORAS.
-			if (!form.getFechaImposicionDesdeBuscar().trim().equals("") && (form.getFechaImposicionHastaBuscar().trim()==null ||form.getFechaImposicionHastaBuscar().trim().equals("")) ) {
-				sql += " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAIMPOSICION+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaImposicionDesdeBuscar()+"', 'DD/MM/YYYY')";
-			}else{
-			  if (!form.getFechaImposicionHastaBuscar().trim().equals("")&& (form.getFechaImposicionDesdeBuscar().trim()==null ||form.getFechaImposicionDesdeBuscar().trim().equals("")) ) {
-			  	sql += " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAIMPOSICION+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaImposicionHastaBuscar()+"', 'DD/MM/YYYY') ";
-			  }else{
-			  	if (!form.getFechaImposicionHastaBuscar().trim().equals("")&& !form.getFechaImposicionDesdeBuscar().trim().equals("") ) { 
-			  		sql += " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAIMPOSICION+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaImposicionDesdeBuscar().trim()+"', 'DD/MM/YYYY')"+
-                           " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAIMPOSICION+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaImposicionHastaBuscar()+"', 'DD/MM/YYYY')";	
-			  	}
-			  }
-			}  
+			
+			//definiendo los tipos de fechas.
+			tipofecha=form.getMostrarTiposFechas();
+			 
+			if (tipofecha.equals(ClsConstants.COMBO_MOSTRAR_ACUERDO)){
+				
+				if (!form.getFechaInicioBuscar().trim().equals("") && (!form.getFechaFinBuscar().trim().equals(""))){
+					sql += " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAACUERDO+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaInicioBuscar()+"', 'DD/MM/YYYY')"+
+					       " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAACUERDO+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaFinBuscar()+"', 'DD/MM/YYYY')";
+				} 
+			
+			}
+			
+			if (tipofecha.equals(ClsConstants.COMBO_MOSTRAR_FIN)){				
+				if (!form.getFechaInicioBuscar().trim().equals("") && (!form.getFechaFinBuscar().trim().equals(""))){
+					sql += " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAFIN+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaInicioBuscar()+"', 'DD/MM/YYYY')"+
+					       " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAFIN+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaFinBuscar()+"', 'DD/MM/YYYY')";
+				} 			
+			}
+			
+			if (tipofecha.equals(ClsConstants.COMBO_MOSTRAR_FIRMEZA)){
+				
+				if (!form.getFechaInicioBuscar().trim().equals("") && (!form.getFechaFinBuscar().trim().equals(""))){
+					sql += " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAFIRMEZA+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaInicioBuscar()+"', 'DD/MM/YYYY')"+
+						   " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAFIRMEZA+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaFinBuscar()+"', 'DD/MM/YYYY')";
+				} 
+			
+			}
+			if (tipofecha.equals(ClsConstants.COMBO_MOSTRAR_IMPOSICION)){				
+			
+				if (!form.getFechaInicioBuscar().trim().equals("") && (!form.getFechaFinBuscar().trim().equals(""))){
+					sql += " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAIMPOSICION+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaInicioBuscar()+"', 'DD/MM/YYYY')"+
+					       " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAIMPOSICION+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaFinBuscar()+"', 'DD/MM/YYYY')";
+				}			
+			}
+			if (tipofecha.equals(ClsConstants.COMBO_MOSTRAR_INICIO)){				
+			
+				if (!form.getFechaInicioBuscar().trim().equals("") && (!form.getFechaFinBuscar().trim().equals(""))){
+					sql += " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAINICIO+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaInicioBuscar()+"', 'DD/MM/YYYY')"+
+					       " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAINICIO+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaFinBuscar()+"', 'DD/MM/YYYY')";
+				}			
+			}
+			
+			if (tipofecha.equals(ClsConstants.COMBO_MOSTRAR_REHABILITADO)){				
+			
+				if (!form.getFechaInicioBuscar().trim().equals("") && (!form.getFechaFinBuscar().trim().equals(""))){
+					sql += " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAREHABILITADO+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaInicioBuscar()+"', 'DD/MM/YYYY')"+
+							" AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAREHABILITADO+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaFinBuscar()+"', 'DD/MM/YYYY')";
+				}			
+			}
+			
+			if (tipofecha.equals(ClsConstants.COMBO_MOSTRAR_RESOLUCION)){				
+			
+				if (!form.getFechaInicioBuscar().trim().equals("") && (!form.getFechaFinBuscar().trim().equals(""))){
+					sql += " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHARESOLUCION+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaInicioBuscar()+"', 'DD/MM/YYYY')"+
+						  " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHARESOLUCION+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaFinBuscar()+"', 'DD/MM/YYYY')";
+				}			
+			}
+			
+			
 			if (!form.getRefCGAE().trim().equals("")) {
 				sql += " AND " + ComodinBusquedas.prepararSentenciaCompleta(form.getRefCGAE().trim(),CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_REFCGAE) ;						 										
-			} 
-           /* rc = this.find(sql);
- 			if (rc!=null) {
-				for (int i = 0; i < rc.size(); i++)	{
-	                Row fila = (Row) rc.get(i);
-					salida.add((Hashtable)fila.getRow());				                
-				}
-			}*/
+			}
+			if (form.getChkRehabilitado()!=null){
+				chkRehabilitado ="1";
+				sql += " AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_CHKREHABILITADO+ "=" + chkRehabilitado;			}
+		
 			Paginador paginador = new Paginador(sql);				
 			int totalRegistros = paginador.getNumeroTotalRegistros();
 			
@@ -340,226 +397,6 @@ public class CenSancionAdm extends MasterBeanAdministrador {
 		}
 		
 	}
-	
-		/**
-	 * Obtiene las sanciones para unos criterios de busqueda y una institucion que lo dio de alta
-	 * @param form Formulario con los criterios
-	 * @param idInstitucionAlta
-	 * @return Vector de Hashtables con los resultados
-	 * @throws ClsExceptions
-	 */
-	public Paginador getSancionesBuscarSinArchivar(SancionesLetradoForm form, String idInstitucionAlta) throws ClsExceptions{
-		Vector salida = new Vector();
-		Hashtable hash=null;
-		RowsContainer rc = new RowsContainer(); 
-		try{
-			
-            String sql ="SELECT " +
-			" nvl( " +CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NOMBRE+",' ') || ' ' || nvl( " +CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+",' ') || ' ' || nvl( " +CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+",' ') AS NOMBRE_LETRADO, " +
-			" " +CenTipoSancionBean.T_NOMBRETABLA+"."+CenTipoSancionBean.C_DESCRIPCION+" AS NOMBRE_TIPOSANCION, " +
-			" " +CenInstitucionBean.T_NOMBRETABLA+"."+CenInstitucionBean.C_ABREVIATURA+" AS ABREVIATURA_INSTI, " +
-			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_IDINSTITUCION+", " +
-			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_IDINSTITUCIONSANCION+", " +
-			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_IDPERSONA+", " +
-			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_IDSANCION+", " +
-			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_IDTIPOSANCION+", " +
-			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_FECHAINICIO+", " +
-			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_FECHAFIN+", " +
-			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_FECHAACUERDO+", " +
-			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_FECHAFIRMEZA+", " +
-			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_CHKFIRMEZA+", " +
-			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_CHKREHABILITADO+", " +
-			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_FECHAREHABILITADO+", " +
-			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_FECHARESOLUCION+", " +
-			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_FECHAIMPOSICION+", " +
-			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_REFCGAE+",  " +
-			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_CHKARCHIVADA+"  " +
-            " FROM " + 
-			CenSancionBean.T_NOMBRETABLA + ", " + 
-			CenPersonaBean.T_NOMBRETABLA + ", " + 
-			CenTipoSancionBean.T_NOMBRETABLA + ", " + 
-			CenInstitucionBean.T_NOMBRETABLA + " " + 
-			" WHERE " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDINSTITUCIONSANCION+ "=" + CenInstitucionBean.T_NOMBRETABLA +"."+ CenInstitucionBean.C_IDINSTITUCION +  						 										
-			" AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDPERSONA+ "=" + CenPersonaBean.T_NOMBRETABLA +"."+ CenPersonaBean.C_IDPERSONA + 
-			" AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDTIPOSANCION+ "=" + CenTipoSancionBean.T_NOMBRETABLA +"."+ CenTipoSancionBean.C_IDTIPOSANCION+ 
-            " AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_CHKARCHIVADA+ "=0";
-
-            // filtro por institucion mia
-			sql += " AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDINSTITUCION+ "=" + idInstitucionAlta;				 										
-            
-			// filtros de busqueda
-			if (!form.getNombreInstitucionBuscar().trim().equals("")) {
-				sql += " AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDINSTITUCIONSANCION+ "=" + form.getNombreInstitucionBuscar();						 										
-			} 
-			if (!form.getColegiadoBuscar().trim().equals("")) {
-				sql += " AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDPERSONA+ "=" + form.getColegiadoBuscar();						 										
-			}
-			
-			if (!form.getTipoSancionBuscar().trim().equals("")) {
-				sql += " AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDTIPOSANCION+ "=" + form.getTipoSancionBuscar();						 										
-			}
-			// TRANSFORMACION DE FECHAS PARA OBVIAR LAS HORAS.
-			if (!form.getFechaInicioBuscar().trim().equals("") && (form.getFechaFinBuscar().trim()==null ||form.getFechaFinBuscar().trim().equals("")) ) {
-				//sql += " AND TO_DATE(TO_CHAR(" + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAINICIO+ ",'DD/MM/YYYY'),'DD/MM/YYYY')=TO_DATE('" + form.getFechaInicioBuscar()+"','DD/MM/YYYY')";
-				sql += " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAINICIO+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaInicioBuscar()+"', 'DD/MM/YYYY')";
-			}else{
-			  if (!form.getFechaFinBuscar().trim().equals("")&& (form.getFechaInicioBuscar().trim()==null ||form.getFechaInicioBuscar().trim().equals("")) ) {
-				//sql += " AND TO_DATE(TO_CHAR(" + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAFIN+ ",'DD/MM/YYYY'),'DD/MM/YYYY')=TO_DATE('" + form.getFechaFinBuscar()+"','DD/MM/YYYY')";
-			  	sql += " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAFIN+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaFinBuscar()+"', 'DD/MM/YYYY') ";
-			  }else{
-			  	if (!form.getFechaFinBuscar().trim().equals("")&& !form.getFechaInicioBuscar().trim().equals("") ) { 
-			  		sql += " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAINICIO+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaInicioBuscar().trim()+"', 'DD/MM/YYYY')"+
-                           " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAFIN+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaFinBuscar()+"', 'DD/MM/YYYY')";	
-			  	}
-			  }
-			}  
-			// TRANSFORMACION DE FECHAS PARA OBVIAR LAS HORAS.
-			if (!form.getFechaImposicionDesdeBuscar().trim().equals("") && (form.getFechaImposicionHastaBuscar().trim()==null ||form.getFechaImposicionHastaBuscar().trim().equals("")) ) {
-				sql += " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAIMPOSICION+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaImposicionDesdeBuscar()+"', 'DD/MM/YYYY')";
-			}else{
-			  if (!form.getFechaImposicionHastaBuscar().trim().equals("")&& (form.getFechaImposicionDesdeBuscar().trim()==null ||form.getFechaImposicionDesdeBuscar().trim().equals("")) ) {
-			  	sql += " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAIMPOSICION+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaImposicionHastaBuscar()+"', 'DD/MM/YYYY') ";
-			  }else{
-			  	if (!form.getFechaImposicionHastaBuscar().trim().equals("")&& !form.getFechaImposicionDesdeBuscar().trim().equals("") ) { 
-			  		sql += " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAIMPOSICION+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaImposicionDesdeBuscar().trim()+"', 'DD/MM/YYYY')"+
-                           " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAIMPOSICION+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaImposicionHastaBuscar()+"', 'DD/MM/YYYY')";	
-			  	}
-			  }
-			}  
-			if (!form.getRefCGAE().trim().equals("")) {
-				sql += " AND " + ComodinBusquedas.prepararSentenciaCompleta(form.getRefCGAE().trim(),CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_REFCGAE) ;						 										
-			} 
-           /* rc = this.find(sql);
- 			if (rc!=null) {
-				for (int i = 0; i < rc.size(); i++)	{
-	                Row fila = (Row) rc.get(i);
-					salida.add((Hashtable)fila.getRow());				                
-				}
-			}*/
-			Paginador paginador = new Paginador(sql);				
-			int totalRegistros = paginador.getNumeroTotalRegistros();
-			
-			if (totalRegistros==0){					
-				paginador =null;
-			}
-			return paginador;
-		}
-		catch(Exception e) {
-			throw new ClsExceptions (e, "Error al obtener las sanciones en la busqueda");
-		}
-		
-	}
-	
-	
-	/**
-	 * Obtiene las sanciones para unos criterios de busqueda y una institucion que lo dio de alta
-	 * @param form Formulario con los criterios
-	 * @param idInstitucionAlta
-	 * @return Vector de Hashtables con los resultados
-	 * @throws ClsExceptions
-	 */
-	public Paginador getSancionesBuscarArchivada(SancionesLetradoForm form, String idInstitucionAlta) throws ClsExceptions{
-		Vector salida = new Vector();
-		Hashtable hash=null;
-		RowsContainer rc = new RowsContainer(); 
-		try{
-			
-            String sql ="SELECT " +
-			" nvl( " +CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NOMBRE+",' ') || ' ' || nvl( " +CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+",' ') || ' ' || nvl( " +CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+",' ') AS NOMBRE_LETRADO, " +
-			" " +CenTipoSancionBean.T_NOMBRETABLA+"."+CenTipoSancionBean.C_DESCRIPCION+" AS NOMBRE_TIPOSANCION, " +
-			" " +CenInstitucionBean.T_NOMBRETABLA+"."+CenInstitucionBean.C_ABREVIATURA+" AS ABREVIATURA_INSTI, " +
-			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_IDINSTITUCION+", " +
-			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_IDINSTITUCIONSANCION+", " +
-			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_IDPERSONA+", " +
-			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_IDSANCION+", " +
-			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_IDTIPOSANCION+", " +
-			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_FECHAINICIO+", " +
-			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_FECHAFIN+", " +
-			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_FECHAACUERDO+", " +
-			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_FECHAFIRMEZA+", " +
-			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_CHKFIRMEZA+", " +
-			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_CHKREHABILITADO+", " +
-			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_FECHAREHABILITADO+", " +
-			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_FECHARESOLUCION+", " +
-			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_FECHAIMPOSICION+", " +
-			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_REFCGAE+",  " +
-			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_CHKARCHIVADA+"  " +
-            " FROM " + 
-			CenSancionBean.T_NOMBRETABLA + ", " + 
-			CenPersonaBean.T_NOMBRETABLA + ", " + 
-			CenTipoSancionBean.T_NOMBRETABLA + ", " + 
-			CenInstitucionBean.T_NOMBRETABLA + " " + 
-			" WHERE " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDINSTITUCIONSANCION+ "=" + CenInstitucionBean.T_NOMBRETABLA +"."+ CenInstitucionBean.C_IDINSTITUCION +  						 										
-			" AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDPERSONA+ "=" + CenPersonaBean.T_NOMBRETABLA +"."+ CenPersonaBean.C_IDPERSONA + 
-			" AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDTIPOSANCION+ "=" + CenTipoSancionBean.T_NOMBRETABLA +"."+ CenTipoSancionBean.C_IDTIPOSANCION+ 
-            " AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_CHKARCHIVADA+ "=1";
-
-            // filtro por institucion mia
-			sql += " AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDINSTITUCION+ "=" + idInstitucionAlta;				 										
-            
-			// filtros de busqueda
-			if (!form.getNombreInstitucionBuscar().trim().equals("")) {
-				sql += " AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDINSTITUCIONSANCION+ "=" + form.getNombreInstitucionBuscar();						 										
-			} 
-			if (!form.getColegiadoBuscar().trim().equals("")) {
-				sql += " AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDPERSONA+ "=" + form.getColegiadoBuscar();						 										
-			}
-			
-			if (!form.getTipoSancionBuscar().trim().equals("")) {
-				sql += " AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_IDTIPOSANCION+ "=" + form.getTipoSancionBuscar();						 										
-			}
-			// TRANSFORMACION DE FECHAS PARA OBVIAR LAS HORAS.
-			if (!form.getFechaInicioBuscar().trim().equals("") && (form.getFechaFinBuscar().trim()==null ||form.getFechaFinBuscar().trim().equals("")) ) {
-				//sql += " AND TO_DATE(TO_CHAR(" + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAINICIO+ ",'DD/MM/YYYY'),'DD/MM/YYYY')=TO_DATE('" + form.getFechaInicioBuscar()+"','DD/MM/YYYY')";
-				sql += " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAINICIO+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaInicioBuscar()+"', 'DD/MM/YYYY')";
-			}else{
-			  if (!form.getFechaFinBuscar().trim().equals("")&& (form.getFechaInicioBuscar().trim()==null ||form.getFechaInicioBuscar().trim().equals("")) ) {
-				//sql += " AND TO_DATE(TO_CHAR(" + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAFIN+ ",'DD/MM/YYYY'),'DD/MM/YYYY')=TO_DATE('" + form.getFechaFinBuscar()+"','DD/MM/YYYY')";
-			  	sql += " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAFIN+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaFinBuscar()+"', 'DD/MM/YYYY') ";
-			  }else{
-			  	if (!form.getFechaFinBuscar().trim().equals("")&& !form.getFechaInicioBuscar().trim().equals("") ) { 
-			  		sql += " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAINICIO+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaInicioBuscar().trim()+"', 'DD/MM/YYYY')"+
-                           " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAFIN+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaFinBuscar()+"', 'DD/MM/YYYY')";	
-			  	}
-			  }
-			}  
-			// TRANSFORMACION DE FECHAS PARA OBVIAR LAS HORAS.
-			if (!form.getFechaImposicionDesdeBuscar().trim().equals("") && (form.getFechaImposicionHastaBuscar().trim()==null ||form.getFechaImposicionHastaBuscar().trim().equals("")) ) {
-				sql += " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAIMPOSICION+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaImposicionDesdeBuscar()+"', 'DD/MM/YYYY')";
-			}else{
-			  if (!form.getFechaImposicionHastaBuscar().trim().equals("")&& (form.getFechaImposicionDesdeBuscar().trim()==null ||form.getFechaImposicionDesdeBuscar().trim().equals("")) ) {
-			  	sql += " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAIMPOSICION+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaImposicionHastaBuscar()+"', 'DD/MM/YYYY') ";
-			  }else{
-			  	if (!form.getFechaImposicionHastaBuscar().trim().equals("")&& !form.getFechaImposicionDesdeBuscar().trim().equals("") ) { 
-			  		sql += " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAIMPOSICION+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaImposicionDesdeBuscar().trim()+"', 'DD/MM/YYYY')"+
-                           " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAIMPOSICION+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaImposicionHastaBuscar()+"', 'DD/MM/YYYY')";	
-			  	}
-			  }
-			}  
-			if (!form.getRefCGAE().trim().equals("")) {
-				sql += " AND " + ComodinBusquedas.prepararSentenciaCompleta(form.getRefCGAE().trim(),CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_REFCGAE) ;						 										
-			} 
-           /* rc = this.find(sql);
- 			if (rc!=null) {
-				for (int i = 0; i < rc.size(); i++)	{
-	                Row fila = (Row) rc.get(i);
-					salida.add((Hashtable)fila.getRow());				                
-				}
-			}*/
-			Paginador paginador = new Paginador(sql);				
-			int totalRegistros = paginador.getNumeroTotalRegistros();
-			
-			if (totalRegistros==0){					
-				paginador =null;
-			}
-			return paginador;
-		}
-		catch(Exception e) {
-			throw new ClsExceptions (e, "Error al obtener las sanciones en la busqueda");
-		}
-		
-	}
-	
 	
 	public String getNuevoId(String idInstitucionAlta) throws ClsExceptions{
 		String nuevoId="";

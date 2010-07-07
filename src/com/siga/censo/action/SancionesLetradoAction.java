@@ -11,6 +11,7 @@ import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionMapping;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
@@ -87,6 +88,12 @@ public class SancionesLetradoAction extends MasterAction
 			String accion = (String)request.getParameter("accion");
 			CenSancionAdm admSancion = new CenSancionAdm(this.getUserBean(request));
 			Vector resultado = admSancion.getSancionesLetrado(miform.getIdPersona(), miform.getIdInstitucionAlta());
+			String idinstitucion= user.getLocation();
+            String username=user.getUserName();
+			String tienepermisoArchivo=admSancion.getTienePermisoArchivación(idinstitucion,username);
+			request.setAttribute("tienepermisoArchivo",tienepermisoArchivo);
+		
+			
 			
 			// RGG indico que estamos en la pestaña de letrado (Datos de colegiacion)
 			request.setAttribute("datosColegiacion","1");			
@@ -116,16 +123,20 @@ public class SancionesLetradoAction extends MasterAction
 							HttpServletResponse response) throws SIGAException 
 	{
 		UsrBean user = null;
-		UserTransaction tx = null;
+		UserTransaction tx = null;		
 		
 		try {
 			SancionesLetradoForm miform = (SancionesLetradoForm)formulario;
 			user = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			
+			String idinstitucion= user.getLocation();
+            String username=user.getUserName();
 			CenSancionAdm admSancion = new CenSancionAdm(this.getUserBean(request));
 			
 			HashMap databackup=new HashMap();
 			
+			String tienepermisoArchivo=admSancion.getTienePermisoArchivación(idinstitucion,username);
+			request.setAttribute("tienepermisoArchivo",tienepermisoArchivo);
+			databackup.put("tienepermisoArchivo", tienepermisoArchivo);
 			 	if (request.getSession().getAttribute("DATAPAGINADOR")!=null){ 
 			 		databackup = (HashMap)request.getSession().getAttribute("DATAPAGINADOR");
 				     Paginador paginador = (Paginador)databackup.get("paginador");
@@ -161,15 +172,16 @@ public class SancionesLetradoAction extends MasterAction
 			Paginador resultado = null;
 			Vector datos = null;
 			
-			String tipobusqueda = miform.getMostrarSanciones();
+			String tipobusqueda = "";
+			if (miform.getMostrarSanciones()!=null){
+				tipobusqueda = ClsConstants.COMBO_MOSTRAR_ARCHIVADAS;				
+			}else tipobusqueda=ClsConstants.COMBO_MOSTRAR_SINARCHIVAR;		
 			
-			if (tipobusqueda.equals("1")){//buscar sin archivar				
-				resultado = admSancion.getSancionesBuscarSinArchivar(miform, user.getLocation());
-			}else{
-				if(tipobusqueda.equals("2")){//buscar archivadas.				
-				resultado = admSancion.getSancionesBuscarArchivada(miform, user.getLocation());
-				}
-			}		
+			//se Obtienen los datos de las consulta para recuperar los datos de las sanciones archivadas o sin archivar.
+			resultado = admSancion.getSancionesBuscar(miform, user.getLocation(),tipobusqueda);
+			
+			
+			
 			 databackup.put("paginador",resultado);
 				if (resultado!=null){ 
 				   datos = resultado.obtenerPagina(1);
@@ -177,6 +189,7 @@ public class SancionesLetradoAction extends MasterAction
 				   request.getSession().setAttribute("DATAPAGINADOR",databackup);
 				} 
 		  }	
+				
 			//request.setAttribute("resultado",resultado);
 			request.setAttribute("activarFilaSel","true");
 	    } 
@@ -254,8 +267,9 @@ public class SancionesLetradoAction extends MasterAction
 				}else{
 					UtilidadesHash.set(hash,CenSancionBean.C_CHKARCHIVADA,"0");
 				}
+			}else {
+				UtilidadesHash.set(hash,CenSancionBean.C_CHKARCHIVADA,"0");
 			}
-			
 			
 			
 			
@@ -355,6 +369,8 @@ public class SancionesLetradoAction extends MasterAction
 				}else{
 					UtilidadesHash.set(hash,CenSancionBean.C_CHKARCHIVADA,"0");
 				}
+			}else{
+				UtilidadesHash.set(hash,CenSancionBean.C_CHKARCHIVADA,"0");
 			}
 			
 			
