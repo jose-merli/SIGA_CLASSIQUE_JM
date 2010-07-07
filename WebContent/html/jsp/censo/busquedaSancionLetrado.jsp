@@ -16,6 +16,7 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.censo.form.SancionesLetradoForm"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
+<%@ page import="com.siga.beans.CenPersonaAdm"%>
 <%@ page import="com.atos.utils.UsrBean"%>
  <%@ page import="java.util.Properties"%>
 <!-- JSP -->
@@ -24,7 +25,20 @@
 	HttpSession ses=request.getSession();
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
 	UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");
+
 	String tienepermisoArchivo = (String) request.getAttribute("tienepermiso");
+	
+		String idPersonaBusqueda="";
+		String busquedaCliente="";
+		String nifCliente="";
+	
+		// Si el cliente es un letrado, le establezco a el como parte de la busqueda
+	if (user.isLetrado()) {
+		idPersonaBusqueda=String.valueOf(user.getIdPersona());
+		CenPersonaAdm admPersona=new CenPersonaAdm(user);
+		busquedaCliente=admPersona.obtenerNombreApellidos(idPersonaBusqueda);
+		nifCliente = admPersona.obtenerNIF(idPersonaBusqueda);
+	}
 	
 %>	
 	
@@ -91,11 +105,18 @@
 		<td width="400">
 			<siga:ComboBD nombre = "nombreInstitucionBuscar" tipo="cmbInstitucionesAbreviadas" clase="boxCombo" obligatorio="false"/>
 		</td>
-
-		<td class="labelText">	
-		<siga:Idioma key="censo.busquedaSancionesLetrado.literal.ncolegiado"/>
-		</td>
+		
+		<td class="labelText">
+			<siga:Idioma key="censo.busquedaSancionesLetrado.literal.tipoSancion"/>
+		</td>				
 		<td >
+			<siga:ComboBD nombre = "tipoSancionBuscar" tipo="cmbTipoSancion"  clase="boxCombo" obligatorio="false"/>
+		</td>
+		<td class="labelText">
+			<siga:Idioma key="censo.BusquedaSancionesLetrado.literal.refCGAE"/>			
+		</td>				
+		<td align="right">
+			<html:text property="refCGAE" size="20" maxlength="50" styleClass="box" readOnly="false"></html:text>
 			<!-- RGG - SELECCION DE COLEGIADO -->
 			<script language="JavaScript">	
 				function buscarCliente () 
@@ -121,85 +142,85 @@
 
 
 			</script>
-			<!-- Boton para buscar un Colegiado -->
-			<input type="button" class="button" name="buscarColegiado" value='<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.buscar"/>' onClick="buscarCliente();">
-			<!-- Si el campo numeroLetrado es de solo lectuta hace falta este botón para limpiar -->
-			&nbsp;<input type="button" class="button" name="limpiarColegiado" value='<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.limpiar"/>' onClick="limpiarCliente();">
-			&nbsp;
+		
 			<!-- Si la busqueda se realiza por idPersona, el campo numeroLetrado no puede modificarse, en cambio
 				 si la busqueda se realiza mediante el campo numeroLetrado se podría modificar por pantalla sin
 				 necesidad de seleccionarlo por el botón -->
-			<html:hidden name="SancionesLetradoForm" property="colegiadoBuscar" size="8" maxlength="80" styleClass="boxConsulta" value="" readOnly="true"></html:hidden>
-			<html:text property="nombreMostrado" size="50" styleClass="boxConsulta" value="" readOnly="true"></html:text>
-			<!-- FIN - RGG - SELECCION DE COLEGIADO -->
-		</td>	
-
-	</tr>
-	<!-- FILA -->
-	<tr>				
-
-		<td class="labelText">
-			<siga:Idioma key="censo.busquedaSancionesLetrado.literal.tipoSancion"/>
-		</td>				
-		<td >
-			<siga:ComboBD nombre = "tipoSancionBuscar" tipo="cmbTipoSancion"  clase="boxCombo" obligatorio="false"/>
+			<html:hidden name="SancionesLetradoForm" property="colegiadoBuscar" size="8" maxlength="80" styleClass="boxConsulta" value = "<%=idPersonaBusqueda%>" readOnly="true"></html:hidden>
+			<html:hidden property = "colegiadoBuscar" value = "<%=idPersonaBusqueda%>"/>
 		</td>
-		<td class="labelText">
-			<siga:Idioma key="censo.BusquedaSancionesLetrado.literal.refCGAE"/>
-		</td>				
-		<td >
-			<html:text  property="refCGAE" size="20" maxlength="50" styleClass="box" readOnly="false"></html:text>
-		</td>
-
+	
 	</tr>
-	<!-- FILA -->
+	
 	<tr>
-		<td class="labelText" width="125">
-			<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.fechaInicio"/>
+		<td class="labelText" colspan="2" >
+			<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.sancionesReahabilitadas"/> <html:checkbox name="SancionesLetradoForm" property="chkRehabilitado" value="0"></html:checkbox>
+			
 		</td>
-		<td >
-			<html:text name="SancionesLetradoForm" property="fechaInicioBuscar" size="10" styleClass="box" value="" readOnly="true"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaInicioBuscar);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
-		</td>
-		<td class="labelText" width="125">
-			<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.fechaFin"/>
-		</td>
-		<td>	
-			<html:text name="SancionesLetradoForm" property="fechaFinBuscar" size="10" styleClass="box" value="" readOnly="true"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaFinBuscar);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
-		</td>
-	</tr>
-	<tr>
-		<td class="labelText" width="125">
-			<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.fechaImposicionDesde"/>
-		</td>
-		<td >
-			<html:text name="SancionesLetradoForm" property="fechaImposicionDesdeBuscar" size="10" styleClass="box" value="" readOnly="true"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaImposicionDesdeBuscar);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
-		</td>
-		<td class="labelText" width="125">
-			<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.fechaImposicionHasta"/>
-		</td>
-		<td>	
-			<html:text name="SancionesLetradoForm" property="fechaImposicionHastaBuscar" size="10" styleClass="box" value="" readOnly="true"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaImposicionHastaBuscar);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
-		</td>
-	</tr>
-		<% if(tienepermisoArchivo.equals("1")){%>
-	<tr>
-	   <td class="labelText" width="125">
-			<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.mostrarSanciones"/>
+		  <td class="labelText" width="125" >
+			<siga:Idioma key="gratuita.listadoAsistencias.literal.fecha"/>
 		</td>
 		<td>
+		<html:select  name="SancionesLetradoForm" property="mostrarTiposFechas" styleClass="boxCombo" >			
+				<html:option value=""></html:option>
+				<html:option value="<%=ClsConstants.COMBO_MOSTRAR_ACUERDO%>"><siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.Acuerdo"/></html:option>
+				<html:option value="<%=ClsConstants.COMBO_MOSTRAR_FIN%>" ><siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.fin"/></html:option>
+				<html:option value="<%=ClsConstants.COMBO_MOSTRAR_FIRMEZA%>" ><siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.firmeza"/></html:option>
+				<html:option value="<%=ClsConstants.COMBO_MOSTRAR_IMPOSICION%>" ><siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.imposicion"/></html:option>				
+				<html:option value="<%=ClsConstants.COMBO_MOSTRAR_INICIO%>" ><siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.inicio"/></html:option>										
+				<html:option value="<%=ClsConstants.COMBO_MOSTRAR_REHABILITADO%>" ><siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.rehabilitado"/></html:option>
+				<html:option value="<%=ClsConstants.COMBO_MOSTRAR_RESOLUCION%>" ><siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.resolucion"/></html:option>
+		</html:select>	
 		
-		<html:select name="SancionesLetradoForm" property="mostrarSanciones" styleClass="boxCombo">
-				<html:option value="<%=ClsConstants.COMBO_MOSTRAR_SINARCHIVAR%>" ><siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.sinArchivar"/></html:option>				
-				<html:option value="<%=ClsConstants.COMBO_MOSTRAR_ARCHIVADAS%>" ><siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.archivadas"/></html:option>
-		</html:select>		
+		</td>
+		<td class="labelText" >
+			<siga:Idioma key="facturacion.consultamorosos.literal.desde"/>&nbsp;&nbsp;<html:text name="SancionesLetradoForm" property="fechaInicioBuscar" size="10" styleClass="box" value="" readOnly="true"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaInicioBuscar);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+		</td>
 		
-	</td>
+		<td class="labelText">
+			<siga:Idioma key="gratuita.busquedaSOJ.literal.hasta"/>&nbsp;&nbsp;<html:text name="SancionesLetradoForm" property="fechaFinBuscar" size="10" styleClass="box" value="" readOnly="true"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaFinBuscar);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+		</td>
+		
+	</tr>	
+		
+		<tr>
+		
+			<td id="busquedaLetrado" class="labelText" colspan="7">
+					<% 	if(user.isLetrado()){%>
+							<siga:BusquedaPersona tipo="personas" titulo="gratuita.seleccionColegiadoJG.literal.titulo" anchoNum="10" anchoDesc="50" idPersona="colegiadoBuscar"></siga:BusquedaPersona>
+						<% 	}else{%>
+							<siga:BusquedaPersona tipo="personas" titulo="gratuita.seleccionColegiadoJG.literal.titulo" anchoNum="10" anchoDesc="50" idPersona="colegiadoBuscar"></siga:BusquedaPersona>									
+					<% 	}%>
+			</td>
+		</tr>
 	
+		
+	<% if(tienepermisoArchivo.equals("1")){%>
+	<tr>
+	   <td class="labelText" >
+			<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.mostrarSanciones"/>
+		</td>	
+		<td>
+			<html:checkbox name="SancionesLetradoForm" property="mostrarSanciones" value="<%=ClsConstants.COMBO_MOSTRAR_SINARCHIVAR%>"></html:checkbox>
+		</td>
+			
+	<td class="labelText" >
+			<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.fArchivada"/>
+	</td>
+	<td class="labelText" >
+			<siga:Idioma key="facturacion.consultamorosos.literal.desde"/>&nbsp;&nbsp;<html:text name="SancionesLetradoForm" property="fechaInicioArchivada" size="10" styleClass="box" value="" readOnly="true"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaInicioArchivada);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+		</td>
+		
+		<td class="labelText">
+			<siga:Idioma key="gratuita.busquedaSOJ.literal.hasta"/>&nbsp;&nbsp;<html:text name="SancionesLetradoForm" property="fechaFinArchivada" size="10" styleClass="box" value="" readOnly="true"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaFinArchivada);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+		</td>
 	</tr>
 	<%}else{%>
-	    <html:hidden name="SancionesLetradoForm" property="mostrarSanciones" size="8" maxlength="80" styleClass="boxConsulta" value="<%=ClsConstants.COMBO_MOSTRAR_SINARCHIVAR%>" readOnly="true"></html:hidden>
+	 <html:hidden name="SancionesLetradoForm" property="fechaInicioArchivada" size="10" styleClass="box" value="" readOnly="true"></html:hidden>
+	 <html:hidden name="SancionesLetradoForm" property="FechaFinArchivada" size="10" styleClass="box" value="" readOnly="true"></html:hidden>
+	<%} %>
+	  
 	
-	<%}%>
 
 	</html:form>
 	</table>
