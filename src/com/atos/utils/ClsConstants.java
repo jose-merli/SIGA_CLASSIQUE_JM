@@ -550,6 +550,16 @@ MDB Microsoft Access Database
   public static final String COMBO_MOSTRAR_ARCHIVADAS = "2";
   public static final String PERMISO_ARCHIVARSANCIONES = "56a";  
   
+  //Tipos de fechas 
+  public static final String COMBO_MOSTRAR_VACIO = "VACIO";
+  public static final String COMBO_MOSTRAR_ACUERDO = "ACUERDO";
+  public static final String COMBO_MOSTRAR_INICIO = "INICIO";
+  public static final String COMBO_MOSTRAR_IMPOSICION= "IMPOSICIÓN";
+  public static final String COMBO_MOSTRAR_FIRMEZA= "FIRMEZA";
+  public static final String COMBO_MOSTRAR_FIN= "FIN";
+  public static final String COMBO_MOSTRAR_REHABILITADO= "REHABILITADO";
+  public static final String COMBO_MOSTRAR_RESOLUCION= "RESOLUCIÓN";
+  
   
   
   public ClsConstants() {
