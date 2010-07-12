@@ -522,8 +522,7 @@ public String getTienePermisoArchivación(String idInstitucion,
                        whereSancion +=" and CEN_SANCION.Fechafin <= '"+fechaArchivada+"' AND CEN_SANCION.IDINSTITUCION ="+idInstitucion;
                        whereSancion += " and cen_sancion.fechaarchivada is null and cen_sancion.chkarchivada=0";
 
-               Vector sanciones= sancionesAdm.select(whereSancion);
-               System.out.println(sanciones.size());
+               Vector sanciones= sancionesAdm.select(whereSancion);               
                int nSanciones=sanciones.size();
                for(int i=0;i<sanciones.size();i++)
                {
