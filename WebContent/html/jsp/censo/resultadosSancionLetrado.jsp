@@ -34,6 +34,9 @@
 <%@ page import="java.util.*"%>
 <%@ page import="com.atos.utils.Row"%>
 <%@ page import="com.siga.Utilidades.PaginadorCaseSensitive"%>
+<%@ page import="com.atos.utils.*"%>
+<%@ page import="com.siga.beans.CenSancionAdm"%>
+
 
 
 
@@ -46,15 +49,20 @@
 	String idioma=usrbean.getLanguage().toUpperCase();
 	String accion=(String)request.getAttribute("ACCION");
 	
-	String activarFilaSel = (String)request.getAttribute("activarFilaSel");
+	String activarFilaSel = (String)request.getAttribute("activarFilaSel");	
+
+	String valorCheckPersona = "";
 	if (activarFilaSel == null || activarFilaSel.equals("")) {
 		activarFilaSel = new String ("false");
 	}
+	
+	String tienepermisoArchivo = (String)request.getAttribute("tienepermisoArchivo");
+	
  
 	// locales
 	SancionesLetradoForm formulario = (SancionesLetradoForm)request.getSession().getAttribute("SancionesLetradoForm");
 
-	//	
+	String tamaño="position:absolute; width:100%; height:20; z-index:3; bottom:0px; left: 0px";
 	// miro si estamos en la pestaña de datos de colegiacion
 	String pestanaColegiacion = "1";
 	String personaColegiacion = "";
@@ -147,14 +155,14 @@
 
 </head>
 
-<body class="tablaCentralCampos">
+<body class="tablaCentralCampos" >
 
 		<!-- INICIO: LISTA DE VALORES --> 
 		<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista 
 			 de cabeceras fijas -->
 
 		<!-- Formulario de la lista de detalle multiregistro -->
-		<html:form action="/CEN_SancionesLetrado.do?noReset=true" method="POST" style="display:none">
+		<html:form action="/CEN_SancionesLetrado.do?noReset=true" target="mainPestanas" method="POST" style="display:none">
 
 			<!-- Campo obligatorio -->
 			<html:hidden property = "modo" value = "" />
@@ -162,6 +170,9 @@
 			<input type="hidden" name= "pestanaColegiacion" value = "<%=pestanaColegiacion %>">
 			<input type="hidden" name= "personaColegiacion" value = "<%=personaColegiacion %>">
 			<input type="hidden" name= "institucionColegiacion" value = "<%=institucionColegiacion %>">
+			<html:hidden property="registrosSeleccionados" />
+			<html:hidden property="datosPaginador" />
+			<html:hidden property="seleccionarTodos" />
 
  			<!-- RGG: cambio a formularios ligeros -->
  			<input type="hidden" name="filaSelD">
@@ -169,24 +180,32 @@
 			<input type="hidden" name="actionModal" value="">
 		</html:form>
  
+   			<%String tamanosCol = "";
+			  String nombresCol = "";
+			 	  tamanosCol="8,28,12,6,8,8,10,10,10";
+				  nombresCol+="censo.busquedaSancionesLetrado.literal.colegio,";
+				  nombresCol+="censo.busquedaSancionesLetrado.literal.ncolegiado,censo.busquedaSancionesLetrado.literal.tipoSancion,";
+				  nombresCol+="censo.BusquedaSancionesLetrado.literal.refCGAE,gratuita.BusquedaSancionesLetrado.literal.fechaInicio,";
+				  nombresCol+="gratuita.BusquedaSancionesLetrado.literal.fechaFin, gratuita.BusquedaSancionesLetrado.literal.rehabilitado, gratuita.BusquedaSancionesLetrado.literal.firmeza,";				  
+				
+			  //}
+				  
+			  %>
 		<siga:TablaCabecerasFijas 
 		   nombre="tablaDatos"
 		   borde="1"
 		   clase="tableTitle"
-		   nombreCol="censo.busquedaSancionesLetrado.literal.colegio,
-				      censo.busquedaSancionesLetrado.literal.ncolegiado,
-					  censo.busquedaSancionesLetrado.literal.tipoSancion,
-					  censo.BusquedaSancionesLetrado.literal.refCGAE,
-					  gratuita.BusquedaSancionesLetrado.literal.fechaInicio,
-					  gratuita.BusquedaSancionesLetrado.literal.fechaFin,
-					  gratuita.BusquedaSancionesLetrado.literal.rehabilitado,
-					  gratuita.BusquedaSancionesLetrado.literal.firmeza,"
-		   tamanoCol="8,28,12,6,8,8,10,10,10"
+		   nombreCol="<%=nombresCol%>"
+		   tamanoCol="<%=tamanosCol%>"
 		   alto="100%"
+		   ajusteAlto="true"
+		   ajuste = "33"
 		   ajusteBotonera="<%=botones%>"		
-		   ajustePaginador="<%=botones2%>"		
-		   modal="G"  
+		   ajustePaginador="true"		
+		   modal="G"  	
+		   	   
 		   activarFilaSel="<%=activarFilaSel%>" >
+		   
 
 			<!-- INICIO: ZONA DE REGISTROS -->
 			<!-- Aqui se iteran los diferentes registros de la lista -->
@@ -232,10 +251,12 @@
 			String fechaFirmeza=(String)registro.get("FECHAFIRMEZA");
 			String chkRehabilitado=(((String)registro.get("CHKREHABILITADO")).equals("1"))?"gratuita.operarEJG.literal.si":"gratuita.operarEJG.literal.no";
 			String chkFirmeza=(((String)registro.get("CHKFIRMEZA")).equals("1"))?"gratuita.operarEJG.literal.si":"gratuita.operarEJG.literal.no";
-			String refCGAE=(String)registro.get("REFCGAE");   
+			String refCGAE=(String)registro.get("REFCGAE");
+			String chkArchivada=(String)registro.get("CHKARCHIVADA");   
 			
 			
 			String cont = new Integer(i+1).toString();
+			
 %>
 
 			<!-- REGISTRO  -->
@@ -243,8 +264,8 @@
 				 que la lista contiene realmente 3 columnas: Las de datos mas 
 				 la de botones de acción sobre los registos  -->
 			
-  			<siga:FilaConIconos fila="<%=cont %>" botones="<%=permisos%>"  modo="<%=accion %>" clase="listaNonEdit" >
-			
+  			<siga:FilaConIconos fila="<%=cont %>" botones="<%=permisos%>"  modo="<%=accion %>" clase="listaNonEdit" >  	
+  				
 				<td>
 					<!-- campos hidden -->
 					<input type="hidden" name="oculto<%=cont %>_1" value="<%=idPersona %>">
@@ -286,8 +307,14 @@
 
 <%	} // del if %>			
 
-		</siga:TablaCabecerasFijas>
+</siga:TablaCabecerasFijas>
 
+		<%if (tienepermisoArchivo.equals("1")){
+			 tamaño="position:absolute; width:100%; height:20; z-index:3; bottom:30px; left: 0px";
+		%><siga:ConjBotonesAccion botones="ar" />
+		<%}%>
+		
+			
 
 	<!-- INICIO: BOTONES ACCION -->
   
@@ -316,10 +343,22 @@
 			}
 		}
 
+
+	 function accionArchivar(){
+			
+		document.forms[0].modo.value = "fecha";
+		document.forms[0].target = "mainPestanas";
+		var resultado=ventaModalGeneral(document.forms[0].name,"P");
+	
+		}
+
+		
+	
 		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES ACCION -->			
 	
+		
 <%if (pestanaColegiacion!=null && !pestanaColegiacion.equals("1")) {%>	
 	<%if ( hm.get("datos")!=null && !hm.get("datos").equals("")){%>
 	     
@@ -329,11 +368,13 @@
 								idioma="<%=idioma%>"
 								modo="buscarPor"								
 								clase="paginator" 
-								divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:0px; left: 0px"
+								divStyle="<%=tamaño%>"
 								distanciaPaginas=""
+								
 								action="<%=action%>" />
-      <%  }%>
-<%}%>	  
+      <%}%>
+<%}%>	
+
 <!-- INICIO: SUBMIT AREA -->
 <!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
