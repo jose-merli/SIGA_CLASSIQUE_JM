@@ -831,63 +831,41 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 			else {
 				//
 				//Caso2: pantalla inicial de listado de calendarios
-				//Borro el calendario completo eliminando previamente todas sus guardias.
+				//Hay que borrar el calendario completo eliminando previamente todas sus guardias
 				//
 				
-				//obteniendo los datos del formulario
-				String idCalendarioGuardias = (String)ocultos.get(0);
+				//obteniendo valores del formulario
+				String idInstitucion = (String)ocultos.get(3);
 				String idTurno = (String)ocultos.get(1);
 				String idGuardia = (String)ocultos.get(2);
-				String idInstitucion = (String)ocultos.get(3);
+				String idCalendarioGuardias = (String)ocultos.get(0);
 				
 				//generando el hash para tratar la guardia del calendario
 				Hashtable miHash = new Hashtable();
-				miHash.clear();
-				miHash.put(ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS, idCalendarioGuardias);
+				miHash.put(ScsCalendarioGuardiasBean.C_IDINSTITUCION, idInstitucion);
 				miHash.put(ScsCalendarioGuardiasBean.C_IDTURNO, idTurno);
 				miHash.put(ScsCalendarioGuardiasBean.C_IDGUARDIA, idGuardia);
-				miHash.put(ScsCalendarioGuardiasBean.C_IDINSTITUCION, idInstitucion);
+				miHash.put(ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS, idCalendarioGuardias);
 
-				//comprobando que es el ultimo calendario
-				//(mirando la fecha fin del calendario no hay ninguno para esta guardia con un fecha fin mayor)
+				//comprobando que sea el ultimo calendario
 				if (admCalendarioGuardia.validarBorradoCalendario(idInstitucion, idCalendarioGuardias, idTurno, idGuardia)) {
-					//comprobando que no hay ninguna guardia realizada
+					//comprobando que no haya ninguna guardia realizada
 					if (admGuardiasColegiado.validarBorradoGuardias(idInstitucion, idCalendarioGuardias, idTurno, idGuardia)) {
 						
 						//empezando transaccion
 						tx = usr.getTransaction();
 						tx.begin();
 						
-						borradosOK = false;
-						
-						//actualizando el ultimo de la guardia con el anterior del calendario						
-						if(admCalendarioGuardia.actualizarGuardia(miHash))
-							//quitando cumplimientos de saltos
-							if(admSaltosCompensaciones.updateSaltosCumplidos(miHash))
-								//quitando cumplimientos de compensaciones
-								if(admSaltosCompensaciones.updateCompensacionesCumplidas(miHash))
-									//borrando permutas
-									if(admPermutaGuardias.deletePermutasCalendario(miHash))
-										//borrando los dias de las guardias
-										if(admGuardiasColegiado.deleteGuardiasCalendario(miHash))
-											//borrando las cabeceras de las guardias
-											if(admCabeceraGuardias.deleteCabecerasGuardiasCalendario(miHash))
-												//borrando las compensaciones creadas en el calendario
-												if(admSaltosCompensaciones.deleteCompensacionesNoCumplidas(miHash))	
-													//borrando las compensaciones creadas en calendarios que ya no existen
-													if(admSaltosCompensaciones.deleteCompensacionesCalendariosInexistentes(miHash))	
-														//borrando los saltos creados en este calendario
-														if (admSaltosCompensaciones.deleteSaltosCreadosEnCalendario(miHash))
-															//borrando el calendario
-															if(admCalendarioGuardia.delete(miHash))
-																borradosOK = true;
-
-						//devolviendo Exito o Fracaso
-						if (borradosOK) {
+						//borrando el calendario
+						try {
+							this.borrarGeneracionCalendario(miHash, usr);
+							this.borrarRegistroCalendario(miHash, usr);
+							
 							tx.commit();
 							forward = exitoRefresco("messages.deleted.success", request);
-						} else {
-							tx.rollback();
+						} catch (Exception e) {
+							if (tx != null)
+								tx.rollback();
 							forward = exito("error.messages.deleted", request);
 						}
 					} else
@@ -1629,115 +1607,125 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 	 * Inserta los datos de 1 Calendario de Guardias Automaticamente al pulsar "Generar Automáticamente" en la <br>
 	 * modal de Mantenimiento del Calendario.
 	 * Usado para generar el Calendario de Guardias de Titulares y de Reservas.
-	 * 
-	 * @param Vector letrados: vector de letrados de la tabla temporal
-	 * @param int posicion: posicion en el vector de letrados del letrado a insertar
-	 * @param ActionMapping mapping Mapeador de las acciones.
-	 * @param MasterForm formulario: formulario del que se recoge la información.
-	 * @param HttpServletRequest request: información de entrada de la pagina original.
-	 * @param HttpServletResponse response: información de salida para la pagina destino. 
-	 * 
-	 * @return void 
 	 */
-	private synchronized String insertarCalendarioAutomaticamente(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	private synchronized String insertarCalendarioAutomaticamente(ActionMapping mapping,
+																  MasterForm formulario,
+																  HttpServletRequest request,
+																  HttpServletResponse response)
+			throws SIGAException
+	{
+		//Controles generales
 		DefinirCalendarioGuardiaForm miForm = (DefinirCalendarioGuardiaForm) formulario;
-		String idCalendarioGuardias = "", idInstitucion="", idGuardia="", idTurno="";
-		UsrBean usr = null;
-		ScsGuardiasColegiadoAdm admGuardiasColegiado = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
-		ScsPermutaGuardiasAdm admPermutaGuardias = new ScsPermutaGuardiasAdm(this.getUserBean(request));
-		ScsCabeceraGuardiasAdm admCabeceraGuardias = new ScsCabeceraGuardiasAdm(this.getUserBean(request));
-		ScsSaltosCompensacionesAdm admSaltosCompensaciones = new ScsSaltosCompensacionesAdm(this.getUserBean(request));
-		Hashtable miHash = new Hashtable();
-
+		UsrBean usr = this.getUserBean(request);
+		ScsGuardiasColegiadoAdm admGuardiasColegiado = new ScsGuardiasColegiadoAdm(usr);
+		
 		UserTransaction tx = null;
 		String forward = "";
-		int salidaError = 0; //Variable para ver nivel de Error al generar el calendario. 0=OK.
+		
+		//Variables generales
+		String idInstitucion, idGuardia, idTurno, idCalendarioGuardias;
 
 		try {
-			usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			tx = usr.getTransaction();
-
-			//Valores obtenidos del formulario
+			//obteniendo valores del formulario
 			idInstitucion = miForm.getIdInstitucion();
 			idTurno = miForm.getIdTurno();
 			idGuardia = miForm.getIdGuardia();
 			idCalendarioGuardias = miForm.getIdCalendarioGuardias();
 
-			//Relleno los datos para borrar las guardias del calendario:
-			miHash.put(ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS, idCalendarioGuardias);
+			//rellenando los datos para buscar las guardias a borrar del calendario
+			Hashtable miHash = new Hashtable();
+			miHash.put(ScsCalendarioGuardiasBean.C_IDINSTITUCION, idInstitucion);
 			miHash.put(ScsCalendarioGuardiasBean.C_IDTURNO, idTurno);
 			miHash.put(ScsCalendarioGuardiasBean.C_IDGUARDIA, idGuardia);
-			miHash.put(ScsCalendarioGuardiasBean.C_IDINSTITUCION, idInstitucion);	
+			miHash.put(ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS, idCalendarioGuardias);
 
+			//validando que no haya ninguna guardia realizada
+			if (! admGuardiasColegiado.validarBorradoGuardias(idInstitucion, idCalendarioGuardias, idTurno, idGuardia))
+				return exito("error.messagess.borrarGuardiasGenerarCalendario", request);
+			
+			//iniciando transaccion
+			tx = usr.getTransaction();
+			tx.begin();
+			
+			//borrando el calendario previamente
+			this.borrarGeneracionCalendario(miHash, usr);
+			
+			//generando el Calendario de Guardias
+			CalendarioSJCS calendarioSJCS = new CalendarioSJCS(new Integer(idInstitucion),
+															   new Integer(idTurno),
+															   new Integer(idGuardia),
+															   new Integer(idCalendarioGuardias),
+															   usr);
+			calendarioSJCS.calcularMatrizPeriodosDiasGuardia();
 
+			//obteniendo los periodos
+			List lDiasASeparar = calendarioSJCS.getDiasASeparar(
+					new Integer(idInstitucion), new Integer(idTurno),
+					new Integer(idGuardia), usr);
 
-			//Validamos que no haya ninguna guardia realizada:
-			if (admGuardiasColegiado.validarBorradoGuardias(idInstitucion, idCalendarioGuardias, idTurno, idGuardia)) {			
-				//
-				//INICIO LA TRANSACCION:
-				//
-				tx.begin();
-				//Borramos el calendario previamente:
-				//DELETE EN TABLA SCS_PERMUTAGUARDIAS solicitante y confirmador
-				if(admPermutaGuardias.deletePermutasCalendario(miHash)){
-					//DELETE EN TABLA SCS_GUARDIASCOLEGIADO
-					if(admGuardiasColegiado.deleteGuardiasCalendario(miHash)){
-						//DELETE EN TABLA SCS_CABECERAGUARDIAS
-						if(admCabeceraGuardias.deleteCabecerasGuardiasCalendario(miHash)){
-							//Updates y Delete sobre las compensaciones:
-							if(admSaltosCompensaciones.updateSaltosCumplidos(miHash)){
-								if(admSaltosCompensaciones.updateCompensacionesCumplidas(miHash)){
-									if(admSaltosCompensaciones.deleteCompensacionesNoCumplidas(miHash)) {
-										//Si todos los borrados han ido bien genero el calendario de guardias:
-
-										//
-										//Generamos el Calendario de Guardias:
-										//
-										CalendarioSJCS calendarioSJCS = new CalendarioSJCS(new Integer(idInstitucion), new Integer(idTurno), new Integer(idGuardia) , new Integer(idCalendarioGuardias), usr);
-
-										//Obtiene la Matriz de Periodos de Dias de Guardia:
-										calendarioSJCS.calcularMatrizPeriodosDiasGuardia();
-
-										//Pinta Datos del Calendario:
-										//calendarioSJCS.pintarCalendarioSJCS();
-										//Obtenemos los dias a Separar
-										List lDiasASeparar = calendarioSJCS.getDiasASeparar(new Integer(idInstitucion), new Integer(idTurno), new Integer(idGuardia) , usr);
-										//Obtengo la matriz de letrados de Guardia para los periodos calculados:
-										try {
-											calendarioSJCS.calcularMatrizLetradosGuardia(lDiasASeparar);
-											tx.commit();
-											forward = exitoRefresco("gratuita.modalRegistro_DefinirCalendarioGuardia.literal.calendarioGenerado",request);
-										} catch (SIGAException e) {
-											tx.rollback();
-											forward = exitoRefresco(e.getLiteral(),request);
-										}catch (ClsExceptions e) {
-											tx.rollback();
-											throw e;
-										}
-										
-
-										//Salida del resultado de ejecutar CalcularMatrizLetradosGuardia:
-										//calendarioSJCS.pintarSalidaCalcularMatrizLetradosGuardia(salidaError);
-
-										//				
-										//FIN DEL CALENDARIO
-										//
-									}
-								}	
-							}	
-						}	
-					}	
-				}else{
-					tx.rollback();
-				}
-			} else
-				forward = exito("error.messagess.borrarGuardiasGenerarCalendario",request);
-		} catch (Exception e){
-			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 
+			//obteniendo la matriz de letrados de guardia
+			try {
+				calendarioSJCS
+						.calcularMatrizLetradosGuardia(lDiasASeparar);
+				tx.commit();
+				forward = exitoRefresco(
+						"gratuita.modalRegistro_DefinirCalendarioGuardia.literal.calendarioGenerado",
+						request);
+			} catch (SIGAException e) {
+				tx.rollback();
+				forward = exitoRefresco(e.getLiteral(), request);
+			} catch (ClsExceptions e) {
+				tx.rollback();
+				throw e;
+			}
+		} catch (Exception e) {
+			throwExcp("messages.general.error",
+					new String[] { "modulo.gratuita" }, e, tx);
 		}
 		return forward;
-	}
+	} //insertarCalendarioAutomaticamente()
 
+	public void borrarGeneracionCalendario(Hashtable calendario, UsrBean usr)
+			throws ClsExceptions, SIGAException
+	{
+		ScsSaltosCompensacionesAdm admSaltosCompensaciones = new ScsSaltosCompensacionesAdm(usr);
+		ScsPermutaGuardiasAdm admPermutaGuardias = new ScsPermutaGuardiasAdm(usr);
+		ScsGuardiasColegiadoAdm admGuardiasColegiado = new ScsGuardiasColegiadoAdm(usr);
+		ScsCabeceraGuardiasAdm admCabeceraGuardias = new ScsCabeceraGuardiasAdm(usr);
+		ScsCalendarioGuardiasAdm admCalendarioGuardia = new ScsCalendarioGuardiasAdm(usr);
+		
+		if (! admSaltosCompensaciones.updateSaltosCumplidos(calendario))
+			throw new SIGAException("Error en borrado de calendario: al quitar cumplimientos de saltos");
+		if (! admSaltosCompensaciones.deleteSaltosCreadosEnCalendario(calendario))
+			throw new SIGAException("Error en borrado de calendario: al borrar saltos creados en el calendario");
+		if (! admSaltosCompensaciones.updateCompensacionesCumplidas(calendario))
+			throw new SIGAException("Error en borrado de calendario: al quitar cumplimientos de compensaciones");
+		if (! admSaltosCompensaciones.deleteCompensacionesNoCumplidas(calendario))
+			throw new SIGAException("Error en borrado de calendario: al borrar compensaciones creadas en el calendario");
+		if (! admSaltosCompensaciones.deleteCompensacionesCalendariosInexistentes(calendario))	
+			throw new SIGAException("Error en borrado de calendario: al borrar compensaciones de calendarios que ya no existen");
+		
+		if (! admPermutaGuardias.deletePermutasCalendario(calendario))
+			throw new ClsExceptions("Error en borrado de calendario: al quitar permutas del calendario");
+		
+		if (! admGuardiasColegiado.deleteGuardiasCalendario(calendario))
+			throw new SIGAException("Error en borrado de calendario: al borrar dias de guardia");
+		if (! admCabeceraGuardias.deleteCabecerasGuardiasCalendario(calendario))
+			throw new SIGAException("Error en borrado de calendario: al borrar cabeceras de guardia");
+
+		if(! admCalendarioGuardia.actualizarGuardia(calendario))
+			throw new SIGAException("Error en borrado de calendario: al actualizar el ultimo en la cola de guardia");
+	} //borrarGeneracionCalendario()
+	
+	public void borrarRegistroCalendario(Hashtable calendario, UsrBean usr)
+			throws ClsExceptions, SIGAException
+	{
+		ScsCalendarioGuardiasAdm admCalendarioGuardia = new ScsCalendarioGuardiasAdm(usr);
+		
+		if(! admCalendarioGuardia.delete(calendario))
+			throw new SIGAException("Error en borrado de registro de calendario");
+	}
+	
 	/**
 	 * Contempla el siguiente caso: 
 	 * Pulso nuevo en pantalla inicial y me abre una modal pequenha al guardar, inserta los datos basicos de un <br>
