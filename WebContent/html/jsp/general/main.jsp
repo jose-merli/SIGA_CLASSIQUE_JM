@@ -149,7 +149,7 @@
 				MM_swapImage('AbrirAyuda','','<%=app%>/html/imagenes/botonAyuda_activo.gif',1);
 				
 				//COMENTADO TEMPORALMENTE: 
-				window.open('<%=pathVersiones%>', 'Versiones', 'width=800,height=600,scrollbars=no;resizable:no;top=100;left=100;Directories=no;Location=no;Menubar=no;Status=yes;Toolbar=no;');
+				window.open('<%=pathVersiones%>', 'Versiones', 'width=800,height=600,scrollbars=1;resizable:no;top=100;left=100;Directories=no;Location=no;Menubar=no;Status=yes;Toolbar=no;');
 								
 				return false;
 			}
