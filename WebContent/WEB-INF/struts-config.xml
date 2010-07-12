@@ -782,6 +782,7 @@
 			<forward name="inicio" path="/html/jsp/censo/busquedaSancionLetrado.jsp"/>
 			<forward name="editar" path="/html/jsp/censo/datosSancionLetrado.jsp"/>
 			<forward name="resultados" path="/html/jsp/censo/resultadosSancionLetrado.jsp"/>
+			<forward name="archivar" path="/html/jsp/gratuita/fechaSancion.jsp"/>
 		</action>
 
 		<action path="/CEN_AbonosCliente" type="com.siga.censo.action.AbonosClienteAction" name="AbonosClienteForm" scope="request">
