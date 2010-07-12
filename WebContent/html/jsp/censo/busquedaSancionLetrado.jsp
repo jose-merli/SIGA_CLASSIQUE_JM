@@ -39,6 +39,9 @@
 		busquedaCliente=admPersona.obtenerNombreApellidos(idPersonaBusqueda);
 		nifCliente = admPersona.obtenerNIF(idPersonaBusqueda);
 	}
+		
+		String fechaInicioArchivada = "";
+		String fechaFinArchivada="";
 	
 %>	
 	
@@ -112,11 +115,11 @@
 		<td >
 			<siga:ComboBD nombre = "tipoSancionBuscar" tipo="cmbTipoSancion"  clase="boxCombo" obligatorio="false"/>
 		</td>
-		<td class="labelText">
+		<td class="labelText" align="right">
 			<siga:Idioma key="censo.BusquedaSancionesLetrado.literal.refCGAE"/>			
 		</td>				
-		<td align="right">
-			<html:text property="refCGAE" size="20" maxlength="50" styleClass="box" readOnly="false"></html:text>
+		<td align="left">	
+		<html:text property="refCGAE" size="20" maxlength="50" styleClass="box" readOnly="false"></html:text>
 			<!-- RGG - SELECCION DE COLEGIADO -->
 			<script language="JavaScript">	
 				function buscarCliente () 
@@ -174,11 +177,13 @@
 		
 		</td>
 		<td class="labelText" >
-			<siga:Idioma key="facturacion.consultamorosos.literal.desde"/>&nbsp;&nbsp;<html:text name="SancionesLetradoForm" property="fechaInicioBuscar" size="10" styleClass="box" value="" readOnly="true"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaInicioBuscar);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+			<siga:Idioma key="facturacion.consultamorosos.literal.desde"/>&nbsp;&nbsp;<html:text name="SancionesLetradoForm" property="fechaInicioBuscar" size="10" styleClass="box" value=""></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaInicioBuscar);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
 		</td>
-		
 		<td class="labelText">
-			<siga:Idioma key="gratuita.busquedaSOJ.literal.hasta"/>&nbsp;&nbsp;<html:text name="SancionesLetradoForm" property="fechaFinBuscar" size="10" styleClass="box" value="" readOnly="true"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaFinBuscar);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+			<siga:Idioma key="gratuita.busquedaSOJ.literal.hasta"/>&nbsp;&nbsp;<html:text name="SancionesLetradoForm" property="fechaFinBuscar" size="10" styleClass="box" value=""></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaFinBuscar);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+		</td>
+		<td width="200">
+		
 		</td>
 		
 	</tr>	
@@ -202,17 +207,15 @@
 		</td>	
 		<td>
 			<html:checkbox name="SancionesLetradoForm" property="mostrarSanciones" value="<%=ClsConstants.COMBO_MOSTRAR_SINARCHIVAR%>"></html:checkbox>
-		</td>
-			
-	<td class="labelText" >
-			<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.fArchivada"/>
-	</td>
-	<td class="labelText" >
-			<siga:Idioma key="facturacion.consultamorosos.literal.desde"/>&nbsp;&nbsp;<html:text name="SancionesLetradoForm" property="fechaInicioArchivada" size="10" styleClass="box" value="" readOnly="true"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaInicioArchivada);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
-		</td>
-		
+		</td>			
 		<td class="labelText">
-			<siga:Idioma key="gratuita.busquedaSOJ.literal.hasta"/>&nbsp;&nbsp;<html:text name="SancionesLetradoForm" property="fechaFinArchivada" size="10" styleClass="box" value="" readOnly="true"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaFinArchivada);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+			<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.fArchivada"/>
+		</td>
+		<td class="labelText">
+		  <siga:Idioma key="facturacion.consultamorosos.literal.desde"/>&nbsp;&nbsp;<html:text name="SancionesLetradoForm" property="fechaInicioArchivada" size="10" styleClass="box" value=""></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaInicioArchivada);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+		</td>
+		<td class="labelText">
+		  <siga:Idioma key="gratuita.busquedaSOJ.literal.hasta"/>&nbsp;&nbsp;<html:text name="SancionesLetradoForm" property="fechaFinArchivada" size="10" styleClass="box" value=""></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaFinArchivada);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
 		</td>
 	</tr>
 	<%}else{%>
@@ -240,6 +243,8 @@
 		 boton una funcion que abajo se reescribe. Los valores asociados separados por comas
 		 son: V Volver, B Buscar,A Avanzada ,S Simple,N Nuevo registro ,L Limpiar,R Borrar Log
 	-->
+	
+	
 
 		<siga:ConjBotonesBusqueda botones="L,B,N"  titulo="" />
 
@@ -251,6 +256,10 @@
 
 		function buscar() 
 		{		
+			 if ((document.forms[0].mostrarTiposFechas.value=="") && ((document.forms[0].fechaInicioBuscar.value!="")||(document.forms[0].fechaFinBuscar.value!=""))){ 
+				alert ('<siga:Idioma key="general.message.tipoFecha"/>');
+				return false;
+				}
 			document.forms[0].modo.value="buscarInit";
 			document.forms[0].target="resultado";	
 			document.forms[0].submit();	
@@ -270,8 +279,11 @@
 		function limpiar() 
 		{		
 			document.forms[0].reset();
-		}		
+		}
+
+			
 	</script>
+	
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 
 	<!-- INICIO: IFRAME LISTA RESULTADOS -->

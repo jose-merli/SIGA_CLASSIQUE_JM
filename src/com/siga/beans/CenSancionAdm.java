@@ -1,19 +1,25 @@
 package com.siga.beans;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ComodinBusquedas;
+import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 //import com.siga.Utilidades.Paginador;
 import com.siga.Utilidades.Paginador;
+import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.censo.form.SancionesLetradoForm;
 //import com.siga.general.SIGAException;
+import com.siga.general.SIGAException;
 
 /**
  * Implementa las operaciones sobre el bean de la tabla CEN_TIPOSANCION
@@ -76,6 +82,11 @@ public class CenSancionAdm extends MasterBeanAdministrador {
 		return campos;
 	}
 
+	
+	public String[] getClavesBeans() {
+		String[] campos = {	CenSancionBean.C_IDINSTITUCION,CenSancionBean.C_FECHAFIN, CenSancionBean.C_CHKREHABILITADO};
+		return campos;
+	}
 	
 	/** Funcion hashTableToBean (Hashtable hash)
 	 *  @param hash Hashtable para crear el bean
@@ -297,9 +308,15 @@ public class CenSancionAdm extends MasterBeanAdministrador {
               	if ((form.getFechaInicioArchivada().trim().equals("")) && (form.getFechaFinArchivada().trim().equals("")) ) {              		
               		sql+= " AND (CEN_SANCION.FECHAARCHIVADA <=sysdate OR CEN_SANCION.FECHAARCHIVADA is null)";
               	}else{
-              		sql += " AND TO_DATE(TO_CHAR(" + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAARCHIVADA+ ",'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('" + form.getFechaInicioArchivada()+"','DD/MM/YYYY')"+
+              		if (!form.getFechaInicioArchivada().trim().equals("") && (!form.getFechaFinArchivada().trim().equals(""))){
+              			sql += " AND TO_DATE(TO_CHAR(" + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAARCHIVADA+ ",'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('" + form.getFechaInicioArchivada()+"','DD/MM/YYYY')"+
 				       " AND TO_DATE(TO_CHAR(" + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAARCHIVADA+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaFinArchivada()+"', 'DD/MM/YYYY')";			
-              		}
+              		}else if (form.getFechaInicioArchivada().trim().equals("") && (!form.getFechaFinArchivada().trim().equals(""))){
+              					sql+= " AND TO_DATE(TO_CHAR(" + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAARCHIVADA+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaFinArchivada()+"', 'DD/MM/YYYY')";              			
+              				}else if (!form.getFechaInicioArchivada().trim().equals("") && (form.getFechaFinArchivada().trim().equals(""))){
+              				  sql += " AND TO_DATE(TO_CHAR(" + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAARCHIVADA+ ",'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('" + form.getFechaInicioArchivada()+"','DD/MM/YYYY')";
+              				}
+              	}
               
              }
 
@@ -326,7 +343,12 @@ public class CenSancionAdm extends MasterBeanAdministrador {
 				if (!form.getFechaInicioBuscar().trim().equals("") && (!form.getFechaFinBuscar().trim().equals(""))){
 					sql += " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAACUERDO+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaInicioBuscar()+"', 'DD/MM/YYYY')"+
 					       " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAACUERDO+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaFinBuscar()+"', 'DD/MM/YYYY')";
-				} 
+				}else if(form.getFechaInicioBuscar().trim().equals("")&&  (!form.getFechaFinBuscar().trim().equals(""))){
+					sql+="And TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAACUERDO+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaFinBuscar()+"', 'DD/MM/YYYY')";
+				}else if(!form.getFechaInicioBuscar().trim().equals("")&&  (form.getFechaFinBuscar().trim().equals(""))){
+						sql+="And TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAACUERDO+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaInicioBuscar()+"', 'DD/MM/YYYY')";
+				}
+				
 			
 			}
 			
@@ -334,7 +356,12 @@ public class CenSancionAdm extends MasterBeanAdministrador {
 				if (!form.getFechaInicioBuscar().trim().equals("") && (!form.getFechaFinBuscar().trim().equals(""))){
 					sql += " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAFIN+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaInicioBuscar()+"', 'DD/MM/YYYY')"+
 					       " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAFIN+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaFinBuscar()+"', 'DD/MM/YYYY')";
-				} 			
+				}else if(form.getFechaInicioBuscar().trim().equals("")&&  (!form.getFechaFinBuscar().trim().equals(""))){
+					sql+="And TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAFIN+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaFinBuscar()+"', 'DD/MM/YYYY')";
+				}else if(!form.getFechaInicioBuscar().trim().equals("")&&  (form.getFechaFinBuscar().trim().equals(""))){
+						sql+="And TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAFIN+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaInicioBuscar()+"', 'DD/MM/YYYY')";
+				}
+					
 			}
 			
 			if (tipofecha.equals(ClsConstants.COMBO_MOSTRAR_FIRMEZA)){
@@ -342,7 +369,11 @@ public class CenSancionAdm extends MasterBeanAdministrador {
 				if (!form.getFechaInicioBuscar().trim().equals("") && (!form.getFechaFinBuscar().trim().equals(""))){
 					sql += " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAFIRMEZA+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaInicioBuscar()+"', 'DD/MM/YYYY')"+
 						   " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAFIRMEZA+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaFinBuscar()+"', 'DD/MM/YYYY')";
-				} 
+				}else if(form.getFechaInicioBuscar().trim().equals("")&&  (!form.getFechaFinBuscar().trim().equals(""))){
+					sql+="And TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAFIRMEZA+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaFinBuscar()+"', 'DD/MM/YYYY')";
+				}else if(!form.getFechaInicioBuscar().trim().equals("")&&  (form.getFechaFinBuscar().trim().equals(""))){
+						sql+="And TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAFIRMEZA+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaInicioBuscar()+"', 'DD/MM/YYYY')";
+				}
 			
 			}
 			if (tipofecha.equals(ClsConstants.COMBO_MOSTRAR_IMPOSICION)){				
@@ -350,6 +381,10 @@ public class CenSancionAdm extends MasterBeanAdministrador {
 				if (!form.getFechaInicioBuscar().trim().equals("") && (!form.getFechaFinBuscar().trim().equals(""))){
 					sql += " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAIMPOSICION+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaInicioBuscar()+"', 'DD/MM/YYYY')"+
 					       " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAIMPOSICION+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaFinBuscar()+"', 'DD/MM/YYYY')";
+				}else if(form.getFechaInicioBuscar().trim().equals("")&&  (!form.getFechaFinBuscar().trim().equals(""))){
+					sql+="And TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAIMPOSICION+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaFinBuscar()+"', 'DD/MM/YYYY')";
+				}else if(!form.getFechaInicioBuscar().trim().equals("")&&  (form.getFechaFinBuscar().trim().equals(""))){
+						sql+="And TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAIMPOSICION+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaInicioBuscar()+"', 'DD/MM/YYYY')";
 				}			
 			}
 			if (tipofecha.equals(ClsConstants.COMBO_MOSTRAR_INICIO)){				
@@ -357,6 +392,10 @@ public class CenSancionAdm extends MasterBeanAdministrador {
 				if (!form.getFechaInicioBuscar().trim().equals("") && (!form.getFechaFinBuscar().trim().equals(""))){
 					sql += " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAINICIO+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaInicioBuscar()+"', 'DD/MM/YYYY')"+
 					       " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAINICIO+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaFinBuscar()+"', 'DD/MM/YYYY')";
+				}else if(form.getFechaInicioBuscar().trim().equals("")&&  (!form.getFechaFinBuscar().trim().equals(""))){
+					sql+="And TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAINICIO+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaFinBuscar()+"', 'DD/MM/YYYY')";
+				}else if(!form.getFechaInicioBuscar().trim().equals("")&&  (form.getFechaFinBuscar().trim().equals(""))){
+						sql+="And TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAINICIO+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaInicioBuscar()+"', 'DD/MM/YYYY')";
 				}			
 			}
 			
@@ -365,6 +404,10 @@ public class CenSancionAdm extends MasterBeanAdministrador {
 				if (!form.getFechaInicioBuscar().trim().equals("") && (!form.getFechaFinBuscar().trim().equals(""))){
 					sql += " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAREHABILITADO+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaInicioBuscar()+"', 'DD/MM/YYYY')"+
 							" AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAREHABILITADO+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaFinBuscar()+"', 'DD/MM/YYYY')";
+				}else if(form.getFechaInicioBuscar().trim().equals("")&&  (!form.getFechaFinBuscar().trim().equals(""))){
+					sql+="And TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAREHABILITADO+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaFinBuscar()+"', 'DD/MM/YYYY')";
+				}else if(!form.getFechaInicioBuscar().trim().equals("")&&  (form.getFechaFinBuscar().trim().equals(""))){
+						sql+="And TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAREHABILITADO+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaInicioBuscar()+"', 'DD/MM/YYYY')";
 				}			
 			}
 			
@@ -373,6 +416,10 @@ public class CenSancionAdm extends MasterBeanAdministrador {
 				if (!form.getFechaInicioBuscar().trim().equals("") && (!form.getFechaFinBuscar().trim().equals(""))){
 					sql += " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHARESOLUCION+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaInicioBuscar()+"', 'DD/MM/YYYY')"+
 						  " AND TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHARESOLUCION+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaFinBuscar()+"', 'DD/MM/YYYY')";
+				}else if(form.getFechaInicioBuscar().trim().equals("")&&  (!form.getFechaFinBuscar().trim().equals(""))){
+					sql+="And TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHARESOLUCION+", 'DD/MM/YYYY'),'DD/MM/YYYY') <= TO_DATE('"+form.getFechaFinBuscar()+"', 'DD/MM/YYYY')";
+				}else if(!form.getFechaInicioBuscar().trim().equals("")&&  (form.getFechaFinBuscar().trim().equals(""))){
+						sql+="And TO_DATE(TO_CHAR("+CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHARESOLUCION+", 'DD/MM/YYYY'),'DD/MM/YYYY') >= TO_DATE('"+form.getFechaInicioBuscar()+"', 'DD/MM/YYYY')";
 				}			
 			}
 			
@@ -460,4 +507,46 @@ public String getTienePermisoArchivación(String idInstitucion,
 	} // getTienePermisoArchivación()
 	
 	
+
+
+
+
+ public int getArchivar (String idInstitucion, String fechaArchivada) throws ClsExceptions, SIGAException {
+		  Hashtable h = new Hashtable();
+		  h.put(new Integer(1), idInstitucion);
+		   CenSancionAdm sancionesAdm = new CenSancionAdm(this.usrbean);
+		   CenSancionBean sancionesBean = new CenSancionBean();
+	       try {
+	            
+	            String whereSancion =" where CEN_SANCION.CHKREHABILITADO = 1";
+                       whereSancion +=" and CEN_SANCION.Fechafin <= '"+fechaArchivada+"' AND CEN_SANCION.IDINSTITUCION ="+idInstitucion;
+                       whereSancion += " and cen_sancion.fechaarchivada is null and cen_sancion.chkarchivada=0";
+
+               Vector sanciones= sancionesAdm.select(whereSancion);
+               System.out.println(sanciones.size());
+               int nSanciones=sanciones.size();
+               for(int i=0;i<sanciones.size();i++)
+               {
+            	   sancionesBean = (CenSancionBean)sanciones.elementAt(i);
+			
+            	   sancionesBean.setChkArchivada("1");          	 
+            	   sancionesBean.setFechaArchivada(GstDate.getApplicationFormatDate ("",fechaArchivada)); 
+            	   String datosCambiar[] = new String[2];
+				   datosCambiar[0]=CenSancionBean.C_CHKARCHIVADA;			
+				   datosCambiar[1]=CenSancionBean.C_FECHAARCHIVADA;
+					
+					if(!sancionesAdm.updateDirect(sancionesBean,sancionesAdm.getClavesBeans(),datosCambiar))
+						throw new ClsExceptions(sancionesAdm.getError());
+				}
+            return nSanciones;
+	     } catch(ClsExceptions e){
+			throw e; 
+		} catch(Exception e){
+			throw new ClsExceptions(e,e.toString()); 
+		}
+		
+		
+	} //getArchivar()
 }
+
+
