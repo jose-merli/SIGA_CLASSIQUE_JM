@@ -115,9 +115,14 @@ public class TagBusquedaPersona extends TagSupport
 			out.println("	<input type=\"text\" name=\"nombrePersona\" size="+this.anchoDesc+" maxlength=\"50\" class=\"box\" readonly=\"true\"/>");				
 			out.println("</td>");
 			out.println("<td>");
-																								
-			out.println("	<!-- Boton buscar -->");
-			out.println("	<input type=\"button\" class=\"button\" id=\"idButton\" name=\"buscarCliente\" value='"+UtilidadesString.getMensajeIdioma(usrbean,"gratuita.inicio_SaltosYCompensaciones.literal.buscar")+"' onClick=\"buscarPersona();\">");
+									
+			if(tipo.equals("personas")){
+				out.println("	<!-- Boton buscar -->");
+				out.println("	<input type=\"button\" class=\"button\" id=\"idButton\" name=\"buscarCliente\" value='"+UtilidadesString.getMensajeIdioma(usrbean,"gratuita.inicio_SaltosYCompensaciones.literal.buscar")+"' onClick=\"buscarPersonaDni();\">");
+			}else{
+				out.println("	<!-- Boton buscar -->");
+				out.println("	<input type=\"button\" class=\"button\" id=\"idButton\" name=\"buscarCliente\" value='"+UtilidadesString.getMensajeIdioma(usrbean,"gratuita.inicio_SaltosYCompensaciones.literal.buscar")+"' onClick=\"buscarPersona();\">");
+			}				
 			out.println("	<!-- Boton limpiar -->");
 			out.println("	&nbsp;<input type=\"button\" class=\"button\" id=\"idButton\" name=\"limpiar\" value='"+UtilidadesString.getMensajeIdioma(usrbean,"gratuita.inicio_SaltosYCompensaciones.literal.limpiar")+"' onClick=\"limpiarPersona();\">");
 			
@@ -164,7 +169,8 @@ public class TagBusquedaPersona extends TagSupport
 			out.println("					{");
 			out.println("						document.getElementById('nombrePersona').value = resultado[4] + \" \" + resultado[5] + \" \" + resultado[6];");
 			out.println("					}");
-
+			//funcion de mostrar persona con dni.
+		
 			if (accion != null && !accion.equals("")) {
 				out.println("					if(resultado != null && document.getElementById('" + this.idPersona + "').value) { ");
 				out.println("                     " + this.accion + ";");
@@ -174,6 +180,35 @@ public class TagBusquedaPersona extends TagSupport
 			
 			out.println("		}		");
 			out.println("");
+			
+			
+				//funcion de mostrar persona con dni.
+			out.println("		function buscarPersonaDni () ");
+			out.println("		{");
+			out.println("			   		if (!vForm) vForm=creaForm();");
+			out.println("					var resultado = ventaModalGeneral(vForm.name,\"G\");	");		
+			out.println("					if (resultado != null && resultado[2]!=null)");
+			out.println("					{");
+			out.println("									o = document.getElementById('" + this.idPersona + "');");
+			out.println("									if (!o) alert (\"Es obligatorio que exista un campo en el formulario para almacenar la informacion devuelta por el tag. Ej. idPersona (hidden)\");");
+			out.println("						document.getElementById('" + this.idPersona + "').value = resultado[0];");
+			out.println("						document.getElementById('numeroNifTagBusquedaPersonas').value = resultado[3];");
+			out.println("					}");
+			out.println("					if (resultado != null && resultado[4]!=null && resultado[5]!=null && resultado[6]!=null)");
+			out.println("					{");
+			out.println("						document.getElementById('nombrePersona').value = resultado[4] + \" \" + resultado[5] + \" \" + resultado[6];");
+			out.println("					}");
+		
+			if (accion != null && !accion.equals("")) {
+				out.println("					if(resultado != null && document.getElementById('" + this.idPersona + "').value) { ");
+				out.println("                     " + this.accion + ";");
+				out.println("					}");
+			}
+
+			out.println("		}		");
+			out.println("");
+			
+			
 			out.println("		function limpiarPersona () ");
 			out.println("		{");
 			out.println("				document.getElementById('" + this.idPersona + "').value = \"\";");			
