@@ -468,6 +468,15 @@ public class CenSancionAdm extends MasterBeanAdministrador {
 		}
 		return nuevoId;
 	}
+	
+	
+	/**
+	 *Se Verifica que el usuario tiene permiso de Archivazión.
+	 * @param form Formulario con los criterios
+	 * @param idInstitucionAlta,usuario
+	 * @return se muestra un resultado con un numero si tiene permiso.
+	 * @throws ClsExceptions
+	 */
 public String getTienePermisoArchivación(String idInstitucion,
 			String usuario) throws ClsExceptions {
 		String permiso = "";
@@ -509,7 +518,13 @@ public String getTienePermisoArchivación(String idInstitucion,
 	
 
 
-
+	/**
+	 *Se Archivan las sanciones que cumplen con la condición que este sin archivar y sin fecha de archivación y que la fechafin sea menor que la fecha de archivo
+	 * @param form Formulario con los criterios
+	 * @param idInstitucionAlta,fechaArchivada
+	 * @return entero con el numero de archivadas.
+	 * @throws ClsExceptions
+	 */
 
  public int getArchivar (String idInstitucion, String fechaArchivada) throws ClsExceptions, SIGAException {
 		  Hashtable h = new Hashtable();
