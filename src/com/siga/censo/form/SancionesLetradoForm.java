@@ -11,8 +11,14 @@ public class SancionesLetradoForm extends MasterForm{
 	private String FechaArchivada;
 	private String ChkArchivada;
 	private String MostrarSanciones;
+	private String MostrarTiposFechas;
+	private String FechaInicioArchivada;
+	private String FechaFinArchivada;
 	
 	
+
+	
+
 	//	metodos set de los campos del formulario
 	public void setNombreInstitucionBuscar(String valor) {
 		UtilidadesHash.set(this.datos, "NombreInstitucionBuscar", valor);
@@ -133,7 +139,18 @@ public class SancionesLetradoForm extends MasterForm{
 	public void setMostrarSanciones(String mostrarSanciones) {
 		MostrarSanciones = mostrarSanciones;
 	}
+	
+	public void setMostrarTiposFechas(String mostrarTiposFechas) {
+		MostrarTiposFechas = mostrarTiposFechas;
+	}
 
+	public void setFechaInicioArchivada(String fechaInicioArchivada) {
+		FechaInicioArchivada = fechaInicioArchivada;
+	}
+	
+	public void setFechaFinArchivada(String fechaFinArchivada) {
+		FechaFinArchivada = fechaFinArchivada;
+	}
 
 	
 //	metodos get de los campos del formulario
@@ -256,5 +273,16 @@ public class SancionesLetradoForm extends MasterForm{
 	public String getMostrarSanciones() {
 		return MostrarSanciones;
 	}
+	public String getMostrarTiposFechas() {
+		return MostrarTiposFechas;
+	}
 
+		public String getFechaInicioArchivada() {
+		return FechaInicioArchivada;
+	}
+
+		
+	public String getFechaFinArchivada() {
+		return FechaFinArchivada;
+	}
 }

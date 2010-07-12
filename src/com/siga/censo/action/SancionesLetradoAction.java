@@ -1,5 +1,6 @@
 package com.siga.censo.action;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -9,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
 
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
@@ -31,6 +34,66 @@ import com.siga.general.SIGAException;
  */
 public class SancionesLetradoAction extends MasterAction 
 {
+	
+	/** 
+	 *  Funcion que atiende a las peticiones. Segun el valor del parametro modo del formulario ejecuta distintas acciones
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  SIGAExceptions  En cualquier caso de error
+	 */
+
+	protected ActionForward executeInternal (ActionMapping mapping,
+			ActionForm formulario,
+			HttpServletRequest request, 
+			HttpServletResponse response)throws SIGAException {
+
+		String mapDestino = "exception";
+		MasterForm miForm = null;
+
+		try {
+			miForm = (MasterForm) formulario;
+			if (miForm == null) {
+				return mapping.findForward(mapDestino);
+			}
+
+			String accion = miForm.getModo();
+
+			if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
+					mapDestino = abrir(mapping, miForm, request, response);
+			}else if (accion.equalsIgnoreCase("archivar")){
+				mapDestino = archivar(mapping, miForm, request, response);			
+			}else if (accion.equalsIgnoreCase("fecha")){ 
+				mapDestino = fecha(mapping, miForm, request, response);	
+			}else{
+				return super.executeInternal(mapping,
+						formulario,
+						request, 
+						response);
+			}
+
+			// Redireccionamos el flujo a la JSP correspondiente
+			if (mapDestino == null) 
+			{ 
+				if (miForm.getModal().equalsIgnoreCase("TRUE"))
+				{
+					request.setAttribute("exceptionTarget", "parent.modal");
+				}
+				throw new ClsExceptions("El ActionMapping no puede ser nulo","","0","GEN00","15");
+			}
+
+		}
+		catch (SIGAException es) { 
+			throw es; 
+		} 
+		catch (Exception e) { 
+			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"}); 
+		} 
+		return mapping.findForward(mapDestino);
+	}
+	
 	/**
 	 * Metodo que implementa el modo abrir
 	 * @param  mapping - Mapeo de los struts
@@ -107,6 +170,10 @@ public class SancionesLetradoAction extends MasterAction
     	}
  		return "resultados";
 	}	
+	
+
+	
+	
 	
 	/**
 	 * Metodo que implementa el modo buscarPor
@@ -639,5 +706,67 @@ public class SancionesLetradoAction extends MasterAction
  		
 	    return "editar";
 	}
+	
+	
+	/**
+	 * Metodo que implementa el modo insertar
+	 * @param  mapping - Mapeo de los struts
+	 * @param  formulario -  Action Form asociado a este Action
+	 * @param  request - objeto llamada HTTP 
+	 * @param  response - objeto respuesta HTTP
+	 * @return  String  Destino del action  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */
+	protected String archivar(ActionMapping mapping, 		
+							MasterForm formulario, 
+							HttpServletRequest request, 
+							HttpServletResponse response) throws SIGAException 
+	{
+		UsrBean user = null;
+		UserTransaction tx = null;
+		String salida = "";
+		
+		try {
+		
+			SancionesLetradoForm miform = (SancionesLetradoForm)formulario;
+			user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			String idinstitucion= user.getLocation();
+            String username=user.getUserName();
+			CenSancionAdm admSancion=new CenSancionAdm(this.getUserBean(request));
+            String tienepermisoArchivo= admSancion.getTienePermisoArchivación(idinstitucion,username);		
+			request.setAttribute("institucionColegiacion",request.getParameter("institucionColegiacion"));			
+			request.setAttribute("tienepermiso",tienepermisoArchivo);
+		
+			String fechaarchivada= miform.getFechaArchivada();
+			
+			int nsanciones=admSancion.getArchivar(idinstitucion,fechaarchivada);		
+			String message=(UtilidadesString.getMensajeIdioma(this.getUserBean(request),"messages.updated.Archivos.success"));
+			
+			message+=" "+ nsanciones+" "+UtilidadesString.getMensajeIdioma(this.getUserBean(request),"messages.updated.ArchivosSanciones.success");
+			
+			salida= this.exitoModal(message, request);
+			
+	    } catch (Exception e) {
+	    	throwExcp("messages.general.error",new String[] {"modulo.censo"},e,tx);
+    	}   
+	     
+	    return salida;
+ 	}
+	
+	
+	/**
+	 * Devuelve los datos necesarios para la insercion de un nuevo estado
+	 */
+	protected String fecha(ActionMapping mapping,
+							MasterForm formulario,
+							HttpServletRequest request,
+							HttpServletResponse response)
+			throws SIGAException
+	{
+		request.setAttribute("modo","archivar");
+		return "archivar";
+	} 
+	
+
 
 }
