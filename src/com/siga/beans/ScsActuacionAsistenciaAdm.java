@@ -324,5 +324,11 @@ public class ScsActuacionAsistenciaAdm extends MasterBeanAdministrador {
 		}
 		return datos;
 	}
+	public void updateActuacionVolanteExpress(ScsActuacionAsistenciaBean actuacion) throws ClsExceptions 
+	{
+		String claves [] ={ScsActuacionAsistenciaBean.C_ANIO,ScsActuacionAsistenciaBean.C_NUMERO, ScsActuacionAsistenciaBean.C_IDINSTITUCION, ScsActuacionAsistenciaBean.C_IDACTUACION};
+		String campos [] = { ScsActuacionAsistenciaBean.C_FECHAJUSTIFICACION, ScsActuacionAsistenciaBean.C_NUMEROASUNTO, ScsActuacionAsistenciaBean.C_IDJUZGADO, ScsActuacionAsistenciaBean.C_IDINSTITUCIONJUZGADO, ScsActuacionAsistenciaBean.C_IDCOMISARIA, ScsActuacionAsistenciaBean.C_IDINSTITUCIONCOMISARIA, ScsActuacionAsistenciaBean.C_IDTIPOACTUACION};
+		this.updateDirect(actuacion,claves,campos);
+	}
 
 }
