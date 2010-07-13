@@ -559,7 +559,7 @@ public class CalendarioSJCS {
 		return false;
 		
 	}
-	private boolean isLetradoValido(LetradoGuardia letradoGuardia,ArrayList diasGuardia,HashMap<Long, List<LetradoGuardia>> hmPersonasConSaltos, boolean isCompensacion) throws ClsExceptions{
+	private boolean isLetradoValido(LetradoGuardia letradoGuardia,ArrayList diasGuardia, HashMap<Long, List<LetradoGuardia>> hmPersonasConSaltos, boolean isCompensacion) throws ClsExceptions{
 		ScsSaltosCompensacionesAdm scsSaltosCompensacionesAdm = null;
 		if(isLetradoBajaTemporal(diasGuardia, letradoGuardia)){
 			ScsSaltosCompensacionesBean salto = new ScsSaltosCompensacionesBean(
@@ -576,9 +576,17 @@ public class CalendarioSJCS {
 			return false;
 			
 		}
-
 		if(isIncompatible(letradoGuardia, diasGuardia)){
-			//TODO Estaria bien insertar compensaciones
+			if(scsSaltosCompensacionesAdm == null)
+				scsSaltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(this.usrBean);
+			ScsSaltosCompensacionesBean compensacion = getSaltoCompensacion(letradoGuardia, diasGuardia, ClsConstants.COMPENSACIONES,this.idGuardia, this.idCalendarioGuardias);
+			compensacion.setFechaCumplimiento(null);
+			StringBuffer descripcion = new StringBuffer();
+			descripcion.append("Compensación por Incompatibilidad");
+			descripcion.append(" ");
+			descripcion.append((String)diasGuardia.get(0));
+			compensacion.setMotivos(descripcion.toString());
+			scsSaltosCompensacionesAdm.insertarSaltoCompensacion(compensacion);
 			return false;
 			
 		}
@@ -645,7 +653,7 @@ public class CalendarioSJCS {
 				}
 				
 				//vale
-				if(isLetradoValido(auxLetradoSeleccionado, diasGuardia, hmPersonasConSaltos, false)){
+				if(isLetradoValido(auxLetradoSeleccionado, diasGuardia,hmPersonasConSaltos, false)){
 					letradoGuardia = auxLetradoSeleccionado;
 					findIt= true;
 				}
@@ -788,15 +796,15 @@ public class CalendarioSJCS {
 			if (alLetradosOrdenados == null || alLetradosOrdenados.size()==0)
 				throw new SIGAException("No existe cola de letrados de guardia");
 			
-			//obteniendo las compensaciones
-			List<LetradoGuardia> alCompensaciones = getCompensaciones(this.idInstitucion, this.idTurno, this.idGuardia);
-			
 			//obteniendo los saltos
 			HashMap<Long, List<LetradoGuardia>> hmPersonasConSaltos = getSaltos(this.idInstitucion, this.idTurno, this.idGuardia);
 			
 			
 			//Para cada dia o conjunto de dias:
 			for (int i=0; i<this.arrayPeriodosDiasGuardiaSJCS.size(); i++) {
+				//obteniendo las compensaciones. Se obtienen dentro de este bucle, ya que si hay incompatibilidades se añade una compensacion.
+				List<LetradoGuardia> alCompensaciones = getCompensaciones(this.idInstitucion, this.idTurno, this.idGuardia);
+				
 				//obteniendo conjunto de dias
 				//Nota: cada periodo es un arraylist de fechas (String en formato de fecha corto DD/MM/YYYY).
 				diasGuardia = (ArrayList) this.arrayPeriodosDiasGuardiaSJCS.get(i);

@@ -977,6 +977,17 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 		
 		
 	}
+	public void insertarSaltoCompensacion(ScsSaltosCompensacionesBean salto) throws ClsExceptions{
+		
+		salto.setUsuMod(this.usuModificacion);
+		salto.setFechaMod("sysdate");
+		
+		Long idSaltosTurno = Long.valueOf(getNuevoIdSaltosTurno(salto.getIdInstitucion().toString(),salto.getIdTurno().toString()));
+		salto.setIdSaltosTurno(idSaltosTurno);
+		this.insert(salto);
+		
+		
+	}
 	public void marcarSaltoCompensacionGuardia(ScsSaltosCompensacionesBean saltoCompensacion) throws ClsExceptions {
 		try {
 			String sql = " UPDATE "+ScsSaltosCompensacionesBean.T_NOMBRETABLA+
