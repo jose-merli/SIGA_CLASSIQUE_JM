@@ -260,7 +260,7 @@ public class AtosVolantesExpressService extends JtaBusinessServiceTemplate
 					throw e;
 				}
 				fechaAsistencia = fechaAsistencia.substring(0,fechaAsistencia.indexOf(" ")) + " " + asistencia.getHora() + ":" + asistencia.getMinuto() + ":00";
-				asistencia.setFechaEstadoAsistencia(fechaAsistencia);
+				asistencia.setFechaEstadoAsistencia("sysdate");
 				asistencia.setFechaHora(fechaAsistencia);
 				asistencia.setIdEstadoAsistencia(new Integer(1));
 				//Atencio en el campo diligencia se guarda, 
