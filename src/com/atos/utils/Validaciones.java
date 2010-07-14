@@ -1241,5 +1241,54 @@ public final class Validaciones{
 	public static boolean validaNoInformado(String valor){
 		return (valor == null || valor.trim().equals(""));
 	}
+	/**
+	 * 
+	 * @param numeroIdentificacion
+	 * @return ClsConstants.TIPO_IDENTIFICACION_OTRO: No tiene formato de nif o nie; 
+	 * @return ClsConstants.TIPO_IDENTIFICACION_NIF: tiene formato nif 
+	 * @return ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE tiene formato nie 
+	 */
 	
+	/*public static int getTipoIdentificacion(String numeroIdentificacion){
+		if(numeroIdentificacion.length()!=9)
+			return ClsConstants.TIPO_IDENTIFICACION_OTRO;
+		//si es NIE, eliminar la x,y,z inicial para tratarlo como nif
+		boolean isNie = false;
+		if (numeroIdentificacion.toUpperCase().startsWith("X")||numeroIdentificacion.toUpperCase().startsWith("Y")||numeroIdentificacion.toUpperCase().startsWith("Z")){
+			//Para que sea igual que la validacion javascript que se hace
+			if(numeroIdentificacion.toUpperCase().startsWith("X"))
+				numeroIdentificacion=numeroIdentificacion.replaceFirst("X","0");
+			else if(numeroIdentificacion.toUpperCase().startsWith("Y"))
+				numeroIdentificacion=numeroIdentificacion.replaceFirst("Y","1");
+			else if(numeroIdentificacion.toUpperCase().startsWith("Z"))
+				numeroIdentificacion=numeroIdentificacion.replaceFirst("Z","2");
+
+//			numeroIdentificacion = numeroIdentificacion.substring(1);
+			isNie = true;
+		}
+		Pattern nifPattern =
+			Pattern.compile("(\\d{1,8})([TRWAGMYFPDXBNJZSQVHLCKEtrwagmyfpdxbnjzsqvhlcke])");
+		Matcher m = nifPattern.matcher(numeroIdentificacion);
+		if(m.matches()){
+			String letra = m.group(2);
+			//Extraer letra del NIF
+			String letras = "TRWAGMYFPDXBNJZSQVHLCKE";
+			int dni = Integer.parseInt(m.group(1));
+			dni = dni % 23;
+			String reference = letras.substring(dni,dni+1);
+
+			if (reference.equalsIgnoreCase(letra)){
+				if(isNie)
+					return ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE;
+				else
+					return ClsConstants.TIPO_IDENTIFICACION_NIF;
+			}else{
+
+				return ClsConstants.TIPO_IDENTIFICACION_OTRO;
+			}
+		}
+		else
+			return ClsConstants.TIPO_IDENTIFICACION_OTRO;
+	}
+	*/
 }

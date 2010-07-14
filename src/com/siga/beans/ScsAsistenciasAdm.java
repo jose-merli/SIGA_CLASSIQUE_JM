@@ -15,6 +15,7 @@ import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.atos.utils.Validaciones;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
@@ -1690,7 +1691,12 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 				p.setNif(asistencia.getAsistidoNif());
 				p.setNombre(asistencia.getAsistidoNombre());
 				p.setTipo(ClsConstants.TIPO_PERSONA_FISICA); 						// persona fisica
-				p.setTipoIdentificacion(""+ClsConstants.TIPO_IDENTIFICACION_OTRO);	// otro
+				//Comento esto. Esta validacion es correcta. si se quiere identificar el tipo de identificacion
+				//dado un numero
+				//El metodo en Validaciones tambien esta comentado. si se quiere uar descomentarlo
+				// int tipoIdentificacion = Validaciones.getTipoIdentificacion(asistencia.getAsistidoNif());
+				//p.setTipoIdentificacion(""+tipoIdentificacion);	// otro
+				p.setTipoIdentificacion(""+ClsConstants.TIPO_IDENTIFICACION_OTRO);
 				personaAdm.prepararInsert(p);
 				personaAdm.insert(p);
 				asistencia.setIdPersonaJG(p.getIdPersona());
