@@ -70,24 +70,15 @@
 			     document.VolantesExpressForm.idGuardia.value = '';
 				 document.VolantesExpressForm.idColegiadoGuardia.value = '';
 				 document.VolantesExpressForm.idColegiadoSustituido.value = '';
-				 // document.VolantesExpressForm.idColegiado.value = '';
-				
 				 document.VolantesExpressForm.fechaGuardia.value = resultado;
 				 document.getElementById('fechaGuardia').onchange();
 				
 		 	}else{
-		 		 document.VolantesExpressForm.turnos.value= '';
-				 document.VolantesExpressForm.guardias.value= '';
-				 document.VolantesExpressForm.colegiadosGuardia.value= '';
-				 document.VolantesExpressForm.colegiadosSustituidos.value= '';
-				 document.VolantesExpressForm.idTurno.value = '';
-			     document.VolantesExpressForm.idGuardia.value = '';
-			     // document.VolantesExpressForm.idColegiado.value = '';
-				 document.VolantesExpressForm.idColegiadoGuardia.value = '';
-				 document.VolantesExpressForm.idColegiadoSustituido.value = '';
-				
-				 document.VolantesExpressForm.fechaGuardia.value = '';
-				 document.getElementById('fechaGuardia').onchange();
+				//Si da a reset no viene nada por lo que actualizamos. si viene con fecha
+				//es que ha cerrado desde el aspa, lo dejamos como estuviera(no hacemos nada) 		 		
+		 		 
+				 if(document.getElementById('fechaGuardia').value=='')
+				 	document.getElementById('fechaGuardia').onchange();
 			} 
 		}
 		
