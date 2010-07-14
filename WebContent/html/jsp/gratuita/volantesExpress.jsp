@@ -145,11 +145,21 @@
 					
 	}
 	function postAccionGuardia(){
+		
 		if((document.VolantesExpressForm.idGuardia && document.VolantesExpressForm.idGuardia.value != ''&& document.VolantesExpressForm.idGuardia.value != '-1')){
-			if(document.VolantesExpressForm.idColegiado&&document.VolantesExpressForm.idColegiado!=''){
+			//Ahora mismo si hay seleccionado un letrado no se va a borrar aunque haya cambio de guardia 
+			if(document.VolantesExpressForm.idColegiado&&document.VolantesExpressForm.idColegiado.value!=''){
 				postAccionColegiado();
 			}else{
-				actualizarResultados();
+				var optionsColegiadoGuardia = document.getElementById("colegiadosGuardia");
+				var encontrado;
+				if(optionsColegiadoGuardia.length==2){
+					optionsColegiadoGuardia.selectedIndex=1;
+					document.getElementById('colegiadosGuardia').onchange();
+					
+				}else{
+					actualizarResultados();
+				}
 			}
 		}else{
 			actualizarResultados();
