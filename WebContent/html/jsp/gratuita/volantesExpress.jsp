@@ -48,6 +48,14 @@
 <siga:TituloExt titulo="gratuita.volantesExpres.literal.titulo"	localizacion="gratuita.volantesExpres.literal.localizacion" />
 
 <script type="text/javascript">
+		function init() 
+		{
+			document.getElementById("colegiadosSustituidos").disabled= true;
+			document.getElementById("colegiadosGuardia").disabled= true;
+			document.getElementById("turnos").disabled= true;
+			document.getElementById("guardias").disabled= true;
+		
+		}
 		function accionCalendario() 
 		{
 			// Abrimos el calendario 
@@ -650,7 +658,7 @@
 
 </head>
 
-<body>
+<body onload="init();">
 
 <bean:define id="fechaJustificacion" name="VolantesExpressForm" property="fechaJustificacion" type="String" />
 <!-- INICIO: CAMPOS DE BUSQUEDA-->
