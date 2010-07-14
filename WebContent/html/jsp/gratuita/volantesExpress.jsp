@@ -120,6 +120,10 @@
 		}
 		postAccionColegiadoGuardia();
 	}
+	function preAccionTurno(){
+		document.getElementById("guardias").disabled= true;
+		
+	}
 	function postAccionTurno(){
 		if((document.VolantesExpressForm.idTurno && document.VolantesExpressForm.idTurno.value != ''&& document.VolantesExpressForm.idTurno.value != '-1')){
 			// if(document.VolantesExpressForm.guardias.length==2){
@@ -870,6 +874,7 @@
 <ajax:select
 	baseUrl="/SIGA/JGR_VolantesExpres.do?modo=getAjaxGuardias"
 	source="turnos" target="guardias" parameters="fechaGuardia={fechaGuardia},idTurno={idTurno}"
+	preFunction="preAccionTurno"
 	postFunction="postAccionTurno" />
 	
 <ajax:updateMultipleSelectFromSelect
