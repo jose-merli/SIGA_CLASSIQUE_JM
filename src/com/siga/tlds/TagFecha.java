@@ -28,7 +28,8 @@ public class TagFecha extends TagSupport {
 	private String nombreCampo = ""; 
 	private String valorInicial = ""; 
 	private String anchoTextField = "";
-    private String necesario = ""; // Si fuese necesario no puede llevar el valor "" 
+    private String necesario = ""; // Si fuese necesario no puede llevar el valor ""
+    private String styleId;
     
 	public void setValorInicial(String valorInicial) {
 		this.valorInicial = valorInicial;
@@ -152,6 +153,10 @@ public class TagFecha extends TagSupport {
 				out.println("		alert(this.valorInicial); ");
 				out.println("	value=\"" + this.valorInicial + "\" ");
 			}
+			if ((this.styleId != null)&&(this.styleId.equals(""))){
+				out.println("		styleId = =\"" + this.styleId + "\" ");
+			}
+			
 			out.println("	onblur=\"return validaFecha"+ this.nombreCampo +"(" + this.nombreCampo + ");\"/> ");
 			out.println(""); // Linea vacia por legibilidad del codigo
 		}catch (Exception e){
@@ -164,5 +169,11 @@ public class TagFecha extends TagSupport {
 	}
 	public void setAnchoTextField(String anchoTextField) {
 		this.anchoTextField = anchoTextField;
+	}
+	public String getStyleId() {
+		return styleId;
+	}
+	public void setStyleId(String styleId) {
+		this.styleId = styleId;
 	}
 }
