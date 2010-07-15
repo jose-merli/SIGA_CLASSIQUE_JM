@@ -937,6 +937,13 @@
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
+    <attribute>
+      <name>styleId</name>
+      <required>false</required>
+      <rtexprvalue>fecha</rtexprvalue>
+    </attribute>
+    
+    
   </tag>  
   
   
