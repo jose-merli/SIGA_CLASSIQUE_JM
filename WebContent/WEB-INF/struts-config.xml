@@ -353,8 +353,6 @@
 			<forward name="leftMenu" path="/openMainFrameset2.do"/>
 		</action>
 		
-		<action path="/reloadBM" type="com.siga.comun.action.ReloadBM">
-		</action>
 		
 
 		<!-- /*#############################################################################*/ -->
