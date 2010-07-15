@@ -58,6 +58,7 @@
 		}
 		function accionCalendario() 
 		{
+			alert("accion calendario");
 			// Abrimos el calendario 
 			
 			var resultado = showModalDialog("<html:rewrite page='/html/jsp/general/calendarGeneral.jsp'/>?valor="+document.VolantesExpressForm.fechaGuardia.value,document.VolantesExpressForm.fechaGuardia,"dialogHeight:275px;dialogWidth:400px;help:no;scroll:no;status:no;");
@@ -683,15 +684,18 @@
 				<td class="labelText">
 				<siga:Idioma
 					key="gratuita.volantesExpres.literal.GuardiaDia" />&nbsp;(*)</td>
-				<td><html:text styleId="fechaGuardia" property="fechaGuardia"
-					size="10" readonly="true" styleClass="box" />&nbsp; <a
+				<td>
+				<siga:Fecha styleId="fechaGuardia" nombreCampo="fechaGuardia"/> &nbsp;<a
 					href='javascript:accionCalendario();//' id="iconoCalendarioA"
 					onMouseOut="MM_swapImgRestore();"
 					onMouseOver="MM_swapImage('Calendario','','<html:rewrite page="/html/imagenes/calendar_hi.gif',1);"/>"><img
 					id="iconoCalendario"
 					src="<html:rewrite page='/html/imagenes/calendar.gif'/>"
 					alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"
-					border="0" align="bottom"></a></td>
+					border="0" align="bottom"></a>
+					
+					
+					</td>
 
 				<td class="labelText"><siga:Idioma
 					key="gratuita.volantesExpres.literal.Lugar" />&nbsp;(*)</td>
