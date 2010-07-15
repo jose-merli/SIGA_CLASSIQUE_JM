@@ -58,7 +58,6 @@
 		}
 		function accionCalendario() 
 		{
-			alert("accion calendario");
 			// Abrimos el calendario 
 			
 			var resultado = showModalDialog("<html:rewrite page='/html/jsp/general/calendarGeneral.jsp'/>?valor="+document.VolantesExpressForm.fechaGuardia.value,document.VolantesExpressForm.fechaGuardia,"dialogHeight:275px;dialogWidth:400px;help:no;scroll:no;status:no;");
