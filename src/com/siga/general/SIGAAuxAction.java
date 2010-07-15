@@ -52,7 +52,6 @@ import es.satec.businessManager.BusinessManager;
  */
 public abstract class SIGAAuxAction extends SIGAActionBase{
 
-	private static BusinessManager businessManager = null;
 
 	/** 
 	 * Funcion que atiende a las peticiones. Segun el valor del parametro modo del formulario ejecuta distintas acciones
@@ -73,8 +72,8 @@ public abstract class SIGAAuxAction extends SIGAActionBase{
 		String aux = "";
 		
 		try {
-			if (businessManager == null)
-				businessManager = BusinessManager.getInstance(SIGAReferences.getInputReference(SIGAReferences.RESOURCE_FILES.ATOS_BUSINESS_CONFIG));
+			
+			
 			
 			// RGG 03-03-2005 cambio para controlar la sesion
 			try {
@@ -481,11 +480,10 @@ public abstract class SIGAAuxAction extends SIGAActionBase{
 	}
 	
 	public BusinessManager getBusinessManager() {
-		return businessManager;
+		return BusinessManager.getInstance();		
+		
 	}
-	public void setBusinessManager(BusinessManager bm) {
-		businessManager = bm;
-	}
+	
 
 
 }
