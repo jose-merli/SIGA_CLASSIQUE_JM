@@ -187,7 +187,7 @@ public class TagBusquedaPersona extends TagSupport
 			out.println("		{");
 			out.println("			   		if (!vForm) vForm=creaForm();");
 			out.println("					var resultado = ventaModalGeneral(vForm.name,\"G\");	");		
-			out.println("					if (resultado != null && resultado[2]!=null)");
+			out.println("					if (resultado != null && resultado[3]!=null)");
 			out.println("					{");
 			out.println("									o = document.getElementById('" + this.idPersona + "');");
 			out.println("									if (!o) alert (\"Es obligatorio que exista un campo en el formulario para almacenar la informacion devuelta por el tag. Ej. idPersona (hidden)\");");
@@ -218,7 +218,7 @@ public class TagBusquedaPersona extends TagSupport
 			out.println("		function obtenerPersonas () ");
 			out.println("		{");
 			out.println("			document.getElementById('nombrePersona').value = \"\";");
-			out.println("			if(document.getElementById('numeroNifTagBusquedaPersonas').value!=\"\"){");
+			out.println("			if(document.getElementById('numeroNifTagBusquedaPersonas').value!=\"\"){");			
 			out.println("			   if (!vForm) vForm=creaForm();");
 			out.println("			   vForm.target=\"submitArea\";");
 			out.println("			   vForm.numeroNif.value=document.getElementById('numeroNifTagBusquedaPersonas').value;");
