@@ -22,6 +22,7 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
@@ -694,6 +695,7 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 			}
 		}
 		catch (Exception e) { 
+			ClsLogging.writeFileLog("!!!!!!!!!!!!!!!ERROR EN DEFINIR UNIDAD FAMILIAR.DescargaEejg "+e.toString(), 10);
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
 		}				
 		return salida;
@@ -735,6 +737,7 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 			}
 		}
 		catch (Exception e) { 
+			ClsLogging.writeFileLog("!!!!!!!!!!!!!!!ERROR EN DEFINIR UNIDAD FAMILIAR.descargaMultiplesEejg "+e.toString(), 10);
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
 		}				
 		return salida;
@@ -822,6 +825,7 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 			}
 		}
 		catch (Exception e) { 
+			ClsLogging.writeFileLog("!!!!!!!!!!!!!!!ERROR EN DEFINIR UNIDAD FAMILIAR.DescargaEejgMasivo "+e.toString(), 10);
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
 		}				
 		return salida;
