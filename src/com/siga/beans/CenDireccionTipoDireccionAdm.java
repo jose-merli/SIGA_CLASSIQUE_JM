@@ -59,7 +59,7 @@ public class CenDireccionTipoDireccionAdm extends MasterBeanAdmVisible {
 	/* (non-Javadoc)
 	 * @see com.siga.beans.MasterBeanAdministrador#getClavesBean()
 	 */
-	protected String[] getClavesBean() {
+	public String[] getClavesBean() {
 		String[] claves = {	CenDireccionTipoDireccionBean.C_IDDIRECCION,
 							CenDireccionTipoDireccionBean.C_IDINSTITUCION,
 							CenDireccionTipoDireccionBean.C_IDPERSONA,
