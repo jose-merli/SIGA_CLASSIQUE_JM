@@ -220,6 +220,12 @@
  				alert (msg);				
 			return false;
 		}
+		if (!(document.VolantesExpressForm.fechaJustificacion && document.VolantesExpressForm.fechaJustificacion.value != '')) {
+			var campo = '<siga:Idioma key="gratuita.volantesExpres.literal.fechaJustificacion"/>';
+ 				var msg = "<siga:Idioma key="errors.required"  arg0=' " + campo + "'/>";
+ 				alert (msg);				
+			return false;
+		}
 		
 		if (!(document.VolantesExpressForm.idTipoAsistenciaColegio && document.VolantesExpressForm.idTipoAsistenciaColegio.value != ''&& document.VolantesExpressForm.idTipoAsistenciaColegio.value != '-1')) {
 			alert ('<siga:Idioma key="gratuita.volantesExpres.literal.tipoAsistenciaColegio"/>');
