@@ -1086,8 +1086,15 @@
 	function traspasoDatosJuzgado (resultado)
 	{
 		if (resultado.length > 1) {
-			seleccionComboSiga (resultado[1], resultado[0]);
-			document.getElementById(resultado[1]).value = resultado[0];
+			// seleccionComboSiga (resultado[1], resultado[0]);
+			var fin = resultado[0].indexOf(',');
+			if (fin != -1) { 
+				idJuzgado = resultado[0].substring(0,fin);
+				document.getElementById(resultado[1]).value = idJuzgado;
+				
+			}
+			
+			 
 		}
 	} //traspasoDatosJuzgado ()
 	function traspasoDatosComisaria (resultado)
@@ -1098,6 +1105,7 @@
 		// Para la busqueda por dni
 	function traspasoDatos (resultado, bNuevo, fila) 
 	{
+		
 		// Porque todas las funciones se llaman igual, las separamos
 		if (!(bNuevo && fila)) 
 			return traspasoDatosJuzgado (resultado);
