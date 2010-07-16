@@ -1754,13 +1754,17 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 			act.setDiaDespues("N");
 			act.setFecha(asistencia.getFechaHora());
 			act.setFechaJustificacion(volantesExpressVo.getFechaJustificacion());
+			if(volantesExpressVo.getFechaJustificacion()!=null && !volantesExpressVo.getFechaJustificacion().equals(""))
+			act.setValidada("1"); // validada si
+			else
+				act.setValidada("0"); // validada no
 			act.setIdActuacion(new Long(1));
 			act.setIdInstitucion(asistencia.getIdInstitucion());
 			act.setIdTipoAsistencia(asistencia.getIdTipoAsistencia());
 			act.setNumero(new Long(""+asistencia.getNumero()));
 			act.setNumeroAsunto(asistencia.getNumeroDiligencia());
 			act.setObservaciones(asistencia.getObservaciones());
-			act.setValidada("1"); // validada si 
+			 
 
 			if (asistencia.getJuzgado()!=null) {
 				act.setIdJuzgado(new Integer(""+asistencia.getJuzgado()));
