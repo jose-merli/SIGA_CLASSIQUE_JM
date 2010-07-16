@@ -93,23 +93,35 @@
 		}
 		actualizarResultados();
 	}
+	function preAccionColegiado(){
+	// 	document.getElementById("buscaColegiadoManual").value = "true";
+	
+	}
+	
 	function postAccionColegiado(){
-		//Comprobamos que esta en el combo
-		var idColegiado = document.VolantesExpressForm.idColegiado.value;
-		var optionsColegiadoGuardia = document.getElementById("colegiadosGuardia");
-		var encontrado;
-		for(var i = 0 ; i <optionsColegiadoGuardia.length ; i++) {
-			var option = optionsColegiadoGuardia.options[i].value;
-			if(option === idColegiado){
-				encontrado=i;
+		if(document.getElementById("buscaColegiadoManual").value == "true"){
+			document.getElementById("buscaColegiadoManual").value = "false";
+			document.getElementById('fechaGuardia').onchange();
+			
+		
+		}else{
+			//Comprobamos que esta en el combo
+			var idColegiado = document.VolantesExpressForm.idColegiado.value;
+			var optionsColegiadoGuardia = document.getElementById("colegiadosGuardia");
+			var encontrado;
+			for(var i = 0 ; i <optionsColegiadoGuardia.length ; i++) {
+				var option = optionsColegiadoGuardia.options[i].value;
+				if(option === idColegiado){
+					encontrado=i;
+				}
 			}
+			if (encontrado){
+				optionsColegiadoGuardia.selectedIndex=encontrado;
+			} else {
+				optionsColegiadoGuardia.selectedIndex=0;
+			}
+			postAccionColegiadoGuardia();
 		}
-		if (encontrado){
-			optionsColegiadoGuardia.selectedIndex=encontrado;
-		} else {
-			optionsColegiadoGuardia.selectedIndex=0;
-		}
-		postAccionColegiadoGuardia();
 	}
 	function preAccionTurno(){
 		document.getElementById("guardias").disabled= true;
@@ -665,7 +677,6 @@
 <!-- INICIO: CAMPOS DE BUSQUEDA-->
 <html:form action="/JGR_VolantesExpres" method="POST"
 	target="mainWorkArea">
-
 	<html:hidden property="modo" value=""/>
 	<html:hidden property="idColegiado" />
 	<html:hidden property="idInstitucion" />
@@ -674,6 +685,7 @@
 	<html:hidden property="delito" />
 	<html:hidden property="msgError" value=""/>
 	<html:hidden property="msgAviso" value=""/>
+	<input type="hidden" name="buscaColegiadoManual" value="false"/>
 
 	<siga:ConjCampos
 		leyenda="gratuita.volantesExpres.literal.cabeceraVolante">
@@ -868,12 +880,12 @@
 <ajax:updateSelectFromField
 	baseUrl="/SIGA/JGR_VolantesExpres.do?modo=getAjaxTurnos"
 	source="fechaGuardia" target="turnos"
-	parameters="fechaGuardia={fechaGuardia}" 
+	parameters="fechaGuardia={fechaGuardia},idColegiado={idColegiado}" 
 	postFunction="postAccionFechaGuardia"
 	/>
 <ajax:select
 	baseUrl="/SIGA/JGR_VolantesExpres.do?modo=getAjaxGuardias"
-	source="turnos" target="guardias" parameters="fechaGuardia={fechaGuardia},idTurno={idTurno}"
+	source="turnos" target="guardias" parameters="fechaGuardia={fechaGuardia},idTurno={idTurno},idColegiado={idColegiado}"
 	preFunction="preAccionTurno"
 	postFunction="postAccionTurno" />
 	
@@ -886,7 +898,7 @@
 <ajax:updateFieldFromField 
 	baseUrl="/SIGA/JGR_VolantesExpres.do?modo=getAjaxColegiado"
     source="numeroColegiado" target="idColegiado,numeroColegiado,nombreColegiado"
-	parameters="numeroColegiado={numeroColegiado}" postFunction="postAccionColegiado"  />
+	parameters="numeroColegiado={numeroColegiado}" preFunction="preAccionColegiado" postFunction="postAccionColegiado"  />
 <ajax:updateFieldFromSelect  
 	baseUrl="/SIGA/JGR_VolantesExpres.do?modo=getAjaxColegiadoGuardia"
     source="colegiadosGuardia" target="idColegiado,numeroColegiado,nombreColegiado"

@@ -767,24 +767,54 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 		int contador = 0;
 		StringBuffer sql = new StringBuffer();
 		if(volanteExpres.getFechaGuardia()!=null){
-//		if(false){
-			
-			sql.append(" SELECT DISTINCT TURNO.IDINSTITUCION, TURNO.IDTURNO, TURNO.NOMBRE ");
-			sql.append(" FROM SCS_TURNO TURNO, SCS_CALENDARIOGUARDIAS GC ");
-			sql.append(" WHERE TURNO.IDINSTITUCION = :");
-			contador ++;
-			sql.append(contador);
-			htCodigos.put(new Integer(contador),volanteExpres.getIdInstitucion());
-			      
-			sql.append(" AND GC.IDINSTITUCION = TURNO.IDINSTITUCION ");
-			sql.append(" AND GC.IDTURNO = TURNO.IDTURNO ");
-			sql.append(" AND TO_DATE(:");
-			String truncFechaGuardia = GstDate.getFormatedDateShort("", volanteExpres.getFechaGuardia());
-			contador ++;
-		    htCodigos.put(new Integer(contador),truncFechaGuardia);
-		    sql.append(contador);
-			sql.append(",'dd/MM/yyyy') BETWEEN TRUNC(GC.FECHAINICIO) AND TRUNC(GC.FECHAFIN) ");
-			sql.append(" ORDER BY TURNO.NOMBRE ");
+			//if(volanteExpres.getIdColegiado()!=null){
+			if(false){
+				sql.append(" SELECT DISTINCT TURNO.IDINSTITUCION, TURNO.IDTURNO, TURNO.NOMBRE ");
+				sql.append(" FROM SCS_TURNO TURNO, SCS_CALENDARIOGUARDIAS GC,SCS_CABECERAGUARDIAS CG ");
+				sql.append(" WHERE TURNO.IDINSTITUCION = :");
+				contador ++;
+				sql.append(contador);
+				htCodigos.put(new Integer(contador),volanteExpres.getIdInstitucion());
+				      
+				sql.append(" AND GC.IDINSTITUCION = TURNO.IDINSTITUCION ");
+				sql.append(" AND GC.IDTURNO = TURNO.IDTURNO ");
+				
+				
+				sql.append(" AND GC.IDINSTITUCION = CG.IDINSTITUCION ");
+				sql.append(" AND GC.IDTURNO = CG.IDTURNO ");
+				sql.append(" AND GC.IDGUARDIA = CG.IDGUARDIA ");
+				sql.append(" AND GC.IDCALENDARIOGUARDIAS = CG.IDCALENDARIOGUARDIAS ");
+				sql.append(" AND CG.IDPERSONA = :");
+				contador ++;
+				sql.append(contador);
+				htCodigos.put(new Integer(contador),volanteExpres.getIdColegiado());
+				
+				
+				sql.append(" AND TO_DATE(:");
+				String truncFechaGuardia = GstDate.getFormatedDateShort("", volanteExpres.getFechaGuardia());
+				contador ++;
+			    htCodigos.put(new Integer(contador),truncFechaGuardia);
+			    sql.append(contador);
+				sql.append(",'dd/MM/yyyy') BETWEEN TRUNC(GC.FECHAINICIO) AND TRUNC(GC.FECHAFIN) ");
+				sql.append(" ORDER BY TURNO.NOMBRE ");
+			}else{
+				sql.append(" SELECT DISTINCT TURNO.IDINSTITUCION, TURNO.IDTURNO, TURNO.NOMBRE ");
+				sql.append(" FROM SCS_TURNO TURNO, SCS_CALENDARIOGUARDIAS GC ");
+				sql.append(" WHERE TURNO.IDINSTITUCION = :");
+				contador ++;
+				sql.append(contador);
+				htCodigos.put(new Integer(contador),volanteExpres.getIdInstitucion());
+				      
+				sql.append(" AND GC.IDINSTITUCION = TURNO.IDINSTITUCION ");
+				sql.append(" AND GC.IDTURNO = TURNO.IDTURNO ");
+				sql.append(" AND TO_DATE(:");
+				String truncFechaGuardia = GstDate.getFormatedDateShort("", volanteExpres.getFechaGuardia());
+				contador ++;
+			    htCodigos.put(new Integer(contador),truncFechaGuardia);
+			    sql.append(contador);
+				sql.append(",'dd/MM/yyyy') BETWEEN TRUNC(GC.FECHAINICIO) AND TRUNC(GC.FECHAFIN) ");
+				sql.append(" ORDER BY TURNO.NOMBRE ");
+			}
 		}else{
 			sql.append(" SELECT IDINSTITUCION , IDTURNO ");
 			sql.append(" , NOMBRE FROM SCS_TURNO TURNO  ");
