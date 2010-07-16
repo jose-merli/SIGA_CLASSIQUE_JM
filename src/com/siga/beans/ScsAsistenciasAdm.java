@@ -1667,7 +1667,7 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 	}
 	public void insertarAsistenciasVolanteExpress(VolantesExpressVo volantesExpressVo)throws ClsExceptions{
 		ScsAsistenciasBean asistencia = null;
-		
+		ScsCabeceraGuardiasAdm cabeceraGuardiasAdm = null;
 		ScsActuacionAsistenciaAdm actAdm = null;
 		boolean isInsertar = false;
 		List<ScsAsistenciasBean> alAsistencias = (List<ScsAsistenciasBean>) volantesExpressVo.getAsistencias(); 
@@ -1709,6 +1709,10 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 				asistencia.setAnio(new Integer(anio));
 				asistencia.setNumero(new Integer(this.getNumeroAsistencia(asistencia.getIdInstitucion().toString(), Integer.parseInt(anio))));
 				this.insert(asistencia);
+				if(cabeceraGuardiasAdm==null)
+					cabeceraGuardiasAdm = new ScsCabeceraGuardiasAdm (volantesExpressVo.getUsrBean());
+				//Validamos todas la cabecera de guardia a instancias de LP
+				cabeceraGuardiasAdm.validacionCabeceraAsistencia(asistencia.getIdInstitucion(), asistencia.getAnio(), asistencia.getNumero(), true);
 			}
 			else {
 				Hashtable htAsistencia = this.beanToHashTable(asistencia);

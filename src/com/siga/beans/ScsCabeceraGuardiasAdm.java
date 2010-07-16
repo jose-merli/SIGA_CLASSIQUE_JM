@@ -510,6 +510,20 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 			GenParametrosAdm admPar = new GenParametrosAdm(this.usrbean);
 			String param = admPar.getValor(this.usrbean.getLocation(), "SCS","VALIDAR_VOLANTE","N");
 			if (param.equals("S")) {
+				validacionCabeceraAsistencia(new Integer(idInstitucion), new Integer(anio), new Integer(numero), actValidada);
+			}
+
+		}
+		catch (Exception e){
+			throw new ClsExceptions(e,"Error al actualizar la validacion de cabecera de guardias");
+		}
+		
+	}
+	public void validacionCabeceraAsistencia(Integer idInstitucion,Integer anio, Integer numero,  boolean actValidada) throws ClsExceptions {
+		String consulta = "";
+		
+		try {
+			
 			    // solamente actualizamos la validacion de la cabecera cuando el paraemtro dice que es necesario validarlas
 			    // buscamos la cabecera de la actuacion
 			    consulta = " SELECT CG.*, F_SIGA_TIENE_ACTS_VALIDADAS(CG.IDINSTITUCION,CG.IDTURNO,CG.IDGUARDIA,CG.IDCALENDARIOGUARDIAS,CG.IDPERSONA,CG.FECHAINICIO) AS ACTUACIONESVALIDADAS " +
@@ -554,11 +568,11 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 				        }
 			    	}
 			    }
-			}
+			
 
 		}
 		catch (Exception e){
-			throw new ClsExceptions(e,"Error al actualizar la validacion de cabecera de guardias");
+			throw new ClsExceptions(e,"Error validar la cabecera de guardias");
 		}
 		
 	}

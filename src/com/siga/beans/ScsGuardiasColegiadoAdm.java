@@ -14,6 +14,7 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.UserTransaction;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngBBDD;
@@ -1041,7 +1042,12 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		cabeceraGuardiaBean.setSustituto("N");
 		cabeceraGuardiaBean.setFacturado("0");
 		cabeceraGuardiaBean.setPagado("0");
-		cabeceraGuardiaBean.setValidado("0");
+		
+		//A instancias luis pedro, como a esto solo se llama desde volante expres y se esta creando una asistencia, ponemos siempre la guardia
+		//como validada
+		
+		cabeceraGuardiaBean.setValidado(ClsConstants.DB_TRUE);
+		
 		
 		guardiaColegiadoBean.setIdInstitucion(idInstitucion);
 		guardiaColegiadoBean.setIdTurno(idTurno);
