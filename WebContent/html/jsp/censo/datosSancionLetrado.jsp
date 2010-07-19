@@ -72,18 +72,22 @@
 	}
 	
 	String nombrePersona="";
+	String nif="";
 	String idPersonaFinal="";
 	CenPersonaAdm admPer = new CenPersonaAdm(user);
 	if (registro.get("IDPERSONA")!=null) {
 		nombrePersona = admPer.obtenerNombreApellidos((String)registro.get("IDPERSONA"));
+		nif=admPer.obtenerNIF((String)registro.get("IDPERSONA"));
 		idPersonaFinal=(String)registro.get("IDPERSONA");
 	} else {
-		if (pestanaColegiacion.equals("1")) {
+		if (pestanaColegiacion.equals("1")) {	
 			nombrePersona = admPer.obtenerNombreApellidos(personaColegiacion);
+			nif=admPer.obtenerNIF(personaColegiacion);
 			idPersonaFinal=personaColegiacion;
 		} else {
 			nombrePersona = "";
 			idPersonaFinal = "";
+			nif="";
 		}
 	}
 
@@ -273,7 +277,7 @@
 										}
 										if (resultado != null && resultado[4]!=null && resultado[5]!=null && resultado[6]!=null)
 										{
-											document.getElementById('nombreMostrado').value = resultado[4] + " " + resultado[5] + " " + resultado[6];
+											document.getElementById('nombreMostrado').value = resultado[3]+ "  "+ resultado[4] + " " + resultado[5] + " " + resultado[6];
 										}
 									}		
 								</script>
@@ -295,6 +299,7 @@
 									 si la busqueda se realiza mediante el campo numeroLetrado se podría modificar por pantalla sin
 									 necesidad de seleccionarlo por el botón -->
 								<html:hidden name="SancionesLetradoForm" property="idPersona" size="8" maxlength="80" styleClass="boxConsulta" value="<%=idPersona%>"></html:hidden>
+								<html:text property="nif" size="10" maxlength="50" styleClass="boxConsulta" value="<%=nif%>" readOnly="true"></html:text>
 								<html:text property="nombreMostrado" size="50" maxlength="150" styleClass="boxConsulta" value="<%=nombrePersona%>" readOnly="true"></html:text>
 								<!-- FIN - RGG - SELECCION DE COLEGIADO -->
 							</td>
