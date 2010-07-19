@@ -245,8 +245,7 @@ public class SancionesLetradoAction extends MasterAction
 			}else tipobusqueda=ClsConstants.COMBO_MOSTRAR_SINARCHIVAR;		
 			
 			//se Obtienen los datos de las consulta para recuperar los datos de las sanciones archivadas o sin archivar.
-			resultado = admSancion.getSancionesBuscar(miform, user.getLocation(),tipobusqueda);
-			
+			resultado = admSancion.getSancionesBuscar(miform, user.getLocation(),tipobusqueda);		
 			
 			
 			 databackup.put("paginador",resultado);
@@ -257,8 +256,9 @@ public class SancionesLetradoAction extends MasterAction
 				} 
 		  }	
 				
-			//request.setAttribute("resultado",resultado);
-			request.setAttribute("activarFilaSel","true");
+			//request.setAttribute("resultado",resultado);			 	
+			
+			 	request.setAttribute("miform",miform);
 	    } 
 		catch (Exception e) {
 	    	throwExcp("messages.general.error",new String[] {"modulo.censo"},e,tx);
@@ -736,10 +736,12 @@ public class SancionesLetradoAction extends MasterAction
             String tienepermisoArchivo= admSancion.getTienePermisoArchivación(idinstitucion,username);		
 			request.setAttribute("institucionColegiacion",request.getParameter("institucionColegiacion"));			
 			request.setAttribute("tienepermiso",tienepermisoArchivo);
-		
-			String fechaarchivada= miform.getFechaArchivada();
+
+			//se necesita la fecha para guardar la fecha de Archivación
+			String fechaarchivada= miform.getFechaArchivada();			
 			
-			int nsanciones=admSancion.getArchivar(idinstitucion,fechaarchivada);		
+			String sentencia=admSancion.getSentenciaSanciones(miform, idinstitucion);			
+			int nsanciones=admSancion.getArchivar(sentencia,fechaarchivada);		
 			String message=(UtilidadesString.getMensajeIdioma(this.getUserBean(request),"messages.updated.Archivos.success"));
 			
 			message+=" "+ nsanciones+" "+UtilidadesString.getMensajeIdioma(this.getUserBean(request),"messages.updated.ArchivosSanciones.success");
