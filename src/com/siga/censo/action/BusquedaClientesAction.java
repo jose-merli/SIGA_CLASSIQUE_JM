@@ -1691,8 +1691,8 @@ public class BusquedaClientesAction extends MasterAction {
 					" from cen_colegiado c, cen_cliente cl, cen_persona p" +
 					" where cl.idpersona = p.idpersona" +
 					" and cl.idpersona = c.idpersona" +
-					" and cl.idinstitucion = c.idinstitucion" +
-					" and c.idinstitucion="+user.getLocation()+
+					//" and cl.idinstitucion = c.idinstitucion" +
+					" and cl.idinstitucion="+user.getLocation()+
 					" and p.nifcif='"+nif+"'"+
 					" and rownum<2" +
 					" order by residente desc, ejerciente desc";			
