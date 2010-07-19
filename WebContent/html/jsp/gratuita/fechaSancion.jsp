@@ -17,6 +17,7 @@
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.beans.CenSancionBean"%>
 <%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
+<%@ page import="com.siga.censo.form.SancionesLetradoForm"%>
 <%@ page import="com.siga.administracion.*"%>
 <%@ page import = "com.siga.Utilidades.*"%>
 
@@ -27,6 +28,9 @@
 	Hashtable miHash = (Hashtable)ses.getAttribute("EJG");
 	ses.removeAttribute("EJG");
 	String modo = (String) request.getAttribute("modo");
+
+   SancionesLetradoForm miform = (SancionesLetradoForm)request.getAttribute("miform");
+	
 	String estilo="";
 	String estiloCombo="";
 	String fechaHoy=UtilidadesBDAdm.getFechaBD("");
@@ -103,6 +107,18 @@
 	<html:form action="/CEN_SancionesLetrado" method="POST" target="submitArea">
 	<html:hidden property = "modo" value = "Archivar"/>
 	<html:hidden property = "idInstitucion" value ="<%=usr.getLocation()%>"/>
+	<html:hidden property="nombreInstitucionBuscar" />
+	<html:hidden property="tipoSancionBuscar" />
+	<html:hidden property="refCGAE" />
+	<html:hidden property="colegiadoBuscar" />
+	<html:hidden property="chkRehabilitado" />
+	<html:hidden property="mostrarTiposFechas" />			
+	<html:hidden property="fechaInicioBuscar" />
+	<html:hidden property="fechaFinBuscar" />
+	<html:hidden property="mostrarSanciones" />					
+	<html:hidden property="fechaInicioArchivada"/>
+	<html:hidden property="fechaFinArchivada"/>
+			
 	
 	
 
@@ -163,6 +179,7 @@
 				//return false;				
 				//window.returnValue="buscarPor";
 		       	window.returnValue="MODIFICADO";
+		     
 		       	//top.cierraConParametros("NORMAL");	
 		
 		}		
@@ -172,6 +189,10 @@
 		{
 			top.cierraConParametros("NORMAL");			
 		}	
+
+		
+	
+	
 		</script>
 	<!-- FIN: SCRIPTS BOTONES -->
 
