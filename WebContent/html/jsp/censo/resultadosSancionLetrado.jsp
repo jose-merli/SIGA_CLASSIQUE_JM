@@ -58,9 +58,8 @@
 	
 	String tienepermisoArchivo = (String)request.getAttribute("tienepermisoArchivo");
 	
- 
-	// locales
-	SancionesLetradoForm formulario = (SancionesLetradoForm)request.getSession().getAttribute("SancionesLetradoForm");
+ //	SancionesLetradoForm miform = (SancionesLetradoForm)request.getAttribute("miform");
+
 
 	String tamaño="position:absolute; width:100%; height:20; z-index:3; bottom:0px; left: 0px";
 	// miro si estamos en la pestaña de datos de colegiacion
@@ -166,6 +165,7 @@
 
 			<!-- Campo obligatorio -->
 			<html:hidden property = "modo" value = "" />
+			<html:hidden property = "formulario" value = "" />
 			<input type="hidden" name= "accionModal" value = "">
 			<input type="hidden" name= "pestanaColegiacion" value = "<%=pestanaColegiacion %>">
 			<input type="hidden" name= "personaColegiacion" value = "<%=personaColegiacion %>">
@@ -173,6 +173,23 @@
 			<html:hidden property="registrosSeleccionados" />
 			<html:hidden property="datosPaginador" />
 			<html:hidden property="seleccionarTodos" />
+			<html:hidden property="nombreInstitucionBuscar" />
+			<html:hidden property="tipoSancionBuscar" />
+			<html:hidden property="refCGAE" />
+			<html:hidden property="colegiadoBuscar" />
+			<html:hidden property="chkRehabilitado" />
+			<html:hidden property="mostrarTiposFechas" />			
+			<html:hidden property="fechaInicioBuscar" />
+			<html:hidden property="fechaFinBuscar" />
+			<html:hidden property="mostrarSanciones" />					
+			<html:hidden property="fechaInicioArchivada"/>
+			<html:hidden property="fechaFinArchivada"/>
+			
+			
+			
+			
+			
+			
 
  			<!-- RGG: cambio a formularios ligeros -->
  			<input type="hidden" name="filaSelD">
@@ -345,11 +362,15 @@
 
 
 	 function accionArchivar(){
-			
-		document.forms[0].modo.value = "fecha";
+		//alert("document.SancionesLetradoForm.tipoSancionBuscar.value"+document.SancionesLetradoForm.tipoSancionBuscar.value); 
+		document.forms[0].modo.value = "fecha";		
 		document.forms[0].target = "mainPestanas";
-		var resultado=ventaModalGeneral(document.forms[0].name,"P");
-	
+		var resultado=ventaModalGeneral(document.forms[0].name,"P");	
+		if (resultado!=undefined && resultado=="MODIFICADO")
+		{
+			refrescarLocal();
+		}
+		
 		}
 
 		
