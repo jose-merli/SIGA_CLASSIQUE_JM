@@ -1,5 +1,7 @@
 <!-- busquedaVolantesResultados.jsp -->
 <!-- CABECERA JSP -->
+<%@page import="com.siga.Utilidades.UtilidadesNumero"%>
+<%@page import="com.siga.Utilidades.UtilidadesString"%>
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -89,11 +91,12 @@
 			   tamanoCol="5,15,20,10,20,10,10,10"
 		   			alto="100%"
 
-			   modal="P"
+			   modal="M"
 		>
 	<% if ((obj!=null) && !obj.isEmpty()) { %>
 				<%
 				int recordNumber=1;
+				System.out.println(recordNumber);
 				//String fechaInicio="", fechaFin="", fechaPermuta="", idcalendarioguardias="", idturno="", idguardia="", idinstitucion="";
 				String fechaInicio="", fechaFin="",  idcalendarioguardias="", idturno="", idguardia="", idinstitucion="";
 				String numerocolegiado="", nombre="", observaciones="", idpersona="", numero="", fechaInicioPermuta="", fechaFinPermuta="";
@@ -133,13 +136,17 @@
 				numerocolegiado = ((String)hash.get("NUMEROCOLEGIADO")).equals("")?"&nbsp;":(String)hash.get("NUMEROCOLEGIADO");
 				nombre = ((String)hash.get("NOMBRE")).equals("")?"&nbsp;":(String)hash.get("NOMBRE");
 				idpersona = ((String)hash.get("IDPERSONA")).equals("")?"&nbsp;":(String)hash.get("IDPERSONA");
-				numero = ((String)hash.get("NUMEROPERMUTA")).equals("")?"NINGUNO":(String)hash.get("NUMEROPERMUTA");
+				numero = ((String)hash.get("NUMEROPERMUTA")).trim().equals("")?"NINGUNO":(String)hash.get("NUMEROPERMUTA");
 				fechaInicioPermuta = ((String)hash.get("FECHAINICIOPERMUTA")).equals("")?"":(String)hash.get("FECHAINICIOPERMUTA");
 				fechaFinPermuta = ((String)hash.get("FECHAFINPERMUTA")).equals("")?"":(String)hash.get("FECHAFINPERMUTA");
 				String nomTurno = ((String)hash.get("NOMTURNO")).equals("")?"":(String)hash.get("NOMTURNO");
 				String nomGuardia = ((String)hash.get("NOMGUARDIA")).equals("")?"":(String)hash.get("NOMGUARDIA");
 				String validado = ((String)hash.get("VALIDADO")).equals("")?"":(String)hash.get("VALIDADO");
-				int numActuacionesValidadas = new Integer((String)hash.get("ACT_VALIDADAS")==null?"0":(String)hash.get("ACT_VALIDADAS")).intValue();
+				int numActuacionesValidadas = 0;
+				if (hash!=null && (String)hash.get("ACT_VALIDADAS")!=null &&
+					!hash.get("ACT_VALIDADAS").toString().trim().equals("")){
+					numActuacionesValidadas = UtilidadesNumero.parseInt((String)hash.get("ACT_VALIDADAS"));
+				}
 
 				//PL:
 				pl = ((String)hash.get("PL")).equals("")?"":(String)hash.get("PL");
@@ -198,7 +205,8 @@
 					<!--fechaFin-->
 					<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFinPermuta)%>
 				</td>
-				<% 		recordNumber++; %>
+				<% System.out.println(recordNumber);		
+				recordNumber++; %>
 			</siga:FilaConIconos>
 
 			<% } %>
