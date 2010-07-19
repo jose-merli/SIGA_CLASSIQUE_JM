@@ -15,7 +15,6 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
@@ -39,7 +38,6 @@ import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsPermutaGuardiasAdm;
 import com.siga.beans.ScsPermutaGuardiasBean;
 import com.siga.beans.ScsSaltosCompensacionesAdm;
-import com.siga.beans.ScsSaltosCompensacionesBean;
 import com.siga.beans.ScsTurnoAdm;
 import com.siga.beans.ScsTurnoBean;
 import com.siga.general.MasterAction;
@@ -393,7 +391,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 					idTurno = (String)ocultos.get(1);
 					idGuardia = (String)ocultos.get(2);
 					idInstitucion = (String)ocultos.get(3);
-					idPersona = (String)ocultos.get(4);
+					idPersona = (String)ocultos.get(5);
 				}
 
 				//Consulto las guardias del periodo:
