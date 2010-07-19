@@ -32,6 +32,7 @@
 		String busquedaCliente="";
 		String nifCliente="";
 	
+		
 		// Si el cliente es un letrado, le establezco a el como parte de la busqueda
 	if (user.isLetrado()) {
 		idPersonaBusqueda=String.valueOf(user.getIdPersona());
@@ -102,12 +103,9 @@
 	<!-- FILA -->
 	<tr>				
 
-		<td class="labelText" width="140">
-			<siga:Idioma key="censo.busquedaSancionesLetrado.literal.colegio"/>
-		</td>				
-		<td width="400">
-			<siga:ComboBD nombre = "nombreInstitucionBuscar" tipo="cmbInstitucionesAbreviadas" clase="boxCombo" obligatorio="false"/>
-		</td>
+		<td class="labelText">
+			<siga:Idioma key="censo.busquedaSancionesLetrado.literal.colegio"/>&nbsp;&nbsp;<siga:ComboBD nombre = "nombreInstitucionBuscar" tipo="cmbInstitucionesAbreviadas" clase="boxCombo" obligatorio="false"/>			
+		</td>		
 		
 		<td class="labelText">
 			<siga:Idioma key="censo.busquedaSancionesLetrado.literal.tipoSancion"/>
@@ -115,34 +113,23 @@
 		<td >
 			<siga:ComboBD nombre = "tipoSancionBuscar" tipo="cmbTipoSancion"  clase="boxCombo" obligatorio="false"/>
 		</td>
-		<td class="labelText" align="right">
-			<siga:Idioma key="censo.BusquedaSancionesLetrado.literal.refCGAE"/>			
+		
+		<td class="labelText" align="center">
+			<siga:Idioma key="censo.BusquedaSancionesLetrado.literal.refCGAE"/>						
+			
 		</td>				
-		<td align="left">	
-		<html:text property="refCGAE" size="20" maxlength="50" styleClass="box" readOnly="false"></html:text>
-			<!-- RGG - SELECCION DE COLEGIADO -->
+		
+		<td>	
+			
+		    <html:text property="refCGAE" size="20" maxlength="50" styleClass="box" readOnly="false"></html:text>
 			<script language="JavaScript">	
-				function buscarCliente () 
-				{    
-					var resultado = ventaModalGeneral("busquedaClientesModalForm","G");			
-					if (resultado != null && resultado[0]!=null)
-					{
-						document.getElementById('colegiadoBuscar').value = resultado[0];
-					}
-					if (resultado != null && resultado[4]!=null && resultado[5]!=null && resultado[6]!=null)
-					{
-						document.getElementById('nombreMostrado').value = resultado[4] + " " + resultado[5] + " " + resultado[6];
-					}
-				}		
-			</script>
-			<script language="JavaScript">	
+
+			
 				function limpiarCliente () 
 				{
 					document.getElementById('colegiadoBuscar').value = "";
 					document.getElementById('nombreMostrado').value = "";
-				}		
-
-
+				}	
 
 			</script>
 		
@@ -151,12 +138,23 @@
 				 necesidad de seleccionarlo por el botón -->
 			<html:hidden name="SancionesLetradoForm" property="colegiadoBuscar" size="8" maxlength="80" styleClass="boxConsulta" value = "<%=idPersonaBusqueda%>" readOnly="true"></html:hidden>
 			<html:hidden property = "colegiadoBuscar" value = "<%=idPersonaBusqueda%>"/>
+			
 		</td>
 	
 	</tr>
 	
 	<tr>
-		<td class="labelText" colspan="2" >
+			<td id="busquedaLetrado" class="labelText" colspan="7">
+					<% 	if(user.isLetrado()){%>
+							<siga:BusquedaPersona tipo="personas" titulo="gratuita.seleccionColegiadoJG.literal.titulo" anchoNum="10" anchoDesc="50" idPersona="colegiadoBuscar"></siga:BusquedaPersona>
+						<% 	}else{%>
+							<siga:BusquedaPersona tipo="personas" titulo="gratuita.seleccionColegiadoJG.literal.titulo" anchoNum="10" anchoDesc="50" idPersona="colegiadoBuscar"></siga:BusquedaPersona>									
+					<% 	}%>
+			</td>
+		</tr>
+	
+	<tr>
+		<td class="labelText" >
 			<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.sancionesReahabilitadas"/> <html:checkbox name="SancionesLetradoForm" property="chkRehabilitado" value="0"></html:checkbox>
 			
 		</td>
@@ -182,33 +180,20 @@
 		<td class="labelText">
 			<siga:Idioma key="gratuita.busquedaSOJ.literal.hasta"/>&nbsp;&nbsp;<html:text name="SancionesLetradoForm" property="fechaFinBuscar" size="10" styleClass="box" value=""></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaFinBuscar);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
 		</td>
-		<td width="200">
-		
-		</td>
+	
 		
 	</tr>	
 		
-		<tr>
 		
-			<td id="busquedaLetrado" class="labelText" colspan="7">
-					<% 	if(user.isLetrado()){%>
-							<siga:BusquedaPersona tipo="personas" titulo="gratuita.seleccionColegiadoJG.literal.titulo" anchoNum="10" anchoDesc="50" idPersona="colegiadoBuscar"></siga:BusquedaPersona>
-						<% 	}else{%>
-							<siga:BusquedaPersona tipo="personas" titulo="gratuita.seleccionColegiadoJG.literal.titulo" anchoNum="10" anchoDesc="50" idPersona="colegiadoBuscar"></siga:BusquedaPersona>									
-					<% 	}%>
-			</td>
-		</tr>
 	
 		
 	<% if(tienepermisoArchivo.equals("1")){%>
 	<tr>
 	   <td class="labelText" >
-			<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.mostrarSanciones"/>
-		</td>	
-		<td>
+			<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.mostrarSanciones"/>&nbsp;&nbsp;&nbsp;&nbsp;
 			<html:checkbox name="SancionesLetradoForm" property="mostrarSanciones" value="<%=ClsConstants.COMBO_MOSTRAR_SINARCHIVAR%>"></html:checkbox>
-		</td>			
-		<td class="labelText">
+		</td>	
+		<td class="labelText" colspan="2" align="center">
 			<siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.fArchivada"/>
 		</td>
 		<td class="labelText">
@@ -255,7 +240,7 @@
 	<script language="JavaScript">
 
 		function buscar() 
-		{		
+		{					
 			 if ((document.forms[0].mostrarTiposFechas.value=="") && ((document.forms[0].fechaInicioBuscar.value!="")||(document.forms[0].fechaFinBuscar.value!=""))){ 
 				alert ('<siga:Idioma key="general.message.tipoFecha"/>');
 				return false;
@@ -281,6 +266,10 @@
 			document.forms[0].reset();
 		}
 
+
+	
+
+						
 			
 	</script>
 	
