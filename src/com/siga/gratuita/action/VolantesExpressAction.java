@@ -207,7 +207,63 @@ public class VolantesExpressAction extends MasterAction
 		return "inicio";
 	}
 
-	
+	private String getFechaGuardia(String fecha)throws ClsExceptions{
+		if(fecha==null ||fecha.equals(""))
+			return "";
+		String checkstr = "0123456789";
+		String fechaADevolver = "";
+		String fechaTemp = "";
+		String separador = "/";
+		String day;
+		String month;
+		String year;
+		int bisiesto = 0;
+		
+		for (int i = 0; i < fecha.length(); i++) {
+			int indice = checkstr.indexOf(fecha.substring(i,i+1)); 
+			if ( indice >= 0) {
+				fechaTemp = fechaTemp + fecha.substring(i,i+1);
+			}else{
+				fechaTemp = fechaTemp + separador;
+			}
+		}
+		fecha = fechaTemp;
+		int pos1=fecha.indexOf(separador);
+		int pos2=fecha.indexOf(separador,pos1+1);
+		int pos3=fecha.indexOf(separador,pos2+1); // No deberia existir.
+		if ((pos1>pos2) || (pos3>0)){throw new ClsExceptions("");}
+		day=fecha.substring(0,pos1);
+		month=fecha.substring(pos1+1,pos2);
+		year=fecha.substring(pos2+1);
+		if (year.length() == 1) {
+			year = "200" + year; } // Si el año es un solo digito se asume 200x
+		if (year.length() == 2) {
+			year = "20" + year; } // Si el año son solo 2 digitos se asume 20xx
+		if ((Integer.parseInt(year) < 1900) || (Integer.parseInt(year) > 2999)) {
+			throw new ClsExceptions("");
+		} // Codigo de error 1 corresponde a año incorrecto
+		if ((day=="") || (month=="") || (year=="")){throw new ClsExceptions("");}
+		// Validacion del campo mes
+		if ((Integer.parseInt(month) < 1) || (Integer.parseInt(month) > 12)) { 
+			throw new ClsExceptions("");} // Codigo de error 2 corresponde a mes incorrecto
+		// Validacion del campo dia
+		if (((Integer.parseInt(day) < 1) || (Integer.parseInt(day) > 31))){ 
+			throw new ClsExceptions(""); } // Codigo de error 3 corresponde a dia incorrecto
+		// Validacion 29 febrero
+		if ((Integer.parseInt(year) % 4 == 0) || (Integer.parseInt(year) % 100 == 0) || (Integer.parseInt(year) % 400 == 0)) { bisiesto = 1; }
+		if (((Integer.parseInt(month) == 2) && (bisiesto == 1) && (Integer.parseInt(day) > 29))) {throw new ClsExceptions(""); } // Codigo de error 4 corresponde a fecha no valida
+		if (((Integer.parseInt(month) == 2) && (bisiesto != 1) && (Integer.parseInt(day) > 28))) { 
+			throw new ClsExceptions(""); }
+		// Validacion del resto de meses
+		if (((Integer.parseInt(day) > 31) && ((month == "01") || (month == "03") || (month == "05") || (month == "07") || (month == "08") || (month == "10") || (month == "12")))) {
+			throw new ClsExceptions(""); }
+		if (((Integer.parseInt(day) > 30) && ((month == "04") || (month == "06") || (month == "09") || (month == "11")))) {
+			throw new ClsExceptions(""); }
+		fechaADevolver = day+separador+month+separador+year;
+		return fechaADevolver;
+		
+		
+	} 
 	protected void getAjaxTurnos (ActionMapping mapping, 		
 			MasterForm formulario, 
 			HttpServletRequest request, 
@@ -218,7 +274,19 @@ public class VolantesExpressAction extends MasterAction
 		VolantesExpressForm miForm = (VolantesExpressForm) formulario;
 		//Recogemos el parametro enviado por ajax
 		String fechaGuardia = request.getParameter("fechaGuardia");
+		try {
+			fechaGuardia = getFechaGuardia(fechaGuardia);	
+		} catch (ClsExceptions e) {
+			ClsLogging.writeFileLog("VOLANTES EXPRESS:Fecha mal formateada.getAjaxTurnos.fechaGuardia:"+fechaGuardia+"/", 10);
+			return;
+		}
+		
 		miForm.setFechaGuardia(fechaGuardia);
+		
+		
+		
+		
+		
 		ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxTurnos.fechaGuardia:"+fechaGuardia+"/", 10);
 		
 		//Sacamos los turnos

@@ -930,7 +930,7 @@
 		</tr>
 	</table>
 </div>
-<div id="divAsistencias" style='height:400px;position:absolute;width:100%; overflow-y:auto'>
+<div id="divAsistencias" style='height:300px;position:absolute;width:100%; overflow-y:auto'>
 	<table id='asistencias' border='1' align='center' width='100%' cellspacing='0' cellpadding='0' style='table-layout:fixed'>
 	</table>
 </div>	
@@ -938,7 +938,7 @@
 
 
 			<!-- INICIO: BOTONES BUSQUEDA -->
-<table class="botonesDetalle" align="center">
+<table id="tablaBotonesDetalle" class="botonesDetalle" align="center">
 	<tr>
 		<td style="width: 900px;">&nbsp;</td>
 		<td class="tdBotones">
@@ -1059,6 +1059,18 @@
 </body>
 
 <script>
+	function setAnchoAsistencias(){
+		tablaAsistencias = document.getElementById("asistencias");
+		var posTablaAsistencias = findPosY(tablaAsistencias);
+		tablaBotonera = document.getElementById("tablaBotonesDetalle");
+		var posTablaBotonera = findPosY(tablaBotonera);
+		document.getElementById("divAsistencias").style.height=posTablaBotonera-posTablaAsistencias;
+		
+	
+	}
+	
+	
+	
 	function accionNuevo(){
 		document.VolantesExpressForm.modo.value = "";
 		document.VolantesExpressForm.submit();
@@ -1266,6 +1278,7 @@
 			td.innerHTML = '<siga:Idioma key="gratuita.volantesExpres.procedimiento"/>';		
 			
 	}
+	setAnchoAsistencias();
 
 </script>
 
