@@ -4893,9 +4893,12 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		    	    if (lImagenes!=null && lImagenes.size()>0){
 			    	    
 			    	    for(ImagenPlantillaForm imagenPlantilla:lImagenes){
+			    	    	
 			    	    	EnvImagenPlantillaBean imagenPlantillaBean = imagenPlantilla.getImagenPlantillaBean();
 			    	    	if(imagenPlantillaBean.isEmbebed()){
-				    	    	addCIDToMultipart(relatedMultipart,imagenPlantillaBean.getPathImagen(null,File.separator),imagenPlantillaBean.getNombre());
+			    	    		if(sCuerpo.indexOf(imagenPlantillaBean.getImagenSrcEmbebida("/"))!=-1){
+					    	    	addCIDToMultipart(relatedMultipart,imagenPlantillaBean.getPathImagen(null,File.separator),imagenPlantillaBean.getNombre());
+				    	    	}
 			    	    	}
 			    	    }
 			    	    
