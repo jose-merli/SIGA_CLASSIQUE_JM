@@ -154,7 +154,8 @@
 			document.forms[0].target="resultadoModal";
 			if (trim(document.forms[0].numColegiado.value)=="" && 
 				trim(document.forms[0].idGuardia.value)=="" && 
-				trim(document.forms[0].idTurno.value)==""){
+				trim(document.forms[0].idTurno.value)=="" &&
+				!document.forms[0].pendienteValidar.checked){
 				alert("<siga:Idioma key="gratuita.busquedaVolantesGuardias.literal.criteriosObligatorios"/> ");	
 				fin();
 				return false;
