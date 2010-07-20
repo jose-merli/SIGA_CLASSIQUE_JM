@@ -1154,12 +1154,14 @@ public class DefinirEnviosAction extends MasterAction {
 					if(idPersona!=null){
 						Vector vCampos = informeCertificado.obtenerDatosFormulario(form);
 
+						String periodo = null;
 						String anyoInformeIRPF = null;
 						String idioma = null;
 						String plantillas = null;
 						for (int i = 0; i < vCampos.size(); i++) {
 							Hashtable ht = (Hashtable) vCampos.get(i); 
 							idPersona= (String)ht.get("idPersona");
+							periodo = (String)ht.get("periodo");
 							anyoInformeIRPF= (String)ht.get("anyoInformeIRPF");
 							idInstitucion= (String)ht.get("idInstitucion");
 							idioma = (String)ht.get("idioma");
@@ -1168,9 +1170,7 @@ public class DefinirEnviosAction extends MasterAction {
 
 						} 
 
-
-
-						Vector vDocumentos = informeCertificado.getDocumentosAEnviar(plantillas, anyoInformeIRPF, idPersona, idioma, idInstitucion, userBean);
+						Vector vDocumentos = informeCertificado.getDocumentosAEnviar(plantillas, periodo, anyoInformeIRPF, idPersona, idioma, idInstitucion, userBean);
 
 						//envio = new Envio(userBean,nombreEnvio);
 
@@ -1210,6 +1210,7 @@ public class DefinirEnviosAction extends MasterAction {
 						//idInstitucion = userBean.getLocation();
 						Vector vCampos = informeCertificado.obtenerDatosFormulario(form);
 
+						String periodo = null;
 						String anyoInformeIRPF = null;
 						String idioma = null;
 						String plantillas = null;
@@ -1221,6 +1222,7 @@ public class DefinirEnviosAction extends MasterAction {
 							Hashtable ht = (Hashtable) vCampos.get(i); 
 							idPersona = (String) ht.get("idPersona");
 							idInstitucion = (String) ht.get("idInstitucion");
+							periodo = (String) ht.get("periodo");
 							anyoInformeIRPF = (String) ht.get("anyoInformeIRPF");
 							idioma = (String) ht.get("idioma");
 							plantillas = (String) ht.get("plantillas");
@@ -1248,6 +1250,7 @@ public class DefinirEnviosAction extends MasterAction {
 							programIRPF.setIdPersona(new Long(idPersona));
 							programIRPF.setIdioma(new Integer(idioma));
 							programIRPF.setEstado(ClsConstants.DB_FALSE);
+							programIRPF.setPeriodo(new Integer(periodo));
 							programIRPF.setAnyoIRPF(new Integer(anyoInformeIRPF));
 							programIRPF.setPlantillas(plantillas);
 

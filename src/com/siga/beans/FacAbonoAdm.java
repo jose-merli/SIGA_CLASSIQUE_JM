@@ -1332,94 +1332,139 @@ public class FacAbonoAdm extends MasterBeanAdministrador {
 	       return datos;                        
 	}
 	
-	// del merge (revisar)
-	public Vector getRetencionesIRPF (String idInstitucion, String idPersona,String anyoRetencionIRPF, String idioma) throws ClsExceptions,SIGAException {
-		Vector vDatos =new Vector();
+	/**
+	 * Obtiene el resumen de retenciones IRPF dados los parametros
+	 * 
+	 * @param idInstitucion
+	 * @param idPersona
+	 * @param periodo
+	 * @param anyoRetencionIRPF
+	 * @param idioma
+	 * @return
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
+	public Vector getRetencionesIRPF(String idInstitucion,
+									 String idPersona,
+									 String periodo,
+									 String anyoRetencionIRPF,
+									 String idioma)
+			throws ClsExceptions, SIGAException
+	{
+		Vector datosObtenidos = new Vector();
+		
 		try {
-            RowsContainer rc = new RowsContainer(); 
-            StringBuffer sql = new StringBuffer();
-            Hashtable htCodigos = new Hashtable();
-            int codigo = 0;
-            sql.append(" SELECT ");
-            if(idPersona == null)
-            	sql.append(" IDPERSONASJCS, ");
-            sql.append(" SUM(TOTALIMPORTESJCS) + SUM(IMPORTETOTALMOVIMIENTOS) TOTALIMPORTESJCS, abs(SUM(TOTALIMPORTEIRPF)) TOTALIMPORTEIRPF ");
-            sql.append(" FROM (SELECT IDPERSONASJCS, ");
-            sql.append(" IDPAGOS, ");
-            sql.append(" SUM(TOTALIMPORTESJCS) AS TOTALIMPORTESJCS, ");
-            sql.append(" SUM(IMPORTETOTALRETENCIONES) AS IMPORTETOTALRETENCIONES,");
-            sql.append(" SUM(IMPORTETOTALMOVIMIENTOS) AS IMPORTETOTALMOVIMIENTOS, ");
-            sql.append(" MAX(TOTALIMPORTEIRPF) AS TOTALIMPORTEIRPF ");
-            sql.append(" FROM (");
-            
-            FcsPagosJGAdm pagosAdm = new FcsPagosJGAdm(usrbean);
-            sql.append(pagosAdm.getQueryDetallePagoColegiado(idInstitucion,null,true, idioma));
-            
-            sql.append(") WHERE ");
-            if(idPersona !=null){
-	            sql.append(" IDPERSONASJCS = :");
-	            codigo++;
-	            sql.append(codigo);
-	            htCodigos.put(new Integer(codigo), idPersona);
-	            sql.append(" AND ");
-            }
-            sql.append(" IDPAGOS IN ");
-            sql.append(" (SELECT FAC_ABONO.IDPAGOSJG ");
-            sql.append(" FROM FAC_ABONO ");
-            sql.append(" WHERE FAC_ABONO.IDINSTITUCION = IDINSTITUCION ");
-            sql.append(" AND FAC_ABONO.IDPAGOSJG = IDPAGOS ");
-            sql.append(" AND FAC_ABONO.IDPERSONA = IDPERSONASJCS ");
-            sql.append(" AND to_char(FAC_ABONO.FECHA,'YYYY') = :");
-            codigo++;
-            sql.append(codigo);
-            htCodigos.put(new Integer(codigo), anyoRetencionIRPF);
-            sql.append(") GROUP BY IDPERSONASJCS, IDPAGOS ");
-            sql.append(" ) ");
-            if(idPersona == null){
-            	sql.append(" GROUP BY IDPERSONASJCS ");
-            	
-            }
+			//construyendo consulta
+			StringBuffer sql = new StringBuffer();
+			Hashtable htCodigos = new Hashtable();
+			int codigo = 0;
+			
+			sql.append(" SELECT ");
+			if (idPersona == null)
+				sql.append("    IDPERSONASJCS, ");
+			sql.append("        SUM(TOTALIMPORTESJCS) + SUM(IMPORTETOTALMOVIMIENTOS) TOTALIMPORTESJCS, ");
+			sql.append("        abs(SUM(TOTALIMPORTEIRPF)) TOTALIMPORTEIRPF ");
+			sql.append("   FROM (SELECT IDPERSONASJCS, ");
+			sql.append("                IDPAGOS, ");
+			sql.append("                SUM(TOTALIMPORTESJCS) AS TOTALIMPORTESJCS, ");
+			sql.append("                SUM(IMPORTETOTALRETENCIONES) AS IMPORTETOTALRETENCIONES,");
+			sql.append("                SUM(IMPORTETOTALMOVIMIENTOS) AS IMPORTETOTALMOVIMIENTOS, ");
+			sql.append("                MAX(TOTALIMPORTEIRPF) AS TOTALIMPORTEIRPF ");
+			sql.append("           FROM (");
+			sql.append(new FcsPagosJGAdm(usrbean).getQueryDetallePagoColegiado(idInstitucion,
+					null, true, idioma));
+			sql.append("                ) ");
+			sql.append("          WHERE ");
+			
+			if (idPersona != null) {
+				sql.append("            IDPERSONASJCS = :");
+				codigo++;
+				sql.append(codigo);
+				htCodigos.put(new Integer(codigo), idPersona);
+				sql.append("        AND ");
+			}
+			
+			sql.append("                IDPAGOS IN (SELECT FAC_ABONO.IDPAGOSJG ");
+			sql.append("                              FROM FAC_ABONO ");
+			sql.append("                             WHERE FAC_ABONO.IDINSTITUCION = IDINSTITUCION ");
+			sql.append("                               AND FAC_ABONO.IDPAGOSJG = IDPAGOS ");
+			sql.append("                               AND FAC_ABONO.IDPERSONA = IDPERSONASJCS ");
+			
+			//obteniendo los abonos dentro del periodo indicado
+			sql.append("                               And Trunc(Fecha) Between ");
+			sql.append("                                 (Select To_Date(Per.Diainicio || '/' || Per.Mesinicio || '/' || ");
+			codigo++;
+			sql.append("                                                 Nvl(Per.Anioinicio, :"+codigo+"), ");
+			htCodigos.put(new Integer(codigo), anyoRetencionIRPF);
+			sql.append("                                                 'dd/mm/yyyy') ");
+			sql.append("                                    From Gen_Periodo Per ");
+			codigo++;
+			sql.append("                                   Where Idperiodo = :"+codigo+") And ");
+			htCodigos.put(new Integer(codigo), periodo);
+			sql.append("                                 (Select To_Date(Per.Diafin || '/' || Per.Mesfin || '/' || ");
+			codigo++;
+			sql.append("                                                 Nvl(Per.Anioinicio, :"+codigo+"), ");
+			htCodigos.put(new Integer(codigo), anyoRetencionIRPF);
+			sql.append("                                                 'dd/mm/yyyy') ");
+			sql.append("                                    From Gen_Periodo Per ");
+			codigo++;
+			sql.append("                                   Where Idperiodo = :"+codigo+") ");
+			htCodigos.put(new Integer(codigo), periodo);
+			
+			sql.append("                           ) ");
+			sql.append("          GROUP BY IDPERSONASJCS, IDPAGOS ");
+			sql.append("          ) ");
+			
+			if (idPersona == null)
+				sql.append("GROUP BY IDPERSONASJCS ");
 
-            if (rc.findBind(sql.toString(),htCodigos)) {
-            	
-               for (int i = 0; i < rc.size(); i++){
-                  Row fila = (Row) rc.get(i);
-                  Hashtable htRegistro = fila.getRow();
-                  if(idPersona!=null){
-	                  htRegistro.put("IDPERSONASJCS", idPersona);
-	                  if(htRegistro.get("TOTALIMPORTESJCS")==null||((String)htRegistro.get("TOTALIMPORTESJCS")).equals(""))
-	                	  htRegistro.put("TOTALIMPORTESJCS", "0");
-	                  if(htRegistro.get("TOTALIMPORTEIRPF")==null ||((String)htRegistro.get("TOTALIMPORTEIRPF")).equals(""))
-	                	  htRegistro.put("TOTALIMPORTEIRPF", "0");
-                  }
-                  vDatos.add(htRegistro);
-                  
-               }
-            }
-            //si se solicita para una persona se ponen totales 0 cuando no haya tenido ningun pago
-            if(idPersona!=null){
-	            if(vDatos==null || vDatos.size()<1){
-	            	vDatos = new Vector();
-	            	Hashtable htRegistro = new Hashtable();
-	            	htRegistro.put("TOTALIMPORTESJCS", "0");
-	            	htRegistro.put("TOTALIMPORTEIRPF", "0");
-	            	htRegistro.put("IDPERSONASJCS", idPersona);
-	            	vDatos.add(htRegistro);
-	            }	
-            }else{
-            	if(vDatos!=null && vDatos.size()<1)
-            		throw new SIGAException("gratuita.retencionesIRPF.informe.mensaje.sinDatos");
-            	
-            }
-       }
-		catch (SIGAException e) {
+			//consultando en BD
+			RowsContainer rc = new RowsContainer();
+			if (rc.findBind(sql.toString(), htCodigos)) {
+
+				for (int i = 0; i < rc.size(); i++) {
+					Row fila = (Row) rc.get(i);
+					Hashtable htRegistro = fila.getRow();
+					
+					if (idPersona != null) {
+						htRegistro.put("IDPERSONASJCS", idPersona);
+						if (htRegistro.get("TOTALIMPORTESJCS") == null
+								|| ((String) htRegistro.get("TOTALIMPORTESJCS"))
+										.equals(""))
+							htRegistro.put("TOTALIMPORTESJCS", "0");
+						if (htRegistro.get("TOTALIMPORTEIRPF") == null
+								|| ((String) htRegistro.get("TOTALIMPORTEIRPF"))
+										.equals(""))
+							htRegistro.put("TOTALIMPORTEIRPF", "0");
+					}
+					datosObtenidos.add(htRegistro);
+				}
+			}
+			
+			// si se solicita para una persona se ponen totales 0 cuando no haya tenido ningun pago
+			if (idPersona != null) {
+				if (datosObtenidos == null || datosObtenidos.size() < 1) {
+					datosObtenidos = new Vector();
+					Hashtable htRegistro = new Hashtable();
+					htRegistro.put("TOTALIMPORTESJCS", "0");
+					htRegistro.put("TOTALIMPORTEIRPF", "0");
+					htRegistro.put("IDPERSONASJCS", idPersona);
+					datosObtenidos.add(htRegistro);
+				}
+			} else {
+				if (datosObtenidos != null && datosObtenidos.size() < 1)
+					throw new SIGAException(
+							"gratuita.retencionesIRPF.informe.mensaje.sinDatos");
+
+			}
+		} catch (SIGAException e) {
 			throw e;
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "FacAbonoAdm.getRetencionesIRPF");
 		}
-       catch (Exception e) {
-       	throw new ClsExceptions (e, "FacAbonoAdm.getRetencionesIRPF");
-       }
-       return vDatos;                        
-	}
+		
+		return datosObtenidos;
+	} //getRetencionesIRPF()
 	
 	// del merge (revisar)
 	public boolean isAbonoConPago (String idAbono, Integer idInstitucion) throws ClsExceptions, SIGAException

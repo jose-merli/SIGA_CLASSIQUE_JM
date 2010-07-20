@@ -1,5 +1,6 @@
 package com.siga.gratuita.action;
 
+import java.util.Calendar;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -92,39 +93,40 @@ public class RetencionesIRPFAction extends MasterAction {
 		return salida;
 	}
 	
-	
-	protected String dialogoInformeIRPF (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws SIGAException 
-			{
-		String salida = "dialogoInformeIRPF";
+	protected String dialogoInformeIRPF(ActionMapping mapping,
+										MasterForm formulario,
+										HttpServletRequest request,
+										HttpServletResponse response)
+			throws SIGAException
+	{
 		try {
 
-			RetencionesIRPFForm miform = (RetencionesIRPFForm)formulario;
-			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			
-            String desdeFicha="";
-            desdeFicha=request.getParameter("desdeFicha");
-			Long idPersona=new Long(miform.getIdPersona());
-			String idInstitucion=miform.getIdInstitucion();
-			CenColegiadoAdm admCol = new CenColegiadoAdm(user); 
-			CenColegiadoBean beanCol = admCol.getDatosColegiales(idPersona,new Integer(idInstitucion.trim()));
+			RetencionesIRPFForm miform = (RetencionesIRPFForm) formulario;
+			UsrBean user = this.getUserBean(request);
+
+			String desdeFicha = request.getParameter("desdeFicha");
+			Long idPersona = new Long(miform.getIdPersona());
+			String idInstitucion = miform.getIdInstitucion();
+			CenColegiadoAdm admCol = new CenColegiadoAdm(user);
+			CenColegiadoBean beanCol = admCol.getDatosColegiales(idPersona,
+					new Integer(idInstitucion.trim()));
 			CenPersonaAdm personaAdm = new CenPersonaAdm(user);
-			String nombre = personaAdm.obtenerNombreApellidos(miform.getIdPersona());
+			String nombre = personaAdm.obtenerNombreApellidos(miform
+					.getIdPersona());
 			request.setAttribute("nombre", nombre);
 			request.setAttribute("colegiado", beanCol);
 			request.setAttribute("desdeFicha", desdeFicha);
-			
-
+			request.setAttribute("anyoIRPF", String.valueOf(Calendar
+					.getInstance().get(Calendar.YEAR) - 1));
 
 		} catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
+			throwExcp("messages.general.error",
+					new String[] { "modulo.censo" }, e, null);
 		}
 
-		return salida;
-
+		return "dialogoInformeIRPF";
 	}
+
 	private String guardarPagoPor(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions,SIGAException{
 		
 		

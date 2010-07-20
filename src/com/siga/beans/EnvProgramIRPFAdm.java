@@ -41,6 +41,7 @@ public class EnvProgramIRPFAdm extends MasterBeanAdministrador {
                 EnvProgramIRPFBean.C_IDPROGRAM,
                 EnvProgramIRPFBean.C_IDPERSONA,
                 EnvProgramIRPFBean.C_ESTADO,
+                EnvProgramIRPFBean.C_PERIODO,
                 EnvProgramIRPFBean.C_ANIOIRPF,
                 EnvProgramIRPFBean.C_IDIOMA,
                 EnvProgramIRPFBean.C_PLANTILLAS,
@@ -85,14 +86,9 @@ public class EnvProgramIRPFAdm extends MasterBeanAdministrador {
 			bean.setIdioma(UtilidadesHash.getInteger(hash, EnvProgramIRPFBean.C_IDIOMA));
 			bean.setPlantillas(UtilidadesHash.getString(hash, EnvProgramIRPFBean.C_PLANTILLAS));
 			bean.setIdPersona(UtilidadesHash.getLong(hash, EnvProgramIRPFBean.C_IDPERSONA));
+			bean.setPeriodo(UtilidadesHash.getInteger(hash, EnvProgramIRPFBean.C_PERIODO));
 			bean.setAnyoIRPF(UtilidadesHash.getInteger(hash, EnvProgramIRPFBean.C_ANIOIRPF));
 			bean.setEstado(UtilidadesHash.getString(hash, EnvProgramIRPFBean.C_ESTADO));
-			
-			
-			
-			
-			
-
 		}
 
 		catch (Exception e)
@@ -120,20 +116,16 @@ public class EnvProgramIRPFAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, EnvProgramIRPFBean.C_IDENVIO, b.getIdEnvio());
 			UtilidadesHash.set(htData, EnvProgramIRPFBean.C_IDPROGRAM, b.getIdProgram());
 			UtilidadesHash.set(htData, EnvProgramIRPFBean.C_IDPERSONA, b.getIdPersona());
+			UtilidadesHash.set(htData, EnvProgramIRPFBean.C_PERIODO, b.getPeriodo());
 			UtilidadesHash.set(htData, EnvProgramIRPFBean.C_ANIOIRPF, b.getAnyoIRPF());
 			UtilidadesHash.set(htData, EnvProgramIRPFBean.C_IDIOMA, b.getIdioma());
 			UtilidadesHash.set(htData, EnvProgramIRPFBean.C_PLANTILLAS, b.getPlantillas());
 			UtilidadesHash.set(htData, EnvProgramIRPFBean.C_ESTADO, b.getEstado());
-			
-
-			
-
 		}
 
 		catch (Exception e)
 		{
 			htData = null;
-
 			throw new ClsExceptions (e, "Error al crear el hashTable a partir del bean");
 		}
 
@@ -209,6 +201,7 @@ public class EnvProgramIRPFAdm extends MasterBeanAdministrador {
 					programPagos.setPlantillas(UtilidadesHash.getString(htFila, EnvProgramIRPFBean.C_PLANTILLAS));
 					programPagos.setIdiomaCodigoExt(UtilidadesHash.getString(htFila, AdmLenguajesBean.C_CODIGOEXT));
 					programPagos.setIdPersona(UtilidadesHash.getLong(htFila, EnvProgramIRPFBean.C_IDPERSONA));
+					programPagos.setPeriodo(UtilidadesHash.getInteger(htFila, EnvProgramIRPFBean.C_PERIODO));
 					programPagos.setAnyoIRPF(UtilidadesHash.getInteger(htFila, EnvProgramIRPFBean.C_ANIOIRPF));
 					programPagos.setEstado(UtilidadesHash.getString(htFila, EnvProgramIRPFBean.C_ESTADO));
 					

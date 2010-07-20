@@ -39,6 +39,8 @@ import com.siga.beans.EnvEnviosBean;
 import com.siga.beans.EnvProgramIRPFBean;
 import com.siga.beans.EnvProgramPagosBean;
 import com.siga.beans.FacAbonoAdm;
+import com.siga.beans.GenPeriodoAdm;
+import com.siga.beans.GenPeriodoBean;
 import com.siga.beans.HelperInformesAdm;
 import com.siga.certificados.Plantilla;
 import com.siga.envios.Documento;
@@ -51,118 +53,143 @@ import com.siga.informes.form.InformesGenericosForm;
 /**
  * Clase de genracion de informes IRPF
  * @author jtacosta
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
-public class InformeCertificadoIRPF extends MasterReport {
-
+public class InformeCertificadoIRPF extends MasterReport
+{
 	private String datosEnvios;
-	public File getInformeIRPF (MasterForm formulario,UsrBean usr,boolean isEnviar) 
-	throws SIGAException,Exception{
+	
+	public File getInformeIRPF(MasterForm formulario,
+							   UsrBean usr,
+							   boolean isEnviar)
+			throws SIGAException, Exception
+	{
+		//Lista de informes generados
+		Vector informesRes = new Vector();
 		
-		
-		
+		//controlando tiempo de generacion de informe generico
 		Date inicio = new Date();
-		ClsLogging.writeFileLog(Calendar.getInstance().getTimeInMillis() + ",==> SIGA: INICIO InformesGenericos.irpf",10);
+		ClsLogging.writeFileLog(Calendar.getInstance().getTimeInMillis()
+				+ ",==> SIGA: INICIO InformesGenericos.irpf", 10);
 		File ficheroSalida = null;
 
-
-		//Obtenemos el formulario y sus datos:
-		InformesGenericosForm miform = (InformesGenericosForm)formulario;
-
-		Vector informesRes = new Vector(); 
-		// Obtiene del campo idInforme los ids separados por ## y devuelve sus beans
+		//obteniendo el formulario y sus datos
+		InformesGenericosForm miform = (InformesGenericosForm) formulario;
+		
+		//obteniendo del campo idInforme los ids separados por ## y devuelviendo sus beans
 		Vector plantillas = this.obtenerPlantillasFormulario(miform, usr);
 
-
-		String idPersona=null;
-		String anyoInformeIRPF=null;
-		String idInstitucion=null;
+		String idPersona = null;
+		String periodo = null;
+		String anyoInformeIRPF = null;
+		String idInstitucion = null;
 		String idioma = null;
 		String datosAEnviar = null;
-		//Carga en el doc los datos comunes del informe (Institucion, idfacturacion,fecha)
-		if (miform.getDatosInforme() != null && !miform.getDatosInforme().trim().equals("")) {
-			// Obtiene del campo datosInforme los campos del formulario primcipal
-			// para obtener la clave para el informe. LOs datos se obtienen en una cadena como los ocultos
-			// y se sirven como un vector de hashtables por si se trata de datos multiregistro.
-
+		if (miform.getDatosInforme() != null
+				&& !miform.getDatosInforme().trim().equals("")) {
+			
+			// Obtiene del campo datosInforme los campos del formulario
+			// primcipal
+			// para obtener la clave para el informe. LOs datos se obtienen en
+			// una cadena como los ocultos
+			// y se sirven como un vector de hashtables por si se trata de datos
+			// multiregistro.
 			Vector datos = this.obtenerDatosFormulario(miform);
 			String idiomaExt = "es";
-			// Se ha dejado preparado por si alguna vez se requiere poner los datos seleccionables(por checkbox en tabla)
-			//Hasta que no se pida esa funcionalidad datos siempre tendra size 1
+			
+			// Se ha dejado preparado por si alguna vez se requiere poner los
+			// datos seleccionables(por checkbox en tabla)
+			// Hasta que no se pida esa funcionalidad datos siempre tendra size
+			// 1
 			for (int j = 0; j < datos.size(); j++) {
-				Hashtable aux  = (Hashtable)datos.get(j);
-				if (aux!=null) {
+				Hashtable aux = (Hashtable) datos.get(j);
+				if (aux != null) {
 
-					idPersona= (String)aux.get("idPersona");
-					anyoInformeIRPF= (String)aux.get("anyoInformeIRPF");
-					idInstitucion= (String)aux.get("idInstitucion");
-					idioma = (String)aux.get("idioma");
+					idPersona = (String) aux.get("idPersona");
+					periodo = (String) aux.get("periodo");
+					anyoInformeIRPF = (String) aux.get("anyoInformeIRPF");
+					idInstitucion = (String) aux.get("idInstitucion");
+					idioma = (String) aux.get("idioma");
 
-					//Como el idioma es el mismo para todos
-					
-					if(isEnviar ){
-						datosAEnviar = getDatosAEnviar(idInstitucion, anyoInformeIRPF, idioma,idPersona, plantillas, usr);
-					}else{
-						if(j==0){
+					// Como el idioma es el mismo para todos
+
+					if (isEnviar) {
+						datosAEnviar = getDatosAEnviar(idInstitucion, periodo,
+								anyoInformeIRPF, idioma, idPersona, plantillas,
+								usr);
+					} else {
+						if (j == 0) {
 							AdmLenguajesAdm a = new AdmLenguajesAdm(usr);
 							idiomaExt = a.getLenguajeExt(idioma).toUpperCase();
 						}
-						for (int i=0;i<plantillas.size();i++) {
-							AdmInformeBean b = (AdmInformeBean) plantillas.get(i);
-							File archivo = getInformeIRPF(b, idInstitucion,anyoInformeIRPF, idPersona, idiomaExt,usr);
+						for (int i = 0; i < plantillas.size(); i++) {
+							AdmInformeBean b = (AdmInformeBean) plantillas
+									.get(i);
+							File archivo = getInformeIRPF(b, idInstitucion, periodo,
+									anyoInformeIRPF, idPersona, idiomaExt, usr);
 							informesRes.add(archivo);
-								
 						}
 					}
-
 				}
 			}
-		}else{
+		} else {
 			throw new SIGAException("messages.informes.ningunInformeGenerado");
-
 		}
 
-		if(isEnviar){
+		if (isEnviar) {
 			setDatosEnvios(datosAEnviar.toString());
-
-		}else{
-			//Si es enviar es que va a generar el fichero luego lo comprimimos en un zip
-			if (informesRes.size()!=0) { 
-				if (informesRes.size()<2) {
+		}
+		else {
+			// Si es enviar es que va a generar el fichero luego lo comprimimos
+			// en un zip
+			if (informesRes.size() != 0) {
+				if (informesRes.size() < 2) {
 					ficheroSalida = (File) informesRes.get(0);
 				} else {
 					AdmTipoInformeAdm admT = new AdmTipoInformeAdm(usr);
-					AdmTipoInformeBean beanT = admT.obtenerTipoInforme(miform.getIdTipoInforme());
-					ArrayList ficherosPDF= new ArrayList();
-					for (int i=0;i<informesRes.size();i++) {
+					AdmTipoInformeBean beanT = admT.obtenerTipoInforme(miform
+							.getIdTipoInforme());
+					ArrayList ficherosPDF = new ArrayList();
+					for (int i = 0; i < informesRes.size(); i++) {
 						File f = (File) informesRes.get(i);
 						ficherosPDF.add(f);
 					}
-					
-					String nombreFicheroZIP=beanT.getDescripcion().trim() + "_" +UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","").replaceAll(":","").replaceAll(" ","");
-				    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//					ReadProperties rp = new ReadProperties("SIGA.properties");
-					String rutaServidorDescargasZip = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
-					rutaServidorDescargasZip += ClsConstants.FILE_SEP+miform.getIdInstitucion()+ClsConstants.FILE_SEP+"temp"+ File.separator;
+
+					String nombreFicheroZIP = beanT.getDescripcion().trim()
+							+ "_"
+							+ UtilidadesBDAdm.getFechaCompletaBD("")
+									.replaceAll("/", "").replaceAll(":", "")
+									.replaceAll(" ", "");
+					ReadProperties rp = new ReadProperties(
+							SIGAReferences.RESOURCE_FILES.SIGA);
+					String rutaServidorDescargasZip = rp
+							.returnProperty("informes.directorioFisicoSalidaInformesJava")
+							+ rp
+									.returnProperty("informes.directorioPlantillaInformesJava");
+					rutaServidorDescargasZip += ClsConstants.FILE_SEP
+							+ miform.getIdInstitucion() + ClsConstants.FILE_SEP
+							+ "temp" + File.separator;
 					File ruta = new File(rutaServidorDescargasZip);
 					ruta.mkdirs();
-					Plantilla.doZip(rutaServidorDescargasZip,nombreFicheroZIP,ficherosPDF);
-					ficheroSalida = new File(rutaServidorDescargasZip + nombreFicheroZIP + ".zip");
+					Plantilla.doZip(rutaServidorDescargasZip, nombreFicheroZIP,
+							ficherosPDF);
+					ficheroSalida = new File(rutaServidorDescargasZip
+							+ nombreFicheroZIP + ".zip");
 				}
 
-			}
-			else
-				throw new SIGAException("messages.general.error.ficheroNoExiste");
+			} else
+				throw new SIGAException(
+						"messages.general.error.ficheroNoExiste");
 		}
 
+		Date fin = new Date();
+		ClsLogging.writeFileLog(Calendar.getInstance().getTimeInMillis()
+				+ ",==> SIGA: FIN InformesGenericos.irpf", 10);
+		ClsLogging.writeFileLog(fin.getTime() - inicio.getTime()
+				+ " MILISEGUNDOS ,==> SIGA: TIEMPO TOTAL", 10);
 
-		Date fin = new Date(); 
-		ClsLogging.writeFileLog(Calendar.getInstance().getTimeInMillis() + ",==> SIGA: FIN InformesGenericos.irpf",10);
-		ClsLogging.writeFileLog(fin.getTime()-inicio.getTime() + " MILISEGUNDOS ,==> SIGA: TIEMPO TOTAL",10);
-
-		return ficheroSalida;	
+		return ficheroSalida;
 	}
+
 	private Hashtable anyadePersonaDatosInforme(Hashtable htDatosInforme,String idPersona,UsrBean usr)throws SIGAException,ClsExceptions{
 		CenPersonaAdm cenPersonaAdm = new CenPersonaAdm(usr);
 		
@@ -186,11 +213,18 @@ public class InformeCertificadoIRPF extends MasterReport {
 		
 	}
 	
-	private String getDatosInformePersona(String idPersona,String anyoInformeIRPF,String idInstitucion
-			,String idioma,String plantillas){
+	private String getDatosInformePersona(String idPersona,
+										  String periodo,
+										  String anyoInformeIRPF,
+										  String idInstitucion,
+										  String idioma,
+										  String plantillas) {
+		
 		StringBuffer sReturn = new StringBuffer();
 		sReturn.append("idPersona==");
 		sReturn.append(idPersona);
+		sReturn.append("##periodo==");
+		sReturn.append(periodo);
 		sReturn.append("##anyoInformeIRPF==");
 		sReturn.append(anyoInformeIRPF);
 		sReturn.append("##idInstitucion==");
@@ -199,112 +233,132 @@ public class InformeCertificadoIRPF extends MasterReport {
 		sReturn.append(idioma);
 		sReturn.append("##plantillas==");
 		sReturn.append(plantillas);
-		
-		sReturn.append("%%%");	
-		return sReturn.toString();
 
+		sReturn.append("%%%");
+		return sReturn.toString();
 	}
 	
-
-	private File getInformeIRPF (AdmInformeBean beanInforme, String idInstitucion,String anyoInformeIRPF,
-			String idPersona,String idiomaExt,UsrBean usr) 
-	throws SIGAException,ClsExceptions{
-
-		
+	private File getInformeIRPF(AdmInformeBean beanInforme,
+								String idInstitucion,
+								String periodo,
+								String anyoInformeIRPF,
+								String idPersona,
+								String idiomaExt,
+								UsrBean usr) 
+			throws SIGAException,ClsExceptions
+	{
 		File ficheroSalida = null;
-		// --- acceso a paths y nombres 
-	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//		ReadProperties rp = new ReadProperties("SIGA.properties");	
-		String rutaPlantilla = rp.returnProperty("informes.directorioFisicoPlantillaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
-		String rutaAlmacen = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
-		////////////////////////////////////////////////
-		// MODELO DE TIPO WORD: LLAMADA A ASPOSE.WORDS
 
-		String rutaPl = rutaPlantilla + ClsConstants.FILE_SEP+idInstitucion+ClsConstants.FILE_SEP+beanInforme.getDirectorio()+ClsConstants.FILE_SEP;
-		String nombrePlantilla=beanInforme.getNombreFisico()+"_"+idiomaExt+".doc";
-		String rutaAlm = rutaAlmacen + ClsConstants.FILE_SEP+idInstitucion+ClsConstants.FILE_SEP+beanInforme.getDirectorio();
-
+		// obteniendo rutas
+		ReadProperties rp = new ReadProperties(
+				SIGAReferences.RESOURCE_FILES.SIGA);
+		String rutaPlantilla = rp
+				.returnProperty("informes.directorioFisicoPlantillaInformesJava")
+				+ rp.returnProperty("informes.directorioPlantillaInformesJava");
+		String rutaAlmacen = rp
+				.returnProperty("informes.directorioFisicoSalidaInformesJava")
+				+ rp.returnProperty("informes.directorioPlantillaInformesJava");
+		String rutaPl = rutaPlantilla + ClsConstants.FILE_SEP + idInstitucion
+				+ ClsConstants.FILE_SEP + beanInforme.getDirectorio()
+				+ ClsConstants.FILE_SEP;
+		String nombrePlantilla = beanInforme.getNombreFisico() + "_"
+				+ idiomaExt + ".doc";
+		String rutaAlm = rutaAlmacen + ClsConstants.FILE_SEP + idInstitucion
+				+ ClsConstants.FILE_SEP + beanInforme.getDirectorio();
 		File crear = new File(rutaAlm);
-		if(!crear.exists())
+		if (!crear.exists())
 			crear.mkdirs();
 
+		// obteniendo manejador de informe Aspose Word
+		MasterWords masterWord = new MasterWords(rutaPl + nombrePlantilla);
+		Document docCertificadoIRPF = masterWord.nuevoDocumento();
 
-		MasterWords masterWord = new MasterWords(rutaPl+nombrePlantilla);
-		Document docCertificadoIRPF = masterWord.nuevoDocumento(); 
-		
-		FacAbonoAdm admFacAbono = new FacAbonoAdm(usr);
-		
-		Vector vDatosInforme = admFacAbono.getRetencionesIRPF(idInstitucion, idPersona, anyoInformeIRPF, usr.getLanguage());
+		// obteniendo los datos para el informe
+		Vector vDatosInforme = new FacAbonoAdm(usr).getRetencionesIRPF(idInstitucion,
+				idPersona, periodo, anyoInformeIRPF, usr.getLanguage());
+
+		// obteniendo el periodo
+		String textoPeriodo = (String) (new GenPeriodoAdm(usr).obtenerPeriodo(periodo,
+				usr.getLanguage())).get(GenPeriodoBean.C_NOMBRE);
 		
 		Hashtable htDatosComunesInforme = new Hashtable();
-		htDatosComunesInforme.put("ANIO_E", anyoInformeIRPF);
+		htDatosComunesInforme.put("ANIO_E", textoPeriodo + " " + anyoInformeIRPF);
 		HelperInformesAdm helper = new HelperInformesAdm();
-		//el metodo getPersonaInstitucion mete tambien el DIA_HOY,MES_HOY,ANYO_HOY 
-		//del momento cuando se genera
-		helper.completarHashSalida(htDatosComunesInforme, helper.getPersonaInstitucion(idInstitucion));
-		
+		// el metodo getPersonaInstitucion mete tambien el
+		// DIA_HOY,MES_HOY,ANYO_HOY
+		// del momento cuando se genera
+		helper.completarHashSalida(htDatosComunesInforme, helper
+				.getPersonaInstitucion(idInstitucion));
+
 		String identificador = null;
-		//Si solo hay una persona ponemos el idpersona en el titulo
+		// Si solo hay una persona ponemos el idpersona en el titulo
 		boolean isPersonaUnica = idPersona != null;
-		if(isPersonaUnica){
-			identificador=idInstitucion+"_"+idPersona+"_"+anyoInformeIRPF+".doc";
-		}else{
-			identificador=idInstitucion+"_"+anyoInformeIRPF+".doc";
+		if (isPersonaUnica) {
+			identificador = idInstitucion + "_" + idPersona + "_" + periodo + "_"
+					+ anyoInformeIRPF + ".doc";
+		} else {
+			identificador = idInstitucion + "_" + periodo + "_" + anyoInformeIRPF + ".doc";
 		}
-		
-		
+
 		Hashtable htRowDatosInforme = null;
 		for (int i = 0; i < vDatosInforme.size(); i++) {
-			htRowDatosInforme = (Hashtable)vDatosInforme.get(i);
+			htRowDatosInforme = (Hashtable) vDatosInforme.get(i);
 			htRowDatosInforme.putAll(htDatosComunesInforme);
-			if(!isPersonaUnica)
+			if (!isPersonaUnica)
 				idPersona = (String) htRowDatosInforme.get("IDPERSONASJCS");
-			htRowDatosInforme = anyadePersonaDatosInforme(htRowDatosInforme,idPersona,usr);
+			htRowDatosInforme = anyadePersonaDatosInforme(htRowDatosInforme,
+					idPersona, usr);
 			htRowDatosInforme = preparaPaginaCertificadoIRPF(htRowDatosInforme);
-			
-			
-			
+
 		}
 
-		docCertificadoIRPF = masterWord.sustituyeRegionDocumento(docCertificadoIRPF,"pagina",vDatosInforme);
-		String nombreArchivo = beanInforme.getNombreSalida()+"_"+identificador;
-		ficheroSalida = masterWord.grabaDocumento(docCertificadoIRPF,rutaAlm,nombreArchivo);
+		docCertificadoIRPF = masterWord.sustituyeRegionDocumento(
+				docCertificadoIRPF, "pagina", vDatosInforme);
+		String nombreArchivo = beanInforme.getNombreSalida() + "_"
+				+ identificador;
+		ficheroSalida = masterWord.grabaDocumento(docCertificadoIRPF, rutaAlm,
+				nombreArchivo);
 
-		
-		
+		return ficheroSalida;
+	} //getInformeIRPF()
 
-		return ficheroSalida;	
-	}
-	private String getDatosAEnviar(String idInstitucion,String anyoInformeIRPF,String idioma,
-			String idPersona,Vector vPlantillas,UsrBean usr)throws SIGAException,Exception{
-		
+	private String getDatosAEnviar(String idInstitucion,
+								   String periodo,
+								   String anyoInformeIRPF,
+								   String idioma,
+								   String idPersona,
+								   Vector vPlantillas,
+								   UsrBean usr)
+			throws SIGAException, Exception
+	{
 		FacAbonoAdm admFacAbono = new FacAbonoAdm(usr);
-		
-		Vector vDatosInforme = admFacAbono.getRetencionesIRPF(idInstitucion, idPersona, anyoInformeIRPF, usr.getLanguage());
-		
+
+		Vector vDatosInforme = admFacAbono.getRetencionesIRPF(idInstitucion,
+				idPersona, periodo, anyoInformeIRPF, usr.getLanguage());
+
 		StringBuffer datosAEnviar = new StringBuffer();
 		StringBuffer plantillas = new StringBuffer();
 		for (int j = 0; j < vPlantillas.size(); j++) {
 			AdmInformeBean b = (AdmInformeBean) vPlantillas.get(j);
 			plantillas.append(b.getIdPlantilla());
-			if(j!=vPlantillas.size()-1)
+			if (j != vPlantillas.size() - 1)
 				plantillas.append("@@");
 		}
-		
+
 		Hashtable htRowDatosInforme = null;
 		for (int i = 0; i < vDatosInforme.size(); i++) {
-			htRowDatosInforme = (Hashtable)vDatosInforme.get(i);
-			String idPersonaRow = (String) htRowDatosInforme.get("IDPERSONASJCS");
-			datosAEnviar.append(getDatosInformePersona(idPersonaRow,anyoInformeIRPF,idInstitucion,idioma,plantillas.toString()));
-			//si es para enviar solo nos va a interesar el path de los archivos
-			
-			
+			htRowDatosInforme = (Hashtable) vDatosInforme.get(i);
+			String idPersonaRow = (String) htRowDatosInforme
+					.get("IDPERSONASJCS");
+			datosAEnviar.append(getDatosInformePersona(idPersonaRow, periodo,
+					anyoInformeIRPF, idInstitucion, idioma, plantillas
+							.toString()));
+			// si es para enviar solo nos va a interesar el path de los archivos
+
 		}
-		return datosAEnviar.toString();
 		
-	}
-	
-	
+		return datosAEnviar.toString();
+	} //getDatosAEnviar()
 	
 	private Hashtable preparaPaginaCertificadoIRPF (Hashtable htDatosInforme) 
 	throws SIGAException,ClsExceptions{
@@ -334,62 +388,80 @@ public class InformeCertificadoIRPF extends MasterReport {
 	public void setDatosEnvios(String datosEnvios) {
 		this.datosEnvios = datosEnvios;
 	}
-	public Vector getDocumentosAEnviar(String plantillas,String anyoIRPF,String idPersona,String idioma,String idInstitucion,UsrBean usrBean)throws ClsExceptions,SIGAException{
-		Vector vPlantillas = getPlantillas(plantillas,idInstitucion,usrBean);
+
+	public Vector getDocumentosAEnviar(String plantillas,
+									   String periodo,
+									   String anyoIRPF,
+									   String idPersona,
+									   String idioma,
+									   String idInstitucion,
+									   UsrBean usrBean)
+			throws ClsExceptions, SIGAException
+	{
+		Vector vPlantillas = getPlantillas(plantillas, idInstitucion, usrBean);
 		AdmLenguajesAdm a = new AdmLenguajesAdm(usrBean);
 		String idiomaExt = a.getLenguajeExt(idioma).toUpperCase();
 		Vector vDocumentos = new Vector();
+		
 		for (int i = 0; i < vPlantillas.size(); i++) {
-			AdmInformeBean beanInforme = (AdmInformeBean)vPlantillas.get(i);
-			File fileDocumento = getInformeIRPF(beanInforme, idInstitucion, anyoIRPF,
-					idPersona, idiomaExt, usrBean);
-			String pathDocumento=fileDocumento.getPath();
-			
+			AdmInformeBean beanInforme = (AdmInformeBean) vPlantillas.get(i);
+			File fileDocumento = getInformeIRPF(beanInforme, idInstitucion,
+					periodo, anyoIRPF, idPersona, idiomaExt, usrBean);
+			String pathDocumento = fileDocumento.getPath();
+
 			// Creacion documentos
 			int indice = pathDocumento.lastIndexOf(ClsConstants.FILE_SEP);
 			String descDocumento = "";
-			if(indice >0)
-				descDocumento = pathDocumento.substring(indice+1);
-			
-			
-			Documento documento = new Documento(pathDocumento,descDocumento);
-			
-			vDocumentos.add(documento);
-			
-			
-		}
-		return vDocumentos;
-		
-	}
-	public void enviarCertificadoIRPFColegiado(UsrBean usrBean, EnvProgramIRPFBean programIRPFBean, 
-			EnvEnvioProgramadoBean envioProgramadoBean)throws ClsExceptions,SIGAException{
-		
-		Envio envio = new Envio(usrBean,envioProgramadoBean.getNombre());
+			if (indice > 0)
+				descDocumento = pathDocumento.substring(indice + 1);
 
-		// Bean envio
+			Documento documento = new Documento(pathDocumento, descDocumento);
+			vDocumentos.add(documento);
+		}
+		
+		return vDocumentos;
+
+	} // getDocumentosAEnviar()
+	
+	public void enviarCertificadoIRPFColegiado(UsrBean usrBean,
+											   EnvProgramIRPFBean programIRPFBean,
+											   EnvEnvioProgramadoBean envioProgramadoBean)
+			throws ClsExceptions, SIGAException
+	{
+		Envio envio = new Envio(usrBean, envioProgramadoBean.getNombre());
 		EnvEnviosBean enviosBean = envio.getEnviosBean();
 		enviosBean.setDescripcion(enviosBean.getDescripcion());
-		// trunco la descripción
-		if (enviosBean.getDescripcion().length()>200)  enviosBean.setDescripcion(enviosBean.getDescripcion().substring(0,99));
+		
+		// truncando la descripcion
+		if (enviosBean.getDescripcion().length() > 200)
+			enviosBean.setDescripcion(enviosBean.getDescripcion().substring(0,
+					99));
 
 		// Preferencia del tipo de envio si el usuario tiene uno:
 		enviosBean.setIdTipoEnvios(envioProgramadoBean.getIdTipoEnvios());
 
-		enviosBean.setIdPlantillaEnvios(envioProgramadoBean.getIdPlantillaEnvios());
-		if (envioProgramadoBean.getIdPlantilla()!=null && !envioProgramadoBean.getIdPlantilla().equals("")) {
+		enviosBean.setIdPlantillaEnvios(envioProgramadoBean
+				.getIdPlantillaEnvios());
+		if (envioProgramadoBean.getIdPlantilla() != null
+				&& !envioProgramadoBean.getIdPlantilla().equals("")) {
 			enviosBean.setIdPlantilla(envioProgramadoBean.getIdPlantilla());
 		} else {
 			enviosBean.setIdPlantilla(null);
 		}
-		
-		Vector vDocumentos = getDocumentosAEnviar(programIRPFBean.getPlantillas(), programIRPFBean.getAnyoIRPF().toString(),
-				programIRPFBean.getIdPersona().toString(), programIRPFBean.getIdiomaCodigoExt(),programIRPFBean.getIdInstitucion().toString(), usrBean);
-		
-	
+
+		Vector vDocumentos = getDocumentosAEnviar(programIRPFBean
+				.getPlantillas(), programIRPFBean.getPeriodo().toString(),
+				programIRPFBean.getAnyoIRPF().toString(),
+				programIRPFBean.getIdPersona().toString(), programIRPFBean
+						.getIdiomaCodigoExt(), programIRPFBean
+						.getIdInstitucion().toString(), usrBean);
+
 		// Genera el envio:
-		envio.generarEnvio(programIRPFBean.getIdPersona().toString(), EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA,vDocumentos);
-		
-	} 
+		envio.generarEnvio(programIRPFBean.getIdPersona().toString(),
+				EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA, vDocumentos);
+
+	} // enviarCertificadoIRPFColegiado()
+	
 	private Vector getPlantillas(String plantillas, String idInstitucion,UsrBean usr)
 	throws ClsExceptions,SIGAException{
 		    
