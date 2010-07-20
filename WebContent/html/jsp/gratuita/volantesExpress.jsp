@@ -720,12 +720,12 @@
 				<table>
 					<tr>
 						<td class="boxConsulta">
-							<html:radio property="lugar" value="centro" onclick="cambiarDiligenciaProcedimiento();actualizarResultados();"></html:radio>
+							<html:radio property="lugar" value="centro" onclick="cambiarDiligenciaProcedimiento();cambiarCentroDetencionJuzgado();actualizarResultados();"></html:radio>
 							<siga:Idioma key="gratuita.volantesExpres.literal.centroDetencion"/>
 						</td>
 					
 						<td class="boxConsulta">
-							<html:radio property="lugar" value="juzgado" onclick="cambiarDiligenciaProcedimiento();actualizarResultados();"></html:radio>
+							<html:radio property="lugar" value="juzgado" onclick="cambiarDiligenciaProcedimiento();cambiarCentroDetencionJuzgado();actualizarResultados();"></html:radio>
 							<siga:Idioma key="gratuita.volantesExpres.literal.juzgado"/>
 						</td>
 					
@@ -911,7 +911,7 @@
 	<table id='tabAsistenciasCabeceras' border='1' width='100%' cellspacing='0' cellpadding='0'>
 		<tr class = 'tableTitle'>
 			<td align='center' width='5%'><siga:Idioma key="gratuita.volantesExpres.literal.hora"/></td>
-			<td align='center' width='26%'><siga:Idioma key="gratuita.volantesExpres.literal.centroDetencion"/>/<siga:Idioma key="gratuita.volantesExpres.literal.juzgado"/></td>
+			<td id='centroDetencionJuzgado' align='center' width='26%'><siga:Idioma key="gratuita.volantesExpres.literal.centroDetencion"/></td>
 			<td align='center' width='36%'><siga:Idioma key="gratuita.volantesExpres.literal.asistido"/></td>
 			<td id='diligenciaProcedimiento' align='center' width='8%' ><siga:Idioma key="gratuita.volantesExpres.literal.numeroDiligencia"/></td>
 			<td align='center' width='14%'>
@@ -1275,7 +1275,15 @@
 		if (document.VolantesExpressForm.lugar[0].checked && document.VolantesExpressForm.lugar[0].value == "centro") 
 			td.innerHTML = '<siga:Idioma key="gratuita.volantesExpres.literal.numeroDiligencia"/>';
 		else
-			td.innerHTML = '<siga:Idioma key="gratuita.volantesExpres.procedimiento"/>';		
+			td.innerHTML = '<siga:Idioma key="gratuita.volantesExpres.procedimiento"/>';
+			
+	}
+	function cambiarCentroDetencionJuzgado(){
+		td = document.getElementById("centroDetencionJuzgado");
+		if (document.VolantesExpressForm.lugar[0].checked && document.VolantesExpressForm.lugar[0].value == "centro") 
+			td.innerHTML = '<siga:Idioma key="gratuita.volantesExpres.literal.centroDetencion"/>';
+		else
+			td.innerHTML = '<siga:Idioma key="gratuita.volantesExpres.literal.juzgado"/>';
 			
 	}
 	setAnchoAsistencias();
