@@ -13,8 +13,13 @@ import com.siga.general.MasterForm;
 
 
  public class DefinicionRemesas_CAJG_Form extends DefinirEJGForm{
- 	
-	 	public String getIdIncidenciasEnvio() {
+	 
+	   private String TipoFecha;
+	   private String FechaInicioBuscar;
+	   private String FechaFinBuscar;
+ 		 
+	 
+		public String getIdIncidenciasEnvio() {
 			return UtilidadesHash.getString(this.datos,"idIncidenciasEnvio");			
 		}
 		
@@ -148,8 +153,7 @@ import com.siga.general.MasterForm;
 			return UtilidadesHash.getString(this.datos, "SELDEFINITIVO"); 
 		}	
 		
-
-	 	public void setRefAuto 					(String refAuto)					{ this.datos.put(ScsEJGBean.C_REFAUTO, refAuto);									}
+	public void setRefAuto 					(String refAuto)					{ this.datos.put(ScsEJGBean.C_REFAUTO, refAuto);									}
 		/**
 		 * Almacena en la Hashtable el anho del EJG 
 		 * 
@@ -456,6 +460,18 @@ import com.siga.general.MasterForm;
 		 */
 		public void setDescripcionEstado		(String descripcion)			{ this.datos.put("DESCRIPCIONESTADO", descripcion);						}
 		
+		public void setTipoFecha(String tipoFecha) {
+	 		TipoFecha = tipoFecha;
+	 	}
+		
+		public void setFechaInicioBuscar(String fechaInicioBuscar) {
+			FechaInicioBuscar = fechaInicioBuscar;
+		}
+		
+		public void setFechaFinBuscar(String fechaFinBuscar) {
+			FechaFinBuscar = fechaFinBuscar;
+		}
+
 		
 		/*
 		 * Metodos GET*/
@@ -889,7 +905,17 @@ import com.siga.general.MasterForm;
 				return UtilidadesHash.getString(datos,"JUZGADO");
 			}
 			
+			public String getTipoFecha() {
+				return TipoFecha;
+			}
 			
+			public String getFechaInicioBuscar() {
+				return FechaInicioBuscar;
+			}
+		
+			public String getFechaFinBuscar() {
+				return FechaFinBuscar;
+			}
 		
 		
 }
