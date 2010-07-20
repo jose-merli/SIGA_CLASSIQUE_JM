@@ -279,6 +279,12 @@
 				if(document.SolicitudIncorporacionForm.mail.value==""){
 					errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.email'/>" + '\n';
 				}
+
+				
+				if(!calcularDigito()){
+					fin();
+					return false;
+				}		
 				
 				if (errores != ""){
 					alert(errores);
@@ -494,6 +500,59 @@
 			}
 			<%}%>
 		}
+
+		// Funciones para obtener el d¡gito de control de la Cuenta
+		function obtenerDigito(valor){	
+		  valores = new Array(1, 2, 4, 8, 5, 10, 9, 7, 3, 6);
+		  control = 0;
+		  for (i=0; i<=9; i++)
+		    control += parseInt(valor.charAt(i)) * valores[i];		  
+		  control = 11 - (control % 11);
+		  if (control == 11) control = 0;
+		  else if (control == 10) control = 1;
+		  return control;
+		}
+		
+		function numerico(valor){
+			cad = valor.toString();
+			for (var i=0; i<cad.length; i++) {
+				var caracter = cad.charAt(i);
+				if (caracter<"0" || caracter>"9"){					
+					return false;
+				}
+			}
+			return true;
+		}
+		
+		function calcularDigito(){
+
+			mensaje = "<siga:Idioma key="messages.censo.cuentasBancarias.errorCuentaBancaria"/>";
+		
+			f = document.SolicitudIncorporacionForm;		
+			if (f.cbo_Codigo.value    == ""  && f.codigoSucursal.value == "" && f.digitoControl.value == ""  && f.numeroCuenta.value   == "" ){ 
+				 return true;
+			}
+			else{
+				if(f.cbo_Codigo.value.length != 4 || f.codigoSucursal.value.length != 4 || f.digitoControl.value.length != 2 || f.numeroCuenta.value.length != 10){
+					alert(mensaje);
+					return false;
+				}	 		
+				else{
+					if(!numerico(f.cbo_Codigo.value) || !numerico(f.codigoSucursal.value) || !numerico(f.digitoControl.value) || !numerico(f.numeroCuenta.value)){
+						alert(mensaje);
+						return false;
+					}
+					else {
+					  if(f.digitoControl.value != obtenerDigito("00" + f.cbo_Codigo.value + f.codigoSucursal.value) + "" + obtenerDigito(f.numeroCuenta.value)){
+							alert(mensaje);
+							return false;
+						}
+					}
+				}
+			}
+			
+			return true;  
+		}	
 	</script>
 
 </head>
