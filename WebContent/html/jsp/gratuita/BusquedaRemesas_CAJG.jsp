@@ -28,6 +28,7 @@
 <%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="com.siga.administracion.SIGAMasterTable"%>
 <%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
+<%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.siga.Utilidades.*"%>
 
 <!-- JSP -->
@@ -201,9 +202,12 @@
 			<siga:Idioma key="gratuita.BusquedaRemesas_CAJG.literal.Descripcion"/>	
 		</td>
 		
-		<td class="labelText" colspan="4">	
-			<html:text name="DefinicionRemesas_CAJG_Form" property="descripcion"  size="40" maxlength="200" styleClass="box"  readonly="false" ></html:text>
+		<td class="labelText" colspan="3">	
+			<html:text  name="DefinicionRemesas_CAJG_Form" property="descripcion"  size="56" maxlength="200" styleClass="box"  readonly="false" ></html:text>
 				
+		</td>
+		
+		<td>
 		</td>
 		
 		
@@ -213,32 +217,27 @@
 		<td class="labelText" >
 			<siga:Idioma key="gratuita.BusquedaRemesas_CAJG.literal.estado"/>	
 		</td>
-		<td class="labelText" >	
-		
-			<siga:ComboBD nombre="idEstado" tipo="cmbEstadosRemesa" estilo="true" clase="boxCombo" obligatorio="false"/>
-			
+		<td class="labelText" colspan="2">		
+			<siga:ComboBD nombre="idEstado" tipo="cmbEstadosRemesa" estilo="true" clase="boxCombo" obligatorio="false"/>			
 				
 		</td>
-		<td class="labelText" width="90">
-			<siga:Idioma key="gratuita.BusquedaRemesas_CAJG.literal.fGeneracion"/>	
+		<td class="labelText" >
+			<siga:Idioma key="gratuita.BusquedaRemesas_CAJG.literal.fecha"/>
 		</td>
-		<td>
-			<html:text name="DefinicionRemesas_CAJG_Form" property="fechaGeneracion" size="10" maxlength="10" styleClass="box"   readOnly="true"></html:text>
-			<a onClick="return showCalendarGeneral(fechaGeneracion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
+		<td class="labelText">
+		<html:select  name="DefinicionRemesas_CAJG_Form" property="tipoFecha" styleClass="boxCombo" >			
+				<html:option value=""></html:option>
+				<html:option value="<%=ClsConstants.COMBO_MOSTRAR_GENERACION%>"><siga:Idioma key="gratuita.BusquedaRemesas_CAJG.literal.fGeneracion"/></html:option>
+				<html:option value="<%=ClsConstants.COMBO_MOSTRAR_ENVIO%>" ><siga:Idioma key="gratuita.BusquedaRemesas_CAJG.literal.fEnvio"/></html:option>
+				<html:option value="<%=ClsConstants.COMBO_MOSTRAR_RECEPCION%>" ><siga:Idioma key="gratuita.BusquedaRemesas_CAJG.literal.fRecepcion"/></html:option>				
+		</html:select>	
+		
 		</td>
 		<td class="labelText" >
-			<siga:Idioma key="gratuita.BusquedaRemesas_CAJG.literal.fEnvio"/>	
+			<siga:Idioma key="gratuita.BusquedaRemesas_CAJG.literal.desde"/>&nbsp;&nbsp;<html:text name="DefinicionRemesas_CAJG_Form" property="fechaInicioBuscar" size="10" styleClass="box" value=""></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaInicioBuscar);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
 		</td>
-		<td>
-			<html:text name="DefinicionRemesas_CAJG_Form" property="fechaEnvio" size="10" maxlength="10" styleClass="box"   readOnly="true"></html:text>
-			<a onClick="return showCalendarGeneral(fechaEnvio);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
-		</td>
-		<td class="labelText" >
-			<siga:Idioma key="gratuita.BusquedaRemesas_CAJG.literal.fRecepcion"/>	
-		</td>
-		<td>
-			<html:text name="DefinicionRemesas_CAJG_Form" property="fechaRecepcion" size="10" maxlength="10" styleClass="box"   readOnly="true"></html:text>
-			<a onClick="return showCalendarGeneral(fechaRecepcion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0" valign="bottom"></a>
+		<td class="labelText">
+			<siga:Idioma key="gratuita.BusquedaRemesas_CAJG.literal.hasta"/>&nbsp;&nbsp;<html:text name="DefinicionRemesas_CAJG_Form" property="fechaFinBuscar" size="10" styleClass="box" value=""></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaFinBuscar);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
 		</td>
 	</tr>
 	
