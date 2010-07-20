@@ -80,6 +80,7 @@
 	String OBSERVACIONES		= (String) hash.get("OBSERVACIONES");
 	String INCIDENCIAS 			= (String) hash.get("INCIDENCIAS");
 	String TIPOASISTENCIACOLEGIO = (String) hash.get("TIPOASISTENCIACOLEGIO");
+	String idfacturacion = (String) hash.get("IDFACTURACION");
 	// Seleccion.
 	ArrayList TIPOASISTENCIACOLEGIOSEL = new ArrayList();
 	TIPOASISTENCIACOLEGIOSEL.add(TIPOASISTENCIACOLEGIO);
@@ -303,7 +304,8 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 		<tr style="display:none">
 			<td class="labelText" width="20%">
 				<siga:Idioma key='gratuita.mantAsistencias.literal.tipo'/>
-			</td>
+			</td>			
+			
 			<td class="labelTextValor" width="80%">	
 			<% if(modo.equals("ver")){%>
 				<%=TIPOASISTENCIASELDESC%>
@@ -314,16 +316,20 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 		</tr>
 
 		<tr>
+			
+		
 			<td class="labelText" width="20%">
 				<siga:Idioma key='gratuita.mantAsistencias.literal.tasiscolegio'/>&nbsp;(*)
 			</td>
+			
 			<td class="labelTextValor" width="80%">	
-			<% if(modo.equals("ver")){%>
+			<% if((modo.equals("ver"))||(!idfacturacion.equals(""))){%>
 				<%=TIPOASISTENCIACOLEGIODESC%>
 			<%}else{%>
 				<siga:ComboBD ancho="700" nombre="idTipoAsistenciaColegio" tipo="scstipoasistenciacolegio" estilo="true" clase="boxCombo" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorioSinTextoSeleccionar="true" obligatorio="false" elementoSel="<%=TIPOASISTENCIACOLEGIOSEL%>" />
 			<%}%>
 			</td>	
+			
 		</tr>
 	</table>
 	<table width="100%" border="0" style="table-layout:fixed">
