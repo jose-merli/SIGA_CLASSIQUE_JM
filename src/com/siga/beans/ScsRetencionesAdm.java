@@ -114,7 +114,7 @@ public class ScsRetencionesAdm extends MasterBeanAdministrador {
 			   (((String)miHash.get(ScsRetencionesBean.C_RETENCION)).length() > 0) 		   ||
 			   (((String)miHash.get(ScsRetencionesBean.C_LETRANIFSOCIEDAD)).length() > 0)) {
 			
-				sql = " where (";
+				sql += " where (";
 					// Por cada criterio de búsqueda, si se ha introducido, se va anhadiendo al string where esa restricción en 
 					// la búsqueda.
 					if ((String)miHash.get(ScsRetencionesBean.C_IDRETENCION) != null && 
