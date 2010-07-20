@@ -455,8 +455,16 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 			<td class="labelText"  >
 				<siga:Idioma key="gratuita.mantAsistencias.literal.estado"/>
 			</td>
-			<td class="labelTextValor">
-				<siga:ComboBD nombre="estadoAsintecia" tipo="cmbEstadosAsistencia" obligatorio="false" accion="" elementoSel="<%=estadoSel%>" clase="<%=estilo%>" readonly="<%=readOnly%>" obligatorioSinTextoSeleccionar="si"/>
+			
+			
+				<%if(usr.isLetrado()){%>
+					<td class="labelText">
+					<siga:ComboBD nombre="estadoAsintecia" tipo="cmbEstadosAsistencia" obligatorio="false" accion="" elementoSel="<%=estadoSel%>" clase="boxConsulta" readonly="true" obligatorioSinTextoSeleccionar="si"/>
+						<% 	}else{%>
+						<td class="labelTextValor">
+						<siga:ComboBD nombre="estadoAsintecia" tipo="cmbEstadosAsistencia" obligatorio="false" accion="" elementoSel="<%=estadoSel%>" clase="<%=estilo%>" readonly="<%=readOnly%>" obligatorioSinTextoSeleccionar="si"/>									
+					<% }%>
+				
 			</td>
 			<td class="labelText" >
 				<siga:Idioma key="gratuita.mantAsistencias.literal.fechaEstado"/>
