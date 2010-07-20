@@ -559,8 +559,18 @@ MDB Microsoft Access Database
   public static final String COMBO_MOSTRAR_FIN= "FIN";
   public static final String COMBO_MOSTRAR_REHABILITADO= "REHABILITADO";
   public static final String COMBO_MOSTRAR_RESOLUCION= "RESOLUCIÓN";
+  public static final String COMBO_MOSTRAR_GENERACION= "GENERACIÓN";
+  public static final String COMBO_MOSTRAR_ENVIO= "ENVIO";
+  public static final String COMBO_MOSTRAR_RECEPCION= "RECEPCIÓN";
   
   
+  //Estados de Remesa
+  
+    public static final int ESTADO_REMESA_GENERADA= 1;
+    public static final int ESTADO_REMESA_ENVIADA= 2;
+    public static final int ESTADO_REMESA_RECIBIDA= 3;
+
+    
   
   public ClsConstants() {
   }
