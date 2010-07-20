@@ -142,7 +142,8 @@ public class MantenimientoAsistenciasAction extends MasterAction
 							" A." + ScsAsistenciasBean.C_COMISARIA + " " + ScsAsistenciasBean.C_COMISARIA + ", " +
 							" A." + ScsAsistenciasBean.C_COMISARIA_IDINSTITUCION + " " + ScsAsistenciasBean.C_COMISARIA_IDINSTITUCION + ", " +
 							" A." + ScsAsistenciasBean.C_IDESTADOASISTENCIA + " " + ScsAsistenciasBean.C_IDESTADOASISTENCIA + ", " +
-							" A." + ScsAsistenciasBean.C_FECHAESTADOASISTENCIA+ " " + ScsAsistenciasBean.C_FECHAESTADOASISTENCIA +
+							" A." + ScsAsistenciasBean.C_FECHAESTADOASISTENCIA+ " " + ScsAsistenciasBean.C_FECHAESTADOASISTENCIA +", " +
+							" A." + ScsAsistenciasBean.C_IDFACTURACION+ " " + ScsAsistenciasBean.C_IDFACTURACION +
 						" FROM "+
 							" SCS_ASISTENCIA A, SCS_TURNO B, SCS_TURNO BB, SCS_GUARDIASTURNO C, SCS_DESIGNA D,"+
 							" SCS_PERSONAJG E, SCS_EJG   F, SCS_TIPOEJG       G, CEN_COLEGIADO H, CEN_PERSONA I"+
