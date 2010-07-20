@@ -213,6 +213,8 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 
 		Hashtable miHash = new Hashtable();
 		String consulta = "";
+		String tipofecha="";
+		int estado=0;
 
 		try {
 
@@ -268,12 +270,6 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 						+ "" + " and r.idinstitucion = e.idinstitucion" + " and r.idremesa = e.idremesa" + " and e.idestado = t.idestado"
 						+ " and e.idestado = (select max(idestado)" + " from cajg_remesaestados" + " where idinstitucion = e.idinstitucion"
 						+ " and idremesa = e.idremesa) ";
-				/*
-				 * " and e.fechamodificacion = (select max(fechamodificacion)"+ "
-				 * from cajg_remesaestados"+ " where idinstitucion =
-				 * e.idinstitucion"+ " and idremesa = e.idremesa) ";
-				 */
-
 				if ((String) miHash.get("PREFIJO") != null && (!((String) miHash.get("PREFIJO")).equals(""))) {
 					consulta += " and r.prefijo='" + (String) miHash.get("PREFIJO") + "'";
 				}
@@ -291,17 +287,29 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				if ((String) miHash.get("IDESTADO") != null && (!((String) miHash.get("IDESTADO")).equals(""))) {
 					consulta += " and e.idestado=" + (String) miHash.get("IDESTADO") + "";
 				}
-				if ((String) miHash.get("FECHAGENERACION") != null && (!((String) miHash.get("FECHAGENERACION")).equals(""))) {
-					consulta += " and f_siga_get_fechaEstadoRemesa(e.idinstitucion, e.idremesa, 1)='" + (String) miHash.get("FECHAGENERACION") + "'";
-
+				
+				//definiendo los tipos de fechas.
+				tipofecha=miForm.getTipoFecha();				
+				if (tipofecha.equals(ClsConstants.COMBO_MOSTRAR_GENERACION)){
+					estado=ClsConstants.ESTADO_REMESA_GENERADA;					
+				}else if (tipofecha.equals(ClsConstants.COMBO_MOSTRAR_ENVIO)){
+						  estado=ClsConstants.ESTADO_REMESA_ENVIADA;
+						}else if (tipofecha.equals(ClsConstants.COMBO_MOSTRAR_RECEPCION)){	
+								estado=ClsConstants.ESTADO_REMESA_RECIBIDA;
+						}
+				
+		
+				if ((tipofecha.equals(ClsConstants.COMBO_MOSTRAR_GENERACION)) || (tipofecha.equals(ClsConstants.COMBO_MOSTRAR_ENVIO)) || (tipofecha.equals(ClsConstants.COMBO_MOSTRAR_RECEPCION))){				
+					if ((!miForm.getFechaInicioBuscar().trim().equals("")) && (!miForm.getFechaFinBuscar().trim().equals(""))){
+							consulta += " and f_siga_get_fechaEstadoRemesa(e.idinstitucion, e.idremesa,"+estado+")>= TO_DATE('"+miForm.getFechaInicioBuscar()+"', 'DD/MM/YYYY')"+
+					       " and f_siga_get_fechaEstadoRemesa(e.idinstitucion, e.idremesa, "+estado+")<= TO_DATE('"+miForm.getFechaFinBuscar()+"', 'DD/MM/YYYY')";					
+					}else if(miForm.getFechaInicioBuscar().trim().equals("")&&  (!miForm.getFechaFinBuscar().trim().equals(""))){
+							consulta +=" and f_siga_get_fechaEstadoRemesa(e.idinstitucion, e.idremesa,"+estado+") <= TO_DATE('"+miForm.getFechaFinBuscar()+"', 'DD/MM/YYYY')";
+						  }else if(!miForm.getFechaInicioBuscar().trim().equals("")&&  (miForm.getFechaFinBuscar().trim().equals(""))){
+							  consulta +=" and f_siga_get_fechaEstadoRemesa(e.idinstitucion, e.idremesa, "+estado+") >= TO_DATE('"+miForm.getFechaInicioBuscar()+"', 'DD/MM/YYYY')";
+						  }
 				}
-				if ((String) miHash.get("FECHAENVIO") != null && (!((String) miHash.get("FECHAENVIO")).equals(""))) {
-					consulta += " and f_siga_get_fechaEstadoRemesa(e.idinstitucion, e.idremesa, 2)='" + (String) miHash.get("FECHAENVIO") + "'";
-				}
-				if ((String) miHash.get("FECHARECEPCION") != null && (!((String) miHash.get("FECHARECEPCION")).equals(""))) {
-
-					consulta += " and f_siga_get_fechaEstadoRemesa(e.idinstitucion, e.idremesa, 3)='" + (String) miHash.get("FECHARECEPCION") + "'";
-				}
+				
 				consulta += " order by r.prefijo,r.numero,r.sufijo";
 
 				// Rellena un vector de Hastable con la claves primarias de la
