@@ -1,9 +1,7 @@
 
 package com.siga.beans;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
@@ -15,7 +13,6 @@ import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
-import com.atos.utils.Validaciones;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
@@ -1759,14 +1756,15 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 			act.setFecha(asistencia.getFechaHora());
 			act.setFechaJustificacion(volantesExpressVo.getFechaJustificacion());
 			if(volantesExpressVo.getFechaJustificacion()!=null && !volantesExpressVo.getFechaJustificacion().equals(""))
-			act.setValidada("1"); // validada si
+				act.setValidada("1"); // validada si
 			else
 				act.setValidada("0"); // validada no
 			act.setIdActuacion(new Long(1));
 			act.setIdInstitucion(asistencia.getIdInstitucion());
 			act.setIdTipoAsistencia(asistencia.getIdTipoAsistencia());
 			act.setNumero(new Long(""+asistencia.getNumero()));
-			act.setNumeroAsunto(asistencia.getNumeroDiligencia());
+			
+			
 			act.setObservaciones(asistencia.getObservaciones());
 			 
 
@@ -1774,8 +1772,10 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 				act.setIdJuzgado(new Integer(""+asistencia.getJuzgado()));
 				act.setIdInstitucionJuzgado(new Long(""+asistencia.getJuzgadoIdInstitucion()));
 				act.setIdTipoActuacion(new Integer(2));
+				act.setNumeroAsunto(asistencia.getNumeroProcedimiento());
 			} 
 			else {
+				act.setNumeroAsunto(asistencia.getNumeroDiligencia());
 				act.setIdComisaria(new Integer(""+asistencia.getComisaria()));
 				act.setIdInstitucionComisaria(new Long(""+asistencia.getComisariaIdInstitucion()));
 				act.setIdTipoActuacion(new Integer(1));
