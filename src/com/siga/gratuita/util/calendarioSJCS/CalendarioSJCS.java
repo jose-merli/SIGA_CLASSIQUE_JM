@@ -529,7 +529,9 @@ public class CalendarioSJCS {
 		LetradoGuardia letradoGuardia = null;
 		//Vamos a recorrer las compensaciones
 		if(alCompensaciones!=null && alCompensaciones.size()>0){
-			for(LetradoGuardia auxLetradoSeleccionado:alCompensaciones){
+			Iterator<LetradoGuardia> iterador = alCompensaciones.iterator();
+			while (iterador.hasNext()) {
+				LetradoGuardia auxLetradoSeleccionado = (LetradoGuardia) iterador.next();
 				if(auxLetradoSeleccionado.getBajasTemporales()==null){
 					//si esta de vacaciones meto salto y que continue
 					CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(this.usrBean);
@@ -538,9 +540,8 @@ public class CalendarioSJCS {
 				}
 				
 				//vale
-				if(isLetradoValido(auxLetradoSeleccionado, diasGuardia, hmPersonasConSaltos, true)){
-//					Se quita ya que se quito la compensacion en isLetradoValido
-					alCompensaciones.remove(auxLetradoSeleccionado);
+				if(isLetradoValido(auxLetradoSeleccionado, diasGuardia, hmPersonasConSaltos,iterador, true)){
+
 					letradoGuardia = auxLetradoSeleccionado;
 					break;
 				}
@@ -559,7 +560,7 @@ public class CalendarioSJCS {
 		return false;
 		
 	}
-	private boolean isLetradoValido(LetradoGuardia letradoGuardia,ArrayList diasGuardia, HashMap<Long, List<LetradoGuardia>> hmPersonasConSaltos, boolean isCompensacion) throws ClsExceptions{
+	private boolean isLetradoValido(LetradoGuardia letradoGuardia,ArrayList diasGuardia, HashMap<Long, List<LetradoGuardia>> hmPersonasConSaltos,Iterator<LetradoGuardia> iteCompensaciones, boolean isCompensacion) throws ClsExceptions{
 		ScsSaltosCompensacionesAdm scsSaltosCompensacionesAdm = null;
 		if(isCompensacion){
 			if(isLetradoBajaTemporal(diasGuardia, letradoGuardia)){
@@ -568,6 +569,8 @@ public class CalendarioSJCS {
 				scsSaltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(this.usrBean);
 				salto.setIdGuardia(this.idGuardia);
 				salto.setIdCalendarioGuardiasCreacion(idCalendarioGuardias);
+				salto.setIdCalendarioGuardias(idCalendarioGuardias);
+				
 				Date hoy = new Date();
 				SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 				String sHoy = sdf2.format(hoy);
@@ -596,12 +599,14 @@ public class CalendarioSJCS {
 					scsSaltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(this.usrBean);
 				ScsSaltosCompensacionesBean compensacion = getSaltoCompensacion(letradoGuardia, diasGuardia, ClsConstants.COMPENSACIONES,this.idGuardia, this.idCalendarioGuardias);
 				scsSaltosCompensacionesAdm.marcarSaltoCompensacionGuardia(compensacion);
+				iteCompensaciones.remove();
 				return false;
 			}else{
 				if(scsSaltosCompensacionesAdm == null)
 					scsSaltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(this.usrBean);
 				ScsSaltosCompensacionesBean compensacion = getSaltoCompensacion(letradoGuardia, diasGuardia, ClsConstants.COMPENSACIONES,this.idGuardia, this.idCalendarioGuardias);
 				scsSaltosCompensacionesAdm.marcarSaltoCompensacionGuardia(compensacion);
+				iteCompensaciones.remove();
 			}
 			
 		}else{
@@ -612,6 +617,7 @@ public class CalendarioSJCS {
 				scsSaltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(this.usrBean);
 				salto.setIdGuardia(this.idGuardia);
 				salto.setIdCalendarioGuardiasCreacion(idCalendarioGuardias);
+				salto.setIdCalendarioGuardias(idCalendarioGuardias);
 				Date hoy = new Date();
 				SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 				String sHoy = sdf2.format(hoy);
@@ -625,6 +631,7 @@ public class CalendarioSJCS {
 				if(scsSaltosCompensacionesAdm == null)
 					scsSaltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(this.usrBean);
 				ScsSaltosCompensacionesBean compensacion = getSaltoCompensacion(letradoGuardia, diasGuardia, ClsConstants.COMPENSACIONES,this.idGuardia, this.idCalendarioGuardias);
+				compensacion.setIdCalendarioGuardiasCreacion(idCalendarioGuardias);
 				compensacion.setFechaCumplimiento(null);
 				StringBuffer descripcion = new StringBuffer();
 				descripcion.append("Compensación por Incompatibilidad");
@@ -661,6 +668,7 @@ public class CalendarioSJCS {
 				new Integer(idInstitucion),new Integer(idTurno),letradoGuardia.getIdPersona(),ClsConstants.SALTOS,"sysdate");
 		saltoCompensacion.setIdCalendarioGuardias(idCalendarioGuardias);
 		saltoCompensacion.setIdGuardia(idGuardia);
+		
 		saltoCompensacion.setSaltoCompensacion(saltoOCompensacion);
 		
 		Date hoy = new Date();
@@ -694,7 +702,7 @@ public class CalendarioSJCS {
 				}
 				
 				//vale
-				if(isLetradoValido(auxLetradoSeleccionado, diasGuardia,hmPersonasConSaltos, false)){
+				if(isLetradoValido(auxLetradoSeleccionado, diasGuardia,hmPersonasConSaltos,null, false)){
 					letradoGuardia = auxLetradoSeleccionado;
 					findIt= true;
 				}
