@@ -1642,7 +1642,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 				return exito("error.messagess.borrarGuardiasGenerarCalendario", request);
 			
 			//iniciando transaccion
-			tx = usr.getTransactionPesada();//.getTransaction();
+			tx = usr.getTransaction();
 			tx.begin();
 			
 			//borrando el calendario previamente
