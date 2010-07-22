@@ -247,15 +247,20 @@
 	    
 	     
 	     document.forms[0].modificarPreferencias.value="1";
+	     document.forms[0].modificarDireccionesCensoWeb.value="0";
+	     document.forms[0].control.value="0";   
 	     document.forms[0].submit();
 		 document.forms[0].modificarPreferencias.value="0";
 	    }
 
 	    function actualizarcenso(){
 
-	    	document.forms[0].modificarDireccionesCensoWeb.value="1";
+	    	 document.forms[0].modificarDireccionesCensoWeb.value="1";
+	    	 document.forms[0].modificarPreferencias.value="1";	 
+	    	 document.forms[0].control.value="1";   	
 		     document.forms[0].submit();
 			 document.forms[0].modificarDireccionesCensoWeb.value="0";
+			 document.forms[0].modificarPreferencias.value="0";
 
 	      }
 	    
@@ -773,6 +778,7 @@
 		<html:hidden property="modo" value="cerrar"/>
 		<input type="hidden"  name="idTipoDireccionNew"  value="">
 		<input type="hidden" name="modificarPreferencias" value="">
+		<input type="hidden" name="control" value="">
 		<input type="hidden" name="modificarDireccionesCensoWeb" value="">
 		<input type="hidden" name = "idDireccionesPreferentes" value = ""/>
 		<input type="hidden" name = "idDireccionesCensoWeb" value = ""/>
