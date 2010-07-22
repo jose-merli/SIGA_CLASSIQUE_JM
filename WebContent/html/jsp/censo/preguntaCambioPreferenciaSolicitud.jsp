@@ -15,15 +15,10 @@
 	String app=request.getContextPath();
 	
 	String idDirecciones=(String)request.getAttribute("idDireccionesPreferentes") ;
+	String idpreferente=(String)request.getAttribute("idDireccionesCensoWeb") ;
 	String modo=(String)request.getAttribute("modo");
-	System.out.println("MODO "+modo);
+	String control=(String)request.getAttribute("control") ;
 	
-	
-	
-	
-	
-	
-
 
 %>
 
@@ -35,7 +30,9 @@
 			if (confirm(type)) {
 			 
 			  parent.document.consultaDireccionesSolicForm.idDireccionesPreferentes.value="<%=idDirecciones%>";
+			  parent.document.consultaDireccionesSolicForm.idDireccionesCensoWeb.value="<%=idpreferente%>";
 			  parent.document.consultaDireccionesSolicForm.modo.value="<%=modo%>";
+			  parent.document.consultaDireccionesSolicForm.control.value="<%=control%>";
 			  parent.actualizar();
 			    
 			}
