@@ -21,7 +21,11 @@ public class AsistenciasForm extends MasterForm
 			designa_numero = "", 
 			designa_turno = "", 
 			designa_idInstitucion = "";
-
+	String numeroDilegenciaAsistencia; 
+	String numeroProcedimientoAsistencia;
+	String comisariaAsistencia;
+	String juzgadoAsistencia;
+	
 	
 	private String modoPestanha=null;
 	
@@ -39,7 +43,7 @@ public class AsistenciasForm extends MasterForm
 	}
 	
 	private String asunto="asunto";
-	private String idInstitucion="idInstitucion";
+	private String idInstitucion;
 	private String anio="anio";
 	private String numero="numero";
 	private String idTipoEJG="idTipoEJG";
@@ -134,8 +138,8 @@ public class AsistenciasForm extends MasterForm
 	private String desdeDesigna = "";
 	private String actuacionValidada = "";
 
-	private String comisaria = "comisaria";
-	private String juzgado = "juzgado";
+	private String comisaria;
+	private String juzgado ;
 	private String idDelito = "idDelito";
 	private String acIdPrision = "acIdPrision";
 	private String acIdInstitucionPrision = "acIdInstitucionPrision";
@@ -148,7 +152,7 @@ public class AsistenciasForm extends MasterForm
 	public void    setAsunto          		 (String	valor)	{ this.datos.put(this.asunto, valor);}
 	public void    setEstado          		 (String	valor)	{ this.datos.put(this.estado, valor);}	
 	public void    setFechaEstado      		 (String	valor)	{ this.datos.put(this.fechaEstadoAsistencia, valor);}
-	public void    setIdInstitucion          (String	valor)	{ this.datos.put(this.idInstitucion, valor);}
+	public void    setIdInstitucion          (String	valor)	{ this.datos.put("idInstitucion", valor);}
 	public void    setIdTipoEJG		         (String	valor)	{ this.datos.put(this.idTipoEJG, valor);}
 	public void    setFechaHora              (String	valor)	{ this.datos.put(this.fechaHora, valor);}
 	public void    setObservaciones          (String	valor)	{ this.datos.put(this.observaciones, valor);}
@@ -234,8 +238,8 @@ public class AsistenciasForm extends MasterForm
 	public void setAcdiadespues     (String	valor)	{ this.datos.put(this.acdiadespues, valor);}
 	public void setAcnumeroasunto   (String	valor)	{ this.datos.put(this.acnumeroasunto, valor);}
 	public void setAcojustificacion (String	valor)	{ this.datos.put(this.acojustificacion, valor);}
-	public void setComisaria (String	valor)		{ this.datos.put(this.comisaria, valor);}
-	public void setJuzgado (String	valor)			{ this.datos.put(this.juzgado, valor);}
+	public void setComisaria (String	valor)		{ this.datos.put("comisaria", valor);}
+	public void setJuzgado (String	valor)			{ this.datos.put("juzgado", valor);}
 	
 	public void setTipoActuacion (String	valor)	{ this.datos.put("TIPOACTUACION", valor);}
 	public void setIdCosteFijo (String	valor)		{ this.datos.put("IDCOSTEFIJO", valor);}
@@ -246,7 +250,7 @@ public class AsistenciasForm extends MasterForm
 	public String getAsunto 	            ()	{return (String)this.datos.get(this.asunto);}
 	public String getEstado 	            ()	{return (String)this.datos.get(this.estado);}
 	public String getFechaEstado 	        ()	{return (String)this.datos.get(this.fechaEstadoAsistencia);}
-	public String getIdInstitucion          ()	{return (String)this.datos.get(this.idInstitucion);}
+	public String getIdInstitucion          ()	{return (String)this.datos.get("idInstitucion");}
 	public String getIdTipoEJG	            ()	{return (String)this.datos.get(this.idTipoEJG);}
 	public String getFechaHora              ()	{return (String)this.datos.get(this.fechaHora);}
 	public String getObservaciones          ()	{return (String)this.datos.get(this.observaciones);}
@@ -330,8 +334,8 @@ public class AsistenciasForm extends MasterForm
 	public String getAcdiadespues     ()	{return (String)this.datos.get(this.acdiadespues);}
 	public String getAcnumeroasunto   ()	{return (String)this.datos.get(this.acnumeroasunto);}
 	public String getAcojustificacion ()	{return (String)this.datos.get(this.acojustificacion);}
-	public String getComisaria ()			{return (String)this.datos.get(this.comisaria);}
-	public String getJuzgado ()				{return (String)this.datos.get(this.juzgado);}
+	public String getComisaria ()			{return (String)this.datos.get("comisaria");}
+	public String getJuzgado ()				{return (String)this.datos.get("juzgado");}
 	public String getAcIdPrision ()			{return (String)this.datos.get(this.acIdPrision);}
 	public String getAcIdInstitucionPrision()	{return (String)this.datos.get(this.acIdInstitucionPrision);}
 	
@@ -502,5 +506,30 @@ public class AsistenciasForm extends MasterForm
 	}
 	public void setAsistenciaBean(ScsAsistenciasBean asistenciaBean) {
 		this.asistenciaBean = asistenciaBean;
+	}
+	public String getNumeroDilegenciaAsistencia() {
+		return numeroDilegenciaAsistencia;
+	}
+	public void setNumeroDilegenciaAsistencia(String numeroDilegenciaAsistencia) {
+		this.numeroDilegenciaAsistencia = numeroDilegenciaAsistencia;
+	}
+	public String getNumeroProcedimientoAsistencia() {
+		return numeroProcedimientoAsistencia;
+	}
+	public void setNumeroProcedimientoAsistencia(
+			String numeroProcedimientoAsistencia) {
+		this.numeroProcedimientoAsistencia = numeroProcedimientoAsistencia;
+	}
+	public String getComisariaAsistencia() {
+		return comisariaAsistencia;
+	}
+	public void setComisariaAsistencia(String comisariaAsistencia) {
+		this.comisariaAsistencia = comisariaAsistencia;
+	}
+	public String getJuzgadoAsistencia() {
+		return juzgadoAsistencia;
+	}
+	public void setJuzgadoAsistencia(String juzgadoAsistencia) {
+		this.juzgadoAsistencia = juzgadoAsistencia;
 	}
 }

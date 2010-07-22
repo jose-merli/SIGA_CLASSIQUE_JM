@@ -2704,7 +2704,7 @@
 			<forward name="exitoRegularizacion" path="/html/jsp/facturacionSJCS/datosRegularizacionExito.jsp"/>
 		</action>
 
-		<action path="/FCS_RetencionesJudiciales" type="com.siga.facturacionSJCS.action.MantenimientoRetencionesJudicialesAction" name="MantenimientoRetencionesJudicialesForm" scope="session">
+		<action path="/FCS_RetencionesJudiciales" type="com.siga.facturacionSJCS.action.MantenimientoRetencionesJudicialesAction" name="MantenimientoRetencionesJudicialesForm" scope="request">
 			<forward name="inicio"	path="/html/jsp/facturacionSJCS/busquedaRetencionesJudiciales.jsp"/>
 			<forward name="resultado" path="/html/jsp/facturacionSJCS/resultadosRetencionesJudiciales.jsp"/>
 			<forward name="operar"	path="/html/jsp/facturacionSJCS/datosRetencionesJudiciales.jsp"/>

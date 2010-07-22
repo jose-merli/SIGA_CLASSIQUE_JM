@@ -72,7 +72,7 @@
 	
 	
 	 <td class="labelText" colspan="5">
-	<html:checkbox  property="checkEsDeTurno"   onclick="activarLetrado(this);" />&nbsp;&nbsp;<siga:Idioma key="FactSJCS.mantRetencionesJ.literal.aplicableLetrados"/>
+	<html:checkbox   property="checkEsDeTurno"   onclick="activarLetrado(this);" />&nbsp;&nbsp;<siga:Idioma key="FactSJCS.mantRetencionesJ.literal.aplicableLetrados"/>
 	</td>
 	</tr>
 	<tr>
@@ -155,6 +155,7 @@
 				sub();
 				if (!isNaN(ncolegiado)){
 				    document.forms[1].ncolegiado.value=ncolegiado;
+				    document.forms[1].checkEsDeTurno.value = document.forms[1].checkEsDeTurno.checked;
 					document.forms[1].modo.value = "buscarPor";
 					document.forms[1].submit();
 				}else alert('<siga:Idioma key="FactSJCS.busquedaRetencionesJ.literal.errorNumerico"/>');

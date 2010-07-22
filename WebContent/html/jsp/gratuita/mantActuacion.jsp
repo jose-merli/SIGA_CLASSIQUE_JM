@@ -301,6 +301,14 @@
 		<html:hidden name="AsistenciasForm" property="esFichaColegial" />
 		<html:hidden name="AsistenciasForm" property="idTipoAsistencia" value="<%=idTipoAsistencia%>"/>
 		<html:hidden name="AsistenciasForm" property="idTipoAsistenciaColegio" value="<%=idTipoAsistenciaColegio%>"/>
+		<html:hidden name="AsistenciasForm" property="modoPestanha"/>
+		<html:hidden name="AsistenciasForm" property="idInstitucion"/>
+		<html:hidden name="AsistenciasForm" property="comisariaAsistencia"/>
+		<html:hidden name="AsistenciasForm" property="juzgadoAsistencia"/>
+		<html:hidden name="AsistenciasForm" property="numeroDilegenciaAsistencia"/>
+		<html:hidden name="AsistenciasForm" property="numeroProcedimientoAsistencia"/>
+		
+		
 
 	<siga:ConjCampos leyenda="gratuita.mantActuacion.literal.dasistencia">
 	<table width="100%" style="table-layout:fixed">

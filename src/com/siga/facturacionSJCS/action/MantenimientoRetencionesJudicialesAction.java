@@ -310,7 +310,7 @@ public class MantenimientoRetencionesJudicialesAction extends MasterAction {
 			
 			// Segunda parte de la consulta (con los criterios de búsqueda seleccionados)
 			consulta += " WHERE RETENCIONES." + FcsRetencionesJudicialesBean.C_IDINSTITUCION + " = " + user.getLocation();
-			boolean checkEsDeTurno  = UtilidadesString.stringToBoolean(UtilidadesHash.getString(miHash,"ESDETURNO"));
+			boolean checkEsDeTurno  = UtilidadesString.stringToBoolean(miFormulario.getCheckEsDeTurno());
 			if (checkEsDeTurno){
 				
 				consulta+=" AND RETENCIONES."+FcsRetencionesJudicialesBean.C_ESDETURNO+"="+ClsConstants.DB_TRUE;
@@ -348,7 +348,7 @@ public class MantenimientoRetencionesJudicialesAction extends MasterAction {
 				            " or trunc("+ FcsRetencionesJudicialesBean.C_FECHAFIN+")>trunc(sysdate))";
 				
 			}
-
+			
 			// Y por último se anhaden los criterios de ordenación
 			consulta += " ORDER BY " + CenColegiadoBean.C_NCOLEGIADO;
 			
@@ -447,20 +447,16 @@ public class MantenimientoRetencionesJudicialesAction extends MasterAction {
 			if (miHash.get(FcsRetencionesJudicialesBean.C_FECHAFIN)!=null && !miHash.get(FcsRetencionesJudicialesBean.C_FECHAFIN).equals("") ){
 			 miHash.put(FcsRetencionesJudicialesBean.C_FECHAFIN,GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaFin()));
 			}
-			if (UtilidadesHash.getString(miHash,FcsRetencionesJudicialesBean.C_TIPORETENCION).equalsIgnoreCase("Porcentual")){
+			/*if (UtilidadesHash.getString(miHash,FcsRetencionesJudicialesBean.C_TIPORETENCION).equalsIgnoreCase("Porcentual")){
 				UtilidadesHash.set(miHash,FcsRetencionesJudicialesBean.C_TIPORETENCION,ClsConstants.TIPO_RETENCION_PORCENTAJE);
 			}else{
 				UtilidadesHash.set(miHash,FcsRetencionesJudicialesBean.C_TIPORETENCION,ClsConstants.TIPO_RETENCION_IMPORTEFIJO);
-			}
+			}*/
 			Hashtable hashBkp = new Hashtable();
 			Vector resultado= admBean.selectPorClave(miHash);
 			hashBkp = ((FcsRetencionesJudicialesBean)resultado.get(0)).getOriginalHash();	
-			boolean checkEsDeTurno  = UtilidadesString.stringToBoolean(miForm.getCheckEsDeTurno());
-			if (checkEsDeTurno){
-				UtilidadesHash.set(miHash,FcsRetencionesJudicialesBean.C_ESDETURNO,ClsConstants.DB_TRUE);
-			}else{
-				UtilidadesHash.set(miHash,FcsRetencionesJudicialesBean.C_ESDETURNO,ClsConstants.DB_FALSE);
-			}
+			UtilidadesHash.set(miHash,(String)hashBkp.get(FcsRetencionesJudicialesBean.C_ESDETURNO),FcsRetencionesJudicialesBean.C_ESDETURNO);
+			
 			tx=usr.getTransaction();
 			tx.begin();
 			if (admBean.update(miHash,hashBkp)) 

@@ -136,7 +136,8 @@
 		}
 		function cargarCheck(){
 		  
-		  <%if (esDeTurno!=null && esDeTurno.equals("1")){%>
+		  <%
+		  if (esDeTurno!=null && esDeTurno.equals("1")){%>
 		  
 		      
 			 document.getElementById("checkEsDeTurno").checked=true;
@@ -248,9 +249,11 @@
 	</td>
 	
 	<td class="labelText" colspan="3">
-		<%if (accion.equalsIgnoreCase("ver")||(!accion.equalsIgnoreCase("ver") && (aplicaRetencion!=null && aplicaRetencion.equalsIgnoreCase("1")))){
-			String tramo = (tipoRetencion.equalsIgnoreCase("P")?"Porcentual":"Importe fijo");%>
-			<html:text name="MantenimientoRetencionesJudicialesForm" property="tipoRetencion" size="18" styleClass="boxConsulta" value="<%=tramo%>" readonly="true"></html:text>
+		<%if (accion.equalsIgnoreCase("ver")||(!accion.equalsIgnoreCase("ver") && (aplicaRetencion!=null && aplicaRetencion.equalsIgnoreCase("1")))){%>
+			<select name="tipoRetencion" class="boxCombo" disabled="disabled">
+				<option  value="<%=ClsConstants.TIPO_RETENCION_PORCENTAJE%>" <%if(tipoRetencion.equalsIgnoreCase("P")){ %>selected<%}%>><siga:Idioma key="FactSJCS.mantRetencionesJ.literal.porcentual"/></option>
+				<option  value="<%=ClsConstants.TIPO_RETENCION_IMPORTEFIJO%>" <%if(tipoRetencion.equalsIgnoreCase("F")){ %>selected<%}%>><siga:Idioma key="FactSJCS.mantRetencionesJ.literal.importeFijo"/></option>
+			</select>
 		<%} else  {%>
 			<select name="tipoRetencion" class="boxCombo">
 				<option  value="<%=ClsConstants.TIPO_RETENCION_PORCENTAJE%>" <%if(tipoRetencion.equalsIgnoreCase("P")){ %>selected<%}%>><siga:Idioma key="FactSJCS.mantRetencionesJ.literal.porcentual"/></option>
@@ -363,32 +366,33 @@
 			document.MantenimientoRetencionesJudicialesForm.importe.value=document.MantenimientoRetencionesJudicialesForm.importe.value.replace(/,/,".");
 			var res = compararFecha(document.forms[1].fechaFin,document.forms[1].fechaInicio);
 			sub();
-		  if (validateMantenimientoRetencionesJudicialesForm(document.MantenimientoRetencionesJudicialesForm)){ 
+		  	if (validateMantenimientoRetencionesJudicialesForm(document.MantenimientoRetencionesJudicialesForm)){ 
 			
-			if (res != 2) {
-			 if (!document.getElementById("checkEsDeTurno").checked && document.getElementById("idPersona").value== "" ){
-			  alert('<siga:Idioma key="FactSJCS.mantRetencionesJ.literal.checkAplicable"/>');
-			  fin();
-			  return false;
-			 }
-			 if (MantenimientoRetencionesJudicialesForm.tipoRetencion.value=='P' && MantenimientoRetencionesJudicialesForm.importe.value>100){
-			  alert('<siga:Idioma key="FactSJCS.mantRetencionesJ.literal.avisoPorcentaje"/>');
-			  fin();
-			  return false;
-			 }else{
-				document.forms[1].target = "submitArea";
-				document.forms[1].modo.value = '<%=accion%>';
-				document.forms[1].submit();				            
-			 }   
-			}else{
-			 alert('<siga:Idioma key="messages.fechas.rangoFechas"/>');
-			 fin();
-			 return false;
-			}
+				if (res != 2) {
+			 		if (!document.getElementById("checkEsDeTurno").checked && document.getElementById("idPersona").value== "" ){
+			  			alert('<siga:Idioma key="FactSJCS.mantRetencionesJ.literal.checkAplicable"/>');
+			  			fin();
+			  			return false;
+			 		}
+			 		if (MantenimientoRetencionesJudicialesForm.tipoRetencion.value=='P' && MantenimientoRetencionesJudicialesForm.importe.value>100){
+			  			alert('<siga:Idioma key="FactSJCS.mantRetencionesJ.literal.avisoPorcentaje"/>');
+			  			fin();
+			  			return false;
+			 		}else{
+			 			document.forms[1].checkEsDeTurno.value = document.getElementById("checkEsDeTurno").checked;
+						document.forms[1].target = "submitArea";
+						document.forms[1].modo.value = '<%=accion%>';
+						document.forms[1].submit();				            
+			 		}   
+				}else{
+			 		alert('<siga:Idioma key="messages.fechas.rangoFechas"/>');
+			 		fin();
+			 		return false;
+				}
 		  }else{
-		   fin();
+		   	fin();
 		  }	
-		}
+	}
 		
 		<!-- Asociada al boton Cerrar -->
 		function accionCerrar()

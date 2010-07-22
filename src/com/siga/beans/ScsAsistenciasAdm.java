@@ -1969,6 +1969,27 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 		
 	}
 	
+	public void updateAsistenciaDesdeActuacion(ScsAsistenciasBean asistencia) throws ClsExceptions 
+	{
+		String claves [] ={ScsAsistenciasBean.C_ANIO,ScsAsistenciasBean.C_NUMERO, ScsAsistenciasBean.C_IDINSTITUCION};
+		ArrayList<String> alCampos = new ArrayList<String>();
+		if(asistencia.getComisaria()!=null){
+			 alCampos.add(ScsAsistenciasBean.C_COMISARIA);
+			 alCampos.add(ScsAsistenciasBean.C_COMISARIA_IDINSTITUCION);
+			 alCampos.add(ScsAsistenciasBean.C_NUMERODILIGENCIA);
+			
+		}
+		if(asistencia.getJuzgado()!=null){
+			alCampos.add(ScsAsistenciasBean.C_JUZGADO);
+			alCampos.add(ScsAsistenciasBean.C_JUZGADO_IDINSTITUCION);
+			alCampos.add(ScsAsistenciasBean.C_NUMEROPROCEDIMIENTO);
+			
+			
+		}
+		this.updateDirect(asistencia,claves,alCampos.toArray(new String[alCampos.size()]));
+	}
+	
+	
 	
 	
 }

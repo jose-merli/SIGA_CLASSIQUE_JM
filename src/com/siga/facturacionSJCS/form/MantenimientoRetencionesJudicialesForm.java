@@ -14,7 +14,13 @@ import com.siga.general.MasterForm;
 * @author julio.vicente 31-03-2005
 */
 public class MantenimientoRetencionesJudicialesForm extends MasterForm {
-	
+	String checkEsDeTurno;
+	public String getCheckEsDeTurno() {
+		return checkEsDeTurno;
+	}
+	public void setCheckEsDeTurno(String checkEsDeTurno) {
+		this.checkEsDeTurno = checkEsDeTurno;
+	}
 	// Metodos Set (Formulario (*.jsp))
 	public void setIdInstitucion (String dato) {UtilidadesHash.set(this.datos,"IDINSTITUCION", dato);} 
 	public void setIdPersona(String dato) {UtilidadesHash.set(this.datos,"IDPERSONA", dato);}
@@ -29,7 +35,7 @@ public class MantenimientoRetencionesJudicialesForm extends MasterForm {
 	public void setImporte (String dato) {UtilidadesHash.set(this.datos,"IMPORTE", dato);}
 	public void setObservaciones (String dato) {UtilidadesHash.set(this.datos,"OBSERVACIONES", dato);}
 	public void setNcolegiado (String dato) {UtilidadesHash.set(this.datos,"NCOLEGIADO", dato);}
-	public void setCheckEsDeTurno (String dato) {UtilidadesHash.set(this.datos,"ESDETURNO", dato);}
+//	public void setCheckEsDeTurno (String dato) {UtilidadesHash.set(this.datos,"ESDETURNO", dato);}
 	public void setValorRetencion (String dato) {UtilidadesHash.set(this.datos,"VALORRETENCION", dato);}
 	public void setDescDestinatario  (String dato) {UtilidadesHash.set(this.datos,"DESCDESTINATARIO", dato);}
 	public void setCheckHistorico  (String dato) {UtilidadesHash.set(this.datos,"CHECKHISTORICO", dato);}
@@ -57,7 +63,7 @@ public class MantenimientoRetencionesJudicialesForm extends MasterForm {
 	public String getImporte () {return UtilidadesHash.getString(this.datos, "IMPORTE");}
 	public String getObservaciones () {return UtilidadesHash.getString(this.datos, "OBSERVACIONES");}
 	public String getNcolegiado () {return UtilidadesHash.getString(this.datos, "NCOLEGIADO");}
-	public String getCheckEsDeTurno () {return UtilidadesHash.getString(this.datos, "ESDETURNO");}
+//	public String getCheckEsDeTurno () {return UtilidadesHash.getString(this.datos, "ESDETURNO");}
 	public String getValorRetencion () {return UtilidadesHash.getString(this.datos, "VALORRETENCION");}
 	public String getDescDestinatario () {return UtilidadesHash.getString(this.datos, "DESCDESTINATARIO");}
 	
