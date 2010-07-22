@@ -18,13 +18,9 @@
 	
 	String idDirecciones=(String)request.getAttribute("idDireccionesCensoWeb") ;
 	String modo=(String)request.getAttribute("modo");
-	System.out.println("MODO "+modo);
-	
-	
-	
-	
-	
-	
+	String modificarPre=(String)request.getAttribute("idDireccionesPreferentes") ;
+	String control=(String)request.getAttribute("control") ;
+
 
 
 %>
@@ -37,6 +33,8 @@
 			if (confirm(type)) {
 			 
 			  parent.document.consultaDireccionesForm.idDireccionesCensoWeb.value="<%=idDirecciones%>";
+			  parent.document.consultaDireccionesForm.modificarPreferencias.value="<%=modificarPre%>";
+			  parent.document.consultaDireccionesForm.control.value="<%=control%>";
 			  parent.document.consultaDireccionesForm.modo.value="<%=modo%>";
 			  parent.actualizarcenso();
 			    
