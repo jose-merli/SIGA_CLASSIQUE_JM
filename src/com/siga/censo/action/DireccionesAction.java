@@ -1200,6 +1200,7 @@ protected String insertar (ActionMapping mapping,
 		//Variables generales
 		String rc = "";
 		UserTransaction t = null;
+		String idDireccionesCensoWeb="";
 		
 		try
 		{
@@ -1247,21 +1248,24 @@ protected String insertar (ActionMapping mapping,
 			
 			//obteniendo adm de BD de direcciones
 			CenDireccionesAdm direccionesAdm = new CenDireccionesAdm (this.getUserBean (request));
+			//digito de control para saber si viene de la pagina de preferentes o de censoweb ya que son dos preguntas distintas.
+		    String control=request.getParameter("control");
 			
 			if (request.getParameter("modificarPreferencias")!=null && request.getParameter("modificarPreferencias").equals("1")){
 				idDireccionesPreferentes=request.getParameter("idDireccionesPreferentes");
-				direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif,request);
+			//	direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif,request);
 			}else {
 			//comprobando que no existen dos direcciones con igual campo preferente
 			 idDireccionesPreferentes=direccionesAdm.obtenerPreferenteDirecciones (idPersona.toString (), 
 					idInstitucionPersona.toString (), preferente, idDireccion, request);
 			  if  (!idDireccionesPreferentes.equals("")){
-				  
-			    request.setAttribute("modo", "guardarInsertarHistorico");
-				request.setAttribute("idDireccionesPreferentes", idDireccionesPreferentes);
+			    request.setAttribute("idDireccionesPreferentes", idDireccionesPreferentes);
+				request.setAttribute("idDireccionesCensoWeb", idDireccionesCensoWeb);
+				request.setAttribute("control", "0");
+				request.setAttribute("modo", "guardarInsertarHistorico");
 				t.rollback();
-				 return "preguntaCambioPreferencia";
-			  } 	
+				return "preguntaCambioPreferencia";
+			} 	
 			}
 			
 			//borrando la direccion en BD
@@ -1277,17 +1281,6 @@ protected String insertar (ActionMapping mapping,
 			//Recordar que ya existe un Trigger en BD que no permite insertar 
 			//  mas de una direccion de correo por colegiado
 			
-			
-			
-			
-			
-			
-			//comprobando que no existen dos direcciones con igual campo preferente
-			/*if (! direccionesAdm.comprobarPreferenteDirecciones (idPersona.toString (), 
-					idInstitucionPersona.toString (), preferente, idDireccion, request))
-				throw new SIGAException (direccionesAdm.getError ());*/
-		
-		
 			//comprobando que el cliente no tenga ya una direccion de tipo guardia
 			// si es asi no se permite anyadir la direccion
 			String tiposDir = "";
@@ -1304,21 +1297,23 @@ protected String insertar (ActionMapping mapping,
 			String tiposdireciones="";
 			for (int i=0; i < tipos.length; i++){
 				tiposdireciones+=tipos[i];				
-			}
-			
-			String idDireccionesCensoWeb="";
+			}			
+		
 			
 			if (request.getParameter("modificarDireccionesCensoWeb")!=null && request.getParameter("modificarDireccionesCensoWeb").equals("1")){
 				idDireccionesCensoWeb=request.getParameter("idDireccionesCensoWeb");				
 			}else {		
 				idDireccionesCensoWeb=direccionesAdm.obtenerTipodireccionCensoWeb(idPersona.toString (), 
 					idInstitucionPersona.toString (), tiposdireciones, idDireccion, request);			  
-				if  (!idDireccionesCensoWeb.equals("")){			
-				request.setAttribute("idDireccionesCensoWeb", idDireccionesCensoWeb);
-				request.setAttribute("modo", "guardarInsertarHistorico");
-				t.rollback();
-				 return "preguntaCambioTipoDireccion";
-			  }
+				if  (!idDireccionesCensoWeb.equals("")){	
+					
+						request.setAttribute("idDireccionesCensoWeb", idDireccionesCensoWeb);
+						request.setAttribute("control", "1");
+						request.setAttribute("modo", "guardarInsertarHistorico");	
+						request.setAttribute("idDireccionesPreferentes", idDireccionesPreferentes);
+						t.rollback();
+						return "preguntaCambioTipoDireccion";
+			 }
 			}			
 			
 			RowsContainer rc2 = new RowsContainer(); 
@@ -1338,11 +1333,28 @@ protected String insertar (ActionMapping mapping,
 							t.rollback();
 							return exito("messages.inserted.error.ExisteYaGuardia", request);
 						}	
-				}else if (new Integer (tipos[i]).intValue () == ClsConstants.TIPO_DIRECCION_CORREO){
+					}else if (new Integer (tipos[i]).intValue () == ClsConstants.TIPO_DIRECCION_CORREO){						
+					String sql1 = direccionesAdm.comprobarTipoDireccion(tipo, miForm.getIDInstitucion().toString(), miForm.getIDPersona().toString());
+					cambiodireccioncensoweb (miForm,i,sql1, tipo, idDireccionesCensoWeb, request);
+					if ((request.getParameter("modificarPreferencias")!=null && request.getParameter("modificarPreferencias").equals("1")) || (request.getParameter("modificarDireccionesCensoWeb")!=null && request.getParameter("modificarDireccionesCensoWeb").equals("1"))){
 						
-					String sql1 = direccionesAdm.comprobarTipoDireccion(tipo, miForm.getIDInstitucion().toString(), miForm.getIDPersona().toString());			
-					cambiodireccioncensoweb (miForm,i,sql1, tipo, idDireccionesCensoWeb, request);	
-				}
+						if ( request.getParameter("control").equals("0")){
+						if (!preferenteModif.equals("")){
+								direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif,request);	
+							}
+						}else cambiodireccioncensoweb (miForm,i,sql1, tipo, idDireccionesCensoWeb, request);
+					}
+				}else { if (!preferenteModif.equals("")){
+							 if (!idDireccionesCensoWeb.equals("") &&(!idDireccionesPreferentes.equals(""))){
+								 direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif,request);
+							 }
+							 if (control.equals("0")){
+								  direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif,request);
+								 
+							 }
+							 }
+						}
+						
 			} //for
 			
 			//estableciendo los datos de la direccion (desde el formulario 
@@ -1441,7 +1453,6 @@ protected String insertar (ActionMapping mapping,
 		}
 		return "seleccion";
 		}
-	
 	
 	protected void cambiodireccioncensoweb (MasterForm formulario,int i,String sql,String tipo,String idDireccionesCensoWeb, HttpServletRequest request)	throws SIGAException
 	{
