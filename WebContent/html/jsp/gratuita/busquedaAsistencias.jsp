@@ -78,7 +78,8 @@
     if (busqueda!=null && (busqueda.get("BUSQUEDAREALIZADA")!=null ||!busqueda.get("BUSQUEDAREALIZADA").toString().equals("") )){
 		busquedaRealizada = busqueda.get("BUSQUEDAREALIZADA").toString();
 	}
-	fechaDesde=UtilidadesBDAdm.getFechaBD("");
+	// inc6845 // fechaDesde=UtilidadesBDAdm.getFechaBD("");
+	fechaDesde="";
 	
 	//if((busquedaRealizada!=null) && (!busquedaRealizada.equals("")) ) 
 	if(busqueda!=null && (esVolver!=null && esVolver.equals("1")) && datosBusqueda!=null)

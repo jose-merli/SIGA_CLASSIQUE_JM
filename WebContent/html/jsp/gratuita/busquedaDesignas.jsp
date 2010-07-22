@@ -40,7 +40,9 @@
 	ArrayList acreditacion   = new ArrayList();
 	ArrayList modulo   = new ArrayList();
 	anio = UtilidadesBDAdm.getYearBD("");
-	fechaAperturaInicio=UtilidadesBDAdm.getFechaBD("");
+	
+	// inc6845 // fechaAperturaInicio=UtilidadesBDAdm.getFechaBD("");
+	fechaAperturaInicio="";
 	
 	String BUSQUEDAREALIZADA = (String)request.getSession().getAttribute("BUSQUEDAREALIZADA");
 		
