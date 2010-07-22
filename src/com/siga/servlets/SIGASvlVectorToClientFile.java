@@ -84,7 +84,8 @@ public class SIGASvlVectorToClientFile extends HttpServlet {
 				}
 				
 				for (int k=0;k<campos.length;k++){
-					linea += UtilidadesString.sustituirParaExcell(row.getString(campos[k]))+ClsConstants.SEPARADOR;
+					// inc6861 // linea += UtilidadesString.sustituirParaExcell(row.getString(campos[k]))+ClsConstants.SEPARADOR;
+					linea += UtilidadesString.sustituirParaExcell(row.getString(campos[k]).replaceAll("\n", " "))+ClsConstants.SEPARADOR;
 				}
 				linea=linea+"\r\n";
 				out.write(linea.getBytes());
