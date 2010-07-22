@@ -39,18 +39,21 @@
 
 <head>
 
-<link id="default" rel="stylesheet" type="text/css"
-	href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>">
-<script src="<html:rewrite page="/html/js/SIGA.js"/>"
-	type="text/javascript"></script>
-
-<!-- Calendario -->
-<script src="<html:rewrite page="/html/js/calendarJs.jsp"/>"
-	type="text/javascript"></script>
-
-<!-- VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
-<script src="<html:rewrite page="/html/js/validacionStruts.js"/>"
-	type="text/javascript"></script>
+	<link id="default" rel="stylesheet" type="text/css"
+		href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>">
+	<script src="<html:rewrite page="/html/js/SIGA.js"/>"
+		type="text/javascript"></script>
+	
+	<!-- Calendario -->
+	<script src="<html:rewrite page="/html/js/calendarJs.jsp"/>"
+		type="text/javascript"></script>
+	
+	<!-- VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
+	<script src="<html:rewrite page="/html/js/validacionStruts.js"/>"
+		type="text/javascript"></script>
+		
+	<siga:Titulo 	titulo="menu.sjcs.informes.certificadoIRPF"
+					localizacion="factSJCS.informes.ruta" />
 
 </head>
 

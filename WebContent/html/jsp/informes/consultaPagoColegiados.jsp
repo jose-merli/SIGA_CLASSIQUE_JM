@@ -26,22 +26,15 @@
 <!-- HEAD -->
 <head>
 
-<link id="default" rel="stylesheet" type="text/css"	href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>">
+	<link id="default" rel="stylesheet" type="text/css"	href="<html:rewrite page="/html/jsp/general/stylesheet.jsp"/>">
+	
+	<script src="<html:rewrite page="/html/js/SIGA.js"/>"	type="text/javascript"></script>
+	<script src="<html:rewrite page="/html/js/validation.js"/>"	type="text/javascript"></script>
+	<script src=""	type="text/javascript"></script>
+	<script src="<html:rewrite page="/html/js/validacionStruts.js"/>" type="text/javascript"></script>
 
-<script src="<html:rewrite page="/html/js/SIGA.js"/>"	type="text/javascript"></script>
-<script src="<html:rewrite page="/html/js/validation.js"/>"	type="text/javascript"></script>
-<script src=""	type="text/javascript"></script>
-<script src="<html:rewrite page="/html/js/validacionStruts.js"/>" type="text/javascript"></script>
-
-
-<!-- INICIO: TITULO Y LOCALIZACION -->
-<!-- Escribe el título y localización en la barra de título del frame principal -->
-<siga:Titulo titulo="informes.sjcs.pagos.literal.titulo"
-	localizacion="facturacion.localizacion" />
-<!-- FIN: TITULO Y LOCALIZACION -->
-
-<!-- Calendario -->
-
+	<siga:Titulo 	titulo="informes.sjcs.pagos.literal.titulo"
+					localizacion="factSJCS.informes.ruta" />
 
 </head>
 
