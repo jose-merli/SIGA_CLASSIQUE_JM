@@ -403,7 +403,7 @@ public class DireccionesAction extends MasterAction
 	 * @return  String  Destino del action  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	protected String insertar (ActionMapping mapping, 
+protected String insertar (ActionMapping mapping, 
 							   MasterForm formulario, 
 							   HttpServletRequest request, 
 							   HttpServletResponse response)
@@ -412,6 +412,7 @@ public class DireccionesAction extends MasterAction
 		//Variables generales
 		String rc = "";
 		UserTransaction t = null; 
+		String idDireccionesCensoWeb="";
 		
 		try
 		{
@@ -447,16 +448,20 @@ public class DireccionesAction extends MasterAction
 			t = this.getUserBean (request).getTransactionPesada();
 			t.begin ();
 			
+			//digito de control, para saber si viene de la jsp de  preguntapreferente.jsp o preguntacensoweb.jsp
+			String control=request.getParameter("control");
+			
 			if (request.getParameter("modificarPreferencias")!=null && request.getParameter("modificarPreferencias").equals("1")){
 				idDireccionesPreferentes=request.getParameter("idDireccionesPreferentes");
-				direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif,request);
 			}else {
 			//comprobando que no existen dos direcciones con igual campo preferente
 			 idDireccionesPreferentes=direccionesAdm.obtenerPreferenteDirecciones (idPersona.toString (), 
 					idInstitucionPersona.toString (), preferente, idDireccion, request);
 			  if  (!idDireccionesPreferentes.equals("")){
-				request.setAttribute("modo", "insertar");
 				request.setAttribute("idDireccionesPreferentes", idDireccionesPreferentes);
+				request.setAttribute("idDireccionesCensoWeb", idDireccionesCensoWeb);
+				request.setAttribute("control", "0");
+				request.setAttribute("modo", "insertar");
 				t.rollback();
 				 return "preguntaCambioPreferencia";
 			  } 	
@@ -479,20 +484,18 @@ public class DireccionesAction extends MasterAction
 			for (int i=0; i < tipos.length; i++){
 				tiposdireciones+=tipos[i];				
 			}
-			
-			String idDireccionesCensoWeb="";
-			
 			if (request.getParameter("modificarDireccionesCensoWeb")!=null && request.getParameter("modificarDireccionesCensoWeb").equals("1")){
 				idDireccionesCensoWeb=request.getParameter("idDireccionesCensoWeb");
-				//direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesCensoWeb, preferenteModif,request);
 			}else {		
 				idDireccionesCensoWeb=direccionesAdm.obtenerTipodireccionCensoWeb(idPersona.toString (), 
 					idInstitucionPersona.toString (), tiposdireciones, idDireccion, request);			  
 				if  (!idDireccionesCensoWeb.equals("")){			
-				request.setAttribute("idDireccionesCensoWeb", idDireccionesCensoWeb);
-				request.setAttribute("modo", "insertar");
-				t.rollback();
-				 return "preguntaCambioTipoDireccion";
+					request.setAttribute("idDireccionesCensoWeb", idDireccionesCensoWeb);
+					request.setAttribute("control", "1");
+					request.setAttribute("modo", "insertar");	
+					request.setAttribute("idDireccionesPreferentes", idDireccionesPreferentes);
+					t.rollback();
+				return "preguntaCambioTipoDireccion";
 			  }
 			}			
 			
@@ -513,10 +516,30 @@ public class DireccionesAction extends MasterAction
 							t.rollback();
 							return exito("messages.inserted.error.ExisteYaGuardia", request);
 						}	
-				}else if (new Integer (tipos[i]).intValue () == ClsConstants.TIPO_DIRECCION_CORREO){			
-					String sql1 = direccionesAdm.comprobarTipoDireccion(tipo, miForm.getIDInstitucion().toString(), miForm.getIDPersona().toString());			
+				}else if (new Integer (tipos[i]).intValue () == ClsConstants.TIPO_DIRECCION_CORREO){//dirección de tipo censoweb					
+					String sql1 = direccionesAdm.comprobarTipoDireccion(tipo, miForm.getIDInstitucion().toString(), miForm.getIDPersona().toString());
 					cambiodireccioncensoweb (miForm,i,sql1, tipo, idDireccionesCensoWeb, request);
-				}
+					if ((request.getParameter("modificarPreferencias")!=null && request.getParameter("modificarPreferencias").equals("1")) || (request.getParameter("modificarDireccionesCensoWeb")!=null && request.getParameter("modificarDireccionesCensoWeb").equals("1"))){
+						
+						if ( request.getParameter("control").equals("1")){
+						if (!preferenteModif.equals("")){
+								direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif,request);	
+							}
+						}else cambiodireccioncensoweb (miForm,i,sql1, tipo, idDireccionesCensoWeb, request);
+					}
+					
+				}else { if (!preferenteModif.equals("")){
+							 if (!idDireccionesCensoWeb.equals("") &&(!idDireccionesPreferentes.equals(""))){
+								 direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif,request);
+							 }
+							 if (control.equals("0")){
+								  direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif,request);
+								 
+							 }
+							 }
+						}
+						
+					
 				
 		} //for
 			
@@ -597,6 +620,7 @@ public class DireccionesAction extends MasterAction
 		return rc; 
 	} //insertar()
 	
+	
 	/** 
 	 * Funcion que modifica una direccion de cliente
 	 * 
@@ -616,6 +640,8 @@ public class DireccionesAction extends MasterAction
 		//Variables generales
 		String rc = "";
 		UserTransaction t = null;
+		String idDireccionesCensoWeb="";
+		
 
 		try
 		{
@@ -642,55 +668,67 @@ public class DireccionesAction extends MasterAction
 			CenDireccionTipoDireccionAdm tipoDirAdm = new CenDireccionTipoDireccionAdm(this.getUserBean (request));			
 			CenDireccionTipoDireccionBean tipodirBean = new CenDireccionTipoDireccionBean();
 			
+			
 			//obteniendo control de bd de direcciones
 			CenDireccionesAdm direccionesAdm = new CenDireccionesAdm (this.getUserBean (request));
 			CenDireccionesBean direccionesBean = new CenDireccionesBean();
+			//digito de control para saber si viene de la pagina de preferentes o de censoweb ya que son dos preguntas distintas.
+		    String control=request.getParameter("control");
 			if (request.getParameter("modificarPreferencias")!=null && request.getParameter("modificarPreferencias").equals("1")){
 				idDireccionesPreferentes=request.getParameter("idDireccionesPreferentes");
-				direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif,request);
-			}else {
-			//comprobando que no existen dos direcciones con igual campo preferente
-			 idDireccionesPreferentes=direccionesAdm.obtenerPreferenteDirecciones (idPersona.toString (), 
+			}else {			
+				//comprobando que no existen dos direcciones con igual campo preferente
+				idDireccionesPreferentes=direccionesAdm.obtenerPreferenteDirecciones (idPersona.toString (), 
 					idInstitucionPersona.toString (), preferente, idDireccion, request);
-			  if  (!idDireccionesPreferentes.equals("")){			
+			   if  (!idDireccionesPreferentes.equals("")){	
+				  
 				request.setAttribute("idDireccionesPreferentes", idDireccionesPreferentes);
+				request.setAttribute("idDireccionesCensoWeb", idDireccionesCensoWeb);
+				request.setAttribute("control", "0");
 				request.setAttribute("modo", "modificarDireccion");
 				t.rollback();
 				 return "preguntaCambioPreferencia";
-			  } 	
+			     }  
+			
+			 
 			}
 			//comprobando que el cliente no tenga ya una direccion de tipo guardia
 			// si es asi no se permite anyadir la direccion
+			
+			//esta es la parte que comprobra si tiene una dirección de tipo censoweb.
 			String tiposDir = "";
-			if (request.getParameter ("idTipoDireccionNew") != null && 
+				if (request.getParameter ("idTipoDireccionNew") != null && 
 					!request.getParameter ("idTipoDireccionNew").equals (""))
-			{
-				int posUltimaComa = request.getParameter ("idTipoDireccionNew").lastIndexOf (",");				
-				if (posUltimaComa > -1)
+					{
+					int posUltimaComa = request.getParameter ("idTipoDireccionNew").lastIndexOf (",");				
+					if (posUltimaComa > -1)
 					tiposDir = (String) request.getParameter ("idTipoDireccionNew").substring (0, posUltimaComa);				   
-			}
+					}
+					String tipos[] = tiposDir.split (",");
 			
-			String tipos[] = tiposDir.split (",");
+					String tiposdireciones="";
+					for (int i=0; i < tipos.length; i++){
+						tiposdireciones+=tipos[i];				
+					}					
+					
 			
-			String tiposdireciones="";
-			for (int i=0; i < tipos.length; i++){
-				tiposdireciones+=tipos[i];				
-			}
-			
-			String idDireccionesCensoWeb="";
-			
-			if (request.getParameter("modificarDireccionesCensoWeb")!=null && request.getParameter("modificarDireccionesCensoWeb").equals("1")){
-				idDireccionesCensoWeb=request.getParameter("idDireccionesCensoWeb");				
-			}else {		
-				idDireccionesCensoWeb=direccionesAdm.obtenerTipodireccionCensoWeb(idPersona.toString (), 
-					idInstitucionPersona.toString (), tiposdireciones, idDireccion, request);			  
-				if  (!idDireccionesCensoWeb.equals("")){			
-				request.setAttribute("idDireccionesCensoWeb", idDireccionesCensoWeb);
-				request.setAttribute("modo", "modificarDireccion");
-				t.rollback();
-				 return "preguntaCambioTipoDireccion";
-			  }
-			}			
+					if ((request.getParameter("modificarDireccionesCensoWeb")!=null && request.getParameter("modificarDireccionesCensoWeb").equals("1")) || (request.getParameter("modificarPreferencias")==null && request.getParameter("modificarPreferencias").equals("0"))){
+						idDireccionesCensoWeb=request.getParameter("idDireccionesCensoWeb");				
+					}else {		
+						idDireccionesCensoWeb=direccionesAdm.obtenerTipodireccionCensoWeb(idPersona.toString (), 
+								idInstitucionPersona.toString (), tiposdireciones, idDireccion, request);			  
+						if  (!idDireccionesCensoWeb.equals("")){			
+							request.setAttribute("idDireccionesCensoWeb", idDireccionesCensoWeb);
+							request.setAttribute("control", "1");
+							request.setAttribute("modo", "modificarDireccion");	
+							request.setAttribute("idDireccionesPreferentes", idDireccionesPreferentes);
+							t.rollback();
+							return "preguntaCambioTipoDireccion";
+						}
+					}
+						
+					
+				//fin de comprobación de censoweb
 			
 			RowsContainer rc2 = new RowsContainer(); 
 			RowsContainer rc3 = new RowsContainer(); 
@@ -718,8 +756,29 @@ public class DireccionesAction extends MasterAction
 					}  
 				}else if (new Integer (tipos[i]).intValue () == ClsConstants.TIPO_DIRECCION_CORREO){						
 					String sql1 = direccionesAdm.comprobarTipoDireccion(tipo, miForm.getIDInstitucion().toString(), miForm.getIDPersona().toString());
-					cambiodireccioncensoweb (miForm,i,sql1, tipo, idDireccionesCensoWeb, request);				
-				}
+					cambiodireccioncensoweb (miForm,i,sql1, tipo, idDireccionesCensoWeb, request);
+					if ((request.getParameter("modificarPreferencias")!=null && request.getParameter("modificarPreferencias").equals("1")) || (request.getParameter("modificarDireccionesCensoWeb")!=null && request.getParameter("modificarDireccionesCensoWeb").equals("1"))){
+						
+						if ( request.getParameter("control").equals("0")){
+						if (!preferenteModif.equals("")){
+								direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif,request);	
+							}
+						}else cambiodireccioncensoweb (miForm,i,sql1, tipo, idDireccionesCensoWeb, request);
+					}
+				}else { if (!preferenteModif.equals("")){
+							 if (!idDireccionesCensoWeb.equals("") &&(!idDireccionesPreferentes.equals(""))){
+								 direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif,request);
+							 }
+							 if (control.equals("0")){
+								  direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif,request);
+								 
+							 }
+							 }
+						}
+						
+					
+			
+				 
 			} //for
 			
 			//estableciendo los datos de la direccion (desde el formulario 
