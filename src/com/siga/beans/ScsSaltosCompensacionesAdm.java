@@ -1,7 +1,10 @@
 
 package com.siga.beans;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsConstants;
@@ -1011,6 +1014,112 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 		} catch (Exception e) {
 			throw new ClsExceptions(e, "Excepcion en marcarSaltoCompensacionBBDD."+e.toString());
 		}
+	}
+	
+	public HashMap<Long, List<LetradoGuardia>> getSaltos (Integer idInstitucion,Integer idTurno,Integer idGuardia) throws ClsExceptions {
+	    RowsContainer rc = new RowsContainer();
+	    LetradoGuardia letradoSeleccionado = null;
+	    HashMap<Long, List<LetradoGuardia>> hmPersonasConSaltos = null;
+		// voy a comprobar si existe un salto en base de datos
+		try {
+
+			String sql =  getQuerySaltosCompensacionesActivos(true,idInstitucion,idTurno,idGuardia);
+	
+			rc = find(sql);
+			hmPersonasConSaltos = new HashMap<Long, List<LetradoGuardia>>();
+			List<LetradoGuardia> alLetradosSaltados = null; 
+			for (int i = 0; i < rc.size(); i++){
+			    letradoSeleccionado = new LetradoGuardia();
+			    letradoSeleccionado.setIdInstitucion(idInstitucion);
+			    letradoSeleccionado.setIdTurno(idTurno);
+			    letradoSeleccionado.setIdGuardia(idGuardia);
+			    letradoSeleccionado.setSaltoCompensacion("C");
+			    
+			    Row fila = (Row) rc.get(i);
+				Hashtable hFila = fila.getRow();
+				Long idPersona = new Long((String)hFila.get(ScsSaltosCompensacionesBean.C_IDPERSONA));
+				letradoSeleccionado.setIdPersona(idPersona);
+				if(hmPersonasConSaltos.containsKey(idPersona)){
+					alLetradosSaltados = (List)hmPersonasConSaltos.get(idPersona);
+					
+				}else{
+					alLetradosSaltados = new ArrayList<LetradoGuardia>();
+					
+				}
+				
+				alLetradosSaltados.add(letradoSeleccionado);
+				hmPersonasConSaltos.put(idPersona, alLetradosSaltados);
+			    //letradoSeleccionado
+			}
+		} catch (Exception e) {
+		    throw new ClsExceptions(e,"Error al comporbar si hay salto en BD.");
+		}
+		
+		return hmPersonasConSaltos;
+	}
+	private String getQuerySaltosCompensacionesActivos(boolean isSalto,Integer idInstitucion,Integer idTurno,Integer idGuardia){
+		 StringBuffer sql = new StringBuffer();
+		 sql.append(" select * from scs_saltoscompensaciones s, scs_inscripcionguardia g ");
+		 sql.append(" where s.idinstitucion=");
+		 sql.append(idInstitucion);
+		 sql.append(" and   s.idturno=");
+		 sql.append(idTurno);
+		 sql.append(" and   s.idguardia=");
+		 sql.append(idGuardia);
+		sql.append(" and   s.saltoocompensacion=");
+		if(isSalto)
+			sql.append(ClsConstants.SALTOS);
+		else
+			sql.append(ClsConstants.COMPENSACIONES);
+		sql.append(" and   s.fechacumplimiento is null ");
+		sql.append(" and s.idinstitucion = g.idinstitucion ");
+		sql.append(" and s.idturno = g.idturno ");
+		sql.append(" and s.idguardia = g.idguardia ");
+		sql.append(" and s.idpersona = g.idpersona ");
+		sql.append(" and g.fechasuscripcion = ");
+		sql.append("     (select max(i.fechasuscripcion) ");
+		sql.append("        from scs_inscripcionguardia i ");
+		sql.append("       where i.idinstitucion = g.idinstitucion ");
+		sql.append("         and i.idturno = g.idturno ");
+		sql.append("         and i.idguardia = g.idguardia ");
+		sql.append("         and i.idpersona = g.idpersona ");
+		sql.append( "      ) ");
+		sql.append(" and g.fechabaja is null order by s.fecha ");
+		return sql.toString();
+		
+	}
+	
+	public List<LetradoGuardia> getCompensaciones (Integer idInstitucion,Integer idTurno,Integer idGuardia) throws ClsExceptions {
+	    RowsContainer rc = new RowsContainer();
+	    LetradoGuardia letradoSeleccionado = null;
+	    List<LetradoGuardia> alLetradosCompensados = null;
+		try {
+			//obtiene las compesaciones de letrados que no estén de baja en la guardia
+		    String sql =  getQuerySaltosCompensacionesActivos(false,idInstitucion,idTurno,idGuardia);
+		    		
+		    		
+			ScsSaltosCompensacionesAdm adm = new ScsSaltosCompensacionesAdm(this.usrbean);
+			rc = adm.find(sql);
+			alLetradosCompensados = new ArrayList<LetradoGuardia>();
+			
+			for (int i = 0; i < rc.size(); i++){
+			    letradoSeleccionado = new LetradoGuardia();
+			    letradoSeleccionado.setIdInstitucion(idInstitucion);
+			    letradoSeleccionado.setIdTurno(idTurno);
+			    letradoSeleccionado.setIdGuardia(idGuardia);
+			    letradoSeleccionado.setSaltoCompensacion("C");
+			    
+			    Row fila = (Row) rc.get(i);
+				Hashtable hFila = fila.getRow();
+				letradoSeleccionado.setIdPersona(new Long((String)hFila.get(ScsSaltosCompensacionesBean.C_IDPERSONA)));
+				alLetradosCompensados.add(letradoSeleccionado);
+			    //letradoSeleccionado
+			}
+		} catch (Exception e) {
+		    throw new ClsExceptions(e,"Error al obtener letrados compensados  en BD.");
+		}
+		
+		return alLetradosCompensados;
 	}
 	
 	
