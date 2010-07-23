@@ -217,6 +217,7 @@
 			  if (document.forms[0].codigoExtJuzgado.value!=""){
 				   document.MantenimientoJuzgadoForm.codigoExt.value=document.forms[0].codigoExtJuzgado.value;
 				   document.MantenimientoJuzgadoForm.submit();		
+				   cambioJuzgado();
 				   
 				
 			 }
@@ -232,11 +233,18 @@
 			 { 
 				  if (document.forms[0].codigoExtComisaria.value!=""){
 					   document.MantenimientoComisariaForm.codigoExtBusqueda.value=document.forms[0].codigoExtComisaria.value;
-					   document.MantenimientoComisariaForm.submit();		
+					   document.MantenimientoComisariaForm.submit();	
+					   cambioComisaria();	
 
 				  }
 			 }
 		//			
+		function cambioComisaria(){
+		 document.forms[0].juzgado.value="";
+		}	
+		function cambioJuzgado(){
+		 document.forms[0].comisaria.value="";
+		}	
 		function traspasoDatosComisaria(resultado){
 //		 seleccionComboSiga("comisaria",resultado[0]);
 		 document.forms[0].comisaria.value=resultado[0];

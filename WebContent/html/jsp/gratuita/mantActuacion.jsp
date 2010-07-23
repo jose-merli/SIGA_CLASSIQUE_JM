@@ -261,13 +261,18 @@
 			{ 
 			  if (document.forms[0].codigoExtJuzgado.value!=""){
 				   document.MantenimientoJuzgadoForm.codigoExt.value=document.forms[0].codigoExtJuzgado.value;
-				   document.MantenimientoJuzgadoForm.submit();		
+				   document.MantenimientoJuzgadoForm.submit();	
+				   cambioJuzgado();	
 				   
 				
 			 }
 			}
 	//		
-			
+		
+		
+		function cambioJuzgado(){
+		 document.forms[0].comisaria.value="";
+		}	
 		function traspasoDatos(resultado){
 		 //seleccionComboSiga("juzgado",resultado[0]);
 		   document.forms[0].juzgado.value=resultado[0];
@@ -520,7 +525,7 @@
 			<%if(!modo.equals("consulta")){%>
 			    <input type="text" name="codigoExtComisaria" class="box" size="8" maxlength="10" onBlur="obtenerComisaria();" />			
 			<%}%>	
-				<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" ancho="680" clase="<%=estiloCombo%>" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=dato%>"  elementoSel="<%=comisariaSel%>"  />
+				<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" accion="cambioComisaria();"  ancho="680" clase="<%=estiloCombo%>" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=dato%>"  elementoSel="<%=comisariaSel%>"  />
 			</td>
 		</tr>
 		<tr>			
@@ -536,7 +541,7 @@
 			   <%if(!modo.equals("consulta")){%>
 			   <input type="text" name="codigoExtJuzgado" class="box" size="8" maxlength="10" onBlur="obtenerJuzgado();" />
 			   <%}%>
-				<siga:ComboBD nombre="juzgado" ancho="680" tipo="comboJuzgadosTurno" obligatorio="false" parametro="<%=dato%>" clase="<%=estiloCombo%>" elementoSel="<%=juzgadoSel%>"   readOnly="<%=readOnlyCombo%>"/>
+				<siga:ComboBD nombre="juzgado" ancho="680" tipo="comboJuzgadosTurno" accion="cambioJuzgado();" obligatorio="false" parametro="<%=dato%>" clase="<%=estiloCombo%>" elementoSel="<%=juzgadoSel%>"   readOnly="<%=readOnlyCombo%>"/>
 			</td>
 		</tr>
 		<tr>
@@ -725,7 +730,8 @@
 			 { 
 				  if (document.forms[0].codigoExtComisaria.value!=""){
 					   document.MantenimientoComisariaForm.codigoExtBusqueda.value=document.forms[0].codigoExtComisaria.value;
-					   document.MantenimientoComisariaForm.submit();		
+					   document.MantenimientoComisariaForm.submit();
+					   cambioComisaria();		
 
 				  }
 			 }
@@ -733,7 +739,13 @@
 		function traspasoDatosComisaria(resultado){
 //		 seleccionComboSiga("comisaria",resultado[0]);
 		 document.forms[0].comisaria.value=resultado[0];
-		}				
+		}
+		function cambioComisaria(){
+		 document.forms[0].juzgado.value="";
+		}			
+		
+					
+			
 
 	</script>
 
