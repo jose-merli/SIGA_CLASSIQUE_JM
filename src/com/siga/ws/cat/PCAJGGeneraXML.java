@@ -157,7 +157,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			ht = (Hashtable)datos.get(i);
 			
 			if (!tipoIntercambio.equals(ht.get(TIPOINTERCAMBIO))) {				
-				if (intercambio != null) {					
+				if (intercambio != null && numDetalles > 0) {					
 					ficheros.add(creaFichero(dirFicheros, dirPlantilla, intercambioDocument, intercambio, tipoInformacion, numDetalles));
 				}
 				numDetalles = 0;
@@ -177,7 +177,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 				escribeErrorExpediente(anyo, numejg, numero, idTipoEJG, e.getMessage());
 			}
 		}
-		if (intercambio != null) {			
+		if (intercambio != null && numDetalles > 0) {			
 			ficheros.add(creaFichero(dirFicheros, dirPlantilla, intercambioDocument, intercambio, tipoInformacion, numDetalles));
 		}
 						
