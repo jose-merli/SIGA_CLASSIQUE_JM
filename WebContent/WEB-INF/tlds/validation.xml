@@ -865,19 +865,18 @@
         <!-- INICIO: datosCVForm nuria.rodriguezg 13-01-2005 -->
       <form name="datosCVForm">
                        
-                        <field property = "fechaInicio" depends = "required">   
+                        <!--field property = "fechaInicio" depends = "required">   
                         	<arg0 key="censo.datosCV.literal.fechaInicio"/>       
-                       	</field>
+                       	</field-->
                         
-                        <field property = "descripcion" depends = "required,maxlength">
+                        <field property = "descripcion" depends = "maxlength">
                             <arg0 key="censo.datosCV.literal.descripcion"/>
                             <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
 				                 <var>
                 	                <var-name>maxlength</var-name> <var-value>500</var-value>
 				                 </var>
                         </field>
-				        <field property = "motivo"                      
-				        depends = "required,maxlength">
+				        <field property = "motivo" depends = "required,maxlength">
 				          <arg0 key="censo.datosCV.literal.motivo"/>
 				          <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
 					          <var>

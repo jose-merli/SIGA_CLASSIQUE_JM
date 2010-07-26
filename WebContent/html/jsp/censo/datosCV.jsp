@@ -396,7 +396,7 @@
 							</tr>
 							
 							<tr>
-								<td class="labelText" ><siga:Idioma key="censo.datosCV.literal.fechaInicio"/>&nbsp(*)</td>
+								<td class="labelText" ><siga:Idioma key="censo.datosCV.literal.fechaInicio"/>&nbsp</td>
 								<td>
 									<html:text name="datosCVForm" property="fechaInicio" value='<%=fechaInicio%>' size="10" styleClass="<%=clase%>" readOnly="true"></html:text>
 									<%if (editarCampos) {%>
@@ -414,10 +414,10 @@
 							</tr>
 
 							<tr>
-								<td class="labelText"><siga:Idioma key="censo.datosCV.literal.certificado"/></td>
+								<td class="labelText"><siga:Idioma key="censo.consultaDatosCV.literal.verificado"/></td>
 								<td><html:checkbox name="datosCVForm" property="certificado" disabled="<%=desactivado%>"/></td>
 
-								<td class="labelText"><siga:Idioma key="censo.datosCV.literal.fechaCertificado"/>&nbsp</td>
+								<td class="labelText"><siga:Idioma key="censo.consultaDatosCV.literal.fechaVerificacion"/>&nbsp</td>
 								<td>
 									<html:text name="datosCVForm" property="fechaMovimiento" value='<%=fechaCertificado%>' size="10" styleClass="<%=clase%>" readOnly="true"></html:text>
 									<%if (editarCampos) {%>
@@ -435,7 +435,7 @@
 							</tr>
 
 							<tr>
-								<td class="labelText" ><siga:Idioma key="censo.datosCV.literal.descripcion"/>&nbsp(*)</td>
+								<td class="labelText" ><siga:Idioma key="censo.datosCV.literal.descripcion"/>&nbsp</td>
 									<td colspan="3">
 										<textarea cols="70" rows="7" name="descripcion" onKeyDown="cuenta(this,500)" onChange="cuenta(this,500)" class="<%=clase%>" style="width:550"><%=descripcion%></textarea>
 									</td>			   	

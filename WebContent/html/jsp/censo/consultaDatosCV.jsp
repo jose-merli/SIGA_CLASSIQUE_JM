@@ -180,8 +180,8 @@
 		   	borde="1"
    			estilo=""
 		   	clase="tableTitle"
-		  	nombreCol=",censo.consultaDatosCV.literal.tipo,censo.consultaDatosCV.literal.fechaInicio,censo.consultaDatosCV.literal.fechaFin,censo.consultaDatosCV.literal.descripcion,censo.consultaDatosCV.literal.certificado,"
-		  	tamanoCol="20,10,10,35,10,15"
+		  	nombreCol=",censo.consultaDatosCV.literal.tipo,,,censo.consultaDatosCV.literal.fechaInicio,censo.consultaDatosCV.literal.fechaFin,censo.consultaDatosCV.literal.descripcion,censo.consultaDatosCV.literal.verificado,"
+		  	tamanoCol="10,15,10,10,10,25,10,10"
 		    alto="100%"
 		    ajuste = "70"		
 		    modal="M">  
@@ -233,6 +233,8 @@
 					<td><input type='hidden' name='oculto<%=String.valueOf(i)%>_1' value='<%=htData.get(CenDatosCVBean.C_IDCV)%>'>	
   						<%=UtilidadesString.mostrarDatoJSP(htData.get("TIPOAPUNTE"))%>
   				</td>
+  				<td><%=UtilidadesString.mostrarDatoJSP(htData.get("DESCSUBTIPO1"))%></td>
+  				<td><%=UtilidadesString.mostrarDatoJSP(htData.get("DESCSUBTIPO2"))%></td>
   				<td><%=UtilidadesString.mostrarDatoJSP(com.atos.utils.GstDate.getFormatedDateShort("",htData.get(CenDatosCVBean.C_FECHAINICIO)))%></td>
   				<td><%=UtilidadesString.mostrarDatoJSP(com.atos.utils.GstDate.getFormatedDateShort("",htData.get(CenDatosCVBean.C_FECHAFIN)))%></td>
   				<td><%=UtilidadesString.mostrarDatoJSP(htData.get(CenDatosCVBean.C_DESCRIPCION))%></td>
