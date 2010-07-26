@@ -140,7 +140,7 @@
 					.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)
 			/*|| conceptoE.equals(PersonaJGAction.PERSONAJG)*/))) {
 		obligatorioDireccion = true;
-		obligatorioTipoIdentificador = true;
+		// obligatorioTipoIdentificador = true;
 		obligatorioIdentificador = true;
 		obligatorioTipoIngreso = true;
 		if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR))
@@ -150,7 +150,7 @@
 					.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)
 			/*|| conceptoE.equals(PersonaJGAction.PERSONAJG)*/))) {
 		obligatorioDireccion = true;
-		obligatorioTipoIdentificador = true;
+		// obligatorioTipoIdentificador = true;
 		obligatorioIdentificador = true;
 		obligatorioTipoIngreso = true;
 		if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR))
@@ -2852,6 +2852,8 @@ function comprobarmovil(valor){
 function accionRestablecer() 
 {		
 	document.forms[0].reset();
+	// inc7269 // Refrescamos la pagina para que cargue tambien los telefonos
+	window.location.reload();
 }
 		
 		
