@@ -361,7 +361,15 @@ public class DatosCVAction extends MasterAction{
 				beanCV.setFechaFin("");
 			}
 			
-			beanCV.setFechaInicio(miForm.getFechaInicio());
+			
+			// inc7029 // beanCV.setFechaInicio(miForm.getFechaInicio());
+			if (miForm.getFechaInicio()!=null && !miForm.getFechaInicio().equals("")){
+				beanCV.setFechaInicio(miForm.getFechaInicio());
+				
+			}else{
+				beanCV.setFechaInicio("");
+			}
+			
 			if (miForm.getFechaMovimiento()!=null && !miForm.getFechaMovimiento().equals("")){
 				beanCV.setFechaMovimiento(miForm.getFechaMovimiento());
 				
