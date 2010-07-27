@@ -500,215 +500,249 @@ public class CalendarioSJCS {
 		}
 	}
 	
+	private LetradoGuardia getSiguienteLetrado(List<LetradoGuardia> alCompensaciones,
+											   List alLetradosOrdenados,
+											   Puntero punteroLetrado,
+											   ArrayList diasGuardia,
+											   HashMap<Long, List<LetradoGuardia>> hmPersonasConSaltos)
+			throws SIGAException, ClsExceptions
+	{
+		LetradoGuardia letradoGuardia = getSiguienteLetradoCompensado(
+				alCompensaciones, diasGuardia, hmPersonasConSaltos);
+		
+		if (letradoGuardia == null)
+			letradoGuardia = getSiguienteLetradoOrdenado(alLetradosOrdenados,
+					punteroLetrado, diasGuardia, hmPersonasConSaltos);
+		
+		if (letradoGuardia == null)
+			throw new SIGAException(
+					"gratuita.modalRegistro_DefinirCalendarioGuardia.literal.errorLetradosSuficientes");
+		
+		return letradoGuardia;
+	} //getSiguienteLetrado()
 	
-	
-	
-	/**
-	 * Si el letrado esta de baja seteamos la baja temporarl en el objeto LetradoGuardia, para luego insertar un salto
-	 * @param periodoDiasGuardia
-	 * @param letradoGuardia
-	 * @return
-	 */
-	
-	private boolean isLetradoBajaTemporal(ArrayList diasGuardia,LetradoGuardia letradoGuardia){
-		boolean isLetradoBaja = false;
-		CenBajasTemporalesBean bajaTemporal= null;
-		for (int j = 0; j < diasGuardia.size(); j++) {
-			String fechaPeriodo = (String)diasGuardia.get(j);
-		    if( letradoGuardia.getBajasTemporales().containsKey(fechaPeriodo)){
-		    	bajaTemporal = letradoGuardia.getBajasTemporales().get(fechaPeriodo);
-		    	letradoGuardia.setBajaTemporal(bajaTemporal);
-		    	isLetradoBaja= true;
-		    	break;
-		    }
-		}
-		return isLetradoBaja;
-	}
-	
-	private LetradoGuardia getSiguienteLetradoCompensado(List<LetradoGuardia> alCompensaciones,ArrayList diasGuardia,HashMap<Long, List<LetradoGuardia>> hmPersonasConSaltos) throws ClsExceptions{
+	private LetradoGuardia getSiguienteLetradoCompensado(List<LetradoGuardia> alCompensaciones,
+														 ArrayList diasGuardia,
+														 HashMap<Long, List<LetradoGuardia>> hmPersonasConSaltos)
+			throws ClsExceptions
+	{
 		LetradoGuardia letradoGuardia = null;
-		//Vamos a recorrer las compensaciones
-		if(alCompensaciones!=null && alCompensaciones.size()>0){
+		
+		// Vamos a recorrer las compensaciones
+		if (alCompensaciones != null && alCompensaciones.size() > 0) {
+			
 			Iterator<LetradoGuardia> iterador = alCompensaciones.iterator();
 			while (iterador.hasNext()) {
 				LetradoGuardia auxLetradoSeleccionado = (LetradoGuardia) iterador.next();
-				if(auxLetradoSeleccionado.getBajasTemporales()==null){
-					//si esta de vacaciones meto salto y que continue
+				
+				if (auxLetradoSeleccionado.getBajasTemporales() == null) {
+					// rellenando las bajas temporales por primera vez
 					CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(this.usrBean);
-					Map<String,CenBajasTemporalesBean> mBajasTemporales =  bajasTemporalescioneAdm.getDiasBajaTemporal(auxLetradoSeleccionado.getIdPersona(), auxLetradoSeleccionado.getIdInstitucion());
+					Map<String, CenBajasTemporalesBean> mBajasTemporales = bajasTemporalescioneAdm
+							.getDiasBajaTemporal(auxLetradoSeleccionado.getIdPersona(), auxLetradoSeleccionado.getIdInstitucion());
 					auxLetradoSeleccionado.setBajasTemporales(mBajasTemporales);
 				}
-				
-				//vale
-				if(isLetradoValido(auxLetradoSeleccionado, diasGuardia, hmPersonasConSaltos,iterador, true)){
 
+				// vale
+				if (isLetradoValido(auxLetradoSeleccionado, diasGuardia, hmPersonasConSaltos, iterador, true)) {
 					letradoGuardia = auxLetradoSeleccionado;
 					break;
 				}
 			}
 		}
+		
 		return letradoGuardia;
+	} //getSiguienteLetradoCompensado()
+
+	private LetradoGuardia getSiguienteLetradoOrdenado(List alLetradosOrdenados,
+													   Puntero punteroLetrado,
+													   ArrayList diasGuardia,
+													   HashMap<Long, List<LetradoGuardia>> hmPersonasConSaltos)
+			throws ClsExceptions
+	{
+		LetradoGuardia letradoGuardia = null;
+		
+		// Vamos a recorrer la cola
+		if (alLetradosOrdenados != null && alLetradosOrdenados.size() > 0) {
+
+			int fin = punteroLetrado.getValor();
+			
+			do {
+				LetradoGuardia auxLetradoSeleccionado = (LetradoGuardia) alLetradosOrdenados.get(punteroLetrado.getValor());
+				if (auxLetradoSeleccionado.getBajasTemporales() == null) {
+					// rellenando las bajas temporales por primera vez
+					CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(this.usrBean);
+					Map<String, CenBajasTemporalesBean> mBajasTemporales = bajasTemporalescioneAdm
+							.getDiasBajaTemporal(auxLetradoSeleccionado.getIdPersona(), auxLetradoSeleccionado.getIdInstitucion());
+					auxLetradoSeleccionado.setBajasTemporales(mBajasTemporales);
+				}
+
+				// vale
+				if (isLetradoValido(auxLetradoSeleccionado, diasGuardia, hmPersonasConSaltos, null, false))
+					letradoGuardia = auxLetradoSeleccionado;
+				
+				// obteniendo siguiente en la cola 
+				if (punteroLetrado.getValor() < alLetradosOrdenados.size() - 1)
+					punteroLetrado.setValor(punteroLetrado.getValor() + 1);
+				else
+					punteroLetrado.setValor(0); //como es una cola circular hay que volver al principio
+
+			} while (letradoGuardia == null && fin != punteroLetrado.getValor());
+
+		}
+		
+		return letradoGuardia;
+	} //getSiguienteLetradoOrdenado()
+	
+	private boolean isLetradoValido(LetradoGuardia letradoGuardia,
+									ArrayList diasGuardia,
+									HashMap<Long, List<LetradoGuardia>> hmPersonasConSaltos,
+									Iterator<LetradoGuardia> iteCompensaciones,
+									boolean isCompensacion)
+			throws ClsExceptions
+	{
+		ScsSaltosCompensacionesAdm scsSaltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(this.usrBean);
+		
+		// Caso de se trate una compensacion
+		if (isCompensacion)
+		{
+			// si esta de vacaciones
+			if (isLetradoBajaTemporal(diasGuardia, letradoGuardia)) {
+				insertarNuevoSaltoBT(letradoGuardia, diasGuardia, "Salto por BT");
+				return false; // y no seleccionar
+			}
+			
+			// si hay incompatibilidad
+			if (isIncompatible(letradoGuardia, diasGuardia)) {
+				return false; // no seleccionar
+			}
+
+			// cumpliendo compensacion
+			cumplirSaltoCompensacion(letradoGuardia, diasGuardia, ClsConstants.COMPENSACIONES, " - Compensacion cumplida");
+			iteCompensaciones.remove();
+
+			// una vez comprobado todo, se selecciona a este letrado
+			return true;
+		}
+		// Caso de que se trata una posicion en la cola
+		else
+		{
+			// si esta de vacaciones
+			if (isLetradoBajaTemporal(diasGuardia, letradoGuardia)) {
+				insertarNuevoSaltoBT(letradoGuardia, diasGuardia, "Salto por BT");
+				return false; // y no seleccionar
+			}
+			
+			// si tiene saltos
+			List<LetradoGuardia> alSaltos;
+			if ( (alSaltos = hmPersonasConSaltos.get(letradoGuardia.getIdPersona())) != null ) {
+				
+				// entonces cumplir salto
+				cumplirSaltoCompensacion(letradoGuardia, diasGuardia, ClsConstants.SALTOS, " - Salto cumplido");
+				alSaltos.remove(0);
+				if (alSaltos.size() == 0)
+					hmPersonasConSaltos.remove(letradoGuardia.getIdPersona());
+
+				return false; // y no seleccionar
+			}
+			
+			// si hay incompatibilidad
+			if (isIncompatible(letradoGuardia, diasGuardia)) {
+				insertarNuevoSaltoCompensacion(letradoGuardia, diasGuardia, ClsConstants.COMPENSACIONES,
+						"Compensacion por Incompatibilidad");
+				return false; // y no seleccionar
+			}
+			
+			// una vez comprobado todo, se selecciona a este letrado
+			return true;
+		}
+	} //isLetradoValido()
+	
+	/**
+	 * Si el letrado esta de baja seteamos la baja temporarl en el objeto LetradoGuardia, para luego insertar un salto
+	 */
+	private boolean isLetradoBajaTemporal(ArrayList diasGuardia, LetradoGuardia letradoGuardia) {
+		boolean isLetradoBaja = false;
+		CenBajasTemporalesBean bajaTemporal;
+		
+		for (int j = 0; j < diasGuardia.size(); j++) {
+			String fechaPeriodo = (String) diasGuardia.get(j);
+			if (letradoGuardia.getBajasTemporales().containsKey(fechaPeriodo)) {
+				bajaTemporal = letradoGuardia.getBajasTemporales().get(fechaPeriodo);
+				letradoGuardia.setBajaTemporal(bajaTemporal);
+				isLetradoBaja = true;
+				break;
+			}
+		}
+		
+		return isLetradoBaja;
 	}
-	private boolean isIncompatible(LetradoGuardia letradoGuardia,ArrayList diasGuardia) throws ClsExceptions{
-		
-		
+	private boolean isIncompatible(LetradoGuardia letradoGuardia, ArrayList diasGuardia)
+			throws ClsExceptions
+	{
 		if (hayIncompatibilidadGuardias(letradoGuardia, diasGuardia))
 			return true;
 		if (!haySeparacionDias(letradoGuardia, diasGuardia))
-			return  true;
-		
+			return true;
+
 		return false;
-		
 	}
-	private boolean isLetradoValido(LetradoGuardia letradoGuardia,ArrayList diasGuardia, HashMap<Long, List<LetradoGuardia>> hmPersonasConSaltos,Iterator<LetradoGuardia> iteCompensaciones, boolean isCompensacion) throws ClsExceptions{
-		ScsSaltosCompensacionesAdm scsSaltosCompensacionesAdm = null;
-		if(isCompensacion){
-			if(isLetradoBajaTemporal(diasGuardia, letradoGuardia)){
-				ScsSaltosCompensacionesBean salto = new ScsSaltosCompensacionesBean(
-						new Integer(idInstitucion),new Integer(idTurno),letradoGuardia.getIdPersona(),ClsConstants.SALTOS,"sysdate");
-				scsSaltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(this.usrBean);
-				salto.setIdGuardia(this.idGuardia);
-				salto.setIdCalendarioGuardiasCreacion(idCalendarioGuardias);
-				salto.setIdCalendarioGuardias(idCalendarioGuardias);
-				
-				Date hoy = new Date();
-				SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
-				String sHoy = sdf2.format(hoy);
-				salto.setFechaCumplimiento(GstDate.getApplicationFormatDate(this.usrBean.getLanguage(),(String)diasGuardia.get(0)));
-				letradoGuardia.getBajaTemporal().setDescripcion(letradoGuardia.getBajaTemporal().getDescripcion()+" - "+sHoy);
-				scsSaltosCompensacionesAdm.insertarSaltoPorBajaTemporal(letradoGuardia.getBajaTemporal(),salto);
-				return false;
-				
-			}
-			if(isIncompatible(letradoGuardia, diasGuardia)){
-				return false;
-				
-			}
-			
-			if(scsSaltosCompensacionesAdm == null)
-				scsSaltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(this.usrBean);
-			ScsSaltosCompensacionesBean compensacion = getSaltoCompensacion(letradoGuardia, diasGuardia, ClsConstants.COMPENSACIONES,this.idGuardia, this.idCalendarioGuardias);
-			scsSaltosCompensacionesAdm.marcarSaltoCompensacionGuardia(compensacion);
-			iteCompensaciones.remove();
-			
-			return true;
-			
-		}else{
-			
-			if(isLetradoBajaTemporal(diasGuardia, letradoGuardia)){
-				ScsSaltosCompensacionesBean salto = new ScsSaltosCompensacionesBean(
-						new Integer(idInstitucion),new Integer(idTurno),letradoGuardia.getIdPersona(),ClsConstants.SALTOS,"sysdate");
-				scsSaltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(this.usrBean);
-				salto.setIdGuardia(this.idGuardia);
-				salto.setIdCalendarioGuardiasCreacion(idCalendarioGuardias);
-				salto.setIdCalendarioGuardias(idCalendarioGuardias);
-				Date hoy = new Date();
-				SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
-				String sHoy = sdf2.format(hoy);
-				salto.setFechaCumplimiento(GstDate.getApplicationFormatDate(this.usrBean.getLanguage(),(String)diasGuardia.get(0)));
-				letradoGuardia.getBajaTemporal().setDescripcion(letradoGuardia.getBajaTemporal().getDescripcion()+" - "+sHoy);
-				scsSaltosCompensacionesAdm.insertarSaltoPorBajaTemporal(letradoGuardia.getBajaTemporal(),salto);
-				return false;
-				
-			}
-			if(isSaltoLetrado(letradoGuardia, hmPersonasConSaltos)){
-				List<LetradoGuardia> alSaltos = hmPersonasConSaltos.get(letradoGuardia.getIdPersona());
-				if(alSaltos!=null && alSaltos.size()>0){
-					scsSaltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(this.usrBean);
-					ScsSaltosCompensacionesBean salto = getSaltoCompensacion(letradoGuardia, diasGuardia, ClsConstants.SALTOS,this.idGuardia, this.idCalendarioGuardias);
-					scsSaltosCompensacionesAdm.marcarSaltoCompensacionGuardia(salto);
-					alSaltos.remove(0);
-					if(alSaltos.size()==0)
-						hmPersonasConSaltos.remove(letradoGuardia.getIdPersona());
-			
-				}
-				return false;
-			}
-			if(isIncompatible(letradoGuardia, diasGuardia)){
-				if(scsSaltosCompensacionesAdm == null)
-					scsSaltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(this.usrBean);
-				ScsSaltosCompensacionesBean compensacion = getSaltoCompensacion(letradoGuardia, diasGuardia, ClsConstants.COMPENSACIONES,this.idGuardia, this.idCalendarioGuardias);
-				compensacion.setIdCalendarioGuardiasCreacion(idCalendarioGuardias);
-				compensacion.setFechaCumplimiento(null);
-				StringBuffer descripcion = new StringBuffer();
-				descripcion.append("Compensación por Incompatibilidad");
-				descripcion.append(" ");
-				descripcion.append((String)diasGuardia.get(0));
-				compensacion.setMotivos(descripcion.toString());
-				scsSaltosCompensacionesAdm.insertarSaltoCompensacion(compensacion);
-				return false;
-				
-			}
-			return true;
-		}
-	}
-	private ScsSaltosCompensacionesBean getSaltoCompensacion(LetradoGuardia letradoGuardia,ArrayList diasGuardia, String saltoOCompensacion,Integer idGuardia,Integer idCalendarioGuardias){
+	private void insertarNuevoSaltoBT(LetradoGuardia letradoGuardia,
+									  ArrayList diasGuardia,
+									  String motivo) throws ClsExceptions
+	{
+		String saltoOCompensacion = ClsConstants.SALTOS;
 		ScsSaltosCompensacionesBean saltoCompensacion = new ScsSaltosCompensacionesBean(
-				new Integer(idInstitucion),new Integer(idTurno),letradoGuardia.getIdPersona(),ClsConstants.SALTOS,"sysdate");
+				idInstitucion, idTurno, idGuardia, idCalendarioGuardias,
+				letradoGuardia.getIdPersona(), saltoOCompensacion, "sysdate");
+		
+		saltoCompensacion.setFechaCumplimiento((String) diasGuardia.get(0));
 		saltoCompensacion.setIdCalendarioGuardias(idCalendarioGuardias);
-		saltoCompensacion.setIdGuardia(idGuardia);
 		
-		saltoCompensacion.setSaltoCompensacion(saltoOCompensacion);
+		// obteniendo motivo
+		StringBuffer descripcion = new StringBuffer();
+		CenBajasTemporalesBean bajaTemporalBean = letradoGuardia.getBajaTemporal();
+		if(bajaTemporalBean.getTipo().equals(CenBajasTemporalesBean.TIPO_COD_VACACION))
+			descripcion.append(UtilidadesString.getMensajeIdioma(this.usrBean, CenBajasTemporalesBean.TIPO_DESC_VACACION));
+		else if(bajaTemporalBean.getTipo().equals(CenBajasTemporalesBean.TIPO_COD_BAJA))
+			descripcion.append(UtilidadesString.getMensajeIdioma(this.usrBean, CenBajasTemporalesBean.TIPO_DESC_BAJA));
+		descripcion.append(" ");
+		descripcion.append(bajaTemporalBean.getDescripcion());
+		saltoCompensacion.setMotivos(motivo + ": " + descripcion);
 		
-		Date hoy = new Date();
-		SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
-		String sHoy = sdf2.format(hoy);
-		
-		saltoCompensacion.setFechaCumplimiento((String)diasGuardia.get(0));
-		
-		saltoCompensacion.setMotivos("Fecha:"+sHoy);
-		return saltoCompensacion;
-		
+		ScsSaltosCompensacionesAdm scsSaltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(this.usrBean);
+		scsSaltosCompensacionesAdm.insertarSaltoCompensacion(saltoCompensacion);
 	}
-	private boolean isSaltoLetrado(LetradoGuardia letradoSeleccionado, HashMap<Long, List<LetradoGuardia>> hmPersonasConSaltos) throws ClsExceptions {
-		return hmPersonasConSaltos.containsKey(letradoSeleccionado.getIdPersona());
-	}
-	
-	private LetradoGuardia getSiguienteLetradoOrdenado(List alLetradosOrdenados,Puntero punteroLetrado,ArrayList diasGuardia,HashMap<Long, List<LetradoGuardia>> hmPersonasConSaltos) throws ClsExceptions{
-		LetradoGuardia letradoGuardia = null;
-		//Vamos a recorrer las compensaciones
-		if(alLetradosOrdenados!=null && alLetradosOrdenados.size()>0){
-			
-			boolean findIt = false;
-			int fin = punteroLetrado.getValor();
-			do{
-				LetradoGuardia auxLetradoSeleccionado = (LetradoGuardia)alLetradosOrdenados.get(punteroLetrado.getValor());
-				if(auxLetradoSeleccionado.getBajasTemporales()==null){
-					//si esta de vacaciones meto salto y que continue
-					CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(this.usrBean);
-					Map<String,CenBajasTemporalesBean> mBajasTemporales =  bajasTemporalescioneAdm.getDiasBajaTemporal(auxLetradoSeleccionado.getIdPersona(), auxLetradoSeleccionado.getIdInstitucion());
-					auxLetradoSeleccionado.setBajasTemporales(mBajasTemporales);
-				}
-				
-				//vale
-				if(isLetradoValido(auxLetradoSeleccionado, diasGuardia,hmPersonasConSaltos,null, false)){
-					letradoGuardia = auxLetradoSeleccionado;
-					findIt= true;
-				}
-				if (punteroLetrado.getValor()<alLetradosOrdenados.size()-1)
-					punteroLetrado.setValor(punteroLetrado.getValor()+1);
-				else
-					punteroLetrado.setValor(0);
+	private void insertarNuevoSaltoCompensacion(LetradoGuardia letradoGuardia,
+												ArrayList diasGuardia,
+												String saltoOCompensacion,
+												String motivo) throws ClsExceptions
+	{
+		ScsSaltosCompensacionesBean saltoCompensacion = new ScsSaltosCompensacionesBean(
+				idInstitucion, idTurno, idGuardia, idCalendarioGuardias,
+				letradoGuardia.getIdPersona(), saltoOCompensacion, "sysdate");
 
-				
-			}while(!findIt && fin!=punteroLetrado.getValor());
-			
-		}
-		return letradoGuardia;
-	}
-	
-	private LetradoGuardia getSiguienteLetrado(List<LetradoGuardia> alCompensaciones,List alLetradosOrdenados,Puntero punteroLetrado,ArrayList diasGuardia,HashMap<Long, List<LetradoGuardia>> hmPersonasConSaltos) throws SIGAException, ClsExceptions{
-		LetradoGuardia letradoGuardia = getSiguienteLetradoCompensado(alCompensaciones,diasGuardia,hmPersonasConSaltos);
-		if(letradoGuardia==null){
-			letradoGuardia = getSiguienteLetradoOrdenado(alLetradosOrdenados, punteroLetrado,diasGuardia,hmPersonasConSaltos);
-		}
-		if(letradoGuardia==null)
-			throw new SIGAException("gratuita.modalRegistro_DefinirCalendarioGuardia.literal.errorLetradosSuficientes");
-		return letradoGuardia;
+		saltoCompensacion.setMotivos(motivo);
 		
-	
+		ScsSaltosCompensacionesAdm scsSaltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(this.usrBean);
+		scsSaltosCompensacionesAdm.insertarSaltoCompensacion(saltoCompensacion);
 	}
-
+	private void cumplirSaltoCompensacion(LetradoGuardia letradoGuardia,
+			   							  ArrayList diasGuardia,
+			   							  String saltoOCompensacion,
+			   							  String motivo) throws ClsExceptions
+	{
+		ScsSaltosCompensacionesBean saltoCompensacion = new ScsSaltosCompensacionesBean(
+				idInstitucion, idTurno, idGuardia,
+				letradoGuardia.getIdPersona(), saltoOCompensacion);
+		
+		saltoCompensacion.setFechaCumplimiento((String) diasGuardia.get(0));
+		saltoCompensacion.setIdCalendarioGuardias(idCalendarioGuardias);
+		saltoCompensacion.setMotivos(motivo);
+		
+		ScsSaltosCompensacionesAdm scsSaltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(this.usrBean);
+		scsSaltosCompensacionesAdm.marcarSaltoCompensacionGuardia(saltoCompensacion);
+	}
 	
 	
 	public List getDiasASeparar(Integer idInstitucion, Integer idTurno, Integer idGuardia,UsrBean usrBean) throws ClsExceptions{
@@ -804,89 +838,104 @@ public class CalendarioSJCS {
 	}
 
 	/**
-	 * Rellena el arraylist de la clase "arrayPeriodosLetradosSJCS" con los periodos rellenados cada uno con su letrado y el arralist de fechas que comprende el periodo.
-	 * Nota: previamente se ha calculado mediante el metodo "calcularMatrizPeriodosDiasGuardia()" el arraylist de periodos de dias factibles con las caracteristicas de la guardia.
+	 * Genera las cabeceras de guardias del calendario, a partir de la lista de dias/periodos
+	 * Nota: previamente se ha calculado mediante el metodo "calcularMatrizPeriodosDiasGuardia()"
 	 */
-	public void calcularMatrizLetradosGuardia(List lDiasASeparar) throws SIGAException ,ClsExceptions
-	{		
-		//Controles generales
+	public void calcularMatrizLetradosGuardia(List lDiasASeparar)
+			throws SIGAException, ClsExceptions
+	{
+		// Controles generales
 		GenClientesTemporalAdm admClientesTmp = new GenClientesTemporalAdm(this.usrBean);
-		ArrayList alLetradosOrdenados;
-		ArrayList diasGuardia; //Periodo obtenido de la lista de periodos del algoritmo del CGAE 
-		ArrayList alLetradosInsertar; //lista de letrados para cada periodo
-		Puntero punteroListaLetrados = new Puntero();
 		ScsSaltosCompensacionesAdm scAdm = new ScsSaltosCompensacionesAdm(this.usrBean);
 		
+		// Variables generales
+		ArrayList diasGuardia; // Periodo o dia de guardia para rellenar con letrado
+		int numeroLetradosGuardia; // Numero de letrados necesarios para cada periodo
+		HashMap<Long, List<LetradoGuardia>> hmPersonasConSaltos; // Lista de saltos
+		List<LetradoGuardia> alCompensaciones; // Lista de compensaciones
+		ArrayList alLetradosOrdenados; // Cola de letrados en la guardia
+		Puntero punteroListaLetrados = new Puntero();
+		
+		ArrayList alLetradosInsertar; // Lista de letrados obtenidos para cada periodo
+
 		try {
-			//obteniendo cola de letrados
-			alLetradosOrdenados = admClientesTmp.obtenerLetradosPosiblesPL(this.idInstitucion, this.idTurno, this.idGuardia);
+			// obteniendo saltos
+			hmPersonasConSaltos = scAdm.getSaltos(this.idInstitucion, this.idTurno, this.idGuardia);
+
+			// obteniendo numero de letrados necesarios para cada periodo
+			numeroLetradosGuardia = this.beanGuardiasTurno.getNumeroLetradosGuardia().intValue();
+			
+			// obteniendo cola de letrados
+			alLetradosOrdenados = admClientesTmp.obtenerLetradosPosiblesPL(
+					this.idInstitucion, this.idTurno, this.idGuardia);
 			punteroListaLetrados.setValor(0);
-			
-			if (alLetradosOrdenados == null || alLetradosOrdenados.size()==0)
+
+			if (alLetradosOrdenados == null || alLetradosOrdenados.size() == 0)
 				throw new SIGAException("No existe cola de letrados de guardia");
-			
-			//obteniendo los saltos
-			HashMap<Long, List<LetradoGuardia>> hmPersonasConSaltos = scAdm.getSaltos(this.idInstitucion, this.idTurno, this.idGuardia);
-			
-			
-			//Para cada dia o conjunto de dias:
-			for (int i=0; i<this.arrayPeriodosDiasGuardiaSJCS.size(); i++) {
-				//obteniendo las compensaciones. Se obtienen dentro de este bucle, ya que si hay incompatibilidades se añade una compensacion.
-				List<LetradoGuardia> alCompensaciones = scAdm.getCompensaciones(this.idInstitucion, this.idTurno, this.idGuardia);
-				
-				//obteniendo conjunto de dias
-				//Nota: cada periodo es un arraylist de fechas (String en formato de fecha corto DD/MM/YYYY).
+
+			// Para cada dia o conjunto de dias:
+			for (int i = 0; i < this.arrayPeriodosDiasGuardiaSJCS.size(); i++) {
+				// obteniendo las compensaciones. Se obtienen dentro de este
+				// bucle, ya que si hay incompatibilidades se añade una compensacion
+				alCompensaciones = scAdm.getCompensaciones(this.idInstitucion, this.idTurno, this.idGuardia);
+
+				// obteniendo conjunto de dias
+				// Nota: cada periodo es un arraylist de fechas (String en formato de fecha corto DD/MM/YYYY)
 				diasGuardia = (ArrayList) this.arrayPeriodosDiasGuardiaSJCS.get(i);
 
-				//Para cada plaza que hay que ocupar en dia/conjunto de dias:
+				// Para cada plaza que hay que ocupar en dia/conjunto de dias:
 				int letradosInsertados = 0;
-				for (int k=0; k<this.beanGuardiasTurno.getNumeroLetradosGuardia().intValue(); k++) {								
-					//obteniendo el letrado a asignar.
-					//ATENCION: este metodo es el nucleo del proceso
-					LetradoGuardia letradoGuardia = getSiguienteLetrado(alCompensaciones, alLetradosOrdenados, punteroListaLetrados, diasGuardia, hmPersonasConSaltos);
-					
-					//guardando la asignacion de guardia si se encontro letrado
+				for (int k = 0; k < numeroLetradosGuardia; k++) {
+					// obteniendo el letrado a asignar.
+					// ATENCION: este metodo es el nucleo del proceso
+					LetradoGuardia letradoGuardia = getSiguienteLetrado(
+							alCompensaciones, alLetradosOrdenados,
+							punteroListaLetrados, diasGuardia,
+							hmPersonasConSaltos);
+
+					// guardando la asignacion de guardia si se encontro letrado
+					// hay que hacerlo aqui para no repetir letrado el mismo dia
 					if (letradoGuardia != null) {
 						alLetradosInsertar = new ArrayList();
 						letradoGuardia.setPeriodoGuardias(diasGuardia);
 						alLetradosInsertar.add(letradoGuardia.clone());
-						this.arrayPeriodosLetradosSJCS.add(alLetradosInsertar.clone());
+						this.arrayPeriodosLetradosSJCS.add(alLetradosInsertar);
+						this.almacenarAsignacionGuardia(alLetradosInsertar, diasGuardia, lDiasASeparar,
+								UtilidadesString.getMensajeIdioma(this.usrBean,
+										"gratuita.literal.comentario.sustitucion"));
 						letradosInsertados++;
-						
-						this.almacenarAsignacionGuardia(alLetradosInsertar, diasGuardia, lDiasASeparar, UtilidadesString.getMensajeIdioma(this.usrBean,"gratuita.literal.comentario.sustitucion"));
 					}
 					else {
-						throw new SIGAException("gratuita.modalRegistro_DefinirCalendarioGuardia.literal.errorLetradosSuficientes");
-					}					
-				} //FIN Para cada plaza que hay que ocupar en dia/conjunto de dias
-				
-				//controlando que se insertaron tantos letrados como hacian falta
-				if ((letradosInsertados != this.beanGuardiasTurno.getNumeroLetradosGuardia().intValue()))
-					throw new SIGAException("gratuita.modalRegistro_DefinirCalendarioGuardia.literal.errorLetradosSuficientes");
-				
-			}//FIN Para cada dia o conjunto de dias
-			
-			//actualizando el ultimo letrado en la guardia
+						throw new SIGAException(
+								"gratuita.modalRegistro_DefinirCalendarioGuardia.literal.errorLetradosSuficientes");
+					}
+				} // FIN Para cada plaza que hay que ocupar en dia/conjunto de dias
+
+				// controlando que se insertaron tantos letrados como hacian falta
+				if (letradosInsertados != numeroLetradosGuardia)
+					throw new SIGAException(
+							"gratuita.modalRegistro_DefinirCalendarioGuardia.literal.errorLetradosSuficientes");
+
+			} // FIN Para cada dia o conjunto de dias
+
+			// actualizando el ultimo letrado en la guardia
 			int punteroUltimo = 0;
 			if (punteroListaLetrados.getValor() == 0)
-				punteroUltimo = alLetradosOrdenados.size()-1;
+				punteroUltimo = alLetradosOrdenados.size() - 1;
 			else
-				punteroUltimo = punteroListaLetrados.getValor()-1;
-			this.actualizarUltimoLetradoGuardiaBBDD((LetradoGuardia) alLetradosOrdenados.get(punteroUltimo));
+				punteroUltimo = punteroListaLetrados.getValor() - 1;
 			
-		} catch (SIGAException e){
+			this.actualizarUltimoLetradoGuardiaBBDD((LetradoGuardia) alLetradosOrdenados.get(punteroUltimo));
+
+		} catch (SIGAException e) {
 			throw e;
 		} catch (Exception e) {
 			e.printStackTrace();
 			this.arrayPeriodosLetradosSJCS = null;
 			throw new ClsExceptions("");
 		}
-	} //calcularMatrizLetradosGuardia()
+	} // calcularMatrizLetradosGuardia()
 	
-
-	
-	
-
 	/**
 	 * Metodo que genera una array de periodos de de fecha a partir de otro. La restriccion que tenemos para 
 	 * partir el array inicial es que contenga dias que se agrupan(que vienen en alDiasAgrupar)

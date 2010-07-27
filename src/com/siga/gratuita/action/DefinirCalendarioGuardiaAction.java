@@ -1702,6 +1702,8 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 			throw new SIGAException("Error en borrado de calendario: al borrar compensaciones creadas en el calendario");
 		if (! admSaltosCompensaciones.deleteCompensacionesCalendariosInexistentes(calendario))	
 			throw new SIGAException("Error en borrado de calendario: al borrar compensaciones de calendarios que ya no existen");
+		if (! admSaltosCompensaciones.deleteSaltosCalendariosInexistentes(calendario))	
+			throw new SIGAException("Error en borrado de calendario: al borrar saltos de calendarios que ya no existen");
 		
 		if (! admPermutaGuardias.deletePermutasCalendario(calendario))
 			throw new ClsExceptions("Error en borrado de calendario: al quitar permutas del calendario");

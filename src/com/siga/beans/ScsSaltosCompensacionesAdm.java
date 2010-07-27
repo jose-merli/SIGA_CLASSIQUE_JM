@@ -683,19 +683,17 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 			idguardia = (String)hash.get(ScsCalendarioGuardiasBean.C_IDGUARDIA);			
 
 			sql.append(" update "+ScsSaltosCompensacionesBean.T_NOMBRETABLA);
-			sql.append(" set "+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+"= NULL");
-			sql.append(" , "+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS+"= NULL");
-			sql.append(" , "+ScsSaltosCompensacionesBean.C_FECHAMODIFICACION+"= SYSDATE");
-			sql.append(" , "+ScsSaltosCompensacionesBean.C_USUMODIFICACION+"="+this.usuModificacion);
-			sql.append(" where "+ScsSaltosCompensacionesBean.C_IDINSTITUCION+"="+idinstitucion);
-			sql.append(" and "+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS+"="+idcalendarioguardias);
-			sql.append(" and "+ScsSaltosCompensacionesBean.C_IDTURNO+"="+idturno);
-			sql.append(" and "+ScsSaltosCompensacionesBean.C_IDGUARDIA+"="+idguardia);
-			sql.append(" and "+ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION+"= 'S'");
-			sql.append(" and "+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+" IS NOT NULL");
+			sql.append("    set "+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+"= NULL");
+			sql.append("      , "+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS+"= NULL");
+			sql.append("      , "+ScsSaltosCompensacionesBean.C_FECHAMODIFICACION+"= SYSDATE");
+			sql.append("      , "+ScsSaltosCompensacionesBean.C_USUMODIFICACION+"="+this.usuModificacion);
+			sql.append("  where "+ScsSaltosCompensacionesBean.C_IDINSTITUCION+"="+idinstitucion);
+			sql.append("    and "+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS+"="+idcalendarioguardias);
+			sql.append("    and "+ScsSaltosCompensacionesBean.C_IDTURNO+"="+idturno);
+			sql.append("    and "+ScsSaltosCompensacionesBean.C_IDGUARDIA+"="+idguardia);
+			sql.append("    and "+ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION+"= 'S'");
 			
 			updateSQL(sql.toString());
-//			ClsMngBBDD.executeUpdate(sql.toString());
 			salida = true;
 		} catch (Exception e) {
 			salida = false;
@@ -732,18 +730,17 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 			idguardia = (String)hash.get(ScsCalendarioGuardiasBean.C_IDGUARDIA);			
 
 			sql.append(" update "+ScsSaltosCompensacionesBean.T_NOMBRETABLA);
-			sql.append(" set "+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+"= NULL");
-			sql.append(" , "+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS+"= NULL");
-			sql.append(" , "+ScsSaltosCompensacionesBean.C_FECHAMODIFICACION+"= SYSDATE");
-			sql.append(" , "+ScsSaltosCompensacionesBean.C_USUMODIFICACION+"="+this.usuModificacion);
-			sql.append(" where "+ScsSaltosCompensacionesBean.C_IDINSTITUCION+"="+idinstitucion);
-			sql.append(" and "+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS+"="+idcalendarioguardias);
-			sql.append(" and "+ScsSaltosCompensacionesBean.C_IDTURNO+"="+idturno);
-			sql.append(" and "+ScsSaltosCompensacionesBean.C_IDGUARDIA+"="+idguardia);
-			sql.append(" and "+ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION+"= 'C'");
-			sql.append(" and "+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+" IS NOT NULL");
+			sql.append("    set "+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+"= NULL");
+			sql.append("      , "+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS+"= NULL");
+			sql.append("      , "+ScsSaltosCompensacionesBean.C_FECHAMODIFICACION+"= SYSDATE");
+			sql.append("      , "+ScsSaltosCompensacionesBean.C_USUMODIFICACION+"="+this.usuModificacion);
+			sql.append("  where "+ScsSaltosCompensacionesBean.C_IDINSTITUCION+"="+idinstitucion);
+			sql.append("    and "+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS+"="+idcalendarioguardias);
+			sql.append("    and "+ScsSaltosCompensacionesBean.C_IDTURNO+"="+idturno);
+			sql.append("    and "+ScsSaltosCompensacionesBean.C_IDGUARDIA+"="+idguardia);
+			sql.append("    and "+ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION+"= 'C'");
+			
 			updateSQL(sql.toString());		
-//			ClsMngBBDD.executeUpdate(sql.toString());
 			salida = true;
 		} catch (Exception e) {
 			salida = false;
@@ -767,6 +764,8 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 			sql.append(" delete from "+ScsSaltosCompensacionesBean.T_NOMBRETABLA);
 			sql.append("  where "+ScsSaltosCompensacionesBean.C_IDINSTITUCION+"="+idinstitucion);
 			sql.append("    and "+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIASCREACION+"="+idcalendarioguardias);
+			sql.append("    and ("+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS+"="+idcalendarioguardias);
+			sql.append("     or  "+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS+" is null)");
 			sql.append("    and "+ScsSaltosCompensacionesBean.C_IDTURNO+"="+idturno);
 			sql.append("    and "+ScsSaltosCompensacionesBean.C_IDGUARDIA+"="+idguardia);
 			sql.append("    and "+ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION+"= 'S'");
@@ -805,16 +804,15 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 			idguardia = (String)hash.get(ScsCalendarioGuardiasBean.C_IDGUARDIA);			
 			
 			sql.append(" delete from "+ScsSaltosCompensacionesBean.T_NOMBRETABLA);
-			sql.append(" where "+ScsSaltosCompensacionesBean.C_IDINSTITUCION+"="+idinstitucion);
-			sql.append(" and "+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIASCREACION+"="+idcalendarioguardias);
-			sql.append(" and ("+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS+"="+idcalendarioguardias);
-			sql.append("  or  "+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS+" is null)");
-			sql.append(" and "+ScsSaltosCompensacionesBean.C_IDTURNO+"="+idturno);
-			sql.append(" and "+ScsSaltosCompensacionesBean.C_IDGUARDIA+"="+idguardia);
-			sql.append(" and "+ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION+"= 'C'");
-//			sql.append(" and "+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+" IS NULL");
+			sql.append("  where "+ScsSaltosCompensacionesBean.C_IDINSTITUCION+"="+idinstitucion);
+			sql.append("    and "+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIASCREACION+"="+idcalendarioguardias);
+			sql.append("    and ("+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS+"="+idcalendarioguardias);
+			sql.append("     or  "+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS+" is null)");
+			sql.append("    and "+ScsSaltosCompensacionesBean.C_IDTURNO+"="+idturno);
+			sql.append("    and "+ScsSaltosCompensacionesBean.C_IDGUARDIA+"="+idguardia);
+			sql.append("    and "+ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION+"= 'C'");
+			
 			deleteSQL(sql.toString());		
-//			ClsMngBBDD.executeUpdate(sql.toString());
 			salida = true;
 		} catch (Exception e) {
 			salida = false;
@@ -855,7 +853,7 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 			sql.append(" where CG."+ScsCalendarioGuardiasBean.C_IDINSTITUCION+"="+idinstitucion);
 			sql.append(" and CG."+ScsCalendarioGuardiasBean.C_IDTURNO+"="+idturno);
 			sql.append(" and CG."+ScsCalendarioGuardiasBean.C_IDGUARDIA+"="+idguardia);
-			sql.append(" and CG."+ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS+"="+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIASCREACION);
+			sql.append(" and CG."+ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS+"= SC."+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIASCREACION);
 			sql.append(")");
 
 					
@@ -868,18 +866,8 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 	}	
 	
 	/**
-	 * Elimina compensaciones ejecutadas y creadas por calendarios antes del cambio 
-	 * de la incidencia INC_06153_SIGA.
-	 * 
-	 * - fechacumplimiento = X, idcalendarioguardias = Y, idcalendarioguardiascreacion = null
-	 * - al borrar el calendario se quedará:
-	 *   fechacumplimiento = null, 
-	 *   idcalendarioguardias = null, 
-	 *   idcalendarioguardiascreacion = null
-     *   con lo que queda como una compensación creada desde menú (incoherencia) pero con 
-     *   motivo = 'No poder asignar automáticamente en la generación de calendario'
-     *   
-     * 
+	 * Elimina saltos de calendarios que ya no existen en la guardia.
+     *
 	 * @param Hashtable hash: tabla hash con los campos: 
 	 * - String idinstitucion
 	 * - String idcalendarioguardias
@@ -888,7 +876,7 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 	 * @return boolean: true si ha ido todo bien.
 	 * @throws ClsExceptions
 	 */
-	public boolean deleteCompensacionesCalendariosIncoherentes(Hashtable hash) throws ClsExceptions {
+	public boolean deleteSaltosCalendariosInexistentes(Hashtable hash) throws ClsExceptions {
 		String idinstitucion="", idturno="", idguardia="";
 		boolean salida = false;
 		StringBuffer sql = new StringBuffer();
@@ -902,11 +890,17 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 			sql.append(" where SC."+ScsSaltosCompensacionesBean.C_IDINSTITUCION+"="+idinstitucion);
 			sql.append(" and SC."+ScsSaltosCompensacionesBean.C_IDTURNO+"="+idturno);
 			sql.append(" and SC."+ScsSaltosCompensacionesBean.C_IDGUARDIA+"="+idguardia);
-			sql.append(" and SC."+ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION+"= 'C'");
+			sql.append(" and SC."+ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION+"= 'S'");
 			sql.append(" and SC."+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS+" is null");
-			sql.append(" and SC."+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIASCREACION+" is null");
-			sql.append(" and SC."+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+" is null");			
-			sql.append(" and SC."+ScsSaltosCompensacionesBean.C_MOTIVOS+"= 'No poder asignar automáticamente en la generación de calendario'");			
+			sql.append(" and SC."+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIASCREACION+" is not null");
+			sql.append(" and not exists (");
+			sql.append(" select 1 from "+ScsCalendarioGuardiasBean.T_NOMBRETABLA+" CG");
+			sql.append(" where CG."+ScsCalendarioGuardiasBean.C_IDINSTITUCION+"="+idinstitucion);
+			sql.append(" and CG."+ScsCalendarioGuardiasBean.C_IDTURNO+"="+idturno);
+			sql.append(" and CG."+ScsCalendarioGuardiasBean.C_IDGUARDIA+"="+idguardia);
+			sql.append(" and CG."+ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS+"= SC."+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIASCREACION);
+			sql.append(")");
+
 					
 			ClsMngBBDD.executeUpdate(sql.toString());
 			salida = true;
@@ -915,7 +909,6 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 		}
 		return salida;
 	}	
-		
 	
 	/**
 	 * A la hora de dar de baja de un turno se debe dar fecha de uso a los saltos y compensaciones
@@ -991,28 +984,34 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 		
 		
 	}
-	public void marcarSaltoCompensacionGuardia(ScsSaltosCompensacionesBean saltoCompensacion) throws ClsExceptions {
+
+	public void marcarSaltoCompensacionGuardia(ScsSaltosCompensacionesBean saltoCompensacion)
+			throws ClsExceptions
+	{
 		try {
-			String sql = " UPDATE "+ScsSaltosCompensacionesBean.T_NOMBRETABLA+
-				" SET "+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+" = '" + saltoCompensacion.getFechaCumplimiento() + "',"+
-				ScsSaltosCompensacionesBean.C_USUMODIFICACION+" = "+this.usrbean.getUserName()+","+
-				ScsSaltosCompensacionesBean.C_FECHAMODIFICACION+" = SYSDATE "+","+
-				ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS+" = "+saltoCompensacion.getIdCalendarioGuardias();
-				if(saltoCompensacion.getMotivos()!=null && !saltoCompensacion.getMotivos().equals(""))
-					sql+=","+ScsSaltosCompensacionesBean.C_MOTIVOS+" = '"+saltoCompensacion.getMotivos()+"'";
-				if(saltoCompensacion.getIdCalendarioGuardiasCreacion()!=null && !saltoCompensacion.getIdCalendarioGuardiasCreacion().equals(""))
-					sql+=","+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIASCREACION+" = "+saltoCompensacion.getIdCalendarioGuardiasCreacion();
-				sql+=" WHERE "+ScsSaltosCompensacionesBean.C_IDINSTITUCION+" = "+saltoCompensacion.getIdInstitucion()+
-				" AND "+ScsSaltosCompensacionesBean.C_IDTURNO+" = "+saltoCompensacion.getIdTurno()+
-				" AND "+ScsSaltosCompensacionesBean.C_IDGUARDIA+" = "+saltoCompensacion.getIdGuardia()+
-				" AND "+ScsSaltosCompensacionesBean.C_IDPERSONA+" = "+saltoCompensacion.getIdPersona()+
-				" AND "+ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION+" = '"+saltoCompensacion.getSaltoCompensacion()+"'"+
-				" AND "+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+" IS NULL"+
-				" AND ROWNUM < 2";
-				ClsMngBBDD.executeUpdate(sql);
- 
+			String sql = 
+				" UPDATE "+ScsSaltosCompensacionesBean.T_NOMBRETABLA+ " " +
+				"    SET "+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+" = '"+saltoCompensacion.getFechaCumplimiento()+"', " +
+				"        "+ScsSaltosCompensacionesBean.C_USUMODIFICACION+" = "+this.usrbean.getUserName()+"," +
+				"        "+ScsSaltosCompensacionesBean.C_FECHAMODIFICACION+" = SYSDATE , " +
+				"        "+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS+" = "+saltoCompensacion.getIdCalendarioGuardias()+" ";
+			if (saltoCompensacion.getMotivos() != null && !saltoCompensacion.getMotivos().equals(""))
+				sql += " , " +
+						""+ScsSaltosCompensacionesBean.C_MOTIVOS+" = "+ScsSaltosCompensacionesBean.C_MOTIVOS+" || '"+saltoCompensacion.getMotivos()+"' ";
+			sql += 
+				"  WHERE "+ScsSaltosCompensacionesBean.C_IDINSTITUCION+" = "+saltoCompensacion.getIdInstitucion()+" " +
+				"    AND "+ScsSaltosCompensacionesBean.C_IDTURNO+" = "+saltoCompensacion.getIdTurno()+" " +
+				"    AND "+ScsSaltosCompensacionesBean.C_IDGUARDIA+" = "+saltoCompensacion.getIdGuardia()+" " +
+				"    AND "+ScsSaltosCompensacionesBean.C_IDPERSONA+" = "+saltoCompensacion.getIdPersona()+" " +
+				"    AND "+ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION+" = '"+saltoCompensacion.getSaltoCompensacion()+"' " +
+				"    AND "+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+" IS NULL " +
+				"    AND rownum=1";
+		
+			ClsMngBBDD.executeUpdate(sql);
+
 		} catch (Exception e) {
-			throw new ClsExceptions(e, "Excepcion en marcarSaltoCompensacionBBDD."+e.toString());
+			throw new ClsExceptions(e,
+					"Excepcion en marcarSaltoCompensacionBBDD." + e.toString());
 		}
 	}
 	
@@ -1057,36 +1056,41 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 		
 		return hmPersonasConSaltos;
 	}
-	private String getQuerySaltosCompensacionesActivos(boolean isSalto,Integer idInstitucion,Integer idTurno,Integer idGuardia){
-		 StringBuffer sql = new StringBuffer();
-		 sql.append(" select * from scs_saltoscompensaciones s, scs_inscripcionguardia g ");
-		 sql.append(" where s.idinstitucion=");
-		 sql.append(idInstitucion);
-		 sql.append(" and   s.idturno=");
-		 sql.append(idTurno);
-		 sql.append(" and   s.idguardia=");
-		 sql.append(idGuardia);
-		sql.append(" and   s.saltoocompensacion=");
-		if(isSalto)
-			sql.append(ClsConstants.SALTOS);
-		else
-			sql.append(ClsConstants.COMPENSACIONES);
-		sql.append(" and   s.fechacumplimiento is null ");
-		sql.append(" and s.idinstitucion = g.idinstitucion ");
-		sql.append(" and s.idturno = g.idturno ");
-		sql.append(" and s.idguardia = g.idguardia ");
-		sql.append(" and s.idpersona = g.idpersona ");
-		sql.append(" and g.fechasuscripcion = ");
-		sql.append("     (select max(i.fechasuscripcion) ");
-		sql.append("        from scs_inscripcionguardia i ");
-		sql.append("       where i.idinstitucion = g.idinstitucion ");
-		sql.append("         and i.idturno = g.idturno ");
-		sql.append("         and i.idguardia = g.idguardia ");
-		sql.append("         and i.idpersona = g.idpersona ");
-		sql.append( "      ) ");
-		sql.append(" and g.fechabaja is null order by s.fecha ");
-		return sql.toString();
+
+	private String getQuerySaltosCompensacionesActivos(boolean isSalto,
+													   Integer idInstitucion,
+													   Integer idTurno,
+													   Integer idGuardia)
+	{
+		StringBuffer sql = new StringBuffer();
 		
+		sql.append(" select * ");
+		sql.append("   from scs_saltoscompensaciones s, scs_inscripcionguardia g ");
+		sql.append("  where s.idinstitucion = "+idInstitucion);
+		sql.append("    and s.idturno = "+idTurno);
+		sql.append("    and s.idguardia = "+idGuardia);
+		sql.append("    and s.saltoocompensacion = '");
+		if (isSalto)
+			sql.append(ClsConstants.SALTOS+"'");
+		else
+			sql.append(ClsConstants.COMPENSACIONES+"'");
+		sql.append("    and s.fechacumplimiento is null ");
+		sql.append("    and s.idinstitucion = g.idinstitucion ");
+		sql.append("    and s.idturno = g.idturno ");
+		sql.append("    and s.idguardia = g.idguardia ");
+		sql.append("    and s.idpersona = g.idpersona ");
+		sql.append("    and g.fechasuscripcion = ");
+		sql.append("        (select max(i.fechasuscripcion) ");
+		sql.append("           from scs_inscripcionguardia i ");
+		sql.append("          where i.idinstitucion = g.idinstitucion ");
+		sql.append("            and i.idturno = g.idturno ");
+		sql.append("            and i.idguardia = g.idguardia ");
+		sql.append("            and i.idpersona = g.idpersona ");
+		sql.append("         ) ");
+		sql.append("    and g.fechabaja is null ");
+		sql.append("  order by s.fecha ");
+		
+		return sql.toString();
 	}
 	
 	public List<LetradoGuardia> getCompensaciones (Integer idInstitucion,Integer idTurno,Integer idGuardia) throws ClsExceptions {
