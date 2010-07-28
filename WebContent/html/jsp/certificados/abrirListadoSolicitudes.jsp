@@ -53,8 +53,14 @@
 	
 	String fBuscar="";
 	String fechaDesde=UtilidadesBDAdm.getFechaBD("");
+	String fechaHasta="";
 	if (request.getParameter("buscar")!=null&&request.getParameter("buscar").equals("true")){
-	    fechaDesde="";
+		if(formulario!=null){
+			if(formulario.getFechaDesde()!=null)
+				fechaDesde=formulario.getFechaDesde();
+			if(formulario.getFechaHasta()!=null)
+				fechaHasta=formulario.getFechaHasta();
+		}
 		fBuscar="buscar";
 	}
 	
@@ -306,7 +312,6 @@
 			  <% }}
 			   
 			  if (request.getParameter("buscar")!=null&&request.getParameter("buscar").equals("true")){%>
-			    SolicitudesCertificadosForm.fechaDesde.value="";
 			    buscar();
 			  <%}%>	
 					
@@ -347,7 +352,7 @@
 							<siga:Idioma key="certificados.solicitudes.literal.fechahasta"/>
 						</td>
 						<td>
-							<siga:Fecha nombreCampo="fechaHasta"/>						
+							<siga:Fecha nombreCampo="fechaHasta" valorInicial="<%=fechaHasta%>"/>						
 							<a href='javascript://'onClick="return showCalendarGeneral(fechaHasta);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
 						</td>
 						<td class="labelText">
@@ -472,3 +477,4 @@
 		<iframe name="submitArea2" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 	</body>
 </html>
+
