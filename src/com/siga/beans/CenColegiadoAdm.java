@@ -1052,6 +1052,7 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 			"d.DOMICILIO DIRECCION_LETR," +
 			"d.CODIGOPOSTAL CP_LETR," +
 			"pb.NOMBRE POBLACION_LETR," +
+			"d.poblacionextranjera POBLACION_EXTRANJERA,"+
 			"(select pr.nombre from cen_provincias pr where pr.idprovincia=d.idprovincia) PROVINCIA_LETR"+
 			"   from "+CenDireccionesBean.T_NOMBRETABLA+" d,"+CenPoblacionesBean.T_NOMBRETABLA+" pb,"+CenDireccionTipoDireccionBean.T_NOMBRETABLA+" td "+
 			"  where d."+CenDireccionesBean.C_IDINSTITUCION+"=:1"+
