@@ -29,8 +29,12 @@ import com.siga.beans.AdmInformeBean;
 import com.siga.beans.AdmTipoInformeAdm;
 import com.siga.beans.AdmTipoInformeBean;
 import com.siga.beans.CenColegiadoAdm;
+import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenNoColegiadoAdm;
 import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.CenPersonaBean;
+import com.siga.beans.CenPoblacionesAdm;
+import com.siga.beans.CenProvinciaAdm;
 import com.siga.beans.EnvDestProgramInformesAdm;
 import com.siga.beans.EnvDestProgramInformesBean;
 import com.siga.beans.EnvDestinatariosBean;
@@ -241,7 +245,53 @@ public class EnvioInformesGenericos extends MasterReport {
 				provincia = (String) htCol.get("PROVINCIA_LETR");
 			}
 			htCabeceraInforme.put("PROVINCIA", provincia);
-
+			
+			String poblacionExtranjera= "";
+			if (htCol != null && htCol.size() > 0) {
+				poblacionExtranjera = (String) htCol.get("POBLACION_EXTRANJERA");
+			}
+			
+			if ((!poblacionExtranjera.equals(""))&&(localidad.equals(""))){
+				htCabeceraInforme.put("CIUDAD", poblacionExtranjera);
+			}
+			
+			
+			if ((direccion.equals(""))&&(codPostal.equals(""))&&(localidad.equals("")) &&(provincia.equals(""))){
+			  Vector direcciones = null;
+			  String idprovincia="";
+			  String idpoblacion="";
+			  
+			  //se llama a la funcion de getDirecciones donde si no tiene dirección de tipo despacho, coge la 
+			  //la dirección preferente y si no tiene ninguna dirección como preferente coge la primera dirección que encuentra.
+			  //el parametro de valor 2, es valor que se le pasa a la funcion para que sepa que tipo de dirección queremos.
+	            	EnvEnviosAdm enviosAdm = new EnvEnviosAdm(usrBean);
+	            	direcciones = enviosAdm.getDirecciones(String.valueOf(idInstitucion),
+							  idPersona,
+							  "2");
+	            	
+					CenPersonaAdm personaAdm = new CenPersonaAdm(usrBean);
+					Hashtable htPersona = new Hashtable();
+					htPersona.put(CenPersonaBean.C_IDPERSONA, idPersona);
+					CenPersonaBean persona= (CenPersonaBean) ((Vector)personaAdm.selectByPK(htPersona)).get(0);					
+					
+			        if (direcciones!=null && direcciones.size()>0) {
+		            	Hashtable htDir = (Hashtable)direcciones.firstElement();
+				    	htCabeceraInforme.put("DIRECCION",(String)htDir.get(CenDireccionesBean.C_DOMICILIO));
+				        htCabeceraInforme.put("CP", (String)htDir.get(CenDireccionesBean.C_CODIGOPOSTAL));				       
+				       
+				        idpoblacion=(String)htDir.get(CenDireccionesBean.C_IDPOBLACION);
+				        CenPoblacionesAdm admpoblacion= new    CenPoblacionesAdm(usrBean);
+				        if (!idpoblacion.equals("")){
+				        	htCabeceraInforme.put("CIUDAD",admpoblacion.getDescripcion(idpoblacion));
+				        }				        
+				        idprovincia=(String)htDir.get(CenDireccionesBean.C_IDPROVINCIA);
+				        CenProvinciaAdm admprovincia= new   CenProvinciaAdm(usrBean);
+				        if (!idprovincia.equals("")){
+				        	htCabeceraInforme.put("PROVINCIA",admprovincia.getDescripcion(idprovincia));
+				        }
+				   }
+			 }
+			
 			String nombre = "";
 			if (htCol != null && htCol.size() > 0) {
 				nombre = (String) htCol.get("NOMBRE_LETRADO");
