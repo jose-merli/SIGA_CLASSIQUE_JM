@@ -11,6 +11,7 @@
 package com.siga.envios.action;
 
 import java.util.*;
+import com.siga.Utilidades.UtilidadesString;
 
 import com.atos.utils.*;
 import com.siga.administracion.SIGAConstants;
@@ -151,9 +152,9 @@ public class TextoSMSAction extends MasterAction
 		    
 	        if (admProducto.insert(beanCampos))
 	        {
-	            beanCampos.setIdCampo(new Integer(EnvCamposPlantillaAdm.K_IDCAMPO_SMS));
-	            beanCampos.setValor(form.getCuerpo());
-	        
+	            beanCampos.setIdCampo(new Integer(EnvCamposPlantillaAdm.K_IDCAMPO_SMS));	            
+	            beanCampos.setValor(UtilidadesString.reemplazarTextoEntreMarca(form.getCuerpo(),"%%"));
+			 
 /*ESTE*/		admProducto.delete(beanCampos);
 			        if (admProducto.insert(beanCampos))
 				    {
@@ -185,5 +186,10 @@ public class TextoSMSAction extends MasterAction
 	        throw new ClsExceptions(e, "Error en update");
 	    }
 	}
+	
+	
+	
+		
+		
 
 }

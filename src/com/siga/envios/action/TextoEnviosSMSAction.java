@@ -17,6 +17,7 @@ import com.siga.administracion.SIGAConstants;
 import com.siga.beans.*;
 import com.siga.general.*;
 import com.siga.gui.processTree.SIGAPTConstants;
+import com.siga.Utilidades.UtilidadesString;
 
 import javax.servlet.http.*;
 import javax.transaction.UserTransaction;
@@ -139,9 +140,8 @@ public class TextoEnviosSMSAction extends MasterAction
 	        EnvEnviosAdm admEnvio = new EnvEnviosAdm(this.getUserBean(request));
 
 	        String idInstitucion = form.getIdInstitucion();
-	        String idEnvio = form.getIdEnvio();
-	        String sCuerpo = form.getCuerpo();
-
+	        String idEnvio = form.getIdEnvio();	             	
+	        String sCuerpo = UtilidadesString.reemplazarTextoEntreMarca(form.getCuerpo(),"%%");
 	        tx = userBean.getTransaction();
 	        tx.begin();
 
