@@ -8,6 +8,7 @@ import com.siga.general.*;
 import javax.servlet.http.*;
 import javax.transaction.UserTransaction;
 import com.siga.gui.processTree.SIGAPTConstants;
+import com.siga.Utilidades.UtilidadesString;
 
 import com.siga.envios.form.*;
 import org.apache.struts.action.*;
@@ -89,7 +90,7 @@ public class SIGAEnviosCorreoElectronicoAction extends MasterAction
 	        String idInstitucion = form.getIdInstitucion();
 	        String idEnvio = form.getIdEnvio();
 	        String sAsunto = form.getAsunto();
-	        String sCuerpo = form.getCuerpo();
+	        String sCuerpo =UtilidadesString.reemplazarTextoEntreMarca(form.getCuerpo(),"%%"); 
 
 	        tx = userBean.getTransaction();
 	        tx.begin();
