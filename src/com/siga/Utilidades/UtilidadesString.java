@@ -1316,5 +1316,61 @@ public class UtilidadesString {
 
         return nombreValido;
     }
+	
+		/**
+		 *  Metodo reemplazarTextoEntreMarca
+		 *  convierte a mayuscula el texto que este entre la marca.
+		 *  y devuelve todo el texto que recibio pero con los textos que estan entre la marca convertida a mayuscula.
+		 * @param <B>texto</B> El texto a inspeccionar
+		 * @param <B>marca</B> Marca que se define para buscar texto entre la marca		
+		 * @return String con la cadena obtenida tras cambiar todos los textos que esten entre la marca y ponerlos a mayuscula.
+		 */
+		
+	public static String reemplazarTextoEntreMarca(String textoreemplazar,String marca){
+        
+        String texto = textoreemplazar;
+        String textoAux = texto;
+        String cadena = "";
+        
+        boolean flag = true;
+        Vector vIndices = new Vector();
+        while (flag) {
+            int beginIndex = textoAux.indexOf(marca)+2;
+            if(beginIndex==-1){
+                flag= false;
+                continue;
+            }
+            cadena = textoAux.substring(beginIndex);
+            int endIndex = cadena.indexOf(marca);
+            if(endIndex==-1){
+                flag= false;
+                continue;
+            }
+            int[] indices = {beginIndex,beginIndex+endIndex};
+            vIndices.add(indices);
+            textoAux = textoAux.substring(beginIndex+endIndex+2);
+            beginIndex = textoAux.indexOf(marca);
+            if(beginIndex==-1)
+                flag= false;
+        }
+        int indiceInicial = 0;
+        int indiceFin = 0;
+        textoAux = texto;
+        String cadenaAntes="";
+        String cadenaDespues="";
+        for (int i = 0; i < vIndices.size(); i++) {
+            int[]indices = (int[]) vIndices.get(i);
+            indiceInicial += indices[0];
+            indiceFin += indices[1];
+            cadenaAntes = textoAux.substring(0,indiceInicial);
+            cadenaDespues = textoAux.substring(indiceFin);
+            String cadenaReemplazo = textoAux.substring(indiceInicial,indiceFin).toUpperCase();
+            indiceInicial=indiceFin+2;
+            indiceFin=indiceFin+2;
+            textoAux = cadenaAntes+cadenaReemplazo+cadenaDespues;
+       }
+        return textoAux;
+        
+    }
     
 }
