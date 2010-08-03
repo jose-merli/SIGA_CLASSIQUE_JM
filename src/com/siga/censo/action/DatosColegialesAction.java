@@ -406,21 +406,25 @@ public class DatosColegialesAction extends MasterAction {
 			}
 			
 			//Control de las fechas:
-			String fechaEstadoOri = (String)original.get(CenDatosColegialesEstadoBean.C_FECHAESTADO);
 			String fechaEstadoNew = miForm.getFechaEstado();
+			String fechaEstadoOri="";
+			if (original!=null){
+				 fechaEstadoOri = (String)original.get(CenDatosColegialesEstadoBean.C_FECHAESTADO);
+			}
+			//String fechaEstadoNew = miForm.getFechaEstado();
 			
 			java.text.SimpleDateFormat sdfNew = new java.text.SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);			
 			Date dateNew = sdfNew.parse(fechaEstadoNew);			
 			
 			java.text.SimpleDateFormat sdfOri = new java.text.SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
-			Date dateOri = sdfOri.parse(fechaEstadoOri);
-			String fechaOriSinHoras = sdfNew.format(dateOri);
-			Date dateOriSinHoras = sdfNew.parse(fechaOriSinHoras);
-			
-			if (dateNew.before(dateOriSinHoras)||dateNew.equals(dateOriSinHoras)) 
+			if (!fechaEstadoOri.equals("")){
+				Date dateOri = sdfOri.parse(fechaEstadoOri);
+				String fechaOriSinHoras = sdfNew.format(dateOri);
+				Date dateOriSinHoras = sdfNew.parse(fechaOriSinHoras);
+					if (dateNew.before(dateOriSinHoras)||dateNew.equals(dateOriSinHoras)) 
 				return exito("messages.general.error.fechaPosteriorActual1",request);
+			}
 			
-
 			// RGG 28-04-2005 Cambio para control de cambio de estado
 			// de un colegiado comunitario.
 			CenColegiadoAdm admCol = new CenColegiadoAdm(this.getUserBean(request));
@@ -430,10 +434,13 @@ public class DatosColegialesAction extends MasterAction {
 			Vector v = admCol.selectByPK(clave);
 			if (v!=null && v.size()>0) {
 				CenColegiadoBean beanCol = (CenColegiadoBean)v.get(0);
+				
+				if (original!=null){
 				if (beanCol.getComunitario().equals(ClsConstants.DB_TRUE) && 
 					miForm.getCmbEstadoColegial().equalsIgnoreCase(String.valueOf(ClsConstants.ESTADO_COLEGIAL_EJERCIENTE))) {
 						throw new SIGAException("messages.censo.comunitarioEstadoColegial.error");
 				}
+			 }
 			}
 			
 			// Cargo la tabla de historico
