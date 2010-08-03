@@ -7,7 +7,7 @@ import com.siga.beans.*;
 import com.siga.general.*;
 import javax.servlet.http.*;
 import javax.transaction.UserTransaction;
-
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.envios.form.*;
 
 import org.apache.struts.action.*;
@@ -109,7 +109,10 @@ public class SIGAPlantillasEnviosCorreoElectronicoAction extends MasterAction
 	        if (admProducto.insert(beanCampos))
 	        {
 	            beanCampos.setIdCampo(new Integer(EnvCamposPlantillaAdm.K_IDCAMPO_CUERPO));
-	            beanCampos.setValor(form.getCuerpo());
+	            String valor= UtilidadesString.reemplazarTextoEntreMarca(form.getCuerpo(),"%%");      	
+	            beanCampos.setValor(valor);
+	            
+	           // beanCampos.setValor(form.getCuerpo());
 	    	
 		        /*
 		        htDatosOld.put(EnvCamposPlantillaBean.C_IDCAMPO, EnvCamposPlantillaAdm.K_IDCAMPO_CUERPO);
