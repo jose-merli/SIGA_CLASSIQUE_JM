@@ -65,6 +65,8 @@ public class BajaTurnosAction extends MasterAction {
 				String accion = miForm.getModo();  
 				if (accion != null && accion.equalsIgnoreCase("bajaEnTodosLosTurnos")) {
 					destino =  solicitarBajaEnTodosLosTurnos (formulario, request);
+				}else if (accion != null && accion.equalsIgnoreCase("abrirModalBaja")) {
+					destino =  abrirModalBaja (miForm, request);
 				}
 				else {
 					return super.executeInternal(mapping, formulario,request,response);
@@ -596,4 +598,12 @@ public class BajaTurnosAction extends MasterAction {
 		return false; // No hay nada pendiente
 	} //comprobarGuardiasDesignasPendientes()
 	
+	
+	
+	protected String abrirModalBaja (
+			MasterForm formulario, 
+			HttpServletRequest request) throws SIGAException 
+	{
+		return "abrirModalBaja";
+	}
 }

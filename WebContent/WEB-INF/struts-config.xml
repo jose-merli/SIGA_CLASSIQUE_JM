@@ -1997,6 +1997,7 @@
 			<forward name="nuevo2" path="/html/jsp/gratuita/altaTurno_2.jsp"/>
 			<forward name="operacionOK" path="/JGR_DefinirTurnosLetrado.do"/>
 			<forward name="error" path="/html/jsp/general/error.jsp"/>
+			<forward name="abrirModalBaja" path="/html/jsp/gratuita/datosBajaModal.jsp"/>
 		</action>
         
 		<action path="/JGR_TelefonosPersonasJG" type="com.siga.gratuita.action.DefinirTelefonosJGAction" name="DefinirTelefonosJGForm" scope="request">
