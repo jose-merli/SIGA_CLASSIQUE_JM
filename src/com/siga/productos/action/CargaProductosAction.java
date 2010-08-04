@@ -24,6 +24,7 @@ import org.apache.struts.upload.FormFile;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenClienteBean;
@@ -221,13 +222,22 @@ public class CargaProductosAction extends MasterAction {
 				if (!idTipoProducto.trim().equals("") && !idProducto.trim().equals("") && !idProductoInstitucion.trim().equals("")) {
 					//obtener el producto por clave
 
-					htProducto.put(PysProductosInstitucionBean.C_IDINSTITUCION, user.getLocation());
-					htProducto.put(PysProductosInstitucionBean.C_IDTIPOPRODUCTO, idTipoProducto);
-					htProducto.put(PysProductosInstitucionBean.C_IDPRODUCTO, idProducto);
-					htProducto.put(PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION, idProductoInstitucion);
-					Vector vProductos = productoAdm.selectByPK(htProducto);
-					if (vProductos!=null && vProductos.size()>0) {
-						producto = (PysProductosInstitucionBean) vProductos.get(0);
+					try{
+						int esNumero = UtilidadesNumero.parseInt(idProducto) + UtilidadesNumero.parseInt(idTipoProducto) + UtilidadesNumero.parseInt(idProductoInstitucion);
+						// Sumo los identificadores para forzar un error si no son enteros
+						htProducto.put(PysProductosInstitucionBean.C_IDINSTITUCION, user.getLocation());
+						htProducto.put(PysProductosInstitucionBean.C_IDTIPOPRODUCTO, idTipoProducto);
+						htProducto.put(PysProductosInstitucionBean.C_IDPRODUCTO, idProducto);
+						htProducto.put(PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION, idProductoInstitucion);
+						Vector vProductos = productoAdm.selectByPK(htProducto);
+						if (vProductos!=null && vProductos.size()>0) {
+							producto = (PysProductosInstitucionBean) vProductos.get(0);
+						}
+					}catch (Exception e){
+						procesoOk = false;
+						ClsLogging.writeFileLog(".-.-.-.-.-.-.-.-.-.", 10);
+						ClsLogging.writeFileLog("CARGA COMPRAS "+idInstitucion+": Línea con identificadores no válidos: "+linea, 10);
+						
 					}
 				}
 			
