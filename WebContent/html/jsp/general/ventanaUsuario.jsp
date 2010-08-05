@@ -25,7 +25,7 @@
 	UsrBean userBean = (UsrBean)request.getSession().getAttribute("USRBEAN");
 	
 	String nombreUsuario = "", nombreInstitucion = "", nifUsuario = "", nombreGrupo = "";
-	Hashtable h = userBean.getDatosUsuario ();
+	Hashtable h = userBean!=null?userBean.getDatosUsuario():null;
 	if (h != null) {
 		nifUsuario        = (String)h.get("NIF_USUARIO");
 		nombreUsuario     = (String)h.get("NOMBRE_USUARIO");
