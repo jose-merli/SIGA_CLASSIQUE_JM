@@ -136,7 +136,8 @@ myCoolMenu.makeMenu(name, parent_name, text, link, target, width, height, regIma
 
 	catch(Exception e)
 	{
-		ClsLogging.writeFileLogError("ERROR EN MENU:"+e.toString(),e,1);
+		// inc6961 // No hace falta escribir esto en el log
+		//ClsLogging.writeFileLogError("ERROR EN MENU:"+e.toString(),e,1);
 	}
 %>
 
