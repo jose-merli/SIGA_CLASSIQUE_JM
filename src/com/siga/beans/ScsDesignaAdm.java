@@ -1550,7 +1550,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			h.put(new Integer(2), idPersona);
 			String sql = "SELECT "+
 			" DIR.Domicilio DOMICILIO_LETRADO,dir.codigopostal CP_LETRADO ,dir.poblacionextranjera POBLACION_LETRADO,dir.idpoblacion ID_POBLACION_LETRADO, "+
-			" dir.idprovincia ID_PROVINCIA_LETRADO,dir.telefono1 TELEFONODESPACHO_LET,dir.fax1 FAX_LETRADO,dir.correoelectronico EMAIL_LETRADO "+
+			" dir.idprovincia ID_PROVINCIA_LETRADO,dir.telefono1 TELEFONODESPACHO_LET,dir.fax1 FAX_LETRADO,dir.correoelectronico EMAIL_LETRADO, dir.movil MOVILDESPACHO_LET"+
 			" from CEN_DIRECCIONES DIR, CEN_DIRECCION_TIPODIRECCION TIP " +
 			" where dir.idinstitucion = tip.idinstitucion " +
 			" and dir.idpersona = tip.idpersona  " +
