@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
@@ -12,6 +13,7 @@ import com.siga.beans.CenBajasTemporalesAdm;
 import com.siga.beans.CenBajasTemporalesBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.censo.form.BajasTemporalesForm;
 import com.siga.censo.service.BajasTemporalesService;
 import com.siga.general.SIGAException;
@@ -62,7 +64,13 @@ public class AtosBajasTemporalesService extends JtaBusinessServiceTemplate
 		List<String> alFechas = GstDate.getFechas(bajasTemporalesForm.getFechaDesde(), bajasTemporalesForm.getFechaHasta(), "dd/MM/yyyy");
 		CenBajasTemporalesAdm btAdm = new CenBajasTemporalesAdm(usrBean);
 		//Atencion si no es un letrado es un administrador por lo que al hacer la solicitud se supone que ya esta validada;
-		if(!usrBean.isLetrado())
+		GenParametrosAdm paramAdm = new GenParametrosAdm (usrBean);
+		//Haria falta meter los parametros en con ClsConstants
+		String codAceptarSolicitudes = paramAdm.getValor (usrBean.getLocation (), "SCS", ClsConstants.GEN_PARAM_ACEPTAR_SOLICITUD_BAJA_TEMPORAL, "");
+		Boolean isAceptarSolicitudes = new Boolean((codAceptarSolicitudes!=null && codAceptarSolicitudes.equalsIgnoreCase(ClsConstants.DB_TRUE)));
+        
+		
+		if(!usrBean.isLetrado()||isAceptarSolicitudes.booleanValue())
 			bajaTemporal.setValidado("1");
 		
 		for (int i = 0; i < idPersonas.length; i++) {
