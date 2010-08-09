@@ -119,7 +119,7 @@
 			
 			function accionGuardarCerrar() 
 			{	 
-				
+				var marcado = false;
 				
 				var aDatos = new Array();
 				var oCheck = document.getElementsByName("chkPL");
@@ -135,18 +135,22 @@
 							var dato2 = oCheck[i].value;
 						}
 						aDatos[j] = oCheck[i].value;
+						marcado = true;
 					}
 				}
-				var auxi = "";
-				for (i=0; i<aDatos.length; i++)
-				{
-					auxi += aDatos[i] + "##";
+				if (marcado){
+					var auxi = "";
+					for (i=0; i<aDatos.length; i++)
+					{
+						auxi += aDatos[i] + "##";
+					}
+					if (auxi.length>2) auxi=auxi.substring(0,auxi.length-2);
+			    	window.returnValue=auxi;
+					window.close();
+				}else{
+					// Debe haber un concepto marcado
+					alert('<siga:Idioma key="infomes.seleccionSerie.debeSeleccionar"/>');
 				}
-				if (auxi.length>2) auxi=auxi.substring(0,auxi.length-2);
-		    	window.returnValue=auxi;
-				window.close();
-				
-				
 			}
 	
 			
