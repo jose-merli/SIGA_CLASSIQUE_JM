@@ -736,7 +736,7 @@
 			<tr>
 				<td class="labelText"><siga:Idioma
 					key="gratuita.volantesExpres.literal.turno" />&nbsp;(*)</td>
-				<td><html:select styleId="turnos" style="width:320px;"
+				<td><html:select styleId="turnos" styleClass="boxCombo" style="width:320px;"
 					property="idTurno">
 					<bean:define id="turnos" name="VolantesExpressForm"
 						property="turnos" type="java.util.Collection" />
@@ -745,7 +745,7 @@
 				</html:select></td>
 				<td class="labelText"><siga:Idioma
 					key="gratuita.volantesExpres.literal.guardia" />&nbsp;(*)</td>
-				<td><html:select styleId="guardias" style="width:320px;"
+				<td><html:select styleId="guardias" styleClass="boxCombo" style="width:320px;"
 					property="idGuardia" >
 					<bean:define id="guardias" name="VolantesExpressForm"
 						property="guardias" type="java.util.Collection" />
@@ -764,7 +764,7 @@
 								<td class="labelText"><siga:Idioma
 									key="gratuita.volantesExpres.literal.colegiado" />&nbsp;</td>
 								<td class="labelText"><html:select
-									styleId="colegiadosGuardia" style="width:420px;"
+									styleId="colegiadosGuardia" styleClass="boxCombo" style="width:420px;"
 									property="idColegiadoGuardia"
 									>
 									<bean:define id="colegiadosGuardia" name="VolantesExpressForm"
@@ -814,7 +814,7 @@
 									<siga:Idioma key="gratuita.volantesExpres.literal.sustitudoDe" />
 									</td>
 									<td ><html:select
-										styleId="colegiadosSustituidos" style="width:200px;"
+										styleId="colegiadosSustituidos" styleClass="boxCombo" style="width:200px;"
 										property="idColegiadoSustituido">
 										<bean:define id="colegiadosSustituidos"
 											name="VolantesExpressForm" property="colegiadosSustituidos"
@@ -848,7 +848,7 @@
 				<td class="labelText"><siga:Idioma
 					key="gratuita.volantesExpres.literal.tipoAsistenciaColegio" />&nbsp;(*)
 				</td>
-				<td colspan="3"><html:select style="width:720px;"
+				<td colspan="3"><html:select styleClass="boxCombo" style="width:720px;"
 					property="idTipoAsistenciaColegio" onchange="actualizarResultados();">
 					<bean:define id="tiposAsistenciaColegio" name="VolantesExpressForm"
 						property="tiposAsistenciaColegio" type="java.util.Collection" />
