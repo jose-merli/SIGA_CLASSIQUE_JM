@@ -862,5 +862,52 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 		
 		
 	} 
+	public List<ScsTurnoBean> getTurnos(String idInstitucion)throws ClsExceptions{
+
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+		
+		sql.append(" SELECT IDINSTITUCION , IDTURNO ");
+		sql.append(" , NOMBRE FROM SCS_TURNO TURNO  ");
+		sql.append(" WHERE TURNO.IDINSTITUCION = :");
+	    contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),idInstitucion);
+		sql.append(" ORDER BY TURNO.NOMBRE ");
+		
+		List<ScsTurnoBean> alTurnos = null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+												
+            if (rc.findBind(sql.toString(),htCodigos)) {
+            	alTurnos = new ArrayList<ScsTurnoBean>();
+            	ScsTurnoBean turnoBean = null;
+            	if(rc.size()>1){
+            		turnoBean = new ScsTurnoBean();
+	    			turnoBean.setNombre(UtilidadesString.getMensajeIdioma(this.usrbean, "general.combo.seleccionar"));
+	    			turnoBean.setIdTurno(new Integer(-1));
+	            	alTurnos.add(turnoBean);
+            	}
+    			for (int i = 0; i < rc.size(); i++){
+            		Row fila = (Row) rc.get(i);
+            		Hashtable<String, Object> htFila=fila.getRow();
+            		
+            		
+            		turnoBean = new ScsTurnoBean();
+            		turnoBean.setIdInstitucion(UtilidadesHash.getInteger(htFila,ScsTurnoBean.C_IDINSTITUCION));
+            		turnoBean.setIdTurno(UtilidadesHash.getInteger(htFila,ScsTurnoBean.C_IDTURNO));
+        			turnoBean.setNombre(UtilidadesHash.getString(htFila,ScsTurnoBean.C_NOMBRE));
+            		alTurnos.add(turnoBean);
+            	}
+            } 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+       }
+       return alTurnos;
+		
+		
+		
+	}
 	
 }
