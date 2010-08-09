@@ -4488,6 +4488,21 @@
                  <arg0 key="envios.imagenes.literal.archivo"/>
          </field>
       </form>
+      
+      <form name="BajasTemporalesForm">
+         <field property="fechaDesde" depends = "required">
+                 <arg0 key="censo.bajastemporales.fechaInicio"/>
+         </field>
+         <field property = "fechaHasta" depends = "required">
+                 <arg0 key="censo.bajastemporales.fechaFin"/>
+         </field>
+         <field property = "tipo" depends = "required">
+                 <arg0 key="censo.bajastemporales.tipo"/>
+         </field>
+         
+         
+      </form>
+      
 					
 </formset>
 

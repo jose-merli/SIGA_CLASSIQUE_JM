@@ -6,6 +6,7 @@
 		</transactionManager>
 		<service interface="com.siga.gratuita.service.VolantesExpressService" implementation="com.siga.gratuita.service.impl.AtosVolantesExpressService"/>
 		<service interface="com.siga.gratuita.service.EejgService" implementation="com.siga.gratuita.service.impl.AtosEejgService"/>		
+		<service interface="com.siga.censo.service.BajasTemporalesService" implementation="com.siga.censo.service.impl.AtosBajasTemporalesService"/>
 	</context>
 	
 	<context id="letrados">

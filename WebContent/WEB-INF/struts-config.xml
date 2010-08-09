@@ -289,6 +289,9 @@
 		<form-bean name="mantenimientoPagosSCJSAForm" type="com.siga.facturacionSJCS.form.MantenimientoPagosSCJSAForm" />
 		<form-bean name="configuracionAbonosForm" type="com.siga.facturacionSJCS.form.ConfiguracionAbonosForm"/>
 		<form-bean name="InformesFacturacionMultipleForm" type="com.siga.informes.form.InformesFacturacionMultipleForm"/>
+		<form-bean name="BajasTemporalesForm" type="com.siga.censo.form.BajasTemporalesForm"/>
+		
+		
 	</form-beans>
 
 
@@ -1962,6 +1965,8 @@
 
 		<action path="/JGR_RetencionesJudicialesLetrado" forward="/FCS_RetencionesJudiciales.do?esFichaColegial=1" >
         </action>
+        <!-- ***** Censo / Ficha Colegial / SJCS /Retenciones ***** -->
+        <action path="/JGR_RetencionesCenso" forward="/html/jsp/gratuita/pestanaRetencionesCenso.jsp"/>
 
 
 		<action path="/JGR_AnulacionAsistencia" type="com.siga.gratuita.action.ContAnulDeliJuriAsistenciaAction" name="AsistenciasForm">
@@ -2102,7 +2107,6 @@
 			<forward name="error" path="/html/jsp/general/error.jsp"/>
 		</action>
 
-		<!-- ***** Justicia Gratuita / Baja Turnos / Guardias ***** -->
 		<action path="/JGR_BajaTurnos" type="com.siga.gratuita.action.BajaTurnosAction" name="BajaTurnosForm" scope="request">
 			<forward name="listado" path="/html/jsp/gratuita/listarTurnosLetrados.jsp"/>
 			<forward name="listadoBaja" path="/html/jsp/gratuita/listarTurnosBaja.jsp"/>
@@ -2114,6 +2118,15 @@
 			<forward name="nuevo2" path="/html/jsp/gratuita/altaTurno_2.jsp"/>
 			<forward name="operacionOK" path="/JGR_DefinirTurnosLetrado.do"/>
 			<forward name="error" path="/html/jsp/general/error.jsp"/>
+		</action>
+		<action path="/JGR_BajasTemporales" type="com.siga.censo.action.GestionBajasTemporalesAction" name="BajasTemporalesForm">
+			<forward name="inicio" path="/html/jsp/censo/bajasTemporales/gestionBajasTemporales.jsp"/>
+			<forward name="listadoBajasTemporales" path="/html/jsp/censo/bajasTemporales/listadoBajasTemporales.jsp"/>
+			<forward name="solicitud" path="/html/jsp/censo/bajasTemporales/solicitudBajasTemporales.jsp"/>
+			
+		</action>
+	
+		<action path="/CEN_BajasTemporales" forward="/JGR_BajasTemporales.do?fichaColegial=true" >
 		</action>
 
 		<!-- ***** Justicia Gratuita / Definir Calendario de Guardias ***** -->

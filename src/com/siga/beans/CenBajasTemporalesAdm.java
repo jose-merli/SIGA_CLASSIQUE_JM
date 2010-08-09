@@ -6,7 +6,6 @@ package com.siga.beans;
  
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -18,7 +17,7 @@ import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.Utilidades.UtilidadesString;
+import com.siga.censo.form.BajasTemporalesForm;
 import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
 
 public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
@@ -43,6 +42,8 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
                 CenBajasTemporalesBean.C_FECHADESDE,
                 CenBajasTemporalesBean.C_FECHAHASTA,
                 CenBajasTemporalesBean.C_FECHAALTA,
+                CenBajasTemporalesBean.C_FECHAESTADO,
+                CenBajasTemporalesBean.C_VALIDADO,
                 CenBajasTemporalesBean.C_DESCRIPCION,
             	CenBajasTemporalesBean.C_FECHAMODIFICACION,
             	CenBajasTemporalesBean.C_USUMODIFICACION
@@ -89,6 +90,8 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
 			bean.setFechaDesde(UtilidadesHash.getString(hash, CenBajasTemporalesBean.C_FECHADESDE));
 			bean.setFechaHasta(UtilidadesHash.getString(hash, CenBajasTemporalesBean.C_FECHAHASTA));
 			bean.setFechaAlta(UtilidadesHash.getString(hash, CenBajasTemporalesBean.C_FECHAALTA));
+			bean.setFechaEstado(UtilidadesHash.getString(hash, CenBajasTemporalesBean.C_FECHAESTADO));
+			bean.setValidado(UtilidadesHash.getString(hash, CenBajasTemporalesBean.C_VALIDADO));
 			bean.setDescripcion(UtilidadesHash.getString(hash, CenBajasTemporalesBean.C_DESCRIPCION));
 
 		}
@@ -121,6 +124,8 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, CenBajasTemporalesBean.C_FECHADESDE, b.getFechaDesde());
 			UtilidadesHash.set(htData, CenBajasTemporalesBean.C_FECHAHASTA, b.getFechaHasta());
 			UtilidadesHash.set(htData, CenBajasTemporalesBean.C_FECHAALTA, b.getFechaAlta());
+			UtilidadesHash.set(htData, CenBajasTemporalesBean.C_FECHAESTADO, b.getFechaEstado());
+			UtilidadesHash.set(htData, CenBajasTemporalesBean.C_VALIDADO, b.getValidado());
 			UtilidadesHash.set(htData, CenBajasTemporalesBean.C_DESCRIPCION, b.getDescripcion());
 			
 
@@ -252,8 +257,355 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
 		return numLetradosConBajaTemporal;
 		
 		}
-    
-    
+    	
+    public List<CenBajasTemporalesBean> getBajasTemporales(BajasTemporalesForm bajaTemporalForm)throws ClsExceptions{
+    	StringBuffer sql = new StringBuffer();
+
+    	
+    	StringBuffer sqlWhereBT = new StringBuffer();
+		if(bajaTemporalForm.getEstadoBaja()!=null && !bajaTemporalForm.getEstadoBaja().equals("-1")){
+			if(bajaTemporalForm.getEstadoBaja().equals("P")){
+				sqlWhereBT.append(" AND BT.VALIDADO IS NULL ");
+			}else if(bajaTemporalForm.getEstadoBaja().equals("V")){
+				sqlWhereBT.append(" AND BT.VALIDADO='1' ");
+			}else if(bajaTemporalForm.getEstadoBaja().equals("D")){
+				sqlWhereBT.append(" AND BT.VALIDADO='0' ");
+			}
+		}
+		if(bajaTemporalForm.getTipo()!=null && !bajaTemporalForm.getTipo().equals("")){
+			sqlWhereBT.append(" AND BT.TIPO='");
+			sqlWhereBT.append(bajaTemporalForm.getTipo());
+			sqlWhereBT.append("'");
+			
+		}
+		if(bajaTemporalForm.getFechaDesde()!=null && !bajaTemporalForm.getFechaDesde().equals("")){
+			sqlWhereBT.append(" AND TRUNC(BT.FECHABT)>='");
+			sqlWhereBT.append(bajaTemporalForm.getFechaDesde());
+			sqlWhereBT.append("'");
+			
+		}
+		if(bajaTemporalForm.getFechaHasta()!=null && !bajaTemporalForm.getFechaHasta().equals("")){
+			sqlWhereBT.append(" AND TRUNC(BT.FECHABT)<='");
+			sqlWhereBT.append(bajaTemporalForm.getFechaHasta());
+			sqlWhereBT.append("'");
+			
+		}
+		StringBuffer sqlWhereTurno = new StringBuffer();
+		StringBuffer sqlWhereGuardia = new StringBuffer();
+		if(bajaTemporalForm.getIdTurno()!=null && !bajaTemporalForm.getIdTurno().equals("-1")&& !bajaTemporalForm.getIdTurno().equals("")){
+			sqlWhereTurno.append(" AND IT.IDTURNO=");
+			sqlWhereTurno.append(bajaTemporalForm.getIdTurno());
+			sqlWhereTurno.append(" ");
+			
+			
+		}
+		if(bajaTemporalForm.getIdGuardia()!=null && !bajaTemporalForm.getIdGuardia().equals("-1")&& !bajaTemporalForm.getIdGuardia().equals("")){
+			sqlWhereGuardia.append(" AND IT.IDGUARDIA=");
+			sqlWhereGuardia.append(bajaTemporalForm.getIdGuardia());
+			sqlWhereGuardia.append(" ");
+			
+			
+		}
+		StringBuffer sqlBajas = new StringBuffer();
+		sqlBajas.append(" SELECT DISTINCT BT.IDINSTITUCION,  BT.IDPERSONA,    ");
+		//Sera null cuando venga dela ficha colegial
+		if(bajaTemporalForm.getSituacion()==null || bajaTemporalForm.getSituacion().equals("B")){
+			sqlBajas.append(" BT.TIPO,BT.FECHADESDE,  BT.FECHAHASTA,  BT.FECHAALTA,  BT.DESCRIPCION,BT.VALIDADO,BT.FECHAESTADO, ");	
+		}else{
+			sqlBajas.append(" 'Baja' TIPO, NULL, NULL,  NULL, ");
+			sqlBajas.append(" NULL, NULL, NULL, ");	
+		}
+		
+		sqlBajas.append(" DECODE(COL.COMUNITARIO,'1',COL.NCOMUNITARIO, COL.NCOLEGIADO) NCOLEGIADO, ");
+		sqlBajas.append(" PER.NOMBRE,PER.APELLIDOS1,PER.APELLIDOS2 "); 
+		sqlBajas.append(" FROM CEN_BAJASTEMPORALES BT,CEN_COLEGIADO COL,CEN_PERSONA PER ");
+		sqlBajas.append(" WHERE BT.IDINSTITUCION = COL.IDINSTITUCION  AND BT.IDPERSONA = COL.IDPERSONA ");
+		sqlBajas.append(" AND COL.IDPERSONA = PER.IDPERSONA ");
+    	if(bajaTemporalForm.getIdPersona()!=null && !bajaTemporalForm.getIdPersona().equals("")){
+    		sqlBajas.append(" AND BT.IDPERSONA=");
+    		sqlBajas.append(bajaTemporalForm.getIdPersona());
+    		sqlBajas.append(" ");
+			
+			
+		}
+    	sqlBajas.append(" AND TO_CHAR( BT.FECHABT,'YYYY' )>=TO_CHAR( BT.FECHABT,'YYYY' )-2 ");
+    	sqlBajas.append(sqlWhereBT);
+    	
+    	if(bajaTemporalForm.getIdTurno()!=null && !bajaTemporalForm.getIdTurno().equals("-1")){
+    		sqlBajas.append(" AND ( ");
+    		sqlBajas.append(" EXISTS (SELECT IT.IDPERSONA ");
+    		sqlBajas.append(" FROM SCS_INSCRIPCIONTURNO IT ");
+    		sqlBajas.append(" WHERE IT.IDPERSONA = COL.IDPERSONA ");
+        	if(bajaTemporalForm.getIdPersona()!=null && !bajaTemporalForm.getIdPersona().equals("")){
+        		sqlBajas.append(" AND IT.IDPERSONA=");
+        		sqlBajas.append(bajaTemporalForm.getIdPersona());
+        		sqlBajas.append(" ");
+				
+			}
+        	sqlBajas.append(" AND IT.IDINSTITUCION = COL.IDINSTITUCION ");
+        	sqlBajas.append(" AND IT.FECHABAJA IS NULL ");
+        	sqlBajas.append(sqlWhereTurno);
+        	sqlBajas.append(" AND IT.FECHAVALIDACION IS NOT NULL) ");
+        	sqlBajas.append(" OR  ");
+        	sqlBajas.append(" EXISTS (SELECT IT.IDPERSONA ");
+        	sqlBajas.append(" FROM SCS_INSCRIPCIONGUARDIA IT ");
+        	sqlBajas.append(" WHERE IT.IDPERSONA = COL.IDPERSONA ");
+        	if(bajaTemporalForm.getIdPersona()!=null && !bajaTemporalForm.getIdPersona().equals("")){
+        		sqlBajas.append(" AND IT.IDPERSONA=");
+        		sqlBajas.append(bajaTemporalForm.getIdPersona());
+        		sqlBajas.append(" ");
+				
+				
+			}
+        	sqlBajas.append(" AND IT.IDINSTITUCION = COL.IDINSTITUCION ");
+        	sqlBajas.append(" AND IT.FECHABAJA IS NULL ");
+        	sqlBajas.append(sqlWhereTurno);
+        	sqlBajas.append(sqlWhereGuardia);
+        	sqlBajas.append(" AND IT.FECHAVALIDACION IS NOT NULL) ");
+        	sqlBajas.append(" ) ");
+			
+			
+		}
+    	
+    	StringBuffer sqlActivos = new StringBuffer();
+    	sqlActivos.append(" SELECT DISTINCT COL.IDINSTITUCION,  COL.IDPERSONA, ");
+		sqlActivos.append(" NULL, NULL, NULL,  NULL, ");
+		sqlActivos.append(" NULL, NULL, NULL, ");
+		sqlActivos.append(" DECODE(COL.COMUNITARIO, '1', COL.NCOMUNITARIO,COL.NCOLEGIADO) NCOLEGIADO, ");
+		sqlActivos.append(" PER.NOMBRE,  PER.APELLIDOS1,  PER.APELLIDOS2 ");
+		sqlActivos.append(" FROM CEN_COLEGIADO COL, CEN_PERSONA PER ");
+		sqlActivos.append(" WHERE COL.IDPERSONA = PER.IDPERSONA ");
+		if(bajaTemporalForm.getIdPersona()!=null && !bajaTemporalForm.getIdPersona().equals("")){
+			sqlActivos.append(" AND PER.IDPERSONA=");
+			sqlActivos.append(bajaTemporalForm.getIdPersona());
+			sqlActivos.append(" ");
+		}
+		sqlActivos.append(" AND EXISTS (SELECT IT.IDPERSONA ");
+		sqlActivos.append(" FROM SCS_INSCRIPCIONTURNO IT ");
+		sqlActivos.append(" WHERE IT.IDPERSONA = COL.IDPERSONA ");
+		if(bajaTemporalForm.getIdPersona()!=null && !bajaTemporalForm.getIdPersona().equals("")){
+			sqlActivos.append(" AND IT.IDPERSONA=");
+			sqlActivos.append(bajaTemporalForm.getIdPersona());
+			sqlActivos.append(" ");
+			
+			
+		}
+		sqlActivos.append(" AND IT.IDINSTITUCION = COL.IDINSTITUCION ");
+		sqlActivos.append(" AND IT.FECHABAJA IS NULL ");
+		sqlActivos.append(sqlWhereTurno);
+		sqlActivos.append(" AND IT.FECHAVALIDACION IS NOT NULL) ");
+		sqlActivos.append(" AND NOT EXISTS (SELECT * ");
+		sqlActivos.append(" FROM CEN_BAJASTEMPORALES BT ");
+		sqlActivos.append(" WHERE BT.IDINSTITUCION = COL.IDINSTITUCION ");
+		if(bajaTemporalForm.getIdPersona()!=null && !bajaTemporalForm.getIdPersona().equals("")){
+			sqlActivos.append(" AND BT.IDPERSONA=");
+			sqlActivos.append(bajaTemporalForm.getIdPersona());
+			sqlActivos.append(" ");
+			
+			
+		}
+		sqlActivos.append(" AND BT.IDPERSONA = COL.IDPERSONA) ");
+		
+
+		sqlActivos.append(" UNION ");
+
+		sqlActivos.append(" SELECT DISTINCT COL.IDINSTITUCION,  COL.IDPERSONA, ");
+		sqlActivos.append(" NULL, NULL, NULL,  NULL, ");
+		sqlActivos.append(" NULL, NULL, NULL, ");
+		sqlActivos.append(" DECODE(COL.COMUNITARIO, '1', COL.NCOMUNITARIO,COL.NCOLEGIADO) NCOLEGIADO, ");
+		sqlActivos.append(" PER.NOMBRE,  PER.APELLIDOS1,  PER.APELLIDOS2 ");
+		sqlActivos.append(" FROM CEN_COLEGIADO COL, CEN_PERSONA PER ");
+		sqlActivos.append(" WHERE COL.IDPERSONA = PER.IDPERSONA ");
+		if(bajaTemporalForm.getIdPersona()!=null && !bajaTemporalForm.getIdPersona().equals("")){
+			sqlActivos.append(" AND PER.IDPERSONA=");
+			sqlActivos.append(bajaTemporalForm.getIdPersona());
+			sqlActivos.append(" ");
+			
+			
+		}
+		sqlActivos.append(" AND EXISTS (SELECT IT.IDPERSONA ");
+		sqlActivos.append(" FROM SCS_INSCRIPCIONGUARDIA IT ");
+		sqlActivos.append(" WHERE IT.IDPERSONA = COL.IDPERSONA ");
+		if(bajaTemporalForm.getIdPersona()!=null && !bajaTemporalForm.getIdPersona().equals("")){
+			sqlActivos.append(" AND IT.IDPERSONA=");
+			sqlActivos.append(bajaTemporalForm.getIdPersona());
+			sqlActivos.append(" ");
+			
+			
+		}
+		sqlActivos.append(" AND IT.IDINSTITUCION = COL.IDINSTITUCION ");
+		sqlActivos.append(" AND IT.FECHABAJA IS NULL ");
+		sqlActivos.append(sqlWhereTurno);
+		sqlActivos.append(sqlWhereGuardia);
+		sqlActivos.append(" AND IT.FECHASUSCRIPCION IS NOT NULL) ");
+		sqlActivos.append(" AND NOT EXISTS (SELECT * ");
+		sqlActivos.append(" FROM CEN_BAJASTEMPORALES BT ");
+		sqlActivos.append(" WHERE BT.IDINSTITUCION = COL.IDINSTITUCION ");
+		if(bajaTemporalForm.getIdPersona()!=null && !bajaTemporalForm.getIdPersona().equals("")){
+			sqlActivos.append(" AND BT.IDPERSONA=");
+			sqlActivos.append(bajaTemporalForm.getIdPersona());
+			sqlActivos.append(" ");
+		}
+		sqlActivos.append(" AND BT.IDPERSONA = COL.IDPERSONA) ");
+		
+		if(bajaTemporalForm.getSituacion()==null || bajaTemporalForm.getSituacion().equals("B")){
+        	sql.append(sqlBajas);
+        	sql.append(" ORDER BY  BT.FECHADESDE,PER.APELLIDOS1 ");
+		}else if(bajaTemporalForm.getSituacion().equals("T")){
+			sql.append(sqlBajas);
+			sql.append(" UNION ");
+			sql.append(sqlActivos);
+
+			sql.append(" ORDER BY APELLIDOS1 ");
+		}else if(bajaTemporalForm.getSituacion().equals("A")){
+			sql.append(sqlActivos);
+				sql.append(" ORDER BY APELLIDOS1 ");
+			
+		}
+    	
+    	List<CenBajasTemporalesBean> alBajasTemporales = null;
+    	try {
+			RowsContainer rc = new RowsContainer(); 
+
+			if (rc.find(sql.toString())) {
+				alBajasTemporales = new ArrayList<CenBajasTemporalesBean>();
+				
+				CenPersonaBean persona = null;
+				CenColegiadoBean colegiado = null;
+				CenBajasTemporalesBean bajaTemporal = null;
+
+				for (int i = 0; i < rc.size(); i++){
+					Row fila = (Row) rc.get(i);
+					Hashtable<String, Object> htFila=fila.getRow();
+					bajaTemporal =  (CenBajasTemporalesBean)this.hashTableToBean(htFila);
+					bajaTemporal.setUsrBean(this.usrbean);
+					
+					
+					persona = new CenPersonaBean();
+					colegiado = new CenColegiadoBean();
+					persona.setColegiado(colegiado);
+					bajaTemporal.setPersona(persona);
+					colegiado.setIdInstitucion(UtilidadesHash.getInteger(htFila,CenColegiadoBean.C_IDINSTITUCION));
+					colegiado.setNColegiado(UtilidadesHash.getString(htFila,CenColegiadoBean.C_NCOLEGIADO));
+					persona.setIdPersona(UtilidadesHash.getLong(htFila,CenPersonaBean.C_IDPERSONA));
+					persona.setNombre(UtilidadesHash.getString(htFila,CenPersonaBean.C_NOMBRE));
+					persona.setApellido1(UtilidadesHash.getString(htFila,CenPersonaBean.C_APELLIDOS1));
+					persona.setApellido2(UtilidadesHash.getString(htFila,CenPersonaBean.C_APELLIDOS2));
+					alBajasTemporales.add(bajaTemporal);
+				}
+			}else{
+				alBajasTemporales = new ArrayList<CenBajasTemporalesBean>();
+			} 
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar consulta.");
+		}
+
+    	return alBajasTemporales;
+    }
+    public void validarBajaTemporal(CenBajasTemporalesBean bajaTemporal) throws ClsExceptions{
+    	String[] claves ={CenBajasTemporalesBean.C_IDINSTITUCION,CenBajasTemporalesBean.C_FECHAALTA,CenBajasTemporalesBean.C_IDPERSONA};
+    	String[] campos ={CenBajasTemporalesBean.C_VALIDADO,CenBajasTemporalesBean.C_FECHAESTADO};
+    	try {
+			updateDirect(bajaTemporal, claves, campos);
+		} catch (ClsExceptions e) {
+			throw new ClsExceptions (e, "Error al modificar Baja temporal.");
+		}
+    	
+    	
+    	
+    }
+    public void borrarBajaTemporal(CenBajasTemporalesBean bajaTemporal) throws ClsExceptions{
+    	String[] claves ={CenBajasTemporalesBean.C_IDINSTITUCION,CenBajasTemporalesBean.C_FECHAALTA,CenBajasTemporalesBean.C_IDPERSONA};
+    	try {
+			deleteDirect(this.beanToHashTable(bajaTemporal), claves);
+		} catch (ClsExceptions e) {
+			throw new ClsExceptions (e, "Error al borrar baja Temporal.");
+		}
+    	
+    	
+    	
+    }
+    public void modificarBajaTemporal(CenBajasTemporalesBean bajaTemporal) throws ClsExceptions{
+    	String[] claves ={CenBajasTemporalesBean.C_IDINSTITUCION,CenBajasTemporalesBean.C_FECHAALTA,CenBajasTemporalesBean.C_IDPERSONA};
+    	String[] campos ={CenBajasTemporalesBean.C_TIPO,CenBajasTemporalesBean.C_DESCRIPCION};
+    	try {
+    		updateDirect(bajaTemporal, claves, campos);
+		} catch (ClsExceptions e) {
+			throw new ClsExceptions (e, "Error al modificar Baja temporal.");
+		}
+    	
+    }
+    public void setBajaTemporal(BajasTemporalesForm bajaTemporalForm)throws ClsExceptions {
+    	CenBajasTemporalesBean bajaTemporalBean = bajaTemporalForm.getBajaTemporalBean();
+    	Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT * FROM CEN_BAJASTEMPORALES WHERE IDINSTITUCION=:");
+	    contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),bajaTemporalBean.getIdInstitucion());
+		sql.append(" AND IDPERSONA=:");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),bajaTemporalBean.getIdPersona());
+    	sql.append(" AND FECHAALTA=");
+    	sql.append("TO_DATE('");
+    	sql.append(bajaTemporalBean.getFechaAlta());
+    	sql.append("', 'YYYY/MM/DD HH24:MI:SS')");
+		
+		RowsContainer rc = new RowsContainer(); 
+		
+        if (rc.findBind(sql.toString(),htCodigos)) {
+
+        	if(rc.size()>1){
+        		Row fila = (Row) rc.get(0);
+        		Hashtable<String, Object> htFila=fila.getRow();
+        		bajaTemporalBean.setFechaBT((String)htFila.get(CenBajasTemporalesBean.C_FECHABT));
+        		bajaTemporalBean.setFechaDesde((String)htFila.get(CenBajasTemporalesBean.C_FECHADESDE));
+        		bajaTemporalBean.setFechaHasta((String)htFila.get(CenBajasTemporalesBean.C_FECHAALTA));
+        		bajaTemporalBean.setDescripcion((String)htFila.get(CenBajasTemporalesBean.C_DESCRIPCION));
+        		bajaTemporalBean.setTipo((String)htFila.get(CenBajasTemporalesBean.C_TIPO));
+        		bajaTemporalBean.setUsrBean(this.usrbean);
+        		
+        	}else
+    			throw new ClsExceptions("Error fatal al obtener la baja temporal");
+        }
+		
+	}
+    public CenBajasTemporalesBean getBajaTemporal(BajasTemporalesForm bajaTemporalForm)throws ClsExceptions {
+    	Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT * FROM CEN_BAJASTEMPORALES WHERE IDINSTITUCION=:");
+	    contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),bajaTemporalForm.getBajaTemporalBean().getIdInstitucion());
+		sql.append(" AND IDPERSONA=:");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),bajaTemporalForm.getBajaTemporalBean().getIdPersona());
+    	sql.append(" AND FECHAALTA=");
+    	sql.append("TO_DATE('");
+    	sql.append(bajaTemporalForm.getBajaTemporalBean().getFechaAlta());
+    	sql.append("', 'YYYY/MM/DD HH24:MI:SS')");
+		
+		RowsContainer rc = new RowsContainer(); 
+		CenBajasTemporalesBean bajaTemporalBean = null;
+        if (rc.findBind(sql.toString(),htCodigos)) {
+
+        	if(rc.size()>0){
+        		Row fila = (Row) rc.get(0);
+        		Hashtable<String, Object> htFila=fila.getRow();
+        		bajaTemporalBean = (CenBajasTemporalesBean)hashTableToBean(htFila);
+        		bajaTemporalBean.setUsrBean(this.usrbean);
+        	}else
+    			throw new ClsExceptions("Error fatal al obtener la baja temporal");
+        }
+        return bajaTemporalBean;
+		
+	}
+
+
     
    
    
