@@ -329,7 +329,7 @@ public class MantenimientoRetencionesJudicialesAction extends MasterAction {
 			// Si vengo de la ficha colegial aniadimos la persona
 			String fichaColegial = (String)request.getParameter("esFichaColegial");
 			if (fichaColegial != null && fichaColegial.equals("1")) {
-				String idPersona = (String)request.getParameter("idPersonaPestanha");
+				String idPersona = (String) request.getSession().getAttribute("idPersonaPestanha");
 				consulta += " AND RETENCIONES." + FcsRetencionesJudicialesBean.C_IDPERSONA + " = " + idPersona;
 			}
 			
