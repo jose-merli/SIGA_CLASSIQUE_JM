@@ -9,12 +9,15 @@
 
 package com.atos.utils;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Locale;
 
 import java.util.Vector;
@@ -691,6 +694,36 @@ public class GstDate {
 			}
 		}
 		return dat;
+	}
+	static public List<String> getFechas(String strFechaDesde,String strFechaHasta,String formato){
+		Calendar cal = Calendar.getInstance();
+		DateFormat dateFormat = new SimpleDateFormat(formato);
+		List<String> alFechas = new ArrayList<String>();
+		Date fechaHasta;
+		try {
+			fechaHasta = dateFormat.parse(strFechaHasta);
+			cal.setTime(dateFormat.parse(strFechaDesde));
+			while(cal.getTime().compareTo(fechaHasta)<=0){
+				Date fecha = cal.getTime();
+				cal.add(Calendar.DATE, 1);
+				alFechas.add(dateFormat.format(fecha));
+			}
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return alFechas;
+		
+		
+		
+	}
+	public static String getHoyJsp()
+	{
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		return sdf.format(new Date());
+		
+	
 	}
 
 }
