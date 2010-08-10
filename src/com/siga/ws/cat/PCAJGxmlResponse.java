@@ -269,12 +269,11 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 		CajgEJGRemesaBean cajgEJGRemesaBean = new CajgEJGRemesaBean();
 		String[] claves = new String[]{CajgEJGRemesaBean.C_IDINSTITUCION, CajgEJGRemesaBean.C_ANIO, CajgEJGRemesaBean.C_NUMERO, CajgEJGRemesaBean.C_IDTIPOEJG};
 		String[] campos = new String[]{CajgEJGRemesaBean.C_RECIBIDA};
-				
-		Hashtable<String, Object> hash = new Hashtable<String, Object>();
-		hash.put(ScsEJGBean.C_IDINSTITUCION, idInstitucion);
-		hash.put(ScsEJGBean.C_ANIO, String.valueOf(anyoExpediente));
-		hash.put(ScsEJGBean.C_NUMEJG, Integer.parseInt(numExpediente.trim()));							
-		Vector vectorEJGs = scsEJGAdm.select(hash);
+		
+		Vector vectorEJGs = scsEJGAdm.select(" WHERE " + ScsEJGBean.C_IDINSTITUCION + " = " + idInstitucion +
+											" AND " + ScsEJGBean.C_ANIO   + " = " + anyoExpediente +
+											" AND TO_NUMBER(" +  ScsEJGBean.C_NUMEJG + ") = " + Integer.parseInt(numExpediente.trim()));
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		String fechaEstado = sdf.format(fechaEstadoCalendar.getTime());
 		

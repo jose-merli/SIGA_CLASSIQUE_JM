@@ -4,11 +4,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
-import com.atos.utils.ClsLogging;
-import com.atos.utils.UsrBean;
-import com.siga.beans.GenParametrosAdm;
-import com.siga.general.SIGAException;
-
 public abstract class FtpPcajgAbstract {
 	
 	protected static String HIST = "HIST";
