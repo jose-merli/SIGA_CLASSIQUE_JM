@@ -259,16 +259,15 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 			try {
 				intercambioRespuesta = stub.enviarIntercambio(intercambio);			
 			} catch (Exception e) {
-				e.printStackTrace();
+				ClsLogging.writeFileLogError("Se ha producido un error en el envío del webservice \"" + getUrlWS() + "\" para el colegio " + getIdInstitucion(), e, 3);
 				if (e.getCause() instanceof ConnectException) {
-					ClsLogging.writeFileLogError("Error de conexión con el webservice", e, 3);
+					ClsLogging.writeFileLogError("Error de conexión con el webservice \"" + getUrlWS() + "\" para el colegio " + getIdInstitucion(), e, 3);
 				}
 			}
 			if (intercambioRespuesta != null) {
 				try {
 					trataRespuesta(intercambioRespuesta);
 				} catch (Exception e) {
-					e.printStackTrace();
 					ClsLogging.writeFileLogError("Error al tratar la respuesta webservice", e, 3);
 				}
 			} else {
@@ -544,8 +543,9 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 			AxisObjectSerializerDeserializer.serializeAxisObject(expediente, true, true);
 			expedientes.add(expediente);
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 			String texto = "No se ha completado correctamente la información del expediente";
+			ClsLogging.writeFileLogError("No se ha completado correctamente la información del expediente para el colegio " + getIdInstitucion(), e, 3);
 			String mensaje = e.getMessage();
 			if (e.getCause() != null) {
 				mensaje = e.getCause().getMessage();
