@@ -376,7 +376,7 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
         	sqlBajas.append(" AND IT.FECHABAJA IS NULL ");
         	sqlBajas.append(sqlWhereTurno);
         	sqlBajas.append(sqlWhereGuardia);
-        	sqlBajas.append(" AND IT.FECHAVALIDACION IS NOT NULL) ");
+        	sqlBajas.append(" AND IT.FECHASUSCRIPCION IS NOT NULL) ");
         	sqlBajas.append(" ) ");
 			
 			

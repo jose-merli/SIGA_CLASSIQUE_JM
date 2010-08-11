@@ -209,8 +209,8 @@ public class GestionBajasTemporalesAction extends MasterAction {
 			HttpServletResponse response) throws ClsExceptions,Exception 
 			{
 		BajasTemporalesForm bajasTemporalesForm = (BajasTemporalesForm) formulario;
-//		bajasTemporalesForm.setMsgAviso("");
-//		bajasTemporalesForm.setMsgError("");
+		bajasTemporalesForm.setMsgAviso("");
+		bajasTemporalesForm.setMsgError("");
 		UsrBean usrBean = this.getUserBean(request);
 		String forward = "listadoBajasTemporales";
 		
@@ -407,7 +407,7 @@ public class GestionBajasTemporalesAction extends MasterAction {
 			bts.insertaBajasTemporales(bajasTemporalesForm, usrBean);
 			if(bajasTemporalesForm.getMsgAviso()!=null && !bajasTemporalesForm.getMsgAviso().equals("")){
 				bajasTemporalesForm.setMsgAviso("");
-				forward = exitoModal("",request);
+				forward = exitoModal("messages.inserted.error",request);
 			}else{
 				forward = exitoModal("messages.updated.success",request);	
 			}
