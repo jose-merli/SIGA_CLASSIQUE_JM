@@ -283,18 +283,20 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
 			sqlWhereBT.append("'");
 			
 		}
+		StringBuffer sqlFechas = new StringBuffer();
 		if(bajaTemporalForm.getFechaDesde()!=null && !bajaTemporalForm.getFechaDesde().equals("")){
-			sqlWhereBT.append(" AND TRUNC(BT.FECHABT)>='");
-			sqlWhereBT.append(bajaTemporalForm.getFechaDesde());
-			sqlWhereBT.append("'");
+			sqlFechas.append(" AND TRUNC(BT.FECHABT)>='");
+			sqlFechas.append(bajaTemporalForm.getFechaDesde());
+			sqlFechas.append("'");
 			
 		}
 		if(bajaTemporalForm.getFechaHasta()!=null && !bajaTemporalForm.getFechaHasta().equals("")){
-			sqlWhereBT.append(" AND TRUNC(BT.FECHABT)<='");
-			sqlWhereBT.append(bajaTemporalForm.getFechaHasta());
-			sqlWhereBT.append("'");
+			sqlFechas.append(" AND TRUNC(BT.FECHABT)<='");
+			sqlFechas.append(bajaTemporalForm.getFechaHasta());
+			sqlFechas.append("'");
 			
 		}
+		sqlWhereBT.append(sqlFechas);
 		StringBuffer sqlWhereTurno = new StringBuffer();
 		sqlWhereTurno.append(" AND IT.IDINSTITUCION=");
 		sqlWhereTurno.append(bajaTemporalForm.getIdInstitucion());
@@ -422,6 +424,8 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
 			
 			
 		}
+		sqlActivos.append(sqlFechas);
+		sqlActivos.append(" AND BT.VALIDADO='1'");
 		sqlActivos.append(" AND BT.IDINSTITUCION=");
 		sqlActivos.append(bajaTemporalForm.getIdInstitucion());
 		sqlActivos.append(" AND BT.IDPERSONA = COL.IDPERSONA) ");
@@ -469,6 +473,8 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
 			sqlActivos.append(bajaTemporalForm.getIdPersona());
 			sqlActivos.append(" ");
 		}
+		sqlActivos.append(sqlFechas);
+		sqlActivos.append(" AND BT.VALIDADO='1'");
 		sqlActivos.append(" AND BT.IDINSTITUCION=");
 		sqlActivos.append(bajaTemporalForm.getIdInstitucion());
 		sqlActivos.append(" AND BT.IDPERSONA = COL.IDPERSONA) ");
