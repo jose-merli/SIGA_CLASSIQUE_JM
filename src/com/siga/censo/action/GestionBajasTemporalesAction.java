@@ -596,7 +596,7 @@ public class GestionBajasTemporalesAction extends MasterAction {
 			
 			request.setAttribute("datos",datos);
 
-			String nombreFichero = "incidencias"; 
+			String nombreFichero = "incidencias"+UtilidadesString.replaceAllIgnoreCase(bajasTemporalesForm.getFechaDesde(), "/", "")+"_"+UtilidadesString.replaceAllIgnoreCase(bajasTemporalesForm.getFechaHasta(), "/", ""); 
 			String[] cabeceras = {"NCOLEGIADO","NOMBRE","APELLIDOS1","APELLIDOS2","INCIDENCIA"};
 			
 			request.setAttribute("descripcion",nombreFichero);
