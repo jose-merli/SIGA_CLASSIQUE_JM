@@ -59,25 +59,27 @@
 			</tr>
 	<tr>
 		<td colspan="4">
-		<div style="height:170px;overflow:scroll ">
+		<div style="height:140px;overflow:scroll ">
 		<table class="tablaCampos" id='idPersonasdeBaja' border='1'
 			align='center' width='100%' cellspacing='0' cellpadding='0'
 			style='table-layout: fixed'>
 			
 			<tr class='tableTitle'>
-				<td align='center' width='50%'><siga:Idioma
+				<td align='center' width='20%'><siga:Idioma
 					key="censo.bajastemporales.colegiado.numero" /></td>
-				<td align='center' width='50%'><siga:Idioma
+				<td align='center' width='80%'><siga:Idioma
 					key="censo.bajastemporales.colegiado.nombre" /></td>
 			</tr>
 			<logic:notEmpty name="BajasTemporalesForm" property="personasDeBaja">
 				<logic:iterate name="BajasTemporalesForm" property="personasDeBaja"
 					id="personaDeBajaBean" indexId="index">
 					<tr class="<%=((index+1)%2==0?"filaTablaPar":"filaTablaImpar")%>" style="padding:5px;">
-						<td align='center' width='50%'><c:out
-							value="${personaDeBajaBean.idPersona}" /></td>
-						<td align='left' width='50%'><c:out
-							value="${personaDeBajaBean.nombre}" /></td>
+						<td align='center' width='20%'><c:out
+							value="${personaDeBajaBean.colegiado.NColegiado}" /></td>
+						<td align='left' width='80%'><c:out
+							value="${personaDeBajaBean.nombre}"/>&nbsp;<c:out
+							value="${personaDeBajaBean.apellido1}"/>&nbsp;<c:out
+							value="${personaDeBajaBean.apellido2}"/></td>
 
 					</tr>
 				</logic:iterate>
@@ -97,15 +99,15 @@
 			</tr>
 	<tr>
 		<td colspan="4">
-			<div style="height:170px;overflow:scroll ">
+			<div style="height:140px;overflow:scroll ">
 		<table class="tablaCampos" id='idPersonasDeGuardia' border='1'
 			align='center' width='100%' cellspacing='0' cellpadding='0'
 			style='table-layout: fixed'>
 			
 			<tr class='tableTitle'>
-				<td align='center' width='8%'><siga:Idioma
+				<td align='center' width='20%'><siga:Idioma
 					key="censo.bajastemporales.colegiado.numero" /></td>
-				<td align='center' width='18%'><siga:Idioma
+				<td align='center' width='80%'><siga:Idioma
 					key="censo.bajastemporales.colegiado.nombre" /></td>
 			</tr>
 			<logic:notEmpty name="BajasTemporalesForm"
@@ -114,10 +116,12 @@
 					property="personasDeGuardia" id="personasDeGuardiaBean"
 					indexId="index">
 					<tr class="<%=((index+1)%2==0?"filaTablaPar":"filaTablaImpar")%>" style="padding:5px;">
-						<td align='center' width='8%'><c:out
-							value="${personasDeGuardiaBean.idPersona}" /></td>
-						<td align='left' width='18%'><c:out
-							value="${personasDeGuardiaBean.nombre}" /></td>
+						<td align='center' width='20%'><c:out
+							value="${personasDeGuardiaBean.colegiado.NColegiado}" /></td>
+						<td align='left' width='80%'><c:out
+							value="${personasDeGuardiaBean.nombre}"/>&nbsp;<c:out
+							value="${personasDeGuardiaBean.apellido1}"/>&nbsp;<c:out
+							value="${personasDeGuardiaBean.apellido2}"/></td>
 
 					</tr>
 				</logic:iterate>
