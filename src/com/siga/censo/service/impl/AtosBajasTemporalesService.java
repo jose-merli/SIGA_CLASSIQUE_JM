@@ -3,6 +3,7 @@ package com.siga.censo.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -14,6 +15,7 @@ import com.siga.beans.CenBajasTemporalesBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.GenParametrosAdm;
+import com.siga.beans.ScsGuardiasColegiadoAdm;
 import com.siga.censo.form.BajasTemporalesForm;
 import com.siga.censo.service.BajasTemporalesService;
 import com.siga.general.SIGAException;
@@ -54,11 +56,14 @@ public class AtosBajasTemporalesService extends JtaBusinessServiceTemplate
 		return cenBajasTemporalesBean;
 		
 	}
-	public void insertaBajasTemporales(BajasTemporalesForm bajasTemporalesForm,boolean isComprobacion,UsrBean usrBean)throws ClsExceptions{
+	public void insertaBajasTemporales(BajasTemporalesForm bajasTemporalesForm,UsrBean usrBean)throws ClsExceptions{
 		CenBajasTemporalesBean bajaTemporal = bajasTemporalesForm.getBajaTemporalBean();
-		bajaTemporal.setFechaAlta(UtilidadesString.formatoFecha(new Date(),"yyyy/MM/dd HH:mm:ss"));
-		bajaTemporal.setFechaEstado(bajaTemporal.getFechaAlta());
 		String datosSelecionados = bajasTemporalesForm.getDatosSeleccionados();
+		if(datosSelecionados==null || datosSelecionados.equals("")){
+			bajasTemporalesForm.setMsgAviso("No habia ninguna insercion pendiente");
+			return;
+		}
+			
 		String idPersonas[] = datosSelecionados.split("@@");
 		List<String> lAuxiliar= new ArrayList<String>();
 		List<String> alFechas = GstDate.getFechas(bajasTemporalesForm.getFechaDesde(), bajasTemporalesForm.getFechaHasta(), "dd/MM/yyyy");
@@ -82,24 +87,73 @@ public class AtosBajasTemporalesService extends JtaBusinessServiceTemplate
 				lAuxiliar.add(idPersona);
 			bajaTemporal.setIdPersona(new Long(idPersona));
 			for(String fechaBT:alFechas){
+				bajaTemporal.setFechaAlta(UtilidadesString.formatoFecha(new Date(),"yyyy/MM/dd HH:mm:ss"));
+				bajaTemporal.setFechaEstado(bajaTemporal.getFechaAlta());
 				bajaTemporal.setFechaBT(GstDate.getApplicationFormatDate("", fechaBT));
-				if(!isComprobacion){
-					try {
-						btAdm.insert(bajaTemporal);	
-					} catch (Exception e) {
-						System.out.println(e.toString());
-						break;
-					}
-					
-				}else{
-					btAdm.insert(bajaTemporal);
-				}
+				btAdm.insert(bajaTemporal);
+				
 				
 			}
 			
 		}
 		
 	}
+	
+	public void comprobarInsercion(BajasTemporalesForm bajasTemporalesForm,UsrBean usrBean)throws ClsExceptions{
+		CenBajasTemporalesBean bajaTemporal = bajasTemporalesForm.getBajaTemporalBean();
+		
+		String datosSelecionados = bajasTemporalesForm.getDatosSeleccionados();
+		String auxDatosSeleccionados ="";
+		String idPersonas[] = datosSelecionados.split("@@");
+		List<String> lAuxiliar= new ArrayList<String>();
+		List<String> alFechas = GstDate.getFechas(bajasTemporalesForm.getFechaDesde(), bajasTemporalesForm.getFechaHasta(), "dd/MM/yyyy");
+		CenBajasTemporalesAdm btAdm = new CenBajasTemporalesAdm(usrBean);
+		ScsGuardiasColegiadoAdm gcAdm = new ScsGuardiasColegiadoAdm(usrBean);
+		//Atencion si no es un letrado es un administrador por lo que al hacer la solicitud se supone que ya esta validada;
+		
+		
+		
+		Map<Long, CenPersonaBean> tmColegiadosDeBaja =  btAdm.getColegiadosBajaTemporal(bajaTemporal.getIdInstitucion(), bajaTemporal.getFechaDesde(), bajaTemporal.getFechaHasta());
+		Map<Long, CenPersonaBean> tmColegiadosDeGuardia =  gcAdm.getColegiadosDeGuardia(bajaTemporal.getIdInstitucion(), bajaTemporal.getFechaDesde(), bajaTemporal.getFechaHasta());
+		List<CenPersonaBean> alPersonasDeBaja = new ArrayList<CenPersonaBean>();
+		List<CenPersonaBean> alPersonasDeGuardia = new ArrayList<CenPersonaBean>();
+		for (int i = 0; i < idPersonas.length; i++) {
+			String idPersona = idPersonas[i];
+			if(lAuxiliar.contains(idPersona))
+				continue;
+			else
+				lAuxiliar.add(idPersona);
+			bajaTemporal.setIdPersona(new Long(idPersona));
+			if(tmColegiadosDeGuardia.containsKey(bajaTemporal.getIdPersona())){
+				alPersonasDeGuardia.add((CenPersonaBean)tmColegiadosDeGuardia.get(bajaTemporal.getIdPersona()));
+				if(tmColegiadosDeBaja.containsKey(bajaTemporal.getIdPersona()))
+					alPersonasDeBaja.add((CenPersonaBean)tmColegiadosDeBaja.get(bajaTemporal.getIdPersona()));
+				continue;
+			}else{
+				if(tmColegiadosDeBaja.containsKey(bajaTemporal.getIdPersona())){
+					alPersonasDeBaja.add((CenPersonaBean)tmColegiadosDeBaja.get(bajaTemporal.getIdPersona()));
+					continue;
+				}
+				
+			}
+			for(String fechaBT:alFechas){
+				bajaTemporal.setFechaBT(GstDate.getApplicationFormatDate("", fechaBT));
+				auxDatosSeleccionados+="@@"+idPersona;
+				//alBajasTemporales.add(bajaTemporal);
+			}
+			
+		}
+		if(auxDatosSeleccionados.length()>2){
+			auxDatosSeleccionados=auxDatosSeleccionados.substring(2);
+			
+		}
+		bajasTemporalesForm.setDatosSeleccionados(auxDatosSeleccionados);
+		bajasTemporalesForm.setPersonasDeGuardia(alPersonasDeGuardia);
+		bajasTemporalesForm.setPersonasDeBaja(alPersonasDeBaja);
+
+		
+	}
+	
 	
 	
 	public void denegarSolicitudesBajaTemporal(BajasTemporalesForm bajasTemporalesForm,UsrBean usrBean)throws ClsExceptions{

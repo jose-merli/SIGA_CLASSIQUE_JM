@@ -2123,9 +2123,11 @@
 			<forward name="inicio" path="/html/jsp/censo/bajasTemporales/gestionBajasTemporales.jsp"/>
 			<forward name="listadoBajasTemporales" path="/html/jsp/censo/bajasTemporales/listadoBajasTemporales.jsp"/>
 			<forward name="solicitud" path="/html/jsp/censo/bajasTemporales/solicitudBajasTemporales.jsp"/>
+			<forward name="incidencias" path="/html/jsp/censo/bajasTemporales/incidenciasBajasTemporales.jsp"/>
+			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>
 			
 		</action>
-	
+
 		<action path="/CEN_BajasTemporales" forward="/JGR_BajasTemporales.do?fichaColegial=true" >
 		</action>
 

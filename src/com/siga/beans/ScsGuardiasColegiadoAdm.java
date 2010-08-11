@@ -9,6 +9,8 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -1808,6 +1810,64 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		
 		
 	} 
+	public Map<Long,CenPersonaBean> getColegiadosDeGuardia(Integer idInstitucion, String fechaDesde,String fechaHasta)throws ClsExceptions{
+
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+        
+		sql.append(" SELECT DISTINCT GC.IDPERSONA,");
+		sql.append(" DECODE(COL.COMUNITARIO, '1', COL.NCOMUNITARIO,COL.NCOLEGIADO) NCOLEGIADO, ");
+		sql.append(" PER.NOMBRE,  PER.APELLIDOS1,  PER.APELLIDOS2 ");
+		sql.append(" FROM SCS_GUARDIASCOLEGIADO GC,CEN_COLEGIADO COL, CEN_PERSONA PER ");
+		sql.append(" WHERE COL.IDPERSONA = PER.IDPERSONA ");
+		sql.append(" AND GC.IDINSTITUCION = COL.IDINSTITUCION ");
+		sql.append(" AND GC.IDPERSONA = PER.IDPERSONA ");
+		sql.append(" AND GC.IDINSTITUCION = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),idInstitucion);		
+		sql.append(" AND GC. FECHAFIN BETWEEN :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),GstDate.getFormatedDateShort("",fechaDesde));
+		sql.append(" AND :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),GstDate.getFormatedDateShort("",fechaHasta));
+		
+		Map<Long,CenPersonaBean> tmPersonas = null;
+		CenPersonaBean persona = null;
+		CenColegiadoBean colegiado = null;
+		try {
+			Vector datos = this.selectGenericoBind(sql.toString(), htCodigos);
+			
+			tmPersonas = new  TreeMap<Long, CenPersonaBean>();
+			for (int i = 0; i < datos.size(); i++) {
+				Hashtable htFila = (Hashtable) datos.get(i);
+				persona = new CenPersonaBean();
+				colegiado = new CenColegiadoBean();
+				persona.setColegiado(colegiado);
+				colegiado.setIdInstitucion(UtilidadesHash.getInteger(htFila,CenColegiadoBean.C_IDINSTITUCION));
+				colegiado.setNColegiado(UtilidadesHash.getString(htFila,CenColegiadoBean.C_NCOLEGIADO));
+				persona.setIdPersona(UtilidadesHash.getLong(htFila,CenPersonaBean.C_IDPERSONA));
+				persona.setNombre(UtilidadesHash.getString(htFila,CenPersonaBean.C_NOMBRE));
+				persona.setApellido1(UtilidadesHash.getString(htFila,CenPersonaBean.C_APELLIDOS1));
+				persona.setApellido2(UtilidadesHash.getString(htFila,CenPersonaBean.C_APELLIDOS2));
+				
+				tmPersonas.put(persona.getIdPersona(),persona);
+			}
+ 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+       }finally{
+    	   if(tmPersonas==null)
+    		   tmPersonas = new  TreeMap<Long, CenPersonaBean>();
+       }
+       return tmPersonas;
+		
+		
+	}
 	
 	
 }

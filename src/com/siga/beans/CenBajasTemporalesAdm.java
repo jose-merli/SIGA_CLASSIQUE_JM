@@ -185,11 +185,13 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
 			throw e;
 		}
 		catch (Exception e) {
-			throw new ClsExceptions (e, "Error al obtener los getDiasVacaciones: "+ e.toString());
+			throw new ClsExceptions (e, "Error al obtener los getDiasBajaTemporal: "+ e.toString());
 		}
 		return mSalida;
 		
 	}
+    
+    
     /**
      * eSTE METODO NOS DEVUELVE UN MAP DE LOS LETRADOS CON BAJA TEMPORAL DE LA LISTA DE LETRADOS
      * @param alLetrados
@@ -263,6 +265,9 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
 
     	
     	StringBuffer sqlWhereBT = new StringBuffer();
+    	
+    	sqlWhereBT.append(" AND BT.IDINSTITUCION=");
+    	sqlWhereBT.append(bajaTemporalForm.getIdInstitucion());
 		if(bajaTemporalForm.getEstadoBaja()!=null && !bajaTemporalForm.getEstadoBaja().equals("-1")){
 			if(bajaTemporalForm.getEstadoBaja().equals("P")){
 				sqlWhereBT.append(" AND BT.VALIDADO IS NULL ");
@@ -291,6 +296,8 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
 			
 		}
 		StringBuffer sqlWhereTurno = new StringBuffer();
+		sqlWhereTurno.append(" AND IT.IDINSTITUCION=");
+		sqlWhereTurno.append(bajaTemporalForm.getIdInstitucion());
 		StringBuffer sqlWhereGuardia = new StringBuffer();
 		if(bajaTemporalForm.getIdTurno()!=null && !bajaTemporalForm.getIdTurno().equals("-1")&& !bajaTemporalForm.getIdTurno().equals("")){
 			sqlWhereTurno.append(" AND IT.IDTURNO=");
@@ -298,11 +305,15 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
 			sqlWhereTurno.append(" ");
 			
 			
+			
 		}
+		sqlWhereGuardia.append(" AND IT.IDINSTITUCION=");
+		sqlWhereGuardia.append(bajaTemporalForm.getIdInstitucion());
 		if(bajaTemporalForm.getIdGuardia()!=null && !bajaTemporalForm.getIdGuardia().equals("-1")&& !bajaTemporalForm.getIdGuardia().equals("")){
 			sqlWhereGuardia.append(" AND IT.IDGUARDIA=");
 			sqlWhereGuardia.append(bajaTemporalForm.getIdGuardia());
 			sqlWhereGuardia.append(" ");
+			
 			
 			
 		}
@@ -343,6 +354,8 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
 				
 			}
         	sqlBajas.append(" AND IT.IDINSTITUCION = COL.IDINSTITUCION ");
+        	sqlBajas.append(" AND IT.IDINSTITUCION=");
+        	sqlBajas.append(bajaTemporalForm.getIdInstitucion());
         	sqlBajas.append(" AND IT.FECHABAJA IS NULL ");
         	sqlBajas.append(sqlWhereTurno);
         	sqlBajas.append(" AND IT.FECHAVALIDACION IS NOT NULL) ");
@@ -358,6 +371,8 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
 				
 			}
         	sqlBajas.append(" AND IT.IDINSTITUCION = COL.IDINSTITUCION ");
+        	sqlBajas.append(" AND IT.IDINSTITUCION=");
+        	sqlBajas.append(bajaTemporalForm.getIdInstitucion());
         	sqlBajas.append(" AND IT.FECHABAJA IS NULL ");
         	sqlBajas.append(sqlWhereTurno);
         	sqlBajas.append(sqlWhereGuardia);
@@ -375,6 +390,8 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
 		sqlActivos.append(" PER.NOMBRE,  PER.APELLIDOS1,  PER.APELLIDOS2 ");
 		sqlActivos.append(" FROM CEN_COLEGIADO COL, CEN_PERSONA PER ");
 		sqlActivos.append(" WHERE COL.IDPERSONA = PER.IDPERSONA ");
+		sqlActivos.append(" AND COL.IDINSTITUCION=");
+		sqlActivos.append(bajaTemporalForm.getIdInstitucion());
 		if(bajaTemporalForm.getIdPersona()!=null && !bajaTemporalForm.getIdPersona().equals("")){
 			sqlActivos.append(" AND PER.IDPERSONA=");
 			sqlActivos.append(bajaTemporalForm.getIdPersona());
@@ -391,6 +408,7 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
 			
 		}
 		sqlActivos.append(" AND IT.IDINSTITUCION = COL.IDINSTITUCION ");
+
 		sqlActivos.append(" AND IT.FECHABAJA IS NULL ");
 		sqlActivos.append(sqlWhereTurno);
 		sqlActivos.append(" AND IT.FECHAVALIDACION IS NOT NULL) ");
@@ -404,6 +422,8 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
 			
 			
 		}
+		sqlActivos.append(" AND BT.IDINSTITUCION=");
+		sqlActivos.append(bajaTemporalForm.getIdInstitucion());
 		sqlActivos.append(" AND BT.IDPERSONA = COL.IDPERSONA) ");
 		
 
@@ -416,6 +436,8 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
 		sqlActivos.append(" PER.NOMBRE,  PER.APELLIDOS1,  PER.APELLIDOS2 ");
 		sqlActivos.append(" FROM CEN_COLEGIADO COL, CEN_PERSONA PER ");
 		sqlActivos.append(" WHERE COL.IDPERSONA = PER.IDPERSONA ");
+		sqlActivos.append(" AND COL.IDINSTITUCION=");
+		sqlActivos.append(bajaTemporalForm.getIdInstitucion());
 		if(bajaTemporalForm.getIdPersona()!=null && !bajaTemporalForm.getIdPersona().equals("")){
 			sqlActivos.append(" AND PER.IDPERSONA=");
 			sqlActivos.append(bajaTemporalForm.getIdPersona());
@@ -423,6 +445,7 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
 			
 			
 		}
+
 		sqlActivos.append(" AND EXISTS (SELECT IT.IDPERSONA ");
 		sqlActivos.append(" FROM SCS_INSCRIPCIONGUARDIA IT ");
 		sqlActivos.append(" WHERE IT.IDPERSONA = COL.IDPERSONA ");
@@ -446,6 +469,8 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
 			sqlActivos.append(bajaTemporalForm.getIdPersona());
 			sqlActivos.append(" ");
 		}
+		sqlActivos.append(" AND BT.IDINSTITUCION=");
+		sqlActivos.append(bajaTemporalForm.getIdInstitucion());
 		sqlActivos.append(" AND BT.IDPERSONA = COL.IDPERSONA) ");
 		
 		if(bajaTemporalForm.getSituacion()==null || bajaTemporalForm.getSituacion().equals("B")){
@@ -604,11 +629,63 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
         return bajaTemporalBean;
 		
 	}
-
-
     
-   
-   
+    public Map<Long,CenPersonaBean> getColegiadosBajaTemporal(Integer idInstitucion,String fechaDesde,String fechaHasta)
+	throws ClsExceptions {
 
+    	List<Long> alColegiados = null;
+		
+		Hashtable htCodigos = new Hashtable();
+		int keyContador = 0;
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT DISTINCT BT.IDPERSONA,");
+		sql.append(" DECODE(COL.COMUNITARIO, '1', COL.NCOMUNITARIO,COL.NCOLEGIADO) NCOLEGIADO, ");
+		sql.append(" PER.NOMBRE,  PER.APELLIDOS1,  PER.APELLIDOS2 ");
+		sql.append(" FROM CEN_BAJASTEMPORALES BT,CEN_COLEGIADO COL, CEN_PERSONA PER ");
+		sql.append(" WHERE COL.IDPERSONA = PER.IDPERSONA ");
+		sql.append(" AND BT.IDINSTITUCION = COL.IDINSTITUCION ");
+		sql.append(" AND BT.IDPERSONA = PER.IDPERSONA ");
+		sql.append(" AND BT.IDINSTITUCION =:");
+		keyContador++;
+		sql.append(keyContador);
+		htCodigos.put(new Integer(keyContador), idInstitucion);
+		sql.append(" AND BT.FECHABT  BETWEEN :");
+		keyContador++;
+		sql.append(keyContador);
+		htCodigos.put(new Integer(keyContador),GstDate.getFormatedDateShort("",fechaDesde));
+		sql.append(" AND :");
+		keyContador++;
+		sql.append(keyContador);
+		htCodigos.put(new Integer(keyContador),GstDate.getFormatedDateShort("",fechaHasta));	
+		Map<Long,CenPersonaBean> tmPersonas = null;
+		CenPersonaBean persona = null;
+		CenColegiadoBean colegiado = null;
+		try {
+			Vector datos = this.selectGenericoBind(sql.toString(), htCodigos);
+			
+			tmPersonas = new  TreeMap<Long, CenPersonaBean>();
+			for (int i = 0; i < datos.size(); i++) {
+				Hashtable htFila = (Hashtable) datos.get(i);
+				persona = new CenPersonaBean();
+				colegiado = new CenColegiadoBean();
+				persona.setColegiado(colegiado);
+				colegiado.setIdInstitucion(UtilidadesHash.getInteger(htFila,CenColegiadoBean.C_IDINSTITUCION));
+				colegiado.setNColegiado(UtilidadesHash.getString(htFila,CenColegiadoBean.C_NCOLEGIADO));
+				persona.setIdPersona(UtilidadesHash.getLong(htFila,CenPersonaBean.C_IDPERSONA));
+				persona.setNombre(UtilidadesHash.getString(htFila,CenPersonaBean.C_NOMBRE));
+				persona.setApellido1(UtilidadesHash.getString(htFila,CenPersonaBean.C_APELLIDOS1));
+				persona.setApellido2(UtilidadesHash.getString(htFila,CenPersonaBean.C_APELLIDOS2));
+				
+				tmPersonas.put(persona.getIdPersona(),persona);
+			}
+ 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+       }finally{
+    	   if(tmPersonas==null)
+    		   tmPersonas = new  TreeMap<Long, CenPersonaBean>();
+       }
+       return tmPersonas;
+    }
 
 }

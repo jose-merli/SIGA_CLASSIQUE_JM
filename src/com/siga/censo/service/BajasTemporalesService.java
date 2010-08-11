@@ -14,7 +14,8 @@ public interface BajasTemporalesService extends BusinessService{
 	
 	public Object executeService(CenBajasTemporalesBean bajasTemporalesVo  ) throws SIGAException,ClsExceptions;
 	public List<CenBajasTemporalesBean> getBajasTemporales(BajasTemporalesForm bajaTemporal,UsrBean usrBean)throws ClsExceptions;
-	public void insertaBajasTemporales(BajasTemporalesForm bajasTemporalesForm,boolean isComprobacion,UsrBean usrBean)throws ClsExceptions;
+	public void insertaBajasTemporales(BajasTemporalesForm bajasTemporalesForm,UsrBean usrBean)throws ClsExceptions;
+	public void comprobarInsercion(BajasTemporalesForm bajasTemporalesForm,UsrBean usrBean)throws ClsExceptions;
 	public void validarSolicitudesBajaTemporal(BajasTemporalesForm bajasTemporalesForm,UsrBean usrBean)throws ClsExceptions;
 	public void denegarSolicitudesBajaTemporal(BajasTemporalesForm bajasTemporalesForm,UsrBean usrBean)throws ClsExceptions;
 	public void borrarSolicitudBajaTemporal(BajasTemporalesForm bajasTemporalesForm,UsrBean usrBean)throws ClsExceptions;

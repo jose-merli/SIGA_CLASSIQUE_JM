@@ -52,6 +52,10 @@
 	}
 	
 </script>
+<head>
+       
+</head>
+
 </head>
 
 <body  onload="onInit();">
@@ -216,6 +220,7 @@
 			alert(messageAviso);
 		if (messageError)
 			alert(messageError);
+		
 
 
 
@@ -225,7 +230,10 @@ if(document.getElementById("chkGeneral")){
 	  marcarDesmarcarTodos(document.getElementById("chkGeneral"));
 }
 
-
+if(!document.getElementById('idBusqueda')){
+	top.setLocalizacion('<siga:Idioma key="censo.fichaCliente.sjcs.bajastemporales.localizacion"/>');
+	top.setTitulo('<siga:Idioma key="general.ventana.cgae"/>', '<siga:Idioma key="censo.fichaCliente.sjcs.bajastemporales.cabecera"/>');
+}
 </script>
 	
 </body>

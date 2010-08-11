@@ -36,7 +36,7 @@
 	
 </head>
 
-<body onLoad=onLoad();>
+<body>
 
 <table class="tablaTitulo" cellspacing="0" heigth="32">
 	<tr>
@@ -54,7 +54,6 @@
 	<html:hidden property="fechaAlta" />
 	<html:hidden property="colegiadoNumero" />
 	<html:hidden property="colegiadoNombre" />
-	<html:hidden property="existenciaSolapados" />
 	<html:hidden property="fichaColegial" />
 	
 	
@@ -168,26 +167,7 @@
 
 <script type="text/javascript">
 <!-- Asociada al boton GuardarCerrar -->
-	function onLoad() 
-	{
-		sub();
-		if(document.BajasTemporalesForm.existenciaSolapados.value!=''&&document.BajasTemporalesForm.existenciaSolapados.value=='true'){
-			if(document.BajasTemporalesForm.fichaColegial.value=='true'){
-				alert("<siga:Idioma key='censo.bajastemporales.msj.alert.solapamiento'/>");
-				fin()
-				return false;
-			}else{
-				if(confirm("<siga:Idioma key='censo.bajastemporales.msj.confirm.solapamiento'/>")){
-					document.BajasTemporalesForm.modo.value="insertarNuevaSolicitudDirect";
-					document.BajasTemporalesForm.submit();
-				}else{
-					fin();
-				}
-			}
-		}else{
-			fin();
-		}
-	}
+	
 	function accionGuardarCerrar() 
 		{		
 			sub();

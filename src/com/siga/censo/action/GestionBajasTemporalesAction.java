@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.TreeMap;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,19 +16,30 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.aspose.words.internal.fo;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.AjaxCollectionXmlBuilder;
+import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.CenBajasTemporalesAdm;
 import com.siga.beans.CenBajasTemporalesBean;
 import com.siga.beans.CenClienteAdm;
+import com.siga.beans.CenColegiadoBean;
+import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.CenPersonaBean;
+import com.siga.beans.EnvEstatEnvioAdm;
+import com.siga.beans.ScsGuardiasColegiadoAdm;
 import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsTurnoAdm;
 import com.siga.beans.ScsTurnoBean;
 import com.siga.censo.form.BajasTemporalesForm;
 import com.siga.censo.service.BajasTemporalesService;
+import com.siga.envios.form.DefinirEnviosForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -85,6 +97,8 @@ public class GestionBajasTemporalesAction extends MasterAction {
 						mapDestino = modificarSolicitud(mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("refrescar")){
 						mapDestino = refrescar(mapping, miForm, request, response);
+					}else if ( accion.equalsIgnoreCase("generarIncidencias")){
+						mapDestino = generarIncidencias(mapping, miForm, request, response);
 					}		
 					
 					
@@ -113,6 +127,8 @@ public class GestionBajasTemporalesAction extends MasterAction {
 			HttpServletResponse response) throws ClsExceptions, SIGAException 
 			{
 		BajasTemporalesForm bajasTemporalesForm = (BajasTemporalesForm) formulario;
+		bajasTemporalesForm.setMsgAviso("");
+		bajasTemporalesForm.setMsgError("");
 		UsrBean usrBean = this.getUserBean(request);
 		bajasTemporalesForm.setUsrBean(usrBean);
 		String parameter = request.getParameter("fichaColegial");
@@ -201,6 +217,8 @@ public class GestionBajasTemporalesAction extends MasterAction {
 			HttpServletResponse response) throws ClsExceptions,Exception 
 			{
 		BajasTemporalesForm bajasTemporalesForm = (BajasTemporalesForm) formulario;
+//		bajasTemporalesForm.setMsgAviso("");
+//		bajasTemporalesForm.setMsgError("");
 		UsrBean usrBean = this.getUserBean(request);
 		String forward = "listadoBajasTemporales";
 		
@@ -297,7 +315,6 @@ public class GestionBajasTemporalesAction extends MasterAction {
 		bajasTemporalesForm.setFechaHasta(null);
 		bajasTemporalesForm.setDescripcion(null);
 		bajasTemporalesForm.setTipo(null);
-		bajasTemporalesForm.setExistenciaSolapados(false);
 		bajasTemporalesForm.setModo("insertarNuevaSolicitud");
 		return "solicitud";
 	}
@@ -365,15 +382,18 @@ public class GestionBajasTemporalesAction extends MasterAction {
 			
 			BusinessManager bm = getBusinessManager();
 			BajasTemporalesService bts = (BajasTemporalesService)bm.getService(BajasTemporalesService.class);
-			try {
-				bts.insertaBajasTemporales(bajasTemporalesForm,true, usrBean);
+			
+				bts.comprobarInsercion(bajasTemporalesForm, usrBean);
+				if((bajasTemporalesForm.getPersonasDeBaja()!=null && bajasTemporalesForm.getPersonasDeBaja().size()>0)||
+						(bajasTemporalesForm.getPersonasDeGuardia()!=null && bajasTemporalesForm.getPersonasDeGuardia().size()>0)){
+					forward="incidencias";
+					return  forward;
+				}else{
+					bts.insertaBajasTemporales(bajasTemporalesForm, usrBean);
+					
+				}
 				forward = exitoModal("messages.updated.success",request);
-			} catch (Exception e) {
-				bajasTemporalesForm.setExistenciaSolapados(true);
-				forward="solicitud";
-				return  forward;
-				
-			}
+			
 			
 		} catch (Exception e) {
 			throwExcp("messages.general.errorExcepcion", e, null); 
@@ -392,9 +412,14 @@ public class GestionBajasTemporalesAction extends MasterAction {
 		try {
 			BusinessManager bm = getBusinessManager();
 			BajasTemporalesService bts = (BajasTemporalesService)bm.getService(BajasTemporalesService.class);
-			bts.insertaBajasTemporales(bajasTemporalesForm,false, usrBean);
-			bajasTemporalesForm.setExistenciaSolapados(false);
-			forward = exitoModal("messages.updated.success",request);
+			bts.insertaBajasTemporales(bajasTemporalesForm, usrBean);
+			if(bajasTemporalesForm.getMsgAviso()!=null && !bajasTemporalesForm.getMsgAviso().equals("")){
+				bajasTemporalesForm.setMsgAviso("");
+				forward = exitoModal("",request);
+			}else{
+				forward = exitoModal("messages.updated.success",request);	
+			}
+			
 			
 		} catch (Exception e) {
 			throwExcp("messages.general.errorExcepcion", e, null); 
@@ -515,7 +540,84 @@ public class GestionBajasTemporalesAction extends MasterAction {
 		
 		return forward;
 	}
+	protected String generarIncidencias (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException 
+			{
+
+		BajasTemporalesForm bajasTemporalesForm = (BajasTemporalesForm) formulario;
+		UsrBean usrBean = this.getUserBean(request);
+		try {
+			ScsGuardiasColegiadoAdm gcAdm = new ScsGuardiasColegiadoAdm(usrBean);
+			CenBajasTemporalesAdm btAdm = new CenBajasTemporalesAdm(usrBean);
+			
+			
+//			RowsContainer rowsColegiadoDeGuardia = gcAdm.getRowsColegiadosDeGuardia(bajasTemporalesForm.getBajaTemporalBean().getIdInstitucion(),
+//					bajasTemporalesForm.getBajaTemporalBean().getFechaDesde(), bajasTemporalesForm.getBajaTemporalBean().getFechaHasta());
+//			
+			
+			Vector datos = new Vector();
+			for(CenPersonaBean persona:bajasTemporalesForm.getPersonasDeGuardia()){
+				Row row = new Row();
+				Hashtable htRow = new Hashtable();
+				
+				htRow.put(CenPersonaBean.C_APELLIDOS1, persona.getApellido1());
+				htRow.put(CenPersonaBean.C_APELLIDOS2, persona.getApellido2());
+				htRow.put(CenPersonaBean.C_NOMBRE, persona.getNombre());
+				htRow.put(CenColegiadoBean.C_NCOLEGIADO, persona.getColegiado().getNColegiado());
+				htRow.put("INCIDENCIA", "Colegiado de Guardia");
+				
+				row.setRow(htRow);
+				datos.add(row);
+				
+			}
+			
+			
+			
+			for(CenPersonaBean persona:bajasTemporalesForm.getPersonasDeBaja()){
+				Row row = new Row();
+				Hashtable htRow = new Hashtable();
+				
+				htRow.put(CenPersonaBean.C_APELLIDOS1, persona.getApellido1());
+				htRow.put(CenPersonaBean.C_APELLIDOS2, persona.getApellido2());
+				htRow.put(CenPersonaBean.C_NOMBRE, persona.getNombre());
+				htRow.put(CenColegiadoBean.C_NCOLEGIADO, persona.getColegiado().getNColegiado());
+				htRow.put("INCIDENCIA", "Colegiado de Baja");
+				
+				row.setRow(htRow);
+				datos.add(row);
+				
+			}
+			
+			
 	
+			
+			
+//			RowsContainer rowsColegiadosDeBaja = btAdm.getRowsColegiadosBajaTemporal(bajasTemporalesForm.getBajaTemporalBean().getIdInstitucion(),
+//					bajasTemporalesForm.getBajaTemporalBean().getFechaDesde(), bajasTemporalesForm.getBajaTemporalBean().getFechaHasta());
+//			
+			
+			
+
+			
+			
+			request.setAttribute("datos",datos);
+
+			String nombreFichero = "incidencias"; 
+			String[] cabeceras = {"NCOLEGIADO","NOMBRE","APELLIDOS1","APELLIDOS2","INCIDENCIA"};
+			
+			request.setAttribute("descripcion",nombreFichero);
+			request.setAttribute("cabeceras",cabeceras);
+
+
+		} catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.consultas"},e,null); 
+		}
+		return "generaExcel";
+	
+		
+	}
 	
 	
 	

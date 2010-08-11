@@ -10,6 +10,7 @@ import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenBajasTemporalesBean;
+import com.siga.beans.CenPersonaBean;
 import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsTurnoBean;
 import com.siga.general.MasterForm;
@@ -50,6 +51,8 @@ public class BajasTemporalesForm extends MasterForm {
 	
 	
 	List<CenBajasTemporalesBean> bajasTemporales;
+	List<CenPersonaBean> personasDeBaja;
+	List<CenPersonaBean> personasDeGuardia;
 	
 	String msgError;
 	String msgAviso;
@@ -57,7 +60,6 @@ public class BajasTemporalesForm extends MasterForm {
 	
 	boolean fichaColegial=false; 
 	
-	boolean existenciaSolapados; 
 
 	String botones ="";
 	UsrBean usrBean;
@@ -92,14 +94,7 @@ public class BajasTemporalesForm extends MasterForm {
 		this.botones = botones;
 	}
 
-	public boolean isExistenciaSolapados() {
-		return existenciaSolapados;
-	}
-
-	public void setExistenciaSolapados(boolean existenciaSolapados) {
-		this.existenciaSolapados = existenciaSolapados;
-	}
-
+	
 	public String getDatosSeleccionados() {
 		return datosSeleccionados;
 	}
@@ -367,10 +362,12 @@ public class BajasTemporalesForm extends MasterForm {
 		botones = "";
 		
 		bajasTemporales = null;
+		personasDeBaja=null;
+		personasDeGuardia=null;
+		
 		msgError = null;
 		msgAviso= null;
 		
-		existenciaSolapados = false;
 		fichaColegial = false;
 	}
 
@@ -435,6 +432,25 @@ public class BajasTemporalesForm extends MasterForm {
 	public void setUsrBean(UsrBean usrBean) {
 		this.usrBean = usrBean;
 	}
+
+	public List<CenPersonaBean> getPersonasDeBaja() {
+		return personasDeBaja;
+	}
+
+	public void setPersonasDeBaja(List<CenPersonaBean> personasDeBaja) {
+		this.personasDeBaja = personasDeBaja;
+	}
+
+
+	public List<CenPersonaBean> getPersonasDeGuardia() {
+		return personasDeGuardia;
+	}
+
+	public void setPersonasDeGuardia(List<CenPersonaBean> personasDeGuardia) {
+		this.personasDeGuardia = personasDeGuardia;
+	}
+
+	
 
 	
 	
