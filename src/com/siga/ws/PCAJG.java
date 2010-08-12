@@ -317,12 +317,11 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 				TipoCodigoExpediente expedientError = errorContenido.getCodigoExpedienteError();
 				int anioExp = expedientError.getAnyoExpediente().intValue();
 				String numExp = expedientError.getNumExpediente();
-
-				Hashtable<String, Object> hash = new Hashtable<String, Object>();
-				hash.put(ScsEJGBean.C_IDINSTITUCION, idInstitucion);
-				hash.put(ScsEJGBean.C_ANIO, String.valueOf(anioExp));
-				hash.put(ScsEJGBean.C_NUMEJG, Integer.parseInt(numExp.trim()));
-				Vector vectorEJGs = scsEJGAdm.select(hash);
+				
+				Vector vectorEJGs = scsEJGAdm.select(" WHERE " + ScsEJGBean.C_IDINSTITUCION + " = " + idInstitucion +
+						" AND " + ScsEJGBean.C_ANIO   + " = " + anioExp +
+						" AND TO_NUMBER(" +  ScsEJGBean.C_NUMEJG + ") = " + Integer.parseInt(numExp.trim()));
+				
 				if (vectorEJGs != null) {
 					if (vectorEJGs.size() == 0) {
 						// EJG no encontrado
