@@ -715,11 +715,13 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 					Hashtable ejg = (Hashtable) datos.get(i);
 					gestionaEstadoEJG(request, ejg);
 				}
-				String idInstitucion = getIDInstitucion(request).toString();
+				String idInstitucion = getIDInstitucion(request).toString();			
 				Hashtable hashRemesa = new Hashtable();
 				hashRemesa.put("IDINSTITUCION", idInstitucion);
-				hashRemesa.put("IDREMESA", miForm.getIdRemesa());
+				hashRemesa.put("IDREMESA", miForm.getIdRemesa());				
 				CajgRemesaAdm admRemesa = new CajgRemesaAdm(this.getUserBean(request));
+				CajgRespuestaEJGRemesaAdm RespuestaEJGRemesaAdm = new CajgRespuestaEJGRemesaAdm(this.getUserBean(request));
+				RespuestaEJGRemesaAdm.eliminaAnterioresErrores(Integer.parseInt(idInstitucion), Integer.parseInt(miForm.getIdRemesa()));				
 				admRemesa.delete(hashRemesa);
 
 				eliminaFicheroTXTGenerado(idInstitucion, miForm.getIdRemesa());
