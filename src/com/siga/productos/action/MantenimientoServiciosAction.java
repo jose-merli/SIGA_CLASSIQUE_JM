@@ -1760,6 +1760,10 @@ public class MantenimientoServiciosAction extends MasterAction {
 			
 			if ((criterios != null)&&(!criterios.equals(""))){
 				query = UtilidadesProductosServicios.getQuery( vTablas, vCriterios);
+				if (query.indexOf("@IDGRUPO@")!=-1){
+					query=UtilidadesString.replaceAllIgnoreCase(query,"@IDGRUPO@",""+null+",2000");
+				}
+				
 				//cambiamos @IDINSTITUCION@	 por el IdInstitucion correcto
 				query = UtilidadesProductosServicios.reemplazaString("@IDINSTITUCION@",(String)usr.getLocation(), query);
 				//aplicamos el idConsulta si existia y sino calculamos uno nuevo
@@ -1957,7 +1961,11 @@ public class MantenimientoServiciosAction extends MasterAction {
 			if (!esInsercion){
 				Hashtable viejaConsulta = (Hashtable)request.getSession().getAttribute("DATABACKUPCONSULTA");
 				if (!queryPorDefecto) 
+					
+				
+				if (!nuevaConsulta.equals(viejaConsulta)){
 					correcto = consultaAdm.update(nuevaConsulta, viejaConsulta);
+				}
 				else {
 					Hashtable aborrar = new Hashtable();
 					aborrar.put(ConConsultaBean.C_IDINSTITUCION, (String)usr.getLocation());
@@ -2017,9 +2025,9 @@ public class MantenimientoServiciosAction extends MasterAction {
 		}
 		catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.productos"},e,tx); 
-		}		
-					
-		return (result);		
+		}
+									
+		return (result);	
 	}
 
 
