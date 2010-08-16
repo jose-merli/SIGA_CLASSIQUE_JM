@@ -1,0 +1,172 @@
+package com.siga.beans;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.Iterator;
+
+import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
+import com.atos.utils.ComodinBusquedas;
+import com.atos.utils.GstDate;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
+import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
+import com.siga.administracion.SIGAConstants;
+import com.siga.consultas.CriterioDinamico;
+import com.siga.consultas.form.RecuperarConsultasForm;
+import com.siga.general.SIGAException;
+
+public class AdmConsultaInformeAdm extends MasterBeanAdministrador {
+
+	public AdmConsultaInformeAdm(UsrBean usuario) {
+		super(AdmConsultaInformeBean.T_NOMBRETABLA, usuario);
+	}
+
+	protected String[] getCamposBean() {
+		String[] campos = { AdmConsultaInformeBean.C_IDINSTITUCION,
+				AdmConsultaInformeBean.C_IDCONSULTA,
+				AdmConsultaInformeBean.C_IDPLANTILLA,
+				AdmConsultaInformeBean.C_NOMBRE,
+				AdmConsultaInformeBean.C_VARIASLINEAS,
+				AdmConsultaInformeBean.C_FECHAMODIFICACION,
+				AdmConsultaInformeBean.C_USUMODIFICACION };
+		return campos;
+	}
+
+	protected String[] getClavesBean() {
+		String[] claves = { AdmConsultaInformeBean.C_IDINSTITUCION,
+				AdmConsultaInformeBean.C_IDCONSULTA,
+				AdmConsultaInformeBean.C_IDPLANTILLA };
+		return claves;
+	}
+
+	protected String[] getOrdenCampos() {
+		return getClavesBean();
+	}
+
+	protected MasterBean hashTableToBean(Hashtable hash) throws ClsExceptions {
+		AdmConsultaInformeBean bean = null;
+		try {
+			bean = new AdmConsultaInformeBean();
+			bean.setIdInstitucion(UtilidadesHash.getInteger(hash, AdmConsultaInformeBean.C_IDINSTITUCION));
+			bean.setIdConsulta(UtilidadesHash.getInteger(hash, AdmConsultaInformeBean.C_IDCONSULTA));
+			bean.setIdPlantilla(UtilidadesHash.getString(hash, AdmConsultaInformeBean.C_IDPLANTILLA));
+			bean.setNombre(UtilidadesHash.getString(hash, AdmConsultaInformeBean.C_NOMBRE));
+			bean.setVariasLineas(UtilidadesHash.getString(hash, AdmConsultaInformeBean.C_VARIASLINEAS));
+			bean.setFechaMod(UtilidadesHash.getString(hash, AdmConsultaInformeBean.C_FECHAMODIFICACION));
+			bean.setUsuMod(UtilidadesHash.getInteger(hash, AdmConsultaInformeBean.C_USUMODIFICACION));
+		} catch (Exception e) {
+			bean = null;
+			throw new ClsExceptions(e,
+					"Error al construir el bean a partir del hashTable");
+		}
+		return bean;
+	}
+	protected MasterBean hashTableToConsultaBean(Hashtable hash) throws ClsExceptions {
+		AdmConsultaInformeConsultaBean bean = null;
+		try {
+			bean = new AdmConsultaInformeConsultaBean();
+			bean.setIdInstitucion(UtilidadesHash.getInteger(hash, AdmConsultaInformeConsultaBean.C_IDINSTITUCION));
+			bean.setIdConsulta(UtilidadesHash.getInteger(hash, AdmConsultaInformeConsultaBean.C_IDCONSULTA));
+			bean.setIdPlantilla(UtilidadesHash.getString(hash, AdmConsultaInformeConsultaBean.C_IDPLANTILLA));
+			bean.setNombre(UtilidadesHash.getString(hash, AdmConsultaInformeConsultaBean.C_NOMBRE));
+			bean.setVariasLineas(UtilidadesHash.getString(hash, AdmConsultaInformeConsultaBean.C_VARIASLINEAS));
+			bean.setDescripcion(UtilidadesHash.getString(hash, AdmConsultaInformeConsultaBean.C_DESCRIPCION));
+			bean.setGeneral(UtilidadesHash.getString(hash, AdmConsultaInformeConsultaBean.C_GENERAL));
+			bean.setSentencia(UtilidadesHash.getString(hash, AdmConsultaInformeConsultaBean.C_SENTENCIA));
+			bean.setIdModulo(UtilidadesHash.getInteger(hash, AdmConsultaInformeConsultaBean.C_IDMODULO));
+		} catch (Exception e) {
+			bean = null;
+			throw new ClsExceptions(e,
+					"Error al construir el bean a partir del hashTable");
+		}
+		return bean;
+	}
+
+	protected Hashtable beanToHashTable(MasterBean bean) throws ClsExceptions {
+		Hashtable htData = null;
+		try {
+			htData = new Hashtable();
+			AdmConsultaInformeBean b = (AdmConsultaInformeBean) bean;
+			UtilidadesHash.set(htData, AdmConsultaInformeBean.C_IDINSTITUCION, b.getIdInstitucion());
+			UtilidadesHash.set(htData, AdmConsultaInformeBean.C_IDCONSULTA, b.getIdConsulta());
+			UtilidadesHash.set(htData, AdmConsultaInformeBean.C_IDPLANTILLA, b.getIdPlantilla());
+			UtilidadesHash.set(htData, AdmConsultaInformeBean.C_NOMBRE, b.getNombre());
+			UtilidadesHash.set(htData, AdmConsultaInformeBean.C_VARIASLINEAS, b.getVariasLineas());
+			UtilidadesHash.set(htData, AdmConsultaInformeBean.C_FECHAMODIFICACION, b.getFechaMod());
+			UtilidadesHash.set(htData, AdmConsultaInformeBean.C_USUMODIFICACION, b.getUsuMod());
+		} catch (Exception e) {
+			htData = null;
+			throw new ClsExceptions(e,
+					"Error al crear el hashTable a partir del bean");
+		}
+		return htData;
+	}
+
+	/**
+	 * Sustituye los filtros en el texto de la sentencia
+	 */
+	public String sustituirFiltrosConsulta(AdmConsultaInformeConsultaBean consulta,
+			ArrayList<HashMap<String, String>> listaFiltros)
+	{
+		String sentencia = consulta.getSentencia();
+		sentencia = sentencia.toUpperCase();
+		sentencia = sentencia.replaceAll("\n", " ");
+		
+		// reemplazando filtros
+		String nombreCampo, obligatorio, valor;
+		for (HashMap<String, String> filtro : listaFiltros) {
+			nombreCampo = "%%" + filtro.get(AdmTipoFiltroInformeBean.C_NOMBRECAMPO).toUpperCase() + "%%";
+			obligatorio = filtro.get(AdmTipoFiltroInformeBean.C_OBLIGATORIO);
+			valor = filtro.get("VALOR");
+			
+			if (sentencia.toUpperCase().indexOf(nombreCampo) > -1)
+				sentencia = sentencia.replaceAll(nombreCampo, valor);
+			else if (obligatorio == ClsConstants.DB_TRUE && consulta.getGeneral() == ClsConstants.DB_FALSE)
+				return null; // no estan todos los filtros obligatorios
+		}
+		
+		// comprobando los campos que faltan por sustituir en la sentencia
+		if (sentencia.indexOf("%%") > -1)
+			return null;
+		
+		return sentencia;
+	} // sustituirFiltrosConsulta()
+	
+	/**
+	 * Realiza una query de las consultas asociadas al informe (adm_consultainforme, con_consulta)
+	 * @return Vector<>
+	 * @throws SIGAException 
+	 * @throws ClsExceptions 
+	 */
+	public Vector<AdmConsultaInformeConsultaBean> selectConsultas(Hashtable htPlantilla)
+		throws ClsExceptions, SIGAException
+	{
+		String sentencia = 
+			"select * " +
+			"  from "+AdmConsultaInformeBean.T_NOMBRETABLA+" inf, "+ConConsultaBean.T_NOMBRETABLA+" con " +
+			" where inf."+AdmConsultaInformeBean.C_IDINSTITUCION+" = con."+ConConsultaBean.C_IDINSTITUCION+" " +
+			"   and inf."+AdmConsultaInformeBean.C_IDCONSULTA+" = con."+ConConsultaBean.C_IDCONSULTA+" " +
+			"   and inf."+AdmConsultaInformeBean.C_IDINSTITUCION+" = "+htPlantilla.get(AdmConsultaInformeBean.C_IDINSTITUCION)+" " +
+			"   and inf."+AdmConsultaInformeBean.C_IDPLANTILLA+" = '"+htPlantilla.get(AdmConsultaInformeBean.C_IDPLANTILLA)+"' ";
+		Vector hashtables = super.selectGenerico(sentencia);
+		
+		Hashtable ht;
+		Vector<AdmConsultaInformeConsultaBean> salida = new Vector<AdmConsultaInformeConsultaBean>();
+		AdmConsultaInformeConsultaBean consultaBean;
+		for (Iterator iterHashtables = hashtables.iterator(); iterHashtables.hasNext();) {
+			ht = (Hashtable) iterHashtables.next();
+			consultaBean = (AdmConsultaInformeConsultaBean) hashTableToConsultaBean(ht);
+			salida.add(consultaBean);
+		}
+		
+		return salida;
+	}
+}

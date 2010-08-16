@@ -1,4 +1,3 @@
-
 package com.siga.informes;
 
 import java.io.File;
@@ -50,19 +49,28 @@ import com.siga.beans.AdmLenguajesAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.certificados.Plantilla;
 
-public class MasterReport  {
+public class MasterReport
+{
+	/**
+	 * Carater de control que delimita las variables en las plantillas FO
+	 */
+	protected static final String CTR="%%";
 	
+	/**
+	 * Usuario del action
+	 */
 	private UsrBean usuario;
 	
-	public MasterReport(){
-		
+	
+	// CONSTRUCTORES
+	public MasterReport() {
 	}
-
-	public MasterReport(UsrBean usuario){
+	public MasterReport(UsrBean usuario) {
 		this.usuario = usuario;
-	}
+	}	
 	
 	
+	// METODOS
 	public Vector obtenerDatosFormulario(InformesGenericosForm form) throws ClsExceptions {
 	    Vector salida = new Vector ();
 	    String datosInforme = form.getDatosInforme();
@@ -150,111 +158,106 @@ public class MasterReport  {
 	}
 	
 	/**
-	 * Carater de control que delimita las variables en las plantillas FO
+	 * Genera un informe PDF sin mas configuracion
+	 * @return True si lo ha generado correctamente
 	 */
-	protected static final String CTR="%%";
-	
-	//Genera el PDF. Devuelve true si lo ha generado correctamente.
-	public boolean generarInforme(HttpServletRequest request, String nombreFicheroFO) throws ClsExceptions {
-		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
-		String institucion =usr.getLocation();
-		String idioma=request.getParameter("idioma");
-		String idiomaExt="";
-		if(idioma==null || idioma.length()==0){
-			idioma = usr.getLanguage();
-		}
-		// RGG 26/02/2007 cambio en los codigos de lenguajes
-		AdmLenguajesAdm a = new AdmLenguajesAdm(usr);
-		idiomaExt = "es";
+	public boolean generarInforme(HttpServletRequest request,
+								  String nombreFicheroFO)
+			throws ClsExceptions
+	{
+		// Variables generales
+		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		String institucion = usr.getLocation();
+		String idiomaExt;
+		
+		// Ficheros necesarios: plantilla, intermedio FOP, PDF final
+		File plantillaFO = null;
+		File ficheroFOP = null;
+		File ficheroPDF = null;
+
+		// Rutas
+		String rutaServidorPlantillas = null; // ruta base para plantilla e intermedio FOP
+		String rutaServidorDescargas = null; // ruta base para PDF final
+		String rutaPlantillaFO = null; //ruta plantilla
+		String rutaFOP = null; // ruta intermedio FOP (directorio)
+		String rutaFicheroFOP = null; // ruta intermedio FOP (fichero)
+		String rutaFicheroPDF = null; // ruta PDF final (directorio)
+		String nombreFicheroGenerado = null; // ruta PDF final (fichero)
+
 		try {
-			idiomaExt = a.getLenguajeExt(idioma).toUpperCase();
-		} catch (Exception e) {
-			
-		}	
-		
-		usr.setLanguage(idioma);
-		usr.setLanguageExt(idiomaExt);
-		
-		
-		File plantillaFO=null;
-		File ficheroFOP=null;		
-		File ficheroPDF=null;
-		File rutaTmp=null;
-		File rutaPDF=null;
-		
-		String  rutaServidorPlantillas=null, rutaServidorTmp=null, rutaServidorDescargas=null, rutaFicheroFO=null, rutaFicheroFOP=null;
-		String nombreFicheroGenerado=null;		
-		GenParametrosAdm admParametros = new GenParametrosAdm(usr);//Solo lectura
-		
-		try {
-			
-			//
-			// OBTENCION DE LA PLANTILLA FO:
-			//
-			
-			// Ubicacion de la carpeta donde se crean los ficheros FO:
-			rutaServidorPlantillas = admParametros.getValor(institucion, "INF", "PATH_INFORMES_PLANTILLA", "");
-			rutaServidorPlantillas += ClsConstants.FILE_SEP + institucion;
-			
-			// Construyo la ruta para la plantilla FO: 	 		
-			rutaFicheroFO = rutaServidorPlantillas+ClsConstants.FILE_SEP+nombreFicheroFO+"_"+idiomaExt+".fo";
-			ClsLogging.writeFileLog("*********** rutaFicheroFO: "+rutaFicheroFO,7);			
-			//Fichero con la plantilla FO:
-			plantillaFO = new File(rutaFicheroFO);	 
-			
-			//
-			// NOMBRE DEL FICHERO SIN EXTENSION: nombre del fichero generado a partir del nombre de la plantilla concatenado con la hora en milisegundos:
-			//
-			nombreFicheroGenerado = nombreFicheroFO+System.currentTimeMillis();
-			
-			//
-			// GENERACION DEL FICHERO FOP DEL USUARIO:
-			//	 					
-			// Ubicacion de la carpeta donde se crean los ficheros temporales FO:
-			rutaServidorTmp = rutaServidorPlantillas+ClsConstants.FILE_SEP+"tmp"+ClsConstants.FILE_SEP;
-			
-			//Construyo la ruta para la plantilla FO: 	 		
-			rutaFicheroFOP = rutaServidorTmp+nombreFicheroGenerado+".fo";
-			
-			//Crea el fichero. Si no existe el directorio de la institucion para el fichero temporal lo crea.	 		
-			rutaTmp = new File(rutaServidorTmp);
-			rutaTmp.mkdirs();
+			// obteniendo idioma
+			String idioma = request.getParameter("idioma");
+			if (idioma == null || idioma.length() == 0)
+				idioma = usr.getLanguage();
+			usr.setLanguage(idioma);
+			idiomaExt = "es";
+			try {
+				idiomaExt = new AdmLenguajesAdm(usr).getLenguajeExt(idioma).toUpperCase();
+			} catch (Exception e) {
+			}
+			usr.setLanguageExt(idiomaExt);
+
+			// obteniendo rutas de origen (plantilla), destino (PDF) y nombre de fichero generado unico
+			GenParametrosAdm admParametros = new GenParametrosAdm(usr);
+			rutaServidorPlantillas = admParametros.getValor(institucion, "INF",
+					"PATH_INFORMES_PLANTILLA", "")
+					+ ClsConstants.FILE_SEP + institucion;
+			rutaServidorDescargas = admParametros.getValor(institucion, "INF",
+					"PATH_INFORMES_DESCARGA", "") + File.separator + institucion
+					+ File.separator;
+			nombreFicheroGenerado = nombreFicheroFO + System.currentTimeMillis();
+
+			// 1. obteniendo plantilla FO
+			rutaPlantillaFO = rutaServidorPlantillas + ClsConstants.FILE_SEP
+					+ nombreFicheroFO + "_" + idiomaExt + ".fo";
+			plantillaFO = new File(rutaPlantillaFO);
+			ClsLogging.writeFileLog("*********** rutaFicheroFO: "
+					+ rutaPlantillaFO, 7);
+
+			// 2. generando intermedio FOP a partir de plantilla y datos
+			// 2.1. obteniendo ruta para fichero intermedio FOP
+			rutaFOP = rutaServidorPlantillas + ClsConstants.FILE_SEP
+					+ "tmp";
+			new File(rutaFOP).mkdirs();
+			rutaFicheroFOP = rutaFOP + ClsConstants.FILE_SEP
+					+ nombreFicheroGenerado + ".fo";
 			ficheroFOP = new File(rutaFicheroFOP);
+
+			// 2.2. obteniendo texto de plantilla FO
+			String sPlantillaFO = UtilidadesString.getFileContent(plantillaFO);
 			
-			// Generacion del fichero .FOP para este usuario a partir de la plantilla .FO correspondiente:						
-			//boolean correcto= this.obtencionPagina(ficheroFOP,plantillaFO, hashDatos);
-			String sPlantillaFO=UtilidadesString.getFileContent(plantillaFO);
-			String content=reemplazarDatos(request,sPlantillaFO);
-			UtilidadesString.setFileContent(ficheroFOP,content);
-			//
-			// GENERACION DEL FICHERO PDF DEL USUARIO:
-			//
-			// Ubicacion de la carpeta donde se crean los ficheros PDF:
-			rutaServidorDescargas = admParametros.getValor(institucion, "INF", "PATH_INFORMES_DESCARGA", "");
-			//Antes estaba asi: rutaServidorDescargas += idInstitucion+File.separator;
-			rutaServidorDescargas += File.separator+institucion+File.separator;
-			
-			//Crea el fichero. Si no existe el directorio de la institucion para la descarga lo crea.
-			rutaPDF = new File(rutaServidorDescargas);
-			rutaPDF.mkdirs();
-			ficheroPDF = new File(rutaServidorDescargas+nombreFicheroGenerado+".pdf");
-			
-			//Clase para la conversion de FOP a PDF con un directorio base para usar rutas relativas:
+			// 2.3. generando intermedio FOP, reemplazando los datos en la plantilla
+			String content = reemplazarDatos(request, sPlantillaFO);
+			UtilidadesString.setFileContent(ficheroFOP, content);
+
+			// 3. generando PDF final
+			// 3.1. obteniendo ruta para fichero PDF final
+			new File(rutaServidorDescargas).mkdirs();
+			rutaFicheroPDF = rutaServidorDescargas + nombreFicheroGenerado
+					+ ".pdf";
+			ficheroPDF = new File(rutaFicheroPDF);
+			ClsLogging.writeFileLog("*********** rutaFicheroPDF: "
+					+ rutaFicheroPDF, 7);
+
+			// 3.2. convirtiendo FOP a PDF
 			Plantilla plantilla = new Plantilla(this.usuario);
-			plantilla.convertFO2PDF(ficheroFOP, ficheroPDF, rutaServidorPlantillas);
-			
-			// Borramos el .FOP que hemos generado para este usuario:
+			plantilla.convertFO2PDF(ficheroFOP, ficheroPDF,
+					rutaServidorPlantillas);
+
+			// 3.3. borrando fichero intermedio FOP generado
 			ficheroFOP.delete();
-			
-			request.setAttribute("rutaFichero", rutaServidorDescargas+nombreFicheroGenerado+".pdf");			
-			request.setAttribute("borrarFichero", "true");			
-			
-		} catch (Exception e){
-			throw new ClsExceptions(e, "Error al generar el informe");			
+
+			// devolviendo el fichero PDF generado
+			request.setAttribute("rutaFichero", rutaServidorDescargas
+					+ nombreFicheroGenerado + ".pdf");
+			request.setAttribute("borrarFichero", "true");
+
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al generar el informe");
 		}
+		
 		return true;
-	}
-	
+	} // generarInforme()
 	
 	// OBTENCION DE LA PLANTILLA FO:
 	public String obtenerContenidoPlantilla(String rutaServidorPlantillas, String nombrePlantilla) throws SIGAException, ClsExceptions{
@@ -883,30 +886,5 @@ public class MasterReport  {
 		
 		return ficZip;
 	}
-
-public class Prueba{
-	String nombre="";
-	String descripcion="";
-	public String getNombre() {
-		return nombre;
-	}
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
-	public String getDescripcion() {
-		return descripcion;
-	}
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
 	
 }
-	
-}
-
-	
-	
-	
-	
-	
-

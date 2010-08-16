@@ -1,7 +1,12 @@
 package com.siga.informes.action;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,18 +15,27 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.UsrBean;
+import com.siga.beans.AdmInformeAdm;
+import com.siga.beans.AdmInformeBean;
+import com.siga.beans.AdmTipoFiltroInformeAdm;
+import com.siga.beans.AdmTipoFiltroInformeBean;
+import com.siga.beans.AdmTipoInformeAdm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
-import com.siga.gratuita.form.RetencionesIRPFForm;
-import com.siga.informes.InformeCertificadoPago;
 import com.siga.informes.InformeFichaFacturacion;
 import com.siga.informes.InformeFichaPago;
+import com.siga.informes.InformePersonalizable;
 import com.siga.informes.form.MantenimientoInformesForm;
 
 /**
- * Clase para el Mantenimiento de los Informes generados en formato PDF para los
- * Ppagos, Facturaciones.
+ * Clase para el Mantenimiento de los Informes generados en formato PDF.
+ * Nota: estos informes son llamados directamente desde las JSPs, 
+ * ya que se trata de pantallas que no tienen Action propio 
+ * y solo se dedican a generar el informe
  * 
  * @author david.sanchezp
  */
@@ -60,11 +74,16 @@ public class MantenimientoInformesAction extends MasterAction {
 							formulario, request, response);
 					return mapping.findForward(mapDestino);
 				} else if (modo.equalsIgnoreCase("generarCertificadoPago")) {
-					InformeCertificadoPago inf = new InformeCertificadoPago();
+					/*InformeCertificadoPago inf = new InformeCertificadoPago();
 					mapDestino = inf.generarCertificadoPago(mapping,
 							formulario, request, response);
-					return mapping.findForward(mapDestino);
-					// DESCARGAR
+					return mapping.findForward(mapDestino);/**/
+					/**/ArrayList<HashMap<String, String>> filtrosInforme = 
+							obtenerDatosFormCertificadoPago(formulario, request);
+					InformePersonalizable inf = new InformePersonalizable();
+					mapDestino = inf.generarInformes(mapping,
+							formulario, request, response, "CERPA", filtrosInforme);
+					return mapping.findForward(mapDestino);/**/
 				} else if (miForm.getModo().equalsIgnoreCase(
 						"generarInformeIRPF")) {
 					return mapping.findForward(this.generarInformeIRPF(mapping,
@@ -105,6 +124,60 @@ public class MantenimientoInformesAction extends MasterAction {
 	}
 
 	/**
+	 * Este metodo reenvia la llamada a los Informes Genericos, 
+	 *   ya que el Informe IRPF se genera en formato DOC
+	 */
+	protected String generarInformeIRPF(ActionMapping mapping,
+			MasterForm formulario, HttpServletRequest request,
+			HttpServletResponse response) throws SIGAException {
+		String salida = "generaInformeIRPF";
+		return salida;
+	}
+
+	/**
+	 * Obtiene los filtros del formulario para generar el Certificado de Pago
+	 */
+	private ArrayList<HashMap<String, String>> obtenerDatosFormCertificadoPago(
+			ActionForm formulario, HttpServletRequest request) throws SIGAException
+	{
+		// Controles y Variables
+		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		ArrayList<HashMap<String, String>> filtros;
+		HashMap<String, String> filtro;
+		String idinstitucion = null;
+		String idpago = null;
+		String idioma = null;
+		
+		// obteniendo valores del formulario
+		try {
+			idinstitucion = usr.getLocation();
+			idpago = request.getParameter("idPago");
+			idioma = request.getParameter("idioma").toUpperCase();
+		} catch(Exception e) {
+			throwExcp("messages.general.error",
+					new String[] { "modulo.facturacionSJCS" }, e, null);
+		}
+
+		// generando lista de filtros
+		filtros = new ArrayList<HashMap<String, String>>();
+		
+		filtro = new HashMap<String, String>();
+		filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDINSTITUCION");
+		filtro.put("VALOR", idinstitucion);
+		filtros.add(filtro);
+		filtro = new HashMap<String, String>();
+		filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDPAGO");
+		filtro.put("VALOR", idpago);
+		filtros.add(filtro);
+		filtro = new HashMap<String, String>();
+		filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDIOMA");
+		filtro.put("VALOR", idioma);
+		filtros.add(filtro);
+
+		return filtros;
+	}
+
+	/**
 	 * Metodo que permite la descarga de un fichero
 	 */
 	protected String descargar(ActionMapping mapping, MasterForm formulario,
@@ -133,15 +206,6 @@ public class MantenimientoInformesAction extends MasterAction {
 					new String[] { "modulo.facturacionSJCS" }, e, null);
 		}
 		return "descargaFichero";
-	}
-
-	protected String generarInformeIRPF(ActionMapping mapping,
-			MasterForm formulario, HttpServletRequest request,
-			HttpServletResponse response) throws SIGAException {
-		RetencionesIRPFForm miform = (RetencionesIRPFForm) formulario;
-
-		String salida = "generaInformeIRPF";
-		return salida;
 	}
 
 }
