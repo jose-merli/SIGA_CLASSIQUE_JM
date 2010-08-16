@@ -14,13 +14,24 @@ import com.siga.general.MasterForm;
 */
  public class DefinirMantenimientoEJGForm extends MasterForm
  {
-	String numeroDilegencia = "", numeroProcedimiento = "", comisaria = "", juzgado = "", 
-			designa_anio= "", designa_numero = "", designa_turno = "", designa_idInstitucion = "",
-	        idTurnoEJG="",idGuardiaEJG="",pretension="", idOrigenCAJG="", idPreceptivo="", idSituacion="" ;
+	String numeroDilegencia = "";
+	String numeroProcedimiento = "";
+	String comisaria = "";
+	String juzgado = ""; 
+	String designa_anio= "";
+	String designa_numero = "";
+	String designa_turno = "";
+	String designa_idInstitucion = "";
+	String idTurnoEJG="";
+	String idGuardiaEJG="";
+	String pretension="";
+	String idOrigenCAJG="";
+	String idPreceptivo="";
+	String idSituacion="" ;
+	String idRenuncia="";
 
-	public String getPretension() {
-		return pretension;
-	}
+	
+
 	public void setPretension(String pretension) {
 		this.pretension = pretension;
 	}
@@ -50,6 +61,18 @@ import com.siga.general.MasterForm;
 	 * Metodos SET
 	 */
 	
+	/**
+	 * Almacena en la Hashtable el idrenuncia del EJG 
+	 * 
+	 * @param valor idrenuncia de la EJG. De tipo "Integer". 
+	 * @return void 
+	 */
+	
+		public void setidRenuncia(String idRenuncia) {
+		this.idRenuncia = idRenuncia;
+	}
+		
+		
 	/**
 	 * Almacena en la Hashtable el anho del EJG 
 	 * 
@@ -165,6 +188,23 @@ import com.siga.general.MasterForm;
 	/*
 	 * Metodos GET*/
 	
+	/**
+	 * Recupera de la Hashtable el idPretenciones de la EJG
+	 * 
+	 * @return idPretenciones de la EJG
+	 */
+	public String getPretension() {
+		return pretension;
+	}
+	
+	/**
+	 * Recupera de la Hashtable el idrenuncia de la EJG
+	 * 
+	 * @return idrenuncia de la EJG
+	 */
+	public String getidRenuncia() {
+		return idRenuncia;
+	}
 	/**
 	 * Recupera de la Hashtable el anho de la EJG
 	 * 
