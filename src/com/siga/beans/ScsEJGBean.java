@@ -88,12 +88,12 @@ public class ScsEJGBean extends MasterBean{
 	private String idOrigenCAJG;
 	private String idPreceptivo;
 	private String idSituacion;
+	private String idRenuncia;
 	
 
 	
 	/*
 	 *  Nombre de Tabla*/
-	
 	static public String T_NOMBRETABLA = "SCS_EJG";
 	
 	/*
@@ -168,8 +168,16 @@ public class ScsEJGBean extends MasterBean{
 	static public final String C_IDORIGENCAJG   = "IDORIGENCAJG";
 	static public final String C_PRECEPTIVO   = "IDPRECEPTIVO";
 	static public final String C_SITUACION   = "IDSITUACION";
+	static public final String C_IDRENUNCIA   = "IDRENUNCIA";
 	
 	
+		
+	public String getIdRenuncia() {
+		return idRenuncia;
+	}
+	public void setIdRenuncia(String idRenuncia) {
+		this.idRenuncia = idRenuncia;
+	}
 	
 	public String getIdPretension() {
 		return idPretension;
