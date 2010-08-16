@@ -76,7 +76,7 @@ public class PestanaDelitoEJGAction extends MasterAction {
 					" ejg.CALIDAD, ejg.OBSERVACIONES, ejg.DELITOS, ejg.IDPROCURADOR, ejg.IDINSTITUCION_PROC, ejg.NUMERO_CAJG," +
 					" ejg.ANIOCAJG, ejg.NUMERODILIGENCIA NUMERODILIGENCIA, ejg.NUMEROPROCEDIMIENTO NUMEROPROCEDIMIENTO, ejg.JUZGADO JUZGADO," +
 					" ejg.JUZGADOIDINSTITUCION JUZGADOIDINSTITUCION, ejg.COMISARIA COMISARIA, ejg.COMISARIAIDINSTITUCION COMISARIAIDINSTITUCION," +
-					" ejg.FECHA_DES_PROC,ejg.IDPRECEPTIVO, ejg.IDSITUACION "+
+					" ejg.FECHA_DES_PROC,ejg.IDPRECEPTIVO, ejg.IDSITUACION, ejg.IDRENUNCIA "+
 					"  from scs_ejg            ejg" ;
 			consulta += " where "+
 			"ejg.idtipoejg = " + idTipoEJG + " and ejg.idinstitucion = " + usr.getLocation() + " and ejg.anio = " + anio + " and ejg.numero = " + numero;			
