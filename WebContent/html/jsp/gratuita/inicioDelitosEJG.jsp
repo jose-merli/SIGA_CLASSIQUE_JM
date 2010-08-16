@@ -47,6 +47,7 @@
 	ArrayList pretensionesSel = new ArrayList();
 	ArrayList preceptivoSel = new ArrayList();
 	ArrayList situacionSel = new ArrayList();
+	ArrayList renunciaSel = new ArrayList();
 
 	//ScsEJGAdm adm = new ScsEJGAdm (usr);
 	
@@ -54,6 +55,9 @@
 		   procuradorNombreCompleto = "", procuradorNumColegiado = "", procuradorSel = "",idTurno = "", nombreCompleto="";	
    	String numeroDiligenciaAsi    = "",numeroProcedimientoAsi = "", juzgadoAsi="", juzgadoInstitucionAsi="", comisariaAsi="", comisariaInstitucionAsi="";
    	String idPretension    = "", idPretensionInstitucion="",pretension="", idPreceptivo="", idSituacion="";
+   	
+   	String idRenuncia="";
+   	String idInstintucion="";
    	
 	Hashtable hash = (Hashtable)ses.getAttribute("DATABACKUP");
 	
@@ -69,6 +73,10 @@
 		if (hash.containsKey("IDPRETENSION")) idPretension			  				=  hash.get("IDPRETENSION").toString(); 		
 		if (hash.containsKey("IDPRECEPTIVO")) idPreceptivo			  				=  hash.get("IDPRECEPTIVO").toString();
 		if (hash.containsKey("IDSITUACION")) idSituacion			  				=  hash.get("IDSITUACION").toString();
+		if (hash.containsKey("IDRENUNCIA")) idRenuncia			  				=  hash.get("IDRENUNCIA").toString(); 	
+		
+		if (hash.containsKey("IDINSTITUCION")) idInstintucion			  				=  hash.get("IDINSTITUCION").toString(); 	
+
 
 		if (hash.containsKey("IDTURNO")) idTurno					  			=  hash.get("IDTURNO").toString(); 		
 		if (hash.containsKey("CALIDAD")) calidad					  			=  hash.get("CALIDAD").toString();
@@ -123,6 +131,10 @@
 	
 	if (idSituacion!=null)
 		situacionSel.add(0,idSituacion);
+	
+	if (idRenuncia!=null)
+		renunciaSel.add(0,idRenuncia);	
+	
 
 	String estilo = "box", readOnly="false", estiloCombo="boxCombo";
 	String[] datos={usr.getLocation(),idTurno};		
@@ -209,6 +221,7 @@
 		<html:hidden property = "idPreceptivo" value="<%=idPreceptivo%>"/>
 		<html:hidden property = "idSituacion" value="<%=idSituacion%>"/>
 		<html:hidden property = "fechaProc" value=""/>
+		<html:hidden property = "idRenuncia" value="<%=idRenuncia%>"/>
 	</html:form>
 	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="submitArea" type=""  style="display:none">
 		<input type="hidden" name="actionModal" value="">
@@ -259,45 +272,56 @@
 			<siga:ConjCampos leyenda="pestana.justiciagratuitadesigna.defensajuridica">
 				<table width="100%" style="table-layout:fixed" border=0>
 				   <tr>
-						<td  class="labelText" colspan="3">
+						<td  class="labelText" colspan="4">
 						   <siga:Idioma key='gratuita.operarEJG.literal.Preceptivo'/>
 							<%if (obligatorioPreceptivo) {%>
 								<%=asterisco %> 
 							<%}%>		
 					    </td> 
-						<td colspan="8">
-						 <%if(modopestanha.equals("editar")){%>
-						 
+						<td colspan="10">
+						 <%if(modopestanha.equals("editar")){%>						 
 							<siga:ComboBD nombre="preceptivo2" tipo="comboPreceptivo" ancho="250" clase="<%=estiloCombo%>" filasMostrar="1"  seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=preceptivoSel%>"  readonly="false"/> 
 						 <%}else{%>
 							<siga:ComboBD nombre="preceptivo2" tipo="comboPreceptivo" ancho="250" clase="boxConsulta" filasMostrar="1"  seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=preceptivoSel%>"  readonly="true"/>          	   
-						 <%}%>						
-						</td>					
-						<td  class="labelText" colspan="4">
-						   <siga:Idioma key='gratuita.operarEJG.literal.situacion'/>
-					    </td> 
-						<td colspan="8" >
-						 <%if(modopestanha.equals("editar")){%>
-						 
-							<siga:ComboBD nombre="situacion" tipo="comboSituacion" ancho="250" clase="<%=estiloCombo%>" filasMostrar="1"  seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=situacionSel%>"  readonly="false"/> 
-						 <%}else{%>
-							<siga:ComboBD nombre="situacion" tipo="comboSituacion" ancho="250" clase="boxConsulta" filasMostrar="1"  seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=situacionSel%>"  readonly="true"/>          	   
-						 <%}%>						
+						 <%}%>	
+						
 						</td>
+						 
+						<td colspan="8">
+						 <%if(modopestanha.equals("editar")){%>	
+						    <siga:ComboBD nombre="renuncia" tipo="comboRenuncia" ancho="200" clase="<%=estiloCombo%>" filasMostrar="1"  seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=renunciaSel%>"  readonly="false"/>
+						   <%}else{%> 
+						   <siga:ComboBD nombre="renuncia" tipo="comboRenuncia" ancho="200" clase="boxConsulta" filasMostrar="1"  seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=renunciaSel%>"  readonly="true"/>          	   
+						 <%}%> 
+						</td>	
+										
+						<td  class="labelText" colspan="4">
+						   <siga:Idioma key='gratuita.operarEJG.literal.situacion'/>						   
+					    </td> 
+					    
+					    <td colspan="10">
+					    <%if(modopestanha.equals("editar")){%>						 
+							<siga:ComboBD nombre="situacion" tipo="comboSituacion" ancho="240" clase="<%=estiloCombo%>" filasMostrar="1"  seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=situacionSel%>"  readonly="false"/> 
+						 <%}else{%>
+							<siga:ComboBD nombre="situacion" tipo="comboSituacion" ancho="240" clase="boxConsulta" filasMostrar="1"  seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=situacionSel%>"  readonly="true"/>          	   
+						 <%}%>	
+					    
+					    </td>
+						
 						
 					 </tr>
 					 
 					<tr>
-						<td colspan="3" class="labelText" ><siga:Idioma key='gratuita.mantAsistencias.literal.numeroDiligenciasolo'/></td>
-							<td colspan="3" width="100">
+						<td colspan="4" class="labelText" ><siga:Idioma key='gratuita.mantAsistencias.literal.numeroDiligenciasolo'/></td>
+							<td colspan="6" width="100">
 							<%if(modopestanha.equals("editar")){%>
 							<input name="numeroDilegencia2" size="10" maxlength="20" type="text" value="<%=numeroDiligenciaAsi%>" class="<%=estilo%>" />
 							<%}else{%>
 							<input name="numeroDilegencia2" size="10" maxlength="20" type="text" value="<%=numeroDiligenciaAsi%>" class="boxConsulta" />
 							<%}%>								
 						</td> 
-						<td colspan="3" class="labelText" ><siga:Idioma key='gratuita.mantAsistencias.literal.c.Detencion'/></td>
-							<td colspan="14">
+						<td colspan="4" class="labelText" ><siga:Idioma key='gratuita.mantAsistencias.literal.c.Detencion'/></td>
+							<td colspan="23">
 							<%if(modopestanha.equals("editar")){%>
 							 	<input type="text" name="codigoExtComisaria" class="box" size="3"  style="margin-top:3px;" maxlength="10"/>
 								<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" ancho="505" obligatorio="false" parametro="<%=datos%>" elementoSel="<%=comisariaSel%>" clase="<%=estilo%>" hijo="t" readonly="false"/>
@@ -307,20 +331,20 @@
 						</td>
 					 </tr>
 					<tr>
-						<td colspan="3" class="labelText"><siga:Idioma key='gratuita.mantAsistencias.literal.numeroProced'/>
+						<td colspan="4" class="labelText"><siga:Idioma key='gratuita.mantAsistencias.literal.numeroProced'/>
 						<%if (obligatorioNumProcedimiento) {%>
 							<%= asterisco %> 
 						<%}%>
 						</td>
-						<td colspan="3"> 
+						<td colspan="6"> 
 							<%if(modopestanha.equals("editar")){%>
 							 	<input name="numeroProcedimiento2" size="10" type="text" value="<%=numeroProcedimientoAsi%>" class="<%=estilo%>" maxlength="20"/>
 							<%}else{%>
 								<input name="numeroProcedimiento2" size="10" type="text" value="<%=numeroProcedimientoAsi%>" class="boxConsulta"/>
 							<%}%>						
 						</td>
-						<td colspan="3" class="labelText"><siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado"/></td>	 
-						<td colspan="14">	
+						<td colspan="4" class="labelText"><siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado"/></td>	 
+						<td colspan="23">	
 							<%if(modopestanha.equals("editar")){%>
 							 	  <input type="text" name="codigoExtJuzgado" class="box" size="3"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado();" />
 							 	  <siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" ancho="505" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=juzgadoSel%>" hijo="t" readonly="false"/>           	   
@@ -330,32 +354,32 @@
 						</td>	
 					</tr>
 					<tr>
-						<td colspan="3" class="labelText">
+						<td colspan="4" class="labelText">
 							<siga:Idioma key='gratuita.operarEJG.literal.observacionesAsunto'/>
 						</td>
-						<td colspan="8">	
+						<td colspan="12">	
 							<%if(modopestanha.equals("editar")){%>
-								<html:textarea property="observaciones2" size="7" cols="60" rows="2" style="overflow:auto; width:330px;"  styleClass="box" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" value="<%=OBSERVACIONES%>"></html:textarea>
+								<html:textarea property="observaciones2" size="7" cols="60" rows="2" style="overflow:auto; width:315px;"  styleClass="box" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" value="<%=OBSERVACIONES%>"></html:textarea>
 							<%}else{%>
-								<html:textarea property="observaciones2" size="7" cols="60" rows="2" style="overflow:auto width:330px;" styleClass="boxConsulta" value="<%=OBSERVACIONES%>"></html:textarea>
+								<html:textarea property="observaciones2" size="7" cols="60" rows="2" style="overflow:auto width:315px;" styleClass="boxConsulta" value="<%=OBSERVACIONES%>"></html:textarea>
 							<%}%>							
 						</td>
-						<td colspan="4" class="labelText">
+						<td colspan="6" class="labelText">
 							<siga:Idioma key='gratuita.general.literal.comentariosDelitos'/>
 						</td>
-						<td colspan="8">	
+						<td colspan="15">	
 							<%if(modopestanha.equals("editar")){%>
-									<html:textarea name="DefinirMantenimientoEJGForm" size="7" property="delitos2" cols="60" rows="2" style="overflow:auto; width:340px;" styleClass="box" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" value="<%=DELITOS%>"></html:textarea>							
+									<html:textarea name="DefinirMantenimientoEJGForm" size="7" property="delitos2" cols="60" rows="2" style="overflow:auto; width:345px;" styleClass="box" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" value="<%=DELITOS%>"></html:textarea>							
 							<%}else{%>
-								<html:textarea  name="DefinirMantenimientoEJGForm" size="7" property="delitos2" cols="60" rows="2" style="overflow:auto; width:340px;" styleClass="boxConsulta" value="<%=DELITOS%>"></html:textarea>							
+								<html:textarea  name="DefinirMantenimientoEJGForm" size="7" property="delitos2" cols="60" rows="2" style="overflow:auto; width:345px;" styleClass="boxConsulta" value="<%=DELITOS%>"></html:textarea>							
 							<%}%>							
 						</td>		
 					</tr>			
 					<tr>
-						<td colspan="3" class="labelText">	
+						<td colspan="4" class="labelText">	
 							<siga:Idioma key='gratuita.personaJG.literal.calidad'/>
 						</td>
-							<td colspan="8">			
+							<td colspan="12">			
 							<%if(modopestanha.equals("editar")){%>
 								<html:select styleClass="boxCombo" property="calidad2" style="width=150" value="<%=calidad %>"readOnly="false">
 									<html:option value="D"><siga:Idioma key="gratuita.personaJG.calidad.literal.demandante"/></html:option>
@@ -363,30 +387,30 @@
 								</html:select>
 							<%}else{
 								if(calidad.equals("D")){	%>
-									<html:textarea name="DefinirMantenimientoEJGForm" property="calidad2" cols="60" rows="1" style="overflow:auto" styleClass="boxConsulta" value="Demandante"></html:textarea>							
+									<html:textarea name="DefinirMantenimientoEJGForm" property="calidad2" cols="60" rows="1" style="overflow:auto" styleClass="boxConsulta" value="Demandante" ></html:textarea>							
 								<%}else{%>
-									<html:textarea name="DefinirMantenimientoEJGForm" property="calidad2" cols="60" rows="1" style="overflow:auto" styleClass="boxConsulta" value="Demandado"></html:textarea>							
+									<html:textarea name="DefinirMantenimientoEJGForm" property="calidad2" cols="60" rows="1" style="overflow:auto" styleClass="boxConsulta" value="Demandado" ></html:textarea>							
 							<%  }
 							}%>						
 						
 						</td>	
-						<td colspan="4" class="labelText">	
+						<td colspan="6" class="labelText">	
 							<siga:Idioma key='gratuita.actuacionesDesigna.literal.pretensiones'/>							
 							<%if (obligatorioPretension) {%>
 								<%=asterisco %> 
 							<%}%>	
 						</td>	
-						<td  colspan="8">
+						<td  colspan="15">
 							<%if(modopestanha.equals("editar")){%>
-								<siga:ComboBD nombre="pretensiones2" tipo="comboPretensiones" ancho="340" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="false"/>           	   
+								<siga:ComboBD nombre="pretensiones2" tipo="comboPretensiones" ancho="345" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="false"/>           	   
 							<%}else{%>
-								<siga:ComboBD nombre="pretensiones2" tipo="comboPretensiones" ancho="340" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="true"/>           	   
+								<siga:ComboBD nombre="pretensiones2" tipo="comboPretensiones" ancho="345" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="true"/>           	   
 							<%}%>
 						</td>
 					</tr>
 					
 					<tr>
-						<td colspan="23"> 
+						<td colspan="37"> 
 							<siga:ConjCampos leyenda="gratuita.datosProcurador.literal.procurador">
 								<table  width="100%" border="0">
 									<tr>
@@ -557,7 +581,7 @@
 				document.DefinirMantenimientoEJGForm.delitos.value					=	document.getElementById("delitos2").value;
 				document.DefinirMantenimientoEJGForm.pretension.value				=	document.getElementById("pretensiones2").value;		
 				document.DefinirMantenimientoEJGForm.fechaProc.value				=	document.getElementById("fechaProc1").value;				
-				
+				document.DefinirMantenimientoEJGForm.idRenuncia.value                 =   document.getElementById("renuncia").value;
 
 //				alert("observaciones->"+document.DefinirMantenimientoEJGForm.observaciones.value+"<observaciones2->"+document.getElementById("observaciones").value);							
 //				alert("Procedimiento->"+document.DefinirMantenimientoEJGForm.numeroProcedimiento.value+"<Procedimiento2->"+document.getElementById("numeroProcedimiento").value);											
