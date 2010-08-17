@@ -117,7 +117,8 @@ public class AdmConsultaInformeAdm extends MasterBeanAdministrador {
 			ArrayList<HashMap<String, String>> listaFiltros)
 	{
 		String sentencia = consulta.getSentencia();
-		sentencia = sentencia.toUpperCase();
+		
+		// quitando saltos de linea (para que salga mejor en LOG)
 		sentencia = sentencia.replaceAll("\n", " ");
 		
 		// reemplazando filtros
@@ -127,7 +128,7 @@ public class AdmConsultaInformeAdm extends MasterBeanAdministrador {
 			obligatorio = filtro.get(AdmTipoFiltroInformeBean.C_OBLIGATORIO);
 			valor = filtro.get("VALOR");
 			
-			if (sentencia.toUpperCase().indexOf(nombreCampo) > -1)
+			if (sentencia.indexOf(nombreCampo) > -1)
 				sentencia = sentencia.replaceAll(nombreCampo, valor);
 			else if (obligatorio == ClsConstants.DB_TRUE && consulta.getGeneral() == ClsConstants.DB_FALSE)
 				return null; // no estan todos los filtros obligatorios
