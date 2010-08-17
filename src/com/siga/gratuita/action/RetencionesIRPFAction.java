@@ -185,10 +185,13 @@ public class RetencionesIRPFAction extends MasterAction {
 		try {
 			//Si vengo del menu de censo miro los datos colegiales para mostrar por pantalla:
 			if (request.getSession().getAttribute("entrada")!=null && request.getSession().getAttribute("entrada").equals("2")) {
+				String idPersona = (String)request.getSession().getAttribute("idPersonaTurno");
+				UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+				String idInstitucion = usr.getLocation();
 				try {
 					// Preparo para obtener la informacion del colegiado:
-					idPers = new Long(request.getParameter("idPersonaPestanha"));
-					idInstPers = new Integer(request.getParameter("idInstitucionPestanha"));
+					idPers = new Long(idPersona);
+					idInstPers = new Integer(idInstitucion);
 					CenPersonaAdm personaAdm = new CenPersonaAdm(this.getUserBean(request));
 					CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm(this.getUserBean(request));
 		
