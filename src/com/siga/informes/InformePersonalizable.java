@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
-import org.apache.batik.dom.util.HashTable;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 
@@ -20,7 +19,6 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.PaginadorCaseSensitiveBind;
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.beans.AdmConsultaInformeAdm;
@@ -39,6 +37,9 @@ import com.siga.informes.form.MantenimientoInformesForm;
 
 public class InformePersonalizable extends MasterReport
 {
+	// Informes personalizables
+	public static final String I_CERTIFICADOPAGO = "CERPA";
+	
 	/**
 	 * Invoca a la generacion de formulario personalizado pasandole los datos
 	 * del formulario y el tipo
@@ -80,17 +81,16 @@ public class InformePersonalizable extends MasterReport
 			    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 				AdmTipoInformeAdm admT = new AdmTipoInformeAdm(usr);
 				AdmTipoInformeBean beanT = admT.obtenerTipoInforme(idtipoinforme);
-				String nombreFicheroZIP = beanT.getDescripcion().trim() + "_"
-						+ UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/", "").replaceAll(":", "").replaceAll(" ", "");
 				String rutaServidorDescargasZip = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")
-						+ rp.returnProperty("informes.directorioPlantillaInformesJava");
-				rutaServidorDescargasZip += ClsConstants.FILE_SEP
-						+ idinstitucion + ClsConstants.FILE_SEP + "temp"
-						+ File.separator;
+						+ ClsConstants.FILE_SEP
+						+ idinstitucion + ClsConstants.FILE_SEP
+						+ "temp" + ClsConstants.FILE_SEP;
+				String nombreFicheroZIP = beanT.getDescripcion().trim() + "_"
+						+ UtilidadesBDAdm.getFechaCompletaBD("").
+								replaceAll("/", "").replaceAll(":", "").replaceAll(" ", "");
 				File ruta = new File(rutaServidorDescargasZip);
 				ruta.mkdirs();
-				Plantilla.doZip(rutaServidorDescargasZip, nombreFicheroZIP,
-						listaFicheros);
+				Plantilla.doZip(rutaServidorDescargasZip, nombreFicheroZIP, listaFicheros);
 				
 				request.setAttribute("rutaFichero", rutaServidorDescargasZip + nombreFicheroZIP + ".zip");
 			}
@@ -109,6 +109,16 @@ public class InformePersonalizable extends MasterReport
 		return salida;
 	}
 	
+	/**
+	 * Genera un informe
+	 * 
+	 * @param informe
+	 * @param filtrosInforme
+	 * @param request
+	 * @return File (fichero con el informe generado)
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
 	protected File generarInforme(AdmInformeBean informe,
 								  ArrayList<HashMap<String, String>> filtrosInforme,
 								  HttpServletRequest request)
@@ -118,26 +128,21 @@ public class InformePersonalizable extends MasterReport
 		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 		
 		// obtenemos la plantilla
+		String idinstitucionInforme = informe.getIdInstitucion().toString();
 		String idinstitucion = usr.getLocation();
 		String idiomainforme = usr.getLanguageExt();
 		ReadProperties rp = new ReadProperties(
 				SIGAReferences.RESOURCE_FILES.SIGA);
-		String rutaPl = rp
-				.returnProperty("informes.directorioFisicoPlantillaInformesJava")
-				+ rp.returnProperty("informes.directorioPlantillaInformesJava")
+		String rutaPl = rp.returnProperty("informes.directorioFisicoPlantillaInformesJava")
 				+ ClsConstants.FILE_SEP
-				+ idinstitucion
-				+ ClsConstants.FILE_SEP
-				+ informe.getDirectorio() + ClsConstants.FILE_SEP;
+				+ informe.getDirectorio() + ClsConstants.FILE_SEP
+				+ idinstitucionInforme + ClsConstants.FILE_SEP;
 		String nombrePlantilla = informe.getNombreFisico() + "_"
 				+ idiomainforme + ".doc";
-		String rutaAlm = rp
-				.returnProperty("informes.directorioFisicoSalidaInformesJava")
-				+ rp.returnProperty("informes.directorioPlantillaInformesJava")
+		String rutaAlm = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")
 				+ ClsConstants.FILE_SEP
-				+ idinstitucion
-				+ ClsConstants.FILE_SEP
-				+ informe.getDirectorio();
+				+ informe.getDirectorio() + ClsConstants.FILE_SEP
+				+ idinstitucionInforme + ClsConstants.FILE_SEP;
 
 		// obtenemos los tipos de filtros obligatorios
 		AdmTipoFiltroInformeAdm tipoFiltroAdm = new AdmTipoFiltroInformeAdm(usr);

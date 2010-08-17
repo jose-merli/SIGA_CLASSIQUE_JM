@@ -82,7 +82,8 @@ public class MantenimientoInformesAction extends MasterAction {
 							obtenerDatosFormCertificadoPago(formulario, request);
 					InformePersonalizable inf = new InformePersonalizable();
 					mapDestino = inf.generarInformes(mapping,
-							formulario, request, response, "CERPA", filtrosInforme);
+							formulario, request, response, 
+							InformePersonalizable.I_CERTIFICADOPAGO, filtrosInforme);
 					return mapping.findForward(mapDestino);/**/
 				} else if (miForm.getModo().equalsIgnoreCase(
 						"generarInformeIRPF")) {
