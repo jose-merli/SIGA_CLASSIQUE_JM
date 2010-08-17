@@ -87,7 +87,8 @@
 				document.partidosJud.action= "<%=app%>/html/jsp/gratuita/partidosJudiciales.jsp";
 				document.partidosJud.idinstitucion.value="<%=usr.getLocation()%>";
 				document.partidosJud.idzona.value=document.forms[0].zona.value;
-				document.partidosJud.idsubzona.value=obj.value;
+				document.partidosJud.idsubzona.value=obj.value;			
+				
 				document.partidosJud.submit();
 			};
 		}
@@ -130,24 +131,32 @@
 			<siga:Idioma key="gratuita.definirTurnosIndex.literal.area"/>
 		</td>
 						
-		<td>
+		<td>		
 			<%
 			String [] parametroMateria = null;
 			ArrayList vArea = new ArrayList();
 			try {
 				String area = (String)hash.get("IDAREA");
-				if (area!=null && !area.equals("-1")){
+				
+				if (area!=null && !area.equals("-1")){					
+					vArea.add(usr.getLocation()+","+(String)hash.get("IDAREA"));
 					parametroMateria = new String[]{usr.getLocation(),area};
-					vArea.add(area); 
 				}
+				
 				else {
 					vArea.add("0");
+					 
 				}
 			} catch (Exception e) {
 				vArea.add("0");
-			} %>									
-			<siga:ComboBD nombre="area" tipo="area" estilo="true" clase="boxCombo" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" elementoSel="<%=vArea%>" obligatorio="false" accion="Hijo:materia"/>
-			<script> document.forms[0].area[0].value=-1;</script>
+			}
+			
+			%>									
+			
+			<siga:ComboBD nombre="area" tipo="area" clase="boxCombo"  parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" elementoSel="<%=vArea%>" obligatorio="false" accion="Hijo:materia"/>
+			<script> document.forms[0].area[0].value=-1;</script>		
+		
+		
 		</td>
 		
 		<td class="labelText"> 
@@ -155,7 +164,7 @@
 			try {
 				String materia = (String)hash.get("IDMATERIA");
 				if (materia != null && !materia.equals("-1")){
-					vMateria.add (materia);
+					vMateria.add ((String)hash.get("IDMATERIA"));
 				}
 				else {
 					vMateria.add("0");
@@ -163,19 +172,19 @@
 				}
 			} catch (Exception e) {
 				vMateria.add("0");
-			} %>	
+			} %>			
+			
+			
 			<siga:Idioma key="gratuita.definirTurnosIndex.literal.materia"/>
 		</td> 
-		<td>    
-		
+	<td>		    
 			<siga:ComboBD nombre="materia" tipo="materia" parametro="<%=parametroMateria%>" elementoSel="<%=vMateria%>" clase="boxCombo"  hijo="t"/>
 		</td>
 	</tr>
 	<tr>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.definirTurnosIndex.literal.zona"/>
-		</td>
-						
+		</td>						
 		<td>
 			<%
 			String [] parametroSubZona = null;
