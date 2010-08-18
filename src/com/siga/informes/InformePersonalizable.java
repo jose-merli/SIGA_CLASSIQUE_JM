@@ -136,13 +136,13 @@ public class InformePersonalizable extends MasterReport
 		String rutaPl = rp.returnProperty("informes.directorioFisicoPlantillaInformesJava")
 				+ ClsConstants.FILE_SEP
 				+ informe.getDirectorio() + ClsConstants.FILE_SEP
-				+ idinstitucionInforme + ClsConstants.FILE_SEP;
+				+ (idinstitucionInforme.equals("0") ? "2000" : idinstitucionInforme) + ClsConstants.FILE_SEP;
 		String nombrePlantilla = informe.getNombreFisico() + "_"
 				+ idiomainforme + ".doc";
 		String rutaAlm = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")
 				+ ClsConstants.FILE_SEP
 				+ informe.getDirectorio() + ClsConstants.FILE_SEP
-				+ idinstitucionInforme + ClsConstants.FILE_SEP;
+				+ (idinstitucionInforme.equals("0") ? "2000" : idinstitucionInforme) + ClsConstants.FILE_SEP;
 
 		// obtenemos los tipos de filtros obligatorios
 		AdmTipoFiltroInformeAdm tipoFiltroAdm = new AdmTipoFiltroInformeAdm(usr);
