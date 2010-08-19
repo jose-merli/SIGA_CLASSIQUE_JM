@@ -424,7 +424,7 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 			consulta += " AND guardia."+ScsGuardiasTurnoBean.C_IDTURNO+"(+)=saltos."+ScsSaltosCompensacionesBean.C_IDTURNO;
 			consulta += " AND guardia."+ScsGuardiasTurnoBean.C_IDGUARDIA+"(+)=saltos."+ScsSaltosCompensacionesBean.C_IDGUARDIA;
 			//ORDENACION
-			consulta += " ORDER BY saltos."+ScsSaltosCompensacionesBean.C_FECHA;
+			consulta += " ORDER BY saltos."+ScsSaltosCompensacionesBean.C_FECHA+" desc";
 		}
 		catch (Exception e) {
 			throw new ClsExceptions (e, "Excepcion en ScsSaltosCompensacionesAdm.buscar() en la consulta:"+consulta);
