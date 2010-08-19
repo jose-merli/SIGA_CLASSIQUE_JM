@@ -964,15 +964,16 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		sql.append("       null, 'gratuita.pagos.porCaja', 'gratuita.pagos.porBanco'), "+idioma+") ");
 		sql.append("       as FORMADEPAGO ");
 		
-		sql.append("  from FCS_PAGO_COLEGIADO pc ");
+		sql.append("  from FCS_PAGO_COLEGIADO pc, cen_persona cen ");
 		sql.append(" where pc.IDINSTITUCION = "+idInstitucion+" ");
 		sql.append("   and pc.IDPAGOSJG = nvl("+idPagosJg+", pc.IDPAGOSJG) ");
 		sql.append("   and pc.IDPERORIGEN = nvl("+idPersona+", pc.IDPERORIGEN) ");
+		sql.append("   and cen.idpersona = nvl("+idPersona+", pc.IDPERORIGEN) ");
+		
 		if (irpf)
 			sql.append(
-					"  and impirpf > 0 ");
-		
-		sql.append(" group by pc.IDPERORIGEN, pc.IDPERDESTINO, pc.IDPAGOSJG, pc.IDINSTITUCION ");
+					"  and impirpf > 0 ");		
+		sql.append(" group by cen.apellidos1,cen.apellidos2, pc.IDPERORIGEN, pc.IDPERDESTINO, pc.IDPAGOSJG, pc.IDINSTITUCION ");
 		
 		return sql.toString();
 	} //getQueryDetallePagoColegiado()
