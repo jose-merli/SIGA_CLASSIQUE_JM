@@ -51,6 +51,7 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 	private String CONTABILIDAD_IVA 		= "";
 	private String CONTABILIDAD_TARJETAS 	= "";
 	private String CONTABILIDAD_CAJA 		= "";
+	private String CONTAB_CAJA_ABONO		= "";	
 	private String CONTABILIDAD_COMPENSACION = "";
 	private String CONTABILIDAD_CAJA_ANTICIPOS	= "";
 	private String CONTABILIDAD_INGRESOS_EXTRA	= "";
@@ -3901,6 +3902,7 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 	    // RGG 21/11/2007
 		String concepto 		= "";
 		String asientoContable 	= null;
+		String asientoContableCajaAbono="";
 		// Variables
 		Vector vAbono 	= null;
 		Hashtable hash 		= null, laHash 	= null;
@@ -3942,6 +3944,9 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 				
 				String asientoCompensacionCliente = CONTABILIDAD_COMPENSACION + asientoContable;
 				
+				
+				asientoContableCajaAbono=CONTAB_CAJA_ABONO;
+				
 				Hashtable a = new Hashtable();
 				
 				if (compensado!=null && compensado.trim().equals("1")) {
@@ -3955,7 +3960,7 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 					UtilidadesHash.set(a, "HABER", 			"0");
 					UtilidadesHash.set(a, "BASEIMPONIBLE", 	"");
 					UtilidadesHash.set(a, "IVA", 			"");
-					UtilidadesHash.set(a, "CONTRAPARTIDA", 	asientoContable);
+					UtilidadesHash.set(a, "CONTRAPARTIDA", 	asientoContableCajaAbono);
 					pwcontabilidad.write(this.generarLineaAbono(asiento, a));
 					
 					// Escribimos 2º asiento
@@ -3963,7 +3968,7 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 					UtilidadesHash.set(a, "FECHA", 			UtilidadesHash.getShortDate(hash, "FECHA"));
 					UtilidadesHash.set(a, "CONCEPTO", 		concepto);
 					UtilidadesHash.set(a, "DOCUMENTO", 		UtilidadesHash.getString(hash, "NUMEROABONO"));
-					UtilidadesHash.set(a, "CUENTA", 		asientoContable);
+					UtilidadesHash.set(a, "CUENTA", 		asientoContableCajaAbono);
 					UtilidadesHash.set(a, "DEBE", 			"0");
 					UtilidadesHash.set(a, "HABER", 			imp);
 					UtilidadesHash.set(a, "BASEIMPONIBLE", 	"");
@@ -4433,7 +4438,7 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 			CONTAB_VENTAS_PRODUCTOS = genParametros.getValor(idInstitucion.toString(),"FAC","CONTAB_VENTAS_PRODUCTOS",null);
 			CONTAB_VENTAS_SERVICIOS = genParametros.getValor(idInstitucion.toString(),"FAC","CONTAB_VENTAS_SERVICIOS",null);
 			CONTAB_IRPF = genParametros.getValor(idInstitucion.toString(),"FAC","CONTAB_IRPF",null);
-			
+			CONTAB_CAJA_ABONO = genParametros.getValor(idInstitucion.toString(),"FAC","CONTAB_CAJA_ABONO",null);
 		}
 		catch(Exception e)
 		{
