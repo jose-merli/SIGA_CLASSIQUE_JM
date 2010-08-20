@@ -4,23 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.Iterator;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.ClsLogging;
-import com.atos.utils.ComodinBusquedas;
-import com.atos.utils.GstDate;
-import com.atos.utils.Row;
-import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.Utilidades.UtilidadesString;
-import com.siga.administracion.SIGAConstants;
-import com.siga.consultas.CriterioDinamico;
-import com.siga.consultas.form.RecuperarConsultasForm;
 import com.siga.general.SIGAException;
 
 public class AdmConsultaInformeAdm extends MasterBeanAdministrador {
