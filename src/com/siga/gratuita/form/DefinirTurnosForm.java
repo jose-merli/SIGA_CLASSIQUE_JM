@@ -20,6 +20,17 @@ public class DefinirTurnosForm extends MasterForm {
 	public String activarAsistenciasLetrado = "";
 	public String incluirRegistrosConBajaLogica = "S";
 	
+	String codigoExterno="";
+	
+	
+	public String getCodigoExterno() {
+		return codigoExterno;
+	}
+
+	public void setCodigoExterno(String codigoExterno) {
+		this.codigoExterno = codigoExterno;
+	}
+
 	public DefinirTurnosForm() {
 		//Creación del array de arrays para guardar los criterios de ordenación
 		for (int i=0;i<numCriterios;i++) {

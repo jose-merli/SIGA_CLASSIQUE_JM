@@ -32,7 +32,17 @@
 	Hashtable turno = (Hashtable) ses.getAttribute("turnoElegido");
 	String validarInscripciones=(String)turno.get("VALIDARINSCRIPCIONES"); 
 	
+	String asterisco = "&nbsp(*)&nbsp";
+	int pcajgActivo = 0;
+    boolean obligatorioCodigoExterno = false;
+	if (request.getAttribute("pcajgActivo") != null) {
+		pcajgActivo = Integer.parseInt(request.getAttribute(
+				"pcajgActivo").toString());		
+	}
 	
+	if (pcajgActivo == 4){		
+		obligatorioCodigoExterno = true;
+	}
 
 	DefinirTurnosForm miform = (DefinirTurnosForm) request.getAttribute("DefinirTurnosForm");
 	request.setAttribute("BUSQUEDAREALIZADA",(String)request.getSession().getAttribute("BUSQUEDAREALIZADA"));
@@ -160,6 +170,18 @@
 			%>
 			var mensaje="<%=mensaje%>";
 			var f=document.getElementById("DefinirTurnosForm");
+		
+			if (<%=obligatorioCodigoExterno%> && document.forms[0].codigoExterno.value.length<1) {
+				<%
+				String mensajecodigoexterno = UtilidadesString.getMensajeIdioma(usr, "messages.codigoExterno.obligatoria");
+				%>
+				var error = "<%= mensajecodigoexterno%>";
+				alert(error);
+				fin();
+				return false;	
+				}			
+			
+
 			if (document.forms[0].subzona.value=="") {
 				alert(mensaje);
 				fin();
@@ -177,13 +199,14 @@
     					  }else{
 						    document.forms[0].validarAltas.value="0";
 						  }
-						 } 
+						 }					
+						  
 						document.forms[0].target="submitArea";
 						document.forms[0].modo.value="modificar";
 						document.forms[0].submit();
 						
+				 }
 				}
-			}
 		}
 
 		//Asociada al boton Siguiente -->
@@ -361,13 +384,30 @@
 		</tr>
 		<!-- línea de partidos judiciales -->
 		<tr>		
-			<td class="labelText">
+			<td class="labelText" >
 				<siga:Idioma key="gratuita.definirTurnosIndex.literal.partidoJudicial"/>
 			</td>
-			<td colspan="3">
-				<iframe ID="partidosjudiciales" name="partidosjudiciales"  src="<%=app%>/html/jsp/general/blank.jsp" WIDTH="700"  HEIGHT="19"  FRAMEBORDER="0"  MARGINWIDTH="0"  MARGINHEIGHT="1"  SCROLLING="no"></iframe>
+			<td >
+				<iframe ID="partidosjudiciales" name="partidosjudiciales"  src="<%=app%>/html/jsp/general/blank.jsp" WIDTH="400"  HEIGHT="35"  FRAMEBORDER="0"  MARGINWIDTH="0"  MARGINHEIGHT="1"  SCROLLING="no"></iframe>
 			</td>
-		</tr>
+			
+			 <td class="labelText" >
+				<siga:Idioma key="gratuita.maestroTurnos.literal.codigoExt"/>
+				<%
+				if (obligatorioCodigoExterno) {
+				%>
+				<%=asterisco%> 
+				<%
+ 					}
+ 				%>
+		  </td>
+		  <td >
+			<html:text name="DefinirTurnosForm" property="codigoExterno"  size="10" maxlength="10"  styleClass="Box" readOnly="false" value='<%=(String)turno.get("CODIGOEXT")%>' ></html:text>			
+		  </td>
+			
+	   </tr>
+	   
+	  
 		
 		<tr>
 			<td class="labelText" style="text-align:left"><siga:Idioma key="gratuita.definirTurnosIndex.literal.partidaPresupuestaria"/> &nbsp;(*)</td>

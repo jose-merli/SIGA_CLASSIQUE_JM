@@ -61,7 +61,8 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 				ScsTurnoBean.C_IDAREA,					ScsTurnoBean.C_IDPERSONAULTIMO,
 				ScsTurnoBean.C_IDPARTIDAPRESUPUESTARIA,	ScsTurnoBean.C_USUMODIFICACION,
 				ScsTurnoBean.C_FECHAMODIFICACION, 		ScsTurnoBean.C_ACTIVARRETRICCIONACREDIT,
-				ScsTurnoBean.C_LETRADOACTUACIONES,		ScsTurnoBean.C_LETRADOASISTENCIAS};
+				ScsTurnoBean.C_LETRADOACTUACIONES,		ScsTurnoBean.C_LETRADOASISTENCIAS, 
+				ScsTurnoBean.C_CODIGOEXT};
 		return campos;
 	}
 	/**
@@ -240,6 +241,8 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 			bean.setActivarRestriccionAcreditacion(UtilidadesHash.getString(hash,ScsTurnoBean.C_ACTIVARRETRICCIONACREDIT));
 			bean.setLetradoActuaciones(UtilidadesHash.getString(hash,ScsTurnoBean.C_LETRADOACTUACIONES));
 			bean.setLetradoAsistencias(UtilidadesHash.getString(hash,ScsTurnoBean.C_LETRADOASISTENCIAS));
+			bean.setCodigoExt(UtilidadesHash.getString(hash,ScsTurnoBean.C_CODIGOEXT));
+			
 		}
 		catch(Exception e){
 			bean = null;
@@ -288,6 +291,7 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, ScsTurnoBean.C_ACTIVARRETRICCIONACREDIT, b.getActivarRestriccionAcreditacion());
 			UtilidadesHash.set(hash, ScsTurnoBean.C_LETRADOACTUACIONES, b.getLetradoActuaciones());
 			UtilidadesHash.set(hash, ScsTurnoBean.C_LETRADOASISTENCIAS, b.getLetradoAsistencias());
+			UtilidadesHash.set(hash, ScsTurnoBean.C_CODIGOEXT, b.getCodigoExt());
 		}
 		catch (Exception e){
 			hash = null;
@@ -619,7 +623,8 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 		"  PKG_SIGA_SJCS.FUN_SJ_PARTIDOSJUDICIALES(turno.idinstitucion, turno.idsubzona, turno.idzona) partidojudicial, " +
 		" turno." + ScsTurnoBean.C_ACTIVARRETRICCIONACREDIT + " " + ScsTurnoBean.C_ACTIVARRETRICCIONACREDIT + ", " + 
 		" turno." + ScsTurnoBean.C_LETRADOACTUACIONES + " " + ScsTurnoBean.C_LETRADOACTUACIONES + ", " + 
-		" turno." + ScsTurnoBean.C_LETRADOASISTENCIAS + " " + ScsTurnoBean.C_LETRADOASISTENCIAS +  
+		" turno." + ScsTurnoBean.C_LETRADOASISTENCIAS + " " + ScsTurnoBean.C_LETRADOASISTENCIAS+","+
+		" turno." + ScsTurnoBean.C_CODIGOEXT + " " + ScsTurnoBean.C_CODIGOEXT +  
 		" from scs_turno turno, scs_area area, scs_materia materia, scs_zona zona, scs_subzona subzona, scs_partidapresupuestaria partida, cen_partidojudicial partido"+
 		" where area.idinstitucion = turno.idinstitucion"+
 		" and area.idarea = turno.idarea"+

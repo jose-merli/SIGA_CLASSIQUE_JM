@@ -16,6 +16,8 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.*;
+import com.siga.ws.CajgConfiguracion;
+
 import java.util.*;
 
 import com.siga.Utilidades.UtilidadesHash;
@@ -182,7 +184,11 @@ public class DefinirTurnosAction extends MasterAction {
 	}
 	
 	protected String nuevo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions {
+		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 		request.getSession().setAttribute("accionTurno","nuevo");
+		int tipoCAJG = CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));					
+			request.setAttribute("pcajgActivo", tipoCAJG);
+
 		return "nuevo";
 	}
 	
@@ -254,6 +260,10 @@ public class DefinirTurnosAction extends MasterAction {
 			}
 			else { 
 				hash.put (ScsTurnoBean.C_LETRADOASISTENCIAS, ClsConstants.DB_FALSE);
+			}
+			
+			if (miform.getCodigoExterno() != null) {
+				hash.put(ScsTurnoBean.C_CODIGOEXT,miform.getCodigoExterno());
 			}
 
 			insercion = prepararHash(hash);
@@ -344,6 +354,7 @@ public class DefinirTurnosAction extends MasterAction {
 		aux.put(ScsTurnoBean.C_ACTIVARRETRICCIONACREDIT,(hash.get(ScsTurnoBean.C_ACTIVARRETRICCIONACREDIT)));
 		aux.put(ScsTurnoBean.C_LETRADOACTUACIONES,(hash.get(ScsTurnoBean.C_LETRADOACTUACIONES)));
 		aux.put(ScsTurnoBean.C_LETRADOASISTENCIAS,(hash.get(ScsTurnoBean.C_LETRADOASISTENCIAS)));
+		aux.put(ScsTurnoBean.C_CODIGOEXT,(hash.get(ScsTurnoBean.C_CODIGOEXT)));
 		return aux;
 	}
 	
@@ -398,6 +409,12 @@ public class DefinirTurnosAction extends MasterAction {
 				hash.put (ScsTurnoBean.C_LETRADOASISTENCIAS, ClsConstants.DB_FALSE);
 			}
 
+			if (miform.getCodigoExterno() != null) {
+				hash.put(ScsTurnoBean.C_CODIGOEXT,miform.getCodigoExterno());
+			}
+			
+
+			
 			//Chequeo que el IDMATERIA no sea nulo:
 			if (miform.getMateria()==null || miform.getMateria().trim().equals(""))
 				return exito("gratuita.definirTurnosIndex.errorMateria",request);
@@ -772,6 +789,12 @@ public class DefinirTurnosAction extends MasterAction {
 			//Datos del Turno:
 			ScsTurnoAdm turnoAdm = new ScsTurnoAdm(this.getUserBean(request));
 			Hashtable miTurno = turnoAdm.getDatosTurno(usr.getLocation(), idTurno);
+			
+			int tipoCAJG = CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
+					
+			request.setAttribute("pcajgActivo", tipoCAJG);
+
+			
 			request.getSession().setAttribute("turnoElegido",miTurno);
 			
 			request.getSession().removeAttribute("accionTurno");

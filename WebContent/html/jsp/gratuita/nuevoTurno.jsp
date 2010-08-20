@@ -29,6 +29,19 @@
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
 	String localiz="";
 	String entrada =(String)request.getSession().getAttribute("entrada");
+	
+		String asterisco = "&nbsp(*)&nbsp";
+	int pcajgActivo = 0;
+    boolean obligatorioCodigoExterno = false;
+	if (request.getAttribute("pcajgActivo") != null) {
+		pcajgActivo = Integer.parseInt(request.getAttribute(
+				"pcajgActivo").toString());	
+		System.out.println("pcajgActivo: "+pcajgActivo);
+	}
+	
+	if (pcajgActivo == 4){		
+		obligatorioCodigoExterno = true;
+	}
 
 	DefinirTurnosForm miform = (DefinirTurnosForm) request.getAttribute("DefinirTurnosForm");
 	
@@ -113,6 +126,17 @@
 		{	
 			sub();			
 			var f=document.getElementById("DefinirTurnosForm");
+
+			if (<%=obligatorioCodigoExterno%> && document.forms[0].codigoExterno.value.length<1) {
+				<%
+				String mensajecodigoexterno = UtilidadesString.getMensajeIdioma(usr, "messages.codigoExterno.obligatoria");
+				%>
+				var error = "<%= mensajecodigoexterno%>";
+				alert(error);
+				fin();
+				return false;	
+				}	
+			
 			if (document.forms[0].subzona.value=="") {
 				alert('<siga:Idioma key="messages.subzona.obligatoria"/>');
 				fin();
@@ -205,9 +229,23 @@
 		<td class="labelText">
 			<siga:Idioma key="gratuita.definirTurnosIndex.literal.partidoJudicial"/>
 		</td>
-		<td colspan="3">
-			<iframe ID="partidosjudiciales" name="partidosjudiciales"  src="<%=app%>/html/jsp/general/blank.jsp" WIDTH="700"  HEIGHT="19"  FRAMEBORDER="0"  MARGINWIDTH="0"  MARGINHEIGHT="1"  SCROLLING="no"></iframe>
+		<td >
+			<iframe ID="partidosjudiciales" name="partidosjudiciales"  src="<%=app%>/html/jsp/general/blank.jsp" WIDTH="400"  HEIGHT="35"  FRAMEBORDER="0"  MARGINWIDTH="0"  MARGINHEIGHT="1"  SCROLLING="no"></iframe>
 		</td>
+		
+		<td class="labelText" >
+				<siga:Idioma key="gratuita.maestroTurnos.literal.codigoExt"/>
+				<%
+				if (obligatorioCodigoExterno) {
+				%>
+				<%=asterisco%> 
+				<%
+ 					}
+ 				%>
+		  </td>
+		  <td >
+			<html:text name="DefinirTurnosForm" property="codigoExterno"  size="10" maxlength="10"  styleClass="Box" readOnly="false" value="" ></html:text>			
+		  </td>
 	</tr>
 <tr>
 		<td class="labelText" style="text-align:left"><siga:Idioma key="gratuita.definirTurnosIndex.literal.partidaPresupuestaria"/>&nbsp;(*) </td>
