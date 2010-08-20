@@ -391,7 +391,8 @@
 				<iframe ID="partidosjudiciales" name="partidosjudiciales"  src="<%=app%>/html/jsp/general/blank.jsp" WIDTH="400"  HEIGHT="35"  FRAMEBORDER="0"  MARGINWIDTH="0"  MARGINHEIGHT="1"  SCROLLING="no"></iframe>
 			</td>
 			
-			 <td class="labelText" >
+			 <td class="labelText" >			 
+			 
 				<siga:Idioma key="gratuita.maestroTurnos.literal.codigoExt"/>
 				<%
 				if (obligatorioCodigoExterno) {
@@ -402,7 +403,11 @@
  				%>
 		  </td>
 		  <td >
-			<html:text name="DefinirTurnosForm" property="codigoExterno"  size="10" maxlength="10"  styleClass="Box" readOnly="false" value='<%=(String)turno.get("CODIGOEXT")%>' ></html:text>			
+		  <%if (accion.equalsIgnoreCase("ver")){%>
+		    <html:text name="DefinirTurnosForm" property="codigoExterno"  size="10" maxlength="10"  styleClass="boxConsulta" readOnly="true" value='<%=(String)turno.get("CODIGOEXT")%>' ></html:text>			
+		<%}else{%>				
+			<html:text name="DefinirTurnosForm" property="codigoExterno"  size="10" maxlength="10"  styleClass="Box" readOnly="false" value='<%=(String)turno.get("CODIGOEXT")%>' ></html:text>
+		<%}%>	
 		  </td>
 			
 	   </tr>
