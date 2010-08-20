@@ -35,8 +35,10 @@ public class ScsTurnoBean extends MasterBean{
 	private String      activarRestriccionAcreditacion;
 	private String      letradoAsistencias;
 	private String      letradoActuaciones;
+	private String     codigoExt;
 	
 	/* Nombre de Tabla*/
+	
 	
 	static public String T_NOMBRETABLA = "SCS_TURNO";
 	
@@ -65,8 +67,21 @@ public class ScsTurnoBean extends MasterBean{
 	
 	static public final String  C_LETRADOASISTENCIAS		= "LETRADOASISTENCIAS";
 	static public final String  C_LETRADOACTUACIONES		= "LETRADOACTUACIONES";
-		
-	/*Metodos SET*/
+	static public final String  C_CODIGOEXT    		        = "CODIGOEXT";
+	
+	
+		/*Metodos SET*/
+
+	/**
+	 * Almacena en la Bean el identificador de la institucion "CodigoExt" 
+	 * 
+	 * @param valor String codigoExt. De tipo "String". 
+	 * @return void 
+	 */	
+	public void setCodigoExt(String codigoExt) {
+		this.codigoExt = codigoExt;
+	}
+	
 	/**
 	 * Almacena en la Bean el identificador de la institucion "idInstitucion" 
 	 * 
@@ -195,6 +210,18 @@ public class ScsTurnoBean extends MasterBean{
 	public void setIdPersonaUltimo			(Integer valor)		{ this.idPersonaUltimo = valor;}
 	
 	/*Metodos GET*/
+	
+	/**
+	 * Recupera del Bean el valor  codigoExt.  
+	 * 
+	 * @return Valor codigoExt. De tipo "String" 
+	 */
+	public String getCodigoExt() {
+		return codigoExt;
+	}	
+		
+	
+	
 	/**
 	 * Recupera del Bean el valor idInstitucion.  
 	 * 
@@ -307,6 +334,7 @@ public class ScsTurnoBean extends MasterBean{
 	 * @return Valor idPersonaUltimo. De tipo "Long" 
 	 */
 	public Integer getIdPersonaUltimo			()	{ return this.idPersonaUltimo;}
+	
 	
 	
 	public String getActivarRestriccionAcreditacion() {
