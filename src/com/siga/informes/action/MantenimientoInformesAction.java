@@ -153,7 +153,7 @@ public class MantenimientoInformesAction extends MasterAction {
 		try {
 			idinstitucion = usr.getLocation();
 			idpago = request.getParameter("idPago");
-			idioma = request.getParameter("idioma").toUpperCase();
+			idioma = usr.getLanguage();
 		} catch(Exception e) {
 			throwExcp("messages.general.error",
 					new String[] { "modulo.facturacionSJCS" }, e, null);

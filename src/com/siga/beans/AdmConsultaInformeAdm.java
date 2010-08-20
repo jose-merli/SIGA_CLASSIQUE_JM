@@ -31,8 +31,9 @@ public class AdmConsultaInformeAdm extends MasterBeanAdministrador {
 
 	protected String[] getCamposBean() {
 		String[] campos = { AdmConsultaInformeBean.C_IDINSTITUCION,
-				AdmConsultaInformeBean.C_IDCONSULTA,
 				AdmConsultaInformeBean.C_IDPLANTILLA,
+				AdmConsultaInformeBean.C_IDINSTITUCION_CONSULTA,
+				AdmConsultaInformeBean.C_IDCONSULTA,
 				AdmConsultaInformeBean.C_NOMBRE,
 				AdmConsultaInformeBean.C_VARIASLINEAS,
 				AdmConsultaInformeBean.C_FECHAMODIFICACION,
@@ -56,8 +57,9 @@ public class AdmConsultaInformeAdm extends MasterBeanAdministrador {
 		try {
 			bean = new AdmConsultaInformeBean();
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash, AdmConsultaInformeBean.C_IDINSTITUCION));
-			bean.setIdConsulta(UtilidadesHash.getInteger(hash, AdmConsultaInformeBean.C_IDCONSULTA));
 			bean.setIdPlantilla(UtilidadesHash.getString(hash, AdmConsultaInformeBean.C_IDPLANTILLA));
+			bean.setIdInstitucion_consulta(UtilidadesHash.getInteger(hash, AdmConsultaInformeBean.C_IDINSTITUCION_CONSULTA));
+			bean.setIdConsulta(UtilidadesHash.getInteger(hash, AdmConsultaInformeBean.C_IDCONSULTA));
 			bean.setNombre(UtilidadesHash.getString(hash, AdmConsultaInformeBean.C_NOMBRE));
 			bean.setVariasLineas(UtilidadesHash.getString(hash, AdmConsultaInformeBean.C_VARIASLINEAS));
 			bean.setFechaMod(UtilidadesHash.getString(hash, AdmConsultaInformeBean.C_FECHAMODIFICACION));
@@ -74,8 +76,9 @@ public class AdmConsultaInformeAdm extends MasterBeanAdministrador {
 		try {
 			bean = new AdmConsultaInformeConsultaBean();
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash, AdmConsultaInformeConsultaBean.C_IDINSTITUCION));
-			bean.setIdConsulta(UtilidadesHash.getInteger(hash, AdmConsultaInformeConsultaBean.C_IDCONSULTA));
 			bean.setIdPlantilla(UtilidadesHash.getString(hash, AdmConsultaInformeConsultaBean.C_IDPLANTILLA));
+			bean.setIdInstitucion_consulta(UtilidadesHash.getInteger(hash, AdmConsultaInformeConsultaBean.C_IDINSTITUCION_CONSULTA));
+			bean.setIdConsulta(UtilidadesHash.getInteger(hash, AdmConsultaInformeConsultaBean.C_IDCONSULTA));
 			bean.setNombre(UtilidadesHash.getString(hash, AdmConsultaInformeConsultaBean.C_NOMBRE));
 			bean.setVariasLineas(UtilidadesHash.getString(hash, AdmConsultaInformeConsultaBean.C_VARIASLINEAS));
 			bean.setDescripcion(UtilidadesHash.getString(hash, AdmConsultaInformeConsultaBean.C_DESCRIPCION));
@@ -96,8 +99,9 @@ public class AdmConsultaInformeAdm extends MasterBeanAdministrador {
 			htData = new Hashtable();
 			AdmConsultaInformeBean b = (AdmConsultaInformeBean) bean;
 			UtilidadesHash.set(htData, AdmConsultaInformeBean.C_IDINSTITUCION, b.getIdInstitucion());
-			UtilidadesHash.set(htData, AdmConsultaInformeBean.C_IDCONSULTA, b.getIdConsulta());
 			UtilidadesHash.set(htData, AdmConsultaInformeBean.C_IDPLANTILLA, b.getIdPlantilla());
+			UtilidadesHash.set(htData, AdmConsultaInformeBean.C_IDINSTITUCION_CONSULTA, b.getIdInstitucion_consulta());
+			UtilidadesHash.set(htData, AdmConsultaInformeBean.C_IDCONSULTA, b.getIdConsulta());
 			UtilidadesHash.set(htData, AdmConsultaInformeBean.C_NOMBRE, b.getNombre());
 			UtilidadesHash.set(htData, AdmConsultaInformeBean.C_VARIASLINEAS, b.getVariasLineas());
 			UtilidadesHash.set(htData, AdmConsultaInformeBean.C_FECHAMODIFICACION, b.getFechaMod());
@@ -153,7 +157,7 @@ public class AdmConsultaInformeAdm extends MasterBeanAdministrador {
 		String sentencia = 
 			"select * " +
 			"  from "+AdmConsultaInformeBean.T_NOMBRETABLA+" inf, "+ConConsultaBean.T_NOMBRETABLA+" con " +
-			" where inf."+AdmConsultaInformeBean.C_IDINSTITUCION+" = con."+ConConsultaBean.C_IDINSTITUCION+" " +
+			" where inf."+AdmConsultaInformeBean.C_IDINSTITUCION_CONSULTA+" = con."+ConConsultaBean.C_IDINSTITUCION+" " +
 			"   and inf."+AdmConsultaInformeBean.C_IDCONSULTA+" = con."+ConConsultaBean.C_IDCONSULTA+" " +
 			"   and inf."+AdmConsultaInformeBean.C_IDINSTITUCION+" = "+htPlantilla.get(AdmConsultaInformeBean.C_IDINSTITUCION)+" " +
 			"   and inf."+AdmConsultaInformeBean.C_IDPLANTILLA+" = '"+htPlantilla.get(AdmConsultaInformeBean.C_IDPLANTILLA)+"' ";

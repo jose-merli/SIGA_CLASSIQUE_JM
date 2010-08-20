@@ -3663,9 +3663,6 @@
 
 <!-- INICIO: MantenimientoInformesForm para Pagos 30-05-2005 -->
     <form name="mantenimientoInformesForm">
-        <field property = "idioma" depends = "required">
-            <arg0 key="factSJCS.datosPagos.literal.idioma"/>
-        </field>
         <field property = "idPago" depends = "required">
             <arg0 key="factSJCS.datosPagos.literal.pago"/>
         </field>
