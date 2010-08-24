@@ -40,6 +40,7 @@ public class HistoricoAction extends MasterAction {
 		String result="abrir";
 		String numero = "";
 		String nombre = "";
+		String estadoColegial="";
 
 		try{
 			// Obtengo el UserBean y el identificador de la institucion
@@ -73,6 +74,7 @@ public class HistoricoAction extends MasterAction {
 			CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm(this.getUserBean(request));
 			CenColegiadoBean datosColegiales = colegiadoAdm.getDatosColegiales(idPersona, new Integer(idInstitucionPersona));
 			numero = colegiadoAdm.getIdentificadorColegiado(datosColegiales);
+			estadoColegial = clienteAdm.getEstadoColegial(String.valueOf(idPersona), String.valueOf(idInstitucionPersona));
 			//////////////////////
 			
 			// Paso de parametros empleando request
@@ -81,6 +83,7 @@ public class HistoricoAction extends MasterAction {
 			request.setAttribute("ACCION", accion);
 			request.setAttribute("NOMBRE", nombre);
 			request.setAttribute("NUMERO", numero);
+			request.setAttribute("ESTADOCOLEGIAL", estadoColegial);
 				
 			// idPersona, accion e idInstitucionPersona los guardo en session porque me interesa 
 			// acceder a ellos en varios lugares

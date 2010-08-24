@@ -17,6 +17,7 @@ import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
@@ -49,6 +50,7 @@ public class DefinirTurnosLetradoAction extends MasterAction {
 		String forward="";
 		String numero = "";
 		String nombre = "";
+		String estado = "";
 		CenColegiadoBean datosColegiales;	
 
 		try{
@@ -65,6 +67,7 @@ public class DefinirTurnosLetradoAction extends MasterAction {
 					nombre = personaAdm.obtenerNombreApellidos(String.valueOf(idPers));
 					datosColegiales = colegiadoAdm.getDatosColegiales(idPers,idInstPers);
 					numero = colegiadoAdm.getIdentificadorColegiado(datosColegiales);
+					
 				} catch (Exception e1){
 					try {
 						Hashtable datosColegiado = (Hashtable)request.getSession().getAttribute("DATOSCOLEGIADO");
@@ -80,6 +83,7 @@ public class DefinirTurnosLetradoAction extends MasterAction {
 			Hashtable datosColegiado = new Hashtable();
 			datosColegiado.put("NOMBRECOLEGIADO",nombre);
 			datosColegiado.put("NUMEROCOLEGIADO",numero);
+			
 			request.getSession().setAttribute("DATOSCOLEGIADO", datosColegiado);
 		
 			MasterForm miForm = (MasterForm)formulario;
@@ -224,16 +228,21 @@ public class DefinirTurnosLetradoAction extends MasterAction {
 			
 			CenPersonaAdm personaAdm = new CenPersonaAdm(this.getUserBean(request));
 			CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm(this.getUserBean(request));
+			CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserBean(request));
+			
 			String nombre = personaAdm.obtenerNombreApellidos(String.valueOf(idPersona));
 			CenColegiadoBean datosColegiales = colegiadoAdm.getDatosColegiales(idPersona,idInstitucion);
 			String numero = colegiadoAdm.getIdentificadorColegiado(datosColegiales);
+			String estado = clienteAdm.getEstadoColegial(String.valueOf(idPersona), String.valueOf(idInstitucion));
 		
 			// Almaceno la informacion del colegiado (almaceno "" si no tengo la informacion):
 			Hashtable datosColegiado = new Hashtable();
 			datosColegiado.put("NOMBRECOLEGIADO",nombre);
 			datosColegiado.put("NUMEROCOLEGIADO",numero);
+			datosColegiado.put("ESTADOCOLEGIAL",estado);
 			request.setAttribute("nombre", nombre);
 			request.setAttribute("numero", numero);
+			request.setAttribute("estadoColegial", estado);
 			request.setAttribute("IDPERSONA",idPersona);
 			request.setAttribute("IDINSTITUCION",idInstitucion);
 			request.setAttribute("accion", accion);
@@ -242,6 +251,7 @@ public class DefinirTurnosLetradoAction extends MasterAction {
 			request.getSession().setAttribute("accion", accion);
 			request.getSession().setAttribute("nombre", nombre);
 			request.getSession().setAttribute("numero", numero);
+			request.getSession().setAttribute("estadoColegial", estado);
 			request.getSession().setAttribute("bIncluirRegistrosConBajaLogica",new Boolean(bIncluirRegistrosConBajaLogica).toString());
 			
 		}catch (SIGAException e1) {

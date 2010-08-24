@@ -127,6 +127,7 @@ public class ExpedientesAction extends MasterAction{
 
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");			
 			CenPersonaAdm personaAdm = new CenPersonaAdm(this.getUserName(request),user,idInstitucionPersona.intValue(),idPersona.longValue());
+			CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserName(request),user,idInstitucionPersona.intValue(), idPersona.longValue());
 
 			CenPersonaBean personaBean = personaAdm.getIdentificador(idPersona);
 			ExpExpedienteAdm expedientesAdm = new ExpExpedienteAdm(this.getUserBean(request));
@@ -134,7 +135,7 @@ public class ExpedientesAction extends MasterAction{
 			Vector v=null;
 			String nombre = null;
 			String numero = "";
-			
+			String estadoColegial = "";
 			if (personaBean==null){
 				nombre="";
 			}
@@ -149,6 +150,7 @@ public class ExpedientesAction extends MasterAction{
 					nombre =nombre+ personaBean.getApellido2();
 				}
 				v = expedientesAdm.selectExpedientesCliente(idPersona.longValue(), idInstitucionPersona.intValue());
+				estadoColegial = clienteAdm.getEstadoColegial(String.valueOf(idPersona), String.valueOf(idInstitucionPersona));
 			}	
 			
 			request.setAttribute("idPersona", idPersona);
@@ -156,6 +158,7 @@ public class ExpedientesAction extends MasterAction{
 			request.setAttribute("vDatos", v);	
 			request.setAttribute("nombrePersona", nombre);
 			request.setAttribute("numero", numero);
+			request.setAttribute("estadoColegial", estadoColegial);
 		}
 		catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, null);

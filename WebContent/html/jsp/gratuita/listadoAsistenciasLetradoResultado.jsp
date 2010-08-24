@@ -158,21 +158,6 @@
 	</head>
 
 <body class="tablaCentralCampos" >
-		<table class="tablaTitulo" align="center" cellspacing=0>
-			<tr>
-				<td class="titulitosDatos">
-					<siga:Idioma key="censo.fichaCliente.asistencias.pestana.titulito"/>&nbsp;&nbsp;
-					<%=UtilidadesString.mostrarDatoJSP(nombrePestanha)%>&nbsp;&nbsp;
-				    <% if(numeroPestanha!= null && !numeroPestanha.equalsIgnoreCase("")) { %>
-							<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(numeroPestanha)%>
-					<% } else { %>
-						   <siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>
-					<% } %>
-				</td>
-			</tr>
-		</table>
-	<% //} %>
-
 
 	<% 	
 	

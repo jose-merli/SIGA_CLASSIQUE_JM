@@ -41,7 +41,8 @@
 	String nombre=(String)request.getAttribute("nombrePersona");
 	String numero=(String)request.getAttribute("numero");
 	String idPersona=String.valueOf((Long)request.getAttribute("idPersona"));
-	Vector vDatos=(Vector)request.getAttribute("vDatos");		
+	Vector vDatos=(Vector)request.getAttribute("vDatos");	
+	String estadoColegial=(String)request.getAttribute("estadoColegial");
 	String DB_TRUE=ClsConstants.DB_TRUE;
 	String DB_FALSE=ClsConstants.DB_FALSE;
 	String botones="N"; 
@@ -164,8 +165,9 @@
 		<tr>
 		<td class="titulitosDatos">
 			<siga:Idioma key="censo.consultaDatosBancarios.literal.titulo1"/> &nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombre)%> &nbsp;&nbsp;
-	    <%if(!numero.equalsIgnoreCase("")){%>
+	   		<%if(!numero.equalsIgnoreCase("")){%>
 					<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(numero)%>
+					<%if (!estadoColegial.equals("")){%> &nbsp; (<%=UtilidadesString.mostrarDatoJSP(estadoColegial)%>) <%}%>
 			<%} 
 			else {%>
 				   <siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>

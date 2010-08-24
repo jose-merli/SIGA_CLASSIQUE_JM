@@ -129,10 +129,12 @@ public class DireccionesAction extends MasterAction
 			Vector v = null;
 			String nombre = null;
 			String numero = "";
+			String estadoColegial="";
 			CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm (this.getUserBean(request));
 			CenColegiadoBean bean = colegiadoAdm.getDatosColegiales(idPersona, idInstitucionPersona);
 			numero = colegiadoAdm.getIdentificadorColegiado(bean);
 			nombre = personaAdm.obtenerNombreApellidos(String.valueOf(idPersona));
+			estadoColegial = clienteAdm.getEstadoColegial(String.valueOf(idPersona), String.valueOf(idInstitucionPersona));
 			
 			boolean bIncluirRegistrosConBajaLogica = UtilidadesString.stringToBoolean(((DireccionesForm)formulario).getIncluirRegistrosConBajaLogica());
 			request.setAttribute("bIncluirRegistrosConBajaLogica", "" + bIncluirRegistrosConBajaLogica);
@@ -142,6 +144,7 @@ public class DireccionesAction extends MasterAction
 			request.setAttribute("idInstitucion", idInstitucionPersona);
 			request.setAttribute("accion", accion);
 			request.setAttribute("nombrePersona", nombre);
+			request.setAttribute("estadoColegial", estadoColegial);
 			request.setAttribute("numero", numero);
 			request.setAttribute("vDatos", v);
 		}

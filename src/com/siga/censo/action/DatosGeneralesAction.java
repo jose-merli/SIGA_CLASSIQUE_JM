@@ -403,6 +403,11 @@ public class DatosGeneralesAction extends MasterAction {
 				if (!nocol.equals("")) {
 					request.setAttribute("CenDatosGeneralesNoColegiado",nocol);
 				}
+				
+				// in5755 // Recuperamos el estado colegial para mostrarlo en la cabecera
+				CenClienteAdm admCli = new CenClienteAdm(this.getUserBean(request));
+				request.setAttribute("ESTADOCOLEGIAL",admCli.getEstadoColegial(idPersona, idInstitucion));
+				
 				// Comprueba si el usuario reside en algun otro colegio
 				request.setAttribute("RESIDENTE", beanCol.getSituacionResidente());
 			}

@@ -34,6 +34,7 @@
 	//Datos del Colegiado si procede:
 	String nombrePestanha = (String)request.getAttribute("NOMBRECOLEGPESTAÑA");
 	String numeroPestanha = (String)request.getAttribute("NUMEROCOLEGPESTAÑA");
+	String estadoColegial = (String)request.getAttribute("ESTADOCOLEGIAL");
 	//Si entrada=2 venimos de la pestanha de SJCS:
 	String entrada = (String)ses.getAttribute("entrada");
 	//Si venimos del menu de Censo tenemos un alto menor ya que ponemos el nombre del colegiado:
@@ -74,6 +75,7 @@
 					<siga:Idioma key="censo.fichaCliente.proximasDesignas.pestana.titulito"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombrePestanha)%>&nbsp;&nbsp;
 				    <% if(numeroPestanha!= null && !numeroPestanha.equalsIgnoreCase("")) { %>
 							<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(numeroPestanha)%>
+							<%if (!estadoColegial.equals("")){%> &nbsp; (<%=UtilidadesString.mostrarDatoJSP(estadoColegial)%>) <%}%>
 					<% } else { %>
 						   <siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>
 					<% } %>

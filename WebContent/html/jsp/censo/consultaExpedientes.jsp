@@ -39,6 +39,7 @@
 	String nombre=(String)request.getAttribute("nombrePersona");
 	String numero=(String)request.getAttribute("numero");	
 	Vector vDatos=(Vector)request.getAttribute("vDatos");	
+	String estadoColegial=(String)request.getAttribute("estadoColegial");
 	String sTipo = request.getParameter("tipo");
 	String botones=""; 		
 	
@@ -125,6 +126,7 @@
 					<siga:Idioma key="censo.consultaExpedientes.titulo"/> &nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombre)%> &nbsp;&nbsp;
 				    <%if(!numero.equalsIgnoreCase("")){%>
 							<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(numero)%>
+							<%if (!estadoColegial.equals("")){%> &nbsp; (<%=UtilidadesString.mostrarDatoJSP(estadoColegial)%>) <%}%>
 					<%} 
 					else {%>
 						   <siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>

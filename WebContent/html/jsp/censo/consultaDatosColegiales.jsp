@@ -43,7 +43,8 @@
 	
 	String modo=(String)request.getAttribute("ACCION"); // Obtengo la accion anterior
 	String nombre=(String)request.getAttribute("NOMBRE"); // Obtengo el nombre completo de la persona
-	String numero=(String)request.getAttribute("NUMERO"); // Obtengo el numero de colegiado de la persona	
+	String numero=(String)request.getAttribute("NUMERO"); // Obtengo el numero de colegiado de la persona
+	String estadoColegial=(String)request.getAttribute("ESTADOCOLEGIAL"); // Obtengo el estado colegial de la persona	
 	String idInstitucion=(String)request.getAttribute("IDINSTITUCIONPERSONA"); // Obtengo el identificador de la institucion	
 	String residencia=(String)request.getAttribute("RESIDENTE"); // Obtengo si es editable la residencia o no
 	String botonesAccion="N";
@@ -159,6 +160,7 @@
 					<siga:Idioma key="censo.consultaDatosColegiales.literal.titulo1"/>&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombre)%>&nbsp;&nbsp;
 					<% if(!numero.equalsIgnoreCase("")){%>
 						<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>&nbsp;<%=UtilidadesString.mostrarDatoJSP(numero)%>
+						<%if (!estadoColegial.equals("")){%> &nbsp; (<%=UtilidadesString.mostrarDatoJSP(estadoColegial)%>) <%}%>
 					<% }else{ %>
 					   <siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>
 					<%}%>					

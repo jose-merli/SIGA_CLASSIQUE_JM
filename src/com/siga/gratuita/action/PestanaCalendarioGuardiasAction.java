@@ -23,6 +23,7 @@ import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenBajasTemporalesAdm;
 import com.siga.beans.CenBajasTemporalesBean;
+import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
@@ -204,6 +205,7 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 		UsrBean usr;
 		String numero = "";
 		String nombre = "";
+		String estado = "";
 		CenColegiadoBean datosColegiales;		
 		
 			try {
@@ -215,19 +217,23 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 						Integer idInstPers = new Integer(request.getParameter("idInstitucionPestanha"));
 						CenPersonaAdm personaAdm = new CenPersonaAdm(this.getUserBean(request));
 						CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm(this.getUserBean(request));
+						CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserBean(request));
 			
 						// Obtengo la informacion del colegiado:
 						nombre = personaAdm.obtenerNombreApellidos(String.valueOf(idPers));
 						datosColegiales = colegiadoAdm.getDatosColegiales(idPers,idInstPers);
 						numero = colegiadoAdm.getIdentificadorColegiado(datosColegiales);
+						estado = clienteAdm.getEstadoColegial(String.valueOf(idPers), String.valueOf(idInstPers));
 					} catch (Exception e1){
 						nombre = miForm.getNombreColegiadoPestanha();
 						numero = miForm.getNumeroColegiadoPestanha();
+						estado = "";
 					}
 				}
 				// Almaceno la informacion del colegiado (almaceno "" si no tengo la informacion):
 				request.setAttribute("NOMBRECOLEGPESTAÑA", nombre);
-				request.setAttribute("NUMEROCOLEGPESTAÑA", numero);	
+				request.setAttribute("NUMEROCOLEGPESTAÑA", numero);
+				request.setAttribute("ESTADOCOLEGIAL", estado);
 				
 				usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 

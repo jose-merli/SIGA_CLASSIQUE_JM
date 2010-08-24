@@ -53,6 +53,7 @@
 		if (numeroColegiado!=null) {
 			bColegiado=true;
 		} 
+	
 	// RGG 24-06-2005 cambio para controlar acceso a datos persona otra institucion que la creadora
 	String consultaPersona = (String) request.getAttribute("CenDatosPersonalesOtraInstitucion");
 	boolean bConsultaPersona = false;
@@ -77,7 +78,6 @@
         }else{
         	cliente = UtilidadesString.getMensajeIdioma(user,"censo.busquedaClientes.literal.sinEstadoColegial");
         }
-
 		
 		fechaCertificado = (String) request.getAttribute("CenDatosGeneralesCertificado");
 		if (fechaCertificado==null || fechaCertificado.equals("")) {
@@ -143,6 +143,8 @@
 	String fallecido = "";
 	String checkFallecido="";
 	String edad= "";
+	String estadoColegial = ""; 
+	estadoColegial = (String) request.getAttribute("ESTADOCOLEGIAL");
 	int tipoIdenNIF = ClsConstants.TIPO_IDENTIFICACION_NIF;
     int tipoIdenCIF = ClsConstants.TIPO_IDENTIFICACION_CIF;
 
@@ -848,7 +850,8 @@ function str_replace(search, replace, subject) {
 				 &nbsp; 		
 				<% if (bColegiado) { %>
 						<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>
-						 <%= UtilidadesString.mostrarDatoJSP(numeroColegiado) %>
+						 <%= UtilidadesString.mostrarDatoJSP(numeroColegiado)  %>
+						 <%if (!estadoColegial.equals("")){%> &nbsp; (<%=UtilidadesString.mostrarDatoJSP(estadoColegial)%>) <%}%>
 				<% } else { %>
 					<% if (sTipo.equalsIgnoreCase("LETRADO")) { %>
 							<siga:Idioma key="censo.fichaCliente.literal.letrado"/>

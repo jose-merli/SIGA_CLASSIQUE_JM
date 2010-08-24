@@ -13,6 +13,7 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
+import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
@@ -61,6 +62,7 @@ public class ProximasDesignasAction extends MasterAction {
 	{
 		String numero = "";
 		String nombre = "";
+		String estado = "";
 		CenColegiadoBean datosColegiales;		
 		
 		try {
@@ -99,19 +101,23 @@ public class ProximasDesignasAction extends MasterAction {
 					Integer idInstPers = new Integer(request.getParameter("idInstitucionPestanha"));
 					CenPersonaAdm personaAdm = new CenPersonaAdm(this.getUserBean(request));
 					CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm(this.getUserBean(request));
+					CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserBean(request));
 		
 					// Obtengo la informacion del colegiado:
 					nombre = personaAdm.obtenerNombreApellidos(String.valueOf(idPers));
 					datosColegiales = colegiadoAdm.getDatosColegiales(idPers,idInstPers);
 					numero = colegiadoAdm.getIdentificadorColegiado(datosColegiales);
+					estado = clienteAdm.getEstadoColegial(String.valueOf(idPers), String.valueOf(idInstPers));
 				} catch (Exception e1){
 					nombre = (String)request.getAttribute("NOMBRECOLEGPESTAÑA");
 					numero = (String)request.getAttribute("NUMEROCOLEGPESTAÑA");
+					estado="";
 				}
 			}
 			// Almaceno la informacion del colegiado (almaceno "" si no tengo la informacion):
 			request.setAttribute("NOMBRECOLEGPESTAÑA", nombre);
-			request.setAttribute("NUMEROCOLEGPESTAÑA", numero);	
+			request.setAttribute("NUMEROCOLEGPESTAÑA", numero);
+			request.setAttribute("ESTADOCOLEGIAL", estado);
 			
 			resultado = (Vector)designaAdm.selectTabla(consulta);
 			request.getSession().setAttribute("DATABACKUP",resultado);

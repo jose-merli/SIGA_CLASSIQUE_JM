@@ -197,6 +197,8 @@ public class DatosColegialesAction extends MasterAction {
 				else
 					request.getSession().setAttribute("DATABACKUP_EST",datosEstado.firstElement());
 			}			
+			// in5755 // Recuperamos el estado colegial para mostrarlo en la cabecera
+			CenClienteAdm admCli = new CenClienteAdm(this.getUserBean(request));
 			
 			// Paso de parametros empleando request
 			request.setAttribute("IDPERSONA", idPersona);
@@ -205,6 +207,7 @@ public class DatosColegialesAction extends MasterAction {
 			request.setAttribute("ACCION", accion);
 			request.setAttribute("NOMBRE", nombre);
 			request.setAttribute("NUMERO", numero);
+			request.setAttribute("ESTADOCOLEGIAL",admCli.getEstadoColegial(idPersona.toString(), idInstitucion));
 			request.setAttribute("DATCOLEGIAL", datosColegiales);
 			request.setAttribute("DATESTADO", datosEstado);
 			request.setAttribute("DATSEGURO", datosSeguro);

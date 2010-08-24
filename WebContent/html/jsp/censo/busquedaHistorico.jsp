@@ -36,7 +36,8 @@
 	Long idPersona=(Long)request.getAttribute("IDPERSONA"); // Obtengo el identificador de la persona
 	String accion=(String)request.getAttribute("ACCION"); // Obtengo la accion anterior
 	String nombre=(String)request.getAttribute("NOMBRE"); // Obtengo el nombre completo de la persona
-	String numero=(String)request.getAttribute("NUMERO"); // Obtengo el numero de colegiado de la persona	
+	String numero=(String)request.getAttribute("NUMERO"); // Obtengo el numero de colegiado de la persona
+	String estadoColegial=(String)request.getAttribute("ESTADOCOLEGIAL"); // Obtengo el estado colegial de la persona
 	String idInstitucion=(String)request.getSession().getAttribute("IDINSTITUCIONPERSONA"); // Obtengo el identificador de la institucion	
 
 	// Institucion del usuario de la aplicacion
@@ -104,6 +105,7 @@
 			<siga:Idioma key="censo.busquedaHistorico.literal.titulo1"/> &nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombre)%> &nbsp;&nbsp;
 		    <%if(!numero.equalsIgnoreCase("")){%>
 					<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(numero)%>
+					<%if (!estadoColegial.equals("")){%> &nbsp; (<%=UtilidadesString.mostrarDatoJSP(estadoColegial)%>) <%}%>
 			<%} 
 			else {%>
 				   <siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>

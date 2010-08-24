@@ -42,7 +42,8 @@
 	//String idUsr="20321016";	
 	String nombre=(String)request.getAttribute("nombrePersona");
 	String numero=(String)request.getAttribute("numero");
-	Vector vDatos=(Vector)request.getAttribute("vDatos");	
+	Vector vDatos=(Vector)request.getAttribute("vDatos");
+	String estadoColegial=(String)request.getAttribute("estadoColegial");
 	String DB_TRUE=ClsConstants.DB_TRUE;
 	String DB_FALSE=ClsConstants.DB_FALSE;	
 	String botones="N"; 
@@ -171,6 +172,7 @@
 			<siga:Idioma key="censo.consultaDirecciones.literal.titulo1"/> &nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombre)%> &nbsp;&nbsp;
 		    <%if(!numero.equalsIgnoreCase("")){%>
 					<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(numero)%>
+					<%if (!estadoColegial.equals("")){%> &nbsp; (<%=UtilidadesString.mostrarDatoJSP(estadoColegial)%>) <%}%>
 			<%} 
 			else {%>
 				   <siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>

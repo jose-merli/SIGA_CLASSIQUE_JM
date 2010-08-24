@@ -48,6 +48,7 @@
 	//Datos del Colegiado si procede:
 	String nombrePestanha = (String)request.getAttribute("NOMBRECOLEGPESTAÑA");
 	String numeroPestanha = (String)request.getAttribute("NUMEROCOLEGPESTAÑA");
+	String estadoColegial= (String)request.getAttribute("ESTADOCOLEGIAL");
 
 	//Almaceno en el request los parametros de la pestanha:
 	request.setAttribute("NOMBRECOLEGPESTAÑA",nombrePestanha);
@@ -98,6 +99,7 @@
 					<siga:Idioma key="censo.fichaCliente.calendarioGuardias.pestana.titulito"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombrePestanha)%>&nbsp;&nbsp;
 				    <% if(numeroPestanha!= null && !numeroPestanha.equalsIgnoreCase("")) { %>
 							<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(numeroPestanha)%>
+							<%if (!estadoColegial.equals("")){%> &nbsp; (<%=UtilidadesString.mostrarDatoJSP(estadoColegial)%>) <%}%>
 					<% } else { %>
 						   <siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>
 					<% } %>

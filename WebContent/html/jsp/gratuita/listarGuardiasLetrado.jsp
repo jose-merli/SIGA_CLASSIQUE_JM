@@ -33,11 +33,12 @@
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
 
 	//Datos del Colegiado si procede:
-	String nombrePestanha=null, numeroPestanha=null;
+	String nombrePestanha=null, numeroPestanha=null, estadoColegial=null;
 	try {
 		Hashtable datosColegiado = (Hashtable)request.getSession().getAttribute("DATOSCOLEGIADO");
 		nombrePestanha = (String)datosColegiado.get("NOMBRECOLEGIADO");
 		numeroPestanha = (String)datosColegiado.get("NUMEROCOLEGIADO");
+		estadoColegial = (String)datosColegiado.get("ESTADOCOLEGIAL");
 	} catch (Exception e){
 		nombrePestanha = "";
 		numeroPestanha = "";
@@ -91,6 +92,7 @@
 					<siga:Idioma key="censo.fichaCliente.guardiasInscrito.pestana.titulito"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombrePestanha)%>&nbsp;&nbsp;
 				    <% if(numeroPestanha!= null && !numeroPestanha.equalsIgnoreCase("")) { %>
 							<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(numeroPestanha)%>
+							<%if (!estadoColegial.equals("")){%> &nbsp; (<%=UtilidadesString.mostrarDatoJSP(estadoColegial)%>) <%}%>
 					<% } else { %>
 						   <siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>
 					<% } %>

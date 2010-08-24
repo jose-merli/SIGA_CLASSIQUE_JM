@@ -122,10 +122,12 @@ public class DatosCVAction extends MasterAction{
 			Vector vCliente=null;
 			String nombre = null;
 			String numero = "";
+			String estadoColegial = "";
 			CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm (this.getUserBean(request));
 			CenColegiadoBean bean = colegiadoAdm.getDatosColegiales(idPersona, idInstitucionPersona);
 			numero = colegiadoAdm.getIdentificadorColegiado(bean);
 			nombre = personaAdm.obtenerNombreApellidos(String.valueOf(idPersona));
+			estadoColegial = clienteAdm.getEstadoColegial(String.valueOf(idPersona), String.valueOf(idInstitucionPersona));
 //			String mensaje = "";
 //			if(nombre!=""){
 //				String sWhere = " where " + CenClienteBean.C_IDINSTITUCION + "=" + idInstitucion;
@@ -151,6 +153,7 @@ public class DatosCVAction extends MasterAction{
 			request.setAttribute("nombrePersona", nombre);
 			request.setAttribute("numero", numero);
 			request.setAttribute("vDatos", v);
+			request.setAttribute("estadoColegial", estadoColegial);
 		}
 		catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, null);

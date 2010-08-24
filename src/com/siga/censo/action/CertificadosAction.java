@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionMapping;
 import com.atos.utils.UsrBean;
 import com.siga.beans.AdmCertificadosAdm;
+import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
@@ -48,19 +49,23 @@ public class CertificadosAction extends MasterAction{
 			CenPersonaAdm personaAdm = new CenPersonaAdm(this.getUserName(request),usr,idInstitucionPersona.intValue(),idPersona.longValue());
 			CenPersonaBean personaBean = personaAdm.getIdentificador(idPersona);
 			AdmCertificadosAdm certificadosAdm = new AdmCertificadosAdm(this.getUserBean(request));
+			CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserName(request),usr,idInstitucionPersona.intValue(), idPersona.longValue());
 			
 			Vector v = null;
 			String nombre = null;
 			String numero = "";
+			String estadoColegial="";
 			
 			CenColegiadoBean bean = colegiadoAdm.getDatosColegiales(idPersona, idInstitucionPersona);
 			numero = colegiadoAdm.getIdentificadorColegiado(bean);
 			nombre = personaBean.getNombre() + " " + personaBean.getApellido1() + " " + personaBean.getApellido2();;
+			estadoColegial = clienteAdm.getEstadoColegial(String.valueOf(idPersona), String.valueOf(idInstitucionPersona));
 			
 			v = certificadosAdm.getCertificadosUsuario(personaBean.getNIFCIF());
 			request.setAttribute("vDatos", v);	
 			request.setAttribute("nombrePersona", nombre);
 			request.setAttribute("numero", numero);
+			request.setAttribute("estadoColegial", estadoColegial);
 		}
 		catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, null);

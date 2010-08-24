@@ -60,23 +60,6 @@
 
 <body onLoad="ajusteAlto('resultado');refrescarLocal();">
     
-				
-	<%
-		//Entrada desde el menu de Censo:
-		if (entrada.equalsIgnoreCase("2")) { %>
-		    <table class="tablaTitulo" align="center" cellspacing=0>
-			<tr>
-				<td  class="titulitosDatos">
-					<siga:Idioma key="censo.fichaCliente.retencionesIRPF.pestana.titulito"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombrePestanha)%>&nbsp;&nbsp;
-				    <% if(numeroPestanha!= null && !numeroPestanha.equalsIgnoreCase("")) { %>
-							<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(numeroPestanha)%>
-					<% } else { %>
-						   <siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>
-					<% } %>
-				</td>
-			</tr>
-			</table>
-	<% } %>
 	</table>
 	<br>
 	

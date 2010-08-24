@@ -12,6 +12,7 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
+import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
@@ -47,6 +48,7 @@ public class DefinirGuardiasLetradoAction extends MasterAction {
 		String mapDestino = "exception";
 		String numero = "";
 		String nombre = "";
+		String estado = "";
 		CenColegiadoBean datosColegiales;		
 		
 		try {
@@ -58,11 +60,13 @@ public class DefinirGuardiasLetradoAction extends MasterAction {
 					Integer idInstPers = new Integer(request.getParameter("idInstitucionPestanha"));
 					CenPersonaAdm personaAdm = new CenPersonaAdm(this.getUserBean(request));
 					CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm(this.getUserBean(request));
+					CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserBean(request));
 		
 					// Obtengo la informacion del colegiado:
 					nombre = personaAdm.obtenerNombreApellidos(String.valueOf(idPers));
 					datosColegiales = colegiadoAdm.getDatosColegiales(idPers,idInstPers);
 					numero = colegiadoAdm.getIdentificadorColegiado(datosColegiales);
+					estado = clienteAdm.getEstadoColegial(String.valueOf(idPers), String.valueOf(idInstPers));
 				} catch (Exception e1){
 					try {
 						Hashtable datosColegiado = (Hashtable)request.getSession().getAttribute("DATOSCOLEGIADO");
@@ -78,6 +82,7 @@ public class DefinirGuardiasLetradoAction extends MasterAction {
 			Hashtable datosColegiado = new Hashtable();
 			datosColegiado.put("NOMBRECOLEGIADO",nombre);
 			datosColegiado.put("NUMEROCOLEGIADO",numero);
+			datosColegiado.put("ESTADOCOLEGIAL",estado);
 			request.getSession().setAttribute("DATOSCOLEGIADO", datosColegiado);
 			
 			MasterForm miForm = null;
