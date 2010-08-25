@@ -79,32 +79,41 @@ public class ActuacionesAsistenciaLetradoAction extends MasterAction {
 			/*String where = " where IDINSTITUCION = "+usr.getLocation()+" AND "+
 			   " ANIO = "+anio+" AND NUMERO = "+numero;*/
 			/** PDM Modificada la consulta para que se obtenga tambien el nombre de la facturacion**/
-			String consulta=
-				" SELECT IDINSTITUCION,"+
-				" ANIO,"+
-				" NUMERO,"+
-				" IDACTUACION,"+
-				" FECHA,"+
-				" DIADESPUES,"+
-				" ACUERDOEXTRAJUDICIAL,"+
-				" FECHAMODIFICACION,"+
-				" USUMODIFICACION,"+
-				" FECHAJUSTIFICACION,"+
-				" DESCRIPCIONBREVE,"+
-				" LUGAR,"+
-				" NUMEROASUNTO,"+
-				" ANULACION,"+
-				" OBSERVACIONESJUSTIFICACION,"+
-				" IDFACTURACION,"+
-				" OBSERVACIONES,"+
-				" FACTURADO,"+
+			String consulta=" SELECT IDINSTITUCION,"+
+	            " ANIO,"+
+	            " NUMERO,"+
+	            " IDACTUACION,"+
+	            " FECHA,"+
+	            " DIADESPUES,"+
+	            " ACUERDOEXTRAJUDICIAL,"+
+	            " FECHAMODIFICACION,"+
+	            " USUMODIFICACION,"+
+	            " FECHAJUSTIFICACION,"+
+	            " DESCRIPCIONBREVE,"+
+	            " LUGAR,"+
+	            " NUMEROASUNTO,"+
+	            " ANULACION,"+
+	            " OBSERVACIONESJUSTIFICACION,"+
+	            " IDFACTURACION,"+
+	            " OBSERVACIONES,"+
+	            " FACTURADO,      " +
+	            " NUMEROASUNTO," +
+	            " IDPRISION," +
+	            " IDINSTITUCION_PRIS," +
+	            " (Select f_siga_getrecurso(ta.descripcion, "+usr.getLanguage()+")" +
+	            "  from scs_tipoactuacion ta" +
+	            " where ta.idtipoactuacion = "+ScsActuacionAsistenciaBean.T_NOMBRETABLA+"."+ScsActuacionAsistenciaBean.C_IDTIPOACTUACION +
+	            "   and ta.idinstitucion = "+ScsActuacionAsistenciaBean.T_NOMBRETABLA+"."+ScsActuacionAsistenciaBean.C_IDINSTITUCION +
+	            "   and ta.idtipoasistencia = "+ScsActuacionAsistenciaBean.T_NOMBRETABLA+"."+ScsActuacionAsistenciaBean.C_IDTIPOASISTENCIA+") DESCRIPCION_ACTU,"+
 				" (select "+FcsFacturacionJGBean.C_NOMBRE+"||' ('||TO_CHAR("+FcsFacturacionJGBean.C_FECHADESDE+",'DD/MM/YYYY')||'-'||TO_CHAR("+FcsFacturacionJGBean.C_FECHAHASTA+",'DD/MM/YYYY')||')'"+
 				" from "+FcsFacturacionJGBean.T_NOMBRETABLA+
 				" where "+FcsFacturacionJGBean.C_IDINSTITUCION+" = "+usr.getLocation()+
 				"   and "+FcsFacturacionJGBean.T_NOMBRETABLA+"."+FcsFacturacionJGBean.C_IDFACTURACION+" = "+ScsActuacionAsistenciaBean.T_NOMBRETABLA+"."+ScsActuacionAsistenciaBean.C_IDFACTURACION+") nombrefacturacion,"+
+				
 				/** pdm INC-xxx1**/
-				 "DECODE("+ScsActuacionAsistenciaBean.T_NOMBRETABLA+"."+ScsActuacionAsistenciaBean.C_VALIDADA+",'1','Si','No') validada"+	
-				/**/
+				 " DECODE("+ScsActuacionAsistenciaBean.T_NOMBRETABLA+"."+ScsActuacionAsistenciaBean.C_VALIDADA+",'1','Si','No') validada, "+
+				 " DECODE("+ScsActuacionAsistenciaBean.T_NOMBRETABLA+"."+ScsActuacionAsistenciaBean.C_ANULACION+",'1','Si','No') ANULADA "+//INC-4848
+				 /**/
 				"  FROM "+ScsActuacionAsistenciaBean.T_NOMBRETABLA+
 				"  where IDINSTITUCION = "+usr.getLocation()+" AND "+
 				"  ANIO = "+anio+" AND NUMERO = "+numero;

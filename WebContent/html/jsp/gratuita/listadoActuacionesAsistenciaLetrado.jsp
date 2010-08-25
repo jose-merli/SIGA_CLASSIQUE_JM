@@ -37,6 +37,11 @@
 	
 	boolean letradoActuaciones = UtilidadesString.stringToBoolean((String)request.getAttribute("LETRADOACTUACIONES"));
 
+	ArrayList TIPOASISTENCIASEL = new ArrayList();
+	String[] dato = {usr.getLocation()};
+	
+	AsistenciasForm form = (AsistenciasForm) request.getSession().getAttribute("AsistenciasForm");
+	
 %>
 <html>
 	<head>
@@ -57,8 +62,8 @@
 		String tC="";
 		String botones = "";
 		String alto="325";
-	  	nC="gratuita.listadoActuacionesAsistencia.literal.nactuacion,gratuita.listadoActuacionesAsistencia.literal.fecha,gratuita.listadoActuacionesAsistencia.literal.descripcion,gratuita.listadoActuacionesAsistencia.literal.justificado,gratuita.actuacionesDesigna.literal.validada,gratuita.actuacionesDesigna.literal.facturacion,";
-		tC="10,8,33,10,7,22,10";
+	  	nC="gratuita.listadoActuacionesAsistencia.literal.nactuacion,gratuita.listadoActuacionesAsistencia.literal.fecha,gratuita.busquedaAsistencias.literal.fechaAsistencia,informes.cartaOficio.numAsuntoLista,gratuita.mantActuacion.literal.tipoActuacion,gratuita.listadoActuacionesAsistencia.literal.justificado,gratuita.actuacionesDesigna.literal.validada,gratuita.procedimientos.literal.anulada,gratuita.actuacionesDesigna.literal.facturacion,";
+	  	tC="8,8,8,10,14,8,7,7,20,10";
 	%>
 	
 	<html:form action="/JGR_ActuacionAsistenciaLetrado.do" method="post" target="submitArea" style="display:none">
@@ -80,40 +85,40 @@
 		   clase="tableTitle"
 		   nombreCol="<%=nC%>"
 		   tamanoCol="<%=tC%>"
-		   			alto="100%"
-		   			ajusteBotonera="true"		
+   			alto="100%"
+   			ajusteBotonera="true"		
 
 		   modal="G">
 
 		<%if (obj != null && obj.size()>0){%>
 				<%
+				String fechasi="";
 				String fecha = "";
 		    	int recordNumber=1;
 		    	String select = "";
+		    	String select2 = "";
 		    	Vector v = null;
+		    	Vector asi = null;
 		    	ScsAsistenciasAdm scsAsistenciasAdm = new ScsAsistenciasAdm(usr);
 				while ((recordNumber) <= obj.size())
 				{	 
 					Hashtable hash = (Hashtable)obj.get(recordNumber-1);
-					//if (usr.isLetrado()) {
-					//	botones = "C";
-					//} else {
-						String idFacturacion = (String)hash.get("IDFACTURACION");
-						if(modoPestanha != null && modoPestanha.equalsIgnoreCase("editar")) {
-								// Comprobamos el estado del idfacturacion
-								if (idFacturacion==null||idFacturacion.equals(""))
-								{
-									botones = "C,E,B";
-								} else {
-									botones = "C";
-								}
-						} else {
-							botones = "C";
-						}
-						
-						if (!letradoActuaciones) {
-							botones = "C";
-						}
+					String idFacturacion = (String)hash.get("IDFACTURACION");
+					if(modoPestanha != null && modoPestanha.equalsIgnoreCase("editar")) {
+							// Comprobamos el estado del idfacturacion
+							if (idFacturacion==null||idFacturacion.equals(""))
+							{
+								botones = "C,E,B";
+							} else {
+								botones = "C";
+							}
+					} else {
+						botones = "C";
+					}
+					
+					if (!letradoActuaciones) {
+						botones = "C";
+					}
 						
 					//}
 					String anulacion = (String)hash.get("ANULACION");
@@ -121,16 +126,32 @@
 				 	if((anulacion!=null)&&(anulacion).equalsIgnoreCase("1"))
 				 		modo="VER";
 					
+				 	select2 = "select TO_CHAR(FECHAHORA,'dd/mm/yyyy')AS FECHAASI from SCS_ASISTENCIA where IDINSTITUCION="+hash.get("IDINSTITUCION")+"AND ANIO="+hash.get("ANIO") +"AND NUMERO="+hash.get("NUMERO");
+					asi=scsAsistenciasAdm.ejecutaSelect(select2);
+					Hashtable asihash = (Hashtable) asi.get(0);
+					
 				%>
 					<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>" clase="listaNonEdit" modo="<%=modo%>">
-						<td><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=hash.get("ANIO")%>'><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=hash.get("NUMERO")%>'><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=hash.get("IDACTUACION")%>'><%=hash.get("IDACTUACION")%></td>
+						<td>
+							<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=hash.get("ANIO")%>'>
+							<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=hash.get("NUMERO")%>'>
+							<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=hash.get("IDACTUACION")%>'>
+							<%=hash.get("IDACTUACION")%>
+						</td>
 						<% fecha = GstDate.getFormatedDateShort("",(String) hash.get("FECHA")); %>
+
 						<td><%=fecha%></td>
-						<td><%=hash.get("DESCRIPCIONBREVE")%>&nbsp;</td>
+<!-- -->				<% fechasi= (String) asihash.get("FECHAASI");%>
+						<td><%=fechasi%>
+						</td>
+						<td><%=((String) hash.get("NOMBREFACTURACION")==null?"":(String) hash.get("NUMEROASUNTO"))%>&nbsp;</td>
+						<td><%=((String) hash.get("NOMBREFACTURACION")==null?"":(String) hash.get("DESCRIPCION_ACTU"))%>&nbsp;</td>
 						<% fecha = GstDate.getFormatedDateShort("",(String) hash.get("FECHAJUSTIFICACION")); %>
 						<td><%=fecha%>&nbsp;</td>
 						<td><%=(String) hash.get("VALIDADA")%>&nbsp;</td>
+						<td><%=(String) hash.get("ANULADA")%>&nbsp;</td>
 						<td><%=((String) hash.get("NOMBREFACTURACION")==null?"":(String) hash.get("NOMBREFACTURACION"))%>&nbsp;</td>
+						
 					</siga:FilaConIconos>
 					<% recordNumber++;
 				} %>
