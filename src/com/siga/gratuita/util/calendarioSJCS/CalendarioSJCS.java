@@ -737,8 +737,8 @@ public class CalendarioSJCS {
 				idInstitucion, idTurno, idGuardia,
 				letradoGuardia.getIdPersona(), saltoOCompensacion);
 		
-		//saltoCompensacion.setFechaCumplimiento((String) diasGuardia.get(0));
-		saltoCompensacion.setFechaCumplimiento(GstDate.getApplicationFormatDate("", (String) diasGuardia.get(0)) );
+		saltoCompensacion.setFechaCumplimiento((String) diasGuardia.get(0));
+		//saltoCompensacion.setFechaCumplimiento(GstDate.getApplicationFormatDate("", (String) diasGuardia.get(0)) );
 		saltoCompensacion.setIdCalendarioGuardias(idCalendarioGuardias);
 		saltoCompensacion.setMotivos(motivo);
 		
