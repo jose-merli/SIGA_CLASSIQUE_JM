@@ -124,9 +124,11 @@ public class DatosRegistralesAction extends MasterAction{
 				}
 				CenNoColegiadoAdm admNoColegiado = new CenNoColegiadoAdm(this.getUserBean(request));
 				CenNoColegiadoBean beanNoColegiado = null;
+				//String where1 = " WHERE "+CenNoColegiadoBean.C_IDINSTITUCION+"="+idInstitucion+
+				//	" AND "+CenNoColegiadoBean.C_IDPERSONA+"="+idPersona;
 				String where1 = " WHERE ("+CenNoColegiadoBean.C_IDINSTITUCION+"="+idInstitucion+
-				       "OR IDINSTITUCION IN (SELECT IDINSTITUCION FROM CEN_INSTITUCION WHERE CEN_INSTITUCION.CEN_INST_IDINSTITUCION = " + idInstitucion +"))"+
-							   " AND "+CenNoColegiadoBean.C_IDPERSONA+"="+idPersona;
+					"OR IDINSTITUCION IN (SELECT IDINSTITUCION FROM CEN_INSTITUCION WHERE CEN_INSTITUCION.CEN_INST_IDINSTITUCION = " + idInstitucion +"))"+
+					" AND "+CenNoColegiadoBean.C_IDPERSONA+"="+idPersona;
 				Vector vNoColegiados = admNoColegiado.select(where);
 				
 				if (!vNoColegiados.isEmpty()) {
