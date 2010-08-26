@@ -1445,12 +1445,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 									 "(SELECT " + ScsTurnoBean.C_ABREVIATURA + " FROM " + ScsTurnoBean.T_NOMBRETABLA + 
 									 " WHERE " + ScsTurnoBean.C_IDTURNO + " = " + ScsAsistenciasBean.T_NOMBRETABLA + " ." + ScsAsistenciasBean.C_IDTURNO + 
 									 " AND " + ScsTurnoBean.C_IDINSTITUCION + " = " + ScsAsistenciasBean.T_NOMBRETABLA + " ." + ScsAsistenciasBean.C_IDINSTITUCION + ") DES_TURNO, " +
-									 "(SELECT f_siga_getRecurso(s.descripcion, " + this.usrbean.getLanguage() + ") FROM "+ ScsTipoAsistenciaColegioBean.T_NOMBRETABLA + " s, " + ScsAsistenciasBean.T_NOMBRETABLA+ " sa" +  
-									 " WHERE  sa." + ScsAsistenciasBean.C_EJGANIO + " = " + ScsAsistenciasBean.T_NOMBRETABLA + "." +ScsAsistenciasBean.C_EJGANIO+ 
-									 " AND sa." + ScsAsistenciasBean.C_EJGNUMERO + " = " + ScsAsistenciasBean.T_NOMBRETABLA + "." +ScsAsistenciasBean.C_EJGNUMERO+
-									 " AND sa." + ScsAsistenciasBean.C_EJGIDTIPOEJG + " = " +ScsAsistenciasBean.T_NOMBRETABLA + "." +ScsAsistenciasBean.C_EJGIDTIPOEJG +
-									 " AND sa." + ScsAsistenciasBean.C_IDINSTITUCION + " = s." +ScsTipoAsistenciaColegioBean.C_IDINSTITUCION +
-									 " AND sa." + ScsAsistenciasBean.C_IDTIPOASISTENCIACOLEGIO + " = s."+ ScsTipoAsistenciaColegioBean.C_IDTIPOASISTENCIACOLEGIO+ " ) DES_TIPO "+									 
+									 "(SELECT f_siga_getRecurso(s.descripcion, " + this.usrbean.getLanguage() + ") FROM "+ ScsTipoAsistenciaColegioBean.T_NOMBRETABLA + " s " +  
+									 " WHERE  " + ScsAsistenciasBean.T_NOMBRETABLA+"."+ScsAsistenciasBean.C_IDINSTITUCION + " = s." +ScsTipoAsistenciaColegioBean.C_IDINSTITUCION +
+									 " AND " + ScsAsistenciasBean.T_NOMBRETABLA+"."+ScsAsistenciasBean.C_IDTIPOASISTENCIACOLEGIO + " = s."+ ScsTipoAsistenciaColegioBean.C_IDTIPOASISTENCIACOLEGIO+ " ) DES_TIPO "+									 
 							 " FROM " + ScsAsistenciasBean.T_NOMBRETABLA +
 							" WHERE " + ScsAsistenciasBean.C_EJGANIO + " = " + anio + 
 							  " AND " + ScsAsistenciasBean.C_EJGNUMERO + " = " + numero +
