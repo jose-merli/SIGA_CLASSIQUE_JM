@@ -1029,6 +1029,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 		prodSolBean.setIdInstitucionOrigen(new Integer(this.usrbean.getLocation()));
 		prodSolBean.setNoFacturable("0");
 		prodSolBean.setUsuMod(new Integer(this.usrbean.getUserName()));
+		prodSolBean.setFechaSolicitud("sysdate");
 		prodSolBean.setFechaMod("sysdate");
 		
 

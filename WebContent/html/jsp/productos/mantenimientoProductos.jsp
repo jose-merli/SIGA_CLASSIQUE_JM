@@ -143,6 +143,7 @@
    //Parametro para la busqueda:
    String [] parametroCombo = {usrbean.getLocation()};
    String [] institucionParam = {usrbean.getLocation()};
+   
 %>
 
 
@@ -514,6 +515,14 @@
 											<html:text property="cuentaContable" styleClass="boxConsulta"  maxlength="20" size="20" value="<%=row.getString(PysProductosInstitucionBean.C_CUENTACONTABLE)%>" readOnly="true"></html:text>
 										<% } %>							  						  		
 							  	<% } %>
+								</td>
+							</tr>
+							<tr>
+								<td class="labelText">
+									Identificador&nbsp;&nbsp;
+								</td>
+								<td class="labelTextValue" title="Categoria:Tipo:Producto">
+									<%=row.getString(PysProductosInstitucionBean.C_IDTIPOPRODUCTO)%> : <%=row.getString(PysProductosInstitucionBean.C_IDPRODUCTO)%> : <%=row.getString(PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION)%>
 								</td>
 							</tr>
 							<tr>

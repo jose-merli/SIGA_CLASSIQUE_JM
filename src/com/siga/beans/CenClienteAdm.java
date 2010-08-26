@@ -4593,6 +4593,50 @@ public class CenClienteAdm extends MasterBeanAdmVisible
        return v;                        
 	}
  	
+ 	/** 
+ 	 * Nos devuelve una persona en funcion de su nombre DNI
+ 	 * @param  nombreCompleto 
+ 	 * @return  Vector - Filas de la tabla seleccionadas  
+ 	 * @exception  ClsExceptions  En cualquier caso de error
+ 	 */	  
+ 	public Vector buscarPersonaNifCif(String nifcif) throws ClsExceptions, SIGAException {
+		
+ 		Vector v = new Vector();
+       	Hashtable codigos = new Hashtable();
+       	Hashtable registro = new Hashtable();
+       	int contador = 0;
+		RowsContainer rc = null;
+		try {
+
+			String sql = "SELECT cli.idinstitucion, per.idpersona AS IDPERSONA,per.nombre AS NOMBRE,per.apellidos1 AS APELLIDOS1,per.apellidos2 AS APELLIDOS2";
+			sql+= " FROM cen_cliente cli, cen_persona per";
+			sql+= " WHERE cli.idpersona = per.idpersona ";
+			
+			contador ++;
+			codigos.put(new Integer(contador), this.usrbean.getLocation());   
+			sql+= " AND cli.idinstitucion =:"+contador;
+			
+			contador++;
+			sql+= " AND "+ComodinBusquedas.prepararSentenciaCompletaBind(nifcif,"per.nifcif",contador,codigos);
+		  
+			
+			rc = this.findBind(sql,codigos);
+ 			if (rc!=null) {
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					registro = fila.getRow();
+					
+					if (registro != null) 
+						v=this.selectByPK(registro);
+				}
+			}
+       }
+       catch (Exception e) {
+       	throw new ClsExceptions (e, "Error al obtener la informacion sobre una entrada de la tabla cliente.");
+       }
+       return v;                        
+	}
+ 	
  	
  	/**
  	 * Obtiene las instituciones en las cuales el cliente es colegiado ejerciente

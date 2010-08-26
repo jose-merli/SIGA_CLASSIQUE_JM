@@ -70,8 +70,32 @@
 					</tr>
 				</html:form>
 			</table>
-		</siga:ConjCampos>						
-		
+		</siga:ConjCampos>				
+		<div class="labelTextValue" style="padding-left:30px;padding-top:30px;width:80%">
+		<p>El fichero de carga de compras debe ser un fichero de texto, con una linea por cada compra.</p>
+		<p>Los campos necesarios para poder efectuar la compra son los siguientes:</p>
+		<ul>
+			<li>Número de colegiado (Opcional)</li>
+			<li>NIF/CIF del cliente</li>
+			<li>Apellidos y nombre del cliente</li>
+			<li>Cantidad del producto</li>
+			<li>Nombre del producto</li>
+			<li>Identificador de la Categoría</li>
+			<li>Identificador del Tipo de Producto</li>
+			<li>Identificador del Producto</li>
+		</ul>
+		<p>Todos los campos, salvo el Número de colegiado, son obligatorios y se deben separar usando el caracter reservado <b>:</b></p>
+		<p>Los identificadores de los productos pueden obtenerse en la ficha del producto.</p>
+		<p class="labelText">Ejemplo</p>
+		<div class="labelTextValue" style="padding-left:20px; padding-bottom:30px;">
+		: 34620345B : Alonso García, Nieves : 1 : Cuota incorporación : 9 : 3 : 1<br>
+		543545 : 85345671A : Pérez López, Antonio : 1 : Carnet Colegial A.C.A : 15 : 3 : 1<br>
+		543545 : 85345671A : Pérez López, Antonio : 1 : Cuota Consejo : 1 : 6 : 6<br>
+		543545 : 85345671A : Pérez López, Antonio : 3 : Cuotas atrasadas : 5 : 2 : 2<br>
+		: 64564536K : Construcciones S.A. : 6 : Fax : 3 : 7 : 8<br>
+
+		</div>
+		</div>
 		<siga:ConjBotonesAccion botones="G" modal="P" clase="botonesSeguido"/>
 
 		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>

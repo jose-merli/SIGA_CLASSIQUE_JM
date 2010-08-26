@@ -192,7 +192,8 @@ public class CargaProductosAction extends MasterAction {
 		        } catch (Exception e) {
 		        	//
 		        }
-				String datos[] =  UtilidadesString.splitNormal(linea,delimitador);
+				//String datos[] =  UtilidadesString.splitNormal(linea,delimitador);
+		        String datos[] =  linea.split(delimitador);
 				String colegiado = "";
 				String dni = "";
 				String name = "";
@@ -202,14 +203,14 @@ public class CargaProductosAction extends MasterAction {
 				String idProducto = "";
 				String idProductoInstitucion = "";
 				try {
-					colegiado = datos[0];
-					dni = datos[1];
-					name = datos[2];
-					unidades = datos[3];
-					descripcion = datos[4];
-					idTipoProducto = datos[5];
-					idProducto = datos[6];
-					idProductoInstitucion = datos[7];	
+					colegiado = datos[0].trim();
+					dni = datos[1].trim();
+					name = datos[2].trim();
+					unidades = datos[3].trim();
+					descripcion = datos[4].trim();
+					idTipoProducto = datos[5].trim();
+					idProducto = datos[6].trim();
+					idProductoInstitucion = datos[7].trim();	
 				} catch (Exception e) {
 					procesoOk = false;
 					ClsLogging.writeFileLog(".-.-.-.-.-.-.-.-.-.", 10);
@@ -267,7 +268,11 @@ public class CargaProductosAction extends MasterAction {
 						if (vProductos3!=null && vProductos3.size()>0) {
 							cliente = (CenClienteBean) vProductos3.get(0);
 						}						
-					
+					}else if(!dni.trim().equals("")){
+						Vector vClientes = clienteAdm.buscarPersonaNifCif(dni);
+						if (vClientes!=null && vClientes.size()>0) {
+							cliente = (CenClienteBean)vClientes.get(0);
+						}	
 					} else {
 						if (!name.trim().equals("")) {
 							// buscamos persona por nombre de persona (apellido1 apellido2, nombre)
