@@ -481,7 +481,6 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
 			if (file != null) {
 				file.delete();
 			}
