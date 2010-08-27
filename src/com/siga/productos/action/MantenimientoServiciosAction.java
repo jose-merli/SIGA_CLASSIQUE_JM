@@ -1819,7 +1819,8 @@ public class MantenimientoServiciosAction extends MasterAction {
 				request.setAttribute("tipoServicio",hash.get(PysServiciosInstitucionBean.C_IDTIPOSERVICIOS));
 				request.setAttribute("servicio",hash.get(PysServiciosInstitucionBean.C_IDSERVICIO));
 				request.setAttribute("servicioInstitucion",hash.get(PysServiciosInstitucionBean.C_IDSERVICIOSINSTITUCION));
-				result = exitoEspecificoModal("messages.updated.success", "", request);			
+				result = exitoModal("messages.updated.success", request);
+
 			}			
 		}
 		catch (ClsExceptions e){
@@ -2014,7 +2015,7 @@ public class MantenimientoServiciosAction extends MasterAction {
 				request.setAttribute("servicio",hash.get(PysServiciosInstitucionBean.C_IDSERVICIO));
 				request.setAttribute("servicioInstitucion",hash.get(PysServiciosInstitucionBean.C_IDSERVICIOSINSTITUCION));
 				miForm.reset(mapping,request);
-				result=exitoEspecificoModal("messages.updated.success", "", request);			
+				result = exitoModal("messages.updated.success", request);		
 			}			
 		}
 		catch (ClsExceptions e){
@@ -2292,6 +2293,23 @@ public class MantenimientoServiciosAction extends MasterAction {
 		request.setAttribute("sinrefresco","");
 		request.setAttribute("modal",null);
 		return "exitoEspecifico"; 
+	}	
+	
+	
+	/** 
+	 *  Funcion que prepara la salida en caso de exito de la ventana modal <br/>
+	 *  y refresca nivel modal
+	 *  @param mensaje en formato key de recurso
+	 *  @param request para envias los datos
+	 *  @return String con el forward
+	 */
+	protected String exitoRefrescoModal(String mensaje, HttpServletRequest request) {
+		if (mensaje!=null && !mensaje.equals("")) {
+			request.setAttribute("mensaje",mensaje);
+		}
+		request.setAttribute("conrefresco","");
+		request.setAttribute("modal",null);
+		return "exitoModal"; 
 	}	
 	
 	/** 

@@ -87,7 +87,7 @@
 		clase = "boxConsulta";
 	}
 
-	String	botones="G,R,C";
+	String	botones="Y,R,C";
 	
 	ses.setAttribute("AUX_servicio",            servicio);
 	ses.setAttribute("AUX_tipoServicio",        tipoServicio);
@@ -356,7 +356,7 @@
 			}
 			
 			<!-- Asociada al boton Guardar -->
-			function accionGuardar() 
+			function accionGuardarCerrar() 
 			{					
 				sub();
 				//if (validateMantenimientoServiciosForm(document.MantenimientoServiciosForm)){
