@@ -976,6 +976,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 			sql.append(
 					"  and impirpf > 0 ");		
 		sql.append(" group by cen.apellidos1,cen.apellidos2, pc.IDPERORIGEN, pc.IDPERDESTINO, pc.IDPAGOSJG, pc.IDINSTITUCION ");
+		sql.append(" order by cen.apellidos1, cen.apellidos2 ");
 		
 		return sql.toString();
 	} //getQueryDetallePagoColegiado()
