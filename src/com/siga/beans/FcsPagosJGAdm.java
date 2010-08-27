@@ -916,8 +916,10 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 
 			if (isInteresado)
 				sql +=	"                        ) ";
-
 		}
+		
+		sql+=" ORDER BY nombre";
+		
 		return sql;
 		
 	} //getQueryDetallePago()
