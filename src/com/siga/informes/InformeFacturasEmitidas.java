@@ -450,7 +450,9 @@ public class InformeFacturasEmitidas extends MasterReport
 		lineaFactura.addContent(new Element("facturaNif").setText(UtilidadesHash.getString(registro, "NIF")));
 		lineaFactura.addContent(new Element("facturaNombre").setText(UtilidadesHash.getString(registro, "NOMBRE")));
 		lineaFactura.addContent(new Element("facturaObservaciones").setText(UtilidadesHash.getString(registro, "OBSERVACIONES")));
-		lineaFactura.addContent(new Element("facturaBaseImponible").setText(UtilidadesHash.getString(registro, "BASE_IMPONIBLE")));
+		// inc7392 // La base imponible no se formateaba correctamente y salia sin decimales
+		//lineaFactura.addContent(new Element("facturaBaseImponible").setText(UtilidadesHash.getString(registro, "BASE_IMPONIBLE")));
+		lineaFactura.addContent(new Element("facturaBaseImponible").setText(UtilidadesNumero.formato(UtilidadesHash.getDouble(registro, "BASE_IMPONIBLE").doubleValue())));
 		lineaFactura.addContent(new Element("facturaPorcIva").setText(UtilidadesNumero.formato(UtilidadesHash.getDouble(registro, "IVA_PORCENTAJE").doubleValue())));
 		lineaFactura.addContent(new Element("facturaCuotaIva").setText(UtilidadesNumero.formato(UtilidadesHash.getDouble(registro, "IVA").doubleValue())));
 		lineaFactura.addContent(new Element("facturaImporteTotal").setText(UtilidadesNumero.formato(UtilidadesHash.getDouble(registro, "TOTAL_FACTURA").doubleValue())));
