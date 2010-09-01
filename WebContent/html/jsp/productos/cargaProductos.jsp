@@ -22,7 +22,9 @@
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
 
 	UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");
-	
+
+	String delimitador = (String)request.getAttribute("DELIMITADOR");
+	System.out.println("delimitador " + delimitador );
 %>
 
 <html>
@@ -84,15 +86,15 @@
 			<li>Identificador del Tipo de Producto</li>
 			<li>Identificador del Producto</li>
 		</ul>
-		<p>Todos los campos, salvo el Número de colegiado, son obligatorios y se deben separar usando el caracter reservado <b>:</b></p>
+		<p>Todos los campos, salvo el Número de colegiado, son obligatorios y se deben separar usando el caracter reservado <b><%=delimitador%></b></p> 
 		<p>Los identificadores de los productos pueden obtenerse en la ficha del producto.</p>
 		<p class="labelText">Ejemplo</p>
 		<div class="labelTextValue" style="padding-left:20px; padding-bottom:30px;">
-		: 34620345B : Alonso García, Nieves : 1 : Cuota incorporación : 9 : 3 : 1<br>
-		543545 : 85345671A : Pérez López, Antonio : 1 : Carnet Colegial A.C.A : 15 : 3 : 1<br>
-		543545 : 85345671A : Pérez López, Antonio : 1 : Cuota Consejo : 1 : 6 : 6<br>
-		543545 : 85345671A : Pérez López, Antonio : 3 : Cuotas atrasadas : 5 : 2 : 2<br>
-		: 64564536K : Construcciones S.A. : 6 : Fax : 3 : 7 : 8<br>
+		<%=delimitador%> 34620345B <%=delimitador%> Alonso García, Nieves <%=delimitador%> 1 <%=delimitador%> Cuota incorporación <%=delimitador%> 9 <%=delimitador%> 3 <%=delimitador%> 1<br>
+		543545 <%=delimitador%> 85345671A <%=delimitador%> Pérez López, Antonio <%=delimitador%> 1 <%=delimitador%> Carnet Colegial A.C.A <%=delimitador%> 15 <%=delimitador%> 3 <%=delimitador%> 1<br>
+		543545 <%=delimitador%> 85345671A <%=delimitador%> Pérez López, Antonio <%=delimitador%> 1 <%=delimitador%> Cuota Consejo <%=delimitador%> 1 <%=delimitador%> 6 <%=delimitador%> 6<br>
+		543545 <%=delimitador%> 85345671A <%=delimitador%> Pérez López, Antonio <%=delimitador%> 3 <%=delimitador%> Cuotas atrasadas <%=delimitador%> 5 <%=delimitador%> 2 <%=delimitador%> 2<br>
+		<%=delimitador%> 64564536K <%=delimitador%> Construcciones S.A. <%=delimitador%> 6 <%=delimitador%> Fax <%=delimitador%> 3 <%=delimitador%> 7 <%=delimitador%> 8<br>
 
 		</div>
 		</div>

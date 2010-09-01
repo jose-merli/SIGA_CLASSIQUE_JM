@@ -20,6 +20,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
+import org.apache.tools.ant.taskdefs.SQLExec.DelimiterType;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
@@ -102,6 +103,10 @@ public class CargaProductosAction extends MasterAction {
 			// Obtengo el UserBean y el identificador de la institucion
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");			
 			String idInstitucion=user.getLocation();
+			
+			GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request));
+			String delimitador = paramAdm.getValor(user.getLocation(),"PYS","SEPARADOR_FICHEROCOMPRAS","");
+			request.setAttribute("DELIMITADOR", delimitador);
 		
 		} 
 		catch (Exception e) { 
@@ -181,7 +186,7 @@ public class CargaProductosAction extends MasterAction {
 			File temporal = new File(pathTemporal + File.separator+nombre); 
 			BufferedReader reader = new BufferedReader(new FileReader(temporal));
 			String linea = reader.readLine();
-			while (linea != null && procesoOk)
+			while (linea != null && !linea.trim().equals("") && procesoOk)
 			{
 				// tratamiento de cada línea
 				String delimitador="";
