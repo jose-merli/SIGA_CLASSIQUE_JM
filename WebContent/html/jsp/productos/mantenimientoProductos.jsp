@@ -522,7 +522,9 @@
 									Identificador&nbsp;&nbsp;
 								</td>
 								<td class="labelTextValue" title="Categoria:Tipo:Producto">
-									<%=row.getString(PysProductosInstitucionBean.C_IDTIPOPRODUCTO)%> : <%=row.getString(PysProductosInstitucionBean.C_IDPRODUCTO)%> : <%=row.getString(PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION)%>
+									<% if (!remitente.equalsIgnoreCase("insertar")){%>
+										<%=row.getString(PysProductosInstitucionBean.C_IDTIPOPRODUCTO)%> : <%=row.getString(PysProductosInstitucionBean.C_IDPRODUCTO)%> : <%=row.getString(PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION)%>
+									<%} %>
 								</td>
 							</tr>
 							<tr>
