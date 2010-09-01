@@ -144,6 +144,7 @@
    String [] parametroCombo = {usrbean.getLocation()};
    String [] institucionParam = {usrbean.getLocation()};
    
+   String delimitador = " " + (String)request.getAttribute("DELIMITADOR") + " ";
 %>
 
 
@@ -523,7 +524,7 @@
 								</td>
 								<td class="labelTextValue" title="Categoria:Tipo:Producto">
 									<% if (!remitente.equalsIgnoreCase("insertar")){%>
-										<%=row.getString(PysProductosInstitucionBean.C_IDTIPOPRODUCTO)%> : <%=row.getString(PysProductosInstitucionBean.C_IDPRODUCTO)%> : <%=row.getString(PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION)%>
+										<%=row.getString(PysProductosInstitucionBean.C_IDTIPOPRODUCTO) + delimitador + row.getString(PysProductosInstitucionBean.C_IDPRODUCTO) + delimitador +row.getString(PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION)%>
 									<%} %>
 								</td>
 							</tr>

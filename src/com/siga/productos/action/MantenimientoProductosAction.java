@@ -108,6 +108,10 @@ public class MantenimientoProductosAction extends MasterAction {
 			// y no los de posibles modificaciones
 			request.getSession().setAttribute("DATABACKUP", infoProd);
 			
+			GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request));
+			String delimitador = paramAdm.getValor((String)ocultos.get(0),"PYS","SEPARADOR_FICHEROCOMPRAS","");
+			request.setAttribute("DELIMITADOR", delimitador);
+			
 			// Paso valores para dar valores iniciales al formulario			
 			request.setAttribute("container", infoProd);
 			request.setAttribute("container_I", pagoInt);			
