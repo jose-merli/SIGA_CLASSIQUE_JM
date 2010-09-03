@@ -200,6 +200,7 @@
 				String fechaInicio="",fechaInicioPK="", fechaFin="",  idcalendarioguardias="", idturno="", idguardia="", idinstitucion="";
 				String numerocolegiado="", nombre="", observaciones="", idpersona="", numero="", fechaInicioPermuta="", fechaFinPermuta="";
 				String pl = "";
+				boolean facturada= false;
 				int i=0;
 				while ((recordNumber) <= obj.size())
 				{	 	Hashtable hash = (Hashtable)obj.get(recordNumber-1);
@@ -237,6 +238,7 @@
 				numero = ((String)hash.get("NUMEROPERMUTA")).equals("")?"NINGUNO":(String)hash.get("NUMEROPERMUTA");
 				fechaInicioPermuta = ((String)hash.get("FECHAINICIOPERMUTA")).equals("")?"":(String)hash.get("FECHAINICIOPERMUTA");
 				fechaFinPermuta = ((String)hash.get("FECHAFINPERMUTA")).equals("")?"":(String)hash.get("FECHAFINPERMUTA");
+				//facturada = ((String)hash.get("GUARDIAFACTURADA")).equalsIgnoreCase("false")?false:true;
 				//PL:
 				pl = ((String)hash.get("PL")).equals("")?"":(String)hash.get("PL");
 				elems = new FilaExtElement[2];	
@@ -244,8 +246,10 @@
 				
 				if (!modoOriginal.equalsIgnoreCase("VER") && (pl!=null && pl.equals("5"))) {
 					elems[0]=new FilaExtElement("permutar","permutar",SIGAConstants.ACCESS_FULL);	
-				}	
-				if (!modoOriginal.equalsIgnoreCase("VER")&& pl!=null && !pl.equals("6"))
+				}
+				// inc7150 // Si la guardia esta facturada no se puede sustituir
+				//if (!modoOriginal.equalsIgnoreCase("VER")&& pl!=null && !pl.equals("6"))
+				if (!facturada && !modoOriginal.equalsIgnoreCase("VER")&& pl!=null && !pl.equals("6"))
 					elems[1]=new FilaExtElement("sustituir","sustituir",SIGAConstants.ACCESS_FULL);
 				String numeroColegiadoBusqueda = "" + recordNumber + "_" + numerocolegiado;
 				String botones="C";

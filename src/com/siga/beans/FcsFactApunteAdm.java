@@ -130,5 +130,36 @@ public class FcsFactApunteAdm extends MasterBeanAdministrador {
 	}
 	
 	
+	public boolean exiteApunteGuardia(String idinstitucion,String idturno,String idguardia,String idcalendarioguardias,String idpersona, String fInicio){
+		String sql = "";	
+		Vector v = new Vector();
+		boolean salida = false;
+
+		//fechaInicio = "TO_DATE('"+fechaInicio+"','DD/MM/YYYY')";
+
+	    Hashtable codigos = new Hashtable();
+	    codigos.put(new Integer(1),idinstitucion);
+	    codigos.put(new Integer(2),idturno);
+	    codigos.put(new Integer(3),idguardia);
+	    codigos.put(new Integer(4),idcalendarioguardias);
+	    codigos.put(new Integer(5),idpersona);
+	    codigos.put(new Integer(6),fInicio);
+	    
+		sql = "select 1 from fcs_fact_apunte ap ";
+		sql+= " where ap.idinstitucion=:1 and ap.idturno=:2 and ap.idguardia=:3 and ap.idcalendarioguardias=:4 and ap.idpersona=:5 and ap.fechainicio=:6";
+
+		try {
+			v = this.selectGenericoBind(sql,codigos);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+					
+		if (v.size() > 0)
+			salida = true;
+		
+		return salida;
+	}
+	
 	
 }

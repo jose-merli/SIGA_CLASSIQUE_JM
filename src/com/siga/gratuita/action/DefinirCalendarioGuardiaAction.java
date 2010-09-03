@@ -26,6 +26,7 @@ import com.siga.beans.CenBajasTemporalesAdm;
 import com.siga.beans.CenBajasTemporalesBean;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaBean;
+import com.siga.beans.FcsFactApunteAdm;
 import com.siga.beans.HelperInformesAdm;
 import com.siga.beans.ScsCabeceraGuardiasAdm;
 import com.siga.beans.ScsCabeceraGuardiasBean;
@@ -1069,6 +1070,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 		DefinirCalendarioGuardiaForm miForm = (DefinirCalendarioGuardiaForm) formulario;
 		ScsGuardiasColegiadoAdm admGuardiaColegiado = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
 		ScsPermutaGuardiasAdm admPermutaguardias = new ScsPermutaGuardiasAdm(this.getUserBean(request));
+		FcsFactApunteAdm admApuntes = new FcsFactApunteAdm(this.getUserBean(request));
 
 
 		Hashtable miHash = new Hashtable();
@@ -1249,8 +1251,8 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 						pl = admPermutaguardias.ejecutarFuncionPermutas(idinstitucion,idturno,idguardia,idpersona,GstDate.getFormatedDateShort(usr.getLanguage(),fInicioPermuta));
 					} 
 
-
-
+					
+					String guardiaFacturada = admApuntes.exiteApunteGuardia(idinstitucion,idturno,idguardia,idcalendarioguardias,idpersona,GstDate.getFormatedDateShort(usr.getLanguage(),fInicio))?"true":"false";
 
 					//Inserto los datos a visualizar en el JSP
 					Hashtable nueva = new Hashtable();
@@ -1274,6 +1276,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 					nueva.put("IDCALENDARIOGUARDIAS",idcalendarioguardias);
 					nueva.put("OBSERVACIONES",observaciones);
 					nueva.put("PL",pl);
+					nueva.put("GUARDIAFACTURADA",guardiaFacturada);
 					ScsGuardiasColegiadoAdm admGuardiasColegiado = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
 					if (admGuardiasColegiado.validarBorradoGuardia(idinstitucion,idcalendarioguardias,idturno,idguardia,GstDate.getFormatedDateShort(usr.getLanguage(),fInicio),GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin))){
 						nueva.put("PINTARBOTONBORRAR", "1");
