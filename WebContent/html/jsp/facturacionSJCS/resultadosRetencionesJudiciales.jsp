@@ -28,7 +28,8 @@
 	HttpSession ses=request.getSession(true);
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
-	Vector obj = (Vector) request.getAttribute("resultado");		
+	Vector obj = (Vector) request.getAttribute("resultado");
+	String esFicha = (String)request.getParameter("esFichaColegial");
 	
 	Hashtable fila = new Hashtable();
 	
@@ -54,6 +55,13 @@
 		}
 		
 	</script>
+	
+	<% if(esFicha != null && esFicha.equalsIgnoreCase("1")){%>
+	<siga:TituloExt 
+		titulo="gratuita.retencionesJudiciales.literal.titulo"  
+		localizacion="gratuita.retencionesJudiciales.literal.localizacion"/>
+	<%}%>
+	
 </head>
 
 <body >

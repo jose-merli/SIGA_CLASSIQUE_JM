@@ -32,6 +32,7 @@
 	
 	//recoger de request el vector con los registros resultado
 	Vector resultado = (Vector) request.getAttribute("resultado");
+	String esFicha = (String)request.getParameter("esFichaColegial");
 	
 	//campos a mostrar en la tabla
 	String nif ="", nombre ="", pagoAsociado="", movimiento="", cantidad="", idMovimiento="", ncolegiado="";
@@ -61,6 +62,12 @@
 			parent.buscar2();
 		}
 	</script>
+	<% if(esFicha != null && esFicha.equalsIgnoreCase("1")){%>
+		<siga:TituloExt 
+			titulo="censo.fichaCliente.sjcs.movimientos.titulo"  
+			localizacion="censo.fichaCliente.sjcs.movimientos.localizacion"/>
+	<%}%>
+		
 </head>
 
 <body class="tablaCentralCampos">

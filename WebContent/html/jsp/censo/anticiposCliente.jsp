@@ -235,7 +235,7 @@
 		<%}else{%>
 		<siga:TituloExt 
 			titulo="censo.fichaCliente.facturacion.anticipos.cabecera" 
-			localizacion="censo.fichaCliente.facturacion.productos.localizacion"/>
+			localizacion="censo.fichaCliente.facturacion.anticipos.localizacion"/>
 		<%}%>
 		
 		<!-- FIN: TITULO Y LOCALIZACION -->

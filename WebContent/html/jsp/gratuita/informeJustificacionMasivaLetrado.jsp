@@ -44,8 +44,9 @@
 
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
-	<siga:TituloExt titulo="gratuita.informeJustificacionMasiva.literal.titulo"  localizacion="gratuita.informeJustificacionMasiva.literal.localizacion"/>
-	
+	<siga:TituloExt titulo="gratuita.informeJustificacionMasiva.literal.titulo"  
+				localizacion="censo.fichaCliente.sjcs.informeJustificacionMasiva.localizacion"/>
+					
 </head>
 
 <body onLoad="ajusteAlto('resultado');buscar();">
