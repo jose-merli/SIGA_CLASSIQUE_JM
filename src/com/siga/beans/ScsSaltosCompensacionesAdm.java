@@ -396,23 +396,26 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 			consulta += CenColegiadoBean.T_NOMBRETABLA+" coleg ";
 			consulta += " WHERE ";
 			consulta += " saltos."+ScsSaltosCompensacionesBean.C_IDINSTITUCION+"="+UtilidadesHash.getString(registros,"IDINSTITUCION");
-			consulta += " AND saltos."+ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION+"='"+salto+"'";
+			if(salto!=null)
+				consulta += " AND saltos."+ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION+"='"+salto+"'";
 			if (!idTurno.equals(""))
 				consulta += " AND saltos."+ScsSaltosCompensacionesBean.C_IDTURNO+"="+idTurno;
 			if (!idGuardia.equals(""))
 				consulta += " AND saltos."+ScsSaltosCompensacionesBean.C_IDGUARDIA+"="+idGuardia;
 			if (!idPersona.equals(""))
 				consulta += " AND saltos."+ScsSaltosCompensacionesBean.C_IDPERSONA+"="+idPersona;
-			if (compensado.equals("S"))
+			if (compensado!=null && compensado.equals("S"))
 				consulta += " AND saltos."+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+" > TO_DATE('01/01/2001','DD/MM/YYYY')";
+			if (compensado!=null && compensado.equals("N"))
+				consulta += " AND saltos."+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+" is null ";
 			
-				if ((fechaDesde != null && !fechaDesde.trim().equals("")) || (fechaHasta != null && !fechaHasta.trim().equals(""))) {
-					if (!fechaDesde.equals(""))
-						fechaDesde = GstDate.getApplicationFormatDate("", fechaDesde); 
-					if (!fechaHasta.equals(""))
-						fechaHasta = GstDate.getApplicationFormatDate("", fechaHasta);
-					consulta += " AND " + GstDate.dateBetweenDesdeAndHasta("saltos."+ScsSaltosCompensacionesBean.C_FECHA, fechaDesde, fechaHasta);
-				}
+			if ((fechaDesde != null && !fechaDesde.trim().equals("")) || (fechaHasta != null && !fechaHasta.trim().equals(""))) {
+				if (!fechaDesde.equals(""))
+					fechaDesde = GstDate.getApplicationFormatDate("", fechaDesde); 
+				if (!fechaHasta.equals(""))
+					fechaHasta = GstDate.getApplicationFormatDate("", fechaHasta);
+				consulta += " AND " + GstDate.dateBetweenDesdeAndHasta("saltos."+ScsSaltosCompensacionesBean.C_FECHA, fechaDesde, fechaHasta);
+			}
 			
 			//JOINS
 			consulta += " AND perso."+CenPersonaBean.C_IDPERSONA+"=saltos."+ScsSaltosCompensacionesBean.C_IDPERSONA;
