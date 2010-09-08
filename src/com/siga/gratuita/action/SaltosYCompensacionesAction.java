@@ -330,13 +330,22 @@ public class SaltosYCompensacionesAction extends MasterAction {
 				UtilidadesHash.set(registros,"IDTURNO",idTurno);
 				UtilidadesHash.set(registros,"IDGUARDIA",idGuardia);
 				UtilidadesHash.set(registros,"IDPERSONA",miForm.getIdPersona());
-				UtilidadesHash.set(registros,"SALTO",miForm.getSalto());
 				UtilidadesHash.set(registros,"FECHADESDE",miForm.getFechaDesde());
 				UtilidadesHash.set(registros,"FECHAHASTA",miForm.getFechaHasta());
-				//Campo Compensado:
-				if (miForm.getCompensado()!=null) compensado="S";
-				else compensado="N";
-				UtilidadesHash.set(registros,"COMPENSADO",compensado);
+				
+				//Campo Compensado/No compensado/Todo:
+				if (miForm.getCompensado().equalsIgnoreCase("si")){
+					compensado="S";
+					UtilidadesHash.set(registros,"COMPENSADO",compensado);
+				}else if (miForm.getCompensado().equalsIgnoreCase("no")){ 
+					compensado="N";
+					UtilidadesHash.set(registros,"COMPENSADO",compensado);
+				}
+				
+				//Campo salto/compensacion/Todo:
+				if (miForm.getSalto().equalsIgnoreCase("S")||miForm.getSalto().equalsIgnoreCase("C")){
+					UtilidadesHash.set(registros,"SALTO",miForm.getSalto());
+				}
 				
 			    //SELECT
 				salida = admSaltosYCompensaciones.selectGenerico(admSaltosYCompensaciones.buscar(registros));
@@ -364,11 +373,10 @@ public class SaltosYCompensacionesAction extends MasterAction {
 	 */
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		SaltosYCompensacionesForm miForm = (SaltosYCompensacionesForm) formulario;
-		Boolean bool = new Boolean(false);
 		
 		try {
 			miForm.setSalto("S");
-			miForm.setCompensado(bool);
+			miForm.setCompensado("N");
 		}
 		catch  (Exception e){
 			throwExcp("messages.select.error",e,null);	

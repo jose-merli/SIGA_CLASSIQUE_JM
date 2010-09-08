@@ -37,6 +37,31 @@
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
+	
+	<!-- RGG - SELECCION DE COLEGIADO -->
+	<script language="JavaScript">	
+		function buscarCliente () 
+		{
+			var resultado = ventaModalGeneral("busquedaClientesModalForm","G");			
+			if (resultado != null && resultado[2]!=null)
+			{
+				document.getElementById('numeroLetrado').value = resultado[2];
+				document.getElementById('idPersona').value = resultado[0];
+			}
+			if (resultado != null && resultado[4]!=null && resultado[5]!=null && resultado[6]!=null)
+			{
+				document.getElementById('nombreMostrado').value = resultado[4] + " " + resultado[5] + " " + resultado[6];
+			}
+		}		
+	</script>
+	<script language="JavaScript">	
+		function limpiarCliente () 
+		{
+			document.getElementById('numeroLetrado').value = "";
+			document.getElementById('idPersona').value = "";
+			document.getElementById('nombreMostrado').value = "";
+		}		
+	</script>
  	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<siga:Titulo 
@@ -65,46 +90,21 @@
 		<td class="labelText">	
 			<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.turno"/>
 		</td>
-		<td>
+		<td colspan="4">
 			<siga:ComboBD nombre = "idTurno" tipo="turnos" clase="boxCombo" ancho="350" obligatorio="false" accion="Hijo:idGuardia" parametro="<%=dato%>"/>		
 		</td>	
 		<td class="labelText">	
 			<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.guardia"/>
 		</td>	
-		<td>	
+		<td colspan="4">	
 			<siga:ComboBD nombre = "idGuardia" tipo="guardias" clase="boxCombo" ancho="290" obligatorio="false" hijo="t"/> 
 		</td>		
 	</tr>
 	<tr>	
 		<td class="labelText">	
-				<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.numero"/>
+			<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.numero"/>
 		</td>
-		<td class="labelText" colspan="2">	
-
-				<!-- RGG - SELECCION DE COLEGIADO -->
-				<script language="JavaScript">	
-					function buscarCliente () 
-					{
-						var resultado = ventaModalGeneral("busquedaClientesModalForm","G");			
-						if (resultado != null && resultado[2]!=null)
-						{
-							document.getElementById('numeroLetrado').value = resultado[2];
-							document.getElementById('idPersona').value = resultado[0];
-						}
-						if (resultado != null && resultado[4]!=null && resultado[5]!=null && resultado[6]!=null)
-						{
-							document.getElementById('nombreMostrado').value = resultado[4] + " " + resultado[5] + " " + resultado[6];
-						}
-					}		
-				</script>
-				<script language="JavaScript">	
-					function limpiarCliente () 
-					{
-						document.getElementById('numeroLetrado').value = "";
-						document.getElementById('idPersona').value = "";
-						document.getElementById('nombreMostrado').value = "";
-					}		
-				</script>
+		<td colspan="5">	
 				<!-- Si la busqueda se realiza por idPersona, el campo numeroLetrado no puede modificarse, en cambio
 					 si la busqueda se realiza mediante el campo numeroLetrado se podría modificar por pantalla sin
 					 necesidad de seleccionarlo por el botón -->
@@ -118,12 +118,14 @@
 				<!-- FIN - RGG - SELECCION DE COLEGIADO -->
 		</td>
 		<td class="labelText">	
-				<html:radio name="SaltosYCompensacionesForm" property="salto" value="S"></html:radio>				
-				&nbsp;
-				<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.salto"/>	
-				<html:radio name="SaltosYCompensacionesForm" property="salto" value="C"></html:radio>		
-				&nbsp;
-				<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.compensacion"/>
+			<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.mostrar"/>
+		</td>
+		<td>
+			<Select name="salto" class="boxCombo">
+					<option value='todo' selected ><siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.todo"/></option>
+					<option value='S' ><siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.salto"/></option>
+					<option value='C' ><siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.compensacion"/></option>
+			</Select>
 		</td>	
 	</tr>
 	<tr>	
@@ -132,22 +134,26 @@
 			&nbsp;
 			<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.desde"/>
 		</td>
-		<td class="labelText">	
-			<html:text name="SaltosYCompensacionesForm" property="fechaDesde" size="12" styleClass="box" value="" readOnly="true"></html:text>		
-			&nbsp;
+		<td class="labelText" colspan="5">	
+			<siga:Fecha nombreCampo="fechaDesde"></siga:Fecha>
 			<a onClick="return showCalendarGeneral(fechaDesde);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="general.literal.seleccionarFecha"/>'  border="0"></a>
 			&nbsp;
 			<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.hasta"/>
-			&nbsp;		
-			<html:text name="SaltosYCompensacionesForm" property="fechaHasta" size="12" styleClass="box" value="" readOnly="true"></html:text>		
+			&nbsp;
+			<siga:Fecha nombreCampo="fechaHasta"></siga:Fecha>		
 			&nbsp;
 			<a onClick="return showCalendarGeneral(fechaHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="general.literal.seleccionarFecha"/>'  border="0"></a>
 		</td>
 		<td class="labelText">	
 			<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.compensado"/>
-			&nbsp;
-			<html:checkbox name="SaltosYCompensacionesForm" property="compensado" value=""></html:checkbox>
-		</td>	
+		</td>
+		<td>	
+			<Select name="compensado" class="boxCombo">
+					<option value='todo' selected ></option>
+					<option value='no' ><siga:Idioma key="general.no"/></option>
+					<option value='si' ><siga:Idioma key="general.yes"/></option>
+			</Select>
+		</td>
 	</tr>
 	</table>
 

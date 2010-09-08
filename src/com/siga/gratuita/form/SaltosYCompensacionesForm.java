@@ -25,7 +25,7 @@ import com.siga.general.MasterForm;
  	public void setNumeroLetrado (String valor)			{ this.datos.put("NUMEROLETRADO",valor); 	 		}
  	public void setLetrado (String valor)				{ this.datos.put("LETRADO",valor); 	 				} 	
  	public void setSalto (String valor)					{ this.datos.put("SALTO",valor); 	 				}
- 	public void setCompensado (Boolean valor)			{ this.datos.put("COMPENSADO",valor); 	 			}
+ 	public void setCompensado (String valor)			{ this.datos.put("COMPENSADO",valor); 	 			}
  	public void setMotivos (String valor)				{ this.datos.put("MOTIVOS",valor); 	 				}
  	public void setIdSaltosTurno (String valor)			{ this.datos.put("IDSALTOSTURNO",valor); 	 		}
  	
@@ -43,7 +43,7 @@ import com.siga.general.MasterForm;
  	public String getNumeroLetrado ()			{ return ((String)this.datos.get("NUMEROLETRADO")); 		}
  	public String getLetrado ()					{ return ((String)this.datos.get("LETRADO")); 				} 	
  	public String getSalto ()					{ return ((String)this.datos.get("SALTO")); 				}
- 	public Boolean getCompensado ()				{ return ((Boolean)this.datos.get("COMPENSADO")); 			}
+ 	public String getCompensado ()				{ return ((String)this.datos.get("COMPENSADO")); 			}
  	public String getMotivos ()					{ return ((String)this.datos.get("MOTIVOS")); 				}
  	public String getIdSaltosTurno ()			{ return ((String)this.datos.get("IDSALTOSTURNO")); 		} 	
  	
