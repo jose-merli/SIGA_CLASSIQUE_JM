@@ -373,6 +373,7 @@ public class InformeColegiadosPagos extends MasterReport {
 		int contador=0;
 		Hashtable codigo =new Hashtable();
 		double importeAsistenciaAux=0;
+		boolean porActuacion = false;
 		
 		try {
 			StringBuffer sql1 = new StringBuffer();
@@ -438,8 +439,22 @@ public class InformeColegiadosPagos extends MasterReport {
 					String fechaDesde=r1.getString("FECHADESDE");
 					String idApunte=r1.getString("IDAPUNTE");
 					
+					// inc7405 // Comprobamos si se para por actuacion para saber si hay que mostrar las actuaciones o no
+					StringBuffer sqlAct = new StringBuffer();
+					sqlAct.append(" select 1 from scs_hitofacturableguardia where ");
+					sqlAct.append(" idinstitucion= "+idInstitucion);
+					sqlAct.append(" and idturno= "+idTurno);
+					sqlAct.append(" and idguardia= "+idGuardia);
+					sqlAct.append(" and idhito in (4,7,22,46)");
+					RowsContainer rows=new RowsContainer();
+					rows.find(sqlAct.toString());
+					if (rows!=null && rows.size()>0)
+						porActuacion=true;
+					else
+						porActuacion=false;
+					
 					String sql2=
-						"select f_siga_getrecurso(TA.descripcion, "+ idioma +" ) TIPOACTUACION, AAS.ANIO || '/' || AAS.NUMERO || '-' || AAS.IDACTUACION ACTUACION," +//+ (aas.descripcionbreve o aas.idactuacion
+						"select f_siga_getrecurso(TA.descripcion, "+ idioma +" ) TIPOACTUACION, AAS.ANIO || '/' || AAS.NUMERO || '-' || AAS.IDACTUACION ACTUACION, AAS.ANIO || '/' || AAS.NUMERO ASISTENCIA," +
 						"       PJG.NOMBRE||' '||PJG.APELLIDO1||' '||PJG.APELLIDO2 NOMBRE_ASISTIDO, to_char(AAS.FECHA,'DD/MM/YYYY') FECHA_ACTUACION, " +
 						"       DECODE(FAAS.PRECIOAPLICADO,0,NULL,FAAS.PRECIOAPLICADO) AS PRECIO_ACTUACION," +
 						"		f_siga_getrecurso(COS.DESCRIPCION, "+ idioma +" ) AS TIPO_DESPLAZAMIENTO," +
@@ -504,10 +519,13 @@ public class InformeColegiadosPagos extends MasterReport {
 						result.addElement(htAux);
 						//tratar el resto
 						int size2=rc2.size();
-						for(int j=1;j<size2;j++){
-							r2=(Row)rc2.get(j);
-							htAux=r2.getRow();
-							result.addElement(htAux);
+						// inc7405 // Si se factura por asistencia solo escribimos la primera actuacion
+						if(porActuacion){
+							for(int j=1;j<size2;j++){
+								r2=(Row)rc2.get(j);
+								htAux=r2.getRow();
+								result.addElement(htAux);
+							}
 						}
 					}else{
 						htAux.put("NOMBRE_ASISTIDO",sinActuaciones);
