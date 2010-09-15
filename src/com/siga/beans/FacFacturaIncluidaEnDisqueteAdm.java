@@ -405,6 +405,8 @@ public class FacFacturaIncluidaEnDisqueteAdm extends MasterBeanAdministrador {
 		    	String idRecibo=(String)aux2.get(2);
 		    	String importe=(String)aux2.get(3);
 		    	String idRenegociacion="";
+		    	
+		    	idRecibo=idRecibo+"00";
 		    	if (idRecibo!=null && !idRecibo.equals("")) {
 		    	    idRenegociacion=idRecibo.substring(idRecibo.length()-2);
 		    	}
@@ -417,7 +419,6 @@ public class FacFacturaIncluidaEnDisqueteAdm extends MasterBeanAdministrador {
 		    	    numeroFactura=(String)factHash.get(FacFacturaBean.C_NUMEROFACTURA);
 		    	    idFacturaAux=(String)factHash.get(FacFacturaBean.C_IDFACTURA);
 		    	}
-
 
 		    	FacBancoInstitucionAdm bancoAdm =new FacBancoInstitucionAdm(this.usrbean);
 		    	Vector vbancos_codigo=bancoAdm.getBancosCodigoDesdeFichero(idInstitucion,idFactura, idRenegociacion);
@@ -490,10 +491,13 @@ public class FacFacturaIncluidaEnDisqueteAdm extends MasterBeanAdministrador {
 				linea += "56"; // cod reg
 				linea += "90"; // cod dato
 				linea += UtilidadesString.relleno(relleno,12); // nada
-				linea += UtilidadesString.formateaFicheros(idRecibo,12,false); // referencia
-				linea += UtilidadesString.relleno(relleno,60); // nada
+				//linea += UtilidadesString.formateaFicheros(idRecibo,12,false); // referencia
+				//linea += UtilidadesString.relleno(relleno,60); // nada
+				linea += UtilidadesString.relleno(relleno,72); // nada
 				linea += UtilidadesString.formateaFicheros(importeFormat,10,true); // importe
-				linea += UtilidadesString.relleno(relleno,16); // nada
+				linea += UtilidadesString.relleno(relleno,6); 
+				linea += UtilidadesString.formateaFicheros(idRecibo,10,false); // referencia
+				//linea += UtilidadesString.relleno(relleno,16); // nada
 				linea += UtilidadesString.formateaFicheros(ref,40,false); // numero factura / CONCEPTO
 				linea += UtilidadesString.formateaFicheros(motivo,1,true); // motivo devolucion
 				linea += UtilidadesString.relleno(relleno,7); // nada
