@@ -77,7 +77,7 @@ public class AtosBajasTemporalesService extends JtaBusinessServiceTemplate
 		
 		if(!usrBean.isLetrado()||isAceptarSolicitudes.booleanValue())
 			bajaTemporal.setValidado("1");
-		
+		String fechAlta = UtilidadesString.formatoFecha(new Date(),"yyyy/MM/dd HH:mm:ss");
 		for (int i = 0; i < idPersonas.length; i++) {
 			
 			String idPersona = idPersonas[i];
@@ -87,7 +87,7 @@ public class AtosBajasTemporalesService extends JtaBusinessServiceTemplate
 				lAuxiliar.add(idPersona);
 			bajaTemporal.setIdPersona(new Long(idPersona));
 			for(String fechaBT:alFechas){
-				bajaTemporal.setFechaAlta(UtilidadesString.formatoFecha(new Date(),"yyyy/MM/dd HH:mm:ss"));
+				bajaTemporal.setFechaAlta(fechAlta);
 				bajaTemporal.setFechaEstado(bajaTemporal.getFechaAlta());
 				bajaTemporal.setFechaBT(GstDate.getApplicationFormatDate("", fechaBT));
 				btAdm.insert(bajaTemporal);

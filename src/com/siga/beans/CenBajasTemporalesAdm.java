@@ -323,7 +323,7 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
 		sqlBajas.append(" SELECT DISTINCT BT.IDINSTITUCION,  BT.IDPERSONA,    ");
 		//Sera null cuando venga dela ficha colegial
 		if(bajaTemporalForm.getSituacion()==null || bajaTemporalForm.getSituacion().equals("B")){
-			sqlBajas.append(" BT.TIPO,BT.FECHADESDE,  BT.FECHAHASTA,  BT.FECHAALTA,  BT.DESCRIPCION,BT.VALIDADO,BT.FECHAESTADO, ");	
+			sqlBajas.append(" BT.TIPO,BT.FECHADESDE,  BT.FECHAHASTA,  BT.FECHAALTA,  BT.DESCRIPCION,BT.VALIDADO,TRUNC(BT.FECHAESTADO), ");	
 		}else{
 			sqlBajas.append(" 'Baja' TIPO, NULL, NULL,  NULL, ");
 			sqlBajas.append(" NULL, NULL, NULL, ");	
@@ -593,7 +593,8 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
         		Hashtable<String, Object> htFila=fila.getRow();
         		bajaTemporalBean.setFechaBT((String)htFila.get(CenBajasTemporalesBean.C_FECHABT));
         		bajaTemporalBean.setFechaDesde((String)htFila.get(CenBajasTemporalesBean.C_FECHADESDE));
-        		bajaTemporalBean.setFechaHasta((String)htFila.get(CenBajasTemporalesBean.C_FECHAALTA));
+        		bajaTemporalBean.setFechaHasta((String)htFila.get(CenBajasTemporalesBean.C_FECHAHASTA));
+        		bajaTemporalBean.setFechaAlta((String)htFila.get(CenBajasTemporalesBean.C_FECHAALTA));
         		bajaTemporalBean.setDescripcion((String)htFila.get(CenBajasTemporalesBean.C_DESCRIPCION));
         		bajaTemporalBean.setTipo((String)htFila.get(CenBajasTemporalesBean.C_TIPO));
         		bajaTemporalBean.setUsrBean(this.usrbean);
