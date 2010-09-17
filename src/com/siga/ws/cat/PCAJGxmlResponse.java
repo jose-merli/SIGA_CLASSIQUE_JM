@@ -378,7 +378,11 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 				}
 				
 				if (getIdRemesa() != idRemesa/10) {
-					file.delete();
+					if (file.delete()) {
+						ClsLogging.writeFileLog("Fichero eliminado del servidor. Ruta = " + file.getAbsolutePath(), 3);
+					} else {
+						ClsLogging.writeFileLog("No se ha podido eliminar el fichero del servidor. Ruta = " + file.getAbsolutePath(), 3);
+					}
 					//si es distinta remesa ya lo tratará su remesa
 					return;
 //					escribeLogRemesa("La remesa del fichero es distinta a la del usuario de SIGA");
