@@ -3735,20 +3735,16 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 						borrarDirectorio(ruta);
 				 }				
 				
-			}
-
-			//Despues de todo el proceso, generamos/imprimimos las etiquetas
-			String sEtiquetas = envBean.getImprimirEtiquetas();
-			if (sEtiquetas.equals(EnvEnviosAdm.GENERAR_ETIQUETAS)){
-				String sRutaEtiquetas = generarEtiquetas(String.valueOf(envBean.getIdInstitucion()),String.valueOf(envBean.getIdEnvio()),pathDestino,vDestinatarios);
-			}else if (sEtiquetas.equals(EnvEnviosAdm.IMPRIMIR_ETIQUETAS)){
-				/*
-	        	if (aux.exists()) 
-	            {
-		            String sRutaEtiquetas = generarEtiquetas(String.valueOf(idInstitucion),String.valueOf(envBean.getIdEnvio()));
-			        Process p = Runtime.getRuntime().exec(comandoShell + " " + idImpresora + " " + sRutaEtiquetas);	            
-	            }
-				 */
+				 // incXXXX // Controlamos que no se generen etiquetas si no hay destinatarios (puede que no sea null, pero este vacio)
+				 if(vDestinatarios.size()>0){
+					 //Despues de todo el proceso, generamos/imprimimos las etiquetas
+					 String sEtiquetas = envBean.getImprimirEtiquetas();
+					 if (sEtiquetas.equals(EnvEnviosAdm.GENERAR_ETIQUETAS)){
+						 String sRutaEtiquetas = generarEtiquetas(String.valueOf(envBean.getIdInstitucion()),String.valueOf(envBean.getIdEnvio()),pathDestino,vDestinatarios);
+					 }else if (sEtiquetas.equals(EnvEnviosAdm.IMPRIMIR_ETIQUETAS)){
+					 }
+				 }
+				 
 			}
 
 			if (generarLog) {
