@@ -24,7 +24,6 @@
 	UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");
 
 	String delimitador = (String)request.getAttribute("DELIMITADOR");
-	System.out.println("delimitador " + delimitador );
 %>
 
 <html>
