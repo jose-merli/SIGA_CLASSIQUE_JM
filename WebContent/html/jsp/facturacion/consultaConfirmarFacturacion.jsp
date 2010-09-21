@@ -28,7 +28,7 @@
 <%@ page import="com.siga.beans.FacEstadoConfirmFactAdm"%>
 <%@ page import="com.siga.beans.FacEstadoConfirmFactBean"%>
 <%@ page import="com.siga.beans.FacSerieFacturacionBean"%>
-<%@ page import = "com.siga.tlds.FilaExtElement"%>
+<%@ page import="com.siga.tlds.FilaExtElement"%>
 
 <!-- JSP -->
 <% 
@@ -154,7 +154,34 @@
 			document.confirmarFacturacionForm.modo.value = "archivarFactura";
 			document.confirmarFacturacionForm.submit();
 		 }
+
+		function enviar(fila) 
+		{	
+			sub();
+			if(confirm('<siga:Idioma key="facturacion.confirmacionFacturacion.literal.confirmarEnvioFacturas"/>')){
+				var datos;
+				datos = document.getElementById('tablaDatosDinamicosD');
+				datos.value = ""; 
+				var j;
+				var tabla;
+				tabla = document.getElementById('tablaDatos');
+				var flag = true;
 		
+				j = 1;
+				while (flag) {
+				  var aux = 'oculto' + fila + '_' + j;
+				  var oculto = document.getElementById(aux);
+				  if (oculto == null)  { flag = false; }
+				  else { datos.value = datos.value + oculto.value + ','; }
+				  j++;
+				}
+				datos.value = datos.value + "%";
+				document.confirmarFacturacionForm.modo.value = "enviar";
+				document.confirmarFacturacionForm.submit();
+			}else{
+				fin();
+			}
+		 }
 		
 		function download(fila)
 		{
@@ -302,7 +329,7 @@
 		   			estilo=""
 				   	clase="tableTitle"
 				  	nombreCol="facturacion.confirmarFacturacion.literal.sel,facturacion.confirmarFacturacion.literal.conceptosFacturables,facturacion.programarFacturacion.literal.fechaInicioProductos,facturacion.programarFacturacion.literal.fechaInicioServicios,facturacion.confirmarFacturacion.literal.fechaRealGeneracion,facturacion.confirmarFacturacion.literal.fechaPrevistaConfirmacion,facturacion.confirmarFacturacion.literal.fechaConfirmacion,facturacion.confirmarFacturacion.literal.estadoConfirmacion,facturacion.confirmarFacturacion.literal.estadoPDF,facturacion.confirmarFacturacion.literal.estadoEnvio,"
-				  	tamanoCol="4,13,15,15,7,7,7,7,7,7,10"
+				  	tamanoCol="4,17,9,9,7,7,7,7,7,7,18"
 		   			alto="100%"
 				    modal="M"
 				    activarFilaSel="true" > 		  
@@ -343,7 +370,7 @@
 								Integer idEstadoConfirmacion = new Integer((String)htData.get("IDESTADOCONFIRMACION"));
 								Integer idEstadoPDF = new Integer((String)htData.get("IDESTADOPDF"));
 
-								FilaExtElement[] elems=new FilaExtElement[5];
+								FilaExtElement[] elems=new FilaExtElement[6];
 								if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_PENDIENTE) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADAERRORES)) {
 									elems[0]=new FilaExtElement("generar",  "confirmacionInmediata", "facturacion.confirmarFacturacion.boton.confirmacionInmediata", SIGAConstants.ACCESS_READ);
 									elems[1]=new FilaExtElement("confirmar","programarConfirmacion", "facturacion.confirmarFacturacion.boton.programarConfirmacion", SIGAConstants.ACCESS_READ);
@@ -356,6 +383,9 @@
 								}
 								if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADA) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADAERRORES)) {
 									elems[4]=new FilaExtElement("download","download",SIGAConstants.ACCESS_READ); 				
+								}
+								if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADA) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADAERRORES)) {
+									elems[5]=new FilaExtElement("enviar","enviar",SIGAConstants.ACCESS_READ); 				
 								}
 
 								i++;
@@ -373,8 +403,8 @@
 										<input type='hidden' id='oculto<%=String.valueOf(i)%>_4' name='oculto<%=String.valueOf(i)%>_4' value='<%=fCargo%>'>
 										<%=UtilidadesString.mostrarDatoJSP(htData.get(FacSerieFacturacionBean.C_NOMBREABREVIADO))%> <%=(idProgramacion.equals("1"))?"":"["+idProgramacion+"]"%>
 									</td>
-									<td><%=fInicialProducto%>-<%=fFinalProducto%></td> 
-									<td><%=fInicialServicio%>-<%=fFinalServicio%></td> 
+									<td><%=fInicialProducto%> -<br><%=fFinalProducto%></td> 
+									<td><%=fInicialServicio%> -<br><%=fFinalServicio%></td> 
 									<td><%=fRealGeneracion%></td> 	
 									<td><%=fPrevistaConfirmacion%></td> 	
 									<td><%=fRealConfirmacion%></td> 	

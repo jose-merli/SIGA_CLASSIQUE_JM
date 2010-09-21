@@ -85,6 +85,8 @@ public class ConfirmarFacturacionAction extends MasterAction{
 					mapDestino = confirmacionInmediata(mapping, miForm, request, response);
 				} else if (accion.equalsIgnoreCase("generarFacturaSolo")){
 					mapDestino = generarFacturaSolo(mapping, miForm, request, response);
+				} else if (accion.equalsIgnoreCase("enviar")){
+					mapDestino = enviarFacturas(mapping, miForm, request, response);
 				}
 
 				else {
@@ -243,19 +245,22 @@ public class ConfirmarFacturacionAction extends MasterAction{
 						String mensaje = UtilidadesString.getMensajeIdioma(user,"messages.facturacion.PDFFacturaYaProgramada");
 						return exitoRefresco(mensaje,request);
 					}else{
-					ClsLogging.writeFileLog("NO EXISTE EL ZIP, SE PASA A PROGRAMAR SU GENERACION",10);
-					generarFacturaSolo(mapping, formulario, request, response);
-					SIGASvlProcesoAutomaticoRapido.NotificarAhora(SIGASvlProcesoAutomaticoRapido.procesoRapido);
-					String mensaje = UtilidadesString.getMensajeIdioma(user,"messages.facturacion.generacionPDFFacturaProgramada"); 			
-					return exitoRefresco(mensaje,request);
-				}
+						// inc6666 - En vez de que lo haga el proceso automatico generamos de nuevo las facturas y el zip
+						Facturacion fac= new Facturacion(user);
+						fac.generarZipYFacturas(request,idInstitucion, idSerieFacturacion, idProgramacion);
+						/*
+						ClsLogging.writeFileLog("NO EXISTE EL ZIP, SE PASA A PROGRAMAR SU GENERACION",10);
+						generarFacturaSolo(mapping, formulario, request, response);
+						SIGASvlProcesoAutomaticoRapido.NotificarAhora(SIGASvlProcesoAutomaticoRapido.procesoRapido);
+						String mensaje = UtilidadesString.getMensajeIdioma(user,"messages.facturacion.generacionPDFFacturaProgramada"); 			
+						return exitoRefresco(mensaje,request);
+						*/
+					}
 				}
 				else{
 					String mensaje = UtilidadesString.getMensajeIdioma(user,"messages.facturacion.descargaFacturas"); 			
 					return exitoRefresco(mensaje,request);					
 				}
-					
-	//				throw new SIGAException("messages.facturacion.generacionPDFFacturaProgramada");
 			}
 
 			request.setAttribute("nombreFichero", sNombreFichero);
@@ -334,7 +339,6 @@ public class ConfirmarFacturacionAction extends MasterAction{
 				}
 			}
 			
-			
 			tx.commit();
 			
 			// Comprobaciones antes de confirmacion 
@@ -351,133 +355,6 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			
 			salida = exitoRefresco(mensaje,request);
 			
-			
-/* RGG 05/02/2007 CAMBIO DE CONFIRMACION A BACKGROUND
- * Este es el proceso que hacía antes y que ahora se pasa a background
- *  			
-			//FacFacturacionProgramadaBean bean = new FacFacturacionProgramadaBean();
-			FacFacturaAdm admFactura = new FacFacturaAdm(usuario);
-			ReadProperties p = new ReadProperties ("SIGA.properties");
-			
-			Vector ocultos = new Vector();		
-			ocultos = (Vector)form.getDatosTablaOcultos(0);
-			
-			String idSerieFacturacion = (String)ocultos.elementAt(0);			
-			String idProgramacion 	= (String)ocultos.elementAt(1);
-			String usuMod			= (String)ocultos.elementAt(2);
-			String idInstitucion	= this.getIDInstitucion(request).toString();
-			String pathFichero 		= p.returnProperty(keyPath);
-    		String sBarra = "";
-    		if (pathFichero.indexOf("/") > -1) sBarra = "/"; 
-    		if (pathFichero.indexOf("\\") > -1) sBarra = "\\";        		
-    		pathFichero += sBarra+idInstitucion;
-			
-    		String fechaCargo = form.getFechaCargo();
-    		
-			boolean noEncontrado = true;
-			
-			// Confirmar la facturación.
-			Enumeration en = ((Vector)request.getSession().getAttribute("DATABACKUP")).elements();
-			Hashtable hashOld= new Hashtable();
-			while(en.hasMoreElements() && noEncontrado){
-				hashOld = (Hashtable)en.nextElement();
-				if(((String)hashOld.get(FacFacturacionProgramadaBean.C_IDSERIEFACTURACION)).equalsIgnoreCase(idSerieFacturacion)){
-					if(((String)hashOld.get(FacFacturacionProgramadaBean.C_IDPROGRAMACION)).equalsIgnoreCase(idProgramacion)){
-						noEncontrado=false;
-					}
-				}				
-			} // While
-
-			
-			if (noEncontrado) {
-				// ERROR no ha encontrado el registro. No se puede dar
-				throw new SIGAException (adm.getError());
-			} else {
-
-				tx.begin();	
-				
-
-				// Se confirma la facturación
-				Hashtable hashNew = (Hashtable)hashOld.clone();				
-				UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHACONFIRMACION, "sysdate");
-				if(!adm.update(hashNew, hashOld)){
-					throw new SIGAException (adm.getError());
-				}
-
-				//Se genera numero de factura definitivo
-				Object[] param_in_confirmacion = new Object[4];
-				param_in_confirmacion[0] = idInstitucion;
-				param_in_confirmacion[1] = idSerieFacturacion;
-				param_in_confirmacion[2] = idProgramacion;
-				param_in_confirmacion[3] = usuMod;
-	        	
-				String resultadoConfirmar[] = new String[2];
-				resultadoConfirmar = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION.CONFIRMACIONFACTURACION(?,?,?,?,?,?)}", 2, param_in_confirmacion);
-	        	String codretorno = resultadoConfirmar[0];
-	        	if (!codretorno.equals("0")){
-	        		throw new ClsExceptions ("Error al generar números de facturación y disquetes bancarios.");
-	        	}
-				// Se envían a banco para su cobro
-				Object[] param_in_banco = new Object[6];
-				param_in_banco[0] = idInstitucion;
-				param_in_banco[1] = idSerieFacturacion;
-				param_in_banco[2] = idProgramacion;
-				//Fecha de Cargo (DDMMAA):
-				String fechaTMP = null;
-				try {
-					fechaTMP = fechaCargo.substring(0,2)+fechaCargo.substring(3,5)+fechaCargo.substring(8,10); 
-				} catch (Exception e){
-					fechaTMP = "";
-				}
-				param_in_banco[3] = fechaTMP;
-				param_in_banco[4] = pathFichero;
-				param_in_banco[5] = usuMod;
-	        	
-	        	String resultado[] = new String[3];
-	        	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.PRESENTACION(?,?,?,?,?,?,?,?,?)}", 3, param_in_banco);
-	        	codretorno = resultado[1];
-	        	if (!codretorno.equals("0")){
-	        		throw new ClsExceptions ("Error al generar números de facturación y disquetes bancarios.");
-	        	}
-				
-	        	cont = resultado[0];
-
-	        	// DAC  //////////////////////////
-	        	boolean bEnviarFactura = false;
-        		Hashtable datos = new Hashtable();
-        		UtilidadesHash.set(datos, FacSerieFacturacionBean.C_IDINSTITUCION, idInstitucion);
-        		UtilidadesHash.set(datos, FacSerieFacturacionBean.C_IDSERIEFACTURACION, idSerieFacturacion);
-        		FacSerieFacturacionAdm admSerieFac = new FacSerieFacturacionAdm (usuario);
-        		Vector vD = admSerieFac.select(datos);
-        		if ((vD != null) && (vD.size() == 1)){
-        			String generarEnvio = "";
-        			FacSerieFacturacionBean serieFacturacionBean = (FacSerieFacturacionBean) vD.get(0);
-        			generarEnvio = serieFacturacionBean.getEnvioFactura();
-        			if ((generarEnvio != null) && (generarEnvio.equals("1"))) bEnviarFactura = true;
-        			else bEnviarFactura = false;
-        		}
-	        	//////////////////////////////////
-
-    			
-    			tx.commit();
-
-        		if (bEnviarFactura) {
-		        	// Se guardan las facturas impresas.
-		        	// Chequeo si ha existido algun error (retorno != 0)
-		        	int errorAlmacenar = admFactura.almacenar(usr,Integer.valueOf(idInstitucion), Long.valueOf(idSerieFacturacion), Long.valueOf(idProgramacion),usuario, bEnviarFactura);
-					if(errorAlmacenar!=0){					
-						// Error de facturacion:
-						if (errorAlmacenar == 1) 
-							throw new ClsExceptions ("Error en el almacenamiento de la factura");
-						// Error de envíos: 
-						else
-							throw new ClsExceptions ("No se ha podido realizar el envío porque no existe ninguna plantilla definida");
-					}
-        		}
-			}	
-	* FIN DEL PROCESO ANTERIOR
-	**/
-					
 		}catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"}, e, tx);
 		}
@@ -698,5 +575,39 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			return this.error("messages.general.error",new ClsExceptions(e.getMessage()),request);
 		}
 		return this.exitoRefresco("messages.facturacion.generacionPDFFacturaProgramada", request); 
+	}
+	
+	/**
+	 * Genera las facturas individuales y las envia a los destinatarios correspondientes
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws SIGAException
+	 */
+	protected String enviarFacturas(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
+	{
+		
+		try {
+			ConfirmarFacturacionForm form = (ConfirmarFacturacionForm)formulario;
+			
+			Vector ocultos = (Vector)form.getDatosTablaOcultos(0);
+			
+			String idSerieFacturacion = (String)ocultos.elementAt(0);			
+			String idProgramacion 	= (String)ocultos.elementAt(1);
+			String idInstitucion	= this.getIDInstitucion(request).toString();
+			
+			Facturacion fac = new Facturacion(this.getUserBean(request));
+			fac.generarPdfEnviarFacturas(request, idInstitucion, idSerieFacturacion, idProgramacion);
+
+		}
+		catch (ClsExceptions e) {
+			return this.exitoRefresco(e.getMsg(),request);
+		}
+		catch (Exception e) {
+			return this.error("messages.general.error",new ClsExceptions(e.getMessage()),request);
+		}
+		return this.exitoRefresco("messages.envioRealizado.success", request); 
 	}
 }
