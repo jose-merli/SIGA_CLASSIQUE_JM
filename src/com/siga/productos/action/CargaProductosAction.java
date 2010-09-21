@@ -195,8 +195,10 @@ public class CargaProductosAction extends MasterAction {
 		        } catch (Exception e) {
 		        	//
 		        }
+		        char comodin = (char)7;
 				//String datos[] =  UtilidadesString.splitNormal(linea,delimitador);
-		        String datos[] =  linea.split(delimitador);
+				String lineaNueva=linea.replace(delimitador.charAt(0), comodin);
+		        String datos[] =  lineaNueva.split(String.valueOf(comodin));
 				String colegiado = "";
 				String dni = "";
 				String name = "";
