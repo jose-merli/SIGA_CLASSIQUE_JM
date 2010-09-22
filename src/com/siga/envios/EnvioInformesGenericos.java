@@ -318,6 +318,8 @@ public class EnvioInformesGenericos extends MasterReport {
 				double deuda = Double.parseDouble((String) fila.get("DEUDA"));
 				deudaTotal += deuda;
 				
+				//Descripcion de concepto que se pedia que saliera.				
+				htCabeceraInforme.put("DESCRIPCION_PROGRAMACION",(String) fila.get("DESCRIPCION_PROGRAMACION") );
 				//INC_06198_SIGA
 				//se separan las comunicaciones desde la 1 hasta la 5, si existen
 				//estas etiquetas podran usarse en cualquier parte de la plantilla

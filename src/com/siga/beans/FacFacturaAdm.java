@@ -2080,7 +2080,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 					" CODSUCURSAL AS CODIGO_SUCURSAL, "+
 					" DIGCONTROL AS DIGITO_CONTROL, "+
 					" NUMCUENTA AS NUMERO_CUENTA, "+
-					CenColegiadoBean.C_NCOLEGIADO+",NOMBRE,"+CenPersonaBean.C_NIFCIF+", CONCEPTO_DESCSERIEFACT" ;
+					CenColegiadoBean.C_NCOLEGIADO+",NOMBRE,"+CenPersonaBean.C_NIFCIF+", CONCEPTO_DESCSERIEFACT, DESCRIPCION_PROGRAMACION" ;
 					if(isInforme)
 						select+=", MOTIVO_DEVOLUCION";
 					select+=" FROM (SELECT " + 
@@ -2136,13 +2136,18 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 						                  " and N." + FacFacturacionProgramadaBean.C_IDPROGRAMACION + " = F." + FacFacturaBean.C_IDPROGRAMACION +
 						                  " and S." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + " = F." + FacFacturaBean.C_IDSERIEFACTURACION +
 						                  " and F." + FacFacturaBean.C_IDSERIEFACTURACION + " = N." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION +
-						                  ") as CONCEPTO_DESCSERIEFACT ";
+						                  ") as CONCEPTO_DESCSERIEFACT, "+
+										  " FP."+FacFacturacionProgramadaBean.C_DESCRIPCION+"  As DESCRIPCION_PROGRAMACION";
 							if(isInforme)
 								select+= " ,F_SIGA_GETULTIMOMOTIVODEVFACT(F.IDINSTITUCION,F.idfactura,F.IDPERSONA) as MOTIVO_DEVOLUCION ";
 							
+							 
+							
+							
 			String from = 	" FROM " + 
 							FacFacturaBean.T_NOMBRETABLA +" F, "+ CenPersonaBean.T_NOMBRETABLA+" P," +
-							CenCuentasBancariasBean.T_NOMBRETABLA+" C, "+CenBancosBean.T_NOMBRETABLA+" B";
+							CenCuentasBancariasBean.T_NOMBRETABLA+" C, "+CenBancosBean.T_NOMBRETABLA+" B,"+
+							FacFacturacionProgramadaBean.T_NOMBRETABLA+" FP ";
 
 			contador++;
 			codigos.put(new Integer(contador),idInstitucion);
@@ -2155,6 +2160,9 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			where+= " AND F."+FacFacturaBean.C_IDCUENTA+" = C."+CenCuentasBancariasBean.C_IDCUENTA+"(+) ";
 			where+= " AND F."+FacFacturaBean.C_IDPERSONA+" = C."+CenCuentasBancariasBean.C_IDPERSONA+"(+) ";
 			where+= " AND C."+CenCuentasBancariasBean.C_CBO_CODIGO+"=B."+CenBancosBean.C_CODIGO+" (+)";
+			where+= " And  F."+FacFacturaBean.C_IDINSTITUCION+" = FP."+FacFacturacionProgramadaBean.C_IDINSTITUCION;
+            where+= " AND  F."+FacFacturaBean.C_IDSERIEFACTURACION+" = FP."+FacFacturacionProgramadaBean.C_IDSERIEFACTURACION;
+            where+= " AND  F."+FacFacturaBean.C_IDPROGRAMACION+" = FP."+FacFacturacionProgramadaBean.C_IDPROGRAMACION;
 			
 			if(idPersona!=null){
 				contador++;
@@ -2188,9 +2196,10 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 				codigos.put(new Integer(contador),idFactura);
 				where +=" AND F." + FacFacturaBean.C_IDFACTURA+ " =:"+contador+" )";
 			}else{
-				where +=" AND F." + FacFacturaBean.C_NUMEROFACTURA + " > '0' )";
+				where +=" AND F." + FacFacturaBean.C_NUMEROFACTURA + " > '0')";
 			}				
-					
+				
+			
 			where += " WHERE DEUDA > 0";
 			
 			String orderBy = " ORDER BY "  + FacFacturaBean.C_FECHAEMISION + " DESC";
