@@ -1327,8 +1327,10 @@ public class UtilidadesString {
 		 */
 		
 	public static String reemplazarTextoEntreMarca(String textoreemplazar,String marca){
-        
+        if(textoreemplazar==null ||textoreemplazar.length()==0)
+        	return "";
         String texto = textoreemplazar;
+        
         String textoAux = texto;
         String cadena = "";
         
