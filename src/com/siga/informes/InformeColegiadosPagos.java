@@ -452,8 +452,9 @@ public class InformeColegiadosPagos extends MasterReport {
 						porActuacion=true;
 					else
 						porActuacion=false;
-					
-					String sql2=
+					String sql2="";
+					if(porActuacion){
+						sql2=
 						"select f_siga_getrecurso(TA.descripcion, "+ idioma +" ) TIPOACTUACION, AAS.ANIO || '/' || AAS.NUMERO || '-' || AAS.IDACTUACION ACTUACION, AAS.ANIO || '/' || AAS.NUMERO ASISTENCIA," +
 						"       PJG.NOMBRE||' '||PJG.APELLIDO1||' '||PJG.APELLIDO2 NOMBRE_ASISTIDO, to_char(AAS.FECHA,'DD/MM/YYYY') FECHA_ACTUACION, " +
 						"       DECODE(FAAS.PRECIOAPLICADO,0,NULL,FAAS.PRECIOAPLICADO) AS PRECIO_ACTUACION," +
@@ -509,6 +510,76 @@ public class InformeColegiadosPagos extends MasterReport {
 						"   and TA.idtipoasistencia= AAS.idtipoasistencia "+
 						"   and TA.idtipoactuacion = AAS.idtipoactuacion " +	
 						" order by AAS.ANIO, AAS.NUMERO, AAS.IDACTUACION, NOMBRE_ASISTIDO";
+						}else{
+							// inc7405 // Si se factura por asistencia solo escribimos la primera actuacion de la asistencia
+							// asi que filtramos para que salga solo la primera actuacion
+							sql2=
+							" select '' TIPOACTUACION, " +
+							"       '' ACTUACION, " +
+							"       ASI.ANIO || '/' || ASI.NUMERO ASISTENCIA, " +
+							"       PJG.NOMBRE || ' ' || PJG.APELLIDO1 || ' ' || PJG.APELLIDO2 NOMBRE_ASISTIDO, " +
+							"       to_char(ASI.FECHAHORA, 'DD/MM/YYYY') FECHA_ACTUACION, " +
+							"       DECODE(FASI.PRECIOAPLICADO, 0, NULL, FASI.PRECIOAPLICADO) AS PRECIO_ACTUACION, " +
+							"       '' AS TIPO_DESPLAZAMIENTO, " +
+							"       SUM(TACTCOS.IMPORTE) AS IMPORTE_DESPLAZAMIENTO, " +
+							"       '' AS ABREVIATURA_DESPLAZAMIENTO " +
+							"  from FCS_FACT_ASISTENCIA FASI, " +
+							"       SCS_ASISTENCIA               ASI, " +
+							"       FCS_FACT_APUNTE              FAP, " +
+
+							"       SCS_PERSONAJG                PJG, " +
+							"       FCS_FACT_ACTUACIONASISTENCIA FAAS, " +
+							"       SCS_ACTUACIONASISTENCIA      AAS, " +
+							"       SCS_ACTUACIONASISTCOSTEFIJO  ACTCOS, " +
+							"       SCS_TIPOACTUACIONCOSTEFIJO   TACTCOS, " +
+							"       SCS_COSTEFIJO                COS, " +
+							"       SCS_TIPOACTUACION            TA " +
+
+							" where FASI.IDINSTITUCION = ASI.IDINSTITUCION " +
+							"   and FASI.ANIO = ASI.ANIO " +
+							"   and FASI.NUMERO = ASI.NUMERO " +
+							"   and FASI.IDINSTITUCION = FAP.IDINSTITUCION " +
+							"   and FASI.IDFACTURACION = FAP.IDFACTURACION " +
+							"   and FASI.IDAPUNTE = FAP.IDAPUNTE " +
+
+							"   and FASI.IDINSTITUCION = "+idInstitucion +
+							"   and FAP.IDFACTURACION = "+idFacturacion +
+							"   and FAP.IDTURNO ="+idTurno +
+							"   and FAP.IDGUARDIA = "+idGuardia +
+							"   and FAP.IDCALENDARIOGUARDIAS = "+idCalendarioGuardias +
+							"   and trunc(FAP.FECHAINICIO)= '"+fechaDesde+"' "+
+							"   and FAP.Idpersona = "+idPersona+" "+
+							"   and FAP.IdApunte = "+idApunte+" "+
+							" " +
+							"   and ASI.IDPERSONAJG = PJG.IDPERSONA(+) " +
+							"   and ASI.IDINSTITUCION = PJG.IDINSTITUCION(+) " + 
+							"   and FASI.IDINSTITUCION = FAAS.IDINSTITUCION(+) " +
+							"   and FASI.IDFACTURACION = FAAS.IDFACTURACION(+) " +
+							"   and FASI.ANIO = FAAS.ANIO(+) " +
+							"   and FASI.NUMERO = FAAS.NUMERO(+) " +
+							"   and FAAS.IDINSTITUCION = AAS.IDINSTITUCION(+) " +
+							"   and FAAS.NUMERO = AAS.NUMERO(+) " +
+							"   and FAAS.ANIO = AAS.ANIO(+) " +
+							"   and FAAS.IDACTUACION = AAS.IDACTUACION(+) " +
+							"   and AAS.IDINSTITUCION = ACTCOS.IDINSTITUCION(+) " +
+							"   and AAS.ANIO = ACTCOS.ANIO(+) " +
+							"   and AAS.NUMERO = ACTCOS.NUMERO(+) " +
+							"   and AAS.IDACTUACION = ACTCOS.IDACTUACION(+) " +
+							"   and ACTCOS.IDINSTITUCION = TACTCOS.IDINSTITUCION(+) " +
+							"   and ACTCOS.IDTIPOASISTENCIA = TACTCOS.IDTIPOASISTENCIA(+) " +
+							"   and ACTCOS.IDTIPOACTUACION = TACTCOS.IDTIPOACTUACION(+) " +
+							"   and ACTCOS.IDCOSTEFIJO = TACTCOS.IDCOSTEFIJO(+) " +
+							"   and ACTCOS.IDINSTITUCION = COS.IDINSTITUCION(+) " +
+							"   and ACTCOS.IDCOSTEFIJO = COS.IDCOSTEFIJO(+) " +
+							"   and AAS.idinstitucion = TA.idinstitucion(+) " +
+							"   and AAS.idtipoasistencia = TA.idtipoasistencia(+) " +
+							"   and AAS.idtipoactuacion = TA.idtipoactuacion(+) " +
+							" group by ASI.ANIO, ASI.NUMERO, " +
+							"       PJG.NOMBRE || ' ' || PJG.APELLIDO1 || ' ' || PJG.APELLIDO2, " +
+							"       to_char(ASI.FECHAHORA, 'DD/MM/YYYY'), " +
+							"       DECODE(FASI.PRECIOAPLICADO, 0, NULL, FASI.PRECIOAPLICADO) " +
+							" order by ASI.ANIO, ASI.NUMERO, PJG.NOMBRE || ' ' || PJG.APELLIDO1 || ' ' || PJG.APELLIDO2 " ;
+						}
 
 					RowsContainer rc2 = new RowsContainer();
 					rc2.find(sql2);
@@ -519,13 +590,10 @@ public class InformeColegiadosPagos extends MasterReport {
 						result.addElement(htAux);
 						//tratar el resto
 						int size2=rc2.size();
-						// inc7405 // Si se factura por asistencia solo escribimos la primera actuacion
-						if(porActuacion){
-							for(int j=1;j<size2;j++){
-								r2=(Row)rc2.get(j);
-								htAux=r2.getRow();
-								result.addElement(htAux);
-							}
+						for(int j=1;j<size2;j++){
+							r2=(Row)rc2.get(j);
+							htAux=r2.getRow();
+							result.addElement(htAux);
 						}
 					}else{
 						htAux.put("NOMBRE_ASISTIDO",sinActuaciones);
