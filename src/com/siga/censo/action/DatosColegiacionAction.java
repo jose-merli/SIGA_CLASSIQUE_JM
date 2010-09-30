@@ -609,6 +609,8 @@ public class DatosColegiacionAction extends MasterAction {
 				idInstPers = new Integer((String)ocultos.get(1));
 			}
 			
+			
+			
 			// Si he cambiado el tipo de colegiacion de comunitario a espanol se permite modificar el numero de colegiado. Vengo de editar
 			if (miForm.getModo() != null && miForm.getModo().equalsIgnoreCase("abrirEditarNColegiado")) {
 			    accion = "editar";
@@ -646,7 +648,10 @@ public class DatosColegiacionAction extends MasterAction {
 				datosSeguro=admSeguro.obtenerEntradaTiposSeguro(datosColegiales.getIdTipoSeguro().toString());
 			}
 
-			
+            // Recuperamos el estado colegial para mostrarlo en la cabecera
+				CenClienteAdm admCli = new CenClienteAdm(this.getUserBean(request));
+				String estadocolegial=admCli.getEstadoColegial(idPersona.toString(), idInstPers.toString());				 
+				request.setAttribute("ESTADOCOLEGIAL",estadocolegial);
 			
 			// Comprueba si el usuario reside en algun otro colegio
 			if (idPersona.compareTo(new Long(1))>0){
@@ -670,7 +675,7 @@ public class DatosColegiacionAction extends MasterAction {
 					request.getSession().setAttribute("DATABACKUP_EST",datosEstado.firstElement());
 			}			
 			
-			// Paso de parametros empleando request
+			// Paso de parametros empleando request 
 			request.setAttribute("IDPERSONA", idPersona);
 			request.setAttribute("IDINSTITUCION", idInstitucion);
 			request.setAttribute("IDINSTITUCIONPERSONA", idInstitucionPersona);			
