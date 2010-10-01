@@ -1,0 +1,2 @@
+Estas librerias hayq ue cogerlas de las librerias del weblogic y eliminarlas de las librerias del proyecto
+ej./WEBLOGIC92/user_projects/domains/mydomain/lib/jaxrpc.jar 
