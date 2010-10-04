@@ -405,6 +405,16 @@
 			}
 		}
 
+
+	    function recargarCombos(tipo){
+	    	if (document.getElementById('codigoExtJuzgado')){
+	    		document.forms[0].codigoExtJuzgado.value="";
+	    	}
+		}
+			
+			
+		
+			
 		 function obtenerJuzgado() 
 			{ 
 			 if (document.forms[0].codigoExtJuzgado.value!=""){
@@ -680,14 +690,14 @@ function accionCerrar() {
 											key="gratuita.mantenimientoTablasMaestra.literal.codigoext" />
 										</td>
 										<td class="labelText" width="10%">
-											<input type="text" name="codigoExtJuzgado" class="box" size="8" maxlength="10" onBlur="obtenerJuzgado();" />&nbsp;
+										     <html:text name="MaestroDesignasForm" property="codigoExtJuzgado" styleClass="box"  style="width:80" maxlength="10" onBlur="obtenerJuzgado();" ></html:text>&nbsp;											
 										</td>
 										<td>&nbsp;</td>
 									<% } %>
 
 									<% if (!modo.equalsIgnoreCase("ver")) { %> 
 										<td width="80%">
-											<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoJuzgado%>" elementoSel="<%=juzgadoSel%>" ancho="500" pestana="t" accion="Hijo:idProcedimiento" />
+											<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoJuzgado%>" elementoSel="<%=juzgadoSel%>" ancho="500" pestana="t" accion="Hijo:idProcedimiento;recargarCombos(this);" />
 										</td> 
 									<% } else { %> 
 										<td width="100%">
