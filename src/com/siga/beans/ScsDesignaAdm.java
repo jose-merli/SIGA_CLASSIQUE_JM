@@ -1785,6 +1785,24 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				if(idJuzgado==null ||idJuzgado.trim().equalsIgnoreCase("")){
 				    idJuzgado="-33"; // forzamos que no encuentre datos, en lugar de dar error
 				}
+				String codigoExtJuzgado="";
+				if (!idJuzgado.equals("-33")){
+					UsrBean usrBean= new UsrBean();
+					ScsJuzgadoAdm JuzgadoAdm = new ScsJuzgadoAdm (this.usrbean);			
+					 codigoExtJuzgado=JuzgadoAdm.obtenerCodigoExtJuzgado(idInstitucion, idJuzgado.toString());
+					 registro.put("CODIGOJUZGADO",codigoExtJuzgado);
+				}else{
+					 registro.put("CODIGOJUZGADO",codigoExtJuzgado);
+				}
+			
+				/*if(!(codigoExtJuzgado.equals("")) && (!codigoExtJuzgado.equals(null))){
+					registro.put("POBLACION_JUZGADO",codigoExtJuzgado);
+					helperInformes.completarHashSalida(registro,helperInformes.getNombrePoblacionSalida((String)registro.get("ID_POBLACION_JUZGADO"), "POBLACION_JUZGADO"));
+				} else {
+					registro.put("POBLACION_JUZGADO", " ");
+				}*/
+				
+				
 				helperInformes.completarHashSalida(registro,helperInformes.getJuzgadoSalida(idInstJuzgado,idJuzgado,""));
 				
 				String lugar = (String)registro.get("LUGAR");
