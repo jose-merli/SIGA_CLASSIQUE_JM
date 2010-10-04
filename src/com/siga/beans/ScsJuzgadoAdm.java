@@ -517,7 +517,35 @@ public class ScsJuzgadoAdm extends MasterBeanAdministrador {
        }
        return alJuzgados;
 		
+       
 	} 
+      public  String obtenerCodigoExtJuzgado(String institucion,String idJuzgado) throws ClsExceptions 
+	{    	Vector datos = new Vector();
+		boolean salida=false;
+		String codigoExt="";
+		
+		try {
+			String select= " Select Juzgado.Codigoext AS CODIGOEXT from "+ ScsJuzgadoBean.T_NOMBRETABLA +" Juzgado"+
+			               " Where Juzgado."+ScsJuzgadoBean.C_IDJUZGADO+" = "+idJuzgado+
+			               " AND Juzgado."+ScsJuzgadoBean.C_IDINSTITUCION+" = "+ institucion;				                
+				
+
+			
+			datos = this.selectGenerico(select);
+			
+			
+			if (!datos.equals(null)){
+				 codigoExt = (String)((Hashtable)datos.get(0)).get("CODIGOEXT");
+			}
+			
+		} 
+		catch (Exception e) { 	
+			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D. en obtenerCodigoExtJuzgado(..)"); 
+		}
+		return codigoExt;
+	}
+       
+	 
 	
 
 }
