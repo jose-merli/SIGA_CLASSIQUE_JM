@@ -23,6 +23,8 @@ import com.siga.beans.ScsDesignasLetradoAdm;
 import com.siga.beans.ScsDesignasLetradoBean;
 import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
+import com.siga.beans.ScsJuzgadoAdm;
+import com.siga.beans.ScsJuzgadoBean;
 import com.siga.beans.ScsTipoDesignaColegioAdm;
 import com.siga.beans.ScsTipoDesignaColegioBean;
 import com.siga.beans.ScsTurnoAdm;
@@ -88,6 +90,8 @@ public class MaestroDesignasAction extends MasterAction {
 		ScsDesignaAdm admDesigna = null; 
 		Hashtable resultado = new Hashtable();
 		ScsDesignaBean beanDesigna = null;
+		String idJuzgado = "" ;
+		MaestroDesignasForm miform = (MaestroDesignasForm)formulario;
 		
 		try {
 			turno = new ScsTurnoAdm(this.getUserBean(request));
@@ -101,6 +105,7 @@ public class MaestroDesignasAction extends MasterAction {
 			UtilidadesHash.set(resultado,ScsDesignaBean.C_NUMERO, 				(String)request.getParameter("NUMERO"));
 			UtilidadesHash.set(resultado,ScsDesignaBean.C_IDINSTITUCION,		(String)usr.getLocation());
 			UtilidadesHash.set(resultado,ScsDesignaBean.C_IDTURNO,				(String)request.getParameter("IDTURNO"));	
+			UtilidadesHash.set(resultado,ScsDesignaBean.C_IDJUZGADO,			(String)request.getParameter("C_IDJUZGADO"));	
 			
 			// jbd 01/02/2010 Pasamos el valor del pcajg del colegio
 			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
@@ -111,6 +116,9 @@ public class MaestroDesignasAction extends MasterAction {
 			Vector vDesignas = admDesigna.select(resultado);
 			beanDesigna = (ScsDesignaBean)vDesignas.get(0);
 			request.setAttribute("beanDesigna",beanDesigna);
+			
+			//recuperando el idJuzgado.
+			 idJuzgado = beanDesigna.getIdJuzgado().toString();
 						
 			consultaTurno=" where idTurno = " + beanDesigna.getIdTurno() + " and idinstitucion="+usr.getLocation()+" ";
 			consultaTipoDesigna = " where "+ScsTipoDesignaColegioBean.C_IDTIPODESIGNACOLEGIADO +" = " + request.getParameter("TIPODESIGNA") + " and idinstitucion ="+ usr.getLocation()+" ";
@@ -155,6 +163,13 @@ public class MaestroDesignasAction extends MasterAction {
 				request.setAttribute("nombreGuardiaAsistencia",nombreGuardiaAsistencia);
 				
 			}
+			
+			ScsJuzgadoAdm JuzgadoAdm = new ScsJuzgadoAdm (this.getUserBean(request));			
+			
+			if ((!idJuzgado.equals(null))&&(!idJuzgado.equals(""))){				
+			miform.setCodigoExtJuzgado(JuzgadoAdm.obtenerCodigoExtJuzgado(usr.getLocation(), idJuzgado.toString()));
+			}
+			
 
 		} 
 		catch (Exception e2){
