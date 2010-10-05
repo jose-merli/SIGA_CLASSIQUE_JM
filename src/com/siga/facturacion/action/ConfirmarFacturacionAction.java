@@ -39,6 +39,7 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.servlets.SIGASvlProcesoAutomaticoRapido;
+import com.siga.servlets.SIGASvlProcesoGeneracionEnvio;
 
 
 /**
@@ -245,16 +246,39 @@ public class ConfirmarFacturacionAction extends MasterAction{
 						String mensaje = UtilidadesString.getMensajeIdioma(user,"messages.facturacion.PDFFacturaYaProgramada");
 						return exitoRefresco(mensaje,request);
 					}else{
-						// inc6666 - En vez de que lo haga el proceso automatico generamos de nuevo las facturas y el zip
-						Facturacion fac= new Facturacion(user);
-						fac.generarZipYFacturas(request,idInstitucion, idSerieFacturacion, idProgramacion);
-						/*
 						ClsLogging.writeFileLog("NO EXISTE EL ZIP, SE PASA A PROGRAMAR SU GENERACION",10);
 						generarFacturaSolo(mapping, formulario, request, response);
-						SIGASvlProcesoAutomaticoRapido.NotificarAhora(SIGASvlProcesoAutomaticoRapido.procesoRapido);
-						String mensaje = UtilidadesString.getMensajeIdioma(user,"messages.facturacion.generacionPDFFacturaProgramada"); 			
+//						SIGASvlProcesoAutomaticoRapido.NotificarAhora(SIGASvlProcesoAutomaticoRapido.procesoRapido);
+						
+						/*FacFacturacionProgramadaBean factBean = new FacFacturacionProgramadaBean();
+						factBean.setIdInstitucion(Integer.valueOf(idInstitucion));
+						factBean.setIdSerieFacturacion(Long.valueOf(idSerieFacturacion));
+						factBean.setIdProgramacion(Long.valueOf(idProgramacion));
+						// Cambiando esto podemos generar el envio, "1","1","1"
+						factBean.setRealizarEnvio("0");
+						factBean.setGenerarPDF("1");
+						factBean.setEnvio("0");
+						Hashtable hash = new Hashtable();
+						hash.put("REQUEST", request);
+						hash.put("FACFACTURACIONPROGRAMADABEAN", factBean);*/
+						
+						//SIGASvlProcesoAutomaticoRapido.NotificarAhora(hash);
+						
+						Hashtable datosProceso = new Hashtable();
+						
+						Hashtable datosHashtable = new Hashtable();
+						datosHashtable.put("idInstitucion",idInstitucion);
+						datosHashtable.put("idSerieFacturacion",idSerieFacturacion);
+						datosHashtable.put("idProgramacion",idProgramacion);
+						
+						datosProceso.put(SIGASvlProcesoAutomaticoRapido.htNombreProceso,SIGASvlProcesoAutomaticoRapido.procesoIndividualConfirmacionFacturacion);
+						datosProceso.put(SIGASvlProcesoAutomaticoRapido.htNombreDatosHashtable, datosHashtable);
+						
+						SIGASvlProcesoAutomaticoRapido.NotificarAhora(datosProceso);
+						
+						String mensaje = UtilidadesString.getMensajeIdioma(user,"messages.facturacion.generacionPDFFacturaProgramada");
+						
 						return exitoRefresco(mensaje,request);
-						*/
 					}
 				}
 				else{
@@ -338,7 +362,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 					throw new ClsExceptions("Error al actualizar estados de la programación: "+adm.getError());
 				}
 			}
-			
+
 			tx.commit();
 			
 			// Comprobaciones antes de confirmacion 
@@ -562,6 +586,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			bean.setIdEstadoPDF(FacEstadoConfirmFactBean.PDF_PROGRAMADA);
 			bean.setFechaPrevistaConfirmacion("SYSDATE");
 			bean.setGenerarPDF("1");
+			bean.setRealizarEnvio("0");
 			
 			if (!adm.updateDirect(bean)) {
 				throw new ClsExceptions("Error al actualizar estados de la programación: "+adm.getError());
@@ -589,25 +614,114 @@ public class ConfirmarFacturacionAction extends MasterAction{
 	protected String enviarFacturas(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
 	{
 		
+		String sNombreFichero = "";
+		String sRutaTemporal = "";
 		try {
-			ConfirmarFacturacionForm form = (ConfirmarFacturacionForm)formulario;
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			ConfirmarFacturacionForm form = (ConfirmarFacturacionForm) formulario;
+			Vector vOcultos = form.getDatosTablaOcultos(0);
+			String idInstitucion = user.getLocation();
+			String idSerieFacturacion = (String) vOcultos.elementAt(0);
+			String idProgramacion=(String) vOcultos.elementAt(1);
+			FacFacturaAdm facturas = new FacFacturaAdm(user);
+			Vector resultado = facturas.getSerieFacturacionConfirmada(idInstitucion, idSerieFacturacion, idProgramacion);
+			if(!resultado.isEmpty()){
+				//Se accede por clave referenciada de la tabla que hace join por lo 
+				//que todos los registro tienen el mismo estado de generacion de pdf.
+				//Cogemos por tanto el estado del priemr registro
+				Hashtable hashPrimeraFacturaSerieProgramacion = (Hashtable)resultado.get(0); 
+				String estadoPDF  = UtilidadesHash.getString(hashPrimeraFacturaSerieProgramacion,FacFacturacionProgramadaBean.C_IDESTADOPDF);
+				if(estadoPDF.equals(FacEstadoConfirmFactBean.PDF_PROGRAMADA.toString())||estadoPDF.equals(FacEstadoConfirmFactBean.PDF_PROCESANDO.toString())){
+					String mensaje = UtilidadesString.getMensajeIdioma(user,"messages.facturacion.PDFFacturaYaProgramada");
+					return exitoRefresco(mensaje,request);
+				}else{
+					ClsLogging.writeFileLog("NO EXISTE EL ZIP, SE PASA A PROGRAMAR SU GENERACION",10);
+					generarFacturaSolo(mapping, formulario, request, response);
+					
+					FacFacturacionProgramadaBean factBean = new FacFacturacionProgramadaBean();
+					factBean.setIdInstitucion(Integer.valueOf(idInstitucion));
+					factBean.setIdSerieFacturacion(Long.valueOf(idSerieFacturacion));
+					factBean.setIdProgramacion(Long.valueOf(idProgramacion));
+					factBean.setRealizarEnvio("1");
+					factBean.setGenerarPDF("1");
+					factBean.setEnvio("1");
+					Hashtable hash = new Hashtable();
+					hash.put("REQUEST", request);
+					hash.put("FACFACTURACIONPROGRAMADABEAN", factBean);
+					
+					SIGASvlProcesoAutomaticoRapido.NotificarAhora(hash);
+				}
+			}else{
+			}
 			
-			Vector ocultos = (Vector)form.getDatosTablaOcultos(0);
-			
-			String idSerieFacturacion = (String)ocultos.elementAt(0);			
-			String idProgramacion 	= (String)ocultos.elementAt(1);
-			String idInstitucion	= this.getIDInstitucion(request).toString();
-			
-			Facturacion fac = new Facturacion(this.getUserBean(request));
-			fac.generarPdfEnviarFacturas(request, idInstitucion, idSerieFacturacion, idProgramacion);
+		}catch(SIGAException e){	
+			throw e;
+		} catch (Exception e) {
+			throw new SIGAException("messages.general.error");
+		}
+		return this.exitoRefresco("messages.envioRealizado.success", request);
+		
+	}
+	
+	
+	/**
+	 * Metodo que recupera el ZIP generado con las facturas pdf
+	 * Si no existe lo deberia crear en un proceso background
+	 */
+	protected File getZipFactura(ActionMapping mapping, MasterForm formulario,
+			HttpServletRequest request, HttpServletResponse response)
+	throws SIGAException {
+		String sNombreFichero = "";
+		String sRutaTemporal = "";
+		File ficheroZip = null;
+		try {
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			ConfirmarFacturacionForm form = (ConfirmarFacturacionForm) formulario;
+			Vector vOcultos = form.getDatosTablaOcultos(0);
+			String idInstitucion = user.getLocation();
+			String idSerieFacturacion = (String) vOcultos.elementAt(0);
+			String idProgramacion=(String) vOcultos.elementAt(1);
 
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp = new ReadProperties("SIGA.properties");
+			sRutaTemporal = rp.returnProperty("sjcs.directorioFisicoTemporalSJCSJava") +
+			rp.returnProperty("facturacion.directorioTemporalFacturasJava");
+
+			sNombreFichero = idSerieFacturacion+"_"+idProgramacion;
+			String sExtension = ".zip";
+			sNombreFichero += sExtension;
+			sRutaTemporal += File.separator + idInstitucion+ File.separator;
+
+			//Control de que no exista el fichero a descargar:
+			ficheroZip = new File(sRutaTemporal+sNombreFichero);
+			if (!ficheroZip.exists()){
+				FacFacturaAdm facturas = new FacFacturaAdm(user);
+				Vector resultado = facturas.getSerieFacturacionConfirmada(idInstitucion, idSerieFacturacion, idProgramacion);
+				if(!resultado.isEmpty()){
+					//Se accede por clave referenciada de la tabla que hace join por lo 
+					//que todos los registro tienen el mismo estado de generacion de pdf.
+					//Cogemos por tanto el estado del priemr registro
+					Hashtable hashPrimeraFacturaSerieProgramacion = (Hashtable)resultado.get(0); 
+					String estadoPDF  = UtilidadesHash.getString(hashPrimeraFacturaSerieProgramacion,FacFacturacionProgramadaBean.C_IDESTADOPDF);
+					if(estadoPDF.equals(FacEstadoConfirmFactBean.PDF_PROGRAMADA.toString())||estadoPDF.equals(FacEstadoConfirmFactBean.PDF_PROCESANDO.toString())){
+						String mensaje = UtilidadesString.getMensajeIdioma(user,"messages.facturacion.PDFFacturaYaProgramada");
+					}else{
+
+						ClsLogging.writeFileLog("NO EXISTE EL ZIP, SE PASA A PROGRAMAR SU GENERACION",10);
+						generarFacturaSolo(mapping, formulario, request, response);
+						SIGASvlProcesoAutomaticoRapido.NotificarAhora(SIGASvlProcesoAutomaticoRapido.procesoRapido);
+						String mensaje = UtilidadesString.getMensajeIdioma(user,"messages.facturacion.generacionPDFFacturaProgramada"); 			
+
+					}
+				}
+			}
+
+		}catch(SIGAException e){	
+			throw e;
+		} catch (Exception e) {
+			throw new SIGAException("messages.general.error");
 		}
-		catch (ClsExceptions e) {
-			return this.exitoRefresco(e.getMsg(),request);
-		}
-		catch (Exception e) {
-			return this.error("messages.general.error",new ClsExceptions(e.getMessage()),request);
-		}
-		return this.exitoRefresco("messages.envioRealizado.success", request); 
+
+		return ficheroZip;
 	}
 }

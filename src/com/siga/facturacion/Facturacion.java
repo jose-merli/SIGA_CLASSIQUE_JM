@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
@@ -277,6 +276,424 @@ public class Facturacion {
 	    }
 	}
 	
+	/**
+	 * Realiza la confirmacion de una facturacion programada. Tiene la particularidad de
+	 * que realiza su propia gestion de transacciones. Además decide y procesa si se deben
+	 * generar los PDF y realizar los envios.<br>
+	 * No lanza excepciones, sino que usa un fichero de log y los estados propios de la programacion
+	 * para no parar el proceso masivo al que pertenece.
+	 * @param request
+	 * @param idInstitucion
+	 * @param userBean
+	 */
+	public static void confirmarFacturasPartes(HttpServletRequest request, String idInstitucion, UsrBean userBean) {
+		
+		String keyPath 		= "facturacion.directorioBancosOracle";
+		UserTransaction tx = null;
+		
+		try {
+			ClsLogging.writeFileLog("CONFIRMAR FACTURAS PARTES: "+idInstitucion,10);
+			
+			UsrBean usr = new UsrBean();
+			
+			tx = (UserTransaction) usr.getTransactionPesada();
+   			// fichero de log
+		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties p = new ReadProperties ("SIGA.properties");
+			
+	    	// ficheros de log
+			String pathFichero2 = p.returnProperty("facturacion.directorioFisicoLogProgramacion");
+    		String sBarra2 = "";
+    		if (pathFichero2.indexOf("/") > -1) sBarra2 = "/"; 
+    		if (pathFichero2.indexOf("\\") > -1) sBarra2 = "\\";        		
+			String nombreFichero = "";
+			SIGALogging log=null;
+			// obtención de las facturaciones programadas y pendientes con fecha de prevista confirmacion pasada a ahora
+			FacFacturacionProgramadaAdm factAdm = new FacFacturacionProgramadaAdm(userBean);
+			
+			Hashtable codigos = new Hashtable();
+			codigos.put(new Integer("1"), idInstitucion);
+			String sWhere=" where " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = :1" ;
+			// para fechas previstas de confirmacion adecuadas 
+			sWhere += " and ";
+			sWhere += FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM+ " IS NOT NULL ";
+			sWhere += " and ";
+			sWhere += FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM+ " <= SYSDATE";
+			// solo las que estan generadas 
+			sWhere += " and ";
+			sWhere += FacFacturacionProgramadaBean.C_FECHAREALGENERACION+ " IS NOT NULL ";
+			// para los estados de confirmacion adecuados
+			sWhere += " and (";
+			sWhere += FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION + " = " + FacEstadoConfirmFactBean.CONFIRM_PENDIENTE;
+			sWhere += " or ";
+			sWhere += FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION + " = " + FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA;
+			sWhere += " ) ";
+			
+			String[] orden = {FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION};
+			
+			Vector vDatos = factAdm.selectDatosFacturacionBean(sWhere,codigos, orden);
+			
+			boolean errorconfirmacion=false;
+			boolean errorPDF=false;
+			boolean errorenvio=false;
+			
+		    for (int i=0;i<vDatos.size();i++){
+
+				// PROCESO PARA CADA FACTURACION PROGRAMADA
+		    	FacFacturacionProgramadaBean factBean = (FacFacturacionProgramadaBean)vDatos.elementAt(i);
+		    	
+				ClsLogging.writeFileLog("CONFIRMAR FACTURACION PROGRAMADA: "+idInstitucion+" " +factBean.getIdSerieFacturacion()+" " +factBean.getIdProgramacion(),10);
+
+		    	// fichero de log
+				nombreFichero = "LOG_CONFIRM_FAC_"+ factBean.getIdInstitucion()+"_"+factBean.getIdSerieFacturacion()+"_"+factBean.getIdProgramacion()+".log.xls"; 
+				log = new SIGALogging(pathFichero2+sBarra2+factBean.getIdInstitucion()+sBarra2+nombreFichero);
+		    	 
+	    		Facturacion factura = new Facturacion (factBean);
+				String idSerieFacturacion = factBean.getIdSerieFacturacion().toString();			
+				String idProgramacion 	= factBean.getIdProgramacion().toString();
+				String usuMod			= userBean.getUserName();
+				String pathFichero 		= p.returnProperty(keyPath);
+	    		String sBarra = "";
+	    		if (pathFichero.indexOf("/") > -1) sBarra = "/"; 
+	    		if (pathFichero.indexOf("\\") > -1) sBarra = "\\";        		
+	    		pathFichero += sBarra+idInstitucion;
+				
+	    		boolean noEncontrado = true;
+			
+				// Se confirma la facturación
+	    		FacFacturacionProgramadaAdm facadm = new FacFacturacionProgramadaAdm(userBean);
+	    		Hashtable hashNew = new Hashtable();				
+	    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDINSTITUCION, idInstitucion);
+	    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDPROGRAMACION, idProgramacion);
+	    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION,idSerieFacturacion );
+	    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHACONFIRMACION, "sysdate");
+	    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADA);
+					
+	    		String [] claves = {FacFacturacionProgramadaBean.C_IDINSTITUCION,FacFacturacionProgramadaBean.C_IDPROGRAMACION,FacFacturacionProgramadaBean.C_IDSERIEFACTURACION};
+	    		String [] campos = {FacFacturacionProgramadaBean.C_FECHACONFIRMACION,FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION};
+	    		String [] camposFactura = {FacFacturacionProgramadaBean.C_FECHACONFIRMACION,FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM,
+	    				FacFacturacionProgramadaBean.C_ARCHIVARFACT,FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION};
+	    		String [] camposEnvio = {FacFacturacionProgramadaBean.C_IDESTADOENVIO};
+	    		String [] camposPDF = {FacFacturacionProgramadaBean.C_IDESTADOPDF};
+	    		String [] camposConfirmacion = {FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION};
+
+	    		boolean generaryenviar=true;
+
+	    		// try de la confirmacion
+		    	try {
+		    	
+			    	//////////// TRANSACCION ////////////////
+					tx.begin();
+			    	//////////// TRANSACCION ////////////////
+					
+					//----- cambio de estado confirmacion a FINALIZADA -------//
+		    		if(!facadm.updateDirect(hashNew, claves, campos )){
+			    		throw new Exception (facadm.getError());
+					}
+	
+					//Se genera numero de factura definitivo
+					Object[] param_in_confirmacion = new Object[4];
+					param_in_confirmacion[0] = idInstitucion;
+					param_in_confirmacion[1] = idSerieFacturacion;
+					param_in_confirmacion[2] = idProgramacion;
+					param_in_confirmacion[3] = usuMod;
+		        	
+					String resultadoConfirmar[] = new String[2];
+					resultadoConfirmar = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION.CONFIRMACIONFACTURACION(?,?,?,?,?,?)}", 2, param_in_confirmacion);
+		        	String codretorno = resultadoConfirmar[0];
+		        	if (codretorno.equals("-33")){
+		        		throw new SIGAException ("messages.facturacion.confirmar.contadorRepetido");
+		        	}
+		        	if (!codretorno.equals("0")){
+		        		throw new ClsExceptions ("Error al generar números de facturación: "+resultadoConfirmar[1]);
+		        	}
+					// Se envían a banco para su cobro
+					Object[] param_in_banco = new Object[7];
+					param_in_banco[0] = idInstitucion;
+					param_in_banco[1] = idSerieFacturacion;
+					param_in_banco[2] = idProgramacion;
+
+					////////////////////////////////////////////////
+					// Antes
+					//Fecha de Cargo (DDMMAA):
+//		    		String fechaCargo = "18/01/2006";
+//					String fechaTMP = fechaCargo;
+//					try {
+//						fechaTMP = fechaCargo.substring(0,2)+fechaCargo.substring(3,5)+fechaCargo.substring(8,10); 
+//					} 
+//					catch (Exception e){
+//						fechaTMP = "";
+//					}
+					
+					// Ahora:
+					String fechaCargo = factBean.getFechaCargo();
+					try {
+						if (fechaCargo == null || fechaCargo.equals("")){
+							// Sysdate
+							fechaCargo = UtilidadesBDAdm.getFechaBD("formato_ingles");
+						}
+						// Fecha de Cargo (DDMMAA):
+						fechaCargo = fechaCargo.substring(8,10) + fechaCargo.substring(5,7) + fechaCargo.substring(2,4); 
+					}
+					catch (Exception e) {
+						// Sysdate
+						fechaCargo = UtilidadesBDAdm.getFechaBD("formato_ingles");
+						// Fecha de Cargo (DDMMAA):
+						fechaCargo = fechaCargo.substring(8,10) + fechaCargo.substring(5,7) + fechaCargo.substring(2,4); 
+					}
+					////////////////////////////////////////////////
+					
+					param_in_banco[3] = fechaCargo;
+					param_in_banco[4] = pathFichero;
+					param_in_banco[5] = usuMod;
+					param_in_banco[6] = userBean.getLanguage();
+					
+		        	String resultado[] = new String[3];
+		        	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.PRESENTACION(?,?,?,?,?,?,?,?,?,?)}", 3, param_in_banco);
+		        	codretorno = resultado[1];
+		        	if (!codretorno.equals("0")){
+		        		throw new ClsExceptions ("Error al generar disquetes bancarios: " + resultado[2]);
+		        	}
+		        	
+					ClsLogging.writeFileLog("CONFIRMAR Y PRESENTAR OK ",10);
+					
+
+			    	//////////// TRANSACCION ////////////////
+					tx.commit();
+			    	//////////// TRANSACCION ////////////////
+		    	
+		    	} catch (Exception ee) {
+	    		
+			    	//////////// TRANSACCION ////////////////
+		    		tx.rollback();
+			    	//////////// TRANSACCION ////////////////
+		    		
+		    		if(ee instanceof SIGAException) {
+		    		    SIGAException e2=(SIGAException)ee;
+		    			ClsLogging.writeFileLog("ERROR AL CONFIRMAR Y PRESENTAR: "+UtilidadesString.getMensajeIdioma(userBean.getLanguage(),e2.getLiteral()),10);
+						log.writeLogFactura("CONFIRMACION","N/A","N/A","Error en proceso de confirmación: "+UtilidadesString.getMensajeIdioma(userBean.getLanguage(),e2.getLiteral()));
+			    	} else {
+						ClsLogging.writeFileLog("ERROR AL CONFIRMAR Y PRESENTAR: "+ee.toString(),10);
+						log.writeLogFactura("CONFIRMACION","N/A","N/A","Error en proceso de confirmación: "+ee.toString());
+			    	}
+		    		
+		    		// cambio el estado CONFIRMACION a finalizada con errores.
+		    		
+		    		generaryenviar=false;
+		    		
+		    		errorconfirmacion=true;
+		    		
+					//----- cambio de estado confirmacion a FINALIZADA CON ERRORES -------//
+		    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADAERRORES);
+		    		facadm.updateDirect(hashNew, claves, camposConfirmacion);
+					
+					ClsLogging.writeFileLog("CAMBIA ESTADO A FINALIZADA ERRORES. generaryenviar: "+generaryenviar,10);
+		    		
+		    	}
+	        	
+				// se realiza el proceso (La transaccion la maneja la funcion) 
+		    	// de generación y envio de facturas
+
+	        	//////////////////////////////////
+		    	// Antes:
+//	        	UsrBean usrb = new UsrBean();
+//	        	usrb.setLocation(idInstitucion);
+//	        	usrb.setUserName(userBean.getUserName());
+//	        	// lo pongo en la session
+//	        	request.getSession().setAttribute("USRBEAN",usrb);
+		    	// Ahora
+	        	// lo pongo en la session
+	        	request.getSession().setAttribute("USRBEAN",userBean);
+		    	///////////////////////////////////
+	        	boolean isGenerarPdf = factBean.getGenerarPDF().trim().equals("1");
+	        	boolean isGenerarEnvio =factBean.getEnvio().trim().equals("1");
+	        	
+	        	if (generaryenviar) {
+
+					ClsLogging.writeFileLog("ENTRA A GENERAR Y ENVIAR",10);
+	        		// Try de PDFs y envios
+		        	try {
+			        	// Se guardan las facturas impresas.
+			        	if (factBean.getGenerarPDF().trim().equals("1")) {
+
+							ClsLogging.writeFileLog("TIENE QUE GENERAR PDF",10);
+
+				    		//////////// TRANSACCION ////////////////
+							tx.begin();
+					    	//////////// TRANSACCION ////////////////
+	
+							//----- cambio de estado PDF a PROCESANDO -------//
+				    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_PROCESANDO);
+				    		facadm.updateDirect(hashNew, claves, camposPDF);
+			        		
+				    		if (factBean.getEnvio().trim().equals("1")) {
+								//----- cambio de estado ENVIOS a PROCESANDO -------//
+					    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOENVIO, FacEstadoConfirmFactBean.ENVIO_PROCESANDO);
+					    		facadm.updateDirect(hashNew, claves, camposEnvio);
+				    		}
+	
+					    	//////////// TRANSACCION ////////////////
+							tx.commit();
+					    	//////////// TRANSACCION ////////////////
+	
+							
+				        	FacFacturaAdm admFactura = new FacFacturaAdm(userBean);
+				        	
+				        	//////////// ALMACENAR ////////////////
+				        	int errorAlmacenar = admFactura.almacenarOldParaBorrar(request, Integer.valueOf(idInstitucion), Long.valueOf(idSerieFacturacion), Long.valueOf(idProgramacion),(factBean.getEnvio().trim().equals("1")),log,tx);
+				        	
+				        	if(errorAlmacenar!=0){		
+								ClsLogging.writeFileLog("ERROR AL ALMACENAR FACTURA. RETORNO="+errorAlmacenar,3);
+								// Error de facturacion:
+								if (errorAlmacenar == 1) { 
+									
+									errorPDF=true;
+									
+					        		//////////// TRANSACCION ////////////////
+									tx.begin();
+							    	//////////// TRANSACCION ////////////////
+									// ERROR EN GENERAR PDF
+					        		if (factBean.getGenerarPDF().trim().equals("1")) {
+										//----- cambio de estado PDF a FINALIZADO CON ERRORES -------//
+					        			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADAERRORES);
+							    		facadm.updateDirect(hashNew, claves, camposPDF);
+					        		}
+					        		if (factBean.getEnvio().trim().equals("1")) {
+										//----- cambio de estado ENVIO a FINALIZADO CON ERRORES -------//
+					        			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOENVIO, FacEstadoConfirmFactBean.ENVIO_FINALIZADAERRORES);
+							    		facadm.updateDirect(hashNew, claves, camposEnvio);
+					        		}
+					        		//////////// TRANSACCION ////////////////
+									tx.commit();
+							    	//////////// TRANSACCION ////////////////
+
+									ClsLogging.writeFileLog("ERROR GENERAR FACTURA. CAMBIO DE ESTADOS",10);
+								} else if (errorAlmacenar == 2) {
+									
+									errorenvio=true;
+									
+									// ERROR EN ENVIO FACTURA
+					        		//////////// TRANSACCION ////////////////
+									tx.begin();
+							    	//////////// TRANSACCION ////////////////
+					        		if (factBean.getGenerarPDF().trim().equals("1")) {
+										//----- cambio de estado PDF a FINALIZADO -------//
+					        			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADA);
+							    		facadm.updateDirect(hashNew, claves, camposPDF);
+					        		}
+					        		if (factBean.getEnvio().trim().equals("1")) {
+										//----- cambio de estado ENVIO a FINALIZADO CON ERRORES -------//
+					        			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOENVIO, FacEstadoConfirmFactBean.ENVIO_FINALIZADAERRORES);
+							    		facadm.updateDirect(hashNew, claves, camposEnvio);
+					        		}
+					        		//////////// TRANSACCION ////////////////
+									tx.commit();
+							    	//////////// TRANSACCION ////////////////
+
+									ClsLogging.writeFileLog("ERROR ENVIAR FACTURA. CAMBIO DE ESTADOS",10);
+								} else {
+									
+									errorenvio=true;
+									errorPDF=true;
+									
+					        		//////////// TRANSACCION ////////////////
+									tx.begin();
+							    	//////////// TRANSACCION ////////////////
+									// Como ha sido un error general cambio el estado a los dos que procedan
+					        		if (factBean.getGenerarPDF().trim().equals("1")) {
+										//----- cambio de estado PDF a FINALIZADO CON ERRORES -------//
+					        			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADAERRORES);
+							    		facadm.updateDirect(hashNew, claves, camposPDF);
+					        		}
+						    		if (factBean.getEnvio().trim().equals("1")) {
+										//----- cambio de estado ENVIO a FINALIZADO CON ERRORES -------//
+					        			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOENVIO, FacEstadoConfirmFactBean.ENVIO_FINALIZADAERRORES);
+							    		facadm.updateDirect(hashNew, claves, camposEnvio);
+					        		}
+					        		//////////// TRANSACCION ////////////////
+									tx.commit();
+							    	//////////// TRANSACCION ////////////////
+
+									ClsLogging.writeFileLog("ERROR GENERAL GENERAR/ENVIAR FACTURA. CAMBIO DE ESTADOS",10);
+								}
+							} else {
+	
+				        		//////////// TRANSACCION ////////////////
+								tx.begin();
+						    	//////////// TRANSACCION ////////////////
+								//----- cambio de estado PDF a FINALIZADO -------//
+					    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADA);
+					    		facadm.updateDirect(hashNew, claves, camposPDF);
+				        		
+					    		if (factBean.getEnvio().trim().equals("1")) {
+									//----- cambio de estado ENVIO a FINALIZADO -------//
+						    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOENVIO, FacEstadoConfirmFactBean.ENVIO_FINALIZADA);
+						    		facadm.updateDirect(hashNew, claves, camposEnvio);
+					        		
+					    		}
+				        		//////////// TRANSACCION ////////////////
+								tx.commit();
+						    	//////////// TRANSACCION ////////////////
+
+								ClsLogging.writeFileLog("OK TOTO. CAMBIO DE ESTADOS",10);
+
+							}
+	
+			        	}
+	
+		        	} catch (Exception ee) {
+
+		        		errorconfirmacion=true;
+		        		errorPDF=true;
+		        		errorenvio=true;
+		        		
+						ClsLogging.writeFileLog("ERROR GENERAL EN TRY GENERAR/ENVIAR.",10);
+
+				    	//////////// TRANSACCION ////////////////
+						try {
+							tx.rollback();
+						} catch (Exception ex) {}
+				    	//////////// TRANSACCION ////////////////
+	
+			    		// ESCRIBO EN EL LOG mensaje general ??
+						log.writeLogFactura("PDF/ENVIO","N/A","N/A","Error general en el proceso de generación o envío de facturas PDF: "+ee.toString());
+			    		
+						//////////// TRANSACCION ////////////////
+						tx.begin();
+				    	//////////// TRANSACCION ////////////////
+	
+						// cambio el estado a finalizada con errores.
+		        		// COMO NO SABEMOS QUE HA OCURRIDO PONEMOS TODO COMO FINALIZADO CON ERRORES
+		        		if (factBean.getGenerarPDF().trim().equals("1")) {
+							//----- cambio de estado PDF a FINALIZADO -------//
+		        			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADAERRORES);
+				    		facadm.updateDirect(hashNew, claves, camposPDF);
+		        		}
+		        		if (factBean.getEnvio().trim().equals("1")) {
+							//----- cambio de estado ENVIO a FINALIZADO -------//
+		        			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOENVIO, FacEstadoConfirmFactBean.ENVIO_FINALIZADAERRORES);
+				    		facadm.updateDirect(hashNew, claves, camposEnvio);
+		        		}
+	
+		        		//////////// TRANSACCION ////////////////
+						tx.commit();
+				    	//////////// TRANSACCION ////////////////
+						ClsLogging.writeFileLog("ERROR GENERAL EN TRY GENERAR/ENVIAR. ESTADOS CAMBIADOS",10);
+							
+			    	}
+	        	} // del if generaryenviar	        		        	
+		    }// del for
+		    
+
+
+		} catch (Exception e) {
+			// Error general (No hacemos nada, para que continue con la siguiente institucion
+			ClsLogging.writeFileLogError("@@@ Error general al confirmar facturas (Proceso automático) INSTITUCION:"+idInstitucion ,e,3);
+		}
+		
+
+	}
+	
 	
 	public void confirmarProgramacionesFacturasInstitucion(HttpServletRequest request, String idInstitucion, UsrBean userBean) {
 		
@@ -448,220 +865,6 @@ public class Facturacion {
 
 	}
 
-	/**
-	 * Genera el zip con los pdf de las facturas de las series de facturación programadas para la institucion
-	 * <code>idinstitucion</code>. Se buscan series de facturación con los siguientes criterios:
-	 * <ul>
-	 * <li>fechaPrevistaConfirm is not null</li>
-	 * <li>fechaPrevistaConfirm <= SYSDATE</li>
-	 * <li>fechaRealGeneracion is not null</li>
-	 * <li>idEstadoConfirmacion = procesado sin errores</li>
-	 * <li>idEstadoPDF = programado</li>
-	 * </ul>
-	 * @param request
-	 * @param idInstitucion
-	 * @param userBean
-	 */
-	public String generarZipYFacturas(HttpServletRequest request, String idInstitucion, String idSerieFacturacion, String idProgramacion) throws SIGAException, ClsExceptions{
-		Vector facturas=new Vector();
-		Vector plantillas=new Vector();
-		String plantilla="";
-		File ficFOP=null;
-		String salida = "";
-		boolean existeAlgunErrorPdf = false;
-		boolean existeAlgunErrorEnvio = false;
-		UserTransaction tx = null;
-		try {
-			tx = this.usrbean.getTransaction();
-		    FacFacturaAdm admF = new FacFacturaAdm(usrbean);
-		    // Obtengo las facturas a almacenar
-			facturas=admF.getSerieFacturacionConfirmada(idInstitucion.toString(),idSerieFacturacion.toString(),idProgramacion.toString());
-			
-			ClsLogging.writeFileLog("ALMACENAR >> "+idInstitucion.toString()+" "+idSerieFacturacion.toString()+" "+idProgramacion.toString(),10);
-			
-			// Obtengo la plantilla a utilizar
-			FacPlantillaFacturacionAdm plantillaAdm = new FacPlantillaFacturacionAdm(usrbean);
-			CenClienteAdm cliAdm = new CenClienteAdm(usrbean);
-			plantillas=plantillaAdm.getPlantillaSerieFacturacion(idInstitucion.toString(),idSerieFacturacion.toString());
-			plantilla=plantillas.firstElement().toString();
-						
-		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//			ReadProperties rp = new ReadProperties("SIGA.properties");
-			
-			// Obtencion de la ruta donde se almacenan temporalmente los ficheros formato FOP			
-		    String rutaTemporal = rp.returnProperty("facturacion.directorioFisicoTemporalFacturasJava")+rp.returnProperty("facturacion.directorioTemporalFacturasJava");
-    		String barraTemporal = "";
-    		if (rutaTemporal.indexOf("/") > -1){ 
-    			barraTemporal = "/";
-    		}
-    		if (rutaTemporal.indexOf("\\") > -1){ 
-    			barraTemporal = "\\";
-    		}    		
-    		rutaTemporal += barraTemporal+idInstitucion.toString();
-			File rutaFOP=new File(rutaTemporal);
-			//Comprobamos que exista la ruta y sino la creamos
-			if (!rutaFOP.exists()){
-				if(!rutaFOP.mkdirs()){
-					// ESCRIBO EN EL LOG
-					throw new SIGAException("messages.facturacion.almacenar.rutaTemporalMal");					
-				}
-			}
-    		
-			// Obtencion de la ruta donde se almacenan las facturas en formato PDF			
-			String idserieidprogramacion = idSerieFacturacion.toString()+"_" + idProgramacion.toString();
-			String rutaAlmacen = rp.returnProperty("facturacion.directorioFisicoFacturaPDFJava")+rp.returnProperty("facturacion.directorioFacturaPDFJava");
-    		String barraAlmacen = "";
-     		if (rutaAlmacen.indexOf("/") > -1){ 
-    			barraAlmacen = "/";
-    		}
-    		if (rutaAlmacen.indexOf("\\") > -1){ 
-    			barraAlmacen = "\\";
-    		}    		
-    		rutaAlmacen += barraAlmacen+idInstitucion.toString()+barraAlmacen+idserieidprogramacion;
-			File rutaPDF=new File(rutaAlmacen);
-			//Comprobamos que exista la ruta y sino la creamos
-			if (!rutaPDF.exists()){
-				if(!rutaPDF.mkdirs()){
-
-					// ESCRIBO EN EL LOG
-					throw new SIGAException("messages.facturacion.almacenar.rutaAccesoPDFMal");					
-				}
-			}
-			
-			// Obtencion de la ruta de donde se obtiene la plantilla adecuada			
-		    String rutaPlantilla = rp.returnProperty("facturacion.directorioFisicoPlantillaFacturaJava")+rp.returnProperty("facturacion.directorioPlantillaFacturaJava");
-		    String barraPlantilla="";
-    		if (rutaPlantilla.indexOf("/") > -1){
-    			barraPlantilla = "/";
-    		}
-    		if (rutaPlantilla.indexOf("\\") > -1){
-    			barraPlantilla = "\\";
-    		}
-    		rutaPlantilla += barraPlantilla+idInstitucion.toString()+barraPlantilla+plantilla;
-			File rutaModelo=new File(rutaPlantilla);
-			//Comprobamos que exista la ruta y sino la creamos
-			if (!rutaModelo.exists()){
-
-				// ESCRIBO EN EL LOG
-				throw new SIGAException("messages.facturacion.almacenar.rutaPlantillaFacturaMal");					
-			}
-    		
-			
-			
-			ClsLogging.writeFileLog("ALMACENAR >> TERMINA DE OBTENER PLANTILLAS Y DATOS GENERALES",10);
-
-			// recorro todas las facturas para ir creando lo sinformes pertinentes
-    		Enumeration listaFacturas = facturas.elements();
-    		    		
-			ClsLogging.writeFileLog("ALMACENAR >> NUMERO DE FACTURAS: "+facturas.size(),10);
-    		
-			String idFactura="";
-			
-			//Aunque nos ha fallado esta factura es posible que la siguiente, no.
-    		//POR LO TANTO no COMPROBAMOS QUE HAYA SIDO CORRECTO EL CAMBIO ANTERIOR
-			//while (correcto && listaFacturas.hasMoreElements()){
-    		while (listaFacturas.hasMoreElements()){
-    			boolean correcto=true;
-    			try {
-
-	    			if (tx!=null) {
-	    				tx.begin();
-	    			}
-	    			
-	    			Hashtable facturaHash=(Hashtable)listaFacturas.nextElement();
-	    			idFactura=(String)facturaHash.get(FacFacturaBean.C_IDFACTURA);
-	    			String idPersona=(String)facturaHash.get(FacFacturaBean.C_IDPERSONA);
-	    			// Obtenemos el lenguaje del cliente 
-	    			String lenguaje = cliAdm.getLenguaje(idInstitucion.toString(),idPersona); 
-	    			String numFactura=(String)facturaHash.get(FacFacturaBean.C_NUMEROFACTURA);
-		   			CenColegiadoAdm admCol = new CenColegiadoAdm(usrbean);
-		  			Hashtable htCol = admCol.obtenerDatosColegiado(this.usrbean.getLocation(),idPersona,this.usrbean.getLanguage());
-		  			String nColegiado = "";
-		  			if (htCol!=null && htCol.size()>0) {
-		  			    nColegiado = UtilidadesHash.getString(htCol,"NCOLEGIADO_LETRADO");
-		  			}			 
-
-	    			ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> FACTURA: "+idFactura,10);
-	    			
-	    			// TRY del proceso de generacion de la factura en PDF
-	    			try {
-	    				
-	    				// PROCESO DE CREAR EL PDF
-	    				
-	    				// RGG 15/02/2007 CAMBIOS PARA INFORME MASTER REPOR
-	    				InformeFactura inf = new InformeFactura(usrbean);
-	    				File filePDF = inf.generarFactura(request,lenguaje.toUpperCase(),usrbean.getLocation(),idFactura,nColegiado);
-
-	    				if (filePDF==null) {
-	    					correcto = false;
-	    				    throw new ClsExceptions("Error al generar la factura. Fichero devuelto es nulo.");				
-	    				} else {
-	    					correcto = true;
-	    				}
-						
-		    			ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> FACTURA GENERADA EN PDF",10);
-	    				
-		    			
-    				} catch (SIGAException ee) {
-    					correcto = false;
-    					ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> ERROR EN PROCESO DE FOP A PDF: "+ee.getLiteral(usrbean.getLanguage()),10);
-	    	    		existeAlgunErrorPdf = true;
-
-	    			} catch (Exception ee) {
-	    				correcto = false;
-	    				ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> ERROR EN PROCESO DE FOP A PDF: "+ee.toString(),10);
-	    	    		existeAlgunErrorPdf = true;
-	    			}
-	    			
-		    	    // inc6666 - Si es correcto generamos el ZIP con todas las facturas
-    				generarZip(idInstitucion.toString(), idSerieFacturacion.toString(), idProgramacion.toString());
-    				
-	    			if (tx!=null) {
-	    				tx.commit();
-	    			}
-
-    			} catch (Exception tot) {
-    				ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> CATCH GENERAL",10);
-    				if (tx!=null) {
-    					try {
-    						tx.rollback();
-    					} catch (Exception ee) {}
-    				}
-    				//Aunque nos ha fallado esta factura es posible que la siguiente, no.
-    	    		//POR LO TANTO no cazamos la excepcion
-    				//throw tot;
-    			}
-    			
-				ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> PROCESO DE FACTURA OK ",10);
-
-    		} // bucle
-    		
-		}catch (SIGAException e) {
-			
-			ClsLogging.writeFileLog("ALMACENAR >> ERROR GENERAL EN LA FUNCION ALMACENAR: "+e.getLiteral(usrbean.getLanguage()),10);
-			if (ficFOP!=null && ficFOP.exists()){
-				ficFOP.delete();
-			}
-			existeAlgunErrorPdf = true;
-			//throw e;
-		}catch (Exception e) {
-			
-			ClsLogging.writeFileLog("ALMACENAR >> ERROR GENERAL EN LA FUNCION ALMACENAR: "+e.toString(),10);
-			
-			if (ficFOP!=null && ficFOP.exists()){
-				ficFOP.delete();
-			}
-			
-			existeAlgunErrorPdf = true;
-			//throw new ClsExceptions(e,"ERROR general al almacenar factura");
-		}
-		if(existeAlgunErrorPdf){
-			salida ="";
-		}else{
-			salida ="OK";
-		}
-		return salida;
-	}
 	
 	public void generarZip(String idInstitucion, String idSerieFacturacion, String idProgramacion) throws SIGAException, ClsExceptions{
 		String sNombreFichero = "";
@@ -683,7 +886,7 @@ public class Facturacion {
 
 		sNombreFichero += sExtension;
 		sRutaJava += File.separator + idInstitucion
-		+ File.separator+ idSerieFacturacion+"_"+idProgramacion+ File.separator;
+		+ File.separator+ idSerieFacturacion+"_"+idProgramacion+ File.separator/*+ sNombreFichero*/;
 
 		sRutaTemporal += File.separator + idInstitucion+ File.separator;
 
@@ -1054,7 +1257,347 @@ public class Facturacion {
     	}
     }
 
+    
+    /**
+     * Realiza la confirmación de una facturación rápida. Gestiona sus propias transacciones 
+     * debido a que tiene un sistema de log propio y de estados en la facturación programada.
+     * Lanza escepciones en caso de error ya que se gestiona desde un Action.
+     * @param beanP
+     * @param req
+     * @throws ClsExceptions
+     * @throws SIGAException
+     */
+    public void confirmarFacturacionRapidaOld(FacFacturacionProgramadaBean beanP, HttpServletRequest req, boolean archivarFacturacion) throws ClsExceptions, SIGAException 
+	{
+        UserTransaction tx = null;
+        try {
+            
+            tx = this.usrbean.getTransaction();
+            
+            // actualizacion de estado
+   			// fichero de log
+		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties p = new ReadProperties ("SIGA.properties");
+			String pathFichero2 = p.returnProperty("facturacion.directorioFisicoLogProgramacion");
+    		String sBarra2 = "";
+    		if (pathFichero2.indexOf("/") > -1) sBarra2 = "/"; 
+    		if (pathFichero2.indexOf("\\") > -1) sBarra2 = "\\";        		
+			String nombreFichero = "";
+			SIGALogging log=null;
 
+			
+			ClsLogging.writeFileLog("CONFIRMAR FACTURACION RAPIDA: "+beanP.getIdInstitucion()+" " +beanP.getIdSerieFacturacion()+" " +beanP.getIdProgramacion(),10);
+
+	    	// fichero de log
+			nombreFichero = "LOG_CONFIRM_FAC_"+ beanP.getIdInstitucion()+"_"+beanP.getIdSerieFacturacion()+"_"+beanP.getIdProgramacion()+".log.xls"; 
+			log = new SIGALogging(pathFichero2+sBarra2+beanP.getIdInstitucion()+sBarra2+nombreFichero);
+	    	 
+    		Facturacion factura = new Facturacion (beanP);
+			String idSerieFacturacion = beanP.getIdSerieFacturacion().toString();			
+			String idProgramacion 	= beanP.getIdProgramacion().toString();
+			String usuMod			= this.usrbean.getUserName();
+			String pathFichero 		= p.returnProperty("facturacion.directorioBancosOracle");
+    		String sBarra = "";
+    		if (pathFichero.indexOf("/") > -1) sBarra = "/"; 
+    		if (pathFichero.indexOf("\\") > -1) sBarra = "\\";        		
+    		pathFichero += sBarra+beanP.getIdInstitucion().toString();
+    		boolean noEncontrado = true;
+			
+    		// Se confirma la facturación
+    		FacFacturacionProgramadaAdm facadm = new FacFacturacionProgramadaAdm(this.usrbean);
+    		Hashtable hashNew = new Hashtable();				
+    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDINSTITUCION, beanP.getIdInstitucion());
+    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDPROGRAMACION, idProgramacion);
+    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION,idSerieFacturacion );
+    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM, "sysdate");
+    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHACONFIRMACION, "sysdate");
+    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADA);
+    		if (archivarFacturacion) {
+    		    UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_ARCHIVARFACT, "1");
+    		} else {
+    		    UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_ARCHIVARFACT, "0");
+    		}
+				
+    		String [] claves = {FacFacturacionProgramadaBean.C_IDINSTITUCION,FacFacturacionProgramadaBean.C_IDPROGRAMACION,FacFacturacionProgramadaBean.C_IDSERIEFACTURACION};
+    		String [] campos = {FacFacturacionProgramadaBean.C_FECHACONFIRMACION,FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION};
+    		String [] camposFecha = {FacFacturacionProgramadaBean.C_FECHACONFIRMACION,FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM,FacFacturacionProgramadaBean.C_ARCHIVARFACT};
+    		String [] camposEnvio = {FacFacturacionProgramadaBean.C_IDESTADOENVIO};
+    		String [] camposPDF = {FacFacturacionProgramadaBean.C_IDESTADOPDF};
+    		String [] camposConfirmacion = {FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION};
+
+	    	try {
+	    	
+		    	//////////// TRANSACCION ////////////////
+				tx.begin();
+		    	//////////// TRANSACCION ////////////////
+				
+				//----- cambio de estado confirmacion a FINALIZADA -------//
+	    		if(!facadm.updateDirect(hashNew, claves, campos )) {
+		    		throw new Exception (facadm.getError());
+				}
+
+				//Se genera numero de factura definitivo
+				Object[] param_in_confirmacion = new Object[4];
+				param_in_confirmacion[0] = beanP.getIdInstitucion().toString();
+				param_in_confirmacion[1] = idSerieFacturacion;
+				param_in_confirmacion[2] = idProgramacion;
+				param_in_confirmacion[3] = usuMod;
+	        	
+				String resultadoConfirmar[] = new String[2];
+				resultadoConfirmar = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION.CONFIRMACIONFACTURACION(?,?,?,?,?,?)}", 2, param_in_confirmacion);
+	        	String codretorno = resultadoConfirmar[0];
+	        	if (codretorno.equals("-33")){
+	        		throw new SIGAException ("messages.facturacion.confirmar.contadorRepetido");
+	        	}
+	        	if (!codretorno.equals("0")){
+	        		throw new ClsExceptions ("Error al generar números de facturación: "+resultadoConfirmar[1]);
+	        	}
+				// Se envían a banco para su cobro
+				Object[] param_in_banco = new Object[7];
+				param_in_banco[0] = beanP.getIdInstitucion().toString();
+				param_in_banco[1] = idSerieFacturacion;
+				param_in_banco[2] = idProgramacion;
+
+				String fechaCargo = "";
+				try {
+					if (fechaCargo == null || fechaCargo.equals("")){
+						// Sysdate
+						fechaCargo = UtilidadesBDAdm.getFechaBD("formato_ingles");
+					}
+					// Fecha de Cargo (DDMMAA):
+					fechaCargo = fechaCargo.substring(8,10) + fechaCargo.substring(5,7) + fechaCargo.substring(2,4); 
+				}
+				catch (Exception e) {
+					// Sysdate
+					fechaCargo = UtilidadesBDAdm.getFechaBD("formato_ingles");
+					// Fecha de Cargo (DDMMAA):
+					fechaCargo = fechaCargo.substring(8,10) + fechaCargo.substring(5,7) + fechaCargo.substring(2,4); 
+				}
+				////////////////////////////////////////////////
+				
+				param_in_banco[3] = fechaCargo;
+				param_in_banco[4] = pathFichero;
+				param_in_banco[5] = usuMod;
+				param_in_banco[6] = this.usrbean.getLanguage();
+				
+	        	String resultado[] = new String[3];
+	        	resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.PRESENTACION(?,?,?,?,?,?,?,?,?,?)}", 3, param_in_banco);
+	        	codretorno = resultado[1];
+	        	if (!codretorno.equals("0")){
+	        		throw new ClsExceptions ("Error al generar disquetes bancarios: " + resultado[2]);
+	        	}
+	        	
+	        	
+	    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADA);
+	    		facadm.updateDirect(hashNew, claves, camposConfirmacion);
+	    		// actualizo las fechas de confirmacion (las dos) y la archivo
+	    		facadm.updateDirect(hashNew, claves, camposFecha);
+				
+				ClsLogging.writeFileLog("CONFIRMAR Y PRESENTAR OK ",10);
+				
+
+		    	//////////// TRANSACCION ////////////////
+				tx.commit();
+		    	//////////// TRANSACCION ////////////////
+	    	
+	    	} catch (Exception ee) {
+    		
+		    	//////////// TRANSACCION ////////////////
+	    		tx.rollback();
+		    	//////////// TRANSACCION ////////////////
+	    		
+	    		if(ee instanceof SIGAException) {
+	    		    SIGAException e2=(SIGAException)ee;
+	    			ClsLogging.writeFileLog("ERROR AL CONFIRMAR Y PRESENTAR: "+UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),e2.getLiteral()),10);
+					log.writeLogFactura("CONFIRMACION","N/A","N/A","Error en proceso de confirmación: "+UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),e2.getLiteral()));
+		    	} else {
+					ClsLogging.writeFileLog("ERROR AL CONFIRMAR Y PRESENTAR: "+ee.toString(),10);
+					log.writeLogFactura("CONFIRMACION","N/A","N/A","Error en proceso de confirmación: "+ee.toString());
+		    	}
+	    		
+				//----- cambio de estado confirmacion a FINALIZADA CON ERRORES -------//
+	    		tx.begin();
+	    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADAERRORES);
+	    		facadm.updateDirect(hashNew, claves, camposConfirmacion);
+	    		
+	    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM, "sysdate");
+	    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHACONFIRMACION, "");
+	    		// actualizo las fechas de confirmacion (las dos)
+	    		facadm.updateDirect(hashNew, claves, camposFecha);
+				tx.commit();
+				
+				ClsLogging.writeFileLog("CAMBIA ESTADO A FINALIZADA ERRORES.",10);
+				
+				throw new ClsExceptions("Error al confirmar facturacion rápida. " + ee.toString());
+				
+
+	    	}
+            
+	    	
+			ClsLogging.writeFileLog("ENTRA A GENERAR Y ENVIAR",10);
+    		// Try de PDFs y envios
+        	try {
+	        	// Se guardan las facturas impresas.
+	        	if (beanP.getGenerarPDF().trim().equals("1")) { 
+
+					ClsLogging.writeFileLog("TIENE QUE GENERAR PDF",10);
+
+		    		//////////// TRANSACCION ////////////////
+					tx.begin();
+			    	//////////// TRANSACCION ////////////////
+
+					//----- cambio de estado PDF a PROCESANDO -------//
+		    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_PROCESANDO);
+		    		facadm.updateDirect(hashNew, claves, camposPDF);
+		    		/*UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOENVIO, FacEstadoConfirmFactBean.ENVIO_NOAPLICA);
+		    		facadm.updateDirect(hashNew, claves, camposEnvio);*/
+	        		
+			    	//////////// TRANSACCION ////////////////
+					tx.commit();
+			    	//////////// TRANSACCION ////////////////
+
+					
+		        	FacFacturaAdm admFactura = new FacFacturaAdm(this.usrbean);
+		        	
+		        	//////////// ALMACENAR RAPIDA ////////////////
+		        	int errorAlmacenar = this.generaryEnviarProgramacionFactura(req,this.usrbean,beanP.getIdInstitucion(), Long.valueOf(idSerieFacturacion), Long.valueOf(idProgramacion),(beanP.getEnvio().trim().equals("1")),log,tx);
+		        	
+		        	if(errorAlmacenar!=0){		
+						ClsLogging.writeFileLog("ERROR AL ALMACENAR FACTURA. RETORNO="+errorAlmacenar,3);
+
+						// Error de facturacion:
+						if (errorAlmacenar == 1) { 
+							
+			        		//////////// TRANSACCION ////////////////
+							tx.begin();
+					    	//////////// TRANSACCION ////////////////
+							// ERROR EN GENERAR PDF
+			        		if (beanP.getGenerarPDF().trim().equals("1")) {
+								//----- cambio de estado PDF a FINALIZADO CON ERRORES -------//
+			        			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADAERRORES);
+					    		facadm.updateDirect(hashNew, claves, camposPDF);
+			        		}
+			        		
+			        		if (beanP.getEnvio().trim().equals("1")) {
+								//----- cambio de estado ENVIO a FINALIZADO CON ERRORES -------//
+			        			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOENVIO, FacEstadoConfirmFactBean.ENVIO_FINALIZADAERRORES);
+					    		facadm.updateDirect(hashNew, claves, camposEnvio);
+			        		}
+			        		//////////// TRANSACCION ////////////////
+							tx.commit();
+					    	//////////// TRANSACCION ////////////////
+
+						} else if (errorAlmacenar == 2) {
+							
+							// ERROR EN ENVIO FACTURA
+			        		//////////// TRANSACCION ////////////////
+							tx.begin();
+					    	//////////// TRANSACCION ////////////////
+			        		if (beanP.getGenerarPDF().trim().equals("1")) {
+								//----- cambio de estado PDF a FINALIZADO -------//
+			        			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADA);
+					    		facadm.updateDirect(hashNew, claves, camposPDF);
+			        		}
+			        		if (beanP.getEnvio().trim().equals("1")) {
+								//----- cambio de estado ENVIO a FINALIZADO CON ERRORES -------//
+			        			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOENVIO, FacEstadoConfirmFactBean.ENVIO_FINALIZADAERRORES);
+					    		facadm.updateDirect(hashNew, claves, camposEnvio);
+			        		}
+			        		//////////// TRANSACCION ////////////////
+							tx.commit();
+					    	//////////// TRANSACCION ////////////////
+
+							ClsLogging.writeFileLog("ERROR ENVIAR FACTURA. CAMBIO DE ESTADOS",10);
+						} else {
+							
+							
+			        		//////////// TRANSACCION ////////////////
+							tx.begin();
+					    	//////////// TRANSACCION ////////////////
+							// Como ha sido un error general cambio el estado a los dos que procedan
+			        		if (beanP.getGenerarPDF().trim().equals("1")) {
+								//----- cambio de estado PDF a FINALIZADO CON ERRORES -------//
+			        			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADAERRORES);
+					    		facadm.updateDirect(hashNew, claves, camposPDF);
+			        		}
+			        		if (beanP.getEnvio().trim().equals("1")) {
+								//----- cambio de estado ENVIO a FINALIZADO CON ERRORES -------//
+			        			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOENVIO, FacEstadoConfirmFactBean.ENVIO_FINALIZADAERRORES);
+					    		facadm.updateDirect(hashNew, claves, camposEnvio);
+			        		}
+			        		//////////// TRANSACCION ////////////////
+							tx.commit();
+					    	//////////// TRANSACCION ////////////////
+
+							ClsLogging.writeFileLog("ERROR GENERAL GENERAR/ENVIAR FACTURA. CAMBIO DE ESTADOS",10);
+						}
+					} else {
+
+		        		//////////// TRANSACCION ////////////////
+						tx.begin();
+				    	//////////// TRANSACCION ////////////////
+						//----- cambio de estado PDF a FINALIZADO -------//
+			    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADA);
+			    		facadm.updateDirect(hashNew, claves, camposPDF);
+			    		if (beanP.getEnvio().trim().equals("1")) {
+							//----- cambio de estado ENVIO a FINALIZADO -------//
+				    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOENVIO, FacEstadoConfirmFactBean.ENVIO_FINALIZADA);
+				    		facadm.updateDirect(hashNew, claves, camposEnvio);
+			        		
+			    		}
+		        		//////////// TRANSACCION ////////////////
+						tx.commit();
+				    	//////////// TRANSACCION ////////////////
+
+						ClsLogging.writeFileLog("OK TODO. CAMBIO DE ESTADOS",10);
+
+					}
+
+	        	}
+
+        	} catch (Exception ee) {
+
+				ClsLogging.writeFileLog("ERROR GENERAL EN TRY GENERAR/ENVIAR.",10);
+
+		    	//////////// TRANSACCION ////////////////
+				try {
+					tx.rollback();
+				} catch (Exception ex) {}
+		    	//////////// TRANSACCION ////////////////
+
+	    		// ESCRIBO EN EL LOG mensaje general ??
+				log.writeLogFactura("PDF/ENVIO","N/A","N/A","Error general en el proceso de generación o envío de facturas PDF: "+ee.toString());
+	    		
+				//////////// TRANSACCION ////////////////
+				tx.begin();
+		    	//////////// TRANSACCION ////////////////
+
+				// cambio el estado a finalizada con errores.
+        		// COMO NO SABEMOS QUE HA OCURRIDO PONEMOS TODO COMO FINALIZADO CON ERRORES
+        		if (beanP.getGenerarPDF().trim().equals("1")) {
+					//----- cambio de estado PDF a FINALIZADO -------//
+        			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADAERRORES);
+		    		facadm.updateDirect(hashNew, claves, camposPDF);
+        		}
+
+        		//////////// TRANSACCION ////////////////
+				tx.commit();
+		    	//////////// TRANSACCION ////////////////
+
+				throw ee;
+	    	}
+	    	
+    	} 
+    	catch (SIGAException e) {
+    	    try { tx.rollback(); } catch (Exception e3) {}
+    		throw e;
+    	} 
+    	catch (Exception e) {
+    	    try { tx.rollback(); } catch (Exception e3) {}
+    		throw new ClsExceptions(e,"Error al confirmar facturacion rápida.");
+    	}
+    }
+    
     public void confirmarProgramacionFactura(FacFacturacionProgramadaBean beanP, HttpServletRequest req, boolean archivarFacturacion, SIGALogging log, boolean isTransacionPesada, boolean generarPagosBanco) throws ClsExceptions, SIGAException 
     {
     	UserTransaction tx = null;
@@ -1227,7 +1770,7 @@ public class Facturacion {
     		ClsLogging.writeFileLog("ENTRA A GENERAR Y ENVIAR",10);
     		
     		boolean isGenerarPdf = beanP.getGenerarPDF() != null && beanP.getGenerarPDF().trim().equals("1");
-    		boolean isGenerarEnvio = beanP.getEnvio() != null && beanP.getEnvio().trim().equals("1");
+    		boolean isGenerarEnvio = beanP.getEnvio() != null && beanP.getEnvio().trim().equals("1") && (beanP.getRealizarEnvio()==null || beanP.getRealizarEnvio().toString().equalsIgnoreCase("1"));
     		//aqui
     		if(isGenerarPdf){
     			msjAviso = generarPdfEnvioProgramacionFactura(tx,facadm,beanP,req,log,idSerieFacturacion,
@@ -1646,9 +2189,7 @@ public class Facturacion {
 	    			
     				ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> VAMOS A VER SI ENVIARMOS: ENVIAR:"+bGenerarEnvios+" CORRECTO:"+correcto,10);
 
-		    	    // inc6666 - Si es correcto generamos el ZIP con todas las facturas
-    				generarZip(institucion.toString(), serieFacturacion.toString(), idProgramacion.toString());
-    				
+		    	    	
 	    			// Envio de facturas
 	    			if (bGenerarEnvios && correcto){
 	    				
@@ -1762,7 +2303,10 @@ public class Facturacion {
 				ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> PROCESO DE FACTURA OK ",10);
 
     		} // bucle
-    		
+    		 
+    		// inc6666 - Si es correcto generamos el ZIP con todas las facturas
+			generarZip(institucion.toString(), serieFacturacion.toString(), idProgramacion.toString());
+    				
 		}catch (SIGAException e) {
 			
 			ClsLogging.writeFileLog("ALMACENAR >> ERROR GENERAL EN LA FUNCION ALMACENAR: "+e.getLiteral(userbean.getLanguage()),10);
@@ -1953,24 +2497,5 @@ public class Facturacion {
 
     	return salida;
     }
-    
-	public void generarPdfEnviarFacturas(
-			HttpServletRequest req,
-			String idIntitucion,
-			String idSerieFacturacion,
-			String idProgramacion) throws ClsExceptions, SIGAException {
-		
-		UserTransaction tx = this.usrbean.getTransaction();
-		
-		generaryEnviarProgramacionFactura (
-				req, 
-				this.usrbean, 
-				Integer.valueOf(idIntitucion),
-				Long.valueOf(idSerieFacturacion),
-				Long.valueOf(idProgramacion), 
-				true, 
-				null,
-				tx);
-	}
 	
 }
