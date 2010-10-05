@@ -18,7 +18,7 @@ public class FacFacturacionProgramadaBean extends MasterBean {
 	private String 	fechaInicioProductos, fechaFinProductos, fechaInicioServicios, fechaFinServicios, 
 					fechaRealGeneracion, fechaConfirmacion, fechaProgramacion, 
 					fechaRealConfirmacion, generarPDF,envio,archivarFact,fechaPrevistaConfirmacion,fechaPrevistaGeneracion, locked,
-					fechaCargo, confIngresos, confDeudor, ctaIngresos, ctaClientes, visible, descripcion;
+					fechaCargo, confIngresos, confDeudor, ctaIngresos, ctaClientes, visible, descripcion, realizarEnvio;
 
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "FAC_FACTURACIONPROGRAMADA";
@@ -125,4 +125,12 @@ public class FacFacturacionProgramadaBean extends MasterBean {
 	public void setFechaCargo(String fechaCargo) {
 		this.fechaCargo = fechaCargo;
 	}
+	public String getRealizarEnvio() {
+		return this.realizarEnvio;
+	}
+	public void setRealizarEnvio(String realizarEnvio) {
+		this.realizarEnvio = realizarEnvio;
+	}
+	
+	
 }
