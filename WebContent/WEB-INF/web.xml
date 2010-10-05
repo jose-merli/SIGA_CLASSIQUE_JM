@@ -141,11 +141,11 @@
     <servlet-class>com.siga.servlets.SIGASvlProcesoEnvios</servlet-class>
   </servlet>
  
-  <!--<servlet>
+  <servlet>
     <servlet-name>SIGASvlProcesoAutomaticoFacturacion</servlet-name>
     <servlet-class>com.siga.servlets.SIGASvlProcesoAutomaticoFacturacion</servlet-class>
    	<load-on-startup>4</load-on-startup>
-  </servlet>-->
+  </servlet>
   <servlet>
     <servlet-name>SIGASvlProcesoFacturacion</servlet-name>
     <servlet-class>com.siga.servlets.SIGASvlProcesoFacturacion</servlet-class>
@@ -248,6 +248,11 @@
   		<param-value>/ajaxtags</param-value>
   	</init-param>
   </servlet>
+  
+  <servlet>
+    <servlet-name>SIGASvlProcesoIndividualConfirmacionFacturacion</servlet-name>
+    <servlet-class>com.siga.servlets.SIGASvlProcesoIndividualConfirmacionFacturacion</servlet-class>
+  </servlet>
 
   <servlet-mapping>
   	<servlet-name>Ajaxsourceloader</servlet-name>
@@ -337,6 +342,12 @@
     <servlet-name>SIGASvlAsignarUsuariosGrupo</servlet-name>
     <url-pattern>SIGASvlAsignarUsuariosGrupo.svrl</url-pattern>
   </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>SIGASvlProcesoIndividualConfirmacionFacturacion</servlet-name>
+    <url-pattern>SIGASvlProcesoIndividualConfirmacionFacturacion.svrl</url-pattern>
+  </servlet-mapping>
+
 
   <servlet-mapping>
     <servlet-name>ServletPruebaACA</servlet-name>
