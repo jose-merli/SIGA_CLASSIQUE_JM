@@ -486,6 +486,7 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 					DefinirUnidadFamiliarEJGForm unidad = unidadFamiliar.getUnidadFamiliarEjgForm();
 					unidad.setEjg(ejg);
 					unidad.setPermisoEejg(unidadFamiliarForm.getPermisoEejg());
+					unidad.setEsComision(unidadFamiliarForm.getEsComision());
 					if(unidadFamiliarForm.getModo()!=null)
 						unidad.setModo(unidadFamiliarForm.getModo());
 					StringBuffer peticion = new StringBuffer();
@@ -518,13 +519,88 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
        		throw new ClsExceptions (e, "Error al ejecutar consulta de getUnidadFamiliar");
        }
        return unidadFamiliarForm;
-		
-		
-		
-		
-		
-		
-	} 
+
+	}
 	
+	/* Metodo que nos devuelve todos los datos relativos a la unidad familiar
+	 * Se ha creado para recuperar los datos postales en caso de ser destinatario de un EJG
+	 */
+	public Vector getDatosInteresadoEjg(String idInstitucion, String tipoEjg,
+			String anio, String numero,String idioma, String idPersonaJG) throws ClsExceptions  
+	{
+		try {
+			Hashtable htCodigos = new Hashtable();
+			int contador = 0;
+			StringBuffer sql = new StringBuffer();
+			sql.append("select per.idpersona            as dest_idpersona, ");
+			sql.append("       per.fechanacimiento      as dest_fechanacimiento, ");
+			//sql.append("       per.fechamodificacion    as dest_fechamodificacion, ");
+			//sql.append("       per.usumodificacion      as dest_usumodificacion, ");
+			//sql.append("       per.idinstitucion        as dest_idinstitucion, ");
+			//sql.append("       per.idpais               as dest_idpais, ");
+			sql.append("       per.nif                  as dest_nif, ");
+			sql.append("       per.nombre||' '||per.apellido1||' '||per.apellido2 as dest_nombrecompleto, ");
+			sql.append("       per.nombre               as dest_nombre, ");
+			sql.append("       per.apellido1            as dest_apellido1, ");
+			sql.append("       per.apellido2            as dest_apellido2, ");
+			sql.append("       per.direccion            as dest_direccion, ");
+			sql.append("       per.codigopostal         as dest_codigopostal, ");
+			//sql.append("       per.idprofesion          as dest_idprofesion, ");
+			sql.append("       per.regimen_conyugal     as dest_regimen_conyugal, ");
+			//sql.append("       per.idprovincia          as dest_idprovincia, ");
+			//sql.append("       per.idpoblacion          as dest_idpoblacion, ");
+			//sql.append("       per.idestadocivil        as dest_idestadocivil, ");
+			sql.append("       per.tipopersonajg        as dest_tipopersonajg, ");
+			//sql.append("       per.idtipoidentificacion as dest_idtipoidentificacion, ");
+			sql.append("       per.observaciones        as dest_observaciones, ");
+			//sql.append("       per.idrepresentantejg    as dest_idrepresentantejg, ");
+			//sql.append("       per.idtipoencalidad      as dest_idtipoencalidad, ");
+			sql.append("       per.sexo                 as dest_sexo, ");
+			//sql.append("       per.idlenguaje           as dest_idlenguaje, ");
+			sql.append("       per.numerohijos          as dest_numerohijos, ");
+			sql.append("       per.fax                  as dest_fax, ");
+			sql.append("       per.correoelectronico    as dest_correoelectronico, ");
+			sql.append("       f_siga_getrecurso( pais.nombre, "+ idioma +") as dest_nacionalidad, ");
+			sql.append("       f_siga_getrecurso( prov.nombre, "+ idioma +") as dest_provincia, ");
+			sql.append("       f_siga_getrecurso( pobl.nombre, "+ idioma +") as dest_poblacion, ");
+			sql.append("       tel.numerotelefono as dest_telefono, ");
+			sql.append("       f_siga_getrecurso( par.descripcion, "+ idioma +") as dest_parentesco ");
+			sql.append("  from scs_personajg per, scs_unidadfamiliarejg uf, cen_pais pais, cen_poblaciones pobl, ");
+			sql.append("      cen_provincias prov, scs_telefonospersona tel, scs_parentesco par ");
+			contador ++;
+			htCodigos.put(new Integer(contador),idPersonaJG);
+			sql.append(" where per.idpersona =:1 ");
+			contador ++;
+			htCodigos.put(new Integer(contador),idInstitucion);
+			sql.append("   and uf.idinstitucion =:2 ");
+			contador ++;
+			htCodigos.put(new Integer(contador),tipoEjg);
+			sql.append("   and uf.idtipoejg =:3 ");
+			contador ++;
+			htCodigos.put(new Integer(contador),anio);
+			sql.append("   and uf.anio =:4 ");
+			contador ++;
+			htCodigos.put(new Integer(contador),numero);
+			sql.append("   and uf.numero =:5 ");
+			sql.append("   and uf.idpersona = per.idpersona ");
+			sql.append("   and uf.idinstitucion = per.idinstitucion ");
+			sql.append("   and pais.idpais(+) = per.idpais ");
+			sql.append("   and prov.idprovincia(+) = per.idprovincia ");
+			sql.append("   and pobl.idprovincia(+) = per.idprovincia ");
+			sql.append("   and pobl.idpoblacion(+) = per.idpoblacion ");
+			sql.append("   and tel.idpersona(+) = per.idpersona ");
+			sql.append("   and tel.idinstitucion(+) = per.idinstitucion ");
+			sql.append("   and par.idinstitucion(+) = uf.idinstitucion ");
+			sql.append("   and par.idparentesco(+) = uf.idparentesco ");
+           
+			
+			HelperInformesAdm helperInformes = new HelperInformesAdm();	
+			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
+			
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error ScsEJGAdm.getInteresadosEjgSalida.");
+		}
+	}
 
 }
