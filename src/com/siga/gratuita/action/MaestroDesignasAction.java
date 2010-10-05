@@ -104,8 +104,8 @@ public class MaestroDesignasAction extends MasterAction {
 			UtilidadesHash.set(resultado,ScsDesignaBean.C_ANIO, 				(String)request.getParameter("ANIO"));
 			UtilidadesHash.set(resultado,ScsDesignaBean.C_NUMERO, 				(String)request.getParameter("NUMERO"));
 			UtilidadesHash.set(resultado,ScsDesignaBean.C_IDINSTITUCION,		(String)usr.getLocation());
-			UtilidadesHash.set(resultado,ScsDesignaBean.C_IDTURNO,				(String)request.getParameter("IDTURNO"));	
-			UtilidadesHash.set(resultado,ScsDesignaBean.C_IDJUZGADO,			(String)request.getParameter("C_IDJUZGADO"));	
+			UtilidadesHash.set(resultado,ScsDesignaBean.C_IDTURNO,				(String)request.getParameter("IDTURNO"));
+				
 			
 			// jbd 01/02/2010 Pasamos el valor del pcajg del colegio
 			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
@@ -163,14 +163,6 @@ public class MaestroDesignasAction extends MasterAction {
 				request.setAttribute("nombreGuardiaAsistencia",nombreGuardiaAsistencia);
 				
 			}
-			
-			ScsJuzgadoAdm JuzgadoAdm = new ScsJuzgadoAdm (this.getUserBean(request));			
-			
-			if ((!idJuzgado.equals(null))&&(!idJuzgado.equals(""))){				
-			miform.setCodigoExtJuzgado(JuzgadoAdm.obtenerCodigoExtJuzgado(usr.getLocation(), idJuzgado.toString()));
-			}
-			
-
 		} 
 		catch (Exception e2){
 		    throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e2, null); 
