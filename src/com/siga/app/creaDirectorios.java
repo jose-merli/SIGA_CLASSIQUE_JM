@@ -431,6 +431,7 @@ public class creaDirectorios {
 				}
 			}
 			
+		
 			// previsiones Oracle
 		    path = rp.getString("facturacion.directorioPrevisionesOracle");
 			if (instituciones!=null && instituciones.size()>0) {
@@ -569,6 +570,16 @@ public class creaDirectorios {
 			// carta EJG
 			path = rp.getString("sjcs.directorioFisicoCartaEJGJava");
 			path += File.separator + rp.getString("sjcs.directorioCartaEJGJava");
+			if (instituciones!=null && instituciones.size()>0) {
+				for (int j=0;j<instituciones.size();j++) {
+					CenInstitucionBean insti = (CenInstitucionBean) instituciones.get(j); 
+					if (path!=null) salida.add(path + File.separator + insti.getIdInstitucion().toString());
+				}
+			}
+			
+			// Comunicaciones Comision (CAJG)
+			path = rp.getString("sjcs.directorioFisicoComisionJava");
+		    path += File.separator + rp.getString("sjcs.directorioCartaComisionJava");
 			if (instituciones!=null && instituciones.size()>0) {
 				for (int j=0;j<instituciones.size();j++) {
 					CenInstitucionBean insti = (CenInstitucionBean) instituciones.get(j); 
@@ -933,6 +944,19 @@ public class creaDirectorios {
 					destino = new File(pathDestino);
 					destino.mkdirs();
 					carpeta = rp.getString("directorios.carpeta.carta.expediente");
+					hijoOrigen = new File(origen.getAbsolutePath() + File.separator + carpeta);   
+				 	hijoDestino = new File(destino.getAbsolutePath());
+				 	hijoDestino.mkdirs();
+				 	if (hijoOrigen.exists()) {
+				 		recur(hijoOrigen, hijoDestino,insti.getIdInstitucion().toString(),institucionDefecto);
+				 	}
+				 	
+				 	// carpeta.carta.comision
+				 	pathDestino = rp.getString("sjcs.directorioFisicoComisionJava");
+					pathDestino += File.separator + rp.getString("sjcs.directorioCartaComisionJava");
+					destino = new File(pathDestino);
+					destino.mkdirs();
+					carpeta = rp.getString("directorios.carpeta.carta.comision");
 					hijoOrigen = new File(origen.getAbsolutePath() + File.separator + carpeta);   
 				 	hijoDestino = new File(destino.getAbsolutePath());
 				 	hijoDestino.mkdirs();
