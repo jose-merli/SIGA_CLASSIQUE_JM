@@ -124,6 +124,7 @@ public class InformesGenericosAction extends MasterAction {
 
 		String mapDestino = "exception";
 		InformesGenericosForm miForm = null;
+		UsrBean usr = this.getUserBean(request);
 
 		try { 
 
@@ -152,6 +153,9 @@ public class InformesGenericosAction extends MasterAction {
 				anio = (String) vCampos.get(3);
 				numero = (String) vCampos.get(4);
 			}
+			// Para la comision tenemos que usar las comunicaciones de CAJG en vez de EJG
+			if(idTipoInforme.equals("EJG") && usr.isComision())
+				idTipoInforme="CAJG";
 
 			AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
 			AdmTipoInformeAdm admT = new AdmTipoInformeAdm(this.getUserBean(request));
@@ -173,7 +177,7 @@ public class InformesGenericosAction extends MasterAction {
 				} else	if (!idTipoInforme.equals("") && seleccionados.equals("0")) {
 					// Si existes varios informes para el mismo tipo
 					Vector infs=adm.obtenerInformesTipo(idInstitucion,idTipoInforme,aSolicitantes, destinatarios);
-					if (infs!=null) {
+					if (infs!=null && infs.size()>0) {
 						//añadimos al final de los datos del informe a la persona seleccionada si la hubiera
 						
 						
@@ -200,7 +204,7 @@ public class InformesGenericosAction extends MasterAction {
 								datosInforme.append("##");
 								datosInforme.append("numero==");
 								datosInforme.append(numero);
-							}else if(idTipoInforme.equals("EJG")){
+							}else if(idTipoInforme.equals("EJG") || idTipoInforme.equals("CAJG")){
 								datosInforme = new StringBuffer();
 								datosInforme.append("idPersonaJG==");
 								datosInforme.append(idPersonaJG);
@@ -324,7 +328,9 @@ public class InformesGenericosAction extends MasterAction {
 								mapDestino = generaInfFacJG(mapping, miForm, request, response);
 							} else if (idTipoInforme.equals("EJGCA")) {
 								mapDestino = ejgca(mapping, miForm, request, response);
-							} else if (idTipoInforme.equals("EJG")) {
+							} else if (idTipoInforme.equals("EJG")){
+								mapDestino = ejg(mapping, miForm, request, response);
+							} else if (idTipoInforme.equalsIgnoreCase("CAJG")) {
 								mapDestino = ejg(mapping, miForm, request, response);
 							} else if (idTipoInforme.equals("COBRO")) {
 								mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesMorosos);
@@ -727,7 +733,7 @@ public class InformesGenericosAction extends MasterAction {
 							String idiomaDatos="1";
 
 							Hashtable datoscomunes=new Hashtable();
-			            Hashtable clonDatoscomunes=null;
+							Hashtable clonDatoscomunes=null;
 
 							//Carga en el doc los datos comunes del informe (Institucion, idfacturacion,fecha)
 							if (miform.getDatosInforme() != null && !miform.getDatosInforme().trim().equals("")) {
