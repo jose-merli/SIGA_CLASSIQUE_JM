@@ -48,17 +48,20 @@ import com.siga.tlds.FilaExtElement;
 	private String idPoblacionAux="idPoblacionAux";
 	private String idEstadoCivilAux="idEstadoCivilAux";
 	private String regimenConyugalAux="regimenConyugalAux";
+	private boolean esComision=false;;
 	
 	public void    setIdPaisAux				 (String	valor)	{ this.datos.put(this.idPaisAux, valor);}
 	public void    setIdProvinciaAux		 (String	valor)	{ this.datos.put(this.idProvinciaAux, valor);}
 	public void    setIdPoblacionAux		 (String	valor)	{ this.datos.put(this.idPoblacionAux, valor);}
 	public void    setIdEstadoCivilAux		 (String	valor)	{ this.datos.put(this.idEstadoCivilAux, valor);}
 	public void    setRegimenConyugalAux	 (String	valor)	{ this.datos.put(this.regimenConyugalAux, valor);}
+	public void    setEsComision			 (boolean   valor)	{ this.esComision=valor;}
 	public String getIdPaisAux	 			()	{return (String)this.datos.get(this.idPaisAux);}
 	public String getIdProvinciaAux		 	()	{return (String)this.datos.get(this.idProvinciaAux);}
 	public String getIdPoblacionAux		 	()	{return (String)this.datos.get(this.idPoblacionAux);}
 	public String getIdEstadoCivilAux	 	()	{return (String)this.datos.get(this.idEstadoCivilAux);}
 	public String getRegimenConyugalAux		()	{return (String)this.datos.get(this.regimenConyugalAux);}
+	public boolean getEsComision			()	{return this.esComision;}
 
 	// Metodos Set (Formulario (*.jsp))
 	
@@ -618,7 +621,7 @@ import com.siga.tlds.FilaExtElement;
 			//System.out.println("ejg.getestado"+ejg.getIdEstadoEjg());
 			if(permisoEejg!=null && permisoEejg.booleanValue() && 
 					(personaJG!=null && personaJG.getNif()!=null && !personaJG.getNif().trim().equals("") &&personaJG.getTipoIdentificacion()!=null&&(Integer.parseInt(personaJG.getTipoIdentificacion())==ClsConstants.TIPO_IDENTIFICACION_NIF||Integer.parseInt(personaJG.getTipoIdentificacion())==ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE) )
-					&& ejg!=null && (ejg.getIdEstadoEjg()==null || (ejg.getIdEstadoEjg()!=null&&ejg.getIdEstadoEjg().shortValue()<9))){
+					&& ejg!=null && ((ejg.getIdEstadoEjg()==null || (ejg.getIdEstadoEjg()!=null&&ejg.getIdEstadoEjg().shortValue()<9))||esComision)){
 				
 				
 				if(getPeticionEejg()!=null){
@@ -636,15 +639,11 @@ import com.siga.tlds.FilaExtElement;
 							elementosFila[4] = new FilaExtElement("download", "esperaInfoEejg","general.boton.descargarEejg",	SIGAConstants.ACCESS_READ);
 							elementosFila[5] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
 						break;
-						
-						
 						case ScsEejgPeticionesBean.EEJG_ESTADO_ESPERA:case ScsEejgPeticionesBean.EEJG_ESTADO_ESPERA_ESPERANDO:case ScsEejgPeticionesBean.EEJG_ESTADO_INICIAL_ESPERANDO:
 							elementosFila = new FilaExtElement[5];
 							elementosFila[3] = new FilaExtElement("espera", "esperaAdministracionesEejg","general.boton.esperaAdministracionesEejg",SIGAConstants.ACCESS_READ);
 							elementosFila[4] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
 						break;
-						
-						
 						case ScsEejgPeticionesBean.EEJG_ESTADO_ERROR_SOLICITUD:case ScsEejgPeticionesBean.EEJG_ESTADO_ERROR_CONSULTA_INFO:
 							elementosFila = new FilaExtElement[6];
 							elementosFila[3] = new FilaExtElement(null, "solicitarEejg","general.boton.solicitarEejg",	SIGAConstants.ACCESS_READ,"general.boton.solicitudEejg","90");
@@ -663,15 +662,19 @@ import com.siga.tlds.FilaExtElement;
 						break;
 					}
 				}else{
-					elementosFila = new FilaExtElement[5];
-					elementosFila[3] = new FilaExtElement(null, "solicitarEejg","general.boton.solicitarEejg",	SIGAConstants.ACCESS_READ,"general.boton.solicitudEejg","100");
-					elementosFila[4] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
-					
+					if(esComision){
+						// A la comision no les dejaremos solicitar
+						elementosFila = new FilaExtElement[4];
+						elementosFila[3] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
+					}else{
+						elementosFila = new FilaExtElement[5];
+						elementosFila[3] = new FilaExtElement(null, "solicitarEejg","general.boton.solicitarEejg",	SIGAConstants.ACCESS_READ,"general.boton.solicitudEejg","100");
+						elementosFila[4] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
+					}
 				}
 			}else{
 				elementosFila = new FilaExtElement[4];
 				elementosFila[3] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
-				
 			}
 		}
 		this.setElementosFila(elementosFila);

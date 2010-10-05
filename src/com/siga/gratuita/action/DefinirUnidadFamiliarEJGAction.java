@@ -581,6 +581,8 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 			String eejg = paramAdm.getValor (usr.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_EEJG, "");
 			Boolean isPermisoEejg = new Boolean((eejg!=null && eejg.equalsIgnoreCase(ClsConstants.DB_TRUE)));
 			miForm.setPermisoEejg(isPermisoEejg);
+			//seteamos si es comision pcaj
+			miForm.setEsComision(usr.isComision());
 			
 			Vector<ScsEJGBean> vEjg = admEJG.selectByPK(miHash);
 			ScsEJGBean ejg = vEjg.get(0);
@@ -604,7 +606,9 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 			miForm.setEjg(ejg);
 			if (ejg.getIdPersonaJG()!=null ){
 				ScsUnidadFamiliarEJGAdm admUnidadFamiliar = new ScsUnidadFamiliarEJGAdm(usr);;
+				
 				miForm = admUnidadFamiliar.getUnidadFamiliar(miForm, usr);
+				
 			}
 			
 			request.setAttribute("EJG_UNIDADFAMILIAR", PersonaJGAction.EJG_UNIDADFAMILIAR);
