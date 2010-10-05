@@ -15,10 +15,13 @@
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="java.util.Properties"%>
+<%@ page import = "com.atos.utils.UsrBean"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
+	UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");
+	boolean esComision=user.isComision();
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
 	ses.setAttribute("pestanas","1");
 	String[] pestanasOcultas = (String[])request.getAttribute("pestanasOcultas");
@@ -51,13 +54,23 @@
 	<!-- INICIO: CONJUNTO DE PESTAÑAS (LINEA) -->
 	<!-- TAG DE CONJUNTO DE PESTANAS -->
 	
-	<siga:PestanasExt 
-			pestanaId="EJG" 
-			target="mainPestanas"
-			parametros="EJG"
-			elementoactivo="1"
-			procesosinvisibles="<%=pestanasOcultas%>"
-			/>
+	<% if(esComision){%>
+		<siga:PestanasExt 
+				pestanaId="EJG" 
+				target="mainPestanas"
+				parametros="EJG"
+				elementoactivo="8"
+				procesosinvisibles="<%=pestanasOcultas%>"
+				/>
+	<%}else{%>
+		<siga:PestanasExt 
+				pestanaId="EJG" 
+				target="mainPestanas"
+				parametros="EJG"
+				elementoactivo="1"
+				procesosinvisibles="<%=pestanasOcultas%>"
+				/>
+	<%}%>
 
 <!-- FIN: CONJUNTO DE PESTAÑAS (LINEA) -->
 

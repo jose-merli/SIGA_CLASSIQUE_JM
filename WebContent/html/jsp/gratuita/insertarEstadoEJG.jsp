@@ -23,7 +23,8 @@
 <!-- JSP -->
 <% 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
-	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");	
+	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
+	boolean esComision = usr.isComision();
 	Hashtable miHash = (Hashtable)ses.getAttribute("EJG");
 	ses.removeAttribute("EJG");
 	String modo = (String) request.getAttribute("modo");
@@ -135,12 +136,15 @@
 		<siga:Idioma key="pestana.justiciagratuitaejg.estados"/>&nbsp;(*)
 	</td>
 	<td>
-	
-	<%if (automatico!=null && !automatico.equals("1")){%>
-		<siga:ComboBD nombre="idEstadoEJG" tipo="estadosEJG" clase="<%=estiloCombo%>"  ancho="300" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vSel%>" readonly="false"/>
-	<%}else{%>
-	   <siga:ComboBD nombre="idEstadoEJG" tipo="estadosEJG" clase="<%=estiloCombo%>"  ancho="300" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vSel%>" readonly="true"/>
-	<%}%>	
+	<%String readOnly = "true";
+	  if (automatico!=null && !automatico.equals("1"))
+		readOnly = "false"; 
+	%>
+	<% if(esComision){%>
+			<siga:ComboBD nombre="idEstadoEJG" tipo="estadosEJGComision" clase="<%=estiloCombo%>"  ancho="300" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vSel%>" readonly="<%=readOnly%>"/>
+	<% }else{ %>
+			<siga:ComboBD nombre="idEstadoEJG" tipo="estadosEJG" clase="<%=estiloCombo%>"  ancho="300" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vSel%>" readonly="<%=readOnly%>"/>
+	<% } %>
 	
 	</td>
 	</tr>

@@ -12,6 +12,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
+import com.siga.Utilidades.UtilidadesNumero;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinirEJGForm;
@@ -2394,7 +2395,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		}
 
 
-		consulta += " ORDER BY " + ScsEJGBean.C_ANIO + ", to_number("+ ScsEJGBean.C_NUMEJG+") desc";
+		consulta += " ORDER BY to_number(" + ScsEJGBean.C_ANIO + ") desc, to_number("+ ScsEJGBean.C_NUMEJG+") desc";
 
 		hashReturn.put(keyBindConsulta,consulta);
 		hashReturn.put(keyBindCodigos,codigos);
@@ -3380,7 +3381,22 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 
 			sql.append(" ,to_char(EASI.FECHAHORA, 'dd/mm/yyyy') AS FECHA_ASISTENCIA ");
 			sql.append(" ,  (select nombre ||' '||apellidos1||' '|| apellidos2 from cen_persona where idpersona = EASI.IDPERSONACOLEGIADO) AS NOMBRE_LETRADO_ASISTENCIA");
-		       
+			
+			// Campos necesarios para las comucioncaciones de la comision
+			// Nos quedamos con los digitos para saber la cantidad que se reduce
+			sql.append(" ,regexp_replace( (select F_SIGA_GETRECURSO(r.descripcion, 1) From Scs_Tiporesolucion r");
+            sql.append(" where r.Idtiporesolucion=ejg.idtiporatificacionejg),'[^[:digit:]]','') as REDUCCION");
+            // Las fechas en letra
+		    sql.append(" , pkg_siga_fecha_en_letra.F_SIGA_FECHACOMPLETAENLETRA(EJG.Fecharatificacion,'M',"+idioma+") AS Fecharatificacion_LETRA ");
+			sql.append(" , pkg_siga_fecha_en_letra.F_SIGA_FECHACOMPLETAENLETRA(EJG.FECHAPRESENTACION,'M',"+idioma+") AS FECHAPRESENTACION_LETRA ");
+			sql.append(" , pkg_siga_fecha_en_letra.F_SIGA_FECHACOMPLETAENLETRA(EJG.FECHALIMITEPRESENTACION,'M',"+idioma+") AS FECHALIMITEPRESENTACION_LETRA ");
+			sql.append(" , pkg_siga_fecha_en_letra.F_SIGA_FECHACOMPLETAENLETRA(EASI.FECHAHORA,'M',"+idioma+") AS FECHA_ASISTENCIA_LETRA ");
+			sql.append(" , pkg_siga_fecha_en_letra.F_SIGA_FECHACOMPLETAENLETRA(EJG.fechaauto,'M',"+idioma+") AS fechaauto_LETRA ");
+			sql.append(" , pkg_siga_fecha_en_letra.F_SIGA_FECHACOMPLETAENLETRA(EJG.fechanotificacion,'M',"+idioma+") AS fechanotificacion_LETRA ");
+			sql.append(" , pkg_siga_fecha_en_letra.F_SIGA_FECHACOMPLETAENLETRA(EJG.fecharesolucioncajg,'M',"+idioma+") AS fecharesolucioncajg_LETRA ");
+			sql.append(" , pkg_siga_fecha_en_letra.F_SIGA_FECHACOMPLETAENLETRA(EJG.FECHAAPERTURA,'M',"+idioma+") AS FECHAAPERTURA_EJG_LETRA ");
+			sql.append(" , pkg_siga_fecha_en_letra.F_SIGA_FECHACOMPLETAENLETRA(SYSDATE,'M',"+idioma+") AS FECHAACTUAL_LETRA");
+
 			sql.append(" FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGD, SCS_ASISTENCIA EASI ");
 			sql.append(" WHERE  ");
 
@@ -3581,7 +3597,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append("  DECODE(regimen_conyugal,'G', f_siga_getrecurso_etiqueta('gratuita.personaJG.regimen.literal.gananciales',"+idioma+"),");
             sql.append(" 'I', f_siga_getrecurso_etiqueta('gratuita.personaJG.regimen.literal.indeterminado',"+idioma+"),");
             sql.append(" 'S', f_siga_getrecurso_etiqueta('gratuita.personaJG.regimen.literal.separacion',"+idioma+")) as REGIMENCONYUGAL_DEFENDIDO,");
-            sql.append(" f_siga_getrecurso (PROFESION.DESCRIPCION,"+idioma+") PROFESION_DEFENDIDO");
+            sql.append(" f_siga_getrecurso (PROFESION.DESCRIPCION,"+idioma+") PROFESION_DEFENDIDO,");
+            sql.append(" PERSONAJG.IDPERSONA IDPERSONA");
 			sql.append(" FROM V_SIGA_INTERESADOS_EJG    INTERESADO, SCS_PERSONAJG PERSONAJG, CEN_ESTADOCIVIL ESTADOCIVIL, SCS_PROFESION PROFESION ");
   
 			sql.append(" WHERE "); 	
@@ -4335,22 +4352,40 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 
 					
 				}
+				// Aqui sacaremos la informacion de la persona a la que va dirigida la carta
+				ScsUnidadFamiliarEJGAdm admUniFam = new ScsUnidadFamiliarEJGAdm(this.usrbean);
+				if(idPersonaJG!=null && !idPersonaJG.equalsIgnoreCase("")){
+					Vector vDestinatario = admUniFam.getDatosInteresadoEjg(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG);
+					if(vDestinatario!=null && vDestinatario.size()>0){
+						Hashtable clone = (Hashtable) registro.clone();
+						Hashtable destinatario = (Hashtable) vDestinatario.get(0);
+						registro.putAll(destinatario);
+					}
+				}
 				if(isSolicitantes){
 					Vector vDefendidos = getInteresadosEjgSalida(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,idPersonaJG);
 					if(vDefendidos!=null && vDefendidos.size()>0){
 						for (int k = 0; k < vDefendidos.size(); k++) {
 							Hashtable clone = (Hashtable) registro.clone();
 							Hashtable registroDefendido = (Hashtable) vDefendidos.get(k);
+							// jbd // Esto queda un poco feo, es porque getInteresadosEjgSalida siempre nos devuelve un registro,
+							try{   // aunque no tenga datos y puede dar error al comunicar a un NO defendido
+								Vector vDestinatario = admUniFam.getDatosInteresadoEjg(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma,(String)registroDefendido.get("IDPERSONA"));
+								if(vDestinatario!=null && vDestinatario.size()>0){
+									Hashtable destinatario = (Hashtable) vDestinatario.get(0);
+									clone.putAll(destinatario);
+								}
+							}catch (Exception e) {
+								
+							}
 							clone.putAll(registroDefendido);
 							vSalida.add(clone);
 						}
 					}else{
 						vSalida.add(registro);
-						
 					}	
 				
 				}else{
-					
 					vSalida.add(registro);
 				}
 

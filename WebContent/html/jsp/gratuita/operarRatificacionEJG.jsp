@@ -109,6 +109,22 @@
 					<%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%>
 					- <%=UtilidadesString.mostrarDatoJSP(t_nombre)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido1)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido2)%>
 			</td>
+			<td>
+				<%
+					if (!accion.equalsIgnoreCase("ver")) {
+				%>
+				<table>
+					<tr>
+						<td><siga:InformeSimple
+							idInstitucion="<%=usr.getLocation()%>"
+							recurso="gratuita.EJG.botonComunicaciones" idTipoInforme="EJG"
+							formularioDatos="DefinirEJGForm" /></td>
+					</tr>
+				</table>
+				<%
+					}
+				%>
+			</td>
 		</tr>
 		</table>
 
@@ -238,7 +254,7 @@
 	</tr>
 	</html:form>
 	</table>
-
+	
 	</siga:ConjCampos>
 
 	<!-- FIN: CAMPOS DEL REGISTRO -->

@@ -61,7 +61,7 @@
 		<html:hidden property="numero" value="${DefinirUnidadFamiliarEJGForm.numero}"/>
 		<html:hidden property="idInstitucion" value="${DefinirUnidadFamiliarEJGForm.idInstitucion}"/>
 		<input type="hidden" name="tablaDatosDinamicosD"/>
-	
+		
 </html:form>
 
 
@@ -126,6 +126,7 @@
 						<input type="hidden" name="oculto<%=index%>_9" value="${DefinirUnidadFamiliarEJGForm.anio}">
 						<input type="hidden" name="oculto<%=index%>_10" value="${DefinirUnidadFamiliarEJGForm.numero}">
 						<input type="hidden" name="oculto<%=index%>_11" value="${solicitante.peticionEejg.idPeticion}">
+						<input type="hidden" name="oculto<%=index%>_12" value="${DefinirUnidadFamiliarEJGForm.esComision}">
 						<c:out value="${solicitante.parentesco.descripcion}"></c:out>
 					
 					</td>
@@ -206,6 +207,7 @@
 						<input type="hidden" name="oculto<%=index%>_8" value="${DefinirUnidadFamiliarEJGForm.idTipoEJG}">
 						<input type="hidden" name="oculto<%=index%>_9" value="${DefinirUnidadFamiliarEJGForm.anio}">
 						<input type="hidden" name="oculto<%=index%>_10" value="${DefinirUnidadFamiliarEJGForm.numero}">
+						<input type="hidden" name="oculto<%=index%>_12" value="${DefinirUnidadFamiliarEJGForm.esComision}">
 						<c:choose>
 							<c:when test="${solicitante.peticionEejg.idPeticion!=null}">
 							<input type="hidden" name="oculto<%=index%>_11" value="${solicitante.peticionEejg.idPeticion}">
@@ -336,7 +338,7 @@
 		var idTipoEJG = document.getElementById( 'oculto' + fila + '_8');
 		var anio = document.getElementById( 'oculto' + fila + '_9');
 		var numero = document.getElementById( 'oculto' + fila + '_10');
-			
+		var esComision = document.getElementById( 'oculto' + fila + '_12');
 	   	datos = idPersonaJG.value + 	','
 	   			+idInstitucionEJG.value + 	','
 	   			+idTipoEJG.value + 	','

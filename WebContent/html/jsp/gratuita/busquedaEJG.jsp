@@ -43,6 +43,7 @@
 <%
 	String app = request.getContextPath();
 	UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+	boolean esComision = usr.isComision();
 	HttpSession ses = request.getSession();
 	Properties src = (Properties) ses.getAttribute(SIGAConstants.STYLESHEET_REF);
 
@@ -149,6 +150,10 @@
 	String idremesa = "";
 	if(request.getAttribute("idremesa")!=null)
 		idremesa =(String) request.getAttribute("idremesa");
+	
+	if(esComision && idEstado.isEmpty()){
+		idEstado.add("9");
+	}
 %>
 
 <html>
@@ -299,9 +304,15 @@
 				<td class="labelText">
 					<siga:Idioma key="gratuita.busquedaEJG.literal.estadoEJG" />
 				</td>
-				<td colspan="3" class="labelText">
-					<siga:ComboBD nombre="estadoEJG" tipo="estadosEJG" clase="boxCombo" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=idEstado%>" />
-				</td>
+				<% if(esComision){%>
+					<td colspan="3" class="labelText">
+						<siga:ComboBD nombre="estadoEJG" tipo="estadosEJGComision" clase="boxCombo" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=idEstado%>" obligatorioSinTextoSeleccionar="true"/>
+					</td>
+				<% }else{ %>
+					<td colspan="3" class="labelText">
+						<siga:ComboBD nombre="estadoEJG" tipo="estadosEJG" clase="boxCombo" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=idEstado%>" />
+					</td>
+				<% } %>
 				<td class="labelText" style="width:160">
 					<siga:Idioma key="gratuita.busquedaEJG.literal.fechaEstadoDesde" />
 				</td>
@@ -502,11 +513,19 @@
 	
 	<!-- INICIO: BOTONES BUSQUEDA -->	
 	<%if(ventanaCajg.equalsIgnoreCase("0")){%>
+	<%if(!esComision){%>
 		<%if(permisoEejg){ %>
 			<siga:ConjBotonesBusqueda botones="C,N,B,DEE"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
 		<%}else{ %>
 			<siga:ConjBotonesBusqueda botones="C,N,B"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
 		<%} %>
+	<%}else{ %>
+		<%if(permisoEejg){ %>
+			<siga:ConjBotonesBusqueda botones="C,B,DEE"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
+		<%}else{ %>
+			<siga:ConjBotonesBusqueda botones="C,B"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
+		<%} %>
+	<%} %>
 	<%}else if(ventanaCajg.equalsIgnoreCase("1")){%> <!-- Antiguo busquedaEJG_Cajg -->
 		<siga:ConjBotonesBusqueda botones="le,B"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
 	<%}else if(ventanaCajg.equalsIgnoreCase("2")){%> <!-- Antiguo busquedaEJG_Listos -->
@@ -560,7 +579,9 @@
 				el combo hijo de guardias
 				*/
 				var id = document.forms[1].identificador.value;
-				document.forms[1].descripcionEstado.value = document.forms[1].estadoEJG[document.forms[1].estadoEJG.selectedIndex].text;
+				<%if (!esComision){%>
+					document.forms[1].descripcionEstado.value = document.forms[1].estadoEJG[document.forms[1].estadoEJG.selectedIndex].text;
+				<% } %>
 	
 	
 	
@@ -612,7 +633,9 @@
 					el combo hijo de guardias
 					*/
 					var id = document.forms[1].identificador.value;
-					document.forms[1].descripcionEstado.value = document.forms[1].estadoEJG[document.forms[1].estadoEJG.selectedIndex].text;
+					<%if (!esComision){%>
+						document.forms[1].descripcionEstado.value = document.forms[1].estadoEJG[document.forms[1].estadoEJG.selectedIndex].text;
+					<%}%>
 		
 					var posicion = 0;
 					/* Se recorre hasta encontrar el separador, que es ","*/									

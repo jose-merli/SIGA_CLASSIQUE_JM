@@ -47,6 +47,7 @@ public class UsrBean implements Serializable {
 	private String descTrans = "";
 	private String strutsTrans = "nothing.do";
 	private boolean letrado = true; // ACG se deberá inicializar a false
+	private boolean comision = false;
 	private AccessControl accessControl=null;
 	private Hashtable datosUsuario = null;
 	private Boolean ocultarHistorico = null;
@@ -252,6 +253,13 @@ public class UsrBean implements Serializable {
 	public boolean isLetrado() {
 		// Hay que implementar si es letrado cuando se coja del certificado digital
 		return  letrado;
+	}
+	
+	public void setComision(boolean _comision) {
+		comision = _comision;
+	}
+	public boolean isComision() {
+		return  comision;
 	}
 	
 	public String getAccessForProcessNumber(String process) {
