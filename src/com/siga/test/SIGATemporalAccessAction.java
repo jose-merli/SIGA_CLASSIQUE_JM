@@ -104,6 +104,7 @@ public class SIGATemporalAccessAction extends Action
 		usrbean.setProfile(profileArray);
 		usrbean.setLocation(location);
 		usrbean.setLetrado(letrado.equals("S")?true:false);
+		usrbean.setComision(profile.equalsIgnoreCase("CJG")?true:false);
 		
 		// obtengo el idioma de la institucion
 		String idLenguajeInstitucion = "1";
