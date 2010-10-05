@@ -381,12 +381,12 @@
 								if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADA) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADAERRORES)) {
 									elems[3]=new FilaExtElement("descargaLog","descargaLog",SIGAConstants.ACCESS_READ); 				
 								}
-								if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADA) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADAERRORES)) {
+								if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADA)) {
 									elems[4]=new FilaExtElement("download","download",SIGAConstants.ACCESS_READ); 				
 								}
-								if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADA) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADAERRORES)) {
+								/*if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADA)) {
 									elems[5]=new FilaExtElement("enviar","enviar",SIGAConstants.ACCESS_READ); 				
-								}
+								}*/
 
 								i++;
 %> 							
