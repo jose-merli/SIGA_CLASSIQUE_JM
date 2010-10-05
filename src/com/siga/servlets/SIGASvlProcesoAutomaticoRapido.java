@@ -37,6 +37,11 @@ public class SIGASvlProcesoAutomaticoRapido extends SIGAServletAdapter implement
     private String urlSiga = "";
     static final public String procesoRapido = "SIGASvlProcesoRapido";
     static final public String procesoGeneracionEnvio = "SIGASvlProcesoGeneracionEnvio";
+    static final public String procesoIndividualConfirmacionFacturacion = "SIGASvlProcesoIndividualConfirmacionFacturacion";
+	static final public String htNombreProceso = "proceso";
+	static final public String htNombreDatosHashtable = "datosHashtable";
+	
+	
     
 	//Global vars
 	public void init() throws ServletException {
@@ -136,8 +141,42 @@ public class SIGASvlProcesoAutomaticoRapido extends SIGAServletAdapter implement
 			
 		}else if (userData instanceof Hashtable) {
 			Hashtable hashUserData = (Hashtable) userData;
+            String proceso = (String)hashUserData.get(SIGASvlProcesoAutomaticoRapido.htNombreProceso);
+            Hashtable<String, String> datosHashtable= (Hashtable<String, String>) hashUserData.get(SIGASvlProcesoAutomaticoRapido.htNombreDatosHashtable);
+            try
+            {
+               
+                // invocamos al servlet
+                StringBuffer urlAndParameters = new StringBuffer();
+                urlAndParameters.append(urlSiga);
+                urlAndParameters.append(proceso);
+                urlAndParameters.append(".svrl");
+                boolean isFirst = true;
+                if(datosHashtable!=null && datosHashtable.size()>0){
+                    for(String parameterName:datosHashtable.keySet()){
+                        if(isFirst){
+                            urlAndParameters.append("?");
+                            isFirst = false;
+                        }
+                        else{
+                            urlAndParameters.append("&");
+                        }
+                        urlAndParameters.append(parameterName);
+                        urlAndParameters.append("=");
+                        urlAndParameters.append(datosHashtable.get(parameterName));
+                       
+                    }
+                }
+               
+               
+                URL url = new URL(urlAndParameters.toString());
+                Object ret = url.getContent();
 			ClsLogging.writeFileLogWithoutSession(" - Notificación \"" + sNombreProceso + "\" con hashtable como parametro no implementada. ", 3);
-			
+            }catch(Exception e)
+			{
+				ClsLogging.writeFileLogWithoutSession(" - Notificación \"" + sNombreProceso + "\" ejecutada ERROR. ", 3);
+				e.printStackTrace();
+			}
 		}else if (userData instanceof MasterBean) {
 			MasterBean masterBean = (MasterBean) userData;
 			ClsLogging.writeFileLogWithoutSession(" - Notificación \"" + sNombreProceso + "\" con MasterBean como parametro no implementada. ", 3);
