@@ -405,17 +405,7 @@
 			}
 		}
 
-
-	    function recargarCombos(tipo){
-	    	if (document.getElementById('codigoExtJuzgado')){
-	    		document.forms[0].codigoExtJuzgado.value="";
-	    	}
-		}
-			
-			
-		
-			
-		 function obtenerJuzgado() 
+ function obtenerJuzgado() 
 			{ 
 			 if (document.forms[0].codigoExtJuzgado.value!=""){
 				if(document.forms[0].idTurno.selectedIndex <= 0 ){
