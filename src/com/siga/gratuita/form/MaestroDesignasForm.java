@@ -32,22 +32,10 @@ public class MaestroDesignasForm extends MasterForm {
 	private String IDPRETENSION="IDPRETENSION";
 	private String FECHARECEPCIONCOLEGIO = 	"FECHARECEPCIONCOLEGIO";
 	private String FECHAOFICIOJUZGADO 	= 	"FECHAOFICIOJUZGADO";	
-	private String CODIGOEXTJUZGADO     =    "CODIGOEXTJUZGADO";
 	
 	
-	/**
-	 * @return Returns the CodigoExtProcedimiento
-	 */
-	public String getCodigoExtJuzgado() {
-		return (String) this.datos.get(this.CODIGOEXTJUZGADO);
-	}
-	/**
-	 * @param procedimiento The CodigoExtProcedimiento to set.
-	 */
-	public void setCodigoExtJuzgado(String valor) {
-		
-		this.datos.put(this.CODIGOEXTJUZGADO, valor);
-	}
+	
+	
 	/**
 	 * @return Returns the procedimiento.
 	 */
