@@ -1603,14 +1603,15 @@ public class PersonaJGAction extends MasterAction {
 	{
 		UserTransaction tx = null;
 		String mapDestino = ""; // La salida del metodo de la relacion
+		ScsTelefonosPersonaJGAdm admTelefonosJG =  new ScsTelefonosPersonaJGAdm(this.getUserBean(request));								
+		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		PersonaJGForm miform = (PersonaJGForm)formulario;
+		MasterForm form = (MasterForm)formulario;
+		String accion = request.getParameter("accionE");
+		String relacion = form.getModo();
+		String action = (String)request.getServletPath();
+
 		try {
-			
-			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
-	     	PersonaJGForm miform = (PersonaJGForm)formulario;
-	     	MasterForm form = (MasterForm)formulario;
-	     	String accion = request.getParameter("accionE");
-	     	String relacion = form.getModo();
-	     	String action = (String)request.getServletPath();
 
 	     	boolean nuevaPersona = false;
 	     	// Datos Persona
@@ -1705,19 +1706,21 @@ public class PersonaJGAction extends MasterAction {
 				}
 			}// continuamos para update
 			
+			// INSERTAR PERSONA JG SI PROCEDE
+			request.setAttribute("nuevaPersona", nuevaPersona);
+			// Sacado del if // calculo de la persona anterior, que solo funcionara cuando exista persona anterior
+			Hashtable oldPer = (Hashtable) dataBackup.get(ScsPersonaJGBean.T_NOMBRETABLA);
+			// Esto es solo para relacionar personas con personas (representante y esas cosas)
+			if(oldPer==null){
+				oldPer = (Hashtable) dataBackup.get("PERSONAPERSONA");
+			}
+			
 			// Comienzo control de transacciones 
 			tx = user.getTransaction();			
 			tx.begin();
 			
-			// INSERTAR PERSONA JG SI PROCEDE
-			request.setAttribute("nuevaPersona", nuevaPersona);
 			if (!nuevaPersona){
 				// YA existia // Update Persona
-				Hashtable oldPer = (Hashtable) dataBackup.get(ScsPersonaJGBean.T_NOMBRETABLA);
-				// Esto es solo para relacionar personas con personas (representante y esas cosas)
-				if(oldPer==null){
-					oldPer = (Hashtable) dataBackup.get("PERSONAPERSONA");
-				}
 				if (!perAdm.update(persona, oldPer)) {
 					throw new ClsExceptions("Error en update persona. " + perAdm.getError());
 				}
@@ -1727,113 +1730,6 @@ public class PersonaJGAction extends MasterAction {
 					throw new ClsExceptions("Error en insert persona. " + perAdm.getError());
 				}
 			}
-			
-			/** Inicio se añade numeros de telefonos para una personaJG.**/
-			String lTelefonos="";
-			try {  /*se añade numeros de telefonos para una personaJG.*/
-					ScsTelefonosPersonaJGAdm admTelefonosJG =  new ScsTelefonosPersonaJGAdm(this.getUserBean(request));								
-					Hashtable miHash =	new Hashtable();					
-					miHash.put(ScsTelefonosPersonaJGBean.C_IDINSTITUCION, user.getLocation());
-					miHash.put(ScsTelefonosPersonaJGBean.C_IDPERSONA, miform.getIdPersonaJG());								
-					lTelefonos=miform.getlNumerosTelefonos();
-					
-					/* Comprobamos que la lista de telefonos no venga vacia del formularo.*/								 
-					if (!lTelefonos.equals("")){									
-						List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), user.getLocation().toString());
-						  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
-						   * la lTelefonos que ha insertado el usuario.*/
-						if(listaTelefonos!=null){
-							try {											
-									String sql=admTelefonosJG.deleteTelefonos(miHash);
-									admTelefonosJG.deleteSQL(sql);												
-								} catch (Exception e) {
-									   throwExcp("messages.deleted.error",e,tx);
-								} 
-						}				
-						//Recorremos la lista de los telefonos para posteriormente guardar los telefonos.
-						GstStringTokenizer tokens = new GstStringTokenizer(lTelefonos,"%%%");  
-					    while(tokens.hasMoreTokens()){  
-					    	String fila = tokens.nextToken();								    	
-					    	if (fila != null && !fila.equals("")) {
-					    		
-					    		StringTokenizer celdas = new StringTokenizer(fila, "$$~");
-					    		String nombreTelefono="";
-								String numeroTelefono="";
-								String preferenteSms="";
-					    		for (int j = 0; celdas.hasMoreElements(); j++) {
-					    			String celda = celdas.nextToken();									    			
-					    			String[] registro = celda.split("=");
-					    			String key = registro[0];
-									String value = null;
-									
-									if(registro.length==2)
-										value = registro[1];
-									  
-									if(key.equals("nombreTelefonoJG")){						
-											if(value!=null)
-												 nombreTelefono=value;
-									}
-									else if(key.equals("numeroTelefonoJG")){
-											if(value!=null)
-												 numeroTelefono=value;
-											else
-												this.exitoModalSinRefresco("el numero",request);
-									
-									}else if(key.equals("preferenteSms")){
-										if(value!=null)
-											 preferenteSms=value;
-									}
-									
-					    		}								    		
-					    		miHash.put(ScsTelefonosPersonaJGBean.C_NOMBRETELEFONO, nombreTelefono);
-					    		miHash.put(ScsTelefonosPersonaJGBean.C_NUMEROTELEFONO, numeroTelefono);
-					    		miHash.put(ScsTelefonosPersonaJGBean.C_FECHAMODIFICACION, "sysdate");
-					    		miHash.put(ScsTelefonosPersonaJGBean.C_USUMODIFICACION, user.getUserName());
-					    		miHash.put(ScsTelefonosPersonaJGBean.C_PREFERENTESMS, preferenteSms);
-					    		
-					    		//se comprueba el idtelefono para verificar y poner el maximo idtelefono al insertar.
-					    		Hashtable htCol = admTelefonosJG.prepararInsert(miHash);	
-					    		String maximo = (String)htCol.get("IDTELEFONO");								    		
-					    		if (maximo.equals("1")){
-					    			miHash.put(ScsTelefonosPersonaJGBean.C_IDTELEFONO,"1");
-					    			
-					    		}else
-					    			miHash.put(ScsTelefonosPersonaJGBean.C_IDTELEFONO,maximo);
-					    		//se insertan los telefonos que tenga personajg
-					    		
-					    		if((!nombreTelefono.trim().equals(""))&&(!nombreTelefono.trim().equals(""))){
-					    		if (!admTelefonosJG.insert(miHash)) {
-						    			throw new ClsExceptions("Error en insert telefonopersona. " + admTelefonosJG.getError());								    			
-						    	}
-					    		}
-					    		
-					    	}
-					    	 
-					     }  
-					} else 
-					{
-						if (lTelefonos.equals("")){
-							List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(),user.getLocation().toString());
-						  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
-						   * la lTelefonos que ha insertado el usuario.*/
-						if(listaTelefonos!=null){
-							try {											
-									String sql=admTelefonosJG.deleteTelefonos(miHash);
-									admTelefonosJG.deleteSQL(sql);												
-								} catch (Exception e) {
-									   throwExcp("messages.deleted.error",e,tx);
-								} 
-						}				
-					}
-					}
-					
-				} catch (Exception e) {
-					throw new ClsExceptions(e, "Excepcion en insertTelefono.");
-			}				
- 
- 
-			/**Fin se añade numeros de telefonos para una personaJG.**/
-			
 			
 			// Una vez hecho esto continuaremos con el resto de acciones que depende
 			// del tipo de relacion que estemos guardando
@@ -1851,12 +1747,120 @@ public class PersonaJGAction extends MasterAction {
 			} else if (relacion.equalsIgnoreCase("guardarPersona")){
 				mapDestino = guardarRelacionPersona(mapping, form, request, response);
 			}
-	     	
+			
 			// fin de la transaccion
 			tx.commit();
+			
+	    }catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,tx);
+		}
+		// Cerramos la transaccion principal y abrimos una nueva para la insercion de telefonos
+	    
+	    try {  /*se añade numeros de telefonos para una personaJG.*/
+			tx = user.getTransaction();			
+			tx.begin();
+			
+			/** Inicio se añade numeros de telefonos para una personaJG.**/
+			String lTelefonos="";
+			Hashtable miHash =	new Hashtable();					
+			miHash.put(ScsTelefonosPersonaJGBean.C_IDINSTITUCION, user.getLocation());
+			miHash.put(ScsTelefonosPersonaJGBean.C_IDPERSONA, miform.getIdPersonaJG());								
+			lTelefonos=miform.getlNumerosTelefonos();
+			
+			/* Comprobamos que la lista de telefonos no venga vacia del formularo.*/								 
+			if (!lTelefonos.equals("")){									
+				List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(), user.getLocation().toString());
+				  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
+				   * la lTelefonos que ha insertado el usuario.*/
+				if(listaTelefonos!=null){
+					try {											
+							String sql=admTelefonosJG.deleteTelefonos(miHash);
+							admTelefonosJG.deleteSQL(sql);												
+						} catch (Exception e) {
+							   throwExcp("messages.deleted.error",e,tx);
+						} 
+				}				
+				//Recorremos la lista de los telefonos para posteriormente guardar los telefonos.
+				GstStringTokenizer tokens = new GstStringTokenizer(lTelefonos,"%%%");  
+			    while(tokens.hasMoreTokens()){  
+			    	String fila = tokens.nextToken();								    	
+			    	if (fila != null && !fila.equals("")) {
+			    		
+			    		StringTokenizer celdas = new StringTokenizer(fila, "$$~");
+			    		String nombreTelefono="";
+						String numeroTelefono="";
+						String preferenteSms="";
+			    		for (int j = 0; celdas.hasMoreElements(); j++) {
+			    			String celda = celdas.nextToken();									    			
+			    			String[] registro = celda.split("=");
+			    			String key = registro[0];
+							String value = null;
+							
+							if(registro.length==2)
+								value = registro[1];
+							  
+							if(key.equals("nombreTelefonoJG")){						
+									if(value!=null)
+										 nombreTelefono=value;
+							}
+							else if(key.equals("numeroTelefonoJG")){
+									if(value!=null)
+										 numeroTelefono=value;
+									else
+										this.exitoModalSinRefresco("el numero",request);
+							
+							}else if(key.equals("preferenteSms")){
+								if(value!=null)
+									 preferenteSms=value;
+							}
+							
+			    		}								    		
+			    		miHash.put(ScsTelefonosPersonaJGBean.C_NOMBRETELEFONO, nombreTelefono);
+			    		miHash.put(ScsTelefonosPersonaJGBean.C_NUMEROTELEFONO, numeroTelefono);
+			    		miHash.put(ScsTelefonosPersonaJGBean.C_FECHAMODIFICACION, "sysdate");
+			    		miHash.put(ScsTelefonosPersonaJGBean.C_USUMODIFICACION, user.getUserName());
+			    		miHash.put(ScsTelefonosPersonaJGBean.C_PREFERENTESMS, preferenteSms);
+			    		
+			    		//se comprueba el idtelefono para verificar y poner el maximo idtelefono al insertar.
+			    		Hashtable htCol = admTelefonosJG.prepararInsert(miHash);	
+			    		String maximo = (String)htCol.get("IDTELEFONO");								    		
+			    		if (maximo.equals("1")){
+			    			miHash.put(ScsTelefonosPersonaJGBean.C_IDTELEFONO,"1");
+			    			
+			    		}else
+			    			miHash.put(ScsTelefonosPersonaJGBean.C_IDTELEFONO,maximo);
+			    		//se insertan los telefonos que tenga personajg
+			    		
+			    		if((!nombreTelefono.trim().equals(""))&&(!nombreTelefono.trim().equals(""))){
+			    		if (!admTelefonosJG.insert(miHash)) {
+				    			throw new ClsExceptions("Error en insert telefonopersona. " + admTelefonosJG.getError());								    			
+				    	}
+			    		}
+			    		
+			    	}
+			    	 
+			     }  
+			} else {
+				List<ScsTelefonosPersonaJGBean> listaTelefonos = admTelefonosJG.getListadoTelefonosPersonaJG(miform.getIdPersonaJG().toString(),user.getLocation().toString());
+				  /*Comprobamos que la persona tenga una lista de telefonos para borrar esta lista y posteriormente insertar 
+				   * la lTelefonos que ha insertado el usuario.*/
+				if(listaTelefonos!=null){
+					try {											
+							String sql=admTelefonosJG.deleteTelefonos(miHash);
+							admTelefonosJG.deleteSQL(sql);												
+						} catch (Exception e) {
+							   throwExcp("messages.deleted.error",e,tx);
+						} 
+				}				
+			}
+ 
+			/**Fin se añade numeros de telefonos para una personaJG.**/
+			// fin de la transaccion
+			tx.commit();
+			
 		}
 		catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,tx);
+			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},new ClsExceptions(e, "Excepcion en insertTelefono."),tx);
 		}
 		return mapDestino;
 		//return this.exitoModal("messages.updated.success",request);
@@ -1879,7 +1883,6 @@ public class PersonaJGAction extends MasterAction {
 			HttpServletResponse response) throws SIGAException 
 	{
 		String result = "";
-		UserTransaction tx = null;
 		try {
 			
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
@@ -2025,7 +2028,7 @@ public class PersonaJGAction extends MasterAction {
 	     	
 		}
 		catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,tx);
+			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
 		}
 		return result;
 	}	
@@ -2046,7 +2049,6 @@ public class PersonaJGAction extends MasterAction {
 			HttpServletResponse response) throws SIGAException 
 	{
 		String result = "";
-		UserTransaction tx = null;
 		try {
 			
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
@@ -2150,7 +2152,7 @@ public class PersonaJGAction extends MasterAction {
 	     	
 		}
 		catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,tx);
+			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
 		}
 		return result;
 	}	
@@ -2170,7 +2172,6 @@ public class PersonaJGAction extends MasterAction {
 			HttpServletRequest request, 
 			HttpServletResponse response) throws SIGAException 
 	{
-		UserTransaction tx = null;
 		String result = "";
 		try {
 			
@@ -2325,7 +2326,7 @@ public class PersonaJGAction extends MasterAction {
 			result = this.exitoModal("messages.updated.success",request);
 		}
 		catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,tx);
+			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
 		}
 		return result;
 	}	
@@ -2346,7 +2347,6 @@ public class PersonaJGAction extends MasterAction {
 			HttpServletResponse response) throws SIGAException 
 	{
 			String result = "";
-		UserTransaction tx = null;
 		try {
 			
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
@@ -2484,7 +2484,7 @@ public class PersonaJGAction extends MasterAction {
 			}
 		}
 		catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,tx);
+			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
 		}
 		return result;
 	}
@@ -2505,7 +2505,6 @@ public class PersonaJGAction extends MasterAction {
 			HttpServletResponse response) throws SIGAException 
 	{
 			String result = "";
-		UserTransaction tx = null;
 		try {
 			
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
@@ -2601,7 +2600,7 @@ public class PersonaJGAction extends MasterAction {
 			
 		}
 		catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,tx);
+			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
 		}
 		return result;
 	}
@@ -2622,7 +2621,6 @@ public class PersonaJGAction extends MasterAction {
 			HttpServletResponse response) throws SIGAException 
 	{
 		String result = "";
-		UserTransaction tx = null;
 		try {
 			
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
@@ -2680,7 +2678,7 @@ public class PersonaJGAction extends MasterAction {
 			
 		} 
 		catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,tx);
+			throwExcp ("messages.general.error",new String[] {"modulo.gratuita"},e,null);
 		}
 		return "seleccionPersonaJG";
 	}
