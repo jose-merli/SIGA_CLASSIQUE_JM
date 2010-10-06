@@ -2830,13 +2830,20 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" '-') as PROCURADOR_DEFENSA_JURIDICA,");
 			sql.append(" pro.ncolegiado as PROCURADOR_DJ_NCOLEGIADO, ");
 			sql.append(" pro.telefono1 as PROCURADOR_DJ_TELEFONO1, ");
-			sql.append(" pro.telefono2 as PROCURADOR_DJ_TELEFONO2 ");
+			sql.append(" pro.telefono2 as PROCURADOR_DJ_TELEFONO2, ");
+			sql.append(" pro.Domicilio AS PROCURADOR_DOMICILIO_D_J, ");			
+			sql.append(" pro.Codigopostal AS PROCURADOR_CODIGOPOSTAL_D_J, ");
+			sql.append(" (Select Provincia.Nombre ");
+			sql.append("  From Cen_Provincias Provincia ");
+			sql.append(" Where Provincia.Idprovincia = Pro.Idprovincia) As PROCURADOR_PROVINCIA_D_J, ");
+			sql.append("  (Select Poblacion.Nombre ");
+			sql.append("  From Cen_Poblaciones Poblacion, Cen_Provincias Provincia ");
+			sql.append("  Where Poblacion.Idprovincia = Provincia.Idprovincia ");
+			sql.append("  And Pro.Idprovincia = Poblacion.Idprovincia ");
+			sql.append(" And Pro.Idpoblacion = Poblacion.Idpoblacion) As PROCURADOR_POBLACION_D_J ");
 			sql.append(" from  ");
 			sql.append(" scs_procurador          pro ");
-
 			sql.append(" WHERE ");
-			
-		
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucion);
@@ -3507,10 +3514,10 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" ");
 			sql.append(" SELECT  ");
 			sql.append(" PROC.NOMBRE || ' ' || PROC.APELLIDOS1 || ' ' || ");
-			sql.append(" PROC.APELLIDOS2 AS PROCURADOR ");
-			sql.append(" FROM V_SIGA_PROCURADOR_EJG         PROC ");
-			
-  
+			sql.append(" PROC.APELLIDOS2 AS PROCURADOR, PROC.Domicilio AS PROCURADOR_DOMICILIO,");
+			sql.append(" PROC.Codigopostal AS PROCURADOR_CP, PROC.Provincia AS PROCURADOR_PROVINCIA,");
+			sql.append(" PROC.Poblacion AS PROCURADOR_POBLACION, PROC.Idpretencion AS IDPRETENCION");
+			sql.append(" FROM V_SIGA_PROCURADOR_EJG         PROC ");					
 			sql.append(" WHERE "); 	
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucion);
@@ -3917,7 +3924,10 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	public Vector getDatosInformeEjg (String idInstitucion, String tipoEjg,
 			String anioEjg, String numeroEjg,String idioma,boolean isSolicitantes,String idPersonaJG) throws ClsExceptions  
 			{	 
-		Vector vSalida = null;
+		Vector vSalida = null;		
+		UsrBean usrBean = new UsrBean();
+		usrBean.setUserName(String.valueOf(ClsConstants.USUMODIFICACION_AUTOMATICO));
+		
 		HelperInformesAdm helperInformes = new HelperInformesAdm();	
 		try {
 			vSalida = new Vector();
@@ -3980,10 +3990,6 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 					
 				}
 				
-				
-				
-				
-				
 				//Aniadimos los contrarios de la defensa juridica
 
 				Hashtable htFuncion = new Hashtable();
@@ -4013,19 +4019,126 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				
 				
 
-
+				//Aniadimos los datos del procurador de la designa asociada a un EJG
 				helperInformes.completarHashSalida(registro,getAsistenciaEjgSalida(idInstitucion, 
 						tipoEjg,anioEjg,numeroEjg));
 
-				helperInformes.completarHashSalida(registro,getProcuradorEjgSalida(idInstitucion, 
-						tipoEjg,anioEjg,numeroEjg));
-
+				Vector vprocuradorEjg = getProcuradorEjgSalida(idInstitucion,tipoEjg,anioEjg,numeroEjg);
+					
+					for (int l = 0; l < vprocuradorEjg.size(); l++) {
+						Hashtable registroprocurador = (Hashtable) vprocuradorEjg.get(l);							
+							String procurador = (String)registroprocurador.get("PROCURADOR");
+							String ProProcurador = (String)registroprocurador.get("PROCURADOR_PROVINCIA");
+							String PobProcurador = (String)registroprocurador.get("PROCURADOR_POBLACION");							
+							String codigopostal= (String)registroprocurador.get("PROCURADOR_CP");
+							String domicilioProcurador= (String)registroprocurador.get("PROCURADOR_DOMICILIO");
+							String idpretencion= (String)registroprocurador.get("IDPRETENCION");
+							
+							if(procurador!=null && !procurador.trim().equalsIgnoreCase(""))						
+							 registro.put("PROCURADOR",procurador);
+							 else
+								UtilidadesHash.set(registro, "PROCURADOR", "");
+							
+							if(ProProcurador!=null && !ProProcurador.trim().equalsIgnoreCase(""))
+								registro.put("PROCURADOR_PROVINCIA",ProProcurador);
+							else
+								UtilidadesHash.set(registro, "PROCURADOR_PROVINCIA", "");
+							
+							if(PobProcurador!=null && !PobProcurador.trim().equalsIgnoreCase(""))
+								registro.put("PROCURADOR_POBLACION", PobProcurador);
+							else
+								UtilidadesHash.set(registro, "PROCURADOR_POBLACION", "");
+							
+							if(codigopostal!=null && !codigopostal.trim().equalsIgnoreCase(""))
+								registro.put("PROCURADOR_CP", codigopostal);
+							else
+								UtilidadesHash.set(registro, "PROCURADOR_CP", "");
+							
+							if(domicilioProcurador!=null && !domicilioProcurador.trim().equalsIgnoreCase(""))
+								registro.put("PROCURADOR_DOMICILIO", domicilioProcurador);
+							else
+								UtilidadesHash.set(registro, "PROCURADOR_DOMICILIO", "");
+							
+							if(idpretencion!=null && !idpretencion.trim().equalsIgnoreCase("")){			
+								Vector vpretenciones=getPretension(idpretencion, idInstitucion);
+									for (int s = 0; s < vpretenciones.size(); s++) {
+										Hashtable registropretenciones = (Hashtable) vpretenciones.get(s);
+										String procedimientodj = (String)registropretenciones.get("PRETENSION");
+										
+										if(procedimientodj!=null && !procedimientodj.trim().equalsIgnoreCase(""))
+											registro.put("PROCEDIMIENTO_D_J", procedimientodj);
+										else
+											UtilidadesHash.set(registro, "PROCEDIMIENTO_D_J", "");
+									}
+								
+							//	helperInformes.completarHashSalida(registro,getPretension(idpretencion, idInstitucion));
+							}else {
+								UtilidadesHash.set(registro, "PROCEDIMIENTO_D_J", "");
+								
+							}	
+							
+							
+					}
+				
 				//Aniadimos los datos del procurador del ejg
 				String idProcurador = (String)registro.get("IDPROCURADOR");
 				String idInstitucionProc = (String)registro.get("IDINSTITUCION_PROC");
-				helperInformes.completarHashSalida(registro,getDatosProcuradorEjgSalida(idInstitucionProc, 
-						idProcurador));
-
+				Vector vprocuradorDjEjg = getDatosProcuradorEjgSalida(idInstitucionProc, idProcurador);				
+	
+					for (int l = 0; l < vprocuradorDjEjg.size(); l++) {
+						Hashtable registroprocuradorDJ = (Hashtable) vprocuradorDjEjg.get(l);	
+							String procuradordj = (String)registroprocuradorDJ.get("PROCURADOR_DEFENSA_JURIDICA");
+							String ncolegiado = (String)registroprocuradorDJ.get("PROCURADOR_DJ_NCOLEGIADO");							
+							String Procuradordjtel1 = (String)registroprocuradorDJ.get("PROCURADOR_DJ_TELEFONO1");
+							String Procuradordjtel2 = (String)registroprocuradorDJ.get("PROCURADOR_DJ_TELEFONO2");							
+							String domiciliodj= (String)registroprocuradorDJ.get("PROCURADOR_DOMICILIO_D_J");
+							String provincia= (String)registroprocuradorDJ.get("PROCURADOR_PROVINCIA_D_J");
+							String poblacion= (String)registroprocuradorDJ.get("PROCURADOR_POBLACION_D_J");
+							String codigopostal= (String)registroprocuradorDJ.get("PROCURADOR_CODIGOPOSTAL_D_J");	
+							
+							if(procuradordj!=null && !procuradordj.trim().equalsIgnoreCase(""))						
+							 registro.put("PROCURADOR_DEFENSA_JURIDICA",procuradordj);
+							else
+								UtilidadesHash.set(registro, "PROCURADOR_DEFENSA_JURIDICA", "");	
+							
+							if(ncolegiado!=null && !ncolegiado.trim().equalsIgnoreCase(""))						
+							 registro.put("PROCURADOR_DJ_NCOLEGIADO",ncolegiado);
+							else
+								UtilidadesHash.set(registro, "PROCURADOR_DJ_NCOLEGIADO", "");	
+							
+							
+							if(Procuradordjtel1!=null && !Procuradordjtel1.trim().equalsIgnoreCase(""))
+								registro.put("PROCURADOR_DJ_TELEFONO1",Procuradordjtel1);
+							else
+								UtilidadesHash.set(registro, "PROCURADOR_DJ_TELEFONO1", "");
+							
+							if(Procuradordjtel2!=null && !Procuradordjtel2.trim().equalsIgnoreCase(""))
+								registro.put("PROCURADOR_DJ_TELEFONO2", Procuradordjtel2);
+							else
+								UtilidadesHash.set(registro, "PROCURADOR_DJ_TELEFONO2", "");
+							
+							if(domiciliodj!=null && !domiciliodj.trim().equalsIgnoreCase(""))
+								registro.put("PROCURADOR_DOMICILIO_D_J", domiciliodj);
+							else
+								UtilidadesHash.set(registro, "PROCURADOR_DOMICILIO_D_J", "");
+							
+							if(codigopostal!=null && !codigopostal.trim().equalsIgnoreCase(""))
+								registro.put("PROCURADOR_CODIGOPOSTAL_D_J", codigopostal);
+							else
+								UtilidadesHash.set(registro, "PROCURADOR_CODIGOPOSTAL_D_J", "");
+							
+							if(provincia!=null && !provincia.trim().equalsIgnoreCase(""))
+								registro.put("PROCURADOR_PROVINCIA_D_J", provincia);
+							else
+								UtilidadesHash.set(registro, "PROCURADOR_PROVINCIA_D_J", "");
+							
+							if(poblacion!=null && !poblacion.trim().equalsIgnoreCase(""))
+								registro.put("PROCURADOR_POBLACION_D_J", poblacion);
+							else
+								UtilidadesHash.set(registro, "PROCURADOR_POBLACION_D_J", "");
+							
+					}
+					
 				// Aniadimos el fundamento del ejg
 				String idFundamento = (String)registro.get("IDFUNDAMENTOCALIF");
 				helperInformes.completarHashSalida(registro,getFundamentoEjgSalida(idInstitucion, 
@@ -4037,8 +4150,66 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				htFuncion.put(new Integer(3), anioEjg);
 				htFuncion.put(new Integer(4), numeroEjg);
 				
-				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-						htFuncion, "F_SIGA_GETPROCURADORCONTR_EJG", "PROCURADOR_DJ_CONTRARIO"));
+				/*helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
+						htFuncion, "F_SIGA_GETPROCURADORCONTR_EJG", "PROCURADOR_DJ_CONTRARIO"));*/
+				
+			/*inicio de la recuperacion de los datos del Procurador Contrario.*/
+				
+				ScsProcuradorAdm procuradoradm = new ScsProcuradorAdm(usrBean );
+					
+				Hashtable hastprocurador = new Hashtable();
+				hastprocurador.put(ScsContrariosEJGBean.C_IDINSTITUCION, idInstitucion);
+				hastprocurador.put(ScsContrariosEJGBean.C_IDTIPOEJG,tipoEjg);
+				hastprocurador.put(ScsContrariosEJGBean.C_ANIO,anioEjg);
+				hastprocurador.put(ScsContrariosEJGBean.C_NUMERO,numeroEjg);				
+				
+				Vector datosprocuradorContrariodj=procuradoradm.getDatosProcuradorContrarioDJ(hastprocurador);
+				
+			    if (datosprocuradorContrariodj.size()==0){
+					UtilidadesHash.set(registro, "PROCURADOR_DJ_CONTRARIO", "");	
+					UtilidadesHash.set(registro, "PROCURADOR_CONTRA_DOMICI_D_J", "");	
+					 UtilidadesHash.set(registro, "PROCURADOR_CONTRA_PROVIN_D_J", "");
+					 UtilidadesHash.set(registro, "PROCURADOR_CONTRA_POBLA_D_J", "");
+					 UtilidadesHash.set(registro, "PROCURADOR_CONTRA_CP_D_J", "");
+				}else{					
+					for (int l = 0; l < datosprocuradorContrariodj.size(); l++) {
+							Hashtable datosprocuradorContrario = (Hashtable) datosprocuradorContrariodj.get(l);	
+								String procuradorcontrariodj = (String)datosprocuradorContrario.get("PROCURADOR_DJ_CONTRARIO");														
+								String domiciliocontrio= (String)datosprocuradorContrario.get("PROCURADOR_CONTRA_DOMICI_D_J");
+								String provinciacontrario= (String)datosprocuradorContrario.get("PROCURADOR_CONTRA_PROVIN_D_J");
+								String poblacioncontrario= (String)datosprocuradorContrario.get("PROCURADOR_CONTRA_POBLA_D_J");
+								String codigopostalcontrario= (String)datosprocuradorContrario.get("PROCURADOR_CONTRA_CP_D_J");	
+								
+								if(procuradorcontrariodj!=null && !procuradorcontrariodj.trim().equalsIgnoreCase(""))						
+								 registro.put("PROCURADOR_DJ_CONTRARIO",procuradorcontrariodj);
+								else
+									UtilidadesHash.set(registro, "PROCURADOR_DJ_CONTRARIO", "");	
+								
+								if(domiciliocontrio!=null && !domiciliocontrio.trim().equalsIgnoreCase(""))						
+								 registro.put("PROCURADOR_CONTRA_DOMICI_D_J",domiciliocontrio);
+								else
+									UtilidadesHash.set(registro, "PROCURADOR_CONTRA_DOMICI_D_J", "");						
+								
+								if(provinciacontrario!=null && !provinciacontrario.trim().equalsIgnoreCase(""))
+									registro.put("PROCURADOR_CONTRA_PROVIN_D_J", provinciacontrario);
+								else
+									UtilidadesHash.set(registro, "PROCURADOR_CONTRA_PROVIN_D_J", "");
+								
+								if(poblacioncontrario!=null && !poblacioncontrario.trim().equalsIgnoreCase(""))
+									registro.put("PROCURADOR_CONTRA_POBLA_D_J", poblacioncontrario);
+								else
+									UtilidadesHash.set(registro, "PROCURADOR_CONTRA_POBLA_D_J", "");
+								
+								if(codigopostalcontrario!=null && !codigopostalcontrario.trim().equalsIgnoreCase(""))
+									registro.put("PROCURADOR_CONTRA_CP_D_J",codigopostalcontrario);
+								else
+									UtilidadesHash.set(registro, "PROCURADOR_CONTRA_CP_D_J", "");
+															
+						}
+				}//Fin de la recuperacion de los datos del procurador contrario.
+				
+				
+				helperInformes.completarHashSalida(registro,datosprocuradorContrariodj);
 
 				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
 						htFuncion, "F_SIGA_GETABOGADOCONTRARIO_EJG", "ABOGADOSDEFENSA_JURIDICA"));
@@ -4080,6 +4251,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 					registro.put("ID_PROVINCIA_JUZGADO_D_J", " ");
 					registro.put("ID_POBLACION_JUZGADO_D_J", " ");
 					registro.put("JUZGADO_D_J", " ");
+					
+					
+					
 					
 
 					
@@ -4349,6 +4523,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 					UtilidadesHash.set(registro, "FECHA_ACTUACION", "");
 					UtilidadesHash.set(registro, "HORA_ACTUACION", "");
 					UtilidadesHash.set(registro, "LISTA_INTERESADOS_DESIGNA", "");
+							
+				
+			
 
 					
 				}
@@ -4433,7 +4610,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 */
 
-	private Vector getPretension (String idPretension, String idPretensionInstitucion) throws ClsExceptions  
+	public static Vector getPretension (String idPretension, String idPretensionInstitucion) throws ClsExceptions  
 	{
 		try {
 			Hashtable htCodigos = new Hashtable();
