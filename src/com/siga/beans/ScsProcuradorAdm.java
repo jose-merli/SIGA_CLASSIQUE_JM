@@ -453,56 +453,8 @@ public class ScsProcuradorAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions(e,"Error obteniendo clientes "); 
 		}
 	}
-
 	
-	/**
-	 * nombre: getDatosProcuradorContrarioDJ
-	 * valores: se pasa un hashtable que contiene idinstitucion, idtipoejg,anio,numero
-	 * return: retorna un vector, con los datos del procurador contrario de la defensa juridica de un ejg.
-	 * fecha: 05/10/2010    
-	 * **/
-	public  Vector getDatosProcuradorContrarioDJ (Hashtable entrada) 
-	{
-			String idInstitucion= (String)entrada.get("IDINSTITUCION");
-			String tipoEjg= (String)entrada.get("IDTIPOEJG");
-			String anioEjg= (String)entrada.get("ANIO");
-			String numeroEjg= (String)entrada.get("NUMERO");
-			
-			StringBuffer sql = new StringBuffer();		
-			sql.append(" Select  (pro.Nombre || ' ' || pro.Apellidos1 || ' ' || pro.Apellidos2) as PROCURADOR_DJ_CONTRARIO, ");
-			sql.append(" pro.domicilio as PROCURADOR_CONTRA_DOMICI_D_J,pro.codigopostal AS PROCURADOR_CONTRA_CP_D_J, ");
-			sql.append(" (Select Provincia.Nombre ");
-			sql.append(" From Cen_Provincias Provincia ");						
-			sql.append(" Where Provincia.Idprovincia = Pro.Idprovincia) AS PROCURADOR_CONTRA_PROVIN_D_J, ");
-            sql.append(" (Select Poblacion.Nombre ");
-            sql.append(" From Cen_Poblaciones Poblacion, Cen_Provincias Provincia ");
-            sql.append(" Where Poblacion.Idprovincia = Provincia.Idprovincia ");
-            sql.append(" And Pro.Idprovincia = Poblacion.Idprovincia");
-            sql.append(" And Pro.Idpoblacion = Poblacion.Idpoblacion) As PROCURADOR_CONTRA_POBLA_D_J ");
-            sql.append(" From Scs_Contrariosejg, Scs_Personajg p, Scs_Procurador Pro ");
-            sql.append(" Where Scs_Contrariosejg.Idinstitucion = p.Idinstitucion ");
-            sql.append(" And Scs_Contrariosejg.Idpersona = p.Idpersona ");
-            sql.append(" And Scs_Contrariosejg.Idinstitucion  = ");
-            sql.append( idInstitucion);
-            sql.append(" And Scs_Contrariosejg.Idtipoejg = ");
-            sql.append(tipoEjg);
-            sql.append(" And Scs_Contrariosejg.Anio = ");
-            sql.append(anioEjg);
-            sql.append(" And Scs_Contrariosejg.Numero = ");
-            sql.append(numeroEjg);
-            sql.append(" And Pro.Idinstitucion = Scs_Contrariosejg.Idinstitucion_Procu");
-            sql.append(" And Pro.Idprocurador = Scs_Contrariosejg.Idprocurador ");
-         
-       try{
-    	   
-			return this.selectGenerico(sql.toString());
-		}
-		catch (Exception e) 
-		{
-			e.printStackTrace();
-			return new Vector();
-		} 
-	}
+	
 	
 	
 	
