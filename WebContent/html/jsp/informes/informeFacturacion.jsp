@@ -84,14 +84,6 @@
 		<siga:ComboBD nombre="idFacturacion" tipo="cmb_FactInformes" parametro="<%=comboParams%>" clase="boxCombo" obligatorio="true" obligatorioSinTextoSeleccionar="true"/>
 	</td>
 	</tr>
-	<tr>
-	<td class="labelText">
-		<siga:Idioma key="factSJCS.datosPagos.literal.idioma"/>&nbsp;(*)
-	</td>				
-	<td>
-		<siga:ComboBD nombre="idioma" tipo="cmbIdioma"  clase="boxCombo" obligatorio="true" obligatorioSinTextoSeleccionar="true"/>
-	</td>
-	</tr>
 
 	</table>
 	<!-- FIN: CAMPOS DE BUSQUEDA-->
@@ -123,14 +115,12 @@
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
 
-		<!-- Funcion asociada a boton buscar -->
 		function accionGenerarInforme() 
 		{
 			sub();		
 			var f = document.getElementById("InformesGenericosForm");
 			idFact = document.getElementById("idFacturacion").value;
-			idio = document.getElementById("idioma").value;
-			f.datosInforme.value = "idFacturacion"+"=="+idFact+"##"+"idioma"+"=="+idio;
+			f.datosInforme.value = "idFacturacion"+"=="+idFact;
 			f.seleccionados.value="1";
 			f.submit();
 		}

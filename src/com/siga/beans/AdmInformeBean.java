@@ -14,18 +14,20 @@ package com.siga.beans;
 
 public class AdmInformeBean extends MasterBean {
 
-	/* Variables */	
-	private String idPlantilla, descripcion, alias, nombreFisico, directorio, idTipoInforme,  visible,  nombreSalida, preseleccionado,aSolicitantes,destinatarios;
+	// Variables	
+	private String idPlantilla, descripcion, alias, nombreFisico, directorio, idTipoInforme, visible, nombreSalida,
+			preseleccionado, aSolicitantes, destinatarios, tipoformato;
 	private Integer idInstitucion;
 	static public final String TIPODESTINATARIO_CENPERSONA = "C";
 	static public final String TIPODESTINATARIO_SCSPERSONAJG = "S";
 	static public final String TIPODESTINATARIO_SCSJUZGADO = "J";
+	static public final String TIPOFORMATO_WORD = "W";
+	static public final String TIPOFORMATO_EXCEL = "X";
 	
-	
-	/* Nombre tabla */
+	// Nombre tabla
 	static public String T_NOMBRETABLA = "ADM_INFORME";
 	
-	/* Nombre campos de la tabla */
+	// Nombre campos de la tabla
 	static public final String C_IDPLANTILLA = "IDPLANTILLA";
 	static public final String C_DESCRIPCION = "DESCRIPCION";
 	static public final String C_ALIAS = "ALIAS";
@@ -40,7 +42,9 @@ public class AdmInformeBean extends MasterBean {
 	static public final String C_PRESELECCIONADO = "PRESELECCIONADO";
 	static public final String C_ASOLICITANTES = "ASOLICITANTES";
 	static public final String C_DESTINATARIOS = "DESTINATARIOS";
+	static public final String C_TIPOFORMATO = "TIPOFORMATO";
 
+	
 	// Metodos SET
 	public void setIdPlantilla(String valor) {this.idPlantilla = valor;}	
 	public void setDescripcion(String valor) {this.descripcion = valor;}	
@@ -53,6 +57,8 @@ public class AdmInformeBean extends MasterBean {
 	public void setIdInstitucion(Integer valor) {this.idInstitucion = valor;}	
 	public void setPreseleccionado(String valor) {this.preseleccionado = valor;}
 	public void setDestinatarios(String valor) {this.destinatarios = valor;}
+	public void setASolicitantes(String solicitantes) {aSolicitantes = solicitantes;}	
+	public void setTipoformato(String tipoformato) {this.tipoformato = tipoformato;}
 	
 	
 	//Metodos GET
@@ -68,7 +74,6 @@ public class AdmInformeBean extends MasterBean {
 	public String getDestinatarios() {return this.destinatarios;}
 	public Integer getIdInstitucion() {return this.idInstitucion;}
 	public String getASolicitantes() {return aSolicitantes;}
-	public void setASolicitantes(String solicitantes) {aSolicitantes = solicitantes;}	
+	public String getTipoformato() {return tipoformato;}
 	
 }
-

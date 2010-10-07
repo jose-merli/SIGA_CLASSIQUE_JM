@@ -4,9 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,14 +12,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import com.atos.utils.ClsConstants;
-import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
-import com.siga.beans.AdmInformeAdm;
-import com.siga.beans.AdmInformeBean;
-import com.siga.beans.AdmTipoFiltroInformeAdm;
 import com.siga.beans.AdmTipoFiltroInformeBean;
-import com.siga.beans.AdmTipoInformeAdm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -74,11 +65,7 @@ public class MantenimientoInformesAction extends MasterAction {
 							formulario, request, response);
 					return mapping.findForward(mapDestino);
 				} else if (modo.equalsIgnoreCase("generarCertificadoPago")) {
-					/*InformeCertificadoPago inf = new InformeCertificadoPago();
-					mapDestino = inf.generarCertificadoPago(mapping,
-							formulario, request, response);
-					return mapping.findForward(mapDestino);/**/
-					/**/ArrayList<HashMap<String, String>> filtrosInforme = 
+					ArrayList<HashMap<String, String>> filtrosInforme = 
 							obtenerDatosFormCertificadoPago(formulario, request);
 					InformePersonalizable inf = new InformePersonalizable();
 					mapDestino = inf.generarInformes(mapping,

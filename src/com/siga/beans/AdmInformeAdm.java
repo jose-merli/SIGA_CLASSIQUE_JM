@@ -39,7 +39,8 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 				AdmInformeBean.C_PRESELECCIONADO,
 				AdmInformeBean.C_VISIBLE,
 				AdmInformeBean.C_ASOLICITANTES,
-				AdmInformeBean.C_DESTINATARIOS
+				AdmInformeBean.C_DESTINATARIOS,
+				AdmInformeBean.C_TIPOFORMATO
 		};
 		return campos;
 	} //getCamposBean()
@@ -79,6 +80,7 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 			bean.setPreseleccionado	(UtilidadesHash.getString(hash, AdmInformeBean.C_PRESELECCIONADO));
 			bean.setASolicitantes	(UtilidadesHash.getString(hash, AdmInformeBean.C_ASOLICITANTES));
 			bean.setDestinatarios	(UtilidadesHash.getString(hash, AdmInformeBean.C_DESTINATARIOS));
+			bean.setTipoformato		(UtilidadesHash.getString(hash, AdmInformeBean.C_TIPOFORMATO));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -107,6 +109,7 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(htData, AdmInformeBean.C_PRESELECCIONADO, 	b.getPreseleccionado());
 			UtilidadesHash.set(htData, AdmInformeBean.C_ASOLICITANTES, 		b.getASolicitantes());
 			UtilidadesHash.set(htData, AdmInformeBean.C_DESTINATARIOS, 		b.getDestinatarios());
+			UtilidadesHash.set(htData, AdmInformeBean.C_TIPOFORMATO, 		b.getTipoformato());
 		}
 		catch (Exception e) {
 			htData = null;
@@ -145,6 +148,7 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 				"       "+AdmInformeBean.C_VISIBLE+"," +
 				"       "+AdmInformeBean.C_ASOLICITANTES+", " +
 				"       "+AdmInformeBean.C_DESTINATARIOS+" " +
+				"       "+AdmInformeBean.C_TIPOFORMATO+" " +
 				"  FROM "+AdmInformeBean.T_NOMBRETABLA+" " +
 				" WHERE "+AdmInformeBean.C_IDPLANTILLA+" = '"+idInforme+"' " +
 				"   AND "+AdmInformeBean.C_VISIBLE+" = 'S' " +
@@ -170,6 +174,7 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 				salida.setVisible			((String)ht.get(AdmInformeBean.C_VISIBLE));
 				salida.setASolicitantes		((String)ht.get(AdmInformeBean.C_ASOLICITANTES));
 				salida.setDestinatarios		((String)ht.get(AdmInformeBean.C_DESTINATARIOS));
+				salida.setTipoformato		((String)ht.get(AdmInformeBean.C_TIPOFORMATO));
 			}
 		}
 		catch (ClsExceptions e) {
@@ -182,63 +187,121 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 	} //obtenerInforme()
 	
 	/**
-	 * Obtiene un Vector de AdmInformeBean por tipo de informe
+	 * Obtiene un Vector de AdmInformeBean por tipo de informe: 
+	 *  1. Primero busca informes en la institucion pasada como parametro; 
+	 *  2. Si no encuentra nada, busca en el Consejo al que pertenece la institucion;
+	 *  3. Y por ultimo lo intentara en plantillas generales (0)
+	 * 
 	 * @param idInstitucion
 	 * @param idTipoInforme
+	 * @param aSolicitantes
+	 * @param destinatarios
 	 * @return Vector de AdmInformeBean
 	 * @throws ClsExceptions
 	 */
-	public Vector obtenerInformesTipo (String idInstitucion,
-									   String idTipoInforme,
-									   String aSolicitantes,
-									   String destinatarios)
-			throws ClsExceptions
+	public Vector obtenerInformesTipo(String idInstitucion,
+			String idTipoInforme,
+			String aSolicitantes,
+			String destinatarios) throws ClsExceptions
 	{
-		Vector salida = new Vector();
+		final int NUM_CONSULTAS = 3;
+		final int CON_COLEGIO = 0;
+		final int CON_CONSEJO = 1;
+		final int CON_GENERAL = 2;
+		StringBuffer[] where = new StringBuffer[NUM_CONSULTAS];
+		int k;
+		Vector salida;
+
+		// 1. generando consulta de la institucion
+		k = CON_COLEGIO;
+		where[k] = new StringBuffer(
+				"WHERE VISIBLE = 'S' " +
+				"  AND IDTIPOINFORME = '" + idTipoInforme + "' " +
+				"  AND IDINSTITUCION = " + idInstitucion);
+		if (aSolicitantes != null && aSolicitantes.equals("S"))
+			where[k].append(
+				"  AND ASOLICITANTES = 'S'");
+
+		if (destinatarios != null && !destinatarios.equals("")) {
+			where[k].append(
+				"  AND (");
+			for (int i = 0; i < destinatarios.length(); i++) {
+				where[i].append(" DESTINATARIOS like '%" + destinatarios.charAt(i) + "%'");
+				if (i < destinatarios.length() - 1)
+					where[i].append(" OR ");
+			}
+			where[k].append("" +
+				"      ) ");
+		}
+
+		// 2. generando consulta del consejo autonomico
+		CenInstitucionAdm insadm = new CenInstitucionAdm(this.usrbean);
+		Integer insConsejo = null;
 		try {
-			StringBuffer where = new StringBuffer (
+			insConsejo = insadm.getInstitucionPadre(new Integer(idInstitucion));
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al obtener el Consejo de la institucion: " + e.toString());
+		}
+		if (insConsejo != null) {
+			k = CON_CONSEJO;
+			where[k] = new StringBuffer(
 					"WHERE VISIBLE = 'S' " +
-					"  AND IDTIPOINFORME = '"+idTipoInforme+"' " +
-					"  AND IDINSTITUCION = "+idInstitucion
-			);
-			if (aSolicitantes!=null && aSolicitantes.equals("S")) {
-				where.append (
+					"  AND IDTIPOINFORME = '" + idTipoInforme + "' " +
+					"  AND IDINSTITUCION = " + insConsejo);
+			if (aSolicitantes != null && aSolicitantes.equals("S"))
+				where[k].append(
 					"  AND ASOLICITANTES = 'S'");
-			}
-			
-			if (destinatarios!=null && !destinatarios.equals("")) {
-				where.append(" AND (");
-				for(int i=0;i<destinatarios.length();i++){
-					where.append (" DESTINATARIOS like '%" + destinatarios.charAt(i) +"%'");
-					if(i<destinatarios.length()-1)
-						where.append(" OR ");
+
+			// No hay destinatarios, ¿¿deberia haberlos??
+			/*if (destinatarios != null && !destinatarios.equals("")) {
+				where[k].append(
+					"  AND (");
+				for (int i = 0; i < destinatarios.length(); i++) {
+					where[i].append(" DESTINATARIOS like '%" + destinatarios.charAt(i) + "%'");
+					if (i < destinatarios.length() - 1)
+						where[i].append(" OR ");
 				}
-				where.append(" ) ");
-			}
-			
-			salida = this.select (where.toString());
-			if (salida==null || salida.size()==0) {
-				where = new StringBuffer (
-						"WHERE VISIBLE = 'S' " +
-						"  AND IDTIPOINFORME = '"+idTipoInforme+"' " +
-						"  AND IDINSTITUCION = 0 "
-				);
-				if (aSolicitantes!=null && aSolicitantes.equals("S")) {
-					where.append (
-						"  AND ASOLICITANTES='S'");
-				}
-				salida = this.select (where.toString());
-			}
+				where[k].append(
+					"      ) ");
+			}*/
 		}
-		catch (ClsExceptions e) {
+
+		// 3. generando consulta del CGAE
+		k = CON_GENERAL;
+		where[k] = new StringBuffer(
+				"WHERE VISIBLE = 'S' " +
+				"  AND IDTIPOINFORME = '" + idTipoInforme + "' " +
+				"  AND IDINSTITUCION = " + 0);
+		if (aSolicitantes != null && aSolicitantes.equals("S"))
+			where[k].append(
+				"  AND ASOLICITANTES = 'S'");
+
+		// No hay destinatarios, ¿¿deberia haberlos??
+		/*if (destinatarios != null && !destinatarios.equals("")) {
+			where[k].append(
+				"  AND (");
+			for (int i = 0; i < destinatarios.length(); i++) {
+				where[i].append(" DESTINATARIOS like '%" + destinatarios.charAt(i) + "%'");
+				if (i < destinatarios.length() - 1)
+					where[i].append(" OR ");
+			}
+			where[k].append(
+				"      ) ");
+		}*/
+
+		try {
+			k = CON_COLEGIO;
+			do {
+				salida = this.select(where[k].toString());
+				k++;
+			} while ((salida == null || salida.size() == 0) && k < NUM_CONSULTAS);
+		} catch (ClsExceptions e) {
 			throw e;
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al obtener la plantilla: " + e.toString());
 		}
-		catch (Exception e) {
-			throw new ClsExceptions (e, "Error al obtener la plantilla: " + 
-					e.toString());
-		}
-		
+
 		return salida;
-	} //obtenerInformesTipo()
+	} // obtenerInformesTipo()
 	
 }

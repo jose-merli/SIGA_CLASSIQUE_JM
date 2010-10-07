@@ -3671,9 +3671,6 @@
 
 <!-- INICIO: MantenimientoInformesForm para Facturaciones 30-05-2005 -->
     <form name="mantenimientoInformesFacturacionesForm">
-        <field property = "idioma" depends = "required">
-            <arg0 key="factSJCS.datosPagos.literal.idioma"/>
-        </field>
         <field property = "idFacturacion" depends = "required">
             <arg0 key="factSJCS.datosPagos.literal.facturacion"/>
         </field>

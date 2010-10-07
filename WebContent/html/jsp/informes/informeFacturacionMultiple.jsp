@@ -26,16 +26,15 @@
 <%@ page import="java.util.Properties"%>
 
 <!-- JSP -->
-<%  
-	String app=request.getContextPath();
-	HttpSession ses=request.getSession();
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
-	UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);
-	
+<%
+	String app = request.getContextPath();
+	HttpSession ses = request.getSession();
+	Properties src = (Properties) ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	UsrBean usrbean = (UsrBean) session.getAttribute(ClsConstants.USERBEAN);
+
 	//COMBO PAGOS CERRADOS:
 	String comboParams[] = new String[1];
 	comboParams[0] = usrbean.getLocation();
-	
 %>	
 
 <html>
@@ -75,31 +74,22 @@
 	<!-- Zona de campos de busqueda o filtro -->
 	<table class="tablaCampos" align="center">
 
-	
-
-	<!-- FILA -->
-	<tr>				
-	<td class="labelText" width="150">
-		<siga:Idioma key="factSJCS.informes.informeMultiple.factInicial"/>&nbsp;(*)
-	</td>				
-	<td>
-		<siga:ComboBD nombre="idFacturacionInicio" tipo="cmb_FactInformes" parametro="<%=comboParams%>" clase="boxCombo" obligatorio="true" obligatorioSinTextoSeleccionar="true"/>
-	</td>
-	<td class="labelText" width="150">
-		<siga:Idioma key="factSJCS.informes.informeMultiple.factFinal"/>&nbsp;(*)
-	</td>				
-	<td>
-		<siga:ComboBD nombre="idFacturacionFin" tipo="cmb_FactInformes" parametro="<%=comboParams%>" clase="boxCombo" obligatorio="true" obligatorioSinTextoSeleccionar="true"/>
-	</td>
-	</tr>
-	<tr>
-	<td class="labelText">
-		<siga:Idioma key="factSJCS.datosPagos.literal.idioma"/>&nbsp;(*)
-	</td>				
-	<td>
-		<siga:ComboBD nombre="idioma" tipo="cmbIdioma"  clase="boxCombo" obligatorio="true" obligatorioSinTextoSeleccionar="true"/>
-	</td>
-	</tr>
+		<tr>
+			<td class="labelText" width="150"><siga:Idioma
+				key="factSJCS.informes.informeMultiple.factInicial" />&nbsp;(*)</td>
+			<td><siga:ComboBD nombre="idFacturacionInicio"
+				tipo="cmb_FactInformes" parametro="<%=comboParams%>"
+				clase="boxCombo" obligatorio="true"
+				obligatorioSinTextoSeleccionar="true" /></td>
+		</tr>
+		<tr>
+			<td class="labelText" width="150"><siga:Idioma
+				key="factSJCS.informes.informeMultiple.factFinal" />&nbsp;(*)</td>
+			<td><siga:ComboBD nombre="idFacturacionFin"
+				tipo="cmb_FactInformes" parametro="<%=comboParams%>"
+				clase="boxCombo" obligatorio="true"
+				obligatorioSinTextoSeleccionar="true" /></td>
+		</tr>
 
 	</table>
 	<!-- FIN: CAMPOS DE BUSQUEDA-->

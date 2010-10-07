@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.StringTokenizer;
@@ -35,6 +36,7 @@ import com.siga.administracion.SIGAConstants;
 import com.siga.beans.AdmInformeAdm;
 import com.siga.beans.AdmInformeBean;
 import com.siga.beans.AdmLenguajesAdm;
+import com.siga.beans.AdmTipoFiltroInformeBean;
 import com.siga.beans.AdmTipoInformeAdm;
 import com.siga.beans.AdmTipoInformeBean;
 import com.siga.beans.FcsFacturacionJGAdm;
@@ -60,11 +62,10 @@ import com.siga.general.SIGAException;
 import com.siga.informes.CrystalReportMaster;
 import com.siga.informes.InformeAbono;
 import com.siga.informes.InformeCertificadoIRPF;
+import com.siga.informes.InformePersonalizable;
 import com.siga.informes.MasterReport;
 import com.siga.informes.MasterWords;
 import com.siga.informes.form.InformesGenericosForm;
-
-
 
 /**
  * Clase para la generación de informes genéricos configurados en ADM_INFORME
@@ -323,9 +324,21 @@ public class InformesGenericosAction extends MasterAction {
 						} else 
 
 							if (idTipoInforme.equals("FACJG")) {
-								mapDestino = generaInfFacJG(mapping, miForm, request, response);
+								ArrayList<HashMap<String, String>> filtrosInforme = 
+										obtenerDatosFormInformeFacturacionJG(miForm, request);
+								InformePersonalizable inf = new InformePersonalizable();
+								mapDestino = inf.generarInformes(mapping,
+										miForm, request, response, 
+										InformePersonalizable.I_INFORMEFACTSJCS, filtrosInforme);
+								//mapDestino = generaInfFacJG(mapping, miForm, request, response);
 							} else if (idTipoInforme.equals("FJGM")) {
-								mapDestino = generaInfFacJG(mapping, miForm, request, response);
+								ArrayList<HashMap<String, String>> filtrosInforme = 
+										obtenerDatosFormInformeFacturacionJG(miForm, request);
+								InformePersonalizable inf = new InformePersonalizable();
+								mapDestino = inf.generarInformes(mapping,
+										miForm, request, response, 
+										InformePersonalizable.I_INFORMEFACTSJCS, filtrosInforme);
+								//mapDestino = generaInfFacJG(mapping, miForm, request, response);
 							} else if (idTipoInforme.equals("EJGCA")) {
 								mapDestino = ejgca(mapping, miForm, request, response);
 							} else if (idTipoInforme.equals("EJG")){
@@ -895,6 +908,55 @@ public class InformesGenericosAction extends MasterAction {
 		request.setAttribute("generacionOK","OK");
 		return "descarga";	
 	}	
+
+	/**
+	 * Obtiene los filtros del formulario para generar el Informe de Facturacion de JG
+	 */
+	private ArrayList<HashMap<String, String>> obtenerDatosFormInformeFacturacionJG(
+			ActionForm formulario, HttpServletRequest request) throws SIGAException
+	{
+		// Controles y Variables
+		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		ArrayList<HashMap<String, String>> filtros;
+		HashMap<String, String> filtro;
+		String idinstitucion = null;
+		String idfacturaciones = null;
+		String idioma = null;
+		
+		// obteniendo valores del formulario
+		try {
+			idinstitucion = usr.getLocation();
+			Hashtable aux = (Hashtable) this.obtenerDatosFormulario((InformesGenericosForm) formulario).get(0);
+			if (aux.size()==2)
+				idfacturaciones = EjecucionPLs.ejecutarFuncFacturacionesIntervalo(idinstitucion, (String) aux
+						.get("idFacturacionIni"), (String) aux.get("idFacturacionFin"));
+			else
+				idfacturaciones = (String) aux.get ("idFacturacion");
+				
+			idioma = usr.getLanguage();
+		} catch(Exception e) {
+			throwExcp("messages.general.error",
+					new String[] { "modulo.facturacionSJCS" }, e, null);
+		}
+
+		// generando lista de filtros
+		filtros = new ArrayList<HashMap<String, String>>();
+		
+		filtro = new HashMap<String, String>();
+		filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDINSTITUCION");
+		filtro.put("VALOR", idinstitucion);
+		filtros.add(filtro);
+		filtro = new HashMap<String, String>();
+		filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "FACTURACIONES");
+		filtro.put("VALOR", idfacturaciones);
+		filtros.add(filtro);
+		filtro = new HashMap<String, String>();
+		filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDIOMA");
+		filtro.put("VALOR", idioma);
+		filtros.add(filtro);
+
+		return filtros;
+	} // obtenerDatosFormInformeFacturacionJG()
 
 	/**
 	 * Genera el Informe de Facturacion (SJCS > Informes > Informe de Facturacion)
@@ -1592,7 +1654,8 @@ public class InformesGenericosAction extends MasterAction {
 				while (st.hasMoreTokens()) {
 					String dupla = st.nextToken();
 					String d[]= dupla.split("==");
-					ht.put(d[0],d[1]);    
+					if (d.length == 2)
+						ht.put(d[0],d[1]);    
 				}
 				salida.add(ht);
 			}

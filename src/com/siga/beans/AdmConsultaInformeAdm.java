@@ -8,6 +8,8 @@ import java.util.Iterator;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.general.SIGAException;
@@ -163,4 +165,47 @@ public class AdmConsultaInformeAdm extends MasterBeanAdministrador {
 		
 		return salida;
 	}
+	
+	/**
+	 * Ejecuta una sentencia y devuelve un Vector con los campos ordenados, 
+	 * de forma que la salida pueda ser igual que se formateo en la sentencia sql
+	 * 
+	 * @param select
+	 * @return  Vector<Hashtable<Integer, Hashtable<String, String>>>
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
+	public Vector<Vector<Hashtable<String, String>>> selectCamposOrdenados(String select) throws ClsExceptions, SIGAException
+	{
+		// Variables
+		RowsContainer rc; // manejador de BD
+		Row fila; // cada una de las filas obtenidas de BD
+		String[] cabeceras;
+		Hashtable<String, String> registro; // cada uno de las celdas de la tabla obtenida por la sentencia
+		Vector<Hashtable<String, String>> linea;
+		// Salida
+		Vector<Vector<Hashtable<String, String>>> datos = new Vector<Vector<Hashtable<String, String>>>();
+
+		try {
+			rc = new RowsContainer();
+			if (rc.query(select)) {
+				for (int i = 0; i < rc.size(); i++) {
+					fila = (Row) rc.get(i);
+					cabeceras = rc.getFieldNames();
+					linea = new Vector<Hashtable<String, String>>();
+					for (int j = 0; j < cabeceras.length; j++) {
+						registro = new Hashtable<String, String>();
+						registro.put(cabeceras[j], (String) fila.getValue(cabeceras[j]));
+						if (registro != null)
+							linea.add(registro);
+					}
+					datos.add(linea);
+				}
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e, e.getMessage() + "Consulta SQL:" + select);
+		}
+		return datos;
+	} // selectCamposOrdenados()
+
 }
