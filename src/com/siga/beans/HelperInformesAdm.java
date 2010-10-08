@@ -214,8 +214,10 @@ public class HelperInformesAdm  {
 			Hashtable h = new Hashtable();
 			h.put(new Integer(1), idInstitucion);
 			h.put(new Integer(2), idTurno);
+			
 			String sql = "select scs_turno.descripcion AS DESCRIPCION_TURNO ,"+
-			" scs_turno.abreviatura AS ABREV_TURNO ,scs_turno.LETRADOACTUACIONES AS LETRADOACTUACIONES, scs_turno.validarjustificaciones as VALIDARJUSTIFICACIONES "+
+			" scs_turno.abreviatura AS ABREV_TURNO ,scs_turno.LETRADOACTUACIONES AS LETRADOACTUACIONES, scs_turno.validarjustificaciones as VALIDARJUSTIFICACIONES " +
+			",scs_turno.ACTIVARRETRICCIONACREDIT "+
 			" from scs_turno where idinstitucion = :1 and idturno = :2";
 				
 			return ejecutaConsultaBind(sql, h);
@@ -306,6 +308,10 @@ public class HelperInformesAdm  {
 		       + prolongarCampo+
 		       ","+
 		       " JUZ2.IDPOBLACION AS ID_POBLACION_JUZGADO"
+		       + prolongarCampo+
+		       ""+
+		       ","+
+		       " JUZ2.CODIGOEXT AS CODIGOJUZGADO"
 		       + prolongarCampo+
 		       ""+
        
