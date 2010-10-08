@@ -3325,7 +3325,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		
 	}
 	
-	private Vector getEjgSalida (String idInstitucion, String tipoEjg,
+	public Vector getEjgSalida (String idInstitucion, String tipoEjg,
 			String anio, String numero,String idioma) throws ClsExceptions  
 	{
 		try {
@@ -3750,7 +3750,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	
 	
 	
-	private Vector getColegiadoSalida (String idInstitucionDesigna, String idPersonaDesigna,
+	public Vector getColegiadoSalida (String idInstitucionDesigna, String idPersonaDesigna,
 			String idioma,String aliasSalida) throws ClsExceptions  
 	{
 		try {
@@ -4677,12 +4677,15 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	 * return: retorna un vector, con los datos del procurador contrario de la defensa juridica de un ejg.
 	 * fecha: 05/10/2010    
 	 * **/
-	public  Vector getDatosProcuradorContrarioDJ (Hashtable entrada) 
+	public  Vector getDatosProcuradorContrarioDJ (Hashtable entrada) throws ClsExceptions 
 	{
+	
 			String idInstitucion= (String)entrada.get("IDINSTITUCION");
 			String tipoEjg= (String)entrada.get("IDTIPOEJG");
 			String anioEjg= (String)entrada.get("ANIO");
 			String numeroEjg= (String)entrada.get("NUMERO");
+			 RowsContainer rc = new RowsContainer(); 
+			 Vector datos=new Vector();
 			
 			StringBuffer sql = new StringBuffer();		
 			sql.append(" Select  (pro.Nombre || ' ' || pro.Apellidos1 || ' ' || pro.Apellidos2) as PROCURADOR_DJ_CONTRARIO, ");
@@ -4709,15 +4712,24 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
             sql.append(" And Pro.Idinstitucion = Scs_Contrariosejg.Idinstitucion_Procu");
             sql.append(" And Pro.Idprocurador = Scs_Contrariosejg.Idprocurador ");
          
-       try{
-    	   
-			return this.selectGenerico(sql.toString());
+       try{    	   
+    	   			
+			 rc = this.find(sql.toString());
+ 			if (rc!=null){
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					Hashtable registro = (Hashtable)fila.getRow(); 
+					if (registro != null) 
+						datos.add(registro);
+				}
+			}
+	       
 		}
 		catch (Exception e) 
 		{
-			e.printStackTrace();
-			return new Vector();
+			throw new ClsExceptions (e, "getDatosProcuradorContrarioDJ");	
 		} 
+		return datos;
 	}
 
 	 
