@@ -148,7 +148,7 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 				"       "+AdmInformeBean.C_VISIBLE+"," +
 				"       "+AdmInformeBean.C_ASOLICITANTES+", " +
 				"       "+AdmInformeBean.C_DESTINATARIOS+" " +
-				"       "+AdmInformeBean.C_TIPOFORMATO+" " +
+				// "       "+AdmInformeBean.C_TIPOFORMATO+" " +
 				"  FROM "+AdmInformeBean.T_NOMBRETABLA+" " +
 				" WHERE "+AdmInformeBean.C_IDPLANTILLA+" = '"+idInforme+"' " +
 				"   AND "+AdmInformeBean.C_VISIBLE+" = 'S' " +
