@@ -1683,7 +1683,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				else
 					registro.put("DESC_TIPODESIGNA", " ");
 				
-                
+               
 				
 				//metemos el numero de colegiado
 				if(registro.containsKey("IDPERSONA") && registro.get("IDPERSONA")!=null && !((String)registro.get("IDPERSONA")).trim().equals("")){
@@ -1775,17 +1775,34 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					
 					
 				}
-
 				
 				helperInformes.completarHashSalida(registro,getActuacionDesignaSalidaOficio(idInstitucion,numeroDesigna,idTurno,anioDesigna));
 				
 				String idJuzgado = (String)registro.get("IDJUZGADO");
+				
 				String idInstJuzgado = (String)registro.get("IDINSTITUCION_JUZG");
 				
 				if(idJuzgado==null ||idJuzgado.trim().equalsIgnoreCase("")){
 				    idJuzgado="-33"; // forzamos que no encuentre datos, en lugar de dar error
 				}
+								
+				 String Idpretension  = (String)registro.get("IDPRETENSION");
+				 ScsEJGAdm ejgdm = new ScsEJGAdm(this.usrbean);
 				
+				if(Idpretension!=null && !Idpretension.trim().equalsIgnoreCase("")){			
+						Vector vpretenciones=ejgdm.getPretension(Idpretension, idInstitucion);
+						for (int s = 0; s < vpretenciones.size(); s++) {
+							Hashtable registropretenciones = (Hashtable) vpretenciones.get(s);
+							String procedimiento = (String)registropretenciones.get("PRETENSION");
+							if(procedimiento!=null && !procedimiento.trim().equalsIgnoreCase(""))
+								registro.put("PROCEDIMIENTO_DESIGNA", procedimiento);
+							else
+								UtilidadesHash.set(registro, "PROCEDIMIENTO_DESIGNA", "");
+						}							
+							
+				}else	UtilidadesHash.set(registro, "PROCEDIMIENTO_DESIGNA", "");
+				
+								
 				helperInformes.completarHashSalida(registro,helperInformes.getJuzgadoSalida(idInstJuzgado,idJuzgado,""));
 				
 				String lugar = (String)registro.get("LUGAR");
@@ -2009,7 +2026,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				"              '', " +
 				"              Pkg_Siga_Fecha_En_Letra.f_Siga_Fechacompletaenletra(Letant.Fecharenunciasolicita, " +
 				"                                                                  'm', " +
-				"                                                                  1)) Fecha_Solicitudrenuncia_Letra " +
+				"                                                                  1)) Fecha_Solicitudrenuncia_Letra, " +
+				" Des.Idpretension AS Idpretension "+
 				"  From Scs_Designa         Des, " +
 				"       Scs_Designasletrado Let, " +
 				"       Cen_Persona         p, " +
