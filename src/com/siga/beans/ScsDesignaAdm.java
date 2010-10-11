@@ -1715,8 +1715,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETREPRESENTANTE_DES", "REPRESENTANTES_CONTRARIOS"));
 				
 				//Muestra la lista de los anioCaj/numeroCaj de los EJG, relacionados con la designa.
-				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETANIONUMEROCAJ", "LISTAANIONUMEROCAJ"));
-				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETNUMEROANIOCAJ", "LISTANUMEROANIOCAJ"));
+			//	helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETANIONUMEROCAJ", "LISTAANIONUMEROCAJ"));
+			//	helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETNUMEROANIOCAJ", "LISTANUMEROANIOCAJ"));
 				
 				/**
 				 * Se Saca el nombre del tramitador de la EJG relacionada con la designa, si hay mas de una EJG relacionado se saca
@@ -1725,27 +1725,35 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				Vector ejgsdesingna=getejgsdesigna(idTurno, numeroDesigna, anioDesigna, idInstitucion);				
 				ScsEJGAdm ejgadm = new ScsEJGAdm(this.usrbean);
 				int tamanio= ejgsdesingna.size();
-				String Listadotramitador="";
+				String Listadotramitador="";				
+				String Listadoanionumerocajg="";
+				String Listadonumeroaniocajg="";
 				Vector Vtramitador=null;
 				for (int i = 0; i < ejgsdesingna.size(); i++) {					
 					Hashtable registroejg = (Hashtable) ejgsdesingna.get(i);				
 				    String idLetradoEjg  = (String)registroejg.get("IDPERSONA");
 				    String aniocajg = (String)registroejg.get("ANIOCAJG");
-				    String numerocajg = (String)registroejg.get("NUMEROCAJG");				
-						  if(idLetradoEjg!=null && !idLetradoEjg.trim().equalsIgnoreCase("")){
+				    String numerocajg = (String)registroejg.get("NUMEROCAJG");	
+				    String numeroaniocajg = (String)registroejg.get("NUMEROANIOCAJG"); 
+				    String anionumerocajg = (String)registroejg.get("ANIONUMEROCAJG");
+				    if (!numeroaniocajg.equals("/") && (!anionumerocajg.equals("/"))){
+				    	Listadoanionumerocajg+=","+anionumerocajg;
+				    	Listadonumeroaniocajg+=","+numeroaniocajg;
+				    }
+					if(idLetradoEjg!=null && !idLetradoEjg.trim().equalsIgnoreCase("")){
 							Vtramitador=ejgadm.getColegiadoSalida(idInstitucion,idLetradoEjg,idioma,"TRAMITADOR_EGJ");							
 							for (int l = 0; l < Vtramitador.size(); l++) {							  
 									Hashtable registrotramitador = (Hashtable) Vtramitador.get(l);
 									String nombretramitador = (String)registrotramitador.get("NOMBRE_TRAMITADOR_EGJ");									
-									if(nombretramitador!=null && !nombretramitador.trim().equalsIgnoreCase("")){
+									if(nombretramitador!=null && !nombretramitador.trim().equalsIgnoreCase("")){										
 										if (((aniocajg==null || aniocajg.equals(""))&&(numerocajg==null || numerocajg.equals("")))||(tamanio==1)){
 											Listadotramitador+=","+nombretramitador;
-										}else{											
-												Listadotramitador+=","+nombretramitador+"("+aniocajg+"/"+numerocajg+")";
+										}else{	
+											Listadotramitador+=","+nombretramitador+"("+aniocajg+"/"+numerocajg+")";
 											}
 									 }
 						   }							
-				        }
+				    }
 				}//FIN FOR
 				
 				if (Listadotramitador!=null && !Listadotramitador.equals("")){
@@ -1754,7 +1762,22 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				}else{
 					UtilidadesHash.set(registro, "NOMBRE_TRAMITADOR_EJG", "");
 				}					
-			
+				
+				if (Listadoanionumerocajg!=null && !Listadoanionumerocajg.equals("")){
+					Listadoanionumerocajg=Listadoanionumerocajg.substring(1);
+					UtilidadesHash.set(registro, "LISTAANIONUMEROCAJ", Listadoanionumerocajg);					
+				}else{
+					UtilidadesHash.set(registro, "LISTAANIONUMEROCAJ", "");
+				}
+				
+				if (Listadonumeroaniocajg!=null && !Listadonumeroaniocajg.equals("")){
+					Listadonumeroaniocajg=Listadonumeroaniocajg.substring(1);
+					UtilidadesHash.set(registro, "LISTANUMEROANIOCAJ", Listadonumeroaniocajg);					
+				}else{
+					UtilidadesHash.set(registro, "LISTANUMEROANIOCAJ", "");
+				}
+				
+				
 				htCodigo.put(new Integer(2), anioDesigna);
 				htCodigo.put(new Integer(3), idTurno);
 				htCodigo.put(new Integer(4), numeroDesigna);
@@ -2573,7 +2596,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 	       try {
 	            RowsContainer rc = new RowsContainer();
 		        StringBuffer sql = new StringBuffer();		        
-		        sql.append(" select  ejg.aniocajg as ANIOCAJG, ejg.numero_cajg as NUMEROCAJG, ejg.idpersona as IDPERSONA ");
+		        sql.append(" select  ejg.aniocajg || '/' || ejg.numero_cajg as ANIONUMEROCAJG, ejg.numero_cajg  || '/' || ejg.aniocajg as NUMEROANIOCAJG, ejg.aniocajg as ANIOCAJG, ejg.numero_cajg as NUMEROCAJG, ejg.idpersona as IDPERSONA ");
 		        sql.append(" from scs_ejg ejg, scs_designa des, ");
 		        sql.append(" scs_turno tur, scs_tipoejg tip, ");
 		        sql.append(" scs_tipodictamenejg tdic, scs_ejgdesigna ejgDes");        
