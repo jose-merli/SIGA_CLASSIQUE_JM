@@ -1699,17 +1699,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				htCodigo.put(new Integer(2), idInstitucion);
 				//metemos el nombre de partdo
 				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_NOMBRE_PARTIDO", "NOMBRE_PARTIDO"));
-				htCodigo.put(new Integer(1), idInstitucion);
-				htCodigo.put(new Integer(2), numeroDesigna);
-				htCodigo.put(new Integer(3), idTurno);
-				htCodigo.put(new Integer(4), anioDesigna);
-				
-				//htCodigo.put(new Integer(5), idioma);
-				//metemos los delitos
-				//helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETDELITOS_DESIGNA", "DELITOS"));
-				//htCodigo.remove(new Integer(5));
-				
-				
+				htCodigo.put(new Integer(1), idInstitucion);				
 				htCodigo.put(new Integer(2), idTurno);
 				htCodigo.put(new Integer(3), anioDesigna);
 				htCodigo.put(new Integer(4), numeroDesigna);
@@ -1728,7 +1718,43 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETANIONUMEROCAJ", "LISTAANIONUMEROCAJ"));
 				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETNUMEROANIOCAJ", "LISTANUMEROANIOCAJ"));
 				
+				/**
+				 * Se Saca el nombre del tramitador de la EJG relacionada con la designa, si hay mas de una EJG relacionado se saca
+				 * un listado de los tramitadores de cada EJG relacionada con la designa y entre parentesis el anio/numero cajg
+				 * **/
+				Vector ejgsdesingna=getejgsdesigna(idTurno, numeroDesigna, anioDesigna, idInstitucion);				
+				ScsEJGAdm ejgadm = new ScsEJGAdm(this.usrbean);
+				int tamanio= ejgsdesingna.size();
+				String Listadotramitador="";
+				Vector Vtramitador=null;
+				for (int i = 0; i < ejgsdesingna.size(); i++) {					
+					Hashtable registroejg = (Hashtable) ejgsdesingna.get(i);				
+				    String idLetradoEjg  = (String)registroejg.get("IDPERSONA");
+				    String aniocajg = (String)registroejg.get("ANIOCAJG");
+				    String numerocajg = (String)registroejg.get("NUMEROCAJG");				
+						  if(idLetradoEjg!=null && !idLetradoEjg.trim().equalsIgnoreCase("")){
+							Vtramitador=ejgadm.getColegiadoSalida(idInstitucion,idLetradoEjg,idioma,"TRAMITADOR_EGJ");							
+							for (int l = 0; l < Vtramitador.size(); l++) {							  
+									Hashtable registrotramitador = (Hashtable) Vtramitador.get(l);
+									String nombretramitador = (String)registrotramitador.get("NOMBRE_TRAMITADOR_EGJ");									
+									if(nombretramitador!=null && !nombretramitador.trim().equalsIgnoreCase("")){
+										if (((aniocajg==null || aniocajg.equals(""))&&(numerocajg==null || numerocajg.equals("")))||(tamanio==1)){
+											Listadotramitador+=","+nombretramitador;
+										}else{											
+												Listadotramitador+=","+nombretramitador+"("+aniocajg+"/"+numerocajg+")";
+											}
+									 }
+						   }							
+				        }
+				}//FIN FOR
 				
+				if (Listadotramitador!=null && !Listadotramitador.equals("")){
+					Listadotramitador =Listadotramitador.substring(1);					
+					UtilidadesHash.set(registro, "NOMBRE_TRAMITADOR_EJG", Listadotramitador);
+				}else{
+					UtilidadesHash.set(registro, "NOMBRE_TRAMITADOR_EJG", "");
+				}					
+			
 				htCodigo.put(new Integer(2), anioDesigna);
 				htCodigo.put(new Integer(3), idTurno);
 				htCodigo.put(new Integer(4), numeroDesigna);
@@ -2539,5 +2565,53 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		}		
 		
 	  }
+	  
+	  
+	  	public Vector getejgsdesigna(String idturno, String numero, String anio, String idinstitucion) throws ClsExceptions{
+		
+	  		Vector datos=new Vector();
+	       try {
+	            RowsContainer rc = new RowsContainer();
+		        StringBuffer sql = new StringBuffer();		        
+		        sql.append(" select  ejg.aniocajg as ANIOCAJG, ejg.numero_cajg as NUMEROCAJG, ejg.idpersona as IDPERSONA ");
+		        sql.append(" from scs_ejg ejg, scs_designa des, ");
+		        sql.append(" scs_turno tur, scs_tipoejg tip, ");
+		        sql.append(" scs_tipodictamenejg tdic, scs_ejgdesigna ejgDes");        
+		        sql.append(" where ejgDes.Aniodesigna = des.anio ");
+		        sql.append(" and ejgDes.Numerodesigna = des.numero");
+		        sql.append(" and ejgDes.Idturno = des.idturno ");		        
+		        sql.append(" and ejgDes.Idinstitucion = des.idinstitucion ");
+		        sql.append(" and ejgDes.Idinstitucion = ejg.idinstitucion ");
+		        sql.append(" and ejgDes.Anioejg = ejg.anio ");
+		        sql.append(" and ejgDes.Numeroejg = ejg.numero ");
+                sql.append(" and ejgDes.Idtipoejg = ejg.idtipoejg ");
+                sql.append(" and tip.idtipoejg = ejg.idtipoejg "); 
+		        sql.append(" and tdic.idtipodictamenejg(+) = ejg.idtipodictamenejg ");
+                sql.append(" and tdic.idtipodictamenejg(+) = ejg.idinstitucion");
+                sql.append(" and tur.idinstitucion(+) = ejg.idinstitucion ");
+                sql.append(" and tur.idturno(+) = ejg.guardiaturno_idturno ");
+                sql.append(" and des.anio = "+anio);
+                sql.append(" and des.numero = "+numero);
+                sql.append(" and des.idturno = "+idturno);
+                sql.append(" and des.idinstitucion = "+idinstitucion);
+               if (rc.find(sql.toString())) {
+		               for (int i = 0; i < rc.size(); i++){
+		                  Row fila = (Row) rc.get(i);
+		                  Hashtable resultado=fila.getRow();	                  
+		                  datos.add(resultado);
+		               }
+		            } 
+		       }
+		       catch (Exception e) {
+		       		throw new ClsExceptions (e, "Error al obtener la informacion sobre el tipo ejg colegio de una designa.");
+		       }
+		       return datos;      
+	
+	  	   }
+	  	
+	
+	  
+	  
+	  
 	
 }
