@@ -4639,7 +4639,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			
 }
 		catch (Exception e) {
-			throw new ClsExceptions (e, "Error ScsEJGAdm.getComisariaEjgSalida");
+			throw new ClsExceptions (e, "Error ScsEJGAdm.getPretension");
 		}
 	}
 	public ScsTipoEJGBean getTipoEjg (String idTipoEjg) throws ClsExceptions  
