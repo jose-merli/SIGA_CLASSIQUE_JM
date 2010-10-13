@@ -78,6 +78,7 @@ import com.siga.general.EjecucionPLs;
 import com.siga.general.SIGAException;
 import com.siga.informes.MasterWords;
 import com.sun.mail.smtp.SMTPAddressFailedException;
+import com.siga.envios.Envio;
 
 
 public class EnvEnviosAdm extends MasterBeanAdministrador {
@@ -2922,7 +2923,6 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		BufferedWriter bwOut = null;
 	    String sIdInstitucion = String.valueOf(envBean.getIdInstitucion());
 	    String sIdEnvio = String.valueOf(envBean.getIdEnvio());
-	    
 	    String sFicheroLog = "";
 	    try {
 	        // RGG creo los directorios
@@ -2938,8 +2938,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    }
 	    
 	    final String separador = ClsConstants.SEPARADOR; 
-        String sLineaCabecera = "ENVIO"+separador+"NIF/CIF"+separador+"NOMBRE"+separador+"APELLIDO 1"+separador+"APELLIDO 2"+separador+"FAX 1"+separador+"FAX 2"+separador+"MOVIL"+separador+"CORREO ELECTRONICO"+separador+"DOMICILIO"+separador+"PROVINCIA"+separador+"POBLACION"+separador+"PAIS"+separador+"MENSAJE"+separador;
-        
+        //String sLineaCabecera = "ENVIO"+separador+"NIF/CIF"+separador+"NOMBRE"+separador+"APELLIDO 1"+separador+"APELLIDO 2"+separador+"FAX 1"+separador+"FAX 2"+separador+"MOVIL"+separador+"CORREO ELECTRONICO"+separador+"DOMICILIO"+separador+"PROVINCIA"+separador+"POBLACION"+separador+"PAIS"+separador+"MENSAJE"+separador;
+        String sLineaCabecera = "ENVIO"+separador+"NIF/CIF"+separador+"NOMBRE"+separador+"APELLIDO 1"+separador+"APELLIDO 2"+separador+"FAX 1"+separador+"FAX 2"+separador+"MOVIL"+separador+"CORREO ELECTRONICO"+separador+"DOMICILIO"+separador+"PROVINCIA"+separador+"POBLACION"+separador+"PAIS"+separador+"MENSAJE"+separador+"TEL.DESPACHO"+separador;
         CenPoblacionesAdm admPob = new CenPoblacionesAdm(this.usrbean);
         CenProvinciaAdm admPro = new CenProvinciaAdm(this.usrbean);
         CenPaisAdm admPais = new CenPaisAdm(this.usrbean);
@@ -3014,11 +3014,44 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	            	else
 	            		sLinea += admPais.getDescripcion(destBean.getIdPais()) + separador;
 	            }
-	            	
-	            
-	            String err = (htErrores.get(destBean)!=null)?"ERROR: "+(String)htErrores.get(destBean):"OK";
-        		sLinea = sLinea + UtilidadesString.sustituirParaExcell(UtilidadesString.getMensajeIdioma("ES", err)) + separador;
-	            
+	           
+	                String err = (htErrores.get(destBean)!=null)?"ERROR: "+(String)htErrores.get(destBean):"OK";
+        		    sLinea = sLinea + UtilidadesString.sustituirParaExcell(UtilidadesString.getMensajeIdioma("ES", err)) + separador; 
+        		
+        			GenParametrosAdm paramAdm = new GenParametrosAdm(this.usrbean);
+		    		String preferencia = paramAdm.getValor(destBean.getIdInstitucion().toString(),"ENV","TIPO_ENVIO_PREFERENTE","1");		    		
+		    		
+		    		Hashtable direcciones = new Hashtable();
+		    		EnvEnviosAdm enviosAdm = new EnvEnviosAdm(this.usrbean);        		 
+		    		CenDireccionesAdm direccionAdm = new CenDireccionesAdm(this.usrbean);
+        			direcciones=direccionAdm.getEntradaDireccionEspecifica(destBean.getIdPersona().toString(),destBean.getIdInstitucion().toString(),"2");
+        		 
+        			//si tiene direccion de tipo despacho saca el telefono1 del despacho
+        		    if (direcciones!=null && direcciones.size()>0) {		           
+        		    	Hashtable htDir = (Hashtable)direcciones;
+				    	sLinea += htDir.get(CenDireccionesBean.C_TELEFONO1)+separador;				      			       
+        		    }else {
+        		    	//si no tiene direccion de tipo despacho se busca la dirección preferente y se saca el telefono1 despacho.
+        		    		Hashtable direccion=direccionAdm.getEntradaDireccionEspecifica(destBean.getIdPersona().toString(),destBean.getIdInstitucion().toString(),preferencia);		    				
+		    				if (direccion!=null && direccion.size()!=0) {
+		    					Hashtable htDir = (Hashtable)direccion;
+		    					sLinea += htDir.get(CenDireccionesBean.C_TELEFONO1)+separador;		    					
+		    				}else {    					
+		    					//si no tiene ni direccion de tipo despacho, ni una dirección preferente se saca el telefono1 de la primera dirección que se encuentre.
+		    					direccion=direccionAdm.getEntradaDireccionEspecifica(destBean.getIdPersona().toString(),destBean.getIdInstitucion().toString(),"");
+		    					if (direccion!=null || direccion.size()!=0) {
+		    					Hashtable htDir = (Hashtable)direccion;
+		    					//String telefono=htDir.get(CenDireccionesBean.C_TELEFONO1).toString();
+		    					if ((htDir.get(CenDireccionesBean.C_TELEFONO1))!=null){
+		    						sLinea += htDir.get(CenDireccionesBean.C_TELEFONO1)+separador;	
+		    					}else{
+		    						sLinea += " " +separador;
+		    					}
+		    					
+		    					}
+		    				}        		    	
+        		    }
+        		  
 	            try {
 	            	if (i==0) {
 	            		// RGG cambio a formato DOS
