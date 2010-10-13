@@ -732,7 +732,7 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 										   CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDDIRECCION ;
 										  ;
 							try{
-							 if (idDireccion!=null){
+							 if ((idDireccion!=null)&&(!idDireccion.equals(""))){
 								if ((new Integer(idDireccion)) != null){ 
 									sql+=  " AND "+CenDireccionTipoDireccionBean.T_NOMBRETABLA + "." + CenDireccionTipoDireccionBean.C_IDTIPODIRECCION + "=" +idDireccion;
 								}	
