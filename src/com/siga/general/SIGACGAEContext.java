@@ -251,11 +251,11 @@ System.setProperties(properties);
 			 * usuario.
 			*/
 			//@long idPersona=setPersona(obUsu.getNif().toUpperCase(),bean,obUsu.getNombre().toUpperCase());
-			long idPersona=setPersona(user.getUsu_nif().toUpperCase(),bean,user.getPfiNombre().toUpperCase());
+			Long idPersona=getPersona(user.getUsu_nif().toUpperCase(),bean);
 			/* Obtenemos el lenguaje de inicio de sesion. El bean ya debe tener la
 			 * institucion establecida.
 			*/
-			setIdioma(new Long(idPersona),Integer.valueOf(bean.getLocation()),bean);
+			setIdioma(idPersona,Integer.valueOf(bean.getLocation()),bean);
 			
 			tx.commit();
 		}
@@ -315,49 +315,11 @@ System.setProperties(properties);
 		rolObj.insert(admBean);
 	}
 
-	private long setPersona(String nif,UsrBean bean,String _nombre) throws Exception {
-		long retorno=-1; bean.setIdPersona(-1);// Valor por defecto del retorno y del id de personna
+	private Long getPersona(String nif,UsrBean bean) throws Exception {
 		CenPersonaAdm personaAdm=new CenPersonaAdm(bean);
-		Vector vec=personaAdm.select(" where ltrim(UPPER(" +CenPersonaBean.C_NIFCIF+"),'0')='"+UtilidadesString.LTrim(nif.toUpperCase(),"0")+"'");
-		// Si no existe el usuario, salimos de la función y pondemos el idusuario a -1
-		if (vec!=null&&vec.size()==1) {
-			
-			CenPersonaBean persona=(CenPersonaBean)vec.elementAt(0);
-			Long idPersona=persona.getIdPersona();
-			bean.setIdPersona(idPersona.longValue());
-			retorno=idPersona.longValue();
+		Long idPersona = personaAdm.getIdPersona(nif);
+		return idPersona;
 
-			/* RGG 07-09-2005 Cambio para comprobar solamente el NIF
-			
-			// Nos aseguramos que hay cierto parecido en los nombres
-			CenPersonaBean persona=(CenPersonaBean)vec.elementAt(0);
-			String apellido1=persona.getApellido1().toUpperCase();
-			String apellido2=persona.getApellido2().toUpperCase();
-			String nombre=persona.getNombre().toUpperCase();
-			_nombre=_nombre.toUpperCase();
-			int parecido=0;
-			if(_nombre.indexOf(apellido1)!=-1) parecido++;
-			if(_nombre.indexOf(apellido1)!=-1)parecido++;
-			if(_nombre.indexOf(nombre)!=-1)parecido++;
-			try{
-			if (parecido>2){
-				Long idPersona=persona.getIdPersona();
-				bean.setIdPersona(idPersona.longValue());
-				retorno=idPersona.longValue();
-			}
-			}catch(Exception e){
-				// Si se produce una excepción, el usuario quedará en -1
-				e.printStackTrace();
-			}
-			
-			*/
-
-		} else if (vec.size()>1) { // esto no se debe dar nunca
-			throw new SIGAException("messages.general.errorUsuarioEfectivoDuplicado");
-		}
-
-
-		return retorno;
 	}
 
 	//@private AdmUsuarioEfectivoBean checkUsuarioEfectivo(SesionUsuarioTO usu,UsrBean bean, String rol,String numserie) throws Exception {
