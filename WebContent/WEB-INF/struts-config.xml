@@ -598,6 +598,11 @@
 			<forward name="generaInformes" path="/html/jsp/informes/informeFacturacionMultiple.jsp"/>
 			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>
 		</action>
+		<!-- Informe multiple - BETA -->
+		<action path="/INF_InformesMultiplesBeta" type="com.siga.informes.action.InformesFacturacionMultipleAction" name="InformesFacturacionMultipleForm" scope="request">
+            <forward name="inicio" path="/html/jsp/informes/informeFacturacionMultipleBeta.jsp"/>
+			<forward name="generaInformes" path="/html/jsp/informes/informeFacturacionMultipleBeta.jsp"/>
+		</action>
 
 		<!-- ***** Censo / Cuentas Bancarias ***** -->
 		<action path="/CEN_SolicitudCuentasBancarias" type="com.siga.censo.action.CuentasBancariasAction" name="cuentasBancariasSolicForm">

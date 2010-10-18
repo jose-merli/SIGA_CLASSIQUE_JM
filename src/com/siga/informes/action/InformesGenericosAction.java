@@ -324,14 +324,10 @@ public class InformesGenericosAction extends MasterAction {
 						} else 
 
 							if (idTipoInforme.equals("FACJG")) {
-								ArrayList<HashMap<String, String>> filtrosInforme = 
-										obtenerDatosFormInformeFacturacionJG(miForm, request);
-								InformePersonalizable inf = new InformePersonalizable();
-								mapDestino = inf.generarInformes(mapping,
-										miForm, request, response, 
-										InformePersonalizable.I_INFORMEFACTSJCS, filtrosInforme);
-								//mapDestino = generaInfFacJG(mapping, miForm, request, response);
+								mapDestino = generaInfFacJG(mapping, miForm, request, response);
 							} else if (idTipoInforme.equals("FJGM")) {
+								mapDestino = generaInfFacJG(mapping, miForm, request, response);
+							} else if (idTipoInforme.equals(InformePersonalizable.I_INFORMEFACTSJCS)) {
 								ArrayList<HashMap<String, String>> filtrosInforme = 
 										obtenerDatosFormInformeFacturacionJG(miForm, request);
 								InformePersonalizable inf = new InformePersonalizable();
@@ -1011,16 +1007,16 @@ public class InformesGenericosAction extends MasterAction {
 					!miform.getDatosInforme().trim().equals(""))
 			{
 				Hashtable aux = (Hashtable) datos.get(0);
-				if (aux!=null && aux.size()==2) {
-					facturaciones = (String) aux.get ("idFacturacion");
-					idioma = (String) aux.get ("idioma");
-				}else {
-
-					idfacturacionIni = (String) aux.get ("idFacturacionIni");
-					idfacturacionFin = (String) aux.get ("idFacturacionFin");
-					idioma = (String) aux.get ("idioma");
-					facturaciones = EjecucionPLs.ejecutarFuncFacturacionesIntervalo(idinstitucion, idfacturacionIni, idfacturacionFin);
-					multiple = true;
+				if (aux != null) {
+					idioma = usr.getLanguage();
+					if (aux.size()==1) {
+						facturaciones = (String) aux.get ("idFacturacion");
+					} else {
+						idfacturacionIni = (String) aux.get ("idFacturacionIni");
+						idfacturacionFin = (String) aux.get ("idFacturacionFin");
+						facturaciones = EjecucionPLs.ejecutarFuncFacturacionesIntervalo(idinstitucion, idfacturacionIni, idfacturacionFin);
+						multiple = true;
+					}
 				}
 			}
 

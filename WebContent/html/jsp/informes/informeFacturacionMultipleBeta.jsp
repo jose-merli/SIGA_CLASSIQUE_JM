@@ -40,7 +40,6 @@
 <html>
 <head>
 
-
 <link id="default" rel="stylesheet" type="text/css"	href="<%=app%>/html/jsp/general/stylesheet.jsp">
 <script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
 <script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
@@ -52,17 +51,15 @@
 <!-- El nombre del formulario se obtiene del struts-config -->
 <html:javascript formName="InformesFacturacionMultipleForm"	staticJavascript="false" />
 
-
 <!-- Titulo y localizacion -->
-<siga:Titulo titulo="factSJCS.informes.informeMultiple.cabecera" localizacion="factSJCS.informes.ruta" />
-
+<siga:Titulo titulo="menu.justiciaGratuita.informes.informeMultipleNuevo" localizacion="factSJCS.informes.ruta" />
 
 </head>
 <body>
 
 
 <!-- Campos -->
-<siga:ConjCampos leyenda="factSJCS.informes.informeMultiple.cabecera">
+<siga:ConjCampos leyenda="menu.justiciaGratuita.informes.informeMultipleNuevo">
 	<table class="tablaCampos" align="center">
 		<tr>
 			<td class="labelText" width="150"><siga:Idioma
@@ -87,21 +84,15 @@
 <!-- Formularios -->
 <html:form action="/INF_InformesGenericos.do" method="POST"	target="submitArea">
 	<input type="hidden" name="actionModal" value="">
-	<html:hidden property="idTipoInforme" value="FJGM" />
+	<html:hidden property="idTipoInforme" value="FACJ2" />
 	<html:hidden property="datosInforme" value="" />
 	<html:hidden property="seleccionados" value="" />
 	<html:hidden property="idInforme" value="" />
 </html:form>
-<html:form action="/FCS_DatosGeneralesFacturacion.do" method="POST"	target="submitArea">
-	<html:hidden property="accion" value="downloadMultiple" />
-	<html:hidden property="idFacturacionIniDownload" value="" />
-	<html:hidden property="idFacturacionFinDownload" value="" />
-	<html:hidden property="idioma" value="" />
-</html:form>
 
 
 <!-- Botones -->
-<siga:ConjBotonesAccion clase="botonesSeguido" botones="GX,GM" />
+<siga:ConjBotonesAccion clase="botonesSeguido" botones="GM" />
 
 
 <!-- Scripts de botones -->
@@ -115,19 +106,6 @@
 		f.datosInforme.value = "idFacturacionIni" + "==" + idFactIni + "##"
 				+ "idFacturacionFin" + "==" + idFactFin;
 		f.seleccionados.value = "1";
-		f.submit();
-	}
-
-	// Funcion asociada a boton Generar Excels
-	function accionGenerarExcels() {
-		sub();
-		var f = document.getElementById("DatosGeneralesFacturacionForm");
-		idFactIni = document.getElementById("idFacturacionInicio").value;
-		idFactFin = document.getElementById("idFacturacionFin").value;
-		idio = document.getElementById("idioma").value;
-		f.idFacturacionIniDownload.value = idFactIni;
-		f.idFacturacionFinDownload.value = idFactFin;
-		f.idioma.value = idio;
 		f.submit();
 	}
 </script>

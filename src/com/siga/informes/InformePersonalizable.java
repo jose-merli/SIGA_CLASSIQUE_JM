@@ -44,7 +44,7 @@ public class InformePersonalizable extends MasterReport
 {
 	// Informes personalizables
 	public static final String I_CERTIFICADOPAGO = "CERPA";
-	public static final String I_INFORMEFACTSJCS = "FACJG";
+	public static final String I_INFORMEFACTSJCS = "FACJ2";
 	
 	/**
 	 * Invoca a la generacion de formulario personalizado pasandole los datos
