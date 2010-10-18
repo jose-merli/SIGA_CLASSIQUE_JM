@@ -5,6 +5,7 @@ import java.util.*;
 import com.atos.utils.*;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.gratuita.vos.VolantesExpressVo;
 
 // Clase: ScsActuacionAsistenciaAdm 
 // Autor: carlos.vidal@atosorigin.com
@@ -330,5 +331,80 @@ public class ScsActuacionAsistenciaAdm extends MasterBeanAdministrador {
 		String campos [] = { ScsActuacionAsistenciaBean.C_FECHAJUSTIFICACION, ScsActuacionAsistenciaBean.C_NUMEROASUNTO, ScsActuacionAsistenciaBean.C_IDJUZGADO, ScsActuacionAsistenciaBean.C_IDINSTITUCIONJUZGADO, ScsActuacionAsistenciaBean.C_IDCOMISARIA, ScsActuacionAsistenciaBean.C_IDINSTITUCIONCOMISARIA, ScsActuacionAsistenciaBean.C_IDTIPOACTUACION};
 		this.updateDirect(actuacion,claves,campos);
 	}
+
+	public  List<ScsActuacionAsistenciaBean> getActuacionesAsistenciaVolantesExpres(ScsAsistenciasBean asistencia,String lugar) 
+	throws ClsExceptions{
+		
+	Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+	int contador = 0;
+
+		StringBuffer sql =  new StringBuffer();
+		sql.append("SELECT  "); 
+		sql.append( ScsActuacionAsistenciaBean.C_IDACTUACION);
+		sql.append(", "); 
+		sql.append( ScsActuacionAsistenciaBean.C_FECHAJUSTIFICACION);
+		sql.append(" FROM ");
+		sql.append(ScsActuacionAsistenciaBean.T_NOMBRETABLA); 
+		sql.append( "  ");
+		sql.append(" WHERE ");
+		 
+		sql.append( ScsActuacionAsistenciaBean.C_IDINSTITUCION); 
+		sql.append( " = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),asistencia.getIdInstitucion());
+		sql.append(" AND " );
+		sql.append( ScsActuacionAsistenciaBean.C_ANIO); 
+		sql.append( " = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),asistencia.getAnio());
+		sql.append(" AND "); 
+		sql.append( ScsActuacionAsistenciaBean.C_NUMERO); 
+		sql.append( " = :");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),asistencia.getNumero());
+		if(lugar.equals("centro")){
+			
+				sql.append(" AND "); 
+				sql.append( ScsActuacionAsistenciaBean.C_IDCOMISARIA);
+				sql.append(" IS NOT NULL ");
+		}else{
+				sql.append(" AND "); 
+				sql.append( ScsActuacionAsistenciaBean.C_IDJUZGADO);
+				sql.append(" IS NOT NULL ");
+		
+		}
+		
+				
+		List<ScsActuacionAsistenciaBean> alActuacionesAsistencias = null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+												
+            if (rc.findBind(sql.toString(),htCodigos)) {
+            	alActuacionesAsistencias = new ArrayList<ScsActuacionAsistenciaBean>();
+            	ScsActuacionAsistenciaBean actuacionAsistenciaBean = null;
+    			for (int i = 0; i < rc.size(); i++){
+            		Row fila = (Row) rc.get(i);
+            		Hashtable<String, Object> htFila=fila.getRow();
+            		actuacionAsistenciaBean = new ScsActuacionAsistenciaBean();
+            		actuacionAsistenciaBean.setIdActuacion(new Long((String)htFila.get(ScsActuacionAsistenciaBean.C_IDACTUACION)));
+            		actuacionAsistenciaBean.setFechaJustificacion((String)htFila.get(ScsActuacionAsistenciaBean.C_FECHAJUSTIFICACION));
+					
+					alActuacionesAsistencias.add(actuacionAsistenciaBean);
+            	}
+            }else{
+            	alActuacionesAsistencias = new ArrayList<ScsActuacionAsistenciaBean>();
+            } 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+       }
+		
+	
+	return alActuacionesAsistencias;
+}
+	
+	
 
 }

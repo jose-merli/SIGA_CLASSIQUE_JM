@@ -750,7 +750,11 @@ public class VolantesExpressAction extends MasterAction
 			ClsLogging.writeFileLog("getAjaxGuardarAsistencias:Antes de ejecutar servicio:", 10);
 			ArrayList<ScsAsistenciasBean> alAsistencias = (ArrayList<ScsAsistenciasBean>) ves.executeService(volantesExpressVo);
 			miForm.setAsistencias(alAsistencias);
-			miForm.setMsgAviso(UtilidadesString.getMensajeIdioma(volantesExpressVo.getUsrBean(),"messages.updated.success"));
+			if(volantesExpressVo.getMsgAviso()!=null && !volantesExpressVo.getMsgAviso().equals("")){
+				miForm.setMsgAviso(volantesExpressVo.getMsgAviso());
+			}else{
+				miForm.setMsgAviso(UtilidadesString.getMensajeIdioma(volantesExpressVo.getUsrBean(),"messages.updated.success"));
+			}
 		} catch (SIGAException e) {
 			miForm.setAsistencias(alAsistenciaOld);
 			String error = UtilidadesString.getMensajeIdioma(volantesExpressVo.getUsrBean(),e.getLiteral());

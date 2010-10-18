@@ -674,7 +674,8 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 				String comisaria = miForm.getComisaria();				
 				hash.put(ScsActuacionAsistenciaBean.C_IDCOMISARIA,comisaria.substring(0,comisaria.indexOf(",")));
 				hash.put(ScsActuacionAsistenciaBean.C_IDINSTITUCIONCOMISARIA,comisaria.substring(comisaria.indexOf(",")+1));
-				if((miForm.getJuzgadoAsistencia()==null||miForm.getJuzgadoAsistencia().trim().equals("")&&(miForm.getComisariaAsistencia()==null||miForm.getComisariaAsistencia().trim().equals("")))){
+//				if((miForm.getJuzgadoAsistencia()==null||miForm.getJuzgadoAsistencia().trim().equals("")&&(miForm.getComisariaAsistencia()==null||miForm.getComisariaAsistencia().trim().equals("")))){
+				if(miForm.getComisariaAsistencia()==null||miForm.getComisariaAsistencia().trim().equals("")){
 					asistencia = new ScsAsistenciasBean();
 					asistencia.setIdInstitucion(new Integer((String)hash.get(ScsActuacionAsistenciaBean.C_IDINSTITUCION)));
 					asistencia.setAnio(new Integer((String)hash.get(ScsActuacionAsistenciaBean.C_ANIO)));
@@ -695,8 +696,8 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 				String juzgado = miForm.getJuzgado();				
 				hash.put(ScsActuacionAsistenciaBean.C_IDJUZGADO, juzgado.substring(0,juzgado.indexOf(",")));
 				hash.put(ScsActuacionAsistenciaBean.C_IDINSTITUCIONJUZGADO, juzgado.substring(juzgado.indexOf(",")+1));
-				if((miForm.getJuzgadoAsistencia()==null||miForm.getJuzgadoAsistencia().trim().equals("")&&(miForm.getComisariaAsistencia()==null||miForm.getComisariaAsistencia().trim().equals("")))){
-					
+//				if((miForm.getJuzgadoAsistencia()==null||miForm.getJuzgadoAsistencia().trim().equals("")&&(miForm.getComisariaAsistencia()==null||miForm.getComisariaAsistencia().trim().equals("")))){
+				if(miForm.getJuzgadoAsistencia()==null||miForm.getJuzgadoAsistencia().trim().equals("")){
 					if(asistencia==null){
 						asistencia = new ScsAsistenciasBean();
 						asistencia.setIdInstitucion(new Integer((String)hash.get(ScsActuacionAsistenciaBean.C_IDINSTITUCION)));

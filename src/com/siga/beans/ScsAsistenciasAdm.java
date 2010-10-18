@@ -1749,6 +1749,9 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 			}
 			
 			ScsActuacionAsistenciaBean act = new ScsActuacionAsistenciaBean ();
+			
+			
+			
 			act.setAcuerdoExtrajudicial(new Integer(0));
 			act.setAnio(asistencia.getAnio());
 			act.setDescripcionBreve("("+UtilidadesString.getMensajeIdioma(volantesExpressVo.getUsrBean(), "menu.justiciaGratuita.volantesExpres")+")");
@@ -1759,7 +1762,8 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 				act.setValidada("1"); // validada si
 			else
 				act.setValidada("0"); // validada no
-			act.setIdActuacion(new Long(1));
+			if(isInsertar)
+				act.setIdActuacion(new Long(1));
 			act.setIdInstitucion(asistencia.getIdInstitucion());
 			act.setIdTipoAsistencia(asistencia.getIdTipoAsistencia());
 			act.setNumero(new Long(""+asistencia.getNumero()));
@@ -1785,8 +1789,17 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 				actAdm.insert(act);
 			}
 			else {
-				if(isActuacionVolanteExpressModificada(asistencia,asistenciaBBDD,act,actAdm))
-					actAdm.updateActuacionVolanteExpress(act);	
+				
+				try {
+					if(isActuacionVolanteExpressModificada(asistencia,asistenciaBBDD,act,actAdm,volantesExpressVo.getLugar()))
+						actAdm.updateActuacionVolanteExpress(act);
+				} catch (SIGAException e) {
+					
+					
+					String msg = volantesExpressVo.getMsgAviso()!=null?volantesExpressVo.getMsgAviso():UtilidadesString.getMensajeIdioma(volantesExpressVo.getUsrBean(),"gratuita.volantesExpres.mensaje.aviso.actuacionesNoActualizadas");
+					msg += "\\n"+asistencia.getAnio()+"/"+asistencia.getNumero();
+					volantesExpressVo.setMsgAviso(msg);
+				}	
 			}
 		}
 		
@@ -1940,11 +1953,40 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 	private void updateAsistenciaVolanteExpress(ScsAsistenciasBean asistencia) throws ClsExceptions 
 	{
 		String claves [] ={ScsAsistenciasBean.C_ANIO,ScsAsistenciasBean.C_NUMERO, ScsAsistenciasBean.C_IDINSTITUCION};
-		String campos [] = {ScsAsistenciasBean.C_FECHAHORA, ScsAsistenciasBean.C_COMISARIA, ScsAsistenciasBean.C_COMISARIA_IDINSTITUCION, ScsAsistenciasBean.C_JUZGADO, ScsAsistenciasBean.C_JUZGADO_IDINSTITUCION, ScsAsistenciasBean.C_NUMEROPROCEDIMIENTO, ScsAsistenciasBean.C_NUMERODILIGENCIA, ScsAsistenciasBean.C_DELITOSIMPUTADOS, ScsAsistenciasBean.C_IDPERSONAJG};
+		String campos [] = new String[7];
+		campos[0] = ScsAsistenciasBean.C_FECHAHORA;
+		campos[1] =  ScsAsistenciasBean.C_JUZGADO;
+		campos[2] =  ScsAsistenciasBean.C_JUZGADO_IDINSTITUCION;
+		campos[3] =  ScsAsistenciasBean.C_NUMEROPROCEDIMIENTO;
+		campos[4] =  ScsAsistenciasBean.C_NUMERODILIGENCIA;
+		campos[5] =  ScsAsistenciasBean.C_DELITOSIMPUTADOS;
+		campos[6] =  ScsAsistenciasBean.C_IDPERSONAJG;
+		if(asistencia.getComisaria()!=null){
+			campos[1] =  ScsAsistenciasBean.C_COMISARIA;
+			campos[2] =  ScsAsistenciasBean.C_COMISARIA_IDINSTITUCION;
+		}
+			
 		this.updateDirect(asistencia,claves,campos);
 	}
-	private boolean isActuacionVolanteExpressModificada(ScsAsistenciasBean asistencia,ScsAsistenciasBean asistenciaBBDD,ScsActuacionAsistenciaBean actuacion, ScsActuacionAsistenciaAdm actAdm) throws ClsExceptions{
+	private boolean isActuacionVolanteExpressModificada(ScsAsistenciasBean asistencia,ScsAsistenciasBean asistenciaBBDD,ScsActuacionAsistenciaBean actuacion, ScsActuacionAsistenciaAdm actAdm, String lugar) throws SIGAException, ClsExceptions{
 		boolean isActuacionModificada = false;
+		
+		//Hashtable htActuacion = actAdm.beanToHashTable(actuacion);
+		List<ScsActuacionAsistenciaBean> listActuacionesBBDD = actAdm.getActuacionesAsistenciaVolantesExpres(asistencia,lugar);
+		//Si hay ms de una actuacion para esta asistencia de l tipo de lugar del formulario lanzamos excepcion,
+		//para mostrar mensaje de aiso de que no e han podido modificar
+		
+		ScsActuacionAsistenciaBean actuacionBBDD = null;
+		if(listActuacionesBBDD!=null&&listActuacionesBBDD.size()>1)
+				throw new SIGAException("Hay mas de una actuacion de ese tipo, no se modifica ninguna");
+		actuacionBBDD = listActuacionesBBDD.get(0);
+		actuacion.setIdActuacion(actuacionBBDD.getIdActuacion());
+		isActuacionModificada = !((actuacion.getFechaJustificacion()==null && actuacionBBDD.getFechaJustificacion()==null)
+				|| (actuacion.getFechaJustificacion()!=null && actuacionBBDD.getFechaJustificacion()!=null && actuacion.getFechaJustificacion().trim().equalsIgnoreCase(actuacionBBDD.getFechaJustificacion().trim())));
+		if(isActuacionModificada) return true;
+		
+		
+		
 		isActuacionModificada = !((asistencia.getComisaria()==null && asistenciaBBDD.getComisaria()==null)
 				|| (asistencia.getComisaria()!=null && asistenciaBBDD.getComisaria()!=null && asistencia.getComisaria().toString().trim().equalsIgnoreCase(asistenciaBBDD.getComisaria().toString().trim())));
 		if(isActuacionModificada) return true;
@@ -1958,11 +2000,7 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 				|| (numDiligencia!=null && asistenciaBBDD.getNumeroDiligencia()!=null && numDiligencia.trim().equalsIgnoreCase(asistenciaBBDD.getNumeroDiligencia().trim())));
 		if(isActuacionModificada) return true;
 		
-		Hashtable htActuacion = actAdm.beanToHashTable(actuacion);
-		ScsActuacionAsistenciaBean actuacionBBDD = (ScsActuacionAsistenciaBean) ((Vector)actAdm.selectByPK(htActuacion)).get(0);
-		isActuacionModificada = !((actuacion.getFechaJustificacion()==null && actuacionBBDD.getFechaJustificacion()==null)
-				|| (actuacion.getFechaJustificacion()!=null && actuacionBBDD.getFechaJustificacion()!=null && actuacion.getFechaJustificacion().trim().equalsIgnoreCase(actuacionBBDD.getFechaJustificacion().trim())));
-		if(isActuacionModificada) return true;
+		
 		
 		return isActuacionModificada;
 		

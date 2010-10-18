@@ -25,6 +25,15 @@ public class VolantesExpressVo{
 	
 	UsrBean usrBean;
 	String fechaJustificacion;
+	String msgAviso;
+	
+	public String getMsgAviso() {
+		return msgAviso;
+	}
+
+	public void setMsgAviso(String msgAviso) {
+		this.msgAviso = msgAviso;
+	}
 
 	public Integer getIdInstitucion() {
 		return idInstitucion;
