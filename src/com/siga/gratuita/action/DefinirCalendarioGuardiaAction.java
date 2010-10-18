@@ -202,6 +202,8 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 			new ScsCalendarioGuardiasAdm(this.getUserBean(request));
 		ScsGuardiasTurnoAdm admGuardiasTurno = 
 			new ScsGuardiasTurnoAdm(this.getUserBean(request));
+		ScsGuardiasColegiadoAdm admGuardiasColegiado = 
+			new ScsGuardiasColegiadoAdm(this.getUserBean(request));
 		UsrBean usr = null;
 
 		//Variables
@@ -216,6 +218,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 		String fechaDesde="", fechaHasta="", observaciones="";
 		String diasSeparacionGuardias="";
 		String tipoDiasGuardia="";
+		int numeroGuardias=0;
 
 		try
 		{
@@ -256,6 +259,9 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 
 			diasSeparacionGuardias = (String)((Hashtable)registros.get(0)).get("DIASSEPARACIONGUARDIAS");
 			tipoDiasGuardia = (String)((Hashtable)registros.get(0)).get("TIPODIASGUARDIA");
+			
+			// Recuperamos el numero de guardias en el calendario para saber si tenemos que pintar el boton de generar calendario
+			numeroGuardias = admGuardiasColegiado.getNumeroGuardias(idinstitucion, idturno, idguardia, idcalendarioguardias);
 
 			//almacenando en sesion el registro para futuras modificaciones
 			backupHash.put("IDCALENDARIOGUARDIAS", idcalendarioguardias);
@@ -283,6 +289,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 			miHash.put("OBSERVACIONES",observaciones);		
 			miHash.put("DIASSEPARACIONGUARDIAS", diasSeparacionGuardias);
 			miHash.put("TIPODIASGUARDIA", tipoDiasGuardia);
+			miHash.put("NUMEROGUARDIAS", String.valueOf(numeroGuardias));
 
 			request.setAttribute("DATOSINICIALES",miHash);
 
@@ -1648,8 +1655,12 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 			tx = usr.getTransaction();
 			tx.begin();
 			
+			/*
+			// jbd // inc7496 - Ya no se borra la configuracion antes de crear el nuevo
+				   // es necesario borrarlo y volver a crearlo
 			//borrando el calendario previamente
 			this.borrarGeneracionCalendario(miHash, usr);
+			*/
 			
 			//generando el Calendario de Guardias
 			CalendarioSJCS calendarioSJCS = new CalendarioSJCS(new Integer(idInstitucion),

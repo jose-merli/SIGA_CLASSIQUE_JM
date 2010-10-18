@@ -37,6 +37,7 @@
 	String diasSeparacionGuardias="";
 	String tipoDiasGuardia="";
 	String sTipoDiasGuardia="";
+	String numGuardias="";
 
 	//Obtengo del request la hash con los datos iniciales
 	if (request.getAttribute("DATOSINICIALES") != null) {
@@ -53,12 +54,15 @@
 		fechaDesde = (String)datosHash.get("FECHADESDE");
 		fechaHasta = (String)datosHash.get("FECHAHASTA");
 		observaciones = (String)datosHash.get("OBSERVACIONES");
+		numGuardias = (String)datosHash.get("NUMEROGUARDIAS");
 		modo = (String)datosHash.get("modo");
 
 		diasSeparacionGuardias = (String)datosHash.get("DIASSEPARACIONGUARDIAS");
 		tipoDiasGuardia = (String)datosHash.get("TIPODIASGUARDIA");
 		sTipoDiasGuardia = DefinirGuardiasTurnosAction.obtenerTipoDiaPeriodo(tipoDiasGuardia, usr);
 	}
+	
+	boolean tieneGuardias = numGuardias!=null && !numGuardias.equalsIgnoreCase("0");
 %>
 
 <%@page import="java.util.Properties"%>
@@ -244,8 +248,12 @@
 		 LA PROPIEDAD CLASE SE CARGA CON EL ESTILO "botonesDetalle" 
 		 PARA POSICIONARLA EN SU SITIO NATURAL, SI NO SE POSICIONA A MANO
 	-->
+	<%if(tieneGuardias){%>
+		<siga:ConjBotonesAccion botones="Y,C,NL" clase="botonesSeguido" modal="G" modo="<%=modo%>" />
+	<%}else{%>
+		<siga:ConjBotonesAccion botones="GC,Y,C,NL" clase="botonesSeguido" modal="G" modo="<%=modo%>" />
+	<%}%>
 	
-	<siga:ConjBotonesAccion botones="GC,Y,C,NL" clase="botonesSeguido" modal="G" modo="<%=modo%>" />
 <html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="">
   <input type="hidden" name="actionModal" value="">
   <input type="hidden" name="modo" value="abrirBusquedaModal">
@@ -324,11 +332,12 @@
 				if (confirm('<siga:Idioma key="general.aviso.generarCalendarioFechasAnteriorHoy"/>'))
 					document.frames.submitAreaPrincipal.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.gratuita.generandoCalendario';						
 				else{
+					calendarioCreado=1;
 					fin();
 					return false;
 				}
-			} else				
-				document.frames.submitAreaPrincipal.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.gratuita.generandoCalendario';			
+			} else
+				document.frames.submitAreaPrincipal.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.gratuita.generandoCalendario';
 		}
 		
 		//Asociada al boton GuardarCerrar

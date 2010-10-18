@@ -1869,5 +1869,36 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		
 	}
 	
+	/**
+	 * Nos da el numero de guardias que hay para un calendario
+	 * @param idInstitucion
+	 * @param idTurno
+	 * @param idGuardia
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public int getNumeroGuardias(String idInstitucion, String idTurno, String idGuardia, String idCalendario) throws ClsExceptions {
+		Vector salida = new Vector();
+		StringBuffer sql = new StringBuffer();
+		int total = 0;
+
+		sql.append(" SELECT count(1) TOTAL ");
+		sql.append("   FROM SCS_CABECERAGUARDIAS guard ");
+		sql.append("  WHERE guard.IDINSTITUCION = " + idInstitucion);
+		sql.append("    AND guard.IDTURNO = " + idTurno);
+		sql.append("    AND guard.IDGUARDIA = " + idGuardia);
+		sql.append("    AND guard.IDCALENDARIOGUARDIAS = " + idCalendario);
+	
+		try {
+			salida = this.selectGenerico(sql.toString());
+			if(salida!=null && salida.size()>0){
+				Hashtable result = (Hashtable) salida.get(0);
+				total = Integer.valueOf((String)result.get("TOTAL"));
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e,"Error en consulta de getColegiadosGuardiaDia");
+		}
+		return total;
+	}
 	
 }
