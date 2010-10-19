@@ -1571,7 +1571,8 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 						ficheros.add(file);
 					}					
 				} catch (Exception e) {
-					throw new SIGAException("messages.cajg.error.descargaFichero");
+					ClsLogging.writeFileLogError("Error al generar el fichero", e, 3);
+					throw new SIGAException("messages.cajg.error.descargaFichero", e);
 				}			
 				
 			}
@@ -1602,8 +1603,10 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		} catch (SIGAException e) {
 			throw e;
 		} catch (ClsExceptions e) {
+			ClsLogging.writeFileLogError("Error en generaFicheroTXT", e, 3);
 			throwExcp("messages.cajg.error.nodatos", new String[] { "modulo.gratuita" }, e, null);
 		} catch (Exception e) {
+			ClsLogging.writeFileLogError("Error en generaFicheroTXT", e, 3);
 			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
 		}
 		
