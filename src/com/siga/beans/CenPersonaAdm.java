@@ -1190,22 +1190,16 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 		Long idPersona = null;
 		String consulta = new String();
 		consulta = " SELECT IDPERSONA FROM CENPERSONA where " +
-				"ltrim(UPPER(" +CenPersonaBean.C_NIFCIF+"),'0')='"+UtilidadesString.LTrim(nifCif.toUpperCase(),"0")+"'";
-		Vector vec=select(consulta);
-		if (vec!=null&&vec.size()==1) {
-			
-			CenPersonaBean persona=(CenPersonaBean)vec.elementAt(0);
-			idPersona=persona.getIdPersona();
-			
-
-		
-		} else if (vec.size()>1) { // esto no se debe dar nunca
-			throw new SIGAException("messages.general.errorUsuarioEfectivoDuplicado");
-		}
+				" ltrim(UPPER(" +CenPersonaBean.C_NIFCIF+"),'0')='"+UtilidadesString.LTrim(nifCif.toUpperCase(),"0")+"'";
+		RowsContainer rc = new RowsContainer(); 
+		if(rc.size()>1){
+			Row fila = (Row) rc.get(0);
+			idPersona=UtilidadesHash.getLong(fila.getRow(),CenPersonaBean.C_IDPERSONA);
+		}else{
+    		throw new SIGAException("messages.general.errorUsuarioEfectivoDuplicado");
+    	}
 		return idPersona;
 	}
-	
-	
 	public Hashtable getPersonYnColegiado (String idPersona, Integer idInstitucion) 
 	{
 	    Hashtable codigos = new Hashtable();
