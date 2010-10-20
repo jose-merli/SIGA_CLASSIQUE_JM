@@ -350,7 +350,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							ScsEJGBean.C_IDPRETENSION,				ScsEJGBean.C_IDPRETENSIONINSTITUCION,
 							ScsEJGBean.C_IDDICTAMEN,				ScsEJGBean.C_REFAUTO,
 							ScsEJGBean.C_FECHADESIGPROC,			ScsEJGBean.C_IDENTIFICADORDS,
-							ScsEJGBean.C_SITUACION};
+							ScsEJGBean.C_SITUACION,	                ScsEJGBean.C_IDTIPOENCALIDAD,
+							ScsEJGBean.C_CALIDADIDINSTITUCION};
 		return campos;
 	}
 	
@@ -438,7 +439,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			bean.setRefAuto(UtilidadesHash.getString(hash,ScsEJGBean.C_REFAUTO));
 			bean.setFechaProc(UtilidadesHash.getString(hash,ScsEJGBean.C_FECHADESIGPROC));
 			bean.setIdentificadorDS(UtilidadesHash.getString(hash,ScsEJGBean.C_IDENTIFICADORDS));
-			bean.setIdSituacion(UtilidadesHash.getString(hash,ScsEJGBean.C_SITUACION));
+			bean.setIdSituacion(UtilidadesHash.getString(hash,ScsEJGBean.C_SITUACION));			
+			bean.setIdTipoenCalidad(UtilidadesHash.getInteger(hash,ScsEJGBean.C_IDTIPOENCALIDAD));
+			bean.setCalidadidinstitucion(UtilidadesHash.getInteger(hash,ScsEJGBean.C_CALIDADIDINSTITUCION));
 		}
 		catch (Exception e){
 			throw new ClsExceptions(e,"EXCEPCION EN TRANSFORMAR HASHTABLE A BEAN");
@@ -521,7 +524,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, ScsEJGBean.C_REFAUTO, b.getRefAuto());
 			UtilidadesHash.set(htData,ScsEJGBean.C_FECHADESIGPROC, b.getFechaProc());
 			UtilidadesHash.set(htData,ScsEJGBean.C_IDENTIFICADORDS, b.getIdentificadorDS());
-			UtilidadesHash.set(htData,ScsEJGBean.C_SITUACION, b.getIdSituacion());
+			UtilidadesHash.set(htData,ScsEJGBean.C_SITUACION, b.getIdSituacion());			
+			UtilidadesHash.set(htData,ScsEJGBean.C_IDTIPOENCALIDAD, b.getIdTipoenCalidad());
+			UtilidadesHash.set(htData,ScsEJGBean.C_CALIDADIDINSTITUCION, b.getCalidadidinstitucion());
 		}
 		catch (Exception e){
 			 throw new ClsExceptions(e,"EXCEPCION EN TRANSFORMAR EL BEAN A HASHTABLE");
