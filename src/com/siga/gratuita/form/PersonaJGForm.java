@@ -16,6 +16,8 @@ import com.siga.Utilidades.UtilidadesHash;
 
 
 public class PersonaJGForm extends MasterForm {
+	
+		
 			
 	// Datos de entrada de la ventana
 	public void setNcolegiadoContrario(String dato) {
@@ -362,6 +364,8 @@ public class PersonaJGForm extends MasterForm {
 	public String getCalidad() {
 		return UtilidadesHash.getString(this.datos,"Calidad");
 	}
+	
+		
 	public void setIdProcurador(String dato) {
 		UtilidadesHash.set(this.datos,"IdProcurador",dato);
 	}
@@ -561,7 +565,26 @@ public class PersonaJGForm extends MasterForm {
 	String correoElectronico=null;
 	String fax=null;	
 	String lNumerosTelefonos;
+	String idTipoenCalidad="";
 	
+	public String getIdTipoenCalidad() {
+		return idTipoenCalidad;
+	}
+
+	public void setIdTipoenCalidad(String idTipoenCalidad) {
+		this.idTipoenCalidad = idTipoenCalidad;
+	}
+
+	String calidadIdinstitucion="";
+	
+	public String getCalidadIdinstitucion() {
+		return calidadIdinstitucion;
+	}
+
+	public void setCalidadIdinstitucion(String calidadIdinstitucion) {
+		this.calidadIdinstitucion = calidadIdinstitucion;
+	}
+
 	public String getFax() {
 		return fax;
 	}
@@ -630,7 +653,7 @@ public class PersonaJGForm extends MasterForm {
 	public void setNombreAnterior(String nom){
 		this.nombreAnterior = nom;
 	}
-	
+
 	
 
 }
