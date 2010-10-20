@@ -669,8 +669,14 @@ public class DefinirEJGAction extends MasterAction
 				if (miHash.get("IDPERSONA")==null ||((String)miHash.get("IDPERSONA")).equals("")){
 				 hashAux=sojAdm.existeTramitadorSOJ((String)miForm.getIdInstitucion(),(String)miForm.getSOJNumero(),(String)miForm.getSOJAnio(),(String)miForm.getSOJIdTipoSOJ());
 				 miHash.put(ScsEJGBean.C_IDPERSONA,hashAux.get("IDPERSONA"));
-				} 
-			  } 	
+				}	
+			  }
+               /**INC_05960_SIGA, se introduce el campo idtipoencalidad a cero ya que cuando se crea por primera
+               vez el campo calidad por defecto sera "Demandado"**/
+				miHash.put(ScsEJGBean.C_CALIDAD,"0");
+				miHash.put(ScsEJGBean.C_IDTIPOENCALIDAD,0);
+				miHash.put(ScsEJGBean.C_CALIDADIDINSTITUCION,usr.getLocation());
+				
 				// 1. Insertamos el EJG
 				if (!ejgAdm.insert(miHash)) {
 					throw new ClsExceptions ("Error al crear el EJG desde la designa");
@@ -772,8 +778,11 @@ public class DefinirEJGAction extends MasterAction
 					if ((vDe != null) && (vDe.size() == 1)) {
 						defBean = (ScsDefendidosDesignaBean) vDe.get(0);
 					}
-					
-					UtilidadesHash.set(miHash, ScsEJGBean.C_CALIDAD,     			defBean.getCalidad());
+					  /**INC_05960_SIGA, se introduce el campo idtipoencalidad a cero ya que cuando se crea por primera
+                      vez el campo calidad por defecto sera "Demandado"**/
+					miHash.put(ScsEJGBean.C_CALIDAD,"0");
+				    miHash.put(ScsEJGBean.C_IDTIPOENCALIDAD,0);					
+				    miHash.put(ScsEJGBean.C_CALIDADIDINSTITUCION,usr.getLocation());
 					
 					if (!ejgAdm.insert(miHash)) {
 						throw new ClsExceptions ("Error al crear el EJG desde la designa");
@@ -907,6 +916,11 @@ public class DefinirEJGAction extends MasterAction
 					UtilidadesHash.set(miHash, ScsEJGBean.C_JUZGADOIDINSTITUCION, asistenciaBean.getJuzgadoIdInstitucion());
 					UtilidadesHash.set(miHash, ScsEJGBean.C_JUZGADO,     		  asistenciaBean.getJuzgado());	
 					
+					/**INC_05960_SIGA, se introduce el campo idtipoencalidad a cero ya que cuando se crea por primera
+                      vez el campo calidad por defecto sera "Demandado"**/
+					miHash.put(ScsEJGBean.C_CALIDAD,"0");
+				    miHash.put(ScsEJGBean.C_IDTIPOENCALIDAD,0);
+					miHash.put(ScsEJGBean.C_CALIDADIDINSTITUCION,usr.getLocation());
 					if (!ejgAdm.insert(miHash)) {
 						throw new ClsExceptions ("Error al crear el EJG desde la asistencia");
 					}
