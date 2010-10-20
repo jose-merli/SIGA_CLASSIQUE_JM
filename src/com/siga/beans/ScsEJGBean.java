@@ -89,6 +89,7 @@ public class ScsEJGBean extends MasterBean{
 	private String idPreceptivo;
 	private String idSituacion;
 	private String idRenuncia;
+	private String numeroDesignaProc;
 	private Integer idTipoenCalidad;
     private Integer calidadidinstitucion;
 	
@@ -173,8 +174,10 @@ public class ScsEJGBean extends MasterBean{
 	static public final String C_PRECEPTIVO   = "IDPRECEPTIVO";
 	static public final String C_SITUACION   = "IDSITUACION";
 	static public final String C_IDRENUNCIA   = "IDRENUNCIA";
+	static public final String C_NUMERODESIGNAPROC   = "NUMERODESIGNAPROC";
     static public final String C_IDTIPOENCALIDAD   = "IDTIPOENCALIDAD";
     static public final String C_CALIDADIDINSTITUCION   = "CALIDADIDINSTITUCION";
+	
 	
 		
 	public String getIdRenuncia() {
@@ -857,6 +860,13 @@ public class ScsEJGBean extends MasterBean{
 	public void setIdEstadoEjg(Short idEstadoEjg) {
 		this.idEstadoEjg = idEstadoEjg;
 	}
+	public String getNumeroDesignaProc() {
+		return numeroDesignaProc;
+	}
+	public void setNumeroDesignaProc(String numeroDesignaProc) {
+		this.numeroDesignaProc = numeroDesignaProc;
+	}
+	
 	
 	public Integer getIdTipoenCalidad() {
 		return idTipoenCalidad;
