@@ -370,7 +370,7 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 
 				//Modificamos el TipoEJGColegio, FechaPresentacion, FechaLimitePresentacion, ProcuradorNecesario, Procurador, Observaciones y Delitos
 				String[] campos = {//	ScsEJGBean.C_PROCURADORNECESARIO,
-								   ScsEJGBean.C_CALIDAD,					ScsEJGBean.C_OBSERVACIONES,
+								   ScsEJGBean.C_CALIDAD,		            ScsEJGBean.C_OBSERVACIONES,
 								   ScsEJGBean.C_DELITOS,					ScsEJGBean.C_PROCURADOR,					   
 								   ScsEJGBean.C_IDPROCURADOR, 				ScsEJGBean.C_IDINSTITUCIONPROCURADOR,
 								   ScsEJGBean.C_IDPRETENSION,				ScsEJGBean.C_IDPRETENSIONINSTITUCION,
@@ -378,7 +378,8 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 								   ScsEJGBean.C_COMISARIA, 					ScsEJGBean.C_COMISARIAIDINSTITUCION,
 								   ScsEJGBean.C_NUMEROPROCEDIMIENTO, 		ScsEJGBean.C_NUMERODILIGENCIA,
 								   ScsEJGBean.C_FECHADESIGPROC,             ScsEJGBean.C_PRECEPTIVO,
-								   ScsEJGBean.C_SITUACION,                  ScsEJGBean.C_IDRENUNCIA};
+								   ScsEJGBean.C_SITUACION,                  ScsEJGBean.C_IDRENUNCIA,
+								   ScsEJGBean.C_IDTIPOENCALIDAD,            ScsEJGBean.C_CALIDADIDINSTITUCION};
 
 				// Campos a modificar
 				hash = miForm.getDatos();
@@ -453,6 +454,18 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 					UtilidadesHash.set(hash, ScsEJGBean.C_IDRENUNCIA,miForm.getidRenuncia());
 				}else{
 					UtilidadesHash.set(hash, ScsEJGBean.C_IDRENUNCIA, "");
+				}
+				
+				/**INC_07443_SIGA ,se guarda el campo idtipoencalidad que se ha elegido en la jsp**/                      
+				String idTipoenCalidad=miForm.getIdTipoenCalidad();
+				if (idTipoenCalidad != null && !idTipoenCalidad.equals("")) {
+					UtilidadesHash.set(hash, ScsEJGBean.C_IDTIPOENCALIDAD,idTipoenCalidad);						
+					UtilidadesHash.set(hash, ScsEJGBean.C_CALIDADIDINSTITUCION,usr.getLocation());
+					UtilidadesHash.set(hash, ScsEJGBean.C_CALIDAD,idTipoenCalidad);	
+				}else{
+					UtilidadesHash.set(hash, ScsEJGBean.C_IDTIPOENCALIDAD, "");
+					UtilidadesHash.set(hash, ScsEJGBean.C_CALIDADIDINSTITUCION,"");
+					UtilidadesHash.set(hash, ScsEJGBean.C_CALIDAD,"");	
 				}
 				
 				tx.begin();
@@ -537,7 +550,10 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 			String consulta = "select ejg.ANIO, ejg.NUMEJG,designa.ESTADO,ejg.IDTIPOEJG AS IDTIPOEJG,ejg.NUMERO_CAJG AS NUMERO_CAJG, ejg.NUMERO, turno.ABREVIATURA AS NOMBRETURNO, guardia.NOMBRE AS NOMBREGUARDIA, guardia.IDGUARDIA AS IDGUARDIA, " + UtilidadesMultidioma.getCampoMultidiomaSimple("tipoejg.DESCRIPCION",this.getUserBean(request).getLanguage()) + " AS TIPOEJG, ejg.IDTIPOEJGCOLEGIO AS IDTIPOEJGCOLEGIO," +
 							  "decode(ejg.ORIGENAPERTURA,'M','Manual','S','SOJ','A','ASISTENCIA','DESIGNA'), ejg.IDPRETENSION as IDPRETENSION, ejg.IDPRETENSIONINSTITUCION as IDPRETENSIONINSTITUCION, ejg.idtipodictamenejg as IDTIPODICTAMENEJG, " + 
 							  "ejg.FECHAAPERTURA AS FECHAAPERTURA, personajg.NIF AS NIFASISTIDO, personajg.NOMBRE AS NOMBREASISTIDO, personajg.APELLIDO1 AS APELLIDO1ASISTIDO, personajg.APELLIDO2 AS APELLIDO2ASISTIDO, " +
-							  "decode(ejg.CALIDAD,'D','DEMANDANTE','DEMANDADO'), ejg.CALIDAD,colegiado.NCOLEGIADO AS NCOLEGIADO, PERSONA.IDPERSONA AS IDPERSONA, persona.NOMBRE AS NOMBRELETRADO, " +
+							  " (Select Decode(Ejg.Idtipoencalidad, Null,'', f_Siga_Getrecurso(Tipcal.Descripcion,"+ this.getUserBean(request).getLanguage() + ")) "+
+                              "  From Scs_Tipoencalidad Tipcal Where Tipcal.Idtipoencalidad = Ejg.Idtipoencalidad "+
+                              "  And Tipcal.Idinstitucion = Ejg.Calidadidinstitucion) as calidad, Ejg.Idtipoencalidad, Ejg.Calidadidinstitucion, "+							  
+                              "colegiado.NCOLEGIADO AS NCOLEGIADO, PERSONA.IDPERSONA AS IDPERSONA, persona.NOMBRE AS NOMBRELETRADO, " +
 							  "persona.APELLIDOS1 AS APELLIDO1LETRADO, persona.APELLIDOS2 AS APELLIDO2LETRADO, soj.ANIO AS ANIOSOJ, soj.NUMERO AS NUMEROSOJ, soj.NUMSOJ AS CODIGOSOJ, " + UtilidadesMultidioma.getCampoMultidiomaSimple("tiposoj.DESCRIPCION",this.getUserBean(request).getLanguage()) + " AS TIPOSOJ, tiposoj.IDTIPOSOJ AS IDTIPOSOJ, " +
 							  "soj.FECHAAPERTURA AS FECHAAPERTURASOJ, asistencia.ANIO AS ANIOASISTENCIA, asistencia.NUMERO AS ASISTENCIANUMERO, asistencia.FECHAHORA AS ASISTENCIAFECHA, " +
 							  " ejgd.aniodesigna AS DESIGNA_ANIO,ejgd.idturno AS DESIGNA_IDTURNO,ejgd.numerodesigna AS DESIGNA_NUMERO," +
