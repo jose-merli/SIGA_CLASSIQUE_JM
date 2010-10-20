@@ -1197,13 +1197,13 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 			if(rc.size()>1){
 				throw new SIGAException("messages.general.errorUsuarioEfectivoDuplicado");
 				
-			}else{
+			}else if(rc.size()==1){
 				Row fila = (Row) rc.get(0);
 				idPersona=UtilidadesHash.getLong(fila.getRow(),CenPersonaBean.C_IDPERSONA);
 	    	}
-        }else{
-        	throw new SIGAException("messages.general.errorUsuarioEfectivoDuplicado");
         }
+        if(idPersona==null)
+        	idPersona=new Long(-1);
 		return idPersona;
 	}
 	public Hashtable getPersonYnColegiado (String idPersona, Integer idInstitucion) 
