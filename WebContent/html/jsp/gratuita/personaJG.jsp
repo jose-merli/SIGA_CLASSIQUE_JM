@@ -174,8 +174,23 @@
 		obligatorioNacionalidad = true;
 		obligatorioCodigoPostal = true;
 	}
+	
+//String checkSolicitante = miform.getigetSolicitante();
 
-%>	
+ArrayList calidadSel = new ArrayList();
+
+String[] datos2={usr.getLocation(),usr.getLanguage()};
+
+String idcalidad="";
+idcalidad=miform.getIdTipoenCalidad();
+if (idcalidad!=null){
+calidadSel.add(0,idcalidad+","+usr.getLocation());
+}else{
+	calidadSel.add(0,"1"+","+usr.getLocation());
+	}
+
+String calidadIdinstitucion=miform.getCalidadIdinstitucion();
+%>
 
 
 <html>
@@ -654,7 +669,10 @@
 	<html:hidden name="PersonaJGForm" property = "localizacionE" />
 	<html:hidden name="PersonaJGForm" property = "tituloE" />
 	<html:hidden name="PersonaJGForm" property = "conceptoE" />
-	<html:hidden name="PersonaJGForm" property = "lNumerosTelefonos" />
+	<html:hidden name="PersonaJGForm" property = "lNumerosTelefonos" />	
+	<html:hidden property = "idTipoenCalidad" value="<%=idcalidad%>"/>
+	<html:hidden property = "calidadIdinstitucion" value="<%=calidadIdinstitucion%>"/>
+	
 	
 	
 <%
@@ -699,6 +717,7 @@
 	<html:hidden name="PersonaJGForm" property = "idTurnoDES" />
 	<html:hidden name="PersonaJGForm" property = "anioDES" />
 	<html:hidden name="PersonaJGForm" property = "numeroDES" />	
+    <html:hidden name="PersonaJGForm" property = "idPersonaJG" />
 	
 <%
 	} else if (conceptoE.equals(PersonaJGAction.PERSONAJG)) {
@@ -1338,47 +1357,13 @@
 %>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.personaJG.literal.calidad"/>&nbsp;(*)			
-		</td>
-		<td>
-			<%
-				if (accion.equalsIgnoreCase("ver")) {
-								String calid = "";
-								if (miform.getCalidad() != null
-										&& miform.getCalidad()
-												.equalsIgnoreCase("D")) {
-									calid = UtilidadesString
-											.getMensajeIdioma(usr,
-													"gratuita.personaJG.calidad.literal.demandante");
-								} else {
-									if (miform.getCalidad() != null
-										&& miform.getCalidad()
-												.equalsIgnoreCase("O")) {
-									calid = UtilidadesString
-											.getMensajeIdioma(usr,
-													"gratuita.personaJG.calidad.literal.demandado");
-									}
-								}
-			%>
-				<html:text property="calidad" value="<%=calid%>" size="20" styleClass="boxConsulta" readonly="true"></html:text>
-			<%
-				} else {
-			          	if (accion.equalsIgnoreCase("editar")) {%>
-							<html:select styleClass="boxCombo" name="PersonaJGForm" property="calidad"  readOnly="false">
-								<html:option value=""> &nbsp;</html:option>				   
-								<html:option value="D"> <siga:Idioma key="gratuita.personaJG.calidad.literal.demandante"/></html:option>
-								<html:option value="O"><siga:Idioma key="gratuita.personaJG.calidad.literal.demandado"/></html:option>
-							</html:select>
-						<%}else{%>
-							<html:select styleClass="boxCombo" name="PersonaJGForm" property="calidad" value="O" readOnly="false">
-								<html:option  value="">&nbsp; </html:option>				   
-								<html:option value="D"> <siga:Idioma key="gratuita.personaJG.calidad.literal.demandante"/></html:option>
-							<html:option value="O"><siga:Idioma key="gratuita.personaJG.calidad.literal.demandado"/></html:option>
-							</html:select>
-						<%}%>
-					
-			<%
-				}
-			%>
+		</td>		
+			<td>
+				<%if(!accion.equalsIgnoreCase("ver")){%>
+						<siga:ComboBD nombre="calidad2" tipo="ComboCalidades" ancho="200" clase="boxCombo" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=calidadSel%>" hijo="t" readonly="false"/>           	   
+					<%}else{%>
+						<siga:ComboBD nombre="calidad2" tipo="ComboCalidades" ancho="200" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=calidadSel%>" hijo="t" readonly="true"/>           	   
+			<%}%>
 		</td>
 <%
 	}
@@ -2100,8 +2085,7 @@ function limpiarPersonaContrario() {
 			}			
 			sub();
 			var tipoIdent=document.forms[0].tipoId.value;
-			var numId=document.forms[0].NIdentificacion.value;
-						
+			var numId=document.forms[0].NIdentificacion.value;			
 			document.forms[0].importeIngresosAnuales.value=document.forms[0].importeIngresosAnuales.value.replace(/,/,".").trim();
 			document.forms[0].importeBienesInmuebles.value=document.forms[0].importeBienesInmuebles.value.replace(/,/,".").trim();
 			document.forms[0].importeBienesMuebles.value=document.forms[0].importeBienesMuebles.value.replace(/,/,".").trim();
@@ -2220,8 +2204,7 @@ function limpiarPersonaContrario() {
 				
 		   	sub();
 		   	var tipoIdent=document.forms[0].tipoId.value;
-			var numId=document.forms[0].NIdentificacion.value;
-				
+			var numId=document.forms[0].NIdentificacion.value;				
 			document.forms[0].importeIngresosAnuales.value=document.forms[0].importeIngresosAnuales.value.replace(/,/,".").trim();
 			document.forms[0].importeBienesInmuebles.value=document.forms[0].importeBienesInmuebles.value.replace(/,/,".").trim();
 			document.forms[0].importeBienesMuebles.value=document.forms[0].importeBienesMuebles.value.replace(/,/,".").trim();
@@ -2670,19 +2653,19 @@ function limpiarPersonaContrario() {
 			
 			sub();
 			var tipoIdent=document.forms[0].tipoId.value;
-			var numId=document.forms[0].NIdentificacion.value;
-
-			if (document.getElementById('calidad'))
-			{
-				var calidad=document.forms[0].calidad.value;    
-
-			 
+			var numId=document.forms[0].NIdentificacion.value;		
+					
+			if (document.getElementById('calidad2')){				 
+				document.forms[0].idTipoenCalidad.value	=	document.getElementById("calidad2").value;
+				var calidad=document.forms[0].idTipoenCalidad.value;   
 				if (calidad==""){				
-					alert("<siga:Idioma key='gratuita.personaJG.literal.mensajecalidad'/>");
-					fin();
-					return false;				
+				alert("<siga:Idioma key='gratuita.personaJG.literal.mensajecalidad'/>");
+				fin();
+				return false;				
 				}
 			}
+
+			
 			if (!validaNumeroIdentificacion()) {
 				fin();
 				return false;
