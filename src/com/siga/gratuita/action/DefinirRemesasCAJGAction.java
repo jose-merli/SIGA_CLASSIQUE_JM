@@ -270,15 +270,17 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 						+ "" + " and r.idinstitucion = e.idinstitucion" + " and r.idremesa = e.idremesa" + " and e.idestado = t.idestado"
 						+ " and e.idestado = (select max(idestado)" + " from cajg_remesaestados" + " where idinstitucion = e.idinstitucion"
 						+ " and idremesa = e.idremesa) ";
-				if ((String) miHash.get("PREFIJO") != null && (!((String) miHash.get("PREFIJO")).equals(""))) {
-					consulta += " and r.prefijo='" + (String) miHash.get("PREFIJO") + "'";
+								
+				if ((String) miHash.get(CajgRemesaBean.C_PREFIJO) != null && (!((String) miHash.get(CajgRemesaBean.C_PREFIJO)).equals(""))) {					
+					consulta += " AND " + ComodinBusquedas.prepararSentenciaNLS(((String) miHash.get(CajgRemesaBean.C_PREFIJO)).trim(), "r." + CajgRemesaBean.C_PREFIJO);
 				}
-				if ((String) miHash.get("NUMERO") != null && (!((String) miHash.get("NUMERO")).equals(""))) {
-					consulta += " and r.numero='" + (String) miHash.get("NUMERO") + "'";
+				if ((String) miHash.get(CajgRemesaBean.C_NUMERO) != null && (!((String) miHash.get(CajgRemesaBean.C_NUMERO)).equals(""))) {					
+					consulta += " AND " + ComodinBusquedas.prepararSentenciaNLS(((String) miHash.get(CajgRemesaBean.C_NUMERO)).trim(), "r." + CajgRemesaBean.C_NUMERO);
 				}
-				if ((String) miHash.get("SUFIJO") != null && (!((String) miHash.get("SUFIJO")).equals(""))) {
-					consulta += " and r.sufijo='" + (String) miHash.get("SUFIJO") + "'";
+				if ((String) miHash.get(CajgRemesaBean.C_SUFIJO) != null && (!((String) miHash.get(CajgRemesaBean.C_SUFIJO)).equals(""))) {
+					consulta += " AND " + ComodinBusquedas.prepararSentenciaNLS(((String) miHash.get(CajgRemesaBean.C_SUFIJO)).trim(), "r." + CajgRemesaBean.C_SUFIJO);					
 				}
+				
 				if ((String) miHash.get("DESCRIPCION") != null && (!((String) miHash.get("DESCRIPCION")).equals(""))) {
 					// consulta +=" and r.descripcion like
 					// '%"+(String)miHash.get("DESCRIPCION")+"'";
@@ -310,7 +312,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 						  }
 				}
 				
-				consulta += " order by r.prefijo,r.numero,r.sufijo";
+				consulta += " order by r.prefijo DESC,r.numero DESC, r.sufijo DESC";				
 
 				// Rellena un vector de Hastable con la claves primarias de la
 				// tabla
