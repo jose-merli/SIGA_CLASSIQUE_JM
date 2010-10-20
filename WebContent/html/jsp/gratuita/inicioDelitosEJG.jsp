@@ -172,6 +172,11 @@
 		validarProcedimiento = true;
 		obligatorioPretension = true;
 	}
+	/*Se modifica para que sea obligatorio el juzgado para pcajg=5*/
+	boolean obligatoriojuzgado=false;
+	if (pcajgActivo==5){
+		obligatoriojuzgado = true;
+	}
 %>
 
 <%@page import="java.util.Properties"%>
@@ -352,10 +357,12 @@
 								<input name="numeroProcedimiento2" size="10" type="text" value="<%=numeroProcedimientoAsi%>" class="boxConsulta"/>
 							<%}%>						
 						</td>
-						<td colspan="4" class="labelText"><siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado"/></td>	 
+						<td colspan="4" class="labelText"><siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado"/><% if (obligatoriojuzgado){ %>
+											<%= asterisco %>
+											<%}%></td>	 
 						<td colspan="23">	
 							<%if(modopestanha.equals("editar")){%>
-							 	  <input type="text" name="codigoExtJuzgado" class="box" size="3"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado();" />
+							 	  <input type="text" name="codigoExtJuzgado" class="box" size="3"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado();" />							 	  
 							 	  <siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" ancho="505" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=juzgadoSel%>" hijo="t" readonly="false"/>           	   
 							<%}else{%>
 									<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" ancho="555" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=juzgadoSel%>" hijo="t" readonly="true"/>           	   
@@ -570,6 +577,9 @@
 				if(document.getElementById("calidad2").value==""){
 					  error += "<siga:Idioma key='gratuita.personaJG.literal.mensajecalidad'/>"+ '\n';
 					}
+				if(<%=obligatoriojuzgado%> && document.getElementById("juzgado").value==""){										
+					error += "<siga:Idioma key='gratuita.editarDesigna.juzgado'/>"+ '\n';
+				}
 				if(error!=""){
 					alert(error);
 					fin();
@@ -578,12 +588,10 @@
 		 	<%}%> 
 			if (observaciones.length <= 1024) {
 				document.DefinirMantenimientoEJGForm.modo.value = "modificarDefensa";
-				document.DefinirMantenimientoEJGForm.target = "submitArea";
-				
+				document.DefinirMantenimientoEJGForm.target = "submitArea";				
 				document.DefinirMantenimientoEJGForm.procurador.value				=	document.getElementById("procurador").value	;
 				document.DefinirMantenimientoEJGForm.idPreceptivo.value				=	document.getElementById("preceptivo2").value	;
-				document.DefinirMantenimientoEJGForm.idSituacion.value				=	document.getElementById("situacion").value	;
-				//document.DefinirMantenimientoEJGForm.calidad.value					=	document.getElementById("calidad2").value	;
+				document.DefinirMantenimientoEJGForm.idSituacion.value				=	document.getElementById("situacion").value	;				
 				document.DefinirMantenimientoEJGForm.idTipoenCalidad.value					=	document.getElementById("calidad2").value	;
 				document.DefinirMantenimientoEJGForm.comisaria.value				=	document.getElementById("comisaria").value	;
 				document.DefinirMantenimientoEJGForm.juzgado.value					=	document.getElementById("juzgado").value	;				
