@@ -717,7 +717,6 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 	<html:hidden name="PersonaJGForm" property = "idTurnoDES" />
 	<html:hidden name="PersonaJGForm" property = "anioDES" />
 	<html:hidden name="PersonaJGForm" property = "numeroDES" />	
-    <html:hidden name="PersonaJGForm" property = "idPersonaJG" />
 	
 <%
 	} else if (conceptoE.equals(PersonaJGAction.PERSONAJG)) {
