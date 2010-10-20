@@ -20,10 +20,14 @@ public class ScsDefendidosDesignaBean extends MasterBean{
 	private String	observaciones;
 	private String	nombreRepresentande;
 	private String	calidad;
+	private Integer idTipoenCalidad;
+	private Integer calidadIdinstitucion;
+	
 	
 	
 	/*
 	 *  Nombre de Tabla*/
+	
 	
 	static public String T_NOMBRETABLA = "SCS_DEFENDIDOSDESIGNA";
 	
@@ -39,9 +43,10 @@ public class ScsDefendidosDesignaBean extends MasterBean{
 	static public final String	C_IDPERSONA	=			 	"IDPERSONA";
 	static public final String	C_NOMBREREPRESENTANTE	=	"NOMBREREPRESENTANTE";
 	static public final String	C_OBSERVACIONES	=			"OBSERVACIONES";
-	static public final String	C_CALIDAD	=			"CALIDAD";
-		
-	
+	static public final String	C_CALIDAD	=		    	"CALIDAD";
+	static public final String	C_IDTIPOENCALIDAD	=	    "IDTIPOENCALIDAD";
+	static public final String	C_CALIDADIDINSTITUCION 	 =  "CALIDADIDINSTITUCION";			
+															 
 	/*
 	 * Metodos SET*/
 	
@@ -105,6 +110,9 @@ public class ScsDefendidosDesignaBean extends MasterBean{
 	
 	
 	
+	public void setIdTipoenCalidad(Integer valor)			{ this.idTipoenCalidad =	valor;}
+	
+	
 	/*
 	 * Metodos GET*/
 	
@@ -159,4 +167,14 @@ public class ScsDefendidosDesignaBean extends MasterBean{
 	 * @return calidad
 	 */
 	public String getCalidad()			{ return this.calidad;}
+	
+	public Integer getIdTipoenCalidad()		{ return this.idTipoenCalidad;}
+	
+	public Integer getCalidadIdinstitucion() {
+		return calidadIdinstitucion;
+	}
+	public void setCalidadIdinstitucion(Integer calidadIdinstitucion) {
+		this.calidadIdinstitucion = calidadIdinstitucion;
+	}
+
 }
