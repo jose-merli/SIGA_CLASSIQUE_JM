@@ -71,7 +71,7 @@
 				.toString();
 		IDGUARDIA = hash.get("IDGUARDIA").toString();
 		
-		calidad = hash.get("CALIDAD").toString();
+		calidad = hash.get("CALIDAD").toString();	
 		if (hash.containsKey("IDTIPOEJGCOLEGIO"))
 			IDTIPOEJGCOLEGIO = hash.get("IDTIPOEJGCOLEGIO").toString();
 		if (hash.containsKey("PROCURADOR"))
@@ -723,37 +723,13 @@
 					<siga:Idioma key='gratuita.personaJG.literal.calidad'/>
 				</td>		
 				
-				<td class="labelText">
-					<%
-						//if (modo.equalsIgnoreCase("ver")){
-									String calid = "";
-									if (calidad != null && calidad.equalsIgnoreCase("D")) {
-										calid = UtilidadesString
-												.getMensajeIdioma(usr,
-														"gratuita.personaJG.calidad.literal.demandante");
-									} else {
-										calid = UtilidadesString
-												.getMensajeIdioma(usr,
-														"gratuita.personaJG.calidad.literal.demandado");
-									}
-					%>
-					<input type="text" style="width:500px" class="boxConsulta" value="<%=calid%>" readOnly="true">
-					
-					<%
-											//} else  {
-										%>
-						<!--<html:select styleClass="boxCombo" property="calidad" value="<%=calidad %>"   readOnly="false">
-							<html:option value="D"><siga:Idioma key="gratuita.personaJG.calidad.literal.demandante"/></html:option>
-							<html:option value="O"><siga:Idioma key="gratuita.personaJG.calidad.literal.demandado"/></html:option>
-						</html:select>-->
-					<%
-						//}
-					%>
+				<td class="labelText">					
+					<input type="text" style="width:500px" class="boxConsulta" value="<%=calidad%>" readOnly="true">										
 				</td>	
 				<td  style="display:none">
-				  <html:textarea name="DefinirMantenimientoEJGForm" property="calidad" value="<%=calidad%>"/>
+				  <html:text name="DefinirMantenimientoEJGForm" property="calidad" value="<%=calidad%>" readOnly="true"/>				
 				</td> 	
-				
+			
 				<td class="labelText">	
 					<siga:Idioma key='gratuita.actuacionesDesigna.literal.pretensiones'/>
 				</td>	
