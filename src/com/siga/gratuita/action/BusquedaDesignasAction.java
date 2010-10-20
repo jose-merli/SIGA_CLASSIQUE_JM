@@ -1414,6 +1414,9 @@ public class BusquedaDesignasAction extends MasterAction {
 				}else{
 					procuradorNuevo.put(ScsDesignasProcuradorBean.C_FECHADESIGNA, "SYSDATE");	
 				}
+				if (ejgBean.getNumeroDesignaProc()!=null && !ejgBean.getNumeroDesignaProc().equals("")){
+					procuradorNuevo.put(ScsDesignasProcuradorBean.C_NUMERODESIGNACION, ejgBean.getNumeroDesignaProc());
+				}
 				//procuradorNuevo.put(ScsDesignasProcuradorBean.C_IDTIPOMOTIVO,motivo);
 				//procuradorNuevo.put(ScsDesignasProcuradorBean.C_NUMERODESIGNACION,numeroDesigna);
 				//procuradorNuevo.put(ScsDesignasProcuradorBean.C_OBSERVACIONES,observ);
