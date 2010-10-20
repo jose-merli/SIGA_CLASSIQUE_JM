@@ -45,20 +45,21 @@
 	ArrayList juzgadoSel   = new ArrayList();
 	ArrayList comisariaSel = new ArrayList();
 	ArrayList pretensionesSel = new ArrayList();
+	ArrayList calidadSel = new ArrayList();
 	ArrayList preceptivoSel = new ArrayList();
 	ArrayList situacionSel = new ArrayList();
 	ArrayList renunciaSel = new ArrayList();
 
 	//ScsEJGAdm adm = new ScsEJGAdm (usr);
 	
-	String OBSERVACIONES = "", DELITOS = "", PROCURADOR = "", PROCURADORNECESARIO ="",idProcurador="", idInstitucionProcurador="", calidad="", FECHAPROCURADOR="",  
+	String OBSERVACIONES = "", DELITOS = "", PROCURADOR = "", PROCURADORNECESARIO ="",idProcurador="", idInstitucionProcurador="", idcalidad="", FECHAPROCURADOR="",  
 		   procuradorNombreCompleto = "", procuradorNumColegiado = "", procuradorSel = "",idTurno = "", nombreCompleto="";	
    	String numeroDiligenciaAsi    = "",numeroProcedimientoAsi = "", juzgadoAsi="", juzgadoInstitucionAsi="", comisariaAsi="", comisariaInstitucionAsi="";
    	String idPretension    = "", idPretensionInstitucion="",pretension="", idPreceptivo="", idSituacion="";
    	
    	String idRenuncia="";
    	String idInstintucion="";
-   	
+   	String calidadidinstitucion="";
 	Hashtable hash = (Hashtable)ses.getAttribute("DATABACKUP");
 	
 	String anio = hash.get("ANIO").toString();
@@ -79,7 +80,10 @@
 
 
 		if (hash.containsKey("IDTURNO")) idTurno					  			=  hash.get("IDTURNO").toString(); 		
-		if (hash.containsKey("CALIDAD")) calidad					  			=  hash.get("CALIDAD").toString();
+//		if (hash.containsKey("CALIDAD")) calidad					  			=  hash.get("CALIDAD").toString();
+		if (hash.containsKey("IDTIPOENCALIDAD")) idcalidad					  			=  hash.get("IDTIPOENCALIDAD").toString();
+		if (hash.containsKey(ScsEJGBean.C_CALIDADIDINSTITUCION)) calidadidinstitucion	=  hash.get(ScsEJGBean.C_CALIDADIDINSTITUCION).toString();
+		
 		if (hash.containsKey(ScsEJGBean.C_NUMERODILIGENCIA)) numeroDiligenciaAsi					  			=  hash.get(ScsEJGBean.C_NUMERODILIGENCIA).toString();
 		if (hash.containsKey(ScsEJGBean.C_NUMEROPROCEDIMIENTO)) numeroProcedimientoAsi					  			=  hash.get(ScsEJGBean.C_NUMEROPROCEDIMIENTO).toString();
 	
@@ -119,6 +123,9 @@
 
 	if (idPretension!=null && idPretensionInstitucion!=null)
 		pretensionesSel.add(0,idPretension+","+idPretensionInstitucion);	
+	
+	if (idcalidad!=null)
+		calidadSel.add(0,idcalidad+","+idInstintucion);	
 
 	if (juzgadoAsi!=null && juzgadoInstitucionAsi!=null)
 		juzgadoSel.add(0,juzgadoAsi+","+juzgadoInstitucionAsi);	
@@ -210,7 +217,8 @@
 		<html:hidden property = "numero" value = "<%=numero%>"/>
 		<html:hidden property = "anio" value = "<%=anio%>"/>		
 		<html:hidden property = "procurador" value="<%=procuradorSel%>"/>
-		<html:hidden property = "calidad" value="<%=calidad%>"/>
+		<!--<html:hidden property = "calidad" value="<%=idcalidad%>"/>-->
+	    <html:hidden property = "idTipoenCalidad" value="<%=idcalidad%>"/>
 		<html:hidden property = "observaciones" value=""/>
 		<html:hidden property = "comisaria" value="<%=OBSERVACIONES%>"/>
 		<html:hidden property = "juzgado" value=""/>
@@ -377,22 +385,14 @@
 					</tr>			
 					<tr>
 						<td colspan="4" class="labelText">	
-							<siga:Idioma key='gratuita.personaJG.literal.calidad'/>
+							<siga:Idioma key='gratuita.personaJG.literal.calidad'/>&nbsp;(*)
 						</td>
 							<td colspan="12">			
 							<%if(modopestanha.equals("editar")){%>
-								<html:select styleClass="boxCombo" property="calidad2" style="width=150" value="<%=calidad %>"readOnly="false">
-									<html:option value="D"><siga:Idioma key="gratuita.personaJG.calidad.literal.demandante"/></html:option>
-									<html:option value="O"><siga:Idioma key="gratuita.personaJG.calidad.literal.demandado"/></html:option>
-								</html:select>
-							<%}else{
-								if(calidad.equals("D")){	%>
-									<html:textarea name="DefinirMantenimientoEJGForm" property="calidad2" cols="60" rows="1" style="overflow:auto" styleClass="boxConsulta" value="Demandante" ></html:textarea>							
-								<%}else{%>
-									<html:textarea name="DefinirMantenimientoEJGForm" property="calidad2" cols="60" rows="1" style="overflow:auto" styleClass="boxConsulta" value="Demandado" ></html:textarea>							
-							<%  }
-							}%>						
-						
+								<siga:ComboBD nombre="calidad2" tipo="ComboCalidades" ancho="200" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=calidadSel%>" hijo="t" readonly="false"/>           	   
+							<%}else{%>
+								<siga:ComboBD nombre="calidad2" tipo="ComboCalidades" ancho="200" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=calidadSel%>" hijo="t" readonly="true"/>           	   
+							<%}%>
 						</td>	
 						<td colspan="6" class="labelText">	
 							<siga:Idioma key='gratuita.actuacionesDesigna.literal.pretensiones'/>							
@@ -405,7 +405,8 @@
 								<siga:ComboBD nombre="pretensiones2" tipo="comboPretensiones" ancho="345" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="false"/>           	   
 							<%}else{%>
 								<siga:ComboBD nombre="pretensiones2" tipo="comboPretensiones" ancho="345" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="true"/>           	   
-							<%}%>
+							<%}%>	
+							
 						</td>
 					</tr>
 					
@@ -559,6 +560,9 @@
 					if(!validaProcedimiento(document.getElementById("numeroProcedimiento2").value))
 					error += "<siga:Idioma key='gratuita.procedimientos.numero.formato'/>"+ '\n';
 				}
+				if(document.getElementById("calidad2").value==""){
+					  error += "<siga:Idioma key='gratuita.personaJG.literal.mensajecalidad'/>"+ '\n';
+					}
 				if(error!=""){
 					alert(error);
 					fin();
@@ -572,7 +576,8 @@
 				document.DefinirMantenimientoEJGForm.procurador.value				=	document.getElementById("procurador").value	;
 				document.DefinirMantenimientoEJGForm.idPreceptivo.value				=	document.getElementById("preceptivo2").value	;
 				document.DefinirMantenimientoEJGForm.idSituacion.value				=	document.getElementById("situacion").value	;
-				document.DefinirMantenimientoEJGForm.calidad.value					=	document.getElementById("calidad2").value	;
+				//document.DefinirMantenimientoEJGForm.calidad.value					=	document.getElementById("calidad2").value	;
+				document.DefinirMantenimientoEJGForm.idTipoenCalidad.value					=	document.getElementById("calidad2").value	;
 				document.DefinirMantenimientoEJGForm.comisaria.value				=	document.getElementById("comisaria").value	;
 				document.DefinirMantenimientoEJGForm.juzgado.value					=	document.getElementById("juzgado").value	;				
 				document.DefinirMantenimientoEJGForm.numeroDilegencia.value			=	document.getElementById("numeroDilegencia2").value	;
