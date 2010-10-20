@@ -216,11 +216,16 @@
 	}
 	boolean validarProcedimiento = false;
 	boolean obligatorioProcedimiento = false;
+	boolean obligatoriojuzgado=false;
 	if (pcajgActivo==2 || pcajgActivo==3 || pcajgActivo==5){
 		obligatorioProcedimiento = true;
 	}
 	if (pcajgActivo==4 || pcajgActivo==5){
 		validarProcedimiento = true;
+	}
+	/*Se modifica para que sea obligatorio el juzgado para pcajg=5*/
+	if (pcajgActivo==5){
+		obligatoriojuzgado = true;
 	}
 	
 %>	
@@ -244,14 +249,14 @@
 	<script language="JavaScript">
 
 	
-		<!-- Valida el numero de procedimiento (n/aaaa) -->
+		//<!-- Valida el numero de procedimiento (n/aaaa) -->
 		function validaProcedimiento( strValue ) 
 		{
 			var objRegExp  = /^([0-9]+\/[0-9]{4})?$/;
 			return objRegExp.test(strValue);
 		}
 	
-		<!-- Asociada al boton Volver -->
+		//<!-- Asociada al boton Volver -->
 		function accionVolver() 
 		{		
 			document.forms[0].action="JGR_Designas.do";
@@ -261,13 +266,13 @@
 		}
 
 		
-		<!-- Asociada al boton Restablecer -->
+		//<!-- Asociada al boton Restablecer -->
 		function accionRestablecer() 
 		{		
 			document.forms[0].reset();
 		}
 		
-		<!-- Asociada al boton Guardar -->
+		//<!-- Asociada al boton Guardar -->
 		function accionGuardar() 
 		{	
 			<%if (pcajgActivo>0){%>
@@ -278,6 +283,11 @@
 					if(!validaProcedimiento(document.getElementById("numeroProcedimiento").value))
 						error += "<siga:Idioma key='gratuita.procedimientos.numero.formato'/>"+ '\n';
 				}
+				if(<%=obligatoriojuzgado%> && document.getElementById("juzgado").value==""){										
+						error += "<siga:Idioma key='gratuita.editarDesigna.juzgado'/>"+ '\n';
+				}
+
+				
 				if(error!=""){
 					alert(error);
 					fin();
@@ -286,15 +296,16 @@
 		 	<%}%>
 			var estado = trim(document.forms[0].estado.value); // Cogemos el estado de la designa del formulario
 			var estadoOriginal = trim(document.forms[0].estadoOriginal.value); // Cogemos el estado original 
-			if ((estado == "A") && (estadoOriginal != "A")){ // Si es un cambio a anulacion (V,F -> A)...
-				if (confirm("<siga:Idioma key="gratuita.compensacion.confirmacion"/>")) // y desea compensar al letrado ...
+			if ((estado == "A") && (estadoOriginal != "A")){// Si es un cambio a anulacion (V,F -> A)...
+				if (confirm("<siga:Idioma key='gratuita.compensacion.confirmacion'/>"))
+						 // y desea compensar al letrado ...
 				{
 					document.forms[0].compensar.value = "1";
 				}else{
 					document.forms[0].compensar.value = "0";
 				}
 			}else if((estadoOriginal == "A") && (estado != "A")){ // Desanulacion (A -> V,F)
-				alert ("<siga:Idioma key="gratuita.compensacion.anular"/>");
+				alert ("<siga:Idioma key='gratuita.compensacion.anular'/>");
 			}
 			var fechaJuicio = trim(document.forms[0].fechaJuicio.value);
 			sub();
@@ -329,13 +340,13 @@
 			if (trim(fechaJuicio)!="") {
 				valor = trim(document.forms[0].horasJuicio.value);
 	            if (valor!="" && !isNumero(valor)) {
-	            	alert ("<siga:Idioma key="facturacion.seriesFacturacion.literal.horasGeneracion"/>");
+	            	alert ("<siga:Idioma key='facturacion.seriesFacturacion.literal.horasGeneracion'/>");
 	            	fin();
 	            	return false;
 				}
 				valor = trim(document.forms[0].minutosJuicio.value);
 	            if (valor!="" && !isNumero(valor)) {
-	            	alert ("<siga:Idioma key="facturacion.seriesFacturacion.literal.minutosGeneracion"/>");
+	            	alert ("<siga:Idioma key='facturacion.seriesFacturacion.literal.minutosGeneracion'/>");
 	            	fin();
 	            	return false;
 				}
@@ -393,7 +404,7 @@
 			}
 		}
 		
-		<!-- Asociada al boton Consultar Designa -->
+		//<!-- Asociada al boton Consultar Designa -->
 		function consultarAsistenciaFuncion() {
 		   	document.forms[1].submit();
 	 	}
@@ -676,8 +687,10 @@ function accionCerrar() {
 							<table >
 								<tr>
 									<% if (!modo.equalsIgnoreCase("ver")) { %>
-										<td class="labelText" width="10%"><siga:Idioma
-											key="gratuita.mantenimientoTablasMaestra.literal.codigoext" />
+										<td class="labelText" width="16%"><siga:Idioma
+											key="gratuita.mantenimientoTablasMaestra.literal.codigoext" /><% if (obligatoriojuzgado){ %>
+											<%= asterisco %>
+											<%}%>
 										</td>
 										<td class="labelText" width="10%">
 											<input type="text" name="codigoExtJuzgado" class="box" size="8" maxlength="10" onBlur="obtenerJuzgado();" />&nbsp;
