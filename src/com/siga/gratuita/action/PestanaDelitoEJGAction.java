@@ -9,6 +9,7 @@ import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionMapping;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
@@ -71,19 +72,21 @@ public class PestanaDelitoEJGAction extends MasterAction {
 			anio = (String)request.getParameter("ANIO");
 			idTipoEJG = (String)request.getParameter("IDTIPOEJG");
 			
-			String consulta="select decode(ejg.CALIDAD, 'D', 'DEMANDANTE', 'DEMANDADO'),       " +
-					" ejg.guardiaturno_idturno IDTURNO, ejg.IDPRETENSION as IDPRETENSION, ejg.IDPRETENSIONINSTITUCION as IDPRETENSIONINSTITUCION, " +
-					" ejg.CALIDAD, ejg.OBSERVACIONES, ejg.DELITOS, ejg.IDPROCURADOR, ejg.IDINSTITUCION_PROC, ejg.NUMERO_CAJG," +
-					" ejg.ANIOCAJG, ejg.NUMERODILIGENCIA NUMERODILIGENCIA, ejg.NUMEROPROCEDIMIENTO NUMEROPROCEDIMIENTO, ejg.JUZGADO JUZGADO," +
-					" ejg.JUZGADOIDINSTITUCION JUZGADOIDINSTITUCION, ejg.COMISARIA COMISARIA, ejg.COMISARIAIDINSTITUCION COMISARIAIDINSTITUCION," +
-					" ejg.FECHA_DES_PROC,ejg.IDPRECEPTIVO, ejg.IDSITUACION, ejg.IDRENUNCIA "+
-					"  from scs_ejg            ejg" ;
+			String consulta="Select (Select Decode(Ejg.Idtipoencalidad, Null,'', f_Siga_Getrecurso(Tipcal.Descripcion, 1)) "+
+                              "  From Scs_Tipoencalidad Tipcal Where Tipcal.Idtipoencalidad = Ejg.Idtipoencalidad "+
+                              "  And Tipcal.Idinstitucion = Ejg.Calidadidinstitucion) as calidad, Ejg.Idtipoencalidad,Ejg.calidadidinstitucion as CALIDADIDINSTITUCION, "+                              
+                            " ejg.guardiaturno_idturno IDTURNO, ejg.IDPRETENSION as IDPRETENSION, ejg.IDPRETENSIONINSTITUCION as IDPRETENSIONINSTITUCION, " +
+					        " ejg.CALIDAD, ejg.OBSERVACIONES, ejg.DELITOS, ejg.IDPROCURADOR, ejg.IDINSTITUCION_PROC, ejg.NUMERO_CAJG," +
+					        " ejg.ANIOCAJG, ejg.NUMERODILIGENCIA NUMERODILIGENCIA, ejg.NUMEROPROCEDIMIENTO NUMEROPROCEDIMIENTO, ejg.JUZGADO JUZGADO," +
+					        " ejg.JUZGADOIDINSTITUCION JUZGADOIDINSTITUCION, ejg.COMISARIA COMISARIA, ejg.COMISARIAIDINSTITUCION COMISARIAIDINSTITUCION," +
+					        " ejg.FECHA_DES_PROC,ejg.IDPRECEPTIVO, ejg.IDSITUACION, ejg.IDRENUNCIA "+
+					        "  from scs_ejg Ejg " ;
 			consulta += " where "+
-			"ejg.idtipoejg = " + idTipoEJG + " and ejg.idinstitucion = " + usr.getLocation() + " and ejg.anio = " + anio + " and ejg.numero = " + numero;			
-
-			Vector resultado = admBean.selectGenerico(consulta);
-			Hashtable ejg = (Hashtable)resultado.get(0);
+			"ejg.idtipoejg = " + idTipoEJG + " and ejg.idinstitucion = " + usr.getLocation() + " and ejg.anio = " + anio + " and ejg.numero = " + numero;	
+            
 			
+			Vector resultado = admBean.selectGenerico(consulta);
+			Hashtable ejg = (Hashtable)resultado.get(0);			
 			idProcurador=(String)ejg.get("IDPROCURADOR");
 			idInstitucionProcurador=(String)ejg.get("IDINSTITUCION_PROC");
 			UtilidadesHash.set(ejg,"NUMERO",numero);
