@@ -370,7 +370,7 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 
 				//Modificamos el TipoEJGColegio, FechaPresentacion, FechaLimitePresentacion, ProcuradorNecesario, Procurador, Observaciones y Delitos
 				String[] campos = {//	ScsEJGBean.C_PROCURADORNECESARIO,
-								   ScsEJGBean.C_CALIDAD,		            ScsEJGBean.C_OBSERVACIONES,
+								   ScsEJGBean.C_CALIDAD,					ScsEJGBean.C_OBSERVACIONES,
 								   ScsEJGBean.C_DELITOS,					ScsEJGBean.C_PROCURADOR,					   
 								   ScsEJGBean.C_IDPROCURADOR, 				ScsEJGBean.C_IDINSTITUCIONPROCURADOR,
 								   ScsEJGBean.C_IDPRETENSION,				ScsEJGBean.C_IDPRETENSIONINSTITUCION,
@@ -379,7 +379,8 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 								   ScsEJGBean.C_NUMEROPROCEDIMIENTO, 		ScsEJGBean.C_NUMERODILIGENCIA,
 								   ScsEJGBean.C_FECHADESIGPROC,             ScsEJGBean.C_PRECEPTIVO,
 								   ScsEJGBean.C_SITUACION,                  ScsEJGBean.C_IDRENUNCIA,
-								   ScsEJGBean.C_IDTIPOENCALIDAD,            ScsEJGBean.C_CALIDADIDINSTITUCION};
+								   ScsEJGBean.C_IDTIPOENCALIDAD,            ScsEJGBean.C_CALIDADIDINSTITUCION,
+								   ScsEJGBean.C_NUMERODESIGNAPROC};
 
 				// Campos a modificar
 				hash = miForm.getDatos();
@@ -418,6 +419,10 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 				if (fechaProc != null && !fechaProc.equals("")) {
 					
 					UtilidadesHash.set(hash, ScsEJGBean.C_FECHADESIGPROC, GstDate.getApplicationFormatDate("",fechaProc));
+				}
+				String numeroDesignaProc = miForm.getNumeroDesignaProc();
+				if (numeroDesignaProc != null && !numeroDesignaProc.equals("")) {
+					UtilidadesHash.set(hash, ScsEJGBean.C_NUMERODESIGNAPROC, numeroDesignaProc);
 				}
 				
 				String pretension = miForm.getPretension();
