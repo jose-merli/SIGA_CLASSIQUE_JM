@@ -133,11 +133,21 @@
 				}
 			<% } %>
 		}
+
+		function desactivarBotonGenerar(){
+			<% if ((obj!=null) && !obj.isEmpty()) { %>
+				var framePadre = window.parent;
+				var botones = framePadre.document.getElementsByName("idButton");
+				if(botones.length>4){
+					botones(3).style.display="none";
+				}
+			<%}%>
+		}
 	</script>
 	
 </head>
 
-<body onload="activarBusquedaColegiado();">
+<body onload="activarBusquedaColegiado();desactivarBotonGenerar();">
 	<html:form action="/JGR_DefinirCalendarioGuardia.do" method="post" target="submitArea" style="display:none">
 		<html:hidden property = "modo" value = ""/>
 		<html:hidden property = "accion" value = "modalGuardia"/>
