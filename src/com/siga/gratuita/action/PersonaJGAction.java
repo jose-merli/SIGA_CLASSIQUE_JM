@@ -1283,9 +1283,7 @@ public class PersonaJGAction extends MasterAction {
 					
 				
 				if (miform.getConceptoE().equals(PersonaJGAction.DESIGNACION_INTERESADO) ) {
-
-					if (miform.getIdPersonaJG()!=null) {
-						
+					if (miform.getIdPersonaJG()!=null) {						
 						hash = new Hashtable();
 						hash.put(ScsDefendidosDesignaBean.C_IDINSTITUCION,miform.getIdInstitucionDES());
 						hash.put(ScsDefendidosDesignaBean.C_IDTURNO,miform.getIdTurnoDES());
@@ -1306,12 +1304,17 @@ public class PersonaJGAction extends MasterAction {
 							UtilidadesHash.setForCompare(hash, ScsDefendidosDesignaBean.C_OBSERVACIONES,ufBean.getObservaciones());
 							UtilidadesHash.setForCompare(hash, ScsDefendidosDesignaBean.C_IDPERSONA,ufBean.getIdPersona());
 							UtilidadesHash.setForCompare(hash, ScsDefendidosDesignaBean.C_USUMODIFICACION,ufBean.getUsuMod());
-							UtilidadesHash.setForCompare(hash, ScsDefendidosDesignaBean.C_CALIDAD,ufBean.getCalidad());
-							dataBackup.put(ScsDefendidosDesignaBean.T_NOMBRETABLA,hash);						
-					
+							UtilidadesHash.setForCompare(hash, ScsDefendidosDesignaBean.C_CALIDAD,ufBean.getIdTipoenCalidad().toString());
+							UtilidadesHash.setForCompare(hash, ScsDefendidosDesignaBean.C_IDTIPOENCALIDAD,ufBean.getIdTipoenCalidad());
+							UtilidadesHash.setForCompare(hash, ScsDefendidosDesignaBean.C_CALIDADIDINSTITUCION,ufBean.getCalidadIdinstitucion());							
+							dataBackup.put(ScsDefendidosDesignaBean.T_NOMBRETABLA,hash);	
 							
-							//miform.setObservaciones(ufBean.getObservaciones());
-							miform.setCalidad(ufBean.getCalidad());
+
+							
+							miform.setCalidad(ufBean.getIdTipoenCalidad().toString());
+							miform.setIdTipoenCalidad(ufBean.getIdTipoenCalidad().toString());
+							miform.setCalidadIdinstitucion(ufBean.getCalidadIdinstitucion().toString());
+							
 						} else {
 							dataBackup.remove(ScsDefendidosDesignaBean.T_NOMBRETABLA);
 						}
@@ -1531,6 +1534,7 @@ public class PersonaJGAction extends MasterAction {
 								UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_ENCALIDADDE,perBean.getEnCalidadDe());
 								UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_OBSERVACIONES,perBean.getObservaciones());
 								UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDREPRESENTANTEJG,perBean.getIdRepresentanteJG());		
+								UtilidadesHash.setForCompare(hash,ScsPersonaJGBean. C_IDREPRESENTANTEJG,perBean.getIdRepresentanteJG());
 								
 								
 								idRepresentanteJG=perBean.getIdRepresentanteJG();
@@ -2183,7 +2187,6 @@ public class PersonaJGAction extends MasterAction {
 			String idTurnoDES=miform.getIdTurnoDES();
 			String anioDES=miform.getAnioDES();
 			String numeroDES=miform.getNumeroDES();
-
 			Hashtable defendidosDesignaHash = new Hashtable();
 			if(miform.getConceptoE().equals(PersonaJGAction.DESIGNACION_INTERESADO)) {
 				
@@ -2193,9 +2196,11 @@ public class PersonaJGAction extends MasterAction {
 				UtilidadesHash.set(defendidosDesignaHash,ScsDefendidosDesignaBean.C_NUMERO,miform.getNumeroDES());
 				UtilidadesHash.set(defendidosDesignaHash,ScsDefendidosDesignaBean.C_IDTURNO,miform.getIdTurnoDES());				
 				UtilidadesHash.set(defendidosDesignaHash,ScsDefendidosDesignaBean.C_IDPERSONA,miform.getIdPersonaJG());
-				UtilidadesHash.set(defendidosDesignaHash,ScsDefendidosDesignaBean.C_CALIDAD,miform.getCalidad());
+				UtilidadesHash.set(defendidosDesignaHash,ScsDefendidosDesignaBean.C_CALIDAD,miform.getIdTipoenCalidad());
 				UtilidadesHash.set(defendidosDesignaHash,ScsDefendidosDesignaBean.C_NOMBREREPRESENTANTE,miform.getRepresentante());
 				UtilidadesHash.set(defendidosDesignaHash,ScsDefendidosDesignaBean.C_OBSERVACIONES,miform.getObservaciones());
+				UtilidadesHash.set(defendidosDesignaHash,ScsDefendidosDesignaBean.C_IDTIPOENCALIDAD,miform.getIdTipoenCalidad());
+				UtilidadesHash.set(defendidosDesignaHash,ScsDefendidosDesignaBean.C_CALIDADIDINSTITUCION,user.getLocation());				
 			}
 			
 			Hashtable contrariosDesignaHash = new Hashtable();
