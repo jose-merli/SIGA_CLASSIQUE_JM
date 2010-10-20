@@ -59,6 +59,8 @@ import com.siga.beans.ScsDelitosEJGAdm;
 import com.siga.beans.ScsDelitosEJGBean;
 import com.siga.beans.ScsDesignaAdm;
 import com.siga.beans.ScsDesignaBean;
+import com.siga.beans.ScsDesignasProcuradorAdm;
+import com.siga.beans.ScsDesignasProcuradorBean;
 import com.siga.beans.ScsDocumentacionEJGAdm;
 import com.siga.beans.ScsDocumentacionEJGBean;
 import com.siga.beans.ScsDocumentacionSOJAdm;
@@ -757,8 +759,23 @@ public class DefinirEJGAction extends MasterAction
 
 					// 2. Insertamos el EJG a partir de la Designa 
 					
-					UtilidadesHash.set(miHash, ScsEJGBean.C_IDPROCURADOR,    			designaBean.getIdProcurador());
-					UtilidadesHash.set(miHash, ScsEJGBean.C_IDINSTITUCIONPROCURADOR,    designaBean.getIdInstitucionProcurador());
+					// jbd // esto ya no se saca de la designa, hay que ir a la tabla scs_designaprocurador 
+					// UtilidadesHash.set(miHash, ScsEJGBean.C_IDPROCURADOR,    			designaBean.getIdProcurador());
+					// UtilidadesHash.set(miHash, ScsEJGBean.C_IDINSTITUCIONPROCURADOR,    designaBean.getIdInstitucionProcurador());
+					ScsDesignasProcuradorAdm admProcurador = new ScsDesignasProcuradorAdm(this.getUserBean(request));
+					Vector vP = admProcurador.select(p); // Aprovechamos la hash anterior que ya tiene los datos de la designa
+					ScsDesignasProcuradorBean beanProcurador;
+					if ((vP != null) && (vP.size() > 0)) {
+						for (int i = 0; i < vP.size(); i++) {
+							beanProcurador = (ScsDesignasProcuradorBean) vP.get(i);
+							if((beanProcurador.getFechaRenuncia()==null)||(beanProcurador.getFechaRenuncia().equalsIgnoreCase(""))){
+								UtilidadesHash.set(miHash, ScsEJGBean.C_IDINSTITUCIONPROCURADOR,    beanProcurador.getIdInstitucionProc());
+								UtilidadesHash.set(miHash, ScsEJGBean.C_IDPROCURADOR,    			beanProcurador.getIdProcurador());
+								UtilidadesHash.set(miHash, ScsEJGBean.C_NUMERODESIGNAPROC,    		beanProcurador.getNumeroDesignacion());
+								UtilidadesHash.set(miHash, ScsEJGBean.C_FECHADESIGPROC,    			beanProcurador.getFechaDesigna());
+							}
+						}
+					}
 					UtilidadesHash.set(miHash, ScsEJGBean.C_IDPERSONAJG,     			miForm.getIdPersonaJG());
 					
 					UtilidadesHash.set(miHash, ScsEJGBean.C_JUZGADO,     				designaBean.getIdJuzgado());
