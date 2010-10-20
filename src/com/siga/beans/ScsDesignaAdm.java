@@ -2184,12 +2184,11 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				" INTERESADO.TELEFONO AS TELEFONO1_DEFENDIDO,"+
 				" f_siga_getrecurso_etiqueta(DECODE(INTERESADO.SEXO,  null,  null,  'M','gratuita.personaEJG.sexo.mujer',"+
 				" 'gratuita.personaEJG.sexo.hombre'),:9) AS SEXO_DEFENDIDO,"+
-				" INTERESADO.IDLENGUAJE AS IDLENGUAJE_DEFENDIDO," +
-				" f_siga_getrecurso_etiqueta(DECODE(INTERESADO.CALIDAD,"+
-				" null,   '', 'D', 'gratuita.personaJG.calidad.literal.demandante',"+
-				" 'gratuita.personaJG.calidad.literal.demandado'),:10)"+
-				"  AS CALIDAD_DEFENDIDO,"+
-				" INTERESADO.OBSERVACIONES AS OBS_INTERESADO,"+
+				" INTERESADO.IDLENGUAJE AS IDLENGUAJE_DEFENDIDO," +				
+				" (Select Decode(INTERESADO.Idtipoencalidad, Null,'', f_Siga_Getrecurso(Tipcal.Descripcion,:10)) "+
+                              "  From Scs_Tipoencalidad Tipcal Where Tipcal.Idtipoencalidad = INTERESADO.Idtipoencalidad "+
+                              "  And Tipcal.Idinstitucion = INTERESADO.Calidadidinstitucion) AS CALIDAD_DEFENDIDO,"+               
+                " INTERESADO.OBSERVACIONES AS OBS_INTERESADO,"+
 				" INTERESADO.OBSERVACIONES AS OBS_DEFENDIDO,"+
 				" F_SIGA_GETCODIDIOMA(INTERESADO.IDLENGUAJE) AS CODIGOLENGUAJE,"+
 				"to_char(DECODE((select count(EJGDES1.idinstitucion) "+
