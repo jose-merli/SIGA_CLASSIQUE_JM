@@ -29,8 +29,17 @@ import com.siga.general.MasterForm;
 	String idPreceptivo="";
 	String idSituacion="" ;
 	String idRenuncia="";
+	String idTipoenCalidad="";
 
 	
+
+	public String getIdTipoenCalidad() {
+		return idTipoenCalidad;
+	}
+
+	public void setIdTipoenCalidad(String idTipoenCalidad) {
+		this.idTipoenCalidad = idTipoenCalidad;
+	}
 
 	public void setPretension(String pretension) {
 		this.pretension = pretension;
