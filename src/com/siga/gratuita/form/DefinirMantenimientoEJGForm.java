@@ -349,6 +349,13 @@ import com.siga.general.MasterForm;
 	public String getIdTurnoEJG     			()	    { return this.datos.get(ScsEJGBean.C_GUARDIATURNO_IDTURNO).toString();}
 	public String getTipoLetrado     			()	    { return this.datos.get(ScsEJGBean.C_TIPOLETRADO).toString();}
 	public String getFechaAperturaEJG     			()	    { return this.datos.get(ScsEJGBean.C_FECHAAPERTURA).toString();}
+
+	public void setNumeroDesignaProc (String numDesignaProc) { 
+		this.datos.put(ScsEJGBean.C_NUMERODESIGNAPROC, numDesignaProc);
+	}
+	public String getNumeroDesignaProc () {
+		return this.datos.get(ScsEJGBean.C_NUMERODESIGNAPROC).toString();
+	}
 	
 	
 }

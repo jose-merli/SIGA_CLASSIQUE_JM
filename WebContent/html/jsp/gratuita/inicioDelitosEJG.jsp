@@ -55,7 +55,7 @@
 	String OBSERVACIONES = "", DELITOS = "", PROCURADOR = "", PROCURADORNECESARIO ="",idProcurador="", idInstitucionProcurador="", idcalidad="", FECHAPROCURADOR="",  
 		   procuradorNombreCompleto = "", procuradorNumColegiado = "", procuradorSel = "",idTurno = "", nombreCompleto="";	
    	String numeroDiligenciaAsi    = "",numeroProcedimientoAsi = "", juzgadoAsi="", juzgadoInstitucionAsi="", comisariaAsi="", comisariaInstitucionAsi="";
-   	String idPretension    = "", idPretensionInstitucion="",pretension="", idPreceptivo="", idSituacion="";
+   	String idPretension    = "", idPretensionInstitucion="",pretension="", idPreceptivo="", idSituacion="", numeroDesignaProc="";
    	
    	String idRenuncia="";
    	String idInstintucion="";
@@ -99,7 +99,7 @@
 		if (hash.containsKey(ScsEJGBean.C_COMISARIA)) comisariaAsi					  			=  hash.get(ScsEJGBean.C_COMISARIA).toString();
 		if (hash.containsKey(ScsEJGBean.C_COMISARIAIDINSTITUCION)) comisariaInstitucionAsi 		=  hash.get(ScsEJGBean.C_COMISARIAIDINSTITUCION).toString();
 		
- 		if (hash.containsKey("PROCURADOR")) PROCURADOR 					  =  hash.get("PROCURADOR").toString();
+ 		if (hash.containsKey("NUMERODESIGNAPROC")) numeroDesignaProc  =  hash.get("NUMERODESIGNAPROC").toString();
 
 	 	if (hash.containsKey("OBSERVACIONES")) OBSERVACIONES =  hash.get("OBSERVACIONES").toString();
 	 	if (hash.containsKey("DELITOS")) DELITOS =  hash.get("DELITOS").toString();
@@ -229,6 +229,7 @@
 		<html:hidden property = "idPreceptivo" value="<%=idPreceptivo%>"/>
 		<html:hidden property = "idSituacion" value="<%=idSituacion%>"/>
 		<html:hidden property = "fechaProc" value=""/>
+		<html:hidden property = "numeroDesignaProc" value="<%=numeroDesignaProc%>"/>
 		<html:hidden property = "idRenuncia" value="<%=idRenuncia%>"/>
 	</html:form>
 	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="submitArea" type=""  style="display:none">
@@ -416,48 +417,54 @@
 								<table  width="100%" border="0">
 									<tr>
 										<td class="labelText">
+											<html:hidden name = "DefinirMantenimientoEJGForm" property = "procurador" value="<%=procuradorSel%>"/>
 											<siga:Idioma key="gratuita.busquedaSOJ.literal.numeroColegidado"/>
 											<%if (obligatorioProcurador) {%>
 												<%=asterisco %> 
 											<%}%>
 										</td>
-										<td >
-											<html:hidden name = "DefinirMantenimientoEJGForm" property = "procurador" value="<%=procuradorSel%>"/>
+										<td>
 											<input type="text" name="nColegiadoProcurador" id="nColegiadoProcurador" size="5" maxlength="100" class="boxConsulta" readOnly="true" value="<%=procuradorNumColegiado%>"/>
 										</td>
 										<td  class="labelText" >
 											<siga:Idioma key="gratuita.busquedaSOJ.literal.nombre"/>
 										</td>
-										<td >
+										<td>
 											<input type="text" name="nombreCompleto" id="nombreCompleto" size="40" maxlength="100" class="boxConsulta" readOnly="true" value="<%=procuradorNombreCompleto%>"/>
 										</td>
-										<td class="labelText">
-				                             <siga:Idioma key='gratuita.operarEJG.literal.fechaDesigProc'/>
-			                            </td>
-			                            <td>	
-			                             <%   if (modopestanha.equals("ver")) {%>
-				                             <input type="text" class="boxConsulta" value="<%=FECHAPROCURADOR%>" readOnly="true">
-			                             <%	} else { %>
-
-											  <input type="text" name="fechaProc1" class="box" size="10" value="<%=FECHAPROCURADOR%>" readOnly="true">&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaProc1);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
-			                             <%}%>
-			                            </td>
 										<td>
 											<%if(modopestanha.equals("editar")){%>
 												<html:button property='idButton' onclick="return buscarProcurador();" styleClass="button"><siga:Idioma key="general.boton.search"/></html:button>
-				 
-												
-												
 											<%}%>
 										</td>
-										<td >
+										<td>
 											<%if(modopestanha.equals("editar")){%>
-												
 												<html:button property='idButton' onclick="return limpiarProcurador();" styleClass="button"><siga:Idioma key="general.boton.clear"/></html:button> 
-												
-												
 											<%}%>
 										</td>
+									</tr>
+									<tr>
+										<td class="labelText">
+										Num.Designacion
+										</td>
+										<td>
+			                             <%if (modopestanha.equals("ver")) {%>
+				                             <input type="text" class="boxConsulta" value="99" readOnly="true">
+			                             <%} else {%>
+											  <input type="text" name="numDesignaProc" class="box" size="10" maxlength="20" value="<%=numeroDesignaProc%>">
+			                             <%}%>
+			                            </td>
+			                            <td class="labelText">	
+			                             <siga:Idioma key='gratuita.operarEJG.literal.fechaDesigProc'/>
+			                             </td>
+			                             <td>
+			                             <%   if (modopestanha.equals("ver")) {%>
+				                             <input type="text" class="boxConsulta" value="<%=FECHAPROCURADOR%>" readOnly="true">
+			                             <%	} else { %>
+											  <input type="text" name="fechaProc1" class="box" size="10" value="<%=FECHAPROCURADOR%>" readOnly="true">&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaProc1);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+			                             <%}%>
+			                            </td>
+										
 									</tr>
 									
 								</table>
@@ -584,9 +591,10 @@
 				document.DefinirMantenimientoEJGForm.numeroProcedimiento.value		=	document.getElementById("numeroProcedimiento2").value;					
 				document.DefinirMantenimientoEJGForm.observaciones.value			=	document.getElementById("observaciones2").value;
 				document.DefinirMantenimientoEJGForm.delitos.value					=	document.getElementById("delitos2").value;
-				document.DefinirMantenimientoEJGForm.pretension.value				=	document.getElementById("pretensiones2").value;		
+				document.DefinirMantenimientoEJGForm.pretension.value				=	document.getElementById("pretensiones2").value;
 				document.DefinirMantenimientoEJGForm.fechaProc.value				=	document.getElementById("fechaProc1").value;				
-				document.DefinirMantenimientoEJGForm.idRenuncia.value                 =   document.getElementById("renuncia").value;
+				document.DefinirMantenimientoEJGForm.idRenuncia.value               =   document.getElementById("renuncia").value;
+				document.DefinirMantenimientoEJGForm.numeroDesignaProc.value        =   document.getElementById("numDesignaProc").value;
 
 //				alert("observaciones->"+document.DefinirMantenimientoEJGForm.observaciones.value+"<observaciones2->"+document.getElementById("observaciones").value);							
 //				alert("Procedimiento->"+document.DefinirMantenimientoEJGForm.numeroProcedimiento.value+"<Procedimiento2->"+document.getElementById("numeroProcedimiento").value);											
@@ -613,6 +621,7 @@
 			document.getElementById("nColegiadoProcurador").value     = '';
 			document.getElementById("procurador").value = '';
 			document.getElementById("fechaProc1").value = '';
+			document.getElementById("numDesignaProc").value = '';
 			
 				
 		

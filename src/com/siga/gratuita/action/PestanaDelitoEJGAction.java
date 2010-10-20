@@ -76,7 +76,7 @@ public class PestanaDelitoEJGAction extends MasterAction {
                               "  From Scs_Tipoencalidad Tipcal Where Tipcal.Idtipoencalidad = Ejg.Idtipoencalidad "+
                               "  And Tipcal.Idinstitucion = Ejg.Calidadidinstitucion) as calidad, Ejg.Idtipoencalidad,Ejg.calidadidinstitucion as CALIDADIDINSTITUCION, "+                              
                             " ejg.guardiaturno_idturno IDTURNO, ejg.IDPRETENSION as IDPRETENSION, ejg.IDPRETENSIONINSTITUCION as IDPRETENSIONINSTITUCION, " +
-					        " ejg.CALIDAD, ejg.OBSERVACIONES, ejg.DELITOS, ejg.IDPROCURADOR, ejg.IDINSTITUCION_PROC, ejg.NUMERO_CAJG," +
+					        " ejg.CALIDAD, ejg.OBSERVACIONES, ejg.DELITOS, ejg.IDPROCURADOR, ejg.NUMERODESIGNAPROC, ejg.IDINSTITUCION_PROC, ejg.NUMERO_CAJG," +
 					        " ejg.ANIOCAJG, ejg.NUMERODILIGENCIA NUMERODILIGENCIA, ejg.NUMEROPROCEDIMIENTO NUMEROPROCEDIMIENTO, ejg.JUZGADO JUZGADO," +
 					        " ejg.JUZGADOIDINSTITUCION JUZGADOIDINSTITUCION, ejg.COMISARIA COMISARIA, ejg.COMISARIAIDINSTITUCION COMISARIAIDINSTITUCION," +
 					        " ejg.FECHA_DES_PROC,ejg.IDPRECEPTIVO, ejg.IDSITUACION, ejg.IDRENUNCIA "+
