@@ -483,7 +483,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		
 		st = map.get(PRE_NUMEROPROCEDIMIENTO);
 		BigInteger bi = getBigInteger(map.get(PRE_ANOPROCEDIMIENTO));
-		if (st != null || bi != null) {
+		if ((st != null && !st.trim().equals("")) || bi != null) {
 			SIGAAsignaDtExpedientesDtPretensionesDefenderProcedimiento procedimiento = new SIGAAsignaDtExpedientesDtPretensionesDefenderProcedimiento();			
 			procedimiento.setNumeroProcedimiento(st);
 			procedimiento.setAnoProcedimiento(bi);
