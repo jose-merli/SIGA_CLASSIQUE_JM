@@ -38,7 +38,8 @@ public class ScsDefendidosDesignaAdm extends MasterBeanAdministrador {
 				ScsDefendidosDesignaBean.C_ANIO,					ScsDefendidosDesignaBean.C_NUMERO,
 				ScsDefendidosDesignaBean.C_FECHAMODIFICACION,		ScsDefendidosDesignaBean.C_USUMODIFICACION,
 				ScsDefendidosDesignaBean.C_IDPERSONA,				ScsDefendidosDesignaBean.C_OBSERVACIONES,
-				ScsDefendidosDesignaBean.C_CALIDAD, ScsDefendidosDesignaBean.C_NOMBREREPRESENTANTE};
+				ScsDefendidosDesignaBean.C_CALIDAD,                 ScsDefendidosDesignaBean.C_NOMBREREPRESENTANTE, 
+				ScsDefendidosDesignaBean.C_IDTIPOENCALIDAD,         ScsDefendidosDesignaBean.C_CALIDADIDINSTITUCION };
 		return campos;
 	}
 	/** Funcion getClavesBean ()
@@ -72,6 +73,8 @@ public class ScsDefendidosDesignaAdm extends MasterBeanAdministrador {
 			bean.setCalidad(UtilidadesHash.getString(hash,ScsDefendidosDesignaBean.C_CALIDAD));
 			bean.setNombreRepresentante(UtilidadesHash.getString(hash,ScsDefendidosDesignaBean.C_NOMBREREPRESENTANTE));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,ScsDefendidosDesignaBean.C_USUMODIFICACION));
+			bean.setIdTipoenCalidad(UtilidadesHash.getInteger(hash,ScsDefendidosDesignaBean.C_IDTIPOENCALIDAD));
+			bean.setCalidadIdinstitucion(UtilidadesHash.getInteger(hash,ScsDefendidosDesignaBean.C_CALIDADIDINSTITUCION));
 		}
 		catch(Exception e){
 			bean = null;
@@ -100,6 +103,8 @@ public class ScsDefendidosDesignaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, ScsDefendidosDesignaBean.C_IDPERSONA,b.getIdPersona());
 			UtilidadesHash.set(hash, ScsDefendidosDesignaBean.C_USUMODIFICACION,b.getUsuMod());
 			UtilidadesHash.set(hash, ScsDefendidosDesignaBean.C_CALIDAD,b.getCalidad());
+			UtilidadesHash.set(hash, ScsDefendidosDesignaBean.C_IDTIPOENCALIDAD,b.getIdTipoenCalidad());
+			UtilidadesHash.set(hash, ScsDefendidosDesignaBean.C_CALIDADIDINSTITUCION,b.getCalidadIdinstitucion());
 			
 		}
 		catch (Exception e){
@@ -202,8 +207,11 @@ public class ScsDefendidosDesignaAdm extends MasterBeanAdministrador {
 			String demandante=UtilidadesString.getMensajeIdioma(lg,"gratuita.insertarSOJ.literal.demandante");
 			String demandado=UtilidadesString.getMensajeIdioma(lg,"gratuita.insertarSOJ.literal.demandado");
 			
-			String sql ="select " +
-			"decode(dd."+ScsDefendidosDesignaBean.C_CALIDAD+",'D','"+demandante+"','O','"+demandado+"','') CALIDAD_DEFENDIDO,"+
+			String sql="Select (Select Decode(Ejg.Idtipoencalidad, Null,'', f_Siga_Getrecurso(Tipcal.Descripcion,"+ lenguaje + ")) "+
+                              "  From Scs_Tipoencalidad Tipcal Where Tipcal.Idtipoencalidad = dd."+ ScsDefendidosDesignaBean.C_IDTIPOENCALIDAD+
+                              "  And Tipcal.Idinstitucion = dd."+ ScsDefendidosDesignaBean.C_CALIDADIDINSTITUCION+") as CALIDAD_DEFENDIDO, "+                              
+			//String sql ="select " +
+			//"decode(dd."+ScsDefendidosDesignaBean.C_CALIDAD+",'D','"+demandante+"','O','"+demandado+"','') CALIDAD_DEFENDIDO,"+
 			"pd."+ScsPersonaJGBean.C_NIF +" NIF_DEFENDIDO,"+
 			"pd." + ScsPersonaJGBean.C_APELLIDO1 +
 			"||' '||pd." + ScsPersonaJGBean.C_APELLIDO2 +
