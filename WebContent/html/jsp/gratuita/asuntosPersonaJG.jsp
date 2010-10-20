@@ -100,6 +100,8 @@
 			<html:hidden property="enCalidadDe"/>
 			<html:hidden property="enCalidadDeLibre"/>
 			<html:hidden property="calidad"/>
+			<html:hidden property="idTipoenCalidad"/>
+			<html:hidden property="calidadIdinstitucion"/>			
 			<html:hidden property="idProcurador"/>
 			<html:hidden property="idRepresentanteJG"/>
 			<html:hidden property="idAbogadoContrarioEJG"/>
