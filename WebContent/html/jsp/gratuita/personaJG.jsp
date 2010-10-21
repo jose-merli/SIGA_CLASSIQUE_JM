@@ -130,6 +130,10 @@
 	boolean obligatorioIdentificador = false;
 	boolean obligatorioNacionalidad = false;
 	boolean obligatorioTipoIngreso = false;
+	boolean obligatorioEstadoCivil= false;
+	boolean obligatorioRegimenConyuge= false;
+	boolean obligatorioIngreso = true;
+	
 	if ((pcajgActivo == 1)
 			&& ((conceptoE.equals(PersonaJGAction.EJG) || conceptoE
 					.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)
@@ -156,14 +160,24 @@
 		if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR))
 			obligatorioParentesco = true;
 	} else if ((pcajgActivo == 4)
-			&& ((conceptoE.equals(PersonaJGAction.EJG) || conceptoE
-					.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)
-			/*|| conceptoE.equals(PersonaJGAction.PERSONAJG)*/))) {
-		obligatorioDireccion = true;
-		obligatorioPoblacion = true;
-		obligatorioCodigoPostal = true;
-		if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR))
-			obligatorioParentesco = true;
+			&& (conceptoE.equals(PersonaJGAction.EJG) || conceptoE
+					.equals(PersonaJGAction.EJG_UNIDADFAMILIAR) ||conceptoE.equals(PersonaJGAction.DESIGNACION_INTERESADO)
+			/*|| conceptoE.equals(PersonaJGAction.PERSONAJG)*/)) {
+		
+		if (conceptoE.equals(PersonaJGAction.DESIGNACION_INTERESADO)){
+			 obligatorioEstadoCivil= true;
+		     obligatorioRegimenConyuge=true;
+		 }else{
+			obligatorioDireccion = true;
+			obligatorioPoblacion = true;
+			obligatorioCodigoPostal = true;
+			if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)){
+				obligatorioParentesco = true;
+			    obligatorioEstadoCivil= true;
+			    obligatorioRegimenConyuge=true;
+			    obligatorioIngreso= true;
+			}
+		 }
 	} else if ((pcajgActivo == 5)
 			&& ((conceptoE.equals(PersonaJGAction.EJG) || conceptoE
 					.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)
@@ -173,6 +187,7 @@
 		obligatorioParentesco = true;
 		obligatorioNacionalidad = true;
 		obligatorioCodigoPostal = true;
+	
 	}
 	
 //String checkSolicitante = miform.getigetSolicitante();
@@ -1119,7 +1134,10 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 			%>
 		</td>
 		<td class="labelText">
-			<siga:Idioma key="gratuita.personaJG.literal.estadoCivil"/>		
+			<siga:Idioma key="gratuita.personaJG.literal.estadoCivil"/>	
+			<%if (obligatorioEstadoCivil){%>
+					<%=asterisco%> 
+				<%}%>			 
 		</td>
 		<td>
 			<%
@@ -1242,8 +1260,11 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 	
 	<tr>
 		<td class="labelText">
-			<siga:Idioma key="gratuita.personaJG.literal.regimenConyugal"/>		
-		</td>
+			<siga:Idioma key="gratuita.personaJG.literal.regimenConyugal"/>	
+			<%if (obligatorioRegimenConyuge){%>
+					<%=asterisco%> 
+				<%}%>	
+			</td>
 		<td>
 			<%
 				if (accion.equalsIgnoreCase("ver")) {
@@ -1267,15 +1288,7 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 											.getMensajeIdioma(usr,
 													"gratuita.personaJG.regimen.literal.separacion");
 								}
-							}
-
-							/*				if (miform.getRegimenConyugal()!=null && miform.getRegimenConyugal().equalsIgnoreCase("G")) {
-							 regimen = UtilidadesString.getMensajeIdioma(usr,"gratuita.personaJG.regimen.literal.gananciales");
-							 } else {
-							
-							 regimen = UtilidadesString.getMensajeIdioma(usr,"gratuita.personaJG.regimen.literal.separacion");
-							 }
-							 */
+							}						
 			%>
 				<html:text name="PersonaJGForm" property="regimenConyugal" value="<%=regimen%>" size="18" styleClass="boxConsulta" readonly="true"></html:text>
 			<%
@@ -1788,6 +1801,13 @@ function limpiarPersonaContrario() {
 	<tr>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.operarInteresado.literal.ingresos"/>
+			<%
+				if (obligatorioIngreso) {
+			%>
+				<%=asterisco%> 
+			<%
+ 				}
+ 			%>
 		</td>
 
 		<td>
@@ -2167,6 +2187,8 @@ function limpiarPersonaContrario() {
 							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nacionalidad'/>"+ '\n';
 						if (<%=obligatorioTipoIngreso%> && document.forms[0].tipoIngreso.value =="")
 							error += "<siga:Idioma key='errors.required' arg0='gratuita.operarInteresado.literal.tipoIngresos'/>"+ '\n';
+							
+						
 						if(error!=""){
 							alert(error);
 							fin();
@@ -2279,12 +2301,17 @@ function limpiarPersonaContrario() {
 					if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value=="")
 						error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
 					if (<%=obligatorioNacionalidad%> && document.forms[0].nacionalidad.value =="")
-						error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nacionalidad'/>"+ '\n';
+						error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nacionalidad'/>"+ '\n';						
+					if (<%=obligatorioEstadoCivil%> && document.forms[0].estadoCivil.value=="")
+							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.estadoCivil'/>"+ '\n';								
+					if (<%=obligatorioRegimenConyuge%> && document.forms[0].regimenConyugal.value=="")
+							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.regimenConyugal'/>"+ '\n';
 					if (<%=obligatorioParentesco%> && document.forms[0].parentesco.value=="")
-						error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.parentescoNormalizado'/>"+ '\n';
+						error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.parentescoNormalizado'/>"+ '\n';						
 					if (<%=obligatorioTipoIngreso%> && document.forms[0].tipoIngreso.value =="")
 						error += "<siga:Idioma key='errors.required' arg0='gratuita.operarInteresado.literal.tipoIngresos'/>"+ '\n';
-					
+					if (<%=obligatorioIngreso%> && document.forms[0].importeIngresosAnuales.value =="")
+							error += "<siga:Idioma key='errors.required' arg0='gratuita.operarInteresado.literal.ingresos'/>"+ '\n';
 					if(error!=""){
 						alert(error);
 						fin();
@@ -2651,23 +2678,32 @@ function limpiarPersonaContrario() {
 			var tipoIdent=document.forms[0].tipoId.value;
 			var numId=document.forms[0].NIdentificacion.value;		
 					
-			if (document.getElementById('calidad2')){				 
-				document.forms[0].idTipoenCalidad.value	=	document.getElementById("calidad2").value;
-				var calidad=document.forms[0].idTipoenCalidad.value;   
-				if (calidad==""){				
-				alert("<siga:Idioma key='gratuita.personaJG.literal.mensajecalidad'/>");
-				fin();
-				return false;				
-				}
-			}
-
-			
+						
 			if (!validaNumeroIdentificacion()) {
 				fin();
 				return false;
 			}
 			if(document.forms[0].NIdentificacion.value=="") document.forms[0].tipoId.value = "";
 
+			var error = "";
+			if (document.getElementById('calidad2')){				 
+				document.forms[0].idTipoenCalidad.value	=	document.getElementById("calidad2").value;
+				var calidad=document.forms[0].idTipoenCalidad.value;   
+				if (calidad==""){			
+					error+="<siga:Idioma key='gratuita.personaJG.literal.mensajecalidad'/>";				
+				}				
+			}			
+			if (<%=obligatorioEstadoCivil%> && document.forms[0].estadoCivil.value=="")
+				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.estadoCivil'/>"+ '\n';
+			if (<%=obligatorioRegimenConyuge%> && document.forms[0].regimenConyugal.value=="")
+			    error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.regimenConyugal'/>"+ '\n';
+			    
+			if(error!=""){
+			  alert(error);
+			  fin();
+			  return false;
+			 }	
+			
 		 	document.forms[0].action="<%=app + actionE%>";	
 			document.forms[0].modo.value='guardarDesigna';
 			
@@ -2695,6 +2731,8 @@ function limpiarPersonaContrario() {
 					}
 				}
 			}
+
+		
 			
 		}
 <%}%>
