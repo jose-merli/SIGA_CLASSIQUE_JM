@@ -183,12 +183,9 @@ String[] datos2={usr.getLocation(),usr.getLanguage()};
 
 String idcalidad="";
 idcalidad=miform.getIdTipoenCalidad();
-if (idcalidad!=null){
+if (idcalidad!=null&&!idcalidad.equals("")){
 calidadSel.add(0,idcalidad+","+usr.getLocation());
-}else{
-	calidadSel.add(0,"1"+","+usr.getLocation());
-	}
-
+}
 String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 %>
 
@@ -1359,7 +1356,7 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 		</td>		
 			<td>
 				<%if(!accion.equalsIgnoreCase("ver")){%>
-						<siga:ComboBD nombre="calidad2" tipo="ComboCalidades" ancho="200" clase="boxCombo" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=calidadSel%>" hijo="t" readonly="false"/>           	   
+						<siga:ComboBD nombre="calidad2" tipo="ComboCalidades" ancho="200" clase="boxCombo" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="true"  obligatorioSinTextoSeleccionar="true" parametro="<%=datos2%>" elementoSel="<%=calidadSel%>" hijo="t" readonly="false"/>           	   
 					<%}else{%>
 						<siga:ComboBD nombre="calidad2" tipo="ComboCalidades" ancho="200" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=calidadSel%>" hijo="t" readonly="true"/>           	   
 			<%}%>
