@@ -397,7 +397,7 @@
 						</td>
 							<td colspan="12">			
 							<%if(modopestanha.equals("editar")){%>
-								<siga:ComboBD nombre="calidad2" tipo="ComboCalidades" ancho="200" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=calidadSel%>" hijo="t" readonly="false"/>           	   
+								<siga:ComboBD nombre="calidad2" tipo="ComboCalidades" ancho="200" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="true" obligatorioSinTextoSeleccionar="true" parametro="<%=datos2%>" elementoSel="<%=calidadSel%>" hijo="t" readonly="false"/>           	   
 							<%}else{%>
 								<siga:ComboBD nombre="calidad2" tipo="ComboCalidades" ancho="200" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=calidadSel%>" hijo="t" readonly="true"/>           	   
 							<%}%>
