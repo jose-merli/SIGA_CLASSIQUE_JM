@@ -140,14 +140,12 @@
 		// Nada de momento
 	} else if ((pcajgActivo == 2)
 			&& ((conceptoE.equals(PersonaJGAction.EJG) || conceptoE
-					.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)))) {
-		obligatorioDireccion = true;		
+					.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)))) {			
 		if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR))
 			obligatorioParentesco = true;
 	} else if ((pcajgActivo == 3)
 			&& ((conceptoE.equals(PersonaJGAction.EJG) || conceptoE
-					.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)))) {
-		obligatorioDireccion = true;		
+					.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)))) {				
 		obligatorioIdentificador = true;		
 		if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR))
 			obligatorioParentesco = true;
