@@ -148,6 +148,7 @@
 	String[] datos2={usr.getLocation(),usr.getLanguage()};	
 	
 	String asterisco = "&nbsp(*)&nbsp";
+
 	int pcajgActivo = 0;
 	if (request.getAttribute("PCAJG_ACTIVO")!=null){
 		pcajgActivo = Integer.parseInt(request.getAttribute("PCAJG_ACTIVO").toString());
@@ -157,7 +158,8 @@
 	boolean obligatorioProcurador = false;
 	boolean validarProcedimiento = false;
 	boolean obligatorioPretension = false;
-	
+	boolean obligatorioSituacion = false;
+	boolean obligatoriojuzgado=false;
 	if (pcajgActivo==1){
 		
 	}else if (pcajgActivo==2){
@@ -168,15 +170,15 @@
 		obligatorioPretension = true;
 	}else if (pcajgActivo==4){
 		validarProcedimiento = true;
+		obligatorioPreceptivo = true;
+		obligatorioSituacion  = true;
+		obligatorioPretension = true;
 	}else if (pcajgActivo==5){
 		validarProcedimiento = true;
 		obligatorioPretension = true;
+		obligatoriojuzgado = true;/*Se modifica para que sea obligatorio el juzgado para pcajg=5*/
 	}
-	/*Se modifica para que sea obligatorio el juzgado para pcajg=5*/
-	boolean obligatoriojuzgado=false;
-	if (pcajgActivo==5){
-		obligatoriojuzgado = true;
-	}
+	
 %>
 
 <%@page import="java.util.Properties"%>
@@ -289,7 +291,7 @@
 						<td  class="labelText" colspan="4">
 						   <siga:Idioma key='gratuita.operarEJG.literal.Preceptivo'/>
 							<%if (obligatorioPreceptivo) {%>
-								<%=asterisco %> 
+								<%=asterisco%> 
 							<%}%>		
 					    </td> 
 						<td colspan="10">
@@ -310,7 +312,10 @@
 						</td>	
 										
 						<td  class="labelText" colspan="4">
-						   <siga:Idioma key='gratuita.operarEJG.literal.situacion'/>						   
+						   <siga:Idioma key='gratuita.operarEJG.literal.situacion'/>
+						   <%if (obligatorioSituacion) {%>
+								<%=asterisco%> 
+							<%}%>							   
 					    </td> 
 					    
 					    <td colspan="10">
@@ -564,6 +569,9 @@
 				var error = "";
 		   		if (<%=obligatorioPreceptivo%> && document.getElementById("preceptivo2").value=="")
 					error += "<siga:Idioma key='errors.required' arg0='gratuita.operarEJG.literal.Preceptivo'/>"+ '\n';
+					
+				if (<%=obligatorioSituacion%> && document.getElementById("situacion").value=="")
+						error += "<siga:Idioma key='errors.required' arg0='gratuita.operarEJG.literal.situacion'/>"+ '\n';						
 				if (<%=obligatorioNumProcedimiento%> && document.getElementById("numeroProcedimiento2").value=="")
 					error += "<siga:Idioma key='errors.required' arg0='gratuita.mantAsistencias.literal.numeroProced'/>"+ '\n';
 				if ( <%=obligatorioPretension%> && document.getElementById("pretensiones2").value=="")
