@@ -1314,11 +1314,15 @@ public class PersonaJGAction extends MasterAction {
 							miform.setCalidad(ufBean.getIdTipoenCalidad().toString());
 							miform.setIdTipoenCalidad(ufBean.getIdTipoenCalidad().toString());
 							miform.setCalidadIdinstitucion(ufBean.getCalidadIdinstitucion().toString());
-							
+						    int tipoCAJG = CajgConfiguracion.getTipoCAJG(new Integer(miform.getIdInstitucionDES()));					
+						    request.setAttribute("pcajgActivo", tipoCAJG);
+					
 						} else {
 							dataBackup.remove(ScsDefendidosDesignaBean.T_NOMBRETABLA);
 						}
 					}
+					  int tipoCAJG = CajgConfiguracion.getTipoCAJG(new Integer(miform.getIdInstitucionDES()));					
+						    request.setAttribute("pcajgActivo", tipoCAJG);
 				} else
 					if (miform.getConceptoE().equals(PersonaJGAction.DESIGNACION_CONTRARIOS)) {
 						
