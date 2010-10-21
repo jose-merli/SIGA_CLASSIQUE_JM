@@ -132,45 +132,37 @@
 	boolean obligatorioTipoIngreso = false;
 	boolean obligatorioEstadoCivil= false;
 	boolean obligatorioRegimenConyuge= false;
-	boolean obligatorioIngreso = true;
+	boolean obligatorioIngreso = false;
 	
 	if ((pcajgActivo == 1)
 			&& ((conceptoE.equals(PersonaJGAction.EJG) || conceptoE
-					.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)
-			/*|| conceptoE.equals(PersonaJGAction.PERSONAJG)*/))) {
+					.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)))) {
 		// Nada de momento
 	} else if ((pcajgActivo == 2)
 			&& ((conceptoE.equals(PersonaJGAction.EJG) || conceptoE
-					.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)
-			/*|| conceptoE.equals(PersonaJGAction.PERSONAJG)*/))) {
-		obligatorioDireccion = true;
-		// obligatorioTipoIdentificador = true;
-		obligatorioIdentificador = true;
-		obligatorioTipoIngreso = true;
+					.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)))) {
+		obligatorioDireccion = true;		
 		if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR))
 			obligatorioParentesco = true;
 	} else if ((pcajgActivo == 3)
 			&& ((conceptoE.equals(PersonaJGAction.EJG) || conceptoE
-					.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)
-			/*|| conceptoE.equals(PersonaJGAction.PERSONAJG)*/))) {
-		obligatorioDireccion = true;
-		// obligatorioTipoIdentificador = true;
-		obligatorioIdentificador = true;
-		obligatorioTipoIngreso = true;
+					.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)))) {
+		obligatorioDireccion = true;		
+		obligatorioIdentificador = true;		
 		if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR))
 			obligatorioParentesco = true;
 	} else if ((pcajgActivo == 4)
 			&& (conceptoE.equals(PersonaJGAction.EJG) || conceptoE
 					.equals(PersonaJGAction.EJG_UNIDADFAMILIAR) ||conceptoE.equals(PersonaJGAction.DESIGNACION_INTERESADO)
-			/*|| conceptoE.equals(PersonaJGAction.PERSONAJG)*/)) {
-		
+			)) {		
 		if (conceptoE.equals(PersonaJGAction.DESIGNACION_INTERESADO)){
 			 obligatorioEstadoCivil= true;
-		     obligatorioRegimenConyuge=true;
+		     obligatorioRegimenConyuge=true;		    
 		 }else{
 			obligatorioDireccion = true;
 			obligatorioPoblacion = true;
 			obligatorioCodigoPostal = true;
+			obligatorioIngreso= true;
 			if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)){
 				obligatorioParentesco = true;
 			    obligatorioEstadoCivil= true;
@@ -180,8 +172,7 @@
 		 }
 	} else if ((pcajgActivo == 5)
 			&& ((conceptoE.equals(PersonaJGAction.EJG) || conceptoE
-					.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)
-			/*|| conceptoE.equals(PersonaJGAction.PERSONAJG)*/))) {
+					.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)))) {
 		obligatorioDireccion = true;
 		obligatorioPoblacion = true;
 		obligatorioParentesco = true;
@@ -190,12 +181,9 @@
 	
 	}
 	
-//String checkSolicitante = miform.getigetSolicitante();
 
 ArrayList calidadSel = new ArrayList();
-
 String[] datos2={usr.getLocation(),usr.getLanguage()};
-
 String idcalidad="";
 idcalidad=miform.getIdTipoenCalidad();
 if (idcalidad!=null&&!idcalidad.equals("")){
@@ -2184,10 +2172,9 @@ function limpiarPersonaContrario() {
 						if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value=="")
 							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
 						if (<%=obligatorioNacionalidad%> && document.forms[0].nacionalidad.value =="")
-							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nacionalidad'/>"+ '\n';
-						if (<%=obligatorioTipoIngreso%> && document.forms[0].tipoIngreso.value =="")
-							error += "<siga:Idioma key='errors.required' arg0='gratuita.operarInteresado.literal.tipoIngresos'/>"+ '\n';
-							
+							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nacionalidad'/>"+ '\n';						
+						if (<%=obligatorioIngreso%> && document.forms[0].importeIngresosAnuales.value =="")
+								error += "<siga:Idioma key='errors.required' arg0='gratuita.operarInteresado.literal.ingresos'/>"+ '\n';	
 						
 						if(error!=""){
 							alert(error);
