@@ -216,17 +216,28 @@
 	}
 	boolean validarProcedimiento = false;
 	boolean obligatorioProcedimiento = false;
-	boolean obligatoriojuzgado=false;
-	if (pcajgActivo==2 || pcajgActivo==3 || pcajgActivo==5){
+	boolean obligatoriojuzgado=false;	
+	boolean obligatorioModulo=false;
+	boolean obligatorioTipoDesigna=false;
+	
+	if (pcajgActivo==2 || pcajgActivo==3){
 		obligatorioProcedimiento = true;
-	}
-	if (pcajgActivo==4 || pcajgActivo==5){
+	}	
+
+	if (pcajgActivo==4){
 		validarProcedimiento = true;
+	    obligatorioProcedimiento = true;
+		obligatorioModulo=true;
+		obligatorioTipoDesigna=true;		
 	}
+	
 	/*Se modifica para que sea obligatorio el juzgado para pcajg=5*/
 	if (pcajgActivo==5){
+		validarProcedimiento = true;
 		obligatoriojuzgado = true;
+		obligatorioProcedimiento = true;
 	}
+
 	
 %>	
 
@@ -277,15 +288,24 @@
 		{	
 			<%if (pcajgActivo>0){%>
 				var error = "";
+
+				
+				if (<%=obligatorioTipoDesigna%> && document.getElementById("tipo").value=="")
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.editarDesigna.literal.tipo'/>"+ '\n';
+
+				if(<%=obligatoriojuzgado%> && document.getElementById("juzgado").value==""){										
+					error += "<siga:Idioma key='gratuita.editarDesigna.juzgado'/>"+ '\n';
+				}
+				if (<%=obligatorioModulo%> && document.getElementById("idProcedimiento").value=="")
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesDesigna.literal.modulo'/>"+ '\n';
+					
 				if (<%=obligatorioProcedimiento%> && document.getElementById("idPretension").value=="")
 					error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesDesigna.literal.pretensiones'/>"+ '\n';
 				if(<%=validarProcedimiento%>){
 					if(!validaProcedimiento(document.getElementById("numeroProcedimiento").value))
 						error += "<siga:Idioma key='gratuita.procedimientos.numero.formato'/>"+ '\n';
 				}
-				if(<%=obligatoriojuzgado%> && document.getElementById("juzgado").value==""){										
-						error += "<siga:Idioma key='gratuita.editarDesigna.juzgado'/>"+ '\n';
-				}
+				
 
 				
 				if(error!=""){
@@ -586,6 +606,9 @@ function accionCerrar() {
 					<tr>
 						<td class="labelText" width="15%">
 							<siga:Idioma key="gratuita.editarDesigna.literal.tipo" />
+							<%if(obligatorioTipoDesigna){%>
+						 		<%= asterisco %>
+							<%}%>
 						</td>
 						<%
 							ArrayList vTipo = new ArrayList();
@@ -594,7 +617,7 @@ function accionCerrar() {
 						%>
 						<td colspan="2">
 						<% if (!modo.equalsIgnoreCase("ver")) { %> 
-							<siga:ComboBD pestana="true" nombre="tipo" tipo="tipoDesignaColegio" estilo="true" clase="boxCombo" elementoSel="<%=vTipo%>" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" />
+							<siga:ComboBD  pestana="true" nombre="tipo" tipo="tipoDesignaColegio" estilo="true" clase="boxCombo" elementoSel="<%=vTipo%>" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" />
 						<% } else { %> 
 							<siga:ComboBD pestana="true" nombre="tipo" tipo="tipoDesignaColegio" estilo="true" clase="boxConsulta" elementoSel="<%=vTipo%>" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="true" />
 						<% } %>
@@ -716,7 +739,10 @@ function accionCerrar() {
 					</tr>
 					<tr>
 						<td class="labelText"><siga:Idioma
-							key="gratuita.actuacionesDesigna.literal.modulo" />
+							key="gratuita.actuacionesDesigna.literal.modulo" /> 
+							<%if (obligatorioModulo){ %>
+								<%= asterisco %>
+							<%}%>
 						</td>
 						<td colspan="7">
 						<%-- Procedimiento --%> 
