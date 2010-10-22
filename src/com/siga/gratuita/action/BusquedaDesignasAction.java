@@ -1267,8 +1267,6 @@ public class BusquedaDesignasAction extends MasterAction {
 
 			designaBean.setCodigo(UtilidadesHash.getString(datosHash, ScsDesignaBean.C_CODIGO));
 
-			String sql="select ce.idpersona as IDPERSONA from scs_contrariosejg ce where ce.anio="+ejgBean.getAnio()+" and ce.idinstitucion="+ejgBean.getIdInstitucion()+" and ce.idtipoejg="+ejgBean.getIdTipoEJG()+" and ce.numero="+ejgBean.getNumero() ;
-			contrarios=designaAdm.selectGenerico(sql);			
 
 			contrariosHash.put(ScsContrariosDesignaBean.C_IDINSTITUCION,designaBean.getIdInstitucion());
 			contrariosHash.put(ScsContrariosDesignaBean.C_ANIO,designaBean.getAnio());
@@ -1285,12 +1283,35 @@ public class BusquedaDesignasAction extends MasterAction {
 				return false;
 			}
 
+			String sql="select ce.idpersona as IDPERSONA, ce.idprocurador as IDPROCURADOR, ce.idinstitucion_procu IDINSTPROCURADOR, ";
+				  sql+=" ce.idrepresentanteejg  as IDREPRESENTANTE, ce.idabogadocontrarioejg as IDABOGADO, ce.nombreabogadocontrarioejg as NOMBREABOGADO, ";
+                  sql+=" ce.nombrerepresentanteejg as NOMBREREPRESENTANTE from scs_contrariosejg ce where ce.anio="+ejgBean.getAnio()+" and ce.idinstitucion="+ejgBean.getIdInstitucion()+" and ce.idtipoejg="+ejgBean.getIdTipoEJG()+" and ce.numero="+ejgBean.getNumero() ;
+			contrarios=designaAdm.selectGenerico(sql);			
 			// Copiamos los contrarios del EJG
 
 			if (contrarios!=null && contrarios.size()>0){
 				for (int i=0;i<contrarios.size();i++){
 					String idPersonaContrario = (String)((Hashtable)contrarios.get(i)).get("IDPERSONA");
+					String idProcuradorContrario = (String)((Hashtable)contrarios.get(i)).get("IDPROCURADOR");
+					String idInstProcuradorContrario = (String)((Hashtable)contrarios.get(i)).get("IDINSTPROCURADOR");
+					String idAbogadoContrario = (String)((Hashtable)contrarios.get(i)).get("IDABOGADO");
+					String idRepresentanteContrario = (String)((Hashtable)contrarios.get(i)).get("IDREPRESENTANTE");
+					String nombreAbogado = (String)((Hashtable)contrarios.get(i)).get("NOMBREABOGADO");
+					String nombreRepresentante = (String)((Hashtable)contrarios.get(i)).get("NOMBREREPRESENTANTE");
 					contrariosHash.put(ScsContrariosDesignaBean.C_IDPERSONA,idPersonaContrario);
+					contrariosHash.put(ScsContrariosDesignaBean.C_NOMBREABOGADOCONTRARIO,nombreAbogado);
+					contrariosHash.put(ScsContrariosDesignaBean.C_NOMBREREPRESENTANTE,nombreRepresentante);
+					if(idProcuradorContrario!=null&&!idProcuradorContrario.equalsIgnoreCase(""))
+						contrariosHash.put(ScsContrariosDesignaBean.C_IDPROCURADOR,idProcuradorContrario);
+					if(idInstProcuradorContrario!=null&&!idInstProcuradorContrario.equalsIgnoreCase(""))
+						contrariosHash.put(ScsContrariosDesignaBean.C_IDINSTITUCIONPROCURADOR,idInstProcuradorContrario);
+					if(idInstProcuradorContrario!=null&&!idInstProcuradorContrario.equalsIgnoreCase(""))
+						contrariosHash.put(ScsContrariosDesignaBean.C_IDINSTITUCIONPROCURADOR,idInstProcuradorContrario);
+					if(idAbogadoContrario!=null&&!idAbogadoContrario.equalsIgnoreCase(""))
+						contrariosHash.put(ScsContrariosDesignaBean.C_IDABOGADOCONTRARIO,idAbogadoContrario);
+					// TODO TODO // jbd // Con el representante tenemos un problema gordo, en EJG y asistencias es una personaJG y en designas es un colegiado
+					// if(idRepresentanteContrario!=null&&!idRepresentanteContrario.equalsIgnoreCase(""))
+					//	 contrariosHash.put(ScsContrariosDesignaBean.C_IDREPRESENTANTELEGAL,idRepresentanteContrario);
 					contrariosAdm.insert(contrariosHash);
 				}
 			}			

@@ -865,6 +865,14 @@ public class DefinirEJGAction extends MasterAction
 						contrariosEJGBean.setNumero(EJG_numero);
 						contrariosEJGBean.setIdPersona(contrariosDesignaBean.getIdPersona());
 						contrariosEJGBean.setObservaciones(contrariosDesignaBean.getObservaciones());
+						if(contrariosDesignaBean.getIdProcurador()!=null)
+							contrariosEJGBean.setIdProcurador(Long.valueOf(contrariosDesignaBean.getIdProcurador()));
+						contrariosEJGBean.setIdInstitucionProcurador(contrariosDesignaBean.getIdInstitucionProcurador());
+						// TODO // jbd // Con el representante tenemos un problema gordo, en EJG y asistencias es una personaJG y en designas es un colegiado
+						// contrariosEJGBean.setIdRepresentanteEjg(contrariosDesignaBean.getIdRepresentanteLegal());
+						// contrariosEJGBean.setNombreRepresentanteEjg(contrariosDesignaBean.getNombreRepresentante());
+						contrariosEJGBean.setIdAbogadoContrarioEjg(contrariosDesignaBean.getIdAbogadoContrario());
+						contrariosEJGBean.setNombreAbogadoContrarioEjg(contrariosDesignaBean.getnombreAbogadoContrario());
 						
 						if (!contrariosEJGAdm.insert(contrariosEJGBean))
 							throw new ClsExceptions ("Error al crear el EJG desde la designa");
