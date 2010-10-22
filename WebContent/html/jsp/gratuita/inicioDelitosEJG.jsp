@@ -442,28 +442,17 @@
 											<siga:Idioma key="gratuita.busquedaSOJ.literal.nombre"/>
 										</td>
 										<td>
-											<input type="text" name="nombreCompleto" id="nombreCompleto" size="40" maxlength="100" class="boxConsulta" readOnly="true" value="<%=procuradorNombreCompleto%>"/>
+											<input type="text" name="nombreCompleto" id="nombreCompleto" size="30" maxlength="100" class="boxConsulta" readOnly="true" value="<%=procuradorNombreCompleto%>"/>
 										</td>
-										<td>
-											<%if(modopestanha.equals("editar")){%>
-												<html:button property='idButton' onclick="return buscarProcurador();" styleClass="button"><siga:Idioma key="general.boton.search"/></html:button>
-											<%}%>
-										</td>
-										<td>
-											<%if(modopestanha.equals("editar")){%>
-												<html:button property='idButton' onclick="return limpiarProcurador();" styleClass="button"><siga:Idioma key="general.boton.clear"/></html:button> 
-											<%}%>
-										</td>
-									</tr>
-									<tr>
+										
 										<td class="labelText">
-										Num.Designacion
+											<siga:Idioma key='gratuita.operarEJG.literal.numDesigProc'/>
 										</td>
 										<td>
 			                             <%if (modopestanha.equals("ver")) {%>
 				                             <input type="text" class="boxConsulta" value="99" readOnly="true">
 			                             <%} else {%>
-											  <input type="text" name="numDesignaProc" class="box" size="10" maxlength="20" value="<%=numeroDesignaProc%>">
+											  <input type="text" name="numDesignaProc" class="box" size="5" maxlength="20" value="<%=numeroDesignaProc%>">
 			                             <%}%>
 			                            </td>
 			                            <td class="labelText">	
@@ -476,7 +465,16 @@
 											  <input type="text" name="fechaProc1" class="box" size="10" value="<%=FECHAPROCURADOR%>" readOnly="true">&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaProc1);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
 			                             <%}%>
 			                            </td>
-										
+										<td>
+											<%if(modopestanha.equals("editar")){%>
+												<html:button property='idButton' onclick="return buscarProcurador();" styleClass="button"><siga:Idioma key="general.boton.search"/></html:button>
+											<%}%>
+										</td>
+										<td>
+											<%if(modopestanha.equals("editar")){%>
+												<html:button property='idButton' onclick="return limpiarProcurador();" styleClass="button"><siga:Idioma key="general.boton.clear"/></html:button> 
+											<%}%>
+										</td>
 									</tr>
 									
 								</table>
