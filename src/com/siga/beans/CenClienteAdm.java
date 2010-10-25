@@ -3389,8 +3389,12 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 					else
 						beanCol.setNColegiado(beanSolic.getNColegiado());
 				}
-				
-				beanCol.setFechaIncorporacion ("SYSDATE");
+				// TODO //jbd // Utilizamos la fecha de estado como la fecha de incorporacion, ya que en interfaz es la fecha de incorporacion
+				if(beanSolic.getFechaEstadoColegial()!=null && !beanSolic.getFechaEstadoColegial().equalsIgnoreCase("")){
+					beanCol.setFechaIncorporacion (beanSolic.getFechaEstadoColegial());  
+				}else{
+					beanCol.setFechaIncorporacion ("SYSDATE");
+				}
 				beanCol.setFechaPresentacion ("SYSDATE");
 				beanCol.setIndTitulacion (ClsConstants.DB_FALSE);
 				beanCol.setJubilacionCuota (ClsConstants.DB_FALSE);
