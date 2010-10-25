@@ -582,61 +582,73 @@ public class InformesGenericosAction extends MasterAction {
 			String rutaAlmacen = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
 			////////////////////////////////////////////////
 			// MODELO DE TIPO WORD: LLAMADA A ASPOSE.WORDS
-
-
-
 			for (int i=0;i<plantillas.size();i++) {
-				AdmInformeBean b = (AdmInformeBean) plantillas.get(i); 
-				String rutaPl = rutaPlantilla + ClsConstants.FILE_SEP+usr.getLocation()+ClsConstants.FILE_SEP+b.getDirectorio()+ClsConstants.FILE_SEP;
-				String nombrePlantilla=b.getNombreFisico()+"_"+usr.getLanguageExt()+".doc";
-				String rutaAlm = rutaAlmacen + ClsConstants.FILE_SEP+usr.getLocation()+ClsConstants.FILE_SEP+b.getDirectorio();
+				AdmInformeBean b = (AdmInformeBean) plantillas.get(i); 				
 				Vector datosconsulta=new Vector();
-
-				File crear = new File(rutaAlm);
-				if(!crear.exists())
-					crear.mkdirs();
-
 				if(b.getIdPlantilla().equals("EJGCA1")){//para los modelos con diferentes regiones
 
 					ScsEJGAdm ejgAdm= new ScsEJGAdm(usr);
 					String idioma=usr.getLanguageInstitucion();
 					String numero="";
-					String idTipoEJG="";
-					MasterWords words=new MasterWords(rutaPl+nombrePlantilla);
-					Document doc=words.nuevoDocumento(); 
+					String idTipoEJG="";					
 					Hashtable datoscomunes=new Hashtable();
-
+					String codigoext="";
+					String idintitucionactual=""+this.getIDInstitucion(request);
 					//Carga en el doc los datos comunes del informe (Institucion, idfacturacion,fecha)
 					if (miform.getDatosInforme() != null && !miform.getDatosInforme().trim().equals("")) {
 						Hashtable aux  = (Hashtable)datos.get(0);
 						if (aux!=null) {
 							idTipoEJG= (String)aux.get("idTipoEJG");
 							String anio= (String)aux.get("anio");
-							numero= (String)aux.get("numero");
-							//idioma = usr.getLanguageInstitucion();
-							//datosconsulta=ejgAdm.comunesEjgca(""+this.getIDInstitucion(request), idTipoEJG,anio,numero, idioma);
-							datosconsulta=ejgAdm.getDatosInformeCalificacion(""+this.getIDInstitucion(request), idTipoEJG,anio,numero, idioma);
-
+							numero= (String)aux.get("numero");							
+							Vector vSalida = null;							
+							HelperInformesAdm helperInformes = new HelperInformesAdm();								
+							vSalida = ejgAdm.getCalificacionEjgSalida(""+this.getIDInstitucion(request),idTipoEJG,anio, numero,idioma);
+							/**Como accedemos al ejg por clave primaria solo nos saldra un registro**/
+							Hashtable registro = (Hashtable) vSalida.get(0);			
+							/**Aniadimos el solicitante del ejg**/
+							String idPersonaJG = (String)registro.get("IDPERSONAJG");
+							Vector infosolicitante=ejgAdm.getSolicitanteCalificacionEjgSalida(idintitucionactual,anio,idTipoEJG,numero,idPersonaJG,idioma);
+							Hashtable datoscalificacion = (Hashtable) infosolicitante.get(0);
+							/**Lenguaje del Solcitante**/
+							String ididioma = (String)datoscalificacion.get("IDLENGUAJE");
+							codigoext = (String)datoscalificacion.get("CODIGOLENGUAJE");
+							if (ididioma.equals(" ")){
+								ididioma=usr.getLanguage();
+								codigoext= usr.getLanguageExt();
+							}
+							/**Datos del informe Calificacion, que son necesarios para imprimir el informe
+							   y depende del idioma que tenga el solicitante,se imprimira en ese idioma el documento, si no tiene idioma
+							   se imprime en el idioma de la institucion**/
+								datosconsulta=ejgAdm.getDatosInformeCalificacion(idintitucionactual, idTipoEJG,anio,numero,ididioma, registro, vSalida, infosolicitante);
+							
 							if (datosconsulta!=null && datosconsulta.size()>0) {
 								datoscomunes = (Hashtable)datosconsulta.get(0);
 							}
 						}
 					}
-//					datosconsulta=ejgAdm.regionEjgca(idioma);
+    				/**se guarda en el documento con el lenguaje del solicitante**/
+					String rutaPl = rutaPlantilla + ClsConstants.FILE_SEP+usr.getLocation()+ClsConstants.FILE_SEP+b.getDirectorio()+ClsConstants.FILE_SEP;
+					String nombrePlantilla=b.getNombreFisico()+"_"+codigoext+".doc";
+					String rutaAlm = rutaAlmacen + ClsConstants.FILE_SEP+usr.getLocation()+ClsConstants.FILE_SEP+b.getDirectorio();			
+
+					File crear = new File(rutaAlm);
+					if(!crear.exists())
+						crear.mkdirs();
+				
+					MasterWords words=new MasterWords(rutaPl+nombrePlantilla);
+					Document doc=words.nuevoDocumento(); 
+					
 					if (datosconsulta!=null && datosconsulta.size()>0) {
 						doc=words.sustituyeRegionDocumento(doc,"Region",datosconsulta);
 						doc = words.sustituyeDocumento(doc,datoscomunes);
 					}
-//					doc=words.sustituyeRegionDocumento(doc,"Region",datoscomunes);
-
-
-					String idinstitucion = ""+this.getIDInstitucion(request);
-
-					String identificador=idinstitucion+"_"+idTipoEJG+"_"+numero+".doc";
+					
+					String identificador=idintitucionactual+"_"+idTipoEJG+"_"+numero+".doc";
 					File archivo = words.grabaDocumento(doc,rutaAlm,b.getNombreSalida()+"_"+identificador);
 					informesRes.add(archivo);
-
-				}		       
+				}			
+				
 			}
 
 			/////////////////////////////////////////////////
