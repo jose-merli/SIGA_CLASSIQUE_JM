@@ -2447,7 +2447,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		}
 	}
 	
-	private Vector getCalificacionEjgSalida (String idInstitucion, String tipoEjg,
+	public Vector getCalificacionEjgSalida (String idInstitucion, String tipoEjg,
 			String anio, String numero,String idioma) throws ClsExceptions  
 	{
 		try {
@@ -2535,66 +2535,52 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	private Vector getSolicitanteCalificacionEjgSalida (String idInstitucion, String anioEjg, String tipoEjg, String numeroEjg,
+	public Vector getSolicitanteCalificacionEjgSalida (String idInstitucion, String anioEjg, String tipoEjg, String numeroEjg,
 			String idPersonaJG,String idioma) throws ClsExceptions  
 	{
 		try {
 			Hashtable htCodigos = new Hashtable();
 			int keyContador = 0;
-			
-		
 			StringBuffer sql = new StringBuffer();
 			sql.append(" ");
-			sql.append(" select f_siga_getrecurso(tgl.descripcion,:");
-			keyContador++;
-			htCodigos.put(new Integer(keyContador), idioma);
-			sql.append(keyContador);
-			sql.append(" ) SITUACION_LABORAL,");
+			sql.append(" select f_siga_getrecurso(Tgl.Descripcion,decode(Pjg.Idlenguaje,");			
+			sql.append("null, "+idioma+ ",Pjg.Idlenguaje)) SITUACION_LABORAL,");
 			sql.append(" nvl(pjg.nombre || ' ' || pjg.apellido1 || ' ' || pjg.apellido2, '-') as NOMBRE_APE_SOLIC, ");
 			sql.append(" pjg.nif as NIFCIF_SOLIC, ");
 			sql.append(" nvl(pjg.direccion, '-') as DIR_SOLIC, ");
 			sql.append(" nvl(pjg.codigopostal, '-') as CP_SOLIC, ");
-			sql.append(" nvl((SELECT F_SIGA_GETRECURSO(NOMBRE, 1) ");
+			sql.append(" nvl((SELECT F_SIGA_GETRECURSO(Nombre,decode(Pjg.Idlenguaje,null,"+idioma+",Pjg.Idlenguaje)) ");
 			sql.append(" FROM CEN_POBLACIONES ");
 			sql.append(" WHERE IDPOBLACION = pjg.idpoblacion), ");
-			sql.append(" '-') as POB_SOLIC ");
+			sql.append(" '-') as POB_SOLIC, ");
+			sql.append(" decode(Pjg.Idlenguaje,null,"+idioma+",Pjg.Idlenguaje) as IDLENGUAJE,");
+			sql.append(" f_Siga_Getcodidioma(decode(Pjg.Idlenguaje,null,"+idioma+",Pjg.Idlenguaje)) As CODIGOLENGUAJE ");
 			sql.append(" FROM scs_unidadfamiliarejg fam,scs_personajg pjg,SCS_TIPOGRUPOLABORAL tgl ");
-			sql.append(" WHERE ");
-			
+			sql.append(" WHERE ");			
 			sql.append(" fam.idinstitucion = tgl.idinstitucion(+) ");
 			sql.append(" AND  fam.idtipogrupolab = tgl.idtipogrupolab(+) ");
 			sql.append(" and pjg.idinstitucion = fam.idinstitucion ");
-			sql.append(" AND pjg.idpersona = fam.idpersona ");
-		
+			sql.append(" AND pjg.idpersona = fam.idpersona ");		
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idPersonaJG);
 			sql.append(" AND fam.idpersona = :");
-			sql.append(keyContador);
-			
+			sql.append(keyContador);			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), tipoEjg);
 			sql.append(" AND fam.idtipoejg = :");
-			sql.append(keyContador);
-			
+			sql.append(keyContador);			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), anioEjg);
 			sql.append(" AND fam.anio = :");
-			sql.append(keyContador);
-			
+			sql.append(keyContador);			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), numeroEjg);
 			sql.append(" AND fam.numero = :");
-			sql.append(keyContador);
-			
+			sql.append(keyContador);			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucion);
 			sql.append(" AND fam.idinstitucion = :");
-			sql.append(keyContador);
-			
-			
-			
-			
-			
+			sql.append(keyContador);			
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
 			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
 			
@@ -3180,15 +3166,11 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		}
 	}
 	public Vector getDatosInformeCalificacion (String idInstitucion, String tipoEjg,
-			String anioEjg, String numeroEjg,String idioma) throws ClsExceptions  
+			String anioEjg, String numeroEjg,String idioma, Hashtable registro, Vector vSalida, Vector infosolicitante) throws ClsExceptions  
 	{	 
-		Vector vSalida = null;
+		
 		HelperInformesAdm helperInformes = new HelperInformesAdm();	
-		try {
-				
-			vSalida = getCalificacionEjgSalida(idInstitucion, tipoEjg,anioEjg, numeroEjg,idioma); 
-			//Como accedemos al ejg por clave primaria solo nos saldra un registro
-			Hashtable registro = (Hashtable) vSalida.get(0);
+		try {			
 			
 			//Añadimos la descripcion de el tipo de colegio
 			String idTipoColegio = (String)registro.get("IDTIPOEJGCOLEGIO");
@@ -3225,8 +3207,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			
 			
 			//Aniadimos el solicitante del ejg
-			String idPersonaJG = (String)registro.get("IDPERSONAJG");
-			helperInformes.completarHashSalida(registro,getSolicitanteCalificacionEjgSalida(idInstitucion,anioEjg,tipoEjg,numeroEjg,idPersonaJG,idioma));
+			helperInformes.completarHashSalida(registro,infosolicitante);
 			
 			//Aniadimos los datos de la designa asociada al ejg
 			helperInformes.completarHashSalida(registro,getDesignaCalificacionEjgSalida(idInstitucion, 
@@ -3277,15 +3258,6 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				String asuntoDJ = (String)registro.get("ASUNTO_DEFENSA_JURIDICA");
 				registro.put("ASUNTO", asuntoDJ);
 				
-				
-				
-				
-			
-				
-				
-				
-				
-				
 			}
 			//Aniadimos los datos del colegiado del ejg
 			String idPersona = (String)registro.get("IDPERSONA");
@@ -3317,11 +3289,6 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			String idPretension = (String)registro.get("PRETENSION");
 			String idPretensionInstitucion = (String)registro.get("PRETENSIONINSTITUCION");
 			helperInformes.completarHashSalida(registro,getPretension(idPretension, idPretensionInstitucion));
-							
-			
-			
-			
-
 		}
 		catch (Exception e) {
 			throw new ClsExceptions (e, "Error al obtener la informacion en getDatosInformeCalificacion");
