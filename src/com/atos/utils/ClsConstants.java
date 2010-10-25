@@ -217,7 +217,7 @@ public class ClsConstants {
 			
 	// Parametros de GenParametros
 	public static final String PLAZO_EN_DIAS_ENTREGA_DOCSOLICITUD = "PLAZO_EN_DIAS_ENTREGA_DOC_SOLICITUD";     
-	public static final String PLAZO_EN_DIAS_SALTAALARMA_ENTREGA_DOCSOLICITUD = "PLAZO_EN_DIAS_SALTA _ALARMA_ ENTREGA_DOC_SOLICITUD";   
+	public static final String PLAZO_EN_DIAS_SALTAALARMA_ENTREGA_DOCSOLICITUD = "PLAZO_EN_DIAS_SALTA_ALARMA_ENTREGA_DOC_SOLICITUD";   
 	public static final String MODULO_CENSO = "CEN";  
 	public static final String MODULO_GENERAL = "GEN";
 	public static final String MODULO_FACTURACION = "FAC"; 
