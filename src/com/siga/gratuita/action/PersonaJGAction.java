@@ -1304,17 +1304,23 @@ public class PersonaJGAction extends MasterAction {
 							UtilidadesHash.setForCompare(hash, ScsDefendidosDesignaBean.C_OBSERVACIONES,ufBean.getObservaciones());
 							UtilidadesHash.setForCompare(hash, ScsDefendidosDesignaBean.C_IDPERSONA,ufBean.getIdPersona());
 							UtilidadesHash.setForCompare(hash, ScsDefendidosDesignaBean.C_USUMODIFICACION,ufBean.getUsuMod());
-							UtilidadesHash.setForCompare(hash, ScsDefendidosDesignaBean.C_CALIDAD,ufBean.getIdTipoenCalidad().toString());
-							UtilidadesHash.setForCompare(hash, ScsDefendidosDesignaBean.C_IDTIPOENCALIDAD,ufBean.getIdTipoenCalidad());
-							UtilidadesHash.setForCompare(hash, ScsDefendidosDesignaBean.C_CALIDADIDINSTITUCION,ufBean.getCalidadIdinstitucion());							
+							UtilidadesHash.setForCompare(hash, ScsDefendidosDesignaBean.C_CALIDAD,ufBean.getCalidad());
+							
+							if (ufBean.getIdTipoenCalidad()!=null){								
+								UtilidadesHash.setForCompare(hash, ScsDefendidosDesignaBean.C_IDTIPOENCALIDAD,ufBean.getIdTipoenCalidad());
+								UtilidadesHash.setForCompare(hash, ScsDefendidosDesignaBean.C_CALIDADIDINSTITUCION,ufBean.getCalidadIdinstitucion());
+							}
+							
 							dataBackup.put(ScsDefendidosDesignaBean.T_NOMBRETABLA,hash);	
 							
 
+							if (ufBean.getIdTipoenCalidad()!=null){	
+								miform.setCalidad(ufBean.getIdTipoenCalidad().toString());
+								miform.setIdTipoenCalidad(ufBean.getIdTipoenCalidad().toString());
+								miform.setCalidadIdinstitucion(ufBean.getCalidadIdinstitucion().toString());
+							}
 							
-							miform.setCalidad(ufBean.getIdTipoenCalidad().toString());
-							miform.setIdTipoenCalidad(ufBean.getIdTipoenCalidad().toString());
-							miform.setCalidadIdinstitucion(ufBean.getCalidadIdinstitucion().toString());
-						    int tipoCAJG = CajgConfiguracion.getTipoCAJG(new Integer(miform.getIdInstitucionDES()));					
+							int tipoCAJG = CajgConfiguracion.getTipoCAJG(new Integer(miform.getIdInstitucionDES()));					
 						    request.setAttribute("pcajgActivo", tipoCAJG);
 					
 						} else {
