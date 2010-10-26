@@ -21,6 +21,10 @@ public void setDescripcion(String descripcion) {					UtilidadesHash.set(this.dat
 public String getAbreviatura() {									return UtilidadesHash.getString(this.datos,ScsTipoDocumentoEJGBean.C_ABREVIATURA);}
 
 public void setAbreviatura(String abreviatura) {					UtilidadesHash.set(this.datos, ScsTipoDocumentoEJGBean.C_ABREVIATURA, abreviatura);}
+
+public String getCodigoExt() {									    return UtilidadesHash.getString(this.datos,ScsTipoDocumentoEJGBean.C_CODIGOEXT);}
+
+public void setCodigoExt(String codigoExt) {					   UtilidadesHash.set(this.datos, ScsTipoDocumentoEJGBean.C_CODIGOEXT, codigoExt);}
  	
 public String getDocumento() {										return UtilidadesHash.getString(this.datos,ScsDocumentacionEJGBean.C_IDDOCUMENTO);}
 
