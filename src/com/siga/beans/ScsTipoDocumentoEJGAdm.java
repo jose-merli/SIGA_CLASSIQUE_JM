@@ -37,7 +37,11 @@ public class ScsTipoDocumentoEJGAdm extends MasterBeanAdministrador {
 	 * @see com.siga.beans.MasterBeanAdministrador#getCamposBean()
 	 */
 	protected String[] getCamposBean() {
-		String [] campos = {ScsTipoDocumentoEJGBean.C_ABREVIATURA,ScsTipoDocumentoEJGBean.C_DESCRIPCION,ScsTipoDocumentoEJGBean.C_IDINSTITUCION,ScsTipoDocumentoEJGBean.C_IDTIPODOCUMENTOEJG};
+		String [] campos = {ScsTipoDocumentoEJGBean.C_ABREVIATURA,
+				            ScsTipoDocumentoEJGBean.C_DESCRIPCION,
+				            ScsTipoDocumentoEJGBean.C_IDINSTITUCION,
+				            ScsTipoDocumentoEJGBean.C_IDTIPODOCUMENTOEJG,
+				            ScsTipoDocumentoEJGBean.C_CODIGOEXT};
 		return campos;
 	}
 
@@ -69,6 +73,7 @@ public class ScsTipoDocumentoEJGAdm extends MasterBeanAdministrador {
 			bean.setDescripcion((String)hash.get(ScsTipoDocumentoEJGBean.C_DESCRIPCION));		
 			bean.setIdInstitucion((String)hash.get(ScsTipoDocumentoEJGBean.C_IDINSTITUCION));		
 			bean.setIdTipoDocumentoEJG((String)hash.get(ScsTipoDocumentoEJGBean.C_IDTIPODOCUMENTOEJG));
+			bean.setIdTipoDocumentoEJG((String)hash.get(ScsTipoDocumentoEJGBean.C_CODIGOEXT));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -91,6 +96,7 @@ public class ScsTipoDocumentoEJGAdm extends MasterBeanAdministrador {
 			htData.put(ScsTipoDocumentoEJGBean.C_DESCRIPCION, b.getDescripcion());
 			htData.put(ScsTipoDocumentoEJGBean.C_IDTIPODOCUMENTOEJG, b.getIdTipoDocumentoEJG());
 			htData.put(ScsTipoDocumentoEJGBean.C_IDINSTITUCION, b.getIdInstitucion());
+			htData.put(ScsTipoDocumentoEJGBean.C_IDINSTITUCION, b.getCodigoExt());
 		}
 		catch (Exception e) {
 			htData = null;
@@ -146,7 +152,8 @@ public class ScsTipoDocumentoEJGAdm extends MasterBeanAdministrador {
 		sql.append(lenguaje);
 		sql.append(") ");
 		sql.append(ScsTipoDocumentoEJGBean.C_DESCRIPCION);
-		sql.append(" , IDINSTITUCION, IDTIPODOCUMENTOEJG "); 
+		sql.append(" , IDINSTITUCION, IDTIPODOCUMENTOEJG, ");
+		sql.append(ScsTipoDocumentoEJGBean.C_CODIGOEXT);		
 		sql.append(" FROM SCS_TIPODOCUMENTOEJG  WHERE IDTIPODOCUMENTOEJG = :");
 		contador++;
 		htCodigos.put(new Integer(contador), idTipoDoc);
@@ -164,20 +171,21 @@ public class ScsTipoDocumentoEJGAdm extends MasterBeanAdministrador {
 			Hashtable row = (Hashtable)datos.get(0);
 			String descripcion = (String)row.get(ScsTipoDocumentoEJGBean.C_DESCRIPCION);
 			String abreviatura = (String)row.get(ScsTipoDocumentoEJGBean.C_ABREVIATURA);
+			String codigoext = (String)row.get(ScsTipoDocumentoEJGBean.C_CODIGOEXT);
+			String idtipoDocumentoejg = (String)row.get(ScsTipoDocumentoEJGBean.C_IDTIPODOCUMENTOEJG);
 			beanTipoDocumento = new ScsTipoDocumentoEJGBean();
 			beanTipoDocumento.setIdTipoDocumentoEJG(idTipoDoc);
 			beanTipoDocumento.setIdInstitucion(idInstitucion);
 			beanTipoDocumento.setDescripcion(descripcion);
 			beanTipoDocumento.setAbreviatura(abreviatura);
-			
-			
-			
-
+			beanTipoDocumento.setCodigoExt(codigoext);
+			beanTipoDocumento.setIdTipoDocumentoEJG(idtipoDocumentoejg);
 		} 
 		catch (Exception e) { 	
 			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D."); 
 		}
 		return beanTipoDocumento;
 	}
+	
 	
 }
