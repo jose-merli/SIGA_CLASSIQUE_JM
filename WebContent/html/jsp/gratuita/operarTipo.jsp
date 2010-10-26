@@ -24,16 +24,19 @@
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
-	Hashtable miHash = (Hashtable) ses.getAttribute("elegido");
+	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);		
 	String accion = (String)request.getAttribute("accionModo");	
-	ses.removeAttribute("elegido");
-
-	String descri=(String)miHash.get("DESCRIPCION");
-	String abrev=(String)miHash.get("ABREVIATURA");
-	String tipodocu=(String)miHash.get("IDTIPODOCUMENTOEJG");
 	
-	ses.setAttribute("idTipoDoc",tipodocu);
+	int pcajgActivo = 0;	
+	if (request.getAttribute("pcajgActivo") != null) {
+		pcajgActivo = Integer.parseInt(request.getAttribute(
+				"pcajgActivo").toString());
+	}
+	String asterisco = "&nbsp(*)&nbsp";
+	boolean codigoExtObligatorio = false;	
+	if (pcajgActivo == 5){
+		codigoExtObligatorio=true;
+	}	
 	
 %>	
 
@@ -58,10 +61,10 @@
 <body onLoad="ajusteAlto('resultado'); ">
 	
 	<html:form action="/JGR_MantenimientoDocumentacionEJG.do" method="POST" target="submitArea">
-	<html:hidden property = "modo" value = ""/>
-	<html:hidden property = "tipoDocumento" value = "<%=tipodocu%>"/>
+	<html:hidden property = "modo" value = ""/>	
 	<html:hidden property = "actionModal" value = ""/>
-
+	<html:hidden name="DefinirMantenimDocumentacionEJGForm" property="tipoDocumento"/>
+	
 	
 		<!-- SUBCONJUNTO DE DATOS -->
 		<siga:ConjCampos leyenda="sjcs.ejg.documentacion.tipoDocumentacion">
@@ -70,37 +73,59 @@
 					<td class="labelText" valign="top">
 						<siga:Idioma key="censo.fichaCliente.literal.abreviatura"/>&nbsp;(*)
 					</td>				
-					<td valign="top">
-						<%if (accion.equalsIgnoreCase("ver")){%>
-							<html:text name="DefinirMantenimDocumentacionEJGForm" property="abreviatura" size="30" maxlength="60" styleClass="boxConsulta" value="<%=abrev%>" readonly="true"></html:text>
+					<td valign="top">		
+					<%if (accion.equalsIgnoreCase("ver")){%>				
+						<html:text name="DefinirMantenimDocumentacionEJGForm" property="abreviatura" size="30" maxlength="60" styleClass="boxConsulta" readonly="true"></html:text>						
 						<%} else {%>
-							<html:text name="DefinirMantenimDocumentacionEJGForm" property="abreviatura" size="30" maxlength="60" styleClass="box" value="<%=abrev%>"></html:text>
+  						<html:text name="DefinirMantenimDocumentacionEJGForm" property="abreviatura" size="30" maxlength="60" styleClass="box" readonly="false"></html:text>						
 						<%}%>
 					</td>	
 				
+				    <td class="labelText" valign="top">
+						<siga:Idioma key="general.codeext"/>
+						<%
+							if (codigoExtObligatorio) {
+						%>
+							<%=asterisco%> 
+						<%
+ 							}
+ 						%>		
+					</td>
+					<td valign="top" >					
+					<%if (accion.equalsIgnoreCase("ver")){%>								
+							<html:text name="DefinirMantenimDocumentacionEJGForm" property="codigoExt" size="9" maxlength="10" styleClass="boxConsulta" readonly="true"></html:text>
+						<%} else {%>
+					    	<html:text name="DefinirMantenimDocumentacionEJGForm" property="codigoExt" size="9" maxlength="10" styleClass="box" readonly="false"></html:text>
+						<%}%>
+					</td>
+					
+				</tr>
+				<tr>
+				</tr>
+				<tr>			
 					<td class="labelText" valign="top">
 						<siga:Idioma key="gratuita.maestros.documentacionEJG.nombre"/>&nbsp;(*)
 					</td>
-					<td valign="top">
-						<%if (accion.equalsIgnoreCase("ver")){%>
-							<textarea name="descripcion" rows="5" cols="60" onkeydown="cuenta(this,200);" class="boxConsulta" readonly="true"><%=descri%></textarea>
+					<td valign="top">	
+						<%if (accion.equalsIgnoreCase("ver")){%>						
+							<html:textarea name="DefinirMantenimDocumentacionEJGForm" property="descripcion" rows="5" cols="60" onkeydown="cuenta(this,200)" onChange="cuenta(this,200)" styleClass="boxConsulta" readonly="true"/>
 						<%} else {%>
-							<textarea name="descripcion" rows="5" cols="60" onkeydown="cuenta(this,200)" onChange="cuenta(this,200)" class="box"><%=descri%></textarea>
-						<%}%>
+							<html:textarea name="DefinirMantenimDocumentacionEJGForm" property="descripcion" rows="5" cols="60" onkeydown="cuenta(this,200)" onChange="cuenta(this,200)" styleClass="box" readonly="false"/>
+						<%}%>					
 					</td>
 				</tr>
+					
 			</table>
 		</siga:ConjCampos>
 	</html:form>
 
 	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
-	<!-- INICIO: BOTONES REGISTRO -->
+	<!-- INICIO: BOTONES REGISTRO -->		
 		<%if (accion.equalsIgnoreCase("ver")){%>
 			<siga:ConjBotonesAccion botones="" clase="botonesSeguido" titulo="sjcs.ejg.documentacion.documentacion"/>
 		<%} else {%>
 			<siga:ConjBotonesAccion botones="G,R" clase="botonesSeguido" titulo="sjcs.ejg.documentacion.documentacion"/>
 		<%}%>
-
 	<!-- FIN: BOTONES REGISTRO -->
 	
 	<!-- INICIO: SCRIPTS BOTONES -->
@@ -135,9 +160,21 @@
 			var contenido = document.forms[0].abreviatura.value;
 			sub();
 			if (nombre != "") {
-				if (contenido!="") {
-                    document.forms[0].modo.value="modificar";
-					document.forms[0].submit();
+				if (contenido!="") {                   
+
+					var error = "";
+					if (<%=codigoExtObligatorio%> && document.forms[0].codigoExt.value==""){
+					  error += "<siga:Idioma key='errors.required' arg0='general.codeext'/>"+ '\n';
+					  if(error!=""){
+					   alert(error);
+					   fin();
+					   return false;
+					 }
+					}else{
+						document.forms[0].modo.value="modificar";
+						document.forms[0].submit();
+						}
+						 
 				}
 				else{ 
 					alert('<siga:Idioma key="gratuita.areasMaterias.message.requeridoAbreviatura"/>');
@@ -173,12 +210,12 @@
 
 	<!-- FIN: IFRAME LISTA RESULTADOS -->
 
-	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
-		<%if (accion.equalsIgnoreCase("ver")){%>
+		<!-- ******* BOTONES DE ACCIONES EN REGISTRO ***** -->		
+	<%if (accion.equalsIgnoreCase("ver")){%>
 			<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"/>
 		<%} else {%>
 			<siga:ConjBotonesAccion botones="V,N" clase="botonesDetalle"/>
-		<%}%>
+	<%}%>
 	<!-- FIN: BOTONES REGISTRO -->
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
@@ -199,7 +236,7 @@
 			<%
 			// indicamos que es boton volver
 			ses.setAttribute("esVolver","1");
-			%>
+			%>			
 			document.forms[0].modo.value="abrirAvanzada";
 			document.forms[0].target="mainWorkArea"; 
 			document.forms[0].submit(); 
