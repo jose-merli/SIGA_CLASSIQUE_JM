@@ -32,6 +32,7 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinirMantenimDocumentacionEJGForm;
+import com.siga.ws.CajgConfiguracion;
 
 
 /**
@@ -190,39 +191,56 @@ protected ActionForward executeInternal (ActionMapping mapping,
 		
 		try {
 			Vector ocultos = formulario.getDatosTablaOcultos(0);
+			ScsTipoDocumentoEJGAdm admBean =  new ScsTipoDocumentoEJGAdm(this.getUserBean(request));
+			ScsDocumentoEJGAdm docejgadm = new ScsDocumentoEJGAdm(this.getUserBean(request));
 			DefinirMantenimDocumentacionEJGForm miForm = (DefinirMantenimDocumentacionEJGForm)formulario;
-			
+			ScsTipoDocumentoEJGBean beanTipoDocumento=new ScsTipoDocumentoEJGBean();
 			UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 			String sql="";
 			String sql2="";
-			if(ocultos!=null){
-				sql="Select idinstitucion,idtipodocumentoejg,abreviatura,f_siga_getrecurso(descripcion,"+usr.getLanguage()+") as DESCRIPCION from scs_tipodocumentoejg t where t.idinstitucion="+usr.getLocation()+" and t.idtipodocumentoejg="+(String)ocultos.get(0);
-				
-					sql2="Select idinstitucion,idtipodocumentoejg,abreviatura,f_siga_getrecurso(descripcion,"+usr.getLanguage()+") as DESCRIPCION ,t.iddocumentoejg as IDDOCUMENTOEJG from scs_documentoejg t where t.idinstitucion="+usr.getLocation()+" and t.idtipodocumentoejg="+(String)ocultos.get(0);
-				
-			}else{
-				sql="Select idinstitucion,idtipodocumentoejg,abreviatura,f_siga_getrecurso(descripcion,"+usr.getLanguage()+") as DESCRIPCION from scs_tipodocumentoejg t where t.idinstitucion="+usr.getLocation()+" and t.idtipodocumentoejg="+(String)request.getSession().getAttribute("idTipoDoc");
-				sql2="Select idinstitucion,idtipodocumentoejg,abreviatura,f_siga_getrecurso(descripcion,"+usr.getLanguage()+") as DESCRIPCION, t.iddocumentoejg as IDDOCUMENTOEJG  from scs_documentoejg t where t.idinstitucion="+usr.getLocation()+" and t.idtipodocumentoejg="+(String)request.getSession().getAttribute("idTipoDoc")+"";
-				request.getSession().removeAttribute("idTipoDoc");
-			}
+			Hashtable miHash = new Hashtable();
+			miHash = miForm.getDatos();	
+			String idInstitucion=usr.getLocation();
+			String idioma=usr.getLanguage();			
+			Vector resultado2=new Vector();		
+			String tipoDocumento= miForm.getTipoDocumento();
 			
-			sql2+=" order by abreviatura, DESCRIPCION";
-			ScsDocumentacionEJGAdm admBean =  new ScsDocumentacionEJGAdm(this.getUserBean(request));
+			if(ocultos!=null){				
+				miHash.put(ScsTipoDocumentoEJGBean.C_IDINSTITUCION,idInstitucion);
+				miHash.put(ScsTipoDocumentoEJGBean.C_IDTIPODOCUMENTOEJG,(String)ocultos.get(0));	
+			    beanTipoDocumento = admBean.getTipoDocumento(miHash,idioma);			
+			    resultado2 =  docejgadm.getListaDocumentoEjg(miHash,idioma);				
+			}else{
+				miHash.put(ScsTipoDocumentoEJGBean.C_IDINSTITUCION,idInstitucion);
+				miHash.put(ScsTipoDocumentoEJGBean.C_IDTIPODOCUMENTOEJG,(String)request.getSession().getAttribute("idTipoDoc"));				
+				beanTipoDocumento = admBean.getTipoDocumento(miHash,idioma);
+			    resultado2 =  docejgadm.getListaDocumentoEjg(miHash,idioma);				
+				miForm.setTipoDocumento(" ");
+			    //request.getSession().removeAttribute("idTipoDoc");
+			}			
+		
 			//Entramos al formulario en modo 'modificación'
 			request.setAttribute("accionModo","editar");
-			request.getSession().setAttribute("accionModo","editar");
+			request.getSession().setAttribute("accionModo","editar");	
 			
-			Hashtable elegidoHash = new Hashtable();
+			// recuperamos los valores de el tipo documento y lo mostramos en la jsp.
+			if(beanTipoDocumento!=null){
+				String  descripcion = beanTipoDocumento.getDescripcion(); 
+				String  abreviatura = beanTipoDocumento.getAbreviatura();
+				String  codigoExt   = beanTipoDocumento.getCodigoExt();
+				String  idtipoDocumentoejg  = beanTipoDocumento.getIdTipoDocumentoEJG();	
+				miForm.setDescripcion(descripcion);
+				miForm.setAbreviatura(abreviatura);
+				miForm.setCodigoExt(codigoExt);			
+				miForm.setTipoDocumento(idtipoDocumentoejg);
+				
+			}						
+			request.getSession().setAttribute("resultado",resultado2);				
+			int tipoCAJG = CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion));			
+			request.setAttribute("pcajgActivo", tipoCAJG);
+		
+		
 
-			// Volvemos a obtener de base de datos la información, para que se la más actúal que hay en la base de datos
-			Vector resultado = admBean.selectGenerico(sql);
-			if(resultado!=null)
-				elegidoHash=(Hashtable)resultado.get(0);
-			Vector resultado2 = admBean.selectGenerico(sql2);
-			
-			request.getSession().setAttribute("resultado",resultado2);
-			
-			request.getSession().setAttribute("elegido",elegidoHash);
 		} catch (Exception e) {
 			   throwExcp("messages.general.error",e,null);
 		}		
@@ -236,31 +254,38 @@ protected ActionForward executeInternal (ActionMapping mapping,
 		try {
 			Vector ocultos = formulario.getDatosTablaOcultos(0);
 			DefinirMantenimDocumentacionEJGForm miForm = (DefinirMantenimDocumentacionEJGForm)formulario;
+			ScsDocumentoEJGAdm docejgadm = new ScsDocumentoEJGAdm(this.getUserBean(request));			
+			ScsDocumentoEJGBean beanDocumento=new ScsDocumentoEJGBean();
+			UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");			
+			Hashtable miHash = new Hashtable();			
+			String idInstitucion=usr.getLocation();
+			String idioma=usr.getLanguage();	
 			
-			UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
-			String sql="";
-			String sql2="";
 			if(ocultos!=null){
-				//sql="Select * from scs_tipodocumentoejg t where t.idinstitucion="+usr.getLocation()+" and t.idtipodocumentoejg="+(String)ocultos.get(0);
-				sql="Select idinstitucion,idtipodocumentoejg,abreviatura,f_siga_getrecurso(descripcion,"+usr.getLanguage()+") as DESCRIPCION ,t.iddocumentoejg as IDDOCUMENTOEJG from scs_documentoejg t where t.idinstitucion="+usr.getLocation()+" and t.idtipodocumentoejg="+(String)ocultos.get(0)+" and t.iddocumentoejg="+(String)ocultos.get(1)+"";
-			}else{
-				//sql="Select * from scs_tipodocumentoejg t where t.idinstitucion="+usr.getLocation()+" and t.idtipodocumentoejg="+(String)request.getSession().getAttribute("idTipoDoc");
-				//sql2="Select * from scs_documentoejg t where t.idinstitucion="+usr.getLocation()+" and t.idtipodocumentoejg="+(String)request.getSession().getAttribute("idTipoDoc");
+				miHash.put(ScsDocumentoEJGBean.C_IDINSTITUCION,idInstitucion);
+				miHash.put(ScsDocumentoEJGBean.C_IDTIPODOCUMENTOEJG,(String)ocultos.get(0));
+				miHash.put(ScsDocumentoEJGBean.C_IDDOCUMENTOEJG,(String)ocultos.get(1));	
+				beanDocumento = docejgadm.getDocumento(miHash,idioma);					
 			}
-			
-			
-			ScsDocumentacionEJGAdm admBean =  new ScsDocumentacionEJGAdm(this.getUserBean(request));
-			//Entramos al formulario en modo 'modificación'
+			// recuperamos los valores de el tipo documento y lo mostramos en la jsp.
+			if(beanDocumento!=null){
+				String  descripcion = beanDocumento.getDescripcion(); 
+				String  abreviatura = beanDocumento.getAbreviatura();
+				String  codigoExt   = beanDocumento.getCodigoExt();
+				String  idtipoDocumentoejg  = beanDocumento.getIdTipoDocumentoEJG();
+				String  iddocumentoejg= beanDocumento.getIdDocumentoEJG();
+				miForm.setDescripcion(descripcion);
+				miForm.setAbreviatura(abreviatura);
+				miForm.setCodigoExt(codigoExt);
+				miForm.setTipoDocumento(idtipoDocumentoejg);
+				miForm.setDocumento(iddocumentoejg);
+			}	
+			//Entramos al formulario en modo 'modificacion'
 			request.setAttribute("accionModo","editar");
-			request.getSession().setAttribute("accionModo","editar");
+			request.getSession().setAttribute("accionModo","editar");			
+			int tipoCAJG = CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion));		
+			request.setAttribute("pcajgActivo", tipoCAJG);
 			
-			Hashtable elegidoHash = new Hashtable();
-
-			// Volvemos a obtener de base de datos la información, para que se la más actúal que hay en la base de datos
-			Vector resultado = admBean.selectGenerico(sql);
-			if(resultado!=null)
-				elegidoHash=(Hashtable)resultado.get(0);
-			request.getSession().setAttribute("elegido",elegidoHash);
 		} catch (Exception e) {
 			   throwExcp("messages.general.error",e,null);
 		}		
@@ -277,27 +302,39 @@ protected ActionForward executeInternal (ActionMapping mapping,
 			UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 			String sql="";
 			String sql2="";
+			ScsDocumentoEJGAdm docejgadm = new ScsDocumentoEJGAdm(this.getUserBean(request));
+			ScsDocumentoEJGBean beanDocumento=new ScsDocumentoEJGBean();
+			Hashtable miHash = new Hashtable();			
+			String idInstitucion=usr.getLocation();
+			String idioma=usr.getLanguage();	
+			
 			if(ocultos!=null){
-				//sql="Select * from scs_tipodocumentoejg t where t.idinstitucion="+usr.getLocation()+" and t.idtipodocumentoejg="+(String)ocultos.get(0);
-				sql="Select idinstitucion,idtipodocumentoejg,abreviatura,f_siga_getrecurso(descripcion,"+usr.getLanguage()+") as DESCRIPCION from scs_documentoejg t where t.idinstitucion="+usr.getLocation()+" and t.idtipodocumentoejg="+(String)ocultos.get(0)+" and t.iddocumentoejg="+(String)ocultos.get(1);;
-			}else{
-				//sql="Select * from scs_tipodocumentoejg t where t.idinstitucion="+usr.getLocation()+" and t.idtipodocumentoejg="+(String)request.getSession().getAttribute("idTipoDoc");
-				//sql2="Select * from scs_documentoejg t where t.idinstitucion="+usr.getLocation()+" and t.idtipodocumentoejg="+(String)request.getSession().getAttribute("idTipoDoc");
+				miHash.put(ScsDocumentoEJGBean.C_IDINSTITUCION,idInstitucion);
+				miHash.put(ScsDocumentoEJGBean.C_IDTIPODOCUMENTOEJG,(String)ocultos.get(0));
+				miHash.put(ScsDocumentoEJGBean.C_IDDOCUMENTOEJG,(String)ocultos.get(1));	
+				beanDocumento = docejgadm.getDocumento(miHash,idioma);					
 			}
 			
-			
-			ScsDocumentacionEJGAdm admBean =  new ScsDocumentacionEJGAdm(this.getUserBean(request));
-			//Entramos al formulario en modo 'modificación'
+			// recuperamos los valores de el tipo documento y lo mostramos en la jsp.
+			if(beanDocumento!=null){
+				String  descripcion = beanDocumento.getDescripcion(); 
+				String  abreviatura = beanDocumento.getAbreviatura();
+				String  codigoExt   = beanDocumento.getCodigoExt();
+				String  idtipoDocumentoejg  = beanDocumento.getIdTipoDocumentoEJG();
+				String  iddocumentoejg= beanDocumento.getIdDocumentoEJG();
+				miForm.setDescripcion(descripcion);
+				miForm.setAbreviatura(abreviatura);
+				miForm.setCodigoExt(codigoExt);
+				miForm.setTipoDocumento(idtipoDocumentoejg);
+				miForm.setDocumento(iddocumentoejg);
+			}	
+							
+			int tipoCAJG = CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion));			
+			request.setAttribute("pcajgActivo", tipoCAJG);
+			//Entramos al formulario en modo 'ver'
 			request.setAttribute("accionModo","ver");
 			request.getSession().setAttribute("accionModo","ver");
 			
-			Hashtable elegidoHash = new Hashtable();
-
-			// Volvemos a obtener de base de datos la información, para que se la más actúal que hay en la base de datos
-			Vector resultado = admBean.selectGenerico(sql);
-			if(resultado!=null)
-				elegidoHash=(Hashtable)resultado.get(0);
-			request.getSession().setAttribute("elegido",elegidoHash);
 		} catch (Exception e) {
 			   throwExcp("messages.general.error",e,null);
 		}		
@@ -316,30 +353,39 @@ protected ActionForward executeInternal (ActionMapping mapping,
 		try {
 			
 			Vector ocultos = formulario.getDatosTablaOcultos(0);
-			DefinirMantenimDocumentacionEJGForm miForm = (DefinirMantenimDocumentacionEJGForm)formulario;
+			DefinirMantenimDocumentacionEJGForm miForm = (DefinirMantenimDocumentacionEJGForm)formulario;			
 			//miForm.setDocumento((String)ocultos.get(1));
 			UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
-			
+			String lenguaje=usr.getLanguage();
+			String idInstitucion=usr.getLocation();
 			ScsDocumentacionEJGAdm admBean =  new ScsDocumentacionEJGAdm(this.getUserBean(request));
+			ScsTipoDocumentoEJGAdm admtBean =  new ScsTipoDocumentoEJGAdm(this.getUserBean(request));
+			ScsDocumentoEJGAdm docejgadm = new ScsDocumentoEJGAdm(this.getUserBean(request));
+			ScsTipoDocumentoEJGBean beanTipoDocumento=new ScsTipoDocumentoEJGBean();
+			Vector resultado2=new Vector();
 			//Entramos al formulario en modo 'modificación'
 			request.setAttribute("accionModo","ver");
 			request.getSession().setAttribute("accionModo","ver");
 			
 			Hashtable elegidoHash = new Hashtable();
+			Hashtable miHash = new Hashtable();
 
-			String sql="Select IDINSTITUCION,IDTIPODOCUMENTOEJG,ABREVIATURA,f_siga_getrecurso(DESCRIPCION,"+usr.getLanguage()+") as DESCRIPCION	 from scs_tipodocumentoejg t where t.idinstitucion="+usr.getLocation()+" and t.idtipodocumentoejg="+(String)ocultos.get(0);
-			String sql2="Select idinstitucion,idtipodocumentoejg,abreviatura,f_siga_getrecurso(descripcion,"+usr.getLanguage()+") as DESCRIPCION ,t.iddocumentoejg as IDDOCUMENTOEJG from scs_documentoejg t where t.idinstitucion="+usr.getLocation()+" and t.idtipodocumentoejg="+(String)ocultos.get(0);
-			sql2+=" order by abreviatura, DESCRIPCION";
-			// Volvemos a obtener de base de datos la información, para que se la más actúal que hay en la base de datos
-			Vector resultado = admBean.selectGenerico(sql);
-			if(resultado!=null)
-				elegidoHash=(Hashtable)resultado.get(0);
+			miHash.put(ScsTipoDocumentoEJGBean.C_IDINSTITUCION,idInstitucion);
+			miHash.put(ScsTipoDocumentoEJGBean.C_IDTIPODOCUMENTOEJG,(String)ocultos.get(0));
+			beanTipoDocumento = admtBean.getTipoDocumento(miHash,lenguaje);			
+			resultado2 =  docejgadm.getListaDocumentoEjg(miHash,lenguaje);
 			
-			Vector resultado2 = admBean.selectGenerico(sql2);
+		if(beanTipoDocumento!=null){			
+				miForm.setDescripcion(beanTipoDocumento.getDescripcion());
+				miForm.setAbreviatura(beanTipoDocumento.getAbreviatura());
+				miForm.setCodigoExt(beanTipoDocumento.getCodigoExt());
+				miForm.setTipoDocumento(beanTipoDocumento.getIdTipoDocumentoEJG());
+			}				
+		
 			
-			request.getSession().setAttribute("resultado",resultado2);
-			
-			request.getSession().setAttribute("elegido",elegidoHash);			
+			int tipoCAJG = CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion));			
+			request.setAttribute("pcajgActivo", tipoCAJG);
+			request.getSession().setAttribute("resultado",resultado2);					
 
 		} catch (Exception e) {
 			   throwExcp("messages.general.error",e,null);
@@ -359,17 +405,24 @@ protected ActionForward executeInternal (ActionMapping mapping,
 	 * @param response De tipo HttpServletResponse
 	 * 
 	 * @return String que indicará la siguiente acción a llevar a cabo. 
+	 * @throws ClsExceptions 
 	 */
-	protected String nuevo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	protected String nuevo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException, ClsExceptions {
+			UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");			
+			int idInstitucion=Integer.parseInt(usr.getLocation());
+			int tipoCAJG = CajgConfiguracion.getTipoCAJG(idInstitucion);		
+			request.setAttribute("pcajgActivo", tipoCAJG);
 		return "insertarTipo";
 	}
 
-	protected String nuevo2(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		
+	protected String nuevo2(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException, ClsExceptions {		
 		DefinirMantenimDocumentacionEJGForm miForm = (DefinirMantenimDocumentacionEJGForm)formulario;
-		String idTipo=miForm.getTipoDocumento();
-		
-		request.setAttribute("idTipoDoc",idTipo);
+		UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
+		int idInstitucion=Integer.parseInt(usr.getLocation());
+		int tipoCAJG = CajgConfiguracion.getTipoCAJG(idInstitucion);
+		String idTipo=miForm.getTipoDocumento();		
+		miForm.setDocumento(idTipo);	
+		request.setAttribute("pcajgActivo", tipoCAJG);
 		
 		return "insertarDocu";
 	}
@@ -397,6 +450,7 @@ protected ActionForward executeInternal (ActionMapping mapping,
 		String idInstitucion=usr.getLocation();
 		String abreviatura = miForm.getAbreviatura();
 		String descripcion = miForm.getDescripcion();
+		String codigoExt = miForm.getCodigoExt();		
 		String nombreTabla = ScsTipoDocumentoEJGBean.T_NOMBRETABLA;
 		String nombreCampoDescripcion = ScsTipoDocumentoEJGBean.C_DESCRIPCION;
 		String nombreCampoAbreviatura = ScsTipoDocumentoEJGBean.C_ABREVIATURA;
@@ -448,6 +502,10 @@ protected ActionForward executeInternal (ActionMapping mapping,
 					
 		        	miHash.put(ScsTipoDocumentoEJGBean.C_ABREVIATURA,abreviatura);
 		        	miHash.put(ScsTipoDocumentoEJGBean.C_DESCRIPCION,idRecurso);
+		        	miHash.put(ScsTipoDocumentoEJGBean.C_CODIGOEXT,codigoExt);
+		        	//miHash.put(ScsTipoDocumentoEJGBean.C_IDTIPODOCUMENTOEJG,miHash.get(ScsTipoDocumentoEJGBean.C_IDTIPODOCUMENTOEJG));
+		        	String idtipodocumentoejg=newTipoIdDocumentoEjg;
+		        	 miForm.setDocumento(miHash.get(ScsTipoDocumentoEJGBean.C_IDTIPODOCUMENTOEJG).toString());
 		        	request.getSession().setAttribute("idTipoDoc",miHash.get(ScsTipoDocumentoEJGBean.C_IDTIPODOCUMENTOEJG));
 					admBean.insert(miHash);	        
 					tx.commit();			
@@ -490,6 +548,7 @@ protected ActionForward executeInternal (ActionMapping mapping,
 		String idInstitucion=usr.getLocation();
 		String abreviatura = miForm.getAbreviatura();
 		String descripcion = miForm.getDescripcion();
+		String codigoExt = miForm.getCodigoExt();
 		
 		String nombreTabla = ScsDocumentoEJGBean.T_NOMBRETABLA;
 		String nombreCampoDescripcion = ScsDocumentoEJGBean.C_DESCRIPCION;
@@ -544,6 +603,7 @@ protected ActionForward executeInternal (ActionMapping mapping,
 					
 		        	miHash.put(ScsDocumentoEJGBean.C_ABREVIATURA,abreviatura);
 		        	miHash.put(ScsDocumentoEJGBean.C_DESCRIPCION,idRecurso);
+		        	miHash.put(ScsDocumentoEJGBean.C_CODIGOEXT,codigoExt);
 					admBean.insert(miHash);	        
 					tx.commit();	
 				
@@ -589,13 +649,16 @@ protected ActionForward executeInternal (ActionMapping mapping,
 		
 				
 		String claves[]={ScsTipoDocumentoEJGBean.C_IDINSTITUCION,ScsTipoDocumentoEJGBean.C_IDTIPODOCUMENTOEJG};
-		String campos[]={ScsTipoDocumentoEJGBean.C_IDINSTITUCION,ScsTipoDocumentoEJGBean.C_IDTIPODOCUMENTOEJG,ScsTipoDocumentoEJGBean.C_ABREVIATURA,ScsTipoDocumentoEJGBean.C_DESCRIPCION};
+		String campos[]={ScsTipoDocumentoEJGBean.C_IDINSTITUCION,ScsTipoDocumentoEJGBean.C_IDTIPODOCUMENTOEJG,
+				         ScsTipoDocumentoEJGBean.C_ABREVIATURA,ScsTipoDocumentoEJGBean.C_DESCRIPCION,
+				         ScsTipoDocumentoEJGBean.C_CODIGOEXT};
 		String nombreTabla = ScsTipoDocumentoEJGBean.T_NOMBRETABLA;
 		String nombreCampoDescripcion = ScsTipoDocumentoEJGBean.C_DESCRIPCION;
 		String nombreCampoAbreviatura = ScsTipoDocumentoEJGBean.C_ABREVIATURA;
 		String idInstitucion=usr.getLocation();
 		String abreviatura = miForm.getAbreviatura();
 		String descripcion = miForm.getDescripcion();
+		String codigoExt = miForm.getCodigoExt();
 		
 		Hashtable miHash = new Hashtable();
 		
@@ -659,7 +722,7 @@ protected ActionForward executeInternal (ActionMapping mapping,
 					
 					miHash.put(ScsTipoDocumentoEJGBean.C_DESCRIPCION,idRecurso);
 					miHash.put(ScsTipoDocumentoEJGBean.C_ABREVIATURA,abreviatura);
-					
+					miHash.put(ScsTipoDocumentoEJGBean.C_CODIGOEXT,codigoExt);					
 					admBean.updateDirect(miHash,claves,campos);	        
 					tx.commit();	
 					
@@ -690,16 +753,16 @@ protected ActionForward executeInternal (ActionMapping mapping,
 			ScsDocumentoEJGAdm admBean =  new ScsDocumentoEJGAdm(this.getUserBean(request));
 			Hashtable miHash = new Hashtable();		
 			String claves[]={ScsDocumentoEJGBean.C_IDINSTITUCION,ScsDocumentoEJGBean.C_IDTIPODOCUMENTOEJG,ScsDocumentoEJGBean.C_IDDOCUMENTOEJG};
-			String campos[]={ScsDocumentoEJGBean.C_IDINSTITUCION,ScsDocumentoEJGBean.C_IDTIPODOCUMENTOEJG,ScsDocumentoEJGBean.C_ABREVIATURA,ScsDocumentoEJGBean.C_IDDOCUMENTOEJG,ScsDocumentoEJGBean.C_DESCRIPCION};
+			String campos[]={ScsDocumentoEJGBean.C_IDINSTITUCION,ScsDocumentoEJGBean.C_IDTIPODOCUMENTOEJG,
+					         ScsDocumentoEJGBean.C_ABREVIATURA,ScsDocumentoEJGBean.C_IDDOCUMENTOEJG,
+					         ScsDocumentoEJGBean.C_DESCRIPCION,ScsDocumentoEJGBean.C_CODIGOEXT};		
 			String nombreTabla = ScsDocumentoEJGBean.T_NOMBRETABLA;
 			String nombreCampoDescripcion = ScsDocumentoEJGBean.C_DESCRIPCION;
 			String nombreCampoAbreviatura = ScsDocumentoEJGBean.C_ABREVIATURA;
 			String idInstitucion=usr.getLocation();
 			String abreviatura = miForm.getAbreviatura();
 			String descripcion = miForm.getDescripcion();
-			
-			
-			
+			String codigoExt = miForm.getCodigoExt();	
 			try {			
 				miHash = miForm.getDatos();		
 				miHash.put(ScsDocumentoEJGBean.C_IDINSTITUCION,usr.getLocation());
@@ -712,10 +775,6 @@ protected ActionForward executeInternal (ActionMapping mapping,
 				String idRecurso = GenRecursosCatalogosAdm.getNombreIdRecurso(nombreTabla, nombreCampoDescripcion, new Integer(idInstitucion), pkRecursoDocumento);
 				if(idRecurso==null)
 					throw new SIGAException("error.messages.sinConfiguracionMultiIdioma");
-				
-				
-				
-				
 				ScsDocumentoEJGBean beanDocumento = admBean.getDocumento(miHash,usr.getLanguage());
 				
 				boolean isCambioDescripcion = !beanDocumento.getDescripcion().equals(descripcion); 
@@ -730,8 +789,6 @@ protected ActionForward executeInternal (ActionMapping mapping,
 				Hashtable htSignos = new Hashtable();
 				htSignos.put(ScsDocumentoEJGBean.C_IDTIPODOCUMENTOEJG, "=");
 				htSignos.put(ScsDocumentoEJGBean.C_IDDOCUMENTOEJG, "<>");
-				
-				
 				if(isCambioAbreviatura){
 					isClaveUnicaMultiIdioma = UtilidadesBDAdm.isClaveUnica(idInstitucion,abreviatura,nombreCampoAbreviatura,
 						htPkTabl,htSignos,nombreTabla,3);
@@ -762,7 +819,7 @@ protected ActionForward executeInternal (ActionMapping mapping,
 						
 						miHash.put(ScsDocumentoEJGBean.C_DESCRIPCION,idRecurso);
 						miHash.put(ScsDocumentoEJGBean.C_ABREVIATURA,abreviatura);
-						
+						miHash.put(ScsDocumentoEJGBean.C_CODIGOEXT,codigoExt);						
 						admBean.updateDirect(miHash,claves,campos);	        
 						tx.commit();	
 						
@@ -808,10 +865,6 @@ protected ActionForward executeInternal (ActionMapping mapping,
 		
 		try {	
 			tx=usr.getTransaction();
-			
-			
-			
-			
 			tx.begin();
 			// Borramos primero los documentos asociados al tipo de documento que vamos a borrar
 			String idTipoDocumento = (String)ocultos.get(0);
@@ -822,10 +875,7 @@ protected ActionForward executeInternal (ActionMapping mapping,
 			claves[0] = ScsDocumentoEJGBean.C_IDINSTITUCION;
 			claves[1] = ScsDocumentoEJGBean.C_IDTIPODOCUMENTOEJG;
 			String nombreTablaDoc =  ScsDocumentoEJGBean.T_NOMBRETABLA;
-			String nombreCampoDescripcionDoc =  ScsDocumentoEJGBean.C_DESCRIPCION;
-			
-			
-			
+			String nombreCampoDescripcionDoc =  ScsDocumentoEJGBean.C_DESCRIPCION;	
 			ScsDocumentoEJGAdm admDocumentoEjg = new ScsDocumentoEJGAdm(usr);
 			Vector listaDocumentos = admDocumentoEjg.select(miHashDocu);
 			
@@ -857,13 +907,7 @@ protected ActionForward executeInternal (ActionMapping mapping,
 				
 				
 			}
-				
-			
-			
-			
-				
-			
-			// Borramos el tipo de documento
+		// Borramos el tipo de documento
 			String nombreTabla =  ScsTipoDocumentoEJGBean.T_NOMBRETABLA;
 			
 			String nombreCampoDescripcion =  ScsTipoDocumentoEJGBean.C_DESCRIPCION;
