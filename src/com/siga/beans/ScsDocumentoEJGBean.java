@@ -15,7 +15,9 @@ package com.siga.beans;
 public class ScsDocumentoEJGBean extends MasterBean{
 	/* Variables */
 	private String 	idInstitucion,idTipoDocumentoEJG,idDocumentoEJG,abreviatura,descripcion;
+	private String  codigoExt;
 
+	
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "SCS_DOCUMENTOEJG";
 
@@ -25,6 +27,7 @@ public class ScsDocumentoEJGBean extends MasterBean{
 	static public final String C_ABREVIATURA			= "ABREVIATURA";	
 	static public final String C_DESCRIPCION			= "DESCRIPCION";
 	static public final String C_IDDOCUMENTOEJG			= "IDDOCUMENTOEJG";
+	static public final String C_CODIGOEXT			    = "CODIGOEXT";
 	
 	
 
@@ -63,5 +66,11 @@ public class ScsDocumentoEJGBean extends MasterBean{
 	}
 	public void setIdDocumentoEJG(String idDocumentoEJG) {
 		this.idDocumentoEJG = idDocumentoEJG;
+	}
+	public String getCodigoExt() {
+		return codigoExt;
+	}
+	public void setCodigoExt(String codigoExt) {
+		this.codigoExt = codigoExt;
 	}
 }
