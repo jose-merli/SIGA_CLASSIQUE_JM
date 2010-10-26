@@ -25,16 +25,18 @@
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
-	Hashtable miHash = (Hashtable) ses.getAttribute("elegido");
+	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);		
 	String accion = (String)request.getAttribute("accionModo");	
-	ses.removeAttribute("elegido");
-
-	String descri=(String)miHash.get("DESCRIPCION");
-	String abrev=(String)miHash.get("ABREVIATURA");
-	String tipodocu=(String)miHash.get("IDTIPODOCUMENTOEJG");
-	String docu=(String)miHash.get("IDDOCUMENTOEJG");
-	request.getSession().setAttribute("idTipoDoc",tipodocu);
+	int pcajgActivo = 0;	
+	if (request.getAttribute("pcajgActivo") != null) {
+		pcajgActivo = Integer.parseInt(request.getAttribute(
+				"pcajgActivo").toString());
+	}
+	String asterisco = "&nbsp(*)&nbsp";
+	boolean codigoExtObligatorio = false;	
+	if (pcajgActivo == 5){
+		codigoExtObligatorio=true;
+	}	
 	
 %>	
 
@@ -59,9 +61,9 @@
 <body onLoad="ajusteAlto('resultado'); ">
 	
 	<html:form action="/JGR_MantenimientoDocumentacionEJG.do" method="POST" target="submitArea">
-	<html:hidden property = "modo" value = ""/>
-	<html:hidden property = "tipoDocumento" value = "<%=tipodocu%>"/>
-	<html:hidden property = "documento" value = "<%=docu%>"/>
+	<html:hidden property = "modo" value = ""/>	
+	<html:hidden name="DefinirMantenimDocumentacionEJGForm" property="tipoDocumento"/>
+	<html:hidden name="DefinirMantenimDocumentacionEJGForm" property="documento"/>	
 	<html:hidden property = "actionModal" value = ""/>
 
 	
@@ -69,15 +71,35 @@
 		<!-- SUBCONJUNTO DE DATOS -->
 		<siga:ConjCampos leyenda="sjcs.ejg.documentacion.tipoDocumentacion">
 			<table align="center" width="100%">
+				<tr>
+		    		<td class="labelText" valign="top">
+						<siga:Idioma key="general.codeext"/>
+						<%
+							if (codigoExtObligatorio) {
+						%>
+							<%=asterisco%> 
+						<%
+ 							}
+ 						%>		
+					</td>
+					<td valign="top" >	
+						<%if (accion.equalsIgnoreCase("ver")){%>				
+							<html:text name="DefinirMantenimDocumentacionEJGForm" property="codigoExt" size="9" maxlength="10" styleClass="boxConsulta"></html:text>
+						<%} else {%>
+						    <html:text name="DefinirMantenimDocumentacionEJGForm" property="codigoExt" size="9" maxlength="10" styleClass="box"></html:text>
+						<%}%>
+					</td>			
+				</tr>
+					
 				<tr>				
 					<td class="labelText" valign="top">
 						<siga:Idioma key="censo.fichaCliente.literal.abreviatura"/>&nbsp;(*)
 					</td>				
 					<td valign="top">
 						<%if (accion.equalsIgnoreCase("ver")){%>
-							<html:text name="DefinirMantenimDocumentacionEJGForm" property="abreviatura" size="40" maxlength="60" styleClass="boxConsulta" value="<%=abrev%>" readonly="true"></html:text>
+							<html:text name="DefinirMantenimDocumentacionEJGForm" property="abreviatura" size="40" maxlength="60" styleClass="boxConsulta"  readonly="true"></html:text>
 						<%} else {%>
-							<html:text name="DefinirMantenimDocumentacionEJGForm" property="abreviatura" size="40" maxlength="60" styleClass="box" value="<%=abrev%>"></html:text>
+							<html:text name="DefinirMantenimDocumentacionEJGForm" property="abreviatura" size="40" maxlength="60" styleClass="box" ></html:text>
 						<%}%>
 					</td>	
 				</tr>
@@ -87,9 +109,9 @@
 					</td>
 					<td valign="top">
 						<%if (accion.equalsIgnoreCase("ver")){%>
-							<textarea name="descripcion" rows="5" cols="60" onkeydown="cuenta(this,300)"  class="boxConsulta" readonly="true"><%=descri%></textarea>
+							<html:textarea name="DefinirMantenimDocumentacionEJGForm" property="descripcion" rows="5" cols="60" onkeydown="cuenta(this,300)" onChange="cuenta(this,300)" styleClass="boxConsulta" readonly="true"/>
 						<%} else {%>
-							<textarea name="descripcion" rows="5" cols="60" onkeydown="cuenta(this,300)" onChange="cuenta(this,300)"  class="box"><%=descri%></textarea>
+							<html:textarea name="DefinirMantenimDocumentacionEJGForm" property="descripcion" rows="5" cols="60" onkeydown="cuenta(this,300)" onChange="cuenta(this,300)" styleClass="box" readonly="false"/>
 						<%}%>
 					</td>
 				</tr>
@@ -123,6 +145,7 @@
 		{
 			var abreviatura = document.forms[0].abreviatura.value;
 			var descripcion = document.forms[0].descripcion.value;
+			var codigoExt = document.forms[0].codigoExt.value;
 			sub();
 			if (trim(abreviatura) == "") {
 				alert('<siga:Idioma key="gratuita.areasMaterias.message.requeridoAbreviatura"/>');
@@ -136,6 +159,16 @@
 				return false;
 			}
 
+			var error = "";
+			if (<%=codigoExtObligatorio%> && trim(codigoExt)==""){
+				error += "<siga:Idioma key='errors.required' arg0='general.codeext'/>"+ '\n';
+				 if(error!=""){
+					  alert(error);
+					  fin();
+					  return false;
+				 }
+			}	
+			
 			document.forms[0].modo.value="modificarDocu";
 			document.forms[0].submit();
 			window.returnValue="MODIFICADO";

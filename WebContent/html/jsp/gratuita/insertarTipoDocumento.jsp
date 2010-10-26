@@ -25,8 +25,18 @@
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
 	
 	String tipo="";
-	tipo=(String)request.getSession().getAttribute("idTipoDoc");
-	ses.removeAttribute("idTipoDoc");
+	tipo=(String)request.getSession().getAttribute("idTipoDoc");	
+	ses.removeAttribute("idTipoDoc");	
+	int pcajgActivo = 0;	
+	if (request.getAttribute("pcajgActivo") != null) {
+		pcajgActivo = Integer.parseInt(request.getAttribute(
+				"pcajgActivo").toString());
+	}
+	String asterisco = "&nbsp(*)&nbsp";
+	boolean codigoExtObligatorio = false;	
+	if (pcajgActivo == 5){
+		codigoExtObligatorio=true;
+	}	
 	
 %>
 
@@ -62,7 +72,7 @@
 
 	<html:form action="/JGR_MantenimientoDocumentacionEJG.do" method="POST" target="submitArea">
 	<html:hidden property = "modo" value = "InsertarTipo"/>
-	<html:hidden property = "actionModal" value = ""/>
+	<html:hidden property = "actionModal" value = ""/>	
 	<html:hidden property = "tipoDocumento" value = "<%=tipo%>"/>
 
 		<!-- SUBCONJUNTO DE DATOS -->
@@ -77,6 +87,25 @@
 					<td valign="top">
 						<html:text name="DefinirMantenimDocumentacionEJGForm" property="abreviatura" size="30" maxlength="60" styleClass="box" value=""></html:text>
 					</td>
+					<td class="labelText" valign="top">
+						<siga:Idioma key="general.codeext"/>
+						<%
+							if (codigoExtObligatorio) {
+						%>
+							<%=asterisco%> 
+						<%
+ 							}
+ 						%>		
+					</td>
+					<td >
+						<html:text name="DefinirMantenimDocumentacionEJGForm" property="codigoExt" size="9" maxlength="10" styleClass="box" value=""></html:text>
+					</td>
+					
+				</tr>
+				
+				<tr>
+				</tr>
+				<tr>				
 					<td class="labelText" valign="top">
 						<siga:Idioma key="gratuita.maestros.documentacionEJG.nombre"/>(*)
 					</td>
@@ -116,11 +145,21 @@
 		function accionGuardar() 
 		{	sub();
 			var nombre = document.forms[0].descripcion.value;
-			var contenido = document.forms[0].abreviatura.value;
+			var contenido = document.forms[0].abreviatura.value;			
+			var codigoExt = document.forms[0].codigoExt.value;
 			if (nombre != "") {
 				if (contenido!="") {
-
-					document.forms[0].submit();
+					var error = "";
+					if (<%=codigoExtObligatorio%> && document.forms[0].codigoExt.value==""){
+						error += "<siga:Idioma key='errors.required' arg0='general.codeext'/>"+ '\n';
+						 if(error!=""){
+							  alert(error);
+							  fin();
+							  return false;
+							 }	
+					}else {
+						document.forms[0].submit();
+						}					  
 				}
 				else{
 					alert('<siga:Idioma key="gratuita.areasMaterias.message.requeridoAbreviatura"/>');
@@ -133,6 +172,8 @@
 				 fin();
 				 return false;
 			}
+
+			
 			
 		}		
 		

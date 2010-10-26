@@ -27,7 +27,18 @@
 	Hashtable miHash = (Hashtable)request.getSession().getAttribute("elegido");
 	request.getSession().removeAttribute("elegido");
 	
-	String tipo=(String)request.getAttribute("idTipoDoc");
+	int pcajgActivo = 0;	
+	if (request.getAttribute("pcajgActivo") != null) {
+		pcajgActivo = Integer.parseInt(request.getAttribute(
+				"pcajgActivo").toString());
+	}
+	String asterisco = "&nbsp(*)&nbsp";
+	boolean codigoExtObligatorio = false;	
+	if (pcajgActivo == 5){
+		codigoExtObligatorio=true;
+	}	
+	
+	
 
 %>
 
@@ -60,8 +71,8 @@
 	<table class="tablaCentralCamposPeque" align="center">	
 	
 	<html:form action="/JGR_MantenimientoDocumentacionEJG.do" method="POST" target="submitArea">
-	<html:hidden property = "modo" value = "InsertarDocumento"/>
-	<html:hidden property = "tipoDocumento" value = "<%=tipo%>"/>
+	<html:hidden property = "modo" value = "InsertarDocumento"/>	
+	<html:hidden name="DefinirMantenimDocumentacionEJGForm" property="tipoDocumento"/>
 	
 	
 	<tr>		
@@ -72,6 +83,22 @@
 	<table class="tablaCampos" align="center">
 	
 	<!-- FILA -->	
+		<tr>
+		    <td class="labelText" valign="top">
+						<siga:Idioma key="general.codeext"/>
+						<%
+							if (codigoExtObligatorio) {
+						%>
+							<%=asterisco%> 
+						<%
+ 							}
+ 						%>		
+			</td>
+			<td valign="top" >					
+				<html:text name="DefinirMantenimDocumentacionEJGForm" property="codigoExt" size="9" maxlength="10" styleClass="box" value=""></html:text>
+			</td>			
+		</tr>	
+		
 		<tr>	
 			<td class="labelText" valign="top">
 				<siga:Idioma key="censo.fichaCliente.literal.abreviatura"/>(*)
@@ -111,18 +138,19 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">	
 	
-		<!-- Asociada al boton Restablecer -->
+		//<!-- Asociada al boton Restablecer -->
 		function accionRestablecer() 
 		{		
 			document.forms[0].reset();
 		}
 		
-		<!-- Asociada al boton Guardar y Cerrar -->
+		//<!-- Asociada al boton Guardar y Cerrar -->
 		function accionGuardarCerrar() 
 		{	
 			
 			var abreviatura = document.forms[0].abreviatura.value;
 			var descripcion = document.forms[0].descripcion.value;
+			var codigoExt   = document.forms[0].codigoExt.value;
 			sub();
 			if (trim(abreviatura) == "") {
 				alert('<siga:Idioma key="gratuita.areasMaterias.message.requeridoAbreviatura"/>');
@@ -135,11 +163,23 @@
 				fin();
 				return false;
 			}
+			
+
+			var error = "";
+			if (<%=codigoExtObligatorio%> && trim(codigoExt)==""){
+				error += "<siga:Idioma key='errors.required' arg0='general.codeext'/>"+ '\n';
+				 if(error!=""){
+					  alert(error);
+					  fin();
+					  return false;
+				 }
+			}	
+			
 		 
 		 document.forms[0].submit();
 		window.returnValue="MODIFICADO";
 		}
-		<!-- Asociada al boton Cerrar -->
+		//<!-- Asociada al boton Cerrar -->
 		function accionCerrar()
 		{
 			top.cierraConParametros("NORMAL");			
