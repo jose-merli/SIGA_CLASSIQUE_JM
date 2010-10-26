@@ -27,7 +27,8 @@ public class GeneraConstantesXSD {
 		Connection conn = DriverManager.getConnection(url, props);
 
 		//PCAJG
-		String[] vistas = new String[]{"V_PCAJG_EJG", "V_PCAJG_ABOGADOSDESIGNADOS", "V_PCAJG_CONTRARIOS", "V_PCAJG_DOCUMENTACIONEXP_F", "V_PCAJG_DOCUMENTACIONEXP_DS", "V_PCAJG_FAMILIARES", "V_PCAJG_MARCASEXPEDIENTES"};
+		String[] vistas = new String[]{"V_PCAJG_EJG", "V_PCAJG_ABOGADOSDESIGNADOS", "V_PCAJG_CONTRARIOS", "V_PCAJG_DOCUMENTACIONEXP_F"
+				, "V_PCAJG_DOCUMENTACIONEXP_DS", "V_PCAJG_FAMILIARES", "V_PCAJG_MARCASEXPEDIENTES", "V_PCAJG_DELITOS"};
 		
 		//PAMPLONA 2055
 		//String[] vistas = new String[]{"v_ws_2055_archivo","v_ws_2055_ejg","v_ws_2055_persona"};
@@ -86,6 +87,8 @@ public class GeneraConstantesXSD {
 				
 			}
 			System.out.println("");
+		} else {
+			throw new IllegalArgumentException("La vista " + vista + " no tiene datos y no se pueden extraer sus columnas.");
 		}	
 		rs.close();
 		ps.close();

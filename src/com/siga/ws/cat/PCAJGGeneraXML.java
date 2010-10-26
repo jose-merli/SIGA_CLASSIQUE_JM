@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ import org.apache.xmlbeans.XmlOptions;
 import org.w3c.dom.Document;
 
 import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.ReadProperties;
@@ -37,58 +39,58 @@ import com.siga.beans.CajgRemesaEstadosAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaAdm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.action.DefinirRemesasCAJGAction;
+import com.siga.pcajg.ws.xsd.TipoElementoTipificadoEstandar;
+import com.siga.pcajg.ws.xsd.TipoElementoTipificadoIntercambio;
+import com.siga.pcajg.ws.xsd.TipoInformacion;
 import com.siga.ws.PCAJGConstantes;
 import com.siga.ws.SIGAWSClientAbstract;
 import com.siga.ws.SigaWSHelper;
 import com.siga.ws.cat.ftp.FtpPcajgAbstract;
 import com.siga.ws.cat.ftp.FtpPcajgFactory;
-import com.siga.ws.pcajg.DatosDomicilio;
-import com.siga.ws.pcajg.IntercambioDocument;
-import com.siga.ws.pcajg.TipoAbogadoDesignado;
-import com.siga.ws.pcajg.TipoCodigoExpediente;
-import com.siga.ws.pcajg.TipoDatosContacto;
-import com.siga.ws.pcajg.TipoDatosPersona;
-import com.siga.ws.pcajg.TipoDatosProcurador;
-import com.siga.ws.pcajg.TipoDocumentacionExpediente;
-import com.siga.ws.pcajg.TipoDomiciliosPersona;
-import com.siga.ws.pcajg.TipoElementoTipificadoEstandar;
-import com.siga.ws.pcajg.TipoElementoTipificadoIntercambio;
-import com.siga.ws.pcajg.TipoExpediente;
-import com.siga.ws.pcajg.TipoIdentificacionIntercambio;
-import com.siga.ws.pcajg.TipoIdentificacionTramite;
-import com.siga.ws.pcajg.TipoInformacion;
-import com.siga.ws.pcajg.DatosDomicilio.Municipio;
-import com.siga.ws.pcajg.DatosDomicilio.Municipio.Municipio2;
-import com.siga.ws.pcajg.IntercambioDocument.Intercambio;
-import com.siga.ws.pcajg.IntercambioDocument.Intercambio.InformacionIntercambio;
-import com.siga.ws.pcajg.TipoDocumentacionExpediente.Documentacion;
-import com.siga.ws.pcajg.TipoDocumentacionExpediente.Documentacion.DatosDocumento;
-import com.siga.ws.pcajg.TipoExpediente.Contrarios;
-import com.siga.ws.pcajg.TipoExpediente.DatosAsistenciaDetenido;
-import com.siga.ws.pcajg.TipoExpediente.DatosDefensaJudicial;
-import com.siga.ws.pcajg.TipoExpediente.DatosExpediente;
-import com.siga.ws.pcajg.TipoExpediente.DatosRepresentante;
-import com.siga.ws.pcajg.TipoExpediente.DatosSolicitante;
-import com.siga.ws.pcajg.TipoExpediente.DatosTramitacionExpediente;
-import com.siga.ws.pcajg.TipoExpediente.Familiares;
-import com.siga.ws.pcajg.TipoExpediente.ProfesionalesDesignados;
-import com.siga.ws.pcajg.TipoExpediente.Contrarios.Contrario;
-import com.siga.ws.pcajg.TipoExpediente.DatosExpediente.CodigoExpedienteServicio;
-import com.siga.ws.pcajg.TipoExpediente.DatosExpediente.MarcasExpediente;
-import com.siga.ws.pcajg.TipoExpediente.DatosExpediente.MarcasExpediente.MarcaExpediente;
-import com.siga.ws.pcajg.TipoExpediente.DatosSolicitante.DatosEconomicosPersona;
-import com.siga.ws.pcajg.TipoExpediente.DatosSolicitante.DatosEconomicosPersona.Ingresos;
-import com.siga.ws.pcajg.TipoExpediente.DatosSolicitante.DatosEconomicosPersona.PropiedadesBienesInmuebles;
-import com.siga.ws.pcajg.TipoExpediente.DatosSolicitante.DatosEconomicosPersona.PropiedadesBienesMuebles;
-import com.siga.ws.pcajg.TipoExpediente.DatosSolicitante.DatosEconomicosPersona.PropiedadesBienesOtros;
-import com.siga.ws.pcajg.TipoExpediente.DatosTramitacionExpediente.TramiteArchivo;
-import com.siga.ws.pcajg.TipoExpediente.DatosTramitacionExpediente.TramiteDictamen;
-import com.siga.ws.pcajg.TipoExpediente.DatosTramitacionExpediente.TramiteResolucion;
-import com.siga.ws.pcajg.TipoExpediente.DatosTramitacionExpediente.TramiteResolucion.PrestacionesResolucion;
-import com.siga.ws.pcajg.TipoExpediente.Familiares.Familiar;
-import com.siga.ws.pcajg.TipoExpediente.ProfesionalesDesignados.AbogadosDesignados;
-import com.siga.ws.pcajg.TipoExpediente.ProfesionalesDesignados.ProcuradorDesignado;
-import com.siga.ws.pcajg.TipoInformacion.Expedientes;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument;
+import com.siga.ws.pcajg.cat.xsd.TipoCodigoExpediente;
+import com.siga.ws.pcajg.cat.xsd.TipoCodigoExpedienteServicio;
+import com.siga.ws.pcajg.cat.xsd.TipoIdentificacionIntercambio;
+import com.siga.ws.pcajg.cat.xsd.TipoProfesionalesDesignados;
+import com.siga.ws.pcajg.cat.xsd.DatosContactoDocument.DatosContacto;
+import com.siga.ws.pcajg.cat.xsd.DatosDomicilioDocument.DatosDomicilio;
+import com.siga.ws.pcajg.cat.xsd.DatosPersonaDocument.DatosPersona;
+import com.siga.ws.pcajg.cat.xsd.DatosProcuradorDocument.DatosProcurador;
+import com.siga.ws.pcajg.cat.xsd.DocumentacionExpedienteDocument.DocumentacionExpediente;
+import com.siga.ws.pcajg.cat.xsd.DocumentacionExpedienteDocument.DocumentacionExpediente.DatosDocumento;
+import com.siga.ws.pcajg.cat.xsd.DomiciliosPersonaDocument.DomiciliosPersona;
+import com.siga.ws.pcajg.cat.xsd.IdentificacionTramiteDocument.IdentificacionTramite;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoICD;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosContrario;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosExpediente;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosFamiliares;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosRepresentante;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosSolicitante;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosTramitacionExpediente;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.Pretension;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosExpediente.MarcasExpediente;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosSolicitante.DatosEconomicosPersona;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosSolicitante.DatosEconomicosPersona.Ingresos;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosSolicitante.DatosEconomicosPersona.PropiedadesBienesInmuebles;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosSolicitante.DatosEconomicosPersona.PropiedadesBienesMuebles;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosSolicitante.DatosEconomicosPersona.PropiedadesBienesOtros;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosTramitacionExpediente.TramiteArchivo;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosTramitacionExpediente.TramiteDictamen;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosTramitacionExpediente.TramiteResolucion;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosTramitacionExpediente.TramiteResolucion.PrestacionesResolucion;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.Pretension.AsistenciaPenal;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.Pretension.ProcedimientoAdministrativo;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.Pretension.ProcedimientoJudicial;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.Pretension.AsistenciaPenal.AsistenciaCentroDetencion;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.Pretension.AsistenciaPenal.AsistenciaOrganoJudicial;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.Pretension.AsistenciaPenal.Delito;
+import com.siga.ws.pcajg.cat.xsd.TipoProfesionalesDesignados.AbogadoDesignado;
+import com.siga.ws.pcajg.cat.xsd.TipoProfesionalesDesignados.ProcuradorDesignado;
+import com.siga.ws.pcajg.cat.xsd.TipoProfesionalesDesignados.AbogadoDesignado.LibreDatosAbogado;
 
 
 /**
@@ -97,11 +99,14 @@ import com.siga.ws.pcajg.TipoInformacion.Expedientes;
  */
 public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstantes {
 		
-	private static final String INTERCAMBIO_ALTA_PRESENTACION = "IAP";
-	private static final String INTERCAMBIO_EXPEDIENTES_DICTAMINADOS = "IED";
-	private static final String INTERCAMBIO_EXPEDIENTES_ARCHIVADOS = "IEA";
-	private static final String INTERCAMBIO_RESOLUCIONES = "IR";	
+	public static final String VERSION_XSD_GENERALITAT = "3.1";
 	
+	private static final String INTERCAMBIO_ALTA_PRESENTACION = "IAP";//INTERCAMBIO ALTA PRESENTACION
+	private static final String INTERCAMBIO_EXPEDIENTES_DICTAMINADOS = "IED";//INTERCAMBIO EXPEDIENTES DICTAMINADOS
+	private static final String INTERCAMBIO_EXPEDIENTES_ARCHIVADOS = "IEA";//INTERCAMBIO EXPEDIENTES ARCHIVADOS
+	private static final String INTERCAMBIO_RESOLUCIONES = "IR";//INTERCAMBIO RESOLUCIONES
+	private static final String INTERCAMBIO_CAMBIO_DESIGNACION = "ICD";//INTERCAMBIO CAMBIO DESIGNACION
+		
 	private String idTipoEJG;
 	private String anyo;
 	private String numero;
@@ -113,6 +118,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	private Map htAbogadosDesignados = new Hashtable();
 	private Map htContrarios = new Hashtable();
 	private Map htDocumentacionExpediente = new Hashtable();
+	private Map htDelitos = new Hashtable();
 		
 		
 	/**
@@ -144,14 +150,19 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		Vector datosDocumentacionExpedienteDS = cajgEJGRemesaAdm.getDocumentacionExpedienteDS(getIdInstitucion(), getIdRemesa());
 		construyeHTxPersona(datosDocumentacionExpedienteDS, htDocumentacionExpediente);
 		
+		Vector datosDelitos = cajgEJGRemesaAdm.getDelitos(getIdInstitucion(), getIdRemesa());
+		construyeHTxEJG(datosDelitos, htDelitos);
+		
 		Hashtable ht = null;
 		String tipoIntercambio = "";
-		Expedientes expedientes = null;
+		InformacionIntercambio informacionIntercambio = null;
 		Intercambio intercambio = null;
 		IntercambioDocument intercambioDocument = null;
 		TipoInformacion tipoInformacion = null;
 		int numDetalles = 0;
 		int sufijoIdIntercambio = 0;
+		TipoICD tipoICD = null;
+		TipoGenerico tipoGenerico = null;
 		
 		for (int i = 0; i < datos.size(); i++) {
 			ht = (Hashtable)datos.get(i);
@@ -163,19 +174,32 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 				numDetalles = 0;
 				intercambioDocument = IntercambioDocument.Factory.newInstance();
 				intercambio = intercambioDocument.addNewIntercambio();
-				InformacionIntercambio informacionIntercambio = rellenaInformacionIntercambio(intercambio, ht, sufijoIdIntercambio++);
-				
-				tipoInformacion = informacionIntercambio.addNewInformacion();				
-				expedientes = tipoInformacion.addNewExpedientes();										
+				informacionIntercambio = rellenaInformacionIntercambio(intercambio, ht, sufijoIdIntercambio++);
+				if (tipoIntercambio.equals(INTERCAMBIO_CAMBIO_DESIGNACION)) {
+					tipoICD = informacionIntercambio.addNewTipoICD();
+				} else {
+					tipoGenerico = informacionIntercambio.addNewTipoGenerico();
+				}					
 			}
+			
 			tipoIntercambio = (String) ht.get(TIPOINTERCAMBIO);
-			try {
-				if (addExpediente(expedientes, ht, tipoIntercambio)) {
-					numDetalles++;
+			idTipoEJG = (String)ht.get(IDTIPOEJG);
+			anyo = (String)ht.get(ANIO);
+			numero = (String)ht.get(NUMERO);
+			numejg = (String)ht.get(NUMEJG);
+			
+			try {	
+				
+				if (tipoIntercambio.equals(INTERCAMBIO_CAMBIO_DESIGNACION)) {
+					numDetalles += addExpedienteTipoICD(tipoICD, ht, tipoIntercambio);
+				} else {
+					numDetalles += addExpedienteTipoGenerico(tipoGenerico, ht, tipoIntercambio);
 				}
-			} catch (IllegalArgumentException e) {
+				
+			} catch (IllegalArgumentException e) {				
 				escribeErrorExpediente(anyo, numejg, numero, idTipoEJG, e.getMessage());
 			}
+			
 		}
 		if (intercambio != null && numDetalles > 0) {			
 			ficheros.add(creaFichero(dirFicheros, dirPlantilla, intercambioDocument, intercambio, tipoInformacion, numDetalles));
@@ -202,8 +226,8 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		
 		StringBuffer nombreFichero = new StringBuffer();
 		nombreFichero.append(tipoIdentificacionIntercambio.getTipoIntercambio());
-		nombreFichero.append("_" + tipoIdentificacionIntercambio.getOrigenIntercambio().getCodigo());
-		nombreFichero.append("_" + tipoIdentificacionIntercambio.getDestinoIntercambio().getCodigo());
+		nombreFichero.append("_" + tipoIdentificacionIntercambio.getCodOrigenIntercambio());
+		nombreFichero.append("_" + tipoIdentificacionIntercambio.getCodDestinoIntercambio());
 		nombreFichero.append("_" + tipoIdentificacionIntercambio.getIdentificadorIntercambio());
 		
 		
@@ -213,51 +237,80 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		nombreFichero.append("_" + tipoIdentificacionIntercambio.getNumeroDetallesIntercambio());
 		nombreFichero.append(".xml");
 		
-		file = new File(file, nombreFichero.toString());		
-				
+		file = new File(file, nombreFichero.toString());
+		SigaWSHelper.deleteEmptyNode(intercambio.getDomNode());
+		
 		XmlOptions xmlOptions = new XmlOptions();
 		xmlOptions.setSavePrettyPrintIndent(4);
-		xmlOptions.setSavePrettyPrint();	
+		xmlOptions.setSavePrettyPrint();
 		
-		SigaWSHelper.deleteEmptyNode(intercambio.getDomNode());
+		//xmlOptions.setCharacterEncoding("ISO-8859-15");
+		Map<String, String> mapa = new HashMap<String, String>();
+		mapa.put(intercambio.getDomNode().getNamespaceURI(), "");
+		xmlOptions.setSaveSuggestedPrefixes(mapa);
+		
+		ClsLogging.writeFileLog("Guardando fichero generado xml para la Generalitat en " + file.getAbsolutePath(), 3);
 		intercambioDocument.save(file, xmlOptions);
-				
-		File fileXSL = null;
-		File dirXSL = new File(dirPlantilla);
 		
-		if (dirXSL.exists()) {
-			for (int i = 0; i < dirXSL.listFiles().length; i++) {
-				if (dirXSL.listFiles()[i].getName().endsWith(".xsl")){
-					fileXSL = dirXSL.listFiles()[i];
-					break;
-				}
-			}
-			
-			if (fileXSL != null) { //si tiene xsl lo transformo
-				File xmlTrans = new File(file.getParentFile(), "T" + file.getName());
-				file.renameTo(xmlTrans);
-				TransformerFactory tFactory = TransformerFactory.newInstance();
-				Transformer transformer = tFactory.newTransformer(new StreamSource(fileXSL));							
-				transformer.transform(new StreamSource(xmlTrans), new StreamResult(file));
-								
-				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-				DocumentBuilder builder = factory.newDocumentBuilder();
-				Document xmldoc = builder.parse(file);
-				
-				FileOutputStream fos = new FileOutputStream(file);		
-				OutputFormat of = new OutputFormat("XML", "ISO-8859-15", true);				
-				of.setIndent(1);
-				of.setIndenting(true);
-				of.setLineWidth(500);
-				
-				XMLSerializer serializer = new XMLSerializer(fos, of);
-				serializer.asDOMSerializer();
-				serializer.serialize( xmldoc.getDocumentElement() );
-				fos.flush();
-				fos.close();
-				xmlTrans.delete();
-			}
+		if (!intercambioDocument.validate()) {
+			throw new Exception("El xml generado no cumple el esquema establecido con la Generalitat");
 		}
+		
+				
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = factory.newDocumentBuilder();
+		Document xmldoc = builder.parse(file);
+		
+		FileOutputStream fos = new FileOutputStream(file);		
+		OutputFormat of = new OutputFormat("XML", "ISO-8859-15", true);				
+		of.setIndent(1);
+		of.setIndenting(true);
+//		of.setLineWidth(500);
+		
+		XMLSerializer serializer = new XMLSerializer(fos, of);
+		serializer.asDOMSerializer();
+		serializer.serialize( xmldoc.getDocumentElement() );
+		fos.flush();
+		fos.close();
+		
+		//intercambioDocument.save(file, xmlOptions);
+				
+//		File fileXSL = null;
+//		File dirXSL = new File(dirPlantilla);
+//		
+//		if (dirXSL.exists()) {
+//			for (int i = 0; i < dirXSL.listFiles().length; i++) {
+//				if (dirXSL.listFiles()[i].getName().endsWith(".xsl")){
+//					fileXSL = dirXSL.listFiles()[i];
+//					break;
+//				}
+//			}
+//			
+//			if (fileXSL != null) { //si tiene xsl lo transformo
+//				File xmlTrans = new File(file.getParentFile(), "T" + file.getName());
+//				file.renameTo(xmlTrans);
+//				TransformerFactory tFactory = TransformerFactory.newInstance();
+//				Transformer transformer = tFactory.newTransformer(new StreamSource(fileXSL));							
+//				transformer.transform(new StreamSource(xmlTrans), new StreamResult(file));
+//								
+//				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+//				DocumentBuilder builder = factory.newDocumentBuilder();
+//				Document xmldoc = builder.parse(file);
+//				
+//				FileOutputStream fos = new FileOutputStream(file);		
+//				OutputFormat of = new OutputFormat("XML", "ISO-8859-15", true);				
+//				of.setIndent(1);
+//				of.setIndenting(true);
+//				of.setLineWidth(500);
+//				
+//				XMLSerializer serializer = new XMLSerializer(fos, of);
+//				serializer.asDOMSerializer();
+//				serializer.serialize( xmldoc.getDocumentElement() );
+//				fos.flush();
+//				fos.close();
+//				xmlTrans.delete();
+//			}
+//		}
 		
 		return file;
 		
@@ -339,6 +392,67 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 //		fos.close();
 		return file;
 	}
+	
+	
+	private int addExpedienteTipoICD(TipoICD tipoICD, Hashtable htEJGs, String tipoIntercambio) throws Exception {
+		com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoICD.Expediente expediente = tipoICD.addNewExpediente();
+		
+		com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoICD.Expediente.DatosExpediente datosExpediente = expediente.addNewDatosExpediente();
+		
+		TipoCodigoExpediente tipoCodigoExpediente = getTipoCodigoExpediente(htEJGs);
+		TipoCodigoExpedienteServicio codigoExpedienteServicio = getTipoCodigoExpedienteServicio(htEJGs);
+		
+		if (codigoExpedienteServicio.getAnyoExpedienteServicio() > 0 && codigoExpedienteServicio.getNumExpedienteServicio() != null && codigoExpedienteServicio.getOrigenExpedienteServicio() != null) {
+			datosExpediente.addNewCodigoExpedienteServicio().set(codigoExpedienteServicio);			
+		} else {
+			datosExpediente.addNewCodigoExpediente().set(tipoCodigoExpediente);
+		}
+		
+		expediente.addNewProfesionalesDesignados().set(getTipoProfesionalesDesignados(htEJGs));
+		
+		SigaWSHelper.deleteEmptyNode(expediente.getDomNode());
+		
+		if(!validateXML_EJG(expediente, anyo, numejg, numero, idTipoEJG)){
+			tipoICD.removeExpediente(tipoICD.sizeOfExpedienteArray()-1);
+			return 0;			
+		}
+		
+		return 1;
+	}
+
+	private TipoCodigoExpediente getTipoCodigoExpediente(Hashtable htEJGs) throws ClsExceptions {
+		TipoCodigoExpediente codigoExpediente = TipoCodigoExpediente.Factory.newInstance();
+		codigoExpediente.setColegioExpediente((String)htEJGs.get(DE_CE_COLEGIOEXPEDIENTE));
+		String numExpediente = UtilidadesString.formatea(htEJGs.get(DE_CE_NUMEXPEDIENTE), 8, true);
+		codigoExpediente.setNumExpediente(numExpediente);		
+		Integer anyoExpediente = getInteger("año del expediente", (String)htEJGs.get(DE_CE_ANYOEXPEDIENTE));		
+		if (anyoExpediente != null) {
+			codigoExpediente.setAnyoExpediente(anyoExpediente);	
+		}
+		return codigoExpediente;
+	}
+
+	private TipoCodigoExpedienteServicio getTipoCodigoExpedienteServicio(Hashtable htEJGs) {
+
+		TipoCodigoExpedienteServicio codigoExpedienteServicio = TipoCodigoExpedienteServicio.Factory.newInstance();
+		
+		String value = getString((String)htEJGs.get(DE_CES_ORIGENEXPEDIENTESERVICI));
+		if (value != null) {			
+			codigoExpedienteServicio.setOrigenExpedienteServicio(value);
+		}
+		
+		value = getString((String)htEJGs.get(DE_CES_NUMEXPEDIENTESERVICIO));		
+		if (value != null) {			
+			codigoExpedienteServicio.setNumExpedienteServicio(value);
+		}		
+		
+		Integer anyoExpServicio = getInteger("año CAJG" ,(String)htEJGs.get(DE_CES_ANYOEXPEDIENTESERVICIO));
+		if (anyoExpServicio != null) {			
+			codigoExpedienteServicio.setAnyoExpedienteServicio(anyoExpServicio);
+		}
+		
+		return codigoExpedienteServicio;
+	}
 
 	/**
 	 * Añade un expediente en el fichero xml
@@ -347,50 +461,49 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	 * @return
 	 * @throws Exception
 	 */
-	private boolean addExpediente(Expedientes expedientes, Hashtable htEJGs, String tipoIntercambio) throws Exception {		
+	private int addExpedienteTipoGenerico(TipoGenerico tipoGenerico, Hashtable htEJGs, String tipoIntercambio) throws Exception {		
 		
-		TipoExpediente tipoExpediente = expedientes.addNewExpediente();
-		idTipoEJG = (String)htEJGs.get(IDTIPOEJG);
-		anyo = (String)htEJGs.get(ANIO);
-		numero = (String)htEJGs.get(NUMERO);
-		numejg = (String)htEJGs.get(NUMEJG);
+		Expediente expediente = tipoGenerico.addNewExpediente();		
 		
-		datosExpediente(tipoExpediente, htEJGs);
-		profesionalesDesignados(tipoExpediente, htEJGs);
-		datosSolicitante(tipoExpediente, htEJGs);
-		datosRepresentante(tipoExpediente, htEJGs);
-		
+		datosExpediente(expediente, htEJGs);
+		profesionalesDesignados(expediente, htEJGs);	
+	
+		datosSolicitante(expediente, htEJGs);
+		datosRepresentante(expediente, htEJGs);
+	
 		String key = getKey(new Object[]{getIdInstitucion(), anyo, numero, idTipoEJG});
 		List list = (List) htFamiliares.get(key);
-		if (list != null && list.size() > 0) {
-			Familiares familiares = tipoExpediente.addNewFamiliares();
+		if (list != null && list.size() > 0) {			
 			for (int i = 0; i < list.size(); i++) {
 				Hashtable ht = (Hashtable) list.get(i);			
-				datosFamiliares(familiares, ht);
+				datosFamiliares(expediente.addNewDatosFamiliares(), ht);
 			}
 		}
-				
+			
 		list = (List)htContrarios.get(key);		
-		if (list != null && list.size() > 0) {
-			Contrarios contrarios = tipoExpediente.addNewContrarios();
+		if (list != null && list.size() > 0) {			
 			for (int i = 0; i < list.size(); i++) {
 				Hashtable ht = (Hashtable) list.get(i);
-				datosContrario(contrarios, ht);
+				datosContrario(expediente.addNewDatosContrario(), ht);
 			}
 		}
-		
-		datosDefensaJudicial(tipoExpediente, htEJGs);
-		datosAsistenciaDetenido(tipoExpediente, htEJGs);
+		//solo si IED o IR
+		if (tipoIntercambio.equals(INTERCAMBIO_EXPEDIENTES_DICTAMINADOS)) {
+			rellenaPretension(expediente, htEJGs);
+		}
+	
 		if (!tipoIntercambio.equals(INTERCAMBIO_ALTA_PRESENTACION)) {
-			datosTramitacionExpediente(tipoExpediente, htEJGs, tipoIntercambio);
+			datosTramitacionExpediente(expediente, htEJGs, tipoIntercambio);
 		}
 		
-		if(!validateXML_EJG(tipoExpediente, anyo, numejg, numero, idTipoEJG)){
-			expedientes.removeExpediente(expedientes.sizeOfExpedienteArray()-1);
-			return false;			
+		SigaWSHelper.deleteEmptyNode(expediente.getDomNode());
+		
+		if(!validateXML_EJG(expediente, anyo, numejg, numero, idTipoEJG)){
+			tipoGenerico.removeExpediente(tipoGenerico.sizeOfExpedienteArray()-1);
+			return 0;			
 		}
 		
-		return true;
+		return 1;
 	}
 	
 	/**
@@ -400,18 +513,20 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	 * @throws Exception 
 	 * @throws Exception
 	 */
-	private void profesionalesDesignados(TipoExpediente tipoExpediente, Hashtable htEJGs) throws Exception {
-		ProfesionalesDesignados profesionalesDesignados = tipoExpediente.addNewProfesionalesDesignados();
+	private void profesionalesDesignados(Expediente expediente, Hashtable htEJGs) throws Exception {		
+		expediente.addNewProfesionalesDesignados().set(getTipoProfesionalesDesignados(htEJGs));
+	}
+
+	private TipoProfesionalesDesignados getTipoProfesionalesDesignados(Hashtable htEJGs) throws Exception {
+		TipoProfesionalesDesignados profesionalesDesignados = TipoProfesionalesDesignados.Factory.newInstance();
 		
 		String key = getKey(new Object[]{getIdInstitucion(), anyo, numero, idTipoEJG});
 		List list = (List) htAbogadosDesignados.get(key);
 		
 		if (list != null && list.size() > 0) {
-			AbogadosDesignados abogadosDesignados = profesionalesDesignados.addNewAbogadosDesignados();
-			for (int i = 0; i < list.size(); i++) {
-				Hashtable ht = (Hashtable) list.get(i);			
-				abogadoDesignado(abogadosDesignados, ht);
-			}
+			AbogadoDesignado abogadoDesignado = profesionalesDesignados.addNewAbogadoDesignado();		
+			Hashtable ht = (Hashtable) list.get(0);			
+			abogadoDesignado(abogadoDesignado, ht);		
 		}
 		
 		
@@ -421,22 +536,20 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			procuradorDesignado.setBajaProcuradorDesignado(valueInt.intValue());
 		}
 				
-		TipoDatosProcurador datosProcurador = procuradorDesignado.addNewDatosProcurador();
+		DatosProcurador datosProcurador = procuradorDesignado.addNewDatosProcurador();
 		datosProcurador.setColegioProcurador((String)htEJGs.get(PD_PD_DP_COLEGIOPROCURADOR));
-		Integer valueInteger = getInteger("número de colegiado del procurador", (String)htEJGs.get(PD_PD_DP_NUMCOLEGIADOPROCURADO));
-		if (valueInteger != null) {
-			datosProcurador.setNumColegiadoProcurador(valueInteger.intValue());
-		}
+		datosProcurador.setNumColegiadoProcurador((String)htEJGs.get(PD_PD_DP_NUMCOLEGIADOPROCURADO));		
 		datosProcurador.setNombreCompletoProcurador((String)htEJGs.get(PD_PD_DP_NOMBRECOMPLETOPROCURA));		
 		
 		Calendar cal = getCalendar((String)htEJGs.get(PD_PD_FECHADESIGNACIONPROCURAD));
 		if (cal != null) {
 			procuradorDesignado.setFechaDesignacionProcurador(cal);
 		}
-		valueInteger = getInteger("número de designación del procurador", (String)htEJGs.get(PD_PD_NUMDESIGNACIONPROCURADOR));
-		if (valueInteger != null) {
-			procuradorDesignado.setNumDesignacionProcurador(valueInteger.intValue());
+		Long valueLong = getLong((String)htEJGs.get(PD_PD_NUMDESIGNACIONPROCURADOR));
+		if (valueLong != null) {
+			procuradorDesignado.setNumDesignacionProcurador(valueLong);
 		}
+		return profesionalesDesignados;
 	}
 
 	/**
@@ -445,27 +558,36 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	 * @param htEJGs
 	 * @throws Exception
 	 */
-	private void datosTramitacionExpediente(TipoExpediente tipoExpediente, Hashtable htEJGs, String tipoIntercambio) throws Exception {
+	private void datosTramitacionExpediente(Expediente expediente, Hashtable htEJGs, String tipoIntercambio) throws Exception {
 		DatosTramitacionExpediente datosTramitacionExpediente = null;
 		if (tipoIntercambio.equals(INTERCAMBIO_EXPEDIENTES_ARCHIVADOS)) {
-			datosTramitacionExpediente = tipoExpediente.addNewDatosTramitacionExpediente();
+			datosTramitacionExpediente = expediente.addNewDatosTramitacionExpediente();
 			TramiteArchivo tramiteArchivo = datosTramitacionExpediente.addNewTramiteArchivo();
 			identificacionTramite(tramiteArchivo.addNewIdentificacionTramite(), htEJGs, DTE_TA_IT_ESTADOEXPEDIENTE_CDA, DTE_TA_IT_FECHAESTADO);
 		} else if (tipoIntercambio.equals(INTERCAMBIO_EXPEDIENTES_DICTAMINADOS)) {		
-			datosTramitacionExpediente = tipoExpediente.addNewDatosTramitacionExpediente();
+			datosTramitacionExpediente = expediente.addNewDatosTramitacionExpediente();
 			TramiteDictamen tramiteDictamen = datosTramitacionExpediente.addNewTramiteDictamen();
 			identificacionTramite(tramiteDictamen.addNewIdentificacionTramite(), htEJGs, DTE_TD_IT_ESTADOEXPEDIENTE_CDA, DTE_TD_IT_FECHAESTADO);
-			rellenaTipoElementoTipificadoEstandar(tramiteDictamen.addNewTipoDictamen(), (String)htEJGs.get(DTE_TD_TIPODICTAMEN_CDA));
-			rellenaTipoElementoTipificadoEstandar(tramiteDictamen.addNewMotivoDictamen(), (String)htEJGs.get(DTE_TD_MOTIVODICTAMEN_CDA));
+			tramiteDictamen.setCodTipoDictamen(getCodigoElementoTipificado((String)htEJGs.get(DTE_TD_TIPODICTAMEN_CDA)));
+			tramiteDictamen.setDescTipoDictamen(getDescripcionElementoTipificado((String)htEJGs.get(DTE_TD_TIPODICTAMEN_CDA)));
+			
+			tramiteDictamen.setCodMotivoDictamen(getCodigoElementoTipificado((String)htEJGs.get(DTE_TD_MOTIVODICTAMEN_CDA)));			
+			tramiteDictamen.setDescMotivoDictamen(getDescripcionElementoTipificado((String)htEJGs.get(DTE_TD_MOTIVODICTAMEN_CDA)));
+			
 			tramiteDictamen.setIntervaloIngresosRecursos((String)htEJGs.get(DTE_TD_INTERVALOINGRESOSRECURS));
 			tramiteDictamen.setObservacionesDictamen((String)htEJGs.get(DTE_TD_OBSERVACIONESDICTAMEN));
 		} else if (tipoIntercambio.equals(INTERCAMBIO_RESOLUCIONES)) {		
-			datosTramitacionExpediente = tipoExpediente.addNewDatosTramitacionExpediente();
+			datosTramitacionExpediente = expediente.addNewDatosTramitacionExpediente();
 			TramiteResolucion tramiteResolucion = datosTramitacionExpediente.addNewTramiteResolucion();
 			identificacionTramite(tramiteResolucion.addNewIdentificacionTramite(), htEJGs, DTE_TR_IT_ESTADOEXPEDIENTE_CDA, DTE_TR_IT_FECHAESTADO);
 			tramiteResolucion.setIdentificadorResolucion((String)htEJGs.get(DTE_TR_IDENTIFICADORRESOLUCION));
-			rellenaTipoElementoTipificadoEstandar(tramiteResolucion.addNewTipoResolucion(), (String)htEJGs.get(DTE_TR_TIPORESOLUCION_CDA));
-			rellenaTipoElementoTipificadoEstandar(tramiteResolucion.addNewMotivoResolucion(), (String)htEJGs.get(DTE_TR_MOTIVORESOLUCION_CDA));
+			
+			tramiteResolucion.setCodTipoResolucion(getCodigoElementoTipificado((String)htEJGs.get(DTE_TR_TIPORESOLUCION_CDA)));
+			tramiteResolucion.setDescTipoResolucion(getDescripcionElementoTipificado((String)htEJGs.get(DTE_TR_TIPORESOLUCION_CDA)));
+			
+			tramiteResolucion.setCodMotivoResolucion(getCodigoElementoTipificado((String)htEJGs.get(DTE_TR_MOTIVORESOLUCION_CDA)));
+			tramiteResolucion.setDescMotivoResolucion(getDescripcionElementoTipificado((String)htEJGs.get(DTE_TR_MOTIVORESOLUCION_CDA)));
+			
 			tramiteResolucion.setIntervaloIngresosRecursos((String)htEJGs.get(DTE_TR_INTERVALOINGRESOSRECURS));
 			
 			CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(getUsrBean());
@@ -473,7 +595,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			for (int i = 0; i < datos.size(); i++) {
 				Hashtable ht = (Hashtable) datos.get(i);
 				PrestacionesResolucion prestacionesResolucion = tramiteResolucion.addNewPrestacionesResolucion();
-				rellenaTipoElementoTipificadoEstandar(prestacionesResolucion.addNewTipoPrestacion(), (String)ht.get(DTE_TR_PR_TIPOPRESTACION_CDA));
+				prestacionesResolucion.setCodTipoPrestacion(getCodigoElementoTipificado((String)ht.get(DTE_TR_PR_TIPOPRESTACION_CDA)));
 			}
 		}
 	}
@@ -486,12 +608,27 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	 * @param it_fechaestado
 	 * @throws Exception
 	 */
-	private void identificacionTramite(TipoIdentificacionTramite tipoIdentificacionTramite, Hashtable htEJGs, String it_estadoexpediente_cda, String it_fechaestado) throws Exception {
-		rellenaTipoElementoTipificadoEstandar(tipoIdentificacionTramite.addNewEstadoExpediente(), (String)htEJGs.get(it_estadoexpediente_cda));
+	private void identificacionTramite(IdentificacionTramite identificacionTramite, Hashtable htEJGs, String it_estadoexpediente_cda, String it_fechaestado) throws Exception {
+		identificacionTramite.setCodEstadoExpediente(getCodigoElementoTipificado((String)htEJGs.get(it_estadoexpediente_cda)));
+		identificacionTramite.setDescEstadoExpediente(getDescripcionElementoTipificado((String)htEJGs.get(it_estadoexpediente_cda)));
+				
 		Calendar cal = getCalendar((String)htEJGs.get(it_fechaestado));
 		if (cal != null) {
-			tipoIdentificacionTramite.setFechaEstado(cal);
+			identificacionTramite.setFechaEstado(cal);
 		}
+	}
+	
+	private void rellenaProcedimientoJudicial(ProcedimientoJudicial procedimientoJudicial, Hashtable htEJGs) throws Exception {
+		procedimientoJudicial.setCodPartidoJudicial(getCodigoElementoTipificado((String)htEJGs.get(DDJ_PARTIDOJUDICIAL_CDA)));
+		procedimientoJudicial.setDescPartidoJudicial(getDescripcionElementoTipificado((String)htEJGs.get(DDJ_PARTIDOJUDICIAL_CDA)));
+		
+		procedimientoJudicial.setCodJurisdiccion(getCodigoElementoTipificado((String)htEJGs.get(DDJ_JURISDICCION_CDA)));
+		procedimientoJudicial.setDescJurisdiccion(getDescripcionElementoTipificado((String)htEJGs.get(DDJ_JURISDICCION_CDA)));
+		
+		procedimientoJudicial.setCodOrganoJudicial(getCodigoElementoTipificado((String)htEJGs.get(DDJ_ORGANOJUDICIAL_CDA)));
+		procedimientoJudicial.setDescOrganoJudicial(getDescripcionElementoTipificado((String)htEJGs.get(DDJ_ORGANOJUDICIAL_CDA)));
+		
+		procedimientoJudicial.setIdentificadorProcedimiento((String)htEJGs.get(DDJ_IDENTIFICADORPROCEDIMIENTO));
 	}
 
 	/**
@@ -500,27 +637,43 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	 * @param htEJGs
 	 * @throws Exception
 	 */
-	private void datosAsistenciaDetenido(TipoExpediente tipoExpediente, Hashtable htEJGs) throws Exception {
-		DatosAsistenciaDetenido datosAsistenciaDetenido = tipoExpediente.addNewDatosAsistenciaDetenido();
-		datosAsistenciaDetenido.setNumeroAtestado((String)htEJGs.get(DAD_NUMEROATESTADO));
-		Calendar cal = getCalendar((String)htEJGs.get(DAD_FECHAASISTENCIAATESTADO));
-		if (cal != null) {
-			datosAsistenciaDetenido.setFechaAsistenciaAtestado(cal);
-		}
-		rellenaTipoElementoTipificadoEstandar(datosAsistenciaDetenido.addNewCentroDetencion(), (String)htEJGs.get(DAD_CENTRODETENCION_CDA));
-		datosAsistenciaDetenido.setNumeroDiligencia((String)htEJGs.get(DAD_NUMERODILIGENCIA));
-		cal = getCalendar((String)htEJGs.get(DAD_FECHAASISTENCIADILIGENCIA));
-		if (cal != null) {
-			datosAsistenciaDetenido.setFechaAsistenciaDiligencia(cal);
-		}
-		rellenaTipoElementoTipificadoEstandar(datosAsistenciaDetenido.addNewOrganoJudicial(), (String)htEJGs.get(DAD_ORGANOJUDICIAL_CDA));
-		datosAsistenciaDetenido.addNewAbogadoAsistencia().setNumColegiadoAbogado((String)htEJGs.get(DAD_AA_NUMCOLEGIADOABOGADO));		
+	private void rellenaAsistenciaPenal(AsistenciaPenal asistenciaPenal, Hashtable htEJGs) throws Exception {
+		asistenciaPenal.setCodPartidoJudicial(getCodigoElementoTipificado((String)htEJGs.get(DDJ_PARTIDOJUDICIAL_CDA)));
+		asistenciaPenal.setDescPartidoJudicial(getDescripcionElementoTipificado((String)htEJGs.get(DDJ_PARTIDOJUDICIAL_CDA)));
 		
-		Boolean b = getBoolean((String)htEJGs.get(DAD_ESATESTADO));
-		if (b != null) {
-			datosAsistenciaDetenido.setEsAtestado(b.booleanValue());
+		String codOrganoJudicial = getCodigoElementoTipificado((String)htEJGs.get(DAD_ORGANOJUDICIAL_CDA));
+		if (codOrganoJudicial != null) {//por juzgado DILIGENCIA
+			Calendar cal = getCalendar((String)htEJGs.get(DAD_FECHAASISTENCIADILIGENCIA));
+			if (cal != null) {
+				asistenciaPenal.setFechaAsistencia(cal);
+			}
+			AsistenciaOrganoJudicial asistenciaOrganoJudicial = asistenciaPenal.addNewAsistenciaOrganoJudicial();
+			asistenciaOrganoJudicial.setCodOrganoJudicial(codOrganoJudicial);
+			asistenciaOrganoJudicial.setDescOrganoJudicial(getDescripcionElementoTipificado((String)htEJGs.get(DAD_ORGANOJUDICIAL_CDA)));
+			asistenciaPenal.setIdentificadorAsistencia((String)htEJGs.get(DDJ_IDENTIFICADORPROCEDIMIENTO));
+		} else { //por comisaría ATESTADO
+			Calendar cal = getCalendar((String)htEJGs.get(DAD_FECHAASISTENCIAATESTADO));
+			if (cal != null) {
+				asistenciaPenal.setFechaAsistencia(cal);
+			}
+			AsistenciaCentroDetencion asistenciaCentroDetencion = asistenciaPenal.addNewAsistenciaCentroDetencion();
+			asistenciaCentroDetencion.setCodCentroDetencion(getCodigoElementoTipificado((String)htEJGs.get(DAD_CENTRODETENCION_CDA)));
+			asistenciaCentroDetencion.setDescCentroDetencion(getDescripcionElementoTipificado((String)htEJGs.get(DAD_CENTRODETENCION_CDA)));
+			asistenciaPenal.setIdentificadorAsistencia((String)htEJGs.get(DAD_NUMEROATESTADO));
 		}
-		rellenaTipoElementoTipificadoEstandar(datosAsistenciaDetenido.addNewTipoDelito(), (String)htEJGs.get(DAD_TIPODELITO_CDA));
+		
+		String key = getKey(new Object[]{getIdInstitucion(), anyo, numero, idTipoEJG});
+		List list = (List) htDelitos.get(key);
+		
+		if (list != null && list.size() > 0) {
+			for (int i = 0; i < list.size(); i++) {
+				Hashtable ht = (Hashtable)list.get(i);	
+				Delito delito = asistenciaPenal.addNewDelito();
+				delito.setCodTipoDelito(getCodigoElementoTipificado((String)ht.get(DELITO_CDA)));
+				delito.setDescTipoDelito(getDescripcionElementoTipificado((String)ht.get(DELITO_CDA)));
+			}
+		}		
+				
 	}
 
 	/**
@@ -530,27 +683,30 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	 * @throws Exception
 	 */
 	
-	private void abogadoDesignado(AbogadosDesignados abogadosDesignados, Hashtable ht) throws Exception {	
-	
-		TipoAbogadoDesignado tipoAbogadoDesignado = abogadosDesignados.addNewAbogadoDesignado();
+	private void abogadoDesignado(AbogadoDesignado abogadoDesignado, Hashtable ht) throws Exception {	
 		
 		Integer valueInt = getInteger("baja abogado designado", (String)ht.get(PD_AD_AD_BAJAABOGADODESIGNADO));
 		if (valueInt != null) {
-			tipoAbogadoDesignado.setBajaAbogadoDesignado(valueInt.intValue());
+			abogadoDesignado.setBajaAbogadoDesignado(valueInt.intValue());
 		}
 		
-		tipoAbogadoDesignado.setNumColegiadoAbogado((String)ht.get(PD_AD_AD_NUMCOLEGIADOABOGADO));
+		abogadoDesignado.setNumColegiadoAbogado((String)ht.get(PD_AD_AD_NUMCOLEGIADOABOGADO));
 		Calendar cal = getCalendar((String)ht.get(PD_AD_AD_FECHADESIGNACIONABOGA));
 		if (cal != null) {
-			tipoAbogadoDesignado.setFechaDesignacionAbogado(cal);
+			abogadoDesignado.setFechaDesignacionAbogado(cal);
 		}
 		Long valueLong = getLong((String)ht.get(PD_AD_AD_NUMDESIGNACIONABOGADO));
 		if (valueLong != null) {
-			tipoAbogadoDesignado.setNumDesignacionAbogado(valueLong.longValue());
+			abogadoDesignado.setNumDesignacionAbogado(valueLong.longValue());
 		}
-		String st  = (String)ht.get(PD_AD_AD_NOMBRECOMPLETOABO);
-		if (st != null) {
-			tipoAbogadoDesignado.setNombreCompletoAbogado(st);
+		String nombreAbo  = getString((String)ht.get(PD_AD_AD_NOMBREABO));
+		String apellido1Abo = getString((String)ht.get(PD_AD_AD_APELLIDO1ABO));
+		
+		if (nombreAbo != null && apellido1Abo != null) {
+			LibreDatosAbogado libreDatosAbogado = abogadoDesignado.addNewLibreDatosAbogado();
+			libreDatosAbogado.setNombreAbogado(nombreAbo);
+			libreDatosAbogado.setPrimerApellidoAbogado(apellido1Abo);
+			libreDatosAbogado.setSegundoApellidoAbogado(getString((String)ht.get(PD_AD_AD_APELLIDO2ABO)));
 		}
 	}
 
@@ -559,30 +715,46 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	 * 
 	 * @param expedienteType
 	 * @param htEJGs
+	 * @throws Exception 
 	 */
-	private void datosDefensaJudicial(TipoExpediente tipoExpediente, Hashtable htEJGs) {
-		DatosDefensaJudicial datosDefensaJudicial = tipoExpediente.addNewDatosDefensaJudicial();
-		rellenaTipoElementoTipificadoEstandar(datosDefensaJudicial.addNewPartidoJudicial(), (String)htEJGs.get(DDJ_PARTIDOJUDICIAL_CDA));
-		rellenaTipoElementoTipificadoEstandar(datosDefensaJudicial.addNewJurisdiccion(), (String)htEJGs.get(DDJ_JURISDICCION_CDA));
-		rellenaTipoElementoTipificadoEstandar(datosDefensaJudicial.addNewOrganoJudicial(), (String)htEJGs.get(DDJ_ORGANOJUDICIAL_CDA));
-		rellenaTipoElementoTipificadoEstandar(datosDefensaJudicial.addNewTipoProcedimiento(), (String)htEJGs.get(DDJ_TIPOPROCEDIMIENTO_CDA));
-		datosDefensaJudicial.setIdentificadorProcedimiento((String)htEJGs.get(DDJ_IDENTIFICADORPROCEDIMIENTO));
-		datosDefensaJudicial.setResumenPretension((String)htEJGs.get(DDJ_RESUMENPRETENSION));
+	private void rellenaPretension(Expediente expediente, Hashtable htEJGs) throws Exception {
+		Pretension pretension = expediente.addNewPretension();
 		
-		Boolean b = getBoolean((String)htEJGs.get(DDJ_RENUNCIADESIGNACION));
-		if (b != null){
-			datosDefensaJudicial.setRenunciaDesignacion(b.booleanValue());			
-		}
-		b = getBoolean((String)htEJGs.get(DDJ_RENUNCIAHONORARIOS));
-		if (b != null) {
-			datosDefensaJudicial.setRenunciaHonorarios(b.booleanValue());
-		}
-		Integer value = getInteger("demandante o demandado", (String)htEJGs.get(DDJ_DEMANDADODEMANDANTE));
-		if (value != null) {
-			datosDefensaJudicial.setDemandadoDemandante(value.intValue());
+		String key = getKey(new Object[]{getIdInstitucion(), anyo, numero, idTipoEJG});
+		List list = (List) htDelitos.get(key);
+				
+		String codigoOrganoJudicial = getCodigoElementoTipificado((String)htEJGs.get(DDJ_ORGANOJUDICIAL_CDA));
+		if (list != null && list.size() > 0) { //si tiene delitos es una asistencia LP
+			rellenaAsistenciaPenal(pretension.addNewAsistenciaPenal(), htEJGs);
+		} else if (codigoOrganoJudicial != null && !codigoOrganoJudicial.trim().equals("-1")) {
+			rellenaProcedimientoJudicial(pretension.addNewProcedimientoJudicial(), htEJGs);
+		} else {
+			ProcedimientoAdministrativo procedimientoAdministrativo = pretension.addNewProcedimientoAdministrativo();
+			procedimientoAdministrativo.setCodOrganoJudicial("-2");//siempre -2 segun el xsd 
+			procedimientoAdministrativo.setDescOrganoJudicial("Altres");//siempre altres segun xsd
+			procedimientoAdministrativo.setIdentificadorProcedimiento((String)htEJGs.get(DDJ_IDENTIFICADORPROCEDIMIENTO));
 		}
 		
-		rellenaTipoElementoTipificadoEstandar(datosDefensaJudicial.addNewPreceptivo(), (String)htEJGs.get(DDJ_PRECEPTIVO_CDA));
+		pretension.setCodTipoProcedimiento(getCodigoElementoTipificado((String)htEJGs.get(DDJ_TIPOPROCEDIMIENTO_CDA)));
+		pretension.setDescTipoProcedimiento(getDescripcionElementoTipificado((String)htEJGs.get(DDJ_TIPOPROCEDIMIENTO_CDA)));
+		pretension.setResumenPretension((String)htEJGs.get(DDJ_RESUMENPRETENSION));
+		
+		Integer renunciaDesignacion = getInteger("renuncia designación", (String)htEJGs.get(DDJ_RENUNCIADESIGNACION));
+		if (renunciaDesignacion != null){
+			pretension.setRenunciaDesignacion(renunciaDesignacion.shortValue());			
+		}
+		
+		Integer renunciaHonorarios = getInteger("renuncia honorarios", (String)htEJGs.get(DDJ_RENUNCIAHONORARIOS));
+		if (renunciaHonorarios != null){
+			pretension.setRenunciaHonorarios(renunciaHonorarios.shortValue());			
+		}
+		
+		Integer demandanteDemandado = getInteger("demandante o demandado", (String)htEJGs.get(DDJ_DEMANDADODEMANDANTE));
+		if (demandanteDemandado != null) {
+			pretension.setDemandadoDemandante(demandanteDemandado.shortValue());
+		}
+		pretension.setCodPreceptivo(getCodigoElementoTipificado((String)htEJGs.get(DDJ_PRECEPTIVO_CDA)));
+		pretension.setDescPreceptivo(getDescripcionElementoTipificado((String)htEJGs.get(DDJ_PRECEPTIVO_CDA)));		
 	}
 
 	/**
@@ -591,19 +763,16 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	 * @param htEJGs
 	 * @throws Exception
 	 */
-	private void datosContrario(Contrarios contrarios, Hashtable htEJGs) throws Exception {		
-		Contrario contrario = contrarios.addNewContrario();
+	private void datosContrario(DatosContrario contrario, Hashtable htEJGs) throws Exception {		
+		
 		datosPersona(contrario.addNewDatosPersona(), htEJGs, C_C_DP_TIPOPERSONA_CDA, C_C_DP_TIPOIDENTIFICACION_CDA, C_C_DP_IDENTIFICACION, C_C_DP_NOMBRE
 				, C_C_DP_PRIMERAPELLIDO, C_C_DP_SEGUNDOAPELLIDO, C_C_DP_RAZONSOCIAL, C_C_DP_FECHANACIMIENTO, C_C_DP_NACIONALIDAD_CDA
 				, C_C_DP_SITUACIONLABORAL_CDA, C_C_DP_PROFESION_CDA, C_C_DP_SEXO, C_C_DP_IDIOMACOMUNICACION, C_C_DP_ESTADOCIVIL_CDA
 				, C_C_DP_REGIMENECONOMICO_CDA, C_C_DP_NUMHIJOS, C_C_DP_FECHAFORMALIZACION, C_C_DP_TIPOPERSONAJURIDICA_CDA);
 		
-		TipoDatosProcurador datosProcurador = contrario.addNewDatosProcurador();
-		datosProcurador.setColegioProcurador((String)htEJGs.get(C_C_DP_COLEGIOPROCURADOR));
-		Integer valueInteger = getInteger("número de colegiado del procurador", (String)htEJGs.get(C_C_DP_NUMCOLEGIADOPROCURADOR));
-		if (valueInteger != null) {
-			datosProcurador.setNumColegiadoProcurador(valueInteger.intValue());
-		}
+		DatosProcurador datosProcurador = contrario.addNewDatosProcurador();
+		datosProcurador.setColegioProcurador((String)htEJGs.get(C_C_DP_COLEGIOPROCURADOR));		
+		datosProcurador.setNumColegiadoProcurador(getString((String)htEJGs.get(C_C_DP_NUMCOLEGIADOPROCURADOR)));		
 		datosProcurador.setNombreCompletoProcurador((String)htEJGs.get(C_C_DP_NOMBRECOMPLETOPROCURADO));
 	}
 
@@ -613,37 +782,31 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	 * @param htEJGs
 	 * @throws Exception
 	 */
-	private void datosFamiliares(Familiares datosFamiliares, Hashtable htFam) throws Exception {
+	private void datosFamiliares(DatosFamiliares datosFamiliares, Hashtable htFam) throws Exception {
 		
-		Familiar familiar = datosFamiliares.addNewFamiliar();
-		rellenaTipoElementoTipificadoEstandar(familiar.addNewParentesco(), (String)htFam.get(F_F_PARENTESCO_CDA));
-		
-		Boolean b =  getBoolean((String)htFam.get(F_F_FAMILIARMENOR));
-		if (b != null) {
-			familiar.setFamiliarMenor(b.booleanValue());
+		datosFamiliares.setCodParentesco(getCodigoElementoTipificado((String)htFam.get(F_F_PARENTESCO_CDA)));		
+		datosFamiliares.setDescParentesco(getDescripcionElementoTipificado((String)htFam.get(F_F_PARENTESCO_CDA)));
+						
+		Integer familiarMenor =  getInteger("familiar menor", ((String)htFam.get(F_F_FAMILIARMENOR)));
+		if (familiarMenor != null) {
+			datosFamiliares.setFamiliarMenor(familiarMenor.shortValue());
 		}
-		datosPersona(familiar.addNewDatosPersona(), htFam, F_F_DP_TIPOPERSONA_CDA, F_F_DP_TIPOIDENTIFICACION_CDA, F_F_DP_IDENTIFICACION, F_F_DP_NOMBRE
+		datosPersona(datosFamiliares.addNewDatosPersona(), htFam, F_F_DP_TIPOPERSONA_CDA, F_F_DP_TIPOIDENTIFICACION_CDA, F_F_DP_IDENTIFICACION, F_F_DP_NOMBRE
 				, F_F_DP_PRIMERAPELLIDO, F_F_DP_SEGUNDOAPELLIDO, F_F_DP_RAZONSOCIAL, F_F_DP_FECHANACIMIENTO, F_F_DP_NACIONALIDAD_CDA
 				, F_F_DP_SITUACIONLABORAL_CDA, F_F_DP_PROFESION_CDA, F_F_DP_SEXO, F_F_DP_IDIOMACOMUNICACION, F_F_DP_ESTADOCIVIL_CDA
 				, F_F_DP_REGIMENECONOMICO_CDA, F_F_DP_NUMHIJOS, F_F_DP_FECHAFORMALIZACION, F_F_DP_TIPOPERSONAJURIDICA_CDA);
-		
-		TipoDocumentacionExpediente tipoDocumentacionExpediente = familiar.addNewDocumentacionExpediente();
-		
+			
 		String idPersona = (String)htFam.get(IDPERSONA);
 		String key = getKey(new Object[]{getIdInstitucion(), anyo, numero, idTipoEJG, idPersona});
 		List list = (List) htDocumentacionExpediente.get(key);
 		
-		
 		if (list != null && list.size() > 0) {
 			for (int i = 0; i < list.size(); i++) {
 				Hashtable htDoc = (Hashtable)list.get(i);				
-				documentacionExpediente(tipoDocumentacionExpediente.addNewDocumentacion(), htDoc, F_F_DE_D_TIPODOCUMENTACION_CDA
+				documentacionExpediente(datosFamiliares.addNewDocumentacionExpediente(), htDoc, F_F_DE_D_TIPODOCUMENTACION_CDA
 						, F_F_DE_D_DD_TIPODOCUMENTO_CDA, F_F_DE_D_DD_FECHAPRESENTACIDO, F_F_DE_D_DD_DESCRIPCIONAMPLIAD, F_F_DE_D_DD_PROCEDENTE);
 			}
-		} else {
-			tipoDocumentacionExpediente.getDomNode().getParentNode().removeChild(tipoDocumentacionExpediente.getDomNode());
 		}
-//		ver si hay que añadir geronimos al classpath
 	}
 
 	/**
@@ -669,10 +832,10 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	 * @param htEJGs
 	 * @throws Exception
 	 */
-	private void datosRepresentante(TipoExpediente tipoExpediente, Hashtable htEJGs) throws Exception {
+	private void datosRepresentante(Expediente expediente, Hashtable htEJGs) throws Exception {
 		String st = getString((String)htEJGs.get(DR_DP_TIPOPERSONA_CDA));
 		if (st != null) {
-			DatosRepresentante datosRepresentante = tipoExpediente.addNewDatosRepresentante();
+			DatosRepresentante datosRepresentante = expediente.addNewDatosRepresentante();
 			datosPersona(datosRepresentante.addNewDatosPersona(), htEJGs, DR_DP_TIPOPERSONA_CDA, DR_DP_TIPOIDENTIFICACION_CDA, DR_DP_IDENTIFICACION, DR_DP_NOMBRE
 				, DR_DP_PRIMERAPELLIDO, DR_DP_SEGUNDOAPELLIDO, DR_DP_RAZONSOCIAL, DR_DP_FECHANACIMIENTO, DR_DP_NACIONALIDAD_CDA
 				, DR_DP_SITUACIONLABORAL_CDA, DR_DP_PROFESION_CDA, DR_DP_SEXO, DR_DP_IDIOMACOMUNICACION, DR_DP_ESTADOCIVIL_CDA
@@ -700,8 +863,8 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	 * @param htEJGs
 	 * @throws Exception
 	 */
-	private void datosSolicitante(TipoExpediente tipoExpediente, Hashtable htEJGs) throws Exception {
-		DatosSolicitante datosSolicitante = tipoExpediente.addNewDatosSolicitante();
+	private void datosSolicitante(Expediente expediente, Hashtable htEJGs) throws Exception {
+		DatosSolicitante datosSolicitante = expediente.addNewDatosSolicitante();
 		
 		datosPersona(datosSolicitante.addNewDatosPersona(), htEJGs, DS_DP_TIPOPERSONA_CDA, DS_DP_TIPOIDENTIFICACION_CDA, DS_DP_IDENTIFICACION, DS_DP_NOMBRE
 				, DS_DP_PRIMERAPELLIDO, DS_DP_SEGUNDOAPELLIDO, DS_DP_RAZONSOCIAL, DS_DP_FECHANACIMIENTO, DS_DP_NACIONALIDAD_CDA
@@ -723,7 +886,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		
 		datosContacto(datosSolicitante.addNewDatosContacto(), htEJGs, DS_DC_NUMEROTELEFONO1, DS_DC_NUMEROTELEFONO2, DS_DC_EMAIL);
 		
-		TipoDocumentacionExpediente tipoDocumentacionExpediente = datosSolicitante.addNewDocumentacionExpediente();
+		//DocumentacionExpediente documentacionExpediente = datosSolicitante.addNewDocumentacionExpediente();
 		
 		String idPersona = (String)htEJGs.get(IDPERSONA);		
 		String key = getKey(new Object[]{getIdInstitucion(), anyo, numero, idTipoEJG, idPersona});
@@ -732,17 +895,17 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		if (list != null && list.size() > 0) {
 			for (int i = 0; i < list.size(); i++) {
 				Hashtable ht = (Hashtable)list.get(i);
-				documentacionExpediente(tipoDocumentacionExpediente.addNewDocumentacion(), ht, DS_DE_D_TIPODOCUMENTACION_CDA, 
+				documentacionExpediente(datosSolicitante.addNewDocumentacionExpediente(), ht, DS_DE_D_TIPODOCUMENTACION_CDA, 
 						DS_DE_D_DD_TIPODOCUMENTO_CDA, DS_DE_D_DD_FECHAPRESENTACIONDO, DS_DE_D_DD_DESCRIPCIONAMPLIADA, DS_DE_D_DD_PROCEDENTE);
 			}
-		} else {
-			tipoDocumentacionExpediente.getDomNode().getParentNode().removeChild(tipoDocumentacionExpediente.getDomNode());
 		}
 		
 		DatosEconomicosPersona datosEconomicosPersona = datosSolicitante.addNewDatosEconomicosPersona();
 
 		Ingresos ingresos = datosEconomicosPersona.addNewIngresos();
-		rellenaTipoElementoTipificadoEstandar(ingresos.addNewConceptoIngresos(), (String) htEJGs.get(DS_DEP_I_CONCEPTOINGRESOS_CDA));
+		ingresos.setCodConceptoIngresos(getCodigoElementoTipificado((String) htEJGs.get(DS_DEP_I_CONCEPTOINGRESOS_CDA)));
+		ingresos.setDescConceptoIngresos(getDescripcionElementoTipificado((String) htEJGs.get(DS_DEP_I_CONCEPTOINGRESOS_CDA)));
+				
 		ingresos.setObservacionesIngresos((String) htEJGs.get(DS_DEP_I_OBSERVACIONESINGRESOS));
 		ingresos.setDescripcionIngresos((String) htEJGs.get(DS_DEP_I_DESCRIPCIONINGRESOS));
 		Double value = getDouble((String) htEJGs.get(DS_DEP_I_IMPORTEBRUTO));
@@ -751,12 +914,17 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		}
 		Integer valueInt = getInteger("acumulable de los ingresos", (String) htEJGs.get(DS_DEP_I_ACUMULABLE));
 		if (valueInt != null) {
-			ingresos.setAcumulable(valueInt.intValue());
+			ingresos.setAcumulable(valueInt.shortValue());
 		}
 			
 		PropiedadesBienesInmuebles propiedadesBienesInmuebles = datosEconomicosPersona.addNewPropiedadesBienesInmuebles();
-		rellenaTipoElementoTipificadoEstandar(propiedadesBienesInmuebles.addNewTipoBienInmueble(), (String) htEJGs.get(DS_DEP_PBI_TIPOBIENINMUEBL_CDA));
-		rellenaTipoElementoTipificadoEstandar(propiedadesBienesInmuebles.addNewOrigenValoracion(), (String) htEJGs.get(DS_DEP_PBI_ORIGENVALORACIO_CDA));
+		
+		propiedadesBienesInmuebles.setCodTipoBienInmueble(getCodigoElementoTipificado((String) htEJGs.get(DS_DEP_PBI_TIPOBIENINMUEBL_CDA)));
+		propiedadesBienesInmuebles.setDescTipoBienInmueble(getDescripcionElementoTipificado((String) htEJGs.get(DS_DEP_PBI_TIPOBIENINMUEBL_CDA)));
+		
+		propiedadesBienesInmuebles.setCodOrigenValoracion(getCodigoElementoTipificado((String) htEJGs.get(DS_DEP_PBI_ORIGENVALORACIO_CDA)));
+		propiedadesBienesInmuebles.setDescOrigenValoracion(getDescripcionElementoTipificado((String) htEJGs.get(DS_DEP_PBI_ORIGENVALORACIO_CDA)));
+				
 		propiedadesBienesInmuebles.setCargas((String) htEJGs.get(DS_DEP_PBI_CARGAS));
 		propiedadesBienesInmuebles.setObservaciones((String) htEJGs.get(DS_DEP_PBI_OBSERVACIONES));
 		value = getDouble((String) htEJGs.get(DS_DEP_PBI_VALORACIONECONOMICA));
@@ -765,11 +933,13 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		}
 		valueInt = getInteger("acumulable de los bienes inmuebles", (String) htEJGs.get(DS_DEP_PBI_ACUMULABLE));
 		if (valueInt != null) {
-			propiedadesBienesInmuebles.setAcumulable(valueInt.intValue());
+			propiedadesBienesInmuebles.setAcumulable(valueInt.shortValue());
 		}
 		
 		PropiedadesBienesMuebles propiedadesBienesMuebles = datosEconomicosPersona.addNewPropiedadesBienesMuebles();
-		rellenaTipoElementoTipificadoEstandar(propiedadesBienesMuebles.addNewTipoBienMueble(), (String) htEJGs.get(DS_DEP_PBM_TIPOBIENMUEBLE_CDA));
+		propiedadesBienesMuebles.setCodTipoBienMueble(getCodigoElementoTipificado((String) htEJGs.get(DS_DEP_PBM_TIPOBIENMUEBLE_CDA)));
+		propiedadesBienesMuebles.setDescTipoBienMueble(getDescripcionElementoTipificado((String) htEJGs.get(DS_DEP_PBM_TIPOBIENMUEBLE_CDA)));
+				
 		propiedadesBienesMuebles.setObservaciones((String) htEJGs.get(DS_DEP_PBM_OBSERVACIONES));
 		value = getDouble((String) htEJGs.get(DS_DEP_PBM_VALORACIONECONOMICA));
 		if (value != null) {
@@ -777,7 +947,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		}
 		valueInt = getInteger("acumulable de los bienes muebles", (String) htEJGs.get(DS_DEP_PBM_ACUMULABLE));
 		if (valueInt != null) {
-			propiedadesBienesMuebles.setAcumulable(valueInt.intValue());
+			propiedadesBienesMuebles.setAcumulable(valueInt.shortValue());
 		}
 		
 		PropiedadesBienesOtros propiedadesBienesOtros = datosEconomicosPersona.addNewPropiedadesBienesOtros();
@@ -791,7 +961,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 
 		valueInt = getInteger("acumulable de bienes otros",(String) htEJGs.get(DS_DEP_PBO_ACUMULABLE));
 		if (valueInt != null) {
-			propiedadesBienesOtros.setAcumulable(valueInt.intValue());
+			propiedadesBienesOtros.setAcumulable(valueInt.shortValue());
 		}
 		
 		datosEconomicosPersona.setOtrosDatosEconomicos((String)htEJGs.get(DS_DEP_OTROSDATOSECONOMICOS));
@@ -809,15 +979,18 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	 * @param de_dd_procedente
 	 * @throws Exception
 	 */
-	private void documentacionExpediente(Documentacion documentacion, Hashtable htDocumentacion, String de_tipodocumentacion_cda,
+	private void documentacionExpediente(DocumentacionExpediente documentacion, Hashtable htDocumentacion, String de_tipodocumentacion_cda,
 			String de_dd_tipodocumento_cda, String de_dd_fechapresentaciondocumento, String de_dd_descripcionampliadadocumento,
-			String de_dd_procedente) throws Exception {
+			String de_dd_procedente) throws Exception {		
 		
 		
-		rellenaTipoElementoTipificadoEstandar(documentacion.addNewTipoDocumentacion(), (String)htDocumentacion.get(de_tipodocumentacion_cda));
-		
+		documentacion.setCodTipoDocumentacion(getCodigoElementoTipificado((String)htDocumentacion.get(de_tipodocumentacion_cda)));
+		documentacion.setDescTipoDocumentacion(getDescripcionElementoTipificado((String)htDocumentacion.get(de_tipodocumentacion_cda)));
+				
 		DatosDocumento datosDocumento = documentacion.addNewDatosDocumento();
-		rellenaTipoElementoTipificadoEstandar(datosDocumento.addNewTipoDocumento(), (String)htDocumentacion.get(de_dd_tipodocumento_cda));
+		datosDocumento.setCodTipoDocumento(getCodigoElementoTipificado((String)htDocumentacion.get(de_dd_tipodocumento_cda)));
+		datosDocumento.setDescTipoDocumento(getDescripcionElementoTipificado((String)htDocumentacion.get(de_dd_tipodocumento_cda)));
+				
 		Calendar cal = getCalendar((String)htDocumentacion.get(de_dd_fechapresentaciondocumento));
 		if (cal != null) {
 			datosDocumento.setFechaPresentacionDocumento(cal);
@@ -825,7 +998,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		datosDocumento.setDescripcionAmpliadaDocumento((String)htDocumentacion.get(de_dd_descripcionampliadadocumento));
 		Integer valueInt = getInteger("procedente de la documentación", (String)htDocumentacion.get(de_dd_procedente));
 		if (valueInt != null) {
-			datosDocumento.setProcedente(valueInt.intValue());
+			datosDocumento.setProcedente(valueInt.shortValue());
 		}
 	}
 
@@ -838,10 +1011,10 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	 * @param dc_numerotelefono2
 	 * @param dc_email
 	 */
-	private void datosContacto(TipoDatosContacto tipoDatosContacto, Hashtable htEJGs, String dc_numerotelefono1, String dc_numerotelefono2, String dc_email) {
-		tipoDatosContacto.setNumeroTelefono1((String)htEJGs.get(dc_numerotelefono1));
-		tipoDatosContacto.setNumeroTelefono2((String)htEJGs.get(dc_numerotelefono2));
-		tipoDatosContacto.setEmail((String)htEJGs.get(dc_email));
+	private void datosContacto(DatosContacto datosContacto, Hashtable htEJGs, String dc_numerotelefono1, String dc_numerotelefono2, String dc_email) {
+		datosContacto.setNumeroTelefono1((String)htEJGs.get(dc_numerotelefono1));
+		datosContacto.setNumeroTelefono2((String)htEJGs.get(dc_numerotelefono2));
+		datosContacto.setEmail((String)htEJGs.get(dc_email));
 	}
 
 	
@@ -862,26 +1035,35 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	 * @param dop_dd_m_subcodigomunicipio
 	 * @param dop_dd_codigopostal
 	 */
-	private void domiciliosPersona(TipoDomiciliosPersona tipoDomiciliosPersona, Hashtable htEJGs, String dop_tipodomicilio_cda, String dop_dd_tipovia_cda,
+	private void domiciliosPersona(DomiciliosPersona domiciliosPersona, Hashtable htEJGs, String dop_tipodomicilio_cda, String dop_dd_tipovia_cda,
 			String dop_dd_nombrevia, String dop_dd_numerodireccion, String dop_dd_escaleradireccion, String dop_dd_pisodireccion,
 			String dop_dd_puertadireccion, String dop_dd_pais_cda, String dop_dd_provincia_cda, String dop_dd_m_municipio_cda,
 			String dop_dd_m_subcodigomunicipio, String dop_dd_codigopostal) {
 		
 		
-		rellenaTipoElementoTipificadoEstandar(tipoDomiciliosPersona.addNewTipoDomicilio(), (String)htEJGs.get(dop_tipodomicilio_cda));
-		DatosDomicilio datosDomicilio = tipoDomiciliosPersona.addNewDatosDomicilio();
-		rellenaTipoElementoTipificadoEstandar(datosDomicilio.addNewTipoVia(), (String)htEJGs.get(dop_dd_tipovia_cda));
+		domiciliosPersona.setCodTipoDomicilioArray(new String[]{getCodigoElementoTipificado((String)htEJGs.get(dop_tipodomicilio_cda))});
+				
+		DatosDomicilio datosDomicilio = domiciliosPersona.addNewDatosDomicilio();
+		
+		datosDomicilio.setCodTipoVia(getCodigoElementoTipificado((String)htEJGs.get(dop_dd_tipovia_cda)));
+		datosDomicilio.setDescTipoVia(getDescripcionElementoTipificado((String)htEJGs.get(dop_dd_tipovia_cda)));
+		
 		datosDomicilio.setNombreVia((String)htEJGs.get(dop_dd_nombrevia));
 		datosDomicilio.setNumeroDireccion((String)htEJGs.get(dop_dd_numerodireccion));
 		datosDomicilio.setEscaleraDireccion((String)htEJGs.get(dop_dd_escaleradireccion));
 		datosDomicilio.setPisoDireccion((String)htEJGs.get(dop_dd_pisodireccion));
 		datosDomicilio.setPuertaDireccion((String)htEJGs.get(dop_dd_puertadireccion));
-		rellenaTipoElementoTipificadoEstandar(datosDomicilio.addNewPais(), (String)htEJGs.get(dop_dd_pais_cda));
-		rellenaTipoElementoTipificadoEstandar(datosDomicilio.addNewProvincia(), (String)htEJGs.get(dop_dd_provincia_cda));
 		
-		Municipio municipio = datosDomicilio.addNewMunicipio();
-		rellenaMunicipio(municipio.addNewMunicipio(), (String)htEJGs.get(dop_dd_m_municipio_cda));
-		municipio.setSubcodigoMunicipio((String)htEJGs.get(dop_dd_m_subcodigomunicipio));
+		datosDomicilio.setCodPais(getCodigoElementoTipificado((String)htEJGs.get(dop_dd_pais_cda)));
+		datosDomicilio.setDescPais(getDescripcionElementoTipificado((String)htEJGs.get(dop_dd_pais_cda)));
+		
+		datosDomicilio.setCodProvincia(getCodigoElementoTipificado((String)htEJGs.get(dop_dd_provincia_cda)));
+		datosDomicilio.setDescProvincia(getDescripcionElementoTipificado((String)htEJGs.get(dop_dd_provincia_cda)));
+		
+		datosDomicilio.setSubCodigoMunicipio((String)htEJGs.get(dop_dd_m_subcodigomunicipio));
+		datosDomicilio.setCodMunicipio(getCodigoElementoTipificado((String)htEJGs.get(dop_dd_m_municipio_cda)));
+		datosDomicilio.setDescMunicipio(getDescripcionElementoTipificado((String)htEJGs.get(dop_dd_m_municipio_cda)));
+				
 		String st = getString((String)htEJGs.get(dop_dd_codigopostal));
 		if (st != null) {
 			datosDomicilio.setCodigoPostal(st);
@@ -913,39 +1095,52 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	 * @param dp_tipopersonajuridica_cda
 	 * @throws Exception
 	 */
-	private void datosPersona(TipoDatosPersona tipoDatosPersona, Hashtable htEJGs, String dp_tipopersona_cda, String dp_tipoidentificacion_cda,
+	private void datosPersona(DatosPersona datosPersona, Hashtable htEJGs, String dp_tipopersona_cda, String dp_tipoidentificacion_cda,
 			String dp_identificacion, String dp_nombre, String dp_primerapellido, String dp_segundoapellido, String dp_razonsocial,
 			String dp_fechanacimiento, String dp_nacionalidad_cda, String dp_situacionlaboral_cda, String dp_profesion_cda, String dp_sexo,
 			String dp_idiomacomunicacion, String dp_estadocivil_cda, String dp_regimeneconomico_cda, String dp_numhijos,
 			String dp_fechaformalizacion, String dp_tipopersonajuridica_cda) throws Exception {
 		
-		rellenaTipoElementoTipificadoEstandar(tipoDatosPersona.addNewTipoPersona(), (String)htEJGs.get(dp_tipopersona_cda));
-		rellenaTipoElementoTipificadoEstandar(tipoDatosPersona.addNewTipoIdentificacion(), (String)htEJGs.get(dp_tipoidentificacion_cda));
-		tipoDatosPersona.setIdentificacion((String)htEJGs.get(dp_identificacion));
-		tipoDatosPersona.setNombre((String)htEJGs.get(dp_nombre));
-		tipoDatosPersona.setPrimerApellido((String)htEJGs.get(dp_primerapellido));
-		tipoDatosPersona.setSegundoApellido((String)htEJGs.get(dp_segundoapellido));
-		tipoDatosPersona.setRazonSocial((String)htEJGs.get(dp_razonsocial));
+		datosPersona.setCodTipoPersona(getCodigoElementoTipificado((String)htEJGs.get(dp_tipopersona_cda)));
+		datosPersona.setCodTipoIdentificacion(getCodigoElementoTipificado((String)htEJGs.get(dp_tipoidentificacion_cda)));		
+		
+		datosPersona.setIdentificacion((String)htEJGs.get(dp_identificacion));
+		datosPersona.setNombre((String)htEJGs.get(dp_nombre));
+		datosPersona.setPrimerApellido((String)htEJGs.get(dp_primerapellido));
+		datosPersona.setSegundoApellido((String)htEJGs.get(dp_segundoapellido));
+		datosPersona.setRazonSocial((String)htEJGs.get(dp_razonsocial));
 		Calendar cal = getCalendar((String)htEJGs.get(dp_fechanacimiento));
 		if (cal != null) {
-			tipoDatosPersona.setFechaNacimiento(cal);
+			datosPersona.setFechaNacimiento(cal);
 		}
-		rellenaTipoElementoTipificadoEstandar(tipoDatosPersona.addNewNacionalidad(), (String)htEJGs.get(dp_nacionalidad_cda));
-		rellenaTipoElementoTipificadoEstandar(tipoDatosPersona.addNewSituacionLaboral(), (String)htEJGs.get(dp_situacionlaboral_cda));
-		rellenaTipoElementoTipificadoEstandar(tipoDatosPersona.addNewProfesion(), (String)htEJGs.get(dp_profesion_cda));
-		tipoDatosPersona.setSexo((String)htEJGs.get(dp_sexo));
-		tipoDatosPersona.setIdiomaComunicacion((String)htEJGs.get(dp_idiomacomunicacion));		
-		rellenaTipoElementoTipificadoEstandar(tipoDatosPersona.addNewEstadoCivil(), (String)htEJGs.get(dp_estadocivil_cda));
-		rellenaTipoElementoTipificadoEstandar(tipoDatosPersona.addNewRegimenEconomico(), (String)htEJGs.get(dp_regimeneconomico_cda));
+		datosPersona.setCodNacionalidad(getCodigoElementoTipificado((String)htEJGs.get(dp_nacionalidad_cda)));
+		datosPersona.setDescNacionalidad(getDescripcionElementoTipificado((String)htEJGs.get(dp_nacionalidad_cda)));
+		
+		datosPersona.setCodSituacionLaboral(getCodigoElementoTipificado((String)htEJGs.get(dp_situacionlaboral_cda)));
+		datosPersona.setDescSituacionLaboral(getDescripcionElementoTipificado((String)htEJGs.get(dp_situacionlaboral_cda)));
+		
+		datosPersona.setCodProfesion(getCodigoElementoTipificado((String)htEJGs.get(dp_profesion_cda)));
+		datosPersona.setDescProfesion(getDescripcionElementoTipificado((String)htEJGs.get(dp_profesion_cda)));
+				
+		datosPersona.setSexo((String)htEJGs.get(dp_sexo));
+		datosPersona.setIdiomaComunicacion((String)htEJGs.get(dp_idiomacomunicacion));
+		
+		datosPersona.setCodEstadoCivil(getCodigoElementoTipificado((String)htEJGs.get(dp_estadocivil_cda)));
+		datosPersona.setDescEstadoCivil(getDescripcionElementoTipificado((String)htEJGs.get(dp_estadocivil_cda)));
+		
+		datosPersona.setCodRegimenEconomico(getCodigoElementoTipificado((String)htEJGs.get(dp_regimeneconomico_cda)));
+				
 		Long value = getLong((String)htEJGs.get(dp_numhijos));
 		if (value != null) {
-			tipoDatosPersona.setNumHijos(value.longValue());
+			datosPersona.setNumHijos(value.longValue());
 		}
 		cal = getCalendar((String)htEJGs.get(dp_fechaformalizacion));
 		if (cal != null) {
-			tipoDatosPersona.setFechaFormalizacion(cal);
+			datosPersona.setFechaFormalizacion(cal);
 		}
-		rellenaTipoElementoTipificadoEstandar(tipoDatosPersona.addNewTipoPersonaJuridica(), (String)htEJGs.get(dp_tipopersonajuridica_cda));		
+		
+		datosPersona.setCodTipoPersonaJuridica(getCodigoElementoTipificado((String)htEJGs.get(dp_tipopersonajuridica_cda)));
+		datosPersona.setDescTipoPersonaJuridica(getDescripcionElementoTipificado((String)htEJGs.get(dp_tipopersonajuridica_cda)));						
 	}
 
 	/**
@@ -1025,9 +1220,6 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 					tipoElementoTipificadoEstandar.setAbreviatura(array[2]);
 				}
 			}
-		}	
-		if (!relleno) {
-			tipoElementoTipificadoEstandar.getDomNode().getParentNode().removeChild(tipoElementoTipificadoEstandar.getDomNode());
 		}
 	}
 
@@ -1052,30 +1244,27 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		}
 		
 	}
-		
-	/**
-	 * 
-	 * @param municipioType2
-	 * @param value
-	 */
-	private void rellenaMunicipio(Municipio2 municipio2, String value) {
-		boolean relleno = false;
-		if (value != null && !value.trim().equals("")) {
-			String[] array = value.split("##");
+	
+	private String getCodigoElementoTipificado(String elementoTipificado) {
+		String code = null;
+		if (elementoTipificado != null && !elementoTipificado.trim().equals("")) {
+			String[] array = elementoTipificado.split("##");
 			if (array != null && array.length > 0) {
-				municipio2.setCodigo(array[0]);
-				relleno = true;
-				if (array.length > 1) {
-					municipio2.setDescripcion(array[1]);
-				}
-				if (array.length > 2) {
-					municipio2.setAbreviatura(array[2]);
-				}
+				code = array[0];
 			}
 		}
-		if (!relleno) {
-			municipio2.getDomNode().getParentNode().removeChild(municipio2.getDomNode());
+		return code;
+	}
+	
+	private String getDescripcionElementoTipificado(String elementoTipificado) {
+		String desc = null;
+		if (elementoTipificado != null && !elementoTipificado.trim().equals("")) {
+			String[] array = elementoTipificado.split("##");
+			if (array != null && array.length > 1) {
+				desc = array[1];
+			}
 		}
+		return desc;
 	}
 	
 	/**
@@ -1085,43 +1274,19 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	 * @throws Exception
 	 */
 
-	private void datosExpediente(TipoExpediente tipoExpediente, Hashtable htEJGs) throws Exception {
-		DatosExpediente datosExpediente = tipoExpediente.addNewDatosExpediente();
+	private void datosExpediente(Expediente expediente, Hashtable htEJGs) throws Exception {
+		DatosExpediente datosExpediente = expediente.addNewDatosExpediente();
 		
-		TipoCodigoExpediente codigoExpediente = datosExpediente.addNewCodigoExpediente();
-		codigoExpediente.setColegioExpediente((String)htEJGs.get(DE_CE_COLEGIOEXPEDIENTE));
-		String numExpediente = UtilidadesString.formatea(htEJGs.get(DE_CE_NUMEXPEDIENTE), 8, true);
-		codigoExpediente.setNumExpediente(numExpediente);		
-		Long anyoExpediente = getLong((String)htEJGs.get(DE_CE_ANYOEXPEDIENTE));		
-		if (anyoExpediente != null) {
-			codigoExpediente.setAnyoExpediente(anyoExpediente.longValue());	
+		TipoCodigoExpediente tipoCodigoExpediente = getTipoCodigoExpediente(htEJGs);
+		TipoCodigoExpedienteServicio codigoExpedienteServicio = getTipoCodigoExpedienteServicio(htEJGs);		
+		
+		if (codigoExpedienteServicio.getAnyoExpedienteServicio() > 0 && codigoExpedienteServicio.getNumExpedienteServicio() != null && codigoExpedienteServicio.getOrigenExpedienteServicio() != null) {
+			datosExpediente.addNewCodigoExpedienteServicio().set(codigoExpedienteServicio);			
+		} else {
+			datosExpediente.addNewCodigoExpediente().set(tipoCodigoExpediente);			
 		}
 		
-		CodigoExpedienteServicio codigoExpedienteServicio = null;
 		
-		String value = getString((String)htEJGs.get(DE_CES_ORIGENEXPEDIENTESERVICI));
-		if (value != null) {
-			if (codigoExpedienteServicio == null) {
-				codigoExpedienteServicio = datosExpediente.addNewCodigoExpedienteServicio();
-			}
-			codigoExpedienteServicio.setOrigenExpedienteServicio(value);
-		}
-		
-		value = getString((String)htEJGs.get(DE_CES_NUMEXPEDIENTESERVICIO));		
-		if (value != null) {
-			if (codigoExpedienteServicio == null) {
-				codigoExpedienteServicio = datosExpediente.addNewCodigoExpedienteServicio();
-			}
-			codigoExpedienteServicio.setNumExpedienteServicio(value);
-		}		
-		
-		Long anyoLong = getLong((String)htEJGs.get(DE_CES_ANYOEXPEDIENTESERVICIO));
-		if (anyoLong != null) {
-			if (codigoExpedienteServicio == null) {
-				codigoExpedienteServicio = datosExpediente.addNewCodigoExpedienteServicio();
-			}
-			codigoExpedienteServicio.setAnyoExpedienteServicio(anyoLong.longValue());
-		}		
 		Calendar cal = getCalendar((String)htEJGs.get(DE_FECHASOLICITUD));
 		if (cal != null) {
 			datosExpediente.setFechaSolicitud(cal);
@@ -1136,13 +1301,11 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			for (int i = 0; i < list.size(); i++) {
 				Hashtable ht = (Hashtable) list.get(i);
 				String st = getString((String)ht.get(DE_ME_ME_VALORMARCAEXPEDIENTE));
-				if (st != null) {					
-					if (marcasExpediente == null) {
-						marcasExpediente = datosExpediente.addNewMarcasExpediente();
-					}
-					MarcaExpediente marcaExpediente = marcasExpediente.addNewMarcaExpediente();				
-					rellenaTipoElementoTipificadoEstandar(marcaExpediente.addNewMarcaExpediente(), (String)ht.get(DE_ME_ME_MARCAEXPEDIENTE_CDA));
-					marcaExpediente.setValorMarcaExpediente(st);
+				if (st != null) {
+					marcasExpediente = datosExpediente.addNewMarcasExpediente();
+					marcasExpediente.setCodMarcaExpediente(getCodigoElementoTipificado((String)ht.get(DE_ME_ME_MARCAEXPEDIENTE_CDA)));				
+					marcasExpediente.setDescMarcaExpediente(getDescripcionElementoTipificado((String)ht.get(DE_ME_ME_MARCAEXPEDIENTE_CDA)));					
+					marcasExpediente.setValorMarcaExpediente(st);
 				}
 			}
 		}
@@ -1176,13 +1339,17 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		
 		if (ht != null) {		
 			identificacionIntercambio.setTipoIntercambio((String)ht.get(TIPOINTERCAMBIO));
-			rellenaTipoElementoTipificadoIntercambio(identificacionIntercambio.addNewOrigenIntercambio(), (String)ht.get(ORIGENINTERCAMBIO_CDA));
-			rellenaTipoElementoTipificadoIntercambio(identificacionIntercambio.addNewDestinoIntercambio(), (String)ht.get(DESTINOINTERCAMBIO_CDA));		
 			
+			identificacionIntercambio.setCodOrigenIntercambio(getCodigoElementoTipificado((String)ht.get(ORIGENINTERCAMBIO_CDA)));
+			identificacionIntercambio.setDescOrigenIntercambio(getDescripcionElementoTipificado((String)ht.get(ORIGENINTERCAMBIO_CDA)));
+			
+			identificacionIntercambio.setCodDestinoIntercambio(getCodigoElementoTipificado((String)ht.get(DESTINOINTERCAMBIO_CDA)));
+			identificacionIntercambio.setDescDestinoIntercambio(getDescripcionElementoTipificado((String)ht.get(DESTINOINTERCAMBIO_CDA)));
+						
 			Long valueLong = getLong((String)ht.get(IDENTIFICADORINTERCAMBIO));
 			identificacionIntercambio.setIdentificadorIntercambio((valueLong.longValue() * 10) + sufijoIdIntercambio);		
 			identificacionIntercambio.setFechaIntercambio(Calendar.getInstance());			
-			identificacionIntercambio.setVersionPCAJG((String)ht.get(VERSION_PCAJG));
+			identificacionIntercambio.setVersion(VERSION_XSD_GENERALITAT);
 		}
 		return informacionIntercambio;
 	}
@@ -1263,6 +1430,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			escribeLogRemesa("Se ha producido un error de conexión con el servidor FTP");
 			ClsLogging.writeFileLogError("Error en el envío FTP", e, 3);			
 		} catch (Exception e) {
+			e.printStackTrace();//TODO
 			tx.rollback();
 			throw e;
 		} finally {			

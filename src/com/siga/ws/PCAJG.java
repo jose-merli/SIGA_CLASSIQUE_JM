@@ -131,6 +131,7 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 	private Map htAbogadosDesignados = new Hashtable();
 	private Map htContrarios = new Hashtable();
 	private Map htDocumentacionExpediente = new Hashtable();
+	private Map htDelitos = new Hashtable();
 		
 		
 	/**
@@ -161,6 +162,9 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 		
 		Vector datosDocumentacionExpedienteDS = cajgEJGRemesaAdm.getDocumentacionExpedienteDS(getIdInstitucion(), getIdRemesa());
 		construyeHTxPersona(datosDocumentacionExpedienteDS, htDocumentacionExpediente);
+		
+		Vector datosDelitos = cajgEJGRemesaAdm.getDelitos(getIdInstitucion(), getIdRemesa());
+		construyeHTxEJG(datosDelitos, htDelitos);
 		
 		Hashtable ht = null;
 		String tipoIntercambio = "";
@@ -766,11 +770,18 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 			tieneDatos = true;
 			datosAsistenciaDetenido.setEsAtestado(b.booleanValue());
 		}
-		tipoElementoTipificadoEstandar = rellenaTipoElementoTipificadoEstandar((String)htEJGs.get(DAD_TIPODELITO_CDA));
-		if (tipoElementoTipificadoEstandar != null) {
-			tieneDatos = true;
-			datosAsistenciaDetenido.setTipoDelito(tipoElementoTipificadoEstandar);
+		
+		String key = getKey(new Object[]{getIdInstitucion(), anyo, numero, idTipoEJG});
+		List list = (List) htDelitos.get(key);		
+		if (list != null && list.size() > 0) {
+			Hashtable ht = (Hashtable)list.get(0);//cogemos el último
+			tipoElementoTipificadoEstandar = rellenaTipoElementoTipificadoEstandar((String)ht.get(DELITO_CDA));
+			if (tipoElementoTipificadoEstandar != null) {
+				tieneDatos = true;
+				datosAsistenciaDetenido.setTipoDelito(tipoElementoTipificadoEstandar);
+			}
 		}
+		
 		
 		if (!tieneDatos) {
 			datosAsistenciaDetenido = null;

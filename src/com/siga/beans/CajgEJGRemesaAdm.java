@@ -289,6 +289,14 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 		return getDatos(sql);
 	}
 	
+	public Vector getDelitos(int idInstitucion, int idRemesa) throws ClsExceptions, SIGAException {
+		String sql = "SELECT *" +
+				" FROM V_PCAJG_DELITOS" +
+				" WHERE IDINSTITUCION = " + idInstitucion +
+				" AND IDREMESA = " + idRemesa;
+		return getDatos(sql);
+	}
+	
 	public Vector getDatosPrestacionesResolucion(int idInstitucion, int idRemesa, String idTipoEJG, String anio, String numero) {
 		Vector datos = new Vector();		
 		return datos;

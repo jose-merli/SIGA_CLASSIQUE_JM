@@ -235,7 +235,9 @@ public abstract class SIGAWSClientAbstract {
 		if (list.size() > 0) {
 			valido = false;
 			for (String st : list) {
-				escribeErrorExpediente(anio, numejg, numero, idTipoEJG, st);
+				if (st != null) {
+					escribeErrorExpediente(anio, numejg, numero, idTipoEJG, st);
+				}
 			}
 		}
 		return valido;

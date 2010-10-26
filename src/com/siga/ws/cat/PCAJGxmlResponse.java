@@ -35,21 +35,21 @@ import com.siga.ws.PCAJGConstantes;
 import com.siga.ws.SIGAWSClientAbstract;
 import com.siga.ws.cat.ftp.FtpPcajgAbstract;
 import com.siga.ws.cat.ftp.FtpPcajgFactory;
-import com.siga.ws.cat.respuesta.IntercambioDocument;
-import com.siga.ws.cat.respuesta.TipoIdentificacionIntercambio;
-import com.siga.ws.cat.respuesta.IntercambioDocument.Intercambio;
-import com.siga.ws.cat.respuesta.IntercambioDocument.Intercambio.InformacionIntercambio;
-import com.siga.ws.cat.respuesta.IntercambioDocument.Intercambio.InformacionIntercambio.IntercambioErroneo;
-import com.siga.ws.cat.respuesta.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico;
-import com.siga.ws.cat.respuesta.IntercambioDocument.Intercambio.InformacionIntercambio.IntercambioErroneo.DatosError;
-import com.siga.ws.cat.respuesta.IntercambioDocument.Intercambio.InformacionIntercambio.IntercambioErroneo.DatosError.ErrorContenido;
-import com.siga.ws.cat.respuesta.IntercambioDocument.Intercambio.InformacionIntercambio.IntercambioErroneo.DatosError.ErrorGeneral;
-import com.siga.ws.cat.respuesta.IntercambioDocument.Intercambio.InformacionIntercambio.IntercambioErroneo.DatosError.ErrorContenido.CodigoExpedienteError;
-import com.siga.ws.cat.respuesta.IntercambioDocument.Intercambio.InformacionIntercambio.IntercambioErroneo.DatosError.ErrorContenido.DetalleError;
-import com.siga.ws.cat.respuesta.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente;
-import com.siga.ws.cat.respuesta.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosExpediente;
-import com.siga.ws.cat.respuesta.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosTramitacionExpediente.TramiteResolucion;
-import com.siga.ws.cat.respuesta.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosTramitacionExpediente.TramiteResolucion.PrestacionesResolucion;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument;
+import com.siga.ws.pcajg.cat.xsd.TipoIdentificacionIntercambio;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.IntercambioErroneo;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.IntercambioErroneo.DatosError;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.IntercambioErroneo.DatosError.ErrorContenido;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.IntercambioErroneo.DatosError.ErrorGeneral;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.IntercambioErroneo.DatosError.ErrorContenido.CodigoExpedienteError;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.IntercambioErroneo.DatosError.ErrorContenido.DetalleError;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosExpediente;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosTramitacionExpediente.TramiteResolucion;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosTramitacionExpediente.TramiteResolucion.PrestacionesResolucion;
 
 
 
@@ -177,7 +177,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 				}			
 				
 				InformacionIntercambio informacionIntercambio = intercambioIRDoc.getIntercambio().getInformacionIntercambio();
-				
+								
 				String idInstitucion = informacionIntercambio.getIdentificacionIntercambio().getCodDestinoIntercambio();
 				TipoGenerico tipoGenerico = informacionIntercambio.getTipoGenerico();
 				if (tipoGenerico == null) {
