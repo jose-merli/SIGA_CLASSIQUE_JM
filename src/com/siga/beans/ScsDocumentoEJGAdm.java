@@ -36,7 +36,12 @@ public class ScsDocumentoEJGAdm extends MasterBeanAdministrador {
 	 * @see com.siga.beans.MasterBeanAdministrador#getCamposBean()
 	 */
 	protected String[] getCamposBean() {
-		String [] campos = {ScsDocumentoEJGBean.C_ABREVIATURA,ScsDocumentoEJGBean.C_DESCRIPCION,ScsDocumentoEJGBean.C_IDINSTITUCION,ScsDocumentoEJGBean.C_IDTIPODOCUMENTOEJG,ScsDocumentoEJGBean.C_IDDOCUMENTOEJG};
+		String [] campos = {ScsDocumentoEJGBean.C_ABREVIATURA,
+							ScsDocumentoEJGBean.C_DESCRIPCION,
+							ScsDocumentoEJGBean.C_IDINSTITUCION,
+							ScsDocumentoEJGBean.C_IDTIPODOCUMENTOEJG,
+							ScsDocumentoEJGBean.C_IDDOCUMENTOEJG,
+							ScsDocumentoEJGBean.C_CODIGOEXT };
 		return campos;
 	}
 
@@ -71,6 +76,7 @@ public class ScsDocumentoEJGAdm extends MasterBeanAdministrador {
 			bean.setIdInstitucion((String)hash.get(ScsDocumentoEJGBean.C_IDINSTITUCION));		
 			bean.setIdTipoDocumentoEJG((String)hash.get(ScsDocumentoEJGBean.C_IDTIPODOCUMENTOEJG));
 			bean.setIdDocumentoEJG((String)hash.get(ScsDocumentoEJGBean.C_IDDOCUMENTOEJG));
+			bean.setCodigoExt((String)hash.get(ScsDocumentoEJGBean.C_CODIGOEXT));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -94,6 +100,7 @@ public class ScsDocumentoEJGAdm extends MasterBeanAdministrador {
 			htData.put(ScsDocumentoEJGBean.C_IDTIPODOCUMENTOEJG, b.getIdTipoDocumentoEJG());
 			htData.put(ScsDocumentoEJGBean.C_IDINSTITUCION, b.getIdInstitucion());
 			htData.put(ScsDocumentoEJGBean.C_IDDOCUMENTOEJG, b.getIdDocumentoEJG());
+			htData.put(ScsDocumentoEJGBean.C_CODIGOEXT, b.getCodigoExt());
 		}
 		catch (Exception e) {
 			htData = null;
@@ -150,7 +157,7 @@ public class ScsDocumentoEJGAdm extends MasterBeanAdministrador {
 		sql.append(lenguaje);
 		sql.append(") ");
 		sql.append(ScsDocumentoEJGBean.C_DESCRIPCION);
-		sql.append(" , IDINSTITUCION, IDTIPODOCUMENTOEJG "); 
+		sql.append(" , IDINSTITUCION, IDTIPODOCUMENTOEJG,IDDOCUMENTOEJG, CODIGOEXT "); 
 		sql.append(" FROM SCS_DOCUMENTOEJG  WHERE ");
 		sql.append(" IDDOCUMENTOEJG = :");
 		contador++;
@@ -174,21 +181,60 @@ public class ScsDocumentoEJGAdm extends MasterBeanAdministrador {
 			Hashtable row = (Hashtable)datos.get(0);
 			String descripcion = (String)row.get(ScsTipoDocumentoEJGBean.C_DESCRIPCION);
 			String abreviatura = (String)row.get(ScsTipoDocumentoEJGBean.C_ABREVIATURA);
+			String codigoExt = (String)row.get(ScsTipoDocumentoEJGBean.C_CODIGOEXT);
 			beanDocumento = new ScsDocumentoEJGBean();
 			beanDocumento.setIdDocumentoEJG(idDoc);
 			beanDocumento.setIdTipoDocumentoEJG(idTipoDoc);
 			beanDocumento.setIdInstitucion(idInstitucion);
 			beanDocumento.setDescripcion(descripcion);
 			beanDocumento.setAbreviatura(abreviatura);
-			
-			
-			
-
+			beanDocumento.setCodigoExt(codigoExt);	
 		} 
 		catch (Exception e) { 	
 			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D."); 
 		}
 		return beanDocumento;
 	}
+	
+	
+	public Vector getListaDocumentoEjg(Hashtable htPkTabl,String lenguaje) throws ClsExceptions {
+		
+		Vector datos = new Vector();				
+		StringBuffer sql = new StringBuffer();
+		Hashtable htCodigos = new Hashtable();
+		int contador = 0;
+		String idInstitucion = (String)htPkTabl.get(ScsDocumentoEJGBean.C_IDINSTITUCION);
+		String idTipoDoc = (String)htPkTabl.get(ScsDocumentoEJGBean.C_IDTIPODOCUMENTOEJG);
+		sql.append(" SELECT IDINSTITUCION, IDTIPODOCUMENTOEJG, ABREVIATURA, ");
+		sql.append(" F_SIGA_GETRECURSO(");
+		sql.append(ScsDocumentoEJGBean.C_DESCRIPCION);
+		sql.append(",");
+		sql.append(lenguaje);
+		sql.append(") ");
+		sql.append(ScsTipoDocumentoEJGBean.C_DESCRIPCION);
+		sql.append(" , IDDOCUMENTOEJG ");
+		//sql.append(ScsTipoDocumentoEJGBean.C_CODIGOEXT);		
+		sql.append(" FROM scs_documentoejg  WHERE IDTIPODOCUMENTOEJG = :");
+		contador++;
+		htCodigos.put(new Integer(contador), idTipoDoc);
+		sql.append(contador);
+		sql.append(" AND IDINSTITUCION = :");
+		contador++;
+		htCodigos.put(new Integer(contador),idInstitucion );
+		sql.append(contador);
+		sql.append(" ORDER BY ABREVIATURA, DESCRIPCION ");   
+		try {						
+			
+			 datos = this.selectGenericoBind(sql.toString(),htCodigos);			
+			
+		} 
+		catch (Exception e) { 	
+			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D., en la funcion getListaDocumentoEjg()"); 
+		}
+		return datos;
+	}
+	
+		
+	
 	
 }
