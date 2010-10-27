@@ -265,7 +265,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		OutputFormat of = new OutputFormat("XML", "ISO-8859-15", true);				
 		of.setIndent(1);
 		of.setIndenting(true);
-//		of.setLineWidth(500);
+		of.setLineWidth(1500);
 		
 		XMLSerializer serializer = new XMLSerializer(fos, of);
 		serializer.asDOMSerializer();
