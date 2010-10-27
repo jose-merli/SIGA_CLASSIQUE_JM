@@ -1342,7 +1342,8 @@ public class BusquedaDesignasAction extends MasterAction {
 				defendidosDesignaBean.setIdTurno(designaBean.getIdTurno());
 				defendidosDesignaBean.setNumero(new Integer(designaBean.getNumero().intValue()));
 				defendidosDesignaBean.setCalidad(ejgBean.getCalidad());
-
+				defendidosDesignaBean.setIdTipoenCalidad(ejgBean.getIdTipoenCalidad());
+				defendidosDesignaBean.setCalidadIdinstitucion(ejgBean.getCalidadidinstitucion());
 				ScsDefendidosDesignaAdm defendidosDesignaAdm = new ScsDefendidosDesignaAdm (usuario);
 				if (!defendidosDesignaAdm.insert(defendidosDesignaBean)) {
 					return false;
@@ -1369,7 +1370,8 @@ public class BusquedaDesignasAction extends MasterAction {
 					defendidosDesignaBean.setIdTurno(designaBean.getIdTurno());
 					defendidosDesignaBean.setNumero(new Integer(designaBean.getNumero().intValue()));
 					defendidosDesignaBean.setCalidad(ejgBean.getCalidad());
-
+					defendidosDesignaBean.setIdTipoenCalidad(ejgBean.getIdTipoenCalidad());
+					defendidosDesignaBean.setCalidadIdinstitucion(ejgBean.getCalidadidinstitucion());
 					ScsDefendidosDesignaAdm defendidosDesignaAdm = new ScsDefendidosDesignaAdm (usuario);
 					if (!defendidosDesignaAdm.insert(defendidosDesignaBean)) {
 						return false;
