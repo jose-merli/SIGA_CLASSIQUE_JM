@@ -197,14 +197,14 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 			// Dependiendo de donde vengamos tenemos que modificar unos campos u otros.
 			UsrBean usr 	= (UsrBean)request.getSession().getAttribute("USRBEAN");
 			tx = usr.getTransaction();
-			
+			String idinstitucion=usr.getLocation();
 			ScsEJGAdm ejgAdm = new ScsEJGAdm(usr);
 			DefinirMantenimientoEJGForm miForm 	= (DefinirMantenimientoEJGForm)formulario;
 
 			//Modificamos el TipoEJGColegio, FechaPresentacion, FechaLimitePresentacion, ProcuradorNecesario, Procurador, Observaciones y Delitos
 			String[] campos = {ScsEJGBean.C_IDTIPOEJGCOLEGIO, 			ScsEJGBean.C_FECHAPRESENTACION,
 							   ScsEJGBean.C_FECHALIMITEPRESENTACION,	ScsEJGBean.C_PROCURADORNECESARIO,
-							   ScsEJGBean.C_CALIDAD,					ScsEJGBean.C_OBSERVACIONES,
+							   ScsEJGBean.C_OBSERVACIONES,
 							   ScsEJGBean.C_DELITOS,					ScsEJGBean.C_PROCURADOR,					   
 							   ScsEJGBean.C_IDPROCURADOR, 				ScsEJGBean.C_IDINSTITUCIONPROCURADOR,
 							   ScsEJGBean.C_NUMERO_CAJG,				ScsEJGBean.C_ANIO_CAJG,
@@ -213,7 +213,7 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 							   ScsEJGBean.C_NUMEROPROCEDIMIENTO, 		ScsEJGBean.C_NUMERODILIGENCIA,
 							   ScsEJGBean.C_IDPERSONA,                  ScsEJGBean.C_GUARDIATURNO_IDTURNO,
 							   ScsEJGBean.C_GUARDIATURNO_IDGUARDIA,     ScsEJGBean.C_FECHAAPERTURA,
-							   ScsEJGBean.C_IDORIGENCAJG};
+							   ScsEJGBean.C_IDORIGENCAJG  };
 
 			// Campos a modificar
 			hash = miForm.getDatos();
@@ -271,7 +271,7 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 
 			}else{
 				UtilidadesHash.set(hash, ScsEJGBean.C_IDORIGENCAJG, "");
-			}
+			}		
 			
 			tx.begin();
 			ejgAdm.updateDirect(hash,null,campos);
