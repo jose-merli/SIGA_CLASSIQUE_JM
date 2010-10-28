@@ -38,8 +38,10 @@
 			  <LI > La sentencia debe ir etiquetada con los siguientes etiquetas para indicar el comienzo y fin de las diferentes partes de la sentencia:
 			   <ul class="labelText" type="square">
 			       <LI ><B style="FONT-SIZE: 14px;">&LT;SELECT&GT; &LT;/SELECT&GT%%</B>, donde se indica la clausula SELECT.</LI>
-			       <LI ><B style="FONT-SIZE: 14px;">&LTFROM&GT; &LT;/FROM&GT;</B>, donde se indica la clausula FROM de la sentencia principal.</LI>
+			       <LI ><B style="FONT-SIZE: 14px;">&LTFROM&GT; &LT;/FROM&GT;</B>, donde se indica la clausula FROM de la sentencia principal.</LI>			       
 			       <LI ><B style="FONT-SIZE: 14px;">&LTWHERE&GT; &LT;/WHERE&GT;</B>, donde se indica la clausula WHERE de la sentencia principal.</LI>
+			       <LI ><B style="FONT-SIZE: 14px;">&LTUNION&GT; &LT;/UNION&GT;</B>, donde se indica la clausula UNION de la sentencia principal.</LI>
+			       <LI ><B style="FONT-SIZE: 14px;">&LTUNIONALL&GT; &LT;/UNIONALL&GT;</B>, donde se indica la clausula UNION ALL de la sentencia principal.</LI>
 			       <LI ><B style="FONT-SIZE: 14px;">&LTGROUPBY&GT; &LT;/GROUPBY&GT;</B>, donde se indica la clausula GROUP BY de la sentencia principal.</LI>   
        		       <LI ><B style="FONT-SIZE: 14px;">&LTORDERBY&GT; &LT;/ORDERBY&GT;</B>, donde se indica la clausula ORDER BY de la sentencia principal.</LI>   
 			    </ul> 
