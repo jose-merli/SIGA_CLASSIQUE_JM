@@ -1832,7 +1832,7 @@ public class EditarConsultaAction extends MasterAction {
 					if ((select.toUpperCase().indexOf(ClsConstants.ETIQUETASELECTCLOSE))<0){
 						throw new SIGAException("messages.consultas.error.etiquetaSelectClose");		
 					}
-				}
+			    }
 			//FROM
 				if ((select.toUpperCase().indexOf(ClsConstants.ETIQUETAFROMOPEN))<0){
 					throw new SIGAException("messages.consultas.error.etiquetaFromOpen");
@@ -1851,6 +1851,29 @@ public class EditarConsultaAction extends MasterAction {
 				 	existeCondicionEnWhere=true;
 				 }
 				}	
+			//UNION	
+				if ((select.toUpperCase().indexOf(ClsConstants.ETIQUETAUNIONOPEN))>=0){					
+					if ((select.toUpperCase().indexOf(ClsConstants.ETIQUETAUNIONOPEN))<0){
+						throw new SIGAException("messages.consultas.error.etiquetaUnionOpen");
+					}		
+					if ((select.toUpperCase().indexOf(ClsConstants.ETIQUETAUNIONCLOSE))<0){
+						throw new SIGAException("messages.consultas.error.etiquetaUnionClose");
+					}							 
+				}	
+				
+				
+			//UNION	ALL
+				if ((select.toUpperCase().indexOf(ClsConstants.ETIQUETAUNIONALLOPEN))>=0){					
+					if ((select.toUpperCase().indexOf(ClsConstants.ETIQUETAUNIONALLOPEN))<0){
+						throw new SIGAException("messages.consultas.error.etiquetaUnionAllOpen");
+					}		
+					if ((select.toUpperCase().indexOf(ClsConstants.ETIQUETAUNIONALLCLOSE))<0){
+						throw new SIGAException("messages.consultas.error.etiquetaUnionAllClose");
+					}							 
+				}		
+					
+					
+				
 			//ORDER BY
 				if ((select.toUpperCase().indexOf(ClsConstants.ETIQUETAORDERBYOPEN))>=0){
 					
@@ -1970,11 +1993,9 @@ public class EditarConsultaAction extends MasterAction {
 			 
 			 // Antes de ejecutar la consulta eliminamos todas las etiquetas introducidas y la nueva consulta la metemos en la variable selectAEjecutar
 			 selectAEjecutar=ConConsultaAdm.eliminarEtiquetas(select);
-			 selectAEjecutar=selectAEjecutar.replaceAll(ClsConstants.ETIQUETAOPERADOR,"=");
-			  
-             // 
-		      PreparedStatement ps=con.prepareStatement(selectAEjecutar);
-		      ResultSet rs=ps.executeQuery();
+			 selectAEjecutar=selectAEjecutar.replaceAll(ClsConstants.ETIQUETAOPERADOR,"=");	 
+			 PreparedStatement ps=con.prepareStatement(selectAEjecutar);
+		     ResultSet rs=ps.executeQuery();
 		      ResultSetMetaData rs1=rs.getMetaData();
 		      numeroCampos=rs1.getColumnCount();
 		      con.close();
@@ -2177,6 +2198,18 @@ public class EditarConsultaAction extends MasterAction {
 		  critCampoWhere=select.substring(select.toUpperCase().indexOf(ClsConstants.ETIQUETAWHEREOPEN),select.toUpperCase().indexOf(ClsConstants.ETIQUETASWHERECLOSE));
 		}
 	  }
+	
+	//comprobamos si se han metido criterios pero no se ha metido la etiqueta <UNION> o <UNION ALL>
+	selectAux=select.substring(select.toUpperCase().indexOf(ClsConstants.ETIQUETAWHEREOPEN));
+	if (	(selectAux.toUpperCase().indexOf("UNION")>=0)||(selectAux.toUpperCase().indexOf("UNION ALL")>=0)){
+		 if (selectAux.toUpperCase().indexOf("UNION ALL")>=0){
+			 if (selectAux.toUpperCase().indexOf(ClsConstants.ETIQUETAUNIONALLOPEN)<0){
+			  throw new SIGAException("messages.consultas.error.etiquetaUnionAllOpen");
+			 }		 
+		}else  if (selectAux.toUpperCase().indexOf(ClsConstants.ETIQUETAUNIONOPEN)<0){
+			throw new SIGAException("messages.consultas.error.etiquetaUnionOpen");
+		}
+	  }	
 		
 		// Sustituimos los criterios dinamicos que pueda haber en los campos de salida
 			 while ((critCampoSalida.indexOf(ClsConstants.TIPONUMERO))>=0 || (critCampoSalida.indexOf(ClsConstants.TIPOTEXTO))>=0 || (critCampoSalida.indexOf(ClsConstants.TIPOFECHA)>=0 ||(critCampoSalida.indexOf(ClsConstants.TIPOMULTIVALOR))>=0 ) ){
@@ -2408,19 +2441,118 @@ public class EditarConsultaAction extends MasterAction {
 							} catch (Exception e){
 								throw new SIGAException ("Error al construir la consulta del multivalor. "+e.getMessage());
 							}
-						    
-							
-						
-						
-					 
-						
-				
 					}else{
 					
 						throw new SIGAException("messages.consultas.error.CriterioDinamico");
 					}
 				 	
 			 }
+				 	  /**Sustituimos los criterios dinamicos que pueda haber dentro de la etiqueta FROM**/
+				 while ((selectFrom.indexOf(ClsConstants.TIPONUMERO))>=0 || (selectFrom.indexOf(ClsConstants.TIPOTEXTO))>=0 || selectFrom.indexOf(ClsConstants.TIPOFECHA)>=0 || (selectFrom.indexOf(ClsConstants.TIPOMULTIVALOR))>=0 ){
+					  
+					  aliasSustituir="";
+				      aliasSustituirFinal="";
+					  
+				      if (selectFrom.toUpperCase().indexOf(ClsConstants.TIPOTEXTO)>=0 ){
+					  String existeOperador=selectFrom.substring(0,selectFrom.toUpperCase().indexOf(ClsConstants.TIPOTEXTO));
+						if (existeOperador.toUpperCase().indexOf(ClsConstants.ETIQUETAOPERADOR)<0){
+							throw new SIGAException("messages.consultas.error.etiquetaOperador");
+					    }	
+						aliasSustituir=selectFrom.substring(0,selectFrom.toUpperCase().indexOf(ClsConstants.TIPOTEXTO));
+				 		aliasSustituir=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf("FROM"));
+				 		if (aliasSustituir.toUpperCase().lastIndexOf(" AS ")>=0){
+				 			String aux=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "));
+				 			if (aux.toUpperCase().lastIndexOf(ClsConstants.ETIQUETAOPERADOR)<=0){
+				 				throw new SIGAException("messages.consultas.error.etiquetaOperador");
+				 			}else{
+				 			aliasSustituirFinal=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "),aliasSustituir.toUpperCase().lastIndexOf(ClsConstants.ETIQUETAOPERADOR));
+				 			}
+					 		 
+					    }
+						selectFrom=selectFrom.toUpperCase().replaceFirst(ClsConstants.TIPOTEXTO,"'1'");						
+						selectFrom=selectFrom.substring(0,selectFrom.indexOf(aliasSustituirFinal))+selectFrom.substring(selectFrom.indexOf(aliasSustituirFinal)+aliasSustituirFinal.length());
+										  
+				 
+				  
+				  } else if (selectFrom.toUpperCase().indexOf(ClsConstants.TIPONUMERO)>=0){
+				 		String existeOperador=selectFrom.substring(0,selectFrom.toUpperCase().indexOf(ClsConstants.TIPONUMERO));
+						if (existeOperador.toUpperCase().indexOf(ClsConstants.ETIQUETAOPERADOR)<0){
+							throw new SIGAException("messages.consultas.error.etiquetaOperador");
+					    }
+				 		aliasSustituir=selectFrom.substring(0,selectFrom.toUpperCase().indexOf(ClsConstants.TIPONUMERO));
+				 		aliasSustituir=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf("FROM"));
+				 		if (aliasSustituir.toUpperCase().lastIndexOf(" AS ")>=0){
+				 			String aux=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "));
+				 			if (aux.toUpperCase().lastIndexOf(ClsConstants.ETIQUETAOPERADOR)<=0){
+				 				throw new SIGAException("messages.consultas.error.etiquetaOperador");
+				 			}else{
+				 			 aliasSustituirFinal=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "),aliasSustituir.toUpperCase().lastIndexOf(ClsConstants.ETIQUETAOPERADOR));
+				 			}
+					 		 
+					    }
+				 		selectFrom=selectFrom.toUpperCase().replaceFirst(ClsConstants.TIPONUMERO,"1");				 	
+				 		selectFrom=selectFrom.substring(0,selectFrom.indexOf(aliasSustituirFinal))+selectFrom.substring(selectFrom.indexOf(aliasSustituirFinal)+aliasSustituirFinal.length());				 		
+					
+				   }else if (selectFrom.toUpperCase().indexOf(ClsConstants.TIPOFECHA)>=0 ){
+						String existeOperador=selectFrom.substring(0,selectFrom.toUpperCase().indexOf(ClsConstants.TIPOFECHA));
+						if (existeOperador.toUpperCase().indexOf(ClsConstants.ETIQUETAOPERADOR)<0){
+							throw new SIGAException("messages.consultas.error.etiquetaOperador");
+					    }
+						aliasSustituir=selectFrom.substring(0,selectFrom.toUpperCase().indexOf(ClsConstants.TIPOFECHA));
+				 		aliasSustituir=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf("FROM"));
+				 		if (aliasSustituir.toUpperCase().lastIndexOf(" AS ")>=0){
+				 			String aux=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "));
+				 			if (aux.toUpperCase().lastIndexOf(ClsConstants.ETIQUETAOPERADOR)<=0){
+				 				throw new SIGAException("messages.consultas.error.etiquetaOperador");
+				 			}else{
+				 			  aliasSustituirFinal=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "),aliasSustituir.toUpperCase().lastIndexOf(ClsConstants.ETIQUETAOPERADOR));
+				 			}
+					 		 
+					    }
+						selectFrom=selectFrom.toUpperCase().replaceFirst(ClsConstants.TIPOFECHA,"sysdate");
+						selectFrom=selectFrom.substring(0,selectFrom.indexOf(aliasSustituirFinal))+selectFrom.substring(selectFrom.indexOf(aliasSustituirFinal)+aliasSustituirFinal.length());
+						String final1=selectFrom;
+						
+				   }else if (selectFrom.toUpperCase().indexOf(ClsConstants.TIPOMULTIVALOR)>=0 ){
+						String existeOperador=selectFrom.substring(0,selectFrom.toUpperCase().indexOf(ClsConstants.TIPOMULTIVALOR));
+						if (existeOperador.toUpperCase().indexOf(ClsConstants.ETIQUETAOPERADOR)<0){
+							throw new SIGAException("messages.consultas.error.etiquetaOperador");
+					    }	
+						aliasSustituir=selectFrom.substring(0,selectFrom.toUpperCase().indexOf(ClsConstants.TIPOMULTIVALOR));
+				 		aliasSustituir=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf("FROM"));
+				 		if (aliasSustituir.toUpperCase().lastIndexOf(" AS ")>=0){
+				 			String aux=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "));
+				 			if (aux.toUpperCase().lastIndexOf(ClsConstants.ETIQUETAOPERADOR)<=0){
+				 				throw new SIGAException("messages.consultas.error.etiquetaOperador");
+				 			}else{
+				 			   aliasSustituirFinal=aliasSustituir.substring(aliasSustituir.toUpperCase().lastIndexOf(" AS "),aliasSustituir.toUpperCase().lastIndexOf(ClsConstants.ETIQUETAOPERADOR));
+				 			}
+					 		 
+					    }
+						    String valor=ClsConstants.TIPOMULTIVALOR+ObtenerSelectAyuda(selectFrom,request)+"%%";			
+						    String selectAyudaTratada=ObtenerSelectAyuda(selectFrom,request).toUpperCase().replaceAll("\r\n"," ").replaceAll(" ","");
+						    if (selectAyudaTratada.indexOf("AS\"ID\"")<0 || selectAyudaTratada.indexOf("AS\"DESCRIPCION\"")<0){
+						    	throw new SIGAException("messages.consultas.error.SelectAyuda");
+						    }
+						    try{
+						    RowsContainer rc = new RowsContainer();
+							rc.query(ObtenerSelectAyuda(selectFrom,request));
+							int pos =selectFrom.indexOf(valor);					
+							selectFrom=selectFrom.substring(0,pos)+"1"+selectFrom.substring(pos+valor.length());
+							selectFrom=selectFrom.substring(0,selectFrom.indexOf(aliasSustituirFinal))+selectFrom.substring(selectFrom.indexOf(aliasSustituirFinal)+aliasSustituirFinal.length());
+							
+						    } catch (ClsExceptions e) {
+								throw new SIGAException ("Error al construir la consulta del multivalor. "+e.getMessage());
+							} catch (Exception e){
+								throw new SIGAException ("Error al construir la consulta del multivalor. "+e.getMessage());
+							}
+				
+					}else{
+					
+						throw new SIGAException("messages.consultas.error.CriterioDinamico");
+					}
+				  }
+				 
 				 if (critCampoWhere!=null && !critCampoWhere.equals("")){
 				 	select=critCampoSalida+ClsConstants.ETIQUETASELECTCLOSE+selectFrom+ClsConstants.ETIQUETASFROMCLOSE+critCampoWhere+ClsConstants.ETIQUETASWHERECLOSE;
 				 	
