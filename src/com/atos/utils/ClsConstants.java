@@ -66,6 +66,10 @@ public class ClsConstants {
 	public static final String ETIQUETASORDERBYCLOSE= "</ORDERBY>";
 	public static final String ETIQUETAOPERADOR   	= "%%OPERADOR%%";
 	public static final String CONSTANTESUSTITUIRCOMILLAS 	= "#@#";
+	public static final String ETIQUETAUNIONOPEN	    = "<UNION>";
+	public static final String ETIQUETAUNIONCLOSE	    = "</UNION>";
+	public static final String ETIQUETAUNIONALLOPEN	    = "<UNIONALL>";
+	public static final String ETIQUETAUNIONALLCLOSE	= "</UNIONALL>";
 
 	//	Estado de la solicitud de incorporación de colegiado
 	public static final int ESTADO_SOLICITUD_PENDIENTE_DOC 		= 10;	
