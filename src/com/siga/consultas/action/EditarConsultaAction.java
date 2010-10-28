@@ -2186,11 +2186,12 @@ public class EditarConsultaAction extends MasterAction {
 		String selectFrom=select.substring(select.toUpperCase().indexOf(ClsConstants.ETIQUETAFROMOPEN),select.toUpperCase().indexOf(ClsConstants.ETIQUETASFROMCLOSE));
 		String critCampoWhere="";
 		String  selectAux="";
+		String  selectAuxunion="";
 		String aliasSustituir="";
 		String aliasSustituirFinal="";
 		//comprobamos si se han metido criterios pero no se ha metido la etiqueta <where>
 		selectAux=select.substring(select.toUpperCase().indexOf(ClsConstants.ETIQUETASFROMCLOSE));
-	if 	(selectAux.toUpperCase().indexOf("WHERE")>=0){
+	if 	(select.toUpperCase().indexOf("WHERE")>=0){
 		
 		if (select.toUpperCase().indexOf(ClsConstants.ETIQUETAWHEREOPEN)<0){
 			throw new SIGAException("messages.consultas.error.etiquetaWhereOpen");
@@ -2200,13 +2201,13 @@ public class EditarConsultaAction extends MasterAction {
 	  }
 	
 	//comprobamos si se han metido criterios pero no se ha metido la etiqueta <UNION> o <UNION ALL>
-	selectAux=select.substring(select.toUpperCase().indexOf(ClsConstants.ETIQUETAWHEREOPEN));
-	if (	(selectAux.toUpperCase().indexOf("UNION")>=0)||(selectAux.toUpperCase().indexOf("UNION ALL")>=0)){
-		 if (selectAux.toUpperCase().indexOf("UNION ALL")>=0){
-			 if (selectAux.toUpperCase().indexOf(ClsConstants.ETIQUETAUNIONALLOPEN)<0){
+	selectAuxunion=select.substring(select.toUpperCase().indexOf(ClsConstants.ETIQUETASWHERECLOSE));
+	if (	(selectAuxunion.toUpperCase().indexOf("UNION")>=0)||(selectAuxunion.toUpperCase().indexOf("UNION ALL")>=0)){
+		 if (selectAuxunion.toUpperCase().indexOf("UNION ALL")>=0){
+			 if (selectAuxunion.toUpperCase().indexOf(ClsConstants.ETIQUETAUNIONALLOPEN)<0){
 			  throw new SIGAException("messages.consultas.error.etiquetaUnionAllOpen");
 			 }		 
-		}else  if (selectAux.toUpperCase().indexOf(ClsConstants.ETIQUETAUNIONOPEN)<0){
+		}else  if (selectAuxunion.toUpperCase().indexOf(ClsConstants.ETIQUETAUNIONOPEN)<0){
 			throw new SIGAException("messages.consultas.error.etiquetaUnionOpen");
 		}
 	  }	
