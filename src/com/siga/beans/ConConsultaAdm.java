@@ -927,6 +927,8 @@ public class ConConsultaAdm extends MasterBeanAdministrador {
 		select=select.replaceAll(ClsConstants.ETIQUETASELECTOPEN,"").replaceAll(ClsConstants.ETIQUETASELECTCLOSE,"");
 		select=select.replaceAll(ClsConstants.ETIQUETAFROMOPEN,"").replaceAll(ClsConstants.ETIQUETASFROMCLOSE,"");
 		select=select.replaceAll(ClsConstants.ETIQUETAWHEREOPEN,"").replaceAll(ClsConstants.ETIQUETASWHERECLOSE,"");
+		select=select.replaceAll(ClsConstants.ETIQUETAUNIONOPEN,"").replaceAll(ClsConstants.ETIQUETAUNIONCLOSE,"");
+		select=select.replaceAll(ClsConstants.ETIQUETAUNIONALLOPEN,"").replaceAll(ClsConstants.ETIQUETAUNIONALLCLOSE,"");
 		select=select.replaceAll(ClsConstants.ETIQUETAORDERBYOPEN,"").replaceAll(ClsConstants.ETIQUETASORDERBYCLOSE,"");
 		select=select.replaceAll(ClsConstants.ETIQUETAGROUPBYOPEN,"").replaceAll(ClsConstants.ETIQUETASGROUPBYCLOSE,"");
 		
