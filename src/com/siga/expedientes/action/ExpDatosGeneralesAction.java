@@ -200,7 +200,6 @@ public class ExpDatosGeneralesAction extends MasterAction
 			HttpServletResponse response) throws SIGAException {
 		
 		try{
-		
 			ExpDatosGeneralesForm form = (ExpDatosGeneralesForm)formulario;
 			ExpTipoExpedienteAdm tipoAdm = new ExpTipoExpedienteAdm(this.getUserBean(request));
 			HttpSession ses = request.getSession();		
@@ -414,13 +413,15 @@ public class ExpDatosGeneralesAction extends MasterAction
 	protected String modificar(ActionMapping mapping, MasterForm formulario,
 			HttpServletRequest request, HttpServletResponse response)
 			throws SIGAException {
-		
-		try {
+		// Recuperamos los datos anteriores de la sesión		
+		String forward = "";
+	    HttpSession ses=request.getSession();
+	    UsrBean userBean = ((UsrBean)ses.getAttribute(("USRBEAN")));        
+	    HashMap datosExpediente = (HashMap)ses.getAttribute("DATABACKUP");
+			UserTransaction tx = userBean.getTransaction();
+			try {
 	    
-		    // Recuperamos los datos anteriores de la sesión		
-		    HttpSession ses=request.getSession();
-		    UsrBean userBean = ((UsrBean)ses.getAttribute(("USRBEAN")));        
-		    HashMap datosExpediente = (HashMap)ses.getAttribute("DATABACKUP");	
+		    	
 		    ExpExpedienteBean expBean=(ExpExpedienteBean)datosExpediente.get("datosParticulares");
 		    Integer idEstadoOld=expBean.getIdEstado();
 		    Integer idFaseOld=expBean.getIdFase();
@@ -533,9 +534,9 @@ public class ExpDatosGeneralesAction extends MasterAction
 	    			null:(ExpEstadosBean)vEstadoNew.elementAt(0);
 	    	
 	    	//Iniciamos la transacción
-	        UserTransaction tx = userBean.getTransaction();
 	        
-	        try {
+	        
+	        
 		        tx.begin();   
 	    	    	
 		        //Si cambia el estado, vamos a necesitar el anterior bean de estado
@@ -581,23 +582,24 @@ public class ExpDatosGeneralesAction extends MasterAction
 		            		hEjSancion.put("idInstitucion",userBean.getLocation());
 		            		hEjSancion.put("idPersona",form.getIdPersona());
 		            		request.getSession().setAttribute("ejecucionSancion",hEjSancion);
-		            		tx.commit();
-		            		return "ejecucionSancion";
+		            		forward = "ejecucionSancion"; 
+		            		
 		            	}
 		            }
-		        	tx.commit();
+		        	
 		        }
-		        
+		        tx.commit();
+		        if(forward.equals(""))
+					forward = exitoRefresco("messages.updated.success",request);
 		    }catch (Exception e) {
 		    	throwExcp("messages.general.error",new String[] {"modulo.expediente"},e,tx); 
-		        return exito("messages.updated.error",request);
+		    	forward = exito("messages.updated.error",request); 
 		    }
-		}catch (Exception e) {
-	    	throwExcp("messages.general.error",new String[] {"modulo.expediente"},e,null); 
-	        return exito("messages.updated.error",request);
-	    }
 		
-		return exitoRefresco("messages.updated.success",request);
+		
+		
+		return forward;
+		
 		
 	}
 	

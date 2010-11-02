@@ -25,7 +25,9 @@ public class ScsCabeceraGuardiasBean extends MasterBean{
 	public String	validado;
 	public Long letradoSustituido;
 	public String	fechaSustitucion;
-	public String  comenSustitucion;	
+	public String  comenSustitucion;
+	public String  fechaAlta;
+	private Integer posicion; 
 	
 	/* Nombre de Tabla */
 	
@@ -47,7 +49,9 @@ public class ScsCabeceraGuardiasBean extends MasterBean{
 	static public final String	C_VALIDADO = 				"VALIDADO";
 	static public final String 	C_LETRADOSUSTITUIDO =		"LETRADOSUSTITUIDO";
 	static public final String  C_FECHASUSTITUCION = 		"FECHASUSTITUCION";
-	static public final String  C_COMENSUSTITUCION = 		"COMENSUSTITUCION";		
+	static public final String  C_COMENSUSTITUCION = 		"COMENSUSTITUCION";
+	static public final String  C_FECHAALTA = 		"FECHAALTA";
+	static public final String  C_POSICION = 		"POSICION";
 	
 	public String getComenSustitucion() {
 		return comenSustitucion;
@@ -173,5 +177,18 @@ public class ScsCabeceraGuardiasBean extends MasterBean{
 	public void setSustituto(String sustituto) {
 		this.sustituto = sustituto;
 	}
+	public String getFechaAlta() {
+		return fechaAlta;
+	}
+	public void setFechaAlta(String fechaAlta) {
+		this.fechaAlta = fechaAlta;
+	}
+	public Integer getPosicion() {
+		return posicion;
+	}
+	public void setPosicion(Integer posicion) {
+		this.posicion = posicion;
+	}
+	
 	
 }

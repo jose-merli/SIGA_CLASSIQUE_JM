@@ -38,7 +38,8 @@ public class ScsDesignaBean extends MasterBean {
 	private Integer  idPretension; 
 	private String  sufijo;
 	private String  fechaRecepcionColegio; 
-	private String  fechaOficioJuzgado; 
+	private String  fechaOficioJuzgado;
+	private String  fechaAlta;
 	
 	// Nombre de Tabla
 	static public String T_NOMBRETABLA = "SCS_DESIGNA";
@@ -71,6 +72,7 @@ public class ScsDesignaBean extends MasterBean {
 	static public final String	C_SUFIJO		        =	"SUFIJO";
 	static public final String	C_FECHARECEPCIONCOLEGIO = 	"FECHARECEPCIONCOLEGIO";
 	static public final String	C_FECHAOFICIOJUZGADO 	= 	"FECHAOFICIOJUZGADO";
+	static public final String	C_FECHAALTA 	= 	"FECHAALTA";
 	
 	
 
@@ -400,6 +402,12 @@ public void setIdTipoDesignaColegio(Integer idTipoDesignaColegio) {
 	}
 	public void setFechaOficioJuzgado(String fechaOficioJuzgado) {
 		this.fechaOficioJuzgado = fechaOficioJuzgado;
+	}
+	public String getFechaAlta() {
+		return fechaAlta;
+	}
+	public void setFechaAlta(String fechaAlta) {
+		this.fechaAlta = fechaAlta;
 	}
 	
 }

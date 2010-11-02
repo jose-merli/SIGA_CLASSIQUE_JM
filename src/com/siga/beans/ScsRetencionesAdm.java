@@ -178,6 +178,44 @@ public class ScsRetencionesAdm extends MasterBeanAdministrador {
 		return nuevoId;
 	}
 	
+	 public List<ScsRetencionesBean> getRetenciones(String where,String idLenguaje)throws ClsExceptions{
+			StringBuffer sql = new StringBuffer();
+			sql.append(" SELECT IDRETENCION,  ");
+			sql.append("  F_SIGA_GETRECURSO(DESCRIPCION, ");
+			sql.append(idLenguaje);
+			sql.append(") DESCRIPCION ");
+			sql.append(" , LETRANIFSOCIEDAD, RETENCION, FECHAMODIFICACION, USUMODIFICACION   FROM SCS_MAESTRORETENCIONES "); 
+			if(where!=null)
+				sql.append(where);
+			
+
+			sql.append(" ORDER BY DESCRIPCION ");
+			
+			List<ScsRetencionesBean> alRetenciones = null;
+			try {
+				RowsContainer rc = new RowsContainer(); 
+													
+	            if (rc.find(sql.toString())) {
+	            	alRetenciones = new ArrayList<ScsRetencionesBean>();
+	            	ScsRetencionesBean retencionBean = null;
+      	
+	            	
+	    			for (int i = 0; i < rc.size(); i++){
+	            		Row fila = (Row) rc.get(i);
+	            		Hashtable<String, Object> htFila=fila.getRow();
+	            		retencionBean = (ScsRetencionesBean) this.hashTableToBean(htFila);
+	            		alRetenciones.add(retencionBean);
+	            	}
+	            } 
+	       } catch (Exception e) {
+	       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+	       }
+	       return alRetenciones;
+			
+		} 
+	 
+	 
+	
 	
 	/**
 	 * Prepara los datos, para posteriormente insertarlos en la base de datos. La preparación consiste en calcular el

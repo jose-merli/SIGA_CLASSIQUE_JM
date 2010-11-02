@@ -77,6 +77,8 @@ public class ScsGuardiasTurnoBean extends MasterBean
 	private Integer		idGuardiaSustitucion;
 	private Integer		idTurnoSustitucion;
 	private String		esViolenciaGenero;
+	private String seleccionTiposDia;
+	private String descripcionTipoDiasGuardia;
 	
 	
 	
@@ -155,6 +157,18 @@ public class ScsGuardiasTurnoBean extends MasterBean
 	}
 	public void setEsViolenciaGenero(String valor) {
 		this.esViolenciaGenero = valor;
+	}
+	public String getSeleccionTiposDia() {
+		return seleccionTiposDia;
+	}
+	public void setSeleccionTiposDia(String seleccionTiposDia) {
+		this.seleccionTiposDia = seleccionTiposDia;
+	}
+	public String getDescripcionTipoDiasGuardia() {
+		return descripcionTipoDiasGuardia;
+	}
+	public void setDescripcionTipoDiasGuardia(String descripcionTipoDiasGuardia) {
+		this.descripcionTipoDiasGuardia = descripcionTipoDiasGuardia;
 	}
 	
 }

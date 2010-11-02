@@ -1,5 +1,9 @@
 package com.siga.beans;
 
+import com.atos.utils.GstDate;
+import com.siga.gratuita.form.InscripcionTGForm;
+import com.siga.tlds.FilaExtElement;
+
 /**
  * Implementa las operaciones sobre el bean de la tabla SCS_INSCRIPCIONTURNO
  * 
@@ -23,7 +27,15 @@ public class ScsInscripcionTurnoBean extends MasterBean{
 	private String  observacionesSolicitud;
 	private String  observacionesValidacion;
 	private String  observacionesBaja;
+	private String	fechaDenegacion;
+	private String  observacionesDenegacion;
+	InscripcionTGForm inscripcion;
 	
+	ScsTurnoBean turno;
+	CenPersonaBean persona;
+	String estado = null;
+	private String	fechaValorAlta;
+	private String	fechaValorBaja;
 	/* Nombre de Tabla*/
 	
 	static public String T_NOMBRETABLA = "SCS_INSCRIPCIONTURNO";
@@ -41,6 +53,8 @@ public class ScsInscripcionTurnoBean extends MasterBean{
 	static public final String 	C_OBSERVACIONESSOLICITUD = 	"OBSERVACIONESSOLICITUD";
 	static public final String 	C_OBSERVACIONESVALIDACION = "OBSERVACIONESVALIDACION";
 	static public final String 	C_OBSERVACIONESBAJA = 		"OBSERVACIONESBAJA";
+	static public final String 	C_OBSERVACIONESDENEGACION = "OBSERVACIONESDENEGACION";
+	static public final String 	C_FECHADENEGACION	=	"FECHADENEGACION";
 	
 	
 	
@@ -179,6 +193,89 @@ public class ScsInscripcionTurnoBean extends MasterBean{
 	 * 
 	 * @return Observaciones de baja del turno
 	 */
-	public String getObservacionesBaja		()	{ return this.observacionesBaja;}	
+	public String getObservacionesBaja		()	{ return this.observacionesBaja;}
+	public ScsTurnoBean getTurno() {
+		return turno;
+	}
+	public void setTurno(ScsTurnoBean turno) {
+		this.turno = turno;
+	}
+	public CenPersonaBean getPersona() {
+		return persona;
+	}
+	public void setPersona(CenPersonaBean persona) {
+		this.persona = persona;
+	}
+	
+	public InscripcionTGForm getInscripcion() {
+		inscripcion = new InscripcionTGForm();
+		inscripcion.setIdTurno(idTurno.toString());
+		inscripcion.setIdPersona(idPersona.toString());
+		inscripcion.setIdInstitucion(idInstitucion.toString());
+		StringBuffer nombre = new StringBuffer();
+		nombre.append(persona.getNombre());
+		nombre.append(" ");
+		nombre.append(persona.getApellido1());
+		if(persona.getApellido2()!=null){
+			nombre.append(" ");
+			nombre.append(persona.getApellido2());
+		}
+		inscripcion.setColegiadoNombre(nombre.toString());
+		inscripcion.setColegiadoNumero(persona.getColegiado().getNColegiado());
+		inscripcion.setObservacionesSolicitud(observacionesSolicitud);
+		try {
+			inscripcion.setFechaSolicitud(GstDate.getFormatedDateShort("", fechaSolicitud));
+			inscripcion.setFechaValidacion(GstDate.getFormatedDateShort("", fechaValidacion));
+			inscripcion.setFechaSolicitudBaja(GstDate.getFormatedDateShort("", fechaSolicitudBaja));
+			inscripcion.setFechaDenegacion(GstDate.getFormatedDateShort("", fechaDenegacion));
+			inscripcion.setFechaValorAlta(fechaValorAlta);
+			inscripcion.setFechaValorBaja(fechaValorBaja);
+			
+			inscripcion.setFechaBaja(GstDate.getFormatedDateShort("", fechaBaja));	
+		} catch (Exception e) {
+		}
+		inscripcion.setObservacionesValidacion(observacionesValidacion);
+		inscripcion.setObservacionesDenegacion(observacionesDenegacion);
+		inscripcion.setObservacionesBaja(observacionesBaja);
+		inscripcion.setEstado(estado);
+		return inscripcion;
+		
+		
+	}
+	public void setInscripcion(InscripcionTGForm inscripcion) {
+		this.inscripcion = inscripcion;
+		
+		
+	}
+	public String getEstado() {
+		return estado;
+	}
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+	public String getFechaDenegacion() {
+		return fechaDenegacion;
+	}
+	public void setFechaDenegacion(String fechaDenegacion) {
+		this.fechaDenegacion = fechaDenegacion;
+	}
+	public String getObservacionesDenegacion() {
+		return observacionesDenegacion;
+	}
+	public void setObservacionesDenegacion(String observacionesDenegacion) {
+		this.observacionesDenegacion = observacionesDenegacion;
+	}
+	public String getFechaValorAlta() {
+		return fechaValorAlta;
+	}
+	public void setFechaValorAlta(String fechaValorAlta) {
+		this.fechaValorAlta = fechaValorAlta;
+	}
+	public String getFechaValorBaja() {
+		return fechaValorBaja;
+	}
+	public void setFechaValorBaja(String fechaValorBaja) {
+		this.fechaValorBaja = fechaValorBaja;
+	}	
 	
 }

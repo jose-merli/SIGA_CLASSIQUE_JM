@@ -63,7 +63,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 							ScsDesignaBean.C_CODIGO, 				ScsDesignaBean.C_NUMPROCEDIMIENTO,
 							ScsDesignaBean.C_IDPROCEDIMIENTO,       ScsDesignaBean.C_FECHAESTADO,
 							ScsDesignaBean.C_SUFIJO,				ScsDesignaBean.C_FECHAOFICIOJUZGADO,
-							ScsDesignaBean.C_FECHARECEPCIONCOLEGIO};
+							ScsDesignaBean.C_FECHARECEPCIONCOLEGIO,
+							ScsDesignaBean.C_FECHAALTA};
 		return campos;
 	}
 	/** Funcion getClavesBean ()
@@ -114,6 +115,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			bean.setIdPretension(UtilidadesHash.getInteger(hash,ScsDesignaBean.C_IDPRETENSION));
 			bean.setFechaRecepcionColegio(UtilidadesHash.getString(hash,ScsDesignaBean.C_FECHARECEPCIONCOLEGIO));
 			bean.setFechaOficioJuzgado(UtilidadesHash.getString(hash,ScsDesignaBean.C_FECHAOFICIOJUZGADO));
+			bean.setFechaAlta(UtilidadesHash.getString(hash,ScsDesignaBean.C_FECHAALTA));
 		}
 		catch(Exception e){
 			bean = null;
@@ -215,6 +217,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, ScsDesignaBean.C_IDPRETENSION,b.getIdPretension());
 			UtilidadesHash.set(hash, ScsDesignaBean.C_FECHAOFICIOJUZGADO,b.getFechaOficioJuzgado());
 			UtilidadesHash.set(hash, ScsDesignaBean.C_FECHARECEPCIONCOLEGIO,b.getFechaRecepcionColegio());
+			UtilidadesHash.set(hash, ScsDesignaBean.C_FECHAALTA,b.getFechaAlta());
 			return hash;
 		}
 		catch (Exception e){
@@ -2587,6 +2590,18 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		}		
 		
 	  }
+	
+
+	@Override
+	public boolean update(Hashtable hashDataNew, Hashtable hashDataOld)
+			throws ClsExceptions {
+		// TODO Auto-generated method stub
+		return super.update(hashDataNew, hashDataOld);
+	}
+
+	
+
+	  
 	  
 	  
 	  	public Vector getejgsdesigna(String idturno, String numero, String anio, String idinstitucion) throws ClsExceptions{

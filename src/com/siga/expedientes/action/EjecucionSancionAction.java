@@ -46,8 +46,9 @@ public class EjecucionSancionAction extends MasterAction {
 		UserTransaction tx = null;
 		
 		try {
+			
 			UsrBean userBean = (UsrBean)request.getSession().getAttribute(("USRBEAN"));
-			tx = userBean.getTransaction();		
+			tx = userBean.getTransactionPesada();		
 			EjecucionSancionForm form =  (EjecucionSancionForm)formulario;
 			
 			Hashtable hEjSancion = (Hashtable)request.getSession().getAttribute("ejecucionSancion");
@@ -59,7 +60,7 @@ public class EjecucionSancionAction extends MasterAction {
 			if (form.isBajaTurno()){
 				ScsInscripcionTurnoAdm tAdm = new ScsInscripcionTurnoAdm(this.getUserBean(request));
 				//Obligo a que no use internamente una transaccion.
-				tAdm.insertarBajaenTurno(false, userBean,idPersona,idInstitucion,form.getMotivo());
+				 tAdm.insertarBajaEnTurnos(idPersona,idInstitucion,form.getMotivo());
 			}
 			if (form.isBajaColegial()){
 				CenDatosColegialesEstadoAdm c1Adm = new CenDatosColegialesEstadoAdm(this.getUserBean(request));

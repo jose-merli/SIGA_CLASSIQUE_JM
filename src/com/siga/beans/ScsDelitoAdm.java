@@ -162,7 +162,7 @@ public class ScsDelitoAdm extends MasterBeanAdministrador {
 		}
 		return nuevoId;
 	}
-	public List<ScsDelitoBean> getComisarias(VolantesExpressVo volanteExpres)throws ClsExceptions{
+	public List<ScsDelitoBean> getDelitos(VolantesExpressVo volanteExpres)throws ClsExceptions{
 
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
 		int contador = 0;

@@ -503,7 +503,7 @@ public class DatosColegiacionAction extends MasterAction {
 			
 			
 			//Control de errores:
-			int error = admCliente.tieneTrabajosSJCSPendientes(new Long((String)camposOcultos.get(0)), new Integer((String)camposOcultos.get(1)));
+			int error = admCliente.tieneTrabajosSJCSPendientes(new Long((String)camposOcultos.get(0)), new Integer((String)camposOcultos.get(1)),null,null);
 			if (error == 1)
 				return exito("error.message.guardiasEstadoColegial", request);
 			else if (error == 2)

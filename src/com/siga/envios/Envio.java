@@ -193,7 +193,7 @@ public class Envio
             EnvDestinatariosAdm destAdm = new EnvDestinatariosAdm(this.usrBean);
             EnvDestinatariosBean destBean = null;
 	        boolean crearDestinatario;
-	        //FIXME  AQUI SE LLAMA 2
+	        //
             if (!destAdm.existeDestinatario(String.valueOf(enviosBean.getIdEnvio()),
                     						String.valueOf(enviosBean.getIdInstitucion()),
                     						idPersona)){                
@@ -297,7 +297,7 @@ public class Envio
     public void addDocumentosDestinatarioDireccionEspecifica(String idPersona, String idDireccion, Vector documentos) throws SIGAException{
         
         try{
-        	//FIXME  AQUI SE LLAMA 3
+        	//
             EnvDestinatariosAdm destAdm = new EnvDestinatariosAdm(this.usrBean);
             EnvDestinatariosBean destBean = null;
 	        boolean crearDestinatario;
@@ -786,7 +786,7 @@ public class Envio
         if (crearDestinatario){
 	        //***** Insertamos Destinatario *******
 	        
-        	//FIXME  AQUI SE LLAMA 4
+        	//
 	        EnvDestinatariosAdm destAdm = new EnvDestinatariosAdm(this.usrBean);
 	        int tipo = enviosBean.getIdTipoEnvios().intValue();
 	        
@@ -1339,7 +1339,7 @@ public class Envio
         try {
 	        if (crearDestinatario ||crearCertificado){
 		        //***** Insertamos Destinatario *******
-	        	//FIXME  AQUI SE LLAMA 5
+	        	//
 		        EnvDestinatariosAdm destAdm = new EnvDestinatariosAdm(this.usrBean);
 		        //EnvEnviosAdm enviosAdm = new EnvEnviosAdm(idUsuario);
 		        int tipo = enviosBean.getIdTipoEnvios().intValue();

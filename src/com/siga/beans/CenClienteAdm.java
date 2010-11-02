@@ -3951,34 +3951,15 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	 * -2: Error, tiene designas pendientes
 	 * -3: Excepcion
 	 */
-	public int tieneTrabajosSJCSPendientes(Long idPersona, Integer idInstitucion)
+	public int tieneTrabajosSJCSPendientes(Long idPersona, Integer idInstitucion,String fechaDesde,String fechaHasta)
 	{
-		return tieneTrabajosSJCSPendientes(idPersona, idInstitucion, null);
+		return tieneTrabajosSJCSPendientes(idPersona, idInstitucion, null,fechaDesde,fechaHasta);
 	}
 	
-	public int tieneTrabajosSJCSPendientes(Long idPersona, Integer idInstitucion, Integer idTurno) {
-		int error = 0;
-	
+	public int tieneTrabajosSJCSPendientes(Long idPersona, Integer idInstitucion, Integer idTurno,String fechaDesde,String fechaHasta) {
 		//1.- Chequeo que no tiene guardias pendientes de realizar:
-		ScsGuardiasColegiadoAdm admGuardiasColegiado = new ScsGuardiasColegiadoAdm(this.usrbean); 
-		StringBuffer sql = new StringBuffer();
-		sql.append("WHERE "+ScsGuardiasColegiadoBean.C_IDINSTITUCION+"="+idInstitucion);
-		sql.append(" AND "+ScsGuardiasColegiadoBean.C_IDPERSONA+"="+idPersona);
-		sql.append(" AND "+ScsGuardiasColegiadoBean.C_FECHAFIN+" >= SYSDATE ");
+		int error = tieneGuardiasSJCSPendientes(idPersona, idInstitucion, idTurno, null, fechaDesde, fechaHasta);
 		
-		if (idTurno!=null)
-		{
-			sql.append(" AND " + ScsGuardiasColegiadoBean.C_IDTURNO+"="+idTurno);
-		}
-		
-		try {
-			Vector v = admGuardiasColegiado.select(sql.toString());
-			if (v!=null && !v.isEmpty())
-				error = 1;
-		} catch (Exception e) {
-			error = 3;
-		}
-
 		//En caso de no tener error en la primera comprobacion:
 		if (error == 0) {
 			//2.- Chequeo que no tiene designas pendientes de realizar:
@@ -3999,6 +3980,18 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			sql2.append(" AND des."+ScsDesignaBean.C_IDTURNO+" = deslet."+ScsDesignasLetradoBean.C_IDTURNO);
 			sql2.append(" AND des."+ScsDesignaBean.C_ANIO+" = deslet."+ScsDesignasLetradoBean.C_ANIO);
 			sql2.append(" AND des."+ScsDesignaBean.C_NUMERO+" = deslet."+ScsDesignasLetradoBean.C_NUMERO);
+			
+			if(fechaDesde!=null && fechaHasta!=null){
+				sql2.append(" AND TRUNC(des."+ScsDesignaBean.C_FECHAENTRADA+") BETWEEN '"+fechaDesde+"' AND '"+fechaHasta+"' ");
+			}else if(fechaHasta!=null ){
+				if(fechaHasta.equalsIgnoreCase("sysdate"))
+					sql2.append(" AND des."+ScsDesignaBean.C_FECHAENTRADA+" > sysdate ");
+				else
+					sql2.append(" AND TRUNC(des."+ScsDesignaBean.C_FECHAENTRADA+") > '"+fechaHasta+"' ");
+					
+			} 
+			
+			
 			try {
 				Vector v2 = admDesignas.selectGenerico(sql2.toString());
 				if (v2!=null && !v2.isEmpty() && !((String)((Hashtable)v2.get(0)).get("TOTAL")).equals("0"))
@@ -4018,7 +4011,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	 * 1: Error, tiene guardias pendientes
 	 * -1: Excepcion
 	 */
-	public int tieneGuardiasSJCSPendientes(Long idPersona, Integer idInstitucion, Integer idTurno, Integer idGuardia) {
+	public int tieneGuardiasSJCSPendientes(Long idPersona, Integer idInstitucion, Integer idTurno, Integer idGuardia,String fechaDesde,String fechaHasta) {
 		int error = 0;
 	
 		//1.- Chequeo que no tiene guardias pendientes de realizar:
@@ -4026,8 +4019,15 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 		StringBuffer sql = new StringBuffer();
 		sql.append("WHERE "+ScsGuardiasColegiadoBean.C_IDINSTITUCION+"="+idInstitucion);
 		sql.append(" AND "+ScsGuardiasColegiadoBean.C_IDPERSONA+"="+idPersona);
-		sql.append(" AND "+ScsGuardiasColegiadoBean.C_FECHAFIN+" >= SYSDATE ");
-		sql.append(" AND "+ScsGuardiasColegiadoBean.C_IDGUARDIA+"="+idGuardia);
+		if(fechaDesde!=null && fechaHasta!=null){
+			sql.append(" AND TRUNC("+ScsGuardiasColegiadoBean.C_FECHAFIN+") BETWEEN '"+fechaDesde+"' AND '"+fechaHasta+"'  ");
+		}else if(fechaHasta!=null && !fechaHasta.equalsIgnoreCase("sysdate")){
+			sql.append(" AND TRUNC("+ScsGuardiasColegiadoBean.C_FECHAFIN+") > '"+fechaHasta+"' ");
+		}else{
+			sql.append(" AND "+ScsGuardiasColegiadoBean.C_FECHAFIN+" > SYSDATE ");
+		}
+		if(idGuardia!=null)
+			sql.append(" AND "+ScsGuardiasColegiadoBean.C_IDGUARDIA+"="+idGuardia);
 		
 		if (idTurno!=null)
 		{

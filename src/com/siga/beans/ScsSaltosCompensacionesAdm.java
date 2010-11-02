@@ -9,7 +9,6 @@ import java.util.Vector;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
@@ -481,183 +480,6 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 	}
 	
 	
-	/**
-	 * 
-	 * @param idInstitucion
-	 * @param idTurno
-	 * @param idPersona
-	 * @param idPersonaSeleccionada
-	 * @return
-	 * @throws ClsExceptions
-	 */
-	public boolean aplicarSaltosYCompensaciones (Integer idInstitucion, Integer idTurno, Integer idPersona, Integer idPersonaSeleccionada) throws ClsExceptions 
-	{
-		// 1. Comprobamos si existe salto compensacion
-		Hashtable hashSalto = new Hashtable();
-		hashSalto.put(ScsSaltosCompensacionesBean.C_IDINSTITUCION, idInstitucion);
-		hashSalto.put(ScsSaltosCompensacionesBean.C_IDTURNO, idTurno);
-		hashSalto.put(ScsSaltosCompensacionesBean.C_IDPERSONA, idPersona);
-		hashSalto.put(ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO,"");
-		hashSalto.put(ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION,"S");
-
-		boolean haySalto = false;
-		ScsSaltosCompensacionesBean saltoBean = new ScsSaltosCompensacionesBean();
-		try {
-			saltoBean = (ScsSaltosCompensacionesBean)((Vector)this.select(hashSalto)).get(0);
-			haySalto = true;
-		}
-		catch (Exception e) {
-		}
-	
-		// 2. OBTENEMOS EL PRIMER LETRADO DE LA COLA APLICANDO SALTOS Y COMPENSACIONES
-		try {
-	 		//Parametros de entrada del PL
-	        Object[] param_in = new Object[3];
-	 		String resultadoPl[] = new String[3];
-	        String contador,consultaTemp ="";
-	        Hashtable temporalBean = new Hashtable(), temporalBean2 = new Hashtable();		        
-	        GenClientesTemporalAdm temporalAdm = new GenClientesTemporalAdm(this.usrbean);	        
-	        ScsSaltosCompensacionesAdm saltosAdm = new ScsSaltosCompensacionesAdm(this.usrbean);
-	        contador = EjecucionPLs.ejecutarPL_OrdenaColegiadosTurno(idInstitucion, idTurno, 1) [0];
-	        
-	        // Consulta en la tabla temporal la posicion para el letrado
-	        consultaTemp =	" select cli.posicion posicion,cli.idpersona  idpersona"+
-							" from gen_clientestemporal cli"+
-							" where cli.idinstitucion = " + idInstitucion + 
-							" and cli.contador        = " + contador +
-							" and cli.salto           <> 'S'" +
-							" and cli.posicion        = " +		// el primero de la posicion para el turno
-							" (select min(cli2.posicion)" +
-							" from gen_clientestemporal cli2" +
-							" where cli2.idinstitucion 	= " + idInstitucion +
-							" and cli2.contador			= " + contador+ ")";		        
-	        
-	        Vector resultado = ((Vector)temporalAdm.ejecutaSelect(consultaTemp));
-	        
-	        if (!resultado.isEmpty()){
-	        	temporalBean = (Hashtable)resultado.get(0);
-	        	resultado.clear();
-
-	        	// Se identifica el letrado seleccionado anteriormente
-		        consultaTemp = " select cli.salto " +
-							   " from gen_clientestemporal cli " +
-							   " where cli.idinstitucion = " + idInstitucion +
-							   " and cli.contador = " + contador +
-							   " and cli.idpersona = " + idPersonaSeleccionada +
-							   " and cli.salto <> 'S' " +
-							   " and cli.posicion = 1 " + 
-							   " order by cli.posicion";
-		        resultado = (Vector)temporalAdm.ejecutaSelect(consultaTemp);
-	        } 
-	        else resultado.clear();
-	        
-	        // Si se ha seleccionado el letrado que no correspondía, introduzco salto al letrado seleccionado
-	        if (resultado.isEmpty()) {
-	        	
-	        	Hashtable hashNew = new Hashtable();
-	        	// Se rellena la hash con la que se va a insertar
-	        	hashNew.put("IDINSTITUCION",idInstitucion);
-	        	hashNew.put("IDTURNO",idTurno);
-	        	hashNew.put("IDSALTOSTURNO",saltosAdm.getNuevoIdSaltosTurno(idInstitucion.toString(), idTurno.toString()));
-	        	hashNew.put("IDPERSONA",idPersona);
-	        	hashNew.put("SALTOOCOMPENSACION","S");
-	        	hashNew.put("FECHA","sysdate");		        	
-	        	hashNew.put("IDGUARDIA","null");
-	        	hashNew.put("MOTIVOS","Designado manualmente");
-	        	hashNew.put("FECHACUMPLIMIENTO","");
-	        	hashNew.put("USUMODIFICACION",this.usuModificacion);
-	        	hashNew.put("FECHAMODIFICACION","sysdate");
-	        	saltosAdm.insert(hashNew);
-	        	
-	        } 
-	        // 4. Si el letrado selecciona es el primero de la cola
-	        else {
-	        	temporalBean2 = (Hashtable)((Vector)temporalAdm.ejecutaSelect(consultaTemp)).get(0);
-	
-	        	// 4.1 Si letrado con compensación pendiente -> se borra la compensacion
-	        	if (temporalBean2.get("SALTO").toString().equalsIgnoreCase("C")) {
-	        		
-	        		Hashtable hashNew = new Hashtable(), hashOld = new Hashtable();
-	        		
-	        		consultaTemp = " select * from scs_saltoscompensaciones " +
-								   " where idinstitucion = " + idInstitucion +
-								   " and idpersona = " + temporalBean.get("IDPERSONA") +
-								   " and fechacumplimiento is NULL " +
-								   " and saltoocompensacion = 'C' " +
-								   " and rownum < 2";
-	        		hashNew = (Hashtable)(((Vector)saltosAdm.selectGenerico(consultaTemp)).get(0));
-	        		hashOld = (Hashtable)hashNew.clone();
-	        		hashNew.put("FECHACUMPLIMIENTO","sysdate");
-	        		saltosAdm.update(hashNew, hashOld);
-	        	}
-	
-	        	// 4.2 Si letrado no tiene compensacion pendiente -> se pone el ultimo de la cola
-	        	else {
-	        		// Se actualiza el último campo seleccionado
-	        		ScsTurnoAdm turnoAdm = new ScsTurnoAdm(this.usrbean);
-	        		GenClientesTemporalAdm clientesAdm = new GenClientesTemporalAdm(this.usrbean);
-	        		ScsTurnoBean turnoBean = new ScsTurnoBean();
-	        		Vector clientes = new Vector();
-	        		Hashtable hashNew = new Hashtable(), hashOld = new Hashtable();
-	        		hashNew.put("IDINSTITUCION",idInstitucion);
-	        		hashNew.put("IDTURNO",idTurno);		        		
-	        		turnoBean = (ScsTurnoBean)((Vector)turnoAdm.selectByPK(hashNew)).get(0);
-	        		hashNew = turnoBean.getOriginalHash();
-	        		// hashOld = turnoBean.getOriginalHash();
-	        		hashOld = (Hashtable)hashNew.clone();
-	        		hashNew.put("IDPERSONA_ULTIMO",temporalBean.get("IDPERSONA"));
-	        		
-	        		// Hay que eliminar los saltos anteriores al seleccionado, por ello se realiza la siguiente consulta
-	        		//consultaTemp = " select idcliente from gen_clientestemporal cli " +
-	        		consultaTemp = " select idpersona from gen_clientestemporal cli " +
-								   " where cli.idinstitucion = " + idInstitucion + 
-								   " and cli.contador = " + contador +
-								   " and cli.posicion = 1 " +
-								   " and cli.salto = 'S'" + 
-								   " order by cli.posicion";		        		
-	        		clientes = (Vector)clientesAdm.ejecutaSelect(consultaTemp);
-	        		
-	        		int i = 0;
-	        		Vector vectorClientes = new Vector();
-	        		while (i<clientes.size()) {
-	        			consultaTemp = " select * from scs_saltoscompensaciones " +
-					    " where idinstitucion = " + idInstitucion +
-					    " and idpersona = " + ((Hashtable)clientes.get(i)).get("IDPERSONA") +
-					    " and fechacumplimiento is NULL " +
-					    " and saltoocompensacion = 'S' " +
-					    " and rownum < 2";		        			
-	        			vectorClientes.add((Hashtable)(((Vector)saltosAdm.selectGenerico(consultaTemp)).get(0)));
-	        			i++;
-	        		}
-	
-	        		turnoAdm.update(hashNew, hashOld);		        		
-	        		
-	        		//Se recorren todos los clientes
-	        		i = 0;
-	        		while (i< vectorClientes.size()) {		        			
-			     		hashNew = (Hashtable)vectorClientes.get(i);
-			     		hashOld = (Hashtable)hashNew.clone();
-			     		hashNew.put("FECHACUMPLIMIENTO","sysdate");				     		
-			     		saltosAdm.update(hashNew, hashOld);				     		
-			     		i++;
-	        		}
-	        	}
-	        }
-	        
-			// Ahora se borra de la tabla temporal
-	        if (!contador.equals("0")) {
-	        	Hashtable miHash = new Hashtable();
-	         	miHash.put("IDINSTITUCION", idInstitucion);
-	         	miHash.put("CONTADOR",contador);	             	
-	        	temporalAdm.delete(miHash);		        	
-	        }     
-		} 
-		catch(Exception e){
-			throw new ClsExceptions(e.getMessage());
-		}
-	
-		return true;
-	}
 	
 	/**
 	 * A la hora de borrar un calendario hay 3 pasos posteriores:
@@ -860,7 +682,7 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 			sql.append(")");
 
 					
-			ClsMngBBDD.executeUpdate(sql.toString());
+			this.deleteSQL(sql.toString());
 			salida = true;
 		} catch (Exception e) {
 			salida = false;
@@ -905,7 +727,7 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 			sql.append(")");
 
 					
-			ClsMngBBDD.executeUpdate(sql.toString());
+			this.deleteSQL(sql.toString());
 			salida = true;
 		} catch (Exception e) {
 			salida = false;
@@ -948,7 +770,7 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 			sql.append(" and "+ScsSaltosCompensacionesBean.C_IDPERSONA+"="+idpersona);
 			sql.append(" and "+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+" IS NULL");
 					
-			ClsMngBBDD.executeUpdate(sql.toString());
+			this.updateSQL(sql.toString());
 			salida = true;
 		} catch (Exception e) {
 			salida = false;
@@ -1010,7 +832,7 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 				"    AND "+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+" IS NULL " +
 				"    AND rownum=1";
 		
-			ClsMngBBDD.executeUpdate(sql);
+			this.updateSQL(sql);
 
 		} catch (Exception e) {
 			throw new ClsExceptions(e,
@@ -1025,7 +847,7 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 		// voy a comprobar si existe un salto en base de datos
 		try {
 
-			String sql =  getQuerySaltosCompensacionesActivos(true,idInstitucion,idTurno,idGuardia);
+			String sql =  getQuerySaltosCompensacionesActivos(ClsConstants.SALTOS,idInstitucion,idTurno,idGuardia);
 	
 			rc = find(sql);
 			hmPersonasConSaltos = new HashMap<Long, List<LetradoGuardia>>();
@@ -1060,7 +882,7 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 		return hmPersonasConSaltos;
 	}
 
-	private String getQuerySaltosCompensacionesActivos(boolean isSalto,
+	private String getQuerySaltosCompensacionesActivos(String tipo,
 													   Integer idInstitucion,
 													   Integer idTurno,
 													   Integer idGuardia)
@@ -1068,31 +890,15 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 		StringBuffer sql = new StringBuffer();
 		
 		sql.append(" select * ");
-		sql.append("   from scs_saltoscompensaciones s, scs_inscripcionguardia g ");
+		sql.append("   from scs_saltoscompensaciones s ");
 		sql.append("  where s.idinstitucion = "+idInstitucion);
 		sql.append("    and s.idturno = "+idTurno);
 		sql.append("    and s.idguardia = "+idGuardia);
 		sql.append("    and s.saltoocompensacion = '");
-		if (isSalto)
-			sql.append(ClsConstants.SALTOS+"'");
-		else
-			sql.append(ClsConstants.COMPENSACIONES+"'");
-		sql.append("    and s.fechacumplimiento is null ");
-		sql.append("    and s.idinstitucion = g.idinstitucion ");
-		sql.append("    and s.idturno = g.idturno ");
-		sql.append("    and s.idguardia = g.idguardia ");
-		sql.append("    and s.idpersona = g.idpersona ");
-		sql.append("    and g.fechasuscripcion = ");
-		sql.append("        (select max(i.fechasuscripcion) ");
-		sql.append("           from scs_inscripcionguardia i ");
-		sql.append("          where i.idinstitucion = g.idinstitucion ");
-		sql.append("            and i.idturno = g.idturno ");
-		sql.append("            and i.idguardia = g.idguardia ");
-		sql.append("            and i.idpersona = g.idpersona ");
-		sql.append("         ) ");
-		sql.append("    and g.fechabaja is null ");
+		sql.append(tipo);
+		sql.append("'    and s.fechacumplimiento is null ");
 		sql.append("  order by s.fecha ");
-		
+
 		return sql.toString();
 	}
 	
@@ -1102,7 +908,7 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 	    List<LetradoGuardia> alLetradosCompensados = null;
 		try {
 			//obtiene las compesaciones de letrados que no estén de baja en la guardia
-		    String sql =  getQuerySaltosCompensacionesActivos(false,idInstitucion,idTurno,idGuardia);
+		    String sql =  getQuerySaltosCompensacionesActivos(ClsConstants.COMPENSACIONES,idInstitucion,idTurno,idGuardia);
 		    		
 		    		
 			ScsSaltosCompensacionesAdm adm = new ScsSaltosCompensacionesAdm(this.usrbean);
@@ -1127,6 +933,52 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 		}
 		
 		return alLetradosCompensados;
+	}
+	public Vector<LetradoGuardia> getLetradosSaltosCompensacionesTurno(String idInstitucion, String idTurno) throws ClsExceptions {
+		
+		String sql = "select p." + CenPersonaBean.C_IDPERSONA +
+				", p." + CenPersonaBean.C_NIFCIF +
+				", c." + CenColegiadoBean.C_NCOLEGIADO +
+				", p." + CenPersonaBean.C_NOMBRE +
+				", p." + CenPersonaBean.C_APELLIDOS1 +
+				", p." + CenPersonaBean.C_APELLIDOS2 +
+				", sc." + ScsSaltosCompensacionesBean.C_IDSALTOSTURNO +
+				", sc." + ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION + 
+				" from "+ScsSaltosCompensacionesBean.T_NOMBRETABLA+" sc, "+CenPersonaBean.T_NOMBRETABLA+" p, " + CenColegiadoBean.T_NOMBRETABLA + " c" +
+				" where sc."+ScsSaltosCompensacionesBean.C_IDPERSONA+" = p." + CenPersonaBean.C_IDPERSONA +
+				" and sc."+ScsSaltosCompensacionesBean.C_IDPERSONA+" = c." + CenColegiadoBean.C_IDPERSONA +
+				" and sc."+ScsSaltosCompensacionesBean.C_IDINSTITUCION + " = " + idInstitucion +
+				" and sc."+ScsSaltosCompensacionesBean.C_IDINSTITUCION + " = c." + CenColegiadoBean.C_IDINSTITUCION +
+				" and sc."+ScsSaltosCompensacionesBean.C_IDTURNO+" = " + idTurno +
+				" and sc."+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+" is null" +
+				" and sc." + ScsSaltosCompensacionesBean.C_IDGUARDIA + " is null" +
+				" order by sc."+ScsSaltosCompensacionesBean.C_FECHA;
+		Vector<LetradoGuardia> datosVector = null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+            if (rc.find(sql)) {
+            	datosVector = new Vector<LetradoGuardia>();
+    			for (int i = 0; i < rc.size(); i++){
+            		Row fila = (Row) rc.get(i);
+            		Hashtable<String, Object> htFila=fila.getRow();
+            		
+            		LetradoGuardia letradoGuardia = new LetradoGuardia();
+            		letradoGuardia.setSaltoCompensacion(UtilidadesHash.getString(htFila, ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION));
+            		letradoGuardia.setIdSaltoCompensacion(UtilidadesHash.getString(htFila, ScsSaltosCompensacionesBean.C_IDSALTOSTURNO));
+            		
+            		letradoGuardia.setIdPersona(UtilidadesHash.getLong(htFila, ScsInscripcionGuardiaBean.C_IDPERSONA));
+            		CenPersonaBean personaBean = new CenPersonaBean(
+            				letradoGuardia.getIdPersona(),(String)htFila.get(CenPersonaBean.C_NOMBRE),(String)htFila.get(CenPersonaBean.C_APELLIDOS1),
+            				(String)htFila.get(CenPersonaBean.C_APELLIDOS2),(String)htFila.get(CenColegiadoBean.C_NCOLEGIADO));
+            		letradoGuardia.setPersona(personaBean);
+            		datosVector.add(letradoGuardia);
+            	}
+            } 
+       } catch (Exception e) {
+    	   throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D.");
+       }
+		return datosVector;
+//		return find(sql);	
 	}
 	
 	

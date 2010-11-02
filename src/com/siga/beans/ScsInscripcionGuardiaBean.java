@@ -1,5 +1,9 @@
 package com.siga.beans;
 
+import com.atos.utils.GstDate;
+import com.siga.gratuita.form.InscripcionTGForm;
+
+
 /**
  * Implementa las operaciones sobre el bean de la tabla SCS_INSCRIPCIONGUARDIA
  * 
@@ -20,6 +24,16 @@ public class ScsInscripcionGuardiaBean extends MasterBean{
 	private String	fechaBaja;
 	private String  observacionesSuscripcion;
 	private String  observacionesBaja;
+	private String	fechaValidacion;
+	private String	fechaSolicitudBaja;
+	private String	observacionesValidacion;
+	private String	fechaDenegacion;
+	private String  observacionesDenegacion;
+	InscripcionTGForm inscripcion;
+	String estado= null;
+	private String	fechaValorAlta;
+	private String	fechaValorBaja;
+	
 	
 	/**
 	 *  Nombre de Tabla
@@ -40,7 +54,14 @@ public class ScsInscripcionGuardiaBean extends MasterBean{
 	static public final String 	C_FECHABAJA = 					"FECHABAJA";
 	static public final String 	C_OBSERVACIONESSUSCRIPCION = 	"OBSERVACIONESSUSCRIPCION";
 	static public final String 	C_OBSERVACIONESBAJA = 			"OBSERVACIONESBAJA";
+
+	static public final String 	C_FECHASOLICITUDBAJA = 			"FECHASOLICITUDBAJA";
+	static public final String 	C_FECHAVALIDACION = 			"FECHAVALIDACION";
+	static public final String 	C_OBSERVACIONESVALIDACION =		"OBSERVACIONESVALIDACION";
+	static public final String 	C_OBSERVACIONESDENEGACION = "OBSERVACIONESDENEGACION";
+	static public final String 	C_FECHADENEGACION	=	"FECHADENEGACION";
 	
+
 	
 	
 	/**
@@ -156,6 +177,118 @@ public class ScsInscripcionGuardiaBean extends MasterBean{
 	 * 
 	 * @return Observaciones de la baja de la guardia
 	 */
-	public String getObservacionesBaja			()	{ return this.observacionesBaja;}	
-	
+	public String getObservacionesBaja			()	{ return this.observacionesBaja;}
+	public String getFechaValidacion() {
+		return fechaValidacion;
+	}
+	public void setFechaValidacion(String fechaValidacion) {
+		this.fechaValidacion = fechaValidacion;
+	}
+	public String getFechaSolicitudBaja() {
+		return fechaSolicitudBaja;
+	}
+	public void setFechaSolicitudBaja(String fechaSolicitudBaja) {
+		this.fechaSolicitudBaja = fechaSolicitudBaja;
+	}
+	public String getObservacionesValidacion() {
+		return observacionesValidacion;
+	}
+	public void setObservacionesValidacion(String observacionesValidacion) {
+		this.observacionesValidacion = observacionesValidacion;
+	}
+	ScsTurnoBean turno;
+	ScsGuardiasTurnoBean guardia;
+	CenPersonaBean persona;
+
+
+
+
+	public ScsTurnoBean getTurno() {
+		return turno;
+	}
+	public void setTurno(ScsTurnoBean turno) {
+		this.turno = turno;
+	}
+	public ScsGuardiasTurnoBean getGuardia() {
+		return guardia;
+	}
+	public void setGuardia(ScsGuardiasTurnoBean guardia) {
+		this.guardia = guardia;
+	}
+	public CenPersonaBean getPersona() {
+		return persona;
+	}
+	public void setPersona(CenPersonaBean persona) {
+		this.persona = persona;
+	}
+	public InscripcionTGForm getInscripcion() {
+		InscripcionTGForm inscripcion = new InscripcionTGForm();
+		
+		inscripcion.setIdTurno(idTurno.toString());
+		inscripcion.setIdPersona(idPersona.toString());
+		inscripcion.setIdInstitucion(idInstitucion.toString());
+		inscripcion.setIdGuardia(idGuardia.toString());
+		StringBuffer nombre = new StringBuffer();
+		nombre.append(persona.getNombre());
+		nombre.append(" ");
+		nombre.append(persona.getApellido1());
+		if(persona.getApellido2()!=null){
+			nombre.append(" ");
+			nombre.append(persona.getApellido2());
+		}
+		if(turno!=null&&turno.getGuardias()!=null)
+			inscripcion.setTipoGuardias(turno.getGuardias().toString());
+		if(turno!=null&&turno.getValidarInscripciones()!=null)
+			inscripcion.setValidarInscripciones(turno.getValidarInscripciones());
+		inscripcion.setColegiadoNombre(nombre.toString());
+		inscripcion.setColegiadoNumero(persona.getColegiado().getNColegiado());
+		inscripcion.setObservacionesSolicitud(observacionesSuscripcion);
+		try {
+			inscripcion.setFechaSolicitud(GstDate.getFormatedDateShort("", fechaSuscripcion));
+			inscripcion.setFechaValidacion(GstDate.getFormatedDateShort("", fechaValidacion));
+			inscripcion.setFechaSolicitudBaja(GstDate.getFormatedDateShort("", fechaSolicitudBaja));
+			inscripcion.setFechaDenegacion(GstDate.getFormatedDateShort("", fechaDenegacion));
+			inscripcion.setFechaBaja(GstDate.getFormatedDateShort("", fechaBaja));
+			inscripcion.setFechaValorAlta(fechaValorAlta);
+			inscripcion.setFechaValorBaja(fechaValorBaja);
+		} catch (Exception e) {
+		}
+		inscripcion.setObservacionesValidacion(observacionesValidacion);
+		inscripcion.setObservacionesDenegacion(observacionesDenegacion);
+		inscripcion.setObservacionesBaja(observacionesBaja);
+		this.inscripcion= inscripcion;
+		inscripcion.setEstado(estado);
+		return inscripcion;
+	}
+	public String getEstado() {
+		return estado;
+	}
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+	public String getFechaDenegacion() {
+		return fechaDenegacion;
+	}
+	public void setFechaDenegacion(String fechaDenegacion) {
+		this.fechaDenegacion = fechaDenegacion;
+	}
+	public String getObservacionesDenegacion() {
+		return observacionesDenegacion;
+	}
+	public void setObservacionesDenegacion(String observacionesDenegacion) {
+		this.observacionesDenegacion = observacionesDenegacion;
+	}
+	public String getFechaValorAlta() {
+		return fechaValorAlta;
+	}
+	public void setFechaValorAlta(String fechaValorAlta) {
+		this.fechaValorAlta = fechaValorAlta;
+	}
+	public String getFechaValorBaja() {
+		return fechaValorBaja;
+	}
+	public void setFechaValorBaja(String fechaValorBaja) {
+		this.fechaValorBaja = fechaValorBaja;
+	}	
+		
 }

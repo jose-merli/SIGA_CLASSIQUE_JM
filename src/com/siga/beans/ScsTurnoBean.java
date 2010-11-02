@@ -1,8 +1,14 @@
 package com.siga.beans;
 
+import java.util.TreeMap;
+import java.util.Vector;
+
+
+
 import com.siga.Utilidades.AjaxXMLBuilderAnnotation;
 import com.siga.Utilidades.AjaxXMLBuilderNameAnnotation;
 import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
+import com.siga.gratuita.form.DefinirTurnosForm;
 /**
  * Implementa las operaciones sobre el bean de la tabla SCS_TURNO
  * 
@@ -31,16 +37,30 @@ public class ScsTurnoBean extends MasterBean{
 	private Integer		idPartidaPresupuestaria;
 	private Integer		idGrupoFacturacion;	
 	private String		requisitos;	
-	private Integer		idPersonaUltimo;
+	private Long		idPersonaUltimo;
 	private String      activarRestriccionAcreditacion;
 	private String      letradoAsistencias;
 	private String      letradoActuaciones;
 	private String     codigoExt;
 	
+	ScsPartidaPresupuestariaBean partidaPresupuestaria =null;
+	ScsMateriaBean materia = null;
+	ScsAreaBean area = null;
+	ScsZonaBean zona = null;
+	ScsSubzonaBean subZona =null;
+	CenPartidoJudicialBean partidoJudicial = null;
+	ScsGrupoFacturacionBean grupoFacturacion = null;
+	ScsOrdenacionColasBean ordenacionColas = null;
+	
 	/* Nombre de Tabla*/
 	
 	
 	static public String T_NOMBRETABLA = "SCS_TURNO";
+	static public int TURNO_GUARDIAS_OBLIGATORIAS = 0;
+	static public int TURNO_GUARDIAS_TODAS0NINGUNA = 1;
+	static public int TURNO_GUARDIAS_ELEGIR = 2;
+	
+	
 	
 	
 	/*Nombre de campos de la tabla*/
@@ -207,7 +227,7 @@ public class ScsTurnoBean extends MasterBean{
 	 * @param valor Long idPersonaUltimo. De tipo "Long". 
 	 * @return void 
 	 */	
-	public void setIdPersonaUltimo			(Integer valor)		{ this.idPersonaUltimo = valor;}
+	public void setIdPersonaUltimo			(Long valor)		{ this.idPersonaUltimo = valor;}
 	
 	/*Metodos GET*/
 	
@@ -333,8 +353,7 @@ public class ScsTurnoBean extends MasterBean{
 	 * 
 	 * @return Valor idPersonaUltimo. De tipo "Long" 
 	 */
-	public Integer getIdPersonaUltimo			()	{ return this.idPersonaUltimo;}
-	
+	public Long getIdPersonaUltimo			()	{ return this.idPersonaUltimo;}
 	
 	
 	public String getActivarRestriccionAcreditacion() {
@@ -355,5 +374,207 @@ public class ScsTurnoBean extends MasterBean{
 	}
 	public void setLetradoAsistencias(String letradoAsistencias) {
 		this.letradoAsistencias = letradoAsistencias;
+	}
+	public ScsPartidaPresupuestariaBean getPartidaPresupuestaria() {
+		return partidaPresupuestaria;
+	}
+	public void setPartidaPresupuestaria(
+			ScsPartidaPresupuestariaBean partidaPresupuestaria) {
+		this.partidaPresupuestaria = partidaPresupuestaria;
+	}
+	public ScsMateriaBean getMateria() {
+		return materia;
+	}
+	public void setMateria(ScsMateriaBean materia) {
+		this.materia = materia;
+	}
+	public ScsAreaBean getArea() {
+		return area;
+	}
+	public void setArea(ScsAreaBean area) {
+		this.area = area;
+	}
+	public ScsZonaBean getZona() {
+		return zona;
+	}
+	public void setZona(ScsZonaBean zona) {
+		this.zona = zona;
+	}
+	public ScsSubzonaBean getSubZona() {
+		return subZona;
+	}
+	public void setSubZona(ScsSubzonaBean subZona) {
+		this.subZona = subZona;
+	}
+	public CenPartidoJudicialBean getPartidoJudicial() {
+		return partidoJudicial;
+	}
+	public void setPartidoJudicial(CenPartidoJudicialBean partidoJudicial) {
+		this.partidoJudicial = partidoJudicial;
+	}
+	public ScsGrupoFacturacionBean getGrupoFacturacion() {
+		return grupoFacturacion;
+	}
+	public void setGrupoFacturacion(ScsGrupoFacturacionBean grupoFacturacion) {
+		this.grupoFacturacion = grupoFacturacion;
+	}
+	public DefinirTurnosForm getDefinirTurnosForm(){
+		DefinirTurnosForm definirTurnoForm = new DefinirTurnosForm();
+		definirTurnoForm.setAbreviatura(this.abreviatura);
+		definirTurnoForm.setActivarActuacionesLetrado(this.letradoActuaciones);
+		definirTurnoForm.setActivarAsistenciasLetrado(this.letradoAsistencias);
+		definirTurnoForm.setActivarRestriccionActuacion(this.activarRestriccionAcreditacion);
+		if(area!=null)
+			definirTurnoForm.setArea(this.area.getNombre());
+		if(this.getDescripcion()!=null)
+			definirTurnoForm.setDescripcion(this.getDescripcion().trim());
+		definirTurnoForm.setDesignaDirecta(this.getDesignaDirecta());
+		if(grupoFacturacion!=null)
+			definirTurnoForm.setGrupoFacturacion(this.grupoFacturacion.getNombre());
+		if(guardias!=null)
+			definirTurnoForm.setGuardias(this.guardias.toString());
+		if(idTurno!=null)
+			definirTurnoForm.setIdTurno(this.getIdTurno().toString());
+		if(materia!=null)
+			definirTurnoForm.setMateria(this.materia.getNombre());
+		definirTurnoForm.setNombre(this.getNombre());
+		
+		if(ordenacionColas!=null){
+			definirTurnoForm.setAlfabeticoApellidos(ordenacionColas.getAlfabeticoApellidos().toString());
+			definirTurnoForm.setAntiguedad(ordenacionColas.getNumeroColegiado().toString());
+			definirTurnoForm.setAntiguedadEnCola(ordenacionColas.getAntiguedadCola().toString());
+			definirTurnoForm.setEdad(ordenacionColas.getFechaNacimiento().toString());
+		
+			String valor1 = "";
+			if (definirTurnoForm.getCrit_1().equalsIgnoreCase("0")) {
+				valor1="gratuita.maestroTurnos.literal.sinDefinir";
+			} else if (definirTurnoForm.getCrit_1().equalsIgnoreCase("1")) {
+				valor1="gratuita.maestroTurnos.literal.alfabetico";
+			} else	if (definirTurnoForm.getCrit_1().equalsIgnoreCase("2")) {
+				valor1="gratuita.maestroTurnos.literal.antiguedad";
+			} else	if (definirTurnoForm.getCrit_1().equalsIgnoreCase("3")) {
+				valor1="gratuita.maestroTurnos.literal.edad";
+			} else	if (definirTurnoForm.getCrit_1().equalsIgnoreCase("4")) {
+				valor1="gratuita.maestroTurnos.literal.cola";
+			} 
+			definirTurnoForm.setCrit_1(valor1);
+	
+			String orden1 = "";
+			if (definirTurnoForm.getOrd_1().equalsIgnoreCase("A")) {
+				orden1="gratuita.maestroTurnos.literal.ascendente";
+			} else	if (definirTurnoForm.getOrd_1().equalsIgnoreCase("D")) {
+				orden1="gratuita.maestroTurnos.literal.descendente";
+			}
+			definirTurnoForm.setOrd_1(orden1);
+			String valor2 = "";
+			if (definirTurnoForm.getCrit_2().equalsIgnoreCase("0")) {
+				valor2="gratuita.maestroTurnos.literal.sinDefinir";
+			} else if (definirTurnoForm.getCrit_2().equalsIgnoreCase("1")) {
+				valor2="gratuita.maestroTurnos.literal.alfabetico";
+			} else	if (definirTurnoForm.getCrit_2().equalsIgnoreCase("2")) {
+				valor2="gratuita.maestroTurnos.literal.antiguedad";
+			} else	if (definirTurnoForm.getCrit_2().equalsIgnoreCase("3")) {
+				valor2="gratuita.maestroTurnos.literal.edad";
+			} else	if (definirTurnoForm.getCrit_2().equalsIgnoreCase("4")) {
+				valor2="gratuita.maestroTurnos.literal.cola";
+			} 
+			definirTurnoForm.setCrit_2(valor2);
+	
+			String orden2 = "";
+			if (definirTurnoForm.getOrd_2().equalsIgnoreCase("A")) {
+				orden2="gratuita.maestroTurnos.literal.ascendente";
+			} else	if (definirTurnoForm.getOrd_2().equalsIgnoreCase("D")) {
+				orden2="gratuita.maestroTurnos.literal.descendente";
+			}
+			definirTurnoForm.setOrd_2(orden2);
+			String valor3 = "";
+			if (definirTurnoForm.getCrit_3().equalsIgnoreCase("0")) {
+				valor3="gratuita.maestroTurnos.literal.sinDefinir";
+			} else if (definirTurnoForm.getCrit_3().equalsIgnoreCase("1")) {
+				valor3="gratuita.maestroTurnos.literal.alfabetico";
+			} else	if (definirTurnoForm.getCrit_3().equalsIgnoreCase("2")) {
+				valor3="gratuita.maestroTurnos.literal.antiguedad";
+			} else	if (definirTurnoForm.getCrit_3().equalsIgnoreCase("3")) {
+				valor3="gratuita.maestroTurnos.literal.edad";
+			} else	if (definirTurnoForm.getCrit_3().equalsIgnoreCase("4")) {
+				valor3="gratuita.maestroTurnos.literal.cola";
+			} 
+			definirTurnoForm.setCrit_3(valor3);
+	
+			String orden3 = "";
+			if (definirTurnoForm.getOrd_3().equalsIgnoreCase("A")) {
+				orden3="gratuita.maestroTurnos.literal.ascendente";
+			} else	if (definirTurnoForm.getOrd_3().equalsIgnoreCase("D")) {
+				orden3="gratuita.maestroTurnos.literal.descendente";
+			}
+			definirTurnoForm.setOrd_3(orden3);
+			String valor4 = "";
+			if (definirTurnoForm.getCrit_4().equalsIgnoreCase("0")) {
+				valor4="gratuita.maestroTurnos.literal.sinDefinir";
+			} else if (definirTurnoForm.getCrit_4().equalsIgnoreCase("1")) {
+				valor4="gratuita.maestroTurnos.literal.alfabetico";
+			} else	if (definirTurnoForm.getCrit_4().equalsIgnoreCase("2")) {
+				valor4="gratuita.maestroTurnos.literal.antiguedad";
+			} else	if (definirTurnoForm.getCrit_4().equalsIgnoreCase("3")) {
+				valor4="gratuita.maestroTurnos.literal.edad";
+			} else	if (definirTurnoForm.getCrit_4().equalsIgnoreCase("4")) {
+				valor4="gratuita.maestroTurnos.literal.cola";
+			} 
+			definirTurnoForm.setCrit_4(valor4);
+		}
+		String orden4 = "";
+		if (definirTurnoForm.getOrd_4().equalsIgnoreCase("A")) {
+			orden4="gratuita.maestroTurnos.literal.ascendente";
+		} else	if (definirTurnoForm.getOrd_4().equalsIgnoreCase("D")) {
+			orden4="gratuita.maestroTurnos.literal.descendente";
+		}
+		definirTurnoForm.setOrd_4(orden4);
+		
+		
+		
+		
+		
+		
+		
+		/*gratuita.maestroTurnos.literal.sinDefinir");
+						} else
+						if (miform.getCrit_4().equalsIgnoreCase("1")) {
+							valor4=UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.alfabetico");
+						} else
+						if (miform.getCrit_4().equalsIgnoreCase("2")) {
+							valor4=UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.antiguedad");
+						} else
+						if (miform.getCrit_4().equalsIgnoreCase("3")) {
+							valor4=UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.edad");
+						} else
+						if (miform.getCrit_4().equalsIgnoreCase("4")) {
+							valor4=UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.cola*/
+		
+			
+		
+//		definirTurnoForm.setOrd_4(this);
+//		definirTurnoForm.setOrd_4(this);
+//		definirTurnoForm.setOrd_4(this);
+//		definirTurnoForm.setOrd_4(this);
+		if(partidaPresupuestaria!=null)
+			definirTurnoForm.setPartidaPresupuestaria(this.partidaPresupuestaria.getNombrePartida());
+		if(partidoJudicial!=null)
+			definirTurnoForm.setPartidoJudicial(this.partidoJudicial.getNombre());
+		definirTurnoForm.setRequisitos(this.getRequisitos());
+		if(subZona!=null)
+			definirTurnoForm.setSubzona(this.subZona.getNombre());
+		definirTurnoForm.setValidacionInscripcion(this.getValidarInscripciones());
+		definirTurnoForm.setValidarJustificaciones(this.getValidarJustificaciones());
+		if(zona!=null)
+			definirTurnoForm.setZona(this.zona.getNombre());
+		return definirTurnoForm;
+		
+		
+	}
+	public ScsOrdenacionColasBean getOrdenacionColas() {
+		return ordenacionColas;
+	}
+	public void setOrdenacionColas(ScsOrdenacionColasBean ordenacionColas) {
+		this.ordenacionColas = ordenacionColas;
 	}
 }

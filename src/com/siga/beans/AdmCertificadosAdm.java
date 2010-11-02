@@ -4,6 +4,7 @@ import java.util.*;
 
 import com.atos.utils.*;
 import com.siga.Utilidades.*;
+import com.siga.general.EjecucionPLs;
 
 public class AdmCertificadosAdm extends MasterBeanAdministrador
 {
@@ -162,20 +163,6 @@ public class AdmCertificadosAdm extends MasterBeanAdministrador
 			                        AdmUsuariosBean.T_NOMBRETABLA + " U " +
 			             " WHERE " + where;
 
-			/*if (rc.queryNLS(sql)) {
-				for (int i = 0; i < rc.size(); i++)	{
-					Row fila = (Row) rc.get(i);
-					MasterBean registro = (MasterBean) this.hashTableToBeanInicial(fila.getRow()); 
-					if (registro != null)
-					{
-					    Hashtable ht = new Hashtable();
-					    
-					    ht.put("datos", registro);
-						ht.put("nombreUsuario", fila.getString(AdmUsuariosBean.C_DESCRIPCION));
-						datos.add(ht);
-					}
-				}
-			}*/
 			Paginador paginador = new Paginador(sql);				
 			int totalRegistros = paginador.getNumeroTotalRegistros();
 			
@@ -193,5 +180,12 @@ public class AdmCertificadosAdm extends MasterBeanAdministrador
 	public Vector getCertificadosUsuario(String NIF) throws ClsExceptions 
 	{
 		return select(" WHERE " + AdmCertificadosBean.C_NIF + " = '" + NIF + "'");
+	}
+	
+	public void revocarCertificados(Integer idInstitucion, String nif) throws ClsExceptions
+	{
+		String resultado[] = EjecucionPLs.ejecutarPL_RevocarCertificados(idInstitucion, nif);
+		if (! resultado[0].equalsIgnoreCase("0"))
+			throw new ClsExceptions("Error al ejecutar el PL de Revocacion de Certificados");
 	}
 }

@@ -8,10 +8,16 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.struts.action.ActionMapping;
+
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngBBDD;
+import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
@@ -21,6 +27,7 @@ import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.general.EjecucionPLs;
+import com.siga.general.MasterForm;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.vos.VolantesExpressVo;
@@ -71,9 +78,8 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 	 * @return String con las tablas del select, campo from
 	 */
 	
-	protected String getTablasSelect(String entrada){
-		String campos = " SCS_TURNO,SCS_PARTIDAPRESUPUESTARIA,SCS_GRUPOFACTURACION,SCS_MATERIA,SCS_AREA,SCS_SUBZONA,SCS_ZONA,CEN_PARTIDOJUDICIAL,SCS_INSCRIPCIONTURNO,SCS_ORDENACIONCOLAS "; 
-		if (entrada =="1")campos="SCS_TURNO   turnos, SCS_PARTIDAPRESUPUESTARIA partid,SCS_GRUPOFACTURACION  grupof,SCS_MATERIA       materi,SCS_AREA    area,SCS_SUBZONA    subzon,SCS_ZONA    zona,CEN_PARTIDOJUDICIAL   parjud,SCS_ORDENACIONCOLAS";	
+	protected String getTablasTurnos(){
+		String campos=" SCS_TURNO   turnos, SCS_PARTIDAPRESUPUESTARIA partid,SCS_GRUPOFACTURACION  grupof,SCS_MATERIA       materi,SCS_AREA    area,SCS_SUBZONA    subzon,SCS_ZONA    zona,CEN_PARTIDOJUDICIAL   parjud,SCS_ORDENACIONCOLAS";
 		return campos;
 	}
 	/**
@@ -82,8 +88,7 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 	 * @return String con los campos del select
 	 */
 	
-	protected String[] getCamposSelect(String entrada){
-		if (entrada.equalsIgnoreCase("1")){
+	private String[] getCamposTurnos(){
 			String[] campos = {	"turnos."+ScsTurnoBean.C_IDTURNO+" IDTURNO",								
 					//"substr(turnos."+ScsTurnoBean.C_NOMBRE+ ",1,10) NOMBRE",
 					"turnos."+ScsTurnoBean.C_NOMBRE+ " NOMBRE",
@@ -115,53 +120,13 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 					ScsOrdenacionColasBean.T_NOMBRETABLA+"."+ScsOrdenacionColasBean.C_NUMEROCOLEGIADO+" ANTIGUEDAD",
 					ScsOrdenacionColasBean.T_NOMBRETABLA+"."+ScsOrdenacionColasBean.C_ANTIGUEDADCOLA+" ANTIGUEDADENCOLA",
 					//nuevo campo para contar el numero de letrados en cola
-					"(select count(*) from SCS_INSCRIPCIONTURNO INS where ins.fechabaja is null and ins.idinstitucion=turnos.idinstitucion and ins.idturno=turnos.idturno) as nLetrados"};
+					"(select count(*) from SCS_INSCRIPCIONTURNO INS where ins.idinstitucion=turnos.idinstitucion and ins.idturno=turnos.idturno and " +
+					"(ins.FECHABAJA IS NULL OR TRUNC(ins.FECHABAJA)>TRUNC(SYSDATE))			AND (ins.FECHAVALIDACION IS NOT NULL AND TRUNC(ins.FECHAVALIDACION)<=TRUNC(SYSDATE))) " +
+					"as nLetrados"};
+			
+			 
 			return campos;
-		}else{ 
-			String[] campos = {	ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDTURNO													+ " IDTURNO",								
-//					"substr(" + ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_NOMBRE + ",1,10)" 							+ " NOMBRE",
-					ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_NOMBRE + " NOMBRE",
-					ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_ABREVIATURA												+ " ABREVIATURA",
-					ScsAreaBean.T_NOMBRETABLA+"."+ScsAreaBean.C_NOMBRE														+ " AREA",
-					ScsAreaBean.T_NOMBRETABLA+"."+ScsAreaBean.C_IDAREA														+ " IDAREA",
-					ScsMateriaBean.T_NOMBRETABLA+"."+ScsMateriaBean.C_NOMBRE												+" MATERIA",
-					ScsMateriaBean.T_NOMBRETABLA+"."+ScsMateriaBean.C_IDMATERIA												+" IDMATERIA",
-					ScsZonaBean.T_NOMBRETABLA+"."+ScsZonaBean.C_NOMBRE														+" ZONA",
-					ScsZonaBean.T_NOMBRETABLA+"."+ScsZonaBean.C_IDZONA														+" IDZONA",
-					ScsSubzonaBean.T_NOMBRETABLA+"."+ScsSubzonaBean.C_NOMBRE												+" SUBZONA",
-					ScsSubzonaBean.T_NOMBRETABLA+"."+ScsSubzonaBean.C_IDSUBZONA												+" IDSUBZONA",
-					CenPartidoJudicialBean.T_NOMBRETABLA+"."+CenPartidoJudicialBean.C_NOMBRE								+" PARTIDOJUDICIAL",
-					CenPartidoJudicialBean.T_NOMBRETABLA+"."+CenPartidoJudicialBean.C_IDPARTIDO								+" IDPARTIDOJUDICIAL",
-					ScsPartidaPresupuestariaBean.T_NOMBRETABLA+"."+ScsPartidaPresupuestariaBean.C_NOMBREPARTIDA				+" PARTIDAPRESUPUESTARIA",
-					ScsPartidaPresupuestariaBean.T_NOMBRETABLA+"."+ScsPartidaPresupuestariaBean.C_IDPARTIDAPRESUPUESTARIA	+" IDPARTIDAPRESUPUESTARIA",
-					UtilidadesMultidioma.getCampoMultidiomaSimple(ScsGrupoFacturacionBean.T_NOMBRETABLA+"."+ScsGrupoFacturacionBean.C_NOMBRE,this.usrbean.getLanguage())								+" GRUPOFACTURACION",
-					ScsGrupoFacturacionBean.T_NOMBRETABLA+"."+ScsGrupoFacturacionBean.C_IDGRUPOFACTURACION					+" IDGRUPOFACTURACION",
-					ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_GUARDIAS													+ " GUARDIAS",
-					ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_VALIDARJUSTIFICACIONES									+ " VALIDARJUSTIFICACIONES",
-					ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_VALIDARINSCRIPCIONES										+" VALIDARINSCRIPCIONES",
-					ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_DESIGNADIRECTA											+" DESIGNADIRECTA",
-					ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_DESCRIPCION												+" DESCRIPCION",
-					ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_REQUISITOS												+" REQUISITOS",
-					ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDPERSONAULTIMO											+" IDPERSONAULTIMO",
-					ScsOrdenacionColasBean.T_NOMBRETABLA+"."+ScsOrdenacionColasBean.C_IDORDENACIONCOLAS						+" IDORDENACIONCOLAS",
-					ScsOrdenacionColasBean.T_NOMBRETABLA+"."+ScsOrdenacionColasBean.C_ALFABETICOAPELLIDOS					+" ALFABETICOAPELLIDOS",
-					ScsOrdenacionColasBean.T_NOMBRETABLA+"."+ScsOrdenacionColasBean.C_FECHANACIMIENTO						+" EDAD",
-					ScsOrdenacionColasBean.T_NOMBRETABLA+"."+ScsOrdenacionColasBean.C_NUMEROCOLEGIADO						+" ANTIGUEDAD",
-					ScsOrdenacionColasBean.T_NOMBRETABLA+"."+ScsOrdenacionColasBean.C_ANTIGUEDADCOLA						+" ANTIGUEDADENCOLA",
-					ScsInscripcionTurnoBean.T_NOMBRETABLA+"."+ScsInscripcionTurnoBean.C_OBSERVACIONESSOLICITUD				+" OBSERVACIONESSOLICITUD",
-					ScsInscripcionTurnoBean.T_NOMBRETABLA+"."+ScsInscripcionTurnoBean.C_OBSERVACIONESVALIDACION				+" OBSERVACIONESVALIDACION",
-					ScsInscripcionTurnoBean.T_NOMBRETABLA+"."+ScsInscripcionTurnoBean.C_OBSERVACIONESBAJA+" OBSERVACIONESBAJA",
-					ScsInscripcionTurnoBean.T_NOMBRETABLA+"."+ScsInscripcionTurnoBean.C_FECHASOLICITUD+" FECHASOLICITUD",
-					ScsInscripcionTurnoBean.T_NOMBRETABLA+"."+ScsInscripcionTurnoBean.C_FECHASOLICITUDBAJA+" FECHASOLICITUDBAJA",
-					ScsInscripcionTurnoBean.T_NOMBRETABLA+"."+ScsInscripcionTurnoBean.C_FECHAVALIDACION+" FECHAVALIDACION",
-					ScsInscripcionTurnoBean.T_NOMBRETABLA+"."+ScsInscripcionTurnoBean.C_FECHABAJA+" FECHABAJA",
-					// rgg CAMBIO PARA METER PARTIDOS JUDICIALES
-					" Pkg_Siga_Sjcs.FUN_SJ_PARTIDOSJUDICIALES(SCS_SUBZONA.idinstitucion,SCS_SUBZONA.IDSUBZONA,SCS_ZONA.IDZONA) PARTIDOS ",					
-					" DECODE(FECHAVALIDACION, NULL, TO_CHAR(FECHASOLICITUD, 'YYYYMMDD'), '00000000') ||"+
-					" DECODE(FECHABAJA, NULL, TO_CHAR(FECHASOLICITUD, 'YYYYMMDD'), '00000000') ||"+
-			" DECODE(FECHABAJA, NULL, '99999999', TO_CHAR(FECHABAJA, 'YYYYMMDD')) ORDEN"};
-			return campos;
-		}
+		
 	}
 	/**
 	 * Prepara los datos, para posteriormente insertarlos en la base de datos. La preparación consiste en calcular el
@@ -237,7 +202,7 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 			bean.setIdPartidaPresupuestaria(UtilidadesHash.getInteger(hash,ScsTurnoBean.C_IDPARTIDAPRESUPUESTARIA));
 			bean.setIdGrupoFacturacion(UtilidadesHash.getInteger(hash,ScsTurnoBean.C_IDGRUPOFACTURACION));
 			bean.setRequisitos(UtilidadesHash.getString(hash,ScsTurnoBean.C_REQUISITOS));
-			bean.setIdPersonaUltimo(UtilidadesHash.getInteger(hash,ScsTurnoBean.C_IDPERSONAULTIMO));
+			bean.setIdPersonaUltimo(UtilidadesHash.getLong(hash,ScsTurnoBean.C_IDPERSONAULTIMO));
 			bean.setActivarRestriccionAcreditacion(UtilidadesHash.getString(hash,ScsTurnoBean.C_ACTIVARRETRICCIONACREDIT));
 			bean.setLetradoActuaciones(UtilidadesHash.getString(hash,ScsTurnoBean.C_LETRADOACTUACIONES));
 			bean.setLetradoAsistencias(UtilidadesHash.getString(hash,ScsTurnoBean.C_LETRADOASISTENCIAS));
@@ -335,14 +300,14 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 	 * 		2=abreviatura,nombre, area, materia, zona, subzona, partidoJudicial, fechaAlta, fechaValidacion, fechaCancelacion
 	 * @return Vector de Hashtable con los registros que cumplan con la clausula where 
 	 */
-	public Vector selectTabla(String where, String entrada){
+	public Vector selectTurnos(String where){
 		Vector v = new Vector();
 		RowsContainer rc = null;
 		try{
 			rc = new RowsContainer(); 
-			String sql = UtilidadesBDAdm.sqlSelect(this.getTablasSelect(entrada), this.getCamposSelect(entrada));
+			String sql = UtilidadesBDAdm.sqlSelect(this.getTablasTurnos(), this.getCamposTurnos());
 			sql += where;
-			sql += this.getOrdenCampos()!=null ? UtilidadesBDAdm.sqlOrderBy(this.getOrdenCampos()) : UtilidadesBDAdm.sqlOrderBy(this.getOrdenSelect(entrada));
+			sql += this.getOrdenCampos()!=null ? UtilidadesBDAdm.sqlOrderBy(this.getOrdenCampos()) : UtilidadesBDAdm.sqlOrderBy(this.getOrdenSelect());
 			if (rc.queryNLS(sql)) {
 				for (int i = 0; i < rc.size(); i++)	{
 					Row fila = (Row) rc.get(i);
@@ -371,71 +336,14 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 	 * @param entrada String identificador de l permiso del usuario logado
 	 * @return vector de Strings con los campos con los que se desea realizar la ordenación.
 	 */
-	protected String[] getOrdenSelect(String entrada){
-		if (entrada.equalsIgnoreCase("1")){
+	protected String[] getOrdenSelect(){
+		
 			String[] campos={"turnos."+ScsTurnoBean.C_ABREVIATURA};
 			return campos;
-		}
-		else if(entrada.equalsIgnoreCase("2")){String[] campos={ " ORDEN DESC"};
-		return campos;
-		}
-		else{
-			String[] campos = null;
-			campos[0] = "";
-			return campos;
-		}
+		
 	}
 	
-	public Vector getUltimoLetradoInscrito(String institucion, int ultimo){
-		Vector v = new Vector();
-		CenColegiadoAdm colegiados = new CenColegiadoAdm(this.usrbean);
-		try {
-			String where=" where "+
-			CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDINSTITUCION+"="+institucion+" and "+
-			CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDPERSONA+"="+ultimo+" ";
-			v= colegiados.select(where);
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return v;
-	}
-	
-	public Vector getLetradosInscritos(int institucion, int turno){
-		Vector vLetrados = new Vector();
-		Vector v = new Vector();
-		Vector vResult = new Vector();
-		CenColegiadoAdm colegiados = new CenColegiadoAdm(this.usrbean);
-		ScsInscripcionTurnoAdm inscripciones = new ScsInscripcionTurnoAdm(this.usrbean);
-		CenPersonaAdm persona = new CenPersonaAdm(this.usrbean);
-		try {
-			try{
-				String where=" where "+
-				ScsInscripcionTurnoBean.C_IDINSTITUCION+"="+institucion+" and "+
-				ScsInscripcionTurnoBean.C_IDTURNO+"="+turno+" and "+
-				ScsInscripcionTurnoBean.C_FECHAVALIDACION+" is not null and "+
-				ScsInscripcionTurnoBean.C_FECHABAJA+" is null ";
-				vLetrados = inscripciones.select(where);
-			}
-			catch(Exception e){
-				e.printStackTrace();
-			}
-			for (int ind=0;ind < vLetrados.size();ind++){
-				try{
-					ScsInscripcionTurnoBean fila = (ScsInscripcionTurnoBean)vLetrados.get(ind);
-					String where =" where "+CenColegiadoBean.C_IDPERSONA+"="+fila.getIdPersona()+" ";
-					v=colegiados.select(where);
-					CenColegiadoBean personaBean = (CenColegiadoBean)v.get(0);
-					where = " where "+CenPersonaBean.C_IDPERSONA+"="+(personaBean.getIdPersona()).toString()+ " ";
-					vResult.add((persona.select(where)).get(0));
-				}catch(Exception e){
-					e.printStackTrace();
-				}
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return v;
-	}
+		
 	/**
 	 * Efectúa un DELETE en la tabla SCS_TURNO del registro seleccionado 
 	 * 
@@ -501,118 +409,7 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 		return datos;
 	}
 	
-	/**
-	 * Efectúa un SELECT en la tabla SCS_TURNO con los datos introducidos. 
-	 * 
-	 * @param sql. Consulta a realizar
-	 * @return Vector de Hashtable con los registros que cumplan la sentencia sql 
-	 */
-	public Vector selectTabla(String sql){
-		Vector v = new Vector();
-		RowsContainer rc = null;
-		try{
-			rc = new RowsContainer();
-			String contador = "";
-			if (rc.query(sql)) {
-				String institucion="";
-				GenClientesTemporalAdm temporalAdm = new GenClientesTemporalAdm(this.usrbean);
-				GenClientesTemporalBean temporalBean = new GenClientesTemporalBean();
-				Hashtable miHash = new Hashtable();
-				String consultaTemp ="";
-				Object[] param_in = new Object[3];
-				String resultadoPl[] = new String[3];
-				int cont=0;
-				
-				//Por cada uno de los registros que se seleccionan se debe ejecutar el PL que da la posición del letrado dentro del turno
-				for (int i = 0; i < rc.size(); i++) {
-					Row fila = (Row) rc.get(i);
-					Hashtable registro = (Hashtable)fila.getRow(); 
-					
-					contador = EjecucionPLs.ejecutarPL_OrdenaColegiadosTurno(
-							Integer.valueOf((String) registro.get("INSTITUCION")), 
-							Integer.valueOf((String) registro.get("IDTURNO")), 
-							1)[0];
-					
-					//Consulta en la tabla temporal la posicion para el letrado
-					consultaTemp=	" where "+
-					GenClientesTemporalBean.T_NOMBRETABLA+"."+GenClientesTemporalBean.C_IDPERSONA+"="+(String)registro.get("IDPERSONA")+" and "+
-					GenClientesTemporalBean.T_NOMBRETABLA+"."+GenClientesTemporalBean.C_CONTADOR+"="+contador+" and "+
-					GenClientesTemporalBean.T_NOMBRETABLA+"."+GenClientesTemporalBean.C_SALTO+"<> 'S' ";
-					
-					try{
-						temporalBean = (GenClientesTemporalBean)((Vector)temporalAdm.select(consultaTemp)).get(0);
-						
-						//Anhadir al registro que se devolverá el campo posición del letrado dentro del turno
-						registro.put("POSICION",temporalBean.getPosicion().toString());
-						
-						//Anhadir el registro a v
-						if (registro != null) 
-							v.add(cont,registro);
-						
-						//Borrar de la tabla temporal por el campo contador
-						if (!contador.equals("0")) {
-							miHash.put("CONTADOR",contador);
-							temporalAdm.delete(miHash);
-						}
-						cont++;
-					}catch(Exception e){}
-					
-				}
-			}
-		}
-		catch(ClsExceptions e){
-			e.printStackTrace();
-		}
-		return v;
-	}	
-	/**
-	 * Efectúa un SELECT en la tabla SCS_TURNO con los datos introducidos. 
-	 * @param institucion Codigo institucion seleccionada
-	 * @param turno Codigo turno seleccionado
-	 * @return Vector de Hashtable con los registros que cumplan la sentencia sql 
-	 */
-	public Vector selectLetradosEnCola(String institucion, String turno){
-		Vector vResult = null;
-		try{
-			
-			String contador = EjecucionPLs.ejecutarPL_OrdenaColegiadosTurno(
-					Integer.valueOf(institucion), 
-					Integer.valueOf(turno), 
-					0)[0];
-			
-			//Consulta en la tabla temporal la posicion para el letrado
-			String consultaTemp =
-				"select "+
-				"T."+GenClientesTemporalBean.C_IDPERSONA+", "+
-				"decode(C."+CenColegiadoBean.C_COMUNITARIO+",'"+ClsConstants.DB_TRUE+"',"+"C."+CenColegiadoBean.C_NCOMUNITARIO+","+CenColegiadoBean.C_NCOLEGIADO+") "+CenColegiadoBean.C_NCOLEGIADO+", "+
-				"P."+CenPersonaBean.C_NOMBRE     + ", " +
-				"P."+CenPersonaBean.C_APELLIDOS1 + ", " +
-				"P."+CenPersonaBean.C_APELLIDOS2 + ", " +
-				"P."+CenPersonaBean.C_IDPERSONA  +
-				" from "+
-				GenClientesTemporalBean.T_NOMBRETABLA + " T, "+
-				CenColegiadoBean.T_NOMBRETABLA+" C, "+
-				CenPersonaBean.T_NOMBRETABLA+" P "+
-				" where "+
-				"T."+GenClientesTemporalBean.C_IDINSTITUCION+"=C."+CenColegiadoBean.C_IDINSTITUCION+" and "+
-				"T."+GenClientesTemporalBean.C_IDPERSONA+"=C."+CenColegiadoBean.C_IDPERSONA+" and "+
-				"T."+GenClientesTemporalBean.C_IDPERSONA+"=P."+CenPersonaBean.C_IDPERSONA+" and "+
-				"T."+GenClientesTemporalBean.C_CONTADOR+"="+contador+" and "+
-				"T."+GenClientesTemporalBean.C_SALTO+"<> 'S'"+
-				" order by T."+GenClientesTemporalBean.C_POSICION;
-			vResult=this.find(consultaTemp).getAll();
-			
-			//Borrar de la tabla temporal por el campo contador
-			String deleteTemp =
-				"delete "+GenClientesTemporalBean.T_NOMBRETABLA+
-				" where "+GenClientesTemporalBean.C_CONTADOR+"="+contador;
-			ClsMngBBDD.executeUpdate(deleteTemp);
-		}
-		catch(ClsExceptions e){
-			e.printStackTrace();
-		}
-		return vResult;
-	}	
+
 	
 	public Hashtable getDatosTurno(String idInstitucion, String idTurno) {
 		String consulta =	" select turno.nombre nombre, turno.abreviatura abreviatura, turno.idarea idarea, turno.idmateria idmateria, turno.idzona idzona, "+
@@ -652,41 +449,10 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 		return miTurno;
 	}
 	
-	public Vector getTurnosLetrado (String idInstitucion, String idPersona) 
-	{
-		String where=	" WHERE SCS_PARTIDAPRESUPUESTARIA.idinstitucion (+)= SCS_TURNO.idinstitucion"+            
-						" AND SCS_PARTIDAPRESUPUESTARIA.idpartidapresupuestaria (+)= SCS_TURNO.idpartidapresupuestaria"+  
-						" AND SCS_GRUPOFACTURACION.idinstitucion = SCS_TURNO.idinstitucion"+
-						" AND SCS_GRUPOFACTURACION.idgrupofacturacion = SCS_TURNO.idgrupofacturacion"+
-						" AND SCS_MATERIA.idinstitucion = SCS_TURNO.idinstitucion"+
-						" AND SCS_MATERIA.idarea = SCS_TURNO.idarea"+
-						" AND SCS_MATERIA.idmateria = SCS_TURNO.idmateria"+
-						" AND SCS_AREA.idinstitucion = SCS_MATERIA.idinstitucion"+
-						" AND SCS_AREA.idarea = SCS_MATERIA.idarea"+
-						" AND SCS_SUBZONA.idinstitucion (+)= SCS_TURNO.idinstitucion"+
-						" AND SCS_SUBZONA.idzona (+)= SCS_TURNO.idzona"+
-						" AND SCS_SUBZONA.idsubzona (+)= SCS_TURNO.idsubzona"+
-						" AND SCS_ZONA.idinstitucion (+)= SCS_TURNO.idinstitucion"+
-						" AND SCS_ZONA.idzona (+)= SCS_TURNO.idzona"+
-						" AND CEN_PARTIDOJUDICIAL.idpartido (+)= SCS_SUBZONA.idpartido"+
-						" and scs_ordenacioncolas.idordenacioncolas = scs_turno.idordenacioncolas "+
-						" AND SCS_TURNO.idinstitucion ="+idInstitucion+
-						" AND SCS_INSCRIPCIONTURNO.idinstitucion = "+idInstitucion+
-						" AND SCS_INSCRIPCIONTURNO.idturno = SCS_TURNO.idturno"+
-						" AND SCS_INSCRIPCIONTURNO.FECHABAJA IS NULL "+
-						" AND SCS_INSCRIPCIONTURNO.idpersona = "+idPersona+" ";
-		return this.selectTabla(where,"2");
-	}
 	
-	/**
-	 * Metodo que crea la select para usar con el paginador de turnos en la pestaña sjcs de la ficha colegial
-	 * @param idInstitucion
-	 * @param idPersona
-	 * @param historico
-	 * @return
-	 * @throws ClsExceptions
-	 */
-	public String getSelectTurnosLetrado (String idInstitucion, String idPersona, boolean historico) throws ClsExceptions 
+	
+	/*
+	public String getSelectTurnosLetrado (String idInstitucion, String idPersona, boolean historico,String fecha) throws ClsExceptions 
 	{
 		String sql = UtilidadesBDAdm.sqlSelect(this.getTablasSelect("2"), this.getCamposSelect("2"));
 		
@@ -712,14 +478,56 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 						
 						" AND SCS_INSCRIPCIONTURNO.idpersona = "+idPersona+" ";
 						if (!historico){
-							where += " AND SCS_INSCRIPCIONTURNO.FECHABAJA IS NULL ";
+							if(fecha!=null){
+								//String fechaFmt =GstDate.getApplicationFormatDate("", fecha);
+								if(fecha.equalsIgnoreCase("sysdate"))
+									fecha = "trunc(sysdate)";
+								else
+									fecha = "'"+fecha+"'";
+							}else
+								fecha = "trunc(sysdate)";
+								
+								//NO SACAR LAS CANCELADAS
+								where += " AND ( ";
+//								where += "   (SCS_INSCRIPCIONTURNO.FECHAVALIDACION IS NOT NULL AND SCS_INSCRIPCIONTURNO.FECHABAJA IS NOT NULL ";
+//								where += " AND TO_CHAR(SCS_INSCRIPCIONTURNO.FECHAVALIDACION, 'DD/MM/YYYY') <> ";
+//								where += " NVL(TO_CHAR(SCS_INSCRIPCIONTURNO.FECHABAJA, 'DD/MM/YYYY'), '0')) ";
+//								where += " OR ";
+								
+								   //PENDIENTES DE ALTA
+								where += " (SCS_INSCRIPCIONTURNO.FECHADENEGACION IS NULL AND SCS_INSCRIPCIONTURNO.FECHASOLICITUDBAJA IS NULL ";
+								where += " AND SCS_INSCRIPCIONTURNO.FECHAVALIDACION IS NULL) ";
+								     
+								where += " OR ";
+								     //VALIDADOS DE ALTA
+								where += " (SCS_INSCRIPCIONTURNO.FECHAVALIDACION IS NOT NULL AND ";
+								where += " TRUNC(SCS_INSCRIPCIONTURNO.FECHAVALIDACION) <= "+fecha.trim()+" "; 
+								where += " AND (SCS_INSCRIPCIONTURNO.FECHABAJA IS NULL ";
+								where += " OR (SCS_INSCRIPCIONTURNO.FECHABAJA IS NOT NULL AND ";
+								where += " TRUNC(SCS_INSCRIPCIONTURNO.FECHABAJA) > "+fecha.trim()+")))" ;
+							  
+								
+								
+								
+								where += " OR ";
+								     // PENDIENTES DE BAJA
+								where += " (SCS_INSCRIPCIONTURNO.FECHASOLICITUDBAJA IS NOT NULL AND SCS_INSCRIPCIONTURNO.FECHABAJA IS NULL AND SCS_INSCRIPCIONTURNO.FECHADENEGACION IS NULL) ";
+								       
+								       //BAJA FUTURA
+								//where += " OR TRUNC(SCS_INSCRIPCIONTURNO.FECHABAJA) >"+fecha.trim()+" ";
+								       
+								       // BAJA DENEGADA
+								where += " OR "; 
+								where += " (SCS_INSCRIPCIONTURNO.FECHADENEGACION IS NOT NULL AND SCS_INSCRIPCIONTURNO.FECHASOLICITUDBAJA IS NOT NULL) ";
+								where += " ) ";
+							
 						}
 		sql += where;
-		sql += " ORDER BY NOMBRE, FECHABAJA DESC";
+		sql += " ORDER BY NOMBRE,FECHASOLICITUD";
 		return sql;
 	}
 
-	
+	*/
 	
 	public static String getNombreTurnoJSP (String institucion, String idturno) throws ClsExceptions,SIGAException {
 		   String datos="";
@@ -753,19 +561,7 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 	       return datos;                        
 	    }	
 		
-	public PaginadorBind getTurnosClientePaginador (Integer idInstitucion, Long idPersona, boolean historico) throws ClsExceptions, SIGAException {
-		PaginadorBind paginador=null;
-		try {
-			Hashtable codigos = new Hashtable();
-			String select = getSelectTurnosLetrado(idInstitucion.toString(), idPersona.toString(), historico);
-			paginador = new PaginadorBind(select,codigos);
-
-		} catch (Exception e) {
-			throw new ClsExceptions (e, "Error al ejecutar consulta getServiciosSolicitadosPaginador.");
-		}
-		return paginador;  
-		
-	}
+	
 	public List<ScsTurnoBean> getTurnos(VolantesExpressVo volanteExpres)throws ClsExceptions{
 
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
@@ -861,12 +657,12 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
        }
        return alTurnos;
 		
-		
-		
-		
-		
-		
-	} 
+	}
+	
+	
+	
+	
+	
 	public List<ScsTurnoBean> getTurnos(String idInstitucion)throws ClsExceptions{
 
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
@@ -914,5 +710,234 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 		
 		
 	}
+	public ScsTurnoBean getTurnoInscripcion(Integer idInstitucion,Integer idTurno)throws ClsExceptions{
+
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT  ");
+		sql.append(" T.NOMBRE NOMBRETURNO, ");
+		sql.append(" T.DESCRIPCION DESCRIPCIONTURNO,  T.ABREVIATURA ABREVIATURATURNO, ");
+		sql.append(" T.GUARDIAS GUARDIAS, T.VALIDARJUSTIFICACIONES , ");
+		sql.append(" T.VALIDARINSCRIPCIONES , T.DESIGNADIRECTA , ");
+		sql.append(" T.REQUISITOS,  T.IDPERSONA_ULTIMO IDPERSONAULTIMO, ");
+		sql.append(" T.ACTIVARRETRICCIONACREDIT, T.LETRADOACTUACIONES, T.LETRADOASISTENCIAS, ");
+		sql.append(" A.NOMBRE AREA,    A.IDAREA IDAREA,   M.NOMBRE MATERIA, ");
+		sql.append(" M.IDMATERIA IDMATERIA,   Z.NOMBRE ZONA,  Z.IDZONA IDZONA, ");
+		sql.append(" SZ.NOMBRE SUBZONA,  SZ.IDSUBZONA IDSUBZONA,  ");
+		sql.append(" PKG_SIGA_SJCS.FUN_SJ_PARTIDOSJUDICIALES(SZ.IDINSTITUCION,SZ.IDSUBZONA,Z.IDZONA) PARTIDOJUDICIAL, ");
+		sql.append(" PP.NOMBREPARTIDA PARTIDAPRESUPUESTARIA, ");
+		sql.append(" PP.IDPARTIDAPRESUPUESTARIA IDPARTIDAPRESUPUESTARIA, F_SIGA_GETRECURSO(GF.NOMBRE, 1) GRUPOFACTURACION, ");
+		sql.append(" GF.IDGRUPOFACTURACION IDGRUPOFACTURACION, ");
+		sql.append(" OC.IDORDENACIONCOLAS, OC.ALFABETICOAPELLIDOS, ");
+		sql.append(" OC.FECHANACIMIENTO, OC.NUMEROCOLEGIADO ,   OC.ANTIGUEDADCOLA , ");
+		sql.append(" T.IDINSTITUCION,   T.IDTURNO ");
+		
+		sql.append(" FROM SCS_TURNO T, ");
+		sql.append(" SCS_ORDENACIONCOLAS OC,SCS_PARTIDAPRESUPUESTARIA PP, SCS_GRUPOFACTURACION GF, ");
+		sql.append(" SCS_MATERIA M,   SCS_AREA A,    SCS_SUBZONA SZ, ");
+		sql.append(" SCS_ZONA Z ");
+		sql.append(" WHERE OC.IDORDENACIONCOLAS = T.IDORDENACIONCOLAS ");
+		
+		sql.append(" AND PP.IDINSTITUCION(+) = T.IDINSTITUCION ");
+		sql.append(" AND PP.IDPARTIDAPRESUPUESTARIA(+) =       T.IDPARTIDAPRESUPUESTARIA ");
+		sql.append(" AND GF.IDINSTITUCION = T.IDINSTITUCION ");
+		sql.append(" AND GF.IDGRUPOFACTURACION =		       T.IDGRUPOFACTURACION ");
+		sql.append(" AND M.IDINSTITUCION = T.IDINSTITUCION ");
+		sql.append(" AND M.IDAREA = T.IDAREA		   AND M.IDMATERIA = T.IDMATERIA ");
+		sql.append(" AND A.IDINSTITUCION = M.IDINSTITUCION   AND A.IDAREA = M.IDAREA ");
+		sql.append(" AND SZ.IDINSTITUCION(+) = T.IDINSTITUCION   AND SZ.IDZONA(+) = T.IDZONA ");
+		sql.append(" AND SZ.IDSUBZONA(+) = T.IDSUBZONA   AND Z.IDINSTITUCION(+) = T.IDINSTITUCION ");
+		sql.append(" AND Z.IDZONA(+) = T.IDZONA ");
+
+		
+		
+		
+		sql.append(" AND T.IDINSTITUCION = ");
+		sql.append(idInstitucion);
+
+		sql.append(" AND T.IDTURNO = ");
+		sql.append(idTurno);
+
+
+		ScsTurnoBean turno = null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+
+			if (rc.find(sql.toString())) {
+				ScsPartidaPresupuestariaBean partidaPresupuestaria =null;
+				ScsMateriaBean materia = null;
+				ScsAreaBean area = null;
+				ScsZonaBean zona = null;
+				ScsSubzonaBean subZona =null;
+				CenPartidoJudicialBean partidoJudicial = null;
+				ScsGrupoFacturacionBean grupoFacturacion = null;
+				ScsOrdenacionColasBean ordenacionColas = null;
+
+				for (int i = 0; i < rc.size(); i++){
+					Row fila = (Row) rc.get(i);
+					Hashtable<String, Object> htFila=fila.getRow();
+					turno = new ScsTurnoBean();
+
+
+					turno.setIdInstitucion(UtilidadesHash.getInteger(htFila,ScsTurnoBean.C_IDINSTITUCION));
+					turno.setIdTurno(UtilidadesHash.getInteger(htFila,ScsTurnoBean.C_IDTURNO));
+					turno.setNombre(UtilidadesHash.getString(htFila,"NOMBRETURNO"));
+					turno.setDescripcion(UtilidadesHash.getString(htFila,"DESCRIPCIONTURNO"));
+					turno.setAbreviatura(UtilidadesHash.getString(htFila,"ABREVIATURATURNO"));
+					turno.setGuardias(UtilidadesHash.getInteger(htFila,ScsTurnoBean.C_GUARDIAS));
+					turno.setValidarJustificaciones(UtilidadesHash.getString(htFila,ScsTurnoBean.C_VALIDARJUSTIFICACIONES));
+					turno.setValidarInscripciones(UtilidadesHash.getString(htFila,ScsTurnoBean.C_VALIDARINSCRIPCIONES));
+					turno.setDesignaDirecta(UtilidadesHash.getString(htFila,ScsTurnoBean.C_DESIGNADIRECTA));
+					turno.setRequisitos(UtilidadesHash.getString(htFila,ScsTurnoBean.C_REQUISITOS));
+					turno.setIdPersonaUltimo(UtilidadesHash.getLong(htFila,ScsTurnoBean.C_IDPERSONAULTIMO));
+					turno.setActivarRestriccionAcreditacion(UtilidadesHash.getString(htFila,ScsTurnoBean.C_ACTIVARRETRICCIONACREDIT));
+					turno.setLetradoActuaciones(UtilidadesHash.getString(htFila,ScsTurnoBean.C_LETRADOACTUACIONES));
+					turno.setLetradoAsistencias(UtilidadesHash.getString(htFila,ScsTurnoBean.C_LETRADOASISTENCIAS));
+					
+					
+					ordenacionColas = new ScsOrdenacionColasBean();
+					ordenacionColas.setAlfabeticoApellidos(UtilidadesHash.getInteger(htFila,ScsOrdenacionColasBean.C_ALFABETICOAPELLIDOS));
+					ordenacionColas.setAntiguedadCola(UtilidadesHash.getInteger(htFila,ScsOrdenacionColasBean.C_ANTIGUEDADCOLA));
+					ordenacionColas.setFechaNacimiento(UtilidadesHash.getInteger(htFila,ScsOrdenacionColasBean.C_FECHANACIMIENTO));
+					ordenacionColas.setNumeroColegiado(UtilidadesHash.getInteger(htFila,ScsOrdenacionColasBean.C_NUMEROCOLEGIADO));
+					ordenacionColas.setIdOrdenacionColas(UtilidadesHash.getInteger(htFila,ScsOrdenacionColasBean.C_IDORDENACIONCOLAS));
+					partidaPresupuestaria = new ScsPartidaPresupuestariaBean();
+					partidaPresupuestaria.setIdPartidaPresupuestaria(UtilidadesHash.getInteger(htFila,ScsPartidaPresupuestariaBean.C_IDPARTIDAPRESUPUESTARIA));
+					partidaPresupuestaria.setNombrePartida(UtilidadesHash.getString(htFila,"PARTIDAPRESUPUESTARIA"));
+					materia = new ScsMateriaBean();
+					materia.setIdMateria(UtilidadesHash.getInteger(htFila,ScsMateriaBean.C_IDMATERIA));
+					materia.setNombre(UtilidadesHash.getString(htFila,"MATERIA"));
+					area = new ScsAreaBean();
+					area.setIdArea(UtilidadesHash.getInteger(htFila,ScsAreaBean.C_IDAREA));
+					area.setNombre(UtilidadesHash.getString(htFila,"AREA"));
+					zona = new ScsZonaBean();
+					zona.setIdZona(UtilidadesHash.getInteger(htFila,ScsZonaBean.C_IDZONA));
+					zona.setNombre(UtilidadesHash.getString(htFila,"ZONA"));
+					subZona = new ScsSubzonaBean();
+					subZona.setIdSubzona(UtilidadesHash.getInteger(htFila,ScsSubzonaBean.C_IDSUBZONA));
+					subZona.setNombre(UtilidadesHash.getString(htFila,"SUBZONA"));
+					partidoJudicial = new CenPartidoJudicialBean();
+//					partidoJudicial.setIdPartido(UtilidadesHash.getInteger(htFila,CenPartidoJudicialBean.C_IDPARTIDO));
+					partidoJudicial.setNombre(UtilidadesHash.getString(htFila,"PARTIDOJUDICIAL"));
+					grupoFacturacion = new ScsGrupoFacturacionBean();
+					grupoFacturacion.setIdGrupoFacturacion(UtilidadesHash.getInteger(htFila,ScsGrupoFacturacionBean.C_IDGRUPOFACTURACION));
+					grupoFacturacion.setNombre(UtilidadesHash.getString(htFila,"GRUPOFACTURACION"));
+					turno.setPartidaPresupuestaria(partidaPresupuestaria);
+					turno.setMateria(materia);
+					turno.setArea(area);
+					turno.setZona(zona);
+					turno.setSubZona(subZona);
+					turno.setPartidoJudicial(partidoJudicial);
+					turno.setGrupoFacturacion(grupoFacturacion);
+					turno.setOrdenacionColas(ordenacionColas);
+					
+				}
+			} 
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar consulta.");
+		}
+		return turno;
+
+	}
+	
+	public Vector getTurnosDisponibles(Hashtable hashFiltro,Long idPersona,Integer idInstitucion) throws ClsExceptions{
+
+		
+
+
+			String sql = 
+				 " SELECT SCS_TURNO.IDTURNO IDTURNO, SCS_TURNO.NOMBRE NOMBRE, SCS_TURNO.ABREVIATURA ABREVIATURA,  SCS_AREA.NOMBRE AREA,   "+
+				 " SCS_AREA.IDAREA IDAREA, SCS_MATERIA.NOMBRE MATERIA, SCS_MATERIA.IDMATERIA IDMATERIA,  SCS_ZONA.NOMBRE ZONA,   "+
+				 " SCS_ZONA.IDZONA IDZONA, SCS_SUBZONA.NOMBRE SUBZONA, SCS_SUBZONA.IDSUBZONA IDSUBZONA,    "+
+				 " Pkg_Siga_Sjcs.FUN_SJ_PARTIDOSJUDICIALES("+idInstitucion+",SCS_SUBZONA.IDSUBZONA,SCS_ZONA.IDZONA) PARTIDOS,CEN_PARTIDOJUDICIAL.NOMBRE PARTIDOJUDICIAL, CEN_PARTIDOJUDICIAL.IDPARTIDO IDPARTIDOJUDICIAL,    "+
+				 " SCS_PARTIDAPRESUPUESTARIA.NOMBREPARTIDA PARTIDAPRESUPUESTARIA,    "+
+				 " SCS_PARTIDAPRESUPUESTARIA.IDPARTIDAPRESUPUESTARIA IDPARTIDAPRESUPUESTARIA,    "+
+				 UtilidadesMultidioma.getCampoMultidiomaSimple("SCS_GRUPOFACTURACION.NOMBRE", usrbean.getLanguage())+" GRUPOFACTURACION, SCS_GRUPOFACTURACION.IDGRUPOFACTURACION IDGRUPOFACTURACION,    "+
+				 " SCS_TURNO.GUARDIAS GUARDIAS, SCS_TURNO.VALIDARJUSTIFICACIONES VALIDARJUSTIFICACIONES,    "+
+				 " SCS_TURNO.VALIDARINSCRIPCIONES VALIDARINSCRIPCIONES, SCS_TURNO.DESIGNADIRECTA DESIGNADIRECTA,    "+
+				 " SCS_TURNO.DESCRIPCION DESCRIPCION, SCS_TURNO.REQUISITOS REQUISITOS,    "+
+				 " SCS_TURNO.IDPERSONA_ULTIMO IDPERSONAULTIMO, SCS_TURNO.IDPERSONA_ULTIMO IDORDENACIONCOLAS,    "+
+				 " SCS_ORDENACIONCOLAS.ALFABETICOAPELLIDOS A8LFABETICOAPELLIDOS, SCS_ORDENACIONCOLAS.FECHANACIMIENTO EDAD,    "+
+				 " SCS_ORDENACIONCOLAS.NUMEROCOLEGIADO ANTIGUEDAD, SCS_ORDENACIONCOLAS.ANTIGUEDADCOLA ANTIGUEDADENCOLA,   "+
+				 " (select count(1) "+
+				 "  from scs_guardiasturno g "+
+				 "  where g.idinstitucion=SCS_TURNO.Idinstitucion "+
+				 "     and g.idturno=scs_turno.idturno) NGUARDIAS "+
+				 "   ,SCS_TURNO.IDINSTITUCION "+
+				 " FROM  SCS_TURNO,SCS_PARTIDAPRESUPUESTARIA,SCS_GRUPOFACTURACION,SCS_MATERIA,SCS_AREA,SCS_SUBZONA,SCS_ZONA, CEN_PARTIDOJUDICIAL,SCS_ORDENACIONCOLAS  " +
+				 
+				 " WHERE SCS_PARTIDAPRESUPUESTARIA.idinstitucion (+)= SCS_TURNO.idinstitucion    "+
+				 " AND SCS_PARTIDAPRESUPUESTARIA.idpartidapresupuestaria (+)= SCS_TURNO.idpartidapresupuestaria   "+
+				 " AND  SCS_GRUPOFACTURACION.idinstitucion = SCS_TURNO.idinstitucion   "+
+				 " AND  SCS_GRUPOFACTURACION.idgrupofacturacion = SCS_TURNO.idgrupofacturacion   "+
+				 " AND  SCS_MATERIA.idinstitucion = SCS_TURNO.idinstitucion " +
+				 " AND  SCS_MATERIA.Idmateria = SCS_TURNO.Idmateria " +
+				 " AND SCS_Area.idarea = SCS_TURNO.idarea   "+
+				 " AND SCS_AREA.idinstitucion = SCS_MATERIA.idinstitucion   "+
+				 " AND SCS_AREA.idarea = SCS_MATERIA.idarea " + 
+				 " AND SCS_SUBZONA.idinstitucion = SCS_TURNO.idinstitucion    "+
+				 " AND SCS_SUBZONA.IDSUBZONA= SCS_TURNO.IDSUBZONA    "+
+				 " AND SCS_ZONA.idinstitucion = SCS_TURNO.idinstitucion"+
+				 " AND SCS_ZONA.idzona = SCS_TURNO.idzona     "+
+				 " and scs_zona.idzona=scs_subzona.idzona "+
+				 " AND CEN_PARTIDOJUDICIAL.idpartido (+)= SCS_SUBZONA.idpartido  "+
+				 " and scs_ordenacioncolas.idordenacioncolas = scs_turno.idordenacioncolas  " +
+				 " AND SCS_TURNO.idinstitucion = "+idInstitucion+
+				 " AND SCS_TURNO.IDTURNO NOT IN (select idturno from scs_inscripcionturno t where t.idpersona = "+idPersona+
+				 " and t.idinstitucion = "+idInstitucion+" and t.FECHABAJA IS NULL 	AND  FECHADENEGACION IS  NULL)";
+
+			try{
+				Integer.parseInt((String)hashFiltro.get("IDPARTIDOJUDICIAL"));
+			}catch(Exception e){hashFiltro.put("IDPARTIDOJUDICIAL","-1");}
+							
+			if(!((String)hashFiltro.get("ABREVIATURA")).equalsIgnoreCase("")){
+				sql += " AND "+ComodinBusquedas.prepararSentenciaCompleta(((String)hashFiltro.get("ABREVIATURA")).trim(),"SCS_TURNO."+ScsTurnoBean.C_ABREVIATURA);
+			}
+			if(!((String)hashFiltro.get("NOMBRE")).equalsIgnoreCase("")){
+				sql += " AND "+ComodinBusquedas.prepararSentenciaCompleta(((String)hashFiltro.get("NOMBRE")).trim(),"SCS_TURNO."+ScsTurnoBean.C_NOMBRE);
+			}
+			//if((ant)&&(Integer.parseInt((String)hash.get("IDAREA"))>0))where+=" and ";
+			if(Integer.parseInt((String)hashFiltro.get("IDAREA"))>0){
+				sql+=	" AND SCS_AREA.idarea = "+(String)hashFiltro.get("IDAREA");
+					//ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDAREA+" = "+((String)hash.get("IDAREA")).toUpperCase();
+			}
+			//if((ant)&&(Integer.parseInt((String)hash.get("IDMATERIA"))>0))where+=" and ";
+			try{
+				if(Integer.parseInt((String)hashFiltro.get("IDMATERIA"))>0){
+				sql+=	" AND SCS_MATERIA.idmateria ="+(String)hashFiltro.get("IDMATERIA");
+				// ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDAREA+" = "+((String)hash.get("IDAREA")).toUpperCase();
+				}
+			}catch(Exception e){}
+			//if((ant)&&(Integer.parseInt((String)hash.get("IDZONA"))>0))where+=" and ";
+			String idzon = "";
+			if (hashFiltro.get("IDZONA")!=null && !hashFiltro.get("IDZONA").equals("0")&& !hashFiltro.get("IDZONA").equals("")) {
+				idzon=(String)hashFiltro.get("IDZONA");
+				//idzon=idzon.substring(idzon.indexOf(","),idzon.length());
+				if(Integer.parseInt(idzon)>0){
+					sql+=	" AND SCS_ZONA.idzona ="+idzon;
+					//ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDZONA+" = "+((String)hash.get("IDZONA")).toUpperCase();
+				}
+			}
+			//if((ant)&&(Integer.parseInt((String)hash.get("IDSUBZONA"))>0))where+=" and ";
+			try{
+				if(Integer.parseInt((String)hashFiltro.get("IDSUBZONA"))>0){
+				sql+=	" AND SCS_SUBZONA.idsubzona = "+(String)hashFiltro.get("IDSUBZONA");
+				}
+			}catch(Exception e){}
+			//if((ant)&&(Integer.parseInt((String)hash.get("IDPARTIDAPRESUPUESTARIA"))>0))where+=" and ";
+			//ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDSUBZONA+"="+form.getSubzona()+" and "+
+			sql+=" order by SCS_TURNO.NOMBRE";
+			
+			Vector vTurno;
+			
+			vTurno = this.ejecutaSelect(sql);
+			
+		
+		return vTurno;
+}
+	
+	
+	
 	
 }

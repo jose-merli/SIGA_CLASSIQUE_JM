@@ -289,6 +289,10 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
 			sqlFechas.append(bajaTemporalForm.getFechaDesde());
 			sqlFechas.append("'");
 			
+		}else{
+			sqlFechas.append(" AND TRUNC(BT.FECHABT)>=TRUNC(SYSDATE)");
+			bajaTemporalForm.setFechaDesde(GstDate.getHoyJsp());
+			
 		}
 		if(bajaTemporalForm.getFechaHasta()!=null && !bajaTemporalForm.getFechaHasta().equals("")){
 			sqlFechas.append(" AND TRUNC(BT.FECHABT)<='");
@@ -358,9 +362,18 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
         	sqlBajas.append(" AND IT.IDINSTITUCION = COL.IDINSTITUCION ");
         	sqlBajas.append(" AND IT.IDINSTITUCION=");
         	sqlBajas.append(bajaTemporalForm.getIdInstitucion());
-        	sqlBajas.append(" AND IT.FECHABAJA IS NULL ");
+        	
         	sqlBajas.append(sqlWhereTurno);
-        	sqlBajas.append(" AND IT.FECHAVALIDACION IS NOT NULL) ");
+        	
+        	sqlBajas.append(" AND (IT.FECHABAJA IS NULL OR TRUNC(IT.FECHABAJA)>='");
+        	sqlBajas.append(bajaTemporalForm.getFechaDesde());
+        	sqlBajas.append("')");
+
+        	sqlBajas.append("AND (IT.FECHAVALIDACION IS NOT NULL AND TRUNC(IT.FECHAVALIDACION)<='");
+        	sqlBajas.append(bajaTemporalForm.getFechaDesde());
+        	sqlBajas.append("')");
+        	
+        	sqlBajas.append(" ) ");
         	sqlBajas.append(" OR  ");
         	sqlBajas.append(" EXISTS (SELECT IT.IDPERSONA ");
         	sqlBajas.append(" FROM SCS_INSCRIPCIONGUARDIA IT ");
@@ -375,10 +388,19 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
         	sqlBajas.append(" AND IT.IDINSTITUCION = COL.IDINSTITUCION ");
         	sqlBajas.append(" AND IT.IDINSTITUCION=");
         	sqlBajas.append(bajaTemporalForm.getIdInstitucion());
-        	sqlBajas.append(" AND IT.FECHABAJA IS NULL ");
         	sqlBajas.append(sqlWhereTurno);
         	sqlBajas.append(sqlWhereGuardia);
-        	sqlBajas.append(" AND IT.FECHASUSCRIPCION IS NOT NULL) ");
+        	sqlBajas.append(" AND (IT.FECHABAJA IS NULL OR TRUNC(IT.FECHABAJA)>='");
+        	sqlBajas.append(bajaTemporalForm.getFechaDesde());
+        	sqlBajas.append("')");
+
+        	sqlBajas.append("AND (IT.FECHAVALIDACION IS NOT NULL AND TRUNC(IT.FECHAVALIDACION)<='");
+        	sqlBajas.append(bajaTemporalForm.getFechaDesde());
+        	sqlBajas.append("')");
+        	
+        	sqlBajas.append(") ");
+        	
+        	
         	sqlBajas.append(" ) ");
 			
 			
@@ -410,10 +432,18 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
 			
 		}
 		sqlActivos.append(" AND IT.IDINSTITUCION = COL.IDINSTITUCION ");
-
-		sqlActivos.append(" AND IT.FECHABAJA IS NULL ");
 		sqlActivos.append(sqlWhereTurno);
-		sqlActivos.append(" AND IT.FECHAVALIDACION IS NOT NULL) ");
+		
+		sqlActivos.append(" AND (IT.FECHABAJA IS NULL OR TRUNC(IT.FECHABAJA)>='");
+		sqlActivos.append(bajaTemporalForm.getFechaDesde());
+		sqlActivos.append("')");
+
+		sqlActivos.append("AND (IT.FECHAVALIDACION IS NOT NULL AND TRUNC(IT.FECHAVALIDACION)<='");
+		sqlActivos.append(bajaTemporalForm.getFechaDesde());
+		sqlActivos.append("')");
+    	
+		
+		sqlActivos.append(" ) ");
 		sqlActivos.append(" AND NOT EXISTS (SELECT * ");
 		sqlActivos.append(" FROM CEN_BAJASTEMPORALES BT ");
 		sqlActivos.append(" WHERE BT.IDINSTITUCION = COL.IDINSTITUCION ");
@@ -461,10 +491,16 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
 			
 		}
 		sqlActivos.append(" AND IT.IDINSTITUCION = COL.IDINSTITUCION ");
-		sqlActivos.append(" AND IT.FECHABAJA IS NULL ");
 		sqlActivos.append(sqlWhereTurno);
 		sqlActivos.append(sqlWhereGuardia);
-		sqlActivos.append(" AND IT.FECHASUSCRIPCION IS NOT NULL) ");
+		sqlActivos.append(" AND (IT.FECHABAJA IS NULL OR TRUNC(IT.FECHABAJA)>='");
+		sqlActivos.append(bajaTemporalForm.getFechaDesde());
+		sqlActivos.append("')");
+
+		sqlActivos.append("AND (IT.FECHAVALIDACION IS NOT NULL AND TRUNC(IT.FECHAVALIDACION)<='");
+		sqlActivos.append(bajaTemporalForm.getFechaDesde());
+		sqlActivos.append("')");
+		sqlActivos.append(" ) ");
 		sqlActivos.append(" AND NOT EXISTS (SELECT * ");
 		sqlActivos.append(" FROM CEN_BAJASTEMPORALES BT ");
 		sqlActivos.append(" WHERE BT.IDINSTITUCION = COL.IDINSTITUCION ");

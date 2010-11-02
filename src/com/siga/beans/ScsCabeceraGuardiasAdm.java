@@ -50,7 +50,9 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 				ScsCabeceraGuardiasBean.C_USUMODIFICACION,
 				ScsCabeceraGuardiasBean.C_LETRADOSUSTITUIDO,	
 				ScsCabeceraGuardiasBean.C_FECHASUSTITUCION,
-				ScsCabeceraGuardiasBean.C_COMENSUSTITUCION			
+				ScsCabeceraGuardiasBean.C_COMENSUSTITUCION,
+				ScsCabeceraGuardiasBean.C_FECHAALTA,
+				ScsCabeceraGuardiasBean.C_POSICION
 		};
 		return campos;
 	}
@@ -84,6 +86,9 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 			bean.setFechaSustitucion	(UtilidadesHash.getString (hash, ScsCabeceraGuardiasBean.C_FECHASUSTITUCION));
 			bean.setComenSustitucion 	(UtilidadesHash.getString (hash, ScsCabeceraGuardiasBean.C_COMENSUSTITUCION));
 			bean.setLetradoSustituido	(UtilidadesHash.getLong(hash, ScsCabeceraGuardiasBean.C_LETRADOSUSTITUIDO));
+			bean.setFechaAlta(UtilidadesHash.getString (hash, ScsCabeceraGuardiasBean.C_FECHAALTA));
+			bean.setPosicion(UtilidadesHash.getInteger(hash, ScsCabeceraGuardiasBean.C_POSICION));
+			
 			
 			
 			
@@ -116,6 +121,8 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, ScsCabeceraGuardiasBean.C_LETRADOSUSTITUIDO, b.getLetradoSustituido());
 			UtilidadesHash.set(hash, ScsCabeceraGuardiasBean.C_FECHASUSTITUCION, b.getFechaSustitucion());
 			UtilidadesHash.set(hash, ScsCabeceraGuardiasBean.C_COMENSUSTITUCION, b.getComenSustitucion());
+			UtilidadesHash.set(hash, ScsCabeceraGuardiasBean.C_FECHAALTA, b.getFechaAlta());
+			UtilidadesHash.set(hash, ScsCabeceraGuardiasBean.C_POSICION, b.getPosicion());
 			
 			
 		}
@@ -709,6 +716,71 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 			
 			return consulta;
 		}
+
+	
+
+	
+	
+
+	
+
+	
+
+	
+	@Override
+	public boolean update(MasterBean bean) throws ClsExceptions {
+		// TODO Auto-generated method stub
+		return super.update(bean);
+	}
+
+	public Integer getMaximaPosicionCabecera(Integer idInstitucion, Integer idTurno, Integer idGuardia, Integer idCalendario,String fecha) throws ClsExceptions{
+		Integer posicion = null;
+		try {
+			Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+			int contador = 0;	
+			StringBuffer sql = new StringBuffer();
+			sql.append(" ");
+			sql.append("SELECT MAX(POSICION) POSICION FROM SCS_CABECERAGUARDIAS CG ");
+			sql.append("WHERE CG.IDTURNO = :");
+			contador ++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador),idTurno);
+			sql.append("AND CG.IDGUARDIA = :");
+			contador ++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador),idGuardia);
+			sql.append("AND CG.IDINSTITUCION = :");
+			contador ++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador),idInstitucion);
+			sql.append("AND CG.IDCALENDARIOGUARDIAS = :");
+			contador ++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador),idCalendario);
+			sql.append("AND TO_DATE(:");
+			contador ++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador),fecha);
+			sql.append(") BETWEEN TO_DATE(TRUNC(CG.FECHAINICIO)) AND TO_DATE(TRUNC(CG.FECHA_FIN)) ");
+
+			Vector v = this.selectGenericoBind(sql.toString(),htCodigos);
+			if (v!=null && !v.isEmpty()) {
+				Hashtable hash = (Hashtable)v.firstElement();
+				String pos = (String)hash.get("POSICION");
+				if (pos!=null && !pos.equals(""))
+					posicion = Integer.parseInt(pos);
+			}
+		}
+		catch (Exception e){
+			throw new ClsExceptions(e,"Excepcion en ScsCabeceraGuardiasAdm.getMaximaPoasicionCabecera().");
+		}
+		return posicion;
+	}
+
+	
+	
+
+	
 	
 	
 }

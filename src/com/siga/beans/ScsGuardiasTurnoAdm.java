@@ -296,7 +296,18 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 					ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_IDPERSONA+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONLABORABLES+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_ESVIOLENCIAGENERO+","+
-					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONFESTIVOS;
+					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONFESTIVOS+","+
+					ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA+","+
+					ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_FECHAVALIDACION+","+
+					ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION+","+
+					ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_OBSERVACIONESSUSCRIPCION+","+
+					ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_OBSERVACIONESBAJA+","+
+					ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_OBSERVACIONESDENEGACION+" OBSERVACIONESDENEGACION,"+
+					ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_FECHADENEGACION+" FECHADENEGACION,"+
+					"NVL("+ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_FECHADENEGACION+","+ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_FECHAVALIDACION+") FECHAVALOR,"+
+					"TO_CHAR(NVL("+ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_FECHADENEGACION+","+ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_FECHABAJA+"),'dd/mm/yyyy') FECHAVALORBAJA,"+
+					ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_VALIDARINSCRIPCIONES+" VALIDARINSCRIPCIONES";
+				
 				break;
 				
 			case 3:
@@ -313,7 +324,8 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_TIPODIASGUARDIA+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONLABORABLES+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_ESVIOLENCIAGENERO+","+
-					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONFESTIVOS;
+					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONFESTIVOS+","+
+					ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_VALIDARINSCRIPCIONES+" VALIDARINSCRIPCIONES";
 				break;
 				
 			case 4:
@@ -326,7 +338,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_TIPODIASGUARDIA+" TIPODIASGUARDIA"+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONLABORABLES+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_ESVIOLENCIAGENERO+","+
-					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONFESTIVOS;
+					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONFESTIVOS+"";
 				break;
 				
 			default:
@@ -1199,60 +1211,6 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 	       }
 	       return datos;                        
 	} //getDatosPlantillas ()
-	
-	/**
-	 * Efectúa un SELECT en la tabla SCS_TURNO con los datos introducidos. 
-	 * 
-	 * @param sql. Consulta a realizar
-	 * @return Vector de Hashtable con los registros que cumplan la sentencia sql 
-	 */
-	public Vector selectLetradosEnCola (String institucion, String turno, String guardia)
-	{
-		Vector vResult = null;
-		try
-		{
-			//Ejecucion del PL
-			String [] resultadoPl = EjecucionPLs.ejecutarPL_OrdenaColegiadosGuardia (
-					Integer.valueOf(institucion), Integer.valueOf(turno),
-					Integer.valueOf(guardia), new Integer(0));
-			//Resultado del PL
-			String contador = resultadoPl[0];
-			
-			//Consulta en la tabla temporal la posicion para el letrado
-			String consultaTemp =
-				"select T."+GenClientesTemporalBean.C_IDPERSONA+", " +
-				"       decode(C."+CenColegiadoBean.C_COMUNITARIO+", '"+ClsConstants.DB_TRUE+"', " +
-				"              C."+CenColegiadoBean.C_NCOMUNITARIO+", " +
-				"              C."+CenColegiadoBean.C_NCOLEGIADO+") " + CenColegiadoBean.C_NCOLEGIADO+", " +
-				"       P."+CenPersonaBean.C_IDPERSONA+", " +
-				"       P."+CenPersonaBean.C_NOMBRE+", " +
-				"       P."+CenPersonaBean.C_APELLIDOS1+", " +
-				"       P."+CenPersonaBean.C_APELLIDOS2+" " +
-				"  from "+GenClientesTemporalBean.T_NOMBRETABLA+" T, " +
-				"       "+CenColegiadoBean.T_NOMBRETABLA+" C, " +
-				"       "+CenPersonaBean.T_NOMBRETABLA+" P " +
-				" where T."+GenClientesTemporalBean.C_IDINSTITUCION+" = C."+CenColegiadoBean.C_IDINSTITUCION+" " +
-				"   and T."+GenClientesTemporalBean.C_IDPERSONA+" = C."+CenColegiadoBean.C_IDPERSONA+" " +
-				"   and T."+GenClientesTemporalBean.C_IDPERSONA+" = P."+CenPersonaBean.C_IDPERSONA+" " +
-				"   and T."+GenClientesTemporalBean.C_CONTADOR+" = "+contador+" " +
-				"   and T."+GenClientesTemporalBean.C_SALTO+" <> 'S'" +
-				" order by T."+GenClientesTemporalBean.C_POSICION;
-			
-			vResult = this.find(consultaTemp).getAll();
-			
-			//Borrar de la tabla temporal por el campo contador
-			String deleteTemp =
-				"delete "+GenClientesTemporalBean.T_NOMBRETABLA+
-				" where "+GenClientesTemporalBean.C_CONTADOR+"="+contador;
-			ClsMngBBDD.executeUpdate(deleteTemp);
-		}
-		catch (ClsExceptions e)
-		{
-			e.printStackTrace();
-		}
-		
-		return vResult;
-	} //selectLetradosEnCola ()
 
 
 	public static String getNombreGuardiaJSP (String institucion, String idturno, String idguardia) throws ClsExceptions,SIGAException {
@@ -1468,6 +1426,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 		
 		
 	} 
+	
 		
 
 }

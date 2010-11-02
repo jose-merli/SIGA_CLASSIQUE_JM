@@ -1,5 +1,6 @@
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -13,8 +14,11 @@ import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesHash;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.InscripcionTurno;
+import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
 
 
 public class BusquedaClientesFiltrosAdm {
@@ -116,7 +120,7 @@ public class BusquedaClientesFiltrosAdm {
 	 * @return Vector de Rows con los resultados
 	 * @throws ClsExceptions Excepcion interna
 	 */	
-	public Vector buscaLetradosTodasLasGuardias(String idInstitucion, String idTurno, String idGuardia, String fecha) throws ClsExceptions{
+	/*public Vector buscaLetradosTodasLasGuardias(String idInstitucion, String idTurno, String idGuardia, String fecha) throws ClsExceptions{
 		//primero buscamos los de nuestra guardia
 		Vector result=this.buscaInternaLetradosMismaGuardia(idInstitucion, idTurno, idGuardia, fecha, true, 0);
 		if(result==null) result= new Vector();
@@ -150,12 +154,11 @@ public class BusquedaClientesFiltrosAdm {
 		}
 		return result;
 	}
-	
+	*/
 	public Vector buscaLetradosTodasLasGuardiasDistintasAGuadria(String idInstitucion, String idTurno, String idGuardia, String fecha) throws ClsExceptions
 	{
 		//primero buscamos los de nuestra guardia
-		Vector result = new Vector();
-		int difRow=0;
+		Vector letradosTodasLasGuardiasDistintasAGuardiaVector = new Vector();
 		
 		//luego buscamos el resto de guardias
 		String sqlGuardias=
@@ -176,17 +179,18 @@ public class BusquedaClientesFiltrosAdm {
 				//y buscamos los de cada uno
 				Row auxR=(Row)guardias.get(i);
 				String auxG=auxR.getString(ScsGuardiasTurnoBean.C_IDGUARDIA);
-				Vector auxV=buscaInternaLetradosMismaGuardia(idInstitucion,idTurno,auxG,fecha, false, difRow);
+				Vector auxV=buscaInternaLetradosMismaGuardia(idInstitucion,idTurno,auxG,fecha, false, letradosTodasLasGuardiasDistintasAGuardiaVector.size());
 				if(auxV!=null){
-					while(!auxV.isEmpty()){
-						result.addElement(auxV.elementAt(0));
-						auxV.removeElementAt(0);
-						difRow++;
-					}
+					
+						if(auxV!=null){
+							letradosTodasLasGuardiasDistintasAGuardiaVector.addAll(auxV);
+
+						}
+					
 				}
 			}
 		}
-		return result;
+		return letradosTodasLasGuardiasDistintasAGuardiaVector;
 	}
 	
 	
@@ -202,7 +206,7 @@ public class BusquedaClientesFiltrosAdm {
 	 * @return Vector de Rows con los resultados
 	 * @throws ClsExceptions Excepcion interna
 	 */
-	public Vector buscaLetradosDelTurno(String idInstitucion, String idTurno, String idGuardia, String fecha)throws ClsExceptions{
+	protected Vector buscaLetradosDelTurno(String idInstitucion, String idTurno,  String fecha,int difRow)throws ClsExceptions{
 
 		////////////////////////
 		// Cambio ca-sjcs-004
@@ -211,10 +215,8 @@ public class BusquedaClientesFiltrosAdm {
 //		Vector result=buscaLetradosTodasLasGuardias(idInstitucion, idTurno, idGuardia,fecha);
 //		if(result==null) result= new Vector();
 		// Ahora:
-		Vector result = new Vector();
 		////////////////////////
 		
-		int difRow=result.size();
 		
 		//luego los que no tienen guardia
 		String sqlResto=	
@@ -248,7 +250,9 @@ public class BusquedaClientesFiltrosAdm {
 			"where it."+ScsInscripcionTurnoBean.C_IDINSTITUCION+"="+idInstitucion+
 			"  and it."+ScsInscripcionTurnoBean.C_IDTURNO+"="+idTurno+
 			"  and it."+ScsInscripcionTurnoBean.C_FECHAVALIDACION+" is not null"+
-			"  and it."+ScsInscripcionTurnoBean.C_FECHABAJA+" is null"+
+			"  and TRUNC(it."+ScsInscripcionTurnoBean.C_FECHAVALIDACION+") <= to_date('"+fecha.substring(0,10)+"','YYYY/MM/DD') "+
+			"  and (it."+ScsInscripcionTurnoBean.C_FECHABAJA+" is null"+
+			"  or TRUNC(it."+ScsInscripcionTurnoBean.C_FECHABAJA+") > to_date('"+fecha.substring(0,10)+"','YYYY/MM/DD') )"+
 			"  and it."+ScsInscripcionTurnoBean.C_IDINSTITUCION+"=c."+CenColegiadoBean.C_IDINSTITUCION+
 			"  and it."+ScsInscripcionTurnoBean.C_IDINSTITUCION+"=t."+ScsTurnoBean.C_IDINSTITUCION+
 			"  and it."+ScsInscripcionTurnoBean.C_IDTURNO+"=t."+ScsTurnoBean.C_IDTURNO+
@@ -258,115 +262,15 @@ public class BusquedaClientesFiltrosAdm {
 			" order by p."+CenPersonaBean.C_APELLIDOS1+",p."+CenPersonaBean.C_APELLIDOS2+",p."+CenPersonaBean.C_NOMBRE+ 
 			" ) x";
 		
-		Vector resto=findNLS(sqlResto);
-		if(resto!=null && !resto.isEmpty()){
-			while(!resto.isEmpty()){
-				result.addElement(resto.elementAt(0));
-				resto.removeElementAt(0);
-			}
-		}
 		
-		return result;
+		
+		return findNLS(sqlResto);
 	}
 	
 	
-	/**
-	 * Busca todos los letrados del turno ordenados por salto y posicion
-	 * @param idInstitucion Identificador de la institucion
-	 * @param idTurno Identificador del turno
-	 * @return Vector de Rows con los resultados
-	 * @throws ClsExceptions Excepcion interna
-	 */
-	public Vector buscaLetradosDelTurno(String idInstitucion, String idTurno)throws ClsExceptions{
-		return buscaInternaLetradosDelTurno(idInstitucion, idTurno, 0,"1");
+	public Vector buscaLetradosDelTurno(String idInstitucion, String idTurno, String fecha) throws ClsExceptions {
+		return buscaLetradosDelTurno(idInstitucion, idTurno, fecha, 0);
 	}
-	
-	
-	/**
-	 * Busca los letrados de todos los turnos:<br>
-	 * Los de la misma guardia ordenados por posicion<br>
-	 * Los del resto de guardias por orden alfabetico de guardia y nombre<br>
-	 * Los del mismo turno que no tienen guardias por orden alfabetico de nombre<br>
-	 * Los de otros turnos por orden alfabetico de turnos y nombre<br>
-	 * @param idInstitucion Identificador de la institucion
-	 * @param idTurno Identificador del turno
-	 * @param idGuardia Identificador de la guardia
-	 * @param fecha Fecha sobre la que se realiza la busqueda
-	 * @return Vector de Rows con los resultados
-	 * @throws ClsExceptions Excepcion interna
-	 */
-	public Vector buscaLetradosTodosLosTurnos(String idInstitucion, String idTurno, String idGuardia, String fecha) throws ClsExceptions{
-
-		////////////////////////
-		// Cambio ca-sjcs-004
-		// Antes:
-		//primero todos los de nuestro turno
-//		Vector result=buscaLetradosDelTurno(idInstitucion, idTurno, idGuardia,fecha);
-//		if(result==null) result= new Vector();
-		// Ahora:
-		Vector result= new Vector();
-		////////////////////////
-
-		int difRow=result.size();
-		//luego el resto de turnos
-		
-		//luego los turnos que no tienen guardia
-		String sqlResto=	
-			"select "+difRow+" N, x.*	from ("+
-			"select p."+CenPersonaBean.C_IDPERSONA+","+ 
-			"p."+CenPersonaBean.C_NIFCIF+","+ 
-			"c."+CenColegiadoBean.C_NCOLEGIADO+","+ 
-			"p."+CenPersonaBean.C_NOMBRE+","+ 
-			"p."+CenPersonaBean.C_APELLIDOS1+","+ 
-			"p."+CenPersonaBean.C_APELLIDOS2+","+ 
-			"t."+ScsTurnoBean.C_NOMBRE+" TURNO,"+
-			" '' GUARDIA,"+
-			" '' POSICION, "+
-			" '0' SALTO "+
-			
-			", (select TELEFONO1 from cen_direccion_tipodireccion t, cen_direcciones pe "+
-			" where pe."+CenDireccionesBean.C_IDINSTITUCION+"=t."+CenDireccionTipoDireccionBean.C_IDINSTITUCION+
-			" and pe."+CenDireccionesBean.C_IDPERSONA+"=t."+CenDireccionTipoDireccionBean.C_IDPERSONA+
-			" and pe."+CenDireccionesBean.C_IDDIRECCION+"=t."+CenDireccionTipoDireccionBean.C_IDDIRECCION+
-			" and pe."+CenDireccionesBean.C_IDINSTITUCION+"="+idInstitucion +
-			" and pe."+CenDireccionesBean.C_IDPERSONA+"=p."+CenPersonaBean.C_IDPERSONA+
-			" and t."+CenDireccionTipoDireccionBean.C_IDTIPODIRECCION+"=6" +
-			" and pe."+CenDireccionesBean.C_FECHABAJA+" is null " +
-			" and rownum=1) TELEFONO "+
-			
-			"from "+
-			ScsInscripcionTurnoBean.T_NOMBRETABLA+" it,"+
-			this.getTablaColegiado()+" c,"+
-			this.getTablaPersona()+" p,"+
-			ScsTurnoBean.T_NOMBRETABLA+" t "+
-			"where it."+ScsInscripcionTurnoBean.C_IDINSTITUCION+"="+idInstitucion+
-			////////////////////////
-			// Cambio ca-sjcs-004
-			// Antes:
-//			"  and it."+ScsInscripcionTurnoBean.C_IDTURNO+"<>"+idTurno+
-			////////////////////////
-			
-			"  and it."+ScsInscripcionTurnoBean.C_FECHAVALIDACION+" is not null"+
-			"  and it."+ScsInscripcionTurnoBean.C_FECHABAJA+" is null"+
-			"  and it."+ScsInscripcionTurnoBean.C_IDINSTITUCION+"=c."+CenColegiadoBean.C_IDINSTITUCION+
-			"  and it."+ScsInscripcionTurnoBean.C_IDINSTITUCION+"=t."+ScsTurnoBean.C_IDINSTITUCION+
-			"  and it."+ScsInscripcionTurnoBean.C_IDTURNO+"=t."+ScsTurnoBean.C_IDTURNO+
-			"  and it."+ScsInscripcionTurnoBean.C_IDPERSONA+"=c."+CenColegiadoBean.C_IDPERSONA+
-			"  and it."+ScsInscripcionTurnoBean.C_IDPERSONA+"=p."+CenPersonaBean.C_IDPERSONA+
-//			" order by t."+ScsTurnoBean.C_NOMBRE+",p."+CenPersonaBean.C_APELLIDOS1+",p."+CenPersonaBean.C_APELLIDOS2+",p."+CenPersonaBean.C_NOMBRE+ 
-			" order by p."+CenPersonaBean.C_APELLIDOS1+",p."+CenPersonaBean.C_APELLIDOS2+",p."+CenPersonaBean.C_NOMBRE+
-			" ) x";
-		
-		Vector resto=findNLS(sqlResto);
-		if(resto!=null && !resto.isEmpty()){
-			while(!resto.isEmpty()){
-				result.addElement(resto.elementAt(0));
-				resto.removeElementAt(0);
-			}
-		}
-		return result;
-	}
-	
 	
 	/**
 	 * Busca los letrados de todos los turnos:
@@ -377,11 +281,10 @@ public class BusquedaClientesFiltrosAdm {
 	 * @return Vector de Rows con los resultados
 	 * @throws ClsExceptions Excepcion interna
 	 */
-	public Vector buscaLetradosTodosLosTurnos(String idInstitucion, String idTurno) throws ClsExceptions{
+	public Vector buscaLetradosTodosLosTurnos(String idInstitucion, String idTurno,String fecha) throws ClsExceptions{
 		//primero buscamos los de nuestro turno
-		Vector result=buscaInternaLetradosDelTurno(idInstitucion, idTurno, 0,"1");
-		if(result==null) result= new Vector();
-		int difRow=result.size();
+		Vector letradoTodosLosTurnosTurnoVector = buscaLetradosDelTurno(idInstitucion, idTurno, fecha,0);
+		if(letradoTodosLosTurnosTurnoVector==null) letradoTodosLosTurnosTurnoVector= new Vector();
 		
 		//luego buscamos el resto de turnos
 		String sqlTurnos=
@@ -398,19 +301,16 @@ public class BusquedaClientesFiltrosAdm {
 				//y buscamos los de cada uno
 				Row auxR=(Row)turnos.get(i);
 				String auxT=auxR.getString(ScsTurnoBean.C_IDTURNO);
-				Vector auxV=buscaInternaLetradosDelTurno(idInstitucion, auxT, difRow,"0");
+				Vector auxV=buscaLetradosDelTurno(idInstitucion, auxT,fecha, letradoTodosLosTurnosTurnoVector.size());
 				if(auxV!=null){
-					while(!auxV.isEmpty()){
-						result.addElement(auxV.elementAt(0));
-						auxV.removeElementAt(0);
-						difRow++;
-					}
+					letradoTodosLosTurnosTurnoVector.addAll(auxV);
+
 				}
 			}
 		}
-		return result;
+		
+		return letradoTodosLosTurnosTurnoVector;
 	}
-	
 	
 	/**
 	 * Busca todos los letrados del censo:<br>
@@ -426,32 +326,14 @@ public class BusquedaClientesFiltrosAdm {
 	 * @return Vector de Rows con los resultados
 	 * @throws ClsExceptions Excepcion interna
 	 */
-	public Vector buscaLetradosCensoCompleto(String idInstitucion, String idTurno, String idGuardia, String fecha)throws ClsExceptions{
+	public Vector buscaLetradosCensoCompleto(String idInstitucion,  String fecha)throws ClsExceptions{
 
-		////////////////////////
-		// Cambio ca-sjcs-004
-		// Antes:
-		//Primero los que tienen turno
-//		Vector result=buscaLetradosTodosLosTurnos(idInstitucion, idTurno, idGuardia, fecha);
-//		if(result==null) result= new Vector();
-//		int difRow=result.size();
-//		
-//		//luego los que no tienen turno
-//		String sqlResto="select "+difRow+ " N, x.* "+ " from ("+	this.getSqlLetradosSinTurno(idInstitucion)+") x ";
-
-		//Ahora:
-		Vector result= new Vector();
 		String sqlResto="select "+ 0 + " N, x.* "+ " from ("+	this.getSqlLetradosCompleto(idInstitucion)+") x ";
 		////////////////////////
 		
-		Vector resto=findNLS(sqlResto);
-		if(resto!=null && !resto.isEmpty()){
-			while(!resto.isEmpty()){
-				result.addElement(resto.elementAt(0));
-				resto.removeElementAt(0);
-			}
-		}
-		return result;
+		Vector letradosCensoCompletoVector=findNLS(sqlResto);
+		
+		return letradosCensoCompletoVector;
 	}
 	
 	/**
@@ -464,9 +346,9 @@ public class BusquedaClientesFiltrosAdm {
 	 * @return Vector de Rows con los resultados
 	 * @throws ClsExceptions Excepcion interna
 	 */
-	public Vector buscaLetradosCensoCompleto(String idInstitucion, String idTurno)throws ClsExceptions{
+	/*public Vector buscaLetradosCensoCompleto(String idInstitucion, String idTurno,String fecha)throws ClsExceptions{
 		//Primero los que tienen turno
-		Vector result=buscaLetradosTodosLosTurnos(idInstitucion, idTurno);
+		Vector result=buscaLetradosTodosLosTurnos(idInstitucion, idTurno,fecha);
 		if(result==null) result= new Vector();
 		int difRow=result.size();
 		
@@ -487,37 +369,31 @@ public class BusquedaClientesFiltrosAdm {
 		
 		return result;
 	}
-	
+	*/
 			
-	public synchronized Row gestionaDesignacionesAutomaticas(String idInstitucion, String idTurno, String fecha)throws ClsExceptions, SIGAException{
+	public synchronized LetradoGuardia gestionaDesignacionesAutomaticas(String idInstitucion, String idTurno, String fecha)throws ClsExceptions, SIGAException{
 		
-		String contador = null;
-		Row row = null;
 		String saltoocompensacion = null;
 		String idSaltosTurno;
-		String idPersona;
-		
+		ScsSaltosCompensacionesAdm saltocompAdm = new ScsSaltosCompensacionesAdm(usrbean);
 		try{
 			//busco las compensaciones
-			Vector compensacionesSaltos = compensacionesSaltos(idInstitucion, idTurno);
+			Vector<LetradoGuardia> letradosCompensacionesVector = saltocompAdm.getLetradosSaltosCompensacionesTurno(idInstitucion, idTurno);
 			
-			if (compensacionesSaltos != null) {
-				for (int i = 0; i < compensacionesSaltos.size();i++){
-					row = (Row)compensacionesSaltos.get(i);
-					saltoocompensacion = row.getString(ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION);					
+			if (letradosCompensacionesVector != null && letradosCompensacionesVector.size()>0) {
+				for (LetradoGuardia letradoTurno :letradosCompensacionesVector){
+					//letradoGuardia = (Row)compensacionesSaltos.get(i);
+					saltoocompensacion = letradoTurno.getSaltoCompensacion();					
 
 					if (ClsConstants.COMPENSACIONES.equals(saltoocompensacion)) {
-						idSaltosTurno = row.getString(ScsSaltosCompensacionesBean.C_IDSALTOSTURNO);
-						
-						
-						
+						idSaltosTurno = letradoTurno.getIdSaltoCompensacion();
 						
 						CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(usrbean);
 						//comprobamos que el confirmador no esta de vacaciones la fecha que del solicitante
-						Map<String,CenBajasTemporalesBean> mBajasTemporales =  bajasTemporalescioneAdm.getDiasBajaTemporal(new Long(row.getString(ScsSaltosCompensacionesBean.C_IDPERSONA)), new Integer(idInstitucion));
+						Map<String,CenBajasTemporalesBean> mBajasTemporales =  bajasTemporalescioneAdm.getDiasBajaTemporal(letradoTurno.getIdPersona(), new Integer(idInstitucion));
 						if(mBajasTemporales.containsKey(fecha)){
 							ScsSaltosCompensacionesBean salto = new ScsSaltosCompensacionesBean(
-								new Integer(idInstitucion),new Integer(idTurno),new Long(row.getString(ScsSaltosCompensacionesBean.C_IDPERSONA)),ClsConstants.SALTOS,"sysdate");
+								new Integer(idInstitucion),new Integer(idTurno),letradoTurno.getIdPersona(),ClsConstants.SALTOS,"sysdate");
 							ScsSaltosCompensacionesAdm scsSaltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(this.usrbean);
 							CenBajasTemporalesBean bajaTemporal= (CenBajasTemporalesBean)mBajasTemporales.get(fecha);
 							//bajaTemporal.setDescripcion(bajaTemporal.getDescripcion()+" al crear designa para el "+fecha+" ");
@@ -530,87 +406,50 @@ public class BusquedaClientesFiltrosAdm {
 
 						updateCompensacion(idInstitucion, idTurno, idSaltosTurno);
 						
-						return row;
+						return letradoTurno;
 					}
 				}
 			}
-			
-			contador = EjecucionPLs.ejecutarPL_OrdenaColegiadosTurno(
-					Integer.valueOf(idInstitucion), Integer.valueOf(idTurno), 0)[0];
-			
-			String consultaTemp =
-				"select p."+CenPersonaBean.C_IDPERSONA+","+ 
-				"p."+CenPersonaBean.C_NIFCIF+","+ 
-				"c."+CenColegiadoBean.C_NCOLEGIADO+","+ 
-				"p."+CenPersonaBean.C_NOMBRE+","+ 
-				"p."+CenPersonaBean.C_APELLIDOS1+","+ 
-				"p."+CenPersonaBean.C_APELLIDOS2+","+ 
-				"'0' SALTO, "+
-				"ct."+GenClientesTemporalBean.C_SALTO+" COMPENSACION "+
-				"from "+
-				"(select "+GenClientesTemporalBean.C_IDPERSONA+","+
-				GenClientesTemporalBean.C_SALTO+","+
-				GenClientesTemporalBean.C_POSICION+
-				"   from "+GenClientesTemporalBean.T_NOMBRETABLA+
-				"  where "+GenClientesTemporalBean.C_CONTADOR+"="+contador+
-				"  order by "+GenClientesTemporalBean.C_POSICION+") ct,"+
-				this.getTablaColegiado()+" c,"+
-				CenPersonaBean.T_NOMBRETABLA+" p"+
-				" where c."+CenColegiadoBean.C_IDINSTITUCION+"="+idInstitucion+
-				"   and ct."+GenClientesTemporalBean.C_IDPERSONA+"=p."+CenPersonaBean.C_IDPERSONA+
-				"   and ct."+GenClientesTemporalBean.C_IDPERSONA+"=c."+CenColegiadoBean.C_IDPERSONA+
-				" order by ct."+GenClientesTemporalBean.C_SALTO+",ct."+GenClientesTemporalBean.C_POSICION;		
-			
-			
-			
-			row = null;
-			Vector vResult = find(consultaTemp);
-			if(vResult != null && vResult.size() > 0) {	
+
+			List<LetradoGuardia> colaLetradosTurnoList = InscripcionTurno.getColaTurno(Integer.valueOf(idInstitucion), Integer.valueOf(idTurno), fecha,true,usrbean);
+			if(colaLetradosTurnoList != null && colaLetradosTurnoList.size() > 0) {	
 				int i = 0;
-				while ((row = (Row)vResult.get(i)) != null) {
-					idPersona = row.getString(GenClientesTemporalBean.C_IDPERSONA);
+				for (LetradoGuardia letradoTurno :colaLetradosTurnoList){
+					Long idPersona = letradoTurno.getIdPersona();
 					
 					CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(usrbean);
 					//comprobamos que el letrado no esta de vacaciones 
 					Map<String,CenBajasTemporalesBean> mBajasTemporales =  bajasTemporalescioneAdm.getDiasBajaTemporal(new Long(idPersona), new Integer(idInstitucion));
 					if(mBajasTemporales.containsKey(fecha)){
 						ScsSaltosCompensacionesBean salto = new ScsSaltosCompensacionesBean(
-							new Integer(idInstitucion),new Integer(idTurno),new Long(row.getString(ScsSaltosCompensacionesBean.C_IDPERSONA)),ClsConstants.SALTOS,"sysdate");
+							new Integer(idInstitucion),new Integer(idTurno),letradoTurno.getIdPersona(),ClsConstants.SALTOS,"sysdate");
 						ScsSaltosCompensacionesAdm scsSaltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(this.usrbean);
 						CenBajasTemporalesBean bajaTemporal= (CenBajasTemporalesBean)mBajasTemporales.get(fecha);
 						//bajaTemporal.setDescripcion(bajaTemporal.getDescripcion()+" al crear designa para el "+fecha+" ");
 						scsSaltosCompensacionesAdm.insertarSaltoPorBajaTemporal(bajaTemporal,salto);
-						i++;
 						continue;
 					}
 					
-					idSaltosTurno = getIdSaltoTurno(compensacionesSaltos, idPersona);
+					idSaltosTurno = getIdSaltoTurno(letradosCompensacionesVector, idPersona.toString());
 					//se buscan los saltos
 					if (idSaltosTurno != null) {
-						
-						updateCompensacion(idInstitucion, idTurno, idSaltosTurno);						
+						updateCompensacion(idInstitucion, idTurno, idSaltosTurno);
+						continue;
 					} else {
-						break;
+						return letradoTurno;
 					}
 					
-					if (i==vResult.size()-1)
-						//Se ha de repetir el bucle hasta que encontremos a alguien sin saltos.
-						i = 0;
-					else
-						i++;
+					
 				}
 			}
 			
-			if (row == null) {
-				throw new SIGAException("messages.designa.colaVacia");
-			}
+			throw new SIGAException("messages.designa.colaVacia");
+
 			
 		}catch(ClsExceptions ex){
 			throw ex;
-		}finally{
-			borraTemporal(contador);
 		}
-		return row;
+		
 	}
 	
 	
@@ -618,12 +457,12 @@ public class BusquedaClientesFiltrosAdm {
 		String idSaltoTurno = null;
 		if (compensacionesSaltos != null){
 			for (int i = 0; i < compensacionesSaltos.size();i++){
-				Row row = (Row)compensacionesSaltos.get(i);
-				String idPersonaSC = row.getString(ScsSaltosCompensacionesBean.C_IDPERSONA);
-				String salto = row.getString(ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION);
-				if (idPersona.trim().equals(idPersonaSC)){
+				LetradoGuardia letradoTurno = (LetradoGuardia)compensacionesSaltos.get(i);
+				Long idPersonaSC = letradoTurno.getIdPersona();
+				String salto = letradoTurno.getSaltoCompensacion();
+				if (idPersona.toString().equals(idPersonaSC)){
 					if (salto != null && salto.trim().equals(ClsConstants.SALTOS)) {
-						idSaltoTurno = row.getString(ScsSaltosCompensacionesBean.C_IDSALTOSTURNO);
+						idSaltoTurno = letradoTurno.getIdSaltoCompensacion();
 						compensacionesSaltos.remove(i);
 						break;
 					}
@@ -650,28 +489,7 @@ public class BusquedaClientesFiltrosAdm {
 	}
 
 
-	private Vector compensacionesSaltos(String idInstitucion, String idTurno) throws ClsExceptions {
 	
-		String sql = "select p." + CenPersonaBean.C_IDPERSONA +
-				", p." + CenPersonaBean.C_NIFCIF +
-				", c." + CenColegiadoBean.C_NCOLEGIADO +
-				", p." + CenPersonaBean.C_NOMBRE +
-				", p." + CenPersonaBean.C_APELLIDOS1 +
-				", p." + CenPersonaBean.C_APELLIDOS2 +
-				", sc." + ScsSaltosCompensacionesBean.C_IDSALTOSTURNO +
-				", sc." + ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION + 
-				" from "+ScsSaltosCompensacionesBean.T_NOMBRETABLA+" sc, "+CenPersonaBean.T_NOMBRETABLA+" p, " + CenColegiadoBean.T_NOMBRETABLA + " c" +
-				" where sc."+ScsSaltosCompensacionesBean.C_IDPERSONA+" = p." + CenPersonaBean.C_IDPERSONA +
-				" and sc."+ScsSaltosCompensacionesBean.C_IDPERSONA+" = c." + CenColegiadoBean.C_IDPERSONA +
-				" and sc."+ScsSaltosCompensacionesBean.C_IDINSTITUCION + " = " + idInstitucion +
-				" and sc."+ScsSaltosCompensacionesBean.C_IDINSTITUCION + " = c." + CenColegiadoBean.C_IDINSTITUCION +
-				" and sc."+ScsSaltosCompensacionesBean.C_IDTURNO+" = " + idTurno +
-				" and sc."+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+" is null" +
-				" and sc." + ScsSaltosCompensacionesBean.C_IDGUARDIA + " is null" +
-				" order by sc."+ScsSaltosCompensacionesBean.C_FECHA;
-		
-		return find(sql);	
-	}
 
 
 	
@@ -788,7 +606,7 @@ public class BusquedaClientesFiltrosAdm {
 			") a,"+
 			this.getTablaColegiado()+" c,"+
 			CenPersonaBean.T_NOMBRETABLA+" p"+
-			" where c."+GenClientesTemporalBean.C_IDINSTITUCION+"="+idInstitucion+
+			" where c."+CenColegiadoBean.C_IDINSTITUCION+"="+idInstitucion+
 			"   and a."+ScsGuardiasColegiadoBean.C_IDPERSONA+"=p."+CenPersonaBean.C_IDPERSONA+
 			"   and a."+ScsGuardiasColegiadoBean.C_IDPERSONA+"=c."+CenColegiadoBean.C_IDPERSONA;
 		
@@ -846,7 +664,7 @@ public class BusquedaClientesFiltrosAdm {
 			") a,"+
 			this.getTablaColegiado()+" c,"+
 			CenPersonaBean.T_NOMBRETABLA+" p"+
-			" where c."+GenClientesTemporalBean.C_IDINSTITUCION+"="+idInstitucion+
+			" where c."+CenColegiadoBean.C_IDINSTITUCION+"="+idInstitucion+
 			"   and a."+ScsGuardiasColegiadoBean.C_IDPERSONA+"=p."+CenPersonaBean.C_IDPERSONA+
 			"   and a."+ScsGuardiasColegiadoBean.C_IDPERSONA+"=c."+CenColegiadoBean.C_IDPERSONA;
 		
@@ -903,7 +721,7 @@ public class BusquedaClientesFiltrosAdm {
 			") a,"+
 			this.getTablaColegiado()+" c,"+
 			CenPersonaBean.T_NOMBRETABLA+" p"+
-			" where c."+GenClientesTemporalBean.C_IDINSTITUCION+"="+idInstitucion+
+			" where c."+CenColegiadoBean.C_IDINSTITUCION+"="+idInstitucion+
 			"   and a."+ScsGuardiasColegiadoBean.C_IDPERSONA+"=p."+CenPersonaBean.C_IDPERSONA+
 			"   and a."+ScsGuardiasColegiadoBean.C_IDPERSONA+"=c."+CenColegiadoBean.C_IDPERSONA;
 		
@@ -915,18 +733,7 @@ public class BusquedaClientesFiltrosAdm {
 		return result;
 	}
 	
-	/**
-	 * Borra de la tabla temporal los registros que referencia el contador
-	 * @param contador Referencia a la lista de registros en la tabla temporal
-	 * @throws ClsExceptions Excepcion interna
-	 */	
-	protected void borraTemporal(String contador)throws ClsExceptions{
-		//Borrar de la tabla temporal por el campo contador
-		String deleteTemp =
-			"delete "+GenClientesTemporalBean.T_NOMBRETABLA+
-			" where "+GenClientesTemporalBean.C_CONTADOR+"="+contador;
-		ClsMngBBDD.executeUpdate(deleteTemp);
-	}		
+	
 	
 	
 	/**
@@ -995,7 +802,11 @@ public class BusquedaClientesFiltrosAdm {
 				"where g."+ScsInscripcionGuardiaBean.C_IDINSTITUCION+"="+idInstitucion+
 						"  and g."+ScsInscripcionGuardiaBean.C_IDTURNO+"="+idTurno+
 						"  and g."+ScsInscripcionGuardiaBean.C_IDGUARDIA+"="+idGuardia+
-						"  and g."+ScsInscripcionGuardiaBean.C_FECHABAJA+" is null"+
+						" and g.fechavalidacion is not null "+
+						" and TRUNC(g.fechavalidacion) <= "+
+						" to_date('"+fecha.substring(0,10)+"', 'YYYY/MM/DD') "+
+						" and (g.fechabaja is null or "+
+						" TRUNC(g.fechabaja) > to_date('"+fecha.substring(0,10)+"', 'YYYY/MM/DD')) "+
 						"  and g."+ScsInscripcionGuardiaBean.C_IDINSTITUCION+"=c."+CenColegiadoBean.C_IDINSTITUCION+
 						"  and g."+ScsInscripcionGuardiaBean.C_IDINSTITUCION+"=gt."+ScsGuardiasTurnoBean.C_IDINSTITUCION+
 						"  and g."+ScsInscripcionGuardiaBean.C_IDINSTITUCION+"=t."+ScsTurnoBean.C_IDINSTITUCION+
@@ -1014,69 +825,20 @@ public class BusquedaClientesFiltrosAdm {
 	}
 	
 	
-	/**
-	 * Busca todos los letrados del turno ordenados por salto y posicion
-	 * @param idInstitucion Identificador de la institucion
-	 * @param idTurno Identificador del turno
-	 * @param difRow Posicion de la fila anterior
-	 * @return Vector de Rows con los resultados
-	 * @throws ClsExceptions Excepcion interna
-	 */
-	protected Vector buscaInternaLetradosDelTurno(String idInstitucion, String idTurno, int difRow, String salto)throws ClsExceptions{
-		Vector vResult = null;
-		try{
-			String contador = EjecucionPLs.ejecutarPL_OrdenaColegiadosTurno(
-					Integer.valueOf(idInstitucion), Integer.valueOf(idTurno), 1)[0];
-			
-			//Consulta en la tabla temporal la posicion para el letrado
-			String consultaTemp =
-				"select "+difRow+" N, x.*	from ("+
-				"select p."+CenPersonaBean.C_IDPERSONA+","+ 
-				"p."+CenPersonaBean.C_NIFCIF+","+ 
-				"c."+CenColegiadoBean.C_NCOLEGIADO+","+ 
-				"p."+CenPersonaBean.C_NOMBRE+","+ 
-				"p."+CenPersonaBean.C_APELLIDOS1+","+ 
-				"p."+CenPersonaBean.C_APELLIDOS2+","+ 
-				"t."+ScsTurnoBean.C_NOMBRE+" TURNO, "+
-				(salto==null?"":"'"+salto+"' SALTO,")+
-				"ct."+GenClientesTemporalBean.C_SALTO+" COMPENSACION, "+
-				
-				
-				" (select TELEFONO1 from cen_direccion_tipodireccion t, cen_direcciones pe "+
-				" where pe."+CenDireccionesBean.C_IDINSTITUCION+"=t."+CenDireccionTipoDireccionBean.C_IDINSTITUCION+
-				" and pe."+CenDireccionesBean.C_IDPERSONA+"=t."+CenDireccionTipoDireccionBean.C_IDPERSONA+
-				" and pe."+CenDireccionesBean.C_IDDIRECCION+"=t."+CenDireccionTipoDireccionBean.C_IDDIRECCION+
-				" and pe."+CenDireccionesBean.C_IDINSTITUCION+"="+idInstitucion +
-				" and pe."+CenDireccionesBean.C_IDPERSONA+"=p."+CenPersonaBean.C_IDPERSONA+
-				" and t."+CenDireccionTipoDireccionBean.C_IDTIPODIRECCION+"=6 "+
-				" and pe."+CenDireccionesBean.C_FECHABAJA+" is null " +
-				" and rownum=1) TELEFONO "+
-				
-				
-				"from "+
-				GenClientesTemporalBean.T_NOMBRETABLA+" ct,"+
-				this.getTablaColegiado()+" c,"+
-				this.getTablaPersona()+" p,"+
-				ScsTurnoBean.T_NOMBRETABLA+" t "+
-				" where ct."+GenClientesTemporalBean.C_IDINSTITUCION+"="+idInstitucion+
-				"   and ct."+GenClientesTemporalBean.C_CONTADOR+"="+contador+
-				"   and t."+ScsTurnoBean.C_IDTURNO+"="+idTurno+
-				"   and ct."+GenClientesTemporalBean.C_IDINSTITUCION+"=t."+ScsTurnoBean.C_IDINSTITUCION+
-				"   and ct."+GenClientesTemporalBean.C_IDINSTITUCION+"=c."+CenColegiadoBean.C_IDINSTITUCION+
-				"   and ct."+GenClientesTemporalBean.C_IDPERSONA+"=p."+CenPersonaBean.C_IDPERSONA+
-				"   and ct."+GenClientesTemporalBean.C_IDPERSONA+"=c."+CenColegiadoBean.C_IDPERSONA+
-				" ORDER BY ct."+GenClientesTemporalBean.C_SALTO+",ct."+GenClientesTemporalBean.C_POSICION+
-				") x";
-			
-			vResult=findNLS(consultaTemp);
-			
-			borraTemporal(contador);
-			
-		}catch(ClsExceptions e){
-			e.printStackTrace();
+	
+	/*protected Vector buscaInternaLetradosDelTurnoNew(String idInstitucion, String idTurno, String fecha, int difRow)throws ClsExceptions{
+		List<LetradoGuardia> letradosColaTurnoList = InscripcionTurno.getColaTurno(Integer.valueOf(idInstitucion), Integer.valueOf(idTurno), fecha, false, usrbean);
+		Vector letradosColaTurnoVector = new Vector();
+		for(LetradoGuardia letradoTurno:letradosColaTurnoList){
+			Row row = new Row();
+			Hashtable htRow = new Hashtable();
+			htRow.put("N", difRow);
+			htRow.put("letradoTurno", letradoTurno);
+			letradosColaTurnoVector.add(htRow);
 		}
-		return vResult;
-	}	
+		
+		return letradosColaTurnoVector;
+	}	*/
 	
 	
 	/**
@@ -1211,48 +973,52 @@ public class BusquedaClientesFiltrosAdm {
 
 	
 	protected String getSqlLetradosCompleto(String idInstitucion){
-		String sql=	
-			"select p."+CenPersonaBean.C_IDPERSONA+","+ 
-			"p."+CenPersonaBean.C_NIFCIF+","+ 
-			"c."+CenColegiadoBean.C_NCOLEGIADO+","+ 
-			"p."+CenPersonaBean.C_NOMBRE+","+ 
-			"p."+CenPersonaBean.C_APELLIDOS1+","+ 
-			"p."+CenPersonaBean.C_APELLIDOS2+","+ 
-			"'' TURNO,"+
-			"'' GUARDIA,"+
-			"'' POSICION, "+
-			"'0' SALTO, "+
-			"'' COMPENSACION, "+
-			
-			" (select TELEFONO1 from cen_direccion_tipodireccion t, cen_direcciones pe "+
-			" where pe."+CenDireccionesBean.C_IDINSTITUCION+"=t."+CenDireccionTipoDireccionBean.C_IDINSTITUCION+
-			" and pe."+CenDireccionesBean.C_IDPERSONA+"=t."+CenDireccionTipoDireccionBean.C_IDPERSONA+
-			" and pe."+CenDireccionesBean.C_IDDIRECCION+"=t."+CenDireccionTipoDireccionBean.C_IDDIRECCION+
-			" and pe."+CenDireccionesBean.C_IDINSTITUCION+"="+idInstitucion +
-			" and pe."+CenDireccionesBean.C_IDPERSONA+"=p."+CenPersonaBean.C_IDPERSONA+
-			" and t."+CenDireccionTipoDireccionBean.C_IDTIPODIRECCION+"=6 "+
-			" and pe."+CenDireccionesBean.C_FECHABAJA+" is null " +
-			" and rownum=1) TELEFONO "+//puede haber mas de un telefono de guardia
-			
-			"from "+
-			this.getTablaColegiado()+" c,"+
-			this.getTablaPersona()+" p,"+
-			"(select "+CenDatosColegialesEstadoBean.C_IDPERSONA+
-			"   from "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+" a"+
-			"  where "+CenDatosColegialesEstadoBean.C_IDINSTITUCION+"="+idInstitucion+
-			"    and "+CenDatosColegialesEstadoBean.C_IDESTADO+"=20"+      
-			"    and "+CenDatosColegialesEstadoBean.C_FECHAESTADO+"="+
-			"		 (select max("+CenDatosColegialesEstadoBean.C_FECHAESTADO+")"+
-			"		    from "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+
-			"		   where "+CenDatosColegialesEstadoBean.C_IDPERSONA+"= a."+CenDatosColegialesEstadoBean.C_IDPERSONA+
-			"			 and "+CenDatosColegialesEstadoBean.C_IDINSTITUCION+"="+idInstitucion+" AND CEN_DATOSCOLEGIALESESTADO.FECHAESTADO <= SYSDATE)"+          
-			") r "+
-			" where c."+CenColegiadoBean.C_IDINSTITUCION+"="+idInstitucion+
-			"   and c."+ScsInscripcionTurnoBean.C_IDPERSONA+"=p."+CenColegiadoBean.C_IDPERSONA+
-			"   and c."+ScsInscripcionTurnoBean.C_IDPERSONA+"=r."+CenPersonaBean.C_IDPERSONA+
-			" order by p."+CenPersonaBean.C_APELLIDOS1+",p."+CenPersonaBean.C_APELLIDOS2+",p."+CenPersonaBean.C_NOMBRE;
-
-		return sql;	
+		
+		StringBuffer sql = new StringBuffer();
+		sql.append(" ");
+		sql.append("SELECT CEN_PERSONA.IDPERSONA, ");
+		sql.append("CEN_PERSONA.NIFCIF, ");
+		sql.append("F_SIGA_CALCULONCOLEGIADO(CEN_COLEGIADO.IDINSTITUCION, CEN_COLEGIADO.IDPERSONA) NCOLEGIADO, ");
+		sql.append("CEN_PERSONA.NOMBRE, CEN_PERSONA.APELLIDOS1, CEN_PERSONA.APELLIDOS2, ");
+		sql.append("'' TURNO,'' GUARDIA,'' POSICION,'0' SALTO,'' COMPENSACION, ");
+		sql.append("(select TELEFONO1 ");
+		sql.append("from cen_direccion_tipodireccion t, cen_direcciones pe ");
+		sql.append("where pe.IDINSTITUCION = t.IDINSTITUCION ");
+		sql.append("and pe.IDPERSONA = t.IDPERSONA ");
+		sql.append("and pe.IDDIRECCION = t.IDDIRECCION ");
+		sql.append("and pe.IDINSTITUCION = ");
+		sql.append(idInstitucion);
+		sql.append("and pe.IDPERSONA = CEN_PERSONA.IDPERSONA ");
+		sql.append("and t.IDTIPODIRECCION = 6 ");
+		sql.append("and pe.FECHABAJA is null ");
+		sql.append("and rownum = 1) TELEFONO ");
+		        
+		sql.append("FROM CEN_PERSONA, CEN_CLIENTE, CEN_COLEGIADO ");
+		sql.append("WHERE CEN_PERSONA.IDPERSONA = CEN_CLIENTE.IDPERSONA ");
+		sql.append("AND CEN_CLIENTE.IDPERSONA = CEN_COLEGIADO.IDPERSONA ");
+		sql.append("AND CEN_CLIENTE.IDINSTITUCION = CEN_COLEGIADO.IDINSTITUCION ");
+		sql.append("AND (CEN_CLIENTE.IDINSTITUCION = ");
+		sql.append(idInstitucion);
+		sql.append(") AND CEN_CLIENTE.IDINSTITUCION = ");
+		sql.append(idInstitucion);
+		sql.append("AND (CEN_COLEGIADO.SITUACIONEJERCICIO = 1) ");
+		sql.append("AND 1 in (select 1 ");
+		sql.append("from CEN_DATOSCOLEGIALESESTADO ");
+		sql.append("where CEN_DATOSCOLEGIALESESTADO.IDINSTITUCION = ");
+		sql.append("CEN_CLIENTE.IDINSTITUCION ");
+		sql.append("and IDPERSONA = CEN_CLIENTE.IDPERSONA ");
+		sql.append("and FECHAESTADO = ");
+		sql.append("(select max(FECHAESTADO) ");
+		sql.append("from CEN_DATOSCOLEGIALESESTADO ");
+		sql.append("where IDINSTITUCION = CEN_CLIENTE.IDINSTITUCION ");
+		sql.append("and IDPERSONA = CEN_CLIENTE.IDPERSONA ");
+		sql.append("and FECHAESTADO <= sysdate) ");
+		sql.append("and IDESTADO in (20, 10)) ");
+		        
+		sql.append("ORDER BY CEN_PERSONA.APELLIDOS1 || ' ' || CEN_PERSONA.APELLIDOS2, ");
+		sql.append("CEN_PERSONA.NOMBRE ");
+		
+		return sql.toString();	
 	}
 
 	/**
@@ -1413,7 +1179,7 @@ public class BusquedaClientesFiltrosAdm {
 						Vector v = admT.select(hash);
 						if (v!=null && v.size()>0) {
 							ScsTurnoBean bean = (ScsTurnoBean) v.get(0);
-							bean.setIdPersonaUltimo(new Integer(idPersona));
+							bean.setIdPersonaUltimo(new Long(idPersona));
 							
 							if (!admT.updateDirect(bean)) {
 								
@@ -1446,5 +1212,8 @@ public class BusquedaClientesFiltrosAdm {
 		}
 			
 	}
+
+
+	
 	
 }

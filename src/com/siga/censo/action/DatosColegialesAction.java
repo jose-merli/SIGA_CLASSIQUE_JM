@@ -14,9 +14,12 @@ import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.*;
 import com.siga.general.*;
+import com.siga.gratuita.InscripcionTurno;
 import com.siga.censo.form.HistoricoForm;
 import com.siga.censo.form.DatosColegialesForm;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -172,10 +175,6 @@ public class DatosColegialesAction extends MasterAction {
 				datosSeguro=admSeguro.obtenerEntradaTiposSeguro(datosColegiales.getIdTipoSeguro().toString());
 			}
 
-//			if(!clienteAdm.esColegiado(idPersona,idInstPers).isEmpty()){
-//				numero = clienteAdm.obtenerNumero(idPersona,idInstPers);				
-//			}			
-			
 			// Comprueba si el usuario reside en algun otro colegio
 			if (idPersona.compareTo(new Long(1))>0){
 				esResidente=colegiadoAdm.getResidenciaColegio(idPersona.toString(),idInstitucionPersona);
@@ -221,13 +220,6 @@ public class DatosColegialesAction extends MasterAction {
 				remitente=(Object)"consulta";				
 			}
 			request.setAttribute("modelo",remitente);
-			
-			// DE MOMENTO NO -> idPersona, accion e idInstitucionPersona los guardo en session porque me interesa 
-			// acceder a ellos en varios lugares
-			
-			//request.getSession().setAttribute("IDPERSONA", idPersona);
-			//request.getSession().setAttribute("ACCION", accion);		
-			//request.getSession().setAttribute("IDINSTITUCIONPERSONA", idInstitucionPersona);		
 		} 
 		catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null); 
@@ -265,10 +257,6 @@ public class DatosColegialesAction extends MasterAction {
 			// Obtener los datos colegiales del usuario
 			infoEntrada=(CenDatosColegialesEstadoBean)admin.obtenerEntradaEstadoColegial((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2));			
 			
-			// Paso valores originales del registro al session para tratar siempre copn los mismos valores
-			// y no los de posibles modificaciones
-			//request.getSession().setAttribute("DATABACKUP_ESTADOS", infoEntrada);
-
 			// Paso valores para dar valores iniciales al formulario			
 			request.setAttribute("container", infoEntrada);
 			request.setAttribute("NOMBRE", (String)ocultos.get(3));
@@ -284,9 +272,6 @@ public class DatosColegialesAction extends MasterAction {
 		return (result);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.siga.general.MasterAction#ver(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-	 */
 	protected String ver(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		String result = "ver";
 		return result;
@@ -323,9 +308,6 @@ public class DatosColegialesAction extends MasterAction {
 			nombre = personaAdm.obtenerNombreApellidos(idPersona);
 			datosColegiales=colegiadoAdm.getDatosColegiales(Long.valueOf(idPersona),Integer.valueOf(idInstitucion));
 			numero = colegiadoAdm.getIdentificadorColegiado(datosColegiales);			
-//			if(!clienteAdm.esColegiado(Long.getLong(idPersona),Integer.getInteger(idInstitucion)).isEmpty()){
-//				numero = clienteAdm.obtenerNumero(Long.getLong(idPersona),Integer.getInteger(idInstitucion));				
-//			}								
 			
 			String idEstado = "";
 			try {
@@ -360,167 +342,157 @@ public class DatosColegialesAction extends MasterAction {
 		return result;
 	}
 
-	/** 
-	 *  Funcion que implementa la accion insertar
-	 * @param  mapping - Mapeo de los struts
-	 * @param  formulario -  Action Form asociado a este Action
-	 * @param  request - objeto llamada HTTP 
-	 * @param  response - objeto respuesta HTTP
-	 * @return  String  Destino del action  
-	 * @exception  SIGAException  En cualquier caso de error
+	/**
+	 * Inserta un nuevo estado colegial en el sistema.
+	 * 
+	 * Ademas, realiza las siguientes comprobaciones:
+	 *  a. que el nuevo estado sea posterior al existente anterior
+	 *  b. cambio de estado de un colegiado comunitario
+	 *  c. si tiene cosas pendientes de SJCS (Guardias y Designas)
+	 * 
+	 * @param mapping - Mapeo de los struts
+	 * @param formulario - Action Form asociado a este Action
+	 * @param request - objeto llamada HTTP
+	 * @param response - objeto respuesta HTTP
+	 * @return String - Destino del action
+	 * @exception SIGAException - En cualquier caso de error
 	 */
-	protected String insertar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		
-		String result="error";
+	protected String insertar(ActionMapping mapping,
+			MasterForm formulario,
+			HttpServletRequest request,
+			HttpServletResponse response) throws SIGAException
+	{
+		// Controles generales
+		UsrBean usr = this.getUserBean(request);
+		String idioma = usr.getLanguage();
+		DatosColegialesForm miForm = (DatosColegialesForm) formulario;
+		CenClienteAdm admCliente = new CenClienteAdm(usr);
+		CenColegiadoAdm admColegiado = new CenColegiadoAdm(usr);
+		CenDatosColegialesEstadoAdm admEstados = new CenDatosColegialesEstadoAdm(usr);
 		UserTransaction tx = null;
-		CenClienteAdm admCliente = new CenClienteAdm(getUserBean(request)); 
-		
-		try{
-			Hashtable original;			
+		String result;
 
-			// Obtengo usuario y creo manejadores para acceder a las BBDD
-			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			CenDatosColegialesEstadoAdm admin=new CenDatosColegialesEstadoAdm(this.getUserBean(request));			
-			
-			// Obtengo los datos del formulario
-			DatosColegialesForm miForm = (DatosColegialesForm)formulario;
+		// Variables
+		String idinstitucion;
+		String idpersona;
+		String fechaEstado;
+		String motivo;
 
-			//Control de errores:
-			int error = admCliente.tieneTrabajosSJCSPendientes(new Long(miForm.getIdPersona()), new Integer(miForm.getIdInstitucion()));
-			/*if (error == 1)
-				return exito("error.message.guardiasEstadoColegial", request);
-			else if (error == 2)
-				return exito("error.message.designasEstadoColegial", request);*/
-			 if (error == 3)
-				throw new SIGAException (admCliente.getError());
-			
-			// Cargo la tabla hash con los valores del formulario para insertar en la BBDD
-			Hashtable hash = miForm.getDatos();
-			hash.put(CenDatosColegialesEstadoBean.C_IDPERSONA, miForm.getIdPersona());			
-			hash.put(CenDatosColegialesEstadoBean.C_IDINSTITUCION, miForm.getIdInstitucion());
-			hash.put(CenDatosColegialesEstadoBean.C_FECHAESTADO, "sysdate");			
-									
-			// Cargo una hastable con los valores originales del registro sobre el que se realizará la modificacion						
-			
-			if (request.getSession().getAttribute("DATABACKUP_EST")!=null){
-				original=((Row)request.getSession().getAttribute("DATABACKUP_EST")).getRow();
-		    }else{
-				original=new Hashtable();
+		int pendienteSJCS;
+
+		try {
+			// obteniendo datos del formulario
+			idinstitucion = miForm.getIdInstitucion();
+			idpersona = miForm.getIdPersona();
+			fechaEstado = miForm.getFechaEstado();
+			motivo = miForm.getMotivo();
+
+			// obteniendo los valores originales del registro de estado colegial anterior
+			Hashtable original;
+			String fechaEstadoOrigen = "";
+			if (request.getSession().getAttribute("DATABACKUP_EST") != null) {
+				original = ((Row) request.getSession().getAttribute("DATABACKUP_EST")).getRow();
+				if (original != null)
+					fechaEstadoOrigen = (String) original.get(CenDatosColegialesEstadoBean.C_FECHAESTADO);
+			} else {
+				original = new Hashtable();
 			}
-			
-			//Control de las fechas:
-			String fechaEstadoNew = miForm.getFechaEstado();
-			String fechaEstadoOri="";
-			if (original!=null){
-				 fechaEstadoOri = (String)original.get(CenDatosColegialesEstadoBean.C_FECHAESTADO);
+
+			// a. comprobando que el nuevo estado sea posterior al existente anterior
+			if (!fechaEstadoOrigen.equals("")) {
+				SimpleDateFormat formatoForm = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+				Date dateNueva = formatoForm.parse(fechaEstado);
+				SimpleDateFormat formatoInterno = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
+				Date dateOrigen = formatoInterno.parse(fechaEstadoOrigen);
+				String fechaOriSinHoras = formatoForm.format(dateOrigen);
+				Date dateOriSinHoras = formatoForm.parse(fechaOriSinHoras);
+				if (dateNueva.before(dateOriSinHoras) || dateNueva.equals(dateOriSinHoras))
+					return exito("messages.general.error.fechaPosteriorActual1", request);
 			}
-			//String fechaEstadoNew = miForm.getFechaEstado();
-			
-			java.text.SimpleDateFormat sdfNew = new java.text.SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);			
-			Date dateNew = sdfNew.parse(fechaEstadoNew);			
-			
-			java.text.SimpleDateFormat sdfOri = new java.text.SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
-			if (!fechaEstadoOri.equals("")){
-				Date dateOri = sdfOri.parse(fechaEstadoOri);
-				String fechaOriSinHoras = sdfNew.format(dateOri);
-				Date dateOriSinHoras = sdfNew.parse(fechaOriSinHoras);
-					if (dateNew.before(dateOriSinHoras)||dateNew.equals(dateOriSinHoras)) 
-				return exito("messages.general.error.fechaPosteriorActual1",request);
-			}
-			
-			// RGG 28-04-2005 Cambio para control de cambio de estado
-			// de un colegiado comunitario.
-			CenColegiadoAdm admCol = new CenColegiadoAdm(this.getUserBean(request));
+
+			// b. controlando cambio de estado de un colegiado comunitario
 			Hashtable clave = new Hashtable();
-			clave.put(CenColegiadoBean.C_IDPERSONA,miForm.getIdPersona());
-			clave.put(CenColegiadoBean.C_IDINSTITUCION,miForm.getIdInstitucion());
-			Vector v = admCol.selectByPK(clave);
-			if (v!=null && v.size()>0) {
-				CenColegiadoBean beanCol = (CenColegiadoBean)v.get(0);
-				
-				if (original!=null){
-				if (beanCol.getComunitario().equals(ClsConstants.DB_TRUE) && 
-					miForm.getCmbEstadoColegial().equalsIgnoreCase(String.valueOf(ClsConstants.ESTADO_COLEGIAL_EJERCIENTE))) {
+			clave.put(CenColegiadoBean.C_IDPERSONA, idpersona);
+			clave.put(CenColegiadoBean.C_IDINSTITUCION, idinstitucion);
+			Vector v = admColegiado.selectByPK(clave);
+			if (v != null && v.size() > 0) {
+				CenColegiadoBean beanCol = (CenColegiadoBean) v.get(0);
+
+				if (original != null) {
+					if (beanCol.getComunitario().equals(ClsConstants.DB_TRUE)
+							&& miForm.getCmbEstadoColegial().equalsIgnoreCase(
+									String.valueOf(ClsConstants.ESTADO_COLEGIAL_EJERCIENTE))) {
 						throw new SIGAException("messages.censo.comunitarioEstadoColegial.error");
+					}
 				}
-			 }
 			}
-			
-			// Cargo la tabla de historico
-			CenHistoricoBean beanHis = new CenHistoricoBean ();
-			beanHis.setMotivo(miForm.getMotivo());
 
-			// Especifico el tipo de cambio del historico	
-			if(hash.get(CenDatosColegialesEstadoBean.C_IDESTADO).toString().equalsIgnoreCase(String.valueOf(ClsConstants.ESTADO_COLEGIAL_BAJACOLEGIAL))){				
+			// c. comprobando si tiene cosas pendientes de SJCS (Guardias y Designas)
+			pendienteSJCS = admCliente.tieneTrabajosSJCSPendientes(new Long(idpersona), new Integer(idinstitucion),null,null);
+			if (pendienteSJCS == 3)
+				throw new SIGAException(admCliente.getError());
+
+			// anyadiendo la hora a la fecha del estado para permitir varios estados en el mismo dia
+			fechaEstado = UtilidadesString.formatoFecha(fechaEstado + " " + UtilidadesBDAdm.getHoraBD(),
+					"dd/MM/yyyy HH:mm:ss", "yyyy/MM/dd HH:mm:ss");
+
+			// preparando datos para insertar el estado colegial en el sistema
+			Hashtable hashEstado = miForm.getDatos();
+			hashEstado.put(CenDatosColegialesEstadoBean.C_IDINSTITUCION, idinstitucion);
+			hashEstado.put(CenDatosColegialesEstadoBean.C_IDPERSONA, idpersona);
+			hashEstado.put(CenDatosColegialesEstadoBean.C_FECHAESTADO, fechaEstado);
+
+			// generando datos de historico
+			CenHistoricoBean beanHis = new CenHistoricoBean();
+			beanHis.setMotivo(motivo);
+			int estado = new Integer(hashEstado.get(CenDatosColegialesEstadoBean.C_IDESTADO).toString()).intValue();
+			switch (estado) {
+			case ClsConstants.ESTADO_COLEGIAL_BAJACOLEGIAL:
 				beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_BAJA_COLEGIAL));
-			}
-			if(hash.get(CenDatosColegialesEstadoBean.C_IDESTADO).toString().equalsIgnoreCase(String.valueOf(ClsConstants.ESTADO_COLEGIAL_EJERCIENTE))){				
+				break;
+			case ClsConstants.ESTADO_COLEGIAL_EJERCIENTE:
 				beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_ALTA_EJERCICIO));
-			}	
-			if(hash.get(CenDatosColegialesEstadoBean.C_IDESTADO).toString().equalsIgnoreCase(String.valueOf(ClsConstants.ESTADO_COLEGIAL_SINEJERCER))){				
+				break;
+			case ClsConstants.ESTADO_COLEGIAL_SINEJERCER:
 				beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_BAJA_EJERCICIO));
-			}
-			if(hash.get(CenDatosColegialesEstadoBean.C_IDESTADO).toString().equalsIgnoreCase(String.valueOf(ClsConstants.ESTADO_COLEGIAL_INHABILITACION))){				
+				break;
+			case ClsConstants.ESTADO_COLEGIAL_INHABILITACION:
 				beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_INHABILITACION));
-			}
-			if(hash.get(CenDatosColegialesEstadoBean.C_IDESTADO).toString().equalsIgnoreCase(String.valueOf(ClsConstants.ESTADO_COLEGIAL_SUSPENSION))){				
+				break;
+			case ClsConstants.ESTADO_COLEGIAL_SUSPENSION:
 				beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_SUSPENSION));
+				break;
 			}
-						
-			// Comienzo control de transacciones
+
+			// iniciando transaccion
 			tx = usr.getTransactionPesada();
-			tx.begin();	
-			
-			
-			//String fechaNewBD = sdfOri.format(dateNew);
-			// pdm concatenamos a la fecha que obtenemos del formulario las horas/minutos/seg de la fecha actual, porque si no lo
-			// hacemos asi, no deja insertar dos estados colegiales en el mismo dia.
-			  String fechaNewBD =miForm.getFechaEstado();
-			  //String hora =UtilidadesString.formatoFecha(new Date(),"HH:mm:ss");
-			  String hora =UtilidadesBDAdm.getHoraBD();
-			  fechaNewBD=fechaNewBD+" "+hora;
-			  fechaNewBD=UtilidadesString.formatoFecha(fechaNewBD,"dd/MM/yyyy HH:mm:ss","yyyy/MM/dd HH:mm:ss"); 
-			 // 
+			tx.begin();
 
-			hash.put(CenDatosColegialesEstadoBean.C_FECHAESTADO, fechaNewBD);
+			// 1 y 2. guardando estado e historico
+			if (admEstados.insercionConHistorico(hashEstado, beanHis, idioma)) {
+				revisionesPorCambioEstadoColegial(idinstitucion, idpersona, Integer.toString(estado), miForm
+						.getFechaEstado(), usr); // OJO: se pasa la fecha sin hora
 
-			if (admin.insercionConHistorico(hash, beanHis, this.getLenguaje(request))){
-//				 Lanzamos el proceso de revision de ANTICIPOS 
-				String resultado1[] = EjecucionPLs.ejecutarPL_RevisionAnticiposLetrado(miForm.getIdInstitucion(),
-																						  miForm.getIdPersona(),
-																						  ""+this.getUserName(request));
-				if ((resultado1 == null) || (!resultado1[0].equals("0")))
-					throw new ClsExceptions ("Error al ejecutar el PL PROC_SIGA_ACT_ANTICIPOSCLIENTE ");
-				
-
-				
-				// Lanzamos el proceso de revision de suscripciones del letrado 
-				String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado(miForm.getIdInstitucion(),
-																						  miForm.getIdPersona(),
-																						  miForm.getFechaEstado(),
-																						  ""+this.getUserName(request));
-				if ((resultado == null) || (!resultado[0].equals("0")))
-					throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO");
-				
-				String message=(UtilidadesString.getMensajeIdioma(this.getUserBean(request),"messages.updated.success"));
+				// terminando transaccion
 				tx.commit();
-				if (error==1 || error==2){
-					//System.out.println(UtilidadesString.getMensajeIdioma(this.getUserBean(request),"messages.censo.estadosColegiales.avisoTareasPendientes"));
-					message+="\r\n"+UtilidadesString.getMensajeIdioma(this.getUserBean(request),"messages.censo.estadosColegiales.avisoTareasPendientes");
-				}else{
-					//message="messages.updated.success";
-				}
-				result=exitoModal(message,request);
-			}	
-			else{
-				throw new SIGAException (admin.getError());
+
+				// informando de fin correcto y de cosas SJCS pendientes
+				String message = (UtilidadesString.getMensajeIdioma(usr, "messages.updated.success"));
+				if (pendienteSJCS == 1 || pendienteSJCS == 2)
+					message += "\r\n"
+							+ UtilidadesString.getMensajeIdioma(usr,
+									"messages.censo.estadosColegiales.avisoTareasPendientes");
+				result = exitoModal(message, request);
+			} else {
+				throw new SIGAException(admEstados.getError());
 			}
-		} 
-		catch (Exception e) { 
-			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,tx); 
+		} catch (Exception e) {
+			result = "error";
+			throwExcp("messages.general.error", new String[] { "modulo.censo" }, e, tx);
 		}
+
 		return (result);
-	}
+	} // insertar()
 
 	/** 
 	 * Recibe orden de guardar los cambios realizados en los datos colegiales
@@ -671,7 +643,8 @@ public class DatosColegialesAction extends MasterAction {
 				request.setAttribute("idPersona", miForm.getIdPersona());
 				request.setAttribute("idInstitucion", miForm.getIdInstitucion());
 				request.setAttribute("pestanaSituacion", pestanasituacion);
-				return exitoRefrescoConEditarNColegiado("messages.updated.success",request);
+				request.setAttribute("mensaje","messages.updated.success");
+				return "exitoConEditarNColegiado"; 
 			}
 			
 			result = exitoRefresco("messages.updated.success",request);
@@ -682,16 +655,6 @@ public class DatosColegialesAction extends MasterAction {
 		return (result);
 	} //modificarDatos ()
 	
-
-	protected String exitoRefrescoConEditarNColegiado(String mensaje, HttpServletRequest request) {
-		if (mensaje!=null && !mensaje.equals("")) {
-			request.setAttribute("mensaje",mensaje);
-		}
-		return "exitoConEditarNColegiado"; 
-	}
-
-
-
 	/** 
 	 *  Funcion que implementa la accion modificar
 	 * @param  mapping - Mapeo de los struts
@@ -824,103 +787,175 @@ public class DatosColegialesAction extends MasterAction {
 		return (result);
 	}
 	
-	/** 
-	 *  Funcion que implementa la accion borrar
-	 * @param  mapping - Mapeo de los struts
-	 * @param  formulario -  Action Form asociado a este Action
-	 * @param  request - objeto llamada HTTP 
-	 * @param  response - objeto respuesta HTTP
-	 * @return  String  Destino del action  
-	 * @exception  SIGAException  En cualquier caso de error
+	/**
+	 * Borra un estado colegial del sistema
+	 * 
+	 * Ademas, realiza las siguientes comprobaciones:
+	 *  a. que el nuevo estado sea posterior al existente anterior
+	 *  b. cambio de estado de un colegiado comunitario
+	 *  c. si tiene cosas pendientes de SJCS (Guardias y Designas)
+	 * 
+	 * @param mapping - Mapeo de los struts
+	 * @param formulario - Action Form asociado a este Action
+	 * @param request - objeto llamada HTTP
+	 * @param response - objeto respuesta HTTP
+	 * @return String - Destino del action
+	 * @exception SIGAException - En cualquier caso de error
 	 */
-	protected String borrar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		
-		String result="error";				
-		UserTransaction tx=null;
-		CenClienteAdm admCliente = new CenClienteAdm(this.getUserBean(request));
-		
+	protected String borrar(ActionMapping mapping,
+			MasterForm formulario,
+			HttpServletRequest request,
+			HttpServletResponse response) throws SIGAException
+	{
+		// Controles generales
+		UsrBean usr = this.getUserBean(request);
+		String idioma = usr.getLanguage();
+		DatosColegialesForm miForm = (DatosColegialesForm) formulario;
+		CenClienteAdm admCliente = new CenClienteAdm(usr);
+		CenColegiadoAdm admColegiado = new CenColegiadoAdm(usr);
+		CenDatosColegialesEstadoAdm admEstados = new CenDatosColegialesEstadoAdm(usr);
+		CenHistoricoAdm admHistorico = new CenHistoricoAdm(usr);
+		UserTransaction tx = null;
+		String result;
+
+		// Variables
+		Vector camposOcultos;
+		String idinstitucion;
+		String idpersona;
+
+		int pendienteSJCS;
+
 		try {
-			Hashtable hash = new Hashtable();		
-			Vector camposOcultos = new Vector();
+			// obteniendo datos del formulario
+			camposOcultos = miForm.getDatosTablaOcultos(0);
+			idinstitucion = miForm.getIdInstitucion();
+			idpersona = miForm.getIdPersona();
 
-			// Obtengo usuario y creo manejadores para acceder a las BBDD
-			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			CenDatosColegialesEstadoAdm admin=new CenDatosColegialesEstadoAdm(this.getUserBean(request));
-			CenHistoricoAdm adminHist=new CenHistoricoAdm(this.getUserBean(request));			
- 			
-			// Obtengo los datos del formulario
-			DatosColegialesForm miForm = (DatosColegialesForm)formulario;
-			camposOcultos = miForm.getDatosTablaOcultos(0);			
+			// a. comprobando si tiene cosas pendientes de SJCS (Guardias y Designas)
+			pendienteSJCS = admCliente.tieneTrabajosSJCSPendientes(new Long(idpersona), new Integer(idinstitucion),null,null);
+			if (pendienteSJCS == 3)
+				throw new SIGAException(admCliente.getError());
 
-			// Cargo la tabla hash con los valores del formulario para insertar en la BBDD
-			hash.put(CenDatosColegialesEstadoBean.C_IDPERSONA, camposOcultos.get(0));			
-			hash.put(CenDatosColegialesEstadoBean.C_IDINSTITUCION, camposOcultos.get(1));
-			hash.put(CenDatosColegialesEstadoBean.C_FECHAESTADO, camposOcultos.get(2));
-												
-			// Cargo una nueva tabla hash para insertar en la tabla de historico
-			Hashtable hashHist = new Hashtable();			
+			// obteniendo datos del estado
+			Hashtable hash = new Hashtable();
+			hash.put(CenDatosColegialesEstadoBean.C_IDPERSONA, idinstitucion);
+			hash.put(CenDatosColegialesEstadoBean.C_IDINSTITUCION, idpersona);
+			hash.put(CenDatosColegialesEstadoBean.C_FECHAESTADO, (String) camposOcultos.get(2));
 
-			// Cargo los valores obtenidos del formulario referentes al historico			
-			hashHist.put(CenHistoricoBean.C_IDPERSONA, miForm.getIdPersona());			
-			hashHist.put(CenHistoricoBean.C_IDINSTITUCION, miForm.getIdInstitucion());			
+			// generando datos para el historico
+			Hashtable hashHist = new Hashtable();
+			hashHist.put(CenHistoricoBean.C_IDPERSONA, idpersona);
+			hashHist.put(CenHistoricoBean.C_IDINSTITUCION, idinstitucion);
 			hashHist.put(CenHistoricoBean.C_MOTIVO, ClsConstants.HISTORICO_REGISTRO_ELIMINADO);
-			hashHist.put(CenHistoricoBean.C_IDTIPOCAMBIO, new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_DATOS_COLEGIALES).toString());
+			hashHist.put(CenHistoricoBean.C_IDTIPOCAMBIO, new Integer(
+					ClsConstants.TIPO_CAMBIO_HISTORICO_DATOS_COLEGIALES).toString());
+			hashHist.put(CenHistoricoBean.C_IDHISTORICO, admHistorico.getNuevoID(hash).toString());
 			
-			
-			//Control de errores:
-			int error = admCliente.tieneTrabajosSJCSPendientes(new Long((String)camposOcultos.get(0)), new Integer((String)camposOcultos.get(1)));
-			/*if (error == 1)
-				return exito("error.message.guardiasEstadoColegial", request);
-			else if (error == 2)
-				return exito("error.message.designasEstadoColegial", request);*/
-			if (error == 3)
-				throw new SIGAException (admCliente.getError());
-			
-			
-			// Comienzo control de transacciones
+			// iniciando transaccion
 			tx = usr.getTransaction();
-			tx.begin();	
+			tx.begin();
 
-			// Asigno el IDHISTORICO			
-			hashHist.put(CenHistoricoBean.C_IDHISTORICO, adminHist.getNuevoID(hash).toString());			
-
-			if (admin.borrarConHistorico(hash,hashHist, this.getLenguaje(request))){
-//				 Lanzamos el proceso de revision de ANTICIPOS 
-				String resultado1[] = EjecucionPLs.ejecutarPL_RevisionAnticiposLetrado(miForm.getIdInstitucion(),
-																						  miForm.getIdPersona(),
-																						  ""+this.getUserName(request));
-				if ((resultado1 == null) || (!resultado1[0].equals("0")))
-					throw new ClsExceptions ("Error al ejecutar el PL PROC_SIGA_ACT_ANTICIPOSCLIENTE ");
-				
-
-			    //				 Lanzamos el proceso de revision de suscripciones del letrado 
-				String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado(miForm.getIdInstitucion(),
-																						  miForm.getIdPersona(),
-																						  miForm.getFechaEstado(),
-																						  ""+this.getUserName(request));
-				if ((resultado == null) || (!resultado[0].equals("0")))
-					throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO");
-				
-				String message=(UtilidadesString.getMensajeIdioma(this.getUserBean(request),"messages.deleted.success"));
-				tx.commit();
-				if (error==1 || error==2 ){
-					//System.out.println(UtilidadesString.getMensajeIdioma(this.getUserBean(request),"messages.censo.estadosColegiales.avisoTareasPendientes"));
-					message+="\r\n"+UtilidadesString.getMensajeIdioma(this.getUserBean(request),"messages.censo.estadosColegiales.avisoTareasPendientes");
-				}else{
-					//message="messages.updated.success";
+			// 1 y 2. borrando estado e insertando historico
+			if (admEstados.borrarConHistorico(hash, hashHist, idioma)) {
+				// obteniendo ultimo estado colegial
+				Vector<Row> vEstados = admColegiado.getEstadosColegiales(new Long(idpersona), new Integer(idinstitucion), idioma);
+				if (vEstados != null && vEstados.size() > 0) {
+					Row ultimoEstado = vEstados.get(0);
+					String estado = ultimoEstado.getString(CenDatosColegialesEstadoBean.C_IDESTADO);
+					String fechaEstado = ultimoEstado.getString(CenDatosColegialesEstadoBean.C_FECHAESTADO);
+					
+					// ejecutando revisiones
+					revisionesPorCambioEstadoColegial(idinstitucion, idpersona, estado, fechaEstado, usr);
 				}
-				
-				result=exitoRefresco(message,request);
-			}	
-			else{
-				throw new SIGAException (admin.getError());
+
+				// terminando transaccion
+				tx.commit();
+
+				// informando de fin correcto y de cosas SJCS pendientes
+				String message = (UtilidadesString.getMensajeIdioma(usr, "messages.deleted.success"));
+				if (pendienteSJCS == 1 || pendienteSJCS == 2)
+					message += "\r\n"
+							+ UtilidadesString.getMensajeIdioma(usr,
+									"messages.censo.estadosColegiales.avisoTareasPendientes");
+				result = exitoRefresco(message, request);
+			} else {
+				throw new SIGAException(admEstados.getError());
 			}
-		} 
-		catch (Exception e) { 
-			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,tx); 
-		}					
-		return result;					
-	}
+		} catch (Exception e) {
+			result = "error";
+			throwExcp("messages.general.error", new String[] { "modulo.censo" }, e, tx);
+		}
+
+		return result;
+	} // borrar()
+	
+	/**
+	 *  Realiza revisiones sobre el colegiado a partir del estado pasado como parametro:
+	 *  1. Revisar anticipos
+	 *  2. Revisar suscripciones a servicios
+	 *  3. Dar de baja en las colas de guardia y turno si el nuevo estado no es ejerciente
+	 *  4. Revocar certificados si el nuevo estado es de baja
+	 *  
+	 * @param idinstitucion
+	 * @param idpersona
+	 * @param estado
+	 * @param fechaEstado
+	 * @param usr
+	 * @throws ClsExceptions
+	 * @throws ParseException
+	 * @throws SIGAException
+	 */
+	protected void revisionesPorCambioEstadoColegial(String idinstitucion,
+			String idpersona,
+			String estado,
+			String fechaEstado,
+			UsrBean usr) throws ClsExceptions, ParseException, SIGAException
+	{
+		// Controles generales
+		CenPersonaAdm admPersona = new CenPersonaAdm(usr);
+		AdmCertificadosAdm admCertif = new AdmCertificadosAdm(usr);
+		String usuario = usr.getUserName();
+
+		// 1. revisando anticipos
+		String resultado1[] = EjecucionPLs.ejecutarPL_RevisionAnticiposLetrado(idinstitucion, idpersona, usuario);
+		if ((resultado1 == null) || (!resultado1[0].equals("0")))
+			throw new ClsExceptions("Error al ejecutar el PL PROC_SIGA_ACT_ANTICIPOSCLIENTE ");
+
+		// 2. revisando suscripciones a servicios
+		String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado(idinstitucion, idpersona,
+				fechaEstado, usuario);
+		if ((resultado == null) || (!resultado[0].equals("0")))
+			throw new ClsExceptions("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO");
+
+		// 3. Dar de baja en las colas de guardia y turno si el nuevo estado es de baja
+		if (new Integer(estado).intValue() != ClsConstants.ESTADO_COLEGIAL_EJERCIENTE) {
+			// TODO: mover a recurso
+			String observacionesBaja = "Baja por cambio de estado colegial";
+
+			Hashtable<String, Object> turnoHash = new Hashtable<String, Object>();
+			UtilidadesHash.set(turnoHash, ScsInscripcionTurnoBean.C_IDINSTITUCION, idinstitucion);
+			UtilidadesHash.set(turnoHash, ScsInscripcionTurnoBean.C_IDPERSONA, idpersona);
+			UtilidadesHash.set(turnoHash, ScsInscripcionTurnoBean.C_FECHABAJA, "");
+			// TODO: tambien hay que dar de baja si la fecha es posterior a la nueva fecha. Supongo que habra que
+			// utilizar una busqueda especial
+			Vector<ScsInscripcionTurnoBean> vTurnos = new ScsInscripcionTurnoAdm(usr).select(turnoHash);
+
+			InscripcionTurno inscripcionTurno;
+			for (int x = 0; x < vTurnos.size(); x++) {
+				ScsInscripcionTurnoBean c = (ScsInscripcionTurnoBean) vTurnos.get(x);
+				inscripcionTurno = InscripcionTurno.getInscripcionTurno(c.getIdInstitucion(), c.getIdTurno(), c
+						.getIdPersona(), c.getFechaSolicitud(), usr, false);
+				inscripcionTurno.solicitarBaja(fechaEstado, observacionesBaja,fechaEstado,c.getFechaValidacion(),"N", usr);
+				//inscripcionTurno.validarBaja(fechaEstado, observacionesBaja, usr);
+			}
+		}
+
+		// 4. revocando certificados
+		if (new Integer(estado).intValue() > ClsConstants.ESTADO_COLEGIAL_EJERCIENTE) {
+			String nif = admPersona.obtenerNIF(idpersona);
+			admCertif.revocarCertificados(new Integer(idinstitucion), nif);
+		}
+	} // revisionesPorCambioEstadoColegial()
 	
 	/** 
 	 *  Funcion que implementa la accion buscarPor
@@ -958,24 +993,4 @@ public class DatosColegialesAction extends MasterAction {
 		return (result);
 	}
 
-	/** 
-	 *  Funcion que prepara el formato fecha
-	 * @param  fecha - Fecha en formato original
-	 * @return  String - Formato actualizado fecha   
-	 */	
-	protected String prepararFecha(String fecha){
-		
-		String sInicial = fecha;
-		String sFinal = "";		
-		
-		if (sInicial == null) 
-			return sFinal;
-		
-		for (int i=0;i<sInicial.length();i++) {
-			if (sInicial.charAt(i) == '-') sFinal += '/';
-			else sFinal += sInicial.charAt(i);
-		}
-		sFinal += " 00:00:00";		
-		return sFinal;
-	}
 }
