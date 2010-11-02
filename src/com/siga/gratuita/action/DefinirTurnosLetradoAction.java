@@ -100,7 +100,6 @@ public class DefinirTurnosLetradoAction extends MasterAction {
 					miForm.setFechaConsulta("sysdate");
 				forward =this.abrirTurnosPaginados(mapping,miForm,request,response);
 			}else if (accion.equalsIgnoreCase("abrirTurnosPaginados")){
-				borrarPaginador(request, paginadorPenstania);
 				forward =this.abrirTurnosPaginados(mapping,miForm,request,response);
 			} 
 			
