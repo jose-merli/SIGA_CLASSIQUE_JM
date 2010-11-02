@@ -66,14 +66,16 @@
 			document.InscripcionTGForm.colegiadoNombre.value   = resultado[4]+' '+resultado[5]+' '+resultado[6];
 		}
 	}
-	
+	var isRefrescar = false;
 	function refrescarLocal(){
+		isRefrescar = true;
 		document.getElementById('idBusqueda').onclick();
 			
 	}
 	
 	
 	function preAccionBusqueda(){
+	
 		document.getElementById("tipoBusqueda").value =  document.InscripcionTGForm.tipo.value;
 		if(document.InscripcionTGForm.clase[0].checked) 
 			document.getElementById("claseBusqueda").value = 'T';
@@ -81,13 +83,16 @@
 			document.getElementById("claseBusqueda").value = 'G';
 		
 		document.getElementById("estadoBusqueda").value = document.InscripcionTGForm.estado.value;
-		if(document.InscripcionTGForm.idPersona.value==''){
-			if(!confirm('<siga:Idioma key="messages.general.aviso.sinletradoseleccionado"/>')) {
-					return 'cancel';
-			 }
-			
+		if(!isRefrescar){
+			if(document.InscripcionTGForm.idPersona.value==''){
+				if(!confirm('<siga:Idioma key="messages.general.aviso.sinletradoseleccionado"/>')) {
+						return 'cancel';
+				 }
+				
+			}
 		}
 		sub();
+		isRefrescar = false;
 	}
 	function postAccionBusqueda(){
 		// validarAnchoTabla();
