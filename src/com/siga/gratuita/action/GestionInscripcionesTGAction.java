@@ -3187,7 +3187,13 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			MasterForm formulario, 
 			HttpServletRequest request, 
 			HttpServletResponse response) throws SIGAException {
-		
+		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
+		miForm.clear();
+		request.getSession().removeAttribute("DATABACKUP");
+		request.getSession().removeAttribute("DATOSFORMULARIO");
+		request.getSession().removeAttribute("BUSQUEDAREALIZADA");
+		request.getSession().removeAttribute("accionTurno");
+		request.getSession().removeAttribute("pestanas");
 		return "busquedaTurnosDisponibles";
 	}
 	
