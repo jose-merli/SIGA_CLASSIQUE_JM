@@ -162,6 +162,11 @@
 			</siga:FilaConIconos>
 		</logic:iterate>
 	</logic:notEmpty>
+	<logic:empty name="InscripcionTGForm"	property="inscripcionesGuardia">
+		<br>
+   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
+ 		<br>
+	</logic:empty>
 </table>
 <script>
 marcarDesmarcarTodos(document.getElementById("chkGeneral"));

@@ -91,7 +91,6 @@
 	  				visibleEdicion = "no"
 	  				visibleBorrado = "no"
 	  				elementos="<%=elementosFila%>"
-	  				
 	  				clase="listaNonEdit">
 				<td align='center' width='4%'><input type="checkbox"
 					value="<%=String.valueOf(index.intValue()+1)%>"
@@ -145,10 +144,14 @@
 				</td>
 
 
-
 			</siga:FilaConIconos>
 		</logic:iterate>
 	</logic:notEmpty>
+	<logic:empty name="InscripcionTGForm"	property="inscripcionesTurno">
+		<br>
+   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
+ 		<br>
+	</logic:empty>
 </table>
 <script>
 marcarDesmarcarTodos(document.getElementById("chkGeneral"));
