@@ -41,6 +41,7 @@
 	String app=request.getContextPath(); 
 	HttpSession ses=request.getSession(true);
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
+	boolean esComision = usr.isComision();
 	
 	String idioma=usr.getLanguage().toUpperCase();
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
@@ -164,11 +165,14 @@
 	    	
 	   		String idFacturacion =  (String)registro.get("IDFACTURACION");
 			
-	    	boolean isModificable = ((idFacturacion==null||idFacturacion.equals("")) ||(idFacturacion!=null &&(fRatificacion==null||fRatificacion.equals("")))); 
-	    
+	    	boolean isModificable = ((idFacturacion==null||idFacturacion.equals("")) ||(idFacturacion!=null &&(fRatificacion==null||fRatificacion.equals(""))));
+	    	if(esComision){
+	    		if(isModificable ) botones = "C,E";
+				else botones = "C";
+	    	}else{
 				if(isModificable ) botones = "C,E,B";
 				else botones = "C,B";
-
+	    	}
 			String CODIGO=null;
 			if(registro.get(ScsEJGBean.C_NUMEJG)==null||registro.get(ScsEJGBean.C_NUMEJG).equals(""))
 				CODIGO="&nbsp;";
