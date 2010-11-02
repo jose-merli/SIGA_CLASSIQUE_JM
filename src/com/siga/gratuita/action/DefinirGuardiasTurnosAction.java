@@ -1,6 +1,7 @@
 package com.siga.gratuita.action;
 
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -27,6 +28,9 @@ import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsHitoFacturableGuardiaAdm;
 import com.siga.beans.ScsHitoFacturableGuardiaBean;
+import com.siga.beans.ScsInscripcionGuardiaAdm;
+import com.siga.beans.ScsInscripcionTurnoAdm;
+import com.siga.beans.ScsInscripcionTurnoBean;
 import com.siga.beans.ScsOrdenacionColasAdm;
 import com.siga.beans.ScsOrdenacionColasBean;
 import com.siga.beans.ScsTurnoAdm;
@@ -61,15 +65,21 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 		try {			
 			MasterForm miForm = null;
 			miForm = (MasterForm) formulario;
-			if (miForm != null) {
-				if(miForm.getModo()!=null && miForm.getModo().equalsIgnoreCase("sustituir")) {
-					return mapping.findForward(sustituir(mapping, miForm, request, response));
-				} else if(miForm.getModo()!=null && miForm.getModo().equalsIgnoreCase("insertarSustitucion")) {
-					return mapping.findForward(insertarSustitucion(mapping, miForm, request, response));
-				} else
-					return super.executeInternal(mapping, formulario,request,response);
-			} else {
+			String parametro = mapping.getParameter();
+			if(parametro!=null && parametro.equals("abrirAvanzada")){
 				return mapping.findForward(this.abrirAvanzada(mapping,miForm,request,response));
+			}else{
+				if (miForm != null) {
+					
+					if(miForm.getModo()!=null && miForm.getModo().equalsIgnoreCase("sustituir")) {
+						return mapping.findForward(sustituir(mapping, miForm, request, response));
+					} else if(miForm.getModo()!=null && miForm.getModo().equalsIgnoreCase("insertarSustitucion")) {
+						return mapping.findForward(insertarSustitucion(mapping, miForm, request, response));
+					} else
+						return super.executeInternal(mapping, formulario,request,response);
+				} else {
+					return mapping.findForward(this.abrirAvanzada(mapping,miForm,request,response));
+				}
 			}
 		} catch (SIGAException es) {
 			throw es;
@@ -319,10 +329,13 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 		
 		try
 		{
+			DefinirGuardiasTurnosForm miForm = (DefinirGuardiasTurnosForm)formulario;
 			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 			request.removeAttribute("DATABACKUPPESTANA");
 			
 			Hashtable turno =(Hashtable) request.getSession().getAttribute("turnoElegido");
+			String idTurno = (String)turno.get("IDTURNO");
+			String idInstitucion = usr.getLocation();
 			
 			String entrada = (String)request.getSession().getAttribute("entrada");  //esta variable solo es temporal , en el momento de tener acceso desde el menu, se debe consultar por Session.EsLetrado()
 			
@@ -335,11 +348,18 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 					" WHERE"+
 					" SCS_GUARDIASTURNO.IDINSTITUCION = SCS_TURNO.IDINSTITUCION AND " +
 					" SCS_GUARDIASTURNO.IDTURNO = SCS_TURNO.IDTURNO AND " +
-					" SCS_TURNO.IDINSTITUCION = "+(String)usr.getLocation()+//la del turno del que procedemos
-					" AND SCS_TURNO.IDTURNO = "+(String)turno.get("IDTURNO")+//la del turno del que procedemos
+					" SCS_TURNO.IDINSTITUCION = "+idInstitucion+//la del turno del que procedemos
+					" AND SCS_TURNO.IDTURNO = "+idTurno+//la del turno del que procedemos
 					" ORDER BY SCS_GUARDIASTURNO.NOMBRE ASC";
+				request.getSession().setAttribute("IDTURNOSESION",(String)turno.get("IDTURNO"));			
+				Vector resultado = (Vector)guardias.ejecutaSelect(consulta);
+				request.getSession().setAttribute("resultado",resultado);
 			}
 			else {//Es letrado
+				
+				String idPersona = (String)request.getSession().getAttribute("idPersonaTurno");
+				String fechaConsultaTurno =  (String)request.getSession().getAttribute("fechaConsultaInscripcionTurno");
+				miForm.setFechaConsulta(fechaConsultaTurno);
 				consulta =
 					" SELECT "+guardias.getCamposTabla(3)+ " , " +
 							"Pkg_Siga_Sjcs.FUN_SJ_PARTIDOSJUDICIALES" +
@@ -348,14 +368,54 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 				 	" WHERE "+
 				 	" SCS_GUARDIASTURNO.IDINSTITUCION = SCS_TURNO.IDINSTITUCION AND " +
 					" SCS_GUARDIASTURNO.IDTURNO = SCS_TURNO.IDTURNO AND " +
-					" SCS_TURNO.IDINSTITUCION = "+(String)usr.getLocation()+//la del turno del que procedemos
-					" AND SCS_TURNO.IDTURNO = "+(String)turno.get("IDTURNO")+//la del turno del que procedemos
+					" SCS_TURNO.IDINSTITUCION = "+idInstitucion+//la del turno del que procedemos
+					" AND SCS_TURNO.IDTURNO = "+idTurno+//la del turno del que procedemos
 					" ORDER BY SCS_GUARDIASTURNO.NOMBRE ASC";
+				ScsInscripcionTurnoAdm admInsTurno = new ScsInscripcionTurnoAdm(usr);
+				String fechaSolicitudTurno = (String)request.getSession().getAttribute("FECHASOLICITUDTURNOSESION");
+				ScsInscripcionTurnoBean inscripcionTurnoSeleccionada = admInsTurno.getInscripcionTurno(new Integer(idInstitucion),new Integer( idTurno), new Long(idPersona), fechaSolicitudTurno,false);
+				//miramos si tiene fecha de baja para que puedan solictar altas nuevas de inscripciones de guardia
+				//Boolean isFechaBajaInscTurnoActiva = insTurnoBeanActiva!=null && insTurnoBeanActiva.getFechaBaja()!=null && !insTurnoBeanActiva.getFechaBaja().equals("");
+				request.setAttribute("inscripcionTurnoSeleccionada", inscripcionTurnoSeleccionada);
+				request.getSession().setAttribute("IDTURNOSESION",(String)turno.get("IDTURNO"));			
+				Vector resultado = (Vector)guardias.ejecutaSelect(consulta);
+				ScsInscripcionGuardiaAdm admInsGua = new ScsInscripcionGuardiaAdm(usr);
+				ScsInscripcionTurnoBean inscripcionHoy = null;
+				if(inscripcionTurnoSeleccionada.getFechaBaja()!=null&&!inscripcionTurnoSeleccionada.getFechaBaja().equals("")){
+					inscripcionHoy = admInsTurno.getInscripcion(new Integer(idInstitucion),new Integer( idTurno), new Long(idPersona), "sysdate");
+				}else{
+					inscripcionHoy = inscripcionTurnoSeleccionada;
+					
+				}
+				Boolean isPermitidoInscripcionGuardia = inscripcionHoy.equals(inscripcionTurnoSeleccionada)||inscripcionTurnoSeleccionada.getFechaBaja()==null||(inscripcionTurnoSeleccionada.getFechaBaja().compareTo(inscripcionHoy.getFechaValidacion())>0);
+				request.setAttribute("isPermitidoInscripcionGuardia", isPermitidoInscripcionGuardia);
+				if(resultado!=null && resultado.size()>0){
+					Iterator iteResultado = resultado.iterator();
+					while (iteResultado.hasNext()) {
+						Hashtable htGuardia = (Hashtable) iteResultado.next();
+						String idGuardia = (String)htGuardia.get("IDGUARDIA");
+						
+						
+						Vector inscripcionGuardia = admInsGua.getInscripcionActiva(idInstitucion,
+								idTurno, idPersona, new Integer(idGuardia),fechaConsultaTurno);
+						if(inscripcionGuardia!=null && inscripcionGuardia.size()>0){
+							Hashtable htInscripcionGuardia = (Hashtable)inscripcionGuardia.get(0);
+							
+							htGuardia.put("INSCRIPCIONGUARDIA",htInscripcionGuardia);
+						
+						}else{
+//							if(inscripcionTurnoSeleccionada.getFechaBaja()!=null&&!inscripcionTurnoSeleccionada.getFechaBaja().equals(""))
+//								iteResultado.remove();
+						}
+						
+					}
+					
+				}
+				
+				request.getSession().setAttribute("resultado",resultado);
 			}
 			
-			request.getSession().setAttribute("IDTURNOSESION",(String)turno.get("IDTURNO"));			
-			Vector resultado = (Vector)guardias.ejecutaSelect(consulta);			
-			request.getSession().setAttribute("resultado",resultado);
+			
 		}
 		catch(Exception e){
 			throwExcp("error.messages.editar",e,null);

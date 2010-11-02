@@ -6,15 +6,12 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.transaction.UserTransaction;
-
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -26,9 +23,7 @@ import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.GstDate;
 import com.atos.utils.ReadProperties;
-import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.GestorContadores;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesBDAdm;
@@ -39,11 +34,7 @@ import com.siga.beans.BusquedaClientesFiltrosAdm;
 import com.siga.beans.CenBajasTemporalesAdm;
 import com.siga.beans.CenBajasTemporalesBean;
 import com.siga.beans.CenColegiadoAdm;
-import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
-import com.siga.beans.CenPersonaBean;
-import com.siga.beans.FacFacturaBean;
-import com.siga.beans.GenClientesTemporalAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsAsistenciasAdm;
 import com.siga.beans.ScsAsistenciasBean;
@@ -67,20 +58,17 @@ import com.siga.beans.ScsDesignasProcuradorAdm;
 import com.siga.beans.ScsDesignasProcuradorBean;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
+import com.siga.beans.ScsEJGDESIGNAAdm;
 import com.siga.beans.ScsEJGDESIGNABean;
 import com.siga.beans.ScsJuzgadoAdm;
 import com.siga.beans.ScsJuzgadoBean;
-import com.siga.beans.ScsSaltosCompensacionesBean;
 import com.siga.certificados.Plantilla;
-import com.siga.facturacion.form.ConsultaMorososForm;
-import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.BuscarDesignasForm;
-import com.siga.gratuita.form.BusquedaDesignasForm;
+import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
 import com.siga.informes.InformeBusquedaDesignas;
-import com.siga.beans.ScsEJGDESIGNAAdm;
 
 
 
@@ -209,79 +197,7 @@ public class BusquedaDesignasAction extends MasterAction {
 		return "inicio";
 	}
 	
-	/**
-	 * Obtiene el siguiente letrado seleccionado automaticamente de la cola del turno
-	 */
-	protected String abrirAvanzada (ActionMapping mapping,
-									MasterForm formulario,
-									HttpServletRequest request,
-									HttpServletResponse response)
-		throws ClsExceptions, SIGAException
-	{
-		//en la modal se ha elegido buscar el letrado automaticamente
-		//Controles generales
-		UsrBean usr = this.getUserBean(request);
-		BuscarDesignasForm miForm = (BuscarDesignasForm) formulario;
-		GenClientesTemporalAdm temporalAdm = new GenClientesTemporalAdm(usr);
-		String institucion = usr.getLocation();
-		String contador = null;
-		
-		try {
-			//guardando datos sesion
-			request.getSession().setAttribute("formularioAvanzada", 
-					(Hashtable<String, Object>) miForm.getDatos());
-			
-			//solicitando ordenacion de la cola de turno
-			contador = EjecucionPLs.ejecutarPL_OrdenaColegiadosTurno(
-					Integer.valueOf(institucion), 
-					Integer.valueOf((String) miForm.getIdTurno()), 
-					1)[0];
-			
-			//consultando primero en la cola
-			String consultaTemp =
-				" select cli.posicion posicion," +
-				"        cli.idpersona idpersona " +
-				"   from gen_clientestemporal cli " +
-				"  where cli.idinstitucion = "+institucion+" " +
-				"    and cli.contador = "+contador+" " +
-				"    and cli.salto <> 'S' " +
-				"    and cli.posicion = " +	//el primero de la posicion para el turno
-				"        (select min(cli2.posicion) " +
-				"           from gen_clientestemporal cli2 " +
-				"          where cli2.idinstitucion = "+institucion+" " +
-				"            and cli2.contador = "+contador+") ";
-			Hashtable<String, Object> temporalBean = (Hashtable<String, Object>) (
-					(Vector) temporalAdm.ejecutaSelect(consultaTemp)).get(0);
-			
-			//buscando nColegiado primero de la cola
-			CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm(usr);
-			CenColegiadoBean colegiadoElegido = colegiadoAdm.getDatosColegiales(
-					new Long((String) temporalBean.get("IDPERSONA")), new Integer(institucion));
-			
-			//guardando datos respuesta
-			miForm.setNcolegiado(colegiadoAdm.getIdentificadorColegiado(colegiadoElegido));
-			miForm.setIdPersona(colegiadoElegido.getIdPersona().toString());
-			request.setAttribute("datosEntrada", miForm);       
-			request.setAttribute("hayDatos", "si");
-		}
-		catch (Exception e) {
-			miForm.setNcolegiado("");
-			miForm.setIdPersona("");
-			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, null);
-		}
-		finally {
-			//borrando la tabla temporal
-			if (contador!= null && !contador.equals("0")) {
-				Hashtable<String, Object> miHash = new Hashtable<String, Object>();
-				miHash.put("IDINSTITUCION", institucion);
-				miHash.put("CONTADOR", contador);
-				temporalAdm.delete(miHash);
-			}
-		}
-
-		return "nuevoRecarga";
-		
-	} //abrirAvanzada()
+	
 	
 	/**Funcion que transforma los datos de entrada para poder hacer la consulta a BBDD
 	 * 
@@ -759,20 +675,21 @@ public class BusquedaDesignasAction extends MasterAction {
 				} else {
 					//busqueda automatica
 					BusquedaClientesFiltrosAdm busquedaClientesFiltrosAdm= new BusquedaClientesFiltrosAdm(usr);
-					Row row = busquedaClientesFiltrosAdm.gestionaDesignacionesAutomaticas(usr.getLocation(), miform.getIdTurno(),(String)hash.get("FECHAENTRADAINICIO"));
-					idPersonaSel = (String)row.getValue(CenPersonaBean.C_IDPERSONA);					
-					numColegiadoAutomatico = (String)row.getValue(CenColegiadoBean.C_NCOLEGIADO);
-					nombreApellidos = (String)row.getValue(CenPersonaBean.C_NOMBRE);
-					String apellido1 = (String)row.getValue(CenPersonaBean.C_APELLIDOS1);
-					compensacion = (String)row.getValue(ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION);
+					LetradoGuardia letradoTurno = busquedaClientesFiltrosAdm.gestionaDesignacionesAutomaticas(usr.getLocation(), miform.getIdTurno(),(String)hash.get("FECHAENTRADAINICIO"));
+					idPersonaSel = letradoTurno.getIdPersona().toString();					
+					numColegiadoAutomatico = letradoTurno.getPersona().getColegiado().getNColegiado();
+					nombreApellidos = letradoTurno.getPersona().getNombre();
+					String apellido1 = letradoTurno.getPersona().getApellido1();
+					
 					if (apellido1 != null) {
 						nombreApellidos += " " + apellido1;	
 					}
 
-					String apellido2 = (String)row.getValue(CenPersonaBean.C_APELLIDOS2);
+					String apellido2 = letradoTurno.getPersona().getApellido2();
 					if (apellido2 != null) {
 						nombreApellidos += " " + apellido2;	
-					}				
+					}
+					compensacion = letradoTurno.getSaltoCompensacion();
 				}
 			}
 
@@ -1020,6 +937,7 @@ public class BusquedaDesignasAction extends MasterAction {
 
 			String sql = "PROC_ACTUALIZARGENPARAMETROS("+designaBean.getIdInstitucion()+", "+codigo,to_char(fechaInicio));*/
 			/***/
+			designaBean.setFechaAlta("SYSDATE");
 			if (!designaAdm.insert(designaBean)) {
 				return false;
 			}
@@ -1084,7 +1002,7 @@ public class BusquedaDesignasAction extends MasterAction {
 				designaBean.setNumProcedimiento(UtilidadesHash.getString(datosDesigna, ScsDesignaBean.C_NUMPROCEDIMIENTO));			
 
 			ScsDesignaAdm designaAdm = new ScsDesignaAdm (usuario);
-
+			designaBean.setFechaAlta("SYSDATE");
 			if (!designaAdm.insert(designaBean)) {
 				return false;
 			}
@@ -1278,7 +1196,7 @@ public class BusquedaDesignasAction extends MasterAction {
 			if (datosHash.get(ScsDesignaBean.C_IDINSTITUCIONJUZGADO)!=null && !((String)datosHash.get(ScsDesignaBean.C_IDINSTITUCIONJUZGADO)).equals(""))
 				designaBean.setIdInstitucionJuzgado(new Integer(UtilidadesHash.getString(datosHash, ScsDesignaBean.C_IDINSTITUCIONJUZGADO)));			
 
-
+			designaBean.setFechaAlta("SYSDATE");
 			if (!designaAdm.insert(designaBean)) {
 				return false;
 			}

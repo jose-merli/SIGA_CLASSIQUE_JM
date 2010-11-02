@@ -9,7 +9,13 @@ public class ColaGuardiasForm extends MasterForm {
 
 	//Campos para la tabla de turnos
 	String idPersona = "";
-
+	private String fechaConsulta;
+	public String getFechaConsulta() {
+		return fechaConsulta;
+	}
+	public void setFechaConsulta(String fechaConsulta) {
+		this.fechaConsulta = fechaConsulta;
+	}
 	public void setDefGuardia		(String  guardia)		{ if(guardia==null)   datos.remove("DEFGUARDIA"); else datos.put("DEFGUARDIA",guardia);		}
 	public void setIdGuardia		(String  guardia)		{ if(guardia==null)   datos.remove("IDGUARDIA");  else datos.put("IDGUARDIA",guardia);		}
 	public void setNColegiado		(String  nColegiado)	{ if(nColegiado==null)datos.remove("NCOLEGIADO"); else datos.put("NCOLEGIADO",nColegiado);	}
@@ -23,6 +29,7 @@ public class ColaGuardiasForm extends MasterForm {
 	public String 	  getNombre()     						{ return (String)datos.get("NOMBRE"); 		}
 	public String 	  getApellido1()    					{ return (String)datos.get("APELLIDO1"); 	}
 	public String 	  getApellido2()     					{ return (String)datos.get("APELLIDO2"); 	}
+	
 	
 	public String getIdPersona() {
 		return idPersona;

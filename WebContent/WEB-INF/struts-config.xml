@@ -177,7 +177,6 @@
     	<form-bean name="tablaMaestraSJCSRet" type="com.siga.gratuita.form.SolicitudRetencionForm"/>
     	<form-bean name="DefinirTurnosForm" type="com.siga.gratuita.form.DefinirTurnosForm"/>
     	<form-bean name="DefinirTurnosFormNuevo" type="com.siga.gratuita.form.DefinirTurnosForm"/>
-		<form-bean name="AltaTurnosGuardiasForm" type="com.siga.gratuita.form.AltaTurnosGuardiasForm"/>
     	<form-bean name="SolicitudRetencionForm" type="com.siga.gratuita.form.SolicitudRetencionForm"/>
 		<form-bean name="CalendarioLaboralForm" type="com.siga.gratuita.form.CalendarioLaboralForm"/>
 		<form-bean name="DefinirPartidaPresupuestariaForm" type="com.siga.gratuita.form.DefinirPartidaPresupuestariaForm"/>
@@ -188,7 +187,7 @@
 		<form-bean name="MantenimientoMaestroPJForm" type="com.siga.gratuita.form.MantenimientoMaestroPJForm"/>
 		<form-bean name="DefinirListaGuardiasForm" type="com.siga.gratuita.form.DefinirListaGuardiasForm"/>
 		<form-bean name="DefinirIncompatibilidadesGuardiaForm" type="com.siga.gratuita.form.DefinirIncompatibilidadesGuardiaForm"/>
-		<form-bean name="ValidarTurnosForm" type="com.siga.gratuita.form.ValidarTurnosForm"/>
+		<form-bean name="InscripcionTGForm" type="com.siga.gratuita.form.InscripcionTGForm"/>
 		<form-bean name="DefinirZonasSubzonasForm" type="com.siga.gratuita.form.DefinirZonasSubzonasForm"/>
 		<form-bean name="DefinirCalendarioGuardiaForm" type="com.siga.gratuita.form.DefinirCalendarioGuardiaForm"/>
 		<form-bean name="BajaTurnosForm" type="com.siga.gratuita.form.BajaTurnosForm"/>
@@ -1996,19 +1995,7 @@
             <forward name="consultarAsistencia" path="/html/jsp/gratuita/consultaAsistencia.jsp"/>
         </action>
 
-		<action path="/JGR_SolicitarBajaTurno" type="com.siga.gratuita.action.BajaTurnosAction" name="BajaTurnosForm" scope="request">
-			<forward name="listado" path="/html/jsp/gratuita/listarTurnosLetrados.jsp"/>
-			<forward name="listadoBaja" path="/html/jsp/gratuita/listarTurnosBaja.jsp"/>
-			<forward name="confirmacion" path="/html/jsp/gratuita/listarTurnosBajaConfirmacion.jsp"/>
-			<forward name="verTurno" path="/html/jsp/gratuita/consultaTurno.jsp"/>
-			<forward name="verGuardia" path="/html/jsp/gratuita/altaTurno_2.jsp"/>
-			<forward name="editar" path="/html/jsp/gratuita/consultaTurno.jsp"/>
-	     	<forward name="nuevo" path="/html/jsp/gratuita/altaTurnos.jsp"/>
-			<forward name="nuevo2" path="/html/jsp/gratuita/altaTurno_2.jsp"/>
-			<forward name="operacionOK" path="/JGR_DefinirTurnosLetrado.do"/>
-			<forward name="error" path="/html/jsp/general/error.jsp"/>
-			<forward name="abrirModalBaja" path="/html/jsp/gratuita/datosBajaModal.jsp"/>
-		</action>
+		
         
 		<action path="/JGR_TelefonosPersonasJG" type="com.siga.gratuita.action.DefinirTelefonosJGAction" name="DefinirTelefonosJGForm" scope="request">
 			<forward name="listadoTelefonos" path="/html/jsp/gratuita/listadoTelefonosJG.jsp"/>
@@ -2099,31 +2086,56 @@
 			<forward name="borrar" path="/html/jsp/gratuita/modalHitoPago.jsp"/>
 			<forward name="nuevo" path="/html/jsp/gratuita/modalDefinirHitoPago.jsp"/>
 		</action>
-
-		<!-- ***** Justicia Gratuita / Validar Turnos ***** -->
-		<action path="/JGR_ValidarTurnos" type="com.siga.gratuita.action.ValidarTurnosAction" name="ValidarTurnosForm" scope="request">
-			<forward name="listado" path="/html/jsp/gratuita/listarTurnosLetrados.jsp"/>
-			<forward name="verTurno" path="/html/jsp/gratuita/consultaTurno.jsp"/>
-			<forward name="verGuardia" path="/html/jsp/gratuita/altaTurno_2.jsp"/>
-			<forward name="editar" path="/html/jsp/gratuita/consultaTurno.jsp"/>
-     		<forward name="nuevo" path="/html/jsp/gratuita/altaTurnos.jsp"/>
-			<forward name="nuevo2" path="/html/jsp/gratuita/altaTurno_2.jsp"/>
-			<forward name="operacionOK" path="/JGR_DefinirTurnosLetrado.do"/>
-			<forward name="error" path="/html/jsp/general/error.jsp"/>
+		<!-- ***** Justicia Gratuita / Baja Turnos / Guardias ***** -->
+		<action path="/JGR_AltaTurnosGuardias" type="com.siga.gratuita.action.GestionInscripcionesTGAction" name="InscripcionTGForm">
+			<forward name="busquedaTurnosDisponibles" path="/html/jsp/gratuita/busquedaTurnosDisponibles.jsp"/>
+			<forward name="listadoTurnosDisponibles" path="/html/jsp/gratuita/listadoTurnosDisponibles.jsp"/>
+			<forward name="consultaTurnoInscripcion" path="/html/jsp/gratuita/consultaTurnoInscripcion.jsp"/>
+			<forward name="consultaGuardiasInscripcion" path="/html/jsp/gratuita/consultaGuardiasInscripcion.jsp"/>
+			<forward name="validarInscripcion" path="/html/jsp/gratuita/validarInscripcion.jsp"/>
+			<forward name="editarTelefonosGuardia" path="/html/jsp/gratuita/editarTelefonosGuardia.jsp"/>
+			<forward name="msjAvisoEstado" path="/html/jsp/gratuita/msjAvisoEstado.jsp"/>
 		</action>
-
-		<action path="/JGR_BajaTurnos" type="com.siga.gratuita.action.BajaTurnosAction" name="BajaTurnosForm" scope="request">
-			<forward name="listado" path="/html/jsp/gratuita/listarTurnosLetrados.jsp"/>
-			<forward name="listadoBaja" path="/html/jsp/gratuita/listarTurnosBaja.jsp"/>
-			<forward name="confirmacion" path="/html/jsp/gratuita/listarTurnosBajaConfirmacion.jsp"/>
-			<forward name="verTurno" path="/html/jsp/gratuita/consultaTurno.jsp"/>
-			<forward name="verGuardia" path="/html/jsp/gratuita/altaTurno_2.jsp"/>
-			<forward name="editar" path="/html/jsp/gratuita/consultaTurno.jsp"/>
-	     	<forward name="nuevo" path="/html/jsp/gratuita/altaTurnos.jsp"/>
-			<forward name="nuevo2" path="/html/jsp/gratuita/altaTurno_2.jsp"/>
-			<forward name="operacionOK" path="/JGR_DefinirTurnosLetrado.do"/>
-			<forward name="error" path="/html/jsp/general/error.jsp"/>
+		<action path="/JGR_SolicitarBajaTurno" type="com.siga.gratuita.action.GestionInscripcionesTGAction" name="InscripcionTGForm">
+			<forward name="consultaTurnoInscripcion" path="/html/jsp/gratuita/consultaTurnoInscripcion.jsp"/>
+			<forward name="consultaGuardiasInscripcion" path="/html/jsp/gratuita/consultaGuardiasInscripcion.jsp"/>
+			<forward name="validarInscripcion" path="/html/jsp/gratuita/validarInscripcion.jsp"/>
+			<forward name="msjAvisoEstado" path="/html/jsp/gratuita/msjAvisoEstado.jsp"/>
 		</action>
+		
+		<action path="/JGR_InscribirseEnGuardia" type="com.siga.gratuita.action.GestionInscripcionesTGAction" name="InscripcionTGForm">
+			<forward name="consultaTurnoInscripcion" path="/html/jsp/gratuita/consultaTurnoInscripcion.jsp"/>
+			<forward name="consultaGuardiasInscripcion" path="/html/jsp/gratuita/consultaGuardiasInscripcion.jsp"/>
+			<forward name="validarInscripcion" path="/html/jsp/gratuita/validarInscripcion.jsp"/>
+			<forward name="msjAvisoEstado" path="/html/jsp/gratuita/msjAvisoEstado.jsp"/>
+		</action>
+		<action path="/JGR_BajaEnGuardia" type="com.siga.gratuita.action.GestionInscripcionesTGAction" name="InscripcionTGForm">
+			<forward name="consultaTurnoInscripcion" path="/html/jsp/gratuita/consultaTurnoInscripcion.jsp"/>
+			<forward name="consultaGuardiasInscripcion" path="/html/jsp/gratuita/consultaGuardiasInscripcion.jsp"/>
+			<forward name="validarInscripcion" path="/html/jsp/gratuita/validarInscripcion.jsp"/>
+			<forward name="msjAvisoEstado" path="/html/jsp/gratuita/msjAvisoEstado.jsp"/>
+		</action>
+		
+		
+		<action path="/JGR_BajaTurnos" type="com.siga.gratuita.action.GestionInscripcionesTGAction" name="InscripcionTGForm" scope="request">
+			<forward name="consultaInscripcion" path="/html/jsp/gratuita/consultaInscripcion.jsp"/>
+			
+		</action>
+		
+		<action path="/JGR_ValidarTurnos" type="com.siga.gratuita.action.GestionInscripcionesTGAction" name="InscripcionTGForm" >
+			<forward name="inicio" path="/html/jsp/gratuita/gestionInscripcionesTG.jsp"/>
+			<forward name="listadoInscripcionTurnos" path="/html/jsp/gratuita/listadoInscripcionTurnos.jsp"/>
+			<forward name="listadoInscripcionGuardias" path="/html/jsp/gratuita/listadoInscripcionGuardias.jsp"/>
+			<forward name="consultaTurnoInscripcion" path="/html/jsp/gratuita/consultaTurnoInscripcion.jsp"/>
+			<forward name="consultaGuardiasInscripcion" path="/html/jsp/gratuita/consultaGuardiasInscripcion.jsp"/>
+			<forward name="validarInscripcion" path="/html/jsp/gratuita/validarInscripcion.jsp"/>
+			<forward name="editarFechaValidacion" path="/html/jsp/gratuita/cambioFechaValidacion.jsp"/>
+			<forward name="editarFechaBaja" path="/html/jsp/gratuita/cambioFechaBaja.jsp"/>
+			<forward name="msjAvisoEstado" path="/html/jsp/gratuita/msjAvisoEstado.jsp"/>
+			
+		</action>
+		
+		
 		<action path="/JGR_BajasTemporales" type="com.siga.censo.action.GestionBajasTemporalesAction" name="BajasTemporalesForm">
 			<forward name="inicio" path="/html/jsp/censo/bajasTemporales/gestionBajasTemporales.jsp"/>
 			<forward name="listadoBajasTemporales" path="/html/jsp/censo/bajasTemporales/listadoBajasTemporales.jsp"/>
@@ -2132,10 +2144,8 @@
 			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>
 			
 		</action>
-
 		<action path="/CEN_BajasTemporales" forward="/JGR_BajasTemporales.do?fichaColegial=true" >
 		</action>
-
 		<!-- ***** Justicia Gratuita / Definir Calendario de Guardias ***** -->
 		<action path="/JGR_DefinirCalendarioGuardia" type="com.siga.gratuita.action.DefinirCalendarioGuardiaAction" name="DefinirCalendarioGuardiaForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/inicio_DefinirCalendarioGuardia.jsp"/>
@@ -2158,19 +2168,7 @@
 			<forward name="listar2LG" path="/html/jsp/gratuita/listado2LG.jsp"/>
             <forward name="recogidaDatos" path="/html/jsp/gratuita/datosPeriodoGuardias.jsp"/>
 		</action>
-
-		<action path="/JGR_InscribirseEnGuardia" type="com.siga.gratuita.action.InscribirseEnGuardiaAction" name="DefinirGuardiasTurnosForm" scope="request">
-			<forward name="editar" path="/html/jsp/gratuita/editarGuardiaTurnoInscripcion.jsp"/>
-			<forward name="nuevo" path="/html/jsp/gratuita/altaGuardia.jsp"/>
-			<forward name="listado" path="/html/jsp/gratuita/guardiasTurno.jsp"/>
-		</action>
-	
-		<action path="/JGR_BajaEnGuardia" type="com.siga.gratuita.action.BajaEnGuardiaAction" name="DefinirGuardiasTurnosForm" scope="request">
-			<forward name="editar" path="/html/jsp/gratuita/editarGuardiaTurnoInscripcion.jsp"/>
-			<forward name="nuevo" path="/html/jsp/gratuita/bajaGuardia.jsp"/>
-			<forward name="listado" path="/html/jsp/gratuita/guardiasTurno.jsp"/>
-		</action>
-
+		
 		<!-- ***** Justicia Gratuita / Definir Incompatibilidades de Guardia ***** -->
 		<action path="/JGR_IncompatibilidadesGuardia" type="com.siga.gratuita.action.DefinirIncompatibilidadesGuardiaAction" name="DefinirIncompatibilidadesGuardiaForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/inicio_IncompatibilidadesGuardia.jsp"/>
@@ -2179,14 +2177,7 @@
 			<forward name="buscarModal" path="/html/jsp/gratuita/listadoModal_IncompatibilidadesGuardia.jsp"/>
 		</action>
 
-		<action path="/JGR_ListarGuardiasTurnosLetrado" type="com.siga.gratuita.action.DefinirGuardiasTurnosAction">
-			<forward name="listado" path="/html/jsp/gratuita/listarGuardiasTurnosLetrado.jsp"/>
-		</action>
 		
-
-		<action path="/JGR_ListaGuardiasTurno" type="com.siga.gratuita.action.DefinirGuardiasTurnosAction">
-			<forward name="listado" path="/html/jsp/gratuita/listarGuardiasTurnos.jsp"/>
-		</action>
 		
 		<action path="/JGR_VolantesExpres" type="com.siga.gratuita.action.VolantesExpressAction" name="VolantesExpressForm" >
 			<forward name="inicio" path="/html/jsp/gratuita/volantesExpress.jsp"/>
@@ -2214,9 +2205,17 @@
 			<forward name="verLetrado" path="/html/jsp/gratuita/pestanaGuardiaExp.jsp"/>
 			<forward name="sustituir" path="/html/jsp/gratuita/modalSustitucionLetradoGuardia.jsp"/>
 		</action>
+		<action path="/JGR_ListarGuardiasTurnosLetrado" type="com.siga.gratuita.action.DefinirGuardiasTurnosAction" parameter="abrirAvanzada" name="DefinirGuardiasTurnosForm" >
+			<forward name="listado" path="/html/jsp/gratuita/listarGuardiasTurnosLetrado.jsp"/>
+	</action>
+		
+		<action path="/JGR_ListaGuardiasTurno" type="com.siga.gratuita.action.DefinirGuardiasTurnosAction">
+			<forward name="listado" path="/html/jsp/gratuita/listarGuardiasTurnos.jsp"/>
+		</action>
 
-		<action path="/JGR_ListarGuardiasLetrado" type="com.siga.gratuita.action.DefinirGuardiasLetradoAction">
+		<action path="/JGR_ListarGuardiasLetrado" type="com.siga.gratuita.action.DefinirGuardiasLetradoAction" name ="DefinirGuardiasLetradoForm">
 			<forward name="listado" path="/html/jsp/gratuita/listarGuardiasLetrado.jsp"/>
+			
 		</action>
 
 		<action path="/DefinirGuardiasLetradoAction" type="com.siga.gratuita.action.DefinirGuardiasLetradoAction" name="DefinirGuardiasLetradoForm" scope="request">
@@ -2497,20 +2496,6 @@
 			<forward name="avanzada" path="/JGR_DefinirTurnos.do"/>
 		</action>
 
-		<!-- ***** Justicia Gratuita / Alta Turnos / Guardias ***** -->
-		<action path="/JGR_AltaTurnosGuardias" type="com.siga.gratuita.action.AltaTurnosGuardiasAction" name="AltaTurnosGuardiasForm" scope="request">
-				<forward name="inicio" path="/html/jsp/gratuita/listarTurnosDisp_2.jsp"/>
-<!-- -->		<forward name="listadoResultados" path="/html/jsp/gratuita/listarTurnosDisp.jsp"/>
-				<forward name="nuevo" path="/html/jsp/gratuita/altaTurnos.jsp"/>
-				<forward name="nuevoMasivo" path="/html/jsp/gratuita/altaTurnosMasivo.jsp"/>
-				<forward name="nuevo2" path="/html/jsp/gratuita/altaTurno_2.jsp"/>
-				<forward name="operacionOK" path="/JGR_DefinirTurnosLetrado.do"/>
-				<forward name="verTurno" path="/html/jsp/gratuita/consultaTurno.jsp"/>
-				<forward name="error" path="/html/jsp/general/error.jsp"/>
-				<forward name="editarTelefonoGuardia" path="/html/jsp/gratuita/editarTelefonoGuardia.jsp"/>
-				<forward name="editarTelefonoGuardiaMasivo" path="/html/jsp/gratuita/editarTelefonoGuardiaMasivo.jsp"/>
-				
-		</action>
 		
 		<!-- ***** Justicia Gratuita / Entrada a Saltos y Compensaciones ***** -->
 		<action path="/JGR_SaltosYCompensaciones" type="com.siga.gratuita.action.SaltosYCompensacionesAction" name="SaltosYCompensacionesForm" scope="request">

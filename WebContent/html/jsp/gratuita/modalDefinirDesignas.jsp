@@ -156,7 +156,7 @@
 			}
 		}
 		
-		function buscarClienteAutomatica ()
+		/* function buscarClienteAutomatica ()
 		{
 			if(document.forms[1].idTurno.selectedIndex > 0){
 				document.forms[1].target="submitArea";
@@ -165,7 +165,7 @@
 			}else{
 				alert("<siga:Idioma key='gratuita.nuevaAsistencia.mensaje.alert1' />");
 			}
-		}
+		}*/ 
 	
 		function cargarCliente ()
 		{
@@ -311,7 +311,7 @@
 				<html:hidden property="flagSalto" value=""></html:hidden>
 				<html:hidden property="flagCompensacion" value=""></html:hidden>
 					<siga:BusquedaSJCS	propiedad="seleccionLetrado" botones="M"
-						concepto="Designacion" operacion="Asignacion" nombre="BuscarDesignasForm" campoTurno="idTurno"
+						concepto="Designacion" operacion="Asignacion" nombre="BuscarDesignasForm" campoTurno="idTurno" campoFecha="fechaAperturaInicio"
 						campoPersona="idPersona" campoColegiado="ncolegiado" campoNombreColegiado="nomColegiado" mostrarNColegiado="true"
 						mostrarNombreColegiado="true" campoFlagSalto="flagSalto" campoFlagCompensacion="flagCompensacion" campoSalto="checkSalto" modo="nuevo"
 					/>

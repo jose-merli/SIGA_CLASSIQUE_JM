@@ -102,7 +102,7 @@ public class AtosVolantesExpressService extends JtaBusinessServiceTemplate
 						
 						guardiasColegiadoAdm.insertarGuardiaManual(volantesExpressVo.getIdInstitucion().toString(), volantesExpressVo.getIdTurno().toString(),
 								volantesExpressVo.getIdGuardia().toString(), volantesExpressVo.getIdColegiado().toString(),  
-								truncFechaGuardia, volantesExpressVo.getUsrBean());
+								null,null,truncFechaGuardia, volantesExpressVo.getUsrBean());
 					} catch (SIGAException e) {
 						
 						//Si es un dia sin calendario de guardias habra que insertarlo

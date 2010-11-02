@@ -128,7 +128,7 @@
 			<tr>
 				<td colspan="5">
 					<siga:BusquedaSJCS propiedad="buscaLetrado" concepto="designacion" operacion="sustitucion" nombre="CambiosLetradosDesignasForm" botones="M"
-							campoTurno="idTurno" campoPersona="idPersona" campoColegiado="NColegiado" campoNombreColegiado="nomColegiado" mostrarNColegiado="true"
+							campoTurno="idTurno" campoFecha="fechaDesigna" campoPersona="idPersona" campoColegiado="NColegiado" campoNombreColegiado="nomColegiado" mostrarNColegiado="true"
 							mostrarNombreColegiado="true" campoFlagSalto="flagSalto" campoFlagCompensacion="flagCompensacion" modo="nuevo"  campoSalto="checkSalto" campoCompensacion="checkCompensacion"
 						/>		
 				</td>	

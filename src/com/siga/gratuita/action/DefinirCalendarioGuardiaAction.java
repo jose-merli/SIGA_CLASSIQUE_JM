@@ -1856,7 +1856,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 	{
 		//Controles globales
 		DefinirCalendarioGuardiaForm miForm;
-		ScsGuardiasColegiadoAdm admGuardiasColegiado;
+		ScsGuardiasColegiadoAdm guardiasColegiadoAdm;
 
 		//Variables
 		UsrBean usr;
@@ -1878,7 +1878,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 		try {
 			//Controles globales
 			
-			admGuardiasColegiado = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
+			guardiasColegiadoAdm = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
 
 			//Valores obtenidos del formulario
 			miForm = (DefinirCalendarioGuardiaForm) formulario;
@@ -1897,86 +1897,14 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 			if(mBajasTemporalesConfirmador.containsKey(fechaInicio))
 				throw new SIGAException("censo.bajastemporales.messages.colegiadoEnVacaciones");
 			
-			
-			
 			indicePeriodo = Integer.parseInt(miForm.getIndicePeriodo());
 
-			//Calculo los periodos de guardias:
-			CalendarioSJCS calendarioSJCS = new CalendarioSJCS
-			(new Integer(idInstitucion), new Integer(idTurno),
-					new Integer(idGuardia), new Integer(idCalendarioGuardias),
-					usr);
-			calendarioSJCS.calcularMatrizPeriodosDiasGuardia();
+			guardiasColegiadoAdm.insertarGuardiaManual(idInstitucion,idTurno,
+					idGuardia, idPersona, 
+					indicePeriodo,fechaInicio,fechaFin, usr);
+			
 
 			
-			//Obtenemos los dias a Agrupar
-			List lDiasASeparar = calendarioSJCS.getDiasASeparar(new Integer(idInstitucion), new Integer(idTurno), new Integer(idGuardia) , usr);
-			
-			
-			
-			//Nota: El array arrayPeriodosSJCS es un array periodos y cada periodo es un array de dias
-			ArrayList arrayPeriodosSJCS = calendarioSJCS.getArrayPeriodosDiasGuardiaSJCS();
-
-			//Selecciono el periodo de la lista de periodos:
-			arrayPeriodoSeleccionado = (ArrayList)arrayPeriodosSJCS.get(indicePeriodo);
-
-			//Creo el Letrado:
-			letrado = new LetradoGuardia
-			(new Long(idPersona), new Integer(idInstitucion),
-					new Integer(idTurno), new Integer(idGuardia));			
-
-			//VALIDACIONES:
-			//Relleno una hash con los datos necesarios para validar:
-			miHash = new Hashtable ();
-			miHash.put("IDPERSONA",idPersona);
-			miHash.put("IDINSTITUCION",idInstitucion);
-			miHash.put("IDCALENDARIOGUARDIAS",idCalendarioGuardias);
-			miHash.put("IDTURNO",idTurno);
-			miHash.put("IDGUARDIA",idGuardia);
-			miHash.put("FECHAINICIO",fechaInicio); //Del periodo
-			miHash.put("FECHAFIN",fechaFin); //Del periodo
-
-			//Numero de letrados: si supera el contador de letrados el permitido no puedo insertar
-			validacionOk = true; numeroError = 0;
-
-//			Se quita la validacion del numero de letrados INC_4866			
-//			if (validacionOk && !admGuardiasColegiado.validarNumeroLetrados(miHash)) { 
-			//validacionOk = false; numeroError=1;
-			//}
-
-//			El siguiente bloque de codigo se comenta de forma temporal para cuando 
-//			tengamos tiempo de revisar y arreglar estas comprobaciones
-//			//Que la persona elegida no haga una guardia incompatible el mismo dia para este periodo:
-//			if (validacionOk && !admGuardiasColegiado.validarIncompatibilidadGuardia(idInstitucion, idTurno, idGuardia, arrayPeriodoSeleccionado, idPersona)) {
-//			validacionOk = false; numeroError=2;
-//			}
-//			//Numero correcto de separacion entre guardias para este pediodo:
-//			if (validacionOk && !admGuardiasColegiado.validarSeparacionGuardias(miHash)) { 
-//			validacionOk = false; numeroError=3;
-//			}
-
-			//Si cumple todas las validaciones inserto
-			if (validacionOk)  {
-				//INSERT (INICIO TRANSACCION)
-				tx=usr.getTransaction();
-				tx.begin();   
-				//Almaceno en BBDD la cabecera y las guardias colegiado para este letrado:
-				calendarioSJCS.almacenarAsignacionGuardiaLetrado(letrado,arrayPeriodoSeleccionado,lDiasASeparar);
-				tx.commit();
-
-				forward = exitoModal("messages.inserted.success", request);
-			} else {
-				//Casos de error en la validacion. Aviso con un mensaje de error y no refresco.
-				switch (numeroError){
-				//1.Error: el número de letrados no es el permitido
-				case 1: forward = exito("gratuita.modalRegistro_DefinirCalendarioGuardia.literal.errorLetrados" ,request);break;
-				//2.Error: el colegiado hace una guardia incompatible el mismo día	
-				case 2: forward = exito("gratuita.modalRegistro_DefinirCalendarioGuardia.literal.errorIncompatibilidad" ,request);break;
-				//3.Error: numero incorrecto de separacion entre guardias
-				case 3: forward = exito("gratuita.modalRegistro_DefinirCalendarioGuardia.literal.errorSeparacion" ,request);break;
-				default:forward = exito("gratuita.modalRegistro_DefinirCalendarioGuardia.literal.seleccioneFecha" ,request);break;
-				}
-			}
 		}catch (SIGAException e) {
 			request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr,e.getLiteral()));	
 			return "errorConAviso"; 

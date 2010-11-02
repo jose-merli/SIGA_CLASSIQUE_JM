@@ -28,8 +28,7 @@
 	request.getSession().removeAttribute("pestanasG");
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
-	Vector resultado = (Vector)request.getSession().getAttribute("DATABACKUP");
-	request.getSession().removeAttribute("DATABACKUP");
+	List<ScsInscripcionTurnoBean> resultado = (ArrayList)request.getAttribute("resultado");
 	
 	//Datos del Colegiado si procede:
 	String nombrePestanha = (String)request.getAttribute("NOMBRECOLEGPESTAÑA");
@@ -50,6 +49,9 @@
 
 %>
 
+<%@page import="com.siga.gratuita.util.calendarioSJCS.LetradoGuardia"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.ArrayList"%>
 <html>
 <!-- HEAD -->
 <head>
@@ -91,13 +93,18 @@
 			<input type="hidden" name="tablaDatosDinamicosD">
 			<input type="hidden" name="actionModal" value="">
 		</html:form>	
-		
 
 		<siga:TablaCabecerasFijas 
 		   nombre="tablaDatos"
 		   borde="1"
 		   clase="tableTitle"
-		   nombreCol="gratuita.definirTurnosIndex.literal.abreviatura,gratuita.listarProximasDesignas.literal.nombreTurno,gratuita.definirTurnosIndex.literal.area,gratuita.definirTurnosIndex.literal.materia,gratuita.definirTurnosIndex.literal.zona,gratuita.definirTurnosIndex.literal.subzona,gratuita.listarProximasDesignas.literal.posicion"
+		   nombreCol="gratuita.definirTurnosIndex.literal.abreviatura,
+		   gratuita.listarProximasDesignas.literal.nombreTurno,
+		   gratuita.definirTurnosIndex.literal.area
+		   ,gratuita.definirTurnosIndex.literal.materia
+		   ,gratuita.definirTurnosIndex.literal.zona
+		   ,gratuita.definirTurnosIndex.literal.subzona
+		   ,gratuita.listarProximasDesignas.literal.posicion"
 		   tamanoCol="17,20,15,15,12,11,10"
 		   			alto="100%"
 		   			ajusteBotonera="true"		
@@ -113,22 +120,27 @@
 	    	int contador=1;
 			while ((contador) <= resultado.size())
 			{	 
-				Hashtable hash = (Hashtable)resultado.get(contador-1);
+				ScsInscripcionTurnoBean inscripcionLetradoTurno = (ScsInscripcionTurnoBean)resultado.get(contador-1);
 		%>
-		<tr>
-				<td class="listaNonEdit"><%=hash.get("ABREVIATURA")%>&nbsp;</td>
-				<td class="listaNonEdit"><%=hash.get("TURNO")%></td>
-				<td class="listaNonEdit"><%=hash.get("AREA")%></td>
-				<td class="listaNonEdit"><%=hash.get("MATERIA")%></td>
-				<td class="listaNonEdit"><%=hash.get("ZONA")%></td>
-				<td class="listaNonEdit">&nbsp;<%=hash.get("SUBZONA")%></td>
-				<td class="listaNonEdit"><%=hash.get("POSICION")%></td>
-		</tr>
+		<siga:FilaConIconos	fila='<%=String.valueOf(contador)%>'
+	  				botones="" 
+	  				pintarEspacio="no"
+	  				visibleConsulta="no"
+	  				visibleEdicion = "no"
+	  				visibleBorrado = "no"
+	  				clase="listaNonEdit">
+				<td ><%=inscripcionLetradoTurno.getTurno().getAbreviatura()%>&nbsp;</td>
+				<td ><%=inscripcionLetradoTurno.getTurno().getNombre()%>&nbsp;</td>
+				<td ><%=inscripcionLetradoTurno.getTurno().getArea().getNombre()%>&nbsp;</td>
+				<td ><%=inscripcionLetradoTurno.getTurno().getMateria().getNombre()%>&nbsp;</td>
+				<td><%=inscripcionLetradoTurno.getTurno().getZona().getNombre()%>&nbsp;</td>
+				<td><%=inscripcionLetradoTurno.getTurno().getSubZona().getNombre()%>&nbsp;</td>
+				<td ><%=inscripcionLetradoTurno.getTurno().getIdOrdenacionColas()==null?"":inscripcionLetradoTurno.getTurno().getIdOrdenacionColas()%>&nbsp;</td>
+		</siga:FilaConIconos>
 		<%	contador++;}%>
 	<% } %>
 
 		</siga:TablaCabecerasFijas>
-	
 
 
 <script language="JavaScript">

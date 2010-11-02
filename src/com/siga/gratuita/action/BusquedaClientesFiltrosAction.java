@@ -96,11 +96,11 @@ public class BusquedaClientesFiltrosAction extends MasterAction {
 				
 				String pagina = (String)request.getParameter("pagina");
 				if (pagina!=null){
-					datos = paginador.obtenerPagina(Integer.parseInt(pagina));
+					datos = paginador.obtenerPaginaNoCache(Integer.parseInt(pagina));
 				}
 				else {
 					// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
-					datos = paginador.obtenerPagina((paginador.getPaginaActual()));
+					datos = paginador.obtenerPaginaNoCache((paginador.getPaginaActual()));
 				}
 				databackup.put("paginador",paginador);
 				databackup.put("datos",datos);
@@ -116,7 +116,7 @@ public class BusquedaClientesFiltrosAction extends MasterAction {
 				databackup.put("concepto", f.getConcepto());
 				
 				if (paginador!=null){ 
-				   datos = paginador.obtenerPagina(1);
+				   datos = paginador.obtenerPaginaNoCache(1);
 				   databackup.put("datos",datos);
 				   request.getSession().setAttribute("DATAPAGINADOR_VECTOR",databackup);
 				}   
@@ -183,29 +183,19 @@ public class BusquedaClientesFiltrosAction extends MasterAction {
 					resultado=adm.buscaLetradosTodasLasGuardiasDistintasAGuadria(idInstitucion, idTurno, idGuardia, fecha);
 					break;
 					
-				case 3://Letrados del Turno
-					resultado=adm.buscaLetradosDelTurno(idInstitucion, idTurno, idGuardia, fecha);
+				case 3:case 6://Letrados del Turno
+					resultado=adm.buscaLetradosDelTurno(idInstitucion, idTurno,  fecha);
 					break;
 					
-				case 4://Letrados de Todos los Turnos
-					resultado=adm.buscaLetradosTodosLosTurnos(idInstitucion, idTurno, idGuardia, fecha);
+				case 4:case 7://Letrados de Todos los Turnos
+					resultado=adm.buscaLetradosTodosLosTurnos(idInstitucion, idTurno, fecha);
 					break;
 					
-				case 5://Censo Completo
-					resultado=adm.buscaLetradosCensoCompleto(idInstitucion, idTurno, idGuardia, fecha);
+				case 5:case 8://Censo Completo
+					resultado=adm.buscaLetradosCensoCompleto(idInstitucion,  fecha);
 					break;
 					
-				case 6://Letrados del Turno
-					resultado=adm.buscaLetradosDelTurno(idInstitucion, idTurno);
-					break;
-					
-				case 7://Letrados de Todos los Turnos
-					resultado=adm.buscaLetradosTodosLosTurnos(idInstitucion, idTurno);
-					break;
-					
-				case 8://Censo Completo
-					resultado=adm.buscaLetradosCensoCompleto(idInstitucion, idTurno);
-					break;
+				
 					
 				default://no hay filtro
 					throw new ClsExceptions("La opción seleccionada no está implementada");

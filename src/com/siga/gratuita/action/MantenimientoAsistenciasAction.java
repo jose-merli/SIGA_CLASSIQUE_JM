@@ -405,59 +405,7 @@ public class MantenimientoAsistenciasAction extends MasterAction
 	protected synchronized String insertar(	ActionMapping mapping, MasterForm formulario,
 								HttpServletRequest request, HttpServletResponse response)
 								throws SIGAException  {
-		/*HttpSession ses = request.getSession();
-		UsrBean usr 	= (UsrBean)ses.getAttribute("USRBEAN");
-		ScsAsistenciasAdm asistencias = new ScsAsistenciasAdm(this.getUserBean(request));
-		AsistenciasForm miForm = (AsistenciasForm) formulario;
-		String turno = miForm.getIdTurno();
-		// El turno viene con la institucion por delante.
-		turno = turno.substring(turno.indexOf(",")+1);
-		String colegiado = miForm.getColegiado();
-		// Comprobamos que el letrado este apuntado al turno
-		String select = "SELECT COUNT(*) REGISTROS FROM CEN_COLEGIADO A,  SCS_INSCRIPCIONGUARDIA B "+
-			" WHERE A.IDINSTITUCION = B.IDINSTITUCION AND A.IDPERSONA = B.IDPERSONA AND "+
-			" B.FECHABAJA IS NULL AND B.IDTURNO = "+turno+" AND A.NCOLEGIADO = "+colegiado;
-		try{
-			Vector resultado = null;
-			resultado=(Vector)asistencias.ejecutaSelect(select);
-			int registros = Integer.parseInt((String) ((Hashtable) resultado.get(0)).get("REGISTROS"));
-			if(registros > 0)
-			{
-				// Obtenemos el siguiente numero.
-				select = "SELECT nvl(MAX(NUMERO)+1,1) NUMERO FROM SCS_ASISTENCIA WHERE IDINSTITUCION = "+usr.getLocation();
-				resultado=(Vector)asistencias.ejecutaSelect(select);
-				String numero = (String) ((Hashtable) resultado.get(0)).get("NUMERO");
-				// Obtenemos el idpersona de cen_colegiado correspondiente a idinstitucion y ncolegiado
-				select = "SELECT IDPERSONA FROM CEN_COLEGIADO WHERE IDINSTITUCION = "+usr.getLocation()+
-				" AND NCOLEGIADO = "+miForm.getColegiado();
-				resultado=(Vector)asistencias.ejecutaSelect(select);
-				String IDPERSONA = (String) ((Hashtable) resultado.get(0)).get("IDPERSONA");
-				// Obtenemos el formulario y procedemos a realizar el insert.
-				Hashtable hash = new Hashtable();
-				hash.put(ScsAsistenciasBean.C_IDINSTITUCION,usr.getLocation());
-				hash.put(ScsAsistenciasBean.C_ANIO,miForm.getFechaHora().substring(6));
-				hash.put(ScsAsistenciasBean.C_NUMERO,numero);
-				hash.put(ScsAsistenciasBean.C_FECHAHORA,GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaHora()));
-				hash.put(ScsAsistenciasBean.C_IDTURNO,miForm.getIdTurno().substring(miForm.getIdTurno().indexOf(",")+1));
-				hash.put(ScsAsistenciasBean.C_IDGUARDIA,miForm.getIdGuardia());
-				hash.put(ScsAsistenciasBean.C_IDTIPOASISTENCIA,miForm.getIdTipoAsistencia());
-				hash.put(ScsAsistenciasBean.C_IDTIPOASISTENCIACOLEGIO,miForm.getIdTipoAsistenciaColegio());
-				hash.put(ScsAsistenciasBean.C_IDPERSONACOLEGIADO,IDPERSONA);
-				asistencias.insert(hash);
-				request.setAttribute("mensaje","messages.inserted.success");
-				request.setAttribute("modal","1");
-			}
-			else
-			{
-				request.setAttribute("mensaje","gratuita.nuevaAsistencia.mensaje.alert2");
-				request.setAttribute("sinrefresco","1");
-			}
-		}
-		catch (Exception e) 
-		{
-			request.setAttribute("mensaje","messages.inserted.error");
-			request.setAttribute("sinrefresco","1");
-		} */
+
 		
 		UsrBean usr = null;
 		UserTransaction tx = null;
@@ -576,6 +524,7 @@ public class MantenimientoAsistenciasAction extends MasterAction
 					cabeceraGuardiasModelo.setIdPersona(new Long(idPersona));
 					cabeceraGuardiasModelo.setComenSustitucion(UtilidadesString.getMensajeIdioma(usr.getLanguage(),"gratuita.literal.letrado.refuerzo.asistencias"));
 					cabeceraGuardiasModelo.setSustituto("1");
+					cabeceraGuardiasModelo.setFechaAlta("SYSDATE");
 					if(!cabeceraAdm.insert(cabeceraGuardiasModelo))
 						throw new ClsExceptions(cabeceraAdm.getError());
 					

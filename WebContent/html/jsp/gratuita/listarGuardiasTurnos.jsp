@@ -209,7 +209,7 @@
 				  ScsInscripcionGuardiaAdm InscripcionGuardiaAdm = new ScsInscripcionGuardiaAdm(usr);
 		          Vector letradosinscritos = new Vector();
 		          String NLetradosInscritos="";
-				  letradosinscritos= InscripcionGuardiaAdm.selectGenerico(InscripcionGuardiaAdm.getnumeroColegiadosIncritos((String)hash.get("IDINSTITUCION"),(String)hash.get("IDTURNO"),(String)hash.get("IDGUARDIA")));
+				  letradosinscritos= InscripcionGuardiaAdm.selectGenerico(InscripcionGuardiaAdm.getQueryNumeroColegiadosIncritos((String)hash.get("IDINSTITUCION"),(String)hash.get("IDTURNO"),(String)hash.get("IDGUARDIA"),"sysdate"));
 				if( letradosinscritos!=null  ||  letradosinscritos.size()>0){			 
 					NLetradosInscritos=(String)(((Hashtable)(letradosinscritos.get(0))).get("NLETRADOSINSCRITOS"));
 				
@@ -273,32 +273,8 @@
 			document.forms[0].submit();
 		}
 
-		// botones alta y baja
-		function solicitaralta(fila) 
-		{
-			var guardia 				= 'oculto' + fila + '_' + 2;
-			var guardias 				= 'oculto' + fila + '_' + 3;
-			document.forms[0].guardiaElegida.value = document.getElementById(guardia).value;
-			document.forms[0].guardias.value = document.getElementById(guardias).value;
-			document.forms[0].action = "<%=app%>/JGR_InscribirseEnGuardia.do";
-			document.forms[0].modo.value = "editar";
-			var resultado = ventaModalGeneral(document.forms[0].name,"G");
-			buscar();
-		}
-
-		function solicitarbaja(fila) 
-		{
-			var guardia 				= 'oculto' + fila + '_' + 2;
-			var guardias 				= 'oculto' + fila + '_' + 3;
-			var fechaInscripcion		= 'oculto' + fila + '_' + 4;
-			document.forms[0].guardiaElegida.value = document.getElementById(guardia).value;
-			document.forms[0].guardias.value = document.getElementById(guardias).value;
-			document.forms[0].fechaInscripcion.value = document.getElementById(fechaInscripcion).value;
-			document.forms[0].action = "<%=app%>/JGR_BajaEnGuardia.do";
-			document.forms[0].modo.value = "editar";
-			var resultado = ventaModalGeneral(document.forms[0].name,"G");
-			buscar();
-		}
+		
+		
 
 		function refrescarLocal(){
 			buscar();

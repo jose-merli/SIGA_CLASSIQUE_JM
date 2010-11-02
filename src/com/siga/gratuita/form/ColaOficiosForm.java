@@ -8,7 +8,7 @@ import com.siga.general.MasterForm;
 public class ColaOficiosForm extends MasterForm 
 {
 	String idPersona = "";
-	
+	private String fechaConsulta;
 	//Campos para la tabla de turnos
 
 	public void setNColegiado		(String  nColegiado)	{ if(nColegiado==null)datos.remove("NCOLEGIADO"); else datos.put("NCOLEGIADO",nColegiado);	}
@@ -26,5 +26,11 @@ public class ColaOficiosForm extends MasterForm
 	}
 	public void setIdPersona(String idPersona) {
 		this.idPersona = idPersona;
+	}
+	public String getFechaConsulta() {
+		return fechaConsulta;
+	}
+	public void setFechaConsulta(String fechaConsulta) {
+		this.fechaConsulta = fechaConsulta;
 	}
 }

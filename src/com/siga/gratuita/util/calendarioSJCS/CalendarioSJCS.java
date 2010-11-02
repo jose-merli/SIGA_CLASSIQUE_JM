@@ -20,16 +20,11 @@ import java.util.Vector;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
-import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.GstDate;
-import com.atos.utils.Row;
-import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
-
 import com.siga.beans.CenBajasTemporalesAdm;
 import com.siga.beans.CenBajasTemporalesBean;
-import com.siga.beans.GenClientesTemporalAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsCabeceraGuardiasAdm;
 import com.siga.beans.ScsCabeceraGuardiasBean;
@@ -45,6 +40,7 @@ import com.siga.beans.ScsHitoFacturableGuardiaBean;
 import com.siga.beans.ScsSaltosCompensacionesAdm;
 import com.siga.beans.ScsSaltosCompensacionesBean;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.InscripcionGuardia;
 import com.siga.gratuita.util.calendarioSJCS.Entity.PeriodoEfectivo;
 
 /**
@@ -463,7 +459,8 @@ public class CalendarioSJCS {
 						beanCabeceraGuardias.setValidado(ClsConstants.DB_FALSE);
 					}
 
-
+					beanCabeceraGuardias.setFechaAlta("SYSDATE");
+					beanCabeceraGuardias.setPosicion(letrado.getPosicion());
 					admCabeceraGuardias.insert(beanCabeceraGuardias);
 
 
@@ -847,7 +844,7 @@ public class CalendarioSJCS {
 			throws SIGAException, ClsExceptions
 	{
 		// Controles generales
-		GenClientesTemporalAdm admClientesTmp = new GenClientesTemporalAdm(this.usrBean);
+		
 		ScsSaltosCompensacionesAdm scAdm = new ScsSaltosCompensacionesAdm(this.usrBean);
 		
 		// Variables generales
@@ -868,22 +865,25 @@ public class CalendarioSJCS {
 			numeroLetradosGuardia = this.beanGuardiasTurno.getNumeroLetradosGuardia().intValue();
 			
 			// obteniendo cola de letrados
-			alLetradosOrdenados = admClientesTmp.obtenerLetradosPosiblesPL(
-					this.idInstitucion, this.idTurno, this.idGuardia);
-			punteroListaLetrados.setValor(0);
 
-			if (alLetradosOrdenados == null || alLetradosOrdenados.size() == 0)
-				throw new SIGAException("No existe cola de letrados de guardia");
 
 			// Para cada dia o conjunto de dias:
+			int posicion = 0;
 			for (int i = 0; i < this.arrayPeriodosDiasGuardiaSJCS.size(); i++) {
+				posicion = 0;
+				// obteniendo conjunto de dias
+				// Nota: cada periodo es un arraylist de fechas (String en formato de fecha corto DD/MM/YYYY)
+				diasGuardia = (ArrayList) this.arrayPeriodosDiasGuardiaSJCS.get(i);
+				alLetradosOrdenados = InscripcionGuardia.getColaGuardia(idInstitucion , idTurno, idGuardia,(String)diasGuardia.get(0),(String)diasGuardia.get(diasGuardia.size()-1),usrBean);
+
+				if (alLetradosOrdenados == null || alLetradosOrdenados.size() == 0)
+					throw new SIGAException("No existe cola de letrados de guardia");
+				
 				// obteniendo las compensaciones. Se obtienen dentro de este
 				// bucle, ya que si hay incompatibilidades se añade una compensacion
 				alCompensaciones = scAdm.getCompensaciones(this.idInstitucion, this.idTurno, this.idGuardia);
 
-				// obteniendo conjunto de dias
-				// Nota: cada periodo es un arraylist de fechas (String en formato de fecha corto DD/MM/YYYY)
-				diasGuardia = (ArrayList) this.arrayPeriodosDiasGuardiaSJCS.get(i);
+				
 
 				// Para cada plaza que hay que ocupar en dia/conjunto de dias:
 				int letradosInsertados = 0;
@@ -900,7 +900,10 @@ public class CalendarioSJCS {
 					if (letradoGuardia != null) {
 						alLetradosInsertar = new ArrayList();
 						letradoGuardia.setPeriodoGuardias(diasGuardia);
-						alLetradosInsertar.add(letradoGuardia.clone());
+						LetradoGuardia letradoGuardiaClone = (LetradoGuardia)letradoGuardia.clone();
+						letradoGuardiaClone.setPosicion(posicion);
+						posicion++;
+						alLetradosInsertar.add(letradoGuardiaClone);
 						this.arrayPeriodosLetradosSJCS.add(alLetradosInsertar);
 						this.almacenarAsignacionGuardia(alLetradosInsertar, diasGuardia, lDiasASeparar,
 								UtilidadesString.getMensajeIdioma(this.usrBean,
@@ -918,16 +921,17 @@ public class CalendarioSJCS {
 					throw new SIGAException(
 							"gratuita.modalRegistro_DefinirCalendarioGuardia.literal.errorLetradosSuficientes");
 
+				// actualizando el ultimo letrado en la guardia
+				int punteroUltimo = 0;
+				if (punteroListaLetrados.getValor() == 0)
+					punteroUltimo = alLetradosOrdenados.size() - 1;
+				else
+					punteroUltimo = punteroListaLetrados.getValor() - 1;
+				
+				this.actualizarUltimoLetradoGuardiaBBDD((LetradoGuardia) alLetradosOrdenados.get(punteroUltimo));
 			} // FIN Para cada dia o conjunto de dias
 
-			// actualizando el ultimo letrado en la guardia
-			int punteroUltimo = 0;
-			if (punteroListaLetrados.getValor() == 0)
-				punteroUltimo = alLetradosOrdenados.size() - 1;
-			else
-				punteroUltimo = punteroListaLetrados.getValor() - 1;
 			
-			this.actualizarUltimoLetradoGuardiaBBDD((LetradoGuardia) alLetradosOrdenados.get(punteroUltimo));
 
 		} catch (SIGAException e) {
 			throw e;

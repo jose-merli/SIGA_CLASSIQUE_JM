@@ -14,10 +14,7 @@
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 
-<%@ page import="com.siga.administracion.SIGAConstants"%>
-<%@ page import="com.siga.general.*"%>
 <%@ page import="com.atos.utils.*"%>
-<%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="java.util.*"%>
 <%@ page import="com.siga.Utilidades.*"%>
@@ -26,7 +23,7 @@
 <% 
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
+	
 	UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);
 	String nListad =request.getAttribute("NLETRADOSTURNO") != null?(String)request.getAttribute("NLETRADOSTURNO"):"";
 	
@@ -37,7 +34,8 @@
 %>	
 
 
-<html>
+<%@page import="com.siga.gratuita.util.calendarioSJCS.LetradoGuardia"%>
+
 <!-- HEAD -->
 <html>
 	<!-- HEAD -->
@@ -174,6 +172,28 @@
 			document.forms[0].target = "submitArea";
 			document.forms[0].submit();
 		}
+		function accionCalendario() 
+		{
+			// Abrimos el calendario 
+			var resultado = showModalDialog("<html:rewrite page='/html/jsp/general/calendarGeneral.jsp'/>?valor="+ document.ColaOficiosForm.fechaConsulta.value, document.ColaOficiosForm.fechaConsulta,"dialogHeight:275px;dialogWidth:400px;help:no;scroll:no;status:no;");
+			if (resultado) {
+				 
+				 document.ColaOficiosForm.fechaConsulta.value = resultado;
+				 document.getElementById('fechaConsulta').value = resultado;
+				 document.ColaOficiosForm.modo.value = 'ver';
+				 
+				 document.ColaOficiosForm.submit();
+				
+		 	}else{
+					if(document.ColaOficiosForm.fechaConsulta.value==''){
+						document.getElementById('fechaConsulta').value = '';
+						document.ColaOficiosForm.fechaConsulta.value = '';
+						document.ColaOficiosForm.modo.value = 'ver';
+						document.ColaOficiosForm.submit();
+					}
+			} 
+		}
+		
 		
 		</script>
 
@@ -182,6 +202,30 @@
 <body onload="validaTabla();">
 
 		<html:form action="/JGR_ColaOficio" method="get" >
+		
+			<fieldset>
+		<table border="0" style="table-layout:fixed;" cellpadding="2" cellspacing="2" width="100%" align="center">
+		  	<tr>
+					<td class="labelText"><siga:Idioma key="gratuita.gestionInscripciones.fechaConsulta"/></td>
+					<td width="70%" align="left" >
+					<html:text id="fechaConsulta" name="ColaOficiosForm" property="fechaConsulta" size="10" maxlength="10" styleClass="box" ></html:text>
+					&nbsp;&nbsp;<a
+						id="calendarioTd" 
+						onClick="accionCalendario();"
+						onMouseOut="MM_swapImgRestore();"
+						onMouseOver="MM_swapImage('Calendario','','<html:rewrite page='/html/imagenes/calendar.gif'/>',1);"><img
+						src="<html:rewrite page='/html/imagenes/calendar.gif'/>"
+						alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"
+						border="0"></a>
+					</td>
+				</tr>
+			
+			
+		  </table>
+	 	</fieldset>
+		
+		
+		
 			<html:hidden property = "modo"/>
  			<!-- RGG: cambio a formularios ligeros -->
 			<input type="hidden" name="tablaDatosDinamicosD">
@@ -257,18 +301,18 @@
 		   nombre="tablaLetrados"
 		   borde="1"
 		   clase="tableTitle"
-		   tamanoCol="20,20,53,7"
-		   nombreCol="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,gratuita.turnos.literal.apellidosSolo,"
+		   tamanoCol="14,40,18,18,10"
+		   nombreCol="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,F.Val,F.Baja,"
 		   alto="450"
 		   ajusteAlto="">
 
 			<!-- INICIO: ZONA DE REGISTROS -->
 			<!-- Aqui se iteran los diferentes registros de la lista -->
 		
-<%	Vector resultado = (Vector) request.getAttribute("vLetradosEnCola");
+<%	ArrayList letradosColaGuardiaList = (ArrayList) request.getAttribute("letradosColaTurnoList");
          
         
-	if (resultado==null || resultado.size()==0) { %>			
+	if (letradosColaGuardiaList==null || letradosColaGuardiaList.size()==0) { %>			
 	 		<tr>
 			  <td colspan="4" height="265px">
 	   		 	<p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
@@ -276,16 +320,16 @@
 	 		</tr>	 		
 <%	} else { 
 		// recorro el resultado
-		for (int i=0;i<resultado.size();i++) {
-			Row registro = (Row) resultado.elementAt(i);
+		for (int i=0;i<letradosColaGuardiaList.size();i++) {
+			LetradoGuardia letradoGuardia = (LetradoGuardia) letradosColaGuardiaList.get(i);
 			
 			// calculo de campos
-			String apellido1 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS1));
-			String apellido2 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS2));
-			String nombre = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_NOMBRE));
-			String ncolegiado = UtilidadesString.mostrarDatoJSP(registro.getString(CenColegiadoBean.C_NCOLEGIADO));
-			
-			String idPersona = registro.getString(CenPersonaBean.C_IDPERSONA);
+			String apellido1 = letradoGuardia.getPersona().getApellido1();
+			String apellido2 =letradoGuardia.getPersona().getApellido2();
+			String nombre = letradoGuardia.getPersona().getNombre();
+			String ncolegiado = letradoGuardia.getPersona().getColegiado().getNColegiado();
+
+			String idPersona = letradoGuardia.getIdPersona().toString();
 			String numeroColegiadoBusqueda = "" + i + "_" + ncolegiado;
 %>
 			<!-- REGISTRO  -->
@@ -297,13 +341,30 @@
 					<%=ncolegiado%>
 				</td>
 				<td>
-					<%=nombre%>
+					<%=nombre+apellido1+" "+apellido2%>
+				</td>
+				
+				<td>
+				<%if(letradoGuardia.getFechaValidacion()!=null &&!letradoGuardia.getFechaValidacion().equals("")){ %>
+					<%=letradoGuardia.getFechaValidacion()%>
+				<%}else{ %>
+					&nbsp;
+				<%} %>
+			
+					
 				</td>
 				<td>
-					<%=apellido1+" "+apellido2 %>
+				<%if(letradoGuardia.getFechaBaja()!=null &&!letradoGuardia.getFechaBaja().equals("")){ %>
+					<%=letradoGuardia.getFechaBaja()%>
+				<%}else{ %>
+					&nbsp;
+				<%} %>
+
 				</td>
+				
+				
 				<td align="center">
-					<img src="/SIGA/html/imagenes/bcambiarusuario.gif" style="cursor:hand;" onClick="fijarUltimoLetrado(<%=i+1%>)" alt="<%=literalFijarUltimoLetrado%>">
+					<img src="/SIGA/html/imagenes/bcambiarusuario.gif" name = "bcambiarusuario" style="cursor:hand;" onClick="fijarUltimoLetrado(<%=i+1%>)" alt="<%=literalFijarUltimoLetrado%>">
 				</td>
 			</tr>		
 			<!-- FIN REGISTRO -->
@@ -463,6 +524,14 @@
 </form>
 
 <iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-
+<script>
+  	function habilitarCambiarUsuario(valor){
+  		var bcambiarusuario =document.getElementsByName("bcambiarusuario");
+		for (i=0;i<bcambiarusuario.length;i++) {
+			bcambiarusuario[i].disabled=valor;
+		}
+	}
+	habilitarCambiarUsuario(document.getElementById('fechaConsulta').value=='');
+  </script>
 </body>
 </html>

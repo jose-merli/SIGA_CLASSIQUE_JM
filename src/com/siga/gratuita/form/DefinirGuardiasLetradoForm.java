@@ -12,6 +12,14 @@ public class DefinirGuardiasLetradoForm extends MasterForm {
 	
 		//Metodos set de los campos del formulario
 
+	
+	String fechaConsulta;
+	public String getFechaConsulta() {
+		return fechaConsulta;
+	}
+	public void setFechaConsulta(String fechaConsulta) {
+		this.fechaConsulta = fechaConsulta;
+	}
 	public void setGuardia (String valor){ 
 		this.datos.put("GUARDIA", valor);
 	}
@@ -79,6 +87,13 @@ public class DefinirGuardiasLetradoForm extends MasterForm {
 	}
 	public String getFechaBaja (String valor){ 
 		return (String)this.datos.get("FECHABAJA");
+	}
+	private String bajaLogica="N";
+	public String getBajaLogica() {
+		return bajaLogica;
+	}
+	public void setBajaLogica(String bajaLogica) {
+		this.bajaLogica = bajaLogica;
 	}
 	
 }

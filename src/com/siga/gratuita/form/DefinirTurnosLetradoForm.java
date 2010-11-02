@@ -10,6 +10,8 @@ import java.util.*;
 public class DefinirTurnosLetradoForm extends MasterForm {
 
 	public String incluirRegistrosConBajaLogica = "N";
+	public String fechaConsulta;
+	
 	public String idpersona = "";
 	public String idinstitucion = "";
 	
@@ -35,6 +37,14 @@ public class DefinirTurnosLetradoForm extends MasterForm {
 	
 	public void setIdInstitucion(String s) {
 		this.idinstitucion = s;
+	}
+
+	public String getFechaConsulta() {
+		return fechaConsulta;
+	}
+
+	public void setFechaConsulta(String fechaConsulta) {
+		this.fechaConsulta = fechaConsulta;
 	}
 	
 }

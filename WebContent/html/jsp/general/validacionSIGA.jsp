@@ -195,8 +195,17 @@ function relleno(caracter, longitud){
 
 function compararFecha (dato1, dato2)
 {
-	String1 = "" + dato1.value;
-	String2 = "" + dato2.value;
+	String1 = "";
+	String2 = "";
+	if (typeof dato1 == "object")
+		String1 = String1 + dato1.value;
+	else
+		String1 = String1 + dato1;
+	
+	if (typeof dato2 == "object")
+		String2 = String2 + dato2.value;
+	else
+		String2 = String2 + dato2;
 	
 	if ((typeof String1 == "undefined") || (typeof String2 == "undefined")) 
 		return -1;

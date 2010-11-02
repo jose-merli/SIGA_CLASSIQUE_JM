@@ -1,6 +1,10 @@
 package com.siga.informes;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,15 +12,22 @@ import javax.servlet.http.HttpSession;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
+import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
+import com.siga.beans.ScsInscripcionGuardiaBean;
+import com.siga.beans.ScsInscripcionTurnoAdm;
 import com.siga.beans.ScsSaltosCompensacionesAdm;
 import com.siga.beans.ScsTurnoAdm;
 import com.siga.beans.ScsTurnoBean;
+import com.siga.gratuita.InscripcionTurno;
+import com.siga.gratuita.form.ColaGuardiasForm;
 import com.siga.gratuita.form.ColaOficiosForm;
+import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
 
 /**
  * @author david.sanchezp
@@ -55,7 +66,7 @@ public class InformeColaOficios extends MasterReport {
 		hashTurno.put(ScsTurnoBean.C_IDTURNO,turno);
 		hashTurno.put(ScsTurnoBean.C_IDINSTITUCION,institucion);
 		ScsTurnoBean turnoBean = (ScsTurnoBean)((Vector)turnoAdm.select(hashTurno)).get(0);
-		Integer ultimo=turnoBean.getIdPersonaUltimo();
+		Long ultimo=turnoBean.getIdPersonaUltimo();
 		
 		if(ultimo!=null){
 			//buscar numero colegiado
@@ -87,21 +98,52 @@ public class InformeColaOficios extends MasterReport {
 		
 		String institucion =usr.getLocation();
 		String turno =(String)turnoElegido.get("IDTURNO");
+		String nombreTurno =(String)turnoElegido.get("NOMBRE");
 		
-		ScsTurnoAdm turnoAdm = new ScsTurnoAdm(usr);
 		ScsSaltosCompensacionesAdm saltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(usr);
 		
 		//Cargar último letrado
-		ColaOficiosForm coForm=new ColaOficiosForm();
+		//ColaOficiosForm coForm=new ColaOficiosForm();
+		ColaOficiosForm coForm=(ColaOficiosForm)request.getAttribute("ColaGuardiasForm");
+		
+		String fecha  = coForm.getFechaConsulta();
+		fecha = (fecha!=null&&!fecha.trim().equals(""))?fecha:null;
 		cargarUltimoLetrado(usr, institucion, turno, coForm);
 		htDatos=coForm.getDatos();
-
+		
+		//PONEMOS EL NOMBRE DEL TURNO Y LA HORA DE GENERACION Y LA FECHA DE CONSULTA
+		htDatos.put("NOMBRE_TURNO", nombreTurno);
+		htDatos.put("FECHA_GENERACION",  new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date()));
+		htDatos.put("FECHA_CONSULTA", (fecha!=null&&!fecha.trim().equals(""))?fecha:"Muestra todas las inscripciones");
+		
+		
 		//Cargar listado de letrados en cola
-		Vector vLetradosEnCola=turnoAdm.selectLetradosEnCola(institucion,turno);
+		List<LetradoGuardia> letradosColaTurnoList = InscripcionTurno.getColaTurno(new Integer(institucion),new Integer(turno),fecha,false,usr);
+		Vector vLetradosEnCola = new Vector();
+		for(LetradoGuardia letradoGuardia:letradosColaTurnoList){
+			Row row = new Row();
+			Hashtable htRow = new Hashtable();
+			
+			htRow.put(CenPersonaBean.C_IDPERSONA, letradoGuardia.getIdPersona());
+//			CenPersonaBean persona = admPersona.getPersonaColegiado(letradoGuardia.getIdPersona(), letradoGuardia.getIdInstitucion());
+			htRow.put(CenPersonaBean.C_APELLIDOS1, letradoGuardia.getPersona().getApellido1());
+			htRow.put(CenPersonaBean.C_APELLIDOS2, letradoGuardia.getPersona().getApellido2());
+			htRow.put(CenPersonaBean.C_NOMBRE, letradoGuardia.getPersona().getNombre());
+			htRow.put(CenColegiadoBean.C_NCOLEGIADO, letradoGuardia.getPersona().getColegiado().getNColegiado());
+			htRow.put(ScsInscripcionGuardiaBean.C_FECHAVALIDACION, letradoGuardia.getFechaValidacion());
+			htRow.put(ScsInscripcionGuardiaBean.C_FECHABAJA, letradoGuardia.getFechaBaja());
+			row.setRow(htRow);
+			vLetradosEnCola.add(row);
+			
+		}
+		
 		plantilla = this.reemplazaRegistros(plantilla, vLetradosEnCola, htDatos, "LETRADOS");
-
+		
+		
 		//Cargar listado de compensaciones
 		Vector vCompensaciones=saltosCompensacionesAdm.selectSaltosCompensaciones(institucion, turno, null, ClsConstants.COMPENSACIONES);
+		
+		
 		plantilla = this.reemplazaRegistros(plantilla, vCompensaciones, htDatos, "COMPENSACIONES");
 		
 		//Cargar listado de saltos

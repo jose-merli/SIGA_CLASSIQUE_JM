@@ -64,6 +64,9 @@ public class Paginador implements IPaginador, Serializable
 	public Vector obtenerPagina(int pagina) throws ClsExceptions, SIGAException {
 		return paginador.obtenerPagina(pagina);
 	}
+	public Vector obtenerPaginaNoCache(int pagina) throws ClsExceptions, SIGAException {
+		return paginador.obtenerPaginaNoCache(pagina);
+	}
 
 	/**
 	 * @return the paginador

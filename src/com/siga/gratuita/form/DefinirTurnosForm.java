@@ -20,6 +20,7 @@ public class DefinirTurnosForm extends MasterForm {
 	public String activarAsistenciasLetrado = "";
 	public String incluirRegistrosConBajaLogica = "S";
 	
+
 	String codigoExterno="";
 	
 	
@@ -383,7 +384,7 @@ public class DefinirTurnosForm extends MasterForm {
 		return (String)this.datos.get("DESIGNADIRECTA");
 	}
 	public String getValidacionInscripcion(){
-		return (String)this.datos.get("VALIDACIONINSCRIPCION");
+		return (String)this.datos.get("VALIDARINSCRIPCIONES");
 	}
 
 	

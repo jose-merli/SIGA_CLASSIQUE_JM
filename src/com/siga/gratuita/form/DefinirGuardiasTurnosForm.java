@@ -56,6 +56,14 @@ public class DefinirGuardiasTurnosForm extends MasterForm
 	private String diasASeparar;
 	private String hayDiasASeparar;
 	
+	private String validarInscripciones;
+	private String observacionesValidacion;
+	private String fechaValidacion;
+	private String fechaSolicitudBaja;
+	
+	private String fechaConsulta;
+	
+	
 	
 	//////////////////// GETTERS ////////////////////
 	public String getIdPersona() {return idPersona;}
@@ -497,5 +505,35 @@ public class DefinirGuardiasTurnosForm extends MasterForm
 	}
 	public void setComenSustitucion(String comenSustitucion) {
 		this.comenSustitucion = comenSustitucion;
+	}
+	public String getValidarInscripciones() {
+		return validarInscripciones;
+	}
+	public void setValidarInscripciones(String validarInscripciones) {
+		this.validarInscripciones = validarInscripciones;
+	}
+	public String getObservacionesValidacion() {
+		return observacionesValidacion;
+	}
+	public void setObservacionesValidacion(String observacionesValidacion) {
+		this.observacionesValidacion = observacionesValidacion;
+	}
+	public String getFechaValidacion() {
+		return fechaValidacion;
+	}
+	public void setFechaValidacion(String fechaValidacion) {
+		this.fechaValidacion = fechaValidacion;
+	}
+	public String getFechaSolicitudBaja() {
+		return fechaSolicitudBaja;
+	}
+	public void setFechaSolicitudBaja(String fechaSolicitudBaja) {
+		this.fechaSolicitudBaja = fechaSolicitudBaja;
+	}
+	public String getFechaConsulta() {
+		return fechaConsulta;
+	}
+	public void setFechaConsulta(String fechaConsulta) {
+		this.fechaConsulta = fechaConsulta;
 	}
 }

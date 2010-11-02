@@ -1,5 +1,8 @@
 package com.siga.informes;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -8,6 +11,7 @@ import javax.servlet.http.HttpSession;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
@@ -15,8 +19,11 @@ import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
+import com.siga.beans.ScsInscripcionGuardiaBean;
 import com.siga.beans.ScsSaltosCompensacionesAdm;
+import com.siga.gratuita.InscripcionGuardia;
 import com.siga.gratuita.form.ColaGuardiasForm;
+import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
 
 /**
  * @author david.sanchezp
@@ -83,21 +90,50 @@ public class InformeColaGuardias extends MasterReport {
 		ColaGuardiasForm coForm=(ColaGuardiasForm)request.getAttribute("ColaGuardiasForm");
 		HttpSession ses = request.getSession();
 		Hashtable turnoElegido = (Hashtable)ses.getAttribute("turnoElegido");
+		
 		UsrBean usr = (UsrBean)ses.getAttribute("USRBEAN"); 
 		
 		//Integer usuario=this.getUsuario();
 		String institucion =usr.getLocation();
 		String turno =(String)turnoElegido.get("IDTURNO");
+		String nombreTurno =(String)turnoElegido.get("NOMBRE");
 		String guardia=coForm.getIdGuardia();
+		String fecha  = coForm.getFechaConsulta();
+		fecha = (fecha!=null&&!fecha.trim().equals(""))?fecha:null;
+		
 		ScsGuardiasTurnoAdm guardiasTurnoAdm = new ScsGuardiasTurnoAdm(usr);
 		ScsSaltosCompensacionesAdm saltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(usr);
 		
 		//Cargar último letrado
 		cargarUltimoLetrado(usr, institucion, turno, guardia, coForm);
-		htDatos=coForm.getDatos();//contiene la descripcion de la guardia (DESGUARDIA), la trae de la pagina jsp
+		htDatos=coForm.getDatos();//contiene la descripcion de la guardia (DEFGUARDIA), la trae de la pagina jsp
 
+		//PONEMOS EL NOMBRE DEL TURNO Y LA HORA DE GENERACION Y LA FECHA DE CONSULTA
+		htDatos.put("NOMBRE_TURNO", nombreTurno);
+		htDatos.put("FECHA_GENERACION",  new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date()));
+		htDatos.put("FECHA_CONSULTA", (fecha!=null&&!fecha.trim().equals(""))?fecha:"Muestra todas las inscripciones");
+		
+		
 		//Cargar listado de letrados en cola
-		Vector vLetradosEnCola=guardiasTurnoAdm.selectLetradosEnCola(institucion,turno,guardia);
+		ArrayList<LetradoGuardia> alLetrados = InscripcionGuardia.getColaGuardia(new Integer(institucion),new Integer(turno), new Integer(guardia), fecha,fecha, usr);
+		Vector vLetradosEnCola = new Vector();
+		for(LetradoGuardia letradoGuardia:alLetrados){
+			Row row = new Row();
+			Hashtable htRow = new Hashtable();
+			
+			htRow.put(CenPersonaBean.C_IDPERSONA, letradoGuardia.getIdPersona());
+//			CenPersonaBean persona = admPersona.getPersonaColegiado(letradoGuardia.getIdPersona(), letradoGuardia.getIdInstitucion());
+			htRow.put(CenPersonaBean.C_APELLIDOS1, letradoGuardia.getPersona().getApellido1());
+			htRow.put(CenPersonaBean.C_APELLIDOS2, letradoGuardia.getPersona().getApellido2());
+			htRow.put(CenPersonaBean.C_NOMBRE, letradoGuardia.getPersona().getNombre());
+			htRow.put(CenColegiadoBean.C_NCOLEGIADO, letradoGuardia.getPersona().getColegiado().getNColegiado());
+			htRow.put(ScsInscripcionGuardiaBean.C_FECHAVALIDACION, letradoGuardia.getFechaValidacion());
+			htRow.put(ScsInscripcionGuardiaBean.C_FECHABAJA, letradoGuardia.getFechaBaja());
+			row.setRow(htRow);
+			vLetradosEnCola.add(row);
+			
+		}
+		
 		plantilla = this.reemplazaRegistros(plantilla, vLetradosEnCola, htDatos, "LETRADOS");
 
 		//Cargar listado de compensaciones

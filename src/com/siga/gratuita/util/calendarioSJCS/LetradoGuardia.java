@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import com.siga.beans.CenBajasTemporalesBean;
+import com.siga.beans.CenPersonaBean;
+import com.siga.beans.ScsTurnoBean;
 
 /**
  * @author A203486
@@ -20,11 +22,48 @@ import com.siga.beans.CenBajasTemporalesBean;
 public class LetradoGuardia implements Cloneable {
 
 	private String saltoCompensacion = null; //Valores = S(Salto)/ N(No)/ C(Compensacion)
+	private String idSaltoCompensacion = null;
 	private Long idPersona;
 	private Integer idInstitucion, idTurno, idGuardia;
 	private ArrayList periodoGuardias;
 	private Map<String,CenBajasTemporalesBean> bajasTemporales;
 	CenBajasTemporalesBean bajaTemporal;
+	CenPersonaBean persona = null;
+	Integer posicion;
+	String fechaValidacion;
+	String fechaBaja;
+
+	public String getFechaValidacion() {
+		return fechaValidacion;
+	}
+
+	public void setFechaValidacion(String fechaValidacion) {
+		this.fechaValidacion = fechaValidacion;
+	}
+
+	public String getFechaBaja() {
+		return fechaBaja;
+	}
+
+	public void setFechaBaja(String fechaBaja) {
+		this.fechaBaja = fechaBaja;
+	}
+
+	public Integer getPosicion() {
+		return posicion;
+	}
+
+	public void setPosicion(Integer posicion) {
+		this.posicion = posicion;
+	}
+
+	public CenPersonaBean getPersona() {
+		return persona;
+	}
+	
+	public void setPersona(CenPersonaBean persona) {
+		this.persona = persona;
+	}
 
 	public CenBajasTemporalesBean getBajaTemporal() {
 		return bajaTemporal;
@@ -64,6 +103,13 @@ public class LetradoGuardia implements Cloneable {
 		this.idInstitucion = idInstitucion;
 		this.idTurno = idTurno;
 		this.idGuardia = idGuardia;
+	}
+
+	public LetradoGuardia(Long idPersona, Integer idInstitucion, Integer idTurno) {
+		this.idPersona = idPersona;
+		this.idInstitucion = idInstitucion;
+		this.idTurno = idTurno;
+		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -146,5 +192,13 @@ public class LetradoGuardia implements Cloneable {
 	public void setBajasTemporales(
 			Map<String, CenBajasTemporalesBean> bajasTemporales) {
 		this.bajasTemporales = bajasTemporales;
+	}
+
+	public String getIdSaltoCompensacion() {
+		return idSaltoCompensacion;
+	}
+
+	public void setIdSaltoCompensacion(String idSaltoCompensacion) {
+		this.idSaltoCompensacion = idSaltoCompensacion;
 	}
 }

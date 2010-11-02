@@ -27,6 +27,7 @@ import com.siga.beans.PysPeticionCompraSuscripcionBean;
 import com.siga.beans.PysProductosSolicitadosAdm;
 import com.siga.beans.PysProductosSolicitadosBean;
 import com.siga.beans.PysServiciosSolicitadosBean;
+import com.siga.beans.ScsInscripcionTurnoAdm;
 import com.siga.beans.ScsTurnoAdm;
 import com.siga.beans.ScsTurnoBean;
 import com.siga.censo.form.DatosFacturacionForm;
@@ -86,13 +87,20 @@ public class DefinirTurnosLetradoAction extends MasterAction {
 			
 			request.getSession().setAttribute("DATOSCOLEGIADO", datosColegiado);
 		
-			MasterForm miForm = (MasterForm)formulario;
+			DefinirTurnosLetradoForm miForm = (DefinirTurnosLetradoForm)formulario;
+			
 			//forward =this.abrir(mapping,miForm,request,response);
 			String accion = miForm.getModo();
 			if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir") || accion.equalsIgnoreCase("abrirTurnosLimpiar")){
 				borrarPaginador(request, paginadorPenstania);
+				String fechaConsultaTurno =  (String)request.getSession().getAttribute("fechaConsultaInscripcionTurno");
+				if(fechaConsultaTurno!=null)
+					miForm.setFechaConsulta(fechaConsultaTurno);
+				else
+					miForm.setFechaConsulta("sysdate");
 				forward =this.abrirTurnosPaginados(mapping,miForm,request,response);
 			}else if (accion.equalsIgnoreCase("abrirTurnosPaginados")){
+				borrarPaginador(request, paginadorPenstania);
 				forward =this.abrirTurnosPaginados(mapping,miForm,request,response);
 			} 
 			
@@ -104,30 +112,7 @@ public class DefinirTurnosLetradoAction extends MasterAction {
 	}
 	
 	
-	/** 
-	 *  Funcion que atiende la accion abrir.
-	 * @param  mapping - Mapeo de los struts
-	 * @param  formulario -  Action Form asociado a este Action
-	 * @param  request - objeto llamada HTTP 
-	 * @param  response - objeto respuesta HTTP
-	 * @return  String  Destino del action  
-	 * @exception  ClsExceptions  En cualquier caso de error
-	 */
-	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions {
-		try {
-			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
-			String idPersona = (String)request.getSession().getAttribute("idPersonaTurno");
-			
-			ScsTurnoAdm turno = new ScsTurnoAdm(usr);
-
-			Vector vTurno = turno.getTurnosLetrado(""+this.getIDInstitucion(request), idPersona);
-			request.getSession().setAttribute("entrada","2");	
-			request.setAttribute("resultado",vTurno);
-		}catch(Exception e){
-			throw new ClsExceptions (e,"Error en la select");
-		}
-		return "listado";
-	}
+	
 	
 	
 	/** 
@@ -158,12 +143,13 @@ public class DefinirTurnosLetradoAction extends MasterAction {
 		request.setAttribute(ClsConstants.PARAM_PAGINACION, paginadorPenstania);
 		//DatosFacturacionForm miform = (DatosFacturacionForm) formulario;
 		DefinirTurnosLetradoForm miform = (DefinirTurnosLetradoForm) formulario;
-		ScsTurnoAdm turnosAdm = new ScsTurnoAdm(this.getUserBean(request));
+		ScsInscripcionTurnoAdm inscripcionTurnosAdm = new ScsInscripcionTurnoAdm(this.getUserBean(request));
 		
 		try {
 			HashMap databackup = getPaginador(request, paginadorPenstania);
 			boolean mostrarHistorico = false;
 			boolean bIncluirRegistrosConBajaLogica = UtilidadesString.stringToBoolean((String)request.getSession().getAttribute("bIncluirRegistrosConBajaLogica"));
+			String fecha = miform.getFechaConsulta();
 			if (databackup != null) {
 				
 				PaginadorBind paginador = (PaginadorBind) databackup.get("paginador");
@@ -207,7 +193,7 @@ public class DefinirTurnosLetradoAction extends MasterAction {
 				
 				databackup = new HashMap();
 				
-				PaginadorBind paginador = turnosAdm.getTurnosClientePaginador(idInstitucion, idPersona, bIncluirRegistrosConBajaLogica);
+				PaginadorBind paginador = inscripcionTurnosAdm.getTurnosClientePaginador(idInstitucion, idPersona, bIncluirRegistrosConBajaLogica,fecha);
 				
 				// Paginador paginador = new Paginador(sql);
 				int totalRegistros = paginador.getNumeroTotalRegistros();
@@ -253,6 +239,8 @@ public class DefinirTurnosLetradoAction extends MasterAction {
 			request.getSession().setAttribute("numero", numero);
 			request.getSession().setAttribute("estadoColegial", estado);
 			request.getSession().setAttribute("bIncluirRegistrosConBajaLogica",new Boolean(bIncluirRegistrosConBajaLogica).toString());
+			request.getSession().setAttribute("fechaConsultaInscripcionTurno",miform.getFechaConsulta());
+			
 			
 		}catch (SIGAException e1) {
 			// Excepcion procedente de obtenerPagina cuando se han borrado datos

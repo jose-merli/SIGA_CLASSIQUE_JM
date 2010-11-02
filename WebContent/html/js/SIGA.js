@@ -258,7 +258,6 @@ function setLocalizacion(localizacion) {
 
 function ventaModalGeneral(nombreFormulario,tamano){
 	var formulario = document.getElementById(nombreFormulario);
-	
 	// cargo el action en un campo que se llama siempre actionModal
 	formulario.actionModal.value=formulario.action;
 	// envio los campos del formulario como parametro con el action incluido en ellos
@@ -1202,6 +1201,17 @@ function ocultarDIV(ident){
 	ajusteAlto('mainWorkarea');
 	return true;
 }
+function getFechaActualDDMMYYYY(){
+		var date = new Date();
+		iDay = date.getDate();
+    	iMonth = date.getMonth()+1;
+    	if(iMonth<10)iMonth='0'+iMonth;
+    	if(iDay<10)iDay='0'+iDay;
+    	iYear = date.getFullYear();
+    	sDisplayDate = iDay + "/" + iMonth + "/" + iYear;
+
+    	return sDisplayDate;
+	}
 function findPosY(obj)
   {
     var curtop = 0;
@@ -1232,6 +1242,3 @@ function findPosY(obj)
         curleft += obj.x;
     return curleft;
   }
-  
-
-

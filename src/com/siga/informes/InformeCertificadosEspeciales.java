@@ -324,7 +324,8 @@ public class InformeCertificadosEspeciales extends MasterReport
 	                 getSqlFromGeneral()+",  scs_inscripcionturno      it "+
 					 getSqlWhereGeneral()+" and it.idinstitucion(+)=c.idinstitucion "+
 					   " and it.idpersona(+)=c.idpersona  "+
-					   " and it.fechavalidacion(+) is not null "+
+					   " and it.fechavalidacion(+) <=SYSDATE AND (IT.FECHABAJA(+) IS NULL OR IT.FECHABAJA(+)>SYSDATE)" +
+					   
 					   " order by it.fechavalidacion asc";
 		
 		return sSQL;

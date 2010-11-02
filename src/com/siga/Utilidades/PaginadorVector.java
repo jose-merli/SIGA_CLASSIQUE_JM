@@ -45,7 +45,7 @@ public class PaginadorVector extends Paginador implements IPaginador, Serializab
 			}
 			inicializar();
 		} 
-		catch (Exception e) { }
+		catch (Exception e) { e.printStackTrace();}
 	}
 
 	protected PaginadorVector(Vector vDatos, String[] cabeceras) throws ClsExceptions 
@@ -86,6 +86,7 @@ public class PaginadorVector extends Paginador implements IPaginador, Serializab
 			}
 		} 
 		catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -113,38 +114,49 @@ public class PaginadorVector extends Paginador implements IPaginador, Serializab
 
 		Vector retorno = null;
 		try {
-
+			if(true){
+				this.cache=this.vDatos;
+				this.paginaFinalCache = this.ultimaPagina;
+			}
+				
+			
+			
 			// Comprobamos si está en Caché
-			if (pagina >= this.paginaInicialCache
-					&& pagina <= this.paginaFinalCache) {
+			if (false && (pagina >= this.paginaInicialCache
+					&& pagina <= this.paginaFinalCache)) {
 				retorno = obtenerPaginaCache(pagina - this.paginaInicialCache
 						+ 1, pagina == ultimaPagina);
 				paginaActual = pagina;
 			} else {
-				int rowmax = (pagina + DISTANCIA_PAGINAS_CACHE)
-						* this.numeroRegistrosPagina;
-				int rowmin = (pagina - DISTANCIA_PAGINAS_CACHE - 1)
-						* this.numeroRegistrosPagina + 1;
-
-				if (rowmin < 0) {
-					rowmin = 1;
-					this.paginaInicialCache = 1;
-				} else {
-					this.paginaInicialCache = pagina - DISTANCIA_PAGINAS_CACHE;
+				if(true){
+					retorno = obtenerPaginaCache(pagina , pagina == ultimaPagina);
+					paginaActual = pagina;
+				}else{
+					int rowmax = (pagina + DISTANCIA_PAGINAS_CACHE)
+							* this.numeroRegistrosPagina;
+					int rowmin = (pagina - DISTANCIA_PAGINAS_CACHE - 1)
+							* this.numeroRegistrosPagina + 1;
+	
+					if (rowmin < 0) {
+						rowmin = 1;
+						this.paginaInicialCache = 1;
+					} else {
+						this.paginaInicialCache = pagina - DISTANCIA_PAGINAS_CACHE;
+					}
+	
+					if (rowmax > numeroTotalRegistros) {
+						rowmax = numeroTotalRegistros;
+						this.paginaFinalCache = ultimaPagina;
+					} else {
+						this.paginaFinalCache = pagina + DISTANCIA_PAGINAS_CACHE;
+					}
+	
+					//hago la select para actualizar la caché
+					setCache(rowmin, rowmax);
+					retorno = obtenerPaginaCache(pagina - this.paginaInicialCache
+							+ 1, pagina == ultimaPagina);
+					paginaActual = pagina;
 				}
-
-				if (rowmax > numeroTotalRegistros) {
-					rowmax = numeroTotalRegistros;
-					this.paginaFinalCache = ultimaPagina;
-				} else {
-					this.paginaFinalCache = pagina + DISTANCIA_PAGINAS_CACHE;
-				}
-
-				//hago la select para actualizar la caché
-				setCache(rowmin, rowmax);
-				retorno = obtenerPaginaCache(pagina - this.paginaInicialCache
-						+ 1, pagina == ultimaPagina);
-				paginaActual = pagina;
 			}
 		} catch (Exception e) {
 			throw new ClsExceptions(e, e.getMessage());
@@ -152,6 +164,23 @@ public class PaginadorVector extends Paginador implements IPaginador, Serializab
 
 		return retorno;
 	}
+	public Vector obtenerPaginaNoCache(int pagina) throws ClsExceptions {
+
+		Vector retorno = null;
+		try {
+				this.cache=this.vDatos;
+				this.paginaFinalCache = this.ultimaPagina;
+				retorno = obtenerPaginaCache(pagina , pagina == ultimaPagina);
+				paginaActual = pagina;
+				
+		} catch (Exception e) {
+			throw new ClsExceptions(e, e.getMessage());
+		}
+
+		return retorno;
+	}
+	
+	
 
 	// pagina=1...NUMERO_PAGINAS_CACHE*2+1
 	private Vector obtenerPaginaCache(int pagina, boolean ultimaPag) 
@@ -174,6 +203,7 @@ public class PaginadorVector extends Paginador implements IPaginador, Serializab
 		}
 		return retorno;
 	}
+	
 
 	public void setCache(int rowmin, int rowmax) throws ClsExceptions {
 		this.cache = this.vDatos;

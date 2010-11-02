@@ -3663,7 +3663,7 @@
 
 <!-- INICIO: MantenimientoInformesForm para Pagos 30-05-2005 -->
     <form name="mantenimientoInformesForm">
-        <field property = "idPago" depends = "required">
+                <field property = "idPago" depends = "required">
             <arg0 key="factSJCS.datosPagos.literal.pago"/>
         </field>
     </form>
@@ -4497,6 +4497,48 @@
          
       </form>
       
+       <form name="InscripcionTGForm">
+            <field 	property = "telefono1" 	depends = "required, mask"> 
+		            	<msg name="mask" key="errors.telefono"/>
+						<arg0 key="censo.datosDireccion.literal.telefono1"/>					
+						<var>
+			                <var-name>mask</var-name>
+			                <var-value>${telefonoSIGA}</var-value>
+			            </var>
+				</field>
+				<field 	property = "telefono2" 	depends = "mask"> 
+						<msg name="mask" key="errors.telefono"/>
+						<arg0 key="censo.datosDireccion.literal.telefono2"/>					
+						<var>
+			                <var-name>mask</var-name>
+			                <var-value>${telefonoSIGA}</var-value>
+			            </var>
+				</field>
+				<field 	property = "fax1" 	depends = "mask"> 
+						<msg name="mask" key="errors.telefono"/>
+						<arg0 key="censo.datosDireccion.literal.fax1"/>					
+						<var>
+			                <var-name>mask</var-name>
+			                <var-value>${telefonoSIGA}</var-value>
+			            </var>
+				</field>
+				<field 	property = "fax2" 	depends = "mask"> 
+						<msg name="mask" key="errors.telefono"/>
+						<arg0 key="censo.datosDireccion.literal.fax2"/>					
+						<var>
+			                <var-name>mask</var-name>
+			                <var-value>${telefonoSIGA}</var-value>
+			            </var>
+				</field>
+				<field 	property = "movil" 	depends = "mask"> 
+						<msg name="mask" key="errors.telefono"/>
+						<arg0 key="censo.datosDireccion.literal.movil"/>					
+						<var>
+			                <var-name>mask</var-name>
+			                <var-value>${telefonoSIGA}</var-value>
+			            </var>
+				</field>
+        </form>
 					
 </formset>
 

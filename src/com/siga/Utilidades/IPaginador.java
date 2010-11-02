@@ -32,6 +32,7 @@ public interface IPaginador
 	public int getPaginaActual();
 
 	public Vector obtenerPagina(int pagina) throws ClsExceptions, SIGAException;
+	public Vector obtenerPaginaNoCache(int pagina) throws ClsExceptions, SIGAException;
 	public String getQueryInicio();
 	public Hashtable getCodigosInicio();
 }

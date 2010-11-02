@@ -59,20 +59,20 @@ import com.siga.beans.CajgRemesaEstadosBean;
 import com.siga.beans.CajgRespuestaEJGRemesaAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaBean;
 import com.siga.beans.CenColegiadoBean;
-import com.siga.beans.GenClientesTemporalBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
 import com.siga.beans.ScsEstadoEJGAdm;
 import com.siga.beans.ScsEstadoEJGBean;
-import com.siga.beans.ScsGuardiasColegiadoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsTipoEJGBean;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.InscripcionGuardia;
 import com.siga.gratuita.form.DefinicionRemesas_CAJG_Form;
 import com.siga.gratuita.form.DefinirEJGForm;
+import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
 import com.siga.informes.MasterWords;
 import com.siga.ws.CajgConfiguracion;
 import com.siga.ws.SIGAWSClientAbstract;
@@ -859,56 +859,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		return "inicio";
 	}
 
-	/**
-	 * No implementado
-	 */
-	protected String abrirAvanzada(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-
-		ScsGuardiasColegiadoAdm admGuardiasColegiado = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
-		ScsGuardiasColegiadoAdm admTemporal = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
-
-		Hashtable hashTemporal = new Hashtable();
-		Vector letrados = new Vector();
-
-		String contador = "", idinstitucion = "", idturno = "", idguardia = "", consulta = "";
-
-		// Recuperamos los valores necesarios para llamar al PL
-		idinstitucion = formulario.getDatos().get("IDINSTITUCION").toString();
-		idturno = formulario.getDatos().get("GUARDIATURNO_IDTURNO").toString();
-		idguardia = formulario.getDatos().get("GUARDIATURNO_IDGUARDIA").toString();
-
-		// Ejecutamos el PL para obtener los letrados a los que asignarles un
-		// EJG
-		contador = admGuardiasColegiado.ejecutarPLGuardias(idinstitucion, idturno, idguardia);
-		// Si NO tengo letrados aviso del error
-		if (Integer.parseInt(contador) == 0) {
-			// Lanzo excepcion con error a tratar:
-			// throw new SIGAException("Error en
-			// DefinirCalendarioGuardiaAction.insertarCalendarioAutomaticamente()");
-			// //Si tengo letrados borro y genero el calendario
-		} else {
-			try {
-				// Buscamos los datos necesarios para los letrados obtenidos a
-				// traves del contador.
-				// Los insertamos en un Vector de Hash
-				consulta = " SELECT " + GenClientesTemporalBean.C_IDPERSONA + " FROM " + GenClientesTemporalBean.T_NOMBRETABLA + " WHERE "
-						+ GenClientesTemporalBean.C_IDINSTITUCION + " = " + idinstitucion + " AND " + GenClientesTemporalBean.C_CONTADOR + " = " + contador;
-				letrados = admTemporal.selectGenerico(consulta);
-				// Borramos con el contador de la tabla temporal
-				hashTemporal.clear();
-				hashTemporal.put(GenClientesTemporalBean.C_IDINSTITUCION, idinstitucion);
-				hashTemporal.put(GenClientesTemporalBean.C_CONTADOR, contador);
-				admTemporal.delete(hashTemporal);
-
-				// Almacenamos el IDPERSONA del letrado en la sesión para
-				// recuperarlo posteriormente
-				request.getSession().setAttribute("datosEntrada", ((Hashtable) letrados.get(0)).get("IDPERSONA").toString());
-			} catch (Exception e) {
-				throwExcp("messages.general.error", e, null);
-			}
-		}
-		return "busquedaAutomatica";
-	}
+	
 
 	/**
 	 * 

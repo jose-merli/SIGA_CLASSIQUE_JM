@@ -1,5 +1,6 @@
 package com.siga.gratuita.action;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -26,7 +27,9 @@ import com.siga.beans.ScsSaltosCompensacionesAdm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.InscripcionGuardia;
 import com.siga.gratuita.form.ColaGuardiasForm;
+import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
 import com.siga.informes.InformeColaGuardias;
 
 /**
@@ -108,16 +111,19 @@ public class ColaGuardiasAction extends MasterAction {
 		String institucion =usr.getLocation();
 		String turno =(String)turnoElegido.get("IDTURNO");
 		String guardia=coForm.getIdGuardia();
-		ScsGuardiasTurnoAdm guardiasTurnoAdm = new ScsGuardiasTurnoAdm(this.getUserBean(request));
+		String fecha  = coForm.getFechaConsulta();
+		fecha = (fecha!=null&&!fecha.trim().equals(""))?fecha:null;
 		ScsSaltosCompensacionesAdm saltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(this.getUserBean(request));
 		
 		//Cargar último letrado
 		cargarUltimoLetrado(this.getUserBean(request), institucion, turno, guardia, coForm);
 		
 		//Cargar listado de letrados en cola
-		Vector vLetradosEnCola=guardiasTurnoAdm.selectLetradosEnCola(institucion,turno,guardia);
-		if(vLetradosEnCola!=null && !vLetradosEnCola.isEmpty()){
-			request.setAttribute("vLetradosEnCola",vLetradosEnCola);
+		ArrayList<LetradoGuardia> letradosColaGuardiaList = InscripcionGuardia.getColaGuardia(new Integer(institucion),new Integer(turno), new Integer(guardia), fecha,fecha, usr);
+		
+		
+		if(letradosColaGuardiaList!=null && !letradosColaGuardiaList.isEmpty()){
+			request.setAttribute("letradosColaGuardiaList",letradosColaGuardiaList);
 		}
 		
 		//Cargar listado de compensaciones
@@ -136,7 +142,7 @@ public class ColaGuardiasAction extends MasterAction {
 		ScsInscripcionGuardiaAdm InscripcionGuardiaAdm = new ScsInscripcionGuardiaAdm(this.getUserBean(request));
 		Vector letradosinscritos = new Vector();
 		String NLetradosInscritos="";
-		 letradosinscritos= InscripcionGuardiaAdm.selectGenerico(InscripcionGuardiaAdm.getnumeroColegiadosIncritos(institucion, turno, guardia));
+		 letradosinscritos= InscripcionGuardiaAdm.selectGenerico(InscripcionGuardiaAdm.getQueryNumeroColegiadosIncritos(institucion, turno, guardia,fecha));
 		 if( letradosinscritos!=null  ||  letradosinscritos.size()>0){			 
 			NLetradosInscritos=(String)(((Hashtable)(letradosinscritos.get(0))).get("NLETRADOSINSCRITOS"));
 			request.setAttribute("NLETRADOSINSCRITOS",NLetradosInscritos);	
@@ -169,7 +175,7 @@ public class ColaGuardiasAction extends MasterAction {
 			//Obtengo el bean de la facturacion:
 			// Nombre de la plantilla FO:
 			String nombreFicheroFO = ClsConstants.PLANTILLA_FO_COLAGUARDIAS;
-
+			
 			InformeColaGuardias reportColaGuardias = new InformeColaGuardias(this.getUserBean(request));
 			
 			//Generamos el Informe si la hash no es null:			

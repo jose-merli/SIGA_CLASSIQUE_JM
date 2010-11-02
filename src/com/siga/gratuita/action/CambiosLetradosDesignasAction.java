@@ -36,6 +36,7 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.CambiosLetradosDesignasForm;
+import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
 
 
 /**
@@ -379,14 +380,14 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 			
 			//calculando letrado automatico si no ha sido seleccionado manualmente
 			if (idPersona == null || idPersona.trim().equals("")) {
-				Row row = new BusquedaClientesFiltrosAdm().gestionaDesignacionesAutomaticas(idInstitucion, idTurno, GstDate.getFormatedDateShort("", miform.getAplFechaDesigna()));
-				idPersona = (String) row.getValue(ScsDesignasLetradoBean.C_IDPERSONA);
-				compensacion = (String) row.getValue(ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION);
-				String nombre = (String) row.getValue(CenPersonaBean.C_NOMBRE);
-				String apellido1 = (String) row.getValue(CenPersonaBean.C_APELLIDOS1);
-				String apellido2 = (String) row.getValue(CenPersonaBean.C_APELLIDOS2);
+				LetradoGuardia letradoTurno = new BusquedaClientesFiltrosAdm().gestionaDesignacionesAutomaticas(idInstitucion, idTurno, GstDate.getFormatedDateShort("", miform.getAplFechaDesigna()));
+				idPersona = letradoTurno.getIdPersona().toString();
+				compensacion = letradoTurno.getSaltoCompensacion();
+				String nombre = letradoTurno.getPersona().getNombre();
+				String apellido1 = letradoTurno.getPersona().getApellido1();
+				String apellido2 = letradoTurno.getPersona().getApellido2();
 
-				numeroColAutomatico = (String) row.getValue(CenColegiadoBean.C_NCOLEGIADO);
+				numeroColAutomatico = letradoTurno.getPersona().getColegiado().getNColegiado();
 				if (apellido1 != null)
 					nombreColAutomatico = apellido1;
 				if (apellido2 != null) {

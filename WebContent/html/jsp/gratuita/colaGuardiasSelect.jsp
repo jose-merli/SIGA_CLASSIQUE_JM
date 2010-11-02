@@ -15,12 +15,8 @@
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 
 <%@ page import="com.siga.administracion.SIGAConstants"%>
-<%@ page import="com.siga.general.*"%>
 <%@ page import="com.atos.utils.*"%>
-<%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
-<%@ page import="com.siga.beans.*"%>
 <%@ page import="java.util.*"%>
-<%@ page import="com.siga.Utilidades.*"%>
 
 <!-- JSP -->
 <% 
@@ -31,7 +27,6 @@
 %>	
 
 
-<html>
 <!-- HEAD -->
 <html>
 	<!-- HEAD -->
@@ -39,6 +34,7 @@
 
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
+		<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
 		<siga:Titulo titulo="pestana.justiciagratuitaturno.colaGuardia" localizacion="gratuita.turnos.localizacion.colaTurno"/>
 		<script>
 		<!-- Asociada al boton Volver -->
@@ -82,7 +78,37 @@
 				}
 			}
 		}
+		function accionCalendario() 
+		{
+			// Abrimos el calendario 
+			var resultado = showModalDialog("<html:rewrite page='/html/jsp/general/calendarGeneral.jsp'/>?valor="+ document.ColaGuardiasForm.fechaConsulta.value, document.ColaGuardiasForm.fechaConsulta,"dialogHeight:275px;dialogWidth:400px;help:no;scroll:no;status:no;");
+			if (resultado) {
+				 
+				 document.ColaGuardiasForm.fechaConsulta.value = resultado;
+				 document.getElementById('fechaConsulta').value = resultado;
+				 document.ColaGuardiasForm.modo.value = 'ver';
+				 
+				 document.ColaGuardiasForm.submit();
+				
+		 	}else{
+					if(document.ColaGuardiasForm.fechaConsulta.value==''){
+						document.getElementById('fechaConsulta').value = '';
+						document.ColaGuardiasForm.fechaConsulta.value = '';
+						document.ColaGuardiasForm.modo.value = 'ver';
+						document.ColaGuardiasForm.submit();
+					}
+			} 
+		}
 		
+		function mostrarFechaActual()
+	{
+		
+			fechaActual = getFechaActualDDMMYYYY();
+			document.getElementById("fechaConsulta").value = fechaActual;
+		
+		
+	}
+				
 		</script>
 
 	</head>
@@ -94,7 +120,7 @@ parametros[0] = usrbean.getLocation();					// institucion
 parametros[1] = (String)turnoElegido.get("IDTURNO");	// turno
 %>
 
-<body class="tablaCentralCampos" onload="ajusteAltoBotones('areaDatos');cargarGuardia();">
+<body class="tablaCentralCampos" onload="ajusteAltoBotones('areaDatos');mostrarFechaActual();cargarGuardia();">
 
 	 <html:form action="/JGR_ColaGuardias" method="get" >
 	 	<fieldset>
@@ -106,7 +132,22 @@ parametros[1] = (String)turnoElegido.get("IDTURNO");	// turno
 			  <td>
 				<siga:ComboBD nombre="idGuardia" tipo="guardias" obligatorioSinTextoSeleccionar="true" parametro="<%=parametros%>" clase="boxCombo" accion="cargarGuardia();"/>
 			  </td>
-			</tr>
+			
+					<td class="labelText"><siga:Idioma key="gratuita.gestionInscripciones.fechaConsulta"/></td>
+					<td >
+					<html:text id="fechaConsulta" name="ColaGuardiasForm" property="fechaConsulta" size="10" maxlength="10" styleClass="box" ></html:text>
+					&nbsp;&nbsp;<a
+						id="calendarioTd" 
+						onClick="accionCalendario();"
+						onMouseOut="MM_swapImgRestore();"
+						onMouseOver="MM_swapImage('Calendario','','<html:rewrite page='/html/imagenes/calendar.gif'/>',1);"><img
+						src="<html:rewrite page='/html/imagenes/calendar.gif'/>"
+						alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"
+						border="0"></a>
+					</td>
+				</tr>
+			
+			
 		  </table>
 	 	</fieldset>
 	 	

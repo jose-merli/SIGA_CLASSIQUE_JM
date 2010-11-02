@@ -517,76 +517,7 @@ public class EjecucionPLs {
 	    return resultado;
 	}
 	
-	/**
-	 * PL que almacena los letrados para hacer guardias en una tabla temporal con un indice posicion + idinstitucion.
-	 * @param idInstitucion
-	 * @param idPersona
-	 * @param usuario
-	 * @return
-	 * @throws ClsExceptions
-	 */
-	public static String[] ejecutarPL_OrdenaColegiadosGuardia (Integer idInstitucion,
-															   Integer idTurno,
-															   Integer idGuardia,
-															   Integer conSaltComp)
-	{
-		Object[] paramIn = new Object[4]; //Parametros de entrada del PL
-		String resultado[] = new String[3]; //Parametros de salida del PL
-		
-		try {
-	 		//Parametros de entrada del PL
-	        paramIn[0] = idInstitucion.toString();
-	        paramIn[1] = idTurno.toString();
-	        paramIn[2] = idGuardia.toString();
-	        paramIn[3] = conSaltComp.toString(); // con saltos y compensaciones
-	        
-	        //Ejecucion del PL
-			resultado = ClsMngBBDD.callPLProcedure(
-					"{call  pkg_siga_ordenacion.ordena_colegiados_guardia (?,?,?,?,?,?,?)}", 
-					3, paramIn);
-		}
-		catch (Exception e) {
-			resultado[0] = "0"; 	// P_CONTADOR
-	    	resultado[1] = "ERROR"; // ERROR P_DATOSERROR
-	    	resultado[2] = "ERROR"; // ERROR P_DATOSERROR
-		}
-		
-	    return resultado;
-	} //ejecutarPL_OrdenaColegiadosGuardia()
-	/**
-	 * PL que almacena los letrados para hacer guardias en una tabla temporal con un indice posicion + idinstitucion.
-	 * @param idInstitucion
-	 * @param idPersona
-	 * @param usuario
-	 * @return
-	 * @throws ClsExceptions
-	 */
-	public static String[] ejecutarPL_OrdenaColegiadosTurno (Integer idInstitucion,
-															 Integer idTurno,
-															 Integer conSaltComp)
-	{
-		Object[] paramIn = new Object[3]; //Parametros de entrada del PL
-		String resultado[] = new String[3]; //Parametros de salida del PL
-		
-		try {
-	 		//Parametros de entrada del PL
-	        paramIn[0] = idInstitucion.toString();
-	        paramIn[1] = idTurno.toString();
-	        paramIn[2] = conSaltComp.toString(); // con saltos y compensaciones
-	        
-	        //Ejecucion del PL
-			resultado = ClsMngBBDD.callPLProcedure(
-					"{call  pkg_siga_ordenacion.ordena_colegiados_turno (?,?,?,?,?,?)}", 
-					3, paramIn);
-		}
-		catch (Exception e) {
-			resultado[0] = "0"; 	// P_CONTADOR
-	    	resultado[1] = "ERROR"; // ERROR P_DATOSERROR
-	    	resultado[2] = "ERROR"; // ERROR P_DATOSERROR
-		}
-		
-	    return resultado;
-	} //ejecutarPL_OrdenaColegiadosTurno()
+	
 	
 	
 	public static String ejecutarPLExportarTurno(String idInstitucion,
@@ -1034,6 +965,27 @@ public static String[] ejecutarF_SIGA_COMPROBAR_ANTICIPAR (
 	
 		return resultado;
 	}
+	public static String [] ejecutarPL_RevocarCertificados(Integer idInstitucion, String nif) 
+	{
+		Object[] param_in; 			//Parametros de entrada del PL
+		String resultado[] = null; 	//Parametros de salida del PL
+	
+		try {
+			resultado = new String[2];
+			param_in  = new Object[2];
+			param_in[0] = idInstitucion.toString();
+			param_in[1] = nif;
+			
+			// Ejecucion del PL
+		    resultado = ClsMngBBDD.callPLProcedure("{call Pkg_Siga_Administracion.Revocarcertificados (?,?,?,?)}", 2, param_in);
+		} 
+		catch (Exception e){
+			resultado[0] = "-1";     
+	    	resultado[1] = "ERROR al ejecutar el procedimiento pkg_siga_censo.ActualizarDatosLetrado";
+		}
+	    
+	    return resultado;
+	} // ejecutarPL_RevocarCertificados()
 
 
 }

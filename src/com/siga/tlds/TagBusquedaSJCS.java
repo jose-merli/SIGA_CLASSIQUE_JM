@@ -525,6 +525,10 @@ public class TagBusquedaSJCS extends TagSupport {
 					if(campoFecha==null){
 						throw new ClsExceptions("El atributo 'campoFecha' es obligatorio cuando el concepto es '"+concepto+"'");
 					}
+				}else{
+					if(campoFecha==null){
+						throw new ClsExceptions("El atributo 'campoFecha' es obligatorio cuando el concepto es '"+concepto+"'");
+					}
 				}
 				if(concepto.equals("GUARDIA")){
 					if(!manual){
@@ -588,6 +592,10 @@ public class TagBusquedaSJCS extends TagSupport {
 			out.println("	if("+nombre+"."+campoGuardia+".value==null || "+nombre+"."+campoGuardia+".value==''){ alert('"+msg1+" "+msg2+"'); return false;}");
 			msg1=UtilidadesString.getMensajeIdioma(usrbean, "gratuita.busquedaEJG.literal.fechaApertura");
 			out.println("	if("+nombre+"."+campoFecha+".value==null || "+nombre+"."+campoFecha+".value==''){ alert('"+msg1+" "+msg2+"'); return false;}");
+		}else if(concepto.equalsIgnoreCase("DESIGNACION")){
+			msg1=UtilidadesString.getMensajeIdioma(usrbean, "gratuita.busquedaEJG.literal.fechaApertura");
+			out.println("	if("+nombre+"."+campoFecha+".value==null || "+nombre+"."+campoFecha+".value==''){ alert('"+msg1+" "+msg2+"'); return false;}");
+			
 		}
 		out.println("	return true;");
 		out.println("}");
@@ -725,6 +733,8 @@ public class TagBusquedaSJCS extends TagSupport {
 			if(!concepto.equalsIgnoreCase("DESIGNACION")){
 				out.println("		vForm.idGuardia.value="+nombre+"."+campoGuardia+".value;");
 				out.println("		vForm.fecha.value="+nombre+"."+campoFecha+".value;");
+			}else if(concepto.equalsIgnoreCase("DESIGNACION")){
+				out.println("		vForm.fecha.value="+nombre+"."+campoFecha+".value;");
 			}
 			out.println("		var res = ventaModalGeneral(vForm.name,\"G\");");
 			out.println("		manejaRespuestaForm(res);");
@@ -747,6 +757,9 @@ public class TagBusquedaSJCS extends TagSupport {
 			if(!concepto.equalsIgnoreCase("DESIGNACION")){
 				out.println("		vForm.idGuardia.value="+nombre+"."+campoGuardia+".value;");
 				out.println("		vForm.fecha.value="+nombre+"."+campoFecha+".value;");
+			}else if(concepto.equalsIgnoreCase("DESIGNACION")){
+				out.println("		vForm.fecha.value="+nombre+"."+campoFecha+".value;");
+				
 			}
 			out.println("		creaSubmitArea();");
 			out.println("		vForm.submit();");

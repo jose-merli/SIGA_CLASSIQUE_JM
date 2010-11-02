@@ -1,5 +1,8 @@
 package com.siga.gratuita.action;
 
+import java.util.Hashtable;
+import java.util.Vector;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
@@ -9,20 +12,23 @@ import org.apache.struts.action.ActionMapping;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ComodinBusquedas;
-import com.atos.utils.Row;
-import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.CenPersonaBean;
+import com.siga.beans.ScsInscripcionTurnoAdm;
+import com.siga.beans.ScsOrdenacionColasAdm;
+import com.siga.beans.ScsOrdenacionColasBean;
+import com.siga.beans.ScsTurnoAdm;
+import com.siga.beans.ScsTurnoBean;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.form.DefinirTurnosForm;
 import com.siga.gratuita.form.*;
 import com.siga.ws.CajgConfiguracion;
 
 import java.util.*;
-
-import com.siga.Utilidades.UtilidadesHash;
-import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.*;
 
 /**
  * @author ruben.fernandez
@@ -109,7 +115,8 @@ public class DefinirTurnosAction extends MasterAction {
 					idTurno=(String)request.getSession().getAttribute("IDTURNOSESION");
 				}
 			}
-			request.getSession().setAttribute("IDTURNOSESION",idTurno);
+			request.getSession().setAttribute("IDTURNOSESION",idTurno);	
+			request.getSession().setAttribute("FECHASOLICITUDTURNOSESION",(String)ocultos.get(19));
 /*
 			String idTurno ="";
 			try{
@@ -456,126 +463,12 @@ public class DefinirTurnosAction extends MasterAction {
 		    
 		    // validacion de Altas
 		    if (validarAltasBajas!=null && validarAltasBajas.equals("1")){
-		    String sqlAltas = 
-				"SELECT "+ 
-					"inscri."+ScsInscripcionTurnoBean.C_IDINSTITUCION+" IDINSTITUCION,"+
-					"inscri."+ScsInscripcionTurnoBean.C_IDPERSONA+" IDPERSONA,"+
-					"inscri."+ScsInscripcionTurnoBean.C_IDTURNO+" IDTURNO,"+
-					"inscri."+ScsInscripcionTurnoBean.C_FECHASOLICITUD+" FECHASOLICITUD,"+
-					"f_siga_calculoncolegiado (" + usr.getLocation() + "," + "inscri."+ScsInscripcionTurnoBean.C_IDPERSONA+") NCOLEGIADO," +
-					"person."+CenPersonaBean.C_NOMBRE+" NOMBRE_PERSONA,"+
-					"person."+CenPersonaBean.C_APELLIDOS1+" APELLIDO1_PERSONA,"+
-					"person."+CenPersonaBean.C_APELLIDOS2+" APELLIDO2_PERSONA,"+
-					"turnos."+ScsTurnoBean.C_NOMBRE+" NOMBRE_TURNO "+
-				"FROM "+
-					ScsInscripcionTurnoBean.T_NOMBRETABLA 	+" inscri, "+
-					CenColegiadoBean.T_NOMBRETABLA 			+" colegi, "+
-					CenPersonaBean.T_NOMBRETABLA 			+" person, "+
-					ScsTurnoBean.T_NOMBRETABLA 				+" turnos  "+
-				"WHERE "+
-					"colegi.idinstitucion 	= inscri.idinstitucion and "+
-					"colegi.idpersona 		= inscri.idpersona and "	+
-					"person.idpersona		= inscri.idpersona and "	+
-					"turnos.idinstitucion 	= inscri.idinstitucion and "+
-					"turnos.idturno 	    = inscri.idturno and "+
-					"turnos.idturno 		= "+idturno+" and "		+
-					"inscri.idinstitucion 	= "+usr.getLocation()+" and " +
-					"inscri.fechavalidacion is null and "				+
-					"inscri.fechabaja 		is null "				+
-					"order by inscri.fechasolicitud desc";
-		    
-		    RowsContainer rcAlta = null;
-			rcAlta = new RowsContainer();
-			rcAlta.query(sqlAltas);
+		   
 			ScsInscripcionTurnoAdm insTurnoAdm=new ScsInscripcionTurnoAdm(this.getUserBean(request));
-			ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(this.getUserBean(request));
+			insTurnoAdm.validarInscripcionesPendientes(usr.getLocation(),idturno);
 			
 			
-			Hashtable hashOriginal=new Hashtable();
-			Hashtable hashNew=new Hashtable();
-		
-			for (int i = 0; i < rcAlta.size(); i++)	{
-				Row fila = (Row) rcAlta.get(i);	
-				hashOriginal=fila.getRow();
-				hashNew=(Hashtable)hashOriginal.clone();
-				hashNew.put(ScsInscripcionTurnoBean.C_FECHASOLICITUDBAJA,"");
-				hashNew.put(ScsInscripcionTurnoBean.C_FECHABAJA,"");
-				hashNew.put(ScsInscripcionTurnoBean.C_FECHAVALIDACION,"sysdate");
-				hashNew.put(ScsInscripcionTurnoBean.C_OBSERVACIONESBAJA,"");
-				hashNew.put(ScsInscripcionTurnoBean.C_OBSERVACIONESSOLICITUD,"");
-				hashNew.put(ScsInscripcionTurnoBean.C_OBSERVACIONESVALIDACION,".");
-				
-				
-				insTurnoAdm.update(hashNew,hashOriginal);
-			}
 			
-			String sqlBajas = 
-				"SELECT "+
-				"inscri."+ScsInscripcionTurnoBean.C_IDINSTITUCION+" IDINSTITUCION,"+
-				"inscri."+ScsInscripcionTurnoBean.C_IDPERSONA+" IDPERSONA,"+
-				"inscri."+ScsInscripcionTurnoBean.C_IDTURNO+" IDTURNO,"+
-				"inscri."+ScsInscripcionTurnoBean.C_FECHASOLICITUD+" FECHASOLICITUD,"+
-				"colegi."+CenColegiadoBean.C_NCOLEGIADO+" NCOLEGIADO,"+
-				"person."+CenPersonaBean.C_NOMBRE+" NOMBRE_PERSONA,"+
-				"person."+CenPersonaBean.C_APELLIDOS1+" APELLIDO1_PERSONA,"+
-				"person."+CenPersonaBean.C_APELLIDOS2+" APELLIDO2_PERSONA,"+
-				"turnos."+ScsTurnoBean.C_NOMBRE+" NOMBRE_TURNO "+
-			"FROM "+
-				ScsInscripcionTurnoBean.T_NOMBRETABLA 	+" inscri, "+
-				CenColegiadoBean.T_NOMBRETABLA 			+" colegi, "+
-				CenPersonaBean.T_NOMBRETABLA 			+" person, "+
-				ScsTurnoBean.T_NOMBRETABLA 				+" turnos  "+
-		
-		
-		     "WHERE colegi.idinstitucion 	= inscri.idinstitucion and "+
-				"colegi.idpersona 		= inscri.idpersona and "	+
-				"person.idpersona		= inscri.idpersona and "	+
-				"turnos.idinstitucion 	= inscri.idinstitucion and "+
-				"turnos.idturno 	    = inscri.idturno and "+
-				"turnos.idturno 		= "+idturno+" and "+
-				"inscri.idinstitucion 	= "+usr.getLocation()+" and " +
-				"(inscri.fechasolicitudbaja is not nulL) and "+				
-				"inscri.fechabaja 		is null "				+
-				"order by inscri.fechasolicitud desc";
-		
-		    
-		    RowsContainer rcBaja = null;
-		    rcBaja = new RowsContainer();
-		    rcBaja.query(sqlBajas);
-			
-			
-			 hashOriginal=new Hashtable();
-			 hashNew=new Hashtable();
-		
-			for (int i = 0; i < rcBaja.size(); i++)	{
-				Row fila = (Row) rcBaja.get(i);	
-				hashOriginal=fila.getRow();
-				hashNew=(Hashtable)hashOriginal.clone();
-				
-				hashNew.put(ScsInscripcionTurnoBean.C_FECHABAJA,"sysdate");
-				hashNew.put(ScsInscripcionTurnoBean.C_FECHAVALIDACION,"sysdate");
-				hashNew.put(ScsInscripcionTurnoBean.C_OBSERVACIONESBAJA,".");
-				hashNew.put(ScsInscripcionTurnoBean.C_OBSERVACIONESSOLICITUD,".");
-				hashNew.put(ScsInscripcionTurnoBean.C_OBSERVACIONESVALIDACION,".");
-				
-				
-				insTurnoAdm.update(hashNew,hashOriginal);
-				
-				
-				
-				
-			}
-			if (rcBaja.size()>0){
-//			 Damos de baja tambien las guardias asociadas al turno
-			Hashtable laHash = new Hashtable();
-			laHash.put(ScsInscripcionGuardiaBean.C_IDINSTITUCION	,usr.getLocation());
-			laHash.put(ScsInscripcionGuardiaBean.C_IDTURNO			,idturno);
-			laHash.put(ScsInscripcionGuardiaBean.C_FECHABAJA		,(String)hashNew.get(ScsInscripcionTurnoBean.C_FECHABAJA));
-			String[] claves = {ScsInscripcionGuardiaBean.C_IDINSTITUCION,
-					           ScsInscripcionGuardiaBean.C_IDTURNO};
-			String[] campos = {ScsInscripcionGuardiaBean.C_FECHABAJA};
-			insguardia.updateDirect(laHash,claves,campos);
-		    }
 		    }
 		    tx.commit();
 		    
@@ -728,7 +621,7 @@ public class DefinirTurnosAction extends MasterAction {
 			
 			request.getSession().setAttribute("DATOSFORMULARIO",hash);
 			request.getSession().setAttribute("BUSQUEDAREALIZADA","SI");
-			Vector vTurno = turno.selectTabla(where,"1"); //el segundo parámetro sirve para indicarle al método que los campos a recuperar en el select son:
+			Vector vTurno = turno.selectTurnos(where); //el segundo parámetro sirve para indicarle al método que los campos a recuperar en el select son:
 														  //abreviatura,nombre, area, materia, zona, subzona, partidoJudicial,partidaPresupuestaria, grupoFacturacion
 			request.setAttribute("resultado",vTurno);
 			request.setAttribute("mantTurnos","1");

@@ -13,20 +13,19 @@
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="c.tld" prefix="c"%>
 
-<%@ page import="com.siga.administracion.SIGAConstants"%>
-<%@ page import="com.siga.general.*"%>
+
 <%@ page import="com.atos.utils.*"%>
-<%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="java.util.*"%>
 <%@ page import="com.siga.Utilidades.*"%>
 
+
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
-	HttpSession ses=request.getSession();
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
+
 	UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);
 	String nListad =request.getAttribute("NLETRADOSINSCRITOS") != null?(String)request.getAttribute("NLETRADOSINSCRITOS"):"";
 	
@@ -39,7 +38,8 @@
 %>	
 
 
-<html>
+<%@page import="com.siga.gratuita.util.calendarioSJCS.LetradoGuardia"%>
+
 <!-- HEAD -->
 <html>
 	<!-- HEAD -->
@@ -159,6 +159,7 @@
 		<input type="hidden" name="actionModal" value="">
 		<input type="hidden" name="idPersona" >
 		<input type="hidden" name="idGuardia" value="<%=idGuardia%>" >
+		<html:hidden property="fechaConsulta"/>
 	</html:form>	
 
 		
@@ -225,8 +226,8 @@
 		   nombre="tablaLetrados"
 		   borde="1"
 		   clase="tableTitle"
-		   tamanoCol="20,20,53,7"
-		   nombreCol="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,gratuita.turnos.literal.apellidosSolo,"
+		   tamanoCol="14,40,18,18,10"
+		   nombreCol="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,F.Val,F.Baja,"
 		   alto="400"
 		   ajusteAlto="">
 
@@ -234,8 +235,9 @@
 			<!-- Aqui se iteran los diferentes registros de la lista -->
 		
 
-	<% Vector resultado = (Vector) request.getAttribute("vLetradosEnCola");
-	if (resultado==null || resultado.size()==0) { %>			
+	<%
+	ArrayList letradosColaGuardiaList = (ArrayList) request.getAttribute("letradosColaGuardiaList");
+	if (letradosColaGuardiaList==null || letradosColaGuardiaList.size()==0) { %>			
 	 		<tr>
 	 		
 			  <td colspan="4" height="225px">
@@ -244,18 +246,20 @@
 	 		</tr>	 		
 <%	} else { 
 		// recorro el resultado
-		for (int i=0;i<resultado.size();i++) {
-			Row registro = (Row) resultado.elementAt(i);
+		for (int i=0;i<letradosColaGuardiaList.size();i++) {
+			LetradoGuardia letradoGuardia = (LetradoGuardia) letradosColaGuardiaList.get(i);
 			
 			// calculo de campos
-			String apellido1 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS1));
-			String apellido2 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS2));
-			String nombre = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_NOMBRE));
-			String ncolegiado = UtilidadesString.mostrarDatoJSP(registro.getString(CenColegiadoBean.C_NCOLEGIADO));
+			String apellido1 = letradoGuardia.getPersona().getApellido1();
+			String apellido2 =letradoGuardia.getPersona().getApellido2();
+			String nombre = letradoGuardia.getPersona().getNombre();
+			String ncolegiado = letradoGuardia.getPersona().getColegiado().getNColegiado();
 
-			String idPersona = registro.getString(CenPersonaBean.C_IDPERSONA);
+			String idPersona = letradoGuardia.getIdPersona().toString();
 			String numeroColegiadoBusqueda = "" + i + "_" + ncolegiado;
+			
 	%>
+	
 			<!-- REGISTRO  -->
   			<tr class="listaNonEdit">
 				<td>
@@ -264,13 +268,28 @@
 					<%=ncolegiado%>
 				</td>
 				<td>
-					<%=nombre%>
+					<%=nombre+apellido1+" "+apellido2%>
+				</td>
+				
+				<td>
+				<%if(letradoGuardia.getFechaValidacion()!=null &&!letradoGuardia.getFechaValidacion().equals("")){ %>
+					<%=letradoGuardia.getFechaValidacion()%>
+				<%}else{ %>
+					&nbsp;
+				<%} %>
+			
+					
 				</td>
 				<td>
-					<%=apellido1+" "+apellido2 %>
+				<%if(letradoGuardia.getFechaBaja()!=null &&!letradoGuardia.getFechaBaja().equals("")){ %>
+					<%=letradoGuardia.getFechaBaja()%>
+				<%}else{ %>
+					&nbsp;
+				<%} %>
+
 				</td>
 				<td align="center">
-					<img src="/SIGA/html/imagenes/bcambiarusuario.gif" style="cursor:hand;" onClick="fijarUltimoLetrado(<%=i+1%>)" alt="<%=literalFijarUltimoLetrado%>">
+					<img src="/SIGA/html/imagenes/bcambiarusuario.gif" name="bcambiarusuario" style="cursor:hand;" onClick="fijarUltimoLetrado(<%=i+1%>)" alt="<%=literalFijarUltimoLetrado%>">
 				</td>
 			</tr>		
 			<!-- FIN REGISTRO -->
@@ -423,7 +442,15 @@
   </table>
   
   <iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-  
+  <script>
+  	function habilitarCambiarUsuario(valor){
+  		var bcambiarusuario =document.getElementsByName("bcambiarusuario");
+		for (i=0;i<bcambiarusuario.length;i++) {
+			bcambiarusuario[i].disabled=valor;
+		}
+	}
+	habilitarCambiarUsuario(document.getElementById('fechaConsulta').value=='');
+  </script>
   
 </body>
 </html>

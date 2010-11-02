@@ -11,16 +11,16 @@
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 <%@ taglib uri = "libreria_SIGA.tld" prefix="siga"%>
 
+
+
 <%@ page import="com.siga.tlds.FilaExtElement"%>
 <%@ page import="java.util.*"%>
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.gratuita.util.Colegio"%>
-<%@ page import="com.siga.administracion.SIGAMasterTable"%>
+
 <%@ page import="com.siga.administracion.SIGAConstants"%>
-<%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
-<%@page import="com.siga.Utilidades.PaginadorBind"%>
 
 <% 	
 	String app=request.getContextPath();
@@ -32,7 +32,7 @@
 
 	request.getSession().removeAttribute("ocultos");
 	request.getSession().removeAttribute("campos");
-	FilaExtElement[] elems=new FilaExtElement[1];
+	FilaExtElement[] elems=null;
 
 	//Datos del Colegiado si procede:
 	String nombrePestanha=null, numeroPestanha=null, estadoColegial=null;
@@ -114,14 +114,17 @@
 
 %>
 
+<%@page import="com.siga.Utilidades.PaginadorBind"%>
 <html>
 	<head>
 		<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 		<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
-
+		<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
 		<!-- INICIO: TITULO Y LOCALIZACION -->
 		<!-- Escribe el título y localización en la barra de título del frame principal -->
-		<% if (entrada.equalsIgnoreCase("2")){ %>
+		<% 
+		boolean isEntradaSJCS = entrada.equalsIgnoreCase("1");
+		if (!isEntradaSJCS){ %>
 		<siga:TituloExt 
 			titulo="censo.fichaCliente.sjcs.turnos.cabecera" 
 			localizacion="censo.fichaCliente.sjcs.turnos.localizacion"/>
@@ -131,11 +134,13 @@
 
 </head>
 
-<body class="tablaCentralCampos">
-    <table class="tablaTitulo" align="center" cellspacing=0>
+<body class="tablaCentralCampos" onload="mostrarFecha();">
+    
 	<%
+	
 		//Entrada desde el menu de Censo:
-		if (entrada.equalsIgnoreCase("2")) { %>
+		if (!isEntradaSJCS) { %>
+		<table class="tablaTitulo" align="center" cellspacing=0>
 			<tr>
 				<td class="titulitosDatos">
 					<siga:Idioma key="censo.fichaCliente.turnoInscrito.pestana.titulito"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombrePestanha)%>&nbsp;&nbsp;
@@ -147,6 +152,30 @@
 					<% } %>
 				</td>
 			</tr>
+			</table>
+			<siga:ConjCampos leyenda="gratuita.busquedaSJCS.literal.filtro">
+			<table>
+			<tr>
+					<td class="labelText"><siga:Idioma key="gratuita.gestionInscripciones.fechaConsulta"/></td>
+					<td >
+					<html:text id="fechaConsulta" name="DefinirTurnosLetradoForm" property="fechaConsulta" size="10" maxlength="10" styleClass="box" ></html:text>
+					&nbsp;&nbsp;<a
+						id="calendarioTd" 
+						onClick="accionCalendario();"
+						onMouseOut="MM_swapImgRestore();"
+						onMouseOver="MM_swapImage('Calendario','','<html:rewrite page='/html/imagenes/calendar.gif'/>',1);"><img
+						src="<html:rewrite page='/html/imagenes/calendar.gif'/>"
+						alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"
+						border="0"></a>
+					</td>
+				</tr>
+				
+			</table>
+			</siga:ConjCampos>
+			
+			
+			
+			
 	<% } %>
 
 	<% 	
@@ -156,20 +185,26 @@
 		String alto="";
 		
 		//Entrada desde el menu de  SJCS:
-		if (entrada.equalsIgnoreCase("1")){
+		if (isEntradaSJCS){
 			nC="gratuita.definirTurnosIndex.literal.abreviatura,censo.SolicitudIncorporacion.literal.nombre,gratuita.definirTurnosIndex.literal.area,gratuita.definirTurnosIndex.literal.materia,gratuita.definirTurnosIndex.literal.zona,gratuita.definirTurnosIndex.literal.subzona,gratuita.definirTurnosIndex.literal.grupoFacturacion,gratuita.listarTurnos.literal.letradosInscritos,";
 			tC="10,20,10,14,10,10,10,5,10";
 			botones="C,E,B";
 			alto="253";}
 		//Entrada desde el menu de Censo:
 		else {	
-				nC="gratuita.definirTurnosIndex.literal.abreviatura,censo.SolicitudIncorporacion.literal.nombre,gratuita.definirTurnosIndex.literal.area,gratuita.definirTurnosIndex.literal.materia,gratuita.definirTurnosIndex.literal.zona,gratuita.definirTurnosIndex.literal.subzona,gratuita.listarTurnos.literal.fechaAlta,gratuita.listarTurnos.literal.fechaValidacion,gratuita.listarGuardiasTurno.literal.fechaBaja,";
-				tC="9,17,8,9,9,8,9,9,9,13";
-				botones="C";
+				nC="gratuita.definirTurnosIndex.literal.abreviatura,censo.SolicitudIncorporacion.literal.nombre,gratuita.definirTurnosIndex.literal.materia,gratuita.definirTurnosIndex.literal.subzona,gratuita.listaTurnosLetrados.literal.fechasolicitud,F. Valor,gratuita.altaTurnos.literal.fsbaja,F. Valor Baja,Estado,";
+				tC="16,16,8,8,8,8,8,8,8,10";
+				if(bIncluirBajaLogica)
+					botones="";
+				else
+					botones="C";
 				alto="326";}
 	%>
 		<html:form action="DefinirTurnosAction.do" method="post" target="<%=elTarget%>" style="display:none">
-		
+			
+			
+			
+			
 			<!-- Datos del Colegiado seleccionado -->
 			<input type="hidden" name = "nombreColegiadoPestanha" value = "<%=nombrePestanha%>"/>
 			<input type="hidden" name = "numeroColegiadoPestanha" value = "<%=numeroPestanha%>"/>
@@ -181,6 +216,7 @@
 			<input type="hidden" name="idPersona" />
 			<input type="hidden" name="idTurno" />
 			<input type="hidden" name="fechaSolicitud"/>
+			
 			<input type="hidden" name="observacionesSolicitud"/>
 			<input type="hidden" name="fechaValidacion"/>
 			<input type="hidden" name="observacionesValidacion"/>
@@ -191,6 +227,11 @@
 			<input type="hidden" name="filaSelD">
 			<input type="hidden" name="tablaDatosDinamicosD">
 			<input type="hidden" name="actionModal" value="">
+			
+			
+			
+			
+			
 		</html:form>	
 		
 		
@@ -210,11 +251,11 @@
 	   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
 	 		<br>
 	<%} else {
-	
+		
 		for (int j = 0; j < resultado.size(); j++) {
 			int i=j+1;
 			Hashtable registro;
-			if (entrada.equalsIgnoreCase("1")){
+			if (isEntradaSJCS){
 				registro = (Hashtable)resultado.get(j);
 			}else{
 				Row fila = (Row)resultado.elementAt(j);
@@ -247,27 +288,89 @@
 			}catch(Exception e){o5="-1";}
 				
 			//obtenemos la fecha de validacion
+			elems = new FilaExtElement[2];
 			elems[0]=null;
 			String fechaSolicitud 		= (String) registro.get("FECHASOLICITUD");
 			String fechaValidacion 		= (String) registro.get("FECHAVALIDACION");
 			String fechaSolicitudBaja 	= (String) registro.get("FECHASOLICITUDBAJA");
 			String fechaBaja 			= (String) registro.get("FECHABAJA");
+			String fechaDenegacion 		= (String) registro.get("FECHADENEGACION");
+			String fechaValor 		= (String) registro.get("FECHAVALOR");
+			String fechaValorBaja 		= (String) registro.get("FECHAVALORBAJA");
+			
 			
 			if(fechaSolicitud == null) 		fechaSolicitud 	= "";
 			if(fechaValidacion == null) 	fechaValidacion = "";
 			if(fechaBaja == null) 			fechaBaja 		= "";
 			if(fechaSolicitudBaja == null) 	fechaSolicitudBaja = "";
-
-				if(!fechaSolicitud.equals("") && !fechaValidacion.equals("") && fechaSolicitudBaja.equals("") && fechaBaja.equals(""))
-				{
-					elems[0]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_FULL);
-				}else if(!entrada.equalsIgnoreCase("1")){
-					elems[0]=new FilaExtElement("consultaturno","consultaturno",SIGAConstants.ACCESS_FULL);
+			if(fechaDenegacion == null) 	fechaDenegacion = "";
+			if(fechaValor == null) 	fechaValor = "";
+			if(fechaValorBaja == null) 	fechaValorBaja = "";
+			String estado = null;
+			if(!isEntradaSJCS){
+				elems[0]=new FilaExtElement("consultaInscripcion","consultaInscripcion",SIGAConstants.ACCESS_FULL);
+				estado= "No aplica";
+				if(fechaValidacion.equals("")){
+					if(fechaSolicitudBaja.equals("")){
+						if(fechaDenegacion.equals("")){
+							estado =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.alta.pendiente");
+							elems[1]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_FULL);
+						}else{
+							estado =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.alta.denegada");
+						}
+						
+					}else{
+						if(fechaBaja.equals("")){
+							if(fechaDenegacion.equals("")){
+								estado  =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.baja.pendiente");
+							}else{
+								elems[1]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_FULL);
+								estado =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.baja.denegada");
+							}
+							
+						}else{
+							estado =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.baja.confirmada");
+							
+						}
+						
+						
+						
+					}
+					
+				}else{
+					
+					if(fechaSolicitudBaja.equals("")){
+						estado =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.alta.confirmada");
+						elems[1]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_FULL);
+					}else{
+						if(fechaBaja.equals("")){
+							if(fechaDenegacion.equals("")){
+								estado =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.baja.pendiente");
+							}else{
+								elems[1]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_FULL);
+								estado =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.baja.denegada");
+							}
+							
+						}else{
+							estado =UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.estado.baja.confirmada");
+							
+						}
+						
+						
+					}
+					
+					
+					
 				}
+				
+				
+				
+				
+			}
 			%>
 
-			<siga:FilaConIconos fila='<%=String.valueOf(i)%>' botones="<%=botones%>" elementos='<%=elems%>' clase="listaNonEdit">
-				<td >
+			<siga:FilaConIconos fila='<%=String.valueOf(i)%>' botones="<%=botones%>" visibleBorrado="<%=String.valueOf(isEntradaSJCS)%>" visibleEdicion="<%=String.valueOf(isEntradaSJCS)%>" pintarEspacio="<%=String.valueOf(isEntradaSJCS)%>" elementos='<%=elems%>' clase="listaNonEdit">
+				
 				<input type='hidden' name='oculto<%=String.valueOf(i)%>_1' value='<%=registro.get("IDTURNO")%>'>
 				<input type='hidden' name='oculto<%=String.valueOf(i)%>_2' value='<%=registro.get("GUARDIAS")%>'>
 				<input type='hidden' name='oculto<%=String.valueOf(i)%>_3' value='<%=registro.get("VALIDARJUSTIFICACIONES")%>'>
@@ -284,31 +387,67 @@
 				<input type='hidden' name='oculto<%=String.valueOf(i)%>_14' value='<%=o3%>'>
 				<input type='hidden' name='oculto<%=String.valueOf(i)%>_15' value='<%=o4%>'>
 				<input type='hidden' name='oculto<%=String.valueOf(i)%>_16' value='<%=o5%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_17' value='<%=registro.get("IDGRUPOFACTURACION")%>'><%if (entrada.equals("2")){%>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_18' value='<%=registro.get("PARTIDAPRESUPUESTARIA")%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_19' value='<%=registro.get("GRUPOFACTURACION")%>'><%}%>
+				<input type='hidden' name='oculto<%=String.valueOf(i)%>_17' value='<%=registro.get("IDGRUPOFACTURACION")%>'>
+				
+				<input type='hidden' name='oculto<%=String.valueOf(i)%>_18' value=''>
+				<input type='hidden' name='oculto<%=String.valueOf(i)%>_19' value=''>
+				
 				<input type='hidden' name='oculto<%=String.valueOf(i)%>_20' value='<%=registro.get("FECHASOLICITUD")%>'>
 				<input type='hidden' name='oculto<%=String.valueOf(i)%>_21' value='<%=registro.get("OBSERVACIONESSOLICITUD")%>'>
 				<input type='hidden' name='oculto<%=String.valueOf(i)%>_22' value='<%=registro.get("FECHAVALIDACION")%>'>
 				<input type='hidden' name='oculto<%=String.valueOf(i)%>_23' value='<%=registro.get("OBSERVACIONESVALIDACION")%>'>
 				<input type='hidden' name='oculto<%=String.valueOf(i)%>_24' value='<%=registro.get("FECHASOLICITUDBAJA")%>'>
 				<input type='hidden' name='oculto<%=String.valueOf(i)%>_25' value='<%=registro.get("OBSERVACIONESBAJA")%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_26' value='<%=registro.get("IDGRUPOFACTURACION")%>'><%=registro.get("ABREVIATURA")%>&nbsp;</td>
+				<input type='hidden' name='oculto<%=String.valueOf(i)%>_26' value='<%=registro.get("IDGRUPOFACTURACION")%>'>
 				<input type='hidden' name='oculto<%=String.valueOf(i)%>_27' value='<%=registro.get("FECHABAJA")%>'>
+				<input type='hidden' name='oculto<%=String.valueOf(i)%>_28' value='<%=registro.get("FECHADENEGACION")%>'>
+				<input type='hidden' name='oculto<%=String.valueOf(i)%>_29' value='<%=registro.get("OBSERVACIONESDENEGACION")%>'>
+				
+				<%if (!isEntradaSJCS){%>
+				<td ><%=registro.get("ABREVIATURA")%>&nbsp;</td>
+				<td ><%=((String)registro.get("NOMBRE"))%>&nbsp;</td>
+				<td ><%=registro.get("MATERIA")%>&nbsp;</td>
+				
+				<td ><%if (!((String)registro.get("SUBZONA")).equals("")){%><%=registro.get("SUBZONA")%><%}else{%> &nbsp <%}%>&nbsp;</td>
+				<td ><%if (!fechaSolicitud.equals("")){%>
+					&nbsp;<%=GstDate.getFormatedDateShort("",fechaSolicitud)%>
+					<%}else{%>
+					&nbsp;<%}%>
+				</td>
+					<td ><%if (!fechaValor.equals("")){%>
+						&nbsp;<%=GstDate.getFormatedDateShort("",fechaValor)%>
+						<%}else{%>
+						&nbsp;<%}%>
+						
+					</td>
+					<td ><%if(!fechaSolicitudBaja.equals("")){%>
+						<%=GstDate.getFormatedDateShort("",fechaSolicitudBaja)%>
+					<% }else{%>
+						&nbsp;
+					<% }%>
+					</td>
+					<td >
+					<%if (!fechaValorBaja.equals(""))
+						{%>
+						&nbsp;<%=fechaValorBaja%>
+						
+					<% }else{%>
+						&nbsp;
+					<% }%>
+					</td>
+					
+					<td ><%=estado%></td>
+				
+				<%}else{%>
+				<td ><%=registro.get("ABREVIATURA")%>&nbsp;</td>
 				<td ><%=((String)registro.get("NOMBRE"))%>&nbsp;</td>
 				<td ><%=registro.get("AREA")%>&nbsp;</td>
 				<td ><%=registro.get("MATERIA")%>&nbsp;</td>
 				<td ><%=registro.get("ZONA")%>&nbsp;</td>
 				<td ><%if (!((String)registro.get("SUBZONA")).equals("")){%><%=registro.get("SUBZONA")%><%}else{%> &nbsp <%}%>&nbsp;</td>
-				<% if (entrada.equalsIgnoreCase("1")) { %>
-					<td ><%=registro.get("GRUPOFACTURACION")%></td>
-				<% } else { %>
-					<td ><%if (registro.get("FECHASOLICITUD")!=null){%>&nbsp;<%=GstDate.getFormatedDateShort("",(String)registro.get("FECHASOLICITUD"))%><%}else{%>&nbsp;<%}%>&nbsp;</td>
-					<td ><%if (registro.get("FECHAVALIDACION")!=null){%>&nbsp;<%=GstDate.getFormatedDateShort("",(String)registro.get("FECHAVALIDACION"))%><%}else{%>&nbsp;<%}%>&nbsp;</td>
-					<td ><%if (registro.get("FECHABAJA")!=null){%>&nbsp;<%=GstDate.getFormatedDateShort("",(String)registro.get("FECHABAJA"))%><%}else{%>&nbsp;<%}%>&nbsp;</td>
-				<% } %>
-				<% if (entrada.equalsIgnoreCase("1")){%>
-			  		<td align="right"><%=registro.get("NLETRADOS")%>&nbsp;</td>
+				<td ><%=registro.get("GRUPOFACTURACION")%></td>
+				<td align="right"><%=registro.get("NLETRADOS")%>&nbsp;</td>
+				
 			  	<%} %>
 				</siga:FilaConIconos>
 			<!-- FIN REGISTRO -->
@@ -320,7 +459,7 @@
 	} // del if
 %>		
 		</siga:TablaCabecerasFijas>
-		<% if (entrada.equalsIgnoreCase("2")){%>
+		<% if (!isEntradaSJCS){%>
 			<!-- Si hay datos se muestra el paginador -->
 			<%if ( hm.get("datos")!=null && !hm.get("datos").equals("")){%>
 				<siga:Paginador totalRegistros="<%=totalRegistros%>" 
@@ -331,7 +470,8 @@
 								clase="paginator" 
 								divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:30px; left: 0px"
 								distanciaPaginas=""
-								action="<%=action%>" />
+								
+								action="<%=action%>"  />
 			<%}%>
 			
 			
@@ -340,7 +480,7 @@
 				<table align="center" border="0">
 					<tr>
 						<td class="labelText">
-							<siga:Idioma key="censo.consultaRegistrosBajaLogica.literal"/>
+							<siga:Idioma key="gratuita.gestionInscripciones.vertodas"/>
 							
 							<% if (bIncluirBajaLogica) { %>
 								<input type="checkbox" name="bajaLogica" onclick="incluirRegBajaLogica(this);" checked>
@@ -394,163 +534,135 @@
 
 	
 		<script>
-				//Valida el Alta en un Turno:
-				function validaralta(fila) 
-				{
-					  var turno 				= 'oculto' + fila + '_' + 1;
-					  var fsoli 				    = 'oculto' + fila + '_' + 20;
-					  var osoli 				= 'oculto' + fila + '_' + 21;
-					  document.forms[0].idInstitucion.value 	= <%=usr.getLocation()%>;
-					  document.forms[0].idPersona.value 		= <%=request.getSession().getAttribute("idPersonaTurno")%>;
-					  document.forms[0].idTurno.value 			= document.getElementById(turno).value;
-					  document.forms[0].fechaSolicitud.value = document.getElementById(fsoli).value;
-					  document.forms[0].observacionesSolicitud.value = document.getElementById(osoli).value;
-					  document.forms[0].action		= "<%=app%>/JGR_ValidarTurnos.do";
-					  document.forms[0].modo.value = "Ver";
-		
-					  var resultado = ventaModalGeneral(document.forms[0].name,"G");
-				      if(resultado == "MODIFICADO") 
-				      	refrescarLocal();
-				      document.forms[0].action= "<%=app%>/DefinirTurnosAction.do";
-				 }
 				 
-				//Valida la Baja en un Turno:
-				function validar(fila) 
-				{
-					  var turno = 'oculto' + fila + '_' + 1;
-					  var fsoli = 'oculto' + fila + '_' + 20;
-					  var osoli = 'oculto' + fila + '_' + 21;
-					  var fvali = 'oculto' + fila + '_' + 22;
-					  var ovali = 'oculto' + fila + '_' + 23;
-					  var fbaja = 'oculto' + fila + '_' + 24;
-					  var obaja = 'oculto' + fila + '_' + 25;
-					  document.forms[0].idInstitucion.value 	= <%=usr.getLocation()%>;
-					  document.forms[0].idPersona.value 		= <%=request.getSession().getAttribute("idPersonaTurno")%>;
-					  document.forms[0].idTurno.value 			= document.getElementById(turno).value;
-					  document.forms[0].fechaSolicitud.value = document.getElementById(fsoli).value;
-					  document.forms[0].observacionesSolicitud.value = document.getElementById(osoli).value;
-					  document.forms[0].fechaValidacion.value = document.getElementById(fvali).value;
-					  document.forms[0].observacionesValidacion.value = document.getElementById(ovali).value;
-					  document.forms[0].fechaSolicitudBaja.value = document.getElementById(fbaja).value;
-					  document.forms[0].observacionesBaja.value = document.getElementById(obaja).value;
-					  document.forms[0].paso.value = "turno";
-					  document.forms[0].action		= "<%=app%>/JGR_BajaTurnos.do";
-					  document.forms[0].modo.value = "Ver";
-		
-					  var resultado = ventaModalGeneral(document.forms[0].name,"G");
-				      if(resultado == "MODIFICADO")
-				      	 refrescarLocal(); 
-				      document.forms[0].action		= "<%=app%>/DefinirTurnosAction.do";				    
-				 }
+				
+			
+	function solicitarbaja(fila) 
+	{
+	   	document.FormASolicitarBaja.idInstitucion.value = <%=usr.getLocation()%>;
+	   	document.FormASolicitarBaja.idPersona.value = <%=request.getSession().getAttribute("idPersonaTurno")%>;
+	   
+	    var idTurno = 'oculto' + fila + '_' + 1;
+		var fsoli = 'oculto' + fila + '_' + 20;
+		var osoli = 'oculto' + fila + '_' + 21;
+		var fvali = 'oculto' + fila + '_' + 22;
+		var ovali = 'oculto' + fila + '_' + 23;
+		var fsolbaja = 'oculto' + fila + '_' + 24;
+		var obaja = 'oculto' + fila + '_' + 25;
+		var fbaja = 'oculto' + fila + '_' + 27;
+		var fechaDenegacion = 'oculto' + fila + '_' + 28;
+		var observacionesDenegacion = 'oculto' + fila + '_' + 29;
+	   	document.FormASolicitarBaja.idTurno.value = document.getElementById(idTurno).value;
+	   	document.FormASolicitarBaja.fechaSolicitud.value = document.getElementById(fsoli).value;
+	   	document.FormASolicitarBaja.observacionesSolicitud.value 	= document.getElementById(osoli).value;
+		document.FormASolicitarBaja.fechaValidacion.value 			= document.getElementById(fvali).value;
+		document.FormASolicitarBaja.fechaBaja.value 			= document.getElementById(fbaja).value;
+		document.FormASolicitarBaja.observacionesValidacion.value 	= document.getElementById(ovali).value;
+		document.FormASolicitarBaja.fechaSolicitudBaja.value 		= document.getElementById(fsolbaja).value;
+		document.FormASolicitarBaja.observacionesBaja.value 		= document.getElementById(obaja).value;
+
+	   	document.FormASolicitarBaja.fechaDenegacion.value 		= document.getElementById(fechaDenegacion).value;
+		document.FormASolicitarBaja.observacionesDenegacion.value 		= document.getElementById(observacionesDenegacion).value;
+	   	
+	   	
+	   	
+	   	document.FormASolicitarBaja.modo.value = "sbtConsultaTurno";
+	    document.FormASolicitarBaja.target = "submitArea";
+	   	// document.FormAValidar.submit();
+	   	var resultado = ventaModalGeneral(document.FormASolicitarBaja.name,"G");
+	   	if (resultado=='MODIFICADO') {
+		  	refrescarLocal();
+	 	}
+	   	
+	   	
+	 }
 				 
-				function solicitarbaja(fila) 
-				{
-				  var turno = 'oculto' + fila + '_' + 1;
-				  var fsoli = 'oculto' + fila + '_' + 20;
-				  var osoli = 'oculto' + fila + '_' + 21;
-				  var fvali = 'oculto' + fila + '_' + 22;
-				  var ovali = 'oculto' + fila + '_' + 23;
-				  var fbaja = 'oculto' + fila + '_' + 24;
-				  var obaja = 'oculto' + fila + '_' + 25;
-				  document.BajaTurnosForm.idInstitucion.value 			= <%=usr.getLocation()%>;
-				  document.BajaTurnosForm.idPersona.value 				= <%=request.getSession().getAttribute("idPersonaTurno")%>;
-				  document.BajaTurnosForm.idTurno.value 					= document.getElementById(turno).value;
-				  document.BajaTurnosForm.fechaSolicitud.value 			= document.getElementById(fsoli).value;
-				  document.BajaTurnosForm.observacionesSolicitud.value 	= document.getElementById(osoli).value;
-				  document.BajaTurnosForm.fechaValidacion.value 			= document.getElementById(fvali).value;
-				  document.BajaTurnosForm.observacionesValidacion.value 	= document.getElementById(ovali).value;
-				  document.BajaTurnosForm.fechaSolicitudBaja.value 		= document.getElementById(fbaja).value;
-				  document.BajaTurnosForm.observacionesBaja.value 		= document.getElementById(obaja).value;
-				  document.BajaTurnosForm.paso.value 						= "turnoS";
-				  //document.forms[1].action   						= "<%=app%>/JGR_SolicitarBajaTurno.do";
-				  document.BajaTurnosForm.modo.value 						= "Ver";
+			
+				
+	function consultaInscripcion(fila) 
+	{
+		document.FormAConsultar.idInstitucion.value = <%=usr.getLocation()%>;
+		document.FormAConsultar.idPersona.value = <%=request.getSession().getAttribute("idPersonaTurno")%>;
+	   
+		var idTurno = 'oculto' + fila + '_' + 1;
+		var fsoli = 'oculto' + fila + '_' + 20;
+		var osoli = 'oculto' + fila + '_' + 21;
+		var fvali = 'oculto' + fila + '_' + 22;
+		var ovali = 'oculto' + fila + '_' + 23;
+		var fsolbaja = 'oculto' + fila + '_' + 24;
+		var obaja = 'oculto' + fila + '_' + 25;
+		var fbaja = 'oculto' + fila + '_' + 27;
+		var fechaDenegacion = 'oculto' + fila + '_' + 28;
+		var observacionesDenegacion = 'oculto' + fila + '_' + 29;
+		document.FormAConsultar.idTurno.value = document.getElementById(idTurno).value;
+	   	document.FormAConsultar.fechaSolicitud.value = document.getElementById(fsoli).value;
+	   	document.FormAConsultar.observacionesSolicitud.value 	= document.getElementById(osoli).value;
+	    document.FormAConsultar.fechaValidacion.value 			= document.getElementById(fvali).value;
+		document.FormAConsultar.fechaBaja.value 			= document.getElementById(fbaja).value;
+		document.FormAConsultar.observacionesValidacion.value 	= document.getElementById(ovali).value;
+		document.FormAConsultar.fechaSolicitudBaja.value 		= document.getElementById(fsolbaja).value;
+		document.FormAConsultar.observacionesBaja.value 		= document.getElementById(obaja).value;
+	   	document.FormAConsultar.fechaDenegacion.value 		= document.getElementById(fechaDenegacion).value;
 
-				  document.BajaTurnosForm.confirmacion.value = "0";
-				  document.BajaTurnosForm.target = "submitArea";
-				  document.BajaTurnosForm.submit();
-	
-/*				  var resultado = ventaModalGeneral(document.BajaTurnosForm.name,"G");
-			      if(resultado == "MODIFICADO") 
-			      	 refrescarLocal(); 
-			      //document.forms[1].action		= "<%=app%>/DefinirTurnosAction.do";				    
-*/
-				}
-
-				<!-- Abrimos una ventana informativa de las fechas y motivo de la baja del turno-->
-				function consultaturno(fila) 
-				{
-				  var fsolbaja = 'oculto' + fila + '_' + 24;
-				  var obaja = 'oculto' + fila + '_' + 25;
-				  var fbaja = 'oculto' + fila + '_' + 27;
-				  
-				  document.BajaTurnosForm.fechaSolicitudBaja.value 	= document.getElementById(fsolbaja).value;
-				  document.BajaTurnosForm.fechaBaja.value 			= document.getElementById(fbaja).value;
-				  document.BajaTurnosForm.observacionesBaja.value 	= document.getElementById(obaja).value;
-				  document.BajaTurnosForm.modo.value= "abrirModalBaja";
-
-				  ventaModalGeneral(document.BajaTurnosForm.name,"P");
-				}
+		document.FormAConsultar.observacionesDenegacion.value 		= document.getElementById(observacionesDenegacion).value;
+		
+		
+	   	document.FormAConsultar.modo.value = "consultaInscripcion";
+	   	var resultado = ventaModalGeneral(document.FormAConsultar.name,"M");
+												
+				
+				 
+		}
+				
+				
+				
 				
 				function darDeBajaEnTodosLosTurnos(mostrarMensaje) 
 				{
+					sub();
 					if (mostrarMensaje) {
 						var mensaje = "<siga:Idioma key="censo.fichaCliente.turnoInscrito.pregunta.bajaEnTodosLosTurnos"/>";
 						if(!confirm(mensaje)) {
-                           
+							fin();
 							return;
 						}
-						
 					}
-					
-					document.BajaTurnosForm.modo.value = "bajaEnTodosLosTurnos";
-					document.BajaTurnosForm.target = "submitArea";
-					document.BajaTurnosForm.submit();
+					document.FormASolicitarBaja.idInstitucion.value = <%=usr.getLocation()%>;
+	   				document.FormASolicitarBaja.idPersona.value = <%=request.getSession().getAttribute("idPersonaTurno")%>;
+					document.FormASolicitarBaja.modo.value = "comprobarBajaEnTodosLosTurnos";
+					document.FormASolicitarBaja.target = "submitArea";
+					document.FormASolicitarBaja.submit();
+					// refrescarLocal();
 				}
+				
 				
 				 function buscar()
 				 {
-					document.forms[0].action		 = "<%=app%>/JGR_DefinirTurnosLetradoAction.do?granotm=<%=System.currentTimeMillis()%>";
-			 		document.forms[0].modo.value = "buscarPor";
-			 		document.forms[0].submit();
+					document.FormASolicitar.action		 = "<%=app%>/JGR_DefinirTurnosLetradoAction.do?granotm=<%=System.currentTimeMillis()%>";
+			 		document.FormASolicitar.modo.value = "buscarPor";
+			 		document.FormASolicitar.submit();
 				 }
 					
 				function accionSolicitar()
 				{
-					document.forms[0].action		= "<%=app%>/JGR_AltaTurnosGuardias.do";
-					document.forms[0].modo.value	= "";
-			   		var resultado = ventaModalGeneral(document.forms[0].name,"G");
+					document.FormASolicitar.modo.value	= "busquedaTurnosDisponibles";
+			   		var resultado = ventaModalGeneral(document.FormASolicitar.name,"G");
 				    if(resultado == "MODIFICADO") 
 				    	refrescarLocal();
-					document.forms[0].action		= "<%=app%>/DefinirTurnosAction.do";
 				}
 				
-				function refrescarLocal()
+				function refrescarLocal(incluirBajaLogica)
+				
 				{
-					document.forms[0].action = "<%=app%>/JGR_DefinirTurnosLetrado.do";
-					document.forms[0].submit();
+			
+					document.DefinirTurnosLetradoForm.action = "<%=app%>/JGR_DefinirTurnosLetrado.do";
+					if(incluirBajaLogica){
+						document.DefinirTurnosLetradoForm.incluirRegistrosConBajaLogica.value = "S";
+					}
+					document.DefinirTurnosLetradoForm.submit();
 				}
 		
-				function preguntaConfirmacion(mensajeConfirmacion)
-				{
-					document.BajaTurnosForm.confirmacion.value = "1";
-
-					if (mensajeConfirmacion != null && mensajeConfirmacion != "") {
-						if(!confirm(mensajeConfirmacion)) {	
-							return
-						}
-						
-					} 
-
-					if (document.BajaTurnosForm.modo.value == "bajaEnTodosLosTurnos") {
-					  	darDeBajaEnTodosLosTurnos(false);
-					}
-					else {
-					    var resultado = ventaModalGeneral(document.BajaTurnosForm.name, "G");
-					    if(resultado == "MODIFICADO") {
-					      refrescarLocal(); 
-					    }
-					}
-				}
+				
 
 				// Funcion que agrega el concepto de baja logica
 				function incluirRegBajaLogica(o) {
@@ -562,37 +674,102 @@
 					document.DefinirTurnosLetradoForm.modo.value = "abrirTurnosLimpiar";
 					document.DefinirTurnosLetradoForm.submit();
 				}
+	function mostrarFecha()
+	{
+		
+		if(document.getElementById('fechaConsulta')){
+			if(document.DefinirTurnosLetradoForm.fechaConsulta && document.DefinirTurnosLetradoForm.fechaConsulta.value!=''&& document.DefinirTurnosLetradoForm.fechaConsulta.value!='sysdate'){
+				document.getElementById('fechaConsulta').value = document.DefinirTurnosLetradoForm.fechaConsulta.value;
+			}else{
+				fechaActual = getFechaActualDDMMYYYY();
+				document.getElementById('fechaConsulta').value = fechaActual;
+				document.DefinirTurnosLetradoForm.fechaConsulta.value = fechaActual;
+			}
+		}
+	}
+	function accionCalendario() 
+		{
+			// Abrimos el calendario 
+			var resultado = showModalDialog("<html:rewrite page='/html/jsp/general/calendarGeneral.jsp'/>?valor="+ document.DefinirTurnosLetradoForm.fechaConsulta.value, document.DefinirTurnosLetradoForm.fechaConsulta,"dialogHeight:275px;dialogWidth:400px;help:no;scroll:no;status:no;");
+			if (resultado) {
+				 
+				 document.DefinirTurnosLetradoForm.fechaConsulta.value = resultado;
+				 document.getElementById('fechaConsulta').value = resultado;
+				 document.DefinirTurnosLetradoForm.modo.value = 'abrirTurnosPaginados';
+				 
+				 document.DefinirTurnosLetradoForm.submit();
 				
-				</script>	
-
-
-		
-		<html:form action="/JGR_SolicitarBajaTurno.do" method="post" target="">
-			<!-- indica que estamos en solicitud de baja -->
-			<input type="hidden" name="solBaja" value="1" />
-		
-			<input type="hidden" name="actionModal" value="" /> 
-			<html:hidden name="BajaTurnosForm" property="modo" /> 
-			<!-- campos a pasar -->
-			<html:hidden name="BajaTurnosForm" property="paso" value="turno"/>
-			<html:hidden name="BajaTurnosForm" property="idInstitucion" />
-			<html:hidden name="BajaTurnosForm" property="idPersona" />
-			<html:hidden name="BajaTurnosForm" property="idTurno" />
-			<html:hidden name="BajaTurnosForm" property="fechaSolicitud"/>
-			<html:hidden name="BajaTurnosForm" property="observacionesSolicitud"/>
-			<html:hidden name="BajaTurnosForm" property="fechaValidacion"/>
-			<html:hidden name="BajaTurnosForm" property="observacionesValidacion"/>
-			<html:hidden name="BajaTurnosForm" property="fechaSolicitudBaja"/>
-			<html:hidden name="BajaTurnosForm" property="observacionesBaja"/>
-			<html:hidden name="BajaTurnosForm" property="confirmacion"/>
-			<html:hidden name="BajaTurnosForm" property="fechaBaja"/>
-		</html:form>	
-			
+		 	}else{
+					if(document.DefinirTurnosLetradoForm.fechaConsulta.value==''){
+						fechaActual = getFechaActualDDMMYYYY();
+						document.getElementById('fechaConsulta').value = fechaActual;
+						document.DefinirTurnosLetradoForm.fechaConsulta.value = fechaActual;
+						document.DefinirTurnosLetradoForm.modo.value = 'abrirTurnosPaginados';
+						document.DefinirTurnosLetradoForm.submit();
+					}
+			} 
+		}
+</script>	
 		<html:form action="/JGR_DefinirTurnosLetrado.do" method="post" target="">
 			<input type="hidden" name="incluirRegistrosConBajaLogica" value="<%=bIncluirBajaLogica%>">
-			<html:hidden name="DefinirTurnosLetradoForm" property="modo" />
+			<html:hidden property="modo" value="" />
+			<html:hidden property="fechaConsulta"/>
 		</html:form>	
-
+		
+		<html:form action="/JGR_AltaTurnosGuardias"  name="FormASolicitar" type ="com.siga.gratuita.form.InscripcionTGForm">
+			<html:hidden property="modo"/>
+			<html:hidden property="idInstitucion" />
+			<html:hidden property="idPersona" />
+			<html:hidden property="idTurno" />
+			<html:hidden property="fechaSolicitud" />
+			<html:hidden property="observacionesSolicitud" />
+			<html:hidden property="fechaValidacion" />
+			<html:hidden property="observacionesValidacion" />
+			<html:hidden property="fechaSolicitudBaja" />
+			<html:hidden property="observacionesBaja" />
+			<html:hidden property="fechaBaja" />
+			<html:hidden property="observacionesDenegacion" />
+			<html:hidden property="fechaDenegacion" />
+			<html:hidden property="estadoPendientes"/>
+			<input type="hidden" name="actionModal" />
+	</html:form>
+	<html:form action="/JGR_SolicitarBajaTurno"  name="FormASolicitarBaja" type ="com.siga.gratuita.form.InscripcionTGForm">
+			<html:hidden property="modo"/>
+			<html:hidden property="idInstitucion" />
+			<html:hidden property="idPersona" />
+			<html:hidden property="idTurno" />
+			<html:hidden property="fechaSolicitud" />
+			<html:hidden property="observacionesSolicitud" />
+			<html:hidden property="fechaValidacion" />
+			<html:hidden property="observacionesValidacion" />
+			<html:hidden property="fechaSolicitudBaja" />
+			<html:hidden property="observacionesBaja" />
+			<html:hidden property="fechaBaja" />
+			<html:hidden property="observacionesDenegacion" />
+			<html:hidden property="fechaDenegacion" />
+			<html:hidden property="estadoPendientes"/>
+			<input type="hidden" name="actionModal" />
+	</html:form>
+	
+	<html:form action="/JGR_BajaTurnos"  name="FormAConsultar" type ="com.siga.gratuita.form.InscripcionTGForm">
+			<html:hidden property="modo"/>
+			<html:hidden property="idInstitucion" />
+			<html:hidden property="idPersona" />
+			<html:hidden property="idTurno" />
+			<html:hidden property="fechaSolicitud" />
+			<html:hidden property="observacionesSolicitud" />
+			<html:hidden property="fechaValidacion" />
+			<html:hidden property="observacionesValidacion" />
+			<html:hidden property="fechaSolicitudBaja" />
+			<html:hidden property="observacionesBaja" />
+			<html:hidden property="fechaBaja"/>
+			<html:hidden property="observacionesDenegacion" />
+			<html:hidden property="fechaDenegacion" />
+			<html:hidden property="estadoPendientes"/>
+			<input type="hidden" name="actionModal" />
+	</html:form>
+	
+		
 <!-- INICIO: SUBMIT AREA -->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 <!-- FIN: SUBMIT AREA -->

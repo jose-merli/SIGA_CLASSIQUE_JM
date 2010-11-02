@@ -69,6 +69,7 @@ public class TagBotonesAccion extends TagSupport {
 	private String idBoton;
 	private String idPersonaBA;
 	private String idInstitucionBA;
+	private boolean ordenar = true;
 
 
 	private List<ActionButtonsConstants> botonera = null;
@@ -166,6 +167,12 @@ public class TagBotonesAccion extends TagSupport {
 	public void setTitulo(String titulo) {
 		this.titulo = titulo;
 	}
+	public boolean isOrdenar() {
+		return ordenar;
+	}
+	public void setOrdenar(boolean ordenar) {
+		this.ordenar = ordenar;
+	}
 
 	/**
 	 * Acciones a pintar antes del tag 
@@ -220,8 +227,8 @@ public class TagBotonesAccion extends TagSupport {
 			out.println("<td  style=\"width:900px;\">");
 			out.println("&nbsp;");
 			out.println("</td>");
-			
-			Collections.sort(botonera, new ActionButtonComparator());
+			if(this.isOrdenar())
+				Collections.sort(botonera, new ActionButtonComparator());
 
 			for (ActionButtonsConstants abc: botonera){
 
@@ -334,5 +341,6 @@ public class TagBotonesAccion extends TagSupport {
 		out.println("\">");
 		out.println("</td>");
 	}
+	
 
 }

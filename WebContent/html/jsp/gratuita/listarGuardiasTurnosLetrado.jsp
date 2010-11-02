@@ -16,6 +16,7 @@
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 
+
 <%@ page import="com.siga.tlds.FilaExtElement"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.beans.*"%>
@@ -26,41 +27,52 @@
 <%@ page import="java.util.Properties"%>
 <%@ page import="java.util.Hashtable"%>
 <%@ page import="java.util.Vector"%>
-<!-- JSP -->
-<% 
-	String app=request.getContextPath();
-	HttpSession ses=request.getSession();
-	request.getSession().removeAttribute("pestanasG");
-	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
-	Vector obj = (Vector)request.getSession().getAttribute("resultado");
-	Hashtable turno =(Hashtable)request.getSession().getAttribute("turnoElegido");
-	Vector ocultos = (Vector)ses.getAttribute("ocultos");
-	Vector campos = (Vector)ses.getAttribute("campos");
-	String accionTurno = (String)request.getSession().getAttribute("accionTurno");
-	String botones="C,E,B";
-	if (accionTurno.equalsIgnoreCase("Ver"))botones="C";
-	FilaExtElement[] elems=new FilaExtElement[2];
-	elems[0]=null;
-	elems[1]=null;
 
-	
+<!-- JSP -->
+<%
+	String app = request.getContextPath();
+	HttpSession ses = request.getSession();
+	request.getSession().removeAttribute("pestanasG");
+	UsrBean usr = (UsrBean) request.getSession()
+			.getAttribute("USRBEAN");
+	Properties src = (Properties) ses
+			.getAttribute(SIGAConstants.STYLESHEET_REF);
+	Vector obj = (Vector) request.getSession()
+			.getAttribute("resultado");
+	Hashtable turno = (Hashtable) request.getSession().getAttribute(
+			"turnoElegido");
+	Vector ocultos = (Vector) ses.getAttribute("ocultos");
+	Vector campos = (Vector) ses.getAttribute("campos");
+	String accionTurno = (String) request.getSession().getAttribute(
+			"accionTurno");
+	String botones = "C,E,B";
+	if (accionTurno.equalsIgnoreCase("Ver"))
+		botones = "C";
+	FilaExtElement[] elems = new FilaExtElement[1];
+	elems[0] = null;
+
 	//Datos del Colegiado si procede:
-	String nombrePestanha=null, numeroPestanha=null;
+	String nombrePestanha = null, numeroPestanha = null;
 	try {
-		Hashtable datosColegiado = (Hashtable)request.getSession().getAttribute("DATOSCOLEGIADO");
-		nombrePestanha = (String)datosColegiado.get("NOMBRECOLEGIADO");
-		numeroPestanha = (String)datosColegiado.get("NUMEROCOLEGIADO");
-	} catch (Exception e){
+		Hashtable datosColegiado = (Hashtable) request.getSession()
+				.getAttribute("DATOSCOLEGIADO");
+		nombrePestanha = (String) datosColegiado.get("NOMBRECOLEGIADO");
+		numeroPestanha = (String) datosColegiado.get("NUMEROCOLEGIADO");
+	} catch (Exception e) {
 		nombrePestanha = "";
 		numeroPestanha = "";
 	}
-	
-	String alto = "245";
-	String idturno = (String) request.getSession().getAttribute("IDTURNOSESION");
 
+	String alto = "245";
+	String idturno = (String) request.getSession().getAttribute(
+			"IDTURNOSESION");
+	ScsInscripcionTurnoBean inscripcionTurnoSeleccionada = (ScsInscripcionTurnoBean) request
+			.getAttribute("inscripcionTurnoSeleccionada");
+	String fechaConsultaTurno = (String) request.getSession()
+			.getAttribute("fechaConsultaInscripcionTurno");
 %>	
 
+<%@page import="com.siga.Utilidades.UtilidadesHash"%>
 <html>
 <!-- HEAD -->
 <head>
@@ -91,22 +103,40 @@
 	
 </head>
 
-<body class="tablaCentralCampos">
+<body class="tablaCentralCampos" onload="mostrarFecha();">
 
 		    <table class="tablaTitulo" align="center" cellspacing=0>
 			<tr>
 				<td class="titulitosDatos">
 					<siga:Idioma key="censo.consultaDatosGenerales.literal.titulo1"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombrePestanha)%>&nbsp;&nbsp;
-				    <% if(numeroPestanha!= null && !numeroPestanha.equalsIgnoreCase("")) { %>
+				    <%
+				    	if (numeroPestanha != null && !numeroPestanha.equalsIgnoreCase("")) {
+				    %>
 							<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(numeroPestanha)%>
-					<% } else { %>
+					<%
+						} else {
+					%>
 						   <siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>
-					<% } %>
+					<%
+						}
+					%>
 				</td>
 			</tr>
 			</table>	
 
 <!-- Información del Turno que tenemos seleccionado-->
+<html:form action="DefinirGuardiasTurnosAction.do" method="post" target=""	 >
+		
+		<!-- Campo obligatorio -->
+		<html:hidden property = "modo" value = ""/>
+		<input type="hidden" name="guardiaElegida" value="">
+		<input type="hidden" name="guardias" value="">
+		<input type="hidden" name="fechaInscripcion" value="">
+			<!-- RGG: cambio a formularios ligeros -->
+			<input type="hidden" name="tablaDatosDinamicosD">
+			<input type="hidden" name="actionModal" value="">
+		<html:hidden property="validarInscripciones" name = "DefinirGuardiasTurnosForm"/>	
+		<input type="hidden" name="fechaSolicitudTurno" value="${inscripcionTurnoSeleccionada.fechaSolicitud}">
 <siga:ConjCampos leyenda="gratuita.listarGuardias.literal.turno">
 	<table border="0" align="center">
 	<tr>
@@ -140,181 +170,388 @@
 		</td>
 		<td class="labelText" style="text-align:left"><siga:Idioma key="gratuita.definirTurnosIndex.literal.partidoJudicial"/> </td>
 		<td  class="labelTextValor" style="text-align:left">
-			<%=(turno.get("PARTIDOJUDICIAL")==null)?"&nbsp;":turno.get("PARTIDOJUDICIAL")%>
-		</td>
+			<%=(turno.get("PARTIDOJUDICIAL") == null) ? "&nbsp;"
+									: turno.get("PARTIDOJUDICIAL")%>
+			
+		</td></tr>
+		
+			
+			
 	</table>
+	
 </siga:ConjCampos>
+	<siga:ConjCampos leyenda="gratuita.busquedaSJCS.literal.filtro">
+		<table border="0" align="center">
+			
+			<tr>
+				<td class="labelText" ><siga:Idioma
+					key="gratuita.gestionInscripciones.fechaConsulta" /></td>
+				<td width="75%"><html:text property="fechaConsulta"
+					name="DefinirGuardiasTurnosForm" value="<%=fechaConsultaTurno%>"
+					size="10" maxlength="10" styleClass="box" readonly="true"></html:text>
+
+
+				</td>
+				
+			</tr>
+			
+		</table>
+
+	</siga:ConjCampos>
+</html:form>	
 
 		<!-- INICIO: LISTA DE VALORES -->
 		<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista 
 			 de cabeceras fijas -->
 
 		<!-- Formulario de la lista de detalle multiregistro -->
-		<html:form action="DefinirGuardiasTurnosAction.do" method="post" target=""	 style="display:none">
-		
-		<!-- Campo obligatorio -->
-		<html:hidden property = "modo" value = ""/>
-		<input type="hidden" name="guardiaElegida" value="">
-		<input type="hidden" name="guardias" value="">
-		<input type="hidden" name="fechaInscripcion" value="">
-			<!-- RGG: cambio a formularios ligeros -->
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
-		</html:form>	
 		
 		
-		  <%
-			String nC="";
-			String tC="";
-				nC="gratuita.listarGuardias.literal.guardia,gratuita.listarGuardias.literal.obligatoriedad,gratuita.listarGuardias.literal.tipodia,gratuita.listarGuardias.literal.duracion,gratuita.listarGuardiasTurno.literal.letradosGuardia,gratuita.listarGuardiasTurno.literal.fechaInscripcion,gratuita.listarGuardiasTurno.literal.fechaBaja,";
-				tC="20,10,10,10,10,10,10,20";
-			%>
-		<siga:TablaCabecerasFijas 
+		
+			
+		
+		
+		
+		  <siga:TablaCabecerasFijas 
 		   nombre="tablaDatos"
 		   borde="1"
 		   clase="tableTitle"
-		   nombreCol="<%=nC%>"
-		   tamanoCol="<%=tC%>"
+		   nombreCol="gratuita.listarGuardias.literal.guardia,gratuita.listarGuardias.literal.obligatoriedad,gratuita.listarGuardias.literal.tipodia,gratuita.listarGuardias.literal.duracion,gratuita.listarGuardias.literal.fechainscripcion,Fecha Valor,Fecha Solicitud Baja,gratuita.listarGuardiasTurno.literal.fechaBaja,Estado,"
+		   tamanoCol="15,8,10,6,7,8,8,8,6,6"
 		   alto="<%=alto%>"
+		   
+		   ajusteBotonera="true"
 		  >
+		  
+		  
+		  
 		
-		<% if (obj==null || obj.size()==0){%>
+		<%
+		  		  		  					if (obj == null || obj.size() == 0) {
+		  		  		  				%>
 				
 					<br>
 			   		<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
 					<br>
-		<%}else{ 
-			// consultamos si el colegiado esta dado de baja
-			String idper = (String)request.getSession().getAttribute("idPersonaTurno");
-			boolean estaDeBaja = false;
-			if(usr.isLetrado() && idper != null)			
-			{
-				CenColegiadoAdm cenColegiadoAdm = new CenColegiadoAdm(usr);
-				Hashtable hashtable = cenColegiadoAdm.getEstadoColegial(Long.valueOf(idper),Integer.valueOf(usr.getLocation()));
-				if(hashtable==null)
-					estaDeBaja = true;
-				else
-				if(!hashtable.get("IDESTADO").equals(String.valueOf(ClsConstants.ESTADO_COLEGIAL_EJERCIENTE))){
-					estaDeBaja = true;
-				}	
-/*
-					if(hashtable.get("IDESTADO").equals(String.valueOf(ClsConstants.ESTADO_COLEGIAL_BAJACOLEGIAL))
-					   || hashtable.get("IDESTADO").equals(String.valueOf(ClsConstants.ESTADO_COLEGIAL_SUSPENSION))) 
-					   		estaDeBaja = true;
-*/					   		
-			}
-		  
-	    	int recordNumber=1;
-	    	String obligatoriedad 	= "";
-	    	String fechainscripcion = "";
-	    	String fechabaja 		= "";
-	    	String tiposguardias 		= "";
-			while ((recordNumber) <= obj.size())
-			{	 
-				Hashtable hash = (Hashtable)obj.get(recordNumber-1);
-
-				Vector inscrG = null;
-				String consulta="";
-				String fI = "";
-				String fB = "";
-					consulta="select MAX(SCS_INSCRIPCIONGUARDIA.FECHASUSCRIPCION) FECHAINSCRIPCION ";
-					consulta+=" from SCS_INSCRIPCIONGUARDIA where idinstitucion="+usr.getLocation();
-					consulta+=" and idturno=" + idturno;
-					consulta+=" and idpersona=" + request.getSession().getAttribute("idPersonaTurno");
-					consulta+=" and idguardia=" + (String)hash.get("IDGUARDIA");
-					ScsInscripcionGuardiaAdm inscripcion = new ScsInscripcionGuardiaAdm(usr);
-					inscrG = (Vector)inscripcion.ejecutaSelect(consulta);
-					fI = (String)((Hashtable)inscrG.get(0)).get("FECHAINSCRIPCION");
-					
-					consulta="select FECHABAJA ";
-					consulta+=" from SCS_INSCRIPCIONGUARDIA where idinstitucion="+usr.getLocation();
-					consulta+=" and idpersona=" + request.getSession().getAttribute("idPersonaTurno");
-					consulta+=" and idturno=" + idturno;
-					consulta+=" and idguardia=" + (String)hash.get("IDGUARDIA")+" ORDER BY FECHASUSCRIPCION DESC";
-					try{
-						inscrG.add(((Vector)inscripcion.ejecutaSelect(consulta)).get(0));
-					}catch(Exception e){
-						Hashtable guard = new Hashtable();
-						guard.put("FECHABAJA","");
-						inscrG.add(guard);
-					}
-					fB= (String)((Hashtable)inscrG.get(1)).get("FECHABAJA");
-
-					// Comprobamos si se debe mostrar los botones de alta y de baja
-					consulta="select FECHABAJA ";
-					consulta+=" from SCS_INSCRIPCIONTURNO where idinstitucion="+usr.getLocation();
-					consulta+=" and idpersona=" + request.getSession().getAttribute("idPersonaTurno");
-					consulta+=" and idturno=" + idturno+" ORDER BY FECHASOLICITUD DESC";
-
-					Vector fechaB = null;
-					String fechaBTurno = "";
-					boolean solicitar = false;
-					try{
-
-						fechaB = (Vector)inscripcion.ejecutaSelect(consulta);
-						if(fechaB.size()>0)
-						{
-							fechaBTurno = (String)((Hashtable)fechaB.get(0)).get("FECHABAJA");
-							if(fechaBTurno == null || fechaBTurno.equals("")) solicitar = true;
+		<%
+			} else {
+					// consultamos si el colegiado esta dado de baja
+					String idper = (String) request.getSession().getAttribute(
+							"idPersonaTurno");
+					boolean estaDeBaja = false;
+					if (usr.isLetrado() && idper != null) {
+						CenColegiadoAdm cenColegiadoAdm = new CenColegiadoAdm(
+								usr);
+						Hashtable hashtable = cenColegiadoAdm
+								.getEstadoColegial(Long.valueOf(idper), Integer
+										.valueOf(usr.getLocation()));
+						if (hashtable == null) {
+							estaDeBaja = true;
+						} else if (!hashtable
+								.get("IDESTADO")
+								.equals(
+										String
+												.valueOf(ClsConstants.ESTADO_COLEGIAL_EJERCIENTE))) {
+							estaDeBaja = true;
 						}
-						
-					}catch(Exception e){
+
 					}
 
-					tiposguardias 		= (String)hash.get("GUARDIAS");
-					obligatoriedad 		= (String)hash.get("OBLIGATORIEDAD");
-					fechainscripcion 	= (String)((Hashtable)inscrG.get(0)).get("FECHAINSCRIPCION");
-					fechabaja			= (String)((Hashtable)inscrG.get(1)).get("FECHABAJA");
-					elems[0] = null;
-					elems[1] = null;
-					// Comprobamos que no este de baja colegial.
-					if((obligatoriedad.equals("1") || obligatoriedad.equals("2")) && solicitar)
-					{
-						if(!estaDeBaja)
-						{
-							if(fechainscripcion.equals("")) {
-								elems[0]=new FilaExtElement("solicitaralta","solicitaralta",SIGAConstants.ACCESS_FULL);
+					int recordNumber = 1;
+					String obligatoriedad = "";
+					String fechaSolicitud = "";
+					String fechaValidacion = "";
+					String fechaSolicitudBaja = "";
+					String fechaBaja = "";
+					String fechaDenegacion = "";
+					String fechaValor = "";
+					String tiposguardias = "";
+					Boolean isPermitidoInscripcionGuardia = (Boolean) request
+							.getAttribute("isPermitidoInscripcionGuardia");
+					while ((recordNumber) <= obj.size()) {
+						Hashtable htGuardia = (Hashtable) obj
+								.get(recordNumber - 1);
+						tiposguardias = (String) htGuardia.get("GUARDIAS");
+						obligatoriedad = (String) htGuardia
+								.get("OBLIGATORIEDAD");
+
+						Hashtable htInscripcion = (Hashtable) htGuardia
+								.get("INSCRIPCIONGUARDIA");
+
+						if (htInscripcion != null) {
+
+							fechaSolicitud = (String) htInscripcion
+									.get("FECHASUSCRIPCION");
+							fechaValidacion = (String) htInscripcion
+									.get("FECHAVALIDACION");
+							fechaSolicitudBaja = (String) htInscripcion
+									.get("FECHASOLICITUDBAJA");
+							fechaBaja = (String) htInscripcion.get("FECHABAJA");
+							fechaDenegacion = (String) htInscripcion
+									.get("FECHADENEGACION");
+							fechaValor = (String) htInscripcion
+									.get("FECHAVALOR");
+
+							if (fechaSolicitud == null)
+								fechaSolicitud = "";
+							if (fechaValidacion == null)
+								fechaValidacion = "";
+							if (fechaBaja == null)
+								fechaBaja = "";
+							if (fechaSolicitudBaja == null)
+								fechaSolicitudBaja = "";
+							if (fechaDenegacion == null)
+								fechaDenegacion = "";
+							if (fechaValor == null)
+								fechaValor = "";
+
+						} else {
+
+							fechaSolicitud = "";
+							fechaValidacion = "";
+							fechaBaja = "";
+							fechaSolicitudBaja = "";
+							fechaDenegacion = "";
+							fechaValor = "";
+						}
+						String estado = "No aplica";
+						if (fechaSolicitud.equals("")) {
+							estado = "";
+						} else {
+							if (fechaValidacion.equals("")) {
+								if (fechaSolicitudBaja.equals("")) {
+									if (fechaDenegacion.equals("")) {
+										estado = UtilidadesString
+												.getMensajeIdioma(usr,
+														"gratuita.gestionInscripciones.estado.alta.pendiente");
+										// elems[1]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_FULL);
+									} else {
+										estado = UtilidadesString
+												.getMensajeIdioma(usr,
+														"gratuita.gestionInscripciones.estado.alta.denegada");
+									}
+
+								} else {
+									if (fechaBaja.equals("")) {
+										if (fechaDenegacion.equals("")) {
+											estado = UtilidadesString
+													.getMensajeIdioma(usr,
+															"gratuita.gestionInscripciones.estado.baja.pendiente");
+										} else {
+											// elems[1]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_FULL);
+											estado = UtilidadesString
+													.getMensajeIdioma(usr,
+															"gratuita.gestionInscripciones.estado.baja.denegada");
+										}
+
+									} else {
+										estado = UtilidadesString
+												.getMensajeIdioma(usr,
+														"gratuita.gestionInscripciones.estado.baja.confirmada");
+
+									}
+
+								}
+
+							} else {
+
+								if (fechaSolicitudBaja.equals("")) {
+									estado = UtilidadesString
+											.getMensajeIdioma(usr,
+													"gratuita.gestionInscripciones.estado.alta.confirmada");
+									// elems[1]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_FULL);
+								} else {
+									if (fechaBaja.equals("")) {
+										if (fechaDenegacion.equals("")) {
+											estado = UtilidadesString
+													.getMensajeIdioma(usr,
+															"gratuita.gestionInscripciones.estado.baja.pendiente");
+										} else {
+											// elems[1]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_FULL);
+											estado = UtilidadesString
+													.getMensajeIdioma(usr,
+															"gratuita.gestionInscripciones.estado.baja.denegada");
+										}
+
+									} else {
+										estado = UtilidadesString
+												.getMensajeIdioma(usr,
+														"gratuita.gestionInscripciones.estado.baja.confirmada");
+
+									}
+
+								}
+
 							}
-							if(!fechainscripcion.equals("") && !fechabaja.equals("") )
-							{	
-								request.getSession().setAttribute("esActualizacion",fechainscripcion);
-								elems[0]=new FilaExtElement("solicitaralta","solicitaralta",SIGAConstants.ACCESS_FULL);
+
+						}
+						elems[0] = null;
+
+						if (isPermitidoInscripcionGuardia) {
+							//compobamos que el turno este validado y no este en baja
+							//if(inscripcionTurnoSeleccionada!=null && inscripcionTurnoSeleccionada.getFechaValidacion()!=null && !inscripcionTurnoSeleccionada.getFechaValidacion().equalsIgnoreCase("")){
+							//&& (inscripcionTurnoSeleccionada.getFechaBaja()==null || inscripcionTurnoSeleccionada.getFechaBaja().equals(""))){
+
+							if (obligatoriedad.equals("2")
+									|| obligatoriedad.equals("1")) {
+								if (!estaDeBaja) {
+									if (fechaSolicitud.equals("")) {
+
+										elems[0] = new FilaExtElement(
+												"solicitaralta",
+												"solicitaralta",
+												SIGAConstants.ACCESS_FULL);
+
+									} else {
+
+										if (!fechaDenegacion.equals("")) {
+											if (fechaSolicitudBaja.equals(""))
+												elems[0] = new FilaExtElement(
+														"solicitaralta",
+														"solicitaralta",
+														SIGAConstants.ACCESS_FULL);
+											else
+												elems[0] = new FilaExtElement(
+														"solicitarbaja",
+														"solicitarbaja",
+														SIGAConstants.ACCESS_FULL);
+										} else {
+											if (!fechaBaja.equals("")) {
+												request
+														.getSession()
+														.setAttribute(
+																"esActualizacion",
+																fechaSolicitud);
+												//elems[0]=new FilaExtElement("solicitaralta","solicitaralta",SIGAConstants.ACCESS_FULL);
+											} else {
+												if (fechaSolicitudBaja
+														.equals("")) {
+													elems[0] = new FilaExtElement(
+															"solicitarbaja",
+															"solicitarbaja",
+															SIGAConstants.ACCESS_FULL);
+
+												}
+											}
+										}
+									}
+								} else {
+									if (!fechaSolicitud.equals("")
+											&& fechaSolicitudBaja.equals("")
+											&& fechaBaja.equals("")) {
+										elems[0] = new FilaExtElement(
+												"solicitarbaja",
+												"solicitarbaja",
+												SIGAConstants.ACCESS_FULL);
+									}
+								}
+
 							}
+							//}
 						}
-						if(!fechainscripcion.equals("") && fechabaja.equals(""))
-						{
-							elems[1]=new FilaExtElement("solicitarbaja","solicitarbaja",SIGAConstants.ACCESS_FULL);
-						}
-					}
-					
-				String tipoDia = (String)hash.get("TIPODIASGUARDIA");
-				String literalDuracion ="gratuita.altaTurnos_2.literal.dias";
-				if(tipoDia.equalsIgnoreCase("D"))
-					literalDuracion = "gratuita.altaTurnos_2.literal.dias";
-				else if(tipoDia.equalsIgnoreCase("S"))
-						literalDuracion = "gratuita.altaTurnos_2.literal.semanas";
-					 else if(tipoDia.equalsIgnoreCase("M"))
+						String tipoDia = (String) htGuardia
+								.get("TIPODIASGUARDIA");
+						String literalDuracion = "gratuita.altaTurnos_2.literal.dias";
+						if (tipoDia.equalsIgnoreCase("D"))
+							literalDuracion = "gratuita.altaTurnos_2.literal.dias";
+						else if (tipoDia.equalsIgnoreCase("S"))
+							literalDuracion = "gratuita.altaTurnos_2.literal.semanas";
+						else if (tipoDia.equalsIgnoreCase("M"))
 							literalDuracion = "gratuita.altaTurnos_2.literal.meses";
-						  else if(tipoDia.equalsIgnoreCase("Q"))
-								 literalDuracion = "gratuita.altaTurnos_2.literal.quincenas";	
+						else if (tipoDia.equalsIgnoreCase("Q"))
+							literalDuracion = "gratuita.altaTurnos_2.literal.quincenas";
+		%>
+		  <siga:FilaConIconos pintarEspacio="false" visibleEdicion="false" visibleBorrado="false"  fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>"  elementos='<%=elems%>' clase="listaNonEdit">
 				
-				%>
-		  <siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>"  elementos='<%=elems%>' clase="listaNonEdit">
-				<td><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=hash.get("IDTURNO")%>'><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=hash.get("IDGUARDIA")%>'><%=hash.get("GUARDIA")%><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=hash.get("GUARDIAS")%>'><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=fechainscripcion%>'></td>
-				<td><%if(((String)hash.get("OBLIGATORIEDAD")).equalsIgnoreCase("0")){%><siga:Idioma key="gratuita.altaTurnos_2.literal.obligatorias"/><%}else if(((String)hash.get("OBLIGATORIEDAD")).equalsIgnoreCase("1")){%><siga:Idioma key="gratuita.altaTurnos_2.literal.todasninguna"/><%}else{%><siga:Idioma key="gratuita.altaTurnos_2.literal.aeleccion"/><%}%></td>
+				<input type='hidden' name='validaInscripciones' value='<%=htGuardia.get("VALIDARINSCRIPCIONES")%>'>
+				<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=htGuardia.get("IDTURNO")%>'>
+				<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=htGuardia.get("IDGUARDIA")%>'>
+				<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=htGuardia.get("GUARDIAS")%>'>
+				<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=fechaSolicitud%>'>
+				<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_44' value='<%=fechaValidacion%>'>
+				<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_55' value='<%=idper%>'>
 				<td>
-				<%=ScsGuardiasTurnoAdm.obtenerTipoDia((String)hash.get("SELECCIONLABORABLES"), (String)hash.get("SELECCIONFESTIVOS"), usr)%>
+				<%=htGuardia.get("GUARDIA")%>
 				</td>
-				<td><%=hash.get("DURACION")%>&nbsp;<siga:Idioma key="<%=literalDuracion%>"/></td>
-				<td><%=hash.get("NUMEROLETRADOS")%></td>
-				<td>&nbsp;<%=GstDate.getFormatedDateShort("",fI)%></td>
-				<td>&nbsp;<%=GstDate.getFormatedDateShort("",fB)%></td>
+				<td><%
+					if (((String) htGuardia.get("OBLIGATORIEDAD"))
+											.equalsIgnoreCase("0")) {
+				%>
+					<siga:Idioma key="gratuita.altaTurnos_2.literal.obligatorias"/>
+				<%
+					} else if (((String) htGuardia
+											.get("OBLIGATORIEDAD"))
+											.equalsIgnoreCase("1")) {
+				%>
+					<siga:Idioma key="gratuita.altaTurnos_2.literal.todasninguna"/>
+				<%
+					} else {
+				%>
+					<siga:Idioma key="gratuita.altaTurnos_2.literal.aeleccion"/><%
+						}
+					%></td>
+				<td>
+				<%=ScsGuardiasTurnoAdm
+													.obtenerTipoDia(
+															(String) htGuardia
+																	.get("SELECCIONLABORABLES"),
+															(String) htGuardia
+																	.get("SELECCIONFESTIVOS"),
+															usr)%>
+				</td>
+				<td><%=htGuardia.get("DURACION")%>&nbsp;<siga:Idioma key="<%=literalDuracion%>"/></td>
+				<td>&nbsp;<%=GstDate.getFormatedDateShort("",
+											fechaSolicitud)%></td>
+					<td>&nbsp;<%=GstDate.getFormatedDateShort("",
+											fechaValor)%></td>
+					<td>&nbsp;<%=GstDate.getFormatedDateShort("",
+											fechaSolicitudBaja)%></td>
+					<td>&nbsp;<%=GstDate.getFormatedDateShort("",
+											fechaBaja)%>
+					</td>
+					<td>&nbsp;<%=estado%>
+					</td>
 			</siga:FilaConIconos>	
 		
-		<%recordNumber++;}%>	
-		<%}%>
+		<%
+						recordNumber++;
+								}
+					%>	
+		<%
+				}
+			%>
 		</siga:TablaCabecerasFijas>
-
+<html:form action="/JGR_InscribirseEnGuardia"  name="FormASolicitar" type ="com.siga.gratuita.form.InscripcionTGForm">
+			<html:hidden property="modo"/>
+			<html:hidden property="idInstitucion" />
+			<html:hidden property="idPersona" />
+			<html:hidden property="idTurno" />
+			<html:hidden property="idGuardia" />
+			<html:hidden property="fechaSolicitud"/>
+			<html:hidden property="observacionesSolicitud"/>
+			<html:hidden property="fechaValidacion"/>
+			<html:hidden property="observacionesValidacion"/>
+			<html:hidden property="fechaSolicitudBaja"/>
+			<html:hidden property="observacionesBaja"/>
+			<html:hidden property="fechaBaja"/>
+			<html:hidden property="fechaSolicitudTurno"/>
+			<input type="hidden" name="actionModal" />
+	</html:form>
+	<html:form action="/JGR_BajaEnGuardia"  name="FormASolicitarBaja" type ="com.siga.gratuita.form.InscripcionTGForm">
+			<html:hidden property="modo"/>
+			<html:hidden property="idInstitucion" />
+			<html:hidden property="idPersona" />
+			<html:hidden property="idTurno" />
+			<html:hidden property="idGuardia" />
+			<html:hidden property="fechaSolicitud"/>
+			<html:hidden property="observacionesSolicitud"/>
+			<html:hidden property="fechaValidacion"/>
+			<html:hidden property="observacionesValidacion"/>
+			<html:hidden property="fechaSolicitudBaja"/>
+			<html:hidden property="observacionesBaja"/>
+			<html:hidden property="fechaBaja"/>
+			<input type="hidden" name="actionModal" />
+	</html:form>
 <!-- FIN: LISTA DE VALORES -->
 		
 <script language="JavaScript">
@@ -330,29 +567,57 @@
 // botones alta y baja
 		function solicitaralta(fila) 
 		{
-			var guardia 				= 'oculto' + fila + '_' + 2;
-			var guardias 				= 'oculto' + fila + '_' + 3;
-			document.forms[0].guardiaElegida.value = document.getElementById(guardia).value;
-			document.forms[0].guardias.value = document.getElementById(guardias).value;
-			document.forms[0].action = "<%=app%>/JGR_InscribirseEnGuardia.do";
-			document.forms[0].modo.value = "editar";
-			var resultado = ventaModalGeneral(document.forms[0].name,"G");
+			var idTurno 				= 'oculto' + fila + '_' + 1;
+			var idGuardia 				= 'oculto' + fila + '_' + 2;
+			var idPersona 				= 'oculto' + fila + '_' + 55;
+			document.FormASolicitar.idTurno.value = document.getElementById(idTurno).value;
+			document.FormASolicitar.idGuardia.value = document.getElementById(idGuardia).value;
+			document.FormASolicitar.idPersona.value = document.getElementById(idPersona).value;
+			document.FormASolicitar.idInstitucion.value = <%=usr.getLocation()%>;
+			document.FormASolicitar.fechaSolicitud.value = "";
+			document.FormASolicitar.fechaSolicitudTurno.value = document.getElementById('fechaSolicitudTurno').value;
+
+			document.FormASolicitar.modo.value = "sigConsultaTurno";
+			
+			var resultado = ventaModalGeneral(document.FormASolicitar.name,"G");
 			buscar();
 		}
-
+		
 		function solicitarbaja(fila) 
 		{
-			var guardia 				= 'oculto' + fila + '_' + 2;
-			var guardias 				= 'oculto' + fila + '_' + 3;
+			var idTurno 				= 'oculto' + fila + '_' + 1;
+			var idGuardia 				= 'oculto' + fila + '_' + 2;
 			var fechaInscripcion		= 'oculto' + fila + '_' + 4;
-			document.forms[0].guardiaElegida.value = document.getElementById(guardia).value;
-			document.forms[0].guardias.value = document.getElementById(guardias).value;
-			document.forms[0].fechaInscripcion.value = document.getElementById(fechaInscripcion).value;
-			document.forms[0].action = "<%=app%>/JGR_BajaEnGuardia.do";
-			document.forms[0].modo.value = "editar";
-			var resultado = ventaModalGeneral(document.forms[0].name,"G");
-			buscar();
+			var fechaValidacion		= 'oculto' + fila + '_' + 44;
+			var idPersona 				= 'oculto' + fila + '_' + 55;
+			document.FormASolicitarBaja.idTurno.value = document.getElementById(idTurno).value;
+			document.FormASolicitarBaja.idGuardia.value = document.getElementById(idGuardia).value;
+			document.FormASolicitarBaja.idPersona.value = document.getElementById(idPersona).value;
+			document.FormASolicitarBaja.idInstitucion.value = <%=usr.getLocation()%>;
+			document.FormASolicitarBaja.fechaSolicitud.value = document.getElementById(fechaInscripcion).value;
+			document.FormASolicitarBaja.fechaValidacion.value = document.getElementById(fechaValidacion).value;
+			document.FormASolicitarBaja.modo.value = "sbgConsultaTurno";
+			var resultado = ventaModalGeneral(document.FormASolicitarBaja.name,"G");
+			if(resultado)
+				buscar();
+			
+			
 		}
+		
+		function mostrarFecha()
+	{
+		
+		if(document.getElementById('fechaConsulta')){
+			if(document.DefinirGuardiasTurnosForm.fechaConsulta && document.DefinirGuardiasTurnosForm.fechaConsulta.value!=''&& document.DefinirGuardiasTurnosForm.fechaConsulta.value!='sysdate'){
+				document.getElementById('fechaConsulta').value = document.DefinirGuardiasTurnosForm.fechaConsulta.value;
+			}else{
+				fechaActual = getFechaActualDDMMYYYY();
+				document.getElementById('fechaConsulta').value = fechaActual;
+				document.DefinirGuardiasTurnosForm.fechaConsulta.value = fechaActual;
+			}
+		}
+	}
+		
 
 		function refrescarLocal(){
 			buscar();

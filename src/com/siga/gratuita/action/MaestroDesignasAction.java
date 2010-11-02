@@ -360,6 +360,7 @@ public class MaestroDesignasAction extends MasterAction {
 				nuevaDesigna.put(ScsDesignaBean.C_FECHAJUICIO,aux);		
 			}
 			
+			hash.put(ScsDesignaBean.C_FECHAALTA,"SYSDATE");
 			
 			if (!designaAdm.insert(hash)) {
 			    throw new  ClsExceptions("Error al insertar designación: "+designaAdm.getError());
@@ -534,7 +535,7 @@ public class MaestroDesignasAction extends MasterAction {
 							designaNueva.put(ScsDesignaBean.C_FECHARECEPCIONCOLEGIO,"");
 						}
 						tx.begin();
-						
+
 						designaAdm.update(designaNueva,designaAntigua.getOriginalHash());
 						
 						if (anular)

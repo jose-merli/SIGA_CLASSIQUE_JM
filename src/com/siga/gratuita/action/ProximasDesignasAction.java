@@ -1,6 +1,7 @@
 package com.siga.gratuita.action;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,10 +18,15 @@ import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.ScsInscripcionTurnoAdm;
+import com.siga.beans.ScsInscripcionTurnoBean;
 import com.siga.beans.ScsTurnoAdm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.InscripcionTurno;
+import com.siga.gratuita.form.InscripcionTGForm;
+import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
 
 /**
  * @author ruben.fernandez
@@ -68,30 +74,8 @@ public class ProximasDesignasAction extends MasterAction {
 		try {
 			HttpSession ses = request.getSession();
 			String idPersona = (String) ses.getAttribute("idPersonaTurno");
-			Vector ocultos = (Vector)ses.getAttribute("ocultos");
-			Hashtable turno = (Hashtable)request.getSession().getAttribute("turnoElegido");
 			UsrBean usr = (UsrBean)ses.getAttribute("USRBEAN");
-			Vector resultado = new Vector();
-			ScsTurnoAdm designaAdm = new ScsTurnoAdm(this.getUserBean(request));
-			String consulta =	" select  turno.idturno idturno, turno.idinstitucion institucion, persona.nombre nombrecolegiado, persona.apellidos1 ap1, persona.apellidos2 ap2,turno.nombre turno, turno.abreviatura abreviatura, area.nombre area, materia.nombre materia, zona.nombre zona, subzona.nombre subzona, inscripcion.fechavalidacion fechavalidacion, inscripcion.fechabaja fechabaja, persona.idpersona idpersona"+
-								" from scs_turno turno, scs_materia materia, scs_area area, scs_subzona subzona, scs_zona zona, scs_inscripcionturno inscripcion, cen_persona persona"+
-								" WHERE area.idinstitucion = turno.idinstitucion"+
-								" AND area.idarea = turno.idarea"+
-								" and persona.idpersona = inscripcion.idpersona"+
-								" AND materia.idinstitucion = turno.idinstitucion"+
-								" AND materia.idarea = turno.idarea"+
-								" AND materia.idmateria = turno.idmateria"+
-								" AND subzona.idinstitucion (+)= turno.idinstitucion"+
-								" AND subzona.idzona (+)= turno.idzona"+
-								" AND subzona.idsubzona (+)= turno.idsubzona"+
-								" AND zona.idinstitucion (+)= turno.idinstitucion"+
-								" AND zona.idzona (+)= turno.idzona"+
-								" AND turno.idinstitucion ="+usr.getLocation()+
-								" AND inscripcion.idinstitucion = turno.idinstitucion"+
-								" AND inscripcion.idturno		= turno.idturno"+	
-								" AND inscripcion.idpersona = "+idPersona+
-								" and inscripcion.fechavalidacion is not null"+
-								" and inscripcion.fechabaja is null";
+		
 			
 			//Si vengo del menu de censo miro los datos colegiales para mostrar por pantalla:
 			if (request.getSession().getAttribute("entrada")!=null && request.getSession().getAttribute("entrada").equals("2")) {
@@ -116,11 +100,44 @@ public class ProximasDesignasAction extends MasterAction {
 			}
 			// Almaceno la informacion del colegiado (almaceno "" si no tengo la informacion):
 			request.setAttribute("NOMBRECOLEGPESTAÑA", nombre);
-			request.setAttribute("NUMEROCOLEGPESTAÑA", numero);
+			request.setAttribute("NUMEROCOLEGPESTAÑA", numero);	
 			request.setAttribute("ESTADOCOLEGIAL", estado);
+			ScsTurnoAdm turnoAdm = new ScsTurnoAdm(this.getUserBean(request));
+			ScsInscripcionTurnoAdm admInsTurno = new ScsInscripcionTurnoAdm(usr);
+			InscripcionTGForm inscripcionTurnoForm = new InscripcionTGForm();
+			inscripcionTurnoForm.setIdInstitucion(usr.getLocation());
+			inscripcionTurnoForm.setIdPersona(idPersona);
+			inscripcionTurnoForm.setFechaActiva("sysdate");
 			
-			resultado = (Vector)designaAdm.selectTabla(consulta);
-			request.getSession().setAttribute("DATABACKUP",resultado);
+			
+			
+			
+			List<ScsInscripcionTurnoBean> inscripcionTurnoList= admInsTurno.getInscripcionesTurno(inscripcionTurnoForm, false);
+			
+			for(ScsInscripcionTurnoBean insTurnoBean:inscripcionTurnoList){
+				
+				insTurnoBean.setTurno(turnoAdm.getTurnoInscripcion(insTurnoBean.getIdInstitucion(), insTurnoBean.getIdTurno()));
+				
+				List<LetradoGuardia> colaTurnoList = InscripcionTurno.getColaTurno(insTurnoBean.getIdInstitucion(), insTurnoBean.getIdTurno(), "sysdate", false, usr);
+				boolean foundIt = false;
+				int i=0;
+				while (!foundIt && i<colaTurnoList.size()) {
+					
+					LetradoGuardia letradoTurno = colaTurnoList.get(i);
+					
+					
+					if(letradoTurno.getIdPersona().toString().equals(idPersona)){
+						foundIt = true;
+						insTurnoBean.getTurno().setIdOrdenacionColas(i+1);
+						
+					}
+					i++;
+				}
+									
+			}
+			
+			request.setAttribute("resultado",inscripcionTurnoList);
+
 		}catch(Exception e){
 			throwExcp("messages.select.error",e,null);
 		}
@@ -135,42 +152,54 @@ public class ProximasDesignasAction extends MasterAction {
 	 * @param  response - objeto respuesta HTTP
 	 * @return  String  Destino del action  
 	 * @exception  ClsExceptions  En cualquier caso de error
+	 * @throws SIGAException 
 	 */
 	protected String abrirAvanzada (ActionMapping mapping, 		
 										  	 MasterForm formulario, 
 											 HttpServletRequest request, 
-											 HttpServletResponse response) throws ClsExceptions{
+											 HttpServletResponse response) throws ClsExceptions, SIGAException{
 		
 		HttpSession ses = request.getSession();
+		try {
 		String idPersona = (String) ses.getAttribute("idPersonaTurno");
 		UsrBean usr = (UsrBean)ses.getAttribute("USRBEAN");
-		ScsTurnoAdm designaAdm = new ScsTurnoAdm(this.getUserBean(request));
-		Vector resultado = new Vector();
-		String consulta =	" select  turno.idturno idturno, turno.idinstitucion institucion, persona.nombre nombrecolegiado, persona.apellidos1 ap1, persona.apellidos2 ap2, turno.nombre turno, turno.abreviatura abreviatura, area.nombre area, materia.nombre materia, zona.nombre zona, subzona.nombre subzona, inscripcion.fechavalidacion fechavalidacion, inscripcion.fechabaja fechabaja, persona.idpersona idpersona"+
-							" from scs_turno turno, scs_materia materia, scs_area area, scs_subzona subzona, scs_zona zona, scs_inscripcionturno inscripcion, cen_persona persona"+
-							" WHERE area.idinstitucion = turno.idinstitucion"+
-							" AND area.idarea = turno.idarea"+
-							" AND materia.idinstitucion = turno.idinstitucion"+
-							" AND materia.idarea = turno.idarea"+
-							" AND materia.idmateria = turno.idmateria"+
-							" AND subzona.idinstitucion (+)= turno.idinstitucion"+
-							" AND subzona.idzona (+)= turno.idzona"+
-							" AND subzona.idsubzona (+)= turno.idsubzona"+
-							" AND zona.idinstitucion (+)= turno.idinstitucion"+
-							" AND zona.idzona (+)= turno.idzona"+
-							" AND turno.idinstitucion ="+usr.getLocation()+
-							" and persona.idpersona = inscripcion.idpersona"+
-							" AND inscripcion.idinstitucion = turno.idinstitucion"+
-							" AND inscripcion.idturno		= turno.idturno"+	
-							" AND inscripcion.idpersona = "+idPersona+
-							" and inscripcion.fechavalidacion is not null"+
-							" and inscripcion.fechabaja is null";
+		ScsTurnoAdm turnoAdm = new ScsTurnoAdm(this.getUserBean(request));
+		ScsInscripcionTurnoAdm admInsTurno = new ScsInscripcionTurnoAdm(usr);
+		InscripcionTGForm inscripcionTurnoForm = new InscripcionTGForm();
+		inscripcionTurnoForm.setIdInstitucion(usr.getLocation());
+		inscripcionTurnoForm.setIdPersona(idPersona);
+		//Estado confirmada
+		inscripcionTurnoForm.setEstado("C");
+		// de alta
+		inscripcionTurnoForm.setTipo("A");
+		//activas a feccha
+		inscripcionTurnoForm.setFechaActiva("sysdate");
 		
-		try{
-			resultado = (Vector)designaAdm.selectTabla(consulta);
-			request.setAttribute("resultado",resultado);
+		List<ScsInscripcionTurnoBean> inscripcionTurnoList= admInsTurno.getInscripcionesTurno(inscripcionTurnoForm, false);
+		
+		for(ScsInscripcionTurnoBean insTurnoBean:inscripcionTurnoList){
+			insTurnoBean.setTurno(turnoAdm.getTurnoInscripcion(insTurnoBean.getIdInstitucion(), insTurnoBean.getIdTurno()));
+			List<LetradoGuardia> colaTurnoList = InscripcionTurno.getColaTurno(insTurnoBean.getIdInstitucion(), insTurnoBean.getIdTurno(), "sysdate", false, usr);
+			boolean foundIt = false;
+			int i=0;
+			while (!foundIt && i<colaTurnoList.size()) {
+				
+				LetradoGuardia letradoTurno = colaTurnoList.get(i);
+				
+				
+				if(letradoTurno.getIdPersona().toString().equals(idPersona)){
+					foundIt = true;
+					
+					insTurnoBean.getTurno().setIdOrdenacionColas(i+1);
+					
+				}
+				i++;
+			}
+		}
+		
+		request.setAttribute("resultado",inscripcionTurnoList);
 		}catch(Exception e){
-			
+			throwExcp("messages.select.error",e,null);
 		}
 		return "listado";
 

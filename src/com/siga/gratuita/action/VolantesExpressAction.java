@@ -166,7 +166,7 @@ public class VolantesExpressAction extends MasterAction
 		if(isDelitosVE){
 			List<ScsDelitoBean> alDelitos = null;
 			ScsDelitoAdm admDelitos = new ScsDelitoAdm(miForm.getUsrBean());
-			alDelitos = admDelitos.getComisarias(miForm.getVolanteExpressVo());
+			alDelitos = admDelitos.getDelitos(miForm.getVolanteExpressVo());
 			if(alDelitos==null){
 				alDelitos = new ArrayList<ScsDelitoBean>();
 			

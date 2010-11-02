@@ -1,6 +1,9 @@
 package com.siga.gratuita.action;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +16,7 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.CenColegiadoAdm;
@@ -27,7 +31,9 @@ import com.siga.beans.ScsTurnoBean;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.InscripcionTurno;
 import com.siga.gratuita.form.ColaOficiosForm;
+import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
 import com.siga.informes.InformeColaOficios;
 
 /**
@@ -78,7 +84,8 @@ public class ColaOficiosAction extends MasterAction {
 			MasterForm formulario, 
 			HttpServletRequest request, 
 			HttpServletResponse response) throws ClsExceptions, SIGAException{
-		
+		ColaOficiosForm coForm=(ColaOficiosForm)formulario;
+		coForm.setFechaConsulta(GstDate.getHoyJsp());
 		return ver(mapping, formulario, request, response);
 	}
 	
@@ -106,7 +113,8 @@ public class ColaOficiosAction extends MasterAction {
 		Integer usuario=this.getUserName(request);
 		String institucion =usr.getLocation();
 		String turno =(String)turnoElegido.get("IDTURNO");
-		
+		String fecha  = coForm.getFechaConsulta();
+		fecha = (fecha!=null&&!fecha.trim().equals(""))?fecha:null;
 		ScsTurnoAdm turnoAdm = new ScsTurnoAdm(this.getUserBean(request));
 		ScsSaltosCompensacionesAdm saltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(this.getUserBean(request));
 		
@@ -114,14 +122,14 @@ public class ColaOficiosAction extends MasterAction {
 		cargarUltimoLetrado(this.getUserBean(request), institucion, turno, coForm);
 		
 		//Cargar listado de letrados en cola
-		Vector vLetradosEnCola=turnoAdm.selectLetradosEnCola(institucion,turno);
-		if(vLetradosEnCola!=null && !vLetradosEnCola.isEmpty()){
-			request.setAttribute("vLetradosEnCola",vLetradosEnCola);			
+		List<LetradoGuardia> letradosColaTurnoList = InscripcionTurno.getColaTurno(new Integer(institucion),new Integer(turno),fecha,false,usr);
+		if(letradosColaTurnoList!=null && !letradosColaTurnoList.isEmpty()){
+			request.setAttribute("letradosColaTurnoList",letradosColaTurnoList);			
 			
 		ScsInscripcionTurnoAdm InscripcionTurnoAdm = new ScsInscripcionTurnoAdm(this.getUserBean(request));
 		Vector letradosinscritos = new Vector();
 		String NLETRADOSTURNO="";
-		 letradosinscritos= InscripcionTurnoAdm.selectGenerico(InscripcionTurnoAdm.getnumeroColegiadosTurnos(institucion, turno));
+		 letradosinscritos= InscripcionTurnoAdm.selectGenerico(InscripcionTurnoAdm.getQueryNumeroColegiadosIncritos(institucion, turno,fecha));
 		 if( letradosinscritos!=null  ||  letradosinscritos.size()>0){			 
 			NLETRADOSTURNO=(String)(((Hashtable)(letradosinscritos.get(0))).get("NLETRADOSTURNO"));
 			request.setAttribute("NLETRADOSTURNO",NLETRADOSTURNO);	
@@ -167,7 +175,8 @@ public class ColaOficiosAction extends MasterAction {
 			//Obtengo el bean de la facturacion:
 			// Nombre de la plantilla FO:
 			String nombreFicheroFO = ClsConstants.PLANTILLA_FO_COLATURNOS;
-
+			ColaOficiosForm coForm=(ColaOficiosForm)formulario;
+			request.setAttribute("ColaGuardiasForm", coForm);
 			//Generamos el Informe si la hash no es null:
 			InformeColaOficios informe = new InformeColaOficios(this.getUserBean(request)); 
 			if (informe.generarInforme(request, nombreFicheroFO))
@@ -207,7 +216,7 @@ public class ColaOficiosAction extends MasterAction {
 		hashTurno.put(ScsTurnoBean.C_IDTURNO,turno);
 		hashTurno.put(ScsTurnoBean.C_IDINSTITUCION,institucion);
 		ScsTurnoBean turnoBean = (ScsTurnoBean)((Vector)turnoAdm.select(hashTurno)).get(0);
-		Integer ultimo=turnoBean.getIdPersonaUltimo();
+		Long ultimo=turnoBean.getIdPersonaUltimo();
 		
 		if(ultimo!=null){
 			//buscar numero colegiado
@@ -243,7 +252,7 @@ public class ColaOficiosAction extends MasterAction {
 
 			if (v != null && v.size() == 1) {
 				ScsTurnoBean b = (ScsTurnoBean) v.get(0);
-				b.setIdPersonaUltimo(new Integer(miForm.getIdPersona()));
+				b.setIdPersonaUltimo(new Long(miForm.getIdPersona()));
 				if (!adm.update(b)) {
 					return exito("messages.updated.error",request);
 				}

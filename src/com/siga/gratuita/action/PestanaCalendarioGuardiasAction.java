@@ -606,7 +606,8 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 				cabecerasGuarConf.setComenSustitucion(UtilidadesString.getMensajeIdioma(usr.getLanguage(),"gratuita.literal.letrado.permuta"));
 				
 
-				
+				cabecerasGuarSol.setFechaAlta("SYSDATE");
+				cabecerasGuarConf.setFechaAlta("SYSDATE");
 				if(!admCabeceraGuardias.insert((cabecerasGuarSol)))
 					throw new ClsExceptions(admCabeceraGuardias.getError());
 				if(!admCabeceraGuardias.insert((cabecerasGuarConf)))
@@ -806,6 +807,9 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			
 			cabecerasGuarSol.setIdPersona(new Long(idPersonaConfirmador));
 			cabecerasGuarConf.setIdPersona(new Long(idPersonaSolicitante));
+			cabecerasGuarSol.setFechaAlta("SYSDATE");
+			cabecerasGuarConf.setFechaAlta("SYSDATE");
+			
 			if(!cabeceraGuardiasAdm.insert((cabecerasGuarConf)))
 				throw new ClsExceptions(cabeceraGuardiasAdm.getError());
 			if(!cabeceraGuardiasAdm.insert((cabecerasGuarSol)))
