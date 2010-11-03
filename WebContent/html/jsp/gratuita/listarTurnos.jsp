@@ -695,7 +695,7 @@
 				 
 				 document.DefinirTurnosLetradoForm.fechaConsulta.value = resultado;
 				 document.getElementById('fechaConsulta').value = resultado;
-				 document.DefinirTurnosLetradoForm.modo.value = 'abrirTurnosPaginados';
+				 document.DefinirTurnosLetradoForm.modo.value = 'abrir';
 				 
 				 document.DefinirTurnosLetradoForm.submit();
 				

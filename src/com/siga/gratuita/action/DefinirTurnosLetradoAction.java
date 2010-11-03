@@ -13,6 +13,7 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorBind;
@@ -56,7 +57,7 @@ public class DefinirTurnosLetradoAction extends MasterAction {
 
 		try{
 			//Si vengo del menu de censo miro los datos colegiales para mostrar por pantalla:
-			if (request.getSession().getAttribute("entrada")!=null && request.getSession().getAttribute("entrada").equals("2")) {
+			/*if (request.getSession().getAttribute("entrada")!=null && request.getSession().getAttribute("entrada").equals("2")) {
 				try {
 					// Preparo para obtener la informacion del colegiado:
 					Long idPers = new Long(request.getParameter("idPersonaPestanha"));
@@ -86,18 +87,24 @@ public class DefinirTurnosLetradoAction extends MasterAction {
 			datosColegiado.put("NUMEROCOLEGIADO",numero);
 			
 			request.getSession().setAttribute("DATOSCOLEGIADO", datosColegiado);
-		
+		*/
 			DefinirTurnosLetradoForm miForm = (DefinirTurnosLetradoForm)formulario;
 			
 			//forward =this.abrir(mapping,miForm,request,response);
 			String accion = miForm.getModo();
+			String fechaConsultaTurno =  (String)request.getSession().getAttribute("fechaConsultaInscripcionTurno");
+			
+			if(fechaConsultaTurno!=null){
+				if(miForm.getFechaConsulta()==null || miForm.getFechaConsulta().equals(fechaConsultaTurno)){
+					miForm.setFechaConsulta(fechaConsultaTurno);
+				}
+			}
+			else{
+				miForm.setFechaConsulta("sysdate");
+			}
 			if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir") || accion.equalsIgnoreCase("abrirTurnosLimpiar")){
 				borrarPaginador(request, paginadorPenstania);
-				String fechaConsultaTurno =  (String)request.getSession().getAttribute("fechaConsultaInscripcionTurno");
-				if(fechaConsultaTurno!=null)
-					miForm.setFechaConsulta(fechaConsultaTurno);
-				else
-					miForm.setFechaConsulta("sysdate");
+				
 				forward =this.abrirTurnosPaginados(mapping,miForm,request,response);
 			}else if (accion.equalsIgnoreCase("abrirTurnosPaginados")){
 				forward =this.abrirTurnosPaginados(mapping,miForm,request,response);
@@ -225,6 +232,7 @@ public class DefinirTurnosLetradoAction extends MasterAction {
 			datosColegiado.put("NOMBRECOLEGIADO",nombre);
 			datosColegiado.put("NUMEROCOLEGIADO",numero);
 			datosColegiado.put("ESTADOCOLEGIAL",estado);
+			request.getSession().setAttribute("DATOSCOLEGIADO", datosColegiado);
 			request.setAttribute("nombre", nombre);
 			request.setAttribute("numero", numero);
 			request.setAttribute("estadoColegial", estado);
@@ -232,12 +240,14 @@ public class DefinirTurnosLetradoAction extends MasterAction {
 			request.setAttribute("IDINSTITUCION",idInstitucion);
 			request.setAttribute("accion", accion);
 			request.getSession().setAttribute("entrada","2");
-			request.getSession().setAttribute("DATOSCOLEGIADO", datosColegiado);
+			
 			request.getSession().setAttribute("accion", accion);
 			request.getSession().setAttribute("nombre", nombre);
 			request.getSession().setAttribute("numero", numero);
 			request.getSession().setAttribute("estadoColegial", estado);
 			request.getSession().setAttribute("bIncluirRegistrosConBajaLogica",new Boolean(bIncluirRegistrosConBajaLogica).toString());
+			if(miform.getFechaConsulta().equals("sysdate"))
+				miform.setFechaConsulta(GstDate.getHoyJsp());
 			request.getSession().setAttribute("fechaConsultaInscripcionTurno",miform.getFechaConsulta());
 			
 			

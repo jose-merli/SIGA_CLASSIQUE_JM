@@ -349,6 +349,12 @@ public class InscripcionTGForm extends MasterForm {
 		idRetencion = null;
 		
 		guardiasSel= null;
+		setAbreviatura("");
+		setNombre("");
+		setArea("");
+		setMateria("");
+		setZona("");
+		setSubzona("");
 		
 
 	}

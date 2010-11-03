@@ -575,7 +575,7 @@ public class InscripcionGuardia
 			laHash.put(ScsInscripcionGuardiaBean.C_IDGUARDIA			,idGuardia);
 		laHash.put(ScsInscripcionGuardiaBean.C_IDPERSONA		,idPersona);
 		laHash.put(ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION,fechSubscripcion);
-		laHash.put(ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA,fechSolicitudBaja);
+		
 		
 		String[] claves = null;
 		if(idGuardia!=null){
@@ -593,10 +593,12 @@ public class InscripcionGuardia
 		}
 
 		ScsInscripcionGuardiaAdm inscripcionAdm = new ScsInscripcionGuardiaAdm(usr);
-		Vector<ScsInscripcionGuardiaBean> v = inscripcionAdm.selectByPKForUpdate(laHash);
+		Vector<ScsInscripcionGuardiaBean> v = inscripcionAdm.select(laHash);
+		
+		laHash.put(ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA,fechSolicitudBaja);
 		
 		boolean tieneBajaDenegada = false;
-		if (v != null && v.size() == 1) {
+		if (v != null && v.size() >0 ) {
 			ScsInscripcionGuardiaBean inscripcionBean = (ScsInscripcionGuardiaBean) v.get(0);
 			
 				if(inscripcionBean.getFechaDenegacion()!=null && !inscripcionBean.getFechaDenegacion().equals("")){

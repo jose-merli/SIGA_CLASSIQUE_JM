@@ -74,9 +74,11 @@ public class DefinirGuardiasLetradoAction extends MasterAction {
 						Hashtable datosColegiado = (Hashtable)request.getSession().getAttribute("DATOSCOLEGIADO");
 						nombre = (String)datosColegiado.get("NOMBRECOLEGIADO");
 						numero = (String)datosColegiado.get("NUMEROCOLEGIADO");
+						estado = (String)datosColegiado.get("ESTADOCOLEGIAL");
 					}catch(Exception e2){
 						nombre = "";
 						numero = "";
+						estado ="";
 					}
 				}
 			}
