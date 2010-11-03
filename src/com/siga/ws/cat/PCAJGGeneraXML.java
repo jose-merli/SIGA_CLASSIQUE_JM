@@ -99,8 +99,6 @@ import com.siga.ws.pcajg.cat.xsd.TipoProfesionalesDesignados.AbogadoDesignado.Li
  */
 public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstantes {
 		
-	public static final String VERSION_XSD_GENERALITAT = "3.1";
-	
 	private static final String INTERCAMBIO_ALTA_PRESENTACION = "IAP";//INTERCAMBIO ALTA PRESENTACION
 	private static final String INTERCAMBIO_EXPEDIENTES_DICTAMINADOS = "IED";//INTERCAMBIO EXPEDIENTES DICTAMINADOS
 	private static final String INTERCAMBIO_EXPEDIENTES_ARCHIVADOS = "IEA";//INTERCAMBIO EXPEDIENTES ARCHIVADOS
@@ -670,11 +668,20 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 				Hashtable ht = (Hashtable)list.get(i);	
 				Delito delito = asistenciaPenal.addNewDelito();
 				delito.setCodTipoDelito(getCodigoElementoTipificado((String)ht.get(DELITO_CDA)));
-				delito.setDescTipoDelito(getDescripcionElementoTipificado((String)ht.get(DELITO_CDA)));
+				delito.setDescTipoDelito(truncar(getDescripcionElementoTipificado((String)ht.get(DELITO_CDA)), 50));
 			}
 		}		
 				
 	}
+
+	private String truncar(String st, int i) {
+		String resultado = st;
+		if (st != null && st.length() > i) {
+			resultado = st.substring(0, i-3) + "...";			
+		}
+		return resultado;
+	}
+	
 
 	/**
 	 * 
@@ -1194,7 +1201,9 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		Calendar cal = null;		
 		if (fecha != null && !fecha.trim().equals("")) {
 			cal = Calendar.getInstance();
-			cal.setTime(GstDate.convertirFecha(fecha));				
+			cal.setTime(GstDate.convertirFecha(fecha));		
+			cal.clear(Calendar.ZONE_OFFSET);
+			cal.clear(Calendar.DST_OFFSET);
 		}	
 		
 		return cal;
@@ -1461,7 +1470,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		
 	}
 
-	public static void main(String[] args) throws Exception {
+	public static void main2(String[] args) throws Exception {
 		File fileXSL = new File("C:\\Datos\\plantillas\\CAJG\\2047\\plantilla.xsl");
 		File file = new File("C:\\Documents and Settings\\angelcpe.ITCGAE-WS011\\Escritorio\\temp\\generalitat\\IED_2047_GEN_12_20091221_5.xml");
 		File xmlTrans = new File(file.getParentFile(), "T" + file.getName());

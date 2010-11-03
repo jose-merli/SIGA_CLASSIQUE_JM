@@ -1,5 +1,4 @@
 package com.siga.ws;
-
 /**
  * NO MODIFICAR. Clase generada con GeneraConstantesXSD
  */
@@ -23,6 +22,7 @@ public interface PCAJGConstantes {
 	public final String DESTINOINTERCAMBIO_CDA = "DESTINOINTERCAMBIO_CDA";
 	public final String IDENTIFICADORINTERCAMBIO = "IDENTIFICADORINTERCAMBIO";
 	public final String VERSION_PCAJG = "VERSION_PCAJG";
+	public final String VERSION_XSD_GENERALITAT = "VERSION_XSD_GENERALITAT";
 	public final String DE_CE_COLEGIOEXPEDIENTE = "DE_CE_COLEGIOEXPEDIENTE";
 	public final String DE_CE_NUMEXPEDIENTE = "DE_CE_NUMEXPEDIENTE";
 	public final String DE_CE_ANYOEXPEDIENTE = "DE_CE_ANYOEXPEDIENTE";
