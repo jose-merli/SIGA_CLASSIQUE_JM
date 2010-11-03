@@ -254,10 +254,22 @@
 
 
 <div style="position:absolute;bottom:80px;left: 0px;width:100%;">
-		<p class="labelText" style="text-align:center">
-			<siga:Idioma key="gratuita.altaTurno_2.literal.todas" />
-		</p>
-	</div>
+
+		<c:choose>
+			<c:when test="${InscripcionTGForm.modo=='sitDatos'||InscripcionTGForm.modo=='sigDatos'||InscripcionTGForm.modo=='vitDatos'||InscripcionTGForm.modo=='vigDatos'}">
+				<p class="labelText" style="text-align:center">
+					<siga:Idioma key="gratuita.gestionInscripciones.literal.guardias.alta" />
+				</p>
+			</c:when>
+			<c:when test="${InscripcionTGForm.modo=='sbtDatos'||InscripcionTGForm.modo=='sbgDatos'||InscripcionTGForm.modo=='vbtDatos'||InscripcionTGForm.modo=='vbgDatos'}">
+				<p class="labelText" style="text-align:center">
+					<siga:Idioma key="gratuita.gestionInscripciones.literal.guardias.baja" />
+				</p>
+			</c:when>
+		</c:choose>		
+			
+		
+</div>
 		<siga:ConjBotonesAccion ordenar="false" botones="X,S"  />	
 
 </body>
