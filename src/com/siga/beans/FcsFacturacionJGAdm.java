@@ -3777,7 +3777,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and nvl(guatur.esviolenciagenero, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 				"         group by fuc.precioaplicado " +
 				"         " +
-				"        union " +
+				"        union all " +
 				"         " +
 				"        /*Maximos por asistencias*/ " +
 				"        select sum(decode(fac.regularizacion, '0', 1, 0)) as SUBCANTIDAD, " +
@@ -3797,7 +3797,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and nvl(guatur.esviolenciagenero, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 				"         group by fuc.precioaplicado " +
 				"         " +
-				"        union " +
+				"        union all " +
 				"         " +
 				"        /*Maximos por actuaciones*/ " +
 				"        select sum(decode(fac.regularizacion, '0', 1, 0)) as SUBCANTIDAD, " +
@@ -3892,7 +3892,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and nvl(guatur.esviolenciagenero, '0') "+(esRegionVG ? "=" : "<>")+" '1' " +
 				"         group by fac.precioaplicado " +
 				"         " +
-				"        union " +
+				"        union all " +
 				"         " +
 				"        /*Actuaciones FG*/ " +
 				"        select sum(apu.precioaplicado) / decode(hitgua.preciohito, null, 1, 0, 1, hitgua.preciohito) as SUBCANTIDAD, " +
