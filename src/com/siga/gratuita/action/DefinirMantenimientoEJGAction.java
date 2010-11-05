@@ -627,7 +627,12 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 			
 			// Volvemos a obtener de base de datos la información, para que se la más actúal que hay en la base de datos			
 			Vector resultado = admBean.selectGenerico(consulta);
-			Hashtable ejg = (Hashtable)resultado.get(0);
+			Hashtable ejg = null;
+			try{
+				ejg = (Hashtable)resultado.get(0);
+			}catch (Exception e) {
+				throwExcp("error.general.yanoexiste",e,null);
+			}
 			
 //			consulta = "SELECT " + UtilidadesMultidioma.getCampoMultidioma("descripcion",this.getUserBean(request).getLanguage()) + " FROM SCS_MAESTROESTADOSEJG WHERE IDESTADOEJG = ( SELECT DISTINCT IDESTADOEJG " +
 //					   "FROM SCS_ESTADOEJG ejg1 WHERE ejg1.idtipoejg = " + miHash.get("IDTIPOEJG") + " and ejg1.idinstitucion = " + miHash.get("IDINSTITUCION") + " and ejg1.anio = " + miHash.get("ANIO") + " and ejg1.numero = " + miHash.get("NUMERO") + " and ejg1.fechainicio =( SELECT MAX(FECHAINICIO) FROM SCS_ESTADOEJG ejg WHERE ejg.idtipoejg = " 

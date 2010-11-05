@@ -65,7 +65,7 @@ public class PestanaDelitoEJGAction extends MasterAction {
 				v = admEJG.selectPorClave(miHash);
 				request.getSession().setAttribute("DATABACKUP",admEJG.beanToHashTable((ScsEJGBean)v.get(0)));			
 			} catch (Exception e) {
-				   throwExcp("messages.general.error",e,null);
+				   throwExcp("error.general.yanoexiste",e,null);
 			}
 			// Obtengo de la pestanha el anio, numero, idTipoEJG:			
 			numero = (String)request.getParameter("NUMERO");

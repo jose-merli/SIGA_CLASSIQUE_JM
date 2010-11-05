@@ -36,10 +36,10 @@
 	String botones="", anio= "", numero="", idTipoEJG = "" ;
 	
 	if (accion.equalsIgnoreCase("ver")){
-		botones = "C";
+		botones = "V,i";
 	}
 	else {
-		botones = "C,E,B";
+		botones = "V,N,i";
 	}
 
 	ScsDocumentacionEJGBean fila = new ScsDocumentacionEJGBean();
@@ -114,6 +114,9 @@
 							t_anio      = (String)hTitulo.get(ScsEJGBean.C_ANIO);
 							t_numero    = (String)hTitulo.get(ScsEJGBean.C_NUMEJG);
 							t_tipoEJG   = (String)hTitulo.get("TIPOEJG");
+						}
+						if(t_numero==null||t_tipoEJG==null||t_anio==null){
+							botones="V";
 						}
 					
 					%>
@@ -211,7 +214,7 @@
 
 
 	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
-	<siga:ConjBotonesAccion botones="V,N,i" clase="botonesDetalle" modo="<%=accion%>"/>
+	<siga:ConjBotonesAccion botones="<%=botones %>" clase="botonesDetalle" modo="<%=accion%>"/>
 
 	
 	<!-- INICIO: SCRIPTS BOTONES -->

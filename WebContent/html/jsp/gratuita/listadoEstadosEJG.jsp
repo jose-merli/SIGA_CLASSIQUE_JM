@@ -40,7 +40,7 @@
 		botones = "";
 	}
 	else {
-		botones = "";
+		botones = "V,N";
 	}
 	
 	Hashtable fila = new Hashtable();
@@ -111,6 +111,9 @@
 							t_numero    = (String)hTitulo.get(ScsEJGBean.C_NUMEJG);
 							t_tipoEJG   = (String)hTitulo.get("TIPOEJG");
 						}
+						if(t_numero==null||t_tipoEJG==null||t_anio==null){
+							botones="";
+						}
 					
 					%>
 					<%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%>
@@ -180,7 +183,7 @@
 	<!-- FIN: SUBMIT AREA -->	
 	
 	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
-	<siga:ConjBotonesAccion botones="V,N" clase="botonesDetalle" modo="<%=accion%>"/>
+	<siga:ConjBotonesAccion botones="<%=botones %>" clase="botonesDetalle" modo="<%=accion%>"/>
 	
 	<script type="text/javascript">
 				

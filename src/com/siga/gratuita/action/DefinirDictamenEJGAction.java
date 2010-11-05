@@ -162,7 +162,11 @@ public class DefinirDictamenEJGAction extends MasterAction {
 		
 		try {			
 			v = admEJG.selectPorClave(miHash);
-			request.getSession().setAttribute("DATABACKUPDICT",admEJG.beanToHashTable((ScsEJGBean)v.get(0)));			
+			try{
+				request.getSession().setAttribute("DATABACKUPDICT",admEJG.beanToHashTable((ScsEJGBean)v.get(0)));
+			}catch (Exception e) {
+				throwExcp("error.general.yanoexiste",e,null);
+			}
 		} catch (Exception e) {
 			   throwExcp("messages.general.error",e,null);
 		}

@@ -585,7 +585,12 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 			miForm.setEsComision(usr.isComision());
 			
 			Vector<ScsEJGBean> vEjg = admEJG.selectByPK(miHash);
-			ScsEJGBean ejg = vEjg.get(0);
+			ScsEJGBean ejg = null;
+			try{
+				ejg = vEjg.get(0);
+			}catch (Exception e) {
+				throwExcp("error.general.yanoexiste",e,null);
+			}
 //			P_INSTITUCION IN SCS_EJG.IDINSTITUCION%type,
 //            P_IDTIPOEJG   IN SCS_EJG.IDTIPOEJG%type,
 //            P_ANIO        IN SCS_EJG.ANIO%type,

@@ -1896,7 +1896,7 @@ public class PersonaJGAction extends MasterAction {
 			HttpServletRequest request, 
 			HttpServletResponse response) throws SIGAException 
 	{
-		String result = "";
+		String result = this.exito("error.general.yanoexiste",request);;
 		try {
 			
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
@@ -1989,59 +1989,60 @@ public class PersonaJGAction extends MasterAction {
 						throw new ClsExceptions("Error en updateEJG. " + admEJG.getError());
 					}
 				}
-			}
 			
-			// INSERTAR O ACTUALIZAR UNIDAD FAMILIAR EJG (RELACIONADO)
-			ScsUnidadFamiliarEJGAdm ufAdm = new ScsUnidadFamiliarEJGAdm(this.getUserBean(request));
-			// Si tenemos una persona anterior es porque estamos actualizando a alguien
-			// si no hay persona anterior hacemos un insert de la nueva
-			if ((idPersonaAnterior!=null)&&(!idPersonaAnterior.equalsIgnoreCase(""))) {
-
-				// Si existe una persona anterior la vamos a borrar
-				Hashtable borrar = new Hashtable();
-				borrar.put(ScsUnidadFamiliarEJGBean.C_IDINSTITUCION,miform.getIdInstitucionEJG());
-				borrar.put(ScsUnidadFamiliarEJGBean.C_IDTIPOEJG,miform.getIdTipoEJG());
-				borrar.put(ScsUnidadFamiliarEJGBean.C_ANIO,miform.getAnioEJG());
-				borrar.put(ScsUnidadFamiliarEJGBean.C_NUMERO,miform.getNumeroEJG());
-				borrar.put(ScsUnidadFamiliarEJGBean.C_IDPERSONA,idPersonaAnterior);
-								
-				ScsDocumentacionEJGAdm scsDocumentacionEJGAdm = new ScsDocumentacionEJGAdm(getUserBean(request));
-
-				Vector vuf = ufAdm.selectByPK(unidadFamiliarBean);
-				// Comprobamos que la persona tenga una relacion existente con el ejg para actualizar o insertar/borrar
-				if (vuf!=null && vuf.size()>0) {
-				    // UPDATE
-				    if (!ufAdm.updateDirect(unidadFamiliarBean,null,ufAdm.getCamposBean())) {
-						throw new ClsExceptions("Error en update unidad familiar. " + ufAdm.getError());
+				// INSERTAR O ACTUALIZAR UNIDAD FAMILIAR EJG (RELACIONADO)
+				ScsUnidadFamiliarEJGAdm ufAdm = new ScsUnidadFamiliarEJGAdm(this.getUserBean(request));
+				// Si tenemos una persona anterior es porque estamos actualizando a alguien
+				// si no hay persona anterior hacemos un insert de la nueva
+				if ((idPersonaAnterior!=null)&&(!idPersonaAnterior.equalsIgnoreCase(""))) {
+	
+					// Si existe una persona anterior la vamos a borrar
+					Hashtable borrar = new Hashtable();
+					borrar.put(ScsUnidadFamiliarEJGBean.C_IDINSTITUCION,miform.getIdInstitucionEJG());
+					borrar.put(ScsUnidadFamiliarEJGBean.C_IDTIPOEJG,miform.getIdTipoEJG());
+					borrar.put(ScsUnidadFamiliarEJGBean.C_ANIO,miform.getAnioEJG());
+					borrar.put(ScsUnidadFamiliarEJGBean.C_NUMERO,miform.getNumeroEJG());
+					borrar.put(ScsUnidadFamiliarEJGBean.C_IDPERSONA,idPersonaAnterior);
+									
+					ScsDocumentacionEJGAdm scsDocumentacionEJGAdm = new ScsDocumentacionEJGAdm(getUserBean(request));
+	
+					Vector vuf = ufAdm.selectByPK(unidadFamiliarBean);
+					// Comprobamos que la persona tenga una relacion existente con el ejg para actualizar o insertar/borrar
+					if (vuf!=null && vuf.size()>0) {
+					    // UPDATE
+					    if (!ufAdm.updateDirect(unidadFamiliarBean,null,ufAdm.getCamposBean())) {
+							throw new ClsExceptions("Error en update unidad familiar. " + ufAdm.getError());
+						}
+					} else {
+					    // INSERT
+						// Insertamos el nuevo y borramos el viejo
+					    if (!ufAdm.insert(unidadFamiliarBean)) {
+							throw new ClsExceptions("Error en insert unidad familiar. " + ufAdm.getError());
+						}
+					    // Update de la documentacion de la persona antigua a la nueva
+						scsDocumentacionEJGAdm.copiaDocumentacionPresentador(idInstitucionEJG, idTipoEJG, miform.getAnioEJG(), miform.getNumeroEJG(), idPersonaAnterior, miform.getIdPersonaJG());
+					    if (!ufAdm.delete(borrar)) {
+							throw new ClsExceptions("Error en delete unidad familiar. " + ufAdm.getError());
+						}
 					}
 				} else {
-				    // INSERT
-					// Insertamos el nuevo y borramos el viejo
-				    if (!ufAdm.insert(unidadFamiliarBean)) {
+					// Insert unidad familiar con los nuevos valores
+					if (!ufAdm.insert(unidadFamiliarBean)) {
 						throw new ClsExceptions("Error en insert unidad familiar. " + ufAdm.getError());
 					}
-				    // Update de la documentacion de la persona antigua a la nueva
-					scsDocumentacionEJGAdm.copiaDocumentacionPresentador(idInstitucionEJG, idTipoEJG, miform.getAnioEJG(), miform.getNumeroEJG(), idPersonaAnterior, miform.getIdPersonaJG());
-				    if (!ufAdm.delete(borrar)) {
-						throw new ClsExceptions("Error en delete unidad familiar. " + ufAdm.getError());
-					}
+				    
 				}
-			} else {
-				// Insert unidad familiar con los nuevos valores
-				if (!ufAdm.insert(unidadFamiliarBean)) {
-					throw new ClsExceptions("Error en insert unidad familiar. " + ufAdm.getError());
+	
+				if (miform.getConceptoE().equals(PersonaJGAction.EJG)) {
+					result = this.exitoRefresco("messages.updated.success",request);
+				} else {
+					result = this.exitoModal("messages.updated.success",request);
 				}
-			    
-			}
-
-			if (miform.getConceptoE().equals(PersonaJGAction.EJG)) {
-				result = this.exitoRefresco("messages.updated.success",request);
-			} else {
-				result = this.exitoModal("messages.updated.success",request);
 			}
 	     	
 		}
 		catch (Exception e) {
+
 			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
 		}
 		return result;
