@@ -126,8 +126,8 @@
 				<td class="labelText">¿Letrado?</td>
 				<td >
 					<select name="sLetrado" class="boxCombo">
-						<option value=S>SÍ, soy Letrado</option>
 						<option value=N>NO, no soy Letrado</option>
+						<option value=S>SÍ, soy Letrado</option>
 					</select>
 				</td>
 			</tr>
