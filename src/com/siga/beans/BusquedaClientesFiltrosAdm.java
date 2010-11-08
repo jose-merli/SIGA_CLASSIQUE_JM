@@ -907,7 +907,7 @@ public class BusquedaClientesFiltrosAdm {
 			filtro=" where "+ComodinBusquedas.tratarNumeroColegiado(nColegiado,"F_SIGA_CALCULONCOLEGIADO("+CenColegiadoBean.C_IDINSTITUCION+","+CenColegiadoBean.C_IDPERSONA+") " );
 		}
 		String tablaColegiado=
-			"(select "+CenColegiadoBean.C_IDINSTITUCION+","+CenColegiadoBean.C_IDPERSONA+","+
+			"(select "+CenColegiadoBean.C_IDINSTITUCION+","+CenColegiadoBean.C_IDPERSONA+","+CenColegiadoBean.C_SITUACIONEJERCICIO+","+
 			"F_SIGA_CALCULONCOLEGIADO("+CenColegiadoBean.C_IDINSTITUCION+","+CenColegiadoBean.C_IDPERSONA+") "+CenColegiadoBean.C_NCOLEGIADO+
 			" from "+CenColegiadoBean.T_NOMBRETABLA + filtro + ")";
 		return tablaColegiado;
@@ -976,10 +976,10 @@ public class BusquedaClientesFiltrosAdm {
 		
 		StringBuffer sql = new StringBuffer();
 		sql.append(" ");
-		sql.append("SELECT CEN_PERSONA.IDPERSONA, ");
-		sql.append("CEN_PERSONA.NIFCIF, ");
-		sql.append("F_SIGA_CALCULONCOLEGIADO(CEN_COLEGIADO.IDINSTITUCION, CEN_COLEGIADO.IDPERSONA) NCOLEGIADO, ");
-		sql.append("CEN_PERSONA.NOMBRE, CEN_PERSONA.APELLIDOS1, CEN_PERSONA.APELLIDOS2, ");
+		sql.append("SELECT p.IDPERSONA, ");
+		sql.append("p.NIFCIF, ");
+		sql.append("F_SIGA_CALCULONCOLEGIADO(c.IDINSTITUCION, c.IDPERSONA) NCOLEGIADO, ");
+		sql.append("p.NOMBRE, p.APELLIDOS1, p.APELLIDOS2, ");
 		sql.append("'' TURNO,'' GUARDIA,'' POSICION,'0' SALTO,'' COMPENSACION, ");
 		sql.append("(select TELEFONO1 ");
 		sql.append("from cen_direccion_tipodireccion t, cen_direcciones pe ");
@@ -988,20 +988,22 @@ public class BusquedaClientesFiltrosAdm {
 		sql.append("and pe.IDDIRECCION = t.IDDIRECCION ");
 		sql.append("and pe.IDINSTITUCION = ");
 		sql.append(idInstitucion);
-		sql.append("and pe.IDPERSONA = CEN_PERSONA.IDPERSONA ");
+		sql.append("and pe.IDPERSONA = p.IDPERSONA ");
 		sql.append("and t.IDTIPODIRECCION = 6 ");
 		sql.append("and pe.FECHABAJA is null ");
 		sql.append("and rownum = 1) TELEFONO ");
 		        
-		sql.append("FROM CEN_PERSONA, CEN_CLIENTE, CEN_COLEGIADO ");
-		sql.append("WHERE CEN_PERSONA.IDPERSONA = CEN_CLIENTE.IDPERSONA ");
-		sql.append("AND CEN_CLIENTE.IDPERSONA = CEN_COLEGIADO.IDPERSONA ");
-		sql.append("AND CEN_CLIENTE.IDINSTITUCION = CEN_COLEGIADO.IDINSTITUCION ");
+		sql.append("FROM CEN_CLIENTE,");
+		sql.append(this.getTablaColegiado()+" c,");
+		sql.append(this.getTablaPersona()+" p ");
+		sql.append("WHERE p.IDPERSONA = CEN_CLIENTE.IDPERSONA ");
+		sql.append("AND CEN_CLIENTE.IDPERSONA = c.IDPERSONA ");
+		sql.append("AND CEN_CLIENTE.IDINSTITUCION = c.IDINSTITUCION ");
 		sql.append("AND (CEN_CLIENTE.IDINSTITUCION = ");
 		sql.append(idInstitucion);
 		sql.append(") AND CEN_CLIENTE.IDINSTITUCION = ");
 		sql.append(idInstitucion);
-		sql.append("AND (CEN_COLEGIADO.SITUACIONEJERCICIO = 1) ");
+		sql.append("AND (c.SITUACIONEJERCICIO = 1) ");
 		sql.append("AND 1 in (select 1 ");
 		sql.append("from CEN_DATOSCOLEGIALESESTADO ");
 		sql.append("where CEN_DATOSCOLEGIALESESTADO.IDINSTITUCION = ");
@@ -1015,8 +1017,8 @@ public class BusquedaClientesFiltrosAdm {
 		sql.append("and FECHAESTADO <= sysdate) ");
 		sql.append("and IDESTADO in (20, 10)) ");
 		        
-		sql.append("ORDER BY CEN_PERSONA.APELLIDOS1 || ' ' || CEN_PERSONA.APELLIDOS2, ");
-		sql.append("CEN_PERSONA.NOMBRE ");
+		sql.append("ORDER BY p.APELLIDOS1 || ' ' || p.APELLIDOS2, ");
+		sql.append("p.NOMBRE ");
 		
 		return sql.toString();	
 	}
