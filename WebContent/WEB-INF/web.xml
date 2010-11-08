@@ -1,37 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--Local-->
+	<!--Local-->
 
-<web-app id="WebApp_ID" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+<web-app id="WebApp_ID" version="2.4"
+	xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 	<display-name>SIGA92</display-name>
 	<!--************ Seguridad de Certificados INI ************-->
-	
+
 	<context-param>
 		<param-name>client-cert-proxy-enabled</param-name>
-		<param-value>true</param-value> 
+		<param-value>true</param-value>
 	</context-param>
 
 	<filter>
 		<filter-name>ResponseOverrideFilter</filter-name>
 		<filter-class>org.displaytag.filter.ResponseOverrideFilter</filter-class>
 	</filter>
-  	<filter>
-	 	<filter-name>HttpsFilter</filter-name>
-	 	<filter-class>com.pra.core.filters.security.HttpsFilter</filter-class>
+	<filter>
+		<filter-name>HttpsFilter</filter-name>
+		<filter-class>com.pra.core.filters.security.HttpsFilter</filter-class>
 	</filter>
 	<filter>
-	 	<filter-name>AccesoCertificadoFilter</filter-name>
-	 	<filter-class>com.pra.core.filters.security.AccesoCertificadoFilter</filter-class>
+		<filter-name>AccesoCertificadoFilter</filter-name>
+		<filter-class>com.pra.core.filters.security.AccesoCertificadoFilter</filter-class>
 	</filter>
 	<filter>
-	 	<filter-name>CtrlCRLFilter</filter-name>
-	 	<filter-class>com.pra.core.filters.security.CtrlCRLFilter</filter-class>
+		<filter-name>CtrlCRLFilter</filter-name>
+		<filter-class>com.pra.core.filters.security.CtrlCRLFilter</filter-class>
 	</filter>
 	<filter>
-	 	<filter-name>DatosSesionFilter</filter-name>
-	 	<filter-class>com.pra.core.filters.security.DatosSesionFilter</filter-class>
+		<filter-name>DatosSesionFilter</filter-name>
+		<filter-class>com.pra.core.filters.security.DatosSesionFilter</filter-class>
 	</filter>
-	
+
 	<filter-mapping>
 		<filter-name>ResponseOverrideFilter</filter-name>
 		<url-pattern>*.do</url-pattern>
@@ -40,424 +42,419 @@
 		<filter-name>ResponseOverrideFilter</filter-name>
 		<url-pattern>*.jsp</url-pattern>
 	</filter-mapping>
-  
-  	<filter-mapping>
-	 	<filter-name>HttpsFilter</filter-name>
-	 	<url-pattern>/sigainit.do</url-pattern>
+
+	<filter-mapping>
+		<filter-name>HttpsFilter</filter-name>
+		<url-pattern>/sigainit.do</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
-	 	<filter-name>AccesoCertificadoFilter</filter-name>
-	 	<url-pattern>/sigainit.do</url-pattern>
+		<filter-name>AccesoCertificadoFilter</filter-name>
+		<url-pattern>/sigainit.do</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
-	 	<filter-name>CtrlCRLFilter</filter-name>
-	 	<url-pattern>/sigainit.do</url-pattern>
+		<filter-name>CtrlCRLFilter</filter-name>
+		<url-pattern>/sigainit.do</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
-	 	<filter-name>DatosSesionFilter</filter-name>
-	 	<url-pattern>/sigainit.do</url-pattern>
+		<filter-name>DatosSesionFilter</filter-name>
+		<url-pattern>/sigainit.do</url-pattern>
 	</filter-mapping>
 
 	<filter-mapping>
-	 	<filter-name>HttpsFilter</filter-name>
-	 	<url-pattern>/itcgaeinit.do</url-pattern>
+		<filter-name>HttpsFilter</filter-name>
+		<url-pattern>/itcgaeinit.do</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
-	 	<filter-name>AccesoCertificadoFilter</filter-name>
-	 	<url-pattern>/itcgaeinit.do</url-pattern>
+		<filter-name>AccesoCertificadoFilter</filter-name>
+		<url-pattern>/itcgaeinit.do</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
-	 	<filter-name>CtrlCRLFilter</filter-name>
-	 	<url-pattern>/itcgaeinit.do</url-pattern>
+		<filter-name>CtrlCRLFilter</filter-name>
+		<url-pattern>/itcgaeinit.do</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
-	 	<filter-name>DatosSesionFilter</filter-name>
-	 	<url-pattern>/itcgaeinit.do</url-pattern>
+		<filter-name>DatosSesionFilter</filter-name>
+		<url-pattern>/itcgaeinit.do</url-pattern>
 	</filter-mapping>
 
 	<filter-mapping>
-	 	<filter-name>HttpsFilter</filter-name>
-	 	<url-pattern>/developmentLogin.do</url-pattern>
+		<filter-name>HttpsFilter</filter-name>
+		<url-pattern>/developmentLogin.do</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
-	 	<filter-name>AccesoCertificadoFilter</filter-name>
-	 	<url-pattern>/developmentLogin.do</url-pattern>
+		<filter-name>AccesoCertificadoFilter</filter-name>
+		<url-pattern>/developmentLogin.do</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
-	 	<filter-name>CtrlCRLFilter</filter-name>
-	 	<url-pattern>/developmentLogin.do</url-pattern>
+		<filter-name>CtrlCRLFilter</filter-name>
+		<url-pattern>/developmentLogin.do</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
-	 	<filter-name>DatosSesionFilter</filter-name>
-	 	<url-pattern>/developmentLogin.do</url-pattern>
-	</filter-mapping>	
+		<filter-name>DatosSesionFilter</filter-name>
+		<url-pattern>/developmentLogin.do</url-pattern>
+	</filter-mapping>
 
 	<!--************ Seguridad de Certificados FIN ************-->
 
-  <!--<listener>
-    <listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoCenso</listener-class>
-  </listener>-->
-  <!--listener>
-    <listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoServicios</listener-class>
-  </listener-->
-<!--<listener>
-    <listener-class>com.siga.servlets.SIGASvlInicializacionesSecundarias</listener-class>
-  </listener>-->
-<!-- <listener>
-    <listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoExpedientes</listener-class>
-  </listener>
- -->
-  <!--listener>
-    <listener-class>com.siga.servlets.SIGASvlProcesoColaDatosLetrado</listener-class>
-  </listener-->
-
-  <!--<listener>
-    <listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoContadores</listener-class>
-  </listener>-->
-  <!--  
-  <listener>
-    <listener-class>com.siga.eejg.SolicitudEEJGListener</listener-class>    
-  </listener>
-  -->
-  <listener>
-    <listener-class>com.siga.general.BusinessManagerListener</listener-class>
-  </listener>
-  
-  
- <!--  
- <servlet>
-    <servlet-name>SIGASvlProcesoAutomaticoEnvios</servlet-name>
-    <servlet-class>com.siga.servlets.SIGASvlProcesoAutomaticoEnvios</servlet-class>
-   	<load-on-startup>3</load-on-startup>
-  </servlet>
-  -->
-  <servlet>
-    <servlet-name>SIGATest</servlet-name>
-    <servlet-class>com.siga.servlets.SIGASvlConectarBaseDatos</servlet-class>
-  </servlet>
-  
-  <servlet>
-    <servlet-name>SIGASvlProcesoEnvios</servlet-name>
-    <servlet-class>com.siga.servlets.SIGASvlProcesoEnvios</servlet-class>
-  </servlet>
-  
-  <!--<servlet>
-    <servlet-name>SIGASvlProcesoAutomaticoFacturacion</servlet-name>
-    <servlet-class>com.siga.servlets.SIGASvlProcesoAutomaticoFacturacion</servlet-class>
-   	<load-on-startup>4</load-on-startup>
-  </servlet>-->
-  <servlet>
-    <servlet-name>SIGASvlProcesoFacturacion</servlet-name>
-    <servlet-class>com.siga.servlets.SIGASvlProcesoFacturacion</servlet-class>
-  </servlet>
-
-  <servlet>
-    <servlet-name>SIGASvlProcesoAutomaticoRapido</servlet-name>
-    <servlet-class>com.siga.servlets.SIGASvlProcesoAutomaticoRapido</servlet-class>
-   	<load-on-startup>5</load-on-startup>
-  </servlet> 
-  <servlet>
-    <servlet-name>SIGASvlProcesoRapido</servlet-name>
-    <servlet-class>com.siga.servlets.SIGASvlProcesoRapido</servlet-class>
-  </servlet> 
- <servlet>
-    <servlet-name>SIGASvlProcesoGeneracionEnvio</servlet-name>
-    <servlet-class>com.siga.servlets.SIGASvlProcesoGeneracionEnvio</servlet-class>
-  </servlet>
-  
-  <servlet>
-    <servlet-name>SIGASvlVectorToClientFileConExtension</servlet-name>
-    <servlet-class>com.siga.servlets.SIGASvlVectorToClientFileConExtension</servlet-class>
-  </servlet>
-  
-  <servlet>
-    <servlet-name>SIGASvlVectorToClientFile</servlet-name>
-    <servlet-class>com.siga.servlets.SIGASvlVectorToClientFile</servlet-class>
-  </servlet>
-  
-
-  <servlet>
-    <servlet-name>SIGADataSourceInit</servlet-name>
-    <servlet-class>com.siga.servlets.SIGADataSourceInit</servlet-class>
-    <load-on-startup>2</load-on-startup>
-  </servlet>
-
-  <servlet>
-    <servlet-name>SIGASvlPermisosAplicacion</servlet-name>
-    <servlet-class>com.siga.servlets.SIGASvlPermisosAplicacion</servlet-class>
-  </servlet>
-
-  <servlet>
-    <servlet-name>SIGASvlAsignarUsuariosGrupo</servlet-name>
-    <servlet-class>com.siga.servlets.SIGASvlAsignarUsuariosGrupo</servlet-class>
-  </servlet>
-
-  <servlet>
-    <servlet-name>ServletPruebaACA</servlet-name>
-    <servlet-class>com.siga.servlets.ServletPruebaACA</servlet-class>
-  </servlet>
-
-  <servlet>
-    <servlet-name>SIGATPVControl</servlet-name>
-    <servlet-class>com.siga.servlets.SIGATPVControl</servlet-class>
-  </servlet>
-
-  <servlet>
-    <servlet-name>ServletDescargaFichero</servlet-name>
-    <servlet-class>com.siga.servlets.SIGASvlDownloadFile</servlet-class>
-  </servlet>
-
-  <servlet>
-    <servlet-name>action</servlet-name>
-    <servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
-    <init-param>
-      <param-name>application</param-name>
-      <param-value>ApplicationResources</param-value>
-    </init-param>
-    <init-param>
-      <param-name>config</param-name>
-      <param-value>/WEB-INF/struts-config.xml</param-value>
-    </init-param>
-    <init-param>
-      <param-name>debug</param-name>
-      <param-value>2</param-value>
-    </init-param>
-    <init-param>
-      <param-name>detail</param-name>
-      <param-value>2</param-value>
-    </init-param>
-    <init-param>
-      <param-name>validate</param-name>
-      <param-value>true</param-value>
-    </init-param>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
-
-  <servlet>
-    <servlet-name>SIGADireccionIP</servlet-name>
-    <servlet-class>com.siga.servlets.SIGADireccionIP</servlet-class>
-  </servlet>
-  <servlet>
-  	<servlet-name>Ajaxsourceloader</servlet-name>
-  	<servlet-class>
-  		net.sourceforge.ajaxtags.servlets.SourceLoader
-  	</servlet-class>
-  	<!-- you don't need this, don't use spaces in url-pattern!-->
-  	<init-param>
-  		<param-name>prefix</param-name>
-  		<param-value>/ajaxtags</param-value>
-  	</init-param>
-  </servlet>
-  
-  <servlet>
-    <servlet-name>SIGASvlProcesoIndividualConfirmacionFacturacion</servlet-name>
-    <servlet-class>com.siga.servlets.SIGASvlProcesoIndividualConfirmacionFacturacion</servlet-class>
-  </servlet>
-
-  <servlet-mapping>
-  	<servlet-name>Ajaxsourceloader</servlet-name>
-  	<!-- if you have /js/ in use in you webapp just map the url (use the prefix)-->
-  	<url-pattern>/ajaxtags/js/*</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-  	<servlet-name>Ajaxsourceloader</servlet-name>
-  	<url-pattern>/img/*</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-  	<servlet-name>Ajaxsourceloader</servlet-name>
-  	<url-pattern>/css/*</url-pattern>
-  </servlet-mapping>
-  
+	<!--
+		<listener>
+		<listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoCenso</listener-class>
+		</listener> <listener>
+		<listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoServicios</listener-class>
+		</listener> <listener>
+		<listener-class>com.siga.servlets.SIGASvlInicializacionesSecundarias</listener-class>
+		</listener> <listener>
+		<listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoExpedientes</listener-class>
+		</listener> <listener>
+		<listener-class>com.siga.servlets.SIGASvlProcesoColaDatosLetrado</listener-class>
+		</listener> <listener>
+		<listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoContadores</listener-class>
+		</listener> <listener>
+		<listener-class>com.siga.eejg.SolicitudEEJGListener</listener-class>
+		</listener>
+	-->
+	<listener>
+		<listener-class>com.siga.general.BusinessManagerListener</listener-class>
+	</listener>
 
 
 
-  <!-- RGG para llamada externa -->
-  <servlet-mapping>
-    <servlet-name>SIGATest</servlet-name>
-    <url-pattern>SIGATest.svrl</url-pattern>
-  </servlet-mapping>
-<!--  
-  <servlet-mapping>
-    <servlet-name>SIGASvlProcesoAutomaticoEnvios</servlet-name>
-    <url-pattern>SIGASvlProcesoAutomaticoEnvios.svrl</url-pattern>
-  </servlet-mapping>
--->
-  <servlet-mapping>
-    <servlet-name>SIGASvlProcesoEnvios</servlet-name>
-    <url-pattern>SIGASvlProcesoEnvios.svrl</url-pattern>
-  </servlet-mapping>
-<!--<servlet-mapping>
-    <servlet-name>SIGASvlProcesoAutomaticoFacturacion</servlet-name>
-    <url-pattern>SIGASvlProcesoAutomaticoFacturacion.svrl</url-pattern>
-  </servlet-mapping>-->
+	<!--
+		<servlet> <servlet-name>SIGASvlProcesoAutomaticoEnvios</servlet-name>
+		<servlet-class>com.siga.servlets.SIGASvlProcesoAutomaticoEnvios</servlet-class>
+		<load-on-startup>3</load-on-startup> </servlet>
+	-->
+	<servlet>
+		<servlet-name>SIGATest</servlet-name>
+		<servlet-class>com.siga.servlets.SIGASvlConectarBaseDatos</servlet-class>
+	</servlet>
 
-  <servlet-mapping>
-    <servlet-name>SIGASvlProcesoFacturacion</servlet-name>
-    <url-pattern>SIGASvlProcesoFacturacion.svrl</url-pattern>
-  </servlet-mapping>
-  
-  <servlet-mapping>
-    <servlet-name>SIGASvlProcesoAutomaticoRapido</servlet-name>
-    <url-pattern>SIGASvlProcesoAutomaticoRapido.svrl</url-pattern>
-  </servlet-mapping> 
+	<servlet>
+		<servlet-name>SIGASvlProcesoEnvios</servlet-name>
+		<servlet-class>com.siga.servlets.SIGASvlProcesoEnvios</servlet-class>
+	</servlet>
 
-  <servlet-mapping>
-    <servlet-name>SIGASvlProcesoRapido</servlet-name>
-    <url-pattern>SIGASvlProcesoRapido.svrl</url-pattern>
-  </servlet-mapping> 
+	<!--
+		<servlet>
+		<servlet-name>SIGASvlProcesoAutomaticoFacturacion</servlet-name>
+		<servlet-class>com.siga.servlets.SIGASvlProcesoAutomaticoFacturacion</servlet-class>
+		<load-on-startup>4</load-on-startup> </servlet>
+	-->
+	<servlet>
+		<servlet-name>SIGASvlProcesoFacturacion</servlet-name>
+		<servlet-class>com.siga.servlets.SIGASvlProcesoFacturacion</servlet-class>
+	</servlet>
 
-  <servlet-mapping>
-    <servlet-name>SIGASvlProcesoGeneracionEnvio</servlet-name>
-    <url-pattern>SIGASvlProcesoGeneracionEnvio.svrl</url-pattern>
-  </servlet-mapping>
-  
-  <servlet-mapping>
-    <servlet-name>action</servlet-name>
-    <url-pattern>*.do</url-pattern>
-  </servlet-mapping>
+	<servlet>
+		<servlet-name>SIGASvlProcesoAutomaticoRapido</servlet-name>
+		<servlet-class>com.siga.servlets.SIGASvlProcesoAutomaticoRapido</servlet-class>
+		<load-on-startup>5</load-on-startup>
+	</servlet>
+	<servlet>
+		<servlet-name>SIGASvlProcesoRapido</servlet-name>
+		<servlet-class>com.siga.servlets.SIGASvlProcesoRapido</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>SIGASvlProcesoGeneracionEnvio</servlet-name>
+		<servlet-class>com.siga.servlets.SIGASvlProcesoGeneracionEnvio</servlet-class>
+	</servlet>
 
-  <servlet-mapping>
-    <servlet-name>SIGASvlVectorToClientFile</servlet-name>
-    <url-pattern>SIGASvlVectorToClientFile.svrl</url-pattern>
-  </servlet-mapping>
-  
-  <servlet-mapping>
-    <servlet-name>SIGASvlVectorToClientFileConExtension</servlet-name>
-    <url-pattern>SIGASvlVectorToClientFileConExtension.svrl</url-pattern>
-  </servlet-mapping>
+	<servlet>
+		<servlet-name>SIGASvlVectorToClientFileConExtension</servlet-name>
+		<servlet-class>com.siga.servlets.SIGASvlVectorToClientFileConExtension</servlet-class>
+	</servlet>
 
-  <servlet-mapping>
-    <servlet-name>SIGADataSourceInit</servlet-name>
-    <url-pattern>SIGADataSourceInit.svrl</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>SIGASvlPermisosAplicacion</servlet-name>
-    <url-pattern>SIGASvlPermisosAplicacion.svrl</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>SIGASvlAsignarUsuariosGrupo</servlet-name>
-    <url-pattern>SIGASvlAsignarUsuariosGrupo.svrl</url-pattern>
-  </servlet-mapping>
-  
-  <servlet-mapping>
-    <servlet-name>SIGASvlProcesoIndividualConfirmacionFacturacion</servlet-name>
-    <url-pattern>SIGASvlProcesoIndividualConfirmacionFacturacion.svrl</url-pattern>
-  </servlet-mapping>
+	<servlet>
+		<servlet-name>SIGASvlVectorToClientFile</servlet-name>
+		<servlet-class>com.siga.servlets.SIGASvlVectorToClientFile</servlet-class>
+	</servlet>
 
 
-  <servlet-mapping>
-    <servlet-name>ServletPruebaACA</servlet-name>
-    <url-pattern>ServletPruebaACA.svrl</url-pattern>
-  </servlet-mapping>
+	<servlet>
+		<servlet-name>SIGADataSourceInit</servlet-name>
+		<servlet-class>com.siga.servlets.SIGADataSourceInit</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
 
-  <servlet-mapping>
-    <servlet-name>SIGATPVControl</servlet-name>
-    <url-pattern>SIGATPVControl.svrl</url-pattern>
-  </servlet-mapping>
+	<servlet>
+		<servlet-name>SIGASvlPermisosAplicacion</servlet-name>
+		<servlet-class>com.siga.servlets.SIGASvlPermisosAplicacion</servlet-class>
+	</servlet>
 
-  <servlet-mapping>
-    <servlet-name>ServletDescargaFichero</servlet-name>
-    <url-pattern>ServletDescargaFichero.svrl</url-pattern>
-  </servlet-mapping>
+	<servlet>
+		<servlet-name>SIGASvlAsignarUsuariosGrupo</servlet-name>
+		<servlet-class>com.siga.servlets.SIGASvlAsignarUsuariosGrupo</servlet-class>
+	</servlet>
 
- <servlet-mapping>
-    <servlet-name>SIGADireccionIP</servlet-name>
-    <url-pattern>SIGADireccionIP.svrl</url-pattern>
-  </servlet-mapping>
+	<servlet>
+		<servlet-name>ServletPruebaACA</servlet-name>
+		<servlet-class>com.siga.servlets.ServletPruebaACA</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>SIGATPVControl</servlet-name>
+		<servlet-class>com.siga.servlets.SIGATPVControl</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>ServletDescargaFichero</servlet-name>
+		<servlet-class>com.siga.servlets.SIGASvlDownloadFile</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>action</servlet-name>
+		<servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
+		<init-param>
+			<param-name>application</param-name>
+			<param-value>ApplicationResources</param-value>
+		</init-param>
+		<init-param>
+			<param-name>config</param-name>
+			<param-value>/WEB-INF/struts-config.xml</param-value>
+		</init-param>
+		<init-param>
+			<param-name>debug</param-name>
+			<param-value>2</param-value>
+		</init-param>
+		<init-param>
+			<param-name>detail</param-name>
+			<param-value>2</param-value>
+		</init-param>
+		<init-param>
+			<param-name>validate</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet>
+		<servlet-name>SIGADireccionIP</servlet-name>
+		<servlet-class>com.siga.servlets.SIGADireccionIP</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>Ajaxsourceloader</servlet-name>
+		<servlet-class>net.sourceforge.ajaxtags.servlets.SourceLoader</servlet-class>
+		<!-- you don't need this, don't use spaces in url-pattern!-->
+		<init-param>
+			<param-name>prefix</param-name>
+			<param-value>/ajaxtags</param-value>
+		</init-param>
+	</servlet>
+
+	<servlet>
+		<servlet-name>SIGASvlProcesoIndividualConfirmacionFacturacion</servlet-name>
+		<servlet-class>com.siga.servlets.SIGASvlProcesoIndividualConfirmacionFacturacion</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>Ajaxsourceloader</servlet-name>
+		<!--
+			if you have /js/ in use in you webapp just map the url (use the
+			prefix)
+		-->
+		<url-pattern>/ajaxtags/js/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>Ajaxsourceloader</servlet-name>
+		<url-pattern>/img/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>Ajaxsourceloader</servlet-name>
+		<url-pattern>/css/*</url-pattern>
+	</servlet-mapping>
 
 
-    <session-config>
-      <session-timeout>3600</session-timeout> 
-    </session-config>
 
-  <welcome-file-list>
-    <!--welcome-file>html/jsp/index.jsp</welcome-file-->
-    <welcome-file>html/jsp/developmentLogin/main.jsp</welcome-file>
-    <!--welcome-file>sigainit.do</welcome-file-->
-  </welcome-file-list>
 
-  <error-page>
-    <error-code>400</error-code>
-    <location>/html/jsp/error/error400.jsp</location>
-  </error-page>
+	<!-- RGG para llamada externa -->
+	<servlet-mapping>
+		<servlet-name>SIGATest</servlet-name>
+		<url-pattern>SIGATest.svrl</url-pattern>
+	</servlet-mapping>
+	<!--
+		<servlet-mapping>
+		<servlet-name>SIGASvlProcesoAutomaticoEnvios</servlet-name>
+		<url-pattern>SIGASvlProcesoAutomaticoEnvios.svrl</url-pattern>
+		</servlet-mapping>
+	-->
+	<servlet-mapping>
+		<servlet-name>SIGASvlProcesoEnvios</servlet-name>
+		<url-pattern>SIGASvlProcesoEnvios.svrl</url-pattern>
+	</servlet-mapping>
+	<!--
+		<servlet-mapping>
+		<servlet-name>SIGASvlProcesoAutomaticoFacturacion</servlet-name>
+		<url-pattern>SIGASvlProcesoAutomaticoFacturacion.svrl</url-pattern>
+		</servlet-mapping>
+	-->
 
-  <error-page>
-    <error-code>401</error-code>
-    <location>/html/jsp/error/error401.jsp</location>
-  </error-page>
+	<servlet-mapping>
+		<servlet-name>SIGASvlProcesoFacturacion</servlet-name>
+		<url-pattern>SIGASvlProcesoFacturacion.svrl</url-pattern>
+	</servlet-mapping>
 
-  <error-page>
-    <error-code>403</error-code>
-    <location>/html/jsp/error/error403.jsp</location>
-  </error-page>
+	<servlet-mapping>
+		<servlet-name>SIGASvlProcesoAutomaticoRapido</servlet-name>
+		<url-pattern>SIGASvlProcesoAutomaticoRapido.svrl</url-pattern>
+	</servlet-mapping>
 
-  <error-page>
-    <error-code>404</error-code>
-    <location>/html/jsp/error/error404.jsp</location>
-  </error-page>
+	<servlet-mapping>
+		<servlet-name>SIGASvlProcesoRapido</servlet-name>
+		<url-pattern>SIGASvlProcesoRapido.svrl</url-pattern>
+	</servlet-mapping>
 
-  <error-page>
-    <error-code>500</error-code>
-    <location>/html/jsp/error/errorSIGA.jsp</location>
-  </error-page>
+	<servlet-mapping>
+		<servlet-name>SIGASvlProcesoGeneracionEnvio</servlet-name>
+		<url-pattern>SIGASvlProcesoGeneracionEnvio.svrl</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>action</servlet-name>
+		<url-pattern>*.do</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>SIGASvlVectorToClientFile</servlet-name>
+		<url-pattern>SIGASvlVectorToClientFile.svrl</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>SIGASvlVectorToClientFileConExtension</servlet-name>
+		<url-pattern>SIGASvlVectorToClientFileConExtension.svrl</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>SIGADataSourceInit</servlet-name>
+		<url-pattern>SIGADataSourceInit.svrl</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>SIGASvlPermisosAplicacion</servlet-name>
+		<url-pattern>SIGASvlPermisosAplicacion.svrl</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>SIGASvlAsignarUsuariosGrupo</servlet-name>
+		<url-pattern>SIGASvlAsignarUsuariosGrupo.svrl</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>SIGASvlProcesoIndividualConfirmacionFacturacion</servlet-name>
+		<url-pattern>SIGASvlProcesoIndividualConfirmacionFacturacion.svrl</url-pattern>
+	</servlet-mapping>
+
+
+	<servlet-mapping>
+		<servlet-name>ServletPruebaACA</servlet-name>
+		<url-pattern>ServletPruebaACA.svrl</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>SIGATPVControl</servlet-name>
+		<url-pattern>SIGATPVControl.svrl</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>ServletDescargaFichero</servlet-name>
+		<url-pattern>ServletDescargaFichero.svrl</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>SIGADireccionIP</servlet-name>
+		<url-pattern>SIGADireccionIP.svrl</url-pattern>
+	</servlet-mapping>
+
+
+	<session-config>
+		<session-timeout>600</session-timeout>
+	</session-config>
+
+	<welcome-file-list>
+		<!--welcome-file>html/jsp/index.jsp</welcome-file-->
+		<welcome-file>html/jsp/developmentLogin/main.jsp</welcome-file>
+		<!--welcome-file>sigainit.do</welcome-file-->
+	</welcome-file-list>
+
+	<error-page>
+		<error-code>400</error-code>
+		<location>/html/jsp/error/error400.jsp</location>
+	</error-page>
+
+	<error-page>
+		<error-code>401</error-code>
+		<location>/html/jsp/error/error401.jsp</location>
+	</error-page>
+
+	<error-page>
+		<error-code>403</error-code>
+		<location>/html/jsp/error/error403.jsp</location>
+	</error-page>
+
+	<error-page>
+		<error-code>404</error-code>
+		<location>/html/jsp/error/error404.jsp</location>
+	</error-page>
+
+	<error-page>
+		<error-code>500</error-code>
+		<location>/html/jsp/error/errorSIGA.jsp</location>
+	</error-page>
 
 	<jsp-config>
 		<taglib>
-	    <taglib-uri>struts-bean.tld</taglib-uri>
-	    <taglib-location>/WEB-INF/tlds/struts-bean.tld</taglib-location>
-	  </taglib>
-	
-	  <taglib>
-	    <taglib-uri>struts-html.tld</taglib-uri>
-	    <taglib-location>/WEB-INF/tlds/struts-html.tld</taglib-location>
-	  </taglib>
-	
-	  <taglib>
-	    <taglib-uri>struts-logic.tld</taglib-uri>
-	    <taglib-location>/WEB-INF/tlds/struts-logic.tld</taglib-location>
-	  </taglib>
-	
-	  <taglib>
-	    <taglib-uri>struts-nested.tld</taglib-uri>
-	    <taglib-location>/WEB-INF/tlds/struts-nested.tld</taglib-location>
-	  </taglib>
-	
-	  <taglib>
-	    <taglib-uri>struts-template.tld</taglib-uri>
-	    <taglib-location>/WEB-INF/tlds/struts-template.tld</taglib-location>
-	  </taglib>
-	
-	  <taglib>
-	    <taglib-uri>struts-tiles.tld</taglib-uri>
-	    <taglib-location>/WEB-INF/tlds/struts-tiles.tld</taglib-location>
-	  </taglib>
-	
-	  <taglib>
-	    <taglib-uri>libreria_SIGA.tld</taglib-uri>
-	    <taglib-location>/WEB-INF/tlds/libreria_SIGA.tld</taglib-location>
-	  </taglib>
-	
-		<taglib> 
-	    	<taglib-uri>fmt.tld</taglib-uri> 
-	    	<taglib-location>/WEB-INF/tlds/fmt.tld</taglib-location>
+			<taglib-uri>struts-bean.tld</taglib-uri>
+			<taglib-location>/WEB-INF/tlds/struts-bean.tld</taglib-location>
 		</taglib>
-		<taglib> 
-		    <taglib-uri>c.tld</taglib-uri> 
-		    <taglib-location>/WEB-INF/tlds/c.tld</taglib-location>
+
+		<taglib>
+			<taglib-uri>struts-html.tld</taglib-uri>
+			<taglib-location>/WEB-INF/tlds/struts-html.tld</taglib-location>
 		</taglib>
-		<taglib> 
-	    	<taglib-uri>displaytag.tld</taglib-uri> 
-	    	<taglib-location>/WEB-INF/tlds/displaytag-el.tld</taglib-location>
+
+		<taglib>
+			<taglib-uri>struts-logic.tld</taglib-uri>
+			<taglib-location>/WEB-INF/tlds/struts-logic.tld</taglib-location>
 		</taglib>
-		<taglib> 
-	    	<taglib-uri>ajaxtags.tld</taglib-uri> 
-	    	<taglib-location>/WEB-INF/tlds/ajaxtags.tld</taglib-location>
+
+		<taglib>
+			<taglib-uri>struts-nested.tld</taglib-uri>
+			<taglib-location>/WEB-INF/tlds/struts-nested.tld</taglib-location>
 		</taglib>
-		
-		
+
+		<taglib>
+			<taglib-uri>struts-template.tld</taglib-uri>
+			<taglib-location>/WEB-INF/tlds/struts-template.tld</taglib-location>
+		</taglib>
+
+		<taglib>
+			<taglib-uri>struts-tiles.tld</taglib-uri>
+			<taglib-location>/WEB-INF/tlds/struts-tiles.tld</taglib-location>
+		</taglib>
+
+		<taglib>
+			<taglib-uri>libreria_SIGA.tld</taglib-uri>
+			<taglib-location>/WEB-INF/tlds/libreria_SIGA.tld</taglib-location>
+		</taglib>
+
+		<taglib>
+			<taglib-uri>fmt.tld</taglib-uri>
+			<taglib-location>/WEB-INF/tlds/fmt.tld</taglib-location>
+		</taglib>
+		<taglib>
+			<taglib-uri>c.tld</taglib-uri>
+			<taglib-location>/WEB-INF/tlds/c.tld</taglib-location>
+		</taglib>
+		<taglib>
+			<taglib-uri>displaytag.tld</taglib-uri>
+			<taglib-location>/WEB-INF/tlds/displaytag-el.tld</taglib-location>
+		</taglib>
+		<taglib>
+			<taglib-uri>ajaxtags.tld</taglib-uri>
+			<taglib-location>/WEB-INF/tlds/ajaxtags.tld</taglib-location>
+		</taglib>
+
+
 	</jsp-config>
 </web-app>
