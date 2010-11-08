@@ -246,25 +246,6 @@ public class InformeColegiadosPagos extends MasterReport {
 			
 			
 			//Direccion de la sociedad o persona
-		    /*sql=
-		    	"select D.DOMICILIO, D.CODIGOPOSTAL," +
-		    	"(select p.nombre from cen_poblaciones p where p.idpoblacion=d.idpoblacion) POBLACION," +
-		    	"(select p.nombre from cen_provincias p where p.idprovincia=d.idprovincia) PROVINCIA" +
-		    	"  from CEN_DIRECCIONES D, CEN_DIRECCION_TIPODIRECCION DTD" +
-		    	" where D.IDDIRECCION = DTD.IDDIRECCION  " +
-		    	"   and D.IDINSTITUCION = DTD.IDINSTITUCION   " +
-		    	"   and D.IDPERSONA = DTD.IDPERSONA    " +
-		    	//"   and D.PREFERENTE LIKE '%C%'   " +
-		    	"   and DTD.IDTIPODIRECCION = 2   " +
-				"   and d.fechabaja is null"+
-		    	"   and D.IDPERSONA = " +idSociedad;
-			rc = new RowsContainer();
-			rc.find(sql);
-			if(rc!=null && rc.size()>0){
-				Row r=(Row)rc.get(0);
-				result.putAll(r.getRow());
-			}*/
-			
 			 String direccion="";
 				 direccion=this.getDireccionCartaPago(idSociedad,idInstitucion,"C");// buscamos una direccion preferente correo
 				 rc = new RowsContainer();
@@ -319,7 +300,7 @@ public class InformeColegiadosPagos extends MasterReport {
 			if (!(idCuenta.equals(""))){
 				// Datos Bancarios de la sociedad o persona
 		    sql=
-		    	"SELECT DECODE(CUEN.NUMEROCUENTA,NULL,'',CUEN.CBO_CODIGO||' '||CUEN.CODIGOSUCURSAL||' '||CUEN.DIGITOCONTROL||' '||CUEN.NUMEROCUENTA||' '|| substr(BAN.NOMBRE,6)) CUENTA_CORRIENTE" +
+		    	"SELECT DECODE(CUEN.NUMEROCUENTA,NULL,'',CUEN.CBO_CODIGO||' '||CUEN.CODIGOSUCURSAL||' '||CUEN.DIGITOCONTROL||' '||CUEN.NUMEROCUENTA||' '|| Decode(Substr(Ban.Nombre, 1), '~', '', Ban.Nombre)) CUENTA_CORRIENTE" +
 		    	"  FROM CEN_CUENTASBANCARIAS CUEN, CEN_BANCOS BAN" +
 		    	" WHERE BAN.CODIGO = CUEN.CBO_CODIGO " +
 		    	"   AND CUEN.FECHABAJA IS NULL " +
@@ -333,22 +314,6 @@ public class InformeColegiadosPagos extends MasterReport {
 				result.putAll(r.getRow());
 			}
 			}else result.put("CUENTA_CORRIENTE","");
-
-			// Datos Bancarios de la sociedad o persona
-		 /*  sql=
-		    	"SELECT DECODE(CUEN.NUMEROCUENTA,NULL,'',CUEN.CBO_CODIGO||' '||CUEN.CODIGOSUCURSAL||' '||CUEN.DIGITOCONTROL||' '||CUEN.NUMEROCUENTA||' '|| substr(BAN.NOMBRE,6)) CUENTA_CORRIENTE" +
-		    	"  FROM CEN_CUENTASBANCARIAS CUEN, CEN_BANCOS BAN" +
-		    	" WHERE BAN.CODIGO = CUEN.CBO_CODIGO " +
-		    	"   AND CUEN.FECHABAJA IS NULL " +
-		    	"   AND CUEN.ABONOSJCS = 1" +
-		    	"   AND CUEN.IDINSTITUCION = "+idInstitucion+
-		    	"   AND CUEN.IDPERSONA = " +idSociedad;
-			rc = new RowsContainer();
-			rc.find(sql);
-			if(rc!=null && rc.size()>0){
-				Row r=(Row)rc.get(0);
-				result.putAll(r.getRow());
-			}*/
 			
 		} catch (Exception e) {
 			throw new ClsExceptions(e,"Error al generar el informe");
