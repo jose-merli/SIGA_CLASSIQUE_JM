@@ -69,7 +69,7 @@
 		<!-- FIN: SCRIPTS BOTONES -->
 	</head>
 	
-	<body>
+	<body onload="buscar();">
 		
 			<html:form action="/EXP_MantenerTiposExpedientes.do" method="POST" target="submitArea" style="display:none">
 				<html:hidden property = "modo" value = ""/>
