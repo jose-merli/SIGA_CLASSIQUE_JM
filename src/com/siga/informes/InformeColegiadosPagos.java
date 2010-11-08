@@ -300,7 +300,7 @@ public class InformeColegiadosPagos extends MasterReport {
 			if (!(idCuenta.equals(""))){
 				// Datos Bancarios de la sociedad o persona
 		    sql=
-		    	"SELECT DECODE(CUEN.NUMEROCUENTA,NULL,'',CUEN.CBO_CODIGO||' '||CUEN.CODIGOSUCURSAL||' '||CUEN.DIGITOCONTROL||' '||CUEN.NUMEROCUENTA||' '|| Decode(Substr(Ban.Nombre, 1), '~', '', Ban.Nombre)) CUENTA_CORRIENTE" +
+		    	"SELECT DECODE(CUEN.NUMEROCUENTA,NULL,'',CUEN.CBO_CODIGO||' '||CUEN.CODIGOSUCURSAL||' '||CUEN.DIGITOCONTROL||' '||CUEN.NUMEROCUENTA||' '|| Decode(Substr(Ban.Nombre, 1, 1), '~', '', Ban.Nombre)) CUENTA_CORRIENTE" +
 		    	"  FROM CEN_CUENTASBANCARIAS CUEN, CEN_BANCOS BAN" +
 		    	" WHERE BAN.CODIGO = CUEN.CBO_CODIGO " +
 		    	"   AND CUEN.FECHABAJA IS NULL " +
