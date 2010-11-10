@@ -459,11 +459,15 @@ public class MantenimientoPrevisionesAction extends MasterAction {
 		        	
 					//////////////////////////////////
 					// cambio de estado
+		        	
 					FcsFactEstadosFacturacionBean beanEstado = new FcsFactEstadosFacturacionBean();
+					String idOrdenEstado= admEstado.getIdordenestadoMaximo(idInstitucion, idFacturacion);
+					admEstado.insert(beanEstado);
 					beanEstado.setIdInstitucion(new Integer(idInstitucion));
 					beanEstado.setIdFacturacion(new Integer(idFacturacion));
 					beanEstado.setIdEstadoFacturacion(new Integer(ClsConstants.ESTADO_FACTURACION_EJECUTADA));
 					beanEstado.setFechaEstado("SYSDATE");
+					beanEstado.setIdOrdenEstado(new Integer(idOrdenEstado));
 					admEstado.insert(beanEstado);
 					
 					// Exportacion de datos a EXCEL

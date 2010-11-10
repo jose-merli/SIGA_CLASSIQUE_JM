@@ -33,7 +33,8 @@ public class FcsFactEstadosFacturacionAdm extends MasterBeanAdministrador {
 							FcsFactEstadosFacturacionBean.C_IDINSTITUCION,
 							FcsFactEstadosFacturacionBean.C_FECHAMODIFICACION,
 							FcsFactEstadosFacturacionBean.C_USUMODIFICACION,
-							FcsFactEstadosFacturacionBean.C_FECHAESTADO};
+							FcsFactEstadosFacturacionBean.C_FECHAESTADO,
+							FcsFactEstadosFacturacionBean.C_IDORDENESTADO};
 		return campos;
 	}
 
@@ -56,6 +57,7 @@ public class FcsFactEstadosFacturacionAdm extends MasterBeanAdministrador {
 			bean.setIdFacturacion(UtilidadesHash.getInteger(hash,FcsFactEstadosFacturacionBean.C_IDFACTURACION));
 			bean.setFechaMod(UtilidadesHash.getString(hash,FcsFactEstadosFacturacionBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,FcsFactEstadosFacturacionBean.C_USUMODIFICACION));
+			bean.setIdOrdenEstado(UtilidadesHash.getInteger(hash,FcsFactEstadosFacturacionBean.C_IDORDENESTADO));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -75,6 +77,7 @@ public class FcsFactEstadosFacturacionAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, FcsFactEstadosFacturacionBean.C_FECHAMODIFICACION, 		b.getFechaMod());
 			UtilidadesHash.set(htData, FcsFactEstadosFacturacionBean.C_FECHAESTADO, 		b.getFechaEstado());
 			UtilidadesHash.set(htData, FcsFactEstadosFacturacionBean.C_USUMODIFICACION, 		b.getUsuMod());
+			UtilidadesHash.set(htData, FcsFactEstadosFacturacionBean.C_IDORDENESTADO, 		b.getIdOrdenEstado());
 		}
 		catch (Exception e) {
 			htData = null;
@@ -157,5 +160,31 @@ public class FcsFactEstadosFacturacionAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Excepcion en FcsFactEstadosFacturacionAdm.selectGenerico(). Consulta SQL:"+select);
 		}
 		return datos;	
+	}
+	
+	public String getIdordenestadoMaximo (String idInstitucion, String idFacturacion) throws ClsExceptions {
+		
+		String consulta=null; 
+		String idordenmax=null;
+		RowsContainer rc = null;
+		int contador = 0;
+		
+		try {
+			//Obtengo la fecha mas reciente:
+			rc = new RowsContainer();
+			consulta = " Select max("+FcsFactEstadosFacturacionBean.C_IDORDENESTADO+")+1 as IDORDENESTADO"+
+					" FROM "+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+
+					" WHERE "+FcsFactEstadosFacturacionBean.C_IDINSTITUCION+"="+idInstitucion+
+					" AND "+FcsFactEstadosFacturacionBean.C_IDFACTURACION+"="+idFacturacion;	
+			
+			if (rc.query(consulta)) {
+				Row fila = (Row) rc.get(0);										
+				idordenmax = fila.getString(FcsFactEstadosFacturacionBean.C_IDORDENESTADO);	
+			}
+		}catch (Exception e) { 	
+			throw new ClsExceptions (e, "Error al ejecutar el 'select' en la funcion getIdordenestadoMaximo() en B.D."); 
+		}		
+		return idordenmax;		
+	
 	}
 }

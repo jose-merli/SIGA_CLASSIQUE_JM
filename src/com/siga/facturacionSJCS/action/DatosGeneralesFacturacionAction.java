@@ -326,22 +326,24 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 		try 
 		{ 
 			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+			FcsFactEstadosFacturacionAdm admEstado = new FcsFactEstadosFacturacionAdm(usr);
 			
 			tx = usr.getTransactionPesada();
 			
 			DatosGeneralesFacturacionForm miform = (DatosGeneralesFacturacionForm)formulario;
 			String idFacturacion = miform.getIdFacturacion();
 			String idInstitucion = usr.getLocation(); 
+			String idOrdenEstado= admEstado.getIdordenestadoMaximo(idInstitucion, idFacturacion);			
 			
 			tx.begin();
-			// admFac.ejecutarFacturacion(idInstitucion,idFacturacion,tx);
-			FcsFactEstadosFacturacionAdm admEstado = new FcsFactEstadosFacturacionAdm(usr);
+			// admFac.ejecutarFacturacion(idInstitucion,idFacturacion,tx);			
 			FcsFactEstadosFacturacionBean beanEstado = null;
 			beanEstado = new FcsFactEstadosFacturacionBean();
 			beanEstado.setIdInstitucion(new Integer(idInstitucion));
 			beanEstado.setIdFacturacion(new Integer(idFacturacion));
 			beanEstado.setIdEstadoFacturacion(new Integer(ClsConstants.ESTADO_FACTURACION_PROGRAMADA));
 			beanEstado.setFechaEstado("SYSDATE");
+			beanEstado.setIdOrdenEstado(new Integer(idOrdenEstado));
 			admEstado.insert(beanEstado);
 			tx.commit();
 		    // Notificación
@@ -440,6 +442,10 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			facturaPrueba.setIdInstitucion(Integer.valueOf((String)usr.getLocation()));
 			facturaPrueba.setIdFacturacion(Integer.valueOf((String)datos.get("IDFACTURACION")));
 
+			
+			String localizacion=usr.getLocation();
+			String idfacturacion=((String)datos.get("IDFACTURACION"));
+			
 			//preparamos la insercion en estados fact
 			Hashtable estado = new Hashtable();
 			estado.put(FcsFactEstadosFacturacionBean.C_IDFACTURACION , datos.get("IDFACTURACION"));
@@ -448,6 +454,7 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			estado.put(FcsFactEstadosFacturacionBean.C_IDESTADOFACTURACION, String.valueOf(ClsConstants.ESTADO_FACTURACION_ABIERTA));
 			estado.put(FcsFactEstadosFacturacionBean.C_IDINSTITUCION, usr.getLocation());
 			estado.put(FcsFactEstadosFacturacionBean.C_USUMODIFICACION , usr.getUserName());
+			estado.put(FcsFactEstadosFacturacionBean.C_IDORDENESTADO , "1");//al inicio sera un uno ya que sera el primero
 			
 			if(!facturacionAdm.insert(datos))
 				throw new SIGAException(facturacionAdm.getError());
@@ -729,22 +736,24 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 		try 
 		{ 
 			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+			FcsFactEstadosFacturacionAdm admEstado = new FcsFactEstadosFacturacionAdm(usr);
 			
 			tx = usr.getTransactionPesada();
 			
 			DatosGeneralesFacturacionForm miform = (DatosGeneralesFacturacionForm)formulario;
 			String idFacturacion = miform.getIdFacturacion();
 			String idInstitucion = usr.getLocation(); 
-			
+			String idOrdenEstado= admEstado.getIdordenestadoMaximo(idInstitucion, idFacturacion);
 			tx.begin();
 			// admFac.ejecutarFacturacion(idInstitucion,idFacturacion,tx);
-			FcsFactEstadosFacturacionAdm admEstado = new FcsFactEstadosFacturacionAdm(usr);
+			
 			FcsFactEstadosFacturacionBean beanEstado = null;
 			beanEstado = new FcsFactEstadosFacturacionBean();
 			beanEstado.setIdInstitucion(new Integer(idInstitucion));
 			beanEstado.setIdFacturacion(new Integer(idFacturacion));
 			beanEstado.setIdEstadoFacturacion(new Integer(ClsConstants.ESTADO_FACTURACION_PROGRAMADA));
 			beanEstado.setFechaEstado("SYSDATE");
+			beanEstado.setIdOrdenEstado(new Integer(idOrdenEstado));
 			admEstado.insert(beanEstado);
 			tx.commit();
 		    // Notificación

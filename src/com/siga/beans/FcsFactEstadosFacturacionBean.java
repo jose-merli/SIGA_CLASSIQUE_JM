@@ -12,8 +12,8 @@ package com.siga.beans;
 public class FcsFactEstadosFacturacionBean extends MasterBean {
 	
 	/* Variables */
-	private Integer idInstitucion, idEstadoFacturacion, idFacturacion;
-	
+	private Integer idInstitucion, idEstadoFacturacion, idFacturacion,idOrdenEstado;	
+
 	private String 	fechaEstado;
 
 	/* Nombre tabla */
@@ -26,6 +26,7 @@ public class FcsFactEstadosFacturacionBean extends MasterBean {
 	static public final String C_FECHAESTADO			= "FECHAESTADO";
 	static public final String C_FECHAMODIFICACION			= "FECHAMODIFICACION";
 	static public final String C_USUMODIFICACION			= "USUMODIFICACION";
+	static public final String C_IDORDENESTADO			= "IDORDENESTADO";
 	
 
 	/**
@@ -67,5 +68,12 @@ public class FcsFactEstadosFacturacionBean extends MasterBean {
 	 */
 	public void setFechaEstado(String dato) {
 		this.fechaEstado = dato;
+	}
+	
+	public Integer getIdOrdenEstado() {
+		return idOrdenEstado;
+	}
+	public void setIdOrdenEstado(Integer idOrdenEstado) {
+		this.idOrdenEstado = idOrdenEstado;
 	}
 }
