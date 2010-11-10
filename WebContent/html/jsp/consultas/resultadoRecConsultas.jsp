@@ -74,7 +74,7 @@
 		   		  clase="tableTitle"
 		   		  nombreCol="consultas.recuperarconsulta.literal.descripcion,
 		   		  consultas.recuperarconsulta.literal.modulo,"
-		   		  tamanoCol="57,30,13"
+		   		  tamanoCol="15,72,13"
 		   		  alto="100%" 
 		   		  activarFilaSel="true" >
 	   		     		    		  
@@ -119,8 +119,8 @@
 						<input type="hidden" name="oculto<%=""+(i+1)%>_2" value="<%=fila.getString(ConConsultaBean.C_IDCONSULTA)%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_3" value="<%=fila.getString(ConConsultaBean.C_TIPOCONSULTA)%>">	
 						<input type="hidden" name="oculto<%=""+(i+1)%>_4" value="<%=fila.getString(ConConsultaBean.C_ESEXPERTA)%>">				
-					<td><%=fila.getString(ConConsultaBean.C_DESCRIPCION)%></td>
 					<td><%=fila.getString(ConModuloBean.C_NOMBRE)%></td>
+					<td><%=fila.getString(ConConsultaBean.C_DESCRIPCION)%></td>
 				</siga:FilaConIconos>
 <%
 					}
