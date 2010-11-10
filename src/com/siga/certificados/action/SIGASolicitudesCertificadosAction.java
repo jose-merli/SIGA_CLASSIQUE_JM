@@ -55,6 +55,11 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 	                mapDestino = enviar(mapping, miForm, request, response);
 	            } 
 	            
+	            else if (accion.equalsIgnoreCase("ver")){
+	            	// Para no repetir un metodo igual que editar usamos el mismo
+	                mapDestino = editar(mapping, miForm, request, response);
+	            }
+	            
 	            else if (accion.equalsIgnoreCase("denegar"))
 	            {
 	                mapDestino = denegar(mapping, miForm, request, response);
@@ -467,6 +472,10 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException
 	{
     	try{
+    		MasterForm miForm = (MasterForm) formulario;
+    		String accion = miForm.getModo();
+    		request.setAttribute("modo", accion);
+    		
 	        SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm)formulario;
 	        CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.getUserBean(request));
 	        Vector vOcultos = form.getDatosTablaOcultos(0);
@@ -606,6 +615,8 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		}		    
 		return "mostrar";
 	}
+	
+	
 
 	/**
 	 * generarVariosPDF. Este modo lo que hace ahora es coger todos los ids y generarlos. Para ellos coge su plantilla si es que está configurada y

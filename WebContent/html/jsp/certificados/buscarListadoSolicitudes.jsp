@@ -563,7 +563,7 @@
 		   		  			certificados.solicitudes.literal.institucionOrigenLista,
 		   		  			certificados.solicitudes.literal.institucionDestino,
 		   		  			certificados.solicitudes.literal.estadocertificado,"
-		   		   tamanoCol="3,7,7,8,13,10,10,10,8,24"
+		   		   tamanoCol="3,7,7,8,11,10,10,10,7,27"
 		   		  alto="100%"
 		   		  modal="G"
 	   		  	  activarFilaSel="true" 
@@ -582,7 +582,7 @@
 				{
 			 		for (int i=0; i<resultado.size(); i++)
 			   		{
-			   			String botones = "E,B";
+			   			String botones = "C,E,B";
 				  		//Row htDatos = (Row)vDatos.elementAt(i);
 						
 						Row fila = (Row)resultado.elementAt(i);

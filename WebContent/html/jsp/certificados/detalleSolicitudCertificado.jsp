@@ -24,20 +24,15 @@
 	String idInstitucion = userBean.getLocation();
 	int institucion = Integer.parseInt(idInstitucion);
 	
-	Properties src = (Properties) ses
-			.getAttribute(SIGAConstants.STYLESHEET_REF);
-	CerSolicitudCertificadosBean beanSolicitud = (CerSolicitudCertificadosBean) request
-			.getAttribute("solicitud");
-	CenInstitucionBean beanInstitucionOrigen = (CenInstitucionBean) request
-			.getAttribute("institucionOrigen");
-	CenInstitucionBean beanInstitucionDestino = (CenInstitucionBean) request
-			.getAttribute("institucionDestino");
-	String modificarSolicitud = (String) request
-			.getAttribute("modificarSolicitud");
-	String idEstadoSolicitud = (String) request
-			.getAttribute("idEstadoSolicitud");
-	String tipoCertificado = (String) request
-			.getAttribute("tipoCertificado");
+	String modo=(String)request.getAttribute("modo");
+	
+	Properties src = (Properties) ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	CerSolicitudCertificadosBean beanSolicitud = (CerSolicitudCertificadosBean) request.getAttribute("solicitud");
+	CenInstitucionBean beanInstitucionOrigen = (CenInstitucionBean) request.getAttribute("institucionOrigen");
+	CenInstitucionBean beanInstitucionDestino = (CenInstitucionBean) request.getAttribute("institucionDestino");
+	String modificarSolicitud = (String) request.getAttribute("modificarSolicitud");
+	String idEstadoSolicitud = (String) request.getAttribute("idEstadoSolicitud");
+	String tipoCertificado = (String) request.getAttribute("tipoCertificado");
 
 	boolean isSolicitudColegio = beanSolicitud.getIdInstitucion_Sol().intValue()!=2000 && !String.valueOf(beanSolicitud.getIdInstitucion_Sol()).substring(0,2).equals("30"); 
 	String comboInstituciones = "cmbInstitucionesAbreviadas";
@@ -58,8 +53,7 @@
 		
 	ArrayList idInstitucionPresentador = new ArrayList();
 	if (beanInstitucionOrigen != null) {
-		idInstitucionPresentador.add(beanInstitucionOrigen
-				.getIdInstitucion().toString());
+		idInstitucionPresentador.add(beanInstitucionOrigen.getIdInstitucion().toString());
 	}
 	
 	ArrayList aMetodoSol = new ArrayList();
@@ -67,8 +61,7 @@
 
 	ArrayList idInstitucionDestino = new ArrayList();
 	if (beanInstitucionDestino != null) {
-		idInstitucionDestino.add(beanInstitucionDestino
-				.getIdInstitucion().toString());
+		idInstitucionDestino.add(beanInstitucionDestino.getIdInstitucion().toString());
 	}
 
 	String codigo = (String) request.getAttribute("codigo");
@@ -85,18 +78,15 @@
 	String sAbreviaturaInstitucionDestino = "";
 
 	if (beanInstitucionOrigen != null) {
-		sAbreviaturaInstitucionOrigen = beanInstitucionOrigen
-				.getAbreviatura();
+		sAbreviaturaInstitucionOrigen = beanInstitucionOrigen.getAbreviatura();
 	}
 
 	if (beanInstitucionDestino != null) {
-		sAbreviaturaInstitucionDestino = beanInstitucionDestino
-				.getAbreviatura();
+		sAbreviaturaInstitucionDestino = beanInstitucionDestino.getAbreviatura();
 	}
 	String deshabilitaCobro = "";
 	String deshabilitaDescarga = "";
-	if (idEstadoSolicitud
-			.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND)) {
+	if (idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND)) {
 		deshabilitaDescarga = "disabled";
 		deshabilitaCobro = "";
 
@@ -104,23 +94,35 @@
 			.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_APROBADO)) {
 		deshabilitaDescarga = "";
 		deshabilitaCobro = "";
-	} else if (idEstadoSolicitud
-			.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_DENEGADO)
-			|| idEstadoSolicitud
-					.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO)
-			|| idEstadoSolicitud
-					.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_ANULADO)) {
+	} else if (idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_DENEGADO)
+			|| idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO)
+			|| idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_ANULADO)) {
 		deshabilitaDescarga = "disabled";
 		deshabilitaCobro = "disabled";
 	}
 	String botones = "";
-	if (idEstadoSolicitud
-			.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_DENEGADO)
-			|| idEstadoSolicitud
-					.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_ANULADO)) {
+	if (idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_DENEGADO) 
+		|| idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_ANULADO) 
+		|| modo.equalsIgnoreCase("ver")) {
 		botones = "C";
 	} else {
 		botones = "Y,C";
+	}
+	
+	String tipoBox="box";
+	String stLectura="false";
+	boolean modoEditar=true;
+	String deshabilitaInfo="";
+	String deshabilitaChecks="";
+	if(modo.equalsIgnoreCase("ver")){
+		tipoBox="boxConsulta";
+		stLectura="true";
+		modoEditar=false;
+		deshabilitaDescarga = "disabled";
+		deshabilitaCobro = "disabled";
+		deshabilitaInfo = "disabled";
+		deshabilitaChecks = "disabled";
+		modificarSolicitud="0";
 	}
 
 	String nombreUltimoUsuMod = (String) request
@@ -291,227 +293,187 @@
 	<html:form action="/CER_GestionSolicitudes.do" method="POST"
 		target="submitArea">
 		<html:hidden property="modo" value="" />
-		<html:hidden property="idInstitucion"
-			value="<%=beanSolicitud.getIdInstitucion().toString() %>" />
-		<html:hidden property="idInstitucionSolicitud"
-			value="<%=String.valueOf(beanSolicitud.getIdInstitucion_Sol()) %>" />
-		<html:hidden property="buscarIdPeticionCompra"
-			value="<%=sIdCompra %>" />
+		<html:hidden property="idInstitucion" value="<%=beanSolicitud.getIdInstitucion().toString() %>" />
+		<html:hidden property="idInstitucionSolicitud" value="<%=String.valueOf(beanSolicitud.getIdInstitucion_Sol()) %>" />
+		<html:hidden property="buscarIdPeticionCompra" value="<%=sIdCompra %>" />
 			
 			
 		<html:hidden property="idSolicitud" value="<%=numSolicitud%>" />
 		<tr>
-			<td><siga:ConjCampos
-				leyenda="certificados.solicitudes.ventanaEdicion.datosSolicitud">
+			<td><siga:ConjCampos leyenda="certificados.solicitudes.ventanaEdicion.datosSolicitud">
 				<table class="tablaCampos" align="center">
 					<tr>
-						<td class="labelText" ><siga:Idioma
-							key="certificados.solicitudes.literal.numeroSolicitud" /></td>
+						<td class="labelText" ><siga:Idioma key="certificados.solicitudes.literal.numeroSolicitud" /></td>
 						<td class="labelTextValor"><%=numSolicitud%></td>
-						<td class="labelText" ><siga:Idioma
-							key="certificados.solicitudes.literal.numeroCertificado" /></td>
+						<td class="labelText" ><siga:Idioma key="certificados.solicitudes.literal.numeroCertificado" /></td>
 						<td class="labelTextValor"><%=codigo%></td>
-						<td class="labelText"><siga:Idioma
-							key="certificados.solicitudes.literal.fechaSolicitud" /></td>
+						<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.fechaSolicitud" /></td>
 						<td class="labelTextValor"><%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(userBean.getLanguage(), beanSolicitud.getFechaSolicitud()))%>
 						</td>
 					</tr>
 					<tr>
 					<% if (sIdCompra != null) { %>
-						<td class="labelText"><siga:Idioma
-							key="certificados.solicitudes.literal.idSolicitudCompra" /></td>
+						<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.idSolicitudCompra" /></td>
 						<td class="labelTextValor"><%=sIdCompra%></td>
 						<td colspan="2"></td>
 					<%}else{%>
 						<td colspan="4"></td>
 					<% } %>
-						<td class="labelText">
-							<siga:Idioma key="certificados.solicitudes.literal.metodoSolicitud"/>
-						</td>
+						<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.metodoSolicitud"/></td>
 						<td>
-							<siga:ComboBD nombre="metodoSolicitud" tipo="comboMetodoSolicitud" obligatorio="false" parametro="<%=parametros%>" ElementoSel="<%=aMetodoSol%>" clase="boxCombo"/>
+							<siga:ComboBD nombre="metodoSolicitud" tipo="comboMetodoSolicitud" obligatorio="false" parametro="<%=parametros%>" ElementoSel="<%=aMetodoSol%>" 
+								clase="<%=tipoBox%>" readonly="<%=stLectura%>"/>
 						</td>
 					</tr>
 					<tr>
-						<td class="labelText"><siga:Idioma
-							key="certificados.solicitudes.literal.colegioOrigen" />&nbsp;(*)
+						<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.colegioOrigen" />&nbsp;(*)
 						</td>
 						<td class="labelTextValor">
-						<%
-							if (modificarSolicitud.equals("1")) {
-						%> <siga:ComboBD
-							nombre="idInstitucionOrigen" tipo="<%=consultaOrigen%>" obligatorioSinTextoSeleccionar="true"
-							elementoSel="<%=idInstitucionPresentador%>" parametro="<%=parametros%>" clase="box"
-							filasMostrar="1" readonly="false" /> <%
- 	} else {
- %> 						<siga:ComboBD
+						<%if (modificarSolicitud.equals("1")) { %> 
+							<siga:ComboBD
+								nombre="idInstitucionOrigen" tipo="<%=consultaOrigen%>" obligatorioSinTextoSeleccionar="true"
+								elementoSel="<%=idInstitucionPresentador%>" parametro="<%=parametros%>" clase="<%=tipoBox%>"
+								filasMostrar="1" readonly="<%=stLectura%>" /> 
+						<%} else {%> 						
+							<siga:ComboBD
 								nombre="idInstitucionOrigen" tipo="<%=consultaOrigen%>" obligatorioSinTextoSeleccionar="true"
 								elementoSel="<%=idInstitucionPresentador%>" parametro="<%=parametros%>" clase="boxConsulta"
-								filasMostrar="1" readonly="true" /> <%
- 	}
- %>
+								filasMostrar="1" readonly="true" /> 
+						<%}%>
 						</td>
 						<td class="labelText">
-						<%
-							if (tipoCertificado.equals("C")) {
-						%> <siga:Idioma
-							key="certificados.solicitudes.literal.facturableA" /> <%
- 	} else {
- %> <siga:Idioma
-							key="certificados.solicitudes.literal.colegioDestino" /> <%
- 	}
- %>
+						<%if (tipoCertificado.equals("C")) {%> 
+							<siga:Idioma key="certificados.solicitudes.literal.facturableA" /> 
+						<%} else {%> 
+							<siga:Idioma key="certificados.solicitudes.literal.colegioDestino" /> 
+						<%}%>
 						</td>
 						<td class="labelTextValor">
-						<%
-							if (modificarSolicitud.equals("1")
-											&& !(idEstadoSolicitud
-													.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO))) {
-						%>
-						<siga:ComboBD nombre="idInstitucionDestino"
-							tipo="<%=consultaDestino%>"
-							elementoSel="<%=idInstitucionDestino%>" parametro="<%=parametros%>" clase="box"
-							filasMostrar="1" readonly="false" /> <%
- 	} else {
- %> 				<siga:ComboBD
-							nombre="idInstitucionDestino" tipo="<%=consultaDestino%>"
-							elementoSel="<%=idInstitucionDestino%>" parametro="<%=parametros%>"  clase="boxConsulta"
-							filasMostrar="1" readonly="true" /> <%
- 	}
- %>
+						<%if (modificarSolicitud.equals("1")
+							  && !(idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO))) {%>
+							<siga:ComboBD nombre="idInstitucionDestino"
+								tipo="<%=consultaDestino%>" elementoSel="<%=idInstitucionDestino%>" parametro="<%=parametros%>" 
+								clase="<%=tipoBox%>" filasMostrar="1" readonly="<%=stLectura%>" /> 
+						<%} else {%> 				
+							<siga:ComboBD
+								nombre="idInstitucionDestino" tipo="<%=consultaDestino%>"
+								elementoSel="<%=idInstitucionDestino%>" parametro="<%=parametros%>"  clase="boxConsulta"
+								filasMostrar="1" readonly="true" /> 
+						<%}%>
 						</td>
 					</tr>
 					<tr>
-
-
-										<td class="labelText">
-											<siga:Idioma key="certificados.solicitudes.literal.descripcion"/>
-										</td>				
-										<td colspan="3">
-											<html:textarea property="valor" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" value="<%=beanSolicitud.getDescripcion()%>" styleClass="boxConsulta" cols="100" rows="4" value="<%=beanSolicitud.getDescripcion()%>" readonly="true"/>
-										</td>
-										
+						<td class="labelText">
+							<siga:Idioma key="certificados.solicitudes.literal.descripcion"/>
+						</td>				
+						<td colspan="3">
+							<html:textarea property="valor" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" value="<%=beanSolicitud.getDescripcion()%>" styleClass="boxConsulta" cols="100" rows="4" value="<%=beanSolicitud.getDescripcion()%>" readonly="true"/>
+						</td>
 					</tr>
 				</table>
-			</siga:ConjCampos> <siga:ConjCampos
-				leyenda="certificados.solicitudes.ventanaEdicion.gestionSolicitud">
+			</siga:ConjCampos> 
+			<siga:ConjCampos leyenda="certificados.solicitudes.ventanaEdicion.gestionSolicitud">
 				<table class="tablaCampos" align="center" border="0">
 					<tr>
 						<td class="labelText"><siga:Idioma
 							key="certificados.solicitudes.literal.fechaEmision" /></td>
 						<td>
-						<%
-							if (modificarSolicitud.equals("1")) {
-						%> <html:text
-							name="SolicitudesCertificadosForm" style="width:80px"
-							property="fechaEmision" styleClass="box" readonly="true"
-							value="<%=GstDate.getFormatedDateShort(userBean.getLanguage(), beanSolicitud.getFechaEmisionCertificado()) %>">
-						</html:text> <a href='javascript://'
-							onClick="return showCalendarGeneral(fechaEmision);"><img
-							src="<%=app%>/html/imagenes/calendar.gif" border="0"></a> <%
- 	} else {
- %>
-						<html:text name="SolicitudesCertificadosForm" style="width:80px"
-							property="fechaEmision" styleClass="boxConsulta" readonly="true"
-							value="<%=GstDate.getFormatedDateShort(userBean.getLanguage(), beanSolicitud.getFechaEmisionCertificado()) %>">
-						</html:text> <%
- 	}
- %>
+						<%if (modificarSolicitud.equals("1")) {%> 
+							<html:text
+								name="SolicitudesCertificadosForm" style="width:80px"
+								property="fechaEmision" styleClass="<%=tipoBox %>" readonly="true"
+								value="<%=GstDate.getFormatedDateShort(userBean.getLanguage(), beanSolicitud.getFechaEmisionCertificado()) %>">
+							</html:text> 
+							<%if(modoEditar){%>
+								<a href='javascript://' onClick="return showCalendarGeneral(fechaEmision);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+							<%}%> 
+						<%} else {%>
+							<html:text name="SolicitudesCertificadosForm" style="width:80px" property="fechaEmision" styleClass="boxConsulta" readonly="true"
+								value="<%=GstDate.getFormatedDateShort(userBean.getLanguage(), beanSolicitud.getFechaEmisionCertificado()) %>">
+							</html:text> 
+						<%}%>
 						</td>
 					</tr>
 					<tr>
-						<td class="labelText"><siga:Idioma
-							key="certificados.solicitudes.literal.descargado" /></td>
-						<td><input type=checkbox name="checkDescarga"
-							onclick="validarCheckDescarga();" <%=deshabilitaDescarga%>
-							<%=(beanSolicitud.getFechaDescarga()!=null && !beanSolicitud.getFechaDescarga().trim().equals(""))?"checked":"" %>>
-						&nbsp;&nbsp;<html:text name="SolicitudesCertificadosForm"
-							property="fechaDescarga" styleClass="boxConsulta" readonly="true"
-							value="<%=GstDate.getFormatedDateShort(userBean.getLanguage(), beanSolicitud.getFechaDescarga()) %>"
-							size="10"></html:text></td>
-						<td class="labelText"><siga:Idioma
-							key="certificados.solicitudes.literal.cobrado" /></td>
-						<td><input type=checkbox name="checkCobro"
-							onclick="validarCheckCobro();" <%=deshabilitaCobro%>
-							<%=(beanSolicitud.getFechaCobro()!=null && !beanSolicitud.getFechaCobro().trim().equals(""))?"checked":"" %>>
-						&nbsp;&nbsp;<html:text name="SolicitudesCertificadosForm"
-							property="fechaCobro" styleClass="boxConsulta" readonly="true"
-							value="<%=GstDate.getFormatedDateShort(userBean.getLanguage(), beanSolicitud.getFechaCobro()) %>"
-							size="10"></html:text></td>
-						<td class="labelText"><siga:Idioma
-							key="certificados.solicitudes.literal.enviado" /></td>
-						<td><input type=checkbox name="checkEnvio" disabled
-							<%=(beanSolicitud.getFechaEnvio()!=null && !beanSolicitud.getFechaEnvio().trim().equals(""))?"checked":"" %>>
-						&nbsp;&nbsp;<html:text name="SolicitudesCertificadosForm"
-							property="fechaEnvio" styleClass="boxConsulta" readonly="true"
-							value="<%=GstDate.getFormatedDateShort(userBean.getLanguage(), beanSolicitud.getFechaEnvio()) %>"
-							size="10"></html:text></td>
+						<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.descargado" /></td>
+						<td>
+							<input type=checkbox name="checkDescarga" onclick="validarCheckDescarga();" <%=deshabilitaDescarga%> <%=(beanSolicitud.getFechaDescarga()!=null && !beanSolicitud.getFechaDescarga().trim().equals(""))?"checked":"" %>>
+							&nbsp;&nbsp;
+							<html:text name="SolicitudesCertificadosForm" property="fechaDescarga" styleClass="boxConsulta" readonly="true"
+								value="<%=GstDate.getFormatedDateShort(userBean.getLanguage(), beanSolicitud.getFechaDescarga()) %>"
+								size="10"></html:text>
+						</td>
+						<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.cobrado" /></td>
+						<td>
+							<input type=checkbox name="checkCobro" onclick="validarCheckCobro();" <%=deshabilitaCobro%>
+								<%=(beanSolicitud.getFechaCobro()!=null && !beanSolicitud.getFechaCobro().trim().equals(""))?"checked":"" %>>
+							&nbsp;&nbsp;
+							<html:text name="SolicitudesCertificadosForm"
+								property="fechaCobro" styleClass="boxConsulta" readonly="true"
+								value="<%=GstDate.getFormatedDateShort(userBean.getLanguage(), beanSolicitud.getFechaCobro()) %>"
+								size="10"></html:text>
+						</td>
+						<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.enviado" /></td>
+						<td>
+							<input type=checkbox name="checkEnvio" disabled <%=(beanSolicitud.getFechaEnvio()!=null && !beanSolicitud.getFechaEnvio().trim().equals(""))?"checked":"" %>>
+						&nbsp;&nbsp;
+							<html:text name="SolicitudesCertificadosForm"
+								property="fechaEnvio" styleClass="boxConsulta" readonly="true"
+								value="<%=GstDate.getFormatedDateShort(userBean.getLanguage(), beanSolicitud.getFechaEnvio()) %>"
+								size="10"></html:text>
+						</td>
 						<td class="labelText"><siga:Idioma
 							key="certificados.solicitudes.literal.entregadaInfoAdjunta" /></td>
-						<td><input type=checkbox name="checkInfoAdjunta"
-							onclick="fijarFechaEntregaInfo();" 
-							<%=(beanSolicitud.getFechaEntregaInfo()!=null && !beanSolicitud.getFechaEntregaInfo().trim().equals(""))?"checked":"" %>>
-						&nbsp;&nbsp;<html:text name="SolicitudesCertificadosForm"
-							property="fechaEntregaInfo" styleClass="boxConsulta"
-							readonly="true"
-							value="<%=GstDate.getFormatedDateShort(userBean.getLanguage(), beanSolicitud.getFechaEntregaInfo()) %>"
+						<td>
+							<input type=checkbox name="checkInfoAdjunta" onclick="fijarFechaEntregaInfo();" <%=deshabilitaInfo%>
+								<%=(beanSolicitud.getFechaEntregaInfo()!=null && !beanSolicitud.getFechaEntregaInfo().trim().equals(""))?"checked":"" %>>
+						&nbsp;&nbsp;
+							<html:text name="SolicitudesCertificadosForm"
+								property="fechaEntregaInfo" styleClass="boxConsulta" readonly="true" 
+								value="<%=GstDate.getFormatedDateShort(userBean.getLanguage(), beanSolicitud.getFechaEntregaInfo()) %>"
 							size="10"></html:text></td> 
 					</tr>
 					<tr>
-						<td class="labelText" colspan="4"><siga:Idioma
-							key="certificados.solicitudes.literal.ultimoUsuMod" />
-						&nbsp;&nbsp; <span class="boxConsulta"><%=nombreUltimoUsuMod%></span>
+						<td class="labelText" colspan="4">
+							<siga:Idioma key="certificados.solicitudes.literal.ultimoUsuMod" />
+						&nbsp;&nbsp; 
+							<span class="boxConsulta"><%=nombreUltimoUsuMod%></span>
 						</td>
-						<td class="labelText" colspan="4"><siga:Idioma
-							key="certificados.solicitudes.literal.ultimaFechaMod" />
-						&nbsp;&nbsp; <span class="boxConsulta"> <%=UtilidadesString.mostrarDatoJSP(GstDate
-									.getFormatedDateShort(userBean
-											.getLanguage(), beanSolicitud
-											.getFechaMod()))%>
-						</span></td>
+						<td class="labelText" colspan="4">
+							<siga:Idioma key="certificados.solicitudes.literal.ultimaFechaMod" />
+						&nbsp;&nbsp; 
+							<span class="boxConsulta"> <%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(userBean.getLanguage(), beanSolicitud.getFechaMod()))%></span>
+						</td>
 					</tr>
 				</table>
-			</siga:ConjCampos> <siga:ConjCampos
-				leyenda="certificados.solicitudes.ventanaEdicion.sanciones">
+			</siga:ConjCampos> 
+			<siga:ConjCampos leyenda="certificados.solicitudes.ventanaEdicion.sanciones">
 				<table class="tablaCampos" align="center" border="0" cellspacing="0">
 					<tr>
-
-
 						<td width="25%">&nbsp;</td>
 						<td width="25">&nbsp;</td>
-						<td class="labelText"><siga:Idioma
-							key="certificados.solicitudes.ventanaEdicion.textoSanciones" /></td>
-						<td class="labelText"><siga:Idioma
-							key="certificados.solicitudes.ventanaEdicion.comentario" /></td>
+						<td class="labelText"><siga:Idioma key="certificados.solicitudes.ventanaEdicion.textoSanciones" /></td>
+						<td class="labelText"><siga:Idioma key="certificados.solicitudes.ventanaEdicion.comentario" /></td>
 					</tr>
 					<tr>
-						<td><siga:ConjCampos
-							leyenda="certificados.solicitudes.ventanaEdicion.estadosColegiales">
-							<table class="tablaCampos" align="center" border="0"
-								cellspacing="0">
-
+						<td><siga:ConjCampos leyenda="certificados.solicitudes.ventanaEdicion.estadosColegiales">
+							<table class="tablaCampos" align="center" border="0" cellspacing="0">
 								<tr>
-									<td class="labelText"><siga:Idioma
-										key="certificados.solicitudes.ventanaEdicion.incluirLiteratura" />
-									<html:checkbox property="incluirLiteratura" /></td>
+									<td class="labelText"><siga:Idioma key="certificados.solicitudes.ventanaEdicion.incluirLiteratura" />
+									<html:checkbox property="incluirLiteratura" disabled="<%=!modoEditar%>"/></td>
 									<td></td>
 								</tr>
-
 								<tr>
 									<td class="tdBotones">
-									<%
-										if (modificarSolicitud.equals("1")) {
-									%> <input type="button"
-										width="200"
+									<% if (modificarSolicitud.equals("1")) { %> 
+									<input type="button" width="200"
 										alt="<siga:Idioma key="certificados.solicitudes.literal.copiarHistorico"/>"
 										id="enviarSel" onclick="return copiarHistorico();"
 										name="idButton" class="button"
 										value="<siga:Idioma key="certificados.solicitudes.literal.copiarHistorico"/>">
-									<%
-										} else {
-									%> &nbsp; <%
- 	}
- %>
+									<%} else { %> 
+									&nbsp; 
+									<% } %>
 									</td>
 								</tr>
 								<tr>
@@ -599,11 +561,10 @@
 						<td>
 						<table>
 							<tr>
-								<td class="labelText"><siga:Idioma
-									key="certificados.solicitudes.ventanaEdicion.incluirDeudas" />
+								<td class="labelText">
+								<siga:Idioma key="certificados.solicitudes.ventanaEdicion.incluirDeudas" />
 								</td>
-								<td><html:checkbox property="incluirDeudas" /></td>
-
+								<td><html:checkbox property="incluirDeudas" disabled="<%=!modoEditar%>"/></td>
 							</tr>
 						</table>
 						</td>
@@ -612,10 +573,10 @@
 						<table>
 							<tr>
 
-								<td class="labelText"><siga:Idioma
-									key="certificados.solicitudes.ventanaEdicion.incluirSanciones" />
+								<td class="labelText">
+									<siga:Idioma key="certificados.solicitudes.ventanaEdicion.incluirSanciones" />
 								</td>
-								<td><html:checkbox property="incluirSanciones" /></td>
+								<td><html:checkbox property="incluirSanciones" disabled="<%=!modoEditar%>"/></td>
 							</tr>
 						</table>
 						</td>
