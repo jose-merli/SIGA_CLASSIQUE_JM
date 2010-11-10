@@ -197,15 +197,23 @@
 			String fechaEstado = UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usrbean.getLanguage(),registro.get("FECHAESTADO")));
 			String nomInstitucion = UtilidadesString.mostrarDatoJSP(registro.get(CenInstitucionBean.C_ABREVIATURA));
 			String regularizacion = UtilidadesString.mostrarDatoJSP(registro.get(FcsFacturacionJGBean.C_REGULARIZACION));
-
+			String borrarporGrupo = UtilidadesString.mostrarDatoJSP(registro.get("BORRAPORGRUPO"));
+			String borrarporEstado = UtilidadesString.mostrarDatoJSP(registro.get("BORRARPORESTADO"));
+			boolean borrarestado=false;
+			boolean borrargrupo=false;
 			// permisos de acceso
-			String permisos = "C";
-			if (idInstitucion.equals(usrbean.getLocation()) && !idestado.equals(new Integer(ClsConstants.ESTADO_FACTURACION_LISTA_CONSEJO).toString()) && !idestado.equals(new Integer(ClsConstants.ESTADO_FACTURACION_PROGRAMADA).toString()) && !idestado.equals(new Integer(ClsConstants.ESTADO_FACTURACION_EN_EJECUCION).toString())) {
-				permisos += ",B";
+			String permisos = "C";	
+			
+			if (borrarporGrupo.equals("1")&& borrarporEstado.equals("1")){//se puede borrar por grupo y por estado
+				permisos += ",B";			
 			}
+			
 			if (idInstitucion.equals(usrbean.getLocation()) && (idestado.equals(new Integer(ClsConstants.ESTADO_FACTURACION_ABIERTA).toString()) || idestado.equals(new Integer(ClsConstants.ESTADO_FACTURACION_EJECUTADA).toString()))) {
 				permisos += ",E";
 			}
+			
+			
+		 
 									
 %>
 			<!-- REGISTRO  -->

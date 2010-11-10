@@ -162,18 +162,40 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"         where est."+FcsFactEstadosFacturacionBean.C_IDESTADOFACTURACION+" = estados."+FcsEstadosFacturacionBean.C_IDESTADOFACTURACION+" " +
 				"       ) as DESESTADO, " +
 				"       est."+FcsFactEstadosFacturacionBean.C_IDESTADOFACTURACION+" as IDESTADO, " +
-				"       est."+FcsFactEstadosFacturacionBean.C_FECHAESTADO+" as FECHAESTADO " +
+				"       est."+FcsFactEstadosFacturacionBean.C_FECHAESTADO+" as FECHAESTADO, " +
+				"  Decode((Select Count(*)  "+
+                "            From Fcs_Facturacionjg       Facpos, "+
+                "            Fcs_Fact_Grupofact_Hito Grupos, "+
+                "            Fcs_Fact_Grupofact_Hito Gru " +
+                "            Where Fac.Idinstitucion = Gru.Idinstitucion "+
+                "            And Fac.Idfacturacion = Gru.Idfacturacion "+
+                "            And Facpos.Idinstitucion = Grupos.Idinstitucion "+
+                "            And Facpos.Idfacturacion = Grupos.Idfacturacion "+
+                "            And Facpos.Idinstitucion = Fac.Idinstitucion "+
+                "            And Facpos.prevision = Fac.prevision "+
+                "            And Facpos.Fechadesde > Fac.Fechadesde "+
+                "            And Grupos.Idgrupofacturacion =  Gru.Idgrupofacturacion "+
+                "            And Grupos.Idhitogeneral = Gru.Idhitogeneral), 0, '1','0') BORRAPORGRUPO, "  +
+                " (Select Decode(Est.Idestadofacturacion, 10,'1',20,'1','0') "+   
+                "         From Fcs_Fact_Estadosfacturacion Est "+
+                "          Where Fac.Idinstitucion = Est.Idinstitucion "+
+                "          And Fac.Idfacturacion = Est.Idfacturacion "+                          
+                "          And Est.Idordenestado = "+  
+                "             	(Select Max(Est2.Idordenestado) "+
+                " 		         From Fcs_Fact_Estadosfacturacion Est2 "+
+                "   		     Where Est2.Idinstitucion = Est.Idinstitucion "+
+                "           	 And Est2.Idfacturacion = Est.Idfacturacion)  And Rownum = 1) BORRARPORESTADO "+                           
 				"  from "+FcsFacturacionJGBean.T_NOMBRETABLA+" FAC, " +
 				"       "+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+" EST, " +
 				"       "+CenInstitucionBean.T_NOMBRETABLA+" INS " +
 				" where fac."+FcsFacturacionJGBean.C_IDINSTITUCION+" = EST."+FcsFactEstadosFacturacionBean.C_IDINSTITUCION+" " +
 				"   and fac."+FcsFacturacionJGBean.C_IDFACTURACION+" = EST."+FcsFactEstadosFacturacionBean.C_IDFACTURACION+" " +
-				"   and est."+FcsFactEstadosFacturacionBean.C_FECHAESTADO+" = " +
-				"       (select max(est2."+FcsFactEstadosFacturacionBean.C_FECHAESTADO+") " +
-				"          from "+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+" EST2 " +
-				"         where est2."+FcsFactEstadosFacturacionBean.C_IDINSTITUCION+" = est."+FcsFactEstadosFacturacionBean.C_IDINSTITUCION+" " +
+				"   and est."+FcsFactEstadosFacturacionBean.C_IDORDENESTADO+"="+
+				"         (Select Max(est2."+FcsFactEstadosFacturacionBean.C_IDORDENESTADO+") "+
+			    "            from "+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+" EST2 " +
+				"           where est2."+FcsFactEstadosFacturacionBean.C_IDINSTITUCION+" = est."+FcsFactEstadosFacturacionBean.C_IDINSTITUCION+" " +
 				"           and est2."+FcsFactEstadosFacturacionBean.C_IDFACTURACION+" = est."+FcsFactEstadosFacturacionBean.C_IDFACTURACION+" " +
-				"       ) " +
+				"       ) " +	                           
 				"   and fac."+FcsFacturacionJGBean.C_IDINSTITUCION+" = ins."+CenInstitucionBean.C_IDINSTITUCION+" " +
 				"   and fac."+FcsFacturacionJGBean.C_PREVISION+" = '"+ClsConstants.DB_FALSE+"'";
 			
@@ -265,15 +287,16 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 	 		  UtilidadesMultidioma.getCampoMultidioma(FcsEstadosFacturacionBean.T_NOMBRETABLA+"."+FcsEstadosFacturacionBean.C_DESCRIPCION,this.usrbean.getLanguage())+ ", "+
 	 		  " est."+FcsFactEstadosFacturacionBean.C_FECHAESTADO+ " " + FcsFactEstadosFacturacionBean.C_FECHAESTADO +
 	 		  " from  "+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+"  est, "+FcsEstadosFacturacionBean.T_NOMBRETABLA+" " + 
-			  " where est."+FcsFactEstadosFacturacionBean.C_FECHAESTADO+" = " +
-			  "		( select max(est2."+FcsFactEstadosFacturacionBean.C_FECHAESTADO+") " + 
-			  "     from "+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+" est2 " + 
-			  "     where est2."+FcsFactEstadosFacturacionBean.C_IDFACTURACION+"= "+idFacturacion + 
-			  "     and   est2."+FcsFactEstadosFacturacionBean.C_IDINSTITUCION+" = "+idInstitucion +" ) " + 
+			  " where est."+FcsFactEstadosFacturacionBean.C_IDORDENESTADO+" = " +
+			  "         (Select Max(est2."+FcsFactEstadosFacturacionBean.C_IDORDENESTADO+") "+
+			  "            from "+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+" EST2 " +
+			  "           where est2."+FcsFactEstadosFacturacionBean.C_IDINSTITUCION+" = est."+FcsFactEstadosFacturacionBean.C_IDINSTITUCION+" " +
+			  "           and est2."+FcsFactEstadosFacturacionBean.C_IDFACTURACION+" = est."+FcsFactEstadosFacturacionBean.C_IDFACTURACION+" " +
+			  "       ) " +	                          
 			  " and   est."+FcsFactEstadosFacturacionBean.C_IDFACTURACION+" = "+idFacturacion +
 			  " and   est."+FcsFactEstadosFacturacionBean.C_IDINSTITUCION+" = "+idInstitucion +
 			  " and   est."+FcsFactEstadosFacturacionBean.C_IDESTADOFACTURACION+" = "+ FcsEstadosFacturacionBean.T_NOMBRETABLA +"."+FcsEstadosFacturacionBean.C_IDESTADOFACTURACION;
-			 
+			
 			FcsEstadosFacturacionAdm adm = new FcsEstadosFacturacionAdm(this.usrbean);
 			rc = this.find(sql);
 			if (rc!=null) {
@@ -584,12 +607,13 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		" AND "+FcsFacturacionJGBean.C_REGULARIZACION+"='" + ClsConstants.DB_TRUE + "'" + 
 		" AND (SELECT "+FcsFactEstadosFacturacionBean.C_IDESTADOFACTURACION+" FROM "+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+
 		"	   WHERE "+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+"."+FcsFactEstadosFacturacionBean.C_IDINSTITUCION+"="+idInstitucion+
-		"	   AND "+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+"."+FcsFactEstadosFacturacionBean.C_IDFACTURACION+"="+idFacturacion + 
-		"      AND "+FcsFactEstadosFacturacionBean.C_FECHAESTADO+"=(" +
-		"                  SELECT MAX("+FcsFactEstadosFacturacionBean.C_FECHAESTADO+") FROM "+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+" EST2" +
+		"	   AND "+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+"."+FcsFactEstadosFacturacionBean.C_IDFACTURACION+"="+idFacturacion +
+		"  AND "+FcsFactEstadosFacturacionBean.C_IDORDENESTADO+" = " +
+		"         (Select Max(est2."+FcsFactEstadosFacturacionBean.C_IDORDENESTADO+") "+
+		"            from "+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+" EST2 " +
 		"				   WHERE EST2."+FcsFactEstadosFacturacionBean.C_IDINSTITUCION+"="+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+"."+FcsFactEstadosFacturacionBean.C_IDINSTITUCION+
 		"				   AND EST2."+FcsFactEstadosFacturacionBean.C_IDFACTURACION+"="+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+"."+FcsFactEstadosFacturacionBean.C_IDFACTURACION+"))<>"+ClsConstants.ESTADO_FACTURACION_LISTA_CONSEJO;
-		
+		                          
 		try {		
 			if (rc.query(sql)) {
 				if (rc!=null && rc.size()>0) {
@@ -622,12 +646,12 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		" AND "+FcsFacturacionJGBean.C_REGULARIZACION+"='" + ClsConstants.DB_TRUE + "'" + 
 		" AND (SELECT "+FcsFactEstadosFacturacionBean.C_IDESTADOFACTURACION+" FROM "+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+
 		"	   WHERE "+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+"."+FcsFactEstadosFacturacionBean.C_IDINSTITUCION+"="+idInstitucion+
-		"	   AND "+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+"."+FcsFactEstadosFacturacionBean.C_IDFACTURACION+"="+idFacturacion + 
-		"      AND "+FcsFactEstadosFacturacionBean.C_FECHAESTADO+"=(" +
-		"                  SELECT MAX("+FcsFactEstadosFacturacionBean.C_FECHAESTADO+") FROM "+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+" EST2" +
+		"	   AND "+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+"."+FcsFactEstadosFacturacionBean.C_IDFACTURACION+"="+idFacturacion +
+		"  AND "+FcsFactEstadosFacturacionBean.C_IDORDENESTADO+" = " +
+		"         (Select Max(est2."+FcsFactEstadosFacturacionBean.C_IDORDENESTADO+") "+
+		"            from "+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+" EST2 " +
 		"				   WHERE EST2."+FcsFactEstadosFacturacionBean.C_IDINSTITUCION+"="+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+"."+FcsFactEstadosFacturacionBean.C_IDINSTITUCION+
-		"				   AND EST2."+FcsFactEstadosFacturacionBean.C_IDFACTURACION+"="+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+"."+FcsFactEstadosFacturacionBean.C_IDFACTURACION+"))="+ClsConstants.ESTADO_FACTURACION_ABIERTA;
-		
+		"				   AND EST2."+FcsFactEstadosFacturacionBean.C_IDFACTURACION+"="+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+"."+FcsFactEstadosFacturacionBean.C_IDFACTURACION+"))="+ClsConstants.ESTADO_FACTURACION_ABIERTA;		                          
 		try {		
 			if (rc.query(sql)) {
 				if (rc!=null && rc.size()>0) {
@@ -716,10 +740,10 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			beanEstado.setIdFacturacion(nuevoIdFacturacion);
 			beanEstado.setIdInstitucion(new Integer(idInstitucion));
 			beanEstado.setFechaEstado("SYSDATE");
+			beanEstado.setIdOrdenEstado(1);//al inicio sera un uno ya que sera el primero
 //			beanEstado.setFechaMod("SYSDATE");
 //			beanEstado.setUsuMod(this.usuModificacion);
-			beanEstado.setIdEstadoFacturacion(new Integer(ClsConstants.ESTADO_FACTURACION_ABIERTA));
-			
+			beanEstado.setIdEstadoFacturacion(new Integer(ClsConstants.ESTADO_FACTURACION_ABIERTA));		
 			if (!admEstado.insert(beanEstado)) {
 				throw new SIGAException(this.getError());
 			}
@@ -1957,11 +1981,11 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			
 			" where fac.idinstitucion = est.idinstitucion " +
 			"   and fac.idfacturacion = est.idfacturacion " +
-			"   and est.fechaestado = " +
-			"       (select max(fechaestado) " +
-			"          from FCS_FACT_ESTADOSFACTURACION " +
-			"         where idinstitucion = est.idinstitucion " +
-			"           and idfacturacion = est.idfacturacion)" +
+			"  And est.Idordenestado = "+
+            "      (Select Max(Est2.Idordenestado) "+
+            "         From Fcs_Fact_Estadosfacturacion Est2 "+
+            "         Where Est2.Idinstitucion = est.Idinstitucion "+
+            "         And Est2.Idfacturacion = est.Idfacturacion) "+		
 			"   and fac.idinstitucion = ins.idinstitucion " +
 			"   and ins.cen_inst_idinstitucion = ins_con.idinstitucion " +
 			"   and fac.idinstitucion = "+idInstitucion+" " +
@@ -3971,11 +3995,13 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			//////////////////////////////////
 			// cambio de estado
 		    tx.begin();
+		    String idOrdenEstado= admEstado.getIdordenestadoMaximo(idInstitucion, idFacturacion);
 			beanEstado = new FcsFactEstadosFacturacionBean();
 			beanEstado.setIdInstitucion(new Integer(idInstitucion));
 			beanEstado.setIdFacturacion(new Integer(idFacturacion));
 			beanEstado.setIdEstadoFacturacion(new Integer(ClsConstants.ESTADO_FACTURACION_EN_EJECUCION));
-			beanEstado.setFechaEstado("SYSDATE");
+			beanEstado.setFechaEstado("SYSDATE");			
+			beanEstado.setIdOrdenEstado(new Integer(idOrdenEstado));
 			admEstado.insert(beanEstado);
 			tx.commit();
 			
@@ -4092,11 +4118,13 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			//////////////////////////////////
 			// cambio de estado
 			tx.begin();
+			idOrdenEstado= admEstado.getIdordenestadoMaximo(idInstitucion, idFacturacion);
 			beanEstado = new FcsFactEstadosFacturacionBean();
 			beanEstado.setIdInstitucion(new Integer(idInstitucion));
 			beanEstado.setIdFacturacion(new Integer(idFacturacion));
 			beanEstado.setIdEstadoFacturacion(new Integer(ClsConstants.ESTADO_FACTURACION_EJECUTADA));
 			beanEstado.setFechaEstado("SYSDATE");
+			beanEstado.setIdOrdenEstado(new Integer(idOrdenEstado));
 			Thread.sleep(1000);
 			admEstado.insert(beanEstado);
 			tx.commit();
@@ -4157,6 +4185,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 
 	    FcsFactEstadosFacturacionAdm admEstado = new FcsFactEstadosFacturacionAdm(this.usrbean);
 		FcsFactEstadosFacturacionBean beanEstado = null;
+		String idOrdenEstado="";
 
 	    SimpleDateFormat sdfLong = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); 
 		Date dat = Calendar.getInstance().getTime();
@@ -4177,11 +4206,13 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			//////////////////////////////////
 			// cambio de estado
 		    tx.begin();
+		    idOrdenEstado= admEstado.getIdordenestadoMaximo(idInstitucion, idFacturacion);
 			beanEstado = new FcsFactEstadosFacturacionBean();
 			beanEstado.setIdInstitucion(new Integer(idInstitucion));
 			beanEstado.setIdFacturacion(new Integer(idFacturacion));
 			beanEstado.setIdEstadoFacturacion(new Integer(ClsConstants.ESTADO_FACTURACION_EN_EJECUCION));
 			beanEstado.setFechaEstado("SYSDATE");
+			beanEstado.setIdOrdenEstado(new Integer(idOrdenEstado));			
 			admEstado.insert(beanEstado);
 			tx.commit();
 			
@@ -4284,11 +4315,13 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			//////////////////////////////////
 			// cambio de estado
 			tx.begin();
+			idOrdenEstado= admEstado.getIdordenestadoMaximo(idInstitucion, idFacturacion);
 			beanEstado = new FcsFactEstadosFacturacionBean();
 			beanEstado.setIdInstitucion(new Integer(idInstitucion));
 			beanEstado.setIdFacturacion(new Integer(idFacturacion));
 			beanEstado.setIdEstadoFacturacion(new Integer(ClsConstants.ESTADO_FACTURACION_EJECUTADA));
 			beanEstado.setFechaEstado("SYSDATE");
+			beanEstado.setIdOrdenEstado(new Integer(idOrdenEstado));
 			Thread.sleep(1000);
 			admEstado.insert(beanEstado);
 			tx.commit();
@@ -4360,20 +4393,20 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 	    		 		" WHERE F.IDINSTITUCION = E.IDINSTITUCION "+
 	    		 		" AND F.IDFACTURACION = E.IDFACTURACION "+
 	    		 		" AND E.IDESTADOFACTURACION =:1 "+
-	    		 		" AND E.IDINSTITUCION=:2 "+
-	    		 		" AND E.FECHAESTADO = "+
-	    		 		" (SELECT MAX(E2.FECHAESTADO) "+
-	    		 		" FROM FCS_FACT_ESTADOSFACTURACION E2 "+
-	    		 		" WHERE E2.IDINSTITUCION = E.IDINSTITUCION "+
-	    		 		" AND E2.IDFACTURACION = E.IDFACTURACION)" +
+	    		 		" AND E.IDINSTITUCION=:2 "+	    		 	
+	    		 		" AND E.IDORDENESTADO= "+
+	    		 		" (Select Max(Est2.IDORDENESTADO) "+
+	    		 		"	From FCS_FACT_ESTADOSFACTURACION Est2 "+
+	    		 		"   Where Est2.IDINSTITUCION = E.IDINSTITUCION "+
+	    		 		"   And Est2.IDFACTURACION = E.IDFACTURACION) "+	    		 		
 	    		 		" AND NOT EXISTS (" +
 	    		 		"         SELECT *" +
 	    		 		"           FROM FCS_FACT_ESTADOSFACTURACION ESTFAC" +
-	    		 		"          WHERE ESTFAC.FECHAESTADO =" +
-	    		 		"                (SELECT MAX(ESTFAC2.FECHAESTADO)" +
-	    		 		"                   FROM FCS_FACT_ESTADOSFACTURACION ESTFAC2" +
-	    		 		"                  WHERE ESTFAC2.IDINSTITUCION = ESTFAC.IDINSTITUCION" +
-	    		 		"                    AND ESTFAC2.IDFACTURACION = ESTFAC.IDFACTURACION)" +
+	    		 		"  WHERE  ESTFAC.IDORDENESTADO= "+
+	    		 		" (Select Max(Est2.IDORDENESTADO) "+
+	    		 		"	From FCS_FACT_ESTADOSFACTURACION Est2 "+
+	    		 		"   Where Est2.IDINSTITUCION = ESTFAC.IDINSTITUCION "+
+	    		 		"   And Est2.IDFACTURACION = ESTFAC.IDFACTURACION) "+	    		 		
 	    		 		"                    AND ESTFAC.IDESTADOFACTURACION = :3" +
 	    		 		"        )";
 			   

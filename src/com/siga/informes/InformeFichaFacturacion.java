@@ -123,12 +123,12 @@ public class InformeFichaFacturacion extends MasterReport {
 				"fcs_estadosfacturacion e,"+
 				"fcs_facturacionjg f2 "+
 				"where fe.Idinstitucion=f.Idinstitucion" +
-				"  and fe.Idfacturacion=f.Idfacturacion" +
-				"   and fe.fechaestado = " +
-				"       (select max(fe2.fechaestado) " +
-				"          from FCS_FACT_ESTADOSFACTURACION fe2 " +
-				"         where fe2.idinstitucion = fe.idinstitucion " +
-				"           and fe2.idfacturacion = fe.idfacturacion)" +				
+				"  and fe.Idfacturacion=f.Idfacturacion" +				
+				" And fe.Idordenestado = "+
+                "       (Select Max(Est2.Idordenestado) "+
+                "          From Fcs_Fact_Estadosfacturacion Est2 "+
+                "         Where Est2.Idinstitucion = fe.Idinstitucion "+
+                "           And Est2.Idfacturacion = fe.Idfacturacion) "+							
 				"  and fe.idestadofacturacion = e.idestadofacturacion"+
 				"  and f.Idinstitucion=f2.Idinstitucion(+)"+
 				"  and f.idfacturacion_regulariza = f2.idfacturacion(+)"+
