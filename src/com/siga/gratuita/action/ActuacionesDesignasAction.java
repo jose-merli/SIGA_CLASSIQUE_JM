@@ -377,91 +377,17 @@ public class ActuacionesDesignasAction extends MasterAction {
 			Vector visibles = (Vector)miform.getDatosTablaVisibles(0);
 			Vector ocultos = (Vector)miform.getDatosTablaOcultos(0);
 			Hashtable hashEJG = new Hashtable();
-			ScsEJGAdm ejgAdm = new ScsEJGAdm (this.getUserBean(request));
+			ScsEJGAdm ejgAdm = new ScsEJGAdm (this.getUserBean(request));		
+			Hashtable hashDatosDesigna= new Hashtable();			
+			UtilidadesHash.set(hashDatosDesigna,ScsDesignaBean.C_IDINSTITUCION, (String)usr.getLocation());
+			UtilidadesHash.set(hashDatosDesigna,ScsDesignaBean.C_ANIO, (String)designaActual.get("ANIO"));
+			UtilidadesHash.set(hashDatosDesigna,ScsDesignaBean.C_NUMERO, (String)designaActual.get("NUMERO"));
+			UtilidadesHash.set(hashDatosDesigna,ScsDesignaBean.C_IDTURNO, (String)designaActual.get("IDTURNO"));
+			UtilidadesHash.set(hashDatosDesigna,"VISIBLE",(String)visibles.get(1));		
 			
-			String consultaDesigna = " SELECT des.anio anio, des.numero numero, des.idturno idturno, des.idinstitucion idinstitucion,"+
-									" per.nombre nombre, per.apellidos1 apellido1, per.apellidos2 apellido2,"+
-									" col.ncolegiado ncolegiado, tur.nombre turno, des.fechaentrada fecha, des.FECHAANULACION, "+
-									" tur." + ScsTurnoBean.C_VALIDARJUSTIFICACIONES + " validarJustificaciones, " +
-									" des.codigo codigo, des.idjuzgado juzgado, des.idinstitucion_juzg institucionjuzgado, des.idprocedimiento procedimiento, "+
-									" (select nombre "+
-									" from scs_juzgado juz"+
-									" where juz.idinstitucion=des.idinstitucion_juzg "+
-									"  and  juz.idjuzgado=des.idjuzgado) nombrejuzgado, "+
-									" (select nombre "+
-									" from scs_procedimientos proc"+
-									" where proc.idinstitucion="+(String)usr.getLocation()+
-									"  and  proc.idprocedimiento=des.idprocedimiento) nombreprocedimiento , "+
-								    " ejgdesigna.anioejg anioejg, "+
-								    " ejgdesigna.idtipoejg idtipoejg, "+
-							        " ejgdesigna.numeroejg numeroejg"+
-									" FROM scs_designa des, cen_colegiado col, cen_persona per,scs_turno tur, scs_ejgdesigna ejgdesigna "+
-									" WHERE  per.idpersona = F_SIGA_GETIDLETRADO_DESIGNA("+(String)usr.getLocation()+","+(String)designaActual.get("IDTURNO")+","+ (String)designaActual.get("ANIO")+","+(String)designaActual.get("NUMERO")+")"+
-									" and col.idpersona = per.idpersona"+
-									" and col.idinstitucion = des.idinstitucion"+
-									" and tur.idinstitucion = des.idinstitucion"+									
-									" and tur.idturno = des.idturno"+
-									" and ejgdesigna.idinstitucion(+)=des.idinstitucion"+
-									" and ejgdesigna.idturno(+)=des.idturno"+
-									" and ejgdesigna.aniodesigna(+)=des.anio"+
-									" and ejgdesigna.numerodesigna(+)=des.numero"+
-									" and des."+ ScsDesignaBean.C_IDINSTITUCION +"="+(String)usr.getLocation()+
-									" and des."+ ScsDesignaBean.C_ANIO +"="+ (String)designaActual.get("ANIO")+
-									" and des."+ ScsDesignaBean.C_NUMERO +"="+ (String)designaActual.get("NUMERO")+
-									" and des."+ ScsDesignaBean.C_IDTURNO +"="+ (String)designaActual.get("IDTURNO")+" ";
-			
-			String consultaActuacion =" SELECT act.IDINSTITUCION idinstitucion, act.IDTURNO idturno, act.ANIO anio, act.NUMERO numero, act.NUMEROASUNTO numeroasunto, act.FECHA fechaactuacion"+
-									",act.FECHAJUSTIFICACION fechajustificacion, act.ACUERDOEXTRAJUDICIAL acuerdoextrajudicial"+ 
-									",tur.nombre turno, act.numeroasunto numeroasunto, act.observaciones observaciones,  act.observacionesjustificacion observacionesjustificacion,"+
-									" act.fechajustificacion fechajustificacion,act.acuerdoextrajudicial acuerdoextrajudicial, act.lugar lugar, act.anulacion anulacion, act.numeroasunto numeroasunto"+
-									",act."+ScsActuacionDesignaBean.C_IDCOMISARIA+
-									",act."+ScsActuacionDesignaBean.C_IDINSTITUCIONCOMISARIA+
-									",act."+ScsActuacionDesignaBean.C_IDJUZGADO+
-									",act."+ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO+
-									",act."+ScsActuacionDesignaBean.C_IDPRISION+
-									",act."+ScsActuacionDesignaBean.C_IDINSTITUCIONPRISION+
-									",act."+ScsActuacionDesignaBean.C_IDPROCEDIMIENTO+
-									",act."+ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO+
-									",act."+ScsActuacionDesignaBean.C_IDACREDITACION+
-									",pro.nombre nombreprocedimiento, pro.idprocedimiento idprocedimiento"+
-									",acred."+ScsAcreditacionBean.C_DESCRIPCION+" AS NOMBREACREDITACION "+
-									",act." + ScsActuacionDesignaBean.C_VALIDADA + " actuacionValidada " +
-									",juzgado." + ScsJuzgadoBean.C_NOMBRE+ " NOMBREJUZGADO " +
-									",act."+ScsActuacionDesignaBean.C_IDPRETENSION+
-									" ,act.facturado FACTURADO "+
-									" ,act.idpersonacolegiado IDPERSONACOLEGIADO, "+
-									" per.nombre nombre, per.apellidos1 apellido1, per.apellidos2 apellido2,"+
-									" col.ncolegiado ncolegiado, "+
-									" act."+ScsActuacionDesignaBean.C_TALONARIO+
-									" ,act."+ScsActuacionDesignaBean.C_TALON+
-									//FROM y WHERE:
-									" FROM SCS_ACTUACIONDESIGNA act, scs_procedimientos pro , scs_turno tur, scs_acreditacion acred, scs_juzgado juzgado, cen_colegiado col, cen_persona per"+
-									" WHERE act.IDINSTITUCION =  "+ usr.getLocation()+
-									" and act.IDTURNO = "+(String)designaActual.get("IDTURNO")+
-									" and act.ANIO = "+(String)designaActual.get("ANIO")+
-									" and act.NUMERO =  "+(String)designaActual.get("NUMERO")+
-									" and pro.idinstitucion = act.idinstitucion_proc"+ 
-									" and pro.idprocedimiento = act.IDPROCEDIMIENTO"+  
-									" and tur.idinstitucion = act.idinstitucion"+
-									" and tur.idturno = act.idturno"+
-									" and acred.idacreditacion = act.idacreditacion"+
-									" and act.numeroasunto = "+(String)visibles.get(1)+
-									" and act."+ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO+"=juzgado."+ScsJuzgadoBean.C_IDINSTITUCION+
-									" and act."+ScsActuacionDesignaBean.C_IDJUZGADO+"=juzgado."+ScsJuzgadoBean.C_IDJUZGADO +
-									" and act.idpersonacolegiado = per.idpersona" +    
-									" and col.idpersona = per.idpersona" +
-									" and col.idinstitucion = act.idinstitucion";
-			
-			String consulta =	" WHERE IDINSTITUCION =  "+ usr.getLocation()+
-									" and IDTURNO = "+(String)designaActual.get("IDTURNO")+
-									" and ANIO = "+(String)designaActual.get("ANIO")+
-									" and NUMERO =  "+(String)designaActual.get("NUMERO")+
-									" and numeroasunto = "+(String)visibles.get(1);
-			
-			ScsActuacionDesignaAdm designaAdm = new ScsActuacionDesignaAdm (this.getUserBean(request));
-			
-			Hashtable hashDesigna =  (Hashtable)((Vector)designaAdm.ejecutaSelect(consultaDesigna)).get(0);
-			
+			ScsActuacionDesignaAdm designaAdm = new ScsActuacionDesignaAdm (this.getUserBean(request));	
+			//consultamos las designas
+			Hashtable hashDesigna =  (Hashtable)(designaAdm.getConsultaDesigna(hashDatosDesigna, request)).get(0);		
 			UtilidadesHash.set(hashEJG,ScsEJGBean.C_IDINSTITUCION,(String)hashDesigna.get("IDINSTITUCION"));
 			UtilidadesHash.set(hashEJG,ScsEJGBean.C_NUMERO,(String)hashDesigna.get("NUMEROEJG"));
 			UtilidadesHash.set(hashEJG,ScsEJGBean.C_ANIO,(String)hashDesigna.get("ANIOEJG"));
@@ -474,12 +400,15 @@ public class ActuacionesDesignasAction extends MasterAction {
 			 UtilidadesHash.set(hashDesigna,ScsEJGBean.C_FECHARATIFICACION,((ScsEJGBean)vEjgRelacionado.get(0)).getFechaRatificacion());
 			 UtilidadesHash.set(hashDesigna,ScsEJGBean.C_FECHANOTIFICACION,((ScsEJGBean)vEjgRelacionado.get(0)).getFechaNotificacion());
 		    }
-			Hashtable hashActuacion = (Hashtable)((Vector)designaAdm.ejecutaSelect(consultaActuacion)).get(0);
-			ScsActuacionDesignaBean actuacionAntigua = (ScsActuacionDesignaBean)((Vector)designaAdm.select(consulta)).get(0);
-
+			//Se muestra todas las Actuaciones de la designa.			
+		    Hashtable hashActuacion = (Hashtable)(designaAdm.getConsultaActuacion(hashDatosDesigna, request)).get(0);
+		    
+		    //Mostrar Las Actuaciones antiguas.
+		   Hashtable actuacionAntigua =(Hashtable)(designaAdm.getDesignaActuaciones(hashDatosDesigna, request)).get(0);
+		    
 			request.setAttribute("hashDesigna",hashDesigna);
 			request.setAttribute("hashActuacionActual",hashActuacion);
-			ses.setAttribute("hashActuacionAntigua",actuacionAntigua.getOriginalHash());
+			ses.setAttribute("hashActuacionAntigua",actuacionAntigua);
 			
 			String talonario=((String)hashActuacion.get("TALONARIO"));
 		    miform.setTalonario(talonario);
@@ -858,7 +787,29 @@ public class ActuacionesDesignasAction extends MasterAction {
 		UserTransaction tx = null;
 		ActuacionesDesignasForm miform = (ActuacionesDesignasForm)formulario;
 		Hashtable actuacionModificada = (Hashtable)miform.getDatos();
+		Hashtable ultimaActuacion = (Hashtable)miform.getDatos();
 		Hashtable actuacionAntigua = (Hashtable)ses.getAttribute("hashActuacionAntigua");
+		
+		String clavesActuaciones[] = {	ScsActuacionDesignaBean.C_IDINSTITUCION,		ScsActuacionDesignaBean.C_IDTURNO,
+							ScsActuacionDesignaBean.C_ANIO,					ScsActuacionDesignaBean.C_NUMERO,
+							ScsActuacionAsistenciaBean.C_NUMEROASUNTO};
+		
+		String campos[]={	ScsActuacionDesignaBean.C_IDINSTITUCION,				ScsActuacionDesignaBean.C_IDTURNO,
+							ScsActuacionDesignaBean.C_ANIO,							
+							ScsActuacionDesignaBean.C_FECHAMODIFICACION,			ScsActuacionDesignaBean.C_USUMODIFICACION,
+							ScsActuacionDesignaBean.C_FECHA,						ScsActuacionDesignaBean.C_NUMEROASUNTO,
+							ScsActuacionDesignaBean.C_ACUERDOEXTRAJUDICIAL,			ScsActuacionDesignaBean.C_ANULACION,
+							ScsActuacionDesignaBean.C_IDPROCEDIMIENTO,				ScsActuacionDesignaBean.C_LUGAR,
+							ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION,	ScsActuacionDesignaBean.C_OBSERVACIONES,			
+							ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,			ScsActuacionDesignaBean.C_FACTURADO,
+							ScsActuacionDesignaBean.C_PAGADO,
+							ScsActuacionDesignaBean.C_IDFACTURACION,				ScsActuacionDesignaBean.C_VALIDADA,
+							ScsActuacionDesignaBean.C_IDJUZGADO,				    ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO,
+							ScsActuacionDesignaBean.C_IDCOMISARIA,				    ScsActuacionDesignaBean.C_IDINSTITUCIONCOMISARIA,
+							ScsActuacionDesignaBean.C_IDPRISION,				    ScsActuacionDesignaBean.C_IDINSTITUCIONPRISION,
+							ScsActuacionDesignaBean.C_IDACREDITACION,				ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO,
+							ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO,			ScsActuacionDesignaBean.C_IDPRETENSION,
+		    				ScsActuacionDesignaBean.C_TALONARIO,					ScsActuacionDesignaBean.C_TALON};
 		
 		ScsActuacionDesignaAdm actuacionDesignaAdm = new ScsActuacionDesignaAdm(this.getUserBean(request));
 		boolean ok = false;
@@ -892,12 +843,13 @@ public class ActuacionesDesignasAction extends MasterAction {
 			String fechaJus = "";
 			fechaJus = (String)actuacionModificada.get("FECHAJUSTIFICACION");
 			if(fechaJus!=null && !fechaJus.equals(""))
-				actuacionModificada.put(ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,GstDate.getApplicationFormatDate("",fechaJus));
+			actuacionModificada.put(ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,GstDate.getApplicationFormatDate("",fechaJus));
 			actuacionModificada.put(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO,(String)actuacionModificada.get("PROCEDIMIENTO"));
 			actuacionModificada.put(ScsActuacionDesignaBean.C_IDINSTITUCION,(String)usr.getLocation());
 			actuacionModificada.put(ScsActuacionDesignaBean.C_ANULACION,(((String)actuacionModificada.get("ANULACION")!=null)&&((String)actuacionModificada.get("ANULACION")).equalsIgnoreCase("on"))?"1":"0");
 			//Por defecto 0 ya que se elimina de la interfaz:
 			actuacionModificada.put(ScsActuacionDesignaBean.C_ACUERDOEXTRAJUDICIAL,"0");
+			
 			
 			// Obtengo el idPrision y la idInstitucion del Prision:
 			Long idPrision=null;
@@ -1058,7 +1010,8 @@ public class ActuacionesDesignasAction extends MasterAction {
 				// Valido que el nuevo estado de la acreditacion es correcto:
 				if (multiplesAcreditaciones || this.comprobarAcreditacion(nuevoEstado, true, actuacionAntigua, request, bAplicarRestriccionesActuaciones)) {
 					tx.begin();
-					actuacionDesignaAdm.update(actuacionModificada, actuacionAntigua);
+					//actuacionDesignaAdm.update(actuacionModificada, actuacionAntigua);
+					actuacionDesignaAdm.updateDirect(actuacionModificada,clavesActuaciones,campos);
 					tx.commit();
 					forward = exitoModal("messages.updated.success",request); 
 				} 
@@ -1069,7 +1022,9 @@ public class ActuacionesDesignasAction extends MasterAction {
 			else
 			{
 				tx.begin();
-				actuacionDesignaAdm.update(actuacionModificada, actuacionAntigua);
+			//	actuacionDesignaAdm.update(actuacionModificada, actuacionAntigua);
+			//	tx.commit();
+				actuacionDesignaAdm.updateDirect(actuacionModificada,clavesActuaciones,campos);
 				tx.commit();
 				String mensaje = cambiaLetradoDesigna == true ? "gratuita.designas.actuaciones.exitoConCambioLetrado" : "messages.updated.success";
 				forward = exitoModal(mensaje,request); 
