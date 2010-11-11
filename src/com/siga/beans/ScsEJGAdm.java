@@ -2251,11 +2251,16 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			  throw new ClsExceptions("messages.comprueba.noidInstitucion");			
 			}else			
 				consulta += " and ejg.IDINSTITUCION =" + idInstitucion;			
-		   }				
+		}				
 		
-		if ((miHash.containsKey("NIF")) && (!miHash.get("NIF").toString().equals(""))){
-			contador++;
-			codigos.put(new Integer(contador),((String)miHash.get("NIF")).trim()+"%");
+		// jbd // Consulta para el interesado
+		// Hasta ahora se estaba haciendo una consulta independiente para cada campo del nombre
+		// Lo optimo es meter todo en la misma consulta
+		if (((miHash.containsKey("NIF")) && (!miHash.get("NIF").toString().equals("")))||
+			((miHash.containsKey("NOMBRE")) && (!miHash.get("NOMBRE").toString().equals("")))||
+			((miHash.containsKey("APELLIDO1")) && (!miHash.get("APELLIDO1").toString().equals("")))||
+			((miHash.containsKey("APELLIDO2")) && (!miHash.get("APELLIDO2").toString().equals("")))){
+			
 			consulta += " and ( select COUNT(1) " + 
 			"	from SCS_UNIDADFAMILIAREJG unidad, SCS_EJG EJG2, scs_personajg PJG " + 
 			"	where  unidad.idinstitucion = pjg.idinstitucion " +
@@ -2268,75 +2273,36 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			"	and ejg2.IDINSTITUCION = ejg.IDINSTITUCION " +
 			"	and ejg2.ANIO = ejg.ANIO " + 
 			"	and ejg2.NUMERO = ejg.NUMERO " +
-			"	and ejg2.IDTIPOEJG = ejg.IDTIPOEJG" +
-			"	AND LTRIM(upper(pjg.nif),'0') LIKE LTRIM(UPPER(:"+contador+"),'0')) > 0";						 
-		}
-
-		if ((miHash.containsKey("NOMBRE")) && (!miHash.get("NOMBRE").toString().equals(""))||
-			(miHash.containsKey("APELLIDO1")) && (!miHash.get("APELLIDO1").toString().equals(""))||
-			(miHash.containsKey("APELLIDO2")) && (!miHash.get("APELLIDO2").toString().equals(""))){
-
-			String vDatosSolicitante="";
-
+			"	and ejg2.IDTIPOEJG = ejg.IDTIPOEJG";
+			if ((miHash.containsKey("NIF")) && (!miHash.get("NIF").toString().equals(""))){
+				contador++;
+				codigos.put(new Integer(contador),((String)miHash.get("NIF")).trim()+"%");
+				consulta += " AND LTRIM(upper(pjg.nif),'0') LIKE LTRIM(UPPER(:"+contador+"),'0') ";						 
+			}
 			if ((miHash.containsKey("NOMBRE")) && (!miHash.get("NOMBRE").toString().equals(""))){
 				contador++;
-				consulta += " and ( select COUNT(1) " + 
-				"	from SCS_UNIDADFAMILIAREJG unidad, SCS_EJG EJG2, scs_personajg PJG " + 
-				"	where  unidad.idinstitucion = pjg.idinstitucion " +
-				"	and unidad.idpersona = pjg.idpersona " +
-				"	and ejg2.IDINSTITUCION = unidad.IDINSTITUCION(+) " +
-				"	and ejg2.ANIO = unidad.ANIO(+) " +
-				"	and ejg2.NUMERO = unidad.NUMERO(+) " +
-				"	and ejg2.IDTIPOEJG = unidad.IDTIPOEJG(+) " +
-				"	and unidad.SOLICITANTE(+) = '1' " +
-				"	and ejg2.IDINSTITUCION = ejg.IDINSTITUCION " +
-				"	and ejg2.ANIO = ejg.ANIO " + 
-				"	and ejg2.NUMERO = ejg.NUMERO " +
-				"	and ejg2.IDTIPOEJG = ejg.IDTIPOEJG";
-				consulta += " and "+ ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("NOMBRE")).trim(),"upper(pjg.NOMBRE)",contador,codigos ) + ")>0";
+    			consulta += " and "+ ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("NOMBRE")).trim(),"upper(pjg.NOMBRE)",contador,codigos );
 			}
-
 			if ((miHash.containsKey("APELLIDO1")) && (!miHash.get("APELLIDO1").toString().equals(""))){
 				contador++; 
-				consulta += " and ( select COUNT(1) " + 
-				"	from SCS_UNIDADFAMILIAREJG unidad, SCS_EJG EJG2, scs_personajg PJG " + 
-				"	where  unidad.idinstitucion = pjg.idinstitucion " +
-				"	and unidad.idpersona = pjg.idpersona " +
-				"	and ejg2.IDINSTITUCION = unidad.IDINSTITUCION(+) " +
-				"	and ejg2.ANIO = unidad.ANIO(+) " +
-				"	and ejg2.NUMERO = unidad.NUMERO(+) " +
-				"	and ejg2.IDTIPOEJG = unidad.IDTIPOEJG(+) " +
-				"	and unidad.SOLICITANTE(+) = '1' " +
-				"	and ejg2.IDINSTITUCION = ejg.IDINSTITUCION " +
-				"	and ejg2.ANIO = ejg.ANIO " + 
-				"	and ejg2.NUMERO = ejg.NUMERO " +
-				"	and ejg2.IDTIPOEJG = ejg.IDTIPOEJG ";
-				consulta += " and "+ ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("APELLIDO1")).trim(),"upper(pjg.apellido1)",contador,codigos ) + ")>0";
+				consulta += " and "+ ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("APELLIDO1")).trim(),"upper(pjg.apellido1)",contador,codigos );
 			}
-			
 			if ((miHash.containsKey("APELLIDO2")) && (!miHash.get("APELLIDO2").toString().equals(""))){
 				contador++;
-				consulta += " and ( SELECT COUNT(1) " + 
-				"	from SCS_UNIDADFAMILIAREJG unidad, SCS_EJG EJG2, scs_personajg PJG " + 
-				"	where  unidad.idinstitucion = pjg.idinstitucion " +
-				"	and unidad.idpersona = pjg.idpersona " +
-				"	and ejg2.IDINSTITUCION = unidad.IDINSTITUCION(+) " +
-				"	and ejg2.ANIO = unidad.ANIO(+) " +
-				"	and ejg2.NUMERO = unidad.NUMERO(+) " +
-				"	and ejg2.IDTIPOEJG = unidad.IDTIPOEJG(+) " +
-				"	and unidad.SOLICITANTE(+) = '1' " +
-				"	and ejg2.IDINSTITUCION = ejg.IDINSTITUCION " +
-				"	and ejg2.ANIO = ejg.ANIO " + 
-				"	and ejg2.NUMERO = ejg.NUMERO " +
-				"	and ejg2.IDTIPOEJG = ejg.IDTIPOEJG ";
-				consulta += " and "+ ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("APELLIDO2")).trim(),"upper(pjg.apellido2)",contador,codigos ) + ")>0";
+				consulta += " and "+ ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("APELLIDO2")).trim(),"upper(pjg.apellido2)",contador,codigos );
 			}
+			consulta += ") >0 ";
 		}
 
 		if ((miHash.containsKey("JUZGADO")) && (!miHash.get("JUZGADO").toString().equals(""))) {
-			String a[]=((String)miHash.get("JUZGADO")).split(",");
+			/*String a[]=((String)miHash.get("JUZGADO")).split(",");
 			contador++;
 			consulta += " and "+ComodinBusquedas.prepararSentenciaCompletaBind(a[0].trim(),"ejg.JUZGADO", contador, codigos);
+			*/
+			String a[]=((String)miHash.get("JUZGADO")).split(",");
+			contador++;
+			codigos.put(new Integer(contador),a[0]);
+			consulta += " and ejg.JUZGADO=:"+contador;	
 		}
 
 		if ((miHash.containsKey("ASUNTO")) && (!miHash.get("ASUNTO").toString().equals(""))) {
