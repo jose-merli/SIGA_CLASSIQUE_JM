@@ -11,6 +11,7 @@ import com.siga.general.MasterForm;
 public class ActuacionesDesignasForm extends MasterForm {
 	
 	protected String defensaJuridica= "DEFENSAJURIDICA";
+	protected String codigo="CODIGO";	
 	protected String idturno = "IDTURNO";
 	protected String turno = "TURNO";
 	protected String anio = "ANIO";
@@ -442,6 +443,20 @@ public class ActuacionesDesignasForm extends MasterForm {
 	 */
 	public String getIdPersona() {
 		return UtilidadesHash.getString(this.datos, this.IDPERSONA);
+	}
+
+	/**
+	 * @return Returns the codigo.
+	 */
+	public String getCodigo() {
+		return codigo;
+	}
+
+		/**
+	 * @param codigo The codigo to set.
+	 */
+	public void setCodigo(String codigo) {
+		this.codigo = codigo;
 	}
 
 }
