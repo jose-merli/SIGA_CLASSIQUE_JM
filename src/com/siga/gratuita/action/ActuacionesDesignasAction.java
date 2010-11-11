@@ -786,8 +786,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 		UsrBean usr = null;
 		UserTransaction tx = null;
 		ActuacionesDesignasForm miform = (ActuacionesDesignasForm)formulario;
-		Hashtable actuacionModificada = (Hashtable)miform.getDatos();
-		Hashtable ultimaActuacion = (Hashtable)miform.getDatos();
+		Hashtable actuacionModificada = (Hashtable)miform.getDatos();	
 		Hashtable actuacionAntigua = (Hashtable)ses.getAttribute("hashActuacionAntigua");
 		
 		String clavesActuaciones[] = {	ScsActuacionDesignaBean.C_IDINSTITUCION,		ScsActuacionDesignaBean.C_IDTURNO,
