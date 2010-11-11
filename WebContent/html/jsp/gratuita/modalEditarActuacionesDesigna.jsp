@@ -258,8 +258,9 @@
 
 		<html:hidden property = "idPersona" value="<%=idPersona%>" />
 		<html:hidden property = "idTurno" value= "<%=idTurno%>"/>
-		<html:hidden property = "anio" value="<%=anio%>" />
+		<html:hidden property = "anio" value="<%=anio%>" />	
 		<html:hidden property = "numero" value="<%=numero%>" />
+	
 		
 		
 		
@@ -284,18 +285,18 @@
 					</td>
 					<td>
 						<html:text name="ActuacionesDesignasForm" property="anio" size="5" styleClass="boxConsulta" value="<%=anio%>" readonly="true"></html:text>
-					</td>
+					</td>					
 					<td class="labelText" style="display:none" >
 						<siga:Idioma key="gratuita.listadoAsistencias.literal.numero"/>
-					</td>
+					</td>					
 					<td style="display:none" >
-					<html:text name="ActuacionesDesignasForm" property="numero" size="5" styleClass="boxConsulta" value="<%=numero%>" readonly="true"></html:text>
-					</td>
+				    	<html:text name="ActuacionesDesignasForm" property="numero" size="5" styleClass="boxConsulta" value="<%=numero%>" readonly="true"></html:text>
+					</td>					
 					<td class="labelText">
 						<siga:Idioma key="gratuita.listadoAsistencias.literal.numero"/>
 					</td>
 					<td>
-					<html:text name="ActuacionesDesignasForm" property="numero" size="5" styleClass="boxConsulta" value="<%=codigo%>" readonly="true"></html:text>
+					<html:text name="ActuacionesDesignasForm" property="codigo" size="5" styleClass="boxConsulta" value="<%=codigo%>" readonly="true"></html:text>
 					</td>
 					<td class="labelText">
 						<siga:Idioma key="gratuita.inicio_PestanaCalendarioGuardias.literal.fechaDesigna"/>
