@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
@@ -468,5 +470,135 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		       return 0;
 		   }
 	   }
+	
+	
+	public Vector getConsultaDesigna (Hashtable entrada, HttpServletRequest request)throws ClsExceptions 
+	  {
+		Vector salida=null;				
+		String consultaDesigna = " SELECT des.anio anio, des.numero numero, des.idturno idturno, des.idinstitucion idinstitucion,"+
+									" per.nombre nombre, per.apellidos1 apellido1, per.apellidos2 apellido2,"+
+									" col.ncolegiado ncolegiado, tur.nombre turno, des.fechaentrada fecha, des.FECHAANULACION, "+
+									" tur." + ScsTurnoBean.C_VALIDARJUSTIFICACIONES + " validarJustificaciones, " +
+									" des.codigo codigo, des.idjuzgado juzgado, des.idinstitucion_juzg institucionjuzgado, des.idprocedimiento procedimiento, "+
+									" (select nombre "+
+									" from scs_juzgado juz"+
+									" where juz.idinstitucion=des.idinstitucion_juzg "+
+									"  and  juz.idjuzgado=des.idjuzgado) nombrejuzgado, "+
+									" (select nombre "+
+									" from scs_procedimientos proc"+
+									" where proc.idinstitucion="+entrada.get("IDINSTITUCION")+
+									"  and  proc.idprocedimiento=des.idprocedimiento) nombreprocedimiento , "+
+								    " ejgdesigna.anioejg anioejg, "+
+								    " ejgdesigna.idtipoejg idtipoejg, "+
+							        " ejgdesigna.numeroejg numeroejg"+
+									" FROM scs_designa des, cen_colegiado col, cen_persona per,scs_turno tur, scs_ejgdesigna ejgdesigna "+
+									" WHERE  per.idpersona = F_SIGA_GETIDLETRADO_DESIGNA("+entrada.get("IDINSTITUCION")+","+ entrada.get("IDTURNO")+","+ entrada.get("ANIO")+","+entrada.get("NUMERO")+")"+
+									" and col.idpersona = per.idpersona"+
+									" and col.idinstitucion = des.idinstitucion"+
+									" and tur.idinstitucion = des.idinstitucion"+									
+									" and tur.idturno = des.idturno"+
+									" and ejgdesigna.idinstitucion(+)=des.idinstitucion"+
+									" and ejgdesigna.idturno(+)=des.idturno"+
+									" and ejgdesigna.aniodesigna(+)=des.anio"+
+									" and ejgdesigna.numerodesigna(+)=des.numero"+
+									" and des."+ ScsDesignaBean.C_IDINSTITUCION +"="+  entrada.get("IDINSTITUCION")+
+									" and des."+ ScsDesignaBean.C_ANIO +"="+  entrada.get("ANIO")+
+									" and des."+ ScsDesignaBean.C_NUMERO +"="+ entrada.get("NUMERO")+
+									" and des."+ ScsDesignaBean.C_IDTURNO +"="+ entrada.get("IDTURNO")+" ";
+	
+		try {	
+			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+			ScsActuacionDesignaAdm designaAdm = new ScsActuacionDesignaAdm (usr);		
+			salida=(Vector)designaAdm.ejecutaSelect(consultaDesigna);					
+		}catch (ClsExceptions e) {		
+			throw new ClsExceptions (e, "Error al ejecutar el 'getConsultaDesigna' en B.D.");		
+		}
+		return salida;
+	}
+	
+	  
+		public Vector getConsultaActuacion (Hashtable entrada, HttpServletRequest request)throws ClsExceptions {
+			Vector salida=null;				
+		String consultaActuacion = "  SELECT act.IDINSTITUCION idinstitucion, act.IDTURNO idturno, act.ANIO anio, act.NUMERO numero, act.NUMEROASUNTO numeroasunto, act.FECHA fechaactuacion"+
+									",act.FECHAJUSTIFICACION fechajustificacion, act.ACUERDOEXTRAJUDICIAL acuerdoextrajudicial"+ 
+									",tur.nombre turno, act.numeroasunto numeroasunto, act.observaciones observaciones,  act.observacionesjustificacion observacionesjustificacion,"+
+									" act.fechajustificacion fechajustificacion,act.acuerdoextrajudicial acuerdoextrajudicial, act.lugar lugar, act.anulacion anulacion, act.numeroasunto numeroasunto"+
+									",act."+ScsActuacionDesignaBean.C_IDCOMISARIA+
+									",act."+ScsActuacionDesignaBean.C_IDINSTITUCIONCOMISARIA+
+									",act."+ScsActuacionDesignaBean.C_IDJUZGADO+
+									",act."+ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO+
+									",act."+ScsActuacionDesignaBean.C_IDPRISION+
+									",act."+ScsActuacionDesignaBean.C_IDINSTITUCIONPRISION+
+									",act."+ScsActuacionDesignaBean.C_IDPROCEDIMIENTO+
+									",act."+ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO+
+									",act."+ScsActuacionDesignaBean.C_IDACREDITACION+
+									",pro.nombre nombreprocedimiento, pro.idprocedimiento idprocedimiento"+
+									",acred."+ScsAcreditacionBean.C_DESCRIPCION+" AS NOMBREACREDITACION "+
+									",act." + ScsActuacionDesignaBean.C_VALIDADA + " actuacionValidada " +
+									",juzgado." + ScsJuzgadoBean.C_NOMBRE+ " NOMBREJUZGADO " +
+									",act."+ScsActuacionDesignaBean.C_IDPRETENSION+
+									" ,act.facturado FACTURADO "+
+									" ,act.idpersonacolegiado IDPERSONACOLEGIADO, "+
+									" per.nombre nombre, per.apellidos1 apellido1, per.apellidos2 apellido2,"+
+									" col.ncolegiado ncolegiado, "+
+									" act."+ScsActuacionDesignaBean.C_TALONARIO+
+									" ,act."+ScsActuacionDesignaBean.C_TALON+									
+									" FROM SCS_ACTUACIONDESIGNA act, scs_procedimientos pro , scs_turno tur, scs_acreditacion acred, scs_juzgado juzgado, cen_colegiado col, cen_persona per"+
+									" WHERE act.IDINSTITUCION =  "+  entrada.get("IDINSTITUCION")+
+									" and act.IDTURNO = "+ entrada.get("IDTURNO")+
+									" and act.ANIO = "+entrada.get("ANIO")+
+									" and act.NUMERO =  "+ entrada.get("NUMERO")+
+									" and pro.idinstitucion = act.idinstitucion_proc"+ 
+									" and pro.idprocedimiento = act.IDPROCEDIMIENTO"+  
+									" and tur.idinstitucion = act.idinstitucion"+
+									" and tur.idturno = act.idturno"+
+									" and acred.idacreditacion = act.idacreditacion"+
+									" and act.numeroasunto = "+entrada.get("VISIBLE")+
+									" and act."+ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO+"=juzgado."+ScsJuzgadoBean.C_IDINSTITUCION+
+									" and act."+ScsActuacionDesignaBean.C_IDJUZGADO+"=juzgado."+ScsJuzgadoBean.C_IDJUZGADO +
+									" and act.idpersonacolegiado = per.idpersona" +    
+									" and col.idpersona = per.idpersona" +
+									" and col.idinstitucion = act.idinstitucion";
+	
+		try {	
+			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+			ScsActuacionDesignaAdm designaAdm = new ScsActuacionDesignaAdm (usr);		
+			salida=(Vector)designaAdm.ejecutaSelect(consultaActuacion);					
+		}catch (ClsExceptions e) {		
+			throw new ClsExceptions (e, "Error al ejecutar el 'getConsultaActuacion' en B.D.");		
+		}
+		return salida;
+		}
+		
+		public Vector getDesignaActuaciones(Hashtable entrada, HttpServletRequest request)throws ClsExceptions {
+		
+		
+			Vector salida=new Vector();
+			String consulta =	"Select Idinstitucion,Idturno,Anio,Numero,Fechamodificacion,Usumodificacion,Fecha, "+
+							    " Numeroasunto,Acuerdoextrajudicial,Anulacion,Idprocedimiento,Lugar,Observacionesjustificacion, "+
+							    " Observaciones,Fechajustificacion,Facturado,Pagado,Idfacturacion,Validada,Idjuzgado,Idinstitucion_Juzg, "+
+							    " Idcomisaria,Idinstitucion_Comis,Idprision,Idinstitucion_Pris,Idacreditacion,Idinstitucion_Proc, "+
+							    " Idpersonacolegiado,Idpretension,Talonario,Talon "+
+								" From Scs_Actuaciondesigna " +
+								" WHERE IDINSTITUCION =  "+ entrada.get("IDINSTITUCION")+
+								" and IDTURNO = "+entrada.get("IDTURNO")+
+								" and ANIO = "+entrada.get("ANIO")+
+								" and NUMERO =  "+ entrada.get("NUMERO")+
+								" and numeroasunto = "+entrada.get("VISIBLE")+
+								" Order By Idinstitucion, Idturno, Anio, Numeroasunto ";
+			
+		try {	
+			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+			ScsActuacionDesignaAdm designaAdm = new ScsActuacionDesignaAdm (usr);		
+			salida=(Vector)designaAdm.ejecutaSelect(consulta);		
+			
+		}catch (ClsExceptions e) {		
+			throw new ClsExceptions (e, "Error al ejecutar el 'getDesignaActuaciones' en B.D.");		
+		}
+		return salida;
+		
+		}
+			
+		
 	
 }
