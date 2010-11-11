@@ -34,13 +34,13 @@
 	String accion = (String)request.getSession().getAttribute("accion");
 	
 		
-	String botones="", anio= "", numero="", idTipoEJG = "" ;
+	String botonesPie="", botones="",anio= "", numero="", idTipoEJG = "" ;
 	
 	if (accion.equalsIgnoreCase("ver")){
-		botones = "";
+		botonesPie = "V";
 	}
 	else {
-		botones = "V,N";
+		botonesPie = "V,N";
 	}
 	
 	Hashtable fila = new Hashtable();
@@ -111,8 +111,8 @@
 							t_numero    = (String)hTitulo.get(ScsEJGBean.C_NUMEJG);
 							t_tipoEJG   = (String)hTitulo.get("TIPOEJG");
 						}
-						if(t_numero==null||t_tipoEJG==null||t_anio==null){
-							botones="";
+						if((t_anio==null) ||(t_numero==null)){
+							botonesPie="V";
 						}
 					
 					%>
@@ -183,7 +183,7 @@
 	<!-- FIN: SUBMIT AREA -->	
 	
 	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
-	<siga:ConjBotonesAccion botones="<%=botones %>" clase="botonesDetalle" modo="<%=accion%>"/>
+	<siga:ConjBotonesAccion botones="<%=botonesPie %>" clase="botonesDetalle" modo="<%=accion%>"/>
 	
 	<script type="text/javascript">
 				
