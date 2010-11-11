@@ -11,6 +11,7 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.*;
+import com.siga.ws.CajgConfiguracion;
 import com.atos.utils.*;
 
 import org.apache.struts.action.*;
@@ -164,6 +165,8 @@ public class DefinirDictamenEJGAction extends MasterAction {
 			v = admEJG.selectPorClave(miHash);
 			try{
 				request.getSession().setAttribute("DATABACKUPDICT",admEJG.beanToHashTable((ScsEJGBean)v.get(0)));
+				int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
+				request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
 			}catch (Exception e) {
 				throwExcp("error.general.yanoexiste",e,null);
 			}

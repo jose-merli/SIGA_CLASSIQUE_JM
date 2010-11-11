@@ -56,6 +56,26 @@
 		} catch (Exception e) {		
 		}
 	}
+	
+	int pcajgActivo = 0;
+	if (request.getAttribute("PCAJG_ACTIVO")!=null){
+		pcajgActivo = Integer.parseInt(request.getAttribute("PCAJG_ACTIVO").toString());
+	}
+	boolean obligatorioFecha = false;
+	boolean obligatorioTipoDictamen = false;
+	boolean obligatorioFundamento = false;
+	if (pcajgActivo==1){
+		
+	}else if (pcajgActivo==2){
+		obligatorioFecha = true;
+		obligatorioTipoDictamen = true;
+		obligatorioFundamento = true;
+	}else if (pcajgActivo==3){
+		obligatorioFecha = true;
+		obligatorioTipoDictamen = true;
+		obligatorioFundamento = true;
+	}
+	String asterisco = "&nbsp(*)&nbsp";
 %>
 
 <html>
@@ -133,53 +153,56 @@
 						<tr>
 							<td><!-- FILA -->
 						<tr>
-							<td class="labelText"><siga:Idioma
-								key="gratuita.busquedaContabilidad.literal.fecha" /></td>
-							<td class="labelText">
-							<%
-								if (accion.equalsIgnoreCase("ver")) {
-							%> <html:text
-								name="DefinirDictamenEJGForm" property="fechaDictamen" size="10"
-								styleClass="boxConsulta" value="<%=fechaDictamen%>"
-								readonly="true" disabled="false"></html:text> <%
- 	} else {
- %> <html:text
-								name="DefinirDictamenEJGForm" property="fechaDictamen" size="10"
-								styleClass="box" value="<%=fechaDictamen%>" readonly="true"
-								disabled="false"></html:text>&nbsp;&nbsp;<a
-								onClick="return showCalendarGeneral(fechaDictamen);"
-								onMouseOut="MM_swapImgRestore();"
-								onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img
-								src="<%=app%>/html/imagenes/calendar.gif"
-								alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"
-								border="0"></a> <%
- 	}
- %>
+							<td class="labelText"><siga:Idioma key="gratuita.busquedaContabilidad.literal.fecha" />
+								<%if (obligatorioFecha) {%>
+									<%=asterisco%> 
+								<%}%>	
 							</td>
-							<td class="labelText"><siga:Idioma
-								key="gratuita.operarDictamen.literal.tipoDictamen" /></td>
 							<td class="labelText">
-							<%
-								if (accion.equalsIgnoreCase("ver")) {
-							%> <siga:ComboBD
-								nombre="idTipoDictamenEJG" tipo="dictamenEJG"
-								clase="boxConsulta" filasMostrar="1" seleccionMultiple="false"
-								obligatorio="false" parametro="<%=dato%>"
-								elementoSel="<%=vIntFDict%>" readOnly="true" /> <%
- 	} else {
- %> <siga:ComboBD
-								nombre="idTipoDictamenEJG" tipo="dictamenEJG" clase="boxCombo"
-								filasMostrar="1" seleccionMultiple="false" obligatorio="false"
-								parametro="<%=dato%>" elementoSel="<%=vIntFDict%>" /> <%
- 	}
- %>
+								<%if(accion.equalsIgnoreCase("ver")){%> 
+									<html:text
+										name="DefinirDictamenEJGForm" property="fechaDictamen" size="10"
+										styleClass="boxConsulta" value="<%=fechaDictamen%>"
+										readonly="true" disabled="false"></html:text> 
+								<%}else{%> 
+									<html:text
+										name="DefinirDictamenEJGForm" property="fechaDictamen" size="10"
+										styleClass="box" value="<%=fechaDictamen%>" readonly="true"
+										disabled="false"></html:text>&nbsp;&nbsp;<a
+										onClick="return showCalendarGeneral(fechaDictamen);"
+										onMouseOut="MM_swapImgRestore();"
+										onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img
+										src="<%=app%>/html/imagenes/calendar.gif"
+										alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"
+										border="0"></a> 
+								<%}%>
+							</td>
+							<td class="labelText"><siga:Idioma key="gratuita.operarDictamen.literal.tipoDictamen" />
+								<%if (obligatorioTipoDictamen) {%>
+									<%=asterisco%> 
+								<%}%>
+							</td>
+							<td class="labelText">
+								<%if (accion.equalsIgnoreCase("ver")) {%> 
+									<siga:ComboBD
+										nombre="idTipoDictamenEJG" tipo="dictamenEJG"
+										clase="boxConsulta" filasMostrar="1" seleccionMultiple="false"
+										obligatorio="false" parametro="<%=dato%>"
+										elementoSel="<%=vIntFDict%>" readOnly="true" /> 
+								<%}else{%> 
+									<siga:ComboBD
+										nombre="idTipoDictamenEJG" tipo="dictamenEJG" clase="boxCombo"
+										filasMostrar="1" seleccionMultiple="false" obligatorio="false"
+										parametro="<%=dato%>" elementoSel="<%=vIntFDict%>" /> 
+								<%}%>
 							</td>
 						</tr>
 						<tr>
-							<td class="labelText"><siga:Idioma
-								key="gratuita.operarDictamen.literal.fundamentoclf" /></td>
-
-
+							<td class="labelText"><siga:Idioma key="gratuita.operarDictamen.literal.fundamentoclf" />
+								<%if (obligatorioFecha) {%>
+									<%=asterisco%> 
+								<%}%>
+							</td>
 							<td class="labelText" colspan="3">
 							<%
 								if (accion.equalsIgnoreCase("ver")) {
@@ -199,20 +222,18 @@
 							</td>
 						</tr>
 						<tr>
-							<td class="labelText"><siga:Idioma
-								key="gratuita.operarDictamen.literal.dictamen" /></td>
+							<td class="labelText"><siga:Idioma key="gratuita.operarDictamen.literal.dictamen" /></td>
 							<td class="labelText" colspan="4">
-							<%
-								if (accion.equalsIgnoreCase("ver")) {
-							%> <textarea name="dictamen"
-								class="boxConsulta" style="width: 815px" rows="20"
-								readOnly="true"><%=dictamen%></textarea> <%
- 	} else {
- %> <textarea
-								name="dictamen" class="box" style="width: 815px" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" rows="20"><%=dictamen%></textarea>
-							<%
-								}
-							%>
+							<%if (accion.equalsIgnoreCase("ver")) {%> 
+								<textarea name="dictamen"
+									class="boxConsulta" style="width: 815px" rows="20"
+									readOnly="true"><%=dictamen%></textarea> 
+							<%} else {%> 
+								<textarea
+									name="dictamen" class="box" style="width: 815px" 
+									onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" 
+									rows="20"><%=dictamen%></textarea>
+							<%}%>
 							</td>
 						</tr>
 
@@ -256,6 +277,20 @@
 		function accionGuardar()
 		{
 			sub();
+			<%if (pcajgActivo>0){%>
+				var error = "";
+		   		if (<%=obligatorioFundamento%> && document.getElementById("idFundamentoCalificacion").value=="")
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.operarDictamen.literal.fundamentoclf'/>"+ '\n';
+				if (<%=obligatorioTipoDictamen%> && document.getElementById("idTipoDictamenEJG").value=="")
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.operarDictamen.literal.tipoDictamen'/>"+ '\n';
+				if (<%=obligatorioFecha%> && document.getElementById("fechaDictamen").value=="")
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.busquedaContabilidad.literal.fecha'/>"+ '\n';						
+				if(error!=""){
+					alert(error);
+					fin();
+					return false;
+				}
+		 	<%}%> 
 			document.forms[0].submit();
 
 		}
