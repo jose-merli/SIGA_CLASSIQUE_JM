@@ -1252,20 +1252,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			    	consulta += " AND des.anio = :" + contador;
 			    }	
 			}
-			/*if (UtilidadesHash.getString(miHash,"SUFIJO") != null && !UtilidadesHash.getString(miHash,"SUFIJO").equalsIgnoreCase("")) {
-				
-				
-			    if (ComodinBusquedas.hasComodin(UtilidadesHash.getString(miHash,"SUFIJO")))	{
-			    	contador++;
-			    	consulta += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind(UtilidadesHash.getString(miHash,"SUFIJO"),"des.sufijo",contador,codigosBind ); 
-			    	
-			    }else {
-			    	contador++;
-				    codigosBind.put(new Integer(contador),UtilidadesHash.getString(miHash,"SUFIJO").trim());
-				    consulta += " AND ltrim(des.sufijo,'0') = ltrim(:" + contador+",'0')" ; 
-			    	
-			    }
-			}*/
+
 			if (UtilidadesHash.getString(miHash,"CODIGO") != null && !UtilidadesHash.getString(miHash,"CODIGO").equalsIgnoreCase("")) {
 				
 				
@@ -1276,14 +1263,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			    }else {
 			    	contador++;
 				    codigosBind.put(new Integer(contador),UtilidadesHash.getString(miHash,"CODIGO").trim());
-			    	// Si es numerico
-			    	/*if (UtilidadesHash.getInteger(miHash,"CODIGO") != null) {
-			    		consulta += " AND des.codigo =:" + contador;//El código para la busqueda se trata como un numerico para que si no meten comodines(*) 
-			                                                                                      // haga la busqueda exacta y si intentan buscar el numero 3 devuelve el 3,03,003, etc...
-			    	}
-			    	else { // no es numerico*/
-			    		consulta += " AND ltrim(des.codigo,'0') = ltrim(:" + contador+",'0')" ; 
-			    	//}
+			    	consulta += " AND ltrim(des.codigo,'0') = ltrim(:" + contador+",'0')" ; 
 			    }
 			}
 			if (UtilidadesHash.getString(miHash,"JUZGADO") != null && !UtilidadesHash.getString(miHash,"JUZGADO").equalsIgnoreCase("")) {
@@ -1321,10 +1301,6 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			}
 			}
 			
-			
-			
-			
-			
 			if (UtilidadesHash.getString(miHash,"CALIDAD") != null && !UtilidadesHash.getString(miHash,"CALIDAD").equalsIgnoreCase("")) {
 				contador++;
 				codigosBind.put(new Integer(contador),(String)UtilidadesHash.getString(miHash,"CALIDAD").trim());
@@ -1339,10 +1315,6 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				
 			}
 			
-//			aux += (((UtilidadesHash.getString(datos,"ANIO") == null)||(UtilidadesHash.getString(datos,"ANIO").equalsIgnoreCase("")))?"":" AND "+ComodinBusquedas.prepararSentenciaCompleta((String)UtilidadesHash.getString(datos,"ANIO"),"des.anio" ));
-//			aux += (((UtilidadesHash.getString(datos,"NUMERO") == null)||(UtilidadesHash.getString(datos,"NUMERO").equalsIgnoreCase("")))?"":" and "+ComodinBusquedas.prepararSentenciaCompleta((String)UtilidadesHash.getString(datos,"NUMERO"),"des.numero" ));
-			//aux += (((UtilidadesHash.getString(datos,"FECHAENTRADAINICIO") == null)||(UtilidadesHash.getString(datos,"FECHAENTRADAINICIO").equalsIgnoreCase("")))?"":" and des.fechaentrada > to_date('"+((String)UtilidadesHash.getString(datos,"FECHAENTRADAINICIO"))+"','DD/MM/YYYY')");
-			//aux += (((UtilidadesHash.getString(datos,"FECHAENTRADAFIN") == null)||(UtilidadesHash.getString(datos,"FECHAENTRADAFIN").equalsIgnoreCase("")))?"":" and des.fechaentrada < to_date('"+((String)UtilidadesHash.getString(datos,"FECHAENTRADAFIN"))+"','DD/MM/YYYY')");
 			if ((miHash.containsKey("FECHAENTRADAINICIO") && !UtilidadesHash.getString(miHash,"FECHAENTRADAINICIO").equalsIgnoreCase(""))
 				||
 				(miHash.containsKey("FECHAENTRADAFIN")&& !UtilidadesHash.getString(miHash,"FECHAENTRADAFIN").equalsIgnoreCase(""))
@@ -1366,52 +1338,48 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			
 			boolean isFiltrado = false;
 			String subConsulta1="";
-			subConsulta1+=" AND (select count(1) from V_SIGA_DEFENDIDOS_DESIGNA VDEF";
+			// jbd // Cambiamos la consulta de la vista por una mas ligera con la tabla de defendidos
+			/*subConsulta1+=" AND (select count(1) from V_SIGA_DEFENDIDOS_DESIGNA VDEF";
 			subConsulta1+=" where VDEF.idInstitucion = des.idinstitucion";
 			subConsulta1+=" and VDEF.anio = des.anio";
 			subConsulta1+=" and VDEF.numero = des.numero";
-			subConsulta1+=" and VDEF.IDTURNO = des.idturno";
+			subConsulta1+=" and VDEF.IDTURNO = des.idturno";*/
+			subConsulta1+=" AND (SELECT count(1)";
+			subConsulta1+="   FROM SCS_DEFENDIDOSDESIGNA DEF, SCS_PERSONAJG PER";
+			subConsulta1+="  WHERE DEF.IDINSTITUCION = PER.IDINSTITUCION";
+			subConsulta1+="    AND DEF.IDPERSONA = PER.IDPERSONA";
+			subConsulta1+="    AND DEF.IDINSTITUCION = des.idInstitucion";
+			subConsulta1+="    AND DEF.ANIO = des.ANIO";
+			subConsulta1+="    AND DEF.IDTURNO = des.idTURNO";
+			subConsulta1+="    AND DEF.NUMERO = des.NUMERO";
 			if(UtilidadesHash.getString(miHash,"NIF") != null && !UtilidadesHash.getString(miHash,"NIF").equalsIgnoreCase("")){
-				
 				isFiltrado = true;
 				subConsulta1+=" and ";
 				if (ComodinBusquedas.hasComodin(miHash.get("NIF").toString())){	
 				contador++;
-				subConsulta1+=ComodinBusquedas.prepararSentenciaCompletaBind((String)UtilidadesHash.getString(miHash,"NIF").trim(),"VDEF.NIF",contador,codigosBind);
+				subConsulta1+=ComodinBusquedas.prepararSentenciaCompletaBind((String)UtilidadesHash.getString(miHash,"NIF").trim(),"PER.NIF",contador,codigosBind);
 				}else{
 					contador++;
-					subConsulta1 +=ComodinBusquedas.prepararSentenciaNIFBind(miHash.get("NIF").toString(),"VDEF.NIF",contador, codigosBind);
+					subConsulta1 +=ComodinBusquedas.prepararSentenciaNIFBind(miHash.get("NIF").toString(),"PER.NIF",contador, codigosBind);
 				}
-				
-				//
-				
 			}
 			if(UtilidadesHash.getString(miHash,"NOMBRE") != null && !UtilidadesHash.getString(miHash,"NOMBRE").equalsIgnoreCase("")){
 				isFiltrado = true;
 				subConsulta1+=" and ";
 				contador++;
-				subConsulta1+=ComodinBusquedas.prepararSentenciaCompletaBind((String)UtilidadesHash.getString(miHash,"NOMBRE").trim(),"VDEF.NOMBRE",contador, codigosBind);
-			
-				
-				
+				subConsulta1+=ComodinBusquedas.prepararSentenciaCompletaBind((String)UtilidadesHash.getString(miHash,"NOMBRE").trim(),"PER.NOMBRE",contador, codigosBind);
 			}
 			if(UtilidadesHash.getString(miHash,"APELLIDO1") != null && !UtilidadesHash.getString(miHash,"APELLIDO1").equalsIgnoreCase("")){
 				isFiltrado = true;
 				subConsulta1+=" and ";
 				contador++;
-				subConsulta1+=ComodinBusquedas.prepararSentenciaCompletaBind((String)UtilidadesHash.getString(miHash,"APELLIDO1").trim(),"VDEF.APELLIDO1",contador,codigosBind);
-			
-
-				
+				subConsulta1+=ComodinBusquedas.prepararSentenciaCompletaBind((String)UtilidadesHash.getString(miHash,"APELLIDO1").trim(),"PER.APELLIDO1",contador,codigosBind);
 			}
 			if(UtilidadesHash.getString(miHash,"APELLIDO2") != null && !UtilidadesHash.getString(miHash,"APELLIDO2").equalsIgnoreCase("")){
-				
 				isFiltrado = true;
 				subConsulta1+=" and ";
 				contador++;
-				subConsulta1+=ComodinBusquedas.prepararSentenciaCompletaBind((String)UtilidadesHash.getString(miHash,"APELLIDO2").trim(),"VDEF.APELLIDO2",contador,codigosBind);
-			
-				
+				subConsulta1+=ComodinBusquedas.prepararSentenciaCompletaBind((String)UtilidadesHash.getString(miHash,"APELLIDO2").trim(),"PER.APELLIDO2",contador,codigosBind);
 			}
 			
 			subConsulta1+=" )>0 ";
