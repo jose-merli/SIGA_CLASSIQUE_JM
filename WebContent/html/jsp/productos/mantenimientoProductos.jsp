@@ -494,10 +494,10 @@
 								</td>
 								<td class="labelText"> 					
 									<% if (remitente=="insertar"){%>
-							  			<html:textarea property="nombre" styleClass="box" cols="25" rows="4" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)"/>
+							  			<html:textarea property="nombre" styleClass="box" cols="25" rows="4" onKeyDown="cuenta(this,100)" onChange="cuenta(this,100)"/>
 							  		<% } else { %>
 										<% if (remitente=="modificar"){ %>
-											<html:textarea property="nombre" styleClass="box" cols="25" rows="4" onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" value="<%=row.getString(PysProductosInstitucionBean.C_DESCRIPCION)%>"/>
+											<html:textarea property="nombre" styleClass="box" cols="25" rows="4" onKeyDown="cuenta(this,100)" onChange="cuenta(this,100)" value="<%=row.getString(PysProductosInstitucionBean.C_DESCRIPCION)%>"/>
 										<%}else{%>
 											<html:textarea property="nombre" styleClass="boxConsulta" cols="25" rows="4"  maxlength="100" value="<%=row.getString(PysProductosInstitucionBean.C_DESCRIPCION)%>" readOnly="true"/>
 										<% } %>
