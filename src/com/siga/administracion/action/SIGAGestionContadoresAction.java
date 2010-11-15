@@ -46,6 +46,22 @@ public class SIGAGestionContadoresAction extends MasterAction
 		UsrBean userBean = ((UsrBean) request.getSession().getAttribute(
 				("USRBEAN")));
 		AdmContadorBean beanOld = new AdmContadorBean();
+		
+		String[] claves = { AdmContadorBean.C_IDINSTITUCION,
+				AdmContadorBean.C_IDCONTADOR };
+		
+		String[] campos = { AdmContadorBean.C_CONTADOR,
+				AdmContadorBean.C_DESCRIPCION,
+				AdmContadorBean.C_FECHARECONFIGURACION,
+				AdmContadorBean.C_IDCONTADOR,
+				AdmContadorBean.C_IDINSTITUCION,
+				AdmContadorBean.C_LONGITUDCONTADOR,
+				AdmContadorBean.C_MODIFICABLECONTADOR, AdmContadorBean.C_MODO,
+				AdmContadorBean.C_NOMBRE, AdmContadorBean.C_PREFIJO,
+				AdmContadorBean.C_RECONFIGURACIONCONTADOR,
+				AdmContadorBean.C_RECONFIGURACIONPREFIJO,
+				AdmContadorBean.C_RECONFIGURACIONSUFIJO,
+				AdmContadorBean.C_SUFIJO, 				AdmContadorBean.C_FECHAMODIFICACION, AdmContadorBean.C_USUMODIFICACION};
 
 		try {
 			SIGAGestionContadoresForm form = (SIGAGestionContadoresForm) formulario;
@@ -99,9 +115,12 @@ public class SIGAGestionContadoresAction extends MasterAction
 				bean.setModificableContador(ClsConstants.DB_FALSE);
 			}
 
-			if (!adm.update(bean, beanOld)) {
+			bean.setFechaMod("sysdate");			
+			bean.setUsuMod(new Integer(userBean.getUserName()));
+			adm.updateDirect(bean,claves,campos);
+			/*if (!adm.update(bean, beanOld)) {
 				throw new ClsExceptions("messages.updated.error");
-			}
+			}*/
 
 			tx.commit();
 		} catch (Exception e) {

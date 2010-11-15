@@ -151,6 +151,10 @@ public class MantenimientoProductosAction extends MasterAction {
 			pagoSec=admin.obtenerFormasPago((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3),ClsConstants.TIPO_PAGO_SECRETARIA);			
 			pagoComun=admin.obtenerFormasPago((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2),(String)ocultos.get(3),ClsConstants.TIPO_PAGO_INTERNET_SECRETARIA);			
 			
+			
+			GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request));
+			String delimitador = paramAdm.getValor((String)ocultos.get(0),"PYS","SEPARADOR_FICHEROCOMPRAS","");
+			request.setAttribute("DELIMITADOR", delimitador);			
 			// Paso valores para dar valores iniciales al formulario			
 			request.setAttribute("container", infoProd);
 			request.setAttribute("container_I", pagoInt);			
@@ -272,6 +276,10 @@ public class MantenimientoProductosAction extends MasterAction {
 				b.setReconfiguracionSufijo(null);
 				b.setIdModulo(new Integer("9"));//Productos y Servicios
 				b.setIdTabla(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+				b.setFechaMod("SYSDATE");
+				b.setUsuMod(new Integer(usr.getUserName()));
+				b.setFechacreacion("SYSDATE");
+				b.setUsucreacion(new Integer(usr.getUserName()));
 				
 				admContador.insert(b);					
 			
@@ -393,6 +401,33 @@ public class MantenimientoProductosAction extends MasterAction {
 		boolean correcto=true;
 		
 		
+		String[] claves = { AdmContadorBean.C_IDINSTITUCION,
+				AdmContadorBean.C_IDCONTADOR };
+		
+		String[] campos = { AdmContadorBean.C_CONTADOR,
+				AdmContadorBean.C_DESCRIPCION,
+				AdmContadorBean.C_FECHARECONFIGURACION,
+				AdmContadorBean.C_IDCAMPOCONTADOR,
+                AdmContadorBean.C_IDCAMPOPREFIJO,
+                AdmContadorBean.C_IDCAMPOSUFIJO,
+				AdmContadorBean.C_IDCONTADOR,
+				AdmContadorBean.C_IDINSTITUCION,
+				AdmContadorBean.C_IDTABLA,
+				AdmContadorBean.C_LONGITUDCONTADOR,
+				AdmContadorBean.C_MODIFICABLECONTADOR,
+				AdmContadorBean.C_MODO,
+				AdmContadorBean.C_NOMBRE,
+				AdmContadorBean.C_PREFIJO,
+				AdmContadorBean.C_RECONFIGURACIONCONTADOR,
+				AdmContadorBean.C_RECONFIGURACIONPREFIJO,
+				AdmContadorBean.C_RECONFIGURACIONSUFIJO,
+				AdmContadorBean.C_SUFIJO, 	
+				AdmContadorBean.C_GENERAL,
+                AdmContadorBean.C_IDMODULO,
+                AdmContadorBean.C_FECHAMODIFICACION,
+				AdmContadorBean.C_USUMODIFICACION};
+
+		
 		try {		
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
@@ -497,7 +532,9 @@ public class MantenimientoProductosAction extends MasterAction {
 					AdmContadorBean b = (AdmContadorBean) v.get(0);
 					b.setDescripcion((String)hash.get("DESCRIPCION"));
 					b.setNombre((String)hash.get("DESCRIPCION"));
-					admContador.updateDirect(b);					
+					b.setFechaMod("sysdate");			
+					b.setUsuMod(new Integer(usr.getUserName()));
+					admContador.updateDirect(b,claves,campos);									
 				} else {
 					// No existía el certificado. Se crea
 					AdmContadorBean b = new AdmContadorBean();
@@ -523,7 +560,10 @@ public class MantenimientoProductosAction extends MasterAction {
 					b.setReconfiguracionSufijo(null);
 					b.setIdModulo(new Integer("9"));//Productos y Servicios
 					b.setIdTabla(CerSolicitudCertificadosBean.T_NOMBRETABLA);
-					
+					b.setFechaMod("SYSDATE");
+					b.setUsuMod(new Integer(usr.getUserName()));
+					b.setFechacreacion("SYSDATE");
+					b.setUsucreacion(new Integer(usr.getUserName()));
 					admContador.insert(b);					
 				
 					// ACTUALIZO EL VALOR EN LA SOLICITUD (FK A CONTADORES)

@@ -25,7 +25,9 @@ public class AdmContadorBean extends MasterBean {
 	private Integer idinstitucion, modoContador, longitudContador, idModulo; 
 	private String  prefijo, sufijo, fechaReconfiguracion, reconfiguracionContador, reconfiguracionPrefijo;
 	private String  reconfiguracionSufijo, idTabla, idCampoContador, idCampoPrefijo, idCampoSufijo;
-	private Long contador;
+	private Long contador;	
+	private Integer usucreacion;	
+	private String	fechacreacion = "";
 	
 	
 	/* Nombre tabla */
@@ -52,6 +54,8 @@ public class AdmContadorBean extends MasterBean {
 	static public final String C_IDCAMPOSUFIJO    = "IDCAMPOSUFIJO";
 	static public final String C_IDMODULO    = "IDMODULO";
 	static public final String C_GENERAL    = "GENERAL";
+	static public final String C_FECHACREACION ="FECHACREACION";
+	static public final String C_USUCREACION="USUCREACION";
 
 	// Metodos SET
 	public void setIdContador(String idcontador) {this.idcontador = idcontador;}	
@@ -74,7 +78,8 @@ public class AdmContadorBean extends MasterBean {
 	public void setModoContador(Integer modoContador) {this.modoContador = modoContador;}
 	public void setContador(Long contador) {this.contador = contador;}
 	public void setIdModulo(Integer idModulo) {this.idModulo = idModulo;}
-	
+	public void setUsucreacion(Integer usucreacion) {this.usucreacion = usucreacion;}
+	public void setFechacreacion(String fechacreacion) {this.fechacreacion = fechacreacion;}
 	
 	//Metodos GET
 	
@@ -98,6 +103,8 @@ public class AdmContadorBean extends MasterBean {
 	public Integer getModoContador() {return modoContador;}
 	public Long getContador() {return contador;}
 	public Integer getIdModulo() {return idModulo;}
+	public Integer getUsucreacion() {return usucreacion;}	
+	public String getFechacreacion() {return fechacreacion;}
 	
 	
 	

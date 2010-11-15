@@ -320,12 +320,16 @@ public class DatosGeneralesAction extends MasterAction{
 						htContador.put(AdmContadorBean.C_RECONFIGURACIONCONTADOR,"0");
 						//htContador.put(AdmContadorBean.C_RECONFIGURACIONPREFIJO,NULL);
 						//htContador.put(AdmContadorBean.C_RECONFIGURACIONSUFIJO,NULL);
+						htContador.put(AdmContadorBean.C_IDMODULO,ClsConstants.IDMODULOFACTURACION);//Modulo facturacion.
 						htContador.put(AdmContadorBean.C_IDTABLA,"FAC_FACTURA");
 						htContador.put(AdmContadorBean.C_IDCAMPOCONTADOR,"NUMEROFACTURA");
 						htContador.put(AdmContadorBean.C_IDCAMPOPREFIJO,"NUMEROFACTURA");
 						htContador.put(AdmContadorBean.C_IDCAMPOSUFIJO,"NUMEROFACTURA");
 						htContador.put(AdmContadorBean.C_GENERAL,"0");
-						if (!admC.insert(htContador)){
+						htContador.put(AdmContadorBean.C_FECHAMODIFICACION,"SYSDATE");
+				        htContador.put(AdmContadorBean.C_USUMODIFICACION,(new Integer(user.getUserName())));
+				        htContador.put(AdmContadorBean.C_FECHACREACION,"SYSDATE");
+				        htContador.put(AdmContadorBean.C_USUCREACION,(new Integer(user.getUserName())));					if (!admC.insert(htContador)){
 							throw new ClsExceptions("Error al insertar el nuevo contador");
 						}
 						hashNew.put(FacSerieFacturacionBean.C_IDCONTADOR, nuevoIdContador);

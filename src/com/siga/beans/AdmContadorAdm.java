@@ -33,7 +33,9 @@ public class AdmContadorAdm extends MasterBeanAdministrador
 				AdmContadorBean.C_RECONFIGURACIONPREFIJO,
 				AdmContadorBean.C_RECONFIGURACIONSUFIJO,
 				AdmContadorBean.C_SUFIJO, AdmContadorBean.C_GENERAL,
-				AdmContadorBean.C_IDMODULO };
+				AdmContadorBean.C_IDMODULO,
+				AdmContadorBean.C_FECHAMODIFICACION, AdmContadorBean.C_USUMODIFICACION,
+			    AdmContadorBean.C_FECHACREACION, AdmContadorBean.C_USUCREACION};
 		return campos;
 	}
 
@@ -91,7 +93,11 @@ public class AdmContadorAdm extends MasterBeanAdministrador
 			bean.setSufijo(UtilidadesHash.getString(hash,
 					AdmContadorBean.C_SUFIJO));
 			bean.setIdModulo(UtilidadesHash.getInteger(hash,
-					AdmContadorBean.C_IDMODULO));
+					AdmContadorBean.C_IDMODULO));			
+			bean.setFechaMod(UtilidadesHash.getString(hash, AdmContadorBean.C_FECHAMODIFICACION));
+			bean.setUsuMod(UtilidadesHash.getInteger(hash, AdmContadorBean.C_USUMODIFICACION));
+			bean.setFechacreacion(UtilidadesHash.getString(hash, AdmContadorBean.C_FECHACREACION));
+			bean.setUsucreacion(UtilidadesHash.getInteger(hash, AdmContadorBean.C_USUCREACION));	
 
 		} catch (Exception e) {
 			bean = null;
@@ -145,8 +151,12 @@ public class AdmContadorAdm extends MasterBeanAdministrador
 					b.getReconfiguracionSufijo());
 			UtilidadesHash.set(htData, AdmContadorBean.C_SUFIJO, b.getSufijo());
 			UtilidadesHash.set(htData, AdmContadorBean.C_IDMODULO, b
-					.getIdModulo());
-
+					.getIdModulo());			
+			UtilidadesHash.set(htData, AdmContadorBean.C_FECHAMODIFICACION, b.getFechaMod());
+			UtilidadesHash.set(htData, AdmContadorBean.C_USUMODIFICACION, b.getUsuMod());
+			UtilidadesHash.set(htData, AdmContadorBean.C_FECHACREACION, b.getFechacreacion());
+			UtilidadesHash.set(htData, AdmContadorBean.C_USUCREACION, b.getUsucreacion());	
+			
 		} catch (Exception e) {
 			htData = null;
 			throw new ClsExceptions(e,
