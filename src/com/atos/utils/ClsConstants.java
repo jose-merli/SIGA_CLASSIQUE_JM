@@ -224,7 +224,7 @@ public class ClsConstants {
 	public static final String PLAZO_EN_DIAS_SALTAALARMA_ENTREGA_DOCSOLICITUD = "PLAZO_EN_DIAS_SALTA_ALARMA_ENTREGA_DOC_SOLICITUD";   
 	public static final String MODULO_CENSO = "CEN";  
 	public static final String MODULO_GENERAL = "GEN";
-	public static final String MODULO_FACTURACION = "FAC"; 
+	public static final String MODULO_FACTURACION = "FAC";	
 	public static final String MODULO_SJCS = "SCS";
 	public static final String MODULO_FACTURACION_SJCS = "FCS";
 	public static final String MODULO_PRODUCTOS = "PYS";
@@ -239,6 +239,9 @@ public class ClsConstants {
 	public static final String SALTOS = "S";
 	public static final String COMPENSACIONES = "C";
 	public static final String OCULTAR_MOTIVO_MODIFICACION = "OCULTAR_MOTIVO_MODIFICACION";
+	
+	//El idmodulo de facturacion en numero
+	public static final int IDMODULOFACTURACION = 6;
 
 	// tipos preferente RGG 04-02-2005
 	public static final String TIPO_PREFERENTE_CORREO = "C";  
