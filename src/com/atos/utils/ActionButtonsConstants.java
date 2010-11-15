@@ -27,7 +27,7 @@ public enum ActionButtonsConstants {
 	SOLICITAR_ASISTENCIA ("sas","gratuita.operarEJG.boton.solicitudAsistencia","accionSolicitudAsistencia()",20),
 	ACEPTAR ("a","global.boton.aceptar","accionAceptar()",21),
 	DETALLE_PAGO ("dpa","general.boton.detallePago","accionDetallePago()",22),
-	DENEGAR_SOLICITUDES ("dn","general.boton.denegarSolicitud","accionDenegarSolicitud()",23),
+	DENEGAR_SOLICITUDES ("ds","general.boton.denegarSolicitud","accionDenegarSolicitud()",23),
 	GUARDAR_EJECUTAR ("ge","general.boton.guardarEjecutar","accionGuardarEjecutar()",24),
 	ENVIO_WS ("ws","general.boton.envioWS","envioWS(this)", "idButtonEnvioWS",25),
 	IMPRIMIR ("i","general.boton.imprimir","accionImprimir()",26),
