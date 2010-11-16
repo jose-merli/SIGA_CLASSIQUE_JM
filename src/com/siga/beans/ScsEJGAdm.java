@@ -3296,8 +3296,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" DECODE(ejg.CALIDAD, null, '', 'D', ");
 			sql.append(" 'gratuita.personaJG.calidad.literal.demandante', ");
 			sql.append(" 'gratuita.personaJG.calidad.literal.demandado') ");
-			sql.append(" AS CALIDAD_DEFENSA_JURIDICA, ");
-			
+			sql.append(" AS CALIDAD_DEFENSA_JURIDICA, ");			
 			sql.append(" EJG.OBSERVACIONES AS ASUNTO_DEFENSA_JURIDICA, ");
 			sql.append(" EJG.DELITOS AS COM_DEL_DEFENSA_JURIDICA, ");
 			sql.append(" EJG.NUMERO_CAJG AS NUMERO_CAJG_DEFENSA_JURIDICA, ");
@@ -3326,7 +3325,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			
 			sql.append(" ,TO_CHAR(EJG.FECHAPRESENTACION, 'dd-mm-yyyy') as FECHAPRESENTACION");
 			sql.append(" ,TO_CHAR(EJG.FECHALIMITEPRESENTACION, 'dd-mm-yyyy') as FECHALIMITEPRESENTACION");
-
+			sql.append(" ,Easi.Idturno AS IDTURNOASISTENCIA "); 
+            sql.append(" ,Easi.Idguardia AS IDGUARDIAASISTENCIA ");
 			sql.append(" ,to_char(EASI.FECHAHORA, 'dd/mm/yyyy') AS FECHA_ASISTENCIA ");
 			sql.append(" ,  (select nombre ||' '||apellidos1||' '|| apellidos2 from cen_persona where idpersona = EASI.IDPERSONACOLEGIADO) AS NOMBRE_LETRADO_ASISTENCIA");
 			
@@ -4192,16 +4192,17 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 					registro.put("ID_PROVINCIA_JUZGADO_D_J", " ");
 					registro.put("ID_POBLACION_JUZGADO_D_J", " ");
 					registro.put("JUZGADO_D_J", " ");
-					
-					
-					
-					
-
-					
-					
 				}
 				
-				
+				//nombre GuardiaAsistencia				
+				String idturnoAsistencia = (String)registro.get("IDTURNOASISTENCIA");
+				String idGuardiaAsistencia = (String)registro.get("IDGUARDIAASISTENCIA");
+				String nombreGuardiaAsistencia=ScsGuardiasTurnoAdm.getNombreGuardiaJSP(idInstitucion,idturnoAsistencia, idGuardiaAsistencia);				
+				if (nombreGuardiaAsistencia!=null && !nombreGuardiaAsistencia.trim().equalsIgnoreCase("")){
+					registro.put("NOMBRE_GUARDIA_ASISTENCIA", nombreGuardiaAsistencia);
+				}else{
+					registro.put("NOMBRE_GUARDIA_ASISTENCIA", " ");
+				}
 				// Datos de la asistencia asociada
 				String fechaAsistencia = (String)registro.get("FECHA_ASISTENCIA");				
 				if(fechaAsistencia!=null && !fechaAsistencia.trim().equalsIgnoreCase("")){					
