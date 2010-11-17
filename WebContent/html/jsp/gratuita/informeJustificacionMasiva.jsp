@@ -27,7 +27,9 @@
 	
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
-	<siga:TituloExt titulo="gratuita.informeJustificacionMasiva.literal.titulo"  localizacion="gratuita.informeJustificacionMasiva.literal.localizacion"/>
+	
+	
+	
 	
 </head>
 
@@ -306,6 +308,19 @@
 		<script language="JavaScript">
 function inicio ()
 {
+	var siga ="SIGA";
+	var tit ="<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.titulo"/>";
+	top.setTitulo(siga, tit);
+	if(document.InformeJustificacionMasivaForm.fichaColegial.value=='true'){
+		var loc ="<siga:Idioma key="censo.fichaCliente.sjcs.informeJustificacionMasiva.localizacion"/>";
+		top.setLocalizacion(loc);	
+	}else{
+		var loc ="<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.localizacion"/>";
+		top.setLocalizacion(loc);
+	
+	}
+	
+				
 	document.getElementById("mostrarSoloPendientes").checked = "checked";
 	document.getElementById("oculto").style.display = "none";
 	
