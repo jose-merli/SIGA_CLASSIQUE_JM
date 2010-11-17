@@ -515,13 +515,22 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 						List<DesignaForm> designaList = admDesignas.getDesignaList(f, designaHashtable,null, false);
 						designaFormList.addAll(designaList);
 					}
+					request.setAttribute("designaFormList", designaFormList);
+					request.setAttribute("paginaSeleccionada", paginador.getPaginaActual());
+					request.setAttribute("totalRegistros", paginador.getNumeroTotalRegistros());
+					request.setAttribute("registrosPorPagina", paginador.getNumeroRegistrosPorPagina());
+					databackup.put("paginador",paginador);
+					databackup.put("datos",designaFormList);
+				}else{
+					databackup.put("datos",new ArrayList<DesignaForm>());
+					request.setAttribute("designaFormList", new ArrayList<DesignaForm>());
+					request.setAttribute("paginaSeleccionada", 1);
+					request.setAttribute("totalRegistros", 0);
+					request.setAttribute("registrosPorPagina",1);
+					setPaginador(request, paginadorPenstania, databackup);
+					
 				}	
-				request.setAttribute("designaFormList", designaFormList);
-				request.setAttribute("paginaSeleccionada", paginador.getPaginaActual());
-				request.setAttribute("totalRegistros", paginador.getNumeroTotalRegistros());
-				request.setAttribute("registrosPorPagina", paginador.getNumeroRegistrosPorPagina());
-				databackup.put("paginador",paginador);
-				databackup.put("datos",designaFormList);
+				
 
 			}else{	
 				databackup=new HashMap();
@@ -529,11 +538,8 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 				
 				PaginadorBind paginador = admDesignas.getDesignasJustificacionPaginador(f,false);
 				
-				if (paginador!=null){
+				if (paginador!=null&& paginador.getNumeroTotalRegistros()>0){
 					int totalRegistros = paginador.getNumeroTotalRegistros();
-					if (totalRegistros==0){					
-						paginador =null;
-					}
 					databackup.put("paginador",paginador);
 					Vector datos = paginador.obtenerPagina(1);
 					
