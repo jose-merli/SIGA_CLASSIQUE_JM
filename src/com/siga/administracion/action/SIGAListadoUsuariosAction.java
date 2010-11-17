@@ -5,6 +5,8 @@ import java.util.*;
 import com.atos.utils.*;
 import com.siga.beans.*;
 import com.siga.general.*;
+import com.siga.ws.CajgConfiguracion;
+
 import javax.servlet.http.*;
 import org.apache.struts.action.*;
 import com.siga.administracion.form.*;
@@ -60,6 +62,7 @@ public class SIGAListadoUsuariosAction extends MasterAction
         Hashtable hashNew = (Hashtable)hashOld.clone();
 	    
 	    hashNew.put(AdmUsuariosBean.C_ACTIVO, form.getActivo());
+	    hashNew.put(AdmUsuariosBean.C_CODIGOEXT, form.getCodigoExt());
 	    
         if (usuariosAdm.update(hashNew, hashOld))
         {
@@ -150,6 +153,7 @@ public class SIGAListadoUsuariosAction extends MasterAction
         String fechaAlta = (String)vOcultos.elementAt(7);
         String usuMod = (String)vOcultos.elementAt(8);
         String fechaMod = (String)vOcultos.elementAt(9);
+        String codigoExt = (String)vOcultos.elementAt(10);
         
         usuariosBean.setIdUsuario(new Integer(idUsuario));
         usuariosBean.setIdInstitucion(new Integer(idInstitucion));
@@ -161,6 +165,7 @@ public class SIGAListadoUsuariosAction extends MasterAction
         usuariosBean.setFechaAlta(fechaAlta);
         usuariosBean.setUsuMod(new Integer(usuMod));
         usuariosBean.setFechaMod(fechaMod);
+        usuariosBean.setCodigoExt(codigoExt);
 
         Vector datos = new Vector();
         datos.add(usuariosBean);
@@ -168,6 +173,9 @@ public class SIGAListadoUsuariosAction extends MasterAction
         
         request.setAttribute("datos", datos);
         request.setAttribute("editable", bEditable ? "1" : "0");
+        
+        int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(userBean.getLocation()));
+		request.setAttribute("PCAJG_ACTIVO", valorPcajgActivo);
         
         if (bEditable)
         {

@@ -21,6 +21,10 @@
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
 	Vector datos = (Vector)request.getAttribute("datos");
 	boolean bEditable = ((String)request.getAttribute("editable")).equals("1");
+	int pcajg_activo=(Integer)request.getAttribute("PCAJG_ACTIVO");
+	boolean codigoExtOb = pcajg_activo==4;
+	String asterisco="";
+	if(codigoExtOb) asterisco="(*)";
 	
 	request.removeAttribute("datos");
 	request.removeAttribute("editable");
@@ -47,6 +51,14 @@
 			function accionGuardarCerrar() 
 			{
 				sub();
+				<%if (codigoExtOb){%>
+					if(listadoUsuariosForm.codigoExt.value==""){
+						msg = "<siga:Idioma key='errors.required' arg0='administracion.certificados.literal.codigoExt'/>";
+						alert(msg);
+						fin();
+						return false;
+					}
+				<%}%>
 				listadoUsuariosForm.submit();
 				window.returnValue="MODIFICADO";
 			}
@@ -84,7 +96,7 @@
 							<siga:ConjCampos leyenda="administracion.usuarios.titulo">
 								<table class="tablaCampos" align="center">
 									<tr>				
-										<td class="labelText">
+										<td class="labelText" width="30%">
 											<siga:Idioma key="administracion.usuarios.literal.nombre"/>
 										</td>				
 										<td class="labelTextValue">
@@ -112,31 +124,15 @@
 											<siga:Idioma key="administracion.usuarios.literal.activo"/>
 										</td>				
 										<td class="labelTextValue">
-<%
-											if (!bEditable)
-											{
-												if (bean.getActivo().equals("S"))
-												{
-%>
-												<siga:Idioma key="general.boton.yes"/>
-<%
-												}
-												
-												else
-												{
-%>
-											<siga:Idioma key="general.boton.no"/>
-<%
-												}
-											}
-										  
-											else
-											{
-%>
+											<%if (!bEditable){
+												if (bean.getActivo().equals("S")){%>	
+													<siga:Idioma key="general.boton.yes"/>
+												<%}else{%>
+													<siga:Idioma key="general.boton.no"/>
+												<%}
+											}else{%>
 										  		<input type="checkbox" name="activo" <%if (bean.getActivo().equals("S")) {%>checked<%}%> value="S">
-<%
-											}
-%>
+											<%}%>
 										</td>
 									</tr>
 									<tr>				
@@ -148,6 +144,24 @@
 												<tr>
 													<td class="labelTextValue">
 														<%=bean.getGrupos()%>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+									<tr>				
+										<td class="labelText">
+											<siga:Idioma key="administracion.certificados.literal.codigoExt"/>&nbsp;<%=asterisco %>
+										</td>
+										<td>
+											<table cellspacing="0" cellpadding="0">
+												<tr>
+													<td class="labelTextValue">
+													<%if (!bEditable){%>
+														<%=bean.getCodigoExt()%>
+													<%}else{ %>
+														<html:text name="listadoUsuariosForm" property="codigoExt" value="<%=bean.getCodigoExt()%>" size="10" maxlength="10" styleClass="box"/>
+													<%}%>
 													</td>
 												</tr>
 											</table>

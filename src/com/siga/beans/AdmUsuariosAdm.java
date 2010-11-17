@@ -23,7 +23,8 @@ public class AdmUsuariosAdm extends MasterBeanAdministrador
 		        		   AdmUsuariosBean.C_FECHA_ALTA,
 						   AdmUsuariosBean.C_FECHAMODIFICACION, 
 						   AdmUsuariosBean.C_USUMODIFICACION,
-						   AdmUsuariosBean.F_GRUPOS};
+						   AdmUsuariosBean.F_GRUPOS,
+						   AdmUsuariosBean.C_CODIGOEXT};
 
 		return campos;
 	}
@@ -45,7 +46,8 @@ public class AdmUsuariosAdm extends MasterBeanAdministrador
      		   			   AdmUsuariosBean.C_ACTIVO,
      		   			   AdmUsuariosBean.C_FECHA_ALTA,
      		   			   AdmUsuariosBean.C_FECHAMODIFICACION, 
-     		   			   AdmUsuariosBean.C_USUMODIFICACION};
+     		   			   AdmUsuariosBean.C_USUMODIFICACION,
+						   AdmUsuariosBean.C_CODIGOEXT};
 		
 		return campos;
 
@@ -69,6 +71,7 @@ public class AdmUsuariosAdm extends MasterBeanAdministrador
 			bean.setGrupos(UtilidadesHash.getString(hash, AdmUsuariosBean.C_IDS_GRUPOS));
 			bean.setFechaMod(UtilidadesHash.getString(hash, AdmUsuariosBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash, AdmUsuariosBean.C_USUMODIFICACION));
+			bean.setCodigoExt(UtilidadesHash.getString(hash, AdmUsuariosBean.C_CODIGOEXT));
 		}
 
 		catch (Exception e)
@@ -101,6 +104,7 @@ public class AdmUsuariosAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(htData, AdmUsuariosBean.C_IDS_GRUPOS, b.getGrupos());
 			UtilidadesHash.set(htData, AdmUsuariosBean.C_FECHAMODIFICACION, b.getFechaMod());
 			UtilidadesHash.set(htData, AdmUsuariosBean.C_USUMODIFICACION, b.getUsuMod());
+			UtilidadesHash.set(htData, AdmUsuariosBean.C_CODIGOEXT, b.getCodigoExt());
 		}
 
 		catch (Exception e)
@@ -123,7 +127,8 @@ public class AdmUsuariosAdm extends MasterBeanAdministrador
     public Vector getDatosUsuario (String idUsuario, String idInstitucion) 
     {
 		String sql = " SELECT " + AdmUsuariosBean.C_DESCRIPCION + " NOMBRE_USUARIO, " + 
-								  AdmUsuariosBean.C_NIF + " NIF_USUARIO, " + 
+								  AdmUsuariosBean.C_NIF + " NIF_USUARIO, " +
+								  AdmUsuariosBean.C_CODIGOEXT + " CODIGOEXT, " + 
 								  CenInstitucionBean.C_NOMBRE + " NOMBRE_INSTITUCION, " +
 								  "F_SIGA_ROLES_USUARIO(u." + AdmUsuariosBean.C_IDINSTITUCION + ", u." + AdmUsuariosBean.C_IDUSUARIO + ") NOMBRE_GRUPO " +
 						" FROM " + AdmUsuariosBean.T_NOMBRETABLA + " u, " + CenInstitucionBean.T_NOMBRETABLA + " i " +

@@ -14,6 +14,7 @@ public class SIGAListadoUsuariosForm extends MasterForm
     private String NIF="";
     private String activo="N";
     private String fechaAlta="";
+    private String codigoExt="";
     
 //    public String getModo() 
 //    {
@@ -113,4 +114,13 @@ public class SIGAListadoUsuariosForm extends MasterForm
     {
         this.activoConsulta = activoConsulta;
     }
+
+	public String getCodigoExt() {
+		return codigoExt;
+	}
+
+	public void setCodigoExt(String codigoExt) {
+		this.codigoExt = codigoExt;
+	}
+    
 }

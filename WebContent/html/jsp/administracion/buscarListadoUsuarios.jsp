@@ -90,6 +90,7 @@
 						<input type="hidden" name="oculto<%=""+(i+1)%>_8" value="<%=bean.getFechaAlta()%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_9" value="<%=bean.getUsuMod()%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_10" value="<%=bean.getFechaMod()%>">
+						<input type="hidden" name="oculto<%=""+(i+1)%>_11" value="<%=bean.getCodigoExt()%>">
 						
 						<%=bean.getDescripcion()%>
 					</td>

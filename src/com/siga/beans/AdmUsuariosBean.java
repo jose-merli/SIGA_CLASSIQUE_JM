@@ -11,6 +11,7 @@ public class AdmUsuariosBean extends MasterBean
 	private String activo;
 	private String fechaAlta;
 	private String grupos;
+	private String codigoExt;
 
 	/* Nombre campos de la tabla */
 	static public final String C_IDUSUARIO = "IDUSUARIO";
@@ -21,6 +22,7 @@ public class AdmUsuariosBean extends MasterBean
 	static public final String C_ACTIVO = "ACTIVO";
 	static public final String C_FECHA_ALTA = "FECHAALTA";
 	static public final String C_IDS_GRUPOS = "IDSGRUPOS";
+	static public final String C_CODIGOEXT = "CODIGOEXT";
 	
 	static public final String F_GRUPOS = "F_SIGA_ROLES_USUARIO(" + C_IDINSTITUCION + " , " + C_IDUSUARIO + ") AS " + C_IDS_GRUPOS;
 
@@ -105,5 +107,15 @@ public class AdmUsuariosBean extends MasterBean
     public void setGrupos(String grupos)
     {
         this.grupos=grupos;
-    }    
+    }
+
+	public String getCodigoExt() {
+		return codigoExt;
+	}
+
+	public void setCodigoExt(String codigoExt) {
+		this.codigoExt = codigoExt;
+	}    
+    
+    
 }
