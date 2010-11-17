@@ -260,9 +260,9 @@ public class ValidarVolantesGuardiasAction extends MasterAction {
 			//Datos necesarios para la consulta
 			String idinstitucion = usr.getLocation();
 			String idpersonaParam = miForm.getIdPersona();
-			String idTurno = miForm.getIdTurno();
-			if (idTurno.indexOf(",")!=-1) {
-			    idTurno = idTurno.substring(idTurno.indexOf(",")+1,idTurno.length());
+			String idTurnoForm = miForm.getIdTurno();
+			if (idTurnoForm.indexOf(",")!=-1) {
+				idTurnoForm = idTurnoForm.substring(idTurnoForm.indexOf(",")+1,idTurnoForm.length());
 			}
 			String idGuardia = miForm.getIdGuardia();
 			
@@ -274,7 +274,7 @@ public class ValidarVolantesGuardiasAction extends MasterAction {
 
 			miHash.put("IDINSTITUCION",idinstitucion);
 			miHash.put("IDPERSONA",idpersonaParam);
-			miHash.put("IDTURNO",idTurno);
+			miHash.put("IDTURNO",idTurnoForm);
 			miHash.put("IDGUARDIA",idGuardia);
 			miHash.put("NUMCOLEGIADO",numeroColegiadoParam);
 			miHash.put("BUSCARFECHADESDE",fechaDesde);
@@ -295,7 +295,7 @@ public class ValidarVolantesGuardiasAction extends MasterAction {
 				
 				String fechaInicioPK = (String)registro.get("FECHA_INICIO_PK");
 				String fechaFin = (String)registro.get(ScsCabeceraGuardiasBean.C_FECHA_FIN);
-				String idturno = (String)registro.get(ScsCabeceraGuardiasBean.C_IDTURNO);
+				String idTurno = (String)registro.get(ScsCabeceraGuardiasBean.C_IDTURNO);
 				String idguardia = (String)registro.get(ScsCabeceraGuardiasBean.C_IDGUARDIA);
 				String idpersona = (String)registro.get(ScsCabeceraGuardiasBean.C_IDPERSONA);
 				String idCalendarioGuardias = (String)registro.get(ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS);
@@ -414,13 +414,13 @@ public class ValidarVolantesGuardiasAction extends MasterAction {
 				//Consulta como solicitante
 
 				//Ejecuto el PL de Permutas que me dice el tipo de Permuta posible:				
-				pl = admPermutaguardias.ejecutarFuncionPermutas(idinstitucion,idturno,idguardia,idpersona,GstDate.getFormatedDateShort(usr.getLanguage(),fInicio));
+				pl = admPermutaguardias.ejecutarFuncionPermutas(idinstitucion,idTurno,idguardia,idpersona,GstDate.getFormatedDateShort(usr.getLanguage(),fInicio));
 				if (pl.equals("5")){//si buscando por la fecha de inicio (para el caso en el que todavia no se haya confirmado la solicitud de la permuta) devuelve el valor "5" (pendiente de permutar) volvemos a ejecutar
 					                // el procedimiento pasando la fecha de inicio de permuta (para el caso en el que ya se haya 
 					                // confirmado la permuta) por si sigue devolviendo "5" o devuelve otro
 					                // valor como "3" (guardia permutada), como "2" (Permuta solicitada) o "4" (Pendiente de confirmar).
 				
-				    pl = admPermutaguardias.ejecutarFuncionPermutas(idinstitucion,idturno,idguardia,idpersona,GstDate.getFormatedDateShort(usr.getLanguage(),fInicioPermuta));
+				    pl = admPermutaguardias.ejecutarFuncionPermutas(idinstitucion,idTurno,idguardia,idpersona,GstDate.getFormatedDateShort(usr.getLanguage(),fInicioPermuta));
 				} 
 				
 				//Inserto los datos a visualizar en el JSP
@@ -437,7 +437,7 @@ public class ValidarVolantesGuardiasAction extends MasterAction {
 				nueva.put("NOMBRE",nombre);
 				nueva.put("IDPERSONA",idpersona);
 				nueva.put("IDINSTITUCION",idinstitucion);
-				nueva.put("IDTURNO",idturno);
+				nueva.put("IDTURNO",idTurno);
 				nueva.put("IDGUARDIA",idguardia);
 				nueva.put("IDCALENDARIOGUARDIAS",(String)registro.get("IDCALENDARIOGUARDIAS"));
 				nueva.put("NOMTURNO",(String)registro.get("NOMTURNO"));
@@ -459,7 +459,7 @@ public class ValidarVolantesGuardiasAction extends MasterAction {
 			request.setAttribute("resultado",new Vector(tmResultado.values()));
 
 			request.setAttribute("IDINSTITUCION",idinstitucion);
-			request.setAttribute("IDTURNO",idTurno);
+			request.setAttribute("IDTURNO",idTurnoForm);
 			request.setAttribute("IDGUARDIA",idGuardia);
 			//JTA Se pasaba como parametro "". Lo dejo por si no esuviera controlado el NullPointerException
 			request.setAttribute("IDCALENDARIOGUARDIAS","");

@@ -1,4 +1,4 @@
-<!-- volantesExpress.jsp -->
+<!-- consultaAsistencia.jsp -->
 
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">

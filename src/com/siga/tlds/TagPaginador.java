@@ -34,6 +34,8 @@ public class TagPaginador extends TagSupport {
 	private String divStyle;
 	private String distanciaPaginas;
 	private String idioma;
+	private String preFunction;
+	private String postFunction;
 	
 	public static final String SPACE = "&nbsp;";
 	public static final String YES = "yes";
@@ -275,19 +277,30 @@ public class TagPaginador extends TagSupport {
 
 	
 	private String getAnchor(int page, String label) {
-		
-		return 
-			new StringBuffer(ABEGIN)				
-				.append("paginar("+page+");return false;")
-				.append(QUOT)
-				.append(" class=\"")
-				.append(this.clase)
-				.append("\"")
-				.append(GT)
-				.append(label)
-				.append(AEND)
-				.append(INTRO)
-			.toString();
+		StringBuffer sb = new StringBuffer(ABEGIN);
+		if(this.getPreFunction()!=null && !this.getPreFunction().equals("")){
+			sb.append(this.getPreFunction());
+			sb.append("(");
+			sb.append(page);
+			sb.append(");");
+		}
+		sb.append("paginar("+page+");");
+		if(this.getPostFunction()!=null && !this.getPostFunction().equals("")){
+			sb.append(this.getPostFunction());
+			sb.append("(");
+			sb.append(page);
+			sb.append(");");
+		}
+		sb.append("return false;");
+		sb.append(QUOT);
+		sb.append(" class=\"");
+		sb.append(this.clase);
+		sb.append("\"");
+		sb.append(GT);
+		sb.append(label);
+		sb.append(AEND);
+		sb.append(INTRO);
+		return sb.toString();
 				
 	}
 
@@ -326,6 +339,18 @@ public class TagPaginador extends TagSupport {
 	}
 	public void setRegistrosSeleccionados(String registrosSeleccionados) {
 		this.registrosSeleccionados = registrosSeleccionados;
+	}
+	public String getPreFunction() {
+		return preFunction;
+	}
+	public void setPreFunction(String preFunction) {
+		this.preFunction = preFunction;
+	}
+	public String getPostFunction() {
+		return postFunction;
+	}
+	public void setPostFunction(String postFunction) {
+		this.postFunction = postFunction;
 	}
 	
 

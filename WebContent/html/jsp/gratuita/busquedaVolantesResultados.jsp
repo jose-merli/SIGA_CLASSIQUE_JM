@@ -205,7 +205,7 @@
 					<!--fechaFin-->
 					<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFinPermuta)%>
 				</td>
-				<% System.out.println(recordNumber);		
+				<% 		
 				recordNumber++; %>
 			</siga:FilaConIconos>
 

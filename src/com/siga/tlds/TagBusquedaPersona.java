@@ -19,6 +19,7 @@ public class TagBusquedaPersona extends TagSupport
 	String numeroColegiado="";
 	String anchoDesc = "";
 	String anchoNum = "";
+	String campoObligatorio = "";
 
 //	public String getNumeroColegiado() {
 //		return numeroColegiado;
@@ -92,12 +93,16 @@ public class TagBusquedaPersona extends TagSupport
 				out.println("			<tr>");	
 				out.println("				<td class=\"labelText\">");
 				out.println("					"+UtilidadesString.getMensajeIdioma(usrbean,"gratuita.busquedaSOJ.literal.colegiado"));
+				if(campoObligatorio!=null && campoObligatorio.equals("true"))
+					out.println("(*)");
 				out.println("				</td>");
 			}
 			else if(tipo.equals("personas")){
 				out.println("			<tr>");
 				out.println("				<td class=\"labelText\">");
 				out.println("					"+UtilidadesString.getMensajeIdioma(usrbean,"gratuita.busquedaSOJ.literal.nif"));
+				if(campoObligatorio!=null && campoObligatorio.equals("true"))
+					out.println("(*)");
 				out.println("				</td>");
 			}
 
@@ -105,6 +110,8 @@ public class TagBusquedaPersona extends TagSupport
 				out.println("			<tr>");
 				out.println("				<td class=\"labelText\">");
 				out.println("					"+UtilidadesString.getMensajeIdioma(usrbean,"gratuita.busquedaSOJ.literal.nif"));
+				if(campoObligatorio!=null && campoObligatorio.equals("true"))
+					out.println("(*)");
 				out.println("				</td>");
 			}
 			out.println("<td>");
@@ -216,7 +223,7 @@ public class TagBusquedaPersona extends TagSupport
 			out.println("				document.getElementById('nombrePersona').value = \"\";");
 			out.println("		}	");
 			out.println("		function obtenerPersonas () ");
-			out.println("		{");
+			out.println("		{sub();");
 			out.println("			document.getElementById('nombrePersona').value = \"\";");
 			out.println("			if(document.getElementById('numeroNifTagBusquedaPersonas').value!=\"\"){");			
 			out.println("			   if (!vForm) vForm=creaForm();");
@@ -225,7 +232,7 @@ public class TagBusquedaPersona extends TagSupport
 			out.println("			   vForm.modo.value=\"tagBusquedaPersona\";");	
 			out.println("			   vForm.submit();");	
 			out.println("			}");
-			out.println("			else{");
+			out.println("			else{fin();");
 			out.println("				limpiarPersona();");
 			out.println("			}");
 			out.println("		}");
@@ -263,6 +270,12 @@ public class TagBusquedaPersona extends TagSupport
 			e.printStackTrace();
 		}
 		return EVAL_PAGE;
+	}
+	public String getCampoObligatorio() {
+		return campoObligatorio;
+	}
+	public void setCampoObligatorio(String campoObligatorio) {
+		this.campoObligatorio = campoObligatorio;
 	}
 
 }

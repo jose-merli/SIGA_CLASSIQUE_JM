@@ -373,17 +373,41 @@ public class ActuacionesDesignasAction extends MasterAction {
 		try {			
 			
 			ActuacionesDesignasForm miform = (ActuacionesDesignasForm)formulario;
+
+			String anio = null;
+			String idInstitucion = null;
+			String idTurno = null;
+			String numero = null;
+			String numeroAsunto = null;
 			Hashtable designaActual = (Hashtable) ses.getAttribute("designaActual");
-			Vector visibles = (Vector)miform.getDatosTablaVisibles(0);
-			Vector ocultos = (Vector)miform.getDatosTablaOcultos(0);
+			if(designaActual!=null&&miform.getNactuacion()==null&&miform.getAnio()==null
+					&&miform.getIdTurno()==null && miform.getNumero()==null){
+				Vector visibles = (Vector)miform.getDatosTablaVisibles(0);
+				numeroAsunto = (String)visibles.get(1);
+				anio = (String)designaActual.get("ANIO");
+				idInstitucion= (String)usr.getLocation();
+				idTurno = (String)designaActual.get("IDTURNO");
+				numero = (String)designaActual.get("NUMERO");
+				
+			}else{
+				numeroAsunto = miform.getNactuacion();
+				anio = miform.getAnio();
+				idInstitucion= (String)usr.getLocation();
+				idTurno = miform.getIdTurno();
+				numero = miform.getNumero();
+				
+				
+			}
+						
+
 			Hashtable hashEJG = new Hashtable();
 			ScsEJGAdm ejgAdm = new ScsEJGAdm (this.getUserBean(request));		
 			Hashtable hashDatosDesigna= new Hashtable();			
-			UtilidadesHash.set(hashDatosDesigna,ScsDesignaBean.C_IDINSTITUCION, (String)usr.getLocation());
-			UtilidadesHash.set(hashDatosDesigna,ScsDesignaBean.C_ANIO, (String)designaActual.get("ANIO"));
-			UtilidadesHash.set(hashDatosDesigna,ScsDesignaBean.C_NUMERO, (String)designaActual.get("NUMERO"));
-			UtilidadesHash.set(hashDatosDesigna,ScsDesignaBean.C_IDTURNO, (String)designaActual.get("IDTURNO"));
-			UtilidadesHash.set(hashDatosDesigna,"VISIBLE",(String)visibles.get(1));		
+			UtilidadesHash.set(hashDatosDesigna,ScsDesignaBean.C_IDINSTITUCION, idInstitucion);
+			UtilidadesHash.set(hashDatosDesigna,ScsDesignaBean.C_ANIO, anio);
+			UtilidadesHash.set(hashDatosDesigna,ScsDesignaBean.C_NUMERO, numero);
+			UtilidadesHash.set(hashDatosDesigna,ScsDesignaBean.C_IDTURNO, idTurno);
+			UtilidadesHash.set(hashDatosDesigna,"VISIBLE",numeroAsunto);		
 			
 			ScsActuacionDesignaAdm designaAdm = new ScsActuacionDesignaAdm (this.getUserBean(request));	
 			//consultamos las designas
@@ -449,7 +473,18 @@ public class ActuacionesDesignasAction extends MasterAction {
 		String consultaDesigna = null;
 		Hashtable hashEJG = new Hashtable();
 		try {
-			   hash = (Hashtable)ses.getAttribute("designaActual");
+			ActuacionesDesignasForm miform = (ActuacionesDesignasForm)formulario;
+			if(miform!=null && miform.getIdTurno()!=null &&!miform.getIdTurno().equals("")){
+				hash = new Hashtable();
+				hash.put(ScsActuacionDesignaBean.C_ANIO, miform.getAnio());
+				hash.put(ScsActuacionDesignaBean.C_IDTURNO, miform.getIdTurno());
+				hash.put(ScsActuacionDesignaBean.C_NUMERO, miform.getNumero());
+//				hash.put(ScsActuacionDesignaBean.C_IDINSTITUCION, miform.getidAnio());
+				
+			}else{
+				hash = (Hashtable)ses.getAttribute("designaActual");
+			}
+			
 	
 				consultaDesigna =" SELECT des.anio anio, des.numero numero, des.idturno idturno, des.idinstitucion idinstitucion, des.FECHAANULACION,"+
 								" per.nombre nombre, per.apellidos1 apellido1, per.apellidos2 apellido2,"+
@@ -1108,9 +1143,9 @@ public class ActuacionesDesignasAction extends MasterAction {
 		boolean ok = false;
 		boolean tieneEstado = false;
 		int estadoAnterior = -1;
-		boolean estadoAnteriorInicio = false;
-		boolean estadoAnteriorFinal = false;
-		boolean estadoAnteriorCompleta = false;
+		boolean existeAlgunaAcreditacionDeInicio = false;
+		boolean existeAlgunaAcreditacionDeInicioFin = false;
+		boolean estadoAlgunaAcreditacionCompleta = false;
 		
 		//Recupero si tiene una acreditacion para esa actuacion con ese procedimiento: 
 		int estadoOriginal = -1;
@@ -1133,13 +1168,13 @@ public class ActuacionesDesignasAction extends MasterAction {
 		if (!vActuacionesDesigna.isEmpty()) {
 			tieneEstado = true;
 			//Obtengo si el estado anterior era Inicio:
-			estadoAnteriorInicio = this.buscarEstadoInicio(vActuacionesDesigna, request);
-			estadoAnteriorFinal = this.buscarEstadoFinal(vActuacionesDesigna, request);
-			estadoAnteriorCompleta = this.buscarEstadoCompleta(vActuacionesDesigna, request);
+			existeAlgunaAcreditacionDeInicio = this.buscarEstadoInicio(vActuacionesDesigna, request);
+			existeAlgunaAcreditacionDeInicioFin = this.buscarEstadoFinal(vActuacionesDesigna, request);
+			estadoAlgunaAcreditacionCompleta = this.buscarEstadoCompleta(vActuacionesDesigna, request);
 		// Si no tiene acreditaciones
 		} else { 
 			tieneEstado = false;
-			estadoAnteriorInicio = false;
+			existeAlgunaAcreditacionDeInicio = false;
 		}
 		
 		switch (nuevoEstado){
@@ -1151,7 +1186,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 					break;
 			case ClsConstants.ESTADO_ACREDITACION_FINAL:
 			case ClsConstants.ESTADO_ACREDITACION_REGULARIZACION:
-					if ((!bAplicarRestriccionesActuaciones || (tieneEstado && estadoAnteriorInicio )) && !estadoAnteriorFinal && !estadoAnteriorCompleta)
+					if ((!bAplicarRestriccionesActuaciones || (tieneEstado && existeAlgunaAcreditacionDeInicio )) && !existeAlgunaAcreditacionDeInicioFin && !estadoAlgunaAcreditacionCompleta)
 						ok = true; //OK
 					else
 						ok = false; //Error: si anhado final debe haber inicio.

@@ -81,6 +81,7 @@ public enum ActionButtonsConstants {
 	RESOLUCION_FTP ("resolucionFTP","general.boton.resolucionFTP","resolucionFTP(this)", "idButtonResolucionFTP",74),
 	INFORME_RETENCIONES_IRPF ("iri","general.boton.informeRetencionesIRPF","accionInformeRetencionesIRPF()",75),
 	ARCHIVAR ("ar","general.botons.Archivar","accionArchivar()",76),
+	INFORME_JUSTIFICACION ("ij","general.boton.informeJustificacion","informeJustificacion()",77),
 	;
 
 

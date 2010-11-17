@@ -453,6 +453,14 @@ public class ScsJuzgadoAdm extends MasterBeanAdministrador {
 	}
 	public List<ScsJuzgadoBean> getJuzgados(VolantesExpressVo volanteExpres)throws ClsExceptions{
 
+		
+       return getJuzgados(volanteExpres.getIdInstitucion().toString(),volanteExpres.getIdTurno().toString(),volanteExpres.getUsrBean());
+		
+       
+	} 
+	
+	public List<ScsJuzgadoBean> getJuzgados(String idInstitucion,String idTurno,UsrBean usrBean)throws ClsExceptions{
+
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
 		int contador = 0;
 		StringBuffer sql = new StringBuffer();
@@ -483,12 +491,12 @@ public class ScsJuzgadoAdm extends MasterBeanAdministrador {
 		sql.append(" and scs_turno.IDINSTITUCION = :");
 		contador ++;
 		sql.append(contador);
-		htCodigos.put(new Integer(contador),volanteExpres.getIdInstitucion());
+		htCodigos.put(new Integer(contador),idInstitucion);
 		sql.append(" and scs_juzgado.visible = '1' ");
 		sql.append(" and scs_turno.idturno = :");
 		contador ++;
 		sql.append(contador);
-		htCodigos.put(new Integer(contador),volanteExpres.getIdTurno());
+		htCodigos.put(new Integer(contador),idTurno);
 		sql.append(" and nvl(scs_procedimientos.vigente, '0') = '1' ");
 		sql.append(" ORDER BY NOMBRE ");
 		List<ScsJuzgadoBean> alJuzgados= null;
@@ -498,7 +506,7 @@ public class ScsJuzgadoAdm extends MasterBeanAdministrador {
             if (rc.findBind(sql.toString(),htCodigos)) {
             	alJuzgados = new ArrayList<ScsJuzgadoBean>();
             	ScsJuzgadoBean juzgadoBean = new ScsJuzgadoBean();
-            	juzgadoBean.setNombre(UtilidadesString.getMensajeIdioma(volanteExpres.getUsrBean(), "general.combo.seleccionar"));
+            	juzgadoBean.setNombre(UtilidadesString.getMensajeIdioma(usrBean, "general.combo.seleccionar"));
             	juzgadoBean.setIdJuzgado(new Integer(-1));
             	alJuzgados.add(juzgadoBean);
     			for (int i = 0; i < rc.size(); i++){

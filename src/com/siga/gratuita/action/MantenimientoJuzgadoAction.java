@@ -1,11 +1,15 @@
 package com.siga.gratuita.action;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
+
+import net.sourceforge.ajaxtags.xml.AjaxXmlBuilder;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -13,9 +17,11 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.CenClienteAdm;
 import com.siga.beans.ScsJuzgadoAdm;
 import com.siga.beans.ScsJuzgadoBean;
 import com.siga.beans.ScsJuzgadoProcedimientoAdm;
@@ -24,6 +30,7 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.MantenimientoJuzgadoForm;
+import com.siga.gratuita.form.VolantesExpressForm;
 
 /**
  * @author david.sanchez
@@ -70,6 +77,10 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 				mapDestino = recargarJuzgadoModal(mapping, miForm, request, response);
 			}else if (accion.equalsIgnoreCase("buscarJuzgado")){
 			    mapDestino = buscarJuzgado(mapping, miForm, request, response);	
+		    	
+			}else if (accion.equalsIgnoreCase("getAjaxJuzgado")){
+			    getAjaxJuzgado(mapping, miForm, request, response);
+			    return null;
 		    	
 			} else {
 				return super.executeInternal(mapping,
@@ -481,5 +492,32 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D."); 
 		}
 		return "buscarJuzgado";
+	}
+	@SuppressWarnings("unchecked")
+	protected void getAjaxJuzgado (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception
+			{
+		//Sacamos las guardias si hay algo selccionado en el turno
+		String codigoExt = request.getParameter("codigoExtJuzgado");
+		
+		
+		MantenimientoJuzgadoForm miform = (MantenimientoJuzgadoForm)formulario;
+		ScsJuzgadoAdm juzgadoAdm= new ScsJuzgadoAdm(this.getUserBean(request));
+		String where = " where upper(codigoext) = upper ('"+codigoExt+"')" +
+				       " and idinstitucion="+this.getUserBean(request).getLocation();
+		Vector resultadoJuzgado = juzgadoAdm.select(where);
+		String idJuzgado ="";
+		if (resultadoJuzgado!=null && resultadoJuzgado.size()>0) {
+			ScsJuzgadoBean juzgadoBean = (ScsJuzgadoBean) resultadoJuzgado.get(0);
+			idJuzgado = juzgadoBean.getIdJuzgado().toString();
+			miform.setIdJuzgado(idJuzgado);
+		}
+		
+		List listaParametros = new ArrayList();
+		listaParametros.add(idJuzgado);
+		respuestaAjax(new AjaxXmlBuilder(), listaParametros,response );
+		
 	}
 }

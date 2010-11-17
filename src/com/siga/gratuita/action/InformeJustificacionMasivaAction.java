@@ -1,67 +1,104 @@
 package com.siga.gratuita.action;
 
-import java.util.Date;
-
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Locale;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import javax.transaction.UserTransaction;
-
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.aspose.words.Document;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.ReadProperties;
+import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.SIGAReferences;
+import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
-
-
+import com.siga.Utilidades.paginadores.PaginadorBind;
+import com.siga.administracion.SIGAConstants;
+import com.siga.beans.AdmInformeAdm;
+import com.siga.beans.AdmInformeBean;
+import com.siga.beans.AdmLenguajesAdm;
+import com.siga.beans.AdmTipoInformeAdm;
+import com.siga.beans.AdmTipoInformeBean;
+import com.siga.beans.CenClienteAdm;
+import com.siga.beans.CenColegiadoAdm;
+import com.siga.beans.CenColegiadoBean;
+import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.CenPersonaBean;
 import com.siga.beans.GenParametrosAdm;
-import com.siga.beans.ScsAcreditacionBean;
-import com.siga.beans.ScsAcreditacionProcedimientoAdm;
-import com.siga.beans.ScsAcreditacionProcedimientoBean;
 import com.siga.beans.ScsActuacionDesignaAdm;
 import com.siga.beans.ScsActuacionDesignaBean;
 import com.siga.beans.ScsDesignaAdm;
 import com.siga.beans.ScsDesignaBean;
 import com.siga.beans.ScsDesignasLetradoAdm;
+import com.siga.certificados.Plantilla;
+import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.form.AcreditacionForm;
+import com.siga.gratuita.form.ActuacionDesignaForm;
+import com.siga.gratuita.form.DesignaForm;
 import com.siga.gratuita.form.InformeJustificacionMasivaForm;
+import com.siga.informes.MasterWords;
 
 
 public class InformeJustificacionMasivaAction extends MasterAction {
+	
 	protected ActionForward executeInternal(ActionMapping mapping,
 			ActionForm formulario, HttpServletRequest request,
 			HttpServletResponse response) throws SIGAException {
 		String mapDestino = "exception";
 		MasterForm miForm = null;
-
+		
 		try {
 			do {
 				miForm = (MasterForm) formulario;
+				
 				if (miForm != null) {
 					String accion = miForm.getModo();
-
-					if (accion == null || accion.equalsIgnoreCase("")
-							|| accion.equalsIgnoreCase("abrir")) {
-						mapDestino = abrir(mapping, miForm, request, response);
+					
+					if (accion == null || accion.equalsIgnoreCase("")||accion.equalsIgnoreCase("abrir")) {
+						if(mapping.getPath().equals("/JGR_InformeJustificacion")){
+							mapDestino = inicioInforme(mapping, miForm, request, response);
+							break;
+						}else {
+							mapDestino = abrir(mapping, miForm, request, response);
+							break;
+						}
+					} else if (accion.equalsIgnoreCase("buscarInit")){
+						borrarPaginador(request, paginadorPenstania);
+						mapDestino = buscarPor(mapping, miForm, request, response);
 						break;
-					} else if (accion.equalsIgnoreCase("")) {
-						mapDestino = "";
-					} else {
+					}else if (accion.equalsIgnoreCase("buscarPor")){
+						mapDestino = buscarPor(mapping, miForm, request, response);	
+						break;
+					}
+					else if (accion.equalsIgnoreCase("justificar")) {
+						mapDestino = justificar(mapping, miForm, request, response);
+						break;
+					} else if (accion.equalsIgnoreCase("informe")) {
+						mapDestino = generaInforme(mapping, miForm, request, response);
+						break;
+					}else {
 						return super.executeInternal(mapping, formulario,
 								request, response);
 					}
@@ -80,699 +117,316 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 					new String[] { "modulo.gratuita" });
 		}
 	}
-
+	protected String inicioInforme (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException 
+			{
+		InformeJustificacionMasivaForm form = (InformeJustificacionMasivaForm) formulario;
+		form.clear();
+		
+		return "inicioInforme";
+		
+	}
+	
+	protected String abrir (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException 
+			{
+		
+		String modo = (String) request.getSession().getAttribute("modo");
+		InformeJustificacionMasivaForm form = (InformeJustificacionMasivaForm) formulario;
+		form.clear();
+		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		
+		
+		if(request.getParameter("idPersonaPestanha")!=null){
+			Long idPersona = new Long(request.getParameter("idPersonaPestanha"));
+			Integer idInstitucion = new Integer(request.getParameter("idInstitucionPestanha"));
+			CenPersonaAdm personaAdm = new CenPersonaAdm(this.getUserBean(request));
+			CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm(this.getUserBean(request));
+			
+			// Obtengo la informacion del colegiado:
+			String nombreColegiado = personaAdm.obtenerNombreApellidos(String.valueOf(idPersona));
+			CenColegiadoBean datosColegiales = colegiadoAdm.getDatosColegiales(idPersona,idInstitucion);
+			String numColegiado = colegiadoAdm.getIdentificadorColegiado(datosColegiales);
+			form.setNombreColegiado(nombreColegiado);
+			if(numColegiado!=null){
+				CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserBean(request));
+				String estadoColegial = clienteAdm.getEstadoColegial(String.valueOf(idPersona), String.valueOf(idInstitucion));
+				form.setNumColegiado(numColegiado);
+				form.setEstadoColegial(estadoColegial);
+			}else{
+				form.setNumColegiado(null);
+				form.setEstadoColegial(null);
+				
+			}
+			form.setIdInstitucion(""+idInstitucion);
+			form.setIdPersona(""+idPersona);
+			form.setFichaColegial(true);
+			
+		}
+		
+		
+		
+		// TODO CONTROLAR ESTE MODO PARA VER QUE SE DEJA HACER           
+		// Integer modoPestanha = new Integer(request.getParameter("modoPestanha"));
+		System.out.println("TODO TODO TODO");
+		
+		
+		
+		GenParametrosAdm paramAdm = new GenParametrosAdm (user);
+		//Haria falta meter los parametros en con ClsConstants
+		String cod_Fact_ja_2005 = paramAdm.getValor (user.getLocation (), "SCS", ClsConstants.GEN_PARAM_FACT_JA_2005, "");
+		boolean	aplicarAcreditacionesAnterior2005 = (cod_Fact_ja_2005!=null && cod_Fact_ja_2005.equalsIgnoreCase(ClsConstants.DB_TRUE));
+		form.setAplicarAcreditacionesAnterior2005(aplicarAcreditacionesAnterior2005);
+		return "inicio";
+	}
 	protected String nuevo(ActionMapping mapping, MasterForm formulario,
 			HttpServletRequest request, HttpServletResponse response)
 			throws ClsExceptions, SIGAException {
 		return this.abrir(mapping, formulario, request, response);
 	}
 
-	protected synchronized String modificar(ActionMapping mapping, MasterForm formulario,
+	
+	protected synchronized String justificar(ActionMapping mapping, MasterForm formulario,
 			HttpServletRequest request, HttpServletResponse response)
 	throws ClsExceptions, SIGAException {
-		UserTransaction tx = null;
+//		UserTransaction tx = null;
 		StringBuffer msgSinAcreditaciones = new StringBuffer();
 		StringBuffer msgAviso = new StringBuffer();
 		UsrBean user = (UsrBean) request.getSession().getAttribute(
 				"USRBEAN");
-	    ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//		ReadProperties rp3 = new ReadProperties("SIGA.properties");
-		final String TIPO_ACREDIT_INIFIN = rp3.returnProperty("codigo.general.scstipoacreditacion.iniciofin");
-		final String ACREDITACION_INIFIN = rp3.returnProperty("codigo.general.scsacreditacion.iniciofin");
 		String obsJustificacion = UtilidadesString.getMensajeIdioma(user, "gratuita.informeJustificacionMasiva.observaciones.justificacion");
 		String obsActuacion = UtilidadesString.getMensajeIdioma(user, "gratuita.informeJustificacionMasiva.observaciones.actuacion");
-
+	    ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		final String idAcreditacionPenal = rp3.returnProperty("codigo.general.scsacreditacion.jurisdiccion.penal");
 		try {
-			InformeJustificacionMasivaForm f = (InformeJustificacionMasivaForm) formulario;
+			InformeJustificacionMasivaForm miForm = (InformeJustificacionMasivaForm) formulario;
 
-			GstDate gstDate = new GstDate();
-			String fechaDefecto = f.getFecha();
-			Date dateFechaDefecto = null;
-			if (fechaDefecto != null && !fechaDefecto.equalsIgnoreCase(""))
-				dateFechaDefecto = gstDate.parseStringToDate(fechaDefecto,
-						"dd/MM/yyyy", new Locale(user.getLanguage()));
-
-			tx = this.getUserBean(request).getTransaction();
-			tx.begin(); // Abro aqui la transaccion porque se insertan personas
-
+			String fechaJustificacion = miForm.getFecha();
 			ScsDesignaAdm desginaAdm = new ScsDesignaAdm(this
 					.getUserBean(request));
 			ScsActuacionDesignaAdm actuacionDesginaAdm = new ScsActuacionDesignaAdm(
 					this.getUserBean(request));
-
-			String claves[] = { ScsDesignaBean.C_ANIO, ScsDesignaBean.C_NUMERO,
+			
+			String clavesDesigna[] = { ScsDesignaBean.C_ANIO, ScsDesignaBean.C_NUMERO,
 					ScsDesignaBean.C_IDINSTITUCION, ScsDesignaBean.C_IDTURNO };
+			String camposDesigna[]={ScsDesignaBean.C_FECHAESTADO,ScsDesignaBean.C_ESTADO};
 
-			Hashtable htAcumulaAcreditacionesProcedimiento = new Hashtable();
-			Boolean isFactAnterior2005 = null;
-
-			for (int i = 0; i < f.getDatosTabla().size(); i++) {
-
-				Vector vCampos = f.getDatosTablaOcultos(i);
-				String anio = (String) vCampos.get(0);
-				String numero = (String) vCampos.get(1);
-				String idInstitucion = (String) vCampos.get(2);
-				String idTurno = (String) vCampos.get(3);
-				String idJuzgado = (String) vCampos.get(4);
-				String idInstJuzgado = (String) vCampos.get(5);
-				String isCheckFechaIni = (String) vCampos.get(6);
-				String isCheckFechaFin = (String) vCampos.get(7);
-				String idProcedimiento = (String) vCampos.get(8);
-				String fechaIniActuacion = (String) vCampos.get(9);
-				String idJurisdiccion = (String) vCampos.get(10);
-				String idPersona = (String) vCampos.get(11);
-				String codigoDesigna = (String) vCampos.get(12);
-				String numeroJustificaciones = (String) vCampos.get(13);
-				String baja = (String) vCampos.get(14);
-
-				Hashtable h = new Hashtable();
-
-				UtilidadesHash.set(h, ScsDesignaBean.C_ANIO, anio);
-				UtilidadesHash.set(h, ScsDesignaBean.C_IDINSTITUCION,
-						idInstitucion);
-				UtilidadesHash.set(h, ScsDesignaBean.C_NUMERO, numero);
-				UtilidadesHash.set(h, ScsDesignaBean.C_IDTURNO, idTurno);
-
-				Vector aux = new Vector();
-				/*
-				 * if (!esCampoVacio(fechaIni)) {
-				 * aux.add(ScsDesignaBean.C_FECHAINI); UtilidadesHash.set (h,
-				 * ScsDesignaBean.C_FECHAINI,
-				 * GstDate.getApplicationFormatDate("", fechaDefecto)); }
-				 */
-				boolean isFechaFin = new Boolean(isCheckFechaFin)
-				.booleanValue();
-				/*if (isFechaFin) {
-					aux.add(ScsDesignaBean.C_FECHAFIN);
-					UtilidadesHash.set(h, ScsDesignaBean.C_FECHAFIN, GstDate
-							.getApplicationFormatDate("", fechaDefecto));
-				}*/
-				boolean isBaja = UtilidadesString.stringToBoolean(baja);
-				if (isBaja) {
-					aux.add(ScsDesignaBean.C_FECHAESTADO);
-					aux.add(ScsDesignaBean.C_ESTADO);
-					UtilidadesHash.set(h, ScsDesignaBean.C_FECHAESTADO,
-					"sysdate");
-					UtilidadesHash.set(h, ScsDesignaBean.C_ESTADO, "F");
-				}
-
-				String campos[] = new String[aux.size()];
-				for (int b = 0; b < aux.size(); b++) {
-					campos[b] = (String) aux.get(b);
-				}
-
-				//si hay cambio de estado de la designa actulizaremos dicho
-				// campo
-
-				if (isBaja)
-					desginaAdm.updateDirect(h, claves, campos);
-				else {
-					try{
-						//					(si se cambia afinalizado se mete la fechaFin)
-						//if (isFechaFin)
-						//desginaAdm.updateDirect(h, claves, campos);
-
-						//Preparamos el insert. Aqui le mete el numero de asunto
-						// que sera el max+1
-						Hashtable hashActuacion = new Hashtable();
-
-						boolean isFechaInicio = new Boolean(isCheckFechaIni)
-						.booleanValue();
+			String clavesActuacion[] = { ScsActuacionDesignaBean.C_ANIO, ScsActuacionDesignaBean.C_NUMERO,
+					ScsActuacionDesignaBean.C_IDINSTITUCION, ScsActuacionDesignaBean.C_IDTURNO ,ScsActuacionDesignaBean.C_NUMEROASUNTO};
+			
+			
+			
+			String idPersona   =  miForm.getIdPersona();
+			String datosJustificacion = miForm.getDatosJustificacion();
+			
+			if(datosJustificacion.length()>0){
+				String[] arrayDatosJustificacion = datosJustificacion.split("#");
+				
+				for (int i = 0; i < arrayDatosJustificacion.length; i++) {
+					String rowJustificacion = arrayDatosJustificacion[i];
+					String[] arrayRowsJustificacion = rowJustificacion.split(",");
+					String anio  =  arrayRowsJustificacion[0];
+					String numero  =  arrayRowsJustificacion[1]; 
+					String idInstitucion  =  arrayRowsJustificacion[2];
+					String idTurno  =  arrayRowsJustificacion[3];
+					String idJuzgado  =  arrayRowsJustificacion[4];
+					String idProcedimiento  =  arrayRowsJustificacion[5];
+					String numActuacion  =  arrayRowsJustificacion[6];
+					String idAcreditacion  =  arrayRowsJustificacion[7];
+					String justificado   =  arrayRowsJustificacion[8];
+					String idJurisdiccion   =  arrayRowsJustificacion[9];
+					String fechaDesigna   =  arrayRowsJustificacion[10];
+					String validado   =  arrayRowsJustificacion[11];
+					
+					
+					
+					//si la actuacion es x es que es nueva, sino es modificacion(justificacion, validacion o baja)
+					Hashtable hashActuacion = new Hashtable();
+					if(numActuacion.equals("x")){
+						
 						UtilidadesHash.set(hashActuacion,
 								ScsActuacionDesignaBean.C_ANIO, anio);
 						UtilidadesHash.set(hashActuacion,
 								ScsActuacionDesignaBean.C_IDINSTITUCION,
 								idInstitucion);
 						UtilidadesHash.set(hashActuacion,
-								ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO,
-								idPersona);
-						UtilidadesHash.set(hashActuacion,
 								ScsActuacionDesignaBean.C_NUMERO, numero);
 						UtilidadesHash.set(hashActuacion,
 								ScsActuacionDesignaBean.C_IDTURNO, idTurno);
 						UtilidadesHash.set(hashActuacion,
+								ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO,
+								idPersona);
+						
+						UtilidadesHash.set(hashActuacion,
 								ScsActuacionDesignaBean.C_IDJUZGADO, idJuzgado);
 						UtilidadesHash.set(hashActuacion,
 								ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO,
-								idInstJuzgado);
-
-						/*UtilidadesHash.set(hashActuacion,
-								ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,
-								GstDate.getApplicationFormatDate("", fechaDefecto));
-						UtilidadesHash
-								.set(hashActuacion,
-										ScsActuacionDesignaBean.C_FECHA, 
-										GstDate.getApplicationFormatDate("", fechaDefecto));
-						 */
-						UtilidadesHash.set(hashActuacion,
-								ScsActuacionDesignaBean.C_FECHAMODIFICACION,
-						"sysdate");
-						UtilidadesHash.set(hashActuacion,
-								ScsActuacionDesignaBean.C_USUMODIFICACION,
-								new Long(this.getUserBean(request).getIdPersona()));
-
+								idInstitucion);
+	//					UtilidadesHash.set(hashActuacion,
+	//							ScsActuacionDesignaBean.C_FECHAMODIFICACION,
+	//					"sysdate");
+	//					UtilidadesHash.set(hashActuacion,
+	//							ScsActuacionDesignaBean.C_USUMODIFICACION,
+	//							new Long(this.getUserBean(request).getIdPersona()));
+	
 						UtilidadesHash.set(hashActuacion,
 								ScsActuacionDesignaBean.C_IDPROCEDIMIENTO,
 								idProcedimiento);
-
+						UtilidadesHash.set(
+								hashActuacion,
+								ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO,
+								idInstitucion);
+	
 						UtilidadesHash.set(
 								hashActuacion,
 								ScsActuacionDesignaBean.C_ACUERDOEXTRAJUDICIAL,
 								"0");
 						UtilidadesHash.set(hashActuacion,
 								ScsActuacionDesignaBean.C_ANULACION, "0");
+						 
+						if(miForm.isAplicarAcreditacionesAnterior2005()&&idJurisdiccion!=null 
+								&& idJurisdiccion.equalsIgnoreCase(idAcreditacionPenal)){
+							idAcreditacion = getIdAcreditacion(idAcreditacion,fechaJustificacion!=null?fechaJustificacion:fechaDesigna , user);
+							
+						}
 						UtilidadesHash.set(hashActuacion,
-								ScsActuacionDesignaBean.C_VALIDADA, "1");
-
-						UtilidadesHash.set(
-								hashActuacion,
-								ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO,
-								idInstitucion);
-
-						Hashtable hashInicial = (Hashtable)hashActuacion.clone();
-
-
-
-						String idAcreditacion = null;
-						//					Miramos si estaba metida l acreditacion de inicio
-						Date dateFechaInicioActuacion = null;
-						if (fechaIniActuacion != null && !fechaIniActuacion.equalsIgnoreCase(""))
-							dateFechaInicioActuacion = gstDate.parseStringToDate(fechaIniActuacion,
-									"dd/MM/yyyy", new Locale(user.getLanguage()));
-
-
-						//try{
-
-
-						ArrayList alHashActuacion = actuacionDesginaAdm.existeActuacionesSinJustificar(hashActuacion);
-						//Vemos si existen mas de una actuacion dada de alta. si es asi recorremos el array 
-						//e insertamos la justificacion de cada una de ellas
-						if(alHashActuacion!=null && alHashActuacion.size()>0){
-							int sizeHash = alHashActuacion.size();
-							if( sizeHash != Integer.parseInt(numeroJustificaciones)){
-								msgAviso.append(", ");
-								msgAviso.append(anio);
-								msgAviso.append(" / ");
-								msgAviso.append(codigoDesigna);
-							}else {
-								String fechaJustificacion = null;
-								switch (sizeHash) {
-								case 1:
-									//Casos posibles:
-									//1. Tipo de acreditacion de inicio-fin
-									//2. Tipo de acreditacion de inicio + tipo de acreditacion de fin
-									//Inicio dada de alta y justificada y fin dad de alta sin justificar
-									//Inicio
-									hashActuacion = (Hashtable)alHashActuacion.get(0);
-									String idAcreditActExistente = (String)hashActuacion.get(ScsActuacionDesignaBean.C_IDACREDITACION);
-									String idTipoAcreditacion =  (String)hashActuacion.get(ScsAcreditacionBean.C_IDTIPOACREDITACION);
-									fechaJustificacion = (String)hashActuacion.get(ScsActuacionDesignaBean.C_FECHAJUSTIFICACION);
-
-									if(idTipoAcreditacion.equalsIgnoreCase(TIPO_ACREDIT_INIFIN)){
-										//si es de inicio y fin nos da igual lo que haya marcado ya que se va a justificar una sola
-										UtilidadesHash.set(hashActuacion,
-												ScsActuacionDesignaBean.C_IDACREDITACION,
-												idAcreditActExistente);
-										UtilidadesHash.set(hashActuacion,
-												ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION,
-												obsJustificacion);								
-										//Es posible que este justificada y no validada
-										if(fechaJustificacion==null){
-											UtilidadesHash.set(hashActuacion,
-													ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,
-													GstDate.getApplicationFormatDate("", fechaDefecto));
-										}else{
-											UtilidadesHash.set(hashActuacion,
-													ScsActuacionDesignaBean.C_VALIDADA, "1");
-
-										}
-										actuacionDesginaAdm.updateDirect(actuacionDesginaAdm.hashTableToBean(hashActuacion));
-									}else{
-										//si no es de este tipo y solo hay una dada de alta, que es la de inicio
-										//(POR DEFINICION NO PUEDE EXISTIR ACTUACION DE FIN SIN INICIO) 
-										if (isFechaInicio && isFechaFin) {
-											//Este caso es que esta insertada la actuacion de inicio sin justificar
-											//y nos selecciona los dos check
-											//HAY QUE MODIFICAR LA DE INICIO E INSEERTAR LA DE FIN
-											//HAY QUE MODIFICAR LA DE INICIO
-											UtilidadesHash.set(hashActuacion,
-													ScsActuacionDesignaBean.C_IDACREDITACION,
-													idAcreditActExistente);
-
-											UtilidadesHash.set(hashActuacion,
-													ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION,
-													obsJustificacion);
-											//Es posible que este justificada y no validada
-											if(fechaJustificacion==null){
-												UtilidadesHash.set(hashActuacion,
-														ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,
-														GstDate.getApplicationFormatDate("", fechaDefecto));
-											}else{
-												UtilidadesHash.set(hashActuacion,
-														ScsActuacionDesignaBean.C_VALIDADA, "1");
-
-											}
-											actuacionDesginaAdm.updateDirect(actuacionDesginaAdm.hashTableToBean(hashActuacion));
-
-											//Preparamos el insert de la acreditacion de fin
-											idAcreditacion = getAcreditacion(htAcumulaAcreditacionesProcedimiento,
-													isFactAnterior2005,dateFechaDefecto,dateFechaInicioActuacion,
-													idProcedimiento,idJurisdiccion, false, true,user);
-											UtilidadesHash.set(hashInicial,
-													ScsActuacionDesignaBean.C_IDACREDITACION,
-													idAcreditacion);
-
-											UtilidadesHash.set(hashInicial,
-													ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,
-													GstDate.getApplicationFormatDate("", fechaDefecto));
-											UtilidadesHash.set(hashInicial,
-													ScsActuacionDesignaBean.C_FECHA,
-													GstDate.getApplicationFormatDate("", fechaDefecto));
-
-											//comprobamos si existe la actuacion solo que no esta justificada
-											hashInicial = actuacionDesginaAdm.prepararInsert(hashInicial);
-											UtilidadesHash.set(hashInicial,
-													ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION,
-													obsJustificacion);
-											UtilidadesHash.set(hashInicial,
-													ScsActuacionDesignaBean.C_OBSERVACIONES,
-													obsActuacion);
-											actuacionDesginaAdm.insert(hashInicial);
-
-										}else if(isFechaInicio||isFechaFin){
-											//Este caso es que esta insertada la actuacion de inicio sin justificar o
-											// que la de inicio este justificada y la de fin no. 
-											//Por lo tanto solo queda un check por marcar que es el de inicio o el de fin
-											//HAY QUE MODIFICAR LA DE INICIO O LA DE FIN
-											UtilidadesHash.set(hashActuacion,
-													ScsActuacionDesignaBean.C_IDACREDITACION,
-													idAcreditActExistente);
-
-											UtilidadesHash.set(hashActuacion,
-													ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION,
-													obsJustificacion);
-											//Es posible que este justificada y no validada
-											if(fechaJustificacion==null){
-												UtilidadesHash.set(hashActuacion,
-														ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,
-														GstDate.getApplicationFormatDate("", fechaDefecto));
-											}else{
-												UtilidadesHash.set(hashActuacion,
-														ScsActuacionDesignaBean.C_VALIDADA, "1");
-
-											}
-											actuacionDesginaAdm.updateDirect(actuacionDesginaAdm.hashTableToBean(hashActuacion));
-
-										}
-
-
-									}
-									break;
-								case 2: 
-
-
-									if (isFechaInicio && isFechaFin) {
-
-										for (int j=0; j<alHashActuacion.size(); j++){
-											hashActuacion = (Hashtable)alHashActuacion.get(j);
-											idAcreditActExistente = (String)hashActuacion.get(ScsActuacionDesignaBean.C_IDACREDITACION);
-											fechaJustificacion = (String)hashActuacion.get(ScsActuacionDesignaBean.C_FECHAJUSTIFICACION);
-											if (Integer.parseInt(hashActuacion.get("IDTIPOACREDITACION").toString())==(ClsConstants.ESTADO_ACREDITACION_INICIO)){
-
-
-
-
-												UtilidadesHash.set(hashActuacion,
-														ScsActuacionDesignaBean.C_IDACREDITACION,
-														idAcreditActExistente);
-
-												UtilidadesHash.set(hashActuacion,
-														ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION,
-														obsJustificacion);
-												if(fechaJustificacion==null){
-													UtilidadesHash.set(hashActuacion,
-															ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,
-															GstDate.getApplicationFormatDate("", fechaDefecto));
-												}else{
-													UtilidadesHash.set(hashActuacion,
-															ScsActuacionDesignaBean.C_VALIDADA, "1");
-
-												}
-												actuacionDesginaAdm.updateDirect(actuacionDesginaAdm.hashTableToBean(hashActuacion));
-											}else{
-
-												//Atencion cogemos la fecha justificacion de la segunda por si acaso
-
-												
-												UtilidadesHash.set(hashActuacion,
-														ScsActuacionDesignaBean.C_IDACREDITACION,
-														idAcreditActExistente);
-
-												UtilidadesHash.set(hashActuacion,
-														ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION,
-														obsJustificacion);
-												//Es posible que este justificada y no validada
-												if(fechaJustificacion==null){
-													UtilidadesHash.set(hashActuacion,
-															ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,
-															GstDate.getApplicationFormatDate("", fechaDefecto));
-												}else{
-													UtilidadesHash.set(hashActuacion,
-															ScsActuacionDesignaBean.C_VALIDADA, "1");
-
-												}
-												actuacionDesginaAdm.updateDirect(actuacionDesginaAdm.hashTableToBean(hashActuacion));
-											}	
-										}
-									}else{
-										//Solo puede ser que sea de inicio
-										//(por progama Si esta seleccionado el fin hay que seleccionar el incio)
-
-										for (int j=0; j<alHashActuacion.size(); j++){
-											hashActuacion = (Hashtable)alHashActuacion.get(j);
-											String idAcreditActExistenteInicio = (String)hashActuacion.get(ScsActuacionDesignaBean.C_IDACREDITACION);
-											if (Integer.parseInt(hashActuacion.get("IDTIPOACREDITACION").toString())==(ClsConstants.ESTADO_ACREDITACION_INICIO)){
-												UtilidadesHash.set(hashActuacion,
-														ScsActuacionDesignaBean.C_IDACREDITACION,
-														idAcreditActExistenteInicio);
-
-												UtilidadesHash.set(hashActuacion,
-														ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION,
-														obsJustificacion);
-												//Es posible que este justificada y no validada
-												if(fechaJustificacion==null){
-													UtilidadesHash.set(hashActuacion,
-															ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,
-															GstDate.getApplicationFormatDate("", fechaDefecto));
-												}else{
-													UtilidadesHash.set(hashActuacion,
-															ScsActuacionDesignaBean.C_VALIDADA, "1");
-
-												}
-												actuacionDesginaAdm.updateDirect(actuacionDesginaAdm.hashTableToBean(hashActuacion));
-
-											}
-										}
-									}
-
-									break;
-
-								default:
-									break;
-								}
-
-							}
+								ScsActuacionDesignaBean.C_IDACREDITACION,
+								idAcreditacion);
+	
+						UtilidadesHash.set(hashActuacion,
+								ScsActuacionDesignaBean.C_FECHA,
+								GstDate.getApplicationFormatDate("", fechaJustificacion));
+					
+						UtilidadesHash.set(hashActuacion,
+							ScsActuacionDesignaBean.C_OBSERVACIONES,
+							obsActuacion);
+						
+						
+						//Es posible que este justificada y no validada
+						
+						UtilidadesHash.set(hashActuacion,
+								ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,
+								GstDate.getApplicationFormatDate("", fechaJustificacion));
+						
+						UtilidadesHash.set(hashActuacion,
+								ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION,
+								obsJustificacion);
+						
+						if(Boolean.parseBoolean(validado)){
+							UtilidadesHash.set(hashActuacion,
+									ScsActuacionDesignaBean.C_VALIDADA, "1");
 						}else{
-
-
-
-							if (isFechaInicio && isFechaFin) {
-								//Si nuestro procedimiento tiene creado acreditacion de inicio fin, metemos esta
-								//si NO meteremos una de inicio y otra de fin individuales
-								ScsAcreditacionProcedimientoAdm scsAcProc = new ScsAcreditacionProcedimientoAdm(user);
-								Hashtable htPKScsAcredProc = new Hashtable();
-								htPKScsAcredProc.put(ScsAcreditacionProcedimientoBean.C_IDINSTITUCION,idInstitucion);
-								htPKScsAcredProc.put(ScsAcreditacionProcedimientoBean.C_IDPROCEDIMIENTO,idProcedimiento);
-								htPKScsAcredProc.put(ScsAcreditacionProcedimientoBean.C_IDACREDITACION,ACREDITACION_INIFIN);
-								Vector vLista = scsAcProc.selectByPK(htPKScsAcredProc);
-
-								if(vLista!=null && vLista.size()>0){
-									idAcreditacion = ACREDITACION_INIFIN;
-									UtilidadesHash.set(hashActuacion,
-											ScsActuacionDesignaBean.C_IDACREDITACION,
-											idAcreditacion);
-									UtilidadesHash.set(hashActuacion,
-											ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION,
-											obsJustificacion);
-									//comprobamos si existe la actuacion solo que no esta justificada
-									hashActuacion = actuacionDesginaAdm.prepararUpdate(hashActuacion);
-
-
-
-									//Si trae numero de asunto metemos la fecha de justificacion, si no seran nuevas actuaciones
-									if((String)hashActuacion.get(ScsActuacionDesignaBean.C_NUMEROASUNTO)!=null &&
-											!((String)hashActuacion.get(ScsActuacionDesignaBean.C_NUMEROASUNTO)).equalsIgnoreCase("")){
-
-										//Si ha habido concurrencia es que la fecha de justificacion no es nula 
-										if(hashActuacion.get(ScsActuacionDesignaBean.C_FECHAJUSTIFICACION)!=null
-												&&!((String)hashActuacion.get(ScsActuacionDesignaBean.C_FECHAJUSTIFICACION)).equalsIgnoreCase("")){
-											msgAviso.append(", ");
-											msgAviso.append(anio);
-											msgAviso.append(" / ");
-											msgAviso.append(codigoDesigna);
-
-
-										}else{
-											UtilidadesHash.set(hashActuacion,
-													ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION,
-													obsJustificacion);
-											UtilidadesHash.set(hashActuacion,
-													ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,
-													GstDate.getApplicationFormatDate("", fechaDefecto));
-											actuacionDesginaAdm.updateDirect(actuacionDesginaAdm.hashTableToBean(hashActuacion));
-
-
-										}
-
-									}else{
-										//Si no trae numero de asunto es que no existe registro no justificado.
-										//Habra que dar de alta la actuacion
-										hashActuacion = actuacionDesginaAdm.prepararInsert(hashActuacion);
-
-										UtilidadesHash.set(hashActuacion,
-												ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION,
-												obsJustificacion);
-										UtilidadesHash.set(hashActuacion,
-												ScsActuacionDesignaBean.C_OBSERVACIONES,
-												obsActuacion);
-										UtilidadesHash.set(hashActuacion,
-												ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,
-												GstDate.getApplicationFormatDate("", fechaDefecto));
-										UtilidadesHash
-										.set(hashActuacion,
-												ScsActuacionDesignaBean.C_FECHA,
-												GstDate.getApplicationFormatDate("", fechaDefecto));
-										actuacionDesginaAdm.insert(hashActuacion);
-									}
-
-
-								}else{
-
-
-
-									//						Si es de inicio y final metemos una de inicio y otra
-									// de fin
-									idAcreditacion = getAcreditacion(htAcumulaAcreditacionesProcedimiento,
-											isFactAnterior2005,dateFechaDefecto,dateFechaInicioActuacion,
-											idProcedimiento,idJurisdiccion, true, false,user);
-									UtilidadesHash.set(hashActuacion,
-											ScsActuacionDesignaBean.C_IDACREDITACION,
-											idAcreditacion);
-									UtilidadesHash.set(hashActuacion,
-											ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION,
-											obsJustificacion);
-									//comprobamos si existe la actuacion solo que no esta justificada
-									hashActuacion = actuacionDesginaAdm.prepararUpdate(hashActuacion);
-
-
-
-									//Si trae numero de asunto metemos la fecha de justificacion, si no seran nuevas actuaciones
-									if((String)hashActuacion.get(ScsActuacionDesignaBean.C_NUMEROASUNTO)!=null &&
-											!((String)hashActuacion.get(ScsActuacionDesignaBean.C_NUMEROASUNTO)).equalsIgnoreCase("")){
-
-										//Si ha habido concurrencia es que la fecha de justificacion no es nula 
-										if(hashActuacion.get(ScsActuacionDesignaBean.C_FECHAJUSTIFICACION)!=null
-												&&!((String)hashActuacion.get(ScsActuacionDesignaBean.C_FECHAJUSTIFICACION)).equalsIgnoreCase("")){
-											msgAviso.append(", ");
-											msgAviso.append(anio);
-											msgAviso.append(" / ");
-											msgAviso.append(codigoDesigna);
-
-
-										}else{
-											UtilidadesHash.set(hashActuacion,
-													ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION,
-													obsJustificacion);
-											UtilidadesHash.set(hashActuacion,
-													ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,
-													GstDate.getApplicationFormatDate("", fechaDefecto));
-											actuacionDesginaAdm.updateDirect(actuacionDesginaAdm.hashTableToBean(hashActuacion));
-
-
-										}
-
-									}else{
-										//Si no trae numero de asunto es que no existe registro no justificado.
-										//Habra que dar de alta la actuacion
-										hashActuacion = actuacionDesginaAdm.prepararInsert(hashActuacion);
-
-										UtilidadesHash.set(hashActuacion,
-												ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION,
-												obsJustificacion);
-										UtilidadesHash.set(hashActuacion,
-												ScsActuacionDesignaBean.C_OBSERVACIONES,
-												obsActuacion);
-										UtilidadesHash.set(hashActuacion,
-												ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,
-												GstDate.getApplicationFormatDate("", fechaDefecto));
-										UtilidadesHash
-										.set(hashActuacion,
-												ScsActuacionDesignaBean.C_FECHA,
-												GstDate.getApplicationFormatDate("", fechaDefecto));
-										actuacionDesginaAdm.insert(hashActuacion);
-									}
-									idAcreditacion = getAcreditacion(htAcumulaAcreditacionesProcedimiento,
-											isFactAnterior2005,dateFechaDefecto,dateFechaInicioActuacion,
-											idProcedimiento,idJurisdiccion, false, true,user);
-									UtilidadesHash.set(hashActuacion,
-											ScsActuacionDesignaBean.C_IDACREDITACION,
-											idAcreditacion);
-
-									UtilidadesHash.set(hashActuacion,
-											ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION,
-											obsJustificacion);
-									//Sacamos el asunto de la ultima acreditacion para comprobar que 
-									String newNumeroAsunto = (String)hashActuacion.get(ScsActuacionDesignaBean.C_NUMEROASUNTO);
-									//comprobamos si existe la actuacion solo que no esta justificada
-									hashActuacion = actuacionDesginaAdm.prepararUpdate(hashActuacion);
-
-
-
-									//Si trae numero de asunto metemos la fecha de justificacion
-									if((String)hashActuacion.get(ScsActuacionDesignaBean.C_NUMEROASUNTO)!=null &&
-											!((String)hashActuacion.get(ScsActuacionDesignaBean.C_NUMEROASUNTO)).equalsIgnoreCase("")&&
-											!((String)hashActuacion.get(ScsActuacionDesignaBean.C_NUMEROASUNTO)).equalsIgnoreCase(newNumeroAsunto)){
-
-										//Si ha habido concurrencia es que la fecha de justificacion no es nula 
-										if(hashActuacion.get(ScsActuacionDesignaBean.C_FECHAJUSTIFICACION)!=null
-												&&!((String)hashActuacion.get(ScsActuacionDesignaBean.C_FECHAJUSTIFICACION)).equalsIgnoreCase("")){
-											msgAviso.append(", ");
-											msgAviso.append(anio);
-											msgAviso.append(" / ");
-											msgAviso.append(codigoDesigna);
-
-										}else{
-
-											UtilidadesHash.set(hashActuacion,
-													ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION,
-													obsJustificacion);
-											UtilidadesHash.set(hashActuacion,
-													ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,
-													GstDate.getApplicationFormatDate("", fechaDefecto));
-											actuacionDesginaAdm.updateDirect(actuacionDesginaAdm.hashTableToBean(hashActuacion));
-
-
-										}
-
-									}else{
-										//Si no trae numero de asunto es que no existe registro no justificado.
-										//Habra que dar de alta la actuacion
-										hashActuacion = actuacionDesginaAdm.prepararInsert(hashActuacion);
-
-
-										UtilidadesHash.set(hashActuacion,
-												ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION,
-												obsJustificacion);
-										UtilidadesHash.set(hashActuacion,
-												ScsActuacionDesignaBean.C_OBSERVACIONES,
-												obsActuacion);
-										UtilidadesHash.set(hashActuacion,
-												ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,
-												GstDate.getApplicationFormatDate("", fechaDefecto));
-										UtilidadesHash
-										.set(hashActuacion,
-												ScsActuacionDesignaBean.C_FECHA,
-												GstDate.getApplicationFormatDate("", fechaDefecto));
-										actuacionDesginaAdm.insert(hashActuacion);
-									}
-
-								}
-
-							} else {
-								//						Creamos una actuacion de inicio o fin.
-								idAcreditacion = getAcreditacion(htAcumulaAcreditacionesProcedimiento,
-										isFactAnterior2005,dateFechaDefecto,dateFechaInicioActuacion,
-										idProcedimiento,idJurisdiccion, isFechaInicio, isFechaFin,user);
+							UtilidadesHash.set(hashActuacion,
+									ScsActuacionDesignaBean.C_VALIDADA, "0");
+							
+						}
+						//actuacionDesginaAdm.updateDirect(actuacionDesginaAdm.hashTableToBean(hashActuacion));
+						hashActuacion = actuacionDesginaAdm.prepararInsert(hashActuacion);
+						actuacionDesginaAdm.insert(hashActuacion);
+						
+						
+	
+											
+					}else{
+						List<String> camposList = new ArrayList<String>();
+						UtilidadesHash.set(hashActuacion,
+								ScsActuacionDesignaBean.C_ANIO, anio);
+						UtilidadesHash.set(hashActuacion,
+								ScsActuacionDesignaBean.C_IDINSTITUCION,
+								idInstitucion);
+						UtilidadesHash.set(hashActuacion,
+								ScsActuacionDesignaBean.C_NUMERO, numero);
+						UtilidadesHash.set(hashActuacion,
+								ScsActuacionDesignaBean.C_IDTURNO, idTurno);
+						UtilidadesHash.set(hashActuacion,
+								ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO,
+								idPersona);
+						
+						
+						UtilidadesHash.set(hashActuacion,
+								ScsActuacionDesignaBean.C_NUMEROASUNTO,
+								numActuacion);
+						
+						UtilidadesHash.set(hashActuacion,
+								ScsActuacionDesignaBean.C_FECHAMODIFICACION,
+						"sysdate");
+						UtilidadesHash.set(hashActuacion,
+								ScsActuacionDesignaBean.C_USUMODIFICACION,user.getUserName());
+						
+						camposList.add(ScsActuacionDesignaBean.C_FECHAMODIFICACION);
+						camposList.add(ScsActuacionDesignaBean.C_USUMODIFICACION);
+						
+						//si ya estaba justificado no seteamos la frecha de justificacion
+						if(justificado.equalsIgnoreCase(ClsConstants.DB_FALSE)){
+							camposList.add(ScsActuacionDesignaBean.C_FECHAJUSTIFICACION);
+							camposList.add(ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION);
+							UtilidadesHash.set(hashActuacion,
+									ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,
+									GstDate.getApplicationFormatDate("", fechaJustificacion));
+							UtilidadesHash.set(hashActuacion,
+									ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION,
+									obsJustificacion);
+							if(miForm.isAplicarAcreditacionesAnterior2005()&&idJurisdiccion!=null 
+									&& idJurisdiccion.equalsIgnoreCase(idAcreditacionPenal)){
+								camposList.add(ScsActuacionDesignaBean.C_IDACREDITACION);
+								idAcreditacion = getIdAcreditacion(idAcreditacion,fechaJustificacion, user);
 								UtilidadesHash.set(hashActuacion,
 										ScsActuacionDesignaBean.C_IDACREDITACION,
 										idAcreditacion);
-								//comprobamos si existe la actuacion solo que no esta justificada
-
-
-								UtilidadesHash.set(hashActuacion,
-										ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION,
-										obsJustificacion);
-								hashActuacion = actuacionDesginaAdm.prepararUpdate(hashActuacion);
-
-
-
-								//Si trae numero de asunto metemos la fecha de justificacion
-								if((String)hashActuacion.get(ScsActuacionDesignaBean.C_NUMEROASUNTO)!=null &&
-										!((String)hashActuacion.get(ScsActuacionDesignaBean.C_NUMEROASUNTO)).equalsIgnoreCase("")){
-
-									//Si ha habido concurrencia es que la fecha de justificacion no es nula 
-									if(hashActuacion.get(ScsActuacionDesignaBean.C_FECHAJUSTIFICACION)!=null
-											&&!((String)hashActuacion.get(ScsActuacionDesignaBean.C_FECHAJUSTIFICACION)).equalsIgnoreCase("")){
-										msgAviso.append(", ");
-										msgAviso.append(anio);
-										msgAviso.append(" / ");
-										msgAviso.append(codigoDesigna);
-
-									}else{
-										UtilidadesHash.set(hashActuacion,
-												ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION,
-												obsJustificacion);
-
-										UtilidadesHash.set(hashActuacion,
-												ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,
-												GstDate.getApplicationFormatDate("", fechaDefecto));
-										actuacionDesginaAdm.updateDirect(actuacionDesginaAdm.hashTableToBean(hashActuacion));
-
-
-									}
-
-								}else{
-									//Si no trae numero de asunto es que no existe registro no justificado.
-									//Habra que dar de alta la actuacion
-									hashActuacion = actuacionDesginaAdm.prepararInsert(hashActuacion);
-									UtilidadesHash.set(hashActuacion,
-											ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION,
-											obsJustificacion);
-									UtilidadesHash.set(hashActuacion,
-											ScsActuacionDesignaBean.C_OBSERVACIONES,
-											obsActuacion);
-									UtilidadesHash.set(hashActuacion,
-											ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,
-											GstDate.getApplicationFormatDate("", fechaDefecto));
-									UtilidadesHash
-									.set(hashActuacion,
-											ScsActuacionDesignaBean.C_FECHA,
-											GstDate.getApplicationFormatDate("", fechaDefecto));
-									actuacionDesginaAdm.insert(hashActuacion);
-								}
-
+								
+								
 							}
-
 						}
-					}catch(ClsExceptions cls){
-						msgSinAcreditaciones.append(", ");
-						msgSinAcreditaciones.append(anio);
-						msgSinAcreditaciones.append(" / ");
-						msgSinAcreditaciones.append(codigoDesigna);
-						/*msgSinAcreditaciones.append("(");
-						msgSinAcreditaciones.append(cls.getMsg());
-						msgSinAcreditaciones.append("}");*/
-
+						camposList.add(ScsActuacionDesignaBean.C_VALIDADA);
+						if(Boolean.parseBoolean(validado)){
+							UtilidadesHash.set(hashActuacion,
+									ScsActuacionDesignaBean.C_VALIDADA, "1");
+						}else{
+							UtilidadesHash.set(hashActuacion,
+									ScsActuacionDesignaBean.C_VALIDADA, "0");
+							
+						}
+						
+						
+						
+						actuacionDesginaAdm.updateDirect(hashActuacion,clavesActuacion,camposList.toArray(new String[camposList.size()]));
+						
+						
+						
 					}
 				}
-
-
+			}
+			String datosBaja = miForm.getDatosBaja();
+			if(datosBaja.length()>0){
+				String[] arrayDatosBaja = datosBaja.split("#");
+				Hashtable<String, String> htDesigna = null;
+				
+				for (int i = 0; i < arrayDatosBaja.length; i++) {
+					String rowBaja = arrayDatosBaja[i];
+					String[] arrayRowsJustificacion = rowBaja.split(",");
+					htDesigna = new Hashtable<String, String>();
+					String anio  =  arrayRowsJustificacion[0];
+					String numero  =  arrayRowsJustificacion[1]; 
+					String idInstitucion  =  arrayRowsJustificacion[2];
+					String idTurno  =  arrayRowsJustificacion[3];
+					htDesigna.put(ScsDesignaBean.C_IDINSTITUCION,idInstitucion);
+					htDesigna.put(ScsDesignaBean.C_ANIO,anio);
+					htDesigna.put(ScsDesignaBean.C_IDTURNO,idTurno);
+					htDesigna.put(ScsDesignaBean.C_NUMERO,numero);
+					htDesigna.put(ScsDesignaBean.C_FECHAESTADO,"sysdate");
+					htDesigna.put(ScsDesignaBean.C_ESTADO, "F");
+					desginaAdm.updateDirect(htDesigna, clavesDesigna, camposDesigna);
+					
+				}
 			}
 
-			tx.commit();
+//			tx.commit();
 		} catch (Exception e) {
-			throwExcp("messages.general.error",
-					new String[] { "modulo.gratuita" }, e, tx);
+			//throwExcp("messages.general.error",	new String[] { "modulo.gratuita" }, e, tx);
 		}
 		StringBuffer txtADevolver = new StringBuffer("");
 		if(msgAviso.toString().equalsIgnoreCase("") && msgSinAcreditaciones.toString().equalsIgnoreCase("")){
@@ -794,175 +448,130 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		}
 		return exitoRefresco(txtADevolver.toString(), request);
 	}
-
-	protected String getAcreditacion(Hashtable htAcumulaAcreditacionesProcedimiento,
-			Boolean isFactAnterior2005,Date fechaJustificacion,Date dateFechaInicioActuacion,
-			String idProcedimiento, String idJurisdiccion,
-			boolean isAcreditacionInicio,boolean isAcreditacionFin,UsrBean usrBean) throws ClsExceptions {
+	
+	protected String getIdAcreditacion(String idAcreditacion,String fecha,UsrBean usrBean) throws Exception {
 		//		Si la fecha es anterior a 01/01/2005 cogera un tipo de
 		// acreditacion(2 si es inuicio y 3 si es final)
 		//Si es posterior a esa fecha cogera otros tipos de
 		// acreditacion(6 si es inuicio y 7 si es final)
-		String idAcreditacion = "";
 	    ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 //		ReadProperties rp3 = new ReadProperties("SIGA.properties");
 		//Miramos es tipo de jurisdiccion(constante ==1). 
 		//Si es de penal va a depender de la fecha de acreditacion 
+	    Date dateFecha = null;
+		if (fecha != null && !fecha.equalsIgnoreCase(""))
+			dateFecha = GstDate.convertirFecha(fecha,"dd/MM/yyyy");
 		
-		GenParametrosAdm paramAdm = new GenParametrosAdm (usrBean);
-		//Haria falta meter los parametros en con ClsConstants
-		if(isFactAnterior2005 == null){
-			String cod_Fact_ja_2005 = paramAdm.getValor (usrBean.getLocation (), "SCS", ClsConstants.GEN_PARAM_FACT_JA_2005, "");
-			isFactAnterior2005 = new Boolean((cod_Fact_ja_2005!=null && cod_Fact_ja_2005.equalsIgnoreCase(ClsConstants.DB_TRUE)));
-        
-		}
 		//obtenemos el parametro si es 1 hay que aplicara la logica de las acreditaciones anteriores a 2005
         //si es 0 no es necesario
-        String acreditacion = "";
-		final String idAcreditacionPenal = rp3.returnProperty("codigo.general.scsacreditacion.jurisdiccion.penal");
-		
-		if(idJurisdiccion!=null && idJurisdiccion.equalsIgnoreCase(idAcreditacionPenal) && isFactAnterior2005.booleanValue()){
-		
-			if(dateFechaInicioActuacion!=null){
-				if (Integer.parseInt(GstDate.getYear(dateFechaInicioActuacion)) < 2005) {
-					 if (!isAcreditacionInicio && isAcreditacionFin) {
-						//creamos una actuacion de inicio
-						idAcreditacion = rp3
-								.returnProperty("codigo.general.scsacreditacion.fin.antes2005");
-						acreditacion = "codigo.general.scsacreditacion.fin.antes2005";
-	
-					} else{
-						throw new ClsExceptions("Algo Falla.No deberia venir!!");
-					}
-				} else {
-					 if (!isAcreditacionInicio && isAcreditacionFin) {
-						//creamos una actuacion de inicio
-						idAcreditacion = rp3
-								.returnProperty("codigo.general.scsacreditacion.fin.despues2005");
-						acreditacion = "codigo.general.scsacreditacion.fin.despues2005";
-	
-					} else {
-						throw new ClsExceptions("Algo Falla.No deberia venir!!");
-					}
-	
-				}
+		if (Integer.parseInt(GstDate.getYear(dateFecha)) < 2005) {
+			String idAcreditacionInicioAntes2005 =  rp3.returnProperty("codigo.general.scsacreditacion.inicio.antes2005");
+			String idAcreditacionFinAntes2005 =  rp3.returnProperty("codigo.general.scsacreditacion.fin.antes2005");
+			String idAcreditacionInicioDespues2005 =  rp3.returnProperty("codigo.general.scsacreditacion.inicio.despues2005");
+			String idAcreditacionFinDespues2005 =  rp3.returnProperty("codigo.general.scsacreditacion.fin.despues2005");
+			if(idAcreditacion.equalsIgnoreCase(idAcreditacionInicioDespues2005)){
+				idAcreditacion = idAcreditacionInicioAntes2005;
 				
-			
-			}else{
-				if (Integer.parseInt(GstDate.getYear(fechaJustificacion)) < 2005) {
-					if (isAcreditacionInicio && !isAcreditacionFin) {
-						idAcreditacion = rp3
-								.returnProperty("codigo.general.scsacreditacion.inicio.antes2005");
-						acreditacion = "codigo.general.scsacreditacion.inicio.antes2005";
-	
-					} else if (!isAcreditacionInicio && isAcreditacionFin) {
-						//creamos una actuacion de inicio
-						idAcreditacion = rp3
-								.returnProperty("codigo.general.scsacreditacion.fin.antes2005");
-						acreditacion = "codigo.general.scsacreditacion.fin.antes2005";
-	
-					} else if (!isAcreditacionInicio && !isAcreditacionFin) {
-						throw new ClsExceptions("No deberia venir!!");
-					}
-				} else {
-					if (isAcreditacionInicio && !isAcreditacionFin) {
-						//Creamos una actuacion de fin
-						idAcreditacion = rp3
-								.returnProperty("codigo.general.scsacreditacion.inicio.despues2005");
-						acreditacion = "codigo.general.scsacreditacion.inicio.despues2005";
-	
-					} else if (!isAcreditacionInicio && isAcreditacionFin) {
-						//creamos una actuacion de inicio
-						idAcreditacion = rp3
-								.returnProperty("codigo.general.scsacreditacion.fin.despues2005");
-						acreditacion = "codigo.general.scsacreditacion.fin.despues2005";
-	
-					} else if (!isAcreditacionInicio && !isAcreditacionFin) {
-						throw new ClsExceptions("No deberia venir!!");
-					}
-	
-				}
-			
-			}
-		}else{
-			if (isAcreditacionInicio && !isAcreditacionFin) {
-				//Creamos una actuacion de fin
-				idAcreditacion = rp3
-						.returnProperty("codigo.general.scsacreditacion.inicio.despues2005");
-				acreditacion = "codigo.general.scsacreditacion.inicio.despues2005";
-
-			} else if (!isAcreditacionInicio && isAcreditacionFin) {
-				//creamos una actuacion de inicio
-				idAcreditacion = rp3
-						.returnProperty("codigo.general.scsacreditacion.fin.despues2005");
-				acreditacion = "codigo.general.scsacreditacion.fin.despues2005";
-
-			} else if (!isAcreditacionInicio && !isAcreditacionFin) {
-				throw new ClsExceptions("No deberia venir!!");
-			}	
-		}
-		
-		ScsAcreditacionProcedimientoAdm scsAcProc = new ScsAcreditacionProcedimientoAdm(usrBean);
-		Hashtable htPKScsAcredProc = new Hashtable();
-		String idInstitucion = usrBean.getLocation ();
-		String keyAcumulaAcreditaciones = idInstitucion+"||"+idProcedimiento+"||"+idAcreditacion;
-		htPKScsAcredProc.put(ScsAcreditacionProcedimientoBean.C_IDINSTITUCION,idInstitucion);
-		htPKScsAcredProc.put(ScsAcreditacionProcedimientoBean.C_IDPROCEDIMIENTO,idProcedimiento);
-		htPKScsAcredProc.put(ScsAcreditacionProcedimientoBean.C_IDACREDITACION,idAcreditacion);
-		Vector vLista = null;
-		if(htAcumulaAcreditacionesProcedimiento.containsKey(keyAcumulaAcreditaciones))
-			vLista = (Vector)htAcumulaAcreditacionesProcedimiento.get(keyAcumulaAcreditaciones);
-		else
-			vLista = scsAcProc.selectByPK(htPKScsAcredProc);
-		if(vLista == null)
-			vLista = new Vector();
-		htAcumulaAcreditacionesProcedimiento.put(keyAcumulaAcreditaciones, vLista);
-		if(vLista==null || vLista.size()==0){
-			throw new ClsExceptions("Error no existe la acreditacion:"+acreditacion+":"+idAcreditacion+" del procedimineto:"+idProcedimiento);
-		}
-		
-		
-		
-		
+			}else if(idAcreditacion.equalsIgnoreCase(idAcreditacionFinDespues2005)){
+				idAcreditacion = idAcreditacionFinAntes2005;
+			} 
+		} 
 		return idAcreditacion;
-
 	}
-	protected String buscar(ActionMapping mapping, MasterForm formulario,
+	protected String buscarPor(ActionMapping mapping, MasterForm formulario,
 			HttpServletRequest request, HttpServletResponse response)
 			throws ClsExceptions, SIGAException {
+		
 		InformeJustificacionMasivaForm f = (InformeJustificacionMasivaForm) formulario;
-		ScsDesignasLetradoAdm admDesignas = new ScsDesignasLetradoAdm(this
-				.getUserBean(request));
-		//Vector v = adm.getDesignasLetrado(this.getIDInstitucion(request),
-		// f.getLetrado(), f.getFecha());
+		UsrBean usrBean = this.getUserBean(request);
+		ScsDesignasLetradoAdm admDesignas = new ScsDesignasLetradoAdm(usrBean);
+		f.setIdInstitucion(usrBean.getLocation());
 		
-		/*Vector v = admDesignas.getDesignasLetradoNew(this.getIDInstitucion(request), f
-				.getLetrado(), f.getFechaDesde(), f.getFechaHasta(), f
-				.getMostrarTodas(),f.getInteresadoNombre(),f.getInteresadoApellidos(),false);*/
-		/*Vector v = admDesignas.getDatosSalidaJustificacion(this.getIDInstitucion(request), f
-				.getLetrado(), f.getFechaDesde(), f.getFechaHasta(), f
-				.getMostrarTodas(),f.getInteresadoNombre(),f.getInteresadoApellidos(),false);*/
-		String keyPersona =f.getLetrado(); 
-		Hashtable htPersonas = admDesignas.getPersonasSalidaJustificacion(this.getIDInstitucion(request),keyPersona , f.getFechaDesde(), f.getFechaHasta(), f
-				.getMostrarTodas(),f.getInteresadoNombre(),f.getInteresadoApellidos(),false);
 		
-		Vector vRowsInformePorPersona = null;
-		if(htPersonas!=null && htPersonas.size()>0){
-			TreeMap tmRowsInformePorPersona = (TreeMap) htPersonas.get(keyPersona);
-			
-			if(tmRowsInformePorPersona!=null){
-				vRowsInformePorPersona = new Vector(tmRowsInformePorPersona.values());
-			}else{
-				vRowsInformePorPersona = new Vector();
+		request.setAttribute(ClsConstants.PARAM_PAGINACION,paginadorPenstania);
+		boolean permitirBotones = usrBean.getAccessType()!=null && usrBean.getAccessType().equals(SIGAConstants.ACCESS_FULL); 
+		request.setAttribute("permitirBotones", permitirBotones);
+		
+		try {
+			HashMap databackup=getPaginador(request, paginadorPenstania);
+			if (databackup!=null){ 
+
+				PaginadorBind paginador = (PaginadorBind)databackup.get("paginador");
+				List<DesignaForm> designaFormList = new ArrayList<DesignaForm>();
+				//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
+				String pagina = (String)request.getParameter("pagina");
+				if (paginador!=null){	
+					Vector datos=new Vector();
+					if (pagina!=null){
+						datos = paginador.obtenerPagina(Integer.parseInt(pagina));
+					}else{// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
+						datos = paginador.obtenerPagina((paginador.getPaginaActual()));
+					}
+					 
+					//Ahora nos salen designas. Las obtenemos y obtenemos sus listado
+					for (int i = 0; i < datos.size(); i++) {
+						Row designaRow = (Row)datos.get(i);
+						Hashtable designaHashtable = (Hashtable) designaRow.getRow();
+						List<DesignaForm> designaList = admDesignas.getDesignaList(f, designaHashtable,null, false);
+						designaFormList.addAll(designaList);
+					}
+				}	
+				request.setAttribute("designaFormList", designaFormList);
+				request.setAttribute("paginaSeleccionada", paginador.getPaginaActual());
+				request.setAttribute("totalRegistros", paginador.getNumeroTotalRegistros());
+				request.setAttribute("registrosPorPagina", paginador.getNumeroRegistrosPorPagina());
+				databackup.put("paginador",paginador);
+				databackup.put("datos",designaFormList);
+
+			}else{	
+				databackup=new HashMap();
+				String keyPersona =f.getIdPersona();
 				
+				PaginadorBind paginador = admDesignas.getDesignasJustificacionPaginador(f,false);
+				
+				if (paginador!=null){
+					int totalRegistros = paginador.getNumeroTotalRegistros();
+					if (totalRegistros==0){					
+						paginador =null;
+					}
+					databackup.put("paginador",paginador);
+					Vector datos = paginador.obtenerPagina(1);
+					
+					List<DesignaForm> designaFormList = new ArrayList<DesignaForm>();
+					//Ahora nos salen designas. Las obtenemos y obtenemos sus listado
+					for (int i = 0; i < datos.size(); i++) {
+						Row designaRow = (Row)datos.get(i);
+						Hashtable designaHashtable = (Hashtable) designaRow.getRow();
+						List<DesignaForm> designaList = admDesignas.getDesignaList(f, designaHashtable,null, false);
+						designaFormList.addAll(designaList);
+					}
+					request.setAttribute("designaFormList", designaFormList);
+					request.setAttribute("paginaSeleccionada", paginador.getPaginaActual());
+					request.setAttribute("totalRegistros", paginador.getNumeroTotalRegistros());
+					request.setAttribute("registrosPorPagina", paginador.getNumeroRegistrosPorPagina());
+					databackup.put("datos",designaFormList);
+					setPaginador(request, paginadorPenstania, databackup);
+				}else{
+					databackup.put("datos",new ArrayList<DesignaForm>());
+					request.setAttribute("designaFormList", new ArrayList<DesignaForm>());
+					request.setAttribute("paginaSeleccionada", 1);
+					request.setAttribute("totalRegistros", 0);
+					request.setAttribute("registrosPorPagina",1);
+					setPaginador(request, paginadorPenstania, databackup);
+					
+				} 	
+
+
 			}
-		}else{
-			vRowsInformePorPersona = new Vector();
-			
-		}
-		//Vector vRowsInformePorPersona = (Vector) htPersonas.get(keyPersona);
-		request.setAttribute("resultado", vRowsInformePorPersona);
-		request.setAttribute("letrado", f.getLetrado());
+		}catch (SIGAException e1) {
+			// Excepcion procedente de obtenerPagina cuando se han borrado datos
+			 return exitoRefresco("error.messages.obtenerPagina",request);
+		}catch (Exception e) 
+		{
+			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
+		} 
+		
+		request.setAttribute("letrado", f.getIdPersona());
 
 		if (f.getMostrarTodas() != null && !f.getMostrarTodas().equals("")) {
 			request.setAttribute("mostrarTodas", f.getMostrarTodas());
@@ -980,11 +589,355 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 			String fecha = gstDate.parseDateToString(new Date(),"dd/MM/yyyy", this.getLocale(request)); 
 			f.setFecha(fecha);
 		}
-
-		return "resultado";
+		return "listadoPaginado";
 	}
 	
+	
+	
+	protected String generaInforme(ActionMapping mapping, MasterForm formulario,
+			HttpServletRequest request, HttpServletResponse response)
+	throws ClsExceptions, SIGAException {
+		Date inicio = new Date();
+		ClsLogging.writeFileLog(Calendar.getInstance().getTimeInMillis() + "==> SIGA: INICIO InformesJustificacion.GeneraInforme",10);
+		InformeJustificacionMasivaForm f = (InformeJustificacionMasivaForm) formulario;
+		UsrBean usr = this.getUserBean(request);
+		ScsDesignasLetradoAdm admDesignas = new ScsDesignasLetradoAdm(usr);
+		Integer idInstitucion = this.getIDInstitucion(request);
+		f.setIdInstitucion(""+idInstitucion);
+		//Ijniciamos esta variable para ir metiendo los juzgados. Se hace para evitar el acceso masivo a BBDD
+		
+		
+		try {
+			String idioma = f.getIdioma();
+			GstDate gstDate = new GstDate();
+			String hoy = gstDate.parseDateToString(new Date(),"dd/MM/yyyy", this.getLocale(request));
+			if(idioma ==null ||idioma.equalsIgnoreCase("")){
+				hoy = EjecucionPLs.ejecutarPLPKG_SIGA_FECHA_EN_LETRA(hoy,"dma",usr.getLanguage());
+				idioma = usr.getLanguageExt();
+			
+			}else{
+				hoy = EjecucionPLs.ejecutarPLPKG_SIGA_FECHA_EN_LETRA(hoy,"dma",idioma);
+				AdmLenguajesAdm admLenguajes = new AdmLenguajesAdm(usr);
+				idioma = admLenguajes.getLenguajeExt(idioma);
+			
+			}
+			
+			File ficheroSalida = null;
+			Vector informesRes = new Vector(); 
+			// El id del informe es:
+			Vector plantillas = this.obtenerPlantillasFormulario("JUS1",idInstitucion.toString(), usr);
+			// Obtiene el Array de las plantillas. En este caso solo es una por lo que sacamos el 
+			// elemneto 0 del vector
+			AdmInformeBean b = (AdmInformeBean) plantillas.get(0);
+			
+			// --- acceso a paths y nombres 
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp = new ReadProperties("SIGA.properties");	
+			String rutaPlantilla = rp.returnProperty("informes.directorioFisicoPlantillaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
+			String rutaAlmacen = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
+			////////////////////////////////////////////////
+			// MODELO DE TIPO WORD: LLAMADA A ASPOSE.WORDS
+			String rutaPl = rutaPlantilla + ClsConstants.FILE_SEP+usr.getLocation()+ClsConstants.FILE_SEP+b.getDirectorio()+ClsConstants.FILE_SEP;
+			String nombrePlantilla=b.getNombreFisico()+"_"+idioma+".doc";
+			String rutaAlm = rutaAlmacen + ClsConstants.FILE_SEP+usr.getLocation()+ClsConstants.FILE_SEP+b.getDirectorio();
+			
+			
+			File crear = new File(rutaAlm);
+			if(!crear.exists())
+				crear.mkdirs();
+			
+			MasterWords words=new MasterWords(rutaPl+nombrePlantilla);
+			Hashtable htCabeceraInforme = null;
+			Hashtable htPersonas = admDesignas.getPersonasSalidaInformeJustificacion(f,true);
+			
+			if(htPersonas==null ||htPersonas.size()<1){
+				throw new SIGAException("messages.informes.ficheroVacio");
+				
+			}else{
+					//Hashtable htPersonas = getHashPersonaInforme(vRowsInforme,usr,idInstitucion);
+					Iterator itePersonas = htPersonas.keySet().iterator();
+					int j = 0;
+					while (itePersonas.hasNext()) {
+						String keyPersona = (String) itePersonas.next();
+						TreeMap tmRowsInformePorPersona = (TreeMap) htPersonas.get(keyPersona);
+						Vector vRowsInformePorPersona = new Vector();
+						Iterator itRowsDesigna = tmRowsInformePorPersona.keySet().iterator();
+						 
+						while (itRowsDesigna.hasNext()) {
+							String keyRowDesigna = (String) itRowsDesigna.next();
+							Hashtable htRowDesigna = (Hashtable) tmRowsInformePorPersona.get(keyRowDesigna);
+							//esto es de lo viejo lo meto
+							htRowDesigna.put("PENDIENTE"," ");
+							htRowDesigna.put("ACREDITACION_INI"," ");
+							htRowDesigna.put("ACREDITACION_FIN"," ");
+							String estado = (String)htRowDesigna.get(ScsDesignaBean.C_ESTADO);
+							if (estado != null && estado.equals("F"))
+								htRowDesigna.put("BAJA","X");
+							else
+								htRowDesigna.put("BAJA"," ");
+							
+							
+							
+							
+							List<DesignaForm> designaList = (List<DesignaForm>) htRowDesigna.get("designaList");
+							for(DesignaForm designaForm:designaList){
+								
+								boolean isPrimero = true;
+//								IF DESIGNA.JUZGADO NULL && DESIGNA.ACTUACIONES EMPTY
+//								RETURN SIN JUZGADO;
+//							IF	DESIGNA.IDPROCEDIMIENTO NULL && DESIGNA.ACTUACIONES EMPTY
+//								RETURN SIN PROCEDIMIENTO:
+//							IF DESIGNA.ACTUACIONES EMPTY
+//									CATEGORIA = DESIGNA.CATEGORIA;
+//									IF DESIGNA.ACREDITACIONES EMPTY
+//										RETURN MODULO SIN ACREDITACIONES;
+//									ELSE 
+//										ACREDITACION = DESIGNA.ACREDITACIONES(i).ACREDITACION;
+//
+//							ELSE
+//								CATEGORIA = DESIGNA.ACTUACIONES(i).CATEGORIA;
+//								ACTUACION = DESIGNA.ACTUACIONES(i);
+//								ACREDITACION = ACTUACION.DESCRIPCION;
+//								IF DESIGNA.ACREDITACIONES[KEYACTUACION]
+//									ACREDITACION = DESIGNA.ACREDITACIONES[KEYACTUACION](i).ACREDITACION;
+								
+								if(designaForm.getIdJuzgado()==null||designaForm.getIdJuzgado().equals("")){
+									
+									String acreditacion = UtilidadesString.getMensajeIdioma(usr,"gratuita.informeJustificacionMasiva.aviso.sinJuzgado");
+									Hashtable htRowDesignaClone = (Hashtable) htRowDesigna.clone();
+									htRowDesignaClone.put("CATEGORIA", "");
+									htRowDesignaClone.put("ACREDITACION", acreditacion);
+									htRowDesignaClone.put("FECHAJUSTIFICACION", "");
+									htRowDesignaClone.put("VALIDADA", "");
+									vRowsInformePorPersona.add(htRowDesignaClone);
+									
+								}else if(designaForm.getIdProcedimiento()==null||designaForm.getIdProcedimiento().equals("")){
+									String acreditacion = UtilidadesString.getMensajeIdioma(usr,"gratuita.informeJustificacionMasiva.aviso.sinModulo");
+									Hashtable htRowDesignaClone = (Hashtable) htRowDesigna.clone();
+									htRowDesignaClone.put("CATEGORIA", "");
+									htRowDesignaClone.put("ACREDITACION", acreditacion);
+									htRowDesignaClone.put("FECHAJUSTIFICACION", "");
+									htRowDesignaClone.put("VALIDADA", "");
+									vRowsInformePorPersona.add(htRowDesignaClone);
+								}else{
+									if(designaForm.getActuaciones()!=null && designaForm.getActuaciones().size()>0){
+										Map<String, List<ActuacionDesignaForm>> actuacionesMap = designaForm.getActuaciones();
+										Iterator actuacionesIterator = actuacionesMap.keySet().iterator(); 
+										while (actuacionesIterator.hasNext()) {
+											String idProcedimineto = (String) actuacionesIterator.next();
+											List<ActuacionDesignaForm> actuacionesList = actuacionesMap.get(idProcedimineto);
+											if(actuacionesList!=null && actuacionesList.size()>0){
+												for (ActuacionDesignaForm actuacionForm : actuacionesList) {
+													String categoria = actuacionForm.getCategoria();
+													//String acreditacion = actuacionForm.getDescripcion();
+													String acreditacion = actuacionForm.getAcreditacion().getDescripcion();
+													String fechaJustificacion ="";
+													String validada = "";
+													if(actuacionForm.getFechaJustificacion()!=null && !actuacionForm.getFechaJustificacion().equals("")){
+														fechaJustificacion =  actuacionForm.getFechaJustificacion();
+														if(actuacionForm.getValidada().equals("1")){
+															validada = "X";
+														}
+														
+													}
+													Hashtable htRowDesignaClone = (Hashtable) htRowDesigna.clone();
+													if(isPrimero){
+														isPrimero = false;
+													}else{
+														htRowDesignaClone.put("CODIGODESIGNA", "");
+														htRowDesignaClone.put("EXPEDIENTES", "");
+														htRowDesignaClone.put("IDJUZGADO", "");
+														htRowDesignaClone.put("FECHADESIGNA", "");
+														htRowDesignaClone.put("ASUNTO", "");
+														htRowDesignaClone.put("CLIENTE", "");
+														
+													}
+													htRowDesignaClone.put("CATEGORIA", categoria);
+													htRowDesignaClone.put("ACREDITACION", acreditacion);
+													htRowDesignaClone.put("FECHAJUSTIFICACION", fechaJustificacion);
+													htRowDesignaClone.put("VALIDADA", validada);
+													vRowsInformePorPersona.add(htRowDesignaClone);
+													if(designaForm.getAcreditaciones()!=null && designaForm.getAcreditaciones().size()>0){
+														Map<String, List<AcreditacionForm>> acreditacionesMap = designaForm.getAcreditaciones();
+														List<AcreditacionForm> acreditacionesList = acreditacionesMap.get(idProcedimineto);
+														if(acreditacionesList!=null && acreditacionesList.size()>0){
+															for (AcreditacionForm acreditacionForm : acreditacionesList) {
+																fechaJustificacion = "";
+																validada = "";
+																acreditacion = acreditacionForm.getDescripcion();
+																Hashtable htRowDesignaClone2 = (Hashtable) htRowDesigna.clone();
+																if(isPrimero){
+																	isPrimero = false;
+																}else{
+																	htRowDesignaClone2.put("CODIGODESIGNA", "");
+																	htRowDesignaClone2.put("EXPEDIENTES", "");
+																	htRowDesignaClone2.put("IDJUZGADO", "");
+																	htRowDesignaClone2.put("FECHADESIGNA", "");
+																	htRowDesignaClone2.put("ASUNTO", "");
+																	htRowDesignaClone2.put("CLIENTE", "");
+																	
+																}
+																htRowDesignaClone2.put("CATEGORIA", categoria);
+																htRowDesignaClone2.put("ACREDITACION", acreditacion);
+																htRowDesignaClone2.put("FECHAJUSTIFICACION", fechaJustificacion);
+																htRowDesignaClone2.put("VALIDADA", validada);
+																vRowsInformePorPersona.add(htRowDesignaClone2);
+															}
+														}
+													}
+												}
+											}
+										}
+									}else{
+										String categoria = designaForm.getCategoria();
+										if(designaForm.getAcreditaciones()!=null && designaForm.getAcreditaciones().size()>0){
+											Map<String, List<AcreditacionForm>> acreditacionesMap = designaForm.getAcreditaciones();
+											Iterator acreditacionesIterator = acreditacionesMap.keySet().iterator(); 
+											while (acreditacionesIterator.hasNext()) {
+												String idProcedimineto = (String) acreditacionesIterator.next();
+												List<AcreditacionForm> acreditacionesList = acreditacionesMap.get(idProcedimineto);
+												if(acreditacionesList!=null && acreditacionesList.size()>0){
+													for (AcreditacionForm acreditacionForm : acreditacionesList) {
+														String acreditacion = acreditacionForm.getDescripcion();
+														Hashtable htRowDesignaClone = (Hashtable) htRowDesigna.clone();
+														if(isPrimero){
+															isPrimero = false;
+														}else{
+															htRowDesignaClone.put("CODIGODESIGNA", "");
+															htRowDesignaClone.put("EXPEDIENTES", "");
+															htRowDesignaClone.put("IDJUZGADO", "");
+															htRowDesignaClone.put("FECHADESIGNA", "");
+															htRowDesignaClone.put("ASUNTO", "");
+															htRowDesignaClone.put("CLIENTE", "");
+															
+														}
+														htRowDesignaClone.put("CATEGORIA", categoria);
+														htRowDesignaClone.put("ACREDITACION", acreditacion);
+														htRowDesignaClone.put("FECHAJUSTIFICACION", "");
+														htRowDesignaClone.put("VALIDADA", "");
+														vRowsInformePorPersona.add(htRowDesignaClone);
+														
+													}
+												}
+												
+											}
+											
+										}else{
+											
+											String acreditacion = UtilidadesString.getMensajeIdioma(usr,"gratuita.informeJustificacionMasiva.literal.moduloSinAcreditaciones");
+											Hashtable htRowDesignaClone = (Hashtable) htRowDesigna.clone();
+											htRowDesignaClone.put("CATEGORIA", categoria);
+											htRowDesignaClone.put("ACREDITACION", acreditacion);
+											htRowDesignaClone.put("FECHAJUSTIFICACION", "");
+											htRowDesignaClone.put("VALIDADA", "");
+											vRowsInformePorPersona.add(htRowDesignaClone);
+										}
+									}
+								}
+							}
+						}
+						//En toda las filas tenemos la descripcion del colegiado asi que cogemos la
+						//primera para sacar la cabecera
+						Hashtable htRow = (Hashtable)vRowsInformePorPersona.get(0);
+						htCabeceraInforme = new Hashtable();
+						String nColegiado =  (String)htRow.get(CenColegiadoBean.C_NCOLEGIADO);
+						htCabeceraInforme.put("NCOLEGIADO",nColegiado);
+						htCabeceraInforme.put("ETIQUETA","Nº Colegiado");
+						htCabeceraInforme.put("NOMBRE",(String)htRow.get(CenPersonaBean.C_NOMBRE));
+						htCabeceraInforme.put("FECHA",hoy);
+			
+						String direccion = "";
+						String codPostal = "";
+						String pobLetrado = "";
+						String provLetrado = "";
+						
+						if (htRow!=null && htRow.size()>0) {
+							codPostal = (String)htRow.get("CP_LETRADO");
+							pobLetrado = (String)htRow.get("POBLACION_LETRADO");
+							direccion = (String)htRow.get("DOMICILIO_LETRADO");
+							provLetrado = (String)htRow.get("PROVINCIA_LETRADO");
+						}
+						htCabeceraInforme.put("DIRECCION",direccion);
+						htCabeceraInforme.put("CP",codPostal);
+						htCabeceraInforme.put("POBLACION",pobLetrado);
+						htCabeceraInforme.put("PROVINCIA",provLetrado);
+						htCabeceraInforme.put("CRONOLOGICO",nColegiado);
 
+						Document doc=words.nuevoDocumento();
+						doc = words.sustituyeDocumento(doc,htCabeceraInforme);
+						doc = words.sustituyeRegionDocumento(doc,"region",vRowsInformePorPersona);
+
+						StringBuffer nombreArchivo = new StringBuffer(); 
+						nombreArchivo.append(nColegiado);
+						nombreArchivo.append("-");
+						
+						nombreArchivo.append(b.getNombreSalida());
+						nombreArchivo.append("_");
+						nombreArchivo.append(idInstitucion);
+						nombreArchivo.append("_");
+						nombreArchivo.append(j);
+						nombreArchivo.append(".doc");
+						j++;
+						File archivo = words.grabaDocumento(doc,rutaAlm,nombreArchivo.toString());
+						informesRes.add(archivo);
+					}
+				/////////////////////////////////////////////////
+				if (informesRes.size()!=0) { 
+					if (informesRes.size()<2) {
+						ficheroSalida = (File) informesRes.get(0);
+					} else {
+						AdmTipoInformeAdm admT = new AdmTipoInformeAdm(this.getUserBean(request));
+						AdmTipoInformeBean beanT = admT.obtenerTipoInforme("JUSDE");
+						ArrayList ficheros= new ArrayList();
+						for (int i=0;i<informesRes.size();i++) {
+							File file = (File) informesRes.get(i);
+							ficheros.add(file);
+						}
+						String nombreFicheroZIP=beanT.getDescripcion().trim() + "_" +UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","").replaceAll(":","").replaceAll(" ","");
+						String rutaServidorDescargasZip = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
+						rutaServidorDescargasZip += ClsConstants.FILE_SEP+idInstitucion+ClsConstants.FILE_SEP+"temp"+ File.separator;
+						File ruta = new File(rutaServidorDescargasZip);
+						ruta.mkdirs();
+						Plantilla.doZip(rutaServidorDescargasZip,nombreFicheroZIP,ficheros);
+						ficheroSalida = new File(rutaServidorDescargasZip + nombreFicheroZIP + ".zip");
+					}
+					request.setAttribute("nombreFichero", ficheroSalida.getName());
+					request.setAttribute("rutaFichero", ficheroSalida.getPath());
+					request.setAttribute("borrarFichero", "true");
+				}
+				else
+					throw new SIGAException("messages.informes.ficheroVacio");
+			}
+		}catch (SIGAException e) {
+			// request.setAttribute("mensaje", e.getMessage());
+			return exito(e.getLiteral(), request);
+//			throwExcp(e.getMessage(),new String[] {"modulo.informes"},e,null);
+		}finally{
+			Date fin = new Date(); 
+			ClsLogging.writeFileLog(Calendar.getInstance().getTimeInMillis() + "==> SIGA: FIN InformesJustificacion.GeneraInforme",10);
+			ClsLogging.writeFileLog(fin.getTime()-inicio.getTime() + " MILISEGUNDOS ==> SIGA: TIEMPO TOTAL",10);	
+			
+		}
+		
+		
+		
+
+		request.setAttribute("generacionOK","OK");
+		return "descarga";
+	}
+	private Vector obtenerPlantillasFormulario(String idInforme, String idInstitucion, UsrBean usr) throws ClsExceptions {
+	    Vector salida = new Vector ();
+	    try {
+		    AdmInformeAdm adm = new AdmInformeAdm(usr);
+		    salida.add(adm.obtenerInforme(idInstitucion,idInforme));
+		    
+	    } catch (ClsExceptions e) {
+	        throw e;
+	    } catch (Exception e) {
+	        throw new ClsExceptions(e,"Error al obtener los objetos plantillas del formulario.");
+	    }
+	    return salida;
+	}
 	
 
 }

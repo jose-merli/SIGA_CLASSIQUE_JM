@@ -3,6 +3,9 @@ package com.siga.beans;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.TreeMap;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +17,9 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.form.AcreditacionForm;
+import com.siga.gratuita.form.ActuacionDesignaForm;
+import com.siga.gratuita.form.DesignaForm;
 
 /**
  * Implementa las operaciones sobre la base de datos, es decir: select, insert, update... a la tabla SCS_DESIGNA
@@ -470,8 +476,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		       return 0;
 		   }
 	   }
-	
-	
+
 	public Vector getConsultaDesigna (Hashtable entrada, HttpServletRequest request)throws ClsExceptions 
 	  {
 		Vector salida=null;				
@@ -598,7 +603,280 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		return salida;
 		
 		}
-			
+
+		public void setActuacionesDesignas(DesignaForm designa, boolean isMostrarJustificacionesPtes)  throws ClsExceptions, SIGAException 
+	{
+	    Hashtable<Integer,String> codigos = new Hashtable<Integer,String>();
+	    int contador=0;
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT AC.IDACREDITACION,AC.DESCRIPCION ACREDITACION,AC.IDTIPOACREDITACION,ACP.PORCENTAJE, TAC.DESCRIPCION TIPO, ");
+		sql.append(" PRO.NOMBRE PROCEDIMIENTO,PRO.CODIGO CATEGORIA, PRO.IDJURISDICCION,PRO.COMPLEMENTO,ACT.NUMEROASUNTO,ACT.IDPROCEDIMIENTO,ACT.IDJUZGADO, TO_CHAR(ACT.FECHAJUSTIFICACION,'dd/mm/yyyy') FECHAJUSTIFICACION,ACT.VALIDADA ");
+		sql.append(" FROM SCS_ACTUACIONDESIGNA          ACT, ");
+		sql.append(" SCS_PROCEDIMIENTOS            PRO, ");
+		sql.append(" SCS_ACREDITACIONPROCEDIMIENTO ACP, ");
+		sql.append(" SCS_ACREDITACION              AC, ");
+		sql.append(" SCS_TIPOACREDITACION          TAC ");
+		sql.append(" WHERE AC.IDTIPOACREDITACION = TAC.IDTIPOACREDITACION ");
+		sql.append(" AND ACT.IDACREDITACION = AC.IDACREDITACION ");
+		      
+		sql.append(" AND ACT.IDACREDITACION = ACP.IDACREDITACION ");
+		sql.append(" AND ACT.IDINSTITUCION_PROC = ACP.IDINSTITUCION ");
+		sql.append(" AND ACT.IDPROCEDIMIENTO = ACP.IDPROCEDIMIENTO ");
+		      
+		sql.append(" AND ACT.IDINSTITUCION_PROC = PRO.IDINSTITUCION ");
+		sql.append(" AND ACT.IDPROCEDIMIENTO = PRO.IDPROCEDIMIENTO ");
+		sql.append(" AND ACT.IDINSTITUCION = :");
+		contador++;
+		codigos.put(new Integer(contador),designa.getIdInstitucion());
+		sql.append(contador);
+		sql.append(" AND ACT.IDTURNO = :");
+		contador++;
+		codigos.put(new Integer(contador),designa.getIdTurno());
+		sql.append(contador);
+		sql.append(" AND ACT.ANIO = :");
+		contador++;
+		codigos.put(new Integer(contador),designa.getAnio());
+		sql.append(contador);
+		sql.append(" AND ACT.NUMERO = :");
+		contador++;
+		codigos.put(new Integer(contador),designa.getNumero());
+		sql.append(contador);
+		sql.append(" ORDER BY ACT.NUMEROASUNTO");
+		Vector actuacionesVector = this.selectGenericoBind(sql.toString(), codigos);
 		
+		
+		TreeMap<String, List<ActuacionDesignaForm>> tmActuaciones = new TreeMap<String, List<ActuacionDesignaForm>>();
+		List<ActuacionDesignaForm> actuacionesList = null;
+		ActuacionDesignaForm actuacionDesigna = null;
+		AcreditacionForm acreditacion = null;
+		if(actuacionesVector!=null && actuacionesVector.size()>0){
+			for (int j = 0; j < actuacionesVector.size(); j++) {
+				Hashtable registro = (Hashtable) actuacionesVector.get(j);
+				String idProcedimiento  = (String)registro.get("IDPROCEDIMIENTO");
+				if(tmActuaciones.containsKey(idProcedimiento)){
+					actuacionesList = (List<ActuacionDesignaForm>)tmActuaciones.get(idProcedimiento);
+				}else{
+					actuacionesList = new ArrayList<ActuacionDesignaForm>();
+				}
+				actuacionDesigna = new ActuacionDesignaForm();
+				actuacionDesigna.setCategoria((String)registro.get("CATEGORIA"));
+				actuacionDesigna.setFechaJustificacion((String)registro.get("FECHAJUSTIFICACION"));
+				actuacionDesigna.setValidada((String)registro.get("VALIDADA"));
+				actuacionDesigna.setNumero((String)registro.get("NUMEROASUNTO"));
+				actuacionDesigna.setIdJuzgado((String)registro.get("IDJUZGADO"));
+				actuacionDesigna.setIdProcedimiento(idProcedimiento);
+				actuacionDesigna.setDescripcionProcedimiento((String)registro.get("PROCEDIMIENTO"));
+				actuacionDesigna.setMultiplesComplementos((String)registro.get("COMPLEMENTO"));
+				actuacionDesigna.setIdJurisdiccion((String)registro.get("IDJURISDICCION"));
+				acreditacion = new AcreditacionForm();
+				actuacionDesigna.setAcreditacion(acreditacion);
+				acreditacion.setId((String)registro.get("IDACREDITACION"));
+				acreditacion.setDescripcion((String)registro.get("ACREDITACION"));
+				acreditacion.setPorcentaje((String)registro.get("PORCENTAJE"));
+				acreditacion.setIdTipo((String)registro.get("IDTIPOACREDITACION"));
+				acreditacion.setIdProcedimiento(idProcedimiento);
+				
+				actuacionesList.add(actuacionDesigna);
+				tmActuaciones.put(idProcedimiento, actuacionesList);
+				
+			}
+		}
+		designa.setActuaciones(tmActuaciones);
+		TreeMap<String, List<AcreditacionForm>> tmAcreditaciones = new TreeMap<String, List<AcreditacionForm>>();
+		designa.setAcreditaciones(tmAcreditaciones);
+		if(tmActuaciones.size()>0){
+			Iterator<String> itActuaciones = tmActuaciones.keySet().iterator();
+			boolean isAgunaActuacionPte = false;
+			while (itActuaciones.hasNext()) {
+				String idProcedimiento = (String) itActuaciones.next();
+				List<ActuacionDesignaForm> actuacionesProcedimientoList = (List<ActuacionDesignaForm>) tmActuaciones.get(idProcedimiento);
+				
+				
+				List<AcreditacionForm> acreditacionesPendientesList = null;
+				if(designa.getEstado().equals("V")||designa.getEstado().equals(""))
+					acreditacionesPendientesList = getAcreditacionesPendientes(designa.getIdInstitucion(), idProcedimiento,null,(designa.getActuacionRestriccionesActiva()!=null && designa.getActuacionRestriccionesActiva().equals(ClsConstants.DB_TRUE)),actuacionesProcedimientoList);
+				else
+					acreditacionesPendientesList = new ArrayList<AcreditacionForm>();
+				
+				//Hacemos esto para el rowspan de la jsp
+				
+				if(acreditacionesPendientesList==null || acreditacionesPendientesList.size()==0){
+					//si no hay mas actuaciones no aparece en la vista
+					if(false){
+//					if(tmActuaciones.size()==1){
+						boolean isPteValidar = false;
+						for(ActuacionDesignaForm actuacion:actuacionesProcedimientoList ){
+							isPteValidar = actuacion.getValidada().equals(ClsConstants.DB_FALSE);
+							if(isPteValidar)
+								break;
+						}
+						if(!isPteValidar&&isMostrarJustificacionesPtes)
+							itActuaciones.remove();
+					}else{
+						boolean isPteValidar = false;
+						for(ActuacionDesignaForm actuacion:actuacionesProcedimientoList ){
+							isPteValidar = actuacion.getValidada().equals(ClsConstants.DB_FALSE);
+							if(isPteValidar&&!isAgunaActuacionPte)
+								isAgunaActuacionPte = true;
+								
+						}
+						
+						
+					}
+				}else{
+					isAgunaActuacionPte = true;
+					AcreditacionForm primeraAcreditacion = acreditacionesPendientesList.get(0);
+					primeraAcreditacion.setRowSpan(acreditacionesPendientesList.size());
+					tmAcreditaciones.put(idProcedimiento, acreditacionesPendientesList);
+				}
+				
+			}
+			if(!isAgunaActuacionPte&&isMostrarJustificacionesPtes){
+				designa.setActuaciones(null);
+			}
+		}else{
+			if(designa.getIdProcedimiento()!=null && !designa.getIdProcedimiento().equals("")){
+				
+				List<AcreditacionForm> acreditacionesPendientesList = null;
+				if(designa.getEstado().equals("V")||designa.getEstado().equals(""))
+					acreditacionesPendientesList = getAcreditacionesPendientes(designa.getIdInstitucion(), designa.getIdProcedimiento(),designa.getIdJuzgado(),(designa.getActuacionRestriccionesActiva()!=null && designa.getActuacionRestriccionesActiva().equals(ClsConstants.DB_TRUE)), null);
+				else
+					acreditacionesPendientesList = new ArrayList<AcreditacionForm>();
+				
+				//Hacemos esto para el rowspan de la jsp
+				if(acreditacionesPendientesList!=null && acreditacionesPendientesList.size()>0){
+					AcreditacionForm primeraAcreditacion = acreditacionesPendientesList.get(0);
+					primeraAcreditacion.setRowSpan(acreditacionesPendientesList.size());
+				}
+				tmAcreditaciones.put(designa.getIdProcedimiento(), acreditacionesPendientesList);
+			}
+		}
+		
+		
+		
+	}
+
 	
+	public List<AcreditacionForm> getAcreditacionesPendientes(String idInstitucion,String idProcedimiento,String idJuzgado,boolean restriccionesActivas, List<ActuacionDesignaForm> actuacionesList) throws ClsExceptions, SIGAException 
+	{
+	    
+		
+		Hashtable<Integer,String> codigos = new Hashtable<Integer,String>();
+	    int contador=0;
+		StringBuffer sql = new StringBuffer();
+
+		sql.append(" SELECT AC.IDACREDITACION,AC.DESCRIPCION,TAC.IDTIPOACREDITACION,ACPRO.PORCENTAJE,PRO.IDJURISDICCION ");
+		sql.append(" FROM SCS_ACREDITACIONPROCEDIMIENTO ACPRO, ");
+		sql.append(" SCS_PROCEDIMIENTOS            PRO, ");
+		sql.append(" SCS_ACREDITACION              AC, ");
+		sql.append(" SCS_TIPOACREDITACION          TAC ");
+		sql.append(" WHERE  ");
+		sql.append(" AC.IDTIPOACREDITACION = TAC.IDTIPOACREDITACION ");
+		sql.append(" AND ACPRO.IDACREDITACION = AC.IDACREDITACION ");
+		sql.append(" AND PRO.IDINSTITUCION = ACPRO.IDINSTITUCION ");
+		sql.append(" AND PRO.IDPROCEDIMIENTO = ACPRO.IDPROCEDIMIENTO ");
+
+		
+		
+		sql.append(" AND ACPRO.IDINSTITUCION = :");
+		contador++;
+		codigos.put(new Integer(contador),idInstitucion);
+		sql.append(contador);
+		sql.append(" AND ACPRO.IDPROCEDIMIENTO = :");
+		contador++;
+		codigos.put(new Integer(contador),idProcedimiento);
+		sql.append(contador);
+		sql.append(" AND TAC.IDTIPOACREDITACION NOT IN (4) ");
+		sql.append(" AND AC.IDACREDITACION NOT IN (10,11)");
+		
+		
+//		ArrayList
+		if(restriccionesActivas && actuacionesList!=null && actuacionesList.size()>0){
+			boolean isInicio = false;
+			boolean isFin = false;
+			boolean isCompleta = false;
+			for (int i = 0; i < actuacionesList.size(); i++) {
+				ActuacionDesignaForm actuacion = (ActuacionDesignaForm) actuacionesList.get(i);
+				String multiplesComplementos = actuacion.getMultiplesComplementos();
+				if(multiplesComplementos!=null && multiplesComplementos.equals(ClsConstants.DB_TRUE))
+					return new ArrayList<AcreditacionForm>();
+//					break;
+				
+//				if(multiplesComplementos!=null && multiplesComplementos.equals(ClsConstants.DB_FALSE))
+//					return new ArrayList<AcreditacionForm>();
+//				
+				if(i==0){
+					sql.append(" AND AC.IDACREDITACION NOT IN (");
+				
+					idJuzgado = actuacion.getIdJuzgado();
+					contador++;
+					codigos.put(new Integer(contador),actuacion.getAcreditacion().getId());
+					sql.append(":");
+					sql.append(contador);
+					sql.append(")");
+				}
+				
+				
+				if(!isInicio){
+					isInicio = actuacion.getAcreditacion().getIdTipo().equals("1");
+					if(isInicio){
+						sql.append(" AND TAC.IDTIPOACREDITACION NOT IN (:");
+						contador++;
+						codigos.put(new Integer(contador),"3");
+						sql.append(contador);
+						sql.append(")");
+						
+					}
+				}
+				if(!isFin){
+					isFin = actuacion.getAcreditacion().getIdTipo().equals("2");
+					if(isFin){
+						sql.append(" AND TAC.IDTIPOACREDITACION NOT IN (:");
+						contador++;
+						codigos.put(new Integer(contador),"3");
+						sql.append(contador);
+						sql.append(")");
+						
+					}
+				}
+				if(!isCompleta){
+					isCompleta = actuacion.getAcreditacion().getIdTipo().equals("3");
+					if(isCompleta){
+						return new ArrayList<AcreditacionForm>();
+					}
+				}
+				
+				
+				
+//				if(i!=actuacionesList.size()-1)
+//					sql.append(",");
+//				else
+//					sql.append(")");
+				
+			}
+			if(isInicio && isFin)
+				return new ArrayList<AcreditacionForm>();
+			
+			
+		}
+
+		Vector acreditacionesPtesVector = this.selectGenericoBind(sql.toString(), codigos);
+		List<AcreditacionForm> acreditacionesPtesList = new ArrayList<AcreditacionForm>();
+		AcreditacionForm acreditacionForm = null;
+		for (int j = 0; j < acreditacionesPtesVector.size(); j++) {
+			Hashtable registro = (Hashtable) acreditacionesPtesVector.get(j);
+			acreditacionForm = new AcreditacionForm();
+			acreditacionForm.setDescripcion((String)registro.get("DESCRIPCION"));
+			acreditacionForm.setIdTipo((String)registro.get("IDTIPOACREDITACION"));
+			acreditacionForm.setPorcentaje((String)registro.get("PORCENTAJE"));
+			acreditacionForm.setId((String)registro.get("IDACREDITACION"));
+			acreditacionForm.setIdJurisdiccion((String)registro.get("IDJURISDICCION"));
+			acreditacionForm.setIdJuzgado(idJuzgado);
+			acreditacionForm.setIdProcedimiento(idProcedimiento);
+			acreditacionesPtesList.add(acreditacionForm);
+			
+		}
+		return acreditacionesPtesList;
+
+	}
 }

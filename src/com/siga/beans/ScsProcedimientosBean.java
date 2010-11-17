@@ -1,5 +1,9 @@
 package com.siga.beans;
 
+import com.siga.Utilidades.AjaxXMLBuilderAnnotation;
+import com.siga.Utilidades.AjaxXMLBuilderNameAnnotation;
+import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
+
 /**
  * Implementa las operaciones sobre el bean de la tabla SCS_PRECIOHITO
  * 
@@ -7,7 +11,7 @@ package com.siga.beans;
  * @since 6/12/2004
  * @version 15-12-2008 - adrianag
  */
-
+@AjaxXMLBuilderAnnotation 
 public class ScsProcedimientosBean extends MasterBean
 {
 	//
@@ -47,7 +51,9 @@ public class ScsProcedimientosBean extends MasterBean
 	//
 	public Integer	getIdJurisdiccion()		{return idJurisdiccion;}
 	public Integer	getIdInstitucion()		{return idInstitucion;}
+	@AjaxXMLBuilderValueAnnotation(isCData=false)
 	public Integer	getIdProcedimiento()	{return Integer.valueOf(idProcedimiento);}
+	@AjaxXMLBuilderNameAnnotation
 	public String	getNombre()				{return nombre;}
 	public Float	getPrecio()				{return precio;}
 	public String	getCodigo()				{return codigo;}

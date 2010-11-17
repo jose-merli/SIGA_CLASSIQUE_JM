@@ -266,6 +266,9 @@ public class HelperInformesAdm  {
 			sql += prolongarCampo;
 			sql +=",idjurisdiccion AS IDJURISDICCION";
 			sql += prolongarCampo;
+			sql +=",COMPLEMENTO AS COMPLEMENTO";
+			sql += prolongarCampo;
+			
 			sql +=" from scs_procedimientos"+
 			" WHERE IDINSTITUCION = :1 "+
 			" AND IDPROCEDIMIENTO = :2 ";

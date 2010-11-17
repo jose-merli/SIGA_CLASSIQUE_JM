@@ -1736,13 +1736,15 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 				}
 				
 			}else{
-				delAsisAdm =  new ScsDelitosAsistenciaAdm(volantesExpressVo.getUsrBean());
-				//Borramos los delitos que tuviera
-				delAsisAdm.borrarDelitosAsitencia(asistencia.getIdInstitucion(), asistencia.getAnio(), asistencia.getNumero());
-				//si tiene delito lo insertamos
-				if(delitoAsistencia!=null){
-					
-					delAsisAdm.insert(delitoAsistencia);
+				if(isAsistenciaModificada){
+					delAsisAdm =  new ScsDelitosAsistenciaAdm(volantesExpressVo.getUsrBean());
+					//Borramos los delitos que tuviera
+					delAsisAdm.borrarDelitosAsitencia(asistencia.getIdInstitucion(), asistencia.getAnio(), asistencia.getNumero());
+					//si tiene delito lo insertamos
+					if(delitoAsistencia!=null){
+						
+						delAsisAdm.insert(delitoAsistencia);
+					}
 				}
 				
 				
@@ -1922,24 +1924,28 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 		boolean isAsistenciaModificada = !((fechaHora==null && asistenciaBBDD.getFechaHora()==null)
 		|| (fechaHora!=null && asistenciaBBDD.getFechaHora()!=null && fechaHora.trim().equalsIgnoreCase(asistenciaBBDD.getFechaHora().trim())));
 
+		if(asistencia.getComisaria()!=null){
 		if(isAsistenciaModificada) return true;
-		isAsistenciaModificada = !((asistencia.getComisaria()==null && asistenciaBBDD.getComisaria()==null)
-				|| (asistencia.getComisaria()!=null && asistenciaBBDD.getComisaria()!=null && asistencia.getComisaria().toString().trim().equalsIgnoreCase(asistenciaBBDD.getComisaria().toString().trim())));
-		if(isAsistenciaModificada) return true;
+			isAsistenciaModificada = !((asistencia.getComisaria()==null && asistenciaBBDD.getComisaria()==null)
+					|| (asistencia.getComisaria()!=null && asistenciaBBDD.getComisaria()!=null && asistencia.getComisaria().toString().trim().equalsIgnoreCase(asistenciaBBDD.getComisaria().toString().trim())));
+			if(isAsistenciaModificada) return true;
+			String numDiligencia = asistencia.getNumeroDiligencia()==null ? "" : asistencia.getNumeroDiligencia();
+			isAsistenciaModificada = !((numDiligencia==null && asistenciaBBDD.getNumeroDiligencia()==null)
+					|| (numDiligencia!=null && asistenciaBBDD.getNumeroDiligencia()!=null && numDiligencia.trim().equalsIgnoreCase(asistenciaBBDD.getNumeroDiligencia().trim())));
+			if(isAsistenciaModificada) return true;
+		}else{
 		
-		isAsistenciaModificada = !((asistencia.getJuzgado()==null && asistenciaBBDD.getJuzgado()==null)
-				|| (asistencia.getJuzgado()!=null && asistenciaBBDD.getJuzgado()!=null && asistencia.getJuzgado().toString().trim().equalsIgnoreCase(asistenciaBBDD.getJuzgado().toString().trim())));
-		if(isAsistenciaModificada) return true;
+			isAsistenciaModificada = !((asistencia.getJuzgado()==null && asistenciaBBDD.getJuzgado()==null)
+					|| (asistencia.getJuzgado()!=null && asistenciaBBDD.getJuzgado()!=null && asistencia.getJuzgado().toString().trim().equalsIgnoreCase(asistenciaBBDD.getJuzgado().toString().trim())));
+			if(isAsistenciaModificada) return true;
+			String numProcedimiento = asistencia.getNumeroProcedimiento()==null ? "" : asistencia.getNumeroProcedimiento();
+			isAsistenciaModificada = !((numProcedimiento==null && asistenciaBBDD.getNumeroProcedimiento()==null)
+					|| (numProcedimiento!=null && asistenciaBBDD.getNumeroProcedimiento()!=null && numProcedimiento.trim().equalsIgnoreCase(asistenciaBBDD.getNumeroProcedimiento().trim())));
+			if(isAsistenciaModificada) return true;
+		}
 		
-		String numDiligencia = asistencia.getNumeroDiligencia()==null ? "" : asistencia.getNumeroDiligencia();
-		isAsistenciaModificada = !((numDiligencia==null && asistenciaBBDD.getNumeroDiligencia()==null)
-				|| (numDiligencia!=null && asistenciaBBDD.getNumeroDiligencia()!=null && numDiligencia.trim().equalsIgnoreCase(asistenciaBBDD.getNumeroDiligencia().trim())));
-		if(isAsistenciaModificada) return true;
 		
-		String numProcedimiento = asistencia.getNumeroProcedimiento()==null ? "" : asistencia.getNumeroProcedimiento();
-		isAsistenciaModificada = !((numProcedimiento==null && asistenciaBBDD.getNumeroProcedimiento()==null)
-				|| (numProcedimiento!=null && asistenciaBBDD.getNumeroProcedimiento()!=null && numProcedimiento.trim().equalsIgnoreCase(asistenciaBBDD.getNumeroProcedimiento().trim())));
-		if(isAsistenciaModificada) return true;
+		
 
 		isAsistenciaModificada = !((asistencia.getIdPersonaJG()==null && asistenciaBBDD.getIdPersonaJG()==null)
 				|| (asistencia.getIdPersonaJG()!=null && asistenciaBBDD.getIdPersonaJG()!=null && asistencia.getIdPersonaJG().toString().trim().equalsIgnoreCase(asistenciaBBDD.getIdPersonaJG().toString().trim())));
@@ -1953,17 +1959,17 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 	private void updateAsistenciaVolanteExpress(ScsAsistenciasBean asistencia) throws ClsExceptions 
 	{
 		String claves [] ={ScsAsistenciasBean.C_ANIO,ScsAsistenciasBean.C_NUMERO, ScsAsistenciasBean.C_IDINSTITUCION};
-		String campos [] = new String[7];
+		String campos [] = new String[6];
 		campos[0] = ScsAsistenciasBean.C_FECHAHORA;
 		campos[1] =  ScsAsistenciasBean.C_JUZGADO;
 		campos[2] =  ScsAsistenciasBean.C_JUZGADO_IDINSTITUCION;
 		campos[3] =  ScsAsistenciasBean.C_NUMEROPROCEDIMIENTO;
-		campos[4] =  ScsAsistenciasBean.C_NUMERODILIGENCIA;
-		campos[5] =  ScsAsistenciasBean.C_DELITOSIMPUTADOS;
-		campos[6] =  ScsAsistenciasBean.C_IDPERSONAJG;
+		campos[4] =  ScsAsistenciasBean.C_DELITOSIMPUTADOS;
+		campos[5] =  ScsAsistenciasBean.C_IDPERSONAJG;
 		if(asistencia.getComisaria()!=null){
 			campos[1] =  ScsAsistenciasBean.C_COMISARIA;
 			campos[2] =  ScsAsistenciasBean.C_COMISARIA_IDINSTITUCION;
+			campos[3] =  ScsAsistenciasBean.C_NUMERODILIGENCIA;
 		}
 			
 		this.updateDirect(asistencia,claves,campos);
@@ -1986,14 +1992,16 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 		if(isActuacionModificada) return true;
 		
 		
+		if(asistencia.getComisaria()!=null){
 		
-		isActuacionModificada = !((asistencia.getComisaria()==null && asistenciaBBDD.getComisaria()==null)
-				|| (asistencia.getComisaria()!=null && asistenciaBBDD.getComisaria()!=null && asistencia.getComisaria().toString().trim().equalsIgnoreCase(asistenciaBBDD.getComisaria().toString().trim())));
-		if(isActuacionModificada) return true;
-		
-		isActuacionModificada = !((asistencia.getJuzgado()==null && asistenciaBBDD.getJuzgado()==null)
-				|| (asistencia.getJuzgado()!=null && asistenciaBBDD.getJuzgado()!=null && asistencia.getJuzgado().toString().trim().equalsIgnoreCase(asistenciaBBDD.getJuzgado().toString().trim())));
-		if(isActuacionModificada) return true;
+			isActuacionModificada = !((asistencia.getComisaria()==null && asistenciaBBDD.getComisaria()==null)
+					|| (asistencia.getComisaria()!=null && asistenciaBBDD.getComisaria()!=null && asistencia.getComisaria().toString().trim().equalsIgnoreCase(asistenciaBBDD.getComisaria().toString().trim())));
+			if(isActuacionModificada) return true;
+		}else{
+			isActuacionModificada = !((asistencia.getJuzgado()==null && asistenciaBBDD.getJuzgado()==null)
+					|| (asistencia.getJuzgado()!=null && asistenciaBBDD.getJuzgado()!=null && asistencia.getJuzgado().toString().trim().equalsIgnoreCase(asistenciaBBDD.getJuzgado().toString().trim())));
+			if(isActuacionModificada) return true;
+		}
 		
 		String numDiligencia = asistencia.getNumeroDiligencia()==null ? "" : asistencia.getNumeroDiligencia();
 		isActuacionModificada = !((numDiligencia==null && asistenciaBBDD.getNumeroDiligencia()==null)

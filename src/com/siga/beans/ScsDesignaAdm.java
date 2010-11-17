@@ -1805,6 +1805,9 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				if(idJuzgado==null ||idJuzgado.trim().equalsIgnoreCase("")){
 				    idJuzgado="-33"; // forzamos que no encuentre datos, en lugar de dar error
 				}
+				
+			
+				
 								
 				 String Idpretension  = (String)registro.get("IDPRETENSION");
 				 ScsEJGAdm ejgdm = new ScsEJGAdm(this.usrbean);
@@ -2558,21 +2561,9 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		}		
 		
 	  }
-	
-
-	@Override
-	public boolean update(Hashtable hashDataNew, Hashtable hashDataOld)
-			throws ClsExceptions {
-		// TODO Auto-generated method stub
-		return super.update(hashDataNew, hashDataOld);
-	}
-
-	
-
 	  
 	  
-	  
-	  	public Vector getejgsdesigna(String idturno, String numero, String anio, String idinstitucion) throws ClsExceptions{
+	  public Vector getejgsdesigna(String idturno, String numero, String anio, String idinstitucion) throws ClsExceptions{
 		
 	  		Vector datos=new Vector();
 	       try {
@@ -2613,9 +2604,6 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		       return datos;      
 	
 	  	   }
-	  	
-	
-	  
 	  
 	  
 	

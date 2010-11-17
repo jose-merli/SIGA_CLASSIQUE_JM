@@ -1,11 +1,16 @@
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 
 /**
  * Implementa las operaciones sobre el bean de la tabla SCS_JUZGADOPROCEDIMIENTO
@@ -207,5 +212,59 @@ public class ScsJuzgadoProcedimientoAdm extends MasterBeanAdministrador {
 		}
 		return datos;
 	}	
+	public List<ScsProcedimientosBean> getModulos(Integer idJuzgado,Integer idInstitucion,boolean isCombo)throws ClsExceptions{
+
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT PROC.IDPROCEDIMIENTO, "); 
+		sql.append(" PROC.NOMBRE FROM SCS_JUZGADOPROCEDIMIENTO P,  ");
+		sql.append(" SCS_PROCEDIMIENTOS PROC WHERE P.IDJUZGADO=:");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),idJuzgado); 
+		sql.append(" AND P.IDINSTITUCION_JUZG=:");
+		contador ++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador),idInstitucion);
+		sql.append(" AND PROC.IDINSTITUCION = P.IDINSTITUCION "); 
+		sql.append(" AND PROC.IDPROCEDIMIENTO = P.IDPROCEDIMIENTO AND NVL(PROC.VIGENTE,'0')='1'  ");
+		sql.append(" ORDER BY PROC.NOMBRE ");
+
+			
+			
+		
+		List<ScsProcedimientosBean> moduloList = null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+												
+            if (rc.findBind(sql.toString(),htCodigos)) {
+            	moduloList = new ArrayList<ScsProcedimientosBean>();
+            	ScsProcedimientosBean moduloBean = null;
+            	if(isCombo){
+	            	if(rc.size()>1){
+	            		moduloBean = new ScsProcedimientosBean();
+	            		moduloBean.setIdProcedimiento(new Integer(-1));
+	            		moduloBean.setNombre(UtilidadesString.getMensajeIdioma(this.usrbean, "general.combo.seleccionar"));
+	            		moduloList.add(moduloBean);
+	            	}
+            	}
+            	for (int i = 0; i < rc.size(); i++){
+            		Row fila = (Row) rc.get(i);
+            		Hashtable<String, Object> htFila=fila.getRow();
+            		moduloBean = new ScsProcedimientosBean();
+            		moduloBean.setIdProcedimiento(UtilidadesHash.getInteger(htFila,ScsProcedimientosBean.C_IDPROCEDIMIENTO));
+            		moduloBean.setIdInstitucion(UtilidadesHash.getInteger(htFila,ScsProcedimientosBean.C_IDINSTITUCION));
+            		moduloBean.setNombre(UtilidadesHash.getString(htFila,ScsProcedimientosBean.C_NOMBRE));
+            		moduloList.add(moduloBean);
+            	}
+            } 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+       }
+       return moduloList;
+		
+		
+	} 
 	
 }

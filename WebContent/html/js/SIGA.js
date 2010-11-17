@@ -1199,6 +1199,7 @@ function ocultarDIV(ident){
 	//ajusteAlto();
 	ajusteAlto('resultado');
 	ajusteAlto('mainWorkarea');
+	
 	return true;
 }
 function getFechaActualDDMMYYYY(){

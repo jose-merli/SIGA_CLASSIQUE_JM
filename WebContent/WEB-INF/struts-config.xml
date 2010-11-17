@@ -1822,6 +1822,7 @@
 			<forward name="inicio" path="/html/jsp/gratuita/editarDesigna.jsp"/>
 			<forward name="edicion" path="/html/jsp/gratuita/pestanasDesignas.jsp"/>
 			<forward name="PreguntaDesignaDuplicada" path="/html/jsp/gratuita/preguntaDesignaDuplicada.jsp"/>
+			<forward name="actualizarDesigna" path="/html/jsp/gratuita/actualizarDesigna.jsp"/>
 
 		</action>
 
@@ -1912,11 +1913,21 @@
 			<forward name="edicion" path="/html/jsp/gratuita/pestanasActuacionesDesignas.jsp"/> 
 		</action> 
 		-->
-		<action path="/JGR_PestanaDesignas" type="com.siga.gratuita.action.InformeJustificacionMasivaLetradoAction" name="InformeJustificacionMasivaForm">
-			<forward name="inicio" path="/html/jsp/gratuita/informeJustificacionMasivaLetrado.jsp"/>
-			<forward name="resultado" path="/html/jsp/gratuita/informeJustificacionMasivaLetradoResultados.jsp" />
-			<forward name="buscarInit" path="/html/jsp/gratuita/informeJustificacionMasivaLetradoResultados.jsp" />
+		<action path="/JGR_PestanaDesignas" type="com.siga.gratuita.action.InformeJustificacionMasivaAction" name="InformeJustificacionMasivaForm">
+			<forward name="inicio" path="/html/jsp/gratuita/informeJustificacionMasiva.jsp"/>
+			<forward name="listadoPaginado" path="/html/jsp/gratuita/listadoPaginadoInformeJustificacion.jsp" />
 		</action>
+		
+		<action path="/JGR_InformeJustificacionMasiva" type="com.siga.gratuita.action.InformeJustificacionMasivaAction" name="InformeJustificacionMasivaForm">
+			<forward name="inicio" path="/html/jsp/gratuita/informeJustificacionMasiva.jsp"/>
+			<forward name="listadoPaginado" path="/html/jsp/gratuita/listadoPaginadoInformeJustificacion.jsp" />
+			
+		</action>
+		
+		<action path="/JGR_InformeJustificacion" type="com.siga.gratuita.action.InformeJustificacionMasivaAction"  name="InformeJustificacionMasivaForm">
+			<forward name="inicioInforme" path="/html/jsp/gratuita/informeJustificacion.jsp"/>
+		</action>
+		
 
 		<action path="/JGR_PestanaProximasDesignas" type="com.siga.gratuita.action.ProximasDesignasAction">
 			<forward name="listado" path="/html/jsp/gratuita/listarProximasDesignasTurno.jsp"/>
@@ -2121,7 +2132,7 @@
 			<forward name="consultaInscripcion" path="/html/jsp/gratuita/consultaInscripcion.jsp"/>
 			
 		</action>
-		
+
 		<action path="/JGR_ValidarTurnos" type="com.siga.gratuita.action.GestionInscripcionesTGAction" name="InscripcionTGForm" >
 			<forward name="inicio" path="/html/jsp/gratuita/gestionInscripcionesTG.jsp"/>
 			<forward name="listadoInscripcionTurnos" path="/html/jsp/gratuita/listadoInscripcionTurnos.jsp"/>
@@ -2144,6 +2155,7 @@
 			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>
 			
 		</action>
+		
 		<action path="/CEN_BajasTemporales" forward="/JGR_BajasTemporales.do?fichaColegial=true" >
 		</action>
 		<!-- ***** Justicia Gratuita / Definir Calendario de Guardias ***** -->
@@ -2187,14 +2199,7 @@
 
 		
 
-		<action path="/JGR_InformeJustificacionMasiva" type="com.siga.gratuita.action.InformeJustificacionMasivaAction" name="InformeJustificacionMasivaForm">
-			<forward name="inicio" path="/html/jsp/gratuita/informeJustificacionMasiva.jsp"/>
-			<forward name="resultado" path="/html/jsp/gratuita/informeJustificacionMasivaResultados.jsp" />
-			
-		</action>
-		<action path="/JGR_InformeJustificacion" type="com.siga.gratuita.action.InformeJustificacionAction" name="InformeJustificacionMasivaForm">
-			<forward name="inicio" path="/html/jsp/gratuita/informeJustificacion.jsp"/>
-		</action>
+		
 		
 		<action path="/DefinirGuardiasTurnosAction" type="com.siga.gratuita.action.DefinirGuardiasTurnosAction" name="DefinirGuardiasTurnosForm" scope="request">
 			<forward name="nuevo" path="/html/jsp/gratuita/definirGuardiaTurno.jsp"/>

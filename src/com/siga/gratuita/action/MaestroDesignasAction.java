@@ -1,5 +1,7 @@
 package com.siga.gratuita.action;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,8 +14,10 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.AjaxCollectionXmlBuilder;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.ScsAsistenciasAdm;
 import com.siga.beans.ScsAsistenciasBean;
@@ -25,6 +29,9 @@ import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsJuzgadoAdm;
 import com.siga.beans.ScsJuzgadoBean;
+import com.siga.beans.ScsJuzgadoProcedimientoAdm;
+import com.siga.beans.ScsProcedimientosAdm;
+import com.siga.beans.ScsProcedimientosBean;
 import com.siga.beans.ScsTipoDesignaColegioAdm;
 import com.siga.beans.ScsTipoDesignaColegioBean;
 import com.siga.beans.ScsTurnoAdm;
@@ -34,6 +41,7 @@ import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.BuscarDesignasForm;
 import com.siga.gratuita.form.MaestroDesignasForm;
+import com.siga.gratuita.form.VolantesExpressForm;
 import com.siga.ws.CajgConfiguracion;
 
 
@@ -55,6 +63,16 @@ public class MaestroDesignasAction extends MasterAction {
 		try{
 			if((miForm == null)||(miForm.getModo()==null)||(miForm.getModo().equals(""))){
 				return mapping.findForward(this.abrir(mapping, miForm, request, response));
+			}else if ( miForm.getModo().equalsIgnoreCase("actualizarDesigna")){
+				return mapping.findForward(actualizarDesigna(mapping, miForm, request, response));
+				
+			}else if ( miForm.getModo().equalsIgnoreCase("actualizaDesigna")){
+				return mapping.findForward(actualizaDesigna(mapping, miForm, request, response));
+				
+			}else if ( miForm.getModo().equalsIgnoreCase("getAjaxModulos")){
+				getAjaxModulos(mapping, miForm, request, response);
+				return null;
+				
 			} else 
 				return super.executeInternal(mapping, formulario, request, response);
 		} catch (SIGAException e) {
@@ -100,12 +118,22 @@ public class MaestroDesignasAction extends MasterAction {
 			admDesigna = new ScsDesignaAdm(this.getUserBean(request));
 
 			//Recogemos de la pestanha la designa insertada o la que se quiere consultar
-			//y los metemos en un hashtable para el jsp			
-			UtilidadesHash.set(resultado,ScsDesignaBean.C_ANIO, 				(String)request.getParameter("ANIO"));
-			UtilidadesHash.set(resultado,ScsDesignaBean.C_NUMERO, 				(String)request.getParameter("NUMERO"));
-			UtilidadesHash.set(resultado,ScsDesignaBean.C_IDINSTITUCION,		(String)usr.getLocation());
-			UtilidadesHash.set(resultado,ScsDesignaBean.C_IDTURNO,				(String)request.getParameter("IDTURNO"));
-				
+			//y los metemos en un hashtable para el jsp		
+			if(miform.getAnio()!=null && !miform.getAnio().equals("")&&
+					miform.getIdTurno()!=null && !miform.getIdTurno().equals("")&&
+					miform.getNumero()!=null && !miform.getNumero().equals("")){
+				UtilidadesHash.set(resultado,ScsDesignaBean.C_ANIO, 				miform.getAnio());
+				UtilidadesHash.set(resultado,ScsDesignaBean.C_NUMERO, 				miform.getNumero());
+				UtilidadesHash.set(resultado,ScsDesignaBean.C_IDINSTITUCION,		(String)usr.getLocation());
+				UtilidadesHash.set(resultado,ScsDesignaBean.C_IDTURNO,				miform.getIdTurno());
+					
+			}else{
+			
+				UtilidadesHash.set(resultado,ScsDesignaBean.C_ANIO, 				(String)request.getParameter("ANIO"));
+				UtilidadesHash.set(resultado,ScsDesignaBean.C_NUMERO, 				(String)request.getParameter("NUMERO"));
+				UtilidadesHash.set(resultado,ScsDesignaBean.C_IDINSTITUCION,		(String)usr.getLocation());
+				UtilidadesHash.set(resultado,ScsDesignaBean.C_IDTURNO,				(String)request.getParameter("IDTURNO"));
+			}
 			
 			// jbd 01/02/2010 Pasamos el valor del pcajg del colegio
 			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
@@ -565,6 +593,7 @@ public class MaestroDesignasAction extends MasterAction {
 	 * @return  String  Destino del action  
 	 * @exception  ClsExceptions,SIGAException   En cualquier caso de error
 	 */
+	
 	protected String borrar(ActionMapping mapping, MasterForm formulario,
 							HttpServletRequest request, HttpServletResponse response)
 							throws ClsExceptions,SIGAException  {
@@ -666,4 +695,106 @@ public class MaestroDesignasAction extends MasterAction {
 		}
 		return false;
 	}
+	protected String actualizarDesigna(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException
+	{
+		HttpSession ses = request.getSession();
+		UsrBean usr = this.getUserBean(request);
+		String forward="actualizarDesigna";
+		MaestroDesignasForm miform = (MaestroDesignasForm)formulario;
+		ScsDesignaAdm admDesigna  = new ScsDesignaAdm(usr);
+		ScsTurnoAdm admTurno = new ScsTurnoAdm(usr);
+		
+		Hashtable filtro = new Hashtable();
+		UtilidadesHash.set(filtro,ScsDesignaBean.C_ANIO, 				miform.getAnio());
+		UtilidadesHash.set(filtro,ScsDesignaBean.C_NUMERO, 				miform.getNumero());
+		UtilidadesHash.set(filtro,ScsDesignaBean.C_IDINSTITUCION,		(String)usr.getLocation());
+		UtilidadesHash.set(filtro,ScsDesignaBean.C_IDTURNO,				miform.getIdTurno());
+		
+		
+		Vector vDesignas = admDesigna.select(filtro);
+		
+		Hashtable letradoHashtable = admDesigna.obtenerLetradoDesigna((String)usr.getLocation(), miform.getIdTurno(), miform.getAnio(), miform.getNumero());
+		miform.setLetrado(UtilidadesHash.getString(letradoHashtable, "NCOLEGIADO")+" "+UtilidadesHash.getString(letradoHashtable, "NOMBRE"));
+		Hashtable pkTurnoHashtable = new Hashtable();
+		pkTurnoHashtable.put(ScsTurnoBean.C_IDTURNO, miform.getIdTurno());
+		pkTurnoHashtable.put(ScsTurnoBean.C_IDINSTITUCION, (String)usr.getLocation());
+		Vector turnoVector = admTurno.selectByPK(pkTurnoHashtable);
+		ScsTurnoBean turnoBean = (ScsTurnoBean) turnoVector.get(0) ;
+		miform.setTurno(turnoBean.getDescripcion());
+		ScsDesignaBean beanDesigna = (ScsDesignaBean)vDesignas.get(0);
+		
+		
+		List<ScsJuzgadoBean> alJuzgados = null;
+		ScsJuzgadoAdm admJuzgados = new ScsJuzgadoAdm(usr);
+		alJuzgados = admJuzgados.getJuzgados((String)usr.getLocation(),miform.getIdTurno(),usr);
+		if(alJuzgados==null){
+			alJuzgados = new ArrayList<ScsJuzgadoBean>();
+		
+		}
+		miform.setJuzgados(alJuzgados);
+		miform.setModulos(new ArrayList<ScsProcedimientosBean>());
+		
+		miform.setFormulario(beanDesigna);
+
+		return "actualizarDesigna";
+	}
+	protected String actualizaDesigna(ActionMapping mapping, MasterForm formulario,
+			HttpServletRequest request, HttpServletResponse response)
+			throws ClsExceptions,SIGAException  {
+		
+		HttpSession ses = request.getSession();
+		UsrBean usr = (UsrBean)ses.getAttribute("USRBEAN");
+		MaestroDesignasForm miform = (MaestroDesignasForm)formulario;
+		
+		try {
+			ScsDesignaAdm designaAdm = new ScsDesignaAdm (this.getUserBean(request));
+			String clavesDesigna[] = { ScsDesignaBean.C_ANIO, ScsDesignaBean.C_NUMERO,
+					ScsDesignaBean.C_IDINSTITUCION, ScsDesignaBean.C_IDTURNO };
+			String camposDesigna[]={ScsDesignaBean.C_IDINSTITUCIONJUZGADO,ScsDesignaBean.C_IDJUZGADO,ScsDesignaBean.C_IDPROCEDIMIENTO};
+			Hashtable<String, String> htDesigna = new Hashtable<String, String>();
+			htDesigna.put(ScsDesignaBean.C_IDINSTITUCION,usr.getLocation());
+			htDesigna.put(ScsDesignaBean.C_ANIO,miform.getAnio());
+			htDesigna.put(ScsDesignaBean.C_IDTURNO,miform.getIdTurno());
+			htDesigna.put(ScsDesignaBean.C_NUMERO,miform.getNumero());
+			if(miform.getIdProcedimiento()!=null && !miform.getIdProcedimiento().equals("")&& !miform.getIdProcedimiento().equals("-1"))
+				htDesigna.put(ScsDesignaBean.C_IDPROCEDIMIENTO,miform.getIdProcedimiento());
+			if(miform.getIdJuzgado()!=null && !miform.getIdJuzgado().equals("")&& !miform.getIdJuzgado().equals("-1")){
+				htDesigna.put(ScsDesignaBean.C_IDJUZGADO, miform.getIdJuzgado());
+				htDesigna.put(ScsDesignaBean.C_IDINSTITUCIONJUZGADO, usr.getLocation());
+			}
+			designaAdm.updateDirect(htDesigna, clavesDesigna, camposDesigna);
+
+		}catch(Exception e){
+			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, null); 
+		}
+		return exitoModal("messages.updated.success",request);
+	}
+	
+	protected void getAjaxModulos (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception
+			{
+		MaestroDesignasForm miForm = (MaestroDesignasForm) formulario;
+		UsrBean usr = this.getUserBean(request);
+		//Recogemos el parametro enviado por ajax
+		String idJuzgado = request.getParameter("idJuzgado");
+		miForm.setIdJuzgado(idJuzgado);
+		
+		//Sacamos las guardias si hay algo selccionado en el turno
+		List<ScsProcedimientosBean> modulosList = null;
+		if(idJuzgado!= null && !idJuzgado.equals("-1")&& !idJuzgado.equals("")){
+			ScsJuzgadoProcedimientoAdm admModulos = new ScsJuzgadoProcedimientoAdm(usr);
+			modulosList = admModulos.getModulos(new Integer(idJuzgado),new Integer(usr.getLocation()),true);
+		}
+		if(modulosList==null){
+			modulosList = new ArrayList<ScsProcedimientosBean>();
+			
+		}
+		miForm.setModulos(modulosList);
+		respuestaAjax(new AjaxCollectionXmlBuilder<ScsProcedimientosBean>(), modulosList,response);
+		
+	}
+	
 }

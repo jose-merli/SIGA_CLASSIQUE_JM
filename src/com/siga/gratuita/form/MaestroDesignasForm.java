@@ -1,6 +1,12 @@
 package com.siga.gratuita.form;
 
+import java.util.List;
+
+import com.atos.utils.GstDate;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.beans.ScsDesignaBean;
+import com.siga.beans.ScsJuzgadoBean;
+import com.siga.beans.ScsProcedimientosBean;
 import com.siga.general.MasterForm;
 
 /**
@@ -33,9 +39,20 @@ public class MaestroDesignasForm extends MasterForm {
 	private String FECHARECEPCIONCOLEGIO = 	"FECHARECEPCIONCOLEGIO";
 	private String FECHAOFICIOJUZGADO 	= 	"FECHAOFICIOJUZGADO";	
 	
+	private String letrado;
+	private List<ScsJuzgadoBean> juzgados;  
+	private String idJuzgado;
+	private List<ScsProcedimientosBean> modulos;
 	
 	
+	private String procedimiento;
 	
+	public String getLetrado() {
+		return letrado;
+	}
+	public void setLetrado(String letrado) {
+		this.letrado = letrado;
+	}
 	/**
 	 * @return Returns the procedimiento.
 	 */
@@ -432,6 +449,40 @@ public class MaestroDesignasForm extends MasterForm {
 	}
 	public void setFechaOficioJuzgado(String fechaOficioJuzgado) {
 		UtilidadesHash.set(this.datos, this.FECHAOFICIOJUZGADO, fechaOficioJuzgado);
+	}
+	public void setFormulario(ScsDesignaBean beanDesigna){
+		setCodigo(beanDesigna.getAnio()+"/"+beanDesigna.getCodigo());
+		try {
+			setFecha(GstDate.getFormatedDateShort("",beanDesigna.getFechaEntrada()));	
+		} catch (Exception e) {}
+		
+		setProcedimiento(beanDesigna.getProcedimiento());
+		if(beanDesigna.getIdJuzgado()!=null)
+			setIdJuzgado(beanDesigna.getIdJuzgado().toString());
+	}
+	public List<ScsJuzgadoBean> getJuzgados() {
+		return juzgados;
+	}
+	public void setJuzgados(List<ScsJuzgadoBean> juzgados) {
+		this.juzgados = juzgados;
+	}
+	public String getIdJuzgado() {
+		return idJuzgado;
+	}
+	public void setIdJuzgado(String idJuzgado) {
+		this.idJuzgado = idJuzgado;
+	}
+	public List<ScsProcedimientosBean> getModulos() {
+		return modulos;
+	}
+	public void setModulos(List<ScsProcedimientosBean> modulos) {
+		this.modulos = modulos;
+	}
+	public String getProcedimiento() {
+		return procedimiento;
+	}
+	public void setProcedimiento(String procedimiento) {
+		this.procedimiento = procedimiento;
 	}
 	
 	

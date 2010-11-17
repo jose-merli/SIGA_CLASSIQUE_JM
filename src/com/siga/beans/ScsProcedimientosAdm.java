@@ -3,7 +3,8 @@
 
 package com.siga.beans;
 
-import java.util.*;
+import java.util.Hashtable;
+import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
@@ -180,6 +181,7 @@ public class ScsProcedimientosAdm extends MasterBeanAdministrador {
 		}
 		return salida;
 	}
+	
 
 
 }
