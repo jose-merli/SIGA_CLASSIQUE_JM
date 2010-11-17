@@ -95,7 +95,8 @@ function accionEditarDesigna(anio,idTurno,numero,idInstitucion)
 
 
 function accionGuardar () 
-{
+{	
+	sub();
 	var checksAcreditacion = document.getElementsByName("checkAcreditacion");
 	var datosJustificacion = "";
 	for (i=0;i<checksAcreditacion.length;i++) {
@@ -207,6 +208,7 @@ function accionGuardar ()
 		if(document.InformeJustificacionMasivaForm.fichaColegial.value=='true'){
 		
 			if (!confirm('<siga:Idioma key="gratuita.informeJustificacionMasiva.confirmar.responsabilidadColegiado"/>')){
+				fin();
 				return false;
 			}
 		
@@ -215,6 +217,10 @@ function accionGuardar ()
 		document.InformeJustificacionMasivaForm.datosBaja.value = datosBaja;
 		document.InformeJustificacionMasivaForm.datosJustificacion.value = datosJustificacion;
 		document.InformeJustificacionMasivaForm.submit();
+	}else{
+		alert('<siga:Idioma key="general.message.seleccionar"/>');
+		fin();
+		return;
 	}
 }
 function onCheckValidacion(elementoPulsado){
@@ -582,8 +588,8 @@ function inicio(){
 			<td align='center' width=4%">N.Act</td>
 			<td align='center' width="15%">Acreditaciones</td>
 			<td align='center' width="3%">V</td>
-			<td align='center' width="3%"></td>
-			<td align='center' width="3%"></td>
+			<td align='center' width="3%">&nbsp;</td>
+			<td align='center' width="3%">&nbsp;</td>
 			<td align='center' width="4%">Baja</td>
 			
 	</tr>
@@ -599,7 +605,7 @@ function inicio(){
 			<td width="8%"></td>
 			<td width="15%"></td>
 			<td width="4%"></td>
-			<td width=4%"></td>
+			<td width="4%"></td>
 			<td width="15%"></td>
 			<td width="3%"></td>
 			<td width="3%"></td>
@@ -612,7 +618,15 @@ function inicio(){
 <bean:define id="paginaSeleccionada" name="paginaSeleccionada" scope="request"></bean:define>
 <bean:define id="totalRegistros" name="totalRegistros" scope="request"></bean:define>
 <bean:define id="registrosPorPagina" name="registrosPorPagina" scope="request"></bean:define>
-
+<c:choose>
+   <c:when test="${empty designaFormList}">
+		<br>
+	   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
+	 		<br>
+   </c:when>
+   <c:otherwise>
+     
+   
 	<c:forEach items="${designaFormList}" var="designa" varStatus="status">                 
 		<input type="hidden" id="anio_${status.count}" value="${designa.anio}">  
 		<input type="hidden" id="numero_${status.count}" value="${designa.numero}">
@@ -1196,6 +1210,8 @@ function inicio(){
 		
 		
 </c:forEach>
+</c:otherwise>
+ </c:choose>
 </table>
 	
 	
@@ -1218,7 +1234,7 @@ function inicio(){
 
 															
 	
-<c:if test="${permitirBotones==true}">
+<c:if test="${permitirBotones==true && not empty designaFormList}">
 <table class="botonesDetalle" align="center">
 <tr>
 <td  style="width:900px;">
