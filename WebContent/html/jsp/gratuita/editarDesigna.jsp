@@ -37,6 +37,7 @@
 	ses.removeAttribute("resultado");
 
 	String modo = (String) ses.getAttribute("Modo");
+	String modoAction=(String) ses.getAttribute("ModoAction");
 	String idInstitucionLocation = usr.getLocation();
 	String[] dato = { usr.getLocation() };
 	String[] datoJuzgado = new String[2];
@@ -44,6 +45,9 @@
 	String fechaApertura = "";
 	String fechaOficioJuzgado = "";
 	String fechaRecepcionColegio = "";
+	String modo1="";
+	
+	
 	
 	//Hastable letrado= new Hastable();
 	ScsDesignaAdm clase = new ScsDesignaAdm(usr);
@@ -90,6 +94,8 @@
 	String estilo = "box", readOnly="false", estiloCombo="boxCombo";
 	String idPretension = "",pretension="";
 
+	
+	 
 	try {
 
 		// Designa seleccionada:
@@ -97,7 +103,20 @@
 		asistenciaBean = (ScsAsistenciasBean) request.getAttribute("asistenciaBean");
 
 		tipo = (String) resultado.get("IDTIPODESIGNACOLEGIO");
+		
 		estado = (String) resultado.get("ESTADO");
+		
+		if (modo=="Ver"){
+			 modo1="ver";	
+			 modoAction="ver";
+		}
+
+	 	if ((modoAction.equals("editar"))&&(estado.equals("F"))){			
+			modo1="editar";
+			modo="ver";
+	     }
+	 
+		
 		if (resultado.get("FECHAFIN") != null && !((String) resultado.get("FECHAFIN")).equals(""))
 			fecha = GstDate.getFormatedDateShort("", (String) resultado.get("FECHAFIN"));
 		procurador = (String) resultado.get("PROCURADOR");
@@ -238,6 +257,14 @@
 		obligatorioProcedimiento = true;
 	}
 
+	if (modo1.equals("editar")){
+	 validarProcedimiento = false;
+	 obligatorioProcedimiento = false;
+	 obligatoriojuzgado=false;	
+	 obligatorioModulo=false;
+	 obligatorioTipoDesigna=false;
+	 
+	}
 	
 %>	
 
@@ -628,7 +655,7 @@ function accionCerrar() {
 							<siga:Idioma key="gratuita.editarDesigna.literal.estado" />
 						</td>
 						<td>
-						<% if (!modo.equalsIgnoreCase("ver")) { %> 
+						<% if (!modo1.equalsIgnoreCase("ver")) { %> 
 						<Select name="estado"
 							class="boxCombo">
 							<option value='V'
@@ -816,19 +843,27 @@ function accionCerrar() {
 					<tr>
 					<td class="labelText">
 						<siga:Idioma key="gratuita.editarDesigna.literal.fechaOficioJuzgado"/></td>
+					<%if (modo.equalsIgnoreCase("ver")){%>
+						<td class="labelTextValor"><%=UtilidadesString.mostrarDatoJSP(fechaOficioJuzgado)%></td>
+					<%}else{%>										
 					<td>
 						<siga:Fecha nombreCampo="fechaOficioJuzgado" valorInicial="<%=fechaOficioJuzgado%>"></siga:Fecha>
 						<a onClick="return showCalendarGeneral(fechaOficioJuzgado);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
 							<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>" border="0"></a>
 					</td>
+					<%} %>
 					<td class="labelText">
 						<siga:Idioma key="gratuita.editarDesigna.literal.fechaRecepcionColegio"/>
 					</td>
+					<%if (modo.equalsIgnoreCase("ver")){%>
+						<td class="labelTextValor"><%=UtilidadesString.mostrarDatoJSP(fechaRecepcionColegio)%></td>
+					<%}else{%>								
 					<td>
 						<siga:Fecha nombreCampo="fechaRecepcionColegio" valorInicial="<%=fechaRecepcionColegio%>"></siga:Fecha>
 						<a onClick="return showCalendarGeneral(fechaRecepcionColegio);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
 							<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>" border="0"></a>
 					</td>
+					<%}%>
 					</tr>
 					<tr>
 						<td class="labelText"><siga:Idioma
@@ -912,7 +947,7 @@ function accionCerrar() {
 </html:form>
 <!-- SI NO EXISTE FECHA DE ANULACIÓN MOSTRAMOS EL BOTÓN ANULARPOR SI DESEA ANULAR LA DESIGNA //-->
 <siga:ConjBotonesAccion botones="G,R,V" clase="botonesDetalle"
-	modo="<%=modo%>" />
+	modo="<%=modo1%>" />
 
 
 <iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp"
