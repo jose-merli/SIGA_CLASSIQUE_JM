@@ -72,8 +72,8 @@
 		   	      nombre="tablaDatos"
 		   		  borde="1"
 		   		  clase="tableTitle"
-		   		  nombreCol="consultas.recuperarconsulta.literal.descripcion,
-		   		  consultas.recuperarconsulta.literal.modulo,"
+		   		  nombreCol="consultas.recuperarconsulta.literal.modulo,
+		   		  consultas.recuperarconsulta.literal.descripcion,"
 		   		  tamanoCol="15,72,13"
 		   		  alto="100%" 
 		   		  activarFilaSel="true" >
