@@ -213,7 +213,7 @@ function accionGuardar ()
 			}
 		
 		}
-	
+		document.InformeJustificacionMasivaForm.modo.value="justificar";
 		document.InformeJustificacionMasivaForm.datosBaja.value = datosBaja;
 		document.InformeJustificacionMasivaForm.datosJustificacion.value = datosJustificacion;
 		document.InformeJustificacionMasivaForm.submit();
@@ -523,7 +523,7 @@ function inicio(){
 </script>
 </head>
 
-<body onload="inicio();ajustarCabeceraTabla();">
+<body onload="inicio();ajustarCabeceraTabla();ajusteAlto('listadoInformeJustificacionDiv');">
 
 
 
@@ -577,25 +577,24 @@ function inicio(){
 
 <table id='listadoInformeJustificacionCab' border='1' width='100%' cellspacing='0' cellpadding='0'>
 	<tr class = 'tableTitle'>
-			<td align='center' width="8%">Designa</td>
-			<td align='center' width="8%">EJG</td>
-			
-			<td align='center' width="12%">Juzgado</td>
-			<td align='center' width="8%">F. Salida</td>
-			<td align='center' width="8%">Asunto</td>
-			<td align='center' width="15%">Cliente</td>
-			<td align='center' width="4%">Cat</td>
-			<td align='center' width=4%">N.Act</td>
-			<td align='center' width="15%">Acreditaciones</td>
-			<td align='center' width="3%">V</td>
-			<td align='center' width="3%">&nbsp;</td>
-			<td align='center' width="3%">&nbsp;</td>
-			<td align='center' width="4%">Baja</td>
+            <td align='center' width="8%"><siga:Idioma key="gratuita.informeJustificacionMasiva.literal.designa"/></td>
+            <td align='center' width="8%"><siga:Idioma key="gratuita.informeJustificacionMasiva.literal.ejg"/></td>
+            <td align='center' width="12%"><siga:Idioma key="gratuita.informeJustificacionMasiva.literal.juzgado"/></td>
+            <td align='center' width="8%"><siga:Idioma key="gratuita.informeJustificacionMasiva.literal.fechaSalida"/></td>
+            <td align='center' width="8%"><siga:Idioma key="gratuita.informeJustificacionMasiva.literal.asunto"/></td>
+            <td align='center' width="15%"><siga:Idioma key="gratuita.informeJustificacionMasiva.literal.cliente"/></td>
+            <td align='center' width="4%"><siga:Idioma key="gratuita.informeJustificacionMasiva.literal.categoria"/></td>
+            <td align='center' width=4%"><siga:Idioma key="gratuita.informeJustificacionMasiva.literal.numeroActuacion"/></td>
+            <td align='center' width="15%"><siga:Idioma key="gratuita.informeJustificacionMasiva.literal.acreditaciones"/></td>
+            <td align='center' width="3%">V</td>
+            <td align='center' width="3%">&nbsp;</td>
+            <td align='center' width="3%">&nbsp;</td>
+            <td align='center' width="4%"><siga:Idioma key="gratuita.informeJustificacionMasiva.literal.baja"/></td>
 			
 	</tr>
 </table>
 <!-- 2. Pintamos el contenido de la tabla -->
-<div id='listadoInformeJustificacionDiv' style='height:400;position:absolute; width:100%; overflow-y:auto'>
+<div id='listadoInformeJustificacionDiv' style='height:400;width:100%; overflow-y:auto'>
 <table id='listadoInformeJustificacion' border='1' align='center' width='100%' cellspacing='0' cellpadding='0' style='table-layout:fixed'>
 	<tr>
 			<td width="8%"></td>
@@ -1217,7 +1216,7 @@ function inicio(){
 	
 		
 </div>
-<div >
+<div style='height:70px;'>
 	  
 	  						
 <siga:Paginador totalRegistros="${totalRegistros}" 
@@ -1275,9 +1274,6 @@ function inicio(){
 				src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"
 				style="display: none"></iframe>		
 <!-- FIN: SUBMIT AREA -->
-<script>
-setAltoResultado();
-</script>
 </body>
 	
 </html>

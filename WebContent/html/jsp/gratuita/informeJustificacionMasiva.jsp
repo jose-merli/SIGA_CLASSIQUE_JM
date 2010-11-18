@@ -33,7 +33,7 @@
 	
 </head>
 
-<body onLoad="ajusteAlto('resultado');inicio();">
+<body onLoad="inicio();ajusteAlto('resultado');ajusteAlto('mainWorkArea');">
 <bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
 	<html:form action = "${path}" method="POST" target="resultado">
 
@@ -291,18 +291,18 @@
 	</html:form>
 	
 
+
 	<iframe align="center" src="<html:rewrite page="/html/jsp/general/blank.jsp"/>"
 					id="resultado"
 					name="resultado" 
 					scrolling="no"
 					frameborder="0"
 					marginheight="0"
-					marginwidth="0";					 
+					marginwidth="0";	
 					class="frameGeneral">
 	</iframe>
 	
-<iframe name="submitArea" src="<html:rewrite page="/html/jsp/general/blank.jsp"/>" style="display:none"></iframe>	
-	
+	<iframe name="submitArea" src="<html:rewrite page="/html/jsp/general/blank.jsp"/>" style="display:none"></iframe>	
 	
 	
 		<script language="JavaScript">
@@ -326,12 +326,7 @@ function inicio ()
 	
 	
 	
-	if(document.InformeJustificacionMasivaForm.idPersona.value!=''){
-		var date = new Date();
-        
-        iYear = date.getFullYear(); 
-		document.InformeJustificacionMasivaForm.anio.value = iYear;
-		//String anio = UtilidadesBDAdm.getYearBD("");
+	if(document.InformeJustificacionMasivaForm.fichaColegial.value=='true'){
 		buscar();
 	}
 	
@@ -344,12 +339,12 @@ function onClickMostrarJustificacionesPendientes ()
 		document.getElementById("oculto").style.display = "none";
 	}else if(document.InformeJustificacionMasivaForm.fichaColegial.value=='false'){
 		document.getElementById("oculto").style.display = "block";
-	
 	}else{
 		document.getElementById("oculto").style.display = "none";
+		
 	}
-	// buscar();
-	
+	ajusteAlto('mainWorkArea');
+	ajusteAlto('resultado');
 }
 function buscar ()
 {
