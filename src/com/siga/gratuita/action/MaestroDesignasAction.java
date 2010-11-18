@@ -99,7 +99,7 @@ public class MaestroDesignasAction extends MasterAction {
 			HttpServletResponse response) throws ClsExceptions, SIGAException
 	{
 		HttpSession ses = request.getSession();
-		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");		
 		String forward="inicio";
 		String consultaTipoDesigna=null, consultaTurno=null, nombreTurno="", nombreTipoDesigna = "", nombreTurnoAsistencia="", nombreGuardiaAsistencia="", consultaTurnoAsistencia="", consultaGuardiaAsistencia="";
 		ScsTipoDesignaColegioAdm tipodesigna = null;
@@ -188,10 +188,10 @@ public class MaestroDesignasAction extends MasterAction {
 				nombreTurnoAsistencia = ((ScsTurnoBean)((Vector)turno.select(consultaTurnoAsistencia)).get(0)).getNombre();
 				nombreGuardiaAsistencia = ((ScsGuardiasTurnoBean)((Vector)guardia.select(consultaGuardiaAsistencia)).get(0)).getNombre();
 				request.setAttribute("nombreTurnoAsistencia",nombreTurnoAsistencia);
-				request.setAttribute("nombreGuardiaAsistencia",nombreGuardiaAsistencia);
-				
+				request.setAttribute("nombreGuardiaAsistencia",nombreGuardiaAsistencia);				
 			}
-		} 
+			ses.setAttribute("ModoAction","editar");
+		}		
 		catch (Exception e2){
 		    throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e2, null); 
 		}
@@ -254,6 +254,7 @@ public class MaestroDesignasAction extends MasterAction {
 			Vector visibles = (Vector)miform.getDatosTablaVisibles(0);
 			Vector ocultos = (Vector)miform.getDatosTablaOcultos(0);
 			String idturno ="", anio="",numero="";
+			String estado= "";			
 			String desdeEjg=(String)request.getParameter("desdeEjg");
 			String desdeEJG=(String)request.getParameter("desdeEJG");
 			if ((desdeEjg!=null && desdeEjg.equalsIgnoreCase("si"))||(desdeEJG!=null && desdeEJG.equalsIgnoreCase("si"))){
@@ -265,7 +266,9 @@ public class MaestroDesignasAction extends MasterAction {
 				idturno = (String) miform.getIdTurno();
 				anio = (String)miform.getAnio();
 				numero = (String)miform.getNumero();
+				estado= miform.getEstado();
 			}
+			
 			
 			Hashtable elegido = new Hashtable();
 			elegido.put(ScsDesignaBean.C_IDINSTITUCION, usr.getLocation());
@@ -273,7 +276,21 @@ public class MaestroDesignasAction extends MasterAction {
 			elegido.put(ScsDesignaBean.C_ANIO, (hayDatos?anio:(String)ocultos.get(3)));
 			elegido.put(ScsDesignaBean.C_NUMERO, (hayDatos?numero:(String)ocultos.get(2)));
 			
-			ses.setAttribute("Modo","editar");		// para saber en que modo se mete desde la tabla
+			
+			if (hayDatos==true){				 
+				 estado = miform.getEstado();				 
+			}else {
+				estado= (String)visibles.get(5);
+			}			
+
+			String modoaction="";
+			 if (estado.equalsIgnoreCase("FINALIZADO")|| estado.equalsIgnoreCase("F")){				 
+				  ses.setAttribute("ModoAction","editar");
+				 ses.setAttribute("Modo","ver");
+			}else{					
+				ses.setAttribute("Modo","editar");	
+			}		 
+	  
 			request.setAttribute("idDesigna",elegido);
 		} 
 		catch (Exception e2){
@@ -330,6 +347,7 @@ public class MaestroDesignasAction extends MasterAction {
 	
 			HttpSession ses = (HttpSession)request.getSession();
 			ses.setAttribute("Modo","Ver");
+			ses.setAttribute("ModoAction","Ver");
 			request.setAttribute("idDesigna",elegido);
 		} 
 		catch (Exception e2){
@@ -424,6 +442,7 @@ public class MaestroDesignasAction extends MasterAction {
 		boolean ok=false;
 		UserTransaction tx = null;
 		String aux2 = "";
+		String Fechaoficiojuzgado="";
 
 		try {
 			tx = usr.getTransaction();
@@ -448,8 +467,11 @@ public class MaestroDesignasAction extends MasterAction {
 							if (aux2==null)
 								aux2 = "";
 						}catch(Exception e){aux2="";}
-						designaNueva.put(ScsDesignaBean.C_FECHAFIN,aux2);
-						designaNueva.put(ScsDesignaBean.C_IDTIPODESIGNACOLEGIO,(String)datosEntrada.get("TIPO"));
+						designaNueva.put(ScsDesignaBean.C_FECHAFIN,aux2);					
+						String tipo=(String)datosEntrada.get("TIPO");
+						if (tipo!=null){
+						 designaNueva.put(ScsDesignaBean.C_IDTIPODESIGNACOLEGIO,(String)datosEntrada.get("TIPO"));	
+						}
 						
 						String estado = (String)datosEntrada.get("ESTADO");//estado seleccionado
 						String estadoOriginal = miform.getEstadoOriginal();//estado original
@@ -492,7 +514,6 @@ public class MaestroDesignasAction extends MasterAction {
 							designaNueva.put(ScsDesignaBean.C_FECHAJUICIO,"");		
 						}
 						
-						//designaNueva.put(ScsDesignaBean.C_PROCURADOR,(String)datosEntrada.get("PROCURADOR"));
 						designaNueva.put(ScsDesignaBean.C_RESUMENASUNTO,(String)datosEntrada.get("ASUNTO"));
 						designaNueva.put(ScsDesignaBean.C_OBSERVACIONES,(String)datosEntrada.get("OBSERVACIONES"));
 						designaNueva.put(ScsDesignaBean.C_DELITOS,(String)datosEntrada.get("DELITOS"));
@@ -531,46 +552,77 @@ public class MaestroDesignasAction extends MasterAction {
 						    UtilidadesHash.set(designaNueva, ScsDesignaBean.C_NUMPROCEDIMIENTO, miform.getNumeroProcedimiento());
 						}else{
 							 UtilidadesHash.set(designaNueva, ScsDesignaBean.C_NUMPROCEDIMIENTO, "");
-						}
-						if (miform.getIdProcedimiento() != null) {
-							String procedimientoSel=miform.getIdProcedimiento();
-							String procedimiento[] = procedimientoSel.split(",");
-						    UtilidadesHash.set(designaNueva, ScsDesignaBean.C_IDPROCEDIMIENTO,procedimiento[0]);
-						}else{
-							 UtilidadesHash.set(designaNueva, ScsDesignaBean.C_IDPROCEDIMIENTO, "");
-						}
+						}	
 						
+						String procedimientoSel=(String)datosEntrada.get("IDPROCEDIMIENTO");
+						if (procedimientoSel!=null){
+							if(procedimientoSel.equals("")&& designaAntigua.getEstado().equals("F")){
+								if (!designaAntigua.getProcedimiento().equals("")){
+									designaNueva.put(ScsDesignaBean.C_IDPROCEDIMIENTO, designaAntigua.getProcedimiento());
+								}else{
+									designaNueva.put(ScsDesignaBean.C_IDPROCEDIMIENTO, "");
+								}
+							}else{
+								String procedimiento[] = procedimientoSel.split(",");
+								designaNueva.put(ScsDesignaBean.C_IDPROCEDIMIENTO, procedimiento[0]);
+							}							
+						}
 						// JBD 16/2/2009 INC-5739-SIGA
-						// Obtenemos el idPretension
-						if (miform.getIdPretension() != null) {
-							String pretensionSel=miform.getIdPretension();
-							String pretensiones[] = pretensionSel.split(",");
-						    UtilidadesHash.set(designaNueva, ScsDesignaBean.C_IDPRETENSION,pretensiones[0]);
-						}else{
-							 UtilidadesHash.set(designaNueva, ScsDesignaBean.C_IDPRETENSION, "");
+						// Obtenemos el idPretension						
+						String pretensionSel=(String)datosEntrada.get("IDPRETENSION");
+						if (pretensionSel!=null){
+							if(pretensionSel.equals("")&& designaAntigua.getEstado().equals("F")){							
+								if (designaAntigua.getIdPretension()!=null){
+									if (!designaAntigua.getIdPretension().equals("")){
+										designaNueva.put(ScsDesignaBean.C_IDPRETENSION, designaAntigua.getIdPretension());
+									}else{
+										designaNueva.put(ScsDesignaBean.C_IDPRETENSION, "");
+									}
+								}						
+							}else{
+								String pretenciaon[] = pretensionSel.split(",");
+								designaNueva.put(ScsDesignaBean.C_IDPRETENSION, pretenciaon[0]);
+							}							
 						}
-						// jbd 8/3/2010 inc-6876
-						if (miform.getFechaOficioJuzgado()!= null && !miform.getFechaOficioJuzgado().equalsIgnoreCase("")){
-							String fechaOficioJuzgado = GstDate.getApplicationFormatDate("",miform.getFechaOficioJuzgado());
-							designaNueva.put(ScsDesignaBean.C_FECHAOFICIOJUZGADO,fechaOficioJuzgado);		
-						}else{
-							designaNueva.put(ScsDesignaBean.C_FECHAOFICIOJUZGADO,"");
-						}
-						if (miform.getFechaRecepcionColegio()!= null && !miform.getFechaRecepcionColegio().equalsIgnoreCase("")){
-							String fechaRecepcionColegio = GstDate.getApplicationFormatDate("",miform.getFechaRecepcionColegio());
-							designaNueva.put(ScsDesignaBean.C_FECHARECEPCIONCOLEGIO,fechaRecepcionColegio);		
-						}else{
-							designaNueva.put(ScsDesignaBean.C_FECHARECEPCIONCOLEGIO,"");
-						}
-						tx.begin();
-
-						designaAdm.update(designaNueva,designaAntigua.getOriginalHash());
 						
+						// jbd 8/3/2010 inc-6876						
+						String fechaoficiojuzgado = (String)GstDate.getApplicationFormatDate(lengua,(String)datosEntrada.get("FECHAOFICIOJUZGADO"));
+						if (fechaoficiojuzgado!=null){
+							if(fechaoficiojuzgado.equals("")&& designaAntigua.getEstado().equals("F")){
+									if (!designaAntigua.getFechaOficioJuzgado().equals("")){
+										designaNueva.put(ScsDesignaBean.C_FECHAOFICIOJUZGADO,designaAntigua.getFechaOficioJuzgado());
+									}else{
+										designaNueva.put(ScsDesignaBean.C_FECHAOFICIOJUZGADO, "");
+									}
+							}else{
+								designaNueva.put(ScsDesignaBean.C_FECHAOFICIOJUZGADO,fechaoficiojuzgado);
+							}							
+						}else if (!designaAntigua.getEstado().equals("F")){
+							designaNueva.put(ScsDesignaBean.C_FECHAOFICIOJUZGADO, "");
+						}		
+						
+						String fechaRecepcionColegio = (String)GstDate.getApplicationFormatDate(lengua,(String)datosEntrada.get("FECHARECEPCIONCOLEGIO"));
+						if (fechaRecepcionColegio!=null){
+							if(fechaRecepcionColegio.equals("")&& designaAntigua.getEstado().equals("F")){
+									if (!designaAntigua.getFechaRecepcionColegio().equals("")){
+										designaNueva.put(ScsDesignaBean.C_FECHARECEPCIONCOLEGIO,designaAntigua.getFechaRecepcionColegio());
+									}else{
+										designaNueva.put(ScsDesignaBean.C_FECHARECEPCIONCOLEGIO, "");
+									}
+							}else{
+								designaNueva.put(ScsDesignaBean.C_FECHARECEPCIONCOLEGIO,fechaRecepcionColegio);
+							}
+							
+						}else if (!designaAntigua.getEstado().equals("F")){
+							designaNueva.put(ScsDesignaBean.C_FECHARECEPCIONCOLEGIO, "");
+						}		
+						
+						tx.begin();
+						designaAdm.update(designaNueva,designaAntigua.getOriginalHash());						
 						if (anular)
 							designaAdm.anularDesigna(mapping, formulario, request, response);
 						if (desAnular)
-							designaAdm.desAnularDesigna(mapping, formulario, request, response);
-						
+							designaAdm.desAnularDesigna(mapping, formulario, request, response);						
 						tx.commit();
 						
 						
