@@ -1,5 +1,6 @@
 package com.siga.gratuita.action;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
@@ -113,27 +114,31 @@ public class ProximasDesignasAction extends MasterAction {
 			
 			
 			List<ScsInscripcionTurnoBean> inscripcionTurnoList= admInsTurno.getInscripcionesTurno(inscripcionTurnoForm, false);
-			
-			for(ScsInscripcionTurnoBean insTurnoBean:inscripcionTurnoList){
-				
-				insTurnoBean.setTurno(turnoAdm.getTurnoInscripcion(insTurnoBean.getIdInstitucion(), insTurnoBean.getIdTurno()));
-				
-				List<LetradoGuardia> colaTurnoList = InscripcionTurno.getColaTurno(insTurnoBean.getIdInstitucion(), insTurnoBean.getIdTurno(), "sysdate", false, usr);
-				boolean foundIt = false;
-				int i=0;
-				while (!foundIt && i<colaTurnoList.size()) {
+			if(inscripcionTurnoList!=null ){
+				for(ScsInscripcionTurnoBean insTurnoBean:inscripcionTurnoList){
 					
-					LetradoGuardia letradoTurno = colaTurnoList.get(i);
+					insTurnoBean.setTurno(turnoAdm.getTurnoInscripcion(insTurnoBean.getIdInstitucion(), insTurnoBean.getIdTurno()));
 					
-					
-					if(letradoTurno.getIdPersona().toString().equals(idPersona)){
-						foundIt = true;
-						insTurnoBean.getTurno().setIdOrdenacionColas(i+1);
+					List<LetradoGuardia> colaTurnoList = InscripcionTurno.getColaTurno(insTurnoBean.getIdInstitucion(), insTurnoBean.getIdTurno(), "sysdate", false, usr);
+					boolean foundIt = false;
+					int i=0;
+					while (!foundIt && i<colaTurnoList.size()) {
 						
+						LetradoGuardia letradoTurno = colaTurnoList.get(i);
+						
+						
+						if(letradoTurno.getIdPersona().toString().equals(idPersona)){
+							foundIt = true;
+							insTurnoBean.getTurno().setIdOrdenacionColas(i+1);
+							
+						}
+						i++;
 					}
-					i++;
+										
 				}
-									
+			}else{
+				inscripcionTurnoList = new ArrayList<ScsInscripcionTurnoBean>();
+				
 			}
 			
 			request.setAttribute("resultado",inscripcionTurnoList);
