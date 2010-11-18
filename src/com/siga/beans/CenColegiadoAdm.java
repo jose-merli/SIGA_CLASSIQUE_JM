@@ -1371,4 +1371,28 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 	return vInforme;
 					
 	}
+	
+	/** 
+	 * Obtiene los datos colegiales de una persona dependiendo de la institucion
+	 * @param  idPersona - identificador de la persona
+	 * @param  idInstitucion - identificador de la institucion	
+	 * @return  CenColegiadoBean con los datos colegiales  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */		
+	public Vector getColegiaciones (String idPersona) throws ClsExceptions, SIGAException{
+		Vector colegiaciones = new Vector();
+		try {
+			Hashtable hash = new Hashtable();
+			UtilidadesHash.set(hash, CenColegiadoBean.C_IDPERSONA, idPersona);
+			Vector v = this.select(hash);
+			if ((v != null) && (v.size()>0)) {
+				for (int i = 0; i < v.size(); i++) {
+					colegiaciones.add(((CenColegiadoBean)v.get(i)).getIdInstitucion());
+				}
+			}
+		}catch (Exception e) {
+			throw new ClsExceptions (e, "Error al recuperar los datos");
+		}
+		return colegiaciones;
+	}
 }

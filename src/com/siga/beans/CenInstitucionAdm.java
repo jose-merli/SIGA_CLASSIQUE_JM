@@ -149,6 +149,34 @@ public class CenInstitucionAdm extends MasterBeanAdministrador {
 		}
 		return nombreInstitucion;
 	}
+	
+	/** 
+	 * Funcion que devuelve la abreviatura de la Institucion'
+	 * @param  String idInstitucion 
+	 * @return String nombreInstitucion
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */
+	public String getAbreviaturaInstitucion(String idInstitucion)
+			throws ClsExceptions,SIGAException {
+		
+		String abrevInstitucion="";
+		Hashtable hash = new Hashtable();
+		try{
+			hash.put(CenInstitucionBean.C_IDINSTITUCION,idInstitucion);
+			Vector vInstitucion = this.select(hash);
+			CenInstitucionBean instBean = (CenInstitucionBean)vInstitucion.elementAt(0);
+			abrevInstitucion=instBean.getAbreviatura();
+		}
+//		catch (SIGAException e) {
+//			throw e;
+//		}
+		catch(ClsExceptions e){
+			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D.");
+		}catch(Exception e){
+			throw new ClsExceptions (e,"Elemento nulo");
+		}
+		return abrevInstitucion;
+	}
 
 	
 	/** 

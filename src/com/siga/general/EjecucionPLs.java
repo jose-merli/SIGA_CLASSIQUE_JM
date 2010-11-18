@@ -987,5 +987,30 @@ public static String[] ejecutarF_SIGA_COMPROBAR_ANTICIPAR (
 	    return resultado;
 	} // ejecutarPL_RevocarCertificados()
 
+	
+	// PROC_SIGA_ACTESTADOABONO
+	public static String[] ejecutarPL_copiaColegiado(String idPersonaD, String idPersonaO, String idInstitucion) throws ClsExceptions{
+		Object[] param_in; //Parametros de entrada del PL
+		String resultado[] = null; //Parametros de salida del PL
+	
+		try {
+			resultado = new String[2];
+			param_in = new Object[3];
+			param_in[0] = idPersonaO;
+			param_in[1] = idPersonaD;
+			param_in[2] = idInstitucion;
+		        
+			//Ejecucion del PL
+		    resultado = ClsMngBBDD.callPLProcedure("{call PKG_FUSION_PERSONAS.Combo_IIIUD(?,?,?,?,?)}", 2, param_in);
+			
+		} catch (Exception e){
+			resultado[0] = "1"; //ERROR P_CODRETORNO
+	    	resultado[1] = "ERROR"; //ERROR P_DATOSERROR        	
+		}
+	    
+	    //Resultado del PL        
+	    return resultado;
+	}	
+	
 
 }

@@ -812,7 +812,11 @@
 			<forward name="mostrarDatosFactura" path="/html/jsp/facturacion/mostrarDatosFacturaCompensadora.jsp" />
 		</action>
 		
-		
+		<action path="/CEN_MantenimientoDuplicados" type="com.siga.censo.action.MantenimientoDuplicadosAction" name="MantenimientoDuplicadosForm" scope="request">
+			<forward name="inicio" path="/html/jsp/censo/busquedaDuplicados.jsp"/>
+			<forward name="resultado" path="/html/jsp/censo/resultadoBusquedaDuplicados.jsp"/>
+			<forward name="gestionar" path="/html/jsp/censo/gestionarDuplicado.jsp"/>
+		</action>
 		
 
 		<action path="/CEN_ProductosCliente" forward="/CEN_Facturacion.do?modo=abrirProductosPaginados" >
@@ -2132,7 +2136,7 @@
 			<forward name="consultaInscripcion" path="/html/jsp/gratuita/consultaInscripcion.jsp"/>
 			
 		</action>
-
+		
 		<action path="/JGR_ValidarTurnos" type="com.siga.gratuita.action.GestionInscripcionesTGAction" name="InscripcionTGForm" >
 			<forward name="inicio" path="/html/jsp/gratuita/gestionInscripcionesTG.jsp"/>
 			<forward name="listadoInscripcionTurnos" path="/html/jsp/gratuita/listadoInscripcionTurnos.jsp"/>
@@ -2155,7 +2159,6 @@
 			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>
 			
 		</action>
-		
 		<action path="/CEN_BajasTemporales" forward="/JGR_BajasTemporales.do?fichaColegial=true" >
 		</action>
 		<!-- ***** Justicia Gratuita / Definir Calendario de Guardias ***** -->

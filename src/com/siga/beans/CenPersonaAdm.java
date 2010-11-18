@@ -22,6 +22,7 @@ import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.censo.form.BusquedaClientesForm;
+import com.siga.censo.form.MantenimientoDuplicadosForm;
 import com.siga.general.SIGAException;
 
 /**
@@ -1189,6 +1190,7 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 	public Long getIdPersona(String nifCif) throws ClsExceptions, SIGAException {
 		Long idPersona = null;
 		String consulta = new String();
+
 		consulta = " SELECT IDPERSONA FROM CEN_PERSONA where " +
 				" ltrim(UPPER(" +CenPersonaBean.C_NIFCIF+"),'0')='"+UtilidadesString.LTrim(nifCif.toUpperCase(),"0")+"'";
 		RowsContainer rc = new RowsContainer(); 
@@ -1284,7 +1286,94 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 	}
 	
 	
+	/**
+	 * Obtiene clientes repetidos segun los criterios de entrada
+	 * 
+	 * @param idInstitucion 
+	 * @param formulario Formulario de busqueda de clientes con los datos de busqueda 
+	 * @return java.util.Vector Vector de tablas hash  
+	 */
+	public Vector getPersonasSimilares(MantenimientoDuplicadosForm formulario) throws ClsExceptions, SIGAException {
+
+		Vector salida = null;
+		String sqlClientes = "";
+	  	
+	  	// Acceso a BBDD
+		RowsContainer rcClientes = null;
+		try { 
+		    
+			String nombre = formulario.getNombre();
+			String apellido1 = formulario.getApellido1();
+			String apellido2 = formulario.getApellido2();
+			String nif = formulario.getNifcif();
+			
+			//Tabla cen_persona
+			String P_APELLIDOS1=CenPersonaBean.C_APELLIDOS1;
+			String P_APELLIDOS2=CenPersonaBean.C_APELLIDOS2;
+			String P_NOMBRE=CenPersonaBean.C_NOMBRE;
+			String P_NIF=CenPersonaBean.C_NIFCIF;
+			
+			StringBuffer sqlSelect = new StringBuffer();
+			sqlSelect.append("select "); 
+			sqlSelect.append("p1.idpersona idpersona1, p1.nombre nombre1, p1.apellidos1 apellido11, p1.apellidos2 apellido21, p1.nifcif nifcif1, c1.ncolegiado ncolegiado1, ");
+			sqlSelect.append("p2.idpersona idpersona2, p2.nombre nombre2, p2.apellidos1 apellido12, p2.apellidos2 apellido22, p2.nifcif nifcif2, c2.ncolegiado ncolegiado2 ");
+
+			StringBuffer sqlFrom = new StringBuffer();
+			sqlFrom.append(" from cen_persona p1, cen_persona p2, cen_colegiado c1, cen_colegiado c2 ");
+
+			StringBuffer sqlWhere = new StringBuffer();
+			sqlWhere.append(" where p1.idpersona < p2.idpersona "); 
+			
+			// Outerjoin con la tabla de colegiados (no solo buscamos duplicados de colegiados)
+	       	sqlWhere.append(" and c1.idpersona(+) = p1.idpersona ");
+	       	sqlWhere.append(" and c2.idpersona(+) = p2.idpersona ");
+	       	
+	       	// Colegiados del mismo colegio, con el mismo nColegiado, pero distinta persona
+	       	if(formulario.getChkNumColegiado()){
+		       	sqlWhere.append(" and c1.ncolegiado=c2.ncolegiado ");
+		       	sqlWhere.append(" and c1.idinstitucion=c2.idinstitucion ");
+	       	}
+	       	
+	       	String sql=sqlSelect.toString()+sqlFrom.toString()+sqlWhere.toString();
+	        
+			Vector similares=this.selectGenerico(sql);
+	       	
+			return similares;
+		} 
+//		catch (SIGAException e) { 
+//			throw e; 	
+//		}
+		catch (Exception e) { 	
+			throw new ClsExceptions(e,"Error obteniendo clientes "); 
+		}
+	}
 	
+	
+	/**
+	 * Devuelve una persona a partir de su idPersona  
+	 * @version 1	 
+	 * @param nifcif de la persona a buscar 
+	 */	
+	public CenPersonaBean getPersonaPorId (String idPersona) throws ClsExceptions, SIGAException{
+
+		
+		try {
+			CenPersonaBean perBean = null;
+			
+			Hashtable codigos = new Hashtable();
+			codigos.put(new Integer(1),idPersona);
+			Vector personas = selectBind("WHERE idpersona = :1",codigos);
+			
+			if ((personas != null) && personas.size() == 1) {
+				perBean = (CenPersonaBean)personas.get(0);
+			}
+			
+			return perBean;
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al recuperar los datos");
+		}
+	}
 	
 }
 	
