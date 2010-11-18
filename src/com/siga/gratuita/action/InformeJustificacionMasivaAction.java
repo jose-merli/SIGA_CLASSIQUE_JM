@@ -165,6 +165,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 			form.setIdInstitucion(""+idInstitucion);
 			form.setIdPersona(""+idPersona);
 			form.setFichaColegial(true);
+			form.setAnio(GstDate.getYear(new Date()));
 			
 		}
 		
