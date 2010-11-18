@@ -365,24 +365,24 @@
 					<%String estilo ="filaTablaImpar";
 					  if(c1!=null){%>
 					  	<tr class="<%=estilo %>">
-							<td class="labelTextValue"style="text-align:right;"><input name="radioCol" type="radio" disabled="true"/><%=c1.getIdPersona()!=null?c1.getIdPersona():""%></td>
-							<td class="labelText" style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.colegiaciones.inscrito"/></td>
-							<td class="labelTextValue"><%=c1.getComunitario().equals("0")?"No":"Si"%></td>	
-							<td class="labelText" style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.colegiaciones.numeroColegiado"/></td>
-							<td class="labelTextValue"><%=c1.getNColegiado()!=null?c1.getNColegiado():""%><%=c1.getNComunitario()!=null?c1.getNComunitario():""%></td>
-							<td class="labelText" style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.colegiaciones.fechaIncorporacion"/></td>
-							<td class="labelTextValue"><%=fechaInc1%></td>
+							<td style="text-align:right;"><input name="radioCol" type="radio" disabled="true"/><%=c1.getIdPersona()!=null?c1.getIdPersona():""%></td>
+							<td style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.colegiaciones.inscrito"/></td>
+							<td><%=c1.getComunitario().equals("0")?"No":"Si"%></td>	
+							<td style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.colegiaciones.numeroColegiado"/></td>
+							<td><%=c1.getNColegiado()!=null?c1.getNColegiado():""%><%=c1.getNComunitario()!=null?c1.getNComunitario():""%></td>
+							<td style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.colegiaciones.fechaIncorporacion"/></td>
+							<td><%=fechaInc1%></td>
 						</tr>
 						<%if(e1!=null){%>
 							<tr class="<%=estilo %>">
 								<!-- Este check se deberia cargar solo cuando se seleccione el radio del colegiado -->
 								<td style="text-align:right;"><%=nombreInstitucion1%></td>	
-								<td class="labelText" style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.colegiaciones.estado"/></td>
-								<td class="labelTextValue"><%=e1.getString("DESCRIPCION")%></td>
-								<td class="labelText" style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.colegiaciones.fechaEstado"/></td>
-								<td class="labelTextValue"><%=UtilidadesString.formatoFecha( e1.getString("FECHAESTADO"),"yyyy/MM/dd HH:mm:ss","dd/MM/yyyy")%></td>
-								<td class="labelText" style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.colegiaciones.observaciones"/></td>
-								<td class="labelTextValue"><%=e1.getString("OBSERVACIONES")!=null?e1.getString("OBSERVACIONES"):""%></td>
+								<td style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.colegiaciones.estado"/></td>
+								<td><%=e1.getString("DESCRIPCION")%></td>
+								<td style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.colegiaciones.fechaEstado"/></td>
+								<td><%=UtilidadesString.formatoFecha( e1.getString("FECHAESTADO"),"yyyy/MM/dd HH:mm:ss","dd/MM/yyyy")%></td>
+								<td style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.colegiaciones.observaciones"/></td>
+								<td><%=e1.getString("OBSERVACIONES")!=null?e1.getString("OBSERVACIONES"):""%></td>
 							</tr>
 							<%}else{%>
 							<tr class="<%=estilo %>">
@@ -402,24 +402,24 @@
 						estilo ="filaTablaPar";
 						if(c2!=null){%>
 						<tr class="<%=estilo %>">
-							<td class="labelTextValue"style="text-align:right;"><input name="radioCol" type="radio" disabled="true"/><%=c2.getIdPersona()!=null?c2.getIdPersona():""%></td>
-							<td class="labelText" style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.colegiaciones.inscrito"/></td>
-							<td class="labelTextValue"><%=c2.getComunitario().equals("0")?"No":"Si"%></td>	
-							<td class="labelText" style="text-align:right;">NºColegiado:</td>
-							<td class="labelTextValue"><%=c2.getNColegiado()%><%=c2.getNComunitario()%></td>
-							<td class="labelText" style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.colegiaciones.fechaIncorporacion"/></td>
-							<td class="labelTextValue"><%=fechaInc2%></td>
+							<td style="text-align:right;"><input name="radioCol" type="radio" disabled="true"/><%=c2.getIdPersona()!=null?c2.getIdPersona():""%></td>
+							<td style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.colegiaciones.inscrito"/></td>
+							<td><%=c2.getComunitario().equals("0")?"No":"Si"%></td>	
+							<td style="text-align:right;">NºColegiado:</td>
+							<td><%=c2.getNColegiado()%><%=c2.getNComunitario()%></td>
+							<td style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.colegiaciones.fechaIncorporacion"/></td>
+							<td><%=fechaInc2%></td>
 						</tr>
 						<%if(e2!=null){%>
 							<tr class="<%=estilo %>">
 								<!-- Este check se deberia cargar solo cuando se seleccione el radio del colegiado -->
 								<td style="text-align:right;"><%=nombreInstitucion2%>&nbsp;</td>	
-								<td class="labelText" style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.colegiaciones.estado"/></td>
-								<td class="labelTextValue"><%=e2.getString("DESCRIPCION")%></td>
-								<td class="labelText" style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.colegiaciones.fechaEstado"/></td>
-								<td class="labelTextValue"><%=UtilidadesString.formatoFecha( e2.getString("FECHAESTADO"),"yyyy/MM/dd HH:mm:ss","dd/MM/yyyy")%></td>
-								<td class="labelText" style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.colegiaciones.observaciones"/></td>
-								<td class="labelTextValue"><%=e2.getString("OBSERVACIONES")!=null?e2.getString("OBSERVACIONES"):""%></td>
+								<td style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.colegiaciones.estado"/></td>
+								<td ><%=e2.getString("DESCRIPCION")%></td>
+								<td style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.colegiaciones.fechaEstado"/></td>
+								<td><%=UtilidadesString.formatoFecha( e2.getString("FECHAESTADO"),"yyyy/MM/dd HH:mm:ss","dd/MM/yyyy")%></td>
+								<td style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.colegiaciones.observaciones"/></td>
+								<td><%=e2.getString("OBSERVACIONES")!=null?e2.getString("OBSERVACIONES"):""%></td>
 							</tr>
 							<%}else{%>
 							<tr class="<%=estilo %>">
@@ -449,40 +449,40 @@
 							estilo =(i+1)%2==0?"filaTablaPar":"filaTablaImpar";
 						  	Hashtable reg = (Hashtable)vDirecciones.get(i);%>
 							<tr class="<%=estilo %>">
-								<td class="labelTextValue"style="text-align:right;"><%=reg.get("IDPERSONA")%></td>
-								<td class="labelText" style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.direcciones.fechaModificacion"/></td>
-								<td class="labelTextValue"><%=UtilidadesString.formatoFecha( (String)reg.get("FECHAMODIFICACION"),"yyyy/MM/dd HH:mm:ss","dd/MM/yyyy")%></td>	
-								<td class="labelText" style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.direcciones.domicilio"/></td>
-								<td class="labelTextValue" colspan="3"><%=reg.get("DOMICILIO")%></td>
-								<td class="labelText" style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.direcciones.poblacion"/></td>
-								<td class="labelTextValue"><%=reg.get("POBLACION")%><%=reg.get("POBLACIONEXTRANJERA")%></td>
+								<td style="text-align:right;"><%=reg.get("IDPERSONA")%></td>
+								<td style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.direcciones.fechaModificacion"/></td>
+								<td><%=UtilidadesString.formatoFecha( (String)reg.get("FECHAMODIFICACION"),"yyyy/MM/dd HH:mm:ss","dd/MM/yyyy")%></td>	
+								<td style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.direcciones.domicilio"/></td>
+								<td colspan="3"><%=reg.get("DOMICILIO")%></td>
+								<td style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.direcciones.poblacion"/></td>
+								<td><%=reg.get("POBLACION")%><%=reg.get("POBLACIONEXTRANJERA")%></td>
 							</tr>
 							<tr class="<%=estilo %>">
 								<td style="text-align:right;"><input name="checkDireccion" id="<%=reg.get("IDPERSONA")%>" value="<%=reg.get("IDINSTITUCION")+"&&"+reg.get("IDPERSONA")+"&&"+reg.get("IDDIRECCION")%>" type="checkBox"/></td>	
-								<td class="labelText" style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.direcciones.codigoPostal"/></td>
-								<td class="labelTextValue"><%=reg.get("CODIGOPOSTAL")%></td>
-								<td class="labelText" style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.direcciones.provincia"/></td>
-								<td class="labelTextValue" colspan="3"><%=reg.get("PROVINCIA")%></td>
-								<td class="labelText" style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.direcciones.pais"/></td>
-								<td class="labelTextValue"><%=reg.get("PAIS")%></td>
+								<td style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.direcciones.codigoPostal"/></td>
+								<td><%=reg.get("CODIGOPOSTAL")%></td>
+								<td style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.direcciones.provincia"/></td>
+								<td colspan="3"><%=reg.get("PROVINCIA")%></td>
+								<td style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.direcciones.pais"/></td>
+								<td><%=reg.get("PAIS")%></td>
 							</tr>
 							<tr class="<%=estilo%>">
 								<td></td>
-								<td class="labelText" style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.direcciones.telefono"/></td>
-								<td class="labelTextValue"><%=reg.get("TELEFONO1")%></td>
-								<td class="labelText" style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.direcciones.movil"/></td>
-								<td class="labelTextValue"><%=reg.get("MOVIL")%></td>
-								<td class="labelText" style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.direcciones.fax1"/></td>
-								<td class="labelTextValue"><%=reg.get("FAX1")%></td>
-								<td class="labelText" style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.direcciones.fax2"/></td>
-								<td class="labelTextValue"><%=reg.get("FAX2")%></td>
+								<td style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.direcciones.telefono"/></td>
+								<td><%=reg.get("TELEFONO1")%></td>
+								<td style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.direcciones.movil"/></td>
+								<td><%=reg.get("MOVIL")%></td>
+								<td style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.direcciones.fax1"/></td>
+								<td><%=reg.get("FAX1")%></td>
+								<td style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.direcciones.fax2"/></td>
+								<td ><%=reg.get("FAX2")%></td>
 							</tr>
 							<tr class="<%=estilo%>">
 								<td></td>
-								<td class="labelText" style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.direcciones.correo"/></td>
-								<td class="labelTextValue"><%=reg.get("CORREOELECTRONICO")%></td>
-								<td class="labelText" style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.direcciones.tipo"/></td>
-								<td class="labelTextValue" colspan="7"><%=reg.get("CEN_TIPODIRECCION.DESCRIPCION")%></td>
+								<td style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.direcciones.correo"/></td>
+								<td><%=reg.get("CORREOELECTRONICO")%></td>
+								<td style="text-align:right;"><siga:Idioma key="censo.fusionDuplicados.direcciones.tipo"/></td>
+								<td colspan="7"><%=reg.get("CEN_TIPODIRECCION.DESCRIPCION")%></td>
 								
 							</tr>
 							<tr >
