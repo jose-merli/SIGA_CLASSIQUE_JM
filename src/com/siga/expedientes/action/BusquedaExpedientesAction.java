@@ -63,10 +63,12 @@ public class BusquedaExpedientesAction extends MasterAction {
 //			La primera vez que se carga el formulario 
 //			Abrir
 			if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
-				BusquedaExpedientesForm formExp = (BusquedaExpedientesForm)miForm;
-				formExp.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
-				formExp.reset(mapping,request);
-				request.getSession().removeAttribute("DATAPAGINADOR");
+				// jbd // inc6710 // Esto no se debe de borrar porque al 'volver' se pasa por abrir y no queremos
+								  // perder el paginador
+				//BusquedaExpedientesForm formExp = (BusquedaExpedientesForm)miForm;
+				//formExp.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
+				//formExp.reset(mapping,request);
+				//request.getSession().removeAttribute("DATAPAGINADOR");
 				mapDestino = abrir(mapping, miForm, request, response);
 			}else if (accion.equalsIgnoreCase("abrirAvanzada")){
 				BusquedaExpedientesForm formExp = (BusquedaExpedientesForm)miForm;
