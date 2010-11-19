@@ -18,12 +18,14 @@ public class TagConjCampos extends TagSupport {
 	String leyenda;
 	boolean desplegable;
 	boolean oculto;
+	private String preFunction;
+	private String postFunction;
 	
-/**
- * Da valor al atributo 
- * @author raul.ggonzalez. 10-12-04
- * @param dato 
- */
+	/**
+	 * Da valor al atributo 
+	 * @author raul.ggonzalez. 10-12-04
+	 * @param dato 
+	 */
 	public void setLeyenda(String dato) {
 		this.leyenda=dato;
 	}
@@ -52,6 +54,24 @@ public class TagConjCampos extends TagSupport {
 			this.oculto=false;
 	}
 	
+	
+	
+	public String getPreFunction() {
+		return preFunction==null?"":preFunction;
+	}
+
+	public void setPreFunction(String preFunction) {
+		this.preFunction = preFunction;
+	}
+
+	public String getPostFunction() {
+		return postFunction==null?"":postFunction;
+	}
+
+	public void setPostFunction(String postFunction) {
+		this.postFunction = postFunction;
+	}
+
 /**
  * Acciones a pintar antes del tag 
  * @author raul.ggonzalez. 10-12-04
@@ -78,7 +98,7 @@ public class TagConjCampos extends TagSupport {
 					
 				if (desplegable){	
 					out.println("<legend style=\"cursor:hand;\"> ");
-					out.println("<a onclick=\"ocultarDIV('"+ identificador +"');\">");
+					out.println("<a onclick=\""+ getPreFunction()+" ocultarDIV('"+ identificador +"');"+ getPostFunction() +"\">");
 					if (oculto){
 						out.println("<img id=\"" +identificador + "ImMas\" src=\""+app+"/html/imagenes/simboloMas.gif\"style=\"display:inline\">");
 						out.println("<img id=\"" +identificador + "ImMenos\" src=\""+app+"/html/imagenes/simboloMenos.gif\"style=\"display:none\">");
