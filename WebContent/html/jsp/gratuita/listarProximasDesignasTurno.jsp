@@ -76,8 +76,12 @@
 				<td class="titulitosDatos">
 					<siga:Idioma key="censo.fichaCliente.proximasDesignas.pestana.titulito"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombrePestanha)%>&nbsp;&nbsp;
 				    <% if(numeroPestanha!= null && !numeroPestanha.equalsIgnoreCase("")) { %>
-							<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(numeroPestanha)%>
-							<%if (!estadoColegial.equals("")){%> &nbsp; (<%=UtilidadesString.mostrarDatoJSP(estadoColegial)%>) <%}%>
+						<%if (estadoColegial!=null && !estadoColegial.equals("")){%>
+							<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>
+							 <%= UtilidadesString.mostrarDatoJSP(numeroPestanha)  %> &nbsp; (<%=UtilidadesString.mostrarDatoJSP(estadoColegial)%>)
+						 <%}else{%> 
+						 	(<siga:Idioma key="censo.busquedaClientes.literal.sinEstadoColegial"/>) 
+						 <%}%>
 					<% } else { %>
 						   <siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>
 					<% } %>

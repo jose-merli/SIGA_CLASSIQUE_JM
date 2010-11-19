@@ -231,7 +231,7 @@ public class DefinirTurnosLetradoAction extends MasterAction {
 			Hashtable datosColegiado = new Hashtable();
 			datosColegiado.put("NOMBRECOLEGIADO",nombre);
 			datosColegiado.put("NUMEROCOLEGIADO",numero);
-			datosColegiado.put("ESTADOCOLEGIAL",estado);
+			datosColegiado.put("ESTADOCOLEGIAL",estado!=null?estado:"");
 			request.getSession().setAttribute("DATOSCOLEGIADO", datosColegiado);
 			request.setAttribute("nombre", nombre);
 			request.setAttribute("numero", numero);

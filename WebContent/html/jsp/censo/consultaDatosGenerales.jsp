@@ -849,9 +849,12 @@ function str_replace(search, replace, subject) {
 				 <%=UtilidadesString.mostrarDatoJSP(nombre) + " " + UtilidadesString.mostrarDatoJSP(apellido1) + " " + UtilidadesString.mostrarDatoJSP(apellido2) %>
 				 &nbsp; 		
 				<% if (bColegiado) { %>
+					 <%if (estadoColegial!=null && !estadoColegial.equals("")){%>
 						<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>
-						 <%= UtilidadesString.mostrarDatoJSP(numeroColegiado)  %>
-						 <%if (!estadoColegial.equals("")){%> &nbsp; (<%=UtilidadesString.mostrarDatoJSP(estadoColegial)%>) <%}%>
+						 <%= UtilidadesString.mostrarDatoJSP(numeroColegiado)  %> &nbsp; (<%=UtilidadesString.mostrarDatoJSP(estadoColegial)%>)
+					 <%}else{%> 
+					 	(<siga:Idioma key="censo.busquedaClientes.literal.sinEstadoColegial"/>) 
+					 <%}%>
 				<% } else { %>
 					<% if (sTipo.equalsIgnoreCase("LETRADO")) { %>
 							<siga:Idioma key="censo.fichaCliente.literal.letrado"/>

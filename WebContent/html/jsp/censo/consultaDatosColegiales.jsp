@@ -159,8 +159,12 @@
 				<td class="titulitosDatos">
 					<siga:Idioma key="censo.consultaDatosColegiales.literal.titulo1"/>&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombre)%>&nbsp;&nbsp;
 					<% if(!numero.equalsIgnoreCase("")){%>
-						<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>&nbsp;<%=UtilidadesString.mostrarDatoJSP(numero)%>
-						<%if (!estadoColegial.equals("")){%> &nbsp; (<%=UtilidadesString.mostrarDatoJSP(estadoColegial)%>) <%}%>
+						<%if (estadoColegial!=null && !estadoColegial.equals("")){%>
+							<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>
+							 <%= UtilidadesString.mostrarDatoJSP(numeroColegiadoMostrar)  %> &nbsp; (<%=UtilidadesString.mostrarDatoJSP(estadoColegial)%>)
+						 <%}else{%> 
+						 	(<siga:Idioma key="censo.busquedaClientes.literal.sinEstadoColegial"/>) 
+						 <%}%>
 					<% }else{ %>
 					   <siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>
 					<%}%>					

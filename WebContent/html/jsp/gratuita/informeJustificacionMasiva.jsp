@@ -50,15 +50,15 @@
 						<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.titulo"/>
 						<c:out value="${InformeJustificacionMasivaForm.nombreColegiado}"></c:out>&nbsp;&nbsp;
 					    <c:choose>
-					    	<c:when test="${InformeJustificacionMasivaForm.numColegiado!=null&&InformeJustificacionMasivaForm.numColegiado!=''}">
+					    	<c:when test="${InformeJustificacionMasivaForm.estadoColegial!=null&&InformeJustificacionMasivaForm.estadoColegial!=''}">			    	
 					    		<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>&nbsp;&nbsp;<c:out value="${InformeJustificacionMasivaForm.numColegiado}"></c:out>
 					    		<c:if test="${InformeJustificacionMasivaForm.estadoColegial!=null&&InformeJustificacionMasivaForm.estadoColegial!=''}">
 					    			&nbsp;(<c:out value="${InformeJustificacionMasivaForm.estadoColegial}"></c:out>)
 					    		</c:if>
-					    	</c:when>
-					    	<c:otherwise>
-					    	<siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>
-					    	</c:otherwise>
+							</c:when>
+						 	<c:otherwise>
+						 		(<siga:Idioma key="censo.busquedaClientes.literal.sinEstadoColegial"/>)
+						 	</c:otherwise>
 					    </c:choose>
 					</td>
 				</tr>
