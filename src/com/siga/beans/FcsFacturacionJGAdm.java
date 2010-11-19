@@ -4375,11 +4375,16 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			}
 		    throw new ClsExceptions(e,"Error en la ejecución de la Facturación SJCS. idinstitucion="+idInstitucion+" idfacturacion="+idFacturacion);
 		}
+		
+		
 	}
 	
-	public void facturacionesSJCSProgramadas(String idInstitucion,UsrBean usr) throws SIGAException, ClsExceptions
+	public boolean facturacionesSJCSProgramadas(String idInstitucion,UsrBean usr) throws SIGAException, ClsExceptions
 	{
+		boolean ejecutafacturacion=false;
+		
 	    try {
+	    	
 			Hashtable codigos = new Hashtable();
 			codigos.put(new Integer(1),new Integer(ClsConstants.ESTADO_FACTURACION_PROGRAMADA).toString());
 			codigos.put(new Integer(2),idInstitucion);
@@ -4426,11 +4431,11 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 					}
 					
 					// Genero los multiples ficheros pendientes
-					if (bRegularizacion) {
+					if (bRegularizacion)
 					    this.ejecutarRegularizacion(idInstitucion,idFacturacion,tx);    
-					} else {
+					else
 					    this.ejecutarFacturacion(idInstitucion,idFacturacion,tx);
-					}
+					ejecutafacturacion=true;
 					
 						
 			    }
@@ -4439,6 +4444,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		} catch (Exception e) {
 		    throw new ClsExceptions(e,"Error al lanzar las ejecuciones de facturacion SJCS programadas");
 		}
+		return ejecutafacturacion;
 	}
 	
 	public boolean yaHaSidoEjecutada (String idInstitucion,String idFacturacion) throws SIGAException, ClsExceptions
