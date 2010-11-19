@@ -499,16 +499,7 @@ function onCheckAcreditacion(elementoPulsado){
 	return true;
 }
 
-function setAltoResultado(){
-	 tablaInformeJustificacion = document.getElementById("listadoInformeJustificacion");
-	 tablaBotonera = document.getElementById("tablaBotonesDetalle");
-	 if(tablaInformeJustificacion && tablaBotonera){
-		 var posTablaInformeJustificacion = findPosY(tablaInformeJustificacion);
-		 var posTablaBotonera = findPosY(tablaBotonera);
-		 document.getElementById("listadoInformeJustificacionDiv").style.height=posTablaBotonera-posTablaInformeJustificacion-20;
 
-	 }
-}
 function inicio(){
 	//si tiene permiso para los botons existira, si no estara oculto
 	if(document.getElementById("idInformeJustificacion")){
@@ -520,10 +511,22 @@ function inicio(){
 		}
 	}
 }
+
+
+function ajustarAltoResultados(){
+	parent.ajustarAltoResultado();
+	ajusteDivListado();
+}
+function ajusteDivListado(){
+	ajusteAlto('listadoInformeJustificacionDiv');
+}
+
+
+
 </script>
 </head>
 
-<body onload="inicio();ajustarCabeceraTabla();ajusteAlto('listadoInformeJustificacionDiv');">
+<body onload="inicio();ajustarCabeceraTabla();ajusteDivListado();">
 
 
 
@@ -1216,9 +1219,7 @@ function inicio(){
 	
 		
 </div>
-<div style='height:70px;'>
-	  
-	  						
+
 <siga:Paginador totalRegistros="${totalRegistros}" 
 								registrosPorPagina="${registrosPorPagina}" 
 								paginaSeleccionada="${paginaSeleccionada}" 
@@ -1248,7 +1249,9 @@ function inicio(){
 </tr>
 </table>
 </c:if>
-</div>
+
+
+
 	<html:form action="/JGR_ActuacionesDesigna" method="post" target="mainWorkArea" style="display:none">
 		<html:hidden property = "modo"/>
 		<html:hidden property = "actionModal" value=""/>
@@ -1274,6 +1277,9 @@ function inicio(){
 				src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"
 				style="display: none"></iframe>		
 <!-- FIN: SUBMIT AREA -->
+<script>
+ajustarAltoResultados();
+</script>
 </body>
 	
 </html>

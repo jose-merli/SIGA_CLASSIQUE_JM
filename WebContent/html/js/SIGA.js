@@ -1187,16 +1187,19 @@ function ocultarDIV(ident){
 	if(document.getElementById(ident).style.display == "none" ) {
 		document.getElementById(ident).style.display = "inline";
 		document.getElementById(ident).parentElement.className='legend';
-		document.getElementById(ident+"ImMas").style.display = "none"
-		document.getElementById(ident+"ImMenos").style.display = "inline-block"
+		if(document.getElementById(ident+"ImMas"))
+			document.getElementById(ident+"ImMas").style.display = "none"
+		if(document.getElementById(ident+"ImMenos"))
+			document.getElementById(ident+"ImMenos").style.display = "inline-block"
 	}else {
 		document.getElementById(ident).style.display = "none";
 		document.getElementById(ident).parentElement.className='legendNoBorder';
-		document.getElementById(ident+"ImMenos").style.display = "none"
-		document.getElementById(ident+"ImMas").style.display = "inline-block"
+		if(document.getElementById(ident+"ImMenos"))
+			document.getElementById(ident+"ImMenos").style.display = "none"
+		if(document.getElementById(ident+"ImMas"))
+			document.getElementById(ident+"ImMas").style.display = "inline-block"
 	}
 	ajusteAltoPaginador('resultado');
-	//ajusteAlto();
 	ajusteAlto('resultado');
 	ajusteAlto('mainWorkarea');
 	

@@ -33,7 +33,7 @@
 	
 </head>
 
-<body onLoad="inicio();ajusteAlto('resultado');ajusteAlto('mainWorkArea');">
+<body onLoad="inicio();">
 <bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
 	<html:form action = "${path}" method="POST" target="resultado">
 
@@ -76,7 +76,7 @@
 
 			<tr>
 				<td>
-				<siga:ConjCampos desplegable="true" oculto="false" leyenda="Datos de Justificacion">
+				<siga:ConjCampos desplegable="true" oculto="false" postFunction="ajustarDivListadoResultados();" leyenda="Datos de Justificacion">
 				
 					<table>
 					
@@ -196,7 +196,7 @@
 			
 			<tr>
 				<td>
-					<siga:ConjCampos desplegable="true" oculto="true" leyenda="gratuita.busquedaDesignas.literal.datosDesigna">
+					<siga:ConjCampos desplegable="true" oculto="true" postFunction="ajustarDivListadoResultados();" leyenda="gratuita.busquedaDesignas.literal.datosDesigna">
 						<table>
 						
 							<tr>
@@ -274,7 +274,12 @@
 				
 		</table>
 	</html:form>
-
+	<!-- Formularios auxiliares para la busqueda de persona-->
+	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="" style="display:none">
+		<html:hidden property="actionModal" value=""/>
+		<html:hidden property="modo" value="abrirBusquedaModal"/>
+		
+	</html:form>
 	
 	<!-- FIN: CAMPOS DE BUSQUEDA-->	
 	
@@ -283,12 +288,7 @@
 
 	<siga:ConjBotonesBusqueda   botones="B"  titulo=""/>
 
-		<!-- Formularios auxiliares para la busqueda de persona-->
-	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="" style="display:none">
-		<html:hidden property="actionModal" value=""/>
-		<html:hidden property="modo" value="abrirBusquedaModal"/>
-		
-	</html:form>
+	
 	
 
 
@@ -301,11 +301,11 @@
 					marginwidth="0";	
 					class="frameGeneral">
 	</iframe>
-	
+
 	<iframe name="submitArea" src="<html:rewrite page="/html/jsp/general/blank.jsp"/>" style="display:none"></iframe>	
 	
 	
-		<script language="JavaScript">
+<script language="JavaScript">
 function inicio ()
 {
 	var siga ="SIGA";
@@ -343,8 +343,27 @@ function onClickMostrarJustificacionesPendientes ()
 		document.getElementById("oculto").style.display = "none";
 		
 	}
-	ajusteAlto('mainWorkArea');
+	ajustarAltoResultado();
+	 
+}
+
+function ajustarDivListadoResultados(){
+	documentResultado =document.frames['resultado'];
+	try
+  	{
+		documentResultado.ajusteDivListado();
+  	}
+	catch(err)
+  	{
+  		//peta porque todavia no se ha pintado la ventana hija
+  	}
+}
+
+function ajustarAltoResultado()
+{	ajusteAltoBotonesPaginador('resultado');
 	ajusteAlto('resultado');
+	ajusteAlto('mainWorkarea');
+	ajustarDivListadoResultados();
 }
 function buscar ()
 {
