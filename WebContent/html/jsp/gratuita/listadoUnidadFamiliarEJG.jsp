@@ -318,6 +318,13 @@
 	
 	function accionNuevo()
 	{
+		
+			var idPersonaJG = document.getElementById( 'oculto' + '1' + '_6');
+			if (idPersonaJG==null)			{
+			    alert("<siga:Idioma key='gratuita.listadoUnidadFamiliarEJG.solicitante'/>");
+				return;
+			}
+
 		document.PersonaJGForm.target = "submitArea";
 		document.PersonaJGForm.modo.value = "abrirPestana";
 		document.PersonaJGForm.accionE.value = "nuevo";
