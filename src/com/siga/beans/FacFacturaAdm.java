@@ -2068,8 +2068,8 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	    try {
 		    
 			String select = "SELECT " +
-				"to_char("+FacFacturaBean.C_FECHAEMISION+",'DD/MM/RRRR') AS "+FacFacturaBean.C_FECHAEMISION+", "+
-				"PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(to_char("+FacFacturaBean.C_FECHAEMISION+",'DD/MM/RRRR'),'m',"+lenguaje+") AS FECHAEMISIONMESLETRA, "+
+				"to_char(FECHA_EMISION,'DD/MM/RRRR') AS "+FacFacturaBean.C_FECHAEMISION+", "+
+				"PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(to_char(FECHA_EMISION,'DD/MM/RRRR'),'m',"+lenguaje+") AS FECHAEMISIONMESLETRA, "+
 					
 					FacFacturaBean.C_NUMEROFACTURA	+ ", " +
 					FacFacturaBean.C_IDFACTURA	+ ", " +
@@ -2084,7 +2084,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 					if(isInforme)
 						select+=", MOTIVO_DEVOLUCION";
 					select+=" FROM (SELECT " + 
-							"F." + FacFacturaBean.C_FECHAEMISION + ", " +
+							"F." + FacFacturaBean.C_FECHAEMISION + " AS FECHA_EMISION, " +
 							"F." + FacFacturaBean.C_NUMEROFACTURA	+ ", " +
 							"F." + FacFacturaBean.C_IDFACTURA	+ ", " +
 							"F." + FacFacturaBean.C_IMPTOTALNETO	+ " AS NETO, " +
@@ -2202,7 +2202,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			
 			where += " WHERE DEUDA > 0";
 			
-			String orderBy = " ORDER BY to_date("  + FacFacturaBean.C_FECHAEMISION + ") DESC";
+			String orderBy = " ORDER BY FECHA_EMISION DESC";
 	
 			String consulta = select + from + where + orderBy;
 	
