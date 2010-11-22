@@ -2202,7 +2202,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			
 			where += " WHERE DEUDA > 0";
 			
-			String orderBy = " ORDER BY "  + FacFacturaBean.C_FECHAEMISION + " DESC";
+			String orderBy = " ORDER BY to_date("  + FacFacturaBean.C_FECHAEMISION + ") DESC";
 	
 			String consulta = select + from + where + orderBy;
 	
