@@ -35,7 +35,7 @@
 	String buscar = (String) request.getAttribute("buscar");
 	String funcionBuscar = "";
 	if (buscar != null) {
-		funcionBuscar = "recargarCombos();buscar()";
+		funcionBuscar = "recargarCombos();buscar('buscarPor')";
 	}
 
 	ArrayList vTipoExp = new ArrayList();
@@ -249,7 +249,7 @@
 	</siga:ConjCampos>
 
 
-	<siga:ConjCampos leyenda="expedientes.auditoria.literal.denunciado">
+	<siga:ConjCampos leyenda="expedientes.auditoria.literal.denunciado" desplegable="true" oculto="true">
 
 		<table align="left">
 
@@ -283,7 +283,7 @@
 
 	</siga:ConjCampos>
 
-	<siga:ConjCampos leyenda="expedientes.auditoria.literal.denunciante">
+	<siga:ConjCampos leyenda="expedientes.auditoria.literal.denunciante" desplegable="true" oculto="true">
 
 		<table align="left">
 
