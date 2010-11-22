@@ -620,7 +620,7 @@ import com.siga.tlds.FilaExtElement;
 			//System.out.println("ejg"+ejg);
 			//System.out.println("ejg.getestado"+ejg.getIdEstadoEjg());
 			if(permisoEejg!=null && permisoEejg.booleanValue() && 
-					(personaJG!=null && personaJG.getNif()!=null && !personaJG.getNif().trim().equals("") &&personaJG.getTipoIdentificacion()!=null&&(Integer.parseInt(personaJG.getTipoIdentificacion())==ClsConstants.TIPO_IDENTIFICACION_NIF||Integer.parseInt(personaJG.getTipoIdentificacion())==ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE) )
+					(personaJG!=null && personaJG.getNif()!=null && !personaJG.getNif().trim().equals("") &&personaJG.getTipoIdentificacion()!=null&&!personaJG.getTipoIdentificacion().equalsIgnoreCase("")&&(Integer.parseInt(personaJG.getTipoIdentificacion())==ClsConstants.TIPO_IDENTIFICACION_NIF||Integer.parseInt(personaJG.getTipoIdentificacion())==ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE) )
 					&& ejg!=null && ((ejg.getIdEstadoEjg()==null || (ejg.getIdEstadoEjg()!=null&&ejg.getIdEstadoEjg().shortValue()<9))||esComision)){
 				
 				
