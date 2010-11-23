@@ -61,7 +61,7 @@ public class GestionarFacturaLineasAction extends MasterAction
 					beanFactura.getNumeroFactura().equalsIgnoreCase("0")
 				   )  
 					request.setAttribute("modificar", new Boolean (true));
-				else request.setAttribute("modificar", new Boolean (false));
+				else request.setAttribute("modificar", new Boolean (true));
 			}
 			else request.setAttribute("modificar", new Boolean (false));
 			
@@ -81,6 +81,7 @@ public class GestionarFacturaLineasAction extends MasterAction
 			// Obtengo los diferentes parametros recibidos
 			GestionarFacturaForm miForm = (GestionarFacturaForm) formulario;
 			Integer idInstitucion = new Integer((String)miForm.getDatosTablaOcultos(0).get(0));
+			
 			String idFactura = (String)miForm.getDatosTablaOcultos(0).get(1);
 			Long numeroLinea = new Long((String)miForm.getDatosTablaOcultos(0).get(2));
 			modo = miForm.getModo().toLowerCase();
@@ -90,6 +91,10 @@ public class GestionarFacturaLineasAction extends MasterAction
 			UtilidadesHash.set(claves, FacLineaFacturaBean.C_IDINSTITUCION, idInstitucion);
 			UtilidadesHash.set(claves, FacLineaFacturaBean.C_IDFACTURA, idFactura);
 			UtilidadesHash.set(claves, FacLineaFacturaBean.C_NUMEROLINEA, numeroLinea);
+			
+     		//Recuperamos el numerofactura, si tiene numero de factura solo se puede cambiar la descripción de la linea, al editar.
+			FacFacturaAdm facturaAdm = new FacFacturaAdm(this.getUserBean(request));
+			String numerofactura=facturaAdm.getNumerofactura(idInstitucion, idFactura);
 			
 			// Recuperamos la linea
 			FacLineaFacturaAdm lineasAdm = new FacLineaFacturaAdm(this.getUserBean(request));
@@ -102,50 +107,34 @@ public class GestionarFacturaLineasAction extends MasterAction
 			Boolean bEditarPrecio = new Boolean(false);
 			Boolean bEditarDescripcion = new Boolean(false);
 
+		
 			GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request));
 			Hashtable hash = new Hashtable();
 			String aux = paramAdm.getValor(idInstitucion.toString(),ClsConstants.MODULO_FACTURACION,"MODIFICAR_DESCRIPCION",null);
 			if (aux != null && aux.equalsIgnoreCase("s")) {
 				bEditarDescripcion = new Boolean(true);
 			}
-/*
-			UtilidadesHash.set(hash, GenParametrosBean.C_IDINSTITUCION, idInstitucion);
-			UtilidadesHash.set(hash, GenParametrosBean.C_MODULO, ClsConstants.MODULO_FACTURACION);
-			UtilidadesHash.set(hash, GenParametrosBean.C_PARAMETRO, "MODIFICAR_DESCRIPCION");
-			Vector vAux = paramAdm.select(hash);
-			if (vAux != null) {
-				GenParametrosBean beanParametro = (GenParametrosBean)vAux.get(0);
-				if (beanParametro.getValor().equalsIgnoreCase("s"))
-					bEditarDescripcion = new Boolean(true);
-			}
-*/			
+
 			aux = paramAdm.getValor(idInstitucion.toString(),ClsConstants.MODULO_FACTURACION,"MODIFICAR_IMPORTE_UNITARIO",null);
 			if (aux != null && aux.equalsIgnoreCase("s")) {
 				bEditarPrecio = new Boolean(true);
 			}
-/*
-			UtilidadesHash.set(hash, GenParametrosBean.C_PARAMETRO, "MODIFICAR_IMPORTE_UNITARIO");
-			vAux = paramAdm.select(hash);
-			if (vAux != null) {
-				GenParametrosBean beanParametro = (GenParametrosBean)vAux.get(0);
-				if (beanParametro.getValor().equalsIgnoreCase("s"))
-					bEditarPrecio = new Boolean(true);
-			}
-*/			
 
 			aux = paramAdm.getValor(idInstitucion.toString(),ClsConstants.MODULO_FACTURACION,"MODIFICAR_IVA",null);
 			if (aux != null && aux.equalsIgnoreCase("s")) {
 				bEditarIVA = new Boolean(true);
 			}
-/*
-			UtilidadesHash.set(hash, GenParametrosBean.C_PARAMETRO, "MODIFICAR_IVA");
-			vAux = paramAdm.select(hash);
-			if (vAux != null) {
-				GenParametrosBean beanParametro = (GenParametrosBean)vAux.get(0);
-				if (beanParametro.getValor().equalsIgnoreCase("s"))
-					bEditarIVA = new Boolean(true);
+
+			//Si tiene un numero de factura, se modifica solo la descripcio de las lineas, el resto de campos no se pueden modificar.
+			if (!numerofactura.equals("")){			
+					  aux = paramAdm.getValor(idInstitucion.toString(),ClsConstants.MODULO_FACTURACION,"MODIFICAR_DESCRIPCION",null);
+					 if (aux != null && aux.equalsIgnoreCase("s")) {
+						 bEditarDescripcion = new Boolean(true);
+					 }			
+					 bEditarIVA = new Boolean(false);
+					 bEditarPrecio = new Boolean(false);
 			}
-*/
+				
 			request.setAttribute("editarDescripcion", bEditarDescripcion);
 			request.setAttribute("editarPrecio", bEditarPrecio);
 			request.setAttribute("editarIVA", bEditarIVA);
