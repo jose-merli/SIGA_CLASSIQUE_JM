@@ -46,11 +46,12 @@
 	String tipoAbonoBusqueda="";
 	String busquedaNumeroAbono="";
 	String nifCliente="";
-
+CenPersonaAdm admPersona=new CenPersonaAdm(user);
 	// Si el cliente es un letrado, le establezco a el como parte de la busqueda
 	if (user.isLetrado()) {
 		idPersonaBusqueda=String.valueOf(user.getIdPersona());
-		CenPersonaAdm admPersona=new CenPersonaAdm(user);
+		//CenPersonaAdm admPersona=new CenPersonaAdm(user);
+		 admPersona=new CenPersonaAdm(user);
 		busquedaCliente=admPersona.obtenerNombreApellidos(idPersonaBusqueda);
 		nifCliente = admPersona.obtenerNIF(idPersonaBusqueda);
 	}
@@ -69,6 +70,7 @@
 		pagadoBusqueda=formSession.getPagadoBusqueda();
 		tipoAbonoBusqueda=formSession.getTipoAbonoBusqueda();
 		busquedaNumeroAbono=formSession.getNumeroAbono();
+		nifCliente = admPersona.obtenerNIF(idPersonaBusqueda);
 		funcionBuscar = "buscarPaginador()";
 	}
 
@@ -102,7 +104,7 @@
 	</head>
 
 
-	<body onLoad="ajusteAlto('resultado');desahabilitaBonotesLetrado();<%=funcionBuscar %>">
+	<body onLoad="ajusteAlto('resultado');desahabilitaBonotesLetrado();inicio();<%=funcionBuscar %>">
 	
 		<div id="camposRegistro" class="posicionBusquedaSolo" align="center">	
 
@@ -215,17 +217,12 @@
 										</html:select>
 									</td>
 							 	</tr>
-							 	<tr>
-							 		
-							 		<td id="busquedaLetrado" class="labelText" colspan="7">
-							 		<% 	if(user.isLetrado()){%>
-								 		<siga:BusquedaPersona tipo="personas" titulo="gratuita.seleccionColegiadoJG.literal.titulo" anchoNum="10" anchoDesc="50" idPersona="idPersonaBusqueda"></siga:BusquedaPersona>
-										<% 	}else{%>
-										<siga:BusquedaPersona tipo="personas" titulo="gratuita.seleccionColegiadoJG.literal.titulo" anchoNum="10" anchoDesc="50" idPersona="idPersonaBusqueda"></siga:BusquedaPersona>									
-										<% 	}%>
-									</td>
-										
-							   </tr>
+							 	
+							 	<tr><td colspan="10">							 
+									<siga:BusquedaPersona tipo="personas" anchoNum="10" anchoDesc="50"  titulo="gratuita.seleccionColegiadoJG.literal.titulo" idPersona="idPersonaBusqueda">
+									</siga:BusquedaPersona>
+								</td></tr>
+							 	
 					   	  </html:form>	
 				        </table>
 					 </siga:ConjCampos>
@@ -247,6 +244,15 @@
 		
 			<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 			<script language="JavaScript">
+
+			function inicio(){		
+			
+				// Ajustamos el numero del colegiado y simulamos la busqueda
+				<%if(!idPersonaBusqueda.equalsIgnoreCase("")){%>
+				document.getElementById('numeroNifTagBusquedaPersonas').value="<%=nifCliente%>";				
+				obtenerPersonas();
+				<%}%>
+			}
 	
 				// Funcion asociada a boton nuevo
 				function nuevo() 
