@@ -3779,4 +3779,43 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
        }
        return salida;
     }
+	
+	/**
+	 * Obtiene el Numerofactura
+	 * @param idInstitucion
+	 * @param idFactura
+	 * @return
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
+	public String getNumerofactura(Integer idInstitucion, String idFactura) throws ClsExceptions,SIGAException {
+		try {
+		    Hashtable codigos = new Hashtable();
+		    codigos.put(new Integer(1),idInstitucion.toString());
+		    codigos.put(new Integer(2),idFactura);
+            String select ="SELECT "+FacFacturaBean.C_NUMEROFACTURA+" AS NUMEROFACTURA FROM FAC_FACTURA WHERE IDINSTITUCION=:1 AND IDFACTURA=:2 ";
+
+			RowsContainer rc = new RowsContainer(); 
+			if (rc.queryBind(select,codigos)) {
+				if (rc.size() != 1) return null;
+				Hashtable aux = (Hashtable)((Row) rc.get(0)).getRow();
+				String numeroFactura = UtilidadesHash.getString(aux, "NUMEROFACTURA");
+				return numeroFactura;
+			}
+		}
+	    catch (Exception e) {
+	   		if (e instanceof SIGAException){
+	   			throw (SIGAException)e;
+	   		}
+	   		else {
+	   			if (e instanceof ClsExceptions){
+	   				throw (ClsExceptions)e;
+	   			}
+	   			else {
+	   				throw new ClsExceptions(e, "Error al obtener el estado de las facturas.");
+	   			}
+	   		}	
+	    }
+		return null;
+	}
 }
