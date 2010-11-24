@@ -972,8 +972,14 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 				defendidosDesignaBean.setIdInstitucion(new Integer(miForm.getIdInstitucion()));
 				defendidosDesignaBean.setIdTurno(new Integer(miForm.getDesigna_turno()));
 				defendidosDesignaBean.setNumero(new Integer(miForm.getDesigna_numero()));
-				if (miForm.getDatos().get("CALIDAD")!=null && !miForm.getDatos().get("CALIDAD").equals("")){
-				   defendidosDesignaBean.setCalidad((String)miForm.getDatos().get("CALIDAD"));
+				/*if (miForm.getDatos().get("CALIDAD")!=null && !miForm.getDatos().get("CALIDAD").equals("")){
+				   defendidosDesignaBean.setCalidad((String)miForm.getDatos().get("CALIDAD"));				   
+				}*/
+				String idtipocalidad= (String)miForm.getIdTipoenCalidad();
+				String calidadIdinstitucion= (String)miForm.getCalidadIdinstitucion();
+				if (idtipocalidad!=null && !idtipocalidad.equals("")){
+					defendidosDesignaBean.setIdTipoenCalidad(new Integer(idtipocalidad));
+					defendidosDesignaBean.setCalidadIdinstitucion(new Integer(idtipocalidad));
 				}
 				// Falta hacer la validacion de la persona, si no existe el idpersonajg pero existe una persona con el mismo nif o con el mismo nombre
 				// y apellidos no se inserta
