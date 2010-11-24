@@ -284,7 +284,7 @@ public class MaestroDesignasAction extends MasterAction {
 			}			
 
 			String modoaction="";
-			 if (estado.equalsIgnoreCase("FINALIZADO")|| estado.equalsIgnoreCase("F")){				 
+			 if (estado!=null&&(estado.equalsIgnoreCase("FINALIZADO")|| estado.equalsIgnoreCase("F"))){				 
 				  ses.setAttribute("ModoAction","editar");
 				 ses.setAttribute("Modo","ver");
 			}else{					
