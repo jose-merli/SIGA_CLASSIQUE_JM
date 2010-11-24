@@ -165,10 +165,10 @@
 			   nombre="tablaDatos"
 			   borde="1"
 			   clase="tableTitle"
-			   nombreCol="facturacion.busquedaAbonos.literal.numeroAbono,facturacion.busquedaAbonos.literal.fecha,
+			   nombreCol="facturacion.busquedaAbonos.literal.numAbono,facturacion.busquedaAbonos.literal.fecha,
 			   			  facturacion.busquedaAbonos.literal.cliente,gratuita.modalRegistro_DefinirCalendarioGuardia.literal.observaciones,facturacion.busquedaAbonos.literal.estado,
-			   			  facturacion.busquedaAbonos.literal.totalAbono,facturacion.busquedaAbonos.literal.numeroFactura,"
-			   tamanoCol="8,8,18,25,12,7,9,15"
+			   			  facturacion.busquedaAbonos.literal.totalAbono,facturacion.busquedaAbonos.literal.numFacturaAsociada,"
+			   tamanoCol="10,8,18,23,12,7,9,15"
 			   alto="245"
 			   ajustePaginador="true" 
 			   activarFilaSel="true" >
