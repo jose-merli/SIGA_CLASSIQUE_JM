@@ -30,8 +30,17 @@ import com.siga.general.MasterForm;
 	String idSituacion="" ;
 	String idRenuncia="";
 	String idTipoenCalidad="";
+	String calidadIdinstitucion="";
 
 	
+
+	public String getCalidadIdinstitucion() {
+		return calidadIdinstitucion;
+	}
+
+	public void setCalidadIdinstitucion(String calidadIdinstitucion) {
+		this.calidadIdinstitucion = calidadIdinstitucion;
+	}
 
 	public String getIdTipoenCalidad() {
 		return idTipoenCalidad;
