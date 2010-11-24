@@ -147,9 +147,9 @@
 <% 				} else if (busquedaVolver.equals("NADA")) {  %>
 					top.mainWorkArea.document.location="<%=app%>/html/jsp/general/blank.jsp";
 <% 				} else if (busquedaVolver.equals("P")) {	%>
-					document.solicitudCompraForm.action = "<%=app%>/PYS_GenerarSolicitudes.do" + "?noReset=true";
-					document.solicitudCompraForm.modo.value="abrir";	
-					document.solicitudCompraForm.submit();	
+					document.solicitudCompraForm.action = "<%=app%>/PYS_GenerarSolicitudes.do" + "?noReset=true";					
+					document.solicitudCompraForm.modo.value="abrirAlVolver";	
+					document.solicitudCompraForm.submit();						
 <% 				} else if (busquedaVolver.equals("BUSQUEDA_LETRADO")) {	%>
 					document.BusquedaLetradosForm.action = document.BusquedaLetradosForm.action + "?" + "<%=SessionForms.getForm(request,"/CEN_BusquedaLetradosNew.do","buscar")%>";
 					document.BusquedaLetradosForm.id.value = document.forms[0].id.value;

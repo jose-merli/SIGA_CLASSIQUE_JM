@@ -113,8 +113,11 @@ public class SolicitudCompraAction extends MasterAction{
 				// La primera vez que se carga el formulario 
 				// Abrir
 				if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
-					mapDestino = abrir(mapping, miForm, request, response);	
-					
+					request.getSession().removeAttribute("resultBusqueda");
+					request.getSession().removeAttribute("auxSolicitudCompraForm");
+					mapDestino = abrir(mapping, miForm, request, response);						
+				}else if (accion.equalsIgnoreCase("abrirAlVolver")){
+					mapDestino = abrir(mapping, miForm, request, response);
 				}else if (accion.equalsIgnoreCase("solicitar")){
 					mapDestino = solicitar(mapping, miForm, request, response);
 				}else if (accion.equalsIgnoreCase("borrarCarrito")){
@@ -186,7 +189,7 @@ public class SolicitudCompraAction extends MasterAction{
 			Integer idInstitucion=this.getIDInstitucion(request);
 			
 			String certificado =request.getParameter("certificado");
-			request.getSession().removeAttribute("resultBusqueda");
+			//request.getSession().removeAttribute("resultBusqueda");
 			
 			if (certificado!=null && !certificado.equalsIgnoreCase("")){
 				certificado=request.getParameter("certificado");
@@ -194,12 +197,28 @@ public class SolicitudCompraAction extends MasterAction{
 			}
 			
            
+			SolicitudCompraForm form = null;
+			if(request.getSession().getAttribute("auxSolicitudCompraForm")!=null){
+				form = (SolicitudCompraForm)request.getSession().getAttribute("auxSolicitudCompraForm");
+				request.setAttribute("catalogo", form.getCatalogo());
+				request.setAttribute("tipoProducto", form.getTipoProducto());
+				request.setAttribute("categoriaProducto", form.getTipoProducto().toString()+","+form.getCategoriaProducto());
+		    	request.setAttribute("producto", form.getProducto());
+				
 			
-			SolicitudCompraForm form = (SolicitudCompraForm) formulario;
+				//Datos de los Servicios seleccionados en los combos:
+				request.setAttribute("tipoServicio", form.getTipoServicio());
+				request.setAttribute("categoriaServicio", form.getTipoServicio().toString()+","+form.getCategoriaServicio());
+				request.setAttribute("servicio", form.getServicio());
+			
+										
+			}else{
+				form = (SolicitudCompraForm) formulario;
+			}
 			
 			Long idPersona 	= null;
 			String nombre 	= "";
-			String numero 	= "";	
+			String numero 	= "";	 
 			String nif 		= "";
 	
 //			 Si es la primera vez que entramos
@@ -253,10 +272,12 @@ public class SolicitudCompraAction extends MasterAction{
 			}else{
 				request.setAttribute("idInstitucionPresentador", null);
 			}
+			
+			
 			request.setAttribute("idPersona", idPersona);
 			request.setAttribute("nombrePersona", nombre);
 			request.setAttribute("numero", numero);
-			request.setAttribute("nif", nif);	
+			request.setAttribute("nif", nif);
 		    
 					
 		}
@@ -264,6 +285,8 @@ public class SolicitudCompraAction extends MasterAction{
 			throwExcp("messages.general.error",new String[] {"modulo.producto"},e, null); 
 		} 
 		return "abrir";
+		
+		
 	}
 	
 	/** 
@@ -664,12 +687,17 @@ public class SolicitudCompraAction extends MasterAction{
 	protected String buscarProducto(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try{
 			 
-			SolicitudCompraForm form = (SolicitudCompraForm) formulario;
+			
+			SolicitudCompraForm form =  (SolicitudCompraForm) formulario;
+			
+			
 			String select =""; 
 			String where="";
 			String consulta="";
 			Vector resultado=new Vector();
 			request.getSession().removeAttribute("resultBusqueda");
+			request.getSession().removeAttribute("auxSolicitudCompraForm");
+			
 			/*CarroCompra carro = CarroCompraAdm.getCarroCompra(form.getIdPersona(), form.getIdInstitucion(), request);
 			
 			if(form.getConcepto()== null){	}
@@ -867,6 +895,7 @@ public class SolicitudCompraAction extends MasterAction{
 		
 			// subimos a sesion el resultado de la consulta porque si se cambia de cliente se quiere seguir manteniendo los resultados obtenidos
 			request.getSession().setAttribute("resultBusqueda",resultado);
+			request.getSession().setAttribute("auxSolicitudCompraForm",form);
 				
 			
 		}
