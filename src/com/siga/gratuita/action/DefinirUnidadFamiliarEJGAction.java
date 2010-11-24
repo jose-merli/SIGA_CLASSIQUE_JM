@@ -47,6 +47,7 @@ import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinirUnidadFamiliarEJGForm;
 import com.siga.gratuita.service.EejgService;
+import com.siga.gui.processTree.SIGAPTConstants;
 
 import es.satec.businessManager.BusinessManager;
 
@@ -859,6 +860,15 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 		languaje.append("_ES");
 		peticionEejg.setIdioma(languaje.toString());
 		ScsEejgPeticionesAdm admPeticionEejg = new ScsEejgPeticionesAdm(usr);
+		
+		HttpSession session = (HttpSession) request.getSession();
+		UsrBean usrBean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);
+		String tipoAcceso = usrBean.getAccessType();
+		if (!tipoAcceso.equalsIgnoreCase(SIGAPTConstants.ACCESS_FULL)) {	
+			ClsLogging.writeFileLog("Acceso denegado",request,3);
+			return exitoRefresco("messages.error.accesoDenegado", request);
+		}
+		
 		try {
 			admPeticionEejg.insertarPeticionEejg(peticionEejg);	
 		} catch (Exception e) {

@@ -2404,7 +2404,11 @@
 			<forward name="inicio" path="/html/jsp/gratuita/listadoUnidadFamiliarEJG.jsp"/>
 			<forward name="insertar" path="/html/jsp/gratuita/operarUnidadFamiliarEJG.jsp"/>
 		</action>
-
+		
+		<action path="/JGR_UnidadFamiliarEEJG" type="com.siga.gratuita.action.DefinirUnidadFamiliarEJGAction" name="DefinirUnidadFamiliarEJGForm" scope="request">
+			<forward name="accesodenegado" path="/html/jsp/general/accesoDenegado.jsp"/>
+		</action>
+		
 		<action path="/JGR_UnidadFamiliarPerJG" type="com.siga.gratuita.action.PersonaJGAction" name="PersonaJGForm" scope="request">
 			<forward name="personaJG" path="/html/jsp/gratuita/personaJG.jsp"/>
 			<forward name="buscarNIF" path="/html/jsp/gratuita/personasJGOculta.jsp"/>			

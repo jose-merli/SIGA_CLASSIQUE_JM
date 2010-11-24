@@ -503,7 +503,7 @@
 		<html:hidden property = "codigoExt" value=""/>
 		<html:hidden property = "nombreObjetoDestino" value=""/>
 	</html:form>
-	<html:form action="/JGR_UnidadFamiliarEJG"  method="post" target="submitArea">
+	<html:form action="/JGR_UnidadFamiliarEEJG"  method="post" target="resultado">
 		<html:hidden property="modo"/>
 		<html:hidden property="datosInforme"/>
 		

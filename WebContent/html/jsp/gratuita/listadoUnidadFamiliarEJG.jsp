@@ -63,7 +63,14 @@
 		<input type="hidden" name="tablaDatosDinamicosD"/>
 		
 </html:form>
-
+<html:form action="/JGR_UnidadFamiliarEEJG" name="EEJG" method="post" target="submitArea" type ="com.siga.gratuita.form.DefinirUnidadFamiliarEJGForm">
+		<html:hidden property="modo"/>
+		<html:hidden property="idTipoEJG" value="${DefinirUnidadFamiliarEJGForm.idTipoEJG}"/>
+		<html:hidden property="anio" value="${DefinirUnidadFamiliarEJGForm.anio}"/>
+		<html:hidden property="numero" value="${DefinirUnidadFamiliarEJGForm.numero}"/>
+		<html:hidden property="idInstitucion" value="${DefinirUnidadFamiliarEJGForm.idInstitucion}"/>
+		<input type="hidden" name="tablaDatosDinamicosD"/>
+</html:form>
 
 <table class="tablaTitulo" cellspacing="0" heigth="38">
 <tr>
@@ -382,9 +389,10 @@
 	   			+idTipoEJG.value + 	','
 	   			+anio.value + 	','
 	   			+numero.value + '#';
-	   	document.DefinirUnidadFamiliarEJGForm.tablaDatosDinamicosD.value = datos;
-	   	document.DefinirUnidadFamiliarEJGForm.modo.value = "solicitarEejg";
-		document.DefinirUnidadFamiliarEJGForm.submit();
+   		
+	   	document.EEJG.tablaDatosDinamicosD.value = datos;
+	   	document.EEJG.modo.value = "solicitarEejg";
+		document.EEJG.submit();
 	
 	}	
 	function descargarEejg(fila) {
@@ -403,9 +411,9 @@
 				+idPeticion.value + ''
 				'#';
 		
-	   	document.DefinirUnidadFamiliarEJGForm.tablaDatosDinamicosD.value = datos;
-	   	document.DefinirUnidadFamiliarEJGForm.modo.value = "descargaEejg";
-		document.DefinirUnidadFamiliarEJGForm.submit();
+	   	document.EEJG.tablaDatosDinamicosD.value = datos;
+	   	document.EEJG.modo.value = "descargaEejg";
+		document.EEJG.submit();
 	
 	}
 	function descargaEejg() {
@@ -438,9 +446,9 @@
 			return;
 		}
 		
-	   	document.DefinirUnidadFamiliarEJGForm.tablaDatosDinamicosD.value = datos;
-	   	document.DefinirUnidadFamiliarEJGForm.modo.value = "descargaEejgMasivo";
-		document.DefinirUnidadFamiliarEJGForm.submit();
+	   	document.EEJG.tablaDatosDinamicosD.value = datos;
+	   	document.EEJG.modo.value = "descargaEejgMasivo";
+		document.EEJG.submit();
 	
 	}	
 		
