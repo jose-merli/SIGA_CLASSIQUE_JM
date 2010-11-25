@@ -82,12 +82,7 @@
 </head>
 
 <body>
-
-
-		<tr>				
-	<td width="100%" align="center">
-
-		<table class="tablaTitulo" cellspacing="0" heigth="38">
+	<table class="tablaTitulo" cellspacing="0" heigth="38">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
 	
@@ -126,7 +121,7 @@
 				%>
 			</td>
 		</tr>
-		</table>
+	</table>
 
 
 	<siga:ConjCampos leyenda="gratuita.dictamenEJG.literal.datosRatificacion">
@@ -139,9 +134,6 @@
 	<html:hidden property = "idTipoEJG" value ="<%=idTipoEJG%>"/>
 	<html:hidden property = "anio" value ="<%=anio%>"/>
 	<html:hidden property = "numero" value ="<%=numero%>"/>
-
-	<tr>		
-	<td>			
 	
 	<!-- FILA -->
 	<tr>
@@ -243,15 +235,13 @@
 	</td>
 	<td class="labelText" colspan="3">	
 		<%if (accion.equalsIgnoreCase("ver")) {%>	
-			<textarea name="ratificacionDictamen" class="boxConsulta" style="width:770px" rows="25" readOnly="true"><%=observaciones%></textarea>
+			<textarea name="ratificacionDictamen" class="boxConsulta" style="width:770px" rows="18" readOnly="true"><%=observaciones%></textarea>
 		<%} else {%>
-			<textarea name="ratificacionDictamen" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" class="box" style="width:770px" rows="25"><%=observaciones%></textarea>
+			<textarea name="ratificacionDictamen" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" class="box" style="width:770px" rows="18"><%=observaciones%></textarea>
 		<%}%>
 	</td>		
 	</tr>
-		
-	</td>
-	</tr>
+
 	</html:form>
 	</table>
 	
