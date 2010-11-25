@@ -55,14 +55,13 @@
 		
 		fechaInicio=(String)resultado.getFechaInicio();
 		fechaInicio=GstDate.getFormatedDateShort("",fechaInicio);
-		
 
 		observaciones=(String)resultado.getObservaciones();
 		automatico=(String)resultado.getAutomatico();
 		
-		  if (automatico!=null && automatico.equals("1")){
+		  if (modo.equalsIgnoreCase("consulta")){
 	      estilo="boxConsulta";
-	      estiloCombo="boxConsulta";
+	      estiloCombo="boxComboConsulta";
 	      bReadOnly=true;
 		  }
 	}
@@ -124,8 +123,8 @@
 		<siga:Idioma key="gratuita.operarEJG.literal.fecha"/>&nbsp;(*)
 	</td>
 	<td>
-		<html:textarea property="fechaInicio" styleclass="box" style="width:100;overflow:hidden" rows="1" value="<%=fechaInicio%>" readOnly="true"/>
-		<%if (automatico!=null && !automatico.equals("1")){%>
+		<html:textarea property="fechaInicio" styleclass="<%=estilo%>" style="width:100;overflow:hidden" rows="1" value="<%=fechaInicio%>" readOnly="true"/>
+		<%if (!bReadOnly){%>
 			<a onClick="return showCalendarGeneral(fechaInicio);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
 		<%}%>
 		
@@ -140,11 +139,15 @@
 	  if (automatico!=null && !automatico.equals("1"))
 		readOnly = "false"; 
 	%>
-	<% if(esComision){%>
-			<siga:ComboBD nombre="idEstadoEJG" tipo="estadosEJGComision" clase="<%=estiloCombo%>"  ancho="300" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vSel%>" readonly="<%=readOnly%>"/>
-	<% }else{ %>
-			<siga:ComboBD nombre="idEstadoEJG" tipo="estadosEJG" clase="<%=estiloCombo%>"  ancho="300" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vSel%>" readonly="<%=readOnly%>"/>
-	<% } %>
+	<%if(bReadOnly){ %>
+		<siga:ComboBD nombre="idEstadoEJG" tipo="estadosEJG" clase="<%=estiloCombo%>"  ancho="300" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vSel%>" readonly="true"/>
+	<%}else{ %>
+		<% if(esComision){%>
+				<siga:ComboBD nombre="idEstadoEJG" tipo="estadosEJGComision" clase="<%=estiloCombo%>"  ancho="300" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vSel%>" readonly="<%=readOnly%>"/>
+		<% }else{ %>
+				<siga:ComboBD nombre="idEstadoEJG" tipo="estadosEJG" clase="<%=estiloCombo%>"  ancho="300" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vSel%>" readonly="<%=readOnly%>"/>
+		<% } %>
+	<%} %>
 	
 	</td>
 	</tr>
@@ -153,7 +156,7 @@
 		<siga:Idioma key="pestana.justiciagratuitaejg.observaciones"/>
 	</td>
 	<td colspan="3">
-		<html:textarea cols="60" rows="8" property="observaciones" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)"  styleclass="box" value="<%=observaciones%>" ></html:textarea> 
+		<html:textarea cols="60" rows="8" property="observaciones" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)"  styleclass="<%=estilo%>" value="<%=observaciones%>" ></html:textarea> 
 	
 	</td>
 	</tr>		
@@ -166,20 +169,26 @@
 	</fieldset>
 	<table align="left">
 	
-	<%if (automatico!=null && automatico.equals("1")){%>
-	<tr  >
-	  <td class="labelText" colspan="6"  >
-		<siga:Idioma key="gratuita.maestro.campoBloqueo.nota"/>
-	  </td>
-	</tr>
-	<%}%>	
+	<%if (!modo.equalsIgnoreCase("consulta")){%>
+		<%if (automatico!=null && automatico.equals("1")){%>
+		<tr>
+		  <td class="labelText" colspan="6"  >
+			<siga:Idioma key="gratuita.maestro.campoBloqueo.nota"/>
+		  </td>
+		</tr>
+		<%}%>
+	<%}%>		
 	</table>
 	
 	<!-- FIN: CAMPOS DEL REGISTRO -->
 
 	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 	<!-- INICIO: BOTONES REGISTRO -->
+	<%if (bReadOnly){ %>
+		<siga:ConjBotonesAccion botones="C" modal="P"  />
+	<%}else{%>
 		<siga:ConjBotonesAccion botones="Y,R,C" modal="P"  />
+	<%}%>
 	<!-- FIN: BOTONES REGISTRO -->
 	
 	<!-- INICIO: SCRIPTS BOTONES -->

@@ -126,8 +126,8 @@
 		   nombre="listadoDocumentacion"
 		   borde="2"
 		   clase="tableTitle"		   
-		   nombreCol="gratuita.operarEJG.literal.fecha,pestana.justiciagratuitaejg.estados,pestana.justiciagratuitaejg.observaciones,pestana.justiciagratuitaejg.automatico,"
-		   tamanoCol="10,30,40,10,10"
+		   nombreCol="gratuita.operarEJG.literal.fecha,pestana.justiciagratuitaejg.estados,pestana.justiciagratuitaejg.observaciones,pestana.justiciagratuitaejg.automatico,Propietario,"
+		   tamanoCol="10,25,35,10,10,10"
 		   			alto="100%"
 		   			ajusteBotonera="true"		
 
@@ -135,19 +135,37 @@
 		  >
   	<%if (obj.size()>0){
 	    	int recordNumber=1;
+			boolean blPropietarioComision = false;
+			String stPropietario;
+			boolean blAutomatico = false;
 			while (recordNumber-1 < obj.size())
 			{			
 				fila = (Hashtable)obj.get(recordNumber-1);
 				String automatico=(String)fila.get("AUTOMATICO");
+				if(fila.get("PROPIETARIOCOMISION")!=null && fila.get("PROPIETARIOCOMISION").toString().equalsIgnoreCase("1")){
+					blPropietarioComision=true;
+					stPropietario="CAJG";
+				}else{
+					blPropietarioComision=false;
+					stPropietario="ICA";
+				}
+
 				if (automatico.equals("1")){
 				 automatico="Si";
+				 stPropietario="";
+				 blAutomatico=true;
 				}else{
 				 automatico="No";
+				 blAutomatico=false;
 				}
-				if (fila.get("AUTOMATICO").equals("0")) {
-				 botones="E,B";
+				if((usr.isComision()&&blPropietarioComision)||(!usr.isComision()&&!blPropietarioComision)){
+					if (!blAutomatico) {
+					 	botones="C,E,B";
+					}else{
+					 	botones="C";
+					}
 				}else{
-				 botones="E";
+					botones="C";
 				}
 				
 				
@@ -162,6 +180,7 @@
 					</td>
 					<td><%=automatico%>&nbsp;
 					</td>
+					<td><%=stPropietario%>&nbsp; </td>
 				</siga:FilaConIconos>		
 		<% recordNumber++;		   
 		} %>

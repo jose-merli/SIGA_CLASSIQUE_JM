@@ -2398,6 +2398,7 @@
 			<forward name="inicio" path="/html/jsp/gratuita/listadoEstadosEJG.jsp"/>
 			<forward name="insertar" path="/html/jsp/gratuita/insertarEstadoEJG.jsp"/>
 			<forward name="editar" path="/html/jsp/gratuita/insertarEstadoEJG.jsp"/>
+			<forward name="ver" path="/html/jsp/gratuita/insertarEstadoEJG.jsp"/>
 		</action>
 
 		<action path="/JGR_UnidadFamiliarEJG" type="com.siga.gratuita.action.DefinirUnidadFamiliarEJGAction" name="DefinirUnidadFamiliarEJGForm" scope="request">

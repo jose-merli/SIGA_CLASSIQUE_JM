@@ -97,7 +97,27 @@ public class DefinirEstadosEJGAction extends MasterAction
 						  HttpServletResponse response)
 			throws SIGAException
 	{		
-		return null;
+		Vector v=new Vector();
+	   try{
+		Hashtable miHash = new Hashtable();
+		Vector ocultos = formulario.getDatosTablaOcultos (0);			
+		DefinirEstadosEJGForm miForm = (DefinirEstadosEJGForm) formulario; 
+		miHash.put (ScsEstadoEJGBean.C_IDESTADOPOREJG, ocultos.get(0));
+		miHash.put (ScsEstadoEJGBean.C_IDTIPOEJG, miForm.getIdTipoEJG ());
+		miHash.put (ScsEstadoEJGBean.C_ANIO, miForm.getAnio ());
+		miHash.put (ScsEstadoEJGBean.C_NUMERO, miForm.getNumero ());
+		miHash.put (ScsEstadoEJGBean.C_IDINSTITUCION, this.getUserBean(request).getLocation ());
+		ScsEstadoEJGAdm  estadoEJGAdm=new ScsEstadoEJGAdm(this.getUserBean(request));
+		v=estadoEJGAdm.selectByPK(miHash);
+		request.getSession ().setAttribute ("EJG", miHash);
+		
+		request.setAttribute ("resultado", v);
+		request.setAttribute("modo","consulta");
+	   }catch (Exception e){
+	   	throwExcp ("messages.general.error", e, null);
+	   	
+	   }
+		return "ver";
 	} //ver ()
 	
 	/**
@@ -143,6 +163,8 @@ public class DefinirEstadosEJGAction extends MasterAction
 			miHash = miForm.getDatos ();
 			admBean.prepararInsert (miHash);
 			miHash.put(ScsEstadoEJGBean.C_AUTOMATICO,ClsConstants.DB_FALSE);
+			if(usr.isComision())
+				miHash.put(ScsEstadoEJGBean.C_PROPIETARIOCOMISION,ClsConstants.DB_TRUE);
 			tx = usr.getTransaction ();
 			tx.begin ();
 			admBean.insert (miHash);
@@ -176,6 +198,8 @@ public class DefinirEstadosEJGAction extends MasterAction
 			Hashtable miHash = new Hashtable ();
 			miHash = miForm.getDatos ();
 			admBean.prepararUpdate (miHash);
+			if(usr.isComision())
+				miHash.put(ScsEstadoEJGBean.C_PROPIETARIOCOMISION,ClsConstants.DB_TRUE);
 			tx = usr.getTransaction ();
 			tx.begin ();
 			admBean.updateDirect(miHash,null,null);

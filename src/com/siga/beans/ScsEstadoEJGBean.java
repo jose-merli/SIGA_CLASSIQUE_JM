@@ -24,6 +24,7 @@ public class ScsEstadoEJGBean extends MasterBean
 	static public final String	C_FECHAINICIO		= "FECHAINICIO";
 	static public final String	C_OBSERVACIONES		= "OBSERVACIONES";
 	static public final String	C_AUTOMATICO		= "AUTOMATICO";
+	static public final String	C_PROPIETARIOCOMISION		= "PROPIETARIOCOMISION";
 	
 	
 	//////////////////// ATRIBUTOS ////////////////////
@@ -36,6 +37,7 @@ public class ScsEstadoEJGBean extends MasterBean
 	private String 	fechaInicio;
 	private String 	observaciones;
 	private String 	automatico;
+	private String 	propietarioComision;
 	
 	
 	//////////////////// SETTERS ////////////////////
@@ -47,6 +49,8 @@ public class ScsEstadoEJGBean extends MasterBean
 	public void setIdEstadoEJG		(Integer valor) {this.idEstadoEJG		= valor;}
 	public void setFechaInicio		(String	 valor) {this.fechaInicio		= valor;}
 	public void setObservaciones	(String	 valor) {this.observaciones		= valor;}
+	public void setAutomatico		(String  valor) {this.automatico 		= valor;}
+	public void setPropietarioComisino (String	 valor) {this.propietarioComision = valor;}
 	
 	
 	//////////////////// GETTERS ////////////////////
@@ -58,16 +62,7 @@ public class ScsEstadoEJGBean extends MasterBean
 	public Integer	getIdEstadoEJG		() {return this.idEstadoEJG;}
 	public String	getFechaInicio		() {return this.fechaInicio;}
 	public String	getObservaciones	() {return this.observaciones;}
-	/**
-	 * @return Returns the automatico.
-	 */
-	public String getAutomatico() {
-		return this.automatico;
-	}
-	/**
-	 * @param automatico The automatico to set.
-	 */
-	public void setAutomatico(String valor) {
-		this.automatico = valor;
-	}
+	public String 	getAutomatico		() {return this.automatico;}
+	public String	getPropietarioComision	() {return this.propietarioComision;}
+	
 }

@@ -40,7 +40,8 @@ public class ScsEstadoEJGAdm extends MasterBeanAdministrador
 				ScsEstadoEJGBean.C_FECHAMODIFICACION,
 				ScsEstadoEJGBean.C_USUMODIFICACION,
 				ScsEstadoEJGBean.C_OBSERVACIONES,
-				ScsEstadoEJGBean.C_AUTOMATICO
+				ScsEstadoEJGBean.C_AUTOMATICO,
+				ScsEstadoEJGBean.C_PROPIETARIOCOMISION
 		};
 		
 		return campos;
@@ -78,6 +79,7 @@ public class ScsEstadoEJGAdm extends MasterBeanAdministrador
 			bean.setFechaMod (UtilidadesHash.getString (hash, ScsEstadoEJGBean.C_FECHAMODIFICACION));
 			bean.setObservaciones(UtilidadesHash.getString(hash, ScsEstadoEJGBean.C_OBSERVACIONES));
 			bean.setAutomatico(UtilidadesHash.getString(hash, ScsEstadoEJGBean.C_AUTOMATICO));
+			bean.setPropietarioComisino(UtilidadesHash.getString(hash, ScsEstadoEJGBean.C_PROPIETARIOCOMISION));
 		}
 		catch (Exception e) {
 			 throw new ClsExceptions (e,
@@ -107,6 +109,7 @@ public class ScsEstadoEJGAdm extends MasterBeanAdministrador
 			htData.put (ScsEstadoEJGBean.C_USUMODIFICACION,		b.getUsuMod ());
 			htData.put (ScsEstadoEJGBean.C_OBSERVACIONES,		b.getObservaciones ());
 			htData.put (ScsEstadoEJGBean.C_AUTOMATICO,		    b.getAutomatico());
+			htData.put (ScsEstadoEJGBean.C_PROPIETARIOCOMISION,	b.getPropietarioComision());
 		}
 		catch (Exception e){
 			 throw new ClsExceptions (e,
