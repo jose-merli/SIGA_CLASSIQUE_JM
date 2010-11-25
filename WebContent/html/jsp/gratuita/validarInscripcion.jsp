@@ -436,14 +436,16 @@
 		
 						<td align="left"><logic:notEmpty name="InscripcionTGForm"
 							property="retenciones">
+							<html:select property="idRetencion" styleClass="boxCombo">
 								<logic:iterate name="InscripcionTGForm" property="retenciones"
 									id="retencion" indexId="index">
-									<html:select property="idRetencion" styleClass="boxCombo">
+									
 										<html:option value="${retencion.idRetencion}">
 											<c:out value="${retencion.descripcion}"></c:out>
 										</html:option>
+									</logic:iterate>
 									</html:select>
-								</logic:iterate>
+								
 							</logic:notEmpty>
 						</td>
 					</tr>
