@@ -24,7 +24,9 @@ import com.siga.general.MasterForm;
 	 String anioCAJG;
 	 String numeroCAJG;
 	 
- 	public void setRefAuto 					(String refAuto)					{ this.datos.put(ScsEJGBean.C_REFAUTO, refAuto);									}
+	 
+ 	public void setRefAuto 					(String refAuto)					{ this.datos.put(ScsEJGBean.C_REFAUTO, refAuto);									} 	
+ 	
 	/**
 	 * Almacena en la Hashtable el anho del EJG 
 	 * 
@@ -661,6 +663,13 @@ import com.siga.general.MasterForm;
 	public String getIdTipoResolAuto() 				{return UtilidadesHash.getString(this.datos, ScsEJGBean.C_IDTIPORESOLAUTO);		}
 	public void setIdTipoResolAuto(String dato)		{this.datos.put(ScsEJGBean.C_IDTIPORESOLAUTO, dato);								}
 	
+	public String getIdRenuncia() {
+		return idRenuncia;
+	}
+	public void setIdRenuncia(String idRenuncia) {
+		this.idRenuncia = idRenuncia;
+	}
+
 	public String getIdTipoSentidoAuto() 				{return UtilidadesHash.getString(this.datos, ScsEJGBean.C_IDTIPOSENTIDOAUTO);		}
 	public void setIdTipoSentidoAuto(String dato)		{this.datos.put(ScsEJGBean.C_IDTIPOSENTIDOAUTO, dato);								}
 	
@@ -673,7 +682,10 @@ import com.siga.general.MasterForm;
 	
 	String rutaFicheroDownload, ficheroDownload, borrarFicheroDownload;
 	String fechaAperturaDesde, fechaAperturaHasta, fechaLimitePresentacionDesde, fechaLimitePresentacionHasta, fechaEstadoDesde, fechaEstadoHasta, fechaDictamenDesde, fechaDictamenHasta;
+	String idRenuncia="";
 	
+	
+
     public String getBorrarFicheroDownload() {
         return borrarFicheroDownload;
     }
