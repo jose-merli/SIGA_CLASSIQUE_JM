@@ -21,6 +21,7 @@ import com.siga.Utilidades.AjaxCollectionXmlBuilder;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.ScsAsistenciasAdm;
 import com.siga.beans.ScsAsistenciasBean;
+import com.siga.beans.ScsDefendidosDesignaAdm;
 import com.siga.beans.ScsDesignaAdm;
 import com.siga.beans.ScsDesignaBean;
 import com.siga.beans.ScsDesignasLetradoAdm;
@@ -40,6 +41,7 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.BuscarDesignasForm;
+import com.siga.gratuita.form.BusquedaDesignasForm;
 import com.siga.gratuita.form.MaestroDesignasForm;
 import com.siga.gratuita.form.VolantesExpressForm;
 import com.siga.ws.CajgConfiguracion;
@@ -110,7 +112,7 @@ public class MaestroDesignasAction extends MasterAction {
 		ScsDesignaBean beanDesigna = null;
 		String idJuzgado = "" ;
 		MaestroDesignasForm miform = (MaestroDesignasForm)formulario;
-		
+		String idtipoencalidad="";
 		try {
 			turno = new ScsTurnoAdm(this.getUserBean(request));
 			guardia = new ScsGuardiasTurnoAdm(this.getUserBean(request));
@@ -135,6 +137,7 @@ public class MaestroDesignasAction extends MasterAction {
 				UtilidadesHash.set(resultado,ScsDesignaBean.C_IDTURNO,				(String)request.getParameter("IDTURNO"));
 			}
 			
+			
 			// jbd 01/02/2010 Pasamos el valor del pcajg del colegio
 			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
 			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
@@ -144,6 +147,15 @@ public class MaestroDesignasAction extends MasterAction {
 			Vector vDesignas = admDesigna.select(resultado);
 			beanDesigna = (ScsDesignaBean)vDesignas.get(0);
 			request.setAttribute("beanDesigna",beanDesigna);
+			
+			//Se recupera el campo calidad, si tiene para el interesado de la designa.
+			//para que se pase el dato a la jsp,y para cuando le damos al botón volver
+			//vuelva con los datos de la busqueda que se realizo.
+			ScsDefendidosDesignaAdm defendidosAdm = new ScsDefendidosDesignaAdm(usr);
+			idtipoencalidad= defendidosAdm.getidTipoEnCalidad(resultado);
+			
+		
+			
 			
 			//recuperando el idJuzgado.
 			 idJuzgado = beanDesigna.getIdJuzgado().toString();
@@ -163,6 +175,12 @@ public class MaestroDesignasAction extends MasterAction {
 			UtilidadesHash.set(resultado,"TURNO", 								nombreTurno);
 			UtilidadesHash.set(resultado,"TIPODESIGNA",							nombreTipoDesigna);
 			
+			if ((idtipoencalidad!=null)&&(idtipoencalidad.equals(""))){
+				UtilidadesHash.set(resultado,"CALIDAD", idtipoencalidad);
+			}else{
+				UtilidadesHash.set(resultado,"CALIDAD", "");
+			}
+				
 			ses.setAttribute("resultado",resultado);	
 			
 			ScsAsistenciasBean asistenciaBean = null;
@@ -251,6 +269,8 @@ public class MaestroDesignasAction extends MasterAction {
 			HttpSession ses = (HttpSession)request.getSession();
 			UsrBean usr = (UsrBean)ses.getAttribute("USRBEAN");
 			MaestroDesignasForm miform = (MaestroDesignasForm)formulario;
+			
+		
 			Vector visibles = (Vector)miform.getDatosTablaVisibles(0);
 			Vector ocultos = (Vector)miform.getDatosTablaOcultos(0);
 			String idturno ="", anio="",numero="";
@@ -269,6 +289,7 @@ public class MaestroDesignasAction extends MasterAction {
 				estado= miform.getEstado();
 			}
 			
+		
 			
 			Hashtable elegido = new Hashtable();
 			elegido.put(ScsDesignaBean.C_IDINSTITUCION, usr.getLocation());
