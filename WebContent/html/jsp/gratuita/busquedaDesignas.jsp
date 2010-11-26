@@ -40,6 +40,10 @@
 	ArrayList acreditacion   = new ArrayList();
 	ArrayList modulo   = new ArrayList();
 	anio = UtilidadesBDAdm.getYearBD("");
+		String calidadidinstitucion="";
+	String idcalidad="";
+	ArrayList calidadSel = new ArrayList();
+String[] getdatos = { usr.getLocation() };
 	
 	// inc6845 // fechaAperturaInicio=UtilidadesBDAdm.getFechaBD("");
 	fechaAperturaInicio="";
@@ -57,7 +61,7 @@
 			tipoDesigna=(String)datos.get("IDTIPODESIGNACOLEGIO");
 			actuacionesPendientes=(String)datos.get("ACTUACIONES_PENDIENTES");
 			estado =(String)datos.get("ESTADO");
-			calidad =(String)datos.get("CALIDAD");									
+			calidad =(String)datos.get("CALIDAD");		
 			juzgado.add((String)datos.get("JUZGADO"));
 			procedimiento =(String)datos.get("PROCEDIMIENTO");						
 			asunto =(String)datos.get("ASUNTO");			
@@ -79,7 +83,20 @@
 			apellido2=(String)datos.get("APELLIDO2");
 			
 			if (datos.get("NombreMostrado")!=null)
-			nombreMostrado = (String)datos.get("NombreMostrado");		
+			nombreMostrado = (String)datos.get("NombreMostrado");
+			
+			if (datos.get("IDTIPOENCALIDAD")!=null){
+				if (datos.get("CALIDADIDINSTITUCION")!=null){
+					calidadidinstitucion	=  datos.get("CALIDADIDINSTITUCION").toString();
+					idcalidad = datos.get("IDTIPOENCALIDAD").toString();
+					calidadSel.add(0,idcalidad+","+calidadidinstitucion);
+				} 
+			}else{
+				if (!calidad.equals("")&&(calidad!=null)){					
+					calidadSel.add(0,calidad+","+idInstitucion);
+				}
+			}
+			
 		}
 	
 
@@ -288,52 +305,33 @@
 	<siga:ConjCampos leyenda="gratuita.busquedaEJG.literal.defensa" desplegable="true" oculto="true">
 		<table  border="0" align="center" width="100%">
 		<tr>
-		<td class="labelText" colspan="1">
-			<siga:Idioma key="gratuita.personaJG.literal.calidad"/>
-		</td>
-		<td class="labelText" colspan="2">
-				<Select name="calidad" class="boxCombo">
-					<%if(calidad!=null && !calidad.equals("")){%>
-						<%if(calidad.equals("D")){%>			
-							<option value=""></option>
-							<option value="D" selected><siga:Idioma key="gratuita.personaJG.calidad.literal.demandante"/></option>
-							<option value="O"><siga:Idioma key="gratuita.personaJG.calidad.literal.demandado"/></option>
-						<%}%>
-						<%if(calidad.equals("O")){%>
-							<option value=""></option>
-							<option value="D"><siga:Idioma key="gratuita.personaJG.calidad.literal.demandante"/></option>
-							<option value="O" selected><siga:Idioma key="gratuita.personaJG.calidad.literal.demandado"/></option>
-						<%}%>
-					<%}else{%>	
-						<option value="" selected></option>
-						<option value="D"><siga:Idioma key="gratuita.personaJG.calidad.literal.demandante"/></option>
-						<option value="O"><siga:Idioma key="gratuita.personaJG.calidad.literal.demandado"/></option>
-					<%}%>					
-				</Select>
-		</td> 
-		
-		<td class="labelText" >
-			<siga:Idioma key="gratuita.mantAsistencias.literal.juzgado"/>
-		</td>
-		
-		<td class="labelText" >
-	
-			<input type="text" name="codigoExtJuzgado" class="box" size="10"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado();" />
-			<siga:ComboBD nombre="juzgado" tipo="comboJuzgados" ancho="534" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  hijo="t" elementoSel="<%=juzgado%>" parametro="<%=dato%>" />           	   
-		</td>
-		</tr><tr>
-		<td class="labelText" colspan="1">
-			<siga:Idioma key="informes.cartaAsistencia.procedimiento"/>
-		</td>
-		<td class="labelText" colspan="2">
-			<html:text name="BuscarDesignasForm" property="procedimiento" size="15" maxlength="100" styleClass="box"  value="<%=procedimiento%>"></html:text>
-		</td>
-		<td class="labelText">	
-			<siga:Idioma key="informes.cartaAsistencia.asunto"/>
-		</td>	
-		<td class="labelText">
-			<html:text name="BuscarDesignasForm" property="asunto" size="15" maxlength="100" styleClass="box"  value="<%=asunto%>"></html:text>
-		</td>
+				<td class="labelText">
+					<siga:Idioma key="gratuita.personaJG.literal.calidad" /></td>
+				<td colspan="1">
+						&nbsp;<siga:ComboBD nombre="calidad" tipo="ComboCalidades" ancho="140" clase="boxCombo" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=dato%>" elementoSel="<%=calidadSel%>" hijo="t" readonly="false"/>
+				</td>
+				<td class="labelText">
+					<siga:Idioma key="gratuita.mantAsistencias.literal.juzgado" /></td>
+				<td class="labelText">
+					<input type="text" name="codigoExtJuzgado" class="box" size="7" style="margin-top: 3px;" maxlength="10" onBlur="obtenerJuzgado();" />
+				</td>
+				<td class="labelText">
+					<siga:ComboBD nombre="juzgado" tipo="comboJuzgados" ancho="450" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" hijo="t" elementoSel="<%=juzgado%>" parametro="<%=dato%>" />
+				</td>
+		</tr>
+		<tr>
+			<td class="labelText" >
+				<siga:Idioma key="informes.cartaAsistencia.procedimiento"/>
+			</td>
+			<td class="labelText" >
+				<html:text name="BuscarDesignasForm" property="procedimiento" size="17" maxlength="100" styleClass="box"  value="<%=procedimiento%>"></html:text>
+			</td>
+			<td class="labelText">	
+				<siga:Idioma key="informes.cartaAsistencia.asunto"/>
+			</td>	
+			<td class="labelText">
+				<html:text name="BuscarDesignasForm" property="asunto" size="15" maxlength="100" styleClass="box"  value="<%=asunto%>"></html:text>
+			</td>
 		</tr>
 		
 		</table>
