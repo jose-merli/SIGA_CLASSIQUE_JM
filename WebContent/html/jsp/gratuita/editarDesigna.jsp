@@ -89,6 +89,7 @@
 	String auxJuicio = "";
 	String sHorasJuicio = "";
 	String sMinutosJuicio = "";
+	String calidad ="";
 
 	
 	String estilo = "box", readOnly="false", estiloCombo="boxCombo";
@@ -121,6 +122,7 @@
 			fecha = GstDate.getFormatedDateShort("", (String) resultado.get("FECHAFIN"));
 		procurador = (String) resultado.get("PROCURADOR");
 		asunto = (String) resultado.get("RESUMENASUNTO");
+		calidad = (String) resultado.get("CALIDAD");
 		try {
 
 			fechaEstado = GstDate.getFormatedDateShort("",
@@ -297,10 +299,10 @@
 		//<!-- Asociada al boton Volver -->
 		function accionVolver() 
 		{		
-			document.forms[0].action="JGR_Designas.do";
-			document.forms[0].modo.value="volverBusqueda";
+			document.BuscarDesignasForm.action="JGR_Designas.do";
+			document.BuscarDesignasForm.modo.value="volverBusqueda";
 
-			document.forms[0].submit();
+			document.BuscarDesignasForm.submit();
 		}
 
 		
@@ -565,8 +567,8 @@ function accionCerrar() {
 <table class="tablaCentralCampos" height="420" align="center" >
 	<html:form action="JGR_Designas.do" method="POST" target="mainWorkArea">
 		<html:hidden name="MaestroDesignasForm" property="modo" value="" />
-		<html:hidden name="MaestroDesignasForm" property="idTurno"
-			value="<%=idTurno%>" />
+		<html:hidden name="MaestroDesignasForm" property="idTurno" value="<%=idTurno%>" />
+		<html:hidden name="BuscarDesignasForm" property="calidad" value="<%=calidad%>" />	
 		<input type="hidden" name="modificarDesigna" value="0">
 		<html:hidden property="compensar" value="" />
 		<tr>

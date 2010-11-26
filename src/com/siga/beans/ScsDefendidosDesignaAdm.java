@@ -281,5 +281,38 @@ public class ScsDefendidosDesignaAdm extends MasterBeanAdministrador {
 		}
 		return datos;                        
 	}
-
+	
+	public String getidTipoEnCalidad (Hashtable claves) throws ClsExceptions, SIGAException {
+		RowsContainer rc = null;
+		
+		try { rc = new RowsContainer(); }
+		catch(Exception e) { e.printStackTrace(); }
+		
+		try {		
+			String sql = "  Select Def.idtipoencalidad as IDTIPOENCALIDAD From Scs_Defendidosdesigna Def"+ 
+			  			 " Where Def.Idinstitucion ="  +  UtilidadesHash.getLong(claves,ScsDefendidosDesignaBean.C_IDINSTITUCION)+
+						 " And Def.Numero = " + UtilidadesHash.getLong(claves, ScsDefendidosDesignaBean.C_NUMERO) +
+						 " And Def.Anio =" + UtilidadesHash.getInteger(claves, ScsDefendidosDesignaBean.C_ANIO) + 
+						 " AND Def.Idturno = " + UtilidadesHash.getLong(claves, ScsDefendidosDesignaBean.C_IDTURNO);
+			
+			
+			// RGG cambio visibilidad
+			rc = this.findForUpdate(sql);
+			if (rc!=null) {
+				Row fila = (Row) rc.get(0);
+				Hashtable prueba = fila.getRow();
+				String registros = UtilidadesHash.getString(prueba, "IDTIPOENCALIDAD");
+				if (registros != null) {
+					return registros;
+				}
+			}
+		}	
+		catch (ClsExceptions e) {		
+			throw new ClsExceptions (e, "Error al ejecutar el 'select' en getidTipoEnCalidad() para verificar si hay mas datos en B.D.");		
+		}
+		return "";
+	}
+	
+	
+	
 }

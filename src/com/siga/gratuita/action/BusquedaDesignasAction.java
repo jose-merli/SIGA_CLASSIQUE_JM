@@ -1536,7 +1536,8 @@ public class BusquedaDesignasAction extends MasterAction {
 				//resultado = admBean.selectGenerico(consulta);
 				//request.getSession().setAttribute("resultado",v);
 			}
-			// En "DATOSFORMULARIO" almacenamos el identificador del letrado			 			 
+		
+			// En "DATOSFORMULARIO" almacenamos el identificador del letrado			
 			miHash.put("BUSQUEDAREALIZADA","1");
 			request.getSession().setAttribute("DATOSFORMULARIO",miHash);	
 			request.getSession().setAttribute("BUSQUEDAREALIZADA", consulta.toString());
