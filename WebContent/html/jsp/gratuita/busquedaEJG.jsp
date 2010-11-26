@@ -63,9 +63,13 @@
 	ArrayList juzgado = new ArrayList();
 	ArrayList idTurno = new ArrayList(), idGuardia = new ArrayList(), idTipoEJG = new ArrayList(), idTipoEJGColegio = new ArrayList(), idEstado = new ArrayList();
 	String cajgAnio="", cajgNumero ="";
-	
+	String idRenuncia="";
+	ArrayList renunciaSel = new ArrayList();
 	String ventanaCajg = request.getParameter("ventanaCajg");
-
+	String calidadidinstitucion="";
+	String idcalidad="";
+	ArrayList calidadSel = new ArrayList();
+	String idInstitucion = usr.getLocation();
 	try {
 
 		busquedaRealizada = miHash.get("BUSQUEDAREALIZADA").toString();
@@ -115,6 +119,29 @@
 			if (miHash.get(ScsEJGBean.C_NUMERO_CAJG) != null) {
 				cajgNumero=miHash.get(ScsEJGBean.C_NUMERO_CAJG).toString();
 			}
+			if (miHash.get(ScsEJGBean.C_IDRENUNCIA)!= null){
+				idRenuncia=miHash.get(ScsEJGBean.C_IDRENUNCIA).toString();
+				if (idRenuncia!=null)
+					renunciaSel.add(0,idRenuncia);	
+			}
+			
+			if (miHash.get(ScsEJGBean.C_IDTIPOENCALIDAD)!=null&&miHash.get(ScsEJGBean.C_IDTIPOENCALIDAD).equals("")){
+				if (miHash.get(ScsEJGBean.C_CALIDADIDINSTITUCION)!=null){
+					calidadidinstitucion	=  miHash.get(ScsEJGBean.C_CALIDADIDINSTITUCION).toString();
+					idcalidad = miHash.get(ScsEJGBean.C_IDTIPOENCALIDAD).toString();
+					calidadSel.add(0,idcalidad+","+calidadidinstitucion);
+				}
+					
+			}
+			else{ if (!calidad.equals("")&& calidad!=null){
+					calidadSel.add(0,calidad+","+idInstitucion);
+				}
+				
+
+			} 
+			
+
+			
 		}
 	} catch (Exception e) {
 	}
@@ -237,6 +264,7 @@
 		<html:hidden property = "selDefinitivo" value = ""/>
 		<html:hidden property = "idRemesa" value = "<%=idremesa%>"/>
 		<input type="hidden" name="volver" value="">
+	
 		
 
 	<siga:ConjCampos leyenda="gratuita.busquedaEJG.literal.EJG">
@@ -429,25 +457,8 @@
 			<tr>
 				<td class="labelText" colspan="1">
 					<siga:Idioma key="gratuita.personaJG.literal.calidad" /></td>
-				<td class="labelText" colspan="1">
-					<Select name="calidad" class="boxCombo">
-					<%if (!calidad.equals("")) {%>
-						<%if (calidad.equals("D")) {%>
-							<option value=""></option>
-							<option value="D" selected><siga:Idioma key="gratuita.personaJG.calidad.literal.demandante" /></option>
-							<option value="O"><siga:Idioma key="gratuita.personaJG.calidad.literal.demandado" /></option>
-						<%}%>
-						<%if (calidad.equals("O")) {%>
-							<option value=""></option>
-							<option value="D"><siga:Idioma key="gratuita.personaJG.calidad.literal.demandante" /></option>
-							<option value="O" selected><siga:Idioma key="gratuita.personaJG.calidad.literal.demandado" /></option>
-						<%}%>
-					<%}else{%>
-						<option value="" selected></option>
-						<option value="D"><siga:Idioma key="gratuita.personaJG.calidad.literal.demandante" /></option>
-						<option value="O"><siga:Idioma key="gratuita.personaJG.calidad.literal.demandado" /></option>
-					<%}%>
-					</Select>
+				<td colspan="1">
+					<siga:ComboBD nombre="calidad" tipo="ComboCalidades" ancho="140" clase="boxCombo" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=calidadSel%>" hijo="t" readonly="false"/>
 				</td>
 				<td class="labelText">
 					<siga:Idioma key="gratuita.mantAsistencias.literal.juzgado" /></td>
@@ -459,17 +470,13 @@
 				</td>
 			</tr>
 			<tr>
-				<td class="labelText">
-					<siga:Idioma key="informes.cartaAsistencia.procedimiento" />
+				<td class="labelText" colspan="1">
+					<siga:Idioma key="gratuita.operarEJG.literal.renuncia" />
 				</td>
-				<td class="labelText">
-					<html:text name="<%=formulario%>" property="procedimiento" size="14" maxlength="100" styleClass="box" value="<%=procedimiento%>"></html:text>
+				<td colspan="8">
+				 <siga:ComboBD nombre="idRenuncia" tipo="comboRenuncia" ancho="140" clase="boxCombo" filasMostrar="1"  seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=renunciaSel%>"  readonly="false"/>
 				</td>
-				<td class="labelText">
-					<siga:Idioma key="informes.cartaAsistencia.asunto" />
-				</td>
-				<td class="labelText" colspan="2">
-					<html:text name="<%=formulario%>" property="asunto" size="100" maxlength="100" styleClass="box" value="<%=asunto%>"></html:text>
+				<td>
 				</td>
 			</tr>
 		</table>
@@ -563,11 +570,10 @@
 			 }
 		}
 	
-		<!-- Funcion asociada a boton buscar -->
+		//<!-- Funcion asociada a boton buscar -->
 		function buscarPaginador(){		
 			
-				document.forms[1].modo.value = "buscarPor";
-				
+				document.forms[1].modo.value = "buscarPor";				
 				<%if(ventanaCajg.equalsIgnoreCase("2")){%>
 					document.forms[1].modo.value = "buscarListos";
 					document.forms[1].idRemesa.value=<%=idremesa%>;
@@ -599,14 +605,13 @@
 		}		
 		
 		function buscar(){ 
-			
 				
 				if ( !validarObjetoAnio(document.getElementById("anio")) ){
-					alert("<siga:Idioma key="fecha.error.anio"/>");
+					alert("<siga:Idioma key='fecha.error.anio'/>");
 					return false;
 				}
 				if ( !validarObjetoAnio(document.getElementById("anioCAJG")) ){
-					alert("<siga:Idioma key='gratuita.operarEJG.literal.CAJG'/> <siga:Idioma key="fecha.error.anio"/>");
+					alert("<siga:Idioma key='gratuita.operarEJG.literal.CAJG'/> <siga:Idioma key='fecha.error.anio'/>");
 					return false;
 				}
 	
@@ -660,7 +665,7 @@
 			
 		}		
 		
-		<!-- Funcion asociada a boton limpiar -->
+		//<!-- Funcion asociada a boton limpiar -->
 		function limpiar(){		
 			document.forms[1].reset();
 		}
@@ -669,7 +674,7 @@
 		 seleccionComboSiga("juzgado",resultado[0]);
 		}	
 		
-		<!-- Funcion asociada a boton Nuevo -->
+		//<!-- Funcion asociada a boton Nuevo -->
 		function nuevo(){
 			document.forms[1].modo.value = "nuevo";
 			var resultado=ventaModalGeneral(document.forms[1].name,"M");
@@ -693,7 +698,7 @@
 		    var dat = "";
 		    var datos = document.frames.resultado.document.getElementsByName("datosCarta");
 		    if (datos.length==0){
-		    	alert("<siga:Idioma key="general.message.seleccionar"/>");
+		    	alert("<siga:Idioma key='general.message.seleccionar'/>");
 			    fin();
 			    return false;
 			}
@@ -726,7 +731,7 @@
 			    var dat = "";
 			    var datos = document.frames.resultado.document.getElementsByName("datosCarta");
 			    if (datos.length==0){
-			    	alert("<siga:Idioma key="general.message.seleccionar"/>");
+			    	alert("<siga:Idioma key='general.message.seleccionar'/>");
 				    fin();
 				    return false;
 				}
@@ -771,7 +776,7 @@
 					<%}%>
 		}
 		
-		<!-- Accion de la busqueda CAJG -->
+		//<!-- Accion de la busqueda CAJG -->
 		function accionListoParaEnviar() 
 		{
 			try{

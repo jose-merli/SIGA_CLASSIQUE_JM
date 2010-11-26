@@ -322,7 +322,10 @@ public class DefinirEJGAction extends MasterAction
 		  if(miForm.getNumeroCAJG()!=null){
 			  miHash.put(ScsEJGBean.C_NUMERO_CAJG, miForm.getNumeroCAJG());
 		  }
-		  
+		  if(miForm.getIdRenuncia()!=null){
+			  miHash.put(ScsEJGBean.C_IDRENUNCIA, miForm.getIdRenuncia());
+		  }
+		
 		  request.getSession().setAttribute("DATOSFORMULARIO",miHash);			
 			
 		}catch (SIGAException e1) {
