@@ -268,7 +268,7 @@
 					<%=ncolegiado%>
 				</td>
 				<td>
-					<%=nombre+apellido1+" "+apellido2%>
+					<%=nombre+" "+apellido1+" "+apellido2%>
 				</td>
 				
 				<td>
