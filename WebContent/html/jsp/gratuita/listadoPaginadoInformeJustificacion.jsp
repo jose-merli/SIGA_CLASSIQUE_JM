@@ -530,757 +530,780 @@ function ajusteDivListado(){
 
 
 
-<bean:define id="usrBean" name="USRBEAN" scope="session" type="com.atos.utils.UsrBean"></bean:define>
+<bean:define id="usrBean" name="USRBEAN" scope="session"
+	type="com.atos.utils.UsrBean"></bean:define>
 
 <!-- FIN: TITULO OPCIONAL DE LA TABLA -->
 <!-- INICIO: CAMPOS -->
 <!-- Zona de campos de busqueda o filtro -->
-<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
-		<html:form action="${path}" method="post" target="submitArea" >
-			<html:hidden property="modo"  value="justificar"/>
-			
-			<html:hidden property="idPersona"/>
-			<html:hidden property="datosJustificacion"/>
-			<html:hidden property="datosBaja"/>
-			<html:hidden property="mostrarTodas"/>
-			<html:hidden property="fichaColegial"/>
+<bean:define id="path" name="org.apache.struts.action.mapping.instance"
+	property="path" scope="request" />
+<html:form action="${path}" method="post" target="submitArea">
+	<html:hidden property="modo" value="justificar" />
 
-			<input type="hidden" name="tablaDatosDinamicosD">
-			<input type="hidden" name="actionModal" value="">
-			
-			<c:choose>
-			<c:when test="${InformeJustificacionMasivaForm.fichaColegial==true}">
-				<html:hidden property="fecha"/>
-			</c:when>
-			<c:otherwise>
+	<html:hidden property="idPersona" />
+	<html:hidden property="datosJustificacion" />
+	<html:hidden property="datosBaja" />
+	<html:hidden property="mostrarTodas" />
+	<html:hidden property="fichaColegial" />
+
+	<input type="hidden" name="tablaDatosDinamicosD">
+	<input type="hidden" name="actionModal" value="">
+
+	<c:choose>
+		<c:when test="${InformeJustificacionMasivaForm.fichaColegial==true}">
+			<html:hidden property="fecha" />
+		</c:when>
+		<c:otherwise>
 			<div>
-			
+
 			<table width="100%" border="0">
-			<tr>
-				<td width="75%">
-					&nbsp;
-				</td>
-				<td class="labelText">
-					<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.fecha.Justif"/>
-					<html:text property="fecha" size="10" styleClass="box" readOnly="true" />	
-					&nbsp;
-					<a id="iconoCalendarioA" onClick="return showCalendarGeneral(fecha);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<html:rewrite page="/html/imagenes/calendar_hi.gif',1);"/>">
-					<img src="<html:rewrite page='/html/imagenes/calendar.gif'/>" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
-				</td>
-			</tr>
-				
+				<tr>
+					<td width="75%">&nbsp;</td>
+					<td class="labelText"><siga:Idioma
+						key="gratuita.informeJustificacionMasiva.literal.fecha.Justif" />
+					<html:text property="fecha" size="10" styleClass="box"
+						readOnly="true" /> &nbsp; <a id="iconoCalendarioA"
+						onClick="return showCalendarGeneral(fecha);"
+						onMouseOut="MM_swapImgRestore();"
+						onMouseOver="MM_swapImage('Calendario','','<html:rewrite page="/html/imagenes/calendar_hi.gif',1);"/>">
+					<img src="<html:rewrite page='/html/imagenes/calendar.gif'/>"
+						alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"
+						border="0"></a></td>
+				</tr>
+
 			</table>
 			</div>
-			
-			</c:otherwise>
-			</c:choose>
-			
-			</html:form>
+
+		</c:otherwise>
+	</c:choose>
+
+</html:form>
 
 
-<table id='listadoInformeJustificacionCab' border='1' width='100%' cellspacing='0' cellpadding='0'>
-	<tr class = 'tableTitle'>
-            <td align='center' width="8%"><siga:Idioma key="gratuita.informeJustificacionMasiva.literal.designa"/></td>
-            <td align='center' width="8%"><siga:Idioma key="gratuita.informeJustificacionMasiva.literal.ejg"/></td>
-            <td align='center' width="12%"><siga:Idioma key="gratuita.informeJustificacionMasiva.literal.juzgado"/></td>
-            <td align='center' width="8%"><siga:Idioma key="gratuita.informeJustificacionMasiva.literal.fechaSalida"/></td>
-            <td align='center' width="8%"><siga:Idioma key="gratuita.informeJustificacionMasiva.literal.asunto"/></td>
-            <td align='center' width="15%"><siga:Idioma key="gratuita.informeJustificacionMasiva.literal.cliente"/></td>
-            <td align='center' width="4%"><siga:Idioma key="gratuita.informeJustificacionMasiva.literal.categoria"/></td>
-            <td align='center' width=4%"><siga:Idioma key="gratuita.informeJustificacionMasiva.literal.numeroActuacion"/></td>
-            <td align='center' width="15%"><siga:Idioma key="gratuita.informeJustificacionMasiva.literal.acreditaciones"/></td>
-            <td align='center' width="3%">V</td>
-            <td align='center' width="3%">&nbsp;</td>
-            <td align='center' width="3%">&nbsp;</td>
-            <td align='center' width="4%"><siga:Idioma key="gratuita.informeJustificacionMasiva.literal.baja"/></td>
-			
+<table id='listadoInformeJustificacionCab' border='1' width='100%'
+	cellspacing='0' cellpadding='0'>
+	<tr class='tableTitle'>
+		<td align='center' width="8%"><siga:Idioma
+			key="gratuita.informeJustificacionMasiva.literal.designa" /></td>
+		<td align='center' width="8%"><siga:Idioma
+			key="gratuita.informeJustificacionMasiva.literal.ejg" /></td>
+		<td align='center' width="12%"><siga:Idioma
+			key="gratuita.informeJustificacionMasiva.literal.juzgado" /></td>
+		<td align='center' width="8%"><siga:Idioma
+			key="gratuita.informeJustificacionMasiva.literal.fechaSalida" /></td>
+		<td align='center' width="8%"><siga:Idioma
+			key="gratuita.informeJustificacionMasiva.literal.asunto" /></td>
+		<td align='center' width="15%"><siga:Idioma
+			key="gratuita.informeJustificacionMasiva.literal.cliente" /></td>
+		<td align='center' width="4%"><siga:Idioma
+			key="gratuita.informeJustificacionMasiva.literal.categoria" /></td>
+		<td align='center' width=4%"><siga:Idioma
+			key="gratuita.informeJustificacionMasiva.literal.numeroActuacion" /></td>
+		<td align='center' width="15%"><siga:Idioma
+			key="gratuita.informeJustificacionMasiva.literal.acreditaciones" /></td>
+		<td align='center' width="3%">V</td>
+		<td align='center' width="3%">&nbsp;</td>
+		<td align='center' width="3%">&nbsp;</td>
+		<td align='center' width="4%"><siga:Idioma
+			key="gratuita.informeJustificacionMasiva.literal.baja" /></td>
+
 	</tr>
 </table>
 <!-- 2. Pintamos el contenido de la tabla -->
-<div id='listadoInformeJustificacionDiv' style='height:400;width:100%; overflow-y:auto'>
-<table id='listadoInformeJustificacion' border='1' align='center' width='100%' cellspacing='0' cellpadding='0' style='table-layout:fixed'>
+<div id='listadoInformeJustificacionDiv'
+	style='height: 400; width: 100%; overflow-y: auto'>
+<table id='listadoInformeJustificacion' border='1' align='center'
+	width='100%' cellspacing='0' cellpadding='0'
+	style='table-layout: fixed'>
 	<tr>
-			<td width="8%"></td>
-			<td width="8%"></td>
-			<td width="12%"></td>
-			<td width="8%"></td>
-			<td width="8%"></td>
-			<td width="15%"></td>
-			<td width="4%"></td>
-			<td width="4%"></td>
-			<td width="15%"></td>
-			<td width="3%"></td>
-			<td width="3%"></td>
-			<td width="3%"></td>
-			<td width="4%"></td>
+		<td width="8%"></td>
+		<td width="8%"></td>
+		<td width="12%"></td>
+		<td width="8%"></td>
+		<td width="8%"></td>
+		<td width="15%"></td>
+		<td width="4%"></td>
+		<td width="4%"></td>
+		<td width="15%"></td>
+		<td width="3%"></td>
+		<td width="3%"></td>
+		<td width="3%"></td>
+		<td width="4%"></td>
 	</tr>
-<bean:define id="permitirBotones" name="permitirBotones" scope="request"></bean:define>
-	
-<bean:define id="designaFormList" name="designaFormList" scope="request"></bean:define>
-<bean:define id="paginaSeleccionada" name="paginaSeleccionada" scope="request"></bean:define>
-<bean:define id="totalRegistros" name="totalRegistros" scope="request"></bean:define>
-<bean:define id="registrosPorPagina" name="registrosPorPagina" scope="request"></bean:define>
-<c:choose>
-   <c:when test="${empty designaFormList}">
-		<br>
-	   		 <p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
-	 		<br>
-   </c:when>
-   <c:otherwise>
-     
-   
-	<c:forEach items="${designaFormList}" var="designa" varStatus="status">                 
-		<input type="hidden" id="anio_${status.count}" value="${designa.anio}">  
-		<input type="hidden" id="numero_${status.count}" value="${designa.numero}">
-		<input type="hidden" id="idTurno_${status.count}" value="${designa.idTurno}">
-		<input type="hidden" id="idInstitucion_${status.count}" value="${designa.idInstitucion}">
-		<input type="hidden" id="actuacionRestriccionesActiva_${status.count}" value="${designa.actuacionRestriccionesActiva}">
-		<input type="hidden" id="actuacionValidarJustificaciones_${status.count}" value="${designa.actuacionValidarJustificaciones}">
-		
-		
-		<input type="hidden" id="fechaDesigna_${status.count}" value="${designa.fecha}">
-		
-		<c:set var="disabledPorCambioLetrado" value=""/>
-		
-		<c:if test="${(designa.cambioLetrado=='S'&&InformeJustificacionMasivaForm.fichaColegial==true)}">
-			<c:set var="disabledPorCambioLetrado" value="disabled='disabled'"/>
-		</c:if>
-		
-		<c:set var="valiDisabled" value=""/>
-		<c:if test="${(designa.actuacionValidarJustificaciones!=null && designa.actuacionValidarJustificaciones=='N')||usrBean.letrado==true||(designa.cambioLetrado=='S'&&InformeJustificacionMasivaForm.fichaColegial==true)}">
-			<c:set var="valiDisabled" value="disabled='disabled'"/>
-		</c:if>
-		
-		<tr id="fila_${status.count}" class="filaTablaImpar">
-		
+	<bean:define id="permitirBotones" name="permitirBotones"
+		scope="request"></bean:define>
 
-		<td rowspan="${designa.rowSpan}"><c:out value="${designa.codigoDesigna}"/></td>
-		
-		<td rowspan="${designa.rowSpan}">
-			<c:choose>
-				<c:when test="${designa.ejgs!=null && designa.ejgs!=''}">
-					<c:out value="${designa.ejgs}"></c:out>
-				</c:when>
-				<c:otherwise>
-					  &nbsp;
-				</c:otherwise>
-			</c:choose>
-		
-		</td>
-		<td rowspan="${designa.rowSpan}">
-			<c:choose>
-				<c:when test="${designa.juzgado!=null && designa.juzgado!=''}">
-					<c:out value="${designa.juzgado}"></c:out>
-				</c:when>
-				<c:otherwise>
-					  &nbsp;
-				</c:otherwise>
-			</c:choose>
-		
-		 </td>
-		<td rowspan="${designa.rowSpan}"><c:out value="${designa.fecha}"/></td>
-		<td rowspan="${designa.rowSpan}">
-			<c:choose>
-				<c:when test="${designa.asunto!=null && designa.asunto!=''}">
-					<c:out value="${designa.asunto}"></c:out>
-				</c:when>
-				<c:otherwise>
-					  &nbsp;
-				</c:otherwise>
-			</c:choose>
-		
-		 </td>
-		<td rowspan="${designa.rowSpan}">
-			<c:choose>
-				<c:when test="${designa.clientes!=null && designa.clientes!=''}">
-					<c:out value="${designa.clientes}"></c:out>
-				</c:when>
-				<c:otherwise>
-					  &nbsp;
-				</c:otherwise>
-			</c:choose>
-		
-		 </td>
-		
-		
-		<c:choose>
-			<c:when test="${designa.juzgado==''&&empty designa.actuaciones}">
-				<td align="center" rowspan="${designa.rowSpan}" colspan="3">
-					<siga:Idioma key="gratuita.informeJustificacionMasiva.aviso.sinJuzgado"/>
-				</td>
-				<td rowspan="${designa.rowSpan}">
-					<input type="checkbox" disabled="disabled"/>
-				</td>
-				<td rowspan="${designa.rowSpan}">
-
-					<c:choose>
-						<c:when test="${permitirBotones==true && designa.estado!=null && designa.estado=='V' &&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
-							<img id="iconoboton_editar1" src="/SIGA/html/imagenes/beditar_off.gif" style="cursor:hand;" alt="Editar" name="editar_1" border="0" onClick="accionEditarDesigna(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion});" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('editar_1','','/SIGA/html/imagenes/beditar_on.gif',1)">
+	<bean:define id="designaFormList" name="designaFormList"
+		scope="request"></bean:define>
+	<bean:define id="paginaSeleccionada" name="paginaSeleccionada"
+		scope="request"></bean:define>
+	<bean:define id="totalRegistros" name="totalRegistros" scope="request"></bean:define>
+	<bean:define id="registrosPorPagina" name="registrosPorPagina"
+		scope="request"></bean:define>
+	<c:choose>
+		<c:when test="${empty designaFormList}">
+			<tr>
+				<td colspan="13" class="titulitos" style="text-align: center"><siga:Idioma
+					key="messages.noRecordFound" /></td>
+			<tr>
+		</c:when>
+		<c:otherwise>
+			<c:forEach items="${designaFormList}" var="designa"
+				varStatus="status">
+				<input type="hidden" id="anio_${status.count}"
+					value="${designa.anio}">
+				<input type="hidden" id="numero_${status.count}"
+					value="${designa.numero}">
+				<input type="hidden" id="idTurno_${status.count}"
+					value="${designa.idTurno}">
+				<input type="hidden" id="idInstitucion_${status.count}"
+					value="${designa.idInstitucion}">
+				<input type="hidden"
+					id="actuacionRestriccionesActiva_${status.count}"
+					value="${designa.actuacionRestriccionesActiva}">
+				<input type="hidden"
+					id="actuacionValidarJustificaciones_${status.count}"
+					value="${designa.actuacionValidarJustificaciones}">
+				<input type="hidden" id="fechaDesigna_${status.count}"
+					value="${designa.fecha}">
+				<c:set var="disabledPorCambioLetrado" value="" />
+				<c:if
+					test="${(designa.cambioLetrado=='S'&&InformeJustificacionMasivaForm.fichaColegial==true)}">
+					<c:set var="disabledPorCambioLetrado" value="disabled='disabled'" />
+				</c:if>
+				<c:set var="valiDisabled" value="" />
+				<c:if
+					test="${(designa.actuacionValidarJustificaciones!=null && designa.actuacionValidarJustificaciones=='N')||usrBean.letrado==true||(designa.cambioLetrado=='S'&&InformeJustificacionMasivaForm.fichaColegial==true)}">
+					<c:set var="valiDisabled" value="disabled='disabled'" />
+				</c:if>
+				<tr id="fila_${status.count}" class="filaTablaImpar">
+					<td rowspan="${designa.rowSpan}"><c:out
+						value="${designa.codigoDesigna}" /></td>
+					<td rowspan="${designa.rowSpan}"><c:choose>
+						<c:when test="${designa.ejgs!=null && designa.ejgs!=''}">
+							<c:out value="${designa.ejgs}"></c:out>
 						</c:when>
 						<c:otherwise>
 							&nbsp;
 						</c:otherwise>
-					</c:choose>
-					&nbsp;
-				</td>
-				<td rowspan="${designa.rowSpan}">
-					<c:choose>
-					
-						<c:when test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'||InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
-							<img  src="/SIGA/html/imagenes/icono+.gif" style="cursor:hand;" alt="<siga:Idioma key="gratuita.informeJustificacionMasiva.aviso.validarActuaciones"/>" name="" border="0" onclick="accionNuevaActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion})" />
+					</c:choose></td>
+					<td rowspan="${designa.rowSpan}"><c:choose>
+						<c:when test="${designa.juzgado!=null && designa.juzgado!=''}">
+							<c:out value="${designa.juzgado}"></c:out>
 						</c:when>
 						<c:otherwise>
 							&nbsp;
 						</c:otherwise>
-					</c:choose>
-					
-				</td>
-				<td>
-				
-				
-					<c:choose>
-						<c:when test="${designa.baja=='1'}">
-							<input type="checkbox" disabled="disabled" checked="checked"/>
+					</c:choose></td>
+					<td rowspan="${designa.rowSpan}"><c:out
+						value="${designa.fecha}" /></td>
+					<td rowspan="${designa.rowSpan}"><c:choose>
+						<c:when test="${designa.asunto!=null && designa.asunto!=''}">
+							<c:out value="${designa.asunto}"></c:out>
 						</c:when>
 						<c:otherwise>
-							<input name="checkBaja" id="baja_${status.count}"  ${disabledPorCambioLetrado} type="checkbox"/>
+					  		&nbsp;
 						</c:otherwise>
-					</c:choose>
-			
-				
-				</td>
-			</c:when>
-			
-			<c:otherwise>
-				
-				<c:choose>
-						<c:when test="${designa.idProcedimiento==''&&empty designa.actuaciones}">
+					</c:choose></td>
+					<td rowspan="${designa.rowSpan}"><c:choose>
+						<c:when test="${designa.clientes!=null && designa.clientes!=''}">
+							<c:out value="${designa.clientes}"></c:out>
+						</c:when>
+						<c:otherwise>
+					  		&nbsp;
+						</c:otherwise>
+					</c:choose></td>
+					<c:choose>
+						<c:when test="${designa.juzgado==''&&empty designa.actuaciones}">
 							<td align="center" rowspan="${designa.rowSpan}" colspan="3">
-								<siga:Idioma key="gratuita.informeJustificacionMasiva.aviso.sinModulo"/>
-							</td>
-							
-							<td rowspan="${designa.rowSpan}">
-								<input type="checkbox" disabled="disabled"/>
-							</td>
-							<td rowspan="${designa.rowSpan}">
-								<c:choose>
-									<c:when test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V' &&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
-										<img id="iconoboton_editar1" src="/SIGA/html/imagenes/beditar_off.gif" style="cursor:hand;" alt="Editar" name="editar_1" border="0" onClick="accionEditarDesigna(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion});" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('editar_1','','/SIGA/html/imagenes/beditar_on.gif',1)">
-									</c:when>
-									<c:otherwise>
-										&nbsp;
-									</c:otherwise>
-								</c:choose>
-							</td>
-							<td rowspan="${designa.rowSpan}">
-								<c:choose>
-									<c:when test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'||InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
-										<img  src="/SIGA/html/imagenes/icono+.gif" style="cursor:hand;" alt="<siga:Idioma key="gratuita.informeJustificacionMasiva.aviso.validarActuaciones"/>" name="" border="0" onclick="accionNuevaActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion})" />
-									</c:when>
-									<c:otherwise>
-										&nbsp;
-									</c:otherwise>
-								</c:choose>
-							</td>
-							
-							<td>
-								<c:choose>
-									<c:when test="${designa.baja=='1'}">
-										<input type="checkbox" disabled="disabled" checked="checked"/>
-									</c:when>
-									<c:otherwise>
-										<input name="checkBaja" id="baja_${status.count}" ${disabledPorCambioLetrado} type="checkbox"/>
-									</c:otherwise>
-								</c:choose>
-							</td>
+							<siga:Idioma
+								key="gratuita.informeJustificacionMasiva.aviso.sinJuzgado" /></td>
+							<td rowspan="${designa.rowSpan}"><input type="checkbox"
+								disabled="disabled" /></td>
+							<td rowspan="${designa.rowSpan}"><c:choose>
+								<c:when
+									test="${permitirBotones==true && designa.estado!=null && designa.estado=='V' &&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
+									<img id="iconoboton_editar1"
+										src="/SIGA/html/imagenes/beditar_off.gif"
+										style="cursor: hand;" alt="Editar" name="editar_1" border="0"
+										onClick="accionEditarDesigna(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion});"
+										onMouseOut="MM_swapImgRestore()"
+										onMouseOver="MM_swapImage('editar_1','','/SIGA/html/imagenes/beditar_on.gif',1)">
+								</c:when>
+								<c:otherwise>
+									&nbsp;
+								</c:otherwise>
+							</c:choose></td>
+							<td rowspan="${designa.rowSpan}"><c:choose>
+								<c:when
+									test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'||InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
+									<img src="/SIGA/html/imagenes/icono+.gif" style="cursor: hand;"
+										alt="<siga:Idioma key="gratuita.informeJustificacionMasiva.nuevaActuacion"/>"
+										name="" border="0"
+										onclick="accionNuevaActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion})" />
+								</c:when>
+								<c:otherwise>
+									&nbsp;
+								</c:otherwise>
+							</c:choose></td>
+							<td><c:choose>
+								<c:when test="${designa.baja=='1'}">
+									<input type="checkbox" disabled="disabled" checked="checked" />
+								</c:when>
+								<c:otherwise>
+									<input name="checkBaja" id="baja_${status.count}"
+										${disabledPorCambioLetrado} type="checkbox" />
+								</c:otherwise>
+							</c:choose></td>
+				</tr>
+				</c:when>
+
+				<c:otherwise>
+
+					<c:choose>
+						<c:when
+							test="${designa.idProcedimiento==''&&empty designa.actuaciones}">
+							<td align="center" rowspan="${designa.rowSpan}" colspan="3">
+							<siga:Idioma
+								key="gratuita.informeJustificacionMasiva.aviso.sinModulo" /></td>
+							<td rowspan="${designa.rowSpan}"><input type="checkbox"
+								disabled="disabled" /></td>
+							<td rowspan="${designa.rowSpan}"><c:choose>
+								<c:when
+									test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V' &&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
+									<img id="iconoboton_editar1"
+										src="/SIGA/html/imagenes/beditar_off.gif"
+										style="cursor: hand;" alt="Editar" name="editar_1" border="0"
+										onClick="accionEditarDesigna(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion});"
+										onMouseOut="MM_swapImgRestore()"
+										onMouseOver="MM_swapImage('editar_1','','/SIGA/html/imagenes/beditar_on.gif',1)">
+								</c:when>
+								<c:otherwise>
+											&nbsp;
+										</c:otherwise>
+							</c:choose></td>
+							<td rowspan="${designa.rowSpan}"><c:choose>
+								<c:when
+									test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'||InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
+									<img src="/SIGA/html/imagenes/icono+.gif" style="cursor: hand;"
+										alt="<siga:Idioma key="gratuita.informeJustificacionMasiva.nuevaActuacion"/>"
+										name="" border="0"
+										onclick="accionNuevaActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion})" />
+								</c:when>
+								<c:otherwise>
+											&nbsp;
+										</c:otherwise>
+							</c:choose></td>
+							<td><c:choose>
+								<c:when test="${designa.baja=='1'}">
+									<input type="checkbox" disabled="disabled" checked="checked" />
+								</c:when>
+								<c:otherwise>
+									<input name="checkBaja" id="baja_${status.count}"
+										${disabledPorCambioLetrado} type="checkbox" />
+								</c:otherwise>
+							</c:choose></td>
+							</tr>
 						</c:when>
 						<c:otherwise>
 							<c:choose>
 								<c:when test="${empty designa.actuaciones}">
-									
-										<c:choose>
-										
-											<c:when test="${designa.categoria!=null && designa.categoria!=''}">
-												<td title="${designa.descripcionProcedimiento}" rowspan="${designa.rowSpan}">
-													<c:out value="${designa.categoria}"/>
-												</td>
-											</c:when>
-											<c:otherwise>
-												<td  rowspan="${designa.rowSpan}">
-												  &nbsp;
-												</td>
-											</c:otherwise>
-										</c:choose>
-									
-									<td rowspan="${designa.rowSpan}">
-										&nbsp;
-									</td>
-									
+									<c:choose>
+										<c:when
+											test="${designa.categoria!=null && designa.categoria!=''}">
+											<td title="${designa.descripcionProcedimiento}"
+												rowspan="${designa.rowSpan}"><c:out
+												value="${designa.categoria}" /></td>
+										</c:when>
+										<c:otherwise>
+											<td rowspan="${designa.rowSpan}">&nbsp;</td>
+										</c:otherwise>
+									</c:choose>
+									<td rowspan="${designa.rowSpan}">&nbsp;</td>
+
 									<c:choose>
 										<c:when test="${empty designa.acreditaciones}">
-											<td align="center" rowspan="${designa.rowSpan}">
-												Modulo sin acreditaciones
-											</td>
-											<td>
-											
-											<input type="checkbox" disabled="disabled"/></td>
-											<td rowspan="${designa.rowSpan}">
-											<c:choose>
-												<c:when test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
-													<img id="iconoboton_editar1" src="/SIGA/html/imagenes/beditar_off.gif" style="cursor:hand;" alt="Editar" name="editar_1" border="0" onClick="accionEditarDesigna(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion});" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('editar_1','','/SIGA/html/imagenes/beditar_on.gif',1)">
+											<td align="center" rowspan="${designa.rowSpan}">Modulo
+											sin acreditaciones</td>
+											<td><input type="checkbox" disabled="disabled" /></td>
+											<td rowspan="${designa.rowSpan}"><c:choose>
+												<c:when
+													test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
+													<img id="iconoboton_editar1"
+														src="/SIGA/html/imagenes/beditar_off.gif"
+														style="cursor: hand;" alt="Editar" name="editar_1"
+														border="0"
+														onClick="accionEditarDesigna(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion});"
+														onMouseOut="MM_swapImgRestore()"
+														onMouseOver="MM_swapImage('editar_1','','/SIGA/html/imagenes/beditar_on.gif',1)">
 												</c:when>
 												<c:otherwise>
-													&nbsp;
-												</c:otherwise>
-											</c:choose>
-											</td>
-											<td rowspan="${designa.rowSpan}">
-											<c:choose>
-												<c:when test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'||InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
-													<img  src="/SIGA/html/imagenes/icono+.gif" style="cursor:hand;" alt="<siga:Idioma key="gratuita.informeJustificacionMasiva.aviso.validarActuaciones"/>" name="" border="0" onclick="accionNuevaActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion})" />
+															&nbsp;
+														</c:otherwise>
+											</c:choose></td>
+											<td rowspan="${designa.rowSpan}"><c:choose>
+												<c:when
+													test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'||InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
+													<img src="/SIGA/html/imagenes/icono+.gif"
+														style="cursor: hand;"
+														alt="<siga:Idioma key="gratuita.informeJustificacionMasiva.nuevaActuacion"/>"
+														name="" border="0"
+														onclick="accionNuevaActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion})" />
 												</c:when>
 												<c:otherwise>
-													&nbsp;
+															&nbsp;
+														</c:otherwise>
+											</c:choose></td>
+											<td><c:choose>
+												<c:when test="${designa.baja=='1'}">
+													<input type="checkbox" disabled="disabled"
+														checked="checked" />
+												</c:when>
+												<c:otherwise>
+													<input name="checkBaja" id="baja_${status.count}"
+														${disabledPorCambioLetrado} type="checkbox" />
 												</c:otherwise>
-											</c:choose>
-											</td>
-											<td>
-												<c:choose>
-													<c:when test="${designa.baja=='1'}">
-														<input type="checkbox" disabled="disabled" checked="checked"/>
-													</c:when>
-													<c:otherwise>
-														<input name="checkBaja" id="baja_${status.count}" ${disabledPorCambioLetrado} type="checkbox"/>
-													</c:otherwise>
-												</c:choose>
-											</td>
+											</c:choose></td>
+											</tr>
 										</c:when>
-									<c:otherwise>
-										<input type="hidden" id="multiplesComplementos_${status.count}" value="${designa.multiplesComplementos}">
-											<c:forEach items="${designa.acreditaciones}" var="acreditacionesMap">
-											<c:set var="listAcreditaciones" scope="page" value="${acreditacionesMap.value}"/>
-											<c:choose>
-											<c:when test="${empty listAcreditaciones}">
-												<td align="center" rowspan="${designa.rowSpan}">
-													<c:choose>
-													<c:when test="${designa.baja=='1'}">
-														<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.designaSinActuaciones"/>
-													</c:when>
-													<c:otherwise>
-														<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.moduloSinAcreditaciones"/>
-													</c:otherwise>
-												</c:choose>
-											</td>
-											<td>
-											
-											<input type="checkbox" disabled="disabled"/></td>
-											<td rowspan="${designa.rowSpan}">
-											<c:choose>
-												<c:when test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
-													<img id="iconoboton_editar1" src="/SIGA/html/imagenes/beditar_off.gif" style="cursor:hand;" alt="Editar" name="editar_1" border="0" onClick="accionEditarDesigna(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion});" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('editar_1','','/SIGA/html/imagenes/beditar_on.gif',1)">
-												</c:when>
-												<c:otherwise>
-													&nbsp;
-												</c:otherwise>
-											</c:choose>
-											</td>
-											<td rowspan="${designa.rowSpan}">
-											<c:choose>
-												<c:when test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'||InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
-													<img  src="/SIGA/html/imagenes/icono+.gif" style="cursor:hand;" alt="<siga:Idioma key="gratuita.informeJustificacionMasiva.aviso.validarActuaciones"/>" name="" border="0" onclick="accionNuevaActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion})" />
-												</c:when>
-												<c:otherwise>
-													&nbsp;
-												</c:otherwise>
-											</c:choose>
-											</td>
-											<td>
+										<c:otherwise>
+											<input type="hidden"
+												id="multiplesComplementos_${status.count}"
+												value="${designa.multiplesComplementos}">
+											<c:forEach items="${designa.acreditaciones}"
+												var="acreditacionesMap">
+												<c:set var="listAcreditaciones" scope="page"
+													value="${acreditacionesMap.value}" />
 												<c:choose>
-													<c:when test="${designa.baja=='1'}">
-														<input type="checkbox" disabled="disabled" checked="checked"/>
+													<c:when test="${empty listAcreditaciones}">
+														<td align="center" rowspan="${designa.rowSpan}"><c:choose>
+															<c:when test="${designa.baja=='1'}">
+																<siga:Idioma
+																	key="gratuita.informeJustificacionMasiva.literal.designaSinActuaciones" />
+															</c:when>
+															<c:otherwise>
+																<siga:Idioma
+																	key="gratuita.informeJustificacionMasiva.literal.moduloSinAcreditaciones" />
+															</c:otherwise>
+														</c:choose></td>
+														<td><input type="checkbox" disabled="disabled" /></td>
+														<td rowspan="${designa.rowSpan}"><c:choose>
+															<c:when
+																test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
+																<img id="iconoboton_editar1"
+																	src="/SIGA/html/imagenes/beditar_off.gif"
+																	style="cursor: hand;" alt="Editar" name="editar_1"
+																	border="0"
+																	onClick="accionEditarDesigna(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion});"
+																	onMouseOut="MM_swapImgRestore()"
+																	onMouseOver="MM_swapImage('editar_1','','/SIGA/html/imagenes/beditar_on.gif',1)">
+															</c:when>
+															<c:otherwise>
+																		&nbsp;
+																	</c:otherwise>
+														</c:choose></td>
+														<td rowspan="${designa.rowSpan}"><c:choose>
+															<c:when
+																test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'||InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
+																<img src="/SIGA/html/imagenes/icono+.gif"
+																	style="cursor: hand;"
+																	alt="<siga:Idioma key="gratuita.informeJustificacionMasiva.nuevaActuacion"/>"
+																	name="" border="0"
+																	onclick="accionNuevaActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion})" />
+															</c:when>
+															<c:otherwise>
+																	&nbsp;
+																</c:otherwise>
+														</c:choose></td>
+														<td><c:choose>
+															<c:when test="${designa.baja=='1'}">
+																<input type="checkbox" disabled="disabled"
+																	checked="checked" />
+															</c:when>
+															<c:otherwise>
+																<input name="checkBaja" id="baja_${status.count}"
+																	${disabledPorCambioLetrado} type="checkbox" />
+															</c:otherwise>
+														</c:choose></td>
+														</tr>
 													</c:when>
 													<c:otherwise>
-														<input name="checkBaja" id="baja_${status.count}" ${disabledPorCambioLetrado} type="checkbox"/>
-													</c:otherwise>
-												</c:choose>
-											</td>
-											</c:when>
-											<c:otherwise>
-												
-													
-														<c:forEach var="acreditacion" items="${listAcreditaciones}" varStatus="estadoAcreditacion">
+														<c:forEach var="acreditacion"
+															items="${listAcreditaciones}"
+															varStatus="estadoAcreditacion">
 															<c:choose>
 																<c:when test="${estadoAcreditacion.first}">
-																	<td>
-																		<input name="checkAcreditacion" id="acre_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}" onclick="onCheckAcreditacion(this);" ${disabledPorCambioLetrado} type="checkbox"/><c:out value="${acreditacion.descripcion}"/>
-																		<input name="${status.count}_${acreditacion.idProcedimiento}_checkAcreditacion" id="checkacre_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}" type="hidden"/>
-																		  
-																		
-																	</td>
-																	<td><input name="checkValidacion" id="vali_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}" type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled}/></td>
-																	<td rowspan="${designa.rowSpan}">
-																	<c:choose>
-																		<c:when test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
-																			<img id="iconoboton_editar1" src="/SIGA/html/imagenes/beditar_off.gif" style="cursor:hand;" alt="Editar" name="editar_1" border="0" onClick="accionEditarDesigna(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion});" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('editar_1','','/SIGA/html/imagenes/beditar_on.gif',1)">
+																	<td><input name="checkAcreditacion"
+																		id="acre_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}"
+																		onclick="onCheckAcreditacion(this);"
+																		${disabledPorCambioLetrado} type="checkbox" /><c:out
+																		value="${acreditacion.descripcion}" /> <input
+																		name="${status.count}_${acreditacion.idProcedimiento}_checkAcreditacion"
+																		id="checkacre_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}"
+																		type="hidden" /></td>
+																	<td><input name="checkValidacion"
+																		id="vali_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}"
+																		type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled}/></td>
+																	<td rowspan="${designa.rowSpan}"><c:choose>
+																		<c:when
+																			test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
+																			<img id="iconoboton_editar1"
+																				src="/SIGA/html/imagenes/beditar_off.gif"
+																				style="cursor: hand;" alt="Editar" name="editar_1"
+																				border="0"
+																				onClick="accionEditarDesigna(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion});"
+																				onMouseOut="MM_swapImgRestore()"
+																				onMouseOver="MM_swapImage('editar_1','','/SIGA/html/imagenes/beditar_on.gif',1)">
 																		</c:when>
 																		<c:otherwise>
-																			&nbsp;
+																					&nbsp;
+																				</c:otherwise>
+																	</c:choose></td>
+																	<td rowspan="${designa.rowSpan}"><c:choose>
+																		<c:when
+																			test="${permitirBotones==true && designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'||InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
+																			<img src="/SIGA/html/imagenes/icono+.gif"
+																				style="cursor: hand;"
+																				alt="<siga:Idioma key="gratuita.informeJustificacionMasiva.nuevaActuacion"/>"
+																				name="" border="0"
+																				onclick="accionNuevaActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion})" />
+																		</c:when>
+																		<c:otherwise>
+																					&nbsp;
+																				</c:otherwise>
+																	</c:choose></td>
+																	<td rowspan="${designa.rowSpan}"><c:choose>
+																		<c:when test="${designa.baja=='1'}">
+																			<input type="checkbox" disabled="disabled"
+																				checked="checked" />
+																		</c:when>
+																		<c:otherwise>
+																			<input name="checkBaja" id="baja_${status.count}"
+																				${disabledPorCambioLetrado} type="checkbox" />
 																		</c:otherwise>
-																	</c:choose>
-																			</td>
-																	<td rowspan="${designa.rowSpan}">
-																		<c:choose>
-																			<c:when test="${permitirBotones==true && designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'||InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
-																				<img  src="/SIGA/html/imagenes/icono+.gif" style="cursor:hand;" alt="<siga:Idioma key="gratuita.informeJustificacionMasiva.aviso.validarActuaciones"/>" name="" border="0" onclick="accionNuevaActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion})" />
-																			</c:when>
-																			<c:otherwise>
-																				&nbsp;
-																			</c:otherwise>
-																		</c:choose>
-																	</td>
-																	<td rowspan="${designa.rowSpan}" >
-																		<c:choose>
-																			<c:when test="${designa.baja=='1'}">
-																				<input type="checkbox" disabled="disabled" checked="checked"/>
-																			</c:when>
-																			<c:otherwise>
-																				<input name="checkBaja" id="baja_${status.count}" ${disabledPorCambioLetrado} type="checkbox"/>
-																			</c:otherwise>
-																		</c:choose>
-																		
-																		</td>	
+																	</c:choose></td>
 																	</tr>
 																</c:when>
-															<c:otherwise>
-																<tr class="filaTablaImpar">
-																	<td>
-																		<input name="checkAcreditacion" id="acre_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}" onclick="onCheckAcreditacion(this);" ${disabledPorCambioLetrado} type="checkbox"/><c:out value="${acreditacion.descripcion}"/>
-																		<input name="${status.count}_${acreditacion.idProcedimiento}_checkAcreditacion" id="checkacre_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}"  type="hidden"/>
-																		
-																	</td>
-																	<td><input name="chechValidacion" id="vali_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}" type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled}/></td>
-																	
-																</tr>
-															</c:otherwise>
+																<c:otherwise>
+																	<tr class="filaTablaImpar">
+																		<td><input name="checkAcreditacion"
+																			id="acre_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}"
+																			onclick="onCheckAcreditacion(this);"
+																			${disabledPorCambioLetrado} type="checkbox" /><c:out
+																			value="${acreditacion.descripcion}" /> <input
+																			name="${status.count}_${acreditacion.idProcedimiento}_checkAcreditacion"
+																			id="checkacre_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}"
+																			type="hidden" /></td>
+																		<td><input name="chechValidacion"
+																			id="vali_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}"
+																			type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled}/></td>
+																	</tr>
+																</c:otherwise>
 															</c:choose>
-															
-															
-															
-															
 														</c:forEach>
-														
 													</c:otherwise>
-												</c:choose>				
+												</c:choose>
 											</c:forEach>
-										
-										
 										</c:otherwise>
 									</c:choose>
 								</c:when>
-							<c:otherwise>
-								<c:forEach items="${designa.actuaciones}" var="actuacionesMap" varStatus="estadoMapActuaciones">
-									<c:set var="listActuaciones" scope="page" value="${actuacionesMap.value}"/>
-									
-											<c:forEach var="actuacion" items="${listActuaciones}" varStatus="estadoListActuaciones">
-											
-												<c:choose>
-														<c:when test="${estadoListActuaciones.first&&estadoMapActuaciones.first}">
-															
-																<c:choose>
-																	<c:when test="${actuacion.categoria!=null && actuacion.categoria!=''}">
-																		<td title="${actuacion.descripcionProcedimiento}">
-																			<c:out value="${actuacion.categoria}"/>
-																		</td>
-																	</c:when>
-																	<c:otherwise>
-																		<td>
-																		  &nbsp;
-																		 </td>
-																	</c:otherwise>
-																</c:choose>
-															
-															<td>
-																<c:out value="${actuacion.numero}"/>
-															</td>
-															
-															
-															<td>
-															
-																<c:choose>
-																	<c:when test="${actuacion.fechaJustificacion==null || actuacion.fechaJustificacion==''}">
-																		<input name="checkAcreditacion" id="acre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}" onclick="onCheckAcreditacion(this);" ${disabledPorCambioLetrado} type="checkbox"/>
-																		<c:out value="${actuacion.descripcion}"/>
-																		<input name="${status.count}_${actuacion.acreditacion.idProcedimiento}_checkAcreditacion" id="checkacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}"  type="hidden"/>
-																	</c:when>
-																	<c:otherwise>
-																		<input name="${status.count}_${actuacion.acreditacion.idProcedimiento}_checkAcreditacion" id="hiddacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}"  type="hidden"/>
-																		<c:out value="${actuacion.descripcion}"/>
-																	</c:otherwise>
-																</c:choose>
-															</td>
-															<td>
-																<c:choose>
-																	<c:when test="${actuacion.validada=='1'}">
-																		<input type="checkbox" disabled="disabled" checked="checked"/>
-																	</c:when>
-																	<c:otherwise>
-																		<c:choose>
-																			<c:when test="${designa.baja=='1'}">
-																				<input type="checkbox" disabled="disabled"/>
-																			</c:when>
-																			<c:otherwise>
-																					
-																				
-																	
-																				<c:choose>
-																					<c:when test="${actuacion.fechaJustificacion==null || actuacion.fechaJustificacion==''}">
-																						<input name="checkValidacion" id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}" type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled}/>
-																					</c:when>
-																					<c:otherwise>
-																						<input name="checkValidacion" id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}" type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled}/>
-																					</c:otherwise>
-																				</c:choose>
-															
-																			</c:otherwise>
-																		</c:choose>
-																	
-																		
-																	</c:otherwise>
-																</c:choose>
-																
-															</td>
-															
-															<td>
-																<c:choose>
-																	<c:when test="${permitirBotones==true && designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'||InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
-																		<img id="iconoboton_editar1" src="/SIGA/html/imagenes/beditar_off.gif" style="cursor:hand;" alt="Editar" name="editar_1" border="0" onClick="accionEditarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero});" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('editar_1','','/SIGA/html/imagenes/beditar_on.gif',1)">
-																	</c:when>
-																	<c:otherwise>
+								<c:otherwise>
+									<c:forEach items="${designa.actuaciones}" var="actuacionesMap"
+										varStatus="estadoMapActuaciones">
+										<c:set var="listActuaciones" scope="page"
+											value="${actuacionesMap.value}" />
+										<c:forEach var="actuacion" items="${listActuaciones}"
+											varStatus="estadoListActuaciones">
+											<c:choose>
+												<c:when
+													test="${estadoListActuaciones.first&&estadoMapActuaciones.first}">
+													<c:choose>
+														<c:when
+															test="${actuacion.categoria!=null && actuacion.categoria!=''}">
+															<td title="${actuacion.descripcionProcedimiento}"><c:out
+																value="${actuacion.categoria}" /></td>
+														</c:when>
+														<c:otherwise>
+															<td>&nbsp;</td>
+														</c:otherwise>
+													</c:choose>
+													<td><c:out value="${actuacion.numero}" /></td>
+													<td><c:choose>
+														<c:when
+															test="${actuacion.fechaJustificacion==null || actuacion.fechaJustificacion==''}">
+															<input name="checkAcreditacion"
+																id="acre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}"
+																onclick="onCheckAcreditacion(this);"
+																${disabledPorCambioLetrado} type="checkbox" />
+															<input
+																name="${status.count}_${actuacion.acreditacion.idProcedimiento}_checkAcreditacion"
+																id="checkacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}"
+																type="hidden" />
+															<c:out value="${actuacion.descripcion}" />
+														</c:when>
+														<c:otherwise>
+															<input
+																name="${status.count}_${actuacion.acreditacion.idProcedimiento}_checkAcreditacion"
+																id="hiddacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}"
+																type="hidden" />
+															<c:out value="${actuacion.descripcion}" />
+														</c:otherwise>
+													</c:choose></td>
+													<td><c:choose>
+														<c:when test="${actuacion.validada=='1'}">
+															<input type="checkbox" disabled="disabled"
+																checked="checked" />
+														</c:when>
+														<c:otherwise>
+															<c:choose>
+																<c:when test="${designa.baja=='1'}">
+																	<input type="checkbox" disabled="disabled" />
+																</c:when>
+																<c:otherwise>
+																	<c:choose>
+																		<c:when
+																			test="${actuacion.fechaJustificacion==null || actuacion.fechaJustificacion==''}">
+																			<input name="checkValidacion"
+																				id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}"
+																				type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled}/>
+																		</c:when>
+																		<c:otherwise>
+																			<input name="checkValidacion"
+																				id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}"
+																				type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled}/>
+																		</c:otherwise>
+																	</c:choose>
+																</c:otherwise>
+															</c:choose>
+														</c:otherwise>
+													</c:choose></td>
+													<td><c:choose>
+														<c:when
+															test="${permitirBotones==true && designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'||InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
+															<img id="iconoboton_editar1"
+																src="/SIGA/html/imagenes/beditar_off.gif"
+																style="cursor: hand;" alt="Editar" name="editar_1"
+																border="0"
+																onClick="accionEditarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero});"
+																onMouseOut="MM_swapImgRestore()"
+																onMouseOver="MM_swapImage('editar_1','','/SIGA/html/imagenes/beditar_on.gif',1)">
+														</c:when>
+														<c:otherwise>
 																		&nbsp;
 																	</c:otherwise>
-																</c:choose>
-															</td>
-															
-															<td rowspan="${designa.rowSpan}">
-																<c:choose>
-																	<c:when test="${permitirBotones==true && designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'||InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
-																		<img  src="/SIGA/html/imagenes/icono+.gif" style="cursor:hand;" alt="<siga:Idioma key="gratuita.informeJustificacionMasiva.aviso.validarActuaciones"/>" name="" border="0" onclick="accionNuevaActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion})" />
-																	</c:when>
-																	<c:otherwise>
+													</c:choose></td>
+													<td rowspan="${designa.rowSpan}"><c:choose>
+														<c:when
+															test="${permitirBotones==true && designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'||InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
+															<img src="/SIGA/html/imagenes/icono+.gif"
+																style="cursor: hand;"
+																alt="<siga:Idioma key="gratuita.informeJustificacionMasiva.nuevaActuacion"/>"
+																name="" border="0"
+																onclick="accionNuevaActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion})" />
+														</c:when>
+														<c:otherwise>
 																		&nbsp;
 																	</c:otherwise>
-																</c:choose>
-															</td>
-															<td rowspan="${designa.rowSpan}" >
+													</c:choose></td>
+													<td rowspan="${designa.rowSpan}"><c:choose>
+														<c:when test="${designa.baja=='1'}">
+															<input type="checkbox" disabled="disabled"
+																checked="checked" />
+														</c:when>
+														<c:otherwise>
+															<input name="checkBaja" id="baja_${status.count}"
+																${disabledPorCambioLetrado} type="checkbox" />
+														</c:otherwise>
+													</c:choose></td>
+													</tr>
+												</c:when>
+												<c:otherwise>
+													<tr class="filaTablaImpar">
+														<c:choose>
+															<c:when
+																test="${actuacion.categoria!=null && actuacion.categoria!=''}">
+																<td title="${actuacion.descripcionProcedimiento}">
+																<c:out value="${actuacion.categoria}" /></td>
+															</c:when>
+															<c:otherwise>
+																<td>&nbsp;</td>
+															</c:otherwise>
+														</c:choose>
+
+														<td><c:out value="${actuacion.numero}" /></td>
+														<td><c:choose>
+															<c:when
+																test="${actuacion.fechaJustificacion==null || actuacion.fechaJustificacion==''}">
+																<input name="checkAcreditacion"
+																	id="acre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}"
+																	onclick="onCheckAcreditacion(this);"
+																	${disabledPorCambioLetrado} type="checkbox" />
+																<input
+																	name="${status.count}_${actuacion.acreditacion.idProcedimiento}_checkAcreditacion"
+																	id="checkacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}"
+																	type="hidden" />
+																<c:out value="${actuacion.descripcion}" />
+															</c:when>
+															<c:otherwise>
+																<input
+																	name="${status.count}_${actuacion.acreditacion.idProcedimiento}_checkAcreditacion"
+																	id="hiddacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}"
+																	type="hidden" />
+																<c:out value="${actuacion.descripcion}" />
+															</c:otherwise>
+														</c:choose></td>
+														<td><c:choose>
+															<c:when test="${actuacion.validada=='1'}">
+																<input type="checkbox" disabled="disabled"
+																	checked="checked" />
+															</c:when>
+															<c:otherwise>
 																<c:choose>
 																	<c:when test="${designa.baja=='1'}">
-																		<input type="checkbox" disabled="disabled" checked="checked"/>
+																		<input type="checkbox" disabled="disabled" />
 																	</c:when>
 																	<c:otherwise>
-																		<input name="checkBaja" id="baja_${status.count}" ${disabledPorCambioLetrado} type="checkbox"/>
-																	</c:otherwise>
-																</c:choose>
-																
-																</td>	
-															</tr>
-														</c:when>
-													<c:otherwise>
-														<tr class="filaTablaImpar">
-															
-																<c:choose>
-																
-																	<c:when test="${actuacion.categoria!=null && actuacion.categoria!=''}">
-																		<td title="${actuacion.descripcionProcedimiento}">
-																			<c:out value="${actuacion.categoria}"/>
-																		</td>
-																		
-																	</c:when>
-																	<c:otherwise>
-																	<td >
-																		  &nbsp;
-																		  </td>
-																	</c:otherwise>
-																</c:choose>
-															
-															<td>
-																<c:out value="${actuacion.numero}"/>
-															</td>
-															<td>
-															
-																<c:choose>
-																	<c:when test="${actuacion.fechaJustificacion==null || actuacion.fechaJustificacion==''}">
-																		
-																		<input name="checkAcreditacion" id="acre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}" onclick="onCheckAcreditacion(this);" ${disabledPorCambioLetrado} type="checkbox"/>
-																		<input name="${status.count}_${actuacion.acreditacion.idProcedimiento}_checkAcreditacion" id="checkacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}"  type="hidden"/>
-																		<c:out value="${actuacion.descripcion}"/>
-																		
-																	</c:when>
-																	<c:otherwise>
-																		<input name="${status.count}_${actuacion.acreditacion.idProcedimiento}_checkAcreditacion" id="hiddacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}"  type="hidden"/>
-																		
-																		<c:out value="${actuacion.descripcion}"/>
-																	</c:otherwise>
-																</c:choose>
-															</td>
-															<td>
-																<c:choose>
-																	<c:when test="${actuacion.validada=='1'}">
-																		<input type="checkbox" disabled="disabled" checked="checked"/>
-																	</c:when>
-																	<c:otherwise>
-																	
 																		<c:choose>
-																			<c:when test="${designa.baja=='1'}">
-																				<input type="checkbox" disabled="disabled"/>
+																			<c:when
+																				test="${actuacion.fechaJustificacion==null || actuacion.fechaJustificacion==''}">
+																				<input name="checkValidacion"
+																					id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}"
+																					type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled}/>
 																			</c:when>
 																			<c:otherwise>
-																	
-																				<c:choose>
-																					<c:when test="${actuacion.fechaJustificacion==null || actuacion.fechaJustificacion==''}">
-																						<input  name="checkValidacion" id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}" type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled}/>
-																					</c:when>
-																					<c:otherwise>
-																						<input name="checkValidacion" id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}" type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled}/>
-																					</c:otherwise>
-																				</c:choose>
-																			
+																				<input name="checkValidacion"
+																					id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}"
+																					type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled}/>
 																			</c:otherwise>
 																		</c:choose>
-																			
-																	
-																	
-																	
-																		
 																	</c:otherwise>
 																</c:choose>
-																
-															</td>
-															
-															<td>
-																<c:choose>
-																	<c:when test="${permitirBotones==true && designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'||InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">																		
-																		<img id="iconoboton_editar1" src="/SIGA/html/imagenes/beditar_off.gif" style="cursor:hand;" alt="Editar" name="editar_1" border="0" onClick="accionEditarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero});" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('editar_1','','/SIGA/html/imagenes/beditar_on.gif',1)">
-																	</c:when>
-																	<c:otherwise>
-																		&nbsp;
-																	</c:otherwise>
-																</c:choose>
-															</td>
-															
-														</tr>
-													</c:otherwise>
-												</c:choose>
-												
+															</c:otherwise>
+														</c:choose></td>
+														<td><c:choose>
+															<c:when
+																test="${permitirBotones==true && designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'||InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
+																<img id="iconoboton_editar1"
+																	src="/SIGA/html/imagenes/beditar_off.gif"
+																	style="cursor: hand;" alt="Editar" name="editar_1"
+																	border="0"
+																	onClick="accionEditarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero});"
+																	onMouseOut="MM_swapImgRestore()"
+																	onMouseOver="MM_swapImage('editar_1','','/SIGA/html/imagenes/beditar_on.gif',1)">
+															</c:when>
+															<c:otherwise>
+																			&nbsp;
+																		</c:otherwise>
+														</c:choose></td>
+													</tr>
+												</c:otherwise>
+											</c:choose>
+										</c:forEach>
+										<c:set var="keyAcreditaciones" scope="page"
+											value="${actuacionesMap.key}" />
+										<c:set var="listAcreditacionesPtes" scope="page"
+											value="${designa.acreditaciones[keyAcreditaciones]}" />
+										<c:if
+											test="${listAcreditacionesPtes!=null && not empty designa.acreditaciones}">
+											<c:forEach var="acreditacionPte"
+												items="${listAcreditacionesPtes}"
+												varStatus="estadoListAcreditacionesPte">
+												<tr class="filaTablaImpar">
+													<td>&nbsp;</td>
+													<td>&nbsp;</td>
+													<td><input name="checkAcreditacion"
+														id="acre_${status.count}_x_${acreditacionPte.idTipo}_${acreditacionPte.id}_${acreditacionPte.idProcedimiento}_${acreditacionPte.idJuzgado}_0_${acreditacionPte.idJurisdiccion}"
+														onclick="onCheckAcreditacion(this);"
+														${disabledPorCambioLetrado} type="checkbox" /><c:out
+														value="${acreditacionPte.descripcion}" /> <input
+														name="${status.count}_${acreditacionPte.idProcedimiento}_checkAcreditacion"
+														id="checkacre_${status.count}_x_${acreditacionPte.idTipo}_${acreditacionPte.id}_${acreditacionPte.idProcedimiento}_${acreditacionPte.idJuzgado}_0_${acreditacionPte.idJurisdiccion}"
+														type="hidden" /></td>
+													<td><input name="checkValidacion"
+														id="vali_${status.count}_x_${acreditacionPte.idTipo}_${acreditacionPte.id}_${acreditacionPte.idProcedimiento}_${acreditacionPte.idJuzgado}_0_${acreditacionPte.idJurisdiccion}"
+														type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled}/>
+													</td>
+
+													<c:if test="${estadoListAcreditacionesPte.first}">
+														<td rowspan="${acreditacionPte.rowSpan}">&nbsp;</td>
+													</c:if>
+												</tr>
 											</c:forEach>
-											<c:set var="keyAcreditaciones" scope="page" value="${actuacionesMap.key}"/>
-											<c:set var="listAcreditacionesPtes" scope="page" value="${designa.acreditaciones[keyAcreditaciones]}" />
-											
-												<c:if test="${listAcreditacionesPtes!=null && not empty designa.acreditaciones}">
-														<c:forEach var="acreditacionPte" items="${listAcreditacionesPtes}"  varStatus="estadoListAcreditacionesPte">
-															<tr class="filaTablaImpar">
-																<td>
-																	&nbsp;
-																</td>
-																<td>
-																	&nbsp;
-																</td>
-																<td>
-																	<input name="checkAcreditacion" id="acre_${status.count}_x_${acreditacionPte.idTipo}_${acreditacionPte.id}_${acreditacionPte.idProcedimiento}_${acreditacionPte.idJuzgado}_0_${acreditacionPte.idJurisdiccion}" onclick="onCheckAcreditacion(this);" ${disabledPorCambioLetrado} type="checkbox"/><c:out value="${acreditacionPte.descripcion}"/>
-																	<input name="${status.count}_${acreditacionPte.idProcedimiento}_checkAcreditacion" id="checkacre_${status.count}_x_${acreditacionPte.idTipo}_${acreditacionPte.id}_${acreditacionPte.idProcedimiento}_${acreditacionPte.idJuzgado}_0_${acreditacionPte.idJurisdiccion}"  type="hidden"/>
-																</td>
-																<td><input name="checkValidacion" id="vali_${status.count}_x_${acreditacionPte.idTipo}_${acreditacionPte.id}_${acreditacionPte.idProcedimiento}_${acreditacionPte.idJuzgado}_0_${acreditacionPte.idJurisdiccion}" type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled}/></td>
-																
-																<c:if test="${estadoListAcreditacionesPte.first}">	
-																	<td rowspan="${acreditacionPte.rowSpan}">
-																	
-																		&nbsp;
-																	</td>
-																</c:if>
-															</tr>
-														</c:forEach>
-												
-												</c:if>
-								
-								</c:forEach>
-							</c:otherwise>
-						</c:choose>		
+										</c:if>
+									</c:forEach>
+								</c:otherwise>
+							</c:choose>
+						</c:otherwise>
+					</c:choose>
 				</c:otherwise>
-			</c:choose>				
-		</c:otherwise>
 	</c:choose>
-		
-		
-		
-</c:forEach>
-</c:otherwise>
- </c:choose>
+	</c:forEach>
+	</c:otherwise>
+	</c:choose>
 </table>
-	
-	
-		
+
+
+
 </div>
 
-<siga:Paginador totalRegistros="${totalRegistros}" 
-								registrosPorPagina="${registrosPorPagina}" 
-								paginaSeleccionada="${paginaSeleccionada}" 
-								idioma="${usrBean.language}"
-								modo="buscarPor"								
-								clase="paginator" 
-								divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:30px; left: 0px"
-								distanciaPaginas=""
-								action="/SIGA${path}.do?noReset=true" 
-								preFunction="preFunction"
-								/>
+<siga:Paginador totalRegistros="${totalRegistros}"
+	registrosPorPagina="${registrosPorPagina}"
+	paginaSeleccionada="${paginaSeleccionada}" idioma="${usrBean.language}"
+	modo="buscarPor" clase="paginator"
+	divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:30px; left: 0px"
+	distanciaPaginas="" action="/SIGA${path}.do?noReset=true"
+	preFunction="preFunction" />
 
-															
-	
+
+
 <c:if test="${permitirBotones==true && not empty designaFormList}">
-<table class="botonesDetalle" align="center">
-<tr>
-<td  style="width:900px;">
-&nbsp;
-</td>
-<td class="tdBotones">
-<input type="button" alt="Guardar"  id="idButton" onclick="return accionGuardar();" class="button" name="idButton" value="Guardar">
-</td>
-<td class="tdBotones">
-<input type="button" alt="Informe Justif."  id="idInformeJustificacion" onclick="return informeJustificacion();" class="button" name="idButton" value="Informe Justif.">
-</td>
-</tr>
-</table>
+	<table class="botonesDetalle" align="center">
+		<tr>
+			<td style="width: 900px;">&nbsp;</td>
+			<td class="tdBotones"><input type="button" alt="Guardar"
+				id="idButton" onclick="return accionGuardar();" class="button"
+				name="idButton" value="Guardar"></td>
+			<td class="tdBotones"><input type="button" alt="Informe Justif."
+				id="idInformeJustificacion" onclick="return informeJustificacion();"
+				class="button" name="idButton" value="Informe Justif."></td>
+		</tr>
+	</table>
 </c:if>
 
 
 
-	<html:form action="/JGR_ActuacionesDesigna" method="post" target="mainWorkArea" style="display:none">
-		<html:hidden property = "modo"/>
-		<html:hidden property = "actionModal" value=""/>
-		<html:hidden property = "anio"/>
-		<html:hidden property = "idTurno"/>
-		<html:hidden property = "numero"/>
-		<html:hidden property = "nactuacion"/>
-		<html:hidden property = "deDonde" value="/JGR_ActuacionesDesigna"/>
+<html:form action="/JGR_ActuacionesDesigna" method="post"
+	target="mainWorkArea" style="display:none">
+	<html:hidden property="modo" />
+	<html:hidden property="actionModal" value="" />
+	<html:hidden property="anio" />
+	<html:hidden property="idTurno" />
+	<html:hidden property="numero" />
+	<html:hidden property="nactuacion" />
+	<html:hidden property="deDonde" value="/JGR_ActuacionesDesigna" />
 
-		
-	</html:form>
-	
-	<html:form action="/JGR_MantenimientoDesignas" method="post" target="mainWorkArea" style="display:none">
-		<html:hidden property = "modo" value ="abrir" />
-		<html:hidden property = "actionModal" value=""/>
-		<html:hidden property = "anio"/>
-		<html:hidden property = "idTurno"/>
-		<html:hidden property = "numero"/>
-		
-		
-	</html:form>
+
+</html:form>
+
+<html:form action="/JGR_MantenimientoDesignas" method="post"
+	target="mainWorkArea" style="display:none">
+	<html:hidden property="modo" value="abrir" />
+	<html:hidden property="actionModal" value="" />
+	<html:hidden property="anio" />
+	<html:hidden property="idTurno" />
+	<html:hidden property="numero" />
+
+
+</html:form>
 <iframe name="submitArea"
-				src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"
-				style="display: none"></iframe>		
+	src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"
+	style="display: none"></iframe>
 <!-- FIN: SUBMIT AREA -->
 <script>
 ajustarAltoResultados();
 </script>
 </body>
-	
+
 </html>
 
