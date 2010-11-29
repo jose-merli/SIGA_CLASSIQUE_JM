@@ -507,7 +507,8 @@ function inicio(){
 			
 			document.getElementById("idInformeJustificacion").disabled =""; 
 		}else{
-			document.getElementById("idInformeJustificacion").disabled ="disabled";
+			//document.getElementById("idInformeJustificacion").disabled ="disabled";
+			document.getElementById("idInformeJustificacion").disabled ="";
 		}
 	}
 }
