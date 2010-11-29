@@ -18,6 +18,7 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.PaginadorBind;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DesignaForm;
@@ -1902,8 +1903,61 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 	}
 	
 
+	/**
+	 * Recupera la fecha de renuncia del primer letrado de la designa
+	 * @param sdb
+	 * @param fecha
+	 * @return
+	 * @throws ClsExceptions 
+	 */
+	public Hashtable getPrimerLetrado(ScsDesignaBean sdb) throws ClsExceptions {
+		try {
+			String sql = "select * "+
+						 "  from scs_designasletrado " +
+						 " where idinstitucion = "+sdb.getIdInstitucion()+" " +
+						 "   and idturno = "+sdb.getIdTurno()+" " +
+						 "   and anio = "+sdb.getAnio()+" " +
+						 "   and numero = "+sdb.getNumero()+" " +
+						 " order by fechaRenuncia asc";
+
+			Vector vector = selectGenerico(sql);
+		    if ((vector != null) && (vector.size() > 0)) {
+		    	return (Hashtable)vector.get(0);
+		    }
+
+			return null;
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la informacion sobre obtenerColegiadoDesignadoEnFecha()");
+		}
+
+	}
 	
 	
+	public boolean updateFechaDesigna(Hashtable hash, String fechaDesigna) throws ClsExceptions{
+
+		try {
+			Row row = new Row();	
+			StringBuffer sql = new StringBuffer(); 
+			
+			sql.append(" update scs_designasletrado ");
+			sql.append("    set fechadesigna = '"+UtilidadesString.formatoFecha(fechaDesigna, ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH)+"', ");
+			sql.append("        fechamodificacion = sysdate ,");
+			sql.append("        usumodificacion =" +this.usuModificacion );
+			sql.append("  where idinstitucion = " + hash.get(ScsDesignasLetradoBean.C_IDINSTITUCION));
+			sql.append("    and idturno = "+ hash.get(ScsDesignasLetradoBean.C_IDTURNO));
+			sql.append("    and anio = " + hash.get(ScsDesignasLetradoBean.C_ANIO));
+			sql.append("    and numero = " + hash.get(ScsDesignasLetradoBean.C_NUMERO));
+			sql.append("    and idpersona = " + hash.get(ScsDesignasLetradoBean.C_IDPERSONA));
+			sql.append("    and fechadesigna = '"+UtilidadesString.formatoFecha((String)hash.get(ScsDesignasLetradoBean.C_FECHADESIGNA), ClsConstants.DATE_FORMAT_JAVA,ClsConstants.DATE_FORMAT_SHORT_SPANISH)+"' ");
+			
+			this.updateSQL(sql.toString());
+		}
+		catch (Exception e) {
+			throw new ClsExceptions(e,  e.getMessage());
+		}
+		return true;
+	}
 	
 	
 		
@@ -1944,5 +1998,4 @@ class Acumulador{
 		
 	}
 
-	
 }

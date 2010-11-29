@@ -879,4 +879,33 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		return acreditacionesPtesList;
 
 	}
+	
+	/**
+	 * Recupera la fecha de la primera actuacion de una designa
+	 * @param sdb
+	 * @param fecha
+	 * @return
+	 * @throws ClsExceptions 
+	 */
+	public String getFechaPrimeraActuacion(ScsDesignaBean sdb) throws ClsExceptions {
+		try {
+			String sql = "select min(fecha) as FECHAACTUACION " +
+						 "  from scs_actuaciondesigna " +
+						 " where idinstitucion = "+sdb.getIdInstitucion()+" " +
+						 "   and idturno = "+sdb.getIdTurno()+" " +
+						 "   and anio = "+sdb.getAnio()+" " +
+						 "   and numero = "+sdb.getNumero();
+
+			Vector vector = selectGenerico(sql);
+		    if ((vector != null) && (vector.size() == 1)) {
+		    	return (String)((Hashtable)vector.get(0)).get("FECHAACTUACION");
+		    }
+
+			return null;
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la informacion sobre obtenerColegiadoDesignadoEnFecha()");
+		}
+
+	}
 }

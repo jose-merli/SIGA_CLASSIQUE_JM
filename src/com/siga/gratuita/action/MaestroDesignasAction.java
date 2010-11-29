@@ -1,4 +1,5 @@
 package com.siga.gratuita.action;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -13,12 +14,16 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.AjaxCollectionXmlBuilder;
+import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.ScsActuacionDesignaAdm;
 import com.siga.beans.ScsAsistenciasAdm;
 import com.siga.beans.ScsAsistenciasBean;
 import com.siga.beans.ScsDefendidosDesignaAdm;
@@ -460,10 +465,15 @@ public class MaestroDesignasAction extends MasterAction {
 		MaestroDesignasForm miform = (MaestroDesignasForm)formulario;
 		Hashtable datosEntrada = null;
 		ScsDesignaAdm designaAdm = new ScsDesignaAdm (this.getUserBean(request));
+		ScsDesignasLetradoAdm admDesignasLetrado = new ScsDesignasLetradoAdm(this.getUserBean(request));
+		ScsActuacionDesignaAdm admActuacionesDesignas = new ScsActuacionDesignaAdm(this.getUserBean(request));
 		boolean ok=false;
 		UserTransaction tx = null;
 		String aux2 = "";
 		String Fechaoficiojuzgado="";
+		boolean actualizarFechaLetrado = false;
+		Hashtable hsDesignaLetrado = new Hashtable();
+		Hashtable hsDesignaLetradoNew = new Hashtable();
 
 		try {
 			tx = usr.getTransaction();
@@ -519,10 +529,63 @@ public class MaestroDesignasAction extends MasterAction {
 						
 						// JBD INC-5682-SIGA Actualizamos la fecha de entrada 
 						// si el usuario la ha modificado mete la nueva, si no, vuelve a meter la original
+						// jbd // Agregamos un control para que la fecha sea correcta y ademas tenemos que cambiar 
+						       // la fecha de designacion del primer letrado
 						String fechaApertura = GstDate.getApplicationFormatDate("",(String)datosEntrada.get("FECHA"));
 						if (fechaApertura!=null && !fechaApertura.equals("")) {
 							//String aux = fechaApertura.substring(0,fechaApertura.length()-9);
-							designaNueva.put(ScsDesignaBean.C_FECHAENTRADA,fechaApertura);		
+							designaNueva.put(ScsDesignaBean.C_FECHAENTRADA,fechaApertura);
+							if(!fechaApertura.equalsIgnoreCase(designaAntigua.getFechaEntrada())){
+								Date dtFechaApertura = UtilidadesFecha.getDate(fechaApertura,ClsConstants.DATE_FORMAT_JAVA);
+								// Recogemos las fechas de renuncia y actuacion que marcan el limite de la fecha apertura
+								// Si es posterior a esas fechas no dejamos que se cambie la fecha
+								hsDesignaLetrado = admDesignasLetrado.getPrimerLetrado(designaAntigua);
+								String stFechaPrimeraRenuncia = (String)hsDesignaLetrado.get(ScsDesignasLetradoBean.C_FECHARENUNCIA);
+								Date dtFechaPrimeraRenuncia=null;
+								if(stFechaPrimeraRenuncia!=null && !stFechaPrimeraRenuncia.equalsIgnoreCase("")){							
+									dtFechaPrimeraRenuncia = UtilidadesFecha.getDate(stFechaPrimeraRenuncia,ClsConstants.DATE_FORMAT_JAVA);
+								}
+								String stFechaPrimeraActuacion = admActuacionesDesignas.getFechaPrimeraActuacion(designaAntigua);
+								Date dtFechaPrimeraActuacion = null;
+								if(stFechaPrimeraActuacion!=null && !stFechaPrimeraActuacion.equalsIgnoreCase("")){
+									dtFechaPrimeraActuacion = UtilidadesFecha.getDate(stFechaPrimeraActuacion,ClsConstants.DATE_FORMAT_JAVA);
+								}
+								// Ambas fechas pueden ser null
+								String stMotivo="";
+								Date dtFechaCorte=null;
+								if(dtFechaPrimeraActuacion==null && dtFechaPrimeraRenuncia==null){
+									// Si no hay fecha de renuncia ni fecha de actuacion actualizamos la fecha de designa del letrado 
+									actualizarFechaLetrado = true;
+									hsDesignaLetradoNew.put(ScsDesignasLetradoBean.C_FECHADESIGNA, fechaApertura);
+								}else{
+									// Si una es nula cogemos la otra
+									if(dtFechaPrimeraActuacion==null){
+										dtFechaCorte = dtFechaPrimeraRenuncia;
+										stMotivo="messages.designa.fechaDesigna.anterior.renuncia";
+									}else if(dtFechaPrimeraRenuncia==null){
+										dtFechaCorte = dtFechaPrimeraActuacion;
+										stMotivo="messages.designa.fechaDesigna.anterior.actuacion";
+									}else{
+										// Ninguna es nula
+										if(dtFechaPrimeraActuacion.before(dtFechaPrimeraRenuncia)){
+											dtFechaCorte = dtFechaPrimeraActuacion;
+											stMotivo="messages.designa.fechaDesigna.anterior.actuacion";
+										}else{
+											dtFechaCorte = dtFechaPrimeraRenuncia;
+											stMotivo="messages.designa.fechaDesigna.anterior.renuncia";
+										}
+									}
+									if(dtFechaCorte.before(dtFechaApertura)){
+										String mensaje = UtilidadesString.getMensajeIdioma(this.getUserBean(request),"messages.designa.fechaDesigna.anterior");
+										mensaje += UtilidadesString.getMensajeIdioma(this.getUserBean(request),stMotivo);
+										return exitoRefresco(mensaje, request);
+									}else{
+										actualizarFechaLetrado = true;
+										hsDesignaLetradoNew.put(ScsDesignasLetradoBean.C_FECHADESIGNA, fechaApertura);
+									}
+								}
+								
+							}
 						}
 						
 						String fechaJuicio = GstDate.getApplicationFormatDate("",(String)datosEntrada.get("FechaJuicio"));
@@ -639,7 +702,10 @@ public class MaestroDesignasAction extends MasterAction {
 						}		
 						
 						tx.begin();
-						designaAdm.update(designaNueva,designaAntigua.getOriginalHash());						
+						designaAdm.update(designaNueva,designaAntigua.getOriginalHash());	
+						if(actualizarFechaLetrado){
+							admDesignasLetrado.updateFechaDesigna(hsDesignaLetrado, fechaApertura);
+						}
 						if (anular)
 							designaAdm.anularDesigna(mapping, formulario, request, response);
 						if (desAnular)
