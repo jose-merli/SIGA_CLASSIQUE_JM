@@ -334,11 +334,11 @@
 				    modal="M"
 				    activarFilaSel="true" > 		  
 	 	
-<%				if(vDatos == null || vDatos.size()<1 ) { %>
+					<%if(vDatos == null || vDatos.size()<1 ) { %>
 		 					<br><br>
 		   		 			<p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
 		 					<br><br>	 		
-<%		 				}
+					<%}
 		 				else {	 
 				 			Enumeration en = vDatos.elements();	
 				 			int i=0;  	 				 			
@@ -373,7 +373,7 @@
 								FilaExtElement[] elems=new FilaExtElement[6];
 								if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_PENDIENTE) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADAERRORES)) {
 									elems[0]=new FilaExtElement("generar",  "confirmacionInmediata", "facturacion.confirmarFacturacion.boton.confirmacionInmediata", SIGAConstants.ACCESS_READ);
-									elems[1]=new FilaExtElement("confirmar","programarConfirmacion", "facturacion.confirmarFacturacion.boton.programarConfirmacion", SIGAConstants.ACCESS_READ);
+									elems[1]=new FilaExtElement("confirmar","programarConfirmacion", "facturacion.confirmarFacturacion.boton.cambiarFechaCargoyConfirmar", SIGAConstants.ACCESS_READ);
 								}
 								if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADA) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADAERRORES)) {
 									elems[2]=new FilaExtElement("archivar","archivar",SIGAConstants.ACCESS_READ); 				
@@ -389,13 +389,13 @@
 								}*/
 
 								i++;
-%> 							
+								%> 							
 								<siga:FilaConIconos fila='<%=String.valueOf(i)%>' botones='' visibleConsulta='false' visibleEdicion='false' visibleBorrado='false' elementos='<%=elems%>' pintarEspacio="no" clase="listaNonEdit">
-<% if (sCheckArchivado.trim().equals("1")) { %>
+								<% if (sCheckArchivado.trim().equals("1")) { %>
 									<td><center><input type=checkbox name="sel" value="1" checked disabled></center></td> 
-<% } else { %>
+								<% } else { %>
 									<td><center><input type=checkbox name="sel" value="1" disabled></center></td> 
-<% } %>
+								<% } %>
 									<td>
 										<input type='hidden' id='oculto<%=String.valueOf(i)%>_1' name='oculto<%=String.valueOf(i)%>_1' value='<%=htData.get(FacFacturacionProgramadaBean.C_IDSERIEFACTURACION)%>'>
 										<input type='hidden' id='oculto<%=String.valueOf(i)%>_2' name='oculto<%=String.valueOf(i)%>_2' value='<%=htData.get(FacFacturacionProgramadaBean.C_IDPROGRAMACION)%>'>	
@@ -412,8 +412,8 @@
 									<td><%=sEstadoPDF%></td> 	
 									<td><%=sEstadoEnvios%></td> 	
 								</siga:FilaConIconos>
-<%						}
-	 					} // While %>
+						<%}
+						} // While %>
 	  		</siga:TablaCabecerasFijas>  			
 					
 
