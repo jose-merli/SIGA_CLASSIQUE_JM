@@ -578,6 +578,7 @@ public class MaestroDesignasAction extends MasterAction {
 									if(dtFechaCorte.before(dtFechaApertura)){
 										String mensaje = UtilidadesString.getMensajeIdioma(this.getUserBean(request),"messages.designa.fechaDesigna.anterior");
 										mensaje += UtilidadesString.getMensajeIdioma(this.getUserBean(request),stMotivo);
+										mensaje += " (" +UtilidadesString.formatoFecha(dtFechaCorte, ClsConstants.DATE_FORMAT_SHORT_SPANISH)+")";
 										return exitoRefresco(mensaje, request);
 									}else{
 										actualizarFechaLetrado = true;
