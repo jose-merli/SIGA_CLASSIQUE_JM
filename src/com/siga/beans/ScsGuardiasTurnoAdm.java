@@ -697,7 +697,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
         					codigos.put(new Integer(contador),institucion);
         					
         					sql += " F_SIGA_FECHAFINSOLICITANTE(:"+contador+","+ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDTURNO+","+ScsGuardiasTurnoBean.T_NOMBRETABLA + "." + ScsGuardiasTurnoBean.C_IDGUARDIA+","+
-	                                         "guardias2.idpersona, guardias2.fechainicio, guardias2.idcalendarioguardias)) AS FECHA_FIN,  SCS_INCLUSIONGUARDIASENLISTAS.ORDEN";	
+	                                         "guardias2.idpersona, guardias2.fechainicio, guardias2.idcalendarioguardias)) AS FECHA_FIN,  SCS_INCLUSIONGUARDIASENLISTAS.ORDEN, guardias2.posicion ";	
 											
 					   
 	                                         
@@ -769,134 +769,18 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 	         	             " AND " +ScsGuardiasTurnoBean.T_NOMBRETABLA +"."+ ScsGuardiasTurnoBean.C_IDTURNO+"="+ScsInclusionGuardiasEnListasBean.T_NOMBRETABLA+"."+ScsInclusionGuardiasEnListasBean.C_IDTURNO+
 	         	             " AND " +ScsGuardiasTurnoBean.T_NOMBRETABLA +"."+ ScsGuardiasTurnoBean.C_IDGUARDIA+"="+ScsInclusionGuardiasEnListasBean.T_NOMBRETABLA+"."+ScsInclusionGuardiasEnListasBean.C_IDGUARDIA+	         	          
 	         	             " AND SCS_INCLUSIONGUARDIASENLISTAS.IDLISTA ="+idlista;
-	         						
-							/*  sql += "GROUP BY TURNO, GUARDIA, LETRADO, FECHA_INICIO,FECHA_FIN" +
-							  		",OFICINA1, OFICINA2, RESIDENCIA, MOVIL,  FAX1,  FAX2 " +
-							  " ORDER BY FECHA_INICIO,FECHA_FIN, TURNO, GUARDIA, LETRADO";*/
-							
+
+							sql +=" ORDER BY FECHA_INICIO,FECHA_FIN, SCS_TURNO.NOMBRE, GUARDIA, POSICION, LETRADO";
+				// jbd // inc7654 // Para evitar lo ocurrido en Murcia se cambia la forma de crear la lista de letrados de guardia
+					   // Se devuelve ya en el orden de salida, asi no hace falta hacer la ordenacion a posteriori y evitamos usar un 
+					   // TreeMap intermedio que provocaba el error de eliminar un letrado si tenian el mismo nombre y guardia el mismo dia
 			    if (rc.findBind(sql,codigos)) {
 	               for (int i = 0; i < rc.size(); i++){
 	                  Row fila = (Row) rc.get(i);
 	                  Hashtable resultado=fila.getRow();	
-	                   
-						idturno = (String)resultado.get("IDTURNO");
-						String turno = (String)resultado.get("TURNO");
-						String guardia = (String)resultado.get("GUARDIA");
-						String letrado = (String)resultado.get("LETRADO");
-						idguardia = (String)resultado.get(ScsGuardiasTurnoBean.C_IDGUARDIA);
-						idpersona = (String)resultado.get("IDPERSONA");
-						idcalendarioguardias = (String)resultado.get("IDCALENDARIOGUARDIAS");
-						String orden = (String)resultado.get("ORDEN"); 
-						String fechaInicioPK = (String)resultado.get("FECHA_INICIO");
-						String fechaFinPK = (String)resultado.get("FECHA_FIN");
-
-						/*Hashtable htCodigoDireccion = new Hashtable();
-						htCodigoDireccion.put(new Integer(1), institucion);
-						htCodigoDireccion.put(new Integer(2), idpersona);
-						htCodigoDireccion.put(new Integer(3), "6");
-						htCodigoDireccion.put(new Integer(4), "11");
-						
-						
-						helperInformes.completarHashSalida(resultado,helperInformes.ejecutaFuncionSalida(
-								htCodigoDireccion, "f_siga_getdireccioncliente", "OFICINA1"));
-						
-						htCodigoDireccion = new Hashtable();
-						htCodigoDireccion.put(new Integer(1), institucion);
-						htCodigoDireccion.put(new Integer(2), idpersona);
-						htCodigoDireccion.put(new Integer(3), "6");
-						htCodigoDireccion.put(new Integer(4), "12");
-						helperInformes.completarHashSalida(resultado,helperInformes.ejecutaFuncionSalida(
-								htCodigoDireccion, "f_siga_getdireccioncliente", "OFICINA2"));
-						
-						htCodigoDireccion = new Hashtable();
-						htCodigoDireccion.put(new Integer(1), institucion);
-						htCodigoDireccion.put(new Integer(2), idpersona);
-						htCodigoDireccion.put(new Integer(3), "1");
-						htCodigoDireccion.put(new Integer(4), "11");
-						helperInformes.completarHashSalida(resultado,helperInformes.ejecutaFuncionSalida(
-								htCodigoDireccion, "f_siga_getdireccioncliente", "RESIDENCIA"));
-						
-						htCodigoDireccion = new Hashtable();
-						htCodigoDireccion.put(new Integer(1), institucion);
-						htCodigoDireccion.put(new Integer(2), idpersona);
-						htCodigoDireccion.put(new Integer(3), "6");
-						htCodigoDireccion.put(new Integer(4), "13");
-						helperInformes.completarHashSalida(resultado,helperInformes.ejecutaFuncionSalida(
-								htCodigoDireccion, "f_siga_getdireccioncliente", "MOVIL"));
-						
-						htCodigoDireccion = new Hashtable();
-						htCodigoDireccion.put(new Integer(1), institucion);
-						htCodigoDireccion.put(new Integer(2), idpersona);
-						htCodigoDireccion.put(new Integer(3), "6");
-						htCodigoDireccion.put(new Integer(4), "14");
-						helperInformes.completarHashSalida(resultado,helperInformes.ejecutaFuncionSalida(
-								htCodigoDireccion, "f_siga_getdireccioncliente", "FAX1"));
-						
-						htCodigoDireccion = new Hashtable();
-						htCodigoDireccion.put(new Integer(1), institucion);
-						htCodigoDireccion.put(new Integer(2), idpersona);
-						htCodigoDireccion.put(new Integer(3), "6");
-						htCodigoDireccion.put(new Integer(4), "15");
-						helperInformes.completarHashSalida(resultado,helperInformes.ejecutaFuncionSalida(
-								htCodigoDireccion, "f_siga_getdireccioncliente", "FAX2"));*/
-						
-						/*Hashtable htCodigo = new Hashtable();
-						htCodigo.put(new Integer(1), institucion);
-						htCodigo.put(new Integer(2), idturno);
-						htCodigo.put(new Integer(3), idguardia);
-						htCodigo.put(new Integer(4), idpersona);
-						htCodigo.put(new Integer(5), fechaInicio);
-						htCodigo.put(new Integer(6), idcalendarioguardias); 
-						
-						//FECHAINICIO
-						helperInformes.completarHashSalida(resultado,helperInformes.ejecutaFuncionSalida(
-								htCodigo, "F_SIGA_FECHAINISOLICITANTE", "FECHA_INICIO"));
-						String fInicio = (String)resultado.get("FECHA_INICIO");
-						//Si la fecha de inicio del solicitante es nula miramos  la fecha de inicio del confirmador
-						if(fInicio==null||fInicio.trim().equals("")){
-							helperInformes.completarHashSalida(resultado,helperInformes.ejecutaFuncionSalida(
-									htCodigo, "F_SIGA_FECHAINICONFIRMADOR", "FECHA_INICIO"));
-							fInicio = (String)resultado.get("FECHA_INICIO");
-							//Si la fecha de inicio del confirmador es nula ponemos como fecha de inicio de la permuta 
-							//la fecha de inicio real
-							if(fInicio==null||fInicio.trim().equals("")){
-								fInicio = fechaInicioPK;
-								
-							}
-							
-						}
-						resultado.put("FECHA_INICIO", fInicio);
-						//FECHAFINPERMUTA
-						helperInformes.completarHashSalida(resultado,helperInformes.ejecutaFuncionSalida(
-								htCodigo, "F_SIGA_FECHAFINSOLICITANTE", "FECHA_FIN"));
-						String fFin = (String)resultado.get("FECHA_FIN");
-						//Si la fecha de fin del solicitante es nula miramos  la fecha de fin del confirmador
-						if(fFin==null||fFin.trim().equals("")){
-							helperInformes.completarHashSalida(resultado,helperInformes.ejecutaFuncionSalida(
-									htCodigo, "F_SIGA_FECHAFINCONFIRMADOR", "FECHA_FIN"));
-							fFin = (String)resultado.get("FECHAFINPERMUTA");
-							//Si la fecha de fin del confirmador es nula ponemos como fecha de fin de la permuta 
-							//la fecha de fin real
-							if(fFin==null||fFin.trim().equals("")){
-								fFin = fechaFinPK;
-								
-							}
-							
-						}
-						resultado.put("FECHA_FIN", fFin);*/
-				  
-						
-						String keyTreeMap = fechaInicioPK+orden+turno+guardia+letrado.toLowerCase();
-						tmListaGuardias.put(keyTreeMap, resultado);
-													                 
+	                  datos.add(resultado); 					                 
 	               }
-	               Iterator iteLista = tmListaGuardias.keySet().iterator();
-					while (iteLista.hasNext()) {
-						String key = (String) iteLista.next();
-		        		Hashtable listaGuardiasOrdenadas = (Hashtable) tmListaGuardias.get(key);
-		        		datos.add(listaGuardiasOrdenadas);
-					}
-	            } 
+	            }
 	       }
 	       catch (Exception e) {
 	       	throw new ClsExceptions (e, "Error al obtener la informacion sobre listas de guardias.");
