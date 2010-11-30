@@ -30,6 +30,7 @@
 <% 
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
+	
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);	
 
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
@@ -45,18 +46,21 @@
 	String sFProgramacion 				= "";
 	String sFPrevistaGeneracion 	= "";
 	String sFRealGeneracion 	= "";
-	String sFPrevistaConfirmacion 	= "";
+	String sFPrevistaConfirmacion 	= "";	
 	String sHorasConfirmacion 	= "";
 	String sHorasGeneracion 	= "";
 	String sMinutosConfirmacion 	= "";
 	String sMinutosGeneracion 	= "";
+	String sFCargoFicheroBanco 	= "";
+	String sHorasCargoFicheroBanco 	= "";
+	String sMinutosCargoFicheroBanco 	= "";
 	String enviarFacturas 	= "";
 	String generarPDF 	= "";
 	boolean bEditableConfirmacion = true;
 	boolean bEditableGeneracion = true;
 	boolean bEditable = true;
 	boolean nuevo = true;
-	
+	String auxFcargo ="";
 
 	if(request.getSession().getAttribute("DATABACKUP")!= null){		
 			// Se trata de modificacion
@@ -84,6 +88,14 @@
 				sHorasConfirmacion = aux.substring(11,13);
 				sMinutosConfirmacion = aux.substring(14,16);		
 			}
+			
+			sFCargoFicheroBanco =com.atos.utils.GstDate.getFormatedDateShort("", UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHACARGO));
+			auxFcargo = UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHACARGO);
+			if (!auxFcargo.equals("")) {
+				sHorasCargoFicheroBanco = auxFcargo.substring(11,13);
+				sMinutosCargoFicheroBanco = auxFcargo.substring(14,16);		
+			}
+					
 			enviarFacturas = UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_ENVIO);
 			generarPDF = UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_GENERAPDF);
 
@@ -101,7 +113,9 @@
 		
 	}
 
+		String modoAction=(String) ses.getAttribute("ModoAction");
 	
+		
 	String iconos="E,B";
 	String botones="N"; 
 	
@@ -169,16 +183,17 @@ function IsNum( numstr ) {
 
 	<script language="JavaScript">
 
-		<!-- Asociada al boton Volver -->
+		//<!-- Asociada al boton Volver -->
 		function accionCerrar(){ 			
 			window.close();
 		}			
 		
-		<!-- Asociada al boton GuardarCerrar -->
+		//<!-- Asociada al boton GuardarCerrar -->
 		function accionGuardarCerrar() {	
 
 			var fechaConf = trim(document.programarFacturacionForm.fechaPrevistaConfirmacion.value);
 			var fechaGen = trim(document.programarFacturacionForm.fechaPrevistaGeneracion.value);
+			var fechaCargo = trim(document.programarFacturacionForm.fechaCargo.value);
 			f=document.programarFacturacionForm;			
 				
 			sub();
@@ -227,20 +242,41 @@ function IsNum( numstr ) {
 					return false;
 				}
 			}
+
+			if (trim(fechaCargo)!="") {
+				horas = trim(document.programarFacturacionForm.horasCargo.value);
+				minutos = trim(document.programarFacturacionForm.minutosCargo.value);
+				if (horas.length==1) {
+					document.programarFacturacionForm.horasCargo.value = "0" + horas;
+				}
+				if (minutos.length==1) {
+					document.programarFacturacionForm.minutosCargo.value = "0" + minutos;
+				}
+				if (horas!="" && (horas>23 || horas<0)) {
+					alert('<siga:Idioma key="messages.programarFacturacionForm.mensajeHoras"/>');
+					fin();
+					return false;
+				}
+				if (minutos!="" && (minutos>59 || minutos<0)) {
+					alert('<siga:Idioma key="messages.programarFacturacionForm.mensajeMinutos"/>');
+					fin();
+					return false;
+				}
+			}
+			
 		
-				var valor = "";
-				var iValue = "";
+				var valor = "";				
 				
 			if (trim(fechaGen)!="") {
 				valor = trim(f.horasGeneracion.value);
 	            if (!IsNum(valor)) {
-	            	alert ("<siga:Idioma key="facturacion.seriesFacturacion.literal.horasGeneracion"/>");
+	            	alert ("<siga:Idioma key='facturacion.seriesFacturacion.literal.horasGeneracion'/>");
 	            	fin();
 	            	return false;
 				}
 				valor = trim(f.minutosGeneracion.value);
 	            if (!IsNum(valor)) {
-	            	alert ("<siga:Idioma key="facturacion.seriesFacturacion.literal.minutosGeneracion"/>");
+	            	alert ("<siga:Idioma key='facturacion.seriesFacturacion.literal.minutosGeneracion'/>");
 	            	fin();
 	            	return false;
 				}
@@ -250,13 +286,30 @@ function IsNum( numstr ) {
 			
 				valor = trim(f.horasConfirmacion.value);
 	            if (!IsNum(valor)) {
-	            	alert ("<siga:Idioma key="facturacion.seriesFacturacion.literal.horasConfirmacion"/>");
+	            	alert ("<siga:Idioma key='facturacion.seriesFacturacion.literal.horasConfirmacion'/>");
 	            	fin();
 	            	return false;
 				}
 				valor = trim(f.minutosConfirmacion.value);
 	            if (!IsNum(valor)) {
-	            	alert ("<siga:Idioma key="facturacion.seriesFacturacion.literal.minutosConfirmacion"/>");
+	            	alert ("<siga:Idioma key='facturacion.seriesFacturacion.literal.minutosConfirmacion'/>");
+	            	fin();
+	            	return false;
+				}
+			}
+
+
+			if (trim(fechaCargo)!="") {
+				
+				valor = trim(f.horasCargo.value);
+	            if (!IsNum(valor)) {
+	            	alert ("<siga:Idioma key='facturacion.seriesFacturacion.literal.minutosCargoFicheroBanco'/>");
+	            	fin();
+	            	return false;
+				}
+				valor = trim(f.minutosCargo.value);
+	            if (!IsNum(valor)) {
+	            	alert ("<siga:Idioma key='facturacion.seriesFacturacion.literal.minutosCargoFicheroBanco'/>");
 	            	fin();
 	            	return false;
 				}
@@ -271,19 +324,19 @@ function IsNum( numstr ) {
 
 			// Comprobamos las fechas
 			if (compararFecha (f.fechaInicialProducto, f.fechaFinalProducto) == 1) {
-				alert ("<siga:Idioma key="messages.fechas.rangoFechas"/>");
+				alert ("<siga:Idioma key='messages.fechas.rangoFechas'/>");
 				fin();
 				return false;
 			}
 			if (compararFecha (f.fechaInicialServicio, f.fechaFinalServicio) == 1) {
-				alert ("<siga:Idioma key="messages.fechas.rangoFechas"/>");
+				alert ("<siga:Idioma key='messages.fechas.rangoFechas'/>");
 				fin();
 				return false;
 			}	
 			var iguales = compararFecha (f.fechaPrevistaGeneracion, f.fechaPrevistaConfirmacion);
 			if (iguales==1) {
 				// no valen las fechas
-				alert ("<siga:Idioma key="messages.fechas.rangoFechasPrevistas"/>");
+				alert ("<siga:Idioma key='messages.fechas.rangoFechasPrevistas'/>");
 				fin();
 				return false;
 			} else {
@@ -294,12 +347,12 @@ function IsNum( numstr ) {
 					var horasGen = trim(document.programarFacturacionForm.horasGeneracion.value);
 					var minutosGen = trim(document.programarFacturacionForm.minutosGeneracion.value);
 					if (parseInt(horasConf)<parseInt(horasGen)) {
-						alert ("<siga:Idioma key="messages.fechas.rangoHorasPrevistas"/>");
+						alert ("<siga:Idioma key='messages.fechas.rangoHorasPrevistas'/>");
 						fin();
 						return false;
 					} else if (parseInt(horasConf)==parseInt(horasGen)) {
 						if (parseInt(minutosConf)<parseInt(minutosGen)) {
-							alert ("<siga:Idioma key="messages.fechas.rangoHorasPrevistas"/>");
+							alert ("<siga:Idioma key='messages.fechas.rangoHorasPrevistas'/>");
 							fin();
 							return false;
 						}
@@ -369,19 +422,16 @@ function IsNum( numstr ) {
 									<siga:Idioma key="facturacion.seriesFacturacion.literal.serieFacturacion"/>&nbsp;(*)
 								</td>
 								<td COLSPAN=4>
-<%
-									if(nuevo){
-										dato[0] = usr.getLocation().toString();
-%>
-											<siga:ComboBD nombre="serieFacturacion" tipo="cmbSerieFacturacion" parametro="<%=dato%>" clase="boxCombo" accion="cambiaSerie();" obligatorio="true"/>
-<%								
+									<%if(nuevo){
+											dato[0] = usr.getLocation().toString();
+									%>
+								    <siga:ComboBD nombre="serieFacturacion" tipo="cmbSerieFacturacion" parametro="<%=dato%>" clase="boxCombo" accion="cambiaSerie();" obligatorio="true"/>
+									<%								
 									} else {
-%>
+									%>
 										<html:hidden property="serieFacturacion" value='<%=LSerieFacturacion.toString()%>'/>
 										<html:text property="serieFacturacionDes" value='<%=sSerieFacturacionDesc%>' size="60" styleClass="boxConsulta" readOnly="true"></html:text>
-<%								
-									}
-%>								
+									<%}%>								
 								</td>
 							</tr>
 							<!-- FILA -->
@@ -407,27 +457,27 @@ function IsNum( numstr ) {
 									<siga:Idioma key="facturacion.seriesFacturacion.literal.fInicio"/>
 								</td>
 								<td>
-<% if (bEditable) { %>
+									<% if (bEditable) { %>
 									<html:text name="programarFacturacionForm" property="fechaInicialProducto" value="<%=sFInicialProducto%>" size="10" styleClass="box" readonly="true"/>
 										<a href='javascript://' onClick="return showCalendarGeneral(fechaInicialProducto);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
 											<img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="facturacion.seriesFacturacion.literal.seleccionarFecha"/>' border="0">
 										</a>
-<% } else { %>
+									<% } else { %>
 									<html:text name="programarFacturacionForm" property="fechaInicialProducto" value="<%=sFInicialProducto%>" size="10" styleClass="boxConsulta" readonly="true"/>
-<% }  %>
+									<% }  %>
 								</td>
 								<td class="labelText"  width="100px">
 									<siga:Idioma key="facturacion.seriesFacturacion.literal.fFin"/>
 								</td>
 								<td>									
-<% if (bEditable) { %>
+								<% if (bEditable) { %>
 									<html:text name="programarFacturacionForm" property="fechaFinalProducto" value="<%=sFFinalProducto%>" size="10" styleClass="box" readonly="true"></html:text>									
 										<a href='javascript://' onClick="return showCalendarGeneral(fechaFinalProducto);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
 											<img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="facturacion.seriesFacturacion.literal.seleccionarFecha"/>' border="0">
 										</a>
-<% } else { %>
+								<% } else { %>
 									<html:text name="programarFacturacionForm" property="fechaFinalProducto" value="<%=sFFinalProducto%>" size="10" styleClass="boxConsulta" readonly="true"></html:text>									
-<% }  %>
+								<% }  %>
 								</td>
 							</tr>
 							<!-- FILA -->
@@ -438,28 +488,28 @@ function IsNum( numstr ) {
 								<td class="labelText">
 									<siga:Idioma key="facturacion.seriesFacturacion.literal.fInicio"/>
 								</td>	
-								<td width="110px">
-<% if (bEditable) { %>
+								<td width="120px">
+									<% if (bEditable) { %>
 									<html:text name="programarFacturacionForm" property="fechaInicialServicio" value="<%=sFInicialServicio%>" size="10" styleClass="box" readonly="true"></html:text>									
 										<a href='javascript://' onClick="return showCalendarGeneral(fechaInicialServicio);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
 											<img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="facturacion.seriesFacturacion.literal.seleccionarFecha"/>' border="0">
 										</a>
-<% } else { %>
+									<% } else { %>
 									<html:text name="programarFacturacionForm" property="fechaInicialServicio" value="<%=sFInicialServicio%>" size="10" styleClass="boxConsulta" readonly="true"></html:text>									
-<% }  %>
+									<% }  %>
 								</td>
 								<td class="labelText">
 									<siga:Idioma key="facturacion.seriesFacturacion.literal.fFin"/>
 								</td>
-								<td  width="110px">
-<% if (bEditable) { %>
+								<td  width="120px">
+								<% if (bEditable) { %>
 									<html:text name="programarFacturacionForm" property="fechaFinalServicio" value="<%=sFFinalServicio%>" size="10" styleClass="box" readonly="true"></html:text>									
 										<a href='javascript://' onClick="return showCalendarGeneral(fechaFinalServicio);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
 											<img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="facturacion.seriesFacturacion.literal.seleccionarFecha"/>' border="0">
 										</a>
-<% } else { %>
+								<% } else { %>
 									<html:text name="programarFacturacionForm" property="fechaFinalServicio" value="<%=sFFinalServicio%>" size="10" styleClass="boxConsulta" readonly="true"></html:text>									
-<% }  %>
+								<% }  %>
 								</td>
 							</tr>
 						</table>
@@ -473,15 +523,15 @@ function IsNum( numstr ) {
 								<td class="labelText"  width="260px">
 									<siga:Idioma key="facturacion.seriesFacturacion.literal.fechaPrevistaGeneracion"/>&nbsp;(*)
 								</td>
-								<td   width="110px">
-<% if (bEditable) { %>
-									<html:text name="programarFacturacionForm" property="fechaPrevistaGeneracion" value="<%=sFPrevistaGeneracion%>" size="10" styleClass="box" readonly="true"></html:text>									
-										<a href='javascript://' onClick="return showCalendarGeneral(fechaPrevistaGeneracion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
-											<img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="facturacion.seriesFacturacion.literal.seleccionarFecha"/>' border="0">
-										</a>
-<% } else { %>
-									<html:text name="programarFacturacionForm" property="fechaPrevistaGeneracion" value="<%=sFPrevistaGeneracion%>" size="10" styleClass="boxConsulta" readonly="true"></html:text>									
-<% }  %>
+								<td   width="120px">
+									<% if (bEditable) { %>
+										<html:text name="programarFacturacionForm" property="fechaPrevistaGeneracion" value="<%=sFPrevistaGeneracion%>" size="10" styleClass="box" readonly="true"></html:text>									
+											<a href='javascript://' onClick="return showCalendarGeneral(fechaPrevistaGeneracion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
+												<img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="facturacion.seriesFacturacion.literal.seleccionarFecha"/>' border="0">
+											</a>
+									<% } else { %>
+										<html:text name="programarFacturacionForm" property="fechaPrevistaGeneracion" value="<%=sFPrevistaGeneracion%>" size="10" styleClass="boxConsulta" readonly="true"></html:text>									
+									<% }  %>
 								</td>
 								<td class="labelText"   width="110px">
 									<siga:Idioma key="facturacion.seriesFacturacion.literal.hora"/>
@@ -510,11 +560,16 @@ function IsNum( numstr ) {
 								<td class="labelText"   width="260px">
 									<siga:Idioma key="facturacion.seriesFacturacion.literal.fechaPrevistaConfirmacion"/>
 								</td>
-								<td   width="110px">
+								<td   width="120px">
+								<% if (bEditable) { %>
 									<html:text name="programarFacturacionForm" property="fechaPrevistaConfirmacion" value="<%=sFPrevistaConfirmacion%>" size="10" styleClass="box" readonly="true"></html:text>									
 										<a href='javascript://' onClick="return showCalendarGeneral(fechaPrevistaConfirmacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
 											<img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="facturacion.seriesFacturacion.literal.seleccionarFecha"/>' border="0">
 										</a>
+										
+								<% } else { %>
+										<html:text name="programarFacturacionForm" property="fechaPrevistaConfirmacion" value="<%=sFPrevistaConfirmacion%>" size="10" styleClass="boxConsulta" readonly="true"></html:text>									
+										<% }  %>
 								</td>
 								<td class="labelText"  width="110px">
 									<siga:Idioma key="facturacion.seriesFacturacion.literal.hora"/>
@@ -528,6 +583,37 @@ function IsNum( numstr ) {
 									<html:text name="programarFacturacionForm" property="horasConfirmacion"  value="<%=sHorasConfirmacion%>" size="1" maxlength="2" styleClass="boxConsulta" readonly="<%=!bEditableConfirmacion%>"></html:text>					
 									:
 									<html:text name="programarFacturacionForm" property="minutosConfirmacion"   value="<%=sMinutosConfirmacion%>" size="1" maxlength="2" styleClass="boxConsulta" readonly="<%=!bEditableConfirmacion%>"></html:text>	
+								<%}%>
+								</td>
+								
+							</tr>
+								
+							<tr>
+								<td class="labelText"   width="260px">
+									<siga:Idioma key="facturacion.seriesFacturacion.literal.fechaCargoenficheroBancario"/>
+								</td>
+								<td   width="120px">
+								<% if (modoAction.equals("editar")) { %>
+										<html:text name="programarFacturacionForm" property="fechaCargo" value="<%=sFCargoFicheroBanco%>" size="10" styleClass="box" readonly="false"></html:text>									
+										<a href='javascript://' onClick="return showCalendarGeneral(fechaCargo);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
+											<img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="facturacion.seriesFacturacion.literal.seleccionarFecha"/>' border="0">
+										</a>
+								<% } else { %>
+										<html:text name="programarFacturacionForm" property="fechaCargo" value="<%=sFCargoFicheroBanco%>" size="10" styleClass="boxConsulta" readonly="true"></html:text>									
+								<% } %>
+								</td>
+								<td class="labelText"  width="110px">
+									<siga:Idioma key="facturacion.seriesFacturacion.literal.hora"/>
+								</td>
+								<td  class="boxConsulta">
+								<%if (modoAction.equals("editar")){%>
+									<html:text name="programarFacturacionForm" property="horasCargo"  value="<%=sHorasCargoFicheroBanco%>" size="1" maxlength="2" styleClass="box" readonly="false"></html:text>					
+									:
+									<html:text name="programarFacturacionForm" property="minutosCargo"   value="<%=sMinutosCargoFicheroBanco%>" size="1" maxlength="2" styleClass="box" readonly="false"></html:text>	
+								<% } else {%>
+									<html:text name="programarFacturacionForm" property="horasCargo"  value="<%=sHorasCargoFicheroBanco%>" size="1" maxlength="2" styleClass="boxConsulta" readonly="true"></html:text>					
+									:
+									<html:text name="programarFacturacionForm" property="minutosCargo"   value="<%=sMinutosCargoFicheroBanco%>" size="1" maxlength="2" styleClass="boxConsulta" readonly="true"></html:text>	
 								<%}%>
 								</td>
 								
