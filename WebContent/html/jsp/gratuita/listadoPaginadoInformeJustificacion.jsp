@@ -72,7 +72,7 @@ function accionEditarActuacion(anio,idTurno,numero,idInstitucion,numeroActuacion
 	document.ActuacionesDesignasForm.idTurno.value = idTurno;
 	document.ActuacionesDesignasForm.numero.value = numero;
 	document.ActuacionesDesignasForm.nactuacion.value = numeroActuacion;
-	document.ActuacionesDesignasForm.modo.value = "Editar";
+	document.ActuacionesDesignasForm.modo.value = "EditarDesdeInforme";
 	var resultado=ventaModalGeneral(document.ActuacionesDesignasForm.name,"G");
 	if(resultado=='MODIFICADO') 
 		parent.buscar();

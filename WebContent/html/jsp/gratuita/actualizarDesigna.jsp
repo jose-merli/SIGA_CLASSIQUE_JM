@@ -95,8 +95,8 @@
 
 <table class="tablaTitulo" cellspacing="0" heigth="38">
 	<tr>
-		<td>
-			Actualizar Designa
+		<td id="titulo" class="titulitosDatos">
+			<siga:Idioma key="gratuita.actuacionesDesigna.literal.actualizarDesigna" />
 		</td>
 	</tr>
 	</table>

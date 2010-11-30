@@ -60,9 +60,15 @@ public class ActuacionesDesignasAction extends MasterAction {
 
 		MasterForm miForm = null;
 		miForm = (MasterForm) formulario;
+		String accion = miForm.getModo();
 		try{
+			if(accion.equalsIgnoreCase("EditarDesdeInforme")){
+				request.getSession().removeAttribute("designaActual");
+				miForm.setModo("editar");
+			}
 			if((miForm == null)||(miForm.getModo()==null)||(miForm.getModo().equals(""))){
 				return mapping.findForward(this.abrir(mapping, miForm, request, response));
+			
 			}else return super.executeInternal(mapping, formulario, request, response);
 		
 		} catch (SIGAException e) {
@@ -380,8 +386,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 			String numero = null;
 			String numeroAsunto = null;
 			Hashtable designaActual = (Hashtable) ses.getAttribute("designaActual");
-			if(designaActual!=null&&miform.getNactuacion()==null&&miform.getAnio()==null
-					&&miform.getIdTurno()==null && miform.getNumero()==null){
+			if(designaActual!=null){
 				Vector visibles = (Vector)miform.getDatosTablaVisibles(0);
 				numeroAsunto = (String)visibles.get(1);
 				anio = (String)designaActual.get("ANIO");
