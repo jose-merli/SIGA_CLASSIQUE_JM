@@ -12,6 +12,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionMapping;
 
@@ -87,7 +88,7 @@ public class ProgramarFacturacionAction extends MasterAction{
 		try
 		{				
 			Integer usuario = this.getUserName(request);
-			
+			HttpSession ses = request.getSession();
 			ProgramarFacturacionForm form 	= (ProgramarFacturacionForm)formulario;
 			FacFacturacionProgramadaAdm adm = new FacFacturacionProgramadaAdm(this.getUserBean(request));
 			
@@ -110,7 +111,7 @@ public class ProgramarFacturacionAction extends MasterAction{
 
 			request.getSession().setAttribute("DATABACKUP", vDatos);	
 
-			
+			ses.setAttribute("ModoAction","editar");
 		} catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
 		} 	
@@ -187,6 +188,8 @@ public class ProgramarFacturacionAction extends MasterAction{
 		ProgramarFacturacionForm form = (ProgramarFacturacionForm)formulario;
 		Long idSerieFacturacion;
 		String salida = "";
+		HttpSession ses = request.getSession();
+		
 		try
 		{	
 			tx = this.getUserBean(request).getTransaction();			
@@ -247,7 +250,7 @@ public class ProgramarFacturacionAction extends MasterAction{
 				throw new SIGAException (adm.getError());
 			}			
 			tx.commit();
-			
+			ses.setAttribute("ModoAction","editar");
 
 		}
 		catch (Exception e) {
@@ -271,6 +274,7 @@ public class ProgramarFacturacionAction extends MasterAction{
 		ProgramarFacturacionForm form = (ProgramarFacturacionForm)formulario;
 		Long idSerieFacturacion;
 		String salida="";
+		
 		try
 		{	
 			tx = this.getUserBean(request).getTransaction();			
@@ -307,7 +311,7 @@ public class ProgramarFacturacionAction extends MasterAction{
 			// para que no se pierda la hora de programacion (Creacion)
 			bean.setFechaProgramacion(null);
 			
-			// tratamiento de estados de la programacion 
+		// tratamiento de estados de la programacion 
 			bean = adm.tratamientoEstadosProgramacion(bean);
 			
 			// Comprobaciones antes de confirmacion 
@@ -329,6 +333,8 @@ public class ProgramarFacturacionAction extends MasterAction{
 				throw new SIGAException (adm.getError());
 			}			
 			tx.commit();
+			
+			
 			
 		}
 		catch (Exception e) {
@@ -423,6 +429,7 @@ public class ProgramarFacturacionAction extends MasterAction{
 			
 			// tratamos las fechas con minutos y segundos
 			String aux = "";
+			String auxfechaCargo="";
 
 			aux = form.getFechaPrevistaGeneracion().substring(0,form.getFechaPrevistaGeneracion().length()-9) + " " + ((form.getHorasGeneracion().trim().equals(""))?"00":form.getHorasGeneracion())+":"+((form.getMinutosGeneracion().trim().equals(""))?"00":form.getMinutosGeneracion())+":00";
 			bean.setFechaPrevistaGeneracion(aux);			
@@ -430,8 +437,18 @@ public class ProgramarFacturacionAction extends MasterAction{
 			if (form.getFechaPrevistaConfirmacion()!=null && !form.getFechaPrevistaConfirmacion().equals("")) {
 				aux = form.getFechaPrevistaConfirmacion().substring(0,form.getFechaPrevistaConfirmacion().length()-9) + " " + ((form.getHorasConfirmacion().trim().equals(""))?"00":form.getHorasConfirmacion())+":"+((form.getMinutosConfirmacion().trim().equals(""))?"00":form.getMinutosConfirmacion())+":00";
 				bean.setFechaPrevistaConfirmacion(aux);			
+			}else{
+				bean.setFechaPrevistaConfirmacion("");		
+			}
+			
+			if (form.getFechaCargo()!=null && !form.getFechaCargo().equals("")) {
+				auxfechaCargo = form.getFechaCargo().substring(0,form.getFechaCargo().length()-9) + " " + ((form.getHorasCargo().trim().equals(""))?"00":form.getHorasCargo())+":"+((form.getMinutosCargo().trim().equals(""))?"00":form.getMinutosCargo())+":00";
+				bean.setFechaCargo(auxfechaCargo);			
+			}else{
+				bean.setFechaCargo("");
 			}
 
+			
 			bean.setGenerarPDF((form.getGenerarPDF()!=null)?"1":"0");			
 			bean.setEnvio((form.getEnviarFacturas()!=null)?"1":"0");			
 			if (bean.getEnvio().equals("1")) bean.setGenerarPDF("1");
