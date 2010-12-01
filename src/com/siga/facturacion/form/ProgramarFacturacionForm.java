@@ -302,33 +302,7 @@ public class ProgramarFacturacionForm extends MasterForm{
 		return UtilidadesHash.getString(this.datos, FacFacturacionProgramadaBean.C_FECHACARGO);
 	}
 	
-	/**Horas Cargo**/
-	public void setHorasCargo(String dato) {				
-		try {
-			this.datos.put("horasCargo", dato);
-		}
-		catch (Exception e) {
-			
-		}	
-	}
-	
-	public String getHorasCargo() {
-		return UtilidadesHash.getString(this.datos, "horasCargo");
-	}
-	
-	/**Minutos Cargo**/
-	public String getMinutosCargo() {
-		return UtilidadesHash.getString(this.datos, "minutosCargo");
-	}	
-	
-	public void setMinutosCargo(String dato) {				
-		try {
-			this.datos.put("minutosCargo", dato);
-		}
-		catch (Exception e) {
-		
-		}	
-	}
+
 	
 	
 }
