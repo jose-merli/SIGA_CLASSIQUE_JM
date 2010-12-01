@@ -246,26 +246,7 @@ function IsNum( numstr ) {
 				}
 			}
 
-			if (trim(fechaCargo)!="") {
-				horas = trim(document.programarFacturacionForm.horasCargo.value);
-				minutos = trim(document.programarFacturacionForm.minutosCargo.value);
-				if (horas.length==1) {
-					document.programarFacturacionForm.horasCargo.value = "0" + horas;
-				}
-				if (minutos.length==1) {
-					document.programarFacturacionForm.minutosCargo.value = "0" + minutos;
-				}
-				if (horas!="" && (horas>23 || horas<0)) {
-					alert('<siga:Idioma key="messages.programarFacturacionForm.mensajeHoras"/>');
-					fin();
-					return false;
-				}
-				if (minutos!="" && (minutos>59 || minutos<0)) {
-					alert('<siga:Idioma key="messages.programarFacturacionForm.mensajeMinutos"/>');
-					fin();
-					return false;
-				}
-			}
+			
 			
 		
 				var valor = "";				
@@ -300,24 +281,6 @@ function IsNum( numstr ) {
 	            	return false;
 				}
 			}
-
-
-			if (trim(fechaCargo)!="") {
-				
-				valor = trim(f.horasCargo.value);
-	            if (!IsNum(valor)) {
-	            	alert ("<siga:Idioma key='facturacion.seriesFacturacion.literal.minutosCargoFicheroBanco'/>");
-	            	fin();
-	            	return false;
-				}
-				valor = trim(f.minutosCargo.value);
-	            if (!IsNum(valor)) {
-	            	alert ("<siga:Idioma key='facturacion.seriesFacturacion.literal.minutosCargoFicheroBanco'/>");
-	            	fin();
-	            	return false;
-				}
-			}
-
 
 			if (!validateProgramarFacturacionForm(document.programarFacturacionForm)){	
 				fin();
@@ -402,9 +365,7 @@ function IsNum( numstr ) {
 					document.programarFacturacionForm.fechaPrevistaConfirmacion.value = resultado;
 					document.programarFacturacionForm.horasConfirmacion.value = "20";//ponemos que la hora por defecto para confirmacion seran las 20:00
 					document.programarFacturacionForm.minutosConfirmacion.value = "00";					 
-					document.programarFacturacionForm.fechaCargo.value=resultado;
-					document.programarFacturacionForm.horasCargo.value="20";
-					document.programarFacturacionForm.minutosCargo.value="00";					
+					document.programarFacturacionForm.fechaCargo.value=resultado;							
 				}
 			}
 
@@ -561,7 +522,7 @@ function IsNum( numstr ) {
 										<html:text name="programarFacturacionForm" property="fechaPrevistaGeneracion" value="<%=sFPrevistaGeneracion%>" size="10" styleClass="boxConsulta" readonly="true"></html:text>									
 									<% }  %>
 								</td>
-								<td class="labelText"   width="110px">
+								<td class="labelText"   width="40px">
 									<siga:Idioma key="facturacion.seriesFacturacion.literal.hora"/>
 								</td>
 								<td class="boxConsulta">
@@ -599,7 +560,7 @@ function IsNum( numstr ) {
 										<html:text name="programarFacturacionForm" property="fechaPrevistaConfirmacion" value="<%=sFPrevistaConfirmacion%>" size="10" styleClass="boxConsulta" readonly="true"></html:text>									
 										<% }  %>
 								</td>
-								<td class="labelText"  width="110px">
+								<td class="labelText"  width="40px">
 									<siga:Idioma key="facturacion.seriesFacturacion.literal.hora"/>
 								</td>
 								<td class="boxConsulta">
@@ -629,22 +590,7 @@ function IsNum( numstr ) {
 								<% } else { %>
 										<html:text name="programarFacturacionForm" property="fechaCargo" value="<%=sFCargoFicheroBanco%>" size="10" styleClass="boxConsulta" readonly="true"></html:text>									
 								<% } %>
-								</td>
-								<td class="labelText"  width="110px">
-									<siga:Idioma key="facturacion.seriesFacturacion.literal.hora"/>
-								</td>
-								<td  class="boxConsulta">
-								<%if (modoAction.equals("editar")){%>
-									<html:text name="programarFacturacionForm" property="horasCargo"  value="<%=sHorasCargoFicheroBanco%>" size="1" maxlength="2" styleClass="box" readonly="false"></html:text>					
-									:
-									<html:text name="programarFacturacionForm" property="minutosCargo"   value="<%=sMinutosCargoFicheroBanco%>" size="1" maxlength="2" styleClass="box" readonly="false"></html:text>	
-								<% } else {%>
-									<html:text name="programarFacturacionForm" property="horasCargo"  value="<%=sHorasCargoFicheroBanco%>" size="1" maxlength="2" styleClass="boxConsulta" readonly="true"></html:text>					
-									:
-									<html:text name="programarFacturacionForm" property="minutosCargo"   value="<%=sMinutosCargoFicheroBanco%>" size="1" maxlength="2" styleClass="boxConsulta" readonly="true"></html:text>	
-								<%}%>
-								</td>
-								
+								</td>					
 							</tr>
 						</table>
 

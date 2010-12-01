@@ -166,7 +166,9 @@ public class ProgramarFacturacionAction extends MasterAction{
 	 */
 	protected String nuevo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try{
-			request.getSession().setAttribute("DATABACKUP", null);
+				HttpSession ses = request.getSession();
+			request.getSession().setAttribute("DATABACKUP", null);	
+				ses.setAttribute("ModoAction","editar");
 		} catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
 		} 
@@ -441,9 +443,8 @@ public class ProgramarFacturacionAction extends MasterAction{
 				bean.setFechaPrevistaConfirmacion("");		
 			}
 			
-			if (form.getFechaCargo()!=null && !form.getFechaCargo().equals("")) {
-				auxfechaCargo = form.getFechaCargo().substring(0,form.getFechaCargo().length()-9) + " " + ((form.getHorasCargo().trim().equals(""))?"00":form.getHorasCargo())+":"+((form.getMinutosCargo().trim().equals(""))?"00":form.getMinutosCargo())+":00";
-				bean.setFechaCargo(auxfechaCargo);			
+			if (form.getFechaCargo()!=null && !form.getFechaCargo().equals("")) {							
+				bean.setFechaCargo(form.getFechaCargo());
 			}else{
 				bean.setFechaCargo("");
 			}
@@ -465,5 +466,40 @@ public class ProgramarFacturacionAction extends MasterAction{
 		
 	protected String buscar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response)	throws ClsExceptions, SIGAException {
 		return this.abrir(mapping, formulario, request, response);
+	}
+	
+	protected String ver(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		try
+		{				
+			Integer usuario = this.getUserName(request);
+			HttpSession ses = request.getSession();
+			ProgramarFacturacionForm form 	= (ProgramarFacturacionForm)formulario;
+			FacFacturacionProgramadaAdm adm = new FacFacturacionProgramadaAdm(this.getUserBean(request));
+			
+			Vector ocultos = new Vector();		
+			ocultos = (Vector)form.getDatosTablaOcultos(0);
+			
+			Long idSerieFacturacion = Long.valueOf((String)ocultos.elementAt(0));			
+			Long idProgramacion 	= Long.valueOf((String)ocultos.elementAt(1));	
+			Integer idInstitucion	= this.getIDInstitucion(request);
+									
+			String sWhere=" where " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = " + idInstitucion;
+			sWhere += " and ";
+			sWhere += FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " = " + idSerieFacturacion;
+			sWhere += " and ";
+			sWhere += FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDPROGRAMACION + " = " + idProgramacion;
+			
+			String[] orden = {FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION};
+			
+			Vector vDatos = adm.selectDatosFacturacion(sWhere, orden);
+
+			request.getSession().setAttribute("DATABACKUP", vDatos);	
+
+			ses.setAttribute("ModoAction","ver");
+		} catch (Exception e) { 
+			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
+		} 	
+	return "ver";
+
 	}
 }
