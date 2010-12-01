@@ -61,6 +61,8 @@
 	boolean bEditable = true;
 	boolean nuevo = true;
 	String auxFcargo ="";
+	
+	String modoAction=(String) ses.getAttribute("ModoAction");
 
 	if(request.getSession().getAttribute("DATABACKUP")!= null){		
 			// Se trata de modificacion
@@ -100,8 +102,9 @@
 			generarPDF = UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_GENERAPDF);
 
 			nuevo	= false;				
-
-			if (!sFRealGeneracion.trim().equals("")) {
+			
+			
+			if (!sFRealGeneracion.trim().equals("")||modoAction.trim().equals("ver")) {
 				bEditable=false;
 				bEditableGeneracion=false;
 			}
@@ -113,7 +116,7 @@
 		
 	}
 
-		String modoAction=(String) ses.getAttribute("ModoAction");
+		
 	
 		
 	String iconos="E,B";
@@ -386,6 +389,26 @@ function IsNum( numstr ) {
 				document.forms[0].submit();
 			}
 
+
+			function Calcularvalor(){
+				document.forms[0].fechaCargo.value =document.forms[0].fechaPrevistaConfirmacion.value;
+			} 
+
+			function accionCalendario() 
+			{
+				// Abrimos el calendario 				
+				var resultado = showModalDialog("<html:rewrite page='/html/jsp/general/calendarGeneral.jsp'/>?valor="+document.programarFacturacionForm.fechaPrevistaConfirmacion.value,document.programarFacturacionForm.fechaPrevistaConfirmacion,"dialogHeight:275px;dialogWidth:400px;help:no;scroll:no;status:no;");
+				if (resultado) {
+					document.programarFacturacionForm.fechaPrevistaConfirmacion.value = resultado;
+					document.programarFacturacionForm.horasConfirmacion.value = "20";//ponemos que la hora por defecto para confirmacion seran las 20:00
+					document.programarFacturacionForm.minutosConfirmacion.value = "00";					 
+					document.programarFacturacionForm.fechaCargo.value=resultado;
+					document.programarFacturacionForm.horasCargo.value="20";
+					document.programarFacturacionForm.minutosCargo.value="00";					
+				}
+			}
+
+			 
 		</script>
 </head>
 
@@ -413,7 +436,12 @@ function IsNum( numstr ) {
 									<siga:Idioma key="facturacion.seriesFacturacion.literal.descripcion"/>&nbsp;(*)
 								</td>
 								<td colspan="4" align="left">
+								<%if (modoAction.equals("editar")){%>
 									<input type ="text"  value="<%=sDescripcion%>" id="descripcionProgramacion" name="descripcionProgramacion" class="box" style="width:'300px';">
+								<%								
+									} else {%>
+										<input type ="text"  value="<%=sDescripcion%>" id="descripcionProgramacion" name="descripcionProgramacion" class="boxConsulta" style="width:'300px';">
+									 <%}%>	
 								</td>
 							</tr>
 						
@@ -561,9 +589,9 @@ function IsNum( numstr ) {
 									<siga:Idioma key="facturacion.seriesFacturacion.literal.fechaPrevistaConfirmacion"/>
 								</td>
 								<td   width="120px">
-								<% if (bEditable) { %>
+								<% if (modoAction.equals("editar")) { %>
 									<html:text name="programarFacturacionForm" property="fechaPrevistaConfirmacion" value="<%=sFPrevistaConfirmacion%>" size="10" styleClass="box" readonly="true"></html:text>									
-										<a href='javascript://' onClick="return showCalendarGeneral(fechaPrevistaConfirmacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
+										<a href='javascript://' onClick="javascript:accionCalendario();" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);">
 											<img src="<%=app%>/html/imagenes/calendar.gif" alt='<siga:Idioma key="facturacion.seriesFacturacion.literal.seleccionarFecha"/>' border="0">
 										</a>
 										
@@ -575,14 +603,14 @@ function IsNum( numstr ) {
 									<siga:Idioma key="facturacion.seriesFacturacion.literal.hora"/>
 								</td>
 								<td class="boxConsulta">
-								<%if (bEditableConfirmacion){%>
-									<html:text name="programarFacturacionForm" property="horasConfirmacion"  value="<%=sHorasConfirmacion%>" size="1" maxlength="2" styleClass="box" readonly="<%=!bEditableConfirmacion%>"></html:text>					
+									<%if (modoAction.equals("editar")){%>
+									<html:text name="programarFacturacionForm" property="horasConfirmacion"  value="<%=sHorasConfirmacion%>" size="1" maxlength="2" styleClass="box" readonly="false"></html:text>					
 									:
-									<html:text name="programarFacturacionForm" property="minutosConfirmacion"   value="<%=sMinutosConfirmacion%>" size="1" maxlength="2" styleClass="box" readonly="<%=!bEditableConfirmacion%>"></html:text>	
+									<html:text name="programarFacturacionForm" property="minutosConfirmacion"   value="<%=sMinutosConfirmacion%>" size="1" maxlength="2" styleClass="box" readonly="false"></html:text>	
 								<% } else {%>
-									<html:text name="programarFacturacionForm" property="horasConfirmacion"  value="<%=sHorasConfirmacion%>" size="1" maxlength="2" styleClass="boxConsulta" readonly="<%=!bEditableConfirmacion%>"></html:text>					
+									<html:text name="programarFacturacionForm" property="horasConfirmacion"  value="<%=sHorasConfirmacion%>" size="1" maxlength="2" styleClass="boxConsulta" readonly="true"></html:text>					
 									:
-									<html:text name="programarFacturacionForm" property="minutosConfirmacion"   value="<%=sMinutosConfirmacion%>" size="1" maxlength="2" styleClass="boxConsulta" readonly="<%=!bEditableConfirmacion%>"></html:text>	
+									<html:text name="programarFacturacionForm" property="minutosConfirmacion"   value="<%=sMinutosConfirmacion%>" size="1" maxlength="2" styleClass="boxConsulta" readonly="true"></html:text>	
 								<%}%>
 								</td>
 								
@@ -629,21 +657,39 @@ function IsNum( numstr ) {
 								<tr>
 									<td class="labelText" style="text-align:left" colspan="2">
 										<siga:Idioma key="facturacion.datosGenerales.literal.generaPDF"/>&nbsp;&nbsp;
+										<% if (modoAction.equals("editar")) {%>
 										<% if ((enviarFacturas != null) && (enviarFacturas.equals("1"))) { %>
 												<input type="checkbox" name="generarPDF" checked disabled>
-										<% } else if ((generarPDF != null) && (generarPDF.equals("1"))) { %>
+										<%} else if ((generarPDF != null) && (generarPDF.equals("1"))) { %>
 												<input type="checkbox" name="generarPDF" checked>
-										<% } else { %>
+										<%} else { %>
 												<input type="checkbox" name="generarPDF" >
+										<%}%>
+										<%}else{ %>
+											<%if ((enviarFacturas != null) && (enviarFacturas.equals("1"))) {%>
+												<input type="checkbox" name="generarPDF" checked disabled>
+										<%} else if ((generarPDF != null) && (generarPDF.equals("1"))) { %>
+												<input type="checkbox" name="generarPDF" checked disabled>
+										<% }else { %>
+												<input type="checkbox" name="generarPDF" disabled >
 										<% } %>
+										<%}%>
 									</td>
 									<td class="labelText"  style="text-align:left" colspan="2">
 										<siga:Idioma key="facturacion.datosGenerales.literal.envioFacturas"/>&nbsp;&nbsp;
+										<% if (modoAction.equals("editar")) { %>
+											<%  if ((enviarFacturas != null) && (enviarFacturas.equals("1"))) { %>
+													<input type="checkbox" name="enviarFacturas" onclick="actualiza();" checked>
+											<% } else { %>
+													<input type="checkbox" name="enviarFacturas" onclick="actualiza();">
+											<% } %>
+										<%} else{ %>
 										<% if ((enviarFacturas != null) && (enviarFacturas.equals("1"))) { %>
-												<input type="checkbox" name="enviarFacturas" onclick="actualiza();" checked>
+												<input type="checkbox" name="enviarFacturas" onclick="actualiza();" checked disabled>
 										<% } else { %>
-												<input type="checkbox" name="enviarFacturas" onclick="actualiza();">
+												<input type="checkbox" name="enviarFacturas" onclick="actualiza();" disabled>
 										<% } %>
+										<%} %>
 									</td>
 								</tr>
 						</table>
@@ -651,10 +697,11 @@ function IsNum( numstr ) {
 	</siga:ConjCampos>
 	
 		<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
-		
-			<siga:ConjBotonesAccion botones="C,Y" modal="M"/>
-	
-	
+		<% if (modoAction.equals("editar")) { %>
+			<siga:ConjBotonesAccion botones="C,Y" modal="M"/>	
+		<%}else{%>
+			<siga:ConjBotonesAccion botones="C" modal="M"/>
+		<%}%>
 <!-- FIN ******* CAPA DE PRESENTACION ****** -->
 			
 <!-- INICIO: SUBMIT AREA -->
