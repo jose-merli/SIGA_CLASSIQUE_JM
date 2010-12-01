@@ -139,7 +139,9 @@ public class PestanaDelitoEJGAction extends MasterAction {
 			Vector vDelitosEJG = admDelitoEJG.getDelitosEJG(idInstitucion,anio,numero,idTipoEJG, usr.getLanguage());
 			request.setAttribute("vDelitosEJG",vDelitosEJG);
 			
-			String consulta="select decode(ejg.CALIDAD, 'D', 'DEMANDANTE', 'DEMANDADO'),       " +
+			String consulta="select (Select Decode(Ejg.Idtipoencalidad, Null,'', f_Siga_Getrecurso(Tipcal.Descripcion,"+ usr.getLanguage()+")) "+
+                              "  From Scs_Tipoencalidad Tipcal Where Tipcal.Idtipoencalidad = Ejg.Idtipoencalidad "+
+                              "  And Tipcal.Idinstitucion = ejg.Calidadidinstitucion) as calidad, ejg.Idtipoencalidad,ejg.calidadidinstitucion, "+
 			" ejg.guardiaturno_idturno IDTURNO, "+
 			" ejg.CALIDAD, ejg.OBSERVACIONES, ejg.DELITOS, ejg.IDPROCURADOR, ejg.IDINSTITUCION_PROC, ejg.NUMERO_CAJG," +
 			" ejg.ANIOCAJG, ejg.NUMERODILIGENCIA NUMERODILIGENCIA, ejg.NUMEROPROCEDIMIENTO NUMEROPROCEDIMIENTO, ejg.JUZGADO JUZGADO," +
