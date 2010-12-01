@@ -120,7 +120,7 @@
 		   			estilo=""
 				   	clase="tableTitle"
 				  	nombreCol="facturacion.programarFacturacion.literal.conceptosFacturables,facturacion.seriesFacturacion.literal.descripcion,facturacion.programarFacturacion.literal.fechaInicioProductos,facturacion.programarFacturacion.literal.fechaInicioServicios,facturacion.programarFacturacion.literal.fechaProgramacion,facturacion.programarFacturacion.literal.fechaPrevistaGeneracion,facturacion.programarFacturacion.literal.fechaRealGeneracion,facturacion.seriesFacturacion.literal.fechaPrevistaConfirmacion,facturacion.seriesFacturacion.literal.fechaRealConfirmacion,"
-				  	tamanoCol="14,9,15,15,8,8,8,8,8,8"
+				  	tamanoCol="12,9,15,15,8,8,8,7,8,12"
 		   			alto="100%"
 		   			ajusteBotonera="true"	
 		   			activarFilaSel="true"	
@@ -156,7 +156,7 @@
 								
 								// mostrar editar
 								if (fRealGeneracion.trim().equals("") || !estadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADA.toString())) {
-									iconos="E";
+									iconos="C,E";
 								}
 								// mostrar eliminar
 								if (fRealGeneracion.trim().equals("")) {
