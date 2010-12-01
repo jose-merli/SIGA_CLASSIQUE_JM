@@ -1896,7 +1896,7 @@ public class PersonaJGAction extends MasterAction {
 			HttpServletRequest request, 
 			HttpServletResponse response) throws SIGAException 
 	{
-		String result = this.exito("error.general.yanoexiste",request);;
+		String result = this.exito("error.general.yanoexiste",request);
 		try {
 			
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
@@ -2036,6 +2036,7 @@ public class PersonaJGAction extends MasterAction {
 				if (miform.getConceptoE().equals(PersonaJGAction.EJG)) {
 					result = this.exitoRefresco("messages.updated.success",request);
 				} else {
+					request.removeAttribute("sinrefresco");
 					result = this.exitoModal("messages.updated.success",request);
 				}
 			}
