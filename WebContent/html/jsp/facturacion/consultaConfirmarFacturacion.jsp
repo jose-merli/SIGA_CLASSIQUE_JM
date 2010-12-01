@@ -302,6 +302,41 @@
 			var f = document.confirmarFacturacionForm.name;	
 			document.frames.submitArea.location = '/SIGA/html/jsp/general/loadingWindowOpener.jsp?formName=' + f + '&msg=facturacion.confirmarFacturacion.literal.confirmandoFacturacion';
 		}
+
+		//Funcion asociada al boton Consultar
+				
+		
+			function consultarfactura(fila) {
+
+				//alert('probando');
+				var datos;
+				datos = document.getElementById('tablaDatosDinamicosD');
+				datos.value = ""; 
+				var j;
+				var tabla;
+				tabla = document.getElementById('tablaDatos');
+				var flag = true;
+
+				j = 1;
+				while (flag) {
+				  var aux = 'oculto' + fila + '_' + j;
+				  var oculto = document.getElementById(aux);
+				  if (oculto == null)  { flag = false; }
+				  else { datos.value = datos.value + oculto.value + ','; }
+				  j++;
+				}
+				datos.value = datos.value + "%";
+				
+				   document.confirmarFacturacionForm.modo.value = "consultarfactura";
+				   ventaModalGeneral(document.confirmarFacturacionForm.name,"M");
+				   
+			 }			
+
+			
+
+		
+					
+				
 		
 	</script>
 </head> 
@@ -371,18 +406,19 @@
 								Integer idEstadoPDF = new Integer((String)htData.get("IDESTADOPDF"));
 
 								FilaExtElement[] elems=new FilaExtElement[6];
-								if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_PENDIENTE) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADAERRORES)) {
-									elems[0]=new FilaExtElement("generar",  "confirmacionInmediata", "facturacion.confirmarFacturacion.boton.confirmacionInmediata", SIGAConstants.ACCESS_READ);
-									elems[1]=new FilaExtElement("confirmar","programarConfirmacion", "facturacion.confirmarFacturacion.boton.cambiarFechaCargoyConfirmar", SIGAConstants.ACCESS_READ);
+								elems[0]=new FilaExtElement("consultar","consultarfactura",SIGAConstants.ACCESS_READ);
+								if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_PENDIENTE) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADAERRORES)) {									
+									elems[1]=new FilaExtElement("generar",  "confirmacionInmediata", "facturacion.confirmarFacturacion.boton.confirmacionInmediata", SIGAConstants.ACCESS_READ);
+									elems[2]=new FilaExtElement("confirmar","programarConfirmacion", "facturacion.confirmarFacturacion.boton.cambiarFechaCargoyConfirmar", SIGAConstants.ACCESS_READ);									
 								}
 								if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADA) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADAERRORES)) {
-									elems[2]=new FilaExtElement("archivar","archivar",SIGAConstants.ACCESS_READ); 				
+									elems[3]=new FilaExtElement("archivar","archivar",SIGAConstants.ACCESS_READ); 				
 								}	
 								if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADA) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADAERRORES)) {
-									elems[3]=new FilaExtElement("descargaLog","descargaLog",SIGAConstants.ACCESS_READ); 				
-								}
+									elems[4]=new FilaExtElement("descargaLog","descargaLog",SIGAConstants.ACCESS_READ); 				
+								} 
 								if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADA)) {
-									elems[4]=new FilaExtElement("download","download",SIGAConstants.ACCESS_READ); 				
+									elems[5]=new FilaExtElement("download","download",SIGAConstants.ACCESS_READ); 				
 								}
 								/*if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADA)) {
 									elems[5]=new FilaExtElement("enviar","enviar",SIGAConstants.ACCESS_READ); 				
