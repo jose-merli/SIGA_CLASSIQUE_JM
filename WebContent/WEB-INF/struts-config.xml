@@ -8,7 +8,8 @@
 		<form-bean name="CensoBusquedaLetradosBean" type="es.satec.siga.util.formbeans.censo.BusquedaBean"/>
 
 
-		<!-- ************************** FORMS CENSO ************************* -->
+		<!-- ************************** FORMS CENSO *************************
+-->
 		<form-bean name="busquedaClientesForm" type="com.siga.censo.form.BusquedaClientesForm"/>
 		<form-bean name="busquedaClientesAvanzadaForm" type="com.siga.censo.form.BusquedaClientesForm"/>
 		<form-bean name="SolicitudIncorporacionForm" type="com.siga.censo.form.SolicitudIncorporacionForm"/>
@@ -50,7 +51,8 @@
 		<form-bean name="MantenimientoDuplicadosForm" type="com.siga.censo.form.MantenimientoDuplicadosForm"/>
 
 
-		<!-- ************************** FORMS FACTURACIÓN ************************* -->
+		<!-- ************************** FORMS FACTURACIÓN *************************
+-->
 		<form-bean name="AsignacionConceptosFacturablesForm" type="com.siga.facturacion.form.AsignacionConceptosFacturablesForm"/>
 		<form-bean name="DatosGeneralesForm" type="com.siga.facturacion.form.DatosGeneralesForm"/>
 		<form-bean name="TiposProductosForm" type="com.siga.facturacion.form.TiposProductosForm"/>
@@ -85,7 +87,8 @@
 		<form-bean name="DevolucionesManualesForm" type="com.siga.facturacion.form.DevolucionesManualesForm"/>
 
 
-		<!-- ************************** FORMS PRODUCTOS Y SERVICIOS ************************* -->
+		<!-- ************************** FORMS PRODUCTOS Y SERVICIOS *************************
+-->
 		<form-bean name="MantenimientoProductosForm" type="com.siga.productos.form.MantenimientoProductosForm"/>
 		<form-bean name="solicitudCompraForm" type="com.siga.productos.form.SolicitudCompraForm"/>
 		<form-bean name="MantenimientoServiciosForm" type="com.siga.productos.form.MantenimientoServiciosForm"/>
@@ -98,7 +101,8 @@
 		<form-bean name="sufijosForm" type="com.siga.facturacion.form.SufijosForm"/>
 
 
-		<!-- ************************** FORMS EXPEDIENTES ************************* -->
+		<!-- ************************** FORMS EXPEDIENTES *************************
+-->
 		<form-bean name="FasesForm" type="com.siga.expedientes.form.FasesForm"/>
 		<form-bean name="ClasificacionesForm" type="com.siga.expedientes.form.ClasificacionesForm"/>
 		<form-bean name="RolesForm" type="com.siga.expedientes.form.RolesForm"/>
@@ -123,19 +127,26 @@
 		<form-bean name="PestanaConfigurableForm" type="com.siga.expedientes.form.PestanaConfigurableForm"/>
 		
 
-		<!-- ************************** FORMS SOLICITUD INCORPORACIÓN ************************* -->
-		<!-- ************************** FORMS CATÁLOGO DE PRODUCTOS ************************* -->
-		<!-- ************************** FORMS CATÁLOGO DE CURSOS ************************* -->
-		<!-- ************************** FORMS SECRETARÍA ************************* -->
-		<!-- ************************** FORMS CERTIFICADOS ************************* -->
+		<!-- ************************** FORMS SOLICITUD INCORPORACIÓN *************************
+-->
+		<!-- ************************** FORMS CATÁLOGO DE PRODUCTOS *************************
+-->
+		<!-- ************************** FORMS CATÁLOGO DE CURSOS *************************
+-->
+		<!-- ************************** FORMS SECRETARÍA *************************
+-->
+		<!-- ************************** FORMS CERTIFICADOS *************************
+-->
 		<form-bean name="MantenimientoCertificadosForm" type="com.siga.certificados.form.SIGAMantenimientoCertificadosForm"/>
 		<form-bean name="MantenimientoCertificadosCamposForm" type="com.siga.certificados.form.SIGAMantenimientoCertificadosCamposForm"/>
 		<form-bean name="MantenimientoCertificadosPlantillasForm" type="com.siga.certificados.form.SIGAMantenimientoCertificadosPlantillasForm"/>
 		<form-bean name="SolicitudesCertificadosForm" type="com.siga.certificados.form.SIGASolicitudesCertificadosForm"/>
 		<form-bean name="SolicitudCertificadoForm" type="com.siga.certificados.form.SIGASolicitudCertificadoForm"/>
 
-		<!-- ************************** FORMS CONTACTOS ************************* -->
-		<!-- ************************** FORMS ENVÍOS A GRUPOS ************************* -->
+		<!-- ************************** FORMS CONTACTOS *************************
+-->
+		<!-- ************************** FORMS ENVÍOS A GRUPOS *************************
+-->
 		<form-bean name="ListaCorreosForm" type="com.siga.envios.form.ListaCorreosForm"/>
 		<form-bean name="DefinirEnviosForm" type="com.siga.envios.form.DefinirEnviosForm"/>
 		<form-bean name="DestinatarioManualForm" type="com.siga.envios.form.DestinatarioManualForm"/>
@@ -155,7 +166,8 @@
 		<form-bean name="TextoEnviosSMSForm" type="com.siga.envios.form.TextoEnviosSMSForm"/>
 
 
-    	<!-- ************************** FORMS ADMINISTRACIÓN ************************* -->
+    	<!-- ************************** FORMS ADMINISTRACIÓN *************************
+-->
 		<!--form-bean name="tablaMaestraForm" type="com.siga.administracion.form.SIGAAdmGenericMTForm"/-->
 		<form-bean name="confInterfazForm" type="com.siga.administracion.form.SIGAGestorInterfazForm"/>
 		<form-bean name="auditoriaAdminForm" type="com.siga.administracion.form.SIGAAuditoriaAdminForm"/>
@@ -173,7 +185,8 @@
 		<form-bean name="configurarPermisosAplicacionForm" type="com.siga.administracion.form.SIGAConfigurarPermisosAplicacionForm"/>
 
 
-    	<!-- ************************** FORMS JUSTICIA GRATUÍTA ************************* -->
+    	<!-- ************************** FORMS JUSTICIA GRATUÍTA *************************
+-->
     	<form-bean name="tablaMaestraSJCSRet" type="com.siga.gratuita.form.SolicitudRetencionForm"/>
     	<form-bean name="DefinirTurnosForm" type="com.siga.gratuita.form.DefinirTurnosForm"/>
     	<form-bean name="DefinirTurnosFormNuevo" type="com.siga.gratuita.form.DefinirTurnosForm"/>
@@ -255,14 +268,16 @@
 		
 		
 		
-    	<!-- ************************** FORMS CONSULTAS ************************* -->
+    	<!-- ************************** FORMS CONSULTAS *************************
+-->
 		<form-bean name="RecuperarConsultasForm" type="com.siga.consultas.form.RecuperarConsultasForm"/>
 		<form-bean name="PermisosConsultaForm" type="com.siga.consultas.form.PermisosConsultaForm"/>
 		<form-bean name="EditarConsultaForm" type="com.siga.consultas.form.EditarConsultaForm"/>
 		<form-bean name="EditarConsultaExpertaForm" type="com.siga.consultas.form.EditarConsultaExpertaForm"/>
 
 
-    	<!-- ************************** FORMS FACTURACIÓN SJCS************************* -->
+    	<!-- ************************** FORMS FACTURACIÓN SJCS*************************
+-->
     	<form-bean name="mantenimientoFacturacionForm" type="com.siga.facturacionSJCS.form.MantenimientoFacturacionForm"/>
 		<form-bean name="DatosGeneralesFacturacionForm" type="com.siga.facturacionSJCS.form.DatosGeneralesFacturacionForm"/>
 		<form-bean name="MantenimientoMovimientosForm" type="com.siga.facturacionSJCS.form.MantenimientoMovimientosForm"/>
@@ -318,9 +333,12 @@
 
 
     <action-mappings>
-    	<!-- *************************************************************************** -->
-    	<!-- ************************** INICIO ACTION GLOBALES ************************* -->
-    	<!-- *************************************************************************** -->
+    	<!-- ***************************************************************************
+-->
+    	<!-- ************************** INICIO ACTION GLOBALES *************************
+-->
+    	<!-- ***************************************************************************
+-->
 
 		<action path="/menu" include="/html/jsp/general/menu.jsp"/>
 		<action path="/menu_izq" include="/html/jsp/general/menu_izq.jsp"/>
@@ -357,31 +375,49 @@
 		
 		
 
-		<!-- /*#############################################################################*/ -->
-		<!-- /**********INICIO TEMPORAL PARA EL ACCESO DE DESARROLLO ************************/ -->
-		<!-- /*#############################################################################*/ -->
+		<!-- /*#############################################################################*/
+-->
+		<!-- /**********INICIO TEMPORAL PARA EL ACCESO DE DESARROLLO ************************/
+-->
+		<!-- /*#############################################################################*/
+-->
 		<action path="/developmentLoginTipoAcceso" include="/html/jsp/developmentLogin/selectorTipoAcceso.jsp"/>
-		<!-- /*#############################################################################*/ -->
-		<!-- /*************FIN TEMPORAL PARA EL ACCESO DE DESARROLLO ************************/ -->
-		<!-- /*#############################################################################*/ -->
+		<!-- /*#############################################################################*/
+-->
+		<!-- /*************FIN TEMPORAL PARA EL ACCESO DE DESARROLLO ************************/
+-->
+		<!-- /*#############################################################################*/
+-->
 
-		<!-- *************************************************************************** -->
-		<!-- **************************** FIN ACTION GLOBALES ************************** -->
-		<!-- *************************************************************************** -->
+		<!-- ***************************************************************************
+-->
+		<!-- **************************** FIN ACTION GLOBALES **************************
+-->
+		<!-- ***************************************************************************
+-->
 
-		<!-- *************************************************************************** -->
-		<!-- ************************** INICIO PRUEBA BUSQUEDA ************************* -->
-		<!-- *************************************************************************** -->
+		<!-- ***************************************************************************
+-->
+		<!-- ************************** INICIO PRUEBA BUSQUEDA *************************
+-->
+		<!-- ***************************************************************************
+-->
 		<action path="/CEN_BusquedaLetradosPruebas" type="es.satec.siga.util.actions.censo.BusquedaLetradosAction" name="CensoBusquedaLetradosBean" scope="request">
 			<forward name="inicio" path="/html/jsp/pruebaCenso/BusquedaLetrados.jsp"/>
 		</action>
-		<!-- *************************************************************************** -->
-		<!-- *************************** FIN PRUEBA BUSQUEDA *************************** -->
-		<!-- *************************************************************************** -->
+		<!-- ***************************************************************************
+-->
+		<!-- *************************** FIN PRUEBA BUSQUEDA ***************************
+-->
+		<!-- ***************************************************************************
+-->
 
-		<!-- **************************************************************************** -->
-		<!-- **************************** INICIO ACTION MENÚS *************************** -->
-		<!-- **************************************************************************** -->
+		<!-- ****************************************************************************
+-->
+		<!-- **************************** INICIO ACTION MENÚS ***************************
+-->
+		<!-- ****************************************************************************
+-->
 
 		<!-- ***** Censo / Acceso Directo Solicitud Incorporación ***** -->
 		<action path="/CEN_SolicitudesIncorporacionAccesoDirecto" type="com.siga.censo.action.SolicitudIncorporacionAccesoDirectoAction" name="SolicitudIncorporacionAccesoDirectoForm" scope="request" validate="true">
@@ -501,7 +537,8 @@
 			<forward name="exitoGuardar" path="/html/jsp/censo/exitoSolicitudIncorporacionDatos.jsp"/>
 		</action>
 
-		<!-- ***** Censo / Ver Solicitudes Modificación / Solicitudes Genéricas ***** -->
+		<!-- ***** Censo / Ver Solicitudes Modificación / Solicitudes Genéricas *****
+-->
 		<action path="/CEN_SolicitudesModificacionGenericas" type="com.siga.censo.action.SolicitudesModificacionAction" name="SolicitudesModificacionForm" scope="session">
 			<forward name="abrir" path="/html/jsp/censo/busquedaSolicitudesModificacion.jsp"/>
 			<forward name="listar" path="/html/jsp/censo/consultaSolicitudesModificacion.jsp"/>
@@ -510,7 +547,8 @@
 			<forward name="modificarDatos" path="/html/jsp/censo/AdministracionClientes.jsp"/>
 		</action>
 
-		<!-- ***** Censo / Ver Solicitudes Modificación / Solicitudes Específicas ***** -->
+		<!-- ***** Censo / Ver Solicitudes Modificación / Solicitudes Específicas *****
+-->
 		<action path="/CEN_SolicitudesModificacionEspecificas" type="com.siga.censo.action.SolicitudesModificacionEspecificasAction" name="SolicitudesModificacionEspecificasForm" scope="request">
 			<forward name="abrir" path="/html/jsp/censo/busquedaSolicitudesModificacionEspecificas.jsp"/>
 			<forward name="listar" path="/html/jsp/censo/consultaSolicitudesModificacionEspecificas.jsp"/>
@@ -524,7 +562,8 @@
 			<forward name="denegarSolicitud" path="/html/jsp/censo/consultaSolicitudesModificacionEspecificas.jsp"/>
 		</action>
 
-		<!-- ***** Censo / Ver Solicitudes Modificación / Modificación Datos ***** -->
+		<!-- ***** Censo / Ver Solicitudes Modificación / Modificación Datos *****
+-->
 		<action path="/CEN_ModificacionDatos" type="com.siga.censo.action.SolicitudesModificacionAction" name="SolicitudesModificacionForm" scope="request">
 			<forward name="abrir" path="/html/jsp/censo/solicitudTextoLibre.jsp"/>
 			<forward name="insertar" path="/html/jsp/censo/insercionOK.jsp"/>
@@ -545,7 +584,8 @@
 		<!-- ***** Censo / Informes / Carta de Incorporación ***** -->
 		<action path="/CEN_CartaIncorporacion" forward="/notImplemented.do"/>
 
-		<!-- ***** Censo / Informes / Candidatos a Aprobar por Junta de Gobierno ***** -->
+		<!-- ***** Censo / Informes / Candidatos a Aprobar por Junta de Gobierno *****
+-->
 		<action path="/CEN_CandidatosaAprobarporJuntadeGobierno" forward="/notImplemented.do"/>
 
 		<!-- ***** Censo / Informes / Número de Incorporaciones ***** -->
@@ -593,7 +633,8 @@
 
 		<action path="/INF_InformesMultiples" type="com.siga.informes.action.InformesFacturacionMultipleAction" name="InformesFacturacionMultipleForm" scope="request">
             <forward name="inicio" path="/html/jsp/informes/informeFacturacionMultiple.jsp"/>
-			<!-- Modificar entradas correspondiente a generarInforme y descargar excels -->
+			<!-- Modificar entradas correspondiente a generarInforme y descargar excels
+-->
 			<forward name="generaInformes" path="/html/jsp/informes/informeFacturacionMultiple.jsp"/>
 			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>
 		</action>
@@ -709,7 +750,8 @@
 			<forward name="abrirModal" path="/html/jsp/censo/nuevoGrupoCliente.jsp"/>
 		</action>
 
-		<!-- ***** Censo / Datos Generales de un Colegiado y de un No Colegiado ***** -->
+		<!-- ***** Censo / Datos Generales de un Colegiado y de un No Colegiado *****
+-->
 		<action path="/CEN_DatosGenerales" type="com.siga.censo.action.DatosGeneralesAction" name="datosGeneralesForm" scope="request">
 			<forward name="inicio" path="/html/jsp/censo/consultaDatosGenerales.jsp"/>
 			<forward name="exitoInsercion" path="/html/jsp/censo/exitoInsercion.jsp"/>
@@ -910,6 +952,7 @@
 			<forward name="editar" path="/html/jsp/facturacion/seriesFacturacion.jsp"/>
 			<forward name="actualizaDatos" path="/html/jsp/facturacion/actualizaDatos.jsp"/>
 			<forward name="nuevo" path="/html/jsp/facturacion/seriesFacturacion.jsp"/>
+			<forward name="ver" path="/html/jsp/facturacion/seriesFacturacion.jsp"/>			
 		</action>
 
 		<!-- ***** Facturación / Generar Facturación ***** -->
@@ -929,6 +972,7 @@
 			<forward name="resultados" path="/html/jsp/facturacion/consultaConfirmarFacturacion.jsp"/>
 			<forward name="exitoConString" path="/html/jsp/facturacion/exitoConString.jsp"/>
 			<forward name="abrirFechaCargo" path="/html/jsp/facturacion/ventanaFechaCargo.jsp"/>
+			<forward name="ver" path="/html/jsp/facturacion/seriesFacturacion.jsp"/>	
 		</action>
 
 		<!-- ***** Facturación / Buscar Factura ***** -->
@@ -938,7 +982,8 @@
 			<forward name="administrarPestanas" path="/html/jsp/facturacion/facturaAdministracionPestanas.jsp"/>
 		</action>
 
-		<!-- ***** Facturación / Mantenimiento Factura / Datos Generales ***** -->
+		<!-- ***** Facturación / Mantenimiento Factura / Datos Generales *****
+-->
 		<action path="/FAC_DatosGeneralesFactura" type="com.siga.facturacion.action.GestionarFacturaDatosGeneralesAction" name="GestionarFacturaForm" scope="request">
 			<forward name="inicio" path="/html/jsp/facturacion/facturaDatosGenerales.jsp"/>
 			<forward name="ValidarDireccion" path="/html/jsp/facturacion/preguntaValidacionDireccion.jsp"/>
@@ -1030,7 +1075,8 @@
 		<!-- ***** Facturación / Paso a Contabilidad ***** -->
 		<action path="/FAC_PasoaContabilidad" forward="/notImplemented.do"/>
 
-		<!-- ***** Facturación / Informes y Consultas / Consulta de Morosos ***** -->
+		<!-- ***** Facturación / Informes y Consultas / Consulta de Morosos *****
+-->
 		<action path="/FAC_ConsultaMorosos" type="com.siga.facturacion.action.ConsultaMorososAction" name="ConsultaMorososForm" scope="session">
 			<forward name="inicio" path="/html/jsp/facturacion/consultaMorosos.jsp"/>
 			<forward name="resultado" path="/html/jsp/facturacion/listadoMorosos.jsp"/>
@@ -1039,22 +1085,28 @@
 			
 		</action>
 
-		<!-- ***** Facturación / Informes y Consultas / Certificado de Factura ***** -->
+		<!-- ***** Facturación / Informes y Consultas / Certificado de Factura *****
+-->
 		<action path="/FAC_CertificadoFactura" forward="/notImplemented.do"/>
 
-		<!-- ***** Facturación / Informes y Consultas / Relación de Facturas ***** -->
+		<!-- ***** Facturación / Informes y Consultas / Relación de Facturas *****
+-->
 		<action path="/FAC_RelacionFacturas" forward="/notImplemented.do"/>
 
-		<!-- ***** Facturación / Informes y Consultas / Recibos devueltos por el Banco ***** -->
+		<!-- ***** Facturación / Informes y Consultas / Recibos devueltos por el Banco *****
+-->
 		<action path="/FAC_RecibosDevueltosporelBanco" forward="/notImplemented.do"/>
 
-		<!-- ***** Facturación / Informes y Consultas / Facturas renegociadas ***** -->
+		<!-- ***** Facturación / Informes y Consultas / Facturas renegociadas *****
+-->
 		<action path="/FAC_FacturasRenegociadas" forward="/notImplemented.do"/>
 
-		<!-- ***** Facturación / Informes y Consultas / Certificados de Abonos ***** -->
+		<!-- ***** Facturación / Informes y Consultas / Certificados de Abonos *****
+-->
 		<action path="/FAC_CertificadosAbonos" forward="/notImplemented.do"/>
 
-		<!-- ***** Facturación / Informes y Consultas / Relación de Abonos ***** -->
+		<!-- ***** Facturación / Informes y Consultas / Relación de Abonos *****
+-->
 		<action path="/FAC_RelacionAbonos" forward="/notImplemented.do"/>
 
 		<action path="/FAC_Contabilidad" type="com.siga.facturacion.action.MantContabilidadAction" name="ContabilidadForm">
@@ -1140,7 +1192,8 @@
 			<forward name="editar"     path="/html/jsp/facturacion/datosSufijos.jsp"/>
 		</action>
 
-		<!-- ***** Productos y Servicios / Mantenimiento Categorías Productos ***** -->
+		<!-- ***** Productos y Servicios / Mantenimiento Categorías Productos *****
+-->
 		<action path="/PYS_MantenimientoCategoriasProductos" type="com.siga.productos.action.MantenimientoCategoriasProductosAction" name="MantenimientoCategoriasProductosForm" scope="request" validate="false">
 			<forward name="inicio" path="/html/jsp/productos/busquedaCategoriasProductos.jsp"/>
 			<forward name="buscarPor" path="/html/jsp/productos/busquedaCategoriasProductosResultados.jsp"/>
@@ -1149,7 +1202,8 @@
 			<forward name="nuevo" path="/html/jsp/productos/datosCategoriasProductos.jsp"/>
 		</action>
 
-		<!-- ***** Productos y Servicios / Mantenimiento Categorías Servicios ***** -->
+		<!-- ***** Productos y Servicios / Mantenimiento Categorías Servicios *****
+-->
 		<action path="/PYS_MantenimientoCategoriasServicios" type="com.siga.productos.action.MantenimientoCategoriasServiciosAction" name="MantenimientoCategoriasServiciosForm" scope="request" validate="false">
 			<forward name="inicio" path="/html/jsp/productos/busquedaCategoriasServicios.jsp"/>
 			<forward name="buscarPor" path="/html/jsp/productos/busquedaCategoriasServiciosResultados.jsp"/>
@@ -1449,13 +1503,16 @@
 		<!-- ***** Secretaría / Informes / Ficha o Folleto del Curso ***** -->
 		<action path="/SEC_FichaoFolletoCurso" forward="/notImplemented.do"/>
 
-		<!-- ***** Secretaría / Informes / Listado de Control de Asistencias ***** -->
+		<!-- ***** Secretaría / Informes / Listado de Control de Asistencias *****
+-->
 		<action path="/SEC_ListadoControlAsistencias" forward="/notImplemented.do"/>
 
-		<!-- ***** Secretaría / Informes / Certificados de Asistencia y/o Aprovechamiento ***** -->
+		<!-- ***** Secretaría / Informes / Certificados de Asistencia y/o Aprovechamiento *****
+-->
 		<action path="SEC_CertificadosAsistencia/Aprovechamiento" forward="/notImplemented.do"/>
 
-		<!-- ***** Secretaría / Informes / Listado de Alumnos inscritos en un Curso ***** -->
+		<!-- ***** Secretaría / Informes / Listado de Alumnos inscritos en un Curso *****
+-->
 		<action path="/SEC_ListadoAlumnosInscritosCurso" forward="/notImplemented.do"/>
 
 		<!-- ***** Certificados / Solicitud Certificado ***** -->
@@ -1484,13 +1541,15 @@
 			<forward name="abrirPestanas" path="/html/jsp/certificados/abrirPestanasCertificados.jsp"/>
 		</action>
 
-		<!-- ***** Certificados / Mantenimiento de Certificados / Campos ***** -->
+		<!-- ***** Certificados / Mantenimiento de Certificados / Campos *****
+-->
 		<action path="/CER_Campos" type="com.siga.certificados.action.SIGAMantenimientoCertificadosCamposAction" name="MantenimientoCertificadosCamposForm" scope="request">
 			<forward name="abrir" path="/html/jsp/certificados/pestanaCampos.jsp"/>
 			<forward name="mostrar" path="/html/jsp/certificados/detalleRegistroCamposCertificado.jsp"/>
 		</action>
 
-		<!-- ***** Certificados / Mantenimiento de Certificados / Plantillas ***** -->
+		<!-- ***** Certificados / Mantenimiento de Certificados / Plantillas *****
+-->
 		<action path="/CER_Plantillas" type="com.siga.certificados.action.SIGAMantenimientoCertificadosPlantillasAction" name="MantenimientoCertificadosPlantillasForm" scope="request">
 			<forward name="abrir" path="/html/jsp/certificados/pestanaPlantillas.jsp"/>
 			<forward name="mostrar" path="/html/jsp/certificados/detalleRegistroPlantillasCertificado.jsp"/>
@@ -1572,7 +1631,8 @@
 			<forward name="mostrar" path="/html/jsp/envios/detalleRegistroCamposEnvios.jsp"/>
 		</action>
 
-		<!-- ***** Envíos a Grupos / Definir Plantillas / Plantillas de Generación ***** -->
+		<!-- ***** Envíos a Grupos / Definir Plantillas / Plantillas de Generación *****
+-->
 		<action path="/ENV_Plantillas_Salida" type="com.siga.envios.action.SIGAPlantillasEnviosPlantillasAction" name="PlantillasEnviosPlantillasForm" scope="request">
 			<forward name="abrir" path="/html/jsp/envios/pestanaPlantillas.jsp"/>
 			<forward name="mostrar" path="/html/jsp/envios/detalleRegistroPlantillasEnvios.jsp"/>
@@ -1596,7 +1656,8 @@
 			<forward name="seleccion" path="/html/jsp/envios/seleccionDireccionModal.jsp"/>
 		</action>
 
-		<!-- ***** Envíos a Grupos / Definir Plantillas / Correo Electrónico ***** -->
+		<!-- ***** Envíos a Grupos / Definir Plantillas / Correo Electrónico *****
+-->
 		<action path="/ENV_Campos_Correoe" type="com.siga.envios.action.SIGAPlantillasEnviosCorreoElectronicoAction" name="PlantillasEnviosCorreoElectronicoForm" scope="request">
 			<forward name="abrir" path="/html/jsp/envios/pestanaCorreoElectronico.jsp"/>
 			<!--forward name="mostrar" path="/html/jsp/envios/detalleRegistroPlantillasEnvios.jsp"/-->
@@ -1782,7 +1843,8 @@
 			<forward name="datos"     path="/html/jsp/administracion/auditoriaUsuariosDatos.jsp"/>
 		</action>
 
-		<!-- ***** Administración / Gestion Paramaetros / Parametros Generales ***** -->
+		<!-- ***** Administración / Gestion Paramaetros / Parametros Generales *****
+-->
 		<action path="/ADM_ParametrosGenerales" type="com.siga.administracion.action.ParametrosGeneralesAction" name="parametrosGeneralesForm" scope="request" >
 			<forward name="inicio"    path="/html/jsp/administracion/parametrosGeneralesBusqueda.jsp"/>
 			<forward name="resultado" path="/html/jsp/administracion/parametrosGeneralesBusquedaResultado.jsp"/>
@@ -1794,7 +1856,8 @@
 			<forward name="resultado"            path="/html/jsp/administracion/multidiomaBusquedaResultado.jsp"/>
 		</action>
 
-		<!-- ***** Administración / Gestion Multidioma / Catalogo Maestros ***** -->
+		<!-- ***** Administración / Gestion Multidioma / Catalogo Maestros *****
+-->
 		<action path="/ADM_GestionarMultiidiomaCatalogos"  forward="/ADM_GestionarMultiidiomaEtiquetas.do?catalogos=true" >
 			<forward name="inicio"               path="/html/jsp/administracion/multidiomaBusqueda.jsp"/>
 			<forward name="resultado"            path="/html/jsp/administracion/multidiomaBusquedaResultado.jsp"/>
@@ -2080,13 +2143,15 @@
 			<forward name="listado" path="/html/jsp/gratuita/listarTurnos.jsp"/>
 		</action>
 
-		<!-- ***** Justicia Gratuita / Configurar Turnos / Clasificación Turnos ***** -->
+		<!-- ***** Justicia Gratuita / Configurar Turnos / Clasificación Turnos *****
+-->
 		<action path="/JGR_ClasificacionTurnos" forward="/notImplemented.do"/>
 
 		<!-- ***** Justicia Gratuita / Configurar Turnos / Turnos ***** -->
 		<action path="/JGR_Turnos" forward="/notImplemented.do"/>
 
-		<!-- ***** Justicia Gratuita / Configurar Turnos / Definir Hitos Facturables ***** --> 
+		<!-- ***** Justicia Gratuita / Configurar Turnos / Definir Hitos Facturables *****
+--> 
 		<action path="/JGR_DefinirHitosFacturables" type="com.siga.gratuita.action.DefinirHitosFacturablesGuardiasAction" name="DefinirHitosFacturablesGuardiasForm" scope="request"> 
 		   <forward name="abrir" path="/html/jsp/gratuita/listadoHitosFacturables.jsp"/> 
 		   <forward name="editar" path="/html/jsp/gratuita/modalHitoFacturable.jsp"/> 
@@ -2184,7 +2249,8 @@
             <forward name="recogidaDatos" path="/html/jsp/gratuita/datosPeriodoGuardias.jsp"/>
 		</action>
 		
-		<!-- ***** Justicia Gratuita / Definir Incompatibilidades de Guardia ***** -->
+		<!-- ***** Justicia Gratuita / Definir Incompatibilidades de Guardia *****
+-->
 		<action path="/JGR_IncompatibilidadesGuardia" type="com.siga.gratuita.action.DefinirIncompatibilidadesGuardiaAction" name="DefinirIncompatibilidadesGuardiaForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/inicio_IncompatibilidadesGuardia.jsp"/>
 			<forward name="buscarInicio" path="/html/jsp/gratuita/listado_IncompatibilidadesGuardia.jsp"/>
@@ -2230,19 +2296,24 @@
 			<forward name="ver" path="/html/jsp/gratuita/editarGuardiaTurno.jsp"/>
 		</action>
 
-		<!-- ***** Justicia Gratuita / Configurar Turnos / Validar Inscripciones ***** -->
+		<!-- ***** Justicia Gratuita / Configurar Turnos / Validar Inscripciones *****
+-->
 		<action path="/JGR_ValidarInscripciones" forward="/notImplemented.do"/>
 
-		<!-- ***** Justicia Gratuita / Configurar Turnos / Validar Inscripción Turno ***** -->
+		<!-- ***** Justicia Gratuita / Configurar Turnos / Validar Inscripción Turno *****
+-->
 		<action path="/JGR_ValidarInscripcionTurno" forward="/notImplemented.do"/>
 
-		<!-- ***** Justicia Gratuita / Configurar Turnos / Validar Baja en Turno ***** -->
+		<!-- ***** Justicia Gratuita / Configurar Turnos / Validar Baja en Turno *****
+-->
 		<action path="/JGR_ValidarBajaTurno" forward="/notImplemented.do"/>
 
-		<!-- ***** Justicia Gratuita / Configurar Turnos / Validar Baja Clasificación Turno ***** -->
+		<!-- ***** Justicia Gratuita / Configurar Turnos / Validar Baja Clasificación Turno *****
+-->
 		<action path="/JGR_ValidarBajaClasificacionTurno" forward="/notImplemented.do"/>
 
-		<!-- ***** Justicia Gratuita / Configurar Turnos / Partidos Judiciales ***** -->
+		<!-- ***** Justicia Gratuita / Configurar Turnos / Partidos Judiciales *****
+-->
 		<action path="/JGR_MantenimientoPartidosJudiciales" type="com.siga.gratuita.action.MantenimientoPJAction" name="MantenimientoPJForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/busquedaPJ.jsp"/>
 			<forward name="listarPJ" path="/html/jsp/gratuita/listadoPJ.jsp"/>
@@ -2252,7 +2323,8 @@
 			<forward name="exitoMio" path="/html/jsp/gratuita/exitoInsertar.jsp"/>
 		</action>
 
-		<!-- ***** Justicia Gratuita / Configurar Turnos / Maestro Partidos Judiciales ***** -->
+		<!-- ***** Justicia Gratuita / Configurar Turnos / Maestro Partidos Judiciales *****
+-->
 		<action path="/JGR_MantenimientoMaestroPJ" type="com.siga.gratuita.action.MantenimientoMaestroPJAction" name="MantenimientoMaestroPJForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/busquedaMaestroPJ.jsp"/>
 			<forward name="listarMaestroPJ" path="/html/jsp/gratuita/listadoMaestroPJ.jsp"/>
@@ -2294,29 +2366,36 @@
 			<forward name="inicio" path="/html/jsp/gratuita/listadoRelacionadoConSJCS.jsp"/>
 		</action>
 
-		<!-- ***** Justicia Gratuita / Configurar Turnos / Mantenimiento de Facturas ***** -->
+		<!-- ***** Justicia Gratuita / Configurar Turnos / Mantenimiento de Facturas *****
+-->
 		<action path="/JGR_MantenimientoFacturas" forward="/notImplemented.do"/>
 
-		<!-- ***** Justicia Gratuita / Configurar Turnos / Mantenimiento de Pagos ***** -->
+		<!-- ***** Justicia Gratuita / Configurar Turnos / Mantenimiento de Pagos *****
+-->
 		<action path="/JGR_MantenimientoPagos" forward="/notImplemented.do"/>
 
-		<!-- ***** Justicia Gratuita / Configurar Turnos / Generar Fichero 190 ***** -->
+		<!-- ***** Justicia Gratuita / Configurar Turnos / Generar Fichero 190 *****
+-->
 		<action path="/JGR_GenerarFichero190" forward="/notImplemented.do"/>
 
-		<!-- ***** Justicia Gratuita / Configurar Turnos / Asistencia Guardia ***** -->
+		<!-- ***** Justicia Gratuita / Configurar Turnos / Asistencia Guardia *****
+-->
 		<action path="/JGR_AsistenciaGuardia" forward="/notImplemented.do"/>
 
-		<!-- ***** Justicia Gratuita / Entrada a Mantenimiento Calendario Laboral ***** -->
+		<!-- ***** Justicia Gratuita / Entrada a Mantenimiento Calendario Laboral *****
+-->
 		<action path="/JGR_Calendario" forward="/html/jsp/gratuita/calendario.jsp"/>
 
-		<!-- ***** Justicia Gratuita / Configurar Turnos / Calendario Laboral ***** -->
+		<!-- ***** Justicia Gratuita / Configurar Turnos / Calendario Laboral *****
+-->
 		<action path="/CalendarioLaboralAction" type="com.siga.gratuita.action.CalendarioLaboralAction" name="CalendarioLaboralForm" scope="request">
 			<forward name="listarCalendario" path="/html/jsp/gratuita/listadoCalendario.jsp"/>
 			<forward name="modificacionOk" path="/html/jsp/gratuita/operarCalendario.jsp"/>
 			<forward name="insertarFiesta" path="/html/jsp/gratuita/insertarCalendario.jsp"/>
 		</action>
 
-		<!-- ***** Justicia Gratuita / Entrada a Mantenimiento Partidas Presupuestarias ***** -->
+		<!-- ***** Justicia Gratuita / Entrada a Mantenimiento Partidas Presupuestarias *****
+-->
 		<action path="/JGR_PartidaPresupuestaria" forward="/html/jsp/gratuita/partidaPresupuestaria.jsp"/>
 
 		<!-- ***** Justicia Gratuita / Partidas Presupuestarias ***** -->
@@ -2326,7 +2405,8 @@
 			<forward name="modificacionOk" path="/html/jsp/gratuita/operarPartida.jsp"/>
 		</action>
 
-		<!-- ***** Justicia Gratuita / Configurar Turnos / Expedientes SOJ ***** -->
+		<!-- ***** Justicia Gratuita / Configurar Turnos / Expedientes SOJ *****
+-->
 		<action path="/JGR_ExpedientesSOJ" type="com.siga.gratuita.action.DefinirExpedientesSOJAction" name="DefinirSOJForm" scope="session">
 			<forward name="inicio" path="/html/jsp/gratuita/busquedaSOJ.jsp"/>
 			<forward name="busqueda" path="/html/jsp/gratuita/busquedaSOJ.jsp"/>
@@ -2441,15 +2521,18 @@
 			<forward name="inicio" path="/html/jsp/gratuita/operarImpugnacionEJG.jsp"/>
 		</action>
 
-		<!-- ***** Justicia Gratuita / Configurar Turnos / Mantenimiento Turnos de Oficio ***** -->
+		<!-- ***** Justicia Gratuita / Configurar Turnos / Mantenimiento Turnos de Oficio *****
+-->
 		<action path="/JGR_MantenimientoTurnosdeOficio" forward="/notImplemented.do"/>
 
-		<!-- ***** Justicia Gratuita / Configurar Turno / Areas y Materias ***** -->
+		<!-- ***** Justicia Gratuita / Configurar Turno / Areas y Materias *****
+-->
 		<action path="/JGR_DefinirAreasMaterias" type="com.siga.gratuita.action.DefinirAreasMateriasAction" name="DefinirAreasMateriasForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/busquedaAreas.jsp"/>
 		</action>
 
-		<!-- ***** Justicia Gratuita / Configurar Turno / Areas y Materias ***** -->
+		<!-- ***** Justicia Gratuita / Configurar Turno / Areas y Materias *****
+-->
 		<action path="/DefinirAreasMateriasAction" type="com.siga.gratuita.action.DefinirAreasMateriasAction" name="DefinirAreasMateriasForm" scope="request">
 			<forward name="busqueda" path="/html/jsp/gratuita/busquedaAreas.jsp"/>
 			<forward name="listarAreas" path="/html/jsp/gratuita/listadoAreas.jsp"/>
@@ -2480,7 +2563,8 @@
 			<forward name="insertarDictamen" path="/html/jsp/gratuita/insertarDictamen.jsp"/>
 		</action>				
 
-		<!-- ***** Justicia Gratuita / Configurar Turno / Zonas y Subzonas ***** -->
+		<!-- ***** Justicia Gratuita / Configurar Turno / Zonas y Subzonas *****
+-->
 		<action path="/JGR_DefinirZonasSubzonas" type="com.siga.gratuita.action.DefinirZonasSubzonasAction" name="DefinirZonasSubzonasForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/busquedaZonas.jsp"/>
 			<forward name="busqueda" path="/html/jsp/gratuita/busquedaZonas.jsp"/>
@@ -2510,7 +2594,8 @@
 		</action>
 
 		
-		<!-- ***** Justicia Gratuita / Entrada a Saltos y Compensaciones ***** -->
+		<!-- ***** Justicia Gratuita / Entrada a Saltos y Compensaciones *****
+-->
 		<action path="/JGR_SaltosYCompensaciones" type="com.siga.gratuita.action.SaltosYCompensacionesAction" name="SaltosYCompensacionesForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/inicio_SaltosYCompensaciones.jsp"/>
 			<forward name="listado" path="/html/jsp/gratuita/listado_SaltosYCompensaciones.jsp"/>
@@ -2518,7 +2603,8 @@
 			<forward name="mantenimiento" path="/html/jsp/gratuita/modalMantenimiento_SaltosYCompensaciones.jsp"/>
 		</action>
 
-		<!-- ***** Justicia Gratuita / Mantenimiento Grupos de Facturación ***** -->
+		<!-- ***** Justicia Gratuita / Mantenimiento Grupos de Facturación *****
+-->
 		<action path="/JGR_MantenimientoGruposFacturacion" type="com.siga.gratuita.action.DefinirGrupoFacturacionAction" name="DefinirGrupoFacturacionForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/busquedaGrupoFacturacion.jsp"/>
 			<forward name="listarGrupos" path="/html/jsp/gratuita/consultaGrupoFacturacion.jsp"/>
@@ -2534,7 +2620,8 @@
 			<forward name="exitoInsercionProcedimiento" path="/html/jsp/gratuita/exitoInsercionProcedimiento.jsp"/>
 		</action>
 
-		<!-- ***** Justicia Gratuita / Mantenimiento Incompatibilidades de Guardias ***** -->
+		<!-- ***** Justicia Gratuita / Mantenimiento Incompatibilidades de Guardias *****
+-->
 		<action path="/JGR_MantenimientoIncompatibilidadesGuardias" type="com.siga.gratuita.action.BusquedaIncompatibilidadesGuardiasAction" name="MantenimientoIncompatibilidadesGuardiasForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/busquedaIncompatibilidadesGuardias.jsp" />
 			<forward name="resultado" path="/html/jsp/gratuita/listadoIncompatibilidadesGuardias.jsp" />
@@ -2583,7 +2670,8 @@
 			<forward name="editar" path="/html/jsp/gratuita/nuevoEstadoRemesa.jsp"/>
 		</action>
 		
-		<!-- ***** Justicia Gratuita / e_comunicaciones / Gestion Resoluciones ***** -->
+		<!-- ***** Justicia Gratuita / e_comunicaciones / Gestion Resoluciones *****
+-->
 		<action path="/JGR_E-Comunicaciones_RemesaResolucion"  type="com.siga.gratuita.action.DefinirRemesaResolucionesCAJGAction" name="DefinicionRemesaResolucionesCAJGForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/busquedaRemesaResoluciones_CAJG.jsp?idTipoRemesa=1"/>
 			<forward name="insertarResolucion" path="/html/jsp/gratuita/insertarRemesaResolucion.jsp"/>						
@@ -2707,12 +2795,14 @@
 			<forward name="exitoInsertarPago" path="/html/jsp/facturacionSJCS/exitoInsertarPago.jsp"/>
 		</action>
 
-		<!-- ***** Facturación SJCS / Mantenimiento de Pago / Importes Totales ***** -->
+		<!-- ***** Facturación SJCS / Mantenimiento de Pago / Importes Totales *****
+-->
 		<action path="/FCS_ImportesTotales" type="com.siga.facturacionSJCS.action.DatosImporteTotalesPagoAction" name="datosGeneralesPagoForm" scope="request">
 			<forward name="inicio" path="/html/jsp/facturacionSJCS/consultaPagoImportesTotales.jsp"/>
 		</action>
 
-		<!-- ***** Facturación SJCS / Mantenimiento de Pago / Conf. Abonos ***** -->
+		<!-- ***** Facturación SJCS / Mantenimiento de Pago / Conf. Abonos *****
+-->
 		<action path="/FCS_ConfiguracionAbonos" type="com.siga.facturacionSJCS.action.ConfiguracionAbonosAction" name="configuracionAbonosForm" scope="session">
 			<forward name="inicio" path="/html/jsp/facturacionSJCS/configurarAbono.jsp"/>
 		</action>
@@ -2777,7 +2867,8 @@
 			<forward name="inicio" path="/html/jsp/informes/informeFichaFacturacion.jsp"/>
 		</action>
 
-        <!-- ***** Facturacion SJCS / mantenimiento de Informes de Facturaciones ***** -->
+        <!-- ***** Facturacion SJCS / mantenimiento de Informes de Facturaciones *****
+-->
        <!-- <action path="/INF_CartaPago" type="com.siga.informes.action.MantenimientoInformesAction" name="mantenimientoInformesForm" scope="request">
             <forward name="inicio" path="/html/jsp/informes/informeFichaColegiados.jsp"/>
             <forward name="descargas" path="/html/jsp/informes/descargaInformes.jsp"/>
@@ -2792,12 +2883,14 @@
 		</action>
         
 
-        <!-- ***** Facturacion SJCS / mantenimiento de Informes de Facturaciones ***** -->
+        <!-- ***** Facturacion SJCS / mantenimiento de Informes de Facturaciones *****
+-->
         <action path="/INF_CertificadoPago" type="com.siga.informes.action.MantenimientoInformesAction" name="mantenimientoInformesForm" scope="request">
             <forward name="inicio" path="/html/jsp/informes/informeFichaCertificados.jsp"/>
         </action>
 
-        <!-- ***** Facturacion SJCS / mantenimiento de Informes de Facturaciones ***** -->
+        <!-- ***** Facturacion SJCS / mantenimiento de Informes de Facturaciones *****
+-->
         <action path="/INF_InformeFacturacion" type="com.siga.informes.action.MantenimientoInformesAction" name="mantenimientoInformesForm" scope="request">
             <forward name="inicio" path="/html/jsp/informes/informeFacturacion.jsp"/>
         </action>
@@ -2916,9 +3009,12 @@
 			
 		</action>	
 
-		<!-- **************************************************************************** -->
-		<!-- *****************************  FIN ACTION MENÚS **************************** -->
-		<!-- **************************************************************************** -->
+		<!-- ****************************************************************************
+-->
+		<!-- *****************************  FIN ACTION MENÚS ****************************
+-->
+		<!-- ****************************************************************************
+-->
 	</action-mappings>
 
 	<plug-in className="org.apache.struts.validator.ValidatorPlugIn">
