@@ -45,7 +45,6 @@ public class SIGACGAEContext {
 	private static final String ENTORNO_DESARROLLO ="DESARROLLO";
 //	private static final String ZONA_ID_OBJECT ="zonaparameter";
 	private static final String ROL_LETRADO ="ABOGADO"; // Es el rol que corresponde a un letrado
-	private static final String ROL_COMISION ="COMISION"; // Es el rol que corresponde a la comision
 	/**
 	 *
 	 */
@@ -218,10 +217,8 @@ System.setProperties(properties);
 			// Se establece si el usuario es un letrado
 		 	//@String rol=obUsu.getRol().toUpperCase();
 			String rol = user.getRolDesc().toUpperCase();
-			System.out.println("Sigacgaecontext rol "+rol );
 			bean.setLetrado(rol.equalsIgnoreCase(SIGACGAEContext.ROL_LETRADO));
-			// Se establece si el usuario pertenece a la comision
-			bean.setComision(rol.equalsIgnoreCase(SIGACGAEContext.ROL_COMISION));
+
 			/* Obtenemos el idRol que corresponde al rol del certificado y lo metemos
 			 * en el bean del usuario
 			*/

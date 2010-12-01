@@ -52,6 +52,7 @@ public class UsrBean implements Serializable {
 	private Hashtable datosUsuario = null;
 	private Boolean ocultarHistorico = null;
 	private boolean aplicarLOPD = false;
+	private static final String ROL_COMISION ="CJG"; // Es el rol que corresponde a la comision
 
 	public UsrBean() {
 	    ReadProperties ldapProperties= new ReadProperties(SIGAReferences.RESOURCE_FILES.JNDI);
@@ -132,6 +133,13 @@ public class UsrBean implements Serializable {
 	}
 	public void setProfile(String[] prof) {
 		profile = prof;
+		// Se establece si el usuario pertenece a la comision
+		this.setComision(false);
+		for (int i = 0; i < prof.length; i++) {	
+			if(prof[i].equalsIgnoreCase(ROL_COMISION)){
+				this.setComision(true);
+			}
+		}
 	}
 
 	public UserTransaction getTransaction() {
