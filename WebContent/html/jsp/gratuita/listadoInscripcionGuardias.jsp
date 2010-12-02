@@ -1,4 +1,4 @@
-<!-- listadoInscripcionTurnos.jsp -->
+<!-- listadoInscripcionGuardias.jsp -->
 
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
