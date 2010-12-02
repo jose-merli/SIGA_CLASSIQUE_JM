@@ -62,7 +62,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 		miForm = (MasterForm) formulario;
 		String accion = miForm.getModo();
 		try{
-			if(accion.equalsIgnoreCase("EditarDesdeInforme")){
+			if(accion!=null && accion.equalsIgnoreCase("EditarDesdeInforme")){
 				request.getSession().removeAttribute("designaActual");
 				miForm.setModo("editar");
 			}
