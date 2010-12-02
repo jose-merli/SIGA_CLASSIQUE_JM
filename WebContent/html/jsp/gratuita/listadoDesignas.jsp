@@ -31,57 +31,36 @@
 	String idInstitucionLocation = usr.getLocation();
 	String idioma=usr.getLanguage().toUpperCase();
 	//Vector obj = (Vector)request.getAttribute("resultado");
-	String estado = "";
+	
 	ses.removeAttribute("resultado");
 	
 	
 	/** PAGINADOR ***/
 	Vector resultado=null;
 	String paginaSeleccionada ="";
-	
 	String totalRegistros ="";
-	
 	String registrosPorPagina = "";
-	
 	String valorCheckPersona = "";
 	if (datosPaginador!=null) {
-		
-		 
-
-		
-		
-		
-	
-	
 	 if ( datosPaginador.get("datos")!=null && !datosPaginador.get("datos").equals("")){
-	  resultado = (Vector)datosPaginador.get("datos");
-	  
+	  	resultado = (Vector)datosPaginador.get("datos");
 	    PaginadorBind paginador = (PaginadorBind)datosPaginador.get("paginador");
 		paginaSeleccionada = String.valueOf(paginador.getPaginaActual());
-	
 	 	totalRegistros = String.valueOf(paginador.getNumeroTotalRegistros());
-	
 	 	registrosPorPagina = String.valueOf(paginador.getNumeroRegistrosPorPagina()); 
-	  
-	
-	 	
 	 }else{
-	  resultado =new Vector();
-	  paginaSeleccionada = "0";
-	
-	 	totalRegistros = "0";
-	
-	 	registrosPorPagina = "0";
+		resultado =new Vector();
+		paginaSeleccionada = "0";
+		totalRegistros = "0";
+		registrosPorPagina = "0";
 	 }
-}else{
-      resultado =new Vector();
-	  paginaSeleccionada = "0";
-	
-	 	totalRegistros = "0";
-	
-	 	registrosPorPagina = "0";
-}	 
-		String action=app+"/JGR_Designas.do?noReset=true";
+	}else{
+      	resultado =new Vector();
+	  	paginaSeleccionada = "0";
+		totalRegistros = "0";
+		registrosPorPagina = "0";
+	}	 
+	String action=app+"/JGR_Designas.do?noReset=true";
     /**************/
 	ScsDesignaAdm desigAdm = new ScsDesignaAdm(usr);
 %>	
@@ -144,57 +123,22 @@
 	 		<br>
 		<%}else{%>
 			  <%
-		    	String anioAnt="", numeroAnt="", turnoAnt="";
-				String turnoDesig="";
-				String actNoValida="";
-				String defendidos="";
-				String letradoDesig="";
-				String IDletradoDesig="";
-				String fechaEntrada="";
-				String nColegiado="";
 		    	
+				String defendidos="";
+		    	String estado = "";
 				for (int recordNumber = 1,contadorFila=1; recordNumber-1 < resultado.size(); recordNumber++)
 				{	
 					Row fila = (Row)resultado.elementAt(recordNumber-1);
 					Hashtable registro = (Hashtable) fila.getRow();
-					
-					
-						String idInstitucion = (String) registro.get("IDINSTITUCION"); 
-						String anioNow   = (String) registro.get("ANIO");
-						String numeroNow = (String) registro.get("NUMERO");
-						String turnoNow  = (String) registro.get("IDTURNO");
-						//String idPersona = (String) registro.get("IDPERSONA");
-						
-						
-						
-				     
-						
-					
-					
-					
-					turnoDesig =  desigAdm.getNombreTurnoDes(usr.getLocation(), (String) registro.get("IDTURNO"));
-					 actNoValida =  desigAdm.getActDesig_NoValidar(usr.getLocation(), (String) registro.get("IDTURNO"),(String) registro.get("ANIO"),(String) registro.get("NUMERO"));
-					 defendidos =  desigAdm.getDefendidosDesigna(usr.getLocation(), (String) registro.get("IDTURNO"),(String) registro.get("ANIO"),(String) registro.get("NUMERO"),"1");
-					 letradoDesig =  desigAdm.getLetradoDesig(usr.getLocation(), (String) registro.get("IDTURNO"),(String) registro.get("ANIO"),(String) registro.get("NUMERO"));
-					 IDletradoDesig =  desigAdm.getIDLetradoDesig(usr.getLocation(), (String) registro.get("IDTURNO"),(String) registro.get("ANIO"),(String) registro.get("NUMERO"));
-					 fechaEntrada = GstDate.getFormatedDateShort("",desigAdm.getFechaEntrada(usr.getLocation(), (String) registro.get("IDTURNO"),(String) registro.get("ANIO"),(String) registro.get("NUMERO")));
-					 if (IDletradoDesig==null || IDletradoDesig.equals("")){
-					  IDletradoDesig=" ";
-					 } 
-					 nColegiado =  desigAdm.getNColegiadoDesig(usr.getLocation(), (String) registro.get("IDTURNO"),(String) registro.get("ANIO"),(String) registro.get("NUMERO"));
-					 if (nColegiado==null || nColegiado.equals("")){
-					  nColegiado=" ";
-					 } 
-					
-					
+
+					defendidos =    (String) registro.get("DEFENDIDOS");
 					
 					estado = (String) registro.get("ESTADO");
 					if (estado!=null){
 						if (estado.equalsIgnoreCase("V")) estado = UtilidadesString.getMensajeIdioma(usr, "gratuita.designa.estado.abierto");
 						else if (estado.equalsIgnoreCase("F")) estado = UtilidadesString.getMensajeIdioma(usr, "gratuita.designa.estado.finalizado");
-							 else if(estado.equalsIgnoreCase("A")) estado = UtilidadesString.getMensajeIdioma(usr, "gratuita.designa.estado.anulado");
-							 	  else estado="";
-								 
+					 	else if(estado.equalsIgnoreCase("A")) estado = UtilidadesString.getMensajeIdioma(usr, "gratuita.designa.estado.anulado");
+						else estado="";
 					}
 					
 					
@@ -202,47 +146,29 @@
 				  	<siga:FilaConIconos fila='<%=String.valueOf(contadorFila)%>' botones="E,C,B" clase="listaNonEdit">
 						
 						<td align="center">
-					<%
-					String valorCheck = idInstitucion+"||"+anioNow+"||"+turnoNow+"||"+numeroNow;
-					
-							boolean isChecked = false;
-							
-
-							for (int z = 0; z < registrosSeleccionados.size(); z++) {
-									
-								Hashtable clavesRegistro = (Hashtable) registrosSeleccionados
-										.get(z);
-								String clave = (String)clavesRegistro.get("CLAVE");
-								
-								if (valorCheck.equals(clave)) {
-									isChecked = true;
-									break;
-								}
-								
-
+						<%String valorCheck = registro.get("IDINSTITUCION")+"||"+registro.get("ANIO")+"||"+registro.get("IDTURNO")+"||"+registro.get("NUMERO");
+						boolean isChecked = false;
+						for (int z = 0; z < registrosSeleccionados.size(); z++) {
+							Hashtable clavesRegistro = (Hashtable) registrosSeleccionados.get(z);
+							String clave = (String)clavesRegistro.get("CLAVE");
+							if (valorCheck.equals(clave)) {
+								isChecked = true;
+								break;
 							}
-							
-								if (isChecked) {
-			%>
-								
-									<input type="checkbox" value="<%=valorCheck%>"  name="chkPersona" checked onclick="pulsarCheck(this)">
-								<%
-									} else {
-								%>
-									<input type="checkbox" value="<%=valorCheck%>"  name="chkPersona" onclick="pulsarCheck(this)" >
-							<%
-								}
-							
-							%>
-					</td>
+						}if (isChecked) {%>
+								<input type="checkbox" value="<%=valorCheck%>"  name="chkPersona" checked onclick="pulsarCheck(this)">
+							<%} else {%>
+								<input type="checkbox" value="<%=valorCheck%>"  name="chkPersona" onclick="pulsarCheck(this)" >
+						<%}%>
+						</td>
 						<td>
-							<input type='hidden' name='oculto<%=String.valueOf(contadorFila)%>_1' value='<%= registro.get("IDTURNO")%>'>
-							<input type='hidden' name='oculto<%=String.valueOf(contadorFila)%>_2' value='<%=IDletradoDesig%>'>
+							<input type='hidden' name='oculto<%=String.valueOf(contadorFila)%>_1' value='<%=registro.get("IDTURNO")%>'>
+							<input type='hidden' name='oculto<%=String.valueOf(contadorFila)%>_2' value='<%=registro.get("IDLETRADODESIG")%>'>
 							<input type='hidden' name='oculto<%=String.valueOf(contadorFila)%>_3' value='<%=registro.get("NUMERO")%>'>
 							
-							<input type='hidden' name='datosCarta' value='idinstitucion==<%=usr.getLocation()%>##idturno==<%=registro.get("IDTURNO")%>##anio==<%=registro.get("ANIO")%>##numero==<%=registro.get("NUMERO")%>##ncolegiado==<%=nColegiado%>##codigo==<%=registro.get("CODIGO")%>'>
+							<input type='hidden' name='datosCarta' value='idinstitucion==<%=usr.getLocation()%>##idturno==<%=registro.get("IDTURNO")%>##anio==<%=registro.get("ANIO")%>##numero==<%=registro.get("NUMERO")%>##ncolegiado==<%=registro.get("NCOLEGIADO")%>##codigo==<%=registro.get("CODIGO")%>'>
 							<input type='hidden' name='oculto<%=String.valueOf(contadorFila)%>_4' value='<%=registro.get("ANIO")%>'>
-							<%=turnoDesig%>&nbsp;
+							<%=registro.get("TURNODESIG")%>&nbsp;
 						</td>
 						<td><%=registro.get("ANIO")%>&nbsp;</td>
 				<!--	<td>< %=registro.get("NUMERO")%>&nbsp;</td> -->
@@ -251,13 +177,12 @@
 						<%}else{%>
 						<td><%=registro.get("CODIGO")%>&nbsp;</td>
 						<% }%>
-						<!-- td><%if (registro.get("FECHAENTRADA")!=null){out.print (GstDate.getFormatedDateShort("",registro.get("FECHAENTRADA").toString()));}%>&nbsp;</td-->
-						<td><%=fechaEntrada%>&nbsp;</td>
+						<td><%=registro.get("FECHAENTRADA")%>&nbsp;</td>
 						<td><%=estado%></td>
-						<td><%=nColegiado%>&nbsp;</td>
-						<td><%=letradoDesig%>&nbsp;</td>
+						<td><%=registro.get("NCOLEGIADO")%>&nbsp;</td>
+						<td><%=registro.get("LETRADODESIG")%>&nbsp;</td>
 						<td><%=UtilidadesString.mostrarDatoJSP(defendidos)%>&nbsp;</td>
-						<td><%=actNoValida%>&nbsp;</td>
+						<td><%=registro.get("ACTNOVALIDA")%>&nbsp;</td>
 					</siga:FilaConIconos>	
 					
 				<% contadorFila++;

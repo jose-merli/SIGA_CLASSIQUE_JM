@@ -1236,7 +1236,18 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			if(UtilidadesHash.getString(miHash,"NCOLEGIADO")!=null && !((String)UtilidadesHash.getString(miHash,"NCOLEGIADO")).equals("") ){
 				contador++;
 			    codigosBind.put(new Integer(contador),(String)UtilidadesHash.getString(miHash,"NCOLEGIADO"));
-			    consulta += " and F_SIGA_GETIDLETRADO_DESIGNA(des.idinstitucion,des.idturno,des.anio,des.numero) = :"+contador;
+			    
+			    consulta += " and :"+contador+"= (select max(L.IDPERSONA) from SCS_DESIGNASLETRADO L where l.idinstitucion =des.idinstitucion ";
+			    consulta += " and l.idturno =des.idturno ";
+			    consulta += " and l.anio =des.anio "; 
+			    consulta += " and l.numero =des.numero ";
+			    consulta += " and (L.Fechadesigna is null or";
+			    consulta += " L.Fechadesigna = (SELECT MAX(LET2.Fechadesigna) FROM SCS_DESIGNASLETRADO LET2";
+			    consulta += " WHERE L.IDINSTITUCION = LET2.IDINSTITUCION AND L.IDTURNO = LET2.IDTURNO";
+			    consulta += " AND L.ANIO = LET2.ANIO AND L.NUMERO = LET2.NUMERO";
+			    consulta += " AND TRUNC(LET2.Fechadesigna) <= TRUNC(SYSDATE))))";
+			    
+			    //consulta += " and F_SIGA_GETIDLETRADO_DESIGNA(des.idinstitucion,des.idturno,des.anio,des.numero) = :"+contador;
 			}
 			if (UtilidadesHash.getString(miHash,"ANIO") != null && !UtilidadesHash.getString(miHash,"ANIO").equalsIgnoreCase("")) {
 				

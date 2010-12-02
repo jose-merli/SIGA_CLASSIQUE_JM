@@ -23,6 +23,7 @@ import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.GstDate;
 import com.atos.utils.ReadProperties;
+import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.SIGAReferences;
@@ -437,6 +438,7 @@ public class BusquedaDesignasAction extends MasterAction {
 
 		HashMap databackup=new HashMap();
 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+		ScsDesignaAdm desigAdm=new ScsDesignaAdm(this.getUserBean(request));
 		BuscarDesignasForm miForm =(BuscarDesignasForm)formulario;
 		Hashtable miHash= new Hashtable();
 		miHash = miForm.getDatos();
@@ -463,6 +465,9 @@ public class BusquedaDesignasAction extends MasterAction {
 					}
 				}	
 
+				// jbd //
+				actualizarPagina(request, desigAdm, datos);
+			 
 				databackup.put("paginador",paginador);
 				databackup.put("datos",datos);
 
@@ -475,7 +480,7 @@ public class BusquedaDesignasAction extends MasterAction {
 
 				//obtengo datos de la consulta 			
 				PaginadorBind resultado = null;
-				ScsDesignaAdm desigAdm=new ScsDesignaAdm(this.getUserBean(request));
+				
 				resultado=desigAdm.getBusquedaDesigna((String)usr.getLocation(),miHash);
 				Vector datos = null;
 
@@ -484,6 +489,9 @@ public class BusquedaDesignasAction extends MasterAction {
 				databackup.put("paginador",resultado);
 				if (resultado!=null){ 
 					datos = resultado.obtenerPagina(1);
+					// jbd //
+					actualizarPagina(request, desigAdm, datos);
+				
 					databackup.put("datos",datos);
 					request.getSession().setAttribute("DATAPAGINADOR",databackup);
 				} 
@@ -1227,7 +1235,7 @@ public class BusquedaDesignasAction extends MasterAction {
 						contrariosHash.put(ScsContrariosDesignaBean.C_IDINSTITUCIONPROCURADOR,idInstProcuradorContrario);
 					if(idAbogadoContrario!=null&&!idAbogadoContrario.equalsIgnoreCase(""))
 						contrariosHash.put(ScsContrariosDesignaBean.C_IDABOGADOCONTRARIO,idAbogadoContrario);
-					// TODO TODO // jbd // Con el representante tenemos un problema gordo, en EJG y asistencias es una personaJG y en designas es un colegiado
+					// TODO // jbd // Con el representante tenemos un problema gordo, en EJG y asistencias es una personaJG y en designas es un colegiado
 					// if(idRepresentanteContrario!=null&&!idRepresentanteContrario.equalsIgnoreCase(""))
 					//	 contrariosHash.put(ScsContrariosDesignaBean.C_IDREPRESENTANTELEGAL,idRepresentanteContrario);
 					contrariosAdm.insert(contrariosHash);
@@ -1439,7 +1447,7 @@ public class BusquedaDesignasAction extends MasterAction {
 			HttpServletRequest request, HttpServletResponse response)
 	throws ClsExceptions,SIGAException  {
 
-		
+		ScsDesignaAdm desigAdm=new ScsDesignaAdm(this.getUserBean(request));
 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 		BuscarDesignasForm miFormulario =(BuscarDesignasForm)formulario;
 		Hashtable miHash= new Hashtable();
@@ -1486,7 +1494,8 @@ public class BusquedaDesignasAction extends MasterAction {
 						datos = paginador.obtenerPagina((paginador.getPaginaActual()));
 					}
 				}	
-
+				// jbd //
+				actualizarPagina(request, desigAdm, datos);
 				databackup.put("paginador",paginador);
 				databackup.put("datos",datos);
 
@@ -1499,7 +1508,7 @@ public class BusquedaDesignasAction extends MasterAction {
 
 				//obtengo datos de la consulta 			
 				PaginadorBind resultado = null;
-				ScsDesignaAdm desigAdm=new ScsDesignaAdm(this.getUserBean(request));
+				
 				resultado=desigAdm.getBusquedaDesigna((String)usr.getLocation(),miHash);
 				Vector datos = null;
 
@@ -1523,6 +1532,8 @@ public class BusquedaDesignasAction extends MasterAction {
 						miFormulario.setRegistrosSeleccionados(new ArrayList());
 						datos = resultado.obtenerPagina(1);
 					}
+					// jbd //
+					actualizarPagina(request, desigAdm, datos);
 					databackup.put("datos",datos);
 						
 					
@@ -1794,5 +1805,59 @@ public class BusquedaDesignasAction extends MasterAction {
 		return "buscarJuzgado";
 	}
 
+	/**
+	 * Actualizamos el paginador con los datos adicionales para que no se haga desde la jsp que queda feo y cutre 
+	 * @throws SIGAException 
+	 */
+	private Vector actualizarPagina(HttpServletRequest request,ScsDesignaAdm desigAdm,Vector datos) throws ClsExceptions, SIGAException{
+		String turnoDesig="";
+		String actNoValida="";
+		String defendidos="";
+		String letradoDesig="";
+		String IDletradoDesig="";
+		String fechaEntrada="";
+		String nColegiado="";
+		Row fila;
+		// Obtenemos las relaciones de la EJG con designaciones y asistencias para mostrarlas en la busqueda
+		try{
+
+			for (int recordNumber = 1,contadorFila=1; recordNumber-1 < datos.size(); recordNumber++)
+			{	
+				fila = (Row)datos.elementAt(recordNumber-1);
+				Hashtable registro = (Hashtable) fila.getRow();
+
+				String idInstitucion = (String) registro.get("IDINSTITUCION"); 
+				String desAnio   = (String) registro.get("ANIO");
+				String desNumero = (String) registro.get("NUMERO");
+				String desIdTurno  = (String) registro.get("IDTURNO");
+
+				turnoDesig =  desigAdm.getNombreTurnoDes(idInstitucion, desIdTurno);
+				actNoValida =  desigAdm.getActDesig_NoValidar(idInstitucion, desIdTurno,desAnio,desNumero);
+				defendidos =  desigAdm.getDefendidosDesigna(idInstitucion, desIdTurno,desAnio,desNumero,"1");
+				letradoDesig =  desigAdm.getLetradoDesig(idInstitucion, desIdTurno, desAnio,desNumero);
+				IDletradoDesig =  desigAdm.getIDLetradoDesig(idInstitucion, desIdTurno,desAnio,desNumero);
+				fechaEntrada = GstDate.getFormatedDateShort("",desigAdm.getFechaEntrada(idInstitucion, desIdTurno,desAnio,desNumero));
+				if (IDletradoDesig==null || IDletradoDesig.equals("")){
+					 IDletradoDesig=" ";
+				} 
+				nColegiado =  desigAdm.getNColegiadoDesig(idInstitucion, desIdTurno,desAnio,desNumero);
+				if (nColegiado==null || nColegiado.equals("")){
+					 nColegiado=" ";
+				} 
+				registro.put( "TURNODESIG"    ,turnoDesig );
+				registro.put( "ACTNOVALIDA"   ,actNoValida );
+				registro.put( "DEFENDIDOS"    ,defendidos );
+				registro.put( "LETRADODESIG"  ,letradoDesig );
+				registro.put( "IDLETRADODESIG",IDletradoDesig );
+				registro.put( "FECHAENTRADA"  ,fechaEntrada );
+				registro.put( "NCOLEGIADO"    ,nColegiado );
+
+			}
+		} catch (Exception e) {
+			throwExcp("messages.general.error",e,null);
+		}
+		return datos;
+
+	}
 
 }
