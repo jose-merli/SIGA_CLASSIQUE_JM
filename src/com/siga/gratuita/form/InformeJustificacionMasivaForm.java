@@ -35,14 +35,16 @@ public class InformeJustificacionMasivaForm extends MasterForm
 	private String estadoColegial;
 	
 	private boolean fichaColegial = false;
-	private boolean permitirJustificarNoFavorables;
+	private boolean permitirSinResolucionJustifLetrado;
 
-	public boolean isPermitirJustificarNoFavorables() {
-		return permitirJustificarNoFavorables;
+	
+	
+	public boolean isPermitirSinResolucionJustifLetrado() {
+		return permitirSinResolucionJustifLetrado;
 	}
-	public void setPermitirJustificarNoFavorables(
-			boolean permitirJustificarNoFavorables) {
-		this.permitirJustificarNoFavorables = permitirJustificarNoFavorables;
+	public void setPermitirSinResolucionJustifLetrado(
+			boolean permitirSinResolucionJustifLetrado) {
+		this.permitirSinResolucionJustifLetrado = permitirSinResolucionJustifLetrado;
 	}
 	public boolean getFichaColegial() {
 		return fichaColegial;

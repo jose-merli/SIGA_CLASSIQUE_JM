@@ -233,11 +233,11 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		sqlDesignas.append(" and ejgdes.idinstitucion = ejg.idinstitucion ");
 		sqlDesignas.append(" and ejgdes.idtipoejg = ejg.idtipoejg ");
 		sqlDesignas.append(" and ejgdes.anioejg = ejg.anio ");
-		sqlDesignas.append(" and ejg.idtiporatificacionejg in (");
+		sqlDesignas.append(" and (ejg.idtiporatificacionejg in (");
 		sqlDesignas.append(TIPO_RESOLUCION_RECONOCIDO100);
 		sqlDesignas.append(",");
 		sqlDesignas.append(TIPO_RESOLUCION_RECONOCIDO80);
-		sqlDesignas.append(" )");
+		sqlDesignas.append(" ) or ejg.idtiporatificacionejg is null)");
 		sqlDesignas.append(" and ejgdes.numeroejg = ejg.numero) NUMEJGRESUELTOSFAVORABLES ");
 		
 		sqlDesignas.append(" FROM SCS_DESIGNA D, SCS_DESIGNASLETRADO DL ");
@@ -1508,7 +1508,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 				
 				//seteamos las actuaciones de las designas
 				designaForm.setMultiplesComplementos((String)registro.get("COMPLEMENTO"));
-				if(designaForm.getNumEjgResueltosFavorables()>0 ||formulario.isPermitirJustificarNoFavorables()){
+				if(designaForm.getNumEjgResueltosFavorables()>0 ||formulario.isPermitirSinResolucionJustifLetrado()){
 					admActuacionDesignaAdm.setActuacionesDesignas(designaForm,isMostrarJustificacionesPtes);
 					designaForm.setRowSpan();
 					
@@ -1648,7 +1648,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 				
 				//seteamos las actuaciones de las designas
 				designaForm.setMultiplesComplementos((String)designaHashtable.get("COMPLEMENTO"));
-				if(designaForm.getNumEjgResueltosFavorables()>0||formulario.isPermitirJustificarNoFavorables()){
+				if(designaForm.getNumEjgResueltosFavorables()>0||formulario.isPermitirSinResolucionJustifLetrado()){
 					admActuacionDesignaAdm.setActuacionesDesignas(designaForm,isMostrarJustificacionesPtes);
 					designaForm.setRowSpan();
 					
@@ -1744,11 +1744,11 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
     	sql.append(" and ejgdes.idinstitucion = ejg.idinstitucion ");
     	sql.append(" and ejgdes.idtipoejg = ejg.idtipoejg ");
     	sql.append(" and ejgdes.anioejg = ejg.anio ");
-    	sql.append(" and ejg.idtiporatificacionejg in (");
+    	sql.append(" and (ejg.idtiporatificacionejg in (");
     	sql.append(TIPO_RESOLUCION_RECONOCIDO100);
     	sql.append(",");
     	sql.append(TIPO_RESOLUCION_RECONOCIDO80);
-    	sql.append(" )");
+    	sql.append(" ) or ejg.idtiporatificacionejg is null)");
     	sql.append(" and ejgdes.numeroejg = ejg.numero) NUMEJGRESUELTOSFAVORABLES, ");
 			
 		//}

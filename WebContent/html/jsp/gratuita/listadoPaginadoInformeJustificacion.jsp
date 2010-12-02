@@ -718,7 +718,7 @@ function ajusteDivListado(){
 						</c:otherwise>
 					</c:choose></td>
 					<c:choose>
-					<c:when test="${designa.numEjgResueltosFavorables=='0'&&InformeJustificacionMasivaForm.permitirJustificarNoFavorables==false}">
+					<c:when test="${designa.numEjgResueltosFavorables=='0'&&InformeJustificacionMasivaForm.permitirSinResolucionJustifLetrado==false}">
 							<td align="center" rowspan="${designa.rowSpan}" colspan="3">
 							<siga:Idioma
 								key="gratuita.informeJustificacionMasiva.literal.designaSinEjgFavorable" />
