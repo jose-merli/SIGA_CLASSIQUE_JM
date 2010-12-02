@@ -188,6 +188,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 	private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designasList,InformeJustificacionMasivaForm formulario,Hashtable codigosHashtable,boolean isInforme) throws ClsExceptions{
 		
 		int contador = 0;
+		ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 		StringBuffer sqlDesignas = new StringBuffer();
 		sqlDesignas.append(" SELECT D.ANIO || '/' || D.CODIGO CODIGODESIGNA, ");
 		sqlDesignas.append(" F_SIGA_GETEJG_DESIGNA(:");
@@ -220,6 +221,25 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		sqlDesignas.append(" AND D.ANIO = SDL.ANIO ");
 		sqlDesignas.append(" AND D.NUMERO = SDL.NUMERO ");
 		sqlDesignas.append(" AND D.IDTURNO = SDL.IDTURNO) CAMBIOLETRADO ");
+		final String TIPO_RESOLUCION_RECONOCIDO100 = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.reconocido100");
+		final String TIPO_RESOLUCION_RECONOCIDO80 = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.reconocido80");
+		//que tenga al menos uno con resolucon favorable
+		sqlDesignas.append(", (select count(*) ");
+		sqlDesignas.append(" from SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
+		sqlDesignas.append(" where d.idinstitucion = ejgdes.idinstitucion ");
+		sqlDesignas.append(" and d.idturno = ejgdes.idturno ");
+		sqlDesignas.append(" and d.anio = ejgdes.aniodesigna ");
+		sqlDesignas.append(" and d.numero = ejgdes.numerodesigna ");
+		sqlDesignas.append(" and ejgdes.idinstitucion = ejg.idinstitucion ");
+		sqlDesignas.append(" and ejgdes.idtipoejg = ejg.idtipoejg ");
+		sqlDesignas.append(" and ejgdes.anioejg = ejg.anio ");
+		sqlDesignas.append(" and ejg.idtiporatificacionejg in (");
+		sqlDesignas.append(TIPO_RESOLUCION_RECONOCIDO100);
+		sqlDesignas.append(",");
+		sqlDesignas.append(TIPO_RESOLUCION_RECONOCIDO80);
+		sqlDesignas.append(" )");
+		sqlDesignas.append(" and ejgdes.numeroejg = ejg.numero) NUMEJGRESUELTOSFAVORABLES ");
+		
 		sqlDesignas.append(" FROM SCS_DESIGNA D, SCS_DESIGNASLETRADO DL ");
 		sqlDesignas.append(" WHERE D.IDINSTITUCION = DL.IDINSTITUCION ");
 		sqlDesignas.append(" AND D.ANIO = DL.ANIO ");
@@ -1393,6 +1413,9 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		
 		Hashtable htPersona = new Hashtable();
 		boolean isMostrarJustificacionesPtes = formulario.getMostrarTodas()!=null && formulario.getMostrarTodas().equals("true");
+		
+		
+		
 		//Vector vSalida = null;
 		HelperInformesAdm helperInformes = new HelperInformesAdm();
 		Hashtable htAcumuladorJuzgados = acumula.getAcumuladorJuzgadosHashtable();
@@ -1403,6 +1426,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		List<DesignaForm> designaFormList = null;
 		ScsActuacionDesignaAdm admActuacionDesignaAdm = new ScsActuacionDesignaAdm(usrbean);
 		String idPersona = formulario.getIdPersona();
+		
 		try {
 			//vSalida = new Vector();	
 			designaList = getDesignas(formulario,isInforme); 
@@ -1413,6 +1437,9 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 			while (iteDesignas.hasNext()) {
 				Hashtable registro =  (Hashtable) iteDesignas.next();
 				designaForm = new DesignaForm();
+				String numEjgResultosFavolables  = (String)registro.get("NUMEJGRESUELTOSFAVORABLES");
+				designaForm.setNumEjgResueltosFavorables(Integer.parseInt(numEjgResultosFavolables));
+				
 				idPersona = (String)registro.get("IDPERSONA");
 				String idProcedimiento  = (String)registro.get("IDPROCEDIMIENTO");
 				designaForm.setIdPersona(idPersona);
@@ -1481,20 +1508,25 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 				
 				//seteamos las actuaciones de las designas
 				designaForm.setMultiplesComplementos((String)registro.get("COMPLEMENTO"));
-				
-				admActuacionDesignaAdm.setActuacionesDesignas(designaForm,isMostrarJustificacionesPtes);
-				designaForm.setRowSpan();
-				
-				if(!isMostrarJustificacionesPtes){
+				if(designaForm.getNumEjgResueltosFavorables()>0 ||formulario.isPermitirJustificarNoFavorables()){
+					admActuacionDesignaAdm.setActuacionesDesignas(designaForm,isMostrarJustificacionesPtes);
+					designaForm.setRowSpan();
+					
+					if(!isMostrarJustificacionesPtes){
+						designaFormList.add(designaForm);
+					}else if(designaForm.getIdJuzgado()==null || designaForm.getIdJuzgado().equals("")){
+						designaFormList.add(designaForm);
+					}else if(designaForm.getIdProcedimiento()==null || designaForm.getIdProcedimiento().equals("")){
+						designaFormList.add(designaForm);
+					}
+					else if((designaForm.getActuaciones()!=null && !designaForm.getActuaciones().isEmpty()) ||
+							(designaForm.getAcreditaciones()!=null && designaForm.getAcreditaciones().size()>0)){
+						designaFormList.add(designaForm);
+					}
+				}else{
+					designaForm.setRowSpan();
 					designaFormList.add(designaForm);
-				}else if(designaForm.getIdJuzgado()==null || designaForm.getIdJuzgado().equals("")){
-					designaFormList.add(designaForm);
-				}else if(designaForm.getIdProcedimiento()==null || designaForm.getIdProcedimiento().equals("")){
-					designaFormList.add(designaForm);
-				}
-				else if((designaForm.getActuaciones()!=null && !designaForm.getActuaciones().isEmpty()) ||
-						(designaForm.getAcreditaciones()!=null && designaForm.getAcreditaciones().size()>0)){
-					designaFormList.add(designaForm);
+					
 				}
 				
 				
@@ -1546,7 +1578,8 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 			//for (int j = 0; j < designaList.size(); j++) {
 				designaForm = new DesignaForm();
 				
-				
+				String numEjgResultosFavolables  = (String)designaHashtable.get("NUMEJGRESUELTOSFAVORABLES");
+				designaForm.setNumEjgResueltosFavorables(Integer.parseInt(numEjgResultosFavolables));
 				//Hashtable registro = designaList.get(j);
 				idPersona = (String)designaHashtable.get("IDPERSONA");
 				String idProcedimiento  = (String)designaHashtable.get("IDPROCEDIMIENTO");
@@ -1615,22 +1648,25 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 				
 				//seteamos las actuaciones de las designas
 				designaForm.setMultiplesComplementos((String)designaHashtable.get("COMPLEMENTO"));
-				
-				admActuacionDesignaAdm.setActuacionesDesignas(designaForm,isMostrarJustificacionesPtes);
-				designaForm.setRowSpan();
-				
-				if(!isMostrarJustificacionesPtes){
-					designaFormList.add(designaForm);
-				}else if(designaForm.getIdJuzgado()==null || designaForm.getIdJuzgado().equals("")){
-					designaFormList.add(designaForm);
-				}else if(designaForm.getIdProcedimiento()==null || designaForm.getIdProcedimiento().equals("")){
+				if(designaForm.getNumEjgResueltosFavorables()>0||formulario.isPermitirJustificarNoFavorables()){
+					admActuacionDesignaAdm.setActuacionesDesignas(designaForm,isMostrarJustificacionesPtes);
+					designaForm.setRowSpan();
+					
+					if(!isMostrarJustificacionesPtes){
+						designaFormList.add(designaForm);
+					}else if(designaForm.getIdJuzgado()==null || designaForm.getIdJuzgado().equals("")){
+						designaFormList.add(designaForm);
+					}else if(designaForm.getIdProcedimiento()==null || designaForm.getIdProcedimiento().equals("")){
+						designaFormList.add(designaForm);
+					}
+					else if((designaForm.getActuaciones()!=null && designaForm.getActuaciones().size()>0) ||
+							(designaForm.getAcreditaciones()!=null && designaForm.getAcreditaciones().size()>0)){
+						designaFormList.add(designaForm);
+					}
+				}else{
+					designaForm.setRowSpan();
 					designaFormList.add(designaForm);
 				}
-				else if((designaForm.getActuaciones()!=null && designaForm.getActuaciones().size()>0) ||
-						(designaForm.getAcreditaciones()!=null && designaForm.getAcreditaciones().size()>0)){
-					designaFormList.add(designaForm);
-				}
-				
 				
 				
 	
@@ -1669,14 +1705,13 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		//ReadProperties rp3 = new ReadProperties("SIGA.properties");
 		
 		GenParametrosAdm paramAdm = new GenParametrosAdm (usrbean);
-		//Haria falta meter los parametros en con ClsConstants
-        String codExcluirEjgDenegados = paramAdm.getValor (usrbean.getLocation (), "SCS", ClsConstants.GEN_PARAM_EXCLUIR_EJG_DENEGADOS_JUSTIF_LETRADO, "");
 		
 		
 		
-		final String TIPO_RESOLUCION_DENEGADO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.denegado");
-		sql.append(" SELECT ");
-		sql.append(" TO_CHAR(D.FECHAENTRADA,'dd/mm/yyyy') FECHADESIGNA, ");
+		
+		
+		sql.append(" SELECT * from (");
+		sql.append(" SELECT TO_CHAR(D.FECHAENTRADA,'dd/mm/yyyy') FECHADESIGNA, ");
 		sql.append(" TO_CHAR(D.FECHAENTRADA,'yyyy_mm_dd') FECHAORDEN, ");
 		
 		if(!isMostrarJustificacionesPtes){
@@ -1694,9 +1729,29 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 			sql.append(",d.anio,d.idturno,d.numero,0) AS CLIENTE, ");
 			
 			sql.append(" D.RESUMENASUNTO RESUMENASUNTO, ");
-			sql.append(" D.CODIGO CODIGO, ");
 			sql.append(" DL.FECHARENUNCIA, ");
-		}
+		}//else{
+			
+		final String TIPO_RESOLUCION_RECONOCIDO100 = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.reconocido100");
+		final String TIPO_RESOLUCION_RECONOCIDO80 = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.reconocido80");
+		//que tenga al menos uno con resolucon favorable
+		sql.append(" (select count(*) ");
+    	sql.append(" from SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
+    	sql.append(" where d.idinstitucion = ejgdes.idinstitucion ");
+    	sql.append(" and d.idturno = ejgdes.idturno ");
+    	sql.append(" and d.anio = ejgdes.aniodesigna ");
+    	sql.append(" and d.numero = ejgdes.numerodesigna ");
+    	sql.append(" and ejgdes.idinstitucion = ejg.idinstitucion ");
+    	sql.append(" and ejgdes.idtipoejg = ejg.idtipoejg ");
+    	sql.append(" and ejgdes.anioejg = ejg.anio ");
+    	sql.append(" and ejg.idtiporatificacionejg in (");
+    	sql.append(TIPO_RESOLUCION_RECONOCIDO100);
+    	sql.append(",");
+    	sql.append(TIPO_RESOLUCION_RECONOCIDO80);
+    	sql.append(" )");
+    	sql.append(" and ejgdes.numeroejg = ejg.numero) NUMEJGRESUELTOSFAVORABLES, ");
+			
+		//}
 		sql.append(" D.IDINSTITUCION IDINSTITUCION, ");
 		sql.append(" D.IDTURNO IDTURNO, ");
 		sql.append(" D.ANIO ANIO, ");
@@ -1706,7 +1761,10 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		sql.append(" D.IDINSTITUCION_JUZG IDINSTITUCION_JUZG, ");
 		sql.append(" D.ESTADO ESTADO, ");
 		sql.append(" D.IDPROCEDIMIENTO IDPROCEDIMIENTO, ");
+		sql.append(" D.FECHAENTRADA, D.CODIGO, D.SUFIJO, ");
 		sql.append(" DL.IDPERSONA ");
+		
+		
 		sql.append(" , (SELECT COUNT(*) FROM SCS_DESIGNASLETRADO SDL ");
 		sql.append(" WHERE D.IDINSTITUCION = SDL.IDINSTITUCION ");
 		sql.append(" AND D.ANIO = SDL.ANIO ");
@@ -1754,6 +1812,192 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 			sql.append(" D.ANIO, ");
 			sql.append(" D.NUMERO) > 0 ");
 			sql.append(" ) ");
+
+
+
+
+
+
+
+
+		}else{
+			//Haria falta meter los parametros en con ClsConstants
+
+			/*and not ((select count(*)
+            from SCS_EJG EJG, SCS_EJGDESIGNA EJGDES
+           where d.idinstitucion = ejgdes.idinstitucion
+             and d.idturno = ejgdes.idturno
+             and d.anio = ejgdes.aniodesigna
+             and d.numero = ejgdes.numerodesigna
+             and ejgdes.idinstitucion = ejg.idinstitucion
+             and ejgdes.idtipoejg = ejg.idtipoejg
+             and ejgdes.anioejg = ejg.anio
+             and ejgdes.numeroejg = ejg.numero) > 0 and
+
+     --... el numero de ejgs con ratificacion 3...
+             (select count(*)
+            from SCS_EJG EJG, SCS_EJGDESIGNA EJGDES
+           where d.idinstitucion = ejgdes.idinstitucion
+             and d.idturno = ejgdes.idturno
+             and d.anio = ejgdes.aniodesigna
+             and d.numero = ejgdes.numerodesigna
+             and ejgdes.idinstitucion = ejg.idinstitucion
+             and ejgdes.idtipoejg = ejg.idtipoejg
+             and ejgdes.anioejg = ejg.anio
+             and ejgdes.numeroejg = ejg.numero
+             and ejg.idtiporatificacionejg = 3) = 
+    --... es igual al numero de ejgs relacionados
+    (select count(*)
+            from SCS_EJG EJG, SCS_EJGDESIGNA EJGDES
+           where d.idinstitucion = ejgdes.idinstitucion
+             and d.idturno = ejgdes.idturno
+             and d.anio = ejgdes.aniodesigna
+             and d.numero = ejgdes.numerodesigna
+             and ejgdes.idinstitucion = ejg.idinstitucion
+             and ejgdes.idtipoejg = ejg.idtipoejg
+             and ejgdes.anioejg = ejg.anio
+             and ejgdes.numeroejg = ejg.numero))
+
+             )*/
+
+			String codExcluirEjgDenegados = paramAdm.getValor (usrbean.getLocation (), "SCS", ClsConstants.GEN_PARAM_EXCLUIR_EJG_DENEGADOS_JUSTIF_LETRADO, "");
+			String codExcluirEjgArchivo = paramAdm.getValor (usrbean.getLocation (), "SCS", ClsConstants.GEN_PARAM_EXCLUIR_EJG_ARCHIVO_JUSTIF_LETRADO, "");
+			String codExcluirEjgPtesCAJG = paramAdm.getValor (usrbean.getLocation (), "SCS", ClsConstants.GEN_PARAM_EXCLUIR_EJG_PENDIENTES_CAJG_JUSTIF_LETRADO, "");
+			String codExcluirEjgSinResolucion = paramAdm.getValor (usrbean.getLocation (), "SCS", ClsConstants.GEN_PARAM_EXCLUIR_EJG_SIN_RESOLUCION_JUSTIF_LETRADO, "");
+			String codExcluirSinEjg = paramAdm.getValor (usrbean.getLocation (), "SCS", ClsConstants.GEN_PARAM_EXCLUIR_SIN_EJG_JUSTIF_LETRADO, "");
+			StringBuffer excluirEjs = new StringBuffer("");
+			if(codExcluirEjgDenegados!=null && codExcluirEjgDenegados.equals(ClsConstants.DB_TRUE)){
+				final String TIPO_RESOLUCION_DENEGADO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.denegado");
+				excluirEjs.append(TIPO_RESOLUCION_DENEGADO);
+				excluirEjs.append(",");
+			}
+			if(codExcluirEjgArchivo!=null && codExcluirEjgArchivo.equals(ClsConstants.DB_TRUE)){
+				final String TIPO_RESOLUCION_ARCHIVO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.archivo");
+				excluirEjs.append(TIPO_RESOLUCION_ARCHIVO);
+				excluirEjs.append(",");
+			}
+			if(codExcluirEjgPtesCAJG!=null && codExcluirEjgPtesCAJG.equals(ClsConstants.DB_TRUE)){
+				final String TIPO_RESOLUCION_PTE_CAJG = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.pendientecajg");
+				excluirEjs.append(TIPO_RESOLUCION_PTE_CAJG);
+				excluirEjs.append(",");
+			}
+			if(!excluirEjs.toString().equals("")){
+				//Quitamos la ultima ,
+				excluirEjs = new StringBuffer(excluirEjs.substring(0,excluirEjs.length()-1));
+
+				//excluidos los que, teniendo algun ejg...
+				sql.append(" and not  ");
+				if(codExcluirSinEjg!=null && codExcluirSinEjg.equals(ClsConstants.DB_TRUE)){
+
+
+
+					sql.append(" ( ");
+
+
+				}else{
+					sql.append(" ((select count(*) from SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
+					sql.append(" where d.idinstitucion = ejgdes.idinstitucion ");
+					sql.append(" and d.idturno = ejgdes.idturno ");
+					sql.append(" and d.anio = ejgdes.aniodesigna ");
+					sql.append(" and d.numero = ejgdes.numerodesigna ");
+					sql.append(" and ejgdes.idinstitucion = ejg.idinstitucion ");
+					sql.append(" and ejgdes.idtipoejg = ejg.idtipoejg ");
+					sql.append(" and ejgdes.anioejg = ejg.anio ");
+					sql.append(" and ejgdes.numeroejg = ejg.numero) > 0 and ");
+
+				}
+
+
+
+				//... el numero de ejgs con ratificacion 3...
+				sql.append(" (select count(*) ");
+				sql.append(" from SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
+				sql.append(" where d.idinstitucion = ejgdes.idinstitucion ");
+				sql.append(" and d.idturno = ejgdes.idturno ");
+				sql.append(" and d.anio = ejgdes.aniodesigna ");
+				sql.append(" and d.numero = ejgdes.numerodesigna ");
+				sql.append(" and ejgdes.idinstitucion = ejg.idinstitucion ");
+				sql.append(" and ejgdes.idtipoejg = ejg.idtipoejg ");
+				sql.append(" and ejgdes.anioejg = ejg.anio ");
+				sql.append(" and ejgdes.numeroejg = ejg.numero ");
+				sql.append(" and (ejg.idtiporatificacionejg in ( "); 
+				sql.append(excluirEjs);
+				//... es igual al numero de ejgs relacionados
+				sql.append(" ) ");
+				if(codExcluirEjgSinResolucion!=null && codExcluirEjgSinResolucion.equals(ClsConstants.DB_TRUE)){
+					sql.append(" OR ejg.idtiporatificacionejg is null)) ");
+
+				}else{
+					sql.append("))");
+
+				}
+
+				sql.append("  = (select count(*) ");
+				sql.append(" from SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
+				sql.append(" where d.idinstitucion = ejgdes.idinstitucion ");
+				sql.append(" and d.idturno = ejgdes.idturno ");
+				sql.append(" and d.anio = ejgdes.aniodesigna ");
+				sql.append(" and d.numero = ejgdes.numerodesigna ");
+				sql.append(" and ejgdes.idinstitucion = ejg.idinstitucion ");
+				sql.append(" and ejgdes.idtipoejg = ejg.idtipoejg ");
+				sql.append(" and ejgdes.anioejg = ejg.anio ");
+				sql.append(" and ejgdes.numeroejg = ejg.numero) ");
+
+				sql.append(")");
+
+			}else{
+				String and = "and";
+				if(codExcluirSinEjg!=null && codExcluirSinEjg.equals(ClsConstants.DB_TRUE)){
+					sql.append(" and (select count(*) from SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
+					sql.append(" where d.idinstitucion = ejgdes.idinstitucion ");
+					sql.append(" and d.idturno = ejgdes.idturno ");
+					sql.append(" and d.anio = ejgdes.aniodesigna ");
+					sql.append(" and d.numero = ejgdes.numerodesigna ");
+					sql.append(" and ejgdes.idinstitucion = ejg.idinstitucion ");
+					sql.append(" and ejgdes.idtipoejg = ejg.idtipoejg ");
+					sql.append(" and ejgdes.anioejg = ejg.anio ");
+					sql.append(" and ejgdes.numeroejg = ejg.numero) > 0  ");
+				}
+				
+					if(codExcluirEjgSinResolucion!=null && codExcluirEjgSinResolucion.equals(ClsConstants.DB_TRUE)){
+						sql.append(" and not ((select count(*) from SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
+						sql.append(" where d.idinstitucion = ejgdes.idinstitucion ");
+						sql.append(" and d.idturno = ejgdes.idturno ");
+						sql.append(" and d.anio = ejgdes.aniodesigna ");
+						sql.append(" and d.numero = ejgdes.numerodesigna ");
+						sql.append(" and ejgdes.idinstitucion = ejg.idinstitucion ");
+						sql.append(" and ejgdes.idtipoejg = ejg.idtipoejg ");
+						sql.append(" and ejgdes.anioejg = ejg.anio ");
+						sql.append(" and ejgdes.numeroejg = ejg.numero) > 0  ");
+						
+						sql.append(" and  ((select count(*) ");
+						sql.append(" from SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
+						sql.append(" where d.idinstitucion = ejgdes.idinstitucion ");
+						sql.append(" and d.idturno = ejgdes.idturno ");
+						sql.append(" and d.anio = ejgdes.aniodesigna ");
+						sql.append(" and d.numero = ejgdes.numerodesigna ");
+						sql.append(" and ejgdes.idinstitucion = ejg.idinstitucion ");
+						sql.append(" and ejgdes.idtipoejg = ejg.idtipoejg ");
+						sql.append(" and ejgdes.anioejg = ejg.anio ");
+						sql.append(" and ejgdes.numeroejg = ejg.numero ");
+						sql.append(" and ejg.idtiporatificacionejg is  null) ");
+
+						sql.append("  = (select count(*) ");
+						sql.append(" from SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
+						sql.append(" where d.idinstitucion = ejgdes.idinstitucion ");
+						sql.append(" and d.idturno = ejgdes.idturno ");
+						sql.append(" and d.anio = ejgdes.aniodesigna ");
+						sql.append(" and d.numero = ejgdes.numerodesigna ");
+						sql.append(" and ejgdes.idinstitucion = ejg.idinstitucion ");
+						sql.append(" and ejgdes.idtipoejg = ejg.idtipoejg ");
+						sql.append(" and ejgdes.anioejg = ejg.anio ");
+						sql.append(" and ejgdes.numeroejg = ejg.numero))) ");
+					
+				}
+
+			}
+
+
 		}
 		if(formulario.getEstado()!=null && !formulario.getEstado().equals("")){
 			sql.append(" AND D.ESTADO =:");
@@ -1822,25 +2066,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		
 
 		//tODOS MENOS DENEGADO
-		if(codExcluirEjgDenegados!=null && codExcluirEjgDenegados.equals(ClsConstants.DB_TRUE)){
-			sql.append(" and not exists (select 1 ");
-			sql.append(" from SCS_EJG EJG,SCS_EJGDESIGNA EJGDES ");
-	
-			sql.append(" where d.idinstitucion=ejgdes.idinstitucion ");
-	
-			sql.append(" and d.idturno=ejgdes.idturno ");
-			sql.append(" and d.anio=ejgdes.aniodesigna ");
-			sql.append(" and d.numero=ejgdes.numerodesigna ");
-			sql.append(" and ejgdes.idinstitucion=ejg.idinstitucion ");
-			sql.append(" and ejgdes.idtipoejg=ejg.idtipoejg ");
-			sql.append(" and ejgdes.anioejg=ejg.anio ");
-			sql.append(" and ejgdes.numeroejg=ejg.numero ");
-			sql.append(" and (ejg.idtiporatificacionejg =  ");
-			   //
-			sql.append(TIPO_RESOLUCION_DENEGADO);
-	
-			sql.append(" or ejg.idtiporatificacionejg is null)) ");
-		}
+		
 		if((formulario.getInteresadoApellidos() != null && !formulario.getInteresadoApellidos().equalsIgnoreCase("")) 
 				&& (formulario.getInteresadoNombre() != null && !formulario.getInteresadoNombre().equalsIgnoreCase(""))){
 			
@@ -1895,8 +2121,12 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		    
 			sql.append(":"+contador);
 		}
-		if(!isMostrarJustificacionesPtes){
-			sql.append(" ORDER BY D.FECHAENTRADA,D.IDINSTITUCION, D.ANIO, D.CODIGO, D.SUFIJO");
+		if(isMostrarJustificacionesPtes){
+			sql.append(") WHERE NUMEJGRESUELTOSFAVORABLES>0 ");
+		}else{
+			sql.append(") ORDER BY FECHAENTRADA,IDINSTITUCION, ANIO, CODIGO, SUFIJO ");
+			
+			
 		}
 		return sql.toString();
 		
@@ -1998,4 +2228,5 @@ class Acumulador{
 		
 	}
 
+	
 }

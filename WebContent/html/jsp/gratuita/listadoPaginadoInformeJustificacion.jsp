@@ -681,14 +681,16 @@ function ajusteDivListado(){
 				<tr id="fila_${status.count}" class="filaTablaImpar">
 					<td rowspan="${designa.rowSpan}"><c:out
 						value="${designa.codigoDesigna}" /></td>
-					<td rowspan="${designa.rowSpan}"><c:choose>
-						<c:when test="${designa.ejgs!=null && designa.ejgs!=''}">
-							<c:out value="${designa.ejgs}"></c:out>
-						</c:when>
-						<c:otherwise>
-							&nbsp;
-						</c:otherwise>
-					</c:choose></td>
+					<td rowspan="${designa.rowSpan}">
+						<c:choose>
+							<c:when test="${designa.ejgs!=null && designa.ejgs!=''}">
+								<c:out value="${designa.ejgs}"></c:out>
+							</c:when>
+							<c:otherwise>
+								&nbsp;
+							</c:otherwise>
+						</c:choose>
+					</td>
 					<td rowspan="${designa.rowSpan}"><c:choose>
 						<c:when test="${designa.juzgado!=null && designa.juzgado!=''}">
 							<c:out value="${designa.juzgado}"></c:out>
@@ -716,6 +718,43 @@ function ajusteDivListado(){
 						</c:otherwise>
 					</c:choose></td>
 					<c:choose>
+					<c:when test="${designa.numEjgResueltosFavorables=='0'&&InformeJustificacionMasivaForm.permitirJustificarNoFavorables==false}">
+							<td align="center" rowspan="${designa.rowSpan}" colspan="3">
+							<siga:Idioma
+								key="gratuita.informeJustificacionMasiva.literal.designaSinEjgFavorable" />
+							
+							
+							</td>
+							<td rowspan="${designa.rowSpan}"><input type="checkbox"
+								disabled="disabled" /></td>
+							<td rowspan="${designa.rowSpan}">
+							
+									&nbsp;
+							</td>
+							<td rowspan="${designa.rowSpan}">
+									&nbsp;
+								</td>
+							<td><c:choose>
+								<c:when test="${designa.baja=='1'}">
+									<input type="checkbox" disabled="disabled" checked="checked" />
+								</c:when>
+								<c:otherwise>
+									<input name="checkBaja" id="baja_${status.count}"
+										${disabledPorCambioLetrado} type="checkbox" />
+								</c:otherwise>
+							</c:choose></td>
+				</tr>
+				</c:when>
+				<c:otherwise>
+					
+					
+					<c:choose>
+					
+					
+					
+					
+					
+					
 						<c:when test="${designa.juzgado==''&&empty designa.actuaciones}">
 							<td align="center" rowspan="${designa.rowSpan}" colspan="3">
 							<siga:Idioma
@@ -1238,7 +1277,10 @@ function ajusteDivListado(){
 						</c:otherwise>
 					</c:choose>
 				</c:otherwise>
+		
 	</c:choose>
+	</c:otherwise>
+		</c:choose>
 	</c:forEach>
 	</c:otherwise>
 	</c:choose>

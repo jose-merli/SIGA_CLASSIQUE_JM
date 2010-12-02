@@ -43,7 +43,18 @@ public class DesignaForm extends MasterForm
 	private String estado;
 	
 	private String cambioLetrado;
+	private int numEjgResueltosFavorables; 
 	
+	
+
+	public int getNumEjgResueltosFavorables() {
+		return numEjgResueltosFavorables;
+	}
+
+	public void setNumEjgResueltosFavorables(int numEjgResueltosFavorables) {
+		this.numEjgResueltosFavorables = numEjgResueltosFavorables;
+	}
+
 	public String getEstado() {
 		return estado;
 	}

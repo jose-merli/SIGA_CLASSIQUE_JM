@@ -527,6 +527,19 @@ MDB Microsoft Access Database
   //tipos de parametros de GenParametrosAdm
   //parametro para excluir los ejg denegados del informe de justificacion
   public static final String GEN_PARAM_EXCLUIR_EJG_DENEGADOS_JUSTIF_LETRADO="EXCLUIR_EJG_DENEGADOS_JUSTIF_LETRADO";
+  public static final String GEN_PARAM_EXCLUIR_SIN_EJG_JUSTIF_LETRADO="EXCLUIR_SIN_EJG_JUSTIF_LETRADO";
+  public static final String GEN_PARAM_EXCLUIR_EJG_SIN_RESOLUCION_JUSTIF_LETRADO="EXCLUIR_EJG_SIN_RESOLUCION_JUSTIF_LETRADO";
+  public static final String GEN_PARAM_EXCLUIR_EJG_PENDIENTES_CAJG_JUSTIF_LETRADO="EXCLUIR_EJG_PENDIENTES_CAJG_JUSTIF_LETRADO";
+  public static final String GEN_PARAM_EXCLUIR_EJG_ARCHIVO_JUSTIF_LETRADO="EXCLUIR_EJG_ARCHIVO_JUSTIF_LETRADO";
+  
+  public static final String GEN_PARAM_PERMITIR_NO_FAVORABLES_JUSTIF_LETRADO="PERMITIR_NO_FAVORABLES_JUSTIF_LETRADO";
+  
+  
+	
+	
+	
+	
+  
 //parametro para aplicar logicade acreditaciones anterires a 2005
   public static final String GEN_PARAM_FACT_JA_2005="FACT_JA_2005";
   public static final String GEN_PARAM_DELITOS_VE="DELITOS_VOLANTE_EXPRES";

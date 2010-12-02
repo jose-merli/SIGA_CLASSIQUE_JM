@@ -124,6 +124,10 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 			{
 		InformeJustificacionMasivaForm form = (InformeJustificacionMasivaForm) formulario;
 		form.clear();
+		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		GenParametrosAdm paramAdm = new GenParametrosAdm (user);
+		String codPemitirJustificarNoFavorables = paramAdm.getValor (user.getLocation (), "SCS", ClsConstants.GEN_PARAM_PERMITIR_NO_FAVORABLES_JUSTIF_LETRADO, "");
+		form.setPermitirJustificarNoFavorables(codPemitirJustificarNoFavorables!=null && codPemitirJustificarNoFavorables.equalsIgnoreCase(ClsConstants.DB_TRUE));
 		
 		return "inicioInforme";
 		
@@ -176,6 +180,9 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		String cod_Fact_ja_2005 = paramAdm.getValor (user.getLocation (), "SCS", ClsConstants.GEN_PARAM_FACT_JA_2005, "");
 		boolean	aplicarAcreditacionesAnterior2005 = (cod_Fact_ja_2005!=null && cod_Fact_ja_2005.equalsIgnoreCase(ClsConstants.DB_TRUE));
 		form.setAplicarAcreditacionesAnterior2005(aplicarAcreditacionesAnterior2005);
+		String codPemitirJustificarNoFavorables = paramAdm.getValor (user.getLocation (), "SCS", ClsConstants.GEN_PARAM_PERMITIR_NO_FAVORABLES_JUSTIF_LETRADO, "");
+		form.setPermitirJustificarNoFavorables(codPemitirJustificarNoFavorables!=null && codPemitirJustificarNoFavorables.equalsIgnoreCase(ClsConstants.DB_TRUE));
+		
 		return "inicio";
 	}
 	protected String nuevo(ActionMapping mapping, MasterForm formulario,
@@ -609,6 +616,8 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		
 		
 		try {
+			
+			
 			String idioma = f.getIdioma();
 			GstDate gstDate = new GstDate();
 			String hoy = gstDate.parseDateToString(new Date(),"dd/MM/yyyy", this.getLocale(request));
@@ -774,7 +783,17 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 										}
 									}
 								}else{
-									if(designaForm.getIdJuzgado()==null||designaForm.getIdJuzgado().equals("")){
+									
+									if(designaForm.getNumEjgResueltosFavorables()==0 && !f.isPermitirJustificarNoFavorables()){
+										String acreditacion = UtilidadesString.getMensajeIdioma(usr,"gratuita.informeJustificacionMasiva.literal.designaSinEjgFavorable");
+										Hashtable htRowDesignaClone = (Hashtable) htRowDesigna.clone();
+										htRowDesignaClone.put("CATEGORIA", "");
+										htRowDesignaClone.put("ACREDITACION", acreditacion);
+										htRowDesignaClone.put("FECHAJUSTIFICACION", "");
+										htRowDesignaClone.put("VALIDADA", "");
+										vRowsInformePorPersona.add(htRowDesignaClone);
+										
+									}else if(designaForm.getIdJuzgado()==null||designaForm.getIdJuzgado().equals("")){
 										
 										String acreditacion = UtilidadesString.getMensajeIdioma(usr,"gratuita.informeJustificacionMasiva.aviso.sinJuzgado");
 										Hashtable htRowDesignaClone = (Hashtable) htRowDesigna.clone();
