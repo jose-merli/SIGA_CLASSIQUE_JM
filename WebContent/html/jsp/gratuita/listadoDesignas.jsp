@@ -62,7 +62,6 @@
 	}	 
 	String action=app+"/JGR_Designas.do?noReset=true";
     /**************/
-	ScsDesignaAdm desigAdm = new ScsDesignaAdm(usr);
 %>	
 
 <html>
