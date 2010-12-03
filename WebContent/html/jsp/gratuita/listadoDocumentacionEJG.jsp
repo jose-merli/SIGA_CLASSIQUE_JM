@@ -33,13 +33,13 @@
 	Vector obj = (Vector) request.getAttribute("resultado");
 	String accion = (String)request.getSession().getAttribute("accion");
 		
-	String botones="", anio= "", numero="", idTipoEJG = "" ;
-	
+	String botonesFila="", anio= "", numero="", idTipoEJG = "" ;
+	String	botones="V,N,i";
 	if (accion.equalsIgnoreCase("ver")){
-		botones = "V,i";
+		botonesFila = "C";
 	}
 	else {
-		botones = "V,N,i";
+		botonesFila = "C,E,B";
 	}
 
 	ScsDocumentacionEJGBean fila = new ScsDocumentacionEJGBean();
@@ -115,9 +115,6 @@
 							t_numero    = (String)hTitulo.get(ScsEJGBean.C_NUMEJG);
 							t_tipoEJG   = (String)hTitulo.get("TIPOEJG");
 						}
-						if(t_numero==null||t_tipoEJG==null||t_anio==null){
-							botones="V";
-						}
 					
 					%>
 					<%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%>
@@ -175,7 +172,7 @@
 				String[] datoDocumento={fila.getIdTipoDocumento(),usr.getLocation()};	
 										
 			%>				
-					<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>" clase="listaNonEdit" >
+					<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botonesFila%>" clase="listaNonEdit" >
 					<td><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=fila.getIdDocumentacion()%>">
 					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=fila.getIdDocumento()%>">
 					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=fila.getIdTipoDocumento()%>">
