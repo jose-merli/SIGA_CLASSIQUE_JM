@@ -239,6 +239,9 @@ public class ClsConstants {
 	public static final String SALTOS = "S";
 	public static final String COMPENSACIONES = "C";
 	public static final String OCULTAR_MOTIVO_MODIFICACION = "OCULTAR_MOTIVO_MODIFICACION";
+	public static final String EXPORTAR_COLEGIADOS_ACOGIDOS_A_LOPD = "EXPORTAR_COLEGIADOS_ACOGIDOS_A_LOPD";
+	
+	
 	
 	//El idmodulo de facturacion en numero
 	public static final int IDMODULOFACTURACION = 6;
@@ -530,15 +533,8 @@ MDB Microsoft Access Database
   public static final String GEN_PARAM_EXCLUIR_SIN_EJG_JUSTIF_LETRADO="EXCLUIR_SIN_EJG_JUSTIF_LETRADO";
   public static final String GEN_PARAM_EXCLUIR_EJG_SIN_RESOLUCION_JUSTIF_LETRADO="EXCLUIR_EJG_SIN_RESOLUCION_JUSTIF_LETRADO";
   public static final String GEN_PARAM_EXCLUIR_EJG_PENDIENTES_CAJG_JUSTIF_LETRADO="EXCLUIR_EJG_PENDIENTES_CAJG_JUSTIF_LETRADO";
-  public static final String GEN_PARAM_EXCLUIR_EJG_ARCHIVO_JUSTIF_LETRADO="EXCLUIR_EJG_ARCHIVO_JUSTIF_LETRADO";
-  
+  public static final String GEN_PARAM_EXCLUIR_EJG_ARCHIVO_JUSTIF_LETRADO="EXCLUIR_EJG_ARCHIVO_JUSTIF_LETRADO";  
   public static final String GEN_PARAM_PERMITIR_SINRESOLUCION_JUSTIF_LETRADO="PERMITIR_SINRESOLUCION_JUSTIF_LETRADO";
-  
-  
-	
-	
-	
-	
   
 //parametro para aplicar logicade acreditaciones anterires a 2005
   public static final String GEN_PARAM_FACT_JA_2005="FACT_JA_2005";
