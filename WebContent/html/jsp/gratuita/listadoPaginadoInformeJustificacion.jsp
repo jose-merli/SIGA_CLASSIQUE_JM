@@ -647,7 +647,7 @@ function ajusteDivListado(){
 			<tr>
 				<td colspan="13" class="titulitos" style="text-align: center"><siga:Idioma
 					key="messages.noRecordFound" /></td>
-			<tr>
+			</tr>
 		</c:when>
 		<c:otherwise>
 			<c:forEach items="${designaFormList}" var="designa"
@@ -718,7 +718,7 @@ function ajusteDivListado(){
 						</c:otherwise>
 					</c:choose></td>
 					<c:choose>
-					<c:when test="${designa.numEjgResueltosFavorables=='0'&&InformeJustificacionMasivaForm.permitirSinResolucionJustifLetrado==false}">
+					<c:when test="${designa.numEjgResueltosFavorables=='0'}">
 							<td align="center" rowspan="${designa.rowSpan}" colspan="3">
 							<siga:Idioma
 								key="gratuita.informeJustificacionMasiva.literal.designaSinEjgFavorable" />

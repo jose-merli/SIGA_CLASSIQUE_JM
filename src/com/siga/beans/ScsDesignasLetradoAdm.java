@@ -237,7 +237,11 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		sqlDesignas.append(TIPO_RESOLUCION_RECONOCIDO100);
 		sqlDesignas.append(",");
 		sqlDesignas.append(TIPO_RESOLUCION_RECONOCIDO80);
-		sqlDesignas.append(" ) or ejg.idtiporatificacionejg is null)");
+		sqlDesignas.append(" )");
+		if(formulario.isPermitirSinResolucionJustifLetrado()){
+		sqlDesignas.append(" or ejg.idtiporatificacionejg is null");
+		}
+		sqlDesignas.append(" )");
 		sqlDesignas.append(" and ejgdes.numeroejg = ejg.numero) NUMEJGRESUELTOSFAVORABLES ");
 		
 		sqlDesignas.append(" FROM SCS_DESIGNA D, SCS_DESIGNASLETRADO DL ");
@@ -1508,7 +1512,9 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 				
 				//seteamos las actuaciones de las designas
 				designaForm.setMultiplesComplementos((String)registro.get("COMPLEMENTO"));
-				if(designaForm.getNumEjgResueltosFavorables()>0 ||formulario.isPermitirSinResolucionJustifLetrado()){
+				
+				//if(designaForm.getNumEjgResueltosFavorables()>0 ||formulario.isPermitirSinResolucionJustifLetrado()){
+				if(designaForm.getNumEjgResueltosFavorables()>0){
 					admActuacionDesignaAdm.setActuacionesDesignas(designaForm,isMostrarJustificacionesPtes);
 					designaForm.setRowSpan();
 					
@@ -1648,7 +1654,9 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 				
 				//seteamos las actuaciones de las designas
 				designaForm.setMultiplesComplementos((String)designaHashtable.get("COMPLEMENTO"));
-				if(designaForm.getNumEjgResueltosFavorables()>0||formulario.isPermitirSinResolucionJustifLetrado()){
+				
+				//if(designaForm.getNumEjgResueltosFavorables()>0||formulario.isPermitirSinResolucionJustifLetrado()){
+				if(designaForm.getNumEjgResueltosFavorables()>0){
 					admActuacionDesignaAdm.setActuacionesDesignas(designaForm,isMostrarJustificacionesPtes);
 					designaForm.setRowSpan();
 					
@@ -1748,7 +1756,13 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
     	sql.append(TIPO_RESOLUCION_RECONOCIDO100);
     	sql.append(",");
     	sql.append(TIPO_RESOLUCION_RECONOCIDO80);
-    	sql.append(" ) or ejg.idtiporatificacionejg is null)");
+    	sql.append(" )");
+		if(formulario.isPermitirSinResolucionJustifLetrado()){
+			sql.append(" or ejg.idtiporatificacionejg is null");
+		}
+		sql.append(" )");
+    	
+    	
     	sql.append(" and ejgdes.numeroejg = ejg.numero) NUMEJGRESUELTOSFAVORABLES, ");
 			
 		//}

@@ -126,8 +126,15 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		form.clear();
 		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 		GenParametrosAdm paramAdm = new GenParametrosAdm (user);
+		//Haria falta meter los parametros en con ClsConstants
+		String cod_Fact_ja_2005 = paramAdm.getValor (user.getLocation (), "SCS", ClsConstants.GEN_PARAM_FACT_JA_2005, "");
+		boolean	aplicarAcreditacionesAnterior2005 = (cod_Fact_ja_2005!=null && cod_Fact_ja_2005.equalsIgnoreCase(ClsConstants.DB_TRUE));
+		form.setAplicarAcreditacionesAnterior2005(aplicarAcreditacionesAnterior2005);
 		String codPermitirSinResolucionJustfLetrado = paramAdm.getValor (user.getLocation (), "SCS", ClsConstants.GEN_PARAM_PERMITIR_SINRESOLUCION_JUSTIF_LETRADO, "");
 		form.setPermitirSinResolucionJustifLetrado(codPermitirSinResolucionJustfLetrado!=null && codPermitirSinResolucionJustfLetrado.equalsIgnoreCase(ClsConstants.DB_TRUE));
+		
+		
+		
 		
 		return "inicioInforme";
 		
@@ -175,13 +182,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		
 		
 		
-		GenParametrosAdm paramAdm = new GenParametrosAdm (user);
-		//Haria falta meter los parametros en con ClsConstants
-		String cod_Fact_ja_2005 = paramAdm.getValor (user.getLocation (), "SCS", ClsConstants.GEN_PARAM_FACT_JA_2005, "");
-		boolean	aplicarAcreditacionesAnterior2005 = (cod_Fact_ja_2005!=null && cod_Fact_ja_2005.equalsIgnoreCase(ClsConstants.DB_TRUE));
-		form.setAplicarAcreditacionesAnterior2005(aplicarAcreditacionesAnterior2005);
-		String codPermitirSinResolucionJustfLetrado = paramAdm.getValor (user.getLocation (), "SCS", ClsConstants.GEN_PARAM_PERMITIR_SINRESOLUCION_JUSTIF_LETRADO, "");
-		form.setPermitirSinResolucionJustifLetrado(codPermitirSinResolucionJustfLetrado!=null && codPermitirSinResolucionJustfLetrado.equalsIgnoreCase(ClsConstants.DB_TRUE));
+		
 		
 		return "inicio";
 	}
@@ -537,6 +538,13 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 			}else{	
 				databackup=new HashMap();
 				String keyPersona =f.getIdPersona();
+				GenParametrosAdm paramAdm = new GenParametrosAdm (usrBean);
+				//Haria falta meter los parametros en con ClsConstants
+				String cod_Fact_ja_2005 = paramAdm.getValor (usrBean.getLocation (), "SCS", ClsConstants.GEN_PARAM_FACT_JA_2005, "");
+				boolean	aplicarAcreditacionesAnterior2005 = (cod_Fact_ja_2005!=null && cod_Fact_ja_2005.equalsIgnoreCase(ClsConstants.DB_TRUE));
+				f.setAplicarAcreditacionesAnterior2005(aplicarAcreditacionesAnterior2005);
+				String codPermitirSinResolucionJustfLetrado = paramAdm.getValor (usrBean.getLocation (), "SCS", ClsConstants.GEN_PARAM_PERMITIR_SINRESOLUCION_JUSTIF_LETRADO, "");
+				f.setPermitirSinResolucionJustifLetrado(codPermitirSinResolucionJustfLetrado!=null && codPermitirSinResolucionJustfLetrado.equalsIgnoreCase(ClsConstants.DB_TRUE));
 				
 				PaginadorBind paginador = admDesignas.getDesignasJustificacionPaginador(f,false);
 				
@@ -783,8 +791,8 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 										}
 									}
 								}else{
-									
-									if(designaForm.getNumEjgResueltosFavorables()==0 && !f.isPermitirSinResolucionJustifLetrado()){
+									if(designaForm.getNumEjgResueltosFavorables()==0){
+//									if(designaForm.getNumEjgResueltosFavorables()==0 && !f.isPermitirSinResolucionJustifLetrado()){
 										String acreditacion = UtilidadesString.getMensajeIdioma(usr,"gratuita.informeJustificacionMasiva.literal.designaSinEjgFavorable");
 										Hashtable htRowDesignaClone = (Hashtable) htRowDesigna.clone();
 										htRowDesignaClone.put("CATEGORIA", "");
