@@ -1862,7 +1862,16 @@ public class InformesGenericosAction extends MasterAction {
 					} else {
 						fechaLimitePresentacion = GstDate.getFormatedDateShort("", fechaLimitePresentacion);
 					}
-					htCabeceraInforme.put("FECPRESENTA", fechaLimitePresentacion);							
+					
+					htCabeceraInforme.put("FECLIMITEPRESENTA", fechaLimitePresentacion);		
+					
+					String fechaPresentacion = (String)rowActual.getValue(ScsEJGBean.C_FECHAPRESENTACION);
+					if (fechaPresentacion == null) {
+						fechaPresentacion = "";
+					} else {
+						fechaPresentacion = GstDate.getFormatedDateShort("", fechaPresentacion);
+					}
+					htCabeceraInforme.put("FECPRESENTA", fechaPresentacion);				
 
 					String nombre = (String)rowActual.getValue(ScsPersonaJGBean.C_NOMBRE);
 					String apellido1 = (String)rowActual.getValue(ScsPersonaJGBean.C_APELLIDO1);
@@ -1929,7 +1938,26 @@ public class InformesGenericosAction extends MasterAction {
 						}
 
 						hash.put("DES_DOCU", datosDoc.trim());
-						vDatosDoc.add(hash);
+					
+						String fechalimitedoc = (String)rowActual.getString("FECLIMITEPRESENTADOC");
+						if (fechalimitedoc == null) {
+							fechalimitedoc = "";
+						} else {
+							fechalimitedoc = GstDate.getFormatedDateShort("", fechalimitedoc);
+						}
+				
+						String fechaentregadoc = (String)rowActual.getString("FECPRESENTACIONDOC");
+						if (fechaentregadoc == null) {
+							fechaentregadoc = "";
+						} else {
+							fechaentregadoc = GstDate.getFormatedDateShort("", fechaentregadoc);
+						}
+					
+						hash.put("FECLIMITEPRESENTADOC",fechalimitedoc);
+						hash.put("FECPRESENTACIONDOC",fechaentregadoc);
+					
+						vDatosDoc.add(hash);						
+						
 
 						j++;
 
