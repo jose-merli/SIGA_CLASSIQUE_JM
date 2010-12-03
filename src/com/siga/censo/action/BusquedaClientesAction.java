@@ -50,12 +50,7 @@ import com.siga.general.SIGAException;
  * Clase action del caso de uso BUSCAR CLIENTE
  * @author AtosOrigin 14-12-2004
  */
-public class BusquedaClientesAction extends MasterAction {
-	//Atencion!!Tenr en cuenta que el orden de estas claves es el mismo oden que se va a
-	//seguir al obtener los adtos en la jsp. Ver metodos actualizarSelecionados y aniadeClaveBusqueda(2)
-	//de la super clase(MasterAction)
-	final String[] clavesBusqueda={CenClienteBean.C_IDINSTITUCION,CenClienteBean.C_IDPERSONA,CenClienteBean.C_NOAPARECERREDABOGACIA};
-	
+public class BusquedaClientesAction extends MasterAction {	
 	/** 
 	 *  Funcion que atiende a las peticiones. Segun el valor del parametro modo del formulario ejecuta distintas acciones
 	 * @param  mapping - Mapeo de los struts
@@ -840,15 +835,33 @@ public class BusquedaClientesAction extends MasterAction {
 	protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 
 		String destino = "";
+		//Atencion!!Tenr en cuenta que el orden de estas claves es el mismo oden que se va a
+		//seguir al obtener los adtos en la jsp. Ver metodos actualizarSelecionados y aniadeClaveBusqueda(2)
+		//de la super clase(MasterAction)
+		String[] clavesBusqueda={CenClienteBean.C_IDINSTITUCION,CenClienteBean.C_IDPERSONA};
+		String[] clavesBusqueda1={CenClienteBean.C_IDINSTITUCION,CenClienteBean.C_IDPERSONA,CenClienteBean.C_NOAPARECERREDABOGACIA};
+	 
 		try {
 			// obtener institucion
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			String idInstitucion=user.getLocation();
+			GenParametrosAdm paramAdm = new GenParametrosAdm(user);
+			String ParametrolopdActivo="";
+			String Auxparametro = paramAdm.getValor(idInstitucion,ClsConstants.MODULO_CENSO,ClsConstants.EXPORTAR_COLEGIADOS_ACOGIDOS_A_LOPD,null);
+			if (Auxparametro != null && Auxparametro.equalsIgnoreCase("s")) {	 
+				ParametrolopdActivo = "1";//true			
+			}else{
+				ParametrolopdActivo = "0";//false				
+				clavesBusqueda=clavesBusqueda1;
+			}
 
 			// casting del formulario
 			BusquedaClientesForm miFormulario = (BusquedaClientesForm)formulario;
 			String colegiado = miFormulario.getColegiado();
-			
+			//para poner las claves para la busqueda avanzada.
+			if (miFormulario.getAvanzada().equals(ClsConstants.DB_TRUE)){ 
+						clavesBusqueda=clavesBusqueda1;
+			}
 			//Si es seleccionar todos esta variable no vandra nula y ademas nos traera el numero de pagina 
 			//donde nos han marcado el seleccionar todos(asi evitamos meter otra variable)
 			boolean isSeleccionarTodos = miFormulario.getSeleccionarTodos()!=null 
@@ -862,7 +875,7 @@ public class BusquedaClientesAction extends MasterAction {
 				
 				
 				if (seleccionados != null ) {
-					ArrayList alRegistros = actualizarSelecionados(this.clavesBusqueda,seleccionados, clavesRegSeleccinados);
+					ArrayList alRegistros = actualizarSelecionados(clavesBusqueda,seleccionados, clavesRegSeleccinados);
 					if (alRegistros != null) {
 						clavesRegSeleccinados = alRegistros;
 						miFormulario.setRegistrosSeleccionados(clavesRegSeleccinados);
@@ -913,7 +926,7 @@ public class BusquedaClientesAction extends MasterAction {
 					if(isSeleccionarTodos){
 						//Si hay que seleccionar todos hacemos la query completa.
 						ArrayList clavesRegSeleccinados = new ArrayList((Collection)cliente.selectGenericoNLSBind(resultado.getQueryInicio(), resultado.getCodigosInicio()));
-						aniadeClavesBusqueda(this.clavesBusqueda,clavesRegSeleccinados);
+						aniadeClavesBusqueda(clavesBusqueda,clavesRegSeleccinados);
 						miFormulario.setRegistrosSeleccionados(clavesRegSeleccinados);
 						datos = resultado.obtenerPagina(Integer.parseInt(miFormulario.getSeleccionarTodos()));
 						miFormulario.setSeleccionarTodos("");
@@ -931,13 +944,13 @@ public class BusquedaClientesAction extends MasterAction {
 				}else{
 					miFormulario.setRegistrosSeleccionados(new ArrayList());
 				} 
-				miFormulario.setDatosPaginador(databackup);
-				
+				miFormulario.setDatosPaginador(databackup);				
 
-				request.setAttribute("CenResultadoBusquedaClientes",resultado);
+				request.setAttribute("CenResultadoBusquedaClientes",resultado);				
 			}
-			if (miFormulario.getAvanzada().equals(ClsConstants.DB_TRUE)){ 
-				destino="resultadoAvanzada";
+			request.setAttribute("ParametrolopdActivo",ParametrolopdActivo);
+			if (miFormulario.getAvanzada().equals(ClsConstants.DB_TRUE)){ 				
+				destino="resultadoAvanzada";				
 				// para saber en que tipo de busqueda estoy
 				request.getSession().setAttribute("CenBusquedaClientesTipo","A"); // busqueda avanzada	
 			} else {
