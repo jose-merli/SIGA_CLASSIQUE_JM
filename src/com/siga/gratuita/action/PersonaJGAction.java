@@ -1816,6 +1816,8 @@ public class PersonaJGAction extends MasterAction {
 							if(key.equals("nombreTelefonoJG")){						
 									if(value!=null)
 										 nombreTelefono=value;
+									else
+										nombreTelefono="";
 							}
 							else if(key.equals("numeroTelefonoJG")){
 									if(value!=null)
@@ -1845,7 +1847,7 @@ public class PersonaJGAction extends MasterAction {
 			    			miHash.put(ScsTelefonosPersonaJGBean.C_IDTELEFONO,maximo);
 			    		//se insertan los telefonos que tenga personajg
 			    		
-			    		if((!nombreTelefono.trim().equals(""))&&(!nombreTelefono.trim().equals(""))){
+			    		if(!numeroTelefono.trim().equals("")){
 			    		if (!admTelefonosJG.insert(miHash)) {
 				    			throw new ClsExceptions("Error en insert telefonopersona. " + admTelefonosJG.getError());								    			
 				    	}
@@ -1878,6 +1880,7 @@ public class PersonaJGAction extends MasterAction {
 		}
 		return mapDestino;
 		//return this.exitoModal("messages.updated.success",request);
+		
 	}
 
 	/**
@@ -1979,7 +1982,8 @@ public class PersonaJGAction extends MasterAction {
 						idPersonaAnterior = (String) oldUF.get(ScsUnidadFamiliarEJGBean.C_IDPERSONA);
 					} else {
 						idPersonaAnterior = null;
-					}
+					}				
+				
 				}
 				// Solamente para el interesado se actualiza el EJG
 				if (miform.getConceptoE().equals(PersonaJGAction.EJG)) {
@@ -2033,14 +2037,15 @@ public class PersonaJGAction extends MasterAction {
 				    
 				}
 	
-				if (miform.getConceptoE().equals(PersonaJGAction.EJG)) {
-					result = this.exitoRefresco("messages.updated.success",request);
-				} else {
+			if(miform.getConceptoE().equals(PersonaJGAction.EJG)) {
+					result = this.exitoModal("messages.updated.success",request);
+				} else {					
 					request.removeAttribute("sinrefresco");
 					result = this.exitoModal("messages.updated.success",request);
 				}
 			}
-	     	
+			
+				
 		}
 		catch (Exception e) {
 

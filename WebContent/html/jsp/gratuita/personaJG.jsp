@@ -2787,11 +2787,7 @@ function validarDatosFila (fila)
 	var campo = "";
 	var obligatorio = "<siga:Idioma key='messages.campoObligatorio.error'/>";
 	
-	    if (resultado.document.getElementById("nombreTelefonoJG_"+fila).value=='-1' || resultado.document.getElementById("nombreTelefonoJG_"+fila).value=='') {
-			campo = "<siga:Idioma key='gratuita.personaJG.literal.nombreTelefono'/>" ;
-			alert ( campo + " "+ obligatorio);			
-			return false;
-		}
+	   
 	    if (resultado.document.getElementById("numeroTelefonoJG_"+fila).value=='-1' || resultado.document.getElementById("numeroTelefonoJG_"+fila).value=='') {
 			campo = "<siga:Idioma key='gratuita.personaJG.literal.numeroTelefono'/>" ;
 			alert ( campo + " "+ obligatorio);			
