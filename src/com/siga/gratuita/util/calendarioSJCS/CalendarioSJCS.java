@@ -874,6 +874,7 @@ public class CalendarioSJCS {
 				// obteniendo conjunto de dias
 				// Nota: cada periodo es un arraylist de fechas (String en formato de fecha corto DD/MM/YYYY)
 				diasGuardia = (ArrayList) this.arrayPeriodosDiasGuardiaSJCS.get(i);
+				punteroListaLetrados = new Puntero();
 				alLetradosOrdenados = InscripcionGuardia.getColaGuardia(idInstitucion , idTurno, idGuardia,(String)diasGuardia.get(0),(String)diasGuardia.get(diasGuardia.size()-1),usrBean);
 
 				if (alLetradosOrdenados == null || alLetradosOrdenados.size() == 0)

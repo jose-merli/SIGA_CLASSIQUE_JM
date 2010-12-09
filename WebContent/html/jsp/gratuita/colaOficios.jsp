@@ -174,6 +174,7 @@
 		}
 		function accionCalendario() 
 		{
+			document.ColaOficiosForm.target="_self";
 			// Abrimos el calendario 
 			var resultado = showModalDialog("<html:rewrite page='/html/jsp/general/calendarGeneral.jsp'/>?valor="+ document.ColaOficiosForm.fechaConsulta.value, document.ColaOficiosForm.fechaConsulta,"dialogHeight:275px;dialogWidth:400px;help:no;scroll:no;status:no;");
 			if (resultado) {
@@ -181,7 +182,6 @@
 				 document.ColaOficiosForm.fechaConsulta.value = resultado;
 				 document.getElementById('fechaConsulta').value = resultado;
 				 document.ColaOficiosForm.modo.value = 'ver';
-				 
 				 document.ColaOficiosForm.submit();
 				
 		 	}else{
