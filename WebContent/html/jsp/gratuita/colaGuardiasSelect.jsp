@@ -81,6 +81,7 @@
 		function accionCalendario() 
 		{
 			// Abrimos el calendario 
+			document.ColaGuardiasForm.target="areaDatos";
 			var resultado = showModalDialog("<html:rewrite page='/html/jsp/general/calendarGeneral.jsp'/>?valor="+ document.ColaGuardiasForm.fechaConsulta.value, document.ColaGuardiasForm.fechaConsulta,"dialogHeight:275px;dialogWidth:400px;help:no;scroll:no;status:no;");
 			if (resultado) {
 				 
