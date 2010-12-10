@@ -292,7 +292,12 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 		try {
 			k = CON_COLEGIO;
 			do {
-				salida = this.select(where[k].toString());
+				// jbd // inc7693 // Controlamos que no sea null antes de leer su valor
+				if(where[k]!=null){
+					salida = this.select(where[k].toString());
+				}else{
+					salida=null;
+				}
 				k++;
 			} while ((salida == null || salida.size() == 0) && k < NUM_CONSULTAS);
 		} catch (ClsExceptions e) {
