@@ -33,7 +33,7 @@ public class ScsInscripcionGuardiaBean extends MasterBean{
 	String estado= null;
 	private String	fechaValorAlta;
 	private String	fechaValorBaja;
-	
+	private String  observacionesValBaja;
 	
 	/**
 	 *  Nombre de Tabla
@@ -60,6 +60,7 @@ public class ScsInscripcionGuardiaBean extends MasterBean{
 	static public final String 	C_OBSERVACIONESVALIDACION =		"OBSERVACIONESVALIDACION";
 	static public final String 	C_OBSERVACIONESDENEGACION = "OBSERVACIONESDENEGACION";
 	static public final String 	C_FECHADENEGACION	=	"FECHADENEGACION";
+	static public final String 	C_OBSERVACIONESVALBAJA =		"OBSERVACIONESVALBAJA";
 	
 
 	
@@ -256,6 +257,7 @@ public class ScsInscripcionGuardiaBean extends MasterBean{
 		inscripcion.setObservacionesValidacion(observacionesValidacion);
 		inscripcion.setObservacionesDenegacion(observacionesDenegacion);
 		inscripcion.setObservacionesBaja(observacionesBaja);
+		inscripcion.setObservacionesValBaja(observacionesValBaja);
 		this.inscripcion= inscripcion;
 		inscripcion.setEstado(estado);
 		return inscripcion;
@@ -289,6 +291,12 @@ public class ScsInscripcionGuardiaBean extends MasterBean{
 	}
 	public void setFechaValorBaja(String fechaValorBaja) {
 		this.fechaValorBaja = fechaValorBaja;
+	}
+	public String getObservacionesValBaja() {
+		return observacionesValBaja;
+	}
+	public void setObservacionesValBaja(String observacionesValBaja) {
+		this.observacionesValBaja = observacionesValBaja;
 	}	
 		
 }

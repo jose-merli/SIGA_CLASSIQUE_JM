@@ -772,7 +772,7 @@ public class InscripcionTurno
 						fechaBaja="sysdate";
 						
 					}
-					inscripcionGuardia.setBajas(observacionesSolicitudBaja,fechaSolicitudBaja,fechaBaja);
+					inscripcionGuardia.setBajas(observacionesSolicitudBaja,fechaSolicitudBaja,fechaBaja,"-----");
 					inscripcionGuardia.solicitarBaja(usr);
 				}
 			}
@@ -786,7 +786,7 @@ public class InscripcionTurno
 	} //solicitarBaja ()
 	
 
-	public void solicitarBaja (String fechaSolicitudBaja, String observacionesSolicitudBaja,String fechaBaja,String fechaValidacion, String validarInscripciones,UsrBean usr)
+	public void solicitarBaja (String fechaSolicitudBaja, String observacionesSolicitudBaja,String fechaBaja,String observacionesValBaja,String fechaValidacion, String validarInscripciones,UsrBean usr)
 	throws ClsExceptions
 {
 		try {
@@ -794,7 +794,7 @@ public class InscripcionTurno
 			//el proceso de solicitar baja valida las que no es necesario la validacion de las inscripciones
 			if(validarInscripciones.equals("S")){
 				if(fechaBaja!=null&&!fechaBaja.equals(""))
-					validarBaja(fechaBaja,fechaValidacion, usr);
+					validarBaja(fechaBaja,fechaValidacion,observacionesValBaja, usr);
 			}
 		}
 		catch (Exception e) {
@@ -932,7 +932,7 @@ public class InscripcionTurno
 	 * 
 	 * @TODO falta quizas algo de saltos y compensaciones, o pedir confirmacion por interfaz
 	 */
-	public void validarBaja (String fechaBaja,String fechaValidacion, UsrBean usr)
+	public void validarBaja (String fechaBaja,String fechaValidacion,String obsValBaja, UsrBean usr)
 		throws ClsExceptions
 	{
 		try {
@@ -992,7 +992,7 @@ public class InscripcionTurno
 							beanInscripcionGuardia.getFechaSuscripcion(), 
 							usr, false);
 					
-					inscripcionGuardia.setBajas(null,null,fechaBaja);
+					inscripcionGuardia.setBajas(null,null,fechaBaja,obsValBaja);
 					inscripcionGuardia.validarBaja(usr);
 				}
 			}
@@ -1012,7 +1012,7 @@ public class InscripcionTurno
 				}else{
 					inscripcionBean.setFechaBaja(fechaBaja);
 				}
-				
+				inscripcionBean.setObservacionesValBaja(obsValBaja);
 				if (! inscripcionAdm.update(inscripcionBean)) {
 					throw new ClsExceptions("Error al realizar la baja en el turno");
 				}

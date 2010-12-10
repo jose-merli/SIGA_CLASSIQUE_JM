@@ -36,7 +36,10 @@ public class ScsInscripcionTurnoBean extends MasterBean{
 	String estado = null;
 	private String	fechaValorAlta;
 	private String	fechaValorBaja;
+	private String  observacionesValBaja;
+	
 	/* Nombre de Tabla*/
+	
 	
 	static public String T_NOMBRETABLA = "SCS_INSCRIPCIONTURNO";
 	
@@ -55,7 +58,7 @@ public class ScsInscripcionTurnoBean extends MasterBean{
 	static public final String 	C_OBSERVACIONESBAJA = 		"OBSERVACIONESBAJA";
 	static public final String 	C_OBSERVACIONESDENEGACION = "OBSERVACIONESDENEGACION";
 	static public final String 	C_FECHADENEGACION	=	"FECHADENEGACION";
-	
+	static public final String 	C_OBSERVACIONESVALBAJA =		"OBSERVACIONESVALBAJA";
 	
 	
 	/*Metodos SET*/
@@ -237,6 +240,7 @@ public class ScsInscripcionTurnoBean extends MasterBean{
 		inscripcion.setObservacionesValidacion(observacionesValidacion);
 		inscripcion.setObservacionesDenegacion(observacionesDenegacion);
 		inscripcion.setObservacionesBaja(observacionesBaja);
+		inscripcion.setObservacionesValBaja(observacionesValBaja);
 		inscripcion.setEstado(estado);
 		return inscripcion;
 		
@@ -276,6 +280,12 @@ public class ScsInscripcionTurnoBean extends MasterBean{
 	}
 	public void setFechaValorBaja(String fechaValorBaja) {
 		this.fechaValorBaja = fechaValorBaja;
+	}
+	public String getObservacionesValBaja() {
+		return observacionesValBaja;
+	}
+	public void setObservacionesValBaja(String observacionesValBaja) {
+		this.observacionesValBaja = observacionesValBaja;
 	}	
 	
 }

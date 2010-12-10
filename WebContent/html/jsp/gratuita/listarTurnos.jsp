@@ -406,6 +406,7 @@
 				<input type='hidden' name='oculto<%=String.valueOf(i)%>_27' value='<%=registro.get("FECHABAJA")%>'>
 				<input type='hidden' name='oculto<%=String.valueOf(i)%>_28' value='<%=registro.get("FECHADENEGACION")%>'>
 				<input type='hidden' name='oculto<%=String.valueOf(i)%>_29' value='<%=registro.get("OBSERVACIONESDENEGACION")%>'>
+				<input type='hidden' name='oculto<%=String.valueOf(i)%>_30' value='<%=registro.get("OBSERVACIONESVALBAJA")%>'>
 				
 				<%if (!isEntradaSJCS){%>
 				<td ><%=registro.get("ABREVIATURA")%>&nbsp;</td>
@@ -556,6 +557,7 @@
 		var fbaja = 'oculto' + fila + '_' + 27;
 		var fechaDenegacion = 'oculto' + fila + '_' + 28;
 		var observacionesDenegacion = 'oculto' + fila + '_' + 29;
+		var oValbaja = 'oculto' + fila + '_' + 30;
 	   	document.FormASolicitarBaja.idTurno.value = document.getElementById(idTurno).value;
 	   	document.FormASolicitarBaja.fechaSolicitud.value = document.getElementById(fsoli).value;
 	   	document.FormASolicitarBaja.observacionesSolicitud.value 	= document.getElementById(osoli).value;
@@ -567,7 +569,7 @@
 
 	   	document.FormASolicitarBaja.fechaDenegacion.value 		= document.getElementById(fechaDenegacion).value;
 		document.FormASolicitarBaja.observacionesDenegacion.value 		= document.getElementById(observacionesDenegacion).value;
-	   	
+	   	document.FormASolicitarBaja.observacionesValBaja.value 		= document.getElementById(oValbaja).value;
 	   	
 	   	
 	   	document.FormASolicitarBaja.modo.value = "sbtConsultaTurno";
@@ -598,6 +600,7 @@
 		var fbaja = 'oculto' + fila + '_' + 27;
 		var fechaDenegacion = 'oculto' + fila + '_' + 28;
 		var observacionesDenegacion = 'oculto' + fila + '_' + 29;
+		var oValbaja = 'oculto' + fila + '_' + 30;
 		document.FormAConsultar.idTurno.value = document.getElementById(idTurno).value;
 	   	document.FormAConsultar.fechaSolicitud.value = document.getElementById(fsoli).value;
 	   	document.FormAConsultar.observacionesSolicitud.value 	= document.getElementById(osoli).value;
@@ -606,6 +609,7 @@
 		document.FormAConsultar.observacionesValidacion.value 	= document.getElementById(ovali).value;
 		document.FormAConsultar.fechaSolicitudBaja.value 		= document.getElementById(fsolbaja).value;
 		document.FormAConsultar.observacionesBaja.value 		= document.getElementById(obaja).value;
+		document.FormAConsultar.observacionesValBaja.value 		= document.getElementById(oValbaja).value;
 	   	document.FormAConsultar.fechaDenegacion.value 		= document.getElementById(fechaDenegacion).value;
 
 		document.FormAConsultar.observacionesDenegacion.value 		= document.getElementById(observacionesDenegacion).value;
@@ -732,6 +736,7 @@
 			<html:hidden property="fechaSolicitudBaja" />
 			<html:hidden property="observacionesBaja" />
 			<html:hidden property="fechaBaja" />
+			<html:hidden property="observacionesValBaja" />
 			<html:hidden property="observacionesDenegacion" />
 			<html:hidden property="fechaDenegacion" />
 			<html:hidden property="estadoPendientes"/>
@@ -749,6 +754,7 @@
 			<html:hidden property="fechaSolicitudBaja" />
 			<html:hidden property="observacionesBaja" />
 			<html:hidden property="fechaBaja" />
+			<html:hidden property="observacionesValBaja" />
 			<html:hidden property="observacionesDenegacion" />
 			<html:hidden property="fechaDenegacion" />
 			<html:hidden property="estadoPendientes"/>
@@ -768,6 +774,7 @@
 			<html:hidden property="observacionesBaja" />
 			<html:hidden property="fechaBaja"/>
 			<html:hidden property="observacionesDenegacion" />
+			<html:hidden property="observacionesValBaja" />
 			<html:hidden property="fechaDenegacion" />
 			<html:hidden property="estadoPendientes"/>
 			<input type="hidden" name="actionModal" />

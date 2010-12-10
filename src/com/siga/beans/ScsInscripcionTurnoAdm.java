@@ -60,7 +60,8 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 							ScsInscripcionTurnoBean.T_NOMBRETABLA+"."+ScsInscripcionTurnoBean.C_FECHASOLICITUDBAJA+" "+ScsInscripcionTurnoBean.C_FECHASOLICITUDBAJA,
 							ScsInscripcionTurnoBean.T_NOMBRETABLA+"."+ScsInscripcionTurnoBean.C_OBSERVACIONESSOLICITUD+" "+ScsInscripcionTurnoBean.C_OBSERVACIONESSOLICITUD, 	
 							ScsInscripcionTurnoBean.T_NOMBRETABLA+"."+ScsInscripcionTurnoBean.C_OBSERVACIONESVALIDACION+" "+ScsInscripcionTurnoBean.C_OBSERVACIONESVALIDACION,
-							ScsInscripcionTurnoBean.T_NOMBRETABLA+"."+ScsInscripcionTurnoBean.C_OBSERVACIONESBAJA+" "+ScsInscripcionTurnoBean.C_OBSERVACIONESBAJA
+							ScsInscripcionTurnoBean.T_NOMBRETABLA+"."+ScsInscripcionTurnoBean.C_OBSERVACIONESBAJA+" "+ScsInscripcionTurnoBean.C_OBSERVACIONESBAJA,
+							ScsInscripcionTurnoBean.T_NOMBRETABLA+"."+ScsInscripcionTurnoBean.C_OBSERVACIONESVALBAJA+" "+ScsInscripcionTurnoBean.C_OBSERVACIONESVALBAJA
 							,ScsInscripcionTurnoBean.C_FECHADENEGACION,			ScsInscripcionTurnoBean.C_OBSERVACIONESDENEGACION						
 		};
 		return campos;
@@ -77,7 +78,8 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 							ScsInscripcionTurnoBean.C_OBSERVACIONESSOLICITUD, 	ScsInscripcionTurnoBean.C_OBSERVACIONESVALIDACION,
 							ScsInscripcionTurnoBean.C_OBSERVACIONESBAJA,		ScsInscripcionTurnoBean.C_USUMODIFICACION,
 							ScsInscripcionTurnoBean.C_FECHASOLICITUDBAJA,		ScsInscripcionTurnoBean.C_FECHAMODIFICACION
-							,ScsInscripcionTurnoBean.C_FECHADENEGACION,			ScsInscripcionTurnoBean.C_OBSERVACIONESDENEGACION				
+							,ScsInscripcionTurnoBean.C_FECHADENEGACION,			ScsInscripcionTurnoBean.C_OBSERVACIONESDENEGACION
+							,			ScsInscripcionTurnoBean.C_OBSERVACIONESVALBAJA
 		};
 		return campos;
 	}
@@ -121,6 +123,7 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 			bean.setObservacionesSolicitud((String)hash.get(ScsInscripcionTurnoBean.C_OBSERVACIONESSOLICITUD));
 			bean.setObservacionesValidacion((String)hash.get(ScsInscripcionTurnoBean.C_OBSERVACIONESVALIDACION));
 			bean.setObservacionesBaja((String)hash.get(ScsInscripcionTurnoBean.C_OBSERVACIONESBAJA));
+			bean.setObservacionesValBaja((String)hash.get(ScsInscripcionTurnoBean.C_OBSERVACIONESVALBAJA));
 			bean.setObservacionesDenegacion((String)hash.get(ScsInscripcionTurnoBean.C_OBSERVACIONESDENEGACION));
 			bean.setFechaDenegacion((String)hash.get(ScsInscripcionTurnoBean.C_FECHADENEGACION));
 		}
@@ -151,6 +154,7 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 			hash.put(ScsInscripcionTurnoBean.C_OBSERVACIONESSOLICITUD, b.getObservacionesSolicitud());
 			hash.put(ScsInscripcionTurnoBean.C_OBSERVACIONESVALIDACION, b.getObservacionesValidacion());
 			hash.put(ScsInscripcionTurnoBean.C_OBSERVACIONESBAJA, b.getObservacionesBaja());
+			hash.put(ScsInscripcionTurnoBean.C_OBSERVACIONESVALBAJA, b.getObservacionesValBaja());
 			hash.put(ScsInscripcionTurnoBean.C_OBSERVACIONESDENEGACION, b.getObservacionesDenegacion());
 			hash.put(ScsInscripcionTurnoBean.C_FECHADENEGACION, b.getFechaDenegacion());
 		}
@@ -277,9 +281,9 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 						(String) turnoHash.get("FECHASOLICITUD"), usrbean, true);
 				String fechaSolicitudBaja =(String) turnoHash.get("FECHASOLICITUDBAJA");
 				if(fechaSolicitudBaja!=null){
-					inscripcion.validarBaja("sysdate", (String) turnoHash.get("FECHAVALIDACION"), usrbean);
+					inscripcion.validarBaja("sysdate", (String) turnoHash.get("FECHAVALIDACION"),motivo, usrbean);
 				}else{
-					inscripcion.solicitarBaja("sysdate",motivo,"sysdate",(String) turnoHash.get("FECHAVALIDACION"),"N", usrbean);	
+					inscripcion.solicitarBaja("sysdate",motivo,"sysdate","---",(String) turnoHash.get("FECHAVALIDACION"),"N", usrbean);	
 				}
 				
 
@@ -346,7 +350,7 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 		sql.append(" I.IDINSTITUCION,    I.IDPERSONA,    I.IDTURNO, ");
 		sql.append(" I.FECHASOLICITUD,  I.OBSERVACIONESSOLICITUD, ");
 		sql.append(" I.FECHAVALIDACION,  I.OBSERVACIONESVALIDACION, ");
-		sql.append(" I.FECHASOLICITUDBAJA,     I.OBSERVACIONESBAJA,    I.FECHABAJA ");
+		sql.append(" I.FECHASOLICITUDBAJA,     I.OBSERVACIONESBAJA,    I.FECHABAJA,I.OBSERVACIONESVALBAJA ");
 		sql.append(" ,I.FECHADENEGACION,     I.OBSERVACIONESDENEGACION ");
 		sql.append(",TO_CHAR(NVL(I.FECHADENEGACION,I.FECHAVALIDACION),'dd/mm/yyyy') FECHAVALORALTA, ");
 		sql.append("TO_CHAR(NVL(I.FECHADENEGACION, I.FECHABAJA), 'dd/mm/yyyy') FECHAVALORBAJA ");
@@ -1083,7 +1087,7 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 				inscripcion = InscripcionTurno.getInscripcionTurno(
 						new Integer(idInstitucion), new Integer(idTurno), idPersona,
 						(String) turnoHash.get("FECHASOLICITUD"), usrbean, false);
-				inscripcion.validarBaja("sysdate",(String) turnoHash.get("FECHAVALIDACION"), usrbean);
+				inscripcion.validarBaja("sysdate",(String) turnoHash.get("FECHAVALIDACION"),"--", usrbean);
 
 			}
 		}
@@ -1223,6 +1227,7 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 		sql +=","+ScsInscripcionTurnoBean.T_NOMBRETABLA+"."+ScsInscripcionTurnoBean.C_FECHAVALIDACION+" FECHAVALIDACION";
 		sql +=","+ScsInscripcionTurnoBean.T_NOMBRETABLA+"."+ScsInscripcionTurnoBean.C_FECHABAJA+" FECHABAJA";
 		sql +=","+ScsInscripcionTurnoBean.T_NOMBRETABLA+"."+ScsInscripcionTurnoBean.C_OBSERVACIONESDENEGACION+" OBSERVACIONESDENEGACION";
+		sql +=","+ScsInscripcionTurnoBean.T_NOMBRETABLA+"."+ScsInscripcionTurnoBean.C_OBSERVACIONESVALBAJA+" OBSERVACIONESVALBAJA";
 		sql +=","+ScsInscripcionTurnoBean.T_NOMBRETABLA+"."+ScsInscripcionTurnoBean.C_FECHADENEGACION+" FECHADENEGACION";
 		sql +=",NVL("+ScsInscripcionTurnoBean.T_NOMBRETABLA+"."+ScsInscripcionTurnoBean.C_FECHADENEGACION+","+ScsInscripcionTurnoBean.T_NOMBRETABLA+"."+ScsInscripcionTurnoBean.C_FECHAVALIDACION+") FECHAVALOR";
 		sql +=",TO_CHAR(NVL("+ScsInscripcionTurnoBean.T_NOMBRETABLA+"."+ScsInscripcionTurnoBean.C_FECHADENEGACION+","+ScsInscripcionTurnoBean.T_NOMBRETABLA+"."+ScsInscripcionTurnoBean.C_FECHABAJA+"),'dd/mm/yyyy') FECHAVALORBAJA";

@@ -44,7 +44,7 @@
 				
 		}
 		if(document.InscripcionTGForm.modo.value=='vbgComprobarValidar'||document.InscripcionTGForm.modo.value=='vbtComprobarValidar'){
-			document.getElementById('observacionesValidacion').style.display = "none";
+			document.getElementById('observacionesValidacion').style.display = "block";
 		}
 		
 	}
@@ -65,7 +65,7 @@
 				document.InscripcionTGForm.denegar.checked = false;
 				document.getElementById("calendarioTd").style.visibility="visible";
 				if(document.InscripcionTGForm.modo.value=='vbgComprobarValidar'||document.InscripcionTGForm.modo.value=='vbtComprobarValidar'){
-					document.getElementById('observacionesValidacion').style.display = "none";
+					document.getElementById('observacionesValidacion').style.display = "block";
 				}
 			}
 			else
@@ -105,7 +105,7 @@
 				document.getElementById('fechaCheck').value = "";
 				document.getElementById("calendarioTd").style.visibility="hidden";
 				if(document.InscripcionTGForm.modo.value=='vbgComprobarValidar'||document.InscripcionTGForm.modo.value=='vbtComprobarValidar'){
-					document.getElementById('observacionesValidacion').style.display = "none";
+					document.getElementById('observacionesValidacion').style.display = "block";
 				}
 				
 			}
@@ -296,7 +296,7 @@
 					
 					}
 					
-					
+					document.InscripcionTGForm.observacionesValBaja.value = document.InscripcionTGForm.observacionesValidacion.value;
 					
 					
 					
@@ -402,6 +402,7 @@
 	<html:hidden property="fechaValidacionTurno" />
 	<html:hidden property="fechaDenegacion" />
 	<html:hidden property="observacionesDenegacion" />
+	<html:hidden property="observacionesValBaja" />
 	
 	
 	
@@ -612,7 +613,7 @@
 									key="gratuita.altaTurnos.literal.validacion" /></td>
 					
 								<c:choose>
-									<c:when test="${InscripcionTGForm.modo=='vigValidar'||InscripcionTGForm.modo=='vitValidar'||InscripcionTGForm.modo=='vbgComprobarValidar'||InscripcionTGForm.modo=='vbtComprobarValidar'||InscripcionTGForm.modo=='vmitValidar'||InscripcionTGForm.modo=='vmigValidar'}">
+									<c:when test="${InscripcionTGForm.modo=='vigValidar'||InscripcionTGForm.modo=='vitValidar'||InscripcionTGForm.modo=='vbgComprobarValidar'||InscripcionTGForm.modo=='vbtComprobarValidar'||InscripcionTGForm.modo=='vmitValidar'||InscripcionTGForm.modo=='vmigValidar'||InscripcionTGForm.modo=='vmbtComprobarValidar'||InscripcionTGForm.modo=='vmbgComprobarValidar'}">
 										<td><input type="checkbox" name="validar" value="no" onClick="obtenerFecha('validar')">
 										</td>
 										<td class="labelText"><siga:Idioma key="gratuita.altaTurnos.literal.denegar" />
@@ -622,7 +623,7 @@
 									</c:when>
 									
 									
-									<c:when test="${InscripcionTGForm.modo=='sbgComprobarInsertar'||InscripcionTGForm.modo=='sbtComprobarInsertar'||InscripcionTGForm.modo=='vmbtComprobarValidar'||InscripcionTGForm.modo=='vmbgComprobarValidar'}">
+									<c:when test="${InscripcionTGForm.modo=='sbgComprobarInsertar'||InscripcionTGForm.modo=='sbtComprobarInsertar'}">
 										<td>
 											<input type="checkbox" name="validar" value="no" onClick="obtenerFecha('validar');">
 										</td>
@@ -651,7 +652,7 @@
 				</tr>
 				<c:if test="${InscripcionTGForm.modo=='vigValidar'||InscripcionTGForm.modo=='vitValidar'||InscripcionTGForm.modo=='vbgComprobarValidar'||InscripcionTGForm.modo=='vbtComprobarValidar'||
 					InscripcionTGForm.modo=='vmitValidar'||InscripcionTGForm.modo=='vmigValidar'||
-					InscripcionTGForm.modo=='sitEditarTelefonosGuardia'||InscripcionTGForm.modo=='sigInsertar'||InscripcionTGForm.modo=='smitEditarTelefonosGuardia'}">
+					InscripcionTGForm.modo=='sitEditarTelefonosGuardia'||InscripcionTGForm.modo=='sigInsertar'||InscripcionTGForm.modo=='smitEditarTelefonosGuardia'||InscripcionTGForm.modo=='sbgComprobarInsertar'||InscripcionTGForm.modo=='sbtComprobarInsertar'||InscripcionTGForm.modo=='vmbtComprobarValidar'||InscripcionTGForm.modo=='vmbgComprobarValidar'  }">
 						<tr id="observacionesValidacion">
 							<td class="labelText"><siga:Idioma
 								key="gratuita.altaTurnos.literal.ovalidacion" />

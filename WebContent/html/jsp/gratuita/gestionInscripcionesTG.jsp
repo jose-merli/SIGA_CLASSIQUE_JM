@@ -276,7 +276,7 @@
 	   	var fechaBaja	= 'fechaBaja_' + fila ;
 	   	var fechaValidacion = 'fechaValidacion_' + fila ;
 	   	
-	   	
+	   	var oValbaja = 'observacionesValBaja_' + fila;
 	   	var idGuardia = 'idGuardia_' + fila;
 	   	
 	   	var validarInscripciones = 'validarInscripciones_' + fila ;
@@ -288,6 +288,7 @@
 	   	document.FormAValidar.fechaSolicitud.value = document.getElementById(fechaSolicitud).value;
 	   	document.FormAValidar.fechaSolicitudBaja.value = document.getElementById(fechaSolicitudBaja).value;
 	   	document.FormAValidar.fechaBaja.value = document.getElementById(fechaBaja).value;
+	   	document.FormAValidar.observacionesValBaja.value 		= document.getElementById(oValbaja).value;
 	  	document.FormAValidar.fechaValidacion.value = document.getElementById(fechaValidacion).value;
 	   	
 	   	if(document.getElementById(idGuardia))
@@ -421,6 +422,7 @@
 		var fsolbaja = 'fechaSolicitudBaja_' + fila;
 		var obaja = 'observacionesBaja_' + fila;
 		var fbaja = 'fechaBaja_' + fila;
+		var oValbaja = 'observacionesValBaja_' + fila;
 		var oDenegacion = 'observacionesDenegacion_' + fila;
 		var fDenegacion = 'fechaDenegacion_' + fila;
 		document.FormAConsultar.idInstitucion.value = document.getElementById(idInstitucion).value;
@@ -433,6 +435,7 @@
 		document.FormAConsultar.observacionesValidacion.value 	= document.getElementById(ovali).value;
 		document.FormAConsultar.fechaSolicitudBaja.value 		= document.getElementById(fsolbaja).value;
 		document.FormAConsultar.observacionesBaja.value 		= document.getElementById(obaja).value;
+		document.FormAConsultar.observacionesValBaja.value 		= document.getElementById(oValbaja).value;
 		document.FormAConsultar.observacionesDenegacion.value 		= document.getElementById(oDenegacion).value;
 	   	document.FormAConsultar.fechaDenegacion.value 		= document.getElementById(fDenegacion).value;
 	   	document.FormAConsultar.modo.value = "consultaInscripcion";
@@ -663,6 +666,7 @@
 	<html:hidden property="fechaSolicitudBaja" />
 	<html:hidden property="observacionesBaja" />
 	<html:hidden property="fechaBaja" />
+	<html:hidden property="observacionesValBaja" />
 	<html:hidden property="estadoPendientes" />
 	<html:hidden property="validarInscripciones" />
 	<html:hidden property="tipoGuardias" />
@@ -683,6 +687,7 @@
 			<html:hidden property="observacionesValidacion" />
 			<html:hidden property="fechaSolicitudBaja" />
 			<html:hidden property="observacionesBaja" />
+			<html:hidden property="observacionesValBaja" />
 			<html:hidden property="fechaBaja" />
 			<html:hidden property="observacionesDenegacion" />
 			<html:hidden property="fechaDenegacion" />

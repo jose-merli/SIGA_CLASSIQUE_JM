@@ -945,7 +945,7 @@ public class DatosColegialesAction extends MasterAction {
 				ScsInscripcionTurnoBean c = (ScsInscripcionTurnoBean) vTurnos.get(x);
 				inscripcionTurno = InscripcionTurno.getInscripcionTurno(c.getIdInstitucion(), c.getIdTurno(), c
 						.getIdPersona(), c.getFechaSolicitud(), usr, false);
-				inscripcionTurno.solicitarBaja(fechaEstado, observacionesBaja,fechaEstado,c.getFechaValidacion(),"N", usr);
+				inscripcionTurno.solicitarBaja(fechaEstado, observacionesBaja,fechaEstado,observacionesBaja,c.getFechaValidacion(),"N", usr);
 				//inscripcionTurno.validarBaja(fechaEstado, observacionesBaja, usr);
 			}
 		}

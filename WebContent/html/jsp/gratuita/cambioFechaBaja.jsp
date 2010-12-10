@@ -91,10 +91,10 @@
 						
 						<tr>
 					
-						<td class="labelText"><siga:Idioma key="gratuita.altaTurnos.literal.mbaja"/>
+						<td class="labelText">Obs. Baja
 						</td>
 						<td> 
-							<html:textarea name="InscripcionTGForm" property="observacionesBaja"  onChange="cuenta(this,1024)" cols="65" rows="2" onkeydown="cuenta(this,1024);" styleClass="box" style="overflow:auto;width=200;height=80"  disabled="true"></html:textarea>
+							<html:textarea name="InscripcionTGForm" property="observacionesValBaja"  onChange="cuenta(this,1024)" cols="65" rows="2" onkeydown="cuenta(this,1024);" styleClass="box" style="overflow:auto;width=200;height=80"  disabled="true"></html:textarea>
 						</td>
 						</tr>
 						

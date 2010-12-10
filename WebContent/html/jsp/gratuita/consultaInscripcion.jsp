@@ -198,6 +198,17 @@
 				</c:out></td>
 	
 			</tr>
+			<tr>
+		
+	
+				<td class="labelText">Obs. Baja</td>
+				<td><html:textarea name="InscripcionTGForm"
+					property="observacionesValBaja" onChange="cuenta(this,1024)"
+					cols="65" rows="2" onkeydown="cuenta(this,1024);" styleClass="box"
+					style="overflow:auto;width=400;height=58" readonly="true"></html:textarea>
+				</td>
+	
+			</tr>
 			</c:if>
 	
 		</table>

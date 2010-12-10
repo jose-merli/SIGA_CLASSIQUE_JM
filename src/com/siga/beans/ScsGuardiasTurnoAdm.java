@@ -302,6 +302,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 					ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION+","+
 					ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_OBSERVACIONESSUSCRIPCION+","+
 					ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_OBSERVACIONESBAJA+","+
+					ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_OBSERVACIONESVALBAJA+" OBSERVACIONESVALBAJA,"+
 					ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_OBSERVACIONESDENEGACION+" OBSERVACIONESDENEGACION,"+
 					ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_FECHADENEGACION+" FECHADENEGACION,"+
 					"NVL("+ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_FECHADENEGACION+","+ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_FECHAVALIDACION+") FECHAVALOR,"+

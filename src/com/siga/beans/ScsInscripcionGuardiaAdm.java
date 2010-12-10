@@ -40,7 +40,8 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 							ScsInscripcionGuardiaBean.C_FECHAVALIDACION,			ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA,
 							ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION,
 							ScsInscripcionGuardiaBean.C_USUMODIFICACION,			ScsInscripcionGuardiaBean.C_FECHAMODIFICACION
-							,ScsInscripcionGuardiaBean.C_FECHADENEGACION,			ScsInscripcionGuardiaBean.C_OBSERVACIONESDENEGACION
+							,ScsInscripcionGuardiaBean.C_FECHADENEGACION,			ScsInscripcionGuardiaBean.C_OBSERVACIONESDENEGACION,
+							ScsInscripcionGuardiaBean.C_OBSERVACIONESVALBAJA
 							
 		};
 		return campos;
@@ -80,6 +81,7 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 			bean.setObservacionesValidacion((String)hash.get(ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION));
 			bean.setObservacionesDenegacion((String)hash.get(ScsInscripcionGuardiaBean.C_OBSERVACIONESDENEGACION));
 			bean.setFechaDenegacion((String)hash.get(ScsInscripcionGuardiaBean.C_FECHADENEGACION));
+			bean.setObservacionesValBaja((String)hash.get(ScsInscripcionGuardiaBean.C_OBSERVACIONESVALBAJA));
 			
 		}
 		catch(Exception e){
@@ -141,6 +143,7 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 			hash.put(ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA, b.getFechaSolicitudBaja());
 			hash.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION, b.getObservacionesValidacion());
 			hash.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESDENEGACION, b.getObservacionesDenegacion());
+			hash.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESVALBAJA, b.getObservacionesValBaja());
 			hash.put(ScsInscripcionGuardiaBean.C_FECHADENEGACION, b.getFechaDenegacion());
 		}
 		catch (Exception e){
@@ -281,6 +284,7 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 		sql.append(" I.FECHASOLICITUDBAJA, ");
 		sql.append(" I.OBSERVACIONESBAJA, ");
 		sql.append(" I.FECHABAJA ");
+		sql.append(" ,I.OBSERVACIONESVALBAJA ");
 		sql.append(",I.OBSERVACIONESDENEGACION,I.FECHADENEGACION,");
 		sql.append("NVL(I.FECHADENEGACION,I.FECHAVALIDACION) FECHAVALOR");
 		//Sacamos este campo, ya que solo se podran incribie en guardia cuando la incripcion en el turno este validado
@@ -472,8 +476,8 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 			sql.append(" I.IDINSTITUCION,    I.IDPERSONA,    I.IDTURNO, ");
 			sql.append(" I.IDGUARDIA,  I.FECHASUSCRIPCION,  I.OBSERVACIONESSUSCRIPCION, ");
 			sql.append(" I.FECHAVALIDACION,  I.OBSERVACIONESVALIDACION, ");
-			sql.append(" I.FECHASOLICITUDBAJA,     I.OBSERVACIONESBAJA,    I.FECHABAJA ");
-			sql.append(" ,I.FECHADENEGACION,     I.OBSERVACIONESDENEGACION ");
+			sql.append(" I.FECHASOLICITUDBAJA,     I.OBSERVACIONESBAJA,    I.FECHABAJA,I.OBSERVACIONESVALBAJA ");
+			sql.append(" ,I.FECHADENEGACION,     I.OBSERVACIONESDENEGACION  ");
 			sql.append(",TO_CHAR(NVL(I.FECHADENEGACION,I.FECHAVALIDACION),'dd/mm/yyyy') FECHAVALORALTA, ");
 			sql.append("TO_CHAR(NVL(I.FECHADENEGACION, I.FECHABAJA), 'dd/mm/yyyy') FECHAVALORBAJA ");
 			sql.append(" FROM SCS_INSCRIPCIONGUARDIA I,CEN_COLEGIADO COL,CEN_PERSONA PER, SCS_GUARDIASTURNO GT,SCS_TURNO T ");

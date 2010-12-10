@@ -81,6 +81,7 @@ public class InscripcionTGForm extends MasterForm {
 	private String	fechaValorBaja;
 	
 	String fechaActiva = null;
+	String  observacionesValBaja = null;
 	
 	public String getFechaValorAlta() {
 		return fechaValorAlta;
@@ -322,6 +323,7 @@ public class InscripcionTGForm extends MasterForm {
 		fechaBaja = null;
 		fechaDenegacion = null;
 		observacionesDenegacion = null;
+		observacionesValBaja = null;
 		
 		tipo = null;
 		clase = null;
@@ -620,6 +622,12 @@ public class InscripcionTGForm extends MasterForm {
 	}
 	public void setFechaSolicitudTurno(String fechaSolicitudTurno) {
 		this.fechaSolicitudTurno = fechaSolicitudTurno;
+	}
+	public String getObservacionesValBaja() {
+		return observacionesValBaja;
+	}
+	public void setObservacionesValBaja(String observacionesValBaja) {
+		this.observacionesValBaja = observacionesValBaja;
 	}
 	
 }

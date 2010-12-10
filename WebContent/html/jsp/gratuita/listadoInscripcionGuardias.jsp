@@ -80,6 +80,7 @@
 				<input type="hidden" id="fechaSolicitudBaja_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="fechaSolicitudBaja" />">
 				<input type="hidden" id="observacionesBaja_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="observacionesBaja" />">
 				<input type="hidden" id="fechaBaja_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="fechaBaja" />">
+				<input type="hidden" id="observacionesValBaja_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="observacionesValBaja" />">
 				<input type="hidden" id="observacionesDenegacion_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="observacionesDenegacion" />">
 				<input type="hidden" id="fechaDenegacion_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="fechaDenegacion" />">
 				<input type="hidden" id="validarInscripciones_<bean:write name='index'/>" value="<bean:write name="inscripcionGuardia" property="turno.validarInscripciones" />">

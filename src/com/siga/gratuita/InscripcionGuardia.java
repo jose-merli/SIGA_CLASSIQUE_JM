@@ -50,8 +50,9 @@ public class InscripcionGuardia
 	} //InscripcionGuardia ()
 	
 	public void setBajas(String obsSolicitudBaja,String fechaSolicitudBaja,
-			String fechaBaja){
+			String fechaBaja,String observacionesValBaja){
 		this.bean.setObservacionesBaja(obsSolicitudBaja);
+		this.bean.setObservacionesValBaja(observacionesValBaja);
 		this.bean.setFechaSolicitudBaja(fechaSolicitudBaja);
 		this.bean.setFechaBaja(fechaBaja);
 		
@@ -813,6 +814,8 @@ public class InscripcionGuardia
 			else
 				laHash.put(ScsInscripcionGuardiaBean.C_FECHABAJA,fechaBaja);
 			
+			laHash.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESVALBAJA,this.bean.getObservacionesValBaja());
+			
 			String[] claves = null;
 			if(idGuardia!=null){
 				claves = new String[]{ScsInscripcionGuardiaBean.C_IDINSTITUCION,
@@ -830,7 +833,7 @@ public class InscripcionGuardia
 			}
 
 	
-			String[] campos = {ScsInscripcionGuardiaBean.C_FECHABAJA};
+			String[] campos = {ScsInscripcionGuardiaBean.C_FECHABAJA,ScsInscripcionGuardiaBean.C_OBSERVACIONESVALBAJA};
 			ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
 			insguardia.updateDirect(laHash,claves,campos);
 			

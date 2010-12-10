@@ -542,7 +542,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				inscripcion.denegarBajaInscripcionTurno(miForm.getFechaDenegacion(),miForm.getObservacionesDenegacion(),usr);
 			}else if(miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equals(""))
 			{
-				inscripcion.validarBaja(miForm.getFechaBaja(),null,usr);
+				inscripcion.validarBaja(miForm.getFechaBaja(),null,miForm.getObservacionesValBaja(),usr);
 
 
 			}
@@ -563,17 +563,20 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		UsrBean usr = this.getUserBean(request);
 		String forward = "error";
 		try {
-			
-			Date fechaBaja = GstDate.convertirFecha(miForm.getFechaBaja(),"dd/MM/yyyy");
-			Date fechaValidacion= GstDate.convertirFechaHora(miForm.getFechaValidacionTurno());
-			if(fechaBaja.compareTo(fechaValidacion)<0){
-				throw new SIGAException("gratuita.gestionInscripciones.error.baja.menor.valida");
-				
+			if(miForm.getFechaDenegacion()==null || miForm.getFechaDenegacion().equals("")){
+				Date fechaBaja = GstDate.convertirFecha(miForm.getFechaBaja(),"dd/MM/yyyy");
+				if(miForm.getFechaValidacionTurno()!=null&& !miForm.getFechaValidacionTurno().equals("")){
+					Date fechaValidacion= GstDate.convertirFechaHora(miForm.getFechaValidacionTurno());
+					if(fechaBaja.compareTo(fechaValidacion)<0){
+						throw new SIGAException("gratuita.gestionInscripciones.error.baja.menor.valida");
+						
+					}
+				}
+				String estadoPendientes = getEstadoGuardiasDesignasPendientes(
+					  usr, Long.valueOf(miForm.getIdPersona()), new Integer(miForm.getIdInstitucion()), new Integer(miForm.getIdTurno()),null,
+						  null,miForm.getFechaBaja(),false,this.tipoActualizacionBaja); 
+				miForm.setEstadoPendientes(estadoPendientes);
 			}
-			String estadoPendientes = getEstadoGuardiasDesignasPendientes(
-				  usr, Long.valueOf(miForm.getIdPersona()), new Integer(miForm.getIdInstitucion()), new Integer(miForm.getIdTurno()),null,
-					  null,miForm.getFechaBaja(),false,this.tipoActualizacionBaja); 
-			miForm.setEstadoPendientes(estadoPendientes);
 			if(miForm.getEstadoPendientes()!=null&&!miForm.getEstadoPendientes().equals("")){
 				miForm.setModo("vbtValidar");
 				forward = "msjAvisoEstado";
@@ -717,7 +720,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			
 			
 			
-			inscripcion.solicitarBaja(miForm.getFechaSolicitudBaja(),miForm.getObservacionesBaja(),miForm.getFechaBaja(),miForm.getFechaValidacionTurno(),miForm.getValidarInscripciones(), usr);
+			inscripcion.solicitarBaja(miForm.getFechaSolicitudBaja(),miForm.getObservacionesBaja(),miForm.getFechaBaja(),miForm.getObservacionesValBaja(), miForm.getFechaValidacionTurno(),miForm.getValidarInscripciones(), usr);
 			request.setAttribute("mensaje","messages.updated.success");
 			forward = "exito";
 	        request.setAttribute("modal", "1");
@@ -917,7 +920,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			if(miForm.getValidarInscripciones().equals("N"))
 				miForm.setFechaBaja("sysdate");
 			
-			inscripcionGuardia.setBajas(miForm.getObservacionesBaja(), miForm.getFechaSolicitudBaja(), miForm.getFechaBaja());
+			inscripcionGuardia.setBajas(miForm.getObservacionesBaja(), miForm.getFechaSolicitudBaja(), miForm.getFechaBaja(),miForm.getObservacionesValBaja());
 			inscripcionGuardia.solicitarBaja(usr);
 			forward = "exito";
 			request.setAttribute("mensaje","messages.updated.success");
@@ -939,18 +942,19 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		UsrBean usr = this.getUserBean(request);
 		String forward = "error";
 		try {
-			
-			Date fechaBaja = GstDate.convertirFecha(miForm.getFechaBaja(),"dd/MM/yyyy");
-			//En la fecha de validacion turno no se sete al fechad evalidacion de la guardia
-			Date fechaValidacion= GstDate.convertirFechaHora(miForm.getFechaValidacionTurno());
-			if(fechaBaja.compareTo(fechaValidacion)<0){
-				throw new SIGAException("gratuita.gestionInscripciones.error.baja.menor.valida");
-				
+			if(miForm.getFechaDenegacion()!=null && !miForm.getFechaDenegacion().equals("")){
+				Date fechaBaja = GstDate.convertirFecha(miForm.getFechaBaja(),"dd/MM/yyyy");
+				//En la fecha de validacion turno no se sete al fechad evalidacion de la guardia
+				Date fechaValidacion= GstDate.convertirFechaHora(miForm.getFechaValidacionTurno());
+				if(fechaBaja.compareTo(fechaValidacion)<0){
+					throw new SIGAException("gratuita.gestionInscripciones.error.baja.menor.valida");
+					
+				}
+				String estadoPendientes = getEstadoGuardiasDesignasPendientes(
+					  usr, Long.valueOf(miForm.getIdPersona()), new Integer(miForm.getIdInstitucion()), new Integer(miForm.getIdTurno()),idGuardia,
+					  	null,miForm.getFechaBaja(),true,this.tipoActualizacionBaja); 
+				miForm.setEstadoPendientes(estadoPendientes);
 			}
-			String estadoPendientes = getEstadoGuardiasDesignasPendientes(
-				  usr, Long.valueOf(miForm.getIdPersona()), new Integer(miForm.getIdInstitucion()), new Integer(miForm.getIdTurno()),idGuardia,
-				  	null,miForm.getFechaBaja(),true,this.tipoActualizacionBaja); 
-			miForm.setEstadoPendientes(estadoPendientes);
 			if(miForm.getEstadoPendientes()!=null&&!miForm.getEstadoPendientes().equals("")){
 				miForm.setModo("vbgValidar");
 				forward = "msjAvisoEstado";
@@ -989,7 +993,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					inscripcion.denegarBajaGuardia(usr);
 				}else if(miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equals(""))
 				{
-					inscripcion.setBajas(null, null, miForm.getFechaBaja());
+					inscripcion.setBajas(null, null, miForm.getFechaBaja(),miForm.getObservacionesValBaja());
 					inscripcion.validarBaja(usr);
 				}
 			
@@ -1072,7 +1076,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					inscripcion.validarAlta(usr);
 				}else if(miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equals(""))
 				{
-					inscripcion.setBajas(null, null, miForm.getFechaBaja());
+					inscripcion.setBajas(null, null, miForm.getFechaBaja(),miForm.getObservacionesValBaja());
 					inscripcion.validarBaja(usr);
 				}
 			}else{
@@ -1090,9 +1094,9 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				inscripcion.setAltas(miForm.getObservacionesSolicitud(), miForm.getFechaValidacion(), miForm.getObservacionesValidacion());
 				if(miForm.getFechaBaja()==null || miForm.getFechaBaja().equals("")){
 						if(insGuardiaSiguiente!=null ){
-							inscripcion.setBajas(null, null, GstDate.getFormatedDateShort("",insGuardiaSiguiente.getFechaValidacion()));
+							inscripcion.setBajas(null, null, GstDate.getFormatedDateShort("",insGuardiaSiguiente.getFechaValidacion()),miForm.getObservacionesValBaja());
 						}else if(insTurnoActiva!=null&&insTurnoActiva.getFechaBaja()!=null && !insTurnoActiva.getFechaBaja().equals("")){
-							inscripcion.setBajas(null, null, GstDate.getFormatedDateShort("",insTurnoActiva.getFechaBaja()));
+							inscripcion.setBajas(null, null, GstDate.getFormatedDateShort("",insTurnoActiva.getFechaBaja()),miForm.getObservacionesValBaja());
 					}
 				}
 				
@@ -1173,9 +1177,9 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					inscripcion.setAltas(null, miForm.getFechaValidacion(), miForm.getObservacionesValidacion());
 					if(miForm.getFechaBaja()==null || miForm.getFechaBaja().equals("")){
 						if(insGuardiaSiguiente!=null ){
-							inscripcion.setBajas(null, null, GstDate.getFormatedDateShort("",insGuardiaSiguiente.getFechaValidacion()));
+							inscripcion.setBajas(null, null, GstDate.getFormatedDateShort("",insGuardiaSiguiente.getFechaValidacion()),miForm.getObservacionesValBaja());
 						}else if(insTurnoActiva!=null&&insTurnoActiva.getFechaBaja()!=null && !insTurnoActiva.getFechaBaja().equals("")){
-							inscripcion.setBajas(null, null, GstDate.getFormatedDateShort("",insTurnoActiva.getFechaBaja()));
+							inscripcion.setBajas(null, null, GstDate.getFormatedDateShort("",insTurnoActiva.getFechaBaja()),miForm.getObservacionesValBaja());
 					}
 				}
 					
@@ -2002,7 +2006,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 						miForm.setFechaBaja("sysdate");
 					else
 						miForm.setFechaBaja(null);
-					inscripcion.solicitarBaja(miForm.getFechaSolicitudBaja(),observaciones,miForm.getFechaBaja(),(String) turnoHash.get("FECHAVALIDACION"),validarInscripciones, usr);
+					inscripcion.solicitarBaja(miForm.getFechaSolicitudBaja(),observaciones,miForm.getFechaBaja(),null,(String) turnoHash.get("FECHAVALIDACION"),validarInscripciones, usr);
 	
 				}
 				forward = this.exitoRefresco("messages.updated.success", request);
@@ -2288,9 +2292,9 @@ public class GestionInscripcionesTGAction extends MasterAction {
 							inscripcion.setAltas(null, miForm.getFechaValidacion(), miForm.getObservacionesValidacion());
 							if(miForm.getFechaBaja()==null || miForm.getFechaBaja().equals("")){
 								if(insGuardiaSiguiente!=null ){
-									inscripcion.setBajas(null, null, GstDate.getFormatedDateShort("",insGuardiaSiguiente.getFechaValidacion()));
+									inscripcion.setBajas(null, null, GstDate.getFormatedDateShort("",insGuardiaSiguiente.getFechaValidacion()),miForm.getObservacionesValBaja());
 								}else if(insTurnoActiva!=null&&insTurnoActiva.getFechaBaja()!=null && !insTurnoActiva.getFechaBaja().equals("")){
-									inscripcion.setBajas(null, null, GstDate.getFormatedDateShort("",insTurnoActiva.getFechaBaja()));
+									inscripcion.setBajas(null, null, GstDate.getFormatedDateShort("",insTurnoActiva.getFechaBaja()),miForm.getObservacionesValBaja());
 							}
 						}
 							
@@ -2363,9 +2367,9 @@ public class GestionInscripcionesTGAction extends MasterAction {
 //					
 //				}
 				
-				
-
-					if(fechaValidacion!=null){
+					
+//				Si estamos dando de baja y no denegandola comprobamos que la fecha de baja sea mayor que la fecha de validacion
+					if(fechaValidacion!=null&&miForm.getFechaBaja()!=null&&!miForm.getFechaBaja().equals("")){
 						Date fechaBaja = GstDate.convertirFecha(miForm.getFechaBaja(),"dd/MM/yyyy");
 						Date dateFechaValidacion= GstDate.convertirFechaHora(fechaValidacion);
 						if(fechaBaja.compareTo(dateFechaValidacion)<0){
@@ -2426,18 +2430,37 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					fechaValidacion = null;
 //				String fechaSolicitudBaja = d[8];
 				
-				Date fechaBaja = GstDate.convertirFecha(miForm.getFechaBaja(),"dd/MM/yyyy");
-				Date dateFechaValidacion= GstDate.convertirFechaHora(fechaValidacion);
+				
+				
+
+
+				
+				
+				
+				
+				
 				try {
-					if(fechaBaja.compareTo(dateFechaValidacion)<0){
-						throw new SIGAException("gratuita.gestionInscripciones.error.baja.menor.valida");
-						
-					}
 					InscripcionTurno inscripcion = InscripcionTurno.getInscripcionTurno(
 							new Integer(idInstitucion), new Integer(idTurno), Long.valueOf(idPersona),
 							fechaSolicitud, usr, false);
-					inscripcion.validarBaja(miForm.getFechaBaja(),
-							fechaValidacion,usr);
+					if(miForm.getFechaDenegacion()!=null && !miForm.getFechaDenegacion().equals("")){
+						//denegar
+						inscripcion.denegarBajaInscripcionTurno(miForm.getFechaDenegacion(),miForm.getObservacionesDenegacion(),usr);
+					}else if(miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equals(""))
+					{
+						if(fechaValidacion!=null){
+							Date fechaBaja = GstDate.convertirFecha(miForm.getFechaBaja(),"dd/MM/yyyy");
+							Date dateFechaValidacion= GstDate.convertirFechaHora(fechaValidacion);
+							if(fechaBaja.compareTo(dateFechaValidacion)<0){
+								throw new SIGAException("gratuita.gestionInscripciones.error.baja.menor.valida");
+								
+							}
+						}
+						
+						inscripcion.validarBaja(miForm.getFechaBaja(),
+							fechaValidacion,miForm.getObservacionesValBaja(),usr);
+					
+					}
 				} catch (Exception e) {
 					existenErrores = true;
 				}
@@ -2493,7 +2516,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					fechaValidacion = null;
 				
 				
-					if(fechaValidacion!=null){
+					if(fechaValidacion!=null&&miForm.getFechaBaja()!=null &&!miForm.getFechaBaja().equals("")){
 						Date fechaBaja = GstDate.convertirFecha(miForm.getFechaBaja(),"dd/MM/yyyy");
 						Date dateFechaValidacion= GstDate.convertirFechaHora(fechaValidacion);
 						if(fechaBaja.compareTo(dateFechaValidacion)<0){
@@ -2501,13 +2524,15 @@ public class GestionInscripcionesTGAction extends MasterAction {
 								
 						}
 					}
-					String estadoPendientes = getEstadoGuardiasDesignasPendientes(
-							  usr, Long.valueOf(idPersona), new Integer(idInstitucion), 
-							  new Integer(idTurno),idGuardia,null, miForm.getFechaBaja(),true,this.tipoActualizacionBaja);
-					miForm.setEstadoPendientes(estadoPendientes);
-					if(miForm.getEstadoPendientes()!=null && !miForm.getEstadoPendientes().equals("")){
-						hayEstadosPendientes = true;
-						break;
+					if(miForm.getFechaBaja()!=null &&!miForm.getFechaBaja().equals("")){
+						String estadoPendientes = getEstadoGuardiasDesignasPendientes(
+								  usr, Long.valueOf(idPersona), new Integer(idInstitucion), 
+								  new Integer(idTurno),idGuardia,null, miForm.getFechaBaja(),true,this.tipoActualizacionBaja);
+						miForm.setEstadoPendientes(estadoPendientes);
+						if(miForm.getEstadoPendientes()!=null && !miForm.getEstadoPendientes().equals("")){
+							hayEstadosPendientes = true;
+							break;
+						}
 					}
 
 			}
@@ -2558,22 +2583,32 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				if(fechaValidacion!=null && fechaValidacion.equals("-"))
 					fechaValidacion = null;
 				try {
-				
-					if(fechaValidacion!=null){
-						Date fechaBaja = GstDate.convertirFecha(miForm.getFechaBaja(),"dd/MM/yyyy");
-						Date dateFechaValidacion= GstDate.convertirFechaHora(fechaValidacion);
-						if(fechaBaja.compareTo(dateFechaValidacion)<0){
-							throw new SIGAException("gratuita.gestionInscripciones.error.baja.menor.valida");
-								
+					InscripcionGuardia inscripcion = InscripcionGuardia.getInscripcionGuardia(
+							new Integer(idInstitucion), new Integer(idTurno),idGuardia
+									, Long.valueOf(idPersona),	fechaSolicitud, usr, false);
+					if(miForm.getFechaDenegacion()!=null && !miForm.getFechaDenegacion().equals(""))
+					{
+						inscripcion.setDenegacion(miForm.getObservacionesDenegacion(),miForm.getFechaDenegacion());
+						inscripcion.denegarBajaGuardia(usr);
+					}else if(miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equals(""))
+					{
+						if(fechaValidacion!=null){
+							Date fechaBaja = GstDate.convertirFecha(miForm.getFechaBaja(),"dd/MM/yyyy");
+							Date dateFechaValidacion= GstDate.convertirFechaHora(fechaValidacion);
+							if(fechaBaja.compareTo(dateFechaValidacion)<0){
+								throw new SIGAException("gratuita.gestionInscripciones.error.baja.menor.valida");
+									
+							}
 						}
+					
+					
+					
+						inscripcion.setBajas(null,null, miForm.getFechaBaja(),miForm.getObservacionesValBaja());
+						inscripcion.validarBaja(usr);
 					}
-				
-				InscripcionGuardia inscripcion = InscripcionGuardia.getInscripcionGuardia(
-						new Integer(idInstitucion), new Integer(idTurno),idGuardia
-								, Long.valueOf(idPersona),	fechaSolicitud, usr, false);
-				
-					inscripcion.setBajas(null,null, miForm.getFechaBaja());
-					inscripcion.validarBaja(usr);
+					
+					
+					
 				} catch (Exception e) {
 					existenErrores = true;
 				}
@@ -3375,7 +3410,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 							, Long.valueOf(miForm.getIdPersona()),	miForm.getFechaSolicitud(), usr, false);
 				
 				
-			inscripcion.setBajas(null, null,miForm.getFechaBaja());
+			inscripcion.setBajas(null, null,miForm.getFechaBaja(),miForm.getObservacionesValBaja());
 			inscripcion.modificarFechaBaja(usr);
 			request.setAttribute("mensaje","messages.updated.success");
 			forward = "exito";
@@ -3594,7 +3629,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 									, Long.valueOf(idPersona),	fechaSolicitud, usr, false);
 					
 					
-					inscripcionGuardia.setBajas(null, null, miForm.getFechaBaja());
+					inscripcionGuardia.setBajas(null, null, miForm.getFechaBaja(),miForm.getObservacionesValBaja());
 					inscripcionGuardia.modificarFechaBaja(usr);
 				} catch (SIGAException e) {
 					if(miForm.getEstadoPendientes()==null || miForm.getEstadoPendientes().equals("")){
@@ -3606,7 +3641,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 										, Long.valueOf(idPersona),	fechaSolicitud, usr, false);
 						
 						
-						inscripcionGuardia.setBajas(null, null, miForm.getFechaBaja());
+						inscripcionGuardia.setBajas(null, null, miForm.getFechaBaja(),miForm.getObservacionesValBaja());
 						inscripcionGuardia.modificarFechaBaja(usr);
 					}
 				}
