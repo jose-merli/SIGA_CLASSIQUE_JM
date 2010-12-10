@@ -135,7 +135,6 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		
 		
 		
-		
 		return "inicioInforme";
 		
 	}
@@ -545,6 +544,9 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 				f.setAplicarAcreditacionesAnterior2005(aplicarAcreditacionesAnterior2005);
 				String codPermitirSinResolucionJustfLetrado = paramAdm.getValor (usrBean.getLocation (), "SCS", ClsConstants.GEN_PARAM_PERMITIR_SINRESOLUCION_JUSTIF_LETRADO, "");
 				f.setPermitirSinResolucionJustifLetrado(codPermitirSinResolucionJustfLetrado!=null && codPermitirSinResolucionJustfLetrado.equalsIgnoreCase(ClsConstants.DB_TRUE));
+				
+				String mensajeResponsabilidadJustificacionLetrado = paramAdm.getValor (usrBean.getLocation (), "SCS", ClsConstants.GEN_PARAM_MENSAJE_RESPONSABILIDAD_LETRADO, "");
+				f.setMensajeResponsabilidadJustificacionLetrado(mensajeResponsabilidadJustificacionLetrado);
 				
 				PaginadorBind paginador = admDesignas.getDesignasJustificacionPaginador(f,false);
 				

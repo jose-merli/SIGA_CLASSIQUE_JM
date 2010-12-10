@@ -206,10 +206,11 @@ function accionGuardar ()
 	}
 	if(datosBaja!=''||datosJustificacion!=''){
 		if(document.InformeJustificacionMasivaForm.fichaColegial.value=='true'){
-		
-			if (!confirm('<siga:Idioma key="gratuita.informeJustificacionMasiva.confirmar.responsabilidadColegiado"/>')){
-				fin();
-				return false;
+			if(trim(document.InformeJustificacionMasivaForm.mensajeResponsabilidadJustificacionLetrado.value)!=''){
+				if (!confirm(document.InformeJustificacionMasivaForm.mensajeResponsabilidadJustificacionLetrado.value)){
+					fin();
+					return false;
+				}
 			}
 		
 		}
@@ -547,6 +548,7 @@ function ajusteDivListado(){
 	<html:hidden property="datosBaja" />
 	<html:hidden property="mostrarTodas" />
 	<html:hidden property="fichaColegial" />
+	<html:hidden property="mensajeResponsabilidadJustificacionLetrado" />
 
 	<input type="hidden" name="tablaDatosDinamicosD">
 	<input type="hidden" name="actionModal" value="">

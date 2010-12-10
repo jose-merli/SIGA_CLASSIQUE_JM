@@ -36,9 +36,17 @@ public class InformeJustificacionMasivaForm extends MasterForm
 	
 	private boolean fichaColegial = false;
 	private boolean permitirSinResolucionJustifLetrado;
+	private String mensajeResponsabilidadJustificacionLetrado;
 
 	
 	
+	public String getMensajeResponsabilidadJustificacionLetrado() {
+		return mensajeResponsabilidadJustificacionLetrado;
+	}
+	public void setMensajeResponsabilidadJustificacionLetrado(
+			String mensajeResponsabilidadJustificacionLetrado) {
+		this.mensajeResponsabilidadJustificacionLetrado = mensajeResponsabilidadJustificacionLetrado;
+	}
 	public boolean isPermitirSinResolucionJustifLetrado() {
 		return permitirSinResolucionJustifLetrado;
 	}
