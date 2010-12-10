@@ -490,11 +490,11 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 				" asistencia.fechaanulacion fechaanulacion,"+
 				" asistencia.IDINSTITUCION,"+
 				" asistencia.NUMERODILIGENCIA NUMERODILIGENCIA,"+
-				"  asistencia.NUMEROPROCEDIMIENTO NUMEROPROCEDIMIENTO,"+
-				"  asistencia.JUZGADO JUZGADO,"+
-				"  asistencia.JUZGADOIDINSTITUCION JUZGADOIDINSTITUCION,"+
-				"  asistencia.COMISARIA COMISARIA,"+
-				"  asistencia.COMISARIAIDINSTITUCION COMISARIAIDINSTITUCION,"+
+				" asistencia.NUMEROPROCEDIMIENTO NUMEROPROCEDIMIENTO,"+
+				" asistencia.JUZGADO IDJUZGADO,"+
+				" asistencia.JUZGADOIDINSTITUCION IDINSTITUCION_JUZG,"+
+				" asistencia.COMISARIA IDCOMISARIA,"+
+				" asistencia.COMISARIAIDINSTITUCION IDINSTITUCION_COMIS,"+
 				" turno.nombre tnombre,"+
 				" guardiasturno.nombre gtnombre,"+
 				" personajg.nif pjgnif,"+

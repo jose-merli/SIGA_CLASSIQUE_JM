@@ -502,7 +502,7 @@
 			 <%if(!modo.equals("consulta")){%>	
 			    <input type="text" name="codigoExtComisaria" class="box" size="8"  style="margin-top:3px;" maxlength="10" onBlur="obtenerComisaria();" />
 			 <%}%>			
-				<siga:ComboBD ancho="200"  nombre="comisaria" tipo="comboComisariasTurno" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=dato%>"  elementoSel="<%=comisariaSel%>"  />
+				<siga:ComboBD ancho="680"  nombre="comisaria" tipo="comboComisariasTurno" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=dato%>"  elementoSel="<%=comisariaSel%>"  />
 			</td>
 		</tr>
 		<tr>
@@ -519,7 +519,7 @@
 			   <input type="text" name="codigoExtJuzgado" class="box" size="8"  style="margin-top:0px;" maxlength="10" onBlur="obtenerJuzgado();" />
 			   <%}%>
 	
-			  <siga:ComboBD ancho="<%=comboSize%>"  nombre="juzgado" tipo="comboJuzgadosTurno" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=dato%>"  elementoSel="<%=juzgadoSel%>"  />
+			  <siga:ComboBD ancho="<%=comboSize%>"  ancho="680" nombre="juzgado" tipo="comboJuzgadosTurno" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readOnly="<%=readOnlyCombo%>" parametro="<%=dato%>"  elementoSel="<%=juzgadoSel%>"  />
 				
 			</td>
 		

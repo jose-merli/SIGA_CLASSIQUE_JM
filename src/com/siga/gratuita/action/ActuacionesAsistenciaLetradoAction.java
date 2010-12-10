@@ -458,6 +458,10 @@ public class ActuacionesAsistenciaLetradoAction extends MasterAction {
 				" turno." + ScsTurnoBean.C_VALIDARJUSTIFICACIONES + " validarJustificaciones ," +
 				" asistencia."+ScsAsistenciasBean.C_IDTIPOASISTENCIACOLEGIO+" idtipoasistenciacolegio, "+
 				" asistencia."+ScsAsistenciasBean.C_IDTIPOASISTENCIA+" idtipoasistencia, "+
+				" asistencia.JUZGADO IDJUZGADO,"+
+				" asistencia.JUZGADOIDINSTITUCION IDINSTITUCION_JUZG,"+
+				" asistencia.COMISARIA IDCOMISARIA,"+
+				" asistencia.COMISARIAIDINSTITUCION IDINSTITUCION_COMIS,"+
 				" turno."+ScsTurnoBean.C_IDTURNO+" idturno "+
 				" FROM"+
 				" scs_asistencia asistencia,"+

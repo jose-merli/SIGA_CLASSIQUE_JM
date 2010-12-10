@@ -128,21 +128,34 @@
 	 	// Datos del Juzgado seleccionado:
 	 	idJuzgado = (String)hash.get(ScsActuacionAsistenciaBean.C_IDJUZGADO);
 	 	idInstitucionJuzgado =  (String)hash.get(ScsActuacionAsistenciaBean.C_IDINSTITUCIONJUZGADO);
-		if (idJuzgado!=null && idInstitucionJuzgado!=null)
-			juzgadoSel.add(0,idJuzgado+","+idInstitucionJuzgado);	
-		
 		
 	 	// Datos de la comisaria seleccionado:
 	 	idComisaria = (String)hash.get(ScsActuacionAsistenciaBean.C_IDCOMISARIA);
 	 	idInstitucionComisaria =  (String)hash.get(ScsActuacionAsistenciaBean.C_IDINSTITUCIONCOMISARIA);
-		if (idComisaria!=null && idInstitucionComisaria!=null)
-			comisariaSel.add(0,idComisaria+","+idInstitucionComisaria);
+	 	
+		// jbd // inc7688 // Cuando estemos creando una actuacion se metera el juzgado/comisaria de la asistencia
+		if(modo.equals("alta")) {
+			// Pero solo si no estan los 2 cargados
+			if (!idJuzgado.equalsIgnoreCase("") && !idInstitucionJuzgado.equalsIgnoreCase("") && idComisaria.equalsIgnoreCase("") && idInstitucionComisaria.equalsIgnoreCase(""))
+				juzgadoSel.add(0,idJuzgado+","+idInstitucionJuzgado);	
+			
+			if (!idComisaria.equalsIgnoreCase("") && !idInstitucionComisaria.equalsIgnoreCase("") && idJuzgado.equalsIgnoreCase("") && idInstitucionJuzgado.equalsIgnoreCase(""))
+				comisariaSel.add(0,idComisaria+","+idInstitucionComisaria);
+		}else{
+			// Una actuacion creada antes de meter jta la restriccion puede tener comisaria Y juzgado
+			if (idComisaria!=null && idInstitucionComisaria!=null)
+				comisariaSel.add(0,idComisaria+","+idInstitucionComisaria);
+		
+			if (idJuzgado!=null && idInstitucionJuzgado!=null)
+				juzgadoSel.add(0,idJuzgado+","+idInstitucionJuzgado);	
+		}
+
 
 	  	// Datos del Tipo Actuacion seleccionado:
 	 	idTipoActuacion = (String)hash.get(ScsActuacionAsistenciaBean.C_IDTIPOACTUACION);
 		if (idTipoActuacion!=null)
 			tipoActuacionSel.add(0,idTipoActuacion);
-	
+		
 	 	// Datos del tipo coste seleccionado:
 		idCosteFijo = (String)hash.get(ScsActuacionAsistCosteFijoBean.C_IDCOSTEFIJO);
 		if (idCosteFijo!=null)
