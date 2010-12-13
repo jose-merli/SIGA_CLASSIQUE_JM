@@ -1,5 +1,6 @@
 package com.siga.gratuita.action;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -16,10 +17,14 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
+import com.atos.utils.LogFileWriter;
+import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenBajasTemporalesAdm;
@@ -44,6 +49,7 @@ import com.siga.beans.ScsTurnoBean;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.InscripcionGuardia;
 import com.siga.gratuita.form.DefinirCalendarioGuardiaForm;
 import com.siga.gratuita.util.calendarioSJCS.CalendarioSJCS;
 import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
@@ -1617,71 +1623,65 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 	 * Usado para generar el Calendario de Guardias de Titulares y de Reservas.
 	 */
 	private synchronized String insertarCalendarioAutomaticamente(ActionMapping mapping,
-																  MasterForm formulario,
-																  HttpServletRequest request,
-																  HttpServletResponse response)
-			throws SIGAException
+			MasterForm formulario,
+			HttpServletRequest request,
+			HttpServletResponse response) throws SIGAException
 	{
-		//Controles generales
+		// Controles generales
 		DefinirCalendarioGuardiaForm miForm = (DefinirCalendarioGuardiaForm) formulario;
 		UsrBean usr = this.getUserBean(request);
+		ScsGuardiasTurnoAdm admGuardiaTurno = new ScsGuardiasTurnoAdm(usr);
 		ScsGuardiasColegiadoAdm admGuardiasColegiado = new ScsGuardiasColegiadoAdm(usr);
-		
+
 		UserTransaction tx = null;
 		String forward = "";
+
+		// Variables generales
+		String idInstitucion, idGuardia, idTurno, idCalendarioGuardias, porGrupos;
+		ScsGuardiasTurnoBean beanGuardia;
+		ArrayList<ArrayList<String>> lineasLog = new ArrayList<ArrayList<String>>();
+
 		
-		//Variables generales
-		String idInstitucion, idGuardia, idTurno, idCalendarioGuardias;
+		// obteniendo valores del formulario
+		idInstitucion = miForm.getIdInstitucion();
+		idTurno = miForm.getIdTurno();
+		idGuardia = miForm.getIdGuardia();
+		idCalendarioGuardias = miForm.getIdCalendarioGuardias();
 
 		try {
-			//obteniendo valores del formulario
-			idInstitucion = miForm.getIdInstitucion();
-			idTurno = miForm.getIdTurno();
-			idGuardia = miForm.getIdGuardia();
-			idCalendarioGuardias = miForm.getIdCalendarioGuardias();
-
-			//rellenando los datos para buscar las guardias a borrar del calendario
+			// obteniendo datos de la guardia
 			Hashtable miHash = new Hashtable();
 			miHash.put(ScsCalendarioGuardiasBean.C_IDINSTITUCION, idInstitucion);
 			miHash.put(ScsCalendarioGuardiasBean.C_IDTURNO, idTurno);
 			miHash.put(ScsCalendarioGuardiasBean.C_IDGUARDIA, idGuardia);
-			miHash.put(ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS, idCalendarioGuardias);
+			Vector vGuardia = admGuardiaTurno.select(miHash);
+			beanGuardia = (ScsGuardiasTurnoBean) vGuardia.get(0);
+			porGrupos = beanGuardia.getPorGrupos();
 
-			//validando que no haya ninguna guardia realizada
-			if (! admGuardiasColegiado.validarBorradoGuardias(idInstitucion, idCalendarioGuardias, idTurno, idGuardia))
+			// validando que no haya ninguna guardia realizada
+			if (!admGuardiasColegiado.validarBorradoGuardias(idInstitucion, idCalendarioGuardias, idTurno, idGuardia))
 				return exito("error.messagess.borrarGuardiasGenerarCalendario", request);
 			
-			//iniciando transaccion
-			tx = usr.getTransaction();
+			// iniciando transaccion
+			tx = usr.getTransactionPesada();
 			tx.begin();
-			
-			/*
-			// jbd // inc7496 - Ya no se borra la configuracion antes de crear el nuevo
-				   // es necesario borrarlo y volver a crearlo
-			//borrando el calendario previamente
-			this.borrarGeneracionCalendario(miHash, usr);
-			*/
-			
-			//generando el Calendario de Guardias
-			CalendarioSJCS calendarioSJCS = new CalendarioSJCS(new Integer(idInstitucion),
-															   new Integer(idTurno),
-															   new Integer(idGuardia),
-															   new Integer(idCalendarioGuardias),
-															   usr);
-			calendarioSJCS.calcularMatrizPeriodosDiasGuardia();
 
-			//obteniendo los periodos
-			List lDiasASeparar = calendarioSJCS.getDiasASeparar(
-					new Integer(idInstitucion), new Integer(idTurno),
+			// obteniendo los periodos
+			CalendarioSJCS calendarioSJCS = new CalendarioSJCS(new Integer(idInstitucion), new Integer(idTurno),
+					new Integer(idGuardia), new Integer(idCalendarioGuardias), usr);
+			calendarioSJCS.calcularMatrizPeriodosDiasGuardia();
+			List lDiasASeparar = calendarioSJCS.getDiasASeparar(new Integer(idInstitucion), new Integer(idTurno),
 					new Integer(idGuardia), usr);
 
-			//obteniendo la matriz de letrados de guardia
+			// obteniendo la matriz de letrados de guardia
 			try {
-				calendarioSJCS
-						.calcularMatrizLetradosGuardia(lDiasASeparar);
+				if (porGrupos.equals("1"))
+					calendarioSJCS.calcularMatrizLetradosGuardiaPorGrupos(lDiasASeparar);
+				else
+					calendarioSJCS.calcularMatrizLetradosGuardia(lDiasASeparar);
 				tx.commit();
-				forward = exitoRefresco(
-						"gratuita.modalRegistro_DefinirCalendarioGuardia.literal.calendarioGenerado",
+				lineasLog = calendarioSJCS.getBufferLog();
+				forward = exitoRefresco("gratuita.modalRegistro_DefinirCalendarioGuardia.literal.calendarioGenerado",
 						request);
 			} catch (SIGAException e) {
 				tx.rollback();
@@ -1691,11 +1691,18 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 				throw e;
 			}
 		} catch (Exception e) {
-			throwExcp("messages.general.error",
-					new String[] { "modulo.gratuita" }, e, tx);
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, tx);
 		}
+		
+		// escribiendo el log del calendario
+		ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		LogFileWriter log = LogFileWriter.getLogFileWriter(rp
+				.returnProperty("sjcs.directorioFisicoGeneracionCalendarios")
+				+ File.separator + idInstitucion, "calendarioguardiafechas");
+		log.addLog(lineasLog);
+		
 		return forward;
-	} //insertarCalendarioAutomaticamente()
+	} // insertarCalendarioAutomaticamente()
 
 	public void borrarGeneracionCalendario(Hashtable calendario, UsrBean usr)
 			throws ClsExceptions, SIGAException

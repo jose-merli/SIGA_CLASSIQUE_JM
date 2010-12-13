@@ -298,12 +298,6 @@
 				document.BusquedaFacturaForm.submit();
 		}
 		
-	</script>
-	
-	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
-	<!-- FIN: BOTONES REGISTRO -->
-	<!-- INICIO: SCRIPTS BOTONES -->
-	<script language="JavaScript">
 		//Funcion que devuelve true si alguna de las fechas del calendario es anterior a la actual
 		function esFechaAnteriorHoy(){
 			var f_desde = document.forms[0].fechaDesde.value; //DD/MM/YYYY
@@ -324,13 +318,13 @@
 		function accionGenerarCalendario() {
 			// Creo Calendario de Titulares y despues el de Reservas
 			document.forms[0].modo.value = "insertarCalendarioAutomaticamente";
-			document.forms[0].target = "submitAreaPrincipal";							
+			document.forms[0].target = "submitAreaPrincipal";
 			var fname = document.getElementById("DefinirCalendarioGuardiaForm").name;
 			sub();
 			//Control de la fecha de generacion:
 			if (esFechaAnteriorHoy()){
 				if (confirm('<siga:Idioma key="general.aviso.generarCalendarioFechasAnteriorHoy"/>'))
-					document.frames.submitAreaPrincipal.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.gratuita.generandoCalendario';						
+					document.frames.submitAreaPrincipal.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+fname+'&msg=messages.gratuita.generandoCalendario';
 				else{
 					calendarioCreado=1;
 					fin();

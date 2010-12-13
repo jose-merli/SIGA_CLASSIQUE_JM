@@ -197,119 +197,110 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 		return exitoModal("messages.sjcs.sustitucionGuardiasRealizada",request);
 	}
 
-
-	protected String abrir (ActionMapping mapping, 
-							MasterForm formulario, 
-							HttpServletRequest request, 
-							HttpServletResponse response)
-			throws SIGAException
+	protected String abrir(ActionMapping mapping,
+			MasterForm formulario,
+			HttpServletRequest request,
+			HttpServletResponse response) throws SIGAException
 	{
-		//Controles generales
-		DefinirGuardiasTurnosForm miForm = (DefinirGuardiasTurnosForm)formulario;
-		ScsGuardiasTurnoAdm admGuardiasTurno = new ScsGuardiasTurnoAdm(this.getUserBean(request)); 
-		UsrBean usr = null;
-		
-		//Variables generales
+		// Controles generales
+		UsrBean usr = this.getUserBean(request);
+		ScsTurnoAdm turnoAdm = new ScsTurnoAdm(usr);
+		ScsGuardiasTurnoAdm guardiaAdm = new ScsGuardiasTurnoAdm(usr);
+		ScsOrdenacionColasAdm ordenacionAdm = new ScsOrdenacionColasAdm(usr);
+		ScsHitoFacturableGuardiaAdm hitoFacturableAdm = new ScsHitoFacturableGuardiaAdm(usr);
+		DefinirGuardiasTurnosForm miForm = (DefinirGuardiasTurnosForm) formulario;
+
+		// Variables generales
+		String idInstitucion, idTurno, idGuardia;
 		String forward = null;
-		
-		try
-		{
-			//Obteniendo variables y controles generales
-			usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
-			String pestanasG = (String)request.getSession().getAttribute("pestanasG");
-			
-			if (pestanasG != null) {
-				//Obteniendo el modo de la pestanha
+
+		try {
+			String pestanasG = (String) request.getSession().getAttribute("pestanasG");
+
+			if (pestanasG == null) {
+				request.removeAttribute("DATABACKUPPESTANA");
+				forward = super.abrir(mapping, formulario, request, response);
+			}
+			else {
+				// obteniendo el modo de la pestanha
 				String idTurnoPestanha = request.getParameter(ScsGuardiasTurnoBean.C_IDTURNO);
 				miForm.setIdInstitucionPestanha(request.getParameter(ScsGuardiasTurnoBean.C_IDINSTITUCION));
 				miForm.setIdTurnoPestanha(idTurnoPestanha);
 				miForm.setIdGuardiaPestanha(request.getParameter(ScsGuardiasTurnoBean.C_IDGUARDIA));
-				
-				//Pasando el modo de la pestanha
+
+				// pasando el modo de la pestanha
 				request.setAttribute("MODOPESTANA", request.getParameter("MODOPESTANA"));
+
+				// obteniendo los campos de identificacion de la guardia
+				idInstitucion = request.getParameter(ScsGuardiasTurnoBean.C_IDINSTITUCION);
+				idTurno = request.getParameter(ScsGuardiasTurnoBean.C_IDTURNO);
+				idGuardia = request.getParameter(ScsGuardiasTurnoBean.C_IDGUARDIA);
 				
-				//Pasando datos del Turno
-				ScsTurnoAdm turnoAdm = new ScsTurnoAdm(this.getUserBean(request));
-				Hashtable miTurno = turnoAdm.getDatosTurno(usr.getLocation(), idTurnoPestanha);
+				// mostrando datos del Turno
+				Hashtable miTurno = turnoAdm.getDatosTurno(idInstitucion, idTurnoPestanha);
 				request.getSession().setAttribute("turnoElegido", miTurno);
-				
-				//Obteniendo los campos de busqueda de la guardia
+
+				// mostrando datos generales de la Guardia
 				Hashtable hashGuardia = new Hashtable();
-				String idInstitucion = request.getParameter(ScsGuardiasTurnoBean.C_IDINSTITUCION);
-				String idTurno = request.getParameter(ScsGuardiasTurnoBean.C_IDTURNO);
-				String idGuardia = request.getParameter(ScsGuardiasTurnoBean.C_IDGUARDIA);
-				
-				hashGuardia.put(ScsGuardiasTurnoBean.C_IDINSTITUCION,idInstitucion );
-				hashGuardia.put(ScsGuardiasTurnoBean.C_IDTURNO,idTurno );
+				hashGuardia.put(ScsGuardiasTurnoBean.C_IDINSTITUCION, idInstitucion);
+				hashGuardia.put(ScsGuardiasTurnoBean.C_IDTURNO, idTurno);
 				hashGuardia.put(ScsGuardiasTurnoBean.C_IDGUARDIA, idGuardia);
-				
-				//Aqui seleccionamos la guardia que queremos consultar
-				ScsGuardiasTurnoBean beanGuardiasTurno = 
-					(ScsGuardiasTurnoBean)((Vector)admGuardiasTurno.select(hashGuardia)).get(0);
+				ScsGuardiasTurnoBean beanGuardiasTurno = (ScsGuardiasTurnoBean) guardiaAdm.select(hashGuardia).get(0);
 				request.getSession().setAttribute("DATABACKUPPESTANA", beanGuardiasTurno);
-				
-				//Control del checkBox de Periodo
+
+				// mostrando Control de Periodo de la guardia
 				if (beanGuardiasTurno == null)
-					miForm.setCheckDiasPeriodo (ClsConstants.DB_FALSE);
-				else if (beanGuardiasTurno.getDiasPeriodo () == null)
-					miForm.setCheckDiasPeriodo (ClsConstants.DB_FALSE);
-				else if (beanGuardiasTurno.getDiasPeriodo ().equals ("0"))
+					miForm.setCheckDiasPeriodo(ClsConstants.DB_FALSE);
+				else if (beanGuardiasTurno.getDiasPeriodo() == null)
+					miForm.setCheckDiasPeriodo(ClsConstants.DB_FALSE);
+				else if (beanGuardiasTurno.getDiasPeriodo().equals("0"))
 					miForm.setCheckDiasPeriodo(ClsConstants.DB_FALSE);
 				else
-					miForm.setCheckDiasPeriodo(ClsConstants.DB_TRUE);	
-				
-				//Escribiendo en el formulario la configuracion de los dias
-				String laborables = beanGuardiasTurno.getSeleccionLaborables();
-				this.procesarSeleccionLaborables(laborables,miForm);
-				String festivos = beanGuardiasTurno.getSeleccionFestivos();
-				this.procesarSeleccionFestivos(festivos,miForm);
-				
-				// RGG cambio para ordenacion
-				ScsOrdenacionColasBean orden = new ScsOrdenacionColasBean();
-				ScsOrdenacionColasAdm ordenacion = new ScsOrdenacionColasAdm(this.getUserBean(request));
-				String condicion =" where "+ScsOrdenacionColasBean.C_IDORDENACIONCOLAS+"="+beanGuardiasTurno.getIdOrdenacionColas()+" ";
-				Vector vOrdenacion = ordenacion.select(condicion);
-				orden = (ScsOrdenacionColasBean) vOrdenacion.get(0);
-				
+					miForm.setCheckDiasPeriodo(ClsConstants.DB_TRUE);
+
+				// mostrando la configuracion de los dias
+				this.procesarSeleccionLaborables(beanGuardiasTurno.getSeleccionLaborables(), miForm);
+				this.procesarSeleccionFestivos(beanGuardiasTurno.getSeleccionFestivos(), miForm);
+
+				// mostrando ordenacion
+				String condicion =
+					" where " + ScsOrdenacionColasBean.C_IDORDENACIONCOLAS + "=" + beanGuardiasTurno.getIdOrdenacionColas() + " ";
+				ScsOrdenacionColasBean orden = (ScsOrdenacionColasBean) ordenacionAdm.select(condicion).get(0);
 				miForm.setAlfabeticoApellidos(orden.getAlfabeticoApellidos().toString());
 				miForm.setAntiguedad(orden.getNumeroColegiado().toString());
 				miForm.setAntiguedadEnCola(orden.getAntiguedadCola().toString());
 				miForm.setEdad(orden.getFechaNacimiento().toString());
-				
-				ScsHitoFacturableGuardiaAdm admScsHitoFacturableGuardia = new ScsHitoFacturableGuardiaAdm(usr);
-				List lDiasASeparar = admScsHitoFacturableGuardia.getDiasASeparar(new Integer(idInstitucion), new Integer(idTurno), new Integer(idGuardia));
-				if(lDiasASeparar!=null && lDiasASeparar.size()>0){
-					miForm.setHayDiasASeparar(ClsConstants.DB_TRUE);
+
+				// mostrando dias a separar
+				List lDiasASeparar = hitoFacturableAdm.getDiasASeparar(new Integer(idInstitucion),
+						new Integer(idTurno), new Integer(idGuardia));
+				if (lDiasASeparar != null && lDiasASeparar.size() > 0) {
 					StringBuffer sbDiasASeparar = new StringBuffer("[ ");
-					for (int i=0; i<lDiasASeparar.size(); i++){
-						Hashtable htRegistro = (Hashtable)lDiasASeparar.get(i);
-						String diasSemana = (String)htRegistro.get(ScsHitoFacturableGuardiaBean.C_DIASAPLICABLES);
+					for (int i = 0; i < lDiasASeparar.size(); i++) {
+						Hashtable htRegistro = (Hashtable) lDiasASeparar.get(i);
+						String diasSemana = (String) htRegistro.get(ScsHitoFacturableGuardiaBean.C_DIASAPLICABLES);
 						sbDiasASeparar.append(diasSemana);
-						
-						
 					}
 					sbDiasASeparar.append(" ]");
+					
+					miForm.setHayDiasASeparar(ClsConstants.DB_TRUE);
 					miForm.setDiasASeparar(sbDiasASeparar.toString());
-				}else{
+				} else {
 					miForm.setHayDiasASeparar(ClsConstants.DB_FALSE);
 					miForm.setDiasASeparar("");
 				}
-				
-				
+
 				forward = "edicion";
 			}
-			else {
-				request.removeAttribute("DATABACKUPPESTANA");
-				forward = super.abrir(mapping,formulario,request,response);
-			}
-		
-		//Control de excepciones
-		} catch (Exception e){
-			throwExcp("error.messages.editar",e,null);
+
+			// Control de excepciones
+		} catch (Exception e) {
+			throwExcp("error.messages.editar", e, null);
 		}
+
 		return forward;
-	} //abrir()
-	
+	} // abrir()
+
 	/**
 	 * Esta clase se encarga de hacer una consulta para sacar todas las guardias
 	 * para un turno seleccionado, o todas las guardias en las que está o ha estado
@@ -666,106 +657,89 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 	/**
 	 * Modifica los datos de una Guardia para un Turno
 	 */
-	protected String modificar (ActionMapping mapping, 
-								MasterForm formulario, 
-								HttpServletRequest request, 
-								HttpServletResponse response)
-			throws SIGAException
-	{		
-		//Controles generales
-	    ScsGuardiasTurnoBean guardia = 
-	    	(ScsGuardiasTurnoBean) request.getSession().getAttribute("DATABACKUPPESTANA");
-	    ScsGuardiasTurnoAdm guardiaAdm = new ScsGuardiasTurnoAdm (this.getUserBean(request));	    
-		DefinirGuardiasTurnosForm miForm = (DefinirGuardiasTurnosForm)formulario;
+	protected String modificar(ActionMapping mapping,
+			MasterForm formulario,
+			HttpServletRequest request,
+			HttpServletResponse response) throws SIGAException
+	{
+		// Controles generales
+		UsrBean usr = this.getUserBean(request);
+		ScsGuardiasTurnoBean guardia = (ScsGuardiasTurnoBean) request.getSession().getAttribute("DATABACKUPPESTANA");
+		ScsGuardiasTurnoAdm guardiaAdm = new ScsGuardiasTurnoAdm(usr);
+		DefinirGuardiasTurnosForm miForm = (DefinirGuardiasTurnosForm) formulario;
 		Hashtable nuevo = miForm.getDatos();
-		UsrBean usr = null;
 		UserTransaction tx = null;
 
 		try {
-			//Controles generales
-			usr =(UsrBean)request.getSession().getAttribute("USRBEAN");
-		    tx = usr.getTransaction();
-		    
-		    //Preparando los campos de seleccion de la guardia a modificar
-		    nuevo.put("IDINSTITUCION", miForm.getIdInstitucionPestanha());  
-			nuevo.put("IDTURNO", miForm.getIdTurnoPestanha());
-			nuevo.put("IDGUARDIA", miForm.getIdGuardiaPestanha());
-			if (miForm.getVg()!=null) {
-			    nuevo.put("ESVIOLENCIAGENERO", "1");
-			} else {
-			    nuevo.put("ESVIOLENCIAGENERO", "0");
-			}
-			nuevo.put("USUMODIFICACION",usr.getUserName());
-			nuevo.put("FECHAMODIFICACION","sysdate");
-			try
-			{
-				String aux = (String)nuevo.get("VALIDARJUSTIFICACIONES");
-				if (aux!=null)nuevo.put("VALIDARJUSTIFICACIONES","S");
-				else nuevo.put("VALIDARJUSTIFICACIONES","N");
-			}
-			catch(Exception e){
-				nuevo.put("VALIDARJUSTIFICACIONES","N");
-			}
-			
-			//Preparando el campo idOrdenacionColas
-			//hace la select en la tabla, si existe la ordenacion, se recupera el id,
-			//en caso contrario debe insertar el valor
-			Vector v = new Vector();
-			Hashtable haux = new Hashtable();
-			boolean paso=false;
-			String where =
-				" where "+
-				ScsOrdenacionColasBean.C_ALFABETICOAPELLIDOS+"="+(String)nuevo.get("ALFABETICOAPELLIDOS")+" and "+
-				ScsOrdenacionColasBean.C_ANTIGUEDADCOLA+"="+(String)nuevo.get("ANTIGUEDADCOLA")+" and "+
-				ScsOrdenacionColasBean.C_FECHANACIMIENTO+"="+(String)nuevo.get("EDAD")+" and "+
-				ScsOrdenacionColasBean.C_NUMEROCOLEGIADO+"="+(String)nuevo.get("NUMEROCOLEGIADO")+" ";
-			ScsOrdenacionColasAdm ordenacion = 	new ScsOrdenacionColasAdm(this.getUserBean(request));
-			v=ordenacion.select(where);
-			
-			if (v.size()>0){
-				ScsOrdenacionColasBean b = (ScsOrdenacionColasBean)v.get(0);
-				nuevo.put("IDORDENACIONCOLAS",((Integer)b.getIdOrdenacionColas()).toString());
-			} else {
-				ordenacion.prepararInsert(nuevo);
-				haux.put(ScsOrdenacionColasBean.C_ALFABETICOAPELLIDOS,miForm.getAlfabeticoApellidos());
-				haux.put(ScsOrdenacionColasBean.C_ANTIGUEDADCOLA,miForm.getAntiguedadEnCola());
-				haux.put(ScsOrdenacionColasBean.C_FECHANACIMIENTO,miForm.getEdad());
-				haux.put(ScsOrdenacionColasBean.C_NUMEROCOLEGIADO,miForm.getAntiguedad());
-				
-				haux.put(ScsOrdenacionColasBean.C_USUMODIFICACION,(String)usr.getUserName());
-				haux.put(ScsOrdenacionColasBean.C_FECHAMODIFICACION,"sysdate");
-				haux.put(ScsOrdenacionColasBean.C_IDORDENACIONCOLAS,nuevo.get("IDORDENACIONCOLAS"));
-				paso=true;
-			}
-			
-			//Calculando los dias de la semana seleccionados
-			String laborables = this.obtenerSeleccionLaborables(miForm);
-			nuevo.put(ScsGuardiasTurnoBean.C_SELECCIONLABORABLES, laborables);
-			String festivos = this.obtenerSeleccionFestivos(miForm);
-			nuevo.put(ScsGuardiasTurnoBean.C_SELECCIONFESTIVOS, festivos);
-			//Control de la seleccion
-			if (laborables.equals("") && festivos.equals("")) {
-				// No ha seleccionado nada
-				throw new SIGAException("messages.gratuita.confGuardia.noSelecionTipoDia");
-			}
-			
-			//Resto de datos de la guardia
+			// preparando los campos de seleccion de la guardia a modificar
+			nuevo.put(ScsGuardiasTurnoBean.C_IDINSTITUCION, miForm.getIdInstitucionPestanha());
+			nuevo.put(ScsGuardiasTurnoBean.C_IDTURNO, miForm.getIdTurnoPestanha());
+			nuevo.put(ScsGuardiasTurnoBean.C_IDGUARDIA, miForm.getIdGuardiaPestanha());
+			nuevo.put(ScsGuardiasTurnoBean.C_ESVIOLENCIAGENERO, (miForm.getVg() == null) ? "0" : "1");
+			nuevo.put(ScsGuardiasTurnoBean.C_PORGRUPOS, (miForm.getPorGrupos() == null) ? "0" : "1");
+			nuevo.put(ScsGuardiasTurnoBean.C_ROTARCOMPONENTES, (miForm.getRotarComponentes() == null) ? "0" : "1");
+			nuevo.put(ScsGuardiasTurnoBean.C_USUMODIFICACION, usr.getUserName());
+			nuevo.put(ScsGuardiasTurnoBean.C_FECHAMODIFICACION, "sysdate");
 			nuevo.put(ScsGuardiasTurnoBean.C_TIPODIASGUARDIA, miForm.getTipoDiasGuardia());
 			nuevo.put(ScsGuardiasTurnoBean.C_DIASPERIODO, miForm.getDiasPeriodo());
 			nuevo.put(ScsGuardiasTurnoBean.C_TIPODIASPERIODO, miForm.getTipoDiasPeriodo());
-			
-			//Iniciando la modificacion
-		    tx.begin();
-		    if (paso==true) ordenacion.insert(haux);
-		    guardiaAdm.update(nuevo, guardia.getOriginalHash());
-		    tx.commit();
-			
-		//Control de excepciones
+			nuevo.put(ScsGuardiasTurnoBean.C_VALIDARJUSTIFICACIONES, (miForm.getValidarInscripciones() == null) ? "N" : "S");
+
+			// preparando el campo idOrdenacionColas (si no existe, se debe insertar el valor
+			Vector v = new Vector();
+			Hashtable hOrdenacion = new Hashtable();
+			String where = 
+				" where " + ScsOrdenacionColasBean.C_ALFABETICOAPELLIDOS + "=" + (String) nuevo.get("ALFABETICOAPELLIDOS") +
+				"   and " + ScsOrdenacionColasBean.C_ANTIGUEDADCOLA + "=" + (String) nuevo.get("ANTIGUEDADCOLA") + 
+				"   and " + ScsOrdenacionColasBean.C_FECHANACIMIENTO + "=" + (String) nuevo.get("EDAD") + 
+				"   and " + ScsOrdenacionColasBean.C_NUMEROCOLEGIADO + "=" + (String) nuevo.get("NUMEROCOLEGIADO") + " ";
+			ScsOrdenacionColasAdm ordenacion = new ScsOrdenacionColasAdm(usr);
+			v = ordenacion.select(where);
+
+			boolean nuevaOrdenacion;
+			if (v.size() > 0) {
+				ScsOrdenacionColasBean b = (ScsOrdenacionColasBean) v.get(0);
+				nuevo.put("IDORDENACIONCOLAS", ((Integer) b.getIdOrdenacionColas()).toString());
+				nuevaOrdenacion = false;
+			} else {
+				ordenacion.prepararInsert(nuevo);
+				hOrdenacion.put(ScsOrdenacionColasBean.C_ALFABETICOAPELLIDOS, miForm.getAlfabeticoApellidos());
+				hOrdenacion.put(ScsOrdenacionColasBean.C_ANTIGUEDADCOLA, miForm.getAntiguedadEnCola());
+				hOrdenacion.put(ScsOrdenacionColasBean.C_FECHANACIMIENTO, miForm.getEdad());
+				hOrdenacion.put(ScsOrdenacionColasBean.C_NUMEROCOLEGIADO, miForm.getAntiguedad());
+
+				hOrdenacion.put(ScsOrdenacionColasBean.C_USUMODIFICACION, (String) usr.getUserName());
+				hOrdenacion.put(ScsOrdenacionColasBean.C_FECHAMODIFICACION, "sysdate");
+				hOrdenacion.put(ScsOrdenacionColasBean.C_IDORDENACIONCOLAS, nuevo.get("IDORDENACIONCOLAS"));
+				nuevaOrdenacion = true;
+			}
+
+			// calculando los dias de la semana seleccionados
+			String laborables = this.obtenerSeleccionLaborables(miForm);
+			String festivos = this.obtenerSeleccionFestivos(miForm);
+			// Control de la seleccion
+			if (laborables.equals("") && festivos.equals("")) {
+				// No ha seleccionado nada
+				throw new SIGAException("messages.gratuita.confGuardia.noSelecionTipoDia");
+			} else {
+				nuevo.put(ScsGuardiasTurnoBean.C_SELECCIONLABORABLES, laborables);
+				nuevo.put(ScsGuardiasTurnoBean.C_SELECCIONFESTIVOS, festivos);
+			}
+
+			// iniciando la modificacion
+			tx = usr.getTransaction();
+			tx.begin();
+			if (nuevaOrdenacion)
+				ordenacion.insert(hOrdenacion);
+			guardiaAdm.update(nuevo, guardia.getOriginalHash());
+			tx.commit();
+
+			// Control de excepciones
 		} catch (Exception e) {
-			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 
-		}		
-		return exitoRefresco("messages.updated.success",request);
-	} //modificar ()
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, tx);
+		}
+		return exitoRefresco("messages.updated.success", request);
+	} // modificar ()
 	
 	/**
 	 * Borra una Guardia de un Turno

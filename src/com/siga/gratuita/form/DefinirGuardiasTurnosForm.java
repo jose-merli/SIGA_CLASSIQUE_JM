@@ -1,7 +1,6 @@
 package com.siga.gratuita.form;
 
 import java.util.ArrayList;
-
 import com.siga.general.MasterForm;
 
 /**
@@ -13,15 +12,15 @@ public class DefinirGuardiasTurnosForm extends MasterForm
 {
 	//////////////////// ATRIBUTOS DE CLASE ////////////////////
 	//Ordenacion
-	public static String cod_Alfabetico="1";
-	public static String cod_Antig="2";
-	public static String cod_Edad="3";
-	public static String cod_AntigCola="4";
-	public static int numCriterios=4;
-	
+	public static int ORDEN_ALFABETICO = 1;
+	public static int ORDEN_ANTIGUEDAD = 1;
+	public static int ORDEN_EDAD = 1;
+	public static int ORDEN_ANTIGUEDAD_COLA = 1;
+	public static int ORDEN_NUMERO = 4;
 	
 	
 	//////////////////// ATRIBUTOS ////////////////////
+	// Configuracion de guardia
 	private String tipoDiasGuardia="";
 	private String checkDiasPeriodo="";
 	private String diasPeriodo="";
@@ -41,7 +40,11 @@ public class DefinirGuardiasTurnosForm extends MasterForm
 	private String seleccionFestivosDomingo;
 	private String sustituta;
 	private String vg;
+	private String porGrupos;
+	private String rotarComponentes;
+	private ArrayList ordenacion = new ArrayList();
 	
+	// Guardias colegiado
 	private String idPersona="";
 	private String idPersonaSolicitante="";
 	private String idInstitucion="";
@@ -50,28 +53,20 @@ public class DefinirGuardiasTurnosForm extends MasterForm
 	private String checkGuardiaDeSustitucion="", guardiaDeSustitucion ="";
 	private String comenSustitucion;
 	
-	//Ordenacion
-	private ArrayList ordenacion = new ArrayList();
-	
+	// 
 	private String diasASeparar;
 	private String hayDiasASeparar;
 	
+	// Inscripciones
 	private String validarInscripciones;
 	private String observacionesValidacion;
 	private String fechaValidacion;
 	private String fechaSolicitudBaja;
-	
 	private String fechaConsulta;
 	
 	
-	
 	//////////////////// GETTERS ////////////////////
-	public String getIdPersona() {return idPersona;}
-	public String getIdTurno() {return idTurno;}
-	public String getIdInstitucion() {return idInstitucion;}
-	public String getIdGuardia() {return idGuardia;}
-	public String getIdPersonaSolicitante() {return idPersonaSolicitante;}
-	
+	// Configuracion de guardia
 	public String getTipoDiasGuardia() {return tipoDiasGuardia;}
 	public String getCheckDiasPeriodo() {return checkDiasPeriodo;}
 	public String getDiasPeriodo() {return diasPeriodo;}
@@ -89,7 +84,68 @@ public class DefinirGuardiasTurnosForm extends MasterForm
 	public String getSeleccionFestivosViernes() {return this.seleccionFestivosViernes;}
 	public String getSeleccionFestivosSabado() {return this.seleccionFestivosSabado;}
 	public String getSeleccionFestivosDomingo() {return this.seleccionFestivosDomingo;}
+	public String getSustituta() {return sustituta;}
 	public String getVg() {return this.vg;}
+	public String getPorGrupos() {return this.porGrupos;}
+	public String getRotarComponentes() {return this.rotarComponentes;}
+	public String getCheckGuardiaDeSustitucion() {return checkGuardiaDeSustitucion;}
+	public String getGuardiaDeSustitucion() {return guardiaDeSustitucion;}
+	
+	// Guardias colegiado
+	public String getIdPersona() {return idPersona;}
+	public String getIdTurno() {return idTurno;}
+	public String getIdInstitucion() {return idInstitucion;}
+	public String getIdGuardia() {return idGuardia;}
+	public String getIdPersonaSolicitante() {return idPersonaSolicitante;}
+	public String getComenSustitucion() {return comenSustitucion;}
+	
+	// 
+	public String getDiasASeparar() {return diasASeparar;}
+	public String getHayDiasASeparar() {return hayDiasASeparar;}
+	
+	// Inscripciones
+	public String getValidarInscripciones() {return validarInscripciones;}
+	public String getObservacionesValidacion() {return observacionesValidacion;}
+	public String getFechaValidacion() {return fechaValidacion;}
+	public String getFechaSolicitudBaja() {return fechaSolicitudBaja;}
+	public String getFechaConsulta() {return fechaConsulta;}
+	
+	//Criterios de Ordenacion
+	public String getCriterio(int i){
+		String salida = (String)((ArrayList)ordenacion.get(i-1)).get(0);
+		return salida;
+	}
+	public String getOrden(int i){
+		String salida = (String)((ArrayList)ordenacion.get(i-1)).get(1);
+		return salida;
+	}
+	public String getCrit_1(){return getCriterio(1);}
+	public String getCrit_2(){return getCriterio(2);}
+	public String getCrit_3(){return getCriterio(3);}
+	public String getCrit_4(){return getCriterio(4);}
+	public String getOrd_1(){return getOrden(1);}
+	public String getOrd_2(){return getOrden(2);}
+	public String getOrd_3(){return getOrden(3);}
+	public String getOrd_4(){return getOrden(4);}
+	public String getCriterioParaBD(String codigo) {
+		String salida = "0";
+		for (int i=0;i<ORDEN_NUMERO;i++) {
+			ArrayList auxi = (ArrayList)ordenacion.get(i);
+			if (((String)auxi.get(0)).equals(codigo)) {
+				if (((String)auxi.get(1)).equals("A")) {
+					salida = new Integer(ORDEN_NUMERO-i).toString();
+				} else {
+					salida = "-" + new Integer(ORDEN_NUMERO-i).toString();
+				}
+			}
+		}
+		return salida;
+	}
+	public String getAlfabeticoApellidos(){return getCriterioParaBD(Integer.toString(ORDEN_ALFABETICO));}
+	public String getAntiguedad(){return getCriterioParaBD(Integer.toString(ORDEN_ANTIGUEDAD));}
+	public String getEdad(){return getCriterioParaBD(Integer.toString(ORDEN_EDAD));}
+	public String getAntiguedadEnCola(){return getCriterioParaBD(Integer.toString(ORDEN_ANTIGUEDAD_COLA));}
+ 	
 	
 	//Metodos get de los campos del formulario
 	public String getNombreGuardia() {return (String)this.datos.get("NOMBRE");}
@@ -119,142 +175,10 @@ public class DefinirGuardiasTurnosForm extends MasterForm
 	public String getJustificaciones() {return (String) this.datos.get("VALIDARJUSTIFICACIONES");}
 	public String getGuardiaElegida() {return (String) this.datos.get("GUARDIAELEGIDA");}
 	public String getGuardias() {return (String) this.datos.get("GUARDIAS");}
-	
-	//Ordenacion - RGG 15-02-2006
-	public String getCrit_1(){
-		//return (String)this.datos.get("CRIT_1");
-		//RGG
-		String salida="";
-		ArrayList auxi = (ArrayList)ordenacion.get(0);
-		salida = (String)auxi.get(0);
-		return salida;
-	}
-	public String getCrit_2(){
-		//return (String)this.datos.get("CRIT_2");
-		//RGG
-		String salida="";
-		ArrayList auxi = (ArrayList)ordenacion.get(1);
-		salida = (String)auxi.get(0);
-		return salida;
-	}
-	public String getCrit_3(){
-		//return (String)this.datos.get("CRIT_3");
-		//RGG
-		String salida="";
-		ArrayList auxi = (ArrayList)ordenacion.get(2);
-		salida = (String)auxi.get(0);
-		return salida;
-	}
-	public String getCrit_4(){
-		//return (String)this.datos.get("CRIT_4");
-		//RGG
-		String salida="";
-		ArrayList auxi = (ArrayList)ordenacion.get(3);
-		salida = (String)auxi.get(0);
-		return salida;
-	}
-	public String getOrd_1(){
-		//return (String)this.datos.get("ORD_1");
-		//RGG
-		String salida="";
-		ArrayList auxi = (ArrayList)ordenacion.get(0);
-		salida = (String)auxi.get(1);
-		return salida;
-	}
-	public String getOrd_2(){
-		//return (String)this.datos.get("ORD_2");
-		//RGG
-		String salida="";
-		ArrayList auxi = (ArrayList)ordenacion.get(1);
-		salida = (String)auxi.get(1);
-		return salida;
-	}
-	public String getOrd_3(){
-		//return (String)this.datos.get("ORD_3");
-		//RGG
-		String salida="";
-		ArrayList auxi = (ArrayList)ordenacion.get(2);
-		salida = (String)auxi.get(1);
-		return salida;
-	}
-	public String getOrd_4(){
-		//return (String)this.datos.get("ORD_4");
-		//RGG
-		String salida="";
-		ArrayList auxi = (ArrayList)ordenacion.get(3);
-		salida = (String)auxi.get(1);
-		return salida;
-	}
-	public String getAlfabeticoApellidos(){
-		//return (String)this.datos.get("ALFABETICOAPELLIDOS");
-		String salida = "0";
-		//RGG
-		for (int i=0;i<numCriterios;i++) {
-			ArrayList auxi = (ArrayList)ordenacion.get(i);
-			if (((String)auxi.get(0)).equals(DefinirGuardiasTurnosForm.cod_Alfabetico)) {
-				if (((String)auxi.get(1)).equals("A")) {
-					salida = new Integer(numCriterios-i).toString();
-				} else {
-					salida = "-" + new Integer(numCriterios-i).toString();
-				}
-			}
-		}
-		return salida;
-	}
-	public String getAntiguedad(){
-		//return (String)this.datos.get("ANTIGUEDAD");
-		String salida = "0";
-		//RGG
-		for (int i=0;i<numCriterios;i++) {
-			ArrayList auxi = (ArrayList)ordenacion.get(i);
-			if (((String)auxi.get(0)).equals(DefinirGuardiasTurnosForm.cod_Antig)) {
-				if (((String)auxi.get(1)).equals("A")) {
-					salida = new Integer(numCriterios-i).toString();
-				} else {
-					salida = "-" + new Integer(numCriterios-i).toString();
-				}
-			}
-		}
-		return salida;
-	}
-	public String getEdad(){
-		String salida = "0";
-		//RGG
-		for (int i=0;i<numCriterios;i++) {
-			ArrayList auxi = (ArrayList)ordenacion.get(i);
-			if (((String)auxi.get(0)).equals(DefinirGuardiasTurnosForm.cod_Edad)) {
-				if (((String)auxi.get(1)).equals("A")) {
-					salida = new Integer(numCriterios-i).toString();
-				} else {
-					salida = "-" + new Integer(numCriterios-i).toString();
-				}
-			}
-		}
-		return salida;
-		//return (String)this.datos.get("EDAD");
-	}
-	public String getAntiguedadEnCola(){
-		//return (String)this.datos.get("ANTIGUEDADENCOLA");
-		String salida = "0";
-		//RGG
-		for (int i=0;i<numCriterios;i++) {
-			ArrayList auxi = (ArrayList)ordenacion.get(i);
-			if (((String)auxi.get(0)).equals(DefinirGuardiasTurnosForm.cod_AntigCola)) {
-				if (((String)auxi.get(1)).equals("A")) {
-					salida = new Integer(numCriterios-i).toString();
-				} else {
-					salida = "-" + new Integer(numCriterios-i).toString();
-				}
-			}
-		}
-		return salida;
-	}
- 	
 	//Para las pestanhas:
  	public String getIdInstitucionPestanha () {return ((String)this.datos.get("IDINSTITUCIONPESTAÑA"));}
  	public String getIdGuardiaPestanha () {return ((String)this.datos.get("IDGUARDIAPESTAÑA"));}
  	public String getIdTurnoPestanha () {return ((String)this.datos.get("IDTURNOPESTAÑA"));}
-	
 	
  	
 	//////////////////// SETTERS ////////////////////
@@ -282,6 +206,8 @@ public class DefinirGuardiasTurnosForm extends MasterForm
 	public void setSeleccionFestivosSabado(String valor) {this.seleccionFestivosSabado = valor;}
 	public void setSeleccionFestivosDomingo(String valor) {this.seleccionFestivosDomingo = valor;}
 	public void setVg(String valor) {this.vg = valor;}
+	public void setPorGrupos(String valor) {this.porGrupos = valor;}
+	public void setRotarComponentes(String valor) {this.rotarComponentes = valor;}
 	
 	//Metodos set de los campos del formulario
 	public void setNombreGuardia(String valor) {this.datos.put("NOMBRE", valor);}
@@ -310,67 +236,43 @@ public class DefinirGuardiasTurnosForm extends MasterForm
 	public void setJustificaciones(String valor) {this.datos.put("VALIDARJUSTIFICACIONES",valor);}
 	public void setGuardiaElegida(String valor) {this.datos.put("GUARDIAELEGIDA",valor);}
 	public void setGuardias(String valor) {this.datos.put("GUARDIAS",valor);}
+
+	public void setCheckGuardiaDeSustitucion(String checkGuardiaDeSustitucion) {this.checkGuardiaDeSustitucion = checkGuardiaDeSustitucion;}
+	public void setGuardiaDeSustitucion(String guardiaDeSustitucion) {this.guardiaDeSustitucion = guardiaDeSustitucion;}
+	public void setSustituta(String sustituta) {this.sustituta = sustituta;}
+	public void setDiasASeparar(String diasASeparar) {this.diasASeparar = diasASeparar;}
+	public void setHayDiasASeparar(String hayDiasASeparar) {this.hayDiasASeparar = hayDiasASeparar;}
+	public void setComenSustitucion(String comenSustitucion) {this.comenSustitucion = comenSustitucion;}
+	public void setValidarInscripciones(String validarInscripciones) {this.validarInscripciones = validarInscripciones;}
+	public void setObservacionesValidacion(String observacionesValidacion) {this.observacionesValidacion = observacionesValidacion;}
+	public void setFechaValidacion(String fechaValidacion) {this.fechaValidacion = fechaValidacion;}
+	public void setFechaSolicitudBaja(String fechaSolicitudBaja) {this.fechaSolicitudBaja = fechaSolicitudBaja;}
+	public void setFechaConsulta(String fechaConsulta) {this.fechaConsulta = fechaConsulta;}
 	
-	//Ordenacion - RGG 15-02-2006
-	public void setCrit_1 (String valor){ 
-		this.datos.put("CRIT_1", valor);
-		// RGG
-		ArrayList auxi = (ArrayList)ordenacion.get(0);
-		auxi.set(0,valor);
-		ordenacion.set(0,auxi);
+	//Criterios de Ordenacion
+	public void setCriterio(int i, String valor) {
+		this.datos.put("CRIT_"+i, valor);
+		ArrayList auxi = (ArrayList)ordenacion.get(i-1);
+		auxi.set(0, valor);
+		ordenacion.set(i-1, auxi);
 	}
-	public void setCrit_2 (String valor){ 
-		this.datos.put("CRIT_2", valor);
+	public void setOrden(int i, String valor) {
+		this.datos.put("ORD_"+i, valor);
 		// RGG
-		ArrayList auxi = (ArrayList)ordenacion.get(1);
-		auxi.set(0,valor);
-		ordenacion.set(1,auxi);
+		ArrayList auxi = (ArrayList)ordenacion.get(i-1);
+		auxi.set(1, valor);
+		ordenacion.set(i-1, auxi);
 	}
-	public void setCrit_3 (String valor){ 
-		this.datos.put("CRIT_3", valor);
-		// RGG
-		ArrayList auxi = (ArrayList)ordenacion.get(2);
-		auxi.set(0,valor);
-		ordenacion.set(2,auxi);
-	}
-	public void setCrit_4 (String valor){ 
-		this.datos.put("CRIT_4", valor);
-		// RGG
-		ArrayList auxi = (ArrayList)ordenacion.get(3);
-		auxi.set(0,valor);
-		ordenacion.set(3,auxi);
-	}
-	public void setOrd_1 (String valor){ 
-		this.datos.put("ORD_1", valor);
-		// RGG
-		ArrayList auxi = (ArrayList)ordenacion.get(0);
-		auxi.set(1,valor);
-		ordenacion.set(0,auxi);
-	}
-	public void setOrd_2 (String valor){ 
-		this.datos.put("ORD_2", valor);
-		// RGG
-		ArrayList auxi = (ArrayList)ordenacion.get(1);
-		auxi.set(1,valor);
-		ordenacion.set(1,auxi);
-	}
-	public void setOrd_3 (String valor){ 
-		this.datos.put("ORD_3", valor);
-		// RGG
-		ArrayList auxi = (ArrayList)ordenacion.get(2);
-		auxi.set(1,valor);
-		ordenacion.set(2,auxi);
-	}
-	public void setOrd_4 (String valor){ 
-		this.datos.put("ORD_4", valor);
-		// RGG
-		ArrayList auxi = (ArrayList)ordenacion.get(3);
-		auxi.set(1,valor);
-		ordenacion.set(3,auxi);
-	}
-	public void setAlfabeticoApellidos(String valor){
-		//this.datos.put("ALFABETICOAPELLIDOS",valor);
-		// RGG
+	public void setCrit_1(String valor) {setCriterio(1, valor);}
+	public void setCrit_2(String valor) {setCriterio(2, valor);}
+	public void setCrit_3(String valor) {setCriterio(3, valor);}
+	public void setCrit_4(String valor) {setCriterio(4, valor);}
+	public void setOrd_1(String valor) {setOrden(1, valor);}
+	public void setOrd_2(String valor) {setOrden(2, valor);}
+	public void setOrd_3(String valor) {setOrden(3, valor);}
+	public void setOrd_4(String valor) {setOrden(4, valor);}
+	
+	public void setCriterioParaBD(String codigo, String valor) {
 		if (!valor.trim().equals("0")) {
 			String signo = "";
 			String numero = "";
@@ -382,72 +284,16 @@ public class DefinirGuardiasTurnosForm extends MasterForm
 				signo = "A";
 				numero = valor;
 			}
-			ArrayList auxi = (ArrayList)ordenacion.get(numCriterios-new Integer(numero).intValue());
-			auxi.set(0,DefinirGuardiasTurnosForm.cod_Alfabetico);
-			auxi.set(1,signo);
-			ordenacion.set(numCriterios-new Integer(numero).intValue(),auxi);
-		}
-	}
-	public void setAntiguedad(String valor){
-		//this.datos.put("ANTIGUEDAD",valor);
-		// RGG
-		if (!valor.trim().equals("0")) {
-			String signo = "";
-			String numero = "";
-			if (valor.indexOf("-")!=-1) {
-				// tiene signo
-				signo = "D";
-				numero = valor.substring(valor.indexOf("-")+1,valor.length());
-			} else {
-				signo = "A";
-				numero = valor;
-			}
-			ArrayList auxi = (ArrayList)ordenacion.get(numCriterios-new Integer(numero).intValue());
-			auxi.set(0,DefinirGuardiasTurnosForm.cod_Antig);
-			auxi.set(1,signo);
-			ordenacion.set(numCriterios-new Integer(numero).intValue(),auxi);
-		}
-	}
-	public void setEdad(String valor){
-		//this.datos.put("EDAD",valor);
-		// RGG
-		if (!valor.trim().equals("0")) {
-			String signo = "";
-			String numero = "";
-			if (valor.indexOf("-")!=-1) {
-				// tiene signo
-				signo = "D";
-				numero = valor.substring(valor.indexOf("-")+1,valor.length());
-			} else {
-				signo = "A";
-				numero = valor;
-			}
-			ArrayList auxi = (ArrayList)ordenacion.get(numCriterios-new Integer(numero).intValue());
-			auxi.set(0,DefinirGuardiasTurnosForm.cod_Edad);
-			auxi.set(1,signo);
-			ordenacion.set(numCriterios-new Integer(numero).intValue(),auxi);
+			ArrayList auxi = (ArrayList)ordenacion.get(ORDEN_NUMERO-new Integer(numero).intValue());
+			auxi.set(0, codigo);
+			auxi.set(1, signo);
+			ordenacion.set(ORDEN_NUMERO - new Integer(numero).intValue(), auxi);
 		}		
 	}
-	public void setAntiguedadEnCola(String valor){
-		//this.datos.put("ANTIGUEDADENCOLA",valor);
-		// RGG
-		if (!valor.trim().equals("0")) {
-			String signo = "";
-			String numero = "";
-			if (valor.indexOf("-")!=-1) {
-				// tiene signo
-				signo = "D";
-				numero = valor.substring(valor.indexOf("-")+1,valor.length());
-			} else {
-				signo = "A";
-				numero = valor;
-			}
-			ArrayList auxi = (ArrayList)ordenacion.get(numCriterios-new Integer(numero).intValue());
-			auxi.set(0,DefinirGuardiasTurnosForm.cod_AntigCola);
-			auxi.set(1,signo);
-			ordenacion.set(numCriterios-new Integer(numero).intValue(),auxi);
-		}		
-	}
+	public void setAlfabeticoApellidos(String valor) {setCriterioParaBD(Integer.toString(ORDEN_ALFABETICO), valor);}
+	public void setAntiguedad(String valor) {setCriterioParaBD(Integer.toString(ORDEN_ANTIGUEDAD), valor);}
+	public void setEdad(String valor) {setCriterioParaBD(Integer.toString(ORDEN_EDAD), valor);}
+	public void setAntiguedadEnCola(String valor) {setCriterioParaBD(Integer.toString(ORDEN_ANTIGUEDAD_COLA), valor);}
 	
 	//Para las pestanhas:
  	public void setIdInstitucionPestanha (String valor) {this.datos.put("IDINSTITUCIONPESTAÑA",valor);}
@@ -455,85 +301,16 @@ public class DefinirGuardiasTurnosForm extends MasterForm
  	public void setIdGuardiaPestanha (String valor) {this.datos.put("IDGUARDIAPESTAÑA",valor);}
 	
 	
- 	
 	//////////////////// CONSTRUCTORES ////////////////////
 	//Ordenacion
 	public DefinirGuardiasTurnosForm() {
 		//Creación del array de arrays para guardar los criterios de ordenación
-		for (int i=0;i<numCriterios;i++) {
+		for (int i=0; i<ORDEN_NUMERO; i++) {
 			ArrayList aux = new ArrayList();
 			aux.add(""); // criterio
 			aux.add(""); // ordenacion (A/D)
 			ordenacion.add(aux);
 		}
 	}
-	
-	
-	public String getCheckGuardiaDeSustitucion() {
-		return checkGuardiaDeSustitucion;
-	}
-	public void setCheckGuardiaDeSustitucion(String checkGuardiaDeSustitucion) {
-		this.checkGuardiaDeSustitucion = checkGuardiaDeSustitucion;
-	}
-	public String getGuardiaDeSustitucion() {
-		return guardiaDeSustitucion;
-	}
-	public void setGuardiaDeSustitucion(String guardiaDeSustitucion) {
-		this.guardiaDeSustitucion = guardiaDeSustitucion;
-	}
-	public String getSustituta() {
-		return sustituta;
-	}
-	public void setSustituta(String sustituta) {
-		this.sustituta = sustituta;
-	}
-	
-	public String getDiasASeparar() {
-		return diasASeparar;
-	}
-	public void setDiasASeparar(String diasASeparar) {
-		this.diasASeparar = diasASeparar;
-	}
-	public String getHayDiasASeparar() {
-		return hayDiasASeparar;
-	}
-	public void setHayDiasASeparar(String hayDiasASeparar) {
-		this.hayDiasASeparar = hayDiasASeparar;
-	}
-	public String getComenSustitucion() {
-		return comenSustitucion;
-	}
-	public void setComenSustitucion(String comenSustitucion) {
-		this.comenSustitucion = comenSustitucion;
-	}
-	public String getValidarInscripciones() {
-		return validarInscripciones;
-	}
-	public void setValidarInscripciones(String validarInscripciones) {
-		this.validarInscripciones = validarInscripciones;
-	}
-	public String getObservacionesValidacion() {
-		return observacionesValidacion;
-	}
-	public void setObservacionesValidacion(String observacionesValidacion) {
-		this.observacionesValidacion = observacionesValidacion;
-	}
-	public String getFechaValidacion() {
-		return fechaValidacion;
-	}
-	public void setFechaValidacion(String fechaValidacion) {
-		this.fechaValidacion = fechaValidacion;
-	}
-	public String getFechaSolicitudBaja() {
-		return fechaSolicitudBaja;
-	}
-	public void setFechaSolicitudBaja(String fechaSolicitudBaja) {
-		this.fechaSolicitudBaja = fechaSolicitudBaja;
-	}
-	public String getFechaConsulta() {
-		return fechaConsulta;
-	}
-	public void setFechaConsulta(String fechaConsulta) {
-		this.fechaConsulta = fechaConsulta;
-	}
+
 }

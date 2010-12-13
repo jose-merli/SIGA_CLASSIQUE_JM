@@ -115,24 +115,16 @@
 <%if (entrada.equalsIgnoreCase("1")){%>		<!--esto se quitara el dia en que se entre desde el menu-->
 	
 	<tr>
-		<td class="labelText">
-			<siga:Idioma key="gratuita.definirTurnosIndex.literal.abreviatura"/>
-			</td>
-		<td>
-			<input name="abreviatura" type="text" class="box" size="15" maxlength="100" value="<%if((hayBusqueda).equals("1")){%><%=(String)hash.get("ABREVIATURA")%><%}%>" >
-		</td>
-		<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.nombre"/> </td>
-		<td>
-			<input name="nombre" type="text" class="box" size="60" maxlength="1024" value="<%if((hayBusqueda).equals("1")){%><%=(String)hash.get("NOMBRE")%><%}%>">
-		</td>
+		<td class="labelText"><siga:Idioma key="gratuita.definirTurnosIndex.literal.abreviatura"/></td>
+		<td><input name="abreviatura" type="text" class="box" size="15" maxlength="100" value="<%if((hayBusqueda).equals("1")){%><%=(String)hash.get("ABREVIATURA")%><%}%>" ></td>
+		<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.nombre"/></td>
+		<td><input name="nombre" type="text" class="box" size="60" maxlength="1024" value="<%if((hayBusqueda).equals("1")){%><%=(String)hash.get("NOMBRE")%><%}%>"></td>
 	</tr>
+	
 	<tr>
-		<td class="labelText">
-			<siga:Idioma key="gratuita.definirTurnosIndex.literal.area"/>
-		</td>
-						
+		<td class="labelText"><siga:Idioma key="gratuita.definirTurnosIndex.literal.area"/></td>
 		<td>		
-			<%
+		<%
 			String [] parametroMateria = null;
 			ArrayList vArea = new ArrayList();
 			try {
@@ -150,17 +142,13 @@
 			} catch (Exception e) {
 				vArea.add("0");
 			}
-			
-			%>									
-			
+		%>									
 			<siga:ComboBD nombre="area" tipo="area" clase="boxCombo"  parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" elementoSel="<%=vArea%>" obligatorio="false" accion="Hijo:materia"/>
 			<script> document.forms[0].area[0].value=-1;</script>		
-		
-		
 		</td>
-		
 		<td class="labelText"> 
-			<% ArrayList vMateria = new ArrayList();
+		<%
+			ArrayList vMateria = new ArrayList();
 			try {
 				String materia = (String)hash.get("IDMATERIA");
 				if (materia != null && !materia.equals("-1")){
@@ -172,21 +160,17 @@
 				}
 			} catch (Exception e) {
 				vMateria.add("0");
-			} %>			
-			
-			
+			}
+		%>			
 			<siga:Idioma key="gratuita.definirTurnosIndex.literal.materia"/>
 		</td> 
-	<td>		    
-			<siga:ComboBD nombre="materia" tipo="materia" parametro="<%=parametroMateria%>" elementoSel="<%=vMateria%>" clase="boxCombo"  hijo="t"/>
-		</td>
+		<td><siga:ComboBD nombre="materia" tipo="materia" parametro="<%=parametroMateria%>" elementoSel="<%=vMateria%>" clase="boxCombo"  hijo="t"/></td>
 	</tr>
+	
 	<tr>
-		<td class="labelText">
-			<siga:Idioma key="gratuita.definirTurnosIndex.literal.zona"/>
-		</td>						
+		<td class="labelText"><siga:Idioma key="gratuita.definirTurnosIndex.literal.zona"/></td>						
 		<td>
-			<%
+		<%
 			String [] parametroSubZona = null;
 			ArrayList vZona = new ArrayList();
 			try {
@@ -202,15 +186,13 @@
 			} catch (Exception e) {
 				vZona.add("0");
 			}
-			
-			%>									
+		%>									
 			<siga:ComboBD nombre="zona" tipo="zona" clase="boxCombo"  parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" elementoSel="<%=vZona%>" obligatorio="false" accion="Hijo:subzona"/>
 			<script> document.forms[0].zona[0].value=-1;</script>			
 		</td>
-		
 		<td class="labelText">
-			<% ArrayList vSubzona = new ArrayList();
-				
+		<%
+			ArrayList vSubzona = new ArrayList();
 			try {
 				String subZona = (String)hash.get("IDSUBZONA");
 				if (subZona!=null && !subZona.equals("-1")){
@@ -224,27 +206,22 @@
 				vSubzona.add("0");
 				
 			}
-			 %>	
+		%>	
 			<siga:Idioma key="gratuita.definirTurnosIndex.literal.subzona"/>
 		</td>
-		<td>
-			<siga:ComboBD nombre="subzona" tipo="subzona"  parametro="<%=parametroSubZona%>" elementoSel="<%=vSubzona%>" clase="boxCombo"  hijo="t" accion="parent.mostrarPartido(this);"/>
-		</td>
+		<td><siga:ComboBD nombre="subzona" tipo="subzona"  parametro="<%=parametroSubZona%>" elementoSel="<%=vSubzona%>" clase="boxCombo"  hijo="t" accion="parent.mostrarPartido(this);"/></td>
 	</tr>
+	
 	<tr>		
-		<td class="labelText">
-			<siga:Idioma key="gratuita.definirTurnosIndex.literal.partidoJudicial"/>
-		</td>
-		<td colspan="3">
-			<iframe ID="partidosjudiciales" name="partidosjudiciales"  src="<%=app%>/html/jsp/general/blank.jsp" WIDTH="600"  HEIGHT="19"  FRAMEBORDER="0"  MARGINWIDTH="0"  MARGINHEIGHT="1"  SCROLLING="NO"></iframe>
-		</td>
+		<td class="labelText"><siga:Idioma key="gratuita.definirTurnosIndex.literal.partidoJudicial"/></td>
+		<td colspan="3"><iframe ID="partidosjudiciales" name="partidosjudiciales"  src="<%=app%>/html/jsp/general/blank.jsp" WIDTH="600"  HEIGHT="19"  FRAMEBORDER="0"  MARGINWIDTH="0"  MARGINHEIGHT="1"  SCROLLING="NO"></iframe></td>
 	</tr>
+	
 	<tr>
-		<td class="labelText">
-			<siga:Idioma key="gratuita.definirTurnosIndex.literal.partidaPresupuestaria"/>
-		</td>
+		<td class="labelText"><siga:Idioma key="gratuita.definirTurnosIndex.literal.partidaPresupuestaria"/></td>
 		<td>
-			<%ArrayList vParPre = new ArrayList();
+		<%
+			ArrayList vParPre = new ArrayList();
 			try {
 				if (hash.get("IDPARTIDAPRESUPUESTARIA")==null || hash.get("IDPARTIDAPRESUPUESTARIA").equals("-1")){
 					vParPre.add("0");
@@ -254,17 +231,15 @@
 				}
 			} catch (Exception e) {
 				vParPre.add("0");
-			}%>
+			}
+		%>
 			<siga:ComboBD nombre="partidaPresupuestaria" tipo="partidaPresupuestaria" filasMostrar="1" seleccionMultiple="false" elementoSel="<%=vParPre%>" obligatorio="false" estilo="true" clase="boxCombo" parametro="<%=dato%>" />
 			<script> document.forms[0].partidaPresupuestaria[0].value=-1;</script>
 		</td>
-	</tr>
-	<tr>
-		<td class="labelText">
-			<siga:Idioma key="gratuita.definirTurnosIndex.literal.grupoFacturacion"/>
-		</td>
+		<td class="labelText"><siga:Idioma key="gratuita.definirTurnosIndex.literal.grupoFacturacion"/></td>
 		<td>
-			<% ArrayList vGrupo = new ArrayList();
+		<%
+			ArrayList vGrupo = new ArrayList();
 			try {
 				if (hash.get("IDGRUPOFACTURACION")==null || hash.get("IDGRUPOFACTURACION").equals("-1")){
 					vGrupo.add("0");
@@ -274,7 +249,8 @@
 				}
 			} catch (Exception e) {
 				vGrupo.add("0");
-			}%>									
+			}
+		%>									
 			<siga:ComboBD estilo="true" obligatorio="false" nombre="grupoFacturacion" filasMostrar="1" seleccionMultiple="false" elementoSel="<%=vGrupo%>" tipo="grupoFacturacion" clase="boxCombo"  parametro="<%=dato%>"/>
 			<script> document.forms[0].grupoFacturacion[0].value=-1;</script>
 		</td>

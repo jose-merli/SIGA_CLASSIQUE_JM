@@ -168,7 +168,7 @@ public class DefinirGuardiasLetradoAction extends MasterAction {
 			
 			String fecha = miForm.getFechaConsulta();
 			
-			consulta =  " SELECT "+guardias.getCamposTabla(2)+", "+
+			consulta =  " SELECT "+guardias.getCamposTabla(ScsGuardiasTurnoAdm.CAMPOS_LISTAINSCRIPCIONES)+", "+
 	                    " (select s."+ScsInscripcionTurnoBean.C_FECHAVALIDACION+
                         "  from "+ScsInscripcionTurnoBean.T_NOMBRETABLA+" s "+
                         "  where s."+ScsInscripcionTurnoBean.C_IDPERSONA+" = "+ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_IDPERSONA+

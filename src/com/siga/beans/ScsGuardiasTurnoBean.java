@@ -9,8 +9,6 @@ import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
  * 
  * @author ruben.fernandez
  * @since 6/12/2004
- * @version 08/03/2006 david.sanchezp: nuevos campos
- * @version 14/05/2008 adrian.ayala: limpieza, nuevos campos y eliminacion de viejos campos
  */
 @AjaxXMLBuilderAnnotation
 public class ScsGuardiasTurnoBean extends MasterBean
@@ -20,33 +18,36 @@ public class ScsGuardiasTurnoBean extends MasterBean
 	static public String T_NOMBRETABLA = "SCS_GUARDIASTURNO";
 	
 	//Nombres de campos de la tabla
-	static public final String 	C_IDINSTITUCION = 			"IDINSTITUCION";
-	static public final String 	C_IDTURNO = 				"IDTURNO";
-	static public final String 	C_IDGUARDIA = 				"IDGUARDIA";
-	static public final String 	C_NOMBRE = 					"NOMBRE";
-	static public final String 	C_NUMEROLETRADOSGUARDIA =	"NUMEROLETRADOSGUARDIA";
-	static public final String 	C_NUMEROSUSTITUTOSGUARDIA =	"NUMEROSUSTITUTOSGUARDIA";	
-	static public final String 	C_DIASGUARDIA = 			"DIASGUARDIA";
-	static public final String 	C_DIASPAGADOS = 			"DIASPAGADOS";
-	static public final String 	C_VALIDARJUSTIFICACIONES = 	"VALIDARJUSTIFICACIONES";
-	static public final String	C_DIASSEPARACIONGUARDIAS = 	"DIASSEPARACIONGUARDIAS";
-	static public final String	C_IDORDENACIONCOLAS = 		"IDORDENACIONCOLAS";
-	static public final String	C_NUMEROASISTENCIAS = 		"NUMEROASISTENCIAS";
-	static public final String	C_DESCRIPCION = 			"DESCRIPCION";
-	static public final String	C_DESCRIPCIONFACTURACION = 	"DESCRIPCIONFACTURACION";
-	static public final String	C_DESCRIPCIONPAGO = 		"DESCRIPCIONPAGO";
-	static public final String	C_IDPARTIDAPRESUPUESTARIA =	"IDPARTIDAPRESUPUESTARIA";	
-	static public final String	C_NUMEROACTUACIONES = 		"NUMEROACTUACIONES";
-	static public final String 	C_IDPERSONA_ULTIMO = 		"IDPERSONA_ULTIMO";
-	static public final String 	C_TIPODIASGUARDIA = 		"TIPODIASGUARDIA";
-	static public final String 	C_DIASPERIODO =		 		"DIASPERIODO";
-	static public final String 	C_TIPODIASPERIODO = 		"TIPODIASPERIODO";
-	static public final String 	C_FESTIVOS = 				"FESTIVOS";
-	static public final String  C_SELECCIONLABORABLES =		"SELECCIONLABORABLES";
-	static public final String  C_SELECCIONFESTIVOS =		"SELECCIONFESTIVOS";
-	static public final String  C_IDGUARDIASUSTITUCION =	"IDGUARDIASUSTITUCION";
-	static public final String  C_IDTURNOSUSTITUCION =		"IDTURNOSUSTITUCION";
-	static public final String  C_ESVIOLENCIAGENERO =		"ESVIOLENCIAGENERO";
+	static public final String C_IDINSTITUCION				= "IDINSTITUCION";
+	static public final String C_IDTURNO					= "IDTURNO";
+	static public final String C_IDGUARDIA					= "IDGUARDIA";
+	static public final String C_NOMBRE						= "NOMBRE";
+	static public final String C_NUMEROLETRADOSGUARDIA		= "NUMEROLETRADOSGUARDIA";
+	static public final String C_NUMEROSUSTITUTOSGUARDIA	= "NUMEROSUSTITUTOSGUARDIA";	
+	static public final String C_DIASGUARDIA				= "DIASGUARDIA";
+	static public final String C_DIASPAGADOS				= "DIASPAGADOS";
+	static public final String C_VALIDARJUSTIFICACIONES		= "VALIDARJUSTIFICACIONES";
+	static public final String C_DIASSEPARACIONGUARDIAS		= "DIASSEPARACIONGUARDIAS";
+	static public final String C_IDORDENACIONCOLAS			= "IDORDENACIONCOLAS";
+	static public final String C_NUMEROASISTENCIAS			= "NUMEROASISTENCIAS";
+	static public final String C_DESCRIPCION				= "DESCRIPCION";
+	static public final String C_DESCRIPCIONFACTURACION		= "DESCRIPCIONFACTURACION";
+	static public final String C_DESCRIPCIONPAGO			= "DESCRIPCIONPAGO";
+	static public final String C_IDPARTIDAPRESUPUESTARIA	= "IDPARTIDAPRESUPUESTARIA";	
+	static public final String C_NUMEROACTUACIONES			= "NUMEROACTUACIONES";
+	static public final String C_IDPERSONA_ULTIMO			= "IDPERSONA_ULTIMO";
+	static public final String C_TIPODIASGUARDIA			= "TIPODIASGUARDIA";
+	static public final String C_DIASPERIODO				= "DIASPERIODO";
+	static public final String C_TIPODIASPERIODO			= "TIPODIASPERIODO";
+	static public final String C_FESTIVOS					= "FESTIVOS";
+	static public final String C_SELECCIONLABORABLES		= "SELECCIONLABORABLES";
+	static public final String C_SELECCIONFESTIVOS			= "SELECCIONFESTIVOS";
+	static public final String C_IDGUARDIASUSTITUCION		= "IDGUARDIASUSTITUCION";
+	static public final String C_IDTURNOSUSTITUCION			= "IDTURNOSUSTITUCION";
+	static public final String C_ESVIOLENCIAGENERO			= "ESVIOLENCIAGENERO";
+	static public final String C_PORGRUPOS					= "PORGRUPOS";
+	static public final String C_ROTARCOMPONENTES			= "ROTARCOMPONENTES";
+	
 	
 	//////////////////// ATRIBUTOS ////////////////////
 	private Integer 	idInstitucion;
@@ -74,13 +75,14 @@ public class ScsGuardiasTurnoBean extends MasterBean
 	private String		festivos;
 	private String		seleccionLaborables;
 	private String		seleccionFestivos;
+	private String		esViolenciaGenero;
+	private String		porGrupos;
+	private String		rotarComponentes;
+	
 	private Integer		idGuardiaSustitucion;
 	private Integer		idTurnoSustitucion;
-	private String		esViolenciaGenero;
-	private String seleccionTiposDia;
-	private String descripcionTipoDiasGuardia;
-	
-	
+	private String		seleccionTiposDia;
+	private String		descripcionTipoDiasGuardia;
 	
 	
 	//////////////////// GETTERS ////////////////////
@@ -112,7 +114,13 @@ public class ScsGuardiasTurnoBean extends MasterBean
 	public String getSeleccionLaborables () {return seleccionLaborables;}
 	public String getSeleccionFestivos () {return seleccionFestivos;}
 	public String getEsViolenciaGenero () {return esViolenciaGenero;}
+	public String getPorGrupos () {return porGrupos;}
+	public String getRotarComponentes () {return rotarComponentes;}
 	
+	public Integer getIdGuardiaSustitucion() {return idGuardiaSustitucion;}
+	public Integer getIdTurnoSustitucion() {return idTurnoSustitucion;}
+	public String getSeleccionTiposDia() {return seleccionTiposDia;}
+	public String getDescripcionTipoDiasGuardia() {return descripcionTipoDiasGuardia;}
 	
 	
 	//////////////////// SETTERS ////////////////////
@@ -141,34 +149,13 @@ public class ScsGuardiasTurnoBean extends MasterBean
 	public void setFestivos(String festivos) {this.festivos = festivos;}
 	public void setSeleccionLaborables (String valor) {this.seleccionLaborables = valor;}
 	public void setSeleccionFestivos (String valor) {this.seleccionFestivos = valor;}
-
+	public void setEsViolenciaGenero(String valor) {this.esViolenciaGenero = valor;}
+	public void setPorGrupos (String valor) {this.porGrupos = valor;}
+	public void setRotarComponentes (String valor) {this.rotarComponentes = valor;}
 	
-	public Integer getIdGuardiaSustitucion() {
-		return idGuardiaSustitucion;
-	}
-	public void setIdGuardiaSustitucion(Integer idGuardiaSustitucion) {
-		this.idGuardiaSustitucion = idGuardiaSustitucion;
-	}
-	public Integer getIdTurnoSustitucion() {
-		return idTurnoSustitucion;
-	}
-	public void setIdTurnoSustitucion(Integer idTurnoSustitucion) {
-		this.idTurnoSustitucion = idTurnoSustitucion;
-	}
-	public void setEsViolenciaGenero(String valor) {
-		this.esViolenciaGenero = valor;
-	}
-	public String getSeleccionTiposDia() {
-		return seleccionTiposDia;
-	}
-	public void setSeleccionTiposDia(String seleccionTiposDia) {
-		this.seleccionTiposDia = seleccionTiposDia;
-	}
-	public String getDescripcionTipoDiasGuardia() {
-		return descripcionTipoDiasGuardia;
-	}
-	public void setDescripcionTipoDiasGuardia(String descripcionTipoDiasGuardia) {
-		this.descripcionTipoDiasGuardia = descripcionTipoDiasGuardia;
-	}
+	public void setIdGuardiaSustitucion(Integer idGuardiaSustitucion) {this.idGuardiaSustitucion = idGuardiaSustitucion;}
+	public void setIdTurnoSustitucion(Integer idTurnoSustitucion) {this.idTurnoSustitucion = idTurnoSustitucion;}
+	public void setSeleccionTiposDia(String seleccionTiposDia) {this.seleccionTiposDia = seleccionTiposDia;}
+	public void setDescripcionTipoDiasGuardia(String descripcionTipoDiasGuardia) {this.descripcionTipoDiasGuardia = descripcionTipoDiasGuardia;}
 	
 }

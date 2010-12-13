@@ -10,221 +10,134 @@ import com.siga.gratuita.form.InscripcionTGForm;
  * @author ruben.fernandez
  * @since 6/12/2004
  */
-
-public class ScsInscripcionGuardiaBean extends MasterBean{
-	
-	/**
-	 *  Variables 
-	 * */ 
-	private Integer idInstitucion;
-	private Long 	idPersona;
-	private Integer idTurno;
-	private Integer idGuardia;
-	private String	fechaSuscripcion;
-	private String	fechaBaja;
-	private String  observacionesSuscripcion;
-	private String  observacionesBaja;
-	private String	fechaValidacion;
-	private String	fechaSolicitudBaja;
-	private String	observacionesValidacion;
-	private String	fechaDenegacion;
-	private String  observacionesDenegacion;
-	InscripcionTGForm inscripcion;
-	String estado= null;
-	private String	fechaValorAlta;
-	private String	fechaValorBaja;
-	private String  observacionesValBaja;
-	
+public class ScsInscripcionGuardiaBean extends MasterBean
+{
 	/**
 	 *  Nombre de Tabla
-	 * */
-	
+	 */
 	static public String T_NOMBRETABLA = "SCS_INSCRIPCIONGUARDIA";
 	
 	
-	/**
-	 * Nombre de campos de la tabla
-	 * */
+	// Nombre de campos de la tabla
+	static public final String C_IDINSTITUCION				= "IDINSTITUCION";
+	static public final String C_IDTURNO					= "IDTURNO";
+	static public final String C_IDGUARDIA					= "IDGUARDIA";
+	static public final String C_IDPERSONA					= "IDPERSONA";
+	static public final String C_FECHASUSCRIPCION			= "FECHASUSCRIPCION";
 	
-	static public final String 	C_IDPERSONA = 					"IDPERSONA";
-	static public final String 	C_IDINSTITUCION = 				"IDINSTITUCION";
-	static public final String 	C_IDTURNO = 					"IDTURNO";
-	static public final String 	C_IDGUARDIA = 					"IDGUARDIA";
-	static public final String 	C_FECHASUSCRIPCION =	 		"FECHASUSCRIPCION";
-	static public final String 	C_FECHABAJA = 					"FECHABAJA";
-	static public final String 	C_OBSERVACIONESSUSCRIPCION = 	"OBSERVACIONESSUSCRIPCION";
-	static public final String 	C_OBSERVACIONESBAJA = 			"OBSERVACIONESBAJA";
-
-	static public final String 	C_FECHASOLICITUDBAJA = 			"FECHASOLICITUDBAJA";
-	static public final String 	C_FECHAVALIDACION = 			"FECHAVALIDACION";
-	static public final String 	C_OBSERVACIONESVALIDACION =		"OBSERVACIONESVALIDACION";
-	static public final String 	C_OBSERVACIONESDENEGACION = "OBSERVACIONESDENEGACION";
-	static public final String 	C_FECHADENEGACION	=	"FECHADENEGACION";
-	static public final String 	C_OBSERVACIONESVALBAJA =		"OBSERVACIONESVALBAJA";
+	static public final String C_FECHAVALIDACION			= "FECHAVALIDACION";
+	static public final String C_FECHASOLICITUDBAJA			= "FECHASOLICITUDBAJA";
+	static public final String C_FECHABAJA					= "FECHABAJA";
+	static public final String C_FECHADENEGACION			= "FECHADENEGACION";
 	
-
+	static public final String C_OBSERVACIONESSUSCRIPCION	= "OBSERVACIONESSUSCRIPCION";
+	static public final String C_OBSERVACIONESVALIDACION	= "OBSERVACIONESVALIDACION";
+	static public final String C_OBSERVACIONESBAJA			= "OBSERVACIONESBAJA";
+	static public final String C_OBSERVACIONESDENEGACION	= "OBSERVACIONESDENEGACION";
+	static public final String C_OBSERVACIONESVALBAJA		= "OBSERVACIONESVALBAJA";
 	
-	
-	/**
-	 * Metodos SET
-	 * */
-	
-	/**
-	 * Almacena en el Bean el identificador de persona 
-	 * 
-	 * @param valor Identificador de la persona apuntada a la guardia. De tipo "Long". 
-	 * @return void 
-	 */
-	public void setIdPersona	 			(Long 	 valor) 	{ this.idPersona = 					valor;}
-	/**
-	 * Almacena en el Bean el identificador de la institucion 
-	 * 
-	 * @param valor Identificador de la institucion a la que pertenece la guardia. De tipo "Integer". 
-	 * @return void 
-	 */
-	public void setIdInstitucion 			(Integer valor) 	{ this.idInstitucion = 				valor;}
-	/**
-	 * Almacena en el Bean el identificador del turno
-	 * 
-	 * @param valor Identificador del turno de la guardia. De tipo "Integer". 
-	 * @return void 
-	 */
-	public void setIdTurno					(Integer valor)		{ this.idTurno = 					valor;}
-	/**
-	 * Almacena en el Bean el identificador de la guardia
-	 * 
-	 * @param valor Identificador de la guardia. De tipo "Integer". 
-	 * @return void 
-	 */
-	public void setIdGuardia				(Integer valor)		{ this.idGuardia = 					valor;}
-	/**
-	 * Almacena en el Bean la fecha de suscripcion a la guardia
-	 * 
-	 * @param valor Fecha de suscripcion de la persona a la guardia. De tipo "String". 
-	 * @return void 
-	 */
-	public void setFechaSuscripcion			(String  valor)		{ this.fechaSuscripcion = 			valor;}
-	/**
-	 * Almacena en el Bean la fecha de baja de la guardia
-	 * 
-	 * @param valor Fecha de baja de la persona de la guardia. De tipo "String". 
-	 * @return void 
-	 */
-	public void setFechaBaja				(String  valor)		{ this.fechaBaja = 					valor;}
-	/**
-	 * Almacena en el Bean las observaciones de la suscripcion
-	 * 
-	 * @param valor Observaciones de la suscripcion a la guardia. De tipo "String". 
-	 * @return void 
-	 */
-	public void setObservacionesSuscripcion	(String  valor)		{ this.observacionesSuscripcion =	valor;}
-	/**
-	 * Almacena en el Bean las observaciones de la baja
-	 * 
-	 * @param valor Observaciones de la baja de la guardia. De tipo "String". 
-	 * @return void 
-	 */
-	public void setObservacionesBaja		(String  valor)		{ this.observacionesBaja = 			valor;}
+	// Campos calculados
+	static public final String C_IDGRUPOGUARDIACOLEGIADO	= "IDGRUPOGUARDIACOLEGIADO";
+	static public final String C_GRUPO						= "GRUPO";
+	static public final String C_ORDENGRUPO					= "ORDENGRUPO";
 	
 	
-	/**
-	 * Metodos GET
-	 * */
+	// Atributos
+	private Integer idInstitucion;
+	private Integer idTurno;
+	private Integer idGuardia;
+	private Long 	idPersona;
+	private String	fechaSuscripcion;
 	
-	/**
-	 * Recupera del Bean el identificador de la persona
-	 * 
-	 * @return Identificador de la persona
-	 */
-	public Long getIdPersona		 			() 	{ return this.idPersona;}
-	/**
-	 * Recupera del Bean el identificador de la institucion
-	 * 
-	 * @return Identificador de la institucion
-	 */
-	public Integer getIdInstitucion 			() 	{ return this.idInstitucion;}
-	/**
-	 * Recupera del Bean el identificador del turno
-	 * 
-	 * @return Identificador del turno
-	 */
-	public Integer getIdTurno					()	{ return this.idTurno;}
-	/**
-	 * Recupera del Bean el identificador de la guardia
-	 * 
-	 * @return Identificador de la guardia
-	 */
-	public Integer getIdGuardia					()	{ return this.idGuardia;}
-	/**
-	 * Recupera del Bean fecha de la suscripcion a la guardia
-	 * 
-	 * @return Fecha de suscripcion a la guardia
-	 */
-	public String getFechaSuscripcion			()	{ return this.fechaSuscripcion;}
-	/**
-	 * Recupera del Bean fecha de la baja a la guardia
-	 * 
-	 * @return Fecha de baja a la guardia
-	 */
-	public String getFechaBaja					()	{ return this.fechaBaja;}
-	/**
-	 * Recupera del Bean las observaciones de la suscripcion a la guardia
-	 * 
-	 * @return Observaciones de la suscripcion a la guardia
-	 */
-	public String getObservacionesSuscripcion	()	{ return this.observacionesSuscripcion;}
-	/**
-	 * Recupera del Bean las observaciones de la baja de la guardia
-	 * 
-	 * @return Observaciones de la baja de la guardia
-	 */
-	public String getObservacionesBaja			()	{ return this.observacionesBaja;}
-	public String getFechaValidacion() {
-		return fechaValidacion;
-	}
-	public void setFechaValidacion(String fechaValidacion) {
-		this.fechaValidacion = fechaValidacion;
-	}
-	public String getFechaSolicitudBaja() {
-		return fechaSolicitudBaja;
-	}
-	public void setFechaSolicitudBaja(String fechaSolicitudBaja) {
-		this.fechaSolicitudBaja = fechaSolicitudBaja;
-	}
-	public String getObservacionesValidacion() {
-		return observacionesValidacion;
-	}
-	public void setObservacionesValidacion(String observacionesValidacion) {
-		this.observacionesValidacion = observacionesValidacion;
-	}
+	private String	fechaValidacion;
+	private String	fechaSolicitudBaja;
+	private String	fechaBaja;
+	private String	fechaDenegacion;
+	
+	private String  observacionesSuscripcion;
+	private String	observacionesValidacion;
+	private String  observacionesBaja;
+	private String	observacionesValBaja;
+	private String  observacionesDenegacion;
+	
+	// Atributos calculados
+	private String	estado;
+	private String	fechaValorAlta;
+	private String	fechaValorBaja;
+	private Long 	idGrupoGuardiaColegiado;
+	private Integer	grupo;
+	private Integer	ordenGrupo;
+	
+	
+	// Setters
+	public void setIdInstitucion 			(Integer valor)	{this.idInstitucion				= valor;}
+	public void setIdTurno					(Integer valor)	{this.idTurno					= valor;}
+	public void setIdGuardia				(Integer valor)	{this.idGuardia					= valor;}
+	public void setIdPersona	 			(Long valor)	{this.idPersona					= valor;}
+	public void setFechaSuscripcion			(String valor)	{this.fechaSuscripcion			= valor;}
+	
+	public void setFechaValidacion			(String valor)	{this.fechaValidacion			= valor;}
+	public void setFechaSolicitudBaja		(String valor)	{this.fechaSolicitudBaja		= valor;}
+	public void setFechaBaja				(String valor)	{this.fechaBaja					= valor;}
+	public void setFechaDenegacion			(String valor)	{this.fechaDenegacion			= valor;}
+	
+	public void setObservacionesSuscripcion	(String valor)	{this.observacionesSuscripcion	= valor;}
+	public void setObservacionesValidacion	(String valor)	{this.observacionesValidacion	= valor;}
+	public void setObservacionesBaja		(String valor)	{this.observacionesBaja			= valor;}
+	public void setObservacionesValBaja		(String valor)	{this.observacionesValBaja		= valor;}
+	public void setObservacionesDenegacion	(String valor)	{this.observacionesDenegacion	= valor;}
+	
+	public void setEstado					(String valor)	{this.estado					= valor;}
+	public void setFechaValorAlta			(String valor)	{this.fechaValorAlta			= valor;}
+	public void setFechaValorBaja			(String valor)	{this.fechaValorBaja			= valor;}
+	public void setIdGrupoGuardiaColegiado	(Long valor)	{this.idGrupoGuardiaColegiado	= valor;}
+	public void setGrupo					(Integer valor)	{this.grupo						= valor;}
+	public void setOrdenGrupo				(Integer valor)	{this.ordenGrupo				= valor;}
+	
+	
+	// Getters
+	public Integer getIdInstitucion 			() {return this.idInstitucion;}
+	public Integer getIdTurno					() {return this.idTurno;}
+	public Integer getIdGuardia					() {return this.idGuardia;}
+	public Long getIdPersona		 			() {return this.idPersona;}
+	public String getFechaSuscripcion			() {return this.fechaSuscripcion;}
+	
+	public String getFechaValidacion			() {return this.fechaValidacion;}
+	public String getFechaSolicitudBaja			() {return this.fechaSolicitudBaja;}
+	public String getFechaBaja					() {return this.fechaBaja;}
+	public String getFechaDenegacion			() {return this.fechaDenegacion;}
+	
+	public String getObservacionesSuscripcion	() {return this.observacionesSuscripcion;}
+	public String getObservacionesValidacion	() {return this.observacionesValidacion;}
+	public String getObservacionesBaja			() {return this.observacionesBaja;}
+	public String getObservacionesValBaja		() {return this.observacionesValBaja;}
+	public String getObservacionesDenegacion	() {return this.observacionesDenegacion;}
+	
+	public String getEstado						() {return this.estado;}
+	public String getFechaValorAlta				() {return this.fechaValorAlta;}
+	public String getFechaValorBaja				() {return this.fechaValorBaja;}
+	public Long getIdGrupoGuardiaColegiado		() {return this.idGrupoGuardiaColegiado;}
+	public Integer getGrupo						() {return this.grupo;}
+	public Integer getOrdenGrupo				() {return this.ordenGrupo;}
+	
+	
+	// Otros atributos
 	ScsTurnoBean turno;
 	ScsGuardiasTurnoBean guardia;
 	CenPersonaBean persona;
 
+	public void setTurno	(ScsTurnoBean valor)			{this.turno		= valor;}
+	public void setGuardia	(ScsGuardiasTurnoBean valor)	{this.guardia	= valor;}
+	public void setPersona	(CenPersonaBean valor)			{this.persona	= valor;}
+	
+	public ScsTurnoBean getTurno			() {return turno;}
+	public ScsGuardiasTurnoBean getGuardia	() {return guardia;}
+	public CenPersonaBean getPersona		() {return persona;}
 
-
-
-	public ScsTurnoBean getTurno() {
-		return turno;
-	}
-	public void setTurno(ScsTurnoBean turno) {
-		this.turno = turno;
-	}
-	public ScsGuardiasTurnoBean getGuardia() {
-		return guardia;
-	}
-	public void setGuardia(ScsGuardiasTurnoBean guardia) {
-		this.guardia = guardia;
-	}
-	public CenPersonaBean getPersona() {
-		return persona;
-	}
-	public void setPersona(CenPersonaBean persona) {
-		this.persona = persona;
-	}
-	public InscripcionTGForm getInscripcion() {
+	public InscripcionTGForm getInscripcion()
+	{
 		InscripcionTGForm inscripcion = new InscripcionTGForm();
-		
+
 		inscripcion.setIdTurno(idTurno.toString());
 		inscripcion.setIdPersona(idPersona.toString());
 		inscripcion.setIdInstitucion(idInstitucion.toString());
@@ -233,13 +146,13 @@ public class ScsInscripcionGuardiaBean extends MasterBean{
 		nombre.append(persona.getNombre());
 		nombre.append(" ");
 		nombre.append(persona.getApellido1());
-		if(persona.getApellido2()!=null){
+		if (persona.getApellido2() != null) {
 			nombre.append(" ");
 			nombre.append(persona.getApellido2());
 		}
-		if(turno!=null&&turno.getGuardias()!=null)
+		if (turno != null && turno.getGuardias() != null)
 			inscripcion.setTipoGuardias(turno.getGuardias().toString());
-		if(turno!=null&&turno.getValidarInscripciones()!=null)
+		if (turno != null && turno.getValidarInscripciones() != null)
 			inscripcion.setValidarInscripciones(turno.getValidarInscripciones());
 		inscripcion.setColegiadoNombre(nombre.toString());
 		inscripcion.setColegiadoNumero(persona.getColegiado().getNColegiado());
@@ -258,45 +171,8 @@ public class ScsInscripcionGuardiaBean extends MasterBean{
 		inscripcion.setObservacionesDenegacion(observacionesDenegacion);
 		inscripcion.setObservacionesBaja(observacionesBaja);
 		inscripcion.setObservacionesValBaja(observacionesValBaja);
-		this.inscripcion= inscripcion;
 		inscripcion.setEstado(estado);
 		return inscripcion;
 	}
-	public String getEstado() {
-		return estado;
-	}
-	public void setEstado(String estado) {
-		this.estado = estado;
-	}
-	public String getFechaDenegacion() {
-		return fechaDenegacion;
-	}
-	public void setFechaDenegacion(String fechaDenegacion) {
-		this.fechaDenegacion = fechaDenegacion;
-	}
-	public String getObservacionesDenegacion() {
-		return observacionesDenegacion;
-	}
-	public void setObservacionesDenegacion(String observacionesDenegacion) {
-		this.observacionesDenegacion = observacionesDenegacion;
-	}
-	public String getFechaValorAlta() {
-		return fechaValorAlta;
-	}
-	public void setFechaValorAlta(String fechaValorAlta) {
-		this.fechaValorAlta = fechaValorAlta;
-	}
-	public String getFechaValorBaja() {
-		return fechaValorBaja;
-	}
-	public void setFechaValorBaja(String fechaValorBaja) {
-		this.fechaValorBaja = fechaValorBaja;
-	}
-	public String getObservacionesValBaja() {
-		return observacionesValBaja;
-	}
-	public void setObservacionesValBaja(String observacionesValBaja) {
-		this.observacionesValBaja = observacionesValBaja;
-	}	
-		
+	
 }

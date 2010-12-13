@@ -1,4 +1,3 @@
-
 package com.siga.beans;
 
 import java.util.ArrayList;
@@ -7,7 +6,6 @@ import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -21,28 +19,37 @@ import com.siga.gratuita.form.InscripcionTGForm;
 public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 {
 	/**
-	 * Constructor de la clase. 
+	 * Constructor 
 	 * @param usuario Usuario "logado" en la aplicación. De tipo "Integer".  
 	 */
 	public ScsInscripcionGuardiaAdm (UsrBean usuario) {
-		super( ScsInscripcionGuardiaBean.T_NOMBRETABLA, usuario);
+		super(ScsInscripcionGuardiaBean.T_NOMBRETABLA, usuario);
 	}
-	
+
 	/**
 	 * Funcion getCamposBean ()
 	 * @return conjunto de datos con los nombres de todos los campos del bean
 	 */
-	protected String[] getCamposBean() {
-		String[] campos = {	ScsInscripcionGuardiaBean.C_IDPERSONA,					ScsInscripcionGuardiaBean.C_IDINSTITUCION,
-							ScsInscripcionGuardiaBean.C_IDTURNO,					ScsInscripcionGuardiaBean.C_IDGUARDIA,
-							ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION,			ScsInscripcionGuardiaBean.C_FECHABAJA,
-							ScsInscripcionGuardiaBean.C_OBSERVACIONESSUSCRIPCION,	ScsInscripcionGuardiaBean.C_OBSERVACIONESBAJA,
-							ScsInscripcionGuardiaBean.C_FECHAVALIDACION,			ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA,
-							ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION,
-							ScsInscripcionGuardiaBean.C_USUMODIFICACION,			ScsInscripcionGuardiaBean.C_FECHAMODIFICACION
-							,ScsInscripcionGuardiaBean.C_FECHADENEGACION,			ScsInscripcionGuardiaBean.C_OBSERVACIONESDENEGACION,
-							ScsInscripcionGuardiaBean.C_OBSERVACIONESVALBAJA
-							
+	protected String[] getCamposBean()
+	{
+		String[] campos =
+		{
+				ScsInscripcionGuardiaBean.C_IDPERSONA,
+				ScsInscripcionGuardiaBean.C_IDINSTITUCION,
+				ScsInscripcionGuardiaBean.C_IDTURNO,
+				ScsInscripcionGuardiaBean.C_IDGUARDIA,
+				ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION,
+				ScsInscripcionGuardiaBean.C_FECHABAJA,
+				ScsInscripcionGuardiaBean.C_OBSERVACIONESSUSCRIPCION,
+				ScsInscripcionGuardiaBean.C_OBSERVACIONESBAJA,
+				ScsInscripcionGuardiaBean.C_FECHAVALIDACION,
+				ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA,
+				ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION,
+				ScsInscripcionGuardiaBean.C_USUMODIFICACION,
+				ScsInscripcionGuardiaBean.C_FECHAMODIFICACION,
+				ScsInscripcionGuardiaBean.C_FECHADENEGACION,
+				ScsInscripcionGuardiaBean.C_OBSERVACIONESDENEGACION,
+				ScsInscripcionGuardiaBean.C_OBSERVACIONESVALBAJA
 		};
 		return campos;
 	}
@@ -52,9 +59,14 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 	 * @return conjunto de datos con los nombres de todos los campos que forman la claves del bean
 	 */
 	protected String[] getClavesBean() {
-		String[] campos = {	ScsInscripcionGuardiaBean.C_IDINSTITUCION,		ScsInscripcionGuardiaBean.C_IDPERSONA,
-							ScsInscripcionGuardiaBean.C_IDTURNO,			ScsInscripcionGuardiaBean.C_IDGUARDIA,
-							ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};
+		String[] campos =
+		{
+				ScsInscripcionGuardiaBean.C_IDINSTITUCION,
+				ScsInscripcionGuardiaBean.C_IDPERSONA,
+				ScsInscripcionGuardiaBean.C_IDTURNO,
+				ScsInscripcionGuardiaBean.C_IDGUARDIA,
+				ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION
+		};
 		return campos;
 	}
 	
@@ -190,15 +202,21 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 		}
 		return datos;
 	}
-	public ScsInscripcionGuardiaBean getSiguienteInscripcion(String idInstitucion,String idTurno, String idPersona, Integer idGuardia, String fechaBajaTurno, String fechaValGuardia) throws ClsExceptions 
+
+	public ScsInscripcionGuardiaBean getSiguienteInscripcion(String idInstitucion,
+			String idTurno,
+			String idPersona,
+			Integer idGuardia,
+			String fechaBajaTurno,
+			String fechaValGuardia) throws ClsExceptions
 	{
-		
+
 		Vector datos = new Vector();
 		StringBuffer sql = new StringBuffer();
 		Hashtable htCodigos = new Hashtable();
-		int contador =0;
+		int contador = 0;
 		sql.append(" SELECT * ");
-		
+
 		sql.append(" FROM SCS_INSCRIPCIONGUARDIA I ");
 		sql.append(" WHERE I.IDINSTITUCION = :");
 		contador++;
@@ -212,55 +230,47 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 		contador++;
 		sql.append(contador);
 		htCodigos.put(contador, idPersona);
-		if(idGuardia!=null){
+		if (idGuardia != null) {
 			sql.append(" AND I.IDGUARDIA = :");
 			contador++;
 			sql.append(contador);
 			htCodigos.put(contador, idGuardia);
 		}
-		
-		
-			
-		//NO SACAR LAS CANCELADAS
-		sql.append( " AND  ");
-		     //VALIDADOS DE ALTA
-		sql.append( " I.FECHAVALIDACION IS NOT NULL AND ");
-		sql.append( " TRUNC(I.FECHAVALIDACION) >= :");
+
+		// NO SACAR LAS CANCELADAS
+		sql.append(" AND  ");
+		// VALIDADOS DE ALTA
+		sql.append(" I.FECHAVALIDACION IS NOT NULL AND ");
+		sql.append(" TRUNC(I.FECHAVALIDACION) >= :");
 		contador++;
 		sql.append(contador);
 		htCodigos.put(contador, fechaValGuardia);
-		//sql.append(fechaValGuardia);
-		if(fechaBajaTurno!=null && !fechaBajaTurno.equals("")){
-			sql.append( " AND TRUNC(I.FECHAVALIDACION)< :");
+		if (fechaBajaTurno != null && !fechaBajaTurno.equals("")) {
+			sql.append(" AND TRUNC(I.FECHAVALIDACION)< :");
 			contador++;
 			sql.append(contador);
 			htCodigos.put(contador, fechaBajaTurno);
-//			sql.append(fechaBajaTurno);
 		}
-		
-	  
-		
-		       
-		       // BAJA DENEGADA
-		
-		
+
+		// BAJA DENEGADA
+
 		sql.append(" ORDER BY I.FECHAVALIDACION ");
-		
+
 		ScsInscripcionGuardiaBean inscripcionBean = null;
 		try {
-			RowsContainer rc = new RowsContainer(); 
+			RowsContainer rc = new RowsContainer();
 
-			if (rc.findBind(sql.toString(),htCodigos)) {
-				for (int i = 0; i < rc.size(); i++){
+			if (rc.findBind(sql.toString(), htCodigos)) {
+				for (int i = 0; i < rc.size(); i++) {
 					Row fila = (Row) rc.get(i);
-					Hashtable<String, Object> htFila=fila.getRow();
-					inscripcionBean =  (ScsInscripcionGuardiaBean)this.hashTableToBean(htFila);
+					Hashtable<String, Object> htFila = fila.getRow();
+					inscripcionBean = (ScsInscripcionGuardiaBean) this.hashTableToBean(htFila);
 					break;
-					
+
 				}
-			} 
+			}
 		} catch (Exception e) {
-			throw new ClsExceptions (e, "Error al ejecutar consulta.");
+			throw new ClsExceptions(e, "Error al ejecutar consulta.");
 		}
 		return inscripcionBean;
 	}
@@ -425,516 +435,522 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 		return isInscripcionesActivas;
 	}
 	
+	public String getQueryNumeroColegiadosIncritos(String institucion, String turno, String idguardia, String fecha) throws ClsExceptions
+	{
 
-	
-	
-	
-	
-	 public String getQueryNumeroColegiadosIncritos(String institucion, String turno, String idguardia,String fecha) throws ClsExceptions{
-		  
-		  String consulta="";
-		  try{
-		   consulta=" select count(*) as NLETRADOSINSCRITOS from "+ScsInscripcionGuardiaBean.T_NOMBRETABLA +
-		            " where idinstitucion =" + institucion +
-		            " and idturno="+ turno+
-		            " and idguardia="+idguardia;
-		     
-		   if(fecha==null){
-		         //consulta   += " and FECHABAJA IS NULL"; 
-		  	}else{
-		  		if(fecha.equalsIgnoreCase("sysdate")){
-		  			fecha = "TRUNC(SYSDATE)";
-		  			
-		  		}else{
-		  			fecha = "'"+fecha+"'";
-		  			
-		  		}
-		  		consulta   += " and (fechavalidacion IS NOT NULL AND trunc(fechavalidacion)<="+fecha+") and (FECHABAJA IS NULL or trunc(FECHABAJA)>"+fecha+")";
-			   
-		  	}
-		  }
-		  catch (Exception e){
-			  throw new ClsExceptions(e,"Excepcion en ScsInscripcionGuardiaAdm.getQueryNumeroColegiadosIncritos() Consulta SQL:"+consulta);
+		String consulta = "";
+		try {
+			consulta = " select count(*) as NLETRADOSINSCRITOS from " + ScsInscripcionGuardiaBean.T_NOMBRETABLA
+					+ " where idinstitucion =" + institucion + " and idturno=" + turno + " and idguardia=" + idguardia;
+
+			if (fecha == null) {
+				// consulta += " and FECHABAJA IS NULL";
+			} else {
+				if (fecha.equalsIgnoreCase("sysdate")) {
+					fecha = "TRUNC(SYSDATE)";
+
+				} else {
+					fecha = "'" + fecha + "'";
+
+				}
+				consulta += " and (fechavalidacion IS NOT NULL AND trunc(fechavalidacion)<=" + fecha
+						+ ") and (FECHABAJA IS NULL or trunc(FECHABAJA)>" + fecha + ")";
+
 			}
-	
-			return consulta;
-			  
-		  }
-	 
-	 public List<ScsInscripcionGuardiaBean> getInscripcionesGuardia(InscripcionTGForm inscripcionguardiaForm,boolean isEdicion)throws ClsExceptions{
+		} catch (Exception e) {
+			throw new ClsExceptions(e,
+					"Excepcion en ScsInscripcionGuardiaAdm.getQueryNumeroColegiadosIncritos() Consulta SQL:" + consulta);
+		}
 
-			Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
-			int contador = 0;
-			StringBuffer sql = new StringBuffer();
-			sql.append(" SELECT  ");
-			sql.append(" GT.NOMBRE NOMBREGUARDIA, ");
-			sql.append(" T.NOMBRE NOMBRETURNO, ");
-			sql.append(" T.ABREVIATURA ABREVIATURATURNO, ");
-			sql.append(" T.VALIDARINSCRIPCIONES , T.GUARDIAS,");
-			sql.append(" DECODE(COL.COMUNITARIO,'1',COL.NCOMUNITARIO, COL.NCOLEGIADO) NCOLEGIADO, ");
-			sql.append(" PER.NOMBRE,PER.APELLIDOS1,PER.APELLIDOS2, ");
-			sql.append(" I.IDINSTITUCION,    I.IDPERSONA,    I.IDTURNO, ");
-			sql.append(" I.IDGUARDIA,  I.FECHASUSCRIPCION,  I.OBSERVACIONESSUSCRIPCION, ");
-			sql.append(" I.FECHAVALIDACION,  I.OBSERVACIONESVALIDACION, ");
-			sql.append(" I.FECHASOLICITUDBAJA,     I.OBSERVACIONESBAJA,    I.FECHABAJA,I.OBSERVACIONESVALBAJA ");
-			sql.append(" ,I.FECHADENEGACION,     I.OBSERVACIONESDENEGACION  ");
-			sql.append(",TO_CHAR(NVL(I.FECHADENEGACION,I.FECHAVALIDACION),'dd/mm/yyyy') FECHAVALORALTA, ");
-			sql.append("TO_CHAR(NVL(I.FECHADENEGACION, I.FECHABAJA), 'dd/mm/yyyy') FECHAVALORBAJA ");
-			sql.append(" FROM SCS_INSCRIPCIONGUARDIA I,CEN_COLEGIADO COL,CEN_PERSONA PER, SCS_GUARDIASTURNO GT,SCS_TURNO T ");
-			sql.append(" WHERE I.IDINSTITUCION = GT.IDINSTITUCION ");
-			sql.append(" AND I.IDTURNO = GT.IDTURNO  AND I.IDGUARDIA = GT.IDGUARDIA ");
-			sql.append(" AND I.IDINSTITUCION = COL.IDINSTITUCION  AND I.IDPERSONA = COL.IDPERSONA ");
-			sql.append(" AND COL.IDPERSONA = PER.IDPERSONA ");
-			sql.append(" AND GT.IDINSTITUCION = T.IDINSTITUCION  AND GT.IDTURNO= T.IDTURNO ");
-			//Sacamos las guardias en potencia de ser validadas(excepto las obligatorias)
-//			sql.append(" AND T.GUARDIAS!=");
-//			sql.append(ScsTurnoBean.TURNO_GUARDIAS_OBLIGATORIAS);
-			
-			sql.append(" AND I.IDINSTITUCION = :");
-			contador ++;
+		return consulta;
+
+	}
+	
+	public List<ScsInscripcionGuardiaBean> getInscripcionesGuardia(InscripcionTGForm inscripcionguardiaForm,
+			boolean isEdicion) throws ClsExceptions
+	{
+
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT  ");
+		sql.append(" GT.NOMBRE NOMBREGUARDIA, ");
+		sql.append(" T.NOMBRE NOMBRETURNO, ");
+		sql.append(" T.ABREVIATURA ABREVIATURATURNO, ");
+		sql.append(" T.VALIDARINSCRIPCIONES , T.GUARDIAS,");
+		sql.append(" DECODE(COL.COMUNITARIO,'1',COL.NCOMUNITARIO, COL.NCOLEGIADO) NCOLEGIADO, ");
+		sql.append(" PER.NOMBRE,PER.APELLIDOS1,PER.APELLIDOS2, ");
+		sql.append(" I.IDINSTITUCION,    I.IDPERSONA,    I.IDTURNO, ");
+		sql.append(" I.IDGUARDIA,  I.FECHASUSCRIPCION,  I.OBSERVACIONESSUSCRIPCION, ");
+		sql.append(" I.FECHAVALIDACION,  I.OBSERVACIONESVALIDACION, ");
+		sql.append(" I.FECHASOLICITUDBAJA,     I.OBSERVACIONESBAJA,    I.FECHABAJA,I.OBSERVACIONESVALBAJA ");
+		sql.append(" ,I.FECHADENEGACION,     I.OBSERVACIONESDENEGACION ");
+		sql.append(",TO_CHAR(NVL(I.FECHADENEGACION,I.FECHAVALIDACION),'dd/mm/yyyy') FECHAVALORALTA, ");
+		sql.append("TO_CHAR(NVL(I.FECHADENEGACION, I.FECHABAJA), 'dd/mm/yyyy') FECHAVALORBAJA ");
+		sql
+				.append(" FROM SCS_INSCRIPCIONGUARDIA I,CEN_COLEGIADO COL,CEN_PERSONA PER, SCS_GUARDIASTURNO GT,SCS_TURNO T ");
+		sql.append(" WHERE I.IDINSTITUCION = GT.IDINSTITUCION ");
+		sql.append(" AND I.IDTURNO = GT.IDTURNO  AND I.IDGUARDIA = GT.IDGUARDIA ");
+		sql.append(" AND I.IDINSTITUCION = COL.IDINSTITUCION  AND I.IDPERSONA = COL.IDPERSONA ");
+		sql.append(" AND COL.IDPERSONA = PER.IDPERSONA ");
+		sql.append(" AND GT.IDINSTITUCION = T.IDINSTITUCION  AND GT.IDTURNO= T.IDTURNO ");
+		// Sacamos las guardias en potencia de ser validadas(excepto las obligatorias)
+		// sql.append(" AND T.GUARDIAS!=");
+		// sql.append(ScsTurnoBean.TURNO_GUARDIAS_OBLIGATORIAS);
+
+		sql.append(" AND I.IDINSTITUCION = :");
+		contador++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador), inscripcionguardiaForm.getIdInstitucion());
+		if (inscripcionguardiaForm.getIdTurno() != null && !inscripcionguardiaForm.getIdTurno().equalsIgnoreCase("")
+				&& !inscripcionguardiaForm.getIdTurno().equalsIgnoreCase("-1")) {
+			sql.append(" AND I.IDTURNO = :");
+			contador++;
 			sql.append(contador);
-			htCodigos.put(new Integer(contador),inscripcionguardiaForm.getIdInstitucion());
-			if(inscripcionguardiaForm.getIdTurno()!=null && !inscripcionguardiaForm.getIdTurno().equalsIgnoreCase("")&& !inscripcionguardiaForm.getIdTurno().equalsIgnoreCase("-1")){
-				sql.append(" AND I.IDTURNO = :");
-				contador ++;
-				sql.append(contador);
-				htCodigos.put(new Integer(contador),inscripcionguardiaForm.getIdTurno());
-			}
-			if(inscripcionguardiaForm.getIdPersona()!=null && !inscripcionguardiaForm.getIdPersona().equalsIgnoreCase("")){
-				sql.append(" AND I.IDPERSONA = :");
-				contador ++;
-				sql.append(contador);
-				htCodigos.put(new Integer(contador),inscripcionguardiaForm.getIdPersona());
-			}
-			if(inscripcionguardiaForm.getIdGuardia()!=null && !inscripcionguardiaForm.getIdGuardia().equalsIgnoreCase("")&& !inscripcionguardiaForm.getIdGuardia().equalsIgnoreCase("-1")){
-				sql.append(" AND I.IDGUARDIA = :");
-				contador ++;
-				sql.append(contador);
-				htCodigos.put(new Integer(contador),inscripcionguardiaForm.getIdGuardia());
-			}
-			
-			
-			
-			
-			String campoFecha = null;
-			StringBuffer orderBy = new StringBuffer();
-			if(!isEdicion){
-				if(inscripcionguardiaForm.getTipo().equals("A")){
-					campoFecha="I.FECHASUSCRIPCION";
-					orderBy.append(campoFecha);
-					if(inscripcionguardiaForm.getEstado()!=null && inscripcionguardiaForm.getEstado().equals("S")){
-							//ORDENAMOS POR ALGO???
-					}else if(inscripcionguardiaForm.getEstado()!=null && inscripcionguardiaForm.getEstado().equals("P")){
-						sql.append(" AND I.FECHADENEGACION IS NULL ");
-						sql.append(" AND I.FECHAVALIDACION IS NULL ");
-						sql.append(" AND I.FECHABAJA IS NULL ");
-						sql.append(" AND I.FECHASOLICITUDBAJA IS NULL ");
-						//TIENEN QUE TENER LA INSCRIPCION AL TURNO VALIDADAS
-						sql.append(" AND (SELECT count(*) ");
-						sql.append(" FROM SCS_INSCRIPCIONTURNO IT ");
-						sql.append(" WHERE  ");
-						sql.append(" IT.IDINSTITUCION = I.IDINSTITUCION ");
-						sql.append(" AND IT.IDTURNO = I.IDTURNO ");
-						sql.append(" AND IT.IDPERSONA = I.IDPERSONA ");
-						sql.append(" AND IT.FECHAVALIDACION IS NULL ");
-						sql.append(" AND IT.FECHABAJA IS NULL ");
-						sql.append(" AND IT.FECHASOLICITUDBAJA IS NULL)=0 ");
-		
-						
-						
-					}else if(inscripcionguardiaForm.getEstado()!=null && inscripcionguardiaForm.getEstado().equals("C")){
-						orderBy.append(",I.FECHAVALIDACION");
-						sql.append(" AND I.FECHADENEGACION IS NULL ");
-						sql.append(" AND I.FECHAVALIDACION IS NOT NULL ");
-						sql.append(" AND I.FECHABAJA IS NULL ");
-						sql.append(" AND I.FECHASOLICITUDBAJA IS NULL ");
-						
-					}else if(inscripcionguardiaForm.getEstado()!=null && inscripcionguardiaForm.getEstado().equals("D")){
-						orderBy.append(",I.FECHAVALIDACION");
-						sql.append(" AND I.FECHADENEGACION IS NOT NULL ");
-						sql.append(" AND I.FECHAVALIDACION IS NULL ");
-						sql.append(" AND I.FECHABAJA IS NULL ");
-						sql.append(" AND I.FECHASOLICITUDBAJA IS NULL ");
-						
-						
-						
-						
-					}		
-					
-					
-				}else if(inscripcionguardiaForm.getTipo().equals("B")){
-					campoFecha="I.FECHASOLICITUDBAJA";
-					orderBy.append(campoFecha);
-					if(inscripcionguardiaForm.getEstado()!=null && inscripcionguardiaForm.getEstado().equals("P")){
-						sql.append(" AND I.FECHADENEGACION IS NULL ");
-						sql.append(" AND I.FECHASOLICITUDBAJA IS NOT NULL ");
-						sql.append(" AND I.FECHABAJA IS NULL ");
-						
-					}else if(inscripcionguardiaForm.getEstado()!=null && inscripcionguardiaForm.getEstado().equals("C")){
-						orderBy.append(",I.FECHABAJA");
-						sql.append(" AND I.FECHASOLICITUDBAJA IS NOT NULL ");
-						sql.append(" AND I.FECHABAJA IS NOT NULL ");
-						sql.append(" AND I.FECHADENEGACION IS NULL ");
-						
-					}else if(inscripcionguardiaForm.getEstado()!=null && inscripcionguardiaForm.getEstado().equals("D")){
-						orderBy.append(",I.FECHABAJA");
-						sql.append(" AND I.FECHASOLICITUDBAJA IS NOT NULL ");
-						sql.append(" AND I.FECHABAJA IS NULL ");
-						sql.append(" AND I.FECHADENEGACION IS NOT NULL ");
-						
-					}
-					
-					
-				}
-			}else{
-				if(inscripcionguardiaForm.getTipo().equals("A")){
-					orderBy.append(" I.FECHABAJA ");
-				}else{
-					orderBy.append(" I.FECHAVALIDACION ");
-					
-				}
-				
-			}
-			if(inscripcionguardiaForm.getFechaDesde()!=null && !inscripcionguardiaForm.getFechaDesde().equals("")){
-				sql.append(" AND ");
-				sql.append(campoFecha);
-				sql.append(">=:");
-				contador ++;
-				sql.append(contador);
-				htCodigos.put(new Integer(contador),inscripcionguardiaForm.getFechaDesde());
-				
-			}
-			if(inscripcionguardiaForm.getFechaHasta()!=null && !inscripcionguardiaForm.getFechaHasta().equals("")){
-				sql.append(" AND ");
-				sql.append(campoFecha);
-				sql.append("<=:");
-				contador ++;
-				sql.append(contador);
-				htCodigos.put(new Integer(contador),inscripcionguardiaForm.getFechaHasta());
-				
-			}
-			
-			
-			
-			
-			sql.append(" ORDER BY ");
-			sql.append(orderBy);
-			if(!isEdicion)
-				sql.append(" DESC ");
+			htCodigos.put(new Integer(contador), inscripcionguardiaForm.getIdTurno());
+		}
+		if (inscripcionguardiaForm.getIdPersona() != null
+				&& !inscripcionguardiaForm.getIdPersona().equalsIgnoreCase("")) {
+			sql.append(" AND I.IDPERSONA = :");
+			contador++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador), inscripcionguardiaForm.getIdPersona());
+		}
+		if (inscripcionguardiaForm.getIdGuardia() != null
+				&& !inscripcionguardiaForm.getIdGuardia().equalsIgnoreCase("")
+				&& !inscripcionguardiaForm.getIdGuardia().equalsIgnoreCase("-1")) {
+			sql.append(" AND I.IDGUARDIA = :");
+			contador++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador), inscripcionguardiaForm.getIdGuardia());
+		}
 
-			
-			List<ScsInscripcionGuardiaBean> alInscripcion = null;
-			try {
-				RowsContainer rc = new RowsContainer(); 
-													
-	            if (rc.findBind(sql.toString(),htCodigos)) {
-	            	alInscripcion = new ArrayList<ScsInscripcionGuardiaBean>();
-	            	ScsInscripcionGuardiaBean inscripcionBean = null;
-	            	ScsTurnoBean turno = null;
-	            	ScsGuardiasTurnoBean guardia = null;
-	            	CenPersonaBean persona = null;
-	            	CenColegiadoBean colegiado = null;
-	            	
-	            	
-	    			for (int i = 0; i < rc.size(); i++){
-	            		Row fila = (Row) rc.get(i);
-	            		Hashtable<String, Object> htFila=fila.getRow();
-	            		inscripcionBean =  (ScsInscripcionGuardiaBean)this.hashTableToBean(htFila);
-	            		inscripcionBean.setFechaValorAlta(UtilidadesHash.getString(htFila,"FECHAVALORALTA"));
-						inscripcionBean.setFechaValorBaja(UtilidadesHash.getString(htFila,"FECHAVALORBAJA"));
-	            		String estado = "No aplica";
-						if(inscripcionBean.getFechaValidacion().equals("")){
-							if(inscripcionBean.getFechaSolicitudBaja().equals("")){
-								if(inscripcionBean.getFechaDenegacion().equals("")){
-									estado ="Alta Pendiente";
-								}else{
-									estado ="Alta Denegada";
-								}
-								
-							}else{
-								if(inscripcionBean.getFechaBaja().equals("")){
-									if(inscripcionBean.getFechaDenegacion().equals("")){
-										estado ="Baja Pendiente";	
-									}else{
-										estado ="Baja Denegada";
-									}
-									
-								}else{
-									estado ="Baja Confirmada";
-									
-								}
+		String campoFecha = null;
+		StringBuffer orderBy = new StringBuffer();
+		if (!isEdicion) {
+			if (inscripcionguardiaForm.getTipo().equals("A")) {
+				campoFecha = "I.FECHASUSCRIPCION";
+				orderBy.append(campoFecha);
+				if (inscripcionguardiaForm.getEstado() != null && inscripcionguardiaForm.getEstado().equals("S")) {
+					// ORDENAMOS POR ALGO???
+				} else if (inscripcionguardiaForm.getEstado() != null && inscripcionguardiaForm.getEstado().equals("P")) {
+					sql.append(" AND I.FECHADENEGACION IS NULL ");
+					sql.append(" AND I.FECHAVALIDACION IS NULL ");
+					sql.append(" AND I.FECHABAJA IS NULL ");
+					sql.append(" AND I.FECHASOLICITUDBAJA IS NULL ");
+					// TIENEN QUE TENER LA INSCRIPCION AL TURNO VALIDADAS
+					sql.append(" AND (SELECT count(*) ");
+					sql.append(" FROM SCS_INSCRIPCIONTURNO IT ");
+					sql.append(" WHERE  ");
+					sql.append(" IT.IDINSTITUCION = I.IDINSTITUCION ");
+					sql.append(" AND IT.IDTURNO = I.IDTURNO ");
+					sql.append(" AND IT.IDPERSONA = I.IDPERSONA ");
+					sql.append(" AND IT.FECHAVALIDACION IS NULL ");
+					sql.append(" AND IT.FECHABAJA IS NULL ");
+					sql.append(" AND IT.FECHASOLICITUDBAJA IS NULL)=0 ");
+
+				} else if (inscripcionguardiaForm.getEstado() != null && inscripcionguardiaForm.getEstado().equals("C")) {
+					orderBy.append(",I.FECHAVALIDACION");
+					sql.append(" AND I.FECHADENEGACION IS NULL ");
+					sql.append(" AND I.FECHAVALIDACION IS NOT NULL ");
+					sql.append(" AND I.FECHABAJA IS NULL ");
+					sql.append(" AND I.FECHASOLICITUDBAJA IS NULL ");
+
+				} else if (inscripcionguardiaForm.getEstado() != null && inscripcionguardiaForm.getEstado().equals("D")) {
+					orderBy.append(",I.FECHAVALIDACION");
+					sql.append(" AND I.FECHADENEGACION IS NOT NULL ");
+					sql.append(" AND I.FECHAVALIDACION IS NULL ");
+					sql.append(" AND I.FECHABAJA IS NULL ");
+					sql.append(" AND I.FECHASOLICITUDBAJA IS NULL ");
+
+				}
+
+			} else if (inscripcionguardiaForm.getTipo().equals("B")) {
+				campoFecha = "I.FECHASOLICITUDBAJA";
+				orderBy.append(campoFecha);
+				if (inscripcionguardiaForm.getEstado() != null && inscripcionguardiaForm.getEstado().equals("P")) {
+					sql.append(" AND I.FECHADENEGACION IS NULL ");
+					sql.append(" AND I.FECHASOLICITUDBAJA IS NOT NULL ");
+					sql.append(" AND I.FECHABAJA IS NULL ");
+
+				} else if (inscripcionguardiaForm.getEstado() != null && inscripcionguardiaForm.getEstado().equals("C")) {
+					orderBy.append(",I.FECHABAJA");
+					sql.append(" AND I.FECHASOLICITUDBAJA IS NOT NULL ");
+					sql.append(" AND I.FECHABAJA IS NOT NULL ");
+					sql.append(" AND I.FECHADENEGACION IS NULL ");
+
+				} else if (inscripcionguardiaForm.getEstado() != null && inscripcionguardiaForm.getEstado().equals("D")) {
+					orderBy.append(",I.FECHABAJA");
+					sql.append(" AND I.FECHASOLICITUDBAJA IS NOT NULL ");
+					sql.append(" AND I.FECHABAJA IS NULL ");
+					sql.append(" AND I.FECHADENEGACION IS NOT NULL ");
+
+				}
+
+			}
+		} else {
+			if (inscripcionguardiaForm.getTipo().equals("A")) {
+				orderBy.append(" I.FECHABAJA ");
+			} else {
+				orderBy.append(" I.FECHAVALIDACION ");
+
+			}
+
+		}
+		if (inscripcionguardiaForm.getFechaDesde() != null && !inscripcionguardiaForm.getFechaDesde().equals("")) {
+			sql.append(" AND ");
+			sql.append(campoFecha);
+			sql.append(">=:");
+			contador++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador), inscripcionguardiaForm.getFechaDesde());
+
+		}
+		if (inscripcionguardiaForm.getFechaHasta() != null && !inscripcionguardiaForm.getFechaHasta().equals("")) {
+			sql.append(" AND ");
+			sql.append(campoFecha);
+			sql.append("<=:");
+			contador++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador), inscripcionguardiaForm.getFechaHasta());
+
+		}
+
+		sql.append(" ORDER BY ");
+		sql.append(orderBy);
+		if (!isEdicion)
+			sql.append(" DESC ");
+
+		List<ScsInscripcionGuardiaBean> alInscripcion = null;
+		try {
+			RowsContainer rc = new RowsContainer();
+
+			if (rc.findBind(sql.toString(), htCodigos)) {
+				alInscripcion = new ArrayList<ScsInscripcionGuardiaBean>();
+				ScsInscripcionGuardiaBean inscripcionBean = null;
+				ScsTurnoBean turno = null;
+				ScsGuardiasTurnoBean guardia = null;
+				CenPersonaBean persona = null;
+				CenColegiadoBean colegiado = null;
+
+				for (int i = 0; i < rc.size(); i++) {
+					Row fila = (Row) rc.get(i);
+					Hashtable<String, Object> htFila = fila.getRow();
+					inscripcionBean = (ScsInscripcionGuardiaBean) this.hashTableToBean(htFila);
+					inscripcionBean.setFechaValorAlta(UtilidadesHash.getString(htFila, "FECHAVALORALTA"));
+					inscripcionBean.setFechaValorBaja(UtilidadesHash.getString(htFila, "FECHAVALORBAJA"));
+					String estado = "No aplica";
+					if (inscripcionBean.getFechaValidacion().equals("")) {
+						if (inscripcionBean.getFechaSolicitudBaja().equals("")) {
+							if (inscripcionBean.getFechaDenegacion().equals("")) {
+								estado = "Alta Pendiente";
+							} else {
+								estado = "Alta Denegada";
 							}
-						}else{
-							
-							if(inscripcionBean.getFechaSolicitudBaja().equals("")){
-								estado ="Alta Confirmada";
-							}else{
-								if(inscripcionBean.getFechaBaja().equals("")){
-									if(inscripcionBean.getFechaDenegacion().equals("")){
-										estado ="Baja Pendiente";	
-									}else{
-										estado ="Baja Denegada";
-									}
-								}else{
-									estado ="Baja Confirmada";
+
+						} else {
+							if (inscripcionBean.getFechaBaja().equals("")) {
+								if (inscripcionBean.getFechaDenegacion().equals("")) {
+									estado = "Baja Pendiente";
+								} else {
+									estado = "Baja Denegada";
 								}
+
+							} else {
+								estado = "Baja Confirmada";
+
 							}
 						}
-						inscripcionBean.setEstado(estado);
-						
-	            		
-	            		
-	            		turno = new ScsTurnoBean();
-	            		inscripcionBean.setTurno(turno);
-		            	guardia = new ScsGuardiasTurnoBean();
-		            	inscripcionBean.setGuardia(guardia);
-		            	persona = new CenPersonaBean();
-		            	colegiado = new CenColegiadoBean();
-		            	persona.setColegiado(colegiado);
-		            	inscripcionBean.setPersona(persona);
-		            	
-		            	
-	            		
-		            	turno.setIdInstitucion(UtilidadesHash.getInteger(htFila,ScsTurnoBean.C_IDINSTITUCION));
-	            		turno.setIdTurno(UtilidadesHash.getInteger(htFila,ScsTurnoBean.C_IDTURNO));
-	            		turno.setNombre(UtilidadesHash.getString(htFila,"NOMBRETURNO"));
-	            		turno.setAbreviatura(UtilidadesHash.getString(htFila,"ABREVIATURATURNO"));
-						turno.setValidarInscripciones(UtilidadesHash.getString(htFila,ScsTurnoBean.C_VALIDARINSCRIPCIONES));
-						turno.setGuardias(UtilidadesHash.getInteger(htFila,ScsTurnoBean.C_GUARDIAS));
+					} else {
 
-	            		
-	            		guardia.setIdInstitucion(UtilidadesHash.getInteger(htFila,ScsGuardiasTurnoBean.C_IDINSTITUCION));
-	            		guardia.setIdGuardia(UtilidadesHash.getInteger(htFila,ScsGuardiasTurnoBean.C_IDGUARDIA));
-	            		guardia.setNombre(UtilidadesHash.getString(htFila,"NOMBREGUARDIA"));
-	            		
-	            		
-	            		colegiado.setIdInstitucion(UtilidadesHash.getInteger(htFila,CenColegiadoBean.C_IDINSTITUCION));
-	            		colegiado.setNColegiado(UtilidadesHash.getString(htFila,CenColegiadoBean.C_NCOLEGIADO));
-	            		persona.setIdPersona(UtilidadesHash.getLong(htFila,CenPersonaBean.C_IDPERSONA));
-	            		persona.setNombre(UtilidadesHash.getString(htFila,CenPersonaBean.C_NOMBRE));
-	            		persona.setApellido1(UtilidadesHash.getString(htFila,CenPersonaBean.C_APELLIDOS1));
-	            		persona.setApellido2(UtilidadesHash.getString(htFila,CenPersonaBean.C_APELLIDOS2));
-	            		
-	            		alInscripcion.add(inscripcionBean);
-	            	}
-	            } 
-	       } catch (Exception e) {
-	       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
-	       }
-	       return alInscripcion;
-			
+						if (inscripcionBean.getFechaSolicitudBaja().equals("")) {
+							estado = "Alta Confirmada";
+						} else {
+							if (inscripcionBean.getFechaBaja().equals("")) {
+								if (inscripcionBean.getFechaDenegacion().equals("")) {
+									estado = "Baja Pendiente";
+								} else {
+									estado = "Baja Denegada";
+								}
+							} else {
+								estado = "Baja Confirmada";
+							}
+						}
+					}
+					inscripcionBean.setEstado(estado);
+
+					turno = new ScsTurnoBean();
+					inscripcionBean.setTurno(turno);
+					guardia = new ScsGuardiasTurnoBean();
+					inscripcionBean.setGuardia(guardia);
+					persona = new CenPersonaBean();
+					colegiado = new CenColegiadoBean();
+					persona.setColegiado(colegiado);
+					inscripcionBean.setPersona(persona);
+
+					turno.setIdInstitucion(UtilidadesHash.getInteger(htFila, ScsTurnoBean.C_IDINSTITUCION));
+					turno.setIdTurno(UtilidadesHash.getInteger(htFila, ScsTurnoBean.C_IDTURNO));
+					turno.setNombre(UtilidadesHash.getString(htFila, "NOMBRETURNO"));
+					turno.setAbreviatura(UtilidadesHash.getString(htFila, "ABREVIATURATURNO"));
+					turno
+							.setValidarInscripciones(UtilidadesHash.getString(htFila,
+									ScsTurnoBean.C_VALIDARINSCRIPCIONES));
+					turno.setGuardias(UtilidadesHash.getInteger(htFila, ScsTurnoBean.C_GUARDIAS));
+
+					guardia.setIdInstitucion(UtilidadesHash.getInteger(htFila, ScsGuardiasTurnoBean.C_IDINSTITUCION));
+					guardia.setIdGuardia(UtilidadesHash.getInteger(htFila, ScsGuardiasTurnoBean.C_IDGUARDIA));
+					guardia.setNombre(UtilidadesHash.getString(htFila, "NOMBREGUARDIA"));
+
+					colegiado.setIdInstitucion(UtilidadesHash.getInteger(htFila, CenColegiadoBean.C_IDINSTITUCION));
+					colegiado.setNColegiado(UtilidadesHash.getString(htFila, CenColegiadoBean.C_NCOLEGIADO));
+					persona.setIdPersona(UtilidadesHash.getLong(htFila, CenPersonaBean.C_IDPERSONA));
+					persona.setNombre(UtilidadesHash.getString(htFila, CenPersonaBean.C_NOMBRE));
+					persona.setApellido1(UtilidadesHash.getString(htFila, CenPersonaBean.C_APELLIDOS1));
+					persona.setApellido2(UtilidadesHash.getString(htFila, CenPersonaBean.C_APELLIDOS2));
+
+					alInscripcion.add(inscripcionBean);
+				}
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al ejecutar consulta.");
 		}
-	 public List<ScsInscripcionGuardiaBean> getGuardiasInscripcion(Integer idInstitucion,Integer idTurno,Long idPersona,Integer idGuardia)throws ClsExceptions{
+		return alInscripcion;
 
-			Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
-			int contador = 0;
-			StringBuffer sql = new StringBuffer();
-			
-			sql.append(" SELECT GT.IDINSTITUCION,GT.IDTURNO, GT.IDGUARDIA, GT.NOMBRE, ");
-			sql.append(" GT.NUMEROLETRADOSGUARDIA, GT.NUMEROSUSTITUTOSGUARDIA, ");
-			sql.append(" GT.SELECCIONLABORABLES, GT.SELECCIONFESTIVOS, ");
-			sql.append(" GT.TIPODIASGUARDIA ,  GT.DIASGUARDIA , ");
-			sql.append(" GT.DIASPAGADOS ,  GT.DIASSEPARACIONGUARDIAS  ");
-			sql.append(" ,IG.FECHASUSCRIPCION,IG.IDPERSONA  ");
-			
-			sql.append(" FROM SCS_GUARDIASTURNO GT, SCS_INSCRIPCIONGUARDIA IG ");
-			sql.append(" WHERE  ");
-			sql.append(" GT.IDINSTITUCION = IG.IDINSTITUCION ");
-			sql.append(" AND GT.IDTURNO = IG.IDTURNO ");
-			sql.append(" AND GT.IDGUARDIA = IG.IDGUARDIA ");
-			sql.append(" AND IG.IDINSTITUCION = :");
-			contador ++;
+	}
+
+	public List<ScsInscripcionGuardiaBean> getGuardiasInscripcion(Integer idInstitucion,
+			Integer idTurno,
+			Long idPersona,
+			Integer idGuardia) throws ClsExceptions
+	{
+
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+
+		sql.append(" SELECT GT.IDINSTITUCION,GT.IDTURNO, GT.IDGUARDIA, GT.NOMBRE, ");
+		sql.append(" GT.NUMEROLETRADOSGUARDIA, GT.NUMEROSUSTITUTOSGUARDIA, ");
+		sql.append(" GT.SELECCIONLABORABLES, GT.SELECCIONFESTIVOS, ");
+		sql.append(" GT.TIPODIASGUARDIA ,  GT.DIASGUARDIA , ");
+		sql.append(" GT.DIASPAGADOS ,  GT.DIASSEPARACIONGUARDIAS  ");
+		sql.append(" ,IG.FECHASUSCRIPCION,IG.IDPERSONA  ");
+
+		sql.append(" FROM SCS_GUARDIASTURNO GT, SCS_INSCRIPCIONGUARDIA IG ");
+		sql.append(" WHERE  ");
+		sql.append(" GT.IDINSTITUCION = IG.IDINSTITUCION ");
+		sql.append(" AND GT.IDTURNO = IG.IDTURNO ");
+		sql.append(" AND GT.IDGUARDIA = IG.IDGUARDIA ");
+		sql.append(" AND IG.IDINSTITUCION = :");
+		contador++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador), idInstitucion);
+		sql.append(" AND IG.IDTURNO = :");
+		contador++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador), idTurno);
+		sql.append(" AND IG.IDPERSONA = :");
+		contador++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador), idPersona);
+		sql.append(" AND IG.FECHABAJA IS NULL ");
+		sql.append(" AND IG.FECHADENEGACION IS NULL ");
+
+		if (idGuardia != null) {
+			sql.append(" AND IG.IDGUARDIA = :");
+			contador++;
 			sql.append(contador);
-			htCodigos.put(new Integer(contador),idInstitucion);
-			sql.append(" AND IG.IDTURNO = :");
-			contador ++;
-			sql.append(contador);
-			htCodigos.put(new Integer(contador),idTurno);
-			sql.append(" AND IG.IDPERSONA = :");
-			contador ++;
-			sql.append(contador);
-			htCodigos.put(new Integer(contador),idPersona);
-			sql.append(" AND IG.FECHABAJA IS NULL ");
-			sql.append(" AND IG.FECHADENEGACION IS NULL ");
-			
-			if(idGuardia!=null){
-				sql.append(" AND IG.IDGUARDIA = :");
-				contador ++;
-				sql.append(contador);
-				htCodigos.put(new Integer(contador),idGuardia);
-				
-				
+			htCodigos.put(new Integer(contador), idGuardia);
+
+		}
+
+		sql.append(" ORDER BY GT.NOMBRE ");
+
+		List<ScsInscripcionGuardiaBean> alInscripcion = null;
+		try {
+			RowsContainer rc = new RowsContainer();
+
+			if (rc.findBind(sql.toString(), htCodigos)) {
+				alInscripcion = new ArrayList<ScsInscripcionGuardiaBean>();
+				ScsInscripcionGuardiaBean inscripcionBean = null;
+				ScsGuardiasTurnoBean guardia = null;
+
+				for (int i = 0; i < rc.size(); i++) {
+					Row fila = (Row) rc.get(i);
+					Hashtable<String, Object> htFila = fila.getRow();
+					inscripcionBean = new ScsInscripcionGuardiaBean();
+					guardia = new ScsGuardiasTurnoBean();
+
+					guardia.setIdTurno(idTurno);
+					guardia.setIdInstitucion(UtilidadesHash.getInteger(htFila, ScsGuardiasTurnoBean.C_IDINSTITUCION));
+					guardia.setIdGuardia(UtilidadesHash.getInteger(htFila, ScsGuardiasTurnoBean.C_IDGUARDIA));
+					guardia.setNombre(UtilidadesHash.getString(htFila, ScsGuardiasTurnoBean.C_NOMBRE));
+					guardia.setNumeroLetradosGuardia(UtilidadesHash.getInteger(htFila,
+							ScsGuardiasTurnoBean.C_NUMEROLETRADOSGUARDIA));
+					guardia.setNumeroSustitutosGuardia(UtilidadesHash.getInteger(htFila,
+							ScsGuardiasTurnoBean.C_NUMEROSUSTITUTOSGUARDIA));
+					guardia.setSeleccionLaborables(UtilidadesHash.getString(htFila,
+							ScsGuardiasTurnoBean.C_SELECCIONLABORABLES));
+					guardia.setSeleccionFestivos(UtilidadesHash.getString(htFila,
+							ScsGuardiasTurnoBean.C_SELECCIONFESTIVOS));
+					guardia.setDiasGuardia(UtilidadesHash.getInteger(htFila, ScsGuardiasTurnoBean.C_DIASGUARDIA));
+					guardia
+							.setTipodiasGuardia(UtilidadesHash
+									.getString(htFila, ScsGuardiasTurnoBean.C_TIPODIASGUARDIA));
+					String literalTipoDias = "";
+					if (guardia.getTipodiasGuardia().equalsIgnoreCase("D"))
+						literalTipoDias = "gratuita.altaTurnos_2.literal.dias";
+					else if (guardia.getTipodiasGuardia().equalsIgnoreCase("S"))
+						literalTipoDias = "gratuita.altaTurnos_2.literal.semanas";
+					else if (guardia.getTipodiasGuardia().equalsIgnoreCase("M"))
+						literalTipoDias = "gratuita.altaTurnos_2.literal.meses";
+					else if (guardia.getTipodiasGuardia().equalsIgnoreCase("Q"))
+						literalTipoDias = "gratuita.altaTurnos_2.literal.quincenas";
+					guardia.setDescripcionTipoDiasGuardia(literalTipoDias);
+
+					guardia.setDiasPagados(UtilidadesHash.getInteger(htFila, ScsGuardiasTurnoBean.C_DIASPAGADOS));
+					guardia.setDiasSeparacionGuardia(UtilidadesHash.getInteger(htFila,
+							ScsGuardiasTurnoBean.C_DIASSEPARACIONGUARDIAS));
+
+					String seleccionTiposDia = ScsGuardiasTurnoAdm.obtenerTipoDia(guardia.getSeleccionLaborables(),
+							guardia.getSeleccionFestivos(), this.usrbean);
+					guardia.setSeleccionTiposDia(seleccionTiposDia);
+
+					inscripcionBean.setGuardia(guardia);
+					inscripcionBean.setFechaSuscripcion(UtilidadesHash.getString(htFila,
+							ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION));
+					inscripcionBean.setIdGuardia(guardia.getIdGuardia());
+					inscripcionBean.setIdInstitucion(guardia.getIdInstitucion());
+					inscripcionBean.setIdPersona(idPersona);
+					inscripcionBean.setIdTurno(idTurno);
+
+					alInscripcion.add(inscripcionBean);
+				}
 			}
-			
-			sql.append(" ORDER BY GT.NOMBRE ");
-			
-			List<ScsInscripcionGuardiaBean> alInscripcion = null;
-			try {
-				RowsContainer rc = new RowsContainer(); 
-													
-	            if (rc.findBind(sql.toString(),htCodigos)) {
-	            	alInscripcion = new ArrayList<ScsInscripcionGuardiaBean>();
-	            	ScsInscripcionGuardiaBean inscripcionBean = null;
-	            	ScsGuardiasTurnoBean guardia = null;
-            	
-	            	
-	    			for (int i = 0; i < rc.size(); i++){
-	            		Row fila = (Row) rc.get(i);
-	            		Hashtable<String, Object> htFila=fila.getRow();
-	            		inscripcionBean =  new ScsInscripcionGuardiaBean();
-		            	guardia = new ScsGuardiasTurnoBean();
-		            	
-		            	guardia.setIdTurno(idTurno);
-	            		guardia.setIdInstitucion(UtilidadesHash.getInteger(htFila,ScsGuardiasTurnoBean.C_IDINSTITUCION));
-	            		guardia.setIdGuardia(UtilidadesHash.getInteger(htFila,ScsGuardiasTurnoBean.C_IDGUARDIA));
-	            		guardia.setNombre(UtilidadesHash.getString(htFila,ScsGuardiasTurnoBean.C_NOMBRE));
-	            		guardia.setNumeroLetradosGuardia(UtilidadesHash.getInteger(htFila,ScsGuardiasTurnoBean.C_NUMEROLETRADOSGUARDIA));
-	            		guardia.setNumeroSustitutosGuardia(UtilidadesHash.getInteger(htFila,ScsGuardiasTurnoBean.C_NUMEROSUSTITUTOSGUARDIA));
-	            		guardia.setSeleccionLaborables(UtilidadesHash.getString(htFila,ScsGuardiasTurnoBean.C_SELECCIONLABORABLES));
-	            		guardia.setSeleccionFestivos(UtilidadesHash.getString(htFila,ScsGuardiasTurnoBean.C_SELECCIONFESTIVOS));
-	            		guardia.setDiasGuardia(UtilidadesHash.getInteger(htFila,ScsGuardiasTurnoBean.C_DIASGUARDIA));
-	            		guardia.setTipodiasGuardia(UtilidadesHash.getString(htFila,ScsGuardiasTurnoBean.C_TIPODIASGUARDIA));
-	            		String literalTipoDias="" ;
-	            		if(guardia.getTipodiasGuardia().equalsIgnoreCase("D"))
-	            			literalTipoDias = "gratuita.altaTurnos_2.literal.dias";
-	    				else if(guardia.getTipodiasGuardia().equalsIgnoreCase("S"))
-	    					literalTipoDias = "gratuita.altaTurnos_2.literal.semanas";
-	    				else if(guardia.getTipodiasGuardia().equalsIgnoreCase("M"))
-	    					literalTipoDias = "gratuita.altaTurnos_2.literal.meses";
-	    				else if(guardia.getTipodiasGuardia().equalsIgnoreCase("Q"))
-	    					  literalTipoDias = "gratuita.altaTurnos_2.literal.quincenas";
-	            		guardia.setDescripcionTipoDiasGuardia(literalTipoDias);
-	            		
-	            		guardia.setDiasPagados(UtilidadesHash.getInteger(htFila,ScsGuardiasTurnoBean.C_DIASPAGADOS));
-	            		guardia.setDiasSeparacionGuardia(UtilidadesHash.getInteger(htFila,ScsGuardiasTurnoBean.C_DIASSEPARACIONGUARDIAS));
-	            		
-	            		String seleccionTiposDia = ScsGuardiasTurnoAdm.obtenerTipoDia(guardia.getSeleccionLaborables(), guardia.getSeleccionFestivos(), this.usrbean);
-	            		guardia.setSeleccionTiposDia(seleccionTiposDia);
-	            		
-	            		inscripcionBean.setGuardia(guardia);
-	            		inscripcionBean.setFechaSuscripcion(UtilidadesHash.getString(htFila,ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION));
-		            	inscripcionBean.setIdGuardia(guardia.getIdGuardia());
-		            	inscripcionBean.setIdInstitucion(guardia.getIdInstitucion());
-		            	inscripcionBean.setIdPersona(idPersona);
-		            	inscripcionBean.setIdTurno(idTurno);
-		            	
-	            		
-	            		alInscripcion.add(inscripcionBean);
-	            	}
-	            } 
-	       } catch (Exception e) {
-	       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
-	       }
-	       return alInscripcion;
-			
-		} 
-	 
-	 public List<ScsInscripcionGuardiaBean> getGuardiasParaInscripcion(Integer idInstitucion,Integer idTurno,Long idPersona,Integer idGuardia)throws ClsExceptions{
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al ejecutar consulta.");
+		}
+		return alInscripcion;
 
-			Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
-			int contador = 0;
-			StringBuffer sql = new StringBuffer();
-			
-			sql.append(" SELECT GT.IDINSTITUCION,GT.IDGUARDIA , GT.NOMBRE, ");
-			sql.append(" GT.NUMEROLETRADOSGUARDIA, GT.NUMEROSUSTITUTOSGUARDIA, ");
-			sql.append(" GT.SELECCIONLABORABLES, GT.SELECCIONFESTIVOS, ");
-			sql.append(" GT.TIPODIASGUARDIA ,  GT.DIASGUARDIA , ");
-			sql.append(" GT.DIASPAGADOS ,  GT.DIASSEPARACIONGUARDIAS  ");
-			sql.append(" FROM SCS_GUARDIASTURNO GT ");
-			sql.append(" WHERE  ");
-			sql.append(" GT.IDINSTITUCION = :");
-			contador ++;
+	}
+	
+	public List<ScsInscripcionGuardiaBean> getGuardiasParaInscripcion(Integer idInstitucion,
+			Integer idTurno,
+			Long idPersona,
+			Integer idGuardia) throws ClsExceptions
+	{
+
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+
+		sql.append(" SELECT GT.IDINSTITUCION,GT.IDGUARDIA , GT.NOMBRE, ");
+		sql.append(" GT.NUMEROLETRADOSGUARDIA, GT.NUMEROSUSTITUTOSGUARDIA, ");
+		sql.append(" GT.SELECCIONLABORABLES, GT.SELECCIONFESTIVOS, ");
+		sql.append(" GT.TIPODIASGUARDIA ,  GT.DIASGUARDIA , ");
+		sql.append(" GT.DIASPAGADOS ,  GT.DIASSEPARACIONGUARDIAS  ");
+		sql.append(" FROM SCS_GUARDIASTURNO GT ");
+		sql.append(" WHERE  ");
+		sql.append(" GT.IDINSTITUCION = :");
+		contador++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador), idInstitucion);
+		sql.append(" AND GT.IDTURNO = :");
+		contador++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador), idTurno);
+		if (idGuardia != null) {
+			sql.append(" AND GT.IDGUARDIA = :");
+			contador++;
 			sql.append(contador);
-			htCodigos.put(new Integer(contador),idInstitucion);
-			sql.append(" AND GT.IDTURNO = :");
-			contador ++;
-			sql.append(contador);
-			htCodigos.put(new Integer(contador),idTurno);
-			if(idGuardia!=null){
-				sql.append(" AND GT.IDGUARDIA = :");
-				contador ++;
-				sql.append(contador);
-				htCodigos.put(new Integer(contador),idGuardia);
+			htCodigos.put(new Integer(contador), idGuardia);
+		}
+
+		sql.append(" ORDER BY GT.NOMBRE ");
+
+		List<ScsInscripcionGuardiaBean> alInscripcion = null;
+		try {
+			RowsContainer rc = new RowsContainer();
+
+			if (rc.findBind(sql.toString(), htCodigos)) {
+				alInscripcion = new ArrayList<ScsInscripcionGuardiaBean>();
+				ScsInscripcionGuardiaBean inscripcionBean = null;
+				ScsGuardiasTurnoBean guardia = null;
+
+				for (int i = 0; i < rc.size(); i++) {
+					Row fila = (Row) rc.get(i);
+					Hashtable<String, Object> htFila = fila.getRow();
+					inscripcionBean = new ScsInscripcionGuardiaBean();
+					guardia = new ScsGuardiasTurnoBean();
+
+					guardia.setIdTurno(idTurno);
+					guardia.setIdInstitucion(UtilidadesHash.getInteger(htFila, ScsGuardiasTurnoBean.C_IDINSTITUCION));
+					guardia.setIdGuardia(UtilidadesHash.getInteger(htFila, ScsGuardiasTurnoBean.C_IDGUARDIA));
+					guardia.setNombre(UtilidadesHash.getString(htFila, ScsGuardiasTurnoBean.C_NOMBRE));
+					guardia.setNumeroLetradosGuardia(UtilidadesHash.getInteger(htFila,
+							ScsGuardiasTurnoBean.C_NUMEROLETRADOSGUARDIA));
+					guardia.setNumeroSustitutosGuardia(UtilidadesHash.getInteger(htFila,
+							ScsGuardiasTurnoBean.C_NUMEROSUSTITUTOSGUARDIA));
+					guardia.setSeleccionLaborables(UtilidadesHash.getString(htFila,
+							ScsGuardiasTurnoBean.C_SELECCIONLABORABLES));
+					guardia.setSeleccionFestivos(UtilidadesHash.getString(htFila,
+							ScsGuardiasTurnoBean.C_SELECCIONFESTIVOS));
+					guardia.setDiasGuardia(UtilidadesHash.getInteger(htFila, ScsGuardiasTurnoBean.C_DIASGUARDIA));
+					guardia
+							.setTipodiasGuardia(UtilidadesHash
+									.getString(htFila, ScsGuardiasTurnoBean.C_TIPODIASGUARDIA));
+					String literalTipoDias = "";
+					if (guardia.getTipodiasGuardia().equalsIgnoreCase("D"))
+						literalTipoDias = "gratuita.altaTurnos_2.literal.dias";
+					else if (guardia.getTipodiasGuardia().equalsIgnoreCase("S"))
+						literalTipoDias = "gratuita.altaTurnos_2.literal.semanas";
+					else if (guardia.getTipodiasGuardia().equalsIgnoreCase("M"))
+						literalTipoDias = "gratuita.altaTurnos_2.literal.meses";
+					else if (guardia.getTipodiasGuardia().equalsIgnoreCase("Q"))
+						literalTipoDias = "gratuita.altaTurnos_2.literal.quincenas";
+					guardia.setDescripcionTipoDiasGuardia(literalTipoDias);
+
+					guardia.setDiasPagados(UtilidadesHash.getInteger(htFila, ScsGuardiasTurnoBean.C_DIASPAGADOS));
+					guardia.setDiasSeparacionGuardia(UtilidadesHash.getInteger(htFila,
+							ScsGuardiasTurnoBean.C_DIASSEPARACIONGUARDIAS));
+
+					String seleccionTiposDia = ScsGuardiasTurnoAdm.obtenerTipoDia(guardia.getSeleccionLaborables(),
+							guardia.getSeleccionFestivos(), this.usrbean);
+					guardia.setSeleccionTiposDia(seleccionTiposDia);
+
+					inscripcionBean.setGuardia(guardia);
+					inscripcionBean.setIdGuardia(guardia.getIdGuardia());
+					inscripcionBean.setIdInstitucion(guardia.getIdInstitucion());
+					inscripcionBean.setIdPersona(idPersona);
+					inscripcionBean.setIdTurno(idTurno);
+
+					alInscripcion.add(inscripcionBean);
+				}
 			}
-			
-			
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al ejecutar consulta.");
+		}
+		return alInscripcion;
 
-			sql.append(" ORDER BY GT.NOMBRE ");
-			
-			List<ScsInscripcionGuardiaBean> alInscripcion = null;
-			try {
-				RowsContainer rc = new RowsContainer(); 
-													
-	            if (rc.findBind(sql.toString(),htCodigos)) {
-	            	alInscripcion = new ArrayList<ScsInscripcionGuardiaBean>();
-	            	ScsInscripcionGuardiaBean inscripcionBean = null;
-	            	ScsGuardiasTurnoBean guardia = null;
-         	
-	            	
-	    			for (int i = 0; i < rc.size(); i++){
-	            		Row fila = (Row) rc.get(i);
-	            		Hashtable<String, Object> htFila=fila.getRow();
-	            		inscripcionBean =  new ScsInscripcionGuardiaBean();
-		            	guardia = new ScsGuardiasTurnoBean();
-		            	
-		            	guardia.setIdTurno(idTurno);
-	            		guardia.setIdInstitucion(UtilidadesHash.getInteger(htFila,ScsGuardiasTurnoBean.C_IDINSTITUCION));
-	            		guardia.setIdGuardia(UtilidadesHash.getInteger(htFila,ScsGuardiasTurnoBean.C_IDGUARDIA));
-	            		guardia.setNombre(UtilidadesHash.getString(htFila,ScsGuardiasTurnoBean.C_NOMBRE));
-	            		guardia.setNumeroLetradosGuardia(UtilidadesHash.getInteger(htFila,ScsGuardiasTurnoBean.C_NUMEROLETRADOSGUARDIA));
-	            		guardia.setNumeroSustitutosGuardia(UtilidadesHash.getInteger(htFila,ScsGuardiasTurnoBean.C_NUMEROSUSTITUTOSGUARDIA));
-	            		guardia.setSeleccionLaborables(UtilidadesHash.getString(htFila,ScsGuardiasTurnoBean.C_SELECCIONLABORABLES));
-	            		guardia.setSeleccionFestivos(UtilidadesHash.getString(htFila,ScsGuardiasTurnoBean.C_SELECCIONFESTIVOS));
-	            		guardia.setDiasGuardia(UtilidadesHash.getInteger(htFila,ScsGuardiasTurnoBean.C_DIASGUARDIA));
-	            		guardia.setTipodiasGuardia(UtilidadesHash.getString(htFila,ScsGuardiasTurnoBean.C_TIPODIASGUARDIA));
-	            		String literalTipoDias="" ;
-	            		if(guardia.getTipodiasGuardia().equalsIgnoreCase("D"))
-	            			literalTipoDias = "gratuita.altaTurnos_2.literal.dias";
-	    				else if(guardia.getTipodiasGuardia().equalsIgnoreCase("S"))
-	    					literalTipoDias = "gratuita.altaTurnos_2.literal.semanas";
-	    				else if(guardia.getTipodiasGuardia().equalsIgnoreCase("M"))
-	    					literalTipoDias = "gratuita.altaTurnos_2.literal.meses";
-	    				else if(guardia.getTipodiasGuardia().equalsIgnoreCase("Q"))
-	    					  literalTipoDias = "gratuita.altaTurnos_2.literal.quincenas";
-	            		guardia.setDescripcionTipoDiasGuardia(literalTipoDias);
-	            		
-	            		guardia.setDiasPagados(UtilidadesHash.getInteger(htFila,ScsGuardiasTurnoBean.C_DIASPAGADOS));
-	            		guardia.setDiasSeparacionGuardia(UtilidadesHash.getInteger(htFila,ScsGuardiasTurnoBean.C_DIASSEPARACIONGUARDIAS));
-	            		
-	            		String seleccionTiposDia = ScsGuardiasTurnoAdm.obtenerTipoDia(guardia.getSeleccionLaborables(), guardia.getSeleccionFestivos(), this.usrbean);
-	            		guardia.setSeleccionTiposDia(seleccionTiposDia);
-	            		
-	            		inscripcionBean.setGuardia(guardia);
-		            	inscripcionBean.setIdGuardia(guardia.getIdGuardia());
-		            	inscripcionBean.setIdInstitucion(guardia.getIdInstitucion());
-		            	inscripcionBean.setIdPersona(idPersona);
-		            	inscripcionBean.setIdTurno(idTurno);
-		            	
-	            		
-	            		alInscripcion.add(inscripcionBean);
-	            	}
-	            } 
-	       } catch (Exception e) {
-	       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
-	       }
-	       return alInscripcion;
-			
-		} 
-	 
-	 /**
-		 * Obtiene de BD las inscripciones ordenadas para formar la cola de una guardia dada una fecha
-		 * 
-		 * @param idinstitucion
-		 * @param idturno
-		 * @param idguardia
-		 * @param fecha
-		 * @param order
-		 * @return
-		 * @throws ClsExceptions
-		 */
-		
-	public Vector<ScsInscripcionGuardiaBean> getColaGuardia(String idinstitucion, String idturno, String idguardia, String fechaInicio,String fechaFin, String order)
-		throws ClsExceptions
+	}
+	
+	/**
+	 * Obtiene las inscripciones ordenadas para formar la cola de una guardia dada una fecha
+	 * 
+	 * @param idinstitucion
+	 * @param idturno
+	 * @param idguardia
+	 * @param fecha
+	 * @param order
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Vector<ScsInscripcionGuardiaBean> getColaGuardia(
+			String idinstitucion,
+			String idturno,
+			String idguardia,
+			String fechaInicio,
+			String fechaFin,
+			String order) throws ClsExceptions
 	{
 		if (idinstitucion == null || idinstitucion.equals(""))
 			return null;
@@ -952,34 +968,7 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 			fechaFin = "'"+fechaFin.trim()+"'";
 		
 		String consulta =
-			"Select Ins.Idinstitucion,"+
-			"       Ins.Idturno, " +
-			"       Ins.Idguardia, " +
-			
-			" TO_CHAR(TRUNC(Ins.fechavalidacion),'DD/MM/YYYY') AS fechavalidacion, "+
-		    "   TO_CHAR(trunc(Ins.fechabaja),'DD/MM/YYYY') AS fechabaja, "+
-			"       Ins.Idguardia, " +
-			"       Per.Idpersona, " +
-			"       Per.Nombre, " +
-			"       Per.Apellidos1, " +
-			"       Decode(Per.Apellidos2, Null, '', ' ' || Per.Apellidos2) apellidos2, " +
-			"       Decode(Col.Comunitario, '1', Col.Ncomunitario, Col.Ncolegiado) Ncolegiado, " +
-			
-			"       Per.Apellidos1 || " +
-			"       Decode(Per.Apellidos2, Null, '', ' ' || Per.Apellidos2) "+ScsOrdenacionColasBean.C_ALFABETICOAPELLIDOS+", " +
-			"       Decode(Col.Comunitario, '1', Col.Ncomunitario, Col.Ncolegiado) "+ScsOrdenacionColasBean.C_NUMEROCOLEGIADO+", " +
-			"       Per.Fechanacimiento "+ScsOrdenacionColasBean.C_FECHANACIMIENTO+", " +
-			"       Ins.Fechavalidacion AS "+ScsOrdenacionColasBean.C_ANTIGUEDADCOLA+" " +
-			"  From Scs_Guardiasturno      Gua, " +
-			"       Cen_Colegiado          Col, " +
-			"       Cen_Persona            Per, " +
-			"       Scs_Inscripcionguardia Ins " +
-			" Where Col.Idpersona = Per.Idpersona " +
-			"   And Ins.Idinstitucion = Gua.Idinstitucion " +
-			"   And Ins.Idturno = Gua.Idturno " +
-			"   And Ins.Idguardia = Gua.Idguardia " +
-			"   And Ins.Idinstitucion = Col.Idinstitucion " +
-			"   And Ins.Idpersona = Col.Idpersona " +
+			getBaseConsultaInscripciones() +
 			
 			//cuando no se pasa fecha, se sacan todas las validadas (en cualquier fecha)
 			"   And Ins.Fechavalidacion Is Not Null " +
@@ -996,35 +985,177 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 		
 		Vector<ScsInscripcionGuardiaBean> datos = null;
 		try {
-			RowsContainer rc = new RowsContainer(); 
-            if (rc.find(consulta)) {
-            	datos = new Vector<ScsInscripcionGuardiaBean>();
-    			for (int i = 0; i < rc.size(); i++){
-            		Row fila = (Row) rc.get(i);
-            		Hashtable<String, Object> htFila=fila.getRow();
-            		ScsInscripcionGuardiaBean inscripcionBean = new ScsInscripcionGuardiaBean();
-            		inscripcionBean.setIdPersona(UtilidadesHash.getLong(htFila, ScsInscripcionGuardiaBean.C_IDPERSONA));
-            		inscripcionBean.setIdInstitucion(UtilidadesHash.getInteger(htFila, ScsInscripcionGuardiaBean.C_IDINSTITUCION));
-            		inscripcionBean.setIdGuardia(UtilidadesHash.getInteger(htFila, ScsInscripcionGuardiaBean.C_IDGUARDIA));
-            		inscripcionBean.setIdTurno(UtilidadesHash.getInteger(htFila, ScsInscripcionGuardiaBean.C_IDTURNO));
-            		inscripcionBean.setFechaValidacion(UtilidadesHash.getString(htFila, ScsInscripcionGuardiaBean.C_FECHAVALIDACION));
-            		inscripcionBean.setFechaBaja(UtilidadesHash.getString(htFila, ScsInscripcionGuardiaBean.C_FECHABAJA));
-            		CenPersonaBean personaBean = new CenPersonaBean(
-            				inscripcionBean.getIdPersona(),(String)htFila.get(CenPersonaBean.C_NOMBRE),(String)htFila.get(CenPersonaBean.C_APELLIDOS1),
-            				(String)htFila.get(CenPersonaBean.C_APELLIDOS2),(String)htFila.get(CenColegiadoBean.C_NCOLEGIADO));
-            		inscripcionBean.setPersona(personaBean);
-            		datos.add(inscripcionBean);
-            	}
-            } 
-       } catch (Exception e) {
-    	   throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D.");
-       }
+			RowsContainer rc = new RowsContainer();
+			if (rc.find(consulta)) {
+				datos = new Vector<ScsInscripcionGuardiaBean>();
+				for (int i = 0; i < rc.size(); i++) {
+					Row fila = (Row) rc.get(i);
+					Hashtable<String, Object> htFila = fila.getRow();
+
+					ScsInscripcionGuardiaBean inscripcionBean = new ScsInscripcionGuardiaBean();
+					inscripcionBean.setIdInstitucion(UtilidadesHash.getInteger(htFila, ScsInscripcionGuardiaBean.C_IDINSTITUCION));
+					inscripcionBean.setIdTurno(UtilidadesHash.getInteger(htFila, ScsInscripcionGuardiaBean.C_IDTURNO));
+					inscripcionBean.setIdGuardia(UtilidadesHash.getInteger(htFila, ScsInscripcionGuardiaBean.C_IDGUARDIA));
+					inscripcionBean.setIdPersona(UtilidadesHash.getLong(htFila, ScsInscripcionGuardiaBean.C_IDPERSONA));
+					inscripcionBean.setFechaValidacion(UtilidadesHash.getString(htFila, ScsInscripcionGuardiaBean.C_FECHAVALIDACION));
+					inscripcionBean.setFechaBaja(UtilidadesHash.getString(htFila, ScsInscripcionGuardiaBean.C_FECHABAJA));
+					inscripcionBean.setIdGrupoGuardiaColegiado(UtilidadesHash.getLong(htFila, ScsInscripcionGuardiaBean.C_IDGRUPOGUARDIACOLEGIADO));
+					inscripcionBean.setGrupo(UtilidadesHash.getInteger(htFila, ScsInscripcionGuardiaBean.C_GRUPO));
+					inscripcionBean.setOrdenGrupo(UtilidadesHash.getInteger(htFila, ScsInscripcionGuardiaBean.C_ORDENGRUPO));
+					CenPersonaBean personaBean = new CenPersonaBean(inscripcionBean.getIdPersona(), (String) htFila
+							.get(CenPersonaBean.C_NOMBRE), (String) htFila.get(CenPersonaBean.C_APELLIDOS1),
+							(String) htFila.get(CenPersonaBean.C_APELLIDOS2), (String) htFila
+									.get(CenColegiadoBean.C_NCOLEGIADO));
+					inscripcionBean.setPersona(personaBean);
+					datos.add(inscripcionBean);
+				}
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al ejecutar el 'select' en B.D.");
+		}
 		return datos;
 	} //getColaGuardia()
-
-	 
-	 
-	 
-	 
+	
+	/**
+	 * Obtiene los letrados dado un grupo
+	 * 
+	 * @param idGrupoGuardia
+	 * @return Vector<Hashtable>
+	 * @throws ClsExceptions
+	 */
+	public Vector<ScsInscripcionGuardiaBean> getLetradosGrupo(String idGrupoGuardia) throws ClsExceptions
+	{
+		if (idGrupoGuardia == null || idGrupoGuardia.equals(""))
+			return null;
+		
+		String consulta =
+			getBaseConsultaInscripciones() +
+			"    And Gru."+ScsGrupoGuardiaColegiadoBean.C_IDGRUPO+" = "+idGrupoGuardia+" ";
+		
+		Vector<ScsInscripcionGuardiaBean> datos = null;
+		Hashtable hashGrupo;
+		try {
+			RowsContainer rc = new RowsContainer();
+			if (rc.find(consulta)) {
+				datos = new Vector<ScsInscripcionGuardiaBean>();
+				for (int i = 0; i < rc.size(); i++) {
+					Row fila = (Row) rc.get(i);
+					Hashtable<String, Object> htFila = fila.getRow();
+					
+					ScsInscripcionGuardiaBean inscripcionBean = new ScsInscripcionGuardiaBean();
+					inscripcionBean.setIdInstitucion(UtilidadesHash.getInteger(htFila, ScsInscripcionGuardiaBean.C_IDINSTITUCION));
+					inscripcionBean.setIdTurno(UtilidadesHash.getInteger(htFila, ScsInscripcionGuardiaBean.C_IDTURNO));
+					inscripcionBean.setIdGuardia(UtilidadesHash.getInteger(htFila, ScsInscripcionGuardiaBean.C_IDGUARDIA));
+					inscripcionBean.setIdPersona(UtilidadesHash.getLong(htFila, ScsInscripcionGuardiaBean.C_IDPERSONA));
+					inscripcionBean.setFechaValidacion(UtilidadesHash.getString(htFila, ScsInscripcionGuardiaBean.C_FECHAVALIDACION));
+					inscripcionBean.setFechaBaja(UtilidadesHash.getString(htFila, ScsInscripcionGuardiaBean.C_FECHABAJA));
+					inscripcionBean.setIdGrupoGuardiaColegiado(UtilidadesHash.getLong(htFila, ScsInscripcionGuardiaBean.C_IDGRUPOGUARDIACOLEGIADO));
+					inscripcionBean.setGrupo(UtilidadesHash.getInteger(htFila, ScsInscripcionGuardiaBean.C_GRUPO));
+					inscripcionBean.setOrdenGrupo(UtilidadesHash.getInteger(htFila, ScsInscripcionGuardiaBean.C_ORDENGRUPO));
+					CenPersonaBean personaBean = new CenPersonaBean(inscripcionBean.getIdPersona(), (String) htFila
+							.get(CenPersonaBean.C_NOMBRE), (String) htFila.get(CenPersonaBean.C_APELLIDOS1),
+							(String) htFila.get(CenPersonaBean.C_APELLIDOS2), (String) htFila
+									.get(CenColegiadoBean.C_NCOLEGIADO));
+					inscripcionBean.setPersona(personaBean);
+					datos.add(inscripcionBean);
+				}
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al ejecutar el 'select' en B.D.");
+		}
+		return datos;
+	} //getLetradosGrupo()
+	
+	/**
+	 * Obtiene los grupos de una guardia dada, junto con el numero de componentes de cada uno
+	 * 
+	 * @param idinstitucion
+	 * @param idturno
+	 * @param idguardia
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Vector<Hashtable> getNumLetradosGrupos(
+			String idinstitucion,
+			String idturno,
+			String idguardia) throws ClsExceptions
+	{
+		if (idinstitucion == null || idinstitucion.equals(""))
+			return null;
+		if (idturno == null || idturno.equals(""))
+			return null;
+		if (idguardia == null || idguardia.equals(""))
+			return null;
+		
+		String consulta =
+			" Select "+ScsInscripcionGuardiaBean.C_GRUPO+", Count(*) As Numero from " +
+			" ( " +
+			getBaseConsultaInscripciones() +
+			
+			"    And Gua.Idinstitucion = "+idinstitucion+" " +
+			"    And Gua.Idturno = "+idturno+" " +
+			"    And Gua.Idguardia = "+idguardia+" " +
+			
+			" ) " +
+			"  Where "+ScsInscripcionGuardiaBean.C_GRUPO+" Is Not Null " +
+			"  Group By "+ScsInscripcionGuardiaBean.C_GRUPO+" ";
+		
+		Vector<Hashtable> datos = null;
+		Hashtable hashGrupo;
+		try {
+			RowsContainer rc = new RowsContainer();
+			if (rc.find(consulta)) {
+				datos = new Vector<Hashtable>();
+				for (int i = 0; i < rc.size(); i++) {
+					Row fila = (Row) rc.get(i);
+					Hashtable<String, Object> htFila = fila.getRow();
+					
+					hashGrupo = new Hashtable<Integer, Integer>();
+					hashGrupo.put(ScsInscripcionGuardiaBean.C_GRUPO, UtilidadesHash.getInteger(htFila, ScsInscripcionGuardiaBean.C_GRUPO));
+					hashGrupo.put("NUMERO", UtilidadesHash.getInteger(htFila, "NUMERO"));
+					datos.add(hashGrupo);
+				}
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al ejecutar el 'select' en B.D.");
+		}
+		return datos;
+	} //getNumLetradosGrupos()
+	
+	public String getBaseConsultaInscripciones() {
+		return new String(
+			"Select Ins.Idinstitucion,"+
+			"       Ins.Idturno, " +
+			"       Ins.Idguardia, " +
+			"       Per.Idpersona, " +
+			"       TO_CHAR(TRUNC(Ins.fechavalidacion),'DD/MM/YYYY') As Fechavalidacion, "+
+		    "       TO_CHAR(trunc(Ins.fechabaja),'DD/MM/YYYY') As Fechabaja, "+
+		    
+			"       Per.Nombre, " +
+			"       Per.Apellidos1 || " +
+			"       Decode(Per.Apellidos2, Null, '', ' ' || Per.Apellidos2) "+ScsOrdenacionColasBean.C_ALFABETICOAPELLIDOS+", " +
+			"       Decode(Col.Comunitario, '1', Col.Ncomunitario, Col.Ncolegiado) "+ScsOrdenacionColasBean.C_NUMEROCOLEGIADO+", " +
+			"       Per.Fechanacimiento "+ScsOrdenacionColasBean.C_FECHANACIMIENTO+", " +
+			"       Ins.Fechavalidacion AS "+ScsOrdenacionColasBean.C_ANTIGUEDADCOLA+", " +
+			"       Gru."+ScsGrupoGuardiaColegiadoBean.C_IDGRUPOGUARDIACOLEGIADO+" As Idgrupoguardiacolegiado, " +
+			"       Gru."+ScsGrupoGuardiaColegiadoBean.C_IDGRUPO+" As Grupo, " +
+			"       Gru."+ScsGrupoGuardiaColegiadoBean.C_ORDEN+" As Ordengrupo " +
+			"  From Scs_Guardiasturno         Gua, " +
+			"       Cen_Colegiado             Col, " +
+			"       Cen_Persona               Per, " +
+			"       Scs_Inscripcionguardia    Ins, " +
+			"       "+ScsGrupoGuardiaColegiadoBean.T_NOMBRETABLA+" Gru " +
+			" Where Col.Idpersona = Per.Idpersona " +
+			"   And Ins.Idinstitucion = Gua.Idinstitucion " +
+			"   And Ins.Idturno = Gua.Idturno " +
+			"   And Ins.Idguardia = Gua.Idguardia " +
+			"   And Ins.Idinstitucion = Col.Idinstitucion " +
+			"   And Ins.Idpersona = Col.Idpersona " +
+			"   And Ins.Idinstitucion = Gru.Idinstitucion(+) " +
+			"   And Ins.Idturno = Gru.Idturno(+) " +
+			"   And Ins.Idguardia = Gru.Idguardia(+) " +
+			"   And Ins.Idpersona = Gru.Idpersona(+) " +
+			"   And Ins.Fechasuscripcion = Gru.Fechasuscripcion(+) ");
+	}
 	
 }

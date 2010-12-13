@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import com.atos.utils.ClsConstants;
@@ -840,18 +841,18 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 		}
 	}
 	
-	public HashMap<Long, List<LetradoGuardia>> getSaltos (Integer idInstitucion,Integer idTurno,Integer idGuardia) throws ClsExceptions {
+	public HashMap<Long, ArrayList<LetradoGuardia>> getSaltos (Integer idInstitucion,Integer idTurno,Integer idGuardia) throws ClsExceptions {
 	    RowsContainer rc = new RowsContainer();
 	    LetradoGuardia letradoSeleccionado = null;
-	    HashMap<Long, List<LetradoGuardia>> hmPersonasConSaltos = null;
+	    HashMap<Long, ArrayList<LetradoGuardia>> hmPersonasConSaltos = null;
 		// voy a comprobar si existe un salto en base de datos
 		try {
 
 			String sql =  getQuerySaltosCompensacionesActivos(ClsConstants.SALTOS,idInstitucion,idTurno,idGuardia);
 	
 			rc = find(sql);
-			hmPersonasConSaltos = new HashMap<Long, List<LetradoGuardia>>();
-			List<LetradoGuardia> alLetradosSaltados = null; 
+			hmPersonasConSaltos = new HashMap<Long, ArrayList<LetradoGuardia>>();
+			ArrayList<LetradoGuardia> alLetradosSaltados = null; 
 			for (int i = 0; i < rc.size(); i++){
 			    letradoSeleccionado = new LetradoGuardia();
 			    letradoSeleccionado.setIdInstitucion(idInstitucion);
@@ -864,7 +865,7 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 				Long idPersona = new Long((String)hFila.get(ScsSaltosCompensacionesBean.C_IDPERSONA));
 				letradoSeleccionado.setIdPersona(idPersona);
 				if(hmPersonasConSaltos.containsKey(idPersona)){
-					alLetradosSaltados = (List)hmPersonasConSaltos.get(idPersona);
+					alLetradosSaltados = hmPersonasConSaltos.get(idPersona);
 					
 				}else{
 					alLetradosSaltados = new ArrayList<LetradoGuardia>();
@@ -902,17 +903,18 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 		return sql.toString();
 	}
 	
-	public List<LetradoGuardia> getCompensaciones (Integer idInstitucion,Integer idTurno,Integer idGuardia) throws ClsExceptions {
-	    RowsContainer rc = new RowsContainer();
+	public ArrayList<LetradoGuardia> getCompensaciones (Integer idInstitucion,Integer idTurno,Integer idGuardia) throws ClsExceptions {
 	    LetradoGuardia letradoSeleccionado = null;
-	    List<LetradoGuardia> alLetradosCompensados = null;
+	    ArrayList<LetradoGuardia> alLetradosCompensados = null;
+		CenBajasTemporalesAdm btAdm = new CenBajasTemporalesAdm(this.usrbean);
+	    
 		try {
 			//obtiene las compesaciones de letrados que no estén de baja en la guardia
 		    String sql =  getQuerySaltosCompensacionesActivos(ClsConstants.COMPENSACIONES,idInstitucion,idTurno,idGuardia);
 		    		
 		    		
 			ScsSaltosCompensacionesAdm adm = new ScsSaltosCompensacionesAdm(this.usrbean);
-			rc = adm.find(sql);
+			RowsContainer rc = adm.find(sql);
 			alLetradosCompensados = new ArrayList<LetradoGuardia>();
 			
 			for (int i = 0; i < rc.size(); i++){
@@ -925,6 +927,9 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 			    Row fila = (Row) rc.get(i);
 				Hashtable hFila = fila.getRow();
 				letradoSeleccionado.setIdPersona(new Long((String)hFila.get(ScsSaltosCompensacionesBean.C_IDPERSONA)));
+				Map<String, CenBajasTemporalesBean> mBajasTemporales = btAdm.getDiasBajaTemporal(
+						letradoSeleccionado.getIdPersona(), letradoSeleccionado.getIdInstitucion());
+				letradoSeleccionado.setBajasTemporales(mBajasTemporales);
 				alLetradosCompensados.add(letradoSeleccionado);
 			    //letradoSeleccionado
 			}

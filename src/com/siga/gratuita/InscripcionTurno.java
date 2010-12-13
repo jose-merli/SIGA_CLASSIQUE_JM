@@ -239,8 +239,8 @@ public class InscripcionTurno
 		
 		// quitando letrados de la cola si tienen saltos
 		if (quitarSaltos) {
-			HashMap<Long, List<LetradoGuardia>> personasConSaltos = saladm.getSaltos(idInstitucion, idTurno, null);
-			List<LetradoGuardia> alSaltos;
+			HashMap<Long, ArrayList<LetradoGuardia>> personasConSaltos = saladm.getSaltos(idInstitucion, idTurno, null);
+			ArrayList<LetradoGuardia> alSaltos;
 			for (Iterator iter = colaLetrados.iterator(); iter.hasNext(); ) {
 				letradoTurno = (LetradoGuardia) iter.next();
 				if ( (alSaltos = personasConSaltos.get(letradoTurno.getIdPersona())) != null )

@@ -5,7 +5,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
-
 <!-- TAGLIBS -->
 <%@ taglib uri = "libreria_SIGA.tld" prefix="siga"%>
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
@@ -20,6 +19,8 @@
 <%@ page import="com.siga.beans.ScsGuardiasTurnoBean"%>
 <%@ page import="com.siga.beans.ScsOrdenacionColasAdm"%>
 <%@ page import="com.siga.beans.ScsOrdenacionColasBean"%>
+<%@ page import="com.siga.beans.ScsTurnoBean"%>
+<%@ page import="com.siga.beans.ScsGuardiasTurnoAdm"%>
 <%@ page import="com.siga.beans.CenPersonaAdm"%>
 <%@ page import="com.siga.beans.CenPersonaBean"%>
 <%@ page import="com.siga.beans.ScsPartidaPresupuestariaBean"%>
@@ -27,11 +28,7 @@
 <%@ page import="com.siga.gratuita.form.DefinirGuardiasTurnosForm"%>
 <%@ page import="com.siga.gratuita.action.DefinirGuardiasTurnosAction"%>
 
-<%@ page import="com.siga.beans.ScsTurnoBean"%>
-<%@ page import="com.siga.beans.ScsGuardiasTurnoAdm"%>
 
-
-<!-- JSP -->
 <bean:define id="diasASeparar" name="DefinirGuardiasTurnosForm" property="diasASeparar" type="String"/>
 <%
 	String app = request.getContextPath();
@@ -111,7 +108,7 @@
 	String alto = "345";
 	String botonesAccion = "";
 	String altoBotones = "387";
-	String classCombo = "boxCombo", estiloText = "box";
+	String classCombo = "boxCombo", estiloText = "box", estiloNumber = "boxConsultaNumber";
 	boolean soloLectura = false;
 	boolean menuCenso = false;
 
@@ -130,10 +127,12 @@
 	if (modoPestanha.equalsIgnoreCase("ver")) {
 		classCombo = "boxConsulta";
 		estiloText = "boxConsulta";
+		estiloNumber = "boxConsultaNumber";
 		soloLectura = true;
 	} else {
 		classCombo = "boxCombo";
 		estiloText = "box";
+		estiloNumber = "boxNumber";
 		soloLectura = false;
 		botonesAccion += "G,R";
 	}
@@ -156,6 +155,8 @@
 	diasSeparacionGuardias = (String) hash
 			.get("DIASSEPARACIONGUARDIAS");
 	String esViolenciaGenero = (String) hash.get("ESVIOLENCIAGENERO");
+	String porGrupos = (String) hash.get("PORGRUPOS");
+	String rotarComponentes = (String) hash.get("ROTARCOMPONENTES");
 
 	tipoDiasGuardia = (String) hash
 			.get(ScsGuardiasTurnoBean.C_TIPODIASGUARDIA);
@@ -176,7 +177,6 @@
 
 
 <html>
-
 
 <!-- HEAD -->
 <head>
@@ -208,759 +208,694 @@
 
 
 <body class="tablaCentralCampos" onload="modificarVarios();">
+
+<%
+	//Entrada desde el menu de Censo:
+	if (entrada != null && entrada.equals("2")) {
+%>
+<table class="tablaTitulo" align="center" cellspacing=0>
+	<tr><td class="titulitosDatos">
+			<siga:Idioma key="censo.consultaDatosGenerales.literal.titulo1"/>&nbsp;&nbsp;
+			<%=UtilidadesString.mostrarDatoJSP(nombrePestanha)%>&nbsp;&nbsp;
+			<%	if (numeroPestanha != null && !numeroPestanha.equalsIgnoreCase("")) { %>
+			<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(numeroPestanha)%>
+			<%	} else { %>
+			<siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>
+			<%	} %>
+	</td></tr>
+</table>	
+<%	} %>
+
+<!-- TURNO: Información del Turno que tenemos seleccionado -->
+<siga:ConjCampos leyenda="gratuita.listarGuardias.literal.turno" desplegable="true" oculto="true">
+<table border="0" align="center" width="100%">
+	<tr>
+		<td class="labelText" style="text-align:left">
+			<siga:Idioma key="gratuita.definirTurnosIndex.literal.abreviatura"/>
+		</td>
+		<td class="labelText" style="text-align:left">
+			<input name="abreviatura" type="text" class="boxConsulta" size="30" maxlength="30" value="<%=UtilidadesString.mostrarDatoJSP(turnoAbreviatura)%>" readonly="true"></td>
+		<td class="labelText" style="text-align:left">
+			<siga:Idioma key="censo.SolicitudIncorporacion.literal.nombre"/>
+		</td>
+		<td colspan="3" class="labelText" style="text-align:left">
+			<input name="nombre" type="text" class="boxConsulta" size="80" maxlength="100" value="<%=UtilidadesString.mostrarDatoJSP(turnoNombre)%>" readonly="true" >
+		</td>
+	</tr>
 	
-	<%
-			//Entrada desde el menu de Censo:
-			if (entrada.equalsIgnoreCase("2")) {
-		%>
-		    <table class="tablaTitulo" align="center" cellspacing=0>
-			<tr>
-				<td class="titulitosDatos">
-					<siga:Idioma key="censo.consultaDatosGenerales.literal.titulo1"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombrePestanha)%>&nbsp;&nbsp;
-				    <%
-				    	if (numeroPestanha != null
-				    				&& !numeroPestanha.equalsIgnoreCase("")) {
-				    %>
-							<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(numeroPestanha)%>
-					<%
-						} else {
-					%>
-						   <siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>
-					<%
-						}
-					%>
-				</td>
-			</tr>
-			</table>	
-	<%
-			}
-		%>
+	<tr>
+		<td class="labelText" style="text-align:left">
+			<siga:Idioma key="gratuita.definirTurnosIndex.literal.area"/>
+		</td>
+		<td class="labelText" style="text-align:left">
+			<input name="area" type="text" class="boxConsulta" size="25" value="<%=UtilidadesString.mostrarDatoJSP(turnoArea)%>" readonly="true">
+		</td>
+		<td class="labelText" style="text-align:left"><siga:Idioma key="gratuita.definirTurnosIndex.literal.materia"/></td>
+		<td class="labelText" style="text-align:left">
+			<input name="materia" type="text" class="boxConsulta" size="25" value="<%=UtilidadesString.mostrarDatoJSP(turnoMateria)%>" readonly="true">
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="labelText" style="text-align:left">
+			<siga:Idioma key="gratuita.definirTurnosIndex.literal.zona"/>
+		</td>
+		<td class="labelText" style="text-align:left">
+			<input name="zona" type="text" class="boxConsulta" size="30" value="<%=UtilidadesString.mostrarDatoJSP(turnoZona)%>" readonly="true">
+		</td>
+		<td class="labelText" style="text-align:left">
+			<siga:Idioma key="gratuita.definirTurnosIndex.literal.subzona"/>
+		</td>
+		<td class="labelText" style="text-align:left">
+			<input name="subzona" type="text" class="boxConsulta" size="25" value="<%=UtilidadesString.mostrarDatoJSP(turnoSubzona)%>" readonly="true">
+		</td>
+		<td class="labelText" style="text-align:left">
+			<siga:Idioma key="gratuita.definirTurnosIndex.literal.partidoJudicial"/>
+		</td>
+		<td class="labelTextValor" style="text-align:left">
+			<%=UtilidadesString.mostrarDatoJSP(turnoPartidoJudicial)%>
+		</td>
+	</tr>
+</table>
+</siga:ConjCampos>
 
 
-		
-	<!-- TURNO: Información del Turno que tenemos seleccionado -->
-	<siga:ConjCampos leyenda="gratuita.listarGuardias.literal.turno">
-		<table border="0" align="center" width="100%">
+<html:form action="DefinirGuardiasTurnosAction.do" method="POST" target="_top">
+	<html:hidden property = "modo" value = ""/>
+	<html:hidden property = "idInstitucionPestanha" />
+	<html:hidden property = "idTurnoPestanha"/>
+	<html:hidden property = "idGuardiaPestanha"/>
+	<html:hidden name="DefinirGuardiasTurnosForm" property="letradosSustitutos"  value='0'/>
+	<html:hidden name="DefinirGuardiasTurnosForm" property="diasPagados"  value='1'/>									
+	
+	<input type="hidden" name="guardia" value="<%=(String)hash.get("IDGUARDIA")%>">
+	
+	<!-- GUARDIA -->
+	<!-- gratuita.listarGuardias.literal.guardia -->
+	<siga:ConjCampos leyenda="gratuita.guardiasTurno.literal.datosgenerales" desplegable="true" oculto="false">
+	<table align="center" border="0" width="100%">
 		<tr>
-			<td  class="labelText" style="text-align:left">
-				<siga:Idioma key="gratuita.definirTurnosIndex.literal.abreviatura"/>
+			<td class="labelText" style="width:100px;">
+				<siga:Idioma key="censo.SolicitudIncorporacion.literal.nombre"/>&nbsp;(*)
 			</td>
-			<td  class="labelText" style="text-align:left">
-				<input name="abreviatura" type="text" class="boxConsulta" size="30" maxlength="30" value="<%=UtilidadesString.mostrarDatoJSP(turnoAbreviatura)%>" readonly="true"></td>
-			<td class="labelText" style="text-align:left">
-				<siga:Idioma key="censo.SolicitudIncorporacion.literal.nombre"/>
+			<td>
+				<html:text name="DefinirGuardiasTurnosForm" property="nombreGuardia" size="40" maxlength="30" styleClass="<%=estiloText%>" value="<%=nombreGuardia%>" readonly="<%=soloLectura%>"></html:text>
 			</td>
-			<td colspan="3" class="labelText" style="text-align:left">
-				<input name="nombre" type="text" class="boxConsulta" size="80" maxlength="100" value="<%=UtilidadesString.mostrarDatoJSP(turnoNombre)%>" readonly="true" >
+			<td class="labelText">
+				<siga:Idioma key="gratuita.maestroTurnos.literal.descripcion"/>&nbsp;(*)
+			</td>
+			<td>
+				<html:text name="DefinirGuardiasTurnosForm" property="descripcion" size="40" maxlength="1024" styleClass="<%=estiloText%>" value="<%=descripcionGuardia%>" readonly="<%=soloLectura%>"></html:text>
+			</td>
+		</tr>
+
+		<tr>
+			<td class="labelText"><siga:Idioma key="gratuita.maestroGuardias.literal.descripcionFacturacion"/></td>
+			<td>
+				<html:textarea name="DefinirGuardiasTurnosForm" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" property="descripcionFacturacion" rows="3" cols="80" readOnly="<%=soloLectura%>" styleClass="<%=estiloText%>" value="<%=descripcionFacturacion%>" />
+			</td>
+			<td class="labelText"><siga:Idioma key="gratuita.maestroGuardias.literal.descripcionPago"/></td>
+			<td>
+				<html:textarea name="DefinirGuardiasTurnosForm" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" property="descripcionPago" rows="3" cols="80" readOnly="<%=soloLectura%>" styleClass="<%=estiloText%>" value="<%=descripcionPago%>" />
+			</td>
+		</tr>
+
+		<tr>
+			<td class="labelText">
+				<siga:Idioma key="gratuita.turno.guardia.literal.deSustitucion"/> &nbsp;&nbsp;
+			</td>
+			<td class="labelText">
+			<%
+				if (hash.get("IDGUARDIASUSTITUCION") != null && !((String) hash.get("IDGUARDIASUSTITUCION")).equals("")) {
+			%>
+				<siga:ComboBD nombre="guardiaDeSustitucion" tipo="guardias" clase="boxComboConsulta" readOnly="true" parametro="<%=datoGuardia%>" elementoSel="<%=guardiaSel%>" ancho="300"/>
+			<%
+				}
+			%>
+			</td>
+			</td>
+			<td class="labelText" colspan="2">
+				<siga:Idioma key="gratuita.turno.guardia.literal.deViolenciaGenero"/>&nbsp<input type=checkbox name="vg" value=1 <%=(esViolenciaGenero.equals("1"))?"checked":""%> >
+			</td>
+		</tr>
+	</table>
+	</siga:ConjCampos>
+	
+	<siga:ConjCampos leyenda="gratuita.guardiasTurno.literal.configuracioncola" desplegable="true" oculto="false">
+	<table align="center" border="0" width="100%">
+		<tr>
+			<td class="labelText" style="text-align:left" width="20%">
+				<input type=checkbox name="porGrupos" value=1 <%=(porGrupos.equals("1"))?"checked":""%> />
+				<siga:Idioma key="gratuita.guardiasTurno.literal.porgrupos"/>
+			</td>
+			<td class="labelText" style="text-align:left" width="40%">
+				<input type=checkbox name="rotarComponentes" value=1 <%=(rotarComponentes.equals("1"))?"checked":""%> />
+				<siga:Idioma key="gratuita.guardiasTurno.literal.rotarcomponentes"/>
+			</td>
+			<td class="labelText" style="text-align:right" width="40%">
+				<siga:Idioma key="gratuita.listarGuardiasTurno.literal.letradosGuardia"/>&nbsp;(*)
+				&nbsp;&nbsp;
+				<html:text name="DefinirGuardiasTurnosForm" property="letradosGuardia" size="6" maxlength="6" styleClass="<%=estiloNumber%>" value='<%=numeroLetradosGuardia%>' readonly="<%=soloLectura%>"></html:text>
+			</td>
+		</tr>
+	</table>
+	</siga:ConjCampos>
+	
+	<!-- PESOS ORDENACION -->
+	<siga:ConjCampos leyenda="gratuita.maestroTurnos.literal.pesosOrdenacion" desplegable="true" oculto="false">
+	<table border="0" width="100%" align="center">
+		<tr>
+			<td class="labelText" style="text-align:left"><siga:Idioma key="gratuita.maestroTurnos.literal.primerCriterio"/></td>
+			<td class="labelText" style="text-align:right">
+			<%
+				if (!modoPestanha.equalsIgnoreCase("ver")) {
+			%>
+				<html:select styleClass="<%=classCombo %>" name="DefinirGuardiasTurnosForm" property="crit_1">
+					<html:option value="0"><siga:Idioma key="gratuita.maestroTurnos.literal.sinDefinir"/></html:option>
+					<html:option value="1"><siga:Idioma key="gratuita.maestroTurnos.literal.alfabetico"/></html:option>
+					<html:option value="2"><siga:Idioma key="gratuita.maestroTurnos.literal.antiguedad"/></html:option>
+					<html:option value="3"><siga:Idioma key="gratuita.maestroTurnos.literal.edad"/></html:option>
+					<html:option value="4"><siga:Idioma key="gratuita.maestroTurnos.literal.cola"/></html:option>
+				</html:select>
+				&nbsp;
+				<html:select styleClass="<%=classCombo %>" name="DefinirGuardiasTurnosForm" property="ord_1">
+					<html:option value="A"><siga:Idioma key="gratuita.maestroTurnos.literal.ascendente"/></html:option>
+					<html:option value="D"><siga:Idioma key="gratuita.maestroTurnos.literal.descendente"/></html:option>
+				</html:select>
+			<%
+				} else {
+					String valor1 = "";
+					if (miform.getCrit_1().equalsIgnoreCase("0")) {
+						valor1 = UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.sinDefinir");
+					} else if (miform.getCrit_1().equalsIgnoreCase("1")) {
+						valor1 = UtilidadesString.getMensajeIdioma(usr,	"gratuita.maestroTurnos.literal.alfabetico");
+					} else if (miform.getCrit_1().equalsIgnoreCase("2")) {
+						valor1 = UtilidadesString.getMensajeIdioma(usr,	"gratuita.maestroTurnos.literal.antiguedad");
+					} else if (miform.getCrit_1().equalsIgnoreCase("3")) {
+						valor1 = UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.edad");
+					} else if (miform.getCrit_1().equalsIgnoreCase("4")) {
+						valor1 = UtilidadesString.getMensajeIdioma(usr,	"gratuita.maestroTurnos.literal.cola");
+					}
+					String orden1 = "";
+					if (miform.getOrd_1().equalsIgnoreCase("A")) {
+						orden1 = UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.ascendente");
+					} else if (miform.getOrd_1().equalsIgnoreCase("D")) {
+						orden1 = UtilidadesString.getMensajeIdioma(usr,	"gratuita.maestroTurnos.literal.descendente");
+					}
+			%>
+				<input type="text" name="crit_1" class="boxConsulta" value="<%=valor1%>"/>&nbsp;<input type="text" name="ord_1" class="boxConsulta" value="<%=orden1%>"/>
+			<%
+				}
+			%>
+			</td>
+			<td class="labelText" style="text-align:left"><siga:Idioma key="gratuita.maestroTurnos.literal.segundoCriterio"/></td>
+			<td class="labelText" style="text-align:right">
+			<%
+				if (!modoPestanha.equalsIgnoreCase("ver")) {
+			%>
+				<html:select styleClass="<%=classCombo %>" name="DefinirGuardiasTurnosForm" property="crit_2">
+					<html:option value="0"><siga:Idioma key="gratuita.maestroTurnos.literal.sinDefinir"/></html:option>
+					<html:option value="1"><siga:Idioma key="gratuita.maestroTurnos.literal.alfabetico"/></html:option>
+					<html:option value="2"><siga:Idioma key="gratuita.maestroTurnos.literal.antiguedad"/></html:option>
+					<html:option value="3"><siga:Idioma key="gratuita.maestroTurnos.literal.edad"/></html:option>
+					<html:option value="4"><siga:Idioma key="gratuita.maestroTurnos.literal.cola"/></html:option>
+				</html:select>
+				&nbsp;
+				<html:select styleClass="<%=classCombo %>" name="DefinirGuardiasTurnosForm" property="ord_2">
+					<html:option value="A"><siga:Idioma key="gratuita.maestroTurnos.literal.ascendente"/></html:option>
+					<html:option value="D"><siga:Idioma key="gratuita.maestroTurnos.literal.descendente"/></html:option>
+				</html:select>
+			<%
+				} else {
+					String valor2 = "";
+					if (miform.getCrit_2().equalsIgnoreCase("0")) {
+						valor2 = UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.sinDefinir");
+					} else if (miform.getCrit_2().equalsIgnoreCase("1")) {
+						valor2 = UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.alfabetico");
+					} else if (miform.getCrit_2().equalsIgnoreCase("2")) {
+						valor2 = UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.antiguedad");
+					} else if (miform.getCrit_2().equalsIgnoreCase("3")) {
+						valor2 = UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.edad");
+					} else if (miform.getCrit_2().equalsIgnoreCase("4")) {
+						valor2 = UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.cola");
+					}
+					String orden2 = "";
+					if (miform.getOrd_2().equalsIgnoreCase("A")) {
+						orden2 = UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.ascendente");
+					} else if (miform.getOrd_2().equalsIgnoreCase("D")) {
+						orden2 = UtilidadesString.getMensajeIdioma(usr,	"gratuita.maestroTurnos.literal.descendente");
+					}
+			%>
+				<input type="text" name="crit_2" class="boxConsulta" value="<%=valor2%>"/>&nbsp;<input type="text" name="ord_2" class="boxConsulta" value="<%=orden2%>"/>
+			<%
+				}
+			%>
 			</td>
 		</tr>
 		
 		<tr>
-			<td class="labelText" style="text-align:left">
-				<siga:Idioma key="gratuita.definirTurnosIndex.literal.area"/>
+			<td class="labelText" style="text-align:left"><siga:Idioma key="gratuita.maestroTurnos.literal.terceroCriterio"/></td>
+			<td class="labelText" style="text-align:right">
+			<%
+				if (!modoPestanha.equalsIgnoreCase("ver")) {
+			%>
+				<html:select styleClass="<%=classCombo %>" name="DefinirGuardiasTurnosForm" property="crit_3">
+					<html:option value="0"><siga:Idioma key="gratuita.maestroTurnos.literal.sinDefinir"/></html:option>
+					<html:option value="1"><siga:Idioma key="gratuita.maestroTurnos.literal.alfabetico"/></html:option>
+					<html:option value="2"><siga:Idioma key="gratuita.maestroTurnos.literal.antiguedad"/></html:option>
+					<html:option value="3"><siga:Idioma key="gratuita.maestroTurnos.literal.edad"/></html:option>
+					<html:option value="4"><siga:Idioma key="gratuita.maestroTurnos.literal.cola"/></html:option>
+				</html:select>
+				&nbsp;
+				<html:select styleClass="<%=classCombo %>" name="DefinirGuardiasTurnosForm" property="ord_3">
+					<html:option value="A"><siga:Idioma key="gratuita.maestroTurnos.literal.ascendente"/></html:option>
+					<html:option value="D"><siga:Idioma key="gratuita.maestroTurnos.literal.descendente"/></html:option>
+				</html:select>
+			<%
+				} else {
+					String valor3 = "";
+					if (miform.getCrit_3().equalsIgnoreCase("0")) {
+						valor3 = UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.sinDefinir");
+					} else if (miform.getCrit_3().equalsIgnoreCase("1")) {
+						valor3 = UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.alfabetico");
+					} else if (miform.getCrit_3().equalsIgnoreCase("2")) {
+						valor3 = UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.antiguedad");
+					} else if (miform.getCrit_3().equalsIgnoreCase("3")) {
+						valor3 = UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.edad");
+					} else if (miform.getCrit_3().equalsIgnoreCase("4")) {
+						valor3 = UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.cola");
+					}
+					String orden3 = "";
+					if (miform.getOrd_3().equalsIgnoreCase("A")) {
+						orden3 = UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.ascendente");
+					} else if (miform.getOrd_3().equalsIgnoreCase("D")) {
+						orden3 = UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.descendente");
+					}
+			%>
+				<input type="text" name="crit_3" class="boxConsulta" value="<%=valor3%>"/>&nbsp;<input type="text" name="ord_3" class="boxConsulta" value="<%=orden3%>"/>
+			<%
+				}
+			%>
 			</td>
-			<td class="labelText" style="text-align:left">
-				<input name="area" type="text" class="boxConsulta" size="25" value="<%=UtilidadesString.mostrarDatoJSP(turnoArea)%>" readonly="true">
+			<td class="labelText" style="text-align:left"><siga:Idioma key="gratuita.maestroTurnos.literal.cuartoCriterio"/></td>
+			<td class="labelText" style="text-align:right">
+			<%
+				if (!modoPestanha.equalsIgnoreCase("ver")) {
+			%>
+				<html:select styleClass="<%=classCombo %>" name="DefinirGuardiasTurnosForm" property="crit_4">
+					<html:option value="0"><siga:Idioma key="gratuita.maestroTurnos.literal.sinDefinir"/></html:option>
+					<html:option value="1"><siga:Idioma key="gratuita.maestroTurnos.literal.alfabetico"/></html:option>
+					<html:option value="2"><siga:Idioma key="gratuita.maestroTurnos.literal.antiguedad"/></html:option>
+					<html:option value="3"><siga:Idioma key="gratuita.maestroTurnos.literal.edad"/></html:option>
+					<html:option value="4"><siga:Idioma key="gratuita.maestroTurnos.literal.cola"/></html:option>
+				</html:select>
+				&nbsp;
+				<html:select styleClass="<%=classCombo %>" name="DefinirGuardiasTurnosForm" property="ord_4">
+					<html:option value="A"><siga:Idioma key="gratuita.maestroTurnos.literal.ascendente"/></html:option>
+					<html:option value="D"><siga:Idioma key="gratuita.maestroTurnos.literal.descendente"/></html:option>
+				</html:select>
+			<%
+				} else {
+					String valor4 = "";
+					if (miform.getCrit_4().equalsIgnoreCase("0")) {
+						valor4 = UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.sinDefinir");
+					} else if (miform.getCrit_4().equalsIgnoreCase("1")) {
+						valor4 = UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.alfabetico");
+					} else if (miform.getCrit_4().equalsIgnoreCase("2")) {
+						valor4 = UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.antiguedad");
+					} else if (miform.getCrit_4().equalsIgnoreCase("3")) {
+						valor4 = UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.edad");
+					} else if (miform.getCrit_4().equalsIgnoreCase("4")) {
+						valor4 = UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.cola");
+					}
+					String orden4 = "";
+					if (miform.getOrd_4().equalsIgnoreCase("A")) {
+						orden4 = UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.ascendente");
+					} else if (miform.getOrd_4().equalsIgnoreCase("D")) {
+						orden4 = UtilidadesString.getMensajeIdioma(usr, "gratuita.maestroTurnos.literal.descendente");
+					}
+			%>
+				<input type="text" name="crit_4" class="boxConsulta" value="<%=valor4%>"/>&nbsp;<input type="text" name="ord_4" class="boxConsulta" value="<%=orden4%>"/>
+			<%
+				}
+			%>
 			</td>
-			<td class="labelText" style="text-align:left"><siga:Idioma key="gratuita.definirTurnosIndex.literal.materia"/></td>
-			<td class="labelText" style="text-align:left">
-				<input name="materia" type="text" class="boxConsulta" size="25" value="<%=UtilidadesString.mostrarDatoJSP(turnoMateria)%>" readonly="true">
+		</tr>
+	</table>
+	</siga:ConjCampos>
+	
+	<siga:ConjCampos leyenda="gratuita.guardiasTurno.literal.configuracioncalendarios" desplegable="true" oculto="false">
+	<table align="center" border="0" width="100%">
+		<tr>
+			<td class="labelText"><siga:Idioma key="gratuita.listarGuardias.literal.duracion"/>&nbsp;(*)</td>
+			<td>
+				<html:text name="DefinirGuardiasTurnosForm" property="duracion" size="4" maxlength="4" styleClass="<%=estiloNumber%>" value='<%=diasGuardia%>' readonly="<%=soloLectura%>"></html:text>
+				&nbsp;
+				<%
+					if (modoPestanha.equalsIgnoreCase("ver")) {
+				%>
+					<html:text name="DefinirGuardiasTurnosForm" property="tipoDiasGuardia" readOnly="true" styleClass="boxConsulta" value="<%=DefinirGuardiasTurnosAction.obtenerTipoDiaPeriodo(tipoDiasGuardia, usr)%>" />
+				<%
+					} else {
+				%>
+					<html:select name="DefinirGuardiasTurnosForm" property="tipoDiasGuardia" size="1" value="<%=tipoDiasGuardia%>" styleClass="boxCombo">
+						<html:option value="<%=ClsConstants.TIPO_PERIODO_DIAS_GUARDIA_DIAS_NATURALES%>" key="gratuita.combo.literal.diasNaturales"/>
+						<html:option value="<%=ClsConstants.TIPO_PERIODO_DIAS_GUARDIA_SEMANAS_NATURALES%>" key="gratuita.combo.literal.semanasNaturales"/>
+						<html:option value="<%=ClsConstants.TIPO_PERIODO_DIAS_GUARDIA_QUINCENAS_NATURALES%>" key="gratuita.combo.literal.quincenasNaturales"/>
+						<html:option value="<%=ClsConstants.TIPO_PERIODO_DIAS_GUARDIA_MESES_NATURALES%>" key="gratuita.combo.literal.mesesNaturales"/>
+					</html:select>
+				<%
+					}
+				%>
+			</td>
+			<td class="labelText" colspan="2">
+				<siga:Idioma key="gratuita.maestroGuardias.literal.diasSeparacion"/>&nbsp;(*)
+				&nbsp;&nbsp;
+				<html:text name="DefinirGuardiasTurnosForm" property="diasSeparacion" size="2" maxlength="2" styleClass="<%=estiloNumber%>" value='<%=diasSeparacionGuardias%>' readonly="<%=soloLectura%>"></html:text>
+			</td>
+		</tr>
+
+		<tr>
+			<td class="labelText">
+				<html:checkbox name="DefinirGuardiasTurnosForm" property="checkDiasPeriodo" value="<%=ClsConstants.DB_TRUE%>" onclick="modificarDiasPeriodo()" disabled="<%=soloLectura%>" />
+				&nbsp;
+				<siga:Idioma key="gratuita.calendarioGuardias.literal.periodo" />
+			</td>
+			<td>
+				<html:text name="DefinirGuardiasTurnosForm" property="diasPeriodo" size="4" maxlength="4" styleClass="<%=estiloNumber%>" value="<%=diasPeriodo%>" readonly="<%=soloLectura%>"/>
+				&nbsp;
+				<%
+					if (modoPestanha.equalsIgnoreCase("ver")) {
+				%>
+					<html:text name="DefinirGuardiasTurnosForm" property="tipoDiasPeriodo" readOnly="true" styleClass="boxConsulta" value="<%=DefinirGuardiasTurnosAction.obtenerTipoDiaPeriodo(tipoDiasPeriodo, usr)%>" />
+				<%
+					} else {
+				%>
+					<html:select name="DefinirGuardiasTurnosForm" property="tipoDiasPeriodo" size="1" value="<%=tipoDiasPeriodo%>" styleClass="boxCombo">
+						<html:option value="<%=ClsConstants.TIPO_PERIODO_DIAS_GUARDIA_DIAS_NATURALES%>" key="gratuita.combo.literal.diasNaturales"/>
+						<html:option value="<%=ClsConstants.TIPO_PERIODO_DIAS_GUARDIA_SEMANAS_NATURALES%>" key="gratuita.combo.literal.semanasNaturales"/>
+						<html:option value="<%=ClsConstants.TIPO_PERIODO_DIAS_GUARDIA_QUINCENAS_NATURALES%>" key="gratuita.combo.literal.quincenasNaturales"/>
+						<html:option value="<%=ClsConstants.TIPO_PERIODO_DIAS_GUARDIA_MESES_NATURALES%>" key="gratuita.combo.literal.mesesNaturales"/>
+					</html:select>
+				<%
+					}
+				%>
+			</td>		
+			<td rowspan="2" class="labelText" valign="center" align="middle">
+				<html:checkbox name="DefinirGuardiasTurnosForm" property="hayDiasASeparar"
+					value="<%=ClsConstants.DB_TRUE%>" disabled="true" />
+				<siga:Idioma key="gratuita.guardiasTurno.literal.separarGuardia"/>
+				<%=diasASeparar%>
+			</td>
+			<td>
+				<IMG border=0 src="<%=app+"/html/imagenes/"%>help.gif"
+					alt="<siga:Idioma key="gratuita.guardiasTurno.ayuda.separarGuardia"/>">
 			</td>
 		</tr>
 		
 		<tr>
-			<td class="labelText" style="text-align:left">
-				<siga:Idioma key="gratuita.definirTurnosIndex.literal.zona"/>
-			</td>
-			<td class="labelText" style="text-align:left">
-				<input name="zona" type="text" class="boxConsulta" size="30" value="<%=UtilidadesString.mostrarDatoJSP(turnoZona)%>" readonly="true">
-			</td>
-			<td class="labelText" style="text-align:left">
-				<siga:Idioma key="gratuita.definirTurnosIndex.literal.subzona"/>
-			</td>
-			<td class="labelText" style="text-align:left">
-				<input name="subzona" type="text" class="boxConsulta" size="25" value="<%=UtilidadesString.mostrarDatoJSP(turnoSubzona)%>" readonly="true">
-			</td>
-			<td class="labelText" style="text-align:left">
-				<siga:Idioma key="gratuita.definirTurnosIndex.literal.partidoJudicial"/>
-			</td>
-			<td  class="labelTextValor" style="text-align:left">
-				<%=UtilidadesString
-										.mostrarDatoJSP(turnoPartidoJudicial)%>
+			<td colspan="4"><table>
+				<tr>
+					<td class="labelText" rowspan="2" style="width:96px;padding-left:7px;">
+						<siga:Idioma key="gratuita.inicio_PestanaCalendarioGuardias.literal.tipodias"/>
+					</td>
+					<td class="labelText">
+						<siga:Idioma key="gratuita.combo.literal.laborables"/>
+					</td>
+					<td>
+						<%
+							if (!modoPestanha.equalsIgnoreCase("ver")) {
+						%>
+							<html:button property="boton" onclick="marcarTodosLaborables()" styleClass="button" disabled="<%=soloLectura%>">
+								<siga:Idioma key="general.boton.marcarTodos"/>
+							</html:button>
+						<%
+							}
+						%>
+					</td>
+					<td class="labelText" style="width:255px;">
+						<siga:Idioma key="gratuita.checkbox.literal.Lunes"/>
+							<html:checkbox name="DefinirGuardiasTurnosForm" property="seleccionLaborablesLunes" value="<%=ClsConstants.DB_TRUE%>" disabled="<%=soloLectura%>" onclick="modificarSeleccionDias()" />
+						<siga:Idioma key="gratuita.checkbox.literal.Martes"/>
+							<html:checkbox name="DefinirGuardiasTurnosForm" property="seleccionLaborablesMartes" value="<%=ClsConstants.DB_TRUE%>" disabled="<%=soloLectura%>" onclick="modificarSeleccionDias()" />
+						<siga:Idioma key="gratuita.checkbox.literal.Miercoles"/>
+							<html:checkbox name="DefinirGuardiasTurnosForm" property="seleccionLaborablesMiercoles" value="<%=ClsConstants.DB_TRUE%>" disabled="<%=soloLectura%>" onclick="modificarSeleccionDias()" />
+						<siga:Idioma key="gratuita.checkbox.literal.Jueves"/>
+							<html:checkbox name="DefinirGuardiasTurnosForm" property="seleccionLaborablesJueves" value="<%=ClsConstants.DB_TRUE%>" disabled="<%=soloLectura%>" onclick="modificarSeleccionDias()" />
+						<siga:Idioma key="gratuita.checkbox.literal.Viernes"/>
+							<html:checkbox name="DefinirGuardiasTurnosForm" property="seleccionLaborablesViernes" value="<%=ClsConstants.DB_TRUE%>" disabled="<%=soloLectura%>" onclick="modificarSeleccionDias()" />
+						<siga:Idioma key="gratuita.checkbox.literal.Sabado"/>
+							<html:checkbox name="DefinirGuardiasTurnosForm" property="seleccionLaborablesSabado" value="<%=ClsConstants.DB_TRUE%>" disabled="<%=soloLectura%>" onclick="modificarSeleccionDias()" />
+					</td>
+					<td>
+						<%
+							if (!modoPestanha.equalsIgnoreCase("ver")) {
+						%>
+							<html:button property="boton" onclick="desmarcarTodosLaborables()" styleClass="button" disabled="<%=soloLectura%>">
+								<siga:Idioma key="general.boton.desmarcarTodos"/>
+							</html:button>
+						<%
+							}
+						%>
+					</td>
+				</tr>
+						
+				<tr>
+					<td class="labelText">
+						<siga:Idioma key="gratuita.combo.literal.festivos"/>
+					</td>
+					<td>
+						<%
+							if (!modoPestanha.equalsIgnoreCase("ver")) {
+						%>
+							<html:button property="boton" onclick="marcarTodosFestivos()" styleClass="button" disabled="<%=soloLectura%>">
+								<siga:Idioma key="general.boton.marcarTodos"/>
+							</html:button>
+						<%
+							}
+						%>
+					</td>
+					<td class="labelText">
+						<siga:Idioma key="gratuita.checkbox.literal.Lunes"/>
+							<html:checkbox name="DefinirGuardiasTurnosForm" property="seleccionFestivosLunes" value="<%=ClsConstants.DB_TRUE%>" disabled="<%=soloLectura%>" onclick="modificarSeleccionDias()" />
+						<siga:Idioma key="gratuita.checkbox.literal.Martes"/>
+							<html:checkbox name="DefinirGuardiasTurnosForm" property="seleccionFestivosMartes" value="<%=ClsConstants.DB_TRUE%>" disabled="<%=soloLectura%>" onclick="modificarSeleccionDias()" />
+						<siga:Idioma key="gratuita.checkbox.literal.Miercoles"/>
+							<html:checkbox name="DefinirGuardiasTurnosForm" property="seleccionFestivosMiercoles" value="<%=ClsConstants.DB_TRUE%>" disabled="<%=soloLectura%>" onclick="modificarSeleccionDias()" />
+						<siga:Idioma key="gratuita.checkbox.literal.Jueves"/>
+							<html:checkbox name="DefinirGuardiasTurnosForm" property="seleccionFestivosJueves" value="<%=ClsConstants.DB_TRUE%>" disabled="<%=soloLectura%>" onclick="modificarSeleccionDias()" />
+						<siga:Idioma key="gratuita.checkbox.literal.Viernes"/>
+							<html:checkbox name="DefinirGuardiasTurnosForm" property="seleccionFestivosViernes" value="<%=ClsConstants.DB_TRUE%>" disabled="<%=soloLectura%>" onclick="modificarSeleccionDias()" />
+						<siga:Idioma key="gratuita.checkbox.literal.Sabado"/>
+							<html:checkbox name="DefinirGuardiasTurnosForm" property="seleccionFestivosSabado" value="<%=ClsConstants.DB_TRUE%>" disabled="<%=soloLectura%>" onclick="modificarSeleccionDias()" />
+						<siga:Idioma key="gratuita.checkbox.literal.Domingo"/>
+							<html:checkbox name="DefinirGuardiasTurnosForm" property="seleccionFestivosDomingo" value="<%=ClsConstants.DB_TRUE%>" disabled="<%=soloLectura%>" onclick="modificarSeleccionDias()" />
+					</td>
+					<td>
+						<%
+							if (!modoPestanha.equalsIgnoreCase("ver")) {
+						%>
+							<html:button property="boton" onclick="desmarcarTodosFestivos()" styleClass="button" disabled="<%=soloLectura%>">
+								<siga:Idioma key="general.boton.desmarcarTodos"/>
+							</html:button>
+						<%
+							}
+						%>
+					</td>
+				</tr>
+			</table></td>
+			
+			<td class="labelText" width="12%">
+				<div id="labelSeleccionDias"><siga:Idioma key="gratuita.guardiasTurno.literal.seleccionBase"/>:</div>
 			</td>
 		</tr>
-		</table>
+	</table>
 	</siga:ConjCampos>
 
-
-	<html:form action="DefinirGuardiasTurnosAction.do" method="POST" target="_top">
-		<html:hidden property = "modo" value = ""/>
-		<html:hidden property = "idInstitucionPestanha" />
-		<html:hidden property = "idTurnoPestanha"/>
-		<html:hidden property = "idGuardiaPestanha"/>
-
-		<input type="hidden" name="guardia" value="<%=(String)hash.get("IDGUARDIA")%>">
-		<html:hidden name="DefinirGuardiasTurnosForm" property="letradosSustitutos"  value='0'></html:hidden>
-		<html:hidden name="DefinirGuardiasTurnosForm" property="diasPagados"  value='1'></html:hidden>									
-
-		<!-- GUARDIA -->
-		<siga:ConjCampos leyenda="gratuita.listarGuardias.literal.guardia">
-		<table align="center" border="0" width="100%">
-		
-			<tr>
-				<td class="labelText" colspan="3">
-					<siga:Idioma key="gratuita.turno.guardia.literal.deSustitucion"/> &nbsp;&nbsp;
-					<%
-						if (hash.get("IDGUARDIASUSTITUCION") != null
-										&& !((String) hash.get("IDGUARDIASUSTITUCION"))
-												.equals("")) {
-					%>
-						<siga:ComboBD nombre="guardiaDeSustitucion" tipo="guardias" clase="boxComboConsulta" readOnly="true" parametro="<%=datoGuardia%>" elementoSel="<%=guardiaSel%>" ancho="300"/>
-					<%
-						}
-					%>
-				</td>
-				<td class="labelText">
-					<siga:Idioma key="gratuita.turno.guardia.literal.deViolenciaGenero"/>&nbsp<input type=checkbox name="vg" value=1 <%=(esViolenciaGenero.equals("1"))?"checked":""%> >
-				</td>
-				
-			</tr>
-			<tr><td class="labelText">&nbsp;</td></tr>
-		
-			<tr>
-				<td class="labelText" style="width:100px;">
-					<siga:Idioma key="censo.SolicitudIncorporacion.literal.nombre"/>&nbsp;(*)
-				</td>
-				<td>
-					<html:text name="DefinirGuardiasTurnosForm" property="nombreGuardia" size="40" maxlength="30" styleClass="<%=estiloText%>" value="<%=nombreGuardia%>" readonly="<%=soloLectura%>"></html:text>
-				</td>
-				<td class="labelText">
-					<siga:Idioma key="gratuita.maestroTurnos.literal.descripcion"/>&nbsp;(*)
-				</td>
-				<td>
-					<html:text name="DefinirGuardiasTurnosForm" property="descripcion" size="40" maxlength="1024" styleClass="<%=estiloText%>" value="<%=descripcionGuardia%>" readonly="<%=soloLectura%>"></html:text>
-				</td>
-			</tr>
-	
-			<tr>
-				<td class="labelText"><siga:Idioma key="gratuita.maestroGuardias.literal.descripcionFacturacion"/></td>
-				<td>
-					<html:textarea name="DefinirGuardiasTurnosForm" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" property="descripcionFacturacion" rows="3" cols="80" readOnly="<%=soloLectura%>" styleClass="<%=estiloText%>" value="<%=descripcionFacturacion%>" />
-				</td>
-				<td class="labelText"><siga:Idioma key="gratuita.maestroGuardias.literal.descripcionPago"/></td>
-				<td>
-					<html:textarea name="DefinirGuardiasTurnosForm" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" property="descripcionPago" rows="3" cols="80" readOnly="<%=soloLectura%>" styleClass="<%=estiloText%>" value="<%=descripcionPago%>" />
-				</td>
-			</tr>
-	
-			<tr>
-				<td class="labelText" colspan="2">
-					<siga:Idioma key="gratuita.listarGuardiasTurno.literal.letradosGuardia"/>&nbsp;(*)
-					&nbsp;&nbsp;
-					<html:text name="DefinirGuardiasTurnosForm" property="letradosGuardia" size="7" maxlength="6" styleClass="<%=estiloText%>" value='<%=numeroLetradosGuardia%>' readonly="<%=soloLectura%>"></html:text>
-				</td>
-				<td class="labelText" colspan="2">
-					<siga:Idioma key="gratuita.maestroGuardias.literal.diasSeparacion"/>&nbsp;(*)
-					&nbsp;&nbsp;
-					<html:text name="DefinirGuardiasTurnosForm" property="diasSeparacion" size="3" maxlength="2" styleClass="<%=estiloText%>" value='<%=diasSeparacionGuardias%>' readonly="<%=soloLectura%>"></html:text>
-				</td>
-			</tr>
-	
-			<tr>
-				<td class="labelText"><siga:Idioma key="gratuita.listarGuardias.literal.duracion"/>&nbsp;(*)</td>
-				<td>
-					<html:text name="DefinirGuardiasTurnosForm" property="duracion" size="5" maxlength="4" styleClass="<%=estiloText%>" value='<%=diasGuardia%>' readonly="<%=soloLectura%>"></html:text>
-					&nbsp;
-					<%
-						if (modoPestanha.equalsIgnoreCase("ver")) {
-					%>
-						<html:text name="DefinirGuardiasTurnosForm" property="tipoDiasGuardia" readOnly="true" styleClass="boxConsulta" value="<%=DefinirGuardiasTurnosAction.obtenerTipoDiaPeriodo(tipoDiasGuardia, usr)%>" />
-					<%
-						} else {
-					%>
-						<html:select name="DefinirGuardiasTurnosForm" property="tipoDiasGuardia" size="1" value="<%=tipoDiasGuardia%>" styleClass="boxCombo">
-							<html:option value="<%=ClsConstants.TIPO_PERIODO_DIAS_GUARDIA_DIAS_NATURALES%>" key="gratuita.combo.literal.diasNaturales"/>
-							<html:option value="<%=ClsConstants.TIPO_PERIODO_DIAS_GUARDIA_SEMANAS_NATURALES%>" key="gratuita.combo.literal.semanasNaturales"/>
-							<html:option value="<%=ClsConstants.TIPO_PERIODO_DIAS_GUARDIA_QUINCENAS_NATURALES%>" key="gratuita.combo.literal.quincenasNaturales"/>
-							<html:option value="<%=ClsConstants.TIPO_PERIODO_DIAS_GUARDIA_MESES_NATURALES%>" key="gratuita.combo.literal.mesesNaturales"/>
-						</html:select>
-					<%
-						}
-					%>
-				</td>
-				<td class="labelText">
-					<html:checkbox name="DefinirGuardiasTurnosForm" property="checkDiasPeriodo" value="<%=ClsConstants.DB_TRUE%>" onclick="modificarDiasPeriodo()" disabled="<%=soloLectura%>" />
-					&nbsp;
-					<siga:Idioma key="gratuita.calendarioGuardias.literal.periodo" />
-				</td>
-				<td>
-					<html:text name="DefinirGuardiasTurnosForm" property="diasPeriodo" size="5" maxlength="4" styleClass="<%=estiloText%>" value="<%=diasPeriodo%>" readonly="<%=soloLectura%>"/>
-					&nbsp;
-					<%
-						if (modoPestanha.equalsIgnoreCase("ver")) {
-					%>
-						<html:text name="DefinirGuardiasTurnosForm" property="tipoDiasPeriodo" readOnly="true" styleClass="boxConsulta" value="<%=DefinirGuardiasTurnosAction.obtenerTipoDiaPeriodo(tipoDiasPeriodo, usr)%>" />
-					<%
-						} else {
-					%>
-						<html:select name="DefinirGuardiasTurnosForm" property="tipoDiasPeriodo" size="1" value="<%=tipoDiasPeriodo%>" styleClass="boxCombo">
-							<html:option value="<%=ClsConstants.TIPO_PERIODO_DIAS_GUARDIA_DIAS_NATURALES%>" key="gratuita.combo.literal.diasNaturales"/>
-							<html:option value="<%=ClsConstants.TIPO_PERIODO_DIAS_GUARDIA_SEMANAS_NATURALES%>" key="gratuita.combo.literal.semanasNaturales"/>
-							<html:option value="<%=ClsConstants.TIPO_PERIODO_DIAS_GUARDIA_QUINCENAS_NATURALES%>" key="gratuita.combo.literal.quincenasNaturales"/>
-							<html:option value="<%=ClsConstants.TIPO_PERIODO_DIAS_GUARDIA_MESES_NATURALES%>" key="gratuita.combo.literal.mesesNaturales"/>
-						</html:select>
-					<%
-						}
-					%>
-				</td>		
-			</tr>
 			
-			<tr>
-				<td colspan="4"><table>
-					<tr>
-						<td class="labelText" rowspan="2" style="width:96px;padding-left:7px;">
-							<siga:Idioma key="gratuita.inicio_PestanaCalendarioGuardias.literal.tipodias"/>
-						</td>
-						<td class="labelText">
-							<siga:Idioma key="gratuita.combo.literal.laborables"/>
-						</td>
-						<td>
-							<%
-								if (!modoPestanha.equalsIgnoreCase("ver")) {
-							%>
-								<html:button property="boton" onclick="marcarTodosLaborables()" styleClass="button" disabled="<%=soloLectura%>">
-									<siga:Idioma key="general.boton.marcarTodos"/>
-								</html:button>
-							<%
-								}
-							%>
-						</td>
-						<td class="labelText" style="width:255px;">
-							<siga:Idioma key="gratuita.checkbox.literal.Lunes"/>
-								<html:checkbox name="DefinirGuardiasTurnosForm" property="seleccionLaborablesLunes" value="<%=ClsConstants.DB_TRUE%>" disabled="<%=soloLectura%>" onclick="modificarSeleccionDias()" />
-							<siga:Idioma key="gratuita.checkbox.literal.Martes"/>
-								<html:checkbox name="DefinirGuardiasTurnosForm" property="seleccionLaborablesMartes" value="<%=ClsConstants.DB_TRUE%>" disabled="<%=soloLectura%>" onclick="modificarSeleccionDias()" />
-							<siga:Idioma key="gratuita.checkbox.literal.Miercoles"/>
-								<html:checkbox name="DefinirGuardiasTurnosForm" property="seleccionLaborablesMiercoles" value="<%=ClsConstants.DB_TRUE%>" disabled="<%=soloLectura%>" onclick="modificarSeleccionDias()" />
-							<siga:Idioma key="gratuita.checkbox.literal.Jueves"/>
-								<html:checkbox name="DefinirGuardiasTurnosForm" property="seleccionLaborablesJueves" value="<%=ClsConstants.DB_TRUE%>" disabled="<%=soloLectura%>" onclick="modificarSeleccionDias()" />
-							<siga:Idioma key="gratuita.checkbox.literal.Viernes"/>
-								<html:checkbox name="DefinirGuardiasTurnosForm" property="seleccionLaborablesViernes" value="<%=ClsConstants.DB_TRUE%>" disabled="<%=soloLectura%>" onclick="modificarSeleccionDias()" />
-							<siga:Idioma key="gratuita.checkbox.literal.Sabado"/>
-								<html:checkbox name="DefinirGuardiasTurnosForm" property="seleccionLaborablesSabado" value="<%=ClsConstants.DB_TRUE%>" disabled="<%=soloLectura%>" onclick="modificarSeleccionDias()" />
-						</td>
-						<td>
-							<%
-								if (!modoPestanha.equalsIgnoreCase("ver")) {
-							%>
-								<html:button property="boton" onclick="desmarcarTodosLaborables()" styleClass="button" disabled="<%=soloLectura%>">
-									<siga:Idioma key="general.boton.desmarcarTodos"/>
-								</html:button>
-							<%
-								}
-							%>
-						</td>
-					</tr>
-							
-					<tr>
-						<td class="labelText">
-							<siga:Idioma key="gratuita.combo.literal.festivos"/>
-						</td>
-						<td>
-							<%
-								if (!modoPestanha.equalsIgnoreCase("ver")) {
-							%>
-								<html:button property="boton" onclick="marcarTodosFestivos()" styleClass="button" disabled="<%=soloLectura%>">
-									<siga:Idioma key="general.boton.marcarTodos"/>
-								</html:button>
-							<%
-								}
-							%>
-						</td>
-						<td class="labelText">
-							<siga:Idioma key="gratuita.checkbox.literal.Lunes"/>
-								<html:checkbox name="DefinirGuardiasTurnosForm" property="seleccionFestivosLunes" value="<%=ClsConstants.DB_TRUE%>" disabled="<%=soloLectura%>" onclick="modificarSeleccionDias()" />
-							<siga:Idioma key="gratuita.checkbox.literal.Martes"/>
-								<html:checkbox name="DefinirGuardiasTurnosForm" property="seleccionFestivosMartes" value="<%=ClsConstants.DB_TRUE%>" disabled="<%=soloLectura%>" onclick="modificarSeleccionDias()" />
-							<siga:Idioma key="gratuita.checkbox.literal.Miercoles"/>
-								<html:checkbox name="DefinirGuardiasTurnosForm" property="seleccionFestivosMiercoles" value="<%=ClsConstants.DB_TRUE%>" disabled="<%=soloLectura%>" onclick="modificarSeleccionDias()" />
-							<siga:Idioma key="gratuita.checkbox.literal.Jueves"/>
-								<html:checkbox name="DefinirGuardiasTurnosForm" property="seleccionFestivosJueves" value="<%=ClsConstants.DB_TRUE%>" disabled="<%=soloLectura%>" onclick="modificarSeleccionDias()" />
-							<siga:Idioma key="gratuita.checkbox.literal.Viernes"/>
-								<html:checkbox name="DefinirGuardiasTurnosForm" property="seleccionFestivosViernes" value="<%=ClsConstants.DB_TRUE%>" disabled="<%=soloLectura%>" onclick="modificarSeleccionDias()" />
-							<siga:Idioma key="gratuita.checkbox.literal.Sabado"/>
-								<html:checkbox name="DefinirGuardiasTurnosForm" property="seleccionFestivosSabado" value="<%=ClsConstants.DB_TRUE%>" disabled="<%=soloLectura%>" onclick="modificarSeleccionDias()" />
-							<siga:Idioma key="gratuita.checkbox.literal.Domingo"/>
-								<html:checkbox name="DefinirGuardiasTurnosForm" property="seleccionFestivosDomingo" value="<%=ClsConstants.DB_TRUE%>" disabled="<%=soloLectura%>" onclick="modificarSeleccionDias()" />
-						</td>
-						<td>
-							<%
-								if (!modoPestanha.equalsIgnoreCase("ver")) {
-							%>
-								<html:button property="boton" onclick="desmarcarTodosFestivos()" styleClass="button" disabled="<%=soloLectura%>">
-									<siga:Idioma key="general.boton.desmarcarTodos"/>
-								</html:button>
-							<%
-								}
-							%>
-						</td>
-					</tr>
-				</table></td>
-				
-				<td class="labelText" width="12%">
-					<div id="labelSeleccionDias"><siga:Idioma key="gratuita.guardiasTurno.literal.seleccionBase"/>:</div>
-				</td>
-			</tr>
-			<tr>
-				<td colspan = "5">
-					<table>	
-						<tr >
-							<td rowspan="2" class="labelText" valign="center" align="middle"><html:checkbox
-								name="DefinirGuardiasTurnosForm" property="hayDiasASeparar"
-								value="<%=ClsConstants.DB_TRUE%>" disabled="true" />
-								
-								<siga:Idioma key="gratuita.guardiasTurno.literal.separarGuardia"/>
-							
-								<%=diasASeparar%>
-								</td>
-								<td></td>
-							
-							
-						</tr>
-						<tr >
-							<td><IMG border=0
-								src="<%=app+"/html/imagenes/"%>help.gif"
-								alt="<siga:Idioma key="gratuita.guardiasTurno.ayuda.separarGuardia"/>">
-							</td>
-							<td width="45%"></td>
-							
-						
-						
-						</tr>
-					</table>
-				</td>
-			</tr>
-		</table>
-		</siga:ConjCampos>
+	
+</html:form>
 
-				
-		<!-- PESOS ORDENACION -->
-		<siga:ConjCampos leyenda="gratuita.maestroTurnos.literal.pesosOrdenacion">
-		<table border="0" width="100%" align="center">
-			<tr>
-				<td class="labelText" style="text-align:left"><siga:Idioma key="gratuita.maestroTurnos.literal.primerCriterio"/></td>
-				<td class="labelText" style="text-align:right">
-				<%
-					if (!modoPestanha.equalsIgnoreCase("ver")) {
-				%>
-					<html:select styleClass="<%=classCombo %>" name="DefinirGuardiasTurnosForm" property="crit_1">
-						<html:option value="0"><siga:Idioma key="gratuita.maestroTurnos.literal.sinDefinir"/></html:option>
-						<html:option value="1"><siga:Idioma key="gratuita.maestroTurnos.literal.alfabetico"/></html:option>
-						<html:option value="2"><siga:Idioma key="gratuita.maestroTurnos.literal.antiguedad"/></html:option>
-						<html:option value="3"><siga:Idioma key="gratuita.maestroTurnos.literal.edad"/></html:option>
-						<html:option value="4"><siga:Idioma key="gratuita.maestroTurnos.literal.cola"/></html:option>
-					</html:select>
-					&nbsp;
-					<html:select styleClass="<%=classCombo %>" name="DefinirGuardiasTurnosForm" property="ord_1">
-						<html:option value="A"><siga:Idioma key="gratuita.maestroTurnos.literal.ascendente"/></html:option>
-						<html:option value="D"><siga:Idioma key="gratuita.maestroTurnos.literal.descendente"/></html:option>
-					</html:select>
-				<%
-					} else {
-								String valor1 = "";
-								if (miform.getCrit_1().equalsIgnoreCase("0")) {
-									valor1 = UtilidadesString
-											.getMensajeIdioma(usr,
-													"gratuita.maestroTurnos.literal.sinDefinir");
-								} else if (miform.getCrit_1().equalsIgnoreCase("1")) {
-									valor1 = UtilidadesString
-											.getMensajeIdioma(usr,
-													"gratuita.maestroTurnos.literal.alfabetico");
-								} else if (miform.getCrit_1().equalsIgnoreCase("2")) {
-									valor1 = UtilidadesString
-											.getMensajeIdioma(usr,
-													"gratuita.maestroTurnos.literal.antiguedad");
-								} else if (miform.getCrit_1().equalsIgnoreCase("3")) {
-									valor1 = UtilidadesString.getMensajeIdioma(usr,
-											"gratuita.maestroTurnos.literal.edad");
-								} else if (miform.getCrit_1().equalsIgnoreCase("4")) {
-									valor1 = UtilidadesString.getMensajeIdioma(usr,
-											"gratuita.maestroTurnos.literal.cola");
-								}
+<%
+	if (!menuCenso) {
+%>
+	<siga:ConjBotonesAccion botones="<%=botonesAccion%>"  />
+<%
+	}
+%>
 
-								String orden1 = "";
-								if (miform.getOrd_1().equalsIgnoreCase("A")) {
-									orden1 = UtilidadesString
-											.getMensajeIdioma(usr,
-													"gratuita.maestroTurnos.literal.ascendente");
-								} else if (miform.getOrd_1().equalsIgnoreCase("D")) {
-									orden1 = UtilidadesString
-											.getMensajeIdioma(usr,
-													"gratuita.maestroTurnos.literal.descendente");
-								}
-				%>
-				<input type="text" name="crit_1" class="boxConsulta" value="<%=valor1%>"/>&nbsp;<input type="text" name="ord_1" class="boxConsulta" value="<%=orden1%>"/>
-				<%
-					}
-				%>
-				</td>
-				<td class="labelText" style="text-align:left"><siga:Idioma key="gratuita.maestroTurnos.literal.segundoCriterio"/></td>
-				<td class="labelText" style="text-align:right">
-				<%
-					if (!modoPestanha.equalsIgnoreCase("ver")) {
-				%>
-					<html:select styleClass="<%=classCombo %>" name="DefinirGuardiasTurnosForm" property="crit_2">
-						<html:option value="0"><siga:Idioma key="gratuita.maestroTurnos.literal.sinDefinir"/></html:option>
-						<html:option value="1"><siga:Idioma key="gratuita.maestroTurnos.literal.alfabetico"/></html:option>
-						<html:option value="2"><siga:Idioma key="gratuita.maestroTurnos.literal.antiguedad"/></html:option>
-						<html:option value="3"><siga:Idioma key="gratuita.maestroTurnos.literal.edad"/></html:option>
-						<html:option value="4"><siga:Idioma key="gratuita.maestroTurnos.literal.cola"/></html:option>
-					</html:select>
-					&nbsp;
-					<html:select styleClass="<%=classCombo %>" name="DefinirGuardiasTurnosForm" property="ord_2">
-						<html:option value="A"><siga:Idioma key="gratuita.maestroTurnos.literal.ascendente"/></html:option>
-						<html:option value="D"><siga:Idioma key="gratuita.maestroTurnos.literal.descendente"/></html:option>
-					</html:select>
-				<%
-					} else {
-								String valor2 = "";
-								if (miform.getCrit_2().equalsIgnoreCase("0")) {
-									valor2 = UtilidadesString
-											.getMensajeIdioma(usr,
-													"gratuita.maestroTurnos.literal.sinDefinir");
-								} else if (miform.getCrit_2().equalsIgnoreCase("1")) {
-									valor2 = UtilidadesString
-											.getMensajeIdioma(usr,
-													"gratuita.maestroTurnos.literal.alfabetico");
-								} else if (miform.getCrit_2().equalsIgnoreCase("2")) {
-									valor2 = UtilidadesString
-											.getMensajeIdioma(usr,
-													"gratuita.maestroTurnos.literal.antiguedad");
-								} else if (miform.getCrit_2().equalsIgnoreCase("3")) {
-									valor2 = UtilidadesString.getMensajeIdioma(usr,
-											"gratuita.maestroTurnos.literal.edad");
-								} else if (miform.getCrit_2().equalsIgnoreCase("4")) {
-									valor2 = UtilidadesString.getMensajeIdioma(usr,
-											"gratuita.maestroTurnos.literal.cola");
-								}
 
-								String orden2 = "";
-								if (miform.getOrd_2().equalsIgnoreCase("A")) {
-									orden2 = UtilidadesString
-											.getMensajeIdioma(usr,
-													"gratuita.maestroTurnos.literal.ascendente");
-								} else if (miform.getOrd_2().equalsIgnoreCase("D")) {
-									orden2 = UtilidadesString
-											.getMensajeIdioma(usr,
-													"gratuita.maestroTurnos.literal.descendente");
-								}
-				%>
-				<input type="text" name="crit_2" class="boxConsulta" value="<%=valor2%>"/>&nbsp;<input type="text" name="ord_2" class="boxConsulta" value="<%=orden2%>"/>
-				<%
-					}
-				%>
-				</td>
-			</tr>
-			
-			<tr>
-				<td class="labelText" style="text-align:left"><siga:Idioma key="gratuita.maestroTurnos.literal.terceroCriterio"/></td>
-				<td class="labelText" style="text-align:right">
-				<%
-					if (!modoPestanha.equalsIgnoreCase("ver")) {
-				%>
-					<html:select styleClass="<%=classCombo %>" name="DefinirGuardiasTurnosForm" property="crit_3">
-						<html:option value="0"><siga:Idioma key="gratuita.maestroTurnos.literal.sinDefinir"/></html:option>
-						<html:option value="1"><siga:Idioma key="gratuita.maestroTurnos.literal.alfabetico"/></html:option>
-						<html:option value="2"><siga:Idioma key="gratuita.maestroTurnos.literal.antiguedad"/></html:option>
-						<html:option value="3"><siga:Idioma key="gratuita.maestroTurnos.literal.edad"/></html:option>
-						<html:option value="4"><siga:Idioma key="gratuita.maestroTurnos.literal.cola"/></html:option>
-					</html:select>
-					&nbsp;
-					<html:select styleClass="<%=classCombo %>" name="DefinirGuardiasTurnosForm" property="ord_3">
-						<html:option value="A"><siga:Idioma key="gratuita.maestroTurnos.literal.ascendente"/></html:option>
-						<html:option value="D"><siga:Idioma key="gratuita.maestroTurnos.literal.descendente"/></html:option>
-					</html:select>
-				<%
-					} else {
-								String valor3 = "";
-								if (miform.getCrit_3().equalsIgnoreCase("0")) {
-									valor3 = UtilidadesString
-											.getMensajeIdioma(usr,
-													"gratuita.maestroTurnos.literal.sinDefinir");
-								} else if (miform.getCrit_3().equalsIgnoreCase("1")) {
-									valor3 = UtilidadesString
-											.getMensajeIdioma(usr,
-													"gratuita.maestroTurnos.literal.alfabetico");
-								} else if (miform.getCrit_3().equalsIgnoreCase("2")) {
-									valor3 = UtilidadesString
-											.getMensajeIdioma(usr,
-													"gratuita.maestroTurnos.literal.antiguedad");
-								} else if (miform.getCrit_3().equalsIgnoreCase("3")) {
-									valor3 = UtilidadesString.getMensajeIdioma(usr,
-											"gratuita.maestroTurnos.literal.edad");
-								} else if (miform.getCrit_3().equalsIgnoreCase("4")) {
-									valor3 = UtilidadesString.getMensajeIdioma(usr,
-											"gratuita.maestroTurnos.literal.cola");
-								}
 
-								String orden3 = "";
-								if (miform.getOrd_3().equalsIgnoreCase("A")) {
-									orden3 = UtilidadesString
-											.getMensajeIdioma(usr,
-													"gratuita.maestroTurnos.literal.ascendente");
-								} else if (miform.getOrd_3().equalsIgnoreCase("D")) {
-									orden3 = UtilidadesString
-											.getMensajeIdioma(usr,
-													"gratuita.maestroTurnos.literal.descendente");
-								}
-				%>
-				<input type="text" name="crit_3" class="boxConsulta" value="<%=valor3%>"/>&nbsp;<input type="text" name="ord_3" class="boxConsulta" value="<%=orden3%>"/>
-				<%
-					}
-				%>
-				</td>
-				<td class="labelText" style="text-align:left"><siga:Idioma key="gratuita.maestroTurnos.literal.cuartoCriterio"/></td>
-				<td class="labelText" style="text-align:right">
-				<%
-					if (!modoPestanha.equalsIgnoreCase("ver")) {
-				%>
-					<html:select styleClass="<%=classCombo %>" name="DefinirGuardiasTurnosForm" property="crit_4">
-						<html:option value="0"><siga:Idioma key="gratuita.maestroTurnos.literal.sinDefinir"/></html:option>
-						<html:option value="1"><siga:Idioma key="gratuita.maestroTurnos.literal.alfabetico"/></html:option>
-						<html:option value="2"><siga:Idioma key="gratuita.maestroTurnos.literal.antiguedad"/></html:option>
-						<html:option value="3"><siga:Idioma key="gratuita.maestroTurnos.literal.edad"/></html:option>
-						<html:option value="4"><siga:Idioma key="gratuita.maestroTurnos.literal.cola"/></html:option>
-					</html:select>
-					&nbsp;
-					<html:select styleClass="<%=classCombo %>" name="DefinirGuardiasTurnosForm" property="ord_4">
-						<html:option value="A"><siga:Idioma key="gratuita.maestroTurnos.literal.ascendente"/></html:option>
-						<html:option value="D"><siga:Idioma key="gratuita.maestroTurnos.literal.descendente"/></html:option>
-					</html:select>
-				<%
-					} else {
-								String valor4 = "";
-								if (miform.getCrit_4().equalsIgnoreCase("0")) {
-									valor4 = UtilidadesString
-											.getMensajeIdioma(usr,
-													"gratuita.maestroTurnos.literal.sinDefinir");
-								} else if (miform.getCrit_4().equalsIgnoreCase("1")) {
-									valor4 = UtilidadesString
-											.getMensajeIdioma(usr,
-													"gratuita.maestroTurnos.literal.alfabetico");
-								} else if (miform.getCrit_4().equalsIgnoreCase("2")) {
-									valor4 = UtilidadesString
-											.getMensajeIdioma(usr,
-													"gratuita.maestroTurnos.literal.antiguedad");
-								} else if (miform.getCrit_4().equalsIgnoreCase("3")) {
-									valor4 = UtilidadesString.getMensajeIdioma(usr,
-											"gratuita.maestroTurnos.literal.edad");
-								} else if (miform.getCrit_4().equalsIgnoreCase("4")) {
-									valor4 = UtilidadesString.getMensajeIdioma(usr,
-											"gratuita.maestroTurnos.literal.cola");
-								}
+<!-------------------- INICIO: Funciones JavaScript -------------------->
+<script language="JavaScript">
 
-								String orden4 = "";
-								if (miform.getOrd_4().equalsIgnoreCase("A")) {
-									orden4 = UtilidadesString
-											.getMensajeIdioma(usr,
-													"gratuita.maestroTurnos.literal.ascendente");
-								} else if (miform.getOrd_4().equalsIgnoreCase("D")) {
-									orden4 = UtilidadesString
-											.getMensajeIdioma(usr,
-													"gratuita.maestroTurnos.literal.descendente");
-								}
-				%>
-				<input type="text" name="crit_4" class="boxConsulta" value="<%=valor4%>"/>&nbsp;<input type="text" name="ord_4" class="boxConsulta" value="<%=orden4%>"/>
-				<%
-					}
-				%>
-				</td>
-			</tr>
-		</table>
-		</siga:ConjCampos>
-		
-	</html:form>
-
-	<%
-		if (!menuCenso) {
-	%>
-		<siga:ConjBotonesAccion botones="<%=botonesAccion%>"  />
-	<%
+	//Modifica los checks desde el onload
+	function modificarVarios ()
+	{
+		modificarDiasPeriodo ();
+		modificarSeleccionDias ();
+	} //modificarVarios ()
+	
+	//Habilita o no el input y combo de dias de periodo
+	function modificarDiasPeriodo ()
+	{
+		if (document.DefinirGuardiasTurnosForm.checkDiasPeriodo.checked) {
+			document.DefinirGuardiasTurnosForm.diasPeriodo.disabled = false;
+			document.DefinirGuardiasTurnosForm.tipoDiasPeriodo.disabled = false;
+		} else {
+			document.DefinirGuardiasTurnosForm.diasPeriodo.value = "0";
+			document.DefinirGuardiasTurnosForm.diasPeriodo.disabled = true;
+			document.DefinirGuardiasTurnosForm.tipoDiasPeriodo.value = "";
+			document.DefinirGuardiasTurnosForm.tipoDiasPeriodo.disabled = true;				
 		}
-	%>
-
-
+	} //modificarDiasPeriodo ()
 	
-	<!-------------------- INICIO: Funciones JavaScript -------------------->
-	<script language="JavaScript">
+	// Marca todos los checkBox de la seleccion de laborables
+	function marcarTodosLaborables ()
+	{
+		document.DefinirGuardiasTurnosForm.seleccionLaborablesLunes.checked = true;
+		document.DefinirGuardiasTurnosForm.seleccionLaborablesMartes.checked = true;
+		document.DefinirGuardiasTurnosForm.seleccionLaborablesMiercoles.checked = true;
+		document.DefinirGuardiasTurnosForm.seleccionLaborablesJueves.checked = true;
+		document.DefinirGuardiasTurnosForm.seleccionLaborablesViernes.checked = true;
+		document.DefinirGuardiasTurnosForm.seleccionLaborablesSabado.checked = true;
 		
-		//Modifica los checks desde el onload
-		function modificarVarios ()
-		{
-			modificarDiasPeriodo ();
-			modificarSeleccionDias ();
-		} //modificarVarios ()
+		modificarSeleccionDias ();
+	} //marcarTodosLaborables ()
+	// Desmarca todos los checkBox de la seleccion de laborables
+	function desmarcarTodosLaborables ()
+	{
+		document.DefinirGuardiasTurnosForm.seleccionLaborablesLunes.checked = false;
+		document.DefinirGuardiasTurnosForm.seleccionLaborablesMartes.checked = false;
+		document.DefinirGuardiasTurnosForm.seleccionLaborablesMiercoles.checked = false;
+		document.DefinirGuardiasTurnosForm.seleccionLaborablesJueves.checked = false;
+		document.DefinirGuardiasTurnosForm.seleccionLaborablesViernes.checked = false;
+		document.DefinirGuardiasTurnosForm.seleccionLaborablesSabado.checked = false;
 		
-		//Habilita o no el input y combo de dias de periodo
-		function modificarDiasPeriodo ()
-		{
-			if (document.DefinirGuardiasTurnosForm.checkDiasPeriodo.checked) {
-				document.DefinirGuardiasTurnosForm.diasPeriodo.disabled = false;
-				document.DefinirGuardiasTurnosForm.tipoDiasPeriodo.disabled = false;
-			} else {
-				document.DefinirGuardiasTurnosForm.diasPeriodo.value = "0";
-				document.DefinirGuardiasTurnosForm.diasPeriodo.disabled = true;
-				document.DefinirGuardiasTurnosForm.tipoDiasPeriodo.value = "";
-				document.DefinirGuardiasTurnosForm.tipoDiasPeriodo.disabled = true;				
-			}
-		} //modificarDiasPeriodo ()
+		modificarSeleccionDias ();
+	} //desmarcarTodosLaborables ()
+	
+	// Marca todos los checkBox de la seleccion de festivos
+	function marcarTodosFestivos ()
+	{
+		document.DefinirGuardiasTurnosForm.seleccionFestivosLunes.checked = true;
+		document.DefinirGuardiasTurnosForm.seleccionFestivosMartes.checked = true;
+		document.DefinirGuardiasTurnosForm.seleccionFestivosMiercoles.checked = true;
+		document.DefinirGuardiasTurnosForm.seleccionFestivosJueves.checked = true;
+		document.DefinirGuardiasTurnosForm.seleccionFestivosViernes.checked = true;
+		document.DefinirGuardiasTurnosForm.seleccionFestivosSabado.checked = true;
+		document.DefinirGuardiasTurnosForm.seleccionFestivosDomingo.checked = true;
 		
-		// Marca todos los checkBox de la seleccion de laborables
-		function marcarTodosLaborables ()
-		{
-			document.DefinirGuardiasTurnosForm.seleccionLaborablesLunes.checked = true;
-			document.DefinirGuardiasTurnosForm.seleccionLaborablesMartes.checked = true;
-			document.DefinirGuardiasTurnosForm.seleccionLaborablesMiercoles.checked = true;
-			document.DefinirGuardiasTurnosForm.seleccionLaborablesJueves.checked = true;
-			document.DefinirGuardiasTurnosForm.seleccionLaborablesViernes.checked = true;
-			document.DefinirGuardiasTurnosForm.seleccionLaborablesSabado.checked = true;
-			
-			modificarSeleccionDias ();
-		} //marcarTodosLaborables ()
-		// Desmarca todos los checkBox de la seleccion de laborables
-		function desmarcarTodosLaborables ()
-		{
-			document.DefinirGuardiasTurnosForm.seleccionLaborablesLunes.checked = false;
-			document.DefinirGuardiasTurnosForm.seleccionLaborablesMartes.checked = false;
-			document.DefinirGuardiasTurnosForm.seleccionLaborablesMiercoles.checked = false;
-			document.DefinirGuardiasTurnosForm.seleccionLaborablesJueves.checked = false;
-			document.DefinirGuardiasTurnosForm.seleccionLaborablesViernes.checked = false;
-			document.DefinirGuardiasTurnosForm.seleccionLaborablesSabado.checked = false;
-			
-			modificarSeleccionDias ();
-		} //desmarcarTodosLaborables ()
+		modificarSeleccionDias ();
+	} //marcarTodosFestivos ()
+	// Desmarca todos los checkBox de la seleccion de festivos
+	function desmarcarTodosFestivos ()
+	{
+		document.DefinirGuardiasTurnosForm.seleccionFestivosLunes.checked = false;
+		document.DefinirGuardiasTurnosForm.seleccionFestivosMartes.checked = false;
+		document.DefinirGuardiasTurnosForm.seleccionFestivosMiercoles.checked = false;
+		document.DefinirGuardiasTurnosForm.seleccionFestivosJueves.checked = false;
+		document.DefinirGuardiasTurnosForm.seleccionFestivosViernes.checked = false;
+		document.DefinirGuardiasTurnosForm.seleccionFestivosSabado.checked = false;
+		document.DefinirGuardiasTurnosForm.seleccionFestivosDomingo.checked = false;
 		
-		// Marca todos los checkBox de la seleccion de festivos
-		function marcarTodosFestivos ()
-		{
-			document.DefinirGuardiasTurnosForm.seleccionFestivosLunes.checked = true;
-			document.DefinirGuardiasTurnosForm.seleccionFestivosMartes.checked = true;
-			document.DefinirGuardiasTurnosForm.seleccionFestivosMiercoles.checked = true;
-			document.DefinirGuardiasTurnosForm.seleccionFestivosJueves.checked = true;
-			document.DefinirGuardiasTurnosForm.seleccionFestivosViernes.checked = true;
-			document.DefinirGuardiasTurnosForm.seleccionFestivosSabado.checked = true;
-			document.DefinirGuardiasTurnosForm.seleccionFestivosDomingo.checked = true;
-			
-			modificarSeleccionDias ();
-		} //marcarTodosFestivos ()
-		// Desmarca todos los checkBox de la seleccion de festivos
-		function desmarcarTodosFestivos ()
-		{
-			document.DefinirGuardiasTurnosForm.seleccionFestivosLunes.checked = false;
-			document.DefinirGuardiasTurnosForm.seleccionFestivosMartes.checked = false;
-			document.DefinirGuardiasTurnosForm.seleccionFestivosMiercoles.checked = false;
-			document.DefinirGuardiasTurnosForm.seleccionFestivosJueves.checked = false;
-			document.DefinirGuardiasTurnosForm.seleccionFestivosViernes.checked = false;
-			document.DefinirGuardiasTurnosForm.seleccionFestivosSabado.checked = false;
-			document.DefinirGuardiasTurnosForm.seleccionFestivosDomingo.checked = false;
-			
-			modificarSeleccionDias ();
-		} //desmarcarTodosFestivos ()
+		modificarSeleccionDias ();
+	} //desmarcarTodosFestivos ()
+	
+	// Muestra la seleccion de dias en texto
+	//(PRESENTE TAMBIEN EN definirGuardiaTurno.jsp)
+	function modificarSeleccionDias ()
+	{
+		seleccionBase = "<%=UtilidadesString.getMensajeIdioma(usr, "gratuita.guardiasTurno.literal.seleccionBase")%>";
+		seleccionLaborables = "<%=UtilidadesString.getMensajeIdioma(usr, "gratuita.guardiasTurno.literal.seleccionLaborables")%>";
+		seleccionFestivos = "<%=UtilidadesString.getMensajeIdioma(usr, "gratuita.guardiasTurno.literal.seleccionFestivos")%>";
+		L = "<%=UtilidadesString.getMensajeIdioma(usr, "gratuita.checkbox.literal.Lunes")%>";
+		M = "<%=UtilidadesString.getMensajeIdioma(usr, "gratuita.checkbox.literal.Martes")%>";
+		X = "<%=UtilidadesString.getMensajeIdioma(usr, "gratuita.checkbox.literal.Miercoles")%>";
+		J = "<%=UtilidadesString.getMensajeIdioma(usr, "gratuita.checkbox.literal.Jueves")%>";
+		V = "<%=UtilidadesString.getMensajeIdioma(usr, "gratuita.checkbox.literal.Viernes")%>";
+		S = "<%=UtilidadesString.getMensajeIdioma(usr, "gratuita.checkbox.literal.Sabado")%>";
+		D = "<%=UtilidadesString.getMensajeIdioma(usr, "gratuita.checkbox.literal.Domingo")%>";
 		
-		// Muestra la seleccion de dias en texto
-		//(PRESENTE TAMBIEN EN definirGuardiaTurno.jsp)
-		function modificarSeleccionDias ()
-		{
-			seleccionBase = "<%=UtilidadesString.getMensajeIdioma(usr, "gratuita.guardiasTurno.literal.seleccionBase")%>";
-			seleccionLaborables = "<%=UtilidadesString.getMensajeIdioma(usr, "gratuita.guardiasTurno.literal.seleccionLaborables")%>";
-			seleccionFestivos = "<%=UtilidadesString.getMensajeIdioma(usr, "gratuita.guardiasTurno.literal.seleccionFestivos")%>";
-			L = "<%=UtilidadesString.getMensajeIdioma(usr, "gratuita.checkbox.literal.Lunes")%>";
-			M = "<%=UtilidadesString.getMensajeIdioma(usr, "gratuita.checkbox.literal.Martes")%>";
-			X = "<%=UtilidadesString.getMensajeIdioma(usr, "gratuita.checkbox.literal.Miercoles")%>";
-			J = "<%=UtilidadesString.getMensajeIdioma(usr, "gratuita.checkbox.literal.Jueves")%>";
-			V = "<%=UtilidadesString.getMensajeIdioma(usr, "gratuita.checkbox.literal.Viernes")%>";
-			S = "<%=UtilidadesString.getMensajeIdioma(usr, "gratuita.checkbox.literal.Sabado")%>";
-			D = "<%=UtilidadesString.getMensajeIdioma(usr, "gratuita.checkbox.literal.Domingo")%>";
-			
-	        seleccion = "";
-	        
-	        //escribiendo los laborables
-	        selTemp = "";
-	        if (document.DefinirGuardiasTurnosForm.seleccionLaborablesLunes.checked == true)		selTemp += L;
-	        if (document.DefinirGuardiasTurnosForm.seleccionLaborablesMartes.checked == true)		selTemp += M;
-	        if (document.DefinirGuardiasTurnosForm.seleccionLaborablesMiercoles.checked == true)	selTemp += X;
-	        if (document.DefinirGuardiasTurnosForm.seleccionLaborablesJueves.checked == true)		selTemp += J;
-	        if (document.DefinirGuardiasTurnosForm.seleccionLaborablesViernes.checked == true)		selTemp += V;
-	        if (document.DefinirGuardiasTurnosForm.seleccionLaborablesSabado.checked == true)		selTemp += S;
-	        
-	        if (selTemp == L+M+X+J+V)			seleccion += seleccionLaborables + " " + L + "-" + V;
-	        else if (selTemp == L+M+X+J+V+S)	seleccion += seleccionLaborables + " " + L + "-" + S;
-	        else if (! selTemp == "")			seleccion += seleccionLaborables + " " + selTemp;
-	        
-	        //escribiendo los festivos
-	        selTemp = "";
-	        if (document.DefinirGuardiasTurnosForm.seleccionFestivosLunes.checked == true)		selTemp += L;
-	        if (document.DefinirGuardiasTurnosForm.seleccionFestivosMartes.checked == true)		selTemp += M;
-	        if (document.DefinirGuardiasTurnosForm.seleccionFestivosMiercoles.checked == true)	selTemp += X;
-	        if (document.DefinirGuardiasTurnosForm.seleccionFestivosJueves.checked == true)		selTemp += J;
-	        if (document.DefinirGuardiasTurnosForm.seleccionFestivosViernes.checked == true)	selTemp += V;
-	        if (document.DefinirGuardiasTurnosForm.seleccionFestivosSabado.checked == true)		selTemp += S;
-	        if (document.DefinirGuardiasTurnosForm.seleccionFestivosDomingo.checked == true)	selTemp += D;
-	        
-	        if (seleccion != "" && selTemp != "") seleccion += ", ";
-	        
-	        if (selTemp == L+M+X+J+V)			seleccion += seleccionFestivos + " " + L + "-" + V;
-	        else if (selTemp == L+M+X+J+V+S)	seleccion += seleccionFestivos + " " + L + "-" + S;
-	        else if (selTemp == L+M+X+J+V+S+D)	seleccion += seleccionFestivos + " " + L + "-" + D;
-	        else if (! selTemp == "")			seleccion += seleccionFestivos + " " + selTemp;
-	        
-	        //mostrando en pantalla
-	        document.getElementById ("labelSeleccionDias").innerHTML = seleccionBase + ": " + seleccion;
-		} //modificarSeleccionDias ()
-		
-		<!-- Asociada al boton Restablecer -->
-		function accionRestablecer() 	{
-			document.forms[0].reset();
-		}
+        seleccion = "";
+        
+        //escribiendo los laborables
+        selTemp = "";
+        if (document.DefinirGuardiasTurnosForm.seleccionLaborablesLunes.checked == true)		selTemp += L;
+        if (document.DefinirGuardiasTurnosForm.seleccionLaborablesMartes.checked == true)		selTemp += M;
+        if (document.DefinirGuardiasTurnosForm.seleccionLaborablesMiercoles.checked == true)	selTemp += X;
+        if (document.DefinirGuardiasTurnosForm.seleccionLaborablesJueves.checked == true)		selTemp += J;
+        if (document.DefinirGuardiasTurnosForm.seleccionLaborablesViernes.checked == true)		selTemp += V;
+        if (document.DefinirGuardiasTurnosForm.seleccionLaborablesSabado.checked == true)		selTemp += S;
+        
+        if (selTemp == L+M+X+J+V)			seleccion += seleccionLaborables + " " + L + "-" + V;
+        else if (selTemp == L+M+X+J+V+S)	seleccion += seleccionLaborables + " " + L + "-" + S;
+        else if (! selTemp == "")			seleccion += seleccionLaborables + " " + selTemp;
+        
+        //escribiendo los festivos
+        selTemp = "";
+        if (document.DefinirGuardiasTurnosForm.seleccionFestivosLunes.checked == true)		selTemp += L;
+        if (document.DefinirGuardiasTurnosForm.seleccionFestivosMartes.checked == true)		selTemp += M;
+        if (document.DefinirGuardiasTurnosForm.seleccionFestivosMiercoles.checked == true)	selTemp += X;
+        if (document.DefinirGuardiasTurnosForm.seleccionFestivosJueves.checked == true)		selTemp += J;
+        if (document.DefinirGuardiasTurnosForm.seleccionFestivosViernes.checked == true)	selTemp += V;
+        if (document.DefinirGuardiasTurnosForm.seleccionFestivosSabado.checked == true)		selTemp += S;
+        if (document.DefinirGuardiasTurnosForm.seleccionFestivosDomingo.checked == true)	selTemp += D;
+        
+        if (seleccion != "" && selTemp != "") seleccion += ", ";
+        
+        if (selTemp == L+M+X+J+V)			seleccion += seleccionFestivos + " " + L + "-" + V;
+        else if (selTemp == L+M+X+J+V+S)	seleccion += seleccionFestivos + " " + L + "-" + S;
+        else if (selTemp == L+M+X+J+V+S+D)	seleccion += seleccionFestivos + " " + L + "-" + D;
+        else if (! selTemp == "")			seleccion += seleccionFestivos + " " + selTemp;
+        
+        //mostrando en pantalla
+        document.getElementById ("labelSeleccionDias").innerHTML = seleccionBase + ": " + seleccion;
+	} //modificarSeleccionDias ()
+	
+	<!-- Asociada al boton Restablecer -->
+	function accionRestablecer() 	{
+		document.forms[0].reset();
+	}
 
-		<!-- Asociada al boton Guardar -->
-		function accionGuardar() {	
-			if (validateDefinirGuardiasTurnosForm(document.DefinirGuardiasTurnosForm)) {
-				if (document.DefinirGuardiasTurnosForm.duracion.value==0) {
-					alert('<siga:Idioma key="gratuita.maestroTurnos.literal.cero"/>');
-				} else { 
-					document.forms[0].target="submitArea";
-					document.forms[0].modo.value="modificar";
-					document.forms[0].submit();
-				}
+	<!-- Asociada al boton Guardar -->
+	function accionGuardar() {	
+		if (validateDefinirGuardiasTurnosForm(document.DefinirGuardiasTurnosForm)) {
+			if (document.DefinirGuardiasTurnosForm.duracion.value==0) {
+				alert('<siga:Idioma key="gratuita.maestroTurnos.literal.cero"/>');
+			} else { 
+				document.forms[0].target="submitArea";
+				document.forms[0].modo.value="modificar";
+				document.forms[0].submit();
 			}
 		}
+	}
 
-		<!-- Asociada al boton Volver -->
-		function accionVolver() 	{
-			document.forms[0].action="JGR_DefinirTurnos.do";
-			document.forms[0].target="mainWorkArea";
-			document.forms[0].modo.value="abrirAvanzada";
-			document.forms[0].submit();
-		}
+	<!-- Asociada al boton Volver -->
+	function accionVolver() 	{
+		document.forms[0].action="JGR_DefinirTurnos.do";
+		document.forms[0].target="mainWorkArea";
+		document.forms[0].modo.value="abrirAvanzada";
+		document.forms[0].submit();
+	}
+	
+	<!-- Refresco -->
+	function refrescarLocal() {
+		document.forms[0].target = "_parent";
+		document.forms[0].modo.value="editar";
+		document.forms[0].submit();
+	}
+
+</script>
+<!-------------------- FIN: Funciones JavaScript -------------------->
+
+
+
+<!-------------------- INICIO: SUBMIT AREA -------------------->
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+<!-------------------- FIN: SUBMIT AREA -------------------->
+
+
+</body>
 		
-		<!-- Refresco -->
-		function refrescarLocal() {
-			document.forms[0].target = "_parent";
-			document.forms[0].modo.value="editar";
-			document.forms[0].submit();
-		}
-	
-	</script>
-	<!-------------------- FIN: Funciones JavaScript -------------------->
-	
-	
-	
-	<!-------------------- INICIO: SUBMIT AREA -------------------->
-		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
-	<!-------------------- FIN: SUBMIT AREA -------------------->
-	
-	
-	
-</body>		
 </html>
