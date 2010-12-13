@@ -1005,7 +1005,7 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 					CenPersonaBean personaBean = new CenPersonaBean(inscripcionBean.getIdPersona(), (String) htFila
 							.get(CenPersonaBean.C_NOMBRE), (String) htFila.get(CenPersonaBean.C_APELLIDOS1),
 							(String) htFila.get(CenPersonaBean.C_APELLIDOS2), (String) htFila
-									.get(CenColegiadoBean.C_NCOLEGIADO));
+									.get(ScsOrdenacionColasBean.C_NUMEROCOLEGIADO));
 					inscripcionBean.setPersona(personaBean);
 					datos.add(inscripcionBean);
 				}
@@ -1132,6 +1132,8 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 		    "       TO_CHAR(trunc(Ins.fechabaja),'DD/MM/YYYY') As Fechabaja, "+
 		    
 			"       Per.Nombre, " +
+			"       Per.Apellidos1, " +
+			"       Decode(Per.Apellidos2, Null, '', ' ' || Per.Apellidos2) apellidos2, " +
 			"       Per.Apellidos1 || " +
 			"       Decode(Per.Apellidos2, Null, '', ' ' || Per.Apellidos2) "+ScsOrdenacionColasBean.C_ALFABETICOAPELLIDOS+", " +
 			"       Decode(Col.Comunitario, '1', Col.Ncomunitario, Col.Ncolegiado) "+ScsOrdenacionColasBean.C_NUMEROCOLEGIADO+", " +

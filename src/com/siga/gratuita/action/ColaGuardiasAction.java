@@ -20,6 +20,7 @@ import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
+import com.siga.beans.ScsGrupoGuardiaColegiadoAdm;
 import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsInscripcionGuardiaAdm;
@@ -106,6 +107,7 @@ public class ColaGuardiasAction extends MasterAction {
 		HttpSession ses = request.getSession();
 		Hashtable turnoElegido = (Hashtable)ses.getAttribute("turnoElegido");
 		UsrBean usr = (UsrBean)ses.getAttribute("USRBEAN"); 
+		ScsGuardiasTurnoAdm guaAdm = new ScsGuardiasTurnoAdm(usr);
 		
 		Integer usuario=this.getUserName(request);
 		String institucion =usr.getLocation();
@@ -124,6 +126,9 @@ public class ColaGuardiasAction extends MasterAction {
 		
 		if(letradosColaGuardiaList!=null && !letradosColaGuardiaList.isEmpty()){
 			request.setAttribute("letradosColaGuardiaList",letradosColaGuardiaList);
+			if(letradosColaGuardiaList.get(0).getGrupo()!=null){
+				request.setAttribute("porGrupos","1");	
+			}
 		}
 		
 		//Cargar listado de compensaciones
@@ -257,6 +262,11 @@ public class ColaGuardiasAction extends MasterAction {
 			Vector v = adm.selectByPKForUpdate(h);
 			if (v != null && v.size() == 1) {
 				ScsGuardiasTurnoBean b = (ScsGuardiasTurnoBean) v.get(0);
+				// jbd // Si es por grupos tenemos que poner al letrado como el ultimo del grupo
+				if(b.getPorGrupos()!=null && b.getPorGrupos().equalsIgnoreCase("1")){
+					ScsGrupoGuardiaColegiadoAdm admGrupoGuardia = new ScsGrupoGuardiaColegiadoAdm(this.getUserBean(request));
+					admGrupoGuardia.setUltimoDeGrupo(miForm.getIdGrupoGuardiaColegiado());
+				}
 				b.setIdPersona_Ultimo(new Long(miForm.getIdPersona()));
 				if (!adm.update(b)) {
 					return exito("messages.updated.error",request);

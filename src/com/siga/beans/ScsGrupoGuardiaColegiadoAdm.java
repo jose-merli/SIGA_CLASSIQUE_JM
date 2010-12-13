@@ -150,5 +150,38 @@ public class ScsGrupoGuardiaColegiadoAdm extends MasterBeanAdministrador
 		}
 		return datos;
 	}
+	
+	// Ponemos a un letrado como ultimo del grupo
+	public void setUltimoDeGrupo(String idGrupoGuardiaColegiado) throws ClsExceptions {
+		Hashtable hash = new Hashtable();
+		String[] claves ={ScsGrupoGuardiaColegiadoBean.C_IDGRUPOGUARDIACOLEGIADO}; 
+		String[] campos ={ScsGrupoGuardiaColegiadoBean.C_ORDEN};
+		hash.put(ScsGrupoGuardiaColegiadoBean.C_IDGRUPOGUARDIACOLEGIADO, idGrupoGuardiaColegiado);
+		hash.put(ScsGrupoGuardiaColegiadoBean.C_ORDEN, this.getSiguientePosicion(idGrupoGuardiaColegiado));
+		try {
+			updateDirect(hash, claves, campos);
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al actualizar la posicion del letrado");
+		}
+		
+	}
+	
+	private String getSiguientePosicion(String idGrupoGuardiaColegiado) throws ClsExceptions{
+	String posicion="";
+		String sql = "select max(orden)+1 posicion from scs_grupoguardiacolegiado where idgrupoguardia=";
+		sql += " (select idgrupoguardia from scs_grupoguardiacolegiado where idgrupoguardiacolegiado = "+idGrupoGuardiaColegiado+")";
+		RowsContainer rc = new RowsContainer(); 
+		try {
+			if (rc.query(sql) && rc.size()>0) {
+				Row fila = (Row) rc.get(0);
+				Hashtable registro = (Hashtable) fila.getRow(); 
+				if (registro != null) 
+					posicion = (String)registro.get("POSICION");
+			}
+		} catch (ClsExceptions e) {
+			throw new ClsExceptions (e, "Error al recuperar la posicion del ultimo letrado");
+		}
+		return posicion;
+	}
 
 }

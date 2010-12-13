@@ -35,6 +35,20 @@
 	String buscarLetrado             = UtilidadesString.getMensajeIdioma(usrbean, "gratuita.turnos.literal.buscarLetrado");
 	String literalNColegiado         = UtilidadesString.getMensajeIdioma(usrbean, "gratuita.turnos.literal.nColegiado");
 	String literalFijarUltimoLetrado = UtilidadesString.getMensajeIdioma(usrbean, "gratuita.turnos.literal.fijarUltimoLetrado");
+	
+	boolean porGrupos;
+	String tamanoCol;
+	String nombreCol;
+	String grupos = (String)request.getAttribute("porGrupos");
+	if(grupos!=null && grupos.equalsIgnoreCase("1")){
+		porGrupos=true;
+		tamanoCol="14,34,16,16,6,6,8";
+		nombreCol="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,F.Val,F.Baja,Gr,Or,";
+	}else{
+		porGrupos=false;
+		tamanoCol="14,40,18,18,10";
+		nombreCol="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,F.Val,F.Baja,";
+	}
 %>	
 
 
@@ -114,7 +128,7 @@
 		   }
 		   if (fila >= 0 && fila < tabla.rows.length) {
 			   tabla.rows[fila].className = 'listaNonEditSelected';
-			   tabla.rows[fila].scrollIntoView(false);
+			   //tabla.rows[fila].scrollIntoView(false);
 		   }
 		}
 
@@ -141,6 +155,8 @@
 	 	
 		var idPersona  = document.getElementById('idPersona_' + fila).value;
 		document.forms[0].idPersona.value = idPersona;
+		var idGrupoGuardiaColegiado = document.getElementById('idGrupoGuardiaColegiado_' + fila).value;
+		document.forms[0].idGrupoGuardiaColegiado.value = idGrupoGuardiaColegiado;
 		document.forms[0].modo.value = "fijarUltimoLetrado";
 		document.forms[0].target = "submitArea";
 		document.forms[0].submit();
@@ -159,6 +175,7 @@
 		<input type="hidden" name="actionModal" value="">
 		<input type="hidden" name="idPersona" >
 		<input type="hidden" name="idGuardia" value="<%=idGuardia%>" >
+		<input type="hidden" name="idGrupoGuardiaColegiado">
 		<html:hidden property="fechaConsulta"/>
 	</html:form>	
 
@@ -226,8 +243,8 @@
 		   nombre="tablaLetrados"
 		   borde="1"
 		   clase="tableTitle"
-		   tamanoCol="14,40,18,18,10"
-		   nombreCol="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,F.Val,F.Baja,"
+		   tamanoCol="<%=tamanoCol%>"
+		   nombreCol="<%=nombreCol%>"
 		   alto="400"
 		   ajusteAlto="">
 
@@ -257,6 +274,9 @@
 
 			String idPersona = letradoGuardia.getIdPersona().toString();
 			String numeroColegiadoBusqueda = "" + i + "_" + ncolegiado;
+			String grupo = letradoGuardia.getGrupo()!=null?letradoGuardia.getGrupo().toString():"";
+			String ordenGrupo = letradoGuardia.getOrdenGrupo()!=null?letradoGuardia.getOrdenGrupo().toString():"";
+			String idGrupoGuardiaColegiado = letradoGuardia.getIdGrupoGuardiaColegiado()!=null?letradoGuardia.getIdGrupoGuardiaColegiado().toString():"";
 			
 	%>
 	
@@ -265,20 +285,18 @@
 				<td>
 					<input name="numeroColegiadoBusqueda" type="hidden" class="box" size="10" value="<%=numeroColegiadoBusqueda%>" >
 					<input name="idPersona_<%=i+1%>" type="hidden" class="box" size="10" value="<%=idPersona%>" >
+					<input name="idGrupoGuardiaColegiado_<%=i+1%>" type="hidden" class="box" size="10" value="<%=idGrupoGuardiaColegiado%>" >
 					<%=ncolegiado%>
 				</td>
 				<td>
 					<%=nombre+" "+apellido1+" "+apellido2%>
 				</td>
-				
 				<td>
 				<%if(letradoGuardia.getFechaValidacion()!=null &&!letradoGuardia.getFechaValidacion().equals("")){ %>
 					<%=letradoGuardia.getFechaValidacion()%>
 				<%}else{ %>
 					&nbsp;
 				<%} %>
-			
-					
 				</td>
 				<td>
 				<%if(letradoGuardia.getFechaBaja()!=null &&!letradoGuardia.getFechaBaja().equals("")){ %>
@@ -288,6 +306,10 @@
 				<%} %>
 
 				</td>
+				<%if(porGrupos){%>
+					<td><%=grupo%></td>
+					<td><%=ordenGrupo%></td>
+				<%}%>				
 				<td align="center">
 					<img src="/SIGA/html/imagenes/bcambiarusuario.gif" name="bcambiarusuario" style="cursor:hand;" onClick="fijarUltimoLetrado(<%=i+1%>)" alt="<%=literalFijarUltimoLetrado%>">
 				</td>
@@ -318,7 +340,7 @@
 		   nombre="tablaCompensaciones"
 		   borde="1"
 		   clase="tableTitle"
-		   tamanoCol="18,20,40,22"
+		   tamanoCol="18,20,40,22" 
 		   nombreCol="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,gratuita.turnos.literal.apellidosSolo,gratuita.turnos.literal.compensaciones"
 		   alto="170"
 		   ajusteAlto="">

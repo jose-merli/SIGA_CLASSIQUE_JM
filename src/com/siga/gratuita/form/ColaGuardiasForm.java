@@ -22,6 +22,12 @@ public class ColaGuardiasForm extends MasterForm {
 	public void setNombre			(String  nombre)	 	{ if(nombre==null)	  datos.remove("NOMBRE");     else datos.put("NOMBRE",nombre); 			}
 	public void setApellido1		(String  apellido)	 	{ if(apellido==null)  datos.remove("APELLIDO1");  else datos.put("APELLIDO1",apellido); 	}
 	public void setApellido2		(String  apellido)	 	{ if(apellido==null)  datos.remove("APELLIDO2");  else datos.put("APELLIDO2",apellido); 	}
+	public void setIdGrupoGuardiaColegiado (String  idGuardia){ 
+		if(idGuardia==null) 
+			datos.remove("IDGRUPOGUARDIACOLEGIADO");  
+		else 
+			datos.put("IDGRUPOGUARDIACOLEGIADO",idGuardia); 	
+	}
 
 	public String 	  getDefGuardia() 						{ return (String)datos.get("DEFGUARDIA"); 	}
 	public String 	  getIdGuardia() 						{ return (String)datos.get("IDGUARDIA"); 	}
@@ -29,6 +35,7 @@ public class ColaGuardiasForm extends MasterForm {
 	public String 	  getNombre()     						{ return (String)datos.get("NOMBRE"); 		}
 	public String 	  getApellido1()    					{ return (String)datos.get("APELLIDO1"); 	}
 	public String 	  getApellido2()     					{ return (String)datos.get("APELLIDO2"); 	}
+	public String 	  getIdGrupoGuardiaColegiado()     		{ return (String)datos.get("IDGRUPOGUARDIACOLEGIADO"); 	}
 	
 	
 	public String getIdPersona() {
