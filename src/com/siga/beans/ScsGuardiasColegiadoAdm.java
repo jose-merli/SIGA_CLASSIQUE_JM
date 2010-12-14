@@ -1731,7 +1731,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 				CalendarioSJCS calendarioSJCS = new CalendarioSJCS
 					(new Integer(idInstitucion), new Integer(idTurno),
 					new Integer(idGuardia), new Integer(idCalendarioGuardias),
-					usr);
+					null, usr, null);
 				calendarioSJCS.calcularMatrizPeriodosDiasGuardia();
 				
 				//Nota: El array arrayPeriodosSJCS es un array periodos y cada periodo es un array de dias

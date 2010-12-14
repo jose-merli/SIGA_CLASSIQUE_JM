@@ -17,6 +17,7 @@ public class LogFileWriter
 	private String path;
 	private String fileName;
 	private BufferedWriter bWriter;
+	private ArrayList<ArrayList<String>> buffer;
 	
 	
 	/**
@@ -26,6 +27,7 @@ public class LogFileWriter
 	{
 		this.path = path;
 		this.fileName = fileName;
+		this.buffer = new ArrayList<ArrayList<String>>();
 
 		try {
 			// creating directory tree
@@ -81,9 +83,32 @@ public class LogFileWriter
 	
 	// Other Methods
 	/**
-	 * This method adds several lines to the file	 * 
+	 * This method adds a line to a buffer.
+	 * Note: it doesn't write to file: to do this, use flush()
 	 */
-	public void addLog(ArrayList<ArrayList<String>> lines) throws SIGAException
+	public void addLog(ArrayList<String> line) throws SIGAException
+	{
+		if (line != null && !line.isEmpty())
+			this.buffer.add(line);
+	}
+	/**
+	 * This method adds a line to a buffer.
+	 * Note: it doesn't write to file: to do this, use flush()
+	 */
+	public void addLog(String[] cols) throws SIGAException
+	{
+		ArrayList<String> line = new ArrayList<String>();
+		for (String col : cols) {
+			if (col != null)
+				line.add(col);
+		}
+		this.addLog(line);
+	}
+	
+	/**
+	 * This method write buffered lines to the file
+	 */
+	public void flush() throws SIGAException
 	{
 		try {
 			// opening file
@@ -91,7 +116,7 @@ public class LogFileWriter
 			this.bWriter = new BufferedWriter(new FileWriter(path + File.separator + fileName + EXTENSION));
 
 			// writing lines
-			for (ArrayList<String> line : lines) {
+			for (ArrayList<String> line : this.buffer) {
 				for (String field : line) {
 					this.bWriter.write(field);
 					this.bWriter.write(ClsConstants.SEPARADOR);
