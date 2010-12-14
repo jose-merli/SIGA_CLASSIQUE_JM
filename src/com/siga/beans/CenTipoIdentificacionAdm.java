@@ -6,7 +6,9 @@
  */
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
@@ -15,6 +17,7 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 
 /**
  * @author daniel.campos
@@ -141,4 +144,132 @@ public class CenTipoIdentificacionAdm extends MasterBeanAdministrador{
 		}
 		return datos;
 	}	
+	/**
+	 * A falta de bean le metemos este 
+	 * 
+	 */
+	public List<CenTipoIdentificacionBean>  getTipoPersona(String idlenguaje)throws ClsExceptions{
+
+		
+		StringBuffer sql = new StringBuffer();
+		
+		sql.append("Select Decode(Idrecurso,  'gratuita.personaJG.literal.tipoJuridica', 'J',");
+		sql.append(" 'gratuita.personaJG.literal.tipoFisica','F') As IDTIPO, Descripcion ");
+		sql.append("  From (Select Idrecurso, Descripcion From Gen_Recursos ");
+		sql.append(" Where (Idrecurso = 'gratuita.personaJG.literal.tipoFisica' Or Idrecurso = 'gratuita.personaJG.literal.tipoJuridica')");
+        sql.append(" And Idlenguaje = "+idlenguaje+") Order By IDTIPO");
+		
+		List<CenTipoIdentificacionBean> alTipos = null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+												
+            if (rc.find(sql.toString())) {
+            	alTipos = new ArrayList<CenTipoIdentificacionBean>();
+            	CenTipoIdentificacionBean tipoBean = null;            	
+    			for (int i = 0; i < rc.size(); i++){
+            		Row fila = (Row) rc.get(i);
+            		Hashtable<String, Object> htFila=fila.getRow();     		
+            		StringBuffer peticiontipos = new StringBuffer();
+            		tipoBean = new CenTipoIdentificacionBean();            	
+            		tipoBean.setIdTipo(UtilidadesHash.getString(htFila,"IDTIPO"));            		
+            		tipoBean.setDescripcion(UtilidadesHash.getString(htFila,CenTipoIdentificacionBean.C_DESCRIPCION));            		
+            		alTipos.add(tipoBean);
+            	}
+            } 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+       }
+       return alTipos;
+		
+		
+		
+	}
+	
+	public List<CenTipoIdentificacionBean>  getTiposIdentificacion(String idlenguaje)throws ClsExceptions{
+
+		
+		StringBuffer sql = new StringBuffer();
+		
+		sql.append(" SELECT IDTIPOIDENTIFICACION, f_siga_getrecurso (DESCRIPCION,"+idlenguaje+") as DESCRIPCION ");
+		sql.append(" FROM CEN_TIPOIDENTIFICACION where IDTIPOIDENTIFICACION<>20  order by IDTIPOIDENTIFICACION ");		
+      
+        List<CenTipoIdentificacionBean> alTipos = null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+												
+            if (rc.find(sql.toString())) {
+            	alTipos = new ArrayList<CenTipoIdentificacionBean>();
+            	CenTipoIdentificacionBean tipoBean = null;
+            	if(rc.size()>1){
+            		tipoBean = new CenTipoIdentificacionBean();
+            		tipoBean.setIdTipoIdentificacion(new Integer("1"));            		
+	    			tipoBean.setDescripcion(UtilidadesString.getMensajeIdioma(this.usrbean, "general.combo.seleccionar"));	    			
+	            	alTipos.add(tipoBean);
+            		
+            		
+            	}
+    			for (int i = 0; i < rc.size(); i++){
+            		Row fila = (Row) rc.get(i);
+            		Hashtable<String, Object> htFila=fila.getRow();     		
+            		StringBuffer peticiontipos = new StringBuffer();
+            		tipoBean = new CenTipoIdentificacionBean();            	
+            		tipoBean.setIdTipoIdentificacion(UtilidadesHash.getInteger(htFila,CenTipoIdentificacionBean.C_IDTIPOIDENTIFICACION));            		
+            		tipoBean.setDescripcion(UtilidadesHash.getString(htFila,CenTipoIdentificacionBean.C_DESCRIPCION));            		
+            		alTipos.add(tipoBean);
+            	}
+            } 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+       }
+       return alTipos;
+		
+		
+		
+	}
+	
+	
+	public List<CenTipoIdentificacionBean>  getTiposIdentificaciones(String idlenguaje,String idtipoidentificacion)throws ClsExceptions{
+
+		
+		StringBuffer sql = new StringBuffer();
+		
+		sql.append(" SELECT IDTIPOIDENTIFICACION, f_siga_getrecurso (DESCRIPCION,"+idlenguaje+") as DESCRIPCION ");
+		if (idtipoidentificacion.equals("F")){			
+			sql.append(" FROM CEN_TIPOIDENTIFICACION where IDTIPOIDENTIFICACION<>20  order by IDTIPOIDENTIFICACION ");		
+		}else{			
+			sql.append(" From Cen_Tipoidentificacion where IDTIPOIDENTIFICACION=20 or  IDTIPOIDENTIFICACION=50 Order By Idtipoidentificacion ");		
+			
+		}
+		
+        List<CenTipoIdentificacionBean> alTipos = null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+												
+            if (rc.find(sql.toString())) {
+            	alTipos = new ArrayList<CenTipoIdentificacionBean>();
+            	CenTipoIdentificacionBean tipoBean = null;
+            	if(rc.size()>1){
+            		tipoBean = new CenTipoIdentificacionBean();
+            		tipoBean.setIdTipoIdentificacion(new Integer("1"));            		
+	    			tipoBean.setDescripcion(UtilidadesString.getMensajeIdioma(this.usrbean, "general.combo.seleccionar"));	    			
+	            	alTipos.add(tipoBean);
+            		
+            		
+            	}
+    			for (int i = 0; i < rc.size(); i++){
+            		Row fila = (Row) rc.get(i);
+            		Hashtable<String, Object> htFila=fila.getRow();     		
+            		StringBuffer peticiontipos = new StringBuffer();
+            		tipoBean = new CenTipoIdentificacionBean();            	
+            		tipoBean.setIdTipoIdentificacion(UtilidadesHash.getInteger(htFila,CenTipoIdentificacionBean.C_IDTIPOIDENTIFICACION));            		
+            		tipoBean.setDescripcion(UtilidadesHash.getString(htFila,CenTipoIdentificacionBean.C_DESCRIPCION));            		
+            		alTipos.add(tipoBean);
+            	}
+            } 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+       }
+       return alTipos;
+}
+	
 }
