@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Vector;
 
 import com.siga.beans.CenPersonaBean;
+import com.siga.beans.CenTipoIdentificacionBean;
+import com.siga.beans.ScsPersonaJGBean;
 import com.siga.beans.ScsTelefonosPersonaJGBean;
 import com.siga.general.MasterForm;
 import com.siga.Utilidades.UtilidadesHash;
@@ -653,7 +655,47 @@ public class PersonaJGForm extends MasterForm {
 	public void setNombreAnterior(String nom){
 		this.nombreAnterior = nom;
 	}
+	/**nos creamos las variables para sacar el idTipoPersona y el idTipoidentificacion.**/
+	String idTipo;
+	String idTipoPersona;	
+	
+	public String getIdTipoPersona() {
+		return idTipoPersona;
+	}
 
+	public void setIdTipoPersona(String idTipoPersona) {
+		this.idTipoPersona = idTipoPersona;
+	}
+
+	public String getIdTipo() {
+		return idTipo;
+	}
+
+	public void setIdTipo(String idTipo) {
+		this.idTipo = idTipo;
+	}
+
+	List<CenTipoIdentificacionBean> tipos;
+
+	public List<CenTipoIdentificacionBean> getTipos() {
+		return tipos;
+	}
+
+	public void setTipos(List<CenTipoIdentificacionBean>  tipos) {
+		this.tipos = tipos;
+	}
+	
+	List<CenTipoIdentificacionBean> identificadores;
+
+	public List<CenTipoIdentificacionBean> getIdentificadores() {
+		return identificadores;
+	}
+
+	public void setIdentificadores(List<CenTipoIdentificacionBean> identificadores) {
+		this.identificadores = identificadores;
+	}
+	
+	
 	
 
 }
