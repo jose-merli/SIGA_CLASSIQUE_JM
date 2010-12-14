@@ -11,22 +11,15 @@
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
+<!-- AJAX -->
+<%@ taglib uri="ajaxtags.tld" prefix="ajax" %>
 
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="java.util.*"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
-<%@ page import="com.siga.beans.ScsGuardiasTurnoBean"%>
-<%@ page import="com.siga.beans.ScsOrdenacionColasAdm"%>
-<%@ page import="com.siga.beans.ScsOrdenacionColasBean"%>
-<%@ page import="com.siga.beans.CenPersonaAdm"%>
-<%@ page import="com.siga.beans.CenPersonaBean"%>
-<%@ page import="com.siga.beans.ScsPartidaPresupuestariaBean"%>
-<%@ page import="com.siga.beans.ScsPartidaPresupuestariaAdm"%>
 <%@ page import="com.siga.gratuita.form.DefinirGuardiasTurnosForm"%>
-<%@ page import="com.siga.gratuita.action.DefinirGuardiasTurnosAction"%>
-
 
 <!-- JSP -->
 <% 
@@ -61,12 +54,27 @@
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 	
 	<html:javascript formName="DefinirGuardiasTurnosForm" staticJavascript="false" />
+
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+	 	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
+ 	
+ 	<link type="text/css" rel="stylesheet" href="/html/css/ajaxtags.css" />
+ 	<link type="text/css" rel="stylesheet" href="/html/css/displaytag.css" />
  	
 <!-- INICIO: TITULO Y LOCALIZACION -->
 	<siga:Titulo titulo="Alta Guardias" localizacion="SJCS > Turnos > Guardias > Alta Guardias"/>
 
-
+	<script>
+	function postAccionTurno(){
+		if(document.getElementById("idTurnoPrincipal").value !="-1"&&document.getElementById("idTurnoPrincipal").value!="-1"&&document.getElementById("idTurnoPrincipal").value!=""){
+			accionComboGuardiaPrincipal();
+		}
+	}
+	</script>
 </head>
 
 <body onload="activarSustitucion(document.DefinirGuardiasTurnosForm.checkGuardiaDeSustitucion); modificarVarios();">
@@ -81,9 +89,9 @@
 	
 	
 	<div id="camposRegistro" class="posicionModalGrande" align="center">
-	<table class="tablaCentralCampos" align="center" width="100%">
 	
-	<tr><td><!-- Información del Turno que tenemos seleccionado-->
+	
+	<!-- Información del Turno que tenemos seleccionado-->
 		<siga:ConjCampos leyenda="gratuita.listarGuardias.literal.turno">
 		<table border="0" align="center" class="tablaCampos">
 			<tr>
@@ -122,10 +130,10 @@
 			</tr>	
 		</table>
 		</siga:ConjCampos>
-	</td></tr>
 	
 	
-	<tr><td><!-- Comienzo del formulario con los campos -->
+	
+	<!-- Comienzo del formulario con los campos -->
 		<html:javascript formName="DefinirGuardiasTurnosForm" staticJavascript="false" />
 		<html:form action="DefinirGuardiasTurnosAction.do" method="POST" target="mainPestanas">
 
@@ -136,13 +144,46 @@
 		<siga:ConjCampos leyenda="gratuita.listarGuardias.literal.guardia">
 		<table align="center" border="0" width="100%">
 			<tr>
-				<td class="labelText" colspan="3">
-					<siga:Idioma key="gratuita.turno.guardia.literal.deSustitucion"/>
+				<td width="10%"></td>
+				<td width="10%"></td>
+				<td width="10%"></td>
+				<td width="10%"></td>
+				<td width="10%"></td>
+				<td width="10%"></td>
+			</tr>
+		
+			<tr>
+				<td class="labelText">
+					<siga:Idioma key="gratuita.turno.guardia.literal.deSustitucion"/></td>
+				<td class="labelText">
 					<html:checkbox name="DefinirGuardiasTurnosForm" property="checkGuardiaDeSustitucion"  onclick="activarSustitucion(this);" value="true" />
 					<siga:ComboBD nombre="guardiaDeSustitucion" tipo="guardias" clase="boxCombo" parametro="<%=datoGuardia%>" obligatorioSinTextoSeleccionar="si" ancho="" accion="setTexto();"/>
 				</td>
+				
+							
+					<td class="labelText"><siga:Idioma
+						key="gratuita.gestionInscripciones.turno.literal"/> Principal</td>
+					<td><html:select styleId="turnosPrincipales" styleClass="boxCombo" style="width:200px;"
+						property="idTurnoPrincipal">
+						<bean:define id="turnosPrincipales" name="DefinirGuardiasTurnosForm"
+							property="turnosPrincipales" type="java.util.Collection" />
+						<html:optionsCollection name="turnosPrincipales" value="idTurno"
+							label="nombre" />
+						</html:select>
+					</td>
+					<td class="labelText"><siga:Idioma
+						key="gratuita.gestionInscripciones.guardia.literal" /> Principal</td>
+					<td><html:select styleId="guardiasPrincipales" styleClass="boxCombo" style="width:180px;"
+						property="idGuardiaPrincipal" onchange="accionComboGuardiaPrincipal();" >
+						<bean:define id="guardiasPrincipales" name="DefinirGuardiasTurnosForm"
+							property="guardiasPrincipales" type="java.util.Collection" />
+						<html:optionsCollection name="guardiasPrincipales" value="idGuardia"
+							label="nombre" />
+					</html:select>
+					</td>
+						
 			</tr>
-			<tr><td class="labelText">&nbsp;</td></tr>
+			<tr><td class="labelText" colspan="6">&nbsp;</td></tr>
 			<tr>
 				<td class="labelText" style="width:100px;">
 					<siga:Idioma key="censo.SolicitudIncorporacion.literal.nombre"/>&nbsp;(*)
@@ -153,9 +194,10 @@
 				<td class="labelText">
 					<siga:Idioma key="gratuita.maestroTurnos.literal.descripcion"/>&nbsp;(*)
 				</td>
-				<td>
+				<td colspan="3">
 					<html:text name="DefinirGuardiasTurnosForm" property="descripcion" size="40" maxlength="1024" styleClass="box" value="" />
 				</td>
+				
 			</tr>
 			
 			<tr>
@@ -164,22 +206,26 @@
 					<textarea name="descripcionFacturacion" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)"  rows="3" cols="80" class="box" ></textarea>
 				</td>
 				<td class="labelText"><siga:Idioma key="gratuita.maestroGuardias.literal.descripcionPago"/></td>
-				<td>
+				<td colspan="3">
 					<textarea name="descripcionPago" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)"  rows="3" cols="80" class="box"></textarea>
 				</td>
+				
 			</tr>
 			
 			<tr>
-				<td class="labelText" colspan="2">
+				<td class="labelText">
 					<siga:Idioma key="gratuita.listarGuardiasTurno.literal.letradosGuardia"/>&nbsp;(*)
-					&nbsp;&nbsp;
+					</td>
+				<td>
 					<html:text name="DefinirGuardiasTurnosForm" property="letradosGuardia" size="7" maxlength="6" styleClass="box" value='' readonly="false"></html:text>
 				</td>
-				<td class="labelText" colspan="2">
+				<td class="labelText" >
 					<siga:Idioma key="gratuita.maestroGuardias.literal.diasSeparacion"/>&nbsp;(*)
-					&nbsp;&nbsp;
+					</td>
+				<td colspan="2">
 					<html:text name="DefinirGuardiasTurnosForm" property="diasSeparacion" size="3" maxlength="2" styleClass="box" value='' readonly="false"></html:text>
 				</td>
+				
 			</tr>
 
 			<tr>
@@ -199,7 +245,7 @@
 					&nbsp;
 					<siga:Idioma key="gratuita.calendarioGuardias.literal.periodo" />
 				</td>
-				<td>
+				<td colspan="3">
 					<html:text name="DefinirGuardiasTurnosForm" property="diasPeriodo" size="5" maxlength="4" styleClass="box" readonly="false"></html:text>
 					&nbsp;
 					<html:select name="DefinirGuardiasTurnosForm" property="tipoDiasPeriodo" size="1" styleClass="boxCombo">
@@ -209,10 +255,11 @@
 						<html:option value="<%=ClsConstants.TIPO_PERIODO_DIAS_GUARDIA_MESES_NATURALES%>" key="gratuita.combo.literal.mesesNaturales"/>
 					</html:select>
 				</td>		
+			
 			</tr>
 			
 			<tr>
-				<td colspan="4">	
+				<td colspan="5">	
 			
 					<!-- Inicio: tabla para los dias de la semana -->
 					<table BORDER="0">
@@ -283,7 +330,7 @@
 					<!-- Fin: tabla para los dias de la semana -->
 			
 				</td>
-				<td class="labelText" width="12%" >
+				<td class="labelText">
 					<div id="labelSeleccionDias"><siga:Idioma key="gratuita.guardiasTurno.literal.seleccionBase"/>:</div>
 				</td>
 			</tr>
@@ -294,8 +341,16 @@
 		<siga:ConjCampos leyenda="gratuita.maestroTurnos.literal.pesosOrdenacion">
 		<table border="0" width="100%" align="center">
 			<tr>
+				<td width="8%"></td>
+				<td width="3%"></td>
+				<td width="3%"></td>
+				<td width="8%"></td>
+				<td width="3%"></td>
+				<td width="10%"></td>
+			</tr>
+			<tr>
 				<td class="labelText" style="text-align:left" ><siga:Idioma key="gratuita.maestroTurnos.literal.primerCriterio"/></td>
-				<td class="labelText" style="text-align:right" >
+				<td class="labelText" style="text-align:left" >
 					<html:select styleClass="boxCombo" name="DefinirGuardiasTurnosForm" property="crit_1">
 						<html:option value="0"><siga:Idioma key="gratuita.maestroTurnos.literal.sinDefinir"/></html:option>
 						<html:option value="1"><siga:Idioma key="gratuita.maestroTurnos.literal.alfabetico"/></html:option>
@@ -303,14 +358,15 @@
 						<html:option value="3"><siga:Idioma key="gratuita.maestroTurnos.literal.edad"/></html:option>
 						<html:option value="4"><siga:Idioma key="gratuita.maestroTurnos.literal.cola"/></html:option>
 					</html:select>
-					&nbsp;
+				</td>
+				<td>
 					<html:select styleClass="boxCombo" name="DefinirGuardiasTurnosForm" property="ord_1">
 						<html:option value="A"><siga:Idioma key="gratuita.maestroTurnos.literal.ascendente"/></html:option>
 						<html:option value="D"><siga:Idioma key="gratuita.maestroTurnos.literal.descendente"/></html:option>
 					</html:select>
 				</td>
 				<td class="labelText" style="text-align:left" ><siga:Idioma key="gratuita.maestroTurnos.literal.segundoCriterio"/></td>
-				<td class="labelText" style="text-align:right" >
+				<td class="labelText" style="text-align:left" >
 					<html:select styleClass="boxCombo" name="DefinirGuardiasTurnosForm" property="crit_2">
 						<html:option value="0"><siga:Idioma key="gratuita.maestroTurnos.literal.sinDefinir"/></html:option>
 						<html:option value="1"><siga:Idioma key="gratuita.maestroTurnos.literal.alfabetico"/></html:option>
@@ -318,7 +374,8 @@
 						<html:option value="3"><siga:Idioma key="gratuita.maestroTurnos.literal.edad"/></html:option>
 						<html:option value="4"><siga:Idioma key="gratuita.maestroTurnos.literal.cola"/></html:option>
 					</html:select>
-					&nbsp;
+					</td>
+				<td>
 					<html:select styleClass="boxCombo" name="DefinirGuardiasTurnosForm" property="ord_2">
 						<html:option value="A"><siga:Idioma key="gratuita.maestroTurnos.literal.ascendente"/></html:option>
 						<html:option value="D"><siga:Idioma key="gratuita.maestroTurnos.literal.descendente"/></html:option>
@@ -327,7 +384,7 @@
 			</tr>
 			<tr>
 				<td class="labelText" style="text-align:left" ><siga:Idioma key="gratuita.maestroTurnos.literal.terceroCriterio"/></td>
-				<td class="labelText" style="text-align:right" >
+				<td class="labelText" style="text-align:left" >
 					<html:select styleClass="boxCombo" name="DefinirGuardiasTurnosForm" property="crit_3">
 						<html:option value="0"><siga:Idioma key="gratuita.maestroTurnos.literal.sinDefinir"/></html:option>
 						<html:option value="1"><siga:Idioma key="gratuita.maestroTurnos.literal.alfabetico"/></html:option>
@@ -335,14 +392,15 @@
 						<html:option value="3"><siga:Idioma key="gratuita.maestroTurnos.literal.edad"/></html:option>
 						<html:option value="4"><siga:Idioma key="gratuita.maestroTurnos.literal.cola"/></html:option>
 					</html:select>
-					&nbsp;
+					</td>
+				<td>
 					<html:select styleClass="boxCombo" name="DefinirGuardiasTurnosForm" property="ord_3">
 						<html:option value="A"><siga:Idioma key="gratuita.maestroTurnos.literal.ascendente"/></html:option>
 						<html:option value="D"><siga:Idioma key="gratuita.maestroTurnos.literal.descendente"/></html:option>
 					</html:select>
 				</td>
 				<td class="labelText" style="text-align:left" ><siga:Idioma key="gratuita.maestroTurnos.literal.cuartoCriterio"/></td>
-				<td class="labelText" style="text-align:right"  >
+				<td class="labelText" style="text-align:left"  >
 					<html:select styleClass="boxCombo" name="DefinirGuardiasTurnosForm" property="crit_4">
 						<html:option value="0"><siga:Idioma key="gratuita.maestroTurnos.literal.sinDefinir"/></html:option>
 						<html:option value="1"><siga:Idioma key="gratuita.maestroTurnos.literal.alfabetico"/></html:option>
@@ -350,7 +408,8 @@
 						<html:option value="3"><siga:Idioma key="gratuita.maestroTurnos.literal.edad"/></html:option>
 						<html:option value="4"><siga:Idioma key="gratuita.maestroTurnos.literal.cola"/></html:option>
 					</html:select>
-					&nbsp;
+					</td>
+				<td >
 					<html:select styleClass="boxCombo" name="DefinirGuardiasTurnosForm" property="ord_4">
 						<html:option value="A"><siga:Idioma key="gratuita.maestroTurnos.literal.ascendente"/></html:option>
 						<html:option value="D"><siga:Idioma key="gratuita.maestroTurnos.literal.descendente"/></html:option>
@@ -358,11 +417,17 @@
 				</td>
 			</tr>
 		</table>
-		</siga:ConjCampos>
-				
-		</html:form>
-	</td></tr>
-	</table>
+	
+</siga:ConjCampos>
+
+<ajax:select
+	baseUrl="/SIGA/DefinirGuardiasTurnosAction.do?modo=getAjaxGuardias"
+	source="turnosPrincipales" target="guardiasPrincipales" parameters="idTurnoPrincipal={idTurnoPrincipal}"
+	postFunction="postAccionTurno"
+	/>
+</html:form>
+
+</table>
 	
 	
 
@@ -502,24 +567,52 @@
 		<!-- Asociada al boton Guardar -->
 		function accionGuardar()
 		{	
-			sub();			
-			if (document.DefinirGuardiasTurnosForm.checkGuardiaDeSustitucion.checked || validateDefinirGuardiasTurnosForm(document.DefinirGuardiasTurnosForm)){
-				if (!document.DefinirGuardiasTurnosForm.checkGuardiaDeSustitucion.checked && document.DefinirGuardiasTurnosForm.duracion.value==0) {
-					alert('<siga:Idioma key="gratuita.maestroTurnos.literal.cero"/>');
-					fin();
-			 		return false;
-				} else { 
-				
-		        	document.DefinirGuardiasTurnosForm.modo.value = "insertar";
-		        	document.DefinirGuardiasTurnosForm.target = "submitArea";
-					document.DefinirGuardiasTurnosForm.submit();
-					
-			 		
+		
+			sub();
+			if(document.getElementById("idTurnoPrincipal").value !="-1" && document.getElementById("idTurnoPrincipal").value !=""){
+				error = '';
+				if(document.getElementById("idGuardiaPrincipal").value =="-1" || document.getElementById("idGuardiaPrincipal").value ==""){
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.gestionInscripciones.guardia.literal'/>"+ '\n';				
 				}
+				
+				if(document.getElementById("guardia").value ==""){
+					error += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.nombre'/>"+ '\n';
+				}
+				if(document.getElementById("descripcion").value ==""){
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.maestroTurnos.literal.descripcion'/>"+ '\n';
+						
+				}
+				if(error ==''){
+					document.DefinirGuardiasTurnosForm.modo.value = "insertar";
+			       	document.DefinirGuardiasTurnosForm.target = "submitArea";
+					document.DefinirGuardiasTurnosForm.submit();
+				}else{
+					fin();
+					alert(error);
+				 	return false;
+				
+				}
+				
 			}else{
-				fin();
-			 	return false;
-			
+							
+				if (document.DefinirGuardiasTurnosForm.checkGuardiaDeSustitucion.checked || validateDefinirGuardiasTurnosForm(document.DefinirGuardiasTurnosForm)){
+					if (!document.DefinirGuardiasTurnosForm.checkGuardiaDeSustitucion.checked && document.DefinirGuardiasTurnosForm.duracion.value==0) {
+						alert('<siga:Idioma key="gratuita.maestroTurnos.literal.cero"/>');
+						fin();
+				 		return false;
+					} else { 
+					
+			        	document.DefinirGuardiasTurnosForm.modo.value = "insertar";
+			        	document.DefinirGuardiasTurnosForm.target = "submitArea";
+						document.DefinirGuardiasTurnosForm.submit();
+						
+				 		
+					}
+				}else{
+					fin();
+				 	return false;
+				
+				}
 			}
 		}
 
@@ -538,8 +631,26 @@
 			document.forms[0].reset();
 		}
 		
+		function accionComboGuardiaPrincipal(){
+			var deshabilitar = document.getElementById("idGuardiaPrincipal").value==''||document.getElementById("idGuardiaPrincipal").value=='-1';
+			for (i = 0; i < document.DefinirGuardiasTurnosForm.all.length; i++) {
+				if(document.DefinirGuardiasTurnosForm.all[i].name && document.DefinirGuardiasTurnosForm.all[i].type != "hidden") {
+					document.DefinirGuardiasTurnosForm.all[i].disabled = !deshabilitar;
+				}
+			}
+			document.DefinirGuardiasTurnosForm.idTurnoPrincipal.disabled = false;
+			document.DefinirGuardiasTurnosForm.idGuardiaPrincipal.disabled = false;
+			document.DefinirGuardiasTurnosForm.guardia.disabled = false;
+			document.DefinirGuardiasTurnosForm.descripcion.disabled = false;
+			document.DefinirGuardiasTurnosForm.descripcionFacturacion.disabled = false;
+			document.DefinirGuardiasTurnosForm.descripcionPago.disabled = false;
+			
+			
+		}
 		function activarSustitucion (o)
 		{	
+			document.getElementById("idTurnoPrincipal").value ="-1";
+			document.getElementById("idTurnoPrincipal").onchange();
 			for (i = 0; i < document.DefinirGuardiasTurnosForm.all.length; i++) {
 				if(document.DefinirGuardiasTurnosForm.all[i].name && document.DefinirGuardiasTurnosForm.all[i].type != "hidden") {
 					document.DefinirGuardiasTurnosForm.all[i].disabled = o.checked;

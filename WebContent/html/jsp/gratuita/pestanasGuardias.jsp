@@ -47,6 +47,8 @@
 
 	<!-- Campo obligatorio -->
 	<html:hidden property = "modo" value = "editar"/>
+	<html:hidden property = "guardiasPrincipales" />
+	<html:hidden property = "turnosPrincipales"/>
 	
 	<!-- INICIO: CONJUNTO DE PESTAÑAS (LINEA) -->
 <!-- Esto pinta una linea de pestanhas, pero primero es necesario

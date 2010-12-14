@@ -1,6 +1,10 @@
 package com.siga.gratuita.form;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import com.siga.beans.ScsGuardiasTurnoBean;
+import com.siga.beans.ScsTurnoBean;
 import com.siga.general.MasterForm;
 
 /**
@@ -64,7 +68,11 @@ public class DefinirGuardiasTurnosForm extends MasterForm
 	private String fechaSolicitudBaja;
 	private String fechaConsulta;
 	
-	
+	List<ScsTurnoBean> turnosPrincipales;
+	List<ScsGuardiasTurnoBean> guardiasPrincipales;
+	private String idInstitucionPrincipal;
+	private String idTurnoPrincipal;
+	private String idGuardiaPrincipal;
 	//////////////////// GETTERS ////////////////////
 	// Configuracion de guardia
 	public String getTipoDiasGuardia() {return tipoDiasGuardia;}
@@ -311,6 +319,37 @@ public class DefinirGuardiasTurnosForm extends MasterForm
 			aux.add(""); // ordenacion (A/D)
 			ordenacion.add(aux);
 		}
+	}
+	public List<ScsTurnoBean> getTurnosPrincipales() {
+		return turnosPrincipales;
+	}
+	public void setTurnosPrincipales(List<ScsTurnoBean> turnosPrincipales) {
+		this.turnosPrincipales = turnosPrincipales;
+	}
+	public List<ScsGuardiasTurnoBean> getGuardiasPrincipales() {
+		return guardiasPrincipales;
+	}
+	public void setGuardiasPrincipales(
+			List<ScsGuardiasTurnoBean> guardiasPrincipales) {
+		this.guardiasPrincipales = guardiasPrincipales;
+	}
+	public String getIdInstitucionPrincipal() {
+		return idInstitucionPrincipal;
+	}
+	public void setIdInstitucionPrincipal(String idInstitucionPrincipal) {
+		this.idInstitucionPrincipal = idInstitucionPrincipal;
+	}
+	public String getIdTurnoPrincipal() {
+		return idTurnoPrincipal;
+	}
+	public void setIdTurnoPrincipal(String idTurnoPrincipal) {
+		this.idTurnoPrincipal = idTurnoPrincipal;
+	}
+	public String getIdGuardiaPrincipal() {
+		return idGuardiaPrincipal;
+	}
+	public void setIdGuardiaPrincipal(String idGuardiaPrincipal) {
+		this.idGuardiaPrincipal = idGuardiaPrincipal;
 	}
 
 }

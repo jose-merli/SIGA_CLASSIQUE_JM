@@ -1,5 +1,6 @@
 package com.siga.gratuita.action;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -15,12 +16,15 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.AjaxCollectionXmlBuilder;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenBajasTemporalesAdm;
 import com.siga.beans.CenBajasTemporalesBean;
+import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.ScsCabeceraGuardiasAdm;
 import com.siga.beans.ScsCabeceraGuardiasBean;
 import com.siga.beans.ScsGuardiasColegiadoAdm;
@@ -39,6 +43,7 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinirGuardiasTurnosForm;
+import com.siga.gratuita.form.InscripcionTGForm;
 import com.siga.gratuita.util.calendarioSJCS.CalendarioAutomatico;
 import com.siga.gratuita.util.calendarioSJCS.CalendarioSJCS;
 
@@ -75,7 +80,10 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 						return mapping.findForward(sustituir(mapping, miForm, request, response));
 					} else if(miForm.getModo()!=null && miForm.getModo().equalsIgnoreCase("insertarSustitucion")) {
 						return mapping.findForward(insertarSustitucion(mapping, miForm, request, response));
-					} else
+					} if ( miForm.getModo()!=null && miForm.getModo().equalsIgnoreCase("getAjaxGuardias")){
+						getAjaxGuardias (mapping, miForm, request, response);
+						return null;
+					}else
 						return super.executeInternal(mapping, formulario,request,response);
 				} else {
 					return mapping.findForward(this.abrirAvanzada(mapping,miForm,request,response));
@@ -215,8 +223,9 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 		String forward = null;
 
 		try {
+			
 			String pestanasG = (String) request.getSession().getAttribute("pestanasG");
-
+	
 			if (pestanasG == null) {
 				request.removeAttribute("DATABACKUPPESTANA");
 				forward = super.abrir(mapping, formulario, request, response);
@@ -289,7 +298,37 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 					miForm.setHayDiasASeparar(ClsConstants.DB_FALSE);
 					miForm.setDiasASeparar("");
 				}
+				List<ScsTurnoBean> alTurnos = null;
+				ScsTurnoAdm admTurnos = new ScsTurnoAdm(usr);
+				alTurnos = admTurnos.getTurnos(usr.getLocation());
+				if(alTurnos==null){
+					alTurnos = new ArrayList<ScsTurnoBean>();
+				}
+				miForm.setTurnosPrincipales(alTurnos);
 
+				Integer idTurnoPrincipal = beanGuardiasTurno.getIdTurnoPrincipal();
+				List<ScsGuardiasTurnoBean> guardiasPrincipalesList = null;
+				if(idTurnoPrincipal!=null){
+					
+					
+					ScsGuardiasTurnoAdm admGuardias = new ScsGuardiasTurnoAdm(usr);
+					guardiasPrincipalesList = admGuardias.getGuardiasTurnos(new Integer(idTurnoPrincipal),new Integer(usr.getLocation()),true);
+
+					if(guardiasPrincipalesList==null){
+						guardiasPrincipalesList = new ArrayList<ScsGuardiasTurnoBean>();
+					}
+				}
+				else{
+					guardiasPrincipalesList = new ArrayList<ScsGuardiasTurnoBean>();
+				}
+				if(beanGuardiasTurno.getIdGuardiaPrincipal()!=null)
+					miForm.setIdGuardiaPrincipal(beanGuardiasTurno.getIdGuardiaPrincipal().toString());
+				if(beanGuardiasTurno.getIdTurnoPrincipal()!=null)
+					miForm.setIdTurnoPrincipal(beanGuardiasTurno.getIdTurnoPrincipal().toString());
+				
+				miForm.setGuardiasPrincipales(guardiasPrincipalesList);			
+				
+				
 				forward = "edicion";
 			}
 
@@ -299,8 +338,8 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 		}
 
 		return forward;
-	} // abrir()
-
+	} // abrir()//abrir()
+	
 	/**
 	 * Esta clase se encarga de hacer una consulta para sacar todas las guardias
 	 * para un turno seleccionado, o todas las guardias en las que está o ha estado
@@ -456,6 +495,37 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 			hashPestanha.put("MODOPESTANA","EDITAR");
 			request.setAttribute("HASHGUARDIA",hashPestanha);
 			
+			List<ScsTurnoBean> alTurnos = null;
+			ScsTurnoAdm admTurnos = new ScsTurnoAdm(usr);
+			alTurnos = admTurnos.getTurnos(usr.getLocation());
+			if(alTurnos==null){
+				alTurnos = new ArrayList<ScsTurnoBean>();
+			}
+			miForm.setTurnosPrincipales(alTurnos);
+
+			Integer idTurnoPrincipal = beanGuardiasTurno.getIdTurnoPrincipal();
+			List<ScsGuardiasTurnoBean> guardiasPrincipalesList = null;
+			if(idTurnoPrincipal!=null){
+				
+				
+				ScsGuardiasTurnoAdm admGuardias = new ScsGuardiasTurnoAdm(usr);
+				guardiasPrincipalesList = admGuardias.getGuardiasTurnos(new Integer(idTurnoPrincipal),new Integer(usr.getLocation()),true);
+
+				if(guardiasPrincipalesList==null){
+					guardiasPrincipalesList = new ArrayList<ScsGuardiasTurnoBean>();
+				}
+			}
+			else{
+				guardiasPrincipalesList = new ArrayList<ScsGuardiasTurnoBean>();
+			}
+			if(beanGuardiasTurno.getIdGuardiaPrincipal()!=null)
+				miForm.setIdGuardiaPrincipal(beanGuardiasTurno.getIdGuardiaPrincipal().toString());
+			if(beanGuardiasTurno.getIdTurnoPrincipal()!=null)
+				miForm.setIdTurnoPrincipal(beanGuardiasTurno.getIdTurnoPrincipal().toString());
+			
+			miForm.setGuardiasPrincipales(guardiasPrincipalesList);			
+
+			
 		//Control de excepciones
 		} catch(Exception e){
 			throwExcp("error.messages.editar",e,null);
@@ -507,6 +577,39 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 			hashPestanha.put("MODOPESTANA","VER");
 			request.setAttribute("HASHGUARDIA",hashPestanha);
 			
+			List<ScsTurnoBean> alTurnos = null;
+			ScsTurnoAdm admTurnos = new ScsTurnoAdm(usr);
+			alTurnos = admTurnos.getTurnos(usr.getLocation());
+			if(alTurnos==null){
+				alTurnos = new ArrayList<ScsTurnoBean>();
+			}
+			miForm.setTurnosPrincipales(alTurnos);
+
+			Integer idTurnoPrincipal = beanGuardiasTurno.getIdTurnoPrincipal();
+			List<ScsGuardiasTurnoBean> guardiasPrincipalesList = null;
+			if(idTurnoPrincipal!=null){
+				
+				
+				ScsGuardiasTurnoAdm admGuardias = new ScsGuardiasTurnoAdm(usr);
+				guardiasPrincipalesList = admGuardias.getGuardiasTurnos(new Integer(idTurnoPrincipal),new Integer(usr.getLocation()),true);
+
+				if(guardiasPrincipalesList==null){
+					guardiasPrincipalesList = new ArrayList<ScsGuardiasTurnoBean>();
+				}
+			}
+			else{
+				guardiasPrincipalesList = new ArrayList<ScsGuardiasTurnoBean>();
+			}
+			if(beanGuardiasTurno.getIdGuardiaPrincipal()!=null)
+				miForm.setIdGuardiaPrincipal(beanGuardiasTurno.getIdGuardiaPrincipal().toString());
+			if(beanGuardiasTurno.getIdTurnoPrincipal()!=null)
+				miForm.setIdTurnoPrincipal(beanGuardiasTurno.getIdTurnoPrincipal().toString());
+			
+			miForm.setGuardiasPrincipales(guardiasPrincipalesList);			
+
+			
+			
+			
 		//Control de excepciones
 		} catch(Exception e){
 			throwExcp("error.messages.editar",e,null);
@@ -535,6 +638,15 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 			//Escribiendo en el formulario la configuracion de los dias
 			this.procesarSeleccionLaborables("LMXJVS",miForm);
 			this.procesarSeleccionFestivos("LMXJVSD",miForm);
+			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+			List<ScsTurnoBean> alTurnos = null;
+			ScsTurnoAdm admTurnos = new ScsTurnoAdm(usr);
+			alTurnos = admTurnos.getTurnos(usr.getLocation());
+			if(alTurnos==null){
+				alTurnos = new ArrayList<ScsTurnoBean>();
+			}
+			miForm.setTurnosPrincipales(alTurnos);
+			miForm.setGuardiasPrincipales(new ArrayList<ScsGuardiasTurnoBean>());
 		
 		//Control de excepciones
 		} catch (Exception e) {
@@ -556,9 +668,11 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 		Hashtable turno = (Hashtable)request.getSession().getAttribute("turnoElegido");
 		DefinirGuardiasTurnosForm miForm = (DefinirGuardiasTurnosForm)formulario;
+		
+		
 		ScsGuardiasTurnoAdm guardiaAdm = new ScsGuardiasTurnoAdm (this.getUserBean(request));		
 		UserTransaction tx = null;
-		UsrBean usrbean = null;
+		UsrBean usrbean =  (UsrBean)request.getSession().getAttribute("USRBEAN");
 		
 		try
 		{	
@@ -582,9 +696,65 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 				guardiaAdm.insert(b);
 			 	return exitoModal("messages.inserted.success",request);
 			}
+			String  idTurnoPrincipal = miForm.getIdTurnoPrincipal();
+			String  idGuardiaPrincipal = miForm.getIdGuardiaPrincipal();
+			if(idTurnoPrincipal!=null && !idTurnoPrincipal.equals("-1") && !idTurnoPrincipal.equals("")){
+				Hashtable principalHashtable = new Hashtable();
+				UtilidadesHash.set(principalHashtable, ScsGuardiasTurnoBean.C_IDINSTITUCION, usr.getLocation());
+				UtilidadesHash.set(principalHashtable, ScsGuardiasTurnoBean.C_IDTURNO, idTurnoPrincipal);
+				UtilidadesHash.set(principalHashtable, ScsGuardiasTurnoBean.C_IDGUARDIA, idGuardiaPrincipal);
+				Vector principalVector = guardiaAdm.selectByPK(principalHashtable);
+				if (principalVector == null || principalVector.size() != 1) {
+					throw new SIGAException("No se han podido obtener los datos asociados a la guardia principal");
+				}
+				ScsGuardiasTurnoBean beanVinculado = (ScsGuardiasTurnoBean)principalVector.get(0);
+				beanVinculado.setDescripcion(miForm.getDescripcion());
+				beanVinculado.setNombre(miForm.getGuardia());
+				beanVinculado.setDescripcionFacturacion(miForm.getDescripcionFacturacion());
+				beanVinculado.setDescripcionPago(miForm.getDescripcionPago());
+				beanVinculado.setIdInstitucionPrincipal(new Integer(usr.getLocation()));
+				beanVinculado.setIdTurnoPrincipal(new Integer(idTurnoPrincipal));
+				beanVinculado.setIdGuardiaPrincipal(new Integer(idGuardiaPrincipal));
+				beanVinculado.setIdInstitucion(new Integer(usr.getLocation()));
+				beanVinculado.setIdTurno(new Integer(UtilidadesHash.getString(turno, "IDTURNO")));
+				
+				ScsOrdenacionColasAdm ordenacion = 	new ScsOrdenacionColasAdm(this.getUserBean(request));
+				Vector ordenacionVector = new Vector();
+				String where =" where "+
+				ScsOrdenacionColasBean.C_ALFABETICOAPELLIDOS+"="+miForm.getAlfabeticoApellidos()+" and "+
+				ScsOrdenacionColasBean.C_ANTIGUEDADCOLA+"="+miForm.getAntiguedadEnCola()+" and "+
+				ScsOrdenacionColasBean.C_FECHANACIMIENTO+"="+miForm.getEdad()+" and "+
+				ScsOrdenacionColasBean.C_NUMEROCOLEGIADO+"="+miForm.getAntiguedad()+" ";
+				ordenacionVector=ordenacion.select(where);
+				Hashtable ordenacionHashtable = null;
+				if (ordenacionVector.size()>0) {
+					ScsOrdenacionColasBean ordenacioBean = (ScsOrdenacionColasBean)ordenacionVector.get(0);
+					beanVinculado.setIdOrdenacionColas(ordenacioBean.getIdOrdenacionColas());
+				} else {
+					Hashtable beanVinculadoHashtable = guardiaAdm.beanToHashTable(beanVinculado); 
+					ordenacion.prepararInsert(beanVinculadoHashtable);
+					ordenacionHashtable = new Hashtable();
+					ordenacionHashtable.put(ScsOrdenacionColasBean.C_ALFABETICOAPELLIDOS,miForm.getAlfabeticoApellidos());
+					ordenacionHashtable.put(ScsOrdenacionColasBean.C_ANTIGUEDADCOLA,miForm.getAntiguedadEnCola());
+					ordenacionHashtable.put(ScsOrdenacionColasBean.C_FECHANACIMIENTO,miForm.getEdad());
+					ordenacionHashtable.put(ScsOrdenacionColasBean.C_NUMEROCOLEGIADO,miForm.getAntiguedad());
+					ordenacionHashtable.put(ScsOrdenacionColasBean.C_USUMODIFICACION,(String)usr.getUserName());
+					ordenacionHashtable.put(ScsOrdenacionColasBean.C_FECHAMODIFICACION,"sysdate");
+					ordenacionHashtable.put(ScsOrdenacionColasBean.C_IDORDENACIONCOLAS,beanVinculadoHashtable.get("IDORDENACIONCOLAS"));
+				}
+				tx = usrbean.getTransaction();
+				tx.begin();
+				if(ordenacionHashtable!=null)
+					ordenacion.insert(ordenacionHashtable);
+				guardiaAdm.insert(beanVinculado);
+				tx.commit();
+				
+			 	return exitoModal("messages.inserted.success",request);
+			}
+			
 			
 			//Controles generales
-			usrbean = (UsrBean)request.getSession().getAttribute("USRBEAN");
+			
 			Hashtable nuevo = (Hashtable)miForm.getDatos();
 			
 			//Se rellenan los campos que hacen falta para crear
@@ -592,33 +762,29 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 			nuevo.put("IDINSTITUCION",usr.getLocation());  
 			nuevo.put("IDTURNO",(String)turno.get("IDTURNO"));
 			
-			//preparar el campo idOrdenacionColas
-			//hace la select en la tabla, si existe la ordenacion, se recupera el id,
-			//en caso contrario debe insertar el valor
-			Vector v = new Vector();
-			Hashtable haux = new Hashtable();
-			String where =" where "+
-			ScsOrdenacionColasBean.C_ALFABETICOAPELLIDOS+"="+(String)nuevo.get("ALFABETICOAPELLIDOS")+" and "+
-			ScsOrdenacionColasBean.C_ANTIGUEDADCOLA+"="+(String)nuevo.get("ANTIGUEDADCOLA")+" and "+
-			ScsOrdenacionColasBean.C_FECHANACIMIENTO+"="+(String)nuevo.get("EDAD")+" and "+
-			ScsOrdenacionColasBean.C_NUMEROCOLEGIADO+"="+(String)nuevo.get("NUMEROCOLEGIADO")+" ";
 			ScsOrdenacionColasAdm ordenacion = 	new ScsOrdenacionColasAdm(this.getUserBean(request));
-			v=ordenacion.select(where);
-			
-			if (v.size()>0) {
-				ScsOrdenacionColasBean b = (ScsOrdenacionColasBean)v.get(0);
-				nuevo.put("IDORDENACIONCOLAS",((Integer)b.getIdOrdenacionColas()).toString());
+			Vector ordenacionVector = new Vector();
+			String where =" where "+
+			ScsOrdenacionColasBean.C_ALFABETICOAPELLIDOS+"="+miForm.getAlfabeticoApellidos()+" and "+
+			ScsOrdenacionColasBean.C_ANTIGUEDADCOLA+"="+miForm.getAntiguedadEnCola()+" and "+
+			ScsOrdenacionColasBean.C_FECHANACIMIENTO+"="+miForm.getEdad()+" and "+
+			ScsOrdenacionColasBean.C_NUMEROCOLEGIADO+"="+miForm.getAntiguedad()+" ";
+			ordenacionVector=ordenacion.select(where);
+			Hashtable ordenacionHashtable = null;
+			if (ordenacionVector.size()>0) {
+				ScsOrdenacionColasBean ordenacioBean = (ScsOrdenacionColasBean)ordenacionVector.get(0);
+				nuevo.put("IDORDENACIONCOLAS",((Integer)ordenacioBean.getIdOrdenacionColas()).toString());
 			} else {
 				ordenacion.prepararInsert(nuevo);
-				haux.put(ScsOrdenacionColasBean.C_ALFABETICOAPELLIDOS,miForm.getAlfabeticoApellidos());
-				haux.put(ScsOrdenacionColasBean.C_ANTIGUEDADCOLA,miForm.getAntiguedadEnCola());
-				haux.put(ScsOrdenacionColasBean.C_FECHANACIMIENTO,miForm.getEdad());
-				haux.put(ScsOrdenacionColasBean.C_NUMEROCOLEGIADO,miForm.getAntiguedad());
-				
-				haux.put(ScsOrdenacionColasBean.C_USUMODIFICACION,(String)usr.getUserName());
-				haux.put(ScsOrdenacionColasBean.C_FECHAMODIFICACION,"sysdate");
-				haux.put(ScsOrdenacionColasBean.C_IDORDENACIONCOLAS,nuevo.get("IDORDENACIONCOLAS"));
-			}			
+				ordenacionHashtable = new Hashtable();
+				ordenacionHashtable.put(ScsOrdenacionColasBean.C_ALFABETICOAPELLIDOS,miForm.getAlfabeticoApellidos());
+				ordenacionHashtable.put(ScsOrdenacionColasBean.C_ANTIGUEDADCOLA,miForm.getAntiguedadEnCola());
+				ordenacionHashtable.put(ScsOrdenacionColasBean.C_FECHANACIMIENTO,miForm.getEdad());
+				ordenacionHashtable.put(ScsOrdenacionColasBean.C_NUMEROCOLEGIADO,miForm.getAntiguedad());
+				ordenacionHashtable.put(ScsOrdenacionColasBean.C_USUMODIFICACION,(String)usr.getUserName());
+				ordenacionHashtable.put(ScsOrdenacionColasBean.C_FECHAMODIFICACION,"sysdate");
+				ordenacionHashtable.put(ScsOrdenacionColasBean.C_IDORDENACIONCOLAS,nuevo.get("IDORDENACIONCOLAS"));
+			}
 			
 			//Preparando insercion
 //			guardiaAdm.prepararInsert(nuevo);
@@ -643,7 +809,8 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 			//Iniciando la insercion
 			tx = usrbean.getTransaction();
 			tx.begin();
-			ordenacion.insert(haux);
+			if(ordenacionHashtable!=null)
+				ordenacion.insert(ordenacionHashtable);
 			guardiaAdm.insert(nuevo);
 			tx.commit();
 			
@@ -657,21 +824,190 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 	/**
 	 * Modifica los datos de una Guardia para un Turno
 	 */
-	protected String modificar(ActionMapping mapping,
-			MasterForm formulario,
-			HttpServletRequest request,
-			HttpServletResponse response) throws SIGAException
-	{
-		// Controles generales
-		UsrBean usr = this.getUserBean(request);
-		ScsGuardiasTurnoBean guardia = (ScsGuardiasTurnoBean) request.getSession().getAttribute("DATABACKUPPESTANA");
-		ScsGuardiasTurnoAdm guardiaAdm = new ScsGuardiasTurnoAdm(usr);
-		DefinirGuardiasTurnosForm miForm = (DefinirGuardiasTurnosForm) formulario;
+	protected String modificar (ActionMapping mapping, 
+								MasterForm formulario, 
+								HttpServletRequest request, 
+								HttpServletResponse response)
+			throws SIGAException
+	{		
+		//Controles generales
+	    ScsGuardiasTurnoBean guardia = 
+	    	(ScsGuardiasTurnoBean) request.getSession().getAttribute("DATABACKUPPESTANA");
+	    ScsGuardiasTurnoAdm guardiaAdm = new ScsGuardiasTurnoAdm (this.getUserBean(request));	    
+		DefinirGuardiasTurnosForm miForm = (DefinirGuardiasTurnosForm)formulario;
 		Hashtable nuevo = miForm.getDatos();
+		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 		UserTransaction tx = null;
 
 		try {
-			// preparando los campos de seleccion de la guardia a modificar
+			//Controles generales
+			
+		    tx = usr.getTransaction();
+		    String  idTurnoPrincipal = miForm.getIdTurnoPrincipal();
+			String  idGuardiaPrincipal = miForm.getIdGuardiaPrincipal();
+			//SI VIENE GUARDIA VINCULADA 
+			if(idTurnoPrincipal!=null && !idTurnoPrincipal.equals("-1") && !idTurnoPrincipal.equals("")){
+				Hashtable principalHashtable = new Hashtable();
+				UtilidadesHash.set(principalHashtable, ScsGuardiasTurnoBean.C_IDINSTITUCION, usr.getLocation());
+				UtilidadesHash.set(principalHashtable, ScsGuardiasTurnoBean.C_IDTURNO, miForm.getIdTurnoPestanha());
+				UtilidadesHash.set(principalHashtable, ScsGuardiasTurnoBean.C_IDGUARDIA, miForm.getIdGuardiaPestanha());
+				Vector principalVector = guardiaAdm.selectByPK(principalHashtable);
+				if (principalVector == null || principalVector.size() != 1) {
+					throw new SIGAException("No se han podido obtener los datos asociados a la guardia principal");
+				}
+				
+				
+				
+				ScsGuardiasTurnoBean beanVinculado = (ScsGuardiasTurnoBean)principalVector.get(0);
+				// CAso de que la guardia fuera vinculada
+				if(beanVinculado.getIdTurnoPrincipal()!=null && beanVinculado.getIdGuardiaPrincipal()!=null){
+				
+					//Caso de que la guardia fuera vinculada y NO cambien el guardia turno principal
+					//HAY QUE MODIFICAR SOLO LOS CAMPOS DE DESCRIPCION. NO SE HACE NADA CON LA ORDENACION
+					if(beanVinculado.getIdTurnoPrincipal()!=null && beanVinculado.getIdTurnoPrincipal().compareTo(new Integer(miForm.getIdTurnoPrincipal()))==0
+							&&beanVinculado.getIdGuardiaPrincipal()!=null && beanVinculado.getIdGuardiaPrincipal().compareTo(new Integer(miForm.getIdGuardiaPrincipal()))==0){
+						//No hay cambios solo modificamos las descripciones
+						String[] claves ={ScsGuardiasTurnoBean.C_IDINSTITUCION,ScsGuardiasTurnoBean.C_IDTURNO,ScsGuardiasTurnoBean.C_IDGUARDIA}; 
+						String[] campos ={ScsGuardiasTurnoBean.C_DESCRIPCION,ScsGuardiasTurnoBean.C_NOMBRE,ScsGuardiasTurnoBean.C_DESCRIPCIONFACTURACION,ScsGuardiasTurnoBean.C_DESCRIPCIONPAGO};
+						beanVinculado.setDescripcion(miForm.getDescripcion());
+						beanVinculado.setNombre(miForm.getNombreGuardia());
+						beanVinculado.setDescripcionFacturacion(miForm.getDescripcionFacturacion());
+						beanVinculado.setDescripcionPago(miForm.getDescripcionPago());
+						if (!guardiaAdm.updateDirect(beanVinculado,claves,campos)) 
+							throw new ClsExceptions (guardiaAdm.getError());
+						
+					}else{
+						//HAY QUE MODIFICAR TODOS LOS CAMPOS DE LA CONFIGURACION A LOS CAMPOS DEL BEAN.
+						//TAMBIEN SE INSERTA LA NUEVA ORDENACION
+						Hashtable nuevoPrincipalHashtable = new Hashtable();
+						UtilidadesHash.set(nuevoPrincipalHashtable, ScsGuardiasTurnoBean.C_IDINSTITUCION, usr.getLocation());
+						UtilidadesHash.set(nuevoPrincipalHashtable, ScsGuardiasTurnoBean.C_IDTURNO, miForm.getIdTurnoPrincipal());
+						UtilidadesHash.set(nuevoPrincipalHashtable, ScsGuardiasTurnoBean.C_IDGUARDIA, miForm.getIdGuardiaPrincipal());
+						Vector nuevoPrincipalVector = guardiaAdm.selectByPK(nuevoPrincipalHashtable);
+						if (nuevoPrincipalVector == null || nuevoPrincipalVector.size() != 1) {
+							throw new SIGAException("No se han podido obtener los datos asociados a la guardia principal");
+						}
+						ScsGuardiasTurnoBean nuevoBeanVinculado = (ScsGuardiasTurnoBean)nuevoPrincipalVector.get(0);
+						nuevoBeanVinculado.setDescripcion(miForm.getDescripcion());
+						nuevoBeanVinculado.setNombre(miForm.getNombreGuardia());
+						nuevoBeanVinculado.setDescripcionFacturacion(miForm.getDescripcionFacturacion());
+						nuevoBeanVinculado.setDescripcionPago(miForm.getDescripcionPago());
+						nuevoBeanVinculado.setIdInstitucionPrincipal(nuevoBeanVinculado.getIdInstitucion());
+						nuevoBeanVinculado.setIdTurnoPrincipal(nuevoBeanVinculado.getIdTurno());
+						nuevoBeanVinculado.setIdGuardiaPrincipal(nuevoBeanVinculado.getIdGuardia());
+						nuevoBeanVinculado.setIdInstitucion(guardia.getIdInstitucion());
+						nuevoBeanVinculado.setIdTurno(guardia.getIdTurno());
+						nuevoBeanVinculado.setIdGuardia(guardia.getIdGuardia());
+						
+
+						
+						//HABRA CAMBIADO LA ORDENACION
+						ScsOrdenacionColasAdm ordenacion = 	new ScsOrdenacionColasAdm(this.getUserBean(request));
+						Vector ordenacionVector = new Vector();
+						String where =" where "+
+						ScsOrdenacionColasBean.C_ALFABETICOAPELLIDOS+"="+miForm.getAlfabeticoApellidos()+" and "+
+						ScsOrdenacionColasBean.C_ANTIGUEDADCOLA+"="+miForm.getAntiguedadEnCola()+" and "+
+						ScsOrdenacionColasBean.C_FECHANACIMIENTO+"="+miForm.getEdad()+" and "+
+						ScsOrdenacionColasBean.C_NUMEROCOLEGIADO+"="+miForm.getAntiguedad()+" ";
+						ordenacionVector=ordenacion.select(where);
+						Hashtable ordenacionHashtable = null;
+						if (ordenacionVector.size()>0) {
+							ScsOrdenacionColasBean ordenacioBean = (ScsOrdenacionColasBean)ordenacionVector.get(0);
+							nuevoBeanVinculado.setIdOrdenacionColas(ordenacioBean.getIdOrdenacionColas());
+						} else {
+							Hashtable beanVinculadoHashtable = guardiaAdm.beanToHashTable(nuevoBeanVinculado); 
+							ordenacion.prepararInsert(beanVinculadoHashtable);
+							ordenacionHashtable = new Hashtable();
+							ordenacionHashtable.put(ScsOrdenacionColasBean.C_ALFABETICOAPELLIDOS,miForm.getAlfabeticoApellidos());
+							ordenacionHashtable.put(ScsOrdenacionColasBean.C_ANTIGUEDADCOLA,miForm.getAntiguedadEnCola());
+							ordenacionHashtable.put(ScsOrdenacionColasBean.C_FECHANACIMIENTO,miForm.getEdad());
+							ordenacionHashtable.put(ScsOrdenacionColasBean.C_NUMEROCOLEGIADO,miForm.getAntiguedad());
+							ordenacionHashtable.put(ScsOrdenacionColasBean.C_USUMODIFICACION,(String)usr.getUserName());
+							ordenacionHashtable.put(ScsOrdenacionColasBean.C_FECHAMODIFICACION,"sysdate");
+							ordenacionHashtable.put(ScsOrdenacionColasBean.C_IDORDENACIONCOLAS,beanVinculadoHashtable.get("IDORDENACIONCOLAS"));
+						}
+						
+						tx.begin();
+					    if (ordenacionHashtable!=null) ordenacion.insert(ordenacionHashtable);
+					    guardiaAdm.update(guardiaAdm.beanToHashTable(nuevoBeanVinculado), guardia.getOriginalHash());
+					    tx.commit();
+						
+						
+						//Caso de que la guardia fuera vinculada y SI cambien el guardia turno principal
+						
+						
+						
+					}
+				}else{
+					//AHORA ES VINCULADA Y ANTES NO ERA VINCULADA
+					Hashtable nuevoPrincipalHashtable = new Hashtable();
+					UtilidadesHash.set(nuevoPrincipalHashtable, ScsGuardiasTurnoBean.C_IDINSTITUCION, usr.getLocation());
+					UtilidadesHash.set(nuevoPrincipalHashtable, ScsGuardiasTurnoBean.C_IDTURNO, miForm.getIdTurnoPrincipal());
+					UtilidadesHash.set(nuevoPrincipalHashtable, ScsGuardiasTurnoBean.C_IDGUARDIA, miForm.getIdGuardiaPrincipal());
+					Vector nuevoPrincipalVector = guardiaAdm.selectByPK(nuevoPrincipalHashtable);
+					if (nuevoPrincipalVector == null || nuevoPrincipalVector.size() != 1) {
+						throw new SIGAException("No se han podido obtener los datos asociados a la guardia principal");
+					}
+					
+					ScsGuardiasTurnoBean nuevoBeanVinculado = (ScsGuardiasTurnoBean)nuevoPrincipalVector.get(0);
+					
+					nuevoBeanVinculado.setDescripcion(miForm.getDescripcion());
+					nuevoBeanVinculado.setNombre(miForm.getNombreGuardia());
+					nuevoBeanVinculado.setDescripcionFacturacion(miForm.getDescripcionFacturacion());
+					nuevoBeanVinculado.setDescripcionPago(miForm.getDescripcionPago());
+					nuevoBeanVinculado.setIdInstitucionPrincipal(nuevoBeanVinculado.getIdInstitucion());
+					nuevoBeanVinculado.setIdTurnoPrincipal(nuevoBeanVinculado.getIdTurno());
+					nuevoBeanVinculado.setIdGuardiaPrincipal(nuevoBeanVinculado.getIdGuardia());
+					nuevoBeanVinculado.setIdInstitucion(guardia.getIdInstitucion());
+					nuevoBeanVinculado.setIdTurno(guardia.getIdTurno());
+					nuevoBeanVinculado.setIdGuardia(guardia.getIdGuardia());
+					
+					//HABRA CAMBIADO LA ORDENACION
+					ScsOrdenacionColasAdm ordenacion = 	new ScsOrdenacionColasAdm(this.getUserBean(request));
+					Vector ordenacionVector = new Vector();
+					String where =" where "+
+					ScsOrdenacionColasBean.C_ALFABETICOAPELLIDOS+"="+miForm.getAlfabeticoApellidos()+" and "+
+					ScsOrdenacionColasBean.C_ANTIGUEDADCOLA+"="+miForm.getAntiguedadEnCola()+" and "+
+					ScsOrdenacionColasBean.C_FECHANACIMIENTO+"="+miForm.getEdad()+" and "+
+					ScsOrdenacionColasBean.C_NUMEROCOLEGIADO+"="+miForm.getAntiguedad()+" ";
+					ordenacionVector=ordenacion.select(where);
+					Hashtable ordenacionHashtable = null;
+					if (ordenacionVector.size()>0) {
+						ScsOrdenacionColasBean ordenacioBean = (ScsOrdenacionColasBean)ordenacionVector.get(0);
+						nuevoBeanVinculado.setIdOrdenacionColas(ordenacioBean.getIdOrdenacionColas());
+					} else {
+						Hashtable beanVinculadoHashtable = guardiaAdm.beanToHashTable(nuevoBeanVinculado); 
+						ordenacion.prepararInsert(beanVinculadoHashtable);
+						ordenacionHashtable = new Hashtable();
+						ordenacionHashtable.put(ScsOrdenacionColasBean.C_ALFABETICOAPELLIDOS,miForm.getAlfabeticoApellidos());
+						ordenacionHashtable.put(ScsOrdenacionColasBean.C_ANTIGUEDADCOLA,miForm.getAntiguedadEnCola());
+						ordenacionHashtable.put(ScsOrdenacionColasBean.C_FECHANACIMIENTO,miForm.getEdad());
+						ordenacionHashtable.put(ScsOrdenacionColasBean.C_NUMEROCOLEGIADO,miForm.getAntiguedad());
+						ordenacionHashtable.put(ScsOrdenacionColasBean.C_USUMODIFICACION,(String)usr.getUserName());
+						ordenacionHashtable.put(ScsOrdenacionColasBean.C_FECHAMODIFICACION,"sysdate");
+						ordenacionHashtable.put(ScsOrdenacionColasBean.C_IDORDENACIONCOLAS,beanVinculadoHashtable.get("IDORDENACIONCOLAS"));
+					}
+					
+					
+					
+					
+					
+					
+					tx.begin();
+				    if (ordenacionHashtable!=null) ordenacion.insert(ordenacionHashtable);
+				    guardiaAdm.update(guardiaAdm.beanToHashTable(nuevoBeanVinculado), guardia.getOriginalHash());
+				    tx.commit();
+					
+					
+					//Si cambia 
+					
+					
+				}
+					
+//			CASO QUE NO SEA GUARDIA VINCULADA
+			 
+			}else{
+			    
 			nuevo.put(ScsGuardiasTurnoBean.C_IDINSTITUCION, miForm.getIdInstitucionPestanha());
 			nuevo.put(ScsGuardiasTurnoBean.C_IDTURNO, miForm.getIdTurnoPestanha());
 			nuevo.put(ScsGuardiasTurnoBean.C_IDGUARDIA, miForm.getIdGuardiaPestanha());
@@ -686,32 +1022,28 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 			nuevo.put(ScsGuardiasTurnoBean.C_VALIDARJUSTIFICACIONES, (miForm.getValidarInscripciones() == null) ? "N" : "S");
 
 			// preparando el campo idOrdenacionColas (si no existe, se debe insertar el valor
-			Vector v = new Vector();
-			Hashtable hOrdenacion = new Hashtable();
-			String where = 
-				" where " + ScsOrdenacionColasBean.C_ALFABETICOAPELLIDOS + "=" + (String) nuevo.get("ALFABETICOAPELLIDOS") +
-				"   and " + ScsOrdenacionColasBean.C_ANTIGUEDADCOLA + "=" + (String) nuevo.get("ANTIGUEDADCOLA") + 
-				"   and " + ScsOrdenacionColasBean.C_FECHANACIMIENTO + "=" + (String) nuevo.get("EDAD") + 
-				"   and " + ScsOrdenacionColasBean.C_NUMEROCOLEGIADO + "=" + (String) nuevo.get("NUMEROCOLEGIADO") + " ";
-			ScsOrdenacionColasAdm ordenacion = new ScsOrdenacionColasAdm(usr);
-			v = ordenacion.select(where);
-
-			boolean nuevaOrdenacion;
-			if (v.size() > 0) {
-				ScsOrdenacionColasBean b = (ScsOrdenacionColasBean) v.get(0);
-				nuevo.put("IDORDENACIONCOLAS", ((Integer) b.getIdOrdenacionColas()).toString());
-				nuevaOrdenacion = false;
+			ScsOrdenacionColasAdm ordenacion = 	new ScsOrdenacionColasAdm(this.getUserBean(request));
+			Vector ordenacionVector = new Vector();
+			String where =" where "+
+			ScsOrdenacionColasBean.C_ALFABETICOAPELLIDOS+"="+miForm.getAlfabeticoApellidos()+" and "+
+			ScsOrdenacionColasBean.C_ANTIGUEDADCOLA+"="+miForm.getAntiguedadEnCola()+" and "+
+			ScsOrdenacionColasBean.C_FECHANACIMIENTO+"="+miForm.getEdad()+" and "+
+			ScsOrdenacionColasBean.C_NUMEROCOLEGIADO+"="+miForm.getAntiguedad()+" ";
+			ordenacionVector=ordenacion.select(where);
+			Hashtable ordenacionHashtable = null;
+			if (ordenacionVector.size()>0) {
+				ScsOrdenacionColasBean ordenacioBean = (ScsOrdenacionColasBean)ordenacionVector.get(0);
+				nuevo.put("IDORDENACIONCOLAS",((Integer)ordenacioBean.getIdOrdenacionColas()).toString());
 			} else {
 				ordenacion.prepararInsert(nuevo);
-				hOrdenacion.put(ScsOrdenacionColasBean.C_ALFABETICOAPELLIDOS, miForm.getAlfabeticoApellidos());
-				hOrdenacion.put(ScsOrdenacionColasBean.C_ANTIGUEDADCOLA, miForm.getAntiguedadEnCola());
-				hOrdenacion.put(ScsOrdenacionColasBean.C_FECHANACIMIENTO, miForm.getEdad());
-				hOrdenacion.put(ScsOrdenacionColasBean.C_NUMEROCOLEGIADO, miForm.getAntiguedad());
-
-				hOrdenacion.put(ScsOrdenacionColasBean.C_USUMODIFICACION, (String) usr.getUserName());
-				hOrdenacion.put(ScsOrdenacionColasBean.C_FECHAMODIFICACION, "sysdate");
-				hOrdenacion.put(ScsOrdenacionColasBean.C_IDORDENACIONCOLAS, nuevo.get("IDORDENACIONCOLAS"));
-				nuevaOrdenacion = true;
+				ordenacionHashtable = new Hashtable();
+				ordenacionHashtable.put(ScsOrdenacionColasBean.C_ALFABETICOAPELLIDOS,miForm.getAlfabeticoApellidos());
+				ordenacionHashtable.put(ScsOrdenacionColasBean.C_ANTIGUEDADCOLA,miForm.getAntiguedadEnCola());
+				ordenacionHashtable.put(ScsOrdenacionColasBean.C_FECHANACIMIENTO,miForm.getEdad());
+				ordenacionHashtable.put(ScsOrdenacionColasBean.C_NUMEROCOLEGIADO,miForm.getAntiguedad());
+				ordenacionHashtable.put(ScsOrdenacionColasBean.C_USUMODIFICACION,(String)usr.getUserName());
+				ordenacionHashtable.put(ScsOrdenacionColasBean.C_FECHAMODIFICACION,"sysdate");
+				ordenacionHashtable.put(ScsOrdenacionColasBean.C_IDORDENACIONCOLAS,nuevo.get("IDORDENACIONCOLAS"));
 			}
 
 			// calculando los dias de la semana seleccionados
@@ -729,17 +1061,19 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 			// iniciando la modificacion
 			tx = usr.getTransaction();
 			tx.begin();
-			if (nuevaOrdenacion)
-				ordenacion.insert(hOrdenacion);
+			if (ordenacionHashtable!=null)
+				ordenacion.insert(ordenacionHashtable);
 			guardiaAdm.update(nuevo, guardia.getOriginalHash());
 			tx.commit();
 
-			// Control de excepciones
+			}
+			
+		//Control de excepciones
 		} catch (Exception e) {
-			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, tx);
-		}
-		return exitoRefresco("messages.updated.success", request);
-	} // modificar ()
+			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 
+		}		
+		return exitoRefresco("messages.updated.success",request);
+	} //modificar ()
 	
 	/**
 	 * Borra una Guardia de un Turno
@@ -955,5 +1289,25 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 		}
 		return "sustituir";
 	} //sustituir ()
-	
+	private void getAjaxGuardias (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception
+			{
+		DefinirGuardiasTurnosForm miForm = (DefinirGuardiasTurnosForm) formulario;
+		UsrBean usrBean = this.getUserBean(request);
+		//Sacamos las guardias si hay algo selccionado en el turno
+		List<ScsGuardiasTurnoBean> guardiasPrincipalesList = null;
+		if(miForm.getIdTurnoPrincipal()!= null && !miForm.getIdTurnoPrincipal().equals("-1")&& !miForm.getIdTurnoPrincipal().equals("")){
+			ScsGuardiasTurnoAdm admGuardias = new ScsGuardiasTurnoAdm(usrBean);
+			guardiasPrincipalesList = admGuardias.getGuardiasTurnos(new Integer(miForm.getIdTurnoPrincipal()),new Integer(usrBean.getLocation()),true);
+		}
+		if(guardiasPrincipalesList==null){
+			guardiasPrincipalesList = new ArrayList<ScsGuardiasTurnoBean>();
+			
+		}
+		miForm.setGuardiasPrincipales(guardiasPrincipalesList);
+		respuestaAjax(new AjaxCollectionXmlBuilder<ScsGuardiasTurnoBean>(), guardiasPrincipalesList,response);
+		
+	}
 }

@@ -73,7 +73,10 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 				ScsGuardiasTurnoBean.C_ESVIOLENCIAGENERO,
 				ScsGuardiasTurnoBean.C_IDTURNOSUSTITUCION,
 				ScsGuardiasTurnoBean.C_PORGRUPOS,
-				ScsGuardiasTurnoBean.C_ROTARCOMPONENTES
+				ScsGuardiasTurnoBean.C_ROTARCOMPONENTES,
+				ScsGuardiasTurnoBean.C_IDINSTITUCIONPRINCIPAL,
+				ScsGuardiasTurnoBean.C_IDTURNOPRINCIPAL,
+				ScsGuardiasTurnoBean.C_IDGUARDIAPRINCIPAL
 		};
 		return campos;
 	} //getCamposBean ()
@@ -132,6 +135,11 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 			bean.setIdTurnoSustitucion(UtilidadesHash.getInteger(hash, ScsGuardiasTurnoBean.C_IDTURNOSUSTITUCION));
 			bean.setPorGrupos(UtilidadesHash.getString(hash, ScsGuardiasTurnoBean.C_PORGRUPOS));
 			bean.setRotarComponentes(UtilidadesHash.getString(hash, ScsGuardiasTurnoBean.C_ROTARCOMPONENTES));
+			bean.setIdInstitucionPrincipal(UtilidadesHash.getInteger(hash, ScsGuardiasTurnoBean.C_IDINSTITUCIONPRINCIPAL));
+			bean.setIdTurnoPrincipal(UtilidadesHash.getInteger(hash, ScsGuardiasTurnoBean.C_IDTURNOPRINCIPAL));
+			bean.setIdGuardiaPrincipal(UtilidadesHash.getInteger(hash, ScsGuardiasTurnoBean.C_IDGUARDIAPRINCIPAL));
+			
+			
 		}
 		catch(Exception e){
 			bean = null;
@@ -182,6 +190,9 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_IDTURNOSUSTITUCION, b.getIdTurnoSustitucion());
 			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_PORGRUPOS, b.getPorGrupos());
 			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_ROTARCOMPONENTES, b.getRotarComponentes());
+			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_IDINSTITUCIONPRINCIPAL, b.getIdInstitucionPrincipal());
+			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_IDTURNOPRINCIPAL, b.getIdTurnoPrincipal());
+			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_IDGUARDIAPRINCIPAL, b.getIdGuardiaPrincipal());
 		}
 		catch (Exception e){
 			hash = null;
@@ -837,6 +848,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 		}
 		return datos;
 	} // getDatosListaGuardias ()
+	
 	
 	public Vector getDatosPlantillas(String idinstitucion,
 			String anio,

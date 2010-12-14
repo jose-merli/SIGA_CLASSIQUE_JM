@@ -47,6 +47,9 @@ public class ScsGuardiasTurnoBean extends MasterBean
 	static public final String C_ESVIOLENCIAGENERO			= "ESVIOLENCIAGENERO";
 	static public final String C_PORGRUPOS					= "PORGRUPOS";
 	static public final String C_ROTARCOMPONENTES			= "ROTARCOMPONENTES";
+	static public final String C_IDINSTITUCIONPRINCIPAL			= "IDINSTITUCIONPRINCIPAL";
+	static public final String C_IDTURNOPRINCIPAL			= "IDTURNOPRINCIPAL";
+	static public final String C_IDGUARDIAPRINCIPAL			= "IDGUARDIAPRINCIPAL";
 	
 	
 	//////////////////// ATRIBUTOS ////////////////////
@@ -83,6 +86,10 @@ public class ScsGuardiasTurnoBean extends MasterBean
 	private Integer		idTurnoSustitucion;
 	private String		seleccionTiposDia;
 	private String		descripcionTipoDiasGuardia;
+	
+	private Integer 	idInstitucionPrincipal;
+	private Integer 	idTurnoPrincipal;
+	private Integer 	idGuardiaPrincipal;
 	
 	
 	//////////////////// GETTERS ////////////////////
@@ -157,5 +164,23 @@ public class ScsGuardiasTurnoBean extends MasterBean
 	public void setIdTurnoSustitucion(Integer idTurnoSustitucion) {this.idTurnoSustitucion = idTurnoSustitucion;}
 	public void setSeleccionTiposDia(String seleccionTiposDia) {this.seleccionTiposDia = seleccionTiposDia;}
 	public void setDescripcionTipoDiasGuardia(String descripcionTipoDiasGuardia) {this.descripcionTipoDiasGuardia = descripcionTipoDiasGuardia;}
+	public Integer getIdInstitucionPrincipal() {
+		return idInstitucionPrincipal;
+	}
+	public void setIdInstitucionPrincipal(Integer idInstitucionPrincipal) {
+		this.idInstitucionPrincipal = idInstitucionPrincipal;
+	}
+	public Integer getIdTurnoPrincipal() {
+		return idTurnoPrincipal;
+	}
+	public void setIdTurnoPrincipal(Integer idTurnoPrincipal) {
+		this.idTurnoPrincipal = idTurnoPrincipal;
+	}
+	public Integer getIdGuardiaPrincipal() {
+		return idGuardiaPrincipal;
+	}
+	public void setIdGuardiaPrincipal(Integer idGuardiaPrincipal) {
+		this.idGuardiaPrincipal = idGuardiaPrincipal;
+	}
 	
 }

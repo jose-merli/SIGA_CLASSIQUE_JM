@@ -10,6 +10,8 @@
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
+<!-- AJAX -->
+<%@ taglib uri="ajaxtags.tld" prefix="ajax" %>
 
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="java.util.*"%>
@@ -42,7 +44,8 @@
 			.getAttribute("DATABACKUPPESTANA");
 	DefinirGuardiasTurnosForm miform = (DefinirGuardiasTurnosForm) request
 			.getAttribute("DefinirGuardiasTurnosForm");
-
+	
+	
 	//Modo de las pestanhas anteriores:
 	String modoPestanha = request.getAttribute("MODOPESTANA") == null ? ""
 			: (String) request.getAttribute("MODOPESTANA");
@@ -184,6 +187,14 @@
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
+ 	
+ 	<link type="text/css" rel="stylesheet" href="/html/css/ajaxtags.css" />
+ 	<link type="text/css" rel="stylesheet" href="/html/css/displaytag.css" />
  	
 <!-- INICIO: TITULO Y LOCALIZACION -->
 <%
@@ -204,6 +215,13 @@
 
 	<html:javascript formName="DefinirGuardiasTurnosForm" staticJavascript="false" />
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+	<script>
+	function postAccionTurno(){
+		if(document.getElementById("idTurnoPrincipal").value !="-1"&&document.getElementById("idTurnoPrincipal").value!="-1"&&document.getElementById("idTurnoPrincipal").value!=""){
+			accionComboGuardiaPrincipal();
+		}
+	}
+	</script>
 </head>
 
 
@@ -338,6 +356,32 @@
 				<siga:Idioma key="gratuita.turno.guardia.literal.deViolenciaGenero"/>&nbsp<input type=checkbox name="vg" value=1 <%=(esViolenciaGenero.equals("1"))?"checked":""%> >
 			</td>
 		</tr>
+		<tr>
+			<td class="labelText"><siga:Idioma
+				key="gratuita.gestionInscripciones.turno.literal"/> Principal</td>
+			<td><html:select styleId="turnosPrincipales" styleClass="boxCombo" style="width:200px;"
+				property="idTurnoPrincipal">
+				<bean:define id="turnosPrincipales" name="DefinirGuardiasTurnosForm"
+					property="turnosPrincipales" type="java.util.Collection" />
+				<html:optionsCollection name="turnosPrincipales" value="idTurno"
+					label="nombre" />
+				</html:select>
+			</td>
+			<td class="labelText"><siga:Idioma
+				key="gratuita.gestionInscripciones.guardia.literal" /> Principal</td>
+			<td><html:select styleId="guardiasPrincipales" styleClass="boxCombo" style="width:180px;"
+				property="idGuardiaPrincipal" onchange="accionComboGuardiaPrincipal();" >
+				<bean:define id="guardiasPrincipales" name="DefinirGuardiasTurnosForm"
+					property="guardiasPrincipales" type="java.util.Collection" />
+				<html:optionsCollection name="guardiasPrincipales" value="idGuardia"
+					label="nombre" />
+			</html:select>
+			</td>
+
+		</tr>
+		
+		
+		
 	</table>
 	</siga:ConjCampos>
 	
@@ -711,7 +755,11 @@
 		</tr>
 	</table>
 	</siga:ConjCampos>
-
+<ajax:select
+	baseUrl="/SIGA/DefinirGuardiasTurnosAction.do?modo=getAjaxGuardias"
+	source="turnosPrincipales" target="guardiasPrincipales" parameters="idTurnoPrincipal={idTurnoPrincipal}"
+	postFunction="postAccionTurno"
+	/>
 			
 	
 </html:form>
@@ -860,14 +908,41 @@
 
 	<!-- Asociada al boton Guardar -->
 	function accionGuardar() {	
-		if (validateDefinirGuardiasTurnosForm(document.DefinirGuardiasTurnosForm)) {
-			if (document.DefinirGuardiasTurnosForm.duracion.value==0) {
-				alert('<siga:Idioma key="gratuita.maestroTurnos.literal.cero"/>');
-			} else { 
-				document.forms[0].target="submitArea";
-				document.forms[0].modo.value="modificar";
-				document.forms[0].submit();
-			}
+		if(document.getElementById("idTurnoPrincipal").value !="-1" && document.getElementById("idTurnoPrincipal").value !=""){
+				error = '';
+				if(document.getElementById("idGuardiaPrincipal").value =="-1" || document.getElementById("idGuardiaPrincipal").value ==""){
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.gestionInscripciones.guardia.literal'/>"+ '\n';				
+				}
+				
+				if(document.getElementById("nombreGuardia").value ==""){
+					error += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.nombre'/>"+ '\n';
+				}
+				if(document.getElementById("descripcion").value ==""){
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.maestroTurnos.literal.descripcion'/>"+ '\n';
+						
+				}
+				if(error ==''){
+					document.DefinirGuardiasTurnosForm.modo.value = "modificar";
+			       	document.DefinirGuardiasTurnosForm.target = "submitArea";
+					document.DefinirGuardiasTurnosForm.submit();
+				}else{
+					fin();
+					alert(error);
+				 	return false;
+				
+				}
+				
+			}else{
+	
+				if (validateDefinirGuardiasTurnosForm(document.DefinirGuardiasTurnosForm)) {
+					if (document.DefinirGuardiasTurnosForm.duracion.value==0) {
+						alert('<siga:Idioma key="gratuita.maestroTurnos.literal.cero"/>');
+					} else { 
+						document.forms[0].target="submitArea";
+						document.forms[0].modo.value="modificar";
+						document.forms[0].submit();
+					}
+				}
 		}
 	}
 
@@ -885,7 +960,23 @@
 		document.forms[0].modo.value="editar";
 		document.forms[0].submit();
 	}
-
+	function accionComboGuardiaPrincipal(){
+		var deshabilitar = document.getElementById("idGuardiaPrincipal").value==''||document.getElementById("idGuardiaPrincipal").value=='-1';
+		for (i = 0; i < document.DefinirGuardiasTurnosForm.all.length; i++) {
+			if(document.DefinirGuardiasTurnosForm.all[i].name && document.DefinirGuardiasTurnosForm.all[i].type != "hidden") {
+				document.DefinirGuardiasTurnosForm.all[i].disabled = !deshabilitar;
+			}
+		}
+		document.DefinirGuardiasTurnosForm.idTurnoPrincipal.disabled = false;
+		document.DefinirGuardiasTurnosForm.idGuardiaPrincipal.disabled = false;
+		document.DefinirGuardiasTurnosForm.nombreGuardia.disabled = false;
+		document.DefinirGuardiasTurnosForm.descripcion.disabled = false;
+		document.DefinirGuardiasTurnosForm.descripcionFacturacion.disabled = false;
+		document.DefinirGuardiasTurnosForm.descripcionPago.disabled = false;
+		
+		
+	}
+accionComboGuardiaPrincipal();
 </script>
 <!-------------------- FIN: Funciones JavaScript -------------------->
 
