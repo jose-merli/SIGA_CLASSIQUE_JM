@@ -219,10 +219,10 @@
 				<td>
 					<html:text name="DefinirGuardiasTurnosForm" property="letradosGuardia" size="7" maxlength="6" styleClass="box" value='' readonly="false"></html:text>
 				</td>
-				<td class="labelText" >
+				<td class="labelText" colspan="2">
 					<siga:Idioma key="gratuita.maestroGuardias.literal.diasSeparacion"/>&nbsp;(*)
 					</td>
-				<td colspan="2">
+				<td >
 					<html:text name="DefinirGuardiasTurnosForm" property="diasSeparacion" size="3" maxlength="2" styleClass="box" value='' readonly="false"></html:text>
 				</td>
 				
