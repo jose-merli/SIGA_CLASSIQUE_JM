@@ -24,6 +24,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.GstStringTokenizer;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.AjaxCollectionXmlBuilder;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenPersonaAdm;
@@ -123,6 +124,9 @@ public class PersonaJGAction extends MasterAction {
 						// El por defecto sera el de las pestanhas
 						mapDestino = abrirPestana(mapping, miForm, request, response);
 						break; 
+					}else if ( accion.equalsIgnoreCase("getAjaxTipoIdentificacion")){
+						getAjaxTipoIdentificacion(mapping, miForm, request, response);
+						return null;						
 					} else if (accion.equalsIgnoreCase("Ver")){  
 						mapDestino = Ver(mapping, miForm, request, response);
 					} else if (accion.equalsIgnoreCase("Editar")){
@@ -429,6 +433,7 @@ public class PersonaJGAction extends MasterAction {
 			
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 	     	PersonaJGForm miform = (PersonaJGForm)formulario;
+	     	String ididioma=user.getLanguage();
 			
 			// para la clave de la persona JG
 			String idInstitucionJG="", idPersonaJG="";
@@ -622,6 +627,29 @@ public class PersonaJGAction extends MasterAction {
 
 	     	miform = this.rellenarFormulario(miform,request);
      	
+	     	CenTipoIdentificacionAdm tipoIdentificacionAdm = new CenTipoIdentificacionAdm(user);
+		List<CenTipoIdentificacionBean>  alTipos = tipoIdentificacionAdm.getTipoPersona(ididioma);
+		if(alTipos==null){
+			alTipos = new ArrayList<CenTipoIdentificacionBean>();				}
+		
+		miform.setTipos(alTipos);	
+		//Para recuperar el tipo idpersona Juridica o Fisica si hay un dato ya guardado.
+		String idTipoPersona= miform.getIdTipoPersona();
+		if((idTipoPersona==null)||(miform.getIdTipoPersona().equals("F"))){			
+			List<CenTipoIdentificacionBean>  identificadores = tipoIdentificacionAdm.getTiposIdentificacion(ididioma);
+			if(identificadores==null){				
+				identificadores = new ArrayList<CenTipoIdentificacionBean>();		
+			}
+				miform.setIdentificadores(identificadores);
+		}else{
+			List<CenTipoIdentificacionBean> alTipoIdentificaciones = null;
+					alTipoIdentificaciones = tipoIdentificacionAdm.getTiposIdentificaciones(ididioma, miform.getIdTipoPersona().toString());
+						if(alTipoIdentificaciones==null){
+							alTipoIdentificaciones = new ArrayList<CenTipoIdentificacionBean>();
+			
+						}
+						miform.setIdentificadores(alTipoIdentificaciones);
+		}
 			
 			// indico si es modal
 			//request.setAttribute("personaJGpantalla","M");
@@ -653,6 +681,7 @@ public class PersonaJGAction extends MasterAction {
 			
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 	     	PersonaJGForm miform = (PersonaJGForm)formulario;
+	     	String ididioma=user.getLanguage();
 			
 			// para la clave de la persona JG
 			String idInstitucionJG="", idPersonaJG="";
@@ -884,14 +913,34 @@ public class PersonaJGAction extends MasterAction {
 	     	miform.setIdInstitucionPER(idInstitucionPER);
 	     	miform.setIdPersonaPER(idPersonaPER);
 
-	     	miform = this.rellenarFormulario(miform,request);
+	     	miform = this.rellenarFormulario(miform,request);  
 	     	
-	     	
-	     	// indico si es modal o pestanha
-			//request.setAttribute("personaJGpantalla","P");
-	     	
-		}
-		catch (Exception e) {
+		    CenTipoIdentificacionAdm tipoIdentificacionAdm = new CenTipoIdentificacionAdm(user);
+			List<CenTipoIdentificacionBean>  alTipos = tipoIdentificacionAdm.getTipoPersona(ididioma);
+			if(alTipos==null){
+				alTipos = new ArrayList<CenTipoIdentificacionBean>();
+			}
+			
+			miform.setTipos(alTipos);	
+			//Para recuperar el tipo idpersona Juridica o Fisica si hay un dato ya guardado.
+			String idTipoPersona= miform.getIdTipoPersona();
+			if((idTipoPersona==null)||(miform.getIdTipoPersona().equals(ClsConstants.TIPO_IDPERSONA_FISICA))){			
+				List<CenTipoIdentificacionBean>  identificadores = tipoIdentificacionAdm.getTiposIdentificacion(ididioma);
+				if(identificadores==null){				
+					identificadores = new ArrayList<CenTipoIdentificacionBean>();		
+				}
+					miform.setIdentificadores(identificadores);
+			}else{
+				List<CenTipoIdentificacionBean> alTipoIdentificaciones = null;
+						alTipoIdentificaciones = tipoIdentificacionAdm.getTiposIdentificaciones(ididioma, miform.getIdTipoPersona().toString());
+							if(alTipoIdentificaciones==null){
+								alTipoIdentificaciones = new ArrayList<CenTipoIdentificacionBean>();
+				
+							}
+							miform.setIdentificadores(alTipoIdentificaciones);
+			}
+			
+		}catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
 		}
 		
@@ -1045,7 +1094,7 @@ public class PersonaJGAction extends MasterAction {
 		Hashtable dataBackup = new Hashtable();
 		Hashtable hash = new Hashtable();
 		UsrBean user = new UsrBean();
-		
+		String ididioma=user.getLanguage();
 		try {
 			// El siguiente condigo comentado no tiene sentido en este metodo,
 			//pues aqui no se lee DATABACKUP, solo se escribe.
@@ -1141,7 +1190,7 @@ public class PersonaJGAction extends MasterAction {
 					// indicamos que la persona existe
 					miform.setNuevo("1"); 
 					
-					miform.setTipo(perBean.getTipo());
+					miform.setIdTipoPersona(perBean.getTipo());										
 					miform.setTipoId(perBean.getTipoIdentificacion());
 					miform.setNIdentificacion(perBean.getNif());
 					miform.setNombre(perBean.getNombre());
@@ -1576,8 +1625,10 @@ public class PersonaJGAction extends MasterAction {
 									miform.setProfesion(perBean.getIdProfesion().toString());
 								}
 								miform.setObservaciones(perBean.getObservaciones());
-							}
-						}
+							}							
+							
+						}					
+						
 
 				} else {
 					if (miform.getConceptoE().equals(PersonaJGAction.ASISTENCIA_ASISTIDO) ) {
@@ -1659,7 +1710,7 @@ public class PersonaJGAction extends MasterAction {
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDPOBLACION,miform.getPoblacion());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_ESTADOCIVIL,miform.getEstadoCivil());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_REGIMENCONYUGAL,miform.getRegimenConyugal());
-			UtilidadesHash.set(persona,ScsPersonaJGBean.C_TIPOPERSONAJG,miform.getTipo());
+			UtilidadesHash.set(persona,ScsPersonaJGBean.C_TIPOPERSONAJG,miform.getIdTipoPersona());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDTIPOIDENTIFICACION,miform.getTipoId());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_ENCALIDADDE,miform.getEnCalidadDe());
 			UtilidadesHash.set(persona,ScsPersonaJGBean.C_OBSERVACIONES,miform.getObservaciones());
@@ -2751,6 +2802,30 @@ public class PersonaJGAction extends MasterAction {
 			miform.setNombreAnterior(nombreAnterior);
 		}
 		return "asuntosPersonaJGModal";
+	}
+	
+	protected void getAjaxTipoIdentificacion (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception
+			{
+		PersonaJGForm miForm = (PersonaJGForm) formulario;
+		UsrBean usrBean = this.getUserBean(request);
+		String ididioma=usrBean.getLanguage();	
+
+		List<CenTipoIdentificacionBean> alTipoIdentificaciones = null;
+		if (miForm.getIdTipoPersona()!=null && !miForm.getIdTipoPersona().equals("")){
+				CenTipoIdentificacionAdm tipoIdentificacionAdm = new CenTipoIdentificacionAdm(usrBean);			
+			alTipoIdentificaciones = tipoIdentificacionAdm.getTiposIdentificaciones(ididioma, miForm.getIdTipoPersona().toString());
+		
+		}
+		
+		if(alTipoIdentificaciones==null){
+			alTipoIdentificaciones = new ArrayList<CenTipoIdentificacionBean>();
+			
+		}
+		respuestaAjax(new AjaxCollectionXmlBuilder<CenTipoIdentificacionBean>(), alTipoIdentificaciones,response);
+		
 	}
 
 }
