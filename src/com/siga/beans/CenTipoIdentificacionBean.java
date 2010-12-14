@@ -6,6 +6,10 @@
  */
 package com.siga.beans;
 
+import com.siga.Utilidades.AjaxXMLBuilderAnnotation;
+import com.siga.Utilidades.AjaxXMLBuilderNameAnnotation;
+import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
+
 
 /**
  * @author daniel.campos
@@ -13,10 +17,12 @@ package com.siga.beans;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
+@AjaxXMLBuilderAnnotation 
 public class CenTipoIdentificacionBean extends MasterBean{
 
 	/* Variables */
-	private Integer idTipoIdentificacion;
+	private Integer idTipoIdentificacion;	
+	private String idTipo;
 	private String 	descripcion;
 	
 	/* Nombre tabla */
@@ -41,8 +47,16 @@ public class CenTipoIdentificacionBean extends MasterBean{
 	// Metodos SET
 	public void setIdTipoIdentificacion (Integer id)	{ this.idTipoIdentificacion = id; }
 	public void setDescripcion (String s)			{ this.descripcion = s; }
+	public void setIdTipo(String idTipo) {	this.idTipo = idTipo;}
 
 	// Metodos GET
+	@AjaxXMLBuilderValueAnnotation(isCData=false)
 	public Integer getIdTipoIdentificacion 	()	{ return this.idTipoIdentificacion; }
+	@AjaxXMLBuilderNameAnnotation
 	public String getDescripcion    	()	{ return this.descripcion; }
+	public String getIdTipo() { return idTipo;	}
+	
+	
+	
 }
+
