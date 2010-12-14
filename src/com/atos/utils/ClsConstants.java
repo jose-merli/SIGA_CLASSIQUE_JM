@@ -48,6 +48,10 @@ public class ClsConstants {
 	public static final int TIPO_IDENTIFICACION_PASAPORTE 	= 30;
 	public static final int TIPO_IDENTIFICACION_OTRO	 	= 50;
 	
+	// Tipo persona
+	public static final String TIPO_IDPERSONA_FISICA	 	= "F";
+	
+	
 	// Para la busqueda experta de criterios dinamicos
 	public static final String TIPONUMERO	= "%%NUMERO%%";
 	public static final String TIPOTEXTO	= "%%TEXTO%%";
