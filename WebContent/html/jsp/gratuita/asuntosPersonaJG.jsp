@@ -79,7 +79,7 @@
 			<html:hidden property="idInstitucionASI"/>
 			<html:hidden property="anioASI"/>
 			<html:hidden property="numeroASI"/>
-			<html:hidden property="tipo"/>
+			<html:hidden property="idTipoPersona"/>
 			<html:hidden property="tipoId"/>
 			<html:hidden property="NIdentificacion"/>
 			<html:hidden property="nombre"/>
