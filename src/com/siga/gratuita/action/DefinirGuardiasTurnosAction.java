@@ -244,6 +244,8 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 				idInstitucion = request.getParameter(ScsGuardiasTurnoBean.C_IDINSTITUCION);
 				idTurno = request.getParameter(ScsGuardiasTurnoBean.C_IDTURNO);
 				idGuardia = request.getParameter(ScsGuardiasTurnoBean.C_IDGUARDIA);
+				List guardiasVinculadasList = guardiaAdm.getGuardiasTurnosVinculadas(new Integer(idTurno),new Integer(idGuardia),new Integer(idInstitucion));
+				miForm.setGuardiasVinculadas(guardiasVinculadasList);
 				
 				// mostrando datos del Turno
 				Hashtable miTurno = turnoAdm.getDatosTurno(idInstitucion, idTurnoPestanha);
@@ -478,14 +480,17 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 			Hashtable turno = (Hashtable)request.getSession().getAttribute("turnoElegido");
 			hash.put(ScsGuardiasTurnoBean.C_IDINSTITUCION,(String)usr.getLocation());
 			hash.put(ScsGuardiasTurnoBean.C_IDTURNO,(String)turno.get("IDTURNO"));
-			if (ocultos!=null)hash.put(ScsGuardiasTurnoBean.C_IDGUARDIA,(String)ocultos.get(1));
-			else hash.put(ScsGuardiasTurnoBean.C_IDGUARDIA,(String)miForm.getGuardia());
-			
+			String idGuardia = null;
+			if (ocultos!=null)idGuardia = (String)ocultos.get(1);
+			else idGuardia = (String)miForm.getGuardia();
+			hash.put(ScsGuardiasTurnoBean.C_IDGUARDIA,idGuardia);
 			//Aqui seleccionamos la guardia que queremos editar
 			ScsGuardiasTurnoBean beanGuardiasTurno = (ScsGuardiasTurnoBean)((Vector)guardias.select(hash)).get(0);
 			request.getSession().setAttribute("DATABACKUPPESTANA",beanGuardiasTurno);
 			request.getSession().setAttribute("modo","editar");
 			
+//			List guardiasVinculadasList = guardias.getGuardiasTurnosVinculadas(new Integer((String)turno.get("IDTURNO")),new Integer(idGuardia),new Integer(usr.getLocation()));
+//			miForm.setGuardiasVinculadas(guardiasVinculadasList);
 			//Para pasar los parametros de la pestanha: idinstitucion. idturno, idguardia:
 			Hashtable hashPestanha = new Hashtable();
 			hashPestanha.put(ScsGuardiasTurnoBean.C_IDINSTITUCION,(String)usr.getLocation());
@@ -495,35 +500,35 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 			hashPestanha.put("MODOPESTANA","EDITAR");
 			request.setAttribute("HASHGUARDIA",hashPestanha);
 			
-			List<ScsTurnoBean> alTurnos = null;
-			ScsTurnoAdm admTurnos = new ScsTurnoAdm(usr);
-			alTurnos = admTurnos.getTurnos(usr.getLocation());
-			if(alTurnos==null){
-				alTurnos = new ArrayList<ScsTurnoBean>();
-			}
-			miForm.setTurnosPrincipales(alTurnos);
-
-			Integer idTurnoPrincipal = beanGuardiasTurno.getIdTurnoPrincipal();
-			List<ScsGuardiasTurnoBean> guardiasPrincipalesList = null;
-			if(idTurnoPrincipal!=null){
-				
-				
-				ScsGuardiasTurnoAdm admGuardias = new ScsGuardiasTurnoAdm(usr);
-				guardiasPrincipalesList = admGuardias.getGuardiasTurnos(new Integer(idTurnoPrincipal),new Integer(usr.getLocation()),true);
-
-				if(guardiasPrincipalesList==null){
-					guardiasPrincipalesList = new ArrayList<ScsGuardiasTurnoBean>();
-				}
-			}
-			else{
-				guardiasPrincipalesList = new ArrayList<ScsGuardiasTurnoBean>();
-			}
-			if(beanGuardiasTurno.getIdGuardiaPrincipal()!=null)
-				miForm.setIdGuardiaPrincipal(beanGuardiasTurno.getIdGuardiaPrincipal().toString());
-			if(beanGuardiasTurno.getIdTurnoPrincipal()!=null)
-				miForm.setIdTurnoPrincipal(beanGuardiasTurno.getIdTurnoPrincipal().toString());
-			
-			miForm.setGuardiasPrincipales(guardiasPrincipalesList);			
+//			List<ScsTurnoBean> alTurnos = null;
+//			ScsTurnoAdm admTurnos = new ScsTurnoAdm(usr);
+//			alTurnos = admTurnos.getTurnos(usr.getLocation());
+//			if(alTurnos==null){
+//				alTurnos = new ArrayList<ScsTurnoBean>();
+//			}
+//			miForm.setTurnosPrincipales(alTurnos);
+//
+//			Integer idTurnoPrincipal = beanGuardiasTurno.getIdTurnoPrincipal();
+//			List<ScsGuardiasTurnoBean> guardiasPrincipalesList = null;
+//			if(idTurnoPrincipal!=null){
+//				
+//				
+//				ScsGuardiasTurnoAdm admGuardias = new ScsGuardiasTurnoAdm(usr);
+//				guardiasPrincipalesList = admGuardias.getGuardiasTurnos(new Integer(idTurnoPrincipal),new Integer(usr.getLocation()),true);
+//
+//				if(guardiasPrincipalesList==null){
+//					guardiasPrincipalesList = new ArrayList<ScsGuardiasTurnoBean>();
+//				}
+//			}
+//			else{
+//				guardiasPrincipalesList = new ArrayList<ScsGuardiasTurnoBean>();
+//			}
+//			if(beanGuardiasTurno.getIdGuardiaPrincipal()!=null)
+//				miForm.setIdGuardiaPrincipal(beanGuardiasTurno.getIdGuardiaPrincipal().toString());
+//			if(beanGuardiasTurno.getIdTurnoPrincipal()!=null)
+//				miForm.setIdTurnoPrincipal(beanGuardiasTurno.getIdTurnoPrincipal().toString());
+//			
+//			miForm.setGuardiasPrincipales(guardiasPrincipalesList);			
 
 			
 		//Control de excepciones
@@ -576,36 +581,38 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 			hashPestanha.put(ScsGuardiasTurnoBean.C_IDGUARDIA,(String)ocultos.get(1));
 			hashPestanha.put("MODOPESTANA","VER");
 			request.setAttribute("HASHGUARDIA",hashPestanha);
-			
-			List<ScsTurnoBean> alTurnos = null;
-			ScsTurnoAdm admTurnos = new ScsTurnoAdm(usr);
-			alTurnos = admTurnos.getTurnos(usr.getLocation());
-			if(alTurnos==null){
-				alTurnos = new ArrayList<ScsTurnoBean>();
-			}
-			miForm.setTurnosPrincipales(alTurnos);
-
-			Integer idTurnoPrincipal = beanGuardiasTurno.getIdTurnoPrincipal();
-			List<ScsGuardiasTurnoBean> guardiasPrincipalesList = null;
-			if(idTurnoPrincipal!=null){
-				
-				
-				ScsGuardiasTurnoAdm admGuardias = new ScsGuardiasTurnoAdm(usr);
-				guardiasPrincipalesList = admGuardias.getGuardiasTurnos(new Integer(idTurnoPrincipal),new Integer(usr.getLocation()),true);
-
-				if(guardiasPrincipalesList==null){
-					guardiasPrincipalesList = new ArrayList<ScsGuardiasTurnoBean>();
-				}
-			}
-			else{
-				guardiasPrincipalesList = new ArrayList<ScsGuardiasTurnoBean>();
-			}
-			if(beanGuardiasTurno.getIdGuardiaPrincipal()!=null)
-				miForm.setIdGuardiaPrincipal(beanGuardiasTurno.getIdGuardiaPrincipal().toString());
-			if(beanGuardiasTurno.getIdTurnoPrincipal()!=null)
-				miForm.setIdTurnoPrincipal(beanGuardiasTurno.getIdTurnoPrincipal().toString());
-			
-			miForm.setGuardiasPrincipales(guardiasPrincipalesList);			
+//			List guardiasVinculadasList = guardias.getGuardiasTurnosVinculadas(new Integer((String)ocultos.get(0)),new Integer((String)ocultos.get(1)),new Integer(usr.getLocation()));
+//			miForm.setGuardiasVinculadas(guardiasVinculadasList);
+//			
+//			List<ScsTurnoBean> alTurnos = null;
+//			ScsTurnoAdm admTurnos = new ScsTurnoAdm(usr);
+//			alTurnos = admTurnos.getTurnos(usr.getLocation());
+//			if(alTurnos==null){
+//				alTurnos = new ArrayList<ScsTurnoBean>();
+//			}
+//			miForm.setTurnosPrincipales(alTurnos);
+//
+//			Integer idTurnoPrincipal = beanGuardiasTurno.getIdTurnoPrincipal();
+//			List<ScsGuardiasTurnoBean> guardiasPrincipalesList = null;
+//			if(idTurnoPrincipal!=null){
+//				
+//				
+//				ScsGuardiasTurnoAdm admGuardias = new ScsGuardiasTurnoAdm(usr);
+//				guardiasPrincipalesList = admGuardias.getGuardiasTurnos(new Integer(idTurnoPrincipal),new Integer(usr.getLocation()),true);
+//
+//				if(guardiasPrincipalesList==null){
+//					guardiasPrincipalesList = new ArrayList<ScsGuardiasTurnoBean>();
+//				}
+//			}
+//			else{
+//				guardiasPrincipalesList = new ArrayList<ScsGuardiasTurnoBean>();
+//			}
+//			if(beanGuardiasTurno.getIdGuardiaPrincipal()!=null)
+//				miForm.setIdGuardiaPrincipal(beanGuardiasTurno.getIdGuardiaPrincipal().toString());
+//			if(beanGuardiasTurno.getIdTurnoPrincipal()!=null)
+//				miForm.setIdTurnoPrincipal(beanGuardiasTurno.getIdTurnoPrincipal().toString());
+//			
+//			miForm.setGuardiasPrincipales(guardiasPrincipalesList);			
 
 			
 			
@@ -1028,7 +1035,11 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 			nuevo.put(ScsGuardiasTurnoBean.C_IDINSTITUCIONPRINCIPAL,"");
 			nuevo.put(ScsGuardiasTurnoBean.C_IDTURNOPRINCIPAL, "");
 			nuevo.put(ScsGuardiasTurnoBean.C_IDGUARDIAPRINCIPAL, "");
-
+			
+			
+			
+			
+			
 			// preparando el campo idOrdenacionColas (si no existe, se debe insertar el valor
 			ScsOrdenacionColasAdm ordenacion = 	new ScsOrdenacionColasAdm(this.getUserBean(request));
 			Vector ordenacionVector = new Vector();
@@ -1065,13 +1076,35 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 				nuevo.put(ScsGuardiasTurnoBean.C_SELECCIONLABORABLES, laborables);
 				nuevo.put(ScsGuardiasTurnoBean.C_SELECCIONFESTIVOS, festivos);
 			}
-
+			List<ScsGuardiasTurnoBean> guardiasVinculadasList = guardiaAdm.getGuardiasTurnosVinculadas(new Integer(miForm.getIdTurnoPestanha()),new Integer(miForm.getIdGuardiaPestanha()),new Integer(usr.getLocation()));
 			// iniciando la modificacion
-			tx = usr.getTransaction();
+			tx = usr.getTransactionPesada();
 			tx.begin();
 			if (ordenacionHashtable!=null)
 				ordenacion.insert(ordenacionHashtable);
 			guardiaAdm.update(nuevo, guardia.getOriginalHash());
+			if(guardiasVinculadasList!=null && guardiasVinculadasList.size()>0){
+				String[] claves ={ScsGuardiasTurnoBean.C_IDINSTITUCION,ScsGuardiasTurnoBean.C_IDTURNO,ScsGuardiasTurnoBean.C_IDGUARDIA}; 
+				String[] campos ={ScsGuardiasTurnoBean.C_DESCRIPCION,ScsGuardiasTurnoBean.C_NOMBRE,ScsGuardiasTurnoBean.C_DESCRIPCIONFACTURACION,ScsGuardiasTurnoBean.C_DESCRIPCIONPAGO};
+				for(ScsGuardiasTurnoBean guardiaTurno:guardiasVinculadasList){
+					Hashtable guardiaTurnoHashtable = (Hashtable)nuevo.clone();
+					ScsGuardiasTurnoBean guardiaTurnoBean = (ScsGuardiasTurnoBean) guardiaAdm.hashTableToBean(guardiaTurnoHashtable);
+					guardiaTurnoBean.setIdInstitucionPrincipal(new Integer(miForm.getIdInstitucionPestanha()));
+					guardiaTurnoBean.setIdTurnoPrincipal(new Integer(miForm.getIdTurnoPestanha()));
+					guardiaTurnoBean.setIdGuardiaPrincipal(new Integer(miForm.getIdGuardiaPestanha()));
+					guardiaTurnoBean.setIdInstitucion(guardiaTurno.getIdInstitucion());
+					guardiaTurnoBean.setIdTurno(guardiaTurno.getIdTurno());
+					guardiaTurnoBean.setIdGuardia(guardiaTurno.getIdGuardia());
+					guardiaTurnoBean.setDescripcion(guardiaTurno.getDescripcion());
+					guardiaTurnoBean.setNombre(guardiaTurno.getNombre());
+					guardiaTurnoBean.setDescripcionFacturacion(guardiaTurno.getDescripcionFacturacion());
+					guardiaTurnoBean.setDescripcionPago(guardiaTurno.getDescripcionPago());
+					guardiaAdm.updateDirect(guardiaTurnoBean);
+					
+				}
+			}
+			
+			
 			tx.commit();
 
 			}

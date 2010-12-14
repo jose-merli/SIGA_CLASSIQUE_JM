@@ -10,6 +10,7 @@
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="c.tld" prefix="c"%>
 <!-- AJAX -->
 <%@ taglib uri="ajaxtags.tld" prefix="ajax" %>
 
@@ -351,32 +352,69 @@
 			</td>
 			</td>
 			<td class="labelText" colspan="2">
-				<siga:Idioma key="gratuita.turno.guardia.literal.deViolenciaGenero"/>&nbsp<input type=checkbox name="vg" value=1 <%=(esViolenciaGenero.equals("1"))?"checked":""%> >
+				<siga:Idioma key="gratuita.turno.guardia.literal.deViolenciaGenero"/>&nbsp;<input type=checkbox name="vg" value=1 <%=(esViolenciaGenero.equals("1"))?"checked":""%> >
 			</td>
 		</tr>
-		<tr>
-			<td class="labelText"><siga:Idioma
-				key="gratuita.gestionInscripciones.turno.literal"/> Principal</td>
-			<td><html:select styleId="turnosPrincipales" styleClass="boxCombo" style="width:200px;"
-				property="idTurnoPrincipal">
-				<bean:define id="turnosPrincipales" name="DefinirGuardiasTurnosForm"
-					property="turnosPrincipales" type="java.util.Collection" />
-				<html:optionsCollection name="turnosPrincipales" value="idTurno"
-					label="nombre" />
+		<logic:empty name="DefinirGuardiasTurnosForm"	property="guardiasVinculadas">
+			<tr>
+				<td class="labelText"><siga:Idioma
+					key="gratuita.gestionInscripciones.turno.literal"/> Principal</td>
+				<td><html:select styleId="turnosPrincipales" styleClass="boxCombo" style="width:200px;"
+					property="idTurnoPrincipal">
+					<bean:define id="turnosPrincipales" name="DefinirGuardiasTurnosForm"
+						property="turnosPrincipales" type="java.util.Collection" />
+					<html:optionsCollection name="turnosPrincipales" value="idTurno"
+						label="nombre" />
+					</html:select>
+				</td>
+				<td class="labelText"><siga:Idioma
+					key="gratuita.gestionInscripciones.guardia.literal" /> Principal</td>
+				<td><html:select styleId="guardiasPrincipales" styleClass="boxCombo" style="width:180px;"
+					property="idGuardiaPrincipal" onchange="accionComboGuardiaPrincipal();" >
+					<bean:define id="guardiasPrincipales" name="DefinirGuardiasTurnosForm"
+						property="guardiasPrincipales" type="java.util.Collection" />
+					<html:optionsCollection name="guardiasPrincipales" value="idGuardia"
+						label="nombre" />
 				</html:select>
-			</td>
-			<td class="labelText"><siga:Idioma
-				key="gratuita.gestionInscripciones.guardia.literal" /> Principal</td>
-			<td><html:select styleId="guardiasPrincipales" styleClass="boxCombo" style="width:180px;"
-				property="idGuardiaPrincipal" onchange="accionComboGuardiaPrincipal();" >
-				<bean:define id="guardiasPrincipales" name="DefinirGuardiasTurnosForm"
-					property="guardiasPrincipales" type="java.util.Collection" />
-				<html:optionsCollection name="guardiasPrincipales" value="idGuardia"
-					label="nombre" />
-			</html:select>
-			</td>
-
-		</tr>
+				</td>
+	
+			</tr>
+		</logic:empty>
+		
+		
+			
+		<logic:notEmpty name="DefinirGuardiasTurnosForm"	property="guardiasVinculadas">
+			<tr>
+				<td colspan="4">
+					<div style="position:relative;height:100%;  width:100%; overflow-y:auto">
+						<table class="tablaCampos"  border='1' align='center' width='100%' height="10" cellspacing='0' cellpadding='0' style='table-layout:fixed'>
+							<tr class = 'tableTitle'>
+								<td align='center' width='50%'>Turno</td>
+								<td align='center' width='50%'>Guardia</td>
+								
+							</tr>
+							<logic:iterate name="DefinirGuardiasTurnosForm" property="guardiasVinculadas" id="guardiaVinculada" indexId="index">
+								
+									
+										
+												
+								<tr class="filaTablaImpar">
+									<td align='left' width='50%'><c:out value="${guardiaVinculada.turno.abreviatura}"/></td>
+									<td align='left' width='50%'><c:out value="${guardiaVinculada.nombre}"/></td>
+								</tr>
+									
+									
+									
+								
+								
+							</logic:iterate>
+							</table>
+					</div>
+				</td>
+		
+			</tr>
+		</logic:notEmpty>
+			
 		
 		
 		
@@ -915,7 +953,7 @@
 
 	<!-- Asociada al boton Guardar -->
 	function accionGuardar() {	
-		if(document.getElementById("idTurnoPrincipal").value !="-1" && document.getElementById("idTurnoPrincipal").value !=""){
+		if(document.getElementById("idTurnoPrincipal")&&document.getElementById("idTurnoPrincipal").value !="-1" && document.getElementById("idTurnoPrincipal").value !=""){
 				error = '';
 				if(document.getElementById("idGuardiaPrincipal").value =="-1" || document.getElementById("idGuardiaPrincipal").value ==""){
 					error += "<siga:Idioma key='errors.required' arg0='gratuita.gestionInscripciones.guardia.literal'/>"+ '\n';				
@@ -968,19 +1006,20 @@
 		document.forms[0].submit();
 	}
 	function accionComboGuardiaPrincipal(){
-		var deshabilitar = document.getElementById("idGuardiaPrincipal").value==''||document.getElementById("idGuardiaPrincipal").value=='-1';
-		for (i = 0; i < document.DefinirGuardiasTurnosForm.all.length; i++) {
-			if(document.DefinirGuardiasTurnosForm.all[i].name && document.DefinirGuardiasTurnosForm.all[i].type != "hidden") {
-				document.DefinirGuardiasTurnosForm.all[i].disabled = !deshabilitar;
+		if(document.getElementById("idGuardiaPrincipal")){
+			var deshabilitar = document.getElementById("idGuardiaPrincipal").value==''||document.getElementById("idGuardiaPrincipal").value=='-1';
+			for (i = 0; i < document.DefinirGuardiasTurnosForm.all.length; i++) {
+				if(document.DefinirGuardiasTurnosForm.all[i].name && document.DefinirGuardiasTurnosForm.all[i].type != "hidden") {
+					document.DefinirGuardiasTurnosForm.all[i].disabled = !deshabilitar;
+				}
 			}
+			document.DefinirGuardiasTurnosForm.idTurnoPrincipal.disabled = false;
+			document.DefinirGuardiasTurnosForm.idGuardiaPrincipal.disabled = false;
+			document.DefinirGuardiasTurnosForm.nombreGuardia.disabled = false;
+			document.DefinirGuardiasTurnosForm.descripcion.disabled = false;
+			document.DefinirGuardiasTurnosForm.descripcionFacturacion.disabled = false;
+			document.DefinirGuardiasTurnosForm.descripcionPago.disabled = false;
 		}
-		document.DefinirGuardiasTurnosForm.idTurnoPrincipal.disabled = false;
-		document.DefinirGuardiasTurnosForm.idGuardiaPrincipal.disabled = false;
-		document.DefinirGuardiasTurnosForm.nombreGuardia.disabled = false;
-		document.DefinirGuardiasTurnosForm.descripcion.disabled = false;
-		document.DefinirGuardiasTurnosForm.descripcionFacturacion.disabled = false;
-		document.DefinirGuardiasTurnosForm.descripcionPago.disabled = false;
-		
 		
 	}
 

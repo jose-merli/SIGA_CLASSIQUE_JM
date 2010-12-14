@@ -73,6 +73,7 @@ public class DefinirGuardiasTurnosForm extends MasterForm
 	private String idInstitucionPrincipal;
 	private String idTurnoPrincipal;
 	private String idGuardiaPrincipal;
+	List<ScsGuardiasTurnoBean> guardiasVinculadas;
 	//////////////////// GETTERS ////////////////////
 	// Configuracion de guardia
 	public String getTipoDiasGuardia() {return tipoDiasGuardia;}
@@ -350,6 +351,12 @@ public class DefinirGuardiasTurnosForm extends MasterForm
 	}
 	public void setIdGuardiaPrincipal(String idGuardiaPrincipal) {
 		this.idGuardiaPrincipal = idGuardiaPrincipal;
+	}
+	public List<ScsGuardiasTurnoBean> getGuardiasVinculadas() {
+		return guardiasVinculadas;
+	}
+	public void setGuardiasVinculadas(List<ScsGuardiasTurnoBean> guardiasVinculadas) {
+		this.guardiasVinculadas = guardiasVinculadas;
 	}
 
 }

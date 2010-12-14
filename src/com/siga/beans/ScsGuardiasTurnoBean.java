@@ -91,7 +91,14 @@ public class ScsGuardiasTurnoBean extends MasterBean
 	private Integer 	idTurnoPrincipal;
 	private Integer 	idGuardiaPrincipal;
 	
+	private ScsTurnoBean turno;
 	
+	public ScsTurnoBean getTurno() {
+		return turno;
+	}
+	public void setTurno(ScsTurnoBean turno) {
+		this.turno = turno;
+	}
 	//////////////////// GETTERS ////////////////////
 	public String getDescripcion() {return descripcion;}
 	public String getDescripcionFacturacion() {return descripcionFacturacion;}

@@ -1264,5 +1264,63 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 		return alGuardias;
 
 	}	
+	public List<ScsGuardiasTurnoBean> getGuardiasTurnosVinculadas(Integer idTurno,Integer idGuardia, Integer idInstitucion) throws ClsExceptions
+	{
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+
+		sql.append(" SELECT GT.*,");
+		sql.append("T.ABREVIATURA ABREVIATURATURNO ,T.NOMBRE NOMBRETURNO FROM SCS_GUARDIASTURNO GT,SCS_TURNO T ");
+		sql.append(" WHERE GT.IDTURNO= T.IDTURNO AND GT.IDINSTITUCION = T.IDINSTITUCION ");
+		
+		sql.append(" AND GT.IDINSTITUCIONPRINCIPAL =:");
+		contador++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador), idInstitucion);
+		sql.append(" AND GT.IDTURNOPRINCIPAL = :");
+		contador++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador), idTurno);
+		sql.append(" AND GT.IDGUARDIAPRINCIPAL = :");
+		contador++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador), idGuardia);
+		sql.append(" ORDER BY GT.NOMBRE ");
+
+		List<ScsGuardiasTurnoBean> alGuardias = null;
+		try {
+			RowsContainer rc = new RowsContainer();
+
+			if (rc.findBind(sql.toString(), htCodigos)) {
+				alGuardias = new ArrayList<ScsGuardiasTurnoBean>();
+				ScsGuardiasTurnoBean guardiaBean = null;
+				ScsTurnoBean turnoBean = null;
+				for (int i = 0; i < rc.size(); i++) {
+					Row fila = (Row) rc.get(i);
+					Hashtable<String, Object> htFila = fila.getRow();
+					turnoBean = new ScsTurnoBean();
+					guardiaBean = new ScsGuardiasTurnoBean();
+					guardiaBean.setTurno(turnoBean);
+					guardiaBean.setIdInstitucion(UtilidadesHash
+							.getInteger(htFila, ScsGuardiasTurnoBean.C_IDINSTITUCION));
+					guardiaBean.setIdTurno(UtilidadesHash.getInteger(htFila, ScsGuardiasTurnoBean.C_IDTURNO));
+					guardiaBean.setNombre(UtilidadesHash.getString(htFila, ScsGuardiasTurnoBean.C_NOMBRE));
+					guardiaBean.setDescripcion(UtilidadesHash.getString(htFila, ScsGuardiasTurnoBean.C_DESCRIPCION));
+					guardiaBean.setDescripcionFacturacion(UtilidadesHash.getString(htFila, ScsGuardiasTurnoBean.C_DESCRIPCIONFACTURACION));
+					guardiaBean.setDescripcionPago(UtilidadesHash.getString(htFila, ScsGuardiasTurnoBean.C_DESCRIPCIONPAGO));
+					guardiaBean.setIdGuardia(UtilidadesHash.getInteger(htFila, ScsGuardiasTurnoBean.C_IDGUARDIA));
+					turnoBean.setIdTurno(UtilidadesHash.getInteger(htFila, ScsGuardiasTurnoBean.C_IDTURNO));
+					turnoBean.setAbreviatura(UtilidadesHash.getString(htFila, "ABREVIATURATURNO"));
+					turnoBean.setNombre(UtilidadesHash.getString(htFila, "NOMBRETURNO"));
+					alGuardias.add(guardiaBean);
+				}
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al ejecutar consulta.");
+		}
+		return alGuardias;
+
+	}	
 
 }
