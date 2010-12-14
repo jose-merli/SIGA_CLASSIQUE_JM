@@ -5,14 +5,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
 
-import org.apache.avalon.framework.logger.Log4JLogger;
-import org.apache.commons.logging.impl.Log4JCategoryLog;
-import org.apache.tools.ant.listener.Log4jListener;
-
-import weblogic.apache.org.apache.velocity.runtime.log.Log4JLogSystem;
-
-import com.businessobjects.foundation.logging.log4j.Log4jProvider;
-import com.ibatis.common.logging.log4j.Log4jImpl;
 import com.siga.general.SIGAException;
 
 public class LogFileWriter
