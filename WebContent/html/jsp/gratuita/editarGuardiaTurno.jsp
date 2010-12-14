@@ -217,9 +217,7 @@
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 	<script>
 	function postAccionTurno(){
-		if(document.getElementById("idTurnoPrincipal").value !="-1"&&document.getElementById("idTurnoPrincipal").value!="-1"&&document.getElementById("idTurnoPrincipal").value!=""){
-			accionComboGuardiaPrincipal();
-		}
+		accionComboGuardiaPrincipal();
 	}
 	</script>
 </head>
@@ -388,18 +386,27 @@
 	<siga:ConjCampos leyenda="gratuita.guardiasTurno.literal.configuracioncola" desplegable="true" oculto="false">
 	<table align="center" border="0" width="100%">
 		<tr>
-			<td class="labelText" style="text-align:left" width="20%">
-				<input type=checkbox name="porGrupos" value=1 <%=(porGrupos.equals("1"))?"checked":""%> />
-				<siga:Idioma key="gratuita.guardiasTurno.literal.porgrupos"/>
+			<td class="labelText" style="text-align:left" width="15%">
+				<input type=checkbox id="idPorGrupos" name="porGrupos" onClick="comprobarPorGrupos();"value=1 <%=(porGrupos.equals("1"))?"checked":""%> />
+				<label for="idPorGrupos"><siga:Idioma key="gratuita.guardiasTurno.literal.porgrupos"/></label>
 			</td>
-			<td class="labelText" style="text-align:left" width="40%">
-				<input type=checkbox name="rotarComponentes" value=1 <%=(rotarComponentes.equals("1"))?"checked":""%> />
-				<siga:Idioma key="gratuita.guardiasTurno.literal.rotarcomponentes"/>
-			</td>
-			<td class="labelText" style="text-align:right" width="40%">
-				<siga:Idioma key="gratuita.listarGuardiasTurno.literal.letradosGuardia"/>&nbsp;(*)
+			<td class="labelText" style="text-align:right" width="30%">
+				<div id="textoLetrado" style="display:none">
+					<siga:Idioma key="gratuita.listarGuardiasTurno.literal.letradosGuardia"/>&nbsp;(*)
+				</div>
+				<div id="textoGrupos" style="display:none">
+					<siga:Idioma key="gratuita.listarGuardiasTurno.literal.letradosGrupo"/>&nbsp;(*)
+				</div>
 				&nbsp;&nbsp;
+			</td>
+			<td>
 				<html:text name="DefinirGuardiasTurnosForm" property="letradosGuardia" size="6" maxlength="6" styleClass="<%=estiloNumber%>" value='<%=numeroLetradosGuardia%>' readonly="<%=soloLectura%>"></html:text>
+			</td>
+			<td class="labelText"  style="text-align:left" width="40%">
+				<div id="divRotacion">
+				<input type=checkbox id="idRotacion" name="rotarComponentes" value=1 <%=(rotarComponentes.equals("1"))?"checked":""%> />
+				<label for="idRotacion"><siga:Idioma key="gratuita.guardiasTurno.literal.rotarcomponentes"/></label>
+				</div>
 			</td>
 		</tr>
 	</table>
@@ -976,7 +983,21 @@
 		
 		
 	}
+
+	function comprobarPorGrupos(){
+		if(document.getElementById("porGrupos").checked) {
+			document.getElementById("textoLetrado").style.display = "none";
+			document.getElementById("textoGrupos").style.display = "inline-block";
+			document.getElementById("divRotacion").style.display = "inline-block";
+		}else {
+			document.getElementById("textoLetrado").style.display = "inline-block";
+			document.getElementById("textoGrupos").style.display = "none";
+			document.getElementById("divRotacion").style.display = "none";
+		}
+	}
+	
 accionComboGuardiaPrincipal();
+comprobarPorGrupos();
 </script>
 <!-------------------- FIN: Funciones JavaScript -------------------->
 
