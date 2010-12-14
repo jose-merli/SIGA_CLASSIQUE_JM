@@ -1025,6 +1025,9 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 			nuevo.put(ScsGuardiasTurnoBean.C_DIASPERIODO, miForm.getDiasPeriodo());
 			nuevo.put(ScsGuardiasTurnoBean.C_TIPODIASPERIODO, miForm.getTipoDiasPeriodo());
 			nuevo.put(ScsGuardiasTurnoBean.C_VALIDARJUSTIFICACIONES, (miForm.getValidarInscripciones() == null) ? "N" : "S");
+			nuevo.put(ScsGuardiasTurnoBean.C_IDINSTITUCIONPRINCIPAL,"");
+			nuevo.put(ScsGuardiasTurnoBean.C_IDTURNOPRINCIPAL, "");
+			nuevo.put(ScsGuardiasTurnoBean.C_IDGUARDIAPRINCIPAL, "");
 
 			// preparando el campo idOrdenacionColas (si no existe, se debe insertar el valor
 			ScsOrdenacionColasAdm ordenacion = 	new ScsOrdenacionColasAdm(this.getUserBean(request));
