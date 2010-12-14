@@ -70,9 +70,7 @@
 
 	<script>
 	function postAccionTurno(){
-		if(document.getElementById("idTurnoPrincipal").value !="-1"&&document.getElementById("idTurnoPrincipal").value!="-1"&&document.getElementById("idTurnoPrincipal").value!=""){
-			accionComboGuardiaPrincipal();
-		}
+		accionComboGuardiaPrincipal();
 	}
 	</script>
 </head>
