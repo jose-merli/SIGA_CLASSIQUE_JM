@@ -31,7 +31,9 @@
 	
 
 	String idGuardia = (String)request.getAttribute("idGuardia");
-
+	String idInstitucion =(String) request.getAttribute("idInstitucion");
+	String idTurno =(String) request.getAttribute("idTurno");
+	
 	String buscarLetrado             = UtilidadesString.getMensajeIdioma(usrbean, "gratuita.turnos.literal.buscarLetrado");
 	String literalNColegiado         = UtilidadesString.getMensajeIdioma(usrbean, "gratuita.turnos.literal.nColegiado");
 	String literalFijarUltimoLetrado = UtilidadesString.getMensajeIdioma(usrbean, "gratuita.turnos.literal.fijarUltimoLetrado");
@@ -42,11 +44,11 @@
 	String grupos = (String)request.getAttribute("porGrupos");
 	if(grupos!=null && grupos.equalsIgnoreCase("1")){
 		porGrupos=true;
-		tamanoCol="14,34,16,16,6,6,8";
-		nombreCol="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,F.Val,F.Baja,Gr,Or,";
+		tamanoCol="5,6,6,16,28,16,15,8";
+		nombreCol=" ,Gr,Or,gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,F.Val,F.Baja,";
 	}else{
 		porGrupos=false;
-		tamanoCol="14,40,18,18,10";
+		tamanoCol="16,38,18,18,10";
 		nombreCol="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,F.Val,F.Baja,";
 	}
 %>	
@@ -176,6 +178,9 @@
 		<input type="hidden" name="idPersona" >
 		<input type="hidden" name="idGuardia" value="<%=idGuardia%>" >
 		<input type="hidden" name="idGrupoGuardiaColegiado">
+		<input type="hidden" name="datosModificados">
+		<input type="hidden" name="idInstitucion" value="<%=idInstitucion %>">
+		<input type="hidden" name="idTurno" value="<%=idTurno %>">
 		<html:hidden property="fechaConsulta"/>
 	</html:form>	
 
@@ -185,9 +190,9 @@
 <!-------------------------------------------------------------------------------------------------->	
 <table border="0" style="table-layout:fixed;" cellpadding="2" cellspacing="2" width="99%" align="center">
   	<tr style="display:none">
-	  <td width="46%" style="vertical-align: top"></td>
+	  <td width="59%" style="vertical-align: top"></td>
 	  <td width="1%"  style="vertical-align: top"></td>
-	  <td width="51%" style="vertical-align: top"></td>
+	  <td width="40%" style="vertical-align: top"></td>
 	</tr>
   	<tr>
 	  <td colspan="3" style="vertical-align: top">
@@ -226,9 +231,16 @@
 <!-------------------------------------------------------------------------------------------------->	
     
 
-		<table id="tituloTablaLetrados" border='1' width='98.43%' cellspacing='0' cellpadding='0' style="border-bottom:none">
+		<table id="tituloTablaLetrados" border='1' width='96.5%' cellspacing='0' cellpadding='0' style="border-bottom:none">
 		  <tr class = 'tableTitle'>
-			<td align='center' width='69%'>
+		  <% if(porGrupos){ %>
+			  	<td class="tdBotones" width='17%'>
+			  		<input type="button" alt="Guardar" id="idButton" onclick="return accionGuardar();" class="button" name="idButton" value="Guardar">
+			  	</td>
+				<td align='center' width='52%'>
+			<%}else{ %>
+				<td align='center' width='69%'>
+			<%} %>
 				<siga:Idioma key="gratuita.colaGuardia.literal.letradosInscritos"/>:&nbsp;&nbsp;<%=nListad%>
 			</td>
 			<td align='center' width='31%'>
@@ -236,6 +248,12 @@
 				&nbsp;
 				<img src="/SIGA/html/imagenes/bconsultar_off.gif" style="cursor:hand;" onClick="buscarLetradoEnColaLetrado();" alt="<%=buscarLetrado%>" >
 			</td>
+		  </tr>
+		</table>
+
+	  	<table id="tituloTablaLetrados" border='1' width='98.43%' cellspacing='0' cellpadding='0' style="border-bottom:none">
+		  <tr class = 'tableTitle'>
+		  
 		  </tr>
 		</table>
 
@@ -263,25 +281,55 @@
 	 		</tr>	 		
 <%	} else { 
 		// recorro el resultado
+		String grupoAnt="";
+		String ordenAnt="";
+		String apellido1="";
+		String apellido2="";
+		String nombre="";
+		String ncolegiado="";
+		String idPersona="";
+		String numeroColegiadoBusqueda="";
+		String grupo="";
+		String ordenGrupo="";
+		String idGrupoGuardiaColegiado="";
+		int nFila = 0;
 		for (int i=0;i<letradosColaGuardiaList.size();i++) {
 			LetradoGuardia letradoGuardia = (LetradoGuardia) letradosColaGuardiaList.get(i);
 			
 			// calculo de campos
-			String apellido1 = letradoGuardia.getPersona().getApellido1();
-			String apellido2 =letradoGuardia.getPersona().getApellido2();
-			String nombre = letradoGuardia.getPersona().getNombre();
-			String ncolegiado = letradoGuardia.getPersona().getColegiado().getNColegiado();
-
-			String idPersona = letradoGuardia.getIdPersona().toString();
-			String numeroColegiadoBusqueda = "" + i + "_" + ncolegiado;
-			String grupo = letradoGuardia.getGrupo()!=null?letradoGuardia.getGrupo().toString():"";
-			String ordenGrupo = letradoGuardia.getOrdenGrupo()!=null?letradoGuardia.getOrdenGrupo().toString():"";
-			String idGrupoGuardiaColegiado = letradoGuardia.getIdGrupoGuardiaColegiado()!=null?letradoGuardia.getIdGrupoGuardiaColegiado().toString():"";
+			apellido1 = letradoGuardia.getPersona().getApellido1();
+			apellido2 =letradoGuardia.getPersona().getApellido2();
+			nombre = letradoGuardia.getPersona().getNombre();
+			ncolegiado = letradoGuardia.getPersona().getColegiado().getNColegiado();
+			idPersona = letradoGuardia.getIdPersona().toString();
+			numeroColegiadoBusqueda = "" + i + "_" + ncolegiado;
+			grupo = letradoGuardia.getNumeroGrupo()!=null?letradoGuardia.getNumeroGrupo().toString():"";
+			if(porGrupos){
+				if(!grupo.equalsIgnoreCase(grupoAnt)){
+					nFila++;
+					grupoAnt=grupo;
+				}
+			}else{
+				nFila++;
+			}
+			ordenGrupo = letradoGuardia.getOrdenGrupo()!=null?letradoGuardia.getOrdenGrupo().toString():"";
+			idGrupoGuardiaColegiado = letradoGuardia.getIdGrupoGuardiaColegiado()!=null?letradoGuardia.getIdGrupoGuardiaColegiado().toString():"";
 			
 	%>
 	
 			<!-- REGISTRO  -->
-  			<tr class="listaNonEdit">
+  			<tr class="<%=((nFila+1)%2==0?"filaTablaPar":"filaTablaImpar")%>">
+  				<%if(porGrupos){%>
+  					<td><input type="checkbox" id="checkGrupoOrden" value="<%=i+1%>" onclick="modificaParametro(this)"/></td>
+					<td>
+						<input type="text" value="<%=grupo%>" id="grupo_<%=i+1%>" disabled size="1">
+						<input type="hidden" value="<%=grupo%>" id="grupoOriginal_<%=i+1%>" >
+					</td>
+					<td>
+						<input type="text" value="<%=ordenGrupo%>" id="orden_<%=i+1%>" disabled size="1">
+						<input type="hidden" value="<%=ordenGrupo%>" id="ordenOriginal_<%=i+1%>" >
+					</td>
+				<%}%>	
 				<td>
 					<input name="numeroColegiadoBusqueda" type="hidden" class="box" size="10" value="<%=numeroColegiadoBusqueda%>" >
 					<input name="idPersona_<%=i+1%>" type="hidden" class="box" size="10" value="<%=idPersona%>" >
@@ -306,10 +354,7 @@
 				<%} %>
 
 				</td>
-				<%if(porGrupos){%>
-					<td><%=grupo%></td>
-					<td><%=ordenGrupo%></td>
-				<%}%>				
+			
 				<td align="center">
 					<img src="/SIGA/html/imagenes/bcambiarusuario.gif" name="bcambiarusuario" style="cursor:hand;" onClick="fijarUltimoLetrado(<%=i+1%>)" alt="<%=literalFijarUltimoLetrado%>">
 				</td>
@@ -321,9 +366,11 @@
 
 		</siga:TablaCabecerasFijas>
 
+
 	  
 <!-------------------------------------------------------------------------------------------------->	
 	  </td>
+
 	  <td rowspan="2"><!--margen--></td>
 	  <td style="vertical-align: top; height:220px">
 	  
@@ -340,8 +387,8 @@
 		   nombre="tablaCompensaciones"
 		   borde="1"
 		   clase="tableTitle"
-		   tamanoCol="18,20,40,22" 
-		   nombreCol="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,gratuita.turnos.literal.apellidosSolo,gratuita.turnos.literal.compensaciones"
+		   tamanoCol="22,50,28"
+		   nombreCol="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,gratuita.turnos.literal.compensaciones"
 		   alto="170"
 		   ajusteAlto="">
 
@@ -373,10 +420,7 @@
 					<%=ncolegiado%>
 				</td>
 				<td>
-					<%=nombre%>
-				</td>
-				<td>
-					<%=apellido1+" "+apellido2 %>
+					<%=nombre+" "+apellido1+" "+apellido2 %>
 				</td>
 				<td>
 					<%=numero%>
@@ -408,8 +452,8 @@
 		   nombre="tablaSaltos"
 		   borde="1"
 		   clase="tableTitle"
-		   tamanoCol="18,20,40,22"
-		   nombreCol="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,gratuita.turnos.literal.apellidosSolo,gratuita.turnos.literal.saltos"
+		   tamanoCol="22,50,28"
+		   nombreCol="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,gratuita.turnos.literal.saltos"
 		   alto="170"
 		   ajusteAlto="">
 
@@ -441,10 +485,7 @@
 					<%=ncolegiado %>
 				</td>
 				<td>
-					<%=nombre%>
-				</td>
-				<td>
-					<%=apellido1+" "+apellido2 %>
+					<%=nombre+" "+apellido1+" "+apellido2 %>
 				</td>
 				<td>
 					<%=numero%>
@@ -472,7 +513,55 @@
 		}
 	}
 	habilitarCambiarUsuario(document.getElementById('fechaConsulta').value=='');
+
+	function modificaParametro(o){
+		valorGrupo = document.getElementById("grupo_" + o.value);
+		valorOrden = document.getElementById("orden_" + o.value);
+		if (o.checked) {
+			valorGrupo.disabled = false;
+			valorOrden.disabled=false;
+		}
+		else {
+			var mensaje = "<siga:Idioma key="administracion.parametrosGenerales.alert.restaurarValor"/>";
+			if(confirm(mensaje)) {						
+				valorGrupo.value = document.getElementById("grupoOriginal_" + o.value).value;
+				valorGrupo.disabled = true;
+				valorOrden.value = document.getElementById("ordenOriginal_" + o.value).value;
+				valorOrden.disabled = true;
+			}else{
+				o.checked = true;
+			}
+		}
+	}
+
+
+	function accionGuardar(){
+		var datos = "";
+		var ele = document.getElementsByName("checkGrupoOrden");
+		for (i = 0; i < ele.length; i++) {
+			if (ele[i].checked) {
+				if ((document.getElementById("grupo_" + ele[i].value).value.length < 1)||(document.getElementById("orden_" + ele[i].value).value.length < 1)){
+					alert ("<siga:Idioma key="administracion.parametrosGenerales.error.valorParametro"/> " + document.getElementById("oculto" + ele[i].value + "_3").value);
+					return;
+				}
+			
+				if (datos.length > 0) datos = datos + "#;;#";
+				datos = datos + document.getElementById("idGrupoGuardiaColegiado_" + ele[i].value).value + "#;#" + 	// idgrupoguardiacolegiado
+					            document.getElementById("grupo_" + ele[i].value).value + "#;#" +	// grupo
+						        document.getElementById("orden_" + ele[i].value).value + "#;#"; 	// orden
+			}
+		}
+		if (datos.length < 1) {
+			alert ("<siga:Idioma key="administracion.parametrosGenerales.alert.seleccionarElementos"/>");
+			return;
+		}
+		document.forms[0].datosModificados.value = datos;
+		document.forms[0].modo.value = "modificar";
+		document.forms[0].target = "submitArea";
+		document.forms[0].submit();
+	}	
   </script>
+					
   
 </body>
 </html>
