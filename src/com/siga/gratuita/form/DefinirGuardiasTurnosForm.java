@@ -13,9 +13,9 @@ public class DefinirGuardiasTurnosForm extends MasterForm
 	//////////////////// ATRIBUTOS DE CLASE ////////////////////
 	//Ordenacion
 	public static int ORDEN_ALFABETICO = 1;
-	public static int ORDEN_ANTIGUEDAD = 1;
-	public static int ORDEN_EDAD = 1;
-	public static int ORDEN_ANTIGUEDAD_COLA = 1;
+	public static int ORDEN_ANTIGUEDAD = 2;
+	public static int ORDEN_EDAD = 3;
+	public static int ORDEN_ANTIGUEDAD_COLA = 4;
 	public static int ORDEN_NUMERO = 4;
 	
 	
