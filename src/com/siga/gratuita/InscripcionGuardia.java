@@ -177,7 +177,7 @@ public class InscripcionGuardia
 		// obteniendo ordenacion de la guardia
 		String orden;
 		if (beanGuardia.getPorGrupos().equals("1"))
-			orden = " grupo, ordengrupo";
+			orden = " numeroGrupo, ordengrupo";
 		else
 			orden = getOrderBy(idOrdenacionColas.toString(), usr);
 
@@ -290,6 +290,7 @@ public class InscripcionGuardia
 		letradoGuardia.setPersona(inscripcionGuardia.getPersona());
 		letradoGuardia.setFechaBaja(inscripcionGuardia.getFechaBaja());
 		letradoGuardia.setFechaValidacion(inscripcionGuardia.getFechaValidacion());
+		letradoGuardia.setNumeroGrupo(inscripcionGuardia.getNumeroGrupo());
 
 		// rellenando bajas temporales
 		Map<String, CenBajasTemporalesBean> mBajasTemporales = bajasTemporalescioneAdm.getDiasBajaTemporal(

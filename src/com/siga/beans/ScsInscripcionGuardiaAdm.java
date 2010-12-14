@@ -1007,6 +1007,7 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 							(String) htFila.get(CenPersonaBean.C_APELLIDOS2), (String) htFila
 									.get(ScsOrdenacionColasBean.C_NUMEROCOLEGIADO));
 					inscripcionBean.setPersona(personaBean);
+					inscripcionBean.setNumeroGrupo(UtilidadesHash.getString(htFila, ScsGrupoGuardiaBean.C_NUMEROGRUPO));
 					datos.add(inscripcionBean);
 				}
 			}
@@ -1141,12 +1142,14 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 			"       Ins.Fechavalidacion AS "+ScsOrdenacionColasBean.C_ANTIGUEDADCOLA+", " +
 			"       Gru."+ScsGrupoGuardiaColegiadoBean.C_IDGRUPOGUARDIACOLEGIADO+" As Idgrupoguardiacolegiado, " +
 			"       Gru."+ScsGrupoGuardiaColegiadoBean.C_IDGRUPO+" As Grupo, " +
+			"       Grg."+ScsGrupoGuardiaBean.C_NUMEROGRUPO+" As numeroGrupo, " +
 			"       Gru."+ScsGrupoGuardiaColegiadoBean.C_ORDEN+" As Ordengrupo " +
 			"  From Scs_Guardiasturno         Gua, " +
 			"       Cen_Colegiado             Col, " +
 			"       Cen_Persona               Per, " +
 			"       Scs_Inscripcionguardia    Ins, " +
-			"       "+ScsGrupoGuardiaColegiadoBean.T_NOMBRETABLA+" Gru " +
+			"       "+ScsGrupoGuardiaColegiadoBean.T_NOMBRETABLA+" Gru, " +
+			"       "+ScsGrupoGuardiaBean.T_NOMBRETABLA+" Grg " +
 			" Where Col.Idpersona = Per.Idpersona " +
 			"   And Ins.Idinstitucion = Gua.Idinstitucion " +
 			"   And Ins.Idturno = Gua.Idturno " +
@@ -1157,7 +1160,8 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 			"   And Ins.Idturno = Gru.Idturno(+) " +
 			"   And Ins.Idguardia = Gru.Idguardia(+) " +
 			"   And Ins.Idpersona = Gru.Idpersona(+) " +
-			"   And Ins.Fechasuscripcion = Gru.Fechasuscripcion(+) ");
+			"   And Ins.Fechasuscripcion = Gru.Fechasuscripcion(+) " +
+			"   And Grg.Idgrupoguardia(+) = Gru.Idgrupoguardia ");
 	}
 	
 }

@@ -20,7 +20,10 @@ import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
+import com.siga.beans.ScsGrupoGuardiaAdm;
+import com.siga.beans.ScsGrupoGuardiaBean;
 import com.siga.beans.ScsGrupoGuardiaColegiadoAdm;
+import com.siga.beans.ScsGrupoGuardiaColegiadoBean;
 import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsInscripcionGuardiaAdm;
@@ -143,6 +146,8 @@ public class ColaGuardiasAction extends MasterAction {
 		}
 
 		request.setAttribute("idGuardia", guardia);
+		request.setAttribute("idInstitucion", institucion);
+		request.setAttribute("idTurno", turno);
 		
 		ScsInscripcionGuardiaAdm InscripcionGuardiaAdm = new ScsInscripcionGuardiaAdm(this.getUserBean(request));
 		Vector letradosinscritos = new Vector();
@@ -276,5 +281,79 @@ public class ColaGuardiasAction extends MasterAction {
 		catch (Exception e) {
 			return exito("messages.updated.error",request);
 		}
-		return exitoRefresco("messages.updated.success",request);	}
+		return exitoRefresco("messages.updated.success",request);	
+	}
+	
+	protected String modificar(
+			ActionMapping mapping, 
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException{
+		
+		ColaGuardiasForm form = (ColaGuardiasForm) formulario;
+		ScsGrupoGuardiaColegiadoAdm admGrupoColegiado = new ScsGrupoGuardiaColegiadoAdm(this.getUserBean(request));
+		ScsGrupoGuardiaAdm admGrupo = new ScsGrupoGuardiaAdm(this.getUserBean(request));
+		String a = form.getDatosModificados();
+		
+		if (a.length() < 0) {
+			throw new ClsExceptions ("messages.updated.error");
+		}
+			
+		String[] elementos = a.split("#;;#");
+		String idGrupoGuardiaColegiado;
+		String numeroGrupo;
+		String idGrupo="";
+		String orden;
+		Hashtable hash = null;
+		String[] campos = {ScsGrupoGuardiaColegiadoBean.C_IDGRUPO, ScsGrupoGuardiaColegiadoBean.C_ORDEN};
+		String[] claves = {ScsGrupoGuardiaColegiadoBean.C_IDGRUPOGUARDIACOLEGIADO};
+		for (int i = 0; i < elementos.length; i++) {
+			hash=new Hashtable();
+			String []aux = elementos[i].split("#;#");
+			idGrupoGuardiaColegiado = aux[0];
+			numeroGrupo = aux[1];
+			orden = aux[2];
+			
+			String idInstitucion = form.getIdInstitucion();
+			String idTurno = form.getIdTurno();
+			String idGuardia = form.getIdGuardia();
+			
+			// Buscamos el idGrupo que corresponde con el numero del grupo
+			Hashtable grupoGuardia=admGrupo.getGrupoGuardia(idInstitucion, idTurno, idGuardia, numeroGrupo);
+			if(grupoGuardia!=null && grupoGuardia.get(ScsGrupoGuardiaBean.C_IDGRUPOGUARDIA)!=null){
+				idGrupo=(String)grupoGuardia.get(ScsGrupoGuardiaBean.C_IDGRUPOGUARDIA);
+			}else{
+				// Si el grupo no existe lo creamos y lo usamos para meter la guardia
+				idGrupo = admGrupo.getSecuenciaNextVal(ScsGrupoGuardiaBean.S_SECUENCIA).toString();
+				ScsGrupoGuardiaBean bean = new ScsGrupoGuardiaBean();
+				bean.setIdGrupoGuardia(Long.valueOf(idGrupo));
+				bean.setIdInstitucion(Integer.valueOf(idInstitucion));
+				bean.setIdTurno(Integer.valueOf(idTurno));
+				bean.setIdGuardia(Integer.valueOf(idGuardia));
+				bean.setNumeroGrupo(numeroGrupo);
+				bean.setFechaCreacion("sysdate");
+				bean.setUsuCreacion(Integer.valueOf(this.getUserBean(request).getUserName()));
+				try {
+					admGrupo.insert(bean);				
+				} catch (Exception e) {
+					throw new ClsExceptions (e, "Error al crear el grupo");
+				}
+			}
+			
+
+			hash.put(ScsGrupoGuardiaColegiadoBean.C_IDGRUPOGUARDIACOLEGIADO, idGrupoGuardiaColegiado);
+			hash.put(ScsGrupoGuardiaColegiadoBean.C_IDGRUPO, idGrupo);
+			hash.put(ScsGrupoGuardiaColegiadoBean.C_ORDEN, orden);
+			try {
+				admGrupoColegiado.updateDirect(hash, claves, campos);			
+			} catch (Exception e) {
+				throw new ClsExceptions (e, "Error al modificar los grupos de la guardia");
+			}
+		}
+		
+		// TODO // jbd // No estaria mal un pequeño control de errores
+		// TODO // jbd // Cuando se haya recorrido la lista de cambios hay que comprobar que los grupos se sigan usando porque igual se pueden eliminar los que ya no se usen
+		
+		return exitoRefresco("messages.updated.success",request);
+	}
 }

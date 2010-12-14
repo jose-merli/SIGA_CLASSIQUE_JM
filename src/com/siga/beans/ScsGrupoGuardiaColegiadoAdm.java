@@ -183,5 +183,26 @@ public class ScsGrupoGuardiaColegiadoAdm extends MasterBeanAdministrador
 		}
 		return posicion;
 	}
+	
+	public Hashtable getGrupoGuardia(String idInstitucion, String idTurno, String idGuardia, String numeroGrupo) throws ClsExceptions{
+		Hashtable hash = new Hashtable();
+		StringBuffer sql = new StringBuffer();
+		sql.append(" select idgrupoguardia, idinstitucion, idturno, idguardia, ");
+		sql.append(" numerogrupo, fechacreacion, usucreacion, fechamodificacion, usumodificacion ");
+		sql.append(" from scs_grupoguardia ");
+		sql.append(" where idinstitucion="+idInstitucion+" and idturno ="+idTurno+" and idguardia="+idGuardia+" and numerogrupo="+numeroGrupo);
+		RowsContainer rc = new RowsContainer(); 
+		try {
+			if (rc.query(sql.toString()) && rc.size()>0) {
+				Row fila = (Row) rc.get(0);
+				Hashtable registro = (Hashtable) fila.getRow(); 
+				if (registro != null) 
+					hash = (Hashtable) registro.clone();
+			}
+		} catch (ClsExceptions e) {
+			throw new ClsExceptions (e, "Error al recuperar la posicion del ultimo letrado");
+		}
+		return hash;
+	}
 
 }

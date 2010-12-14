@@ -31,6 +31,7 @@ public class LetradoGuardia implements Cloneable
 	private Long idGrupoGuardiaColegiado;
 	private Integer grupo;
 	private Integer ordenGrupo;
+	private String numeroGrupo;
 
 	
 	// Constructores
@@ -76,6 +77,7 @@ public class LetradoGuardia implements Cloneable
 	public void setIdGrupoGuardiaColegiado(Long valor) {this.idGrupoGuardiaColegiado = valor;}
 	public void setGrupo(Integer valor) {this.grupo = valor;}
 	public void setOrdenGrupo(Integer valor) {this.ordenGrupo = valor;}
+	public void setNumeroGrupo(String valor) {this.numeroGrupo = valor;}
 	
 	
 	// Getters
@@ -98,7 +100,7 @@ public class LetradoGuardia implements Cloneable
 	public Long getIdGrupoGuardiaColegiado() {return this.idGrupoGuardiaColegiado;}
 	public Integer getGrupo() {return this.grupo;}
 	public Integer getOrdenGrupo() {return this.ordenGrupo;}
-
+	public String getNumeroGrupo() {return this.numeroGrupo;}
 	
 	// Otros metodos
 	public Object clone() throws CloneNotSupportedException {

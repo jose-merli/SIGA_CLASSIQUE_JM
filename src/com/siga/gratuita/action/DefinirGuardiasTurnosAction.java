@@ -806,6 +806,11 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 			nuevo.put(ScsGuardiasTurnoBean.C_DIASPERIODO, miForm.getDiasPeriodo());
 			nuevo.put(ScsGuardiasTurnoBean.C_TIPODIASPERIODO, miForm.getTipoDiasPeriodo());
 			
+			// TODO // jbd // Temporalemente dejamos esto como "0" y ya se configurara en datos generales
+			// Hay que cambiar la jsp para que se puedan meter estos parametros por interfaz
+			nuevo.put(ScsGuardiasTurnoBean.C_PORGRUPOS, "0");
+			nuevo.put(ScsGuardiasTurnoBean.C_ROTARCOMPONENTES, "0");
+			
 			//Iniciando la insercion
 			tx = usrbean.getTransaction();
 			tx.begin();

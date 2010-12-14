@@ -125,14 +125,17 @@ public class ScsInscripcionGuardiaBean extends MasterBean
 	ScsTurnoBean turno;
 	ScsGuardiasTurnoBean guardia;
 	CenPersonaBean persona;
+	String numeroGrupo;
 
 	public void setTurno	(ScsTurnoBean valor)			{this.turno		= valor;}
 	public void setGuardia	(ScsGuardiasTurnoBean valor)	{this.guardia	= valor;}
 	public void setPersona	(CenPersonaBean valor)			{this.persona	= valor;}
+	public void setNumeroGrupo	(String valor)			{this.numeroGrupo	= valor;}
 	
 	public ScsTurnoBean getTurno			() {return turno;}
 	public ScsGuardiasTurnoBean getGuardia	() {return guardia;}
 	public CenPersonaBean getPersona		() {return persona;}
+	public String getNumeroGrupo() {return numeroGrupo;}
 
 	public InscripcionTGForm getInscripcion()
 	{
