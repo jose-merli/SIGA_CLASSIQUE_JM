@@ -12,6 +12,10 @@
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 
+<!-- AJAX -->
+<%@ taglib uri="ajaxtags.tld" prefix="ajax" %>
+
+
 <!-- IMPORTS -->
 <%@ page import="com.siga.gratuita.action.PersonaJGAction"%>
 <%@ page import="com.siga.gratuita.form.PersonaJGForm"%>
@@ -25,6 +29,8 @@
 <%@page import="java.util.Properties"%>
 <%@page import="java.util.Hashtable"%>
 <%@page import="java.util.ArrayList"%>
+
+
 
 <!-- JSP -->
 <%
@@ -200,9 +206,21 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>	
-	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>	
+	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
+	
+	<!--Step 2 -->
+<script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
+<script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
+<script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
+<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
 
+
+<!--Step 3 -->
+  <!-- defaults for Autocomplete and displaytag -->
+  <link type="text/css" rel="stylesheet" href="/html/css/ajaxtags.css" />
+  	
 	<script type="text/javascript">
+	
 
 	String.prototype.trim = function() {
 		return this.replace(/^\s+|\s+$/g,"");
@@ -273,8 +291,7 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 		 
 		  
 	     
-	   <%} else {%>
-	    
+	   <%} else {%>	    
 	        document.forms[0].solicitante.checked=false;
 	   <%}
 			}%>
@@ -290,24 +307,32 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 
 	<script type="text/javascript">
 
-			function traspasoDatos(resultado,bNuevo) 
-			{
-				document.forms[0].nuevo.value = bNuevo;	
-			  if (bNuevo=="1"){// sólo cargamos los datos de la persona si esta ya estaba dada de alta en personaJG
-				if (trim(resultado[1])!="") {
-					document.forms[0].tipoId.value = resultado[0];	
-				}		
-			//	document.forms[0].tipoId.value = resultado[0];	
-				document.forms[0].idPersonaJG.value = resultado[1]; 
-				// RGG 15-03-2006 para no pisar el dni
-				if (trim(resultado[1])!="") {
-					document.forms[0].NIdentificacion.value = resultado[2]; 
-				}
-				document.forms[0].nombre.value = resultado[3]; 
-				document.forms[0].apellido1.value = resultado[4]; 
-				document.forms[0].apellido2.value = resultado[5]; 
-				document.forms[0].direccion.value = resultado[6]; 
-				document.forms[0].cp.value = resultado[7]; 
+			function retarda(tipoId){				
+				document.PersonaJGForm.tipoId.value = tipoId;
+			}
+
+				function traspasoDatos(resultado,bNuevo) 
+				{
+					document.forms[0].nuevo.value = bNuevo;					
+				  if (bNuevo=="1"){// sólo cargamos los datos de la persona si esta ya estaba dada de alta en personaJG
+					if (trim(resultado[1])!="") {						
+						document.forms[0].idTipoPersona.value=resultado[22];						
+						document.getElementById('idTipoPersona').onchange();
+						//recuperamos el valor del tipoIdentificacion.											
+						var funcionRetardo = 'retarda('+resultado[0]+')';
+						window.setTimeout(funcionRetardo,150,"Javascript");						 															
+					}						
+
+					document.forms[0].idPersonaJG.value = resultado[1]; 
+					// RGG 15-03-2006 para no pisar el dni
+					if (trim(resultado[1])!="") {
+						document.forms[0].NIdentificacion.value = resultado[2]; 
+					}
+					document.forms[0].nombre.value = resultado[3]; 
+					document.forms[0].apellido1.value = resultado[4]; 
+					document.forms[0].apellido2.value = resultado[5]; 
+					document.forms[0].direccion.value = resultado[6]; 
+					document.forms[0].cp.value = resultado[7]; 
 
 				//Estado Civil:
 				document.forms[0].estadoCivil.value = resultado[11];
@@ -395,7 +420,8 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 		}
 
 		// Comprueba el tipo de ident y pinta el boton de generar letra nif si fuese necesario
-		function comprobarTipoIdent(){
+		 
+		 function comprobarTipoIdent(){
 			<%if (!accion.equalsIgnoreCase("ver")) {%>
 			// Solo se genera el NIF o CIF de la persona
 			if((document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")||
@@ -405,11 +431,9 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 				document.getElementById("idButtonNif").style.visibility="hidden";
 			}
 			<%}%>
-		}				
-
+		}	
 		
-
-
+		
 		function rellenarFormulario(){
 			document.forms[0].modo.value="buscarNIF";
 			document.forms[0].target="submitArea2";
@@ -657,8 +681,8 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 	
 <!-- CAMPOS DEL REGISTRO -->
 <table align="center"  width="100%" class="tablaCentralCampos" cellpadding="0" cellspacing="0">
-
 <html:form action="<%=actionE%>" method="POST" target="mainPestanas">	
+
 	<html:hidden property = "modo" />
 	<html:hidden property = "nuevo" value="<%=nuevo%>" />
 
@@ -874,11 +898,11 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 			<%
 				if (accion.equalsIgnoreCase("ver")) {
 							String tip = "";
-							if (miform.getTipo() != null
-									&& miform.getTipo().equalsIgnoreCase("F")) {
+							if (miform.getIdTipoPersona() != null
+									&& miform.getIdTipoPersona().equalsIgnoreCase("F")) {
 								tip = UtilidadesString.getMensajeIdioma(usr,
 										"gratuita.personaJG.literal.tipoFisica");
-							} else if (miform.getTipo() != null) {
+							} else if (miform.getIdTipoPersona() != null) {
 								tip = UtilidadesString.getMensajeIdioma(usr,
 										"gratuita.personaJG.literal.tipoJuridica");
 							}
@@ -887,10 +911,15 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 			<%
 				} else {
 			%>
-			<html:select styleClass="boxCombo" name="PersonaJGForm" property="tipo"   readOnly="false">
-				<html:option value="F"><siga:Idioma key="gratuita.personaJG.literal.tipoFisica"/></html:option>
-				<html:option value="J"><siga:Idioma key="gratuita.personaJG.literal.tipoJuridica"/></html:option>
-			</html:select>
+			
+			<html:select styleId="tipos"   styleClass="<%=estiloBox%>"  readOnly="<%=readonly%>" property="idTipoPersona"  readOnly="false">				
+				<bean:define id="tipos" name="PersonaJGForm"
+						property="tipos" type="java.util.Collection" />
+				<html:optionsCollection name="tipos" value="idTipo"
+						label="descripcion" />					
+			</html:select>		
+			
+			
 			<%
 				}
 			%>
@@ -913,18 +942,19 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 					if (miform.getNIdentificacion() != null) {
 						tipoIdentificacionSel.add(miform.getTipoId());
 					}
-		%>
-			
-		  <%
-					  	if (accion.equalsIgnoreCase("ver")) {
-					  				String tipoIdent = (String) request
-					  						.getAttribute("identificacion");
-					  %>
-		   	<siga:ComboBD nombre = "tipoId" tipo="cmbTipoIdentificacion" elementoSel="<%=tipoIdentificacionSel%>" clase="boxConsulta" obligatorio="true"  readonly="<%=sreadonly%>"/>
-		  <%
-		  	} else {
+			if (accion.equalsIgnoreCase("ver")) {
+				String tipoIdent = (String) request.getAttribute("identificacion");
+		%>			
+				<siga:ComboBD nombre = "tipoId" tipo="cmbTipoIdentificacionConCIF" elementoSel="<%=tipoIdentificacionSel%>" clase="boxConsulta" obligatorio="true"  readonly="<%=sreadonly%>"/>
+	    <%
+		 	} else {
 		  %>
-		   	<siga:ComboBD nombre = "tipoId" tipo="cmbTipoIdentificacion" elementoSel="<%=tipoIdentificacionSel%>" clase="<%=classCombo %>" obligatorio="true"  readonly="<%=sreadonly%>" accion="comprobarTipoIdent();"/>
+		   		<html:select styleId="identificadores"  name="PersonaJGForm"  styleClass="boxCombo"  readOnly="false" property="tipoId" onchange="comprobarTipoIdent();"  >
+					<bean:define id="identificadores" name="PersonaJGForm"
+						property="identificadores" type="java.util.Collection" />
+					<html:optionsCollection name="identificadores" value="idTipoIdentificacion"
+						label="descripcion" />
+				</html:select>
 		   <%
 		   	}
 		   %>
@@ -1377,18 +1407,15 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 		document.PersonaJGForm.idPersonaRepresentante.value ="";
 		document.PersonaJGForm.ncolegiadoRepresentante.value="";
 		document.PersonaJGForm.representante.value="";
-		
-		
 		return false;		
 	}
 		
 	
 	
 function buscarPersona() {		
-		
+	
 		var resultado = ventaModalGeneral("busquedaClientesModalForm","G");			
-		if (resultado != null && resultado[0]!=null)
-		{			
+		if (resultado != null && resultado[0]!=null){		
 			document.PersonaJGForm.idPersonaRepresentante.value       = resultado[0];
 			document.PersonaJGForm.ncolegiadoRepresentante.value    = resultado[2];
 			document.PersonaJGForm.representante.value   = resultado[4]+' '+resultado[5]+' '+resultado[6];			 
@@ -2022,6 +2049,14 @@ function limpiarPersonaContrario() {
 	</td>
 		<%}%>	
 	</tr>
+	<!-- Ajax -->
+<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
+<ajax:select
+	baseUrl="/SIGA${path}.do?modo=getAjaxTipoIdentificacion"
+	source="tipos" target="identificadores"		
+	parameters="idTipoPersona={idTipoPersona}"
+	/>
+	
 </html:form>
 </table>
 
@@ -2079,7 +2114,8 @@ function limpiarPersonaContrario() {
 		}
 		
 		//Asociada al boton Guardar -->
-		function accionGuardar()	{
+		function accionGuardar(){	
+				
 			var lNumerosTelefonos=getDatos();				
 			if (!lNumerosTelefonos){
                  fin();
@@ -2087,16 +2123,16 @@ function limpiarPersonaContrario() {
 			}			
 			sub();
 			var tipoIdent=document.forms[0].tipoId.value;
-			var numId=document.forms[0].NIdentificacion.value;			
+			var numId=document.forms[0].NIdentificacion.value;						
 			document.forms[0].importeIngresosAnuales.value=document.forms[0].importeIngresosAnuales.value.replace(/,/,".").trim();
 			document.forms[0].importeBienesInmuebles.value=document.forms[0].importeBienesInmuebles.value.replace(/,/,".").trim();
 			document.forms[0].importeBienesMuebles.value=document.forms[0].importeBienesMuebles.value.replace(/,/,".").trim();
 			document.forms[0].importeOtrosBienes.value=document.forms[0].importeOtrosBienes.value.replace(/,/,".").trim();
 		 	document.forms[0].action="<%=app + actionE%>";	
 			document.forms[0].modo.value='guardarEJG';
-			document.forms[0].target="submitArea2";
-			var tipo = document.forms[0].tipo.value;
-			var tipoId = document.forms[0].tipoId.value;
+			document.forms[0].target="submitArea2";		
+			var tipo = document.PersonaJGForm.idTipoPersona.value		
+			var tipoId = document.PersonaJGForm.tipoId.value;	
 			var msg1="<siga:Idioma key="gratuita.personaJG.messages.alertTipo1"/>";
 			var msg2="<siga:Idioma key="gratuita.personaJG.messages.alertTipo2"/>";
 
@@ -2180,9 +2216,7 @@ function limpiarPersonaContrario() {
 							return false;
 						}
 					}
-				
-					//	if (document.forms[0].poblacion.value)
-					 	document.forms[0].submit();
+				    	document.forms[0].submit();
 					}else{
 						fin();
 						return false;
@@ -2215,7 +2249,8 @@ function limpiarPersonaContrario() {
 			document.forms[0].action="<%=app + actionE%>";	
 			document.forms[0].modo.value='guardarEJG';
 			document.forms[0].target="submitArea2";
-			var tipo = document.forms[0].tipo.value;
+			//var tipo = document.forms[0].tipo.value;
+			var tipo = document.forms[0].idTipoPersona.value;
 			var tipoId = document.forms[0].tipoId.value;
 			var msg1="<siga:Idioma key="gratuita.personaJG.messages.alertTipo1"/>";
 			var msg2="<siga:Idioma key="gratuita.personaJG.messages.alertTipo2"/>";
@@ -2357,7 +2392,9 @@ function limpiarPersonaContrario() {
 			document.forms[0].action="<%=app + actionE%>";	
 			document.forms[0].modo.value='guardarSOJ';
 			document.forms[0].target="submitArea2";
-			var tipo = document.forms[0].tipo.value;
+			//var tipo = document.forms[0].tipo.value;
+			var tipo = document.forms[0].idTipoPersona.value;
+			
 			var tipoId = document.forms[0].tipoId.value;
 			var msg1="<siga:Idioma key="gratuita.personaJG.messages.alertTipo1"/>";
 			var msg2="<siga:Idioma key="gratuita.personaJG.messages.alertTipo2"/>";
@@ -2422,7 +2459,8 @@ function limpiarPersonaContrario() {
 		 	document.forms[0].action="<%=app + actionE%>";	
 			document.forms[0].modo.value='guardarAsistencia';
 			document.forms[0].target="submitArea2";
-			var tipo = document.forms[0].tipo.value;
+			//var tipo = document.forms[0].tipo.value;
+			var tipo = document.forms[0].idTipoPersona.value;			
 			var tipoId = document.forms[0].tipoId.value;
 			var msg1="<siga:Idioma key="gratuita.personaJG.messages.alertTipo1"/>";
 			var msg2="<siga:Idioma key="gratuita.personaJG.messages.alertTipo2"/>";
@@ -2479,7 +2517,8 @@ function limpiarPersonaContrario() {
 		 	document.forms[0].action="<%=app + actionE%>";	
 			document.forms[0].modo.value='guardarAsistencia';
 			document.forms[0].target="submitArea2";
-			var tipo = document.forms[0].tipo.value;
+			//var tipo = document.forms[0].tipo.value;
+			var tipo = document.forms[0].idTipoPersona.value;			
 			var tipoId = document.forms[0].tipoId.value;
 			var msg1="<siga:Idioma key="gratuita.personaJG.messages.alertTipo1"/>";
 			var msg2="<siga:Idioma key="gratuita.personaJG.messages.alertTipo2"/>";
@@ -2540,7 +2579,8 @@ function limpiarPersonaContrario() {
 		 	document.forms[0].action="<%=app + actionE%>";	
 			document.forms[0].modo.value='guardarContrariosEjg';
 			document.forms[0].target="submitArea2";
-			var tipo = document.forms[0].tipo.value;
+			//var tipo = document.forms[0].tipo.value;
+			var tipo = document.forms[0].idTipoPersona.value;			
 			var tipoId = document.forms[0].tipoId.value;
 			var msg1="<siga:Idioma key="gratuita.personaJG.messages.alertTipo1"/>";
 			var msg2="<siga:Idioma key="gratuita.personaJG.messages.alertTipo2"/>";
@@ -2590,7 +2630,8 @@ function limpiarPersonaContrario() {
 		 	document.forms[0].action="<%=app + actionE%>";	
 			document.forms[0].modo.value='guardarPersona';
 			document.forms[0].target="submitArea2";
-			var tipo = document.forms[0].tipo.value;
+			//var tipo = document.forms[0].tipo.value;
+			var tipo = document.forms[0].idTipoPersona.value;			
 			var tipoId = document.forms[0].tipoId.value;
 			var msg1="<siga:Idioma key="gratuita.personaJG.messages.alertTipo1"/>";
 			var msg2="<siga:Idioma key="gratuita.personaJG.messages.alertTipo2"/>";
@@ -2693,7 +2734,8 @@ function limpiarPersonaContrario() {
 			document.forms[0].modo.value='guardarDesigna';
 			
 			document.forms[0].target="submitArea2";
-			var tipo = document.forms[0].tipo.value;
+			//var tipo = document.forms[0].tipo.value;
+			var tipo = document.forms[0].idTipoPersona.value;			
 			var tipoId = document.forms[0].tipoId.value;
 			var msg1="<siga:Idioma key="gratuita.personaJG.messages.alertTipo1"/>";
 			var msg2="<siga:Idioma key="gratuita.personaJG.messages.alertTipo2"/>";
@@ -2860,7 +2902,6 @@ function accionRestablecer()
 	<!-- FIN: SCRIPTS BOTONES -->
 
 
-
 <%if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS)) {
 	%> 
 	<!-- formulario para seleccionar representante Legal, del censo -->
@@ -2901,6 +2942,7 @@ function accionRestablecer()
 <%
 	}
 %> 
+
 
 	<!-- formulario para buscar personaJG-->
 	<html:form action="/JGR_BusquedaPersonaJG.do" method="POST" target="submitArea">
