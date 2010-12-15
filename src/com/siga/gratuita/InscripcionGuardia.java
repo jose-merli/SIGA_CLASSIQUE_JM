@@ -6,6 +6,7 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
@@ -176,14 +177,15 @@ public class InscripcionGuardia
 
 		// obteniendo ordenacion de la guardia
 		String orden;
-		if (beanGuardia.getPorGrupos().equals("1"))
+		if (beanGuardia.getPorGrupos().equals(ClsConstants.DB_TRUE))
 			orden = " numeroGrupo, ordengrupo";
 		else
 			orden = getOrderBy(idOrdenacionColas.toString(), usr);
 
 		// obteniendo lista de letrados (ordenada)
-		Vector<ScsInscripcionGuardiaBean> listaLetrados = insadm.getColaGuardia(idInstitucion.toString(), idTurno
-				.toString(), idGuardia.toString(), fechaInicio, fechaFin, orden);
+		Vector<ScsInscripcionGuardiaBean> listaLetrados = insadm.getColaGuardia(idInstitucion.toString(),
+				idTurno.toString(), idGuardia.toString(), fechaInicio, fechaFin,
+				(beanGuardia.getPorGrupos().equals(ClsConstants.DB_TRUE)), orden);
 		if (listaLetrados == null || listaLetrados.size() == 0)
 			return colaLetrados;
 

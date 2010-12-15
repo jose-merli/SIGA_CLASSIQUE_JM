@@ -950,6 +950,7 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 			String idguardia,
 			String fechaInicio,
 			String fechaFin,
+			boolean porGrupos,
 			String order) throws ClsExceptions
 	{
 		if (idinstitucion == null || idinstitucion.equals(""))
@@ -967,7 +968,7 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 		else if(!fechaFin.trim().equalsIgnoreCase("sysdate"))
 			fechaFin = "'"+fechaFin.trim()+"'";
 		
-		String consulta =
+		String consulta = 
 			getBaseConsultaInscripciones() +
 			
 			//cuando no se pasa fecha, se sacan todas las validadas (en cualquier fecha)
@@ -978,10 +979,13 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 			"        Trunc(Ins.Fechabaja) > nvl("+fechaFin+", '01/01/1900')) " +
 			"   And Gua.Idinstitucion = "+idinstitucion+" " +
 			"   And Gua.Idturno = "+idturno+" " +
-			"   And Gua.Idguardia = "+idguardia+" " +
-			"   And Gua.Idinstitucion = Gru.Idinstitucion " +
-			"   And Gua.Idturno = Gru.Idturno " +
-			"   And Gua.Idguardia = Gru.Idguardia ";
+			"   And Gua.Idguardia = "+idguardia+" ";
+		
+		if (porGrupos)
+			consulta +=
+				"   And Gua.Idinstitucion = Gru.Idinstitucion " +
+				"   And Gua.Idturno = Gru.Idturno " +
+				"   And Gua.Idguardia = Gru.Idguardia ";
 		
 		if (! (order == null || order.equals("")))
 			consulta += " order by " + order;

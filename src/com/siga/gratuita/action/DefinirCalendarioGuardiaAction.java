@@ -664,10 +664,10 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 		sql.append(" AND " + ScsGuardiasTurnoBean.C_IDGUARDIA + "=" + idGuardia);
 		Vector v = admGuardiasTurno.select(sql.toString());
 		idPersonaUltimoAnterior = null;
-		if (!v.isEmpty()) {
-			if (((ScsGuardiasTurnoBean) v.get(0)).getIdPersona_Ultimo() != null)
-				idPersonaUltimoAnterior = ((ScsGuardiasTurnoBean) v.get(0)).getIdPersona_Ultimo().toString();
-		}
+		if (!v.isEmpty() && ((ScsGuardiasTurnoBean) v.get(0)).getIdPersona_Ultimo() != null)
+			idPersonaUltimoAnterior = ((ScsGuardiasTurnoBean) v.get(0)).getIdPersona_Ultimo().toString();
+		else
+			idPersonaUltimoAnterior = "";
 
 		// calculando nuevo idcalendarioguardias
 		registros = admCalendarioGuardia.selectGenerico(
