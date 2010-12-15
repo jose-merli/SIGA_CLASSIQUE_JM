@@ -870,6 +870,11 @@ function ajusteDivListado(){
 												rowspan="${designa.rowSpan}"><c:out
 												value="${designa.categoria}" /></td>
 										</c:when>
+										<c:when
+											test="${designa.categoria!=null && designa.categoria==''}">
+											<td title="${designa.descripcionProcedimiento}"
+												rowspan="${designa.rowSpan}">&nbsp;</td>
+										</c:when>
 										<c:otherwise>
 											<td rowspan="${designa.rowSpan}">&nbsp;</td>
 										</c:otherwise>
@@ -1078,6 +1083,10 @@ function ajusteDivListado(){
 															<td title="${actuacion.descripcionProcedimiento}"><c:out
 																value="${actuacion.categoria}" /></td>
 														</c:when>
+														<c:when
+															test="${actuacion.categoria!=null && actuacion.categoria==''}">
+															<td title="${actuacion.descripcionProcedimiento}">&nbsp;</td>
+														</c:when>
 														<c:otherwise>
 															<td>&nbsp;</td>
 														</c:otherwise>
@@ -1191,6 +1200,10 @@ function ajusteDivListado(){
 																<td title="${actuacion.descripcionProcedimiento}">
 																<c:out value="${actuacion.categoria}" /></td>
 															</c:when>
+															<c:when
+															test="${actuacion.categoria!=null && actuacion.categoria==''}">
+															<td title="${actuacion.descripcionProcedimiento}">&nbsp;</td>
+														</c:when>
 															<c:otherwise>
 																<td>&nbsp;</td>
 															</c:otherwise>

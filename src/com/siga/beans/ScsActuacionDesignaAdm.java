@@ -647,7 +647,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		contador++;
 		codigos.put(new Integer(contador),designa.getNumero());
 		sql.append(contador);
-		sql.append(" ORDER BY ACT.NUMEROASUNTO");
+		sql.append(" ORDER BY ACT.FECHA,ACT.NUMEROASUNTO");
 		Vector actuacionesVector = this.selectGenericoBind(sql.toString(), codigos);
 		
 		
