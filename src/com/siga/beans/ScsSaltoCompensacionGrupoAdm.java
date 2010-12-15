@@ -1,30 +1,20 @@
 
 package com.siga.beans;
 
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.ListIterator;
 import java.util.Vector;
 
-import sun.text.CompactShortArray.Iterator;
-
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
-import com.ibm.icu.text.SimpleDateFormat;
 import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.general.EjecucionPLs;
 import com.siga.gratuita.InscripcionGuardia;
-import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
 
 /**
  * Implementa las operaciones sobre la base de datos, es decir: select, insert, update... a la tabla SCS_SALTOCOMPENSACIONGRUPO
