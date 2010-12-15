@@ -358,7 +358,7 @@
 		<logic:empty name="DefinirGuardiasTurnosForm"	property="guardiasVinculadas">
 			<tr>
 				<td class="labelText"><siga:Idioma
-					key="gratuita.gestionInscripciones.turno.literal"/> Principal</td>
+					key="gratuita.guardiasTurno.literal.turnoPrincipal"/> </td>
 				<td><html:select styleId="turnosPrincipales" styleClass="boxCombo" style="width:200px;"
 					property="idTurnoPrincipal">
 					<bean:define id="turnosPrincipales" name="DefinirGuardiasTurnosForm"
@@ -368,7 +368,7 @@
 					</html:select>
 				</td>
 				<td class="labelText"><siga:Idioma
-					key="gratuita.gestionInscripciones.guardia.literal" /> Principal</td>
+					key="gratuita.guardiasTurno.literal.guardiaPrincipal" /> </td>
 				<td><html:select styleId="guardiasPrincipales" styleClass="boxCombo" style="width:180px;"
 					property="idGuardiaPrincipal" onchange="accionComboGuardiaPrincipal();" >
 					<bean:define id="guardiasPrincipales" name="DefinirGuardiasTurnosForm"
@@ -389,8 +389,10 @@
 					<div style="position:relative;height:100%;  width:100%; overflow-y:auto">
 						<table class="tablaCampos"  border='1' align='center' width='100%' height="10" cellspacing='0' cellpadding='0' style='table-layout:fixed'>
 							<tr class = 'tableTitle'>
-								<td align='center' width='50%'>Turno</td>
-								<td align='center' width='50%'>Guardia</td>
+								<td align='center' width='50%'><siga:Idioma
+					key="gratuita.guardiasTurno.literal.turnoVinculado" /></td>
+								<td align='center' width='50%'><siga:Idioma
+					key="gratuita.guardiasTurno.literal.guardiaVinculada" /></td>
 								
 							</tr>
 							<logic:iterate name="DefinirGuardiasTurnosForm" property="guardiasVinculadas" id="guardiaVinculada" indexId="index">
@@ -956,7 +958,7 @@
 		if(document.getElementById("idTurnoPrincipal")&&document.getElementById("idTurnoPrincipal").value !="-1" && document.getElementById("idTurnoPrincipal").value !=""){
 				error = '';
 				if(document.getElementById("idGuardiaPrincipal").value =="-1" || document.getElementById("idGuardiaPrincipal").value ==""){
-					error += "<siga:Idioma key='errors.required' arg0='gratuita.gestionInscripciones.guardia.literal'/>"+ '\n';				
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.guardiasTurno.literal.guardiaPrincipal'/>"+ '\n';				
 				}
 				
 				if(document.getElementById("nombreGuardia").value ==""){
