@@ -7,6 +7,9 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.transaction.NotSupportedException;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -251,9 +254,11 @@ public class ColaGuardiasAction extends MasterAction {
 	}
 	
 
-	protected String fijarUltimoLetrado(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException 
+	protected String fijarUltimoLetrado(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
 	{
+		UserTransaction tx = null;
 		try {
+			UsrBean usr = this.getUserBean(request);
 			ColaGuardiasForm miForm =(ColaGuardiasForm)formulario;
 			String guardia = miForm.getIdGuardia();
 			Hashtable turnoElegido = (Hashtable)request.getSession().getAttribute("turnoElegido");
@@ -263,7 +268,11 @@ public class ColaGuardiasAction extends MasterAction {
 			UtilidadesHash.set (h, ScsGuardiasTurnoBean.C_IDGUARDIA, guardia);
 			UtilidadesHash.set (h, ScsGuardiasTurnoBean.C_IDINSTITUCION, this.getIDInstitucion(request));
 			UtilidadesHash.set (h, ScsGuardiasTurnoBean.C_IDTURNO, turno);
-			ScsGuardiasTurnoAdm adm = new ScsGuardiasTurnoAdm (this.getUserBean(request));
+			ScsGuardiasTurnoAdm adm = new ScsGuardiasTurnoAdm (usr);
+			
+			// iniciando transaccion
+			tx = usr.getTransactionPesada();
+			tx.begin();
 			Vector v = adm.selectByPKForUpdate(h);
 			if (v != null && v.size() == 1) {
 				ScsGuardiasTurnoBean b = (ScsGuardiasTurnoBean) v.get(0);
@@ -277,9 +286,10 @@ public class ColaGuardiasAction extends MasterAction {
 					return exito("messages.updated.error",request);
 				}
 			}
+			tx.commit();
 		}
 		catch (Exception e) {
-			return exito("messages.updated.error",request);
+			throwExcp("messages.updated.error", new String[] { "modulo.gratuita" }, e, tx);
 		}
 		return exitoRefresco("messages.updated.success",request);	
 	}
@@ -290,9 +300,11 @@ public class ColaGuardiasAction extends MasterAction {
 			HttpServletRequest request, 
 			HttpServletResponse response) throws ClsExceptions, SIGAException{
 		
+		UserTransaction tx = null;
+		UsrBean usr = this.getUserBean(request);
 		ColaGuardiasForm form = (ColaGuardiasForm) formulario;
-		ScsGrupoGuardiaColegiadoAdm admGrupoColegiado = new ScsGrupoGuardiaColegiadoAdm(this.getUserBean(request));
-		ScsGrupoGuardiaAdm admGrupo = new ScsGrupoGuardiaAdm(this.getUserBean(request));
+		ScsGrupoGuardiaColegiadoAdm admGrupoColegiado = new ScsGrupoGuardiaColegiadoAdm(usr);
+		ScsGrupoGuardiaAdm admGrupo = new ScsGrupoGuardiaAdm(usr);
 		String a = form.getDatosModificados();
 		
 		if (a.length() < 0) {
@@ -307,48 +319,58 @@ public class ColaGuardiasAction extends MasterAction {
 		Hashtable hash = null;
 		String[] campos = {ScsGrupoGuardiaColegiadoBean.C_IDGRUPO, ScsGrupoGuardiaColegiadoBean.C_ORDEN};
 		String[] claves = {ScsGrupoGuardiaColegiadoBean.C_IDGRUPOGUARDIACOLEGIADO};
-		for (int i = 0; i < elementos.length; i++) {
-			hash=new Hashtable();
-			String []aux = elementos[i].split("#;#");
-			idGrupoGuardiaColegiado = aux[0];
-			numeroGrupo = aux[1];
-			orden = aux[2];
-			
-			String idInstitucion = form.getIdInstitucion();
-			String idTurno = form.getIdTurno();
-			String idGuardia = form.getIdGuardia();
-			
-			// Buscamos el idGrupo que corresponde con el numero del grupo
-			Hashtable grupoGuardia=admGrupo.getGrupoGuardia(idInstitucion, idTurno, idGuardia, numeroGrupo);
-			if(grupoGuardia!=null && grupoGuardia.get(ScsGrupoGuardiaBean.C_IDGRUPOGUARDIA)!=null){
-				idGrupo=(String)grupoGuardia.get(ScsGrupoGuardiaBean.C_IDGRUPOGUARDIA);
-			}else{
-				// Si el grupo no existe lo creamos y lo usamos para meter la guardia
-				idGrupo = admGrupo.getSecuenciaNextVal(ScsGrupoGuardiaBean.S_SECUENCIA).toString();
-				ScsGrupoGuardiaBean bean = new ScsGrupoGuardiaBean();
-				bean.setIdGrupoGuardia(Long.valueOf(idGrupo));
-				bean.setIdInstitucion(Integer.valueOf(idInstitucion));
-				bean.setIdTurno(Integer.valueOf(idTurno));
-				bean.setIdGuardia(Integer.valueOf(idGuardia));
-				bean.setNumeroGrupo(numeroGrupo);
-				bean.setFechaCreacion("sysdate");
-				bean.setUsuCreacion(Integer.valueOf(this.getUserBean(request).getUserName()));
+		// iniciando transaccion
+		tx = usr.getTransactionPesada();
+		try {
+			tx.begin();
+
+			for (int i = 0; i < elementos.length; i++) {
+				hash=new Hashtable();
+				String []aux = elementos[i].split("#;#");
+				idGrupoGuardiaColegiado = aux[0];
+				numeroGrupo = aux[1];
+				orden = aux[2];
+				
+				String idInstitucion = form.getIdInstitucion();
+				String idTurno = form.getIdTurno();
+				String idGuardia = form.getIdGuardia();
+				
+				// Buscamos el idGrupo que corresponde con el numero del grupo
+				Hashtable grupoGuardia=admGrupo.getGrupoGuardia(idInstitucion, idTurno, idGuardia, numeroGrupo);
+				if(grupoGuardia!=null && grupoGuardia.get(ScsGrupoGuardiaBean.C_IDGRUPOGUARDIA)!=null){
+					idGrupo=(String)grupoGuardia.get(ScsGrupoGuardiaBean.C_IDGRUPOGUARDIA);
+				}else{
+					// Si el grupo no existe lo creamos y lo usamos para meter la guardia
+					idGrupo = admGrupo.getSecuenciaNextVal(ScsGrupoGuardiaBean.S_SECUENCIA).toString();
+					ScsGrupoGuardiaBean bean = new ScsGrupoGuardiaBean();
+					bean.setIdGrupoGuardia(Long.valueOf(idGrupo));
+					bean.setIdInstitucion(Integer.valueOf(idInstitucion));
+					bean.setIdTurno(Integer.valueOf(idTurno));
+					bean.setIdGuardia(Integer.valueOf(idGuardia));
+					bean.setNumeroGrupo(numeroGrupo);
+					bean.setFechaCreacion("sysdate");
+					bean.setUsuCreacion(Integer.valueOf(this.getUserBean(request).getUserName()));
+					try {
+						admGrupo.insert(bean);				
+					} catch (Exception e) {
+						throwExcp("Error al crear el grupo", new String[] { "modulo.gratuita" }, e, tx);
+					}
+				}
+				
+	
+				hash.put(ScsGrupoGuardiaColegiadoBean.C_IDGRUPOGUARDIACOLEGIADO, idGrupoGuardiaColegiado);
+				hash.put(ScsGrupoGuardiaColegiadoBean.C_IDGRUPO, idGrupo);
+				hash.put(ScsGrupoGuardiaColegiadoBean.C_ORDEN, orden);
 				try {
-					admGrupo.insert(bean);				
+					admGrupoColegiado.updateDirect(hash, claves, campos);			
 				} catch (Exception e) {
-					throw new ClsExceptions (e, "Error al crear el grupo");
+					throwExcp("Error al modificar los grupos de la guardia", new String[] { "modulo.gratuita" }, e, tx);
 				}
 			}
+			tx.commit();
+		} catch (Exception e) {
+			throwExcp("messages.updated.error", new String[] { "modulo.gratuita" }, e, tx);
 			
-
-			hash.put(ScsGrupoGuardiaColegiadoBean.C_IDGRUPOGUARDIACOLEGIADO, idGrupoGuardiaColegiado);
-			hash.put(ScsGrupoGuardiaColegiadoBean.C_IDGRUPO, idGrupo);
-			hash.put(ScsGrupoGuardiaColegiadoBean.C_ORDEN, orden);
-			try {
-				admGrupoColegiado.updateDirect(hash, claves, campos);			
-			} catch (Exception e) {
-				throw new ClsExceptions (e, "Error al modificar los grupos de la guardia");
-			}
 		}
 		
 		// TODO // jbd // No estaria mal un pequeño control de errores
