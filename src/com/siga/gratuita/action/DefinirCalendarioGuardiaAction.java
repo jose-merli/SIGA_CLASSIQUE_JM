@@ -10,6 +10,7 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionForm;
@@ -1667,13 +1668,16 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 		String forward = "";
 
 		// Variables generales
-		String idInstitucion, idGuardia, idTurno, idCalendarioGuardias, porGrupos, fechaDesde, fechaHasta, observaciones, nombreGuardia;
-		boolean rotacion;
+		String idInstitucion, idGuardia, idTurno, idCalendarioGuardias;
+		String fechaDesde, fechaHasta, observaciones, nombreGuardia;
 		int idCalendario;
-		ScsGuardiasTurnoBean beanGuardia;
-		ArrayList<String> lineaLog;
+		String porGrupos = ClsConstants.DB_FALSE;
+		boolean rotacion = false;
+		Vector<ScsGuardiasTurnoBean> guardiasVinculadas = null;
+		ScsGuardiasTurnoBean beanGuardia = null;
+		LogFileWriter log = null;
+		ArrayList<String> lineaLog = null;
 
-		
 		// obteniendo valores del formulario
 		idInstitucion = miForm.getIdInstitucion();
 		idTurno = miForm.getIdTurno();
@@ -1683,14 +1687,6 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 		fechaHasta = miForm.getFechaHasta();
 		observaciones = miForm.getObservaciones();
 
-		// preparando log del calendario
-		ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		LogFileWriter log = LogFileWriter.getLogFileWriter(rp
-				.returnProperty("sjcs.directorioFisicoGeneracionCalendarios")
-				+ File.separator + idInstitucion, idTurno + "." + idGuardia + "." + idCalendarioGuardias + "-"
-				+ fechaDesde.replace('/', '.') + "-" + fechaHasta.replace('/', '.'));
-		log.clear();
-		
 		try {
 			// obteniendo datos de la guardia
 			Hashtable miHash = new Hashtable();
@@ -1706,64 +1702,71 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 			// validando que no haya ninguna guardia realizada
 			if (!admGuardiasColegiado.validarBorradoGuardias(idInstitucion, idCalendarioGuardias, idTurno, idGuardia))
 				return exito("error.messagess.borrarGuardiasGenerarCalendario", request);
-
+	
 			// obteniendo las Guardias vinculadas
 			String where = " WHERE idinstitucionprincipal = "+idInstitucion+" AND idturnoprincipal = "+idTurno+" AND idguardiaprincipal = "+idGuardia;
-			Vector<ScsGuardiasTurnoBean> guardiasVinculadas = admGuardiaTurno.select(where);
-			if (guardiasVinculadas == null)
+			if ((guardiasVinculadas = admGuardiaTurno.select(where)) == null)
 				guardiasVinculadas = new Vector<ScsGuardiasTurnoBean>();
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, tx);
+		}
+
+		try {
+			// preparando log del calendario
+			ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			log = LogFileWriter.getLogFileWriter(rp
+					.returnProperty("sjcs.directorioFisicoGeneracionCalendarios")
+					+ File.separator + idInstitucion, idTurno + "." + idGuardia + "." + idCalendarioGuardias + "-"
+					+ fechaDesde.replace('/', '.') + "-" + fechaHasta.replace('/', '.'));
+			log.clear();
 			
 			// iniciando transaccion
 			tx = usr.getTransactionPesada();
 			tx.begin();
 
-			try {
-				// si hay guardias vinculadas, hay que crear los calendarios antes que nada
-				Vector<ScsCalendarioGuardiasBean> calendariosVinculados = new Vector<ScsCalendarioGuardiasBean>();
-				for (ScsGuardiasTurnoBean guardia : guardiasVinculadas) {
-					lineaLog = new ArrayList<String>();
-					lineaLog.add("Creando calendario para guardia vinculada...");
-					if ((idCalendario = this.crearCalendario(guardia.getIdInstitucion().toString(), guardia.getIdTurno().toString(),
-							guardia.getIdGuardia().toString(), fechaDesde, fechaHasta, observaciones, usr)) > 0) {
-						lineaLog.add("OK");
-						calendariosVinculados.add(new ScsCalendarioGuardiasBean(guardia.getIdInstitucion(), guardia
-								.getIdTurno(), guardia.getIdGuardia(), idCalendario, fechaDesde, fechaHasta, observaciones));
-					}
-					else
-						lineaLog.add("Fallo. Puede que ya exista el calendario");
-					log.addLog(lineaLog);
-				}
-				
-				// inicializando calendario
-				CalendarioSJCS calendarioSJCS = new CalendarioSJCS(new Integer(idInstitucion), new Integer(idTurno),
-						new Integer(idGuardia), new Integer(idCalendarioGuardias), calendariosVinculados, usr, log);
-				
-				// obteniendo los periodos
-				calendarioSJCS.calcularMatrizPeriodosDiasGuardiaAutomatico();
-				List lDiasASeparar = calendarioSJCS.getDiasASeparar(new Integer(idInstitucion), new Integer(idTurno),
-						new Integer(idGuardia), usr);
-	
-				// obteniendo la matriz de letrados de guardia
-				if (porGrupos.equals("1"))
-					calendarioSJCS.calcularMatrizLetradosGuardiaPorGrupos(lDiasASeparar, rotacion);
-				else
-					calendarioSJCS.calcularMatrizLetradosGuardia(lDiasASeparar);
-				
-				tx.commit();
-				forward = exitoRefresco("gratuita.modalRegistro_DefinirCalendarioGuardia.literal.calendarioGenerado",
-						request);
-			} catch (SIGAException e) {
-				tx.rollback();
-				forward = exitoRefresco(e.getLiteral(), request);
-			} catch (ClsExceptions e) {
-				tx.rollback();
-				throw e;
+			// si hay guardias vinculadas, hay que crear los calendarios antes que nada
+			Vector<ScsCalendarioGuardiasBean> calendariosVinculados = new Vector<ScsCalendarioGuardiasBean>();
+			for (ScsGuardiasTurnoBean guardia : guardiasVinculadas) {
+				lineaLog = new ArrayList<String>();
+				lineaLog.add("Creando calendario para guardia vinculada '" +guardia.getNombre()+"'...");
+				if ((idCalendario = this.crearCalendario(guardia.getIdInstitucion().toString(), guardia.getIdTurno()
+						.toString(), guardia.getIdGuardia().toString(), fechaDesde, fechaHasta, observaciones, usr)) > 0) {
+					lineaLog.add("OK");
+					calendariosVinculados
+							.add(new ScsCalendarioGuardiasBean(guardia.getIdInstitucion(), guardia.getIdTurno(),
+									guardia.getIdGuardia(), idCalendario, fechaDesde, fechaHasta, observaciones));
+				} else
+					lineaLog.add("Fallo. Puede que ya exista el calendario");
+				log.addLog(lineaLog);
 			}
+
+			// inicializando calendario
+			CalendarioSJCS calendarioSJCS = new CalendarioSJCS(new Integer(idInstitucion), new Integer(idTurno),
+					new Integer(idGuardia), new Integer(idCalendarioGuardias), calendariosVinculados, usr, log);
+
+			// obteniendo los periodos
+			calendarioSJCS.calcularMatrizPeriodosDiasGuardiaAutomatico();
+			List lDiasASeparar = calendarioSJCS.getDiasASeparar(new Integer(idInstitucion), new Integer(idTurno),
+					new Integer(idGuardia), usr);
+
+			// obteniendo la matriz de letrados de guardia
+			if (porGrupos.equals("1"))
+				calendarioSJCS.calcularMatrizLetradosGuardiaPorGrupos(lDiasASeparar, rotacion);
+			else
+				calendarioSJCS.calcularMatrizLetradosGuardia(lDiasASeparar);
+
+			tx.commit();
+			forward = exitoRefresco("gratuita.modalRegistro_DefinirCalendarioGuardia.literal.calendarioGenerado",
+					request);
+		} catch (SIGAException e) {
+			try {tx.rollback();} catch (Exception e2) {}
+			forward = exitoRefresco(e.getLiteral(), request);
 		} catch (Exception e) {
 			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, tx);
 		} finally {
 			// escribiendo fichero de log
-			log.flush();
+			if (log != null)
+				log.flush();
 		}
 		
 		return forward;
