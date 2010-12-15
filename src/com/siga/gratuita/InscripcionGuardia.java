@@ -234,7 +234,7 @@ public class InscripcionGuardia
 		ScsInscripcionGuardiaAdm insadm = new ScsInscripcionGuardiaAdm(usr);
 
 		// Variables
-		Vector<ScsInscripcionGuardiaBean> vectorLetrados = insadm.getLetradosGrupo(idGrupoGuardia.toString());
+		Vector<ScsInscripcionGuardiaBean> vectorLetrados;
 		ArrayList<LetradoGuardia> listaLetrados = new ArrayList<LetradoGuardia>();
 		LetradoGuardia letradoGuardia;
 		ScsInscripcionGuardiaBean inscripcionGuardia;
@@ -248,7 +248,7 @@ public class InscripcionGuardia
 		ScsGuardiasTurnoBean beanGuardia = (ScsGuardiasTurnoBean) vGuardia.get(0);
 
 		// obteniendo lista de letrados
-		vectorLetrados = insadm.getLetradosGrupo(idGrupoGuardia.toString());
+		vectorLetrados = insadm.getLetradosGrupo(idInstitucion.toString(), idTurno.toString(), idGuardia.toString(), idGrupoGuardia.toString());
 		if (vectorLetrados == null || vectorLetrados.size() == 0)
 			return null;
 

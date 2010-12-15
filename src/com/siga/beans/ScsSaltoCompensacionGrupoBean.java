@@ -96,5 +96,10 @@ public class ScsSaltoCompensacionGrupoBean extends MasterBean
 	public Integer	getUsuCreacion					() {return usuCreacion;}
 	
 	public ArrayList<LetradoGuardia> getLetrados() {return letrados;}
+	
+	
+	public String toString() {
+		return this.saltoCompensacion + ": " + this.fecha;
+	}
 
 }

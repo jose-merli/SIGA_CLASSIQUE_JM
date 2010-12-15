@@ -116,4 +116,8 @@ public class LetradoGuardia implements Cloneable
 		return obj;
 	}
 	
+	public String toString() {
+		return '"' + persona.getApellido1() + " " + persona.getApellido2() + ", " + persona.getNombre() + '"';
+	}
+	
 }

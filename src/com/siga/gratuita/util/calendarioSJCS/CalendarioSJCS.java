@@ -146,7 +146,10 @@ public class CalendarioSJCS
 		}
 		
 		// Calendarios vinculados (guardias vinculadas)
-		this.calendariosVinculados = calendariosVinculados;
+		if (calendariosVinculados.isEmpty())
+			this.calendariosVinculados = null;
+		else
+			this.calendariosVinculados = calendariosVinculados;
 		
 		// 2. CALENDARIO: Fecha de inicio y fin
 		where = " WHERE " + ScsCalendarioGuardiasBean.C_IDINSTITUCION + "=" + idInstitucion + " AND "
@@ -512,6 +515,7 @@ public class CalendarioSJCS
 			HashMap<Long, ArrayList<LetradoGuardia>> hmPersonasConSaltos) throws ClsExceptions, SIGAException
 	{
 		// Variables
+		ScsSaltoCompensacionGrupoAdm saltosCompenGruposAdm = new ScsSaltoCompensacionGrupoAdm(this.usrBean);
 		ArrayList<LetradoGuardia> grupoLetrados;
 		ScsSaltoCompensacionGrupoBean compensacion = null;
 		boolean grupoValido;
@@ -524,6 +528,7 @@ public class CalendarioSJCS
 			compensacion = iterador.next();
 			
 			// comprobando cada letrado del grupo
+			log.addLog(new String[] {"Probando Grupo Compensado", compensacion.getLetrados().toString()});
 			grupoValido = true;
 			for (LetradoGuardia lg : compensacion.getLetrados()) {
 				if (!comprobarRestriccionesLetradoCompensado(lg, diasGuardia, null,
@@ -532,9 +537,16 @@ public class CalendarioSJCS
 				if (!grupoValido)
 					break; // salir de las comprobaciones por letrado si uno de ellos no es valido
 			}
+			if (!grupoValido)
+				log.addLog(new String[] {"Grupo Compensado no valido", compensacion.getLetrados().toString()});
 		}
 		// si bien, cumplir la compensacion de grupo:
 		if (grupoValido) {
+			log.addLog(new String[] {"Compensacion de grupo cumplida"});
+			String motivoCumplimiento = "Compensacion de grupo cumplida";
+			saltosCompenGruposAdm.cumplirSaltoCompensacion(compensacion.getIdSaltoCompensacionGrupo().toString(),
+					diasGuardia.get(0), motivoCumplimiento, idInstitucion.toString(), idTurno.toString(), 
+					idGuardia.toString(), idCalendarioGuardias.toString());
 			return compensacion.getLetrados();
 		}
 		
@@ -543,6 +555,7 @@ public class CalendarioSJCS
 		while (grupoLetrados != null && !grupoValido) {
 			
 			// comprobando cada letrado del grupo
+			log.addLog(new String[] {"Probando Grupo", grupoLetrados.toString()});
 			grupoValido = true;
 			for (LetradoGuardia lg : grupoLetrados) {
 				if (!comprobarRestriccionesLetradoCola(lg, diasGuardia, hmPersonasConSaltos))
@@ -550,8 +563,10 @@ public class CalendarioSJCS
 				if (!grupoValido)
 					break; // salir de las comprobaciones por letrado si uno de ellos no es valido
 			}
-			if (!grupoValido)
+			if (!grupoValido) {
+				log.addLog(new String[] {"Grupo no valido", grupoLetrados.toString()});
 				grupoLetrados = getGrupoLetrados(alLetradosOrdenados, punteroLetrado);
+			}
 		}
 
 		if (grupoValido)
@@ -610,7 +625,7 @@ public class CalendarioSJCS
 
 		// si esta de vacaciones, ...
 		if (isLetradoBajaTemporal(diasGuardia, letradoGuardia)) {
-			log.addLog(new String[] {"Encontrado Baja temporal", diasGuardia.toString(), letradoGuardia.toString()});
+			log.addLog(new String[] {"Encontrado Baja temporal", letradoGuardia.toString(), diasGuardia.toString()});
 			if (letradoGuardia.getGrupo() == null || letradoGuardia.getGrupo().toString().equals(""))
 				// ... crear un salto cumplido (como si fuera un log)
 				insertarNuevoSaltoBT(letradoGuardia, diasGuardia, "Salto por BT");
@@ -624,7 +639,7 @@ public class CalendarioSJCS
 
 		// si hay incompatibilidad
 		if (isIncompatible(letradoGuardia, diasGuardia)) {
-			log.addLog(new String[] {"Encontrado Incompatibilidad", diasGuardia.toString(), letradoGuardia.toString()});
+			log.addLog(new String[] {"Encontrado Incompatibilidad", letradoGuardia.toString(), diasGuardia.toString()});
 			return false; // no seleccionar
 		}
 
@@ -634,16 +649,11 @@ public class CalendarioSJCS
 			cumplirSaltoCompensacion(letradoGuardia, diasGuardia, ClsConstants.COMPENSACIONES, " - Compensacion cumplida");
 			iteCompensaciones.remove();
 		}
-		else {
-			log.addLog(new String[] {"Compensacion de grupo cumplida"});
-			String motivoCumplimiento = "Compensacion de grupo cumplida";
-			saltosCompenGruposAdm.cumplirSaltoCompensacion(
-					idSaltoCompensacionGrupo, diasGuardia.get(0), motivoCumplimiento, idInstitucion.toString(), 
-					idTurno.toString(), idGuardia.toString(), idCalendarioGuardias.toString());
-		}
+		else
+			// nada, hay que cumplir la compensacion cuando todos los letrados esten comprobados
 
 		// una vez comprobado todo, se selecciona a este letrado
-		log.addLog(new String[] {"Letrado OK", diasGuardia.toString(), letradoGuardia.toString()});
+		log.addLog(new String[] {"Letrado OK", letradoGuardia.toString()});
 		return true;
 	} // comprobarRestriccionesLetradoCompensado()
 	
@@ -657,7 +667,7 @@ public class CalendarioSJCS
 
 		// si esta de vacaciones, ...
 		if (isLetradoBajaTemporal(diasGuardia, letradoGuardia)) {
-			log.addLog(new String[] {"Encontrado Baja temporal", diasGuardia.toString(), letradoGuardia.toString()});
+			log.addLog(new String[] {"Encontrado Baja temporal", letradoGuardia.toString(), diasGuardia.toString()});
 			if (letradoGuardia.getGrupo() == null || letradoGuardia.getGrupo().toString().equals(""))
 				// ... crear un salto cumplido (como si fuera un log)
 				insertarNuevoSaltoBT(letradoGuardia, diasGuardia, "Salto por BT");
@@ -673,8 +683,9 @@ public class CalendarioSJCS
 		// si tiene saltos, ...
 		List<LetradoGuardia> alSaltos;
 		if (letradoGuardia.getGrupo() == null || letradoGuardia.getGrupo().toString().equals("")) {
-			log.addLog(new String[] {"Encontrado Salto", letradoGuardia.toString()});
 			if ((alSaltos = hmPersonasConSaltos.get(letradoGuardia.getIdPersona())) != null) {
+				log.addLog(new String[] {"Encontrado Salto", letradoGuardia.toString()});
+				
 				// ... compensar uno
 				cumplirSaltoCompensacion(letradoGuardia, diasGuardia, ClsConstants.SALTOS, " - Salto cumplido");
 				alSaltos.remove(0);
@@ -683,24 +694,23 @@ public class CalendarioSJCS
 				return false; // y no seleccionar
 			}
 		}
-		else {
+		else if ((alSaltos = hmPersonasConSaltos.get(letradoGuardia.getGrupo())) != null) {
 			log.addLog(new String[] {"Encontrado Salto de grupo"});
 			String motivoCumplimiento = "Salto de grupo cumplido";
-			if ((alSaltos = hmPersonasConSaltos.get(letradoGuardia.getGrupo())) != null) {
-				// ... compensar uno
-				saltosCompenGruposAdm.cumplirSaltoCompensacion(alSaltos.get(0).getIdSaltoCompensacionGrupo(),
-						diasGuardia.get(0), motivoCumplimiento, idInstitucion.toString(), idTurno.toString(),
-						idGuardia.toString(), idCalendarioGuardias.toString());
-				alSaltos.remove(0);
-				if (alSaltos.size() == 0)
-					hmPersonasConSaltos.remove(letradoGuardia.getGrupo());
-				return false; // y no seleccionar
-			}
+			
+			// ... compensar uno
+			saltosCompenGruposAdm.cumplirSaltoCompensacion(alSaltos.get(0).getIdSaltoCompensacionGrupo(),
+					diasGuardia.get(0), motivoCumplimiento, idInstitucion.toString(), idTurno.toString(),
+					idGuardia.toString(), idCalendarioGuardias.toString());
+			alSaltos.remove(0);
+			if (alSaltos.size() == 0)
+				hmPersonasConSaltos.remove(letradoGuardia.getGrupo());
+			return false; // y no seleccionar
 		}
 
 		// si hay incompatibilidad, ...
 		if (isIncompatible(letradoGuardia, diasGuardia)) {
-			log.addLog(new String[] {"Encontrado Incompatibilidad", diasGuardia.toString(), letradoGuardia.toString()});
+			log.addLog(new String[] {"Encontrado Incompatibilidad", letradoGuardia.toString(), diasGuardia.toString()});
 			if (letradoGuardia.getGrupo() == null || letradoGuardia.getGrupo().toString().equals("")) {
 				// ... crear compensacion
 				insertarNuevoSaltoCompensacion(letradoGuardia, diasGuardia, ClsConstants.COMPENSACIONES,
@@ -716,7 +726,7 @@ public class CalendarioSJCS
 		}
 
 		// una vez comprobado todo, se selecciona a este letrado
-		log.addLog(new String[] {"Letrado OK", diasGuardia.toString(), letradoGuardia.toString()});
+		log.addLog(new String[] {"Letrado OK", letradoGuardia.toString()});
 		return true;
 	} // comprobarRestriccionesLetradoCola()
 	
@@ -1224,6 +1234,12 @@ public class CalendarioSJCS
 				if (grupoLetrados.size() < numeroLetradosGuardia)
 					log.addLog(new String[] {"Aviso", "El numero de letrados en el grupo es menor que el minimo configurado para la guardia: " + grupoLetrados.size() + " < " + numeroLetradosGuardia});
 					
+				// guardando ultimo de cola
+				if (rotacion)
+					this.actualizarUltimoLetradoGuardiaBBDD(grupoLetrados.get(0));
+				else
+					this.actualizarUltimoLetradoGuardiaBBDD(grupoLetrados.get(grupoLetrados.size()-1));
+				
 				// metiendo grupo en el periodo de guardia
 				alLetradosInsertar = new ArrayList<LetradoGuardia>();
 				posicion = INI_POSICION;
@@ -1235,14 +1251,11 @@ public class CalendarioSJCS
 					
 					// rotando grupo
 					if (rotacion) {
-						if (posicion == INI_POSICION) {
+						if (posicion == INI_POSICION)
 							letrado.setOrdenGrupo(grupoLetrados.size());
-							// actualizando el ultimo letrado en la guardia
-							this.actualizarUltimoLetradoGuardiaBBDD(letrado);
-						}
-						else {
+						else
 							letrado.setOrdenGrupo(posicion-1);
-						}
+						
 						hashGrupoLetrado = new Hashtable();
 						hashGrupoLetrado.put(ScsGrupoGuardiaColegiadoBean.C_IDGRUPOGUARDIACOLEGIADO, letrado.getIdGrupoGuardiaColegiado());
 						beanGrupoLetrado = new ScsGrupoGuardiaColegiadoBean();

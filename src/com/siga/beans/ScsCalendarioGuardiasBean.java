@@ -68,4 +68,9 @@ public class ScsCalendarioGuardiasBean extends MasterBean
 	public String  getObservaciones			()	{ return this.observaciones;			}
 	public Integer getIdPersonaUltimoAnterior() {return idPersonaUltimoAnterior;}
 	
+	
+	public String toString() {
+		return "Cal. " + this.idTurno + "." + this.idGuardia + "." + this.idCalendarioGuardias + "-" + this.fechaInicio + "-" + this.fechaFin;
+	}
+	
 }

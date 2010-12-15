@@ -1683,6 +1683,14 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 		fechaHasta = miForm.getFechaHasta();
 		observaciones = miForm.getObservaciones();
 
+		// preparando log del calendario
+		ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		LogFileWriter log = LogFileWriter.getLogFileWriter(rp
+				.returnProperty("sjcs.directorioFisicoGeneracionCalendarios")
+				+ File.separator + idInstitucion, idTurno + "." + idGuardia + "." + idCalendarioGuardias + "-"
+				+ fechaDesde.replace('/', '.') + "-" + fechaHasta.replace('/', '.'));
+		log.clear();
+		
 		try {
 			// obteniendo datos de la guardia
 			Hashtable miHash = new Hashtable();
@@ -1710,13 +1718,6 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 			tx.begin();
 
 			try {
-				// preparando log del calendario
-				ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-				LogFileWriter log = LogFileWriter.getLogFileWriter(rp
-						.returnProperty("sjcs.directorioFisicoGeneracionCalendarios")
-						+ File.separator + idInstitucion, 
-						nombreGuardia + "-" + fechaDesde + "-" + fechaHasta);
-				
 				// si hay guardias vinculadas, hay que crear los calendarios antes que nada
 				Vector<ScsCalendarioGuardiasBean> calendariosVinculados = new Vector<ScsCalendarioGuardiasBean>();
 				for (ScsGuardiasTurnoBean guardia : guardiasVinculadas) {
@@ -1751,8 +1752,6 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 				tx.commit();
 				forward = exitoRefresco("gratuita.modalRegistro_DefinirCalendarioGuardia.literal.calendarioGenerado",
 						request);
-				// escribiendo fichero de log
-				log.flush();
 			} catch (SIGAException e) {
 				tx.rollback();
 				forward = exitoRefresco(e.getLiteral(), request);
@@ -1762,6 +1761,9 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 			}
 		} catch (Exception e) {
 			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, tx);
+		} finally {
+			// escribiendo fichero de log
+			log.flush();
 		}
 		
 		return forward;

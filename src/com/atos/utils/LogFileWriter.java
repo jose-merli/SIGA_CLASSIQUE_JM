@@ -130,5 +130,25 @@ public class LogFileWriter
 			throw new SIGAException("messages.general.error", e);
 		}
 	}
+	
+	/**
+	 * Clears the contents of the file
+	 * @throws SIGAException 
+	 */
+	public void clear() throws SIGAException {
+		try {
+			this.buffer.clear();
+			
+			// creating directory tree
+			new File(path).mkdirs();
+
+			// creating file
+			File file = new File(path + File.separator + fileName + EXTENSION);
+			if (file.exists())
+				file.delete();
+		} catch (Exception e) {
+			throw new SIGAException("messages.general.error", e);
+		}
+	}
 
 }

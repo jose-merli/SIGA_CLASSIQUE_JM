@@ -978,7 +978,10 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 			"        Trunc(Ins.Fechabaja) > nvl("+fechaFin+", '01/01/1900')) " +
 			"   And Gua.Idinstitucion = "+idinstitucion+" " +
 			"   And Gua.Idturno = "+idturno+" " +
-			"   And Gua.Idguardia = "+idguardia+" ";
+			"   And Gua.Idguardia = "+idguardia+" " +
+			"   And Gua.Idinstitucion = Gru.Idinstitucion " +
+			"   And Gua.Idturno = Gru.Idturno " +
+			"   And Gua.Idguardia = Gru.Idguardia ";
 		
 		if (! (order == null || order.equals("")))
 			consulta += " order by " + order;
@@ -1020,17 +1023,26 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 	/**
 	 * Obtiene los letrados dado un grupo
 	 * 
+	 * @param idInstitucion
+	 * @param idTurno
+	 * @param idGuardia
 	 * @param idGrupoGuardia
 	 * @return Vector<Hashtable>
 	 * @throws ClsExceptions
 	 */
-	public Vector<ScsInscripcionGuardiaBean> getLetradosGrupo(String idGrupoGuardia) throws ClsExceptions
+	public Vector<ScsInscripcionGuardiaBean> getLetradosGrupo(String idInstitucion,
+			String idTurno,
+			String idGuardia,
+			String idGrupoGuardia) throws ClsExceptions
 	{
 		if (idGrupoGuardia == null || idGrupoGuardia.equals(""))
 			return null;
 		
 		String consulta =
 			getBaseConsultaInscripciones() +
+			"    And Gru."+ScsGrupoGuardiaColegiadoBean.C_IDINSTITUCION+" = "+idInstitucion+" " +
+			"    And Gru."+ScsGrupoGuardiaColegiadoBean.C_IDTURNO+" = "+idTurno+" " +
+			"    And Gru."+ScsGrupoGuardiaColegiadoBean.C_IDGUARDIA+" = "+idGuardia+" " +
 			"    And Gru."+ScsGrupoGuardiaColegiadoBean.C_IDGRUPO+" = "+idGrupoGuardia+" ";
 		
 		Vector<ScsInscripcionGuardiaBean> datos = null;
