@@ -12,7 +12,6 @@ import java.util.Vector;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
-import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.gratuita.util.calendarioSJCS.Entity.CalendarioEfectivo;
 
@@ -75,9 +74,14 @@ public class CalendarioAutomatico
 		beanGuardiasTurno = calendarioSJCS.getBeanGuardiasTurno ();
 		
 		//FECHAS:
+		SimpleDateFormat sdf = new SimpleDateFormat
+				(ClsConstants.DATE_FORMAT_JAVA);
 		try {
-			this.fechaInicio = UtilidadesFecha.getFechaApruebaDeFormato(new String(calendarioSJCS.getFechaInicio()));
-			this.fechaFin = UtilidadesFecha.getFechaApruebaDeFormato(new String(calendarioSJCS.getFechaFin()));
+			Date dateInicio = sdf.parse (calendarioSJCS.getFechaInicio ());
+			Date dateFin = sdf.parse (calendarioSJCS.getFechaFin ());
+			sdf.applyPattern (ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+			this.fechaInicio = sdf.format (dateInicio);
+			this.fechaFin = sdf.format (dateFin);
 		} catch (Exception e) {
 			this.fechaInicio = "";
 			this.fechaFin = "";
