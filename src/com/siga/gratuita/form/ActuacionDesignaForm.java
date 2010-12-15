@@ -28,6 +28,8 @@ public class ActuacionDesignaForm extends MasterForm
 	private String multiplesComplementos;
 	private AcreditacionForm acreditacion;
 	private String descripcionProcedimiento;
+	private String idFacturacion;
+	private String descripcionFacturacion;
 	
 	public String getDescripcionProcedimiento() {
 		return descripcionProcedimiento;
@@ -110,6 +112,18 @@ public class ActuacionDesignaForm extends MasterForm
 	}
 	public void setIdJurisdiccion(String idJurisdiccion) {
 		this.idJurisdiccion = idJurisdiccion;
+	}
+	public String getIdFacturacion() {
+		return idFacturacion;
+	}
+	public void setIdFacturacion(String idFacturacion) {
+		this.idFacturacion = idFacturacion;
+	}
+	public String getDescripcionFacturacion() {
+		return descripcionFacturacion;
+	}
+	public void setDescripcionFacturacion(String descripcionFacturacion) {
+		this.descripcionFacturacion = descripcionFacturacion;
 	}
 	
 	

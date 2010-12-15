@@ -610,7 +610,13 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 	    int contador=0;
 		StringBuffer sql = new StringBuffer();
 		sql.append(" SELECT AC.IDACREDITACION,AC.DESCRIPCION ACREDITACION,AC.IDTIPOACREDITACION,ACP.PORCENTAJE, TAC.DESCRIPCION TIPO, ");
-		sql.append(" PRO.NOMBRE PROCEDIMIENTO,PRO.CODIGO CATEGORIA, PRO.IDJURISDICCION,PRO.COMPLEMENTO,ACT.NUMEROASUNTO,ACT.IDPROCEDIMIENTO,ACT.IDJUZGADO, TO_CHAR(ACT.FECHAJUSTIFICACION,'dd/mm/yyyy') FECHAJUSTIFICACION,ACT.VALIDADA ");
+		sql.append(" PRO.NOMBRE PROCEDIMIENTO,PRO.CODIGO CATEGORIA, PRO.IDJURISDICCION,PRO.COMPLEMENTO,ACT.NUMEROASUNTO,ACT.IDPROCEDIMIENTO,ACT.IDJUZGADO,");
+		sql.append(" TO_CHAR(ACT.FECHAJUSTIFICACION,'dd/mm/yyyy') FECHAJUSTIFICACION,ACT.VALIDADA,ACT.IDFACTURACION ");
+		sql.append(" ,(SELECT NOMBRE || ' (' || FECHADESDE || '-' || FECHAHASTA || ')' ");
+		sql.append(" FROM FCS_FACTURACIONJG FJG ");
+		sql.append(" WHERE FJG.IDINSTITUCION = ACT.IDINSTITUCION ");
+		sql.append(" AND FJG.IDFACTURACION = ACT.IDFACTURACION) AS ");
+		sql.append(" DESCRIPCIONFACTURACION ");
 		sql.append(" FROM SCS_ACTUACIONDESIGNA          ACT, ");
 		sql.append(" SCS_PROCEDIMIENTOS            PRO, ");
 		sql.append(" SCS_ACREDITACIONPROCEDIMIENTO ACP, ");
@@ -668,6 +674,8 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 				actuacionDesigna.setDescripcionProcedimiento((String)registro.get("PROCEDIMIENTO"));
 				actuacionDesigna.setMultiplesComplementos((String)registro.get("COMPLEMENTO"));
 				actuacionDesigna.setIdJurisdiccion((String)registro.get("IDJURISDICCION"));
+				actuacionDesigna.setIdFacturacion((String)registro.get("IDFACTURACION"));
+				actuacionDesigna.setDescripcionFacturacion((String)registro.get("DESCRIPCIONFACTURACION"));
 				acreditacion = new AcreditacionForm();
 				actuacionDesigna.setAcreditacion(acreditacion);
 				acreditacion.setId((String)registro.get("IDACREDITACION"));

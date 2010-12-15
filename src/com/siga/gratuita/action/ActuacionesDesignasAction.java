@@ -66,6 +66,10 @@ public class ActuacionesDesignasAction extends MasterAction {
 				request.getSession().removeAttribute("designaActual");
 				miForm.setModo("editar");
 			}
+			if(accion!=null && accion.equalsIgnoreCase("ConsultarDesdeInforme")){
+				request.getSession().removeAttribute("designaActual");
+				miForm.setModo("ver");
+			}
 			if((miForm == null)||(miForm.getModo()==null)||(miForm.getModo().equals(""))){
 				return mapping.findForward(this.abrir(mapping, miForm, request, response));
 			

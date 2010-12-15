@@ -78,6 +78,18 @@ function accionEditarActuacion(anio,idTurno,numero,idInstitucion,numeroActuacion
 		parent.buscar();
 			
 }
+function accionConsultarActuacion(anio,idTurno,numero,idInstitucion,numeroActuacion) 
+{	
+	document.ActuacionesDesignasForm.anio.value = anio;
+	document.ActuacionesDesignasForm.idTurno.value = idTurno;
+	document.ActuacionesDesignasForm.numero.value = numero;
+	document.ActuacionesDesignasForm.nactuacion.value = numeroActuacion;
+	document.ActuacionesDesignasForm.modo.value = "ConsultarDesdeInforme";
+	var resultado=ventaModalGeneral(document.ActuacionesDesignasForm.name,"G");
+	if(resultado=='MODIFICADO') 
+		parent.buscar();
+			
+}
 function accionEditarDesigna(anio,idTurno,numero,idInstitucion) 
 {	
 	document.MaestroDesignasForm.anio.value = anio;
@@ -1122,6 +1134,17 @@ function ajusteDivListado(){
 													</c:choose></td>
 													<td><c:choose>
 														<c:when
+															test="${(permitirBotones==true && designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'||InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false))&&actuacion.idFacturacion!=null&&actuacion.idFacturacion!=''}">
+															<img id="iconoboton_consultar1"
+																src="/SIGA/html/imagenes/bconsultar_off.gif"
+																style="cursor: hand;" alt="Consultar" name="consultar_1"
+																border="0"
+																onClick="accionConsultarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero});"
+																onMouseOut="MM_swapImgRestore()"
+																onMouseOver="MM_swapImage('consultar_1','','/SIGA/html/imagenes/bconsultar_on.gif',1)">
+														</c:when>
+													
+														<c:when
 															test="${permitirBotones==true && designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'||InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
 															<img id="iconoboton_editar1"
 																src="/SIGA/html/imagenes/beditar_off.gif"
@@ -1132,8 +1155,8 @@ function ajusteDivListado(){
 																onMouseOver="MM_swapImage('editar_1','','/SIGA/html/imagenes/beditar_on.gif',1)">
 														</c:when>
 														<c:otherwise>
-																		&nbsp;
-																	</c:otherwise>
+															&nbsp;
+														</c:otherwise>
 													</c:choose></td>
 													<td rowspan="${designa.rowSpan}"><c:choose>
 														<c:when
@@ -1224,6 +1247,19 @@ function ajusteDivListado(){
 															</c:otherwise>
 														</c:choose></td>
 														<td><c:choose>
+														
+														
+														
+															<c:when
+																test="${(permitirBotones==true && designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'||InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false))&&actuacion.idFacturacion!=null && actuacion.idFacturacion!='' }">
+																<img id="iconoboton_consultar1"
+																src="/SIGA/html/imagenes/bconsultar_off.gif"
+																style="cursor: hand;" alt="Consultar" name="consultar_1"
+																border="0"
+																onClick="accionConsultarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero});"
+																onMouseOut="MM_swapImgRestore()"
+																onMouseOver="MM_swapImage('consultar_1','','/SIGA/html/imagenes/bconsultar_on.gif',1)">
+															</c:when>
 															<c:when
 																test="${permitirBotones==true && designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'||InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
 																<img id="iconoboton_editar1"
