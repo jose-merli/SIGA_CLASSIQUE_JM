@@ -741,7 +741,17 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 														validada = "X";
 													}
 													
+												}												
+												String numeroAsunto="";
+												if (actuacionForm.getNumero()!=null &&!actuacionForm.getNumero().equals("")){
+													numeroAsunto=actuacionForm.getNumero();
 												}
+												
+												String descripcionFacturacion="";
+												if (actuacionForm.getDescripcionFacturacion()!=null && !actuacionForm.getDescripcionFacturacion().equals("")){
+													descripcionFacturacion=actuacionForm.getDescripcionFacturacion();
+												}
+												
 												Hashtable htRowDesignaClone = (Hashtable) htRowDesigna.clone();
 												if(isPrimero){
 													isPrimero = false;
@@ -758,6 +768,8 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 												htRowDesignaClone.put("ACREDITACION", acreditacion);
 												htRowDesignaClone.put("FECHAJUSTIFICACION", fechaJustificacion);
 												htRowDesignaClone.put("VALIDADA", validada);
+												htRowDesignaClone.put("N_ACTUACION", numeroAsunto);
+												htRowDesignaClone.put("DESCRIPCIONFACTURACION", descripcionFacturacion);
 												vRowsInformePorPersona.add(htRowDesignaClone);
 												
 											}
@@ -769,6 +781,8 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 														String categoria = "";
 														String fechaJustificacion = "";
 														String validada = "";
+														String numeroAsunto = "";
+														String descripcionFacturacion="";
 														String acreditacion = acreditacionForm.getDescripcion();
 														Hashtable htRowDesignaClone2 = (Hashtable) htRowDesigna.clone();
 														if(isPrimero){
@@ -786,6 +800,8 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 														htRowDesignaClone2.put("ACREDITACION", acreditacion);
 														htRowDesignaClone2.put("FECHAJUSTIFICACION", fechaJustificacion);
 														htRowDesignaClone2.put("VALIDADA", validada);
+														htRowDesignaClone2.put("N_ACTUACION", numeroAsunto);
+														htRowDesignaClone2.put("DESCRIPCIONFACTURACION", descripcionFacturacion);
 														vRowsInformePorPersona.add(htRowDesignaClone2);
 													}
 												}
@@ -801,6 +817,8 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 										htRowDesignaClone.put("ACREDITACION", acreditacion);
 										htRowDesignaClone.put("FECHAJUSTIFICACION", "");
 										htRowDesignaClone.put("VALIDADA", "");
+										htRowDesignaClone.put("N_ACTUACION", "");
+										htRowDesignaClone.put("DESCRIPCIONFACTURACION", "");
 										vRowsInformePorPersona.add(htRowDesignaClone);
 										
 									}else if(designaForm.getIdJuzgado()==null||designaForm.getIdJuzgado().equals("")){
@@ -811,6 +829,8 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 										htRowDesignaClone.put("ACREDITACION", acreditacion);
 										htRowDesignaClone.put("FECHAJUSTIFICACION", "");
 										htRowDesignaClone.put("VALIDADA", "");
+										htRowDesignaClone.put("N_ACTUACION", "");
+										htRowDesignaClone.put("DESCRIPCIONFACTURACION", "");
 										vRowsInformePorPersona.add(htRowDesignaClone);
 										
 									}else if(designaForm.getIdProcedimiento()==null||designaForm.getIdProcedimiento().equals("")){
@@ -820,6 +840,8 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 										htRowDesignaClone.put("ACREDITACION", acreditacion);
 										htRowDesignaClone.put("FECHAJUSTIFICACION", "");
 										htRowDesignaClone.put("VALIDADA", "");
+										htRowDesignaClone.put("N_ACTUACION", "");
+										htRowDesignaClone.put("DESCRIPCIONFACTURACION", "");
 										vRowsInformePorPersona.add(htRowDesignaClone);
 									}else{
 										String categoria = designaForm.getCategoria();
@@ -848,6 +870,8 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 														htRowDesignaClone.put("ACREDITACION", acreditacion);
 														htRowDesignaClone.put("FECHAJUSTIFICACION", "");
 														htRowDesignaClone.put("VALIDADA", "");
+														htRowDesignaClone.put("N_ACTUACION", "");
+														htRowDesignaClone.put("DESCRIPCIONFACTURACION", "");
 														vRowsInformePorPersona.add(htRowDesignaClone);
 														
 													}
@@ -863,6 +887,8 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 											htRowDesignaClone.put("ACREDITACION", acreditacion);
 											htRowDesignaClone.put("FECHAJUSTIFICACION", "");
 											htRowDesignaClone.put("VALIDADA", "");
+											htRowDesignaClone.put("N_ACTUACION", "");
+											htRowDesignaClone.put("DESCRIPCIONFACTURACION", "");
 											vRowsInformePorPersona.add(htRowDesignaClone);
 										}
 									}
