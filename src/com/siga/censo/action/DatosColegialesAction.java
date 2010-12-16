@@ -945,6 +945,12 @@ public class DatosColegialesAction extends MasterAction {
 				ScsInscripcionTurnoBean c = (ScsInscripcionTurnoBean) vTurnos.get(x);
 				inscripcionTurno = InscripcionTurno.getInscripcionTurno(c.getIdInstitucion(), c.getIdTurno(), c
 						.getIdPersona(), c.getFechaSolicitud(), usr, false);
+				// jbd // inc7718 //Esta fecha tiene que ser larga
+				try {
+					fechaEstado=UtilidadesString.formatoFecha(fechaEstado, ClsConstants.DATE_FORMAT_SHORT_SPANISH, ClsConstants.DATE_FORMAT_JAVA);
+				} catch (Exception e) {
+					// Si ha fallado será porque el formato ya es el adecuado DATE_FORMAT_JAVA  
+				}
 				inscripcionTurno.solicitarBaja(fechaEstado, observacionesBaja,fechaEstado,observacionesBaja,c.getFechaValidacion(),"N", usr);
 				//inscripcionTurno.validarBaja(fechaEstado, observacionesBaja, usr);
 			}
