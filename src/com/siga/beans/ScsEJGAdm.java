@@ -2102,13 +2102,25 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			ScsEJGBean.T_NOMBRETABLA + " ejg,"  + 
 			ScsTipoEJGBean.T_NOMBRETABLA + " tipoejg," + 
 			CenColegiadoBean.T_NOMBRETABLA + " colegiado" ;
-		
+
+		// Se filtra por renuncia
+		if (miForm.getIdRenuncia()!=null && !miForm.getIdRenuncia().trim().equalsIgnoreCase("")) {
+			contador++;
+			codigos.put(new Integer(contador),miForm.getIdRenuncia());
+			consulta+=	" ,SCS_RENUNCIA  renuncia "+
+						" where renuncia.idrenuncia=ejg.Idrenuncia"+
+						" And renuncia.idrenuncia = :"+contador +
+						" And ejg." + ScsEJGBean.C_IDTIPOEJG + " = tipoejg." + ScsTipoEJGBean.C_IDTIPOEJG + " and "+
+						" ejg." + ScsEJGBean.C_IDINSTITUCION + " = colegiado." + CenColegiadoBean.C_IDINSTITUCION + "(+) and " +
+						" ejg." + ScsEJGBean.C_IDPERSONA + " = colegiado." + CenColegiadoBean.C_IDPERSONA+"(+)";   
+              
+		}else{	
 		// Comenzamos a cruzar tablas
 		consulta +=
 			" where ejg." + ScsEJGBean.C_IDTIPOEJG + " = tipoejg." + ScsTipoEJGBean.C_IDTIPOEJG + " and " + 
 			" ejg." + ScsEJGBean.C_IDINSTITUCION + " = colegiado." + CenColegiadoBean.C_IDINSTITUCION + "(+) and " +
 			" ejg." + ScsEJGBean.C_IDPERSONA + " = colegiado." + CenColegiadoBean.C_IDPERSONA+"(+)";   
-		
+		}
 		// Parametros para poder reutilizar la busqueda EJG para busquedas CAJG
 		if(TipoVentana.BUSQUEDA_PREPARACION_CAJG.equals(tipoVentana)){
 			consulta +=" AND (f_siga_get_idultimoestadoejg(ejg.idinstitucion,ejg.idtipoejg, ejg.anio, ejg.numero)" +
@@ -2315,10 +2327,10 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			consulta += " and "+ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("PROCEDIMIENTO")).trim(),"ejg.numeroprocedimiento", contador, codigos);
 		}
 
-		if ((miHash.containsKey("CALIDAD")) && (!miHash.get("CALIDAD").toString().equals(""))) {
+		if (miForm.getCalidad()!=null && !miForm.getCalidad().trim().equalsIgnoreCase("")) {
 			contador++;
-			consulta += " and "+ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("CALIDAD")).trim(),"ejg.calidad", contador, codigos);
-
+			codigos.put(new Integer(contador),miForm.getCalidad());		
+			 consulta += " and ejg.Idtipoencalidad = :" + contador;
 		}
 		
 		if ((miHash.containsKey("ESTADOEJG")) && (!miHash.get("ESTADOEJG").toString().equals(""))) {
