@@ -791,7 +791,7 @@ function ajusteDivListado(){
 							</c:choose></td>
 							<td rowspan="${designa.rowSpan}"><c:choose>
 								<c:when
-									test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'||InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
+									test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'&&InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
 									<img src="/SIGA/html/imagenes/icono+.gif" style="cursor: hand;"
 										alt="<siga:Idioma key="gratuita.informeJustificacionMasiva.nuevaActuacion"/>"
 										name="" border="0"
@@ -839,7 +839,7 @@ function ajusteDivListado(){
 							</c:choose></td>
 							<td rowspan="${designa.rowSpan}"><c:choose>
 								<c:when
-									test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'||InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
+									test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'&&InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
 									<img src="/SIGA/html/imagenes/icono+.gif" style="cursor: hand;"
 										alt="<siga:Idioma key="gratuita.informeJustificacionMasiva.nuevaActuacion"/>"
 										name="" border="0"
@@ -903,7 +903,7 @@ function ajusteDivListado(){
 											</c:choose></td>
 											<td rowspan="${designa.rowSpan}"><c:choose>
 												<c:when
-													test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'||InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
+													test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'&&InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
 													<img src="/SIGA/html/imagenes/icono+.gif"
 														style="cursor: hand;"
 														alt="<siga:Idioma key="gratuita.informeJustificacionMasiva.nuevaActuacion"/>"
@@ -964,7 +964,7 @@ function ajusteDivListado(){
 														</c:choose></td>
 														<td rowspan="${designa.rowSpan}"><c:choose>
 															<c:when
-																test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'||InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
+																test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'&&InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
 																<img src="/SIGA/html/imagenes/icono+.gif"
 																	style="cursor: hand;"
 																	alt="<siga:Idioma key="gratuita.informeJustificacionMasiva.nuevaActuacion"/>"
@@ -1021,7 +1021,7 @@ function ajusteDivListado(){
 																	</c:choose></td>
 																	<td rowspan="${designa.rowSpan}"><c:choose>
 																		<c:when
-																			test="${permitirBotones==true && designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'||InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
+																			test="${permitirBotones==true && designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'&&InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
 																			<img src="/SIGA/html/imagenes/icono+.gif"
 																				style="cursor: hand;"
 																				alt="<siga:Idioma key="gratuita.informeJustificacionMasiva.nuevaActuacion"/>"
@@ -1143,7 +1143,7 @@ function ajusteDivListado(){
 													</c:choose></td>
 													<td><c:choose>
 														<c:when
-															test="${(permitirBotones==true && designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'||InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false))&&actuacion.idFacturacion!=null&&actuacion.idFacturacion!=''}">
+															test="${(permitirBotones==true && designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'&&InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false))&&actuacion.idFacturacion!=null&&actuacion.idFacturacion!=''}">
 															<img id="iconoboton_consultar1"
 																src="/SIGA/html/imagenes/bconsultar_off.gif"
 																style="cursor: hand;" alt="Consultar" name="consultar_1"
@@ -1154,7 +1154,7 @@ function ajusteDivListado(){
 														</c:when>
 													
 														<c:when
-															test="${permitirBotones==true && designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'||InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
+															test="${permitirBotones==true && designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'&&InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
 															<img id="iconoboton_editar1"
 																src="/SIGA/html/imagenes/beditar_off.gif"
 																style="cursor: hand;" alt="Editar" name="editar_1"
@@ -1169,7 +1169,7 @@ function ajusteDivListado(){
 													</c:choose></td>
 													<td rowspan="${designa.rowSpan}"><c:choose>
 														<c:when
-															test="${permitirBotones==true && designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'||InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
+															test="${permitirBotones==true && designa.estado!=null && designa.estado=='V'&& (designa.actuacionPermitidaLetrado=='1'&&InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='N'||InformeJustificacionMasivaForm.fichaColegial==false)}">
 															<img src="/SIGA/html/imagenes/icono+.gif"
 																style="cursor: hand;"
 																alt="<siga:Idioma key="gratuita.informeJustificacionMasiva.nuevaActuacion"/>"
