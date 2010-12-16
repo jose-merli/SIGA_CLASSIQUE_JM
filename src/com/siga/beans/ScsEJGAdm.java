@@ -2103,24 +2103,12 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			ScsTipoEJGBean.T_NOMBRETABLA + " tipoejg," + 
 			CenColegiadoBean.T_NOMBRETABLA + " colegiado" ;
 		
-		// Se filtra por renuncia
-		if (miForm.getIdRenuncia()!=null && !miForm.getIdRenuncia().trim().equalsIgnoreCase("")) {
-			contador++;
-			codigos.put(new Integer(contador),miForm.getIdRenuncia());
-			consulta+=	" ,SCS_RENUNCIA  renuncia "+
-						" where renuncia.idrenuncia=ejg.Idrenuncia"+
-						" And renuncia.idrenuncia = :"+contador +
-						" And ejg." + ScsEJGBean.C_IDTIPOEJG + " = tipoejg." + ScsTipoEJGBean.C_IDTIPOEJG + " and "+
-						" ejg." + ScsEJGBean.C_IDINSTITUCION + " = colegiado." + CenColegiadoBean.C_IDINSTITUCION + "(+) and " +
-						" ejg." + ScsEJGBean.C_IDPERSONA + " = colegiado." + CenColegiadoBean.C_IDPERSONA+"(+)";   
-              
-		}else{		
-			// Comenzamos a cruzar tablas
-			consulta +=
+		// Comenzamos a cruzar tablas
+		consulta +=
 			" where ejg." + ScsEJGBean.C_IDTIPOEJG + " = tipoejg." + ScsTipoEJGBean.C_IDTIPOEJG + " and " + 
 			" ejg." + ScsEJGBean.C_IDINSTITUCION + " = colegiado." + CenColegiadoBean.C_IDINSTITUCION + "(+) and " +
 			" ejg." + ScsEJGBean.C_IDPERSONA + " = colegiado." + CenColegiadoBean.C_IDPERSONA+"(+)";   
-		}
+		
 		// Parametros para poder reutilizar la busqueda EJG para busquedas CAJG
 		if(TipoVentana.BUSQUEDA_PREPARACION_CAJG.equals(tipoVentana)){
 			consulta +=" AND (f_siga_get_idultimoestadoejg(ejg.idinstitucion,ejg.idtipoejg, ejg.anio, ejg.numero)" +
@@ -2325,13 +2313,12 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		if ((miHash.containsKey("PROCEDIMIENTO")) && (!miHash.get("PROCEDIMIENTO").toString().equals(""))) {
 			contador++;
 			consulta += " and "+ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("PROCEDIMIENTO")).trim(),"ejg.numeroprocedimiento", contador, codigos);
-		}		
-		
-				
-		if (miForm.getCalidad()!=null && !miForm.getCalidad().trim().equalsIgnoreCase("")) {
+		}
+
+		if ((miHash.containsKey("CALIDAD")) && (!miHash.get("CALIDAD").toString().equals(""))) {
 			contador++;
-			codigos.put(new Integer(contador),miForm.getCalidad());		
-			 consulta += " and ejg.Idtipoencalidad = :" + contador;
+			consulta += " and "+ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("CALIDAD")).trim(),"ejg.calidad", contador, codigos);
+
 		}
 		
 		if ((miHash.containsKey("ESTADOEJG")) && (!miHash.get("ESTADOEJG").toString().equals(""))) {
@@ -2380,8 +2367,6 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			consulta += " and rownum = 1) = :"+contador;
 		}
 
-		
-		
 
 		consulta += " ORDER BY to_number(" + ScsEJGBean.C_ANIO + ") desc, to_number("+ ScsEJGBean.C_NUMEJG+") desc";
 
@@ -3972,6 +3957,13 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
 						htFuncion, "f_siga_getunidadejg", "TOTAL_SOLICITANTE"));
 				
+				
+				
+
+				//Aniadimos los datos del procurador de la designa asociada a un EJG
+				helperInformes.completarHashSalida(registro,getAsistenciaEjgSalida(idInstitucion, 
+						tipoEjg,anioEjg,numeroEjg));
+				
 				/**sacamos el campo pretenciones de Defensa Juridica de  Ejg ***/	
 				
 				Vector vpretenciones=getPretensiondj(idInstitucion,tipoEjg,anioEjg,numeroEjg);
@@ -3985,11 +3977,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 											UtilidadesHash.set(registro, "PROCEDIMIENTO_D_J", "");
 									
 					}
-				
-
-				//Aniadimos los datos del procurador de la designa asociada a un EJG
-				helperInformes.completarHashSalida(registro,getAsistenciaEjgSalida(idInstitucion, 
-						tipoEjg,anioEjg,numeroEjg));
+					
 
 				Vector vprocuradorEjg = getProcuradorEjgSalida(idInstitucion,tipoEjg,anioEjg,numeroEjg);
 					
@@ -4025,9 +4013,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							if(domicilioProcurador!=null && !domicilioProcurador.trim().equalsIgnoreCase(""))
 								registro.put("PROCURADOR_DOMICILIO", domicilioProcurador);
 							else
-								UtilidadesHash.set(registro, "PROCURADOR_DOMICILIO", "");							
-					}
-					
+								UtilidadesHash.set(registro, "PROCURADOR_DOMICILIO", "");
+												
+				}
 				
 				//Aniadimos los datos del procurador del ejg
 				String idProcurador = (String)registro.get("IDPROCURADOR");
@@ -4593,6 +4581,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		}
 	}
 	
+	
 	public static Vector getPretensiondj (String idInstitucion, String tipoEjg,String anio, String numero) throws ClsExceptions  
 	{
 		try {
@@ -4632,6 +4621,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error ScsEJGAdm.getProcuradorEjgSalida.");
 		}
 	}
+	
 	
 	public ScsTipoEJGBean getTipoEjg (String idTipoEjg) throws ClsExceptions  
 	{
