@@ -1,4 +1,4 @@
-<!-- informeJustificacionMasiva.jsp -->
+<!-- informeJustificacionMasivaLetrado.jsp -->
 
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -24,7 +24,10 @@
 <% 
 
 	UsrBean usr=(UsrBean)session.getAttribute("USRBEAN");
-	String app=request.getContextPath();
+	String letrado = ((String)request.getAttribute("letrado")==null)?"":(String)request.getAttribute("letrado");
+	//String modoPestana = (String)request.getAttribute("MODOPESTANA");
+	
+	String anio = UtilidadesBDAdm.getYearBD("");
 %>
 
 <html>
@@ -36,31 +39,31 @@
 	<script src="<html:rewrite page="/html/js/SIGA.js"/>" type="text/javascript"></script>
 	<script src="<html:rewrite page="/html/js/calendarJs.jsp"/>" type="text/javascript"></script>	
 	<script src="<html:rewrite page="/html/jsp/general/validacionSIGA.jsp"/>" type="text/javascript"></script>	
-	
+	<script src="<html:rewrite page="/html/js/validacionStruts.js"/>" type="text/javascript"></script>	
+	<script src="<html:rewrite page="/html/js/validation.js"/>" type="text/javascript"></script>
+
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
-	<siga:Titulo titulo="gratuita.informeJustificacionMasiva.literal.titulo"  localizacion="factSJCS.informes.ruta"/>
-	
+	<siga:TituloExt titulo="gratuita.informeJustificacionMasiva.literal.titulo"  
+				localizacion="censo.fichaCliente.sjcs.informeJustificacionMasiva.localizacion"/>
+					
 </head>
 
-<body onLoad="ajusteAlto('resultado');">
+<body onLoad="ajusteAlto('resultado');buscar();">
 
 	<!-- INICIO: FORMULARIO DE BUSQUEDA DE CLIENTES -->
 	
 	<!-- FIN: FORMULARIO DE BUSQUEDA DE CLIENTES -->	
-	<html:form action = "/JGR_InformeJustificacion.do" method="POST" target="submitArea21">
+	<html:form action = "/JGR_PestanaDesignas.do" method="POST" target="resultado">
+
+		<html:hidden property="modo" />
 		
-		<html:hidden property="modo"/>
-		<html:hidden property="letrado"/>
+
+		<html:hidden property="letrado" value="<%=letrado%>"/>
 		
 		
 		<table width="100%" border="0">
-			<tr>
-				<td>
-					<siga:BusquedaPersona tipo="colegiado" titulo='<%=UtilidadesString.getMensajeIdioma(usr, "gratuita.informeJustificacionMasiva.literal.letrado")%>' idPersona="letrado" >
-					</siga:BusquedaPersona>
-				</td>
-			</tr>
+			
 			<tr>
 				<td>
 					<siga:ConjCampos leyenda="gratuita.informeJustificacionMasiva.literal.fechasDesigna">
@@ -87,10 +90,16 @@
 									<a id="iconoCalendarioA" onClick="return showCalendarGeneral(fechaHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<html:rewrite page="/html/imagenes/calendar_hi.gif"/>',1);"><img src="<html:rewrite page="/html/imagenes/calendar.gif"/>" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
 								</td>
 								<td class="labelText">
+									<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.anio"/>
+								</td>
+								<td>
+									<html:text property="anio"  size="4" styleClass="box" readOnly="false" value="<%=anio%>" maxlength="4"/>
+								</td>
+								<td class="labelText">
 									<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.mostrarHistorico"/>
 								</td>
 								<td>	
-								<html:checkbox property="mostrarTodas"/>
+								<html:checkbox property="mostrarTodas" onclick="buscar();"/>
 									
 								</td>
 							</tr>
@@ -100,7 +109,7 @@
 			</tr>
 				<tr>
 					<td>
-						<siga:ConjCampos leyenda="gratuita.informeJustificacionMasiva.literal.cliente">
+					<siga:ConjCampos leyenda="gratuita.informeJustificacionMasiva.literal.cliente">
 							<table width="100%">
 							<tr>
 								
@@ -128,24 +137,9 @@
 					</td>
 				
 				</tr>
-				<tr>
-					<td>
-					<siga:ConjCampos leyenda="gratuita.informeJustificacionMasiva.literal.idioma">
-						<table>
-							<tr>
-								<td class="labelText">
-									<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.idioma"/>&nbsp;
-								</td>				
-								<td>
-									<siga:ComboBD nombre="idioma" tipo="cmbIdioma"  clase="boxCombo" obligatorio="false" />
-								</td>
-							</tr>
-						</table>
-						</siga:ConjCampos>
-					</td>
-				</tr>
 						
 						
+
 
 		</table>
 		
@@ -154,43 +148,64 @@
 
 	<br>
 	
-		<siga:ConjBotonesBusqueda   botones="ij"  titulo=""/>
-	
 	<!-- FIN: CAMPOS DE BUSQUEDA-->	
 	
 	<!-- Formularios auxiliares para la busqueda de persona-->
+	
 	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="" style="display:none">
 		<html:hidden property="actionModal" value=""/>
 		<html:hidden property="modo" value="abrirBusquedaModal"/>
 		
 	</html:form>
-	
 
 
-	
-	
+	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
+	<script language="JavaScript">
 
-
-	
-	
-	
-<script language="JavaScript">
-
-		function informeJustificacion ()
+		function buscar ()
 		{
+
+			if ( !validarObjetoAnio(document.getElementById("anio")) ){
+				alert("<siga:Idioma key="fecha.error.anio"/>");
+				return false;
+			}
+			
 			sub();
-			document.InformeJustificacionMasivaForm.modo.value = "informe";
-			//document.InformeJustificacionMasivaForm.submit();
-			var f = document.InformeJustificacionMasivaForm.name;	
-			document.frames.submitArea21.location = '<html:rewrite page="/html/jsp/general/loadingWindowOpener.jsp"/>?formName=' + f + '&msg=messages.wait';
-				
+			
+			document.InformeJustificacionMasivaForm.modo.value = "buscarInit";
+			document.InformeJustificacionMasivaForm.submit();
+			
+		}
+		function buscarPaginador() 
+		{
+			document.forms[1].target			= "resultado";
+			document.forms[1].modo.value 		= "buscarPor";
+			document.forms[1].submit();
 				
 		}
 	
+	   function refrescarLocal(){
+			
+			buscar();
+		}		
 
-	</script>	
+	</script>
+
+	<siga:ConjBotonesBusqueda   botones="B"  titulo=""/>
+	<iframe align="center" src="<html:rewrite page="/html/jsp/general/blank.jsp"/>"
+					id="resultado"
+					name="resultado" 
+					scrolling="no"
+					frameborder="0"
+					marginheight="0"
+					marginwidth="0";					 
+					class="frameGeneral">
+	</iframe>
+	
+
 	<iframe name="submitArea" src="<html:rewrite page="/html/jsp/general/blank.jsp"/>" style="display:none"></iframe>
-	<iframe name="submitArea21" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	
+	
 	
   </body>
   

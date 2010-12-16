@@ -43,7 +43,7 @@
 	
 </head>
 
-<body onLoad="ajusteAlto('resultado');">
+<body onLoad="ajusteAlto('resultado');inicio();">
 
 	<!-- INICIO: FORMULARIO DE BUSQUEDA DE CLIENTES -->
 	
@@ -51,13 +51,13 @@
 	<html:form action = "/JGR_InformeJustificacion.do" method="POST" target="submitArea21">
 		
 		<html:hidden property="modo"/>
-		<html:hidden property="letrado"/>
-		
+		<html:hidden property="idPersona"/>
+		<html:hidden property="mostrarTodas"/>
 		
 		<table width="100%" border="0">
 			<tr>
 				<td>
-					<siga:BusquedaPersona tipo="colegiado" titulo='<%=UtilidadesString.getMensajeIdioma(usr, "gratuita.informeJustificacionMasiva.literal.letrado")%>' idPersona="letrado" >
+					<siga:BusquedaPersona tipo="colegiado" titulo='<%=UtilidadesString.getMensajeIdioma(usr, "gratuita.informeJustificacionMasiva.literal.letrado")%>' idPersona="idPersona" >
 					</siga:BusquedaPersona>
 				</td>
 			</tr>
@@ -86,13 +86,14 @@
 									&nbsp;
 									<a id="iconoCalendarioA" onClick="return showCalendarGeneral(fechaHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<html:rewrite page="/html/imagenes/calendar_hi.gif"/>',1);"><img src="<html:rewrite page="/html/imagenes/calendar.gif"/>" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
 								</td>
-								<td class="labelText">
+								<td class="labelText" >
 									<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.mostrarHistorico"/>
-								</td>
-								<td>	
-								<html:checkbox property="mostrarTodas"/>
-									
-								</td>
+									&nbsp;
+									</td>
+									<td class="labelText">	
+										<input type="checkbox" name="mostrarSoloPendientes" value="on">
+									&nbsp;
+									</td>
 							</tr>
 						</table>
 					</siga:ConjCampos>
@@ -175,17 +176,21 @@
 	
 	
 <script language="JavaScript">
-
-		function informeJustificacion ()
-		{
-			sub();
-			document.InformeJustificacionMasivaForm.modo.value = "informe";
-			//document.InformeJustificacionMasivaForm.submit();
-			var f = document.InformeJustificacionMasivaForm.name;	
-			document.frames.submitArea21.location = '<html:rewrite page="/html/jsp/general/loadingWindowOpener.jsp"/>?formName=' + f + '&msg=messages.wait';
-				
-				
-		}
+function inicio ()
+{
+		document.getElementById("mostrarSoloPendientes").checked = "checked";
+}
+	function informeJustificacion ()
+	{
+		sub();
+		document.InformeJustificacionMasivaForm.mostrarTodas.value =document.getElementById("mostrarSoloPendientes").checked;
+		document.InformeJustificacionMasivaForm.modo.value = "informe";
+		//document.InformeJustificacionMasivaForm.submit();
+		var f = document.InformeJustificacionMasivaForm.name;	
+		document.frames.submitArea21.location = '<html:rewrite page="/html/jsp/general/loadingWindowOpener.jsp"/>?formName=' + f + '&msg=messages.wait';
+			
+			
+	}
 	
 
 	</script>	
