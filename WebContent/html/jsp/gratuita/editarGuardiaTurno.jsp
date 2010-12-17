@@ -224,7 +224,7 @@
 </head>
 
 
-<body class="tablaCentralCampos" onload="modificarVarios();">
+<body class="tablaCentralCampos" onload="modificarVarios();init();">
 
 <%
 	//Entrada desde el menu de Censo:
@@ -359,9 +359,9 @@
 			<tr>
 				<td class="labelText"><siga:Idioma
 					key="gratuita.guardiasTurno.literal.turnoPrincipal"/> </td>
-				<td><html:select styleId="turnosPrincipales" styleClass="boxCombo" style="width:200px;"
+				<td><html:select styleId="turnosPrincipales"  styleClass="boxCombo" style="width:200px;"
 					property="idTurnoPrincipal">
-					<bean:define id="turnosPrincipales" name="DefinirGuardiasTurnosForm"
+					<bean:define id="turnosPrincipales"  name="DefinirGuardiasTurnosForm"
 						property="turnosPrincipales" type="java.util.Collection" />
 					<html:optionsCollection name="turnosPrincipales" value="idTurno"
 						label="nombre" />
@@ -823,6 +823,17 @@
 
 <!-------------------- INICIO: Funciones JavaScript -------------------->
 <script language="JavaScript">
+
+function init() 
+{
+	var modo="<%=modoPestanha%>";		
+	if (modo=="VER"){
+		document.getElementById("turnosPrincipales").disabled= true;
+		document.getElementById("guardiasPrincipales").disabled= true;	
+	}
+	
+
+}
 
 	//Modifica los checks desde el onload
 	function modificarVarios ()
