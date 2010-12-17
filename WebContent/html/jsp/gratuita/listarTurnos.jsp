@@ -381,8 +381,8 @@
 				<input type='hidden' name='oculto<%=String.valueOf(i)%>_4' value='<%=registro.get("VALIDARINSCRIPCIONES")%>'>
 				<input type='hidden' name='oculto<%=String.valueOf(i)%>_5' value='<%=registro.get("DESIGNADIRECTA")%>'>
 				<input type='hidden' name='oculto<%=String.valueOf(i)%>_6' value='<%=registro.get("REPARTOPORPUNTOS")%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_7' value='<%=o1%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_8' value='<%=o2%>'>
+				<input type='hidden' name='oculto<%=String.valueOf(i)%>_7' value=''>
+				<input type='hidden' name='oculto<%=String.valueOf(i)%>_8' value=''>
 				<input type='hidden' name='oculto<%=String.valueOf(i)%>_9' value='<%=registro.get("IDORDENACIONCOLAS")%>'>
 				<input type='hidden' name='oculto<%=String.valueOf(i)%>_10' value='<%=o5%>'>
 				<input type='hidden' name='oculto<%=String.valueOf(i)%>_11' value='<%=registro.get("IDAREA")%>'>
@@ -397,16 +397,16 @@
 				<input type='hidden' name='oculto<%=String.valueOf(i)%>_19' value=''>
 				
 				<input type='hidden' name='oculto<%=String.valueOf(i)%>_20' value='<%=registro.get("FECHASOLICITUD")%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_21' value='<%=registro.get("OBSERVACIONESSOLICITUD")%>'>
+				<input type='hidden' name='oculto<%=String.valueOf(i)%>_21' value=''>
 				<input type='hidden' name='oculto<%=String.valueOf(i)%>_22' value='<%=registro.get("FECHAVALIDACION")%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_23' value='<%=registro.get("OBSERVACIONESVALIDACION")%>'>
+				<input type='hidden' name='oculto<%=String.valueOf(i)%>_23' value=''>
 				<input type='hidden' name='oculto<%=String.valueOf(i)%>_24' value='<%=registro.get("FECHASOLICITUDBAJA")%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_25' value='<%=registro.get("OBSERVACIONESBAJA")%>'>
+				<input type='hidden' name='oculto<%=String.valueOf(i)%>_25' value=''>
 				<input type='hidden' name='oculto<%=String.valueOf(i)%>_26' value='<%=registro.get("IDGRUPOFACTURACION")%>'>
 				<input type='hidden' name='oculto<%=String.valueOf(i)%>_27' value='<%=registro.get("FECHABAJA")%>'>
 				<input type='hidden' name='oculto<%=String.valueOf(i)%>_28' value='<%=registro.get("FECHADENEGACION")%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_29' value='<%=registro.get("OBSERVACIONESDENEGACION")%>'>
-				<input type='hidden' name='oculto<%=String.valueOf(i)%>_30' value='<%=registro.get("OBSERVACIONESVALBAJA")%>'>
+				<input type='hidden' name='oculto<%=String.valueOf(i)%>_29' value=''>
+				<input type='hidden' name='oculto<%=String.valueOf(i)%>_30' value=''>
 				
 				<%if (!isEntradaSJCS){%>
 				<td ><%=registro.get("ABREVIATURA")%>&nbsp;</td>
