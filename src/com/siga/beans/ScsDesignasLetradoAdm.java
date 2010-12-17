@@ -911,9 +911,9 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 				//helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
 					//	htFuncion, "f_siga_getdefendidosdesigna", "CLIENTE"));
 				
-//				if(isInforme)
-//					formatearHashInforme(registro,idInstitucion);
-//				
+				if(isInforme)
+					formatearHashInforme(registro,idInstitucion);
+				
 				
 				
 				String keyTreeMap = fechaOrden+anioDesigna+codigoDesigna+idTurno+numeroDesigna;
