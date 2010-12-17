@@ -107,6 +107,8 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 				mapDestino = modalNuevoCalendario(mapping, miForm, request, response);				
 			} else if (accion.equalsIgnoreCase("modalNuevaGuardia")){
 				mapDestino = modalNuevaGuardia(mapping, miForm, request, response);
+			} else if (accion.equalsIgnoreCase("descargarLog")){
+				mapDestino = descargarLog(mapping, miForm, request, response);
 			} else {			
 				return super.executeInternal(mapping,
 						formulario,
@@ -1995,5 +1997,66 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 		}		
 		return forward;
 	}
+	
+	/**
+	 * Descarga el fichero de Log.
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws SIGAException
+	 */
+	private String descargarLog(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) 
+	throws SIGAException{
+		String forward = "descargaFichero";
+		String sFicheroLog=null, sIdInstitucion=null, sIdEnvio=null;
+		ScsCalendarioGuardiasAdm admCalendarioGuardia = new ScsCalendarioGuardiasAdm(this.getUserBean(request));
+		try {
+			DefinirCalendarioGuardiaForm miForm = (DefinirCalendarioGuardiaForm)formulario;
+			UsrBean user = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));   
+			String idInstitucion = "";
+			String idTurno = "";
+			String idGuardia = "";
+			String idCalendarioGuardias = "";
+			String fechaDesde = "";
+			String fechaHasta = "";
+
+			Vector ocultos;		
+			ocultos = miForm.getDatosTablaOcultos(0);
+			idCalendarioGuardias = (String)ocultos.get(0);
+			idTurno = (String)ocultos.get(1);
+			idGuardia = (String)ocultos.get(2);
+			idInstitucion = (String)ocultos.get(3);
+			
+			//obteniendo los datos del calendario:
+			StringBuffer where = new StringBuffer();
+			where.append("WHERE "+ScsCalendarioGuardiasBean.C_IDINSTITUCION+"="+idInstitucion);
+			where.append(" AND "+ScsCalendarioGuardiasBean.C_IDTURNO+"="+idTurno);
+			where.append(" AND "+ScsCalendarioGuardiasBean.C_IDGUARDIA+"="+idGuardia);
+			where.append(" AND "+ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS+"="+idCalendarioGuardias);
+			Vector vCalendario = admCalendarioGuardia.select(where.toString());
+			ScsCalendarioGuardiasBean beanCalendario = (ScsCalendarioGuardiasBean)vCalendario.get(0); 
+			fechaDesde = UtilidadesString.formatoFecha(beanCalendario.getFechaInicio(),ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+			fechaHasta = UtilidadesString.formatoFecha(beanCalendario.getFechaFin(),ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+			
+			ScsGuardiasColegiadoAdm envioAdm = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
+			ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			sFicheroLog = rp.returnProperty("sjcs.directorioFisicoGeneracionCalendarios")
+					+ File.separator + idInstitucion+"\\"+ idTurno + "." + idGuardia + "." + idCalendarioGuardias + "-"
+					+ fechaDesde.replace('/', '.') + "-" + fechaHasta.replace('/', '.') + ".log.xls";
+			File fichero = new File(sFicheroLog);
+			if(fichero==null || !fichero.exists()){
+				throw new SIGAException("messages.general.error.ficheroNoExiste"); 
+			}
+			request.setAttribute("nombreFichero", fichero.getName());
+			request.setAttribute("rutaFichero", fichero.getPath());
+
+		} catch(Exception e){
+			throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
+		}
+		return forward;
+	}
+
 
 }

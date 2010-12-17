@@ -13,11 +13,15 @@
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 
 <!-- IMPORTS -->
+<%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.administracion.SIGAMasterTable"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
-<%@ page import="com.atos.utils.UsrBean"%>
+<%@ page import="com.siga.tlds.FilaExtElement"%>
 <%@ page import="java.util.*"%>
 <%@ page import="com.atos.utils.GstDate"%>
+<%@ page import="java.io.File" %>
+<%@ page import="com.atos.utils.ReadProperties" %>
+<%@ page import="com.siga.Utilidades.SIGAReferences" %>
 
 <!-- JSP --> 
 <% 
@@ -73,13 +77,13 @@
 		
 
 		<siga:TablaCabecerasFijas 		   
-			   nombre="listadoInicial"
-			   borde="1"
-			   clase="tableTitle"		   
-			   nombreCol="gratuita.listado_DefinirCalendarioGuardia.literal.fechaInicio,gratuita.listado_DefinirCalendarioGuardia.literal.fechaFin,gratuita.listado_DefinirCalendarioGuardia.literal.observaciones,"
-			   tamanoCol="20,20,50,10"
-		   			alto="100%"
-			   modal="G"			   
+			   	nombre="tablaDatos"
+			   	borde="1"
+			   	clase="tableTitle"		   
+			   	nombreCol="gratuita.listado_DefinirCalendarioGuardia.literal.fechaInicio,gratuita.listado_DefinirCalendarioGuardia.literal.fechaFin,gratuita.listado_DefinirCalendarioGuardia.literal.observaciones,"
+			   	tamanoCol="15,15,50,12"
+		   		alto="100%"
+			   	modal="G"			   
 		>
 		
 	<!-- INICIO: RESULTADO -->
@@ -87,6 +91,8 @@
 				<%
 				int recordNumber=1;
 				String fechaInicio="", fechaFin="", observaciones="", idcalendarioguardias="", idturno="", idguardia="", idinstitucion="";
+				ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+				String sFicheroLog;
 				while ((recordNumber) <= obj.size())
 				{	 	Hashtable hash = (Hashtable)obj.get(recordNumber-1);
 				%>
@@ -102,6 +108,7 @@
 				3- OBSERVACIONES
 			-->
 			<%
+				FilaExtElement[] elems=new FilaExtElement[1];
 				fechaInicio = ((String)hash.get("FECHAINICIO")).equals("")?"&nbsp;":(String)hash.get("FECHAINICIO");
 				fechaFin = ((String)hash.get("FECHAFIN")).equals("")?"&nbsp;":(String)hash.get("FECHAFIN");
 				observaciones = ((String)hash.get("OBSERVACIONES")).equals("")?"&nbsp;":(String)hash.get("OBSERVACIONES");
@@ -109,10 +116,25 @@
 				idturno = ((String)hash.get("IDTURNO")).equals("")?"&nbsp;":(String)hash.get("IDTURNO");
 				idguardia = ((String)hash.get("IDGUARDIA")).equals("")?"&nbsp;":(String)hash.get("IDGUARDIA");
 				idinstitucion = ((String)hash.get("IDINSTITUCION")).equals("")?"&nbsp;":(String)hash.get("IDINSTITUCION");
-				
+				sFicheroLog = rp.returnProperty("sjcs.directorioFisicoGeneracionCalendarios")
+					+ File.separator + idinstitucion+"\\"+ idturno + "." + idguardia + "." + idcalendarioguardias + "-"
+					+ GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicio).replace('/', '.') 
+					+ "-" + GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin).replace('/', '.') + ".log.xls";
+				File fichero = new File(sFicheroLog);
+				if(fichero!=null && fichero.exists()){
+					//Boton de descarga del envio:
+					elems[0]=new FilaExtElement("descargaLog", "descargaLog", SIGAConstants.ACCESS_READ);
+				} else {
+					elems[0] = null;
+				}
 			%>
-		       	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="E,C,B" clase="listaNonEdit" modo="<%=modopestanha%>"  >
-				<td align="center"><input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=idcalendarioguardias%>' ><input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=idturno%>' ><input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=idguardia%>' ><input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=idinstitucion%>' /><%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicio)%></td>
+		       	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="E,C,B" elementos="<%=elems%>"  clase="listaNonEdit" modo="<%=modopestanha%>"  >
+				<td align="center">
+				<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=idcalendarioguardias%>' >
+				<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=idturno%>' >
+				<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=idguardia%>' >
+				<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=idinstitucion%>' />
+				<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicio)%></td>
 				<td align="center"><%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin)%></td>
 				<td align="center"><%=observaciones%></td>
 			</siga:FilaConIconos>
@@ -131,6 +153,39 @@
 	<!-- Obligatoria en todas las páginas -->
 		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 	<!-- FIN: SUBMIT AREA -->
+	
+	<script language="JavaScript">
+	
+		function descargaLog(fila)
+			{
+
+			   var datos;
+			   datos = document.getElementById('tablaDatosDinamicosD');
+			   datos.value = ""; 
+			   var i, j;
+			   for (i = 0; i < 5; i++) {
+			      var tabla;
+			      tabla = document.getElementById('tablaDatos');
+			      if (i == 0) {
+			        var flag = true;
+			        j = 1;
+			        while (flag) {
+			          var aux = 'oculto' + fila + '_' + j;
+			          var oculto = document.getElementById(aux);
+			          if (oculto == null)  { flag = false; }
+			          else { datos.value = datos.value + oculto.value + ','; }
+			          j++;
+			        }
+			        datos.value = datos.value + "%"
+			      }
+			   }
+				   
+				document.forms[0].target="submitArea";
+				document.forms[0].modo.value="descargarLog";
+				document.forms[0].submit();
+			}
+
+	</script>
 	
 </body>	
 </html>
