@@ -838,8 +838,8 @@ public class DatosColegialesAction extends MasterAction {
 
 			// obteniendo datos del estado
 			Hashtable hash = new Hashtable();
-			hash.put(CenDatosColegialesEstadoBean.C_IDPERSONA, idinstitucion);
-			hash.put(CenDatosColegialesEstadoBean.C_IDINSTITUCION, idpersona);
+			hash.put(CenDatosColegialesEstadoBean.C_IDPERSONA, idpersona);
+			hash.put(CenDatosColegialesEstadoBean.C_IDINSTITUCION, idinstitucion);
 			hash.put(CenDatosColegialesEstadoBean.C_FECHAESTADO, (String) camposOcultos.get(2));
 
 			// generando datos para el historico
@@ -922,6 +922,11 @@ public class DatosColegialesAction extends MasterAction {
 			throw new ClsExceptions("Error al ejecutar el PL PROC_SIGA_ACT_ANTICIPOSCLIENTE ");
 
 		// 2. revisando suscripciones a servicios
+		try {
+			fechaEstado=UtilidadesString.formatoFecha(fechaEstado, ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_ENGLISH);
+		} catch (Exception e1) {
+			// La fecha esta bien formada como dia/mes/ano
+		}
 		String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado(idinstitucion, idpersona,
 				fechaEstado, usuario);
 		if ((resultado == null) || (!resultado[0].equals("0")))
