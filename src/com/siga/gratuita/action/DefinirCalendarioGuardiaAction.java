@@ -108,6 +108,8 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 				mapDestino = modalNuevoCalendario(mapping, miForm, request, response);				
 			} else if (accion.equalsIgnoreCase("modalNuevaGuardia")){
 				mapDestino = modalNuevaGuardia(mapping, miForm, request, response);
+			} else if (accion.equalsIgnoreCase("descargarLog")){
+				mapDestino = descargarLog(mapping, miForm, request, response);
 			} else {			
 				return super.executeInternal(mapping,
 						formulario,
