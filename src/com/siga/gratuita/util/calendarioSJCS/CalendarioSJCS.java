@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -23,6 +24,8 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.LogFileWriter;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesFecha;
+import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenBajasTemporalesBean;
 import com.siga.beans.GenParametrosAdm;
@@ -300,34 +303,6 @@ public class CalendarioSJCS
 		return salida;
 	}
 	
-	/** 
-	 * Actualiza el ultimo de la guardia por el puntero de letrados
-	 * @param letradoSeleccionado
-	 * @throws ClsExceptions
-	 */
-	private void actualizarUltimoLetradoGuardiaBBDD(LetradoGuardia letradoSeleccionado) throws ClsExceptions {
-		try {
-			ScsGuardiasTurnoAdm admGuardiasTurno = new ScsGuardiasTurnoAdm(this.usrBean);
-			
-			String[] claves = {ScsGuardiasTurnoBean.C_IDINSTITUCION, ScsGuardiasTurnoBean.C_IDTURNO, 
-							   ScsGuardiasTurnoBean.C_IDGUARDIA};
-			String[] campos = {ScsGuardiasTurnoBean.C_IDPERSONA_ULTIMO, ScsGuardiasTurnoBean.C_USUMODIFICACION,
-							   ScsGuardiasTurnoBean.C_FECHAMODIFICACION};
-			
-			Hashtable hash = new Hashtable();
-			hash.put(ScsGuardiasTurnoBean.C_IDPERSONA_ULTIMO, letradoSeleccionado.getIdPersona());
-			hash.put(ScsGuardiasTurnoBean.C_USUMODIFICACION, this.usrBean.getUserName());
-			hash.put(ScsGuardiasTurnoBean.C_FECHAMODIFICACION, "SYSDATE");
-			hash.put(ScsGuardiasTurnoBean.C_IDINSTITUCION, letradoSeleccionado.getIdInstitucion());
-			hash.put(ScsGuardiasTurnoBean.C_IDTURNO, letradoSeleccionado.getIdTurno());
-			hash.put(ScsGuardiasTurnoBean.C_IDGUARDIA, letradoSeleccionado.getIdGuardia());
-			
-			admGuardiasTurno.updateDirect(hash, claves, campos);
-		} catch (Exception e) {
-			throw new ClsExceptions(e, "Excepcion en actualizarUltimoLetradoGuardiaBBDD.");
-		}
-	}
-
 	/**
 	 * Almacena para un letrado la guardia del mismo con los registros correspondientes a sus dias de guardia.
 	 * @param letrado
@@ -460,11 +435,14 @@ public class CalendarioSJCS
 			Iterator<LetradoGuardia> iterador = alCompensaciones.iterator();
 			while (iterador.hasNext()) {
 				auxLetradoSeleccionado = (LetradoGuardia) iterador.next();
+				log.addLog(new String[] {"Probando Letrado Compensado", auxLetradoSeleccionado.toString()});
 				// vale
 				if (comprobarRestriccionesLetradoCompensado(auxLetradoSeleccionado, diasGuardia, iterador, null)) {
 					letradoGuardia = auxLetradoSeleccionado;
 					break;
 				}
+				else
+					log.addLog(new String[] {"Letrado Compensado no valido", auxLetradoSeleccionado.toString()});
 			}
 		}
 		if (letradoGuardia != null)
@@ -476,10 +454,13 @@ public class CalendarioSJCS
 			int fin = punteroLetrado.getValor();
 			do {
 				auxLetradoSeleccionado = (LetradoGuardia) alLetradosOrdenados.get(punteroLetrado.getValor());
+				log.addLog(new String[] {"Probando Letrado", auxLetradoSeleccionado.toString()});
 
 				// vale
 				if (comprobarRestriccionesLetradoCola(auxLetradoSeleccionado, diasGuardia, hmPersonasConSaltos))
 					letradoGuardia = auxLetradoSeleccionado;
+				else
+					log.addLog(new String[] {"Letrado no valido", auxLetradoSeleccionado.toString()});
 
 				// obteniendo siguiente en la cola
 				if (punteroLetrado.getValor() < alLetradosOrdenados.size() - 1)
@@ -859,7 +840,7 @@ public class CalendarioSJCS
 	public void calcularMatrizPeriodosDiasGuardiaAutomatico() throws ClsExceptions
 	{
 		// generando calendario normal
-		this.arrayPeriodosDiasGuardiaSJCS.clear();
+		this.arrayPeriodosDiasGuardiaSJCS = new ArrayList();
 		ArrayList<ArrayList<String>> listaDiasPeriodos = this.obtenerPeriodosGuardia();
 		if (listaDiasPeriodos != null && !listaDiasPeriodos.isEmpty())
 			this.arrayPeriodosDiasGuardiaSJCS.addAll(listaDiasPeriodos);
@@ -873,19 +854,21 @@ public class CalendarioSJCS
 		// generar el calendario real (antes) y (ahora) uno ampliado para obtener el periodo de mas
 		if (this.calendariosVinculados != null) {
 			// obteniendo una fechaFin suficientemente posterior
-			SimpleDateFormat sdf = new SimpleDateFormat (ClsConstants.DATE_FORMAT_JAVA);
-			SimpleDateFormat miFormatoFecha = new SimpleDateFormat (ClsConstants.DATE_FORMAT_SHORT_SPANISH);
-			Date dFechaInicio, dFechaFin;
 			try {
-				dFechaInicio = sdf.parse (this.fechaInicio);
+				SimpleDateFormat sdf = new SimpleDateFormat (ClsConstants.DATE_FORMAT_JAVA);
+				SimpleDateFormat miFormatoFecha = new SimpleDateFormat (ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+				Date dFechaInicio = sdf.parse (this.fechaInicio);
 				ArrayList<String> ultimoPeriodo = listaDiasPeriodos.get(listaDiasPeriodos.size()-1);
-				dFechaFin = miFormatoFecha.parse (ultimoPeriodo.get(ultimoPeriodo.size()-1));
+				Date dFechaFin = miFormatoFecha.parse (ultimoPeriodo.get(ultimoPeriodo.size()-1));
+				
+				Date nuevaFechaFin = new Date(dFechaFin.getTime() + dFechaFin.getTime() - dFechaInicio.getTime());
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(nuevaFechaFin);
+				cal.add(Calendar.DATE, 1);
+				this.fechaFin = sdf.format(cal.getTime());
 			} catch (ParseException e) {
 				throw new ClsExceptions(e, "Error al parsear las fechas del calendario");
 			}
-
-			Date nuevaFechaFin = new Date(dFechaFin.getTime() + dFechaFin.getTime() - dFechaInicio.getTime());
-			this.fechaFin = sdf.format(nuevaFechaFin);
 			
 			// generando el calendario ampliado
 			ArrayList<ArrayList<String>> listaDiasPeriodosAmpliado = this.obtenerPeriodosGuardia();
@@ -986,6 +969,7 @@ public class CalendarioSJCS
 		
 		// Controles generales
 		ScsSaltosCompensacionesAdm scAdm = new ScsSaltosCompensacionesAdm(this.usrBean);
+		ScsGuardiasTurnoAdm guardiaAdm = new ScsGuardiasTurnoAdm(this.usrBean);
 
 		// Variables generales
 		ArrayList<String> diasGuardia, primerPeriodo, segundoPeriodo; // Periodo o dia de guardia para rellenar con letrado
@@ -996,6 +980,7 @@ public class CalendarioSJCS
 		Puntero punteroListaLetrados;
 		int posicion;
 		ArrayList<LetradoGuardia> alLetradosInsertar; // Lista de letrados obtenidos para cada periodo
+		LetradoGuardia unLetrado;
 
 		try {
 			// obteniendo saltos
@@ -1094,30 +1079,39 @@ public class CalendarioSJCS
 								this.almacenarAsignacionGuardia(calendario.getIdCalendarioGuardias(), alLetradosInsertar, segundoPeriodo, lDiasASeparar,
 										UtilidadesString.getMensajeIdioma(this.usrBean,
 												"gratuita.literal.comentario.sustitucion"));
-								log.addLog(new String[] {"Guardia vinculada", calendario.toString()});
+								log.addLog(new String[] {UtilidadesString.getMensajeIdioma(this.usrBean,
+										"gratuita.modalRegistro_DefinirCalendarioGuardia.literal.errorLetradosSuficientes")});
 							}
 						}
 						
 						letradosInsertados++;
 					} else {
+						log.addLog(new String[] {UtilidadesString.getMensajeIdioma(this.usrBean,
+								"gratuita.modalRegistro_DefinirCalendarioGuardia.literal.errorLetradosSuficientes")});
 						throw new SIGAException(
 								"gratuita.modalRegistro_DefinirCalendarioGuardia.literal.errorLetradosSuficientes");
 					}
 				} // FIN Para cada plaza que hay que ocupar en dia/conjunto de dias
 
 				// controlando que se insertaron tantos letrados como hacian falta
-				if (letradosInsertados != numeroLetradosGuardia)
+				if (letradosInsertados != numeroLetradosGuardia) {
+					log.addLog(new String[] {});
 					throw new SIGAException(
 							"gratuita.modalRegistro_DefinirCalendarioGuardia.literal.errorLetradosSuficientes");
+				}
 
-				// actualizando el ultimo letrado en la guardia
+				// actualizando el ultimo letrado en la guardia solo si no es de la lista de compensaciones
 				int punteroUltimo = 0;
 				if (punteroListaLetrados.getValor() == 0)
 					punteroUltimo = alLetradosOrdenados.size() - 1;
 				else
 					punteroUltimo = punteroListaLetrados.getValor() - 1;
 
-				this.actualizarUltimoLetradoGuardiaBBDD((LetradoGuardia) alLetradosOrdenados.get(punteroUltimo));
+				unLetrado = alLetradosOrdenados.get(punteroUltimo);
+				if (unLetrado.getSaltoCompensacion() == null)
+					guardiaAdm.cambiarUltimoCola(unLetrado.getIdInstitucion(), unLetrado.getIdTurno(), 
+							unLetrado.getIdGuardia(), unLetrado.getIdPersona(), 
+							unLetrado.getInscripcionGuardia().getFechaSuscripcion());
 			} // FIN Para cada dia o conjunto de dias
 
 		} catch (SIGAException e) {
@@ -1141,6 +1135,7 @@ public class CalendarioSJCS
 		// Controles generales
 		ScsSaltoCompensacionGrupoAdm salComAdm = new ScsSaltoCompensacionGrupoAdm(this.usrBean);
 		ScsGrupoGuardiaColegiadoAdm gruGuaColAdm = new ScsGrupoGuardiaColegiadoAdm(this.usrBean);
+		ScsGuardiasTurnoAdm guardiaAdm = new ScsGuardiasTurnoAdm(this.usrBean);
 
 		// Variables
 		ArrayList<String> diasGuardia, primerPeriodo, segundoPeriodo; // Periodo o dia de guardia para rellenar con letrado
@@ -1154,6 +1149,7 @@ public class CalendarioSJCS
 		ArrayList<LetradoGuardia> grupoLetrados; // Lista de letrados en el grupo
 		ArrayList<LetradoGuardia> alLetradosInsertar; // Lista de letrados obtenidos para cada periodo
 		Puntero punteroListaLetrados;
+		LetradoGuardia unLetrado;
 		
 		ScsGrupoGuardiaColegiadoBean beanGrupoLetrado; // Bean para guardar cambios en los grupos
 		Hashtable hashGrupoLetrado; // Hash para guardar cambios en los grupos
@@ -1236,9 +1232,13 @@ public class CalendarioSJCS
 					
 				// guardando ultimo de cola
 				if (rotacion)
-					this.actualizarUltimoLetradoGuardiaBBDD(grupoLetrados.get(0));
+					unLetrado = grupoLetrados.get(0);
 				else
-					this.actualizarUltimoLetradoGuardiaBBDD(grupoLetrados.get(grupoLetrados.size()-1));
+					unLetrado = grupoLetrados.get(grupoLetrados.size()-1);
+				if (unLetrado.getSaltoCompensacion() == null)
+					guardiaAdm.cambiarUltimoCola(unLetrado.getIdInstitucion(), unLetrado.getIdTurno(), 
+							unLetrado.getIdGuardia(), unLetrado.getIdPersona(), 
+							unLetrado.getInscripcionGuardia().getFechaSuscripcion());
 				
 				// metiendo grupo en el periodo de guardia
 				alLetradosInsertar = new ArrayList<LetradoGuardia>();

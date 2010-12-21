@@ -68,6 +68,29 @@ public class ScsInscripcionGuardiaBean extends MasterBean
 	private Integer	grupo;
 	private Integer	ordenGrupo;
 	
+	// Otros atributos
+	ScsTurnoBean turno;
+	ScsGuardiasTurnoBean guardia;
+	CenPersonaBean persona;
+	String numeroGrupo;
+	
+	
+	/**
+	 * Constructor
+	 */
+	public ScsInscripcionGuardiaBean() {
+		
+	}
+	public ScsInscripcionGuardiaBean(Integer idInstitucion, Integer idTurno, Integer idGuardia, Long idPersona,
+			String fechaSuscripcion)
+	{
+		this.idInstitucion = idInstitucion;
+		this.idTurno = idTurno;
+		this.idGuardia = idGuardia;
+		this.idPersona = idPersona;
+		this.fechaSuscripcion = fechaSuscripcion;
+	}
+	
 	
 	// Setters
 	public void setIdInstitucion 			(Integer valor)	{this.idInstitucion				= valor;}
@@ -93,6 +116,11 @@ public class ScsInscripcionGuardiaBean extends MasterBean
 	public void setIdGrupoGuardiaColegiado	(Long valor)	{this.idGrupoGuardiaColegiado	= valor;}
 	public void setGrupo					(Integer valor)	{this.grupo						= valor;}
 	public void setOrdenGrupo				(Integer valor)	{this.ordenGrupo				= valor;}
+	
+	public void setTurno	(ScsTurnoBean valor)			{this.turno		= valor;}
+	public void setGuardia	(ScsGuardiasTurnoBean valor)	{this.guardia	= valor;}
+	public void setPersona	(CenPersonaBean valor)			{this.persona	= valor;}
+	public void setNumeroGrupo	(String valor)			{this.numeroGrupo	= valor;}
 	
 	
 	// Getters
@@ -120,23 +148,13 @@ public class ScsInscripcionGuardiaBean extends MasterBean
 	public Integer getGrupo						() {return this.grupo;}
 	public Integer getOrdenGrupo				() {return this.ordenGrupo;}
 	
-	
-	// Otros atributos
-	ScsTurnoBean turno;
-	ScsGuardiasTurnoBean guardia;
-	CenPersonaBean persona;
-	String numeroGrupo;
-
-	public void setTurno	(ScsTurnoBean valor)			{this.turno		= valor;}
-	public void setGuardia	(ScsGuardiasTurnoBean valor)	{this.guardia	= valor;}
-	public void setPersona	(CenPersonaBean valor)			{this.persona	= valor;}
-	public void setNumeroGrupo	(String valor)			{this.numeroGrupo	= valor;}
-	
 	public ScsTurnoBean getTurno			() {return turno;}
 	public ScsGuardiasTurnoBean getGuardia	() {return guardia;}
 	public CenPersonaBean getPersona		() {return persona;}
 	public String getNumeroGrupo() {return numeroGrupo;}
 
+	
+	// Otros metodos
 	public InscripcionTGForm getInscripcion()
 	{
 		InscripcionTGForm inscripcion = new InscripcionTGForm();
@@ -176,6 +194,27 @@ public class ScsInscripcionGuardiaBean extends MasterBean
 		inscripcion.setObservacionesValBaja(observacionesValBaja);
 		inscripcion.setEstado(estado);
 		return inscripcion;
+	}
+	
+	/**
+	 * Este metodo comprueba si este bean de inscripcion corresponde a la misma inscripcion 
+	 * que el bean pasado como parametro.
+	 * Es decir, comprueba la igualdad de los siguientes atributos:
+	 * idInstitucion, idTurno, idGuardia, idPersona, fechaSuscripcion
+	 * 
+	 * @param bean
+	 * @return
+	 */
+	public boolean equals(ScsInscripcionGuardiaBean bean) {
+		boolean result = true;
+		
+		result &= idInstitucion.intValue() == bean.getIdInstitucion().intValue();
+		result &= idTurno.intValue() == bean.getIdTurno().intValue();
+		result &= idGuardia.intValue() == bean.getIdGuardia().intValue();
+		result &= idPersona.longValue() == bean.getIdPersona().longValue();
+		result &= fechaSuscripcion.equalsIgnoreCase(bean.getFechaSuscripcion());
+		
+		return result;
 	}
 	
 }

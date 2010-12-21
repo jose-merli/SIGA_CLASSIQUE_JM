@@ -3,8 +3,11 @@ package com.siga.gratuita.util.calendarioSJCS;
 import java.util.ArrayList;
 import java.util.Map;
 
+import com.atos.utils.ClsExceptions;
 import com.siga.beans.CenBajasTemporalesBean;
 import com.siga.beans.CenPersonaBean;
+import com.siga.beans.ScsInscripcionGuardiaBean;
+import com.siga.beans.ScsInscripcionTurnoBean;
 
 /**
  * Created on Mar 15, 2006
@@ -25,8 +28,8 @@ public class LetradoGuardia implements Cloneable
 	private String idSaltoCompensacionGrupo;
 	
 	private CenPersonaBean persona;
-	private String fechaValidacion;
-	private String fechaBaja;
+	private ScsInscripcionGuardiaBean inscripcionGuardia;
+	private ScsInscripcionTurnoBean inscripcionTurno;
 	private Integer posicion;
 	private Long idGrupoGuardiaColegiado;
 	private Integer grupo;
@@ -35,28 +38,56 @@ public class LetradoGuardia implements Cloneable
 
 	
 	// Constructores
-	public LetradoGuardia() {
-	}
-	public LetradoGuardia(Long idPersona, Integer idInstitucion, Integer idTurno, Integer idGuardia, String saltoCompensacion) {
-		this.idPersona = idPersona;
+	public LetradoGuardia(CenPersonaBean perBean, Integer idInstitucion, Integer idTurno, Integer idGuardia,
+			String saltoCompensacion)
+	{
+		this.persona = perBean;
+		this.idPersona = perBean.getIdPersona();
+		
 		this.idInstitucion = idInstitucion;
 		this.idTurno = idTurno;
 		this.idGuardia = idGuardia;
 		this.saltoCompensacion = saltoCompensacion;
-	}
-	public LetradoGuardia(Long idPersona, Integer idInstitucion, Integer idTurno, Integer idGuardia) {
-		this.idPersona = idPersona;
-		this.idInstitucion = idInstitucion;
-		this.idTurno = idTurno;
-		this.idGuardia = idGuardia;
-	}
-	public LetradoGuardia(Long idPersona, Integer idInstitucion, Integer idTurno) {
-		this.idPersona = idPersona;
-		this.idInstitucion = idInstitucion;
-		this.idTurno = idTurno;
-	}
+	}	
+	public LetradoGuardia(ScsInscripcionGuardiaBean inscripcionGuardia,
+			Map<String, CenBajasTemporalesBean> bajasTemporales) throws ClsExceptions
+	{
+		// inicializando letrado
+		this.persona = inscripcionGuardia.getPersona();
+		this.idPersona = this.persona.getIdPersona();
 
+		this.idInstitucion = inscripcionGuardia.getIdInstitucion();
+		this.idTurno = inscripcionGuardia.getIdTurno();
+		this.idGuardia = inscripcionGuardia.getIdGuardia();
+		this.saltoCompensacion = null;
+		this.inscripcionGuardia = inscripcionGuardia;
+
+		// rellenando bajas temporales
+		this.bajasTemporales = bajasTemporales;
+
+		// datos de grupo
+		this.numeroGrupo = inscripcionGuardia.getNumeroGrupo();
+		this.idGrupoGuardiaColegiado = inscripcionGuardia.getIdGrupoGuardiaColegiado();
+		this.grupo = inscripcionGuardia.getGrupo();
+		this.ordenGrupo = inscripcionGuardia.getOrdenGrupo();
+	}	
+	public LetradoGuardia(ScsInscripcionTurnoBean inscripcionTurno,
+			Map<String, CenBajasTemporalesBean> bajasTemporales) throws ClsExceptions
+	{
+		// inicializando letrado
+		this.persona = inscripcionTurno.getPersona();
+		this.idPersona = this.persona.getIdPersona();
+
+		this.idInstitucion = inscripcionTurno.getIdInstitucion();
+		this.idTurno = inscripcionTurno.getIdTurno();
+		this.saltoCompensacion = null;
+		this.inscripcionTurno = inscripcionTurno;
+
+		// rellenando bajas temporales
+		this.bajasTemporales = bajasTemporales;
+	}	
 	
+
 	// Setters
 	public void setIdInstitucion(Integer valor) {this.idInstitucion = valor;}
 	public void setIdTurno(Integer valor) {this.idTurno = valor;}
@@ -71,8 +102,8 @@ public class LetradoGuardia implements Cloneable
 	public void setIdSaltoCompensacionGrupo(String idSaltoCompensacionGrupo) {this.idSaltoCompensacionGrupo = idSaltoCompensacionGrupo;}
 	
 	public void setPersona(CenPersonaBean valor) {this.persona = valor;}
-	public void setFechaValidacion(String valor) {this.fechaValidacion = valor;}
-	public void setFechaBaja(String valor) {this.fechaBaja = valor;}
+	public void setInscripcionGuardia(ScsInscripcionGuardiaBean inscripcionGuardia) {this.inscripcionGuardia = inscripcionGuardia;}
+	public void setInscripcionTurno(ScsInscripcionTurnoBean inscripcionTurno) {this.inscripcionTurno = inscripcionTurno;}
 	public void setPosicion(Integer valor) {this.posicion = valor;}
 	public void setIdGrupoGuardiaColegiado(Long valor) {this.idGrupoGuardiaColegiado = valor;}
 	public void setGrupo(Integer valor) {this.grupo = valor;}
@@ -94,8 +125,8 @@ public class LetradoGuardia implements Cloneable
 	public String getIdSaltoCompensacionGrupo() {return idSaltoCompensacionGrupo;}
 	
 	public CenPersonaBean getPersona() {return this.persona;}
-	public String getFechaValidacion() {return this.fechaValidacion;}
-	public String getFechaBaja() {return this.fechaBaja;}
+	public ScsInscripcionGuardiaBean getInscripcionGuardia() {return inscripcionGuardia;}
+	public ScsInscripcionTurnoBean getInscripcionTurno() {return inscripcionTurno;}
 	public Integer getPosicion() {return this.posicion;}
 	public Long getIdGrupoGuardiaColegiado() {return this.idGrupoGuardiaColegiado;}
 	public Integer getGrupo() {return this.grupo;}
@@ -117,10 +148,16 @@ public class LetradoGuardia implements Cloneable
 	}
 	
 	public String toString() {
+		String grupo;
+		if (this.numeroGrupo != null && !this.numeroGrupo.equals(""))
+			grupo = "(Grupo " + this.numeroGrupo + ")";
+		else
+			grupo = "";
+		
 		if (persona == null)
 			return '"' + "-" + '"';
 		else
-			return '"' + persona.getApellido1() + " " + persona.getApellido2() + ", " + persona.getNombre() + '"';
+			return '"' + persona.getApellido1() + " " + persona.getApellido2() + ", " + persona.getNombre() + '"' + " " + grupo;
 	}
 	
 }

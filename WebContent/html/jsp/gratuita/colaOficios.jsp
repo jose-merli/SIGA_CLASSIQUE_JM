@@ -345,8 +345,8 @@
 				</td>
 				
 				<td>
-				<%if(letradoGuardia.getFechaValidacion()!=null &&!letradoGuardia.getFechaValidacion().equals("")){ %>
-					<%=letradoGuardia.getFechaValidacion()%>
+				<%if(letradoGuardia.getInscripcionTurno().getFechaValidacion()!=null &&!letradoGuardia.getInscripcionTurno().getFechaValidacion().equals("")){ %>
+					<%=letradoGuardia.getInscripcionTurno().getFechaValidacion()%>
 				<%}else{ %>
 					&nbsp;
 				<%} %>
@@ -354,8 +354,8 @@
 					
 				</td>
 				<td>
-				<%if(letradoGuardia.getFechaBaja()!=null &&!letradoGuardia.getFechaBaja().equals("")){ %>
-					<%=letradoGuardia.getFechaBaja()%>
+				<%if(letradoGuardia.getInscripcionTurno().getFechaBaja()!=null &&!letradoGuardia.getInscripcionTurno().getFechaBaja().equals("")){ %>
+					<%=letradoGuardia.getInscripcionTurno().getFechaBaja()%>
 				<%}else{ %>
 					&nbsp;
 				<%} %>

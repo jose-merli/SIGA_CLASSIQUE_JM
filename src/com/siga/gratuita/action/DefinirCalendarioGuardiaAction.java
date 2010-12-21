@@ -27,6 +27,7 @@ import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.SIGAReferences;
+import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenBajasTemporalesAdm;
@@ -107,8 +108,6 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 				mapDestino = modalNuevoCalendario(mapping, miForm, request, response);				
 			} else if (accion.equalsIgnoreCase("modalNuevaGuardia")){
 				mapDestino = modalNuevaGuardia(mapping, miForm, request, response);
-			} else if (accion.equalsIgnoreCase("descargarLog")){
-				mapDestino = descargarLog(mapping, miForm, request, response);
 			} else {			
 				return super.executeInternal(mapping,
 						formulario,
@@ -656,7 +655,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 		// Variables
 		Hashtable miHash = new Hashtable();
 		String idcalendarioguardias;
-		String idPersonaUltimoAnterior;
+		String idPersonaUltimoAnterior, fechaSuscUltimoAnterior;
 		Vector registros = new Vector();
 
 		// calculando idPersonaUltimoAnterior de guardias turno
@@ -665,11 +664,18 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 		sql.append(" AND " + ScsGuardiasTurnoBean.C_IDTURNO + "=" + idTurno);
 		sql.append(" AND " + ScsGuardiasTurnoBean.C_IDGUARDIA + "=" + idGuardia);
 		Vector v = admGuardiasTurno.select(sql.toString());
-		idPersonaUltimoAnterior = null;
-		if (!v.isEmpty() && ((ScsGuardiasTurnoBean) v.get(0)).getIdPersona_Ultimo() != null)
-			idPersonaUltimoAnterior = ((ScsGuardiasTurnoBean) v.get(0)).getIdPersona_Ultimo().toString();
-		else
+		if (v == null || v.isEmpty())
+			throw new ClsExceptions("Error al buscar la guardia del calendario");
+		
+		ScsGuardiasTurnoBean guardiaBean = (ScsGuardiasTurnoBean) v.get(0);
+		if (guardiaBean.getIdPersona_Ultimo() == null) {
 			idPersonaUltimoAnterior = "";
+			fechaSuscUltimoAnterior = "";
+		}
+		else {
+			idPersonaUltimoAnterior = guardiaBean.getIdPersona_Ultimo().toString();
+			fechaSuscUltimoAnterior = guardiaBean.getFechaSuscripcion_Ultimo();
+		}
 
 		// calculando nuevo idcalendarioguardias
 		registros = admCalendarioGuardia.selectGenerico(
@@ -688,6 +694,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 		miHash.put(ScsCalendarioGuardiasBean.C_USUMODIFICACION, "0");
 		miHash.put(ScsCalendarioGuardiasBean.C_FECHAMODIFICACION, "sysdate");
 		miHash.put(ScsCalendarioGuardiasBean.C_IDPERSONA_ULTIMOANTERIOR, idPersonaUltimoAnterior);
+		miHash.put(ScsCalendarioGuardiasBean.C_FECHASUSC_ULTIMOANTERIOR, fechaSuscUltimoAnterior);
 
 		// insert
 		if (admCalendarioGuardia.insert(miHash))
@@ -1716,10 +1723,9 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 		try {
 			// preparando log del calendario
 			ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-			log = LogFileWriter.getLogFileWriter(rp
-					.returnProperty("sjcs.directorioFisicoGeneracionCalendarios")
-					+ File.separator + idInstitucion, idTurno + "." + idGuardia + "." + idCalendarioGuardias + "-"
-					+ fechaDesde.replace('/', '.') + "-" + fechaHasta.replace('/', '.'));
+			log = LogFileWriter.getLogFileWriter(rp.returnProperty("sjcs.directorioFisicoGeneracionCalendarios")
+					+ File.separator + idInstitucion, getNombreFicheroLogCalendario(idTurno, idGuardia,
+					idCalendarioGuardias, fechaDesde, fechaHasta));
 			log.clear();
 			
 			// iniciando transaccion
@@ -1752,10 +1758,12 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 					new Integer(idGuardia), usr);
 
 			// obteniendo la matriz de letrados de guardia
+			log.addLog(new String[] {"INICIO generacion"});
 			if (porGrupos.equals("1"))
 				calendarioSJCS.calcularMatrizLetradosGuardiaPorGrupos(lDiasASeparar, rotacion);
 			else
 				calendarioSJCS.calcularMatrizLetradosGuardia(lDiasASeparar);
+			log.addLog(new String[] {"FIN generacion"});
 
 			tx.commit();
 			forward = exitoRefresco("gratuita.modalRegistro_DefinirCalendarioGuardia.literal.calendarioGenerado",
@@ -1783,18 +1791,12 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 		ScsCabeceraGuardiasAdm admCabeceraGuardias = new ScsCabeceraGuardiasAdm(usr);
 		ScsCalendarioGuardiasAdm admCalendarioGuardia = new ScsCalendarioGuardiasAdm(usr);
 		
-		if (! admSaltosCompensaciones.updateSaltosCumplidos(calendario))
-			throw new SIGAException("Error en borrado de calendario: al quitar cumplimientos de saltos");
-		if (! admSaltosCompensaciones.deleteSaltosCreadosEnCalendario(calendario))
-			throw new SIGAException("Error en borrado de calendario: al borrar saltos creados en el calendario");
-		if (! admSaltosCompensaciones.updateCompensacionesCumplidas(calendario))
-			throw new SIGAException("Error en borrado de calendario: al quitar cumplimientos de compensaciones");
-		if (! admSaltosCompensaciones.deleteCompensacionesNoCumplidas(calendario))
-			throw new SIGAException("Error en borrado de calendario: al borrar compensaciones creadas en el calendario");
-		if (! admSaltosCompensaciones.deleteCompensacionesCalendariosInexistentes(calendario))	
-			throw new SIGAException("Error en borrado de calendario: al borrar compensaciones de calendarios que ya no existen");
-		if (! admSaltosCompensaciones.deleteSaltosCalendariosInexistentes(calendario))	
-			throw new SIGAException("Error en borrado de calendario: al borrar saltos de calendarios que ya no existen");
+		if (! admSaltosCompensaciones.updateSaltosCompensacionesCumplidos(calendario))
+			throw new SIGAException("Error en borrado de calendario: al quitar cumplimientos de saltos y compensaciones");
+		if (! admSaltosCompensaciones.deleteSaltosCompensacionesCreadosEnCalendario(calendario))
+			throw new SIGAException("Error en borrado de calendario: al borrar saltos y compensaciones creados en el calendario");
+		if (! admSaltosCompensaciones.deleteSaltosCompensacionesCalendariosInexistentes(calendario))	
+			throw new SIGAException("Error en borrado de calendario: al borrar saltos y compensaciones de calendarios que ya no existen");
 		
 		if (! admPermutaGuardias.deletePermutasCalendario(calendario))
 			throw new ClsExceptions("Error en borrado de calendario: al quitar permutas del calendario");
@@ -2058,5 +2060,15 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 		return forward;
 	}
 
+	private String getNombreFicheroLogCalendario(String idTurno,
+			String idGuardia,
+			String idCalendarioGuardias,
+			String fechaDesde,
+			String fechaHasta) throws ClsExceptions
+	{
+		ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		return (idTurno.toString() + "." + idGuardia.toString() + "." + idCalendarioGuardias.toString() + "-"
+				+ fechaDesde.replace('/', '.') + "-" + fechaHasta.replace('/', '.'));
+	}
 
 }

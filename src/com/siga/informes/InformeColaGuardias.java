@@ -127,8 +127,8 @@ public class InformeColaGuardias extends MasterReport {
 			htRow.put(CenPersonaBean.C_APELLIDOS2, letradoGuardia.getPersona().getApellido2());
 			htRow.put(CenPersonaBean.C_NOMBRE, letradoGuardia.getPersona().getNombre());
 			htRow.put(CenColegiadoBean.C_NCOLEGIADO, letradoGuardia.getPersona().getColegiado().getNColegiado());
-			htRow.put(ScsInscripcionGuardiaBean.C_FECHAVALIDACION, letradoGuardia.getFechaValidacion());
-			htRow.put(ScsInscripcionGuardiaBean.C_FECHABAJA, letradoGuardia.getFechaBaja());
+			htRow.put(ScsInscripcionGuardiaBean.C_FECHAVALIDACION, letradoGuardia.getInscripcionGuardia().getFechaValidacion());
+			htRow.put(ScsInscripcionGuardiaBean.C_FECHABAJA, letradoGuardia.getInscripcionGuardia().getFechaBaja());
 			row.setRow(htRow);
 			vLetradosEnCola.add(row);
 			

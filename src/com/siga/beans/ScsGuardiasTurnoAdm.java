@@ -62,6 +62,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 				ScsGuardiasTurnoBean.C_IDORDENACIONCOLAS,
 				ScsGuardiasTurnoBean.C_IDPARTIDAPRESUPUESTARIA,
 				ScsGuardiasTurnoBean.C_IDPERSONA_ULTIMO,
+				ScsGuardiasTurnoBean.C_FECHASUSCRIPCION_ULTIMO,
 				ScsGuardiasTurnoBean.C_TIPODIASGUARDIA,
 				ScsGuardiasTurnoBean.C_DIASPERIODO,
 				ScsGuardiasTurnoBean.C_TIPODIASPERIODO,
@@ -125,6 +126,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 			bean.setIdOrdenacionColas(UtilidadesHash.getInteger(hash,ScsGuardiasTurnoBean.C_IDORDENACIONCOLAS));
 			bean.setIdPartidaPresupuestaria(UtilidadesHash.getInteger(hash,ScsGuardiasTurnoBean.C_IDPARTIDAPRESUPUESTARIA));
 			bean.setIdPersona_Ultimo(UtilidadesHash.getLong(hash, ScsGuardiasTurnoBean.C_IDPERSONA_ULTIMO));
+			bean.setFechaSuscripcion_Ultimo(UtilidadesHash.getString(hash, ScsGuardiasTurnoBean.C_FECHASUSCRIPCION_ULTIMO));
 			bean.setTipodiasGuardia(UtilidadesHash.getString(hash,ScsGuardiasTurnoBean.C_TIPODIASGUARDIA));
 			bean.setDiasPeriodo(UtilidadesHash.getInteger(hash,ScsGuardiasTurnoBean.C_DIASPERIODO));
 			bean.setTipoDiasPeriodo(UtilidadesHash.getString(hash,ScsGuardiasTurnoBean.C_TIPODIASPERIODO));
@@ -180,6 +182,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_IDORDENACIONCOLAS, b.getIdOrdenacionColas());
 			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_IDPARTIDAPRESUPUESTARIA, b.getIdPartidaPresupuestaria());
 			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_IDPERSONA_ULTIMO, b.getIdPersona_Ultimo());
+			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_FECHASUSCRIPCION_ULTIMO, b.getFechaSuscripcion_Ultimo());
 			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_TIPODIASGUARDIA, b.getTipodiasGuardia());
 			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_DIASPERIODO, b.getDiasPeriodo());
 			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_TIPODIASPERIODO, b.getTipoDiasPeriodo());
@@ -1323,4 +1326,34 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 
 	}	
 
+	/**
+	 * Cambia el ultimo letrado de la cola de la guardia indicada por el nuevo que se ha solicitado
+	 */
+	public void cambiarUltimoCola (Integer idInstitucion,
+								   Integer idTurno,
+								   Integer idGuardia,
+								   Long idPersona_Ultimo,
+								   String fechaSuscripcion_Ultimo)
+		throws ClsExceptions
+	{
+		String[] campos = 
+		{
+				ScsGuardiasTurnoBean.C_IDPERSONA_ULTIMO,
+				ScsGuardiasTurnoBean.C_FECHASUSCRIPCION_ULTIMO,
+				ScsGuardiasTurnoBean.C_USUMODIFICACION,
+				ScsGuardiasTurnoBean.C_FECHAMODIFICACION
+		};
+		
+		Hashtable hash = new Hashtable();
+		hash.put(ScsGuardiasTurnoBean.C_IDINSTITUCION, idInstitucion);
+		hash.put(ScsGuardiasTurnoBean.C_IDTURNO, idTurno);
+		hash.put(ScsGuardiasTurnoBean.C_IDGUARDIA, idGuardia);
+		hash.put(ScsGuardiasTurnoBean.C_IDPERSONA_ULTIMO, idPersona_Ultimo);
+		hash.put(ScsGuardiasTurnoBean.C_FECHASUSCRIPCION_ULTIMO, fechaSuscripcion_Ultimo);
+		hash.put(ScsGuardiasTurnoBean.C_USUMODIFICACION, this.usrbean.getUserName());
+		hash.put(ScsGuardiasTurnoBean.C_FECHAMODIFICACION, "SYSDATE");
+		
+		this.updateDirect(hash, this.getClavesBean(), campos);
+	} // cambiarUltimoCola()
+	
 }

@@ -282,6 +282,7 @@ public class ColaGuardiasAction extends MasterAction {
 					admGrupoGuardia.setUltimoDeGrupo(miForm.getIdGrupoGuardiaColegiado());
 				}
 				b.setIdPersona_Ultimo(new Long(miForm.getIdPersona()));
+				b.setFechaSuscripcion_Ultimo(miForm.getFechaSuscripcion());
 				if (!adm.update(b)) {
 					return exito("messages.updated.error",request);
 				}

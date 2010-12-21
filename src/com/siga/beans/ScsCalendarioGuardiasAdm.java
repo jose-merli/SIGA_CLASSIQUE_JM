@@ -13,6 +13,7 @@ import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesHash;
 
 /**
@@ -25,41 +26,52 @@ import com.siga.Utilidades.UtilidadesHash;
  * @version 22/03/2006: david.sanchezp: modificacion para poner el idpersona como Long y el texto de idcalendario por idcalendario guardias.
  */
 
-public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador {
-
-
+public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
+{
 	/**
 	 * Constructor de la clase. 
-	 * 
 	 * @param usuario Usuario "logado" en la aplicación. De tipo "Integer".  
 	 */
 	public ScsCalendarioGuardiasAdm (UsrBean usuario) {
 		super( ScsCalendarioGuardiasBean.T_NOMBRETABLA, usuario);
 	}
 
-	/** Funcion getCamposBean ()
-	 *  @return conjunto de datos con los nombres de todos los campos del bean
-	 * 
+	/** 
+	 * Funcion getCamposBean ()
+	 * @return conjunto de datos con los nombres de todos los campos del bean
 	 */
-	
 	protected String[] getCamposBean() {
-		String[] campos = {	ScsCalendarioGuardiasBean.C_FECHAFIN,			ScsCalendarioGuardiasBean.C_FECHAINICIO,
-							ScsCalendarioGuardiasBean.C_FECHAMODIFICACION,	ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS,
-							ScsCalendarioGuardiasBean.C_IDGUARDIA,			ScsCalendarioGuardiasBean.C_IDINSTITUCION,
-							ScsCalendarioGuardiasBean.C_IDTURNO,			ScsCalendarioGuardiasBean.C_OBSERVACIONES,
-							ScsCalendarioGuardiasBean.C_USUMODIFICACION,	ScsCalendarioGuardiasBean.C_IDPERSONA_ULTIMOANTERIOR};
+		String[] campos =
+		{
+				ScsCalendarioGuardiasBean.C_IDINSTITUCION,
+				ScsCalendarioGuardiasBean.C_IDTURNO,
+				ScsCalendarioGuardiasBean.C_IDGUARDIA,
+				ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS,
+				ScsCalendarioGuardiasBean.C_FECHAFIN,
+				ScsCalendarioGuardiasBean.C_FECHAINICIO,
+				ScsCalendarioGuardiasBean.C_OBSERVACIONES,
+				ScsCalendarioGuardiasBean.C_FECHAMODIFICACION,
+				ScsCalendarioGuardiasBean.C_USUMODIFICACION,
+				ScsCalendarioGuardiasBean.C_IDPERSONA_ULTIMOANTERIOR,
+				ScsCalendarioGuardiasBean.C_FECHASUSC_ULTIMOANTERIOR
+		};
 		return campos;
 	}
-	/** Funcion getClavesBean ()
-	 *  @return conjunto de datos con los nombres de todos los campos que forman la claves del bean
-	 * 
+	
+	/** 
+	 * Funcion getClavesBean ()
+	 * @return conjunto de datos con los nombres de todos los campos que forman la claves del bean
 	 */
 	protected String[] getClavesBean() {
-		String[] campos = {	ScsCalendarioGuardiasBean.C_IDINSTITUCION,		ScsCalendarioGuardiasBean.C_IDTURNO,
-							ScsCalendarioGuardiasBean.C_IDGUARDIA,			ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS};
+		String[] campos =
+		{
+				ScsCalendarioGuardiasBean.C_IDINSTITUCION,
+				ScsCalendarioGuardiasBean.C_IDTURNO,
+				ScsCalendarioGuardiasBean.C_IDGUARDIA,
+				ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS
+		};
 		return campos;
 	}
-
 	
 	/** Funcion hashTableToBean (Hashtable hash)
 	 *  @param hash Hashtable para crear el bean
@@ -79,9 +91,8 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador {
 			bean.setObservaciones		(UtilidadesHash.getString (hash, ScsCalendarioGuardiasBean.C_OBSERVACIONES));
 			bean.setUsuMod				(UtilidadesHash.getInteger(hash, ScsCalendarioGuardiasBean.C_USUMODIFICACION));
 			bean.setFechaMod			(UtilidadesHash.getString (hash, ScsCalendarioGuardiasBean.C_FECHAMODIFICACION));
-			bean.setIdPersonaUltimoAnterior(UtilidadesHash.getInteger(hash, ScsCalendarioGuardiasBean.C_IDPERSONA_ULTIMOANTERIOR));
-			
-
+			bean.setIdPersonaUltimoAnterior(UtilidadesHash.getLong(hash, ScsCalendarioGuardiasBean.C_IDPERSONA_ULTIMOANTERIOR));
+			bean.setFechaSuscUltimoAnterior(UtilidadesHash.getString(hash, ScsCalendarioGuardiasBean.C_FECHASUSC_ULTIMOANTERIOR));
 		}
 		catch(Exception e){
 			bean = null;
@@ -110,8 +121,7 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, ScsCalendarioGuardiasBean.C_USUMODIFICACION, b.getUsuMod());
 			UtilidadesHash.set(hash, ScsCalendarioGuardiasBean.C_FECHAMODIFICACION, b.getFechaMod());
 			UtilidadesHash.set(hash, ScsCalendarioGuardiasBean.C_IDPERSONA_ULTIMOANTERIOR, b.getIdPersonaUltimoAnterior());
-			
-			
+			UtilidadesHash.set(hash, ScsCalendarioGuardiasBean.C_FECHASUSC_ULTIMOANTERIOR, b.getFechaSuscUltimoAnterior());
 		}
 		catch (Exception e){
 			hash = null;
@@ -249,40 +259,6 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador {
 		return datos;	
 	}		
 
-	// Suma dias a la fecha pasada como argumento
-	private String sumarDias(String fecha, int dias){
-		String salida = "";
-
-		try {
-			//Recupero del String fechaInicial con formato dd/mm/yyyy la fecha como Date
-			String jsdf = ClsConstants.DATE_FORMAT_SHORT_SPANISH;//"dd/MM/yyyy";//Java Short Date Format
-			SimpleDateFormat formateo = new SimpleDateFormat(jsdf);
-			Date date = new Date();
-			date = formateo.parse(fecha);
-	
-			//Calendario
-			Calendar calendario = Calendar.getInstance();
-			calendario.setTime(date);
-
-			//Nueva fecha calculada
-			Date siguiente = new Date();
-			int dia = 0;
-			for (int i=0; i<dias; i++) {
-				dia = calendario.get(Calendar.DAY_OF_MONTH);
-				calendario.set(Calendar.DAY_OF_MONTH,dia+1);
-			}
-			siguiente = calendario.getTime();
-			
-			//Formateo la fecha como un String
-			salida = formateo.format(siguiente);
-			
-		}
-		catch (Exception e) {
-		}
-
-		return salida;
-	}
-
 	/**
 	 * Valida si una fecha es laborable a partir de la institucion y el dia de inicio.
 	 * Devuelve true si es Laborable y false si es Festivo.
@@ -343,7 +319,7 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador {
 		//Sigo buscando mientras tenga diasRestantes > 0
 		diasRestantes = Integer.parseInt(dias);
 		while (diasRestantes > 0) {				
-				fechaFin = sumarDias(fechaFin,1);
+				fechaFin = UtilidadesFecha.sumarDias(fechaFin,1);
 				if (esFechaLaborablePorInstitucion(fechaFin,idinstitucion)) 
 					diasRestantes--;				
 		}
@@ -351,62 +327,61 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador {
 		return fechaFin;
 	}
 
-	public boolean validarBorradoCalendario(String idInstitucion, String idCalendarioGuardias, String idTurno, String idGuardia) {
+	public boolean validarBorradoCalendario(String idInstitucion,
+			String idCalendarioGuardias,
+			String idTurno,
+			String idGuardia)
+	{
 		boolean correcto = false;
-		
+
 		StringBuffer sql = new StringBuffer();
-		sql.append("SELECT COUNT(*) AS TOTAL FROM "+ScsCalendarioGuardiasBean.T_NOMBRETABLA);
-		sql.append(" WHERE "+ScsCalendarioGuardiasBean.C_IDINSTITUCION+"="+idInstitucion);
-		sql.append("   AND "+ScsCalendarioGuardiasBean.C_IDTURNO+"="+idTurno);
-		sql.append("   AND "+ScsCalendarioGuardiasBean.C_IDGUARDIA+"="+idGuardia);
-		sql.append("   AND "+ScsCalendarioGuardiasBean.C_FECHAFIN+"> (SELECT "+ScsCalendarioGuardiasBean.C_FECHAFIN+" FROM "+ScsCalendarioGuardiasBean.T_NOMBRETABLA);
-														   sql.append(" WHERE "+ScsCalendarioGuardiasBean.C_IDINSTITUCION+"="+idInstitucion);
-														   sql.append(" AND "+ScsCalendarioGuardiasBean.C_IDTURNO+"="+idTurno);
-														   sql.append(" AND "+ScsCalendarioGuardiasBean.C_IDGUARDIA+"="+idGuardia);
-														   sql.append(" AND "+ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS+"="+idCalendarioGuardias);
-														   sql.append(" ) ");
-		try {														   
+		sql.append("SELECT COUNT(*) AS TOTAL ");
+		sql.append("  FROM " + ScsCalendarioGuardiasBean.T_NOMBRETABLA);
+		sql.append(" WHERE " + ScsCalendarioGuardiasBean.C_IDINSTITUCION + "=" + idInstitucion);
+		sql.append("   AND " + ScsCalendarioGuardiasBean.C_IDTURNO + "=" + idTurno);
+		sql.append("   AND " + ScsCalendarioGuardiasBean.C_IDGUARDIA + "=" + idGuardia);
+		sql.append("   AND " + ScsCalendarioGuardiasBean.C_FECHAFIN + " > ");
+		sql.append("      (SELECT " + ScsCalendarioGuardiasBean.C_FECHAFIN);
+		sql.append("         FROM " + ScsCalendarioGuardiasBean.T_NOMBRETABLA);
+		sql.append("        WHERE " + ScsCalendarioGuardiasBean.C_IDINSTITUCION + "=" + idInstitucion);
+		sql.append("          AND " + ScsCalendarioGuardiasBean.C_IDTURNO + "=" + idTurno);
+		sql.append("          AND " + ScsCalendarioGuardiasBean.C_IDGUARDIA + "=" + idGuardia);
+		sql.append("          AND " + ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS + "=" + idCalendarioGuardias);
+		sql.append("      ) ");
+		try {
 			Vector v = this.selectGenerico(sql.toString());
-	        String total = "";
-	        if (!v.isEmpty()) {
-	        	total = (String)((Hashtable)v.get(0)).get("TOTAL");
-	        	//Si devuelve 0 la validacion es true. En otro caso es falso
-	        	if (total!=null && total.equals("0"))
-	        		correcto = true;
-	        }
-	    } catch (Exception e) {
-			correcto = false;	    	
-	    }		
+			String total = "";
+			if (!v.isEmpty()) {
+				total = (String) ((Hashtable) v.get(0)).get("TOTAL");
+				// Si devuelve 0 la validacion es true. En otro caso es falso
+				if (total != null && total.equals("0"))
+					correcto = true;
+			}
+		} catch (Exception e) {
+			correcto = false;
+		}
 		return correcto;
 	}
 	
-	public boolean actualizarGuardia(Hashtable hash) {
+	/**
+	 * Actualiza la guardia con el ultimo de la cola guardado en el calendario
+	 * @param hash con la clave del calendario
+	 * @return true si todo fue bien
+	 */
+	public boolean actualizarGuardia(Hashtable hash)
+	{
 		boolean ok = false;
-		
-		try {
-			String idInstitucion = (String)hash.get(ScsCalendarioGuardiasBean.C_IDINSTITUCION);
-			String idTurno = (String)hash.get(ScsCalendarioGuardiasBean.C_IDTURNO);
-			String idGuardia = (String)hash.get(ScsCalendarioGuardiasBean.C_IDGUARDIA);
-			String idCalendario = (String)hash.get(ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS);
-			
-			StringBuffer sql = new StringBuffer();
-			sql.append(" UPDATE "+ScsGuardiasTurnoBean.T_NOMBRETABLA);
-			sql.append(" SET "+ScsGuardiasTurnoBean.C_IDPERSONA_ULTIMO+"=");
-			sql.append(" ( ");
-					sql.append(" SELECT "+ScsCalendarioGuardiasBean.C_IDPERSONA_ULTIMOANTERIOR);
-					sql.append(" FROM "+ScsCalendarioGuardiasBean.T_NOMBRETABLA);
-					sql.append(" WHERE "+ScsCalendarioGuardiasBean.C_IDINSTITUCION+"="+idInstitucion);
-					sql.append(" AND "+ScsCalendarioGuardiasBean.C_IDTURNO+"="+idTurno);
-					sql.append(" AND "+ScsCalendarioGuardiasBean.C_IDGUARDIA+"="+idGuardia);
-					sql.append(" AND "+ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS+"="+idCalendario);
-			sql.append(" ) ");
-			sql.append(" WHERE "+ScsGuardiasTurnoBean.C_IDINSTITUCION+"="+idInstitucion);
-			sql.append(" AND "+ScsGuardiasTurnoBean.C_IDTURNO+"="+idTurno);
-			sql.append(" AND "+ScsGuardiasTurnoBean.C_IDGUARDIA+"="+idGuardia);
 
-			ClsMngBBDD.executeUpdate(sql.toString());			
+		try {
+			Vector v = this.select(hash);
+			ScsCalendarioGuardiasBean calendarioBean = (ScsCalendarioGuardiasBean) v.get(0);
+			ScsGuardiasTurnoAdm guardiaAdm = new ScsGuardiasTurnoAdm(usrbean);
+			guardiaAdm.cambiarUltimoCola(calendarioBean.getIdInstitucion(), 
+					calendarioBean.getIdTurno(), calendarioBean.getIdGuardia(), 
+					calendarioBean.getIdPersonaUltimoAnterior(), calendarioBean.getFechaSuscUltimoAnterior());
+
 			ok = true;
-		} catch (Exception e){
+		} catch (Exception e) {
 			ok = false;
 		}
 		return ok;

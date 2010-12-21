@@ -36,6 +36,7 @@ public class ScsGuardiasTurnoBean extends MasterBean
 	static public final String C_IDPARTIDAPRESUPUESTARIA	= "IDPARTIDAPRESUPUESTARIA";	
 	static public final String C_NUMEROACTUACIONES			= "NUMEROACTUACIONES";
 	static public final String C_IDPERSONA_ULTIMO			= "IDPERSONA_ULTIMO";
+	static public final String C_FECHASUSCRIPCION_ULTIMO	= "FECHASUSCRIPCION_ULTIMO";
 	static public final String C_TIPODIASGUARDIA			= "TIPODIASGUARDIA";
 	static public final String C_DIASPERIODO				= "DIASPERIODO";
 	static public final String C_TIPODIASPERIODO			= "TIPODIASPERIODO";
@@ -72,6 +73,7 @@ public class ScsGuardiasTurnoBean extends MasterBean
 	private Integer 	numeroActuaciones;
 	private String		designaDirecta;
 	private Long 		idPersona_Ultimo;
+	private String		fechaSuscripcion_Ultimo;
 	private String 		tipodiasGuardia;
 	private Integer		diasPeriodo;
 	private String		tipoDiasPeriodo;
@@ -87,18 +89,12 @@ public class ScsGuardiasTurnoBean extends MasterBean
 	private String		seleccionTiposDia;
 	private String		descripcionTipoDiasGuardia;
 	
+	private ScsTurnoBean turno;
 	private Integer 	idInstitucionPrincipal;
 	private Integer 	idTurnoPrincipal;
 	private Integer 	idGuardiaPrincipal;
 	
-	private ScsTurnoBean turno;
 	
-	public ScsTurnoBean getTurno() {
-		return turno;
-	}
-	public void setTurno(ScsTurnoBean turno) {
-		this.turno = turno;
-	}
 	//////////////////// GETTERS ////////////////////
 	public String getDescripcion() {return descripcion;}
 	public String getDescripcionFacturacion() {return descripcionFacturacion;}
@@ -114,6 +110,7 @@ public class ScsGuardiasTurnoBean extends MasterBean
 	public Integer getIdOrdenacionColas() {return idOrdenacionColas;}
 	public Integer getIdPartidaPresupuestaria() {return idPartidaPresupuestaria;}
 	public Long getIdPersona_Ultimo() {return idPersona_Ultimo;}
+	public String getFechaSuscripcion_Ultimo() {return fechaSuscripcion_Ultimo;}
 	public Integer getIdTurno() {return idTurno;}
 	@AjaxXMLBuilderNameAnnotation
 	public String getNombre() {return nombre;}
@@ -130,11 +127,16 @@ public class ScsGuardiasTurnoBean extends MasterBean
 	public String getEsViolenciaGenero () {return esViolenciaGenero;}
 	public String getPorGrupos () {return porGrupos;}
 	public String getRotarComponentes () {return rotarComponentes;}
+	public ScsTurnoBean getTurno() {return turno;}
 	
 	public Integer getIdGuardiaSustitucion() {return idGuardiaSustitucion;}
 	public Integer getIdTurnoSustitucion() {return idTurnoSustitucion;}
 	public String getSeleccionTiposDia() {return seleccionTiposDia;}
 	public String getDescripcionTipoDiasGuardia() {return descripcionTipoDiasGuardia;}
+	
+	public Integer getIdInstitucionPrincipal() {return idInstitucionPrincipal;}
+	public Integer getIdTurnoPrincipal() {return idTurnoPrincipal;}
+	public Integer getIdGuardiaPrincipal() {return idGuardiaPrincipal;}
 	
 	
 	//////////////////// SETTERS ////////////////////
@@ -151,6 +153,7 @@ public class ScsGuardiasTurnoBean extends MasterBean
 	public void setIdOrdenacionColas(Integer idOrdenacionColas) {this.idOrdenacionColas = idOrdenacionColas;}
 	public void setIdPartidaPresupuestaria(Integer idPartidaPresupuestaria) {this.idPartidaPresupuestaria = idPartidaPresupuestaria;}
 	public void setIdPersona_Ultimo(Long idPersona_Ultimo) {this.idPersona_Ultimo = idPersona_Ultimo;}
+	public void setFechaSuscripcion_Ultimo(String fechaSuscripcionUltimo){fechaSuscripcion_Ultimo = fechaSuscripcionUltimo;}
 	public void setIdTurno(Integer idTurno) {this.idTurno = idTurno;}
 	public void setNombre(String nombre) {this.nombre = nombre;}
 	public void setNumeroActuaciones(Integer numeroActuaciones) {this.numeroActuaciones = numeroActuaciones;}
@@ -166,28 +169,15 @@ public class ScsGuardiasTurnoBean extends MasterBean
 	public void setEsViolenciaGenero(String valor) {this.esViolenciaGenero = valor;}
 	public void setPorGrupos (String valor) {this.porGrupos = valor;}
 	public void setRotarComponentes (String valor) {this.rotarComponentes = valor;}
+	public void setTurno(ScsTurnoBean turno) {this.turno = turno;}
 	
 	public void setIdGuardiaSustitucion(Integer idGuardiaSustitucion) {this.idGuardiaSustitucion = idGuardiaSustitucion;}
 	public void setIdTurnoSustitucion(Integer idTurnoSustitucion) {this.idTurnoSustitucion = idTurnoSustitucion;}
 	public void setSeleccionTiposDia(String seleccionTiposDia) {this.seleccionTiposDia = seleccionTiposDia;}
 	public void setDescripcionTipoDiasGuardia(String descripcionTipoDiasGuardia) {this.descripcionTipoDiasGuardia = descripcionTipoDiasGuardia;}
-	public Integer getIdInstitucionPrincipal() {
-		return idInstitucionPrincipal;
-	}
-	public void setIdInstitucionPrincipal(Integer idInstitucionPrincipal) {
-		this.idInstitucionPrincipal = idInstitucionPrincipal;
-	}
-	public Integer getIdTurnoPrincipal() {
-		return idTurnoPrincipal;
-	}
-	public void setIdTurnoPrincipal(Integer idTurnoPrincipal) {
-		this.idTurnoPrincipal = idTurnoPrincipal;
-	}
-	public Integer getIdGuardiaPrincipal() {
-		return idGuardiaPrincipal;
-	}
-	public void setIdGuardiaPrincipal(Integer idGuardiaPrincipal) {
-		this.idGuardiaPrincipal = idGuardiaPrincipal;
-	}
+	
+	public void setIdInstitucionPrincipal(Integer idInstitucionPrincipal) {this.idInstitucionPrincipal = idInstitucionPrincipal;}
+	public void setIdTurnoPrincipal(Integer idTurnoPrincipal) {this.idTurnoPrincipal = idTurnoPrincipal;}
+	public void setIdGuardiaPrincipal(Integer idGuardiaPrincipal) {this.idGuardiaPrincipal = idGuardiaPrincipal;}
 	
 }

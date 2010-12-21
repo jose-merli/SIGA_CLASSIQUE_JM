@@ -120,18 +120,18 @@ public class InformeColaOficios extends MasterReport {
 		//Cargar listado de letrados en cola
 		List<LetradoGuardia> letradosColaTurnoList = InscripcionTurno.getColaTurno(new Integer(institucion),new Integer(turno),fecha,false,usr);
 		Vector vLetradosEnCola = new Vector();
-		for(LetradoGuardia letradoGuardia:letradosColaTurnoList){
+		for(LetradoGuardia letradoTurno:letradosColaTurnoList){
 			Row row = new Row();
 			Hashtable htRow = new Hashtable();
 			
-			htRow.put(CenPersonaBean.C_IDPERSONA, letradoGuardia.getIdPersona());
+			htRow.put(CenPersonaBean.C_IDPERSONA, letradoTurno.getIdPersona());
 //			CenPersonaBean persona = admPersona.getPersonaColegiado(letradoGuardia.getIdPersona(), letradoGuardia.getIdInstitucion());
-			htRow.put(CenPersonaBean.C_APELLIDOS1, letradoGuardia.getPersona().getApellido1());
-			htRow.put(CenPersonaBean.C_APELLIDOS2, letradoGuardia.getPersona().getApellido2());
-			htRow.put(CenPersonaBean.C_NOMBRE, letradoGuardia.getPersona().getNombre());
-			htRow.put(CenColegiadoBean.C_NCOLEGIADO, letradoGuardia.getPersona().getColegiado().getNColegiado());
-			htRow.put(ScsInscripcionGuardiaBean.C_FECHAVALIDACION, letradoGuardia.getFechaValidacion());
-			htRow.put(ScsInscripcionGuardiaBean.C_FECHABAJA, letradoGuardia.getFechaBaja());
+			htRow.put(CenPersonaBean.C_APELLIDOS1, letradoTurno.getPersona().getApellido1());
+			htRow.put(CenPersonaBean.C_APELLIDOS2, letradoTurno.getPersona().getApellido2());
+			htRow.put(CenPersonaBean.C_NOMBRE, letradoTurno.getPersona().getNombre());
+			htRow.put(CenColegiadoBean.C_NCOLEGIADO, letradoTurno.getPersona().getColegiado().getNColegiado());
+			htRow.put(ScsInscripcionGuardiaBean.C_FECHAVALIDACION, letradoTurno.getInscripcionTurno().getFechaValidacion());
+			htRow.put(ScsInscripcionGuardiaBean.C_FECHABAJA, letradoTurno.getInscripcionTurno().getFechaBaja());
 			row.setRow(htRow);
 			vLetradosEnCola.add(row);
 			

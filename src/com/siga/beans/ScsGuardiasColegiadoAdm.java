@@ -1768,9 +1768,10 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 				}
 				ArrayList arrayPeriodoSeleccionado = (ArrayList)arrayPeriodosSJCS.get(indexPeriodo);
 				//Creo el Letrado:
+				CenPersonaAdm perAdm = new CenPersonaAdm(usr);
 				LetradoGuardia letrado = new LetradoGuardia
-					(idPersona, new Integer(idInstitucion),
-					new Integer(idTurno), new Integer(idGuardia));			
+						(perAdm.getPersonaPorId(idPersona.toString()), new Integer(idInstitucion), 
+						new Integer(idTurno), new Integer(idGuardia), null);
 				
 				ScsCabeceraGuardiasAdm cabeceraAdm = new ScsCabeceraGuardiasAdm(usr);
 				Integer posicionLetradoGuardia = cabeceraAdm.getMaximaPosicionCabecera(letrado.getIdInstitucion(), letrado.getIdTurno(),

@@ -3,6 +3,7 @@ package com.siga.gratuita;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
@@ -13,6 +14,7 @@ import com.atos.utils.UsrBean;
 import com.siga.administracion.SIGAConstants;
 import com.siga.beans.CenBajasTemporalesAdm;
 import com.siga.beans.CenBajasTemporalesBean;
+import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsInscripcionGuardiaAdm;
@@ -158,9 +160,23 @@ public class InscripcionGuardia
 			String fechaFin,
 			UsrBean usr) throws ClsExceptions
 	{
+		// Variables para navegacion por la cola
+		ScsInscripcionGuardiaBean ultimoAnterior;
+		ScsInscripcionGuardiaBean punteroInscripciones;
+		boolean foundUltimo;
+		
+		// Variables de la guardia
+		ScsGuardiasTurnoBean beanGuardia;
+		Integer idOrdenacionColas;
+		String orden;
+		boolean porGrupos;
+		Long idPersonaUltimo;
+		String fechaSuscripcionUltimo;
+
 		// Controles
 		ScsGuardiasTurnoAdm guaadm = new ScsGuardiasTurnoAdm(usr);
 		ScsInscripcionGuardiaAdm insadm = new ScsInscripcionGuardiaAdm(usr);
+		CenBajasTemporalesAdm bajasAdm = new CenBajasTemporalesAdm(usr);
 		ArrayList<LetradoGuardia> colaLetrados = new ArrayList<LetradoGuardia>();
 
 		// obteniendo la guardia
@@ -169,55 +185,61 @@ public class InscripcionGuardia
 		hashGuardia.put(ScsGuardiasTurnoBean.C_IDTURNO, idTurno.toString());
 		hashGuardia.put(ScsGuardiasTurnoBean.C_IDGUARDIA, idGuardia.toString());
 		Vector vGuardia = guaadm.select(hashGuardia);
-		ScsGuardiasTurnoBean beanGuardia = (ScsGuardiasTurnoBean) vGuardia.get(0);
-		Integer idOrdenacionColas = beanGuardia.getIdOrdenacionColas();
+		beanGuardia = (ScsGuardiasTurnoBean) vGuardia.get(0);
+		porGrupos = beanGuardia.getPorGrupos().equals(ClsConstants.DB_TRUE);
+		idOrdenacionColas = beanGuardia.getIdOrdenacionColas();
+		idPersonaUltimo = beanGuardia.getIdPersona_Ultimo();
+		fechaSuscripcionUltimo = beanGuardia.getFechaSuscripcion_Ultimo();
+		
+		// obteniendo ordenacion de la guardia
 		if (idOrdenacionColas == null)
 			throw new ClsExceptions("messages.general.error");
-		Long idPersonaUltimo = beanGuardia.getIdPersona_Ultimo();
+		orden = porGrupos ? " numeroGrupo, ordengrupo" : getOrderBy(idOrdenacionColas.toString(), usr);
 
-		// obteniendo ordenacion de la guardia
-		String orden;
-		if (beanGuardia.getPorGrupos().equals(ClsConstants.DB_TRUE))
-			orden = " numeroGrupo, ordengrupo";
+		// obteniendo ultimo apuntado de la guardia
+		if (idPersonaUltimo == null)
+			ultimoAnterior = null;
 		else
-			orden = getOrderBy(idOrdenacionColas.toString(), usr);
-
+			ultimoAnterior = new ScsInscripcionGuardiaBean(idInstitucion, idTurno, idGuardia, idPersonaUltimo, fechaSuscripcionUltimo);
+		
 		// obteniendo lista de letrados (ordenada)
-		Vector<ScsInscripcionGuardiaBean> listaLetrados = insadm.getColaGuardia(idInstitucion.toString(),
-				idTurno.toString(), idGuardia.toString(), fechaInicio, fechaFin,
-				(beanGuardia.getPorGrupos().equals(ClsConstants.DB_TRUE)), orden);
+		Vector<ScsInscripcionGuardiaBean> listaLetrados = insadm.getColaGuardia(idInstitucion.toString(), 
+				idTurno.toString(), idGuardia.toString(), fechaInicio, fechaFin, porGrupos, orden);
 		if (listaLetrados == null || listaLetrados.size() == 0)
 			return colaLetrados;
 
-		// ordenando, poniendo como primero: el siguiente al ultimo
-		LetradoGuardia letradoGuardia;
-		ScsInscripcionGuardiaBean inscripcionGuardia = null;
-		boolean foundUltimo = false;
-		Vector<LetradoGuardia> colaAuxiliar = new Vector<LetradoGuardia>();
-		if (idPersonaUltimo != null) {
+		if (ultimoAnterior == null) {
+			// si no existe ultimo colegiado, se empieza la cola desde el primero en la lista
 			for (int i = 0; i < listaLetrados.size(); i++) {
-				inscripcionGuardia = (ScsInscripcionGuardiaBean) listaLetrados.get(i);
-				letradoGuardia = obtenerLetradoDeInscripcion(beanGuardia, inscripcionGuardia, usr);
-
-				if (foundUltimo) {
-					// El primero que se añade es el ultimo. Depues habra que moverlo
-					colaLetrados.add(letradoGuardia);
-				} else {
-					colaAuxiliar.add(letradoGuardia);
-				}
-				if (!foundUltimo && inscripcionGuardia.getIdPersona().compareTo(idPersonaUltimo) == 0) {
-					foundUltimo = true;
-				}
+				punteroInscripciones = (ScsInscripcionGuardiaBean) listaLetrados.get(i);
+				colaLetrados.add(new LetradoGuardia(punteroInscripciones, bajasAdm.getDiasBajaTemporal(
+						punteroInscripciones.getIdPersona(), punteroInscripciones.getIdInstitucion())));
 			}
-			colaLetrados.addAll(colaAuxiliar);
 		}
 		else {
-			// si el idpersona ultimo es null, se deja el orden que traian
+			// ordenando la cola en funcion del idPersonaUltimo guardado
+			Vector<LetradoGuardia> colaAuxiliar = new Vector<LetradoGuardia>();
+			foundUltimo = false;
 			for (int i = 0; i < listaLetrados.size(); i++) {
-				inscripcionGuardia = (ScsInscripcionGuardiaBean) listaLetrados.get(i);
-				letradoGuardia = obtenerLetradoDeInscripcion(beanGuardia, inscripcionGuardia, usr);
-				colaLetrados.add(letradoGuardia);
+				punteroInscripciones = listaLetrados.get(i);
+
+				// insertando en la cola si la inscripcion esta activa
+				if (punteroInscripciones.getEstado().equals(ClsConstants.DB_TRUE)) {
+					// El primero que se anyade es el siguiente al ultimo
+					if (foundUltimo) {
+						colaLetrados.add(new LetradoGuardia(punteroInscripciones, bajasAdm.getDiasBajaTemporal(
+								punteroInscripciones.getIdPersona(), punteroInscripciones.getIdInstitucion())));
+					} else {
+						colaAuxiliar.add(new LetradoGuardia(punteroInscripciones, bajasAdm.getDiasBajaTemporal(
+								punteroInscripciones.getIdPersona(), punteroInscripciones.getIdInstitucion())));
+					}
+				}
+				
+				// revisando si se encontro ya al ultimo
+				if (!foundUltimo && punteroInscripciones.equals(ultimoAnterior))
+					foundUltimo = true;
 			}
+			colaLetrados.addAll(colaAuxiliar);
 		}
 
 		// usando saltos si es necesario (en guardias no)
@@ -234,6 +256,7 @@ public class InscripcionGuardia
 		// Controles
 		ScsGuardiasTurnoAdm guaadm = new ScsGuardiasTurnoAdm(usr);
 		ScsInscripcionGuardiaAdm insadm = new ScsInscripcionGuardiaAdm(usr);
+		CenBajasTemporalesAdm bajasAdm = new CenBajasTemporalesAdm(usr);
 
 		// Variables
 		Vector<ScsInscripcionGuardiaBean> vectorLetrados;
@@ -258,7 +281,8 @@ public class InscripcionGuardia
 		listaLetrados = new ArrayList<LetradoGuardia>();
 		for (int i = 0; i < vectorLetrados.size(); i++) {
 			inscripcionGuardia = (ScsInscripcionGuardiaBean) vectorLetrados.get(i);
-			letradoGuardia = obtenerLetradoDeInscripcion(beanGuardia, inscripcionGuardia, usr);
+			letradoGuardia = new LetradoGuardia(inscripcionGuardia, bajasAdm.getDiasBajaTemporal(
+					inscripcionGuardia.getIdPersona(), inscripcionGuardia.getIdInstitucion()));
 			listaLetrados.add(letradoGuardia);
 		}
 
@@ -278,39 +302,6 @@ public class InscripcionGuardia
 				existe = true;
 		}
 		return existe;
-	}
-	
-	private static LetradoGuardia obtenerLetradoDeInscripcion(ScsGuardiasTurnoBean beanGuardia,
-			ScsInscripcionGuardiaBean inscripcionGuardia,
-			UsrBean usr) throws ClsExceptions
-	{
-		CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(usr);
-		LetradoGuardia letradoGuardia;
-
-		letradoGuardia = new LetradoGuardia(inscripcionGuardia.getIdPersona(), inscripcionGuardia.getIdInstitucion(),
-				inscripcionGuardia.getIdTurno(), inscripcionGuardia.getIdGuardia());
-		letradoGuardia.setPersona(inscripcionGuardia.getPersona());
-		letradoGuardia.setFechaBaja(inscripcionGuardia.getFechaBaja());
-		letradoGuardia.setFechaValidacion(inscripcionGuardia.getFechaValidacion());
-		letradoGuardia.setNumeroGrupo(inscripcionGuardia.getNumeroGrupo());
-
-		// rellenando bajas temporales
-		Map<String, CenBajasTemporalesBean> mBajasTemporales = bajasTemporalescioneAdm.getDiasBajaTemporal(
-				letradoGuardia.getIdPersona(), letradoGuardia.getIdInstitucion());
-		letradoGuardia.setBajasTemporales(mBajasTemporales);
-
-		// comprobando que todos los letrados estan en grupo (en caso de que la guardia sea por Grupos)
-		if (beanGuardia.getPorGrupos().equals("1")) {
-			if (inscripcionGuardia.getGrupo() == null || inscripcionGuardia.getGrupo().equals(""))
-				throw new ClsExceptions("Existe algun letrado sin grupo asignado");
-			else {
-				letradoGuardia.setIdGrupoGuardiaColegiado(inscripcionGuardia.getIdGrupoGuardiaColegiado());
-				letradoGuardia.setGrupo(inscripcionGuardia.getGrupo());
-				letradoGuardia.setOrdenGrupo(inscripcionGuardia.getOrdenGrupo());
-			}
-		}
-
-		return letradoGuardia;
 	}
 	
 	/**
@@ -852,6 +843,9 @@ public class InscripcionGuardia
 	public void validarBaja (UsrBean usr)
 		throws ClsExceptions
 	{
+		// Controles
+		ScsGuardiasTurnoAdm guardiaAdm = new ScsGuardiasTurnoAdm(usr);
+		
 		try {
 			Integer idInstitucion = this.bean.getIdInstitucion();
 			Integer idTurno = this.bean.getIdTurno();
@@ -866,11 +860,14 @@ public class InscripcionGuardia
 			hashGuardia.put(ScsGuardiasTurnoBean.C_IDTURNO, idTurno);
 			if(idGuardia!=null)
 				hashGuardia.put(ScsGuardiasTurnoBean.C_IDGUARDIA, idGuardia);
-			Vector vGuardias = new ScsGuardiasTurnoAdm(usr).select(hashGuardia);
+			Vector vGuardias = guardiaAdm.select(hashGuardia);
 			Long idPersonaUltimoGuardia = null;
-			if(vGuardias!=null && vGuardias.size()>0)
-				idPersonaUltimoGuardia = ((ScsGuardiasTurnoBean)vGuardias.get(0) 
-					).getIdPersona_Ultimo();
+			String fechaSuscripcion_Ultimo = null;
+			if(vGuardias!=null && vGuardias.size()>0) {
+				ScsGuardiasTurnoBean beanGuardia = (ScsGuardiasTurnoBean)vGuardias.get(0);
+				idPersonaUltimoGuardia = beanGuardia.getIdPersona_Ultimo();
+				fechaSuscripcion_Ultimo = beanGuardia.getFechaSuscripcion_Ultimo();
+			}
 			
 			//cambiando el ultimo de la cola si es necesario
 		
@@ -889,7 +886,7 @@ public class InscripcionGuardia
 					else
 						penultimoDeLaCola = ((LetradoGuardia) colaLetrados.get(tamanyoCola-2)).getIdPersona();
 					
-					cambiarUltimoCola (idInstitucion, idTurno, idGuardia, penultimoDeLaCola, usr);
+					guardiaAdm.cambiarUltimoCola (idInstitucion, idTurno, idGuardia, penultimoDeLaCola, fechaSuscripcion_Ultimo);
 				}
 			}
 			
@@ -935,33 +932,4 @@ public class InscripcionGuardia
 		}
 	} 
 
-
-	/**
-	 * Cambia el ultimo letrado de la cola de la guardia indicada
-	 * por el nuevo que se ha solicitado
-	 * 
-	 * @TODO Este metodo y tambien las comprobaciones de cola que se hacen desde esta misma clase
-	 * podrian ir en una nueva clase de logica de negocio "ColaGuardia" 
-	 */
-	public void cambiarUltimoCola (Integer idInstitucion,
-								   Integer idTurno,
-								   Integer idGuardia,
-								   Long idPersona,
-								   UsrBean usr)
-		throws ClsExceptions
-	{
-		String sql = 
-			" update "+ScsGuardiasTurnoBean.T_NOMBRETABLA+" " +
-			"    set "+ScsGuardiasTurnoBean.C_IDPERSONA_ULTIMO+" = "+(idPersona==null?"null":idPersona)+", " +
-			"        "+ScsGuardiasTurnoBean.C_FECHAMODIFICACION+" = sysdate, " +
-			"        "+ScsGuardiasTurnoBean.C_USUMODIFICACION+" = "+usr.getUserName()+" " +
-			"  where "+ScsGuardiasTurnoBean.C_IDINSTITUCION+" = "+idInstitucion+" " +
-			"    and "+ScsGuardiasTurnoBean.C_IDTURNO+" = "+idTurno+" " +
-			"    and "+ScsGuardiasTurnoBean.C_IDGUARDIA+" = "+idGuardia+" ";
-		
-		if (! new ScsGuardiasTurnoAdm(usr).updateSQL(sql)) {
-			throw new ClsExceptions("Error al cambiar ultimo letrado de cola de guardia");
-		}
-	} //cambiarUltimoCola()
-	
 }

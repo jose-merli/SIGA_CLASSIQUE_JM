@@ -935,14 +935,6 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 	
 	/**
 	 * Obtiene las inscripciones ordenadas para formar la cola de una guardia dada una fecha
-	 * 
-	 * @param idinstitucion
-	 * @param idturno
-	 * @param idguardia
-	 * @param fecha
-	 * @param order
-	 * @return
-	 * @throws ClsExceptions
 	 */
 	public Vector<ScsInscripcionGuardiaBean> getColaGuardia(
 			String idinstitucion,
@@ -953,12 +945,9 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 			boolean porGrupos,
 			String order) throws ClsExceptions
 	{
-		if (idinstitucion == null || idinstitucion.equals(""))
-			return null;
-		if (idturno == null || idturno.equals(""))
-			return null;
-		if (idguardia == null || idguardia.equals(""))
-			return null;
+		if (idinstitucion == null || idinstitucion.equals(""))		return null;
+		if (idturno == null || idturno.equals(""))					return null;
+		if (idguardia == null || idguardia.equals(""))				return null;
 		if (fechaInicio == null || fechaInicio.equals(""))
 			fechaInicio = "null";
 		else if(!fechaInicio.trim().equalsIgnoreCase("sysdate"))
@@ -969,17 +958,26 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 			fechaFin = "'"+fechaFin.trim()+"'";
 		
 		String consulta = 
+			"Select " +
+		    "       (case when Ins.Fechavalidacion Is Not Null " +
+			"              And Trunc(Ins.Fechavalidacion) <= nvl("+fechaInicio+",  Ins.Fechavalidacion) " +
+			"              And (Ins.Fechabaja Is Null Or " +
+			"                   Trunc(Ins.Fechabaja) > nvl("+fechaFin+", '01/01/1900')) " +
+			"             then '1' " +
+			"             else '0' " +
+			"        end) Activo, " +
 			getBaseConsultaInscripciones() +
 			
-			//cuando no se pasa fecha, se sacan todas las validadas (en cualquier fecha)
 			"   And Ins.Fechavalidacion Is Not Null " +
+			"   And Gua.Idinstitucion = "+idinstitucion+" " +
+			"   And Gua.Idturno = "+idturno+" " +
+			"   And Gua.Idguardia = "+idguardia+" "/* +
+		
+			//cuando no se pasa fecha, se sacan todas las validadas (en cualquier fecha)
 			"   And Trunc(Ins.Fechavalidacion) <= nvl("+fechaInicio+",  Ins.Fechavalidacion) " +
 			//cuando no se pasa fecha, se sacan aunque esten de baja
 			"   And (Ins.Fechabaja Is Null Or " +
-			"        Trunc(Ins.Fechabaja) > nvl("+fechaFin+", '01/01/1900')) " +
-			"   And Gua.Idinstitucion = "+idinstitucion+" " +
-			"   And Gua.Idturno = "+idturno+" " +
-			"   And Gua.Idguardia = "+idguardia+" ";
+			"        Trunc(Ins.Fechabaja) > nvl("+fechaFin+", '01/01/1900')) "*/;
 		
 		if (porGrupos)
 			consulta +=
@@ -989,6 +987,8 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 		
 		if (! (order == null || order.equals("")))
 			consulta += " order by " + order;
+		else
+			consulta += " order by Ins.FechaValidacion ";
 		
 		Vector<ScsInscripcionGuardiaBean> datos = null;
 		try {
@@ -1004,17 +1004,19 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 					inscripcionBean.setIdTurno(UtilidadesHash.getInteger(htFila, ScsInscripcionGuardiaBean.C_IDTURNO));
 					inscripcionBean.setIdGuardia(UtilidadesHash.getInteger(htFila, ScsInscripcionGuardiaBean.C_IDGUARDIA));
 					inscripcionBean.setIdPersona(UtilidadesHash.getLong(htFila, ScsInscripcionGuardiaBean.C_IDPERSONA));
+					inscripcionBean.setFechaSuscripcion(UtilidadesHash.getString(htFila, ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION));
 					inscripcionBean.setFechaValidacion(UtilidadesHash.getString(htFila, ScsInscripcionGuardiaBean.C_FECHAVALIDACION));
 					inscripcionBean.setFechaBaja(UtilidadesHash.getString(htFila, ScsInscripcionGuardiaBean.C_FECHABAJA));
 					inscripcionBean.setIdGrupoGuardiaColegiado(UtilidadesHash.getLong(htFila, ScsInscripcionGuardiaBean.C_IDGRUPOGUARDIACOLEGIADO));
 					inscripcionBean.setGrupo(UtilidadesHash.getInteger(htFila, ScsInscripcionGuardiaBean.C_GRUPO));
 					inscripcionBean.setOrdenGrupo(UtilidadesHash.getInteger(htFila, ScsInscripcionGuardiaBean.C_ORDENGRUPO));
+					inscripcionBean.setNumeroGrupo(UtilidadesHash.getString(htFila, ScsGrupoGuardiaBean.C_NUMEROGRUPO));
+					inscripcionBean.setEstado(UtilidadesHash.getString(htFila, "ACTIVO"));
 					CenPersonaBean personaBean = new CenPersonaBean(inscripcionBean.getIdPersona(), (String) htFila
 							.get(CenPersonaBean.C_NOMBRE), (String) htFila.get(CenPersonaBean.C_APELLIDOS1),
 							(String) htFila.get(CenPersonaBean.C_APELLIDOS2), (String) htFila
 									.get(ScsOrdenacionColasBean.C_NUMEROCOLEGIADO));
 					inscripcionBean.setPersona(personaBean);
-					inscripcionBean.setNumeroGrupo(UtilidadesHash.getString(htFila, ScsGrupoGuardiaBean.C_NUMEROGRUPO));
 					datos.add(inscripcionBean);
 				}
 			}
@@ -1043,11 +1045,12 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 			return null;
 		
 		String consulta =
+			"Select " +
 			getBaseConsultaInscripciones() +
-			"    And Gru."+ScsGrupoGuardiaColegiadoBean.C_IDINSTITUCION+" = "+idInstitucion+" " +
-			"    And Gru."+ScsGrupoGuardiaColegiadoBean.C_IDTURNO+" = "+idTurno+" " +
-			"    And Gru."+ScsGrupoGuardiaColegiadoBean.C_IDGUARDIA+" = "+idGuardia+" " +
-			"    And Gru."+ScsGrupoGuardiaColegiadoBean.C_IDGRUPO+" = "+idGrupoGuardia+" ";
+			"   And Gru."+ScsGrupoGuardiaColegiadoBean.C_IDINSTITUCION+" = "+idInstitucion+" " +
+			"   And Gru."+ScsGrupoGuardiaColegiadoBean.C_IDTURNO+" = "+idTurno+" " +
+			"   And Gru."+ScsGrupoGuardiaColegiadoBean.C_IDGUARDIA+" = "+idGuardia+" " +
+			"   And Gru."+ScsGrupoGuardiaColegiadoBean.C_IDGRUPO+" = "+idGrupoGuardia+" ";
 		
 		Vector<ScsInscripcionGuardiaBean> datos = null;
 		Hashtable hashGrupo;
@@ -1106,12 +1109,12 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 		
 		String consulta =
 			" Select "+ScsInscripcionGuardiaBean.C_GRUPO+", Count(*) As Numero from " +
-			" ( " +
+			" ( Select " +
 			getBaseConsultaInscripciones() +
 			
-			"    And Gua.Idinstitucion = "+idinstitucion+" " +
-			"    And Gua.Idturno = "+idturno+" " +
-			"    And Gua.Idguardia = "+idguardia+" " +
+			"      And Gua.Idinstitucion = "+idinstitucion+" " +
+			"      And Gua.Idturno = "+idturno+" " +
+			"      And Gua.Idguardia = "+idguardia+" " +
 			
 			" ) " +
 			"  Where "+ScsInscripcionGuardiaBean.C_GRUPO+" Is Not Null " +
@@ -1141,10 +1144,11 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 	
 	public String getBaseConsultaInscripciones() {
 		return new String(
-			"Select Ins.Idinstitucion,"+
+			"       Ins.Idinstitucion,"+
 			"       Ins.Idturno, " +
 			"       Ins.Idguardia, " +
 			"       Per.Idpersona, " +
+			"       Ins.fechasuscripcion As Fechasuscripcion, "+
 			"       TO_CHAR(TRUNC(Ins.fechavalidacion),'DD/MM/YYYY') As Fechavalidacion, "+
 		    "       TO_CHAR(trunc(Ins.fechabaja),'DD/MM/YYYY') As Fechabaja, "+
 		    
@@ -1177,7 +1181,7 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 			"   And Ins.Idguardia = Gru.Idguardia(+) " +
 			"   And Ins.Idpersona = Gru.Idpersona(+) " +
 			"   And Ins.Fechasuscripcion = Gru.Fechasuscripcion(+) " +
-			"   And Grg.Idgrupoguardia(+) = Gru.Idgrupoguardia ");
+			"   And Gru.Idgrupoguardia = Grg.Idgrupoguardia(+) ");
 	}
 	
 }

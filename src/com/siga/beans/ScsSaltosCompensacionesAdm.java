@@ -481,23 +481,10 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 	}
 	
 	
-	
 	/**
-	 * A la hora de borrar un calendario hay 3 pasos posteriores:
-	 * Paso1: Descumplimientar saltos cumplidas en este calendario.
-	 * Los saltos no se crean al generar un calendario, en cambio sí que la
-	 * generación de calendarios puede cumplir saltos. Al borrar el calendario
-	 * se deben "descumplimentar dichos saltos" 
-     *
-	 * @param Hashtable hash: tabla hash con los campos: 
-	 * - String idinstitucion
-	 * - String idcalendarioguardias
-	 * - String idturno
-	 * - String idguardia  
-	 * @return boolean: true si ha ido todo bien.
-	 * @throws ClsExceptions
+	 * Quita el cumplimiento de saltos y compensaciones del calendario pasado como parametro
 	 */
-	public boolean updateSaltosCumplidos(Hashtable hash) throws ClsExceptions {
+	public boolean updateSaltosCompensacionesCumplidos(Hashtable hash) throws ClsExceptions {
 		String idinstitucion="", idcalendarioguardias="", idturno="", idguardia="";
 		boolean salida = false;
 		StringBuffer sql = new StringBuffer();
@@ -517,7 +504,6 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 			sql.append("    and "+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS+"="+idcalendarioguardias);
 			sql.append("    and "+ScsSaltosCompensacionesBean.C_IDTURNO+"="+idturno);
 			sql.append("    and "+ScsSaltosCompensacionesBean.C_IDGUARDIA+"="+idguardia);
-			sql.append("    and "+ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION+"= 'S'");
 			
 			updateSQL(sql.toString());
 			salida = true;
@@ -528,56 +514,9 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 	}
 	
 	/**
-	 * A la hora de borrar un calendario hay 3 pasos posteriores:
-	 * Paso2: Descumplimentar compensaciones cumplidas en este calendario.
-	 * Las compensaciones pudieron crearse al generar otro calendario o manulamente.
-	 * -Si se crearon manualmente basta con descumplimentarlas para restaurar la situación anterior a la generación del calendario.
-	 * -Si se crearon por otro calendario, no podrá realizarse la asociación al calendario
-	 *  anterior, por tanto tendrá que dejarse sin asociar al anterior y se procederá 
-	 *  como en el caso anterior.
-     *
-	 * @param Hashtable hash: tabla hash con los campos: 
-	 * - String idinstitucion
-	 * - String idcalendarioguardias
-	 * - String idturno
-	 * - String idguardia  
-	 * @return boolean: true si ha ido todo bien.
-	 * @throws ClsExceptions
+	 * Borra los saltos y compensaciones creados en el caledario pasado como parametro
 	 */
-	public boolean updateCompensacionesCumplidas(Hashtable hash) throws ClsExceptions {
-		String idinstitucion="", idcalendarioguardias="", idturno="", idguardia="";
-		boolean salida = false;
-		StringBuffer sql = new StringBuffer();
-		
-		try {
-			idinstitucion = (String)hash.get(ScsCalendarioGuardiasBean.C_IDINSTITUCION);
-			idcalendarioguardias = (String)hash.get(ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS);
-			idturno = (String)hash.get(ScsCalendarioGuardiasBean.C_IDTURNO);
-			idguardia = (String)hash.get(ScsCalendarioGuardiasBean.C_IDGUARDIA);			
-
-			sql.append(" update "+ScsSaltosCompensacionesBean.T_NOMBRETABLA);
-			sql.append("    set "+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+"= NULL");
-			sql.append("      , "+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS+"= NULL");
-			sql.append("      , "+ScsSaltosCompensacionesBean.C_FECHAMODIFICACION+"= SYSDATE");
-			sql.append("      , "+ScsSaltosCompensacionesBean.C_USUMODIFICACION+"="+this.usuModificacion);
-			sql.append("  where "+ScsSaltosCompensacionesBean.C_IDINSTITUCION+"="+idinstitucion);
-			sql.append("    and "+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS+"="+idcalendarioguardias);
-			sql.append("    and "+ScsSaltosCompensacionesBean.C_IDTURNO+"="+idturno);
-			sql.append("    and "+ScsSaltosCompensacionesBean.C_IDGUARDIA+"="+idguardia);
-			sql.append("    and "+ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION+"= 'C'");
-			
-			updateSQL(sql.toString());		
-			salida = true;
-		} catch (Exception e) {
-			salida = false;
-		}
-		return salida;
-	}
-	
-	/**
-	 * Borra los saltos creados en el caledario pasado como parametro
-	 */
-	public boolean deleteSaltosCreadosEnCalendario(Hashtable hash) throws ClsExceptions {
+	public boolean deleteSaltosCompensacionesCreadosEnCalendario(Hashtable hash) throws ClsExceptions {
 		boolean salida;
 		
 		try {
@@ -594,7 +533,6 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 			sql.append("     or  "+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS+" is null)");
 			sql.append("    and "+ScsSaltosCompensacionesBean.C_IDTURNO+"="+idturno);
 			sql.append("    and "+ScsSaltosCompensacionesBean.C_IDGUARDIA+"="+idguardia);
-			sql.append("    and "+ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION+"= 'S'");
 			
 			deleteSQL(sql.toString());		
 			salida = true;
@@ -605,10 +543,7 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 	} //deleteSaltosCreadosEnCalendario()
 	
 	/**
-	 * A la hora de borrar un calendario hay 3 pasos posteriores:
-	 * Paso3: Eliminar compensaciones NO cumplidas en este calendario.
-	 * Las compensaciones creadas en este calendario que aún no están cumplidas o 
-	 * o ejecutadas por este calendario, han de borrarse.
+	 * Elimina saltos y compensaciones de calendarios que ya no existen en la guardia.
      *
 	 * @param Hashtable hash: tabla hash con los campos: 
 	 * - String idinstitucion
@@ -618,123 +553,39 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 	 * @return boolean: true si ha ido todo bien.
 	 * @throws ClsExceptions
 	 */
-	public boolean deleteCompensacionesNoCumplidas(Hashtable hash) throws ClsExceptions {
-		String idinstitucion="", idcalendarioguardias="", idturno="", idguardia="";
+	public boolean deleteSaltosCompensacionesCalendariosInexistentes(Hashtable hash) throws ClsExceptions
+	{
+		String idinstitucion = "", idturno = "", idguardia = "";
 		boolean salida = false;
 		StringBuffer sql = new StringBuffer();
-		
+
 		try {
-			idinstitucion = (String)hash.get(ScsCalendarioGuardiasBean.C_IDINSTITUCION);
-			idcalendarioguardias = (String)hash.get(ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS);
-			idturno = (String)hash.get(ScsCalendarioGuardiasBean.C_IDTURNO);
-			idguardia = (String)hash.get(ScsCalendarioGuardiasBean.C_IDGUARDIA);			
-			
-			sql.append(" delete from "+ScsSaltosCompensacionesBean.T_NOMBRETABLA);
-			sql.append("  where "+ScsSaltosCompensacionesBean.C_IDINSTITUCION+"="+idinstitucion);
-			sql.append("    and "+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIASCREACION+"="+idcalendarioguardias);
-			sql.append("    and ("+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS+"="+idcalendarioguardias);
-			sql.append("     or  "+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS+" is null)");
-			sql.append("    and "+ScsSaltosCompensacionesBean.C_IDTURNO+"="+idturno);
-			sql.append("    and "+ScsSaltosCompensacionesBean.C_IDGUARDIA+"="+idguardia);
-			sql.append("    and "+ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION+"= 'C'");
-			
-			deleteSQL(sql.toString());		
-			salida = true;
-		} catch (Exception e) {
-			salida = false;
-		}
-		return salida;
-	}	
-	
-	/**
-	 * Elimina compensaciones de calendarios que ya no existen en la guardia.
-     *
-	 * @param Hashtable hash: tabla hash con los campos: 
-	 * - String idinstitucion
-	 * - String idcalendarioguardias
-	 * - String idturno
-	 * - String idguardia  
-	 * @return boolean: true si ha ido todo bien.
-	 * @throws ClsExceptions
-	 */
-	public boolean deleteCompensacionesCalendariosInexistentes(Hashtable hash) throws ClsExceptions {
-		String idinstitucion="", idturno="", idguardia="";
-		boolean salida = false;
-		StringBuffer sql = new StringBuffer();
-		
-		try {
-			idinstitucion = (String)hash.get(ScsCalendarioGuardiasBean.C_IDINSTITUCION);
-			idturno = (String)hash.get(ScsCalendarioGuardiasBean.C_IDTURNO);
-			idguardia = (String)hash.get(ScsCalendarioGuardiasBean.C_IDGUARDIA);			
-			
-			sql.append(" delete from "+ScsSaltosCompensacionesBean.T_NOMBRETABLA+" SC");
-			sql.append(" where SC."+ScsSaltosCompensacionesBean.C_IDINSTITUCION+"="+idinstitucion);
-			sql.append(" and SC."+ScsSaltosCompensacionesBean.C_IDTURNO+"="+idturno);
-			sql.append(" and SC."+ScsSaltosCompensacionesBean.C_IDGUARDIA+"="+idguardia);
-			sql.append(" and SC."+ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION+"= 'C'");
-			sql.append(" and SC."+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS+" is null");
-			sql.append(" and SC."+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIASCREACION+" is not null");
+			idinstitucion = (String) hash.get(ScsCalendarioGuardiasBean.C_IDINSTITUCION);
+			idturno = (String) hash.get(ScsCalendarioGuardiasBean.C_IDTURNO);
+			idguardia = (String) hash.get(ScsCalendarioGuardiasBean.C_IDGUARDIA);
+
+			sql.append(" delete from " + ScsSaltosCompensacionesBean.T_NOMBRETABLA + " SC");
+			sql.append(" where SC." + ScsSaltosCompensacionesBean.C_IDINSTITUCION + "=" + idinstitucion);
+			sql.append(" and SC." + ScsSaltosCompensacionesBean.C_IDTURNO + "=" + idturno);
+			sql.append(" and SC." + ScsSaltosCompensacionesBean.C_IDGUARDIA + "=" + idguardia);
+			sql.append(" and SC." + ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS + " is null");
+			sql.append(" and SC." + ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIASCREACION + " is not null");
 			sql.append(" and not exists (");
-			sql.append(" select 1 from "+ScsCalendarioGuardiasBean.T_NOMBRETABLA+" CG");
-			sql.append(" where CG."+ScsCalendarioGuardiasBean.C_IDINSTITUCION+"="+idinstitucion);
-			sql.append(" and CG."+ScsCalendarioGuardiasBean.C_IDTURNO+"="+idturno);
-			sql.append(" and CG."+ScsCalendarioGuardiasBean.C_IDGUARDIA+"="+idguardia);
-			sql.append(" and CG."+ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS+"= SC."+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIASCREACION);
+			sql.append(" select 1 from " + ScsCalendarioGuardiasBean.T_NOMBRETABLA + " CG");
+			sql.append(" where CG." + ScsCalendarioGuardiasBean.C_IDINSTITUCION + "=" + idinstitucion);
+			sql.append(" and CG." + ScsCalendarioGuardiasBean.C_IDTURNO + "=" + idturno);
+			sql.append(" and CG." + ScsCalendarioGuardiasBean.C_IDGUARDIA + "=" + idguardia);
+			sql.append(" and CG." + ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS + "= SC."
+					+ ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIASCREACION);
 			sql.append(")");
 
-					
 			this.deleteSQL(sql.toString());
 			salida = true;
 		} catch (Exception e) {
 			salida = false;
 		}
 		return salida;
-	}	
-	
-	/**
-	 * Elimina saltos de calendarios que ya no existen en la guardia.
-     *
-	 * @param Hashtable hash: tabla hash con los campos: 
-	 * - String idinstitucion
-	 * - String idcalendarioguardias
-	 * - String idturno
-	 * - String idguardia  
-	 * @return boolean: true si ha ido todo bien.
-	 * @throws ClsExceptions
-	 */
-	public boolean deleteSaltosCalendariosInexistentes(Hashtable hash) throws ClsExceptions {
-		String idinstitucion="", idturno="", idguardia="";
-		boolean salida = false;
-		StringBuffer sql = new StringBuffer();
-		
-		try {
-			idinstitucion = (String)hash.get(ScsCalendarioGuardiasBean.C_IDINSTITUCION);
-			idturno = (String)hash.get(ScsCalendarioGuardiasBean.C_IDTURNO);
-			idguardia = (String)hash.get(ScsCalendarioGuardiasBean.C_IDGUARDIA);			
-			
-			sql.append(" delete from "+ScsSaltosCompensacionesBean.T_NOMBRETABLA+" SC");
-			sql.append(" where SC."+ScsSaltosCompensacionesBean.C_IDINSTITUCION+"="+idinstitucion);
-			sql.append(" and SC."+ScsSaltosCompensacionesBean.C_IDTURNO+"="+idturno);
-			sql.append(" and SC."+ScsSaltosCompensacionesBean.C_IDGUARDIA+"="+idguardia);
-			sql.append(" and SC."+ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION+"= 'S'");
-			sql.append(" and SC."+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIAS+" is null");
-			sql.append(" and SC."+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIASCREACION+" is not null");
-			sql.append(" and not exists (");
-			sql.append(" select 1 from "+ScsCalendarioGuardiasBean.T_NOMBRETABLA+" CG");
-			sql.append(" where CG."+ScsCalendarioGuardiasBean.C_IDINSTITUCION+"="+idinstitucion);
-			sql.append(" and CG."+ScsCalendarioGuardiasBean.C_IDTURNO+"="+idturno);
-			sql.append(" and CG."+ScsCalendarioGuardiasBean.C_IDGUARDIA+"="+idguardia);
-			sql.append(" and CG."+ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS+"= SC."+ScsSaltosCompensacionesBean.C_IDCALENDARIOGUARDIASCREACION);
-			sql.append(")");
-
-					
-			this.deleteSQL(sql.toString());
-			salida = true;
-		} catch (Exception e) {
-			salida = false;
-		}
-		return salida;
-	}	
+	}
 	
 	/**
 	 * A la hora de dar de baja de un turno se debe dar fecha de uso a los saltos y compensaciones
@@ -854,23 +705,19 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 			hmPersonasConSaltos = new HashMap<Long, ArrayList<LetradoGuardia>>();
 			ArrayList<LetradoGuardia> alLetradosSaltados = null; 
 			for (int i = 0; i < rc.size(); i++){
-			    letradoSeleccionado = new LetradoGuardia();
-			    letradoSeleccionado.setIdInstitucion(idInstitucion);
-			    letradoSeleccionado.setIdTurno(idTurno);
-			    letradoSeleccionado.setIdGuardia(idGuardia);
-			    letradoSeleccionado.setSaltoCompensacion("C");
-			    
 			    Row fila = (Row) rc.get(i);
 				Hashtable hFila = fila.getRow();
-				Long idPersona = new Long((String)hFila.get(ScsSaltosCompensacionesBean.C_IDPERSONA));
-				letradoSeleccionado.setIdPersona(idPersona);
-				if(hmPersonasConSaltos.containsKey(idPersona)){
+				
+				Long idPersona = Long.valueOf((String) hFila.get(ScsSaltosCompensacionesBean.C_IDPERSONA));
+			    CenPersonaAdm perAdm = new CenPersonaAdm(this.usrbean);
+				letradoSeleccionado = new LetradoGuardia(
+						perAdm.getPersonaPorId(idPersona.toString()), 
+						idInstitucion, idTurno, idGuardia, "C");
+				
+				if(hmPersonasConSaltos.containsKey(idPersona))
 					alLetradosSaltados = hmPersonasConSaltos.get(idPersona);
-					
-				}else{
+				else
 					alLetradosSaltados = new ArrayList<LetradoGuardia>();
-					
-				}
 				
 				alLetradosSaltados.add(letradoSeleccionado);
 				hmPersonasConSaltos.put(idPersona, alLetradosSaltados);
@@ -918,15 +765,12 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 			alLetradosCompensados = new ArrayList<LetradoGuardia>();
 			
 			for (int i = 0; i < rc.size(); i++){
-			    letradoSeleccionado = new LetradoGuardia();
-			    letradoSeleccionado.setIdInstitucion(idInstitucion);
-			    letradoSeleccionado.setIdTurno(idTurno);
-			    letradoSeleccionado.setIdGuardia(idGuardia);
-			    letradoSeleccionado.setSaltoCompensacion("C");
-			    
 			    Row fila = (Row) rc.get(i);
 				Hashtable hFila = fila.getRow();
-				letradoSeleccionado.setIdPersona(new Long((String)hFila.get(ScsSaltosCompensacionesBean.C_IDPERSONA)));
+				
+			    CenPersonaAdm perAdm = new CenPersonaAdm(this.usrbean);
+				letradoSeleccionado = new LetradoGuardia(perAdm.getPersonaPorId((String) hFila
+						.get(ScsSaltosCompensacionesBean.C_IDPERSONA)), idInstitucion, idTurno, idGuardia, "C");
 				Map<String, CenBajasTemporalesBean> mBajasTemporales = btAdm.getDiasBajaTemporal(
 						letradoSeleccionado.getIdPersona(), letradoSeleccionado.getIdInstitucion());
 				letradoSeleccionado.setBajasTemporales(mBajasTemporales);
@@ -967,15 +811,15 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
             		Row fila = (Row) rc.get(i);
             		Hashtable<String, Object> htFila=fila.getRow();
             		
-            		LetradoGuardia letradoGuardia = new LetradoGuardia();
+            		CenPersonaBean personaBean = new CenPersonaBean(
+            				UtilidadesHash.getLong(htFila, ScsInscripcionGuardiaBean.C_IDPERSONA),
+            				(String)htFila.get(CenPersonaBean.C_NOMBRE),(String)htFila.get(CenPersonaBean.C_APELLIDOS1),
+            				(String)htFila.get(CenPersonaBean.C_APELLIDOS2),(String)htFila.get(CenColegiadoBean.C_NCOLEGIADO));
+            		
+            		LetradoGuardia letradoGuardia = new LetradoGuardia(personaBean, 
+            				Integer.valueOf(idInstitucion), Integer.valueOf(idTurno), null, null);
             		letradoGuardia.setSaltoCompensacion(UtilidadesHash.getString(htFila, ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION));
             		letradoGuardia.setIdSaltoCompensacion(UtilidadesHash.getString(htFila, ScsSaltosCompensacionesBean.C_IDSALTOSTURNO));
-            		
-            		letradoGuardia.setIdPersona(UtilidadesHash.getLong(htFila, ScsInscripcionGuardiaBean.C_IDPERSONA));
-            		CenPersonaBean personaBean = new CenPersonaBean(
-            				letradoGuardia.getIdPersona(),(String)htFila.get(CenPersonaBean.C_NOMBRE),(String)htFila.get(CenPersonaBean.C_APELLIDOS1),
-            				(String)htFila.get(CenPersonaBean.C_APELLIDOS2),(String)htFila.get(CenColegiadoBean.C_NCOLEGIADO));
-            		letradoGuardia.setPersona(personaBean);
             		datosVector.add(letradoGuardia);
             	}
             } 

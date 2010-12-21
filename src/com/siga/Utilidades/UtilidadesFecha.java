@@ -2,6 +2,7 @@ package com.siga.Utilidades;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import com.atos.utils.ClsConstants;
@@ -53,4 +54,38 @@ public class UtilidadesFecha {
 		return fechaFormateada;
 	}
 	
+	/** Suma dias a la fecha pasada como argumento */
+	public static String sumarDias(String fecha, int dias){
+		String salida = "";
+
+		try {
+			//Recupero del String fechaInicial con formato dd/mm/yyyy la fecha como Date
+			String jsdf = ClsConstants.DATE_FORMAT_SHORT_SPANISH;//"dd/MM/yyyy";//Java Short Date Format
+			SimpleDateFormat formateo = new SimpleDateFormat(jsdf);
+			Date date = new Date();
+			date = formateo.parse(fecha);
+	
+			//Calendario
+			Calendar calendario = Calendar.getInstance();
+			calendario.setTime(date);
+
+			//Nueva fecha calculada
+			Date siguiente = new Date();
+			int dia = 0;
+			for (int i=0; i<dias; i++) {
+				dia = calendario.get(Calendar.DAY_OF_MONTH);
+				calendario.set(Calendar.DAY_OF_MONTH,dia+1);
+			}
+			siguiente = calendario.getTime();
+			
+			//Formateo la fecha como un String
+			salida = formateo.format(siguiente);
+			
+		}
+		catch (Exception e) {
+		}
+
+		return salida;
+	}
+
 }

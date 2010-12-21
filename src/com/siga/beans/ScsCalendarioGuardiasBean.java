@@ -14,21 +14,23 @@ public class ScsCalendarioGuardiasBean extends MasterBean
 	private String	fechaInicio;
 	private String	fechaFin;
 	private String  observaciones;
-	private Integer idPersonaUltimoAnterior;
+	private Long idPersonaUltimoAnterior;
+	private String	fechaSuscUltimoAnterior;
 	
 	
 	/** Nombre de Tabla */
 	static public String T_NOMBRETABLA = "SCS_CALENDARIOGUARDIAS";
 	
 	// Nombre de campos de la tabla
-	static public final String	C_IDINSTITUCION	=			"IDINSTITUCION";
-	static public final String 	C_IDTURNO	=				"IDTURNO";
-	static public final String 	C_IDGUARDIA	=				"IDGUARDIA";
-	static public final String 	C_IDCALENDARIOGUARDIAS	=	"IDCALENDARIOGUARDIAS";
-	static public final String 	C_FECHAINICIO =				"FECHAINICIO";
-	static public final String 	C_FECHAFIN =				"FECHAFIN";
-	static public final String  C_OBSERVACIONES = 			"OBSERVACIONES";
-	static public final String  C_IDPERSONA_ULTIMOANTERIOR ="IDPERSONA_ULTIMOANTERIOR";
+	static public final String C_IDINSTITUCION				= "IDINSTITUCION";
+	static public final String C_IDTURNO					= "IDTURNO";
+	static public final String C_IDGUARDIA					= "IDGUARDIA";
+	static public final String C_IDCALENDARIOGUARDIAS		= "IDCALENDARIOGUARDIAS";
+	static public final String C_FECHAINICIO				= "FECHAINICIO";
+	static public final String C_FECHAFIN					= "FECHAFIN";
+	static public final String C_OBSERVACIONES				= "OBSERVACIONES";
+	static public final String C_IDPERSONA_ULTIMOANTERIOR	= "IDPERSONA_ULTIMOANTERIOR";
+	static public final String C_FECHASUSC_ULTIMOANTERIOR	= "FECHASUSC_ULTIMOANTERIOR";
 	
 	
 	/** Constructor */
@@ -47,26 +49,29 @@ public class ScsCalendarioGuardiasBean extends MasterBean
 		this.observaciones = observaciones;
 	}	
 	
+	
 	// Setters
-	public void setIdInstitucion			(Integer valor)	{ this.idInstitucion	=			valor;}
-	public void setIdTurno					(Integer valor)	{ this.idTurno =					valor;}
-	public void setIdGuardia				(Integer valor)	{ this.idGuardia =					valor;}
-	public void setIdCalendarioGuardias		(Integer valor)	{ this.idCalendarioGuardias = 		valor;}
-	public void setFechaInicio				(String  valor)	{ this.fechaInicio =	 			valor;}
-	public void setFechaFin					(String  valor)	{ this.fechaFin = 					valor;}
-	public void setObservaciones			(String  valor)	{ this.observaciones = 				valor;}
-	public void setIdPersonaUltimoAnterior(Integer idPersonaUltimoAnterior) {this.idPersonaUltimoAnterior = idPersonaUltimoAnterior;}
+	public void setIdInstitucion			(Integer idInstitucion)				{this.idInstitucion				= idInstitucion;}
+	public void setIdTurno					(Integer idTurno)					{this.idTurno					= idTurno;}
+	public void setIdGuardia				(Integer idGuardia)					{this.idGuardia					= idGuardia;}
+	public void setIdCalendarioGuardias		(Integer idCalendarioGuardias)		{this.idCalendarioGuardias		= idCalendarioGuardias;}
+	public void setFechaInicio				(String  fechaInicio)				{this.fechaInicio				= fechaInicio;}
+	public void setFechaFin					(String  fechaFin)					{this.fechaFin					= fechaFin;}
+	public void setObservaciones			(String  observaciones)				{this.observaciones				= observaciones;}
+	public void setIdPersonaUltimoAnterior	(Long    idPersonaUltimoAnterior)	{this.idPersonaUltimoAnterior	= idPersonaUltimoAnterior;}
+	public void setFechaSuscUltimoAnterior	(String	 fechaSuscUltimoAnterior)	{this.fechaSuscUltimoAnterior	= fechaSuscUltimoAnterior;}
 	
 	
 	// Getters
-	public Integer getIdInstitucion			()	{ return this.idInstitucion;			}
-	public Integer getIdTurno				()	{ return this.idTurno;					}
-	public Integer getIdGuardia				()	{ return this.idGuardia;				}
-	public Integer getIdCalendarioGuardias	()	{ return this.idCalendarioGuardias;		}
-	public String  getFechaInicio			()	{ return this.fechaInicio;				}
-	public String  getFechaFin				()	{ return this.fechaFin;					}
-	public String  getObservaciones			()	{ return this.observaciones;			}
-	public Integer getIdPersonaUltimoAnterior() {return idPersonaUltimoAnterior;}
+	public Integer getIdInstitucion				() {return idInstitucion;}
+	public Integer getIdTurno					() {return idTurno;}
+	public Integer getIdGuardia					() {return idGuardia;}
+	public Integer getIdCalendarioGuardias		() {return idCalendarioGuardias;}
+	public String  getFechaInicio				() {return fechaInicio;}
+	public String  getFechaFin					() {return fechaFin;}
+	public String  getObservaciones				() {return observaciones;}
+	public Long	   getIdPersonaUltimoAnterior	() {return idPersonaUltimoAnterior;}
+	public String  getFechaSuscUltimoAnterior	() {return fechaSuscUltimoAnterior;}
 	
 	
 	public String toString() {

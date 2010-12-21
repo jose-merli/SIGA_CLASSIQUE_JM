@@ -17,6 +17,7 @@ import com.atos.utils.GstDate;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.beans.CenBajasTemporalesAdm;
 import com.siga.beans.CenDireccionTipoDireccionAdm;
 import com.siga.beans.CenDireccionTipoDireccionBean;
 import com.siga.beans.CenDireccionesAdm;
@@ -172,6 +173,7 @@ public class InscripcionTurno
 		ArrayList<LetradoGuardia> colaLetrados = new ArrayList<LetradoGuardia>();
 		ScsInscripcionTurnoAdm insadm = new ScsInscripcionTurnoAdm(usr);
 		ScsSaltosCompensacionesAdm saladm = new ScsSaltosCompensacionesAdm(usr);
+		CenBajasTemporalesAdm bajasAdm = new CenBajasTemporalesAdm(usr);
 		
 		
 		// obteniendo la guardia
@@ -204,12 +206,8 @@ public class InscripcionTurno
 		if(idPersonaUltimo!=null){
 			for (int i = 0; i < listaLetrados.size(); i++) {
 				inscripcionTurno = (ScsInscripcionTurnoBean) listaLetrados.get(i);
-				letradoTurno = new LetradoGuardia(inscripcionTurno.getIdPersona(),
-						inscripcionTurno.getIdInstitucion(),
-						inscripcionTurno.getIdTurno());
-				letradoTurno.setPersona(inscripcionTurno.getPersona());
-				letradoTurno.setFechaBaja(inscripcionTurno.getFechaBaja());
-				letradoTurno.setFechaValidacion(inscripcionTurno.getFechaValidacion());
+				letradoTurno = new LetradoGuardia(inscripcionTurno, bajasAdm.getDiasBajaTemporal(inscripcionTurno
+						.getIdPersona(), inscripcionTurno.getIdInstitucion()));
 				if(foundUltimo){
 					//El primero que se añade es el ultimo. Depues habra que moverlo
 					colaLetrados.add(letradoTurno);
@@ -227,12 +225,8 @@ public class InscripcionTurno
 //			si el idpersona ultimo es nullo con el orden que traian
 			for (int i = 0; i < listaLetrados.size(); i++) {
 				inscripcionTurno = (ScsInscripcionTurnoBean) listaLetrados.get(i);
-				letradoTurno = new LetradoGuardia(inscripcionTurno.getIdPersona(),
-						inscripcionTurno.getIdInstitucion(),
-						inscripcionTurno.getIdTurno());
-				letradoTurno.setPersona(inscripcionTurno.getPersona());
-				letradoTurno.setFechaBaja(inscripcionTurno.getFechaBaja());
-				letradoTurno.setFechaValidacion(inscripcionTurno.getFechaValidacion());
+				letradoTurno = new LetradoGuardia(inscripcionTurno, bajasAdm.getDiasBajaTemporal(inscripcionTurno
+						.getIdPersona(), inscripcionTurno.getIdInstitucion()));
 				colaLetrados.add(letradoTurno);
 			}
 		}

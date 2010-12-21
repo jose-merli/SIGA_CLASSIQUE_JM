@@ -162,10 +162,13 @@
 			return;
 		}
 	 	
-		var idPersona  = document.getElementById('idPersona_' + fila).value;
+		var idPersona = document.getElementById('idPersona_' + fila).value;
 		document.forms[0].idPersona.value = idPersona;
+		var fechaSuscripcion = document.getElementById('fechaSuscripcion_' + fila).value;
+		document.forms[0].fechaSuscripcion.value = fechaSuscripcion;
 		var idGrupoGuardiaColegiado = document.getElementById('idGrupoGuardiaColegiado_' + fila).value;
 		document.forms[0].idGrupoGuardiaColegiado.value = idGrupoGuardiaColegiado;
+		
 		document.forms[0].modo.value = "fijarUltimoLetrado";
 		document.forms[0].target = "submitArea";
 		document.forms[0].submit();
@@ -183,6 +186,7 @@
 		<input type="hidden" name="tablaDatosDinamicosD">
 		<input type="hidden" name="actionModal" value="">
 		<input type="hidden" name="idPersona" >
+		<input type="hidden" name="fechaSuscripcion" >
 		<input type="hidden" name="idGuardia" value="<%=idGuardia%>" >
 		<input type="hidden" name="idGrupoGuardiaColegiado">
 		<input type="hidden" name="datosModificados">
@@ -307,6 +311,7 @@
 	 					String nombre = "";
 	 					String ncolegiado = "";
 	 					String idPersona = "";
+	 					String fechaSuscripcion = "";
 	 					String numeroColegiadoBusqueda = "";
 	 					String grupo = "";
 	 					String ordenGrupo = "";
@@ -323,6 +328,7 @@
 	 						ncolegiado = letradoGuardia.getPersona().getColegiado()
 	 								.getNColegiado();
 	 						idPersona = letradoGuardia.getIdPersona().toString();
+	 						fechaSuscripcion = letradoGuardia.getInscripcionGuardia().getFechaSuscripcion();
 	 						numeroColegiadoBusqueda = "" + i + "_" + ncolegiado;
 	 						grupo = letradoGuardia.getNumeroGrupo() != null
 	 								? letradoGuardia.getNumeroGrupo().toString()
@@ -367,6 +373,7 @@
 				<td>
 					<input name="numeroColegiadoBusqueda" type="hidden" class="box" size="10" value="<%=numeroColegiadoBusqueda%>" >
 					<input name="idPersona_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=idPersona%>" >
+					<input name="fechaSuscripcion_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=fechaSuscripcion%>" >
 					<input name="idGrupoGuardiaColegiado_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=idGrupoGuardiaColegiado%>" >
 					<%=ncolegiado%>
 				</td>
@@ -375,11 +382,10 @@
 				</td>
 				<td>
 				<%
-					if (letradoGuardia.getFechaValidacion() != null
-										&& !letradoGuardia.getFechaValidacion().equals(
-												"")) {
+					if (letradoGuardia.getInscripcionGuardia().getFechaValidacion() != null
+						&& !letradoGuardia.getInscripcionGuardia().getFechaValidacion().equals("")) {
 				%>
-					<%=letradoGuardia.getFechaValidacion()%>
+					<%=letradoGuardia.getInscripcionGuardia().getFechaValidacion()%>
 				<%
 					} else {
 				%>
@@ -390,10 +396,10 @@
 				</td>
 				<td>
 				<%
-					if (letradoGuardia.getFechaBaja() != null
-										&& !letradoGuardia.getFechaBaja().equals("")) {
+					if (letradoGuardia.getInscripcionGuardia().getFechaBaja() != null
+						&& !letradoGuardia.getInscripcionGuardia().getFechaBaja().equals("")) {
 				%>
-					<%=letradoGuardia.getFechaBaja()%>
+					<%=letradoGuardia.getInscripcionGuardia().getFechaBaja()%>
 				<%
 					} else {
 				%>
