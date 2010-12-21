@@ -96,7 +96,7 @@ public class CalendarioSJCS
 	
     //Datos para usar posteriormente propios de SJCS
 	/**ArrayList de periodos con las fechas en formato corto como String*/
-	private ArrayList arrayPeriodosDiasGuardiaSJCS;	
+	private ArrayList<ArrayList<String>> arrayPeriodosDiasGuardiaSJCS;	
 	/**ArrayList con los periodos, cada uno con sus letrados para hacer las guardias SJCS*/
 	private ArrayList arrayPeriodosLetradosSJCS;
  
@@ -149,7 +149,7 @@ public class CalendarioSJCS
 		}
 		
 		// Calendarios vinculados (guardias vinculadas)
-		if (calendariosVinculados.isEmpty())
+		if (calendariosVinculados == null || calendariosVinculados.isEmpty())
 			this.calendariosVinculados = null;
 		else
 			this.calendariosVinculados = calendariosVinculados;
@@ -829,7 +829,7 @@ public class CalendarioSJCS
 		this.arrayPeriodosDiasGuardiaSJCS.clear();
 		ArrayList<ArrayList<String>> listaDiasPeriodos = this.obtenerPeriodosGuardia();
 		if (listaDiasPeriodos != null && !listaDiasPeriodos.isEmpty())
-			this.arrayPeriodosDiasGuardiaSJCS.add(listaDiasPeriodos);
+			this.arrayPeriodosDiasGuardiaSJCS.addAll(listaDiasPeriodos);
 	} // calcularMatrizPeriodosDiasGuardia()
 	
 	/**

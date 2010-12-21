@@ -2044,9 +2044,10 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 			
 			ScsGuardiasColegiadoAdm envioAdm = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
 			ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-			sFicheroLog = rp.returnProperty("sjcs.directorioFisicoGeneracionCalendarios")
-					+ File.separator + idInstitucion+"\\"+ idTurno + "." + idGuardia + "." + idCalendarioGuardias + "-"
-					+ fechaDesde.replace('/', '.') + "-" + fechaHasta.replace('/', '.') + ".log.xls";
+			sFicheroLog = rp.returnProperty("sjcs.directorioFisicoGeneracionCalendarios") + File.separator
+					+ idInstitucion + "\\"
+					+ getNombreFicheroLogCalendario(idTurno, idGuardia, idCalendarioGuardias, fechaDesde, fechaHasta)
+					+ ".log.xls";
 			File fichero = new File(sFicheroLog);
 			if(fichero==null || !fichero.exists()){
 				throw new SIGAException("messages.general.error.ficheroNoExiste"); 
@@ -2066,8 +2067,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 			String fechaDesde,
 			String fechaHasta) throws ClsExceptions
 	{
-		ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		return (idTurno.toString() + "." + idGuardia.toString() + "." + idCalendarioGuardias.toString() + "-"
+		return (idTurno + "." + idGuardia + "." + idCalendarioGuardias + "-"
 				+ fechaDesde.replace('/', '.') + "-" + fechaHasta.replace('/', '.'));
 	}
 
