@@ -461,8 +461,8 @@ public class MantenimientoPrevisionesAction extends MasterAction {
 					// cambio de estado
 		        	
 					FcsFactEstadosFacturacionBean beanEstado = new FcsFactEstadosFacturacionBean();
-					String idOrdenEstado= admEstado.getIdordenestadoMaximo(idInstitucion, idFacturacion);
-					admEstado.insert(beanEstado);
+					String idOrdenEstado= admEstado.getIdordenestadoMaximo(idInstitucion, idFacturacion);				
+					
 					beanEstado.setIdInstitucion(new Integer(idInstitucion));
 					beanEstado.setIdFacturacion(new Integer(idFacturacion));
 					beanEstado.setIdEstadoFacturacion(new Integer(ClsConstants.ESTADO_FACTURACION_EJECUTADA));
