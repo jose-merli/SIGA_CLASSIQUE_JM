@@ -528,6 +528,8 @@ public class MantenimientoPrevisionesAction extends MasterAction {
 		estado.put(FcsFactEstadosFacturacionBean.C_IDESTADOFACTURACION, String.valueOf(ClsConstants.ESTADO_FACTURACION_ABIERTA));
 		estado.put(FcsFactEstadosFacturacionBean.C_IDINSTITUCION, usr.getLocation());
 		estado.put(FcsFactEstadosFacturacionBean.C_USUMODIFICACION , usr.getUserName());
+		estado.put(FcsFactEstadosFacturacionBean.C_IDORDENESTADO ,1);
+		
 		tx = usr.getTransaction();
 		tx.begin();
 			
