@@ -1126,7 +1126,7 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 		CenPersonaBean personaBean = new CenPersonaBean(inscripcionBean.getIdPersona(), (String) hash
 				.get(CenPersonaBean.C_NOMBRE), (String) hash.get(CenPersonaBean.C_APELLIDOS1),
 				(String) hash.get(CenPersonaBean.C_APELLIDOS2), (String) hash
-						.get(CenColegiadoBean.C_NCOLEGIADO));
+						.get(ScsOrdenacionColasBean.C_NUMEROCOLEGIADO));
 		inscripcionBean.setPersona(personaBean);
 		return inscripcionBean;
 	}
