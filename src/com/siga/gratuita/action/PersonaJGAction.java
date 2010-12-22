@@ -2089,8 +2089,9 @@ public class PersonaJGAction extends MasterAction {
 				}
 	
 			if(miform.getConceptoE().equals(PersonaJGAction.EJG)) {
-					result = this.exitoModal("messages.updated.success",request);
-				} else {					
+					request.removeAttribute("sinrefresco");
+					result = this.exitoRefresco("messages.updated.success",request);
+					} else {					
 					request.removeAttribute("sinrefresco");
 					result = this.exitoModal("messages.updated.success",request);
 				}
@@ -2549,12 +2550,13 @@ public class PersonaJGAction extends MasterAction {
 				}
 			}			
 
-			if(miform.getConceptoE().equals(PersonaJGAction.ASISTENCIA_CONTRARIOS)) {
+			if(miform.getConceptoE().equals(PersonaJGAction.ASISTENCIA_CONTRARIOS)) {				
 				result = this.exitoModal("messages.updated.success",request);
-			} else {
-				result = this.exitoModal("messages.updated.success",request);
-				//result = this.exitoRefresco("messages.updated.success",request);
-			}
+			} else {			
+				request.removeAttribute("sinrefresco");
+				result = this.exitoRefresco("messages.updated.success",request);
+			}				
+				
 		}
 		catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
