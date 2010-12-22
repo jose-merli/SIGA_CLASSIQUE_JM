@@ -474,7 +474,7 @@ public class CalendarioSJCS
 		if (letradoGuardia != null)
 			return letradoGuardia;
 		else
-			throw new SIGAException("gratuita.modalRegistro_DefinirCalendarioGuardia.literal.errorLetradosSuficientes");
+			return null;
 	} // getSiguienteLetrado()
 
 	/**
@@ -985,7 +985,6 @@ public class CalendarioSJCS
 		try {
 			// obteniendo saltos
 			hmPersonasConSaltos = scAdm.getSaltos(this.idInstitucion, this.idTurno, this.idGuardia);
-			log.addLog(new String[] {"Saltos", hmPersonasConSaltos.toString()});
 
 			// obteniendo numero de letrados necesarios para cada periodo
 			numeroLetradosGuardia = this.beanGuardiasTurno.getNumeroLetradosGuardia().intValue();
@@ -1033,6 +1032,7 @@ public class CalendarioSJCS
 				// bucle, ya que si hay incompatibilidades se añade una compensacion
 				alCompensaciones = scAdm.getCompensaciones(this.idInstitucion, this.idTurno, this.idGuardia);
 				log.addLog(new String[] {"Compensaciones", alCompensaciones.toString()});
+				log.addLog(new String[] {"Saltos", hmPersonasConSaltos.toString()});
 
 				// Para cada plaza que hay que ocupar en dia/conjunto de dias:
 				int letradosInsertados = 0;
@@ -1041,11 +1041,12 @@ public class CalendarioSJCS
 					// ATENCION: este metodo es el nucleo del proceso
 					LetradoGuardia letradoGuardia = getSiguienteLetrado(alCompensaciones, alLetradosOrdenados,
 							punteroListaLetrados, diasGuardia, hmPersonasConSaltos);
-					log.addLog(new String[] {"Letrado seleccionado", letradoGuardia.toString()});
 
 					// guardando la asignacion de guardia si se encontro letrado
 					// hay que hacerlo aqui para no repetir letrado el mismo dia
 					if (letradoGuardia != null) {
+						log.addLog(new String[] {"Letrado seleccionado", letradoGuardia.toString()});
+						
 						alLetradosInsertar = new ArrayList<LetradoGuardia>();
 						letradoGuardia.setPeriodoGuardias(diasGuardia);
 						LetradoGuardia letradoGuardiaClone = (LetradoGuardia) letradoGuardia.clone();
@@ -1172,7 +1173,6 @@ public class CalendarioSJCS
 					grupoConSaltos.add(bean.getLetrados().get(0)); // se inserta uno de los letrados, que lleva ya el idSaltoCompensacionGrupo
 				}
 			}
-			log.addLog(new String[] {"Saltos", alSaltos.toString()});
 
 			// obteniendo numero de letrados necesarios para cada periodo
 			numeroLetradosGuardia = this.beanGuardiasTurno.getNumeroLetradosGuardia().intValue();
@@ -1219,6 +1219,7 @@ public class CalendarioSJCS
 				// bucle, ya que si hay incompatibilidades se añade una compensacion
 				alCompensaciones = salComAdm.getSaltosCompensacionesPendientesGuardia(this.idInstitucion, this.idTurno, this.idGuardia, ClsConstants.COMPENSACIONES);
 				log.addLog(new String[] {"Compensaciones", alCompensaciones.toString()});
+				log.addLog(new String[] {"Saltos", alSaltos.toString()});
 
 				// buscando grupo que no tenga restricciones (incompatibilidades, bajas temporales, saltos)
 				grupoLetrados = getSiguienteGrupo(alCompensaciones, alLetradosOrdenados, punteroListaLetrados, diasGuardia, hmGruposConSaltos);

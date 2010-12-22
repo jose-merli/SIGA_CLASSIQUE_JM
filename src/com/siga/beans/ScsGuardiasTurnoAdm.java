@@ -1336,6 +1336,13 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 								   String fechaSuscripcion_Ultimo)
 		throws ClsExceptions
 	{
+		String sIdinstitucion = idInstitucion.toString();
+		String sIdTurno = idTurno.toString();
+		String sIdGuardia = idGuardia.toString();
+		String sIdpersona = (idPersona_Ultimo == null) ? "null" : idPersona_Ultimo.toString();
+		String sFechaSusc = (fechaSuscripcion_Ultimo == null || fechaSuscripcion_Ultimo.equals("")) ?
+				"null" : fechaSuscripcion_Ultimo.toString();
+		
 		String[] campos = 
 		{
 				ScsGuardiasTurnoBean.C_IDPERSONA_ULTIMO,
@@ -1345,11 +1352,11 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 		};
 		
 		Hashtable hash = new Hashtable();
-		hash.put(ScsGuardiasTurnoBean.C_IDINSTITUCION, idInstitucion);
-		hash.put(ScsGuardiasTurnoBean.C_IDTURNO, idTurno);
-		hash.put(ScsGuardiasTurnoBean.C_IDGUARDIA, idGuardia);
-		hash.put(ScsGuardiasTurnoBean.C_IDPERSONA_ULTIMO, idPersona_Ultimo);
-		hash.put(ScsGuardiasTurnoBean.C_FECHASUSCRIPCION_ULTIMO, fechaSuscripcion_Ultimo);
+		hash.put(ScsGuardiasTurnoBean.C_IDINSTITUCION, sIdinstitucion);
+		hash.put(ScsGuardiasTurnoBean.C_IDTURNO, sIdTurno);
+		hash.put(ScsGuardiasTurnoBean.C_IDGUARDIA, sIdGuardia);
+		hash.put(ScsGuardiasTurnoBean.C_IDPERSONA_ULTIMO, sIdpersona);
+		hash.put(ScsGuardiasTurnoBean.C_FECHASUSCRIPCION_ULTIMO, sFechaSusc);
 		hash.put(ScsGuardiasTurnoBean.C_USUMODIFICACION, this.usrbean.getUserName());
 		hash.put(ScsGuardiasTurnoBean.C_FECHAMODIFICACION, "SYSDATE");
 		

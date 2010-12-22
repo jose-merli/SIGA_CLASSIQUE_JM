@@ -212,8 +212,9 @@ public class InscripcionGuardia
 			// si no existe ultimo colegiado, se empieza la cola desde el primero en la lista
 			for (int i = 0; i < listaLetrados.size(); i++) {
 				punteroInscripciones = (ScsInscripcionGuardiaBean) listaLetrados.get(i);
-				colaLetrados.add(new LetradoGuardia(punteroInscripciones, bajasAdm.getDiasBajaTemporal(
-						punteroInscripciones.getIdPersona(), punteroInscripciones.getIdInstitucion())));
+				if (punteroInscripciones.getEstado().equals(ClsConstants.DB_TRUE))
+					colaLetrados.add(new LetradoGuardia(punteroInscripciones, bajasAdm.getDiasBajaTemporal(
+							punteroInscripciones.getIdPersona(), punteroInscripciones.getIdInstitucion())));
 			}
 		}
 		else {
