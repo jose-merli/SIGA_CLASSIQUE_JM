@@ -640,7 +640,9 @@
 				if (datos.length > 0) datos = datos + "#;;#";
 				datos = datos + document.getElementById("idGrupoGuardiaColegiado_" + ele[i].value).value + "#;#" + 	// idgrupoguardiacolegiado
 					            document.getElementById("grupo_" + ele[i].value).value + "#;#" +	// grupo
-						        document.getElementById("orden_" + ele[i].value).value + "#;#"; 	// orden
+					            document.getElementById("orden_" + ele[i].value).value + "#;#" + 	// orden
+						        document.getElementById("idPersona_" + ele[i].value).value + "#;#"+ 	// idPersona
+						        document.getElementById("fechaSuscripcion_" + ele[i].value).value + "#;#"; 	// fechaSuscripcion
 			}
 		}
 		if (datos.length < 1) {

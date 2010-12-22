@@ -114,6 +114,9 @@ public class ColaGuardiasAction extends MasterAction {
 		Hashtable turnoElegido = (Hashtable)ses.getAttribute("turnoElegido");
 		UsrBean usr = (UsrBean)ses.getAttribute("USRBEAN"); 
 		ScsGuardiasTurnoAdm guaAdm = new ScsGuardiasTurnoAdm(usr);
+		Hashtable hashGuardia = new Hashtable();
+		Vector vectGuardia = new Vector();
+		ScsGuardiasTurnoBean beanGuardia = new ScsGuardiasTurnoBean();
 		
 		Integer usuario=this.getUserName(request);
 		String institucion =usr.getLocation();
@@ -148,6 +151,15 @@ public class ColaGuardiasAction extends MasterAction {
 			request.setAttribute("vSaltos",vSaltos);
 		}
 
+		hashGuardia.put(ScsGuardiasTurnoBean.C_IDGUARDIA, guardia);
+		hashGuardia.put(ScsGuardiasTurnoBean.C_IDTURNO, turno);
+		hashGuardia.put(ScsGuardiasTurnoBean.C_IDINSTITUCION, institucion);
+		vectGuardia = guaAdm.selectByPK(hashGuardia);
+		if(vectGuardia!=null && vectGuardia.size()>0){
+			beanGuardia=(ScsGuardiasTurnoBean)vectGuardia.get(0);
+			request.setAttribute("porGrupos",beanGuardia.getPorGrupos());
+		}
+		
 		request.setAttribute("idGuardia", guardia);
 		request.setAttribute("idInstitucion", institucion);
 		request.setAttribute("idTurno", turno);
@@ -315,8 +327,10 @@ public class ColaGuardiasAction extends MasterAction {
 		String[] elementos = a.split("#;;#");
 		String idGrupoGuardiaColegiado;
 		String numeroGrupo;
-		String idGrupo="";
+		String idGrupo;
 		String orden;
+		String idPersona;
+		String fechaSuscripcion;
 		Hashtable hash = null;
 		String[] campos = {ScsGrupoGuardiaColegiadoBean.C_IDGRUPO, ScsGrupoGuardiaColegiadoBean.C_ORDEN};
 		String[] claves = {ScsGrupoGuardiaColegiadoBean.C_IDGRUPOGUARDIACOLEGIADO};
@@ -331,7 +345,9 @@ public class ColaGuardiasAction extends MasterAction {
 				idGrupoGuardiaColegiado = aux[0];
 				numeroGrupo = aux[1];
 				orden = aux[2];
-				
+				idPersona=aux[3];
+				fechaSuscripcion=aux[4];
+					
 				String idInstitucion = form.getIdInstitucion();
 				String idTurno = form.getIdTurno();
 				String idGuardia = form.getIdGuardia();
@@ -362,10 +378,32 @@ public class ColaGuardiasAction extends MasterAction {
 				hash.put(ScsGrupoGuardiaColegiadoBean.C_IDGRUPOGUARDIACOLEGIADO, idGrupoGuardiaColegiado);
 				hash.put(ScsGrupoGuardiaColegiadoBean.C_IDGRUPO, idGrupo);
 				hash.put(ScsGrupoGuardiaColegiadoBean.C_ORDEN, orden);
-				try {
-					admGrupoColegiado.updateDirect(hash, claves, campos);			
-				} catch (Exception e) {
-					throwExcp("Error al modificar los grupos de la guardia", new String[] { "modulo.gratuita" }, e, tx);
+				
+				if(idGrupoGuardiaColegiado!=null && !idGrupoGuardiaColegiado.equalsIgnoreCase("")){
+					try {
+						admGrupoColegiado.updateDirect(hash, claves, campos);			
+					} catch (Exception e) {
+						throwExcp("Error al modificar los grupos de la guardia", new String[] { "modulo.gratuita" }, e, tx);
+					}
+				}else{
+					idGrupoGuardiaColegiado = admGrupoColegiado.getSecuenciaNextVal(ScsGrupoGuardiaColegiadoBean.S_SECUENCIA).toString();
+					ScsGrupoGuardiaColegiadoBean bean = new ScsGrupoGuardiaColegiadoBean();
+					bean.setIdGrupoGuardiaColegiado (Long.valueOf(idGrupoGuardiaColegiado) );
+					bean.setIdPersona(Long.valueOf(idPersona));
+					bean.setOrden(Integer.valueOf(orden));
+					bean.setIdGrupo(Integer.valueOf(idGrupo));
+					bean.setIdInstitucion(Integer.valueOf(idInstitucion));
+					bean.setIdTurno(Integer.valueOf(idTurno));
+					bean.setIdGuardia(Integer.valueOf(idGuardia));
+					bean.setFechaCreacion("sysdate");
+					bean.setUsuCreacion(Integer.valueOf(this.getUserBean(request).getUserName()));
+					bean.setFechaSuscripcion(fechaSuscripcion);
+					try {
+						admGrupoColegiado.insert(bean);				
+					} catch (Exception e) {
+						throwExcp("Error al insertar a la persona", new String[] { "modulo.gratuita" }, e, tx);
+					}
+					
 				}
 			}
 			tx.commit();

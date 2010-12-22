@@ -979,11 +979,11 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 			"   And (Ins.Fechabaja Is Null Or " +
 			"        Trunc(Ins.Fechabaja) > nvl("+fechaFin+", '01/01/1900')) "*/;
 		
-		if (porGrupos)
+		/*if (porGrupos)
 			consulta +=
 				"   And Gua.Idinstitucion = Gru.Idinstitucion " +
 				"   And Gua.Idturno = Gru.Idturno " +
-				"   And Gua.Idguardia = Gru.Idguardia ";
+				"   And Gua.Idguardia = Gru.Idguardia ";*/
 		
 		if (! (order == null || order.equals("")))
 			consulta += " order by " + order;

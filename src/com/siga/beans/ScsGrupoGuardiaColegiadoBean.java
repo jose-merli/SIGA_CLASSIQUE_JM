@@ -28,6 +28,8 @@ public class ScsGrupoGuardiaColegiadoBean extends MasterBean
 	static public final String C_FECHACREACION				= "FECHACREACION";
 	static public final String C_USUCREACION				= "USUCREACION";
 	
+	static public final String S_SECUENCIA					= "SQ_SCS_GRUPOGUARDIACOLEGIADO";
+	
 	
 	// Atributos
 	private Long	idGrupoGuardiaColegiado;
