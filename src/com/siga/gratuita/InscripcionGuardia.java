@@ -251,6 +251,7 @@ public class InscripcionGuardia
 			Integer idTurno,
 			Integer idGuardia,
 			Long idGrupoGuardia,
+			String saltoCompensacion,
 			UsrBean usr) throws ClsExceptions
 	{
 		// Controles
@@ -283,6 +284,8 @@ public class InscripcionGuardia
 			inscripcionGuardia = (ScsInscripcionGuardiaBean) vectorLetrados.get(i);
 			letradoGuardia = new LetradoGuardia(inscripcionGuardia, bajasAdm.getDiasBajaTemporal(
 					inscripcionGuardia.getIdPersona(), inscripcionGuardia.getIdInstitucion()));
+			if (saltoCompensacion != null)
+				letradoGuardia.setSaltoCompensacion(saltoCompensacion);
 			listaLetrados.add(letradoGuardia);
 		}
 

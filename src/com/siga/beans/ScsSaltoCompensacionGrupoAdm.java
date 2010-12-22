@@ -243,7 +243,7 @@ public class ScsSaltoCompensacionGrupoAdm extends MasterBeanAdministrador
 		while (iter.hasNext()) {
 			compensacion = (ScsSaltoCompensacionGrupoBean) iter.next();
 			compensacion.setLetrados(InscripcionGuardia.getLetradosGrupo(idInstitucion, idTurno, idGuardia,
-					compensacion.getIdGrupoGuardia(), this.usrbean));
+					compensacion.getIdGrupoGuardia(), ClsConstants.COMPENSACIONES, this.usrbean));
 			resultado.add(compensacion);
 		}
 
@@ -349,6 +349,117 @@ public class ScsSaltoCompensacionGrupoAdm extends MasterBeanAdministrador
 		hash.put(ScsSaltoCompensacionGrupoBean.C_FECHAMODIFICACION, "sysdate");
 		hash.put(ScsSaltoCompensacionGrupoBean.C_USUMODIFICACION, this.usrbean.getUserName());
 		this.update(hash, original);
+	}
+	
+	/**
+	 * Quita el cumplimiento de saltos y compensaciones del calendario pasado como parametro
+	 */
+	public boolean updateSaltosCompensacionesCumplidos(Hashtable hash) throws ClsExceptions
+	{
+		String idinstitucion = "", idcalendarioguardias = "", idturno = "", idguardia = "";
+		boolean salida = false;
+		StringBuffer sql = new StringBuffer();
+
+		try {
+			idinstitucion = (String) hash.get(ScsCalendarioGuardiasBean.C_IDINSTITUCION);
+			idturno = (String) hash.get(ScsCalendarioGuardiasBean.C_IDTURNO);
+			idguardia = (String) hash.get(ScsCalendarioGuardiasBean.C_IDGUARDIA);
+			idcalendarioguardias = (String) hash.get(ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS);
+
+			sql.append(" update " + ScsSaltoCompensacionGrupoBean.T_NOMBRETABLA);
+			sql.append("    set " + ScsSaltoCompensacionGrupoBean.C_FECHACUMPLIMIENTO + " = null");
+			sql.append("      , " + ScsSaltoCompensacionGrupoBean.C_IDINSTITUCION_CUMPLI + " = null");
+			sql.append("      , " + ScsSaltoCompensacionGrupoBean.C_IDTURNO_CUMPLI + " = null");
+			sql.append("      , " + ScsSaltoCompensacionGrupoBean.C_IDGUARDIA_CUMPLI + " = null");
+			sql.append("      , " + ScsSaltoCompensacionGrupoBean.C_IDCALENDARIOGUARDIAS_CUMPLI + " = null");
+			sql.append("      , " + ScsSaltoCompensacionGrupoBean.C_FECHAMODIFICACION + "= SYSDATE");
+			sql.append("      , " + ScsSaltoCompensacionGrupoBean.C_USUMODIFICACION + "=" + this.usuModificacion);
+			sql.append("  where " + ScsSaltoCompensacionGrupoBean.C_IDINSTITUCION_CUMPLI + "=" + idinstitucion);
+			sql.append("    and " + ScsSaltoCompensacionGrupoBean.C_IDTURNO_CUMPLI + "=" + idturno);
+			sql.append("    and " + ScsSaltoCompensacionGrupoBean.C_IDGUARDIA_CUMPLI + "=" + idguardia);
+			sql.append("    and " + ScsSaltoCompensacionGrupoBean.C_IDCALENDARIOGUARDIAS_CUMPLI + "=" + idcalendarioguardias);
+
+			updateSQL(sql.toString());
+			salida = true;
+		} catch (Exception e) {
+			salida = false;
+		}
+		return salida;
+	}
+	
+	/**
+	 * Borra los saltos y compensaciones creados en el caledario pasado como parametro
+	 */
+	public boolean deleteSaltosCompensacionesCreadosEnCalendario(Hashtable hash) throws ClsExceptions
+	{
+		boolean salida;
+
+		try {
+			String idinstitucion = (String) hash.get(ScsCalendarioGuardiasBean.C_IDINSTITUCION);
+			String idcalendarioguardias = (String) hash.get(ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS);
+			String idturno = (String) hash.get(ScsCalendarioGuardiasBean.C_IDTURNO);
+			String idguardia = (String) hash.get(ScsCalendarioGuardiasBean.C_IDGUARDIA);
+
+			StringBuffer sql = new StringBuffer();
+			sql.append(" delete from " + ScsSaltoCompensacionGrupoBean.T_NOMBRETABLA);
+			sql.append("  where " + ScsSaltoCompensacionGrupoBean.C_IDINSTITUCION + "=" + idinstitucion);
+			sql.append("    and " + ScsSaltoCompensacionGrupoBean.C_IDTURNO + "=" + idturno);
+			sql.append("    and " + ScsSaltoCompensacionGrupoBean.C_IDGUARDIA + "=" + idguardia);
+			sql.append("    and " + ScsSaltoCompensacionGrupoBean.C_IDCALENDARIOGUARDIAS + "=" + idcalendarioguardias);
+			sql.append("    and (" + ScsSaltoCompensacionGrupoBean.C_IDCALENDARIOGUARDIAS_CUMPLI + "=" + idcalendarioguardias);
+			sql.append("     or  " + ScsSaltoCompensacionGrupoBean.C_IDCALENDARIOGUARDIAS_CUMPLI + " is null)");
+
+			deleteSQL(sql.toString());
+			salida = true;
+		} catch (Exception e) {
+			salida = false;
+		}
+		return salida;
+	}
+	
+	/**
+	 * Elimina saltos y compensaciones de calendarios que ya no existen en la guardia.
+     *
+	 * @param Hashtable hash: tabla hash con los campos: 
+	 * - String idinstitucion
+	 * - String idcalendarioguardias
+	 * - String idturno
+	 * - String idguardia  
+	 * @return boolean: true si ha ido todo bien.
+	 * @throws ClsExceptions
+	 */
+	public boolean deleteSaltosCompensacionesCalendariosInexistentes(Hashtable hash) throws ClsExceptions
+	{
+		String idinstitucion = "", idturno = "", idguardia = "";
+		boolean salida = false;
+		StringBuffer sql = new StringBuffer();
+
+		try {
+			idinstitucion = (String) hash.get(ScsCalendarioGuardiasBean.C_IDINSTITUCION);
+			idturno = (String) hash.get(ScsCalendarioGuardiasBean.C_IDTURNO);
+			idguardia = (String) hash.get(ScsCalendarioGuardiasBean.C_IDGUARDIA);
+
+			sql.append("delete from " + ScsSaltoCompensacionGrupoBean.T_NOMBRETABLA + " SC");
+			sql.append(" where SC." + ScsSaltoCompensacionGrupoBean.C_IDINSTITUCION + "=" + idinstitucion);
+			sql.append("   and SC." + ScsSaltoCompensacionGrupoBean.C_IDTURNO + "=" + idturno);
+			sql.append("   and SC." + ScsSaltoCompensacionGrupoBean.C_IDGUARDIA + "=" + idguardia);
+			sql.append("   and SC." + ScsSaltoCompensacionGrupoBean.C_IDCALENDARIOGUARDIAS + " is not null");
+			sql.append("   and (SC." + ScsSaltoCompensacionGrupoBean.C_IDCALENDARIOGUARDIAS_CUMPLI + " is null");
+			sql.append("        or  " + ScsSaltoCompensacionGrupoBean.C_IDCALENDARIOGUARDIAS_CUMPLI);
+			sql.append("           = SC." + ScsSaltoCompensacionGrupoBean.C_IDCALENDARIOGUARDIAS + ")");
+			sql.append("   and not exists (select 1 from " + ScsCalendarioGuardiasBean.T_NOMBRETABLA + " CG");
+			sql.append("                    where CG." + ScsCalendarioGuardiasBean.C_IDINSTITUCION + "=" + idinstitucion);
+			sql.append("                      and CG." + ScsCalendarioGuardiasBean.C_IDTURNO + "=" + idturno);
+			sql.append("                      and CG." + ScsCalendarioGuardiasBean.C_IDGUARDIA + "=" + idguardia);
+			sql.append("                      and CG." + ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS + "=");
+			sql.append("                          SC." + ScsSaltoCompensacionGrupoBean.C_IDCALENDARIOGUARDIAS + ")");
+
+			this.deleteSQL(sql.toString());
+			salida = true;
+		} catch (Exception e) {
+			salida = false;
+		}
+		return salida;
 	}
 	
 }

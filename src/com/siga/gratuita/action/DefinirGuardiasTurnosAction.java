@@ -428,7 +428,7 @@ public class DefinirGuardiasTurnosAction extends MasterAction {
 						String idGuardia = (String)htGuardia.get("IDGUARDIA");
 						
 						
-						Vector inscripcionGuardia = admInsGua.getInscripcionActiva(idInstitucion,
+						Vector inscripcionGuardia = admInsGua.getRegistrosInscripcionGuardiaPendientes(idInstitucion,
 								idTurno, idPersona, new Integer(idGuardia),fechaConsultaTurno);
 						if(inscripcionGuardia!=null && inscripcionGuardia.size()>0){
 							Hashtable htInscripcionGuardia = (Hashtable)inscripcionGuardia.get(0);

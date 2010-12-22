@@ -46,6 +46,8 @@ import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsPermutaGuardiasAdm;
 import com.siga.beans.ScsPermutaGuardiasBean;
+import com.siga.beans.ScsSaltoCompensacionGrupoAdm;
+import com.siga.beans.ScsSaltoCompensacionGrupoBean;
 import com.siga.beans.ScsSaltosCompensacionesAdm;
 import com.siga.beans.ScsTurnoAdm;
 import com.siga.beans.ScsTurnoBean;
@@ -1788,6 +1790,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 			throws ClsExceptions, SIGAException
 	{
 		ScsSaltosCompensacionesAdm admSaltosCompensaciones = new ScsSaltosCompensacionesAdm(usr);
+		ScsSaltoCompensacionGrupoAdm admSaltoCompensacionGrupo = new ScsSaltoCompensacionGrupoAdm(usr);
 		ScsPermutaGuardiasAdm admPermutaGuardias = new ScsPermutaGuardiasAdm(usr);
 		ScsGuardiasColegiadoAdm admGuardiasColegiado = new ScsGuardiasColegiadoAdm(usr);
 		ScsCabeceraGuardiasAdm admCabeceraGuardias = new ScsCabeceraGuardiasAdm(usr);
@@ -1799,6 +1802,13 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 			throw new SIGAException("Error en borrado de calendario: al borrar saltos y compensaciones creados en el calendario");
 		if (! admSaltosCompensaciones.deleteSaltosCompensacionesCalendariosInexistentes(calendario))	
 			throw new SIGAException("Error en borrado de calendario: al borrar saltos y compensaciones de calendarios que ya no existen");
+		
+		if (! admSaltoCompensacionGrupo.updateSaltosCompensacionesCumplidos(calendario))
+			throw new SIGAException("Error en borrado de calendario: al quitar cumplimientos de saltos y compensaciones de grupo");
+		if (! admSaltoCompensacionGrupo.deleteSaltosCompensacionesCreadosEnCalendario(calendario))
+			throw new SIGAException("Error en borrado de calendario: al borrar saltos y compensaciones de grupo creados en el calendario");
+		if (! admSaltoCompensacionGrupo.deleteSaltosCompensacionesCalendariosInexistentes(calendario))	
+			throw new SIGAException("Error en borrado de calendario: al borrar saltos y compensaciones de grupo de calendarios que ya no existen");
 		
 		if (! admPermutaGuardias.deletePermutasCalendario(calendario))
 			throw new ClsExceptions("Error en borrado de calendario: al quitar permutas del calendario");

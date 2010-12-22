@@ -1040,7 +1040,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 						}
 					}
 					ScsInscripcionGuardiaAdm admInsguardia = new ScsInscripcionGuardiaAdm(usr);
-					Vector inscripcionGuardia = admInsguardia.getInscripcionActiva(miForm.getIdInstitucion(),miForm.getIdTurno(), miForm.getIdPersona(),new Integer(miForm.getIdGuardia()), miForm.getFechaValidacion());
+					Vector inscripcionGuardia = admInsguardia.getRegistrosInscripcionGuardiaPendientes(miForm.getIdInstitucion(),miForm.getIdTurno(), miForm.getIdPersona(),new Integer(miForm.getIdGuardia()), miForm.getFechaValidacion());
 					if(inscripcionGuardia!=null && inscripcionGuardia.size()>0){
 						request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.error.guardia.existe"));
 						return "errorConAviso";

@@ -38,6 +38,10 @@ public class LetradoGuardia implements Cloneable
 
 	
 	// Constructores
+	/**
+	 * Este constructor solo deberia usarse cuando no sea necesario guardar posteriormente 
+	 * la inscripcion, por ejemplo como puntero de cola
+	 */
 	public LetradoGuardia(CenPersonaBean perBean, Integer idInstitucion, Integer idTurno, Integer idGuardia,
 			String saltoCompensacion)
 	{

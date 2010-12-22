@@ -1320,6 +1320,89 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 		
 	}
 
+	/**
+	 * Obtiene las inscripcion activa de la persona en la guardia en la fecha dada
+	 */
+	public ScsInscripcionTurnoBean getInscripcionActiva(
+			String idinstitucion,
+			String idturno,
+			String idpersona,
+			String fecha) throws ClsExceptions
+	{
+		if (idinstitucion == null || idinstitucion.equals(""))		return null;
+		if (idturno == null || idturno.equals(""))					return null;
+		if (idpersona == null || idpersona.equals(""))				return null;
+		if (fecha == null || fecha.equals(""))						return null;
+		
+		String consulta = 
+			"Select " +
+			getBaseConsultaInscripciones() +
+			
+			"   And Ins.Fechavalidacion Is Not Null " +
+			"   And Tur.Idinstitucion = "+idinstitucion+" " +
+			"   And Tur.Idturno = "+idturno+" " +
+			
+		    "   And Ins.Fechavalidacion Is Not Null " +
+			"   And Trunc(Ins.Fechavalidacion) <= nvl("+fecha+",  Ins.Fechavalidacion) " +
+			"   And (Ins.Fechabaja Is Null Or " +
+			"        Trunc(Ins.Fechabaja) > nvl("+fecha+", '01/01/1900')) ";
+		
+		Vector<ScsInscripcionTurnoBean> datos = null;
+		try {
+			RowsContainer rc = new RowsContainer();
+			if (rc.find(consulta)) {
+				datos = new Vector<ScsInscripcionTurnoBean>();
+				for (int i = 0; i < rc.size(); i++) {
+					Row fila = (Row) rc.get(i);
+					Hashtable<String, Object> htFila = fila.getRow();
 
+					ScsInscripcionTurnoBean inscripcionBean = new ScsInscripcionTurnoBean();
+					inscripcionBean.setIdInstitucion(UtilidadesHash.getInteger(htFila, ScsInscripcionTurnoBean.C_IDINSTITUCION));
+					inscripcionBean.setIdTurno(UtilidadesHash.getInteger(htFila, ScsInscripcionTurnoBean.C_IDTURNO));
+					inscripcionBean.setIdPersona(UtilidadesHash.getLong(htFila, ScsInscripcionTurnoBean.C_IDPERSONA));
+					inscripcionBean.setFechaSolicitud(UtilidadesHash.getString(htFila, ScsInscripcionTurnoBean.C_FECHASOLICITUD));
+					inscripcionBean.setFechaValidacion(UtilidadesHash.getString(htFila, ScsInscripcionTurnoBean.C_FECHAVALIDACION));
+					inscripcionBean.setFechaBaja(UtilidadesHash.getString(htFila, ScsInscripcionTurnoBean.C_FECHABAJA));
+					CenPersonaBean personaBean = new CenPersonaBean(inscripcionBean.getIdPersona(), (String) htFila
+							.get(CenPersonaBean.C_NOMBRE), (String) htFila.get(CenPersonaBean.C_APELLIDOS1),
+							(String) htFila.get(CenPersonaBean.C_APELLIDOS2), (String) htFila
+									.get(ScsOrdenacionColasBean.C_NUMEROCOLEGIADO));
+					inscripcionBean.setPersona(personaBean);
+					datos.add(inscripcionBean);
+				}
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al ejecutar el 'select' en B.D.");
+		}
+		return datos.get(0);
+	} //getInscripcionActiva()
+
+	public String getBaseConsultaInscripciones() {
+		return new String(
+			"       Ins.Idinstitucion,"+
+			"       Ins.Idturno, " +
+			"       Per.Idpersona, " +
+			"       Ins.fechasuscripcion As Fechasuscripcion, "+
+			"       TO_CHAR(TRUNC(Ins.fechavalidacion),'DD/MM/YYYY') As Fechavalidacion, "+
+		    "       TO_CHAR(trunc(Ins.fechabaja),'DD/MM/YYYY') As Fechabaja, "+
+		    
+			"       Per.Nombre, " +
+			"       Per.Apellidos1, " +
+			"       Decode(Per.Apellidos2, Null, '', ' ' || Per.Apellidos2) apellidos2, " +
+			"       Per.Apellidos1 || " +
+			"       Decode(Per.Apellidos2, Null, '', ' ' || Per.Apellidos2) "+ScsOrdenacionColasBean.C_ALFABETICOAPELLIDOS+", " +
+			"       Decode(Col.Comunitario, '1', Col.Ncomunitario, Col.Ncolegiado) "+ScsOrdenacionColasBean.C_NUMEROCOLEGIADO+", " +
+			"       Per.Fechanacimiento "+ScsOrdenacionColasBean.C_FECHANACIMIENTO+", " +
+			"       Ins.Fechavalidacion AS "+ScsOrdenacionColasBean.C_ANTIGUEDADCOLA+" " +
+			"  From Scs_Turno              Tur, " +
+			"       Cen_Colegiado          Col, " +
+			"       Cen_Persona            Per, " +
+			"       Scs_Inscripcionturno   Ins " +
+			" Where Col.Idpersona = Per.Idpersona " +
+			"   And Ins.Idinstitucion = Gua.Idinstitucion " +
+			"   And Ins.Idturno = Gua.Idturno " +
+			"   And Ins.Idinstitucion = Col.Idinstitucion " +
+			"   And Ins.Idpersona = Col.Idpersona ");
+	}
 	
 }

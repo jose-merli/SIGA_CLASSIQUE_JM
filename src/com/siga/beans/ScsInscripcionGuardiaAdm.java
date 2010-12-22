@@ -275,7 +275,19 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 		return inscripcionBean;
 	}
 	
-	public Vector getInscripcionActiva(String idInstitucion,String idTurno, String idPersona, Integer idGuardia, String fecha) throws ClsExceptions 
+	/**
+	 * Obtiene los registros de inscripciones de guardia con los que se puede hacer algo.
+	 * Es decir, practicamente todos los estados menos Baja
+	 * 
+	 * @param idInstitucion
+	 * @param idTurno
+	 * @param idPersona
+	 * @param idGuardia
+	 * @param fecha
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Vector getRegistrosInscripcionGuardiaPendientes(String idInstitucion,String idTurno, String idPersona, Integer idGuardia, String fecha) throws ClsExceptions 
 	{
 		
 		Vector datos = new Vector();
@@ -934,7 +946,9 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 	}
 	
 	/**
-	 * Obtiene las inscripciones ordenadas para formar la cola de una guardia dada una fecha
+	 * Obtiene las inscripciones ordenadas para formar la cola de una guardia dada una fecha.
+	 * Importante: obtiene todas las inscripciones, no solo las que estan de alta, ya que luego 
+	 * hay que ordenarlas segun el puntero, que puede estar apuntando a una inscripcion de baja
 	 */
 	public Vector<ScsInscripcionGuardiaBean> getColaGuardia(
 			String idinstitucion,
@@ -971,19 +985,15 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 			"   And Ins.Fechavalidacion Is Not Null " +
 			"   And Gua.Idinstitucion = "+idinstitucion+" " +
 			"   And Gua.Idturno = "+idturno+" " +
-			"   And Gua.Idguardia = "+idguardia+" "/* +
+			"   And Gua.Idguardia = "+idguardia+" ";
 		
-			//cuando no se pasa fecha, se sacan todas las validadas (en cualquier fecha)
-			"   And Trunc(Ins.Fechavalidacion) <= nvl("+fechaInicio+",  Ins.Fechavalidacion) " +
-			//cuando no se pasa fecha, se sacan aunque esten de baja
-			"   And (Ins.Fechabaja Is Null Or " +
-			"        Trunc(Ins.Fechabaja) > nvl("+fechaFin+", '01/01/1900')) "*/;
-		
-		/*if (porGrupos)
+		/* Creo que sobra lo siguiente pq ya se hace la union en la consulta base
+		if (porGrupos)
 			consulta +=
 				"   And Gua.Idinstitucion = Gru.Idinstitucion " +
 				"   And Gua.Idturno = Gru.Idturno " +
-				"   And Gua.Idguardia = Gru.Idguardia ";*/
+				"   And Gua.Idguardia = Gru.Idguardia ";
+		*/
 		
 		if (! (order == null || order.equals("")))
 			consulta += " order by " + order;
@@ -998,26 +1008,7 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 				for (int i = 0; i < rc.size(); i++) {
 					Row fila = (Row) rc.get(i);
 					Hashtable<String, Object> htFila = fila.getRow();
-
-					ScsInscripcionGuardiaBean inscripcionBean = new ScsInscripcionGuardiaBean();
-					inscripcionBean.setIdInstitucion(UtilidadesHash.getInteger(htFila, ScsInscripcionGuardiaBean.C_IDINSTITUCION));
-					inscripcionBean.setIdTurno(UtilidadesHash.getInteger(htFila, ScsInscripcionGuardiaBean.C_IDTURNO));
-					inscripcionBean.setIdGuardia(UtilidadesHash.getInteger(htFila, ScsInscripcionGuardiaBean.C_IDGUARDIA));
-					inscripcionBean.setIdPersona(UtilidadesHash.getLong(htFila, ScsInscripcionGuardiaBean.C_IDPERSONA));
-					inscripcionBean.setFechaSuscripcion(UtilidadesHash.getString(htFila, ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION));
-					inscripcionBean.setFechaValidacion(UtilidadesHash.getString(htFila, ScsInscripcionGuardiaBean.C_FECHAVALIDACION));
-					inscripcionBean.setFechaBaja(UtilidadesHash.getString(htFila, ScsInscripcionGuardiaBean.C_FECHABAJA));
-					inscripcionBean.setIdGrupoGuardiaColegiado(UtilidadesHash.getLong(htFila, ScsInscripcionGuardiaBean.C_IDGRUPOGUARDIACOLEGIADO));
-					inscripcionBean.setGrupo(UtilidadesHash.getInteger(htFila, ScsInscripcionGuardiaBean.C_GRUPO));
-					inscripcionBean.setOrdenGrupo(UtilidadesHash.getInteger(htFila, ScsInscripcionGuardiaBean.C_ORDENGRUPO));
-					inscripcionBean.setNumeroGrupo(UtilidadesHash.getString(htFila, ScsGrupoGuardiaBean.C_NUMEROGRUPO));
-					inscripcionBean.setEstado(UtilidadesHash.getString(htFila, "ACTIVO"));
-					CenPersonaBean personaBean = new CenPersonaBean(inscripcionBean.getIdPersona(), (String) htFila
-							.get(CenPersonaBean.C_NOMBRE), (String) htFila.get(CenPersonaBean.C_APELLIDOS1),
-							(String) htFila.get(CenPersonaBean.C_APELLIDOS2), (String) htFila
-									.get(ScsOrdenacionColasBean.C_NUMEROCOLEGIADO));
-					inscripcionBean.setPersona(personaBean);
-					datos.add(inscripcionBean);
+					datos.add(getInscripcionDesdeHashCola(htFila));
 				}
 			}
 		} catch (Exception e) {
@@ -1025,6 +1016,53 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 		}
 		return datos;
 	} //getColaGuardia()
+	
+	/**
+	 * Obtiene las inscripcion activa de la persona en la guardia en la fecha dada
+	 */
+	public ScsInscripcionGuardiaBean getInscripcionActiva(
+			String idinstitucion,
+			String idturno,
+			String idguardia,
+			String idpersona,
+			String fecha) throws ClsExceptions
+	{
+		if (idinstitucion == null || idinstitucion.equals(""))		return null;
+		if (idturno == null || idturno.equals(""))					return null;
+		if (idguardia == null || idguardia.equals(""))				return null;
+		if (idpersona == null || idpersona.equals(""))				return null;
+		if (fecha == null || fecha.equals(""))						return null;
+		
+		String consulta = 
+			"Select " +
+			getBaseConsultaInscripciones() +
+			
+			"   And Ins.Fechavalidacion Is Not Null " +
+			"   And Gua.Idinstitucion = "+idinstitucion+" " +
+			"   And Gua.Idturno = "+idturno+" " +
+			"   And Gua.Idguardia = "+idguardia+" " +
+			
+		    "   And Ins.Fechavalidacion Is Not Null " +
+			"   And Trunc(Ins.Fechavalidacion) <= nvl("+fecha+",  Ins.Fechavalidacion) " +
+			"   And (Ins.Fechabaja Is Null Or " +
+			"        Trunc(Ins.Fechabaja) > nvl("+fecha+", '01/01/1900')) ";
+		
+		Vector<ScsInscripcionGuardiaBean> datos = null;
+		try {
+			RowsContainer rc = new RowsContainer();
+			if (rc.find(consulta)) {
+				datos = new Vector<ScsInscripcionGuardiaBean>();
+				for (int i = 0; i < rc.size(); i++) {
+					Row fila = (Row) rc.get(i);
+					Hashtable<String, Object> htFila = fila.getRow();
+					datos.add(getInscripcionDesdeHashCola(htFila));
+				}
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al ejecutar el 'select' en B.D.");
+		}
+		return datos.get(0);
+	}
 	
 	/**
 	 * Obtiene los letrados dado un grupo
@@ -1061,30 +1099,37 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 				for (int i = 0; i < rc.size(); i++) {
 					Row fila = (Row) rc.get(i);
 					Hashtable<String, Object> htFila = fila.getRow();
-					
-					ScsInscripcionGuardiaBean inscripcionBean = new ScsInscripcionGuardiaBean();
-					inscripcionBean.setIdInstitucion(UtilidadesHash.getInteger(htFila, ScsInscripcionGuardiaBean.C_IDINSTITUCION));
-					inscripcionBean.setIdTurno(UtilidadesHash.getInteger(htFila, ScsInscripcionGuardiaBean.C_IDTURNO));
-					inscripcionBean.setIdGuardia(UtilidadesHash.getInteger(htFila, ScsInscripcionGuardiaBean.C_IDGUARDIA));
-					inscripcionBean.setIdPersona(UtilidadesHash.getLong(htFila, ScsInscripcionGuardiaBean.C_IDPERSONA));
-					inscripcionBean.setFechaValidacion(UtilidadesHash.getString(htFila, ScsInscripcionGuardiaBean.C_FECHAVALIDACION));
-					inscripcionBean.setFechaBaja(UtilidadesHash.getString(htFila, ScsInscripcionGuardiaBean.C_FECHABAJA));
-					inscripcionBean.setIdGrupoGuardiaColegiado(UtilidadesHash.getLong(htFila, ScsInscripcionGuardiaBean.C_IDGRUPOGUARDIACOLEGIADO));
-					inscripcionBean.setGrupo(UtilidadesHash.getInteger(htFila, ScsInscripcionGuardiaBean.C_GRUPO));
-					inscripcionBean.setOrdenGrupo(UtilidadesHash.getInteger(htFila, ScsInscripcionGuardiaBean.C_ORDENGRUPO));
-					CenPersonaBean personaBean = new CenPersonaBean(inscripcionBean.getIdPersona(), (String) htFila
-							.get(CenPersonaBean.C_NOMBRE), (String) htFila.get(CenPersonaBean.C_APELLIDOS1),
-							(String) htFila.get(CenPersonaBean.C_APELLIDOS2), (String) htFila
-									.get(CenColegiadoBean.C_NCOLEGIADO));
-					inscripcionBean.setPersona(personaBean);
-					datos.add(inscripcionBean);
+					datos.add(getInscripcionDesdeHashCola(htFila));
 				}
 			}
 		} catch (Exception e) {
 			throw new ClsExceptions(e, "Error al ejecutar el 'select' en B.D.");
 		}
 		return datos;
-	} //getLetradosGrupo()
+	}
+	
+	private ScsInscripcionGuardiaBean getInscripcionDesdeHashCola(Hashtable hash) {
+		ScsInscripcionGuardiaBean inscripcionBean = new ScsInscripcionGuardiaBean();
+		
+		inscripcionBean.setIdInstitucion(UtilidadesHash.getInteger(hash, ScsInscripcionGuardiaBean.C_IDINSTITUCION));
+		inscripcionBean.setIdTurno(UtilidadesHash.getInteger(hash, ScsInscripcionGuardiaBean.C_IDTURNO));
+		inscripcionBean.setIdGuardia(UtilidadesHash.getInteger(hash, ScsInscripcionGuardiaBean.C_IDGUARDIA));
+		inscripcionBean.setIdPersona(UtilidadesHash.getLong(hash, ScsInscripcionGuardiaBean.C_IDPERSONA));
+		inscripcionBean.setFechaSuscripcion(UtilidadesHash.getString(hash, ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION));
+		inscripcionBean.setFechaValidacion(UtilidadesHash.getString(hash, ScsInscripcionGuardiaBean.C_FECHAVALIDACION));
+		inscripcionBean.setFechaBaja(UtilidadesHash.getString(hash, ScsInscripcionGuardiaBean.C_FECHABAJA));
+		inscripcionBean.setIdGrupoGuardiaColegiado(UtilidadesHash.getLong(hash, ScsInscripcionGuardiaBean.C_IDGRUPOGUARDIACOLEGIADO));
+		inscripcionBean.setGrupo(UtilidadesHash.getInteger(hash, ScsInscripcionGuardiaBean.C_GRUPO));
+		inscripcionBean.setOrdenGrupo(UtilidadesHash.getInteger(hash, ScsInscripcionGuardiaBean.C_ORDENGRUPO));
+		inscripcionBean.setNumeroGrupo(UtilidadesHash.getString(hash, ScsGrupoGuardiaBean.C_NUMEROGRUPO));
+		inscripcionBean.setEstado(UtilidadesHash.getString(hash, "ACTIVO"));
+		CenPersonaBean personaBean = new CenPersonaBean(inscripcionBean.getIdPersona(), (String) hash
+				.get(CenPersonaBean.C_NOMBRE), (String) hash.get(CenPersonaBean.C_APELLIDOS1),
+				(String) hash.get(CenPersonaBean.C_APELLIDOS2), (String) hash
+						.get(CenColegiadoBean.C_NCOLEGIADO));
+		inscripcionBean.setPersona(personaBean);
+		return inscripcionBean;
+	}
 	
 	/**
 	 * Obtiene los grupos de una guardia dada, junto con el numero de componentes de cada uno

@@ -692,143 +692,203 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 		}
 	}
 	
-	public HashMap<Long, ArrayList<LetradoGuardia>> getSaltos (Integer idInstitucion,Integer idTurno,Integer idGuardia) throws ClsExceptions {
-	    RowsContainer rc = new RowsContainer();
-	    LetradoGuardia letradoSeleccionado = null;
-	    HashMap<Long, ArrayList<LetradoGuardia>> hmPersonasConSaltos = null;
-		// voy a comprobar si existe un salto en base de datos
-		try {
-
-			String sql =  getQuerySaltosCompensacionesActivos(ClsConstants.SALTOS,idInstitucion,idTurno,idGuardia);
-	
-			rc = find(sql);
-			hmPersonasConSaltos = new HashMap<Long, ArrayList<LetradoGuardia>>();
-			ArrayList<LetradoGuardia> alLetradosSaltados = null; 
-			for (int i = 0; i < rc.size(); i++){
-			    Row fila = (Row) rc.get(i);
-				Hashtable hFila = fila.getRow();
-				
-				Long idPersona = Long.valueOf((String) hFila.get(ScsSaltosCompensacionesBean.C_IDPERSONA));
-			    CenPersonaAdm perAdm = new CenPersonaAdm(this.usrbean);
-				letradoSeleccionado = new LetradoGuardia(
-						perAdm.getPersonaPorId(idPersona.toString()), 
-						idInstitucion, idTurno, idGuardia, "C");
-				
-				if(hmPersonasConSaltos.containsKey(idPersona))
-					alLetradosSaltados = hmPersonasConSaltos.get(idPersona);
-				else
-					alLetradosSaltados = new ArrayList<LetradoGuardia>();
-				
-				alLetradosSaltados.add(letradoSeleccionado);
-				hmPersonasConSaltos.put(idPersona, alLetradosSaltados);
-			    //letradoSeleccionado
-			}
-		} catch (Exception e) {
-		    throw new ClsExceptions(e,"Error al comporbar si hay salto en BD.");
-		}
-		
-		return hmPersonasConSaltos;
-	}
-
 	private String getQuerySaltosCompensacionesActivos(String tipo,
-													   Integer idInstitucion,
-													   Integer idTurno,
-													   Integer idGuardia)
+			Integer idInstitucion,
+			Integer idTurno,
+			Integer idGuardia)
 	{
 		StringBuffer sql = new StringBuffer();
-		
+
 		sql.append(" select * ");
 		sql.append("   from scs_saltoscompensaciones s ");
-		sql.append("  where s.idinstitucion = "+idInstitucion);
-		sql.append("    and s.idturno = "+idTurno);
-		sql.append("    and s.idguardia = "+idGuardia);
-		sql.append("    and s.saltoocompensacion = '");
-		sql.append(tipo);
-		sql.append("'    and s.fechacumplimiento is null ");
+		sql.append("  where s.idinstitucion = " + idInstitucion);
+		sql.append("    and s.idturno = " + idTurno);
+		sql.append("    and s.idguardia = " + idGuardia);
+		sql.append("    and s.saltoocompensacion = '" + tipo + "' ");
+		sql.append("    and s.fechacumplimiento is null ");
 		sql.append("  order by s.fecha ");
 
 		return sql.toString();
 	}
-	
-	public ArrayList<LetradoGuardia> getCompensaciones (Integer idInstitucion,Integer idTurno,Integer idGuardia) throws ClsExceptions {
-	    LetradoGuardia letradoSeleccionado = null;
-	    ArrayList<LetradoGuardia> alLetradosCompensados = null;
-		CenBajasTemporalesAdm btAdm = new CenBajasTemporalesAdm(this.usrbean);
-	    
+
+	/**
+	 * Obtiene todos los saltos asociados a una guardia
+	 * 
+	 * @param idInstitucion
+	 * @param idTurno
+	 * @param idGuardia
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public HashMap<Long, ArrayList<LetradoGuardia>> getSaltos(Integer idInstitucion, Integer idTurno, Integer idGuardia) throws ClsExceptions
+	{
+		// Controles
+		CenPersonaAdm perAdm = new CenPersonaAdm(this.usrbean);
+
+		// Variables
+		HashMap<Long, ArrayList<LetradoGuardia>> hmPersonasConSaltos;
+		ArrayList<LetradoGuardia> alLetradosSaltados;
+		LetradoGuardia letradoSeleccionado;
+		Hashtable<String, Object> htFila;
+		Long idPersona;
+		
+		// obteniendo query de saltos
+		String sql = getQuerySaltosCompensacionesActivos(ClsConstants.SALTOS, idInstitucion, idTurno, idGuardia);
+		
 		try {
-			//obtiene las compesaciones de letrados que no estén de baja en la guardia
-		    String sql =  getQuerySaltosCompensacionesActivos(ClsConstants.COMPENSACIONES,idInstitucion,idTurno,idGuardia);
-		    		
-		    		
-			ScsSaltosCompensacionesAdm adm = new ScsSaltosCompensacionesAdm(this.usrbean);
-			RowsContainer rc = adm.find(sql);
-			alLetradosCompensados = new ArrayList<LetradoGuardia>();
-			
-			for (int i = 0; i < rc.size(); i++){
-			    Row fila = (Row) rc.get(i);
-				Hashtable hFila = fila.getRow();
-				
-			    CenPersonaAdm perAdm = new CenPersonaAdm(this.usrbean);
-				letradoSeleccionado = new LetradoGuardia(perAdm.getPersonaPorId((String) hFila
-						.get(ScsSaltosCompensacionesBean.C_IDPERSONA)), idInstitucion, idTurno, idGuardia, "C");
-				Map<String, CenBajasTemporalesBean> mBajasTemporales = btAdm.getDiasBajaTemporal(
-						letradoSeleccionado.getIdPersona(), letradoSeleccionado.getIdInstitucion());
-				letradoSeleccionado.setBajasTemporales(mBajasTemporales);
-				alLetradosCompensados.add(letradoSeleccionado);
-			    //letradoSeleccionado
+			RowsContainer rc = this.find(sql);
+			if (rc == null) {
+				hmPersonasConSaltos = null;
+			}
+			else {
+				hmPersonasConSaltos = new HashMap<Long, ArrayList<LetradoGuardia>>();
+				for (int i = 0; i < rc.size(); i++) {
+					htFila = ((Row) rc.get(i)).getRow();
+	
+					idPersona = Long.valueOf((String) htFila.get(ScsSaltosCompensacionesBean.C_IDPERSONA));
+					letradoSeleccionado = new LetradoGuardia(perAdm.getPersonaPorId(idPersona.toString()), idInstitucion,
+							idTurno, idGuardia, ClsConstants.SALTOS);
+	
+					if (hmPersonasConSaltos.containsKey(idPersona))
+						alLetradosSaltados = hmPersonasConSaltos.get(idPersona);
+					else
+						alLetradosSaltados = new ArrayList<LetradoGuardia>();
+	
+					alLetradosSaltados.add(letradoSeleccionado);
+					hmPersonasConSaltos.put(idPersona, alLetradosSaltados);
+				}
 			}
 		} catch (Exception e) {
-		    throw new ClsExceptions(e,"Error al obtener letrados compensados  en BD.");
+			throw new ClsExceptions(e, "Error al comporbar si hay salto en BD.");
 		}
+
+		return hmPersonasConSaltos;
+	}
+
+	/**
+	 * Obtiene todas las compensaciones asociadas a una guardia
+	 * 
+	 * @param idInstitucion
+	 * @param idTurno
+	 * @param idGuardia
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public ArrayList<LetradoGuardia> getCompensaciones(Integer idInstitucion, Integer idTurno, Integer idGuardia) throws ClsExceptions
+	{
+		// Controles
+		ScsInscripcionGuardiaAdm inscripcionAdm = new ScsInscripcionGuardiaAdm(this.usrbean);
+		CenBajasTemporalesAdm btAdm = new CenBajasTemporalesAdm(this.usrbean);
+
+		// Variables
+		ArrayList<LetradoGuardia> alLetradosCompensados;
+		LetradoGuardia letradoSeleccionado;
+		Hashtable<String, Object> htFila;
+		String idPersona;
+		ScsInscripcionGuardiaBean inscripcionGuardia;
+		Map<String, CenBajasTemporalesBean> mBajasTemporales;
 		
+		// obteniendo query de compensaciones
+		String sql = getQuerySaltosCompensacionesActivos(ClsConstants.COMPENSACIONES, idInstitucion, idTurno,
+				idGuardia);
+
+		try {
+			// obtiene las compesaciones de letrados que no esten de baja en la guardia
+			RowsContainer rc = this.find(sql);
+			if (rc == null) {
+				alLetradosCompensados = null;
+			}
+			else {
+				alLetradosCompensados = new ArrayList<LetradoGuardia>();
+				for (int i = 0; i < rc.size(); i++) {
+					htFila = ((Row) rc.get(i)).getRow();
+	
+					idPersona = (String) htFila.get(ScsSaltosCompensacionesBean.C_IDPERSONA);
+					inscripcionGuardia = inscripcionAdm.getInscripcionActiva(idInstitucion.toString(), idTurno.toString(),
+							idGuardia.toString(), idPersona, "sysdate");
+					mBajasTemporales = btAdm.getDiasBajaTemporal(new Long(idPersona), idInstitucion);
+					letradoSeleccionado = new LetradoGuardia(inscripcionGuardia, mBajasTemporales);
+					letradoSeleccionado.setSaltoCompensacion("C");
+					alLetradosCompensados.add(letradoSeleccionado);
+				}
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al obtener letrados compensados  en BD.");
+		}
+
 		return alLetradosCompensados;
 	}
-	public Vector<LetradoGuardia> getLetradosSaltosCompensacionesTurno(String idInstitucion, String idTurno) throws ClsExceptions {
-		
-		String sql = "select p." + CenPersonaBean.C_IDPERSONA +
-				", p." + CenPersonaBean.C_NIFCIF +
-				", c." + CenColegiadoBean.C_NCOLEGIADO +
-				", p." + CenPersonaBean.C_NOMBRE +
-				", p." + CenPersonaBean.C_APELLIDOS1 +
-				", p." + CenPersonaBean.C_APELLIDOS2 +
-				", sc." + ScsSaltosCompensacionesBean.C_IDSALTOSTURNO +
-				", sc." + ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION + 
-				" from "+ScsSaltosCompensacionesBean.T_NOMBRETABLA+" sc, "+CenPersonaBean.T_NOMBRETABLA+" p, " + CenColegiadoBean.T_NOMBRETABLA + " c" +
-				" where sc."+ScsSaltosCompensacionesBean.C_IDPERSONA+" = p." + CenPersonaBean.C_IDPERSONA +
-				" and sc."+ScsSaltosCompensacionesBean.C_IDPERSONA+" = c." + CenColegiadoBean.C_IDPERSONA +
-				" and sc."+ScsSaltosCompensacionesBean.C_IDINSTITUCION + " = " + idInstitucion +
-				" and sc."+ScsSaltosCompensacionesBean.C_IDINSTITUCION + " = c." + CenColegiadoBean.C_IDINSTITUCION +
-				" and sc."+ScsSaltosCompensacionesBean.C_IDTURNO+" = " + idTurno +
-				" and sc."+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+" is null" +
-				" and sc." + ScsSaltosCompensacionesBean.C_IDGUARDIA + " is null" +
-				" order by sc."+ScsSaltosCompensacionesBean.C_FECHA;
-		Vector<LetradoGuardia> datosVector = null;
+
+	/**
+	 * Obtiene las compensaciones asociadas a un turno
+	 * 
+	 * @param idInstitucion
+	 * @param idTurno
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Vector<LetradoGuardia> getLetradosSaltosCompensacionesTurno(String idInstitucion, String idTurno) throws ClsExceptions
+	{
+		// Controles
+		CenBajasTemporalesAdm btAdm = new CenBajasTemporalesAdm(this.usrbean);
+		ScsInscripcionTurnoAdm inscripcionAdm = new ScsInscripcionTurnoAdm(this.usrbean);
+
+		// Variables
+		Vector<LetradoGuardia> alLetradosCompensados;
+		LetradoGuardia letradoSeleccionado;
+		Hashtable<String, Object> htFila;
+		String idPersona;
+		ScsInscripcionTurnoBean inscripcionTurno;
+		Map<String, CenBajasTemporalesBean> mBajasTemporales;
+
+		// obteniendo query de saltos
+		StringBuffer sBuffer = new StringBuffer();
+		sBuffer.append("select p." + CenPersonaBean.C_IDPERSONA + ", ");
+		sBuffer.append("       p." + CenPersonaBean.C_NIFCIF + ", ");
+		sBuffer.append("       c." + CenColegiadoBean.C_NCOLEGIADO + ", ");
+		sBuffer.append("       p." + CenPersonaBean.C_NOMBRE + ", ");
+		sBuffer.append("       p." + CenPersonaBean.C_APELLIDOS1 + ", ");
+		sBuffer.append("       p." + CenPersonaBean.C_APELLIDOS2 + ", ");
+		sBuffer.append("       sc." + ScsSaltosCompensacionesBean.C_IDSALTOSTURNO + ", ");
+		sBuffer.append("       sc." + ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION + " ");
+		sBuffer.append("  from " + ScsSaltosCompensacionesBean.T_NOMBRETABLA + " sc, ");
+		sBuffer.append("       " + CenPersonaBean.T_NOMBRETABLA + " p, ");
+		sBuffer.append("       " + CenColegiadoBean.T_NOMBRETABLA + " c ");
+		sBuffer.append(" where sc." + ScsSaltosCompensacionesBean.C_IDPERSONA + " = p." + CenPersonaBean.C_IDPERSONA);
+		sBuffer.append("   and sc." + ScsSaltosCompensacionesBean.C_IDPERSONA + " = c." + CenColegiadoBean.C_IDPERSONA);
+		sBuffer.append("   and sc." + ScsSaltosCompensacionesBean.C_IDINSTITUCION + " = " + idInstitucion);
+		sBuffer.append("   and sc." + ScsSaltosCompensacionesBean.C_IDINSTITUCION + " = c." + CenColegiadoBean.C_IDINSTITUCION);
+		sBuffer.append("   and sc." + ScsSaltosCompensacionesBean.C_IDTURNO + " = " + idTurno);
+		sBuffer.append("   and sc." + ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO + " is null ");
+		sBuffer.append("   and sc." + ScsSaltosCompensacionesBean.C_IDGUARDIA + " is null ");
+		sBuffer.append(" order by sc." + ScsSaltosCompensacionesBean.C_FECHA);
+
 		try {
-			RowsContainer rc = new RowsContainer(); 
-            if (rc.find(sql)) {
-            	datosVector = new Vector<LetradoGuardia>();
-    			for (int i = 0; i < rc.size(); i++){
-            		Row fila = (Row) rc.get(i);
-            		Hashtable<String, Object> htFila=fila.getRow();
-            		
-            		CenPersonaBean personaBean = new CenPersonaBean(
-            				UtilidadesHash.getLong(htFila, ScsInscripcionGuardiaBean.C_IDPERSONA),
-            				(String)htFila.get(CenPersonaBean.C_NOMBRE),(String)htFila.get(CenPersonaBean.C_APELLIDOS1),
-            				(String)htFila.get(CenPersonaBean.C_APELLIDOS2),(String)htFila.get(CenColegiadoBean.C_NCOLEGIADO));
-            		
-            		LetradoGuardia letradoGuardia = new LetradoGuardia(personaBean, 
-            				Integer.valueOf(idInstitucion), Integer.valueOf(idTurno), null, null);
-            		letradoGuardia.setSaltoCompensacion(UtilidadesHash.getString(htFila, ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION));
-            		letradoGuardia.setIdSaltoCompensacion(UtilidadesHash.getString(htFila, ScsSaltosCompensacionesBean.C_IDSALTOSTURNO));
-            		datosVector.add(letradoGuardia);
-            	}
-            } 
-       } catch (Exception e) {
-    	   throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D.");
-       }
-		return datosVector;
-//		return find(sql);	
-	}
-	
+			RowsContainer rc = this.find(sBuffer.toString());
+			if (rc == null) {
+				alLetradosCompensados = null;
+			} else {
+				alLetradosCompensados = new Vector<LetradoGuardia>();
+				for (int i = 0; i < rc.size(); i++) {
+					htFila = ((Row) rc.get(i)).getRow();
+
+					idPersona = (String) htFila.get(ScsSaltosCompensacionesBean.C_IDPERSONA);
+					inscripcionTurno = inscripcionAdm.getInscripcionActiva(idInstitucion.toString(),
+							idTurno.toString(), idPersona, "sysdate");
+					mBajasTemporales = btAdm.getDiasBajaTemporal(new Long(idPersona), new Integer(idInstitucion));
+					letradoSeleccionado = new LetradoGuardia(inscripcionTurno, mBajasTemporales);
+					letradoSeleccionado.setSaltoCompensacion(UtilidadesHash.getString(htFila,
+							ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION));
+					letradoSeleccionado.setIdSaltoCompensacion(UtilidadesHash.getString(htFila,
+							ScsSaltosCompensacionesBean.C_IDSALTOSTURNO));
+					alLetradosCompensados.add(letradoSeleccionado);
+				}
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al ejecutar el 'select' en B.D.");
+		}
+
+		return alLetradosCompensados;
+	} // getLetradosSaltosCompensacionesTurno()
 	
 }
