@@ -117,9 +117,10 @@
 				idguardia = ((String)hash.get("IDGUARDIA")).equals("")?"&nbsp;":(String)hash.get("IDGUARDIA");
 				idinstitucion = ((String)hash.get("IDINSTITUCION")).equals("")?"&nbsp;":(String)hash.get("IDINSTITUCION");
 				sFicheroLog = rp.returnProperty("sjcs.directorioFisicoGeneracionCalendarios")
-					+ File.separator + idinstitucion+"\\"+ idturno + "." + idguardia + "." + idcalendarioguardias + "-"
+					+ File.separator + idinstitucion+File.separator+ idturno + "." + idguardia + "." + idcalendarioguardias + "-"
 					+ GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicio).replace('/', '.') 
 					+ "-" + GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin).replace('/', '.') + ".log.xls";
+				
 				File fichero = new File(sFicheroLog);
 				if(fichero!=null && fichero.exists()){
 					//Boton de descarga del envio:

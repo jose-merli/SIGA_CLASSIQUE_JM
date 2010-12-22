@@ -2057,7 +2057,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 			ScsGuardiasColegiadoAdm envioAdm = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
 			ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 			sFicheroLog = rp.returnProperty("sjcs.directorioFisicoGeneracionCalendarios") + File.separator
-					+ idInstitucion + "\\"
+					+ idInstitucion + File.separator
 					+ getNombreFicheroLogCalendario(idTurno, idGuardia, idCalendarioGuardias, fechaDesde, fechaHasta)
 					+ ".log.xls";
 			File fichero = new File(sFicheroLog);
