@@ -903,6 +903,7 @@ function str_replace(search, replace, subject) {
 			<html:hidden name="datosGeneralesForm" property="cargo" value="B" />
 			<html:hidden property="actionModal" value=""/>
 			<html:hidden property="tipo" value="<%=sTipo%>"/>
+			<html:hidden name="datosGeneralesForm" property = "continuarAprobacion" value = ""/>
 	<tr>
 		<!-- FILA 1: FOTO -->
 		<td rowspan="3" valign="top" style="width:200px">
@@ -1320,8 +1321,9 @@ function str_replace(search, replace, subject) {
 		<html:hidden name="GruposClienteClienteForm" property="modo" value="buscar"/>
 		<html:hidden name="GruposClienteClienteForm" property="idPersona" />
 		<html:hidden name="GruposClienteClienteForm" property="idInstitucion" />
-		<html:hidden name="GruposClienteClienteForm" property="modoAnterior" />
+		<html:hidden name="GruposClienteClienteForm" property="modoAnterior" />		
 	</html:form>		
+	
 	
 	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 	<!-- Aqui comienza la zona de botones de acciones -->
@@ -1405,8 +1407,7 @@ function str_replace(search, replace, subject) {
 	}
 	}
 		<!-- Asociada al boton Guardar -->
-		function accionGuardar() {
-		
+		function accionGuardar() {		
 			sub();
 				
 				if (validarFormulario()	&&	TestFileType(document.forms[0].foto.value, ['GIF', 'JPG', 'PNG', 'JPEG'])) {
