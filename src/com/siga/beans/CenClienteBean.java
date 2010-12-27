@@ -17,8 +17,11 @@ public class CenClienteBean extends MasterBean {
 	private Integer idInstitucion, idTratamiento;
 	Long idPersona;
 	
+	
+
 	private String 	abonosBanco, asientoContable, caracter, cargosBanco, comisiones, fechaAlta, fotografia, 
 					guiaJudicial, idLenguaje, publicidad,  letrado, fechaCarga,norevista,noredabogacia;
+	private boolean existeDatos;
 
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "CEN_CLIENTE";
@@ -227,5 +230,12 @@ public class CenClienteBean extends MasterBean {
 
 	public void setNoAparacerRedAbogacia(String valor) {
 		this.noredabogacia = valor;
+	}
+	
+	public boolean isExisteDatos() {
+		return existeDatos;
+	}
+	public void setExisteDatos(boolean existeDatos) {
+		this.existeDatos = existeDatos;
 	}
 }
