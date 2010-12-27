@@ -2894,7 +2894,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 				beanCli.setCaracter("P");
 			
 			CenPersonaAdm admPer = new CenPersonaAdm(this.usrbean);
-			CenPersonaBean beanPer = (CenPersonaBean) admPer.hashTableToBean(hashDatosGenerales);
+			CenPersonaBean beanPer = (CenPersonaBean) admPer.hashTableToBean(hashDatosGenerales);			
 			return insertNoColegiado(beanPer, beanCli, request, request.getParameter("continuarAprobacion"));
 		}
 		catch (SIGAException e) { 
@@ -2911,35 +2911,57 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	 * @param beanPer CenPersonaBean con los datos de persona
 	 * @return cenClienteBean con el cliente insertado
 	 */
-	public CenClienteBean insertNoColegiado (CenPersonaBean beanPer, CenClienteBean beanCli, HttpServletRequest request, String continuar) throws SIGAException 
+	public CenClienteBean insertNoColegiado (CenPersonaBean beanPer, CenClienteBean beanCli, HttpServletRequest request, String continuar) throws SIGAException
 	{
-		CenClienteBean auxCli = null;
-		CenPersonaBean auxPer = null; 
-		boolean existePersona = false; 
-		boolean existeCliente = false; 
-
-		try {
+		
+			CenClienteBean auxCli = null;			
+			CenPersonaBean auxPer = null; 
+			boolean existePersona = false; 
+			boolean existeCliente = false; 						
+		try	{
+		
 			CenPersonaAdm admPer = new CenPersonaAdm(this.usrbean);
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			
+		try {
 			//pongo en mayusculas el nifcif
 			beanPer.setNIFCIF(beanPer.getNIFCIF().toUpperCase());
 			
 			//compruebo existencias
 			
-			auxPer = admPer.existePersona(beanPer.getNIFCIF(), beanPer.getNombre(), beanPer.getApellido1(), beanPer.getApellido2());
-			if (auxPer!=null) {
-				existePersona= true; 
+			auxPer = admPer.existePersona(beanPer.getNIFCIF(), beanPer.getNombre(), beanPer.getApellido1(), beanPer.getApellido2(),continuar);
+		
+			if (auxPer!=null) {				
+				existePersona= true;
+								 
 
-				auxCli = this.existeCliente(auxPer.getIdPersona(),new Integer(usr.getLocation()));
+				/**Busca si existe cliente en la institucion actual**/
+				auxCli =  this.existeCliente(auxPer.getIdPersona(),new Integer(usr.getLocation()));
 				if (auxCli!=null) {
 					existeCliente= true;
+				}else{				
+						/**Busca si no existe el cliente en la institución actual, busca si existe en cualquier colegio y si existe 
+						 * se realiza la pregunta si quiere que utilize los mismos datos ya existentes**/
+					auxCli = this.existeClienteOtraInstitucion (auxPer.getIdPersona(),new Integer(usr.getLocation()));
+					if (auxCli!=null){
+						if (auxPer.isExisteDatos()){
+							auxCli.setExisteDatos(true);
+							return auxCli;
+						}else{
+						 existeCliente= false;
+						}
+					}
 				}
+				
 			}
 			
+		}
+			catch (SIGAException e) {
+				auxCli = null;
+				return auxCli;
+			}	
+			
 			// proceso
-			if (existePersona) {
-				
+			if (existePersona) {				
 				this.setError("messages.fichaCliente.personaExiste");
 				if (existeCliente) {
 					throw new SIGAException("messages.fichaCliente.clienteExiste");
@@ -3001,13 +3023,15 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 				}
 				// vuelvo a coger ya el insertado
 				auxCli = this.existeCliente(auxPer.getIdPersona(),new Integer(usr.getLocation()));
-			}
-		}
-		catch (SIGAException se) {
+			}	
+	
+		} catch (SIGAException se) {
 			throw se;
 		}
 		catch (Exception e) {
-			throw new SIGAException ("Error al insertar datos en B.D.",e);
+			auxCli=null;
+			return auxCli;
+		//	throw new SIGAException ("Error al insertar datos en B.D.",e);
 		}
 		return auxCli;
 	}
@@ -3035,8 +3059,8 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 		catch (Exception e) {
 			throw new ClsExceptions (e, "Error al consultar datos en B.D.");
 		}
-	}
-	
+	}	
+
 	public String getLenguaje (String idInstitucion, String idPersona) throws ClsExceptions, SIGAException 
 	{
 		try {
@@ -4726,5 +4750,40 @@ public class CenClienteAdm extends MasterBeanAdmVisible
  		}
  		return datos;
  	}
+ 	
+ 	public Vector getDatosPersonalesOtraInstitucion(Long idPersona)throws ClsExceptions, SIGAException{
+		Vector v = new Vector();
+		RowsContainer rc = null;
+		try{
+		    Hashtable codigos = new Hashtable();
+		    //codigos.put(new Integer(1),idInstitucion.toString());
+		    codigos.put(new Integer(1),idPersona.toString());
+    		
+		    String sql = " SELECT "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NOMBRE+","+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+","+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+","+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+","+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NATURALDE+","+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDESTADOCIVIL+"," +CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_FALLECIDO+","+
+			 "  " + CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_CARACTER+","+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_FOTOGRAFIA+" ,  "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_SEXO+" ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_PUBLICIDAD+" ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_GUIAJUDICIAL+" ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_ABONOSBANCO+" ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_CARGOSBANCO+" , "+
+			 "  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_ASIENTOCONTABLE+","+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_COMISIONES+" ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDTRATAMIENTO+" ,  "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDPERSONA+" ,  "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_FECHANACIMIENTO+" as "+CenPersonaBean.C_FECHANACIMIENTO+",  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDLENGUAJE+" ,  "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDTIPOIDENTIFICACION+" ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_FECHAALTA+"  " +" ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_NOAPARECERREDABOGACIA+ 
+		     ",  TRUNC(f_siga_calculoanios ("+CenPersonaBean.C_FECHANACIMIENTO+", SYSDATE)) AS EDAD  ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_NOENVIARREVISTA+
+			 " FROM   " + CenClienteBean.T_NOMBRETABLA + ",  "+CenPersonaBean.T_NOMBRETABLA +
+			 " WHERE   " + CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDPERSONA+"  = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+"  " +			 
+			 " AND   " + CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDPERSONA+" =:1 "+
+			 " order by fechaalta ASC ";
+
+			// RGG cambio para visibilidad
+            rc = this.findBind(sql,codigos);
+ 			if (rc!=null) {
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					Hashtable registro = (Hashtable)fila.getRow(); 
+					if (registro != null) 
+						v.add(registro);
+				}
+			}
+		}
+		catch(Exception e) {
+			throw new ClsExceptions (e, "Error en getDatosPersonales1");
+		}
+		return v;
+	}
+	
 
 }
