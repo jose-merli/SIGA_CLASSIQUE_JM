@@ -577,6 +577,7 @@ public class CalendarioSJCS
 		ArrayList<LetradoGuardia> grupoLetrados;
 		int numeroGrupo;
 		boolean nuevoGrupo;
+		int fin;
 
 		// controlando que la lista este rellena
 		if (alLetradosOrdenados == null || alLetradosOrdenados.size() == 0)
@@ -586,8 +587,13 @@ public class CalendarioSJCS
 		letrado = alLetradosOrdenados.get(punteroLetrado.getValor());
 		
 		// avanzando hasta encontrar alguien que pertenezca a un grupo
-		while (letrado != null && letrado.getGrupo() == null) {
-			punteroLetrado.incValor();
+		fin = punteroLetrado.getValor();
+		while (letrado != null && letrado.getGrupo() == null && fin != punteroLetrado.getValor()) {
+			// obteniendo siguiente en la cola
+			if (punteroLetrado.getValor() < alLetradosOrdenados.size() - 1)
+				punteroLetrado.incValor();
+			else
+				punteroLetrado.setValor(0); // como es una cola circular hay que volver al principio
 			letrado = alLetradosOrdenados.get(punteroLetrado.getValor());
 		}
 		if (letrado == null) // no se encontro a nadie perteneciente a un grupo
@@ -599,7 +605,7 @@ public class CalendarioSJCS
 		
 		grupoLetrados = new ArrayList<LetradoGuardia>();
 		nuevoGrupo = false;
-		int fin = punteroLetrado.getValor();
+		fin = punteroLetrado.getValor();
 		do {
 			// anyadiendo componente al grupo
 			grupoLetrados.add(letrado);
