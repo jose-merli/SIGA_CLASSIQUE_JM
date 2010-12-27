@@ -19,11 +19,14 @@ import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
 @AjaxXMLBuilderAnnotation
 public class CenPersonaBean extends MasterBean {
 
+
 	/* Variables */
 	private Long idPersona;
 	private Integer idTipoIdentificacion, idEstadoCivil;
 	private String nombre, apellido1, apellido2, nifcif, naturalDe,sexo;  
 	private String fechaNacimiento,fallecido;
+	private boolean existeDatos;
+	
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "CEN_PERSONA";
 
@@ -51,7 +54,8 @@ public class CenPersonaBean extends MasterBean {
 	public void setFechaNacimiento (String f) 		{ this.fechaNacimiento = f; }
 	public void setNaturalDe (String s) 			{ this.naturalDe = s; }
 	public void setFallecido (String fallecido) 			{ this.fallecido = fallecido; }
-
+	
+	public void setExisteDatos(boolean existeDatos) {this.existeDatos = existeDatos;}
 	// Metodos GET
 	@AjaxXMLBuilderValueAnnotation(isCData=false)
 	public Long getIdPersona 			()	{ return this.idPersona; }
@@ -65,6 +69,7 @@ public class CenPersonaBean extends MasterBean {
 	public String getNaturalDe 			() 	{ return this.naturalDe; }
 	public String getFechaNacimiento 		() 	{ return this.fechaNacimiento; }
 	public String getFallecido 			() 	{ return this.fallecido; }
+	public boolean isExisteDatos() { return existeDatos; }
 	/**
 	 * @return Returns the sexo.
 	 */
