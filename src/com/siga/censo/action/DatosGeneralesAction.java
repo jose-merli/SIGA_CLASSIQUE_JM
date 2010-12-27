@@ -988,12 +988,12 @@ public class DatosGeneralesAction extends MasterAction {
 	 */
 	protected String insertar (ActionMapping mapping,	MasterForm formulario,	HttpServletRequest request,	HttpServletResponse response) throws SIGAException 
 	{
-		UserTransaction tx = null;
-		
+		UserTransaction tx = null;		
+	
 		try {		
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-
+			String forward = "";
  			
 			// Obtengo los datos del formulario
 			DatosGeneralesForm miForm = (DatosGeneralesForm)formulario;
@@ -1078,30 +1078,73 @@ public class DatosGeneralesAction extends MasterAction {
 			// insert de la parte de cliente
 			// paso un solo hash con los datos de cliente y de persona
 			CenClienteBean beanCli = adminCli.insertNoColegiado(hash, request);
-			if (beanCli==null){
+			/**se verifica que bien la persona existe con isExisteDatos que indica que es la misma persona,
+			 *  pero que esta dado de alta en otro colegio y preguntara si quiere que también
+			 *  se le de de alta en el actual colegio con los valores de datos generales
+			 *  que tiene actualmente en el sistema**/
+			if (beanCli==null||beanCli.isExisteDatos()){
 			  	CenPersonaBean perBean = null;
+			  	String idinstitucion= miForm.getIdInstitucion();			 
 			  	CenPersonaAdm perAdm = new CenPersonaAdm(this.getUserBean(request));
-				Vector personas = perAdm.select("WHERE UPPER(" + CenPersonaBean.C_NIFCIF + ") = '" + numIdentificacion.toUpperCase() + "'");			
-				String nombrePersona="", apellido1Persona="", apellido2Persona=""; 
+			  	if (numIdentificacion!=null){
+				Vector personas = perAdm.select("WHERE UPPER(" + CenPersonaBean.C_NIFCIF + ") = '" + numIdentificacion.toUpperCase() + "'");
+			  	
+				String nombrePersona="", apellido1Persona="", apellido2Persona="";
+				String nifcif="";
 				if ((personas != null) && personas.size() == 1) {
 					perBean = (CenPersonaBean)personas.get(0);
+					long idPersonaValor = new Long(perBean.getIdPersona()).longValue();
 					nombrePersona = perBean.getNombre().toUpperCase(); 
 					apellido1Persona = perBean.getApellido1().toUpperCase(); 
 					apellido2Persona = perBean.getApellido2().toUpperCase();
-			  	String msj=UtilidadesString.getMensajeIdioma(usr,"messages.censo.nifcifExiste2");	
-			  	msj+=" : "+nombrePersona+" "+apellido1Persona+" "+apellido2Persona;
-				request.setAttribute("msj",msj);
-			  	
-			  	tx.rollback();
-			  	return "continuarAprobacion";
-			  }
-			  }
+					nifcif = perBean.getNIFCIF().toUpperCase();
+					String msj="";					
+					
+					int idInstitucionValor = new Integer(idInstitucion).intValue(); 
+					CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserName(request),usr,idInstitucionValor,idPersonaValor);
+					
+					/**En la función de getDatosPersonales se verifica si el nocolegiado 
+					 * existe en el colegio actual si no existe busca en los diferentes colegios*****/
+					Vector resultado = clienteAdm.getDatosPersonales(idPersonaValor, new Integer(idInstitucion));
+		              if (resultado!=null && resultado.size()==0){		  
+		            	  	/**En la función de getDatosPersonalesOtraInstitucion se verifica si el nocolegiado 
+		            	  	 * existe en el otras instituciones y se cogeran los datos en el que 
+		            	  	 * se dio primero de alta dicho nocolegiado****/
+		            	  resultado = clienteAdm.getDatosPersonalesOtraInstitucion(idPersonaValor);
+		            	  if (beanCli!=null){
+		            		   msj = UtilidadesString.getMensajeIdioma (usr, "messages.censo.nifcifNombreApellidoExiste");	
+		                       msj += ":"+" "+nifcif+" "+nombrePersona+" "+apellido1Persona+" "+apellido2Persona+". "+ "\u00BFDesea"+"Continuar\u003F";
+		            	  }else{
+		            		  msj = UtilidadesString.getMensajeIdioma (usr, "messages.censo.nifcifExiste3");	
+		            		  msj += "-"+nombrePersona+" "+apellido1Persona+" "+apellido2Persona+". "+ "\u00BFDesea"+"Continuar\u003F";
+		            	  }
+		            	  // para los datos anteriores
+		            	  Hashtable datosGeneralesAnteriores = new Hashtable();
+		            	  if (resultado!=null && resultado.size()>0) {
+		            		  request.setAttribute("CenResultadoDatosGenerales",resultado);
+		            		  request.setAttribute ("msj", msj);					
+		            		  forward = "continuarAprobacionNoColegiado";//llama a la pagina donde le pasa los datos.
+		            		  tx.rollback ();
+		            		  return forward;
+		            	  }
+		            	  
+		              }else{		            	  	
+		            	  	msj=UtilidadesString.getMensajeIdioma(usr.getLanguage(), "messages.censo.nifcifExiste4", new String[]{nifcif});		            	  	
+		            	  	request.setAttribute("msj",msj);			  	
+		            	  	tx.rollback();
+		            	  	return "continuarAprobacion";
+			
+		              }
+				}//Fin if 					
+					
+			  }//Fin numIdentificacion
+			  }//Fin beanCli==null||beanCli.isExisteDatos()
 			String mensInformacion = "messages.inserted.success"; 
 			if (!adminCli.getError().equals("")) {
 				mensInformacion = adminCli.getError();
 			}
-
-			
+			/** Si viene a vacio despues de recuperar los datos de beanCli = adminCli.insertNoColegiado pues no debe de entrar solo si el valor beanCli tiene datos. **/
+			if (beanCli!=null){			
 			// Inserto los datos del no colegiado en CenNoColegiado:
 			CenNoColegiadoAdm admNoColegiado = new CenNoColegiadoAdm(this.getUserBean(request));
 			Hashtable hashNoColegiado = new Hashtable();
@@ -1132,13 +1175,9 @@ public class DatosGeneralesAction extends MasterAction {
 			request.setAttribute("idPersona",beanCli.getIdPersona().toString());
 			request.setAttribute("idInstitucion",beanCli.getIdInstitucion().toString());
 			request.setAttribute("tipo",ClsConstants.COMBO_TIPO_PERSONAL);
-			//request.setAttribute("error","OK");
+			}//fin beanCli
+
 	   } 	
-//		catch (SIGAException e) {
-//	   
-//		 throw e;
-//	   } 	
-	   
 	   catch (Exception e) {
 		 throwExcp("messages.general.error",new String[] {"modulo.censo"},e,tx);
    	   }
