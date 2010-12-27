@@ -243,7 +243,8 @@ public class ScsSaltoCompensacionGrupoAdm extends MasterBeanAdministrador
 		while (iter.hasNext()) {
 			compensacion = (ScsSaltoCompensacionGrupoBean) iter.next();
 			compensacion.setLetrados(InscripcionGuardia.getLetradosGrupo(idInstitucion, idTurno, idGuardia,
-					compensacion.getIdGrupoGuardia(), ClsConstants.COMPENSACIONES, this.usrbean));
+					compensacion.getIdGrupoGuardia(), saltoOcompensacion, 
+					compensacion.getIdSaltoCompensacionGrupo().toString(), this.usrbean));
 			resultado.add(compensacion);
 		}
 

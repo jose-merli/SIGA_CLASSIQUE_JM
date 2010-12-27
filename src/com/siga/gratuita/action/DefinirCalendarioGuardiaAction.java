@@ -1735,7 +1735,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 			// iniciando transaccion
 			tx = usr.getTransactionPesada();
 			tx.begin();
-
+			
 			// si hay guardias vinculadas, hay que crear los calendarios antes que nada
 			Vector<ScsCalendarioGuardiasBean> calendariosVinculados = new Vector<ScsCalendarioGuardiasBean>();
 			for (ScsGuardiasTurnoBean guardia : guardiasVinculadas) {
@@ -1762,7 +1762,8 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 					new Integer(idGuardia), usr);
 
 			// obteniendo la matriz de letrados de guardia
-			log.addLog(new String[] {"INICIO generacion"});
+			log.addLog(new String[] { "INICIO generacion",
+					beanGuardia.getNombre() + " (" + fechaDesde + " - " + fechaHasta + ")" });
 			if (porGrupos.equals("1"))
 				calendarioSJCS.calcularMatrizLetradosGuardiaPorGrupos(lDiasASeparar, rotacion);
 			else

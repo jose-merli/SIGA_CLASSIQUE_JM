@@ -99,7 +99,7 @@ public class ScsSaltoCompensacionGrupoBean extends MasterBean
 	
 	
 	public String toString() {
-		return this.saltoCompensacion + ": " + this.fecha;
+		return this.saltoCompensacion + " de grupo: " + this.getLetrados();
 	}
 
 }

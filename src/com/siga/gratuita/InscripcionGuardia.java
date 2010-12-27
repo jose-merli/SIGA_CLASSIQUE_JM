@@ -213,8 +213,7 @@ public class InscripcionGuardia
 			for (int i = 0; i < listaLetrados.size(); i++) {
 				punteroInscripciones = (ScsInscripcionGuardiaBean) listaLetrados.get(i);
 				if (punteroInscripciones.getEstado().equals(ClsConstants.DB_TRUE))
-					colaLetrados.add(new LetradoGuardia(punteroInscripciones, bajasAdm.getDiasBajaTemporal(
-							punteroInscripciones.getIdPersona(), punteroInscripciones.getIdInstitucion())));
+					colaLetrados.add(new LetradoGuardia(punteroInscripciones, null));
 			}
 		}
 		else {
@@ -228,11 +227,9 @@ public class InscripcionGuardia
 				if (punteroInscripciones.getEstado().equals(ClsConstants.DB_TRUE)) {
 					// El primero que se anyade es el siguiente al ultimo
 					if (foundUltimo) {
-						colaLetrados.add(new LetradoGuardia(punteroInscripciones, bajasAdm.getDiasBajaTemporal(
-								punteroInscripciones.getIdPersona(), punteroInscripciones.getIdInstitucion())));
+						colaLetrados.add(new LetradoGuardia(punteroInscripciones, null));
 					} else {
-						colaAuxiliar.add(new LetradoGuardia(punteroInscripciones, bajasAdm.getDiasBajaTemporal(
-								punteroInscripciones.getIdPersona(), punteroInscripciones.getIdInstitucion())));
+						colaAuxiliar.add(new LetradoGuardia(punteroInscripciones, null));
 					}
 				}
 				
@@ -253,6 +250,7 @@ public class InscripcionGuardia
 			Integer idGuardia,
 			Long idGrupoGuardia,
 			String saltoCompensacion,
+			String idSaltoCompensacionGrupo,
 			UsrBean usr) throws ClsExceptions
 	{
 		// Controles
@@ -283,10 +281,11 @@ public class InscripcionGuardia
 		listaLetrados = new ArrayList<LetradoGuardia>();
 		for (int i = 0; i < vectorLetrados.size(); i++) {
 			inscripcionGuardia = (ScsInscripcionGuardiaBean) vectorLetrados.get(i);
-			letradoGuardia = new LetradoGuardia(inscripcionGuardia, bajasAdm.getDiasBajaTemporal(
-					inscripcionGuardia.getIdPersona(), inscripcionGuardia.getIdInstitucion()));
-			if (saltoCompensacion != null)
+			letradoGuardia = new LetradoGuardia(inscripcionGuardia, null);
+			if (saltoCompensacion != null) {
 				letradoGuardia.setSaltoCompensacion(saltoCompensacion);
+				letradoGuardia.setIdSaltoCompensacionGrupo(idSaltoCompensacionGrupo);
+			}
 			listaLetrados.add(letradoGuardia);
 		}
 

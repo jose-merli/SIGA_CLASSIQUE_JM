@@ -5,6 +5,7 @@
 package com.siga.beans;
  
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -143,54 +144,129 @@ public class CenBajasTemporalesAdm extends MasterBeanAdministrador {
 		return htData;
 	}
 
-  
     /**
+     * Devuelve un mapa de todos los colegiados inscritos a una guardia, donde cada registro
+     * corresponde a cada dia en que cada colegiado tiene baja temporal
      * 
-     * @param estado 1 ó 0. Sera uno cuando se quieran los pagos ya enviados.0 con los pagos pendienmtes de enviar
+     * @param idColegiado
      * @param idInstitucion
      * @return
      * @throws ClsExceptions
      */
+	public HashMap<Long, TreeMap<String, CenBajasTemporalesBean>> getLetradosDiasBajaTemporal(Integer idInstitucion,
+			Integer idTurno,
+			Integer idGuardia,
+			String fechaDesde,
+			String fechaHasta) throws ClsExceptions
+	{
+		CenBajasTemporalesBean bajasBean;
+		Long idPersona;
+		String fechaBT;
+		TreeMap<String, CenBajasTemporalesBean> bajasDePersona;
+		
+		HashMap<Long, TreeMap<String, CenBajasTemporalesBean>> mSalida = null;
+		
+		try {
+			Hashtable htCodigos = new Hashtable();
+			int keyContador = 0;
+			StringBuffer select = new StringBuffer();
+			select.append(" SELECT BAJAS.* ");
+			select.append("   FROM CEN_BAJASTEMPORALES BAJAS, SCS_INSCRIPCIONGUARDIA INS ");
+			select.append("  WHERE BAJAS.IDINSTITUCION = INS.IDINSTITUCION ");
+			select.append("    AND BAJAS.IDPERSONA = INS.IDPERSONA ");
+			select.append("    AND INS.IDINSTITUCION = :");
+			keyContador++;
+			select.append(keyContador);
+			htCodigos.put(new Integer(keyContador), idInstitucion);
+			select.append("    AND INS.IDTURNO = :");
+			keyContador++;
+			select.append(keyContador);
+			htCodigos.put(new Integer(keyContador), idTurno);
+			select.append("    AND INS.IDGUARDIA = :");
+			keyContador++;
+			select.append(keyContador);
+			htCodigos.put(new Integer(keyContador), idGuardia);
+			select.append("    AND TRUNC(BAJAS.FECHABT) BETWEEN :");
+			keyContador++;
+			select.append(keyContador);
+			htCodigos.put(new Integer(keyContador), fechaDesde);
+			select.append("                             AND :");
+			keyContador++;
+			select.append(keyContador);
+			htCodigos.put(new Integer(keyContador), fechaHasta);
 
-    public Map<String,CenBajasTemporalesBean> getDiasBajaTemporal(Long idColegiado, Integer idInstitucion)
-			throws ClsExceptions {
+			Vector datos = this.selectGenericoBind(select.toString(), htCodigos);
 
-    	Map<String,CenBajasTemporalesBean> mSalida = null;
+			mSalida = new HashMap<Long, TreeMap<String, CenBajasTemporalesBean>>();
+			for (int i = 0; i < datos.size(); i++) {
+				Hashtable ht = (Hashtable) datos.get(i);
+				
+				bajasBean = (CenBajasTemporalesBean) this.hashTableToBean(ht);
+				idPersona = bajasBean.getIdPersona();
+				fechaBT = bajasBean.getFechaBT();
+				
+				bajasDePersona = (TreeMap<String, CenBajasTemporalesBean>) mSalida.get(idPersona);
+				if (bajasDePersona != null)
+					bajasDePersona.put(GstDate.getFormatedDateShort("", fechaBT), bajasBean);
+				else {
+					bajasDePersona = new TreeMap<String, CenBajasTemporalesBean>();
+					bajasDePersona.put(GstDate.getFormatedDateShort("", fechaBT), bajasBean);
+					mSalida.put(idPersona, bajasDePersona);
+				}
+			}
+
+		} catch (ClsExceptions e) {
+			throw e;
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al obtener los getDiasBajaTemporal: " + e.toString());
+		}
+		
+		return mSalida;
+	}    
+
+    /**
+     * Devuelve un mapa de los dias en que el colegiado tiene baja temporal
+     * 
+     * @param idColegiado
+     * @param idInstitucion
+     * @return
+     * @throws ClsExceptions
+     */
+	public Map<String, CenBajasTemporalesBean> getDiasBajaTemporal(Long idColegiado, Integer idInstitucion) throws ClsExceptions
+	{
+		Map<String, CenBajasTemporalesBean> mSalida = null;
+		
 		try {
 			Hashtable htCodigos = new Hashtable();
 			int keyContador = 0;
 			StringBuffer select = new StringBuffer();
 			select.append(" SELECT * FROM CEN_BAJASTEMPORALES T ");
-			select.append(" WHERE T.IDINSTITUCION = :");
-			
+			select.append("  WHERE T.IDINSTITUCION = :");
 			keyContador++;
 			select.append(keyContador);
 			htCodigos.put(new Integer(keyContador), idInstitucion);
-			select.append(" AND T.IDPERSONA = :");
+			select.append("    AND T.IDPERSONA = :");
 			keyContador++;
 			select.append(keyContador);
 			htCodigos.put(new Integer(keyContador), idColegiado);
 
 			Vector datos = this.selectGenericoBind(select.toString(), htCodigos);
-	
-			mSalida = new  TreeMap<String,CenBajasTemporalesBean>();
+
+			mSalida = new TreeMap<String, CenBajasTemporalesBean>();
 			for (int i = 0; i < datos.size(); i++) {
 				Hashtable ht = (Hashtable) datos.get(i);
-				mSalida.put(GstDate.getFormatedDateShort("",(String)ht.get(CenBajasTemporalesBean.C_FECHABT)),(CenBajasTemporalesBean)this.hashTableToBean(ht));
+				mSalida.put(GstDate.getFormatedDateShort("", (String) ht.get(CenBajasTemporalesBean.C_FECHABT)),
+						(CenBajasTemporalesBean) this.hashTableToBean(ht));
 			}
-				
-			
-		}
-		catch (ClsExceptions e) {
+
+		} catch (ClsExceptions e) {
 			throw e;
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al obtener los getDiasBajaTemporal: " + e.toString());
 		}
-		catch (Exception e) {
-			throw new ClsExceptions (e, "Error al obtener los getDiasBajaTemporal: "+ e.toString());
-		}
-		return mSalida;
 		
-	}
-    
+		return mSalida;
+	}    
     
     /**
      * eSTE METODO NOS DEVUELVE UN MAP DE LOS LETRADOS CON BAJA TEMPORAL DE LA LISTA DE LETRADOS
