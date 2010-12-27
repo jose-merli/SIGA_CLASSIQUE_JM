@@ -382,12 +382,12 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 	 * Comprueba si existe el una Persona  
 	 * @param nifcif de la persona a buscar 
 	 */	
-	public CenPersonaBean existePersona (String nifcif, String nombre, String apellido1, String apellido2) throws ClsExceptions, SIGAException{
+	public CenPersonaBean existePersona (String nifcif, String nombre, String apellido1, String apellido2, String continuar) throws ClsExceptions, SIGAException{
 		String nombrePersona="", apellido1Persona="", apellido2Persona=""; 
 		try {
 			/*CenPersonaBean persona = this.getPersona(nifcif, nombre, apellido1, apellido2); 
 			return persona;*/
-			CenPersonaBean perBean = null;
+			CenPersonaBean perBean = null;			
 			Hashtable codigos = new Hashtable();
 			codigos.put(new Integer(1),UtilidadesString.LTrim(nifcif.toUpperCase(),"0"));
 			Vector personas = selectBind("WHERE ltrim(UPPER(" +CenPersonaBean.C_NIFCIF+"),'0') = :1",codigos);			
@@ -406,21 +406,20 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 				//-Nombre con Apellido2
 				//-Apellido1 con Apellido2
 			 // Solo se hace la comprobacion si el usuario decide continuar
-				
+				if (continuar==null || continuar.equals("")){	
 				if ( ( ComodinBusquedas.sustituirVocales(nombrePersona).equals(ComodinBusquedas.sustituirVocales(nombre.toUpperCase())) && ComodinBusquedas.sustituirVocales(apellido1Persona).equals(ComodinBusquedas.sustituirVocales(apellido1.toUpperCase())) ) || 
 					 ( ComodinBusquedas.sustituirVocales(nombrePersona).equals(ComodinBusquedas.sustituirVocales(nombre.toUpperCase())) && ComodinBusquedas.sustituirVocales(apellido2Persona).equals(ComodinBusquedas.sustituirVocales(apellido2.toUpperCase())) ) ||
 					 ( ComodinBusquedas.sustituirVocales(apellido1Persona).equals(ComodinBusquedas.sustituirVocales(apellido1.toUpperCase())) && ComodinBusquedas.sustituirVocales(apellido2Persona).equals(ComodinBusquedas.sustituirVocales((""+apellido2).toUpperCase())) ) 
-					) {
-					// No hacemos nada (es el mismo y los devolvemos
-				} else {
-					// No es el mismo
-				
-					
+					) { 
+					/**Signifia que es la misma persona y que hay datos**/
+					perBean.setExisteDatos(true);
+					// No hacemos nada (es el mismo y los devolvemos				
+				} else {								
 					throw new SIGAException(UtilidadesString.getMensajeIdioma(this.getLenguaje(), "messages.censo.nifcifExiste4", new String[]{nifcif}));
 				}
 			}
-			
-			
+		
+		}
 			return perBean;
 		}
 		catch (SIGAException e) {
@@ -430,7 +429,7 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 			throw new ClsExceptions (e, "Error al comprobar existencia de NIF/CIF");
 		}
 	}
-
+	
 	public CenPersonaBean getPersona (String nifcif) throws ClsExceptions{
 		 
 		try {
