@@ -643,6 +643,8 @@ caracterParam[0] = tipoCliente;
 			<html:hidden name="datosGeneralesForm" property="modoSociedadSJ"/>
 			<html:hidden name="datosGeneralesForm" property="modoSociedadSP"/>
 			<html:hidden name="datosGeneralesForm" property="longitudSP"/>
+			<html:hidden name="datosGeneralesForm" property="continuarAprobacion" value = ""/>
+			
 		
 		<tr>
 			<!-- COLUMNA: FOTO -->	
