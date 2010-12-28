@@ -1870,7 +1870,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		sql.append(" FROM SCS_GUARDIASCOLEGIADO GC,CEN_COLEGIADO COL, CEN_PERSONA PER ");
 		sql.append(" WHERE  ");
 
-		sql.append("COL.IDPERSONA = PER.IDPERSONA AND ");
+		sql.append(" COL.IDPERSONA = PER.IDPERSONA  ");
 		sql.append(" AND GC.IDINSTITUCION = COL.IDINSTITUCION ");
 		sql.append(" AND GC.IDPERSONA = PER.IDPERSONA ");
 		sql.append(" AND GC.IDINSTITUCION = :");
