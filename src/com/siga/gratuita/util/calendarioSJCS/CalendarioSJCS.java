@@ -588,14 +588,14 @@ public class CalendarioSJCS
 		
 		// avanzando hasta encontrar alguien que pertenezca a un grupo
 		fin = punteroLetrado.getValor();
-		while (letrado != null && letrado.getGrupo() == null && fin != punteroLetrado.getValor()) {
+		do {
 			// obteniendo siguiente en la cola
 			if (punteroLetrado.getValor() < alLetradosOrdenados.size() - 1)
 				punteroLetrado.incValor();
 			else
 				punteroLetrado.setValor(0); // como es una cola circular hay que volver al principio
 			letrado = alLetradosOrdenados.get(punteroLetrado.getValor());
-		}
+		} while (letrado != null && letrado.getGrupo() == null && fin != punteroLetrado.getValor());
 		if (letrado == null) // no se encontro a nadie perteneciente a un grupo
 			return null;
 		else if (letrado.getGrupo() == null)
@@ -1278,7 +1278,7 @@ public class CalendarioSJCS
 				// bucle, ya que si hay incompatibilidades se añade una compensacion
 				alCompensaciones = salComAdm.getSaltosCompensacionesPendientesGuardia(this.idInstitucion, this.idTurno, this.idGuardia, ClsConstants.COMPENSACIONES);
 				log.addLog(new String[] {"Compensaciones", alCompensaciones.toString()});
-				log.addLog(new String[] {"Saltos", alSaltos.toString()});
+				log.addLog(new String[] {"Saltos", hmGruposConSaltos.toString()});
 
 				// buscando grupo que no tenga restricciones (incompatibilidades, bajas temporales, saltos)
 				grupoLetrados = getSiguienteGrupo(alCompensaciones, alLetradosOrdenados, punteroListaLetrados, diasGuardia, hmGruposConSaltos, hmBajasTemporales);
