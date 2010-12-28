@@ -74,6 +74,7 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 	private String CONCEPTO_ASIENTO6		= "general.literal.asiento6"; 	// Pago por caja. Abono Nº
 	private String CONCEPTO_ASIENTO7		= "general.literal.asiento7"; 	// Pago por banco. Abono Nº
 	private String CONCEPTO_ASIENTO10		= "general.literal.asiento3_1"; // Pago por tarjeta. Factura Nº
+	private String CONCEPTO_ASIENTO3_2010   = "general.literal.asiento3_2010"; // Compensación por caja
 	//private String CONCEPTO_ASIENTO12		= "general.literal.asiento11"; // Factura Servicios
 	//private String CONCEPTO_ASIENTO11		= "general.literal.asiento12"; // Factura Productos
 	private String CONCEPTO_ASIENTO8		= "general.literal.asiento8"; // Reparto Pagos justicia gratuita
@@ -2777,7 +2778,12 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 			String idFacturaAnt ="";
 			
 			// Descripcion del concepto
-			concepto = UtilidadesString.sustituirParaExcell(UtilidadesString.getMensajeIdioma(this.usrbean,CONCEPTO_ASIENTO3));
+			// inc7745 // jbd // Para Badajoz (2010) cambiamos el concepto
+			if(this.usrbean.getLocation().equalsIgnoreCase("2010")){
+				concepto = UtilidadesString.sustituirParaExcell(UtilidadesString.getMensajeIdioma(this.usrbean,CONCEPTO_ASIENTO3_2010));
+			}else{
+				concepto = UtilidadesString.sustituirParaExcell(UtilidadesString.getMensajeIdioma(this.usrbean,CONCEPTO_ASIENTO3));
+			}
 			conceptoAnticipo = UtilidadesString.sustituirParaExcell(UtilidadesString.getMensajeIdioma(this.usrbean,CONCEPTO_ASIENTO3_2));
 			
 			vAbono=(Vector)this.selectTablaBind(select,codigos);
