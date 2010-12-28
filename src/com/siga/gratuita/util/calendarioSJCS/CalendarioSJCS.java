@@ -588,14 +588,14 @@ public class CalendarioSJCS
 		
 		// avanzando hasta encontrar alguien que pertenezca a un grupo
 		fin = punteroLetrado.getValor();
-		do {
+		while (letrado != null && letrado.getGrupo() == null && fin != punteroLetrado.getValor()) {
 			// obteniendo siguiente en la cola
 			if (punteroLetrado.getValor() < alLetradosOrdenados.size() - 1)
 				punteroLetrado.incValor();
 			else
 				punteroLetrado.setValor(0); // como es una cola circular hay que volver al principio
 			letrado = alLetradosOrdenados.get(punteroLetrado.getValor());
-		} while (letrado != null && letrado.getGrupo() == null && fin != punteroLetrado.getValor());
+		}
 		if (letrado == null) // no se encontro a nadie perteneciente a un grupo
 			return null;
 		else if (letrado.getGrupo() == null)
