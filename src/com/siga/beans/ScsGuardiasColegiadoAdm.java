@@ -1717,6 +1717,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 			//Periodo:
 			int indexPeriodo = 0;// Integer.parseInt(miForm.getIndicePeriodo());
 			Hashtable h = new Hashtable();
+			UtilidadesHash.set (h, ScsGuardiasColegiadoBean.C_FECHAFIN, GstDate.getApplicationFormatDate("", fechaFin));
 			UtilidadesHash.set (h, ScsGuardiasColegiadoBean.C_IDTURNO, idTurno);
 			UtilidadesHash.set (h, ScsGuardiasColegiadoBean.C_IDGUARDIA, idGuardia);
 			UtilidadesHash.set (h, ScsGuardiasColegiadoBean.C_IDINSTITUCION, idInstitucion);
