@@ -616,27 +616,27 @@ public class InscripcionTurno
 		htInscTurno.put(ScsInscripcionTurnoBean.C_FECHAVALIDACION,GstDate.getApplicationFormatDate(usr.getLanguage(),fechaValidacion));
 		htInscTurno.put(ScsInscripcionTurnoBean.C_OBSERVACIONESVALIDACION,observacionesValidacion);
 
-			String[] clavesGuardia = {ScsInscripcionGuardiaBean.C_IDINSTITUCION,
-					ScsInscripcionGuardiaBean.C_IDPERSONA, 
-					ScsInscripcionGuardiaBean.C_IDTURNO};
-			String[] camposGuardia = {ScsInscripcionGuardiaBean.C_FECHAVALIDACION,ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION};
-			Hashtable htInscGuardia = new Hashtable();
-			htInscGuardia.put(ScsInscripcionGuardiaBean.C_IDINSTITUCION	,this.bean.getIdInstitucion());
-			htInscGuardia.put(ScsInscripcionGuardiaBean.C_IDPERSONA	,this.bean.getIdPersona());
-			htInscGuardia.put(ScsInscripcionGuardiaBean.C_IDTURNO,this.bean.getIdTurno());
-			
-			htInscGuardia.put(ScsInscripcionTurnoBean.C_FECHAVALIDACION,GstDate.getApplicationFormatDate(usr.getLanguage(),fechaValidacion));
-			htInscGuardia.put(ScsInscripcionTurnoBean.C_OBSERVACIONESVALIDACION,observacionesValidacion);
-	
-			
-			
-			
-			ScsInscripcionGuardiaAdm admInscripcionGuardia = new ScsInscripcionGuardiaAdm(usr);
-	        
-			
-			List vGuardiasTurno =  (List) admInscripcionGuardia.getGuardiasInscripcion(this.bean.getIdInstitucion(), 
-					this.bean.getIdTurno(),this.bean.getIdPersona(),null);
+		String[] clavesGuardia = {ScsInscripcionGuardiaBean.C_IDINSTITUCION,
+				ScsInscripcionGuardiaBean.C_IDPERSONA, 
+				ScsInscripcionGuardiaBean.C_IDTURNO};
+		String[] camposGuardia = {ScsInscripcionGuardiaBean.C_FECHAVALIDACION,ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION};
+		Hashtable htInscGuardia = new Hashtable();
+		htInscGuardia.put(ScsInscripcionGuardiaBean.C_IDINSTITUCION	,this.bean.getIdInstitucion());
+		htInscGuardia.put(ScsInscripcionGuardiaBean.C_IDPERSONA	,this.bean.getIdPersona());
+		htInscGuardia.put(ScsInscripcionGuardiaBean.C_IDTURNO,this.bean.getIdTurno());
 		
+		htInscGuardia.put(ScsInscripcionTurnoBean.C_FECHAVALIDACION,GstDate.getApplicationFormatDate(usr.getLanguage(),fechaValidacion));
+		htInscGuardia.put(ScsInscripcionTurnoBean.C_OBSERVACIONESVALIDACION,observacionesValidacion);
+
+		
+		
+		
+		ScsInscripcionGuardiaAdm admInscripcionGuardia = new ScsInscripcionGuardiaAdm(usr);
+        
+		
+		List vGuardiasTurno =  (List) admInscripcionGuardia.getGuardiasInscripcion(this.bean.getIdInstitucion(), 
+				this.bean.getIdTurno(),this.bean.getIdPersona(),null);
+	
 		
 		ScsInscripcionTurnoAdm scsInscripcionTurnoAdm = new ScsInscripcionTurnoAdm(usr);
 		InscripcionGuardia inscripcionGuardia = null;
@@ -1036,13 +1036,47 @@ public class InscripcionTurno
 		UtilidadesHash.set(inscripcionHash, ScsInscripcionTurnoBean.C_IDTURNO, idTurno);
 		UtilidadesHash.set(inscripcionHash, ScsInscripcionTurnoBean.C_IDPERSONA, idPersona);
 		UtilidadesHash.set(inscripcionHash, ScsInscripcionTurnoBean.C_FECHASOLICITUD, this.bean.getFechaSolicitud());
+		
+		
 		ScsInscripcionTurnoAdm inscripcionAdm = new ScsInscripcionTurnoAdm(usr);
 		Vector<ScsInscripcionTurnoBean> v = inscripcionAdm.selectByPKForUpdate(inscripcionHash);
+		String fechaBajaOld = null;
 		if (v != null && v.size() == 1) {
 			ScsInscripcionTurnoBean inscripcionBean = (ScsInscripcionTurnoBean) v.get(0);
+			fechaBajaOld = inscripcionBean.getFechaBaja();
 				inscripcionBean.setFechaBaja(GstDate.getApplicationFormatDate(usr.getLanguage(),fechaBaja));
 			if (! inscripcionAdm.update(inscripcionBean)) {
 				throw new ClsExceptions("Error al realizar la baja en el turno");
+			}
+		}
+		
+		ScsInscripcionGuardiaAdm admInscripcionGuardia = new ScsInscripcionGuardiaAdm(usr);
+		Hashtable<String, Object> inscripcionGuardiaHash = new Hashtable<String, Object>();
+		UtilidadesHash.set(inscripcionGuardiaHash, ScsInscripcionGuardiaBean.C_IDINSTITUCION, idInstitucion);
+		UtilidadesHash.set(inscripcionGuardiaHash, ScsInscripcionGuardiaBean.C_IDTURNO, idTurno);
+		UtilidadesHash.set(inscripcionGuardiaHash, ScsInscripcionGuardiaBean.C_IDPERSONA, idPersona);
+		UtilidadesHash.set(inscripcionGuardiaHash, ScsInscripcionGuardiaBean.C_FECHABAJA, fechaBajaOld);
+		
+		
+		
+		
+		Vector vGuardiasTurno =  admInscripcionGuardia.select(inscripcionGuardiaHash);
+		InscripcionGuardia inscripcionGuardia = null;
+		if(vGuardiasTurno!=null){
+			for(int x=0;x<vGuardiasTurno.size();x++)
+			{
+				ScsInscripcionGuardiaBean beanInscripcionGuardia = (ScsInscripcionGuardiaBean)vGuardiasTurno.get(x);
+				inscripcionGuardia = InscripcionGuardia.getInscripcionGuardia (
+						this.bean.getIdInstitucion(), 
+						this.bean.getIdTurno(), 
+						beanInscripcionGuardia.getIdGuardia(), 
+						this.bean.getIdPersona(), 
+						beanInscripcionGuardia.getFechaSuscripcion(), 
+						usr, false);
+				inscripcionGuardia.setBajas(null, null,fechaBaja,null);
+				inscripcionGuardia.modificarFechaBaja(usr);
+				
+				
 			}
 		}
 		
