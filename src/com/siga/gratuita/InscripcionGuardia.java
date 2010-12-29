@@ -504,11 +504,11 @@ public class InscripcionGuardia
 			if(fechaBaja!=null&&!fechaBaja.equals("")){
 				laHash.put(ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA,"sysdate");
 				laHash.put(ScsInscripcionGuardiaBean.C_FECHABAJA,GstDate.getApplicationFormatDate(usr.getLanguage(),fechaBaja));
-				String[] campos = {ScsInscripcionGuardiaBean.C_FECHAVALIDACION,ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION,ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA,ScsInscripcionGuardiaBean.C_FECHABAJA};
+				String[] campos = {ScsInscripcionGuardiaBean.C_FECHAVALIDACION,ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION,ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA,ScsInscripcionGuardiaBean.C_FECHABAJA,ScsInscripcionGuardiaBean.C_FECHAMODIFICACION,ScsInscripcionGuardiaBean.C_USUMODIFICACION};
 				insguardia.updateDirect(laHash,claves,campos);
 				
 			}else{
-				String[] campos = {ScsInscripcionGuardiaBean.C_FECHAVALIDACION,ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION};
+				String[] campos = {ScsInscripcionGuardiaBean.C_FECHAVALIDACION,ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION,ScsInscripcionGuardiaBean.C_FECHAMODIFICACION,ScsInscripcionGuardiaBean.C_USUMODIFICACION};
 				insguardia.updateDirect(laHash,claves,campos);
 			}
 			
@@ -555,7 +555,7 @@ public class InscripcionGuardia
 			
 				
 			}
-			String[] campos = {ScsInscripcionGuardiaBean.C_FECHAVALIDACION,ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION};
+			String[] campos = {ScsInscripcionGuardiaBean.C_FECHAVALIDACION,ScsInscripcionGuardiaBean.C_OBSERVACIONESVALIDACION,ScsInscripcionGuardiaBean.C_FECHAMODIFICACION,ScsInscripcionGuardiaBean.C_USUMODIFICACION};
 			ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
 			insguardia.updateDirect(laHash,claves,campos);
 			
@@ -604,7 +604,7 @@ public class InscripcionGuardia
 				
 			}
 	
-			String[] campos = {ScsInscripcionGuardiaBean.C_FECHABAJA};
+			String[] campos = {ScsInscripcionGuardiaBean.C_FECHABAJA,ScsInscripcionGuardiaBean.C_FECHAMODIFICACION,ScsInscripcionGuardiaBean.C_USUMODIFICACION};
 			ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
 			insguardia.updateDirect(laHash,claves,campos);
 			
@@ -707,7 +707,7 @@ public class InscripcionGuardia
 			denegarBajaGuardia(usr);
 		}
 		
-		String[] campos = {ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA,ScsInscripcionGuardiaBean.C_OBSERVACIONESBAJA};
+		String[] campos = {ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA,ScsInscripcionGuardiaBean.C_OBSERVACIONESBAJA,ScsInscripcionGuardiaBean.C_FECHAMODIFICACION,ScsInscripcionGuardiaBean.C_USUMODIFICACION};
 		ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
 		insguardia.updateDirect(laHash,claves,campos);
 	} 
@@ -765,7 +765,7 @@ public class InscripcionGuardia
 		}
 
 
-		String[] campos = {ScsInscripcionGuardiaBean.C_FECHABAJA,ScsInscripcionGuardiaBean.C_FECHADENEGACION,ScsInscripcionGuardiaBean.C_OBSERVACIONESDENEGACION,};
+		String[] campos = {ScsInscripcionGuardiaBean.C_FECHABAJA,ScsInscripcionGuardiaBean.C_FECHADENEGACION,ScsInscripcionGuardiaBean.C_OBSERVACIONESDENEGACION,ScsInscripcionGuardiaBean.C_FECHAMODIFICACION,ScsInscripcionGuardiaBean.C_USUMODIFICACION};
 		ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
 		insguardia.updateDirect(laHash,claves,campos);
 		
@@ -830,7 +830,7 @@ public class InscripcionGuardia
 		}
 
 
-		String[] campos = {ScsInscripcionGuardiaBean.C_FECHADENEGACION,ScsInscripcionGuardiaBean.C_OBSERVACIONESDENEGACION};
+		String[] campos = {ScsInscripcionGuardiaBean.C_FECHADENEGACION,ScsInscripcionGuardiaBean.C_OBSERVACIONESDENEGACION,ScsInscripcionGuardiaBean.C_FECHAMODIFICACION,ScsInscripcionGuardiaBean.C_USUMODIFICACION};
 		ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
 		insguardia.updateDirect(laHash,claves,campos);
 		
@@ -925,7 +925,7 @@ public class InscripcionGuardia
 			}
 
 	
-			String[] campos = {ScsInscripcionGuardiaBean.C_FECHABAJA,ScsInscripcionGuardiaBean.C_OBSERVACIONESVALBAJA};
+			String[] campos = {ScsInscripcionGuardiaBean.C_FECHABAJA,ScsInscripcionGuardiaBean.C_OBSERVACIONESVALBAJA,ScsInscripcionGuardiaBean.C_FECHAMODIFICACION,ScsInscripcionGuardiaBean.C_USUMODIFICACION};
 			ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
 			insguardia.updateDirect(laHash,claves,campos);
 			
