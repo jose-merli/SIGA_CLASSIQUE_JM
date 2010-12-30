@@ -412,7 +412,7 @@ public class BusquedaClientesFiltrosAdm {
 				}
 			}
 
-			List<LetradoGuardia> colaLetradosTurnoList = InscripcionTurno.getColaTurno(Integer.valueOf(idInstitucion), Integer.valueOf(idTurno), fecha,true,usrbean);
+			List<LetradoGuardia> colaLetradosTurnoList = InscripcionTurno.getColaTurno(Integer.valueOf(idInstitucion), Integer.valueOf(idTurno), fecha,false,usrbean);
 			if(colaLetradosTurnoList != null && colaLetradosTurnoList.size() > 0) {	
 				int i = 0;
 				for (LetradoGuardia letradoTurno :colaLetradosTurnoList){
@@ -461,7 +461,7 @@ public class BusquedaClientesFiltrosAdm {
 				LetradoGuardia letradoTurno = (LetradoGuardia)compensacionesSaltos.get(i);
 				Long idPersonaSC = letradoTurno.getIdPersona();
 				String salto = letradoTurno.getSaltoCompensacion();
-				if (idPersona.toString().equals(idPersonaSC)){
+				if (idPersona.toString().equals(idPersonaSC.toString())){
 					if (salto != null && salto.trim().equals(ClsConstants.SALTOS)) {
 						idSaltoTurno = letradoTurno.getIdSaltoCompensacion();
 						compensacionesSaltos.remove(i);
