@@ -703,7 +703,8 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 		sql.append("   from scs_saltoscompensaciones s ");
 		sql.append("  where s.idinstitucion = " + idInstitucion);
 		sql.append("    and s.idturno = " + idTurno);
-		sql.append("    and s.idguardia = " + idGuardia);
+		if(idGuardia!=null)
+			sql.append("    and s.idguardia = " + idGuardia);
 		sql.append("    and s.saltoocompensacion = '" + tipo + "' ");
 		sql.append("    and s.fechacumplimiento is null ");
 		sql.append("  order by s.fecha ");
