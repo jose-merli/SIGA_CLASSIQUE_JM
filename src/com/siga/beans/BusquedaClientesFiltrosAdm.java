@@ -269,6 +269,7 @@ public class BusquedaClientesFiltrosAdm {
 	
 	
 	public Vector buscaLetradosDelTurno(String idInstitucion, String idTurno, String fecha) throws ClsExceptions {
+		//return buscaInternaLetradosDelTurnoNew(idInstitucion, idTurno, fecha, 0);
 		return buscaLetradosDelTurno(idInstitucion, idTurno, fecha, 0);
 	}
 	
@@ -378,7 +379,7 @@ public class BusquedaClientesFiltrosAdm {
 		ScsSaltosCompensacionesAdm saltocompAdm = new ScsSaltosCompensacionesAdm(usrbean);
 		try{
 			//busco las compensaciones
-			Vector<LetradoGuardia> letradosCompensacionesVector = saltocompAdm.getLetradosSaltosCompensacionesTurno(idInstitucion, idTurno);
+			Vector<LetradoGuardia> letradosCompensacionesVector = saltocompAdm.getLetradosSaltosCompensacionesTurno(idInstitucion, idTurno,fecha);
 			
 			if (letradosCompensacionesVector != null && letradosCompensacionesVector.size()>0) {
 				for (LetradoGuardia letradoTurno :letradosCompensacionesVector){
@@ -826,19 +827,35 @@ public class BusquedaClientesFiltrosAdm {
 	
 	
 	
-	/*protected Vector buscaInternaLetradosDelTurnoNew(String idInstitucion, String idTurno, String fecha, int difRow)throws ClsExceptions{
+	protected Vector buscaInternaLetradosDelTurnoNew(String idInstitucion, String idTurno, String fecha, int difRow)throws ClsExceptions{
 		List<LetradoGuardia> letradosColaTurnoList = InscripcionTurno.getColaTurno(Integer.valueOf(idInstitucion), Integer.valueOf(idTurno), fecha, false, usrbean);
 		Vector letradosColaTurnoVector = new Vector();
 		for(LetradoGuardia letradoTurno:letradosColaTurnoList){
 			Row row = new Row();
 			Hashtable htRow = new Hashtable();
 			htRow.put("N", difRow);
-			htRow.put("letradoTurno", letradoTurno);
-			letradosColaTurnoVector.add(htRow);
+			htRow.put(CenPersonaBean.C_NIFCIF, letradoTurno.getPersona().getNIFCIF());
+			htRow.put(CenColegiadoBean.C_NCOLEGIADO, letradoTurno.getPersona().getColegiado().getNColegiado());
+			htRow.put(CenPersonaBean.C_APELLIDOS1, letradoTurno.getPersona().getApellido1());
+			htRow.put(CenPersonaBean.C_APELLIDOS2, letradoTurno.getPersona().getApellido2());
+			htRow.put(CenPersonaBean.C_NOMBRE, letradoTurno.getPersona().getNombre());
+			htRow.put(CenPersonaBean.C_IDPERSONA, letradoTurno.getPersona().getIdPersona());
+			htRow.put("TURNO", "");
+			htRow.put("GUARDIA", "");
+			htRow.put("POSICION", "");
+			htRow.put("SALTO", "");
+			htRow.put("IDTU", "");
+			htRow.put("IDGU", "");
+			htRow.put("GUARDIA_SUSTITUCION", "");
+			htRow.put("COMPENSACION", "");
+			htRow.put("TELEFONO", "");
+			row.setRow(htRow);
+			
+			letradosColaTurnoVector.add(row);
 		}
 		
 		return letradosColaTurnoVector;
-	}	*/
+	}	
 	
 	
 	/**

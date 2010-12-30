@@ -827,7 +827,7 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public Vector<LetradoGuardia> getLetradosSaltosCompensacionesTurno(String idInstitucion, String idTurno) throws ClsExceptions
+	public Vector<LetradoGuardia> getLetradosSaltosCompensacionesTurno(String idInstitucion, String idTurno,String fecha) throws ClsExceptions
 	{
 		// Controles
 		CenBajasTemporalesAdm btAdm = new CenBajasTemporalesAdm(this.usrbean);
@@ -874,7 +874,10 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 
 					idPersona = (String) htFila.get(ScsSaltosCompensacionesBean.C_IDPERSONA);
 					inscripcionTurno = inscripcionAdm.getInscripcionActiva(idInstitucion.toString(),
-							idTurno.toString(), idPersona, "sysdate");
+							idTurno.toString(), idPersona, fecha);
+					if(inscripcionTurno==null)
+						continue;
+					
 					mBajasTemporales = btAdm.getDiasBajaTemporal(new Long(idPersona), new Integer(idInstitucion));
 					letradoSeleccionado = new LetradoGuardia(inscripcionTurno, mBajasTemporales);
 					letradoSeleccionado.setSaltoCompensacion(UtilidadesHash.getString(htFila,
