@@ -1122,6 +1122,7 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 			"       Ins.Idturno, " +
 			" TO_CHAR(TRUNC(Ins.fechavalidacion),'DD/MM/YYYY') AS fechavalidacion, "+
 		    "   TO_CHAR(trunc(Ins.fechabaja),'DD/MM/YYYY') AS fechabaja, "+
+		    "       Per.Nifcif,"+
 			"       Per.Idpersona,"+
 			"       Per.Nombre, " +
 			"       Per.Apellidos1, " +
@@ -1172,6 +1173,7 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
             		CenPersonaBean personaBean = new CenPersonaBean(
             				inscripcionBean.getIdPersona(),(String)htFila.get(CenPersonaBean.C_NOMBRE),(String)htFila.get(CenPersonaBean.C_APELLIDOS1),
             				(String)htFila.get(CenPersonaBean.C_APELLIDOS2),(String)htFila.get(CenColegiadoBean.C_NCOLEGIADO));
+            		personaBean.setNIFCIF(UtilidadesHash.getString(htFila, CenPersonaBean.C_NIFCIF));
             		inscripcionBean.setPersona(personaBean);
             		datos.add(inscripcionBean);
             	}
@@ -1382,7 +1384,7 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 			"       Ins.Idinstitucion,"+
 			"       Ins.Idturno, " +
 			"       Per.Idpersona, " +
-			"       Ins.fechasuscripcion As Fechasuscripcion, "+
+			"       Ins.fechasolicitud, "+
 			"       TO_CHAR(TRUNC(Ins.fechavalidacion),'DD/MM/YYYY') As Fechavalidacion, "+
 		    "       TO_CHAR(trunc(Ins.fechabaja),'DD/MM/YYYY') As Fechabaja, "+
 		    
@@ -1399,8 +1401,8 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 			"       Cen_Persona            Per, " +
 			"       Scs_Inscripcionturno   Ins " +
 			" Where Col.Idpersona = Per.Idpersona " +
-			"   And Ins.Idinstitucion = Gua.Idinstitucion " +
-			"   And Ins.Idturno = Gua.Idturno " +
+			"   And Ins.Idinstitucion = Tur.Idinstitucion " +
+			"   And Ins.Idturno = Tur.Idturno " +
 			"   And Ins.Idinstitucion = Col.Idinstitucion " +
 			"   And Ins.Idpersona = Col.Idpersona ");
 	}
