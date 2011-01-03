@@ -17,6 +17,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.InscripcionGuardia;
 import com.siga.gratuita.InscripcionTurno;
 import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
 
@@ -105,8 +106,39 @@ public class BusquedaClientesFiltrosAdm {
 	 * @throws ClsExceptions Excepcion interna
 	 */
 	public Vector buscaLetradosMismaGuardia(String idInstitucion, String idTurno, String idGuardia, String fecha) throws ClsExceptions{
-		return buscaInternaLetradosMismaGuardia(idInstitucion, idTurno, idGuardia, fecha, true, 0);
+		return buscaInternaLetradosDeLaGuardia(idInstitucion, idTurno, idGuardia, fecha, 0);
 	}
+	protected Vector buscaInternaLetradosDeLaGuardia(String idInstitucion, String idTurno, String idGuardia,String fecha, int difRow)throws ClsExceptions{
+		List<LetradoGuardia> letradosColaGuardiaList = InscripcionGuardia.getColaGuardia(Integer.valueOf(idInstitucion), Integer.valueOf(idTurno),Integer.valueOf(idGuardia), fecha, fecha, usrbean);
+		Vector letradosColaGuardiaVector = new Vector();
+		
+		for(LetradoGuardia letradoGuardia:letradosColaGuardiaList){
+			Row row = new Row();
+			Hashtable htRow = new Hashtable();
+			htRow.put("N", difRow);
+			htRow.put(CenPersonaBean.C_NIFCIF, letradoGuardia.getPersona().getNIFCIF());
+			htRow.put(CenColegiadoBean.C_NCOLEGIADO, letradoGuardia.getPersona().getColegiado().getNColegiado());
+			htRow.put(CenPersonaBean.C_APELLIDOS1, letradoGuardia.getPersona().getApellido1());
+			htRow.put(CenPersonaBean.C_APELLIDOS2, letradoGuardia.getPersona().getApellido2());
+			htRow.put(CenPersonaBean.C_NOMBRE, letradoGuardia.getPersona().getNombre());
+			htRow.put(CenPersonaBean.C_IDPERSONA, letradoGuardia.getPersona().getIdPersona());
+			Hashtable actualizaDatos = actualizarDatosBusqueda(letradoGuardia.getPersona().getIdPersona().toString(), idInstitucion, idTurno, idGuardia);
+			htRow.put("TURNO", (String)actualizaDatos.get("TURNO"));
+			htRow.put("GUARDIA", (String)actualizaDatos.get("GUARDIA"));
+			htRow.put("POSICION", (String)actualizaDatos.get("POSICION"));
+			htRow.put("SALTO", "");
+			htRow.put("IDTU", "");
+			htRow.put("IDGU", "");
+			htRow.put("GUARDIA_SUSTITUCION", "");
+			htRow.put("COMPENSACION", "");
+			htRow.put("TELEFONO", (String)actualizaDatos.get("TELEFONO"));
+			row.setRow(htRow);
+			
+			letradosColaGuardiaVector.add(row);
+		}
+		
+		return letradosColaGuardiaVector;
+	}	
 	
 	
 	/**
@@ -206,7 +238,7 @@ public class BusquedaClientesFiltrosAdm {
 	 * @return Vector de Rows con los resultados
 	 * @throws ClsExceptions Excepcion interna
 	 */
-	protected Vector buscaLetradosDelTurno(String idInstitucion, String idTurno,  String fecha,int difRow)throws ClsExceptions{
+	protected Vector buscaLetradosDelTurno(String idInstitucion, String idTurno,  String fecha,int difRow,int idFiltro)throws ClsExceptions{
 
 		////////////////////////
 		// Cambio ca-sjcs-004
@@ -268,9 +300,9 @@ public class BusquedaClientesFiltrosAdm {
 	}
 	
 	
-	public Vector buscaLetradosDelTurno(String idInstitucion, String idTurno, String fecha) throws ClsExceptions {
-		//return buscaInternaLetradosDelTurnoNew(idInstitucion, idTurno, fecha, 0);
-		return buscaLetradosDelTurno(idInstitucion, idTurno, fecha, 0);
+	public Vector buscaLetradosDelTurno(String idInstitucion, String idTurno, String fecha,int idFiltro) throws ClsExceptions {
+		return buscaInternaLetradosDelTurno(idInstitucion, idTurno, fecha, 0,idFiltro);
+		//return buscaLetradosDelTurno(idInstitucion, idTurno, fecha, 0);
 	}
 	
 	/**
@@ -827,7 +859,7 @@ public class BusquedaClientesFiltrosAdm {
 	
 	
 	
-	protected Vector buscaInternaLetradosDelTurnoNew(String idInstitucion, String idTurno, String fecha, int difRow)throws ClsExceptions{
+	protected Vector buscaInternaLetradosDelTurno(String idInstitucion, String idTurno, String fecha, int difRow,int idFiltro)throws ClsExceptions{
 		List<LetradoGuardia> letradosColaTurnoList = InscripcionTurno.getColaTurno(Integer.valueOf(idInstitucion), Integer.valueOf(idTurno), fecha, false, usrbean);
 		Vector letradosColaTurnoVector = new Vector();
 		for(LetradoGuardia letradoTurno:letradosColaTurnoList){
@@ -840,7 +872,14 @@ public class BusquedaClientesFiltrosAdm {
 			htRow.put(CenPersonaBean.C_APELLIDOS2, letradoTurno.getPersona().getApellido2());
 			htRow.put(CenPersonaBean.C_NOMBRE, letradoTurno.getPersona().getNombre());
 			htRow.put(CenPersonaBean.C_IDPERSONA, letradoTurno.getPersona().getIdPersona());
-			htRow.put("TURNO", "");
+			if(idFiltro==3){
+				Hashtable actualizaDatos = actualizarDatosBusqueda(letradoTurno.getPersona().getIdPersona().toString(), idInstitucion, idTurno);
+				htRow.put("TURNO", (String)actualizaDatos.get("TURNO"));
+				htRow.put("TELEFONO", (String)actualizaDatos.get("TELEFONO"));
+			}else{
+				htRow.put("TURNO","");
+				htRow.put("TELEFONO","");
+			}
 			htRow.put("GUARDIA", "");
 			htRow.put("POSICION", "");
 			htRow.put("SALTO", "");
@@ -848,7 +887,11 @@ public class BusquedaClientesFiltrosAdm {
 			htRow.put("IDGU", "");
 			htRow.put("GUARDIA_SUSTITUCION", "");
 			htRow.put("COMPENSACION", "");
-			htRow.put("TELEFONO", "");
+			
+			
+			
+			
+
 			row.setRow(htRow);
 			
 			letradosColaTurnoVector.add(row);
@@ -1231,8 +1274,123 @@ public class BusquedaClientesFiltrosAdm {
 		}
 			
 	}
+	public Hashtable actualizarDatosBusqueda (String idPersona, String idInstitucion, String idTurno) throws ClsExceptions {
+		   Hashtable datos=new Hashtable();
+	       try {
+	            RowsContainer rc = new RowsContainer(); 
+	            StringBuffer sql = new StringBuffer();
+	            sql.append(" SELECT      DISTINCT     T.NOMBRE TURNO, ");
+	            sql.append(" (SELECT TELEFONO1 ");
+	            sql.append(" FROM CEN_DIRECCION_TIPODIRECCION T, CEN_DIRECCIONES PE ");
+	            sql.append(" WHERE PE.IDINSTITUCION = T.IDINSTITUCION ");
+	            sql.append(" AND PE.IDPERSONA = T.IDPERSONA ");
+	            sql.append(" AND PE.IDDIRECCION = T.IDDIRECCION ");
+	            sql.append(" AND PE.IDINSTITUCION = ");
+	            sql.append(idInstitucion);
+	            sql.append(" AND PE.IDPERSONA = G.IDPERSONA ");
+	            sql.append(" AND T.IDTIPODIRECCION =  ");
+	            sql.append(ClsConstants.TIPO_DIRECCION_GUARDIA);
+	            sql.append(" AND PE.FECHABAJA IS NULL ");
+	            sql.append(" AND ROWNUM = 1) TELEFONO ");
+	            sql.append(" FROM SCS_INSCRIPCIONTURNO G, ");
 
+	            sql.append(" SCS_TURNO T ");
+	            sql.append(" WHERE G.IDINSTITUCION = ");
+	            sql.append(idInstitucion);
+	            sql.append(" AND G.IDTURNO = ");
+	            sql.append(idTurno);
+	            sql.append(" AND G.IDINSTITUCION = T.IDINSTITUCION ");
+	            sql.append(" AND G.IDTURNO = T.IDTURNO ");
+	            
+	            sql.append(" AND G.IDPERSONA =  ");
+	            sql.append(idPersona);
 
+	            
+	            
+	            
+	            
+	            
+	           
+														
+	            // RGG cambio visibilidad
+	            Vector datosVector = this.find(sql.toString());
+	            if(datosVector!=null && datosVector.size()>0)
+	            	datos = ((Row) datosVector.get(0)).getRow();
+	            else
+	            	throw new ClsExceptions("Error al obtener la informacion de actualizarDatosBusqueda: ");
+	            
+	       }
+	       catch (ClsExceptions e1) {
+	       	//throw new ClsExceptions (e, "Error al obtener la informacion de direcciones: "+e.getLocalizedMessage());
+	       	throw new ClsExceptions("Error al obtener la informacion de actualizarDatosBusqueda: "+e1.getLocalizedMessage());
+	       }
+	       return datos;                        
+	    }
+
+	public Hashtable actualizarDatosBusqueda (String idPersona, String idInstitucion, String idTurno,String idGuardia) throws ClsExceptions {
+		   Hashtable datos=new Hashtable();
+	       try {
+	            RowsContainer rc = new RowsContainer(); 
+	            StringBuffer sql = new StringBuffer();
+	            sql.append(" SELECT      DISTINCT     T.NOMBRE TURNO, ");
+	            sql.append(" GT.NOMBRE GUARDIA, ");
+	            sql.append(" (SELECT COUNT(*) FROM SCS_CABECERAGUARDIAS CG ");
+	            sql.append(" WHERE CG.IDINSTITUCION = G.IDINSTITUCION ");
+	            sql.append(" AND CG.IDPERSONA = G.IDPERSONA ");
+	            sql.append(" AND CG.IDTURNO = G.IDTURNO ");
+	            sql.append(" AND CG.IDGUARDIA = G.IDGUARDIA ");
+	            sql.append(" AND CG.FECHA_FIN >= SYSDATE) POSICION, ");
+
+	            sql.append(" (SELECT TELEFONO1 ");
+	            sql.append(" FROM CEN_DIRECCION_TIPODIRECCION T, CEN_DIRECCIONES PE ");
+	            sql.append(" WHERE PE.IDINSTITUCION = T.IDINSTITUCION ");
+	            sql.append(" AND PE.IDPERSONA = T.IDPERSONA ");
+	            sql.append(" AND PE.IDDIRECCION = T.IDDIRECCION ");
+	            sql.append(" AND PE.IDINSTITUCION = ");
+	            sql.append(idInstitucion);
+	            sql.append(" AND PE.IDPERSONA = G.IDPERSONA ");
+	            sql.append(" AND T.IDTIPODIRECCION =  ");
+	            sql.append(ClsConstants.TIPO_DIRECCION_GUARDIA);
+	            sql.append(" AND PE.FECHABAJA IS NULL ");
+	            sql.append(" AND ROWNUM = 1) TELEFONO ");
+	            sql.append(" FROM SCS_INSCRIPCIONGUARDIA G, ");
+
+	            sql.append(" SCS_TURNO T,  SCS_GUARDIASTURNO GT ");
+	            sql.append(" WHERE G.IDINSTITUCION = ");
+	            sql.append(idInstitucion);
+	            sql.append(" AND G.IDTURNO = ");
+	            sql.append(idTurno);
+	            sql.append(" AND G.IDGUARDIA = ");
+	            sql.append(idGuardia);
+	            sql.append(" AND G.IDINSTITUCION = GT.IDINSTITUCION ");
+	            sql.append(" AND G.IDINSTITUCION = T.IDINSTITUCION ");
+	            sql.append(" AND G.IDTURNO = T.IDTURNO ");
+	            sql.append(" AND G.IDTURNO = GT.IDTURNO ");
+	            sql.append(" AND G.IDGUARDIA = GT.IDGUARDIA ");
+	            sql.append(" AND G.IDPERSONA =  ");
+	            sql.append(idPersona);
+
+	            
+	            
+	            
+	            
+	            
+	           
+														
+	            // RGG cambio visibilidad
+	            Vector datosVector = this.find(sql.toString());
+	            if(datosVector!=null && datosVector.size()>0)
+	            	datos = ((Row) datosVector.get(0)).getRow();
+	            else
+	            	throw new ClsExceptions("Error al obtener la informacion de actualizarDatosBusqueda: ");
+	            
+	       }
+	       catch (ClsExceptions e1) {
+	       	//throw new ClsExceptions (e, "Error al obtener la informacion de direcciones: "+e.getLocalizedMessage());
+	       	throw new ClsExceptions("Error al obtener la informacion de actualizarDatosBusqueda: "+e1.getLocalizedMessage());
+	       }
+	       return datos;                        
+	    }
 	
 	
 }

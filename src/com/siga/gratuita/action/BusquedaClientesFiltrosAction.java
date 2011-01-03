@@ -173,9 +173,15 @@ public class BusquedaClientesFiltrosAction extends MasterAction {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			String fechaFomateada = null;
 			switch(idFiltro){
 				case 1://Letrados de la Misma Guardia
-					resultado=adm.buscaLetradosMismaGuardia(idInstitucion, idTurno, idGuardia, fecha);
+				
+					if(fecha==null ||fecha.equals(""))
+						fechaFomateada = "sysdate";
+					else
+						fechaFomateada = GstDate.getFormatedDateShort("", fecha);
+					resultado=adm.buscaLetradosMismaGuardia(idInstitucion, idTurno, idGuardia, fechaFomateada);
 					break;
 					
 				case 2://Letrados de Todas las Guardias del Mismo Turno
@@ -184,7 +190,12 @@ public class BusquedaClientesFiltrosAction extends MasterAction {
 					break;
 					
 				case 3:case 6://Letrados del Turno
-					resultado=adm.buscaLetradosDelTurno(idInstitucion, idTurno,  fecha);
+					
+					if(fecha==null ||fecha.equals(""))
+						fechaFomateada = "sysdate";
+					else
+						fechaFomateada = GstDate.getFormatedDateShort("", fecha);
+					resultado=adm.buscaLetradosDelTurno(idInstitucion, idTurno,  fechaFomateada,idFiltro);
 					break;
 					
 				case 4:case 7://Letrados de Todos los Turnos

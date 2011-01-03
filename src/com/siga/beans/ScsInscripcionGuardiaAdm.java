@@ -1127,6 +1127,7 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 				.get(CenPersonaBean.C_NOMBRE), (String) hash.get(CenPersonaBean.C_APELLIDOS1),
 				(String) hash.get(CenPersonaBean.C_APELLIDOS2), (String) hash
 						.get(ScsOrdenacionColasBean.C_NUMEROCOLEGIADO));
+		personaBean.setNIFCIF(UtilidadesHash.getString(hash, CenPersonaBean.C_NIFCIF));
 		inscripcionBean.setPersona(personaBean);
 		return inscripcionBean;
 	}
@@ -1197,6 +1198,7 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 			"       TO_CHAR(TRUNC(Ins.fechavalidacion),'DD/MM/YYYY') As Fechavalidacion, "+
 		    "       TO_CHAR(trunc(Ins.fechabaja),'DD/MM/YYYY') As Fechabaja, "+
 		    
+		    "       Per.Nifcif,"+
 			"       Per.Nombre, " +
 			"       Per.Apellidos1, " +
 			"       Decode(Per.Apellidos2, Null, '', ' ' || Per.Apellidos2) apellidos2, " +
