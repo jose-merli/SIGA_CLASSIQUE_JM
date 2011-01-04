@@ -1032,7 +1032,8 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 		if (idguardia == null || idguardia.equals(""))				return null;
 		if (idpersona == null || idpersona.equals(""))				return null;
 		if (fecha == null || fecha.equals(""))						return null;
-		
+		if(!fecha.equals("sysdate"))
+			fecha = "'"+fecha+"'";
 		String consulta = 
 			"Select " +
 			getBaseConsultaInscripciones() +
@@ -1045,7 +1046,8 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 		    "   And Ins.Fechavalidacion Is Not Null " +
 			"   And Trunc(Ins.Fechavalidacion) <= nvl("+fecha+",  Ins.Fechavalidacion) " +
 			"   And (Ins.Fechabaja Is Null Or " +
-			"        Trunc(Ins.Fechabaja) > nvl("+fecha+", '01/01/1900')) ";
+			"        Trunc(Ins.Fechabaja) > nvl("+fecha+", '01/01/1900')) "+
+			"    and Ins.idpersona ="+idpersona;
 		
 		Vector<ScsInscripcionGuardiaBean> datos = null;
 		try {
@@ -1057,7 +1059,8 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 					Hashtable<String, Object> htFila = fila.getRow();
 					datos.add(getInscripcionDesdeHashCola(htFila));
 				}
-			}
+			}else
+				return null;
 		} catch (Exception e) {
 			throw new ClsExceptions(e, "Error al ejecutar el 'select' en B.D.");
 		}

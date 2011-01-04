@@ -1080,7 +1080,7 @@ public class CalendarioSJCS
 
 				// obteniendo las compensaciones. Se obtienen dentro de este
 				// bucle, ya que si hay incompatibilidades se añade una compensacion
-				alCompensaciones = scAdm.getCompensaciones(this.idInstitucion, this.idTurno, this.idGuardia);
+				alCompensaciones = scAdm.getCompensaciones(this.idInstitucion, this.idTurno, this.idGuardia,(String) diasGuardia.get(0));
 				log.addLog(new String[] {"Compensaciones", alCompensaciones.toString()});
 				log.addLog(new String[] {"Saltos", hmPersonasConSaltos.toString()});
 

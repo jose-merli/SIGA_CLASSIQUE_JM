@@ -777,7 +777,7 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public ArrayList<LetradoGuardia> getCompensaciones(Integer idInstitucion, Integer idTurno, Integer idGuardia) throws ClsExceptions
+	public ArrayList<LetradoGuardia> getCompensaciones(Integer idInstitucion, Integer idTurno, Integer idGuardia,String fecha) throws ClsExceptions
 	{
 		// Controles
 		ScsInscripcionGuardiaAdm inscripcionAdm = new ScsInscripcionGuardiaAdm(this.usrbean);
@@ -807,8 +807,11 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 					htFila = ((Row) rc.get(i)).getRow();
 	
 					idPersona = (String) htFila.get(ScsSaltosCompensacionesBean.C_IDPERSONA);
+					
 					inscripcionGuardia = inscripcionAdm.getInscripcionActiva(idInstitucion.toString(), idTurno.toString(),
-							idGuardia.toString(), idPersona, "sysdate");
+							idGuardia.toString(), idPersona, fecha);
+					if(inscripcionGuardia == null)
+						continue;
 					mBajasTemporales = btAdm.getDiasBajaTemporal(new Long(idPersona), idInstitucion);
 					letradoSeleccionado = new LetradoGuardia(inscripcionGuardia, mBajasTemporales);
 					letradoSeleccionado.setSaltoCompensacion("C");
