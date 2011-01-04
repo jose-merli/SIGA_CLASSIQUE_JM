@@ -386,7 +386,8 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 			consulta  = "SELECT ";
 			consulta += " saltos.*,";
 			consulta += " perso."+CenPersonaBean.C_NOMBRE+" || ' ' || perso."+CenPersonaBean.C_APELLIDOS1+" || ' ' || perso."+CenPersonaBean.C_APELLIDOS2+" AS LETRADO,";
-			consulta += " coleg."+CenColegiadoBean.C_NCOLEGIADO+" AS NUMERO,";
+//			consulta += " coleg."+CenColegiadoBean.C_NCOLEGIADO+" AS NUMERO,";
+			consulta += " DECODE(coleg.COMUNITARIO,'1',coleg.NCOMUNITARIO, coleg.NCOLEGIADO) AS NUMERO, ";
 			consulta += " turno."+ScsTurnoBean.C_NOMBRE+" AS NOMBRETURNO,";
 			consulta += " guardia."+ScsGuardiasTurnoBean.C_NOMBRE+" AS NOMBREGUARDIA ";
 			consulta += " FROM "+ScsSaltosCompensacionesBean.T_NOMBRETABLA+" saltos, ";
