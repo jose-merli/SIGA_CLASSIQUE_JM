@@ -257,7 +257,7 @@
 				<td width='22%'>
 					<input id="buscarLetrado" type="text" class="box" size="8" value="<%=literalNColegiado%>"
 						onfocus="limpiarTexto(this, 1);" onblur="limpiarTexto(this, 0);buscarLetradoEnColaLetrado();">
-					<img src="/SIGA/html/imagenes/bconsultar_off.gif"
+					<img src="<%=app%>/html/imagenes/bconsultar_off.gif"
 						style="cursor: hand;" onClick="buscarLetradoEnColaLetrado();" alt="<%=buscarLetrado%>">
 				</td>
 				<%
@@ -411,7 +411,7 @@
 				</td>
 			
 				<td align="center">
-					<img src="/SIGA/html/imagenes/bcambiarusuario.gif" name="bcambiarusuario" style="cursor:hand;" onClick="fijarUltimoLetrado(<%=i + 1%>)" alt="<%=literalFijarUltimoLetrado%>">
+					<img src="<%=app%>/html/imagenes/bcambiarusuario.gif" name="bcambiarusuario" style="cursor:hand;" onClick="fijarUltimoLetrado(<%=i + 1%>)" alt="<%=literalFijarUltimoLetrado%>">
 				</td>
 			</tr>		
 			<!-- FIN REGISTRO -->

@@ -1017,7 +1017,7 @@ caracterParam[0] = tipoCliente;
 			
 			
 					<% if (!bOcultarHistorico) { %>
-							var datos = showModalDialog("/SIGA/html/jsp/general/ventanaMotivoHistorico.jsp","","dialogHeight:230px;dialogWidth:520px;help:no;scroll:no;status:no;");
+							var datos = showModalDialog(app+"/html/jsp/general/ventanaMotivoHistorico.jsp","","dialogHeight:230px;dialogWidth:520px;help:no;scroll:no;status:no;");
 					<% } else { %>
 							var datos = new Array();
 							datos[0] = 1;

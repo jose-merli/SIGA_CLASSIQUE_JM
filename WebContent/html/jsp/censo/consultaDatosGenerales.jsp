@@ -876,9 +876,9 @@ function str_replace(search, replace, subject) {
 	
 	<td class="titulitosDatos">
 	
-	<img src="/SIGA/html/imagenes/blopd_disable.gif" align="middle" border="0" >
+	<img src="<%=app%>/html/imagenes/blopd_disable.gif" align="middle" border="0" >
 	<siga:Idioma key="general.boton.lopd"/>
-	<img src="/SIGA/html/imagenes/blopd_disable.gif" align="middle" border="0" >
+	<img src="<%=app%>/html/imagenes/blopd_disable.gif" align="middle" border="0" >
 	</td>
 	</tr>
 	<% }%>
@@ -1413,7 +1413,7 @@ function str_replace(search, replace, subject) {
 				if (validarFormulario()	&&	TestFileType(document.forms[0].foto.value, ['GIF', 'JPG', 'PNG', 'JPEG'])) {
 				<%	if (!formulario.getAccion().equals("nuevo")) { %>
 					<% if (!bOcultarHistorico) { %>
-							var datos = showModalDialog("/SIGA/html/jsp/general/ventanaMotivoHistorico.jsp","","dialogHeight:230px;dialogWidth:520px;help:no;scroll:no;status:no;");
+							var datos = showModalDialog(app+"/html/jsp/general/ventanaMotivoHistorico.jsp","","dialogHeight:230px;dialogWidth:520px;help:no;scroll:no;status:no;");
 						<% } else { %>
 								var datos = new Array();
 								datos[0] = 1;
