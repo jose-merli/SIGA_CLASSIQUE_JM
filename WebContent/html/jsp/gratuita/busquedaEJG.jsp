@@ -455,28 +455,45 @@
 	<siga:ConjCampos leyenda="gratuita.busquedaEJG.literal.defensa"  desplegable="true" oculto="true">
 		<table border="0" align="center" width="100%">
 			<tr>
-				<td class="labelText" colspan="1">
-					<siga:Idioma key="gratuita.personaJG.literal.calidad" /></td>
-				<td colspan="1">
-					<siga:ComboBD nombre="calidad" tipo="ComboCalidades" ancho="140" clase="boxCombo" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=calidadSel%>" hijo="t" readonly="false"/>
+				<td class="labelText">
+					<siga:Idioma key="gratuita.personaJG.literal.calidad" />
 				</td>
 				<td class="labelText">
-					<siga:Idioma key="gratuita.mantAsistencias.literal.juzgado" /></td>
+					<siga:ComboBD nombre="calidad" tipo="ComboCalidades" ancho="130" clase="boxCombo" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=calidadSel%>" hijo="t" readonly="false"/>
+				</td>
+				<td>&nbsp</td>
 				<td class="labelText">
+					<siga:Idioma key="gratuita.operarEJG.literal.renuncia" />
+				</td>
+				<td class="labelText">
+					<siga:ComboBD nombre="idRenuncia" tipo="comboRenuncia" ancho="130" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=renunciaSel%>"  readonly="false"/>
+					&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+					&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+				</td>
+			</tr>
+			<tr>
+				<td class="labelText">
+					<siga:Idioma key="gratuita.mantAsistencias.literal.juzgado" />
+				</td>
+				<td class="labelText" colspan="2">
 					<input type="text" name="codigoExtJuzgado" class="box" size="7" style="margin-top: 3px;" maxlength="10" onBlur="obtenerJuzgado();" />
 				</td>
-				<td class="labelText">
+				<td class="labelText" colspan="2">
 					<siga:ComboBD nombre="juzgado" tipo="comboJuzgados" ancho="500" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" hijo="t" elementoSel="<%=juzgado%>" parametro="<%=datos%>" />
 				</td>
 			</tr>
 			<tr>
-				<td class="labelText" colspan="1">
-					<siga:Idioma key="gratuita.operarEJG.literal.renuncia" />
+				<td class="labelText">
+					<siga:Idioma key="informes.cartaAsistencia.procedimiento" />
 				</td>
-				<td colspan="8">
-				 <siga:ComboBD nombre="idRenuncia" tipo="comboRenuncia" ancho="140" clase="boxCombo" filasMostrar="1"  seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=renunciaSel%>"  readonly="false"/>
+				<td class="labelText">
+					<html:text name="<%=formulario%>" property="procedimiento" size="14" maxlength="100" styleClass="box" value="<%=procedimiento%>"></html:text>
 				</td>
-				<td>
+				<td class="labelText">
+					<siga:Idioma key="informes.cartaAsistencia.asunto" />
+				</td>
+				<td class="labelText" colspan="2">
+					<html:text name="<%=formulario%>" property="asunto" size="100" maxlength="100" styleClass="box" value="<%=asunto%>"></html:text>
 				</td>
 			</tr>
 		</table>
