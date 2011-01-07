@@ -580,38 +580,42 @@ public class InformesGenericosAction extends MasterAction {
 //			ReadProperties rp = new ReadProperties("SIGA.properties");	
 			String rutaPlantilla = rp.returnProperty("informes.directorioFisicoPlantillaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
 			String rutaAlmacen = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
+			Vector datosconsulta=new Vector();
+			ScsEJGAdm ejgAdm= new ScsEJGAdm(usr);
+			String idioma=usr.getLanguageInstitucion();
+			String numero="";
+			String idTipoEJG="";					
+			Hashtable datoscomunes=new Hashtable();
+			String codigoext="";
+			String idintitucionactual=""+this.getIDInstitucion(request);
+			String anio="";
+			Vector vSalida = null;	
+			String idPersonaJG="";
+			Vector infosolicitante=new Vector();
+			String ididioma="";
 			////////////////////////////////////////////////
 			// MODELO DE TIPO WORD: LLAMADA A ASPOSE.WORDS
 			for (int i=0;i<plantillas.size();i++) {
-				AdmInformeBean b = (AdmInformeBean) plantillas.get(i); 				
-				Vector datosconsulta=new Vector();
-				if(b.getIdPlantilla().equals("EJGCA1")){//para los modelos con diferentes regiones
-
-					ScsEJGAdm ejgAdm= new ScsEJGAdm(usr);
-					String idioma=usr.getLanguageInstitucion();
-					String numero="";
-					String idTipoEJG="";					
-					Hashtable datoscomunes=new Hashtable();
-					String codigoext="";
-					String idintitucionactual=""+this.getIDInstitucion(request);
+				AdmInformeBean b = (AdmInformeBean) plantillas.get(i);	
+				//if(b.getIdPlantilla().equals("EJGCA1")){//para los modelos con diferentes regiones
+				if(b.getIdTipoInforme().equals("EJGCA")){/**se coloca para que coja los tipos informe =EJGCA(informe calificación)**/					
 					//Carga en el doc los datos comunes del informe (Institucion, idfacturacion,fecha)
 					if (miform.getDatosInforme() != null && !miform.getDatosInforme().trim().equals("")) {
 						Hashtable aux  = (Hashtable)datos.get(0);
 						if (aux!=null) {
 							idTipoEJG= (String)aux.get("idTipoEJG");
-							String anio= (String)aux.get("anio");
-							numero= (String)aux.get("numero");							
-							Vector vSalida = null;							
+							anio= (String)aux.get("anio");
+							numero= (String)aux.get("numero");						
 							HelperInformesAdm helperInformes = new HelperInformesAdm();								
 							vSalida = ejgAdm.getCalificacionEjgSalida(""+this.getIDInstitucion(request),idTipoEJG,anio, numero,idioma);
 							/**Como accedemos al ejg por clave primaria solo nos saldra un registro**/
 							Hashtable registro = (Hashtable) vSalida.get(0);			
 							/**Aniadimos el solicitante del ejg**/
-							String idPersonaJG = (String)registro.get("IDPERSONAJG");
-							Vector infosolicitante=ejgAdm.getSolicitanteCalificacionEjgSalida(idintitucionactual,anio,idTipoEJG,numero,idPersonaJG,idioma);
+							idPersonaJG = (String)registro.get("IDPERSONAJG");
+							infosolicitante=ejgAdm.getSolicitanteCalificacionEjgSalida(idintitucionactual,anio,idTipoEJG,numero,idPersonaJG,idioma);
 							Hashtable datoscalificacion = (Hashtable) infosolicitante.get(0);
 							/**Lenguaje del Solcitante**/
-							String ididioma = (String)datoscalificacion.get("IDLENGUAJE");
+							ididioma = (String)datoscalificacion.get("IDLENGUAJE");
 							codigoext = (String)datoscalificacion.get("CODIGOLENGUAJE");
 							if (ididioma.equals(" ")){
 								ididioma=usr.getLanguage();
