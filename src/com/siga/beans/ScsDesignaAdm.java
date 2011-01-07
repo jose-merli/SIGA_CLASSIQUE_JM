@@ -1322,7 +1322,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				" and def.NUMERO = des.numero"+
 				" and def.IDINSTITUCION = des.idinstitucion"+
 				" and def.IDTURNO = des.idturno"+
-				" and def.calidad = :" + contador+ ") > 0";
+				" and def.idtipoencalidad= :" + contador+ ") > 0";
 				
 			}
 			
@@ -1824,7 +1824,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				 ScsEJGAdm ejgdm = new ScsEJGAdm(this.usrbean);
 				
 				if(Idpretension!=null && !Idpretension.trim().equalsIgnoreCase("")){			
-						Vector vpretenciones=ejgdm.getPretension(Idpretension, idInstitucion);
+						Vector vpretenciones=ejgdm.getPretension(Idpretension, idInstitucion,idioma);
 						for (int s = 0; s < vpretenciones.size(); s++) {
 							Hashtable registropretenciones = (Hashtable) vpretenciones.get(s);
 							String procedimiento = (String)registropretenciones.get("PRETENSION");
@@ -2615,7 +2615,6 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		       return datos;      
 	
 	  	   }
-	  
 	  
 	
 }
