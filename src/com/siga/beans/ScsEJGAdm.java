@@ -3266,7 +3266,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			//Aniadimos la pretension
 			String idPretension = (String)registro.get("PRETENSION");
 			String idPretensionInstitucion = (String)registro.get("PRETENSIONINSTITUCION");
-			helperInformes.completarHashSalida(registro,getPretension(idPretension, idPretensionInstitucion));
+			helperInformes.completarHashSalida(registro,getPretension(idPretension, idPretensionInstitucion, idioma));
 		}
 		catch (Exception e) {
 			throw new ClsExceptions (e, "Error al obtener la informacion en getDatosInformeCalificacion");
@@ -3978,7 +3978,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				
 				/**sacamos el campo pretenciones de Defensa Juridica de  Ejg ***/	
 				
-				Vector vpretenciones=getPretensiondj(idInstitucion,tipoEjg,anioEjg,numeroEjg);
+				Vector vpretenciones=getPretensiondj(idInstitucion,tipoEjg,anioEjg,numeroEjg,idioma);
 				
 				   	for (int l = 0; l < vpretenciones.size(); l++) {
 						Hashtable registropretencion = (Hashtable) vpretenciones.get(l);							
@@ -4560,7 +4560,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 */
 
-	public static Vector getPretension (String idPretension, String idPretensionInstitucion) throws ClsExceptions  
+	public static Vector getPretension (String idPretension, String idPretensionInstitucion,String idioma) throws ClsExceptions  
 	{
 		try {
 			Hashtable htCodigos = new Hashtable();
@@ -4568,7 +4568,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	
 			StringBuffer sql = new StringBuffer();
 			sql.append(" ");
-			sql.append(" select f_siga_getrecurso (DESCRIPCION,1) as PRETENSION ");
+			sql.append(" select f_siga_getrecurso (DESCRIPCION,"+idioma+") as PRETENSION ");
 			sql.append(" from  SCS_PRETENSION PRET");
 	
 			sql.append(" WHERE ");
@@ -4594,7 +4594,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	}
 	
 	
-	public static Vector getPretensiondj (String idInstitucion, String tipoEjg,String anio, String numero) throws ClsExceptions  
+	public static Vector getPretensiondj (String idInstitucion, String tipoEjg,String anio, String numero, String idioma) throws ClsExceptions  
 	{
 		try {
 			Hashtable htCodigos = new Hashtable();
@@ -4602,7 +4602,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			StringBuffer sql = new StringBuffer();
 			sql.append(" ");
 			sql.append(" SELECT  ");
-			sql.append(" f_siga_getrecurso (pret.DESCRIPCION,1) as DESCPRETENCION from scs_ejg e, scs_pretension pret ");						
+			sql.append(" f_siga_getrecurso (pret.DESCRIPCION,"+idioma+") as DESCPRETENCION from scs_ejg e, scs_pretension pret ");						
 			sql.append(" WHERE "); 	
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucion);
