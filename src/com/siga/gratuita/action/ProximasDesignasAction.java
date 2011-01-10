@@ -109,8 +109,8 @@ public class ProximasDesignasAction extends MasterAction {
 			inscripcionTurnoForm.setIdInstitucion(usr.getLocation());
 			inscripcionTurnoForm.setIdPersona(idPersona);
 			inscripcionTurnoForm.setFechaActiva("sysdate");
-			
-			
+			// jbd // inc7765 // Seteamos el tipo para evitar que de error al recuperar las inscripciones
+			inscripcionTurnoForm.setTipo("A");
 			
 			
 			List<ScsInscripcionTurnoBean> inscripcionTurnoList= admInsTurno.getInscripcionesTurno(inscripcionTurnoForm, false);
