@@ -3942,41 +3942,13 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 
 					
 				}
-				/**Se muestra la etiqueta fechaApertura_ejg**/
-				String fechaAperturaEjg=(String)registro.get("FECHAAPERTURA_EJG");
-				Hashtable htFuncion = new Hashtable();
-				htFuncion.put(new Integer(1), fechaAperturaEjg);
-				htFuncion.put(new Integer(2), "m");
-				htFuncion.put(new Integer(3), idioma);
-				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-													htFuncion, "PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA", "FECHAAPERTURA_EJG"));
 				
-				/**Se muestra la etiqueta calidad_defensa_juridica**/
-				String calidadDefensaJuridica  = (String)registro.get("CALIDAD_DEFENSA_JURIDICA");
-				htFuncion = new Hashtable();
-				if (calidadDefensaJuridica!=null && !calidadDefensaJuridica.equals("") ){
-					htFuncion.put(new Integer(1), calidadDefensaJuridica);
-					htFuncion.put(new Integer(2), idioma);
-					helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-														htFuncion, "F_SIGA_GETRECURSO_ETIQUETA", "CALIDAD_DEFENSA_JURIDICA"));
-				}else {
-					registro.put("CALIDAD_DEFENSA_JURIDICA", " ");
-				}
-				
-				/**se muestra el Mes_Actual por si se necesita en ejg.**/
-				String mesActual  = (String)registro.get("MES_ACTUAL");				
-				htFuncion = new Hashtable();
-				htFuncion.put(new Integer(1), mesActual);
-				htFuncion.put(new Integer(2), "m");
-				htFuncion.put(new Integer(3), idioma);
-				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htFuncion, "PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHAENLETRA", "MES_ACTUAL"));
-				registro.put("MES_ACTUAL", mesActual.toString().toUpperCase());
 				     					
 
 				     					
 				//Aniadimos los contrarios de la defensa juridica
 
-				htFuncion = new Hashtable();
+				Hashtable htFuncion = new Hashtable();
 				htFuncion.put(new Integer(1), idInstitucion);
 				htFuncion.put(new Integer(2), tipoEjg);
 				htFuncion.put(new Integer(3), anioEjg);
