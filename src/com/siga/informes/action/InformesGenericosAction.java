@@ -757,8 +757,9 @@ public class InformesGenericosAction extends MasterAction {
 							String idioma=usr.getLanguageInstitucion();
 							String idiomaDatos="1";
 
-							Hashtable datoscomunes=new Hashtable();
-							Hashtable clonDatoscomunes=null;
+							Hashtable datoscomunes=new Hashtable();							
+							Hashtable clonDatoscomunes=null;							
+	
 
 							//Carga en el doc los datos comunes del informe (Institucion, idfacturacion,fecha)
 							if (miform.getDatosInforme() != null && !miform.getDatosInforme().trim().equals("")) {
@@ -775,7 +776,6 @@ public class InformesGenericosAction extends MasterAction {
 									if ((String)aux.get("idPersonaJG")!=null){
 										idPersonaJG = (String)aux.get("idPersonaJG");
 									}
-
 
 									boolean isSolicitantes = beanInforme.getASolicitantes()!=null && beanInforme.getASolicitantes().equalsIgnoreCase("S");
 									String keyConsultasHechas = usr.getLocation()+anio+idTipoEJG+numero+isSolicitantes;
@@ -806,9 +806,7 @@ public class InformesGenericosAction extends MasterAction {
 				     		            	idiomaDatos= (String) clonDatoscomunes.get("IDLENGUAJE");
 											}
 
-
-
-											Hashtable htFuncion = new Hashtable();
+												Hashtable htFuncion = new Hashtable();
 				     		            htFuncion.put(new Integer(1), (String)clonDatoscomunes.get("FECHAAPERTURA_EJG"));
 											htFuncion.put(new Integer(2), "m");
 											htFuncion.put(new Integer(3), idiomaDatos);
@@ -833,8 +831,9 @@ public class InformesGenericosAction extends MasterAction {
 
 					     					helperInformes.completarHashSalida(clonDatoscomunes,helperInformes.ejecutaFuncionSalida(
 														htFuncion, "F_SIGA_GETRECURSO_ETIQUETA", "CALIDAD_DEFENSA_JURIDICA"));
-											}
-
+											}								
+											
+				
 
 											String rutaPl = rutaPlantilla + ClsConstants.FILE_SEP+usr.getLocation()+ClsConstants.FILE_SEP+beanInforme.getDirectorio()+ClsConstants.FILE_SEP;
 											String nombrePlantilla=beanInforme.getNombreFisico()+"_"+idiomainforme+".doc";
