@@ -550,7 +550,11 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 			// 6------>
 			// Caja(570) 		-->  pagoabonoefectivo 	--> 0
 			// Cliente(430.xxx)	-->  0			 		--> pagoabonoefectivo
-			pwcontabilidad=generaAsiento6(pwcontabilidad,fechaDesde,fechaHasta,tx);
+			
+			// jbd // Segun peticion de Javier Jimenez (Badajoz) sobran los pagos por caja de abono (Quitar los asientos de "Pago por caja. Abono")
+			if(beanContab.getIdInstitucion()!=2010){
+				pwcontabilidad=generaAsiento6(pwcontabilidad,fechaDesde,fechaHasta,tx);
+			}
 			
 			// -----------------------------------------------------------------------------------------------------------------
 			// RGG 03/11/2006 Asiento 7
@@ -2233,6 +2237,8 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 			String asientoClientes = ""; 
 			String asientoIngresos = ""; 
 			
+			Double importeD, importeIvaD;
+			
 			
 			for(int x=0;x<vLineasAbonos.size();x++)
 			{
@@ -2251,6 +2257,9 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 			    imp=UtilidadesNumero.redondea((String)hash.get("IMPNETO"), 2);
 			    importeIva= UtilidadesNumero.redondea((String)hash.get("IMPIVA"), 2);
 			    String porcentajeIva= UtilidadesNumero.redondea((String)hash.get("IVA"), 2);
+			    
+			    importeD = Double.parseDouble(imp);
+			    importeIvaD = Double.parseDouble(importeIva);
 			    
 			    // Control de iva 0
 			    boolean ivacero=false;
@@ -2290,8 +2299,16 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 				UtilidadesHash.set(a, "CONCEPTO", 		concepto);
 				UtilidadesHash.set(a, "DOCUMENTO", 		UtilidadesHash.getString(hash, "NUMEROABONO"));
 				UtilidadesHash.set(a, "CUENTA", 		asientoClientes);
-				UtilidadesHash.set(a, "DEBE", 			"" + (Double.parseDouble(imp) + Double.parseDouble(importeIva)));
-				UtilidadesHash.set(a, "HABER", 			"0");
+				// jbd // Cambiamos el debe por haber para que no salgan negativos (peticion de Badajoz)
+				// UtilidadesHash.set(a, "DEBE", 			"" + (Double.parseDouble(imp) + Double.parseDouble(importeIva)));
+				// UtilidadesHash.set(a, "HABER", 			"0");
+				if(this.usrbean.getLocation().equalsIgnoreCase("2010") && importeD<0){
+					UtilidadesHash.set(a, "DEBE", 			"0");
+					UtilidadesHash.set(a, "HABER", 			""+(-1)*(importeD+importeIvaD));
+				}else{
+					UtilidadesHash.set(a, "DEBE", 			importeD+importeIvaD);
+					UtilidadesHash.set(a, "HABER", 			"0");
+				}
 				UtilidadesHash.set(a, "BASEIMPONIBLE", 	"");
 				UtilidadesHash.set(a, "IVA", 			"");
 				UtilidadesHash.set(a, "CONTRAPARTIDA", 	asientoIngresos);
@@ -2303,8 +2320,16 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 				UtilidadesHash.set(a, "CONCEPTO", 		concepto);
 				UtilidadesHash.set(a, "DOCUMENTO", 		UtilidadesHash.getString(hash, "NUMEROABONO"));
 				UtilidadesHash.set(a, "CUENTA", 		asientoIngresos);
-				UtilidadesHash.set(a, "DEBE", 			"0");
-				UtilidadesHash.set(a, "HABER", 			imp);
+				// jbd // Cambiamos el debe por haber para que no salgan negativos (peticion de Badajoz)
+				// UtilidadesHash.set(a, "DEBE", 			"0");
+				// UtilidadesHash.set(a, "HABER", 			imp);
+				if(this.usrbean.getLocation().equalsIgnoreCase("2010") && importeD<0){
+					UtilidadesHash.set(a, "DEBE", 			""+(-1)*importeD);
+					UtilidadesHash.set(a, "HABER", 			"0");
+				}else{
+					UtilidadesHash.set(a, "DEBE", 			"0");
+					UtilidadesHash.set(a, "HABER", 			""+importeD);
+				}
 				UtilidadesHash.set(a, "BASEIMPONIBLE", 	"");
 				UtilidadesHash.set(a, "IVA", 			"");
 				UtilidadesHash.set(a, "CONTRAPARTIDA", 	asientoClientes);
