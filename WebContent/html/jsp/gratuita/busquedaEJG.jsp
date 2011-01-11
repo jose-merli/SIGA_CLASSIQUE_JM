@@ -732,7 +732,7 @@
 		
 		
 		function creaFormInformes() {
-			var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='/SIGA/INF_InformesGenericos.do' target='submitArea21'>");
+			var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='INF_InformesGenericos.do' target='submitArea21'>");
 			formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=usr.getLocation() %>'>"));
 			formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
 			formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='EJG'>"));
