@@ -352,59 +352,10 @@ public class ColaGuardiasAction extends MasterAction {
 				String idTurno = form.getIdTurno();
 				String idGuardia = form.getIdGuardia();
 				
-				// Buscamos el idGrupo que corresponde con el numero del grupo
-				Hashtable grupoGuardia=admGrupo.getGrupoGuardia(idInstitucion, idTurno, idGuardia, numeroGrupo);
-				if(grupoGuardia!=null && grupoGuardia.get(ScsGrupoGuardiaBean.C_IDGRUPOGUARDIA)!=null){
-					idGrupo=(String)grupoGuardia.get(ScsGrupoGuardiaBean.C_IDGRUPOGUARDIA);
-				}else{
-					// Si el grupo no existe lo creamos y lo usamos para meter la guardia
-					idGrupo = admGrupo.getSecuenciaNextVal(ScsGrupoGuardiaBean.S_SECUENCIA).toString();
-					ScsGrupoGuardiaBean bean = new ScsGrupoGuardiaBean();
-					bean.setIdGrupoGuardia(Long.valueOf(idGrupo));
-					bean.setIdInstitucion(Integer.valueOf(idInstitucion));
-					bean.setIdTurno(Integer.valueOf(idTurno));
-					bean.setIdGuardia(Integer.valueOf(idGuardia));
-					bean.setNumeroGrupo(numeroGrupo);
-					bean.setFechaCreacion("sysdate");
-					bean.setUsuCreacion(Integer.valueOf(this.getUserBean(request).getUserName()));
-					try {
-						admGrupo.insert(bean);				
-					} catch (Exception e) {
-						throwExcp("Error al crear el grupo", new String[] { "modulo.gratuita" }, e, tx);
-					}
-				}
+				admGrupoColegiado.insertaGrupoGuardiaColegiado(new Integer(idInstitucion),new Integer(idTurno)
+				,new Integer(idGuardia),new Long(idPersona), fechaSuscripcion, numeroGrupo, orden, idGrupoGuardiaColegiado);
 				
-	
-				hash.put(ScsGrupoGuardiaColegiadoBean.C_IDGRUPOGUARDIACOLEGIADO, idGrupoGuardiaColegiado);
-				hash.put(ScsGrupoGuardiaColegiadoBean.C_IDGRUPO, idGrupo);
-				hash.put(ScsGrupoGuardiaColegiadoBean.C_ORDEN, orden);
 				
-				if(idGrupoGuardiaColegiado!=null && !idGrupoGuardiaColegiado.equalsIgnoreCase("")){
-					try {
-						admGrupoColegiado.updateDirect(hash, claves, campos);			
-					} catch (Exception e) {
-						throwExcp("Error al modificar los grupos de la guardia", new String[] { "modulo.gratuita" }, e, tx);
-					}
-				}else{
-					idGrupoGuardiaColegiado = admGrupoColegiado.getSecuenciaNextVal(ScsGrupoGuardiaColegiadoBean.S_SECUENCIA).toString();
-					ScsGrupoGuardiaColegiadoBean bean = new ScsGrupoGuardiaColegiadoBean();
-					bean.setIdGrupoGuardiaColegiado (Long.valueOf(idGrupoGuardiaColegiado) );
-					bean.setIdPersona(Long.valueOf(idPersona));
-					bean.setOrden(Integer.valueOf(orden));
-					bean.setIdGrupo(Integer.valueOf(idGrupo));
-					bean.setIdInstitucion(Integer.valueOf(idInstitucion));
-					bean.setIdTurno(Integer.valueOf(idTurno));
-					bean.setIdGuardia(Integer.valueOf(idGuardia));
-					bean.setFechaCreacion("sysdate");
-					bean.setUsuCreacion(Integer.valueOf(this.getUserBean(request).getUserName()));
-					bean.setFechaSuscripcion(fechaSuscripcion);
-					try {
-						admGrupoColegiado.insert(bean);				
-					} catch (Exception e) {
-						throwExcp("Error al insertar a la persona", new String[] { "modulo.gratuita" }, e, tx);
-					}
-					
-				}
 			}
 			tx.commit();
 		} catch (Exception e) {

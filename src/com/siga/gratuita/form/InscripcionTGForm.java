@@ -15,6 +15,7 @@ import com.siga.beans.ScsInscripcionTurnoBean;
 import com.siga.beans.ScsRetencionesBean;
 import com.siga.beans.ScsTurnoBean;
 import com.siga.general.MasterForm;
+import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
 import com.siga.tlds.FilaExtElement;
 
 public class InscripcionTGForm extends MasterForm {
@@ -82,6 +83,13 @@ public class InscripcionTGForm extends MasterForm {
 	
 	String fechaActiva = null;
 	String  observacionesValBaja = null;
+	
+	private String porGrupos;
+	List<LetradoGuardia> gruposGuardiaLetrado;
+	
+	
+	private String numeroGrupo;
+	private String ordenGrupo;
 	
 	public String getFechaValorAlta() {
 		return fechaValorAlta;
@@ -357,6 +365,9 @@ public class InscripcionTGForm extends MasterForm {
 		setMateria("");
 		setZona("");
 		setSubzona("");
+		gruposGuardiaLetrado = null;
+		numeroGrupo = null;
+		ordenGrupo = null;
 		
 
 	}
@@ -628,6 +639,30 @@ public class InscripcionTGForm extends MasterForm {
 	}
 	public void setObservacionesValBaja(String observacionesValBaja) {
 		this.observacionesValBaja = observacionesValBaja;
+	}
+	public List<LetradoGuardia> getGruposGuardiaLetrado() {
+		return gruposGuardiaLetrado;
+	}
+	public void setGruposGuardiaLetrado(List<LetradoGuardia> gruposGuardiaLetrado) {
+		this.gruposGuardiaLetrado = gruposGuardiaLetrado;
+	}
+	public String getNumeroGrupo() {
+		return numeroGrupo;
+	}
+	public void setNumeroGrupo(String numeroGrupo) {
+		this.numeroGrupo = numeroGrupo;
+	}
+	public String getOrdenGrupo() {
+		return ordenGrupo;
+	}
+	public void setOrdenGrupo(String ordenGrupo) {
+		this.ordenGrupo = ordenGrupo;
+	}
+	public String getPorGrupos() {
+		return porGrupos;
+	}
+	public void setPorGrupos(String porGrupos) {
+		this.porGrupos = porGrupos;
 	}
 	
 }

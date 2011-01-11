@@ -280,6 +280,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_TIPODIASGUARDIA+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONLABORABLES+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_ESVIOLENCIAGENERO+","+
+					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_PORGRUPOS+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONFESTIVOS;
 				break;
 				
@@ -300,6 +301,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 					ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_IDPERSONA+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONLABORABLES+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_ESVIOLENCIAGENERO+","+
+					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_PORGRUPOS+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONFESTIVOS+","+
 					ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA+","+
 					ScsInscripcionGuardiaBean.T_NOMBRETABLA+"."+ScsInscripcionGuardiaBean.C_FECHAVALIDACION+","+
@@ -328,6 +330,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_TIPODIASGUARDIA+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONLABORABLES+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_ESVIOLENCIAGENERO+","+
+					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_PORGRUPOS+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONFESTIVOS+","+
 					ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_VALIDARINSCRIPCIONES+" VALIDARINSCRIPCIONES";
 				break;
@@ -342,6 +345,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_TIPODIASGUARDIA+" TIPODIASGUARDIA"+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONLABORABLES+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_ESVIOLENCIAGENERO+","+
+					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_PORGRUPOS+","+
 					ScsGuardiasTurnoBean.T_NOMBRETABLA+"."+ScsGuardiasTurnoBean.C_SELECCIONFESTIVOS+"";
 				break;
 				

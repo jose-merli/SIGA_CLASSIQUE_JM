@@ -2,12 +2,15 @@ package com.siga.beans;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
 
 /**
@@ -204,5 +207,53 @@ public class ScsGrupoGuardiaColegiadoAdm extends MasterBeanAdministrador
 		}
 		return hash;
 	}
+	
+	public void insertaGrupoGuardiaColegiado(Integer idInstitucion, Integer idTurno, Integer idGuardia,
+			Long idPersona, String fechaValidacion, String numeroGrupo, String ordenGrupo, String idGrupoGuardiaColegiado) throws ClsExceptions{
+		
+			
+		
+		ScsGrupoGuardiaAdm admGrupo = new ScsGrupoGuardiaAdm(this.usrbean);
+		// Buscamos el idGrupo que corresponde con el numero del grupo
+		Hashtable grupoGuardia=admGrupo.getGrupoGuardia(idInstitucion.toString(), idTurno.toString(), idGuardia.toString(), numeroGrupo);
+		String idGrupo = null;
+		if(grupoGuardia!=null && grupoGuardia.get(ScsGrupoGuardiaBean.C_IDGRUPOGUARDIA)!=null){
+			idGrupo=(String)grupoGuardia.get(ScsGrupoGuardiaBean.C_IDGRUPOGUARDIA);
+		}else{
+			// Si el grupo no existe lo creamos y lo usamos para meter la guardia
+			idGrupo = admGrupo.getSecuenciaNextVal(ScsGrupoGuardiaBean.S_SECUENCIA).toString();
+			ScsGrupoGuardiaBean bean = new ScsGrupoGuardiaBean();
+			bean.setIdGrupoGuardia(Long.valueOf(idGrupo));
+			bean.setIdInstitucion(Integer.valueOf(idInstitucion));
+			bean.setIdTurno(Integer.valueOf(idTurno));
+			bean.setIdGuardia(Integer.valueOf(idGuardia));
+			bean.setNumeroGrupo(numeroGrupo);
+			bean.setFechaCreacion("sysdate");
+			bean.setUsuCreacion(Integer.valueOf(this.usrbean.getUserName()));
+			admGrupo.insert(bean);				
+			
+		}
+
+		Hashtable grupoGuardiaHashtable=new Hashtable();
+		grupoGuardiaHashtable.put(ScsGrupoGuardiaColegiadoBean.C_IDGRUPO, idGrupo);
+		grupoGuardiaHashtable.put(ScsGrupoGuardiaColegiadoBean.C_ORDEN, ordenGrupo);
+		if(idGrupoGuardiaColegiado==null)
+			idGrupoGuardiaColegiado = getSecuenciaNextVal(ScsGrupoGuardiaColegiadoBean.S_SECUENCIA).toString();
+		ScsGrupoGuardiaColegiadoBean bean = new ScsGrupoGuardiaColegiadoBean();
+		bean.setIdGrupoGuardiaColegiado (new Long(idGrupoGuardiaColegiado));
+		bean.setIdPersona(Long.valueOf(idPersona));
+		bean.setOrden(Integer.valueOf(ordenGrupo));
+		bean.setIdGrupo(Integer.valueOf(idGrupo));
+		bean.setIdInstitucion(Integer.valueOf(idInstitucion));
+		bean.setIdTurno(Integer.valueOf(idTurno));
+		bean.setIdGuardia(Integer.valueOf(idGuardia));
+		bean.setFechaCreacion("sysdate");
+		bean.setUsuCreacion(Integer.valueOf(this.usrbean.getUserName()));
+		bean.setFechaSuscripcion(fechaValidacion);
+		this.insert(bean);				
+		
+	}
+	
+	
 
 }

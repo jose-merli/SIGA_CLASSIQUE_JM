@@ -236,8 +236,15 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 			sql.append(contador);
 			htCodigos.put(contador, idGuardia);
 		}
-
+		
+		
 		// NO SACAR LAS CANCELADAS
+		sql.append(" AND ( ");
+		sql.append(" I.FECHABAJA IS NULL "); 
+		sql.append(" OR  ");
+		sql.append(" (I.FECHABAJA IS NOT NULL AND  TRUNC(I.FECHAVALIDACION) <> TRUNC(I.FECHABAJA)) ");
+		sql.append(" ) ");
+		
 		sql.append(" AND  ");
 		// VALIDADOS DE ALTA
 		sql.append(" I.FECHAVALIDACION IS NOT NULL AND ");
@@ -744,7 +751,7 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 		sql.append(" GT.NUMEROLETRADOSGUARDIA, GT.NUMEROSUSTITUTOSGUARDIA, ");
 		sql.append(" GT.SELECCIONLABORABLES, GT.SELECCIONFESTIVOS, ");
 		sql.append(" GT.TIPODIASGUARDIA ,  GT.DIASGUARDIA , ");
-		sql.append(" GT.DIASPAGADOS ,  GT.DIASSEPARACIONGUARDIAS  ");
+		sql.append(" GT.DIASPAGADOS ,  GT.DIASSEPARACIONGUARDIAS,GT.PORGRUPOS  ");
 		sql.append(" ,IG.FECHASUSCRIPCION,IG.IDPERSONA  ");
 
 		sql.append(" FROM SCS_GUARDIASTURNO GT, SCS_INSCRIPCIONGUARDIA IG ");
@@ -827,6 +834,8 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 							guardia.getSeleccionFestivos(), this.usrbean);
 					guardia.setSeleccionTiposDia(seleccionTiposDia);
 
+					guardia.setPorGrupos(UtilidadesHash.getString(htFila, ScsGuardiasTurnoBean.C_PORGRUPOS));
+					
 					inscripcionBean.setGuardia(guardia);
 					inscripcionBean.setFechaSuscripcion(UtilidadesHash.getString(htFila,
 							ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION));
@@ -859,7 +868,7 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 		sql.append(" GT.NUMEROLETRADOSGUARDIA, GT.NUMEROSUSTITUTOSGUARDIA, ");
 		sql.append(" GT.SELECCIONLABORABLES, GT.SELECCIONFESTIVOS, ");
 		sql.append(" GT.TIPODIASGUARDIA ,  GT.DIASGUARDIA , ");
-		sql.append(" GT.DIASPAGADOS ,  GT.DIASSEPARACIONGUARDIAS  ");
+		sql.append(" GT.DIASPAGADOS ,  GT.DIASSEPARACIONGUARDIAS,GT.PORGRUPOS  ");
 		sql.append(" FROM SCS_GUARDIASTURNO GT ");
 		sql.append(" WHERE  ");
 		sql.append(" GT.IDINSTITUCION = :");
@@ -928,6 +937,8 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 					String seleccionTiposDia = ScsGuardiasTurnoAdm.obtenerTipoDia(guardia.getSeleccionLaborables(),
 							guardia.getSeleccionFestivos(), this.usrbean);
 					guardia.setSeleccionTiposDia(seleccionTiposDia);
+					
+					guardia.setPorGrupos(UtilidadesHash.getString(htFila, ScsGuardiasTurnoBean.C_PORGRUPOS));
 
 					inscripcionBean.setGuardia(guardia);
 					inscripcionBean.setIdGuardia(guardia.getIdGuardia());
@@ -1233,5 +1244,61 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 			"   And Ins.Fechasuscripcion = Gru.Fechasuscripcion(+) " +
 			"   And Gru.Idgrupoguardia = Grg.Idgrupoguardia(+) ");
 	}
+	public ScsInscripcionGuardiaBean getUltimaInscripcionInsertada(Hashtable inscripcionGuardiaHashtable) throws ClsExceptions
+	{
+
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT ");
+		sql.append(" I.IDINSTITUCION,    I.IDPERSONA,    I.IDTURNO, ");
+		sql.append(" I.IDGUARDIA,  I.FECHASUSCRIPCION   ");
+		sql.append(" FROM SCS_INSCRIPCIONGUARDIA I ");
+		sql.append(" WHERE  ");
+
+		sql.append(" I.IDINSTITUCION = :");
+		contador++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador), (Integer)inscripcionGuardiaHashtable.get(ScsInscripcionGuardiaBean.C_IDINSTITUCION) );
+		
+		sql.append(" AND I.IDTURNO = :");
+		contador++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador), (Integer)inscripcionGuardiaHashtable.get(ScsInscripcionGuardiaBean.C_IDTURNO) );
+		
 	
+	
+		sql.append(" AND I.IDPERSONA = :");
+		contador++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador), (Long)inscripcionGuardiaHashtable.get(ScsInscripcionGuardiaBean.C_IDPERSONA) );
+	
+		
+		sql.append(" AND I.IDGUARDIA = :");
+		contador++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador), (Integer)inscripcionGuardiaHashtable.get(ScsInscripcionGuardiaBean.C_IDGUARDIA) );
+		
+		sql.append(" AND I.FECHABAJA IS NULL");
+		
+		sql.append(" ORDER BY I.FECHAMODIFICACION DESC ");
+
+		
+		ScsInscripcionGuardiaBean inscripcionBean = null;
+		try {
+			RowsContainer rc = new RowsContainer();
+
+			if (rc.findBind(sql.toString(), htCodigos)) {
+				Row fila = (Row) rc.get(0);
+				Hashtable<String, Object> htFila = fila.getRow();
+				inscripcionBean = (ScsInscripcionGuardiaBean) this.hashTableToBean(htFila);
+			}else{
+				throw new SIGAException("No se ha encontrado ninguna inscripcion");
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al ejecutar consulta.");
+		}
+		return inscripcionBean;
+
+	}
 }

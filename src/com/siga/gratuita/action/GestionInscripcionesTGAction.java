@@ -1,6 +1,8 @@
 package com.siga.gratuita.action;
 
+import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
@@ -32,6 +34,7 @@ import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
+import com.siga.beans.ScsGrupoGuardiaColegiadoAdm;
 import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsInscripcionGuardiaAdm;
@@ -50,6 +53,7 @@ import com.siga.general.SIGAException;
 import com.siga.gratuita.InscripcionGuardia;
 import com.siga.gratuita.InscripcionTurno;
 import com.siga.gratuita.form.InscripcionTGForm;
+import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
 
 
 
@@ -339,23 +343,51 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		try {
 			InscripcionTGForm miForm = (InscripcionTGForm) formulario;
 
-				ScsInscripcionTurnoAdm admInsTurno = new ScsInscripcionTurnoAdm(this.getUserBean(request));
-				ScsInscripcionTurnoBean insUltimaConBaja = admInsTurno.getInscripcion(new Integer(miForm.getIdInstitucion()),new Integer( miForm.getIdTurno()), new Long(miForm.getIdPersona()), null);
-				//miramos si tiene fecha de baja para que puedan solictar altas nuevas de inscripciones de guardia
-				Boolean existeInscConBaja = insUltimaConBaja!=null && insUltimaConBaja.getFechaBaja()!=null && !insUltimaConBaja.getFechaBaja().equals("");
-				if(existeInscConBaja){
-					miForm.setFechaBajaTurno(insUltimaConBaja.getFechaBaja());
-					
-				}else{
-					miForm.setFechaBajaTurno(null);
-					
+			ScsInscripcionTurnoAdm admInsTurno = new ScsInscripcionTurnoAdm(this.getUserBean(request));
+			ScsInscripcionTurnoBean insUltimaConBaja = admInsTurno.getInscripcion(new Integer(miForm.getIdInstitucion()),new Integer( miForm.getIdTurno()), new Long(miForm.getIdPersona()), null);
+			//miramos si tiene fecha de baja para que puedan solictar altas nuevas de inscripciones de guardia
+			Boolean existeInscConBaja = insUltimaConBaja!=null && insUltimaConBaja.getFechaBaja()!=null && !insUltimaConBaja.getFechaBaja().equals("");
+			if(existeInscConBaja){
+				miForm.setFechaBajaTurno(insUltimaConBaja.getFechaBaja());
+				
+			}else{
+				miForm.setFechaBajaTurno(null);
+				
+			}
+			boolean isAlgunaGuardiaPorGrupo = false;
+			String guardiasSeleccionadas = miForm.getGuardiasSel();
+			if(guardiasSeleccionadas!=null &&!guardiasSeleccionadas.equals("")){
+				guardiasSeleccionadas = guardiasSeleccionadas.substring(0,guardiasSeleccionadas.lastIndexOf("@"));
+				List<String> guardiasSeleccionadasList = null;
+				if(guardiasSeleccionadas!=null && !guardiasSeleccionadas.equals("")){
+					String[] guardiasSel = guardiasSeleccionadas.split("@");
+					guardiasSeleccionadasList= Arrays.asList(guardiasSel);
 				}
+				if(guardiasSeleccionadasList!=null && guardiasSeleccionadasList.size()>0){
+					for(ScsInscripcionGuardiaBean insGuardia:miForm.getInscripcionesGuardia()){
+						if(guardiasSeleccionadasList.contains(insGuardia.getGuardia().getIdGuardia().toString())&& insGuardia.getGuardia().getPorGrupos()!=null && insGuardia.getGuardia().getPorGrupos().equals("1")){
+							isAlgunaGuardiaPorGrupo = true;
+							break;
+						}
+					}
+				}
+			}
+			if(isAlgunaGuardiaPorGrupo){
+				miForm.setPorGrupos("1");
+			}else{
+				miForm.setPorGrupos("0");
+				
+			}
+			
 			miForm.setSolicitudAlta(true);
 			miForm.setSolicitudBaja(false);
 			miForm.setValidacionAlta(true);
 			miForm.setValidacionBaja(false);
 			miForm.setMasivo(false);
-
+			
+//			FIXME AAAÑADIR SELECCIÓN DE GRUPO sitDatos ok
+			//COMPROBAR SI EXISTE ALGUNA GUARDIA DEL TURNO QUE SEA DE GRUPO Y EN TAL CASO
+			//SACAR UN LISTADO CON LAS GRUPOS DE LA GUARDIA PARA QUE SEA OBLIGATORIO LA ELECCION DE UNO
 			miForm.setModo("sitEditarTelefonosGuardia");
 			forward = "validarInscripcion";
 		}
@@ -1073,6 +1105,9 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				if(miForm.getFechaValidacion()!=null && !miForm.getFechaValidacion().equals("")&&(miForm.getFechaBaja()==null || miForm.getFechaBaja().equals("")))
 				{
 					inscripcion.setAltas(null, miForm.getFechaValidacion(), miForm.getObservacionesValidacion());
+					if(miForm.getPorGrupos()!=null && miForm.getPorGrupos().equals("1")){
+						inscripcion.setDatosGrupo(miForm.getNumeroGrupo(), new Integer(miForm.getOrdenGrupo()));
+					}
 					inscripcion.validarAlta(usr);
 				}else if(miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equals(""))
 				{
@@ -1091,7 +1126,14 @@ public class GestionInscripcionesTGAction extends MasterAction {
 						new Integer(miForm.getIdInstitucion()), new Integer(miForm.getIdTurno()),idGuardia
 						, Long.valueOf(miForm.getIdPersona()),	miForm.getFechaSolicitud(), usr, false);
 				
+				
 				inscripcion.setAltas(miForm.getObservacionesSolicitud(), miForm.getFechaValidacion(), miForm.getObservacionesValidacion());
+				if(miForm.getFechaValidacion()!=null && !miForm.getFechaValidacion().equals("")&&(miForm.getFechaBaja()==null || miForm.getFechaBaja().equals("")))
+				{
+					if(miForm.getPorGrupos()!=null && miForm.getPorGrupos().equals("1")){
+						inscripcion.setDatosGrupo(miForm.getNumeroGrupo(), new Integer(miForm.getOrdenGrupo()));
+					}
+				}
 				if(miForm.getFechaBaja()==null || miForm.getFechaBaja().equals("")){
 						if(insGuardiaSiguiente!=null ){
 							inscripcion.setBajas(null, null, GstDate.getFormatedDateShort("",insGuardiaSiguiente.getFechaValidacion()),miForm.getObservacionesValBaja());
@@ -1182,7 +1224,9 @@ public class GestionInscripcionesTGAction extends MasterAction {
 							inscripcion.setBajas(null, null, GstDate.getFormatedDateShort("",insTurnoActiva.getFechaBaja()),miForm.getObservacionesValBaja());
 					}
 				}
-					
+					if(miForm.getPorGrupos()!=null && miForm.getPorGrupos().equals("1")){
+						inscripcion.setDatosGrupo(miForm.getNumeroGrupo(), new Integer(miForm.getOrdenGrupo()));
+					}
 					
 					inscripcion.validarAlta(usr);
 				}else if(miForm.getFechaDenegacion()!=null && !miForm.getFechaDenegacion().equals(""))
@@ -1346,7 +1390,31 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				miForm.setValidacionAlta(true);
 				miForm.setValidacionBaja(false);
 				miForm.setMasivo(false);
+				
+//				if(miForm.getPorGrupos()!=null && miForm.getPorGrupos().equals("1")){
+//					ScsGrupoGuardiaColegiadoAdm grupoGuardiaColegiadoAdm = new ScsGrupoGuardiaColegiadoAdm(this.getUserBean(request));
+//					List<LetradoGuardia> grupoGuardiaLetradoList = grupoGuardiaColegiadoAdm.getGruposColegiados(miForm.getIdInstitucion(), miForm.getIdTurno(), miForm.getIdGuardia());
+//					miForm.setGruposGuardiaLetrado(grupoGuardiaLetradoList);
+//				}
+				
+				if(miForm.getPorGrupos()!=null && miForm.getPorGrupos().equals("1")){
+					ArrayList<LetradoGuardia> letradosColaGuardiaList = InscripcionGuardia.getColaGuardia(new Integer(miForm.getIdInstitucion()),new Integer(miForm.getIdTurno()), new Integer(miForm.getIdGuardia()), "sysdate","sysdate", this.getUserBean(request));
+					if(letradosColaGuardiaList!=null && !letradosColaGuardiaList.isEmpty()){
+						miForm.setGruposGuardiaLetrado(letradosColaGuardiaList);
+					}else{
+						miForm.setGruposGuardiaLetrado(new ArrayList<LetradoGuardia>());
+					}
+				}
+				
+				
+				
+					
 				//seteamos el paso siguiente
+//				FIXME AAAÑADIR SELECCIÓN DE GRUPO OK SIGDATOS
+				//COMPROBAR SI EXISTE ALGUNA GUARDIA DEL TURNO QUE SEA DE GRUPO Y EN TAL CASO
+				//SACAR UN LISTADO CON LAS GRUPOS DE LA GUARDIA PARA QUE SEA OBLIGATORIO LA ELECCION DE UNO
+				
+				
 				miForm.setModo("sigInsertar");
 				forward = "validarInscripcion";
 			}
@@ -1368,6 +1436,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			miForm.setMasivo(true);
 			miForm.reset(true,true);
 			miForm.setModo("smitEditarTelefonosGuardia");
+			miForm.setPorGrupos("1");
 			forward = "validarInscripcion";
 		}
 		catch (Exception e) 
@@ -1442,6 +1511,34 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			miForm.setMasivo(false);
 			//seteamos el paso siguiente
 			miForm.setModo("vitValidar");
+			boolean isAlgunaGuardiaPorGrupo = false;
+			String guardiasSeleccionadas = miForm.getGuardiasSel();
+			if(guardiasSeleccionadas!=null&&!guardiasSeleccionadas.equals("")){
+				guardiasSeleccionadas = guardiasSeleccionadas.substring(0,guardiasSeleccionadas.lastIndexOf("@"));
+				List<String> guardiasSeleccionadasList = null;
+				if(guardiasSeleccionadas!=null && !guardiasSeleccionadas.equals("")){
+					String[] guardiasSel = guardiasSeleccionadas.split("@");
+					guardiasSeleccionadasList= Arrays.asList(guardiasSel);
+				}
+				if(guardiasSeleccionadasList!=null && guardiasSeleccionadasList.size()>0){
+					for(ScsInscripcionGuardiaBean insGuardia:miForm.getInscripcionesGuardia()){
+						if(guardiasSeleccionadasList.contains(insGuardia.getGuardia().getIdGuardia().toString())&& insGuardia.getGuardia().getPorGrupos()!=null && insGuardia.getGuardia().getPorGrupos().equals("1")){
+							isAlgunaGuardiaPorGrupo = true;
+							break;
+						}
+					}
+				}
+			}
+			if(isAlgunaGuardiaPorGrupo){
+				miForm.setPorGrupos("1");
+			}else{
+				miForm.setPorGrupos("0");
+				
+			}
+			
+//			FIXME AAAÑADIR SELECCIÓN DE GRUPO vitDatos ok
+			//COMPROBAR SI EXISTE ALGUNA GUARDIA DEL TURNO QUE SEA DE GRUPO Y EN TAL CASO
+			//SACAR UN LISTADO CON LAS GRUPOS DE LA GUARDIA PARA QUE SEA OBLIGATORIO LA ELECCION DE UNO
 			forward = "validarInscripcion";
 		}
 		catch (Exception e) 
@@ -1462,6 +1559,17 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			miForm.setMasivo(false);
 			//seteamos el paso siguiente
 			miForm.setModo("vigValidar");
+			if(miForm.getPorGrupos()!=null && miForm.getPorGrupos().equals("1")){
+				ArrayList<LetradoGuardia> letradosColaGuardiaList = InscripcionGuardia.getColaGuardia(new Integer(miForm.getIdInstitucion()),new Integer(miForm.getIdTurno()), new Integer(miForm.getIdGuardia()), "sysdate","sysdate", this.getUserBean(request));
+				if(letradosColaGuardiaList!=null && !letradosColaGuardiaList.isEmpty()){
+					miForm.setGruposGuardiaLetrado(letradosColaGuardiaList);
+				}else{
+					miForm.setGruposGuardiaLetrado(new ArrayList<LetradoGuardia>());
+				}
+			}
+//			FIXME AAAÑADIR SELECCIÓN DE GRUPO OK vigDatos
+			//COMPROBAR SI EXISTE ALGUNA GUARDIA DEL TURNO QUE SEA DE GRUPO Y EN TAL CASO
+			//SACAR UN LISTADO CON LAS GRUPOS DE LA GUARDIA PARA QUE SEA OBLIGATORIO LA ELECCION DE UNO
 			forward = "validarInscripcion";
 		}
 		catch (Exception e) 
@@ -2049,6 +2157,10 @@ public class GestionInscripcionesTGAction extends MasterAction {
 						miForm.setValidacionAlta(true);
 						miForm.setValidacionBaja(false);
 						miForm.setModo("vmitValidar");
+						miForm.setPorGrupos("1");
+//						FIXME AAAÑADIR SELECCIÓN DE GRUPO solicitudesMasivas ok
+						//COMPROBAR SI EXISTE ALGUNA GUARDIA DEL TURNO QUE SEA DE GRUPO Y EN TAL CASO
+						//SACAR UN LISTADO CON LAS GRUPOS DE LA GUARDIA PARA QUE SEA OBLIGATORIO LA ELECCION DE UNO
 						forward = "validarInscripcion";
 					}else{
 						miForm.setFechaValidacion(null);
@@ -2065,6 +2177,11 @@ public class GestionInscripcionesTGAction extends MasterAction {
 						miForm.setValidacionAlta(false);
 						miForm.setValidacionBaja(true);
 						miForm.setModo("vmigValidar");
+						miForm.setPorGrupos("1");
+						
+//						FIXME AAAÑADIR SELECCIÓN DE GRUPO solicitudesMasivas ok
+						//COMPROBAR SI EXISTE ALGUNA GUARDIA DEL TURNO QUE SEA DE GRUPO Y EN TAL CASO
+						//SACAR UN LISTADO CON LAS GRUPOS DE LA GUARDIA PARA QUE SEA OBLIGATORIO LA ELECCION DE UNO
 						forward = "validarInscripcion";
 					}else{
 						miForm.setFechaValidacion(null);

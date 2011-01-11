@@ -41,11 +41,14 @@
 			  if(ele[i].checked){
 				 
 					guardia=document.getElementById("guardia_"+i);
+		
+					
 		   			guardiasAlta+=guardia.value+"@";
 		  
 		   
 		  	}
 		}
+		
 		document.InscripcionTGForm.guardiasSel.value=guardiasAlta;
 		document.InscripcionTGForm.target="_self";
 		document.InscripcionTGForm.submit();
@@ -172,6 +175,7 @@
 <html:hidden property="tipoGuardias"/>
 <html:hidden property="fechaSolicitud"/>
 <html:hidden property="idGuardia"/>
+<html:hidden property="porGrupos"/>
 <html:hidden property="guardiasSel"/>
 
 	<siga:TablaCabecerasFijas nombre="altaTurno" borde="2"

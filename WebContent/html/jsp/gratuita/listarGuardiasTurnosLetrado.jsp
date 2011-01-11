@@ -466,6 +466,8 @@
 				<input type='hidden' name='validaInscripciones' value='<%=htGuardia.get("VALIDARINSCRIPCIONES")%>'>
 				<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=htGuardia.get("IDTURNO")%>'>
 				<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=htGuardia.get("IDGUARDIA")%>'>
+				<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_22' value='<%=htGuardia.get("PORGRUPOS")%>'>
+				
 				<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=htGuardia.get("GUARDIAS")%>'>
 				<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=fechaSolicitud%>'>
 				<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_44' value='<%=fechaValidacion%>'>
@@ -527,6 +529,7 @@
 			<html:hidden property="idPersona" />
 			<html:hidden property="idTurno" />
 			<html:hidden property="idGuardia" />
+			<html:hidden property="porGrupos" />
 			<html:hidden property="fechaSolicitud"/>
 			<html:hidden property="observacionesSolicitud"/>
 			<html:hidden property="fechaValidacion"/>
@@ -569,9 +572,11 @@
 		{
 			var idTurno 				= 'oculto' + fila + '_' + 1;
 			var idGuardia 				= 'oculto' + fila + '_' + 2;
+			var porGrupos 				= 'oculto' + fila + '_' + 22;
 			var idPersona 				= 'oculto' + fila + '_' + 55;
 			document.FormASolicitar.idTurno.value = document.getElementById(idTurno).value;
 			document.FormASolicitar.idGuardia.value = document.getElementById(idGuardia).value;
+			document.FormASolicitar.porGrupos.value = document.getElementById(porGrupos).value;
 			document.FormASolicitar.idPersona.value = document.getElementById(idPersona).value;
 			document.FormASolicitar.idInstitucion.value = <%=usr.getLocation()%>;
 			document.FormASolicitar.fechaSolicitud.value = "";
