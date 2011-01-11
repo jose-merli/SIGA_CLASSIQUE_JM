@@ -1066,6 +1066,7 @@ public class CalendarioSJCS
 					diasGuardia.addAll(primerPeriodo);
 					diasGuardia.addAll(segundoPeriodo);
 				}
+				log.addLog(new String[] {" ", " "});
 				log.addLog(new String[] {"Dias", diasGuardia.toString()});
 
 				// obteniendo cola de letrados
@@ -1129,8 +1130,6 @@ public class CalendarioSJCS
 								this.almacenarAsignacionGuardia(calendario.getIdCalendarioGuardias(), alLetradosInsertar, segundoPeriodo, lDiasASeparar,
 										UtilidadesString.getMensajeIdioma(this.usrBean,
 												"gratuita.literal.comentario.sustitucion"));
-								log.addLog(new String[] {"FIN generacion", UtilidadesString.getMensajeIdioma(this.usrBean,
-										"gratuita.modalRegistro_DefinirCalendarioGuardia.literal.errorLetradosSuficientes")});
 							}
 						}
 						
@@ -1264,8 +1263,8 @@ public class CalendarioSJCS
 					diasGuardia = new ArrayList<String>();
 					diasGuardia.addAll(primerPeriodo);
 					diasGuardia.addAll(segundoPeriodo);
-					primerPeriodo = segundoPeriodo;
 				}
+				log.addLog(new String[] {" ", " "});
 				log.addLog(new String[] {"Dias", diasGuardia.toString()});
 
 				// obteniendo cola de letrados
@@ -1362,10 +1361,13 @@ public class CalendarioSJCS
 						this.almacenarAsignacionGuardia(calendario.getIdCalendarioGuardias(), alLetradosInsertar, segundoPeriodo, lDiasASeparar,
 								UtilidadesString.getMensajeIdioma(this.usrBean,
 										"gratuita.literal.comentario.sustitucion"));
-						log.addLog(new String[] {"Guardia vinculada", calendario.toString()});
 					}
 				}
 			} // FIN Para cada dia o conjunto de dias
+			
+			// avanzando el puntero de dia en el caso de guardias vinculadas
+			if (this.calendariosVinculados != null)
+				primerPeriodo = segundoPeriodo;
 
 		} catch (SIGAException e) {
 			throw e;

@@ -1740,7 +1740,8 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 			Vector<ScsCalendarioGuardiasBean> calendariosVinculados = new Vector<ScsCalendarioGuardiasBean>();
 			for (ScsGuardiasTurnoBean guardia : guardiasVinculadas) {
 				lineaLog = new ArrayList<String>();
-				lineaLog.add("Creando calendario para guardia vinculada '" +guardia.getNombre()+"'...");
+				lineaLog.add("Creando calendario para:");
+				lineaLog.add("Guardia vinculada '" +guardia.getNombre()+"'...");
 				if ((idCalendario = this.crearCalendario(guardia.getIdInstitucion().toString(), guardia.getIdTurno()
 						.toString(), guardia.getIdGuardia().toString(), fechaDesde, fechaHasta, observaciones, usr)) > 0) {
 					lineaLog.add("OK");
