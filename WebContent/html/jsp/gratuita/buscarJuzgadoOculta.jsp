@@ -78,7 +78,6 @@
 	    		if (nombreObjetoDestino != null && !nombreObjetoDestino.equals("")&& nombreObjetoDestino.equals("TRESFRAMES")){%>
 	        		window.parent.parent.parent.traspasoDatos(aux);
 	   			<%}else{// venimos de una ventana modal%>
-	   					alert("Entramos??");
 	      				window.parent.traspasoDatos(aux);
 	  			<% } 
 	  		}
