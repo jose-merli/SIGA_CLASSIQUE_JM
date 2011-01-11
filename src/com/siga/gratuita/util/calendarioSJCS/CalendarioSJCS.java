@@ -1065,7 +1065,6 @@ public class CalendarioSJCS
 					diasGuardia = new ArrayList<String>();
 					diasGuardia.addAll(primerPeriodo);
 					diasGuardia.addAll(segundoPeriodo);
-					primerPeriodo = segundoPeriodo;
 				}
 				log.addLog(new String[] {"Dias", diasGuardia.toString()});
 
@@ -1164,6 +1163,10 @@ public class CalendarioSJCS
 					guardiaAdm.cambiarUltimoCola(unLetrado.getIdInstitucion(), unLetrado.getIdTurno(), 
 							unLetrado.getIdGuardia(), unLetrado.getIdPersona(), 
 							unLetrado.getInscripcionGuardia().getFechaSuscripcion());
+				
+				// avanzando el puntero de dia en el caso de guardias vinculadas
+				if (this.calendariosVinculados != null)
+					primerPeriodo = segundoPeriodo;
 			} // FIN Para cada dia o conjunto de dias
 
 		} catch (SIGAException e) {
