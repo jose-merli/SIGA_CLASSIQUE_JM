@@ -241,9 +241,9 @@
 
 <table border="0" style="table-layout:fixed;" cellpadding="2" cellspacing="2" width="99%" align="center">
   	<tr style="display:none">
-	  <td width="46%" style="vertical-align: top"></td>
+	  <td width="59%" style="vertical-align: top"></td>
 	  <td width="1%"  style="vertical-align: top"></td>
-	  <td width="51%" style="vertical-align: top"></td>
+	  <td width="40%" style="vertical-align: top"></td>
 	</tr>
   	<tr>
 	  <td colspan="3" style="vertical-align: top">
@@ -283,14 +283,14 @@
 	
 		<table id='tituloTablaLetrados' border='1' width='100%' cellspacing='0' cellpadding='0' style="border-bottom:none">
 		  <tr class = 'tableTitle'>
-			<td align='center' width='69%'>
-				<siga:Idioma key="gratuita.colaOficio.literal.letradosInscritos"/>:&nbsp;&nbsp;<%=nListad%> 
-			</td>
 			<td align='center' width='31%'>
 				<input id="buscarLetrado" type="text" class="box" size="10" value="<%=literalNColegiado%>"  
 				onfocus="limpiarTexto(this, 1);" onblur="buscarLetradoEnColaLetrado();limpiarTexto(this, 0);">
 				&nbsp;
 				<img src="/SIGA/html/imagenes/bconsultar_off.gif" style="cursor:hand;" onClick="buscarLetradoEnColaLetrado();" alt="<%=buscarLetrado%>" >
+			</td>
+			<td align='center' width='69%'>
+				<siga:Idioma key="gratuita.colaOficio.literal.letradosInscritos"/>:&nbsp;&nbsp;<%=nListad%> 
 			</td>
 		  </tr>
 		  
@@ -301,7 +301,7 @@
 		   nombre="tablaLetrados"
 		   borde="1"
 		   clase="tableTitle"
-		   tamanoCol="14,40,18,18,10"
+		   tamanoCol="16,38,18,18,10";
 		   nombreCol="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,F.Val,F.Baja,"
 		   alto="450"
 		   ajusteAlto="">
@@ -333,15 +333,16 @@
 			String numeroColegiadoBusqueda = "" + i + "_" + ncolegiado;
 %>
 			<!-- REGISTRO  -->
-			
-  			<tr class="listaNonEdit">
+			<tr class="<%=((i + 1) % 2 == 0
+								? "filaTablaPar"
+								: "filaTablaImpar")%>">
 				<td>
 					<input name="numeroColegiadoBusqueda" type="hidden" class="box" size="10" value="<%=numeroColegiadoBusqueda%>" >
 					<input name="idPersona_<%=i+1%>" type="hidden" class="box" size="10" value="<%=idPersona%>" >
 					<%=ncolegiado%>
 				</td>
 				<td>
-					<%=nombre+apellido1+" "+apellido2%>
+					<%=nombre + " " + apellido1 + " " + apellido2%>
 				</td>
 				
 				<td>
@@ -393,8 +394,8 @@
 		   nombre="tablaCompensaciones"
 		   borde="1"
 		   clase="tableTitle"
-		   tamanoCol="18,20,40,22"
-		   nombreCol="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,gratuita.turnos.literal.apellidosSolo,gratuita.turnos.literal.compensaciones"
+		   tamanoCol="22,50,28"
+		   nombreCol="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,gratuita.turnos.literal.compensaciones"
 		   alto="170"
 		   ajusteAlto="">
 
@@ -426,10 +427,7 @@
 					<%=ncolegiado%>
 				</td>
 				<td>
-					<%=nombre%>
-				</td>
-				<td>
-					<%=apellido1+" "+apellido2%>
+					<%=nombre+" "+apellido1+" "+apellido2%>
 				</td>
 				<td>
 					<%=numero%>
@@ -461,8 +459,8 @@
 		   nombre="tablaSaltos"
 		   borde="1"
 		   clase="tableTitle"
-		   tamanoCol="18,20,40,22"
-		   nombreCol="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,gratuita.turnos.literal.apellidosSolo,gratuita.turnos.literal.saltos"
+		   tamanoCol="22,50,28"
+		   nombreCol="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,gratuita.turnos.literal.saltos"
 		   alto="170"
 		   ajusteAlto="">
 
@@ -494,10 +492,7 @@
 					<%=ncolegiado %>
 				</td>
 				<td>
-					<%=nombre%>
-				</td>
-				<td>
-					<%=apellido1+" "+apellido2%>
+					<%=nombre+" "+apellido1+" "+apellido2%>
 				</td>
 				<td>
 					<%=numero%>
