@@ -1442,8 +1442,9 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			if (!subConsulta2.equals("")){
 				consulta+=subConsulta2;
 			}
-			
-			consulta+=" order by des.idturno, des.anio desc, des.numero desc";
+			// jbd // inc7744 // Cambiamos el order by porque parece que afecta a la query cuando se busca por colegiado
+			// consulta+=" order by des.idturno, des.anio desc, des.numero desc";
+			consulta+=" order by des.anio desc, des.codigo desc";
       // No utilizamos la clase Paginador para la busqueda de letrados porque al filtrar por residencia la consulta no devolvia bien los 
       //  datos que eran de tipo varchar (devolvía n veces el mismo resultado), utilizamos el paginador PaginadorCaseSensitive
        // y hacemos a parte el tratamiento de mayusculas y signos de acentuación
