@@ -49,7 +49,7 @@ public class ClsConstants {
 	public static final int TIPO_IDENTIFICACION_OTRO	 	= 50;
 	
 	// Tipo persona
-	public static final String TIPO_IDPERSONA_FISICA	 	= "F";
+	//public static final String TIPO_IDPERSONA_FISICA	 	= "F";
 	
 	
 	// Para la busqueda experta de criterios dinamicos
@@ -310,8 +310,8 @@ public class ClsConstants {
 	  public static final String DATE_FORMAT_SQL=initProperties.getString("init.database.sql.date.format");
 	  public static final String TIMESTAMP_FORMAT_SQL=initProperties.getString("init.database.sql.timestamp.format");
 	  // RGG 29-12-2004
-	  public static final String TIPO_PERSONA_FISICA=initProperties.getString("init.database.flag.true");
-	  public static final String TIPO_PERSONA_JURIDICA=initProperties.getString("init.database.flag.false");
+	  public static final String TIPO_PERSONA_FISICA="F";
+	  public static final String TIPO_PERSONA_JURIDICA="J";
 	  public static final String TIPO_SEXO_HOMBRE="H";
 	  public static final String TIPO_SEXO_MUJER="M";
 	  // RGG 13-01-2005
