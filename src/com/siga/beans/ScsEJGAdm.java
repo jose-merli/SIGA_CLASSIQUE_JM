@@ -3704,7 +3704,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	
 	
 	public Vector getColegiadoSalida (String idInstitucionDesigna, String idPersonaDesigna,
-			String idioma,String aliasSalida) throws ClsExceptions  
+			String aliasSalida) throws ClsExceptions  
 	{
 		try {
 			Hashtable htCodigos = new Hashtable();
@@ -3895,7 +3895,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				String idLetradoEjg  = (String)registro.get("IDPERSONA");
 				if(idLetradoEjg!=null && !idLetradoEjg.trim().equalsIgnoreCase("")){
 					helperInformes.completarHashSalida(registro,getColegiadoSalida(idInstitucion, 
-							idLetradoEjg,idioma,"LETRADO"));
+							idLetradoEjg,"LETRADO"));
 					String sexoLetradoEjg  = (String)registro.get("SEXO_ST_LETRADO");
 					sexoLetradoEjg = UtilidadesString.getMensajeIdioma(usrbean, sexoLetradoEjg);
 					registro.put("SEXO_LETRADO", sexoLetradoEjg);
@@ -4366,7 +4366,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 					 
 					if(idLetradoDesigna!=null && !idLetradoDesigna.trim().equals("")){
 						helperInformes.completarHashSalida(registro,getColegiadoSalida(idInstitucionLetradoDesigna, 
-								idLetradoDesigna,idioma,"LETRADO_DESIGNADO"));
+								idLetradoDesigna,"LETRADO_DESIGNADO"));
 						String sexoLetrado  = (String)registro.get("SEXO_ST_LETRADO_DESIGNADO");
 						sexoLetrado = UtilidadesString.getMensajeIdioma(usrbean, sexoLetrado);
 						registro.put("SEXO_LETRADO_DESIGNADO", sexoLetrado);
