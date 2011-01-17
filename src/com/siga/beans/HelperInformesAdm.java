@@ -226,13 +226,13 @@ public class HelperInformesAdm  {
 			throw new ClsExceptions (e, "Error al obtener getTurnoSalida.");
 		}
 	}
-	public Vector getTipoDesignaColegio (String idInstitucion, String idTipoDesigna) throws ClsExceptions  
+	public Vector getTipoDesignaColegio (String idInstitucion, String idTipoDesigna,String idioma) throws ClsExceptions  
 	{
 		try {
 			Hashtable h = new Hashtable();
 			h.put(new Integer(1), idInstitucion);
 			h.put(new Integer(2), idTipoDesigna);
-			String sql = "SELECT f_siga_getrecurso(SCS_TIPODESIGNACOLEGIO.DESCRIPCION,1) AS DESC_TIPODESIGNA "
+			String sql = "SELECT f_siga_getrecurso(SCS_TIPODESIGNACOLEGIO.DESCRIPCION,"+idioma+") AS DESC_TIPODESIGNA "
 				+" FROM SCS_TIPODESIGNACOLEGIO "
 				+" WHERE " 
 				+" SCS_TIPODESIGNACOLEGIO.IDINSTITUCION = :1 "
