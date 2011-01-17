@@ -135,6 +135,8 @@ public class EnvioInformesGenericos extends MasterReport {
 		//Velores comunes para la obttencion de los datos del informe
 		String idTipoInforme = (String) datosInforme.get("idTipoInforme");
 		
+	
+		
 		String idioma = (String) datosInforme.get("idioma");
 
 		if (idTipoInforme.equals(EnvioInformesGenericos.comunicacionesCenso)) {
@@ -369,8 +371,8 @@ public class EnvioInformesGenericos extends MasterReport {
 			String idPersonaJG = (String) datosInforme.get("idPersonaJG");
 
 			boolean isSolicitantes = aSolicitantes!=null && aSolicitantes.equalsIgnoreCase("S");
-
-			Vector datosconsulta= scsDesignaAdm.getDatosSalidaOficio(idinstitucion,idTurno,anio,numero,null,isSolicitantes,idPersonaJG, idioma);
+			String languageInstitucion=(String) 	usrBean.getLanguageInstitucion();
+			Vector datosconsulta= scsDesignaAdm.getDatosSalidaOficio(idinstitucion,idTurno,anio,numero,null,isSolicitantes,idPersonaJG,languageInstitucion,idioma);
 			htDatosInforme.put("row", datosconsulta);
 
 
@@ -419,13 +421,25 @@ public class EnvioInformesGenericos extends MasterReport {
 
 		Vector vDocumentos = new Vector();
 		String idiomaExt = (String) datosInforme.get("idiomaExt");
-		if (idiomaExt == null || idiomaExt.equals(""))
+		/*if (idiomaExt == null || idiomaExt.equals(""))
 			idiomaExt = usrBean.getLanguageExt();
-		datosInforme.put("idiomaExt", idiomaExt);
+		datosInforme.put("idiomaExt", idiomaExt);*/
 
 		String idioma = (String) datosInforme.get("idioma");
 		if (idioma == null || idioma.equals(""))
-			idioma = usrBean.getLanguage();		
+			idioma = usrBean.getLanguageInstitucion();//.getLanguage();
+		
+		switch (Integer.parseInt(idioma)) {
+			case 1:  idiomaExt="ES"; break;
+			case 2:  idiomaExt="CA"; break;
+			case 3:  idiomaExt="EU"; break;
+			case 4:  idiomaExt="GL"; break;	
+		}
+		
+		if (idiomaExt!= null || !idiomaExt.equals("")){
+			datosInforme.put("idiomaExt", idiomaExt);
+		}
+
 		
 		datosInforme.put("idioma", idioma);
 		String idPersona = (String) datosInforme.get("idPersona");
@@ -484,8 +498,7 @@ public class EnvioInformesGenericos extends MasterReport {
 	
 					}else{
 						//datosconsulta =	clase.getDatosPlantillas(idinstitucion,anio,idturno,numero,
-						//usr.getLanguage(),isSolicitantes,idPersonaJG, codigo);
-	
+						//usr.getLanguage(),isSolicitantes,idPersonaJG, codigo);	
 						htDatosInformeFinal = getDatosInformeFinal(datosInforme,
 								usrBean);
 						hashConsultasHechas.put(keyConsultasHechas, htDatosInformeFinal);
@@ -497,7 +510,8 @@ public class EnvioInformesGenericos extends MasterReport {
 						Hashtable htDatosInforme = new Hashtable();
 						htDatosInforme.put("row", datosInformeK);
 						String codigo = (String) datosInformeK.get("CODIGO");
-						String ncolegiado ="" ;				
+						String ncolegiado ="" ;			
+						String idiomaLetrado = (String)datosInformeK.get("IDIOMA_LETRADO");
 						if (datosInformeK.get("NCOLEGIADO_LETRADO")!=null){
 							ncolegiado=(String)UtilidadesHash.getString(datosInformeK,"NCOLEGIADO_LETRADO");
 						}else{
@@ -512,8 +526,19 @@ public class EnvioInformesGenericos extends MasterReport {
 						 String idiomainteresado= (String) datosInformeK.get("CODIGOLENGUAJE");
 						 if (idiomainteresado!=null && !idiomainteresado.trim().equals("")){												
 								idiomaExt=(String)UtilidadesHash.getString(datosInformeK,"CODIGOLENGUAJE");
-							}else
-								idiomaExt= (String) datosInforme.get("idiomaExt");
+							}else{
+								if (idiomaLetrado!=null && !idiomaLetrado.trim().equals("")){																		
+									switch (Integer.parseInt(idiomaLetrado)) {
+										case 1:  idiomaExt="ES"; break;
+										case 2:  idiomaExt="CA"; break;
+										case 3:  idiomaExt="EU"; break;
+										case 4:  idiomaExt="GL"; break;	
+									}
+								}else{
+									idiomaExt= (String) datosInforme.get("idiomaExt");
+								}
+							}
+								
 						 
 						identificador= new StringBuffer();
 						identificador.append(ncolegiado);
