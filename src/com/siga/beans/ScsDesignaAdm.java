@@ -1903,7 +1903,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 						if (vtipoejgcolegiodesigna.size()==0){
 							registro.put("TIPO_EJG_COLEGIO", " ");
 						}
-								
+						
 				//Sacamos los datos de la ultima Actuacion
 				helperInformes.completarHashSalida(registro,getUltimaActuacionDesignaSalida(idInstitucion,numeroDesigna,idTurno,anioDesigna));
 				if(registro.containsKey("NUMASUNTO_UA") && registro.get("NUMASUNTO_UA")!=null && !((String)registro.get("NUMASUNTO_UA")).trim().equals("")){
@@ -2050,8 +2050,24 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 								registroDefendido.put("DESC_TIPODESIGNA", " ");
 							}
 				
-				
-							
+				       /**Sacamos la etiqueta TIPO_EJG_COLEGIO en el idioma del interesado si este no tiene idioma se saca en el idioma de la institucion**/
+						Vector vtipoejgcolegiodesigna1=getTipoEJGColegioDesigna(idTurno, numeroDesigna, anioDesigna, idInstitucion, idLenguaje);
+					
+					
+						for (int s = 0; s < vtipoejgcolegiodesigna1.size(); s++) {
+							Hashtable registropretenciones = (Hashtable) vtipoejgcolegiodesigna1.get(s);
+							String tipoejgDesigna = (String)registropretenciones.get("TIPO_EJG_COLEGIO");
+							if(tipoejgDesigna!=null && !tipoejgDesigna.trim().equalsIgnoreCase("")){
+								registroDefendido.put("TIPO_EJG_COLEGIO", tipoejgDesigna);
+							}else{
+								registroDefendido.put("TIPO_EJG_COLEGIO", " ");
+							}
+						}
+						
+						if (vtipoejgcolegiodesigna1.size()==0){
+							registroDefendido.put("TIPO_EJG_COLEGIO", " ");
+						}
+						
 							clone.putAll(registroDefendido);							
 							
 							vSalida.add(clone);
