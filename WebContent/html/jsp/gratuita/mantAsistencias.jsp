@@ -27,7 +27,7 @@
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
 	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
 	// Validamos si es una consulta o no.
-	String modo = request.getParameter("MODO");
+	String modo = request.getParameter("MODO")!=null?request.getParameter("MODO"):"";
 	String accion = (String) request.getSession().getAttribute("accion");
 
 	boolean esFichaColegial = false;
@@ -61,6 +61,7 @@
 	String NOMBRELETRADO 		= (String) hash.get("NOMBRELETRADO");
 	String APELLIDO1LETRADO 	= (String) hash.get("APELLIDO1LETRADO");
 	String APELLIDO2LETRADO 	= (String) hash.get("APELLIDO2LETRADO");
+	String IDPERSONACOLEGIADO 	= (String) hash.get("IDPERSONACOLEGIADO");
 	String ANIOEJG 				= (String) hash.get("ANIOEJG");
 	String NUMEROEJG 			= (String) hash.get("NUMEROEJG");
 	String CODIGO_EJG			= (String) hash.get("CODIGO_EJG");
@@ -273,6 +274,8 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 <html:hidden property = "idGuardia"    		value= "<%=IDGUARDIA%>"/>
 <html:hidden property = "nombreColegiado"  	value= "<%=nombreCompletoLetrado%>"/>
 <html:hidden property = "numeroColegiado"  	value= "<%=NUMEROCOLEGIADO%>"/>
+<html:hidden property = "idPersona"  		value= "<%=IDPERSONACOLEGIADO%>"/>
+<html:hidden property = "fechaHora"  		value= "<%=FECHAHORA%>"/>
 
 <tr>
 <td valign="top">	
@@ -748,6 +751,11 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 		<input type="hidden" name="modo"        value="buscarComisaria">
 		<html:hidden property = "codigoExtBusqueda" value=""/>
 	</html:form>
+	
+	<html:form action = "/JGR_Asistencia.do" method="POST" target="submitArea">
+	<input type="hidden" name="modo" value="editar">
+	</html:form>
+	
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
 	
@@ -956,7 +964,20 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 //		 seleccionComboSiga("comisaria",resultado[0]);
 		 document.forms[0].comisaria.value=resultado[0];
 		}	
-		
+
+		<!-- Asociada al boton Nuevo-->
+		function accionNuevo()
+		{	
+			document.forms[0].modo.value = "nuevo";
+			document.forms[0].target     = "mainWorkArea";
+   			var resultado = ventaModalGeneral(document.forms[0].name,"M");
+   			if(resultado == "MODIFICADO") {
+   				document.forms[7].modo.value		= "editar";
+				document.forms[7].target	= "mainWorkArea";
+				document.forms[7].submit();
+				
+	   		}
+		}
 	</script>
 
 	
@@ -964,7 +985,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 <%	String botonesDesignaEJG = "";
 
 	if(accion != null && accion.equalsIgnoreCase("modificar")){
- 		botonesDesignaEJG = esFichaColegial ? "g,r" : "g,r,v";
+ 		botonesDesignaEJG = esFichaColegial ? "g,r" : "n,g,r,v";
 	}else{
  		botonesDesignaEJG = esFichaColegial ? "" : "v";
 	}

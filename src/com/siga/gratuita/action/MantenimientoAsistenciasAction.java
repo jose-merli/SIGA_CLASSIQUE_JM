@@ -1,7 +1,7 @@
 package com.siga.gratuita.action;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -17,7 +17,9 @@ import org.apache.struts.action.ActionMapping;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
+import com.atos.utils.ReadProperties;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.Utilidades.UtilidadesString;
@@ -35,7 +37,6 @@ import com.siga.beans.ScsCabeceraGuardiasBean;
 import com.siga.beans.ScsCalendarioLaboralAdm;
 import com.siga.beans.ScsDesignaAdm;
 import com.siga.beans.ScsEJGAdm;
-import com.siga.beans.ScsEJGBean;
 import com.siga.beans.ScsEJGDESIGNAAdm;
 import com.siga.beans.ScsEJGDESIGNABean;
 import com.siga.beans.ScsGuardiasColegiadoAdm;
@@ -115,9 +116,10 @@ public class MantenimientoAsistenciasAction extends MasterAction
 		
 		HttpSession ses = request.getSession();
 		UsrBean usr 	= (UsrBean)ses.getAttribute("USRBEAN");
-		String anio 	= request.getParameter("ANIO");
-		String numero 	= request.getParameter("NUMERO");
-		String modo	 	= request.getParameter("MODO");
+		String anio 	= (String) (request.getParameter("ANIO")!=null?request.getParameter("ANIO"):request.getSession().getAttribute("Asistencia_ANIO"));
+		String numero 	= (String) (request.getParameter("NUMERO")!=null?request.getParameter("NUMERO"):request.getSession().getAttribute("Asistencia_NUMERO"));;
+		String modo	 	= (String) (request.getParameter("MODO")!=null?request.getParameter("MODO"):request.getSession().getAttribute("MODO"));;;
+		
 		request.getSession().removeAttribute("accion");
 		if(modo.equalsIgnoreCase("editar")) 
 			request.getSession().setAttribute("accion","modificar");
@@ -134,7 +136,7 @@ public class MantenimientoAsistenciasAction extends MasterAction
 							" A.IDTIPOASISTENCIA TIPOASISTENCIA,A.IDTIPOASISTENCIACOLEGIO TIPOASISTENCIACOLEGIO,"+ 
 							" A.FECHAHORA FECHAHORA, A.FECHACIERRE FECHACIERRE, A.OBSERVACIONES OBSERVACIONES,"+
 							" A.INCIDENCIAS INCIDENCIAS, I.NIFCIF NIFLETRADO, I.NOMBRE NOMBRELETRADO, I.APELLIDOS1 APELLIDO1LETRADO,"+
-							" I.APELLIDOS2 APELLIDO2LETRADO, H.NCOLEGIADO NUMEROCOLEGIADO, D.CODIGO CODIGO, " +
+							" I.APELLIDOS2 APELLIDO2LETRADO, I.IDPERSONA IDPERSONACOLEGIADO, H.NCOLEGIADO NUMEROCOLEGIADO, D.CODIGO CODIGO, " +
 							" A." + ScsAsistenciasBean.C_NUMERODILIGENCIA + " " + ScsAsistenciasBean.C_NUMERODILIGENCIA + ", " +
 							" A." + ScsAsistenciasBean.C_NUMEROPROCEDIMIENTO + " " + ScsAsistenciasBean.C_NUMEROPROCEDIMIENTO + ", " +
 							" A." + ScsAsistenciasBean.C_JUZGADO + " " + ScsAsistenciasBean.C_JUZGADO + ", " +
@@ -428,7 +430,10 @@ public class MantenimientoAsistenciasAction extends MasterAction
 			String idGuardia = miForm.getIdGuardia();
 			String salto = request.getParameter("checkSalto");
 			String compensacion = request.getParameter("checkCompensacion");
-			String idTipoAsistencia = miForm.getIdTipoAsistencia();
+
+			ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			String idTipoAsistencia  = rp.returnProperty("codigo.general.scs_tipoasistencia.tipoGeneral");
+			//String idTipoAsistencia = miForm.getIdTipoAsistencia();
 			String idTipoAsistenciaColegio = miForm.getIdTipoAsistenciaColegio();
 			String anio = miForm.getFechaHora().substring(6);
 			String fecha = GstDate.getApplicationFormatDate(usr.getLanguage(),miForm.getFechaHora());
@@ -549,10 +554,43 @@ public class MantenimientoAsistenciasAction extends MasterAction
 			String numero = asistencias.getNumeroAsistencia(usr.getLocation(), Integer.parseInt(anio));
 			String estadoAsistencia = "1";	// Activo
 			asistencias.insertarNuevaAsistencia(usr.getLocation(), anio,numero, fecha, idTurno, idGuardia, idTipoAsistencia, idTipoAsistenciaColegio,idPersona, estadoAsistencia);
+			
+			// Si estamos clonando puede que necesitemos meter el juzgado y comisaria
+			// Esto lo hacemos con un update por no modificar el insert, que podria dar problemas ya que se llama desde mas sitios
+			Hashtable hash = new Hashtable();
+			String juzgado = request.getParameter("juzgado");
+			String comisaria = request.getParameter("comisaria");
+			if((juzgado!=null&&!juzgado.equalsIgnoreCase("")) || comisaria!=null&&!comisaria.equalsIgnoreCase("")){
+				UtilidadesHash.set(hash, ScsAsistenciasBean.C_IDINSTITUCION, usr.getLocation());
+				UtilidadesHash.set(hash, ScsAsistenciasBean.C_ANIO, anio);
+				UtilidadesHash.set(hash, ScsAsistenciasBean.C_NUMERO, numero);
+				ArrayList<String> camposAct = new ArrayList<String>();
+				if (juzgado != null && !juzgado.equals("")) {
+					String a[] = juzgado.split(",");
+					UtilidadesHash.set(hash, ScsAsistenciasBean.C_JUZGADO, a[0].trim());
+					UtilidadesHash.set(hash, ScsAsistenciasBean.C_JUZGADO_IDINSTITUCION, a[1].trim());
+					camposAct.add(ScsAsistenciasBean.C_JUZGADO);
+					camposAct.add(ScsAsistenciasBean.C_JUZGADO_IDINSTITUCION);
+				}
+	
+				if (comisaria != null && !comisaria.equals("")) {
+					String a[] = comisaria.split(",");
+					UtilidadesHash.set(hash, ScsAsistenciasBean.C_COMISARIA, a[0].trim());
+					UtilidadesHash.set(hash, ScsAsistenciasBean.C_COMISARIA_IDINSTITUCION, a[1].trim());
+					camposAct.add(ScsAsistenciasBean.C_COMISARIA);
+					camposAct.add(ScsAsistenciasBean.C_COMISARIA_IDINSTITUCION);
+				}
+				
+				String claves [] ={ScsAsistenciasBean.C_ANIO,ScsAsistenciasBean.C_NUMERO, ScsAsistenciasBean.C_IDINSTITUCION};
+	
+				asistencias.updateDirect(hash,claves,camposAct.toArray(new String[camposAct.size()]));
+			}
+			//		
 				
 			// Para abrir la ventana de la asistencia
 			request.getSession().setAttribute("Asistencia_ANIO", anio);
 			request.getSession().setAttribute("Asistencia_NUMERO", numero);
+			request.getSession().setAttribute("MODO", "editar");
 
 			//Insertamos saltos y compensaciones si procede
 			String motivo = UtilidadesString.getMensajeIdioma(usr,"gratuita.literal.altaAsistencia.motivo");
