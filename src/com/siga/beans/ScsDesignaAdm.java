@@ -1956,7 +1956,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 							else
 								idLenguaje=(String)registroDefendido.get("IDLENGUAJE_DEFENDIDO");
 				              
-							
+							/**Depende del idioma del defendido se tiene que imprimir la carta del defendido, si no tiene idioma se imprime en el idioma de la institución.**/
 							String 	idiomaExt="";
 							switch (Integer.parseInt(idLenguaje)) {
 								case 1:  idiomaExt="ES"; break;
@@ -1964,7 +1964,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 								case 3:  idiomaExt="EU"; break;
 								case 4:  idiomaExt="GL"; break;	
 							}
-							
+							/**Para saaber en que idioma se tiene que imprimer la carta de oficio**/
 							registroDefendido.put("CODIGOLENGUAJE", idiomaExt);
 							
 							htCodigo = new Hashtable();
