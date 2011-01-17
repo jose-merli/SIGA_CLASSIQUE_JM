@@ -930,7 +930,7 @@ A.imageLink:active {
 	text-align: right;
 	color:#<%=src.get("color.labelText")%>;
 	padding-left: 7px;
-	padding-right: 10px;
+	padding-right: 7px;
 	padding-top: 1px;
 	padding-bottom: 1px;
 	margin:0px;
