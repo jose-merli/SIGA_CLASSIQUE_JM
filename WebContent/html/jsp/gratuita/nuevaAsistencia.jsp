@@ -74,16 +74,25 @@
 
 	function fLoad()
 	{
-		var tmp1 = document.getElementsByName("turnos");
-		var tmp2 = tmp1[0]; 
-		tmp2.onchange();
+		if("<%=request.getAttribute("mensaje")%>"!="null")
+		{
+		<% mensaje = (String)request.getAttribute("mensaje"); %>
+			alert("<%=mensaje%>");
+		}
+		<%if(bEsClonacion){%>
+			var tmp1 = document.getElementsByName("turnos");
+			var tmp2 = tmp1[0]; 
+			tmp2.onchange();
+		<%}%>
 	}
 
 	function cargarColegiado()
 	{
-		document.getElementById("nomColegiado").value="<%=nombreColegiado%>";
-		document.getElementById("colegiado").value="<%=numeroColegiado%>";
-		document.getElementById("idPersona").value="<%=idPersona%>";
+		<%if(bEsClonacion){%>
+			document.getElementById("nomColegiado").value="<%=nombreColegiado%>";
+			document.getElementById("colegiado").value="<%=numeroColegiado%>";
+			document.getElementById("idPersona").value="<%=idPersona%>";
+		<%}%>
 		
 	}
 
@@ -151,11 +160,6 @@
 				<siga:ComboBD nombre="guardias" tipo="guardias" clase="boxCombo" hijo="t" ancho="480"  accion="parent.rellenarComboLetrado();" parametro="<%=dato%>" elementoSel="<%=idGuardia%>" />
 			</td>	
 		</tr>
-		<script>
-
-			fLoad();
-		
-		</script>
 		<tr>
 			<td class="labelText">
 				<siga:Idioma key='gratuita.nuevaAsistencia.literal.tasistenciacolegio'/>&nbsp;(*)
@@ -165,6 +169,7 @@
 			</td>	
 		</tr>
 		
+
 <%if(bEsClonacion){%>
 		<tr>
 			<td class="labelText" style="vertical-align:text-top;text-align: left">
@@ -258,6 +263,7 @@
 	
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">
+
 
 		function rellenarComboLetrado(){
 			//Cuando es de ficha colegial no crea las funciones javascript que si genera el tag siga:BusquedaSJCS
@@ -389,6 +395,8 @@
 				alert("<siga:Idioma key='gratuita.nuevaAsistencia.mensaje.alert5' />");
 			return true;
 		}
+
+		fLoad();
 
 		cargarColegiado();
 	</script>
