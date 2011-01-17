@@ -924,7 +924,7 @@ public class PersonaJGAction extends MasterAction {
 			miform.setTipos(alTipos);	
 			//Para recuperar el tipo idpersona Juridica o Fisica si hay un dato ya guardado.
 			String idTipoPersona= miform.getIdTipoPersona();
-			if((idTipoPersona==null)||(miform.getIdTipoPersona().equals(ClsConstants.TIPO_IDPERSONA_FISICA))){			
+			if((idTipoPersona==null)||(miform.getIdTipoPersona().equals(ClsConstants.TIPO_PERSONA_FISICA))){			
 				List<CenTipoIdentificacionBean>  identificadores = tipoIdentificacionAdm.getTiposIdentificacion(ididioma);
 				if(identificadores==null){				
 					identificadores = new ArrayList<CenTipoIdentificacionBean>();		
