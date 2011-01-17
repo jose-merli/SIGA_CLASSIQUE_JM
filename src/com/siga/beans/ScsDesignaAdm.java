@@ -1636,9 +1636,9 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 	}
 	
 	
-	public Vector getDatosSalidaOficio (String idInstitucion, String idturno, String anio, String numero, String codigoDesigna, boolean isSolicitantes, String idPersonaJG, String idioma) throws ClsExceptions  
+	public Vector getDatosSalidaOficio (String idInstitucion, String idturno, String anio, String numero, String codigoDesigna, boolean isSolicitantes, String idPersonaJG, String languageInstitucion, String idioma) throws ClsExceptions  
 	{	 
-		Vector vSalida = null;
+	Vector vSalida = null;
 		HelperInformesAdm helperInformes = new HelperInformesAdm();	
 		try {
 			vSalida = new Vector();	
@@ -1653,6 +1653,11 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				String anioDesigna = (String)registro.get("ANIO");
 				String idTurno  = (String)registro.get("IDTURNO");
 				String idPersona  = (String)registro.get("IDPERSONA");
+				String idiomaletrado = (String)registro.get("IDIOMA_LETRADO");
+				
+				if (idiomaletrado!=null && !idiomaletrado.equals("")){
+					idioma=idiomaletrado;
+				}
 				if(numeroDesigna==null||numeroDesigna.trim().equals(""))
 					throw new ClsExceptions("Excepcion Controlada. Seguramente no tenga letrado");
 				
@@ -1662,7 +1667,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				String idTipoDesigna  = (String)registro.get("IDTIPODESIGNACOLEGIO");
 				//Metemos la descripcion del tipo de designa
 				if(idTipoDesigna!=null && !idTipoDesigna.trim().equals(""))
-					helperInformes.completarHashSalida(registro,helperInformes.getTipoDesignaColegio(idInstitucion,idTipoDesigna));
+					helperInformes.completarHashSalida(registro,helperInformes.getTipoDesignaColegio(idInstitucion,idTipoDesigna,idioma));
 				else
 					registro.put("DESC_TIPODESIGNA", " ");
 				
@@ -1724,7 +1729,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				    	Listadonumeroaniocajg+=","+numeroaniocajg;
 				    }
 					if(idLetradoEjg!=null && !idLetradoEjg.trim().equalsIgnoreCase("")){
-							Vtramitador=ejgadm.getColegiadoSalida(idInstitucion,idLetradoEjg,idioma,"TRAMITADOR_EGJ");							
+							Vtramitador=ejgadm.getColegiadoSalida(idInstitucion,idLetradoEjg,"TRAMITADOR_EGJ");							
 							for (int l = 0; l < Vtramitador.size(); l++) {							  
 									Hashtable registrotramitador = (Hashtable) Vtramitador.get(l);
 									String nombretramitador = (String)registrotramitador.get("NOMBRE_TRAMITADOR_EGJ");									
@@ -1881,8 +1886,24 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					registro.put("PROVINCIA_JUZGADO", " ");
 				}
 				//Sacamos el tipo ejg colegio (@cat)
-				helperInformes.completarHashSalida(registro, getTipoEJGColegioDesigna(idTurno, numeroDesigna, anioDesigna, idInstitucion, usrbean.getLanguage().toString()));
+				//helperInformes.completarHashSalida(registro, getTipoEJGColegioDesigna(idTurno, numeroDesigna, anioDesigna, idInstitucion, idioma));				
 				
+					Vector vtipoejgcolegiodesigna=getTipoEJGColegioDesigna(idTurno, numeroDesigna, anioDesigna, idInstitucion, idioma);
+					
+					
+						for (int s = 0; s < vtipoejgcolegiodesigna.size(); s++) {
+							Hashtable registropretenciones = (Hashtable) vtipoejgcolegiodesigna.get(s);
+							String tipoejgDesigna = (String)registropretenciones.get("TIPO_EJG_COLEGIO");
+							if(tipoejgDesigna!=null && !tipoejgDesigna.trim().equalsIgnoreCase("")){
+								registro.put("TIPO_EJG_COLEGIO", tipoejgDesigna);
+							}else{
+								registro.put("TIPO_EJG_COLEGIO", " ");
+							}
+						}
+						if (vtipoejgcolegiodesigna.size()==0){
+							registro.put("TIPO_EJG_COLEGIO", " ");
+						}
+								
 				//Sacamos los datos de la ultima Actuacion
 				helperInformes.completarHashSalida(registro,getUltimaActuacionDesignaSalida(idInstitucion,numeroDesigna,idTurno,anioDesigna));
 				if(registro.containsKey("NUMASUNTO_UA") && registro.get("NUMASUNTO_UA")!=null && !((String)registro.get("NUMASUNTO_UA")).trim().equals("")){
@@ -1908,9 +1929,16 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					registro.put("POBLACION_JUZGADO_UA", " ");
 					registro.put("IDPROCEDIMIENTO_UA", " ");
 					registro.put("PROCEDIMIENTO_UA", " ");
+					registro.put("CATEGORIA_UA", " ");
+					registro.put("IDJURISDICCION_UA", " ");
+					registro.put("IDINSTITUCION_JUZG_UA", " ");
+					registro.put("COMPLEMENTO_UA", " ");					
+					
+					
 				
 				}
 				if(isSolicitantes){
+						
 					Vector vDefendidos = getDefendidosDesignaSalidaOficio(idInstitucion,numeroDesigna,idTurno,anioDesigna,idPersonaJG, idioma);
 					if(vDefendidos!=null && vDefendidos.size()>0){
 						for (int k = 0; k < vDefendidos.size(); k++) {
@@ -1924,10 +1952,44 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 							
 							String idLenguaje="";							
 							if ((((String)registroDefendido.get("IDLENGUAJE_DEFENDIDO")).trim().equals(""))&&((String)registroDefendido.get("IDPERSONAINTERESADO")!=null))
-								idLenguaje=idioma;
+								idLenguaje=languageInstitucion;
 							else
 								idLenguaje=(String)registroDefendido.get("IDLENGUAJE_DEFENDIDO");
-				               		
+				              
+							
+							String 	idiomaExt="";
+							switch (Integer.parseInt(idLenguaje)) {
+								case 1:  idiomaExt="ES"; break;
+								case 2:  idiomaExt="CA"; break;
+								case 3:  idiomaExt="EU"; break;
+								case 4:  idiomaExt="GL"; break;	
+							}
+							
+							registroDefendido.put("CODIGOLENGUAJE", idiomaExt);
+							
+							htCodigo = new Hashtable();
+							String sexoDefendico="";
+							if((String)registroDefendido.get("SEXO_DEFENDIDO")!=null && !((String)registroDefendido.get("SEXO_DEFENDIDO")).trim().equals("")){
+								sexoDefendico=	(String)registroDefendido.get("SEXO_DEFENDIDO");
+								htCodigo.put(new Integer(1), sexoDefendico);
+								htCodigo.put(new Integer(2), idLenguaje);
+								helperInformes.completarHashSalida(registroDefendido,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETRECURSO_ETIQUETA", "SEXO_DEFENDIDO"));
+							}else{
+								registroDefendido.put("SEXO_DEFENDIDO", "");
+							}
+							htCodigo = new Hashtable();
+							String calidadDefendido="";
+							if((String)registroDefendido.get("CALIDAD_DEFENDIDO")!=null && !((String)registroDefendido.get("CALIDAD_DEFENDIDO")).trim().equals("")){
+								calidadDefendido=	(String)registroDefendido.get("CALIDAD_DEFENDIDO");
+								htCodigo.put(new Integer(1), calidadDefendido);
+								htCodigo.put(new Integer(2), idLenguaje);
+								helperInformes.completarHashSalida(registroDefendido,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETRECURSO", "CALIDAD_DEFENDIDO"));
+							}else{
+								registroDefendido.put("CALIDAD_DEFENDIDO", "");
+							}
+							
+							
+							
 							htCodigo = new Hashtable();
 							htCodigo.put(new Integer(1), idInstitucion);
 							htCodigo.put(new Integer(2), numeroDesigna);
@@ -1950,7 +2012,46 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 								registroDefendido.put("LISTA_TELEFONOS_INTERESADO", tInteresado);
 							}else
 								registroDefendido.put("LISTA_TELEFONOS_INTERESADO", "");
-								
+							
+							
+							if(Idpretension!=null && !Idpretension.trim().equalsIgnoreCase("")){			
+								Vector vpretenciones=ejgdm.getPretension(Idpretension, idInstitucion,idLenguaje);
+								for (int s = 0; s < vpretenciones.size(); s++) {
+									Hashtable registropretenciones = (Hashtable) vpretenciones.get(s);
+									String procedimiento1 = (String)registropretenciones.get("PRETENSION");
+									if(procedimiento1!=null && !procedimiento1.trim().equalsIgnoreCase(""))
+										registroDefendido.put("PROCEDIMIENTO_DESIGNA", procedimiento1);
+									else
+										registroDefendido.put("PROCEDIMIENTO_DESIGNA", "");
+								}							
+							
+							}else	registroDefendido.put("PROCEDIMIENTO_DESIGNA", "");	
+							
+							
+							helperInformes.completarHashSalida(registro,helperInformes.getTurnoSalida(idInstitucion,idTurno));
+				
+							//String idTipoDesigna1  = (String)registro.get("IDTIPODESIGNACOLEGIO");
+							//Metemos la descripcion del tipo de designa
+							Vector vtipoDesignaColegio=null;
+							if(idTipoDesigna!=null && !idTipoDesigna.trim().equals("")){
+								vtipoDesignaColegio=helperInformes.getTipoDesignaColegio(idInstitucion,idTipoDesigna,idLenguaje);
+								for (int s = 0; s < vtipoDesignaColegio.size(); s++) {
+									Hashtable tipodesignacolegio = (Hashtable) vtipoDesignaColegio.get(s);
+									String tipodesigna = (String)tipodesignacolegio.get("DESC_TIPODESIGNA");
+									if (!tipodesigna.equals("")&& tipodesigna!=null){
+										registroDefendido.put("DESC_TIPODESIGNA", tipodesigna);
+									}else {
+										registroDefendido.put("DESC_TIPODESIGNA", " ");
+									}
+								}
+							}
+								//helperInformes.completarHashSalida(registro,helperInformes.getTipoDesignaColegio(idInstitucion,idTipoDesigna,idLenguaje));
+							else{
+								registroDefendido.put("DESC_TIPODESIGNA", " ");
+							}
+				
+				
+							
 							clone.putAll(registroDefendido);							
 							
 							vSalida.add(clone);
@@ -1969,7 +2070,20 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					}	
 				
 				}else{
-					registro.put("LISTA_TELEFONOS_INTERESADO", "");		
+					registro.put("LISTA_TELEFONOS_INTERESADO", "");
+					registro.put("NUMERO_EJG", "");
+					registro.put("NIF_DEFENDIDO", "");
+					registro.put("NOMBRE_DEFENDIDO", "");
+					registro.put("DOMICILIO_DEFENDIDO", "");
+					registro.put("CP_DEFENDIDO", "");
+					registro.put("POBLACION_DEFENDIDO", "");
+					registro.put("PROVINCIA_DEFENDIDO", "");
+					registro.put("TELEFONO1_DEFENDIDO", "");
+					registro.put("SEXO_DEFENDIDO", "");
+					registro.put("IDLENGUAJE_DEFENDIDO", "");
+					registro.put("CALIDAD_DEFENDIDO", "");
+					registro.put("OBS_INTERESADO", "");
+					
 					htCodigo = new Hashtable();
 						htCodigo.put(new Integer(1), idInstitucion);
 						htCodigo.put(new Integer(2), numeroDesigna);
@@ -1982,11 +2096,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				}
 				
 				//nuevo
-				
-			
-				
-				
-			}
+		}
 			
 
 		}
@@ -2043,7 +2153,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				"       p.Nombre || ' ' || p.Apellidos1 || " +
 				"       Decode(p.Apellidos2, Null, '', ' ' || p.Apellidos2) || ' ' || " +
 				"       f_Siga_Calculoncolegiado(Let.Idinstitucion, Let.Idpersona) Letrado_Actual, " +
-				"        " +
+				"       (SELECT cli.Idlenguaje FROM Cen_Cliente cli Where cli.Idinstitucion = Let.Idinstitucion And cli.Idpersona = Let.Idpersona) as Idioma_Letrado,  " +
 				"       Pant.Nombre || ' ' || Pant.Apellidos1 || " +
 				"       Decode(Pant.Apellidos2, Null, '', ' ' || Pant.Apellidos2) || ' ' || " +
 				"       f_Siga_Calculoncolegiado(Letant.Idinstitucion, Letant.Idpersona) Ultimo_Letrado_Sustituido, " +
@@ -2115,31 +2225,31 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			h.put(new Integer(6), anio);
 			h.put(new Integer(7), idTurno);
 			h.put(new Integer(8), numero);
-			h.put(new Integer(9), this.usrbean.getLanguage());
-			h.put(new Integer(10), this.usrbean.getLanguage());
-			h.put(new Integer(11), idInstitucion);
-			h.put(new Integer(12), anio);
-			h.put(new Integer(13), idTurno);
-			h.put(new Integer(14), numero);
-			h.put(new Integer(15), idInstitucion);
-			h.put(new Integer(16), anio);
-			h.put(new Integer(17), idTurno);
-			h.put(new Integer(18), numero);
-			h.put(new Integer(19), idInstitucion);
-			h.put(new Integer(20), anio);
-			h.put(new Integer(21), idTurno);
-			h.put(new Integer(22), numero);
-			h.put(new Integer(23), idInstitucion);
-			h.put(new Integer(24), anio);
-			h.put(new Integer(25), idTurno);
-			h.put(new Integer(26), numero);
-			h.put(new Integer(27), idioma);
-			h.put(new Integer(28), idInstitucion);
-			h.put(new Integer(29), anio);
-			h.put(new Integer(30), idTurno);
-			h.put(new Integer(31), numero);
+			//h.put(new Integer(9), idioma);
+			//h.put(new Integer(9), idioma);
+			h.put(new Integer(9), idInstitucion);
+			h.put(new Integer(10), anio);
+			h.put(new Integer(11), idTurno);
+			h.put(new Integer(12), numero);
+			h.put(new Integer(13), idInstitucion);
+			h.put(new Integer(14), anio);
+			h.put(new Integer(15), idTurno);
+			h.put(new Integer(16), numero);
+			h.put(new Integer(17), idInstitucion);
+			h.put(new Integer(18), anio);
+			h.put(new Integer(19), idTurno);
+			h.put(new Integer(20), numero);
+			h.put(new Integer(21), idInstitucion);
+			h.put(new Integer(22), anio);
+			h.put(new Integer(23), idTurno);
+			h.put(new Integer(24), numero);
+			h.put(new Integer(25), idioma);
+			h.put(new Integer(26), idInstitucion);
+			h.put(new Integer(27), anio);
+			h.put(new Integer(28), idTurno);
+			h.put(new Integer(29), numero);
 			if (idPersonaJG!=null && !idPersonaJG.trim().equals("")) {
-				h.put(new Integer(32), idPersonaJG);
+				h.put(new Integer(30), idPersonaJG);
 			}
 			String sql = "SELECT INTERESADO.IDPERSONAJG IDPERSONAINTERESADO,INTERESADO.IDINSTITUCION,"+
 				" INTERESADO.IDTURNO,   INTERESADO.ANIO,   INTERESADO.NUMERO,"+
@@ -2168,10 +2278,10 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				" INTERESADO.NOMBRE_POB AS POBLACION_DEFENDIDO,"+
 				" INTERESADO.NOMBRE_PROV AS PROVINCIA_DEFENDIDO,"+
 				" INTERESADO.TELEFONO AS TELEFONO1_DEFENDIDO,"+
-				" f_siga_getrecurso_etiqueta(DECODE(INTERESADO.SEXO,  null,  null,  'M','gratuita.personaEJG.sexo.mujer',"+
-				" 'gratuita.personaEJG.sexo.hombre'),:9) AS SEXO_DEFENDIDO,"+
+				" DECODE(INTERESADO.SEXO,  null,  null,  'M','gratuita.personaEJG.sexo.mujer',"+
+				" 'gratuita.personaEJG.sexo.hombre') as SEXO_DEFENDIDO,"+				
 				" INTERESADO.IDLENGUAJE AS IDLENGUAJE_DEFENDIDO," +				
-				" (Select Decode(INTERESADO.Idtipoencalidad, Null,'', f_Siga_Getrecurso(Tipcal.Descripcion,:10)) "+
+				" (Select Decode(INTERESADO.Idtipoencalidad, Null,'', Tipcal.Descripcion) "+
                               "  From Scs_Tipoencalidad Tipcal Where Tipcal.Idtipoencalidad = INTERESADO.Idtipoencalidad "+
                               "  And Tipcal.Idinstitucion = INTERESADO.Calidadidinstitucion) AS CALIDAD_DEFENDIDO,"+               
                 " INTERESADO.OBSERVACIONES AS OBS_INTERESADO,"+
@@ -2179,10 +2289,10 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				" F_SIGA_GETCODIDIOMA(INTERESADO.IDLENGUAJE) AS CODIGOLENGUAJE,"+
 				"to_char(DECODE((select count(EJGDES1.idinstitucion) "+
 				"         from SCS_EJGDESIGNA EJGDES1 "+
-				"        where EJGDES1.IDINSTITUCION = :11 "+
-				"          and EJGDES1.ANIODESIGNA = :12 "+
-				"          and EJGDES1.IDTURNO = :13 "+
-				"          and EJGDES1.NUMERODESIGNA = :14), "+
+				"        where EJGDES1.IDINSTITUCION = :9 "+
+				"          and EJGDES1.ANIODESIGNA = :10 "+
+				"          and EJGDES1.IDTURNO = :11 "+
+				"          and EJGDES1.NUMERODESIGNA = :12), "+
 				"       1, "+
 				"       (select EJG.FECHARESOLUCIONCAJG "+
 				"          from scs_ejg ejg, scs_ejgdesigna ejgdes "+
@@ -2190,10 +2300,10 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				"           and ejg.numero = ejgdes.numeroejg "+
 				"           and ejg.idinstitucion = ejgdes.idinstitucion "+
 				"           and ejg.idtipoejg = ejgdes.idtipoejg "+
-				"           AND ejgdes.IDINSTITUCION = :15 "+
-				"           and ejgdes.ANIODESIGNA = :16 "+
-				"           and ejgdes.IDTURNO = :17 "+
-				"           and ejgdes.NUMERODESIGNA = :18), "+
+				"           AND ejgdes.IDINSTITUCION = :13 "+
+				"           and ejgdes.ANIODESIGNA = :14 "+
+				"           and ejgdes.IDTURNO = :15 "+
+				"           and ejgdes.NUMERODESIGNA = :16), "+
 				"       DECODE(INTERESADO.FECHARESOLUCIONCAJG, "+
 				"              NULL, "+
 				"              '', "+
@@ -2201,10 +2311,10 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				" pkg_siga_fecha_en_letra.F_SIGA_FECHACOMPLETAENLETRA(DECODE( " +
 				" (select count(EJGDES1.idinstitucion) " +
 				"     from SCS_EJGDESIGNA EJGDES1 " +
-				"    where EJGDES1.IDINSTITUCION = :19 " +
-				"      and EJGDES1.ANIODESIGNA = :20 " +
-				"      and EJGDES1.IDTURNO = :21 " +
-				"      and EJGDES1.NUMERODESIGNA = :22), " +
+				"    where EJGDES1.IDINSTITUCION = :17 " +
+				"      and EJGDES1.ANIODESIGNA = :18 " +
+				"      and EJGDES1.IDTURNO = :19 " +
+				"      and EJGDES1.NUMERODESIGNA = :20), " +
 				"   1, " +
 				"   (select EJG.FECHARESOLUCIONCAJG " +
 				"      from scs_ejg        ejg, " +
@@ -2217,22 +2327,22 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				"           ejgdes.idinstitucion " +
 				"       and ejg.idtipoejg = " +
 				"           ejgdes.idtipoejg " +
-				"       AND ejgdes.IDINSTITUCION = :23 " +
-				"       and ejgdes.ANIODESIGNA = :24 " +
-				"       and ejgdes.IDTURNO = :25 " +
-				"       and ejgdes.NUMERODESIGNA = :26), " +
+				"       AND ejgdes.IDINSTITUCION = :21 " +
+				"       and ejgdes.ANIODESIGNA = :22 " +
+				"       and ejgdes.IDTURNO = :23 " +
+				"       and ejgdes.NUMERODESIGNA = :24), " +
 				"   DECODE(INTERESADO.FECHARESOLUCIONCAJG, " +
 				"          NULL, " +
 				"          '', " +
 				"          INTERESADO.FECHARESOLUCIONCAJG)), " +
-				" 'dma',  :27) AS FECHARESOLUCIONCAJGLETRA " +
+				" 'dma',  :25) AS FECHARESOLUCIONCAJGLETRA " +
 				"   FROM V_SIGA_INTERESADOS_DESIGNA    INTERESADO"+
-				" WHERE INTERESADO.IDINSTITUCION = :28"+
-				" and INTERESADO.ANIO = :29"+
-				" and INTERESADO.IDTURNO = :30"+
-				" and INTERESADO.NUMERO = :31";
+				" WHERE INTERESADO.IDINSTITUCION = :26"+
+				" and INTERESADO.ANIO = :27"+
+				" and INTERESADO.IDTURNO = :28"+
+				" and INTERESADO.NUMERO = :29";
 				if (idPersonaJG!=null && !idPersonaJG.trim().equals("")) {
-					sql+= " and INTERESADO.IDPERSONAJG = :32";
+					sql+= " and INTERESADO.IDPERSONAJG = :30";
 				}
 				HelperInformesAdm helperInformes = new HelperInformesAdm();	
 				return helperInformes.ejecutaConsultaBind(sql, h);
