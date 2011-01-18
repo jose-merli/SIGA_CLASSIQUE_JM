@@ -386,5 +386,27 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
 		}
 		return ok;
 	}
+
+	public Integer getIdCalendarioPorFecha(String idInstitucion,
+			String idTurno,
+			String idGuardia,
+			String fecha)
+	{
+		StringBuffer where = new StringBuffer();
+		where.append(" Where Idinstitucion = " + idInstitucion + " ");
+		where.append("   And Idturno = " + idTurno + " ");
+		where.append("   And Idguardia = " + idGuardia + " ");
+		where.append("   And '" + fecha + "' Between Fechainicio And Fechafin ");
+
+		try {
+			Vector resultado = this.select(where.toString());
+			if (resultado != null && resultado.size() > 0)
+				return ((ScsCalendarioGuardiasBean) resultado.get(0)).getIdCalendarioGuardias();
+			else
+				return null;
+		} catch (ClsExceptions e) {
+			return null;
+		}
+	}
 	
 }

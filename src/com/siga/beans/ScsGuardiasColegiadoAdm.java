@@ -977,7 +977,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		consulta.append ("          where "+ScsIncompatibilidadGuardiasBean.C_IDINSTITUCION+" = "+idInstitucion);
 		consulta.append ("            and "+ScsIncompatibilidadGuardiasBean.C_IDTURNO+" = "+idTurno);
 		consulta.append ("            and "+ScsIncompatibilidadGuardiasBean.C_IDGUARDIA+" = "+idGuardia);
-		consulta.append ("         UNION ");
+		consulta.append ("         UNION "); //OJO: es necesario mirar ambas, para que funcione igual que se muestra
 		consulta.append ("         select "+ScsIncompatibilidadGuardiasBean.C_IDINSTITUCION+", ");
 		consulta.append ("                "+ScsIncompatibilidadGuardiasBean.C_IDTURNO+", ");
 		consulta.append ("                "+ScsIncompatibilidadGuardiasBean.C_IDGUARDIA+", ");
@@ -1012,7 +1012,10 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		}
 		return !encontrado;
 	}
-	public void insertarCabeceraYGuardia(Integer idInstitucion,	Integer idTurno,Integer idGuardia
+	/**
+	 * Usar insertarGuardiaManual() en vez de este metodo
+	 */
+	@Deprecated public void insertarCabeceraYGuardia(Integer idInstitucion,	Integer idTurno,Integer idGuardia
 			,Integer idCalendarioGuardia,Long idPersona,String fecha,UsrBean usrBean) throws SIGAException,ClsExceptions{
 		ScsCabeceraGuardiasAdm cabeceraGuardiasAdm = new ScsCabeceraGuardiasAdm(usrBean);
 		ScsGuardiasColegiadoAdm guardiasColegiadoAdm = new ScsGuardiasColegiadoAdm(usrBean);
@@ -1708,103 +1711,103 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 
 	}
 	
-	public void insertarGuardiaManual(String idInstitucion, String idTurno, 
-			String idGuardia, String idPersonaEntrante, 
-			Integer indicePeriodo,String fechaInicio,String fechaFin, UsrBean usr) throws ClsExceptions, SIGAException{
-			Integer idCalendarioGuardias = null;//miForm.getIdCalendarioGuardias();
-			Long idPersona = new Long(idPersonaEntrante);// miForm.getIdPersona();
+	/**
+	 * Crea una guardia (cabecera y dias) dada una fecha.<br>
+	 * Este metodo se utiliza por Volantes Expres y en Calendario > Nuevo Letrado
+	 */
+	public void insertarGuardiaManual(String idInstitucion,
+			String idTurno,
+			String idGuardia,
+			String idPersonaEntrante,
+			Integer indicePeriodo,
+			String fechaInicio,
+			String fechaFin,
+			UsrBean usr) throws ClsExceptions, SIGAException
+	{
+		// Controles
+		ScsCalendarioGuardiasAdm calAdm = new ScsCalendarioGuardiasAdm(usr);
+		CenPersonaAdm perAdm = new CenPersonaAdm(usr);
+		ScsCabeceraGuardiasAdm cabeceraAdm = new ScsCabeceraGuardiasAdm(usr);
+		
+		// Variables
+		Long idPersona = new Long(idPersonaEntrante);// miForm.getIdPersona();
+		Integer idCalendarioGuardias;// miForm.getIdCalendarioGuardias();
+		String fechaInicioCalendario;
+		String fechaFinCalendario;
+		int indexPeriodo;// Integer.parseInt(miForm.getIndicePeriodo());
+
+		// obteniendo calendario donde se insertara la guardia
+		idCalendarioGuardias = calAdm.getIdCalendarioPorFecha(idInstitucion, idTurno, idGuardia, (fechaInicio == null) ? fechaFin : fechaInicio);
+		if (idCalendarioGuardias == null)
+			throw new SIGAException("gratuita.volantesExpres.mensaje.diaSinCalendarioGuardias");
+
+		// calculando los periodos de guardias
+		CalendarioSJCS calendarioSJCS = new CalendarioSJCS(new Integer(idInstitucion), new Integer(idTurno),
+				new Integer(idGuardia), new Integer(idCalendarioGuardias), null, usr, null);
+		calendarioSJCS.calcularMatrizPeriodosDiasGuardia();
+		// Nota: El array arrayPeriodosSJCS es un array periodos y cada periodo es un array de dias
+		ArrayList arrayPeriodosSJCS = calendarioSJCS.getArrayPeriodosDiasGuardiaSJCS();
+		List lDiasASeparar = calendarioSJCS.getDiasASeparar(new Integer(idInstitucion), new Integer(idTurno),
+				new Integer(idGuardia), usr);
+
+		// seleccionando el periodo de la lista de periodos
+		ArrayList auxArrayPeriodoSeleccionado;
+		String fecha;
+		boolean findIt = false;
+		if (indicePeriodo == null) {
+			indexPeriodo = 0;
+			fechaInicioCalendario = "";
+			fechaFinCalendario = "";
 			
-			//Periodo:
-			int indexPeriodo = 0;// Integer.parseInt(miForm.getIndicePeriodo());
-			Hashtable h = new Hashtable();
-			UtilidadesHash.set (h, ScsGuardiasColegiadoBean.C_FECHAFIN, GstDate.getApplicationFormatDate("", fechaFin));
-			UtilidadesHash.set (h, ScsGuardiasColegiadoBean.C_IDTURNO, idTurno);
-			UtilidadesHash.set (h, ScsGuardiasColegiadoBean.C_IDGUARDIA, idGuardia);
-			UtilidadesHash.set (h, ScsGuardiasColegiadoBean.C_IDINSTITUCION, idInstitucion);
-			Vector vGuardias = this.select(h);
-			if(vGuardias!=null &&vGuardias.size()>0){
-				
-				ScsGuardiasColegiadoBean b = (ScsGuardiasColegiadoBean) vGuardias.get(0);
-				idCalendarioGuardias = b.getIdCalendarioGuardias();
-				//Calculo los periodos de guardias:
-				CalendarioSJCS calendarioSJCS = new CalendarioSJCS
-					(new Integer(idInstitucion), new Integer(idTurno),
-					new Integer(idGuardia), new Integer(idCalendarioGuardias),
-					null, usr, null);
-				calendarioSJCS.calcularMatrizPeriodosDiasGuardia();
-				
-				//Nota: El array arrayPeriodosSJCS es un array periodos y cada periodo es un array de dias
-				ArrayList arrayPeriodosSJCS = calendarioSJCS.getArrayPeriodosDiasGuardiaSJCS();
-				
-				//Obtenemos los dias a Agrupar
-				List lDiasASeparar = calendarioSJCS.getDiasASeparar(new Integer(idInstitucion), new Integer(idTurno), new Integer(idGuardia) , usr);
-				
-				//Selecciono el periodo de la lista de periodos:
-				String fechaInicioCalendario ="";
-				String fechaFinCalendario ="";
-				boolean findIt = false;
-				if(indicePeriodo==null){
-					for (int i = 0; i < arrayPeriodosSJCS.size(); i++) {
-						ArrayList auxArrayPeriodoSeleccionado = (ArrayList)arrayPeriodosSJCS.get(i);
-						for (int j = 0; j < auxArrayPeriodoSeleccionado.size(); j++) {
-							String fecha = (String)auxArrayPeriodoSeleccionado.get(j);
-							if(fecha.equals(fechaFin)){
-								fechaInicioCalendario = (String)auxArrayPeriodoSeleccionado.get(0);
-								fechaFinCalendario = (String)auxArrayPeriodoSeleccionado.get(auxArrayPeriodoSeleccionado.size()-1);
-								findIt = true;
-								break;
-							}
-						}
-						if(findIt){
-							indexPeriodo = i;
-							break;
-						}
+			for (int i = 0; i < arrayPeriodosSJCS.size(); i++) {
+				auxArrayPeriodoSeleccionado = (ArrayList) arrayPeriodosSJCS.get(i);
+				for (int j = 0; j < auxArrayPeriodoSeleccionado.size(); j++) {
+					fecha = (String) auxArrayPeriodoSeleccionado.get(j);
+					if (fecha.equals(fechaFin)) {
+						fechaInicioCalendario = (String) auxArrayPeriodoSeleccionado.get(0);
+						fechaFinCalendario = (String) auxArrayPeriodoSeleccionado.get(auxArrayPeriodoSeleccionado.size() - 1);
+						findIt = true;
+						break;
 					}
-				}else{
-					fechaInicioCalendario = fechaInicio;
-					fechaFinCalendario = fechaFin;
-					indexPeriodo = indicePeriodo.intValue();
 				}
-				ArrayList arrayPeriodoSeleccionado = (ArrayList)arrayPeriodosSJCS.get(indexPeriodo);
-				//Creo el Letrado:
-				CenPersonaAdm perAdm = new CenPersonaAdm(usr);
-				LetradoGuardia letrado = new LetradoGuardia
-						(perAdm.getPersonaPorId(idPersona.toString()), new Integer(idInstitucion), 
-						new Integer(idTurno), new Integer(idGuardia), null);
-				
-				ScsCabeceraGuardiasAdm cabeceraAdm = new ScsCabeceraGuardiasAdm(usr);
-				Integer posicionLetradoGuardia = cabeceraAdm.getMaximaPosicionCabecera(letrado.getIdInstitucion(), letrado.getIdTurno(),
-						letrado.getIdGuardia(), idCalendarioGuardias, fechaInicioCalendario);
-				if(posicionLetradoGuardia!=null){
-					letrado.setPosicion(posicionLetradoGuardia+1);
-				}else{
-					letrado.setPosicion(0);
+				if (findIt) {
+					indexPeriodo = i;
+					break;
 				}
-				
-				//VALIDACIONES:
-				//Relleno una hash con los datos necesarios para validar:
-				Hashtable miHash = new Hashtable ();
-				miHash.put("IDPERSONA",idPersona);
-				miHash.put("IDINSTITUCION",idInstitucion);
-				miHash.put("IDCALENDARIOGUARDIAS",idCalendarioGuardias);
-				miHash.put("IDTURNO",idTurno);
-				miHash.put("IDGUARDIA",idGuardia);
-				miHash.put("FECHAINICIO",fechaInicioCalendario); //Del periodo
-				miHash.put("FECHAFIN",fechaFinCalendario); //Del periodo
-				//	METER VALIDACIONES TODAVIA NO DEFINIDAS
-					//INSERT (INICIO TRANSACCION)
-				
-				try {
-					//Almaceno en BBDD la cabecera y las guardias colegiado para este letrado:
-					calendarioSJCS.almacenarAsignacionGuardiaLetrado(letrado,arrayPeriodoSeleccionado,lDiasASeparar);
-				} catch (ClsExceptions e) {
-					throw e;
-				}
-			}else{
-				throw new SIGAException("gratuita.volantesExpres.mensaje.diaSinCalendarioGuardias");
-				
 			}
+		} else {
+			fechaInicioCalendario = fechaInicio;
+			fechaFinCalendario = fechaFin;
+			indexPeriodo = indicePeriodo.intValue();
 		}
+		ArrayList arrayPeriodoSeleccionado = (ArrayList) arrayPeriodosSJCS.get(indexPeriodo);
+		
+		// obteniendo el letrado
+		LetradoGuardia letrado = new LetradoGuardia(perAdm.getPersonaPorId(idPersona.toString()), new Integer(
+				idInstitucion), new Integer(idTurno), new Integer(idGuardia), null);
+
+		Integer posicionLetradoGuardia = cabeceraAdm.getMaximaPosicionCabecera(letrado.getIdInstitucion(), letrado
+				.getIdTurno(), letrado.getIdGuardia(), idCalendarioGuardias, fechaInicioCalendario);
+		letrado.setPosicion((posicionLetradoGuardia == null) ? 0 : posicionLetradoGuardia + 1);
+
+		// Validaciones: PENDIENTE DE DEFINIR
+		Hashtable miHash = new Hashtable();
+		miHash.put("IDPERSONA", idPersona);
+		miHash.put("IDINSTITUCION", idInstitucion);
+		miHash.put("IDCALENDARIOGUARDIAS", idCalendarioGuardias);
+		miHash.put("IDTURNO", idTurno);
+		miHash.put("IDGUARDIA", idGuardia);
+		miHash.put("FECHAINICIO", fechaInicioCalendario); // Del periodo
+		miHash.put("FECHAFIN", fechaFinCalendario); // Del periodo
+
+		try {
+			// almacenando en BBDD la cabecera y las guardias colegiado para este letrado
+			calendarioSJCS.almacenarAsignacionGuardiaLetrado(letrado, arrayPeriodoSeleccionado, lDiasASeparar);
+		} catch (ClsExceptions e) {
+			throw e;
+		}
+	} // insertarGuardiaManual()
+
 	public ScsGuardiasColegiadoBean getGuardiaSinCabecera(VolantesExpressVo volanteExpres)throws ClsExceptions{
 
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();

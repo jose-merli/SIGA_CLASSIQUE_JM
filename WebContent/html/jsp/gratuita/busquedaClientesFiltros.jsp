@@ -23,26 +23,26 @@
 
  
 <!-- JSP -->
-<%  String titu = "censo.busquedaClientes.literal.titulo";
+<%
+	String titu = "censo.busquedaClientes.literal.titulo";
 	String busc = "censo.busquedaClientes.literal.titulo";
-	String app=request.getContextPath();
-	HttpSession ses=request.getSession();
+	String app = request.getContextPath();
+	HttpSession ses = request.getSession();
 
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
-	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");	
-	ScsCabeceraGuardiasBean cabeceraGuardias=new ScsCabeceraGuardiasBean();
+	Properties src = (Properties) ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+	UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+	ScsCabeceraGuardiasBean cabeceraGuardias = new ScsCabeceraGuardiasBean();
 	ArrayList seleccion = new ArrayList();
 	ArrayList seleccion2 = new ArrayList();
-	String dato[] = {(String)usr.getLocation()};	
-	String idturno=(String)request.getParameter("idTurno");
-	String idguardia=(String)request.getParameter("idGuardia");
-	String institucion=(String)usr.getLocation();
+	String dato[] = { (String) usr.getLocation() };
+	String idturno = (String) request.getParameter("idTurno");
+	String idguardia = (String) request.getParameter("idGuardia");
+	String institucion = (String) usr.getLocation();
 
 	// Combo guardias = identificardor 2
 	ArrayList elementoSel = new ArrayList();
 	String aaaaaqaq = "" + institucion + "," + idguardia;
-	elementoSel.add (aaaaaqaq); 
-
+	elementoSel.add(aaaaaqaq);
 %>
    
 <html>
@@ -82,134 +82,145 @@
 
 <!-- INICIO ******* CAPA DE PRESENTACION ****** -->
 
-	<!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
-
-	<!-- INICIO: CAMPOS DE BUSQUEDA-->
-	<table  class="tablaCentralCampos"  align="center">
-	<tr>				
-	<td>
-
-	<siga:ConjCampos leyenda="censo.busquedaClientes.literal.titulo1">
-
-	<table class="tablaCampos" align="center">
-
-	<html:form action="/JGR_BusquedaClientesFiltros.do" method="POST" target="resultado">
-	<html:hidden name="busquedaClientesFiltrosForm" property = "modo" value = ""/>
+<!-- INICIO: CAMPOS DE BUSQUEDA-->
+<html:form action="/JGR_BusquedaClientesFiltros.do" method="POST" target="resultado">
 
 	<!-- campos ocultos -->
-	<html:hidden name="busquedaClientesFiltrosForm" property = "concepto" />
-	<html:hidden name="busquedaClientesFiltrosForm" property = "operacion" />
-	<html:hidden name="busquedaClientesFiltrosForm" property = "idTurno" />
-	<html:hidden name="busquedaClientesFiltrosForm" property = "idGuardia" />
-	<html:hidden name="busquedaClientesFiltrosForm" property = "fecha" />
+	<html:hidden name="busquedaClientesFiltrosForm" property="modo" value="" />
+
+	<html:hidden name="busquedaClientesFiltrosForm" property="concepto" />
+	<html:hidden name="busquedaClientesFiltrosForm" property="operacion" />
+	<html:hidden name="busquedaClientesFiltrosForm" property="idTurno" />
+	<html:hidden name="busquedaClientesFiltrosForm" property="idGuardia" />
+	<html:hidden name="busquedaClientesFiltrosForm" property="fecha" />
 
 
-	<!-- FILA -->
-	<tr>				
-		<logic:notEmpty name="busquedaClientesFiltrosForm" property="concepto">					
-		<td class="labelText">
-			<siga:Idioma key="gratuita.busquedaSJCS.literal.filtro"/>&nbsp;
-		</td>
-		<td>
-			<select name="idFiltro" class="boxCombo" onChange="cambiarValor();">
-			<logic:equal name="busquedaClientesFiltrosForm" property="concepto" value="SALTOSCOMP"  >					
-				<option value="1"><siga:Idioma key="gratuita.busquedaSJCS.literal.letradosMismaGuardia"/></option>
-				<option value="2"><siga:Idioma key="gratuita.busquedaSJCS.literal.letradosOtrasGuardia"/></option>
-				<option value="3" selected><siga:Idioma key="gratuita.busquedaSJCS.literal.letradosTurno"/></option>
-				<option value="4"><siga:Idioma key="gratuita.busquedaSJCS.literal.letradosTodosTurnos"/></option>
-				<option value="5"><siga:Idioma key="gratuita.busquedaSJCS.literal.censoCompleto"/></option>
-			</logic:equal>
-			<logic:notEqual name="busquedaClientesFiltrosForm" property="concepto" value="SALTOSCOMP"  >		
-				<logic:notEqual name="busquedaClientesFiltrosForm" property="concepto" value="DESIGNACION"  >			
-					<option value="1" selected><siga:Idioma key="gratuita.busquedaSJCS.literal.letradosMismaGuardia"/></option>
-					<option value="2"><siga:Idioma key="gratuita.busquedaSJCS.literal.letradosOtrasGuardia"/></option>
-					<option value="3"><siga:Idioma key="gratuita.busquedaSJCS.literal.letradosTurno"/></option>
-					<option value="4"><siga:Idioma key="gratuita.busquedaSJCS.literal.letradosTodosTurnos"/></option>
-					<option value="5"><siga:Idioma key="gratuita.busquedaSJCS.literal.censoCompleto"/></option>
-				</logic:notEqual>
-			</logic:notEqual>
-			<logic:equal name="busquedaClientesFiltrosForm" property="concepto" value="DESIGNACION">					
-				<option value="6" selected><siga:Idioma key="gratuita.busquedaSJCS.literal.letradosTurno"/></option>
-				<option value="7"><siga:Idioma key="gratuita.busquedaSJCS.literal.letradosTodosTurnos"/></option>
-				<option value="8"><siga:Idioma key="gratuita.busquedaSJCS.literal.censoCompleto"/></option>
-			</logic:equal>
-			</select>
-		</td>
-		</logic:notEmpty>					
-		<logic:empty name="busquedaClientesFiltrosForm" property="concepto">					
-		<td class="labelText" colspan="2">
-		</td>
-		</logic:empty>					
-
-		<td class="labelText">
-			<siga:Idioma key="gratuita.busquedaEJG.literal.turno"/>
-		</td>
-		<td>
-			<div id="identificadorDiv" style="display:inline">
-				<siga:ComboBD nombre = "identificador" tipo="turnos" clase="boxCombo" obligatorio="false" accion="Hijo:identificador2" parametro="<%=dato%>" ancho="240"/>
-			</div>
-		</td>
-	</tr>
-	
-	<tr>
-		<td class="labelText">
-			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.nColegiado"/>
-		</td>
-		<td>
-			<html:text name="busquedaClientesFiltrosForm" property="numeroColegiado" maxlength="20" size="10" styleClass="box"></html:text>
-		</td>
-		<td class="labelText">
-			<siga:Idioma key="gratuita.busquedaEJG.literal.guardia"/>
-		</td>
-		<td>
-			<siga:ComboBD nombre = "identificador2" tipo="guardiasConSustitucion" clase="boxCombo" elementoSel="<%=elementoSel%>" obligatorio="false" hijo="t" ancho="240"/>
-			&nbsp;<img src="<%=app+"/html/imagenes/botonAyuda.gif"%>" width="20" style="cursor:hand" alt="<siga:Idioma key='gratuita.busquedaEJG.tooltip.guardia'/>" >
-		</td>
-	</tr>
-	
-	<!-- FILA -->
-	<tr>				
-		<td class="labelText">
-			<siga:Idioma key="censo.busquedaClientes.literal.nif"/>
-		</td>
-		<td>
-			<html:text name="busquedaClientesFiltrosForm" property="nif" size="15" styleClass="box"></html:text>
-		</td>
-		<td class="labelText">
-			<siga:Idioma key="censo.busquedaClientes.literal.nombre"/>
-		</td>				
-		<td>
-			<html:text name="busquedaClientesFiltrosForm" property="nombrePersona" size="30" styleClass="box"></html:text>
-		</td>
-	</tr>				
-	
-	<!-- FILA -->
-	<tr>				
-		<td class="labelText">
-			<siga:Idioma key="censo.busquedaClientes.literal.apellido1"/>
-		</td>
-		<td>
-			<html:text name="busquedaClientesFiltrosForm" property="apellido1" size="30" styleClass="box"></html:text>
-		</td>
-		<td class="labelText">
-			<siga:Idioma key="censo.busquedaClientes.literal.apellido2"/>
-		</td>
-		<td>
-			<html:text name="busquedaClientesFiltrosForm" property="apellido2" size="30" styleClass="box"></html:text>
-		</td>
-	</tr>
-
-	</html:form>
-	</table>
-
+	<siga:ConjCampos leyenda="censo.busquedaClientes.literal.titulo1">
+		<table class="tablaCampos" align="center">
+			<tr>
+				<logic:notEmpty name="busquedaClientesFiltrosForm" property="concepto">
+				<td class="labelText">
+					<siga:Idioma key="gratuita.busquedaSJCS.literal.filtro" />&nbsp;
+				</td>
+				<td>
+					<select name="idFiltro" class="boxCombo" onChange="cambiarValor();">
+						<logic:equal name="busquedaClientesFiltrosForm" property="concepto" value="SALTOSCOMP">
+						<option value="1"><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.colaGuardia" /></option>
+						<option value="3"><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.inscritosGuardia" /></option>
+						<option value="2" selected><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.colaTurno" /></option>
+						<option value="4" selected><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.inscritosTurno" /></option>
+						<option value="5"><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.ejercientes" /></option>
+						</logic:equal>
+						
+						<logic:equal name="busquedaClientesFiltrosForm" property="concepto" value="ASISTENCIA">
+						<option value="1" selected><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.colaGuardia" /></option>
+						<option value="3"><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.inscritosGuardia" /></option>
+						<option value="4"><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.inscritosTurno" /></option>
+						<option value="5"><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.ejercientes" /></option>
+						</logic:equal>
+						
+						<logic:equal name="busquedaClientesFiltrosForm" property="concepto" value="DESIGNACION">
+						<option value="2" selected><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.colaTurno" /></option>
+						<option value="4"><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.inscritosTurno" /></option>
+						<option value="5"><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.ejercientes" /></option>
+						</logic:equal>
+					</select>
+				</td>
+				</logic:notEmpty>
+				
+				<logic:empty name="busquedaClientesFiltrosForm" property="concepto">
+				<td class="labelText" colspan="2">
+				</td>
+				</logic:empty>
+			</tr>
+			
+			<tr>
+				<td id="labelTurno" class="labelText">
+					<siga:Idioma key="gratuita.busquedaEJG.literal.turno" />
+				</td>
+				<td>
+					<div id="identificadorDiv" style="display: inline">
+						<siga:ComboBD nombre="identificador" tipo="turnos" clase="boxCombo" obligatorio="false" accion="Hijo:identificador2" parametro="<%=dato%>" ancho="240" />
+					</div>
+				</td>
+				
+				<td id="labelGuardia" class="labelText">
+					<siga:Idioma key="gratuita.busquedaEJG.literal.guardia" />
+				</td>
+				<td>
+					<div id="selecGuardia" style="display: inline">
+						<siga:ComboBD nombre="identificador2" tipo="guardiasConSustitucion" clase="boxCombo" elementoSel="<%=elementoSel%>" obligatorio="false" hijo="t" ancho="240" /> &nbsp;
+						<img src="<%=app + "/html/imagenes/botonAyuda.gif"%>" width="20" style="cursor: hand" alt="<siga:Idioma key='gratuita.busquedaEJG.tooltip.guardia'/>">
+					</div>
+				</td>
+			</tr>
+		</table>
 	</siga:ConjCampos>
 
-	</td>
-	</tr>
-	</table>
+	<siga:ConjCampos leyenda="Filtros de búsqueda">
+	<div id="filtrosBusqueda">
+		<table class="tablaCampos" align="center">
+			<tr>
+				<td class="labelText">
+					<siga:Idioma key="censo.busquedaClientesAvanzada.literal.nColegiado" />
+				</td>
+				<td>
+					<html:text name="busquedaClientesFiltrosForm" property="numeroColegiado" maxlength="20" size="10" styleClass="box" />
+				</td>
 
+				<td id="labelNif" class="labelText">
+					<siga:Idioma key="censo.busquedaClientes.literal.nif" />
+				</td>
+				<td id="nif">
+					<html:text name="busquedaClientesFiltrosForm" property="nif" size="15" styleClass="box" />
+				</td>
+			</tr>
 
-	<!-- FIN: CAMPOS DE BUSQUEDA-->
+			<tr id="filtrosNombre">
+				<td class="labelText">
+					<siga:Idioma key="censo.busquedaClientes.literal.nombre" />
+				</td>
+				<td>
+					<html:text name="busquedaClientesFiltrosForm" property="nombrePersona" size="25" styleClass="box" />
+				</td>
+				<td class="labelText">
+					<siga:Idioma key="censo.busquedaClientes.literal.apellido1" />
+				</td>
+				<td>
+					<html:text name="busquedaClientesFiltrosForm" property="apellido1" size="25" styleClass="box" />
+				</td>
+				<td></td><td></td>
+				<td class="labelText">
+					<siga:Idioma key="censo.busquedaClientes.literal.apellido2" />
+				</td>
+				<td>
+					<html:text name="busquedaClientesFiltrosForm" property="apellido2" size="25" styleClass="box" />
+				</td>
+			</tr>
+
+		</table>
+	</div>
+	<div id="infoBusqueda">
+		<table class="tablaCampos" align="center">
+			<tr>
+				<td class="labelText" width="1">
+					<img src="<%=app + "/html/imagenes/info.gif"%>" width="20" />
+				</td>
+				<td class="labelText">
+					<siga:Idioma key="Sugerencia: podrá buscar por diferentes campos si selecciona otros filtros de búsqueda" />
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					&nbsp;
+				</td>
+			</tr>
+		</table>
+	</div>
+	</siga:ConjCampos>
+
+</html:form>
+<!-- FIN: CAMPOS DE BUSQUEDA-->
 
 
 	<!-- INICIO: BOTONES BUSQUEDA -->
@@ -235,7 +246,7 @@
 							
 				
 			}
-			if (idFiltro == 3) {
+			if (idFiltro == 2) {
 				comboTurnos   = document.getElementById("identificador").value;
 				if (comboTurnos == "") {
 					alert("<siga:Idioma key="gratuita.busquedaSJCS.error.turnoObligatorio"/>");
@@ -246,6 +257,42 @@
 		
 			document.forms[0].modo.value="buscar";
 			document.forms[0].submit();	
+		}
+		
+		function aplicarLogicaCombos(idFiltro)
+		{
+			labelTurnos			= document.getElementById("labelTurno");
+			comboTurnos			= document.getElementById("identificadorDiv");
+			labelGuardias		= document.getElementById("labelGuardia");
+			divGuardias			= document.getElementById("selecGuardia");
+			divFiltrosBusqueda	= document.getElementById("filtrosBusqueda");
+			divInfoBusqueda		= document.getElementById("infoBusqueda");
+
+			labelTurnos.style.visibility="visible";
+		    comboTurnos.style.visibility="visible";
+		    labelGuardias.style.visibility="visible";
+		    divGuardias.style.visibility="visible";
+			divFiltrosBusqueda.style.display = "inline";
+			divInfoBusqueda.style.display = "none";
+
+			if (idFiltro == 1) {
+				divFiltrosBusqueda.style.display = "none";
+				divInfoBusqueda.style.display = "inline";
+			} else if (idFiltro == 2) {
+				divFiltrosBusqueda.style.display = "none";
+				divInfoBusqueda.style.display = "inline";
+				labelGuardias.style.visibility="hidden";
+				divGuardias.style.visibility="hidden";
+			} else if (idFiltro == 3) {
+			} else if (idFiltro == 4) {
+				labelGuardias.style.visibility="hidden";
+				divGuardias.style.visibility="hidden";
+			} else if (idFiltro == 5) {
+				labelGuardias.style.visibility="hidden";
+				divGuardias.style.visibility="hidden";
+				labelTurnos.style.visibility="hidden";
+				comboTurnos.style.visibility="hidden";
+			}
 		}
 
 		function cambiarValor()
@@ -262,7 +309,7 @@
 			var clave="<%=institucion%>,"+idturno;
 			var a=document.forms[0].identificador.options;
 
-			if (idFiltro=="1") {
+			if (idFiltro >= "1" && idFiltro <= "4") {
 				for (i=0;i<a.length;i++){
 					if (a[i].value==clave){
 						a[i].selected=true;
@@ -274,7 +321,7 @@
 				}
 			} 
 			
-			if (idFiltro=="2"||idFiltro=="3"||idFiltro=="6") {
+			if (idFiltro=="2") {
 				for (i=0;i<a.length;i++){
 					if (a[i].value==clave){
 						a[i].selected=true;
@@ -290,31 +337,10 @@
 			document.forms[0].identificador.onchange();
 		}
 		
-		function aplicarLogicaCombos(idFiltro)
-		{   
-			comboTurnos   = document.getElementById("identificadorDiv");
-			comboGuardias = document.getElementById("identificador2Frame");
-
-		    comboTurnos.style.visibility="visible";
-			comboGuardias.style.visibility="visible";
-			
-			if (idFiltro == 3 || idFiltro == 6) {
-				 // Todo lo de un turno en concreto
-				 comboGuardias.style.visibility="hidden";
-			}
-			else if (idFiltro == 4 || idFiltro == 7) {
-				// Todos los turnos
-				comboTurnos.style.visibility="hidden";
-				comboGuardias.style.visibility="hidden";
-			}
-			else if (idFiltro == 5 || idFiltro == 8) {
-				// Censo completo
-				comboTurnos.style.visibility="hidden";
-				comboGuardias.style.visibility="hidden";
-			}
-			
+		<!-- Asociada al boton Cerrar -->
+		function accionCerrar() {		
+			top.cierraConParametros("NORMAL");
 		}
-		
 
 	</script>
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
@@ -326,27 +352,13 @@
 					scrolling="no"
 					frameborder="0"
 					marginheight="0"
-					marginwidth="0";					 
+					marginwidth="0"				 
 					class="frameGeneral">
 	</iframe>
 
 	<!-- INICIO: BOTONES REGISTRO -->
 		<siga:ConjBotonesAccion botones="C" modal="G" clase="botonesDetalle"/>
 	<!-- FIN: BOTONES REGISTRO -->
-
-	
-	<!-- INICIO: SCRIPTS BOTONES -->
-	<script language="JavaScript">
-
-		<!-- Asociada al boton Cerrar -->
-		function accionCerrar() {		
-			top.cierraConParametros("NORMAL");
-		}
-	
-
-	</script>
-	<!-- FIN: SCRIPTS BOTONES -->
-
 
 <!-- INICIO: SUBMIT AREA -->
 <!-- Obligatoria en todas las páginas-->

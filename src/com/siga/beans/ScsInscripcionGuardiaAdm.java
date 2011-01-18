@@ -970,51 +970,46 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 			boolean porGrupos,
 			String order) throws ClsExceptions
 	{
-		if (idinstitucion == null || idinstitucion.equals(""))		return null;
-		if (idturno == null || idturno.equals(""))					return null;
-		if (idguardia == null || idguardia.equals(""))				return null;
+		if (idinstitucion == null || idinstitucion.equals(""))
+			return null;
+		if (idturno == null || idturno.equals(""))
+			return null;
+		if (idguardia == null || idguardia.equals(""))
+			return null;
 		if (fechaInicio == null || fechaInicio.equals(""))
 			fechaInicio = "null";
-		else if(!fechaInicio.trim().equalsIgnoreCase("sysdate"))
-			fechaInicio = "'"+fechaInicio.trim()+"'";
+		else if (!fechaInicio.trim().equalsIgnoreCase("sysdate"))
+			fechaInicio = "'" + fechaInicio.trim() + "'";
 		if (fechaFin == null || fechaFin.equals(""))
 			fechaFin = "null";
-		else if(!fechaFin.trim().equalsIgnoreCase("sysdate"))
-			fechaFin = "'"+fechaFin.trim()+"'";
+		else if (!fechaFin.trim().equalsIgnoreCase("sysdate"))
+			fechaFin = "'" + fechaFin.trim() + "'";
 		
-		String consulta = 
-			"Select " +
-		    "       (case when Ins.Fechavalidacion Is Not Null " +
-			"              And Trunc(Ins.Fechavalidacion) <= nvl("+fechaInicio+",  Ins.Fechavalidacion) " +
-			"              And (Ins.Fechabaja Is Null Or " +
-			"                   Trunc(Ins.Fechabaja) > nvl("+fechaFin+", '01/01/1900')) " +
-			"             then '1' " +
-			"             else '0' " +
-			"        end) Activo, " +
-			getBaseConsultaInscripciones() +
-			
-			"   And Ins.Fechavalidacion Is Not Null " +
-			"   And Gua.Idinstitucion = "+idinstitucion+" " +
-			"   And Gua.Idturno = "+idturno+" " +
-			"   And Gua.Idguardia = "+idguardia+" ";
+		StringBuffer consulta = new StringBuffer();
+		consulta.append("Select ");
+		consulta.append("       (case when Ins.Fechavalidacion Is Not Null ");
+		consulta.append("              And Trunc(Ins.Fechavalidacion) <= nvl("+fechaInicio+",  Ins.Fechavalidacion) ");
+		consulta.append("              And (Ins.Fechabaja Is Null Or ");
+		consulta.append("                   Trunc(Ins.Fechabaja) > nvl("+fechaFin+", '01/01/1900')) ");
+		consulta.append("             then '1' ");
+		consulta.append("             else '0' ");
+		consulta.append("        end) Activo, ");
+		consulta.append(getBaseConsultaInscripciones());
 		
-		/* Creo que sobra lo siguiente pq ya se hace la union en la consulta base
-		if (porGrupos)
-			consulta +=
-				"   And Gua.Idinstitucion = Gru.Idinstitucion " +
-				"   And Gua.Idturno = Gru.Idturno " +
-				"   And Gua.Idguardia = Gru.Idguardia ";
-		*/
+		consulta.append("   And Ins.Fechavalidacion Is Not Null ");
+		consulta.append("   And Gua.Idinstitucion = "+idinstitucion+" ");
+		consulta.append("   And Gua.Idturno = "+idturno+" ");
+		consulta.append("   And Gua.Idguardia = "+idguardia+" ");
 		
 		if (! (order == null || order.equals("")))
-			consulta += " order by " + order;
+			consulta.append(" order by " + order);
 		else
-			consulta += " order by Ins.FechaValidacion ";
+			consulta.append(" order by Ins.FechaValidacion ");
 		
 		Vector<ScsInscripcionGuardiaBean> datos = null;
 		try {
 			RowsContainer rc = new RowsContainer();
-			if (rc.find(consulta)) {
+			if (rc.find(consulta.toString())) {
 				datos = new Vector<ScsInscripcionGuardiaBean>();
 				for (int i = 0; i < rc.size(); i++) {
 					Row fila = (Row) rc.get(i);

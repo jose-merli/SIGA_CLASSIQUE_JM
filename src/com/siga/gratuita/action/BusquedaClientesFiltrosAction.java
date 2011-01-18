@@ -20,7 +20,13 @@ import com.siga.beans.*;
 import com.siga.general.*;
 import com.siga.gratuita.form.BusquedaClientesFiltrosForm;
 
-public class BusquedaClientesFiltrosAction extends MasterAction {
+public class BusquedaClientesFiltrosAction extends MasterAction
+{
+	private static final int FILTRO_COLAGUARDIA = 1;
+	private static final int FILTRO_COLATURNO = 2;
+	private static final int FILTRO_INSCRITOSGUARDIA = 3;
+	private static final int FILTRO_INSCRITOSTURNO = 4;
+	private static final int FILTRO_EJERCIENTES = 5;
 
 	protected ActionForward executeInternal(ActionMapping mapping,ActionForm formulario, HttpServletRequest request,HttpServletResponse response) throws SIGAException 
 	{
@@ -127,100 +133,87 @@ public class BusquedaClientesFiltrosAction extends MasterAction {
         }
 	    return "resultado";
 	}
+	
+	/**
+	 * Obtiene los resultados de la busqueda segun los filtros de la ventana modal
+	 * 
+	 * @param formulario
+	 * @param request
+	 * @return
+	 * @throws SIGAException
+	 */
+	protected Paginador buscarPaginador(MasterForm formulario, HttpServletRequest request) throws SIGAException
+	{
+		// Controles generales
+		UsrBean usr = this.getUserBean(request);
+		String idInstitucion = usr.getLocation();
+		String idioma = usr.getLanguage();
 		
-	protected Paginador buscarPaginador(MasterForm formulario, HttpServletRequest request) throws SIGAException		
-	{		
+		BusquedaClientesFiltrosAdm adm = new BusquedaClientesFiltrosAdm();
+		Vector resultado;
+		
 		try {
-			// obtener institucion
-			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			String idInstitucion=user.getLocation();
+			// obteniendo campos del formulario
+			BusquedaClientesFiltrosForm miFormulario = (BusquedaClientesFiltrosForm) formulario;
+			String filtro = miFormulario.getIdFiltro();
+			String nif = miFormulario.getNif();
+			String ncoleg = miFormulario.getNumeroColegiado();
+			String nombre = miFormulario.getNombrePersona();
+			String apellido1 = miFormulario.getApellido1();
+			String apellido2 = miFormulario.getApellido2();
+			String idTurno;// = miFormulario.getIdTurno();
+			String idTurnoCombo = (String) request.getParameter("identificador");
+			idTurno = (idTurnoCombo == null) ? "" : idTurnoCombo.substring(idTurnoCombo.indexOf(",") + 1);
+			String idGuardia;// = miFormulario.getIdGuardia();
+			String idGuardiaCombo = (String) request.getParameter("identificador2");
+			idGuardia = (idGuardiaCombo == null) ? "" : idGuardiaCombo.substring(idGuardiaCombo.indexOf(",") + 1);
 			
-			// casting del formulario
-			BusquedaClientesFiltrosForm miFormulario = (BusquedaClientesFiltrosForm)formulario;
-			String filtro=miFormulario.getIdFiltro();
-			String nif=miFormulario.getNif();
-			String ncoleg=miFormulario.getNumeroColegiado();
-			String nombre=miFormulario.getNombrePersona();
-			String apellido1=miFormulario.getApellido1();
-			String apellido2=miFormulario.getApellido2();
-			String idGuardia=miFormulario.getIdGuardia();
-			String idTurno=miFormulario.getIdTurno();
-			if (idTurno != null)
-				idTurno = idTurno.substring(idTurno.indexOf(",")+1);
-			
-			String idTurnoCombo = (String)request.getParameter("identificador");
-			if(idTurnoCombo != null && !idTurnoCombo.equals("")) {
-				idTurno = idTurnoCombo.substring(idTurnoCombo.indexOf(",")+1);
-			}
-
-			String idGuardiaCombo = (String)request.getParameter("identificador2");
-			if(idGuardiaCombo != null){
-				idGuardia = idGuardiaCombo.substring(idGuardiaCombo.indexOf(",")+1);
-			}
-			
-			String fecha=miFormulario.getFecha();
-			if(fecha!=null && fecha.length()>0) fecha=GstDate.getApplicationFormatDate(user.getLanguage(),fecha);
-
-			BusquedaClientesFiltrosAdm adm= new BusquedaClientesFiltrosAdm();
-			adm.setFiltosPersona(nif,nombre,apellido1,apellido2);
-			adm.setFiltroNColegiado(ncoleg);
-			
-			// busqueda de clientes
-			Vector resultado = null;
-			int idFiltro=0;
+			String fecha = miFormulario.getFecha();
+			if (fecha != null && fecha.length() > 0)
+				fecha = GstDate.getApplicationFormatDate(idioma, fecha);
+			String fechaFomateada = (fecha == null || fecha.equals("")) ? "sysdate" : GstDate.getFormatedDateShort("", fecha);
+			int idFiltro;
 			try {
-				idFiltro=Integer.parseInt(filtro);
+				idFiltro = Integer.parseInt(filtro);
 			} catch (Exception e) {
 				e.printStackTrace();
+				idFiltro = 0;
 			}
-			String fechaFomateada = null;
-			switch(idFiltro){
-				case 1://Letrados de la Misma Guardia
-				
-					if(fecha==null ||fecha.equals(""))
-						fechaFomateada = "sysdate";
-					else
-						fechaFomateada = GstDate.getFormatedDateShort("", fecha);
-					resultado=adm.buscaLetradosMismaGuardia(idInstitucion, idTurno, idGuardia, fechaFomateada);
+
+			// pasando los filtros al ADM
+			adm.setFiltosPersona(nif, nombre, apellido1, apellido2);
+			adm.setFiltroNColegiado(ncoleg);
+
+			// ejecutando la busqueda
+			switch (idFiltro) {
+				case FILTRO_COLAGUARDIA:
+					resultado = adm.buscaLetradosColaGuardia(idInstitucion, idTurno, idGuardia, fechaFomateada, 0);
 					break;
-					
-				case 2://Letrados de Todas las Guardias del Mismo Turno
-					//resultado=adm.buscaLetradosTodasLasGuardias(idInstitucion, idTurno, idGuardia, fecha);
-					resultado=adm.buscaLetradosTodasLasGuardiasDistintasAGuadria(idInstitucion, idTurno, idGuardia, fecha);
+				case FILTRO_COLATURNO:
+					resultado = adm.buscaLetradosColaTurno(idInstitucion, idTurno, fechaFomateada, idFiltro);
 					break;
-					
-				case 3:case 6://Letrados del Turno
-					
-					if(fecha==null ||fecha.equals(""))
-						fechaFomateada = "sysdate";
-					else
-						fechaFomateada = GstDate.getFormatedDateShort("", fecha);
-					resultado=adm.buscaLetradosDelTurno(idInstitucion, idTurno,  fechaFomateada,idFiltro);
+				case FILTRO_INSCRITOSGUARDIA:
+					resultado = adm.buscaLetradosInscritosGuardia(idInstitucion, idTurno, idGuardia, fechaFomateada);
 					break;
-					
-				case 4:case 7://Letrados de Todos los Turnos
-					resultado=adm.buscaLetradosTodosLosTurnos(idInstitucion, idTurno, fecha);
+				case FILTRO_INSCRITOSTURNO:
+					resultado = adm.buscaLetradosInscritosTurno(idInstitucion, idTurno, fechaFomateada);
 					break;
-					
-				case 5:case 8://Censo Completo
-					resultado=adm.buscaLetradosCensoCompleto(idInstitucion,  fecha);
+				case FILTRO_EJERCIENTES:
+					resultado = adm.buscaLetradosCensoCompleto(idInstitucion, fechaFomateada);
 					break;
-					
-				
-					
-				default://no hay filtro
+				default:// no hay filtro
 					throw new ClsExceptions("La opción seleccionada no está implementada");
 			}
-			
-			Paginador paginador = new Paginador (resultado);
+
+			Paginador paginador = new Paginador(resultado);
 			return paginador;
-		}
-		catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
+			
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
 		}
 		return null;
-	}
-	
+	} // buscarPaginador()
+
 	/**
 	 * Metodo que implementa la busqueda automatica
 	 * @param  mapping - Mapeo de los struts
