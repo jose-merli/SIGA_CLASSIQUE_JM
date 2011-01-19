@@ -320,7 +320,6 @@
 	 		</tr>	 		
 <%	} else { 
 		// recorro el resultado
-		int nFila = 0;
 		for (int i=0;i<letradosColaGuardiaList.size();i++) {
 			LetradoGuardia letradoGuardia = (LetradoGuardia) letradosColaGuardiaList.get(i);
 			
@@ -332,30 +331,18 @@
 
 			String idPersona = letradoGuardia.getIdPersona().toString();
 			String numeroColegiadoBusqueda = "" + i + "_" + ncolegiado;
-			nFila++;
 %>
 			<!-- REGISTRO  -->
-<<<<<<< colaOficios.jsp
-			
-  			<tr class="<%=((nFila + 1) % 2 == 0
-								? "filaTablaPar"
-								: "filaTablaImpar")%>">
-=======
 			<tr class="<%=((i + 1) % 2 == 0
 								? "filaTablaPar"
 								: "filaTablaImpar")%>">
->>>>>>> 1.8
 				<td>
 					<input name="numeroColegiadoBusqueda" type="hidden" class="box" size="10" value="<%=numeroColegiadoBusqueda%>" >
 					<input name="idPersona_<%=i+1%>" type="hidden" class="box" size="10" value="<%=idPersona%>" >
 					<%=ncolegiado%>
 				</td>
 				<td>
-<<<<<<< colaOficios.jsp
 					<%=apellido1+" "+apellido2+", "+nombre%>
-=======
-					<%=nombre + " " + apellido1 + " " + apellido2%>
->>>>>>> 1.8
 				</td>
 				
 				<td>
