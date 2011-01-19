@@ -541,11 +541,14 @@ public class MantenimientoAsistenciasAction extends MasterAction
 								throw new ClsExceptions(guardiasAdm.getError());
 						}
 					}
-				}
-				else
+				}else{
+					// Si no cerramos la transaccion no vuelve correctamente
+					tx.rollback();
 					throw new SIGAException("gratuita.nuevaAsistencia.literal.noCalendario");
-				
+				}
 			}else{
+				// Si no cerramos la transaccion no vuelve correctamente
+				tx.rollback();
 				throw new SIGAException("gratuita.nuevaAsistencia.literal.letradoSinGuardia");
 			}
 				
