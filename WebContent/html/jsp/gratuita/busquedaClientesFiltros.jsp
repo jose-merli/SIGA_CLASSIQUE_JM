@@ -112,12 +112,14 @@
 						<option value="5"><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.ejercientes" /></option>
 						</logic:equal>
 						
-						<logic:equal name="busquedaClientesFiltrosForm" property="concepto" value="ASISTENCIA">
+						<logic:notEqual name="busquedaClientesFiltrosForm" property="concepto" value="SALTOSCOMP">
+						<logic:notEqual name="busquedaClientesFiltrosForm" property="concepto" value="DESIGNACION">
 						<option value="1" selected><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.colaGuardia" /></option>
 						<option value="3"><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.inscritosGuardia" /></option>
 						<option value="4"><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.inscritosTurno" /></option>
 						<option value="5"><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.ejercientes" /></option>
-						</logic:equal>
+						</logic:notEqual>
+						</logic:notEqual>
 						
 						<logic:equal name="busquedaClientesFiltrosForm" property="concepto" value="DESIGNACION">
 						<option value="2" selected><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.colaTurno" /></option>
@@ -157,7 +159,7 @@
 		</table>
 	</siga:ConjCampos>
 
-	<siga:ConjCampos leyenda="Filtros de búsqueda">
+	<siga:ConjCampos leyenda="gratuita.busquedaSJCS.literal.tituloCamposBusqueda">
 	<div id="filtrosBusqueda">
 		<table class="tablaCampos" align="center">
 			<tr>
@@ -207,7 +209,7 @@
 					<img src="<%=app + "/html/imagenes/info.gif"%>" width="20" />
 				</td>
 				<td class="labelText">
-					<siga:Idioma key="Sugerencia: podrá buscar por diferentes campos si selecciona otros filtros de búsqueda" />
+					<siga:Idioma key="gratuita.busquedaSJCS.literal.infoCamposBusqueda" />
 				</td>
 			</tr>
 			<tr>
