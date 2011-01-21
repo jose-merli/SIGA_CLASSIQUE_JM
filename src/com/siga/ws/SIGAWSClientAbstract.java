@@ -328,6 +328,9 @@ public abstract class SIGAWSClientAbstract {
 			CajgRespuestaEJGRemesaBean cajgRespuestaEJGRemesaBean = new CajgRespuestaEJGRemesaBean();			
 			cajgRespuestaEJGRemesaBean.setIdEjgRemesa(cajgEJGRemesaBean.getIdEjgRemesa());
 			cajgRespuestaEJGRemesaBean.setCodigo("-1");
+			if (descripcionError != null && descripcionError.length() >= 1500) {//en la bdd esta definido como varchar de 1500
+				descripcionError = descripcionError.substring(0, 1499);
+			}
 			cajgRespuestaEJGRemesaBean.setDescripcion(descripcionError);
 			cajgRespuestaEJGRemesaBean.setFecha("SYSDATE");		
 			

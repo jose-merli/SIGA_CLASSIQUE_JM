@@ -713,7 +713,7 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 			cabecera = (String) row.getValue("CABECERA");
 			delimitador = row.getString("DELIMITADOR");
 						
-			if (j == 0 && cabecera != null && cabecera.trim().equals("1")) {
+			if (j == 0 && cabecera != null && (cabecera.trim().equals("1") || cabecera.trim().equals("3"))) {
 				cajgRemesaResolucionFicheroBean = new CajgRemesaResolucionFicheroBean();
 				cajgRemesaResolucionFicheroBean.setIdRemesaResolucionFichero(new Integer(primerIdRemesaResolucionFichero));
 				cajgResolucionFicheroAdm.delete(cajgRemesaResolucionFicheroBean);
@@ -768,7 +768,7 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 			bw.close();
 		}
 		
-		if (ELIMINA_DATOS_TABLA_TEMPORAL && cabecera != null && !cabecera.trim().equals("2")) {
+		if (ELIMINA_DATOS_TABLA_TEMPORAL && cabecera != null && !cabecera.trim().equals("2") && !cabecera.trim().equals("3")) {
 			Hashtable hash = new Hashtable();
 			hash.put(CajgRemesaResolucionFicheroBean.C_IDINSTITUCION, idInstitucion);
 			hash.put(CajgRemesaResolucionFicheroBean.C_IDREMESARESOLUCION, idRemesaResolucion);

@@ -86,7 +86,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 					idTipoEJG = mapExp.get(IDTIPOEJG);								
 										
 					escribeLogRemesa("Enviando información del expediente " + anio + "/" + numejg);
-					SIGAAsigna sigaAsigna = getDtExpedientes(mapExp);
+					SIGAAsigna sigaAsigna = getDtExpedientes(mapExp);					
 					respuesta = stub.registrar_Solicitud(sigaAsigna);					
 					escribeLogRemesa("El expediente se ha enviado correctamente.");					
 					
@@ -118,8 +118,10 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 						ClsLogging.writeFileLogError("Error de conexión al enviar el expediente", e, 3);
 						throw e;
 					} else {
+						String descripcionError = "Error al enviar el expediente. " + e.getMessage();
+						escribeErrorExpediente(anio, numejg, numero, idTipoEJG, descripcionError);
 						escribeLogRemesa("Se ha producido un error al enviar el expediente " + anio + "/" + numejg);					
-						ClsLogging.writeFileLogError("Error al enviar el expediente", e, 3);
+						ClsLogging.writeFileLogError(descripcionError, e, 3);
 					}
 				}
 			}
@@ -138,6 +140,8 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 			tx.commit();
 		}				
 	}
+
+
 
 	/**
 	 * 
@@ -175,7 +179,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		if (bi != null) dtExpedientes.setNumeroExpedienteSIGA(bi);
 		bi = getBigInteger(map.get(ANOEXPEDIENTESIGA));
 		if (bi != null) dtExpedientes.setAnoExpedienteSIGA(bi);
-		Integer in = getInteger(map.get(IDORGANISMOCOLEGIOABOGADOS));
+		PositiveInteger in = getInteger(map.get(IDORGANISMOCOLEGIOABOGADOS));
 		if (in != null) dtExpedientes.setIDOrganismoColegioAbogados(in);
 		Date date = getDate(map.get(FECHAREGISTRO));
 		if (date != null) dtExpedientes.setFechaRegistro(date);	
@@ -289,10 +293,10 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		return bigInteger;
 	}
 	
-	private Integer getInteger(String st) {
-		Integer in = null;
+	private PositiveInteger getInteger(String st) {		
+		PositiveInteger in = null;
 		if (st != null && !st.trim().equals("")) {
-			in = Integer.parseInt(st);
+			in = new PositiveInteger(st);
 		}
 		return in;
 	}
@@ -315,7 +319,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 	 
 	private void addDtDireccion(SIGAAsignaDtExpedientesDtPersonas dtPersona, Map<String, String> map) {		
 		SIGAAsignaDtExpedientesDtPersonasDtDirecciones dtDirecciones = new SIGAAsignaDtExpedientesDtPersonasDtDirecciones();
-		Integer in = getInteger(map.get(DIR_IDTIPOVIA));
+		PositiveInteger in = getInteger(map.get(DIR_IDTIPOVIA));
 		if (in != null) dtDirecciones.setIDTipoVia(in);
 		String st = map.get(DIR_NOMBREVIA);
 		if (st != null) dtDirecciones.setNombreVia(st);
@@ -336,7 +340,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		st = map.get(DIR_EMAIL);
 		if (st != null) dtDirecciones.setEmail(st);
 		in = getInteger(map.get(DIR_IDPAIS));
-		if (in != null) dtDirecciones.setIDPais(in);			
+		if (in != null) dtDirecciones.setIDPais(in);
 		dtPersona.setDtDirecciones(dtDirecciones);
 	}
 
@@ -357,7 +361,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 				Map<String, String> map = list.get(i);
 				if (map.get(IDARCHIVO) != null && !map.get(IDARCHIVO).trim().equals("")) {
 					SIGAAsignaDtExpedientesDtArchivos dtArchivo = new SIGAAsignaDtExpedientesDtArchivos();
-					Integer in = getInteger(map.get(IDARCHIVO));
+					PositiveInteger in = getInteger(map.get(IDARCHIVO));
 					if (in != null) dtArchivo.setIDArchivo(in);
 					String st = map.get(NOMBREARCHIVO);
 					if (st != null) dtArchivo.setNombreArchivo(st);
@@ -389,7 +393,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 				Map<String, String> map = list.get(i);
 				
 				SIGAAsignaDtExpedientesDtPersonas dtPersona = new SIGAAsignaDtExpedientesDtPersonas();
-				Integer in = getInteger(map.get(IDTIPOTERCERO));
+				PositiveInteger in = getInteger(map.get(IDTIPOTERCERO));
 				if (in != null) dtPersona.setIDTipoTercero(in);
 				in = getInteger(map.get(IDTIPOPERSONA));
 				if (in != null) dtPersona.setIDTipoPersona(in);
@@ -472,7 +476,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		SIGAAsignaDtExpedientesDtPretensionesDefender dtPretensionesDefender = new SIGAAsignaDtExpedientesDtPretensionesDefender();
 		Boolean b = getBoolean(map.get(PRE_PRECISAABOGADO));
 		if (b != null) dtPretensionesDefender.setPrecisaAbogado(b);
-		Integer in = getInteger(map.get(PRE_IDTIPOPROCEDIMIENTO));
+		PositiveInteger in = getInteger(map.get(PRE_IDTIPOPROCEDIMIENTO));
 		if (in != null) dtPretensionesDefender.setIDTipoProcedimiento(in);
 		String st = map.get(PRE_OTROSASPECTOS);
 		if (st != null) dtPretensionesDefender.setOtrosAspectos(st);
