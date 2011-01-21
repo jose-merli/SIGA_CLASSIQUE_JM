@@ -49,7 +49,7 @@
 			<%  if (mensaje!=null){
 						String msg=UtilidadesString.escape(UtilidadesString.getMensajeIdioma(userBean.getLanguage(),mensaje));
 			%>
-						alert(unescape('<%=msg %>'));
+						alert(unescape("<%=msg %>"));
 						
 			<%  } %>
 			<%  if (modal!=null){%>

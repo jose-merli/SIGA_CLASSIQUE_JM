@@ -37,7 +37,7 @@
 	<script type="text/jscript" language="JavaScript1.2">
 	function reloadPage() {
 	<%  if (mensaje!=null){%>
-		var type = unescape('<%=mensaje%>');
+		var type = unescape("<%=mensaje%>");
 		alert(type);
 	<%  } %>
 	<%  if (modal!=null){%>
