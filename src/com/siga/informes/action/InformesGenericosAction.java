@@ -742,13 +742,7 @@ public class InformesGenericosAction extends MasterAction {
 						String idTipoEJG="";
 						String anio="";
 
-						for (int z=0; z<datos.size(); z++){
-							//Vector datosconsulta=new Vector();
-
-
-
-							//				if(b.getIdPlantilla().equals("EJGCA1")){//para los modelos con diferentes regiones
-
+						for (int z=0; z<datos.size(); z++){							
 							ScsEJGAdm ejgAdm= new ScsEJGAdm(usr);
 							String idioma=usr.getLanguageInstitucion();
 							String idiomaDatos="1";
@@ -780,57 +774,26 @@ public class InformesGenericosAction extends MasterAction {
 										datosconsulta = (Vector) hashConsultasHechas.get(keyConsultasHechas);
 
 									}else{
-										//datosconsulta=ejgAdm.comunesEjg(usr.getLocation(),anio,idTipoEJG,numero,
-										//	  usr.getLanguage(),b.getASolicitantes()!=null && b.getASolicitantes().equalsIgnoreCase("S"),idPersonaJG);
 										datosconsulta=ejgAdm.getDatosInformeEjg(usr.getLocation(),idTipoEJG,anio,numero,
-												usr.getLanguage(),isSolicitantes,idPersonaJG);
+												idioma,isSolicitantes,idPersonaJG);
 										hashConsultasHechas.put(keyConsultasHechas, datosconsulta);
 
 									}
 
 									HelperInformesAdm helperInformes = new HelperInformesAdm();
+									String idiomainteresado="";
+									String idiomainforme="";
 									if (datosconsulta!=null && datosconsulta.size()>0) {
 										for (int j=0;j<datosconsulta.size();j++) {
 											datoscomunes = (Hashtable)datosconsulta.get(j);
-				             			clonDatoscomunes=(Hashtable)datoscomunes.clone();
+											clonDatoscomunes=(Hashtable)datoscomunes.clone();
 											//Seleccionamos el idioma del interesado para seleccionar la plantilla
-											String idiomainforme=usr.getLanguageExt();
-											idiomaDatos=usr.getLanguageInstitucion();
-				     		            String idiomainteresado= (String) clonDatoscomunes.get("CODIGOLENGUAJE");
+											//String idiomainforme=usr.getLanguageExt();		             				
+											 idiomainteresado= (String) clonDatoscomunes.get("CODIGOLENGUAJE");
 											if (idiomainteresado!=null && !idiomainteresado.trim().equals("")){
-												idiomainforme=idiomainteresado;
-				     		            	idiomaDatos= (String) clonDatoscomunes.get("IDLENGUAJE");
+												idiomainforme=idiomainteresado;												
 											}
-
-												Hashtable htFuncion = new Hashtable();
-				     		            htFuncion.put(new Integer(1), (String)clonDatoscomunes.get("FECHAAPERTURA_EJG"));
-											htFuncion.put(new Integer(2), "m");
-											htFuncion.put(new Integer(3), idiomaDatos);
-
-				     					helperInformes.completarHashSalida(clonDatoscomunes,helperInformes.ejecutaFuncionSalida(
-													htFuncion, "PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA", "FECHAAPERTURA_EJG"));
-
-											htFuncion = new Hashtable();
-				     		            htFuncion.put(new Integer(1), (String)clonDatoscomunes.get("MES_ACTUAL"));
-											htFuncion.put(new Integer(2), "m");
-											htFuncion.put(new Integer(3), idiomaDatos);
-
-				     					helperInformes.completarHashSalida(clonDatoscomunes,helperInformes.ejecutaFuncionSalida(
-													htFuncion, "PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHAENLETRA", "MES_ACTUAL"));
-
-				     					clonDatoscomunes.put("MES_ACTUAL", clonDatoscomunes.get("MES_ACTUAL").toString().toUpperCase());
-
-											htFuncion = new Hashtable();
-				     					if (clonDatoscomunes.get("CALIDAD_DEFENSA_JURIDICA")!=null && !clonDatoscomunes.get("CALIDAD_DEFENSA_JURIDICA").equals("") ){
-					     		            htFuncion.put(new Integer(1), (String)clonDatoscomunes.get("CALIDAD_DEFENSA_JURIDICA"));
-												htFuncion.put(new Integer(2), idiomaDatos);
-
-					     					helperInformes.completarHashSalida(clonDatoscomunes,helperInformes.ejecutaFuncionSalida(
-														htFuncion, "F_SIGA_GETRECURSO_ETIQUETA", "CALIDAD_DEFENSA_JURIDICA"));
-											}								
-											
-				
-
+								
 											String rutaPl = rutaPlantilla + ClsConstants.FILE_SEP+usr.getLocation()+ClsConstants.FILE_SEP+beanInforme.getDirectorio()+ClsConstants.FILE_SEP;
 											String nombrePlantilla=beanInforme.getNombreFisico()+"_"+idiomainforme+".doc";
 											String rutaAlm = rutaAlmacen + ClsConstants.FILE_SEP+usr.getLocation()+ClsConstants.FILE_SEP+beanInforme.getDirectorio();
