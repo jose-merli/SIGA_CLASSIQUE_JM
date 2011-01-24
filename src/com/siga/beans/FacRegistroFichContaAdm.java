@@ -2237,8 +2237,6 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 			String asientoClientes = ""; 
 			String asientoIngresos = ""; 
 			
-			Double importeD, importeIvaD;
-			
 			
 			for(int x=0;x<vLineasAbonos.size();x++)
 			{
@@ -2257,9 +2255,6 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 			    imp=UtilidadesNumero.redondea((String)hash.get("IMPNETO"), 2);
 			    importeIva= UtilidadesNumero.redondea((String)hash.get("IMPIVA"), 2);
 			    String porcentajeIva= UtilidadesNumero.redondea((String)hash.get("IVA"), 2);
-			    
-			    importeD = Double.parseDouble(imp);
-			    importeIvaD = Double.parseDouble(importeIva);
 			    
 			    // Control de iva 0
 			    boolean ivacero=false;
@@ -2299,16 +2294,8 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 				UtilidadesHash.set(a, "CONCEPTO", 		concepto);
 				UtilidadesHash.set(a, "DOCUMENTO", 		UtilidadesHash.getString(hash, "NUMEROABONO"));
 				UtilidadesHash.set(a, "CUENTA", 		asientoClientes);
-				// jbd // Cambiamos el debe por haber para que no salgan negativos (peticion de Badajoz)
-				// UtilidadesHash.set(a, "DEBE", 			"" + (Double.parseDouble(imp) + Double.parseDouble(importeIva)));
-				// UtilidadesHash.set(a, "HABER", 			"0");
-				if(this.usrbean.getLocation().equalsIgnoreCase("2010") && importeD<0){
-					UtilidadesHash.set(a, "DEBE", 			"0");
-					UtilidadesHash.set(a, "HABER", 			""+(-1)*(importeD+importeIvaD));
-				}else{
-					UtilidadesHash.set(a, "DEBE", 			importeD+importeIvaD);
-					UtilidadesHash.set(a, "HABER", 			"0");
-				}
+				UtilidadesHash.set(a, "DEBE", 			"" + (Double.parseDouble(imp) + Double.parseDouble(importeIva)));
+				UtilidadesHash.set(a, "HABER", 			"0");
 				UtilidadesHash.set(a, "BASEIMPONIBLE", 	"");
 				UtilidadesHash.set(a, "IVA", 			"");
 				UtilidadesHash.set(a, "CONTRAPARTIDA", 	asientoIngresos);
@@ -2320,16 +2307,8 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 				UtilidadesHash.set(a, "CONCEPTO", 		concepto);
 				UtilidadesHash.set(a, "DOCUMENTO", 		UtilidadesHash.getString(hash, "NUMEROABONO"));
 				UtilidadesHash.set(a, "CUENTA", 		asientoIngresos);
-				// jbd // Cambiamos el debe por haber para que no salgan negativos (peticion de Badajoz)
-				// UtilidadesHash.set(a, "DEBE", 			"0");
-				// UtilidadesHash.set(a, "HABER", 			imp);
-				if(this.usrbean.getLocation().equalsIgnoreCase("2010") && importeD<0){
-					UtilidadesHash.set(a, "DEBE", 			""+(-1)*importeD);
-					UtilidadesHash.set(a, "HABER", 			"0");
-				}else{
-					UtilidadesHash.set(a, "DEBE", 			"0");
-					UtilidadesHash.set(a, "HABER", 			""+importeD);
-				}
+				UtilidadesHash.set(a, "DEBE", 			"0");
+				UtilidadesHash.set(a, "HABER", 			imp);
 				UtilidadesHash.set(a, "BASEIMPONIBLE", 	"");
 				UtilidadesHash.set(a, "IVA", 			"");
 				UtilidadesHash.set(a, "CONTRAPARTIDA", 	asientoClientes);
@@ -4181,6 +4160,24 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 	private String generarLineaAbono (int asiento, Hashtable datos)
 	{									 	
 		String linea = "";
+		Double importeDebe = UtilidadesHash.getDouble(datos, "DEBE");
+		Double importeHaber = UtilidadesHash.getDouble(datos, "HABER");
+		Double baseImponible = UtilidadesHash.getDouble(datos, "BASEIMPONIBLE");
+		String baseImp = "";
+		if(importeDebe<0.0){
+			importeHaber = -1 * importeDebe;
+			importeDebe = 0.0;
+		}
+		if(importeHaber<0.0){
+			importeDebe = -1 * importeHaber;
+			importeHaber = 0.0;
+		}
+		if(baseImponible!=null&&baseImponible<0.0){
+			baseImponible = -1 * baseImponible;
+			baseImp = baseImponible.toString().replace('.', ',');
+		}else{
+			baseImp = (UtilidadesHash.getString(datos, "BASEIMPONIBLE") != null ? UtilidadesHash.getString(datos, "BASEIMPONIBLE").replace('.',','):"");
+		}
 		linea = // Numero Asiento
 			asiento 
 			+ SEPARADOR +	
@@ -4203,15 +4200,18 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 			+ SEPARADOR +
 			
 			// Debe
-			(UtilidadesHash.getString(datos, "DEBE") != null ? UtilidadesHash.getString(datos, "DEBE").replace('.',','):"") 
+			//(UtilidadesHash.getString(datos, "DEBE") != null ? UtilidadesHash.getString(datos, "DEBE").replace('.',','):"")
+			importeDebe.toString().replace('.', ',')
 			+ SEPARADOR +
 			
 			// Haber
-			(UtilidadesHash.getString(datos, "HABER") != null ? UtilidadesHash.getString(datos, "HABER").replace('.',','):"") 
+			//(UtilidadesHash.getString(datos, "HABER") != null ? UtilidadesHash.getString(datos, "HABER").replace('.',','):"")
+			importeHaber.toString().replace('.', ',')
 			+ SEPARADOR +
 			
 			// Base Imponible
-			(UtilidadesHash.getString(datos, "BASEIMPONIBLE") != null ? UtilidadesHash.getString(datos, "BASEIMPONIBLE").replace('.',','):"") 
+			//(UtilidadesHash.getString(datos, "BASEIMPONIBLE") != null ? UtilidadesHash.getString(datos, "BASEIMPONIBLE").replace('.',','):"")
+			baseImp
 			+ SEPARADOR +
 			
 			// IVA

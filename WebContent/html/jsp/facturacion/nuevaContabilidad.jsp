@@ -105,14 +105,20 @@
 	<td>
 	 <table width="100%" border="0">
 		<tr>
-			<td width="35%" class="labelText" colspan="2"><siga:Idioma key="gratuita.nuevaContabilidad.literal.fDesde"/>:&nbsp;(*)
-				<html:text name="ContabilidadForm" property="fechaDesde" size="10" maxlength="10" styleClass="box" readOnly="true" value="">></html:text>
+			<td width="30%" class="labelText">
+				<siga:Idioma key="gratuita.nuevaContabilidad.literal.fDesde"/>:&nbsp;(*)
+			</td>
+			<td>
+				<siga:Fecha nombreCampo="fechaDesde"/>&nbsp;
 				<a href='javascript://'onClick="return showCalendarGeneral(fechaDesde);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>		
 			</td>
 		</tr>
 		<tr>
-			<td width="35%" class="labelText" colspan="2"><siga:Idioma key="gratuita.nuevaContabilidad.literal.fHasta"/>:&nbsp;(*)
-				<html:text name="ContabilidadForm" property="fechaHasta" size="10" maxlength="10" styleClass="box" readOnly="true" value="">></html:text>
+			<td width="30%" class="labelText">
+				<siga:Idioma key="gratuita.nuevaContabilidad.literal.fHasta"/>:&nbsp;(*)
+			</td>
+			<td>
+				<siga:Fecha nombreCampo="fechaHasta"/>&nbsp;
 				<a href='javascript://'onClick="return showCalendarGeneral(fechaHasta);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>			
 			</td>
 		</tr>
