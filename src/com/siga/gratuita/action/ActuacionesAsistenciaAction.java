@@ -682,8 +682,11 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 					asistencia.setNumero(new Integer((String)hash.get(ScsActuacionAsistenciaBean.C_NUMERO)));
 					asistencia.setComisaria(new Long((String)hash.get(ScsActuacionAsistenciaBean.C_IDCOMISARIA)));
 					asistencia.setComisariaIdInstitucion(new Integer((String)hash.get(ScsActuacionAsistenciaBean.C_IDINSTITUCIONCOMISARIA)));
-					asistencia.setNumeroDiligencia((String)hash.get(ScsActuacionAsistenciaBean.C_NUMEROASUNTO));
-					
+					if(miForm.getNumeroDilegenciaAsistencia()==null||miForm.getNumeroDilegenciaAsistencia().trim().equals("")){
+						asistencia.setNumeroDiligencia((String)hash.get(ScsActuacionAsistenciaBean.C_NUMEROASUNTO));
+					}else{
+						asistencia.setNumeroDiligencia(miForm.getNumeroDilegenciaAsistencia());
+					}
 				}
 				
 			} else {
@@ -706,7 +709,11 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 					}
 					asistencia.setJuzgado(new Long((String)hash.get(ScsActuacionAsistenciaBean.C_IDJUZGADO)));
 					asistencia.setJuzgadoIdInstitucion(new Integer((String)hash.get(ScsActuacionAsistenciaBean.C_IDINSTITUCIONJUZGADO)));
-					asistencia.setNumeroProcedimiento((String)hash.get(ScsActuacionAsistenciaBean.C_NUMEROASUNTO));
+					if(miForm.getNumeroProcedimientoAsistencia()==null||miForm.getNumeroProcedimientoAsistencia().trim().equals("")){
+						asistencia.setNumeroProcedimiento((String)hash.get(ScsActuacionAsistenciaBean.C_NUMEROASUNTO));
+					}else{
+						asistencia.setNumeroProcedimiento(miForm.getNumeroProcedimientoAsistencia());
+					}
 				}
 				
 				

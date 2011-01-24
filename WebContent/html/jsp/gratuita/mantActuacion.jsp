@@ -103,6 +103,8 @@
 	String fechaNotificacion= "";
 	String acIdPrision="";
 	String acIdInstitucionPrision="";
+	String numeroDiligencia="";
+	String numeroProcedimiento="";
 	
 	
 	/*try {
@@ -132,22 +134,29 @@
 	 	// Datos de la comisaria seleccionado:
 	 	idComisaria = (String)hash.get(ScsActuacionAsistenciaBean.C_IDCOMISARIA);
 	 	idInstitucionComisaria =  (String)hash.get(ScsActuacionAsistenciaBean.C_IDINSTITUCIONCOMISARIA);
+	 	numeroDiligencia =  (String)hash.get(ScsAsistenciasBean.C_NUMERODILIGENCIA);
+	 	numeroProcedimiento =  (String)hash.get(ScsAsistenciasBean.C_NUMEROPROCEDIMIENTO);
 	 	
 		// jbd // inc7688 // Cuando estemos creando una actuacion se metera el juzgado/comisaria de la asistencia
 		if(modo.equals("alta")) {
 			// Pero solo si no estan los 2 cargados
-			if (!idJuzgado.equalsIgnoreCase("") && !idInstitucionJuzgado.equalsIgnoreCase("") && idComisaria.equalsIgnoreCase("") && idInstitucionComisaria.equalsIgnoreCase(""))
-				juzgadoSel.add(0,idJuzgado+","+idInstitucionJuzgado);	
+			if (!idJuzgado.equalsIgnoreCase("") && !idInstitucionJuzgado.equalsIgnoreCase("") && idComisaria.equalsIgnoreCase("") && idInstitucionComisaria.equalsIgnoreCase("")){
+				juzgadoSel.add(0,idJuzgado+","+idInstitucionJuzgado);
+				ACNUMEROASUNTO = numeroProcedimiento;
+			}
 			
-			if (!idComisaria.equalsIgnoreCase("") && !idInstitucionComisaria.equalsIgnoreCase("") && idJuzgado.equalsIgnoreCase("") && idInstitucionJuzgado.equalsIgnoreCase(""))
+			if (!idComisaria.equalsIgnoreCase("") && !idInstitucionComisaria.equalsIgnoreCase("") && idJuzgado.equalsIgnoreCase("") && idInstitucionJuzgado.equalsIgnoreCase("")){
 				comisariaSel.add(0,idComisaria+","+idInstitucionComisaria);
+				ACNUMEROASUNTO = numeroDiligencia;
+			}
 		}else{
 			// Una actuacion creada antes de meter jta la restriccion puede tener comisaria Y juzgado
 			if (idComisaria!=null && idInstitucionComisaria!=null)
 				comisariaSel.add(0,idComisaria+","+idInstitucionComisaria);
 		
 			if (idJuzgado!=null && idInstitucionJuzgado!=null)
-				juzgadoSel.add(0,idJuzgado+","+idInstitucionJuzgado);	
+				juzgadoSel.add(0,idJuzgado+","+idInstitucionJuzgado);
+
 		}
 
 
@@ -187,12 +196,14 @@
 		 ACDBREVE=(String) hash.get("ACDBREVE");
 		 ACOBSERVACIONES=(String) hash.get("ACOBSERVACIONES");
 		 ACDIADESPUES=(String) hash.get("ACDIADESPUES");
-		 ACNUMEROASUNTO=(String) hash.get("ACNUMEROASUNTO");
 		 ACOJUSTIFICACION=(String) hash.get("ACOJUSTIFICACION");
          /** PDM INC-2616**/
 		 FECHAHORA=GstDate.getFormatedDateShort("",(String) hash.get("FECHAHORA"));
 		 /**/
 		 IDTURNO=(String) hash.get("IDTURNO");
+		 if (hash.get("ACNUMEROASUNTO")!=null)
+		 	ACNUMEROASUNTO=(String) hash.get("ACNUMEROASUNTO");
+		 
 		
 		if(modo.equals("alta")) 
 			ACIDACTUACION=(String) request.getAttribute("idactuacion");
@@ -640,7 +651,14 @@
 		
 	</table>
 	</siga:ConjCampos>
-
+	<table valign="bottom">
+		<!-- tr><td>&nbsp;</td></tr-->
+		<tr>
+			<td class="labelText">
+				<siga:Idioma key='gratuita.mantActuacion.literal.mensajeAsunto'/>
+			</td>
+		</tr>
+	</table>
 </html:form>
  <html:form action = "/JGR_MantenimientoJuzgados.do" method="POST" target="submitArea">
 		<input type="hidden" name="modo"        value="buscarJuzgado">
