@@ -296,6 +296,11 @@
 	
 	String[] datos = { usr.getLocation(), idTurno };
 	String[] datos2 = { usr.getLocation(), usr.getLanguage() };
+	
+	boolean obligatorioFechaPresentacion = false;
+	if (PCAJG_ACTIVADO!=null && PCAJG_ACTIVADO==4){
+		obligatorioFechaPresentacion =true;
+	}
 %>
 
 <html>
@@ -550,8 +555,8 @@
 				}
 			%>
 			</td>
-			<td class="labelText">
-				<siga:Idioma key='gratuita.operarEJG.literal.fechaPresentacion'/>
+			<td class="labelText" nowrap>
+				<siga:Idioma key='gratuita.operarEJG.literal.fechaPresentacion'/>&nbsp;<%=obligatorioFechaPresentacion?pintarAsterisco:""%>
 			</td>
 			<td>	
 			<%
@@ -1206,7 +1211,9 @@
 			   
 			 } 
 		 //< %}%>
-		 
+		 if(<%=obligatorioFechaPresentacion%> && document.forms[0].fechaPresentacion.value==""){
+			 alert("<siga:Idioma key='errors.required' arg0='gratuita.operarEJG.literal.fechaPresentacion'/>");
+		 } 
 		  if (document.forms[0].anioCAJG.value.length!=0 && document.forms[0].anioCAJG.value.length<4){
 			  fin();
 			  alert('<siga:Idioma key="gratuita.operarEJG.message.longitudAnioCAJG"/>');
