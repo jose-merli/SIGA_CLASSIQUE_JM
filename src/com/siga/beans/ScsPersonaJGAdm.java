@@ -7,8 +7,10 @@
 
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Vector;
+import java.util.List;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ComodinBusquedas;
@@ -17,6 +19,7 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.BusquedaPersonaJGForm;
 
@@ -916,5 +919,40 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 				
 		return resultado;
 	}
+	
+	
+		public String getLenguajeSolicitante(Hashtable ht) throws ClsExceptions{
+			
+		String idlenguajeSolicitante = "";
+		int idinstitucion = Integer.parseInt((String) ht.get("IDINSTITUCION"));
+		int idtipoejg = Integer.parseInt((String) ht.get("IDTIPOEJG"));
+		int anio = Integer.parseInt((String) ht.get("ANIO"));
+		int numero = Integer.parseInt((String) ht.get("NUMERO"));		
+		
+		String sql=	" select P.IDLENGUAJE AS IDLENGUAJE_SOLICITANTE  From Scs_Personajg p, Scs_Ejg a  Where a.Idinstitucion = "+idinstitucion+ " "
+		+ " And a.Anio = "+anio+"   And a.Numero =" + numero+"   And a.Idtipoejg =" +idtipoejg +" "
+		+ " And a.Idpersonajg = p.Idpersona(+)"
+		+ " And a.Idinstitucion = p.Idinstitucion(+) ";
+          
+		try {
+
+			RowsContainer rc = new RowsContainer();
+
+			if (rc.find(sql)) {
+				Row r = (Row) rc.get(0);
+				idlenguajeSolicitante = r.getString("IDLENGUAJE_SOLICITANTE");
+			}
+
+		} catch (ClsExceptions e) {
+			throw new ClsExceptions (e, "Error al getLenguajeSolicitante de personaJG");
+		}
+
+		return idlenguajeSolicitante;
+	}
+	
+	
+
+	
+	
 	
 }
