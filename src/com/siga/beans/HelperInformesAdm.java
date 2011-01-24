@@ -328,12 +328,12 @@ public class HelperInformesAdm  {
 			throw new ClsExceptions (e, "Error al obtener getJuzgadoSalida");
 		}
 	}
-	public Vector getTipoResolucionAutomatico (String idTipoResolucion) throws ClsExceptions  
+	public Vector getTipoResolucionAutomatico (String idTipoResolucion, String idioma) throws ClsExceptions  
 	{
 		try {
 			Hashtable h = new Hashtable();
 			h.put(new Integer(1), idTipoResolucion);
-			String sql = "SELECT f_siga_getrecurso(scs_tiporesolauto.DESCRIPCION,1) AS DESC_TIPORESOLAUTO "
+			String sql = "SELECT f_siga_getrecurso(scs_tiporesolauto.DESCRIPCION,"+idioma+") AS DESC_TIPORESOLAUTO "
 				+" FROM scs_tiporesolauto "
 				+" WHERE " 
 				
@@ -346,12 +346,12 @@ public class HelperInformesAdm  {
 			throw new ClsExceptions (e, "Error al obtener getTipoResolucionAutomatico.");
 		}
 	}
-	public Vector getTipoSentidoAutomatico ( String idTipoSentido) throws ClsExceptions  
+	public Vector getTipoSentidoAutomatico ( String idTipoSentido, String idioma) throws ClsExceptions  
 	{
 		try {
 			Hashtable h = new Hashtable();
 			h.put(new Integer(1), idTipoSentido);
-			String sql = "SELECT f_siga_getrecurso(scs_tiposentidoauto.DESCRIPCION,1) AS DESC_TIPOSENTIDOAUTO "
+			String sql = "SELECT f_siga_getrecurso(scs_tiposentidoauto.DESCRIPCION,"+idioma+") AS DESC_TIPOSENTIDOAUTO "
 				+" FROM scs_tiposentidoauto "
 				+" WHERE " 
 				
@@ -365,13 +365,13 @@ public class HelperInformesAdm  {
 		}
 	}
 	
-	public Vector getTipoDictamenEjg (String idInstitucion, String idTipoDictamen) throws ClsExceptions  
+	public Vector getTipoDictamenEjg (String idInstitucion, String idTipoDictamen, String idioma) throws ClsExceptions  
 	{
 		try {
 			Hashtable h = new Hashtable();
 			h.put(new Integer(1), idInstitucion);
 			h.put(new Integer(2), idTipoDictamen);
-			String sql = "SELECT f_siga_getrecurso(scs_tipodictamenejg.DESCRIPCION,1) AS DESC_TIPODICTAMENEJG "
+			String sql = "SELECT f_siga_getrecurso(scs_tipodictamenejg.DESCRIPCION,"+idioma+") AS DESC_TIPODICTAMENEJG "
 				+" FROM scs_tipodictamenejg "
 				+" WHERE " 
 				+" scs_tipodictamenejg.idinstitucion = :1 AND "
@@ -384,13 +384,13 @@ public class HelperInformesAdm  {
 			throw new ClsExceptions (e, "Error al obtener getTipoDictamenEjg.");
 		}
 	}
-	public Vector getTipoRatificacionEjg (String idTipoRatificacion) throws ClsExceptions  
+	public Vector getTipoRatificacionEjg (String idTipoRatificacion, String idioma) throws ClsExceptions  
 	{
 		try {
 			Hashtable h = new Hashtable();
 		
 			h.put(new Integer(1), idTipoRatificacion);
-			String sql = "SELECT f_siga_getrecurso(SCS_TIPORESOLUCION.DESCRIPCION,1) AS DESC_TIPORATIFICACIONEJG "
+			String sql = "SELECT f_siga_getrecurso(SCS_TIPORESOLUCION.DESCRIPCION,"+idioma+") AS DESC_TIPORATIFICACIONEJG "
 				+" FROM SCS_TIPORESOLUCION "
 				+" WHERE " 
 				
