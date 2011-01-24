@@ -1212,7 +1212,9 @@
 			 } 
 		 //< %}%>
 		 if(<%=obligatorioFechaPresentacion%> && document.forms[0].fechaPresentacion.value==""){
+			 fin();
 			 alert("<siga:Idioma key='errors.required' arg0='gratuita.operarEJG.literal.fechaPresentacion'/>");
+			 return false;
 		 } 
 		  if (document.forms[0].anioCAJG.value.length!=0 && document.forms[0].anioCAJG.value.length<4){
 			  fin();
