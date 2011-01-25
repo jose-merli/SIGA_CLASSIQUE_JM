@@ -180,6 +180,8 @@ public class InscripcionGuardia
 		// Controles
 		ScsGuardiasTurnoAdm guaadm = new ScsGuardiasTurnoAdm(usr);
 		ScsInscripcionGuardiaAdm insadm = new ScsInscripcionGuardiaAdm(usr);
+		//TODO Descomentar la siguiente linea (ya que se comento solo para entregar incidencia INC_07825_SIGA urgente:
+		// ScsOrdenacionColasAdm ordadm = new ScsOrdenacionColasAdm(usr);
 		CenBajasTemporalesAdm bajasAdm = new CenBajasTemporalesAdm(usr);
 		ArrayList<LetradoGuardia> colaLetrados = new ArrayList<LetradoGuardia>();
 
@@ -198,7 +200,8 @@ public class InscripcionGuardia
 		// obteniendo ordenacion de la guardia
 		if (idOrdenacionColas == null)
 			throw new ClsExceptions("messages.general.error");
-		orden = porGrupos ? " numeroGrupo, ordengrupo" : getOrderBy(idOrdenacionColas.toString(), usr);
+		//TODO Descomentar la siguiente linea y borrar lo anyadido (ya que se comento solo para entregar incidencia INC_07825_SIGA urgente):
+		orden = porGrupos ? " numeroGrupo, ordengrupo" : /* Anyadido: */ getOrderBy(idOrdenacionColas.toString(), usr); // ordadm.getOrderBy(idOrdenacionColas.toString(), usr);
 
 		// obteniendo ultimo apuntado de la guardia
 		if (idPersonaUltimo == null)
@@ -311,6 +314,7 @@ public class InscripcionGuardia
 		return existe;
 	}
 	
+	//TODO Borrar el siguiente metodo (ya que se comento solo para entregar incidencia INC_07825_SIGA urgente):
 	/**
 	 * Obtiene la clausula order by para el select de inscripciones
 	 * 
@@ -932,12 +936,17 @@ public class InscripcionGuardia
 					//el letrado a dar de baja es el primero en la cola:
 					//asi que hay que poner al anterior como ultimo en la cola
 					Long penultimoDeLaCola;
-					if (tamanyoCola == 1)
+					String fechaSusc_penultimo;
+					if (tamanyoCola == 1) {
 						penultimoDeLaCola = null;
-					else
+						fechaSusc_penultimo = null;
+					}
+					else {
 						penultimoDeLaCola = ((LetradoGuardia) colaLetrados.get(tamanyoCola-2)).getIdPersona();
+						fechaSusc_penultimo = ((LetradoGuardia) colaLetrados.get(tamanyoCola-2)).getInscripcionGuardia().getFechaSuscripcion();
+					}
 					
-					guardiaAdm.cambiarUltimoCola (idInstitucion, idTurno, idGuardia, penultimoDeLaCola, fechaSuscripcion_Ultimo);
+					guardiaAdm.cambiarUltimoCola (idInstitucion, idTurno, idGuardia, penultimoDeLaCola, fechaSusc_penultimo);
 				}
 			}
 			
