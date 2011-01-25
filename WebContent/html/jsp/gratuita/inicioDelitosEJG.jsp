@@ -342,7 +342,7 @@
 						<td colspan="4" class="labelText" ><siga:Idioma key='gratuita.mantAsistencias.literal.c.Detencion'/></td>
 							<td colspan="23">
 							<%if(modopestanha.equals("editar")){%>
-							 	<input type="text" name="codigoExtComisaria" class="box" size="3"  style="margin-top:3px;" maxlength="10"/>
+							 	<input type="text" name="codigoExtComisaria" class="box" size="3"  style="margin-top:3px;" maxlength="10" onBlur="obtenerComisaria();"/>
 								<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" ancho="505" obligatorio="false" parametro="<%=datos%>" elementoSel="<%=comisariaSel%>" clase="<%=estilo%>" hijo="t" readonly="false"/>
 							<%}else{%>
 									<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" ancho="555" obligatorio="false" parametro="<%=datos%>" elementoSel="<%=comisariaSel%>" clase="boxConsulta" hijo="t" readonly="true"/>
