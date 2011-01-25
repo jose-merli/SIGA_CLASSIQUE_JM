@@ -212,7 +212,7 @@ public class ScsGrupoGuardiaColegiadoAdm extends MasterBeanAdministrador
 			Long idPersona, String fechaValidacion, String numeroGrupo, String ordenGrupo, String idGrupoGuardiaColegiado) throws ClsExceptions{
 		
 			
-		
+		boolean nuevo=false;
 		ScsGrupoGuardiaAdm admGrupo = new ScsGrupoGuardiaAdm(this.usrbean);
 		// Buscamos el idGrupo que corresponde con el numero del grupo
 		Hashtable grupoGuardia=admGrupo.getGrupoGuardia(idInstitucion.toString(), idTurno.toString(), idGuardia.toString(), numeroGrupo);
@@ -237,8 +237,10 @@ public class ScsGrupoGuardiaColegiadoAdm extends MasterBeanAdministrador
 		Hashtable grupoGuardiaHashtable=new Hashtable();
 		grupoGuardiaHashtable.put(ScsGrupoGuardiaColegiadoBean.C_IDGRUPO, idGrupo);
 		grupoGuardiaHashtable.put(ScsGrupoGuardiaColegiadoBean.C_ORDEN, ordenGrupo);
-		if(idGrupoGuardiaColegiado==null)
+		if(idGrupoGuardiaColegiado==null||(idGrupoGuardiaColegiado!=null&&idGrupoGuardiaColegiado.trim().equalsIgnoreCase(""))){
+			nuevo=true;
 			idGrupoGuardiaColegiado = getSecuenciaNextVal(ScsGrupoGuardiaColegiadoBean.S_SECUENCIA).toString();
+		}
 		ScsGrupoGuardiaColegiadoBean bean = new ScsGrupoGuardiaColegiadoBean();
 		bean.setIdGrupoGuardiaColegiado (new Long(idGrupoGuardiaColegiado));
 		bean.setIdPersona(Long.valueOf(idPersona));
@@ -250,7 +252,10 @@ public class ScsGrupoGuardiaColegiadoAdm extends MasterBeanAdministrador
 		bean.setFechaCreacion("sysdate");
 		bean.setUsuCreacion(Integer.valueOf(this.usrbean.getUserName()));
 		bean.setFechaSuscripcion(fechaValidacion);
-		this.insert(bean);				
+		if(nuevo)
+			this.insert(bean);
+		else
+			this.updateDirect(bean);
 		
 	}
 	
