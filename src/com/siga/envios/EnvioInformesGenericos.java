@@ -372,7 +372,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 			boolean isSolicitantes = aSolicitantes!=null && aSolicitantes.equalsIgnoreCase("S");
 			String languageInstitucion=(String) 	usrBean.getLanguageInstitucion();
-			Vector datosconsulta= scsDesignaAdm.getDatosSalidaOficio(idinstitucion,idTurno,anio,numero,null,isSolicitantes,idPersonaJG,languageInstitucion,idioma);
+			Vector datosconsulta= scsDesignaAdm.getDatosSalidaOficio(idinstitucion,idTurno,anio,numero,null,isSolicitantes,idPersonaJG,languageInstitucion);
 			htDatosInforme.put("row", datosconsulta);
 
 
@@ -516,30 +516,11 @@ public class EnvioInformesGenericos extends MasterReport {
 							ncolegiado=(String)UtilidadesHash.getString(datosInformeK,"NCOLEGIADO_LETRADO");
 						}else{
 							if(datosInformeK.get("")!=null)
-								ncolegiado=((String)datosInformeK.get("")).split(" - ")[0];
-	
+								ncolegiado=((String)datosInformeK.get("")).split(" - ")[0];	
 						}				
-							/**
-							 * De las comunicaciones a interesados hay que usar el idioma del interesado para que salgan los datos por defecto,
-							 * en el idioma de los interesados, si este no tiene idiomas se debe imprimir en el idioma del Ususario.						 
-							 **/					
-						 String idiomainteresado= (String) datosInformeK.get("CODIGOLENGUAJE");
-						 if (idiomainteresado!=null && !idiomainteresado.trim().equals("")){												
-								idiomaExt=(String)UtilidadesHash.getString(datosInformeK,"CODIGOLENGUAJE");
-							}else{
-								if (idiomaLetrado!=null && !idiomaLetrado.trim().equals("")){																		
-									switch (Integer.parseInt(idiomaLetrado)) {
-										case 1:  idiomaExt="ES"; break;
-										case 2:  idiomaExt="CA"; break;
-										case 3:  idiomaExt="EU"; break;
-										case 4:  idiomaExt="GL"; break;	
-									}
-								}else{
-									idiomaExt= (String) datosInforme.get("idiomaExt");
-								}
-							}
-								
-						 
+						//esta dato lo devuelve la funcion getDatosInformeFinal y nos dice que plantilla debemos coger, pudiendo ser CA,ES,EU,GA
+						idiomaExt=(String)UtilidadesHash.getString(datosInformeK,"CODIGOLENGUAJE");						
+						
 						identificador= new StringBuffer();
 						identificador.append(ncolegiado);
 						identificador.append("-");
