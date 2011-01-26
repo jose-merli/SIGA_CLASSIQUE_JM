@@ -1684,7 +1684,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 								case 2:  idiomaExt="CA"; break;
 								case 3:  idiomaExt="EU"; break;
 								case 4:  idiomaExt="GL"; break;	
-							}
+							}				
+							/**Llama a la funcion para recuperar los valores con el idioma que le pasamos.**/
 							registroDefendido  = getregistrodatosDesigna(registro, idInstitucion,idLenguaje);
 							/**Para saaber en que idioma se tiene que imprimer la carta de oficio**/
 							registroDefendido.put("CODIGOLENGUAJE", idiomaExt);								
@@ -2304,7 +2305,11 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		       return datos;      
 	
 	  	   }
-	  
+	  /**
+	   * nombre: getregistrodatosDesigna
+	   * valores: se le pasa los valores de el registro, institucion y el idioma que queremos que nos aparezca.
+	   * Devuelve: nos devuelve un hastable de todos los datos.
+	   * **/
 	  public Hashtable getregistrodatosDesigna(Hashtable registro,String idInstitucion, String idioma) throws ClsExceptions {
 		  Hashtable vsalida=new Hashtable();	
 		  HelperInformesAdm helperInformes = new HelperInformesAdm();
