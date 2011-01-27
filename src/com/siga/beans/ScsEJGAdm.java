@@ -2528,9 +2528,12 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" nvl(pjg.direccion, '-') as DIR_SOLIC, ");
 			sql.append(" nvl(pjg.codigopostal, '-') as CP_SOLIC, ");
 			sql.append(" nvl((SELECT F_SIGA_GETRECURSO(Nombre,decode(Pjg.Idlenguaje,null,"+idioma+",Pjg.Idlenguaje)) ");
-			sql.append(" FROM CEN_POBLACIONES ");
+			sql.append(" FROM CEN_POBLACIONES ");			
 			sql.append(" WHERE IDPOBLACION = pjg.idpoblacion), ");
 			sql.append(" '-') as POB_SOLIC, ");
+			sql.append(" nvl((SELECT F_SIGA_GETRECURSO(Nombre,decode(Pjg.Idlenguaje,null,"+idioma+",Pjg.Idlenguaje)) ");
+			sql.append("  From Cen_Provincias ");
+			sql.append("  Where Idprovincia = Pjg.Idprovincia),'-')As Prov_Solic, ");         
 			sql.append(" decode(Pjg.Idlenguaje,null,"+idioma+",Pjg.Idlenguaje) as IDLENGUAJE,");
 			sql.append(" f_Siga_Getcodidioma(decode(Pjg.Idlenguaje,null,"+idioma+",Pjg.Idlenguaje)) As CODIGOLENGUAJE ");
 			sql.append(" FROM scs_unidadfamiliarejg fam,scs_personajg pjg,SCS_TIPOGRUPOLABORAL tgl ");
