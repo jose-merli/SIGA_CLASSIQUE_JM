@@ -56,14 +56,13 @@
 		<input type="hidden" name="procedimiento">
 	</html:form>
 
-	<BR>
-
 	<siga:TablaCabecerasFijas 
 		   nombre="tablaDatos"
 		   borde="1"
 		   clase="tableTitle"
 		   nombreCol="&nbsp;,gratuita.procedimientos.literal.nombre"
-		   tamanoCol="20,80" >
+		   tamanoCol="10,90" 
+		   ajusteBotonera="true">
 			   
 			<%	if (vProcedimientos==null || vProcedimientos.size() < 1) { %>			
 			 		<br><br>
@@ -80,7 +79,7 @@
 						String idInstitucion   = "" + UtilidadesHash.getInteger (h, ScsProcedimientosBean.C_IDINSTITUCION);
 			%>
 
-		   <tr class="listaNonEdit">
+		   <tr class="<%=((i+1)%2==0?"filaTablaPar":"filaTablaImpar")%>">
 				<td align="center">
 					<input type="checkbox" name="validado" value="1">
 					<input type="hidden" name="solicita_<%=(i+1)%>_1" value="<%=idInstitucion%>">

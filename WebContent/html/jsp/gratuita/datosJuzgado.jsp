@@ -174,7 +174,7 @@
 		function accionNuevo() 
 		{		
 			document.forms[0].modo.value = "nuevoProcedimientoModal";
-			var resultado = ventaModalGeneral(document.forms[0].name,"P");
+			var resultado = ventaModalGeneral(document.forms[0].name,"M");
 			if (resultado && resultado=='MODIFICADO')
 				refrescarLocal();
 		}	
