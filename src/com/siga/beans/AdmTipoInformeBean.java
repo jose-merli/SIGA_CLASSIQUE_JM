@@ -15,8 +15,11 @@ package com.siga.beans;
 
 public class AdmTipoInformeBean extends MasterBean {
 
+	static public final String CLASETIPOINFORME_PERSONALIZABLE = "P";
+	static public final String CLASETIPOINFORME_GENERICO = "G";
+	static public final String CLASETIPOINFORME_ORDINARIO = "O";
 	/* Variables */	
-	private String 	idTipoInforme, descripcion, idTipoInformePadre, idTipoFormato;
+	private String 	idTipoInforme, descripcion, idTipoInformePadre, idTipoFormato,clase,directorio;
 	
 	
 	/* Nombre tabla */
@@ -27,6 +30,8 @@ public class AdmTipoInformeBean extends MasterBean {
 	static public final String C_DESCRIPCION    = "DESCRIPCION";
 	static public final String C_IDTIPOINFORMEPADRE = "IDTIPOINFORMEPADRE";
 	static public final String C_TIPOFORMATO = "TIPOFORMATO";
+	static public final String C_CLASE = "CLASE";
+	static public final String C_DIRECTORIO = "DIRECTORIO";
 
 
 	
@@ -35,6 +40,7 @@ public class AdmTipoInformeBean extends MasterBean {
 	public void setDescripcion(String nombre) {this.descripcion= nombre;}
 	public void setIdTipoInformePadre(String valor) {this.idTipoInformePadre = valor;}
 	public void setTipoFormato(String valor) {this.idTipoFormato = valor;}
+	public void setClase(String valor) {this.clase = valor;}
 	
 	
 	//Metodos GET
@@ -42,6 +48,13 @@ public class AdmTipoInformeBean extends MasterBean {
 	public String getDescripcion() {return descripcion;}
 	public String getIdTipoInformePadre() {return idTipoInformePadre;}
 	public String getTipoFormato() {return idTipoFormato;}
+	public String getClase() {return clase;}
+	public String getDirectorio() {
+		return directorio;
+	}
+	public void setDirectorio(String directorio) {
+		this.directorio = directorio;
+	}
 	
 	
 	

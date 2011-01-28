@@ -41,6 +41,7 @@ public class TagFila extends TagSupport
 	boolean pintarEspacio = true;
 	private ArrayList valoresEdicion;  
 	private ArrayList valoresConsulta;  
+	private String id;
 	
 	public void setBotones (String dato) 	
 	{
@@ -114,7 +115,13 @@ public class TagFila extends TagSupport
 			
 			this.clase = (this.fila%2==0?"filaTablaPar":"filaTablaImpar");
 			
-			out.println("	<tr class=\""+ this.clase +"\">");
+			out.println("	<tr class=\""+ this.clase+"\"" );
+			if(this.id!=null && !this.id.equals("")){
+				out.println(" id=\""+ this.id+"\"" );
+			}
+			out.println(">");
+			
+			
 			
 			//valores permitidos para el parametro modo cuando se entra en modo edicion
 			this.valoresEdicion = new ArrayList();
@@ -341,5 +348,13 @@ public class TagFila extends TagSupport
 		  "border=\"0\"" +
 		  ">";
 	   out.println(aux);
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 }

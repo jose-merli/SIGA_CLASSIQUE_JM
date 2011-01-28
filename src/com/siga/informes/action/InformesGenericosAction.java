@@ -1041,7 +1041,7 @@ public class InformesGenericosAction extends MasterAction {
 						idioma, doc, words, datoscomunes);
 
 				//Regiones de Guardias y Asistencias/Actuaciones
-				if (infBean.getIdPlantilla().equals ("INFJGM3")||infBean.getIdPlantilla().equals ("INFJG3")) {
+				if (infBean.getCodigo().equals ("INFJGM3")||infBean.getCodigo().equals ("INFJG3")) {
 					totalGA += generaRegionesGA3 (fac, idinstitucion, facturaciones, 
 							idioma, doc, words, datoscomunes);
 					
@@ -1061,7 +1061,7 @@ public class InformesGenericosAction extends MasterAction {
 						datoscomunes.put("AVISOERRORGUARDIAS", " ");
 					}
 				}
-				else if (infBean.getIdPlantilla().equals ("INFJGM3001")||infBean.getIdPlantilla().equals ("INFJG3001")) {
+				else if (infBean.getCodigo().equals ("INFJGM3001")||infBean.getCodigo().equals ("INFJG3001")) {
 					totalGA += generaRegionesGA3001 (fac, idinstitucion, facturaciones, 
 							idioma, doc, words, datoscomunes);
 				}

@@ -305,6 +305,8 @@
 		<form-bean name="configuracionAbonosForm" type="com.siga.facturacionSJCS.form.ConfiguracionAbonosForm"/>
 		<form-bean name="InformesFacturacionMultipleForm" type="com.siga.informes.form.InformesFacturacionMultipleForm"/>
 		<form-bean name="BajasTemporalesForm" type="com.siga.censo.form.BajasTemporalesForm"/>
+		<form-bean name="InformeForm" type="com.siga.administracion.form.InformeForm"/>
+		<form-bean name="InformeFormEdicion" type="com.siga.administracion.form.InformeForm"/>
 		
 		
 	</form-beans>
@@ -330,6 +332,8 @@
 		<forward name="seleccionPlantillasModal" path="/html/jsp/informes/seleccionPlantillasModal.jsp"/>
 		<forward name="seleccionPlantillasModalNew" path="/html/jsp/informes/seleccionPlantillasModalNew.jsp"/>
 		<forward name="definirEnvios" path="/html/jsp/envios/redirigeDefinicionEnvios.jsp"/>
+		<forward name="confirmar" path="/html/jsp/general/msjConfirmar.jsp"/>
+		
     </global-forwards>
 
 
@@ -2227,6 +2231,14 @@
 			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>
 			
 		</action>
+		<action path="/ADM_GestionInformes" type="com.siga.administracion.action.GestionInformesAction" name="InformeForm">
+			<forward name="inicio" path="/html/jsp/administracion/busquedaInformes.jsp"/>
+			<forward name="listadoInformes" path="/html/jsp/administracion/listadoInformes.jsp"/>
+			<forward name="edicion" path="/html/jsp/administracion/edicionInforme.jsp"/>
+			<forward name="listadoArchivosInforme" path="/html/jsp/administracion/listadoArchivosInforme.jsp"/>
+			<forward name="confirmar" path="/html/jsp/general/msjConfirmar.jsp"/>s
+		</action>
+		
 		<action path="/CEN_BajasTemporales" forward="/JGR_BajasTemporales.do?fichaColegial=true" >
 		</action>
 		<!-- ***** Justicia Gratuita / Definir Calendario de Guardias ***** -->

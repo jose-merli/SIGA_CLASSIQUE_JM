@@ -1,11 +1,18 @@
 package com.siga.beans;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.administracion.form.InformeForm;
 
 
 public class AdmInformeAdm extends MasterBeanAdministrador
@@ -40,7 +47,10 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 				AdmInformeBean.C_VISIBLE,
 				AdmInformeBean.C_ASOLICITANTES,
 				AdmInformeBean.C_DESTINATARIOS,
-				AdmInformeBean.C_TIPOFORMATO
+				AdmInformeBean.C_TIPOFORMATO,
+				AdmInformeBean.C_CODIGO,
+				AdmInformeBean.C_ORDEN
+				
 		};
 		return campos;
 	} //getCamposBean()
@@ -57,7 +67,11 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 	
 	protected String[] getOrdenCampos()
 	{
-		return getClavesBean();
+		String [] orden = 
+		{
+				AdmInformeBean.C_ORDEN,AdmInformeBean.C_IDPLANTILLA,AdmInformeBean.C_IDINSTITUCION
+		};
+		return orden;
 	} //getOrdenCampos()
 	
 	protected MasterBean hashTableToBean (Hashtable hash) throws ClsExceptions
@@ -81,6 +95,8 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 			bean.setASolicitantes	(UtilidadesHash.getString(hash, AdmInformeBean.C_ASOLICITANTES));
 			bean.setDestinatarios	(UtilidadesHash.getString(hash, AdmInformeBean.C_DESTINATARIOS));
 			bean.setTipoformato		(UtilidadesHash.getString(hash, AdmInformeBean.C_TIPOFORMATO));
+			bean.setCodigo	(UtilidadesHash.getString(hash, AdmInformeBean.C_CODIGO));
+			bean.setOrden	(UtilidadesHash.getString(hash, AdmInformeBean.C_ORDEN));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -110,6 +126,8 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(htData, AdmInformeBean.C_ASOLICITANTES, 		b.getASolicitantes());
 			UtilidadesHash.set(htData, AdmInformeBean.C_DESTINATARIOS, 		b.getDestinatarios());
 			UtilidadesHash.set(htData, AdmInformeBean.C_TIPOFORMATO, 		b.getTipoformato());
+			UtilidadesHash.set(htData, AdmInformeBean.C_CODIGO, 		b.getCodigo());
+			UtilidadesHash.set(htData, AdmInformeBean.C_ORDEN, 		b.getOrden());
 		}
 		catch (Exception e) {
 			htData = null;
@@ -147,11 +165,13 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 				"       "+AdmInformeBean.C_PRESELECCIONADO+", " +
 				"       "+AdmInformeBean.C_VISIBLE+"," +
 				"       "+AdmInformeBean.C_ASOLICITANTES+", " +
-				"       "+AdmInformeBean.C_DESTINATARIOS+" " +
-				// "       "+AdmInformeBean.C_TIPOFORMATO+" " +
+				"       "+AdmInformeBean.C_DESTINATARIOS+", " +
+				"       "+AdmInformeBean.C_TIPOFORMATO+", " +
+				"       "+AdmInformeBean.C_CODIGO+", " +
+				"       "+AdmInformeBean.C_ORDEN+" " +
 				"  FROM "+AdmInformeBean.T_NOMBRETABLA+" " +
 				" WHERE "+AdmInformeBean.C_IDPLANTILLA+" = '"+idInforme+"' " +
-				"   AND "+AdmInformeBean.C_VISIBLE+" = 'S' " +
+//				"   AND "+AdmInformeBean.C_VISIBLE+" = 'S' " +
 				"   AND "+AdmInformeBean.C_IDINSTITUCION+" IN (0, "+idInstitucion+") " +
 				" ORDER BY "+AdmInformeBean.C_IDINSTITUCION+ " DESC ";
 			
@@ -162,6 +182,7 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 			else {
 				Hashtable ht = (Hashtable) datos.get(0);
 				salida = new AdmInformeBean();
+				salida.setUsrBean(this.usrbean);
 				salida.setAlias				((String)ht.get(AdmInformeBean.C_ALIAS));
 				salida.setDescripcion		((String)ht.get(AdmInformeBean.C_DESCRIPCION));
 				salida.setDirectorio		((String)ht.get(AdmInformeBean.C_DIRECTORIO));
@@ -175,6 +196,8 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 				salida.setASolicitantes		((String)ht.get(AdmInformeBean.C_ASOLICITANTES));
 				salida.setDestinatarios		((String)ht.get(AdmInformeBean.C_DESTINATARIOS));
 				salida.setTipoformato		((String)ht.get(AdmInformeBean.C_TIPOFORMATO));
+				salida.setCodigo		((String)ht.get(AdmInformeBean.C_CODIGO));
+				salida.setOrden		((String)ht.get(AdmInformeBean.C_ORDEN));
 			}
 		}
 		catch (ClsExceptions e) {
@@ -308,5 +331,133 @@ public class AdmInformeAdm extends MasterBeanAdministrador
 
 		return salida;
 	} // obtenerInformesTipo()
+	
+	public List<InformeForm> getInformes(InformeForm informeFormFiltro,String idInstitucion)throws ClsExceptions{
+    	Hashtable codigosHashtable = new Hashtable();
+    	int contador = 0;
+		StringBuffer sql = new StringBuffer();
+    	sql.append(" SELECT NVL(INST.ABREVIATURA,'POR DEFECTO') ABREVIATURAINSTITUCION,I.*");
+    	sql.append(" ,TI.DESCRIPCION DESCRIPCIONTIPOINFORME,TI.CLASE CLASETIPOINFORME ");
+    	sql.append(" FROM ADM_INFORME I,ADM_TIPOINFORME TI,CEN_INSTITUCION INST ");
+    	sql.append(" WHERE");
+    	sql.append(" I.IDTIPOINFORME = TI.IDTIPOINFORME");
+    	sql.append("  AND I.IDINSTITUCION = INST.IDINSTITUCION(+)");
+    	
+    	if(informeFormFiltro.getIdInstitucion()!=null && informeFormFiltro.getIdInstitucion().equals("-1")){
+    		sql.append(" AND I.IDINSTITUCION IN (:");
+    		contador++;
+    		sql.append(contador);
+    		codigosHashtable.put(new Integer(contador),idInstitucion );
+        	sql.append(",0)");
+        	
+    		
+    	
+    	}else if(informeFormFiltro.getIdInstitucion()!=null && !informeFormFiltro.getIdInstitucion().equals("")){
+    		sql.append(" AND I.IDINSTITUCION = :");
+    		contador++;
+    		sql.append(contador);
+    		codigosHashtable.put(new Integer(contador),informeFormFiltro.getIdInstitucion() );
+    		
+
+    	}
+		if(informeFormFiltro.getAlias()!=null && !informeFormFiltro.getAlias().equals("")){
+			sql.append(" AND UPPER(I.ALIAS) LIKE '%");
+    		sql.append(informeFormFiltro.getAlias().toUpperCase());
+    		sql.append("%'");
+
+		}
+		
+		if(informeFormFiltro.getIdTipoInforme()!=null && !informeFormFiltro.getIdTipoInforme().equals("-1")){
+			sql.append(" AND I.IDTIPOINFORME = :");
+			contador++;
+    		sql.append(contador);
+    		codigosHashtable.put(new Integer(contador),informeFormFiltro.getIdTipoInforme());
+		}
+		if(informeFormFiltro.getVisible()!=null && !informeFormFiltro.getVisible().equals("")){
+			sql.append(" AND I.VISIBLE = :");
+			contador++;
+    		sql.append(contador);
+    		codigosHashtable.put(new Integer(contador),informeFormFiltro.getVisible());
+		}
+		if(informeFormFiltro.getASolicitantes()!=null && !informeFormFiltro.getASolicitantes().equals("")){
+			sql.append(" AND I.ASOLICITANTES = :");
+			contador++;
+    		sql.append(contador);
+    		codigosHashtable.put(new Integer(contador),informeFormFiltro.getASolicitantes());
+		}
+		sql.append(" ORDER BY DESCRIPCIONTIPOINFORME,I.IDINSTITUCION,I.ORDEN,I.ALIAS ");
+		
+		
+	
+    	List<InformeForm> informeList = null;
+    	try {
+			RowsContainer rc = new RowsContainer(); 
+			if (rc.findBind(sql.toString(),codigosHashtable)) {
+				informeList = new ArrayList<InformeForm>();
+				
+				AdmInformeBean informeBean = null;
+				InformeForm informeForm = null;
+				for (int i = 0; i < rc.size(); i++){
+					Row fila = (Row) rc.get(i);
+					Hashtable<String, Object> htFila=fila.getRow();
+					informeBean =  (AdmInformeBean)this.hashTableToBean(htFila);
+					informeBean.setUsrBean(this.usrbean);
+					informeForm = informeBean.getInforme();
+					informeForm.setClaseTipoInforme(UtilidadesHash.getString(htFila, "CLASETIPOINFORME"));
+					informeForm.setDescripcionTipoInforme(UtilidadesHash.getString(htFila, "DESCRIPCIONTIPOINFORME"));
+					informeForm.setDescripcionInstitucion(UtilidadesHash.getString(htFila, "ABREVIATURAINSTITUCION"));
+					informeList.add(informeForm);
+					
+				}
+			}else{
+				informeList = new ArrayList<InformeForm>();
+			} 
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar consulta.");
+		}
+
+    	return informeList;
+    }
+	public int getInformesNombreFisicoComun(AdmInformeBean informeBean) throws ClsExceptions{
+		
+		Hashtable codigosHashtable = new Hashtable();
+		RowsContainer rc = new RowsContainer(); 
+    	int contador = 0;
+		StringBuffer sql = new StringBuffer();
+    	sql.append(" SELECT I.NOMBREFISICO ");
+    	sql.append(" FROM ADM_INFORME I");
+    	sql.append(" WHERE");
+    	sql.append(" I.IDTIPOINFORME = :");
+    	contador++;
+		sql.append(contador);
+		codigosHashtable.put(new Integer(contador),informeBean.getIdTipoInforme());
+    	
+   		sql.append(" AND I.IDINSTITUCION = :");
+   		contador++;
+   		sql.append(contador);
+   		codigosHashtable.put(new Integer(contador),informeBean.getIdInstitucion());
+   		
+   		sql.append(" AND I.NOMBREFISICO = :");
+   		contador++;
+   		sql.append(contador);
+   		codigosHashtable.put(new Integer(contador),informeBean.getNombreFisico());
+   		
+   		
+   		int numInformes = 0;
+    	try {
+			if (rc.findBind(sql.toString(),codigosHashtable)) {
+				numInformes =  rc.size();
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar consulta.");
+		}
+		return numInformes;
+		
+	}
+	public Long getNewIdPlantilla() throws ClsExceptions{
+        Long idInforme = getSecuenciaNextVal(AdmInformeBean.SEQ_ADM_INFORME);
+        return idInforme;
+    }
+
 	
 }

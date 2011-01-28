@@ -1,7 +1,9 @@
 
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
@@ -9,6 +11,7 @@ import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.SIGAException;
 
 /**
@@ -359,4 +362,64 @@ public class CenInstitucionAdm extends MasterBeanAdministrador {
 		}
 		return null;
 	}
+	public List<CenInstitucionBean> getInstitucionesInformes(Integer idInstitucion,boolean isCombo)throws ClsExceptions{
+
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+
+			sql.append(" select * from cen_institucion ");
+			sql.append(" WHERE IDINSTITUCION  IN ( :");
+			/*contador ++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador),"2000"); 
+			sql.append(" ,:");*/
+			contador ++;
+			sql.append(contador);
+			sql.append(")");
+			htCodigos.put(new Integer(contador),idInstitucion);
+		//	 sql.append(" ORDER BY abreviatura ");
+			
+			
+			
+		
+		List<CenInstitucionBean> alInstituciones = null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+												
+            if (rc.findBind(sql.toString(),htCodigos)) {
+            	alInstituciones = new ArrayList<CenInstitucionBean>();
+            	CenInstitucionBean institucionBean = null;
+            	if(isCombo){
+	            	if(rc.size()>0){
+	            		institucionBean = new CenInstitucionBean();
+	            		institucionBean.setIdInstitucion(new Integer(-1));
+	            		institucionBean.setAbreviatura(UtilidadesString.getMensajeIdioma(this.usrbean, "general.combo.seleccionar"));
+	            		alInstituciones.add(institucionBean);
+	            	}
+            	}
+            	institucionBean = new CenInstitucionBean();
+        		institucionBean.setIdInstitucion(new Integer("0"));
+        		institucionBean.setAbreviatura("POR DEFECTO");
+        		alInstituciones.add(institucionBean);
+            	for (int i = 0; i < rc.size(); i++){
+            		Row fila = (Row) rc.get(i);
+            		Hashtable<String, Object> htFila=fila.getRow();
+            		institucionBean = new CenInstitucionBean();
+            		institucionBean.setIdInstitucion(UtilidadesHash.getInteger(htFila,CenInstitucionBean.C_IDINSTITUCION));
+            		institucionBean.setAbreviatura(UtilidadesHash.getString(htFila,CenInstitucionBean.C_ABREVIATURA));
+            		institucionBean.setNombre(UtilidadesHash.getString(htFila,CenInstitucionBean.C_NOMBRE));
+            		alInstituciones.add(institucionBean);
+            	}
+            } 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+       }
+       return alInstituciones;
+		
+		
+	} 
+	
+	
+	
 }
