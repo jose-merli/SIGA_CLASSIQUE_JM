@@ -2236,7 +2236,7 @@
 			<forward name="listadoInformes" path="/html/jsp/administracion/listadoInformes.jsp"/>
 			<forward name="edicion" path="/html/jsp/administracion/edicionInforme.jsp"/>
 			<forward name="listadoArchivosInforme" path="/html/jsp/administracion/listadoArchivosInforme.jsp"/>
-			<forward name="confirmar" path="/html/jsp/general/msjConfirmar.jsp"/>s
+			<forward name="confirmar" path="/html/jsp/general/msjConfirmar.jsp"/>
 		</action>
 		
 		<action path="/CEN_BajasTemporales" forward="/JGR_BajasTemporales.do?fichaColegial=true" >
