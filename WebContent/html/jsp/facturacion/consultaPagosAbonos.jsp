@@ -347,9 +347,11 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 		
 			<!-- Funcion asociada a boton pagarCaja -->
 			function pagarCaja() 
-			{							
+			{			
+				sub();				
 				document.forms[0].modo.value='pagarCaja';
 				var resultado = ventaModalGeneral("AbonosPagosForm","P");
+				fin();
 				if (resultado=="MODIFICADO")
 				{
 					refrescarLocal();
@@ -358,15 +360,18 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 			
 			<!-- Funcion asociada a boton compensarFactura -->
 			function compensarFactura() 
-			{							
+			{	
+				sub();						
 				document.forms[0].modo.value='compensarFactura';
 				document.forms[0].submit();
 			}
 			function compensacionFacturaManual() 
-			{							
+			{
+				sub();							
 				document.forms[0].modo.value='compensacionFacturaManual';
 				// Abro ventana modal y refresco si necesario
 				var resultado = ventaModalGeneral(document.AbonosPagosForm.name,"M");
+				fin();
 				if (resultado=="MODIFICADO")
 				{
 					refrescarLocal();
@@ -377,9 +382,11 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 			
 			<!-- Funcion asociada a boton pagarCaja -->
 			function pagarBanco() 
-			{							
+			{						
+				sub();	
 				document.forms[0].modo.value='pagarBanco';
 				var resultado = ventaModalGeneral("AbonosPagosForm","P");
+				fin();
 				if (resultado=="MODIFICADO")
 				{
 					refrescarLocal();

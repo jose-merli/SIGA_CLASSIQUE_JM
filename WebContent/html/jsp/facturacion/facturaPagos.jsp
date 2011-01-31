@@ -169,16 +169,16 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 
 		//Asociada al boton Pago por caja -->
 		function pagoPorCaja() {
-			document.GestionarFacturaForm.action = "<%=app%>"+"/FAC_PagosFactura.do";
-		 
+			sub();
+			document.GestionarFacturaForm.action = "<%=app%>"+"/FAC_PagosFactura.do";	 
 			document.GestionarFacturaForm.modo.value = "pagoPorCaja";
-			
 			rc = ventaModalGeneral(document.GestionarFacturaForm.name, "P");
+			fin();
 			if (rc == "MODIFICADO") refrescarLocal();
 		}	
 
 		//Asociada al boton Pago por tarjeta -->
-		function pagoPorTarjeta(){ 
+		function pagoPorTarjeta(){
 			document.forms[0].modo.value = "abrir";
 			document.forms[0].action = "<%=app%>"+"/FAC_PagosFacturaPorTarjeta.do";
 			document.forms[0].target = "_self";
@@ -187,9 +187,11 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 
 		//Asociada al boton Renegociar -->
 		function botonRenegociar(){ 
+			sub();
 			document.GestionarFacturaForm.action = "<%=app%>"+"/FAC_PagosFactura.do";
 			document.GestionarFacturaForm.modo.value = "pagoRenegociar";
 			rc = ventaModalGeneral(document.GestionarFacturaForm.name, "M");
+			fin();
 			if (rc == "MODIFICADO") refrescarLocal();
 		}	
 	</script>	
@@ -328,7 +330,7 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 			<table  align="left" border="0" width="295">
 				<tr>				
 					<td width="150"  class="labelText"><siga:Idioma key="facturacion.pagosFactura.literal.TotalFactura"/></td>
-					<td width="145" class="labelTextNum" align="left"><%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(total.toString(),2)))%> &euro;</td>
+					<td width="145" class="labelTextNum" align="left"><%=UtilidadesString.formatoImporte(total)%> &euro;</td>
 				</tr>
 			</table>
 			</fieldset>
@@ -373,21 +375,21 @@ String volver = request.getAttribute("volver")==null?"NO":(String)request.getAtt
 				<tr>
 					<td class="tdBotones">
 						<%if(mostrarBotonPago) {%>
-							<html:button property="pagoCaja" onclick="return pagoPorCaja();"    styleClass="button"><siga:Idioma key="facturacion.pagosFactura.boton.PagoCaja"/>    </html:button>
+							<input type="button" name="pagoCaja" id="idButton" value="<siga:Idioma key="facturacion.pagosFactura.boton.PagoCaja"/>" onclick="return pagoPorCaja();" class="button">
 						<%} else { %>
 							&nbsp;
 						<%}%>
 					</td>
 					<td class="tdBotones">
 						<%if(mostrarBotonTarjeta) {%>
-						<html:button property="pagoTarjeta" onclick="return pagoPorTarjeta();" styleClass="button"><siga:Idioma key="facturacion.pagosFactura.boton.PagoTarjeta"/> </html:button>
+							<input type="button" name="pagoTarjeta" id="idButton" value="<siga:Idioma key="facturacion.pagosFactura.boton.PagoTarjeta"/>" onclick="return pagoPorTarjeta();" class="button">
 						<%} else { %>
 							&nbsp;
 						<%}%>
 					</td>
 					<td class="tdBotones">
 						<%if(mostrarBotonRenegociar) {%>
-						<html:button property="renegociar" onclick="return botonRenegociar();"  styleClass="button"><siga:Idioma key="facturacion.pagosFactura.boton.Renegociar"/>  </html:button>
+							<input type="button" name="renegociar" id="idButton" value="<siga:Idioma key="facturacion.pagosFactura.boton.Renegociar"/>" onclick="return botonRenegociar();" class="button">
 						<%} else { %>
 							&nbsp;
 						<%}%>
