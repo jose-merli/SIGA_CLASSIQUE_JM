@@ -227,14 +227,16 @@ public class DatosDetallePagoAction extends MasterAction {
 			
 			//	Recuperamos los importes del pago, por cada persona
 			Vector resultado = new Vector();
-			
+			Hashtable totales = new Hashtable();
 			try 
 			{	
 				resultado = (Vector)this.getDetallePago(idInstitucion, idPago, request);
+				totales   = (Hashtable)this.getTotalesDetallePago(resultado, request);
 			}
 			catch(ClsExceptions e){
 				ClsLogging.writeFileLogError("Error: DatosDetallePagoAction " + e.getMessage(), e,3);
 				resultado = new Vector();
+				totales   = new Hashtable();
 			}
 			catch(Exception e)
 			{	
@@ -243,6 +245,8 @@ public class DatosDetallePagoAction extends MasterAction {
 			}
 			//pasamos el resultado por la request
 			request.setAttribute("resultado",resultado);
+			//pasamos los totales por la request
+			request.setAttribute("totales",totales);
 			
 			//pasamos por la request una variables para indicar que el estado NO es abierta
 			request.setAttribute("estado","NOabierta");
@@ -293,29 +297,12 @@ public class DatosDetallePagoAction extends MasterAction {
 			
 			// Obtenemos los datos de los detalles de los pagos
 			FcsPagosJGAdm pagoAdm = new FcsPagosJGAdm (this.getUserBean(request));
-			Vector pagos = pagoAdm.getDetallePago(new Integer(idInstitucion), new Integer(idPago), this.getUserBean(request).getLanguage());			
+			// inc6307 // jbd // Cambio el getDetallePago por una version extendida que incluye el nombre y ncolegiado
+							  // para ahorrarnos conexiones a bbdd.
+							  // El vector pagos ya trae el nombre y apellidos
+			// Vector pagos = pagoAdm.getDetallePago(new Integer(idInstitucion), new Integer(idPago), this.getUserBean(request).getLanguage());
+			Vector pagos = pagoAdm.getDetallePagoExt(new Integer(idInstitucion), new Integer(idPago), this.getUserBean(request).getLanguage());
 			
-			// Obtenemos el nombre de las personas del pago
-			FcsFacturacionJGAdm facturacionAdm = new FcsFacturacionJGAdm (this.getUserBean(request));
-			if (pagos != null) {
-				for (int i = 0; i < pagos.size(); i++) {
-					Hashtable a = (Hashtable) pagos.get(i);
-					String idPersona = UtilidadesHash.getString(a, "IDPERSONASJCS");
-					if (idPersona != null) {
-						Hashtable p = facturacionAdm.getDatosPersona(idPersona);
-						if (p != null) {
-							
-							CenColegiadoAdm cAdm = new CenColegiadoAdm (this.getUserBean(request));
-							CenColegiadoBean cBean = cAdm.getDatosColegiales(new Long(idPersona), new Integer(idInstitucion));
-							String numColegiado = cAdm.getIdentificadorColegiado(cBean);
-							
-							UtilidadesHash.set(a, "NCOLEGIADO", numColegiado);
-							UtilidadesHash.set(a, "NOMBREPERSONA", UtilidadesHash.getString(p, "NOMBREPERSONA"));							
-							pagos.setElementAt(a, i);
-						}
-					}
-				}
-			}
 			return pagos;
 		}
 		catch (Exception e) {
@@ -453,6 +440,66 @@ public class DatosDetallePagoAction extends MasterAction {
 			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null);
 		}
 		return "detalleConceptoDescargas";		
+	}
+	
+	/**
+	 * Funcion que obtiene los sumatorios de los importes del detalle pago   
+	 * 
+	 * @param idInstitucion
+	 * @param idPago
+	 * @return
+	 */
+	protected Hashtable getTotalesDetallePago (Vector pagos, HttpServletRequest request) throws ClsExceptions
+	{
+		Hashtable totales = new Hashtable();
+//		BigDecimal 
+		Double total = 0.0, totalIrpf = 0.0, totalBrutos = 0.0, totalRetencion=0.0, totalTotal=0.0;
+		Double importeIrpf=0.0, importeTotalSJCS=0.0, importeRetenciones=0.0, importeTotalMovimientoVarios=0.0,importeTotalTotal=0.0;
+		boolean existeMV=false;
+		Hashtable fila;
+		
+		try {
+			
+			// Obtenemos los datos de los detalles de los pagos
+			FcsPagosJGAdm pagoAdm = new FcsPagosJGAdm (this.getUserBean(request));
+			//Vector pagos = pagoAdm.getDetallePago(new Integer(idInstitucion), new Integer(idPago), this.getUserBean(request).getLanguage());			
+			
+			// Obtenemos el nombre de las personas del pago
+			FcsFacturacionJGAdm facturacionAdm = new FcsFacturacionJGAdm (this.getUserBean(request));
+			if (pagos != null) {
+				for (int i = 0; i < pagos.size(); i++) {
+					fila = (Hashtable) pagos.get(i);
+			
+					importeIrpf        = UtilidadesNumero.redondea(UtilidadesHash.getDouble(fila, "TOTALIMPORTEIRPF"),2);
+					importeRetenciones = UtilidadesNumero.redondea(UtilidadesHash.getDouble(fila, "IMPORTETOTALRETENCIONES"),2);
+					importeTotalSJCS   = UtilidadesNumero.redondea(UtilidadesHash.getDouble(fila, "TOTALIMPORTESJCS"),2);
+					importeTotalMovimientoVarios = UtilidadesNumero.redondea(UtilidadesHash.getDouble(fila, "IMPORTETOTALMOVIMIENTOS"),2);
+					if (!existeMV && importeTotalMovimientoVarios!=0){
+						existeMV=true;
+					}
+		
+					float aux = Float.parseFloat(UtilidadesHash.getString(fila, "TOTALIMPORTESJCS")) + Float.parseFloat(UtilidadesHash.getString(fila, "IMPORTETOTALMOVIMIENTOS")) + Float.parseFloat(UtilidadesHash.getString(fila, "TOTALIMPORTEIRPF"))  + Float.parseFloat(UtilidadesHash.getString(fila, "IMPORTETOTALRETENCIONES"));
+					importeTotalTotal = UtilidadesNumero.redondea((new Double(aux)),2);
+		
+					totalBrutos = importeTotalSJCS + importeTotalMovimientoVarios;
+					if (totalBrutos<0) totalBrutos=0.0;
+					total      += totalBrutos;
+					totalIrpf  += importeIrpf;
+					totalRetencion  += importeRetenciones;
+					if ( importeTotalTotal<0) importeTotalTotal=0.0;
+					totalTotal  += importeTotalTotal;
+					
+				}
+			}
+			totales.put("totalBruto", UtilidadesNumero.redondea(total, 2));
+			totales.put("totalIrpf", UtilidadesNumero.redondea(totalIrpf, 2));
+			totales.put("totalTotal", UtilidadesNumero.redondea(totalTotal, 2));
+			totales.put("totalRetencion",UtilidadesNumero.redondea(totalRetencion, 2));
+			return totales;
+		}
+		catch (Exception e) {
+			return null;
+		}
 	}
 	
 }

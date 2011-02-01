@@ -761,11 +761,19 @@ public class UtilidadesString {
 			String parteEntera="";
 			String parteDecimal="";
 			String resultado="";
+			String signo="";
 			
 			if (!importe.equalsIgnoreCase("")){
+				// Tenemos que controlar el signo para evitar que pinte -.123,01
+				if(importe.startsWith("-")){
+					signo="-";
+					importe= importe.substring(1);
+				}
 				if (importe.indexOf('.')!=-1){
 					parteEntera = importe.substring(0,importe.indexOf('.'));
 					parteDecimal = importe.substring(importe.indexOf('.')+1);
+					if(parteDecimal.length()==1)
+						parteDecimal+="0";
 				}
 				else{
 					parteEntera=importe;
@@ -786,6 +794,7 @@ public class UtilidadesString {
 				resultado+=","+parteDecimal;				
 			}
 
+			resultado=signo+resultado;
 			
 			return resultado;
 		}

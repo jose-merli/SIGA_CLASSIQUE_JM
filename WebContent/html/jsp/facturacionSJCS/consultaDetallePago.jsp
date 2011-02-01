@@ -32,6 +32,8 @@
 
 	//recoger de request el vector con los registros resultado
 	Vector resultado = (Vector) request.getAttribute("resultado");
+	
+	Hashtable totales = (Hashtable) request.getAttribute("totales");
 
 	//campos a mostrar en la tabla
 	String nombreColegiado ="", importe="", ncolegiado="", idPersona="", irpf="";
@@ -57,7 +59,6 @@
 	catch(Exception e){}
 
 	//resultado del importeTotal
-	String valorFinal ="", valorFinalIrpf ="", valorFinalRetencion="", valorFinalTotal="";
 
 	//el nombre del colegio
 	String nombreInstitucion = (String)request.getAttribute("nombreInstitucion");
@@ -70,7 +71,15 @@
 	
 	//Importe de Retenciones y Total SJCS:
 	String importeTotalSJCS="", importeRetenciones="", importeTotalMovimientoVarios="",importeTotalTotal="";
-	boolean existeMV=false;
+	// boolean existeMV=false;
+	
+	String valorFinal ="", valorFinalIrpf ="", valorFinalRetencion="", valorFinalTotal="";
+	if(totales!=null){
+		valorFinalRetencion = totales.get("totalRetencion")!=null?totales.get("totalRetencion").toString():"";
+		valorFinalIrpf = totales.get("totalIrpf")!=null?totales.get("totalIrpf").toString():"";
+		valorFinalTotal = totales.get("totalTotal")!=null?totales.get("totalTotal").toString():"";
+		valorFinal = totales.get("totalBruto")!=null?totales.get("totalBruto").toString():"";
+	}
 %>
 
 <html>
@@ -151,7 +160,7 @@
 		   nombreCol="<%=columnas%>"
 		   tamanoCol="<%=tamanoCol%>"
 		   alto="100%"
-		   ajuste="110"					   
+		   ajuste="90"					   
 		   modal="g"
 		   scrollModal="true"
 		  >
@@ -176,9 +185,6 @@
 			importeRetenciones = UtilidadesString.mostrarDatoJSP(UtilidadesNumero.redondea(UtilidadesHash.getString(fila, "IMPORTETOTALRETENCIONES"),2));
 			importeTotalSJCS   = UtilidadesString.mostrarDatoJSP(UtilidadesNumero.redondea(UtilidadesHash.getString(fila, "TOTALIMPORTESJCS"),2));
 			importeTotalMovimientoVarios = UtilidadesString.mostrarDatoJSP(UtilidadesNumero.redondea(UtilidadesHash.getString(fila, "IMPORTETOTALMOVIMIENTOS"),2));
-			if (!existeMV && importeTotalMovimientoVarios!=null && !importeTotalMovimientoVarios.equals("") && !importeTotalMovimientoVarios.equals("0.0")){
-				existeMV=true;
-			}
 
 
 			float aux = Float.parseFloat(UtilidadesHash.getString(fila, "TOTALIMPORTESJCS")) + Float.parseFloat(UtilidadesHash.getString(fila, "IMPORTETOTALMOVIMIENTOS")) + Float.parseFloat(UtilidadesHash.getString(fila, "TOTALIMPORTEIRPF"))  + Float.parseFloat(UtilidadesHash.getString(fila, "IMPORTETOTALRETENCIONES"));
@@ -195,33 +201,30 @@
 			totalTotal  += Float.parseFloat(importeTotalTotal);
 %>
 
-  		<tr>
-				<td class="labelTextValue"><input type="hidden" name="oculto<%=cont%>_1" value="<%=idPersona%>"><%=ncolegiado%></td>
-				<td class="labelTextValue"><%=nombreColegiado%></td>
+  		<tr class="<%=((cont+1)%2==0?"filaTablaPar":"filaTablaImpar")%>">
+				<td><input type="hidden" name="oculto<%=cont%>_1" value="<%=idPersona%>"><%=ncolegiado%></td>
+				<td><%=nombreColegiado%></td>
 				<% if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_CERRADO)) { %>
-					<td class="labelTextNum"><%=UtilidadesNumero.formatoCampo(importeTotalSJCS)%>&nbsp;&euro;</td>				
-					<td class="labelTextNum"><%=UtilidadesNumero.formatoCampo(importeTotalMovimientoVarios)%>&nbsp;&euro;</td>				
+					<td align="right"><%=UtilidadesString.formatoImporte(importeTotalSJCS)%>&nbsp;&euro;</td>				
+					<td align="right"><%=UtilidadesString.formatoImporte(importeTotalMovimientoVarios)%>&nbsp;&euro;</td>				
 				<% } %>
-				<td class="labelTextNum"><%=UtilidadesNumero.formatoCampo(totalBrutos)%>&nbsp;&euro;</td>
-				<td class="labelTextNum">
+				<td align="right"><%=UtilidadesString.formatoImporte(totalBrutos)%>&nbsp;&euro;</td>
+				<td align="right">
 				<% if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_CERRADO)) { %>
-					<%=UtilidadesNumero.formatoCampo(irpf)%>&nbsp;&euro;
+					<%=UtilidadesString.formatoImporte(irpf)%>&nbsp;&euro;
 				<% } else { %>
 					<siga:Idioma key="factSJCS.datosFacturacion.literal.IRPFSinCalcular"/>
 				<% } %>
 				<% if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_CERRADO)) { %>
-					<td class="labelTextNum"><%=UtilidadesNumero.formatoCampo(importeRetenciones)%>&nbsp;&euro;</td>
-					<td class="labelTextNum"><%=UtilidadesNumero.formatoCampo(importeTotalTotal)%>&nbsp;&euro;</td>
+					<td align="right"><%=UtilidadesString.formatoImporte(importeRetenciones)%>&nbsp;&euro;</td>
+					<td align="right"><%=UtilidadesString.formatoImporte(importeTotalTotal)%>&nbsp;&euro;</td>
 				<% } %>
 				</td>
   		</tr>
 
 <%		} // del for
 	} // del if 
-	valorFinal = String.valueOf(UtilidadesNumero.redondea(total,2));
-	valorFinalIrpf = String.valueOf(UtilidadesNumero.redondea(totalIrpf,2));
-	valorFinalRetencion = String.valueOf(UtilidadesNumero.redondea(totalRetencion,2));
-	valorFinalTotal = String.valueOf(UtilidadesNumero.redondea(totalTotal,2));
+
 	%>			
 
 	</siga:TablaCabecerasFijas>
@@ -238,44 +241,48 @@
 <div style="position:absolute;width:100%;bottom:30px;left:0px;">
 		<table border="0" width="100%">
 			<tr>
-				
-		      <td width="<%=tamIni%>%" class="labelTextNum">&nbsp;</td>
-
-				<td width="<%=tamA%>%" class="labelTextNum">
-					<B>
-						<siga:Idioma key="factSJCS.datosFacturacion.literal.totalBruto"/>:<br><%=UtilidadesNumero.formatoCampo(valorFinal)%>&nbsp;&euro;
-					</B>
+				<td width="<%=tamIni%>%" class="labelTextNum">&nbsp;</td>
+				<td align="right" class="tableTitle">
+					<b><siga:Idioma key="factSJCS.datosFacturacion.literal.totalBruto"/></b>
 				</td>
-				<td width="<%=tamA%>%" class="labelTextNum">
-					<B>
-						<siga:Idioma key="factSJCS.detalleFacturacion.literal.totalIRPF"/>:<br>
+				<td style="align:right" class="tableTitle">
+					<b><siga:Idioma key="factSJCS.detalleFacturacion.literal.totalIRPF"/></b>
+				</td>
+				<td style="align:right" class="tableTitle">
+					<b><siga:Idioma key="factSJCS.detalleFacturacion.literal.totalRetenciones"/></b>
+				</td>
+				<td style="align:right" class="tableTitle">
+					<b><siga:Idioma key="factSJCS.detalleFacturacion.literal.total"/></b>
+				</td>
+			</tr>
+			<tr >
+				
+		      <td width="<%=tamIni%>%"></td>
+
+				<td width="<%=tamA%>%" class="labelTextNum" align="right">
+					<%=UtilidadesString.formatoImporte(valorFinal)%>&nbsp;&euro;
+				</td>
+				<td width="<%=tamA%>%" class="labelTextNum" align="right">
 						<% if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_CERRADO)) { %>
-							<%=UtilidadesNumero.formatoCampo(valorFinalIrpf)%>&nbsp;&euro;
+							<%=UtilidadesString.formatoImporte(valorFinalIrpf)%>&nbsp;&euro;
 						<% } else {	%>
 							-
 						<% } %>
-					</B>
 				</td>
 				<% if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_CERRADO)) { %>
-				<td width="<%=tamA%>%" class="labelTextNum">
-					<B>
-						<siga:Idioma key="factSJCS.detalleFacturacion.literal.totalRetenciones"/><br>
-						<% if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_CERRADO)) { %>
-							<%=UtilidadesNumero.formatoCampo(valorFinalRetencion)%>&nbsp;&euro;
-						<% } else {	%>
-							-
-						<% } %>
-					</B>
+				<td width="<%=tamA%>%" class="labelTextNum" align="right">
+					<% if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_CERRADO)) { %>
+						<%=UtilidadesString.formatoImporte(valorFinalRetencion)%>&nbsp;&euro;
+					<% } else {	%>
+						-
+					<% } %>
 				</td>
-				<td width="<%=tamA%>%" class="labelTextNum">
-					<B>
-						<siga:Idioma key="factSJCS.detalleFacturacion.literal.total"/>:<br>
-						<% if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_CERRADO)) { %>
-							<%=UtilidadesNumero.formatoCampo(valorFinalTotal)%>&nbsp;&euro;
-						<% } else {	%>
-							-
-						<% } %>
-					</B>
+				<td width="<%=tamA%>%" class="labelTextNum" align="right">
+					<% if (Integer.parseInt(estadoPago) >= Integer.parseInt(ClsConstants.ESTADO_PAGO_CERRADO)) { %>
+						<%=UtilidadesString.formatoImporte(valorFinalTotal)%>&nbsp;&euro;
+					<% } else {	%>
+						-
+					<% } %>
 				</td>
 				<% } %>
 			</tr>

@@ -1061,6 +1061,34 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 	} //getDetallePago()
 	
 	/**
+	 * Devuelve los datos del pago <code>idpago</code> para cada colegiado incluido en el pago.
+	 * Igual que getDetallePago, pero añadimos las columnas de nombreapellido y ncolegiado para
+	 * que no se tengan que hacer otras 2 querys luego
+	 */
+	public Vector getDetallePagoExt(Integer idInstitucion, Integer idPago, String idioma)
+			throws ClsExceptions, Exception
+	{
+		String sql= "select pago.*, " +
+					" cen.APELLIDOS1 || ' ' || cen.APELLIDOS2 || ', ' || cen.NOMBRE AS NOMBREPERSONA, "+
+					" decode(col.ncomunitario, null, col.ncolegiado, col.ncomunitario) as NCOLEGIADO " +
+					" from (";
+		try {
+			sql += getQueryDetallePagoColegiado(idInstitucion.toString(), idPago
+					.toString(), false, idioma);
+			sql += ") pago, "+
+				" cen_persona   cen, cen_colegiado col " +
+				" where pago.idpersonaSJCS = cen.idpersona " +
+				" and col.idpersona = cen.idpersona " +
+				" and col.idinstitucion ="+idInstitucion.toString();
+			return selectGenerico(sql);
+			
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error en FcsPAgosJG.getDetallePago()"
+					+ sql);
+		}
+	} //getDetallePago()
+	
+	/**
 	 * Obtiene el importe total y los importes y porcentajes pendientes para cada concepto de la facturacion.
 	 */
 	public Hashtable getConceptosPendientesYTotal(Integer idInstitucion, Integer idFacturacion, boolean sinPagosAbiertos) throws ClsExceptions{
