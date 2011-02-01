@@ -23,8 +23,10 @@ import org.apache.struts.upload.FormFile;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.LogFileWriter;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesNumero;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenClienteBean;
 import com.siga.beans.GenParametrosAdm;
@@ -128,9 +130,10 @@ public class CargaProductosAction extends MasterAction {
 		UserTransaction tx = null;
 		Hashtable htProducto = new Hashtable();
 		Hashtable htProducto2 = new Hashtable();
+		LogFileWriter log = null;
 		boolean procesoOk = true;
 		String exito = "";
-		
+		String msjError="El fichero contiene errores y no se ha procesado";
 		try{
 			// Obtengo el UserBean y el identificador de la institucion
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");			
@@ -184,17 +187,26 @@ public class CargaProductosAction extends MasterAction {
 			File temporal = new File(pathTemporal + File.separator+nombre); 
 			BufferedReader reader = new BufferedReader(new FileReader(temporal));
 			String linea = reader.readLine();
-			while (linea != null && !linea.trim().equals("") && procesoOk)
+			
+			log = LogFileWriter.getLogFileWriter(pathTemporal, nombre);
+			log.clear();
+			log.addLog(new String[] {"Se han encontrado los siguientes registros incorrectos. Corrijalos y vuelva a intentarlo"});
+			log.addLog(new String[] {""});
+			
+			int lineNumber = 0;
+			String delimitador="";
+
+			try {
+				GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request));
+				delimitador = paramAdm.getValor(user.getLocation(),"PYS","SEPARADOR_FICHEROCOMPRAS","");
+			} catch (Exception e) {
+				//
+			}
+
+			while (linea != null && !linea.trim().equals(""))
 			{
 				// tratamiento de cada línea
-				String delimitador="";
-				
-				try {
-					GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request));
-					delimitador = paramAdm.getValor(user.getLocation(),"PYS","SEPARADOR_FICHEROCOMPRAS","");
-		        } catch (Exception e) {
-		        	//
-		        }
+				lineNumber++;
 		        char comodin = (char)7;
 				//String datos[] =  UtilidadesString.splitNormal(linea,delimitador);
 				String lineaNueva=linea.replace(delimitador.charAt(0), comodin);
@@ -208,6 +220,7 @@ public class CargaProductosAction extends MasterAction {
 				String idProducto = "";
 				String idProductoInstitucion = "";
 				try {
+					// Recuperamos los datos de la compra
 					colegiado = datos[0].trim();
 					dni = datos[1].trim();
 					name = datos[2].trim();
@@ -220,6 +233,7 @@ public class CargaProductosAction extends MasterAction {
 					procesoOk = false;
 					ClsLogging.writeFileLog(".-.-.-.-.-.-.-.-.-.", 10);
 					ClsLogging.writeFileLog("CARGA COMPRAS "+idInstitucion+": Línea incompleta: "+linea, 10);
+					log.addLog(new String[] {"Linea " + lineNumber + "\t Faltan campos"}); 
 				}
 				
 				PysProductosInstitucionBean producto = null;
@@ -243,7 +257,7 @@ public class CargaProductosAction extends MasterAction {
 						procesoOk = false;
 						ClsLogging.writeFileLog(".-.-.-.-.-.-.-.-.-.", 10);
 						ClsLogging.writeFileLog("CARGA COMPRAS "+idInstitucion+": Línea con identificadores no válidos: "+linea, 10);
-						
+						log.addLog(new String[] {"Linea " + lineNumber + "\t Identificadores de producto no válidos"}); 
 					}
 				}
 			
@@ -264,6 +278,7 @@ public class CargaProductosAction extends MasterAction {
 				if (producto==null) { 
 					ClsLogging.writeFileLog(".-.-.-.-.-.-.-.-.-.", 3);
 					ClsLogging.writeFileLog("CARGA COMPRAS "+idInstitucion+": Error no encuentra Producto: "+linea, 3);
+					log.addLog(new String[] {"Linea " + lineNumber + "\t No se encuentra el producto"}); 
 				} else {
 					// tenemos producto
 					if (!dni.trim().equals("") && !colegiado.trim().equals("")) {
@@ -289,30 +304,46 @@ public class CargaProductosAction extends MasterAction {
 						}
 					}
 				}
-				if (producto!=null) {
-					if (cliente==null) {
-							ClsLogging.writeFileLog(".-.-.-.-.-.-.-.-.-.", 3);
-							ClsLogging.writeFileLog("CARGA COMPRAS "+idInstitucion+": Error no encuentra Cliente: "+linea, 3);
-					} else {
-						// PROCESO DE COMPRA
-						
-						PysProductosInstitucionAdm prodinstadm = new PysProductosInstitucionAdm(user); 
-						boolean insert = prodinstadm.cargarFicheroCompras( producto, cliente, unidades);
-						if(insert==false){
-							ClsLogging.writeFileLog(".-.-.-.-.-.-.-.-.-.", 3);
-							ClsLogging.writeFileLog("PROCESO DE COMPRA "+idInstitucion+": Error al procesar la compra: "+linea, 3);
-						}
-						
-					}
-				}
 				
+				try {
+					int cantidad = UtilidadesNumero.parseInt(unidades);
+
+					if (producto!=null) {
+						if (cliente==null) {
+								ClsLogging.writeFileLog(".-.-.-.-.-.-.-.-.-.", 3);
+								ClsLogging.writeFileLog("CARGA COMPRAS "+idInstitucion+": Error no encuentra Cliente: "+linea, 3);
+								log.addLog(new String[] {"Linea " + lineNumber + "\t No se encuentra el cliente"});
+						} else {
+							// PROCESO DE COMPRA
+							PysProductosInstitucionAdm prodinstadm = new PysProductosInstitucionAdm(user); 
+							boolean insert = prodinstadm.cargarFicheroCompras( producto, cliente, unidades);
+							if(insert==false){
+								ClsLogging.writeFileLog(".-.-.-.-.-.-.-.-.-.", 3);
+								ClsLogging.writeFileLog("PROCESO DE COMPRA "+idInstitucion+": Error al procesar la compra: "+linea, 3);
+								log.addLog(new String[] {"Linea " + lineNumber + ": Error al procesar la compra"});
+							}
+						}
+					}
+				} catch (Exception e) {
+					ClsLogging.writeFileLog(".-.-.-.-.-.-.-.-.-.", 3);
+					ClsLogging.writeFileLog("CARGA COMPRAS "+idInstitucion+": Error la cantidad no es valida: "+linea, 3);
+					log.addLog(new String[] {"Linea " + lineNumber + "\t La cantidad no es valida"});
+				}				
 				linea = reader.readLine();
 				
 			}//while (linea != null) 
-			
-			tx.commit();
-			
-			temporal.deleteOnExit();
+			if(procesoOk == true){
+				tx.commit();
+			}else{
+				tx.rollback();
+			}
+			log.addLog(new String[] {"Fin de archivo"});
+			log.flush();
+			request.setAttribute("nombreFichero", log.getFileName()+".log.xls");
+			request.setAttribute("rutaFichero", UtilidadesString.replaceAllIgnoreCase(log.getPath()+"\\"+log.getFileName()+".log.xls", "/", "\\"));
+			request.setAttribute("borrarFichero", "true");
+			request.setAttribute("accion", "");
+			//temporal.deleteOnExit();
 			
 		} 
 		catch (Exception e) { 
@@ -322,7 +353,7 @@ public class CargaProductosAction extends MasterAction {
 		if(procesoOk == true){
 			exito = this.exito("messages.cargaProductos.inserted.success", request);
 		}else{
-			exito = this.exito("facturacion.nuevoFichero.literal.errorFormato", request);
+			exito = "descargaFichero";
 		}
 		return exito;
 		

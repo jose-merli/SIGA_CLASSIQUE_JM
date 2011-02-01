@@ -44,7 +44,7 @@
 		<script language="JavaScript">
 		
 			function accionGuardar() {
-			
+
 				f= document.CargaProductosForm;
 				
 		    	f.modo.value = "guardarFich";
@@ -55,7 +55,7 @@
 		<!-- FIN: SCRIPTS BOTONES -->
 	</head>
 
-	<body>
+	<body onload="sub();">
 		<siga:ConjCampos leyenda="pys.cargaProductos.titulo">
 			<table   align="left" cellpadding="0" cellpadding="0">
 				<html:form  action="/PYS_CargaProductos.do" method="POST" target="submitArea" enctype="multipart/form-data" >
@@ -66,13 +66,13 @@
 							<siga:Idioma key="pys.cargaProductos.literal.fichero"/>&nbsp;(*)
 						</td>				
 						<td >
-							<html:file name="CargaProductosForm"  property="fichero" size="90" styleClass="box"  ></html:file>
+							<html:file name="CargaProductosForm"  property="fichero" size="90" styleClass="box"  onchange="fin();"></html:file>
 						</td>
 					</tr>
 				</html:form>
 			</table>
 		</siga:ConjCampos>				
-		<div class="labelTextValue" style="padding-left:30px;padding-top:30px;width:80%">
+		<div class="labelTextValue" style="padding-left:30px;padding-top:30px;width:85%">
 		<p>El fichero de carga de compras debe ser un fichero de texto, con una linea por cada compra.</p>
 		<p>Los campos necesarios para poder efectuar la compra son los siguientes:</p>
 		<ul>
@@ -96,8 +96,23 @@
 		<%=delimitador%> 64564536K <%=delimitador%> Construcciones S.A. <%=delimitador%> 6 <%=delimitador%> Fax <%=delimitador%> 3 <%=delimitador%> 7 <%=delimitador%> 8<br>
 
 		</div>
+		<p>Si el fichero es correcto se realizarán las compras y quedarán validadas.</p>
+		<p>Si hay algun error se mostrará un LOG con los fallos a corregir. No se realizarán las compras hasta que el fichero cargado sea correcto.</p>
+		<p>&nbsp;</p>
 		</div>
-		<siga:ConjBotonesAccion botones="G" modal="P" clase="botonesSeguido"/>
+		
+
+<table id="tablaBotonesDetalle" class="botonesSeguido" align="center">
+	<tr>
+		<td style="width: 900px;">&nbsp;</td>
+		<td class="tdBotones">
+			<input type="button" alt='<siga:Idioma key="general.boton.new"/>'
+			name='idButton' id="idButton" onclick="return accionGuardar();" class="button"
+				value='Procesar Fichero'>
+		</td>
+	</tr>
+</table>
+
 
 		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 	</body>
