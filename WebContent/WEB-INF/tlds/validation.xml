@@ -4496,6 +4496,41 @@
          
          
       </form>
+      <form name="InformeFormEdicion">
+      	<field property="idInstitucion" depends = "required">
+                 <arg0 key="general.usuario.literal.institucion"/>
+         </field>
+         
+         <field property="descripcion" depends = "required">
+                 <arg0 key="administracion.informes.literal.descripcion"/>
+         </field>
+         <field property="alias" depends = "required">
+                 <arg0 key="administracion.informes.literal.nombre"/>
+         </field>
+         <field property="nombreSalida" depends = "required">
+                 <arg0 key="administracion.informes.literal.nombreFichGenerado"/>
+         </field>
+          <field property="nombreFisico" depends = "required">
+                 <arg0 key="administracion.informes.literal.nombreFisico"/>
+         </field>
+         <field property="idTipoInforme" depends = "required">
+            <arg0 key="administracion.informes.literal.tipoInforme"/>
+         </field>
+         <field property="visible" depends = "required">
+            <arg0 key="administracion.informes.literal.visible"/>
+         </field>
+         <field property="ASolicitantes" depends = "required">
+          	<arg0 key="administracion.informes.literal.solicitantes"/>
+         </field>
+         <field property="preseleccionado" depends = "required">
+                <arg0 key="administracion.informes.literal.preseleccionado"/>
+         </field>
+          <field property="orden" depends = "required,integer">
+                <arg0 key="administracion.informes.literal.orden"/>
+         </field>
+         
+      </form>
+      
       
        <form name="InscripcionTGForm">
             <field 	property = "telefono1" 	depends = "required, mask"> 
