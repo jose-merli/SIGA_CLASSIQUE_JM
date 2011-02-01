@@ -276,6 +276,7 @@ public class CargaProductosAction extends MasterAction {
 				CenClienteBean cliente = null;
 				CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserBean(request));
 				if (producto==null) { 
+					procesoOk = false;
 					ClsLogging.writeFileLog(".-.-.-.-.-.-.-.-.-.", 3);
 					ClsLogging.writeFileLog("CARGA COMPRAS "+idInstitucion+": Error no encuentra Producto: "+linea, 3);
 					log.addLog(new String[] {"Linea " + lineNumber + "\t No se encuentra el producto"}); 
@@ -310,6 +311,7 @@ public class CargaProductosAction extends MasterAction {
 
 					if (producto!=null) {
 						if (cliente==null) {
+								procesoOk = false;
 								ClsLogging.writeFileLog(".-.-.-.-.-.-.-.-.-.", 3);
 								ClsLogging.writeFileLog("CARGA COMPRAS "+idInstitucion+": Error no encuentra Cliente: "+linea, 3);
 								log.addLog(new String[] {"Linea " + lineNumber + "\t No se encuentra el cliente"});
@@ -318,6 +320,7 @@ public class CargaProductosAction extends MasterAction {
 							PysProductosInstitucionAdm prodinstadm = new PysProductosInstitucionAdm(user); 
 							boolean insert = prodinstadm.cargarFicheroCompras( producto, cliente, unidades);
 							if(insert==false){
+								procesoOk = false;
 								ClsLogging.writeFileLog(".-.-.-.-.-.-.-.-.-.", 3);
 								ClsLogging.writeFileLog("PROCESO DE COMPRA "+idInstitucion+": Error al procesar la compra: "+linea, 3);
 								log.addLog(new String[] {"Linea " + lineNumber + ": Error al procesar la compra"});
@@ -325,6 +328,7 @@ public class CargaProductosAction extends MasterAction {
 						}
 					}
 				} catch (Exception e) {
+					procesoOk = false;
 					ClsLogging.writeFileLog(".-.-.-.-.-.-.-.-.-.", 3);
 					ClsLogging.writeFileLog("CARGA COMPRAS "+idInstitucion+": Error la cantidad no es valida: "+linea, 3);
 					log.addLog(new String[] {"Linea " + lineNumber + "\t La cantidad no es valida"});
