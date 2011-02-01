@@ -344,7 +344,7 @@ public class CargaProductosAction extends MasterAction {
 			log.addLog(new String[] {"Fin de archivo"});
 			log.flush();
 			request.setAttribute("nombreFichero", log.getFileName()+".log.xls");
-			request.setAttribute("rutaFichero", UtilidadesString.replaceAllIgnoreCase(log.getPath()+"\\"+log.getFileName()+".log.xls", "/", "\\"));
+			request.setAttribute("rutaFichero", UtilidadesString.replaceAllIgnoreCase(log.getPath()+"\\"+log.getFileName()+".log.xls", "\\", "/"));
 			request.setAttribute("borrarFichero", "true");
 			request.setAttribute("accion", "");
 			//temporal.deleteOnExit();
