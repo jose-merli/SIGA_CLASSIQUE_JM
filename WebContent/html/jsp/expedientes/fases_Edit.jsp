@@ -121,15 +121,15 @@
 		</td>				
 		<td>
 			<% 
-			   String diasAntelacion = null;
+			   String diasAntelacion = "0";
 			   if (bean.getDiasAntelacion()!=null) diasAntelacion = bean.getDiasAntelacion().toString();
-			   String diasVencimiento = null;
+			   String diasVencimiento = "0";
 			   if (bean.getDiasVencimiento()!=null) diasVencimiento = bean.getDiasVencimiento().toString();
 			   
 			   if (bEditable){ %>
-				<html:text name="FasesForm" property="diasVencimiento" size="3" maxlength="3" styleClass="box" value="<%=diasVencimiento %>"></html:text>
+				<html:text name="FasesForm" property="diasVencimiento" size="3" maxlength="3" styleClass="box" value="<%=diasVencimiento %>" style="text-align:right"></html:text>
 			<% } else { %>
-				<html:text name="FasesForm" property="diasVencimiento" size="3" maxlength="3" styleClass="boxConsulta" disabled="true" value="<%=diasVencimiento %>"></html:text>
+				<html:text name="FasesForm" property="diasVencimiento" size="3" maxlength="3" styleClass="boxConsulta" disabled="true" value="<%=diasVencimiento %>" style="text-align:right"></html:text>
 			<% } %>
 			
 			
@@ -145,9 +145,10 @@
 		<td>
 	
 			<% if (bEditable){ %>
-				<html:text name="FasesForm" property="diasAntelacion" size="3" maxlength="3" styleClass="box" value="<%=diasAntelacion %>"></html:text>
+				<html:text name="FasesForm" property="diasAntelacion" size="3" 
+				maxlength="3" styleClass="box" value="<%=diasAntelacion %>" style="text-align:right"></html:text>
 			<% } else { %>
-				<html:text name="FasesForm" property="diasAntelacion" size="3" maxlength="3" styleClass="boxConsulta" disabled="true" value="<%=diasAntelacion %>"></html:text>
+				<html:text name="FasesForm" property="diasAntelacion" size="3" maxlength="3" styleClass="boxConsulta" disabled="true" value="<%=diasAntelacion %>" style="text-align:right"></html:text>
 			<% } %>
 		
 			
