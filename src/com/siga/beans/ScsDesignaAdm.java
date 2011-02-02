@@ -1218,7 +1218,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		
 		try {
 			//String bBusqueda = formulario.getChkBusqueda();
-			consulta=" select des.estado estado, des.anio anio, des.numero numero, des.fechaentrada fechaentrada,des.idturno idturno, des.codigo codigo, des.sufijo sufijo,des.idinstitucion idinstitucion ";
+			consulta=" select des.estado estado, des.anio anio, des.numero numero, des.fechaentrada fechaentrada,des.idturno idturno, des.codigo||'' codigo, des.sufijo sufijo,des.idinstitucion idinstitucion ";
 			
 			consulta+=" from scs_designa des";
 			contador++;
