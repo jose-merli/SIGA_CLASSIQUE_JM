@@ -55,7 +55,7 @@
 		<!-- FIN: SCRIPTS BOTONES -->
 	</head>
 
-	<body onload="sub();">
+	<body onload="ajusteAlto('divAyuda');sub();">
 		<siga:ConjCampos leyenda="pys.cargaProductos.titulo">
 			<table   align="left" cellpadding="0" cellpadding="0">
 				<html:form  action="/PYS_CargaProductos.do" method="POST" target="submitArea" enctype="multipart/form-data" >
@@ -72,7 +72,7 @@
 				</html:form>
 			</table>
 		</siga:ConjCampos>				
-		<div class="labelTextValue" style="padding-left:30px;padding-top:30px;width:85%">
+		<div name="divAyuda" class="labelTextValue" style="padding-left:30px;padding-top:30px;width:100%; height:90%; overflow-y:scroll">
 		<p>El fichero de carga de compras debe ser un fichero de texto, con una linea por cada compra.</p>
 		<p>Los campos necesarios para poder efectuar la compra son los siguientes:</p>
 		<ul>
@@ -102,7 +102,7 @@
 		</div>
 		
 
-<table id="tablaBotonesDetalle" class="botonesSeguido" align="center">
+<table id="tablaBotonesDetalle" class="botonesDetalle" align="center">
 	<tr>
 		<td style="width: 900px;">&nbsp;</td>
 		<td class="tdBotones">
