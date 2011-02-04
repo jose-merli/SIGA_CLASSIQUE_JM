@@ -92,10 +92,9 @@ public class ScsEJGBean extends MasterBean{
 	private String numeroDesignaProc;
 	private Integer idTipoenCalidad;
     private Integer calidadidinstitucion;
+    private String docResolucion;
 	
 
-	
-	
 	
 	/*
 	 *  Nombre de Tabla*/
@@ -177,6 +176,7 @@ public class ScsEJGBean extends MasterBean{
 	static public final String C_NUMERODESIGNAPROC   = "NUMERODESIGNAPROC";
     static public final String C_IDTIPOENCALIDAD   = "IDTIPOENCALIDAD";
     static public final String C_CALIDADIDINSTITUCION   = "CALIDADIDINSTITUCION";
+    static public final String C_DOCRESOLUCION   = "DOCRESOLUCION";
 	
 	
 		
@@ -881,4 +881,12 @@ public class ScsEJGBean extends MasterBean{
 	public void setCalidadidinstitucion(Integer calidadidinstitucion) {
 		this.calidadidinstitucion = calidadidinstitucion;
 	}
+	public String getDocResolucion() {
+		return docResolucion;
+	}
+	public void setDocResolucion(String docResolucion) {
+		this.docResolucion = docResolucion;
+	}
+
+
 }

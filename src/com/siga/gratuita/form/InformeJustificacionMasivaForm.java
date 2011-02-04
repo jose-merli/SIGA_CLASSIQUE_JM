@@ -1,6 +1,7 @@
 package com.siga.gratuita.form;
 
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.beans.ScsEJGBean;
 import com.siga.general.MasterForm;
 
 public class InformeJustificacionMasivaForm extends MasterForm 
@@ -86,5 +87,13 @@ public class InformeJustificacionMasivaForm extends MasterForm
 	public void setNumeroNifTagBusquedaPersonas(
 			String numeroNifTagBusquedaPersonas) {
 		UtilidadesHash.set(this.datos, "numeroNifTagBusquedaPersonas", numeroNifTagBusquedaPersonas);
+	}
+	
+	public String getDocResolucion() {
+		return UtilidadesHash.getString(datos, ScsEJGBean.C_DOCRESOLUCION);
+	}
+	
+	public void setDocResolucion(String docResolucion) {
+		UtilidadesHash.set(this.datos, ScsEJGBean.C_DOCRESOLUCION, docResolucion);
 	}
 }

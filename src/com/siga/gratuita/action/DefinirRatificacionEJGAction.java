@@ -4,20 +4,29 @@
 
 package com.siga.gratuita.action;
 
-import javax.servlet.http.*;
+import java.io.File;
+import java.util.Hashtable;
+import java.util.Vector;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+
+import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
+import com.atos.utils.UsrBean;
+import com.siga.beans.ScsEJGAdm;
+import com.siga.beans.ScsEJGBean;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
-import com.siga.gratuita.form.*;
-import com.atos.utils.*;
-
-import org.apache.struts.action.*;
-
-import java.util.*;
-
-import com.siga.beans.*;
+import com.siga.gratuita.form.DefinirEJGForm;
+import com.siga.gratuita.pcajg.resoluciones.ResolucionesFicheroAbstract;
 
 /**
 * Maneja las acciones que se pueden realizar sobre la tabla SCS_SOJ
@@ -114,5 +123,34 @@ public class DefinirRatificacionEJGAction extends MasterAction {
 		
 		return "inicio";		
 	}
+	
+	protected String download (ActionMapping mapping,
+			MasterForm formulario,
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException {
+		
+		DefinirEJGForm miForm = (DefinirEJGForm)formulario;			
+		
+		File file = getFicheroPDF(getIDInstitucion(request).toString(), miForm.getDocResolucion());
+
+		if (file == null) {								
+			throw new SIGAException("messages.general.error.ficheroNoExiste");
+		}				
+		
+		request.setAttribute("nombreFichero", file.getName());
+		request.setAttribute("rutaFichero", file.getAbsolutePath());
+
+		return "descargaFichero";
+	}
+	
+	private File getFicheroPDF(String idInstitucion, String docResolucion) {
+		File file = new File(ResolucionesFicheroAbstract.getDirectorioArchivos(idInstitucion));
+		file = new File(file, docResolucion + "." + ResolucionesFicheroAbstract.getExtension(idInstitucion));
+		if (!file.exists()) {
+			file = null;
+		}		
+		return file;
+	}
+	
 	
 }

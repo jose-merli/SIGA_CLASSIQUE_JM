@@ -1,5 +1,6 @@
 package com.siga.gratuita.action;
 
+import java.io.File;
 import java.util.Date;
 
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.InformeJustificacionMasivaForm;
+import com.siga.gratuita.pcajg.resoluciones.ResolucionesFicheroAbstract;
 
 
 public class InformeJustificacionMasivaAction extends MasterAction {
@@ -984,7 +986,32 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		return "resultado";
 	}
 	
+	protected String download (ActionMapping mapping,
+			MasterForm formulario,
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException {
+		
+		InformeJustificacionMasivaForm miForm = (InformeJustificacionMasivaForm) formulario;
+		File file = getFicheroPDF(getIDInstitucion(request).toString(), miForm.getDocResolucion());
 
+		if (file == null) {								
+			throw new SIGAException("messages.general.error.ficheroNoExiste");
+		}				
+		
+		request.setAttribute("nombreFichero", file.getName());
+		request.setAttribute("rutaFichero", file.getAbsolutePath());
+
+		return "descargaFichero";
+	}
+	
+	private File getFicheroPDF(String idInstitucion, String docResolucion) {
+		File file = new File(ResolucionesFicheroAbstract.getDirectorioArchivos(idInstitucion));
+		file = new File(file, docResolucion + "." + ResolucionesFicheroAbstract.getExtension(idInstitucion));
+		if (!file.exists()) {
+			file = null;
+		}		
+		return file;
+	}
 	
 
 }

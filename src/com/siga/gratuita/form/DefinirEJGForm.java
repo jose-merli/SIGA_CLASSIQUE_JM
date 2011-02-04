@@ -7,7 +7,10 @@ package com.siga.gratuita.form;
 
 import com.atos.utils.ClsConstants;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.beans.*;
+import com.siga.beans.ScsAsistenciasBean;
+import com.siga.beans.ScsEJGBean;
+import com.siga.beans.ScsEJGDESIGNABean;
+import com.siga.beans.ScsPersonaJGBean;
 import com.siga.general.MasterForm;
 
 
@@ -875,5 +878,13 @@ import com.siga.general.MasterForm;
 		}
 		public void setAnioCAJG(String anioCAJG) {
 			this.anioCAJG = anioCAJG;
+		}
+		
+		public String getDocResolucion() {
+			return UtilidadesHash.getString(datos, ScsEJGBean.C_DOCRESOLUCION);
+		}
+		
+		public void setDocResolucion(String docResolucion) {
+			UtilidadesHash.set(this.datos, ScsEJGBean.C_DOCRESOLUCION, docResolucion);
 		}
 }

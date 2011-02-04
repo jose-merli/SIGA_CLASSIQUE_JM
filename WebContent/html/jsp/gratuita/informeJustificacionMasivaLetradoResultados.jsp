@@ -88,7 +88,7 @@
 	
 		registrosPorPagina = "0";
 	}
-	String action=app+"/JGR_PestanaDesignas.do?noReset=true";
+	String action=app+"/JGR_PestanaDesignas.do?noReset=true";	
 	
 	
 	
@@ -111,7 +111,7 @@
 
 		<html:form action="/JGR_PestanaDesignas.do" method="post" target="submitArea" >
 			<html:hidden property="modo"    value=""/>
-			
+			<html:hidden property="docResolucion"    value=""/>
 			<html:hidden property="letrado" value="<%=letrado%>"/>
 
 			<input type="hidden" name="tablaDatosDinamicosD">
@@ -221,7 +221,23 @@
 						<%=UtilidadesString.mostrarDatoJSP(codigoDesigna)%>
 					</td>
 					
-					<td><%=UtilidadesString.mostrarDatoJSP(expedientes)%>
+					<td><%if (expedientes != null && expedientes.indexOf("##") > -1) {
+							String[] ejgs = expedientes.split(",");
+							String salida = "";
+							for (String ejg:ejgs) {
+								String[] ejgDoc = ejg.split("##");
+								if (ejgDoc.length > 1) {
+									salida+=", <a href='#' onclick=\"downloadDocumentoResolucion('" + ejgDoc[1] + "')\">" + ejgDoc[0].trim() + "</a>";
+								} else {
+									salida+=", " + ejgDoc[0].trim();	
+								}
+							}
+							expedientes=salida;
+							if (expedientes.length() > 2){
+								expedientes = expedientes.substring(1);
+							}
+						}%>
+						<%=(expedientes==null || expedientes.trim().equals(""))?"&nbsp":expedientes%>						
 					</td>
 					
 					<td >
@@ -566,6 +582,13 @@
 			
 			document.InformeJustificacionMasivaForm.tablaDatosDinamicosD.value = datos;
 			document.InformeJustificacionMasivaForm.modo.value = "modificar";
+			document.InformeJustificacionMasivaForm.submit();
+		}
+
+		function downloadDocumentoResolucion(docResolucion) {			
+			document.InformeJustificacionMasivaForm.docResolucion.value=docResolucion
+			document.InformeJustificacionMasivaForm.modo.value="download";
+			document.InformeJustificacionMasivaForm.target="submitArea";		   	
 			document.InformeJustificacionMasivaForm.submit();
 		}
 		

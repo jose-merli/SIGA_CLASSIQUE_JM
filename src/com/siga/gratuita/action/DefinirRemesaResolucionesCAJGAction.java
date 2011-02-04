@@ -51,6 +51,7 @@ import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinicionRemesaResolucionesCAJGForm;
 import com.siga.gratuita.form.DefinirEJGForm;
+import com.siga.gratuita.pcajg.resoluciones.ResolucionesFicheroAbstract;
 import com.siga.informes.MasterWords;
 
 
@@ -466,7 +467,7 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 //			ReadProperties rp = new ReadProperties("SIGA.properties");
 			String rutaAlmacen = rp.returnProperty("cajg.directorioFisicoCAJG") + rp.returnProperty("cajg.directorioCAJGJava");				
-			rutaAlmacen += File.separator + idInstitucion + File.separator + "remesaResoluciones";
+			rutaAlmacen += File.separator + idInstitucion + File.separator + rp.returnProperty("cajg.directorioRemesaResoluciones");
 			
 			CajgRemesaResolucionAdm resolucionAdm = new CajgRemesaResolucionAdm(this.getUserBean(request));
 
@@ -503,11 +504,8 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 			File parentFile = new File(rutaAlmacen, idRemesaResolucion);
 			deleteFiles(parentFile);			
 			parentFile.mkdirs();
-			
-			
+						
 	    	InputStream stream = formFile.getInputStream();
-//	    	stream.markSupported();
-//	    	detectCodepage(stream);
 	    	
 	    	File file = new File(parentFile, formFile.getFileName());
 	    	cajgRemesaResolucionBean.setNombreFichero(file.getName());
@@ -544,8 +542,6 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 
 		request.setAttribute("mensaje", mensaje);
 		request.setAttribute("modal", "");
-		
-		
 
 		return exitoModal(mensaje, request);
 	}
@@ -559,6 +555,9 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 			File[] files = parentFile.listFiles();
 			if (files != null) {
 				for (int i = 0; i < files.length; i++) {
+					if (files[i].isDirectory()) {
+						deleteFiles(files[i]);
+					}
 					files[i].delete();
 				}		
 			}
@@ -571,8 +570,11 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 	 * @param stream
 	 * @throws IOException
 	 * @throws ClsExceptions
+	 * @throws ClassNotFoundException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
-	private boolean createZIP(UsrBean usr, String idInstitucion, String idTipoRemesa, String idRemesaResolucion, File file, InputStream stream) throws IOException, ClsExceptions, SIGAException {
+	private boolean createZIP(UsrBean usr, String idInstitucion, String idTipoRemesa, String idRemesaResolucion, File file, InputStream stream) throws IOException, ClsExceptions, SIGAException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 		
 		OutputStream bos = new FileOutputStream(file);
 		int bytesRead = 0;
@@ -585,6 +587,21 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 		bos.flush();
 		bos.close();
 		
+		//ver si con el tipo de remesa hay alguna clase java para ejecutar
+		String sql = "SELECT T.JAVACLASS FROM CAJG_TIPOREMESA T" +
+				" WHERE T.IDINSTITUCION = " + idInstitucion +
+				" AND T.IDTIPOREMESA = " + idTipoRemesa;
+		
+		RowsContainer rc = new RowsContainer();
+		if (rc.find(sql)) {
+			Row row = (Row) rc.get(0);
+			String javaClass = row.getString("JAVACLASS");
+			if (javaClass != null && !javaClass.trim().equals("")) {
+				Class<ResolucionesFicheroAbstract> clase = (Class<ResolucionesFicheroAbstract>) Class.forName(javaClass);
+				file = clase.newInstance().execute(idInstitucion, idRemesaResolucion, file);
+			}
+		}
+		
 		boolean generaLog = callProcedure(usr, idInstitucion, idTipoRemesa, idRemesaResolucion, file);		
 		
 		ArrayList ficheros = new ArrayList();
@@ -596,7 +613,8 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 		return generaLog;
 	}
 	
-    public Charset detectCodepage(InputStream in) throws IOException {
+
+	public Charset detectCodepage(InputStream in) throws IOException {
     	int len = 1;
         byte[] bom = new byte[len]; // Get the byte-order mark, if there is one
         in.read(bom, 0, len);

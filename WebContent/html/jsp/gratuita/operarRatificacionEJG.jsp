@@ -32,7 +32,7 @@
 	String accion = (String)ses.getAttribute("accion");
 	String dato[] = {(String)usr.getLocation()};
 		
-	String anio= "", numero="", idTipoEJG = "", observaciones = "",refA="";
+	String anio= "", numero="", idTipoEJG = "", observaciones = "",refA="",docResolucion="";
 	String fechaRatificacion = "", fechaResolucionCAJG= "", fechaNotificacion= "";
 	boolean requiereTurnado= false;
 	ArrayList vFundamentoJuridico= new ArrayList(), vTipoRatificacion= new ArrayList();
@@ -60,6 +60,9 @@
 		if (miHash.containsKey("IDTIPORATIFICACIONEJG") && miHash.get("IDTIPORATIFICACIONEJG") != "") {
 			vTipoRatificacion.add(miHash.get("IDTIPORATIFICACIONEJG").toString());
 		}
+		if (miHash.containsKey("DOCRESOLUCION") && miHash.get("DOCRESOLUCION") != null) {
+			docResolucion = miHash.get("DOCRESOLUCION").toString();
+		}
 	}catch(Exception e){e.printStackTrace();};
 %>
 
@@ -74,6 +77,12 @@
 		function refrescarLocal()
 		{
 			document.location.reload();
+		}
+
+		function descargar() {
+			document.forms[0].modo.value="download";
+			document.forms[0].target="submitArea";		   	
+			document.forms[0].submit();
 		}
 	</script>
 	<siga:Titulo 
@@ -134,6 +143,7 @@
 	<html:hidden property = "idTipoEJG" value ="<%=idTipoEJG%>"/>
 	<html:hidden property = "anio" value ="<%=anio%>"/>
 	<html:hidden property = "numero" value ="<%=numero%>"/>
+	<html:hidden property = "docResolucion" value ="<%=docResolucion%>"/>
 	
 	<!-- FILA -->
 	<tr>
@@ -179,9 +189,9 @@
 	</td>
 	</tr>
 	<tr>
-	<td class="labelText">
-		<siga:Idioma key="gratuita.operarRatificacion.literal.fechaNotificacion"/>
-	</td>
+		<td class="labelText">
+			<siga:Idioma key="gratuita.operarRatificacion.literal.fechaNotificacion"/>
+		</td>
 	<td>
 		<%if (accion.equalsIgnoreCase("ver")){%>
 			<html:text name="DefinirEJGForm" property="fechaNotificacion" size="10" styleClass="boxConsulta" value="<%=fechaNotificacion%>" disabled="false" readonly="true"></html:text>
@@ -204,9 +214,9 @@
 	</tr>
 	<tr>
 		<td class="labelText">
-		<siga:Idioma key="gratuita.operarRatificacion.literal.fechaRatificacion"/>
-	</td>	
-	<td>
+			<siga:Idioma key="gratuita.operarRatificacion.literal.fechaRatificacion"/>
+		</td>	
+		<td>
 		<%if (accion.equalsIgnoreCase("ver")){%>
 			<html:text name="DefinirEJGForm" property="fechaRatificacion" size="10" styleClass="boxConsulta" value="<%=fechaRatificacion%>" disabled="false" readonly="true"></html:text>
 		<%} else {%>
@@ -216,30 +226,40 @@
 			<img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0">
 			</a>
 		<%}%>
-	</td>	
+		</td>	
 	</tr>
+	<%if (docResolucion != null && !docResolucion.trim().equals("")) {%>
 	<tr>
-	<td class="labelText" colspan="2">
-		<siga:Idioma key="gratuita.operarRatificacion.literal.requiereTurnado"/>&nbsp;&nbsp;
-		<%if (accion.equalsIgnoreCase("ver")){%>
-			<input type="Checkbox" name="turnadoRatificacion" <%=(requiereTurnado?"checked":"")%> disabled>
-		<%} else {%>
-			<input type="Checkbox" name="turnadoRatificacion" <%=(requiereTurnado?"checked":"")%>>
-		<%}%>
-		
-	</td>
+		<td class="labelText">
+			<siga:Idioma key="gratuita.literal.docResolucion"/>
+		</td>	
+		<td>	
+			<html:link href="#" onclick="descargar()"><%=docResolucion%></html:link>
+		</td>
+	<tr>
+	<%}%>
+	<tr>
+		<td class="labelText" colspan="2">
+			<siga:Idioma key="gratuita.operarRatificacion.literal.requiereTurnado"/>&nbsp;&nbsp;
+			<%if (accion.equalsIgnoreCase("ver")){%>
+				<input type="Checkbox" name="turnadoRatificacion" <%=(requiereTurnado?"checked":"")%> disabled>
+			<%} else {%>
+				<input type="Checkbox" name="turnadoRatificacion" <%=(requiereTurnado?"checked":"")%>>
+			<%}%>
+			
+		</td>
 	</tr>	
 	<tr>
-	<td class="labelText" colspan="1">
-		<siga:Idioma key="gratuita.operarRatificacion.literal.observacionRatificacion"/>
-	</td>
-	<td class="labelText" colspan="3">	
-		<%if (accion.equalsIgnoreCase("ver")) {%>	
-			<textarea name="ratificacionDictamen" class="boxConsulta" style="width:770px" rows="18" readOnly="true"><%=observaciones%></textarea>
-		<%} else {%>
-			<textarea name="ratificacionDictamen" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" class="box" style="width:770px" rows="18"><%=observaciones%></textarea>
-		<%}%>
-	</td>		
+		<td class="labelText" colspan="1">
+			<siga:Idioma key="gratuita.operarRatificacion.literal.observacionRatificacion"/>
+		</td>
+		<td class="labelText" colspan="3">	
+			<%if (accion.equalsIgnoreCase("ver")) {%>	
+				<textarea name="ratificacionDictamen" class="boxConsulta" style="width:770px" rows="18" readOnly="true"><%=observaciones%></textarea>
+			<%} else {%>
+				<textarea name="ratificacionDictamen" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" class="box" style="width:770px" rows="18"><%=observaciones%></textarea>
+			<%}%>
+		</td>		
 	</tr>
 
 	</html:form>

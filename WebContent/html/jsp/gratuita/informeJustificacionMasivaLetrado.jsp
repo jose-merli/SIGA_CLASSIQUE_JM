@@ -28,6 +28,11 @@
 	//String modoPestana = (String)request.getAttribute("MODOPESTANA");
 	
 	String anio = UtilidadesBDAdm.getYearBD("");
+	String mensaje = "";
+	
+	if ("2003".equals(usr.getLocation())) {
+		mensaje = "mensaje.documentoResolucionExpediente";
+	}
 %>
 
 <html>
@@ -191,7 +196,7 @@
 
 	</script>
 
-	<siga:ConjBotonesBusqueda   botones="B"  titulo=""/>
+	<siga:ConjBotonesBusqueda   botones="B"  titulo="<%=mensaje%>"/>
 	<iframe align="center" src="<html:rewrite page="/html/jsp/general/blank.jsp"/>"
 					id="resultado"
 					name="resultado" 
@@ -200,8 +205,7 @@
 					marginheight="0"
 					marginwidth="0";					 
 					class="frameGeneral">
-	</iframe>
-	
+	</iframe>	
 
 	<iframe name="submitArea" src="<html:rewrite page="/html/jsp/general/blank.jsp"/>" style="display:none"></iframe>
 	
