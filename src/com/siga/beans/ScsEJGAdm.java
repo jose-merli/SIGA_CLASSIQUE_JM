@@ -4326,9 +4326,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							htFuncion.put(new Integer(1), regimenConyugalInteresado);
 							htFuncion.put(new Integer(2), idioma);				
 							helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-							htFuncion, "F_SIGA_GETRECURSO_ETIQUETA", "REGIMEN_CONYUGALDEFENDIDO"));
+							htFuncion, "F_SIGA_GETRECURSO_ETIQUETA", "REGIMENCONYUGAL_DEFENDIDO"));
 						}else{
-							registro.put("REGIMEN_CONYUGALDEFENDIDO", "");
+							registro.put("REGIMENCONYUGAL_DEFENDIDO", "");
 						}
 						
 						 profesionDefendido = (String)registro.get("PROFESIONDEFENDIDO");		
