@@ -1,11 +1,9 @@
 
 package com.siga.beans;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.List;
 import java.util.TreeMap;
 import java.util.Vector;
 
@@ -20,10 +18,7 @@ import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
-
 import com.siga.general.SIGAException;
-import com.siga.gratuita.form.DesignaForm;
-import com.siga.gratuita.form.InformeJustificacionMasivaForm;
 
 
 
@@ -1015,6 +1010,20 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 			}
 			
 			
+		}
+		String expedientes = (String)htRows.get("EXPEDIENTES");
+		if (expedientes != null && expedientes.indexOf("##") > -1) {
+			String[] ejgs = expedientes.split(",");
+			String salida = "";
+			for (String ejg:ejgs) {
+				String[] ejgDoc = ejg.split("##");				
+				salida+=", " + ejgDoc[0].trim();				
+			}
+			expedientes=salida;
+			if (expedientes.length() > 2){
+				expedientes = expedientes.substring(1);
+			}
+			htRows.put("EXPEDIENTES", expedientes);
 		}
 		//Si es de inicio y fin trae el porcentaje(100) en cada justificacion por lo que sera 200.pongo <100 y evito problemas
 		if(porc>=100)

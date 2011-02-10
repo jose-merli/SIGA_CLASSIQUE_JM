@@ -28,11 +28,11 @@
 	//String modoPestana = (String)request.getAttribute("MODOPESTANA");
 	
 	String anio = UtilidadesBDAdm.getYearBD("");
-	String mensaje = "";
-	
-	if ("2003".equals(usr.getLocation())) {
-		mensaje = "mensaje.documentoResolucionExpediente";
+	String mensaje = (String)request.getAttribute("MENSAJE_DOCRESOLUCION");
+	if (mensaje == null) {
+		mensaje = "";
 	}
+	
 %>
 
 <html>

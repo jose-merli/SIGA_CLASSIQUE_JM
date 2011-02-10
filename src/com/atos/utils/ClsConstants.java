@@ -563,6 +563,8 @@ MDB Microsoft Access Database
   // Cambiado por la inc-6980
   public static final String GEN_PARAM_EEJG="ACTIVAR_SOLICITUD_EXP_ECONOMICO_JG";
   
+  public static final String ACTIVAR_MENSAJE_DOCRESOLUCION_COLEGIADO="ACTIVAR_MENSAJE_DOCRESOLUCION_COLEGIADO";  
+  
   
   public static int MAX_SIZE_IMAGE_EMBEBED=100000;
   

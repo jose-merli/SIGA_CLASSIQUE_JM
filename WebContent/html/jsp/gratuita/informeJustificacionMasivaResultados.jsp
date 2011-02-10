@@ -162,7 +162,21 @@
 						<%=UtilidadesString.mostrarDatoJSP(codigoDesigna)%>
 					</td>
 					
-					<td><%=UtilidadesString.mostrarDatoJSP(expedientes)%>
+					<td><%if (expedientes != null && expedientes.indexOf("##") > -1) {
+							String[] ejgs = expedientes.split(",");
+							String salida = "";
+							for (String ejg:ejgs) {
+								String[] ejgDoc = ejg.split("##");
+								
+								salida+=", " + ejgDoc[0].trim();	
+								
+							}
+							expedientes=salida;
+							if (expedientes.length() > 2){
+								expedientes = expedientes.substring(1);
+							}
+						}%>
+						<%=(expedientes==null || expedientes.trim().equals(""))?"&nbsp":expedientes%>
 					</td>
 					
 					<td>

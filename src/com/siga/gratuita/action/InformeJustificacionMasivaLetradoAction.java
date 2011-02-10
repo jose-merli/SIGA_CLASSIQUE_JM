@@ -32,6 +32,7 @@ import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.HelperInformesAdm;
 import com.siga.beans.ScsAcreditacionBean;
 import com.siga.beans.ScsAcreditacionProcedimientoAdm;
@@ -1150,6 +1151,15 @@ public class InformeJustificacionMasivaLetradoAction extends InformeJustificacio
 			//Recoho el modo en el que esta y lo paso como parametro
 			//String accionPestanha = request.getParameter("accion");
 			//request.setAttribute("modo",accionPestanha);
+			
+			UsrBean usr = this.getUserBean(request);
+			GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
+			String activarMensaje = paramAdm.getValor (usr.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.ACTIVAR_MENSAJE_DOCRESOLUCION_COLEGIADO, "");
+			String mensaje = "";
+			if (activarMensaje != null && activarMensaje.trim().equals("1")) {
+				mensaje = "mensaje.documentoResolucionExpediente";				
+			}
+			request.setAttribute("MENSAJE_DOCRESOLUCION", mensaje);
 			
 		}catch(Exception e){
 			throwExcp("messages.select.error",e,null);
