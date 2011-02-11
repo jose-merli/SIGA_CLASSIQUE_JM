@@ -269,8 +269,7 @@ String path = actionMapping.getPath();
 					<siga:InformeSimple 
 						idInstitucion="<%=usr.getLocation()%>" 
 						recurso="facturacion.abonos.boton.DescargarFacturaRectificativaPDF"
-						idInforme="FACRECTIF"
-						idTipoInforme=""
+						idTipoInforme="ABONO"
 						formularioDatos="AbonosDatosGeneralesForm" 
 						/>
 				</td>
