@@ -2783,11 +2783,13 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 			
 			// Descripcion del concepto
 			// inc7745 // jbd // Para Badajoz (2010) cambiamos el concepto
-			if(this.usrbean.getLocation().equalsIgnoreCase("2010")){
+			// Esto finalmente se va a hacer por factura.
+			/*if(this.usrbean.getLocation().equalsIgnoreCase("2010")){
 				concepto = UtilidadesString.sustituirParaExcell(UtilidadesString.getMensajeIdioma(this.usrbean,CONCEPTO_ASIENTO3_2010));
 			}else{
 				concepto = UtilidadesString.sustituirParaExcell(UtilidadesString.getMensajeIdioma(this.usrbean,CONCEPTO_ASIENTO3));
-			}
+			}*/
+			concepto = UtilidadesString.sustituirParaExcell(UtilidadesString.getMensajeIdioma(this.usrbean,CONCEPTO_ASIENTO3));
 			conceptoAnticipo = UtilidadesString.sustituirParaExcell(UtilidadesString.getMensajeIdioma(this.usrbean,CONCEPTO_ASIENTO3_2));
 			
 			vAbono=(Vector)this.selectTablaBind(select,codigos);
