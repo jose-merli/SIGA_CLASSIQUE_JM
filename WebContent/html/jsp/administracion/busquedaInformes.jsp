@@ -83,6 +83,9 @@
 								<td class="labelText">
 									<html:text name="InformeForm" property="alias" size="50" styleClass="box"></html:text>
 								</td>
+								
+							</tr>
+							<tr>
 								<td class="labelText">
 								<siga:Idioma key="administracion.informes.literal.visible"/>
 									
@@ -109,11 +112,18 @@
 											</html:option>
 											<html:option value="N"><siga:Idioma key="general.no"/></html:option>
 									</html:select>		
+								</td>								
+								<td class="labelText">
+										<siga:Idioma key="administracion.informes.literal.destinatarios.enviarA"/>(*)
 								</td>
-																
-							</tr>	
-							
-							
+								<td class="labelText">
+									<html:select property="destinatarios"  name="InformeForm" styleClass="boxCombo" >
+										<html:option value=""><siga:Idioma key="general.combo.seleccionar"/></html:option>
+										<html:option value="C"><siga:Idioma key="administracion.informes.destinatarios.colegiados"/></html:option>
+										<html:option value="S"><siga:Idioma key="administracion.informes.destinatarios.solicitantes"/></html:option>
+									</html:select>		
+								</td>		
+								</tr>	
 						</table>
 					</siga:ConjCampos>	
 				</td>

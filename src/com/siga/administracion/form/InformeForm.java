@@ -7,6 +7,7 @@ import org.apache.struts.upload.FormFile;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.UsrBean;
+import com.siga.administracion.SIGAConstants;
 import com.siga.beans.AdmInformeBean;
 import com.siga.beans.AdmLenguajesBean;
 import com.siga.beans.AdmTipoInformeBean;
@@ -35,7 +36,7 @@ public class InformeForm extends MasterForm {
 	private String modoInterno;
 	private String claseTipoInforme;
 	private String orden;
-	
+	FilaExtElement[] elementosFila;
 	private FormFile theFile;
 	private FileInforme directorioFile;
 	String msgError;
@@ -48,106 +49,152 @@ public class InformeForm extends MasterForm {
 	int filaInformeSeleccionada;
 	String botones;
 	private String lenguaje;
+
 	public String getBotones() {
-		if(usrBean.getLocation()!=null && usrBean.getLocation().equals("2000")){
+		if (usrBean.getLocation() != null
+				&& usrBean.getLocation().equals("2000")) {
 			this.botones = "C,E,B";
-			
-		}else{
+
+		} else {
 			this.botones = "C";
-			if (!idInstitucion.equals("0")){
+			if (!idInstitucion.equals("0")) {
 				this.botones = "C,E,B";
 			}
 		}
 		setBotones(this.botones);
-		
-		
+
 		return this.botones;
 	}
+
 	public void setBotones(String botones) {
 		this.botones = botones;
 	}
+	
+	public FilaExtElement[] getElementosFila() {
+		FilaExtElement[] elementosFila = null;
+		if (!idInstitucion.equals("0")) {
+			elementosFila = new FilaExtElement[3];
+		} else {
+			elementosFila = new FilaExtElement[2];
+			elementosFila[1] = new FilaExtElement("duplicar", "duplicar","general.boton.duplicar", SIGAConstants.ACCESS_READ);
+
+		}
+		this.setElementosFila(elementosFila);
+		return elementosFila;
+	}
+
+	public void setElementosFila(FilaExtElement[] elementosFila) {
+		this.elementosFila = elementosFila;
+	}
+
 	public int getFilaSeleccionada() {
 		return filaSeleccionada;
 	}
+
 	public void setFilaSeleccionada(int filaSeleccionada) {
 		this.filaSeleccionada = filaSeleccionada;
 	}
-	
+
 	public List<AdmTipoInformeBean> getTiposInforme() {
 		return tiposInforme;
 	}
+
 	public void setTiposInforme(List<AdmTipoInformeBean> tiposInforme) {
 		this.tiposInforme = tiposInforme;
 	}
+
 	public UsrBean getUsrBean() {
 		return usrBean;
 	}
+
 	public void setUsrBean(UsrBean usrBean) {
 		this.usrBean = usrBean;
 	}
+
 	public String getMsgError() {
 		return msgError;
 	}
+
 	public void setMsgError(String msgError) {
 		this.msgError = msgError;
 	}
+
 	public String getMsgAviso() {
 		return msgAviso;
 	}
+
 	public void setMsgAviso(String msgAviso) {
 		this.msgAviso = msgAviso;
 	}
+
 	public String getIdPlantilla() {
 		return idPlantilla;
 	}
+
 	public void setIdPlantilla(String idPlantilla) {
 		this.idPlantilla = idPlantilla;
 	}
+
 	public String getDescripcion() {
 		return descripcion;
 	}
+
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
 	}
+
 	public String getAlias() {
 		return alias;
 	}
+
 	public void setAlias(String alias) {
 		this.alias = alias;
 	}
+
 	public String getNombreFisico() {
 		return nombreFisico;
 	}
+
 	public void setNombreFisico(String nombreFisico) {
 		this.nombreFisico = nombreFisico;
 	}
+
 	public String getDirectorio() {
 		return directorio;
 	}
+
 	public void setDirectorio(String directorio) {
 		this.directorio = directorio;
 	}
+
 	public String getIdTipoInforme() {
 		return idTipoInforme;
 	}
+
 	public void setIdTipoInforme(String idTipoInforme) {
 		this.idTipoInforme = idTipoInforme;
 	}
+
 	public String getVisible() {
 		return visible;
 	}
+
 	public void setVisible(String visible) {
 		this.visible = visible;
 	}
+
 	public String getNombreSalida() {
 		return nombreSalida;
 	}
+
 	public void setNombreSalida(String nombreSalida) {
 		this.nombreSalida = nombreSalida;
 	}
+
 	public String getPreseleccionado() {
 		return preseleccionado;
 	}
+
 	public void setPreseleccionado(String preseleccionado) {
 		this.preseleccionado = preseleccionado;
 	}
@@ -155,137 +202,167 @@ public class InformeForm extends MasterForm {
 	public String getASolicitantes() {
 		return aSolicitantes;
 	}
+
 	public void setASolicitantes(String aSolicitantes) {
 		this.aSolicitantes = aSolicitantes;
 	}
+
 	public String getDestinatarios() {
 		return destinatarios;
 	}
+
 	public void setDestinatarios(String destinatarios) {
 		this.destinatarios = destinatarios;
 	}
-	
+
 	public String getTipoFormato() {
 		return tipoFormato;
 	}
+
 	public void setTipoFormato(String tipoFormato) {
 		this.tipoFormato = tipoFormato;
 	}
+
 	public String getIdInstitucion() {
 		return idInstitucion;
 	}
+
 	public void setIdInstitucion(String idInstitucion) {
 		this.idInstitucion = idInstitucion;
 	}
+
 	public String getDescripcionTipoInforme() {
 		return descripcionTipoInforme;
 	}
+
 	public void setDescripcionTipoInforme(String descripcionTipoInforme) {
 		this.descripcionTipoInforme = descripcionTipoInforme;
 	}
-	public AdmInformeBean getInformeVO(){
+
+	public AdmInformeBean getInformeVO() {
 		return getInformeVO(new AdmInformeBean());
-		
+
 	}
-	public AdmInformeBean getInformeVO(AdmInformeBean informeVO){
-		if(informeVO == null)
+
+	public AdmInformeBean getInformeVO(AdmInformeBean informeVO) {
+		if (informeVO == null)
 			informeVO = new AdmInformeBean();
-		informeVO.setIdPlantilla(idPlantilla);	
-		informeVO.setDescripcion(descripcion);	
-		informeVO.setAlias(alias);	
-		informeVO.setNombreFisico(nombreFisico);	
-		informeVO.setDirectorio(directorio);	
-		informeVO.setIdTipoInforme(idTipoInforme);	
-		informeVO.setVisible(visible);	
-		informeVO.setNombreSalida(nombreSalida);	
-		informeVO.setIdInstitucion(new Integer(idInstitucion));	
+		informeVO.setIdPlantilla(idPlantilla);
+		informeVO.setDescripcion(descripcion);
+		informeVO.setAlias(alias);
+		informeVO.setNombreFisico(nombreFisico);
+		informeVO.setDirectorio(directorio);
+		informeVO.setIdTipoInforme(idTipoInforme);
+		informeVO.setVisible(visible);
+		informeVO.setNombreSalida(nombreSalida);
+		informeVO.setIdInstitucion(new Integer(idInstitucion));
 		informeVO.setPreseleccionado(preseleccionado);
 		informeVO.setDestinatarios(destinatarios);
-		informeVO.setASolicitantes(aSolicitantes);	
+		informeVO.setASolicitantes(aSolicitantes);
 		informeVO.setTipoformato(tipoFormato);
 		informeVO.setUsrBean(usrBean);
 		informeVO.setOrden(orden);
 		return informeVO;
-		
+
 	}
-	public void clear(){
-		idPlantilla=null;
-		descripcion=null;
-		alias=null;
-		nombreFisico=null;
-		directorio=null;
-		idTipoInforme=null;
-		descripcionTipoInforme=null;
-		visible=null;
-		nombreSalida=null;
-		preseleccionado=null;
-		aSolicitantes=null;
-		destinatarios=null;
-		tipoFormato=null;
+
+	public void clear() {
+		idPlantilla = null;
+		descripcion = null;
+		alias = null;
+		nombreFisico = null;
+		directorio = null;
+		idTipoInforme = null;
+		descripcionTipoInforme = null;
+		visible = null;
+		nombreSalida = null;
+		preseleccionado = null;
+		aSolicitantes = null;
+		destinatarios = null;
+		tipoFormato = null;
 		theFile = null;
 		directorioFile = null;
 		lenguaje = null;
 		orden = null;
-		
+
 	}
+
 	public List<CenInstitucionBean> getInstituciones() {
 		return instituciones;
 	}
+
 	public void setInstituciones(List<CenInstitucionBean> instituciones) {
 		this.instituciones = instituciones;
 	}
+
 	public String getDescripcionInstitucion() {
 		return descripcionInstitucion;
 	}
+
 	public void setDescripcionInstitucion(String descripcionInstitucion) {
 		this.descripcionInstitucion = descripcionInstitucion;
 	}
+
 	public FormFile getTheFile() {
 		return theFile;
 	}
+
 	public void setTheFile(FormFile theFile) {
 		this.theFile = theFile;
 	}
+
 	public FileInforme getDirectorioFile() {
 		return directorioFile;
 	}
+
 	public void setDirectorioFile(FileInforme directorioFile) {
 		this.directorioFile = directorioFile;
 	}
+
 	public int getFilaInformeSeleccionada() {
 		return filaInformeSeleccionada;
 	}
+
 	public void setFilaInformeSeleccionada(int filaInformeSeleccionada) {
 		this.filaInformeSeleccionada = filaInformeSeleccionada;
 	}
-	
+
 	public String getLenguaje() {
 		return lenguaje;
 	}
+
 	public void setLenguaje(String lenguaje) {
 		this.lenguaje = lenguaje;
 	}
+
 	public List<AdmLenguajesBean> getLenguajes() {
 		return lenguajes;
 	}
+
 	public void setLenguajes(List<AdmLenguajesBean> lenguajes) {
 		this.lenguajes = lenguajes;
 	}
+
 	public String getModoInterno() {
 		return modoInterno;
 	}
+
 	public void setModoInterno(String modoInterno) {
 		this.modoInterno = modoInterno;
 	}
+
 	public String getClaseTipoInforme() {
 		return claseTipoInforme;
 	}
+
 	public void setClaseTipoInforme(String claseTipoInforme) {
 		this.claseTipoInforme = claseTipoInforme;
 	}
+
 	public String getOrden() {
 		return orden;
 	}
+
 	public void setOrden(String orden) {
 		this.orden = orden;
 	}

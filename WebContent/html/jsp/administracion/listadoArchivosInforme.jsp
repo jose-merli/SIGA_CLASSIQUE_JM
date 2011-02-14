@@ -29,8 +29,7 @@
 	type="text/javascript"></script>
 <script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"
 	type="text/javascript"></script>
-<script
-	src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/> type="text/javascript"></script>
+<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>" type="text/javascript"></script>
 	
 	<script src="<html:rewrite page='/html/js/validacionStruts.js'/>" type="text/javascript"></script>
 
@@ -178,7 +177,7 @@
 </div>
 </html:form>
 
-<script>
+<script language="JavaScript">
 function download(fila)
 {
 	document.InformeForm.filaInformeSeleccionada.value=fila-1;
@@ -204,6 +203,11 @@ function upload()
 		error = "<siga:Idioma key='errors.required' arg0='administracion.informes.literal.archivo'/>";
 		alert(error);
 		return;
+	}
+	
+	if (!TestFileType(document.InformeForm.theFile.value, ['DOC'])){
+		fin();
+		return false;
 	}
 	document.InformeForm.modo.value = "upload";
 	document.InformeForm.submit();

@@ -110,7 +110,7 @@ import com.siga.Utilidades.UtilidadesString;
 		public List<AdmTipoInformeBean> getTiposInforme(boolean isCombo)throws ClsExceptions{
 
 			StringBuffer sql = new StringBuffer();
-			sql.append("SELECT * FROM ADM_TIPOINFORME ORDER BY DESCRIPCION ");
+			sql.append("SELECT * FROM ADM_TIPOINFORME WHERE ADM_TIPOINFORME.CLASE <> 'O' ORDER BY DESCRIPCION ");			
 			List<AdmTipoInformeBean> tipoInformeList = null;
 			try {
 				RowsContainer rc = new RowsContainer(); 

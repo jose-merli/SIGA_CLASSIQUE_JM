@@ -46,14 +46,15 @@
 <div>		
 	<table id='listadoInformesCab' border='1' width='100%' cellspacing='0' cellpadding='0'>
 		<tr class = 'tableTitle'>
-			<td align='center' width='8%'>Colegio</td>
-			<td align='center' width='10%'>Tipo</td>
-			<td align='center' width='5%'>Orden</td>
-			<td align='center' width='20%'>Nombre</td>
-			<td align='center' width='20%'>Descripcion</td>
-			<td align='center' width='8%'>Visible</td>
-			<td align='center' width='10%'>Generar copia a Solicitantes</td>
-			<td align='center' width='11%'>&nbsp;</td>
+			<td align='center' width='8%'><siga:Idioma key="administracion.informes.literal.colegio"/></td>
+			<td align='center' width='10%'><siga:Idioma key="administracion.informes.literal.tipoInforme"/></td>
+			<td align='center' width='5%'><siga:Idioma key="administracion.informes.literal.orden"/></td>
+			<td align='center' width='19%'><siga:Idioma key="administracion.informes.literal.nombre"/></td>
+			<td align='center' width='19%'><siga:Idioma key="administracion.informes.literal.descripcion"/></td>
+			<td align='center' width='6%'><siga:Idioma key="administracion.informes.literal.visible"/></td>
+			<td align='center' width='6%'><siga:Idioma key="administracion.informes.literal.solicitantes"/></td>
+			<td align='center' width='6%'><siga:Idioma key="administracion.informes.literal.destinatarios.enviarA"/></td>
+			<td align='center' width='12%'>&nbsp;</td>
 		</tr>
 	</table>
 </div>
@@ -69,21 +70,21 @@
    			</c:when>
    			<c:otherwise>
    			<tr>
-     			<td width='8%'></td>
-     		
-			<td width='10%'></td>
+     			<td width='8%'></td>     		
+				<td width='10%'></td>
 				<td width='5%'></td>
-			<td width='20%'></td>
-			<td width='20%'></td>
-			<td width='8%'></td>
-			<td width='10%'></td>
-			<td width='11%'></td>
+				<td width='19%'></td>
+				<td width='19%'></td>
+				<td width='6%'></td>
+				<td width='6%'></td>
+				<td width='6%'></td>
+				<td width='12%'></td>
 			</tr>
    
-				<c:forEach items="${informes}" var="informe" varStatus="status">                 
-
-				<siga:FilaConIconos	fila='${status.count}'
+				<c:forEach items="${informes}" var="informe" varStatus="status">
+				<siga:FilaConIconos	fila='${status.count}'				    
 	  				botones="${informe.botones}" 
+	  				elementos="${informe.elementosFila}"
 	  				pintarEspacio="no"
 	  				visibleConsulta="no"
 	  				visibleEdicion = "no"
@@ -110,6 +111,7 @@
 				<td align='left'><c:out value="${informe.descripcion}"></c:out></td>
 				<td align='center'><c:out value="${informe.visible}"></c:out></td>
 				<td align='center'><c:out value="${informe.ASolicitantes}"></c:out></td>
+				<td align='center'><c:out value="${informe.destinatarios}"></c:out></td>
 
 				
 			</siga:FilaConIconos>
@@ -171,18 +173,27 @@ function editar(fila){
 
 }
 function borrar(fila){
-	document.InformeFormEdicion.modo.value = "borrar";
-	var idPlantillaFila = 'idPlantilla_'+fila;
-	var idInstitucionFila = 'idInstitucion_'+fila;
-	var claseTipoInformeFila = 'claseTipoInforme_'+fila;
+	if (confirm('<siga:Idioma key="messages.deleteConfirmation"/>')) { 
+		document.InformeFormEdicion.modo.value = "borrar";
+		var idPlantillaFila = 'idPlantilla_'+fila;
+		var idInstitucionFila = 'idInstitucion_'+fila;
+		var claseTipoInformeFila = 'claseTipoInforme_'+fila;
+		document.InformeFormEdicion.idPlantilla.value = document.getElementById(idPlantillaFila).value;
+		document.InformeFormEdicion.idInstitucion.value = document.getElementById(idInstitucionFila).value;
+		document.InformeFormEdicion.claseTipoInforme.value = document.getElementById(claseTipoInformeFila).value;
+		document.InformeFormEdicion.target = "submitArea";
+		document.InformeFormEdicion.submit();	
+	}
+}
+
+function duplicar(fila)
+{
+	var idPlantillaFila = 'idPlantilla_'+fila;		
+	var claseTipoInformeFila = 'claseTipoInforme_'+fila;	
 	document.InformeFormEdicion.idPlantilla.value = document.getElementById(idPlantillaFila).value;
-	document.InformeFormEdicion.idInstitucion.value = document.getElementById(idInstitucionFila).value;
 	document.InformeFormEdicion.claseTipoInforme.value = document.getElementById(claseTipoInformeFila).value;
-	document.InformeFormEdicion.target = "submitArea";
-	document.InformeFormEdicion.submit();
-	
-	
-	
+	document.InformeFormEdicion.modo.value = "duplicar";
+	document.InformeFormEdicion.submit();	
 }
 
 

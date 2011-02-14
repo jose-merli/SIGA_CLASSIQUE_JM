@@ -341,6 +341,7 @@ public class AdmInformeAdm extends MasterBeanAdministrador
     	sql.append(" FROM ADM_INFORME I,ADM_TIPOINFORME TI,CEN_INSTITUCION INST ");
     	sql.append(" WHERE");
     	sql.append(" I.IDTIPOINFORME = TI.IDTIPOINFORME");
+    	sql.append("  AND TI.CLASE <> 'O'");
     	sql.append("  AND I.IDINSTITUCION = INST.IDINSTITUCION(+)");
     	
     	if(informeFormFiltro.getIdInstitucion()!=null && informeFormFiltro.getIdInstitucion().equals("-1")){
@@ -385,6 +386,13 @@ public class AdmInformeAdm extends MasterBeanAdministrador
     		sql.append(contador);
     		codigosHashtable.put(new Integer(contador),informeFormFiltro.getASolicitantes());
 		}
+		
+		if(informeFormFiltro.getDestinatarios()!=null && !informeFormFiltro.getDestinatarios().equals("")){
+			sql.append(" AND I.DESTINATARIOS LIKE '%");		
+			sql.append(informeFormFiltro.getDestinatarios().toUpperCase());    		
+    		sql.append("%'");
+		}
+		
 		sql.append(" ORDER BY DESCRIPCIONTIPOINFORME,I.IDINSTITUCION,I.ORDEN,I.ALIAS ");
 		
 		

@@ -16,6 +16,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
@@ -63,6 +64,9 @@ public class GestionInformesAction extends MasterAction {
 //					}
 					else if ( accion.equalsIgnoreCase("insertar")){
 						mapDestino = insertar(mapping, miForm, request, response);
+					}
+					else if ( accion.equalsIgnoreCase("duplicar")){
+						mapDestino = duplicar(mapping, miForm, request, response);
 					}
 //					else if ( accion.equalsIgnoreCase("comprobarBorrar")){
 //						mapDestino = comprobarBorrar(mapping, miForm, request, response);
@@ -246,6 +250,53 @@ public class GestionInformesAction extends MasterAction {
 		}
 		return "edicion";
 	}
+	
+	protected String duplicar(ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException 
+			{
+
+		InformeForm informeForm = (InformeForm) formulario;
+		UsrBean usrBean = this.getUserBean(request);
+		informeForm.setIdInstitucion(usrBean.getLocation());
+		String forward="exception";
+		try {
+			
+			BusinessManager bm = getBusinessManager();
+			InformesService informeService = (InformesService)bm.getService(InformesService.class);
+			AdmInformeBean informeBean =  informeService.getInforme(informeForm, usrBean);
+			informeForm.setAlias(informeBean.getAlias());
+			informeForm.setASolicitantes(informeBean.getASolicitantes());
+			informeForm.setDescripcion(informeBean.getDescripcion());
+			informeForm.setDestinatarios(informeBean.getDestinatarios());
+//			informeForm.setDirectorio("auxDuplicar");
+			informeForm.setNombreFisico(informeBean.getNombreFisico());
+			informeForm.setNombreSalida(informeBean.getNombreSalida());
+			informeForm.setOrden(informeBean.getOrden());
+			informeForm.setVisible(informeBean.getVisible());
+			informeForm.setPreseleccionado(informeBean.getPreseleccionado());
+			informeForm.setIdTipoInforme(informeBean.getIdTipoInforme());		
+//			if(informeForm.getDirectorioFile()!=null){
+//				informeForm.getDirectorioFile().setFiles(null);
+//				informeForm.setDirectorioFile(null);
+//			}
+
+			boolean isNombreFisicoUnico = informeService.isNombreFisicoUnico(informeForm,true,this.getUserBean(request));			
+			informeService.insertaInforme(informeForm, usrBean);
+			
+			if(isNombreFisicoUnico)
+				forward = exitoRefresco("messages.duplicated.success",request);
+			else{
+				forward = exitoRefresco("administracion.informes.mensaje.aviso.insertar.nombreFisicoRepetido",request);				
+			}
+			
+		}catch (Exception e) {
+			throwExcp("messages.general.errorExcepcion", e, null); 
+		}
+		return forward;
+	}
+	
 	protected String insertar(ActionMapping mapping, 		
 			MasterForm formulario, 
 			HttpServletRequest request, 
@@ -461,7 +512,6 @@ public class GestionInformesAction extends MasterAction {
 		}
 		return "exito";
 	}
-	
 	
 	protected String upload(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException
    	{

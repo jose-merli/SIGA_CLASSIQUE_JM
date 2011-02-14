@@ -53,9 +53,9 @@
 </html:form>
 <html:javascript formName="InformeFormEdicion" staticJavascript="true" />
 <html:form action="/ADM_GestionInformes"  name="InformeFormEdicion" type="com.siga.administracion.form.InformeForm" method="POST" target="submitArea" enctype="multipart/form-data">
-	<html:hidden property="modo" />
-	<html:hidden property="modoInterno" />
-	
+	<html:hidden property="modo" value="${InformeFormEdicion.modo}"/>
+	<html:hidden property="modoInterno" value="${InformeFormEdicion.modoInterno}"/>
+	<html:hidden property="idInstitucion" value="${InformeFormEdicion.idInstitucion}"/>
 	<html:hidden property="idPlantilla" value="${InformeFormEdicion.idPlantilla}"/>
 	<html:hidden property="destinatarios" value="${InformeFormEdicion.destinatarios}"/>
 	<html:hidden property="claseTipoInforme" value="${InformeFormEdicion.claseTipoInforme}"/>

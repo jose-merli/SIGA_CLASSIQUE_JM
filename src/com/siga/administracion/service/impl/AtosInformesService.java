@@ -80,7 +80,7 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
 		boolean isNombreFisicoComun = isNombreFisicoComun(informeForm,usrBean);
 		informeAdm.delete(informeVo);
 		if(!isNombreFisicoComun)
-			eliminaDirectorio(getDirectorio(informeForm));
+			eliminaFicherosAsociados(getDirectorio(informeForm),informeForm.getNombreFisico());
 		
 	}
 	
@@ -204,9 +204,26 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
 		File directorioFile = new File (pathDirectorio);
 		directorioFile.delete();
 	}
-	private void creaDirectorio(String pathDirectorio){	
+	
+	private void eliminaFicherosAsociados(String pathDirectorio, String nombreFisico){	
 		File directorioFile = new File (pathDirectorio);
-		directorioFile.mkdir();
+		if (directorioFile.isDirectory()) {				
+			String[] children = directorioFile.list();
+			FileInforme fileInforme = null;
+			for (int i = 0; i<children.length; i++) {
+			    File informeFile = new File(directorioFile, children[i]);			    
+			    if(informeFile.getName().toLowerCase().startsWith(nombreFisico)){
+			    	informeFile.delete();
+			    }
+			}
+		}			    	
+	}
+	
+	private void creaDirectorio(String pathDirectorio){	
+		
+		File directorioFile = new File (pathDirectorio);
+		if(!directorioFile.exists())
+			directorioFile.mkdir();
 	}
 	private void cambiaDirectorio(String pathDirectorioOld,String pathDirectorio){	
 		File directorioOldFile = new File (pathDirectorioOld);
@@ -295,6 +312,22 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
 					String fechaFileInforme = sdf.format(fileInformeDate);
 				    fileInforme = new FileInforme(informeFile.getName(),permisoFile.toString(),fechaFileInforme,informeFile,isPermitidoBorrar);
 				    filesDirectorio.add(fileInforme);
+				    
+//			    }else if (informeFile.isDirectory() && informeFile.getName().equals("recursos")){
+//			    	String[] childrenRecursos = informeFile.list();
+//			    	FileInforme fileInformeRecursos = null;
+//			    	for (int j = 0; j<childrenRecursos.length; j++) {
+//			    		File informeRecursos = new File(informeFile, childrenRecursos[j]);
+//				    	StringBuffer permisoFile = new StringBuffer("");
+//					
+//					    permisoFile.append(informeRecursos.canRead()?"+r":"-r");
+//					    permisoFile.append(informeRecursos.canWrite()?"+w":"+w");
+//					    
+//					    Date fileInformeDate = new Date(informeRecursos.lastModified());
+//						String fechaFileInforme = sdf.format(fileInformeDate);
+//					    fileInformeRecursos = new FileInforme("/"+informeFile.getName()+"/"+informeRecursos.getName(),permisoFile.toString(),fechaFileInforme,informeRecursos,isPermitidoBorrar);
+//					    filesDirectorio.add(fileInformeRecursos);
+//		    		}
 			    }
 			}
 		}
@@ -343,14 +376,33 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
    	   				fDirectorio.mkdirs();
    				stream = theFile.getInputStream();
    				StringBuffer pathInforme = new StringBuffer(directorio);
-   				pathInforme.append(ClsConstants.FILE_SEP);
-   				pathInforme.append(informeForm.getNombreFisico());
-   				pathInforme.append("_");
-   				pathInforme.append(informeForm.getLenguaje());
-   				//pathInforme.append("ES");
    				int indiceExtension = theFile.getFileName().lastIndexOf(".");
-   				if(indiceExtension!=-1)
-   					pathInforme.append(theFile.getFileName().substring(indiceExtension));
+   				
+				if (theFile.getFileName().substring(indiceExtension).equals(".jpg")
+						|| theFile.getFileName().substring(indiceExtension).equals(".bmp")
+						|| theFile.getFileName().substring(indiceExtension).equals(".gif")
+						|| theFile.getFileName().substring(indiceExtension).equals(".png")) {
+							
+					pathInforme.append(ClsConstants.FILE_SEP);
+					pathInforme.append("recursos");
+					pathInforme.append(ClsConstants.FILE_SEP);
+					File directorioFile = new File(pathInforme.toString());
+					if (!directorioFile.exists()) {
+						directorioFile.mkdir();
+					}
+					
+					pathInforme.append(theFile.getFileName());
+	
+				} else {
+					pathInforme.append(ClsConstants.FILE_SEP);
+					pathInforme.append(informeForm.getNombreFisico());
+					pathInforme.append("_");
+					pathInforme.append(informeForm.getLenguaje());
+					// pathInforme.append("ES");
+					if (indiceExtension != -1)
+						pathInforme.append(theFile.getFileName().substring(indiceExtension));
+				}
+   				
    				String idIntitucionPropietario = informeForm.getIdInstitucion();
    				String  idInstitucionUsuario = informeForm.getUsrBean().getLocation();
    				//solo se tendra pemiso de borrado cuando sea de su propia intitucion o
