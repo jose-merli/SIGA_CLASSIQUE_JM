@@ -104,25 +104,22 @@
 				</td>
 				<td>
 					<select name="idFiltro" class="boxCombo" onChange="cambiarValor();">
-						<logic:equal name="busquedaClientesFiltrosForm" property="concepto" value="SALTOSCOMP">
-						<option value="1"><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.colaGuardia" /></option>
-						<option value="3"><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.inscritosGuardia" /></option>
-						<option value="2" selected><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.colaTurno" /></option>
+						<logic:equal name="busquedaClientesFiltrosForm" property="concepto" value="SALTOSCOMP">						
+						<option value="3"><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.inscritosGuardia" /></option>						
 						<option value="4" selected><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.inscritosTurno" /></option>
 						<option value="5"><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.ejercientes" /></option>
 						</logic:equal>
 						
 						<logic:notEqual name="busquedaClientesFiltrosForm" property="concepto" value="SALTOSCOMP">
 						<logic:notEqual name="busquedaClientesFiltrosForm" property="concepto" value="DESIGNACION">
-						<option value="1" selected><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.colaGuardia" /></option>
+						
 						<option value="3"><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.inscritosGuardia" /></option>
 						<option value="4"><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.inscritosTurno" /></option>
 						<option value="5"><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.ejercientes" /></option>
 						</logic:notEqual>
 						</logic:notEqual>
 						
-						<logic:equal name="busquedaClientesFiltrosForm" property="concepto" value="DESIGNACION">
-						<option value="2" selected><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.colaTurno" /></option>
+						<logic:equal name="busquedaClientesFiltrosForm" property="concepto" value="DESIGNACION">						
 						<option value="4"><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.inscritosTurno" /></option>
 						<option value="5"><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.ejercientes" /></option>
 						</logic:equal>

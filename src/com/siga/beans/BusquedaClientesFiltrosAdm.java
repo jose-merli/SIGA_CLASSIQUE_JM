@@ -259,7 +259,14 @@ public class BusquedaClientesFiltrosAdm {
 		sql.append("               Per.Apellidos2, ");
 		sql.append("               Tur.Nombre Turno, ");
 		sql.append("               Gua.Nombre Guardia, ");
-		sql.append("               '' Posicion, ");
+//		sql.append("               '' Posicion, ");		
+		sql.append("               (SELECT COUNT(*)");
+		sql.append("               	  FROM Scs_Cabeceraguardias Cab");
+		sql.append("                  WHERE Cab.Idinstitucion = Ins.Idinstitucion");
+		sql.append("           	   		AND Cab.Idpersona = Ins.Idpersona");
+		sql.append("               		AND Cab.Idturno = Ins.Idturno");
+		sql.append("          			AND Cab.Idguardia = Ins.Idguardia");
+		sql.append("          			AND Cab.Fecha_Fin >= SYSDATE) Posicion,");
 		sql.append("               '0' Salto, ");
 		sql.append("               '' Compensacion, ");
 		sql.append("               (Select Telefono1 ");

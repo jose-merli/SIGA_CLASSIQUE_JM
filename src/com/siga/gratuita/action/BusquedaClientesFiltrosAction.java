@@ -14,6 +14,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.*;
+import com.ibatis.sqlmap.engine.mapping.sql.dynamic.elements.IsEmptyTagHandler;
 import com.siga.Utilidades.Paginador;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.*;
@@ -186,20 +187,22 @@ public class BusquedaClientesFiltrosAction extends MasterAction
 
 			// ejecutando la busqueda
 			switch (idFiltro) {
-				case FILTRO_COLAGUARDIA:
-					resultado = adm.buscaLetradosColaGuardia(idInstitucion, idTurno, idGuardia, fechaFomateada, 0);
-					break;
-				case FILTRO_COLATURNO:
-					resultado = adm.buscaLetradosColaTurno(idInstitucion, idTurno, fechaFomateada, idFiltro);
-					break;
 				case FILTRO_INSCRITOSGUARDIA:
-					resultado = adm.buscaLetradosInscritosGuardia(idInstitucion, idTurno, idGuardia, fechaFomateada);
+					if (isFormEmpty(ncoleg, nombre, apellido1, apellido2, nif)) {
+						resultado = adm.buscaLetradosColaGuardia(idInstitucion,idTurno, idGuardia, fechaFomateada, 0);
+					} else {
+						resultado = adm.buscaLetradosInscritosGuardia(idInstitucion, idTurno, idGuardia, fechaFomateada);
+					}
 					break;
 				case FILTRO_INSCRITOSTURNO:
-					resultado = adm.buscaLetradosInscritosTurno(idInstitucion, idTurno, fechaFomateada);
+					if (isFormEmpty(ncoleg, nombre, apellido1, apellido2, nif)) {
+						resultado = adm.buscaLetradosColaTurno(idInstitucion,idTurno, fechaFomateada, idFiltro);
+					} else {
+						resultado = adm.buscaLetradosInscritosTurno(idInstitucion,idTurno, fechaFomateada);
+					}
 					break;
 				case FILTRO_EJERCIENTES:
-					resultado = adm.buscaLetradosCensoCompleto(idInstitucion, fechaFomateada);
+					resultado = adm.buscaLetradosCensoCompleto(idInstitucion,fechaFomateada);
 					break;
 				default:// no hay filtro
 					throw new ClsExceptions("La opción seleccionada no está implementada");
@@ -214,6 +217,27 @@ public class BusquedaClientesFiltrosAction extends MasterAction
 		return null;
 	} // buscarPaginador()
 
+	
+	/**
+	 * Metodo que comprueba si el formulario esta vacío
+	 * @param  ncoleg - Numero de colegiado
+	 * @param  nom -  Nombre del colegiado
+	 * @param  ape1 - Primer apellido del colegiado 
+	 * @param  ape2 - Segundo del colegiado
+	 * @param  nif - NIF del colegiado
+	 * @return  Boolean  Comprobacion del formulario  
+	 */
+	private boolean isFormEmpty(String ncoleg, String nom, String ape1,
+			String ape2, String nif) {
+		if (ncoleg.equals("") && nom.equals("") && ape1.equals("")
+				&& ape2.equals("") && nif.equals("")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+		
+	
 	/**
 	 * Metodo que implementa la busqueda automatica
 	 * @param  mapping - Mapeo de los struts
