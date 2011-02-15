@@ -90,14 +90,10 @@
 								<siga:Idioma key="administracion.informes.literal.visible"/>
 									
 								</td>
-								<td class="labelText">
-									<html:select property="visible"  name="InformeForm" styleClass="boxCombo" >
-										<html:option value=""><siga:Idioma key="general.combo.seleccionar"/>
-											</html:option>
-										
-										
-											<html:option value="S"><siga:Idioma key="general.yes"/>
-											</html:option>
+								<td class="labelText" >
+									<html:select property="visible"  name="InformeForm" styleClass="boxCombo" style="width:60px;">
+										<html:option value="">&nbsp;</html:option>
+											<html:option value="S"><siga:Idioma key="general.yes"/></html:option>
 											<html:option value="N"><siga:Idioma key="general.no"/></html:option>
 									</html:select>							
 								</td>
@@ -105,25 +101,23 @@
 								<siga:Idioma key="administracion.informes.literal.solicitantes"/>
 								</td>
 								<td class="labelText">
-									<html:select property="ASolicitantes"  name="InformeForm" styleClass="boxCombo" >
-										<html:option value=""><siga:Idioma key="general.combo.seleccionar"/>
-											</html:option>
-											<html:option value="S"><siga:Idioma key="general.yes"/>
-											</html:option>
-											<html:option value="N"><siga:Idioma key="general.no"/></html:option>
+									<html:select property="ASolicitantes"  name="InformeForm" styleClass="boxCombo" style="width:60px;">
+										<html:option value="">&nbsp;</html:option>
+										<html:option value="S"><siga:Idioma key="general.yes"/></html:option>
+										<html:option value="N"><siga:Idioma key="general.no"/></html:option>
 									</html:select>		
 								</td>								
 								<td class="labelText">
-										<siga:Idioma key="administracion.informes.literal.destinatarios.enviarA"/>(*)
+										<siga:Idioma key="administracion.informes.literal.destinatarios.enviarA"/>
 								</td>
 								<td class="labelText">
 									<html:select property="destinatarios"  name="InformeForm" styleClass="boxCombo" >
-										<html:option value=""><siga:Idioma key="general.combo.seleccionar"/></html:option>
+										<html:option value="">&nbsp;</html:option>
 										<html:option value="C"><siga:Idioma key="administracion.informes.destinatarios.colegiados"/></html:option>
 										<html:option value="S"><siga:Idioma key="administracion.informes.destinatarios.solicitantes"/></html:option>
 									</html:select>		
 								</td>		
-								</tr>	
+							</tr>	
 						</table>
 					</siga:ConjCampos>	
 				</td>

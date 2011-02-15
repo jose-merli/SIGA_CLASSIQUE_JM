@@ -270,17 +270,13 @@ public class GestionInformesAction extends MasterAction {
 			informeForm.setASolicitantes(informeBean.getASolicitantes());
 			informeForm.setDescripcion(informeBean.getDescripcion());
 			informeForm.setDestinatarios(informeBean.getDestinatarios());
-//			informeForm.setDirectorio("auxDuplicar");
+			informeForm.setDirectorio(informeBean.getDirectorio());
 			informeForm.setNombreFisico(informeBean.getNombreFisico());
 			informeForm.setNombreSalida(informeBean.getNombreSalida());
 			informeForm.setOrden(informeBean.getOrden());
 			informeForm.setVisible(informeBean.getVisible());
 			informeForm.setPreseleccionado(informeBean.getPreseleccionado());
 			informeForm.setIdTipoInforme(informeBean.getIdTipoInforme());		
-//			if(informeForm.getDirectorioFile()!=null){
-//				informeForm.getDirectorioFile().setFiles(null);
-//				informeForm.setDirectorioFile(null);
-//			}
 
 			boolean isNombreFisicoUnico = informeService.isNombreFisicoUnico(informeForm,true,this.getUserBean(request));			
 			informeService.insertaInforme(informeForm, usrBean);
