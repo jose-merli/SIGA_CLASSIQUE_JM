@@ -155,9 +155,10 @@
 		obligatorioIdentificador = true;		
 		if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR))
 			obligatorioParentesco = true;
-	} else if ((pcajgActivo == 4)
-			&& (conceptoE.equals(PersonaJGAction.EJG) || conceptoE
-					.equals(PersonaJGAction.EJG_UNIDADFAMILIAR) ||conceptoE.equals(PersonaJGAction.DESIGNACION_INTERESADO)
+	} else if ((pcajgActivo == 4) &&
+			   (conceptoE.equals(PersonaJGAction.EJG) || 
+				conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR) ||
+				conceptoE.equals(PersonaJGAction.DESIGNACION_INTERESADO)
 			)) {		
 		if (conceptoE.equals(PersonaJGAction.DESIGNACION_INTERESADO)){
 			 obligatorioEstadoCivil= true;
@@ -167,10 +168,11 @@
 			obligatorioPoblacion = true;
 			obligatorioCodigoPostal = true;
 			obligatorioIngreso= true;
+		    obligatorioRegimenConyuge=true;
+		    obligatorioNacionalidad=true;
 			if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)){
 				obligatorioParentesco = true;
 			    obligatorioEstadoCivil= true;
-			    obligatorioRegimenConyuge=true;
 			    obligatorioIngreso= true;
 			}
 		 }
