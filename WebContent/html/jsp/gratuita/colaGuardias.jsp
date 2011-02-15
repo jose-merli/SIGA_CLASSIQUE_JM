@@ -632,8 +632,14 @@
 		var ele = document.getElementsByName("checkGrupoOrden");
 		for (i = 0; i < ele.length; i++) {
 			if (ele[i].checked) {
-				if ((document.getElementById("grupo_" + ele[i].value).value.length < 1)||(document.getElementById("orden_" + ele[i].value).value.length < 1)){
-					alert ("<siga:Idioma key="administracion.parametrosGenerales.error.valorParametro"/> " + document.getElementById("oculto" + ele[i].value + "_3").value);
+				if( (document.getElementById("grupo_" + ele[i].value).value.length<1 &&
+				   	 document.getElementById("orden_" + ele[i].value).value.length>=1)||
+				   	(document.getElementById("grupo_" + ele[i].value).value.length>=1 &&
+					 document.getElementById("orden_" + ele[i].value).value.length<1) ){
+					alert ("<siga:Idioma key="administracion.parametrosGenerales.error.valorParametro"/> "+
+						   "<siga:Idioma key="gratuita.turnos.literal.orden"/> " + 
+						   "<siga:Idioma key="general.y"/> " + 
+						   "<siga:Idioma key="gratuita.turnos.literal.grupo"/> ");
 					return;
 				}
 			

@@ -159,14 +159,16 @@ public class ScsGrupoGuardiaColegiadoAdm extends MasterBeanAdministrador
 		Hashtable hash = new Hashtable();
 		String[] claves ={ScsGrupoGuardiaColegiadoBean.C_IDGRUPOGUARDIACOLEGIADO}; 
 		String[] campos ={ScsGrupoGuardiaColegiadoBean.C_ORDEN};
-		hash.put(ScsGrupoGuardiaColegiadoBean.C_IDGRUPOGUARDIACOLEGIADO, idGrupoGuardiaColegiado);
-		hash.put(ScsGrupoGuardiaColegiadoBean.C_ORDEN, this.getSiguientePosicion(idGrupoGuardiaColegiado));
-		try {
-			updateDirect(hash, claves, campos);
-		} catch (Exception e) {
-			throw new ClsExceptions (e, "Error al actualizar la posicion del letrado");
+		// jbd // Para no aumentar el orden a lo tonto solo lo aumentamos cuando no sea el ultimo
+		if(!esUltimoDeGrupo(idGrupoGuardiaColegiado)){
+			hash.put(ScsGrupoGuardiaColegiadoBean.C_IDGRUPOGUARDIACOLEGIADO, idGrupoGuardiaColegiado);
+			hash.put(ScsGrupoGuardiaColegiadoBean.C_ORDEN, this.getSiguientePosicion(idGrupoGuardiaColegiado));
+			try {
+				updateDirect(hash, claves, campos);
+			} catch (Exception e) {
+				throw new ClsExceptions (e, "Error al actualizar la posicion del letrado");
+			}
 		}
-		
 	}
 	
 	private String getSiguientePosicion(String idGrupoGuardiaColegiado) throws ClsExceptions{
@@ -185,6 +187,28 @@ public class ScsGrupoGuardiaColegiadoAdm extends MasterBeanAdministrador
 			throw new ClsExceptions (e, "Error al recuperar la posicion del ultimo letrado");
 		}
 		return posicion;
+	}
+	
+	private boolean esUltimoDeGrupo(String idGrupoGuardiaColegiado) throws ClsExceptions{
+		String idGGCUltimo="";
+	
+		String sql = "select idgrupoguardiacolegiado from scs_grupoguardiacolegiado where idgrupoguardia = ";
+        sql+= " (select idgrupoguardia from scs_grupoguardiacolegiado ";
+        sql+= " where idgrupoguardiacolegiado = "+idGrupoGuardiaColegiado+")";
+        sql+= " order by orden desc";
+		RowsContainer rc = new RowsContainer(); 
+		try {
+			if (rc.query(sql) && rc.size()>0) {
+				Row fila = (Row) rc.get(0);
+				Hashtable registro = (Hashtable) fila.getRow(); 
+				if (registro != null) {
+					idGGCUltimo =(String)registro.get(ScsGrupoGuardiaColegiadoBean.C_IDGRUPOGUARDIACOLEGIADO);
+				}
+			}
+		} catch (ClsExceptions e) {
+			throw new ClsExceptions (e, "Error al recuperar la posicion del ultimo letrado");
+		}
+		return idGGCUltimo.equalsIgnoreCase(idGrupoGuardiaColegiado);
 	}
 	
 	public Hashtable getGrupoGuardia(String idInstitucion, String idTurno, String idGuardia, String numeroGrupo) throws ClsExceptions{

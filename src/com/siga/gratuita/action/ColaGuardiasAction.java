@@ -290,8 +290,10 @@ public class ColaGuardiasAction extends MasterAction {
 				ScsGuardiasTurnoBean b = (ScsGuardiasTurnoBean) v.get(0);
 				// jbd // Si es por grupos tenemos que poner al letrado como el ultimo del grupo
 				if(b.getPorGrupos()!=null && b.getPorGrupos().equalsIgnoreCase("1")){
-					ScsGrupoGuardiaColegiadoAdm admGrupoGuardia = new ScsGrupoGuardiaColegiadoAdm(this.getUserBean(request));
-					admGrupoGuardia.setUltimoDeGrupo(miForm.getIdGrupoGuardiaColegiado());
+					if(!miForm.getIdGrupoGuardiaColegiado().equalsIgnoreCase("")){
+						ScsGrupoGuardiaColegiadoAdm admGrupoGuardia = new ScsGrupoGuardiaColegiadoAdm(this.getUserBean(request));
+						admGrupoGuardia.setUltimoDeGrupo(miForm.getIdGrupoGuardiaColegiado());
+					}
 				}
 				b.setIdPersona_Ultimo(new Long(miForm.getIdPersona()));
 				b.setFechaSuscripcion_Ultimo(miForm.getFechaSuscripcion());
@@ -351,11 +353,22 @@ public class ColaGuardiasAction extends MasterAction {
 				String idInstitucion = form.getIdInstitucion();
 				String idTurno = form.getIdTurno();
 				String idGuardia = form.getIdGuardia();
+				hash.put(ScsGrupoGuardiaColegiadoBean.C_IDGRUPOGUARDIACOLEGIADO,idGrupoGuardiaColegiado);
 				
-				admGrupoColegiado.insertaGrupoGuardiaColegiado(new Integer(idInstitucion),new Integer(idTurno)
-				,new Integer(idGuardia),new Long(idPersona), fechaSuscripcion, numeroGrupo, orden, idGrupoGuardiaColegiado);
-				
-				
+				if(orden.equalsIgnoreCase("") && numeroGrupo.equalsIgnoreCase("")){
+					// Si el orden y grupo vienen vacios hay que quitar el grupoGuardiaColegiado, queda vacio
+					admGrupoColegiado.deleteDirect(hash, claves);
+				}else if(!orden.equalsIgnoreCase("") && !numeroGrupo.equalsIgnoreCase("")){
+					admGrupoColegiado.insertaGrupoGuardiaColegiado(
+						new Integer(idInstitucion),
+						new Integer(idTurno),
+						new Integer(idGuardia),
+						new Long(idPersona), 
+						fechaSuscripcion, 
+						numeroGrupo, 
+						orden, 
+						idGrupoGuardiaColegiado);
+				}
 			}
 			tx.commit();
 		} catch (Exception e) {
