@@ -53,7 +53,10 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
 				ScsCalendarioGuardiasBean.C_FECHAMODIFICACION,
 				ScsCalendarioGuardiasBean.C_USUMODIFICACION,
 				ScsCalendarioGuardiasBean.C_IDPERSONA_ULTIMOANTERIOR,
-				ScsCalendarioGuardiasBean.C_FECHASUSC_ULTIMOANTERIOR
+				ScsCalendarioGuardiasBean.C_FECHASUSC_ULTIMOANTERIOR,
+				ScsCalendarioGuardiasBean.C_IDTURNO_PRINCIPAL,
+				ScsCalendarioGuardiasBean.C_IDGUARDIA_PRINCIPAL,
+				ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS_PRINCIPAL
 		};
 		return campos;
 	}
@@ -93,6 +96,9 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
 			bean.setFechaMod			(UtilidadesHash.getString (hash, ScsCalendarioGuardiasBean.C_FECHAMODIFICACION));
 			bean.setIdPersonaUltimoAnterior(UtilidadesHash.getLong(hash, ScsCalendarioGuardiasBean.C_IDPERSONA_ULTIMOANTERIOR));
 			bean.setFechaSuscUltimoAnterior(UtilidadesHash.getString(hash, ScsCalendarioGuardiasBean.C_FECHASUSC_ULTIMOANTERIOR));
+			bean.setIdTurnoPrincipal(UtilidadesHash.getInteger(hash, ScsCalendarioGuardiasBean.C_IDTURNO_PRINCIPAL));
+			bean.setIdGuardiaPrincipal(UtilidadesHash.getInteger(hash, ScsCalendarioGuardiasBean.C_IDGUARDIA_PRINCIPAL));
+			bean.setIdCalendarioGuardiasPrincipal(UtilidadesHash.getInteger(hash, ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS_PRINCIPAL));
 		}
 		catch(Exception e){
 			bean = null;
@@ -122,6 +128,9 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(hash, ScsCalendarioGuardiasBean.C_FECHAMODIFICACION, b.getFechaMod());
 			UtilidadesHash.set(hash, ScsCalendarioGuardiasBean.C_IDPERSONA_ULTIMOANTERIOR, b.getIdPersonaUltimoAnterior());
 			UtilidadesHash.set(hash, ScsCalendarioGuardiasBean.C_FECHASUSC_ULTIMOANTERIOR, b.getFechaSuscUltimoAnterior());
+			UtilidadesHash.set(hash, ScsCalendarioGuardiasBean.C_IDTURNO_PRINCIPAL, b.getIdTurnoPrincipal());
+			UtilidadesHash.set(hash, ScsCalendarioGuardiasBean.C_IDGUARDIA_PRINCIPAL, b.getIdGuardiaPrincipal());
+			UtilidadesHash.set(hash, ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS_PRINCIPAL, b.getIdCalendarioGuardiasPrincipal());
 		}
 		catch (Exception e){
 			hash = null;
@@ -408,5 +417,34 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
 			return null;
 		}
 	}
+
+	/** 
+	 * Devuelve un String con la consulta SQL que devuelve registros con los datos de los calendarios de las guardias vinculadas
+	 * 
+	 * @param String idinstitucion_pestanha de la pestanha
+	 * @param String idturno_pestanha de la pestanha
+	 * @param String idguardia_pestanha de la pestanha
+	 * @param String idcalendario identificador del calendario
+	 * @return String con la consulta SQL.
+	 * @throws ClsExceptions
+	 */	
+	public String getDatosCalendarioVinculadas(String idinstitucion_pestanha, String idturno_pestanha, String idguardia_pestanha, String idcalendario) throws ClsExceptions{
+		String consulta = "";
+		
+		try {
+			consulta = "SELECT * FROM "+ScsCalendarioGuardiasBean.T_NOMBRETABLA;
+			consulta += " WHERE ";
+			consulta += ScsCalendarioGuardiasBean.C_IDINSTITUCION+"="+idinstitucion_pestanha;
+			consulta += " AND "+ScsCalendarioGuardiasBean.C_IDTURNO_PRINCIPAL+"="+idturno_pestanha;
+			consulta += " AND "+ScsCalendarioGuardiasBean.C_IDGUARDIA_PRINCIPAL+"="+idguardia_pestanha;
+			consulta += " AND "+ScsCalendarioGuardiasBean.C_IDCALENDARIOGUARDIAS_PRINCIPAL+"="+idcalendario;
+			
+		}
+		catch (Exception e){
+			throw new ClsExceptions(e,"Excepcion en ScsCalendarioGuardiasAdm.getDatosCalendarioVinculadas(). Consulta SQL:"+consulta);
+		}
+		
+		return consulta;
+	}		
 	
 }
