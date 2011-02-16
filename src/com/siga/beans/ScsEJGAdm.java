@@ -2343,7 +2343,27 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			if ((miForm.getfechaEstadoDesde() != null && !miForm.getfechaEstadoDesde().equals("")) ||
 					(miForm.getfechaEstadoHasta() != null && !miForm.getfechaEstadoHasta().equals(""))) {
 			  
-				Vector v = GstDate.dateBetweenDesdeAndHastaBind("(select trunc(estadoejg.fechainicio)" +
+				
+					consulta+= " and exists " +
+					" (select 1" +
+			        "  from scs_estadoejg estadoEjg" +
+			        " where estadoEjg.Idtipoejg = ejg.IDTIPOEJG" +
+			        "   and estadoEjg.Idinstitucion = ejg.idinstitucion" +
+			        "   and estadoEjg.Anio = ejg.anio" +
+			        "   and estadoEjg.numero = ejg.numero" +
+			        "   and estadoEjg.Idestadoejg = f_siga_get_idultimoestadoejg(ejg.idinstitucion,ejg.idtipoejg, ejg.anio, ejg.numero) ";
+			        if(miForm.getfechaEstadoDesde() != null && !miForm.getfechaEstadoDesde().equals("")){
+			        	contador++;
+			        	codigos.put(new Integer(contador), miForm.getfechaEstadoDesde());
+			        	consulta +="   and trunc(estadoejg.fechainicio) >=trunc(TO_DATE( :" + contador+"))";
+			        }
+			        if(miForm.getfechaEstadoHasta() != null && !miForm.getfechaEstadoHasta().equals("")){
+			        	contador++;
+			        	codigos.put(new Integer(contador), miForm.getfechaEstadoHasta());
+			        	consulta += "   and trunc(estadoejg.fechainicio) <= trunc(TO_DATE( :" + contador+"))";
+			        }
+			        consulta+=" ) ";
+				/*Vector v = GstDate.dateBetweenDesdeAndHastaBind("(select trunc(estadoejg.fechainicio)" +
 						" from scs_estadoejg estadoEjg" +
 						" where estadoEjg.Idtipoejg=ejg.IDTIPOEJG" +
 						"  and  estadoEjg.Idinstitucion=ejg.idinstitucion" +
@@ -2354,7 +2374,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				Integer in = (Integer)v.get(0);
 				String st = (String)v.get(1);
 				contador = in.intValue();
-				consulta += " and " + st;                    
+				consulta += " and " + st; */                    
 			} 
 		} else if ((miHash.containsKey("DESCRIPCIONESTADO")) && (!miHash.get("DESCRIPCIONESTADO").toString().equals(""))) {
 			contador++;
