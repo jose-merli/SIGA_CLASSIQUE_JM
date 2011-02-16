@@ -192,10 +192,12 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
 			String[] children = directorioFile.list();
 			for (int i = 0; i<children.length; i++) {
 				String childName = children[i];
-			    File informeFile = new File(directorioFile, childName);
-			    String childNewName = childName.replaceAll(nombreFisicoOld, nombreFisico) ;
-			    informeFile.renameTo(new File(directorioFile,childNewName));
-			    informeFile.delete();
+			    File informeFile = new File(directorioFile, childName);			    		    
+			    if(childName.indexOf(".")!=-1 && nombreFisicoOld.equalsIgnoreCase(childName.substring(0, childName.indexOf(".")-3))){
+			    	String childNewName =   UtilidadesString.replaceAllIgnoreCase(childName,nombreFisicoOld,nombreFisico);	
+			    	informeFile.renameTo(new File(directorioFile,childNewName));		
+			    	int p=9;
+			    }
 		    }
 			
 		}
@@ -211,9 +213,9 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
 			String[] children = directorioFile.list();
 			FileInforme fileInforme = null;
 			for (int i = 0; i<children.length; i++) {
-			    File informeFile = new File(directorioFile, children[i]);			    
-			    if(informeFile.getName().toLowerCase().startsWith(nombreFisico)){
-			    	informeFile.delete();
+			    File informeFile = new File(directorioFile, children[i]);	
+			    if(informeFile.getName().indexOf(".")!=-1 && nombreFisico.equalsIgnoreCase(informeFile.getName().substring(0, informeFile.getName().indexOf(".")-3))){
+			     	informeFile.delete();
 			    }
 			}
 		}			    	
@@ -302,8 +304,8 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
 			for (int i = 0; i<children.length; i++) {
 			    File informeFile = new File(directorioFile, children[i]);
 			    
-			    if(informeFile.getName().toLowerCase().startsWith(nombreFisico.toLowerCase()+"_")){
-				    StringBuffer permisoFile = new StringBuffer("");
+			    if(informeFile.getName().indexOf(".")!=-1 && nombreFisico.equalsIgnoreCase(informeFile.getName().substring(0, informeFile.getName().indexOf(".")-3))){
+			        StringBuffer permisoFile = new StringBuffer("");
 					
 				    permisoFile.append(informeFile.canRead()?"+r":"-r");
 				    permisoFile.append(informeFile.canWrite()?"+w":"+w");
