@@ -37,7 +37,6 @@
 			if (validarCampos())
 			{
 				var urlGet=document.frmLogin.action+"?location="+frmLogin.location.value+"&profile="+frmLogin.profile.value+"&user="+frmLogin.user.value+"&letrado="+frmLogin.letrado.value+"&tmpLoginInstitucion="+frmLogin.tmpLoginInstitucion.value+"&posMenu="+frmLogin.posMenu.value;
-				//alert(urlGet);
 				//window.open(urlGet,'sigaTop','channelmode=no;directories=no;fullscreen=no;height=760;width=1024;location=no;menubar=no;resizable=no;scrollbars=no;status=no;titlebar=no;toolbar=no');
 				frmLogin.submit();
 			}
@@ -52,6 +51,17 @@
 			var urlGet=document.frmLogin.action+"?location="+frmLogin.location.value+"&profile="+frmLogin.profile.value+"&user="+frmLogin.user.value+"&letrado="+frmLogin.letrado.value+"&tmpLoginInstitucion="+frmLogin.tmpLoginInstitucion.value+"&posMenu="+frmLogin.posMenu.value;
 			frmLogin.submit();
 		}
+ 
+		function entradaDirectaGen()
+		{
+			frmLogin.location.value="2000";
+			frmLogin.profile.value="ADM";
+			frmLogin.user.value="";
+			frmLogin.letrado.value="N";
+			var urlGet=document.frmLogin.action+"?location="+frmLogin.location.value+"&profile="+frmLogin.profile.value+"&user="+frmLogin.user.value+"&letrado="+frmLogin.letrado.value+"&tmpLoginInstitucion="+frmLogin.tmpLoginInstitucion.value+"&posMenu="+frmLogin.posMenu.value;
+			frmLogin.submit();
+		}
+		
 		
 		function validarCampos()
 		{
@@ -132,10 +142,14 @@
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2" align="center"><br><input type="button" class="button" value="Entrar" onClick="entrar()">
-				<input type="button" class="button" value="Entrar Leon\Administrador\No colegiado" onClick="entradaDirecta()"><br><br></td>
+				<td colspan="2" align="center">
+					<br>
+					<input type="button" class="button" value="Entrar" onClick="entrar()" title="Entrar con los datos de los combos">
+					<input type="button" class="button" value="León" onClick="entradaDirecta()" title="Entrar a LEON como ADMINistrador NO colegiado">
+					<input type="button" class="button" value="General" onClick="entradaDirectaGen()"  title="Entrar a GENERAL como ADMINistrador NO colegiado">
+				</td>
 			</tr>
-			
+
 			<tr>
 			<td colspan="2" class="labelText">
 				<CENTER>
@@ -156,4 +170,3 @@
 		</form>
 	</body>
 </html>
-
