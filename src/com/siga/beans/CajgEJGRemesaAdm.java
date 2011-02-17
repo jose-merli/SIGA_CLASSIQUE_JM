@@ -267,7 +267,7 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 	 */
 	public Vector getDocumentacionExpedienteDS(int idInstitucion, int idRemesa) throws ClsExceptions, SIGAException {
 		String sql = "SELECT *" +
-				" FROM V_PCAJG_DOCUMENTACIONEXP_DS" +
+				" FROM V_PCAJG_M_DOCUMENTACIONEXP" +
 				" WHERE IDINSTITUCION = " + idInstitucion +
 				" AND IDREMESA = " + idRemesa;
 		return getDatos(sql);
@@ -338,7 +338,7 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 	private Vector getDatos(String sql) throws ClsExceptions, SIGAException {
 		Vector datos = this.selectGenerico(sql);
 		//llamada al metodo compruebaCampos es solo para debug.
-		compruebaCampos(datos);
+//		compruebaCampos(datos);
 		return datos;
 	}
 

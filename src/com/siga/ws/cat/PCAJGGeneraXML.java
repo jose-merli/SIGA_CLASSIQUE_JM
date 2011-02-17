@@ -3,6 +3,7 @@ package com.siga.ws.cat;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -173,7 +174,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 				intercambioDocument = IntercambioDocument.Factory.newInstance();
 				intercambio = intercambioDocument.addNewIntercambio();
 				informacionIntercambio = rellenaInformacionIntercambio(intercambio, ht, sufijoIdIntercambio++);
-				if (tipoIntercambio.equals(INTERCAMBIO_CAMBIO_DESIGNACION)) {
+				if (INTERCAMBIO_CAMBIO_DESIGNACION.equals(ht.get(TIPOINTERCAMBIO))) {
 					tipoICD = informacionIntercambio.addNewTipoICD();
 				} else {
 					tipoGenerico = informacionIntercambio.addNewTipoGenerico();
@@ -249,15 +250,14 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		
 		ClsLogging.writeFileLog("Guardando fichero generado xml para la Generalitat en " + file.getAbsolutePath(), 3);
 		intercambioDocument.save(file, xmlOptions);
-		
-		if (!intercambioDocument.validate()) {
-			throw new Exception("El xml generado no cumple el esquema establecido con la Generalitat");
-		}
-		
+		//comprobamos que el fichero generado sea correcto
+		StringBuffer sbErrores = SIGAWSClientAbstract.validateXML(intercambioDocument); 
 				
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		Document xmldoc = builder.parse(file);
+		//quitamos el namespace. solicitado por ibermatica en correo del 01/02/2011 16:04
+		xmldoc.getDocumentElement().removeAttribute("xmlns");
 		
 		FileOutputStream fos = new FileOutputStream(file);		
 		OutputFormat of = new OutputFormat("XML", "ISO-8859-15", true);				
@@ -271,44 +271,10 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		fos.flush();
 		fos.close();
 		
-		//intercambioDocument.save(file, xmlOptions);
-				
-//		File fileXSL = null;
-//		File dirXSL = new File(dirPlantilla);
-//		
-//		if (dirXSL.exists()) {
-//			for (int i = 0; i < dirXSL.listFiles().length; i++) {
-//				if (dirXSL.listFiles()[i].getName().endsWith(".xsl")){
-//					fileXSL = dirXSL.listFiles()[i];
-//					break;
-//				}
-//			}
-//			
-//			if (fileXSL != null) { //si tiene xsl lo transformo
-//				File xmlTrans = new File(file.getParentFile(), "T" + file.getName());
-//				file.renameTo(xmlTrans);
-//				TransformerFactory tFactory = TransformerFactory.newInstance();
-//				Transformer transformer = tFactory.newTransformer(new StreamSource(fileXSL));							
-//				transformer.transform(new StreamSource(xmlTrans), new StreamResult(file));
-//								
-//				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-//				DocumentBuilder builder = factory.newDocumentBuilder();
-//				Document xmldoc = builder.parse(file);
-//				
-//				FileOutputStream fos = new FileOutputStream(file);		
-//				OutputFormat of = new OutputFormat("XML", "ISO-8859-15", true);				
-//				of.setIndent(1);
-//				of.setIndenting(true);
-//				of.setLineWidth(500);
-//				
-//				XMLSerializer serializer = new XMLSerializer(fos, of);
-//				serializer.asDOMSerializer();
-//				serializer.serialize( xmldoc.getDocumentElement() );
-//				fos.flush();
-//				fos.close();
-//				xmlTrans.delete();
-//			}
-//		}
+		//si no es correcto lo genero y lo transformo para poder ver por qué no es correcto
+		if (sbErrores != null) {
+			throw new Exception("El xml generado no cumple el esquema establecido con la Generalitat: " + sbErrores.toString());
+		}
 		
 		return file;
 		
@@ -636,8 +602,9 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	 * @throws Exception
 	 */
 	private void rellenaAsistenciaPenal(AsistenciaPenal asistenciaPenal, Hashtable htEJGs) throws Exception {
-		asistenciaPenal.setCodPartidoJudicial(getCodigoElementoTipificado((String)htEJGs.get(DDJ_PARTIDOJUDICIAL_CDA)));
-		asistenciaPenal.setDescPartidoJudicial(getDescripcionElementoTipificado((String)htEJGs.get(DDJ_PARTIDOJUDICIAL_CDA)));
+		
+		asistenciaPenal.setCodPartidoJudicial(getCodigoElementoTipificado((String)htEJGs.get(CAT_PARTIDO_JUDICIAL_ASIS)));
+		asistenciaPenal.setDescPartidoJudicial(getDescripcionElementoTipificado((String)htEJGs.get(CAT_PARTIDO_JUDICIAL_ASIS)));
 		
 		String codOrganoJudicial = getCodigoElementoTipificado((String)htEJGs.get(DAD_ORGANOJUDICIAL_CDA));
 		if (codOrganoJudicial != null) {//por juzgado DILIGENCIA
@@ -648,7 +615,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			AsistenciaOrganoJudicial asistenciaOrganoJudicial = asistenciaPenal.addNewAsistenciaOrganoJudicial();
 			asistenciaOrganoJudicial.setCodOrganoJudicial(codOrganoJudicial);
 			asistenciaOrganoJudicial.setDescOrganoJudicial(getDescripcionElementoTipificado((String)htEJGs.get(DAD_ORGANOJUDICIAL_CDA)));
-			asistenciaPenal.setIdentificadorAsistencia((String)htEJGs.get(DDJ_IDENTIFICADORPROCEDIMIENTO));
+			asistenciaPenal.setIdentificadorAsistencia((String)htEJGs.get(DAD_NUMERODILIGENCIA));
 		} else { //por comisaría ATESTADO
 			Calendar cal = getCalendar((String)htEJGs.get(DAD_FECHAASISTENCIAATESTADO));
 			if (cal != null) {
@@ -726,22 +693,20 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	 */
 	private void rellenaPretension(Expediente expediente, Hashtable htEJGs) throws Exception {
 		Pretension pretension = expediente.addNewPretension();
-		
-		String key = getKey(new Object[]{getIdInstitucion(), anyo, numero, idTipoEJG});
-		List list = (List) htDelitos.get(key);
 				
-		String codigoOrganoJudicial = getCodigoElementoTipificado((String)htEJGs.get(DDJ_ORGANOJUDICIAL_CDA));
-		if (list != null && list.size() > 0) { //si tiene delitos es una asistencia LP
-			rellenaAsistenciaPenal(pretension.addNewAsistenciaPenal(), htEJGs);
-		} else if (codigoOrganoJudicial != null && !codigoOrganoJudicial.trim().equals("-1")) {
-			rellenaProcedimientoJudicial(pretension.addNewProcedimientoJudicial(), htEJGs);
-		} else {
-			ProcedimientoAdministrativo procedimientoAdministrativo = pretension.addNewProcedimientoAdministrativo();
-			procedimientoAdministrativo.setCodOrganoJudicial("-2");//siempre -2 segun el xsd 
-			procedimientoAdministrativo.setDescOrganoJudicial("Altres");//siempre altres segun xsd
-			procedimientoAdministrativo.setIdentificadorProcedimiento((String)htEJGs.get(DDJ_IDENTIFICADORPROCEDIMIENTO));
+		String pretensionChoice = (String)htEJGs.get(PRETENSION_CHOICE);
+		if (pretensionChoice != null) {
+			if (pretensionChoice.trim().equals("1")) {//PROCEDIMIENTO JUDICIAL
+				rellenaProcedimientoJudicial(pretension.addNewProcedimientoJudicial(), htEJGs);		
+			} else if (pretensionChoice.trim().equals("2")) { //ASISTENCIA PENAL
+				rellenaAsistenciaPenal(pretension.addNewAsistenciaPenal(), htEJGs);  
+			} else if (pretensionChoice.trim().equals("3")) { //PROCEDIMIENTO ADMINISTRATIVO
+				ProcedimientoAdministrativo procedimientoAdministrativo = pretension.addNewProcedimientoAdministrativo();
+				procedimientoAdministrativo.setCodOrganoJudicial("-2");//siempre -2 segun el xsd 
+				procedimientoAdministrativo.setDescOrganoJudicial("Altres");//siempre altres segun xsd
+				procedimientoAdministrativo.setIdentificadorProcedimiento((String)htEJGs.get(DDJ_IDENTIFICADORPROCEDIMIENTO));
+			}
 		}
-		
 		pretension.setCodTipoProcedimiento(getCodigoElementoTipificado((String)htEJGs.get(DDJ_TIPOPROCEDIMIENTO_CDA)));
 		pretension.setDescTipoProcedimiento(getDescripcionElementoTipificado((String)htEJGs.get(DDJ_TIPOPROCEDIMIENTO_CDA)));
 		pretension.setResumenPretension((String)htEJGs.get(DDJ_RESUMENPRETENSION));
@@ -751,9 +716,9 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			pretension.setRenunciaDesignacion(renunciaDesignacion.shortValue());			
 		}
 		
-		Integer renunciaHonorarios = getInteger("renuncia honorarios", (String)htEJGs.get(DDJ_RENUNCIAHONORARIOS));
+		BigInteger renunciaHonorarios = getBigInteger("renuncia honorarios", (String)htEJGs.get(DDJ_RENUNCIAHONORARIOS));
 		if (renunciaHonorarios != null){
-			pretension.setRenunciaHonorarios(renunciaHonorarios.shortValue());			
+			pretension.setRenunciaHonorarios(renunciaHonorarios);			
 		}
 		
 		Integer demandanteDemandado = getInteger("demandante o demandado", (String)htEJGs.get(DDJ_DEMANDADODEMANDANTE));
@@ -810,8 +775,8 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		if (list != null && list.size() > 0) {
 			for (int i = 0; i < list.size(); i++) {
 				Hashtable htDoc = (Hashtable)list.get(i);				
-				documentacionExpediente(datosFamiliares.addNewDocumentacionExpediente(), htDoc, F_F_DE_D_TIPODOCUMENTACION_CDA
-						, F_F_DE_D_DD_TIPODOCUMENTO_CDA, F_F_DE_D_DD_FECHAPRESENTACIDO, F_F_DE_D_DD_DESCRIPCIONAMPLIAD, F_F_DE_D_DD_PROCEDENTE);
+				crearDocumentacionExpediente(datosFamiliares.addNewDocumentacionExpediente(), htDoc, D_TIPODOCUMENTACION_CDA
+						, D_TIPODOCUMENTO_CDA, D_FECHAPRESENTACIDO, D_DESCRIPCIONAMPLIAD, D_PROCEDENTE);
 			}
 		}
 	}
@@ -902,8 +867,8 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		if (list != null && list.size() > 0) {
 			for (int i = 0; i < list.size(); i++) {
 				Hashtable ht = (Hashtable)list.get(i);
-				documentacionExpediente(datosSolicitante.addNewDocumentacionExpediente(), ht, DS_DE_D_TIPODOCUMENTACION_CDA, 
-						DS_DE_D_DD_TIPODOCUMENTO_CDA, DS_DE_D_DD_FECHAPRESENTACIONDO, DS_DE_D_DD_DESCRIPCIONAMPLIADA, DS_DE_D_DD_PROCEDENTE);
+				crearDocumentacionExpediente(datosSolicitante.addNewDocumentacionExpediente(), ht, D_TIPODOCUMENTACION_CDA, 
+						D_TIPODOCUMENTO_CDA, D_FECHAPRESENTACIDO, D_DESCRIPCIONAMPLIAD, D_PROCEDENTE);
 			}
 		}
 		
@@ -986,7 +951,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	 * @param de_dd_procedente
 	 * @throws Exception
 	 */
-	private void documentacionExpediente(DocumentacionExpediente documentacion, Hashtable htDocumentacion, String de_tipodocumentacion_cda,
+	private void crearDocumentacionExpediente(DocumentacionExpediente documentacion, Hashtable htDocumentacion, String de_tipodocumentacion_cda,
 			String de_dd_tipodocumento_cda, String de_dd_fechapresentaciondocumento, String de_dd_descripcionampliadadocumento,
 			String de_dd_procedente) throws Exception {		
 		
@@ -1189,6 +1154,15 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		}
 		return null;
 	}
+	
+	private BigInteger getBigInteger(String campo, String value) {
+		BigInteger bi = null;
+		Integer intValue = getInteger(campo, value);		
+		if (intValue != null) {
+			bi = new BigInteger(intValue.toString());
+		}
+		return bi;
+	}
 
 	/**
 	 * 
@@ -1201,11 +1175,16 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		Calendar cal = null;		
 		if (fecha != null && !fecha.trim().equals("")) {
 			cal = Calendar.getInstance();
-			cal.setTime(GstDate.convertirFecha(fecha));		
-			cal.clear(Calendar.ZONE_OFFSET);
-			cal.clear(Calendar.DST_OFFSET);
+			cal.setTime(GstDate.convertirFecha(fecha));
+			clearCalendar(cal);
 		}	
 		
+		return cal;
+	}
+	
+	private Calendar clearCalendar(Calendar cal) {
+		cal.clear(Calendar.ZONE_OFFSET);
+		//cal.clear(Calendar.DST_OFFSET);
 		return cal;
 	}
 	
@@ -1357,8 +1336,8 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 						
 			Long valueLong = getLong((String)ht.get(IDENTIFICADORINTERCAMBIO));
 			identificacionIntercambio.setIdentificadorIntercambio((valueLong.longValue() * 10) + sufijoIdIntercambio);		
-			identificacionIntercambio.setFechaIntercambio(Calendar.getInstance());			
-			identificacionIntercambio.setVersion(VERSION_XSD_GENERALITAT);
+			identificacionIntercambio.setFechaIntercambio(clearCalendar(Calendar.getInstance()));			
+			identificacionIntercambio.setVersion((String)ht.get(VERSION_XSD_GENERALITAT));
 		}
 		return informacionIntercambio;
 	}

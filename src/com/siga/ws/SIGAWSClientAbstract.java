@@ -243,6 +243,28 @@ public abstract class SIGAWSClientAbstract {
 		return valido;
 	}
 	
+	/**
+	 * 
+	 * @param xmlObject
+	 * @return
+	 */
+	public static StringBuffer validateXML(XmlObject xmlObject) {
+		StringBuffer sb = null;
+		
+		XmlOptions xmlOptions = new XmlOptions();
+		List<XmlValidationError> errores = new ArrayList<XmlValidationError>();
+		xmlOptions.setErrorListener(errores);
+				
+		if (!xmlObject.validate(xmlOptions)){
+			sb = new StringBuffer();
+			for (XmlValidationError error : errores) {
+				sb.append(error);
+				sb.append("\n");
+			}
+		}
+		return sb;
+	}
+	
 
 	/**
 	 * 
@@ -275,7 +297,12 @@ public abstract class SIGAWSClientAbstract {
 							}
 						}
 					}
-					st = "Debe rellenar el campo o los campos " + campos + " en el apartado " + error.getFieldQName().getLocalPart();					 
+					st = "Debe rellenar el campo o los campos " + campos + " en el apartado " + error.getFieldQName().getLocalPart();
+//				} else if (error.getErrorType() == XmlValidationError.ATTRIBUTE_TYPE_INVALID) {
+//					String mensaje = error.getMessage();
+//					if (mensaje != null) {
+//						//parsear el mensaje!!!
+//					}
 				} else {				
 					st = "Error de validación: " + error;
 				}

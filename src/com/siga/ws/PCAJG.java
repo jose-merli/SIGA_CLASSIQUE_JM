@@ -180,8 +180,11 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 			ht = (Hashtable)datos.get(i);
 			
 			if (!tipoIntercambio.equals(ht.get(TIPOINTERCAMBIO))) {								
-				if (intercambio != null && expedientes.size() > 0) {					
-					ficheros.add(creaFichero(dirFicheros, dirPlantilla, intercambio, tipoInformacion, expedientes));
+				if (intercambio != null && expedientes.size() > 0) {
+					File file = creaFichero(dirFicheros, dirPlantilla, intercambio, tipoInformacion, expedientes);
+					if (file != null) {
+						ficheros.add(file);
+					}
 				}
 				expedientes = new ArrayList<TipoExpediente>();
 				intercambio = new IntercambioTipo();
@@ -199,8 +202,11 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 				escribeErrorExpediente(anyo, numejg, numero, idTipoEJG, e.getMessage());
 			}
 		}
-		if (intercambio != null && expedientes.size() > 0) {			
-			ficheros.add(creaFichero(dirFicheros, dirPlantilla, intercambio, tipoInformacion, expedientes));
+		if (intercambio != null && expedientes.size() > 0) {
+			File file = creaFichero(dirFicheros, dirPlantilla, intercambio, tipoInformacion, expedientes);
+			if (file != null) {
+				ficheros.add(file);
+			}
 		}
 						
 		return ficheros;
@@ -239,7 +245,7 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 		Document xmldoc = builder.parse(is);
 		
 		FileOutputStream fos = new FileOutputStream(file);		
-		OutputFormat of = new OutputFormat("XML", "UTF-8", true);				
+		OutputFormat of = new OutputFormat("XML", "ISO-8859-15", true);				
 		of.setIndent(1);
 		of.setIndenting(true);
 		of.setLineWidth(500);
@@ -263,6 +269,7 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 			try {
 				intercambioRespuesta = stub.enviarIntercambio(intercambio);			
 			} catch (Exception e) {
+				file = null;
 				ClsLogging.writeFileLogError("Se ha producido un error en el envío del webservice \"" + getUrlWS() + "\" para el colegio " + getIdInstitucion(), e, 3);
 				if (e.getCause() instanceof ConnectException) {
 					ClsLogging.writeFileLogError("Error de conexión con el webservice \"" + getUrlWS() + "\" para el colegio " + getIdInstitucion(), e, 3);
@@ -946,8 +953,8 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 			DocumentacionType[] documentacionExpediente = new DocumentacionType[list.size()];
 			for (int i = 0; i < list.size(); i++) {
 				Hashtable htDoc = (Hashtable)list.get(i);	
-				documentacionExpediente[i] = documentacionExpediente(htDoc, F_F_DE_D_TIPODOCUMENTACION_CDA
-						, F_F_DE_D_DD_TIPODOCUMENTO_CDA, F_F_DE_D_DD_FECHAPRESENTACIDO, F_F_DE_D_DD_DESCRIPCIONAMPLIAD, F_F_DE_D_DD_PROCEDENTE);
+				documentacionExpediente[i] = documentacionExpediente(htDoc, D_TIPODOCUMENTACION_CDA
+						, D_TIPODOCUMENTO_CDA, D_FECHAPRESENTACIDO, D_DESCRIPCIONAMPLIAD, D_PROCEDENTE);
 			}
 		}
 		return tipoExpedienteFamiliaresFamiliar;
@@ -1053,8 +1060,8 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 			DocumentacionType documentacionExpediente[] = new DocumentacionType[list.size()]; 
 			for (int i = 0; i < list.size(); i++) {
 				Hashtable ht = (Hashtable)list.get(i);
-				documentacionExpediente[i] = documentacionExpediente(ht, DS_DE_D_TIPODOCUMENTACION_CDA, 
-						DS_DE_D_DD_TIPODOCUMENTO_CDA, DS_DE_D_DD_FECHAPRESENTACIONDO, DS_DE_D_DD_DESCRIPCIONAMPLIADA, DS_DE_D_DD_PROCEDENTE);
+				documentacionExpediente[i] = documentacionExpediente(ht, D_TIPODOCUMENTACION_CDA, 
+						D_TIPODOCUMENTO_CDA, D_FECHAPRESENTACIDO, D_DESCRIPCIONAMPLIAD, D_PROCEDENTE);
 			}
 			datosSolicitante.setDocumentacionExpediente(documentacionExpediente);
 		} 

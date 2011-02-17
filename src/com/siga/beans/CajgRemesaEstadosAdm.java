@@ -130,7 +130,7 @@ public class CajgRemesaEstadosAdm extends MasterBeanAdministrador {
 		String select = null;
 		
 		try {
-			select  = " SELECT r."+CajgRemesaEstadosBean.C_IDESTADO+"";
+			select  = " SELECT max(r."+CajgRemesaEstadosBean.C_IDESTADO+") " + CajgRemesaEstadosBean.C_IDESTADO;
 			
 			
 			//FROM:
@@ -140,10 +140,10 @@ public class CajgRemesaEstadosAdm extends MasterBeanAdministrador {
 			//Filtro:
 			select += " WHERE r."+CajgRemesaEstadosBean.C_IDINSTITUCION+"="+idInstitucion;
 			select += " AND r."+CajgRemesaEstadosBean.C_IDREMESA+"="+idRemesa;
-			select += " AND r."+CajgRemesaEstadosBean.C_FECHAREMESA+"=(select max("+CajgRemesaEstadosBean.C_FECHAREMESA+")" +
-																	  " FROM "+CajgRemesaEstadosBean.T_NOMBRETABLA+"" +
-																	  " WHERE "+CajgRemesaEstadosBean.C_IDINSTITUCION+"=r."+CajgRemesaEstadosBean.C_IDINSTITUCION+"" +
-																	  " AND "+CajgRemesaEstadosBean.C_IDREMESA+"=r."+CajgRemesaEstadosBean.C_IDREMESA+")";
+//			select += " AND r."+CajgRemesaEstadosBean.C_FECHAREMESA+"=(select max("+CajgRemesaEstadosBean.C_FECHAREMESA+")" +
+//																	  " FROM "+CajgRemesaEstadosBean.T_NOMBRETABLA+"" +
+//																	  " WHERE "+CajgRemesaEstadosBean.C_IDINSTITUCION+"=r."+CajgRemesaEstadosBean.C_IDINSTITUCION+"" +
+//																	  " AND "+CajgRemesaEstadosBean.C_IDREMESA+"=r."+CajgRemesaEstadosBean.C_IDREMESA+")";
 			
 			
 			

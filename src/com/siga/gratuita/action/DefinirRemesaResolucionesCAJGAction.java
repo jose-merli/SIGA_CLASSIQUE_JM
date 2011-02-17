@@ -682,10 +682,12 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 	    while((ch = reader.read()) != -1) {
 	    	
 	    	if (Character.LINE_SEPARATOR == (byte)ch) {
-	    		cajgRemesaResolucionFicheroBean.setNumeroLinea(new Integer(numLinea++));
-				cajgRemesaResolucionFicheroBean.setLinea(line);
-				cajgRemesaResolucionFicheroBean.setIdRemesaResolucionFichero(new Integer(idRemesaResolucionFichero++));
-				cajgResolucionFicheroAdm.insert(cajgRemesaResolucionFicheroBean);
+	    		if (line != null && !line.trim().equals("")) {
+		    		cajgRemesaResolucionFicheroBean.setNumeroLinea(new Integer(numLinea++));
+					cajgRemesaResolucionFicheroBean.setLinea(line);
+					cajgRemesaResolucionFicheroBean.setIdRemesaResolucionFichero(new Integer(idRemesaResolucionFichero++));
+					cajgResolucionFicheroAdm.insert(cajgRemesaResolucionFicheroBean);
+	    		}
 				line = "";	 
 	    	} else if (Character.LETTER_NUMBER == (byte)ch) {
 	    		
