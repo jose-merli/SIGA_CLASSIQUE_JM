@@ -122,7 +122,7 @@ import com.siga.Utilidades.UtilidadesString;
 		            	if(rc.size()>1){
 		            		tipoInformeBean = new AdmTipoInformeBean();
 		            		tipoInformeBean.setIdTipoInforme("-1");
-		            		tipoInformeBean.setDescripcion(UtilidadesString.getMensajeIdioma(this.usrbean, "general.combo.seleccionar"));
+		            		tipoInformeBean.setDescripcion("");
 		            		tipoInformeList.add(tipoInformeBean);
 		            	}
 	            	}

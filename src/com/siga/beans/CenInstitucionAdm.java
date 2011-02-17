@@ -394,7 +394,7 @@ public class CenInstitucionAdm extends MasterBeanAdministrador {
 	            	if(rc.size()>0){
 	            		institucionBean = new CenInstitucionBean();
 	            		institucionBean.setIdInstitucion(new Integer(-1));
-	            		institucionBean.setAbreviatura(UtilidadesString.getMensajeIdioma(this.usrbean, "general.combo.seleccionar"));
+	            		institucionBean.setAbreviatura("");
 	            		alInstituciones.add(institucionBean);
 	            	}
             	}
