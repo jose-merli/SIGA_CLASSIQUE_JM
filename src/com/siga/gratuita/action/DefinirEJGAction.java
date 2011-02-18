@@ -6,6 +6,7 @@ package com.siga.gratuita.action;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -79,6 +80,7 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.InscripcionGuardia;
+import com.siga.gratuita.form.BuscarDesignasForm;
 import com.siga.gratuita.form.DefinirEJGForm;
 import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
 import com.siga.informes.InformeDefinirEJG;
@@ -90,7 +92,8 @@ import com.siga.informes.InformeDefinirEJG;
 */
 public class DefinirEJGAction extends MasterAction 
 {
-
+	final String[] clavesBusqueda={ScsEJGBean.C_IDINSTITUCION,ScsEJGBean.C_IDTIPOEJG,ScsEJGBean.C_ANIO
+			,ScsEJGBean.C_NUMERO};
 	/** 
 	 *  Funcion que atiende a las peticiones. Segun el valor del parametro modo del formulario ejecuta distintas acciones
 	 * @param  mapping - Mapeo de los struts
@@ -120,7 +123,15 @@ public class DefinirEJGAction extends MasterAction
 //				 La primera vez que se carga el formulario 
 				// Abrir
 				if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
+					DefinirEJGForm form = (DefinirEJGForm)miForm;
+					form.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
+					form.reset(mapping,request);
+					request.getSession().removeAttribute("DATAPAGINADOR");
 					mapDestino = abrir(mapping, miForm, request, response);						
+				}else if (accion.equalsIgnoreCase("buscarInit")){
+					miForm.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
+					request.getSession().removeAttribute("DATAPAGINADOR");
+					mapDestino = buscarPor(mapping, miForm, request, response); 
 				}else if (accion.equalsIgnoreCase("generarCarta")){
 					mapDestino = generarCarta(mapping, miForm, request, response);
 				}else if (accion.equalsIgnoreCase("finalizarCarta")){
@@ -240,7 +251,131 @@ public class DefinirEJGAction extends MasterAction
 	 * 
 	 * @return String que indicará la siguiente acción a llevar a cabo. 
 	 */
-	protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException  {		
+	
+	protected String buscarPor(ActionMapping mapping, MasterForm formulario,
+			HttpServletRequest request, HttpServletResponse response)
+	throws ClsExceptions,SIGAException  {
+
+		ScsEJGAdm admBean =new ScsEJGAdm(this.getUserBean(request));
+		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+		DefinirEJGForm miFormulario =(DefinirEJGForm)formulario;
+		Hashtable miHash= new Hashtable();
+		miHash = miFormulario.getDatos();
+		String consulta= "";
+		String idInstitucion= usr.getLocation();	
+		try {
+
+			//Si es seleccionar todos esta variable no vandra nula y ademas nos traera el numero de pagina 
+			//donde nos han marcado el seleccionar todos(asi evitamos meter otra variable)
+			boolean isSeleccionarTodos = miFormulario.getSeleccionarTodos()!=null 
+				&& !miFormulario.getSeleccionarTodos().equals("");
+			//si no es seleccionar todos los cambios van a fectar a los datos que se han mostrado en 
+			//la jsp por lo que parseamos los datos dento dela variable Registro seleccionados. Cuando hay modificacion
+			//habra que actualizar estos datos
+			if(!isSeleccionarTodos){
+				ArrayList clavesRegSeleccinados = (ArrayList) miFormulario.getRegistrosSeleccionados();
+				String seleccionados = request.getParameter("Seleccion");
+				
+				
+				if (seleccionados != null ) {
+					ArrayList alRegistros = actualizarSelecionados(this.clavesBusqueda,seleccionados, clavesRegSeleccinados);
+					if (alRegistros != null) {
+						clavesRegSeleccinados = alRegistros;
+						miFormulario.setRegistrosSeleccionados(clavesRegSeleccinados);
+					}
+				}
+			}
+			
+			HashMap databackup = (HashMap) miFormulario.getDatosPaginador();
+			if (databackup!=null && databackup.get("paginador")!=null&&!isSeleccionarTodos){
+				PaginadorBind paginador = (PaginadorBind)databackup.get("paginador");
+				Vector datos=new Vector();
+
+				//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
+				String pagina = (String)request.getParameter("pagina");
+
+
+
+				if (paginador!=null){	
+					if (pagina!=null){
+						datos = paginador.obtenerPagina(Integer.parseInt(pagina));
+					}else{// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
+						datos = paginador.obtenerPagina((paginador.getPaginaActual()));
+					}
+				}	
+				// jbd //
+				actualizarPagina(request, admBean, datos);
+				databackup.put("paginador",paginador);
+				databackup.put("datos",datos);
+
+
+
+
+			}else{	
+
+				databackup=new HashMap();
+
+				//obtengo datos de la consulta 			
+				PaginadorBind resultado = null;
+				resultado = admBean.getPaginadorBusquedaMantenimientoEJG(miHash, miFormulario,idInstitucion);
+//				resultado=desigAdm.getBusquedaDesigna((String)usr.getLocation(),miHash);
+				Vector datos = null;
+
+
+
+				databackup.put("paginador",resultado);
+				
+				if (resultado!=null && resultado.getNumeroTotalRegistros()>0){ 
+					
+					
+					if(isSeleccionarTodos){
+						//Si hay que seleccionar todos hacemos la query completa.
+						ArrayList clavesRegSeleccinados = new ArrayList((Collection)admBean.selectGenericoNLSBind(resultado.getQueryInicio(), resultado.getCodigosInicio()));
+						aniadeClavesBusqueda(this.clavesBusqueda,clavesRegSeleccinados);
+						miFormulario.setRegistrosSeleccionados(clavesRegSeleccinados);
+						datos = resultado.obtenerPagina(Integer.parseInt(miFormulario.getSeleccionarTodos()));
+						miFormulario.setSeleccionarTodos("");
+						
+					}else{
+//					
+						miFormulario.setRegistrosSeleccionados(new ArrayList());
+						datos = resultado.obtenerPagina(1);
+					}
+					// jbd //
+					actualizarPagina(request, admBean, datos);
+					databackup.put("datos",datos);
+						
+					
+					
+				}else{
+					resultado = null;
+					miFormulario.setRegistrosSeleccionados(new ArrayList());
+				} 
+				miFormulario.setDatosPaginador(databackup);
+				
+
+				//resultado = admBean.selectGenerico(consulta);
+				//request.getSession().setAttribute("resultado",v);
+			}
+		
+			// En "DATOSFORMULARIO" almacenamos el identificador del letrado			
+			miHash.put("BUSQUEDAREALIZADA","1");
+			request.getSession().setAttribute("DATOSFORMULARIO",miHash);	
+			request.getSession().setAttribute("BUSQUEDAREALIZADA", consulta.toString());
+
+
+		}catch (SIGAException e1) {
+			// Excepcion procedente de obtenerPagina cuando se han borrado datos
+			return exitoRefresco("error.messages.obtenerPagina",request);
+		}catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
+		}
+
+		return "listarEJG";
+	}
+	
+	
+	protected String buscarPorOld(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException  {		
 				
 		
 		ScsEJGAdm admBean;		

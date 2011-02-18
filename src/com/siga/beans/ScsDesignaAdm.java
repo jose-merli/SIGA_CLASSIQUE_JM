@@ -2489,6 +2489,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				String idInstJuzgado = (String)registro.get("IDINSTITUCION_JUZG");				
 				if(idJuzgado==null ||idJuzgado.trim().equalsIgnoreCase("")){
 				    idJuzgado="-33"; // forzamos que no encuentre datos, en lugar de dar error
+				    idInstJuzgado = "0";
 				}
 				helperInformes.completarHashSalida(registro,helperInformes.getJuzgadoSalida(idInstJuzgado,idJuzgado,""));		
 			

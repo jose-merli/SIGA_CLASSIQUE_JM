@@ -214,6 +214,12 @@
 		      buscarPaginador();
 		<%}%>
 		}
+		function seleccionarTodos(pagina) 
+		{
+				document.forms[1].seleccionarTodos.value = pagina;
+				buscar('buscarPor');
+				
+		}
 		
 		
 	</script>
@@ -264,6 +270,7 @@
 		<html:hidden property = "selDefinitivo" value = ""/>
 		<html:hidden property = "idRemesa" value = "<%=idremesa%>"/>
 		<input type="hidden" name="volver" value="">
+		<html:hidden property="seleccionarTodos" />
 	
 		
 
@@ -527,7 +534,7 @@
 		<html:hidden property = "codigoExt" value=""/>
 		<html:hidden property = "nombreObjetoDestino" value=""/>
 	</html:form>
-	<html:form action="/JGR_UnidadFamiliarEEJG"  method="post" target="resultado">
+	<html:form action="/JGR_UnidadFamiliarEEJG"  method="post" target="submitArea21">
 		<html:hidden property="modo"/>
 		<html:hidden property="datosInforme"/>
 		
@@ -708,63 +715,32 @@
 				}
 			}
 		}
-
-
-		function generarCarta(){
-		    sub();
-		    var dat = "";
-		    var datos = document.frames.resultado.document.getElementsByName("datosCarta");
-		    if (datos.length==0){
-		    	alert("<siga:Idioma key='general.message.seleccionar'/>");
-			    fin();
-			    return false;
+		function generarCarta() {
+   			if(window.frames.resultado.ObjArray){
+ 				window.frames.resultado.accionGenerarCarta();
 			}
-			for(i=0; i<datos.length; i++)
-			{
-				dat += datos[i].value+"%%%";
-			}
-			if (dat.length>3)
-				dat = dat.substring(0,dat.length-3);
-			var formularioInformes = creaFormInformes();
-			formularioInformes.datosInforme.value=dat;
-			formularioInformes.submit();
-		}
-		
-		
-		function creaFormInformes() {
-			var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='INF_InformesGenericos.do' target='submitArea21'>");
-			formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=usr.getLocation() %>'>"));
-			formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
-			formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='EJG'>"));
-			formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
-			formu.appendChild(document.createElement("<input type='hidden' name='seleccionados' value='0'>"));
-			document.appendChild(formu);
-			return formu;
-		}
-		
+
+		} 	
 		function descargaEejg(){
 			<%if(ventanaCajg.equalsIgnoreCase("0")){%>
-				sub();
-			    var dat = "";
-			    var datos = document.frames.resultado.document.getElementsByName("datosCarta");
-			    if (datos.length==0){
-			    	alert("<siga:Idioma key='general.message.seleccionar'/>");
-				    fin();
-				    return false;
-				}
-				for(i=0; i<datos.length; i++){
-					dat += datos[i].value+"%%%";
-				}
-				if (dat.length>3) dat = dat.substring(0,dat.length-3);
+				if(window.frames.resultado.ObjArray){
+					sub();
+			   	 	datos =  window.frames.resultado.getDatosSeleccionados();
+			    	if (datos.length==0){
+			    		alert("<siga:Idioma key='general.message.seleccionar'/>");
+				    	fin();
+				    	return false;
+					}
 				
-				document.DefinirUnidadFamiliarEJGForm.datosInforme.value = dat;
-		   		document.DefinirUnidadFamiliarEJGForm.modo.value = "descargaMultiplesEejg";
-				document.DefinirUnidadFamiliarEJGForm.submit();
+				
+					document.DefinirUnidadFamiliarEJGForm.datosInforme.value = datos;
+		   			document.DefinirUnidadFamiliarEJGForm.modo.value = "descargaMultiplesEejg";
+					document.DefinirUnidadFamiliarEJGForm.submit();
+				
+ 					// window.frames.resultado.accionDescargaEejg();
+				}
 			<%}%>
-		
 		}
-
-
 		function aniadirARemesa(){
 			<%if(ventanaCajg.equalsIgnoreCase("2")){%>
 				if(document.frames.resultado.document.<%=formulario%>) {
@@ -804,7 +780,8 @@
 			  	document.forms[1].modo.value = "listosParaComision";
 			  	var f = document.forms[1].name;	
 			  	//Para quien se encargue del marrón de la ruedecita, con mucho cariño para ....
-				//document.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=bot que pasa';
+			  	//(JTA)Saludos tambien de mi parte. si quieres ponerlo aqui mira en accionGenerarCarta() de listadoEJG.jspi
+							//document.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=bot que pasa';
 	
 			    document.forms[1].submit();
 			}

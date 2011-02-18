@@ -2462,7 +2462,7 @@
 		</action>
 
 		<!-- ***** Justicia Gratuita / Configurar Turnos / EJG ***** -->
-		<action path="/JGR_EJG" type="com.siga.gratuita.action.DefinirEJGAction" name="DefinirEJGForm" scope="request">
+		<action path="/JGR_EJG" type="com.siga.gratuita.action.DefinirEJGAction" name="DefinirEJGForm" >
 			<forward name="inicio" path="/html/jsp/gratuita/busquedaEJG.jsp?ventanaCajg=0"/>
 			<forward name="insertarEJG" path="/html/jsp/gratuita/insertarEJG.jsp"/>
 			<forward name="busquedaAutomatica" path="/html/jsp/gratuita/recargarModalInsercionEJG.jsp"/>
