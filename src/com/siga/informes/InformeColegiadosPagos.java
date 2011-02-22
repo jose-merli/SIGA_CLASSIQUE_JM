@@ -590,17 +590,11 @@ public class InformeColegiadosPagos extends MasterReport {
 		try {
 			StringBuffer sql = new StringBuffer();
 			
-			sql.append(" Select (Select Ejg.Numejg ");
-			sql.append("           From Scs_Ejg Ejg, Scs_Ejgdesigna Ejgdes ");
-			sql.append("          Where Des.Idinstitucion = Ejgdes.Idinstitucion ");
-			sql.append("            And Des.Idturno = Ejgdes.Idturno ");
-			sql.append("            And Des.Anio = Ejgdes.Aniodesigna ");
-			sql.append("            And Des.Numero = Ejgdes.Numerodesigna ");
-			sql.append("            And Ejgdes.Idinstitucion = Ejg.Idinstitucion ");
-			sql.append("            And Ejgdes.Idtipoejg = Ejg.Idtipoejg ");
-			sql.append("            And Ejgdes.Anioejg = Ejg.Anio ");
-			sql.append("            And Ejgdes.Numeroejg = Ejg.Numero ");
-			sql.append("            And Rownum = 1) Numeroejg, ");
+			sql.append(" Select  ");
+			sql.append(" f_siga_getdatoejgreldesigna(Des.Idinstitucion,Des.idturno,Des.anio,Des.numero,1) as NUMEROEJG,  ");
+			sql.append(" f_siga_getdatoejgreldesigna(Des.Idinstitucion,Des.idturno,Des.anio,Des.numero,4) as ANIOEJG,  ");
+			sql.append(" f_siga_getdatoejgreldesigna(Des.Idinstitucion,Des.idturno,Des.anio,Des.numero,3) as NUMERO_CAJG,  ");
+			sql.append(" f_siga_getdatoejgreldesigna(Des.Idinstitucion,Des.idturno,Des.anio,Des.numero,2) as ANIO_CAJG,  ");
 			sql.append("        decode(cole.comunitario,'1',cole.ncomunitario,cole.ncolegiado) as NUMERO_COLEGIADO, AD.FECHA, to_char(AD.FECHA,'DD/MM/YYYY') FECHA_OFICIO,  PRO.NOMBRE PROCEDIMIENTO, ");
 			sql.append("        f_siga_formatonumero(COL.IMPOFICIO,2)  IMPORTEPAGADO, ");
 			sql.append("        DES.ANIO || '/' || DES.CODIGO  ASIOFI, ");
