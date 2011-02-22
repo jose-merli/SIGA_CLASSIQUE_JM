@@ -171,9 +171,18 @@
 	</div>
 	
 	
-	<div style="position:absolute; width:964; height:40; z-index:2; top: 470px; left: 16px">	
-			<siga:ConjBotonesAccion botones="A,C" clase="botonesDetalle" modal="G" />
-	</div>
+		<table id="tablaBotonesDetalle" class="botonesDetalle" align="center">
+			<tr>
+				<td style="width: 100%;">&nbsp;</td>
+				<td class="tdBotones">
+					<input type="button" alt='<siga:Idioma key="global.boton.aceptar"/>' name='idButton' id="idButton" onclick="return accionAceptar();" class="button" value='<siga:Idioma key="global.boton.aceptar"/>'>
+				</td>
+				<td class="tdBotones">
+					<input type="button" alt='<siga:Idioma key="general.boton.close"/>' name='idButton' id="idButton" onclick="return accionCerrar();" class="button" value='<siga:Idioma key="general.boton.close"/>'>
+				</td>
+			</tr>
+		</table>
+
 	
 	<!-- INICIO: BOTONES REGISTRO -->	
 		

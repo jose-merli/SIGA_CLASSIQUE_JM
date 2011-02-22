@@ -149,7 +149,17 @@
 	</siga:ConjCampos>	
 	
 	
-	<siga:ConjBotonesAccion botones="A,C" clase="botonesDetalle" modal="G" />
+<table id="tablaBotonesDetalle" class="botonesDetalle" align="center">
+	<tr>
+		<td style="width: 100%;">&nbsp;</td>
+		<td class="tdBotones">
+			<input type="button" alt='<siga:Idioma key="global.boton.aceptar"/>' name='idButton' id="idButton" onclick="return accionAceptar();" class="button" value='<siga:Idioma key="global.boton.aceptar"/>'>
+		</td>
+		<td class="tdBotones">
+			<input type="button" alt='<siga:Idioma key="general.boton.close"/>' name='idButton' id="idButton" onclick="return accionCerrar();" class="button" value='<siga:Idioma key="general.boton.close"/>'>
+		</td>
+	</tr>
+</table>
 	
 	<!-- INICIO: BOTONES REGISTRO -->	
 		

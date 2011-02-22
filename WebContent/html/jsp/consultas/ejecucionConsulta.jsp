@@ -99,7 +99,20 @@
 			class="frameGeneral">
 	</iframe>
 	
-	<siga:ConjBotonesAccion botones="C,D,I" modal="G" />
+	<table id="tablaBotonesDetalle" class="botonesDetalle" align="center">
+		<tr>
+			<td style="width: 100%;">&nbsp;</td>
+			<td class="tdBotones">
+				<input type="button" alt='<siga:Idioma key="general.boton.imprimir"/>' name='idButton' id="idButton" onclick="return accionImprimir();" class="button" value='<siga:Idioma key="general.boton.imprimir"/>'>
+			</td>
+			<td class="tdBotones">
+				<input type="button" alt='<siga:Idioma key="general.boton.download"/>' name='idButton' id="idButton" onclick="return accionDownload();" class="button" value='<siga:Idioma key="general.boton.download"/>'>
+			</td>
+			<td class="tdBotones">
+				<input type="button" alt='<siga:Idioma key="general.boton.close"/>' name='idButton' id="idButton" onclick="return accionCerrar();" class="button" value='<siga:Idioma key="general.boton.close"/>'>
+			</td>
+		</tr>
+	</table>
 	
 	<siga:Paginador totalRegistros="<%=totalRegistros%>" 
 					registrosPorPagina="<%=registrosPorPagina%>" 
