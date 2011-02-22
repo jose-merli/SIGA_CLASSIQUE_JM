@@ -47,13 +47,12 @@
 				<td>
 				
 					<siga:ConjCampos leyenda="general.criterios">	
-						<table class="tablaCampos" border="0" align="left" width="100">
+						<table class="tablaCampos" border="0" align="left">
 							<tr>				
-								<td class="labelText">
+								<td class="labelText" width="100px">
 									<siga:Idioma key="administracion.informes.literal.tipoInforme"/>
-									
 								</td>	
-								<td class="labelText">
+								<td class="labelText" colspan="3">
 									<html:select styleClass="boxCombo" style="width:320px;"
 										property="idTipoInforme" >
 										<bean:define id="tiposInforme" name="InformeForm"
@@ -63,10 +62,9 @@
 									</html:select>
 								</td>
 								<td class="labelText" >
-								<siga:Idioma key="administracion.informes.literal.colegio"/>
-									
+									<siga:Idioma key="administracion.informes.literal.colegio"/>
 								</td>
-								<td class="labelText" colspan="3">
+								<td class="labelText" colspan="2">
 									<html:select styleClass="boxCombo" style="width:320px;"
 										property="idInstitucion" >
 										<bean:define id="instituciones" name="InformeForm"
@@ -80,35 +78,26 @@
 								<td class="labelText">
 								<siga:Idioma key="administracion.informes.literal.nombre"/>
 								</td>
-								<td class="labelText">
-									<html:text name="InformeForm" property="alias" size="50" styleClass="box"></html:text>
+								<td class="labelText" colspan="3">
+									<html:text name="InformeForm" style="width:320px;" property="alias" size="50" styleClass="box"></html:text>
 								</td>
-								
+								<td class="labelText">&nbsp;</td>
+								<td class="labelText">&nbsp;</td>
+								<td class="labelText">&nbsp;</td>
 							</tr>
 							<tr>
 								<td class="labelText">
-								<siga:Idioma key="administracion.informes.literal.visible"/>
-									
+									<siga:Idioma key="administracion.informes.literal.visible"/>
 								</td>
 								<td class="labelText" >
 									<html:select property="visible"  name="InformeForm" styleClass="boxCombo" style="width:60px;">
 										<html:option value="">&nbsp;</html:option>
-											<html:option value="S"><siga:Idioma key="general.yes"/></html:option>
-											<html:option value="N"><siga:Idioma key="general.no"/></html:option>
+										<html:option value="S"><siga:Idioma key="general.yes"/></html:option>
+										<html:option value="N"><siga:Idioma key="general.no"/></html:option>
 									</html:select>							
 								</td>
 								<td class="labelText">
-								<siga:Idioma key="administracion.informes.literal.solicitantes"/>
-								</td>
-								<td class="labelText">
-									<html:select property="ASolicitantes"  name="InformeForm" styleClass="boxCombo" style="width:60px;">
-										<html:option value="">&nbsp;</html:option>
-										<html:option value="S"><siga:Idioma key="general.yes"/></html:option>
-										<html:option value="N"><siga:Idioma key="general.no"/></html:option>
-									</html:select>		
-								</td>								
-								<td class="labelText">
-										<siga:Idioma key="administracion.informes.literal.destinatarios.enviarA"/>
+									<siga:Idioma key="administracion.informes.literal.destinatarios.enviarA"/>
 								</td>
 								<td class="labelText">
 									<html:select property="destinatarios"  name="InformeForm" styleClass="boxCombo" >
@@ -117,6 +106,16 @@
 										<html:option value="S"><siga:Idioma key="administracion.informes.destinatarios.solicitantes"/></html:option>
 									</html:select>		
 								</td>		
+								<td class="labelText" colspan="2">
+									<siga:Idioma key="administracion.informes.literal.solicitantes"/>&nbsp;
+								</td>
+								<td class="labelText">
+									<html:select property="ASolicitantes"  name="InformeForm" styleClass="boxCombo" style="width:60px;">
+										<html:option value="">&nbsp;</html:option>
+										<html:option value="S"><siga:Idioma key="general.yes"/></html:option>
+										<html:option value="N"><siga:Idioma key="general.no"/></html:option>
+									</html:select>		
+								</td>								
 							</tr>	
 						</table>
 					</siga:ConjCampos>	
