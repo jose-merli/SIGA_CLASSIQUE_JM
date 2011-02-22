@@ -54,7 +54,7 @@
 	<br><br>
 	<img src="<%=app%>/html/imagenes/logoRedAbogacia.jpg" aling="center" valign="middle" />
 	</td>
-	<td class="labelEntrada" style="width:400px">
+	<td class="labelEntrada" style="width:410px">
 	<siga:Idioma key="messages.entrada.escrito"/>
 	<br><br>
 	<img src="<%=app%>/html/imagenes/logoMinisterio.jpg"  aling="center" valign="middle"/>
