@@ -199,17 +199,21 @@
 			   nombre="listado"
 			   borde="2"
 			   clase="tableTitle"		   
-			   nombreCol="gratuita.listadoModal_DefinirCalendarioGuardia.literal.fechaInicio,gratuita.listadoModal_DefinirCalendarioGuardia.literal.fechaFin,gratuita.listadoModal_DefinirCalendarioGuardia.literal.numeroColegiado,gratuita.listadoModal_DefinirCalendarioGuardia.literal.nombre,gratuita.listadoModal_DefinirCalendarioGuardia.literal.fechaOriginal,"
-			   tamanoCol="14,14,18,23,15,16"
-		   			alto="100%"
-
+			   nombreCol="gratuita.listadoModal_DefinirCalendarioGuardia.literal.fechaInicio,
+			   		gratuita.listadoModal_DefinirCalendarioGuardia.literal.fechaFin,
+			   		gratuita.listadoModal_DefinirCalendarioGuardia.literal.numeroColegiado,
+			   		gratuita.listadoModal_DefinirCalendarioGuardia.literal.nombre,
+			   		gratuita.listadoModal_DefinirCalendarioGuardia.literal.fechaOriginal,
+			   		gratuita.guardiasTurno.literal.porGrupos.orden,"
+			   tamanoCol="11,11,11,28,11,11,17"
+		   	   alto="100%"
 			   modal="M"
 		>
 				<%
 				int recordNumber=1;
 				String fechaInicio="",fechaInicioPK="", fechaFin="",  idcalendarioguardias="", idturno="", idguardia="", idinstitucion="";
 				String numerocolegiado="", nombre="", observaciones="", idpersona="", numero="", fechaInicioPermuta="", fechaFinPermuta="";
-				String pl = "";
+				String pl = "", orden="";
 				boolean facturada= false;
 				int i=0;
 				while ((recordNumber) <= obj.size())
@@ -232,6 +236,8 @@
 				3- Nº COLEGIADO
 				4- NOMBRE
 				5- FECHA PERMUTA
+				6- GRUPO
+				7- ORDEN
 			-->
 			<%
 				fechaInicio = ((String)hash.get("FECHAINICIO")).equals("")?"&nbsp;":(String)hash.get("FECHAINICIO");
@@ -248,6 +254,7 @@
 				numero = ((String)hash.get("NUMEROPERMUTA")).equals("")?"NINGUNO":(String)hash.get("NUMEROPERMUTA");
 				fechaInicioPermuta = ((String)hash.get("FECHAINICIOPERMUTA")).equals("")?"":(String)hash.get("FECHAINICIOPERMUTA");
 				fechaFinPermuta = ((String)hash.get("FECHAFINPERMUTA")).equals("")?"":(String)hash.get("FECHAFINPERMUTA");
+				orden = ((String)hash.get("ORDEN")).equals("")?"":(String)hash.get("ORDEN");
 				//facturada = ((String)hash.get("GUARDIAFACTURADA")).equalsIgnoreCase("false")?false:true;
 				//PL:
 				pl = ((String)hash.get("PL")).equals("")?"":(String)hash.get("PL");
@@ -317,6 +324,7 @@
 					&nbsp;
 					<% } %>
 				</td>
+				<td align="center"><%=orden%></td>		
 			</siga:FilaConIconos>
 				<% 		recordNumber++; %>
 				<% } %>
@@ -354,7 +362,7 @@
 			/*document.forms[0].fechaInicio.value = document.getElementById(fechainicio).value;
 			document.forms[0].fechaFin.value = document.getElementById(fechafin).value;*/
 		}
-
+		
 		<!-- Funcion asociada a boton cambiar -->
 		function permutar(fila) 
 		{		

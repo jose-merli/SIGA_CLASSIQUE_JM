@@ -11,6 +11,8 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.general.SIGAException;
+import com.siga.gratuita.util.calendarioSJCS.CalendarioSJCS;
 import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
 
 /**
@@ -283,6 +285,226 @@ public class ScsGrupoGuardiaColegiadoAdm extends MasterBeanAdministrador
 		
 	}
 	
+	public void updateOrderGruposLetrados() {
+		String idGuardia ="E";
+		boolean repetido = false;
+		Hashtable hash = new Hashtable();
+		StringBuffer sql = new StringBuffer();
+		ArrayList<Hashtable<String, String>> grupo = new ArrayList<Hashtable<String,String>>();
+		sql.append(" SELECT gg.idgrupoguardia, ggc.idgrupoguardiacolegiado, orden ");
+		sql.append(" FROM scs_grupoguardiacolegiado ggc, scs_grupoguardia gg ");
+		sql.append(" WHERE ggc.idgrupoguardia = gg.idgrupoguardia ");
+		sql.append(" ORDER BY gg.idgrupoguardia, orden");
+		RowsContainer rc = new RowsContainer();
+		try {
+			if (rc.query(sql.toString()) && rc.size() > 0) {				
+				for (int i =0; i<rc.size(); i++){					
+					Row fila = (Row) rc.get(i);
+					Hashtable registro = (Hashtable) fila.getRow();
+					if (registro != null){						
+						if(!idGuardia.equals((String)registro.get("IDGRUPOGUARDIA"))){
+							if(grupo.size()>0){
+								this.sortGrupoLetrado(grupo);
+							}
+							grupo = new ArrayList<Hashtable<String,String>>();
+							idGuardia = (String)registro.get("IDGRUPOGUARDIA");
+						}						
+						grupo.add(registro);
+											
+					}						
+				}
+			}
+		} catch (ClsExceptions e) {
+			// throw new ClsExceptions (e,
+			// "Error al recuperar la posicion del ultimo letrado");
+		}
+	}
 	
+	/**
+	 * Modifica el orden de la cola de guardia de letrados incrementando su orden en una constante (3000).
+	 * Este metodo es necesario para no producir un error de restricción unica de orden en bbdd
+	 */
+	public void modifyOrderGruposLetrados(int idGrupo) {
+		boolean repetido = false;
+		Hashtable hash = new Hashtable();
+		StringBuffer sql = new StringBuffer();
+		int orden=0;		
+		ArrayList<Hashtable<String, String>> grupo = new ArrayList<Hashtable<String,String>>();
+		sql.append(" SELECT gg.idgrupoguardia, ggc.idgrupoguardiacolegiado, orden ");
+		sql.append(" FROM scs_grupoguardiacolegiado ggc, scs_grupoguardia gg ");
+		sql.append(" WHERE ggc.idgrupoguardia = gg.idgrupoguardia ");
+		sql.append(" AND gg.idgrupoguardia ="+idGrupo+" ");
+		sql.append(" ORDER BY gg.idgrupoguardia, orden");
+		RowsContainer rc = new RowsContainer();
+		try {
+			if (rc.query(sql.toString()) && rc.size() > 0) {				
+				for (int i =0; i<rc.size(); i++){					
+					Row fila = (Row) rc.get(i);
+					Hashtable registro = (Hashtable) fila.getRow();										
+					if (registro != null){
+						orden = new Integer((String)registro.get("ORDEN"))+ new Integer(CalendarioSJCS.SUM_POSICION);
+						updateOrderBBDD(new Integer((String)registro.get("IDGRUPOGUARDIA")),
+								orden,
+								new Integer((String)registro.get("IDGRUPOGUARDIACOLEGIADO")));											
+					}
+				}
+			}
+		} catch (ClsExceptions e) {
+			// throw new ClsExceptions (e,
+			// "Error al recuperar la posicion del ultimo letrado");
+		}
+	}
+	
+	/**
+	 * Asigna un orden a los letrados inscritos en un grupo de guardia pero si apuntados en él,
+	 * en orden consecutivo a partir del ultimo letrado apuntado en el grupo de guardia.
+	*/
+	public void reordenarRestoGrupoLetrados(int idGrupo, int sizeGrupo) {
+		boolean repetido = false;
+		Hashtable hash = new Hashtable();
+		StringBuffer sql = new StringBuffer();
+		int orden=0;		
+		ArrayList<Hashtable<String, String>> grupo = new ArrayList<Hashtable<String,String>>();
+		sql.append(" SELECT gg.idgrupoguardia, ggc.idgrupoguardiacolegiado, orden ");
+		sql.append(" FROM scs_grupoguardiacolegiado ggc, scs_grupoguardia gg ");
+		sql.append(" WHERE ggc.idgrupoguardia = gg.idgrupoguardia ");
+		sql.append(" AND gg.idgrupoguardia ="+idGrupo+" ");
+		sql.append(" AND ggc.orden > "+CalendarioSJCS.SUM_POSICION+ " ");
+		sql.append(" ORDER BY gg.idgrupoguardia, orden");
+		RowsContainer rc = new RowsContainer();
+		try {
+			if (rc.query(sql.toString()) && rc.size() > 0) {				
+				for (int i =0; i<rc.size(); i++){					
+					Row fila = (Row) rc.get(i);
+					Hashtable registro = (Hashtable) fila.getRow();										
+					if (registro != null){
+						orden = sizeGrupo+i+1;
+						updateOrderBBDD(new Integer((String)registro.get("IDGRUPOGUARDIA")),
+								orden,
+								new Integer((String)registro.get("IDGRUPOGUARDIACOLEGIADO")));											
+					}
+				}
+			}
+		} catch (ClsExceptions e) {
+			// throw new ClsExceptions (e,
+			// "Error al recuperar la posicion del ultimo letrado");
+		}
+	}
+	
+	/**
+	 * Ordena el grupo de guardia en orden consecutivo iniciandose en 1.
+	 * Nota: No se utiliza en ningún lado, se deja para un posible futuro uso.
+	 */
+	private void sortGrupoLetrado(ArrayList<Hashtable<String, String>> grupo) {
 
+		// actualizar cada uno de los registros
+		boolean esPrimero = true;
+		int primero = 0, posicion = 0;
+
+		for (int i = 0; i < grupo.size(); i++) {
+			if (esPrimero) {
+				primero = new Integer(grupo.get(i).get("ORDEN"));
+				posicion = new Integer(grupo.get(i).get("ORDEN"));
+				esPrimero = false;
+			} else {
+				posicion++;
+				UtilidadesHash.set(grupo.get(i), "ORDEN", posicion);
+				updateOrderBBDD(new Integer(grupo.get(i).get("IDGRUPOGUARDIA")),posicion, new Integer(grupo.get(i).get("IDGRUPOGUARDIACOLEGIADO")));
+			}
+		}
+
+		int ultimo = posicion;
+		int suma, resta;
+
+		if (primero < CalendarioSJCS.INI_POSICION) {
+			suma = CalendarioSJCS.INI_POSICION - ultimo + grupo.size() - 1;
+
+			for (int i = (grupo.size() - 1); i >= 0; i--) {				
+				posicion = new Integer(grupo.get(i).get("ORDEN")) + suma;
+				updateOrderBBDD(new Integer(grupo.get(i).get("IDGRUPOGUARDIA")),posicion, new Integer(grupo.get(i).get("IDGRUPOGUARDIACOLEGIADO")));
+			}
+		} else {
+			resta = primero - CalendarioSJCS.INI_POSICION;
+			for (int i = 0; i < grupo.size(); i++) {
+				posicion = new Integer(grupo.get(i).get("ORDEN")) - resta;
+				updateOrderBBDD(new Integer(grupo.get(i).get("IDGRUPOGUARDIA")),posicion, new Integer(grupo.get(i).get("IDGRUPOGUARDIACOLEGIADO")));
+			}
+		}
+	}
+	
+	/**
+	 * Actualiza en bbdd el orden modificado necesario para el algoritmo de rotación de guardias
+	 */
+	public void updateOrderBBDD(int idGuardia, int orden, int idGrupoColegiado){
+		Hashtable<String, String> hash = new Hashtable<String, String>();
+		Hashtable<String, String> hashDataOld;
+		try {
+			UtilidadesHash.set(hash, ScsGrupoGuardiaColegiadoBean.C_IDGRUPO, idGuardia);
+			UtilidadesHash.set(hash, ScsGrupoGuardiaColegiadoBean.C_IDGRUPOGUARDIACOLEGIADO, idGrupoColegiado);
+			UtilidadesHash.set(hash, ScsGrupoGuardiaColegiadoBean.C_ORDEN, orden);
+			hashDataOld = this.beanToHashTable((ScsGrupoGuardiaColegiadoBean) this.selectByPK(hash).get(0));
+			Hashtable<String, String> hashDataNew = (Hashtable<String, String>)hash.clone();
+			UtilidadesHash.set(hashDataNew,ScsGrupoGuardiaColegiadoBean.C_ORDEN, orden);
+			this.update(hashDataNew, hashDataOld);
+
+		} catch (ClsExceptions e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+		/**
+	 * 
+	*/
+	public void actualizarColaGuardia(Integer idInstitucion,Integer idTurno,Integer idGuardia) {
+		boolean repetido = false;
+		Hashtable hash = new Hashtable();
+		StringBuffer sql = new StringBuffer();
+		//Guardia del Turno
+		ScsGuardiasTurnoBean beanGuardiasTurno = new ScsGuardiasTurnoBean();
+		ScsGuardiasTurnoAdm guardiaAdm = new ScsGuardiasTurnoAdm(this.usrbean);
+		Long idPersona=null;
+		String fechaSubs="";
+		sql.append(" SELECT gru.idpersona, gru.Fechasuscripcion ");
+		sql.append(" FROM Scs_Grupoguardiacolegiado Gru,Scs_Inscripcionguardia Ins,Scs_Grupoguardiacolegiado Gruult,Scs_Guardiasturno Gua ");
+		sql.append(" WHERE Gru.Idinstitucion = Ins.Idinstitucion ");
+		sql.append(" AND  Gru.Idpersona = Ins.Idpersona");
+		sql.append(" AND Gru.Idturno = Ins.Idturno");
+		sql.append(" AND Gru.Idguardia = Ins.Idguardia");
+		sql.append(" AND Gru.Fechasuscripcion = Ins.Fechasuscripcion");
+		sql.append(" AND Gruult.Idinstitucion = Gua.Idinstitucion");
+		sql.append(" AND Gruult.Idturno = Gua.Idturno");
+		sql.append(" AND Gruult.Idguardia = Gua.Idguardia");
+		sql.append(" AND Gruult.Idpersona = Gua.Idpersona_Ultimo");
+		sql.append(" AND Gruult.Fechasuscripcion = Gua.Fechasuscripcion_Ultimo");
+		sql.append(" AND Gru.Idgrupoguardia = Gruult.Idgrupoguardia");
+		sql.append(" AND Gru.Orden > Gruult.Orden");
+		sql.append(" AND Gru.Idinstitucion = "+idInstitucion +" ");
+		sql.append(" AND Gru.Idturno = "+idTurno +" ");
+		sql.append(" AND Gru.Idguardia = "+idGuardia);
+		sql.append(" ORDER BY Gru.Orden desc");
+		RowsContainer rc = new RowsContainer();
+		try {
+			if (rc.query(sql.toString())) {
+				Row fila = (Row) rc.get(0);
+				Hashtable registro = (Hashtable) fila.getRow();
+				if (registro != null) {
+					idPersona = new Long((String) registro.get("IDPERSONA"));
+					fechaSubs = (String) registro.get("FECHASUSCRIPCION");
+					Hashtable<String, String> hashGuardiasTurno=new Hashtable<String, String>();
+					hashGuardiasTurno.put(ScsGuardiasTurnoBean.C_IDGUARDIA, idGuardia.toString());
+					hashGuardiasTurno.put(ScsGuardiasTurnoBean.C_IDINSTITUCION, idInstitucion.toString());
+					hashGuardiasTurno.put(ScsGuardiasTurnoBean.C_IDTURNO, idTurno.toString());
+					beanGuardiasTurno = (ScsGuardiasTurnoBean)guardiaAdm.selectByPK(hashGuardiasTurno).get(0);
+					beanGuardiasTurno.setIdPersona_Ultimo(idPersona);
+					beanGuardiasTurno.setFechaSuscripcion_Ultimo(fechaSubs);
+					guardiaAdm.updateDirect(beanGuardiasTurno);
+				}
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
+	}
+	  
 }

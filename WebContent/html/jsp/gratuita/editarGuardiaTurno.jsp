@@ -1002,6 +1002,7 @@ function init()
 					}
 				}
 		}
+		comprobarPorGrupos();
 	}
 
 	<!-- Asociada al boton Volver -->

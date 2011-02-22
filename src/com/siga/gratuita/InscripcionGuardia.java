@@ -185,6 +185,10 @@ public class InscripcionGuardia
 		CenBajasTemporalesAdm bajasAdm = new CenBajasTemporalesAdm(usr);
 		ArrayList<LetradoGuardia> colaLetrados = new ArrayList<LetradoGuardia>();
 
+		//Actualizar cola guardia
+		ScsGrupoGuardiaColegiadoAdm admGrupoGuardia = new ScsGrupoGuardiaColegiadoAdm(usr);
+		admGrupoGuardia.actualizarColaGuardia(idInstitucion, idTurno, idGuardia);
+		
 		// obteniendo la guardia
 		Hashtable hashGuardia = new Hashtable();
 		hashGuardia.put(ScsGuardiasTurnoBean.C_IDINSTITUCION, idInstitucion.toString());
@@ -208,13 +212,13 @@ public class InscripcionGuardia
 			ultimoAnterior = null;
 		else
 			ultimoAnterior = new ScsInscripcionGuardiaBean(idInstitucion, idTurno, idGuardia, idPersonaUltimo, fechaSuscripcionUltimo);
-		
+
 		// obteniendo lista de letrados (ordenada)
 		Vector<ScsInscripcionGuardiaBean> listaLetrados = insadm.getColaGuardia(idInstitucion.toString(), 
 				idTurno.toString(), idGuardia.toString(), fechaInicio, fechaFin, porGrupos, orden);
 		if (listaLetrados == null || listaLetrados.size() == 0)
 			return colaLetrados;
-
+		
 		if (ultimoAnterior == null) {
 			// si no existe ultimo colegiado, se empieza la cola desde el primero en la lista
 			for (int i = 0; i < listaLetrados.size(); i++) {

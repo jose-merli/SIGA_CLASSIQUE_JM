@@ -364,7 +364,7 @@
 						<input type="hidden" value="<%=grupo%>" id="grupoOriginal_<%=i + 1%>" >
 					</td>
 					<td>
-						<input type="text" value="<%=ordenGrupo%>" id="orden_<%=i + 1%>" disabled size="1">
+						<input type="text" value="<%=ordenGrupo%>" id="orden_<%=i + 1%>" disabled size="1" maxlength="4">
 						<input type="hidden" value="<%=ordenGrupo%>" id="ordenOriginal_<%=i + 1%>" >
 					</td>
 				<%
@@ -625,32 +625,39 @@
 			}
 		}
 	}
-
-
+	
 	function accionGuardar(){
 		var datos = "";
 		var ele = document.getElementsByName("checkGrupoOrden");
 		for (i = 0; i < ele.length; i++) {
 			if (ele[i].checked) {
-				if( (document.getElementById("grupo_" + ele[i].value).value.length<1 &&
-				   	 document.getElementById("orden_" + ele[i].value).value.length>=1)||
-				   	(document.getElementById("grupo_" + ele[i].value).value.length>=1 &&
-					 document.getElementById("orden_" + ele[i].value).value.length<1) ){
-					alert ("<siga:Idioma key="administracion.parametrosGenerales.error.valorParametro"/> "+
-						   "<siga:Idioma key="gratuita.turnos.literal.orden"/> " + 
-						   "<siga:Idioma key="general.y"/> " + 
-						   "<siga:Idioma key="gratuita.turnos.literal.grupo"/> ");
-					return;
-				}
-			
-				if (datos.length > 0) datos = datos + "#;;#";
-				datos = datos + document.getElementById("idGrupoGuardiaColegiado_" + ele[i].value).value + "#;#" + 	// idgrupoguardiacolegiado
-					            document.getElementById("grupo_" + ele[i].value).value + "#;#" +	// grupo
-					            document.getElementById("orden_" + ele[i].value).value + "#;#" + 	// orden
-						        document.getElementById("idPersona_" + ele[i].value).value + "#;#"+ 	// idPersona
-						        document.getElementById("fechaSuscripcion_" + ele[i].value).value + "#;#"; 	// fechaSuscripcion
+					if( (document.getElementById("grupo_" + ele[i].value).value.length<1 &&
+					   	 document.getElementById("orden_" + ele[i].value).value.length>=1)||
+					   	(document.getElementById("grupo_" + ele[i].value).value.length>=1 &&
+						 document.getElementById("orden_" + ele[i].value).value.length<1) ){						 
+							alert ("<siga:Idioma key="administracion.parametrosGenerales.error.valorParametro"/> "+
+							 	  "<siga:Idioma key="gratuita.turnos.literal.orden"/> " + 
+								   "<siga:Idioma key="general.y"/> " + 
+							 	  "<siga:Idioma key="gratuita.turnos.literal.grupo"/> ");
+							return;
+
+					}else{
+						if(document.getElementById("orden_" + ele[i].value).value.length>=1 && 
+						   document.getElementById("orden_" + ele[i].value).value<=0){
+							alert ("El orden debe ser un número comprendido entre 1 y 9999");
+							return;					
+						}
+					}
+				
+					if (datos.length > 0) datos = datos + "#;;#";
+					datos = datos + document.getElementById("idGrupoGuardiaColegiado_" + ele[i].value).value + "#;#" + 	// idgrupoguardiacolegiado
+						            document.getElementById("grupo_" + ele[i].value).value + "#;#" +	// grupo
+						            document.getElementById("orden_" + ele[i].value).value + "#;#" + 	// orden
+							        document.getElementById("idPersona_" + ele[i].value).value + "#;#"+ 	// idPersona
+							        document.getElementById("fechaSuscripcion_" + ele[i].value).value + "#;#"; 	// fechaSuscripcion
 			}
 		}
+		
 		if (datos.length < 1) {
 			alert ("<siga:Idioma key="administracion.parametrosGenerales.alert.seleccionarElementos"/>");
 			return;

@@ -10,13 +10,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
 
@@ -26,8 +26,6 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.LogFileWriter;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.UtilidadesFecha;
-import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenBajasTemporalesAdm;
 import com.siga.beans.CenBajasTemporalesBean;
@@ -85,6 +83,11 @@ import com.siga.gratuita.util.calendarioSJCS.Entity.PeriodoEfectivo;
  */
 public class CalendarioSJCS
 {
+	/** Posicion inicial del orden en cada grupo */
+	public final static int INI_POSICION = 1;
+
+	public static final int SUM_POSICION = 30000;
+			
 	//Claves para identificar la guardia de un calendario
 	private Integer idInstitucion;
 	private Integer idTurno;
@@ -108,6 +111,7 @@ public class CalendarioSJCS
 	private String fechaInicio;
 	private String fechaFin;
 	private Vector<ScsCalendarioGuardiasBean> calendariosVinculados;
+	int numeroGrupoAux=0;
 	
 	/**Buffer de lineas para log*/
 	private LogFileWriter log;
@@ -538,6 +542,7 @@ public class CalendarioSJCS
 		
 		// obteniendo grupo de la cola
 		grupoLetrados = getGrupoLetrados(alLetradosOrdenados, punteroLetrado);
+		int idgrupoinicial = grupoLetrados.get(0).getGrupo();
 		while (grupoLetrados != null && !grupoValido) {
 			
 			// comprobando cada letrado del grupo
@@ -552,13 +557,23 @@ public class CalendarioSJCS
 			if (!grupoValido) {
 				log.addLog(new String[] {"Grupo no valido", grupoLetrados.toString()});
 				grupoLetrados = getGrupoLetrados(alLetradosOrdenados, punteroLetrado);
+				if (idgrupoinicial == grupoLetrados.get(0).getGrupo())
+					break;
 			}
 		}
-
-		if (grupoValido)
+			
+		if (grupoValido){
+			ScsGrupoGuardiaColegiadoAdm admGrupoGuardia = new ScsGrupoGuardiaColegiadoAdm(this.usrBean);
+			admGrupoGuardia.modifyOrderGruposLetrados(grupoLetrados.get(0).getGrupo());
+			/*for(LetradoGuardia letrado: grupoLetrados){
+				letrado.setOrdenGrupo(letrado.getOrdenGrupo()+SUM_POSICION);
+			}*/
+			
 			return grupoLetrados;
-		else
+		
+		}else{
 			return null;
+		}
 	} // getSiguienteGrupo()
 
 	/**
@@ -578,6 +593,7 @@ public class CalendarioSJCS
 		int numeroGrupo;
 		boolean nuevoGrupo;
 		int fin;
+		
 
 		// controlando que la lista este rellena
 		if (alLetradosOrdenados == null || alLetradosOrdenados.size() == 0)
@@ -588,21 +604,24 @@ public class CalendarioSJCS
 		
 		// avanzando hasta encontrar alguien que pertenezca a un grupo
 		fin = punteroLetrado.getValor();
-		while (letrado != null && letrado.getGrupo() == null && fin != punteroLetrado.getValor()) {
+		while (letrado != null && letrado.getGrupo() == null) {
 			// obteniendo siguiente en la cola
 			if (punteroLetrado.getValor() < alLetradosOrdenados.size() - 1)
 				punteroLetrado.incValor();
 			else
 				punteroLetrado.setValor(0); // como es una cola circular hay que volver al principio
 			letrado = alLetradosOrdenados.get(punteroLetrado.getValor());
+			
+			if (fin == punteroLetrado.getValor())
+				break;
 		}
 		if (letrado == null) // no se encontro a nadie perteneciente a un grupo
 			return null;
 		else if (letrado.getGrupo() == null)
 			return null;
-		else
+		else{
 			numeroGrupo = letrado.getGrupo();
-		
+		}
 		grupoLetrados = new ArrayList<LetradoGuardia>();
 		nuevoGrupo = false;
 		fin = punteroLetrado.getValor();
@@ -1007,8 +1026,6 @@ public class CalendarioSJCS
 	 */
 	public void calcularMatrizLetradosGuardia(List lDiasASeparar) throws SIGAException, ClsExceptions
 	{
-		final int INI_POSICION = 0;
-		
 		// Controles generales
 		CenBajasTemporalesAdm bajasAdm = new CenBajasTemporalesAdm(this.usrBean);
 		ScsSaltosCompensacionesAdm scAdm = new ScsSaltosCompensacionesAdm(this.usrBean);
@@ -1184,14 +1201,13 @@ public class CalendarioSJCS
 	 */
 	public void calcularMatrizLetradosGuardiaPorGrupos(List lDiasASeparar, boolean rotacion) throws SIGAException, ClsExceptions
 	{
-		final int INI_POSICION = 0;
-		
 		// Controles generales
 		CenBajasTemporalesAdm bajasAdm = new CenBajasTemporalesAdm(this.usrBean);
 		ScsSaltoCompensacionGrupoAdm salComAdm = new ScsSaltoCompensacionGrupoAdm(this.usrBean);
 		ScsGrupoGuardiaColegiadoAdm gruGuaColAdm = new ScsGrupoGuardiaColegiadoAdm(this.usrBean);
 		ScsGuardiasTurnoAdm guardiaAdm = new ScsGuardiasTurnoAdm(this.usrBean);
-
+		ScsGrupoGuardiaColegiadoAdm admGrupoGuardia = new ScsGrupoGuardiaColegiadoAdm(this.usrBean);
+		ScsGuardiasTurnoBean beanGuardia = new ScsGuardiasTurnoBean();
 		// Variables
 		ArrayList<String> diasGuardia, primerPeriodo, segundoPeriodo; // Periodo o dia de guardia para rellenar con letrado
 		int numeroLetradosGuardia; // Numero de letrados necesarios para cada periodo
@@ -1200,7 +1216,8 @@ public class CalendarioSJCS
 		ArrayList<ScsSaltoCompensacionGrupoBean> alSaltos; // Lista de saltos
 		ArrayList<ScsSaltoCompensacionGrupoBean> alCompensaciones; // Lista de compensaciones
 		
-		ArrayList<LetradoGuardia> alLetradosOrdenados; // Cola de letrados en la guardia
+		ArrayList<LetradoGuardia> alLetradosOrdenados= new ArrayList<LetradoGuardia>();  // Cola de letrados en la guardia
+		
 		int posicion; // Orden de cada componente en la cola y en la lista de guardias generada
 		ArrayList<LetradoGuardia> grupoLetrados; // Lista de letrados en el grupo
 		ArrayList<LetradoGuardia> alLetradosInsertar; // Lista de letrados obtenidos para cada periodo
@@ -1211,9 +1228,13 @@ public class CalendarioSJCS
 		Hashtable hashGrupoLetrado; // Hash para guardar cambios en los grupos
 		
 		ArrayList<String> lineaLog; // Linea para escribir en LOG
+		
+		Long idPersona = null;
+		String fechaSubs="";
 
 		
 		try {
+			
 			// obteniendo bajas temporales por letrado
 			String primerDia = ((ArrayList<String>) this.arrayPeriodosDiasGuardiaSJCS.get(0)).get(0);
 			ArrayList<String> ultimoPeriodo = (ArrayList<String>) this.arrayPeriodosDiasGuardiaSJCS.get(this.arrayPeriodosDiasGuardiaSJCS.size()-1);
@@ -1271,6 +1292,7 @@ public class CalendarioSJCS
 				punteroListaLetrados = new Puntero();
 				alLetradosOrdenados = InscripcionGuardia.getColaGuardia(idInstitucion, idTurno, idGuardia,
 						(String) diasGuardia.get(0), (String) diasGuardia.get(diasGuardia.size() - 1), usrBean);
+				
 				log.addLog(new String[] {"Cola", alLetradosOrdenados.toString()});
 
 				if (alLetradosOrdenados == null || alLetradosOrdenados.size() == 0)
@@ -1284,6 +1306,7 @@ public class CalendarioSJCS
 
 				// buscando grupo que no tenga restricciones (incompatibilidades, bajas temporales, saltos)
 				grupoLetrados = getSiguienteGrupo(alCompensaciones, alLetradosOrdenados, punteroListaLetrados, diasGuardia, hmGruposConSaltos, hmBajasTemporales);
+				
 				if (grupoLetrados == null) {
 					log.addLog(new String[] {"FIN generacion", "Todos los grupos tienen restricciones que no permiten generar el calendario"});
 					throw new SIGAException("Todos los grupos tienen restricciones que no permiten generar el calendario");
@@ -1309,17 +1332,20 @@ public class CalendarioSJCS
 				alLetradosInsertar = new ArrayList<LetradoGuardia>();
 				posicion = INI_POSICION;
 				for (LetradoGuardia letrado : grupoLetrados) {
-					// insertando letrados
-					letrado.setPosicion(posicion);
+					// insertando letrados					
 					letrado.setPeriodoGuardias(diasGuardia);
 					alLetradosInsertar.add(letrado);
 					
-					// rotando grupo
+					// colocando componentes del grupo (mejorando ordenes)
+					letrado.setPosicion(posicion);
+					posicion++;
+					
 					if (rotacion) {
-						if (posicion == INI_POSICION)
+						if (posicion == INI_POSICION){
 							letrado.setOrdenGrupo(grupoLetrados.size());
-						else
+						}else{
 							letrado.setOrdenGrupo(posicion-1);
+						}
 						
 						hashGrupoLetrado = new Hashtable();
 						hashGrupoLetrado.put(ScsGrupoGuardiaColegiadoBean.C_IDGRUPOGUARDIACOLEGIADO, letrado.getIdGrupoGuardiaColegiado());
@@ -1330,10 +1356,12 @@ public class CalendarioSJCS
 						beanGrupoLetrado.setFechaMod("sysdate");
 						beanGrupoLetrado.setUsuMod(new Integer(usrBean.getUserName()));
 						gruGuaColAdm.update(beanGrupoLetrado);
-					}
-					
-					posicion++;
+					}											
 				}
+				
+				//Asignamos valores superiores al tamaño de la lista a los letrados no activos
+				admGrupoGuardia.reordenarRestoGrupoLetrados(grupoLetrados.get(0).getGrupo(), grupoLetrados.size());
+							
 				this.arrayPeriodosLetradosSJCS.add(alLetradosInsertar);
 				
 				// guardando las guardias en BD
@@ -1363,8 +1391,9 @@ public class CalendarioSJCS
 										"gratuita.literal.comentario.sustitucion"));
 					}
 				}
+				
 			} // FIN Para cada dia o conjunto de dias
-			
+		
 			// avanzando el puntero de dia en el caso de guardias vinculadas
 			if (this.calendariosVinculados != null)
 				primerPeriodo = segundoPeriodo;
