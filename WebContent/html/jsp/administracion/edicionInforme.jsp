@@ -55,7 +55,6 @@
 <html:form action="/ADM_GestionInformes"  name="InformeFormEdicion" type="com.siga.administracion.form.InformeForm" method="POST" target="submitArea" enctype="multipart/form-data">
 	<html:hidden property="modo" value="${InformeFormEdicion.modo}"/>
 	<html:hidden property="modoInterno" value="${InformeFormEdicion.modoInterno}"/>
-	<html:hidden property="idInstitucion" value="${InformeFormEdicion.idInstitucion}"/>
 	<html:hidden property="idPlantilla" value="${InformeFormEdicion.idPlantilla}"/>
 	<html:hidden property="destinatarios" value="${InformeFormEdicion.destinatarios}"/>
 	<html:hidden property="claseTipoInforme" value="${InformeFormEdicion.claseTipoInforme}"/>
@@ -100,13 +99,17 @@
 					<siga:Idioma key="administracion.informes.literal.colegio"/>(*)
 				</td>
 				<td class="labelText" colspan="3">
-					<html:select styleClass="boxCombo" style="width:200px;"
-						name="InformeFormEdicion" property="idInstitucion"  >
-						<bean:define id="instituciones" name="InformeForm"
-							property="instituciones" type="java.util.Collection" />
-							<html:optionsCollection  name="instituciones" value="idInstitucion"
-									label="abreviatura" />
+					<html:select styleClass="boxCombo" style="width:200px;" name="InformeFormEdicion" property="idInstitucion"  >
+						<bean:define id="instituciones" name="InformeForm" property="instituciones" type="java.util.Collection" />
+						<html:optionsCollection  name="instituciones" value="idInstitucion" label="abreviatura" />
 					</html:select>
+					
+					<logic:notEmpty name="InformeForm" property="instituciones">
+						<logic:iterate name="InformeForm" property="instituciones" id="institucion" indexId="index">
+							<input type="hidden" name="institucionId_${index}" value="${institucion.idInstitucion}">
+						</logic:iterate>
+					</logic:notEmpty>
+					
 				</td>
 			</tr>
 			
@@ -358,6 +361,7 @@ function inicio()
 }
 function accionGuardar() 
 {		
+	
 	document.getElementById("directorio").disabled="";
 	document.getElementById("idInstitucion").disabled="";
 	document.getElementById("idPlantilla").disabled="";
@@ -369,6 +373,10 @@ function accionGuardar()
 		idClaseTipoInforme = 'claseTipoInforme_'+indiceTipoInforme;
 		claseTipoInforme =  document.getElementById(idClaseTipoInforme).value;
 		document.InformeFormEdicion.claseTipoInforme.value = claseTipoInforme;
+
+		indiceInstitucion = document.getElementById("idInstitucion").selectedIndex;
+		idInstitucion = 'institucionId_'+indiceInstitucion;
+		document.InformeFormEdicion.idInstitucion.value = document.getElementById(idInstitucion).value;		
 	}
 	if(document.InformeFormEdicion.idInstitucion.value=='-1')
 		document.InformeFormEdicion.idInstitucion.value = '';
