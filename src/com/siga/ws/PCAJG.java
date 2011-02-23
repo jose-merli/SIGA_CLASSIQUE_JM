@@ -55,6 +55,7 @@ import com.siga.beans.ScsEJGBean;
 import com.siga.eejg.SignerXMLHandler;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.action.DefinirRemesasCAJGAction;
+import com.siga.informes.MasterWords;
 import com.siga.pcajg.ws.PCAJGBindingStub;
 import com.siga.pcajg.ws.PCAJGLocator;
 import com.siga.pcajg.ws.xsd.ContrarioType;
@@ -115,6 +116,18 @@ import com.siga.pcajg.ws.xsd.TipoInformacionRespuestaResultadoDatosErrorErrorCon
  */
 public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 		
+	protected static enum SUBTIPOCAJG {
+		DESCARGA_FICHERO,
+		ENVIO_WEBSERVICE
+	}
+	
+	private SUBTIPOCAJG subTipoCAJG = SUBTIPOCAJG.ENVIO_WEBSERVICE;
+	
+	public PCAJG(SUBTIPOCAJG subTipoCAJG) {
+		super();
+		this.subTipoCAJG = subTipoCAJG;
+	}
+
 	private static final String INTERCAMBIO_ALTA_PRESENTACION = "IAP";
 	private static final String INTERCAMBIO_EXPEDIENTES_DICTAMINADOS = "IED";
 	private static final String INTERCAMBIO_EXPEDIENTES_ARCHIVADOS = "IEA";
@@ -140,7 +153,7 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 	 * @return
 	 * @throws Exception
 	 */
-	private List<File> generaFicherosXML(String dirFicheros, String dirPlantilla) throws Exception {
+	private List<File> generaFicherosXML(String dirFicheros) throws Exception {
 		
 		List<File> ficheros = new ArrayList<File>();		
 		CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(getUsrBean());
@@ -181,7 +194,7 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 			
 			if (!tipoIntercambio.equals(ht.get(TIPOINTERCAMBIO))) {								
 				if (intercambio != null && expedientes.size() > 0) {
-					File file = creaFichero(dirFicheros, dirPlantilla, intercambio, tipoInformacion, expedientes);
+					File file = creaFichero(dirFicheros, intercambio, tipoInformacion, expedientes);
 					if (file != null) {
 						ficheros.add(file);
 					}
@@ -203,7 +216,7 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 			}
 		}
 		if (intercambio != null && expedientes.size() > 0) {
-			File file = creaFichero(dirFicheros, dirPlantilla, intercambio, tipoInformacion, expedientes);
+			File file = creaFichero(dirFicheros, intercambio, tipoInformacion, expedientes);
 			if (file != null) {
 				ficheros.add(file);
 			}
@@ -212,7 +225,7 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 		return ficheros;
 	}
 	
-	private File creaFichero(String dirFicheros, String dirPlantilla, IntercambioTipo intercambio, TipoInformacion tipoInformacion, List<TipoExpediente> expedientes) throws Exception {
+	private File creaFichero(String dirFicheros, IntercambioTipo intercambio, TipoInformacion tipoInformacion, List<TipoExpediente> expedientes) throws Exception {
 		
 		File file = new File(dirFicheros);
 		file.mkdirs();
@@ -260,7 +273,7 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 			throw new SIGAException("Falta especificar la url del webservice para la institución " + getIdInstitucion());
 		}
 		
-		if (expedientes.size() > 0) {
+		if (SUBTIPOCAJG.ENVIO_WEBSERVICE.equals(subTipoCAJG) && expedientes.size() > 0) {
 			
 			PCAJGLocator locator = new PCAJGLocator(createClientConfig());
 			URL url = new URL(getUrlWS());	
@@ -1728,17 +1741,7 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 				
 		UsrBean usr = getUsrBean();
 		
-		String keyPathFicheros = "cajg.directorioFisicoCAJG";
-		String keyPathPlantillas = "cajg.directorioPlantillaCAJG";
-		String keyPath2 = "cajg.directorioCAJGJava";
-				
-	    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		String pathFichero = p.returnProperty(keyPathFicheros) + p.returnProperty(keyPath2);
-		String pathPlantillas = p.returnProperty(keyPathPlantillas) + p.returnProperty(keyPath2);
-		
-		String dirFicheros = pathFichero + File.separator + getIdInstitucion()  + File.separator + getIdRemesa() + File.separator + "xml";
-		String dirPlantillas = pathPlantillas + File.separator + getIdInstitucion();
-
+		String dirFicheros = getDirXML(getIdInstitucion(), getIdRemesa());
 		UserTransaction tx = usr.getTransaction();
 		
 		//si no queremos generar el fichero txt ademas del xml hay que cometar solamente esta línea
@@ -1753,10 +1756,11 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 			CajgRespuestaEJGRemesaAdm cajgRespuestaEJGRemesaAdm = new CajgRespuestaEJGRemesaAdm(usr);
 			cajgRespuestaEJGRemesaAdm.eliminaAnterioresErrores(getIdInstitucion(), getIdRemesa());
 			
-			List<File> files = generaFicherosXML(dirFicheros, dirPlantillas);	
+			List<File> files = generaFicherosXML(dirFicheros);	
 			tx.commit();//hacemos commit para setear los posibles errores de negocio
 			
 			if (files.size() > 0) {
+				
 				tx.begin();
 										
 				CajgRemesaEstadosAdm cajgRemesaEstadosAdm = new CajgRemesaEstadosAdm(usr);
@@ -1766,9 +1770,14 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 				// Marcar como generada
 				cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIdInstitucion(), getIdRemesa(), Integer.valueOf("1"));
 	
-				
-				//MARCAMOS COMO ENVIADA
-				if (cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIdInstitucion(), getIdRemesa(), Integer.valueOf("2"))) {
+				if (SUBTIPOCAJG.DESCARGA_FICHERO.equals(subTipoCAJG)) {
+					//hacemos zip con el fichero					
+					
+					String nombreFichero = getNombreRutaZIPconXMLs(getIdInstitucion(), getIdRemesa());
+					
+					MasterWords.doZip((ArrayList<File>)files, nombreFichero);
+				} else if (cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIdInstitucion(), getIdRemesa(), Integer.valueOf("2"))) {
+					//MARCAMOS COMO ENVIADA
 					cajgEJGRemesaAdm.nuevoEstadoEJGRemitidoComision(usr, String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()), ClsConstants.REMITIDO_COMISION);
 				}
 				
@@ -1788,6 +1797,22 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 		
 	}
 	
+	private static String getNombreRutaZIPconXMLs(int idInstitucion, int idRemesa) {
+		return getDirXML(idInstitucion, idRemesa) + File.separator + idInstitucion + "_" + idRemesa;
+	}
+	
+	public static String getRutaFicheroZIP(int idInstitucion, int idRemesa) {
+		return getNombreRutaZIPconXMLs(idInstitucion, idRemesa) + ".zip";
+	}
+
+	private static String getDirXML(int idInstitucion, int idRemesa) {
+		String keyPathFicheros = "cajg.directorioFisicoCAJG";		
+		String keyPath2 = "cajg.directorioCAJGJava";				
+	    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String pathFichero = p.returnProperty(keyPathFicheros) + p.returnProperty(keyPath2);
+		return pathFichero + File.separator + idInstitucion  + File.separator + idRemesa + File.separator + "xml";
+	}
+
 	/**
 	 * 
 	 * @param pathFichero

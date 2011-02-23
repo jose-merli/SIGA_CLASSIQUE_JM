@@ -69,12 +69,11 @@ import com.siga.beans.ScsTipoEJGBean;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
-import com.siga.gratuita.InscripcionGuardia;
 import com.siga.gratuita.form.DefinicionRemesas_CAJG_Form;
 import com.siga.gratuita.form.DefinirEJGForm;
-import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
 import com.siga.informes.MasterWords;
 import com.siga.ws.CajgConfiguracion;
+import com.siga.ws.PCAJG;
 import com.siga.ws.SIGAWSClientAbstract;
 import com.siga.ws.SIGAWSListener;
 
@@ -151,7 +150,9 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			} else if (accion.equalsIgnoreCase("erroresResultadoCAJG")) {
 				mapDestino = erroresResultadoCAJG(mapping, miForm, request, response);
 			} else if (accion.equalsIgnoreCase("descargarLog")) {
-				mapDestino = descargarLog(mapping, miForm, request, response);				
+				mapDestino = descargarLog(mapping, miForm, request, response);	
+			} else if (accion.equalsIgnoreCase("generaXML")) {
+				mapDestino = generaXML(mapping, miForm, request, response);	
 			} else {
 				return super.executeInternal(mapping, formulario, request, response);
 			}
@@ -793,6 +794,11 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		return numFicheros>0;
 	}
 	
+	public static File getFicheroXML(String idInstitucion, String idRemesa) throws SIGAException {
+		return new File(PCAJG.getRutaFicheroZIP(Integer.parseInt(idInstitucion), Integer.parseInt(idRemesa)));
+	}
+	
+	
 	/**
 	 * 
 	 * @param idInstitucion
@@ -1386,7 +1392,12 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			SIGAException {
 			
 		DefinicionRemesas_CAJG_Form miForm = (DefinicionRemesas_CAJG_Form) formulario;
-		File file = getFichero(getIDInstitucion(request).toString(), miForm.getIdRemesa());
+		File file = null;
+		if (CajgConfiguracion.getTipoCAJG(getIDInstitucion(request)) == CajgConfiguracion.TIPO_CAJG_PCAJG_GENERAL) {
+			file = getFicheroXML(getIDInstitucion(request).toString(), miForm.getIdRemesa());
+		} else {
+			file = getFichero(getIDInstitucion(request).toString(), miForm.getIdRemesa());
+		}
 		return descargaFichero(formulario, request, file);
 	}
 	
@@ -1394,7 +1405,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		
 		try {
 
-			if (file == null) {
+			if (file == null || !file.exists()) {
 				throw new SIGAException("messages.general.error.ficheroNoExiste");
 			}
 			request.setAttribute("nombreFichero", file.getName());
@@ -1652,7 +1663,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 					
 		String idRemesa = form.getIdRemesa();		
 
-		SIGAWSClientAbstract sigaWSClient = CajgConfiguracion.getSIGAWSClientAbstract(idInstitucion, indexClass);
+		SIGAWSClientAbstract sigaWSClient = CajgConfiguracion.getSIGAWSClientAbstract(usrBean, idInstitucion, indexClass);
 				
 		if (sigaWSClient == null) {
 			throw new ClsExceptions("El colegio no tiene implementado el WebService");
@@ -1695,6 +1706,13 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		ejecutaBackground(formulario, request, 0);		
 		return exitoRefresco("messages.cajg.enviandoWS", request);
 	}
+	
+	
+	private String generaXML(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws Exception {		
+		ejecutaBackground(formulario, request, 0);		
+		return exitoRefresco("messages.cajg.generandoXML", request);
+	}
+	
 	
 	
 	/**

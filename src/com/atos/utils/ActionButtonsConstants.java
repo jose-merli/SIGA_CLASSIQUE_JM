@@ -52,7 +52,7 @@ public enum ActionButtonsConstants {
 	BAJA_EN_TODOS_LOS_TURNOS ("bajaEnTodosLosTurnos","general.boton.bajaEnTodosLosTurnos","darDeBajaEnTodosLosTurnos(true)",45),
 	ALTA_EN_TURNOS_SEL ("altaEnTurnosSel","general.boton.altaEnTurnosSel","darDeAltaEnTurnosSel(true)",46),
 	BA ("ba","","",47),
-	GENERAR_XML ("gxml","general.boton.generaXML","generaXML()",48),
+	GENERAR_XML ("gxml","general.boton.generaXML","generaXML()","idButtonGeneraXML",48),
 	GENERAR_FICHERO ("gf","general.boton.generarFichero","generarFichero(true)",49),
 	GENERAR_CERRAR ("ygc","general.boton.generarCerrar","accionGenerarCerrar()",50),
 	GUARDAR_CERRAR ("y","general.boton.guardarCerrar","accionGuardarCerrar()",51),
