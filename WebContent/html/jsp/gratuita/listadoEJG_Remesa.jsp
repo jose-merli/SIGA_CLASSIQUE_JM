@@ -85,6 +85,8 @@
 	Integer idInstitucion = new Integer(usr.getLocation());
 	int cajgConfig = CajgConfiguracion.getTipoCAJG(idInstitucion);	
 	
+	int tipoPCAJGGeneral = CajgConfiguracion.getPCAJGGeneralTipo(idInstitucion);
+	
 	String buttons="";	
 	
 	boolean isPCajgTXT = cajgConfig < 2 || cajgConfig == 5;
@@ -94,7 +96,7 @@
 	
 	if (modo.equals("consultar")) {
 		buttons="";			
-	} else if (idEstado == 0) {
+	} else if (idEstado == 0) {//INICIADA
 		if (cajgConfig != 0) {
 			buttons="g,ae";//guardar y añadir expedientes
 			if (isPCajgTXT) {
@@ -106,15 +108,21 @@
 					buttons+=",gf,ftp";//genera fichero txt, envio ftp
 				}
 			} else if (cajgConfig == 3) {
-				buttons+=",ws";//envio WebService
+				if (tipoPCAJGGeneral == 1) {
+					buttons+=",ws";//envio WebService
+				} else {
+					buttons+=",gxml";//generar XML	
+				}
 			} else if (cajgConfig == 4) {
 				buttons+=",ws";//envio WebService
-			}	
+			}
 		}
-	} else if (idEstado == 1) {
+	} else if (idEstado == 1) {//GENERADA
 		if (cajgConfig != 0) {
 			buttons="g";//guardar
 			if (isPCajgTXT || cajgConfig == 2) {//QUITAR EL == 2 CUANDO SEA DEFINITIVO EL ENVIO XML
+				buttons+=",d";//descargar
+			} else if (cajgConfig == 3 && tipoPCAJGGeneral != 1) {
 				buttons+=",d";//descargar
 			}
 		}
@@ -135,6 +143,8 @@
 				} else {
 					buttons+=",resolucionFTP";//obtener resoluciones
 				}
+			} else if (cajgConfig == 3 && tipoPCAJGGeneral != 1) {
+				buttons+=",d";//descargar
 			}
 		}
 	}
@@ -235,6 +245,7 @@
 		
 		function deshabilitaTodos() {
 			deshabilita(document.getElementById('idButtonEnvioFTP'));
+			deshabilita(document.getElementById('idButtonGeneraXML'));			
 			deshabilita(document.getElementById('idButtonEnvioWS'));
 			deshabilita(document.getElementById('idButtonRespuestaFTP'));
 			deshabilita(document.getElementById('idButtonResolucionFTP'));			

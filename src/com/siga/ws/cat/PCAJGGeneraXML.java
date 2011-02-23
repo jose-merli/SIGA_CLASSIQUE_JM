@@ -40,9 +40,6 @@ import com.siga.beans.CajgRemesaEstadosAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaAdm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.action.DefinirRemesasCAJGAction;
-import com.siga.pcajg.ws.xsd.TipoElementoTipificadoEstandar;
-import com.siga.pcajg.ws.xsd.TipoElementoTipificadoIntercambio;
-import com.siga.pcajg.ws.xsd.TipoInformacion;
 import com.siga.ws.PCAJGConstantes;
 import com.siga.ws.SIGAWSClientAbstract;
 import com.siga.ws.SigaWSHelper;
@@ -157,7 +154,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		InformacionIntercambio informacionIntercambio = null;
 		Intercambio intercambio = null;
 		IntercambioDocument intercambioDocument = null;
-		TipoInformacion tipoInformacion = null;
+		
 		int numDetalles = 0;
 		int sufijoIdIntercambio = 0;
 		TipoICD tipoICD = null;
@@ -168,7 +165,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			
 			if (!tipoIntercambio.equals(ht.get(TIPOINTERCAMBIO))) {				
 				if (intercambio != null && numDetalles > 0) {					
-					ficheros.add(creaFichero(dirFicheros, dirPlantilla, intercambioDocument, intercambio, tipoInformacion, numDetalles));
+					ficheros.add(creaFichero(dirFicheros, dirPlantilla, intercambioDocument, intercambio, numDetalles));
 				}
 				numDetalles = 0;
 				intercambioDocument = IntercambioDocument.Factory.newInstance();
@@ -201,13 +198,13 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			
 		}
 		if (intercambio != null && numDetalles > 0) {			
-			ficheros.add(creaFichero(dirFicheros, dirPlantilla, intercambioDocument, intercambio, tipoInformacion, numDetalles));
+			ficheros.add(creaFichero(dirFicheros, dirPlantilla, intercambioDocument, intercambio, numDetalles));
 		}
 						
 		return ficheros;
 	}
 	
-	private File creaFichero(String dirFicheros, String dirPlantilla, IntercambioDocument intercambioDocument, Intercambio intercambio, TipoInformacion tipoInformacion, int numDetalles) throws Exception {
+	private File creaFichero(String dirFicheros, String dirPlantilla, IntercambioDocument intercambioDocument, Intercambio intercambio, int numDetalles) throws Exception {
 		
 		File file = new File(dirFicheros);
 		file.mkdirs();
@@ -1187,51 +1184,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		//cal.clear(Calendar.DST_OFFSET);
 		return cal;
 	}
-	
 
-	/**
-	 * 
-	 * @param tipoElementoTipificadoEstandar
-	 * @param value
-	 */
-	private void rellenaTipoElementoTipificadoEstandar(TipoElementoTipificadoEstandar tipoElementoTipificadoEstandar, String value) {
-		boolean relleno = false;
-		if (value != null && !value.trim().equals("")) {
-			String[] array = value.split("##");
-			if (array != null && array.length > 0) {
-				tipoElementoTipificadoEstandar.setCodigo(array[0]);
-				relleno = true;
-				if (array.length > 1) {
-					tipoElementoTipificadoEstandar.setDescripcion(array[1]);
-				}
-				if (array.length > 2) {
-					tipoElementoTipificadoEstandar.setAbreviatura(array[2]);
-				}
-			}
-		}
-	}
-
-	
-	/**
-	 * 
-	 * @param tipoElementoTipificadoEstandar
-	 * @param value
-	 */
-	private void rellenaTipoElementoTipificadoIntercambio(TipoElementoTipificadoIntercambio tipoElementoTipificadoIntercambio, String value) {
-		if (value != null && !value.trim().equals("")) {
-			String[] array = value.split("##");
-			if (array != null && array.length > 0) {
-				tipoElementoTipificadoIntercambio.setCodigo(array[0]);
-				if (array.length > 1) {
-					tipoElementoTipificadoIntercambio.setDescripcion(array[1]);
-				}
-				if (array.length > 2) {
-					tipoElementoTipificadoIntercambio.setAbreviatura(array[2]);
-				}
-			}
-		}
-		
-	}
 	
 	private String getCodigoElementoTipificado(String elementoTipificado) {
 		String code = null;
