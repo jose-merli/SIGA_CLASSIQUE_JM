@@ -40,6 +40,7 @@
 	String NOMBREESTADO = (String) request.getAttribute("NOMBREESTADO");
 	String[] dato = { usr.getLocation() };
 	String idInstitucion = usr.getLocation();
+	if(usr.isComision()) modo="ver";
 	
 
 	// Obtenemos el resultado

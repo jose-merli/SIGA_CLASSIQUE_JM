@@ -77,6 +77,8 @@
 	String sreadonly = "false";
 	boolean scheck = false;
 	String accion = miform.getAccionE();
+	if(usr.isComision()) accion="ver";
+
 	if (accion.equals("ver")) {
 		estiloBox = "boxConsulta";
 		estiloBoxNumber = "boxConsultaNumber";
