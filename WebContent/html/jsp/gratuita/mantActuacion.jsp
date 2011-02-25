@@ -149,6 +149,14 @@
 				comisariaSel.add(0,idComisaria+","+idInstitucionComisaria);
 				ACNUMEROASUNTO = numeroDiligencia;
 			}
+			
+			if (idComisaria.equalsIgnoreCase("") && idInstitucionComisaria.equalsIgnoreCase("") && idJuzgado.equalsIgnoreCase("") && idInstitucionJuzgado.equalsIgnoreCase("")){				
+				if(!numeroDiligencia.equals("") && numeroProcedimiento.equals("")){
+					ACNUMEROASUNTO = numeroDiligencia;
+				}else if(numeroDiligencia.equals("") && !numeroProcedimiento.equals("")){
+					ACNUMEROASUNTO = numeroProcedimiento;
+				}
+			}
 		}else{
 			// Una actuacion creada antes de meter jta la restriccion puede tener comisaria Y juzgado
 			if (idComisaria!=null && idInstitucionComisaria!=null)
