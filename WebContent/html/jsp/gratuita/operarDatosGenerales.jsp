@@ -150,6 +150,22 @@
 					<%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%> <%=UtilidadesString.mostrarDatoJSP(t_tipoSOJ)%>
 					- <%=UtilidadesString.mostrarDatoJSP(t_nombre)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido1)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido2)%>
 			</td>
+			<td>
+				<%
+					if (!accion.equalsIgnoreCase("ver")) {
+				%>
+				<table>
+					<tr>
+						<td><siga:InformeSimple
+							idInstitucion="<%=usr.getLocation()%>"
+							recurso="gratuita.EJG.botonComunicaciones" idTipoInforme="SOJ"
+							formularioDatos="DatosGeneralesSOJForm" /></td>
+					</tr>
+				</table>
+				<%
+					}
+				%>
+				</td>
 		</tr>
 		</table>
 

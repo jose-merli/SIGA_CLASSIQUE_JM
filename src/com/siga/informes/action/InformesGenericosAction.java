@@ -43,6 +43,7 @@ import com.siga.beans.FcsFacturacionJGAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.GenRecursosAdm;
 import com.siga.beans.HelperInformesAdm;
+import com.siga.beans.ScsDefinirSOJAdm;
 import com.siga.beans.ScsDocumentacionEJGAdm;
 import com.siga.beans.ScsDocumentacionEJGBean;
 import com.siga.beans.ScsEJGAdm;
@@ -52,6 +53,7 @@ import com.siga.beans.ScsInclusionGuardiasEnListasBean;
 import com.siga.beans.ScsListaGuardiasAdm;
 import com.siga.beans.ScsListaGuardiasBean;
 import com.siga.beans.ScsPersonaJGBean;
+import com.siga.beans.ScsSOJBean;
 import com.siga.beans.ScsTipoDocumentoEJGBean;
 import com.siga.certificados.Plantilla;
 import com.siga.envios.EnvioInformesGenericos;
@@ -339,6 +341,8 @@ public class InformesGenericosAction extends MasterAction {
 								mapDestino = ejgca(mapping, miForm, request, response);
 							} else if (idTipoInforme.equals("EJG")){
 								mapDestino = ejg(mapping, miForm, request, response);
+							}else if (idTipoInforme.equals("SOJ")){
+								mapDestino = soj(mapping, miForm, request, response);
 							} else if (idTipoInforme.equalsIgnoreCase("CAJG")) {
 								mapDestino = ejg(mapping, miForm, request, response);
 							} else if (idTipoInforme.equals("COBRO")) {
@@ -871,6 +875,170 @@ public class InformesGenericosAction extends MasterAction {
 		Date fin = new Date(); 
 
 		ClsLogging.writeFileLog(Calendar.getInstance().getTimeInMillis() + ",==> SIGA: FIN InformesGenericos.InformeEjg",10);
+		ClsLogging.writeFileLog(fin.getTime()-inicio.getTime() + " MILISEGUNDOS ,==> SIGA: TIEMPO TOTAL",10);
+
+		if(avisoFicherosNoGenerado!=null && !avisoFicherosNoGenerado.toString().trim().equals(""))
+			request.setAttribute("avisoFicherosNoGenerado",avisoFicherosNoGenerado.toString().substring(0,avisoFicherosNoGenerado.length()-1));
+		request.setAttribute("generacionOK","OK");
+		return "descarga";	
+	}	
+	
+	
+	
+	protected String soj (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) 
+	throws SIGAException{
+		Date inicio = new Date();
+		ClsLogging.writeFileLog(Calendar.getInstance().getTimeInMillis() + ",==> SIGA: INICIO InformesGenericos.InformeSoj",10);
+		StringBuffer avisoFicherosNoGenerado = new StringBuffer();
+		try {
+			UsrBean usr = this.getUserBean(request);
+
+			//Obtenemos el formulario y sus datos:
+			InformesGenericosForm miform = (InformesGenericosForm)formulario;
+			File ficheroSalida = null;
+			Vector informesRes = new Vector(); 
+			// Obtiene del campo idInforme los ids separados por ## y devuelve sus beans
+			InformeAbono admInf = new InformeAbono(usr); 
+			Vector plantillas = admInf.obtenerPlantillasFormulario(miform, usr);
+			// Obtiene del campo datosInforme los campos del formulario primcipal
+			// para obtener la clave para el informe. LOs datos se obtienen en una cadena como los ocultos
+			// y se sirven como un vector de hashtables por si se trata de datos multiregistro.
+
+			Vector datos = admInf.obtenerDatosFormulario(miform);
+			// --- acceso a paths y nombres 
+		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+//			ReadProperties rp = new ReadProperties("SIGA.properties");	
+			String rutaPlantilla = rp.returnProperty("informes.directorioFisicoPlantillaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
+			String rutaAlmacen = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
+			////////////////////////////////////////////////
+			// MODELO DE TIPO WORD: LLAMADA A ASPOSE.WORDS
+
+
+
+			Hashtable hashConsultasHechas = new Hashtable();
+			if(plantillas!=null &&plantillas.size()>0){
+				for (int i=0;i<plantillas.size();i++) {
+					AdmInformeBean beanInforme = null;
+					try{
+						beanInforme = (AdmInformeBean) plantillas.get(i); 
+						String numero="";
+						String idTipoSOJ="";
+						String anio="";
+
+						for (int z=0; z<datos.size(); z++){							
+							ScsDefinirSOJAdm definirSOJAdm= new ScsDefinirSOJAdm(usr);
+							String idioma=usr.getLanguageInstitucion();
+							String idiomaDatos="1";
+							//Carga en el doc los datos comunes del informe (Institucion, idfacturacion,fecha)
+							if (miform.getDatosInforme() != null && !miform.getDatosInforme().trim().equals("")) {
+								Hashtable aux  = (Hashtable)datos.get(z);
+								if (aux!=null) {
+										if ((String)aux.get("idtipo")!=null){
+											idTipoSOJ= (String)aux.get("idtipo");
+										}else{
+											idTipoSOJ= (String)aux.get("idTipoSOJ");
+										}
+										
+									
+										anio= (String)aux.get("anio");
+										numero= (String)aux.get("numero");
+
+
+									Hashtable sojHashtable =definirSOJAdm.getDatosInformeSOJ(new Integer(usr.getLocation()),
+											new Integer(idTipoSOJ),new Integer(anio),new Integer(numero));
+
+									 
+
+									HelperInformesAdm helperInformes = new HelperInformesAdm();
+									
+									String idiomainforme="ES";
+									if (sojHashtable!=null && sojHashtable.size()>0) {
+										
+										
+											//Seleccionamos el idioma del interesado para seleccionar la plantilla
+											//String idiomainforme=usr.getLanguageExt();		             				
+											
+								
+											String rutaPl = rutaPlantilla + ClsConstants.FILE_SEP+usr.getLocation()+ClsConstants.FILE_SEP+beanInforme.getDirectorio()+ClsConstants.FILE_SEP;
+											String nombrePlantilla=beanInforme.getNombreFisico()+"_"+idiomainforme+".doc";
+											String rutaAlm = rutaAlmacen + ClsConstants.FILE_SEP+usr.getLocation()+ClsConstants.FILE_SEP+beanInforme.getDirectorio();
+											MasterWords words=new MasterWords(rutaPl+nombrePlantilla);
+											Document doc=words.nuevoDocumento(); 
+											File crear = new File(rutaAlm);
+											if(!crear.exists())
+												crear.mkdirs();
+											Vector documentosSoj =  (Vector)sojHashtable.get("DOCUMENTACION_SOJ");
+											sojHashtable.remove("DOCUMENTACION_SOJ");
+											doc = words.sustituyeDocumento(doc,sojHashtable);
+											doc = words.sustituyeRegionDocumento(doc,"documentos",documentosSoj);
+											
+
+											String idinstitucion = ""+this.getIDInstitucion(request);
+
+											String identificador=idinstitucion+"_"+idTipoSOJ+"_"+numero+"_"+i+"_"+z+".doc";
+											File archivo = words.grabaDocumento(doc,rutaAlm,beanInforme.getNombreSalida()+"_"+identificador);
+											informesRes.add(archivo);
+
+										
+									}
+
+								}
+							}
+
+
+						}	
+					}catch(Exception p){
+						ClsLogging.writeFileLogError("Error generando un informe SOJ: "+beanInforme.getDescripcion(), p, 3);
+						avisoFicherosNoGenerado.append(beanInforme.getDescripcion());
+						avisoFicherosNoGenerado.append(",");
+
+
+
+					}
+
+
+
+				}
+			}else{
+				throw new SIGAException("messages.informes.noPlantillas");
+			}
+			/////////////////////////////////////////////////
+			if (informesRes.size()!=0) { 
+				if (informesRes.size()<2) {
+					ficheroSalida = (File) informesRes.get(0);
+				} else {
+					AdmTipoInformeAdm admT = new AdmTipoInformeAdm(this.getUserBean(request));
+					AdmTipoInformeBean beanT = admT.obtenerTipoInforme(miform.getIdTipoInforme());
+					ArrayList ficherosPDF= new ArrayList();
+					for (int i=0;i<informesRes.size();i++) {
+						File f = (File) informesRes.get(i);
+						ficherosPDF.add(f);
+					}
+					String nombreFicheroZIP=beanT.getDescripcion().trim() + "_" +UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","").replaceAll(":","").replaceAll(" ","");
+					String rutaServidorDescargasZip = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
+					rutaServidorDescargasZip += ClsConstants.FILE_SEP+miform.getIdInstitucion()+ClsConstants.FILE_SEP+"temp"+ File.separator;
+					File ruta = new File(rutaServidorDescargasZip);
+					ruta.mkdirs();
+					Plantilla.doZip(rutaServidorDescargasZip,nombreFicheroZIP,ficherosPDF);
+					ficheroSalida = new File(rutaServidorDescargasZip + nombreFicheroZIP + ".zip");
+				}
+				request.setAttribute("nombreFichero", ficheroSalida.getName());
+				request.setAttribute("rutaFichero", ficheroSalida.getPath());
+				request.setAttribute("borrarFichero", "true");
+			}
+			else{
+				if(!avisoFicherosNoGenerado.toString().trim().equals(""))
+					throw new SIGAException("messages.informes.ningunInformeGenerado");
+				else
+					throw new SIGAException("messages.informes.ficheroVacio");
+			}
+		}
+		catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.informes"},e,null);
+		}
+		Date fin = new Date(); 
+
+		ClsLogging.writeFileLog(Calendar.getInstance().getTimeInMillis() + ",==> SIGA: FIN InformesGenericos.InformeSoj",10);
 		ClsLogging.writeFileLog(fin.getTime()-inicio.getTime() + " MILISEGUNDOS ,==> SIGA: TIEMPO TOTAL",10);
 
 		if(avisoFicherosNoGenerado!=null && !avisoFicherosNoGenerado.toString().trim().equals(""))

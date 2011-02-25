@@ -168,6 +168,23 @@ public class ScsDocumentacionSOJAdm extends MasterBeanAdministrador {
 		}
 		return datos;	
 	}
+	public Vector getDocumentosSOJ(Hashtable hash) throws ClsExceptions {
+		
+		Vector datos = new Vector(); 
+		
+		try { 
+			String where = " WHERE " + ScsDocumentacionSOJBean.C_IDINSTITUCION + " = " + hash.get(ScsDocumentacionSOJBean.C_IDINSTITUCION) + " AND " + ScsSOJBean.C_IDTIPOSOJ + " = " + hash.get(ScsDocumentacionSOJBean.C_IDTIPOSOJ) + 
+						   " AND " + ScsDocumentacionSOJBean.C_ANIO + " = " + hash.get(ScsDocumentacionSOJBean.C_ANIO) + " AND " + ScsDocumentacionSOJBean.C_NUMERO + " = " + hash.get(ScsDocumentacionSOJBean.C_NUMERO)  ;
+			datos = this.selectAll(where);
+		} 
+		catch (ClsExceptions e) {
+			throw e;			
+		}
+		catch (Exception e){
+			 throw new ClsExceptions(e,"EXCEPCION EN BUSCAR POR CLAVE");
+		}
+		return datos;	
+	}
 	
 	/** Funcion getCamposBean ()
 	 *  @return conjunto de datos con los nombres de todos los campos del bean

@@ -7,7 +7,10 @@
 
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
@@ -16,7 +19,7 @@ import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.PaginadorBind;
+import com.siga.Utilidades.paginadores.PaginadorBind;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.Utilidades.UtilidadesString;
@@ -395,7 +398,7 @@ public class ScsDefinirSOJAdm extends MasterBeanAdministrador {
 		
 		try {
 			//String bBusqueda = formulario.getChkBusqueda();
-			consulta = "select soj.ANIO, " +
+			consulta = "select soj.IDINSTITUCION,soj.ANIO, " +
 			   " soj.NUMSOJ," +
 	       " soj.NUMERO," +
 	       " soj.IDTIPOSOJ," +
@@ -407,7 +410,7 @@ public class ScsDefinirSOJAdm extends MasterBeanAdministrador {
 	       //" turno.NOMBRE AS+ NOMBRE," +
 		   " soj.IDTURNO,"+
 		   " soj.IDGUARDIA,"+
-		  
+		   
 		   " soj.IDTIPOSOJCOLEGIO, "+
 		   " soj.SUFIJO,"+
 		   " (persona.nombre || ' ' || persona.apellido1||' '|| persona.apellido2) as nombre"+
@@ -634,4 +637,292 @@ public class ScsDefinirSOJAdm extends MasterBeanAdministrador {
 	    }
 		return null;
 	}
+	public Hashtable getDatosInformeSOJ(Integer idInstitucion,
+			Integer idTipoSOJ,
+			Integer anio,
+			Integer numero) throws ClsExceptions
+	{
+
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT SOJ.*, ");
+		sql.append(" F_SIGA_GETRECURSO(TIPOSOJ.DESCRIPCION, 1) DESCRIPCIONTIPOSOJ, ");
+		sql.append(" F_SIGA_GETRECURSO(TIPOSOJC.DESCRIPCION, 1) DESCRIPCIONTIPOSOJCOLEGIO, ");
+		sql.append(" F_SIGA_GETRECURSO(TC.DESCRIPCION, 1) DESCRIPCIONTIPOCONSULTA, ");
+		sql.append(" F_SIGA_GETRECURSO(TR.DESCRIPCION, 1) DESCRIPCIONTIPORESPUESTA, ");
+		sql.append(" EJG.NUMEJG ");
+		sql.append(" FROM SCS_SOJ            SOJ, ");
+		sql.append(" SCS_TIPOSOJ        TIPOSOJ, ");
+		sql.append(" SCS_TIPOSOJCOLEGIO TIPOSOJC, ");
+		sql.append(" SCS_TIPOCONSULTA   TC, ");
+		sql.append(" SCS_TIPORESPUESTA  TR, ");
+		sql.append(" SCS_EJG            EJG ");
+		sql.append(" WHERE SOJ.IDINSTITUCION = EJG.IDINSTITUCION(+) ");
+		sql.append(" AND SOJ.EJGIDTIPOEJG = EJG.IDTIPOEJG(+) ");
+		sql.append(" AND SOJ.EJGANIO = EJG.ANIO(+) ");
+		sql.append(" AND SOJ.EJGNUMERO = EJG.NUMERO(+) ");
+	      
+		sql.append(" AND SOJ.IDINSTITUCION = TC.IDINSTITUCION(+) ");
+		sql.append(" AND SOJ.IDTIPOCONSULTA = TC.IDTIPOCONSULTA(+) ");
+	      
+		sql.append(" AND SOJ.IDINSTITUCION = TR.IDINSTITUCION(+) ");
+		sql.append(" AND SOJ.IDTIPORESPUESTA = TR.IDTIPORESPUESTA(+) ");
+	      
+		sql.append(" AND SOJ.IDINSTITUCION = TIPOSOJC.IDINSTITUCION(+) ");
+		sql.append(" AND SOJ.IDTIPOSOJCOLEGIO = TIPOSOJC.IDTIPOSOJCOLEGIO(+) ");
+	      
+		sql.append(" AND SOJ.IDTIPOSOJ = TIPOSOJ.IDTIPOSOJ ");
+	    
+		sql.append(" AND SOJ.IDINSTITUCION = :");
+		contador++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador), idInstitucion);
+		
+		sql.append(" AND SOJ.IDTIPOSOJ = :");
+		contador++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador), idTipoSOJ);
+		
+		sql.append(" AND SOJ.ANIO = :");
+		contador++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador), anio);
+		
+		sql.append(" AND SOJ.NUMERO = :");
+		contador++;
+		sql.append(contador);
+		htCodigos.put(new Integer(contador), numero);
+		
+		Hashtable sojHashtable =  new Hashtable();
+		try {
+			RowsContainer rc = new RowsContainer();
+
+			if (rc.findBind(sql.toString(), htCodigos)) {
+				for (int i = 0; i < rc.size(); i++) {
+					Row fila = (Row) rc.get(i);
+					sojHashtable = fila.getRow();
+					
+					actualizarDatosSOJ(sojHashtable);
+				}
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al ejecutar consulta.");
+		}
+		return sojHashtable;
+
+	}
+	private void actualizarDatosGeneralesSOJ(Hashtable sojHashtable) throws ClsExceptions{
+		String fechaAPertura = UtilidadesHash.getString(sojHashtable, ScsSOJBean.C_FECHAAPERTURA);
+		UtilidadesHash.set(sojHashtable, ScsSOJBean.C_FECHAAPERTURA, GstDate.getFormatedDateShort("", fechaAPertura));
+		if(UtilidadesHash.getString(sojHashtable, ScsSOJBean.C_ESTADO).equals("A")){
+			UtilidadesHash.set(sojHashtable, ScsSOJBean.C_ESTADO, UtilidadesString.getMensajeIdioma(this.usrbean,"gratuita.SOJ.estado.abierto"));
+		}else if(UtilidadesHash.getString(sojHashtable, ScsSOJBean.C_ESTADO).equals("P")){
+			UtilidadesHash.set(sojHashtable, ScsSOJBean.C_ESTADO, UtilidadesString.getMensajeIdioma(this.usrbean,"gratuita.SOJ.estado.pendiente"));
+		}else if(UtilidadesHash.getString(sojHashtable, ScsSOJBean.C_ESTADO).equals("C")){
+			UtilidadesHash.set(sojHashtable, ScsSOJBean.C_ESTADO, UtilidadesString.getMensajeIdioma(this.usrbean,"gratuita.SOJ.estado.cerrado"));
+		}
+		
+		String numSOJ  = (String)sojHashtable.get(ScsSOJBean.C_NUMSOJ);
+		if(numSOJ!=null && !numSOJ.trim().equals("")){
+			sojHashtable.put("CODIGO_SOJ", (String)sojHashtable.get(ScsSOJBean.C_ANIO)+"/"+numSOJ);
+		}else{
+			sojHashtable.put("CODIGO_SOJ", "");
+		}
+		
+		//ponemos el codigo de ejg
+		String ejgAnio  = (String)sojHashtable.get(ScsSOJBean.C_EJGANIO);
+		if(ejgAnio!=null && !ejgAnio.trim().equals("")){
+			sojHashtable.put("CODIGO_EJG", (String)sojHashtable.get(ScsSOJBean.C_EJGANIO)+"/"+(String)sojHashtable.get(ScsEJGBean.C_NUMEJG));
+		}else{
+			sojHashtable.put("CODIGO_EJG", "");
+		}
+		
+		
+	}
+	private void actualizarDatosGuardiaSOJ(Hashtable sojHashtable) throws ClsExceptions{
+		HelperInformesAdm helperInformes = new HelperInformesAdm();
+		String idTurno  = (String)sojHashtable.get("IDTURNO");
+		String idInstitucion  = (String)sojHashtable.get("IDINSTITUCION");
+		String idGuardia = (String)sojHashtable.get("IDGUARDIA");
+		if(idTurno!=null && !idTurno.trim().equals("") && idGuardia!=null && !idGuardia.trim().equals("")){
+			Hashtable htFuncion = new Hashtable();
+			htFuncion.put(new Integer(1), idInstitucion);
+			htFuncion.put(new Integer(2), idTurno);
+			htFuncion.put(new Integer(3), idGuardia);
+			helperInformes.completarHashSalida(sojHashtable,helperInformes.ejecutaFuncionSalida(htFuncion, "f_siga_getnombreguardia", "NOMBRE_GUARDIA"));
+			  
+			
+			helperInformes.completarHashSalida(sojHashtable,helperInformes.getTurnoSalida(idInstitucion,idTurno));
+		}else{
+			sojHashtable.put("NOMBRE_GUARDIA", ""); 
+			
+		}
+		
+		
+	}
+	
+	
+	private void actualizarDatosTurnoSOJ(Hashtable sojHashtable) throws ClsExceptions{
+		HelperInformesAdm helperInformes = new HelperInformesAdm();
+		  
+		  
+		String idTurno  = (String)sojHashtable.get("IDTURNO");
+		if(idTurno!=null && !idTurno.trim().equals("") ){
+			String idInstitucion  = (String)sojHashtable.get("IDINSTITUCION");
+			helperInformes.completarHashSalida(sojHashtable,helperInformes.getTurnoSalida(idInstitucion,idTurno));
+		}else{
+			sojHashtable.put("DESCRIPCION_TURNO", "");
+			sojHashtable.put("ABREV_TURNO", "");
+			
+		}
+		
+		
+	}
+	private void actualizarDatosSOJ(Hashtable sojHashtable) throws ClsExceptions{
+		actualizarDatosGeneralesSOJ(sojHashtable);
+		actualizarDatosGuardiaSOJ(sojHashtable);
+		actualizarDatosTurnoSOJ(sojHashtable);
+		actualizarDatosLetrado(sojHashtable);
+		actualizarDatosPersonaJG(sojHashtable);
+		actualizarDatosDocumentacion(sojHashtable);
+		
+	}
+	private void actualizarDatosLetrado(Hashtable sojHashtable) throws ClsExceptions{
+		HelperInformesAdm helperInformes = new HelperInformesAdm();
+		String idLetradoEjg  = (String)sojHashtable.get("IDPERSONA");
+		String idInstitucion  = UtilidadesHash.getString(sojHashtable,"IDINSTITUCION");
+		ScsEJGAdm ejgAdm = new ScsEJGAdm(this.usrbean);
+		if(idLetradoEjg!=null && !idLetradoEjg.trim().equalsIgnoreCase("")){
+			helperInformes.completarHashSalida(sojHashtable,ejgAdm.getColegiadoSalida(idInstitucion, 
+					idLetradoEjg,"LETRADO"));
+			String sexoLetradoEjg  = (String)sojHashtable.get("SEXO_ST_LETRADO");
+			sexoLetradoEjg = UtilidadesString.getMensajeIdioma(usrbean, sexoLetradoEjg);
+			sojHashtable.put("SEXO_LETRADO", sexoLetradoEjg);
+			helperInformes.completarHashSalida(sojHashtable,ejgAdm.getDireccionLetradoSalida(idLetradoEjg,idInstitucion,"LETRADO"));
+			
+			helperInformes.completarHashSalida(sojHashtable,ejgAdm.getDireccionPersonalLetradoSalida(idLetradoEjg,idInstitucion,"LETRADO"));			
+			String telefonoDespacho = (String)sojHashtable.get("TELDESPACHO_LETRADO");
+			if(telefonoDespacho!=null)
+				UtilidadesHash.set(sojHashtable, "TELEFONODESPACHO_LETRADO", telefonoDespacho);
+			else
+				UtilidadesHash.set(sojHashtable, "TELEFONODESPACHO_LETRADO", "");
+			
+			String pobLetradoEjg = (String)sojHashtable.get("POBLACION_LETRADO");
+			if(pobLetradoEjg==null ||pobLetradoEjg.trim().equalsIgnoreCase("")){
+				String idPobLetradoEjg = (String)sojHashtable.get("ID_POBLACION_LETRADO");
+				helperInformes.completarHashSalida(sojHashtable,helperInformes.getNombrePoblacionSalida(idPobLetradoEjg,"POBLACION_LETRADO"));
+				String idProvLetradoEjg = (String)sojHashtable.get("ID_PROVINCIA_LETRADO");
+				if(idProvLetradoEjg!=null && !idProvLetradoEjg.trim().equalsIgnoreCase(""))
+					helperInformes.completarHashSalida(sojHashtable,helperInformes.getNombreProvinciaSalida(idProvLetradoEjg,"PROVINCIA_LETRADO"));
+				else
+					UtilidadesHash.set(sojHashtable, "PROVINCIA_LETRADO", "");
+				
+
+			}else{
+				UtilidadesHash.set(sojHashtable, "PROVINCIA_LETRADO", "");
+				
+			}
+		}else{
+			UtilidadesHash.set(sojHashtable, "NCOLEGIADO_LETRADO", "");
+			UtilidadesHash.set(sojHashtable, "NOMBRE_LETRADO", "");
+			UtilidadesHash.set(sojHashtable, "NIFCIF_LETRADO", "");
+			UtilidadesHash.set(sojHashtable, "SEXO_LETRADO", "");
+			UtilidadesHash.set(sojHashtable, "DOMICILIO_LETRADO", "");
+			UtilidadesHash.set(sojHashtable, "CP_LETRADO", "");
+			UtilidadesHash.set(sojHashtable, "POBLACION_LETRADO", "");
+			UtilidadesHash.set(sojHashtable, "PROVINCIA_LETRADO", "");
+			UtilidadesHash.set(sojHashtable, "TELEFONODESPACHO_LETRADO", "");
+			UtilidadesHash.set(sojHashtable, "EMAIL_LETRADO", "");
+			UtilidadesHash.set(sojHashtable, "FAX_LETRADO", "");
+			UtilidadesHash.set(sojHashtable, "TELEFONO1_LETRADO", "");
+			UtilidadesHash.set(sojHashtable, "TELEFONO2_LETRADO", "");
+			UtilidadesHash.set(sojHashtable, "MOVIL_LETRADO", "");
+		}
+		
+	}
+	
+	private void actualizarDatosPersonaJG(Hashtable sojHashtable) throws NumberFormatException, ClsExceptions{
+		
+		String idPersonaJG  = (String)sojHashtable.get("IDPERSONAJG");
+		String idInstitucion  = UtilidadesHash.getString(sojHashtable,"IDINSTITUCION");
+		if(idPersonaJG!=null && !idPersonaJG.trim().equalsIgnoreCase("")){
+			ScsPersonaJGAdm personaJGAdm = new ScsPersonaJGAdm(this.usrbean);
+			ScsPersonaJGBean personaJGBean = personaJGAdm.getPersonaJG(new Long(idPersonaJG), new Integer(idInstitucion));
+
+			
+			sojHashtable.put("NOMBRE_SOLICITANTE",personaJGBean.getNombre());
+			sojHashtable.put("APELLIDO1_SOLICITANTE",personaJGBean.getApellido1());
+			sojHashtable.put("APELLIDO2_SOLICITANTE",personaJGBean.getApellido2());
+			sojHashtable.put("NIF_SOLICITANTE",personaJGBean.getNif());
+			sojHashtable.put("DIRECCION_SOLICITANTE",personaJGBean.getDireccion());
+			if(personaJGBean.getPoblacion()!=null && personaJGBean.getPoblacion().getNombre()!=null)
+				sojHashtable.put("POBLACION_SOLICITANTE",personaJGBean.getPoblacion().getNombre());
+			else
+				sojHashtable.put("POBLACION_SOLICITANTE","");
+				
+			sojHashtable.put("CODIGOPOSTAL_SOLICITANTE",personaJGBean.getCodigoPostal());
+			if(personaJGBean.getProvincia()!=null && personaJGBean.getProvincia().getNombre()!=null)
+				sojHashtable.put("PROVINCIA_SOLICITANTE",personaJGBean.getProvincia().getNombre());
+			else
+				sojHashtable.put("PROVINCIA_SOLICITANTE","");
+			sojHashtable.put("CORREOELECTRONICO_SOLICITANTE",personaJGBean.getCorreoElectronico());
+			sojHashtable.put("FAX_SOLICITANTE",personaJGBean.getFax());
+    		Vector<ScsTelefonosPersonaJGBean> vTelefonos = personaJGBean.getTelefonos();
+    		if(vTelefonos!=null && vTelefonos.size()>0){
+	    		for (int i = 0; i < vTelefonos.size(); i++) {
+	    			ScsTelefonosPersonaJGBean telefono = (ScsTelefonosPersonaJGBean)vTelefonos.get(i);
+	    			sojHashtable.put("TELEFONO_"+(i+1)+"_SOLICITANTE",telefono.getNumeroTelefono());
+	    			sojHashtable.put("USO_"+(i+1)+"_SOLICITANTE",telefono.getNombreTelefono());
+				}
+    		}else{
+    			sojHashtable.put("TELEFONO_1_SOLICITANTE","");
+    			sojHashtable.put("USO_1_SOLICITANTE","");
+    			
+    		}
+
+			
+			
+		}else{
+			sojHashtable.put("NOMBRE_SOLICITANTE","");
+			sojHashtable.put("APELLIDO1_SOLICITANTE","");
+			sojHashtable.put("APELLIDO2_SOLICITANTE","");
+			sojHashtable.put("NIF_SOLICITANTE","");
+			sojHashtable.put("DIRECCION_SOLICITANTE","");
+			sojHashtable.put("POBLACION_SOLICITANTE","");
+			sojHashtable.put("CODIGOPOSTAL_SOLICITANTE","");
+			sojHashtable.put("PROVINCIA_SOLICITANTE","");
+			sojHashtable.put("CORREOELECTRONICO_SOLICITANTE","");
+			sojHashtable.put("FAX_SOLICITANTE","");
+			sojHashtable.put("TELEFONO_1_SOLICITANTE","");
+			sojHashtable.put("USO_1_SOLICITANTE","");
+			
+			
+		}
+		
+	}
+	private void actualizarDatosDocumentacion(Hashtable sojHashtable) throws NumberFormatException, ClsExceptions{
+		
+		ScsDocumentacionSOJAdm documentacionSOJAdm = new ScsDocumentacionSOJAdm(this.usrbean);
+		Vector documentacionSOJVector = documentacionSOJAdm.getDocumentosSOJ(sojHashtable);
+		Vector newVector = new Vector();
+		for (int i = 0; i < documentacionSOJVector.size(); i++) {
+			ScsDocumentacionSOJBean docBean = (ScsDocumentacionSOJBean)documentacionSOJVector.get(i);
+			Hashtable documentacionHashtable = documentacionSOJAdm.beanToHashTable(docBean);
+			String fechaLimite = UtilidadesHash.getString(documentacionHashtable, ScsDocumentacionSOJBean.C_FECHALIMITE);
+			UtilidadesHash.set(documentacionHashtable, ScsDocumentacionSOJBean.C_FECHALIMITE, GstDate.getFormatedDateShort("", fechaLimite));
+			String fechaEntrega = UtilidadesHash.getString(documentacionHashtable, ScsDocumentacionSOJBean.C_FECHAENTREGA);
+			UtilidadesHash.set(documentacionHashtable, ScsDocumentacionSOJBean.C_FECHAENTREGA, GstDate.getFormatedDateShort("", fechaEntrega));
+			
+			newVector.add(documentacionHashtable);			
+		}
+		
+		sojHashtable.put("DOCUMENTACION_SOJ", newVector);
+		
+		
+		
+		
+		
+	}
+	
 }

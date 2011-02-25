@@ -130,6 +130,7 @@
 	<html:hidden property = "idPersona" value = ""/>
 	<html:hidden property = "numero" value = ""/>
 	<input type="hidden" name="limpiarFilaSeleccionada" value="">
+	<html:hidden property="seleccionarTodos" />
 
 	<siga:ConjCampos leyenda="gratuita.busquedaSOJ.literal.expedientesSOJ">
 	<table  align="center" width="100%" border="0">  		
@@ -237,7 +238,7 @@
 	
 	<!-- INICIO: BOTONES BUSQUEDA -->	
 	
-	<siga:ConjBotonesBusqueda botones="N,B" titulo="gratuita.busquedaSOJ.literal.expedientesSOJ" />
+	<siga:ConjBotonesBusqueda botones="C,N,B" titulo="gratuita.busquedaSOJ.literal.expedientesSOJ" />
 	
 	<!-- FIN: BOTONES BUSQUEDA -->
 	
@@ -298,6 +299,18 @@
 				}
 			}
 		}
+		function seleccionarTodos(pagina) 
+		{
+				document.forms[1].seleccionarTodos.value = pagina;
+				buscar('buscarPor');
+				
+		}		
+		function generarCarta() {
+   			if(window.frames.resultado.ObjArray){
+ 				window.frames.resultado.accionGenerarCarta();
+			}
+
+		} 	
 		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->

@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
-import com.atos.utils.ClsConstants;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,15 +22,15 @@ import org.apache.struts.action.ActionMapping;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.GestorContadores;
-import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.Utilidades.paginadores.PaginadorBind;
 import com.siga.beans.BusquedaClientesFiltrosAdm;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.ScsDefinirSOJAdm;
+import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsSOJBean;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -43,7 +42,8 @@ import com.siga.gratuita.form.DefinirSOJForm;
 * Maneja las acciones que se pueden realizar sobre la tabla SCS_SOJ
 */
 public class DefinirExpedientesSOJAction extends MasterAction {		
-	
+	final String[] clavesBusqueda={ScsSOJBean.C_IDINSTITUCION,ScsSOJBean.C_IDTIPOSOJ,ScsSOJBean.C_ANIO
+			,ScsSOJBean.C_NUMERO};
 	protected ActionForward executeInternal(ActionMapping mapping, ActionForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
 	{
 		MasterForm miForm = (MasterForm) formulario;
@@ -54,10 +54,20 @@ public class DefinirExpedientesSOJAction extends MasterAction {
 			else {
 				String accion = miForm.getModo();
 				String mapDestino = null;
-				if (accion != null && !accion.equalsIgnoreCase("")) {
-					if (accion.equalsIgnoreCase("relacionarConEJG")) {
-						mapDestino=relacionarConEJG (true, miForm, request);
-					}
+				if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
+					DefinirSOJForm form = (DefinirSOJForm)miForm;
+					form.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
+					form.reset(mapping,request);
+					request.getSession().removeAttribute("DATAPAGINADOR");
+					mapDestino = abrir(mapping, miForm, request, response);						
+				}else if (accion.equalsIgnoreCase("buscarInit")){
+					miForm.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
+					request.getSession().removeAttribute("DATAPAGINADOR");
+					mapDestino = buscarPor(mapping, miForm, request, response); 
+				}
+				else if (accion.equalsIgnoreCase("relacionarConEJG")) {
+					mapDestino=relacionarConEJG (true, miForm, request);
+					
 				}
 				else if((miForm.getModo()==null)||(miForm.getModo().equals(""))){
 					return mapping.findForward(this.abrir(mapping, miForm, request, response));
@@ -68,7 +78,7 @@ public class DefinirExpedientesSOJAction extends MasterAction {
 			}
 		}
 		catch(Exception e){
-			return mapping.findForward("exception");
+			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
 		}
 		return super.executeInternal(mapping, formulario, request, response); 
 		
@@ -86,7 +96,124 @@ public class DefinirExpedientesSOJAction extends MasterAction {
 	 * 
 	 * @return String que indicará la siguiente acción a llevar a cabo. 
 	 */
-	protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions,SIGAException {		
+	protected String buscarPor(ActionMapping mapping, MasterForm formulario,
+			HttpServletRequest request, HttpServletResponse response)
+	throws ClsExceptions,SIGAException  {
+
+		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+		DefinirSOJForm miFormulario =(DefinirSOJForm)formulario;
+		Hashtable miHash= new Hashtable();
+		miHash = miFormulario.getDatos();
+		String consulta= "";
+		String idInstitucion= usr.getLocation();	
+		try {
+
+			//Si es seleccionar todos esta variable no vandra nula y ademas nos traera el numero de pagina 
+			//donde nos han marcado el seleccionar todos(asi evitamos meter otra variable)
+			boolean isSeleccionarTodos = miFormulario.getSeleccionarTodos()!=null 
+				&& !miFormulario.getSeleccionarTodos().equals("");
+			//si no es seleccionar todos los cambios van a fectar a los datos que se han mostrado en 
+			//la jsp por lo que parseamos los datos dento dela variable Registro seleccionados. Cuando hay modificacion
+			//habra que actualizar estos datos
+			if(!isSeleccionarTodos){
+				ArrayList clavesRegSeleccinados = (ArrayList) miFormulario.getRegistrosSeleccionados();
+				String seleccionados = request.getParameter("Seleccion");
+				
+				
+				if (seleccionados != null ) {
+					ArrayList alRegistros = actualizarSelecionados(this.clavesBusqueda,seleccionados, clavesRegSeleccinados);
+					if (alRegistros != null) {
+						clavesRegSeleccinados = alRegistros;
+						miFormulario.setRegistrosSeleccionados(clavesRegSeleccinados);
+					}
+				}
+			}
+			
+			HashMap databackup = (HashMap) miFormulario.getDatosPaginador();
+			if (databackup!=null && databackup.get("paginador")!=null&&!isSeleccionarTodos){
+				PaginadorBind paginador = (PaginadorBind)databackup.get("paginador");
+				Vector datos=new Vector();
+
+				//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
+				String pagina = (String)request.getParameter("pagina");
+
+
+
+				if (paginador!=null){	
+					if (pagina!=null){
+						datos = paginador.obtenerPagina(Integer.parseInt(pagina));
+					}else{// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
+						datos = paginador.obtenerPagina((paginador.getPaginaActual()));
+					}
+				}	
+				databackup.put("paginador",paginador);
+				databackup.put("datos",datos);
+
+
+
+
+			}else{	
+
+				databackup=new HashMap();
+
+				//obtengo datos de la consulta 			
+				PaginadorBind resultado = null;
+				ScsDefinirSOJAdm sojAdm=new ScsDefinirSOJAdm(this.getUserBean(request));
+		  	    resultado=sojAdm.getBusquedaSOJ((String)usr.getLocation(),miHash);
+				Vector datos = null;
+
+
+
+				databackup.put("paginador",resultado);
+				
+				if (resultado!=null && resultado.getNumeroTotalRegistros()>0){ 
+					
+					
+					if(isSeleccionarTodos){
+						//Si hay que seleccionar todos hacemos la query completa.
+						ArrayList clavesRegSeleccinados = new ArrayList((Collection)sojAdm.selectGenericoNLSBind(resultado.getQueryInicio(), resultado.getCodigosInicio()));
+						aniadeClavesBusqueda(this.clavesBusqueda,clavesRegSeleccinados);
+						miFormulario.setRegistrosSeleccionados(clavesRegSeleccinados);
+						datos = resultado.obtenerPagina(Integer.parseInt(miFormulario.getSeleccionarTodos()));
+						miFormulario.setSeleccionarTodos("");
+						
+					}else{
+//					
+						miFormulario.setRegistrosSeleccionados(new ArrayList());
+						datos = resultado.obtenerPagina(1);
+					}
+					databackup.put("datos",datos);
+						
+					
+					
+				}else{
+					resultado = null;
+					miFormulario.setRegistrosSeleccionados(new ArrayList());
+				} 
+				miFormulario.setDatosPaginador(databackup);
+				
+
+				//resultado = admBean.selectGenerico(consulta);
+				//request.getSession().setAttribute("resultado",v);
+			}
+		
+			// En "DATOSFORMULARIO" almacenamos el identificador del letrado			
+			miHash.put("BUSQUEDAREALIZADA","1");
+			request.getSession().setAttribute("DATOSFORMULARIO",miHash);	
+			request.getSession().setAttribute("BUSQUEDAREALIZADA", consulta.toString());
+
+
+		}catch (SIGAException e1) {
+			// Excepcion procedente de obtenerPagina cuando se han borrado datos
+			return exitoRefresco("error.messages.obtenerPagina",request);
+		}catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
+		}
+
+		return "listarSOJ";
+	}
+	
+	protected String buscarPorOld(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions,SIGAException {		
 		try{
 			
 		DefinirSOJForm miForm = (DefinirSOJForm) formulario;		
@@ -581,8 +708,9 @@ public class DefinirExpedientesSOJAction extends MasterAction {
 		try {				
 			miHash.put(ScsSOJBean.C_IDTIPOSOJ,(ocultos.get(0)));
 			miHash.put(ScsSOJBean.C_IDINSTITUCION,(ocultos.get(1)));						
-			miHash.put(ScsSOJBean.C_ANIO,(visibles.get(3)));
-			miHash.put(ScsSOJBean.C_NUMERO,(ocultos.get(3)));										
+			miHash.put(ScsSOJBean.C_NUMERO,(ocultos.get(3)));
+			miHash.put(ScsSOJBean.C_ANIO,(ocultos.get(4)));
+													
 			
 			tx=usr.getTransaction();
 			tx.begin();
