@@ -671,6 +671,9 @@ public class ExpDatosGeneralesAction extends MasterAction
 				expBean.setFechaCaducidad(GstDate.getApplicationFormatDate("",form.getFechaCaducidad()));
 			}
 			expBean.setAsunto(form.getAsunto());
+			if (form.getObservaciones()!= null && !form.getObservaciones().equals(""))
+	        	expBean.setObservaciones(form.getObservaciones());
+			
 			if (form.getMinuta()!= null && !form.getMinuta().trim().equals("")) {
 			    expBean.setMinuta(new Double(form.getMinuta()));
 			}
