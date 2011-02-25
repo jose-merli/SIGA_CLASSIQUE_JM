@@ -56,6 +56,7 @@
 	<script>
 
 		function refrescarLocal() {
+			parent.refrescarLocal();
 			document.forms[0].target="_self";
 			document.forms[0].modo.value="buscar";
 			document.forms[0].submit();				

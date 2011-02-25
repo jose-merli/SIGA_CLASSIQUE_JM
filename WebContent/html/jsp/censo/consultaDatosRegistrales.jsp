@@ -106,10 +106,6 @@
 		e.printStackTrace();
 	}
 	
-
-	
-	
-
 %>	
 
 <html>
@@ -141,33 +137,35 @@
 					document.ActividadProfesionalForm.modo.value="buscar";
 					document.ActividadProfesionalForm.modoAnterior.value=document.forms[0].accion.value;				
 					document.ActividadProfesionalForm.idPersona.value=document.forms[0].idPersona.value;	
-					document.ActividadProfesionalForm.idInstitucion.value=document.forms[0].idInstitucion.value;	
+					document.ActividadProfesionalForm.idInstitucion.value=document.forms[0].idInstitucion.value;
 					document.ActividadProfesionalForm.target="resultado";	
 					document.ActividadProfesionalForm.submit();	
 		}
-			function obtenerNif() 
-			{
-			
+
+		function obtenerNif() {
+
 			if (document.forms[0].numIdentificacion.value!="" ){
 				document.getElementById("noobligatoriotipo").style.display="none";
-				//document.getElementById("noobligatorionif").style.display="none";
 				document.getElementById("noobligatorionombre").style.display="none";
 				document.getElementById("noobligatorioapellido").style.display="none";
-				document.getElementById("obligatoriotipo").style.display="block";
-				//document.getElementById("obligatorionif").style.display="block";
+				document.getElementById("obligatoriotipo").style.display="block";				
 				document.getElementById("obligatorionombre").style.display="block";
 				document.getElementById("obligatorioapellido").style.display="block";
+
 			}else{
 				document.DatosRegistralesForm.nombre.disabled=false;
 				document.DatosRegistralesForm.apellido1.disabled=false;
 				document.DatosRegistralesForm.apellido2.disabled=false;
 				document.forms[0].tipoIdentificacion.disabled=false;
+				document.forms[0].numIdentificacion.disabled=false;
 				document.DatosRegistralesForm.nombre.value="";
 				document.DatosRegistralesForm.apellido1.value="";
 				document.DatosRegistralesForm.apellido2.value="";
 				document.forms[0].numIdentificacion.value="";
 				document.forms[0].tipoIdentificacion.value="";
 			}
+
+			alert("EL TIPO ES "+document.forms[0].tipoIdentificacion.value);
 			
 			if((document.forms[0].tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")&& (document.forms[0].numIdentificacion.value!="") ) {
 			     var sNIF = document.forms[0].numIdentificacion.value;
@@ -175,14 +173,11 @@
 				} 
 		   	     var nif = (document.forms[0].numIdentificacion.value);
 				
- 				if (nif!="") {
-					if (!validaNumeroIdentificacion()) {
+				if (nif!="") {
+					if (!validaNumeroIdentificacion2()) {
 						return false;
 					}
 			
-			
-					
-				
 					//LMSP En lugar de abrir la ventana modal, se manda al frame oculto, y éste se encarga de todo :)
 					document.forms[0].modo.value="buscarNIF";
 					document.forms[0].target="submitArea";
@@ -190,8 +185,7 @@
 				}			
 			}
 			
-			function validaNumeroIdentificacion () 
-			{
+			function validaNumeroIdentificacion2 (){
 				document.forms[0].numIdentificacion.value = (document.forms[0].numIdentificacion.value).toUpperCase();
 				var a = (document.forms[0].numIdentificacion.value);
 				if (document.forms[0].tipoIdentificacion!=undefined && (document.forms[0].tipoIdentificacion.value==<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>||document.forms[0].tipoIdentificacion.value==<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>)) {
@@ -202,14 +196,14 @@
 				}
 				return true;
 			}
+
 			
+		function obligatorio(){
 			
-			function obligatorio(){
-				
 			 <%DatosRegistralesForm formularioaux = null;
-			 formularioaux = (DatosRegistralesForm)request.getAttribute("DatosRegistralesForm");
-			String nif=null;
-			nif=formularioaux.getNumIdentificacion();
+			 	formularioaux = (DatosRegistralesForm)request.getAttribute("DatosRegistralesForm");
+				String nif=null;
+				nif=formularioaux.getNumIdentificacion();
 			
 			 if (nif ==null || nif.equals("")) {%>
 				document.getElementById("obligatoriotipo").style.display="none";
@@ -229,68 +223,68 @@
 				document.getElementById("noobligatoriotipo").style.display="none";
 				//document.getElementById("noobligatorionif").style.display="none";
 				document.getElementById("noobligatorionombre").style.display="none";
-				document.getElementById("noobligatorioapellido").style.display="none";
+				document.getElementById("noobligatorioapellido").style.display="none";;
 				document.forms[0].nombre.disabled=true;
 				document.forms[0].apellido1.disabled=true;
 				document.forms[0].apellido2.disabled=true;
 				document.forms[0].tipoIdentificacion.disabled=true;
+				document.forms[0].numIdentificacion.disabled=true;
 			<%}%>
-				
-			}
+		}
 			
-			function nombre1(){
-				if (document.forms[0].nombre.value!=""){
-					document.getElementById("obligatoriotipo").style.display="block";
-					//document.getElementById("obligatorionif").style.display="block";
-					document.getElementById("obligatorionombre").style.display="block";
-					document.getElementById("obligatorioapellido").style.display="block";
-					document.getElementById("noobligatoriotipo").style.display="none";
-					//document.getElementById("noobligatorionif").style.display="none";
-					document.getElementById("noobligatorionombre").style.display="none";
-					document.getElementById("noobligatorioapellido").style.display="none";
-					
-				}else{
-					if (document.forms[0].numIdentificacion.value=="" && document.forms[0].apellido1.value=="" && document.forms[0].tipoIdentificacion.value=="" ){
-						document.getElementById("obligatoriotipo").style.display="none";
-						//document.getElementById("obligatorionif").style.display="none";
-						document.getElementById("obligatorionombre").style.display="none";
-						document.getElementById("obligatorioapellido").style.display="none";
-						document.getElementById("noobligatoriotipo").style.display="block";
-						//document.getElementById("noobligatorionif").style.display="block";
-						document.getElementById("noobligatorionombre").style.display="block";
-						document.getElementById("noobligatorioapellido").style.display="block";
-						document.forms[0].idPersonaNotario.value="";
-					}
+		function nombre1(){
+			if (document.forms[0].nombre.value!=""){
+				document.getElementById("obligatoriotipo").style.display="block";
+				//document.getElementById("obligatorionif").style.display="block";
+				document.getElementById("obligatorionombre").style.display="block";
+				document.getElementById("obligatorioapellido").style.display="block";
+				document.getElementById("noobligatoriotipo").style.display="none";
+				//document.getElementById("noobligatorionif").style.display="none";
+				document.getElementById("noobligatorionombre").style.display="none";
+				document.getElementById("noobligatorioapellido").style.display="none";
+				
+				
+			}else{
+				if (document.forms[0].numIdentificacion.value=="" && document.forms[0].apellido1.value=="" && document.forms[0].tipoIdentificacion.value=="" ){
+					document.getElementById("obligatoriotipo").style.display="none";
+					//document.getElementById("obligatorionif").style.display="none";
+					document.getElementById("obligatorionombre").style.display="none";
+					document.getElementById("obligatorioapellido").style.display="none";
+					document.getElementById("noobligatoriotipo").style.display="block";
+					//document.getElementById("noobligatorionif").style.display="block";
+					document.getElementById("noobligatorionombre").style.display="block";
+					document.getElementById("noobligatorioapellido").style.display="block";
+					document.forms[0].idPersonaNotario.value="";
 				}
-				
-			}
-			function apellidos(){
-				if (document.forms[0].apellido1.value!=""){
-					document.getElementById("obligatoriotipo").style.display="block";
-					//document.getElementById("obligatorionif").style.display="block";
-					document.getElementById("obligatorionombre").style.display="block";
-					document.getElementById("obligatorioapellido").style.display="block";
-					document.getElementById("noobligatoriotipo").style.display="none";
-					//document.getElementById("noobligatorionif").style.display="none";
-					document.getElementById("noobligatorionombre").style.display="none";
-					document.getElementById("noobligatorioapellido").style.display="none";
-				}else{
-					if (document.forms[0].numIdentificacion.value=="" && document.forms[0].nombre.value=="" && document.forms[0].tipoIdentificacion.value=="" ){
-						document.getElementById("obligatoriotipo").style.display="none";
-						//document.getElementById("obligatorionif").style.display="none";
-						document.getElementById("obligatorionombre").style.display="none";
-						document.getElementById("obligatorioapellido").style.display="none";
-						document.getElementById("noobligatoriotipo").style.display="block";
-						//document.getElementById("noobligatorionif").style.display="block";
-						document.getElementById("noobligatorionombre").style.display="block";
-						document.getElementById("noobligatorioapellido").style.display="block";
-						document.forms[0].idPersonaNotario.value="";
-					}
+			}				
+		}
+		
+		function apellidos(){
+			if (document.forms[0].apellido1.value!=""){
+				document.getElementById("obligatoriotipo").style.display="block";
+				//document.getElementById("obligatorionif").style.display="block";
+				document.getElementById("obligatorionombre").style.display="block";
+				document.getElementById("obligatorioapellido").style.display="block";
+				document.getElementById("noobligatoriotipo").style.display="none";
+				//document.getElementById("noobligatorionif").style.display="none";
+				document.getElementById("noobligatorionombre").style.display="none";
+				document.getElementById("noobligatorioapellido").style.display="none";
+			}else{
+				if (document.forms[0].numIdentificacion.value=="" && document.forms[0].nombre.value=="" && document.forms[0].tipoIdentificacion.value=="" ){
+					document.getElementById("obligatoriotipo").style.display="none";
+					//document.getElementById("obligatorionif").style.display="none";
+					document.getElementById("obligatorionombre").style.display="none";
+					document.getElementById("obligatorioapellido").style.display="none";
+					document.getElementById("noobligatoriotipo").style.display="block";
+					//document.getElementById("noobligatorionif").style.display="block";
+					document.getElementById("noobligatorionombre").style.display="block";
+					document.getElementById("noobligatorioapellido").style.display="block";
+					document.forms[0].idPersonaNotario.value="";
 				}
-				
-				
 			}
-			function tipo(){
+		}			
+
+		function tipo(){
 				if (document.forms[0].tipoIdentificacion.value!=""){
 					document.getElementById("obligatoriotipo").style.display="block";
 					//document.getElementById("obligatorionif").style.display="block";
@@ -312,12 +306,137 @@
 						document.getElementById("noobligatorioapellido").style.display="block";
 						document.forms[0].idPersonaNotario.value="";
 					}
-				}
-			
+				}			
 			}
-			
-			
-			
+
+			function comprobarTipoIdent(){				
+				// Solo se genera el NIF o CIF de la persona
+				if((DatosRegistralesForm.tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")||
+					(DatosRegistralesForm.tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>")){
+					document.getElementById("idButtonNif").style.visibility="visible";
+				}	else{
+					document.getElementById("idButtonNif").style.visibility="hidden";
+				}
+			}	
+
+			function validaNumeroIdentificacion(){
+				var errorNIE = false;
+				var errorNIF = false;
+				var valido = true;
+
+				if(DatosRegistralesForm.tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>"){
+					var numero = DatosRegistralesForm.numIdentificacion.value;
+					if(numero.length==9){
+						letIn = numero.substring(8,9);
+						num = numero.substring(0,8);
+						var posicion = num % 23;
+						letras='TRWAGMYFPDXBNJZSQVHLCKET';
+						var letra=letras.substring(posicion,posicion+1);
+						if (letra!=letIn) {
+							errorNIF=true;
+						}
+					}else{
+						errorNIF=true;
+					}
+				}
+				if(DatosRegistralesForm.tipoIdentificacion.value== "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>"){
+					var dnie = DatosRegistralesForm.numIdentificacion.value;
+					if(dnie.length==9){
+						letIni = dnie.substring(0,1);
+						primera=letIni;
+						if  (letIni.toUpperCase()=='Y')
+					 		letIni = '1';
+					 	else if  (letIni.toUpperCase()=='Z')
+					 		letIni = '2';
+					 	else{
+					 		letIni = '0';
+					 	}
+						num = letIni + dnie.substring(1,8);
+						letFin = dnie.substring(8,9);
+						var posicion = num % 23;
+						letras='TRWAGMYFPDXBNJZSQVHLCKET';
+						var letra=letras.substring(posicion,posicion+1);
+						if (!primera.match('[X|Y|Z]')||letra!=letFin) {
+							errorNIE=true;
+						}
+					}else{
+						errorNIE=true;
+					}
+				}
+				if (errorNIF){
+					valido = false;
+					alert("<siga:Idioma key='messages.nif.comprobacion.digitos.error'/>");
+				}
+				if (errorNIE){
+					valido = false;
+					alert("<siga:Idioma key='messages.nie.comprobacion.digitos.error'/>");
+				}
+				return valido;
+			}
+
+			function obtenerLetra(){
+				generarLetra();
+			}
+
+			function generarLetra() {
+				var numId = DatosRegistralesForm.numIdentificacion.value;
+				var tipoIdentificacion = DatosRegistralesForm.tipoIdentificacion.value;
+			  	var letra='TRWAGMYFPDXBNJZSQVHLCKET';
+				if(numId.length==0){
+					return false;		
+				}
+				if( (tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")){
+					if(numId.length==8){
+						if(isNumero(numId)==true){
+						 	numero = numId;
+						 	numero = numero % 23;
+						 	letra=letra.substring(numero,numero+1);
+						 	DatosRegistralesForm.numIdentificacion.value =numId+letra;
+						}else{
+							return validaNumeroIdentificacion(tipoIdentificacion, numId);
+						}
+					}else{
+						rc = validaNumeroIdentificacion(tipoIdentificacion, numId);
+						if(rc==false){
+						    return rc;
+						}	
+					}
+				} else	if((tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") ){
+					if(numId.length==8){
+						var dnie = DatosRegistralesForm.numIdentificacion.value;
+						letIni = numId.substring(0,1);
+						primeraLetra = letIni;
+						if  (letIni.toUpperCase()=='Y')
+					 		letIni = '1';
+					 	else if  (letIni.toUpperCase()=='Z')
+					 		letIni = '2';
+					 	else{
+					 		letIni = '0';
+					 	}
+						num = letIni+numId.substring(1,8);
+						if(primeraLetra.match('[X|Y|Z]') && isNumero(num)){
+							var posicion = num % 23;
+							letras='TRWAGMYFPDXBNJZSQVHLCKET';
+							var letra=letras.substring(posicion,posicion+1);
+							numero = dnie + letra;
+							DatosRegistralesForm.numIdentificacion.value = numero;
+						}else{
+							return validaNumeroIdentificacion(tipoIdentificacion, numId);
+						}	
+					}else{
+						rc = validaNumeroIdentificacion(tipoIdentificacion, numId);
+						if(rc==undefined){
+							return rc;
+						}else if(rc==false){
+							return rc;
+						}	
+					}					
+				}
+				// Caso1: Se han realizado las modificaciones necesarias sin encontrar errores 
+				// Caso2: no es nif ni nie no hay generacion de letra
+
+				return true;
+			}
 			
 		</script>
 	</head>
@@ -457,33 +576,25 @@
 						<siga:ConjCampos leyenda="censo.datosRegistrales.literal.titulo3">
 							<table  border=0>
 								<tr>
-									<% String CIF=String.valueOf(ClsConstants.TIPO_IDENTIFICACION_CIF);
-									   String OTRO=String.valueOf(ClsConstants.TIPO_IDENTIFICACION_OTRO);
-									%>
 									<td id="noobligatoriotipo" class="labelText" >
 									
 										<!-- NUMERO IDENTIFICACION NIF/CIF -->
-										<siga:Idioma key="censo.fichaCliente.literal.tipoIdentificacion"/>
+										<siga:Idioma key="censo.SolicitudIncorporacion.literal.nifcif"/>
 										
 									</td>
 									<td id="obligatoriotipo" class="labelText" >
 									
 										<!-- NUMERO IDENTIFICACION NIF/CIF -->
-										<siga:Idioma key="censo.fichaCliente.literal.tipoIdentificacion"/>&nbsp (*)
+										<siga:Idioma key="censo.SolicitudIncorporacion.literal.nifcif"/>&nbsp (*)
 										
 									</td>
-									<%ArrayList tipoIdentificacionSel = new ArrayList();
-									  tipoIdentificacionSel.add(request.getAttribute("tipoident"));
-									 %>
-									
-									<td colspan="2">
-										
-										 <siga:ComboBD nombre = "tipoIdentificacion" tipo="cmbTipoIdentificacionSinCIF" clase="<%=estiloCaja%>" accion="tipo();" obligatorio="true" elementoSel="<%=tipoIdentificacionSel%>" readonly="false"/>
-										
-													
-									
-										<html:text name="DatosRegistralesForm" property="numIdentificacion" size="11"  onBlur="obtenerNif();" styleClass="<%=estiloCaja %>">
-										</html:text>
+										<%ArrayList tipoIdentificacionSel = new ArrayList();
+										  tipoIdentificacionSel.add(request.getAttribute("tipoident"));
+										 %>									
+									<td>
+										<siga:ComboBD nombre = "tipoIdentificacion" tipo="cmbTipoIdentificacionSinCIF"  ancho="80" clase="<%=estiloCaja%>" obligatorio="true" elementoSel="<%=tipoIdentificacionSel%>" accion="comprobarTipoIdent();"/>
+										<html:text name="DatosRegistralesForm" property="numIdentificacion" size="8" maxlength="20"  styleClass="<%=estiloCaja %>"></html:text>
+										<img id="idButtonNif" src="<%=app%>/html/imagenes/comprobar.gif" border="0" onclick="obtenerLetra();" style="cursor:hand;align:left" style="display:inline;visibility: hidden;">
 									</td>
 									
 								</tr>
@@ -533,9 +644,6 @@
 	</html:form>
 
 
-
-
-	
 <%@ include file="/html/jsp/censo/includeVolver.jspf" %>
 
 	<!-- INICIO: SCRIPTS BOTONES -->
@@ -551,61 +659,67 @@
 		<!-- Asociada al boton Guardar -->
 		function accionGuardar() {
 			sub();
+			if(validaNumeroIdentificacion()){
+
 				if (<%=SSPP%>=="1" && document.forms[0].resena.value!="" && document.forms[0].fechaConstitucion.value!="" && document.forms[0].objetoSocial.value!="") {
-						if (document.getElementById("obligatoriotipo").style.display=="block"){
-						  if (document.forms[0].tipoIdentificacion.value=="" || document.forms[0].numIdentificacion.value=="" || document.forms[0].nombre.value=="" || document.forms[0].apellido1.value==""){ 
-							alert ("Introduzca los campos obligatorios");
-							fin();
-							return false;
-						  }else{
-						  	document.forms[0].modo.value="modificarRegistrales";
-							document.forms[0].target="submitArea";
-						
-							document.forms[0].submit();	
-						  }
-						}else{	
-							document.forms[0].modo.value="modificarRegistrales";
-							document.forms[0].target="submitArea";
-						
-							document.forms[0].submit();		
-						}
+					if (document.forms[0].tipoIdentificacion.value=="" || document.forms[0].numIdentificacion.value=="" || document.forms[0].nombre.value=="" || document.forms[0].apellido1.value==""){ 
+						alert ("Introduzca los campos obligatorios ");
+						fin();
+						return false;
+				  }else{
+						document.forms[0].numIdentificacion.value = (document.forms[0].numIdentificacion.value).toUpperCase();
+					  	document.forms[0].modo.value="modificarRegistrales";
+						document.forms[0].target="submitArea";					
+						document.forms[0].submit();	
+				  }
 				}else{
 					if (<%=SSPP%>=="0"){
-						if (document.getElementById("obligatoriotipo").style.display=="block"){
-						  if (document.forms[0].tipoIdentificacion.value=="" || document.forms[0].numIdentificacion.value=="" || document.forms[0].nombre.value=="" || document.forms[0].apellido1.value==""){ 
-							alert ("Introduzca los campos obligatorios");
+					  if (document.forms[0].tipoIdentificacion.value=="" || document.forms[0].numIdentificacion.value=="" || document.forms[0].nombre.value=="" || document.forms[0].apellido1.value==""){ 
+							alert ("Introduzca los campos obligatorios ");
 							fin();
 							return false;
-						  }else{
+					  }else{
+							document.forms[0].numIdentificacion.value = (document.forms[0].numIdentificacion.value).toUpperCase();
 						  	document.forms[0].modo.value="modificarRegistrales";
-							document.forms[0].target="submitArea";
-						
+							document.forms[0].target="submitArea";						
 							document.forms[0].submit();	
-						  }
-						}else{	
-							document.forms[0].modo.value="modificarRegistrales";
-							document.forms[0].target="submitArea";
-						
-							document.forms[0].submit();		
 						}
-					}
-					else{
-						alert ("Introduzca los campos obligatorios");
+	
+					}else{
+						alert ("Introduzca los campos obligatorios ");
 						fin();
 						return false;	
 					}
 				}
-				
-		}
-		function refrescarLocal() {
-				
-				document.forms[0].modo.value="abrir";
-				
-				document.forms[0].submit();
-
-				
-				
 			}
+			fin();
+			return;
+		}
+		
+		function refrescarLocal() {
+			document.forms[0].modo.value="abrir";
+			deshabilitarCamposAbajo();
+			document.forms[0].submit();	
+		}
+
+
+		function deshabilitarCamposAbajo(){
+			if (document.forms[0].tipoIdentificacion.value!="" && document.forms[0].numIdentificacion.value!="" && document.forms[0].nombre.value!="" && document.forms[0].apellido1.value!=""){
+				document.DatosRegistralesForm.nombre.disabled=true;
+				document.DatosRegistralesForm.apellido1.disabled=true;
+				document.DatosRegistralesForm.apellido2.disabled=true;
+				document.forms[0].tipoIdentificacion.disabled=true;
+				document.forms[0].numIdentificacion.disabled=true;
+				document.getElementById("idButtonNif").style.visibility="hidden";
+			}else{
+				document.DatosRegistralesForm.nombre.disabled=false;
+				document.DatosRegistralesForm.apellido1.disabled=false;
+				document.DatosRegistralesForm.apellido2.disabled=false;
+				document.forms[0].tipoIdentificacion.disabled=false;
+				document.forms[0].numIdentificacion.disabled=false;
+			}
+		}
+		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
 		<!-- INICIO: SUBMIT AREA -->

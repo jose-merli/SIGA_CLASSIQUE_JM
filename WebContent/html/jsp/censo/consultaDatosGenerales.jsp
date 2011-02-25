@@ -294,7 +294,7 @@ caracterParam[0] = tipoCliente;
 			document.forms[0].numIdentificacion.value = formateaNIE(sNIE);
 	   }
 	   	
-}
+	}
 		
 		
 		function adaptaTamanoFoto () 

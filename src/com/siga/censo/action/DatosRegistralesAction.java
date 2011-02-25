@@ -163,6 +163,7 @@ public class DatosRegistralesAction extends MasterAction{
 							miform.setNombre(beanNotario.getNombre());
 							miform.setApellido1(beanNotario.getApellido1());
 							miform.setApellido2(beanNotario.getApellido2());
+							miform.setTipoIdentificacion(beanNotario.getIdTipoIdentificacion().toString());
 							request.setAttribute("tipoident", beanNotario.getIdTipoIdentificacion().toString());
 							
 						}
@@ -218,8 +219,6 @@ public class DatosRegistralesAction extends MasterAction{
 			// Obtengo los datos del formulario
 			DatosRegistralesForm miForm = (DatosRegistralesForm)formulario;
 			
-			
-
 			// Cargo la tabla hash con los valores del formulario para insertar en la BBDD
 			Hashtable hash = new Hashtable();
 			hash = this.prepararFormatosFechas(hash);

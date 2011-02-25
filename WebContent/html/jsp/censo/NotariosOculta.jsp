@@ -83,7 +83,7 @@
 				window.parent.parent.DatosRegistralesForm.nombre.value="";
 				window.parent.parent.DatosRegistralesForm.apellido1.value="";
 				window.parent.parent.DatosRegistralesForm.apellido2.value="";
-				window.parent.parent.DatosRegistralesForm.tipoIdentificacion.value=""
+				window.parent.parent.DatosRegistralesForm.tipoIdentificacion.value="";
 			}		
 		
 	}
