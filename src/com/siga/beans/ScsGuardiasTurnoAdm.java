@@ -837,7 +837,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 					+ ScsInclusionGuardiasEnListasBean.C_IDGUARDIA + " AND SCS_INCLUSIONGUARDIASENLISTAS.IDLISTA ="
 					+ idlista;
 
-			sql += " ORDER BY FECHA_INICIO,FECHA_FIN, SCS_TURNO.NOMBRE, GUARDIA, POSICION, LETRADO";
+			sql += " ORDER BY FECHA_INICIO,FECHA_FIN, SCS_INCLUSIONGUARDIASENLISTAS.ORDEN, GUARDIA, POSICION, LETRADO";
 			// jbd // inc7654
 			// Para evitar lo ocurrido en Murcia se cambia la forma de crear la lista de letrados de
 			// guardia. Se devuelve ya en el orden de salida, asi no hace falta hacer la ordenacion 

@@ -1338,6 +1338,9 @@ public class Plantilla {
 			if (etiqueta.equalsIgnoreCase("TEXTO_TFNO_RESIDENCIA")){
 				resultado=UtilidadesString.getMensajeIdioma(idioma,"informes.listaGuardias.tfnoCasa");
 			}else
+			if (etiqueta.equalsIgnoreCase("TEXTO_POSICION")){
+				resultado=UtilidadesString.getMensajeIdioma(idioma,"informes.listaGuardias.posicion");
+			}else
 			if (etiqueta.equalsIgnoreCase("TEXTO_MOVIL")){
 				resultado=UtilidadesString.getMensajeIdioma(idioma,"informes.listaGuardias.movil");
 			}else
@@ -1590,6 +1593,11 @@ public class Plantilla {
 			if (etiqueta.equalsIgnoreCase("NCOLEGIADO")){
 				if (linea.get("NCOLEGIADO")!=null){
 					resultado="                                	"+(String)linea.get("NCOLEGIADO");					
+				}
+			}
+			if (etiqueta.equalsIgnoreCase("POSICION")){
+				if (linea.get("POSICION")!=null){
+					resultado="                                	"+(String)linea.get("POSICION");					
 				}
 			}
 			resultado=UtilidadesString.formato_ISO_8859_1(resultado);
