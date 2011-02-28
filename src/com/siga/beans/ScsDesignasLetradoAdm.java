@@ -1,9 +1,12 @@
 
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
 
@@ -14,11 +17,14 @@ import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.SIGAReferences;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.Utilidades.paginadores.PaginadorBind;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.form.DefinirEJGForm;
+import com.siga.gratuita.form.DesignaForm;
+import com.siga.gratuita.form.InformeJustificacionMasivaForm;
 
 
 
@@ -30,12 +36,17 @@ import com.siga.general.SIGAException;
  */
 public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 	
+	public final String resolucionDesignaFavorable ="FAVORABLE";
+	public final String resolucionDesignaNoFavorable ="NO_FAVORABLE";
+	public final String resolucionDesignaPteCAJG ="PTE_CAJG";
+	public final String resolucionDesignaSinResolucion ="SIN_RESOLUCION";
+	public final String resolucionDesignaSinEjg ="SIN_EJG";
 	/**
 	 * Constructor de la clase. 
 	 * 
 	 * @param usuario Usuario "logado" en la aplicación. De tipo "Integer".  
 	 */
-	public ScsDesignasLetradoAdm(UsrBean usuario) {
+	public ScsDesignasLetradoAdm (UsrBean usuario) {
 		super( ScsDesignasLetradoBean.T_NOMBRETABLA, usuario);
 	}
 
@@ -164,674 +175,221 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 	}
 	
 	
-	
-	
-		
-	
-	private String getQueryDesignasLetradoSinBroza(Integer idInstitucion, String idPersona, String fechaDesde, 
-			String fechaHasta, String mostrarTodas, String interesadoNombre,
-			String interesadoApellidos, String anio, boolean isInforme,Hashtable codigos)throws ClsExceptions{
-		StringBuffer sql = new StringBuffer();
-		sql.append("select * from (");
-		sql.append(getQueryDesignasLetrado(idInstitucion, idPersona, fechaDesde, fechaHasta, mostrarTodas, 
-								interesadoNombre, interesadoApellidos, anio, isInforme,codigos));
-		sql.append(" ) where fechaRenuncia is null  or fechaActuacionIni is not null");
-		return sql.toString();
-		
+	private PaginadorBind getDesignasPendientesJustificacionPaginador(InformeJustificacionMasivaForm formulario,boolean isInforme)throws ClsExceptions,SIGAException {
+		PaginadorBind paginador=null;
+		try {
+			Acumulador acumula = new Acumulador();
+			List<DesignaForm> designasList = getDesignasJustificacion(formulario,acumula,isInforme);
+			
+			if(designasList!=null && designasList.size()>0){
+				Hashtable codigosHashtable = new Hashtable();
+				String sqlDesignas = getQueryDesignasPendientesJustificacion(designasList,formulario,codigosHashtable,isInforme);
+				paginador = new PaginadorBind(sqlDesignas.toString(),codigosHashtable);
+			 }else{
+				 paginador = null;
+			 } 
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar consulta getDesignasPendientesJustificacionPaginador.");
+		}
+		return paginador;                        
 	}
-
-	private String getQueryDesignasLetrado(Integer idInstitucion, String idPersona, String fechaDesde, 
-			String fechaHasta, String mostrarTodas, String interesadoNombre,
-			String interesadoApellidos, String anio, boolean isInforme,Hashtable codigos)throws ClsExceptions{
-		StringBuffer extra = new StringBuffer("");
+	private String getQueryBaseDesignasPendientesJustificacion(String tipoResolucionDesigna,InformeJustificacionMasivaForm formulario, boolean isInforme,Hashtable codigos){
 		
 		
-		boolean isMostrarTodas = mostrarTodas!=null && mostrarTodas.equals("on");
-		
-		
-	    int contador=0;
+	    int contador=codigos.size();
 
 		StringBuffer sql = new StringBuffer("");
 		
-	    ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		//ReadProperties rp3 = new ReadProperties("SIGA.properties");
+	    
 		
-		GenParametrosAdm paramAdm = new GenParametrosAdm (usrbean);
-		//Haria falta meter los parametros en con ClsConstants
-        String codExcluirEjgDenegados = paramAdm.getValor (usrbean.getLocation (), "SCS", ClsConstants.GEN_PARAM_EXCLUIR_EJG_DENEGADOS_JUSTIF_LETRADO, "");
-		
-		
-		final String INI_ANTES_2005 = rp3.returnProperty("codigo.general.scsacreditacion.inicio.antes2005");
-		final String FIN_ANTES_2005 = rp3.returnProperty("codigo.general.scsacreditacion.fin.antes2005");
-		final String INI_DESPUES_2005 = rp3.returnProperty("codigo.general.scsacreditacion.inicio.despues2005");
-		final String FIN_DESPUES_2005 = rp3.returnProperty("codigo.general.scsacreditacion.fin.despues2005");
-		final String INI_FIN = rp3.returnProperty("codigo.general.scsacreditacion.iniciofin");
-		final String INCOMPARECENCIA = rp3.returnProperty("codigo.general.scsacreditacion.iniciofin.incomparecencia");
-		final String TRANS_EXTRAJUDICIAL = rp3.returnProperty("codigo.general.scsacreditacion.iniciofin.transextrajudicial");
-		
-		final String TIPO_ACREDIT_INI = rp3.returnProperty("codigo.general.scstipoacreditacion.inicio");
-		final String TIPO_ACREDIT_FIN= rp3.returnProperty("codigo.general.scstipoacreditacion.fin");
-		final String TIPO_ACREDIT_INIFIN = rp3.returnProperty("codigo.general.scstipoacreditacion.iniciofin");
-		
-		final String TIPO_RESOLUCION_DENEGADO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.denegado");
-		
-		
-		//codigo.general.scsacreditacion.inicio.antes2005=2
-		//codigo.general.scsacreditacion.fin.antes2005=3
-		//codigo.general.scsacreditacion.inicio.despues2005=10	
-		//codigo.general.scsacreditacion.fin.despues2005=11
-		sql.append(" select  ");
-		sql.append(" d.idinstitucion idinstitucion,");
-		sql.append(" d.idturno idturno, ");
-		sql.append(" d.anio anio, ");
-		sql.append(" d.numero numero, ");
-		sql.append(" d.codigo codigo, ");
-		sql.append(" d.idjuzgado idjuzgado, ");
-		sql.append(" trunc(d.fechaentrada) fechaOrden, ");
-		if(isInforme)
-			sql.append(" nvl(to_char(d.fechaentrada, 'DD/mm/YYYY'),' ') fechadesigna, ");
-		else
-			sql.append(" trunc(d.fechaentrada) fechadesigna, ");
-		sql.append(" d.estado estado, ");
-		//sql.append(" d.resumenasunto asunto, ");//Asi es lo que queria malaga. se cambia porque lo pide gijon
-		sql.append(" d.numprocedimiento asunto, ");
-		sql.append(" d.RESUMENASUNTO RESUMENASUNTO, ");//ahora lo aniadimos porque lo pide Baleares
-		//
-		sql.append(" dl.idpersona, ");
-		sql.append(" dl.fecharenuncia, ");
-		//sql.append(" F_SIGA_GETEJG_DESIGNA(d.idinstitucion, d.idturno, d.anio, d.numero) as expedientes, ");
-		//sql.append(" f_siga_getdefendidosdesigna(d.idinstitucion, d.anio, d.idturno, d.numero,1) as cliente, ");
-		sql.append(" d.idprocedimiento idprocedimiento, ");
-		
-		
-		sql.append(" d.idinstitucion_juzg idinstitucion_juzg, ");
-		sql.append("d.anio");
-		sql.append("||'/'");
-		sql.append("||");
-		sql.append("d.codigo");
-		sql.append(" designacion,");
-		
-		
-		//Obtiene el numero de actuaciones del letrado en la designa
-		//junto con la fechaRenuncia sirve para habilitar o deshabilitar campos
-		sql.append(" (select count(1) ");
-		sql.append(" from scs_actuaciondesigna actini, scs_acreditacionprocedimiento acp, scs_acreditacion ac ");       
-		sql.append(" where actini.idinstitucion = ");
-		
+		sql.append("( SELECT '");
+		sql.append(tipoResolucionDesigna);
+		sql.append("' TIPO_RESOLUCION_DESIGNA,");
+		sql.append(" D.ANIO || '/' || D.CODIGO CODIGODESIGNA, ");
+		sql.append(" F_SIGA_GETEJG_DESIGNA(:");
 		contador++;
-		codigos.put(new Integer(contador),idInstitucion.toString());
-		sql.append(":"+contador);
-		
-		sql.append(" and   actini.idpersonacolegiado = dl.idpersona ");
-		sql.append(" and   actini.idturno = d.idturno ");
-		sql.append(" and   actini.anio = d.anio ");
-		sql.append(" and   actini.numero = d.numero ");
-		
-		sql.append(" and   acp.idinstitucion = ");
-		
-		//ultima modificacion
-		sql.append(" actini.idinstitucion_proc");
-		//sql.append(idInstitucion);
-		
-		sql.append(" and   acp.idprocedimiento = actini.idprocedimiento ");
-		sql.append(" and   acp.idacreditacion = actini.idacreditacion ");
-		sql.append(" and   acp.idacreditacion = ac.idacreditacion ");
-		sql.append(" and   actini.validada=1 ");
-		sql.append(" and   (ac.idtipoacreditacion=");
-		
-		contador++;
-		codigos.put(new Integer(contador),TIPO_ACREDIT_INI);
-		sql.append(":"+contador);
-		
-		sql.append(" or   ac.idtipoacreditacion=");
-
-		contador++;
-		codigos.put(new Integer(contador),TIPO_ACREDIT_INIFIN);
-		sql.append(":"+contador);
-		
-		sql.append(")");
-		//acreditacion de inicio normal ");        
-		//para penal la acreditacion es 2 cuando la mayor entre fechadesigna y fechaactuacion es > 2005, si no es 10 ");
-		sql.append(" and   ac.idacreditacion  ");
-		
-		//lo de arriba lo sustituyo por estp
-		sql.append(" in (");
-
-		contador++;
-		codigos.put(new Integer(contador),INI_DESPUES_2005);
-		sql.append(":"+contador);
-		
-		sql.append(",");
-
-		contador++;
-		codigos.put(new Integer(contador),INI_ANTES_2005);
-		sql.append(":"+contador);
-		
-		sql.append(",");
-
-		contador++;
-		codigos.put(new Integer(contador),INI_FIN);
-		sql.append(":"+contador);
-		
-		sql.append(",");
-
-		contador++;
-		codigos.put(new Integer(contador),INCOMPARECENCIA);
-		sql.append(":"+contador);
-		
-		sql.append(",");
-
-		contador++;
-		codigos.put(new Integer(contador),TRANS_EXTRAJUDICIAL);
-		sql.append(":"+contador);
-		
-		sql.append(")");
-		//Me quedo con la primera, se presupone que solo hay una ");
-		sql.append(") as NActuaciones, ");
-
-		
-		
-		if(isInforme){
-			sql.append(" (select nvl(to_char(actini.fechajustificacion, 'DD/mm/YYYY'),' ')");
-			sql.append("||'||'||acp.porcentaje");
-		}
-		else	
-			sql.append(" (select trunc(actini.fechajustificacion) ");
-		sql.append(" from scs_actuaciondesigna actini, scs_acreditacionprocedimiento acp, scs_acreditacion ac ");       
-		sql.append(" where actini.idinstitucion = ");
-		
-		contador++;
-		codigos.put(new Integer(contador),idInstitucion.toString());
-		sql.append(":"+contador);
-		
-		sql.append(" and   actini.idturno = d.idturno ");
-		sql.append(" and   actini.anio = d.anio ");
-		sql.append(" and   actini.numero = d.numero ");
-		
-		sql.append(" and   acp.idinstitucion = ");
-		
-		//ultima modificacion
-		sql.append(" actini.idinstitucion_proc");
-		//sql.append(idInstitucion);
-		
-		sql.append(" and   acp.idprocedimiento = actini.idprocedimiento ");
-		sql.append(" and   acp.idacreditacion = actini.idacreditacion ");
-		sql.append(" and   acp.idacreditacion = ac.idacreditacion ");
-		sql.append(" and   actini.validada=1 ");
-		sql.append(" and   (ac.idtipoacreditacion=");
-		
-		contador++;
-		codigos.put(new Integer(contador),TIPO_ACREDIT_INI);
-		sql.append(":"+contador);
-		
-		sql.append(" or   ac.idtipoacreditacion=");
-
-		contador++;
-		codigos.put(new Integer(contador),TIPO_ACREDIT_INIFIN);
-		sql.append(":"+contador);
-		
-		sql.append(")");
-		//acreditacion de inicio normal ");        
-		//para penal la acreditacion es 2 cuando la mayor entre fechadesigna y fechaactuacion es > 2005, si no es 10 ");
-		sql.append(" and   ac.idacreditacion  ");
-		
-		//lo de arriba lo sustituyo por estp
-		sql.append(" in (");
-
-		contador++;
-		codigos.put(new Integer(contador),INI_DESPUES_2005);
-		sql.append(":"+contador);
-		
-		sql.append(",");
-
-		contador++;
-		codigos.put(new Integer(contador),INI_ANTES_2005);
-		sql.append(":"+contador);
-		
-		sql.append(",");
-
-		contador++;
-		codigos.put(new Integer(contador),INI_FIN);
-		sql.append(":"+contador);
-		
-		sql.append(",");
-
-		contador++;
-		codigos.put(new Integer(contador),INCOMPARECENCIA);
-		sql.append(":"+contador);
-		
-		sql.append(",");
-
-		contador++;
-		codigos.put(new Integer(contador),TRANS_EXTRAJUDICIAL);
-		sql.append(":"+contador);
-		
-		sql.append(")");
-		//Me quedo con la primera, se presupone que solo hay una ");
-		sql.append(" and rownum<2) as acreditacion_ini, ");
-		
-		
-		if(isInforme){
-			sql.append(" (select nvl(to_char(actfin.fechajustificacion, 'DD/mm/YYYY'),' ') ");
-			sql.append("||'||'||acpfin.porcentaje");
-		}
-		else
-			sql.append(" (select trunc(actfin.fechajustificacion) ");
-		sql.append(" from scs_actuaciondesigna actfin, scs_acreditacionprocedimiento acpfin, scs_acreditacion acfin ");       
-		sql.append(" where actfin.idinstitucion = ");
-
-		contador++;
-		codigos.put(new Integer(contador),idInstitucion.toString());
-		sql.append(":"+contador);
-		
-		sql.append(" and   actfin.idturno = d.idturno ");
-		sql.append(" and   actfin.anio = d.anio ");
-		sql.append(" and   actfin.numero = d.numero ");
-		sql.append(" and   acpfin.idinstitucion =  ");
-
-		contador++;
-		codigos.put(new Integer(contador),idInstitucion.toString());
-		sql.append(":"+contador);
-		
-		sql.append(" and   acpfin.idprocedimiento = actfin.idprocedimiento ");
-		sql.append(" and   acpfin.idacreditacion = actfin.idacreditacion ");
-		sql.append(" and   acpfin.idacreditacion = acfin.idacreditacion ");
-		sql.append(" and   actfin.validada=1 ");
-		sql.append(" and  ( acfin.idtipoacreditacion=");
-
-		contador++;
-		codigos.put(new Integer(contador),TIPO_ACREDIT_FIN);//2 ; // acreditacion de fin normal ");
-		sql.append(":"+contador);
-		
-		sql.append(" or   acfin.idtipoacreditacion=");
-
-		contador++;
-		codigos.put(new Integer(contador),TIPO_ACREDIT_INIFIN);//3) ");
-		sql.append(":"+contador);
-		
-		sql.append(")");
-		// para penal la acreditacion es 3 cuando la mayor entre fechadesigna y fechaactuacion es > 2005, si no es 11 ");
-		sql.append(" and   acfin.idacreditacion "); 
-		
-		sql.append(" in (");
-
-		contador++;
-		codigos.put(new Integer(contador),FIN_DESPUES_2005);
-		sql.append(":"+contador);
-		
-		sql.append(",");
-
-		contador++;
-		codigos.put(new Integer(contador),FIN_ANTES_2005);
-		sql.append(":"+contador);
-		
-		sql.append(",");
-
-		contador++;
-		codigos.put(new Integer(contador),INI_FIN);
-		sql.append(":"+contador);
-		
-		sql.append(",");
-
-		contador++;
-		codigos.put(new Integer(contador),INCOMPARECENCIA);
-		sql.append(":"+contador);
-		
-		sql.append(",");
-
-		contador++;
-		codigos.put(new Integer(contador),TRANS_EXTRAJUDICIAL);
-		sql.append(":"+contador);
-		
-		sql.append(")");
-		
-		// Me quedo con la primera, se presupone que solo hay una ");
-		sql.append(" and rownum<2) as acreditacion_fin, ");   
-		
-		
-		sql.append(" (select trunc(actini.fecha) ");
-		sql.append(" from scs_actuaciondesigna actini, scs_acreditacionprocedimiento acp, scs_acreditacion ac ");       
-		sql.append(" where actini.idinstitucion = ");
-		
-		contador++;
-		codigos.put(new Integer(contador),idInstitucion.toString());
-		sql.append(":"+contador);
-		
-		sql.append(" and   actini.idturno = d.idturno ");
-		sql.append(" and   actini.anio = d.anio ");
-		sql.append(" and   actini.numero = d.numero ");
-		
-		sql.append(" and   acp.idinstitucion = ");
-		
-		//ultima modificacion
-		sql.append(" actini.idinstitucion_proc");
-		//sql.append(idInstitucion);
-		
-		sql.append(" and   acp.idprocedimiento = actini.idprocedimiento ");
-		sql.append(" and   acp.idacreditacion = actini.idacreditacion ");
-		sql.append(" and   acp.idacreditacion = ac.idacreditacion ");
-		sql.append(" and   (ac.idtipoacreditacion=");
-		
-		contador++;
-		codigos.put(new Integer(contador),TIPO_ACREDIT_INI);
-		sql.append(":"+contador);
-		
-		sql.append(" or   ac.idtipoacreditacion=");
-
-		contador++;
-		codigos.put(new Integer(contador),TIPO_ACREDIT_INIFIN);
-		sql.append(":"+contador);
-		
-		sql.append(")");
-		//acreditacion de inicio normal ");        
-		//para penal la acreditacion es 2 cuando la mayor entre fechadesigna y fechaactuacion es > 2005, si no es 10 ");
-		sql.append(" and   ac.idacreditacion  ");
-		
-		//lo de arriba lo sustituyo por estp
-		sql.append(" in (");
-
-		contador++;
-		codigos.put(new Integer(contador),INI_DESPUES_2005);
-		sql.append(":"+contador);
-		
-		sql.append(",");
-
-		contador++;
-		codigos.put(new Integer(contador),INI_ANTES_2005);
-		sql.append(":"+contador);
-		
-		sql.append(",");
-
-		contador++;
-		codigos.put(new Integer(contador),INI_FIN);
-		sql.append(":"+contador);
-		
-		sql.append(",");
-
-		contador++;
-		codigos.put(new Integer(contador),INCOMPARECENCIA);
-		sql.append(":"+contador);
-		
-		sql.append(",");
-
-		contador++;
-		codigos.put(new Integer(contador),TRANS_EXTRAJUDICIAL);
-		sql.append(":"+contador);
-		
-		sql.append(")");
-		//Me quedo con la primera, se presupone que solo hay una ");
-		sql.append(" and rownum<2) as fechaActuacionIni, ");
-		
-		
-		sql.append(" (select trunc(actfin.fecha) ");
-		sql.append(" from scs_actuaciondesigna actfin, scs_acreditacionprocedimiento acpfin, scs_acreditacion acfin ");       
-		sql.append(" where actfin.idinstitucion = ");
-
-		contador++;
-		codigos.put(new Integer(contador),idInstitucion.toString());
-		sql.append(":"+contador);
-		
-		sql.append(" and   actfin.idturno = d.idturno ");
-		sql.append(" and   actfin.anio = d.anio ");
-		sql.append(" and   actfin.numero = d.numero ");
-		sql.append(" and   acpfin.idinstitucion =  ");
-
-		contador++;
-		codigos.put(new Integer(contador),idInstitucion.toString());
-		sql.append(":"+contador);
-		
-		sql.append(" and   acpfin.idprocedimiento = actfin.idprocedimiento ");
-		sql.append(" and   acpfin.idacreditacion = actfin.idacreditacion ");
-		sql.append(" and   acpfin.idacreditacion = acfin.idacreditacion ");
-		sql.append(" and  ( acfin.idtipoacreditacion=");
-
-		contador++;
-		codigos.put(new Integer(contador),TIPO_ACREDIT_FIN);//2 ; // acreditacion de fin normal ");
-		sql.append(":"+contador);
-		
-		sql.append(" or   acfin.idtipoacreditacion=");
-
-		contador++;
-		codigos.put(new Integer(contador),TIPO_ACREDIT_INIFIN);//3) ");
-		sql.append(":"+contador);
-		
-		sql.append(")");
-		// para penal la acreditacion es 3 cuando la mayor entre fechadesigna y fechaactuacion es > 2005, si no es 11 ");
-		sql.append(" and   acfin.idacreditacion "); 
-		
-		sql.append(" in (");
-
-		contador++;
-		codigos.put(new Integer(contador),FIN_DESPUES_2005);
-		sql.append(":"+contador);
-		
-		sql.append(",");
-
-		contador++;
-		codigos.put(new Integer(contador),FIN_ANTES_2005);
-		sql.append(":"+contador);
-		
-		sql.append(",");
-
-		contador++;
-		codigos.put(new Integer(contador),INI_FIN);
-		sql.append(":"+contador);
-		
-		sql.append(",");
-
-		contador++;
-		codigos.put(new Integer(contador),INCOMPARECENCIA);
-		sql.append(":"+contador);
-		
-		sql.append(",");
-
-		contador++;
-		codigos.put(new Integer(contador),TRANS_EXTRAJUDICIAL);
-		sql.append(":"+contador);
-		
-		sql.append(")");
-		
-		// Me quedo con la primera, se presupone que solo hay una ");
-		sql.append(" and rownum<2) as fechaActuacionFin ");  
-		
-		
-		
-		//Vamos a meter este datos para ver las concurrencias
-		if(!isInforme){
-			sql.append(",( select count(*)  from scs_actuaciondesigna act2");
-			sql.append(" where act2.idinstitucion =  "); 
-			
-			contador++;
-			codigos.put(new Integer(contador),idInstitucion.toString());
-			sql.append(":"+contador);
-			
-			sql.append(" and act2.idturno = d.idturno ");
-			sql.append(" and act2.anio = d.anio ");
-			sql.append(" and act2.numero = d.numero ");
-			sql.append(" and (act2.fechajustificacion is null or act2.validada='0')) AS NUMJUSTIFICACIONES ");
-			
-		}
-		sql.append(", F_SIGA_GETEJG_DESIGNA(:");
-		contador++;
-		codigos.put(new Integer(contador),idInstitucion.toString());
+		codigos.put(new Integer(contador),formulario.getIdInstitucion());
 		sql.append(contador);
-		sql.append(",d.idturno,d.anio,d.numero) AS EXPEDIENTES ");
-		
-		sql.append(" ,f_siga_getdefendidosdesigna(:");
+		sql.append(",d.idturno,d.anio,d.numero) AS EXPEDIENTES, ");
+		sql.append(" TO_CHAR(D.FECHAENTRADA,'dd/mm/yyyy') FECHADESIGNA, ");
+		sql.append(" TO_CHAR(D.FECHAENTRADA,'yyyy_mm_dd') FECHAORDEN, ");
+		sql.append(" D.NUMPROCEDIMIENTO ASUNTO, ");
+		sql.append(" f_siga_getdefendidosdesigna(:");
 		contador++;
-		codigos.put(new Integer(contador),idInstitucion.toString());
+		codigos.put(new Integer(contador),formulario.getIdInstitucion());
 		sql.append(contador);
-		sql.append(",d.anio,d.idturno,d.numero,1) AS CLIENTE ");
+		sql.append(",d.anio,d.idturno,d.numero,0) AS CLIENTE, ");
+		sql.append(" D.IDINSTITUCION IDINSTITUCION, ");
+		sql.append(" D.IDTURNO IDTURNO, ");
+		sql.append(" D.ANIO ANIO, ");
+		sql.append(" D.NUMERO NUMERO, ");
+		sql.append(" D.CODIGO CODIGO, ");
+		sql.append(" D.IDJUZGADO IDJUZGADO, ");
+		sql.append(" D.IDINSTITUCION_JUZG IDINSTITUCION_JUZG, ");
+		sql.append(" D.ESTADO ESTADO, ");
+		sql.append(" D.SUFIJO, ");
+		sql.append(" D.FECHAENTRADA, ");
+		sql.append(" D.RESUMENASUNTO RESUMENASUNTO, ");
+		sql.append(" DL.IDPERSONA, ");
+		sql.append(" DL.FECHARENUNCIA, ");
+		sql.append(" D.IDPROCEDIMIENTO IDPROCEDIMIENTO ");
+		sql.append(" , (SELECT COUNT(*) FROM SCS_DESIGNASLETRADO SDL ");
+		sql.append(" WHERE D.IDINSTITUCION = SDL.IDINSTITUCION ");
+		sql.append(" AND D.ANIO = SDL.ANIO ");
+		sql.append(" AND D.NUMERO = SDL.NUMERO ");
+		sql.append(" AND D.IDTURNO = SDL.IDTURNO) CAMBIOLETRADO ");
 		
-		sql.append(" from scs_designa d, scs_designasletrado dl");
 		
-		sql.append(" where d.idinstitucion = dl.idinstitucion ");
-		sql.append(" and d.anio = dl.anio ");
 		
-		if (anio != null && !anio.equals("")) {
-			sql.append(" and d.anio = :");	
+		
+		
+		
+		sql.append(" FROM SCS_DESIGNA D, SCS_DESIGNASLETRADO DL ");
+		sql.append(" WHERE D.IDINSTITUCION = DL.IDINSTITUCION ");
+		sql.append(" AND D.ANIO = DL.ANIO ");
+		sql.append(" AND D.NUMERO = DL.NUMERO ");
+		sql.append(" AND D.IDTURNO = DL.IDTURNO ");
+		sql.append(" AND DL.IDINSTITUCION = :");
+		
+		contador++;
+		codigos.put(new Integer(contador),formulario.getIdInstitucion());
+		sql.append(contador);
+		
+		if(formulario.getIdPersona()!=null && !formulario.getIdPersona().equalsIgnoreCase("")){
+			sql.append(" and DL.IDPERSONA = :");
 			contador++;
-			codigos.put(new Integer(contador),anio);
+			codigos.put(new Integer(contador),formulario.getIdPersona());
 			sql.append(contador);
 		}
 		
-		sql.append(" and d.numero = dl.numero ");
-		sql.append(" and d.idturno = dl.idturno ");
-		sql.append(" and dl.idinstitucion = :");
-		
-		contador++;
-		codigos.put(new Integer(contador),idInstitucion.toString());
-		sql.append(contador);
+		sql.append(getQueryWhereResolucion(tipoResolucionDesigna));
 		
 		
-		
-		if(idPersona!=null && !idPersona.equalsIgnoreCase("")){
-			sql.append(" and dl.idpersona = :");
-			contador++;
-			codigos.put(new Integer(contador),idPersona);
-			sql.append(contador);
-		}
-		
-		
-		sql.append(" and (dl.fechadesigna  is null or dl.fechadesigna = (select max(aux.fechadesigna) ");
-		sql.append(" from scs_designasletrado aux ");
-		sql.append(" where aux.idinstitucion = dl.idinstitucion ");
-		sql.append(" AND dl.idinstitucion = :");
-		contador++;
-		codigos.put(new Integer(contador),idInstitucion.toString());
-		sql.append(contador);
-		
-
-		sql.append(" and aux.idturno = dl.idturno ");
-		sql.append(" and aux.anio = dl.anio ");
-		sql.append(" and aux.numero = dl.numero ");
-		if(idPersona!=null && !idPersona.equalsIgnoreCase("")){
-			sql.append(" and aux.idpersona = dl.idpersona ");
-		}		
-		sql.append(" and trunc(aux.fechadesigna) <= trunc(sysdate))) ");
-		if (fechaDesde != null && !fechaDesde.equals("")) {
-			extra.append(" and trunc(d.fechaentrada) >= :");
-			
-			contador++;
-			codigos.put(new Integer(contador),fechaDesde);
-			extra.append(contador);
-			 
-		}
-		
-		if (fechaHasta != null && !fechaHasta.equals("")) {
-			extra.append(" and trunc(d.fechaentrada) <=:");
-			
-			contador++;
-			codigos.put(new Integer(contador),fechaHasta);
-			extra.append(contador);
-			 
-		}
-		sql.append(extra);
-
-		
-		sql.append(" and d.estado <> 'A' ");
-		if((interesadoApellidos != null && !interesadoApellidos.equalsIgnoreCase("")) 
-				&& (interesadoNombre != null && !interesadoNombre.equalsIgnoreCase(""))){
-			sql.append(" and UPPER(f_siga_getdefendidosdesigna(d.idinstitucion, d.anio, d.idturno, d.numero,0)) like ");
-			contador++;
-			StringBuffer aux = new StringBuffer();
-			aux.append("%");
-			aux.append(interesadoNombre.toUpperCase());
-			aux.append(" ");
-			aux.append(interesadoApellidos.toUpperCase());
-			aux.append("%");
-			codigos.put(new Integer(contador),aux.toString());
-			
-			sql.append(":"+contador);
-		}else if (interesadoApellidos != null && !interesadoApellidos.equalsIgnoreCase("") && (interesadoNombre==null||interesadoNombre.equalsIgnoreCase("")) ){
-		    sql.append(" and UPPER(f_siga_getdefendidosdesigna(d.idinstitucion,  d.anio,d.idturno, d.numero,0)) like ");
-			contador++;
-			StringBuffer aux = new StringBuffer();
-		    aux.append("%");
-		    aux.append(interesadoApellidos.toUpperCase());
-		    aux.append("%");
-			codigos.put(new Integer(contador),aux.toString());
-		    
-			sql.append(":"+contador);
-		}else if ((interesadoApellidos == null||interesadoApellidos.equalsIgnoreCase("")) && interesadoNombre!=null && !interesadoNombre.equalsIgnoreCase("")){
-		    sql.append(" and UPPER(f_siga_getdefendidosdesigna(d.idinstitucion, d.anio, d.idturno, d.numero,0)) like ");
-		    contador++;
-			StringBuffer aux = new StringBuffer();
-		    aux.append("%");
-		    aux.append(interesadoNombre.toUpperCase());
-		    aux.append("%");
-		    codigos.put(new Integer(contador),aux.toString());
-		    
-			sql.append(":"+contador);
-		}
-		//no salen los que ya están finalizados
-		if(!isMostrarTodas){
-			sql.append(" and d.estado <> 'F' ");
-		    // no salen los que ya están justificados totalmente ");
-		    
-		}
-		//tODOS MENOS DENEGADO
-		if(codExcluirEjgDenegados!=null && codExcluirEjgDenegados.equals(ClsConstants.DB_TRUE)){
-			sql.append(" and not exists (select 1 ");
-			sql.append(" from SCS_EJG EJG,SCS_EJGDESIGNA EJGDES ");
-	
-			sql.append(" where d.idinstitucion=ejgdes.idinstitucion ");
-	
-			sql.append(" and d.idturno=ejgdes.idturno ");
-			sql.append(" and d.anio=ejgdes.aniodesigna ");
-			sql.append(" and d.numero=ejgdes.numerodesigna ");
-			sql.append(" and ejgdes.idinstitucion=ejg.idinstitucion ");
-			sql.append(" and ejgdes.idtipoejg=ejg.idtipoejg ");
-			sql.append(" and ejgdes.anioejg=ejg.anio ");
-			sql.append(" and ejgdes.numeroejg=ejg.numero ");
-			sql.append(" and (ejg.idtiporatificacionejg =  ");
-			   //
-			sql.append(TIPO_RESOLUCION_DENEGADO);
-	
-			sql.append(" or ejg.idtiporatificacionejg is null)) ");
-		}
-
-		
-		
+		sql.append(")");
 		return sql.toString();
 		
 	}
-	public PaginadorBind getDesignasLetradoPaginador(Integer idInstitucion, String idPersona, String fechaDesde, 
-			String fechaHasta, String mostrarTodas, String interesadoNombre,
-			String interesadoApellidos, String anio, boolean isInforme)throws ClsExceptions,SIGAException {
-		PaginadorBind paginador=null;
-		try {
-			Hashtable codigos = new Hashtable();
-			StringBuffer sql = new StringBuffer(getQueryDesignasLetradoSinBroza(idInstitucion, idPersona, fechaDesde, 
-					fechaHasta, mostrarTodas, interesadoNombre,
-					interesadoApellidos, anio, isInforme,codigos));
-			
-			sql.append(" ORDER BY fechaOrden desc,anio,codigo desc,idturno,numero ");
-			paginador = new PaginadorBind(sql.toString(),codigos);	
-
-
-		} catch (Exception e) {
-			throw new ClsExceptions (e, "Error al ejecutar consulta getDesignasLetradoPaginador.");
+	
+private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designasList,InformeJustificacionMasivaForm formulario,Hashtable codigosHashtable,boolean isInforme) throws ClsExceptions{
+		
+		int contador = 0;
+		ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		StringBuffer sqlDesignas = new StringBuffer();
+		sqlDesignas.append(" SELECT * from (");
+		sqlDesignas.append(getQueryBaseDesignasPendientesJustificacion(this.resolucionDesignaFavorable, formulario, isInforme, codigosHashtable));
+		String codIncluirEjgNoFavorable = formulario.getIncluirEjgNoFavorable();
+		String codIncluirEjgSinResolucion = formulario.getIncluirEjgSinResolucion();
+		String codIncluirSinEJG = formulario.getIncluirSinEJG();
+		String codIncluirEjgPteCAJG = formulario.getIncluirEjgPteCAJG();
+		//cunado no estan activas las restricciones sacamos todo. Entonces la union se pone siempre que no estesn activas las restricciones
+		// o cuando la restriccion nos lo diga
+		if(!formulario.isActivarRestriccionesFicha() || (codIncluirEjgPteCAJG!=null && !codIncluirEjgPteCAJG.equals(ClsConstants.DB_FALSE))){
+			sqlDesignas.append(" UNION ");
+			sqlDesignas.append(getQueryBaseDesignasPendientesJustificacion(this.resolucionDesignaPteCAJG, formulario, isInforme, codigosHashtable));
 		}
-		return paginador;                        
-	}		
-	
-	
-	private Vector getDesignasLetrado (Integer idInstitucion, String idPersona, String fechaDesde, 
-			String fechaHasta, String mostrarTodas, String interesadoNombre,
-			String interesadoApellidos,boolean isInforme)  throws ClsExceptions, SIGAException 
-	{
-	    Hashtable codigos = new Hashtable();
-		String sql = getQueryDesignasLetrado( idInstitucion,  idPersona,  fechaDesde, 
-			 fechaHasta,  mostrarTodas,  interesadoNombre,	 interesadoApellidos, null, isInforme, codigos);
-	
-		return this.selectGenericoBind(sql, codigos);
+		
+		if(!formulario.isActivarRestriccionesFicha() || (codIncluirEjgNoFavorable!=null && !codIncluirEjgNoFavorable.equals(ClsConstants.DB_FALSE))){
+			sqlDesignas.append(" UNION ");
+			sqlDesignas.append(getQueryBaseDesignasPendientesJustificacion(this.resolucionDesignaNoFavorable, formulario, isInforme, codigosHashtable));
+		}
+		if(!formulario.isActivarRestriccionesFicha() ||(codIncluirEjgSinResolucion!=null && !codIncluirEjgSinResolucion.equals(ClsConstants.DB_FALSE))){
+			sqlDesignas.append(" UNION ");
+			sqlDesignas.append(getQueryBaseDesignasPendientesJustificacion(this.resolucionDesignaSinResolucion, formulario, isInforme, codigosHashtable));
+			
+		}
+		if(!formulario.isActivarRestriccionesFicha() ||(codIncluirSinEJG!=null && !codIncluirSinEJG.equals(ClsConstants.DB_FALSE))){
+			sqlDesignas.append(" UNION ");
+			sqlDesignas.append(getQueryBaseDesignasPendientesJustificacion(this.resolucionDesignaSinEjg, formulario, isInforme, codigosHashtable));
+			
+		}
+		
+		
+		sqlDesignas.append(" ) ALLDESIGNAS");
+		if(designasList!=null && designasList.size()>0){
+            sqlDesignas.append(" WHERE (ALLDESIGNAS.IDINSTITUCION,ALLDESIGNAS.ANIO,ALLDESIGNAS.IDTURNO,ALLDESIGNAS.NUMERO) IN ( ");
+			for(DesignaForm designa:designasList){
+				
+				sqlDesignas.append("(");
+				sqlDesignas.append(designa.getIdInstitucion());
+				sqlDesignas.append(",");
+				sqlDesignas.append(designa.getAnio());
+				sqlDesignas.append(",");
+				sqlDesignas.append(designa.getIdTurno());
+				sqlDesignas.append(",");
+				sqlDesignas.append(designa.getNumero());
+				sqlDesignas.append(")");
+				sqlDesignas.append(",");
+				
+				
+			}
+			//quitamos la coma
+			sqlDesignas.deleteCharAt(sqlDesignas.length()-1);
+			sqlDesignas.append(")");
+			sqlDesignas.append(" ORDER BY ALLDESIGNAS.FECHAENTRADA,ALLDESIGNAS.IDINSTITUCION, ALLDESIGNAS.ANIO, ALLDESIGNAS.CODIGO, ALLDESIGNAS.SUFIJO");
+			
+		}
+		return sqlDesignas.toString();
+		
 	}
 	
 	
-	public Hashtable getPersonasSalidaJustificacion(Integer idInstitucion, String idPersona, String fechaDesde, 
-			String fechaHasta, String mostrarTodas, String interesadoNombre,
-			String interesadoApellidos,boolean isInforme) throws ClsExceptions  
+	
+	
+	
+	
+	private PaginadorBind getTodasDesignasJustificacionPaginador(InformeJustificacionMasivaForm formulario,boolean isInforme)throws ClsExceptions,SIGAException {
+		PaginadorBind paginador=null;
+		try {
+			Hashtable codigosHashtable = new Hashtable();
+			String queryDesignas = getQueryJustificacion(formulario,isInforme, codigosHashtable);
+			paginador = new PaginadorBind(queryDesignas,codigosHashtable);
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar consulta getTodasDesignasJustificacionPaginador.");
+		}
+		return paginador;                        
+	}
+	
+	public PaginadorBind getDesignasJustificacionPaginador(InformeJustificacionMasivaForm formulario,boolean isInforme) throws ClsExceptions, SIGAException{
+		PaginadorBind paginador=null;
+		boolean isMostrarJustificacionesPtes = formulario.getMostrarTodas()!=null && formulario.getMostrarTodas().equals("true");
+		if(isMostrarJustificacionesPtes){
+			paginador = getDesignasPendientesJustificacionPaginador(formulario, isInforme);
+		}else{
+			paginador = getTodasDesignasJustificacionPaginador(formulario, isInforme);
+		}
+		return paginador;                        
+	}	
+	
+	
+	private Vector getDesignasLetradoJustificacion (InformeJustificacionMasivaForm formulario,Acumulador	acumula,boolean isInforme)  throws ClsExceptions, SIGAException 
+	{
+		boolean isMostrarJustificacionesPtes = formulario.getMostrarTodas()!=null && formulario.getMostrarTodas().equals("true");
+		
+		if(isMostrarJustificacionesPtes){
+			
+			
+			List<DesignaForm> designasList = getDesignasJustificacion(formulario,acumula,isInforme);
+			
+			if(designasList!=null && designasList.size()>0){
+				Hashtable codigosHashtable = new Hashtable();
+				String sqlDesignas = getQueryDesignasPendientesJustificacion(designasList,formulario,codigosHashtable,isInforme);
+				return this.selectGenericoBind(sqlDesignas, codigosHashtable);
+			}else 
+				return new Vector();
+		}else{
+			Hashtable codigosHashtable = new Hashtable();
+			String sqlDesignas = getQueryJustificacion(formulario,isInforme,codigosHashtable);
+			return this.selectGenericoBind(sqlDesignas, codigosHashtable);
+			
+		}
+		
+	
+		
+	}
+	
+	
+	
+	public Hashtable getPersonasSalidaInformeJustificacion(InformeJustificacionMasivaForm formulario,boolean isInforme) throws ClsExceptions  
 	{	 
 		
 		Hashtable htPersona = new Hashtable();
@@ -840,95 +398,33 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		Hashtable htAcumuladorJuzgados = new Hashtable();
 		Hashtable htAcumuladorProcedimientos = new Hashtable();
 		Hashtable htAcumuladorTurnos = new Hashtable();
+		Hashtable htAcumuladorActuaciones = new Hashtable();
 		TreeMap tmDesignas = null;
 		
 		try {
 			//vSalida = new Vector();	
-			ClsLogging.writeFileLog(Calendar.getInstance().getTimeInMillis() + ",==> SIGA: INICIO Consulta Justificacion",10);
-			Vector vDesigna = getDesignasLetrado(idInstitucion, idPersona, fechaDesde, 
-					fechaHasta, mostrarTodas, interesadoNombre,	interesadoApellidos,isInforme); 
-			ClsLogging.writeFileLog(Calendar.getInstance().getTimeInMillis() + ",==> SIGA: FIN Consulta Justificacion",10);
+			ClsLogging.writeFileLog(Calendar.getInstance().getTimeInMillis() + ",==> SIGA: INICIO Consultas Justificacion",10);
+			Acumulador acumula = new Acumulador();
+			Vector vDesigna = getDesignasLetradoJustificacion(formulario,acumula,isInforme);
+			
 			for (int j = 0; j < vDesigna.size(); j++) {
 				
 				Hashtable registro = (Hashtable) vDesigna.get(j);
-				idPersona = (String)registro.get("IDPERSONA");
+				String idPersona = (String)registro.get("IDPERSONA");
+				Integer idInstitucion = Integer.parseInt((String)registro.get("IDINSTITUCION"));
 				String numeroDesigna = (String)registro.get("NUMERO");
 				String codigoDesigna = (String)registro.get("CODIGO");
 				String anioDesigna = (String)registro.get("ANIO");
 				String idTurno  = (String)registro.get("IDTURNO");
 				String idProcedimiento  = (String)registro.get("IDPROCEDIMIENTO");
 				String fechaOrden  = (String)registro.get("FECHAORDEN");
-				
-				//helperInformes.completarHashSalida(registro,getNumeroJustificacionesDesignaSalida(idInstitucion.toString(), 
-					//	idTurno,anioDesigna,numeroDesigna));
-				
-				Vector vTurno = geTurno(idInstitucion.toString(), 
-						idTurno,htAcumuladorTurnos,helperInformes);
-				helperInformes.completarHashSalida(registro,vTurno);
-				
-				
-				if(idProcedimiento!=null && !idProcedimiento.equalsIgnoreCase("")){
-					Vector vProcedimiento = getProcedimiento(idInstitucion.toString(), 
-							idProcedimiento,htAcumuladorProcedimientos,helperInformes);
-					helperInformes.completarHashSalida(registro,vProcedimiento);
-				}else{
-					registro.put("PROCEDIMIENTO","");
-					registro.put("CATEGORIA","");
-					registro.put("IDJURISDICCION","");
-					
-				}
-				
-				
-				String idJuzgado = (String)registro.get(ScsDesignaBean.C_IDJUZGADO);
-				String idInstitucionJuzgado  = (String)registro.get("IDINSTITUCION_JUZG");
-				if(idJuzgado!=null && !idJuzgado.equalsIgnoreCase("")){
-					Vector vJuzgado = getJuzgado(idInstitucionJuzgado.toString(),idJuzgado,htAcumuladorJuzgados, helperInformes);
-					helperInformes.completarHashSalida(registro,vJuzgado);
-					String descJuzgado = (String)registro.get("JUZGADO"); 
-					registro.put("DESC_JUZGADO",descJuzgado);
-					if(isInforme)
-						registro.put("IDJUZGADO",descJuzgado);
-				}else{
-					registro.put("DESC_JUZGADO","");
-					registro.put("IDJUZGADO","");
-					
-				}
-	
-				Hashtable htFuncion = new Hashtable();
-				htFuncion.put(new Integer(1), idInstitucion.toString());
-				htFuncion.put(new Integer(2), idTurno);
-				htFuncion.put(new Integer(3), anioDesigna);
-				htFuncion.put(new Integer(4), numeroDesigna);
-				//helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-					//	htFuncion, "F_SIGA_GETEJG_DESIGNA", "EXPEDIENTES"));
-				
-				htFuncion.put(new Integer(5), "1");
-				//helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-					//	htFuncion, "f_siga_getdefendidosdesigna", "CLIENTE"));
-				
-				if(isInforme)
-					formatearHashInforme(registro,idInstitucion);
-				
-				
-				
 				String keyTreeMap = fechaOrden+anioDesigna+codigoDesigna+idTurno+numeroDesigna;
 				if(!htPersona.containsKey(idPersona)){
-					/*Vector vPersona = admPersona.getDatosPersonaTag(idInstitucion.toString(),idPersona);
-					Hashtable htDatosPersona = (Hashtable) vPersona.get(0);
-					String nombre = (String)htDatosPersona.get(CenPersonaBean.C_NOMBRE);
-					String nColegiado = (String)htDatosPersona.get(CenColegiadoBean.C_NCOLEGIADO);
-					registro.put(CenPersonaBean.C_NOMBRE,nombre);
-					registro.put(CenColegiadoBean.C_NCOLEGIADO,nColegiado);
-					
-					
-					helperInformes.completarHashSalida(registro, getDireccionLetradoSalida(idPersona, idInstitucion.toString()));*/
 					if(isInforme)
 						helperInformes.completarHashSalida(registro, getLetradoSalida(idPersona, idInstitucion.toString()));
 					
 					tmDesignas = new TreeMap();
-					//vRows = new Vector();
 				}else{
-					//vRows = (Vector) htPersona.get(idPersona);
 					tmDesignas = (TreeMap) htPersona.get(idPersona);
 					if(isInforme){
 						Iterator iteDesignasPersona = tmDesignas.keySet().iterator();
@@ -941,104 +437,20 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 						registro.put("POBLACION_LETRADO",(String)primerRegistroPersona.get("POBLACION_LETRADO"));
 						registro.put("PROVINCIA_LETRADO",(String)primerRegistroPersona.get("PROVINCIA_LETRADO"));
 					}
-					
 				}
-				
-				//vRows.add(registro);
+				List<DesignaForm> designaList = getDesignaList(formulario, registro, acumula, isInforme);
+				registro.put("designaList", designaList);
 				tmDesignas.put(keyTreeMap, registro);
-				//htPersona.put(idPersona,vRows);
 				htPersona.put(idPersona,tmDesignas);
-				
-				
-				
 			}
-			
-
+			 ClsLogging.writeFileLog(Calendar.getInstance().getTimeInMillis() + ",==> SIGA: FIN Consulta Justificacion",10);
 		}
 		catch (Exception e) {
 			throw new ClsExceptions (e, "Error al obtener la informacion en getPersonasSalidaJustificacion");
 		}
 		return htPersona;
-		
-		
-		
 	}
 	
-	
-	
-	
-	
-	
-	
-	private Hashtable formatearHashInforme(Hashtable htRows,Integer idInstitucion)throws ClsExceptions{
-		
-		//Vemos si esta finalizado y le metemos el campo baja=X
-	
-	
-		String estado = (String)htRows.get(ScsDesignaBean.C_ESTADO);
-		if (estado != null && estado.equals("F"))
-			htRows.put("BAJA","X");
-		else
-			htRows.put("BAJA"," ");
-		//Sacamos la descripcion de los juzgado. Habria que preguntar si esto 
-		//es mejor que meter la join en la query. Respuesta: Seria mejor que trabaje oracle. 
-		//Lo voy a dejar asi por si hay cambios
-		
-		//Las fecha de acreditacion vienen concatenadas dd/mm/aaa|porcentaje
-		boolean isPendiente = false;
-		String fechaAcreditacioIni = (String)htRows.get("ACREDITACION_INI");
-		int porc = 0;
-		if(fechaAcreditacioIni!=null && !fechaAcreditacioIni.equalsIgnoreCase("")){
-			int index = fechaAcreditacioIni.indexOf("||");
-			String fechaRealAcreditacioIni = fechaAcreditacioIni.substring(0,index);
-			htRows.put("ACREDITACION_INI",fechaRealAcreditacioIni);
-			String porcentaje = fechaAcreditacioIni.substring(index+2);
-			porc += Integer.parseInt(porcentaje);
-			
-			isPendiente = true;
-		}
-		String fechaAcreditacioFin = (String)htRows.get("ACREDITACION_FIN");
-		if(fechaAcreditacioFin!=null && !fechaAcreditacioFin.equalsIgnoreCase("")){
-			int index = fechaAcreditacioFin.indexOf("||");
-			String fechaRealAcreditacioFin = fechaAcreditacioFin.substring(0,index);
-			htRows.put("ACREDITACION_FIN",fechaRealAcreditacioFin);
-			String porcentaje = null;
-			//pongo esto por si no viene con fecha porcentaje. Seria un error!
-			if(fechaAcreditacioFin.length()>index+2){
-				porcentaje = fechaAcreditacioFin.substring(index+2);
-				porc += Integer.parseInt(porcentaje);
-			}
-			
-			
-		}
-		String expedientes = (String)htRows.get("EXPEDIENTES");
-		if (expedientes != null && expedientes.indexOf("##") > -1) {
-			String[] ejgs = expedientes.split(",");
-			String salida = "";
-			for (String ejg:ejgs) {
-				String[] ejgDoc = ejg.split("##");				
-				salida+=", " + ejgDoc[0].trim();				
-			}
-			expedientes=salida;
-			if (expedientes.length() > 2){
-				expedientes = expedientes.substring(1);
-			}
-			htRows.put("EXPEDIENTES", expedientes);
-		}
-		//Si es de inicio y fin trae el porcentaje(100) en cada justificacion por lo que sera 200.pongo <100 y evito problemas
-		if(porc>=100)
-			htRows.put("PENDIENTE","");
-		// parche 
-		// if(100==porc)
-		//	htRows.put("PENDIENTE","");
-		else
-			htRows.put("PENDIENTE",String.valueOf(100-porc)+"% PEND");
-		if(!isPendiente)
-			htRows.put("PENDIENTE","100% PEND");
-	
-	return htRows;
-	
-}
 	/**
 	 * Creamos un acumulado de juzgados para evitar conexiones innecesarias a base de datos
 	 * 
@@ -1215,9 +627,811 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 
 	}
 	
-	
-	
+	public List<DesignaForm> getDesignasJustificacion(InformeJustificacionMasivaForm formulario,Acumulador acumula,boolean isInforme) throws ClsExceptions  
+	{	 
+		
+		Hashtable htPersona = new Hashtable();
+		boolean isMostrarJustificacionesPtes = formulario.getMostrarTodas()!=null && formulario.getMostrarTodas().equals("true");
+		
+		
+		
+		//Vector vSalida = null;
+		HelperInformesAdm helperInformes = new HelperInformesAdm();
+		Hashtable htAcumuladorJuzgados = acumula.getAcumuladorJuzgadosHashtable();
+		Hashtable htAcumuladorProcedimientos = acumula.getAcumuladorProcedimientosHashtable();
+		Hashtable htAcumuladorTurnos = acumula.getAcumuladorTurnosHashtable();
+		TreeMap tmDesignas = null;
+		List<Hashtable> designaList = null;
+		List<DesignaForm> designaFormList = null;
+		ScsActuacionDesignaAdm admActuacionDesignaAdm = new ScsActuacionDesignaAdm(usrbean);
+		String idPersona = formulario.getIdPersona();
+		
+		try {
+			//vSalida = new Vector();	
+			designaList = getDesignas(formulario,isInforme); 
+			DesignaForm designaForm = null;
+			designaFormList = new ArrayList<DesignaForm>();
+			Iterator iteDesignas = designaList.iterator();
+			
+			while (iteDesignas.hasNext()) {
+				Hashtable registro =  (Hashtable) iteDesignas.next();
+				designaForm = new DesignaForm();
+				String tipoResolucionDesigna  =UtilidadesHash.getString(registro, "TIPO_RESOLUCION_DESIGNA") ;
+				designaForm.setTipoResolucionDesigna(tipoResolucionDesigna);
+				
+				idPersona = (String)registro.get("IDPERSONA");
+				String idProcedimiento  = (String)registro.get("IDPROCEDIMIENTO");
+				designaForm.setIdPersona(idPersona);
+				designaForm.setNumero((String)registro.get("NUMERO"));
+				designaForm.setAnio((String)registro.get("ANIO"));
+				designaForm.setIdInstitucion(formulario.getIdInstitucion());
+				designaForm.setIdTurno((String)registro.get("IDTURNO"));
 
+				designaForm.setCodigoDesigna((String)registro.get("CODIGODESIGNA"));
+//				List ejgList = getExpedientes((String)registro.get("EXPEDIENTES"));
+//				designaForm.setExpedientes(ejgList);
+//				designaForm.setEjgs((String)registro.get("EXPEDIENTES"));
+				designaForm.setFecha((String)registro.get("FECHADESIGNA"));
+				designaForm.setAsunto((String)registro.get("ASUNTO"));
+				designaForm.setClientes((String)registro.get("CLIENTE"));
+
+				String estado = (String)registro.get("ESTADO");
+				designaForm.setEstado(estado);
+				designaForm.setBaja(estado!=null&&(estado.equals("F")||estado.equals("A"))?"1":"0");
+				
+				
+				Vector vTurno = geTurno(designaForm.getIdInstitucion().toString(), 
+						designaForm.getIdTurno(),htAcumuladorTurnos,helperInformes);
+				helperInformes.completarHashSalida(registro,vTurno);
+				
+				//El turno es quiene tiene si se validan las justificaciones
+				String validarJustificaciones = (String)registro.get("VALIDARJUSTIFICACIONES");
+				designaForm.setActuacionValidarJustificaciones(validarJustificaciones!=null?validarJustificaciones:"S");
+				designaForm.setActuacionRestriccionesActiva((String)registro.get("ACTIVARRETRICCIONACREDIT"));
+				designaForm.setActuacionPermitidaLetrado((String)registro.get("LETRADOACTUACIONES"));
+				String cambioLetrado = (String)registro.get("CAMBIOLETRADO");
+				designaForm.setCambioLetrado(cambioLetrado!=null&&Integer.parseInt(cambioLetrado)>1?"S":"N");
+				
+				
+				
+				designaForm.setIdProcedimiento(idProcedimiento);
+				
+				if(idProcedimiento!=null && !idProcedimiento.equalsIgnoreCase("")){
+					Vector vProcedimiento = getProcedimiento(formulario.getIdInstitucion(), 
+							idProcedimiento,htAcumuladorProcedimientos,helperInformes);
+					helperInformes.completarHashSalida(registro,vProcedimiento);
+				}else{
+					registro.put("PROCEDIMIENTO","");
+					registro.put("CATEGORIA","");
+					registro.put("IDJURISDICCION","");
+					
+				}
+				designaForm.setDescripcionProcedimiento((String)registro.get("PROCEDIMIENTO"));
+				designaForm.setCategoria((String)registro.get("CATEGORIA"));
+				designaForm.setIdJurisdiccion((String)registro.get("IDJURISDICCION"));
+				
+				String idJuzgado = (String)registro.get(ScsDesignaBean.C_IDJUZGADO);
+				String idInstitucionJuzgado  = (String)registro.get("IDINSTITUCION_JUZG");
+				if(idJuzgado!=null && !idJuzgado.equalsIgnoreCase("")){
+					designaForm.setIdJuzgado(idJuzgado);
+					Vector vJuzgado = getJuzgado(idInstitucionJuzgado.toString(),idJuzgado,htAcumuladorJuzgados, helperInformes);
+					helperInformes.completarHashSalida(registro,vJuzgado);
+					String descJuzgado = (String)registro.get("JUZGADO"); 
+					registro.put("DESC_JUZGADO",descJuzgado);
+					if(isInforme)
+						registro.put("IDJUZGADO",descJuzgado);
+				}else{
+					registro.put("DESC_JUZGADO","");
+					registro.put("IDJUZGADO","");
+					
+				}
+				designaForm.setJuzgado((String)registro.get("DESC_JUZGADO"));
+				
+				//seteamos las actuaciones de las designas
+				designaForm.setMultiplesComplementos((String)registro.get("COMPLEMENTO"));
+				
+				
+				//si no estan activos los parametros se pone siempre permitido justificar
+				
+				if((!formulario.getFichaColegial()) || (tipoResolucionDesigna.equals(this.resolucionDesignaFavorable)||
+						(tipoResolucionDesigna.equals(this.resolucionDesignaPteCAJG)&&formulario.getIncluirEjgPteCAJG()!=null&&formulario.getIncluirEjgPteCAJG().equals("2"))
+						||
+						(tipoResolucionDesigna.equals(this.resolucionDesignaNoFavorable)&&formulario.getIncluirEjgNoFavorable()!=null&&formulario.getIncluirEjgNoFavorable().equals("2"))
+						||
+						(tipoResolucionDesigna.equals(this.resolucionDesignaSinEjg)&&formulario.getIncluirSinEJG()!=null&&formulario.getIncluirSinEJG().equals("2"))
+						||
+						(tipoResolucionDesigna.equals(this.resolucionDesignaSinResolucion)&&formulario.getIncluirEjgSinResolucion()!=null&&formulario.getIncluirEjgSinResolucion().equals("2"))
+				)){
+					
+					designaForm.setPermitidoJustificar(true);
+					admActuacionDesignaAdm.setActuacionesDesignas(designaForm,isMostrarJustificacionesPtes);
+					designaForm.setRowSpan();
+					
+					if(!isMostrarJustificacionesPtes){
+						designaFormList.add(designaForm);
+					}else if(designaForm.getIdJuzgado()==null || designaForm.getIdJuzgado().equals("")){
+						designaFormList.add(designaForm);
+					}else if(designaForm.getIdProcedimiento()==null || designaForm.getIdProcedimiento().equals("")){
+						designaFormList.add(designaForm);
+					}
+					else if((designaForm.getActuaciones()!=null && !designaForm.getActuaciones().isEmpty()) ||
+							(designaForm.getAcreditaciones()!=null && designaForm.getAcreditaciones().size()>0)){
+						designaFormList.add(designaForm);
+					}
+				}else{
+					designaForm.setPermitidoJustificar(false);
+					designaForm.setRowSpan();
+					designaFormList.add(designaForm);
+					
+				}
+				
+				
+				
+	
+			
+			}
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la informacion en getDesignasJustificacion");
+		}
+		return designaFormList;
+	}
+	
+	
+	public List<DesignaForm> getDesignaList(InformeJustificacionMasivaForm formulario,Hashtable designaHashtable,Acumulador acumula,boolean isInforme) throws ClsExceptions  
+	{	 
+		
+		Hashtable htPersona = new Hashtable();
+		
+		boolean isMostrarJustificacionesPtes = formulario.getMostrarTodas()!=null && formulario.getMostrarTodas().equals("true");
+
+		
+		//Vector vSalida = null;
+		HelperInformesAdm helperInformes = new HelperInformesAdm();
+		if(acumula==null)
+			acumula= new Acumulador();
+		Hashtable htAcumuladorJuzgados = acumula.getAcumuladorJuzgadosHashtable();
+		Hashtable htAcumuladorProcedimientos = acumula.getAcumuladorProcedimientosHashtable();
+		Hashtable htAcumuladorTurnos = acumula.getAcumuladorTurnosHashtable();
+		//Hashtable htAcumuladorPersona = new Hashtable();
+		TreeMap tmDesignas = null;
+//		List<Hashtable> designaList = null;
+		List<DesignaForm> designaFormList = null;
+		ScsActuacionDesignaAdm admActuacionDesignaAdm = new ScsActuacionDesignaAdm(usrbean);
+		String idPersona = formulario.getIdPersona();
+		try {
+			//vSalida = new Vector();	
+//			ClsLogging.writeFileLog(Calendar.getInstance().getTimeInMillis() + ",==> SIGA: INICIO Consulta Justificacion",10);
+//			designaList = getDesignas(formulario,isInforme); 
+//			ClsLogging.writeFileLog(Calendar.getInstance().getTimeInMillis() + ",==> SIGA: FIN Consulta Justificacion",10);
+			DesignaForm designaForm = null;
+			designaFormList = new ArrayList<DesignaForm>();
+//			Iterator iteDesignas = designaList.iterator();
+			
+			
+				
+			
+			
+			//for (int j = 0; j < designaList.size(); j++) {
+				designaForm = new DesignaForm();
+				
+				String tipoResolucionDesigna  =UtilidadesHash.getString(designaHashtable, "TIPO_RESOLUCION_DESIGNA") ;
+				designaForm.setTipoResolucionDesigna(tipoResolucionDesigna);
+				//Hashtable registro = designaList.get(j);
+				idPersona = (String)designaHashtable.get("IDPERSONA");
+				String idProcedimiento  = (String)designaHashtable.get("IDPROCEDIMIENTO");
+				designaForm.setIdPersona(idPersona);
+				designaForm.setNumero((String)designaHashtable.get("NUMERO"));
+				designaForm.setAnio((String)designaHashtable.get("ANIO"));
+				designaForm.setIdInstitucion(formulario.getIdInstitucion());
+				designaForm.setIdTurno((String)designaHashtable.get("IDTURNO"));
+
+				designaForm.setCodigoDesigna((String)designaHashtable.get("CODIGODESIGNA"));
+				List ejgList = getExpedientes((String)designaHashtable.get("EXPEDIENTES"));
+				designaForm.setExpedientes(ejgList);
+//				designaForm.setEjgs((String)designaHashtable.get("EXPEDIENTES"));
+				designaForm.setFecha((String)designaHashtable.get("FECHADESIGNA"));
+				designaForm.setAsunto((String)designaHashtable.get("ASUNTO"));
+				designaForm.setClientes((String)designaHashtable.get("CLIENTE"));
+
+				//Si el estado es finalizado ponemos baja = 1 si no baja =0
+				String estado = (String)designaHashtable.get("ESTADO");
+				designaForm.setEstado(estado);
+				designaForm.setBaja(estado!=null&&(estado.equals("F")||estado.equals("A"))?"1":"0");
+				
+				
+				Vector vTurno = geTurno(designaForm.getIdInstitucion().toString(), 
+						designaForm.getIdTurno(),htAcumuladorTurnos,helperInformes);
+				helperInformes.completarHashSalida(designaHashtable,vTurno);
+				
+				//El turno es quiene tiene si se validan las justificaciones
+				String validarJustificaciones = (String)designaHashtable.get("VALIDARJUSTIFICACIONES");
+				String actuacionPermitidaLetrado = (String)designaHashtable.get("LETRADOACTUACIONES");
+				designaForm.setActuacionValidarJustificaciones(validarJustificaciones!=null?validarJustificaciones:"S");
+				designaForm.setActuacionRestriccionesActiva((String)designaHashtable.get("ACTIVARRETRICCIONACREDIT"));
+				designaForm.setActuacionPermitidaLetrado(actuacionPermitidaLetrado!=null?actuacionPermitidaLetrado:"0");
+				String cambioLetrado = (String)designaHashtable.get("CAMBIOLETRADO");
+				designaForm.setCambioLetrado(cambioLetrado!=null&&Integer.parseInt(cambioLetrado)>1?"S":"N");
+				designaForm.setIdProcedimiento(idProcedimiento);
+				
+				if(idProcedimiento!=null && !idProcedimiento.equalsIgnoreCase("")){
+					Vector vProcedimiento = getProcedimiento(formulario.getIdInstitucion(), 
+							idProcedimiento,htAcumuladorProcedimientos,helperInformes);
+					helperInformes.completarHashSalida(designaHashtable,vProcedimiento);
+				}else{
+					designaHashtable.put("PERMITIRANIADIRLETRADO","");
+					designaHashtable.put("PROCEDIMIENTO","");
+					designaHashtable.put("CATEGORIA","");
+					designaHashtable.put("IDJURISDICCION","");
+					
+				}
+				designaForm.setDescripcionProcedimiento((String)designaHashtable.get("PROCEDIMIENTO"));
+				designaForm.setCategoria((String)designaHashtable.get("CATEGORIA"));
+				designaForm.setIdJurisdiccion((String)designaHashtable.get("IDJURISDICCION"));
+				
+				String idJuzgado = (String)designaHashtable.get(ScsDesignaBean.C_IDJUZGADO);
+				String idInstitucionJuzgado  = (String)designaHashtable.get("IDINSTITUCION_JUZG");
+				if(idJuzgado!=null && !idJuzgado.equalsIgnoreCase("")){
+					designaForm.setIdJuzgado(idJuzgado);
+					Vector vJuzgado = getJuzgado(idInstitucionJuzgado.toString(),idJuzgado,htAcumuladorJuzgados, helperInformes);
+					helperInformes.completarHashSalida(designaHashtable,vJuzgado);
+					String descJuzgado = (String)designaHashtable.get("JUZGADO"); 
+					designaHashtable.put("DESC_JUZGADO",descJuzgado);
+					if(isInforme)
+						designaHashtable.put("IDJUZGADO",descJuzgado);
+				}else{
+					designaHashtable.put("DESC_JUZGADO","");
+					designaHashtable.put("IDJUZGADO","");
+					
+				}
+				designaForm.setJuzgado((String)designaHashtable.get("DESC_JUZGADO"));
+				
+				//seteamos las actuaciones de las designas
+				designaForm.setMultiplesComplementos((String)designaHashtable.get("COMPLEMENTO"));
+				//designaForm.setPermitirAniadirProcedALetrado((String)designaHashtable.get("PERMITIRANIADIRLETRADO"));
+				
+				
+
+				
+				
+
+				
+				if((!formulario.getFichaColegial()) ||( tipoResolucionDesigna.equals(this.resolucionDesignaFavorable)||
+						(tipoResolucionDesigna.equals(this.resolucionDesignaPteCAJG)&&formulario.getIncluirEjgPteCAJG()!=null&&formulario.getIncluirEjgPteCAJG().equals("2"))
+						||
+						(tipoResolucionDesigna.equals(this.resolucionDesignaNoFavorable)&&formulario.getIncluirEjgNoFavorable()!=null&&formulario.getIncluirEjgNoFavorable().equals("2"))
+						||
+						(tipoResolucionDesigna.equals(this.resolucionDesignaSinEjg)&&formulario.getIncluirSinEJG()!=null&&formulario.getIncluirSinEJG().equals("2"))
+						||
+						(tipoResolucionDesigna.equals(this.resolucionDesignaSinResolucion)&&formulario.getIncluirEjgSinResolucion()!=null&&formulario.getIncluirEjgSinResolucion().equals("2"))
+				)){
+					
+					designaForm.setPermitidoJustificar(true);
+					admActuacionDesignaAdm.setActuacionesDesignas(designaForm,isMostrarJustificacionesPtes);
+					designaForm.setRowSpan();
+					
+					if(!isMostrarJustificacionesPtes){
+						designaFormList.add(designaForm);
+					}else if(designaForm.getIdJuzgado()==null || designaForm.getIdJuzgado().equals("")){
+						designaFormList.add(designaForm);
+					}else if(designaForm.getIdProcedimiento()==null || designaForm.getIdProcedimiento().equals("")){
+						designaFormList.add(designaForm);
+					}
+					else if((designaForm.getActuaciones()!=null && designaForm.getActuaciones().size()>0) ||
+							(designaForm.getAcreditaciones()!=null && designaForm.getAcreditaciones().size()>0)){
+						designaFormList.add(designaForm);
+					}
+				}else{
+					designaForm.setPermitidoJustificar(false);
+					designaForm.setRowSpan();
+					designaFormList.add(designaForm);
+				}
+				
+				
+	
+				
+			
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la informacion en getDesignasJustificacion");
+		}
+		return designaFormList;
+	}
+	
+	
+	private List<Hashtable> getDesignas(InformeJustificacionMasivaForm formulario,boolean isInforme)  throws ClsExceptions, SIGAException 
+	{
+	    Hashtable codigos = new Hashtable();
+		String sql = getQueryJustificacion(formulario,isInforme, codigos);
+	
+		return (Vector<Hashtable>)this.selectGenericoBind(sql, codigos);
+	}
+	
+	
+	
+	
+	private String getQueryWhereResolucion(String tipoResolucionDesigna){
+		 ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		GenParametrosAdm paramAdm = new GenParametrosAdm (usrbean);
+		StringBuffer sql = new StringBuffer();
+		if(tipoResolucionDesigna.equals(this.resolucionDesignaFavorable)){
+			final String TIPO_RESOLUCION_RECONOCIDO100 = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.reconocido100");
+			final String TIPO_RESOLUCION_RECONOCIDO80 = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.reconocido80");
+			sql.append(" AND EXISTS (SELECT * ");
+			sql.append(" FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
+			sql.append(" WHERE D.IDINSTITUCION = EJGDES.IDINSTITUCION ");
+			sql.append(" AND D.IDTURNO = EJGDES.IDTURNO ");
+			sql.append(" AND D.ANIO = EJGDES.ANIODESIGNA ");
+			sql.append(" AND D.NUMERO = EJGDES.NUMERODESIGNA ");
+			sql.append(" AND EJGDES.IDINSTITUCION = EJG.IDINSTITUCION ");
+			sql.append(" AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ");
+			sql.append(" AND EJGDES.ANIOEJG = EJG.ANIO ");
+			sql.append(" AND EJGDES.NUMEROEJG = EJG.NUMERO ");
+			sql.append(" AND EJG.IDTIPORATIFICACIONEJG IN ( ");
+			sql.append(TIPO_RESOLUCION_RECONOCIDO100);
+			sql.append(" , ");
+			sql.append(TIPO_RESOLUCION_RECONOCIDO80);
+			
+			sql.append(" ) ");
+			sql.append(" ) ");
+
+			
+		}else if(tipoResolucionDesigna.equals(this.resolucionDesignaPteCAJG)){
+			
+			final String TIPO_RESOLUCION_PTE_CAJG = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.pendientecajg");
+			final String TIPO_RESOLUCION_RECONOCIDO100 = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.reconocido100");
+			final String TIPO_RESOLUCION_RECONOCIDO80 = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.reconocido80");
+			
+			sql.append(" AND EXISTS (SELECT * ");
+			sql.append(" FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
+			sql.append(" WHERE D.IDINSTITUCION = EJGDES.IDINSTITUCION ");
+			sql.append(" AND D.IDTURNO = EJGDES.IDTURNO ");
+			sql.append(" AND D.ANIO = EJGDES.ANIODESIGNA ");
+			sql.append(" AND D.NUMERO = EJGDES.NUMERODESIGNA ");
+			sql.append(" AND EJGDES.IDINSTITUCION = EJG.IDINSTITUCION ");
+			sql.append(" AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ");
+			sql.append(" AND EJGDES.ANIOEJG = EJG.ANIO ");
+			sql.append(" AND EJGDES.NUMEROEJG = EJG.NUMERO ");
+			sql.append(" AND EJG.IDTIPORATIFICACIONEJG IN (");
+			sql.append(TIPO_RESOLUCION_PTE_CAJG);
+			
+			sql.append(" ) ");
+				        
+			sql.append(" ) ");
+			sql.append(" AND NOT EXISTS (SELECT * ");
+			sql.append(" FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
+			sql.append(" WHERE D.IDINSTITUCION = EJGDES.IDINSTITUCION ");
+			sql.append(" AND D.IDTURNO = EJGDES.IDTURNO ");
+			sql.append(" AND D.ANIO = EJGDES.ANIODESIGNA ");
+			sql.append(" AND D.NUMERO = EJGDES.NUMERODESIGNA ");
+			sql.append(" AND EJGDES.IDINSTITUCION = EJG.IDINSTITUCION ");
+			sql.append(" AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ");
+			sql.append(" AND EJGDES.ANIOEJG = EJG.ANIO ");
+			sql.append(" AND EJGDES.NUMEROEJG = EJG.NUMERO ");
+			sql.append(" AND EJG.IDTIPORATIFICACIONEJG IN ( ");
+			sql.append(TIPO_RESOLUCION_RECONOCIDO100);
+			sql.append(" , ");
+			sql.append(TIPO_RESOLUCION_RECONOCIDO80);
+			sql.append(" ) ");
+			
+			sql.append(" ) ");
+
+			
+		}
+		else if(tipoResolucionDesigna.equals(this.resolucionDesignaNoFavorable)){
+			final String TIPO_RESOLUCION_DENEGADO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.denegado");
+			final String TIPO_RESOLUCION_ARCHIVO = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.archivo");
+			final String TIPO_RESOLUCION_PTE_CAJG = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.pendientecajg");
+			final String TIPO_RESOLUCION_RECONOCIDO100 = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.reconocido100");
+			final String TIPO_RESOLUCION_RECONOCIDO80 = rp3.returnProperty("codigo.general.scstiporesolucion.idtiporesolucion.reconocido80");
+			
+			sql.append(" AND EXISTS (SELECT * ");
+			sql.append(" FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
+			sql.append(" WHERE D.IDINSTITUCION = EJGDES.IDINSTITUCION ");
+			sql.append(" AND D.IDTURNO = EJGDES.IDTURNO ");
+			sql.append(" AND D.ANIO = EJGDES.ANIODESIGNA ");
+			sql.append(" AND D.NUMERO = EJGDES.NUMERODESIGNA ");
+			sql.append(" AND EJGDES.IDINSTITUCION = EJG.IDINSTITUCION ");
+			sql.append(" AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ");
+			sql.append(" AND EJGDES.ANIOEJG = EJG.ANIO ");
+			sql.append(" AND EJGDES.NUMEROEJG = EJG.NUMERO ");
+			sql.append(" AND EJG.IDTIPORATIFICACIONEJG IN (");
+			sql.append(TIPO_RESOLUCION_DENEGADO);
+			sql.append(" , ");
+			sql.append(TIPO_RESOLUCION_ARCHIVO);
+			
+			sql.append(" ) ");
+				        
+			sql.append(" ) ");
+			sql.append(" AND NOT EXISTS (SELECT * ");
+			sql.append(" FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
+			sql.append(" WHERE D.IDINSTITUCION = EJGDES.IDINSTITUCION ");
+			sql.append(" AND D.IDTURNO = EJGDES.IDTURNO ");
+			sql.append(" AND D.ANIO = EJGDES.ANIODESIGNA ");
+			sql.append(" AND D.NUMERO = EJGDES.NUMERODESIGNA ");
+			sql.append(" AND EJGDES.IDINSTITUCION = EJG.IDINSTITUCION ");
+			sql.append(" AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ");
+			sql.append(" AND EJGDES.ANIOEJG = EJG.ANIO ");
+			sql.append(" AND EJGDES.NUMEROEJG = EJG.NUMERO ");
+			sql.append(" AND EJG.IDTIPORATIFICACIONEJG IN ( ");
+			sql.append(TIPO_RESOLUCION_RECONOCIDO100);
+			sql.append(" , ");
+			sql.append(TIPO_RESOLUCION_RECONOCIDO80);
+			sql.append(" , ");
+			sql.append(TIPO_RESOLUCION_PTE_CAJG);
+			sql.append(" ) ");
+			
+			sql.append(" ) ");
+
+			
+		}else if(tipoResolucionDesigna.equals(this.resolucionDesignaSinResolucion)){
+			//Todo sus ejgs estan sin resolucion
+			sql.append(" AND (SELECT COUNT(*) ");
+			sql.append(" FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
+			sql.append(" WHERE D.IDINSTITUCION = EJGDES.IDINSTITUCION ");
+			sql.append(" AND D.IDTURNO = EJGDES.IDTURNO ");
+			sql.append(" AND D.ANIO = EJGDES.ANIODESIGNA ");
+			sql.append(" AND D.NUMERO = EJGDES.NUMERODESIGNA ");
+			sql.append(" AND EJGDES.IDINSTITUCION = EJG.IDINSTITUCION ");
+			sql.append(" AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ");
+			sql.append(" AND EJGDES.ANIOEJG = EJG.ANIO ");
+			sql.append(" AND EJGDES.NUMEROEJG = EJG.NUMERO)=(SELECT COUNT(*) ");
+			sql.append(" FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
+			sql.append(" WHERE D.IDINSTITUCION = EJGDES.IDINSTITUCION ");
+			sql.append(" AND D.IDTURNO = EJGDES.IDTURNO ");
+			sql.append(" AND D.ANIO = EJGDES.ANIODESIGNA ");
+			sql.append(" AND D.NUMERO = EJGDES.NUMERODESIGNA ");
+			sql.append(" AND EJGDES.IDINSTITUCION = EJG.IDINSTITUCION ");
+			sql.append(" AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ");
+			sql.append(" AND EJGDES.ANIOEJG = EJG.ANIO ");
+			sql.append(" AND EJGDES.NUMEROEJG = EJG.NUMERO ");
+			sql.append(" AND EJG.IDTIPORATIFICACIONEJG IS NULL ");
+			sql.append(" ) ");
+			sql.append(" AND  ");
+			sql.append(" (SELECT COUNT(*) ");
+			sql.append(" FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
+			sql.append(" WHERE D.IDINSTITUCION = EJGDES.IDINSTITUCION ");
+			sql.append(" AND D.IDTURNO = EJGDES.IDTURNO ");
+			sql.append(" AND D.ANIO = EJGDES.ANIODESIGNA ");
+			sql.append(" AND D.NUMERO = EJGDES.NUMERODESIGNA ");
+			sql.append(" AND EJGDES.IDINSTITUCION = EJG.IDINSTITUCION ");
+			sql.append(" AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ");
+			sql.append(" AND EJGDES.ANIOEJG = EJG.ANIO ");
+			sql.append(" AND EJGDES.NUMEROEJG = EJG.NUMERO)>0 ");
+//			sql.append(" ) ");
+
+			
+		}else if(tipoResolucionDesigna.equals(this.resolucionDesignaSinEjg)){
+			sql.append(" AND NOT EXISTS (SELECT * ");
+			sql.append(" FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
+			sql.append(" WHERE D.IDINSTITUCION = EJGDES.IDINSTITUCION ");
+			sql.append(" AND D.IDTURNO = EJGDES.IDTURNO ");
+			sql.append(" AND D.ANIO = EJGDES.ANIODESIGNA ");
+			sql.append(" AND D.NUMERO = EJGDES.NUMERODESIGNA ");
+			sql.append(" AND EJGDES.IDINSTITUCION = EJG.IDINSTITUCION ");
+			sql.append(" AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ");
+			sql.append(" AND EJGDES.ANIOEJG = EJG.ANIO ");
+			sql.append(" AND EJGDES.NUMEROEJG = EJG.NUMERO) ");
+
+		}
+		return sql.toString();
+		
+	}
+	
+	private String getQueryBaseJustificacion(String tipoResolucionDesigna,InformeJustificacionMasivaForm formulario, boolean isInforme,Hashtable codigos){
+		StringBuffer extra = new StringBuffer("");
+		
+		boolean isMostrarJustificacionesPtes = formulario.getMostrarTodas()!=null && formulario.getMostrarTodas().equals("true");
+		
+		
+	    int contador=codigos.size();
+
+		StringBuffer sql = new StringBuffer("");
+		
+		
+		sql.append("( SELECT '");
+		sql.append(tipoResolucionDesigna);
+		sql.append("' TIPO_RESOLUCION_DESIGNA,");
+		sql.append(" TO_CHAR(D.FECHAENTRADA,'dd/mm/yyyy') FECHADESIGNA, ");
+		sql.append(" TO_CHAR(D.FECHAENTRADA,'yyyy_mm_dd') FECHAORDEN, ");
+		
+		if(!isMostrarJustificacionesPtes){
+			sql.append("D.ANIO || '/' || D.CODIGO CODIGODESIGNA,");
+			sql.append(" F_SIGA_GETEJG_DESIGNA(:");
+			contador++;
+			codigos.put(new Integer(contador),formulario.getIdInstitucion());
+			sql.append(contador);
+			sql.append(",d.idturno,d.anio,d.numero) AS EXPEDIENTES, ");
+			sql.append(" D.NUMPROCEDIMIENTO ASUNTO, ");
+			sql.append(" f_siga_getdefendidosdesigna(:");
+			contador++;
+			codigos.put(new Integer(contador),formulario.getIdInstitucion());
+			sql.append(contador);
+			sql.append(",d.anio,d.idturno,d.numero,0) AS CLIENTE, ");
+			
+			sql.append(" D.RESUMENASUNTO RESUMENASUNTO, ");
+			sql.append(" DL.FECHARENUNCIA, ");
+		}//else{
+			
+		
+			
+		//}
+		sql.append(" D.IDINSTITUCION IDINSTITUCION, ");
+		sql.append(" D.IDTURNO IDTURNO, ");
+		sql.append(" D.ANIO ANIO, ");
+		sql.append(" D.NUMERO NUMERO, ");
+		
+		sql.append(" D.IDJUZGADO IDJUZGADO, ");
+		sql.append(" D.IDINSTITUCION_JUZG IDINSTITUCION_JUZG, ");
+		sql.append(" D.ESTADO ESTADO, ");
+		sql.append(" D.IDPROCEDIMIENTO IDPROCEDIMIENTO, ");
+		sql.append(" D.FECHAENTRADA, D.CODIGO, D.SUFIJO, ");
+		sql.append(" DL.IDPERSONA ");
+		
+		
+		sql.append(" , (SELECT COUNT(*) FROM SCS_DESIGNASLETRADO SDL ");
+		sql.append(" WHERE D.IDINSTITUCION = SDL.IDINSTITUCION ");
+		sql.append(" AND D.ANIO = SDL.ANIO ");
+		sql.append(" AND D.NUMERO = SDL.NUMERO ");
+		sql.append(" AND D.IDTURNO = SDL.IDTURNO) CAMBIOLETRADO ");
+
+		
+		
+		sql.append(" FROM SCS_DESIGNA D, SCS_DESIGNASLETRADO DL ");
+		sql.append(" WHERE D.IDINSTITUCION = DL.IDINSTITUCION ");
+		sql.append(" AND D.ANIO = DL.ANIO ");
+		sql.append(" AND D.NUMERO = DL.NUMERO ");
+		sql.append(" AND D.IDTURNO = DL.IDTURNO ");
+		sql.append(" AND DL.IDINSTITUCION = :");
+		
+		contador++;
+		codigos.put(new Integer(contador),formulario.getIdInstitucion());
+		sql.append(contador);
+		//sql.append("    and d.codigo in ('00164') ");
+		
+		//sql.append("    and d.codigo in ('00157','00158','00211','00212') ");
+		
+		if(formulario.getIdPersona()!=null && !formulario.getIdPersona().equalsIgnoreCase("")){
+			sql.append(" and DL.IDPERSONA = :");
+			contador++;
+			codigos.put(new Integer(contador),formulario.getIdPersona());
+			sql.append(contador);
+		}
+		if (formulario.getAnio() != null && !formulario.getAnio().equals("")) {
+			sql.append(" and D.ANIO = :");	
+			contador++;
+			codigos.put(new Integer(contador),formulario.getAnio());
+			sql.append(contador);
+		}
+
+		sql.append(getQueryWhereResolucion(tipoResolucionDesigna));
+		
+		if(isMostrarJustificacionesPtes)
+			sql.append(" AND D.ESTADO NOT IN ('A','F') ");
+		
+		if(formulario.getEstado()!=null && !formulario.getEstado().equals("")){
+			sql.append(" AND D.ESTADO =:");
+			contador++;
+			codigos.put(new Integer(contador),formulario.getEstado());
+			sql.append(contador);
+			
+		}
+		if(formulario.getActuacionesPendientes()!=null && !formulario.getActuacionesPendientes().equals("")){
+			if (formulario.getActuacionesPendientes()!= null && !formulario.getActuacionesPendientes().equalsIgnoreCase("")) {
+				if(formulario.getActuacionesPendientes().equalsIgnoreCase("SINACTUACIONES")){
+					sql.append(" and F_SIGA_ACTUACIONESDESIG(D.idinstitucion,D.idturno,D.anio,D.numero) is null");
+				}else{
+					contador++;
+				    codigos.put(new Integer(contador),formulario.getActuacionesPendientes().toUpperCase());
+				    sql.append(" and upper(F_SIGA_ACTUACIONESDESIG(D.idinstitucion,D.idturno,D.anio,D.numero))=upper(:");
+				    sql.append(contador);
+				    sql.append(")");
+				}
+			}
+		}
+		
+		if ((formulario.getFechaJustificacionDesde() != null && !formulario.getFechaJustificacionDesde().equals(""))||(formulario.getFechaJustificacionHasta() != null && !formulario.getFechaJustificacionHasta().equals(""))) {
+			
+			sql.append(" AND (SELECT COUNT(*) FROM SCS_ACTUACIONDESIGNA ACT");
+			sql.append(" WHERE ACT.IDINSTITUCION = D.IDINSTITUCION AND ACT.ANIO = D.ANIO ");
+			sql.append(" AND ACT.IDTURNO = D.IDTURNO AND ACT.NUMERO = D.NUMERO" );
+			
+			if (formulario.getFechaJustificacionDesde() != null && !formulario.getFechaJustificacionDesde().equals("")) {
+				sql.append(" AND ACT.FECHAJUSTIFICACION >= :");
+				
+				contador++;
+				codigos.put(new Integer(contador),formulario.getFechaJustificacionDesde());
+				sql.append(contador);
+				 
+			}
+			if (formulario.getFechaJustificacionHasta() != null && !formulario.getFechaJustificacionHasta().equals("")) {
+				sql.append(" AND ACT.FECHAJUSTIFICACION<= :");
+				contador++;
+				codigos.put(new Integer(contador),formulario.getFechaJustificacionHasta());
+				sql.append(contador);
+				 
+			}
+			sql.append(" )>0");
+			 
+		}
+		
+		if (formulario.getFechaDesde() != null && !formulario.getFechaDesde().equals("")) {
+			sql.append(" and trunc(d.fechaentrada) >= :");
+			
+			contador++;
+			codigos.put(new Integer(contador),formulario.getFechaDesde());
+			sql.append(contador);
+			 
+		}
+		
+		if (formulario.getFechaHasta() != null && !formulario.getFechaHasta().equals("")) {
+			sql.append(" and trunc(d.fechaentrada) <=:");
+			
+			contador++;
+			codigos.put(new Integer(contador),formulario.getFechaHasta());
+			sql.append(contador);
+			 
+		}
+		
+		
+
+		
+		if((formulario.getInteresadoApellidos() != null && !formulario.getInteresadoApellidos().equalsIgnoreCase("")) 
+				&& (formulario.getInteresadoNombre() != null && !formulario.getInteresadoNombre().equalsIgnoreCase(""))){
+			
+			
+			sql.append(" and UPPER(");
+			sql.append("f_siga_getdefendidosdesigna(:");
+			contador++;
+			codigos.put(new Integer(contador),formulario.getIdInstitucion());
+			sql.append(contador);
+			sql.append(",d.anio,d.idturno,d.numero,1) ");
+			sql.append(") like ");
+			contador++;
+			StringBuffer aux = new StringBuffer();
+			aux.append("%");
+			aux.append(formulario.getInteresadoNombre().toUpperCase());
+			aux.append(" ");
+			aux.append(formulario.getInteresadoApellidos().toUpperCase());
+			aux.append("%");
+			codigos.put(new Integer(contador),aux.toString());
+			
+			sql.append(":"+contador);
+		}else if (formulario.getInteresadoApellidos() != null && !formulario.getInteresadoApellidos().equalsIgnoreCase("") && (formulario.getInteresadoNombre()==null||formulario.getInteresadoNombre().equalsIgnoreCase("")) ){
+			sql.append(" and UPPER(");
+			sql.append("f_siga_getdefendidosdesigna(:");
+			contador++;
+			codigos.put(new Integer(contador),formulario.getIdInstitucion());
+			sql.append(contador);
+			sql.append(",d.anio,d.idturno,d.numero,1) ");
+			sql.append(") like ");
+			contador++;
+			StringBuffer aux = new StringBuffer();
+		    aux.append("%");
+		    aux.append(formulario.getInteresadoApellidos().toUpperCase());
+		    aux.append("%");
+			codigos.put(new Integer(contador),aux.toString());
+		    
+			sql.append(":"+contador);
+		}else if ((formulario.getInteresadoApellidos() == null||formulario.getInteresadoApellidos().equalsIgnoreCase("")) && formulario.getInteresadoNombre()!=null && !formulario.getInteresadoNombre().equalsIgnoreCase("")){
+			sql.append(" and UPPER(");
+			sql.append("f_siga_getdefendidosdesigna(:");
+			contador++;
+			codigos.put(new Integer(contador),formulario.getIdInstitucion());
+			sql.append(contador);
+			sql.append(",d.anio,d.idturno,d.numero,1) ");
+			sql.append(") like ");
+		    contador++;
+			StringBuffer aux = new StringBuffer();
+		    aux.append("%");
+		    aux.append(formulario.getInteresadoNombre().toUpperCase());
+		    aux.append("%");
+		    codigos.put(new Integer(contador),aux.toString());
+		    
+			sql.append(":"+contador);
+		}
+		sql.append(")");
+		return sql.toString();
+		
+	}
+	private String getQueryJustificacion(InformeJustificacionMasivaForm formulario, boolean isInforme,Hashtable codigos)throws ClsExceptions{
+		
+		StringBuffer extra = new StringBuffer("");
+		
+		boolean isMostrarJustificacionesPtes = formulario.getMostrarTodas()!=null && formulario.getMostrarTodas().equals("true");
+		
+		
+	    int contador=0;
+
+		StringBuffer sql = new StringBuffer("");
+		
+	    ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		//ReadProperties rp3 = new ReadProperties("SIGA.properties");
+		
+		GenParametrosAdm paramAdm = new GenParametrosAdm (usrbean);
+		
+		
+		
+		
+		
+		sql.append(" SELECT * from (");
+		sql.append(getQueryBaseJustificacion(this.resolucionDesignaFavorable, formulario, isInforme, codigos));
+		String codIncluirEjgNoFavorable = formulario.getIncluirEjgNoFavorable();
+		String codIncluirEjgSinResolucion = formulario.getIncluirEjgSinResolucion();
+		String codIncluirSinEJG = formulario.getIncluirSinEJG();
+		String codIncluirEjgPteCAJG = formulario.getIncluirEjgPteCAJG();
+		//cunado no estan activas las restricciones sacamos todo. Entonces la union se pone siempre que no estesn activas las restricciones
+		// o cuando la restriccion nos lo diga
+		if(!formulario.isActivarRestriccionesFicha() || (codIncluirEjgPteCAJG!=null && !codIncluirEjgPteCAJG.equals(ClsConstants.DB_FALSE))){
+			sql.append(" UNION ");
+			sql.append(getQueryBaseJustificacion(this.resolucionDesignaPteCAJG, formulario, isInforme, codigos));
+		}
+		if(!formulario.isActivarRestriccionesFicha() || (codIncluirEjgNoFavorable!=null && !codIncluirEjgNoFavorable.equals(ClsConstants.DB_FALSE))){
+			sql.append(" UNION ");
+			sql.append(getQueryBaseJustificacion(this.resolucionDesignaNoFavorable, formulario, isInforme, codigos));
+		}
+		if(!formulario.isActivarRestriccionesFicha() ||(codIncluirEjgSinResolucion!=null && !codIncluirEjgSinResolucion.equals(ClsConstants.DB_FALSE))){
+			sql.append(" UNION ");
+			sql.append(getQueryBaseJustificacion(this.resolucionDesignaSinResolucion, formulario, isInforme, codigos));
+			
+		}
+		if(!formulario.isActivarRestriccionesFicha() ||(codIncluirSinEJG!=null && !codIncluirSinEJG.equals(ClsConstants.DB_FALSE))){
+			sql.append(" UNION ");
+			sql.append(getQueryBaseJustificacion(this.resolucionDesignaSinEjg, formulario, isInforme, codigos));
+			
+		}
+		
+		
+		sql.append(" ) ALLDESIGNAS");
+		if(isMostrarJustificacionesPtes){
+			sql.append(" WHERE (NOT EXISTS ");
+			sql.append(" (SELECT * ");
+			sql.append(" FROM SCS_ACTUACIONDESIGNA ACT ");
+			sql.append(" WHERE ACT.IDINSTITUCION = ALLDESIGNAS.IDINSTITUCION ");
+			sql.append(" AND ACT.IDTURNO = ALLDESIGNAS.IDTURNO ");
+			sql.append(" AND ACT.ANIO = ALLDESIGNAS.ANIO ");
+			sql.append(" AND ACT.NUMERO = ALLDESIGNAS.NUMERO) OR ");
+	                    
+			sql.append(" (SELECT COUNT(*) ");
+//	  --NUMERO DE ACREDITACIONES 
+
+			sql.append(" FROM SCS_ACREDITACIONPROCEDIMIENTO ACP ");
+//	  --DE LOS PROCEDIMIENTOS DE TODAS LAS ACTUACIONES DE LA DESIGNACION
+			sql.append(" WHERE EXISTS (SELECT * ");
+			sql.append(" FROM SCS_ACTUACIONDESIGNA ACT ");
+			sql.append(" WHERE ACT.IDINSTITUCION = ALLDESIGNAS.IDINSTITUCION ");
+			sql.append(" AND ACT.IDTURNO = ALLDESIGNAS.IDTURNO ");
+			sql.append(" AND ACT.ANIO = ALLDESIGNAS.ANIO ");
+			sql.append(" AND ACT.NUMERO = ALLDESIGNAS.NUMERO ");
+			sql.append(" AND ACT.IDINSTITUCION_PROC = ACP.IDINSTITUCION ");
+			sql.append(" AND ACT.IDPROCEDIMIENTO = ACP.IDPROCEDIMIENTO) ");
+//	        --Y QUE NO ESTAN YA VALIDADAS 
+			sql.append(" AND NOT EXISTS (SELECT * ");
+			sql.append(" FROM SCS_ACTUACIONDESIGNA ACT ");
+			sql.append(" WHERE ACT.IDINSTITUCION = ALLDESIGNAS.IDINSTITUCION ");
+			sql.append(" AND ACT.IDTURNO = ALLDESIGNAS.IDTURNO ");
+			sql.append(" AND ACT.ANIO = ALLDESIGNAS.ANIO ");
+			sql.append(" AND ACT.NUMERO = ALLDESIGNAS.NUMERO ");
+			sql.append(" AND ACT.IDINSTITUCION_PROC = ACP.IDINSTITUCION ");
+			sql.append(" AND ACT.IDPROCEDIMIENTO = ACP.IDPROCEDIMIENTO ");
+
+			sql.append(" AND ACT.IDACREDITACION = ACP.IDACREDITACION ");
+			sql.append(" AND ACT.VALIDADA = '1'))>0 ");
+	                    
+			sql.append(" ) ");
+	 
+
+			
+			
+			
+		}
+		if(!isMostrarJustificacionesPtes)
+			sql.append(" ORDER BY FECHAENTRADA,IDINSTITUCION, ANIO, CODIGO, SUFIJO ");
+		return sql.toString();
+		
+	}
+	
+	
 	/**
 	 * Recupera la fecha de renuncia del primer letrado de la designa
 	 * @param sdb
@@ -1247,7 +1461,100 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		}
 
 	}
+	private Hashtable formatearHashInforme(Hashtable htRows,Integer idInstitucion)throws ClsExceptions{
+		
+		//Vemos si esta finalizado y le metemos el campo baja=X
 	
+	
+		String estado = (String)htRows.get(ScsDesignaBean.C_ESTADO);
+		if (estado != null && estado.equals("F"))
+			htRows.put("BAJA","X");
+		else
+			htRows.put("BAJA"," ");
+		//Sacamos la descripcion de los juzgado. Habria que preguntar si esto 
+		//es mejor que meter la join en la query. Respuesta: Seria mejor que trabaje oracle. 
+		//Lo voy a dejar asi por si hay cambios
+		
+		//Las fecha de acreditacion vienen concatenadas dd/mm/aaa|porcentaje
+		boolean isPendiente = false;
+		String fechaAcreditacioIni = (String)htRows.get("ACREDITACION_INI");
+		int porc = 0;
+		if(fechaAcreditacioIni!=null && !fechaAcreditacioIni.equalsIgnoreCase("")){
+			int index = fechaAcreditacioIni.indexOf("||");
+			String fechaRealAcreditacioIni = fechaAcreditacioIni.substring(0,index);
+			htRows.put("ACREDITACION_INI",fechaRealAcreditacioIni);
+			String porcentaje = fechaAcreditacioIni.substring(index+2);
+			porc += Integer.parseInt(porcentaje);
+			
+			isPendiente = true;
+		}
+		String fechaAcreditacioFin = (String)htRows.get("ACREDITACION_FIN");
+		if(fechaAcreditacioFin!=null && !fechaAcreditacioFin.equalsIgnoreCase("")){
+			int index = fechaAcreditacioFin.indexOf("||");
+			String fechaRealAcreditacioFin = fechaAcreditacioFin.substring(0,index);
+			htRows.put("ACREDITACION_FIN",fechaRealAcreditacioFin);
+			String porcentaje = null;
+			//pongo esto por si no viene con fecha porcentaje. Seria un error!
+			if(fechaAcreditacioFin.length()>index+2){
+				porcentaje = fechaAcreditacioFin.substring(index+2);
+				porc += Integer.parseInt(porcentaje);
+			}
+			
+			
+		}
+		String expedientes = (String)htRows.get("EXPEDIENTES");
+		if (expedientes != null && expedientes.indexOf("##") > -1) {
+			String[] ejgs = expedientes.split(",");
+			String salida = "";
+			for (String ejg:ejgs) {
+				String[] ejgDoc = ejg.split("##");				
+				salida+=", " + ejgDoc[0].trim();				
+			}
+			expedientes=salida;
+			if (expedientes.length() > 2){
+				expedientes = expedientes.substring(1);
+			}
+			htRows.put("EXPEDIENTES", expedientes);
+		}
+		//Si es de inicio y fin trae el porcentaje(100) en cada justificacion por lo que sera 200.pongo <100 y evito problemas
+		if(porc>=100)
+			htRows.put("PENDIENTE","");
+		// parche 
+		// if(100==porc)
+		//	htRows.put("PENDIENTE","");
+		else
+			htRows.put("PENDIENTE",String.valueOf(100-porc)+"% PEND");
+		if(!isPendiente)
+			htRows.put("PENDIENTE","100% PEND");
+	
+	return htRows;
+	
+}
+private List<DefinirEJGForm> getExpedientes(String expedientes)throws ClsExceptions{
+		//Vemos si esta finalizado y le metemos el campo baja=X
+	List<DefinirEJGForm> ejgList = new ArrayList<DefinirEJGForm>();
+	DefinirEJGForm ejgForm =  null;
+	if (expedientes != null && !expedientes.equals("")) {
+		
+		String[] ejgs = expedientes.split(",");
+		for (String ejg:ejgs) {
+			if(ejg.indexOf("##") > -1){
+				String[] ejgDoc = ejg.split("##");
+				ejgForm = new DefinirEJGForm();
+				ejgForm.setNombre(ejgDoc[0].trim());
+				ejgForm.setDocResolucion(ejgDoc[1]);
+			}else{
+				ejgForm = new DefinirEJGForm();
+				ejgForm.setNombre(ejg.trim());
+			}
+			ejgList.add(ejgForm);
+		}
+
+		
+	}
+	return ejgList;
+	
+}
 	
 	public boolean updateFechaDesigna(Hashtable hash, String fechaDesigna) throws ClsExceptions{
 
@@ -1276,10 +1583,6 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 	
 	
 		
-
-
-	
-	
 }
 class Acumulador{
 	
@@ -1316,4 +1619,6 @@ class Acumulador{
 		acumuladorTurnosHashtable = new Hashtable();
 		
 	}
+
+	
 }

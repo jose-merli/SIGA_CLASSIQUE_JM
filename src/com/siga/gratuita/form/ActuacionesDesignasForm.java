@@ -39,7 +39,13 @@ public class ActuacionesDesignasForm extends MasterForm {
 	protected String pretension = "PRETENSION";
 	protected String talonario = "TALONARIO";
 	protected String talon = "TALON";
-	
+	private boolean fichaColegial = false;
+	public boolean getFichaColegial() {
+		return fichaColegial;
+	}
+	public void setFichaColegial(boolean fichaColegial) {
+		this.fichaColegial = fichaColegial;
+	}
 	
 		/**
 	 * Almacena en la Hashtablla el nombre del talon de la Designa 

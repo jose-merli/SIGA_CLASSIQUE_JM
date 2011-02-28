@@ -1987,19 +1987,19 @@
 			<forward name="edicion" path="/html/jsp/gratuita/pestanasActuacionesDesignas.jsp"/> 
 		</action> 
 		-->
-		<action path="/JGR_InformeJustificacionMasiva" type="com.siga.gratuita.action.InformeJustificacionMasivaAction" name="InformeJustificacionMasivaForm">
+		<action path="/JGR_PestanaDesignas" type="com.siga.gratuita.action.InformeJustificacionMasivaAction" name="InformeJustificacionMasivaForm">
 			<forward name="inicio" path="/html/jsp/gratuita/informeJustificacionMasiva.jsp"/>
-			<forward name="resultado" path="/html/jsp/gratuita/informeJustificacionMasivaResultados.jsp" />
-			
-		</action>
-		<action path="/JGR_InformeJustificacion" type="com.siga.gratuita.action.InformeJustificacionAction" name="InformeJustificacionMasivaForm">
-			<forward name="inicio" path="/html/jsp/gratuita/informeJustificacion.jsp"/>
+			<forward name="listadoPaginado" path="/html/jsp/gratuita/listadoPaginadoInformeJustificacion.jsp" />
 		</action>
 		
-		<action path="/JGR_PestanaDesignas" type="com.siga.gratuita.action.InformeJustificacionMasivaLetradoAction" name="InformeJustificacionMasivaForm">
-			<forward name="inicio" path="/html/jsp/gratuita/informeJustificacionMasivaLetrado.jsp"/>
-			<forward name="resultado" path="/html/jsp/gratuita/informeJustificacionMasivaLetradoResultados.jsp" />
-			<forward name="buscarInit" path="/html/jsp/gratuita/informeJustificacionMasivaLetradoResultados.jsp" />
+		<action path="/JGR_InformeJustificacionMasiva" type="com.siga.gratuita.action.InformeJustificacionMasivaAction" name="InformeJustificacionMasivaForm">
+			<forward name="inicio" path="/html/jsp/gratuita/informeJustificacionMasiva.jsp"/>
+			<forward name="listadoPaginado" path="/html/jsp/gratuita/listadoPaginadoInformeJustificacion.jsp" />
+			
+		</action>
+		
+		<action path="/JGR_InformeJustificacion" type="com.siga.gratuita.action.InformeJustificacionMasivaAction"  name="InformeJustificacionMasivaForm">
+			<forward name="inicioInforme" path="/html/jsp/gratuita/informeJustificacion.jsp"/>
 		</action>
 		
 

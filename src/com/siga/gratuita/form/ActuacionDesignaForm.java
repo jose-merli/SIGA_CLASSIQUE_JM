@@ -30,6 +30,8 @@ public class ActuacionDesignaForm extends MasterForm
 	private String descripcionProcedimiento;
 	private String idFacturacion;
 	private String descripcionFacturacion;
+	private String permitirEditarActuacion;
+	
 	
 	public String getDescripcionProcedimiento() {
 		return descripcionProcedimiento;
@@ -124,6 +126,12 @@ public class ActuacionDesignaForm extends MasterForm
 	}
 	public void setDescripcionFacturacion(String descripcionFacturacion) {
 		this.descripcionFacturacion = descripcionFacturacion;
+	}
+	public String getPermitirEditarActuacion() {
+		return permitirEditarActuacion;
+	}
+	public void setPermitirEditarActuacion(String permitirEditarActuacion) {
+		this.permitirEditarActuacion = permitirEditarActuacion;
 	}
 	
 	

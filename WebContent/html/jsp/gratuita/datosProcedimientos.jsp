@@ -26,33 +26,45 @@
 
 
 <!-- JSP -->
-<%  
-	String app=request.getContextPath();
-	HttpSession ses=request.getSession();
-	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
-	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+<%
+	String app = request.getContextPath();
+	HttpSession ses = request.getSession();
+	UsrBean usr = (UsrBean) ses.getAttribute("USRBEAN");
+	Properties src = (Properties) ses
+			.getAttribute(SIGAConstants.STYLESHEET_REF);
 
 	//recogemos los datos
-	Hashtable resultado = (Hashtable)request.getAttribute("resultado");
-	Vector v = (Vector)request.getAttribute("acreditaciones");
+	Hashtable resultado = (Hashtable) request.getAttribute("resultado");
+	Vector v = (Vector) request.getAttribute("acreditaciones");
 
 	//variables quese van a mostrar en la jsp
-	String nombre="", importe="", idProc="", idJurisdiccion="", codigo="", complemento="", vigente="" ;
+	String nombre = "", importe = "", idProc = "", idJurisdiccion = "", codigo = "", complemento = "", vigente = "",permitirAniadirLetrado="";
 
 	//inicializamos los valores
-	try{
-		nombre = (String)resultado.get(ScsProcedimientosBean.C_NOMBRE);
-		importe = (String)resultado.get(ScsProcedimientosBean.C_PRECIO);
-		idProc = (String)resultado.get(ScsProcedimientosBean.C_IDPROCEDIMIENTO);
-		idJurisdiccion = (String)resultado.get(ScsProcedimientosBean.C_IDJURISDICCION);
-		codigo = (String)resultado.get(ScsProcedimientosBean.C_CODIGO);
-		complemento = (String)resultado.get(ScsProcedimientosBean.C_COMPLEMENTO);
-		vigente=(String)resultado.get(ScsProcedimientosBean.C_VIGENTE);
-	}catch(Exception e){}
+	try {
+		nombre = (String) resultado.get(ScsProcedimientosBean.C_NOMBRE);
+		importe = (String) resultado
+				.get(ScsProcedimientosBean.C_PRECIO);
+		idProc = (String) resultado
+				.get(ScsProcedimientosBean.C_IDPROCEDIMIENTO);
+		idJurisdiccion = (String) resultado
+				.get(ScsProcedimientosBean.C_IDJURISDICCION);
+		codigo = (String) resultado.get(ScsProcedimientosBean.C_CODIGO);
+		complemento = (String) resultado
+				.get(ScsProcedimientosBean.C_COMPLEMENTO);
+		vigente = (String) resultado
+				.get(ScsProcedimientosBean.C_VIGENTE);
+		permitirAniadirLetrado = (String) resultado
+		.get(ScsProcedimientosBean.C_PERMITIRANIADIRLETRADO);
+		
+		
+	} catch (Exception e) {
+	}
 
 	//recuperamos el modo de acceso
-	String modo ="Modificar";
-	if ((nombre==null)||(nombre.equals("")))modo="Insertar";
+	String modo = "Modificar";
+	if ((nombre == null) || (nombre.equals("")))
+		modo = "Insertar";
 	int posBotonNuevo = 298;
 %>	
 <html>
@@ -102,58 +114,65 @@
 		<table class="tablaCampos" align="center" border="0" width="100%">
 	
 		<!-- FILA -->
-		<tr>				
+					<tr>
 
-		<td class="labelText">
-			<siga:Idioma key="gratuita.procedimientos.literal.nombre"/>&nbsp;(*)
-		</td>				
-		<td class="labelText" colspan="3">
-			<html:text name="MantenimientoProcedimientosForm" property="nombre" size="80" maxlength="100" styleClass="box" readonly="false" value="<%=nombre%>"/>
-		</td>
-		</tr>
-		<tr>
-		<td class="labelText">
-			<siga:Idioma key="gratuita.procedimientos.literal.codigo"/>
-		</td>
-		<td class="labelText">
-			<html:text name="MantenimientoProcedimientosForm" property="codigo" maxlength="20" styleClass="box" readonly="false" value="<%=codigo%>"/> 
-		</td>
+						<td class="labelText"><siga:Idioma
+							key="gratuita.procedimientos.literal.nombre" />&nbsp;(*)</td>
+						<td class="labelText" colspan="3"><html:text
+							name="MantenimientoProcedimientosForm" property="nombre"
+							size="80" maxlength="100" styleClass="box" readonly="false"
+							value="<%=nombre%>" /></td>
+					</tr>
+					<tr>
+						<td class="labelText"><siga:Idioma
+							key="gratuita.procedimientos.literal.codigo" /></td>
+						<td class="labelText"><html:text
+							name="MantenimientoProcedimientosForm" property="codigo"
+							maxlength="20" styleClass="box" readonly="false"
+							value="<%=codigo%>" /></td>
 
-		<td class="labelText">
-			<siga:Idioma key="gratuita.procedimientos.literal.complemento"/>
-		</td>
-		<td class="labelText">
-			<input type="checkbox" name="complemento" value="<%=ClsConstants.DB_TRUE%>" <%if(complemento.equals(ClsConstants.DB_TRUE)){%> checked <%}%> />
-		</td>
+						<td class="labelText"><siga:Idioma
+							key="gratuita.procedimientos.literal.complemento" /></td>
+						<td class="labelText"><input type="checkbox"
+							name="complemento" value="<%=ClsConstants.DB_TRUE%>"
+							<%if(complemento.equals(ClsConstants.DB_TRUE)){%> checked <%}%> />
+						</td>
 
-		</tr>				
-		<tr>
-		<td class="labelText">
-			<siga:Idioma key="gratuita.procedimientos.literal.importe"/>&nbsp;(*)
-		</td>
-		<td class="labelText">
-			<html:text name="MantenimientoProcedimientosForm" property="importe" maxlength="11" styleClass="boxNumber" readonly="false" value="<%=UtilidadesNumero.formatoCampo(importe)%>"/>&nbsp;&euro; 
-		</td>
-		<td class="labelText">
-			<siga:Idioma key="gratuita.procedimientos.literal.vigente"/>&nbsp;
-		</td>
-		<td class="labelText">
-			<input type="checkbox" name="vigente" value="<%=ClsConstants.DB_TRUE%>" <%if(vigente.equals(ClsConstants.DB_TRUE)){%> checked <%}%> />
-		</td>
-		</tr>
-		<tr>
-		<td class="labelText">
-			<siga:Idioma key="gratuita.procedimientos.literal.Jurisdiccion"/>&nbsp;(*)
-		</td>
-		<td class="labelText">
-			<% ArrayList juris = new ArrayList(); 
-				 juris.add (idJurisdiccion); %>
-			<siga:ComboBD nombre="jurisdiccion" tipo="jurisdiccionSCJS" clase="boxCombo" obligatorio="true" elementoSel="<%=juris%>"/>
-		</td>
-		</tr>
-		
-		
-		</table>
+					</tr>
+					<tr>
+						<td class="labelText"><siga:Idioma
+							key="gratuita.procedimientos.literal.importe" />&nbsp;(*)</td>
+						<td class="labelText"><html:text
+							name="MantenimientoProcedimientosForm" property="importe"
+							maxlength="11" styleClass="boxNumber" readonly="false"
+							value="<%=UtilidadesNumero.formatoCampo(importe)%>" />&nbsp;&euro;
+						</td>
+						<td class="labelText"><siga:Idioma
+							key="gratuita.procedimientos.literal.vigente" />&nbsp;</td>
+						<td class="labelText"><input type="checkbox" name="vigente"
+							value="<%=ClsConstants.DB_TRUE%>"
+							<%if(vigente.equals(ClsConstants.DB_TRUE)){%> checked <%}%> /></td>
+					</tr>
+					<tr>
+						<td class="labelText"><siga:Idioma
+							key="gratuita.procedimientos.literal.Jurisdiccion" />&nbsp;(*)</td>
+						<td class="labelText">
+						<%
+							ArrayList juris = new ArrayList();
+									juris.add(idJurisdiccion);
+						%> <siga:ComboBD nombre="jurisdiccion"
+							tipo="jurisdiccionSCJS" clase="boxCombo" obligatorio="true"
+							elementoSel="<%=juris%>" /></td>
+							
+							<td class="labelText"><siga:Idioma
+							key="gratuita.procedimientos.literal.permitirAniadirLetrado" />&nbsp;</td>
+						<td class="labelText"><input type="checkbox" name="permitirAniadirLetrado"
+							value="<%=ClsConstants.DB_TRUE%>"
+							<%if(permitirAniadirLetrado.equals(ClsConstants.DB_TRUE)){%> checked <%}%> /></td>
+					</tr>
+
+
+				</table>
 
 	</siga:ConjCampos>
 
@@ -179,15 +198,29 @@
 			   ajusteBotonera="true"
 			   >
 
-<% if ((v != null) && (v.size() > 0)) {
-		for (int i = 0; i < v.size(); i++) { 
-			Hashtable hash = (Hashtable)v.get(i);
-			if (hash != null) {
-				String acreDescripcion = UtilidadesHash.getString (hash, ScsAcreditacionBean.C_DESCRIPCION);
-				Integer acrePorcentaje = UtilidadesHash.getInteger(hash, ScsAcreditacionProcedimientoBean.C_PORCENTAJE);
-				Integer idAcreditacion = UtilidadesHash.getInteger(hash, ScsAcreditacionProcedimientoBean.C_IDACREDITACION);
-				Integer idInstitucion =  UtilidadesHash.getInteger(hash, ScsAcreditacionProcedimientoBean.C_IDINSTITUCION);
-				String  idProcedimiento =UtilidadesHash.getString (hash, ScsAcreditacionProcedimientoBean.C_IDPROCEDIMIENTO);
+<%
+	if ((v != null) && (v.size() > 0)) {
+			for (int i = 0; i < v.size(); i++) {
+				Hashtable hash = (Hashtable) v.get(i);
+				if (hash != null) {
+					String acreDescripcion = UtilidadesHash.getString(
+							hash, ScsAcreditacionBean.C_DESCRIPCION);
+					Integer acrePorcentaje = UtilidadesHash
+							.getInteger(
+									hash,
+									ScsAcreditacionProcedimientoBean.C_PORCENTAJE);
+					Integer idAcreditacion = UtilidadesHash
+							.getInteger(
+									hash,
+									ScsAcreditacionProcedimientoBean.C_IDACREDITACION);
+					Integer idInstitucion = UtilidadesHash
+							.getInteger(
+									hash,
+									ScsAcreditacionProcedimientoBean.C_IDINSTITUCION);
+					String idProcedimiento = UtilidadesHash
+							.getString(
+									hash,
+									ScsAcreditacionProcedimientoBean.C_IDPROCEDIMIENTO);
 %>
 					<siga:FilaConIconos fila='<%=String.valueOf(i+1)%>' visibleConsulta="no" botones='E,B'  modo='<%=modo%>' clase="listaNonEdit">
 						<td>
@@ -195,16 +228,16 @@
 							<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_2" value="<%=idInstitucion.intValue()%>">
 							<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_3" value="<%=idProcedimiento%>">
 							<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_4" value="detalleAcreditacion">
-							<%=UtilidadesString.mostrarDatoJSP(acreDescripcion)%></td>
+							<%=UtilidadesString
+														.mostrarDatoJSP(acreDescripcion)%></td>
 						<td><%=acrePorcentaje.intValue()%></td>
 					</siga:FilaConIconos>
 <%
-			}
-		}
 	}
-	else { // No hay registros 
-		posBotonNuevo = 327;
-	%>
+			}
+		} else { // No hay registros 
+			posBotonNuevo = 327;
+%>
 		<table align="center">
 			<tr>
 				<td>
@@ -213,13 +246,19 @@
 				</td>
 			</tr>
 			</table>
-<% } %>
+<%
+	}
+%>
 
 	</siga:TablaCabecerasFijas>
 	 
-	 <% if (!modo.equalsIgnoreCase("Insertar")) {%>
+	 <%
+	 	 	if (!modo.equalsIgnoreCase("Insertar")) {
+	 	 %>
 	 	<siga:ConjBotonesAccion botones="N" modal="M" />
-	 <% } %>
+	 <%
+	 	}
+	 %>
 	
 
 

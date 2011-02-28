@@ -13,7 +13,7 @@
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
-
+<%@ taglib uri="c.tld" prefix="c"%>
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.*"%>
@@ -22,6 +22,8 @@
 <%@ page import="java.util.Properties"%>
 <%@ page import="java.util.ArrayList"%>
 <%@ page import="java.util.Hashtable"%>
+
+
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();  
@@ -58,6 +60,7 @@
 	String validarJustificaciones = "";
 	String estadoActuacion = "";
 	String actuacionValidada = "";
+	String modoJustificacion = (String) request.getAttribute("modoJustificacion");
 	String modoAnterior = (String) request.getAttribute("MODO_ANTERIOR");
 	String facturada="";
 	
@@ -74,7 +77,8 @@
 	//Hash con la designa y la actuacion:
 	hashDesigna = (Hashtable) request.getAttribute("hashDesigna");
 	
-	// Datos de la designa comunes a todos los modos de visualizacion:
+	
+	
 	anio = (String)hashDesigna.get("ANIO");
 	numero = (String)hashDesigna.get("NUMERO");
 	codigo = (String)hashDesigna.get("CODIGO");
@@ -99,10 +103,10 @@
 	// Caso de estar en Edicion o Consulta:
 	
 	idInstitucionProcedimiento =  usr.getLocation();
-	
+	String nombreFacturacion = "";
 	if (!modoAnterior.equalsIgnoreCase("NUEVO")) {
 		hashActuacion = (Hashtable) request.getAttribute("hashActuacionActual");
-		
+		nombreFacturacion =	(String)hashActuacion.get("NOMBREFACTURACION");
 		//Nuevo numero de actuacion:
 		nactuacion = (String)hashActuacion.get("NUMEROASUNTO");
 		
@@ -168,9 +172,10 @@
 		 nombreJuzgado = (String)hashDesigna.get("NOMBREJUZGADO");
 	    nombreProcedimiento = (String)hashDesigna.get("NOMBREPROCEDIMIENTO");
 	}
-
+	// Datos de la designa comunes a todos los modos de visualizacion:
+	
 	validarJustificaciones = (String) hashDesigna.get("VALIDARJUSTIFICACIONES");
-	actuacionValidada = (fechaJustificacion.equalsIgnoreCase("") ? "0":"1");
+	actuacionValidada = actuacionValidada ==null ? "0":actuacionValidada;
 	//Actualizo el combo de juzgados:
 	if (idJuzgado!=null && idInstitucionJuzgado!=null)
 		juzgadoSel.add(0,idJuzgado+","+idInstitucionJuzgado);
@@ -232,6 +237,7 @@
 
 <body onload="rellenarCombos()">
 
+
 <!-- TITULO -->
 <!-- Barra de titulo actualizable desde los mantenimientos -->
 <table class="tablaTitulo" cellspacing="0" heigth="32">
@@ -244,7 +250,7 @@
 
 	<!-- Comienzo del formulario con los campos -->	
 	<% String aDonde="";
-        if (deDonde!=null && deDonde.equals("ficha") && usr.isLetrado()) {
+        if (deDonde!=null && ((deDonde.equals("ficha") && usr.isLetrado())||deDonde.equals("/JGR_PestanaDesignas"))) {
     		aDonde="/JGR_ActuacionDesignaLetrado.do";
 		} else {
      		deDonde="";
@@ -336,12 +342,7 @@
 				<siga:ConjCampos leyenda="gratuita.actuacionesDesigna.literal.titulo">
 				<table width="100%" border="0">
 				<tr>
-					<td class="labelText">
-						<siga:Idioma key="gratuita.actuacionesAsistencia.literal.nactuacion"/>
-					</td>
-					<td>
-						<html:text name="ActuacionesDesignasForm" property="nactuacion" size="10" value="<%=nactuacion%>" styleClass="boxConsulta" readonly="true"></html:text>
-					</td>
+					
 					<td class="labelText">
 						<siga:Idioma key="gratuita.actuacionesAsistencia.literal.fechaActuacion"/>&nbsp;(*)
 					</td>
@@ -353,6 +354,12 @@
 						<% } else { %>
 							<html:text name="ActuacionesDesignasForm" property="fechaActuacion" size="10" styleClass="boxConsulta" value="<%=fechaActuacion%>" readonly="true"></html:text>
 						<% } %>
+					</td>
+					<td class="labelText">
+						<siga:Idioma key="gratuita.actuacionesAsistencia.literal.nactuacion"/>
+					</td>
+					<td>
+						<html:text name="ActuacionesDesignasForm" property="nactuacion" size="10" value="<%=nactuacion%>" styleClass="boxConsulta" readonly="true"></html:text>
 					</td>
 					<td class="labelText">
 						<siga:Idioma key="gratuita.modalActuacionesDesigna.literal.anulacion"/> 
@@ -399,7 +406,20 @@
 					<td class="labelText">
 						<siga:Idioma key="gratuita.actuacionesDesigna.literal.modulo"/>&nbsp;(*)
 					</td>
-					<% if (esLetrado||modoAnterior.equalsIgnoreCase("VER")){%>
+					<%if (modoJustificacion!=null && modoJustificacion.equals("editarJustificacion")){ %>
+					<td colspan="7">
+						
+							<html:text name="ActuacionesDesignasForm"  style="width:600px" property="procedimiento1" styleClass="boxConsulta" readOnly="true" value="<%=nombreProcedimiento%>"/>
+					</td>
+					<td  style="display:none">
+                            <siga:ComboBD ancho="600" nombre="procedimiento" tipo="comboProcedimientos" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>" hijo="t"  elementoSel="<%=procedimientoSel%>" accion="Hijo:acreditacion" />
+					</td>
+					<%} else if (modoJustificacion!=null && modoJustificacion.equals("nuevoJustificacion")){%>
+						<td  colspan="7">
+                            	<siga:ComboBD ancho="600" nombre="procedimiento" tipo="comboProcedimientosJustificacion" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>" hijo="t"  elementoSel="<%=procedimientoSel%>" accion="Hijo:acreditacion" />
+						</td>
+					
+					<%} else if ((esLetrado||modoAnterior.equalsIgnoreCase("VER"))){%>
 					<td colspan="7">
 						
 							<html:text name="ActuacionesDesignasForm"  style="width:600px" property="procedimiento1" styleClass="boxConsulta" readOnly="true" value="<%=nombreProcedimiento%>"/>
@@ -407,7 +427,9 @@
 					<td  style="display:none">
                             <siga:ComboBD ancho="600" nombre="procedimiento" tipo="comboProcedimientos" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>" hijo="t"  elementoSel="<%=procedimientoSel%>"  />
 					</td>
-					<%}else{ %>
+					
+					
+					<%}else { %>
 					<td  colspan="7">
                             <siga:ComboBD ancho="600" nombre="procedimiento" tipo="comboProcedimientos" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>" hijo="t"  elementoSel="<%=procedimientoSel%>" accion="Hijo:acreditacion" />
 					</td>
@@ -419,8 +441,12 @@
 						<siga:Idioma key="gratuita.procedimientos.literal.acreditacion"/>&nbsp;(*)
 					</td>
 					<td  colspan="7">
-						<% if (modoAnterior.equalsIgnoreCase("VER")) { %>
-							<html:text name="ActuacionesDesignasForm" property="acreditacion" style="width:600px" styleClass="boxConsulta" readOnly="true" value="<%=nombreAcreditacion%>" />
+						<%if (modoJustificacion!=null && modoJustificacion.equals("nuevoJustificacion")){%>
+							<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="<%=readOnlyCombo%>"  hijo="t" elementoSel="<%=acreditacionSel%>" />
+						<%}else if (modoAnterior.equalsIgnoreCase("VER")) { %>
+							<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readOnly="true"   parametro="<%=paramAcreditacion%>" elementoSel="<%=acreditacionSel%>" />
+						
+							
 						<% } else { 
 						  
 						%>
@@ -491,6 +517,13 @@
 				</siga:ConjCampos>			
 			</td>
 		</tr>
+		
+		
+		
+		
+		
+		
+		
 		<tr>
 			<td>
 							
@@ -502,11 +535,17 @@
 							</td>
 								<%if(!modoAnterior.equals("VER")&&(!actuacionValidada.equals("1"))) {%>	
 									<td>	
-										<html:text name="ActuacionesDesignasForm" property="fechaJustificacion" size="10" maxlength="10" styleClass="box" value="<%=fechaJustificacion%>"  readOnly="true"></html:text><%if(!modoAnterior.equals("VER")) {%>&nbsp;&nbsp;<a name="calendarioTd" style="visibility:visible" onClick="showCalendarGeneral(fechaJustificacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a><%}%>
+										<html:text name="ActuacionesDesignasForm" property="fechaJustificacion" size="10" maxlength="10" styleClass="box" value="<%=fechaJustificacion%>"  readOnly="true"></html:text>
+										<%if(!modoAnterior.equals("VER")) {%>
+											&nbsp;&nbsp;<a name="calendarioTd" style="visibility:visible" onClick="showCalendarGeneral(fechaJustificacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+										<%}%>
 									</td>
 								<%}else{%>
 									<td class="labelTextValor">	
-										<html:text name="ActuacionesDesignasForm" property="fechaJustificacion" size="10" maxlength="10" styleClass="boxConsulta" value="<%=fechaJustificacion%>" readOnly="true" ></html:text><%if(!modoAnterior.equals("VER")) {%>&nbsp;&nbsp;<a name="calendarioTd" style="visibility:hidden" onClick="showCalendarGeneral(fechaJustificacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a><%}%>
+										<html:text name="ActuacionesDesignasForm" property="fechaJustificacion" size="10" maxlength="10" styleClass="boxConsulta" value="<%=fechaJustificacion%>" readOnly="true" ></html:text>
+										<%if(!modoAnterior.equals("VER")) {%>
+											&nbsp;&nbsp;<a name="calendarioTd" style="visibility:hidden" onClick="showCalendarGeneral(fechaJustificacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+										<%}%>
 									</td>
 								<%}%>								
 
@@ -528,7 +567,7 @@
 								<%if(actuacionValidada.equals("1")) {%>	
 								<input name="estadoActuacion" type="text" class="boxConsulta" value='<siga:Idioma key='gratuita.mantActuacion.literal.actuacionValidada'/>' readonly="true" >
 								<% }else{ %>
-								<input name="estadoActuacion" type="text" class="boxConsulta" value="" readonly="true" >
+								<input name="estadoActuacion" type="text" class="boxConsulta" value="<siga:Idioma key='gratuita.mantActuacion.literal.actuacionPteValidar'/>" readonly="true" >
 								<% } %>
 							</td>
 
@@ -589,7 +628,32 @@
 				</table>
 			</td>
 		</tr>
-		
+		<%if (nombreFacturacion!=null && !nombreFacturacion.equals("")){%>
+		<tr>
+			<td>
+				<siga:ConjCampos leyenda="gratuita.actuacionesDesigna.literal.facturacion">
+					<table width="100%">
+						<tr>
+						<td width="15%">&nbsp; </td>
+						<td width="85%">&nbsp;
+						</tr>
+						<tr>
+							<td class="labelText" width="15%">
+								<siga:Idioma key="gratuita.actuacionesDesigna.literal.facturacion"/>:
+							</td>
+							<td class="labelTextValor" style="text-align: left;">
+								<%=nombreFacturacion%>
+							</td>
+						</tr>
+						<tr>
+						<td>&nbsp; </td>
+						<td>&nbsp;
+						</tr>
+					</table>
+				</siga:ConjCampos>
+			</td>
+		</tr>
+		<%} %>
 	
 		</table>
 
@@ -618,10 +682,11 @@
 			
 				// document.forms[0].actuacionValidada.value = document.forms[0].checkActuacionValidacion.checked;
 				fecha = document.getElementById("fechaJustificacion");
-				if(!((fecha.value == null)||(fecha.value == ""))){
+				/* if(!((fecha.value == null)||(fecha.value == ""))){
 					document.forms[0].actuacionValidada.value="1";
 					document.forms[0].estadoActuacion.value='<siga:Idioma key='gratuita.mantActuacion.literal.actuacionValidada'/>';
 				}
+				*/
 				if (document.forms[0].juzgado.value=='') {
 					alert('<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado"/> <siga:Idioma key="messages.campoObligatorio.error" />');
 					fin();

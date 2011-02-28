@@ -26,7 +26,7 @@ public class ScsProcedimientosAdm extends MasterBeanAdministrador {
 							ScsProcedimientosBean.C_PRECIO,					
 							ScsProcedimientosBean.C_USUMODIFICACION, 		ScsProcedimientosBean.C_IDJURISDICCION,
 							ScsProcedimientosBean.C_CODIGO, 				ScsProcedimientosBean.C_COMPLEMENTO,
-							ScsProcedimientosBean.C_VIGENTE};
+							ScsProcedimientosBean.C_VIGENTE,ScsProcedimientosBean.C_PERMITIRANIADIRLETRADO};
 		return campos;
 	}
 
@@ -54,6 +54,7 @@ public class ScsProcedimientosAdm extends MasterBeanAdministrador {
 			bean.setCodigo		    (UtilidadesHash.getString(hash,ScsProcedimientosBean.C_CODIGO));
 			bean.setComplemento		(UtilidadesHash.getString(hash,ScsProcedimientosBean.C_COMPLEMENTO));
 			bean.setVigente  		(UtilidadesHash.getString(hash,ScsProcedimientosBean.C_VIGENTE));
+			bean.setPermitirAniadirLetrado(UtilidadesHash.getString(hash,ScsProcedimientosBean.C_PERMITIRANIADIRLETRADO));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -77,6 +78,7 @@ public class ScsProcedimientosAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, ScsProcedimientosBean.C_CODIGO, b.getCodigo().toString());
 			UtilidadesHash.set(htData, ScsProcedimientosBean.C_COMPLEMENTO, b.getComplemento().toString());
 			UtilidadesHash.set(htData, ScsProcedimientosBean.C_VIGENTE, b.getVigente().toString());
+			UtilidadesHash.set(htData, ScsProcedimientosBean.C_PERMITIRANIADIRLETRADO, b.getPermitirAniadirLetrado().toString());
 		}
 		catch (Exception e) {
 			htData = null;

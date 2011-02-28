@@ -62,14 +62,23 @@ public class ActuacionesDesignasAction extends MasterAction {
 		miForm = (MasterForm) formulario;
 		String accion = miForm.getModo();
 		try{
-			if(accion!=null && accion.equalsIgnoreCase("EditarDesdeInforme")){
+			if(accion!=null && accion.equalsIgnoreCase("editarJustificacion")){
 				request.getSession().removeAttribute("designaActual");
+				ActuacionesDesignasForm actuacionesDesignasForm = (ActuacionesDesignasForm)formulario;
+				if(actuacionesDesignasForm.getFichaColegial())
+					request.setAttribute("modoJustificacion","editarJustificacion");
 				miForm.setModo("editar");
-			}
-			if(accion!=null && accion.equalsIgnoreCase("ConsultarDesdeInforme")){
+			}else if(accion!=null && accion.equalsIgnoreCase("consultarJustificacion")){
 				request.getSession().removeAttribute("designaActual");
 				miForm.setModo("ver");
+			}else if(accion!=null && accion.equalsIgnoreCase("nuevoJustificacion")){
+				ActuacionesDesignasForm actuacionesDesignasForm = (ActuacionesDesignasForm)formulario;
+				request.getSession().removeAttribute("designaActual");
+				if(actuacionesDesignasForm.getFichaColegial())
+					request.setAttribute("modoJustificacion","nuevoJustificacion");
+				miForm.setModo("nuevo");
 			}
+			
 			if((miForm == null)||(miForm.getModo()==null)||(miForm.getModo().equals(""))){
 				return mapping.findForward(this.abrir(mapping, miForm, request, response));
 			

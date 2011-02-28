@@ -229,6 +229,11 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 			else
 			    UtilidadesHash.set(procedimientoNuevo, ScsProcedimientosBean.C_VIGENTE, ClsConstants.DB_FALSE);
 			
+			if (miform.getPermitirAniadirLetrado()!=null && miform.getPermitirAniadirLetrado().equals("1"))
+			    UtilidadesHash.set(procedimientoNuevo, ScsProcedimientosBean.C_PERMITIRANIADIRLETRADO, ClsConstants.DB_TRUE);
+			else
+			    UtilidadesHash.set(procedimientoNuevo, ScsProcedimientosBean.C_PERMITIRANIADIRLETRADO, ClsConstants.DB_FALSE);
+			
 
 			request.setAttribute("idProcedimiento",(String) procedimientoNuevo.get(ScsProcedimientosBean.C_IDPROCEDIMIENTO));
 			request.setAttribute("idInstitucionProcedimiento",idInstitucionP.toString());
@@ -288,6 +293,7 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 			
 			//construimos el nuevo procedimiento
 			boolean checkVigente  = UtilidadesString.stringToBoolean(miform.getVigente());
+			boolean checkPermitirAniadirLetrado  = UtilidadesString.stringToBoolean(miform.getPermitirAniadirLetrado());
 			Hashtable tramoNew = (Hashtable)procedimientoOld.clone();
 			tramoNew.put(ScsProcedimientosBean.C_NOMBRE, (String)miform.getNombre());
 			tramoNew.put(ScsProcedimientosBean.C_PRECIO, (String)miform.getPrecio());
@@ -303,6 +309,11 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 				UtilidadesHash.set(tramoNew, ScsProcedimientosBean.C_VIGENTE, ClsConstants.DB_TRUE);
 			}else{
 				UtilidadesHash.set(tramoNew, ScsProcedimientosBean.C_VIGENTE, ClsConstants.DB_FALSE);
+			}
+			if (checkPermitirAniadirLetrado){
+				UtilidadesHash.set(tramoNew, ScsProcedimientosBean.C_PERMITIRANIADIRLETRADO, ClsConstants.DB_TRUE);
+			}else{
+				UtilidadesHash.set(tramoNew, ScsProcedimientosBean.C_PERMITIRANIADIRLETRADO, ClsConstants.DB_FALSE);
 			}
 			//modificamos en bd
 			ok = procedimientoAdm.update(tramoNew, procedimientoOld);

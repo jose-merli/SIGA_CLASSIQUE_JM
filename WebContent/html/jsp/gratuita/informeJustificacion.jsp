@@ -43,7 +43,7 @@
 	
 </head>
 
-<body onLoad="ajusteAlto('resultado');">
+<body onLoad="ajusteAlto('resultado');inicio();">
 
 	<!-- INICIO: FORMULARIO DE BUSQUEDA DE CLIENTES -->
 	
@@ -51,25 +51,159 @@
 	<html:form action = "/JGR_InformeJustificacion.do" method="POST" target="submitArea21">
 		
 		<html:hidden property="modo"/>
-		<html:hidden property="letrado"/>
+		<html:hidden property="idPersona"/>
+		<html:hidden property="mostrarTodas"/>
+		<html:hidden property="activarRestriccionesFicha"/>
 		
 		
 		<table width="100%" border="0">
 			<tr>
 				<td>
-					<siga:BusquedaPersona tipo="colegiado" titulo='<%=UtilidadesString.getMensajeIdioma(usr, "gratuita.informeJustificacionMasiva.literal.letrado")%>' idPersona="letrado" >
-					</siga:BusquedaPersona>
+					<siga:ConjCampos leyenda="gratuita.informeJustificacionMasiva.leyenda.datosJustificacion">
+				
+						<table>
+							
+							<tr>
+							    <td colspan ="4">
+								    <siga:BusquedaPersona tipo="colegiado" idPersona="idPersona" >
+									</siga:BusquedaPersona>
+								</td>
+							</tr>
+							<tr>
+								<td class="labelText" >
+									<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.mostrarHistorico"/>
+									&nbsp;
+								</td>
+								<td class="labelText">	
+									<input type="checkbox" name="mostrarSoloPendientes" value="on">
+									&nbsp;
+								</td>
+									
+								<td class="labelText" >
+							   		<siga:Idioma key="gratuita.informeJustificacionMasiva.activarRestricciones.literal"/>&nbsp;									
+										<input type="checkbox" name="activarRestricciones" value="on" >
+								</td>
+								<td>
+								&nbsp;
+								</td>
+									
+							</tr>
+							<tr>
+							<td colspan ="4">
+							
+								<table>
+									<tr>
+								
+										<td width="20%">
+										</td>
+										<td width="18%">
+										</td>
+										<td width="5%">
+										</td>
+										<td width="18%">
+										</td>
+										<td width="5%">
+										</td>
+										<td width="10">	
+										
+										</td>	
+										<td width="5%">
+										</td>
+										<td width="14%">	
+										
+										</td>	
+										
+				
+									</tr>
+									<tr>
+										<td class="labelText">
+			
+												<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.fecha.Justif"/>&nbsp;<siga:Idioma key="general.literal.desde"/>
+			
+										</td>
+										<td>
+											<html:text property="fechaJustificacionDesde"  size="10" styleClass="box" readOnly="true" />
+											&nbsp;
+											<a id="iconoCalendarioA" onClick="return showCalendarGeneral(fechaJustificacionDesde);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<html:rewrite page="/html/imagenes/calendar_hi.gif"/>',1);"><img src="<html:rewrite page="/html/imagenes/calendar.gif"/>" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+									
+										</td>
+										<td class="labelText">
+											<siga:Idioma key="general.literal.hasta"/>
+										</td>
+										<td>
+											<html:text property="fechaJustificacionHasta"  size="10" styleClass="box" readOnly="true" />
+												&nbsp;
+												<a id="iconoCalendarioA" onClick="return showCalendarGeneral(fechaJustificacionHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<html:rewrite page="/html/imagenes/calendar_hi.gif"/>',1);"><img src="<html:rewrite page="/html/imagenes/calendar.gif"/>" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+										</td>
+										
+										
+										<td class="labelText" >
+												<siga:Idioma key="gratuita.editarDesigna.literal.estado"/>
+										</td>
+										<td>	
+											<Select name="estado" class="boxCombo">
+															<option value=''></option>
+															<option value='V' ><siga:Idioma key="gratuita.estadoDesignacion.activo"/></option>
+															<option value='F' ><siga:Idioma key="gratuita.estadoDesignacion.finalizado"/></option>
+															<option value='A' ><siga:Idioma key="gratuita.estadoDesignacion.anulado"/></option>
+											</Select>
+										</td>
+										<td class="labelText">
+												<siga:Idioma key="gratuita.busquedaDesignas.literal.actuacionesValidadas"/>
+										</td>
+										<td >	
+											<Select name="actuacionesPendientes" class="boxCombo">
+												<option value='' ></option>
+											
+												<option value='No'><siga:Idioma key="general.no"/></option>
+												<option value='Si' ><siga:Idioma key="general.yes"/></option>
+												<option value='SinActuaciones'><siga:Idioma key="gratuita.busquedaDesignas.literal.sinActuaciones"/></option>
+											</Select>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						</table>
+							
+				</siga:ConjCampos>
 				</td>
 			</tr>
 			<tr>
 				<td>
-					<siga:ConjCampos leyenda="gratuita.informeJustificacionMasiva.literal.fechasDesigna">
+					<siga:ConjCampos  leyenda="gratuita.busquedaDesignas.literal.datosDesigna">
 						<table>
+						
+							<tr>
+								
+								<td width="20%">
+								</td>
+								<td width="18%">
+								</td>
+								<td width="5%">
+								</td>
+								<td width="18%">
+								</td>
+								<td width="5%">
+								</td>
+								<td width="10">	
+								
+								</td>	
+								<td width="5%">
+								</td>
+								<td width="14%">	
+								
+								</td>	
+								
+		
+							</tr>
+						
+						
 							<tr>
 								
 								<td class="labelText">
 
-									<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.fechaDesde"/>
+									<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.fechaSalida"/>&nbsp;<siga:Idioma key="general.literal.desde"/>
 
 								</td>
 								<td>
@@ -79,30 +213,14 @@
 						
 								</td>
 								<td class="labelText">
-									<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.fechaHasta"/>
+									<siga:Idioma key="general.literal.hasta"/>
 								</td>
 								<td>
 									<html:text property="fechaHasta"  size="10" styleClass="box" readOnly="true" />
 									&nbsp;
 									<a id="iconoCalendarioA" onClick="return showCalendarGeneral(fechaHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<html:rewrite page="/html/imagenes/calendar_hi.gif"/>',1);"><img src="<html:rewrite page="/html/imagenes/calendar.gif"/>" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
 								</td>
-								<td class="labelText">
-									<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.mostrarHistorico"/>
-								</td>
-								<td>	
-								<html:checkbox property="mostrarTodas"/>
-									
-								</td>
-							</tr>
-						</table>
-					</siga:ConjCampos>
-				</td>
-			</tr>
-				<tr>
-					<td>
-						<siga:ConjCampos leyenda="gratuita.informeJustificacionMasiva.literal.cliente">
-							<table width="100%">
-							<tr>
+							
 								
 								
 								<td class="labelText">
@@ -117,34 +235,15 @@
 								<td >	
 									<html:text  property="interesadoApellidos" size="30" maxlength="100" styleClass="box" ></html:text>
 								</td>	
-								<td width="50%">
-								&nbsp;
-								</td>
+								
 		
 							</tr>
-							</table>
-						</siga:ConjCampos>
-					
-					</td>
-				
-				</tr>
-				<tr>
-					<td>
-					<siga:ConjCampos leyenda="gratuita.informeJustificacionMasiva.literal.idioma">
-						<table>
-							<tr>
-								<td class="labelText">
-									<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.idioma"/>&nbsp;
-								</td>				
-								<td>
-									<siga:ComboBD nombre="idioma" tipo="cmbIdioma"  clase="boxCombo" obligatorio="false" />
-								</td>
-							</tr>
+							
+							
 						</table>
-						</siga:ConjCampos>
-					</td>
-				</tr>
-						
+					</siga:ConjCampos>
+				</td>
+			</tr>
 						
 
 		</table>
@@ -175,17 +274,22 @@
 	
 	
 <script language="JavaScript">
-
-		function informeJustificacion ()
-		{
-			sub();
-			document.InformeJustificacionMasivaForm.modo.value = "informe";
-			//document.InformeJustificacionMasivaForm.submit();
-			var f = document.InformeJustificacionMasivaForm.name;	
-			document.frames.submitArea21.location = '<html:rewrite page="/html/jsp/general/loadingWindowOpener.jsp"/>?formName=' + f + '&msg=messages.wait';
-				
-				
-		}
+function inicio ()
+{
+		document.getElementById("mostrarSoloPendientes").checked = "checked";
+}
+	function informeJustificacion ()
+	{
+		sub();
+		document.InformeJustificacionMasivaForm.activarRestriccionesFicha.value =document.getElementById("activarRestricciones").checked;
+		document.InformeJustificacionMasivaForm.mostrarTodas.value =document.getElementById("mostrarSoloPendientes").checked;
+		document.InformeJustificacionMasivaForm.modo.value = "informe";
+		//document.InformeJustificacionMasivaForm.submit();
+		var f = document.InformeJustificacionMasivaForm.name;	
+		document.frames.submitArea21.location = '<html:rewrite page="/html/jsp/general/loadingWindowOpener.jsp"/>?formName=' + f + '&msg=messages.wait';
+			
+			
+	}
 	
 
 	</script>	

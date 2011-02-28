@@ -12,20 +12,9 @@
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="c.tld" prefix="c"%>
 
 <!-- IMPORTS -->
-<%@ page import="com.siga.administracion.SIGAConstants"%>
-<%@ page import="com.siga.Utilidades.*"%>
-<%@ page import="com.atos.utils.*"%>
-<%@ page import="java.util.*"%>
-<%@ page import="com.siga.beans.*"%>
-
-
-<% 
-
-	UsrBean usr=(UsrBean)session.getAttribute("USRBEAN");
-%>
-
 <html>
 
 <!-- HEAD -->
@@ -38,37 +27,237 @@
 	
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
-	<siga:TituloExt titulo="gratuita.informeJustificacionMasiva.literal.titulo"  localizacion="gratuita.informeJustificacionMasiva.literal.localizacion"/>
+	
+	
+	
 	
 </head>
 
-<body onLoad="ajusteAlto('resultado');">
-
-	<!-- INICIO: FORMULARIO DE BUSQUEDA DE CLIENTES -->
-	
-	<!-- FIN: FORMULARIO DE BUSQUEDA DE CLIENTES -->	
-	<html:form action = "/JGR_InformeJustificacionMasiva.do" method="POST" target="resultado">
+<body onLoad="inicio();">
+<bean:define id="mensajeBusqueda" name="MENSAJE_DOCRESOLUCION"  scope="request"/>
+<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
+	<html:form action = "${path}" method="POST" target="resultado">
 
 		<html:hidden property="modo"/>
-		<html:hidden property="letrado"/>
+		<html:hidden property="idPersona"/>
+		<html:hidden property="mostrarTodas"/>
+		<html:hidden property="activarRestriccionesFicha"/>
+		
+		<html:hidden property="fichaColegial"/>
+		
+		<c:choose>
+			<c:when test="${InformeJustificacionMasivaForm.idPersona!=null&&InformeJustificacionMasivaForm.fichaColegial==true}">
+				<table class="tablaTitulo" cellspacing="0">
+				<tr>
+					<td class="titulitosDatos">
+						<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.titulo"/>
+						<c:out value="${InformeJustificacionMasivaForm.nombreColegiado}"></c:out>&nbsp;&nbsp;
+					    <c:choose>
+					    	<c:when test="${InformeJustificacionMasivaForm.estadoColegial!=null&&InformeJustificacionMasivaForm.estadoColegial!=''}">			    	
+					    		<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>&nbsp;&nbsp;<c:out value="${InformeJustificacionMasivaForm.numColegiado}"></c:out>
+					    		<c:if test="${InformeJustificacionMasivaForm.estadoColegial!=null&&InformeJustificacionMasivaForm.estadoColegial!=''}">
+					    			&nbsp;(<c:out value="${InformeJustificacionMasivaForm.estadoColegial}"></c:out>)
+					    		</c:if>
+							</c:when>
+						 	<c:otherwise>
+						 		(<siga:Idioma key="censo.busquedaClientes.literal.sinEstadoColegial"/>)
+						 	</c:otherwise>
+					    </c:choose>
+					</td>
+				</tr>
+			</table>
+			</c:when>
+			<c:otherwise>
+			
+			</c:otherwise>
+		</c:choose>
+		
+		
 		
 		
 		<table width="100%" border="0">
+
 			<tr>
 				<td>
-					<siga:BusquedaPersona tipo="colegiado" titulo='<%=UtilidadesString.getMensajeIdioma(usr, "gratuita.informeJustificacionMasiva.literal.letrado") + " (*)"%>' idPersona="letrado" >
-					</siga:BusquedaPersona>
+				<siga:ConjCampos desplegable="true" oculto="false" postFunction="ajustarDivListadoResultados();" leyenda="gratuita.informeJustificacionMasiva.leyenda.datosJustificacion">
+				
+					<table>
+					
+					
+					
+						
+					    	<c:choose>
+					    		<c:when test="${InformeJustificacionMasivaForm.idPersona==null&&InformeJustificacionMasivaForm.fichaColegial==false}">
+					    			<tr>
+							    		<td colspan ="4">
+								    		<siga:BusquedaPersona tipo="colegiado" campoObligatorio="true" idPersona="idPersona"  >
+											</siga:BusquedaPersona>
+										</td>
+									</tr>
+									<tr>
+									<td class="labelText" >
+										<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.mostrarHistorico"/>
+										&nbsp;
+									</td>
+									<td class="labelText">	
+										<input type="checkbox" name="mostrarSoloPendientes" value="on" onclick="onClickMostrarJustificacionesPendientes();">
+										&nbsp;
+									</td>
+									
+									<td class="labelText" >
+							    		<siga:Idioma key="gratuita.informeJustificacionMasiva.activarRestricciones.literal"/>&nbsp;									
+											<input type="checkbox" name="activarRestricciones" value="on" >
+									</td>
+									<td>
+									&nbsp;
+									</td>
+									
+									</tr>
+									
+						    	</c:when>
+						    	<c:otherwise>
+						    		<tr>
+							    		<td class="labelText">
+											<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.anio"/>
+										</td>
+										<td class="labelText">
+											<html:text property="anio"  size="4" styleClass="box"  maxlength="4"/>
+										</td>
+										<td class="labelText" >
+											<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.mostrarHistorico"/>
+											&nbsp;
+										</td>
+										<td class="labelText">	
+											<input type="checkbox" name="mostrarSoloPendientes" value="on" onclick="onClickMostrarJustificacionesPendientes();">
+											&nbsp;
+										</td>
+									</tr>
+						    	</c:otherwise>
+						    </c:choose>
+							
+						
+						
+						
+						
+						<tr id="oculto">
+							<td colspan ="4">
+							
+								<table>
+									<tr>
+								
+										<td width="20%">
+										</td>
+										<td width="18%">
+										</td>
+										<td width="5%">
+										</td>
+										<td width="18%">
+										</td>
+										<td width="5%">
+										</td>
+										<td width="10">	
+										
+										</td>	
+										<td width="5%">
+										</td>
+										<td width="14%">	
+										
+										</td>	
+										
+				
+									</tr>
+									<tr>
+										<td class="labelText">
+			
+												<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.fecha.Justif"/>&nbsp;<siga:Idioma key="general.literal.desde"/>
+			
+										</td>
+										<td>
+											<html:text property="fechaJustificacionDesde"  size="10" styleClass="box" readOnly="true" />
+											&nbsp;
+											<a id="iconoCalendarioA" onClick="return showCalendarGeneral(fechaJustificacionDesde);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<html:rewrite page="/html/imagenes/calendar_hi.gif"/>',1);"><img src="<html:rewrite page="/html/imagenes/calendar.gif"/>" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+									
+										</td>
+										<td class="labelText">
+											<siga:Idioma key="general.literal.hasta"/>
+										</td>
+										<td>
+											<html:text property="fechaJustificacionHasta"  size="10" styleClass="box" readOnly="true" />
+												&nbsp;
+												<a id="iconoCalendarioA" onClick="return showCalendarGeneral(fechaJustificacionHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<html:rewrite page="/html/imagenes/calendar_hi.gif"/>',1);"><img src="<html:rewrite page="/html/imagenes/calendar.gif"/>" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+										</td>
+										
+										
+										<td class="labelText" >
+												<siga:Idioma key="gratuita.editarDesigna.literal.estado"/>
+										</td>
+										<td>	
+											<Select name="estado" class="boxCombo">
+															<option value=''></option>
+															<option value='V' ><siga:Idioma key="gratuita.estadoDesignacion.activo"/></option>
+															<option value='F' ><siga:Idioma key="gratuita.estadoDesignacion.finalizado"/></option>
+															<option value='A' ><siga:Idioma key="gratuita.estadoDesignacion.anulado"/></option>
+											</Select>
+										</td>
+										<td class="labelText">
+												<siga:Idioma key="gratuita.busquedaDesignas.literal.actuacionesValidadas"/>
+										</td>
+										<td >	
+											<Select name="actuacionesPendientes" class="boxCombo">
+												<option value='' ></option>
+											
+												<option value='No'><siga:Idioma key="general.no"/></option>
+												<option value='Si' ><siga:Idioma key="general.yes"/></option>
+												<option value='SinActuaciones'><siga:Idioma key="gratuita.busquedaDesignas.literal.sinActuaciones"/></option>
+											</Select>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						
+					</table>
+				</siga:ConjCampos>
 				</td>
+				
 			</tr>
+			
+			
 			<tr>
 				<td>
-					<siga:ConjCampos leyenda="gratuita.informeJustificacionMasiva.literal.fechasDesigna">
+					<siga:ConjCampos desplegable="true" oculto="true" postFunction="ajustarDivListadoResultados();" leyenda="gratuita.busquedaDesignas.literal.datosDesigna">
 						<table>
+						
+							<tr>
+								
+								<td width="20%">
+								</td>
+								<td width="18%">
+								</td>
+								<td width="5%">
+								</td>
+								<td width="18%">
+								</td>
+								<td width="5%">
+								</td>
+								<td width="10">	
+								
+								</td>	
+								<td width="5%">
+								</td>
+								<td width="14%">	
+								
+								</td>	
+								
+		
+							</tr>
+						
+						
 							<tr>
 								
 								<td class="labelText">
 
-									<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.fechaDesde"/>
+									<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.fechaSalida"/>&nbsp;<siga:Idioma key="general.literal.desde"/>
 
 								</td>
 								<td>
@@ -78,30 +267,14 @@
 						
 								</td>
 								<td class="labelText">
-									<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.fechaHasta"/>
+									<siga:Idioma key="general.literal.hasta"/>
 								</td>
 								<td>
 									<html:text property="fechaHasta"  size="10" styleClass="box" readOnly="true" />
 									&nbsp;
 									<a id="iconoCalendarioA" onClick="return showCalendarGeneral(fechaHasta);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<html:rewrite page="/html/imagenes/calendar_hi.gif"/>',1);"><img src="<html:rewrite page="/html/imagenes/calendar.gif"/>" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
 								</td>
-								<td class="labelText">
-									<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.mostrarHistorico"/>
-								</td>
-								<td>	
-								<html:checkbox property="mostrarTodas"  onclick="buscar();"/>
-									
-								</td>
-							</tr>
-						</table>
-					</siga:ConjCampos>
-				</td>
-			</tr>
-				<tr>
-					<td>
-						<siga:ConjCampos leyenda="gratuita.informeJustificacionMasiva.literal.cliente">
-							<table width="100%">
-							<tr>
+							
 								
 								
 								<td class="labelText">
@@ -116,59 +289,37 @@
 								<td >	
 									<html:text  property="interesadoApellidos" size="30" maxlength="100" styleClass="box" ></html:text>
 								</td>	
-								<td width="50%">
-								&nbsp;
-								</td>
+								
 		
 							</tr>
-							</table>
-						</siga:ConjCampos>
-					
-					</td>
+							
+							
+						</table>
+					</siga:ConjCampos>
+				</td>
+			</tr>
 				
-				</tr>
 				
-
-
-
+				
 		</table>
-		
-		
 	</html:form>
-
-	<br>
-	
-	<!-- FIN: CAMPOS DE BUSQUEDA-->	
-	
 	<!-- Formularios auxiliares para la busqueda de persona-->
 	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="" style="display:none">
 		<html:hidden property="actionModal" value=""/>
 		<html:hidden property="modo" value="abrirBusquedaModal"/>
 		
 	</html:form>
+	
+	<!-- FIN: CAMPOS DE BUSQUEDA-->	
+	
 		<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
-	<script language="JavaScript">
 
-		function buscar ()
-		{
-			sub();
-			if (document.InformeJustificacionMasivaForm.letrado.value) {
-				document.InformeJustificacionMasivaForm.modo.value = "buscar";
-				document.InformeJustificacionMasivaForm.submit();
-			}else{
-				alert ("<siga:Idioma key="gratuita.informeJustificacionMasiva.mensaje.aviso.letradoRequerido"/>");
-				fin();
-				return false;
-					
-			}
-		}
+
+	<siga:ConjBotonesBusqueda   botones="B"  titulo="${mensajeBusqueda}"/>
+
+	
 	
 
-	</script>
-
-	<siga:ConjBotonesBusqueda   botones="B"  titulo=""/>
-
-	<iframe name="submitArea" src="<html:rewrite page="/html/jsp/general/blank.jsp"/>" style="display:none"></iframe>
 
 	<iframe align="center" src="<html:rewrite page="/html/jsp/general/blank.jsp"/>"
 					id="resultado"
@@ -176,13 +327,101 @@
 					scrolling="no"
 					frameborder="0"
 					marginheight="0"
-					marginwidth="0";					 
+					marginwidth="0";	
 					class="frameGeneral">
 	</iframe>
+
+	<iframe name="submitArea" src="<html:rewrite page="/html/jsp/general/blank.jsp"/>" style="display:none"></iframe>	
+	
+	
+<script language="JavaScript">
+function inicio ()
+{
+	var siga ="SIGA";
+	var tit ="<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.titulo"/>";
+	top.setTitulo(siga, tit);
+	if(document.InformeJustificacionMasivaForm.fichaColegial.value=='true'){
+		var loc ="<siga:Idioma key="censo.fichaCliente.sjcs.informeJustificacionMasiva.localizacion"/>";
+		top.setLocalizacion(loc);	
+	}else{
+		var loc ="<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.localizacion"/>";
+		top.setLocalizacion(loc);
+	
+	}
+	
+				
+	document.getElementById("mostrarSoloPendientes").checked = "checked";
+	document.getElementById("oculto").style.display = "none";
 	
 	
 	
+	if(document.InformeJustificacionMasivaForm.fichaColegial.value=='true'){
+		buscar();
+	}
 	
+}
+function onClickMostrarJustificacionesPendientes ()
+{
+	document.InformeJustificacionMasivaForm.estado.value='';
+	document.InformeJustificacionMasivaForm.actuacionesPendientes.value=''; 
+	if(document.getElementById("mostrarSoloPendientes").checked){
+		document.getElementById("oculto").style.display = "none";
+	}else if(document.InformeJustificacionMasivaForm.fichaColegial.value=='false'){
+		document.getElementById("oculto").style.display = "block";
+	}else{
+		document.getElementById("oculto").style.display = "none";
+		
+	}
+	ajustarAltoResultado();
+	 
+}
+
+function ajustarDivListadoResultados(){
+	documentResultado =document.frames['resultado'];
+	try
+  	{
+		documentResultado.ajusteDivListado();
+  	}
+	catch(err)
+  	{
+  		//peta porque todavia no se ha pintado la ventana hija
+  	}
+}
+
+function ajustarAltoResultado()
+{	ajusteAltoBotonesPaginador('resultado');
+	ajusteAlto('resultado');
+	ajusteAlto('mainWorkarea');
+	ajustarDivListadoResultados();
+}
+function buscar ()
+{
+	sub();
+	/*if(document.getElementById("mostrarSoloPendientes").checked){
+		document.InformeJustificacionMasivaForm.mostrarTodas.value ="on";
+	}else{
+		document.InformeJustificacionMasivaForm.mostrarTodas.value = "off";
+	}
+	*/ 
+	document.InformeJustificacionMasivaForm.mostrarTodas.value =document.getElementById("mostrarSoloPendientes").checked;
+	if(document.getElementById("activarRestricciones"))
+		document.InformeJustificacionMasivaForm.activarRestriccionesFicha.value =document.getElementById("activarRestricciones").checked;
+	
+	
+	if (document.InformeJustificacionMasivaForm.idPersona.value) {
+		document.InformeJustificacionMasivaForm.modo.value = "buscarInit";
+		// document.InformeJustificacionMasivaForm.modo.value = "buscar";
+		document.InformeJustificacionMasivaForm.submit();
+	}else{
+		alert ("<siga:Idioma key="gratuita.informeJustificacionMasiva.mensaje.aviso.letradoRequerido"/>");
+		fin();
+		return false;
+			
+	}
+}
+
+
+	</script>
 	
 	
   </body>

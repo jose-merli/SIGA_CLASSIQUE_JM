@@ -268,6 +268,8 @@ public class HelperInformesAdm  {
 			sql += prolongarCampo;
 			sql +=",COMPLEMENTO AS COMPLEMENTO";
 			sql += prolongarCampo;
+			sql +=",PERMITIRANIADIRLETRADO AS PERMITIRANIADIRLETRADO";
+			sql += prolongarCampo;
 			
 			sql +=" from scs_procedimientos"+
 			" WHERE IDINSTITUCION = :1 "+

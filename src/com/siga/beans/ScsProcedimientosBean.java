@@ -30,6 +30,7 @@ public class ScsProcedimientosBean extends MasterBean
 	static public final String C_COMPLEMENTO		= "COMPLEMENTO";
 	static public final String C_VIGENTE			= "VIGENTE";
 	static public final String C_ORDEN				= "ORDEN";
+	static public final String C_PERMITIRANIADIRLETRADO				= "PERMITIRANIADIRLETRADO";
 	
 	
 	//
@@ -43,6 +44,7 @@ public class ScsProcedimientosBean extends MasterBean
 	private String	codigo;
 	private String	complemento;
 	private String	vigente;
+	private String	permitirAniadirLetrado;
 	private Integer	orden;
 	
 	
@@ -59,6 +61,7 @@ public class ScsProcedimientosBean extends MasterBean
 	public String	getCodigo()				{return codigo;}
     public String	getComplemento()		{return complemento;}
 	public String	getVigente()			{return vigente;}
+	public String	getPermitirAniadirLetrado()			{return permitirAniadirLetrado;}
 	public Integer	getOrden()				{return orden;}
 	
 	
@@ -74,5 +77,6 @@ public class ScsProcedimientosBean extends MasterBean
     public void setComplemento		(String		complemento)		{this.complemento		= complemento;}
 	public void setVigente			(String		vigente)			{this.vigente			= vigente;}
 	public void setOrden			(Integer	orden)				{this.orden				= orden;}
+	public void setPermitirAniadirLetrado			(String		permitirAniadirLetrado)			{this.permitirAniadirLetrado			= permitirAniadirLetrado;}
 
 }

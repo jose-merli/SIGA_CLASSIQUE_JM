@@ -20,8 +20,15 @@ public class MantenimientoProcedimientosForm extends MasterForm {
 	private String codigoBusqueda =				"CODIGOBUSQUEDA";
 	private String complemento = 		ScsProcedimientosBean.C_COMPLEMENTO;
 	private String vigente = 		    ScsProcedimientosBean.C_VIGENTE;
+	private String permitirAniadirLetrado;
+	
 
-
+	public String getPermitirAniadirLetrado() {
+		return permitirAniadirLetrado;
+	}
+	public void setPermitirAniadirLetrado(String permitirAniadirLetrado) {
+		this.permitirAniadirLetrado = permitirAniadirLetrado;
+	}
 	/**
 	 * @return Returns the refresco.
 	 */

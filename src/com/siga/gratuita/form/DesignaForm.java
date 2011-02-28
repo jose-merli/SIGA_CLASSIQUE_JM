@@ -21,7 +21,8 @@ public class DesignaForm extends MasterForm
 	private String numero;
 	private String idTurno;
 	private String codigoDesigna;
-	private String ejgs;
+//	private String ejgs;
+	private List<DefinirEJGForm> expedientes;
 	private String juzgado;
 	private String fecha;
 	private String asunto;
@@ -43,6 +44,9 @@ public class DesignaForm extends MasterForm
 	private String estado;
 	
 	private String cambioLetrado;
+	boolean permitidoJustificar = false;
+	String tipoResolucionDesigna;
+	
 	private int numEjgResueltosFavorables; 
 	
 	
@@ -131,12 +135,13 @@ public class DesignaForm extends MasterForm
 	public void setCodigoDesigna(String codigoDesigna) {
 		this.codigoDesigna = codigoDesigna;
 	}
+	/*
 	public String getEjgs() {
 		return ejgs;
-	}
-	public void setEjgs(String ejgs) {
+	}*/
+	/*public void setEjgs(String ejgs) {
 		this.ejgs = ejgs;
-	}
+	}*/
 	public String getJuzgado() {
 		return juzgado;
 	}
@@ -254,5 +259,31 @@ public class DesignaForm extends MasterForm
 	public void setCambioLetrado(String cambioLetrado) {
 		this.cambioLetrado = cambioLetrado;
 	}
+
+	public boolean getPermitidoJustificar() {
+		return permitidoJustificar;
+	}
+
+	public void setPermitidoJustificar(boolean permitidoJustificar) {
+		this.permitidoJustificar = permitidoJustificar;
+	}
+
+	public String getTipoResolucionDesigna() {
+		return tipoResolucionDesigna;
+	}
+
+	public void setTipoResolucionDesigna(String tipoResolucionDesigna) {
+		this.tipoResolucionDesigna = tipoResolucionDesigna;
+	}
+
+	public List<DefinirEJGForm> getExpedientes() {
+		return expedientes;
+	}
+
+	public void setExpedientes(List<DefinirEJGForm> expedientes) {
+		this.expedientes = expedientes;
+	}
+
+	
 	
 }

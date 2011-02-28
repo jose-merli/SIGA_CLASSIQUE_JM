@@ -547,7 +547,11 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 									" per.nombre nombre, per.apellidos1 apellido1, per.apellidos2 apellido2,"+
 									" col.ncolegiado ncolegiado, "+
 									" act."+ScsActuacionDesignaBean.C_TALONARIO+
-									" ,act."+ScsActuacionDesignaBean.C_TALON+									
+									" ,act."+ScsActuacionDesignaBean.C_TALON+		
+									",(select "+FcsFacturacionJGBean.C_NOMBRE+"||' ('||TO_CHAR("+FcsFacturacionJGBean.C_FECHADESDE+",'DD/MM/YYYY')||'-'||TO_CHAR("+FcsFacturacionJGBean.C_FECHAHASTA+",'DD/MM/YYYY')||')'"+
+									" from "+FcsFacturacionJGBean.T_NOMBRETABLA+
+								    " where "+FcsFacturacionJGBean.C_IDINSTITUCION+" = "+entrada.get("IDINSTITUCION")+
+								    "   and "+FcsFacturacionJGBean.T_NOMBRETABLA+"."+FcsFacturacionJGBean.C_IDFACTURACION+" = act."+ScsActuacionDesignaBean.C_IDFACTURACION+") nombrefacturacion"+
 									" FROM SCS_ACTUACIONDESIGNA act, scs_procedimientos pro , scs_turno tur, scs_acreditacion acred, scs_juzgado juzgado, cen_colegiado col, cen_persona per"+
 									" WHERE act.IDINSTITUCION =  "+  entrada.get("IDINSTITUCION")+
 									" and act.IDTURNO = "+ entrada.get("IDTURNO")+
@@ -610,7 +614,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 	    int contador=0;
 		StringBuffer sql = new StringBuffer();
 		sql.append(" SELECT AC.IDACREDITACION,AC.DESCRIPCION ACREDITACION,AC.IDTIPOACREDITACION,ACP.PORCENTAJE, TAC.DESCRIPCION TIPO, ");
-		sql.append(" PRO.NOMBRE PROCEDIMIENTO,PRO.CODIGO CATEGORIA, PRO.IDJURISDICCION,PRO.COMPLEMENTO,ACT.NUMEROASUNTO,ACT.IDPROCEDIMIENTO,ACT.IDJUZGADO,");
+		sql.append(" PRO.NOMBRE PROCEDIMIENTO,PRO.CODIGO CATEGORIA, PRO.IDJURISDICCION,PRO.COMPLEMENTO,PRO.PERMITIRANIADIRLETRADO,ACT.NUMEROASUNTO,ACT.IDPROCEDIMIENTO,ACT.IDJUZGADO,");
 		sql.append(" TO_CHAR(ACT.FECHAJUSTIFICACION,'dd/mm/yyyy') FECHAJUSTIFICACION,ACT.VALIDADA,ACT.IDFACTURACION ");
 		sql.append(" ,(SELECT NOMBRE || ' (' || FECHADESDE || '-' || FECHAHASTA || ')' ");
 		sql.append(" FROM FCS_FACTURACIONJG FJG ");
@@ -647,7 +651,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		contador++;
 		codigos.put(new Integer(contador),designa.getNumero());
 		sql.append(contador);
-		sql.append(" ORDER BY ACT.FECHA,ACT.NUMEROASUNTO");
+		sql.append(" ORDER BY ACT.FECHAJUSTIFICACION,ACT.NUMEROASUNTO");
 		Vector actuacionesVector = this.selectGenericoBind(sql.toString(), codigos);
 		
 		
@@ -676,6 +680,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 				actuacionDesigna.setIdJurisdiccion((String)registro.get("IDJURISDICCION"));
 				actuacionDesigna.setIdFacturacion((String)registro.get("IDFACTURACION"));
 				actuacionDesigna.setDescripcionFacturacion((String)registro.get("DESCRIPCIONFACTURACION"));
+				actuacionDesigna.setPermitirEditarActuacion((String)registro.get("PERMITIRANIADIRLETRADO"));
 				acreditacion = new AcreditacionForm();
 				actuacionDesigna.setAcreditacion(acreditacion);
 				acreditacion.setId((String)registro.get("IDACREDITACION"));
@@ -743,7 +748,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 				designa.setActuaciones(null);
 			}
 		}else{
-			if(designa.getIdProcedimiento()!=null && !designa.getIdProcedimiento().equals("")){
+			if(designa.getIdProcedimiento()!=null && !designa.getIdProcedimiento().equals("") && designa.getIdJuzgado()!=null && !designa.getIdJuzgado().equals("") ){
 				
 				List<AcreditacionForm> acreditacionesPendientesList = null;
 				if(designa.getEstado().equals("V")||designa.getEstado().equals(""))
