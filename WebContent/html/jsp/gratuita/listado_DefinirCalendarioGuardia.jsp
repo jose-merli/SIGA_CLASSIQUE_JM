@@ -22,6 +22,7 @@
 <%@ page import="java.io.File" %>
 <%@ page import="com.atos.utils.ReadProperties" %>
 <%@ page import="com.siga.Utilidades.SIGAReferences" %>
+<%@ page import="com.siga.gratuita.action.DefinirCalendarioGuardiaAction"%>
 
 <!-- JSP --> 
 <% 
@@ -80,8 +81,11 @@
 			   	nombre="tablaDatos"
 			   	borde="1"
 			   	clase="tableTitle"		   
-			   	nombreCol="gratuita.listado_DefinirCalendarioGuardia.literal.fechaInicio,gratuita.listado_DefinirCalendarioGuardia.literal.fechaFin,gratuita.listado_DefinirCalendarioGuardia.literal.observaciones,"
-			   	tamanoCol="15,15,50,12"
+			   	nombreCol="gratuita.listado_DefinirCalendarioGuardia.literal.fechaInicio,
+			   			   gratuita.listado_DefinirCalendarioGuardia.literal.fechaFin,
+			   			   gratuita.listado_DefinirCalendarioGuardia.literal.generado,
+			   			   gratuita.listado_DefinirCalendarioGuardia.literal.observaciones,"
+			   	tamanoCol="15,15,10,40,12"
 		   		alto="100%"
 			   	modal="G"			   
 		>
@@ -90,7 +94,7 @@
 	<% if ((obj!= null) && (obj.size()>0)) { %>
 				<%
 				int recordNumber=1;
-				String fechaInicio="", fechaFin="", observaciones="", idcalendarioguardias="", idturno="", idguardia="", idinstitucion="";
+				String fechaInicio="", fechaFin="", observaciones="", idcalendarioguardias="", idturno="", idguardia="",numGuardias ="",generado="",idinstitucion="";
 				ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 				String sFicheroLog;
 				while ((recordNumber) <= obj.size())
@@ -116,6 +120,7 @@
 				idturno = ((String)hash.get("IDTURNO")).equals("")?"&nbsp;":(String)hash.get("IDTURNO");
 				idguardia = ((String)hash.get("IDGUARDIA")).equals("")?"&nbsp;":(String)hash.get("IDGUARDIA");
 				idinstitucion = ((String)hash.get("IDINSTITUCION")).equals("")?"&nbsp;":(String)hash.get("IDINSTITUCION");
+				numGuardias = DefinirCalendarioGuardiaAction.getNumGuardias(idinstitucion,idturno,idguardia,idcalendarioguardias,usr);
 				sFicheroLog = rp.returnProperty("sjcs.directorioFisicoGeneracionCalendarios")
 					+ File.separator + idinstitucion+File.separator+ idturno + "." + idguardia + "." + idcalendarioguardias + "-"
 					+ GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicio).replace('/', '.') 
@@ -128,6 +133,9 @@
 				} else {
 					elems[0] = null;
 				}
+				
+				boolean tieneGuardias = numGuardias!=null && !numGuardias.equalsIgnoreCase("0");
+				if (tieneGuardias)generado="Si";else generado="No";
 			%>
 		       	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="E,C,B" elementos="<%=elems%>"  clase="listaNonEdit" modo="<%=modopestanha%>"  >
 				<td align="center">
@@ -137,6 +145,7 @@
 				<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=idinstitucion%>' />
 				<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicio)%></td>
 				<td align="center"><%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin)%></td>
+				<td align="center"><%=generado%></td>
 				<td align="center"><%=observaciones%></td>
 			</siga:FilaConIconos>
 				<% 		recordNumber++; %>

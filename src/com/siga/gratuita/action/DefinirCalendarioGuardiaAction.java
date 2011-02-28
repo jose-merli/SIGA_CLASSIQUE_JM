@@ -143,15 +143,14 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 	throws SIGAException
 	{
 		//Controles globales
-		DefinirCalendarioGuardiaForm miForm = 
-			(DefinirCalendarioGuardiaForm) formulario;
-		ScsCalendarioGuardiasAdm admCalendarioGuardia = 
-			new ScsCalendarioGuardiasAdm(this.getUserBean(request));
+		DefinirCalendarioGuardiaForm miForm = (DefinirCalendarioGuardiaForm) formulario;
+		ScsCalendarioGuardiasAdm admCalendarioGuardia = new ScsCalendarioGuardiasAdm(this.getUserBean(request));
 		UsrBean usr = null;
 
 		//Variables
 		Vector salida = new Vector();
 		String idinstitucion="", idturno="", idguardia="";
+		int numGuardias=0;
 
 		try
 		{
@@ -161,12 +160,10 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 			//obteniendo valores del formulario
 			idinstitucion = miForm.getIdInstitucionPestanha();
 			idturno = miForm.getIdTurnoPestanha();
-			idguardia = miForm.getIdGuardiaPestanha();
+			idguardia = miForm.getIdGuardiaPestanha();			
 
 			//SELECT
-			salida = admCalendarioGuardia.selectGenerico(
-					admCalendarioGuardia.getCalendarios(
-							idinstitucion,idturno,idguardia));
+			salida = admCalendarioGuardia.selectGenerico(admCalendarioGuardia.getCalendarios(idinstitucion,idturno,idguardia));
 
 			//obteniendo y pasando por sesion los nombres de turno y guardia
 			Hashtable hashTurno = new Hashtable ();
@@ -180,7 +177,6 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 			hashGuardia.put (ScsGuardiasTurnoBean.C_IDGUARDIA, (String) miForm.getIdGuardiaPestanha ());
 			ScsGuardiasTurnoBean beanGuardia = (ScsGuardiasTurnoBean) (new ScsGuardiasTurnoAdm (usr).select (hashGuardia)).get (0);
 			request.setAttribute ("NOMBREGUARDIA", beanGuardia.getNombre ());
-
 			request.setAttribute("resultado",salida);			
 			request.setAttribute("modo",miForm.getModo());
 
@@ -190,6 +186,17 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 
 		return "buscarInicio";
 	} //buscar ()
+	
+	
+	public static String getNumGuardias(String idInstitucion, String idTurno, String idGuardia, String idCalendario, UsrBean usr) {
+		ScsGuardiasColegiadoAdm admGuardiasColegiado = new ScsGuardiasColegiadoAdm(usr);
+		try {
+			return "" + admGuardiasColegiado.getNumeroGuardias(idInstitucion, idTurno, idGuardia, idCalendario);
+		} catch (ClsExceptions e) {
+			e.printStackTrace();
+			return "";
+		}
+	}
 
 	/**
 	 * Abre la modal de Mantenimiento del Calendario de Guardias
