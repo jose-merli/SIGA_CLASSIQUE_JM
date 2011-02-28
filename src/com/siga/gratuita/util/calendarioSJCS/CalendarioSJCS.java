@@ -1337,8 +1337,7 @@ public class CalendarioSJCS
 					alLetradosInsertar.add(letrado);
 					
 					// colocando componentes del grupo (mejorando ordenes)
-					letrado.setPosicion(posicion);
-					posicion++;
+					letrado.setPosicion(posicion);					
 					
 					if (rotacion) {
 						if (posicion == INI_POSICION){
@@ -1356,7 +1355,9 @@ public class CalendarioSJCS
 						beanGrupoLetrado.setFechaMod("sysdate");
 						beanGrupoLetrado.setUsuMod(new Integer(usrBean.getUserName()));
 						gruGuaColAdm.update(beanGrupoLetrado);
-					}											
+					}								
+					
+					posicion++;
 				}
 				
 				//Asignamos valores superiores al tamaño de la lista a los letrados no activos
