@@ -50,6 +50,8 @@
 	String idioma=usrbean.getLanguage().toUpperCase();
     String idInstitucionLocation = usrbean.getLocation();
 	CenClienteAdm admCen = new CenClienteAdm(usrbean);
+	int idInstitucionInt = Integer.parseInt(idInstitucionLocation);
+	boolean esColegio = (idInstitucionInt>2000 && idInstitucionInt<3000);
 %>	
 
 <%  
@@ -232,9 +234,16 @@
 		String tamanosCol="";
 		String nombresCol="";
 		if (colegiado.equals(ClsConstants.DB_TRUE)) {
-			// cliente colegiado
-			tamanosCol="3,8,11,16,10,11,11,8,9,15";
-			nombresCol+="<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,censo.busquedaClientesAvanzada.literal.nif,censo.busquedaClientesAvanzada.literal.nColegiado,censo.busquedaClientesAvanzada.literal.nombre,censo.busquedaClientesAvanzada.literal.fechaIngreso,censo.busquedaClientes.literal.institucion,censo.busquedaClientesAvanzada.literal.estadoColegial,censo.busquedaClientesAvanzada.literal.residente,censo.busquedaClientesAvanzada.literal.fechaNacimiento,";
+
+			if (esColegio){
+				tamanosCol="3,8,11,16,10,11,11,8,9,15";
+				nombresCol+="<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,censo.busquedaClientesAvanzada.literal.nif,censo.busquedaClientesAvanzada.literal.nColegiado,censo.busquedaClientesAvanzada.literal.nombre,censo.busquedaClientesAvanzada.literal.fechaIngreso,censo.busquedaClientesAvanzada.literal.estadoColegial,censo.consultaDatosGenerales.literal.fechaEstado, censo.busquedaClientesAvanzada.literal.residente,censo.busquedaClientesAvanzada.literal.fechaNacimiento,";
+			
+			}else{
+				tamanosCol="3,8,11,16,10,11,11,8,9,15";
+				nombresCol+="<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,censo.busquedaClientesAvanzada.literal.nif,censo.busquedaClientesAvanzada.literal.nColegiado,censo.busquedaClientesAvanzada.literal.nombre,censo.busquedaClientesAvanzada.literal.fechaIngreso,censo.busquedaClientes.literal.institucion,censo.busquedaClientesAvanzada.literal.estadoColegial,censo.busquedaClientesAvanzada.literal.residente,censo.busquedaClientesAvanzada.literal.fechaNacimiento,";
+			}
+			
 		} else {
 			tamanosCol="3,12,42,15,15,16";
   	        nombresCol="<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,censo.busquedaClientesAvanzada.literal.nif,censo.busquedaClientesAvanzada.literal.nombre,censo.busquedaClientes.literal.institucion,censo.busquedaClientes.literal.FechaNacimientoConstitucion,";
@@ -365,6 +374,7 @@
 			String ncolegiado = "";
 			String fechaIncorporacion = "";
 			String estadoColegial = "";
+			String fechaEstadoColegial = "";
 			String residente = "";
 
 			//Campo que indica que si va a ir a el jsp para no coelgiados para sociedades o nif de tipo no personal
@@ -382,6 +392,7 @@
 				//if(registro.get("ESTADOCOLEGIAL")!=null)
 					//estadoColegial = UtilidadesMultidioma.getDatoMaestroIdioma (estadoColegial, usrbean);
 				estadoColegial=UtilidadesString.mostrarDatoJSP(admCen.getEstadoColegial(registro.get(CenColegiadoBean.C_IDPERSONA).toString(),registro.get(CenColegiadoBean.C_IDINSTITUCION).toString()));
+				fechaEstadoColegial = UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usrbean.getLanguage(), admCen.getFechaEstadoColegial(registro.get(CenColegiadoBean.C_IDPERSONA).toString(), registro.get(CenColegiadoBean.C_IDINSTITUCION).toString())));				
 				residente=UtilidadesString.mostrarDatoJSP(registro.get(CenColegiadoBean.C_SITUACIONRESIDENTE));
 			}			
 			String institucion = CenVisibilidad.getAbreviaturaInstitucion(idInstitucion);
@@ -448,11 +459,21 @@
 				<td>
 					<%=fechaIncorporacion %>
 				</td>
-				<td>
-					<%=institucion %>
-				</td>
-				<td>
-					<%=estadoColegial %>
+				<%if (!esColegio){ %>
+					<td><%=institucion%></td>
+					<td>
+					<% if (estadoColegial!=null && !estadoColegial.equals("&nbsp")){%>
+					   <%=estadoColegial%>  (<%=fechaEstadoColegial%>)  
+					<%}else{ // para colegiados sin estado colegial o con estado colegial a futuro %>
+					    <siga:Idioma key="censo.busquedaClientes.literal.sinEstadoColegial"/>
+					<%} %>
+				<% } else{%>				
+					<% if (estadoColegial!=null && !estadoColegial.equals("&nbsp")){%>
+					   <td><%=estadoColegial%></td><td><%=fechaEstadoColegial%></td>  
+					<%}else{ // para colegiados sin estado colegial o con estado colegial a futuro %>
+					    <td><siga:Idioma key="censo.busquedaClientes.literal.sinEstadoColegial"/></td><td>&nbsp;</td>
+					<%} %>
+				<%} %>   
 				</td>
 				<td>
 				    <%=residente.equals("0")?"No":"Si"%>
