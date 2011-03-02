@@ -15,7 +15,7 @@ import com.siga.beans.ScsInscripcionTurnoBean;
 import com.siga.beans.ScsRetencionesBean;
 import com.siga.beans.ScsTurnoBean;
 import com.siga.general.MasterForm;
-import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
+import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
 import com.siga.tlds.FilaExtElement;
 
 public class InscripcionTGForm extends MasterForm {
@@ -85,7 +85,7 @@ public class InscripcionTGForm extends MasterForm {
 	String  observacionesValBaja = null;
 	
 	private String porGrupos;
-	List<LetradoGuardia> gruposGuardiaLetrado;
+	List<LetradoInscripcion> gruposGuardiaLetrado;
 	
 	
 	private String numeroGrupo;
@@ -640,10 +640,10 @@ public class InscripcionTGForm extends MasterForm {
 	public void setObservacionesValBaja(String observacionesValBaja) {
 		this.observacionesValBaja = observacionesValBaja;
 	}
-	public List<LetradoGuardia> getGruposGuardiaLetrado() {
+	public List<LetradoInscripcion> getGruposGuardiaLetrado() {
 		return gruposGuardiaLetrado;
 	}
-	public void setGruposGuardiaLetrado(List<LetradoGuardia> gruposGuardiaLetrado) {
+	public void setGruposGuardiaLetrado(List<LetradoInscripcion> gruposGuardiaLetrado) {
 		this.gruposGuardiaLetrado = gruposGuardiaLetrado;
 	}
 	public String getNumeroGrupo() {

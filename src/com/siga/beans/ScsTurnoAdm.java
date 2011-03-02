@@ -69,7 +69,7 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 				ScsTurnoBean.C_IDPARTIDAPRESUPUESTARIA,	ScsTurnoBean.C_USUMODIFICACION,
 				ScsTurnoBean.C_FECHAMODIFICACION, 		ScsTurnoBean.C_ACTIVARRETRICCIONACREDIT,
 				ScsTurnoBean.C_LETRADOACTUACIONES,		ScsTurnoBean.C_LETRADOASISTENCIAS, 
-				ScsTurnoBean.C_CODIGOEXT};
+				ScsTurnoBean.C_CODIGOEXT,ScsTurnoBean.C_FECHASOLICITUD_ULTIMO};
 		return campos;
 	}
 	/**
@@ -114,6 +114,7 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 					"turnos."+ScsTurnoBean.C_DESCRIPCION+" DESCRIPCION",
 					"turnos."+ScsTurnoBean.C_REQUISITOS+" REQUISITOS",
 					"turnos."+ScsTurnoBean.C_IDPERSONAULTIMO+" IDPERSONAULTIMO",
+					"turnos."+ScsTurnoBean.C_FECHASOLICITUD_ULTIMO+" FECHASOLICTUDULTIMO",
 					ScsOrdenacionColasBean.T_NOMBRETABLA+"."+ScsOrdenacionColasBean.C_IDORDENACIONCOLAS+" IDORDENACIONCOLAS",
 					ScsOrdenacionColasBean.T_NOMBRETABLA+"."+ScsOrdenacionColasBean.C_ALFABETICOAPELLIDOS+" ALFABETICOAPELLIDOS",
 					ScsOrdenacionColasBean.T_NOMBRETABLA+"."+ScsOrdenacionColasBean.C_FECHANACIMIENTO+" EDAD",
@@ -207,6 +208,7 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 			bean.setLetradoActuaciones(UtilidadesHash.getString(hash,ScsTurnoBean.C_LETRADOACTUACIONES));
 			bean.setLetradoAsistencias(UtilidadesHash.getString(hash,ScsTurnoBean.C_LETRADOASISTENCIAS));
 			bean.setCodigoExt(UtilidadesHash.getString(hash,ScsTurnoBean.C_CODIGOEXT));
+			bean.setFechaSolicitudUltimo(UtilidadesHash.getString(hash,ScsTurnoBean.C_FECHASOLICITUD_ULTIMO));
 			
 		}
 		catch(Exception e){
@@ -257,6 +259,7 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, ScsTurnoBean.C_LETRADOACTUACIONES, b.getLetradoActuaciones());
 			UtilidadesHash.set(hash, ScsTurnoBean.C_LETRADOASISTENCIAS, b.getLetradoAsistencias());
 			UtilidadesHash.set(hash, ScsTurnoBean.C_CODIGOEXT, b.getCodigoExt());
+			UtilidadesHash.set(hash, ScsTurnoBean.C_FECHASOLICITUD_ULTIMO, b.getFechaSolicitudUltimo());
 		}
 		catch (Exception e){
 			hash = null;
@@ -414,7 +417,7 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 	public Hashtable getDatosTurno(String idInstitucion, String idTurno) {
 		String consulta =	" select turno.nombre nombre, turno.abreviatura abreviatura, turno.idarea idarea, turno.idmateria idmateria, turno.idzona idzona, "+
 		" turno.idpartidapresupuestaria idpartidapresupuestaria, turno.idgrupofacturacion idgrupofacturacion, turno.guardias guardias, turno.descripcion descripcion,"+
-		" turno.requisitos requisitos, turno.idordenacioncolas idordenacioncolas, turno.idpersona_ultimo idpersona_ultimo, turno.idsubzona idsubzona, area.nombre area,"+
+		" turno.requisitos requisitos, turno.idordenacioncolas idordenacioncolas, turno.idpersona_ultimo idpersona_ultimo,turno.FECHASOLICITUD_ULTIMO FECHASOLICITUD_ULTIMO, turno.idsubzona idsubzona, area.nombre area,"+
 		" materia.nombre materia, zona.nombre zona, subzona.nombre subzona, partida.nombrepartida partidapresupuestaria, turno.idordenacioncolas idordenacioncolas, turno.idturno idturno, turno.validarjustificaciones validarjustificaciones, turno.validarinscripciones validarinscripciones,"+
 		" turno.designadirecta designadirecta, subzona.idpartido idpartidojudicial, "+
 		"  PKG_SIGA_SJCS.FUN_SJ_PARTIDOSJUDICIALES(turno.idinstitucion, turno.idsubzona, turno.idzona) partidojudicial, " +
@@ -720,7 +723,7 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 		sql.append(" T.DESCRIPCION DESCRIPCIONTURNO,  T.ABREVIATURA ABREVIATURATURNO, ");
 		sql.append(" T.GUARDIAS GUARDIAS, T.VALIDARJUSTIFICACIONES , ");
 		sql.append(" T.VALIDARINSCRIPCIONES , T.DESIGNADIRECTA , ");
-		sql.append(" T.REQUISITOS,  T.IDPERSONA_ULTIMO IDPERSONAULTIMO, ");
+		sql.append(" T.REQUISITOS,  T.IDPERSONA_ULTIMO IDPERSONAULTIMO,T.FECHASOLICITUD_ULTIMO  FECHASOLICITUD_ULTIMO,");
 		sql.append(" T.ACTIVARRETRICCIONACREDIT, T.LETRADOACTUACIONES, T.LETRADOASISTENCIAS, ");
 		sql.append(" A.NOMBRE AREA,    A.IDAREA IDAREA,   M.NOMBRE MATERIA, ");
 		sql.append(" M.IDMATERIA IDMATERIA,   Z.NOMBRE ZONA,  Z.IDZONA IDZONA, ");
@@ -791,6 +794,7 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 					turno.setDesignaDirecta(UtilidadesHash.getString(htFila,ScsTurnoBean.C_DESIGNADIRECTA));
 					turno.setRequisitos(UtilidadesHash.getString(htFila,ScsTurnoBean.C_REQUISITOS));
 					turno.setIdPersonaUltimo(UtilidadesHash.getLong(htFila,ScsTurnoBean.C_IDPERSONAULTIMO));
+					turno.setFechaSolicitudUltimo(UtilidadesHash.getString(htFila,ScsTurnoBean.C_FECHASOLICITUD_ULTIMO));
 					turno.setActivarRestriccionAcreditacion(UtilidadesHash.getString(htFila,ScsTurnoBean.C_ACTIVARRETRICCIONACREDIT));
 					turno.setLetradoActuaciones(UtilidadesHash.getString(htFila,ScsTurnoBean.C_LETRADOACTUACIONES));
 					turno.setLetradoAsistencias(UtilidadesHash.getString(htFila,ScsTurnoBean.C_LETRADOASISTENCIAS));
@@ -857,7 +861,7 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 				 " SCS_TURNO.GUARDIAS GUARDIAS, SCS_TURNO.VALIDARJUSTIFICACIONES VALIDARJUSTIFICACIONES,    "+
 				 " SCS_TURNO.VALIDARINSCRIPCIONES VALIDARINSCRIPCIONES, SCS_TURNO.DESIGNADIRECTA DESIGNADIRECTA,    "+
 				 " SCS_TURNO.DESCRIPCION DESCRIPCION, SCS_TURNO.REQUISITOS REQUISITOS,    "+
-				 " SCS_TURNO.IDPERSONA_ULTIMO IDPERSONAULTIMO, SCS_TURNO.IDPERSONA_ULTIMO IDORDENACIONCOLAS,    "+
+				 " SCS_TURNO.IDPERSONA_ULTIMO IDPERSONAULTIMO,SCS_TURNO.FECHASOLICITUD_ULTIMO FECHASOLICITUD_ULTIMO, SCS_TURNO.IDORDENACIONCOLAS IDORDENACIONCOLAS,    "+
 				 " SCS_ORDENACIONCOLAS.ALFABETICOAPELLIDOS A8LFABETICOAPELLIDOS, SCS_ORDENACIONCOLAS.FECHANACIMIENTO EDAD,    "+
 				 " SCS_ORDENACIONCOLAS.NUMEROCOLEGIADO ANTIGUEDAD, SCS_ORDENACIONCOLAS.ANTIGUEDADCOLA ANTIGUEDADENCOLA,   "+
 				 " (select count(1) "+
@@ -936,7 +940,36 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 		
 		return vTurno;
 }
-	
+	public void cambiarUltimoCola (Integer idInstitucion,
+			Integer idTurno,
+			Long idPersonaUltimo,
+			String fechaSolicitudUltimo)
+	throws ClsExceptions
+	{
+		String sIdinstitucion = idInstitucion.toString();
+		String sIdTurno = idTurno.toString();
+		String sIdpersona = (idPersonaUltimo == null) ? "null" : idPersonaUltimo.toString();
+		String sFechaSolicitudUltimo = (fechaSolicitudUltimo == null || fechaSolicitudUltimo.equals("")) ?
+				"null" : fechaSolicitudUltimo.toString();
+
+		String[] campos = 
+		{
+				ScsTurnoBean.C_IDPERSONAULTIMO,
+				ScsTurnoBean.C_FECHASOLICITUD_ULTIMO,
+				ScsTurnoBean.C_USUMODIFICACION,
+				ScsTurnoBean.C_FECHAMODIFICACION
+		};
+
+		Hashtable hash = new Hashtable();
+		hash.put(ScsTurnoBean.C_IDINSTITUCION, sIdinstitucion);
+		hash.put(ScsTurnoBean.C_IDTURNO, sIdTurno);
+		hash.put(ScsTurnoBean.C_IDPERSONAULTIMO, sIdpersona);
+		hash.put(ScsTurnoBean.C_FECHASOLICITUD_ULTIMO, sFechaSolicitudUltimo);
+		hash.put(ScsTurnoBean.C_USUMODIFICACION, this.usrbean.getUserName());
+		hash.put(ScsTurnoBean.C_FECHAMODIFICACION, "SYSDATE");
+
+		this.updateDirect(hash, this.getClavesBean(), campos);
+	} // cambiarUltimoCola()
 	
 	
 	

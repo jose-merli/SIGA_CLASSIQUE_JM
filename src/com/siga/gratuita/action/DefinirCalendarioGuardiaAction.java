@@ -57,7 +57,7 @@ import com.siga.general.SIGAException;
 import com.siga.gratuita.InscripcionGuardia;
 import com.siga.gratuita.form.DefinirCalendarioGuardiaForm;
 import com.siga.gratuita.util.calendarioSJCS.CalendarioSJCS;
-import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
+import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
 
 /**
  * Maneja las acciones que se pueden realizar sobre las tablas SCS_CALENDARIOGUARDIAS. <br>
@@ -2024,7 +2024,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 		idPersona, fechaInicio, fechaFin;
 		int indicePeriodo;
 		ArrayList arrayPeriodoSeleccionado = new ArrayList();
-		LetradoGuardia letrado;
+		LetradoInscripcion letrado;
 		boolean validacionOk;
 		int numeroError;
 		String forward;

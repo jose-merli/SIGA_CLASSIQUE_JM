@@ -2,6 +2,8 @@
 package com.siga.beans;
 
 import java.util.Hashtable;
+import java.util.Vector;
+
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
@@ -131,5 +133,60 @@ public class ScsOrdenacionColasAdm extends MasterBeanAdministrador {
 	protected String[] getOrdenCampos() {
 		return null;
 	}
+	/**
+	 * Obtiene la clausula order by para el select de inscripciones
+	 * 
+	 * @param idInstitucion
+	 * @param idTurno
+	 * @param idGuardia
+	 * @param usr
+	 * @return Order by sin el "order by"
+	 * @throws ClsExceptions
+	 */
+	public static String getOrderBy(String idOrdenacionColas, UsrBean usr)
+			throws ClsExceptions
+	{
+		ScsOrdenacionColasAdm ordadm = new ScsOrdenacionColasAdm(usr);
+		Hashtable hashOrden = new Hashtable();
+		
+		// obteniendo el orden
+		hashOrden.put(ScsOrdenacionColasBean.C_IDORDENACIONCOLAS, idOrdenacionColas);
+		Vector vOrden = ordadm.select(hashOrden);
+		ScsOrdenacionColasBean ordenBean = (ScsOrdenacionColasBean) vOrden.get(0);
+		Integer apellidos = ordenBean.getAlfabeticoApellidos();
+		Integer antiguedad = ordenBean.getAntiguedadCola();
+		Integer fechanacimiento = ordenBean.getFechaNacimiento();
+		Integer numerocolegiado = ordenBean.getNumeroColegiado();
+		
+		// calculando order by
+		String orden = "";
+		for (int i=4; i>0; i--) {
+			if (Math.abs(apellidos) == i) {
+				orden += ScsOrdenacionColasBean.C_ALFABETICOAPELLIDOS+","+ScsOrdenacionColasBean.AUX_ALFABETICOAPELLIDOS_NOMBRE;
+				if (Math.abs(apellidos) != apellidos) orden += " desc";
+				orden += ", ";
+			}
+			if (Math.abs(antiguedad) == i) {
+				orden += ScsOrdenacionColasBean.C_ANTIGUEDADCOLA;
+				if (Math.abs(antiguedad) != antiguedad) orden += " desc";
+				orden += ", ";
+			}
+			if (Math.abs(fechanacimiento) == i) {
+				orden += ScsOrdenacionColasBean.C_FECHANACIMIENTO;
+				if (Math.abs(fechanacimiento) != fechanacimiento) orden += " desc";
+				orden += ", ";
+			}
+			if (Math.abs(numerocolegiado) == i) {
+//				orden += "to_number("+ScsOrdenacionColasBean.C_NUMEROCOLEGIADO+")";
+				orden += ScsOrdenacionColasBean.C_NUMEROCOLEGIADO;
+				if (Math.abs(numerocolegiado) != numerocolegiado) orden += " desc";
+				orden += ", ";
+			}
+		}
+		if (orden.length() > 0)
+			orden = orden.substring(0, orden.length()-2);
+		
+		return orden;
+	} //getOrderBy()
 			
 }

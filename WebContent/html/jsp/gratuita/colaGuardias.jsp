@@ -27,23 +27,23 @@
 	String app = request.getContextPath();
 
 	UsrBean usrbean = (UsrBean) session
-			.getAttribute(ClsConstants.USERBEAN);
+	.getAttribute(ClsConstants.USERBEAN);
 	String nListad = request.getAttribute("NLETRADOSINSCRITOS") != null
-			? (String) request.getAttribute("NLETRADOSINSCRITOS")
-			: "";
+	? (String) request.getAttribute("NLETRADOSINSCRITOS")
+	: "";
 
 	String idGuardia = (String) request.getAttribute("idGuardia");
 	String idInstitucion = (String) request
-			.getAttribute("idInstitucion");
+	.getAttribute("idInstitucion");
 	String idTurno = (String) request.getAttribute("idTurno");
 
 	String buscarLetrado = UtilidadesString.getMensajeIdioma(usrbean,
-			"gratuita.turnos.literal.buscarLetrado");
+	"gratuita.turnos.literal.buscarLetrado");
 	String literalNColegiado = UtilidadesString.getMensajeIdioma(
-			usrbean, "gratuita.turnos.literal.nColegiado");
+	usrbean, "gratuita.turnos.literal.nColegiado");
 	String literalFijarUltimoLetrado = UtilidadesString
-			.getMensajeIdioma(usrbean,
-					"gratuita.turnos.literal.fijarUltimoLetrado");
+	.getMensajeIdioma(usrbean,
+			"gratuita.turnos.literal.fijarUltimoLetrado");
 
 	boolean porGrupos;
 	String tamanoCol;
@@ -61,7 +61,7 @@
 %>	
 
 
-<%@page import="com.siga.gratuita.util.calendarioSJCS.LetradoGuardia"%>
+<%@page import="com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion"%>
 
 <!-- HEAD -->
 <html>
@@ -291,9 +291,9 @@
 
 	<%
 				ArrayList letradosColaGuardiaList = (ArrayList) request
-							.getAttribute("letradosColaGuardiaList");
-					if (letradosColaGuardiaList == null
-							|| letradosColaGuardiaList.size() == 0) {
+								.getAttribute("letradosColaGuardiaList");
+						if (letradosColaGuardiaList == null
+								|| letradosColaGuardiaList.size() == 0) {
 			%>			
 	 		<tr>
 	 		
@@ -303,52 +303,52 @@
 	 		</tr>	 		
 <%
 	 			} else {
-	 					// recorro el resultado
-	 					String grupoAnt = "";
-	 					String ordenAnt = "";
-	 					String apellido1 = "";
-	 					String apellido2 = "";
-	 					String nombre = "";
-	 					String ncolegiado = "";
-	 					String idPersona = "";
-	 					String fechaSuscripcion = "";
-	 					String numeroColegiadoBusqueda = "";
-	 					String grupo = "";
-	 					String ordenGrupo = "";
-	 					String idGrupoGuardiaColegiado = "";
-	 					int nFila = 0;
-	 					for (int i = 0; i < letradosColaGuardiaList.size(); i++) {
-	 						LetradoGuardia letradoGuardia = (LetradoGuardia) letradosColaGuardiaList
-	 								.get(i);
+	 			 					// recorro el resultado
+	 			 					String grupoAnt = "";
+	 			 					String ordenAnt = "";
+	 			 					String apellido1 = "";
+	 			 					String apellido2 = "";
+	 			 					String nombre = "";
+	 			 					String ncolegiado = "";
+	 			 					String idPersona = "";
+	 			 					String fechaSuscripcion = "";
+	 			 					String numeroColegiadoBusqueda = "";
+	 			 					String grupo = "";
+	 			 					String ordenGrupo = "";
+	 			 					String idGrupoGuardiaColegiado = "";
+	 			 					int nFila = 0;
+	 			 					for (int i = 0; i < letradosColaGuardiaList.size(); i++) {
+	 			 						LetradoInscripcion letradoGuardia = (LetradoInscripcion) letradosColaGuardiaList
+	 			 								.get(i);
 
-	 						// calculo de campos
-	 						apellido1 = letradoGuardia.getPersona().getApellido1();
-	 						apellido2 = letradoGuardia.getPersona().getApellido2();
-	 						nombre = letradoGuardia.getPersona().getNombre();
-	 						ncolegiado = letradoGuardia.getPersona().getColegiado()
-	 								.getNColegiado();
-	 						idPersona = letradoGuardia.getIdPersona().toString();
-	 						fechaSuscripcion = letradoGuardia.getInscripcionGuardia().getFechaSuscripcion();
-	 						numeroColegiadoBusqueda = "" + i + "_" + ncolegiado;
-	 						grupo = letradoGuardia.getNumeroGrupo() != null
-	 								? letradoGuardia.getNumeroGrupo().toString()
-	 								: "";
-	 						if (porGrupos) {
-	 							if (!grupo.equalsIgnoreCase(grupoAnt)) {
-	 								nFila++;
-	 								grupoAnt = grupo;
-	 							}
-	 						} else {
-	 							nFila++;
-	 						}
-	 						ordenGrupo = letradoGuardia.getOrdenGrupo() != null
-	 								? letradoGuardia.getOrdenGrupo().toString()
-	 								: "";
-	 						idGrupoGuardiaColegiado = letradoGuardia
-	 								.getIdGrupoGuardiaColegiado() != null
-	 								? letradoGuardia.getIdGrupoGuardiaColegiado()
-	 										.toString()
-	 								: "";
+	 			 						// calculo de campos
+	 			 						apellido1 = letradoGuardia.getPersona().getApellido1();
+	 			 						apellido2 = letradoGuardia.getPersona().getApellido2();
+	 			 						nombre = letradoGuardia.getPersona().getNombre();
+	 			 						ncolegiado = letradoGuardia.getPersona().getColegiado()
+	 			 								.getNColegiado();
+	 			 						idPersona = letradoGuardia.getIdPersona().toString();
+	 			 						fechaSuscripcion = letradoGuardia.getInscripcionGuardia().getFechaSuscripcion();
+	 			 						numeroColegiadoBusqueda = "" + i + "_" + ncolegiado;
+	 			 						grupo = letradoGuardia.getNumeroGrupo() != null
+	 			 								? letradoGuardia.getNumeroGrupo().toString()
+	 			 								: "";
+	 			 						if (porGrupos) {
+	 			 							if (!grupo.equalsIgnoreCase(grupoAnt)) {
+	 			 								nFila++;
+	 			 								grupoAnt = grupo;
+	 			 							}
+	 			 						} else {
+	 			 							nFila++;
+	 			 						}
+	 			 						ordenGrupo = letradoGuardia.getOrdenGrupo() != null
+	 			 								? letradoGuardia.getOrdenGrupo().toString()
+	 			 								: "";
+	 			 						idGrupoGuardiaColegiado = letradoGuardia
+	 			 								.getIdGrupoGuardiaColegiado() != null
+	 			 								? letradoGuardia.getIdGrupoGuardiaColegiado()
+	 			 										.toString()
+	 			 								: "";
 	 		%>
 	
 			<!-- REGISTRO  -->

@@ -12,7 +12,7 @@ import com.siga.beans.ScsInscripcionTurnoBean;
 /**
  * Created on Mar 15, 2006
  */
-public class LetradoGuardia implements Cloneable
+public class LetradoInscripcion implements Cloneable
 {
 	// Atributos
 	private Integer idInstitucion;
@@ -24,7 +24,7 @@ public class LetradoGuardia implements Cloneable
 	private String saltoCompensacion; //Valores = S(Salto)/ N(No)/ C(Compensacion)
 	private String idSaltoCompensacion;
 	private CenBajasTemporalesBean bajaTemporal;
-	private Map<String, CenBajasTemporalesBean> bajasTemporales;
+//	private Map<String, CenBajasTemporalesBean> bajasTemporales;
 	private String idSaltoCompensacionGrupo;
 	
 	private CenPersonaBean persona;
@@ -42,7 +42,7 @@ public class LetradoGuardia implements Cloneable
 	 * Este constructor solo deberia usarse cuando no sea necesario guardar posteriormente 
 	 * la inscripcion, por ejemplo como puntero de cola
 	 */
-	public LetradoGuardia(CenPersonaBean perBean, Integer idInstitucion, Integer idTurno, Integer idGuardia,
+	public LetradoInscripcion(CenPersonaBean perBean, Integer idInstitucion, Integer idTurno, Integer idGuardia,
 			String saltoCompensacion)
 	{
 		this.persona = perBean;
@@ -53,8 +53,7 @@ public class LetradoGuardia implements Cloneable
 		this.idGuardia = idGuardia;
 		this.saltoCompensacion = saltoCompensacion;
 	}	
-	public LetradoGuardia(ScsInscripcionGuardiaBean inscripcionGuardia,
-			Map<String, CenBajasTemporalesBean> bajasTemporales) throws ClsExceptions
+	public LetradoInscripcion(ScsInscripcionGuardiaBean inscripcionGuardia) throws ClsExceptions
 	{
 		// inicializando letrado
 		this.persona = inscripcionGuardia.getPersona();
@@ -67,7 +66,7 @@ public class LetradoGuardia implements Cloneable
 		this.inscripcionGuardia = inscripcionGuardia;
 
 		// rellenando bajas temporales
-		this.bajasTemporales = bajasTemporales;
+//		this.bajasTemporales = bajasTemporales;
 
 		// datos de grupo
 		this.numeroGrupo = inscripcionGuardia.getNumeroGrupo();
@@ -75,8 +74,7 @@ public class LetradoGuardia implements Cloneable
 		this.grupo = inscripcionGuardia.getGrupo();
 		this.ordenGrupo = inscripcionGuardia.getOrdenGrupo();
 	}	
-	public LetradoGuardia(ScsInscripcionTurnoBean inscripcionTurno,
-			Map<String, CenBajasTemporalesBean> bajasTemporales) throws ClsExceptions
+	public LetradoInscripcion(ScsInscripcionTurnoBean inscripcionTurno) throws ClsExceptions
 	{
 		// inicializando letrado
 		this.persona = inscripcionTurno.getPersona();
@@ -88,7 +86,7 @@ public class LetradoGuardia implements Cloneable
 		this.inscripcionTurno = inscripcionTurno;
 
 		// rellenando bajas temporales
-		this.bajasTemporales = bajasTemporales;
+//		this.bajasTemporales = bajasTemporales;
 	}	
 	
 
@@ -102,7 +100,7 @@ public class LetradoGuardia implements Cloneable
 	public void setSaltoCompensacion(String valor) {this.saltoCompensacion = valor;}
 	public void setIdSaltoCompensacion(String valor) {this.idSaltoCompensacion = valor;}
 	public void setBajaTemporal(CenBajasTemporalesBean valor) {this.bajaTemporal = valor;}
-	public void setBajasTemporales(Map<String, CenBajasTemporalesBean> valor) {this.bajasTemporales = valor;}
+//	public void setBajasTemporales(Map<String, CenBajasTemporalesBean> valor) {this.bajasTemporales = valor;}
 	public void setIdSaltoCompensacionGrupo(String idSaltoCompensacionGrupo) {this.idSaltoCompensacionGrupo = idSaltoCompensacionGrupo;}
 	
 	public void setPersona(CenPersonaBean valor) {this.persona = valor;}
@@ -125,7 +123,7 @@ public class LetradoGuardia implements Cloneable
 	public String getSaltoCompensacion() {return this.saltoCompensacion;}
 	public String getIdSaltoCompensacion() {return this.idSaltoCompensacion;}
 	public CenBajasTemporalesBean getBajaTemporal() {return this.bajaTemporal;}
-	public Map<String, CenBajasTemporalesBean> getBajasTemporales() {return this.bajasTemporales;}
+//	public Map<String, CenBajasTemporalesBean> getBajasTemporales() {return this.bajasTemporales;}
 	public String getIdSaltoCompensacionGrupo() {return idSaltoCompensacionGrupo;}
 	
 	public CenPersonaBean getPersona() {return this.persona;}
@@ -139,10 +137,10 @@ public class LetradoGuardia implements Cloneable
 	
 	// Otros metodos
 	public Object clone() throws CloneNotSupportedException {
-		LetradoGuardia obj = null;
+		LetradoInscripcion obj = null;
 
 		try {
-			obj = (LetradoGuardia) super.clone();
+			obj = (LetradoInscripcion) super.clone();
 		} catch (CloneNotSupportedException ex) {
 			obj = null;
 		}

@@ -23,7 +23,7 @@ import com.siga.beans.ScsInscripcionGuardiaBean;
 import com.siga.beans.ScsSaltosCompensacionesAdm;
 import com.siga.gratuita.InscripcionGuardia;
 import com.siga.gratuita.form.ColaGuardiasForm;
-import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
+import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
 
 /**
  * @author david.sanchezp
@@ -115,9 +115,9 @@ public class InformeColaGuardias extends MasterReport {
 		
 		
 		//Cargar listado de letrados en cola
-		ArrayList<LetradoGuardia> alLetrados = InscripcionGuardia.getColaGuardia(new Integer(institucion),new Integer(turno), new Integer(guardia), fecha,fecha, usr);
+		ArrayList<LetradoInscripcion> alLetrados = InscripcionGuardia.getColaGuardia(new Integer(institucion),new Integer(turno), new Integer(guardia), fecha,fecha, usr);
 		Vector vLetradosEnCola = new Vector();
-		for(LetradoGuardia letradoGuardia:alLetrados){
+		for(LetradoInscripcion letradoGuardia:alLetrados){
 			Row row = new Row();
 			Hashtable htRow = new Hashtable();
 			

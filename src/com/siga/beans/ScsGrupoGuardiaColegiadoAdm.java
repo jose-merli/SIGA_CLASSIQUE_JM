@@ -13,7 +13,7 @@ import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.util.calendarioSJCS.CalendarioSJCS;
-import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
+import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
 
 /**
  * Implementa las operaciones sobre la base de datos a la tabla SCS_INSCRIPCIONGUARDIA

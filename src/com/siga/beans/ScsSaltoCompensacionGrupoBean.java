@@ -2,7 +2,7 @@ package com.siga.beans;
 
 import java.util.ArrayList;
 
-import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
+import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
 
 /**
  * Implementa las operaciones sobre el bean de la tabla SCS_SALTOCOMPENSACIONGRUPO
@@ -28,7 +28,7 @@ public class ScsSaltoCompensacionGrupoBean extends MasterBean
 	private String	fechaCreacion;
 	private Integer	usuCreacion;
 	
-	private ArrayList<LetradoGuardia> letrados;
+	private ArrayList<LetradoInscripcion> letrados;
 	
 	
 	/** Nombre de Tabla */
@@ -73,7 +73,7 @@ public class ScsSaltoCompensacionGrupoBean extends MasterBean
 	public void setFechaCreacion				(String  valor)	{this.fechaCreacion					= valor;}
 	public void setUsuCreacion					(Integer valor)	{this.usuCreacion					= valor;}
 	
-	public void setLetrados(ArrayList<LetradoGuardia> letrados) {this.letrados = letrados;}
+	public void setLetrados(ArrayList<LetradoInscripcion> letrados) {this.letrados = letrados;}
 	
 	
 	// GETTERS
@@ -95,7 +95,7 @@ public class ScsSaltoCompensacionGrupoBean extends MasterBean
 	public String	getFechaCreacion				() {return fechaCreacion;}
 	public Integer	getUsuCreacion					() {return usuCreacion;}
 	
-	public ArrayList<LetradoGuardia> getLetrados() {return letrados;}
+	public ArrayList<LetradoInscripcion> getLetrados() {return letrados;}
 	
 	
 	public String toString() {

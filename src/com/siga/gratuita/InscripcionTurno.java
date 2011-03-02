@@ -28,13 +28,15 @@ import com.siga.beans.ScsInscripcionGuardiaAdm;
 import com.siga.beans.ScsInscripcionGuardiaBean;
 import com.siga.beans.ScsInscripcionTurnoAdm;
 import com.siga.beans.ScsInscripcionTurnoBean;
+import com.siga.beans.ScsOrdenacionColasAdm;
+import com.siga.beans.ScsOrdenacionColasBean;
 import com.siga.beans.ScsRetencionesIRPFAdm;
 import com.siga.beans.ScsSaltosCompensacionesAdm;
 import com.siga.beans.ScsTurnoAdm;
 import com.siga.beans.ScsTurnoBean;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.InscripcionTGForm;
-import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
+import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
 
 public class InscripcionTurno
 {
@@ -161,7 +163,7 @@ public class InscripcionTurno
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public static List<LetradoGuardia> getColaTurno(Integer idInstitucion,
+	public static List<LetradoInscripcion> getColaTurno(Integer idInstitucion,
 														 Integer idTurno,
 														 String fecha,
 														 boolean quitarSaltos,
@@ -170,7 +172,7 @@ public class InscripcionTurno
 	{
 		ScsTurnoAdm turadm = new ScsTurnoAdm(usr);
 		Hashtable hashTurno = new Hashtable();
-		ArrayList<LetradoGuardia> colaLetrados = new ArrayList<LetradoGuardia>();
+		ArrayList<LetradoInscripcion> colaLetrados = new ArrayList<LetradoInscripcion>();
 		ScsInscripcionTurnoAdm insadm = new ScsInscripcionTurnoAdm(usr);
 		ScsSaltosCompensacionesAdm saladm = new ScsSaltosCompensacionesAdm(usr);
 		CenBajasTemporalesAdm bajasAdm = new CenBajasTemporalesAdm(usr);
@@ -189,9 +191,10 @@ public class InscripcionTurno
 		
 		
 		Long idPersonaUltimo = beanTurno.getIdPersonaUltimo();
-		
+		String fechaUltimo = beanTurno.getFechaSolicitudUltimo();
+		ScsOrdenacionColasAdm ordenacionColasAdm = new ScsOrdenacionColasAdm(usr);
 		// obteniendo ordenacion de la guardia
-		String orden = InscripcionGuardia.getOrderBy(idOrdenacionColas.toString(), usr);
+		String orden = ordenacionColasAdm.getOrderBy(idOrdenacionColas.toString(), usr);
 		
 		
 //		obteniendo lista de letrados (ordenada)
@@ -201,13 +204,12 @@ public class InscripcionTurno
 		
 		ScsInscripcionTurnoBean inscripcionTurno = null;
 		boolean foundUltimo = false;
-		Vector<LetradoGuardia> colaAuxiliar = new Vector<LetradoGuardia>();
-		LetradoGuardia letradoTurno;
+		Vector<LetradoInscripcion> colaAuxiliar = new Vector<LetradoInscripcion>();
+		LetradoInscripcion letradoTurno;
 		if(idPersonaUltimo!=null){
 			for (int i = 0; i < listaLetrados.size(); i++) {
 				inscripcionTurno = (ScsInscripcionTurnoBean) listaLetrados.get(i);
-				letradoTurno = new LetradoGuardia(inscripcionTurno, bajasAdm.getDiasBajaTemporal(inscripcionTurno
-						.getIdPersona(), inscripcionTurno.getIdInstitucion()));
+				letradoTurno = new LetradoInscripcion(inscripcionTurno);
 				if(foundUltimo){
 					//El primero que se añade es el ultimo. Depues habra que moverlo
 					colaLetrados.add(letradoTurno);
@@ -225,18 +227,17 @@ public class InscripcionTurno
 //			si el idpersona ultimo es nullo con el orden que traian
 			for (int i = 0; i < listaLetrados.size(); i++) {
 				inscripcionTurno = (ScsInscripcionTurnoBean) listaLetrados.get(i);
-				letradoTurno = new LetradoGuardia(inscripcionTurno, bajasAdm.getDiasBajaTemporal(inscripcionTurno
-						.getIdPersona(), inscripcionTurno.getIdInstitucion()));
+				letradoTurno = new LetradoInscripcion(inscripcionTurno);
 				colaLetrados.add(letradoTurno);
 			}
 		}
 		
 		// quitando letrados de la cola si tienen saltos
 		if (quitarSaltos) {
-			HashMap<Long, ArrayList<LetradoGuardia>> personasConSaltos = saladm.getSaltos(idInstitucion, idTurno, null);
-			ArrayList<LetradoGuardia> alSaltos;
+			HashMap<Long, ArrayList<LetradoInscripcion>> personasConSaltos = saladm.getSaltos(idInstitucion, idTurno, null);
+			ArrayList<LetradoInscripcion> alSaltos;
 			for (Iterator iter = colaLetrados.iterator(); iter.hasNext(); ) {
-				letradoTurno = (LetradoGuardia) iter.next();
+				letradoTurno = (LetradoInscripcion) iter.next();
 				if ( (alSaltos = personasConSaltos.get(letradoTurno.getIdPersona())) != null )
 					iter.remove();
 			}
@@ -951,19 +952,24 @@ public class InscripcionTurno
 				
 					
 				if (idPersonaUltimoTurno!=null &&  idPersonaUltimoTurno.equals(idPersona)) {
-					List<LetradoGuardia> colaLetrados =InscripcionTurno.getColaTurno(idInstitucion,idTurno,"sysdate",false,usr);
+					List<LetradoInscripcion> colaLetrados =InscripcionTurno.getColaTurno(idInstitucion,idTurno,"sysdate",false,usr);
 					if (colaLetrados.get(0) != null && !colaLetrados.isEmpty()) {
 						int tamanyoCola = colaLetrados.size();
 						//Long ultimoDeLaCola = ((LetradoGuardia) colaLetrados.get(tamanyoCola-1)).getIdPersona();
 					//el letrado a dar de baja es el primero en la cola:
 					//asi que hay que poner al anterior como ultimo en la cola
 					Long penultimoDeLaCola;
-					if (tamanyoCola == 1)
+					String fechaSusc_penultimo;
+					if (tamanyoCola == 1){
 						penultimoDeLaCola = null;
-					else
-						penultimoDeLaCola = ((LetradoGuardia) colaLetrados.get(tamanyoCola-2)).getIdPersona();
-					
-					cambiarUltimoCola (idInstitucion, idTurno, penultimoDeLaCola, usr);
+						fechaSusc_penultimo = null;
+					}
+					else{
+						penultimoDeLaCola = ((LetradoInscripcion) colaLetrados.get(tamanyoCola-2)).getIdPersona();
+						fechaSusc_penultimo = ((LetradoInscripcion) colaLetrados.get(tamanyoCola-2)).getInscripcionTurno().getFechaSolicitud();
+					}
+					ScsTurnoAdm turnoAdm = new ScsTurnoAdm(usr);
+					turnoAdm.cambiarUltimoCola(idInstitucion, idTurno, penultimoDeLaCola, fechaSusc_penultimo);
 				}
 			}
 			}
@@ -1088,30 +1094,8 @@ public class InscripcionTurno
 	}
 }
 	
-	/**
-	 * Cambia el ultimo letrado de la cola del turno indicado
-	 * por el nuevo que se ha solicitado
-	 * 
-	 * @TODO Este metodo y tambien las comprobaciones de cola que se hacen desde esta misma clase
-	 * podrian ir en una nueva clase de logica de negocio "ColaTurno" 
-	 */
-	public void cambiarUltimoCola (Integer idInstitucion,
-								   Integer idTurno,
-								   Long idPersona,
-								   UsrBean usr)
-		throws ClsExceptions
-	{
-		String sql = 
-			" update "+ScsTurnoBean.T_NOMBRETABLA+" " +
-			"    set "+ScsTurnoBean.C_IDPERSONAULTIMO+" = "+(idPersona==null?"null":idPersona)+", " +
-			"        "+ScsTurnoBean.C_FECHAMODIFICACION+" = sysdate, " +
-			"        "+ScsTurnoBean.C_USUMODIFICACION+" = "+usr.getUserName()+" " +
-			"  where "+ScsTurnoBean.C_IDINSTITUCION+" = "+idInstitucion+" " +
-			"    and "+ScsTurnoBean.C_IDTURNO+" = "+idTurno+" ";
-		
-		if (! new ScsTurnoAdm(usr).updateSQL(sql)) {
-			throw new ClsExceptions("Error al cambiar ultimo letrado de cola de turno");
-		}
-	} //cambiarUltimoCola()
+	
+	
+	
 	
 }

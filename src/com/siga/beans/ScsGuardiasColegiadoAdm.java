@@ -3,7 +3,6 @@ package com.siga.beans;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -14,7 +13,6 @@ import java.util.TreeMap;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.transaction.UserTransaction;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -27,11 +25,9 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.administracion.form.PCAJGListadoTablasMaestrasForm;
-import com.siga.general.EjecucionPLs;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.util.calendarioSJCS.CalendarioSJCS;
-import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
+import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
 import com.siga.gratuita.vos.VolantesExpressVo;
 
 /**
@@ -1075,20 +1071,16 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		String mensaje = "OK";
 				 
 		//Hashtables
-		Hashtable temporalHash = new Hashtable();
 		Hashtable clavesPermuta = new Hashtable();
 		Hashtable clavesCabecera = new Hashtable();
 		Hashtable clavesGuardiaColegiado = new Hashtable();
-		Hashtable saltosCompens = new Hashtable();
 		
 		// Administradores
-		ScsCabeceraGuardiasAdm admCabeceraGuardias = new ScsCabeceraGuardiasAdm(this.usrbean);
+
 		ScsPermutaGuardiasAdm admPermutas = new ScsPermutaGuardiasAdm(this.usrbean);
 		ScsCabeceraGuardiasAdm cabeceraGuardiasAdm = new ScsCabeceraGuardiasAdm(this.usrbean);
-		ScsGuardiasColegiadoAdm guardiasColegiadoAdm = new ScsGuardiasColegiadoAdm(this.usrbean);
 		ScsSaltosCompensacionesAdm saltosCompAdm = new ScsSaltosCompensacionesAdm(this.usrbean);
-		ScsAsistenciasAdm asistenciaAdm = new ScsAsistenciasAdm(this.usrbean);
-		BusquedaClientesFiltrosAdm admFiltros = new BusquedaClientesFiltrosAdm(this.usrbean);
+
 
 		
 		// vectores
@@ -1296,14 +1288,17 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		String motivo = UtilidadesString.getMensajeIdioma(usr,"gratuita.literal.sustitucionLetradoGuardia");
 		
 		try{
-			admFiltros.crearSalto(idInstitucion,idTurno,idGuardia,idPersonaEntrante,salto, motivo);
+			if (salto != null&&(salto.equals("on") || salto.equals("1"))) 
+				saltosCompAdm.crearSaltoCompensacion(idInstitucion,idTurno,idGuardia,idPersonaEntrante, motivo,ClsConstants.SALTOS);
 		}
 		catch (Exception e){
 			throw new ClsExceptions(e.getMessage());
 		}
 		
 		try{
-			admFiltros.crearCompensacion(idInstitucion,idTurno,idGuardia,idPersonaSaliente,compensacion, motivo);
+			
+			if (compensacion != null&&(compensacion.equals("on") || compensacion.equals("1"))) 
+				saltosCompAdm.crearSaltoCompensacion(idInstitucion,idTurno,idGuardia,idPersonaSaliente, motivo,ClsConstants.COMPENSACIONES);
 		}
 		catch (Exception e){
 			throw new ClsExceptions(e.getMessage());
@@ -1784,7 +1779,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		ArrayList arrayPeriodoSeleccionado = (ArrayList) arrayPeriodosSJCS.get(indexPeriodo);
 		
 		// obteniendo el letrado
-		LetradoGuardia letrado = new LetradoGuardia(perAdm.getPersonaPorId(idPersona.toString()), new Integer(
+		LetradoInscripcion letrado = new LetradoInscripcion(perAdm.getPersonaPorId(idPersona.toString()), new Integer(
 				idInstitucion), new Integer(idTurno), new Integer(idGuardia), null);
 
 		Integer posicionLetradoGuardia = cabeceraAdm.getMaximaPosicionCabecera(letrado.getIdInstitucion(), letrado

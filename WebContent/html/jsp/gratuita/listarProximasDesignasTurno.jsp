@@ -49,7 +49,7 @@
 
 %>
 
-<%@page import="com.siga.gratuita.util.calendarioSJCS.LetradoGuardia"%>
+<%@page import="com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.ArrayList"%>
 <html>

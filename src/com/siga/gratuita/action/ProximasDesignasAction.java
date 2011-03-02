@@ -27,7 +27,7 @@ import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.InscripcionTurno;
 import com.siga.gratuita.form.InscripcionTGForm;
-import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
+import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
 
 /**
  * @author ruben.fernandez
@@ -119,12 +119,12 @@ public class ProximasDesignasAction extends MasterAction {
 					
 					insTurnoBean.setTurno(turnoAdm.getTurnoInscripcion(insTurnoBean.getIdInstitucion(), insTurnoBean.getIdTurno()));
 					
-					List<LetradoGuardia> colaTurnoList = InscripcionTurno.getColaTurno(insTurnoBean.getIdInstitucion(), insTurnoBean.getIdTurno(), "sysdate", false, usr);
+					List<LetradoInscripcion> colaTurnoList = InscripcionTurno.getColaTurno(insTurnoBean.getIdInstitucion(), insTurnoBean.getIdTurno(), "sysdate", false, usr);
 					boolean foundIt = false;
 					int i=0;
 					while (!foundIt && i<colaTurnoList.size()) {
 						
-						LetradoGuardia letradoTurno = colaTurnoList.get(i);
+						LetradoInscripcion letradoTurno = colaTurnoList.get(i);
 						
 						
 						if(letradoTurno.getIdPersona().toString().equals(idPersona)){
@@ -184,12 +184,12 @@ public class ProximasDesignasAction extends MasterAction {
 		
 		for(ScsInscripcionTurnoBean insTurnoBean:inscripcionTurnoList){
 			insTurnoBean.setTurno(turnoAdm.getTurnoInscripcion(insTurnoBean.getIdInstitucion(), insTurnoBean.getIdTurno()));
-			List<LetradoGuardia> colaTurnoList = InscripcionTurno.getColaTurno(insTurnoBean.getIdInstitucion(), insTurnoBean.getIdTurno(), "sysdate", false, usr);
+			List<LetradoInscripcion> colaTurnoList = InscripcionTurno.getColaTurno(insTurnoBean.getIdInstitucion(), insTurnoBean.getIdTurno(), "sysdate", false, usr);
 			boolean foundIt = false;
 			int i=0;
 			while (!foundIt && i<colaTurnoList.size()) {
 				
-				LetradoGuardia letradoTurno = colaTurnoList.get(i);
+				LetradoInscripcion letradoTurno = colaTurnoList.get(i);
 				
 				
 				if(letradoTurno.getIdPersona().toString().equals(idPersona)){

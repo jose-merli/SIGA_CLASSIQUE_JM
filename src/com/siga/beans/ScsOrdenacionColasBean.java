@@ -30,7 +30,7 @@ public class ScsOrdenacionColasBean extends MasterBean{
 	static public final String	C_NUMEROCOLEGIADO = 		"NUMEROCOLEGIADO";
 	static public final String	C_ANTIGUEDADCOLA = 			"ANTIGUEDADCOLA";
 	
-	
+	static public final String	AUX_ALFABETICOAPELLIDOS_NOMBRE = 	"NOMBRE";
 	/*Metodos SET*/
 	
 	/**

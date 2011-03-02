@@ -20,7 +20,7 @@
 <%@ page import="com.siga.Utilidades.*"%>
 
 <!-- JSP -->
-<% 
+<%
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	
@@ -34,7 +34,7 @@
 %>	
 
 
-<%@page import="com.siga.gratuita.util.calendarioSJCS.LetradoGuardia"%>
+<%@page import="com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion"%>
 
 <!-- HEAD -->
 <html>
@@ -167,7 +167,11 @@
 			}
 		 	
 			var idPersona  = document.getElementById('idPersona_' + fila).value;
+			var fechaSuscripcion  = document.getElementById('fechaSuscripcion_' + fila).value;
+			
+			
 			document.forms[0].idPersona.value = idPersona;
+			document.forms[0].fechaSuscripcion.value = fechaSuscripcion;
 			document.forms[0].modo.value = "fijarUltimoLetrado";
 			document.forms[0].target = "submitArea";
 			document.forms[0].submit();
@@ -231,6 +235,8 @@
 			<input type="hidden" name="tablaDatosDinamicosD">
 			<input type="hidden" name="actionModal" value="">
 			<input type="hidden" name="idPersona" value="">
+			<input type="hidden" name="fechaSuscripcion" value="">
+			
 		</html:form>	
 		
  	  
@@ -309,29 +315,32 @@
 			<!-- INICIO: ZONA DE REGISTROS -->
 			<!-- Aqui se iteran los diferentes registros de la lista -->
 		
-<%	ArrayList letradosColaGuardiaList = (ArrayList) request.getAttribute("letradosColaTurnoList");
-         
-        
-	if (letradosColaGuardiaList==null || letradosColaGuardiaList.size()==0) { %>			
+<%
+			ArrayList letradosColaGuardiaList = (ArrayList) request.getAttribute("letradosColaTurnoList");
+		         
+		        
+			if (letradosColaGuardiaList==null || letradosColaGuardiaList.size()==0) {
+		%>			
 	 		<tr>
 			  <td colspan="4" height="265px">
 	   		 	<p class="titulitos" style="text-align:center" ><siga:Idioma key="messages.noRecordFound"/></p>
 			  </td>
 	 		</tr>	 		
-<%	} else { 
-		// recorro el resultado
-		for (int i=0;i<letradosColaGuardiaList.size();i++) {
-			LetradoGuardia letradoGuardia = (LetradoGuardia) letradosColaGuardiaList.get(i);
-			
-			// calculo de campos
-			String apellido1 = letradoGuardia.getPersona().getApellido1();
-			String apellido2 =letradoGuardia.getPersona().getApellido2();
-			String nombre = letradoGuardia.getPersona().getNombre();
-			String ncolegiado = letradoGuardia.getPersona().getColegiado().getNColegiado();
+<%
+	 			} else { 
+	 				// recorro el resultado
+	 				for (int i=0;i<letradosColaGuardiaList.size();i++) {
+	 			LetradoInscripcion letradoGuardia = (LetradoInscripcion) letradosColaGuardiaList.get(i);
+	 			
+	 			// calculo de campos
+	 			String apellido1 = letradoGuardia.getPersona().getApellido1();
+	 			String apellido2 =letradoGuardia.getPersona().getApellido2();
+	 			String nombre = letradoGuardia.getPersona().getNombre();
+	 			String ncolegiado = letradoGuardia.getPersona().getColegiado().getNColegiado();
 
-			String idPersona = letradoGuardia.getIdPersona().toString();
-			String numeroColegiadoBusqueda = "" + i + "_" + ncolegiado;
-%>
+	 			String idPersona = letradoGuardia.getIdPersona().toString();
+	 			String numeroColegiadoBusqueda = "" + i + "_" + ncolegiado;
+	 		%>
 			<!-- REGISTRO  -->
 			<tr class="<%=((i + 1) % 2 == 0
 								? "filaTablaPar"
@@ -339,6 +348,7 @@
 				<td>
 					<input name="numeroColegiadoBusqueda" type="hidden" class="box" size="10" value="<%=numeroColegiadoBusqueda%>" >
 					<input name="idPersona_<%=i+1%>" type="hidden" class="box" size="10" value="<%=idPersona%>" >
+					<input name="fechaSuscripcion_<%=i+1%>" type="hidden" class="box" size="10" value="<%=letradoGuardia.getInscripcionTurno().getFechaSolicitud()%>" >
 					<%=ncolegiado%>
 				</td>
 				<td>

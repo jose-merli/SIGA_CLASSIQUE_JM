@@ -14,7 +14,7 @@ import com.atos.utils.UsrBean;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.InscripcionGuardia;
 import com.siga.gratuita.InscripcionTurno;
-import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
+import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
 
 public class BusquedaClientesFiltrosAdm {
 	
@@ -78,10 +78,10 @@ public class BusquedaClientesFiltrosAdm {
 	 * Los ordena por cola
 	 */
 	public Vector buscaLetradosColaGuardia(String idInstitucion, String idTurno, String idGuardia, String fecha, int difRow) throws ClsExceptions{
-		List<LetradoGuardia> letradosColaGuardiaList = InscripcionGuardia.getColaGuardia(Integer.valueOf(idInstitucion), Integer.valueOf(idTurno),Integer.valueOf(idGuardia), fecha, fecha, usrbean);
+		List<LetradoInscripcion> letradosColaGuardiaList = InscripcionGuardia.getColaGuardia(Integer.valueOf(idInstitucion), Integer.valueOf(idTurno),Integer.valueOf(idGuardia), fecha, fecha, usrbean);
 		Vector letradosColaGuardiaVector = new Vector();
 		
-		for(LetradoGuardia letradoGuardia:letradosColaGuardiaList){
+		for(LetradoInscripcion letradoGuardia:letradosColaGuardiaList){
 			Row row = new Row();
 			Hashtable htRow = new Hashtable();
 			htRow.put("N", difRow);
@@ -166,11 +166,11 @@ public class BusquedaClientesFiltrosAdm {
 	public Vector buscaLetradosColaTurno(String idInstitucion, String idTurno, String fecha, int idFiltro) throws ClsExceptions
 	{
 		int difRow = 0;
-		List<LetradoGuardia> letradosColaTurnoList = InscripcionTurno.getColaTurno(Integer.valueOf(idInstitucion),
+		List<LetradoInscripcion> letradosColaTurnoList = InscripcionTurno.getColaTurno(Integer.valueOf(idInstitucion),
 				Integer.valueOf(idTurno), fecha, false, usrbean);
 		Vector letradosColaTurnoVector = new Vector();
 
-		for (LetradoGuardia letradoTurno : letradosColaTurnoList) {
+		for (LetradoInscripcion letradoTurno : letradosColaTurnoList) {
 			Row row = new Row();
 			Hashtable htRow = new Hashtable();
 			htRow.put("N", difRow);
@@ -534,99 +534,13 @@ public class BusquedaClientesFiltrosAdm {
 	//
 	// Otros Metodos
 	//
-	public synchronized LetradoGuardia gestionaDesignacionesAutomaticas(String idInstitucion,
-			String idTurno,
-			String fecha) throws ClsExceptions, SIGAException
-	{
-
-		String saltoocompensacion = null;
-		String idSaltosTurno;
-		ScsSaltosCompensacionesAdm saltocompAdm = new ScsSaltosCompensacionesAdm(usrbean);
-		try {
-			// busco las compensaciones
-			Vector<LetradoGuardia> letradosCompensacionesVector = saltocompAdm.getLetradosSaltosCompensacionesTurno(
-					idInstitucion, idTurno, fecha);
-
-			if (letradosCompensacionesVector != null && letradosCompensacionesVector.size() > 0) {
-				for (LetradoGuardia letradoTurno : letradosCompensacionesVector) {
-					// letradoGuardia = (Row)compensacionesSaltos.get(i);
-					saltoocompensacion = letradoTurno.getSaltoCompensacion();
-
-					if (ClsConstants.COMPENSACIONES.equals(saltoocompensacion)) {
-						idSaltosTurno = letradoTurno.getIdSaltoCompensacion();
-
-						CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(usrbean);
-						// comprobamos que el confirmador no esta de vacaciones la fecha que del solicitante
-						Map<String, CenBajasTemporalesBean> mBajasTemporales = bajasTemporalescioneAdm
-								.getDiasBajaTemporal(letradoTurno.getIdPersona(), new Integer(idInstitucion));
-						if (mBajasTemporales.containsKey(fecha)) {
-							ScsSaltosCompensacionesBean salto = new ScsSaltosCompensacionesBean(new Integer(
-									idInstitucion), new Integer(idTurno), letradoTurno.getIdPersona(),
-									ClsConstants.SALTOS, "sysdate");
-							ScsSaltosCompensacionesAdm scsSaltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(
-									this.usrbean);
-							CenBajasTemporalesBean bajaTemporal = (CenBajasTemporalesBean) mBajasTemporales.get(fecha);
-							// bajaTemporal.setDescripcion(bajaTemporal.getDescripcion()+" al crear designa para el "+fecha+" ");
-							scsSaltosCompensacionesAdm.insertarSaltoPorBajaTemporal(bajaTemporal, salto);
-							continue;
-
-						}
-
-						updateCompensacion(idInstitucion, idTurno, idSaltosTurno);
-
-						return letradoTurno;
-					}
-				}
-			}
-
-			List<LetradoGuardia> colaLetradosTurnoList = InscripcionTurno.getColaTurno(Integer.valueOf(idInstitucion),
-					Integer.valueOf(idTurno), fecha, false, usrbean);
-			if (colaLetradosTurnoList != null && colaLetradosTurnoList.size() > 0) {
-				int i = 0;
-				for (LetradoGuardia letradoTurno : colaLetradosTurnoList) {
-					Long idPersona = letradoTurno.getIdPersona();
-
-					CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(usrbean);
-					// comprobamos que el letrado no esta de vacaciones
-					Map<String, CenBajasTemporalesBean> mBajasTemporales = bajasTemporalescioneAdm.getDiasBajaTemporal(
-							new Long(idPersona), new Integer(idInstitucion));
-					if (mBajasTemporales.containsKey(fecha)) {
-						ScsSaltosCompensacionesBean salto = new ScsSaltosCompensacionesBean(new Integer(idInstitucion),
-								new Integer(idTurno), letradoTurno.getIdPersona(), ClsConstants.SALTOS, "sysdate");
-						ScsSaltosCompensacionesAdm scsSaltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(
-								this.usrbean);
-						CenBajasTemporalesBean bajaTemporal = (CenBajasTemporalesBean) mBajasTemporales.get(fecha);
-						// bajaTemporal.setDescripcion(bajaTemporal.getDescripcion()+" al crear designa para el "+fecha+" ");
-						scsSaltosCompensacionesAdm.insertarSaltoPorBajaTemporal(bajaTemporal, salto);
-						continue;
-					}
-
-					idSaltosTurno = getIdSaltoTurno(letradosCompensacionesVector, idPersona.toString());
-					// se buscan los saltos
-					if (idSaltosTurno != null) {
-						updateCompensacion(idInstitucion, idTurno, idSaltosTurno);
-						continue;
-					} else {
-						return letradoTurno;
-					}
-
-				}
-			}
-
-			throw new SIGAException("messages.designa.colaVacia");
-
-		} catch (ClsExceptions ex) {
-			throw ex;
-		}
-
-	}	
 	
 	private String getIdSaltoTurno(Vector compensacionesSaltos, String idPersona)
 	{
 		String idSaltoTurno = null;
 		if (compensacionesSaltos != null) {
 			for (int i = 0; i < compensacionesSaltos.size(); i++) {
-				LetradoGuardia letradoTurno = (LetradoGuardia) compensacionesSaltos.get(i);
+				LetradoInscripcion letradoTurno = (LetradoInscripcion) compensacionesSaltos.get(i);
 				Long idPersonaSC = letradoTurno.getIdPersona();
 				String salto = letradoTurno.getSaltoCompensacion();
 				if (idPersona.toString().equals(idPersonaSC.toString())) {
@@ -828,217 +742,11 @@ public class BusquedaClientesFiltrosAdm {
 		return result;
 	}
 
-	/**
-	 * Actualiza el valor de "manual" en la designación según los parámetros obtenidos en la busqueda SJCS
-	 * 
-	 * @param idInstitucion
-	 * @param idTurno
-	 * @param idGuardia
-	 * @param anio
-	 * @param numero
-	 * @param flagSalto
-	 * @param flagCompensacion
-	 * @throws ClsExceptions
-	 * @throws SIGAException
-	 */
-	public void actualizaManualDesigna(String idInstitucion,
-			String idTurno,
-			String idPersona,
-			String anio,
-			String numero,
-			String flagSalto,
-			String flagCompensacion) throws ClsExceptions, SIGAException
-	{
-		if (flagSalto != null && flagCompensacion != null && flagSalto.equalsIgnoreCase("O")
-				&& (flagCompensacion.equalsIgnoreCase("C") || flagCompensacion.equalsIgnoreCase("N"))) {
-			ScsDesignasLetradoAdm adm = new ScsDesignasLetradoAdm(this.usrbean);
-			Hashtable hash = new Hashtable();
-			hash.put(ScsDesignasLetradoBean.C_IDINSTITUCION, idInstitucion);
-			hash.put(ScsDesignasLetradoBean.C_IDTURNO, idTurno);
-			hash.put(ScsDesignasLetradoBean.C_ANIO, anio);
-			hash.put(ScsDesignasLetradoBean.C_NUMERO, numero);
-			hash.put(ScsDesignasLetradoBean.C_IDPERSONA, idPersona);
-			Vector v = adm.select(hash);
-			if (v != null && v.size() > 0) {
-				ScsDesignasLetradoBean bean = (ScsDesignasLetradoBean) v.get(0);
-				bean.setManual(new Integer(ClsConstants.DB_FALSE));
-				if (!adm.updateDirect(bean)) {
-					throw new ClsExceptions("Error actualizando campo 'manual' en designa: " + adm.getError());
-				}
-			}
-		}
-	}
-
-	/**
-	 * Crea salto según los parámetros obtenidos en la busqueda SJCS
-	 * 
-	 * @param idInstitucion
-	 * @param idTurno
-	 * @param idGuardia
-	 * @param idPersona
-	 * @param checkSalto
-	 * @param motivo
-	 * @throws ClsExceptions
-	 * @throws SIGAException
-	 */
-	public void crearSalto(String idInstitucion,
-			String idTurno,
-			String idGuardia,
-			String idPersona,
-			String checkSalto,
-			String motivo) throws ClsExceptions, SIGAException
-	{
-
-		if (checkSalto != null) {
-			if (checkSalto.equals("on") || checkSalto.equals("1")) {
-				// cuando hay que insertar salto
-				ScsSaltosCompensacionesAdm adm = new ScsSaltosCompensacionesAdm(this.usrbean);
-				Hashtable hash = new Hashtable();
-				hash.put(ScsSaltosCompensacionesBean.C_IDINSTITUCION, idInstitucion);
-				hash.put(ScsSaltosCompensacionesBean.C_IDTURNO, idTurno);
-				if (idGuardia != null) {
-					hash.put(ScsSaltosCompensacionesBean.C_IDGUARDIA, idGuardia);
-				}
-				hash.put(ScsSaltosCompensacionesBean.C_MOTIVOS, motivo);
-				hash.put(ScsSaltosCompensacionesBean.C_IDPERSONA, idPersona);
-				hash.put(ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION, ClsConstants.SALTOS);
-				hash
-						.put(ScsSaltosCompensacionesBean.C_IDSALTOSTURNO, adm.getNuevoIdSaltosTurno(idInstitucion,
-								idTurno));
-				hash.put(ScsSaltosCompensacionesBean.C_FECHA, "SYSDATE");
-				if (!adm.insert(hash)) {
-					throw new ClsExceptions("Error insertando salto: " + adm.getError());
-				}
-			}
-		}
-	}
-
-	/**
-	 * Crea compensación según los parámetros obtenidos en la busqueda SJCS
-	 * 
-	 * @param idInstitucion
-	 * @param idTurno
-	 * @param idGuardia
-	 * @param idPersona
-	 * @param checkCompensacion
-	 * @param motivo
-	 * @throws ClsExceptions
-	 * @throws SIGAException
-	 */
-	public void crearCompensacion(String idInstitucion,
-			String idTurno,
-			String idGuardia,
-			String idPersona,
-			String checkCompensacion,
-			String motivo) throws ClsExceptions, SIGAException
-	{
-		if (checkCompensacion != null) {
-			if (checkCompensacion.equals("on") || checkCompensacion.equals("1")) {
-				// cuando hay que insertar salto
-				ScsSaltosCompensacionesAdm adm = new ScsSaltosCompensacionesAdm(this.usrbean);
-				Hashtable hash = new Hashtable();
-				hash.put(ScsSaltosCompensacionesBean.C_IDINSTITUCION, idInstitucion);
-				hash.put(ScsSaltosCompensacionesBean.C_IDTURNO, idTurno);
-				if (idGuardia != null) {
-					hash.put(ScsSaltosCompensacionesBean.C_IDGUARDIA, idGuardia);
-				}
-				hash.put(ScsSaltosCompensacionesBean.C_MOTIVOS, motivo);
-				hash.put(ScsSaltosCompensacionesBean.C_IDPERSONA, idPersona);
-				hash.put(ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION, ClsConstants.COMPENSACIONES);
-				hash.put(ScsSaltosCompensacionesBean.C_IDSALTOSTURNO, adm.getNuevoIdSaltosTurno(idInstitucion, idTurno));
-				hash.put(ScsSaltosCompensacionesBean.C_FECHA, "SYSDATE");
-				if (!adm.insert(hash))
-					throw new ClsExceptions("Error insertando compensacion: " + adm.getError());
-			}
-		}
-	}	
 	
-	/**
-	 * Tratamiento del último del turno según los parámetros obtenidos en la busqueda SJCS
-	 * 
-	 * @param idInstitucion
-	 * @param idTurno
-	 * @param idGuardia
-	 * @param flagSalto
-	 * @param flagCompensacion
-	 * @throws ClsExceptions
-	 * @throws SIGAException
-	 */
-	public void tratamientoUltimo(String idInstitucion,
-			String idTurno,
-			String idPersona,
-			String flagSalto,
-			String flagCompensacion) throws ClsExceptions, SIGAException
-	{
 
-		if (flagSalto != null && (flagSalto.equals("") || flagSalto.trim().equalsIgnoreCase("0"))) {
-
-			ScsSaltosCompensacionesAdm adm = new ScsSaltosCompensacionesAdm(this.usrbean);
-
-			if (flagCompensacion == null) {
-				// no hace nada
-
-			} else
-
-			if (flagCompensacion.equalsIgnoreCase("C")) {
-
-				// Cumplimento la compensacion más antigua sin compensar para el turno y letrado
-				String consulta = "where " + ScsSaltosCompensacionesBean.C_IDINSTITUCION + "=" + idInstitucion
-						+ " and " + ScsSaltosCompensacionesBean.C_IDTURNO + "=" + idTurno + " and "
-						+ ScsSaltosCompensacionesBean.C_IDPERSONA + "=" + idPersona + " and "
-						+ ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION + "='" + ClsConstants.COMPENSACIONES + "'"
-						+ " and " + ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO + " IS NULL ";
-
-				Vector v = adm.select(consulta);
-				if (v != null && v.size() > 0) {
-					ScsSaltosCompensacionesBean bean = (ScsSaltosCompensacionesBean) v.get(0);
-					bean.setFechaCumplimiento("SYSDATE");
-					if (!adm.update(bean)) {
-						throw new ClsExceptions("Error cumplimentando compensacion: " + adm.getError());
-					}
-				}
-
-			} else if (flagCompensacion.equalsIgnoreCase("N") || flagCompensacion.equalsIgnoreCase("")) {
-
-				// Le pongo el ultimo del turno
-				ScsTurnoAdm admT = new ScsTurnoAdm(this.usrbean);
-				Hashtable hash = new Hashtable();
-				hash.put(ScsTurnoBean.C_IDINSTITUCION, idInstitucion);
-				hash.put(ScsTurnoBean.C_IDTURNO, idTurno);
-
-				Vector v = admT.select(hash);
-				if (v != null && v.size() > 0) {
-					ScsTurnoBean bean = (ScsTurnoBean) v.get(0);
-					bean.setIdPersonaUltimo(new Long(idPersona));
-
-					if (!admT.updateDirect(bean)) {
-
-						throw new ClsExceptions("Error actualizando campo 'ultimo' en turno: " + admT.getError());
-					}
-
-				}
-			} else if (flagCompensacion.equalsIgnoreCase("S")) {
-
-				// Pongo la fecha de cumplimento al salto mas antiguo sin cumplimentar para elturno y guardia
-				String consulta = " where " + ScsSaltosCompensacionesBean.C_IDINSTITUCION + "=" + idInstitucion
-						+ " and " + ScsSaltosCompensacionesBean.C_IDTURNO + "=" + idTurno + " and "
-						+ ScsSaltosCompensacionesBean.C_IDPERSONA + "=" + idPersona + " and "
-						+ ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION + "='" + ClsConstants.SALTOS + "'" + " and "
-						+ ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO + " IS NULL ";// +
-				// " order by " + ScsSaltosCompensacionesBean.C_FECHA + " desc ";
-
-				Vector v = adm.select(consulta);
-				if (v != null && v.size() > 0) {
-					ScsSaltosCompensacionesBean bean = (ScsSaltosCompensacionesBean) v.get(0);
-					bean.setFechaCumplimiento("sysdate");
-					if (!adm.updateDirect(bean)) {
-						throw new ClsExceptions("Error cumplimentando salto: " + adm.getError());
-					}
-				}
-			}
-		}
-
-	}
+	
+	
+	
 	
 	
 	//

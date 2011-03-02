@@ -82,7 +82,7 @@ import com.siga.general.SIGAException;
 import com.siga.gratuita.InscripcionGuardia;
 import com.siga.gratuita.form.BusquedaCAJG_EJGForm;
 import com.siga.gratuita.form.DefinirEJGForm;
-import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
+import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
 import com.siga.informes.InformeDefinirEJG;
 
 
@@ -908,13 +908,16 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
 			//UtilidadesString.getMensajeIdioma(usr,origenSJCS);
 			
 			// Aplicar cambios (COMENTAR LO QUE NO PROCEDA) Revisar que no se hace algo ya en el action. 
-			BusquedaClientesFiltrosAdm admFiltros = new BusquedaClientesFiltrosAdm(this.getUserBean(request)); 
+			 
 			// Primero: Actualiza si ha sido automático o manual (Designaciones)0
 			//admFiltros.actualizaManualDesigna(idInstitucionSJCS,idTurnoSJCS,idPersonaSJCS,anioSJCS, numeroSJCS, flagSalto,flagCompensacion);
 			// Segundo: Tratamiento de último (Designaciones)
 			//admFiltros.tratamientoUltimo(idInstitucionSJCS,idTurnoSJCS,idPersonaSJCS,flagSalto,flagCompensacion);
 			// Tercero: Generación de salto (Designaciones y asistencias)
-			admFiltros.crearSalto(idInstitucionSJCS,idTurnoSJCS,idGuardiaSJCS,idPersonaSJCS,checkSalto, motivoSaltoSJCS);
+			ScsSaltosCompensacionesAdm saltosCompAdm = new ScsSaltosCompensacionesAdm(this.getUserBean(request));
+			if (checkSalto != null&&(checkSalto.equals("on") || checkSalto.equals("1")))
+			// Tercero: Generación de salto (Designaciones y asistencias)
+				saltosCompAdm.crearSaltoCompensacion(idInstitucionSJCS,idTurnoSJCS,idGuardiaSJCS,idPersonaSJCS, motivoSaltoSJCS,ClsConstants.SALTOS);
 			// Cuarto: Generación de compensación (Designaciones NO ALTAS)
 			//admFiltros.crearCompensacion(idInstitucionSJCS,idTurnoSJCS,idGuardiaSJCS,idPersonaSJCS,checkCompensacion,motivoCompensacionSJCS);
 			///////////////////////////////////////////////////////////////////////////////////////////

@@ -1122,6 +1122,7 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 			"       Ins.Idturno, " +
 			" TO_CHAR(TRUNC(Ins.fechavalidacion),'DD/MM/YYYY') AS fechavalidacion, "+
 		    "   TO_CHAR(trunc(Ins.fechabaja),'DD/MM/YYYY') AS fechabaja, "+
+		    "    Ins.fechasolicitud AS fechaSolicitud, "+
 		    "       Per.Nifcif,"+
 			"       Per.Idpersona,"+
 			"       Per.Nombre, " +
@@ -1169,6 +1170,7 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
             		inscripcionBean.setIdInstitucion(UtilidadesHash.getInteger(htFila, ScsInscripcionTurnoBean.C_IDINSTITUCION));
             		inscripcionBean.setIdTurno(UtilidadesHash.getInteger(htFila, ScsInscripcionTurnoBean.C_IDTURNO));
             		inscripcionBean.setFechaValidacion(UtilidadesHash.getString(htFila, ScsInscripcionTurnoBean.C_FECHAVALIDACION));
+            		inscripcionBean.setFechaSolicitud(UtilidadesHash.getString(htFila, ScsInscripcionTurnoBean.C_FECHASOLICITUD));
             		inscripcionBean.setFechaBaja(UtilidadesHash.getString(htFila, ScsInscripcionTurnoBean.C_FECHABAJA));
             		CenPersonaBean personaBean = new CenPersonaBean(
             				inscripcionBean.getIdPersona(),(String)htFila.get(CenPersonaBean.C_NOMBRE),(String)htFila.get(CenPersonaBean.C_APELLIDOS1),

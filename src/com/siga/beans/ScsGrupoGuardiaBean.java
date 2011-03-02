@@ -2,7 +2,7 @@ package com.siga.beans;
 
 import java.util.ArrayList;
 
-import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
+import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
 
 /**
  * Bean de la tabla SCS_GRUPOGUARDIACOLEGIADO

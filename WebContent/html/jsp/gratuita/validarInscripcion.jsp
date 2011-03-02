@@ -788,7 +788,7 @@ if((document.getElementById('validar')&&document.getElementById('validar').check
 									property="gruposGuardiaLetrado">
 									<logic:iterate name="InscripcionTGForm"
 										property="gruposGuardiaLetrado" id="grupoGuardiaLetrado"
-										type="com.siga.gratuita.util.calendarioSJCS.LetradoGuardia"
+										type="com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion"
 										indexId="index">
 										<tr
 											class="<%=((index+1)%2==0?"filaTablaPar":"filaTablaImpar")%>">

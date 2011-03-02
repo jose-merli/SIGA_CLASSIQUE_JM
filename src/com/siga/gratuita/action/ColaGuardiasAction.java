@@ -36,7 +36,7 @@ import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.InscripcionGuardia;
 import com.siga.gratuita.form.ColaGuardiasForm;
-import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
+import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
 import com.siga.informes.InformeColaGuardias;
 
 /**
@@ -130,7 +130,7 @@ public class ColaGuardiasAction extends MasterAction {
 		cargarUltimoLetrado(this.getUserBean(request), institucion, turno, guardia, coForm);
 		
 		//Cargar listado de letrados en cola
-		ArrayList<LetradoGuardia> letradosColaGuardiaList = InscripcionGuardia.getColaGuardia(new Integer(institucion),new Integer(turno), new Integer(guardia), fecha,fecha, usr);
+		ArrayList<LetradoInscripcion> letradosColaGuardiaList = InscripcionGuardia.getColaGuardia(new Integer(institucion),new Integer(turno), new Integer(guardia), fecha,fecha, usr);
 		
 		
 		if(letradosColaGuardiaList!=null && !letradosColaGuardiaList.isEmpty()){

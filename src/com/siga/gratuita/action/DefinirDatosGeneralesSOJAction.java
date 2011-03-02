@@ -15,16 +15,17 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.BusquedaClientesFiltrosAdm;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.ScsDefinirSOJAdm;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsSOJBean;
+import com.siga.beans.ScsSaltosCompensacionesAdm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -183,13 +184,15 @@ public class DefinirDatosGeneralesSOJAction extends MasterAction {
 				//UtilidadesString.getMensajeIdioma(usr,origenSJCS);
 				
 				// Aplicar cambios (COMENTAR LO QUE NO PROCEDA) Revisar que no se hace algo ya en el action. 
-				BusquedaClientesFiltrosAdm admFiltros = new BusquedaClientesFiltrosAdm(this.getUserBean(request)); 
 				// Primero: Actualiza si ha sido automático o manual (Designaciones)0
 				//admFiltros.actualizaManualDesigna(idInstitucionSJCS,idTurnoSJCS,idPersonaSJCS,anioSJCS, numeroSJCS, flagSalto,flagCompensacion);
 				// Segundo: Tratamiento de último (Designaciones)
 				//admFiltros.tratamientoUltimo(idInstitucionSJCS,idTurnoSJCS,idPersonaSJCS,flagSalto,flagCompensacion);
 				// Tercero: Generación de salto (Designaciones y asistencias)
-				admFiltros.crearSalto(idInstitucionSJCS,idTurnoSJCS,idGuardiaSJCS,idPersonaSJCS,checkSalto, motivoSaltoSJCS);
+				ScsSaltosCompensacionesAdm saltosCompAdm = new ScsSaltosCompensacionesAdm(this.getUserBean(request));
+				if (checkSalto != null&&(checkSalto.equals("on") || checkSalto.equals("1")))
+					saltosCompAdm.crearSaltoCompensacion(idInstitucionSJCS,idTurnoSJCS,idGuardiaSJCS,idPersonaSJCS, motivoSaltoSJCS,ClsConstants.SALTOS);
+				
 				// Cuarto: Generación de compensación (Designaciones NO ALTAS)
 				//admFiltros.crearCompensacion(idInstitucionSJCS,idTurnoSJCS,idGuardiaSJCS,idPersonaSJCS,checkCompensacion,motivoCompensacionSJCS);
 				///////////////////////////////////////////////////////////////////////////////////////////

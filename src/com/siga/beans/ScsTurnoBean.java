@@ -42,6 +42,8 @@ public class ScsTurnoBean extends MasterBean{
 	private String      letradoAsistencias;
 	private String      letradoActuaciones;
 	private String     codigoExt;
+	private String     fechaSolicitudUltimo;
+	
 	
 	ScsPartidaPresupuestariaBean partidaPresupuestaria =null;
 	ScsMateriaBean materia = null;
@@ -88,6 +90,8 @@ public class ScsTurnoBean extends MasterBean{
 	static public final String  C_LETRADOASISTENCIAS		= "LETRADOASISTENCIAS";
 	static public final String  C_LETRADOACTUACIONES		= "LETRADOACTUACIONES";
 	static public final String  C_CODIGOEXT    		        = "CODIGOEXT";
+	static public final String  C_FECHASOLICITUD_ULTIMO     = "FECHASOLICITUD_ULTIMO";
+	
 	
 	
 		/*Metodos SET*/
@@ -576,5 +580,13 @@ public class ScsTurnoBean extends MasterBean{
 	}
 	public void setOrdenacionColas(ScsOrdenacionColasBean ordenacionColas) {
 		this.ordenacionColas = ordenacionColas;
+	}
+
+	public String getFechaSolicitudUltimo() {
+		return fechaSolicitudUltimo;
+	}
+
+	public void setFechaSolicitudUltimo(String fechaSolicitudUltimo) {
+		this.fechaSolicitudUltimo = fechaSolicitudUltimo;
 	}
 }

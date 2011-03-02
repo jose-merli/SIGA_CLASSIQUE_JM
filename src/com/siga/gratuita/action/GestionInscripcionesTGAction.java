@@ -53,7 +53,7 @@ import com.siga.general.SIGAException;
 import com.siga.gratuita.InscripcionGuardia;
 import com.siga.gratuita.InscripcionTurno;
 import com.siga.gratuita.form.InscripcionTGForm;
-import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
+import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
 
 
 
@@ -1398,11 +1398,11 @@ public class GestionInscripcionesTGAction extends MasterAction {
 //				}
 				
 				if(miForm.getPorGrupos()!=null && miForm.getPorGrupos().equals("1")){
-					ArrayList<LetradoGuardia> letradosColaGuardiaList = InscripcionGuardia.getColaGuardia(new Integer(miForm.getIdInstitucion()),new Integer(miForm.getIdTurno()), new Integer(miForm.getIdGuardia()), "sysdate","sysdate", this.getUserBean(request));
+					ArrayList<LetradoInscripcion> letradosColaGuardiaList = InscripcionGuardia.getColaGuardia(new Integer(miForm.getIdInstitucion()),new Integer(miForm.getIdTurno()), new Integer(miForm.getIdGuardia()), "sysdate","sysdate", this.getUserBean(request));
 					if(letradosColaGuardiaList!=null && !letradosColaGuardiaList.isEmpty()){
 						miForm.setGruposGuardiaLetrado(letradosColaGuardiaList);
 					}else{
-						miForm.setGruposGuardiaLetrado(new ArrayList<LetradoGuardia>());
+						miForm.setGruposGuardiaLetrado(new ArrayList<LetradoInscripcion>());
 					}
 				}
 				
@@ -1560,11 +1560,11 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			//seteamos el paso siguiente
 			miForm.setModo("vigValidar");
 			if(miForm.getPorGrupos()!=null && miForm.getPorGrupos().equals("1")){
-				ArrayList<LetradoGuardia> letradosColaGuardiaList = InscripcionGuardia.getColaGuardia(new Integer(miForm.getIdInstitucion()),new Integer(miForm.getIdTurno()), new Integer(miForm.getIdGuardia()), "sysdate","sysdate", this.getUserBean(request));
+				ArrayList<LetradoInscripcion> letradosColaGuardiaList = InscripcionGuardia.getColaGuardia(new Integer(miForm.getIdInstitucion()),new Integer(miForm.getIdTurno()), new Integer(miForm.getIdGuardia()), "sysdate","sysdate", this.getUserBean(request));
 				if(letradosColaGuardiaList!=null && !letradosColaGuardiaList.isEmpty()){
 					miForm.setGruposGuardiaLetrado(letradosColaGuardiaList);
 				}else{
-					miForm.setGruposGuardiaLetrado(new ArrayList<LetradoGuardia>());
+					miForm.setGruposGuardiaLetrado(new ArrayList<LetradoInscripcion>());
 				}
 			}
 //			FIXME AAAÑADIR SELECCIÓN DE GRUPO OK vigDatos

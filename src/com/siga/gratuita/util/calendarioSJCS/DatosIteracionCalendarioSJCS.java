@@ -30,7 +30,7 @@ public class DatosIteracionCalendarioSJCS {
 	private int punteroListaLetrados;
 	
 	//Letrado seleccionado en la iteracion
-	private LetradoGuardia letradoSeleccionado;
+	private LetradoInscripcion letradoSeleccionado;
 	
 	//Lista de letrados principal calculada a partir del PL:
 	private ArrayList arrayListaLetrados;
@@ -38,7 +38,7 @@ public class DatosIteracionCalendarioSJCS {
 	//Lista de letrados pendientes:
 	private ArrayList arrayListaLetradosPendientes;
 	
-	private List<LetradoGuardia> compensacionesBajaTemporal;
+	private List<LetradoInscripcion> compensacionesBajaTemporal;
 
 	public DatosIteracionCalendarioSJCS() {
 		this.error = 0;
@@ -78,13 +78,13 @@ public class DatosIteracionCalendarioSJCS {
 	/**
 	 * @return Returns the letradoSeleccionado.
 	 */
-	public LetradoGuardia getLetradoSeleccionado() {
+	public LetradoInscripcion getLetradoSeleccionado() {
 		return letradoSeleccionado;
 	}
 	/**
 	 * @param letradoSeleccionado The letradoSeleccionado to set.
 	 */
-	public void setLetradoSeleccionado(LetradoGuardia letradoSeleccionado) {
+	public void setLetradoSeleccionado(LetradoInscripcion letradoSeleccionado) {
 		this.letradoSeleccionado = letradoSeleccionado;
 	}
 	/**
@@ -115,13 +115,13 @@ public class DatosIteracionCalendarioSJCS {
 
 
 
-	public List<LetradoGuardia> getCompensacionesBajaTemporal() {
+	public List<LetradoInscripcion> getCompensacionesBajaTemporal() {
 		return compensacionesBajaTemporal;
 	}
 
 
 
-	public void setCompensacionesBajaTemporal(List<LetradoGuardia> compensacionesBajaTemporal) {
+	public void setCompensacionesBajaTemporal(List<LetradoInscripcion> compensacionesBajaTemporal) {
 		this.compensacionesBajaTemporal = compensacionesBajaTemporal;
 	}
 

@@ -11,6 +11,7 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionForm;
@@ -22,6 +23,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.GstDate;
+import com.atos.utils.LogFileWriter;
 import com.atos.utils.ReadProperties;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
@@ -63,12 +65,15 @@ import com.siga.beans.ScsEJGDESIGNAAdm;
 import com.siga.beans.ScsEJGDESIGNABean;
 import com.siga.beans.ScsJuzgadoAdm;
 import com.siga.beans.ScsJuzgadoBean;
+import com.siga.beans.ScsSaltosCompensacionesAdm;
+import com.siga.beans.ScsTurnoAdm;
 import com.siga.certificados.Plantilla;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.BuscarDesignasForm;
-import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
+import com.siga.gratuita.util.calendarioSJCS.CalendarioSJCS;
+import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
 import com.siga.informes.InformeBusquedaDesignas;
 
 
@@ -620,24 +625,8 @@ public class BusquedaDesignasAction extends MasterAction {
 		return "nuevo";
 	}
 
-	/** 
-	 *  Funcion que atiende la accion insertar
-	 * @param  mapping - Mapeo de los struts
-	 * @param  formulario -  Action Form asociado a este Action
-	 * @param  request - objeto llamada HTTP 
-	 * @param  response - objeto respuesta HTTP
-	 * @return  String  Destino del action  
-	 * @exception  ClsExceptions,SIGAException   En cualquier caso de error
-	 */
-
-	/* 
-	 * Autor: ruben.fernandez
-	 * Cambios: DCG - modificado la forma de creacion de designas
-	 *              - arreglado fallos del codigo
-	 *              - ordenado el codigo
-	 * 				- Creadas las funciones de crearDesignaDesdeAsistencia, crearDesignaDesdeEJG, saltosCompensacionesAdm.aplicarSaltosYCompensaciones
-	 * 			RGG - Insertado código para realizar acciones despues de haber seleccionado con busqueda SJCS.  
-	 */
+	
+	
 	protected synchronized String insertar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions,SIGAException  
 	{
 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
@@ -645,69 +634,56 @@ public class BusquedaDesignasAction extends MasterAction {
 		BuscarDesignasForm miform = (BuscarDesignasForm)formulario;
 		String desdeAsistencia=(String)request.getSession().getAttribute("asistencia");
 		String desdeEjg=(String)request.getSession().getAttribute("ejg");
-		String nombreApellidos = null;
-		String numColegiadoAutomatico = null;
-		String compensacion = null;
+		
 
 		if ((desdeAsistencia!=null &&  desdeAsistencia.equalsIgnoreCase("si"))||(desdeEjg!=null &&  desdeEjg.equalsIgnoreCase("si"))){
 			request.getSession().removeAttribute("DATAPAGINADOR");
 		}
-		Hashtable hash = (Hashtable)miform.getDatos();
-		hash.remove("registrosSeleccionados");
-		hash.remove("datosPaginador");
-		if (((String)hash.get("IDTURNO")==null)&&(formAvanzada!=null))hash = this.recogerDatosEntrada(miform.getDatos(),formAvanzada);
-		hash.put("IDINSTITUCION",(String)usr.getLocation());
+		Hashtable formDesignaHash = (Hashtable)miform.getDatos();
+		formDesignaHash.remove("registrosSeleccionados");
+		formDesignaHash.remove("datosPaginador");
+		if (((String)formDesignaHash.get("IDTURNO")==null)&&(formAvanzada!=null))formDesignaHash = this.recogerDatosEntrada(miform.getDatos(),formAvanzada);
+		formDesignaHash.put("IDINSTITUCION",(String)usr.getLocation());
 
 
 		Hashtable nuevaDesigna = new Hashtable();
 		ScsDesignaAdm designaAdm = new ScsDesignaAdm (this.getUserBean(request));
 		UserTransaction tx = null;
 		String idPersonaSel = miform.getIdPersona();
-
+		LetradoInscripcion letradoTurno = null;
 		try{
 			
 			tx = usr.getTransaction();
-			tx.begin();	
+//			tx.begin();	
 			// Obtenemos el idPersona
 			// Si hemos introducido manualmente el numero de colegiado, no sabremos su idPersona lo consultamos de BD
-			if ( idPersonaSel.equals("")) {
-				if (!miform.getNcolegiado().equals("")) {			
-					try {
-						CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm (this.getUserBean(request));
-						idPersonaSel = colegiadoAdm.getIdPersona(miform.getNcolegiado(), this.getIDInstitucion(request).toString());
-					} catch(Exception e){
-						//JTA se estaba saliendo sin cerrar la transaccion
-						tx.rollback();
-						return exitoModalSinRefresco("gratuita.modalDefinirDesignas.errorNumero",request);
-					}
-				} else {
+			
+			boolean isManual = true;
+			if (idPersonaSel.equals("")) {
+					isManual = false;
+					String fecha = (String)formDesignaHash.get("FECHAENTRADAINICIO");
 					//busqueda automatica
-					BusquedaClientesFiltrosAdm busquedaClientesFiltrosAdm= new BusquedaClientesFiltrosAdm(usr);
-					LetradoGuardia letradoTurno = busquedaClientesFiltrosAdm.gestionaDesignacionesAutomaticas(usr.getLocation(), miform.getIdTurno(),(String)hash.get("FECHAENTRADAINICIO"));
-					idPersonaSel = letradoTurno.getIdPersona().toString();					
-					numColegiadoAutomatico = letradoTurno.getPersona().getColegiado().getNColegiado();
-					nombreApellidos = letradoTurno.getPersona().getNombre();
-					String apellido1 = letradoTurno.getPersona().getApellido1();
 					
-					if (apellido1 != null) {
-						nombreApellidos += " " + apellido1;	
-					}
+					ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+					
+					CalendarioSJCS calendario = new CalendarioSJCS(new Integer(usr.getLocation()), new Integer(miform.getIdTurno()),fecha,usr);
+					letradoTurno = calendario.getLetradoTurno();
+					idPersonaSel = letradoTurno.getIdPersona().toString();					
+					
 
-					String apellido2 = letradoTurno.getPersona().getApellido2();
-					if (apellido2 != null) {
-						nombreApellidos += " " + apellido2;	
-					}
-					compensacion = letradoTurno.getSaltoCompensacion();
-				}
 			}
-
-			//comprobamos que el confirmador no esta de vacaciones la fecha que del solicitante
-			CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(usr);
-			Map<String,CenBajasTemporalesBean> mBajasTemporalesConfirmador =  bajasTemporalescioneAdm.getDiasBajaTemporal(new Long(idPersonaSel), new Integer(usr.getLocation()));
-			if(mBajasTemporalesConfirmador.containsKey(hash.get("FECHAENTRADAINICIO")))
-				throw new SIGAException("censo.bajastemporales.messages.colegiadoEnVacaciones");
-
-			hash.put(ScsDesignasLetradoBean.C_IDPERSONA,idPersonaSel);
+			
+			if(isManual){
+				//	comprobamos que el confirmador no esta de vacaciones la fecha que del solicitante
+				CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(usr);
+				Map<String,CenBajasTemporalesBean> mBajasTemporalesConfirmador =  bajasTemporalescioneAdm.getDiasBajaTemporal(new Long(idPersonaSel), new Integer(usr.getLocation()));
+				if(mBajasTemporalesConfirmador.containsKey(formDesignaHash.get("FECHAENTRADAINICIO")))
+					throw new SIGAException("censo.bajastemporales.messages.colegiadoEnVacaciones");
+			}
+			//Seteamos si es manual o automatico
+			formDesignaHash.put(ScsDesignasLetradoBean.C_MANUAL,isManual?ClsConstants.DB_TRUE:ClsConstants.DB_FALSE);
+			//Seteamos el letrado
+			formDesignaHash.put(ScsDesignasLetradoBean.C_IDPERSONA,idPersonaSel);
 
 			String asistencia, ejg, numeroAsistencia, numeroEjg, idTipoEjg;
 
@@ -723,64 +699,26 @@ public class BusquedaDesignasAction extends MasterAction {
 			request.getSession().removeAttribute("numeroEjg");
 			request.getSession().removeAttribute("idTipoEjg");
 
-
-
-			/**pdm añadimos a la hash el campo codigo con el valor que se obtiene de la funcion F_SIGA_OBTENERCODIGODESIGNA **/
-
-			/*String codigo;
-
-    		GestorContadores cont=new GestorContadores(this.getUserBean(request));
-    		Hashtable contadorHash=cont.getContador(this.getIDInstitucion(request),"DESIGNA");
-
-    		//codigo=cont.buscarSiguienteContador(contadorHash);
-    		codigo=cont.getNuevoContador(contadorHash);
-
-    		//codigo=cont.getSiguienteNumContador(contadorHash);
-    		//codigo++;
-    		//System.out.println("Contador -> "+codigo);
-    		cont.setContador(contadorHash,codigo);
-
-    		hash.put("CODIGO",String.valueOf(codigo));*/
-
-
-			// 0. Aplicamos los saltos y compensaciones
-			/* AHORA LO HACEMOS EN LOS CAMBIOS DE ABAJO 21-03-2006
-			ScsSaltosCompensacionesAdm saltosCompensacionesAdm = new ScsSaltosCompensacionesAdm (this.getUserBean(request));
-			if (!saltosCompensacionesAdm.aplicarSaltosYCompensaciones (new Integer(usr.getLocation()), new Integer(miform.getIdTurno()), new Integer(miform.getIdPersona()), new Integer(idPersonaSel))) {
-				throw new ClsExceptions ("Error al aplicar los saltos y las compensaciones");
-			}
-			 */
-
 			// 1. Creamos la Designa
-			ScsAsistenciasAdm asistenciaAdm = new ScsAsistenciasAdm(this.getUserBean(request));
 
+			nuevaDesigna = designaAdm.prepararInsert(formDesignaHash);
 
-			nuevaDesigna = designaAdm.prepararInsert(hash);
-			
-			UtilidadesHash.set(nuevaDesigna, ScsDesignaBean.C_FECHAESTADO,UtilidadesBDAdm.getFechaBD(""));
-
-			// 1.1 Si es asistencia
+			// 1.1 Si se crea desde asistencia
 			if ((asistencia!=null)&&(asistencia.equalsIgnoreCase("si"))){
-
-
+				ScsAsistenciasAdm asistenciaAdm = new ScsAsistenciasAdm(this.getUserBean(request));
 				// Obtenemos la asistencia
 				Hashtable datos = new Hashtable ();
 				UtilidadesHash.set(datos, ScsAsistenciasBean.C_ANIO, miform.getAnioAsistencia());
 				UtilidadesHash.set(datos, ScsAsistenciasBean.C_IDINSTITUCION, usr.getLocation());
 				UtilidadesHash.set(datos, ScsAsistenciasBean.C_NUMERO, numeroAsistencia);
-
-
 				ScsAsistenciasBean asistenciaBean = (ScsAsistenciasBean)((Vector)asistenciaAdm.selectByPK(datos)).get(0);
 
 				// Creamos la designacion desde la asistencia
 				if (!this.crearDesignacionDesdeAsistencia(nuevaDesigna, asistenciaBean, idPersonaSel,this.getUserBean(request), miform.getCalidad())) {
 					throw new ClsExceptions ("Error al crear la designa desde asignación");
 				}
-			}
-
-			// 1.2 Si es un EJG
-			else{
-				if((ejg!=null) && (ejg.equalsIgnoreCase("si"))){
+			}// 1.2 Si se crea desde EJG
+			else if((ejg!=null) && (ejg.equalsIgnoreCase("si"))){
 
 					// Obtenemos el EJG
 					Hashtable datos = new Hashtable ();
@@ -799,61 +737,37 @@ public class BusquedaDesignasAction extends MasterAction {
 					if (!this.crearDesignaDesdeEJG(nuevaDesigna, ejgBean, idPersonaSel,this.getUserBean(request))) {
 						throw new ClsExceptions ("Error al crear la designa desde EJG");
 					}
-				}
-				else {
-
-					// 1.3 Si estoy creando la designa nueva
-
-
-					if (!this.crearDesignacionNueva(nuevaDesigna, idPersonaSel, this.getUserBean(request))) {
-						throw new ClsExceptions ("Error al crear la designa nueva");
-					}
-
+				
+				
+			}else {// 1.3 Si estoy creando la designa nueva
+				if (!this.crearDesignacionNueva(nuevaDesigna, idPersonaSel, this.getUserBean(request))) {
+					throw new ClsExceptions ("Error al crear la designa nueva");
 				}
 			}
-
-			///////////////////////////////////////////////////////////////////////////////////////////
-			// RGG 21-03-2006 : Cambios debidos a la nueva asignacion de colegiados desde Busqueda SJCS
-			// ----------------------------------------------------------------------------------------
-
-			//-----------------------------------------------------
-			// obtencion de valores a utilizar (MODIFICAR SEGUN ACTION)
 			String idInstitucionSJCS=usr.getLocation();
 			String idTurnoSJCS=miform.getIdTurno();
 			String idGuardiaSJCS=null;
 			String anioSJCS=miform.getAnio();
 			String numeroSJCS=miform.getNumero();
-//			String idPersonaSJCS=miform.getIdPersona();
-			String origenSJCS = "gratuita.busquedaDesignas.literal.nuevaDesigna"; 
-			//-----------------------------------------------------
-
-
-			// Obtención parametros de la busqueda SJCS (FIJOS, NO TOCAR)
-			String flagSalto = request.getParameter("flagSalto");
-			String flagCompensacion = request.getParameter("flagCompensacion");
-			String checkSalto = request.getParameter("checkSalto");
-			//String checkCompensacion = request.getParameter("checkCompensacion");
-			String motivoSaltoSJCS = UtilidadesString.getMensajeIdioma(usr,"gratuita.literal.insertarSaltoPor") + " " +
-			UtilidadesString.getMensajeIdioma(usr,origenSJCS);
-			//String motivoCompensacionSJCS = UtilidadesString.getMensajeIdioma(usr,"gratuita.literal.insertarCompensacionPor") + " " +
-			UtilidadesString.getMensajeIdioma(usr,origenSJCS);
-
-			// Aplicar cambios (COMENTAR LO QUE NO PROCEDA) Revisar que no se hace algo ya en el action. 
-			BusquedaClientesFiltrosAdm admFiltros = new BusquedaClientesFiltrosAdm(this.getUserBean(request)); 
-			// Primero: Actualiza si ha sido automático o manual (Designaciones)0
-			admFiltros.actualizaManualDesigna(idInstitucionSJCS,idTurnoSJCS,idPersonaSel,anioSJCS, numeroSJCS, flagSalto,flagCompensacion);
-			// Segundo: Tratamiento de último (Designaciones)
-			if (compensacion == null || !compensacion.trim().equals(ClsConstants.COMPENSACIONES)) { // si no es por compensacion tratamos ultimo
-				if (numColegiadoAutomatico != null){ //es automatico...tenemos que tratar el ultimo
-					admFiltros.tratamientoUltimo(idInstitucionSJCS,idTurnoSJCS,idPersonaSel,flagSalto,flagCompensacion);					
-				}				
+			if(isManual){
+				
+	//			String idPersonaSJCS=miform.getIdPersona();
+				String origenSJCS = "gratuita.busquedaDesignas.literal.nuevaDesigna"; 
+				//-----------------------------------------------------
+	
+				String checkSalto = request.getParameter("checkSalto");
+				//String checkCompensacion = request.getParameter("checkCompensacion");
+				String motivoSaltoSJCS = UtilidadesString.getMensajeIdioma(usr,"gratuita.literal.insertarSaltoPor") + " " +
+				UtilidadesString.getMensajeIdioma(usr,origenSJCS);
+				// Aplicar cambios (COMENTAR LO QUE NO PROCEDA) Revisar que no se hace algo ya en el action. 
+				ScsSaltosCompensacionesAdm saltosCompAdm = new ScsSaltosCompensacionesAdm(this.getUserBean(request));
+				if (checkSalto != null&&(checkSalto.equals("on") || checkSalto.equals("1")))
+				// Tercero: Generación de salto (Designaciones y asistencias)
+					saltosCompAdm.crearSaltoCompensacion(idInstitucionSJCS,idTurnoSJCS,idGuardiaSJCS,idPersonaSel, motivoSaltoSJCS,ClsConstants.SALTOS);
+				// Cuarto: Generación de compensación (Designaciones NO ALTAS)
+				//admFiltros.crearCompensacion(idInstitucionSJCS,idTurnoSJCS,idGuardiaSJCS,idPersonaSJCS,checkCompensacion,motivoCompensacionSJCS);
+				///////////////////////////////////////////////////////////////////////////////////////////
 			}
-			// Tercero: Generación de salto (Designaciones y asistencias)
-			admFiltros.crearSalto(idInstitucionSJCS,idTurnoSJCS,idGuardiaSJCS,idPersonaSel,checkSalto, motivoSaltoSJCS);
-			// Cuarto: Generación de compensación (Designaciones NO ALTAS)
-			//admFiltros.crearCompensacion(idInstitucionSJCS,idTurnoSJCS,idGuardiaSJCS,idPersonaSJCS,checkCompensacion,motivoCompensacionSJCS);
-			///////////////////////////////////////////////////////////////////////////////////////////
-
 
 			// Anhadimos parametros para las pestanhas
 			request.getSession().setAttribute("idDesigna", nuevaDesigna); 
@@ -867,13 +781,16 @@ public class BusquedaDesignasAction extends MasterAction {
 			}
 
 			// Se cierra la transacción
-			tx.commit();
+//			tx.commit();
 
 			request.setAttribute("NUMERO",numeroSJCS);
 			request.setAttribute("IDTURNO",idTurnoSJCS);
 			request.setAttribute("INSTITUCION",idInstitucionSJCS);
 			request.setAttribute("ANIO",anioSJCS);
 		}catch (SIGAException e) {
+			try {
+//				tx.rollback();
+			}catch(Exception rp){} 
 			request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr,e.getLiteral()));	
 			return "errorConAviso"; 
 		} 
@@ -883,13 +800,28 @@ public class BusquedaDesignasAction extends MasterAction {
 
 		String mensaje = "messages.inserted.success";
 
-		if (numColegiadoAutomatico != null) {
+		if (letradoTurno != null) {
+
+			StringBuffer nombreCompletoLetrado  = new StringBuffer(letradoTurno.getPersona().getNombre());
+			
+			if (letradoTurno.getPersona().getApellido1() != null) {
+				nombreCompletoLetrado.append(" ");
+				nombreCompletoLetrado.append(letradoTurno.getPersona().getApellido1());
+					
+			}
+			if (letradoTurno.getPersona().getApellido2() != null) {
+				nombreCompletoLetrado.append(" ");
+				nombreCompletoLetrado.append(letradoTurno.getPersona().getApellido2());
+					
+			}
+			
 			mensaje = UtilidadesString.getMensajeIdioma(this.getUserBean(request), mensaje);
-			mensaje += "\r\n" + UtilidadesString.getMensajeIdioma(getUserBean(request), "messages.nuevaDesigna.seleccionAutomaticaLetrado", new String[]{numColegiadoAutomatico, nombreApellidos});
+			mensaje += "\r\n" + UtilidadesString.getMensajeIdioma(getUserBean(request), "messages.nuevaDesigna.seleccionAutomaticaLetrado", new String[]{letradoTurno.getPersona().getColegiado().getNColegiado(), nombreCompletoLetrado.toString()});
 		}
 
 		return exitoModal(mensaje, request);
 	}
+	
 
 	protected String exitoModal(String mensaje, HttpServletRequest request) 
 	{

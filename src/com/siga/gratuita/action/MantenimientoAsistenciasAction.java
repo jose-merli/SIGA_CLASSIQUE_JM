@@ -41,6 +41,7 @@ import com.siga.beans.ScsEJGDESIGNAAdm;
 import com.siga.beans.ScsEJGDESIGNABean;
 import com.siga.beans.ScsGuardiasColegiadoAdm;
 import com.siga.beans.ScsGuardiasColegiadoBean;
+import com.siga.beans.ScsSaltosCompensacionesAdm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -415,7 +416,7 @@ public class MantenimientoAsistenciasAction extends MasterAction
 		try{
 			usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			tx = usr.getTransaction();
-			
+			ScsSaltosCompensacionesAdm saltosCompAdm = new ScsSaltosCompensacionesAdm(this.getUserBean(request));
 			ScsAsistenciasAdm asistencias = new ScsAsistenciasAdm(this.getUserBean(request));
 			ScsGuardiasColegiadoAdm guardiasAdm = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
 			BusquedaClientesFiltrosAdm admFiltros = new BusquedaClientesFiltrosAdm(this.getUserBean(request));
@@ -597,8 +598,12 @@ public class MantenimientoAsistenciasAction extends MasterAction
 
 			//Insertamos saltos y compensaciones si procede
 			String motivo = UtilidadesString.getMensajeIdioma(usr,"gratuita.literal.altaAsistencia.motivo");
-			admFiltros.crearSalto(usr.getLocation(),idTurno,idGuardia,idPersona,salto, motivo);
-			admFiltros.crearCompensacion(usr.getLocation(),idTurno,idGuardia,idPersona,compensacion, motivo);
+			
+			 
+			if (salto != null&&(salto.equals("on") || salto.equals("1")))
+				saltosCompAdm.crearSaltoCompensacion(usr.getLocation(),idTurno,idGuardia,idPersona, motivo,ClsConstants.SALTOS);
+			if (compensacion != null&&(compensacion.equals("on") || compensacion.equals("1")))
+				saltosCompAdm.crearSaltoCompensacion(usr.getLocation(),idTurno,idGuardia,idPersona, motivo,ClsConstants.COMPENSACIONES);
 			if(miForm.getModo()!=null && miForm.getModo().equals("insertar"))
 				miForm.setModo("");
 			

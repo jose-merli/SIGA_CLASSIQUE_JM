@@ -19,6 +19,7 @@ import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorBind;
+import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.MasterForm;
@@ -329,6 +330,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			entrada.put(ScsDesignaBean.C_ESTADO,"V"); // Estado Activo (V)
 			entrada.put(ScsDesignaBean.C_FECHAENTRADA,GstDate.getApplicationFormatDate("",(String)entrada.get("FECHAENTRADAINICIO")));
 			//entrada.put(ScsDesignaBean.C_CODIGO,(String)entrada.get("CODIGO"));
+			
+			UtilidadesHash.set(entrada, ScsDesignaBean.C_FECHAESTADO,UtilidadesBDAdm.getFechaBD(""));
 			
 			
 			if (entrada.get("JUZGADO")!=null && !(entrada.get("JUZGADO")).equals("")) {

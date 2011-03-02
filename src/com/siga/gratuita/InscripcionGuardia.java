@@ -22,7 +22,7 @@ import com.siga.beans.ScsInscripcionTurnoAdm;
 import com.siga.beans.ScsOrdenacionColasAdm;
 import com.siga.beans.ScsOrdenacionColasBean;
 import com.siga.beans.ScsTurnoAdm;
-import com.siga.gratuita.util.calendarioSJCS.LetradoGuardia;
+import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
 
 public class InscripcionGuardia
 {
@@ -157,7 +157,7 @@ public class InscripcionGuardia
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public static ArrayList<LetradoGuardia> getColaGuardia(Integer idInstitucion,
+	public static ArrayList<LetradoInscripcion> getColaGuardia(Integer idInstitucion,
 			Integer idTurno,
 			Integer idGuardia,
 			String fechaInicio,
@@ -183,7 +183,7 @@ public class InscripcionGuardia
 		//TODO Descomentar la siguiente linea (ya que se comento solo para entregar incidencia INC_07825_SIGA urgente:
 		// ScsOrdenacionColasAdm ordadm = new ScsOrdenacionColasAdm(usr);
 		CenBajasTemporalesAdm bajasAdm = new CenBajasTemporalesAdm(usr);
-		ArrayList<LetradoGuardia> colaLetrados = new ArrayList<LetradoGuardia>();
+		ArrayList<LetradoInscripcion> colaLetrados = new ArrayList<LetradoInscripcion>();
 
 		//Actualizar cola guardia
 		ScsGrupoGuardiaColegiadoAdm admGrupoGuardia = new ScsGrupoGuardiaColegiadoAdm(usr);
@@ -204,8 +204,9 @@ public class InscripcionGuardia
 		// obteniendo ordenacion de la guardia
 		if (idOrdenacionColas == null)
 			throw new ClsExceptions("messages.general.error");
+		ScsOrdenacionColasAdm ordenacionColasAdm = new ScsOrdenacionColasAdm(usr);
 		//TODO Descomentar la siguiente linea y borrar lo anyadido (ya que se comento solo para entregar incidencia INC_07825_SIGA urgente):
-		orden = porGrupos ? " numeroGrupo, ordengrupo" : /* Anyadido: */ getOrderBy(idOrdenacionColas.toString(), usr); // ordadm.getOrderBy(idOrdenacionColas.toString(), usr);
+		orden = porGrupos ? " numeroGrupo, ordengrupo" : /* Anyadido: */ ordenacionColasAdm.getOrderBy(idOrdenacionColas.toString(), usr); // ordadm.getOrderBy(idOrdenacionColas.toString(), usr);
 
 		// obteniendo ultimo apuntado de la guardia
 		if (idPersonaUltimo == null)
@@ -224,12 +225,12 @@ public class InscripcionGuardia
 			for (int i = 0; i < listaLetrados.size(); i++) {
 				punteroInscripciones = (ScsInscripcionGuardiaBean) listaLetrados.get(i);
 				if (punteroInscripciones.getEstado().equals(ClsConstants.DB_TRUE))
-					colaLetrados.add(new LetradoGuardia(punteroInscripciones, null));
+					colaLetrados.add(new LetradoInscripcion(punteroInscripciones));
 			}
 		}
 		else {
 			// ordenando la cola en funcion del idPersonaUltimo guardado
-			Vector<LetradoGuardia> colaAuxiliar = new Vector<LetradoGuardia>();
+			Vector<LetradoInscripcion> colaAuxiliar = new Vector<LetradoInscripcion>();
 			foundUltimo = false;
 			for (int i = 0; i < listaLetrados.size(); i++) {
 				punteroInscripciones = listaLetrados.get(i);
@@ -238,9 +239,9 @@ public class InscripcionGuardia
 				if (punteroInscripciones.getEstado().equals(ClsConstants.DB_TRUE)) {
 					// El primero que se anyade es el siguiente al ultimo
 					if (foundUltimo) {
-						colaLetrados.add(new LetradoGuardia(punteroInscripciones, null));
+						colaLetrados.add(new LetradoInscripcion(punteroInscripciones));
 					} else {
-						colaAuxiliar.add(new LetradoGuardia(punteroInscripciones, null));
+						colaAuxiliar.add(new LetradoInscripcion(punteroInscripciones));
 					}
 				}
 				
@@ -256,7 +257,7 @@ public class InscripcionGuardia
 		return colaLetrados;
 	} // getColaGuardia()
 	
-	public static ArrayList<LetradoGuardia> getLetradosGrupo(Integer idInstitucion,
+	public static ArrayList<LetradoInscripcion> getLetradosGrupo(Integer idInstitucion,
 			Integer idTurno,
 			Integer idGuardia,
 			Long idGrupoGuardia,
@@ -271,8 +272,8 @@ public class InscripcionGuardia
 
 		// Variables
 		Vector<ScsInscripcionGuardiaBean> vectorLetrados;
-		ArrayList<LetradoGuardia> listaLetrados = new ArrayList<LetradoGuardia>();
-		LetradoGuardia letradoGuardia;
+		ArrayList<LetradoInscripcion> listaLetrados = new ArrayList<LetradoInscripcion>();
+		LetradoInscripcion letradoGuardia;
 		ScsInscripcionGuardiaBean inscripcionGuardia;
 
 		// obteniendo la guardia
@@ -289,10 +290,10 @@ public class InscripcionGuardia
 			return null;
 
 		// obteniendo LetradoGuardia's
-		listaLetrados = new ArrayList<LetradoGuardia>();
+		listaLetrados = new ArrayList<LetradoInscripcion>();
 		for (int i = 0; i < vectorLetrados.size(); i++) {
 			inscripcionGuardia = (ScsInscripcionGuardiaBean) vectorLetrados.get(i);
-			letradoGuardia = new LetradoGuardia(inscripcionGuardia, null);
+			letradoGuardia = new LetradoInscripcion(inscripcionGuardia);
 			if (saltoCompensacion != null) {
 				letradoGuardia.setSaltoCompensacion(saltoCompensacion);
 				letradoGuardia.setIdSaltoCompensacionGrupo(idSaltoCompensacionGrupo);
@@ -318,61 +319,8 @@ public class InscripcionGuardia
 		return existe;
 	}
 	
-	//TODO Borrar el siguiente metodo (ya que se comento solo para entregar incidencia INC_07825_SIGA urgente):
-	/**
-	 * Obtiene la clausula order by para el select de inscripciones
-	 * 
-	 * @param idInstitucion
-	 * @param idTurno
-	 * @param idGuardia
-	 * @param usr
-	 * @return Order by sin el "order by"
-	 * @throws ClsExceptions
-	 */
-	public static String getOrderBy(String idOrdenacionColas, UsrBean usr)
-			throws ClsExceptions
-	{
-		ScsOrdenacionColasAdm ordadm = new ScsOrdenacionColasAdm(usr);
-		Hashtable hashOrden = new Hashtable();
-		
-		// obteniendo el orden
-		hashOrden.put(ScsOrdenacionColasBean.C_IDORDENACIONCOLAS, idOrdenacionColas);
-		Vector vOrden = ordadm.select(hashOrden);
-		ScsOrdenacionColasBean ordenBean = (ScsOrdenacionColasBean) vOrden.get(0);
-		Integer apellidos = ordenBean.getAlfabeticoApellidos();
-		Integer antiguedad = ordenBean.getAntiguedadCola();
-		Integer fechanacimiento = ordenBean.getFechaNacimiento();
-		Integer numerocolegiado = ordenBean.getNumeroColegiado();
-		
-		// calculando order by
-		String orden = "";
-		for (int i=4; i>0; i--) {
-			if (Math.abs(apellidos) == i) {
-				orden += ScsOrdenacionColasBean.C_ALFABETICOAPELLIDOS;
-				if (Math.abs(apellidos) != apellidos) orden += " desc";
-				orden += ", ";
-			}
-			if (Math.abs(antiguedad) == i) {
-				orden += ScsOrdenacionColasBean.C_ANTIGUEDADCOLA;
-				if (Math.abs(antiguedad) != antiguedad) orden += " desc";
-				orden += ", ";
-			}
-			if (Math.abs(fechanacimiento) == i) {
-				orden += ScsOrdenacionColasBean.C_FECHANACIMIENTO;
-				if (Math.abs(fechanacimiento) != fechanacimiento) orden += " desc";
-				orden += ", ";
-			}
-			if (Math.abs(numerocolegiado) == i) {
-				orden += ScsOrdenacionColasBean.C_NUMEROCOLEGIADO;
-				if (Math.abs(numerocolegiado) != numerocolegiado) orden += " desc";
-				orden += ", ";
-			}
-		}
-		if (orden.length() > 0)
-			orden = orden.substring(0, orden.length()-2);
-		
-		return orden;
-	} //getOrderBy()
+	
+	
 	
 	////////////////////
 	// METODOS
@@ -932,11 +880,11 @@ public class InscripcionGuardia
 		
 			
 			if (idPersonaUltimoGuardia!=null && idPersonaUltimoGuardia.equals(idPersona)) {
-				ArrayList<LetradoGuardia> colaLetrados = InscripcionGuardia.getColaGuardia(
+				ArrayList<LetradoInscripcion> colaLetrados = InscripcionGuardia.getColaGuardia(
 						idInstitucion,  idTurno, idGuardia,"sysdate","sysdate",usr);
 				if (colaLetrados.get(0) != null && !colaLetrados.isEmpty()) {
 					int tamanyoCola = colaLetrados.size();
-					Long ultimoDeLaCola = ((LetradoGuardia) colaLetrados.get(tamanyoCola-1)).getIdPersona();
+					Long ultimoDeLaCola = ((LetradoInscripcion) colaLetrados.get(tamanyoCola-1)).getIdPersona();
 					//el letrado a dar de baja es el primero en la cola:
 					//asi que hay que poner al anterior como ultimo en la cola
 					Long penultimoDeLaCola;
@@ -946,8 +894,8 @@ public class InscripcionGuardia
 						fechaSusc_penultimo = null;
 					}
 					else {
-						penultimoDeLaCola = ((LetradoGuardia) colaLetrados.get(tamanyoCola-2)).getIdPersona();
-						fechaSusc_penultimo = ((LetradoGuardia) colaLetrados.get(tamanyoCola-2)).getInscripcionGuardia().getFechaSuscripcion();
+						penultimoDeLaCola = ((LetradoInscripcion) colaLetrados.get(tamanyoCola-2)).getIdPersona();
+						fechaSusc_penultimo = ((LetradoInscripcion) colaLetrados.get(tamanyoCola-2)).getInscripcionGuardia().getFechaSuscripcion();
 					}
 					
 					guardiaAdm.cambiarUltimoCola (idInstitucion, idTurno, idGuardia, penultimoDeLaCola, fechaSusc_penultimo);
