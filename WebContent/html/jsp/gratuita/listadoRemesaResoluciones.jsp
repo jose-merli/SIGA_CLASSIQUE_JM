@@ -85,10 +85,8 @@
 	 	registrosPorPagina = "0";
  }	 
 		
-	String action=app+"/JGR_E-Comunicaciones_RemesaResolucion.do?noReset=true";
 	String idTipoRemesa = request.getParameter("idTipoRemesa");
-
-
+	String action=app+"/JGR_E-Comunicaciones_RemesaResolucion.do?noReset=true&idTipoRemesa="+idTipoRemesa;
 	
 %>
 

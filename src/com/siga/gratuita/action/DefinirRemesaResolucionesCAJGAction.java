@@ -197,6 +197,7 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 								"," + "R." + CajgRemesaResolucionBean.C_FECHACARGA +
 								"," + "R." + CajgRemesaResolucionBean.C_FECHARESOLUCION +
 								"," + "R." + CajgRemesaResolucionBean.C_LOGGENERADO +
+								"," + "R." + CajgRemesaResolucionBean.C_IDTIPOREMESA +
 								" FROM " + CajgRemesaResolucionBean.T_NOMBRETABLA + " R" +
 								" WHERE R." + CajgRemesaResolucionBean.C_IDINSTITUCION + " = " + this.getIDInstitucion(request) +
 								" AND R." + CajgRemesaResolucionBean.C_IDTIPOREMESA + " = " + miForm.getIdTipoRemesa();						
