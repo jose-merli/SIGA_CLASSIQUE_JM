@@ -1211,9 +1211,8 @@ public class CalendarioSJCS
 		} catch (SIGAException e) {
 			throw e;
 		} catch (Exception e) {
-			e.printStackTrace();
 			this.arrayPeriodosLetradosSJCS = null;
-			throw new ClsExceptions("");
+			throw new ClsExceptions(e, "");
 		}
 	} // calcularMatrizLetradosGuardia()
 
