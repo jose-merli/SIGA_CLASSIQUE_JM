@@ -140,8 +140,9 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					}else if (accion.equalsIgnoreCase("sbgConsultaGuardias")){
 						mapDestino = sbgConsultaGuardias(mapping, miForm, request, response);
 					}else if (accion.equalsIgnoreCase("sbgDatos")){
-						
 						mapDestino = sbgDatos(mapping, miForm, request, response);
+					}else if (accion.equalsIgnoreCase("sbgInsertar")){
+						mapDestino = sbgInsertar(mapping, miForm, request, response);
 					}else if (accion.equalsIgnoreCase("sbgComprobarInsertar")){
 						mapDestino = sbgComprobarInsertar(mapping, miForm, request, response);
 					}else if (accion.equalsIgnoreCase("vitConsultaTurno")){
