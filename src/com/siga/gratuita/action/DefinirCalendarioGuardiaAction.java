@@ -1802,10 +1802,14 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 				lineaLog = new ArrayList<String>();
 				lineaLog.add("Creando calendario para:");
 				lineaLog.add("Guardia vinculada '" +guardia.getNombre()+"'...");
-				if ((idCalendario = this.crearCalendario(guardia.getIdInstitucion().toString(), guardia.getIdTurno()
-						.toString(), guardia.getIdGuardia().toString(), fechaDesde, fechaHasta, observaciones, idTurno, idGuardia, idCalendarioGuardias, usr)) > 0) {
+				if ((idCalendario = this.crearCalendario(guardia.getIdInstitucion().toString(), 
+						guardia.getIdTurno().toString(), guardia.getIdGuardia().toString(), fechaDesde, fechaHasta, observaciones, 
+						idTurno, idGuardia, idCalendarioGuardias, usr)) > 0)
+				{
 					lineaLog.add("OK");
-					
+					calendariosVinculados.add(new ScsCalendarioGuardiasBean(guardia.getIdInstitucion(), 
+							guardia.getIdTurno(), guardia.getIdGuardia(), idCalendario, fechaDesde, fechaHasta, observaciones,
+							new Integer(idTurno), new Integer(idGuardia), new Integer(idCalendarioGuardias)));
 				} else
 					lineaLog.add("Fallo. Puede que ya exista el calendario");
 				log.addLog(lineaLog);
