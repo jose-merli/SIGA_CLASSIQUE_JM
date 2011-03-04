@@ -347,7 +347,7 @@ function onCheckAcreditacion(elementoPulsado){
 		//Si se pulsa el check de acreditacion y ademas la designa tiene validar actuaciones a no, se pulsa tambien el check 
 		// de validacion(ya que al no ser necesario validar las actuaciones quedaran validadas en la insercion)
 		
-		if(actuacionValidarJustificaciones=='N'){
+		if(actuacionValidarJustificaciones=='N'||document.InformeJustificacionMasivaForm.fichaColegial.value=='false'){
 			document.getElementById(idValidacion).checked = 'checked';
 		}
 		

@@ -325,7 +325,7 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			//quitamos la coma
 			sqlDesignas.deleteCharAt(sqlDesignas.length()-1);
 			sqlDesignas.append(")");
-			sqlDesignas.append(" ORDER BY ALLDESIGNAS.FECHAENTRADA,ALLDESIGNAS.IDINSTITUCION, ALLDESIGNAS.ANIO, ALLDESIGNAS.CODIGO, ALLDESIGNAS.SUFIJO");
+			sqlDesignas.append(" ORDER BY ALLDESIGNAS.FECHAENTRADA DESC,ALLDESIGNAS.IDINSTITUCION, ALLDESIGNAS.ANIO, ALLDESIGNAS.CODIGO, ALLDESIGNAS.SUFIJO");
 			
 		}
 		return sqlDesignas.toString();
@@ -1426,7 +1426,7 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			
 		}
 		if(!isMostrarJustificacionesPtes)
-			sql.append(" ORDER BY FECHAENTRADA,IDINSTITUCION, ANIO, CODIGO, SUFIJO ");
+			sql.append(" ORDER BY FECHAENTRADA DESC ,IDINSTITUCION, ANIO, CODIGO, SUFIJO ");
 		return sql.toString();
 		
 	}
