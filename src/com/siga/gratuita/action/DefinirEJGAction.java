@@ -396,7 +396,7 @@ public class DefinirEJGAction extends MasterAction
 				session.removeAttribute("DATAPAGINADOR");
 			}
 			
-			if ((ocultos != null && visibles != null) || ((miForm.getDesdeDesigna() != null) && (miForm.getDesdeDesigna().equalsIgnoreCase("si")))) {
+			if ((ocultos != null && visibles != null) || ((ocultos != null && miForm.getDesdeDesigna() != null) && (miForm.getDesdeDesigna().equalsIgnoreCase("si")))) {
 				miHash.put(ScsEJGBean.C_IDTIPOEJG,ocultos.get(0));
 				miHash.put(ScsEJGBean.C_IDINSTITUCION,ocultos.get(1));
 				miHash.put(ScsEJGBean.C_ANIO,ocultos.get(2));
@@ -687,7 +687,7 @@ public class DefinirEJGAction extends MasterAction
 				 (miForm.getAsistenciaAnio() == null || miForm.getAsistenciaAnio().equals("")))) { 
 
 								
-/**/      if (miForm.getSOJIdTipoSOJ()!=null){//Sólo en el caso de un EJG dado de alta desde un SOJ
+/**/      if (miForm.getSOJIdTipoSOJ()!=null && !miForm.getSOJIdTipoSOJ().equalsIgnoreCase("")){//Sólo en el caso de un EJG dado de alta desde un SOJ
 			  // Recuperamos los datos introducidos en la pestana Datos Generales del SOJ para insertar aquellos que nos convengan en EJG
 	            request.getSession().removeAttribute("DATAPAGINADOR");
 				miHashSOJ.put(ScsSOJBean.C_ANIO, miForm.getSOJAnio());
