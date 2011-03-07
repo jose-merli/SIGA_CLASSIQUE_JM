@@ -36,6 +36,13 @@ public class DevolucionesManualesForm extends MasterForm{
 	public String getNumeroRemesa() {
  		return UtilidadesHash.getString(datos, "NumeroRemesa");
  	}
+	
+	public void setNumeroFactura (String dato) {
+		UtilidadesHash.set(datos, "NumeroFactura", dato);
+ 	}
+	public String getNumeroFactura() {
+ 		return UtilidadesHash.getString(datos, "NumeroFactura");
+ 	}
 
 	public void setNumeroRecibo (String dato) {
 		UtilidadesHash.set(datos, "NumeroRecibo", dato);

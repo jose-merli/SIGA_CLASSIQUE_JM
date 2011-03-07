@@ -121,31 +121,38 @@
 	    <input type="hidden" name="actionModal" value="">
 		
 			<siga:ConjCampos leyenda="facturacion.devolucionManual.criterios">	
-			<table align="center">
-				<tr>				
-					<td  class="labelText" width="130px"><siga:Idioma key="facturacion.devolucionManual.numeroRecibo"/></td>
-					<td><html:text styleClass="box" property="numeroRecibo" maxlength="12" /></td>
+							<table>				
 
-					<td class="labelText"  width="170px"><siga:Idioma key="facturacion.devolucionManual.fechaCargoDesde"/></td>
-					<td><html:text styleClass="box" property="fechaCargoDesde" cols="8" maxlength="10" readonly="true"/><a href='javascript://'onClick="return showCalendarGeneral(fechaCargoDesde);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a></td>
-		
-					<td class="labelText"><siga:Idioma key="facturacion.devolucionManual.fechaCargoHasta"/></td>
-					<td><html:text styleClass="box" property="fechaCargoHasta" cols="8" maxlength="10" readonly="true"/><a href='javascript://'onClick="return showCalendarGeneral(fechaCargoHasta);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a></td>
-				</tr>
-				<tr>				
-					<td class="labelText" width="130px"><siga:Idioma key="facturacion.devolucionManual.numeroRemesa"/></td>
-					<td><html:text styleClass="box" property="numeroRemesa" maxlength="12" /></td>
-
-					<td class="labelText" width="170px"><siga:Idioma key="facturacion.devolucionManual.titularDomiciliacion"/></td>
+					<td class="labelText" width="80px"><siga:Idioma key="facturacion.devolucionManual.numeroFactura"/></td>
+					<td ><html:text styleClass="box" property="numeroFactura" maxlength="12" /></td>
+					
+					<td class="labelText" width="180px"><siga:Idioma key="facturacion.devolucionManual.titularDomiciliacion"/></td>
 					<td>
 						<html:button property="idButton" onclick="return buscarCliente();" styleClass="button"><siga:Idioma key="general.boton.search"/> </html:button>
 						<html:button property="idButton" onclick="return limpiarCliente();" styleClass="button"><siga:Idioma key="general.boton.clear"/> </html:button>
 						<html:hidden property="titular" />
 					</td>
-					<td colspan="2">
-						<html:text styleClass="boxConsulta" property="nombreTitular" size="50" readOnly="true"/>
+					
+					<td width="30px">
+						<html:text styleClass="boxConsulta" property="nombreTitular" size="40" readOnly="true"/>
 					</td>
-				</tr>
+				</table>
+			<table>
+								
+					<td  class="labelText" width="80px"><siga:Idioma key="facturacion.devolucionManual.numeroRecibo"/></td>
+					<td><html:text styleClass="box" property="numeroRecibo" maxlength="12" /></td>
+					
+					<td class="labelText" width="80px"><siga:Idioma key="facturacion.devolucionManual.numeroRemesa"/></td>
+					<td><html:text styleClass="box" property="numeroRemesa" size='10' maxlength="12" /></td>
+
+					<td class="labelText"  width="170px"><siga:Idioma key="facturacion.devolucionManual.fechaCargoDesde"/></td>
+					<td><html:text styleClass="box" property="fechaCargoDesde" cols="8" maxlength="10" readonly="true"/><a href='javascript://'onClick="return showCalendarGeneral(fechaCargoDesde);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a></td>
+		
+					<td class="labelText" width="60px"><siga:Idioma key="facturacion.devolucionManual.fechaCargoHasta"/></td>
+					<td><html:text styleClass="box" property="fechaCargoHasta" cols="8" maxlength="10" readonly="true"/><a href='javascript://'onClick="return showCalendarGeneral(fechaCargoHasta);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"> </a></td>
+				
+				</table>
+
 			</table>
 		</siga:ConjCampos>	
 

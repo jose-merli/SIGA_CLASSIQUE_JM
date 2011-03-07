@@ -61,6 +61,7 @@ public class DevolucionesManualesAction extends MasterAction{
 			form.setTitular("");
 			form.setNumeroRecibo("");
 			form.setNumeroRemesa("");
+			form.setNumeroFactura("");
 			form.setHayMotivos("");
 			form.setRecibos("");
 			
@@ -303,7 +304,7 @@ public class DevolucionesManualesAction extends MasterAction{
 					//obtengo datos de la consulta 			
 			  	  PaginadorCaseSensitive recibos = null;
 				Vector datos = null;
-			 recibos = recibosAdm.getRecibosParaDevolucion(idInstitucion,form.getFechaCargoDesde(),form.getFechaCargoHasta(),form.getNumeroRecibo(),form.getTitular(),form.getNumeroRemesa());
+			 recibos = recibosAdm.getRecibosParaDevolucion(idInstitucion,form.getFechaCargoDesde(),form.getFechaCargoHasta(),form.getNumeroRecibo(),form.getTitular(),form.getNumeroRemesa(), form.getNumeroFactura());
 			databackup.put("paginador",recibos);
 			if (recibos!=null){ 
 			   datos = recibos.obtenerPagina(1);

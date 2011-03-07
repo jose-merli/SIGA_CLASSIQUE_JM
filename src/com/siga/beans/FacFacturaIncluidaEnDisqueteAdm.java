@@ -243,7 +243,7 @@ public class FacFacturaIncluidaEnDisqueteAdm extends MasterBeanAdministrador {
 	 * @return Vector de resultados
 	 * @throws ClsExceptions
 	 */
-	public PaginadorCaseSensitive getRecibosParaDevolucion(String idInstitucion,String fechaDesde,String fechaHasta,String numRecibo,String titular, String numRemesa) throws ClsExceptions {
+	public PaginadorCaseSensitive getRecibosParaDevolucion(String idInstitucion,String fechaDesde,String fechaHasta,String numRecibo,String titular, String numRemesa, String numFactura) throws ClsExceptions {
 		Vector v = new Vector();
 		RowsContainer rc = null;
 		try{
@@ -290,6 +290,12 @@ public class FacFacturaIncluidaEnDisqueteAdm extends MasterBeanAdministrador {
 				
 			
 				sql += " AND ("+ComodinBusquedas.prepararSentenciaCompleta(numRemesa.trim(),FacFacturaIncluidaEnDisqueteBean.T_NOMBRETABLA + "." + FacFacturaIncluidaEnDisqueteBean.C_IDDISQUETECARGOS)+") ";
+			}
+			
+			if (!numFactura.equals("")) {
+				
+			
+				sql += " AND ("+ComodinBusquedas.prepararSentenciaCompleta(numFactura.trim(),FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_NUMEROFACTURA)+") ";
 			}
 			
 			if (!titular.equals("")) {
