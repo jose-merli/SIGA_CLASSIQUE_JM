@@ -1145,6 +1145,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 						}
 						if (!htNew.get(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO).equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO)){
 					      htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_APROBADO);
+					      htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO,"sysdate");
 						}
 			        	
 						
@@ -1162,7 +1163,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 				            htNew.put(CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO, "sysdate");
 				        }
 					  	htNew.put(CerSolicitudCertificadosBean.C_FECHAMODIFICACION,"sysdate");
-					  	htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO,"sysdate");
+					  	
 
 					    if (!admSolicitud.updateDirect(htNew,claves,campos))  {
 					        throw new ClsExceptions("Error al APROBAR el/los PDF/s");
@@ -1176,7 +1177,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 				        fOut.delete();
 
 					    htNew.put(CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_CER_GENERADO);
-
+					    
 
 				        // FIRMAR CERTIFICADO
 				        if (!admCer.firmarPDF(idSolicitud, idInstitucion)) {
