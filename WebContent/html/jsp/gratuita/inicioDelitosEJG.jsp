@@ -368,9 +368,9 @@
 						<td colspan="23">	
 							<%if(modopestanha.equals("editar")){%>
 							 	  <input type="text" name="codigoExtJuzgado" class="box" size="3"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado();" />							 	  
-							 	  <siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" ancho="505" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=juzgadoSel%>" hijo="t" readonly="false"/>           	   
+							 	  <siga:ComboBD nombre="juzgado" tipo="comboJuzgados" ancho="505" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=juzgadoSel%>" hijo="t" readonly="false"/>           	   
 							<%}else{%>
-									<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" ancho="555" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=juzgadoSel%>" hijo="t" readonly="true"/>           	   
+									<siga:ComboBD nombre="juzgado" tipo="comboJuzgados" ancho="555" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=juzgadoSel%>" hijo="t" readonly="true"/>           	   
 							<%}%>							
 						</td>	
 					</tr>

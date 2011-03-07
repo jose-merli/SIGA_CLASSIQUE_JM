@@ -437,9 +437,7 @@
 				- <%=UtilidadesString.mostrarDatoJSP(t_nombre)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido1)%>
 				<%=UtilidadesString.mostrarDatoJSP(t_apellido2)%></td>
 				<td>
-				<%
-					if (!modo.equalsIgnoreCase("ver")) {
-				%>
+				<%if (!modo.equalsIgnoreCase("ver")) {%>
 				<table>
 					<tr>
 						<td><siga:InformeSimple
@@ -448,9 +446,7 @@
 							formularioDatos="DefinirMantenimientoEJGForm" /></td>
 					</tr>
 				</table>
-				<%
-					}
-				%>
+				<%}%>
 				</td>
 			</tr>
 		</table>
@@ -470,8 +466,7 @@
 			    
 			  }else{
 				  codigoEjg= CODIGO;  
-			  }
-			%>
+			  }%>
 			<td  class="labelText" width="200">	
 				<input type="text" class="boxConsulta" value="<%=ANIO%>" readOnly="true" size="4" > / <input size="4" type="text" class="boxConsulta" value="<%=codigoEjg%>" readOnly="true" >
 			</td>
@@ -483,9 +478,6 @@
 				<input type="text" style="width:100px" class="boxConsulta" value="<%=NIFASISTIDO%>"    readOnly="true">
 				<input type="text" style="width:300px" class="boxConsulta" value="<%=NOMBREASISTIDO%>" readOnly="true">
 			</td>
-			
-			
-			
 			
 		</tr>
 
@@ -544,49 +536,31 @@
 				
 			</td>
 			<td>	
-			<%
-					if (modo.equals("ver")) {
-				%>
-					<siga:ComboBD nombre="idTipoEJGColegio" tipo="tipoEJGColegio" estilo="true" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=TIPOEJGCOLEGIOSEL%>" parametro="<%=dato%>" clase="boxConsulta" readOnly="true"/>
-			<%
-				} else {
-			%>
-					<siga:ComboBD nombre="idTipoEJGColegio" tipo="tipoEJGColegio" estilo="true" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=TIPOEJGCOLEGIOSEL%>" parametro="<%=dato%>" clase="boxCombo"/>
-			<%
-				}
-			%>
+			<%if (modo.equals("ver")) {%>
+				<siga:ComboBD nombre="idTipoEJGColegio" tipo="tipoEJGColegio" estilo="true" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=TIPOEJGCOLEGIOSEL%>" parametro="<%=dato%>" clase="boxConsulta" readOnly="true"/>
+			<%} else {%>
+				<siga:ComboBD nombre="idTipoEJGColegio" tipo="tipoEJGColegio" estilo="true" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=TIPOEJGCOLEGIOSEL%>" parametro="<%=dato%>" clase="boxCombo"/>
+			<%}%>
 			</td>
 			<td class="labelText" nowrap>
 				<siga:Idioma key='gratuita.operarEJG.literal.fechaPresentacion'/>&nbsp;<%=obligatorioFechaPresentacion?pintarAsterisco:""%>
 			</td>
 			<td>	
-			<%
-					if (modo.equals("ver")) {
-				%>
+			<%if (modo.equals("ver")) {%>
 				<input type="text" class="boxConsulta" value="<%=FECHAPRESENTACION%>" readOnly="true">
-			<%
-				} else {
-			%>
+			<%} else {%>
 				<html:text name="DefinirMantenimientoEJGForm" property="fechaPresentacion" size="10" maxlength="10" styleClass="box" value="<%=FECHAPRESENTACION%>" readOnly="true"></html:text>&nbsp;&nbsp;<a onClick="return showCalendarGeneral(fechaPresentacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
-			<%
-				}
-			%>
+			<%}%>
 			</td>
 			<td class="labelText" nowrap>
 				<siga:Idioma key='gratuita.operarEJG.literal.fechaLimitePresentacion'/>
 			</td>
 			<td>	
-			<%
-					if (modo.equals("ver")) {
-				%>
+			<%if (modo.equals("ver")) {%>
 				<input type="text" class="boxConsulta" value="<%=FECHALIMITEPRESENTACION%>" readOnly="true">
-			<%
-				} else {
-			%>
+			<%} else {%>
 				<html:text name="DefinirMantenimientoEJGForm" property="fechaLimitePresentacion" size="10" maxlength="10" styleClass="box" value="<%=FECHALIMITEPRESENTACION%>" readOnly="true"></html:text><a onClick="return showCalendarGeneral(fechaLimitePresentacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
-			<%
-				}
-			%>
+			<%}%>
 			</td>
 		</tr>
 		<tr>
@@ -596,37 +570,28 @@
 			</td>
 			
 			
-			<%
-			   if (modo.equals("ver")) {
-				%>
+			<% if (modo.equals("ver")) {%>
 			   <td  class="labelText">	
 				  <input size="4" type="text" class="boxConsulta" value="<%=anioCAJG%>" readOnly="true" > / <input type="text" class="boxConsulta" size="10" value="<%=numeroCAJG%>" readOnly="true" >
 			   </td>
 				
-			<%
-				} else {
-			%>
+			<%} else {%>
 			  <td  class="labelText">	
-				
-				<html:text name="DefinirMantenimientoEJGForm"  onkeypress="filterChars(this,false,true);"
+					<html:text name="DefinirMantenimientoEJGForm"  onkeypress="filterChars(this,false,true);"
                              onkeyup="filterCharsUp(this);"  onblur="filterCharsNaN(this);" property="anioCAJG" size="4" maxlength="4" styleClass="boxNumber"  value="<%=anioCAJG%>" ></html:text> / <html:text name="DefinirMantenimientoEJGForm" property="numeroCAJG" size="10" maxlength="20" onkeypress="filterChars(this,false,true);"
                              onkeyup="filterCharsUp(this);"  onblur="filterCharsNaN(this);"  styleClass="boxNumber" value="<%=numeroCAJG%>"></html:text>
 			  </td>
 				
-			<%
-						}
-			%>
+			<%}%>
 			
 			
 			<td class="labelText" colspan="2">	
 				<siga:Idioma key='gratuita.operarEJG.literal.origen'/> &nbsp;
-			
-			
-		<%	 if (modo.equals("ver")) {%> 
+			<% if (modo.equals("ver")) {%> 
 				<siga:ComboBD nombre="idOrigenCAJG" tipo="origenCAJG" clase="boxConsulta" ancho="230"  filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vOrigenCAJGSel%>" readOnly="true"/>
-			 <%}else{ %>
-			    <siga:ComboBD nombre="idOrigenCAJG" tipo="origenCAJG" clase="boxCombo" ancho="230" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vOrigenCAJGSel%>" />
-			 <%}%>		
+			<%}else{ %>
+		    	<siga:ComboBD nombre="idOrigenCAJG" tipo="origenCAJG" clase="boxCombo" ancho="230" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=vOrigenCAJGSel%>" />
+		 	<%}%>		
 			</td>
 			
 			<td class="labelText" colspan="2">	
@@ -645,18 +610,7 @@
 				</td> 
 				<td class="labelText" ><siga:Idioma key='gratuita.mantAsistencias.literal.centroDetencion'/></td>
 				<td  colspan="3">	
-				<%
-						//if(!modo.equals("ver")){
-					%>
-				    <!--<input type="text" name="codigoExtComisaria" class="box" size="8"  style="margin-top:3px;" maxlength="10" onBlur="obtenerComisaria();" />-->
-					<!--<siga:ComboBD nombre="comisaria" tipo="comboComisariasTurno" ancho="200" obligatorio="false" parametro="<%=parametroJuzgado%>" elementoSel="<%=comisariaSel%>" clase="<%=estilo%>" hijo="t" readonly="false"/>-->
-				<%
-					//}else{
-				%>
 					<siga:ComboBD nombre="vistaComisaria" tipo="comboComisariasTurno" ancho="450" obligatorio="false" parametro="<%=parametroJuzgado%>" elementoSel="<%=comisariaSel%>" clase="boxConsulta" hijo="t" readonly="true"/>
-				<%
-					//}
-				%>
 				</td>
 				
 			</tr>
@@ -667,27 +621,12 @@
 				</td>
 				<td class="labelText"  width="15%">	
 				 <siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado"/>
-				 <%
-				 	if (!modo.equals("ver")) {
-				 %>
-				 &nbsp;/&nbsp;<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.codigoext"/>
-				 <%
-				 	}
-				 %>
+				 <%if (!modo.equals("ver")) {%>
+				 	&nbsp;/&nbsp;<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.codigoext"/>
+				 <%}%>
 				</td>	 
 				<td  colspan="3">	
-				<%
-						//if(!modo.equals("ver")){
-					%>
-			 	 <!-- <input type="text" name="codigoExtJuzgado" class="box" size="8"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado();" /> -->
-			 	 <!-- <siga:ComboBD nombre="juzgado" tipo="comboJuzgadosTurno" ancho="200" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=juzgadoSel%>" hijo="t" readonly="false"/> -->          	   
-				<%
-          	   					//}else{
-          	   				%>
-				<siga:ComboBD nombre="vistaJuzgado" tipo="comboJuzgadosTurno" ancho="480" clase="boxComboConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=juzgadoSel%>" hijo="t" readonly="true"/>          	   
-				<%
-          	   					//}
-          	   				%>
+					<siga:ComboBD nombre="vistaJuzgado" tipo="comboJuzgados" ancho="480" clase="boxComboConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos%>" elementoSel="<%=juzgadoSel%>" hijo="t" readonly="true"/>          	   
 				</td>	
 			</tr>
 			<tr>
@@ -695,33 +634,13 @@
 					<siga:Idioma key='gratuita.operarEJG.literal.observacionesAsunto'/>
 				</td>
 				<td  colspan="2">	
-					<%
-							// if(modo.equals("ver")){
-						%>
 						<html:textarea name="DefinirMantenimientoEJGForm" property="observaciones" cols="60" rows="2" style="overflow:auto" styleClass="boxConsulta" value="<%=OBSERVACIONES%>" readonly="true"></html:textarea>
-					<%
-						//}else{
-					%>
-						<!--<html:textarea name="DefinirMantenimientoEJGForm" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" property="observaciones" cols="60" rows="2" style="overflow:auto" styleClass="box" value="<%=OBSERVACIONES%>"></html:textarea>-->
-					<%
-						//}
-					%>
 				</td>
 				<td class="labelText">
 					<siga:Idioma key='gratuita.general.literal.comentariosDelitos'/>
 				</td>
 				<td  colspan="2">	
-					<%
-							// if(modo.equals("ver")){
-						%>
-						<html:textarea name="DefinirMantenimientoEJGForm" property="delitos" cols="60" rows="2" style="overflow:auto" styleClass="boxConsulta" value="<%=DELITOS%>" readonly="true"></html:textarea>
-					<%
-						//}else{
-					%>
-						<!--<html:textarea name="DefinirMantenimientoEJGForm" onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" property="delitos" cols="60" rows="2" style="overflow:auto" styleClass="box" value="<%=DELITOS%>"></html:textarea>-->
-					<%
-						//}
-					%>
+					<html:textarea name="DefinirMantenimientoEJGForm" property="delitos" cols="60" rows="2" style="overflow:auto" styleClass="boxConsulta" value="<%=DELITOS%>" readonly="true"></html:textarea>
 				</td>		
 			</tr>			
 			<tr>
@@ -762,13 +681,7 @@
 									<input type="text" name="nombreCompleto" id="nombreCompleto" size="60" maxlength="100" class="boxConsulta" readOnly="true" value="<%=procuradorNombreCompleto%>"/>
 								</td>
 								<td width="10%">
-									<%
-										//if (!modo.equals("ver")) {
-									%>
-										<!--<html:button property="buscar" onclick="return buscarProcurador();" styleClass="button"><siga:Idioma key="general.boton.search"/></html:button>-->
-									<%
-										//}
-									%>			
+	
 								</td>
 							</tr>
 						</table>
@@ -779,144 +692,13 @@
 	</siga:ConjCampos>
 </siga:ConjCampos>
 		
-		
-
-
-
+	
+	<%if ( ((DESIGNA_NUMERO != null) && (!DESIGNA_NUMERO.equals("")))) {%>
+		<!-- Pinta relacion con designa -->
+        <siga:ConjCampos leyenda="gratuita.operarEJG.literal.relacionado">
 
 	
-<%
-		if ( /*	 ((NUMEROSOJ != null)&&(!NUMEROSOJ.equals(""))) || */
-			/*	((NUMEROASISTENCIA != null)&&(!NUMEROASISTENCIA.equals(""))) || */
-			((DESIGNA_NUMERO != null) && (!DESIGNA_NUMERO.equals("")))) {
-	%>
-	
-             <siga:ConjCampos leyenda="gratuita.operarEJG.literal.relacionado">
-
-	
-		<%
-				//if ((NUMEROSOJ != null)&&(!NUMEROSOJ.equals(""))) {
-			%>													
-<!--			<fieldset>																								-->
-<!--	 		<table width="100%"> 																					-->
-<!--			<tr>																									-->
-<!--				<td class="labelText" >																				-->
-<!--					<siga:Idioma key='gratuita.operarEJG.literal.SOJ'/>												-->
-<!--				</td>																								-->
-<!--				<td class="labelText" >																				-->
-<!--					<siga:Idioma key='gratuita.operarEJG.literal.anio'/>											-->
-<!--				</td>																								-->
-<!--				<td >																								-->
-<!--					<input type="text" class="boxConsulta" value="<%=ANIOSOJ%>" readOnly="true">					-->
-<!--				</td>																								-->
-<!--				<td class="labelText" >																				-->
-<!--					<siga:Idioma key='gratuita.busquedaSOJ.literal.codigo'/>										-->
-<!--				</td>																								-->
-<!--				<td >																								-->
-<!--					<input type="text" class="boxConsulta" value="<%=CODIGOSOJ%>" readOnly="true" size="10">		-->
-<!--				</td>																								-->
-<!--				<td class="labelText"  style="display:none">														-->
-<!--					<siga:Idioma key='gratuita.operarEJG.literal.numer'/>											-->
-<!--				</td>																								-->
-<!--				<td style="display:none">																			-->
-<!--					<input type="text" class="boxConsulta" value="<%=NUMEROSOJ%>" readOnly="true" size="10">		-->
-<!--				</td>																								-->
-<!--				<td class="labelText" >																				-->
-<!--					<siga:Idioma key='gratuita.operarEJG.literal.tipo'/>											-->
-<!--				</td>																								-->
-<!--				<td >																								-->
-<!--					<input type="text" class="boxConsulta" value="<%=TIPOSOJ%>" readOnly="true">					-->
-<!--				</td>																								-->
-<!--				<td class="labelText">																				-->
-<!--					<siga:Idioma key='gratuita.operarEJG.literal.fecha'/>											-->
-<!--				</td>																								-->
-<!--				<td >																								-->
-<!--					<input type="text" class="boxConsulta" value="<%=FECHAAPERTURASOJ%>" readOnly="true">			-->
-<!--				</td>																								-->
-<!--				<td>																								-->	
-<!--				<%	//																								-->
-				   //if (modo.equalsIgnoreCase("ver")) {  %>															
-<!--						<img src="<%=app%>/html/imagenes/bconsultar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.operarEJG.boton.ConsultarSOJ'/>" name="consultarSOJ" border="0" onclick="consultarSOJFuncion('ver')"> -->
-				<%
-					// } else {
-				%>																						
-<!--						<img src="<%=app%>/html/imagenes/bconsultar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.operarEJG.boton.ConsultarSOJ'/>" name="consultarSOJ" border="0" onclick="consultarSOJFuncion('ver')">	-->
-<!--						<img src="<%=app%>/html/imagenes/beditar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.boton.EditarDesigna'/>" name="" border="0" onclick="consultarSOJFuncion('<%=modo%>')"> -->
-<!--						<img src="<%=app%>/html/imagenes/bborrar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.boton.BorrarSOJ'/>" name="" border="0" onclick="borrarRelacionarConSOJ()"> -->
-				<%
-					// }
-				%>																								
-<!--																													-->		
-<!--				</td>																								-->			
-<!--			</tr>-->
-<!--	 		</table>-->
-<!--			</fieldset>-->
-			<%
-				//} else
-			%>
-	
-			<%
-					//if ((NUMEROASISTENCIA != null)&&(!NUMEROASISTENCIA.equals(""))) {
-				%>
-<!--	 		<fieldset>  -->
-<!--	 		<table width="100%"> -->
-<!--			<tr>-->
-<!--				<td class="labelText">-->
-<!--					<siga:Idioma key='gratuita.operarEJG.literal.asistencia'/>-->
-<!--				</td>-->
-<!--				<td class="labelText" >-->
-<!--					<siga:Idioma key='gratuita.operarEJG.literal.turno'/>-->
-<!--				</td>-->
-<!--				<td>-->
-<!--					<input type="text" class="boxConsulta" value="<%=nombreTurnoAsistencia%>" readOnly="true">-->
-<!--				</td>-->
-<!--				<td class="labelText" >-->
-<!--					<siga:Idioma key='gratuita.operarEJG.literal.guardia'/>-->
-<!--				</td>-->
-<!--				<td>-->
-<!--					<input type="text" class="boxConsulta" value="<%=nombreGuardiaAsistencia%>" readOnly="true">-->
-<!--				</td>-->
-<!--				<td class="labelText">-->
-<!--					<siga:Idioma key='gratuita.operarEJG.literal.anio'/>-->
-<!--				</td>-->
-<!--				<td >-->
-<!--					<input type="text" class="boxConsulta" value="<%=ASISTENCIA_ANIO%>" readOnly="true" size="10">-->
-<!--				</td>-->
-<!--				<td class="labelText">-->
-<!--					<siga:Idioma key='gratuita.operarEJG.literal.numer'/>-->
-<!--				</td>-->
-<!--				<td>-->
-<!--					<input type="text" class="boxConsulta" value="<%=NUMEROASISTENCIA%>" readOnly="true" size="10">-->
-<!--				</td>-->
-
-<!--				<td >-->
-				<%
-					//	if (modo.equalsIgnoreCase("ver")) {
-				%>
-<!--					<img src="<%=app%>/html/imagenes/bconsultar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.operarEJG.boton.ConsultarAsistencia'/>" name="consultarAsistencia" border="0" onclick="consultarAsistenciaFuncion('ver')">-->
-				<%
-					// } else {
-				%>
-<!--						<img src="<%=app%>/html/imagenes/bconsultar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.operarEJG.boton.ConsultarAsistencia'/>" name="consultarAsistencia" border="0" onclick="consultarAsistenciaFuncion('ver')">-->
-<!--						<img src="<%=app%>/html/imagenes/beditar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.boton.EditarDesigna'/>" name="" border="0" onclick="consultarAsistenciaFuncion('<%=modo%>')">-->
-<!--						<img src="<%=app%>/html/imagenes/bborrar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.boton.BorrarAsistencia'/>" name="" border="0" onclick="borrarRelacionarConAsistencia()">-->
-				<%
-					// }
-				%>
-<!--				</td>-->
-
-
-<!--			</tr>-->
-<!--	 		</table> -->
-<!--			</fieldset>-->
-			<%
-				// } else
-			%>
-			
-			<%
-							if ((DESIGNA_NUMERO != null)
-												&& (!DESIGNA_NUMERO.equals(""))) {
-						%>
+			<%if ((DESIGNA_NUMERO != null)&& (!DESIGNA_NUMERO.equals(""))) {%>
 			
 	 		<!--<fieldset>-->
 			<table width="100%" border="0"> 
@@ -932,10 +714,9 @@
 				<td>
 					<input type="text" cols="20" class="boxConsulta" value="<%=DESIGNA_TURNO_NOMBRE%>" readOnly="true">
 				</td>
-				<%
-				if(ESTADO!=null && ESTADO.trim().equals("A")){ %>
+				<%if(ESTADO!=null && ESTADO.trim().equals("A")){ %>
 				<td style="color:red" class="labelText">
-				<siga:Idioma key='gratuita.designa.estado.anulado'/>
+					<siga:Idioma key='gratuita.designa.estado.anulado'/>
 				</td>
 				<%}%>
 
@@ -945,14 +726,8 @@
 				</td>-->
 				<td class="labelTextValue" >
 	
-				<%=UtilidadesString
-											.mostrarDatoJSP(DESIGNA_ANIO)%>/<%=UtilidadesString
-											.mostrarDatoJSP(DESIGNA_CODIGO)%> - <%=UtilidadesString
-											.mostrarDatoJSP(t_nombreD)%> <%=UtilidadesString
-											.mostrarDatoJSP(t_apellido1D)%> <%=UtilidadesString
-											.mostrarDatoJSP(t_apellido2D)%>
+				<%=UtilidadesString.mostrarDatoJSP(DESIGNA_ANIO)%>/<%=UtilidadesString.mostrarDatoJSP(DESIGNA_CODIGO)%> - <%=UtilidadesString.mostrarDatoJSP(t_nombreD)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido1D)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido2D)%>
 					
-					<!--<input type="text"  class="boxConsulta" value="< %=DESIGNA_ANIO%>" readOnly="true">/<input type="text"  class="boxConsulta" value="< %=DESIGNA_CODIGO%>" readOnly="true">-->
 				</td>
 				<td class="labelText" style="display:none">	
 					<siga:Idioma key='gratuita.operarEJG.literal.numer'/>
@@ -960,57 +735,26 @@
 				<td style="display:none">
 					<input type="text" cols="5" class="boxConsulta" value="<%=DESIGNA_NUMERO%>" readOnly="true">
 				</td>
-				<%
-					if (modo.equalsIgnoreCase("ver")) {
-				%>
+				<%if (modo.equalsIgnoreCase("ver")) {%>
 					<td colspan="3" align="right">
 						<img src="<%=app%>/html/imagenes/bconsultar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.operarEJG.boton.ConsultarDesigna'/>" name="consultarDesigna" border="0" onclick="consultarDesignaFuncion('ver')">
 					</td>
-				<%
-					} else {
-				%>
+				<%} else {%>
 					<td colspan="3" align="right" >
 						<img src="<%=app%>/html/imagenes/bconsultar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.operarEJG.boton.ConsultarDesigna'/>" name="consultarDesigna" border="0" onclick="consultarDesignaFuncion('ver')">
 						<img src="<%=app%>/html/imagenes/beditar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.boton.EditarDesigna'/>" name="" border="0" onclick="consultarDesignaFuncion('<%=modo%>')">
 						<img src="<%=app%>/html/imagenes/bborrar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.boton.BorrarDesigna'/>" name="" border="0" onclick="borrarRelacionConDesigna()">
 					</td>
-				<%
-					}
-				%>
+				<%}%>
 				</tr>			
-		 		<!--  <tr>
-				<td class="labelText" >	
-					&nbsp;
-				</td>
-				<td class="labelText" >	
-					<siga:Idioma key='gratuita.busquedaDesignas.literal.codigo'/>
-				</td>
-				<td>
-					<input type="text" cols="5" class="boxConsulta" value="< %=DESIGNA_CODIGO%>" readOnly="true">
-				</td>-->
-				<!--<td class="labelText">
-					<siga:Idioma key='gratuita.operarEJG.literal.fecha'/>
-				</td>
-				<td>
-					<input type="text" cols="7" class="boxConsulta" value="< %=FECHAENTRADADESIGNA%>" readOnly="true">
-				</td>
-	
-				
-				
-			</tr>-->
+		 		
 			</table>
-	<!--		</fieldset>-->
 			
-			<%
-							}
-						%>
+			<%}%>
 
-</siga:ConjCampos>
+	</siga:ConjCampos>
+	<%}%>
 
-
-<%
-	}
-%>
 <siga:ConjCampos leyenda="gratuita.operarEJG.literal.ServicioTramitacion">
 	<table width="100%" border="0">
 		<tr>
@@ -1018,39 +762,28 @@
 				<siga:Idioma key='gratuita.operarEJG.literal.turno'/>
 			</td>
 			<td>	
-				<%
-						if (modo.equals("ver")) {
-					%>
+				<%if (modo.equals("ver")) {%>
 					<input type="text" class="boxConsulta" value="<%=TURNO%>" readOnly="true" style="width:140px">
-				<%
-					} else {
-								ArrayList lista = new ArrayList();
-								String cadena = usr.getLocation() + "," + idTurno;
-								lista.add(cadena);
+				<%} else {
+					ArrayList lista = new ArrayList();
+					String cadena = usr.getLocation() + "," + idTurno;
+					lista.add(cadena);
 				%>
 					<siga:ComboBD nombre = "identificador" tipo="turnos" clase="boxCombo" ancho="400" obligatorio="false" pestana="t" accion="Hijo:identificador2;" elementoSel="<%=lista%>" parametro="<%=dato%>"/>
-				<%
-					}
-				%>
+				<%}%>
 			</td>
 			<td class="labelText">	
 				<siga:Idioma key='gratuita.operarEJG.literal.guardia'/>
 			</td>
 			<td>	
-				<%
-						if (modo.equals("ver")) {
-					%>
+				<%if (modo.equals("ver")) {%>
 					<input type="text" class="boxConsulta" value="<%=GUARDIA%>" readOnly="true" style="width:140px">					
-				<%
-										} else {
-													ArrayList lista = new ArrayList();
-													String cadena = usr.getLocation() + "," + IDGUARDIA;
-													lista.add(cadena);
-									%>
+				<%} else {
+					ArrayList lista = new ArrayList();
+					String cadena = usr.getLocation() + "," + IDGUARDIA;
+					lista.add(cadena);%>
 					<siga:ComboBD nombre = "identificador2" tipo="guardias" clase="boxCombo" pestana="t" ancho="400" obligatorio="false" hijo="t" parametro="<%=datos%>" elementoSel="<%=lista%>"/>									
-				<%
-														}
-													%>
+				<%}%>
 			</td>
 		</tr>
 		<tr>
@@ -1093,7 +826,6 @@
 		<html:hidden property ="numero" value = ""/>
 		<html:hidden property ="idTurno" value = ""/>
 		<html:hidden property ="anio" value = ""/>
-		
 		<html:hidden property = "ncolegiado" value= "<%=NUMEROCOLEGIADO%>"/>		
 		<html:hidden property = "nombre" value= "<%=NOMBRELETRADO%>"/>	
 	</html:form>		
@@ -1104,7 +836,6 @@
 		<html:hidden property ="numero"   value= "<%=designaNumero%>"/>
 		<html:hidden property ="idTurno"  value= "<%=designaIdTurno%>"/>
 		<html:hidden property ="desdeEjg" value= "si"/>
-		
 	</html:form>		
 	
 	<html:form action = "/JGR_Asistencia.do" method="POST" target="mainWorkArea">
@@ -1203,15 +934,13 @@
 		    return false;
 		   }
 		 <%}%> 
-		//< %if (PCAJG_ACTIVADO!=null && PCAJG_ACTIVADO.intValue()>1){%>
-			 if( !((document.forms[0].anioCAJG.value!="" && document.forms[0].numeroCAJG.value!="" && document.forms[0].idOrigenCAJG.value!="")
-			    || (document.forms[0].anioCAJG.value=="" && document.forms[0].numeroCAJG.value=="" && document.forms[0].idOrigenCAJG.value=="")) ){
-			    fin();
-			    alert('<siga:Idioma key="gratuita.operarEJG.message.anioNumeroOrigen.obligatorios"/>');
-			    return false;
-			   
-			 } 
-		 //< %}%>
+		 if( !((document.forms[0].anioCAJG.value!="" && document.forms[0].numeroCAJG.value!="" && document.forms[0].idOrigenCAJG.value!="")
+		    || (document.forms[0].anioCAJG.value=="" && document.forms[0].numeroCAJG.value=="" && document.forms[0].idOrigenCAJG.value=="")) ){
+		    fin();
+		    alert('<siga:Idioma key="gratuita.operarEJG.message.anioNumeroOrigen.obligatorios"/>');
+		    return false;
+		   
+		 } 
 		 if(<%=obligatorioFechaPresentacion%> && document.forms[0].fechaPresentacion.value==""){
 			 fin();
 			 alert("<siga:Idioma key='errors.required' arg0='gratuita.operarEJG.literal.fechaPresentacion'/>");
@@ -1253,8 +982,6 @@
 		function accionCrearDesignacion()
 		{  
 			document.forms[1].modo.value = "nuevo";
-			
-//			document.forms[1].submit();
 			
 			var resultado=ventaModalGeneral(document.forms[1].name,"M");
 			if(resultado && resultado[0]=="MODIFICADO"){
