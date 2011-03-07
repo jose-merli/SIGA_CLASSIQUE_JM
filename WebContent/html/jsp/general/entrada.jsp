@@ -36,7 +36,6 @@
 </style>	    
 	    <script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
 	</head>
-<!--	<body class ='tablaCentralCampos' background="/SIGA/html/imagenes/fondo2.gif"> -->
 	<body style="background-color:#ffffff;">
 	<table class="labelTextValue" style="height:100%;width:100%;" border="0">
 	<tr>

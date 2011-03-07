@@ -188,7 +188,7 @@
 				<input id="buscarLetrado" type="text" class="box" size="10" value="<%=0%>"  
 				onfocus="limpiarTexto(this, 1);" onblur="buscarLetradoEnColaLetrado();limpiarTexto(this, 0);">
 				&nbsp;
-				<img src="/SIGA/html/imagenes/bconsultar_off.gif" style="cursor:hand;" onClick="buscarLetradoEnColaLetrado();" alt="<%=buscarLetrado%>" >
+				<img src="<%=app%>/html/imagenes/bconsultar_off.gif" style="cursor:hand;" onClick="buscarLetradoEnColaLetrado();" alt="<%=buscarLetrado%>" >
 			</td>
 			<td width='550px'>
 			&nbsp;

@@ -86,8 +86,6 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
 	
 	public String getDirectorio(InformeForm informeForm) throws SIGAException{
 		StringBuffer directorio = null;
-//		informes.directorioFisicoPlantillaInformesJava=/Datos/plantillas
-//		informes.directorioPlantillaInformesJava=/informes_genericos
 		
 		if(informeForm.getClaseTipoInforme().equals(AdmTipoInformeBean.CLASETIPOINFORME_GENERICO)){
 			ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);

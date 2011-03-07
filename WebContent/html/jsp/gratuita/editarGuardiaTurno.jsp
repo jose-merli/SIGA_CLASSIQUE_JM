@@ -803,7 +803,7 @@
 	</table>
 	</siga:ConjCampos>
 <ajax:select
-	baseUrl="/SIGA/DefinirGuardiasTurnosAction.do?modo=getAjaxGuardias"
+	baseUrl="<%=app%>/DefinirGuardiasTurnosAction.do?modo=getAjaxGuardias"
 	source="turnosPrincipales" target="guardiasPrincipales" parameters="idTurnoPrincipal={idTurnoPrincipal}"
 	postFunction="postAccionTurno"
 	/>

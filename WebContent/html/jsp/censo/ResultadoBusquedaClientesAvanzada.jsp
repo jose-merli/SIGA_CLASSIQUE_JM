@@ -704,7 +704,7 @@
 		var idInstPersona = document.getElementById(auxInst).value;		
 	   	datos = "idPersona=="+idPersona + "##idInstitucion==" +idInstPersona ; 
 		
-		var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='/SIGA/INF_InformesGenericos.do' target='submitArea'>");
+		var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='<%=app%>/INF_InformesGenericos.do' target='submitArea'>");
 		formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=idInstitucionLocation %>'>"));
 		formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
 		formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='CENSO'>"));
@@ -750,7 +750,7 @@
 			return;
 		}
 			
-			var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='/SIGA/INF_InformesGenericos.do' target='submitArea'>");
+			var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='<%=app%>/INF_InformesGenericos.do' target='submitArea'>");
 			formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=idInstitucionLocation %>'>"));
 			formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
 			formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='CENSO'>"));
