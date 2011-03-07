@@ -208,20 +208,22 @@ public class FcsCobrosRetencionJudicialAdm extends MasterBeanAdministrador {
 		sql.append(" COB.FECHARETENCION,COB.IMPORTERETENIDO,COB.IDPAGOSJG, ");
 		sql.append(" PAGO.NOMBRE PAGORELACIONADO, ");
 		sql.append(" ABONO.NUMEROABONO ABONORELACIONADO");
-		sql.append(" FROM FCS_COBROS_RETENCIONJUDICIAL COB,	 FCS_PAGOSJG PAGO,FAC_ABONO ABONO ");
-		sql.append(" ,FCS_RETENCIONES_JUDICIALES RET, CEN_PERSONA PER, fcs_destinatarios_retenciones dest ");
+		sql.append(" FROM FCS_COBROS_RETENCIONJUDICIAL COB, FCS_RETENCIONES_JUDICIALES RET, fcs_destinatarios_retenciones dest, ");
+		sql.append(" Fcs_Pago_Colegiado PCOL, FAC_ABONO ABONO, FCS_PAGOSJG PAGO, CEN_PERSONA PER ");
 		sql.append(" WHERE  ");
-		sql.append(" COB.IDINSTITUCION = PAGO.IDINSTITUCION ");
-		sql.append(" AND COB.IDPAGOSJG = PAGO.IDPAGOSJG ");
-		sql.append(" AND COB.IDPERSONA = ABONO.IDPERSONA ");
-		sql.append(" AND PAGO.IDINSTITUCION = ABONO.IDINSTITUCION ");
-		sql.append(" AND PAGO.IDPAGOSJG = ABONO.IDPAGOSJG ");
-		sql.append(" AND COB.IDINSTITUCION = RET.IDINSTITUCION ");
+		sql.append(" COB.IDINSTITUCION = RET.IDINSTITUCION ");
 		sql.append(" AND COB.IDRETENCION = RET.IDRETENCION ");
-		sql.append(" AND COB.IDPERSONA = PER.IDPERSONA ");
-		sql.append(" and dest.idinstitucion=ret.idinstitucion ");
-		sql.append(" and dest.iddestinatario=ret.iddestinatario ");
-		
+		sql.append(" AND RET.idinstitucion = DEST.idinstitucion ");
+		sql.append(" AND RET.iddestinatario = DEST.iddestinatario ");
+		sql.append(" AND COB.IDINSTITUCION = PCOL.Idinstitucion ");
+		sql.append(" AND COB.Idpagosjg = PCOL.IDPAGOSJG  ");
+		sql.append(" AND COB.Idpersona = PCOL.IDPERORIGEN ");
+		sql.append(" AND NVL(PCOL.IDPERDESTINO, PCOL.IDPERORIGEN) = ABONO.IDPERSONA ");
+		sql.append(" AND PCOL.IDINSTITUCION = ABONO.IDINSTITUCION ");
+		sql.append(" AND PCOL.IDPAGOSJG = ABONO.IDPAGOSJG ");
+		sql.append(" AND PCOL.IDINSTITUCION = PAGO.IDINSTITUCION ");
+		sql.append(" AND PCOL.IDPAGOSJG = PAGO.IDPAGOSJG ");
+		sql.append(" AND PCOL.IDPERORIGEN = PER.IDPERSONA ");
 		
 		sql.append(" AND COB.IDINSTITUCION = ");
 		contador++;
