@@ -22,6 +22,7 @@ public class RetencionesIRPFForm extends MasterForm
 	Integer periodo = null;
 	Integer anyoInformeIRPF = null;
 	String idioma;
+	String idCuenta = null;
 
 	
 	// GETTERS
@@ -38,6 +39,7 @@ public class RetencionesIRPFForm extends MasterForm
 	public Integer getAnyoInformeIRPF() { return anyoInformeIRPF; }
 	public Integer getPeriodo() { return periodo; }
 	public String getIdioma() { return idioma; }
+	public String getIdCuenta() { return idCuenta; }
 	
 	
 	// SETTERS
@@ -54,5 +56,6 @@ public class RetencionesIRPFForm extends MasterForm
 	public void setPeriodo(Integer periodo) { this.periodo = periodo; }
 	public void setAnyoInformeIRPF(Integer anyoInformeIRPF) { this.anyoInformeIRPF = anyoInformeIRPF; }
 	public void setIdioma(String idioma) { this.idioma = idioma; }
+	public void setIdCuenta(String idCuenta) { this.idCuenta = idCuenta; }
 
 }
