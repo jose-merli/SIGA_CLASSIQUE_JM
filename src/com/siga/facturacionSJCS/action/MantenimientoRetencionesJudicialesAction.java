@@ -345,7 +345,7 @@ public class MantenimientoRetencionesJudicialesAction extends MasterAction {
 			boolean checkHistorico  = UtilidadesString.stringToBoolean(UtilidadesHash.getString(miHash,"CHECKHISTORICO"));
 			if (!checkHistorico){
 				consulta += " AND (" + FcsRetencionesJudicialesBean.C_FECHAFIN+" is null "+
-				            " or trunc("+ FcsRetencionesJudicialesBean.C_FECHAFIN+")>trunc(sysdate))";
+				            " or trunc("+ FcsRetencionesJudicialesBean.C_FECHAFIN+")>=trunc(sysdate))";
 				
 			}
 			

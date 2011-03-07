@@ -96,7 +96,7 @@
 					 Date dateHoy = sdfNew.parse(fechaHoy);	
 					 Date dateFin = sdfNew.parse(fechaNotificacionFin);
 					
-					 if (!dateHoy.before(dateFin)){
+					 if (!dateHoy.before(dateFin) && !dateHoy.equals(dateFin)){
 					     
 						 botones = "C";
 					 }
