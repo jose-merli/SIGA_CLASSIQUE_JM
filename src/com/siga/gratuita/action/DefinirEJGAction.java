@@ -720,7 +720,7 @@ public class DefinirEJGAction extends MasterAction
 					throw new ClsExceptions ("Error al crear el EJG desde la designa");
 				}
 				
-/**/	  if (miForm.getSOJIdTipoSOJ()!=null){//Sólo en el caso de un EJG dado de alta desde un SOJ
+/**/	  if (miForm.getSOJIdTipoSOJ()!=null && !miForm.getSOJIdTipoSOJ().equalsIgnoreCase("")){//Sólo en el caso de un EJG dado de alta desde un SOJ
 			
 				// creamos la relacion entre el SOJ y el EJG EN EL SOJ.
 				miHashSOJ.put(ScsSOJBean.C_EJGIDTIPOEJG, (String)miHash.get(ScsEJGBean.C_IDTIPOEJG));
