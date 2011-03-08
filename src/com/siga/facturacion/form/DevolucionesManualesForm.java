@@ -64,6 +64,20 @@ public class DevolucionesManualesForm extends MasterForm{
 	public String getNombreTitular() {
  		return UtilidadesHash.getString(datos, "NombreTitular");
  	}
+	
+	public void setDestinatario (String dato) {
+		UtilidadesHash.set(datos, "Destinatario", dato);
+ 	}
+	public String getDestinatario() {
+ 		return UtilidadesHash.getString(datos, "Destinatario");
+ 	}
+ 		
+	public void setNombreDestinatario (String dato) {
+		UtilidadesHash.set(datos, "NombreDestinatario", dato);
+ 	}
+	public String getNombreDestinatario() {
+ 		return UtilidadesHash.getString(datos, "NombreDestinatario");
+ 	}
  		
 	public void setFechaDevolucion (String dato) {
 		UtilidadesHash.set(datos, "FechaDevolucion", dato);

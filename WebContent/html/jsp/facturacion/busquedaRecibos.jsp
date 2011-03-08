@@ -121,20 +121,24 @@
 	    <input type="hidden" name="actionModal" value="">
 		
 			<siga:ConjCampos leyenda="facturacion.devolucionManual.criterios">	
-							<table>				
-
+				<table>
 					<td class="labelText" width="80px"><siga:Idioma key="facturacion.devolucionManual.numeroFactura"/></td>
 					<td ><html:text styleClass="box" property="numeroFactura" maxlength="12" /></td>
 					
-					<td class="labelText" width="180px"><siga:Idioma key="facturacion.devolucionManual.titularDomiciliacion"/></td>
+					<td class="labelText" width="60px"><siga:Idioma key="facturacion.devolucionManual.titularDomiciliacion"/></td>
 					<td>
 						<html:button property="idButton" onclick="return buscarCliente();" styleClass="button"><siga:Idioma key="general.boton.search"/> </html:button>
 						<html:button property="idButton" onclick="return limpiarCliente();" styleClass="button"><siga:Idioma key="general.boton.clear"/> </html:button>
 						<html:hidden property="titular" />
 					</td>
 					
-					<td width="30px">
-						<html:text styleClass="boxConsulta" property="nombreTitular" size="40" readOnly="true"/>
+					<td width="42px"><html:text styleClass="boxConsulta" property="nombreTitular" size="37" readOnly="true"/></td>
+
+
+					<td class="labelText" ><siga:Idioma key="facturacion.buscarFactura.literal.Deudor"/>&nbsp;&nbsp;&nbsp;&nbsp;
+					</td>
+					<td>  
+						<siga:ComboBD nombre="destinatario" tipo="cmbDeudores"  ancho="160" clase="boxCombo" obligatorio="false"/>
 					</td>
 				</table>
 			<table>
