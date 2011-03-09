@@ -1515,18 +1515,18 @@ public class DatosGeneralesAction extends MasterAction {
 	 */
 	protected String insertarSociedad (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
 	{
+		UsrBean usr = (UsrBean) this.getUserBean(request);
 		UserTransaction tx = null;
 		
 		try {		
 			// Obtengo usuario y la transaccion
-			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			tx = usr.getTransactionPesada();
  			
 			// Obtengo los datos del formulario
 			DatosGeneralesForm miForm = (DatosGeneralesForm)formulario;
 			Hashtable hash = miForm.getDatos();
 
-			CenClienteAdm adminCli=new CenClienteAdm(this.getUserBean(request));
+			CenClienteAdm adminCli=new CenClienteAdm(usr);
 
 			// Adecuo formatos
 			hash = this.prepararFormatosFechas(hash);
@@ -1551,7 +1551,7 @@ public class DatosGeneralesAction extends MasterAction {
 
 
 			    // obtencion del path desde tabla parametros
-			    GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request)); 
+			    GenParametrosAdm paramAdm = new GenParametrosAdm(usr); 
 				
 			    pathImagenes = paramAdm.getValor(miForm.getIdInstitucion(),ClsConstants.MODULO_CENSO,ClsConstants.PATH_APP, null);
 				pathImagenes += File.separator + ClsConstants.RELATIVE_PATH_FOTOS;
@@ -1625,7 +1625,7 @@ public class DatosGeneralesAction extends MasterAction {
 			
 
 			// Inserto los datos del no colegiado en CenNoColegiado:
-			CenNoColegiadoAdm admNoColegiado = new CenNoColegiadoAdm(this.getUserBean(request));
+			CenNoColegiadoAdm admNoColegiado = new CenNoColegiadoAdm(usr);
 			Hashtable hashNoColegiado = new Hashtable();
 			hashNoColegiado.put(CenNoColegiadoBean.C_ANOTACIONES,miForm.getAnotaciones());
 			hashNoColegiado.put(CenNoColegiadoBean.C_IDINSTITUCION,beanCli.getIdInstitucion());
@@ -1650,7 +1650,7 @@ public class DatosGeneralesAction extends MasterAction {
 			hashNoColegiado.put(CenNoColegiadoBean.C_USUMODIFICACION,usr.getUserName());
 			hashNoColegiado.put(CenNoColegiadoBean.C_FECHAMODIFICACION,"SYSDATE");
 			
-			GestorContadores gcSJ = new GestorContadores(this.getUserBean(request));
+			GestorContadores gcSJ = new GestorContadores(usr);
 		//Obtenemos los datos de la tabla de contadores pasando el sufijo y el prefijo introducidos en el formnulario	
 			Hashtable contadorConPrefijoSufijoHashSJ=gcSJ.getContador(beanCli.getIdInstitucion(),ClsConstants.SOCIEDADSJ, miForm.getPrefijoNumRegSJ(), miForm.getSufijoNumRegSJ());
 		//Obtenemos los datos de la tabla de contadores sin pasarle el prefijo y el sufijo del formulario (datos originales)	
@@ -1784,9 +1784,9 @@ public class DatosGeneralesAction extends MasterAction {
 			bean.setidInstitucionActividad(new Integer(2000));
 			bean.setIdPersona(beanCli.getIdPersona());
 
-			CenNoColegiadoActividadAdm admGrupos = new CenNoColegiadoActividadAdm(this.getUserBean(request));
+			CenNoColegiadoActividadAdm admGrupos = new CenNoColegiadoActividadAdm(usr);
 			if (admGrupos.insert(bean)) {
-				CenHistoricoAdm admHist = new CenHistoricoAdm (this.getUserBean(request));
+				CenHistoricoAdm admHist = new CenHistoricoAdm (usr);
 				admHist.insertCompleto((CenHistoricoBean)null, bean, CenHistoricoAdm.ACCION_INSERT, this.getLenguaje(request));
 			}
 			request.getSession().setAttribute("hashNoColegiadoOriginal",hashNoColegiado);
@@ -1795,7 +1795,7 @@ public class DatosGeneralesAction extends MasterAction {
 			String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado(beanCli.getIdInstitucion().toString(),
 																					  beanCli.getIdPersona().toString(),
 																					  "",
-																					  ""+this.getUserName(request));
+																					  ""+usr);
 			if ((resultado == null) || (!resultado[0].equals("0")))
 				throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO");
 
