@@ -559,40 +559,36 @@ public class CalendarioSJCS
 			saltosCompenGruposAdm.cumplirSaltoCompensacion(compensacion.getIdSaltoCompensacionGrupo().toString(),
 					diasGuardia.get(0), motivoCumplimiento, idInstitucion.toString(), idTurno.toString(), 
 					idGuardia.toString(), idCalendarioGuardias.toString());
-			return compensacion.getLetrados();
-		}
-		
-		// obteniendo grupo de la cola
-		grupoLetrados = getGrupoLetrados(alLetradosOrdenados, punteroLetrado);
-		int idgrupoinicial = grupoLetrados.get(0).getGrupo();
-		while (grupoLetrados != null && !grupoValido) {
-			
-			// comprobando cada letrado del grupo
-			log.addLog(new String[] {"Probando Grupo", grupoLetrados.toString()});
-			grupoValido = true;
-			for (LetradoInscripcion lg : grupoLetrados) {
-				if (!comprobarRestriccionesLetradoCola(lg, diasGuardia, hmPersonasConSaltos, hmBajasTemporales)) {
-					grupoValido = false;
-					break; // salir de las comprobaciones por letrado si uno de ellos no es valido
+			grupoLetrados = compensacion.getLetrados();
+
+		} else {
+			// obteniendo grupo de la cola
+			grupoLetrados = getGrupoLetrados(alLetradosOrdenados, punteroLetrado);
+			int idgrupoinicial = grupoLetrados.get(0).getGrupo();
+			while (grupoLetrados != null && !grupoValido) {
+				
+				// comprobando cada letrado del grupo
+				log.addLog(new String[] {"Probando Grupo", grupoLetrados.toString()});
+				grupoValido = true;
+				for (LetradoInscripcion lg : grupoLetrados) {
+					if (!comprobarRestriccionesLetradoCola(lg, diasGuardia, hmPersonasConSaltos, hmBajasTemporales)) {
+						grupoValido = false;
+						break; // salir de las comprobaciones por letrado si uno de ellos no es valido
+					}
 				}
-			}
-			if (!grupoValido) {
-				log.addLog(new String[] {"Grupo no valido", grupoLetrados.toString()});
-				grupoLetrados = getGrupoLetrados(alLetradosOrdenados, punteroLetrado);
-				if (idgrupoinicial == grupoLetrados.get(0).getGrupo())
-					break;
+				if (!grupoValido) {
+					log.addLog(new String[] {"Grupo no valido", grupoLetrados.toString()});
+					grupoLetrados = getGrupoLetrados(alLetradosOrdenados, punteroLetrado);
+					if (idgrupoinicial == grupoLetrados.get(0).getGrupo())
+						break;
+				}
 			}
 		}
 			
 		if (grupoValido){
 			ScsGrupoGuardiaColegiadoAdm admGrupoGuardia = new ScsGrupoGuardiaColegiadoAdm(this.usrBean);
-			admGrupoGuardia.modifyOrderGruposLetrados(grupoLetrados.get(0).getGrupo());
-			/*for(LetradoGuardia letrado: grupoLetrados){
-				letrado.setOrdenGrupo(letrado.getOrdenGrupo()+SUM_POSICION);
-			}*/
-			
-			return grupoLetrados;
-		
+			admGrupoGuardia.modifyOrderGruposLetrados(grupoLetrados.get(0).getGrupo());			
+			return grupoLetrados;		
 		}else{
 			return null;
 		}
@@ -1367,18 +1363,19 @@ public class CalendarioSJCS
 						}else{
 							letrado.setOrdenGrupo(posicion-1);
 						}
+					}else{
+							letrado.setOrdenGrupo(posicion);
+					}
 						
-						hashGrupoLetrado = new Hashtable();
-						hashGrupoLetrado.put(ScsGrupoGuardiaColegiadoBean.C_IDGRUPOGUARDIACOLEGIADO, letrado.getIdGrupoGuardiaColegiado());
-						beanGrupoLetrado = new ScsGrupoGuardiaColegiadoBean();
-						beanGrupoLetrado.setIdGrupoGuardiaColegiado(letrado.getIdGrupoGuardiaColegiado());
-						beanGrupoLetrado = (ScsGrupoGuardiaColegiadoBean) gruGuaColAdm.selectByPKForUpdate(hashGrupoLetrado).get(0);
-						beanGrupoLetrado.setOrden(letrado.getOrdenGrupo());
-						beanGrupoLetrado.setFechaMod("sysdate");
-						beanGrupoLetrado.setUsuMod(new Integer(usrBean.getUserName()));
-						gruGuaColAdm.update(beanGrupoLetrado);
-					}								
-					
+					hashGrupoLetrado = new Hashtable();
+					hashGrupoLetrado.put(ScsGrupoGuardiaColegiadoBean.C_IDGRUPOGUARDIACOLEGIADO, letrado.getIdGrupoGuardiaColegiado());
+					beanGrupoLetrado = new ScsGrupoGuardiaColegiadoBean();
+					beanGrupoLetrado.setIdGrupoGuardiaColegiado(letrado.getIdGrupoGuardiaColegiado());
+					beanGrupoLetrado = (ScsGrupoGuardiaColegiadoBean) gruGuaColAdm.selectByPKForUpdate(hashGrupoLetrado).get(0);
+					beanGrupoLetrado.setOrden(letrado.getOrdenGrupo());
+					beanGrupoLetrado.setFechaMod("sysdate");
+					beanGrupoLetrado.setUsuMod(new Integer(usrBean.getUserName()));
+					gruGuaColAdm.update(beanGrupoLetrado);									
 					posicion++;
 				}
 				
