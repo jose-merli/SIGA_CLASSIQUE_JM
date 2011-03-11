@@ -247,7 +247,9 @@ public class TagBotonesAccion extends TagSupport {
 						out.println("</td>");
 					}
 					break;
-				
+				case GENERAR_INFORME:
+					printButton(usrbean, out, abc);
+					break;
 				case BA:
 					// tratamiento de botones de acceso rápido
 					// de momento solamente puede haber uno.

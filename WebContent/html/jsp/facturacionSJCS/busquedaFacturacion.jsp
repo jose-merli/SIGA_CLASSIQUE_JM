@@ -53,6 +53,7 @@
 	}
 	
 	String sTieneHijos = (String)request.getAttribute("SJCSTieneHijos");
+	String strutTrans = (String)request.getAttribute("strutTrans");
 	boolean tieneHijos = false;
 	if (sTieneHijos!=null && sTieneHijos.equals("S")) {
 		tieneHijos =  true;
@@ -83,9 +84,12 @@
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
-	<siga:Titulo 
-		titulo="factSJCS.datosFacturacion.cabecera" 
-		localizacion="factSJCS.mantenimientoFacturacion.localizacion"/>
+	<% if(strutTrans.equalsIgnoreCase("FCS_MantenimientoPrevisiones")){  %>
+		<siga:Titulo titulo="factSJCS.previsiones.cabecera"	localizacion="factSJCS.previsiones.ruta"/>	
+	<% } else if(strutTrans.equalsIgnoreCase("CEN_MantenimientoFacturacion")) { %>
+		<siga:Titulo titulo="factSJCS.datosFacturacion.cabecera" localizacion="factSJCS.mantenimientoFacturacion.localizacion"/>
+	<% }  %>
+	
 	<!-- FIN: TITULO Y LOCALIZACION -->
 
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
@@ -206,7 +210,12 @@
 		String tipoAcceso = usrbean.getAccessType();
 		String botonesBusqueda = "B,";
 		if (tipoAcceso.equalsIgnoreCase(SIGAPTConstants.ACCESS_FULL) ) {
-			botonesBusqueda += "N,NR";
+			if(strutTrans.equalsIgnoreCase("FCS_MantenimientoPrevisiones")){
+				botonesBusqueda += "N";
+			}else if(strutTrans.equalsIgnoreCase("CEN_MantenimientoFacturacion")){
+				botonesBusqueda += "N,NR";
+			}
+			
 		}
 	%>
 

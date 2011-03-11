@@ -17,6 +17,7 @@ import com.siga.beans.*;
 import com.siga.facturacionSJCS.UtilidadesFacturacionSJCS;
 import com.siga.facturacionSJCS.form.MantenimientoFacturacionForm;
 import com.siga.general.*;
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.UsrBean;
@@ -71,6 +72,7 @@ public class MantenimientoFacturacionAction extends MasterAction {
 			
 			// para saber en que tipo de busqueda estoy
 			request.getSession().setAttribute("SJCSBusquedaFacturacionTipo","BFN"); // busqueda normal
+			request.setAttribute("strutTrans", user.getStrutsTrans());
 	
 		}
 		catch (Exception e) {
@@ -310,15 +312,27 @@ public class MantenimientoFacturacionAction extends MasterAction {
 			
 			
 			
-			Hashtable criterios = new Hashtable();
-			if (miFormulario.getNombreInstitucion()!=null) criterios.put("idInstitucion",miFormulario.getNombreInstitucion());
-			if (miFormulario.getEstado()!=null) criterios.put("idEstado",miFormulario.getEstado());
-			if (miFormulario.getFechaIni()!=null) criterios.put("fechaIni",miFormulario.getFechaIni());
-			if (miFormulario.getFechaFin()!=null) criterios.put("fechaFin",miFormulario.getFechaFin());
-			if (miFormulario.getNombre()!=null) criterios.put("nombre",miFormulario.getNombre());
-			if (miFormulario.getHitos()!=null) criterios.put("hito",miFormulario.getHitos());
+				Hashtable criterios = new Hashtable();
+				if (user.getStrutsTrans().equalsIgnoreCase("FCS_MantenimientoPrevisiones")) {
+					if (miFormulario.getEstado()!=null) criterios.put("idEstado",miFormulario.getEstado());
+					if (miFormulario.getFechaIni()!=null) criterios.put("fechaIni",miFormulario.getFechaIni());
+					if (miFormulario.getFechaFin()!=null) criterios.put("fechaFin",miFormulario.getFechaFin());
+					if (miFormulario.getNombre()!=null) criterios.put("nombre",miFormulario.getNombre());
+					if (miFormulario.getHitos()!=null) criterios.put("hito",miFormulario.getHitos());
+					resultado = adm.getFacturaciones(criterios, user.getLocation(), ClsConstants.DB_TRUE);
+					
+				} else if (user.getStrutsTrans().equalsIgnoreCase("CEN_MantenimientoFacturacion")) {
+					if (miFormulario.getNombreInstitucion()!=null) criterios.put("idInstitucion",miFormulario.getNombreInstitucion());
+					if (miFormulario.getEstado()!=null) criterios.put("idEstado",miFormulario.getEstado());
+					if (miFormulario.getFechaIni()!=null) criterios.put("fechaIni",miFormulario.getFechaIni());
+					if (miFormulario.getFechaFin()!=null) criterios.put("fechaFin",miFormulario.getFechaFin());
+					if (miFormulario.getNombre()!=null) criterios.put("nombre",miFormulario.getNombre());
+					if (miFormulario.getHitos()!=null) criterios.put("hito",miFormulario.getHitos());
+					resultado = adm.getFacturaciones(criterios, user.getLocation(), ClsConstants.DB_FALSE);
+				}
 			
-			resultado = adm.getFacturaciones(criterios,user.getLocation());
+			
+			
 			databackup.put("paginador",resultado);
 			if (resultado!=null){ 
 			   datos = resultado.obtenerPagina(1);

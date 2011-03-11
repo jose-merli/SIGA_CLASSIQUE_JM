@@ -143,11 +143,12 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 	 * Devuelve un vector con las facturaciones buscadas 
 	 */	
 	public Paginador getFacturaciones (Hashtable criterios,
-									   String idInstitucionLocation)
+									   String idInstitucionLocation, String prevision)
 			throws ClsExceptions, SIGAException
 	{
 		try
 		{
+
 			String sql =
 				"select fac."+FcsFacturacionJGBean.C_IDINSTITUCION+", " +
 				"       ins."+CenInstitucionBean.C_ABREVIATURA+", " +
@@ -197,7 +198,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"           and est2."+FcsFactEstadosFacturacionBean.C_IDFACTURACION+" = est."+FcsFactEstadosFacturacionBean.C_IDFACTURACION+" " +
 				"       ) " +	                           
 				"   and fac."+FcsFacturacionJGBean.C_IDINSTITUCION+" = ins."+CenInstitucionBean.C_IDINSTITUCION+" " +
-				"   and fac."+FcsFacturacionJGBean.C_PREVISION+" = '"+ClsConstants.DB_FALSE+"'";
+				"   and fac."+FcsFacturacionJGBean.C_PREVISION+" = '"+ prevision +"'";
 			
 			//institucion
 			String institucion = (String) criterios.get ("idInstitucion");
@@ -248,6 +249,8 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				"   and fac."+FcsFacturacionJGBean.C_FECHAHASTA+" <= " +
 				"       to_date ('"+GstDate.dateSuma24hFormatoJava(fechaHasta)+"', '"+ClsConstants.DATE_FORMAT_SQL+"')";
 			}
+			
+			
 			
 			//order by
 			sql +=
@@ -4003,18 +4006,21 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			beanEstado.setFechaEstado("SYSDATE");			
 			beanEstado.setIdOrdenEstado(new Integer(idOrdenEstado));
 			admEstado.insert(beanEstado);
+			boolean prevision = false;
 			tx.commit();
 			
-		    tx.begin();
 			Hashtable criterios = new Hashtable();
 			criterios.put(FcsFacturacionJGBean.C_IDINSTITUCION,idInstitucion);
 			criterios.put(FcsFacturacionJGBean.C_IDFACTURACION,idFacturacion);
 			Vector v = (Vector)this.select(criterios);
 			if (v!=null && v.size()>0) {
+				tx.begin();
+				
 				FcsFacturacionJGBean beanFac = (FcsFacturacionJGBean)v.get(0);
+				if(beanFac.getPrevision().equals("1"))prevision=true;
 				Hashtable estado = this.getEstadoFacturacion(idInstitucion,idFacturacion);
 				String idEstado = (String) estado.get(FcsEstadosFacturacionBean.C_IDESTADOFACTURACION);
-					
+
 				// proceso de facturacion
 				double  importeTotal = 0;
 				Double  importeOficio = null, 
@@ -4024,12 +4030,12 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 
 				//////////////////////////////////
 				// TURNOS DE OFICIO rgg 16-03-2005
-				
+
 				Object[] param_in_facturacion = new Object[3];
 				param_in_facturacion[0] = beanFac.getIdInstitucion().toString(); // IDINSTITUCION
 				param_in_facturacion[1] = beanFac.getIdFacturacion().toString(); // IDFACTURACION 
 				param_in_facturacion[2] = beanFac.getUsuMod().toString();        // USUMODIFICACION
-				
+
 				String resultado[] = new String[3];
 				resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION_SJCS.PROC_FCS_FACTURAR_TURNOS_OFI(?,?,?,?,?,?)}", 3, param_in_facturacion);
 				if (!resultado[1].equalsIgnoreCase("0")) {
@@ -4038,16 +4044,16 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				}
 				importeOficio = new Double(resultado[0].replaceAll(",","."));
 				importeTotal += importeOficio.doubleValue();
-				
-				
+
+
 				//////////////////////////////////
 				// GUARDIAS rgg 22-03-2005
-				
+
 				param_in_facturacion = new Object[3];
 				param_in_facturacion[0] = beanFac.getIdInstitucion().toString(); // IDINSTITUCION
 				param_in_facturacion[1] = beanFac.getIdFacturacion().toString(); // IDFACTURACION
 				param_in_facturacion[2] = beanFac.getUsuMod().toString(); // USUMODIFICACION
-				
+
 				resultado = new String[3];
 				resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION_SJCS.PROC_FCS_FACTURAR_GUARDIAS(?,?,?,?,?,?)}", 3, param_in_facturacion);
 				if (!resultado[1].equalsIgnoreCase("0")) {
@@ -4056,15 +4062,15 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				} 
 				importeGuardia = new Double(resultado[0].replaceAll(",","."));
 				importeTotal += importeGuardia.doubleValue();
-				
+
 				//////////////////////////////////
 				// EXPEDIENTES SOJ rgg 22-03-2005
-				
+
 				param_in_facturacion = new Object[3];
 				param_in_facturacion[0] = beanFac.getIdInstitucion().toString(); // IDINSTITUCION
 				param_in_facturacion[1] = beanFac.getIdFacturacion().toString(); // IDFACTURACION
 				param_in_facturacion[2] = beanFac.getUsuMod().toString(); 		 // USUMODIFICACION
-				
+
 				resultado = new String[3];
 				resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION_SJCS.PROC_FCS_FACTURAR_SOJ(?,?,?,?,?,?)}", 3, param_in_facturacion);
 				if (!resultado[1].equalsIgnoreCase("0")) {
@@ -4073,28 +4079,36 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				} 
 				importeSOJ = new Double(resultado[0].replaceAll(",","."));
 				importeTotal += importeSOJ.doubleValue();
-				
-				
+
+
 				//////////////////////////////////
 				// EXPEDIENTES EJG rgg 22-03-2005
-				
+
 				param_in_facturacion = new Object[3];
 				param_in_facturacion[0] = beanFac.getIdInstitucion().toString(); // IDINSTITUCION
 				param_in_facturacion[1] = beanFac.getIdFacturacion().toString(); // IDFACTURACION
 				param_in_facturacion[2] = beanFac.getUsuMod().toString(); 		 // USUMODIFICACION
-				
+
 				resultado = new String[3];
 				resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION_SJCS.PROC_FCS_FACTURAR_EJG (?,?,?,?,?,?)}", 3, param_in_facturacion);
 				if (!resultado[1].equalsIgnoreCase("0")) {
 					ClsLogging.writeFileLog("Error en PL = "+(String)resultado[2],3);
 					throw new ClsExceptions ("Ha ocurrido un error al ejecutar la facturación de Expedientes de Justicia Gratuita");
 				} 
-				
+
 				importeEJG = new Double(resultado[0].replaceAll(",","."));
 				importeTotal += importeEJG.doubleValue();
-				
+
+				if(prevision){
+					tx.rollback();
+				}else{
+					tx.commit();
+				}
+
+
 				//////////////////////////////////
 				// ACTUALIZO EL TOTAL
+				tx.begin();
 				beanFac.setImporteEJG(importeEJG);
 				beanFac.setImporteGuardia(importeGuardia);
 				beanFac.setImporteOficio(importeOficio);
@@ -4103,18 +4117,13 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				if (!this.update(beanFac)) {
 					throw new SIGAException(this.getError());
 				}
-				
+				tx.commit();
+			}	
 
-			}
+			// Exportacion de datos a EXCEL: Se ha comentado este metodo por que no se quiere utilizar
+			//UtilidadesFacturacionSJCS.exportarDatosFacturacion(new Integer(idInstitucion), new Integer(idFacturacion), this.usrbean);			
 	
-			tx.commit();
-	
-			// Exportacion de datos a EXCEL
-			tx.begin();
-			UtilidadesFacturacionSJCS.exportarDatosFacturacion(new Integer(idInstitucion), new Integer(idFacturacion), this.usrbean);
-			tx.commit();
-	
-			
+
 			//////////////////////////////////
 			// cambio de estado
 			tx.begin();

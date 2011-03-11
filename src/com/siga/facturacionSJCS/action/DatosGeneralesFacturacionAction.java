@@ -41,6 +41,8 @@ import com.siga.beans.FcsFactGrupoFactHitoAdm;
 import com.siga.beans.FcsFactGrupoFactHitoBean;
 import com.siga.beans.FcsFacturacionJGAdm;
 import com.siga.beans.FcsFacturacionJGBean;
+import com.siga.beans.FcsHitoGeneralAdm;
+import com.siga.beans.FcsHitoGeneralBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.facturacionSJCS.UtilidadesFacturacionSJCS;
 import com.siga.facturacionSJCS.form.DatosGeneralesFacturacionForm;
@@ -231,6 +233,11 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 		String idInstitucion = (String)request.getParameter("idInstitucion");
 		String idFacturacion = (String)request.getParameter("idFacturacion");
 		String accion = (String)request.getParameter("accion");
+		//Datos de salida
+		Vector resultado = new Vector(); //datos a mostrar
+		Vector hitos = new Vector();
+		Hashtable h=new Hashtable();
+		boolean hayDetalle = false;
 		
 		//Si estamos en abrir depues de haber insertado las pestanhas no nos pasa el modo
 		if (accion==null){
@@ -280,6 +287,8 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			//el idFacturacion, idInstitucion y modo
 			request.setAttribute("idInstitucion",idInstitucion);
 			request.setAttribute("idFacturacion",idFacturacion);
+			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+			request.setAttribute("strutTrans", usr.getStrutsTrans());
 			//esta variable es para mostrar en los criterios el boton de borrado
 			request.getSession().setAttribute("estado",(String)nombreEstadoBean.get(FcsEstadosFacturacionBean.C_IDESTADOFACTURACION));
 			request.setAttribute("idEstado",UtilidadesHash.getInteger(nombreEstadoBean, FcsEstadosFacturacionBean.C_IDESTADOFACTURACION));
@@ -289,11 +298,85 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			//para el iframe de abajo pasamos el modo por session, se borrará en la jsp
 			if (accion!=null)request.getSession().setAttribute("Modo",accion);
 			request.getSession().setAttribute("vHito",vHito);
+			
+			
+		//comprobando el estado de la facturacion
+		try {
+			String estado = (String) ((Hashtable) (new FcsFacturacionJGAdm(usr))
+					.getEstadoFacturacion(idInstitucion, idFacturacion))
+					.get(FcsEstadosFacturacionBean.C_IDESTADOFACTURACION);
+			
+			if (estado.equals("20") || estado.equals("30"))
+				hayDetalle = true;
+			else
+				hayDetalle = false;
+		}
+		catch (Exception e) {
+			hayDetalle = false;
+		}
+		
+		if (hayDetalle){
+			try 
+			{
+				//obteniendo los detalles de la facturacion
+				resultado = (Vector) this.getDetalleFacturacion(idInstitucion, idFacturacion, request);
+				
+				//obteniendo la descripcion de los hitos
+				hitos = (Vector)(new FcsHitoGeneralAdm(usr)).select();
+				for(int i=0;i<hitos.size();i++)
+				{
+					FcsHitoGeneralBean bean=(FcsHitoGeneralBean)hitos.elementAt(i);
+					h.put(bean.getIdHitoGeneral().toString(),bean.getDescripcion());
+				}
+			}
+			catch(ClsExceptions e){
+				ClsLogging.writeFileLogError("Error: DatosDetalleFacturacionAction"+e.getMessage(),e,3);
+				resultado = new Vector();
+			}
+			catch(Exception e)
+			{	
+				ClsLogging.writeFileLogError("Error: DatosDetalleFacturacionAction"+e.getMessage(),e,3);
+				throwExcp("Error: DatosDetalleFacturacionAction",e,null);
+			}
+		
+			//pasamos el resultado por la request, y tambien el nombre de la institución, y 
+			request.getSession().setAttribute("resultado",resultado);
+			request.getSession().setAttribute("hitos",h);
+			request.getSession().setAttribute("hayDetalle","1");
+		}
+		else {
+			request.getSession().setAttribute("hayDetalle","0");
+		}
+			
+			
 		} 
 		catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null); 
 		} 									
 		return forward;
+	}
+	
+	protected Vector getDetalleFacturacion (String idInstitucion, String idFacturacion, HttpServletRequest request) throws ClsExceptions
+	{
+		//resultado final, vector de Hashtables
+		Vector resultado = new Vector();
+		FcsFacturacionJGAdm facturacionJGAdm = new FcsFacturacionJGAdm(this.getUserBean(request));
+		
+		try{
+			
+			// obtenemos los valores de los importes de oficio, guardia, soj y ejg
+			Hashtable claves = new Hashtable();
+			claves.put(FcsFacturacionJGBean.C_IDFACTURACION,idFacturacion);
+			claves.put(FcsFacturacionJGBean.C_IDINSTITUCION,idInstitucion);
+			resultado = facturacionJGAdm.selectByPK(claves);
+			
+			
+		}catch(Exception e){
+			com.atos.utils.ClsLogging.writeFileLogError("Consulta en DatosDetalleFacturacionAction.getDetalleFacturacion SQL:"+e.getMessage(),e, 3);
+		}
+		
+		
+		return resultado;
 	}
 	
 	/** 
@@ -387,7 +470,7 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 		try{
 			//Recogemos el UsrBean
 			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
-			
+			request.setAttribute("strutTrans", usr.getStrutsTrans());	
 			//Consultamos el nombre de la institucion
 			CenInstitucionAdm institucionAdm = new CenInstitucionAdm(this.getUserBean(request));
 			nombreInstitucion = (String)institucionAdm.getNombreInstitucion(usr.getLocation().toString());
@@ -429,7 +512,12 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 
 			//calculamos el nuevo idFacturacion
 			datos.put("IDINSTITUCION", (String)usr.getLocation());
-			datos.put("PREVISION",ClsConstants.DB_FALSE);
+			if (usr.getStrutsTrans().equalsIgnoreCase("FCS_MantenimientoPrevisiones")) {
+				datos.put("PREVISION",ClsConstants.DB_TRUE);
+			} else if (usr.getStrutsTrans().equalsIgnoreCase("CEN_MantenimientoFacturacion")) {
+				datos.put("PREVISION",ClsConstants.DB_FALSE);	
+			}
+			
 			facturacionAdm.prepararInsert(datos);
 			
 			//ponemos el campo regularizacion a false			

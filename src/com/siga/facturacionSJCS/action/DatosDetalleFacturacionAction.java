@@ -132,6 +132,7 @@ public class DatosDetalleFacturacionAction extends MasterAction {
 		//Datos de entrada
 		String idInstitucion = (String)request.getParameter("idInstitucion"); //idinstitucionforward
 		String idFacturacion = (String)request.getParameter("idFacturacion"); //idfacturacion actual
+		request.setAttribute("strutTrans", usr.getStrutsTrans());	
 		
 		//Datos de salida
 		Vector resultado = new Vector(); //datos a mostrar

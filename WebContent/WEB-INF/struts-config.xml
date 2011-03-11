@@ -2857,18 +2857,11 @@
 			<forward name="listar" path="/html/jsp/facturacionSJCS/busquedaHistoricoPreciosResultados.jsp"/>
 		</action>
 
-		<!-- ***** Facturacion SJCS / mantenimiento de Previsiones ***** -->
-		<action path="/FCS_MantenimientoPrevisiones" type="com.siga.facturacionSJCS.action.MantenimientoPrevisionesAction" name="mantenimientoPrevisionesForm" scope="session">
-			<forward name="inicio" path="/html/jsp/facturacionSJCS/busquedaPrevisiones.jsp"/>
-			<forward name="resultado" path="/html/jsp/facturacionSJCS/busquedaPrevisionesResultados.jsp"/>
-			<forward name="exitoInsercion" path="/html/jsp/facturacionSJCS/exitoInsercion.jsp"/>
-			<forward name="abrir" path="/html/jsp/facturacionSJCS/datosGeneralesPrevisiones.jsp"/>
-			<forward name="configurarSalida" path="/html/jsp/facturacionSJCS/configurarSalida.jsp"/>
-			<forward name="descargas" path="/html/jsp/facturacionSJCS/descargasPrevision.jsp"/>
+		<action path="/FCS_MantenimientoPrevisiones" type="com.siga.facturacionSJCS.action.MantenimientoFacturacionAction" name="mantenimientoFacturacionForm" scope="session">
+			<forward name="inicio" path="/html/jsp/facturacionSJCS/busquedaFacturacion.jsp"/>
+			<forward name="resultado" path="/html/jsp/facturacionSJCS/busquedaFacturacionResultados.jsp"/>
+			<forward name="administracion" path="/html/jsp/facturacionSJCS/administracionFacturacion.jsp"/>
 		</action>
-
-
-
 
 		 <!-- ***** SJCS / Mantenimiento de Informes de Pagos ***** -->
 		<action path="/INF_FichaPago" type="com.siga.informes.action.MantenimientoInformesAction" name="mantenimientoInformesForm" scope="request">

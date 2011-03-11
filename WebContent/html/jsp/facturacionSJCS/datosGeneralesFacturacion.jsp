@@ -55,7 +55,7 @@
 	// Campos de la factura a mostrar en la jsp
 	String nombreInstitucion = "", nombre="", fechaInicio="", fechaFin="", importe="", idFacturacion="";
 	String estado="", botones = "",botonesAbajo="V", fechaEstado="", destino="mainWorkArea";
-	String idInstitucion="", modo="", nombreFacturacion="";
+	String idInstitucion="", modo="", nombreFacturacion="", strutTrans = "";
 	Integer idEstado = new Integer(0);
 
 	//string que dirá cual es el modo en el que se envie el form
@@ -65,11 +65,6 @@
 	String clase = "box", desactivado="false";
 	boolean consulta = false;
 	boolean readonly = false;
-	
-	//para seleccionar los combos
-	Vector vHito = new Vector();
-	Vector gruposF = new Vector();
-	String[] dato1 = {usr.getLocation()};
 
 	try
 	{
@@ -77,6 +72,7 @@
 		idInstitucion = (String)request.getAttribute("idInstitucion");
 		idFacturacion = (String)request.getAttribute("idFacturacion");
 		nombreInstitucion = (String)request.getAttribute("nombreInstitucion");
+		strutTrans = (String)request.getAttribute("strutTrans");
 		
 		// Varibles que dependen del modo de la pagina (consulta, edicion, nuevo)
 		FcsFacturacionJGBean facturaBean = null;
@@ -113,6 +109,7 @@
 		desactivado = "true";
 		readonly = true;
 		clase = "boxConsulta";
+		botones ="GM";
 	}
 	if ((idEstado!=null) && (idEstado.intValue() != ClsConstants.ESTADO_FACTURACION_LISTA_CONSEJO && idEstado.intValue() != ClsConstants.ESTADO_FACTURACION_PROGRAMADA && idEstado.intValue() != ClsConstants.ESTADO_FACTURACION_EN_EJECUCION))
 	{
@@ -128,12 +125,16 @@
 			botones += ",LF";
 		}
 	} else {
-		if ((idEstado!=null)&&(idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_EJECUTADA)) {
-			botones = "LC";
-			consulta = true;
-			desactivado = "true";
-			readonly = true;
-			clase = "boxConsulta";
+		if ((idEstado!=null)&&(idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_EJECUTADA)){
+			if (!strutTrans.equalsIgnoreCase("FCS_MantenimientoPrevisiones")) {
+				botones = "LC,GM";
+				consulta = true;
+				desactivado = "true";
+				readonly = true;
+				clase = "boxConsulta";
+			}else{
+				botones ="EF,GM";
+			}
 		}
 	}
 
@@ -144,9 +145,12 @@
 
 <!-- HEAD -->
 <head>
-	<siga:Titulo 
-		titulo="factSJCS.mantenimientoFacturacion.datosGenerales"
-		localizacion="factSJCS.mantenimientoFacturacion.localizacion"/>
+	<% if(strutTrans.equalsIgnoreCase("FCS_MantenimientoPrevisiones")){  %>
+		<siga:Titulo titulo="factSJCS.previsiones.cabecera" localizacion="factSJCS.previsiones.ruta"/>
+	<% } else if(strutTrans.equalsIgnoreCase("CEN_MantenimientoFacturacion")) { %>
+		<siga:Titulo titulo="factSJCS.mantenimientoFacturacion.datosGenerales" localizacion="factSJCS.mantenimientoFacturacion.localizacion"/>
+	<% }  %>
+	
 	
 	<link id="default" rel="stylesheet" type="text/css" href="<%=app%>/html/jsp/general/stylesheet.jsp">
 	<script src="<%=app%>/html/js/SIGA.js" type="text/javascript"></script>
@@ -177,12 +181,14 @@
 			sub();
 			if (validateDatosGeneralesFacturacionForm(document.DatosGeneralesFacturacionForm)){
 
-				if (compararFecha(document.forms[0].fechaFin, document.forms[0].fechaHoy) ==1) {
-					alert('<siga:Idioma key="factSJCS.datosFacturacion.fechas.errorPosteriorActual"/>');
-					fin();
-					return false;
-				}
-
+				<% if(strutTrans.equalsIgnoreCase("CEN_MantenimientoFacturacion")) { %>
+					if (compararFecha(document.forms[0].fechaFin, document.forms[0].fechaHoy) ==1) {
+						alert('<siga:Idioma key="factSJCS.datosFacturacion.fechas.errorPosteriorActual"/>');
+						fin();
+						return false;
+					}
+				<% } %>
+				
 				if ((compararFecha(document.forms[0].fechaInicio,document.forms[0].fechaFin)==2)) {
 						document.forms[0].modo.value = "<%=accion%>";
 						document.forms[0].target = "submitArea2";
@@ -249,6 +255,27 @@
 			// con pantalla de espera
 			//document.frames.submitArea2.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName='+f+'&msg=messages.factSJCS.procesandoFacturacion';
 		}
+
+		// Funcion asociada a boton Generar Excels
+		function accionGenerarExcels() {
+			sub();
+			var f = document.getElementById("DatosGeneralesFacturacionForm");
+			idFactIni = document.getElementById("idFacturacion").value;			
+			f.idFacturacionIniDownload.value = idFactIni;
+			f.idFacturacionFinDownload.value = idFactIni;
+			f.submit();
+		}
+
+		function accionGenerarInforme() {
+			sub();
+			var f = document.getElementById("InformesGenericosForm");
+			idFactIni = document.getElementById("idFacturacion").value;
+			idFactFin = document.getElementById("idFacturacion").value;
+			f.datosInforme.value = "idFacturacionIni" + "==" + idFactIni + "##"
+					+ "idFacturacionFin" + "==" + idFactFin;
+			f.seleccionados.value = "1";
+			f.submit();
+		}
 		</script>	
 </head>
 
@@ -265,16 +292,14 @@
 		</tr>
 	</table>
 	
-	
-		<html:form action="/FCS_DatosGeneralesFacturacion.do" method="POST" target="submitArea2">
+	<html:form action="/FCS_DatosGeneralesFacturacion.do" method="POST" target="submitArea2">
 		<html:hidden property="modo" value=""/>
 		<html:hidden property ="actionModal" value = ""/>
 		<html:hidden property ="idFacturacion" value = "<%=idFacturacion%>"/>
 		<html:hidden property ="idInstitucion" value = "<%=idInstitucion%>"/>
 		<html:hidden property ="fechaHoy"	   value = '<%=UtilidadesBDAdm.getFechaBD("")%>'/>
 		
-					<siga:ConjCampos leyenda="factSJCS.datosGenerales.cabecera">
-				
+				<siga:ConjCampos leyenda="factSJCS.datosGenerales.cabecera">				
 					<table class="tablaCampos" align="center" >	
 						<tr>		
 							<td class="labelText" ><siga:Idioma key="factSJCS.datosFacturacion.literal.nombre"/>&nbsp(*)</td>
@@ -315,28 +340,62 @@
 							</td>
 						</tr>
 					</table>
-					</siga:ConjCampos>
+				</siga:ConjCampos>
+				
 	</html:form>
-
-
 	
-	<siga:ConjBotonesAccion clase="botonesSeguido" botones='<%=botones%>' modo='<%=modo%>'/>
-
+	<siga:ConjBotonesAccion clase="botonesSeguido" botones='<%=botones%>' modo='<%=modo%>'/>	
+	
+		<!-- Formularios -->
+		<html:form action="/INF_InformesGenericos.do" method="POST"	target="submitArea">
+			<input type="hidden" name="actionModal" value="">
+			<html:hidden property="idTipoInforme" value="FACJ2" />
+			<html:hidden property="datosInforme" value="" />
+			<html:hidden property="seleccionados" value="" />
+			<html:hidden property="idInforme" value="" />
+		</html:form>
+		
 
 <!-- PARA LA FUNCION VOLVER -->
 	<%@ include file="/html/jsp/censo/includeVolver.jspf" %>
 
 <!-- FIN ******* CAPA DE PRESENTACION ****** -->
+<table width="100%" align="center"  >		
+	<tr>				
+		<td width="100%" align="center" >
+		<iframe align="center" src="<%=app%>/html/jsp/facturacionSJCS/consultaCriteriosFacturacion.jsp?idInstitucion=<%=idInstitucion%>&idFacturacion=<%=idFacturacion%>&modo=<%=modo%>&regularizacion=<%=bRegularizacion%>"
+							id="resultado"
+							name="resultado" 
+							scrolling="no"
+							frameborder="0"
+							marginheight="0"
+							marginwidth="0";					 
+							class="frameGeneral"					
+							style="width:100%; height:400px;">
+		</iframe>
+		</td>
+	</tr>
+</table>									
 
-<iframe align="center" src="<%=app%>/html/jsp/facturacionSJCS/consultaCriteriosFacturacion.jsp?idInstitucion=<%=idInstitucion%>&idFacturacion=<%=idFacturacion%>&modo=<%=modo%>&regularizacion=<%=bRegularizacion%>"
-					id="resultado"
-					name="resultado" 
-					scrolling="no"
-					frameborder="0"
-					marginheight="0"
-					marginwidth="0";					 
-					class="frameGeneral">
-	</iframe>
+<table width="100%" align="center">		
+	<tr>				
+		<td width="100%" align="center">
+		<iframe align="center" src="<%=app%>/html/jsp/facturacionSJCS/consultaDetallesCriteriosFacturacion.jsp?idInstitucion=<%=idInstitucion%>&idFacturacion=<%=idFacturacion%>&modo=<%=modo%>&regularizacion=<%=bRegularizacion%>"
+							id="resultado10"
+							name="resultado10" 
+							scrolling="no"
+							frameborder="0"
+							marginheight="0"
+							marginwidth="0";					 
+							class="frameGeneral"
+							style="width:100%; height:300px;">
+		</iframe>
+		</td>
+	</tr>
+</table>
+	
+	
+	
 	
 	<siga:ConjBotonesAccion botones='<%=botonesAbajo%>' modo='<%=modo%>'/>
 

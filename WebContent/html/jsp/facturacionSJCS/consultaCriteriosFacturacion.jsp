@@ -106,7 +106,7 @@
 			   clase="tableTitle"
 			   nombreCol="factSJCS.datosFacturacion.literal.gruposFacturacion,factSJCS.datosFacturacion.literal.hitos,"
 			   tamanoCol="35,45,10"
-		   alto="100%"
+		   	   alto="100%"
 			   modal="P"
 			  >
 		<% if (obj==null || obj.size()==0){%>
@@ -129,6 +129,7 @@
 				<%}%>	
 		<%}%>
 		</siga:TablaCabecerasFijas>
+		
 
 <!-- FIN: LISTA DE VALORES -->
 

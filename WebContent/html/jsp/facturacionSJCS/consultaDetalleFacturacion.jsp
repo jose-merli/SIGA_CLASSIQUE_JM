@@ -41,6 +41,8 @@
 
 	//estado de la factura
 	boolean hayDetalle = false;
+	
+	String strutTrans = (String)request.getAttribute("strutTrans");
 	try {
 		hayDetalle = ((String)request.getAttribute("hayDetalle")).equals ("1");
 	}
@@ -104,9 +106,12 @@
 			ventaModalGeneral(document.forms[0].name,"P");
 		}
 	</script>
-	<siga:Titulo 
-		titulo="factSJCS.mantenimientoFacturacion.detalleFacturacion" 
-		localizacion="factSJCS.mantenimientoFacturacion.localizacion"/>
+		
+	<% if(strutTrans.equalsIgnoreCase("FCS_MantenimientoPrevisiones")){  %>
+		<siga:Titulo titulo="factSJCS.previsiones.cabecera" localizacion="factSJCS.previsiones.ruta"/>
+	<% } else if(strutTrans.equalsIgnoreCase("CEN_MantenimientoFacturacion")) { %>
+		<siga:Titulo titulo="factSJCS.mantenimientoFacturacion.detalleFacturacion" localizacion="factSJCS.mantenimientoFacturacion.localizacion"/>
+	<% }  %>
 </head>
 
 <body class="tablaCentralCampos">
