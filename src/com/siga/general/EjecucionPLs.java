@@ -221,7 +221,7 @@ public class EjecucionPLs {
 		param_in[2] = idinstitucion;
 		
 		String resultadoPl[] = new String[3];
-		resultadoPl = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS.PROC_FCS_CALCULAR_IRPF(?,?,?,?,?,?)}", 3, param_in);
+		resultadoPl = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_PAGOS_SJCS.PROC_FCS_CALCULAR_IRPF(?,?,?,?,?,?,?)}", 4, param_in);
 		return resultadoPl;
 	}
 

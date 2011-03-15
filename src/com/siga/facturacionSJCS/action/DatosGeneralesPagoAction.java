@@ -1070,8 +1070,8 @@ public class DatosGeneralesPagoAction extends MasterAction {
 		String resultado[] = EjecucionPLs.ejecutarPLCalcularIRPF_Pagos(
 				idInstitucion, idPersonaSociedad, esSociedad);
 		//comprueba si el pl se ha ejecutado correctamente
-		if (!resultado[1].equals("0")){
-			throw new ClsExceptions("Error al obtener importes de colegiado: " + resultado[2]);
+		if (!resultado[2].equals("0")){
+			throw new ClsExceptions("Error al obtener importes de colegiado: " + resultado[3]);
 		}
 		return new Double((String) resultado[0]);
 	}

@@ -13,26 +13,26 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
-import com.siga.general.SIGAException;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.UsrBean;
+import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.GstDate;
-import com.siga.beans.CenClienteAdm;
+import com.atos.utils.UsrBean;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenComponentesAdm;
 import com.siga.beans.CenComponentesBean;
+import com.siga.beans.CenNoColegiadoAdm;
+import com.siga.beans.CenNoColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
-import com.siga.beans.CenPersonaBean;
 import com.siga.beans.ScsRetencionesAdm;
 import com.siga.beans.ScsRetencionesBean;
 import com.siga.beans.ScsRetencionesIRPFAdm;
 import com.siga.beans.ScsRetencionesIRPFBean;
-import com.siga.censo.form.DatosFacturacionForm;
+import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
+import com.siga.general.SIGAException;
 import com.siga.gratuita.form.RetencionesIRPFForm;
-import com.atos.utils.ClsMngBBDD;
 
 
 /**
@@ -254,13 +254,17 @@ public class RetencionesIRPFAction extends MasterAction {
 			}
 			Vector vRete = new Vector();
 			Vector vReteSoc = new Vector();
+						
 			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 			ScsRetencionesIRPFAdm reten = new ScsRetencionesIRPFAdm(usr);
 			//Preparamos la select a ejecutar.
 			// Comprobamos si el letrado actua como sociedad.
 			CenComponentesAdm cenComponentesAdm = new CenComponentesAdm(usr);
+			CenNoColegiadoAdm cenNoCol  = new CenNoColegiadoAdm(usr);
 			
 			String idInstitucion = usr.getLocation();
+			
+			
 			String where = " where CEN_CLIENTE_IDINSTITUCION ="+usr.getLocation()+
 						   "   and CEN_CLIENTE_IDPERSONA = "+request.getSession().getAttribute("idPersonaTurno")
 						   + " and "+CenComponentesBean.C_SOCIEDAD +"=1";
@@ -294,7 +298,8 @@ public class RetencionesIRPFAction extends MasterAction {
 			// Si es > 0, el letrado actua como sociedad
 			else
 			{
-				CenComponentesBean sociedad = (CenComponentesBean) vCenComponentes.get(0);
+				CenComponentesBean sociedad = (CenComponentesBean) vCenComponentes.get(0);				
+				Vector vNoCol = cenNoCol.select("where idpersona = "+sociedad.getIdPersona()); 
 				request.setAttribute("idCuenta", String.valueOf(sociedad.getIdCuenta()));
 				request.setAttribute("idPersona", String.valueOf(sociedad.getIdPersona()));
 				CenPersonaAdm cenPersonaAdm = new CenPersonaAdm(usr);
@@ -303,9 +308,8 @@ public class RetencionesIRPFAction extends MasterAction {
 				if(vCenPersona.size()>0)
 				{
 					if (!sociedad.getIdPersona().toString().equals(idPersona2)) {
-						String letra = ((CenPersonaBean) vCenPersona.get(0)).getNIFCIF().substring(0, 1);
-						// Miramos si la letra tiene rentencion asociada.
-						where = " where " + ScsRetencionesBean.T_NOMBRETABLA + "." + ScsRetencionesBean.C_LETRANIFSOCIEDAD + " = '" + letra + "'";
+						String resultado[] = EjecucionPLs.ejecutarPLCalcularIRPF_Pagos(idInstitucion, ""+sociedad.getIdPersona(), true);
+						where = " where " + ScsRetencionesBean.T_NOMBRETABLA + "." + ScsRetencionesBean.C_IDRETENCION + " = '" + resultado[1] + "'";
 						ScsRetencionesAdm irpf = new ScsRetencionesAdm(usr);
 						Vector vIrpf = irpf.select(where);
 						if (vIrpf.size() == 0) {
@@ -313,10 +317,11 @@ public class RetencionesIRPFAction extends MasterAction {
 							request.setAttribute("modal", "1");
 							forward = "exito";
 						} else {
-							Hashtable hashRetencion = new Hashtable();
+							Hashtable hashRetencion = new Hashtable();							
 							ScsRetencionesBean scsRetencionesBean = (ScsRetencionesBean) vIrpf.get(0);
 							hashRetencion.put("LETRA", scsRetencionesBean.getLetraNifSociedad());
-							hashRetencion.put("DESCRIPCION", scsRetencionesBean.getDescripcion());
+							Hashtable<String, String> descripcion = (Hashtable<String, String>)reten.select("select f_siga_getrecurso(descripcion, "+ usr.getLanguage()+ ") DESCRIPCION from scs_maestroretenciones where descripcion = "+scsRetencionesBean.getDescripcion()).get(0);
+							hashRetencion.put("DESCRIPCION",descripcion.get("DESCRIPCION") );
 							hashRetencion.put("RETENCION", String.valueOf(scsRetencionesBean.getRetencion()));
 							request.setAttribute("SOCIEDAD", String.valueOf(sociedad.getIdComponente()));
 							request.setAttribute("idSociedadLetradoSel", String.valueOf(sociedad.getIdPersona()));

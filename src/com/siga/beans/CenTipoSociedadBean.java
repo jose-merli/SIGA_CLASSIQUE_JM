@@ -1,8 +1,13 @@
 package com.siga.beans;
 
+import com.siga.Utilidades.AjaxXMLBuilderAnnotation;
+import com.siga.Utilidades.AjaxXMLBuilderNameAnnotation;
+import com.siga.Utilidades.AjaxXMLBuilderValueAnnotation;
+
 /**
  * @author nuria.rgonzalez 
  */
+@AjaxXMLBuilderAnnotation
 public class CenTipoSociedadBean extends MasterBean{
 	/* Variables */
 	private String letraCif;
@@ -37,6 +42,7 @@ public class CenTipoSociedadBean extends MasterBean{
 	/**
 	 * @param idCV obtiene el idCV.
 	 */
+	
 	public void setLetraCif(String letraCif) {
 		this.letraCif = letraCif;
 	}
@@ -44,12 +50,14 @@ public class CenTipoSociedadBean extends MasterBean{
 	/**
 	 * @return Devuelve la descripcion.
 	 */
+	@AjaxXMLBuilderNameAnnotation
 	public String getDescripcion() {
 		return descripcion;
 	}
 	/**
 	 * @return Devuelve el idCV.
 	 */
+	@AjaxXMLBuilderValueAnnotation(isCData=false)
 	public String getLetraCif() {
 		return letraCif;
 	}

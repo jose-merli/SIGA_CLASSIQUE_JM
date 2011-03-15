@@ -6,8 +6,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,10 +22,12 @@ import org.apache.struts.upload.FormFile;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.AjaxCollectionXmlBuilder;
 import com.siga.Utilidades.GestorContadores;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
@@ -45,9 +48,10 @@ import com.siga.beans.CenNoColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.CenSolicitModifDatosBasicosAdm;
+import com.siga.beans.CenTipoSociedadAdm;
+import com.siga.beans.CenTipoSociedadBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.censo.form.DatosGeneralesForm;
-import com.siga.censo.form.DireccionesForm;
 import com.siga.general.CenVisibilidad;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
@@ -102,6 +106,10 @@ public class DatosGeneralesAction extends MasterAction {
 				mapDestino = insertarNoColegiado(mapping, miForm, request, response);
 			} else if (accion.equalsIgnoreCase("modificarSociedad")){
 				mapDestino = modificarSociedad(mapping, miForm, request, response);
+			}else if ( accion.equalsIgnoreCase("getAjaxTipo")){
+				ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxTipo", 10);
+				getAjaxTipo(mapping, miForm, request, response);
+						
 			} else {
 				return super.executeInternal(mapping,
 						      formulario,
@@ -143,8 +151,27 @@ public class DatosGeneralesAction extends MasterAction {
 			miform.setModo(accionPestanha);
 			//Para saber si debemos cargar en la pestanha el jsp de colegiados/personal o el de no colegiados de Sociedad SJ:
 			String tipo = request.getParameter("tipo");
-			request.setAttribute("modoPestanha",accionPestanha);
+			List<CenTipoSociedadBean> alTipos;
+			CenTipoSociedadAdm admSociedades = new CenTipoSociedadAdm(this.getUserBean(request));
 
+			if (tipo!=null) {
+				
+				if (tipo.equalsIgnoreCase("J") || tipo.equalsIgnoreCase("Y")) {
+					alTipos = admSociedades.select("where letracif='J' or letracif='Y'");
+				} else {
+					alTipos = admSociedades.select("where letracif='" + tipo + "'");
+				}
+				if (alTipos == null) {
+					alTipos = new ArrayList<CenTipoSociedadBean>();
+				}
+				//miform.setTipos(new ArrayList<CenTipoSociedadBean>());
+				miform.setTipos(alTipos);
+			}else{
+				alTipos = admSociedades.select("");
+				miform.setTipos(alTipos);
+			}
+			request.setAttribute("modoPestanha",accionPestanha);			
+			
 			// compruebo que vienen idpersona e idinstitucion
 			idPersona = miform.getIdPersona();
 			idInstitucion = miform.getIdInstitucion();
@@ -182,6 +209,7 @@ public class DatosGeneralesAction extends MasterAction {
 				tx.commit();
 				miform.setSociedadSJ(ClsConstants.DB_FALSE);
 				miform.setSociedadSP(ClsConstants.DB_FALSE);
+				
 				/*if (resultadoPL!=null && resultadoPL[1].equals("0")) {
 					miform.setNumeroRegistro(resultadoPL[0]);
 					miform.setSociedadSJ(ClsConstants.DB_TRUE);
@@ -1795,7 +1823,7 @@ public class DatosGeneralesAction extends MasterAction {
 			String resultado[] = EjecucionPLs.ejecutarPL_RevisionSuscripcionesLetrado(beanCli.getIdInstitucion().toString(),
 																					  beanCli.getIdPersona().toString(),
 																					  "",
-																					  ""+usr);
+																					  ""+usr.getLocation());
 			if ((resultado == null) || (!resultado[0].equals("0")))
 				throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO");
 
@@ -1816,6 +1844,39 @@ public class DatosGeneralesAction extends MasterAction {
    	   }
 	   return "exitoInsercion";			
 	} //insertarSociedad ()
+	
+	
+	// NO se utiliza. Por si se quiesiera emplear Ajax.
+	protected void getAjaxTipo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response)
+			throws ClsExceptions, SIGAException, Exception {
+
+		DatosGeneralesForm miForm = (DatosGeneralesForm) formulario;
+		// Recogemos el parametro enviado por ajax
+		String numIdentificacion = request.getParameter("numIdentificacion");
+		// Sacamos los turnos
+		CenTipoSociedadAdm admSociedades = new CenTipoSociedadAdm(this.getUserBean(request));
+		List<CenTipoSociedadBean> alTipos = null;
+		ArrayList<CenTipoSociedadBean> tipos = new ArrayList<CenTipoSociedadBean>();
+		if (numIdentificacion.substring(0, 1).equalsIgnoreCase("J")) {
+			alTipos = admSociedades.select("where letracif='J' or letracif='Y'");
+		} else {
+			alTipos = admSociedades.select("where letracif='"+miForm.getTipo()+"'");
+		}
+		if (alTipos == null) {
+			alTipos = new ArrayList<CenTipoSociedadBean>();
+		} else {
+			for (CenTipoSociedadBean tipo : alTipos) {
+				tipos.add(tipo);
+				ClsLogging.writeFileLog("DATOS GENERALES:turno:" + tipo.getDescripcion(), 10);
+			}
+		}
+		
+		miForm.setTipos(tipos);
+		
+		ClsLogging.writeFileLog("DATOS GENERALESS:Fin", 10);
+		respuestaAjax(new AjaxCollectionXmlBuilder<CenTipoSociedadBean>(), alTipos, response);
+	}
+	
 
 	/**
 	 * Modifica los datos generales de un No Colegiado de un tipo sociedad
@@ -1999,6 +2060,7 @@ public class DatosGeneralesAction extends MasterAction {
 			hashNoColegiado.put(CenNoColegiadoBean.C_ANOTACIONES,miForm.getAnotaciones());
 			hashNoColegiado.put(CenNoColegiadoBean.C_IDINSTITUCION,miForm.getIdInstitucion());
 			hashNoColegiado.put(CenNoColegiadoBean.C_IDPERSONA,miForm.getIdPersona());
+			if(miForm.getTipo()!=null) hashNoColegiado.put(CenNoColegiadoBean.C_TIPO,miForm.getTipo());
 			
 			
 			if (miForm.getSociedadSP()!=null && miForm.getSociedadSP().equals("1")){

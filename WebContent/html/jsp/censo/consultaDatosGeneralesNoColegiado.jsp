@@ -12,6 +12,8 @@
 <%@ taglib uri="struts-html.tld" prefix="html"%>
 <%@ taglib uri="struts-logic.tld" prefix="logic"%>
 
+<!-- AJAX -->
+<%@ taglib uri="ajaxtags.tld" prefix="ajax" %>
 
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
@@ -52,6 +54,7 @@
 	String tipoi = "";
 	String modo = null;
 	String busquedaVolver = "";
+	String tipoOriginal = "";
 
 	ArrayList gruposSel = new ArrayList();	
 	String cliente = "";
@@ -260,6 +263,7 @@
 	tipoParam[0] = user.getLanguage();
 	ArrayList tipoSel = new ArrayList();
 	tipoSel.add(tipo);
+	tipoOriginal = tipo;
 	
 	
 //	String salidaTipo = "";
@@ -338,6 +342,19 @@ caracterParam[0] = tipoCliente;
 		<!-- El nombre del formulario se obtiene del struts-config -->
 			<html:javascript formName="datosGeneralesNoColegiadoForm" staticJavascript="false" />  
 		  	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
+		  	
+		<!--Step 2 -->
+		<script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
+		<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
+		
+		
+		<!--Step 3 -->
+		  <!-- defaults for Autocomplete and displaytag -->
+		  <link type="text/css" rel="stylesheet" href="/html/css/ajaxtags.css" />
+		  <link type="text/css" rel="stylesheet" href="/html/css/displaytag.css" />
+		  	
 		<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->	
 
 		<script>
@@ -549,9 +566,27 @@ caracterParam[0] = tipoCliente;
 				
 			}
 			
-			
-			
-			
+			function cambioTipo(){
+				
+
+				//if (document.forms[0].modo.value == "editar" || document.forms[0].modo.value == "ver"){					
+					//if(document.forms[0].tipoIdentificacion.value == "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>"){
+				//		if(document.forms[0].numIdentificacion.value.charAt(0) == "J" ) {
+				//			document.forms[0].tipo.tipo = "cmbTipoSociedadJ";
+				//			document.forms[0].tipo.clase = "boxCombo";
+				//			document.forms[0].tipo.readonly = "false";
+				//			alert("El tipo es "+document.forms[0].tipo.tipo);
+				//		}else{
+				//			document.forms[0].tipo.tipo = "cmbTipoSociedadAlta";
+				//			document.forms[0].tipo.clase = "boxConsulta";
+				//			document.forms[0].tipo.readonly = "true";
+				//			alert("El tipo es "+document.forms[0].tipo.tipo);
+				//		}
+				//	}					
+				//}
+			}			
+
+
 		function adaptaTamanoFoto () 
 		{
 			widthMax = 180;
@@ -572,7 +607,6 @@ caracterParam[0] = tipoCliente;
 			}
 			return;
 		}
-		
 		
 		</script>
 
@@ -645,7 +679,6 @@ caracterParam[0] = tipoCliente;
 			<html:hidden name="datosGeneralesForm" property="longitudSP"/>
 			<html:hidden name="datosGeneralesForm" property="continuarAprobacion" value = ""/>
 			
-		
 		<tr>
 			<!-- COLUMNA: FOTO -->	
 			<td valign="top" style="width:200px">
@@ -709,21 +742,45 @@ caracterParam[0] = tipoCliente;
 											<% if (bConsultaPersona) { %>
 													<html:text name="datosGeneralesForm" property="numIdentificacion" size="11" style="width:70px" styleClass="boxConsulta" value="<%=nIdentificacion %>" readonly="true" ></html:text>
 											<% } else { %>
-													<html:text name="datosGeneralesForm" property="numIdentificacion" size="11" style="width:70px" styleClass="<%=estiloCajaNif %>" value="<%=nIdentificacion %>" readonly="<%=breadonlyNif %>" ></html:text>
+													<html:text name="datosGeneralesForm" property="numIdentificacion" size="11" style="width:70px" styleClass="<%=estiloCajaNif %>" value="<%=nIdentificacion %>" readonly="<%=breadonlyNif %>" onblur="cambioTipo();"></html:text>
 											<% }  %>
 										</td>
 										<td class="labelText" width="40%">
 											<%
-												String tipoEstilo="boxCombo";
-												String tipoReadOnly="false";
+												 String tipoEstilo="boxCombo";
+												 String tipoReadOnly="false";
+												 String tipoCombo="cmbTipoSociedadAlta";
+												 String tipoDisabled = "false";
 												
 												if (modo.equalsIgnoreCase("EDITAR") || modo.equalsIgnoreCase("VER")) {
-													tipoEstilo="boxConsulta";
-													tipoReadOnly="true";
+													if(tipo.equalsIgnoreCase("J") || tipo.equalsIgnoreCase("Y")){
+														tipoEstilo="boxCombo";
+														tipoReadOnly="false";
+														tipoCombo="cmbTipoSociedadJ";
+														tipoDisabled = "false";
+													}else{
+														tipoEstilo="boxConsulta";
+														tipoReadOnly="true";
+														tipoCombo="cmbTipoSociedadAlta";
+														tipoDisabled = "true";
+													}
 												}
 											%>  
 											<siga:Idioma key="censo.general.literal.tipoRegistro"/>&nbsp;(*) 
-											<siga:ComboBD nombre = "tipo" tipo="cmbTipoSociedadAlta" clase="<%=tipoEstilo%>" obligatorio="true" readOnly="<%=tipoReadOnly%>" elementoSel="<%=tipoSel%>" parametro="<%=tipoParam %>" />
+											<input type="hidden" name="tipoOriginal" value="<%=tipoOriginal%>"> 
+											
+											<% if (tipoDisabled.equals("false")) {%>
+												<html:select styleId="tipos" styleClass="boxCombo" style="width:200px;" property="tipo" disabled="false">
+													<bean:define id="tipos" name="datosGeneralesForm" property="tipos" type="java.util.Collection" />
+													<html:optionsCollection name="tipos" value="letraCif" label="descripcion" />
+												</html:select>
+											
+											<% } else {%>
+												<html:select styleId="tipos" styleClass="boxCombo" style="width:200px;" property="tipo" disabled="true">
+													<bean:define id="tipos" name="datosGeneralesForm" property="tipos" type="java.util.Collection" />
+													<html:optionsCollection name="tipos" value="letraCif" label="descripcion" />
+												</html:select>
+											<% } %>
 										
 										</td>
 									</tr>
@@ -896,6 +953,7 @@ caracterParam[0] = tipoCliente;
 		</tr>
 		<input type="hidden" name="prefijoOld" value="">
    		<input type="hidden" name="sufijoOld" value="">
+   		   		
 		</html:form>
 	</table>
 
@@ -936,7 +994,7 @@ caracterParam[0] = tipoCliente;
 		}
 		
 		function validarFormulario() {
-		
+			
 			//Valido el formulario:
 			if (validateDatosGeneralesNoColegiadoForm(document.forms[0])) {
 			//if(true){
@@ -944,28 +1002,27 @@ caracterParam[0] = tipoCliente;
 			
 			<% 	if (!(bConsultaPersona || modo.equalsIgnoreCase("VER")) ) {  
 			    %>
-			       
+			    
 					// El tipo de identificacion debe ser CIF:
 					if (document.forms[0].tipoIdentificacion.value == "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>") {
-					
+						
 								//Validamos el formato del CIF:
+								var tipo = document.forms[0].tipos.value;
+								var numIdentificacion = document.forms[0].numIdentificacion.value.charAt(0);
 								
-								
-										var tipo = document.forms[0].tipo.value.charAt(0);
-										var numIdentificacion = document.forms[0].numIdentificacion.value.charAt(0);
+								if(tipo == 'Y') tipo='J';
 										
-										
-										//El tipo debe ser igual a la primera letra del cif salvo para tipo Otro 'O' que no importa:
-										if  ( tipo=="<%=ClsConstants.COMBO_TIPO_OTROS%>" || 
-											  (tipo!="<%=ClsConstants.COMBO_TIPO_OTROS%>" && (tipo.toUpperCase()==numIdentificacion.toUpperCase()) )) {
-												return true;
-										} else {
-												alert ('<siga:Idioma key="censo.fichaCliente.literal.errorCIF"/>');
-												return false;
+								//El tipo debe ser igual a la primera letra del cif salvo para tipo Otro 'O' que no importa:
+								if  ( tipo=="<%=ClsConstants.COMBO_TIPO_OTROS%>" || 
+									  (tipo!="<%=ClsConstants.COMBO_TIPO_OTROS%>" && (tipo.toUpperCase()==numIdentificacion.toUpperCase()) )) {
+										return true;
+								} else {
+										alert ('<siga:Idioma key="censo.fichaCliente.literal.errorCIF"/>');
+										return false;
 										
 								} //Fin validar el CIF
 					} else {
-					
+
 							if (document.forms[0].tipoIdentificacion.value != "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>") {
 							 
 								alert ('<siga:Idioma key="censo.fichaCliente.literal.avisoCIF"/>');
@@ -1011,7 +1068,6 @@ caracterParam[0] = tipoCliente;
 		
 			
 			if (validarFormulario()) {
-			
 			<%	
 			  if (!modo.equalsIgnoreCase("NUEVASOCIEDAD")) { %>
 			
@@ -1030,6 +1086,7 @@ caracterParam[0] = tipoCliente;
 						document.forms[0].motivo.value = datos[1];
 						document.forms[0].target="submitArea2";
 						document.forms[0].modo.value="modificarSociedad";
+						//document.forms[0].tipo.value = document.forms[0].tipos.value;
 						if (datosGeneralesForm.sociedadSP.checked){
 						datosGeneralesForm.prefijoNumRegSP.disabled=false;
 	 					datosGeneralesForm.sufijoNumRegSP.disabled=false;
@@ -1042,6 +1099,7 @@ caracterParam[0] = tipoCliente;
           			    datosGeneralesForm.contadorNumRegSJ.disabled=false;
 	                    datosGeneralesForm.sociedadSJ.disabled=false;
 						}
+						
 						document.forms[0].submit();	
 					}else{
 						fin();
@@ -1072,7 +1130,7 @@ caracterParam[0] = tipoCliente;
 					 	
 					  }		
 				 }
-								
+					
 					document.forms[0].target="submitArea2";
 					document.forms[0].modo.value="insertarSociedad";
 					document.forms[0].submit();	

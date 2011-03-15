@@ -4,6 +4,9 @@
 
 package com.siga.censo.form;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionMapping;
@@ -26,10 +29,21 @@ import com.siga.comun.vos.Vo;
      * El fichero a subir
      */
     protected FormFile fotografia;
+    List<CenTipoSociedadBean> tipos;
+    
+    //List<CenTipoSociedadBean> tiposSoc;
     
 	// BLOQUE PARA EL FORMULARIO DE DATOS GENEREALES 
 
- 	public void setFoto (FormFile dato) { 
+ 	public List<CenTipoSociedadBean> getTipos() {
+		return tipos;
+	}
+
+	public void setTipos(List<CenTipoSociedadBean> tipos) {
+		this.tipos = tipos;
+	}
+
+	public void setFoto (FormFile dato) { 
  		try {
  			//this.datos.put(CenClienteBean.C_FOTOGRAFIA, dato);
  			fotografia = dato;
@@ -479,6 +493,8 @@ import com.siga.comun.vos.Vo;
 	public String getTipo	() 	{ 
 		return UtilidadesHash.getString(this.datos, "TIPO");		
 	}	
+	
+	
 
  	/*public void setNumeroRegistro (String dato) { 
 		UtilidadesHash.set(this.datos,"NUMEROREGISTRO", dato);
