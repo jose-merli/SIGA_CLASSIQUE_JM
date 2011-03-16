@@ -115,6 +115,7 @@
 	datoSolicitante[4] = idTipoEjg;
 	
 
+	String idPersona				 = (String)request.getAttribute("idPersona");
 	String nColegiadoAsistencia      = (String)request.getAttribute("nColegiadoAsistencia");
 	String nombreColegiadoAsistencia = (String)request.getAttribute("nombreColegiadoAsistencia");
 	// -----------------------------------------------------------
@@ -226,7 +227,7 @@
 	<html:javascript formName="BuscarDesignasForm" staticJavascript="false" />
 	<html:form action="/JGR_Designas.do" method="POST" target="submitArea" >
 	<html:hidden property = "modo" value = "insertar"/>
-	<html:hidden property = "idPersona" value="" />
+	<html:hidden property = "idPersona" value="<%=idPersona %>" />
 	<html:hidden property = "manual" value = "0"/>
 	
 	<html:hidden property ="anioAsistencia" value = "<%=anioAsistencia%>"/>

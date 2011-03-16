@@ -589,6 +589,7 @@ public class BusquedaDesignasAction extends MasterAction {
 				String tipoDesigna = adm.getValor(""+this.getIDInstitucion(request),"SCS","TIPO_DESIGNACION_DESDE_ASISTENCIA", "");
 				request.setAttribute("tipoDesignaAsistencia", tipoDesigna);
 				request.setAttribute("idTurnoAsistencia", this.getIDInstitucion(request) + "," + miform.getIdTurno());
+				request.setAttribute("idPersona", miform.getIdPersona());
 				request.setAttribute("nColegiadoAsistencia", miform.getNcolegiado());
 				request.setAttribute("nombreColegiadoAsistencia", miform.getNombre());
 				request.setAttribute("juzgadoAsistencia", miform.getJuzgadoAsi()+ "," + miform.getJuzgadoInstitucionAsi());

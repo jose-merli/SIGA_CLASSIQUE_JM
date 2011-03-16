@@ -713,8 +713,7 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 		<html:hidden property = "numero"     			value=""/>
 		<html:hidden property = "idInstitucion"     	value=""/>
 		<html:hidden property = "anio"     				value=""/>
-
-		
+		<html:hidden property = "idPersona"		value= "<%=IDPERSONACOLEGIADO%>"/>
 	</html:form>		
 	
 	<html:form action = "/JGR_MantenimientoDesignas.do" method="POST" target="mainWorkArea">
@@ -862,11 +861,11 @@ if ((DESIGNA_ANIO != null) && (!DESIGNA_ANIO.equals(""))) {
 //			refrescarLocal();
 			if(resultado && resultado[0]=="MODIFICADO"){
 				with(document.BuscarDesignasForm){
-					numero.value        = resultado[1];
-					idTurno.value     = resultado[2];
-					anio.value          = resultado[4];
-					modo.value          = "editar";
-					target				= "mainWorkArea";
+					numero.value    = resultado[1];
+					idTurno.value   = resultado[2];
+					anio.value      = resultado[4];
+					modo.value      = "editar";
+					target          = "mainWorkArea";
 			   		submit();
 				}
 			}
