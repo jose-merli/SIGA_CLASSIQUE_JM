@@ -803,6 +803,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" AND AC.IDACREDITACION NOT IN (10,11)");
 		
 		
+		
 //		ArrayList
 		if(restriccionesActivas && actuacionesList!=null && actuacionesList.size()>0){
 			boolean isInicio = false;
@@ -872,6 +873,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 			
 			
 		}
+		sql.append(" ORDER BY AC.IDACREDITACION ");
 
 		Vector acreditacionesPtesVector = this.selectGenericoBind(sql.toString(), codigos);
 		List<AcreditacionForm> acreditacionesPtesList = new ArrayList<AcreditacionForm>();

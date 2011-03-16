@@ -166,6 +166,8 @@
 		if (idPretension!=null){
 			pretensionSel.add(0,idPretension);
 		}
+		String aux = (String)request.getAttribute("fechaJustificacion");
+		fechaJustificacion = aux!=null?aux:"";
 	 	//Datos de la designa:
 		nactuacion = (String)hashDesigna.get("NUMEROASUNTO");
 		idPersona = (String)hashDesigna.get("IDPERSONA");
@@ -536,8 +538,10 @@
 								<%if(!modoAnterior.equals("VER")&&(!actuacionValidada.equals("1"))) {%>	
 									<td>	
 										<html:text name="ActuacionesDesignasForm" property="fechaJustificacion" size="10" maxlength="10" styleClass="box" value="<%=fechaJustificacion%>"  readOnly="true"></html:text>
-										<%if(!modoAnterior.equals("VER")) {%>
+										<%if(!modoAnterior.equals("VER")&&!deDonde.equals("/JGR_PestanaDesignas")) {%>
 											&nbsp;&nbsp;<a name="calendarioTd" style="visibility:visible" onClick="showCalendarGeneral(fechaJustificacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+										<%}else if(!modoAnterior.equals("VER")&&deDonde.equals("/JGR_PestanaDesignas")){%>
+											&nbsp;&nbsp;<a name="calendarioTd" style="visibility:hidden" onClick="showCalendarGeneral(fechaJustificacion);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>	
 										<%}%>
 									</td>
 								<%}else{%>
@@ -555,7 +559,7 @@
 
 
 				<% if(!modoAnterior.equals("VER")) {%>
-						<% if (!usr.isLetrado()) { // Agente %>
+						<% if (!usr.isLetrado()&&!deDonde.equals("/JGR_PestanaDesignas")) { // Agente %>
 							<% if ((facturada != null) && (!facturada.equals("1"))) {%>
 									<input type="button" id="idButton" alt="<siga:Idioma key='gratuita.altaTurnos.literal.validacion'/>" id="bValidarActuacion" onclick="validarJustificacion();" class="button" value="<siga:Idioma key='gratuita.altaTurnos.literal.validacion'/>">
 							<%}%>

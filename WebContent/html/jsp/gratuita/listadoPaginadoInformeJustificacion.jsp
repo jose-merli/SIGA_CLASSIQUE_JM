@@ -389,8 +389,9 @@ function onCheckAcreditacion(elementoPulsado){
 			}else{
 				if(idAcreditacion!=idAcreditacionProcedimiento){
 					document.getElementById(elementoProcedimiento).disabled ="";
-					if(actuacionValidarJustificaciones=='S')
+					if(document.InformeJustificacionMasivaForm.fichaColegial.value=='false'&&actuacionValidarJustificaciones=='S'){
 						document.getElementById(elementoValidacion).disabled ="";
+					}
 					
 				}
 				
@@ -514,14 +515,16 @@ function onCheckAcreditacion(elementoPulsado){
 					if(auxIdTipoAcreditacion=='1'||auxIdTipoAcreditacion=='2'){
 						if(idTipoAcreditacion=='3'){
 							document.getElementById(idProcedimiento).disabled ="";
-							if(actuacionValidarJustificaciones=='S')
+							if(document.InformeJustificacionMasivaForm.fichaColegial.value=='false'&&actuacionValidarJustificaciones=='S'){
 								document.getElementById(elementoValidacion).disabled ="";
+							}
 						}
 					}else if(auxIdTipoAcreditacion=='3'){
 						if(((idTipoAcreditacion=='1'||idTipoAcreditacion=='2')||(idTipoAcreditacion=='3'&&idAcreditacion!=auxIdAcreditacion))&&!isCheckAlgunaInicioOFin){
 							document.getElementById(idProcedimiento).disabled ="";
-							if(actuacionValidarJustificaciones=='S')
+							if(document.InformeJustificacionMasivaForm.fichaColegial.value=='false'&&actuacionValidarJustificaciones=='S'){
 								document.getElementById(elementoValidacion).disabled ="";
+							}
 						}
 					}
 				}
@@ -724,7 +727,7 @@ function downloadDocumentoResolucion(docResolucion) {
 				</c:if>
 				<c:set var="valiDisabled" value="" />
 				<c:if
-					test="${(designa.actuacionValidarJustificaciones!=null && designa.actuacionValidarJustificaciones=='N')||usrBean.letrado==true||(designa.cambioLetrado=='S'&&InformeJustificacionMasivaForm.fichaColegial==true)}">
+				test="${InformeJustificacionMasivaForm.fichaColegial==true || (designa.actuacionValidarJustificaciones!=null && designa.actuacionValidarJustificaciones=='N') || designa.cambioLetrado=='S' }">
 					<c:set var="valiDisabled" value="disabled='disabled'" />
 				</c:if>
 				
