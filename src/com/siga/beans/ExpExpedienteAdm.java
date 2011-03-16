@@ -8,6 +8,7 @@ package com.siga.beans;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -1491,6 +1492,13 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			       " AND decode(abs(E.FECHAPRORROGAESTADO - E.FECHAFINALESTADO) - (E.FECHAPRORROGAESTADO - E.FECHAFINALESTADO),0,E.FECHAPRORROGAESTADO,E.FECHAFINALESTADO) < SYSDATE ";
 			
 			if (rc1.query(sql_estado1)) {
+				String linea = "";
+				ClsLogging.writeFileLog("  Resultado de consulta anterior:",7);
+				ClsLogging.writeFileLog("  IDINSTITUCION,IDINSTITUCION_TIPOEXPEDIENTE,IDTIPOEXPEDIENTE,ANIOEXPEDIENTE,NUMEROEXPEDIENTE,FECHAFINAL",7);
+				for (int i = 0; i < rc1.size(); i++)	{
+					Row fila1 = (Row) rc1.get(i);
+					ClsLogging.writeFileLog("  "+fila1.getString("IDINSTITUCION")+","+fila1.getString("IDINSTITUCION_TIPOEXPEDIENTE")+","+fila1.getString("IDTIPOEXPEDIENTE")+","+fila1.getString("ANIOEXPEDIENTE")+","+fila1.getString("NUMEROEXPEDIENTE")+","+fila1.getString("FECHAFINAL"),7);
+				}
 				for (int i = 0; i < rc1.size(); i++)	{
 					try {
 					    tx2.begin();
