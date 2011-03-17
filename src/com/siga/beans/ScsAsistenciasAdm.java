@@ -1554,17 +1554,33 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 			sql.append( "."); 
 			sql.append( ScsAsistenciasBean.C_IDINSTITUCION); 
 			if(!volanteExpres.getLugar().equals("centro")){
-				sql.append(" AND "); 
-				sql.append( ScsAsistenciasBean.T_NOMBRETABLA); 
-				sql.append( "."); 
-				sql.append( ScsAsistenciasBean.C_JUZGADO); 
-				sql.append( " IS NOT NULL ");
+				
+				sql.append(" AND EXISTS  (SELECT 1 FROM SCS_ACTUACIONASISTENCIA AA ");
+				sql.append(" WHERE AA.IDINSTITUCION=SCS_ASISTENCIA.IDINSTITUCION ");
+				sql.append(" AND AA.ANIO = SCS_ASISTENCIA.ANIO ");
+				sql.append(" AND AA.NUMERO= SCS_ASISTENCIA.NUMERO ");
+				sql.append(" AND AA.IDJUZGADO IS NOT NULL ");
+				sql.append(" ) ");
+				
+				
+//				sql.append(" AND "); 
+//				sql.append( ScsAsistenciasBean.T_NOMBRETABLA); 
+//				sql.append( "."); 
+//				sql.append( ScsAsistenciasBean.C_JUZGADO); 
+//				sql.append( " IS NOT NULL ");
 			}else{
-				sql.append(" AND "); 
-				sql.append( ScsAsistenciasBean.T_NOMBRETABLA); 
-				sql.append( "."); 
-				sql.append( ScsAsistenciasBean.C_COMISARIA); 
-				sql.append( " IS NOT NULL ");
+				sql.append(" AND EXISTS  (SELECT 1 FROM SCS_ACTUACIONASISTENCIA AA ");
+				sql.append(" WHERE AA.IDINSTITUCION=SCS_ASISTENCIA.IDINSTITUCION ");
+				sql.append(" AND AA.ANIO = SCS_ASISTENCIA.ANIO ");
+				sql.append(" AND AA.NUMERO= SCS_ASISTENCIA.NUMERO ");
+				sql.append(" AND AA.IDCOMISARIA IS NOT NULL ");
+				sql.append(" ) ");
+				
+//				sql.append(" AND "); 
+//				sql.append( ScsAsistenciasBean.T_NOMBRETABLA); 
+//				sql.append( "."); 
+//				sql.append( ScsAsistenciasBean.C_COMISARIA); 
+//				sql.append( " IS NOT NULL ");
 
 			}
 			if(volanteExpres.getIdTipoAsistencia() != null){
@@ -1927,7 +1943,7 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 		if(asistencia.getComisaria()!=null){
 		if(isAsistenciaModificada) return true;
 			isAsistenciaModificada = !((asistencia.getComisaria()==null && asistenciaBBDD.getComisaria()==null)
-					|| (asistencia.getComisaria()!=null && asistenciaBBDD.getComisaria()!=null && asistencia.getComisaria().toString().trim().equalsIgnoreCase(asistenciaBBDD.getComisaria().toString().trim())));
+					|| (asistencia.getComisaria()!=null && asistencia.getComisaria()!=null && asistencia.getComisaria().toString().trim().equalsIgnoreCase(asistenciaBBDD.getComisaria().toString().trim())));
 			if(isAsistenciaModificada) return true;
 			String numDiligencia = asistencia.getNumeroDiligencia()==null ? "" : asistencia.getNumeroDiligencia();
 			isAsistenciaModificada = !((numDiligencia==null && asistenciaBBDD.getNumeroDiligencia()==null)
