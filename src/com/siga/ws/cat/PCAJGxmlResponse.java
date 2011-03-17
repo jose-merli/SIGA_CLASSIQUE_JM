@@ -485,6 +485,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 				}
 				
 				file.renameTo(getRespuestaFile(getIdInstitucion(), getIdRemesa(), file.getName()));
+				ClsLogging.writeFileLog("Fichero movido a la ruta: " + file.getAbsolutePath(), 3);
 				
 				escribeLogRemesa("Fichero de respuesta " + file.getName() + " encontrado en el servidor FTP. Analizando respuesta.");
 				
