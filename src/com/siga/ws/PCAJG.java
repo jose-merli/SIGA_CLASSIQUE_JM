@@ -1797,22 +1797,6 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 		
 	}
 	
-	private static String getNombreRutaZIPconXMLs(int idInstitucion, int idRemesa) {
-		return getDirXML(idInstitucion, idRemesa) + File.separator + idInstitucion + "_" + idRemesa;
-	}
-	
-	public static String getRutaFicheroZIP(int idInstitucion, int idRemesa) {
-		return getNombreRutaZIPconXMLs(idInstitucion, idRemesa) + ".zip";
-	}
-
-	private static String getDirXML(int idInstitucion, int idRemesa) {
-		String keyPathFicheros = "cajg.directorioFisicoCAJG";		
-		String keyPath2 = "cajg.directorioCAJGJava";				
-	    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		String pathFichero = p.returnProperty(keyPathFicheros) + p.returnProperty(keyPath2);
-		return pathFichero + File.separator + idInstitucion  + File.separator + idRemesa + File.separator + "xml";
-	}
-
 	/**
 	 * 
 	 * @param pathFichero

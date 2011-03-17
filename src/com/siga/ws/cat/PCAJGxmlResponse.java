@@ -4,6 +4,7 @@
 package com.siga.ws.cat;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import javax.transaction.UserTransaction;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlOptions;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ReadProperties;
@@ -83,6 +85,16 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 		return file;
 	}
 	
+	private File getResolucionIRFile(int idInstitucion, String fileName) {		
+		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String rutaAlmacen = rp.returnProperty("cajg.directorioFisicoCAJG") + rp.returnProperty("cajg.directorioCAJGJava");			
+		rutaAlmacen += File.separator + idInstitucion;				
+		File file = new File(rutaAlmacen + File.separator + "resolucionIR");
+		file.mkdirs();
+		file = new File(file, fileName);
+		return file;
+	}	
+	
 	
 	@Override
 	public void execute() throws Exception {
@@ -114,7 +126,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 						fileOutputStream = new FileOutputStream(fileIEE);
 						filesIEE.add(fileIEE);
 					} else if (fileName.startsWith(comienzoFicheroIR_GEN)) {
-						File fileIR = getRespuestaFile(getIdInstitucion(), getIdRemesa(), fileName);
+						File fileIR = getResolucionIRFile(getIdInstitucion(), fileName);
 						fileOutputStream = new FileOutputStream(fileIR);
 						filesIR.add(fileIR);
 					}
@@ -172,13 +184,31 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 				xmlOptions.setLoadSubstituteNamespaces(map);
 				
 				IntercambioDocument intercambioIRDoc = IntercambioDocument.Factory.parse(file, xmlOptions);
-				if (validate(intercambioIRDoc).size() > 0) {
+				if (validate(intercambioIRDoc).size() > 0) {					
 					throw new ClsExceptions("El xml " + file.getName() + " no es válido");
-				}			
+				}
 				
-				InformacionIntercambio informacionIntercambio = intercambioIRDoc.getIntercambio().getInformacionIntercambio();
+				IntercambioDocument intercambioRespuesta = IntercambioDocument.Factory.newInstance();				
+				InformacionIntercambio informacionIntercambioRespuesta = intercambioRespuesta.addNewIntercambio().addNewInformacionIntercambio();
+				IntercambioErroneo intercambioErroneo = informacionIntercambioRespuesta.addNewIntercambioErroneo();
+				DatosError datosError = intercambioErroneo.addNewDatosError();
 								
-				String idInstitucion = informacionIntercambio.getIdentificacionIntercambio().getCodDestinoIntercambio();
+				InformacionIntercambio informacionIntercambio = intercambioIRDoc.getIntercambio().getInformacionIntercambio();
+				TipoIdentificacionIntercambio idInterOrigen = informacionIntercambio.getIdentificacionIntercambio();
+				
+				TipoIdentificacionIntercambio idInterDestino = intercambioErroneo.addNewIdentificacionIntercambio();
+				idInterDestino.setTipoIntercambio(idInterOrigen.getTipoIntercambio());
+				idInterDestino.setCodOrigenIntercambio(idInterOrigen.getCodOrigenIntercambio());
+				idInterDestino.setDescOrigenIntercambio(idInterOrigen.getDescOrigenIntercambio());
+				idInterDestino.setCodDestinoIntercambio(idInterOrigen.getCodDestinoIntercambio());
+				idInterDestino.setDescDestinoIntercambio(idInterOrigen.getDescDestinoIntercambio());
+				idInterDestino.setIdentificadorIntercambio(idInterOrigen.getIdentificadorIntercambio());
+				idInterDestino.setFechaIntercambio(idInterOrigen.getFechaIntercambio());
+				idInterDestino.setNumeroDetallesIntercambio(idInterOrigen.getNumeroDetallesIntercambio());
+				idInterDestino.setVersion(idInterOrigen.getVersion());
+				
+								
+				String idInstitucion = idInterOrigen.getCodDestinoIntercambio();
 				TipoGenerico tipoGenerico = informacionIntercambio.getTipoGenerico();
 				if (tipoGenerico == null) {
 					throw new ClsExceptions("El nodo " + TipoGenerico.class.getSimpleName() + " no puede ser null");
@@ -216,21 +246,38 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 						tipoPrestacion.append("\n" + prestacionesResolucion.getCodTipoPrestacion());
 						tipoPrestacion.append(" " + prestacionesResolucion.getDescTipoPrestacion());
 					}
-					actualizaExpediente(idInstitucion, anyoExpediente, numExpediente, fechaEstado, identificadorResolucion, codTipoResolucion, codMotivoResolucion, intervaloIngresosRecursos, tipoPrestacion.toString());
+					actualizaExpediente(idInstitucion, datosExpediente.getCodigoExpediente().getColegioExpediente(), anyoExpediente, numExpediente, fechaEstado, identificadorResolucion, codTipoResolucion, codMotivoResolucion, intervaloIngresosRecursos, tipoPrestacion.toString(), datosError);
 				}
-						
+				
+				if (datosError.getErrorContenidoArray() == null || datosError.getErrorContenidoArray().length == 0) {
+					//si no hay errores de contenido rellenamos el error general con OK
+					datosError.addNewErrorGeneral().setDescErrorGen("No hay errores");
+				}
+				
+				int numeroDetalles = datosError.getErrorContenidoArray()!=null?datosError.getErrorContenidoArray().length:0;
+				
+				rellenaIdentificacionIntercambio(informacionIntercambioRespuesta, informacionIntercambio, numeroDetalles);
+				//salvar y subir al ftp la respuesta				
+				String nombreFichero = getNombreFichero(informacionIntercambioRespuesta.getIdentificacionIntercambio());
+				File fileRespuestaIR = new File(file.getParent(), nombreFichero);
+				
+				guardaFicheroFormatoCatalan(intercambioRespuesta, fileRespuestaIR);
 				
 				CajgRemesaEstadosAdm cajgRemesaEstadosAdm = new CajgRemesaEstadosAdm(getUsrBean());				
 				List<Integer> listaIdRemesas = cajgRemesaEstadosAdm.comprobarRemesaRecibida(Integer.parseInt(idInstitucion));
 				
 				if (listaIdRemesas != null) {
 					for (Integer idRemesa : listaIdRemesas) {
-						cajgRemesaEstadosAdm.nuevoEstadoRemesa(getUsrBean(), getIdInstitucion(), idRemesa, Integer.valueOf("3"));	
+						cajgRemesaEstadosAdm.nuevoEstadoRemesa(getUsrBean(), getIdInstitucion(), idRemesa, ClsConstants.ESTADO_REMESA_RECIBIDA);	
 					}
 				}
+				//subimos la respuesta al ftp
+				FileInputStream fis = new FileInputStream(fileRespuestaIR);
+				escribeLogRemesa("Subiendo XML generado al servidor FTP");
+				ftpPcajgAbstract.upload(fileRespuestaIR.getName(), fis);				
+				fis.close();				
 				
-				ftpPcajgAbstract.moveToHIST(file.getName());
-				
+				ftpPcajgAbstract.moveToHIST(file.getName());				
 				tx.commit();
 				
 			} catch (Exception e) {
@@ -250,6 +297,20 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 	}
 	
 	
+	private void rellenaIdentificacionIntercambio(InformacionIntercambio informacionIntercambioRespuesta, InformacionIntercambio informacionIntercambioIR, int numeroDetalles) {
+		TipoIdentificacionIntercambio idIntercambio = informacionIntercambioRespuesta.addNewIdentificacionIntercambio();
+		idIntercambio.setTipoIntercambio(PCAJGGeneraXML.INTERCAMBIO_ERRORES_EXPEDIENTE);
+		idIntercambio.setCodOrigenIntercambio(String.valueOf(getIdInstitucion()));
+		idIntercambio.setCodDestinoIntercambio(informacionIntercambioIR.getIdentificacionIntercambio().getCodOrigenIntercambio());		
+		idIntercambio.setIdentificadorIntercambio(informacionIntercambioIR.getIdentificacionIntercambio().getIdentificadorIntercambio());
+		idIntercambio.setFechaIntercambio(clearCalendar(Calendar.getInstance()));		
+		idIntercambio.setNumeroDetallesIntercambio(numeroDetalles);
+		idIntercambio.setVersion(informacionIntercambioIR.getIdentificacionIntercambio().getVersion());
+	}
+	
+
+
+
 	/**
 	 * 
 	 * @param anyoExpediente
@@ -260,10 +321,11 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 	 * @param codMotivoResolucion
 	 * @param intervaloIngresosRecursos
 	 * @param tipoPrestacion
+	 * @param  
 	 * @throws Exception
 	 */
-	private void actualizaExpediente(String idInstitucion, int anyoExpediente, String numExpediente, Calendar fechaEstadoCalendar, String identificadorResolucion, String codTipoResolucion, String codMotivoResolucion, String intervaloIngresosRecursos, String tipoPrestacion) throws Exception {		
-				
+	private void actualizaExpediente(String idInstitucion, String colegioExpediente, int anyoExpediente, String numExpediente, Calendar fechaEstadoCalendar, String identificadorResolucion, String codTipoResolucion, String codMotivoResolucion, String intervaloIngresosRecursos, String tipoPrestacion, DatosError datosError) throws Exception {		
+		
 		ScsEJGAdm scsEJGAdm = new ScsEJGAdm(getUsrBean());
 		CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(getUsrBean());
 		CajgEJGRemesaBean cajgEJGRemesaBean = new CajgEJGRemesaBean();
@@ -280,13 +342,52 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 		if (vectorEJGs != null) {
 			if (vectorEJGs.size() == 0) {
 				//EJG no encontrado
-				escribeLogRemesa("No se ha encontrado el EJG año/número = " + anyoExpediente + "/" + numExpediente);
+				String descError = "No se encuentra el expediente en el sistema con el año/número = " + anyoExpediente + "/" + numExpediente;
+				escribeLogRemesa(descError);
+				rellenaErrorContenido(datosError, colegioExpediente, anyoExpediente, numExpediente, "NumExpediente", descError);				
 			} else if (vectorEJGs.size() > 1) {
 				//se ha encontrado mas de un EJG
-				escribeLogRemesa("Se ha encontrado más de un EJG con el año/número = " + anyoExpediente + "/" + numExpediente);
+				String descError = "Se ha encontrado más de un expediente con el mismo año/número = " + anyoExpediente + "/" + numExpediente;
+				escribeLogRemesa(descError);				
+				rellenaErrorContenido(datosError, colegioExpediente, anyoExpediente, numExpediente, "NumExpediente", descError);				
 			} else {
 				//EJG encontrado
-				ScsEJGBean scsEJGBean = (ScsEJGBean) vectorEJGs.get(0);	
+				ScsEJGBean scsEJGBean = (ScsEJGBean) vectorEJGs.get(0);				
+				
+				String sqlCodTipoResolucion = "SELECT PS.IDTIPORESOLUCION" +
+										" FROM PCAJG_TIPO_RESOLUCION P, PCAJG_TIPO_RESOLUCION_SCSTIPOR PS" +
+										" WHERE P.IDINSTITUCION = PS.IDINSTITUCION" +
+										" AND P.IDENTIFICADOR = PS.IDENTIFICADOR" +
+										" AND P.IDINSTITUCION = " + idInstitucion +
+										" AND P.CODIGO = '" + codTipoResolucion + "'";
+								
+				
+				Vector vector = cajgEJGRemesaAdm.selectGenerico(sqlCodTipoResolucion);
+				if (vector.size() == 0) {
+					String descError = "No se ha encontrado el código " + codTipoResolucion;									
+					rellenaErrorContenido(datosError, colegioExpediente, anyoExpediente, numExpediente, "CodTipoResolucion", descError);
+					return;
+				} else if (vector.size() > 1) {
+					String descError = "Se ha encontrado más de un elemento con el código " + codTipoResolucion;								
+					rellenaErrorContenido(datosError, colegioExpediente, anyoExpediente, numExpediente, "CodTipoResolucion", descError);
+					return;
+				}
+				
+				String sqlCodMotivoResolucion = "SELECT T.IDFUNDAMENTO" +
+								" FROM SCS_TIPOFUNDAMENTOS T" +
+								" WHERE T.IDINSTITUCION = " + idInstitucion +
+								" AND T.CODIGO = '" + codMotivoResolucion + "'";
+				
+				vector = cajgEJGRemesaAdm.selectGenerico(sqlCodMotivoResolucion);
+				if (vector.size() == 0) {
+					String descError = "No se ha encontrado el código " + codMotivoResolucion;									
+					rellenaErrorContenido(datosError, colegioExpediente, anyoExpediente, numExpediente, "CodMotivoResolucion", descError);
+					return;
+				} else if (vector.size() > 1) {
+					String descError = "Se ha encontrado más de un elemento con el código " + codMotivoResolucion;									
+					rellenaErrorContenido(datosError, colegioExpediente, anyoExpediente, numExpediente, "CodMotivoResolucion", descError);
+					return;
+				}
 				
 				//El estado lo pone el trigger como resuelto
 				String observaciones = intervaloIngresosRecursos;
@@ -298,16 +399,8 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 				}
 				
 				String update = "UPDATE " + ScsEJGBean.T_NOMBRETABLA + " SET " +
-						ScsEJGBean.C_IDTIPORATIFICACIONEJG + " = (SELECT PS.IDTIPORESOLUCION" +
-										" FROM PCAJG_TIPO_RESOLUCION P, PCAJG_TIPO_RESOLUCION_SCSTIPOR PS" +
-										" WHERE P.IDINSTITUCION = PS.IDINSTITUCION" +
-										" AND P.IDENTIFICADOR = PS.IDENTIFICADOR" +
-										" AND P.IDINSTITUCION = " + idInstitucion +
-										" AND P.CODIGO = '" + codTipoResolucion + "')" +  //tipoResolucion
-						", " + ScsEJGBean.C_IDFUNDAMENTOJURIDICO + " = (SELECT T.IDFUNDAMENTO" +
-								" FROM SCS_TIPOFUNDAMENTOS T" +
-								" WHERE T.IDINSTITUCION = " + idInstitucion +
-								" AND T.CODIGO = '" + codMotivoResolucion + "')" + //motivoResolucion
+						ScsEJGBean.C_IDTIPORATIFICACIONEJG + " = (" + sqlCodTipoResolucion + ")" +//tipoResolucion
+						", " + ScsEJGBean.C_IDFUNDAMENTOJURIDICO + " = (" + sqlCodMotivoResolucion + ")" + //motivoResolucion
 						", " + ScsEJGBean.C_FECHARESOLUCIONCAJG + " = TO_DATE('" + fechaEstado + "', 'YYYY-MM-DD')" +
 						", " + ScsEJGBean.C_REFAUTO + " = '" + (identificadorResolucion==null?"":identificadorResolucion) + "'" +
 						", " + ScsEJGBean.C_RATIFICACIONDICTAMEN + " = '" + observaciones + "'" +
@@ -328,10 +421,23 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 				
 			}
 		}
-	
 		
 	}
 
+
+	private void rellenaErrorContenido(DatosError datosError,
+			String colegioExpediente, int anyoExpediente, String numExpediente,
+			String campoError, String descError) {
+		ErrorContenido errorContenido = datosError.addNewErrorContenido();
+		CodigoExpedienteError codExpError = errorContenido.addNewCodigoExpedienteError();
+		codExpError.setColegioExpediente(colegioExpediente);
+		codExpError.setAnyoExpediente(anyoExpediente);
+		codExpError.setNumExpediente(numExpediente);
+		
+		DetalleError detalleError = errorContenido.addNewDetalleError();
+		detalleError.setCampoError(campoError);
+		detalleError.setDescError(descError);
+	}
 
 	/**
 	 * 
@@ -371,23 +477,14 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 				TipoIdentificacionIntercambio identificacionIntercambio = intercambioErroneo.getIdentificacionIntercambio();
 				String idInstitucion = identificacionIntercambio.getCodOrigenIntercambio();
 				int idRemesa = (int)identificacionIntercambio.getIdentificadorIntercambio();
+				setIdRemesa(idRemesa/10);
 				
 				if (!String.valueOf(getIdInstitucion()).equals(idInstitucion)) {
 					escribeLogRemesa("La institucion del fichero es nula o distinta a la del usuario de SIGA");
 					throw new ClsExceptions("La institucion del fichero es distinta a la del usuario de SIGA");
 				}
 				
-				if (getIdRemesa() != idRemesa/10) {
-					if (file.delete()) {
-						ClsLogging.writeFileLog("Fichero eliminado del servidor. Ruta = " + file.getAbsolutePath(), 3);
-					} else {
-						ClsLogging.writeFileLog("No se ha podido eliminar el fichero del servidor. Ruta = " + file.getAbsolutePath(), 3);
-					}
-					//si es distinta remesa ya lo tratará su remesa
-					return;
-//					escribeLogRemesa("La remesa del fichero es distinta a la del usuario de SIGA");
-//					throw new ClsExceptions("La remesa del fichero es distinta a la del usuario de SIGA");
-				}
+				file.renameTo(getRespuestaFile(getIdInstitucion(), getIdRemesa(), file.getName()));
 				
 				escribeLogRemesa("Fichero de respuesta " + file.getName() + " encontrado en el servidor FTP. Analizando respuesta.");
 				
@@ -496,7 +593,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 			} catch (Exception e1) {
 				ClsLogging.writeFileLogError("Se ha producido un error al tratar la remesa " + getIdRemesa(), e1, 3);
 			}
-			ClsLogging.writeFileLogError("Se ha producido un error al tratar la respuesta en la remesa " + getIdRemesa(), e, 3);			
+			ClsLogging.writeFileLogError("Se ha producido un error al tratar la respuesta del colegio " + getIdInstitucion(), e, 3);			
 		} finally {
 			
 		}

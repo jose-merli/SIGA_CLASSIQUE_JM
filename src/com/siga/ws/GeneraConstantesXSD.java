@@ -15,23 +15,23 @@ public class GeneraConstantesXSD {
 	
 	public static void main (String[] args) throws Exception {
 		
-		String url = "jdbc:oracle:thin:@192.168.11.55:1521:SIGADES";
-		String user = "uscgae2";
-		String pass = "uscgae2";
-		
-		Properties props = new Properties();
-		props.put("user", user);
-		props.put("password", pass);
+
+//		String url = "jdbc:oracle:thin:pcajg/pcajg@127.0.0.1:1521:XE";
+		String url = "jdbc:oracle:thin:uscgae2/uscgae2@192.168.11.55:1521:SIGADES";
+//		String url = "jdbc:oracle:thin:pcajg/pcajg@192.168.11.55:1521:SIGADES";
 		
 		Class.forName("oracle.jdbc.driver.OracleDriver");
-		Connection conn = DriverManager.getConnection(url, props);
+		Connection conn = DriverManager.getConnection(url);
 
 		//PCAJG
-		String[] vistas = new String[]{"V_PCAJG_EJG", "V_PCAJG_ABOGADOSDESIGNADOS", "V_PCAJG_CONTRARIOS", "V_PCAJG_M_DOCUMENTACIONEXP"
-				, "V_PCAJG_FAMILIARES", "V_PCAJG_MARCASEXPEDIENTES", "V_PCAJG_DELITOS"};
+//		String[] vistas = new String[]{"V_PCAJG_EJG", "V_PCAJG_ABOGADOSDESIGNADOS", "V_PCAJG_CONTRARIOS", "V_PCAJG_M_DOCUMENTACIONEXP"
+//				, "V_PCAJG_FAMILIARES", "V_PCAJG_MARCASEXPEDIENTES", "V_PCAJG_DELITOS"};
 		
 		//PAMPLONA 2055
 		//String[] vistas = new String[]{"v_ws_2055_archivo","v_ws_2055_ejg","v_ws_2055_persona"};
+		
+		//SANTIAGO 2064
+		String[] vistas = new String[]{"V_WS_2064_EJG", "V_WS_2064_PERSONA", "V_WS_2064_CONTRARIOS", "V_WS_2064_DOCUMENTO"};
 		
 		List arrayCampos = new ArrayList(); 
 		
@@ -71,25 +71,20 @@ public class GeneraConstantesXSD {
 			throw e;
 		}
 		
-		
-		if (rs.next()) {
-			System.out.println("");			
-			System.out.println("     /***** CAMPOS DE LA VISTA " + vista + " ****/");
-			System.out.println("");
-			for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
-				String column = rs.getMetaData().getColumnName(i);
-				if (!arrayCampos.contains(column)) {
-					arrayCampos.add(column);
-					System.out.println("	public final String " + column + " = \"" + column + "\";");	
-				} else {
+		System.out.println("");			
+		System.out.println("     /***** CAMPOS DE LA VISTA " + vista + " ****/");
+		System.out.println("");
+		for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
+			String column = rs.getMetaData().getColumnName(i);
+			if (!arrayCampos.contains(column)) {
+				arrayCampos.add(column);
+				System.out.println("	public final String " + column + " = \"" + column + "\";");	
+			} else {
 //					System.err.println("YA EXISTE EL CAMPO " + column);
-				}
-				
-			}
-			System.out.println("");
-		} else {
-			throw new IllegalArgumentException("La vista " + vista + " no tiene datos y no se pueden extraer sus columnas.");
-		}	
+			}			
+		}
+		System.out.println("");
+			
 		rs.close();
 		ps.close();
 	}

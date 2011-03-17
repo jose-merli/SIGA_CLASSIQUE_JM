@@ -8,6 +8,7 @@ import com.siga.ws.PCAJG.SUBTIPOCAJG;
 import com.siga.ws.cat.PCAJGGeneraXML;
 import com.siga.ws.cat.PCAJGxmlResponse;
 import com.siga.ws.i2055.SIGAWSClient;
+import com.siga.ws.i2064.PCAJGGeneraXMLSantiago;
 
 /**
  * @author angel.corral
@@ -19,6 +20,7 @@ public class CajgConfiguracion  {
 	public static final int TIPO_CAJG_PCAJG_GENERAL = 3;
 	public static final int TIPO_CAJG_WEBSERVICE_PAMPLONA = 4;
 	public static final int TIPO_CAJG_TXT_ALCALA = 5;
+	public static final int TIPO_CAJG_XML_SANTIAGO = 6;
 	
 	private static final String PCAJG_ENVIO_WEBSERVICE_TIPO_CAJG3 = "PCAJG_ENVIO_WEBSERVICE_TIPO_CAJG3";
 
@@ -43,6 +45,8 @@ public class CajgConfiguracion  {
 			
 		} else if (tipoCAJG == TIPO_CAJG_WEBSERVICE_PAMPLONA) {
 			obj = new SIGAWSClient();
+		} else if (tipoCAJG == TIPO_CAJG_XML_SANTIAGO) {
+			obj = new PCAJGGeneraXMLSantiago();
 		}
 		return obj;
 	}

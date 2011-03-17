@@ -5,20 +5,29 @@ package com.siga.ws;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.XMLSerializer;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
 import org.apache.xmlbeans.XmlValidationError;
+import org.w3c.dom.Document;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
@@ -29,6 +38,8 @@ import com.siga.beans.CajgEJGRemesaAdm;
 import com.siga.beans.CajgEJGRemesaBean;
 import com.siga.beans.CajgRespuestaEJGRemesaAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaBean;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument;
+import com.siga.ws.pcajg.cat.xsd.TipoIdentificacionIntercambio;
 
 /**
  * @author angelcpe
@@ -398,4 +409,83 @@ public abstract class SIGAWSClientAbstract {
 	}
 
 
+	protected static String getNombreRutaZIPconXMLs(int idInstitucion, int idRemesa) {
+		return getDirXML(idInstitucion, idRemesa) + File.separator + idInstitucion + "_" + idRemesa;
+	}
+	
+	public static String getRutaFicheroZIP(int idInstitucion, int idRemesa) {
+		return getNombreRutaZIPconXMLs(idInstitucion, idRemesa) + ".zip";
+	}
+
+	protected static String getDirXML(int idInstitucion, int idRemesa) {
+		String keyPathFicheros = "cajg.directorioFisicoCAJG";		
+		String keyPath2 = "cajg.directorioCAJGJava";				
+	    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String pathFichero = p.returnProperty(keyPathFicheros) + p.returnProperty(keyPath2);
+		return pathFichero + File.separator + idInstitucion  + File.separator + idRemesa + File.separator + "xml";
+	}
+	
+	protected Calendar clearCalendar(Calendar cal) {
+		cal.clear(Calendar.ZONE_OFFSET);
+		//cal.clear(Calendar.DST_OFFSET);
+		return cal;
+	}
+	
+	
+	protected String getNombreFichero(TipoIdentificacionIntercambio tipoIdentificacionIntercambio) {
+		StringBuffer nombreFichero = new StringBuffer();
+		nombreFichero.append(tipoIdentificacionIntercambio.getTipoIntercambio());
+		nombreFichero.append("_" + tipoIdentificacionIntercambio.getCodOrigenIntercambio());
+		nombreFichero.append("_" + tipoIdentificacionIntercambio.getCodDestinoIntercambio());
+		nombreFichero.append("_" + tipoIdentificacionIntercambio.getIdentificadorIntercambio());
+		
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		String fechaIntercambio = sdf.format(tipoIdentificacionIntercambio.getFechaIntercambio().getTime());
+		nombreFichero.append("_" + fechaIntercambio);
+		nombreFichero.append("_" + tipoIdentificacionIntercambio.getNumeroDetallesIntercambio());
+		nombreFichero.append(".xml");
+		return nombreFichero.toString();
+	}
+	
+	protected void guardaFicheroFormatoCatalan(IntercambioDocument intercambioDocument, File file) throws Exception {
+		SigaWSHelper.deleteEmptyNode(intercambioDocument.getIntercambio().getDomNode());
+		
+		XmlOptions xmlOptions = new XmlOptions();
+		xmlOptions.setSavePrettyPrintIndent(4);
+		xmlOptions.setSavePrettyPrint();
+		
+		//xmlOptions.setCharacterEncoding("ISO-8859-15");
+		Map<String, String> mapa = new HashMap<String, String>();
+		mapa.put(intercambioDocument.getIntercambio().getDomNode().getNamespaceURI(), "");
+		xmlOptions.setSaveSuggestedPrefixes(mapa);
+		
+		ClsLogging.writeFileLog("Guardando fichero generado xml para la Generalitat en " + file.getAbsolutePath(), 3);
+		intercambioDocument.save(file, xmlOptions);
+		//comprobamos que el fichero generado sea correcto
+		StringBuffer sbErrores = SIGAWSClientAbstract.validateXML(intercambioDocument); 
+				
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = factory.newDocumentBuilder();
+		Document xmldoc = builder.parse(file);
+		//quitamos el namespace. solicitado por ibermatica en correo del 01/02/2011 16:04
+		xmldoc.getDocumentElement().removeAttribute("xmlns");
+		
+		FileOutputStream fos = new FileOutputStream(file);		
+		OutputFormat of = new OutputFormat("XML", "ISO-8859-15", true);				
+		of.setIndent(1);
+		of.setIndenting(true);
+		of.setLineWidth(1500);
+		
+		XMLSerializer serializer = new XMLSerializer(fos, of);
+		serializer.asDOMSerializer();
+		serializer.serialize( xmldoc.getDocumentElement() );
+		fos.flush();
+		fos.close();
+		
+		//si no es correcto lo genero y lo transformo para poder ver por qué no es correcto
+		if (sbErrores != null) {
+			throw new Exception("El xml generado no cumple el esquema establecido con la Generalitat: " + sbErrores.toString());
+		}
+	}
 }

@@ -1393,7 +1393,9 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			
 		DefinicionRemesas_CAJG_Form miForm = (DefinicionRemesas_CAJG_Form) formulario;
 		File file = null;
-		if (CajgConfiguracion.getTipoCAJG(getIDInstitucion(request)) == CajgConfiguracion.TIPO_CAJG_PCAJG_GENERAL) {
+		int tipoCajg = CajgConfiguracion.getTipoCAJG(getIDInstitucion(request));
+		if (tipoCajg == CajgConfiguracion.TIPO_CAJG_PCAJG_GENERAL
+				|| tipoCajg == CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO) {
 			file = getFicheroXML(getIDInstitucion(request).toString(), miForm.getIdRemesa());
 		} else {
 			file = getFichero(getIDInstitucion(request).toString(), miForm.getIdRemesa());

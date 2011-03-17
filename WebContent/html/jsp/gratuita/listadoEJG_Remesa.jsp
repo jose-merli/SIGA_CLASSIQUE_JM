@@ -115,6 +115,8 @@
 				}
 			} else if (cajgConfig == 4) {
 				buttons+=",ws";//envio WebService
+			} else if (cajgConfig == 6) {
+				buttons+=",gxml";//generar XML
 			}
 		}
 	} else if (idEstado == 1) {//GENERADA
@@ -123,6 +125,8 @@
 			if (isPCajgTXT || cajgConfig == 2) {//QUITAR EL == 2 CUANDO SEA DEFINITIVO EL ENVIO XML
 				buttons+=",d";//descargar
 			} else if (cajgConfig == 3 && tipoPCAJGGeneral != 1) {
+				buttons+=",d";//descargar
+			} else if (cajgConfig == 6) {
 				buttons+=",d";//descargar
 			}
 		}
@@ -144,6 +148,8 @@
 					buttons+=",resolucionFTP";//obtener resoluciones
 				}
 			} else if (cajgConfig == 3 && tipoPCAJGGeneral != 1) {
+				buttons+=",d";//descargar
+			} else if (cajgConfig == 6) {
 				buttons+=",d";//descargar
 			}
 		}

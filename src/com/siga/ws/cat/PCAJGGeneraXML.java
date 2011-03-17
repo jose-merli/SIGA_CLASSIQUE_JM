@@ -2,29 +2,19 @@ package com.siga.ws.cat;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.math.BigInteger;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
 import javax.transaction.UserTransaction;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
-import org.apache.xmlbeans.XmlOptions;
-import org.w3c.dom.Document;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -102,6 +92,8 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	private static final String INTERCAMBIO_EXPEDIENTES_ARCHIVADOS = "IEA";//INTERCAMBIO EXPEDIENTES ARCHIVADOS
 	private static final String INTERCAMBIO_RESOLUCIONES = "IR";//INTERCAMBIO RESOLUCIONES
 	private static final String INTERCAMBIO_CAMBIO_DESIGNACION = "ICD";//INTERCAMBIO CAMBIO DESIGNACION
+	public static final String INTERCAMBIO_ERRORES_EXPEDIENTE = "IEE";
+	
 		
 	private String idTipoEJG;
 	private String anyo;
@@ -208,70 +200,14 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		
 		File file = new File(dirFicheros);
 		file.mkdirs();
-		/*File[] files = file.listFiles();
-		if (files != null) { //borramos todos los xml que hayamos hecho antes
-			for (int i = 0; i < files.length; i++){
-				if (files[i].getName().endsWith(".xml")) {
-					files[i].delete();
-				}
-			}
-		}*/
-		//intercambio.getInformacionIntercambio().setInformacion(tipoInformacion);
+		
 		TipoIdentificacionIntercambio tipoIdentificacionIntercambio = intercambio.getInformacionIntercambio().getIdentificacionIntercambio();
 		tipoIdentificacionIntercambio.setNumeroDetallesIntercambio(numDetalles);
 		
-		StringBuffer nombreFichero = new StringBuffer();
-		nombreFichero.append(tipoIdentificacionIntercambio.getTipoIntercambio());
-		nombreFichero.append("_" + tipoIdentificacionIntercambio.getCodOrigenIntercambio());
-		nombreFichero.append("_" + tipoIdentificacionIntercambio.getCodDestinoIntercambio());
-		nombreFichero.append("_" + tipoIdentificacionIntercambio.getIdentificadorIntercambio());
+		String nombreFichero = getNombreFichero(tipoIdentificacionIntercambio);
 		
-		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-		String fechaIntercambio = sdf.format(tipoIdentificacionIntercambio.getFechaIntercambio().getTime());
-		nombreFichero.append("_" + fechaIntercambio);
-		nombreFichero.append("_" + tipoIdentificacionIntercambio.getNumeroDetallesIntercambio());
-		nombreFichero.append(".xml");
-		
-		file = new File(file, nombreFichero.toString());
-		SigaWSHelper.deleteEmptyNode(intercambio.getDomNode());
-		
-		XmlOptions xmlOptions = new XmlOptions();
-		xmlOptions.setSavePrettyPrintIndent(4);
-		xmlOptions.setSavePrettyPrint();
-		
-		//xmlOptions.setCharacterEncoding("ISO-8859-15");
-		Map<String, String> mapa = new HashMap<String, String>();
-		mapa.put(intercambio.getDomNode().getNamespaceURI(), "");
-		xmlOptions.setSaveSuggestedPrefixes(mapa);
-		
-		ClsLogging.writeFileLog("Guardando fichero generado xml para la Generalitat en " + file.getAbsolutePath(), 3);
-		intercambioDocument.save(file, xmlOptions);
-		//comprobamos que el fichero generado sea correcto
-		StringBuffer sbErrores = SIGAWSClientAbstract.validateXML(intercambioDocument); 
-				
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder = factory.newDocumentBuilder();
-		Document xmldoc = builder.parse(file);
-		//quitamos el namespace. solicitado por ibermatica en correo del 01/02/2011 16:04
-		xmldoc.getDocumentElement().removeAttribute("xmlns");
-		
-		FileOutputStream fos = new FileOutputStream(file);		
-		OutputFormat of = new OutputFormat("XML", "ISO-8859-15", true);				
-		of.setIndent(1);
-		of.setIndenting(true);
-		of.setLineWidth(1500);
-		
-		XMLSerializer serializer = new XMLSerializer(fos, of);
-		serializer.asDOMSerializer();
-		serializer.serialize( xmldoc.getDocumentElement() );
-		fos.flush();
-		fos.close();
-		
-		//si no es correcto lo genero y lo transformo para poder ver por qué no es correcto
-		if (sbErrores != null) {
-			throw new Exception("El xml generado no cumple el esquema establecido con la Generalitat: " + sbErrores.toString());
-		}
+		file = new File(file, nombreFichero);
+		guardaFicheroFormatoCatalan(intercambioDocument, file);
 		
 		return file;
 		
@@ -1178,12 +1114,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		
 		return cal;
 	}
-	
-	private Calendar clearCalendar(Calendar cal) {
-		cal.clear(Calendar.ZONE_OFFSET);
-		//cal.clear(Calendar.DST_OFFSET);
-		return cal;
-	}
+
 
 	
 	private String getCodigoElementoTipificado(String elementoTipificado) {
@@ -1351,27 +1282,24 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 				escribeLogRemesa("El archivo se ha subido correctamente al servidor FTP");
 			}			
 			
-			
-			CajgRemesaEstadosAdm cajgRemesaEstadosAdm = new CajgRemesaEstadosAdm(usr);
-			CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(usr);
-			
-			
-			// Marcar como generada
-			cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIdInstitucion(), getIdRemesa(), Integer.valueOf("1"));
-
-			
-			//MARCAMOS COMO ENVIADA
-			if (cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIdInstitucion(), getIdRemesa(), Integer.valueOf("2"))) {
-				cajgEJGRemesaAdm.nuevoEstadoEJGRemitidoComision(usr, String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()), ClsConstants.REMITIDO_COMISION);
+			if (files != null && files.size() > 0) {
+				CajgRemesaEstadosAdm cajgRemesaEstadosAdm = new CajgRemesaEstadosAdm(usr);
+				CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(usr);						
+				// Marcar como generada
+				cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIdInstitucion(), getIdRemesa(), ClsConstants.ESTADO_REMESA_GENERADA);				
+				//MARCAMOS COMO ENVIADA
+				if (cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIdInstitucion(), getIdRemesa(), ClsConstants.ESTADO_REMESA_ENVIADA )) {
+					cajgEJGRemesaAdm.nuevoEstadoEJGRemitidoComision(usr, String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()), ClsConstants.REMITIDO_COMISION);
+				}
 			}
 			tx.commit();
 
 		} catch (JSchException e) {
 			tx.rollback();
-			escribeLogRemesa("Se ha producido un error de conexión con el servidor FTP");
+			escribeLogRemesa("Se ha producido un error de conexión con el servidor FTP en la institución " + getIdInstitucion());
 			ClsLogging.writeFileLogError("Error en el envío FTP", e, 3);			
 		} catch (Exception e) {
-			e.printStackTrace();//TODO
+			ClsLogging.writeFileLogError("Error en al generar y enviar el fichero xml para la institución " + getIdInstitucion(), e, 3);
 			tx.rollback();
 			throw e;
 		} finally {			

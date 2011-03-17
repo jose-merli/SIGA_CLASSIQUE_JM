@@ -23,6 +23,7 @@ import org.apache.axis.transport.http.HTTPSender;
 import org.apache.axis.transport.http.HTTPTransport;
 import org.apache.axis.types.PositiveInteger;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.siga.Utilidades.LogHandler;
@@ -71,7 +72,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 			tx.begin();
 			//elimino primero las posibles respuestas que ya tenga por si se ha relanzado
 			cajgRespuestaEJGRemesaAdm.eliminaAnterioresErrores(getIdInstitucion(), getIdRemesa());
-			cajgRespuestaEJGRemesaAdm.insertaErrorEJGnoEnviados(getIdInstitucion(), getIdRemesa(), getUsrBean());	
+			cajgRespuestaEJGRemesaAdm.insertaErrorEJGnoEnviados(getIdInstitucion(), getIdRemesa(), getUsrBean(), "V_WS_2055_EJG");	
 				
 			
 			for (int i = 0; i < listDtExpedientes.size(); i++) {
@@ -129,9 +130,9 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 			if (correctos > 0) {				
 				CajgRemesaEstadosAdm cajgRemesaEstadosAdm = new CajgRemesaEstadosAdm(getUsrBean());
 				// Marcar como generada
-				cajgRemesaEstadosAdm.nuevoEstadoRemesa(getUsrBean(), getIdInstitucion(), getIdRemesa(), Integer.valueOf("1"));				
+				cajgRemesaEstadosAdm.nuevoEstadoRemesa(getUsrBean(), getIdInstitucion(), getIdRemesa(), ClsConstants.ESTADO_REMESA_GENERADA);				
 				//MARCAMOS COMO ENVIADA
-				if (cajgRemesaEstadosAdm.nuevoEstadoRemesa(getUsrBean(), getIdInstitucion(), getIdRemesa(), Integer.valueOf("2"))) {
+				if (cajgRemesaEstadosAdm.nuevoEstadoRemesa(getUsrBean(), getIdInstitucion(), getIdRemesa(), ClsConstants.ESTADO_REMESA_ENVIADA)) {
 					//cajgEJGRemesaAdm.nuevoEstadoEJGRemitidoComision(getUsrBean(), String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()), ClsConstants.REMITIDO_COMISION);
 				}				
 				escribeLogRemesa("Los envíos junto con sus respuestas han sido tratatados satisfactoriamente");
@@ -341,7 +342,10 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		if (st != null) dtDirecciones.setEmail(st);
 		in = getInteger(map.get(DIR_IDPAIS));
 		if (in != null) dtDirecciones.setIDPais(in);
-		dtPersona.setDtDirecciones(dtDirecciones);
+		
+		if (dtDirecciones.getIDPoblacion() != null) {
+			dtPersona.setDtDirecciones(dtDirecciones);
+		}
 	}
 
 	

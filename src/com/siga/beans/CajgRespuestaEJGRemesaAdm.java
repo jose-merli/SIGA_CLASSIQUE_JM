@@ -142,7 +142,7 @@ public class CajgRespuestaEJGRemesaAdm extends MasterBeanAdministrador {
 	 * @param usrBean 
 	 * @throws ClsExceptions 
 	 */
-	public void insertaErrorEJGnoEnviados(int idInstitucion, int idRemesa, UsrBean usrBean) throws ClsExceptions {
+	public void insertaErrorEJGnoEnviados(int idInstitucion, int idRemesa, UsrBean usrBean, String vista) throws ClsExceptions {
 		CajgRespuestaEJGRemesaBean cajgRespuestaEJGRemesaBean = new CajgRespuestaEJGRemesaBean();
 		String sql = "insert into cajg_respuesta_ejgremesa" +
 				" (idrespuesta, idejgremesa, codigo, descripcion, abreviatura, fecha, fechamodificacion, usumodificacion)" +
@@ -151,7 +151,9 @@ public class CajgRespuestaEJGRemesaAdm extends MasterBeanAdministrador {
 				" FROM CAJG_EJGREMESA ER" +
 				" WHERE ER.IDINSTITUCION = " + idInstitucion +
 				" AND ER.IDREMESA = " + idRemesa +
-				" AND ER.IDEJGREMESA NOT IN (SELECT V.IDEJGREMESA FROM V_WS_2055_EJG V)";
+				" AND ER.IDEJGREMESA NOT IN (SELECT V.IDEJGREMESA FROM " + vista + " V" +
+						" WHERE V.IDINSTITUCION = " + idInstitucion +
+						" AND V.IDREMESA = " + idRemesa + ")";
 		insertSQL(sql);		
 	}
 	
