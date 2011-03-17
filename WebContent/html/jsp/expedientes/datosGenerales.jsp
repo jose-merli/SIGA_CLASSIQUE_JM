@@ -146,6 +146,8 @@
 		tipoIVASel.add(idTipoIVA);
 	}
 	String tituloDenunciado = (String)request.getAttribute("tituloDenunciado");
+	
+	String tituloDenunciante = (String)request.getAttribute("tituloDenunciante");
 
 %>	
 
@@ -494,17 +496,19 @@
 			<td class="labelText">
 				<siga:Idioma key="expedientes.auditoria.literal.nexpdisciplinario"/>
 			</td>		
-			<td class="labelTextValue" >
 			<%if (!bEditable){%>
-				<bean:write name="ExpDatosGeneralesForm" property="numExpDisciplinario"/>
+			<td class="labelTextValue" styleClass="box" style= "text-align:right" >
+				<bean:write name="ExpDatosGeneralesForm" property="numExpDisciplinario"></bean:write>
 				/
-				<bean:write name="ExpDatosGeneralesForm" property="anioExpDisciplinario"/>
-			<%}else{%>				
+				<bean:write name="ExpDatosGeneralesForm" property="anioExpDisciplinario"></bean:write>
+			</td>
+			<%}else{%>	
+			<td class="labelTextValue">			
 				<html:text name="ExpDatosGeneralesForm" property="numExpDisciplinario" size="6" maxlength="6" styleClass="box" style="text-align:right;"></html:text>
 				/
 				<html:text name="ExpDatosGeneralesForm" property="anioExpDisciplinario" size="4" maxlength="4" styleClass="box" style="text-align:right;"></html:text>
-			<%}%>
 			</td>
+			<%}%>
 <%}else{%>						
 			<html:hidden name="ExpDatosGeneralesForm" property="numExpDisciplinario"/>
 			<html:hidden name="ExpDatosGeneralesForm" property="anioExpDisciplinario"/>			
@@ -617,10 +621,18 @@
 			</td>
 
 			<td class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.fechainicial"/>&nbsp(*)
+				<siga:Idioma key="expedientes.auditoria.literal.estadoyfechainicial"/>&nbsp(*)
 			</td>
+			
+			<td colspan="2">
+				<%if (bEditable){%>		
+				<siga:ComboBD  nombre = "comboEstados" tipo="cmbEstados" ancho="400" clase="boxCombo" obligatorio="true" accion="parent.limpiarFechas();" ElementoSel="<%=vEstado%>" hijo="t" pestana="t"/>						
+				<%}else{%>
+				<html:text name="ExpDatosGeneralesForm" property="estadoSel"  styleClass="boxConsulta" readonly="true"></html:text>
+				<%}%>
+ 			</td>			
+			
 			<td>
-				
 				<% if (bEditable){%>
 					<siga:Fecha nombreCampo="fechaInicial" valorInicial="<%=form.getFechaInicial()%>"/>
 					<a href='javascript://'onClick="return showCalendarGeneral(fechaInicial);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
@@ -628,21 +640,8 @@
 					<html:text name="ExpDatosGeneralesForm" property="fechaInicial" maxlength="10" size="10" styleClass="<%=boxStyle%>" readonly="true">
 					</html:text>
 				<%}%>
-			</td>
-			
-			<td class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.estado"/>&nbsp(*)
-			</td>
-			<td colspan="2">
-				<%if (bEditable){%>		
-				<siga:ComboBD nombre = "comboEstados" tipo="cmbEstados" clase="boxCombo" obligatorio="true" accion="parent.limpiarFechas();" ElementoSel="<%=vEstado%>" hijo="t" pestana="t"/>						
-				<%}else{%>
-				<html:text name="ExpDatosGeneralesForm" property="estadoSel"  styleClass="boxConsulta" readonly="true"></html:text>
-				<%}%>
- 			</td>
- 						
+			</td>			
 		</tr>
-
 
 		<tr>					
 				
@@ -666,7 +665,7 @@
 				<%}%>
 			</td>		
 			
-			<td class="labelText">
+			<td class="labelText" style="text-align: right; width: 180"'>
 				<siga:Idioma key="expedientes.auditoria.literal.fechaprorroga"/>
 			</td>
 			<td>
@@ -794,6 +793,48 @@
 		
 	</siga:ConjCampos>
 
+	<siga:ConjCampos leyenda="<%=tituloDenunciante%>">
+
+	<table class="tablaCampos" align="center">
+
+	<!-- FILA -->
+		<tr>					
+			<td class="labelText">
+				<html:hidden name="ExpDatosGeneralesForm" property = "idPersona"/>
+				<html:hidden name="ExpDatosGeneralesForm" property = "idDireccion"/>
+				
+				<siga:Idioma key="expedientes.auditoria.literal.nombre"/>&nbsp(*)
+			</td>				
+			<td>
+				<html:text name="ExpDatosGeneralesForm" property="nombreDenunciante" styleClass="boxConsulta" readonly="true"></html:text>
+			</td>
+			<td class="labelText">
+				<siga:Idioma key="expedientes.auditoria.literal.primerapellido"/>&nbsp(*)
+			</td>
+			<td>
+				<html:text name="ExpDatosGeneralesForm" property="primerApellidoDenunciante" styleClass="boxConsulta" readonly="true"></html:text>				
+			</td>
+			<td class="labelText">
+				<siga:Idioma key="expedientes.auditoria.literal.segundoapellido"/>&nbsp(*)
+			</td>
+			<td>
+				<html:text name="ExpDatosGeneralesForm" property="segundoApellidoDenunciante" styleClass="boxConsulta" readonly="true"></html:text>				
+			</td>	 
+		</tr>
+	
+	<!-- FILA -->
+		<tr>					
+			<td class="labelText">
+				<siga:Idioma key="expedientes.auditoria.literal.nif"/>&nbsp(*)
+			</td>				
+			<td>				
+				<html:text name="ExpDatosGeneralesForm" property="nifDenunciante" styleClass="boxConsulta" readonly="true"></html:text>
+			</td>
+		</tr>
+	</table>
+	</siga:ConjCampos>
+
+
 <%if (bAsuntoJud){%>
 	<siga:ConjCampos leyenda="expedientes.auditoria.literal.asuntojudicial">
 
@@ -806,9 +847,9 @@
 			</td>				
 			<td>
 				<%if(bEditable){%>
-				 	  <siga:ComboBD nombre="idMateria" tipo="materiaarea" ancho="200" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosMateria%>" elementoSel="<%=materiaSel%>" accion="Hijo:juzgado" readonly="false"/>           	   
+				 	  <siga:ComboBD nombre="idMateria" tipo="materiaarea" ancho="250" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosMateria%>" elementoSel="<%=materiaSel%>" accion="Hijo:juzgado" readonly="false"/>           	   
 				<%}else{%>
-					  <siga:ComboBD nombre="idMateria" tipo="materiaarea" ancho="200" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosMateria%>" elementoSel="<%=materiaSel%>"  accion="Hijo:juzgado" readonly="true"/>           	   
+					  <siga:ComboBD nombre="idMateria" tipo="materiaarea" ancho="250" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosMateria%>" elementoSel="<%=materiaSel%>"  accion="Hijo:juzgado" readonly="true"/>           	   
 				<%}%>							
 				
 			</td>
@@ -818,9 +859,9 @@
 			<td COLSPAN="3">
 				<%if(bEditable){%>
 				 	  <input type="text" name="codigoExtJuzgado" class="box" size="3"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado();" />
-				 	  <siga:ComboBD nombre="juzgado" tipo="comboJuzgadosMateria" ancho="300" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuzgado%>" elementoSel="<%=juzgadoSel%>" hijo="t" accion="Hijo:procedimiento" readonly="false"/>           	   
+				 	  <siga:ComboBD nombre="juzgado" tipo="comboJuzgadosMateria" ancho="330" clase="<%=estiloCombo%>" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuzgado%>" elementoSel="<%=juzgadoSel%>" hijo="t" accion="Hijo:procedimiento" readonly="false"/>           	   
 				<%}else{%>
-						<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosMateria" ancho="400" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuzgado%>" elementoSel="<%=juzgadoSel%>" hijo="t" accion="Hijo:procedimiento" readonly="true"/>           	   
+						<siga:ComboBD nombre="juzgado" tipo="comboJuzgadosMateria" ancho="330" clase="boxConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuzgado%>" elementoSel="<%=juzgadoSel%>" hijo="t" accion="Hijo:procedimiento" readonly="true"/>           	   
 				<%}%>							
 				
 			</td>

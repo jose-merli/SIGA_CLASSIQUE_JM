@@ -5,11 +5,9 @@
  */
 package com.siga.expedientes.action;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Locale;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +36,7 @@ import com.siga.beans.ExpCamposValorAdm;
 import com.siga.beans.ExpCamposValorBean;
 import com.siga.beans.ExpClasificacionesAdm;
 import com.siga.beans.ExpClasificacionesBean;
+import com.siga.beans.ExpDenuncianteBean;
 import com.siga.beans.ExpEstadosAdm;
 import com.siga.beans.ExpEstadosBean;
 import com.siga.beans.ExpExpedienteAdm;
@@ -59,6 +58,15 @@ import com.xerox.docushare.DSException;
  */
 public class ExpDatosGeneralesAction extends MasterAction 
 {
+	static public final String C_NOMBRETIPOEXPEDIENTE = "NOMBRETIPOEXPEDIENTE";
+	static public final String C_NOMBREINSTITUCION = "NOMBREINSTITUCION";
+	static public final String C_NOMBREPERSONA = "NOMBREPERSONA";
+	static public final String C_NOMBREDENUNCIANTE = "NOMBREDENUNCIANTE";
+	static public final String C_APELLIDO1DENUNCIANTE = "APELLIDO1DENUNCIANTE";
+	static public final String C_APELLIDO2DENUNCIANTE = "APELLIDO2DENUNCIANTE";
+	static public final String C_NIFDENUNCIANTE = "NIFDENUNCIANTE";	
+	
+	
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
 	{
 		try {
@@ -75,6 +83,19 @@ public class ExpDatosGeneralesAction extends MasterAction
 			}
 			UtilidadesHash.set(h, ExpCampoTipoExpedienteBean.C_IDCAMPO, new Integer("9")); // Denunciante/Impugnante
 			v = adm.select(h);
+			
+			//Obtenemos el Titulo Impugnante o Denunciante
+			
+			ExpCampoTipoExpedienteBean aux = (ExpCampoTipoExpedienteBean)v.get(0);
+			String nombreAux = "pestana.auditoriaexp.interesado";
+			
+			if (v != null && v.size() > 0) {
+				aux = (ExpCampoTipoExpedienteBean)v.get(0);
+				nombreAux = aux.getNombre();
+				if(nombreAux ==null||nombreAux.equals(""))
+					nombreAux = ExpCampoTipoExpedienteBean.DENUNCIANTE;
+			}
+			
 			//Comprobamos si tiene visible la pestaña denunciante. Si no la tiene ponemos interesado
 			//si esta visible la descripcion del campo dependera de lo que haya seleccionado
 			//en la configuiracion del tipo de expediente
@@ -96,11 +117,10 @@ public class ExpDatosGeneralesAction extends MasterAction
 					
 			}
 			request.setAttribute("tituloDenunciado", nombre);
-			
+			request.setAttribute("tituloDenunciante", nombreAux);
 			
 			}
-			
-			
+
 			String accion = (String)request.getParameter("accion");
 			if (accion.equals("nuevo")){				
 				return abrirNuevo(mapping, formulario, request, response);			
@@ -225,6 +245,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 			Vector datosFase = null;
 			Vector datosEstado = null;
 			Vector datosClasif = null;
+			int numeroRegistros = 0;
 			
 			ExpExpedienteAdm expAdm = new ExpExpedienteAdm (this.getUserBean(request));	
 			
@@ -250,40 +271,97 @@ public class ExpDatosGeneralesAction extends MasterAction
 	        
 	        //PRIMERA SELECT: EXP_EXPEDIENTE--------------------------
 	        
-	        String where = " WHERE ";
-	                
-			where += "E."+ExpExpedienteBean.C_IDINSTITUCION + " = '" + idInstitucion + "' AND ";
-			where += "E."+ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE + " = '" + idInstitucion_TipoExpediente + "' AND ";
-			where += "E."+ExpExpedienteBean.C_IDTIPOEXPEDIENTE + " = '" + idTipoExpediente + "' AND ";
-			where += "E."+ExpExpedienteBean.C_NUMEROEXPEDIENTE + " = '" + numExpediente + "' AND ";
-			where += "E."+ExpExpedienteBean.C_ANIOEXPEDIENTE + " = '" + anioExpediente + "' ";
+	        
+	        String whereCount = " WHERE ";
+	        int numeroCount = 0;
+	        
+			whereCount += " DEN."+ExpDenuncianteBean.C_IDPERSONA+" = PER."+CenPersonaBean.C_IDPERSONA+"(+)";
+			whereCount += "AND DEN."+ExpDenuncianteBean.C_IDINSTITUCION + " = '" + idInstitucion + "' AND ";
+			whereCount += "DEN."+ExpDenuncianteBean.C_IDINSTITUCION_TIPOEXPEDIENTE + " = '" + idInstitucion_TipoExpediente + "' AND ";
+			whereCount += "DEN."+ExpDenuncianteBean.C_IDTIPOEXPEDIENTE + " = '" + idTipoExpediente + "' AND ";	
+			whereCount += "DEN."+ExpDenuncianteBean.C_NUMEROEXPEDIENTE + " = '" + numExpediente + "' AND ";
+			whereCount += "DEN."+ExpDenuncianteBean.C_ANIOEXPEDIENTE + " = '" + anioExpediente + "' ";			
 			
-		    //join de las tablas EXPEDIENTE E, TIPOEXPEDIENTE T, PERSONA P, COLEGIADO C, INSTITUCION I
-	        where += "AND E."+ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE+" = T."+ExpTipoExpedienteBean.C_IDINSTITUCION+"(+)";
-	        where += " AND E."+ExpExpedienteBean.C_IDTIPOEXPEDIENTE+" = T."+ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE+"(+)";
-	        where += " AND E."+ExpExpedienteBean.C_IDINSTITUCION+" = I."+CenInstitucionBean.C_IDINSTITUCION+"(+)";
-	        where += " AND E."+ExpExpedienteBean.C_IDPERSONA+" = P."+CenPersonaBean.C_IDPERSONA+"(+)";
-	        where += " AND E."+ExpExpedienteBean.C_IDINSTITUCION+" = C."+CenColegiadoBean.C_IDINSTITUCION+"(+)";
-	        where += " AND E."+ExpExpedienteBean.C_IDPERSONA+" = C."+CenColegiadoBean.C_IDPERSONA+"(+)";
-	        			
-			datosExp = expAdm.selectDatosGenerales(where);
+			numeroCount = expAdm.getNumeroDenunciantes(whereCount); 
+			
+			String where = " WHERE ";
+			
+			if ( numeroCount > 0) {
+			
+				//join de las tablas EXPEDIENTE E, TIPOEXPEDIENTE T, PERSONA P, COLEGIADO C, INSTITUCION I
+				where += "E."+ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE+" = T."+ExpTipoExpedienteBean.C_IDINSTITUCION+"(+)";
+				where += " AND E."+ExpExpedienteBean.C_IDTIPOEXPEDIENTE+" = T."+ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE+"(+)";
+				where += " AND E."+ExpExpedienteBean.C_IDINSTITUCION+" = I."+CenInstitucionBean.C_IDINSTITUCION+"(+)";
+				where += " AND E."+ExpExpedienteBean.C_IDPERSONA+" = P."+CenPersonaBean.C_IDPERSONA+"(+)";
+				where += " AND E."+ExpExpedienteBean.C_IDINSTITUCION+" = C."+CenColegiadoBean.C_IDINSTITUCION+"(+)";
+				where += " AND E."+ExpExpedienteBean.C_IDPERSONA+" = C."+CenColegiadoBean.C_IDPERSONA+"(+)";
+				where += " AND DEN."+ExpDenuncianteBean.C_IDPERSONA+" = PER."+CenPersonaBean.C_IDPERSONA+"(+)";
+	        
+				where += "AND E."+ExpExpedienteBean.C_IDINSTITUCION + " = '" + idInstitucion + "' AND ";
+				where += "E."+ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE + " = '" + idInstitucion_TipoExpediente + "' AND ";
+				where += "E."+ExpExpedienteBean.C_IDTIPOEXPEDIENTE + " = '" + idTipoExpediente + "' AND ";
+				where += "E."+ExpExpedienteBean.C_NUMEROEXPEDIENTE + " = '" + numExpediente + "' AND ";
+				where += "E."+ExpExpedienteBean.C_ANIOEXPEDIENTE + " = '" + anioExpediente + "' AND ";
+				where += "DEN."+ExpDenuncianteBean.C_IDINSTITUCION + " = '" + idInstitucion + "' AND ";
+				where += "DEN."+ExpDenuncianteBean.C_IDINSTITUCION_TIPOEXPEDIENTE + " = '" + idInstitucion_TipoExpediente + "' AND ";
+				where += "DEN."+ExpDenuncianteBean.C_IDTIPOEXPEDIENTE + " = '" + idTipoExpediente + "' AND ";	
+				where += "DEN."+ExpDenuncianteBean.C_NUMEROEXPEDIENTE + " = '" + numExpediente + "' AND ";
+				where += "DEN."+ExpDenuncianteBean.C_ANIOEXPEDIENTE + " = '" + anioExpediente + "' ";
+			} else {
+				//join de las tablas EXPEDIENTE E, TIPOEXPEDIENTE T, PERSONA P, COLEGIADO C, INSTITUCION I
+				where += "E."+ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE+" = T."+ExpTipoExpedienteBean.C_IDINSTITUCION+"(+)";
+				where += " AND E."+ExpExpedienteBean.C_IDTIPOEXPEDIENTE+" = T."+ExpTipoExpedienteBean.C_IDTIPOEXPEDIENTE+"(+)";
+				where += " AND E."+ExpExpedienteBean.C_IDINSTITUCION+" = I."+CenInstitucionBean.C_IDINSTITUCION+"(+)";
+				where += " AND E."+ExpExpedienteBean.C_IDPERSONA+" = P."+CenPersonaBean.C_IDPERSONA+"(+)";
+				where += " AND E."+ExpExpedienteBean.C_IDINSTITUCION+" = C."+CenColegiadoBean.C_IDINSTITUCION+"(+)";
+				where += " AND E."+ExpExpedienteBean.C_IDPERSONA+" = C."+CenColegiadoBean.C_IDPERSONA+"(+)";
+				
+				where += "AND E."+ExpExpedienteBean.C_IDINSTITUCION + " = '" + idInstitucion + "' AND ";
+				where += "E."+ExpExpedienteBean.C_IDINSTITUCION_TIPOEXPEDIENTE + " = '" + idInstitucion_TipoExpediente + "' AND ";
+				where += "E."+ExpExpedienteBean.C_IDTIPOEXPEDIENTE + " = '" + idTipoExpediente + "' AND ";
+				where += "E."+ExpExpedienteBean.C_NUMEROEXPEDIENTE + " = '" + numExpediente + "' AND ";
+				where += "E."+ExpExpedienteBean.C_ANIOEXPEDIENTE + " = '" + anioExpediente + "' ";				
+			}
+				
+			datosExp = expAdm.selectDatosGenerales(where, numeroCount);
+				
 	
 			//Hacemos los sets del formulario
 			Row fila = (Row)datosExp.elementAt(0);
-			form.setTipoExpediente(fila.getString("NOMBRETIPOEXPEDIENTE"));
+			form.setTipoExpediente(fila.getString(C_NOMBRETIPOEXPEDIENTE));
 			form.setNumExpediente(fila.getString(ExpExpedienteBean.C_NUMEROEXPEDIENTE));
 			form.setAnioExpediente(fila.getString(ExpExpedienteBean.C_ANIOEXPEDIENTE));
 			form.setNumExpDisciplinario(fila.getString(ExpExpedienteBean.C_NUMEXPDISCIPLINARIO));
 			form.setAnioExpDisciplinario(fila.getString(ExpExpedienteBean.C_ANIOEXPDISCIPLINARIO));
 			form.setFecha(GstDate.getFormatedDateShort("",fila.getString(ExpExpedienteBean.C_FECHA)));
-			form.setInstitucion(fila.getString("NOMBREINSTITUCION"));
+			form.setInstitucion(fila.getString(C_NOMBREINSTITUCION));
 			form.setAsunto(fila.getString(ExpExpedienteBean.C_ASUNTO));
 			form.setIdPersona(fila.getString(ExpExpedienteBean.C_IDPERSONA));
 			form.setIdDireccion(fila.getString(ExpExpedienteBean.C_IDDIRECCION));
-			form.setNombre(fila.getString("NOMBREPERSONA"));
+			form.setNombre(fila.getString(C_NOMBREPERSONA));
 			form.setPrimerApellido(fila.getString(CenPersonaBean.C_APELLIDOS1));
 			form.setSegundoApellido(fila.getString(CenPersonaBean.C_APELLIDOS2));
 			form.setNif(fila.getString(CenPersonaBean.C_NIFCIF));
+			if (fila.getString(C_NOMBREDENUNCIANTE).equalsIgnoreCase("null")) {
+				form.setNombreDenunciante("");
+			} else {
+				form.setNombreDenunciante(fila.getString(C_NOMBREDENUNCIANTE));
+			}
+			if (fila.getString(C_APELLIDO1DENUNCIANTE).equalsIgnoreCase("null")) {
+				form.setPrimerApellidoDenunciante("");
+			} else {
+				form.setPrimerApellidoDenunciante(fila.getString(C_APELLIDO1DENUNCIANTE));
+			}
+			if (fila.getString(C_APELLIDO2DENUNCIANTE).equalsIgnoreCase("null")) {
+				form.setSegundoApellidoDenunciante("");
+			} else {
+				form.setSegundoApellidoDenunciante(fila.getString(C_APELLIDO2DENUNCIANTE));
+			}
+			if (fila.getString(C_NIFDENUNCIANTE).equalsIgnoreCase("null")) {
+				form.setNifDenunciante("");
+			} else {
+				form.setNifDenunciante(fila.getString(C_NIFDENUNCIANTE));	
+			}	
 			form.setNumColegiado(fila.getString(CenColegiadoBean.C_NCOLEGIADO));
 			form.setIdAreaSolo(fila.getString(ExpExpedienteBean.C_IDAREA));
 			form.setIdMateriaSolo(fila.getString(ExpExpedienteBean.C_IDMATERIA));
@@ -418,7 +496,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 	    HttpSession ses=request.getSession();
 	    UsrBean userBean = ((UsrBean)ses.getAttribute(("USRBEAN")));        
 	    HashMap datosExpediente = (HashMap)ses.getAttribute("DATABACKUP");
-			UserTransaction tx = userBean.getTransaction();
+			UserTransaction tx = userBean.getTransactionPesada();
 			try {
 	    
 		    	

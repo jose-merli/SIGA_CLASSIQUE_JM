@@ -237,11 +237,11 @@ public class ScsRetencionesAdm extends MasterBeanAdministrador {
 		 String sql ="SELECT COUNT (*) AS NUMELEM FROM " + nombreTabla + " WHERE LETRANIFSOCIEDAD LIKE '" + ((String)entrada.get(ScsRetencionesBean.C_LETRANIFSOCIEDAD)).toUpperCase() +"'";	
 		
 		try {		
-			if (rc.query(sql)) {			
+			rc.query(sql);			
 				Row fila = (Row) rc.get(0);
 				Hashtable prueba = fila.getRow();			
 				if (Integer.parseInt(prueba.get("NUMELEM").toString()) > 0) entrada.put(ScsRetencionesBean.C_IDRETENCION,"-1");
-			}
+
 		}	
 		catch (ClsExceptions e) {
 			throw e;			

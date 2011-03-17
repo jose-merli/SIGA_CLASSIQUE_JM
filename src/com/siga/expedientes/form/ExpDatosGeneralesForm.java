@@ -29,6 +29,10 @@ public class ExpDatosGeneralesForm extends MasterForm {
     private String segundoApellido="";
     private String nif="";
     private String numColegiado="";
+    private String nombreDenunciante="";
+    private String primerApellidoDenunciante="";
+    private String segundoApellidoDenunciante="";
+    private String nifDenunciante="";    
     private String juzgado="";
     private String idMateria="";
     private String idArea="";
@@ -438,6 +442,29 @@ public class ExpDatosGeneralesForm extends MasterForm {
 	public void setIdDireccion(String idDireccion) {
 		this.idDireccion = idDireccion;
 	}
-	 
+	public String getNombreDenunciante() {
+		return nombreDenunciante;
+	}
+	public void setNombreDenunciante(String nombreDenunciante) {
+		this.nombreDenunciante = nombreDenunciante;
+	}
+	public String getPrimerApellidoDenunciante() {
+		return primerApellidoDenunciante;
+	}
+	public void setPrimerApellidoDenunciante(String primerApellidoDenunciante) {
+		this.primerApellidoDenunciante = primerApellidoDenunciante;
+	}
+	public String getSegundoApellidoDenunciante() {
+		return segundoApellidoDenunciante;
+	}
+	public void setSegundoApellidoDenunciante(String segundoApellidoDenunciante) {
+		this.segundoApellidoDenunciante = segundoApellidoDenunciante;
+	}
+	public String getNifDenunciante() {
+		return nifDenunciante;
+	}
+	public void setNifDenunciante(String nifDenunciante) {
+		this.nifDenunciante = nifDenunciante;
+	}	 
 	
 }

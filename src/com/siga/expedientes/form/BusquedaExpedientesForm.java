@@ -16,6 +16,8 @@ public class BusquedaExpedientesForm extends MasterForm {
 	String orden;
 	String tipoOrden;
 	
+
+	
 	// Metodos Set (Formulario (*.jsp))	
 
 	// BLOQUE PARA EL FORMULARIO DE BUSQUEDA SIMPLE 
@@ -40,6 +42,24 @@ public class BusquedaExpedientesForm extends MasterForm {
 	public void setComboEstados (String dato) { 
  		try {
  			UtilidadesHash.set(this.datos,"ComboEstados", dato);
+ 		} catch (Exception e) {
+ 			// escribimos la traza de momento
+ 			e.printStackTrace();
+ 		}
+ 	}
+	
+	public void setComboMaterias (String dato) { 
+ 		try {
+ 			UtilidadesHash.set(this.datos,"materiaarea", dato);
+ 		} catch (Exception e) {
+ 			// escribimos la traza de momento
+ 			e.printStackTrace();
+ 		}
+ 	}
+	
+	public void setComboJuzgados (String dato) { 
+ 		try {
+ 			UtilidadesHash.set(this.datos,"comboJuzgadosMateria", dato);
  		} catch (Exception e) {
  			// escribimos la traza de momento
  			e.printStackTrace();
@@ -199,6 +219,24 @@ public class BusquedaExpedientesForm extends MasterForm {
  			// escribimos la traza de momento
  			e.printStackTrace();
  		}
+ 	} 
+ 	
+ 	public void setMateriaSel (String dato) { 
+ 		try {
+ 			UtilidadesHash.set(this.datos,"materiaSel", dato);
+ 		} catch (Exception e) {
+ 			// escribimos la traza de momento
+ 			e.printStackTrace();
+ 		}
+ 	}
+ 	
+ 	public void setJuzgadoSel (String dato) { 
+ 		try {
+ 			UtilidadesHash.set(this.datos,"juzgadoSel", dato);
+ 		} catch (Exception e) {
+ 			// escribimos la traza de momento
+ 			e.printStackTrace();
+ 		}
  	}
  	
  	public void setNombreParte (String dato) { 
@@ -314,11 +352,27 @@ public class BusquedaExpedientesForm extends MasterForm {
  		return UtilidadesHash.getString(this.datos, "Estado");		
  	}
  	
+ 	public String getMateriaSel() 	{ 
+ 		return UtilidadesHash.getString(this.datos, "materiaSel");		
+ 	}
+ 	
+ 	public String getJuzgadoSel() 	{ 
+ 		return UtilidadesHash.getString(this.datos, "juzgadoSel");		
+ 	}
+ 	
  	public String getComboFases() 	{ 
  		return UtilidadesHash.getString(this.datos, "ComboFases");		
  	}
  	public String getComboEstados() 	{ 
  		return UtilidadesHash.getString(this.datos, "ComboEstados");		
+ 	}
+ 	
+ 	public String getComboMaterias() 	{ 
+ 		return UtilidadesHash.getString(this.datos, "materiaarea");		
+ 	}
+ 	
+ 	public String getComboJuzgados() 	{ 
+ 		return UtilidadesHash.getString(this.datos, "comboJuzgadosMateria");		
  	}
  	
  	public String getNombreParte() 	{ 
@@ -372,8 +426,35 @@ public class BusquedaExpedientesForm extends MasterForm {
 	public void setTipoOrden(String tipoOrden) {
 		this.tipoOrden = tipoOrden;
 	}
+	public String getNumAsunto() {
+		return UtilidadesHash.getString(this.datos, "numAsunto");	
+	}
+	public void setNumAsunto(String numAsunto) {
+		UtilidadesHash.set(this.datos,"numAsunto", numAsunto);
+	}
 	
+	public String getJuzgado() {
+		return UtilidadesHash.getString(this.datos, "Juzgado");	
+	}
+	public void setJuzgado(String juzgado) {
+		UtilidadesHash.set(this.datos,"Juzgado", juzgado);
+	}
+
  	
+	public String getIdArea() {
+		return UtilidadesHash.getString(this.datos, "idArea");	
+	}
+	public void setIdArea(String idArea) {
+		UtilidadesHash.set(this.datos,"idArea", idArea);
+	}
+	
+	public String getIdMateria() {
+		return UtilidadesHash.getString(this.datos, "idMateria");	
+	}
+	public void setIdMateria(String idMateria) {
+		UtilidadesHash.set(this.datos,"idMateria", idMateria);
+	}
+	
 	// OTRAS FUNCIONES 
 
 }

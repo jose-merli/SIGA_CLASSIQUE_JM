@@ -38,10 +38,16 @@
 	ArrayList vInst = new ArrayList();
 	String sInst = "";
 	String general = "N";
+	String idArea = "";
+	String idMateria = "";
+	String idJuzgado = "";
+	String idInstitucionJuzgado = "";
 	
 	ArrayList vFase = new ArrayList();
 	ArrayList vEstado = new ArrayList();
 	ArrayList vRol = new ArrayList();
+	ArrayList materiaSel   = new ArrayList();
+	ArrayList juzgadoSel   = new ArrayList();
 	
 	Object[] aPerfiles = new Object[2];
 	aPerfiles[0] = userBean.getProfile();
@@ -50,6 +56,9 @@
 	String datoTipoExp[] = new String[2];
 	datoTipoExp[0] = idinstitucion;
 	datoTipoExp[1] = idinstitucion;
+	
+	String[] datosJuzgado = new String[3];
+	
 	
 	try {
 		BusquedaExpedientesForm form = (BusquedaExpedientesForm) session
@@ -60,12 +69,20 @@
 			vFase.add("");
 			vEstado.add("");
 			vRol.add("");
+			materiaSel.add("");
+			juzgadoSel.add("");
+			idArea = null;
+			idMateria = null;
+			
 		} else {
 			sTipoExp = form.getComboTipoExpediente();
 			vTipoExp.add(sTipoExp);
 			vFase.add(form.getComboFases());
 			vEstado.add(form.getComboEstados());
 			vRol.add(form.getRol());
+			materiaSel.add(form.getComboMaterias());
+			juzgadoSel.add(form.getComboJuzgados());	
+
 
 			sInst = form.getInstitucion();
 			vInst.add(sInst);
@@ -74,6 +91,15 @@
 			} else {
 				general = "N";
 			}
+
+			if (form.getIdArea()!=null) idArea		=  form.getIdArea();
+			if (form.getIdMateria()!=null) idMateria =  form.getIdMateria();
+
+			
+			datosJuzgado[0]=idinstitucion;
+			datosJuzgado[1]=idArea;
+			datosJuzgado[2]=idMateria;
+			
 		}
 
 	} catch (Exception e) {
@@ -82,6 +108,10 @@
 		vFase.add("");
 		vEstado.add("");
 		vRol.add("");
+		materiaSel.add("");
+		juzgadoSel.add("");
+		idArea = null;
+		idMateria = null;
 	}
 
 	String txtbuscar = UtilidadesString.getMensajeIdioma(userBean,
@@ -233,9 +263,9 @@
 							key="expedientes.auditoria.literal.nexpdisciplinario" /></td>
 						<td class="labelTextValue"><html:text
 							name="busquedaExpedientesForm" property="numeroExpDisciplinario"
-							size="6" maxlength="6" styleClass="box"></html:text> / <html:text
+							style="width:40px;" maxlength="6" styleClass="box"></html:text> / <html:text
 							name="busquedaExpedientesForm" property="anioExpDisciplinario"
-							size="4" maxlength="4" styleClass="box"></html:text></td>
+							style="width:50px;" maxlength="4" styleClass="box"></html:text></td>
 						<td class="labelText"><siga:Idioma
 							key="expedientes.gestionarExpedientes.fechaApertura" /></td>
 						<td colspan="2"><html:text name="busquedaExpedientesForm"
@@ -263,7 +293,7 @@
 			</tr>
 				</table>
 
-			</siga:ConjCampos> <siga:ConjCampos leyenda="expedientes.auditoria.literal.denunciado">
+			</siga:ConjCampos> <siga:ConjCampos leyenda="expedientes.auditoria.literal.impugnadoydenunciado">
 
 				<table class="tablaCampos" align="center">
 
@@ -297,7 +327,7 @@
 
 			</siga:ConjCampos> 
 			
-			<siga:ConjCampos leyenda="expedientes.auditoria.literal.denunciante">
+			<siga:ConjCampos leyenda="expedientes.auditoria.literal.impugnanteydenunciante">
 
 				<table align="left">
 
@@ -398,6 +428,36 @@
 
 			</siga:ConjCampos>
 			
+			<siga:ConjCampos leyenda="expedientes.auditoria.literal.asuntojudicial">
+				<table class="tablaCampos" align="center">
+					<!-- FILA -->
+					<tr>					
+						<td class="labelText">
+							<siga:Idioma key="expedientes.auditoria.literal.materia"/>
+						</td>				
+						<td><siga:ComboBD id = "comboMaterias" nombre="comboMaterias" tipo="materiaarea"
+							elementoSel="<%=materiaSel%>" clase="boxCombo" obligatorio="false" parametro="<%=datoTipoExp%>" 
+							parametrosIn="<%=aPerfiles%>" accion="Hijo:comboJuzgados" hijo="t" ancho="300"/>
+						</td>
+						<td class="labelText">
+							<siga:Idioma key="expedientes.auditoria.literal.juzgado"/>
+						</td>				
+						<td COLSPAN="3">
+				 	  		<input type="text" id = "codigoExtJuzgado" name="codigoExtJuzgado" class="box" size="3"  style="margin-top:3px;" maxlength="10" onBlur="obtenerJuzgado();" />
+				 	  		<siga:ComboBD id ="comboJuzgados" nombre="comboJuzgados" tipo="comboJuzgadosMateria" ancho="300" clase="boxCombo" parametro="<%=datosJuzgado%>" obligatorio="false" hijo="t"ancho="380"/>           	   				
+						</td>
+					</tr>					
+					<tr>					
+						<td class="labelText">
+							<siga:Idioma key="expedientes.auditoria.literal.nasunto"/>
+						</td>
+						<td>
+							<html:text name="busquedaExpedientesForm" property="numAsunto" size="10" maxlength="20" styleClass="box"></html:text>
+						</td>	
+					</tr>
+				</table>
+			</siga:ConjCampos>			
+			
 	</html:form>
 
 
@@ -490,6 +550,20 @@
 			document.forms[1].submit();
 		}
 
+		function traspasoDatos(resultado){
+			 seleccionComboSiga("comboJuzgados",resultado[0]);
+		}	
+		
+	 	function obtenerJuzgado() {
+		 	alert ("Funcion"); 
+		  	if (document.getElementById("codigoExtJuzgado").value!=""){
+			  	alert ("no es nulo");
+			 	document.MantenimientoJuzgadoForm.nombreObjetoDestino.value="";	
+			   	document.MantenimientoJuzgadoForm.codigoExt.value=document.getElementById("codigoExtJuzgado").value;
+				document.MantenimientoJuzgadoForm.submit();		
+		 	}
+		}
+		
 	</script> <!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 
 <html:form action="/CEN_BusquedaClientesModal.do" method="POST"
@@ -499,10 +573,18 @@
 	<input type="hidden" name="clientes" value="1">
 </html:form>
 
+	<html:form action = "/JGR_MantenimientoJuzgados" method="POST" target="submitArea33">
+		<input type="hidden" name="modo"        value="buscarJuzgado">
+		<html:hidden property = "codigoExt" value=""/>
+		<html:hidden property = "nombreObjetoDestino" value=""/>
+	</html:form>
+
 <!-- INICIO: SUBMIT AREA -->
 <!-- Obligatoria en todas las páginas-->
 <iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp"
 	style="display: none"></iframe>
+	
+<iframe name="submitArea33" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>	
 <!-- FIN: SUBMIT AREA -->
 
 </body>

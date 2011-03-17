@@ -249,7 +249,7 @@
 	</siga:ConjCampos>
 
 
-	<siga:ConjCampos leyenda="expedientes.auditoria.literal.denunciado" desplegable="true" oculto="true">
+	<siga:ConjCampos leyenda="expedientes.auditoria.literal.impugnadoydenunciado" desplegable="true" oculto="true">
 
 		<table align="left">
 
@@ -283,7 +283,7 @@
 
 	</siga:ConjCampos>
 
-	<siga:ConjCampos leyenda="expedientes.auditoria.literal.denunciante" desplegable="true" oculto="true">
+	<siga:ConjCampos leyenda="expedientes.auditoria.literal.impugnanteydenunciante" desplegable="true" oculto="true">
 
 		<table align="left">
 
