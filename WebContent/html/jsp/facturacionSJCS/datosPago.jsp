@@ -253,11 +253,11 @@
 			d = new Number(d);
 			d = Number(d.toFixed(2));
 			d = d.toLocaleString();
-			d = d.replace(".","");
+			//d = d.replace(".","");
 			if(String(d).indexOf(',') < 0){
-				d += '.00'; // aqui puede variar segun la cantidad de decimales que desees;
+				d += ',00'; // aqui puede variar segun la cantidad de decimales que desees;
 			}	
-			return d.replace(".",",");	
+			return d;	
 		}
 
 		function convertirANumero(n){
