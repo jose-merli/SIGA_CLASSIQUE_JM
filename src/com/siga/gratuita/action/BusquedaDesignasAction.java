@@ -611,6 +611,7 @@ public class BusquedaDesignasAction extends MasterAction {
 						//esta relacionado con una asistencia 
 						hashAux=asistenciaAdm.existeLetradoAsistencia( String.valueOf(this.getIDInstitucion(request)),(String)hashAux.get("ASINUMERO"),(String)hashAux.get("ASIANIO"));
 						request.setAttribute("idTurnoAsistencia", this.getIDInstitucion(request) + "," + (String)hashAux.get("TURNO"));
+						request.setAttribute("idPersona", (String)hashAux.get("IDPERSONA"));
 						request.setAttribute("idPersonaAsi", (String)hashAux.get("IDPERSONA"));
 						request.setAttribute("nColegiadoAsistencia", (String)hashAux.get("NCOLEGIADO"));
 						request.setAttribute("nombreColegiadoAsistencia", (String)hashAux.get("NOMCOLEGIADO"));
