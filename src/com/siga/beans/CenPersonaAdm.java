@@ -1254,7 +1254,7 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 	    
 	    
 		codigos.put(new Integer(1),idInstitucion.toString());
-		String sql = "Select p.idpersona, p.nombre, p.apellidos1, p.apellidos2, f_siga_calculoncolegiado(:1, p.idpersona) as NCOLEGIADO " +
+		String sql = "Select p.idpersona, p.nombre, p.apellidos1, p.apellidos2, p.nifcif, f_siga_calculoncolegiado(:1, p.idpersona) as NCOLEGIADO " +
 	   		         " from cen_persona p ";
 		codigos.put(new Integer(2),idPersona);
 		sql += " where p.idpersona = :2";
@@ -1271,6 +1271,7 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 				personaBean.setNombre((String)htCliente.get("NOMBRE"));
 				personaBean.setApellido1((String)htCliente.get("APELLIDOS1"));
 				personaBean.setApellido2((String)htCliente.get("APELLIDOS2"));
+				personaBean.setNIFCIF((String)htCliente.get("NIFCIF"));
 				colegiadoBean.setNColegiado((String)htCliente.get("NCOLEGIADO"));
 				
 			}

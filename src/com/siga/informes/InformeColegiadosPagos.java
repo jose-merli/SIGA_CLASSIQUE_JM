@@ -45,6 +45,8 @@ import com.siga.beans.CenPersonaBean;
 import com.siga.beans.EnvEnvioProgramadoBean;
 import com.siga.beans.EnvEnviosBean;
 import com.siga.beans.EnvProgramPagosBean;
+import com.siga.beans.FacAbonoAdm;
+import com.siga.beans.FacAbonoBean;
 import com.siga.beans.FcsPagoColegiadoAdm;
 import com.siga.beans.FcsPagosJGAdm;
 import com.siga.beans.GenParametrosAdm;
@@ -80,11 +82,20 @@ public class InformeColegiadosPagos extends MasterReport {
 		//datos cabecera
 		String idPersona=(String) htDatos.get("idPersona");
 		
+		//Datos numero de abono
+		String sql1 = "select NUMEROABONO from fac_abono where idinstitucion=" + institucion + " and idpagosjg =" + idPagos;
+		RowsContainer rc1 = new RowsContainer();
+		rc1.find(sql1);
+		Row r1 = (Row) rc1.get(0);
+		String numeroAbono = r1.getString("NUMEROABONO");
+	
+		htDatos.put("NUMEROABONO", numeroAbono);
+		
 		//Datos Persona
 		CenPersonaAdm perAdm = new CenPersonaAdm(usr);
 		CenPersonaBean beanPersona = perAdm.getPersonaColegiado(new Long(idPersona), new Integer(institucion));
 		htDatos.put("NCOLEGIADO", beanPersona.getColegiado().getNColegiado());
-		
+		htDatos.put("NIF", beanPersona.getNIFCIF());
 		
 		//Datos Cabecera
 		htAux=this.obtenerDatosPersonaSociedad(institucion,idPersona,usr, idPagos);
