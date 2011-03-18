@@ -177,8 +177,8 @@ public class ScsOrdenacionColasAdm extends MasterBeanAdministrador {
 				orden += ", ";
 			}
 			if (Math.abs(numerocolegiado) == i) {
-//				orden += "to_number("+ScsOrdenacionColasBean.C_NUMEROCOLEGIADO+")";
-				orden += ScsOrdenacionColasBean.C_NUMEROCOLEGIADO;
+//				orden += "to_number("+ScsOrdenacionColasBean.C_NUMEROCOLEGIADO+")";				 
+				orden += "lpad("+ScsOrdenacionColasBean.C_NUMEROCOLEGIADO+",20,'0')";
 				if (Math.abs(numerocolegiado) != numerocolegiado) orden += " desc";
 				orden += ", ";
 			}
