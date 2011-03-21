@@ -63,6 +63,7 @@
 	String modoJustificacion = (String) request.getAttribute("modoJustificacion");
 	String modoAnterior = (String) request.getAttribute("MODO_ANTERIOR");
 	String facturada="";
+	String validarActuacion = (String) request.getAttribute("validarActuacion");
 	
 
 	// Estilo de los combos:
@@ -173,6 +174,8 @@
 		idPersona = (String)hashDesigna.get("IDPERSONA");
 		 nombreJuzgado = (String)hashDesigna.get("NOMBREJUZGADO");
 	    nombreProcedimiento = (String)hashDesigna.get("NOMBREPROCEDIMIENTO");
+	    if(validarActuacion!=null)
+	    	actuacionValidada = validarActuacion!=null&&validarActuacion.equals("S")?"0":"1";
 	}
 	// Datos de la designa comunes a todos los modos de visualizacion:
 	

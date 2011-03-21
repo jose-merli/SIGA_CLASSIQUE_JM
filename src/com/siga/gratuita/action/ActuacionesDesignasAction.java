@@ -67,6 +67,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 				ActuacionesDesignasForm actuacionesDesignasForm = (ActuacionesDesignasForm)formulario;
 				if(actuacionesDesignasForm.getFichaColegial())
 					request.setAttribute("modoJustificacion","editarJustificacion");
+				request.setAttribute("validarActuacion",actuacionesDesignasForm.getActuacionValidada());
 				miForm.setModo("editar");
 			}else if(accion!=null && accion.equalsIgnoreCase("consultarJustificacion")){
 				request.getSession().removeAttribute("designaActual");
@@ -75,10 +76,9 @@ public class ActuacionesDesignasAction extends MasterAction {
 				ActuacionesDesignasForm actuacionesDesignasForm = (ActuacionesDesignasForm)formulario;
 				request.getSession().removeAttribute("designaActual");
 				if(actuacionesDesignasForm.getFichaColegial()){
+					request.setAttribute("validarActuacion",actuacionesDesignasForm.getActuacionValidada());
 					request.setAttribute("modoJustificacion","nuevoJustificacion");
 					request.setAttribute("fechaJustificacion",GstDate.getHoyJsp());
-
-				
 				}
 				miForm.setModo("nuevo");
 			}

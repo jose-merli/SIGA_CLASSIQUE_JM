@@ -54,7 +54,7 @@ function ajustarCabeceraTabla(){
 function refrescarLocal(){
 	parent.buscar();
 }
-function accionNuevaActuacion(anio,idTurno,numero,idInstitucion) 
+function accionNuevaActuacion(anio,idTurno,numero,idInstitucion,validarActuaciones) 
 {	
 	var accion = document.ActuacionesDesignasForm.action;
 	if(document.InformeJustificacionMasivaForm.fichaColegial.value=='true')
@@ -63,7 +63,7 @@ function accionNuevaActuacion(anio,idTurno,numero,idInstitucion)
 	document.ActuacionesDesignasForm.anio.value = anio;
 	document.ActuacionesDesignasForm.idTurno.value = idTurno;
 	document.ActuacionesDesignasForm.numero.value = numero;
-	
+	document.ActuacionesDesignasForm.actuacionValidada.value = validarActuaciones;
 	document.ActuacionesDesignasForm.modo.value = "nuevoJustificacion";
 	var resultado=ventaModalGeneral(document.ActuacionesDesignasForm.name,"G");
 	if(resultado=='MODIFICADO') 
@@ -71,7 +71,7 @@ function accionNuevaActuacion(anio,idTurno,numero,idInstitucion)
 			
 }
 
-function accionEditarActuacion(anio,idTurno,numero,idInstitucion,numeroActuacion) 
+function accionEditarActuacion(anio,idTurno,numero,idInstitucion,numeroActuacion,validarActuaciones) 
 {	
 	var accion = document.ActuacionesDesignasForm.action;
 	if(document.InformeJustificacionMasivaForm.fichaColegial.value=='true')
@@ -80,7 +80,9 @@ function accionEditarActuacion(anio,idTurno,numero,idInstitucion,numeroActuacion
 	document.ActuacionesDesignasForm.idTurno.value = idTurno;
 	document.ActuacionesDesignasForm.numero.value = numero;
 	document.ActuacionesDesignasForm.nactuacion.value = numeroActuacion;
+	document.ActuacionesDesignasForm.actuacionValidada.value = validarActuaciones;
 	document.ActuacionesDesignasForm.modo.value = "editarJustificacion";
+	
 	var resultado=ventaModalGeneral(document.ActuacionesDesignasForm.name,"G");
 	if(resultado=='MODIFICADO') 
 		parent.buscar();
@@ -924,7 +926,7 @@ function downloadDocumentoResolucion(docResolucion) {
 									<img src="<html:rewrite page='/html/imagenes/icono+.gif'/>" style="cursor: hand;"
 										alt="<siga:Idioma key="gratuita.informeJustificacionMasiva.nuevaActuacion"/>"
 										name="" border="0"
-										onclick="accionNuevaActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion})" />
+										onclick="accionNuevaActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},'${designa.actuacionValidarJustificaciones}');" />
 								</c:when>
 								<c:otherwise>
 									&nbsp;
@@ -976,7 +978,7 @@ function downloadDocumentoResolucion(docResolucion) {
 									<img src="<html:rewrite page='/html/imagenes/icono+.gif'/>" style="cursor: hand;"
 										alt="<siga:Idioma key="gratuita.informeJustificacionMasiva.nuevaActuacion"/>"
 										name="" border="0"
-										onclick="accionNuevaActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion})" />
+										onclick="accionNuevaActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},'${designa.actuacionValidarJustificaciones}');" />
 								</c:when>
 								<c:otherwise>
 											&nbsp;
@@ -1045,7 +1047,7 @@ function downloadDocumentoResolucion(docResolucion) {
 														style="cursor: hand;"
 														alt="<siga:Idioma key="gratuita.informeJustificacionMasiva.nuevaActuacion"/>"
 														name="" border="0"
-														onclick="accionNuevaActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion})" />
+														onclick="accionNuevaActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},'${designa.actuacionValidarJustificaciones}');" />
 												</c:when>
 												<c:otherwise>
 															&nbsp;
@@ -1110,7 +1112,7 @@ function downloadDocumentoResolucion(docResolucion) {
 																	style="cursor: hand;"
 																	alt="<siga:Idioma key="gratuita.informeJustificacionMasiva.nuevaActuacion"/>"
 																	name="" border="0"
-																	onclick="accionNuevaActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion})" />
+																	onclick="accionNuevaActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},'${designa.actuacionValidarJustificaciones}');" />
 															</c:when>
 															<c:otherwise>
 																	&nbsp;
@@ -1171,7 +1173,7 @@ function downloadDocumentoResolucion(docResolucion) {
 																				style="cursor: hand;"
 																				alt="<siga:Idioma key="gratuita.informeJustificacionMasiva.nuevaActuacion"/>"
 																				name="" border="0"
-																				onclick="accionNuevaActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion})" />
+																				onclick="accionNuevaActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},'${designa.actuacionValidarJustificaciones}');" />
 																		</c:when>
 																		<c:otherwise>
 																					&nbsp;
@@ -1327,7 +1329,7 @@ function downloadDocumentoResolucion(docResolucion) {
 																src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>"
 																style="cursor: hand;" alt="Editar" name="editar_1"
 																border="0"
-																onClick="accionEditarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero});"
+																onClick="accionEditarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero},'${designa.actuacionValidarJustificaciones}');" 
 																onMouseOut="MM_swapImgRestore()"
 																onMouseOver="MM_swapImage('editar_1','','<html:rewrite page='/html/imagenes/beditar_on.gif'/>',1)">
 														</c:when>
@@ -1342,7 +1344,7 @@ function downloadDocumentoResolucion(docResolucion) {
 																style="cursor: hand;"
 																alt="<siga:Idioma key="gratuita.informeJustificacionMasiva.nuevaActuacion"/>"
 																name="" border="0"
-																onclick="accionNuevaActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion})" />
+																onclick="accionNuevaActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},'${designa.actuacionValidarJustificaciones}');" />
 														</c:when>
 														<c:otherwise>
 																		&nbsp;
@@ -1467,7 +1469,7 @@ function downloadDocumentoResolucion(docResolucion) {
 																src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>"
 																style="cursor: hand;" alt="Editar" name="editar_1"
 																border="0"
-																onClick="accionEditarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero});"
+																onClick="accionEditarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero},'${designa.actuacionValidarJustificaciones}');" 
 																onMouseOut="MM_swapImgRestore()"
 																onMouseOver="MM_swapImage('editar_1','','<html:rewrite page='/html/imagenes/beditar_on.gif'/>',1)">
 														</c:when>
@@ -1585,6 +1587,8 @@ function downloadDocumentoResolucion(docResolucion) {
 	<html:hidden property="nactuacion" />
 	<html:hidden property="fichaColegial" value="${InformeJustificacionMasivaForm.fichaColegial}"/>
 	<html:hidden property="deDonde" value="${path}" />
+	<html:hidden property="actuacionValidada" />
+	
 
 </html:form>
 
