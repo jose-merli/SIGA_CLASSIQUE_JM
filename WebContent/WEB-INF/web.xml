@@ -97,21 +97,13 @@
 	<!--************ Seguridad de Certificados FIN ************-->
 
 	<!--
-		<listener>
-		<listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoCenso</listener-class>
-		</listener> <listener>
-		<listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoServicios</listener-class>
-		</listener> <listener>
-		<listener-class>com.siga.servlets.SIGASvlInicializacionesSecundarias</listener-class>
-		</listener> <listener>
-		<listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoExpedientes</listener-class>
-		</listener> <listener>
-		<listener-class>com.siga.servlets.SIGASvlProcesoColaDatosLetrado</listener-class>
-		</listener> <listener>
-		<listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoContadores</listener-class>
-		</listener> <listener>
-		<listener-class>com.siga.eejg.SolicitudEEJGListener</listener-class>
-		</listener>
+		<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoCenso</listener-class></listener>
+		<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoServicios</listener-class></listener>
+		<listener><listener-class>com.siga.servlets.SIGASvlInicializacionesSecundarias</listener-class></listener>
+		<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoExpedientes</listener-class></listener>
+		<listener><listener-class>com.siga.servlets.SIGASvlProcesoColaDatosLetrado</listener-class></listener>
+		<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoContadores</listener-class></listener>
+		<listener><listener-class>com.siga.eejg.SolicitudEEJGListener</listener-class></listener>
 	-->
 	<listener>
 		<listener-class>com.siga.general.BusinessManagerListener</listener-class>
