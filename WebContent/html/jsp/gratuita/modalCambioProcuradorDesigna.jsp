@@ -37,6 +37,9 @@
 	if (pcajgActivo==5){
 		obligatorioDesignacion = true;
 	}
+	
+	boolean nuevoProcurador = (Boolean) request.getAttribute("NUEVOPROC");
+	
 	%>
 <html>
 
@@ -196,14 +199,16 @@
 
 		</td>
 	</tr>
-	<tr>
-		<td class="labelText">
-			<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.literal.tipoMotivo"/>
-		</td>
-		<td colspan="3">
-			<siga:ComboBD pestana="true" nombre="idTipoMotivo" tipo="tipoMotivo" estilo="true" clase="box" filasMostrar="1" elementoSel="<%=idCeroValue%>" seleccionMultiple="false" obligatorio="true"/>
-		</td>
-	</tr>
+	<% if (!nuevoProcurador){ %>
+		<tr>
+			<td class="labelText">
+				<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.literal.tipoMotivo"/>
+			</td>
+			<td colspan="3">
+				<siga:ComboBD pestana="true" nombre="idTipoMotivo" tipo="tipoMotivo" estilo="true" clase="box" filasMostrar="1" elementoSel="<%=idCeroValue%>" seleccionMultiple="false" obligatorio="true"/>
+			</td>
+		</tr>
+	<%} %>
 	<tr>
 		<td class="labelText" colspan="4">
 			<siga:Idioma key="gratuita.modalConsulta_DefinirCalendarioGuardia.literal.observaciones"/><br>

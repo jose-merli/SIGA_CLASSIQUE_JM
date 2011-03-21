@@ -289,9 +289,11 @@ public class CambiosProcuradoresDesignasAction extends MasterAction {
 				Hashtable datos=(Hashtable)vDesigna.get(0);
 				ses.setAttribute("DATABACKUP_CLD",datos);
 				miform.setDatos(datos);
+				request.setAttribute("NUEVOPROC", false);
 			}else{
 				ses.removeAttribute("DATABACKUP_CLD");
 				miform.setDatos(hash);
+				request.setAttribute("NUEVOPROC", true);
 			}
 			miform.setObservaciones("");
 			miform.setNumeroDesigna("");
@@ -346,6 +348,7 @@ public class CambiosProcuradoresDesignasAction extends MasterAction {
 				// HASH DE MODIFICACION para el que actualmente estaba asignado
 				Hashtable designaActual= (Hashtable)datos.clone();
 				designaActual.put(ScsDesignasProcuradorBean.C_FECHARENUNCIA,fCambio);
+				designaActual.put(ScsDesignasProcuradorBean.C_IDTIPOMOTIVO,motivo);
 				
 				ok=designaAdm.update(designaActual,datos);
 				if (!ok) throw new ClsExceptions(designaAdm.getError());
@@ -360,8 +363,7 @@ public class CambiosProcuradoresDesignasAction extends MasterAction {
 			designaNueva.put(ScsDesignasProcuradorBean.C_ANIO,anio);
 			designaNueva.put(ScsDesignasProcuradorBean.C_IDPROCURADOR,idProcurador);
 			designaNueva.put(ScsDesignasProcuradorBean.C_IDINSTITUCION_PROC,idInstProcurador);
-			designaNueva.put(ScsDesignasProcuradorBean.C_FECHADESIGNA, fCambio);			
-			designaNueva.put(ScsDesignasProcuradorBean.C_IDTIPOMOTIVO,motivo);
+			designaNueva.put(ScsDesignasProcuradorBean.C_FECHADESIGNA, fCambio);		
 			designaNueva.put(ScsDesignasProcuradorBean.C_NUMERODESIGNACION,numeroDesigna);
 			designaNueva.put(ScsDesignasProcuradorBean.C_OBSERVACIONES,observ);
 			
