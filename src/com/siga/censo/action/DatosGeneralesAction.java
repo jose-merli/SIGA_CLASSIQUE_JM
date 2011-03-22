@@ -1804,7 +1804,12 @@ public class DatosGeneralesAction extends MasterAction {
 		
 		
 		    //gc.setContador(gc.getContador(beanCli.getIdInstitucion(),ClsConstants.SOCIEDADSJ, miForm.getPrefijoNumReg(), miForm.getSufijoNumReg()), miForm.getContadorNumReg());
+			//Antes hay que insertar en cen_clientes
 			admNoColegiado.insert(hashNoColegiado);
+			
+			if(beanCli.isExisteDatos()){
+				 mensInformacion = "messages.inserted.existed"; 
+			}
 			
 			CenNoColegiadoActividadBean bean = new CenNoColegiadoActividadBean();
 			bean.setIdActividadProfesional(new Integer(1));

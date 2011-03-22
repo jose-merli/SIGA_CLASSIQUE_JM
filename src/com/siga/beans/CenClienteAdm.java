@@ -2945,6 +2945,11 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 					if (auxCli!=null){
 						if (auxPer.isExisteDatos()){
 							auxCli.setExisteDatos(true);
+							//Se deberia de insertar un registro en cen_clientes para la nueva institucion
+								auxCli.setIdInstitucion(new Integer(usr.getLocation()));
+								if (!this.insert(auxCli)) {
+									throw new SIGAException(this.getError());
+								}
 							return auxCli;
 						}else{
 						 existeCliente= false;
