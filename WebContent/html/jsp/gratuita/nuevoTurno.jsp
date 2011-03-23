@@ -310,7 +310,7 @@
 
 <%
 	GenParametrosAdm admGen = new GenParametrosAdm(usr);
-	String sActivarRestriccion = admGen.getValor(usr.getLocation(), "SCS", "ACTIVAR_RESTRICCIONES_ACREDITACION", "N");
+	String sActivarRestriccion = admGen.getValor(usr.getLocation(), "SCS", "ACTIVAR_RESTRICCIONES_ACREDITACION", "0");
 	boolean bActivarRestriccion = UtilidadesString.stringToBoolean(sActivarRestriccion);
 %>
 					<td style="text-align:left" >
