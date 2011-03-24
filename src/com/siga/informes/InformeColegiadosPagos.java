@@ -82,15 +82,6 @@ public class InformeColegiadosPagos extends MasterReport {
 		//datos cabecera
 		String idPersona=(String) htDatos.get("idPersona");
 		
-		//Datos numero de abono
-		String sql1 = "select NUMEROABONO from fac_abono where idinstitucion=" + institucion + " and idpagosjg =" + idPagos;
-		RowsContainer rc1 = new RowsContainer();
-		rc1.find(sql1);
-		Row r1 = (Row) rc1.get(0);
-		String numeroAbono = r1.getString("NUMEROABONO");
-	
-		htDatos.put("NUMEROABONO", numeroAbono);
-		
 		//Datos Persona
 		CenPersonaAdm perAdm = new CenPersonaAdm(usr);
 		CenPersonaBean beanPersona = perAdm.getPersonaColegiado(new Long(idPersona), new Integer(institucion));
@@ -756,14 +747,14 @@ public class InformeColegiadosPagos extends MasterReport {
 			
 			//Obtiene el importe del compensado o pagado por caja
 			buf0 = new StringBuffer();
-			buf0.append("select sum(efe.importe) as COMPENSADO_CAJA");
+			buf0.append("select abo.numeroabono as NUMEROABONO, sum(efe.importe) as COMPENSADO_CAJA");
 			buf0.append(" from FAC_ABONO ABO, FAC_PAGOABONOEFECTIVO EFE");
-			buf0.append(" where abo.idinstitucion = efe.idinstitucion");
-			buf0.append(" and abo.idabono = efe.idabono");
-			buf0.append(" and abo.idpagosjg is not null");
+			buf0.append(" where abo.idinstitucion = efe.idinstitucion(+)");
+			buf0.append(" and abo.idabono = efe.idabono(+)");
 			buf0.append(" and abo.idpersona = " + idPersona);
 			buf0.append(" and abo.idpagosjg = " +idPago);
 			buf0.append(" and abo.idinstitucion = " + idInstitucion);
+			buf0.append(" group by abo.numeroabono");
 			rc = new RowsContainer();
 			rc.find(buf0.toString());
 			if(rc!=null && rc.size()>0){
