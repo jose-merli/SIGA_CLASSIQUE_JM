@@ -28,6 +28,10 @@ public class SolicitudEEJGListener extends SIGAContextListenerAdapter implements
 	private Integer idNotificacion;
 	private String nombreProceso = "SolicitudEEJGListener";
 	private long intervalo = -1;
+	private final static String EEJG_VALOR_ACTIVO = "1";
+	private final static String EEJG_TIMER = "EEJG_TIMER";
+	private final static String EEJG_ACTIVO = "EEJG_ACTIVO";
+	private final static String MODULO_SCS = "SCS";
 	
 	/**
 	 * 
@@ -39,7 +43,7 @@ public class SolicitudEEJGListener extends SIGAContextListenerAdapter implements
 		GenParametrosAdm admParametros = new GenParametrosAdm(usrBean);
                 
 		try {
-			intervalo = Long.parseLong(admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, "SCS", "EEJG_TIMER", ""));				
+			intervalo = Long.parseLong(admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, MODULO_SCS, EEJG_TIMER, ""));				
 			iniciaTimer();				
 		} catch (Exception e) {
 			ClsLogging.writeFileLogError("Se ha producido un error al inicializar el TIMER de EEJG", e, 3);
@@ -85,15 +89,18 @@ public class SolicitudEEJGListener extends SIGAContextListenerAdapter implements
 			UsrBean usrBean = new UsrBean();
 			usrBean.setUserName(String.valueOf(ClsConstants.USUMODIFICACION_AUTOMATICO));		
 			GenParametrosAdm admParametros = new GenParametrosAdm(usrBean);
-			long nuevoTimer = Long.parseLong(admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, "SCS", "EEJG_TIMER", ""));
+			long nuevoTimer = Long.parseLong(admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, MODULO_SCS, EEJG_TIMER, ""));
 			if (nuevoTimer != intervalo) {
 				intervalo = nuevoTimer;
 				pararTimer();
 				iniciaTimer();
 			} else {
-				InformacionEconomicaEjg gstInformacionEejg = new InformacionEconomicaEjg();
-				ClsLogging.writeFileLog("Ejecutando listener de solicitudes iniciadas y pendientes de EEJG", 3);
-				gstInformacionEejg.tratarSolicitudesEejg();				
+				String isActivo = admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, MODULO_SCS, EEJG_ACTIVO, EEJG_VALOR_ACTIVO); //METER ESTE PARAMETRO
+				if (EEJG_VALOR_ACTIVO.equals(isActivo)) {
+					InformacionEconomicaEjg gstInformacionEejg = new InformacionEconomicaEjg();
+					ClsLogging.writeFileLog("Ejecutando listener de solicitudes iniciadas y pendientes de EEJG", 3);
+					gstInformacionEejg.tratarSolicitudesEejg();
+				}
 			}			
 					
 		} catch (Exception e) {
