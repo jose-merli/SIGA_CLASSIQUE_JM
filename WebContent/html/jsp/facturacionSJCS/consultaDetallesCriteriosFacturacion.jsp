@@ -60,7 +60,7 @@
 		hayDetalle = false;
 	}
 	
-	String prevision = request.getParameter("prevision");
+	String prevision = ((String)request.getSession().getAttribute("prevision"));
 
 %>	
 

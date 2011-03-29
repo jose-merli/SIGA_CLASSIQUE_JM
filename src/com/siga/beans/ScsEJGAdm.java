@@ -3926,6 +3926,94 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error ScsEJGAdm.getJuzgadoDesignaEjgSalida.");
 		}
 	}
+	
+	public Vector getDatosRegionConyuge(String idInstitucion, String tipoEjg, String anioEjg, String numeroEjg) throws ClsExceptions {	 
+
+		RowsContainer rc = new RowsContainer();
+		Vector datos = new Vector();
+		Hashtable h = new Hashtable();
+		h.put(new Integer(1), idInstitucion);
+		h.put(new Integer(2), tipoEjg);
+		h.put(new Integer(3), anioEjg);
+		h.put(new Integer(4), numeroEjg);
+			
+		StringBuffer sql = new StringBuffer();		
+		sql.append(" SELECT decode(PER2.APELLIDO2, null,PER2.APELLIDO1,PER2.APELLIDO1 || ' ' || PER2.APELLIDO2) || ', ' || ");
+		sql.append(" 	PER2.NOMBRE as CONYUGE_UF,PER2.NIF as NIF_CONYUGE_UF,(select f_siga_getrecurso(descripcion, 1) from scs_parentesco paren where paren.idinstitucion = ufa.idinstitucion and paren.idparentesco = UFA.Idparentesco) as PARENTESCO_UF, ");
+		sql.append(" 	trunc(months_between(sysdate, PER2.FECHANACIMIENTO) / 12) as EDAD_UF,  UFA.IDINSTITUCION, UFA.IDTIPOEJG, UFA.ANIO,UFA.NUMERO, UFA.IDPERSONA IDPERSONAJG, EJG3.CALIDAD AS CALIDAD, ");
+		sql.append("    EJG3.IDTIPOENCALIDAD AS IDTIPOENCALIDAD,EJG3.CALIDADIDINSTITUCION AS CALIDADIDINSTITUCION, UFA.SOLICITANTE AS SOLICITANTE,PER2.NOMBRE, PER2.APELLIDO1,PER2.APELLIDO2, PER2.DIRECCION, PER2.CODIGOPOSTAL, POB.NOMBRE AS NOMBRE_POB,");
+		sql.append("    PROV.NOMBRE AS NOMBRE_PROV, PAIS.NOMBRE AS NOMBRE_PAIS, EJG3.ANIO AS ANIOEJG, EJG3.NUMEJG, PER2.SEXO, PER2.IDLENGUAJE,");
+		sql.append("    (SELECT TEL2.NUMEROTELEFONO FROM SCS_TELEFONOSPERSONA TEL2 WHERE TEL2.IDINSTITUCION = UFA.IDINSTITUCION AND TEL2.IDPERSONA = UFA.IDPERSONA AND ROWNUM < 2) AS TELEFONO, PER2.OBSERVACIONES");
+		sql.append(" FROM SCS_UNIDADFAMILIAREJG UFA, SCS_PERSONAJG PER2, CEN_POBLACIONES POB, CEN_PROVINCIAS PROV, CEN_PAIS PAIS, SCS_EJG EJG3 ");
+		sql.append(" WHERE UFA.IDINSTITUCION = PER2.IDINSTITUCION");
+		sql.append(" 	AND UFA.idpersona <> ejg3.idpersonajg");
+		sql.append(" 	AND UFA.idparentesco = 1  ");
+		sql.append("  	AND UFA.IDPERSONA = PER2.IDPERSONA");
+		sql.append("  	AND UFA.IDINSTITUCION = EJG3.IDINSTITUCION");
+		sql.append("  	AND UFA.IDTIPOEJG = EJG3.IDTIPOEJG");
+		sql.append("  	AND UFA.ANIO = EJG3.ANIO");
+		sql.append("  	AND UFA.NUMERO = EJG3.NUMERO");
+		sql.append("  	AND PER2.IDPOBLACION = POB.IDPOBLACION(+)");
+		sql.append("  	AND PER2.IDPROVINCIA = PROV.IDPROVINCIA(+)");
+		sql.append(" 	AND PER2.IDPAIS = PAIS.IDPAIS(+) ");
+		sql.append("    AND UFA.IDINSTITUCION = :1");
+		sql.append("    AND UFA.IDTIPOEJG = :2");
+		sql.append("    AND UFA.ANIO = :3");
+		sql.append("    AND UFA.NUMERO = :4");
+		sql.append(" ORDER BY IDINSTITUCION, IDTIPOEJG, ANIO, NUMERO, IDPERSONAJG ");
+
+		try {
+			HelperInformesAdm helperInformes = new HelperInformesAdm();
+			return helperInformes.ejecutaConsultaBind(sql.toString(), h);
+
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al obtener la informacion en getDatosRegionConyuge");
+		}
+	}
+	
+		public Vector getDatosRegionUF(String idInstitucion, String tipoEjg, String anioEjg, String numeroEjg) throws ClsExceptions {	 
+
+		RowsContainer rc = new RowsContainer();
+		Vector datos = new Vector();
+		Hashtable h = new Hashtable();
+		h.put(new Integer(1), idInstitucion);
+		h.put(new Integer(2), tipoEjg);
+		h.put(new Integer(3), anioEjg);
+		h.put(new Integer(4), numeroEjg);
+			
+		StringBuffer sql = new StringBuffer();		
+		sql.append(" SELECT decode(PER2.APELLIDO2, null,PER2.APELLIDO1,PER2.APELLIDO1 || ' ' || PER2.APELLIDO2) || ', ' || ");
+		sql.append("    PER2.NOMBRE as NOMBRE_UF, PER2.NIF as NIF_UF, decode(ufa.idparentesco, null, 'No consta',(select f_siga_getrecurso(descripcion, 1) from scs_parentesco paren where paren.idinstitucion = ufa.idinstitucion and paren.idparentesco = UFA.Idparentesco)) as PARENTESCO_UF,");
+		sql.append("    trunc(months_between(sysdate, PER2.FECHANACIMIENTO) / 12) as EDAD_UF,  UFA.IDINSTITUCION, UFA.IDTIPOEJG, UFA.ANIO,UFA.NUMERO, UFA.IDPERSONA IDPERSONAJG, EJG3.CALIDAD AS CALIDAD, ");
+		sql.append("    EJG3.IDTIPOENCALIDAD AS IDTIPOENCALIDAD,EJG3.CALIDADIDINSTITUCION AS CALIDADIDINSTITUCION, UFA.SOLICITANTE AS SOLICITANTE,PER2.NOMBRE, PER2.APELLIDO1,PER2.APELLIDO2, PER2.DIRECCION, PER2.CODIGOPOSTAL, POB.NOMBRE AS NOMBRE_POB,");
+		sql.append("    PROV.NOMBRE AS NOMBRE_PROV, PAIS.NOMBRE AS NOMBRE_PAIS, EJG3.ANIO AS ANIOEJG, EJG3.NUMEJG, PER2.SEXO, PER2.IDLENGUAJE,");
+		sql.append("    (SELECT TEL2.NUMEROTELEFONO FROM SCS_TELEFONOSPERSONA TEL2 WHERE TEL2.IDINSTITUCION = UFA.IDINSTITUCION AND TEL2.IDPERSONA = UFA.IDPERSONA AND ROWNUM < 2) AS TELEFONO, PER2.OBSERVACIONES");
+		sql.append(" FROM SCS_UNIDADFAMILIAREJG UFA, SCS_PERSONAJG PER2, CEN_POBLACIONES POB, CEN_PROVINCIAS PROV, CEN_PAIS PAIS, SCS_EJG EJG3 ");
+		sql.append(" WHERE UFA.IDINSTITUCION = PER2.IDINSTITUCION");
+		sql.append("  AND (UFA.idparentesco <> 1 or UFA.idparentesco is null)");
+		sql.append("  AND UFA.IDPERSONA = PER2.IDPERSONA");
+		sql.append("  AND UFA.IDINSTITUCION = EJG3.IDINSTITUCION");
+		sql.append("  AND UFA.IDTIPOEJG = EJG3.IDTIPOEJG");
+		sql.append("  AND UFA.ANIO = EJG3.ANIO");
+		sql.append("  AND UFA.NUMERO = EJG3.NUMERO");
+		sql.append("  AND PER2.IDPOBLACION = POB.IDPOBLACION(+)");
+		sql.append("  AND PER2.IDPROVINCIA = PROV.IDPROVINCIA(+)");
+		sql.append("  AND PER2.IDPAIS = PAIS.IDPAIS(+) ");
+		sql.append("  AND UFA.IDINSTITUCION = :1");
+		sql.append("  AND UFA.IDTIPOEJG = :2");
+		sql.append("  AND UFA.ANIO = :3");
+		sql.append("  AND UFA.NUMERO = :4");
+		sql.append(" ORDER BY IDINSTITUCION, IDTIPOEJG, ANIO, NUMERO, IDPERSONAJG ");
+
+		try {
+			HelperInformesAdm helperInformes = new HelperInformesAdm();
+			return helperInformes.ejecutaConsultaBind(sql.toString(), h);
+
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al obtener la informacion en getDatosRegionConyuge");
+		}
+	}
+
 	public Vector getDatosInformeEjg (String idInstitucion, String tipoEjg,
 			String anioEjg, String numeroEjg,String idioma,boolean isSolicitantes,String idPersonaJG) throws ClsExceptions  
 			{	 

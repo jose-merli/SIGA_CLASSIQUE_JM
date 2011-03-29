@@ -68,8 +68,7 @@ public class MantenimientoInformesAction extends MasterAction {
 					ArrayList<HashMap<String, String>> filtrosInforme = 
 							obtenerDatosFormCertificadoPago(formulario, request);
 					InformePersonalizable inf = new InformePersonalizable();
-					mapDestino = inf.generarInformes(mapping,
-							formulario, request, response, 
+					mapDestino = inf.generarInformes(formulario, request, 
 							InformePersonalizable.I_CERTIFICADOPAGO, filtrosInforme);
 					return mapping.findForward(mapDestino);/**/
 				} else if (miForm.getModo().equalsIgnoreCase(

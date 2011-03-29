@@ -16,7 +16,7 @@ public class FcsFacturacionJGBean extends MasterBean {
 	private Integer idInstitucion, idFacturacion, idFacturacion_regulariza;
 	private Double importeTotal, importeOficio, importeGuardia, importeSOJ, importeEJG;
 	
-	private String 	nombre, fechaDesde, fechaHasta, regularizacion, prevision;
+	private String 	nombre, fechaDesde, fechaHasta, regularizacion, prevision, nombreFisico;
 
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA 					= "FCS_FACTURACIONJG";
@@ -34,7 +34,8 @@ public class FcsFacturacionJGBean extends MasterBean {
 	static public final String C_PREVISION			    = "PREVISION";
 	static public final String C_NOMBRE					= "NOMBRE";
 	static public final String C_REGULARIZACION			= "REGULARIZACION";
-	static public final String C_IDFACTURACION_REGULARIZA	= "IDFACTURACION_REGULARIZA";			
+	static public final String C_IDFACTURACION_REGULARIZA	= "IDFACTURACION_REGULARIZA";
+	static public final String C_NOMBREFISICO			= "NOMBREFISICO";
 	
 	
 	/**
@@ -192,6 +193,13 @@ public class FcsFacturacionJGBean extends MasterBean {
 	 */
 	public void setRegularizacion(String regularizacion) {
 		this.regularizacion = regularizacion;
+	}
+	
+	public String getNombreFisico() {
+		return nombreFisico;
+	}
+	public void setNombreFisico(String nombreFisico) {
+		this.nombreFisico = nombreFisico;
 	}
 }
 

@@ -333,8 +333,7 @@ public class InformesGenericosAction extends MasterAction {
 								ArrayList<HashMap<String, String>> filtrosInforme = 
 										obtenerDatosFormInformeFacturacionJG(miForm, request);
 								InformePersonalizable inf = new InformePersonalizable();
-								mapDestino = inf.generarInformes(mapping,
-										miForm, request, response, 
+								mapDestino = inf.generarInformes(miForm, request, 
 										InformePersonalizable.I_INFORMEFACTSJCS, filtrosInforme);
 								//mapDestino = generaInfFacJG(mapping, miForm, request, response);
 							} else if (idTipoInforme.equals("EJGCA")) {
@@ -751,7 +750,6 @@ public class InformesGenericosAction extends MasterAction {
 							String idioma=usr.getLanguageInstitucion();
 							String idiomaDatos="1";
 
-							Hashtable datoscomunes=new Hashtable();							
 							Hashtable clonDatoscomunes=null;							
 	
 
@@ -773,14 +771,22 @@ public class InformesGenericosAction extends MasterAction {
 
 									boolean isSolicitantes = beanInforme.getASolicitantes()!=null && beanInforme.getASolicitantes().equalsIgnoreCase("S");
 									String keyConsultasHechas = usr.getLocation()+anio+idTipoEJG+numero+isSolicitantes;
-									Vector datosconsulta = null;
+									Vector datosconsulta = null, regionUF = null, regionConyuge = null;									
 									if(hashConsultasHechas.containsKey(keyConsultasHechas)){
+									// como esto se recorre para cada plantilla (for (int i=0;i<plantillas.size();i++))
+									// no hace falta hacer de nuevo las consultas para cada una
 										datosconsulta = (Vector) hashConsultasHechas.get(keyConsultasHechas);
+										regionUF = (Vector) hashConsultasHechas.get("regionUF");
+										regionConyuge = (Vector) hashConsultasHechas.get("regionConyuge");
 
 									}else{
 										datosconsulta=ejgAdm.getDatosInformeEjg(usr.getLocation(),idTipoEJG,anio,numero,
 												idioma,isSolicitantes,idPersonaJG);
+										regionUF = ejgAdm.getDatosRegionUF(usr.getLocation(),idTipoEJG,anio,numero);
+										regionConyuge = ejgAdm.getDatosRegionConyuge(usr.getLocation(),idTipoEJG,anio,numero);
 										hashConsultasHechas.put(keyConsultasHechas, datosconsulta);
+										hashConsultasHechas.put("regionUF", regionUF);
+										hashConsultasHechas.put("regionConyuge", regionConyuge);
 
 									}
 
@@ -789,8 +795,7 @@ public class InformesGenericosAction extends MasterAction {
 									String idiomainforme="";
 									if (datosconsulta!=null && datosconsulta.size()>0) {
 										for (int j=0;j<datosconsulta.size();j++) {
-											datoscomunes = (Hashtable)datosconsulta.get(j);
-											clonDatoscomunes=(Hashtable)datoscomunes.clone();
+											clonDatoscomunes=(Hashtable)((Hashtable)datosconsulta.get(j)).clone();
 											//Seleccionamos el idioma del interesado para seleccionar la plantilla
 											//String idiomainforme=usr.getLanguageExt();		             				
 											 idiomainteresado= (String) clonDatoscomunes.get("CODIGOLENGUAJE");
@@ -807,33 +812,25 @@ public class InformesGenericosAction extends MasterAction {
 											if(!crear.exists())
 												crear.mkdirs();
 
-				     		            doc = words.sustituyeDocumento(doc,clonDatoscomunes);
+											doc = words.sustituyeDocumento(doc,clonDatoscomunes);
+											if(regionUF!=null)doc = words.sustituyeRegionDocumento(doc, "unidadfamiliar", regionUF);
+											if(regionConyuge!=null)doc = words.sustituyeRegionDocumento(doc, "conyuge", regionConyuge);
 
 											String idinstitucion = ""+this.getIDInstitucion(request);
 
 											String identificador=idinstitucion+"_"+idTipoEJG+"_"+numero+"_"+i+"_"+j+"_"+z+".doc";
 											File archivo = words.grabaDocumento(doc,rutaAlm,beanInforme.getNombreSalida()+"_"+identificador);
 											informesRes.add(archivo);
-
 										}
 									}
-
 								}
 							}
-
-
 						}	
 					}catch(Exception p){
 						ClsLogging.writeFileLogError("Error generando un informe EJG: "+beanInforme.getDescripcion(), p, 3);
 						avisoFicherosNoGenerado.append(beanInforme.getDescripcion());
 						avisoFicherosNoGenerado.append(",");
-
-
-
 					}
-
-
-
 				}
 			}else{
 				throw new SIGAException("messages.informes.noPlantillas");

@@ -13,9 +13,11 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Vector;
@@ -42,6 +44,7 @@ import com.siga.facturacionSJCS.UtilidadesFacturacionSJCS;
 import com.siga.facturacionSJCS.form.GenerarImpreso190Form;
 import com.siga.general.CenVisibilidad;
 import com.siga.general.SIGAException;
+import com.siga.informes.InformePersonalizable;
 
 /**
 * Administrador de Facturacion de justicia gratuita
@@ -70,6 +73,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 							FcsFacturacionJGBean.C_NOMBRE,
 							FcsFacturacionJGBean.C_PREVISION,
 							FcsFacturacionJGBean.C_REGULARIZACION,
+							FcsFacturacionJGBean.C_NOMBREFISICO,
 							FcsFacturacionJGBean.C_USUMODIFICACION};
 		return campos;
 	}
@@ -102,6 +106,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			bean.setNombre(UtilidadesHash.getString(hash, FcsFacturacionJGBean.C_NOMBRE));
 			bean.setPrevision(UtilidadesHash.getString(hash, FcsFacturacionJGBean.C_PREVISION));
 			bean.setRegularizacion(UtilidadesHash.getString(hash, FcsFacturacionJGBean.C_REGULARIZACION));
+			bean.setNombreFisico(UtilidadesHash.getString(hash, FcsFacturacionJGBean.C_NOMBREFISICO));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash, FcsFacturacionJGBean.C_USUMODIFICACION));
 		}
 		catch (Exception e) { 
@@ -130,6 +135,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, FcsFacturacionJGBean.C_NOMBRE, b.getNombre());
 			UtilidadesHash.set(htData, FcsFacturacionJGBean.C_PREVISION, b.getPrevision());
 			UtilidadesHash.set(htData, FcsFacturacionJGBean.C_REGULARIZACION, b.getRegularizacion());
+			UtilidadesHash.set(htData, FcsFacturacionJGBean.C_NOMBREFISICO, b.getNombreFisico());
 			UtilidadesHash.set(htData, FcsFacturacionJGBean.C_USUMODIFICACION, b.getUsuMod());
 		}
 		catch (Exception e) {
@@ -4027,7 +4033,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				importeGuardia = null, 
 				importeSOJ = null,  
 				importeEJG = null;
-
+				
 				//////////////////////////////////
 				// TURNOS DE OFICIO rgg 16-03-2005
 
@@ -4098,7 +4104,22 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 
 				importeEJG = new Double(resultado[0].replaceAll(",","."));
 				importeTotal += importeEJG.doubleValue();
-
+				
+				//////////////////////////////////////
+				/// CREAMOS EL INFORME
+				String rutaFichero = this.generarInformeYObtenerRuta(beanFac.getIdInstitucion().toString(), beanFac.getIdFacturacion().toString());
+				File fichero = null;
+				try {
+					fichero = new File(rutaFichero);
+					if (fichero == null || !fichero.exists()) {
+						throw new SIGAException("messages.general.error.ficheroNoExiste");
+					}
+				} catch (Exception e) {
+					throw new SIGAException("messages.general.error");
+				}
+				beanFac.setNombreFisico(rutaFichero);
+				
+				
 				if(prevision){
 					tx.rollback();
 				}else{
@@ -4189,6 +4210,35 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		    throw new ClsExceptions(e,"Error en la ejecución de la Facturación SJCS. idinstitucion="+idInstitucion+" idfacturacion="+idFacturacion);
 		}
 	}
+	
+	public String generarInformeYObtenerRuta(String idInstitucion, String idFacturacion) throws SIGAException{
+		InformePersonalizable inf = new InformePersonalizable();
+		ArrayList<HashMap<String, String>> filtrosInforme = new ArrayList<HashMap<String, String>>();
+		
+		String rutaFichero = "";
+		HashMap<String, String> filtro;
+		filtro = new HashMap<String, String>();
+		filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDINSTITUCION");
+		filtro.put("VALOR", idInstitucion);
+		filtrosInforme.add(filtro);
+		filtro = new HashMap<String, String>();
+		filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "FACTURACIONES");
+		filtro.put("VALOR", idFacturacion);
+		filtrosInforme.add(filtro);
+		filtro = new HashMap<String, String>();
+		filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDIOMA");
+		filtro.put("VALOR", this.usrbean.getLanguage());
+		filtrosInforme.add(filtro);
+		try {
+			rutaFichero = inf.generarInformes(this.usrbean, InformePersonalizable.I_INFORMEFACTSJCS, filtrosInforme);
+		} catch (ClsExceptions e) {
+			e.printStackTrace();
+		}
+
+		
+		return rutaFichero;							
+	}
+	
 	
 	public void ejecutarRegularizacion(String idInstitucion, String idFacturacion, UserTransaction tx) throws ClsExceptions, SIGAException {
 

@@ -50,12 +50,12 @@
 	}
 
 	// meto en session el indicador de que estamos NO en prevision
-	request.getSession().removeAttribute("prevision");
+	//request.getSession().removeAttribute("prevision");
 
 	// Campos de la factura a mostrar en la jsp
 	String nombreInstitucion = "", nombre="", fechaInicio="", fechaFin="", importe="", idFacturacion="";
 	String estado="", botones = "",botonesAbajo="V", fechaEstado="", destino="mainWorkArea";
-	String idInstitucion="", modo="", nombreFacturacion="", strutTrans = "";
+	String idInstitucion="", modo="", nombreFacturacion="", strutTrans = "", prevision="";
 	Integer idEstado = new Integer(0);
 
 	//string que dirá cual es el modo en el que se envie el form
@@ -73,6 +73,7 @@
 		idFacturacion = (String)request.getAttribute("idFacturacion");
 		nombreInstitucion = (String)request.getAttribute("nombreInstitucion");
 		strutTrans = (String)request.getAttribute("strutTrans");
+		prevision = ((String)request.getSession().getAttribute("prevision"));
 		
 		// Varibles que dependen del modo de la pagina (consulta, edicion, nuevo)
 		FcsFacturacionJGBean facturaBean = null;
@@ -267,14 +268,17 @@
 		}
 
 		function accionGenerarInforme() {
-			sub();
+			document.forms[0].modo.value="descargaFicheroFact";
+			document.forms[0].target = "submitArea2";
+			document.forms[0].submit();
+			/*sub();
 			var f = document.getElementById("InformesGenericosForm");
 			idFactIni = document.getElementById("idFacturacion").value;
 			idFactFin = document.getElementById("idFacturacion").value;
 			f.datosInforme.value = "idFacturacionIni" + "==" + idFactIni + "##"
 					+ "idFacturacionFin" + "==" + idFactFin;
 			f.seleccionados.value = "1";
-			f.submit();
+			f.submit();*/
 		}
 		</script>	
 </head>

@@ -14,6 +14,11 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionForm;
@@ -51,17 +56,41 @@ public class InformePersonalizable extends MasterReport
 	 * del formulario y el tipo
 	 * @throws SIGAException 
 	 */
-	public String generarInformes(ActionMapping mapping,
-								  ActionForm formulario,
+	public String generarInformes(ActionForm formulario,
 								  HttpServletRequest request,
-								  HttpServletResponse response,
 								  String idtipoinforme,
 								  ArrayList<HashMap<String, String>> filtrosInforme)
 		throws ClsExceptions, SIGAException
 	{
 		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		UserTransaction tx = null;
+		String fichero = null;
+		tx = usr.getTransactionLigera();
+		try {			
+			tx.begin();
+			fichero = generarInformes(usr, idtipoinforme, filtrosInforme);
+			tx.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		if (!fichero.equals(""))
+			request.setAttribute("rutaFichero", fichero);
+
+		// devolviendo el fichero generado
+		MasterForm miform = (MasterForm) formulario;
+		miform.setRutaFichero((String) request.getAttribute("rutaFichero"));
+		request.setAttribute("borrarFichero", "true");
+		request.setAttribute("generacionOK", "OK");
+
+		return "descarga";
+	}
+	public String generarInformes(UsrBean usr,
+								  String idtipoinforme,
+								  ArrayList<HashMap<String, String>> filtrosInforme)
+		throws ClsExceptions, SIGAException
+	{
 		String idinstitucion = usr.getLocation();
-		String salida = null;
 
 		AdmInformeBean informe;
 		ArrayList<File> listaFicheros;
@@ -80,11 +109,11 @@ public class InformePersonalizable extends MasterReport
 			for (Object inf : infs) {
 				informe = (AdmInformeBean) inf;
 				if (informe.getTipoformato().equalsIgnoreCase(AdmInformeBean.TIPOFORMATO_WORD))
-					listaFicheros.addAll(this.generarInformeDOC(informe, filtrosInforme, request));
+					listaFicheros.addAll(this.generarInformeDOC(informe, filtrosInforme, usr));
 				else if (informe.getTipoformato().equalsIgnoreCase(AdmInformeBean.TIPOFORMATO_EXCEL))
-					listaFicheros.addAll(this.generarInformeXLS(informe, filtrosInforme, request));
+					listaFicheros.addAll(this.generarInformeXLS(informe, filtrosInforme, usr));
 				else
-					listaFicheros.addAll(this.generarInformeXLS(informe, filtrosInforme, request));
+					listaFicheros.addAll(this.generarInformeXLS(informe, filtrosInforme, usr));
 			}
 
 			// haciendo zip con todos los ficheros devueltos
@@ -103,24 +132,16 @@ public class InformePersonalizable extends MasterReport
 				ruta.mkdirs();
 				Plantilla.doZip(rutaServidorDescargasZip, nombreFicheroZIP, listaFicheros);
 				
-				request.setAttribute("rutaFichero", rutaServidorDescargasZip + nombreFicheroZIP + ".zip");
+				return rutaServidorDescargasZip + nombreFicheroZIP + ".zip";
+			} else if (listaFicheros.size() == 1) {
+				return listaFicheros.get(0).getAbsolutePath();
+			} else {
+				return "";
 			}
-			else if (listaFicheros.size() == 1) {
-				request.setAttribute("rutaFichero", listaFicheros.get(0).getAbsolutePath());
-			}
-
-			// devolviendo el fichero generado
-			MasterForm miform = (MasterForm) formulario;
-			miform.setRutaFichero((String) request.getAttribute("rutaFichero"));
-			request.setAttribute("borrarFichero", "true");
-			request.setAttribute("generacionOK", "OK");
-			salida = "descarga";
 			
 		} catch (Exception e) {
 			throw new SIGAException(e, new String [] {"Error al generar el informe"});
 		}
-		
-		return salida;
 	}
 	
 	/**
@@ -135,7 +156,7 @@ public class InformePersonalizable extends MasterReport
 	 */
 	public ArrayList<File> generarInformeDOC(AdmInformeBean informe,
 								  ArrayList<HashMap<String, String>> filtrosInforme,
-								  HttpServletRequest request)
+								  UsrBean usr)
 		throws ClsExceptions, SIGAException
 	{
 		// Variables
@@ -144,8 +165,9 @@ public class InformePersonalizable extends MasterReport
 		Vector datos;
 		
 		// Controles generales
-		UserTransaction tx;
-		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		//UserTransaction tx;
+		
+		//UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 		
 		// obteniendo la plantilla
 		String idinstitucionInforme = informe.getIdInstitucion().toString();
@@ -168,7 +190,7 @@ public class InformePersonalizable extends MasterReport
 		MasterWords words = new MasterWords(rutaPl + nombrePlantilla);
 		File plantilla = new File(rutaPl + nombrePlantilla);
 		if (!plantilla.exists()) // si no existe la plantilla, generar un Excel
-			return this.generarInformeXLS(informe, filtrosInforme, request);
+			return this.generarInformeXLS(informe, filtrosInforme, usr);
 		Document doc = words.nuevoDocumento();
 		File crear = new File(rutaAlm);
 		if (!crear.exists())
@@ -226,14 +248,14 @@ public class InformePersonalizable extends MasterReport
 						"Problema en la configuracion del informe: La consulta no lleva los filtros obligatorios o lleva de mas");
 
 			// ejecutando la consulta
-			tx = usr.getTransactionLigera();
+			//tx = usr.getTransactionLigera();
 			try {
-				tx.begin();
+				//tx.begin();
 
 				/** @TODO Convendria que cambiar a selectBind */
 				datos = consultaAdm.selectGenerico(sentencia);
 
-				tx.commit();
+				//tx.commit();
 			} catch (Exception sqle) {
 				String mensaje = sqle.getMessage();
 				if (mensaje.indexOf("TimedOutException") != -1
@@ -283,7 +305,7 @@ public class InformePersonalizable extends MasterReport
 	
 	public ArrayList<File> generarInformeXLS(AdmInformeBean informe,
 								  ArrayList<HashMap<String, String>> filtrosInforme,
-								  HttpServletRequest request)
+								  UsrBean usr)
 		throws ClsExceptions, SIGAException
 	{
 		// Variables
@@ -292,8 +314,7 @@ public class InformePersonalizable extends MasterReport
 		Vector<Vector<Hashtable<String, String>>> datos;
 		
 		// Controles generales
-		UserTransaction tx = null;
-		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		//UserTransaction tx = null;
 		
 		// obteniendo ruta de almacenamiento
 		String idinstitucionInforme = informe.getIdInstitucion().toString();
@@ -375,14 +396,14 @@ public class InformePersonalizable extends MasterReport
 						"Problema en la configuracion del informe: La consulta no lleva los filtros obligatorios o lleva de mas");
 
 			// ejecutando la consulta
-			tx = usr.getTransactionLigera();
+			//tx = usr.getTransactionLigera();
 			try {
-				tx.begin();
+//				tx.begin();
 
 				/** @TODO Convendria que cambiar a selectBind */
 				datos = consultaAdm.selectCamposOrdenados(sentencia);
 
-				tx.commit();
+			//	tx.commit();
 			} catch (Exception sqle) {
 				String mensaje = sqle.getMessage();
 				if (mensaje.indexOf("TimedOutException") != -1

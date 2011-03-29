@@ -13,6 +13,7 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
@@ -33,6 +34,7 @@ import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.beans.AdmTipoFiltroInformeBean;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.FcsEstadosFacturacionBean;
 import com.siga.beans.FcsFactEstadosFacturacionAdm;
@@ -49,7 +51,7 @@ import com.siga.facturacionSJCS.form.DatosGeneralesFacturacionForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
-import com.siga.informes.form.MantenimientoInformesForm;
+import com.siga.informes.InformePersonalizable;
 import com.siga.servlets.SIGASvlProcesoAutomaticoRapido;
 
 
@@ -99,6 +101,9 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			}
 			if ((accion != null)&&(accion.equalsIgnoreCase("descargaFicheroGlobal"))){
 				return mapping.findForward(this.descargarFichero(mapping, miForm, request, response));
+			}
+			if ((miForm.getModo() != null) && (miForm.getModo().equalsIgnoreCase("descargaFicheroFact"))){
+				return mapping.findForward(this.descargarFicheroFact(mapping, miForm, request, response));
 			}
 
 			return super.executeInternal(mapping, formulario, request, response);
@@ -289,6 +294,8 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			request.setAttribute("idFacturacion",idFacturacion);
 			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 			request.setAttribute("strutTrans", usr.getStrutsTrans());
+			
+
 			//esta variable es para mostrar en los criterios el boton de borrado
 			request.getSession().setAttribute("estado",(String)nombreEstadoBean.get(FcsEstadosFacturacionBean.C_IDESTADOFACTURACION));
 			request.setAttribute("idEstado",UtilidadesHash.getInteger(nombreEstadoBean, FcsEstadosFacturacionBean.C_IDESTADOFACTURACION));
@@ -340,9 +347,14 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			}
 		
 			//pasamos el resultado por la request, y tambien el nombre de la institución, y 
-			request.getSession().setAttribute("resultado",resultado);
-			request.getSession().setAttribute("hitos",h);
-			request.getSession().setAttribute("hayDetalle","1");
+			request.getSession().setAttribute("resultado", resultado);
+			request.getSession().setAttribute("hitos", h);
+			request.getSession().setAttribute("hayDetalle", "1");
+			if (usr.getStrutsTrans().equals("FCS_MantenimientoPrevisiones")) {
+				request.getSession().setAttribute("prevision", "S");
+			} else if (usr.getStrutsTrans().equals("CEN_MantenimientoFacturacion")) {
+				request.getSession().setAttribute("prevision", "N");
+			}
 		}
 		else {
 			request.getSession().setAttribute("hayDetalle","0");
@@ -741,7 +753,13 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 		    tx.begin();
 		    
 			// vemos si venimos de previsiones
-			String prevision = request.getParameter("prevision");
+		    String prevision = "";
+		    if (usr.getStrutsTrans().equalsIgnoreCase("FCS_MantenimientoPrevisiones")) {
+				prevision = "S";
+			} else if (usr.getStrutsTrans().equalsIgnoreCase("CEN_MantenimientoFacturacion")) {
+				prevision = "N";	
+			}
+			
 			
 			//preparamos el nuevo registro
 			FcsFactGrupoFactHitoBean beanCriterio = new FcsFactGrupoFactHitoBean();
@@ -1172,6 +1190,49 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 		}
 		return "descargaFichero";	
 	}
+	
+		protected String descargarFicheroFact(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException
+	{
+		
+		try{
+			// Obtengo usuario y creo manejadores para acceder a las BBDD
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			DatosGeneralesFacturacionForm miform = (DatosGeneralesFacturacionForm) formulario;
+			FcsFacturacionJGAdm fact = new FcsFacturacionJGAdm(user); 
+			String idInstitucion =  miform.getIdInstitucion();
+			String idFacturacion =  miform.getIdFacturacion();
+			Vector vf = fact.select("where idInstitucion ="+idInstitucion+" and idfacturacion="+idFacturacion);
+			FcsFacturacionJGBean beanOriginal = (FcsFacturacionJGBean) vf.get(0);	
+			String nombreFichero = beanOriginal.getNombreFisico();
 
+			File fichero=new File(nombreFichero);
+			
+			//Si el nombre físico del dichero no se ha guardado antes, se actualiza en bbdd
+			if((nombreFichero.equals("")) && (fichero==null || !fichero.exists())){
+				nombreFichero = fact.generarInformeYObtenerRuta(idInstitucion,idFacturacion);
+				FcsFacturacionJGBean bean = new FcsFacturacionJGBean();
+				bean.setIdInstitucion(Integer.parseInt(idInstitucion));
+				bean.setIdFacturacion(Integer.parseInt(idFacturacion));
+				bean.setNombreFisico(nombreFichero);
+				fact.update(bean,beanOriginal);
+				fichero = new File(nombreFichero);
+
+				if (fichero == null || !fichero.exists()) {
+					throw new SIGAException("messages.general.error.ficheroNoExiste");
+				}
+
+			}else if((!nombreFichero.equals("")) && (fichero==null || !fichero.exists())){
+				throw new SIGAException("messages.general.error.ficheroNoExiste");
+			}
+			request.setAttribute("nombreFichero", fichero.getName());
+			request.setAttribute("rutaFichero", fichero.getPath());
+		
+		} 
+		catch (Exception e) { 
+			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null); 
+		}
+		
+		return "descargaFichero";
+	}
 
 }

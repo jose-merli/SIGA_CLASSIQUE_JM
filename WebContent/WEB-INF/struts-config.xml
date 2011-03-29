@@ -644,7 +644,7 @@
 			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>
 		</action>
 		<!-- Informe multiple - BETA -->
-		<action path="/INF_InformesMultiplesBeta" type="com.siga.informes.action.InformesFacturacionMultipleAction" name="InformesFacturacionMultipleForm" scope="request">
+		<action path="/INF_InformesMultiplesBeta" type="com.siga.facturacionSJCS.action.DatosGeneralesFacturacionAction" name="DatosGeneralesFacturacionForm" scope="request">
             <forward name="inicio" path="/html/jsp/informes/informeFacturacionMultipleBeta.jsp"/>
 			<forward name="generaInformes" path="/html/jsp/informes/informeFacturacionMultipleBeta.jsp"/>
 		</action>
