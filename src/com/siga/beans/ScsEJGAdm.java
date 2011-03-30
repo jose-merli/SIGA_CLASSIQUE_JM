@@ -2237,6 +2237,12 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			codigos.put(new Integer(contador),(String)UtilidadesHash.getString(miHash,"IDTIPODICTAMENEJG"));
 			consulta += " and ejg.idtipodictamenejg = :" + contador;
 		}
+		
+		if ((miHash.containsKey("IDTIPORATIFICACIONEJG")) && (!miHash.get("IDTIPORATIFICACIONEJG").toString().equals(""))){
+			contador++;
+			codigos.put(new Integer(contador),(String)UtilidadesHash.getString(miHash,"IDTIPORATIFICACIONEJG"));
+			consulta += " and ejg.idtiporatificacionejg = :" + contador;
+		}
 
 		if (UtilidadesHash.getString(miHash,"NUMEJG") != null && !UtilidadesHash.getString(miHash,"NUMEJG").equalsIgnoreCase("")) {
 			if (ComodinBusquedas.hasComodin(UtilidadesHash.getString(miHash,"NUMEJG"))) {

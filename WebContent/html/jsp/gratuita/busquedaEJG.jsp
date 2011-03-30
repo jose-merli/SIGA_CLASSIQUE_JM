@@ -167,6 +167,7 @@
 	String[] datos = { usr.getLocation() };
 	ArrayList juzgadoSel = new ArrayList();
 	String dato[] = { (String) usr.getLocation() };
+	String idioma[] = { (String) usr.getLanguage() };
 	String accion="";
 	String formulario="";
 	
@@ -409,11 +410,20 @@
 					<siga:Idioma key='gratuita.operarEJG.literal.CAJG'/> 
 					<siga:Idioma key='gratuita.operarEJG.literal.anio'/>/<siga:Idioma key='gratuita.busquedaEJG.literal.codigo'/>
 				</td>
-				<td class="labelText" colspan="3">
+				<td class="labelText" >
 					<html:text name="<%=formulario%>" styleClass="box" property="anioCAJG"  style="width:40" maxlength="4" value="<%=cajgAnio%>"></html:text>&nbsp;/&nbsp;
 					<html:text name="<%=formulario%>" styleClass="box" property="numeroCAJG" value="<%=cajgNumero%>" size="8" maxlength="10">
 					</html:text>
 				</td>
+				
+				<td class="labelText">
+					<siga:Idioma key="Resolución"/>
+				</td>
+				<td > 
+					<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="resolucionEJG" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=idioma%>" ancho="140" />
+				</td>
+				
+				
 				<td class="labelText" style="text-align: left;width:160"><siga:Idioma
 					key="gratuita.busquedaEJG.literal.fechaLimiteDesde" />
 				</td>
