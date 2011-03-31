@@ -141,6 +141,7 @@
 	boolean obligatorioEstadoCivil= false;
 	boolean obligatorioRegimenConyuge= false;
 	boolean obligatorioIngreso = false;
+	boolean obligatorioFechaNac = false;
 	
 	if ((pcajgActivo == 1)
 			&& ((conceptoE.equals(PersonaJGAction.EJG) || conceptoE
@@ -187,8 +188,17 @@
 		obligatorioNacionalidad = true;
 		obligatorioCodigoPostal = true;
 	
+	}else if ((pcajgActivo == 6) && ((conceptoE.equals(PersonaJGAction.EJG) || conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)))){
+		//Campos solicitante
+		obligatorioDireccion = true;
+		obligatorioPoblacion = true;		
+		obligatorioCodigoPostal = true;
+		
+		//Campos UF
+		obligatorioParentesco = true;
+		obligatorioFechaNac = true;
+		
 	}
-	
 
 ArrayList calidadSel = new ArrayList();
 String[] datos2={usr.getLocation(),usr.getLanguage()};
@@ -1138,10 +1148,17 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
 																																		selPais.add(ClsConstants.ID_PAIS_ESPANA);
 																																	}*/
 			%>
-			<siga:ComboBD pestana="<%=bPestana%>" elementoSel="<%=selPais %>" nombre = "nacionalidad" tipo="pais" ancho="220" clase="<%=classCombo %>" readOnly="<%=sreadonly%>"/>
+			<siga:ComboBD pestana="<%=bPestana%>" elementoSel="<%=selPais %>" nombre = "nacionalidad" tipo="pais" ancho="200" clase="<%=classCombo %>" readOnly="<%=sreadonly%>"/>
 		</td>
-		<td class="labelText">
-			<siga:Idioma key="gratuita.personaJG.literal.fechaNac"/>		
+		<td class="labelText" width="140">
+			<siga:Idioma key="gratuita.personaJG.literal.fechaNac"/>	
+			<%
+				if (obligatorioFechaNac) {
+			%>
+				<%=asterisco%> 
+			<%
+ 				}
+ 			%>		
 		</td>
 		<td >
 			<html:text name="PersonaJGForm" property="fechaNac" size="10" maxlength="10" styleClass="<%=estiloBox%>" readOnly="true"></html:text>
@@ -2318,6 +2335,7 @@ function limpiarPersonaContrario() {
 							document.forms[0].NIdentificacion.value=="")
 							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nIdentificacion'/>"+ '\n';
 					}
+
 					if (<%=obligatorioDireccion%> && document.forms[0].direccion.value.length<1)
 						error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
 					if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value=="")
@@ -2336,6 +2354,8 @@ function limpiarPersonaContrario() {
 						error += "<siga:Idioma key='errors.required' arg0='gratuita.operarInteresado.literal.tipoIngresos'/>"+ '\n';
 					if (<%=obligatorioIngreso%> && document.forms[0].importeIngresosAnuales.value =="")
 							error += "<siga:Idioma key='errors.required' arg0='gratuita.operarInteresado.literal.ingresos'/>"+ '\n';
+					if (<%=obligatorioFechaNac%> && document.forms[0].fechaNac.value=="" && document.forms[0].parentesco.value!="<%=ClsConstants.TIPO_CONYUGE%>")
+							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.fechaNac'/>"+ '\n';
 					if(error!=""){
 						alert(error);
 						fin();

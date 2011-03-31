@@ -160,6 +160,7 @@
 	boolean obligatorioPretension = false;
 	boolean obligatorioSituacion = false;
 	boolean obligatoriojuzgado=false;
+	boolean obligatorioAsunto=false;
 	if (pcajgActivo==1){
 		
 	}else if (pcajgActivo==2){
@@ -177,6 +178,8 @@
 		validarProcedimiento = true;
 		obligatorioPretension = true;
 		obligatoriojuzgado = true;/*Se modifica para que sea obligatorio el juzgado para pcajg=5*/
+	}else if (pcajgActivo==6){
+		obligatorioAsunto = true;
 	}
 	
 %>
@@ -377,6 +380,9 @@
 					<tr>
 						<td colspan="4" class="labelText">
 							<siga:Idioma key='gratuita.operarEJG.literal.observacionesAsunto'/>
+							<% if (obligatorioAsunto){ %>
+									<%= asterisco %>
+							<%}%>
 						</td>
 						<td colspan="12">	
 							<%if(modopestanha.equals("editar")){%>
@@ -586,6 +592,11 @@
 				if(<%=obligatoriojuzgado%> && document.getElementById("juzgado").value==""){										
 					error += "<siga:Idioma key='gratuita.editarDesigna.juzgado'/>"+ '\n';
 				}
+
+				if(<%=obligatorioAsunto%> && document.getElementById("observaciones2").value==""){										
+					error += "<siga:Idioma key='gratuita.editarDesigna.asunto'/>"+ '\n';
+				}
+				
 				if(error!=""){
 					alert(error);
 					fin();

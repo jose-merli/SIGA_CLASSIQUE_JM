@@ -48,6 +48,9 @@ public class ClsConstants {
 	public static final int TIPO_IDENTIFICACION_PASAPORTE 	= 30;
 	public static final int TIPO_IDENTIFICACION_OTRO	 	= 50;
 	
+	//Tipo parentésco
+	public static final int TIPO_CONYUGE 					= 1;
+	
 	// Tipo persona
 	//public static final String TIPO_IDPERSONA_FISICA	 	= "F";
 	
@@ -373,6 +376,8 @@ public class ClsConstants {
 	  public static final String PLANTILLA_FO_COLATURNOS="colaTurnos";
 	  public static final String PLANTILLA_FO_COLAGUARDIAS="colaGuardias";
 	  public static final String PLANTILLA_FO_SOLICITUDASISTENCIA="solicitudAsistencia";
+	  
+	  
 
 	  
 	  //Java Date format constants 
