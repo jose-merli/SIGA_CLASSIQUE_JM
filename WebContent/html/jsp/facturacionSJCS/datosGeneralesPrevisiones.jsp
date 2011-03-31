@@ -19,7 +19,9 @@
 <%@ page import = "com.siga.Utilidades.*"%>
 <%@ page import = "com.atos.utils.*"%>
 <%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
-
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.Vector"%>
+<%@ page import="java.util.Properties"%>
 
 <!-- JSP -->
 <% 
