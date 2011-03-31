@@ -647,10 +647,10 @@ public class ScsDefinirSOJAdm extends MasterBeanAdministrador {
 		int contador = 0;
 		StringBuffer sql = new StringBuffer();
 		sql.append(" SELECT SOJ.*, ");
-		sql.append(" F_SIGA_GETRECURSO(TIPOSOJ.DESCRIPCION, 1) DESCRIPCIONTIPOSOJ, ");
-		sql.append(" F_SIGA_GETRECURSO(TIPOSOJC.DESCRIPCION, 1) DESCRIPCIONTIPOSOJCOLEGIO, ");
-		sql.append(" F_SIGA_GETRECURSO(TC.DESCRIPCION, 1) DESCRIPCIONTIPOCONSULTA, ");
-		sql.append(" F_SIGA_GETRECURSO(TR.DESCRIPCION, 1) DESCRIPCIONTIPORESPUESTA, ");
+		sql.append(" F_SIGA_GETRECURSO(TIPOSOJ.DESCRIPCION, "+usrbean.getLanguage()+") DESCRIPCIONTIPOSOJ, ");
+		sql.append(" F_SIGA_GETRECURSO(TIPOSOJC.DESCRIPCION, "+usrbean.getLanguage()+") DESCRIPCIONTIPOSOJCOLEGIO, ");
+		sql.append(" F_SIGA_GETRECURSO(TC.DESCRIPCION, "+usrbean.getLanguage()+") DESCRIPCIONTIPOCONSULTA, ");
+		sql.append(" F_SIGA_GETRECURSO(TR.DESCRIPCION, "+usrbean.getLanguage()+") DESCRIPCIONTIPORESPUESTA, ");
 		sql.append(" EJG.NUMEJG ");
 		sql.append(" FROM SCS_SOJ            SOJ, ");
 		sql.append(" SCS_TIPOSOJ        TIPOSOJ, ");
@@ -737,7 +737,6 @@ public class ScsDefinirSOJAdm extends MasterBeanAdministrador {
 		}else{
 			sojHashtable.put("CODIGO_EJG", "");
 		}
-		
 		
 	}
 	private void actualizarDatosGuardiaSOJ(Hashtable sojHashtable) throws ClsExceptions{
