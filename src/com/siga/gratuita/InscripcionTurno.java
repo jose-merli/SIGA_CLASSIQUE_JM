@@ -196,13 +196,22 @@ public class InscripcionTurno
 		// obteniendo ordenacion de la guardia
 		String orden = ordenacionColasAdm.getOrderBy(idOrdenacionColas.toString(), usr);
 		
+		ScsInscripcionTurnoBean ultimoAnterior;
+		
+		// obteniendo ultimo apuntado de la guardia
+		if (idPersonaUltimo == null)
+			ultimoAnterior = null;
+		else
+			ultimoAnterior = new ScsInscripcionTurnoBean(idInstitucion, idTurno, idPersonaUltimo, fechaUltimo);
 		
 //		obteniendo lista de letrados (ordenada)
 		Vector<ScsInscripcionTurnoBean> listaLetrados = insadm.getColaTurno(idInstitucion.toString(), idTurno.toString(), fecha, orden);
 		if (listaLetrados == null || listaLetrados.size()==0)
 			return colaLetrados;
 		
-		ScsInscripcionTurnoBean inscripcionTurno = null;
+		/* FORMA ANTIGUA DE RELLENAR LA COLA DE TURNOS */
+		 
+		/*ScsInscripcionTurnoBean inscripcionTurno = null;
 		boolean foundUltimo = false;
 		Vector<LetradoInscripcion> colaAuxiliar = new Vector<LetradoInscripcion>();
 		LetradoInscripcion letradoTurno;
@@ -224,13 +233,49 @@ public class InscripcionTurno
 			colaLetrados.addAll(colaAuxiliar);
 			}else{
 		
-//			si el idpersona ultimo es nullo con el orden que traian
+		   // el idpersona ultimo es nulo con el orden que traian
 			for (int i = 0; i < listaLetrados.size(); i++) {
 				inscripcionTurno = (ScsInscripcionTurnoBean) listaLetrados.get(i);
 				letradoTurno = new LetradoInscripcion(inscripcionTurno);
 				colaLetrados.add(letradoTurno);
 			}
+		}*/
+		
+		ScsInscripcionTurnoBean punteroInscripciones = null;
+		boolean foundUltimo;
+		LetradoInscripcion letradoTurno;
+		if (ultimoAnterior == null) {
+			// si no existe ultimo colegiado, se empieza la cola desde el
+			// primero en la lista
+			for (int i = 0; i < listaLetrados.size(); i++) {
+				punteroInscripciones = (ScsInscripcionTurnoBean) listaLetrados.get(i);
+				if (punteroInscripciones.getEstado().equals(ClsConstants.DB_TRUE))
+					colaLetrados.add(new LetradoInscripcion(punteroInscripciones));
+			}
+		} else {
+			// ordenando la cola en funcion del idPersonaUltimo guardado
+			Vector<LetradoInscripcion> colaAuxiliar = new Vector<LetradoInscripcion>();
+			foundUltimo = false;
+			for (int i = 0; i < listaLetrados.size(); i++) {
+				punteroInscripciones = listaLetrados.get(i);
+
+				// insertando en la cola si la inscripcion esta activa
+				if (punteroInscripciones.getEstado().equals(ClsConstants.DB_TRUE)) {
+					// El primero que se anyade es el siguiente al ultimo
+					if (foundUltimo) {
+						colaLetrados.add(new LetradoInscripcion(punteroInscripciones));
+					} else {
+						colaAuxiliar.add(new LetradoInscripcion(punteroInscripciones));
+					}
+				}
+
+				// revisando si se encontro ya al ultimo
+				if (!foundUltimo && punteroInscripciones.equals(ultimoAnterior))
+					foundUltimo = true;
+			}
+			colaLetrados.addAll(colaAuxiliar);
 		}
+		
 		
 		// quitando letrados de la cola si tienen saltos
 		if (quitarSaltos) {

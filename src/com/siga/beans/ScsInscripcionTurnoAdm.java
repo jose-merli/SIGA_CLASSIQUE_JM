@@ -1089,10 +1089,6 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 
 			}
 		}
-		
-		
-	
-		
 	}
 	
 	/**
@@ -1117,8 +1113,16 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 		else if(!fecha.trim().equalsIgnoreCase("sysdate"))
 			fecha = "'"+fecha.trim()+"'";
 		
-		String consulta =
-			"Select Ins.Idinstitucion,"+
+		String consulta = 
+		"Select "+
+			"       (case when Ins.Fechavalidacion Is Not Null "+
+			"              And Trunc(Ins.Fechavalidacion) <= nvl("+fecha+",  Ins.Fechavalidacion) "+
+			"              And (Ins.Fechabaja Is Null Or "+
+			"                   Trunc(Ins.Fechabaja) > nvl("+fecha+", '01/01/1900')) "+
+			"             then '1' "+
+			"             else '0' "+
+			"        end) Activo, "+
+			" Ins.Idinstitucion,"+
 			"       Ins.Idturno, " +
 			" TO_CHAR(TRUNC(Ins.fechavalidacion),'DD/MM/YYYY') AS fechavalidacion, "+
 		    "   TO_CHAR(trunc(Ins.fechabaja),'DD/MM/YYYY') AS fechabaja, "+
@@ -1147,10 +1151,10 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 			
 			//cuando no se pasa fecha, se sacan todas las validadas (en cualquier fecha)
 			"   And Ins.Fechavalidacion Is Not Null " +
+/*
 			"   And Trunc(Ins.Fechavalidacion) <= nvl("+fecha+",  Ins.Fechavalidacion) " +
-			//cuando no se pasa fecha, se sacan aunque esten de baja
-			"   And (Ins.Fechabaja Is Null Or " +
-			"        Trunc(Ins.Fechabaja) > nvl("+fecha+", '01/01/1900')) " +
+				//cuando no se pasa fecha, se sacan aunque esten de baja
+			"   And (Ins.Fechabaja Is Null Or   Trunc(Ins.Fechabaja) > nvl("+fecha+", '01/01/1900')) " +*/
 			"   And Tur.Idinstitucion = "+idinstitucion+" " +
 			"   And Tur.Idturno = "+idturno+" ";
 		
@@ -1172,6 +1176,7 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
             		inscripcionBean.setFechaValidacion(UtilidadesHash.getString(htFila, ScsInscripcionTurnoBean.C_FECHAVALIDACION));
             		inscripcionBean.setFechaSolicitud(UtilidadesHash.getString(htFila, ScsInscripcionTurnoBean.C_FECHASOLICITUD));
             		inscripcionBean.setFechaBaja(UtilidadesHash.getString(htFila, ScsInscripcionTurnoBean.C_FECHABAJA));
+            		inscripcionBean.setEstado(UtilidadesHash.getString(htFila, "ACTIVO"));
             		CenPersonaBean personaBean = new CenPersonaBean(
             				inscripcionBean.getIdPersona(),(String)htFila.get(CenPersonaBean.C_NOMBRE),(String)htFila.get(CenPersonaBean.C_APELLIDOS1),
             				(String)htFila.get(CenPersonaBean.C_APELLIDOS2),(String)htFila.get(CenColegiadoBean.C_NCOLEGIADO));

@@ -63,6 +63,17 @@ public class ScsInscripcionTurnoBean extends MasterBean{
 	
 	/*Metodos SET*/
 	
+	public ScsInscripcionTurnoBean() {
+
+	}
+	
+	public ScsInscripcionTurnoBean(int idInstitucion, int idTurno, Long idPersonaUltimo, String fechaSolicitud) {
+		this.idInstitucion = idInstitucion;
+		this.idTurno = idTurno;
+		this.idPersona = idPersonaUltimo;
+		this.fechaSolicitud = fechaSolicitud;
+
+	}
 	/**
 	 * Almacena en el Bean el identificador de persona 
 	 * 
@@ -287,5 +298,25 @@ public class ScsInscripcionTurnoBean extends MasterBean{
 	public void setObservacionesValBaja(String observacionesValBaja) {
 		this.observacionesValBaja = observacionesValBaja;
 	}	
+	
+		/**
+	 * Este metodo comprueba si este bean de inscripcion corresponde a la misma inscripcion 
+	 * que el bean pasado como parametro.
+	 * Es decir, comprueba la igualdad de los siguientes atributos:
+	 * idInstitucion, idTurno, idGuardia, idPersona, fechaSuscripcion
+	 * 
+	 * @param bean
+	 * @return
+	 */
+	public boolean equals(ScsInscripcionTurnoBean bean) {
+		boolean result = true;
+		
+		result &= idInstitucion.intValue() == bean.getIdInstitucion().intValue();
+		result &= idTurno.intValue() == bean.getIdTurno().intValue();
+		result &= idPersona.longValue() == bean.getIdPersona().longValue();
+		result &= fechaSolicitud.equalsIgnoreCase(bean.getFechaSolicitud());
+		
+		return result;
+	}
 	
 }
