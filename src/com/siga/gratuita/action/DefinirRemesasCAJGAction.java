@@ -1673,6 +1673,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		sigaWSClient.setIdInstitucion(idInstitucion);
 		sigaWSClient.setUsrBean(usrBean);
 		sigaWSClient.setIdRemesa(Integer.parseInt(idRemesa));
+		sigaWSClient.setSimular("1".equals(form.getSimular()));
 		
 		GenParametrosAdm admParametros = new GenParametrosAdm(usrBean);		
 		String urlWS = admParametros.getValor(idInstitucion.toString(), "SCS", "PCAJG_WS_URL", "");

@@ -1266,33 +1266,33 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			List<File> files = generaFicherosXML(dirFicheros, dirPlantillas);
 			//hacemos commit por los posibles errores de validación del xml con el xsd
 			tx.commit();
-			tx.begin();
+			
+			if (!isSimular()) {
+				if (files != null && files.size() > 0) {
+					tx.begin();				
+					ftpPcajgAbstract = FtpPcajgFactory.getInstance(usr, String.valueOf(getIdInstitucion()));
+					escribeLogRemesa("Conectando al servidor FTP");			
+					ftpPcajgAbstract.connect();				
 				
-			ftpPcajgAbstract = FtpPcajgFactory.getInstance(usr, String.valueOf(getIdInstitucion()));			
-						
-			escribeLogRemesa("Conectando al servidor FTP");
-			
-			ftpPcajgAbstract.connect();
-						
-			for (File file : files) {
-				FileInputStream fis = new FileInputStream(file);
-				escribeLogRemesa("Subiendo XML generado al servidor FTP");
-				ftpPcajgAbstract.upload(file.getName(), fis);				
-				fis.close();				
-				escribeLogRemesa("El archivo se ha subido correctamente al servidor FTP");
-			}			
-			
-			if (files != null && files.size() > 0) {
-				CajgRemesaEstadosAdm cajgRemesaEstadosAdm = new CajgRemesaEstadosAdm(usr);
-				CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(usr);						
-				// Marcar como generada
-				cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIdInstitucion(), getIdRemesa(), ClsConstants.ESTADO_REMESA_GENERADA);				
-				//MARCAMOS COMO ENVIADA
-				if (cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIdInstitucion(), getIdRemesa(), ClsConstants.ESTADO_REMESA_ENVIADA )) {
-					cajgEJGRemesaAdm.nuevoEstadoEJGRemitidoComision(usr, String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()), ClsConstants.REMITIDO_COMISION);
-				}
+					for (File file : files) {
+						FileInputStream fis = new FileInputStream(file);
+						escribeLogRemesa("Subiendo XML generado al servidor FTP");
+						ftpPcajgAbstract.upload(file.getName(), fis);				
+						fis.close();				
+						escribeLogRemesa("El archivo se ha subido correctamente al servidor FTP");
+					}
+				
+					CajgRemesaEstadosAdm cajgRemesaEstadosAdm = new CajgRemesaEstadosAdm(usr);
+					CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(usr);						
+					// Marcar como generada
+					cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIdInstitucion(), getIdRemesa(), ClsConstants.ESTADO_REMESA_GENERADA);				
+					//MARCAMOS COMO ENVIADA
+					if (cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIdInstitucion(), getIdRemesa(), ClsConstants.ESTADO_REMESA_ENVIADA )) {
+						cajgEJGRemesaAdm.nuevoEstadoEJGRemitidoComision(usr, String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()), ClsConstants.REMITIDO_COMISION);
+					}
+					tx.commit();
+				}				
 			}
-			tx.commit();
 
 		} catch (JSchException e) {
 			tx.rollback();

@@ -58,8 +58,12 @@ public abstract class SIGAWSClientAbstract {
 	private String urlWS;
 	private boolean generaTXT;
 	private boolean firmarXML;
+	private boolean simular;
 	
 			
+	
+
+
 	public abstract void execute() throws Exception;
 	
 		
@@ -473,8 +477,7 @@ public abstract class SIGAWSClientAbstract {
 		
 		FileOutputStream fos = new FileOutputStream(file);		
 		OutputFormat of = new OutputFormat("XML", "ISO-8859-15", true);				
-		of.setIndent(1);
-		of.setIndenting(true);
+		of.setIndent(2);
 		of.setLineWidth(1500);
 		
 		XMLSerializer serializer = new XMLSerializer(fos, of);
@@ -487,5 +490,14 @@ public abstract class SIGAWSClientAbstract {
 		if (sbErrores != null) {
 			throw new Exception("El xml generado no cumple el esquema establecido con la Generalitat: " + sbErrores.toString());
 		}
+	}
+	
+	public boolean isSimular() {
+		return simular;
+	}
+
+
+	public void setSimular(boolean simular) {
+		this.simular = simular;
 	}
 }

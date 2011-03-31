@@ -164,6 +164,12 @@
 		}
 
 		function envioFTP(){
+			//'¿Antes de realizar el envío desea comprobar si los expedientes cumplen los requisitos para ser enviados?
+			if (confirm('<siga:Idioma key="gratuita.cajg.preguntaSimular"/>')) {			
+				document.DefinicionRemesas_CAJG_Form.simular.value=1;
+			} else {
+				document.DefinicionRemesas_CAJG_Form.simular.value=0;
+			}
 			document.DefinicionRemesas_CAJG_Form.modo.value="envioFTP";
 			document.DefinicionRemesas_CAJG_Form.idRemesa.value=document.forms[0].idRemesa.value;	
 			document.DefinicionRemesas_CAJG_Form.idInstitucion.value=document.forms[0].idInstitucion.value;	
@@ -228,6 +234,7 @@
 		<html:hidden property = "idInstitucion" value = "<%=usr.getLocation()%>"/>
 		<html:hidden property = "actionModal" value = ""/>
 		<html:hidden property = "idRemesa" value = "<%=idremesa%>"/>
+		<html:hidden property = "simular" value = "0"/>
 		<html:hidden property = "idEstado" value = "<%=String.valueOf(idEstado)%>"/>
 		<html:hidden  name="DefinicionRemesas_CAJG_Form" property="accion"/>
 	

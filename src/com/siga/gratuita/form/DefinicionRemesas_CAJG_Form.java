@@ -916,6 +916,13 @@ import com.siga.general.MasterForm;
 			public String getFechaFinBuscar() {
 				return FechaFinBuscar;
 			}
-		
+
+			public String getSimular() {
+				return UtilidadesHash.getString(this.datos,"SIMULAR");			
+			}
+			
+			public void setSimular(String simular) {
+				this.datos.put("SIMULAR", simular);
+			}
 		
 }
