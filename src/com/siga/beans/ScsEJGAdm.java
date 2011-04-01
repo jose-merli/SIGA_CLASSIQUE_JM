@@ -3955,7 +3955,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		sql.append(" FROM SCS_UNIDADFAMILIAREJG UFA, SCS_PERSONAJG PER2, CEN_POBLACIONES POB, CEN_PROVINCIAS PROV, CEN_PAIS PAIS, SCS_EJG EJG3 ");
 		sql.append(" WHERE UFA.IDINSTITUCION = PER2.IDINSTITUCION");
 		sql.append(" 	AND UFA.idpersona <> ejg3.idpersonajg");
-		sql.append(" 	AND UFA.idparentesco = 1  ");
+		sql.append(" 	AND UFA.idparentesco = "+ClsConstants.TIPO_CONYUGE);
 		sql.append("  	AND UFA.IDPERSONA = PER2.IDPERSONA");
 		sql.append("  	AND UFA.IDINSTITUCION = EJG3.IDINSTITUCION");
 		sql.append("  	AND UFA.IDTIPOEJG = EJG3.IDTIPOEJG");
@@ -4001,7 +4001,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		sql.append(" FROM SCS_UNIDADFAMILIAREJG UFA, SCS_PERSONAJG PER2, CEN_POBLACIONES POB, CEN_PROVINCIAS PROV, CEN_PAIS PAIS, SCS_EJG EJG3 ");
 		sql.append(" WHERE UFA.IDINSTITUCION = PER2.IDINSTITUCION");
 		sql.append("  AND UFA.IDPERSONA <> EJG3.IDPERSONAJG");
-		sql.append("  AND (UFA.idparentesco <> 1 or UFA.idparentesco is null)");
+		sql.append("  AND (UFA.idparentesco <> "+ClsConstants.TIPO_CONYUGE+" or UFA.idparentesco is null)");
 		sql.append("  AND UFA.IDPERSONA = PER2.IDPERSONA");
 		sql.append("  AND UFA.IDINSTITUCION = EJG3.IDINSTITUCION");
 		sql.append("  AND UFA.IDTIPOEJG = EJG3.IDTIPOEJG");
