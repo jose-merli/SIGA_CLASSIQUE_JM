@@ -179,13 +179,15 @@
 		}
 		
 		function accionVolver(){
-			sub();			
-			document.forms[0].action="./JGR_E-Comunicaciones_Gestion.do";	
-			document.forms[0].modo.value="abrir";
-			document.forms[0].volver.value="SI";
-			document.forms[0].idRemesa.value=<%=idremesa%>;
-			document.forms[0].target="mainWorkArea"; 
-			document.forms[0].submit(); 
+			sub();	
+			var miForm = document.forms[0];
+			miForm.action="./JGR_E-Comunicaciones_Gestion.do";	
+			miForm.modo.value="abrir";
+			miForm.volver.value="SI";
+			miForm.idRemesa.value=<%=idremesa%>;
+			miForm.numero.value = "";
+			miForm.target="mainWorkArea"; 
+			miForm.submit(); 
 		}
 		
 		
@@ -235,7 +237,7 @@
 		}
 		
 		function descargarLog(fila) {
-	    	var idEjgRemesa = document.getElementById('oculto' + fila + '_1');
+	    	var idEjgRemesa = document.getElementById('oculto' + fila + '_5');
 	    	
 	    	document.DefinicionRemesas_CAJG_Form.modo.value="erroresResultadoCAJG";	    	
 	    	document.DefinicionRemesas_CAJG_Form.idEjgRemesa.value=idEjgRemesa.value
@@ -263,10 +265,13 @@
 				deshabilitaTodos();				
 			<%}%>			
 		}
+
 	</script>
 </head>
 
 <body onload="inicio()">
+
+	
 
 	<html:form action="/JGR_E-Comunicaciones_Gestion.do?noReset=true" method="post" target="mainWorkArea" style="display:none">
 		<input type="hidden" name="modo" value="">
@@ -274,18 +279,38 @@
 		<input type="hidden" name="tablaDatosDinamicosD">
 		<input type="hidden" name="actionModal" value="">
 		<input type="hidden" name="idRemesa" value="">
+		<html:hidden property="idInstitucion" value = ""/>
+		<input type="hidden" name="idTipoEJG" value="">
+		<input type="hidden" name="anio" value="">
+		<input type="hidden" name="numero" value="">
 		<input type="hidden" name="idEjgRemesa" value="">		
 		<input type="hidden" name="volver" value="">
 		
-	</html:form>		
+	</html:form>	
+	
+	<html:form action="/JGR_EJG.do" method="post" target="mainWorkArea" style="display:none">
+		<html:hidden property="modo"          value = ""/>
+		<html:hidden property="anio"          value = ""/>
+		<html:hidden property="numero"        value = ""/>
+		<html:hidden property="idTipoEJG"     value = ""/>
+		<html:hidden property="idInstitucion" value = ""/>
+
+		<!-- Campo obligatorio -->
+		<!-- RGG: cambio a formularios ligeros -->
+		<input type="hidden" name="tablaDatosDinamicosD">
+		<input type="hidden" name="actionModal" value="">
+	</html:form>
+	
+	
+		
 	<siga:ConjBotonesAccion botones="<%= buttons %>" clase="botonesSeguido" titulo="gratuita.BusquedaRemesas_CAJG.literal.Remesa"/>	
 		
 	<siga:TablaCabecerasFijas 		   
-		   nombre="listadoEJG"
+		   nombre="tablaDatos"
 		   borde="1"
 		   clase="tableTitle"		   
 		   nombreCol="gratuita.busquedaEJG.literal.turno, gratuita.busquedaEJG.literal.guardia, gratuita.busquedaEJG.literal.anyo, gratuita.busquedaEJG.literal.codigo, gratuita.busquedaEJG.literal.tipoEJG, gratuita.listadoActuacionesAsistencia.literal.fecha, gratuita.busquedaEJG.literal.estadoEJG, gratuita.busquedaEJG.literal.solicitante,"
-		   tamanoCol="15,15,5,6,15,9,10,15,10"
+		   tamanoCol="15,14,4,5,15,9,10,15,13"
 		   alto="100%" 
 		   ajustePaginador="true"
 		   ajusteBotonera="true"	
@@ -297,10 +322,14 @@
 	    	int recordNumber=1;
 	    	String select = "";
 	    	Vector v = null;
-	    	String botones = "";
+	    	String botones = "C";
 	    	
-	    	if (!modo.equals("consultar") && (idEstado == 0)) {
-	    		botones = "B";
+	    	if (!modo.equals("consultar")){
+	    		botones += ",E";
+	    		if (idEstado == 0) {
+	    			botones += ",B";	
+	    		}
+	    		
 	    	}
 	    	
 	    	String fRatificacion = "";
@@ -327,16 +356,17 @@
 
 			%>
 				
-				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' elementos="<%=elems%>" botones="<%=botones%>" visibleconsulta="false" visibleEdicion="false" pintarespacio="false" clase="listaNonEdit">
+				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' elementos="<%=elems%>" botones="<%=botones%>" visibleconsulta="false" visibleEdicion="false" pintarespacio="false" clase="listaNonEdit" modo="<%=modo%>">
 					<td><%=(String)registro.get("TURNO")%>&nbsp;</td>
 					<td><%=(String)registro.get("GUARDIA")%>&nbsp;</td>
 					<td>
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=registro.get(CajgEJGRemesaBean.C_IDEJGREMESA)%>">
-										
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=registro.get(ScsEJGBean.C_ANIO)%>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=registro.get(ScsEJGBean.C_NUMERO)%>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=registro.get(ScsEJGBean.C_IDTIPOEJG)%>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=registro.get(ScsEJGBean.C_NUMEJG)%>">
+					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=registro.get(ScsEJGBean.C_IDTIPOEJG)%>">
+					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=registro.get(ScsEJGBean.C_IDINSTITUCION)%>">
+					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=registro.get(ScsEJGBean.C_ANIO)%>">
+					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=registro.get(ScsEJGBean.C_NUMERO)%>">
+					
+					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=registro.get(CajgEJGRemesaBean.C_IDEJGREMESA)%>">
+					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_6" value="<%=registro.get(ScsEJGBean.C_NUMEJG)%>">
 					
 					<%=registro.get(ScsEJGBean.C_ANIO)%></td>
 					<td><%=CODIGO%></td>
@@ -379,5 +409,42 @@
 <!-- FIN: SUBMIT AREA -->	
 	
 </body>	
+
+	<script type="text/javascript">
+		function consultar(fila) {			
+			document.forms[0].modo.value = "Ver";
+			consultaEdita(fila);
+		}
+		
+		function editar(fila) {
+			document.forms[0].modo.value = "Editar";
+			consultaEdita(fila)
+		}
+
+		function consultaEdita(fila) {
+			document.forms[0].target = document.forms[1].target;			
+			document.forms[0].action = document.forms[1].action;		
+			
+			document.forms[0].tablaDatosDinamicosD.value = document.forms[1].tablaDatosDinamicosD.value
+			document.forms[0].actionModal.value = document.forms[0].actionModal.value
+
+			var idTipoEJG = document.getElementById('oculto' + fila + '_1');
+			var idInstitucion = document.getElementById('oculto' + fila + '_2');
+			var anio = document.getElementById('oculto' + fila + '_3');
+			var numero = document.getElementById('oculto' + fila + '_4');
+			var idEjgRemesa = document.getElementById('oculto' + fila + '_5');
+			
+			document.forms[0].idTipoEJG.value = idTipoEJG.value;				
+			document.forms[0].idInstitucion.value = idInstitucion.value;
+			document.forms[0].anio.value = anio.value;				
+			document.forms[0].numero.value = numero.value;
+			document.forms[0].idEjgRemesa.value = idEjgRemesa.value;
+			
+			document.forms[0].submit();
+		}
+	
+		
+
+	</script>
 </html>
 	

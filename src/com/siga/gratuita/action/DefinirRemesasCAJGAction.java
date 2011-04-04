@@ -666,7 +666,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		
 		try {
 
-			String idEjgRemesa = (String)ocultos.get(0);
+			String idEjgRemesa = (String)ocultos.get(4);
 			miHash.put(CajgEJGRemesaBean.C_IDEJGREMESA, idEjgRemesa);
 			
 			tx = usr.getTransaction();
@@ -676,9 +676,9 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 
 			Hashtable hashEstado = new Hashtable();
 			hashEstado.put(ScsEJGBean.C_IDINSTITUCION, getIDInstitucion(request));
-			hashEstado.put(ScsEJGBean.C_ANIO,ocultos.get(1));
-			hashEstado.put(ScsEJGBean.C_NUMERO, ocultos.get(2));
-			hashEstado.put(ScsEJGBean.C_IDTIPOEJG, ocultos.get(3));
+			hashEstado.put(ScsEJGBean.C_ANIO,ocultos.get(2));
+			hashEstado.put(ScsEJGBean.C_NUMERO, ocultos.get(3));
+			hashEstado.put(ScsEJGBean.C_IDTIPOEJG, ocultos.get(0));
 
 			gestionaEstadoEJG(request, hashEstado);
 
