@@ -239,79 +239,60 @@ public class InformeCertificadosEspeciales extends MasterReport
 	
 	private Vector getDatos(Hashtable ht)
 	{
-		Vector v=null; 
-	    try
-	    {   
-	        Hashtable htDatos = new Hashtable();
-	        String idInstitucion=UtilidadesHash.getString(ht,"@idinstitucion@"); 
-	        String idPersona=UtilidadesHash.getString(ht,"@idPersona@");
-	        String idSolicitud=UtilidadesHash.getString(ht,"@idsolicitud@");
-	        String idIdioma=UtilidadesHash.getString(ht,"@idioma@");
-	        
-	       /* ReadProperties rp = new ReadProperties("SIGA.properties");
-	        
-	        String sSQL = rp.returnProperty("certificados.consultacliente");*/
-	        String sSQL ="";
-	       
-	        String tipoCert=UtilidadesHash.getString(ht,"TIPOCERTIFICADO");
-	        
-	        if (tipoCert!=null && tipoCert.equals(Certificado.CERT_TIPO_CURSO)) {
-	        	sSQL = getSqlCurso(tipoCert);
-	        }
-	        else if (tipoCert!=null && tipoCert.equals(Certificado.CERT_TIPO_TURNO)) {
-	        	sSQL=getSqlTurno(tipoCert);	
-	        }
-	        else if (tipoCert!=null && tipoCert.equals(Certificado.CERT_TIPO_PASANTIA)) {
-	        	sSQL = getSqlPasantia(tipoCert);
-	        }
-	        else if (tipoCert!=null && (tipoCert.equals(Certificado.CERT_TIPO_DESPACHO1)||tipoCert.equals(Certificado.CERT_TIPO_DESPACHO2))) {
-	        	sSQL = getSqlDespacho(tipoCert);
-	        }
-	        else if (tipoCert!=null && tipoCert.equals(Certificado.CERT_TIPO_BANCO)) {
-	        	sSQL = getSqlBanco(tipoCert);
-	        }
-	        else if (tipoCert!=null && tipoCert.equals(Certificado.CERT_TIPO_DIRECCION)) {
-	        	sSQL = getSqlDirecciones(tipoCert);
-	        }
-	            else if (tipoCert!=null && tipoCert.equals(Certificado.CERT_TIPO_COMPONENTES)) {
-	        	sSQL = getSqlComponentes(tipoCert);
-	        }
-	        
-	        Enumeration enumHash = ht.keys();
-	        
-	        while (enumHash.hasMoreElements())
-	        {
-	            String sClave = (String)enumHash.nextElement();
-	            String sValor = (String)ht.get(sClave);
-	            
-	            //sSQL = sSQL.replaceFirst(sClave, sValor);
-	            sSQL = sSQL.replaceAll("(?i)"+sClave, sValor);
-	        }
-	        
-	        sSQL = sSQL.replaceAll("(?i)" + "@IDIOMA@", idioma);
-//	        sSQL = sSQL.replaceAll("@idioma@", this.usrbean.getLanguage());
-	        
-	        RowsContainer rc =new RowsContainer();
-	        rc.find(sSQL);
+		Vector v = null;
+		try {
+			String sSQL = "";
 
-	        if (rc==null || rc.size()==0) 
-	        {
-	            throw new SIGAException("messages.certificados.error.noexistendatos", null, null);
-	        }
-            
-	        if (rc!=null) {
- 				v = new Vector();
-				for (int i = 0; i < rc.size(); i++)	{
+			String tipoCert = UtilidadesHash.getString(ht, "TIPOCERTIFICADO");
+
+			if (tipoCert != null && tipoCert.equals(Certificado.CERT_TIPO_CURSO)) {
+				sSQL = getSqlCurso(tipoCert);
+			} else if (tipoCert != null && tipoCert.equals(Certificado.CERT_TIPO_TURNO)) {
+				sSQL = getSqlTurno(tipoCert);
+			} else if (tipoCert != null && tipoCert.equals(Certificado.CERT_TIPO_PASANTIA)) {
+				sSQL = getSqlPasantia(tipoCert);
+			} else if (tipoCert != null	&& (tipoCert.equals(Certificado.CERT_TIPO_DESPACHO1) || 
+											tipoCert.equals(Certificado.CERT_TIPO_DESPACHO2))) {
+				sSQL = getSqlDespacho(tipoCert);
+			} else if (tipoCert != null && tipoCert.equals(Certificado.CERT_TIPO_BANCO)) {
+				sSQL = getSqlBanco(tipoCert);
+			} else if (tipoCert != null && tipoCert.equals(Certificado.CERT_TIPO_DIRECCION)) {
+				sSQL = getSqlDirecciones(tipoCert);
+			} else if (tipoCert != null && tipoCert.equals(Certificado.CERT_TIPO_COMPONENTES)) {
+				sSQL = getSqlComponentes(tipoCert);
+			}
+
+			Enumeration enumHash = ht.keys();
+
+			while (enumHash.hasMoreElements()) {
+				String sClave = (String) enumHash.nextElement();
+				String sValor = (String) ht.get(sClave);
+
+				sSQL = sSQL.replaceAll("(?i)" + sClave, sValor);
+			}
+
+			sSQL = sSQL.replaceAll("(?i)" + "@IDIOMA@", idioma);
+
+			RowsContainer rc = new RowsContainer();
+			rc.find(sSQL);
+
+			if (rc == null || rc.size() == 0) {
+				throw new SIGAException("messages.certificados.error.noexistendatos", null, null);
+			}
+
+			if (rc != null) {
+				v = new Vector();
+				for (int i = 0; i < rc.size(); i++) {
 					Row fila = (Row) rc.get(i);
-					Hashtable registro = (Hashtable)fila.getRow(); 
-					if (registro != null) 
+					Hashtable registro = (Hashtable) fila.getRow();
+					if (registro != null)
 						v.add(registro);
 				}
 			}
-	    }catch(Exception e){}	
-	    return v;
-	}
-	
+		} catch (Exception e) {
+		}
+		return v;
+	}	
 	
 	public String getSqlTurno(String tipoCert){
 		String sSQL =getSqlCamposGeneral(tipoCert)+",  (select scs_turno.nombre "+
@@ -324,7 +305,8 @@ public class InformeCertificadosEspeciales extends MasterReport
 	                 getSqlFromGeneral()+",  scs_inscripcionturno      it "+
 					 getSqlWhereGeneral()+" and it.idinstitucion(+)=c.idinstitucion "+
 					   " and it.idpersona(+)=c.idpersona  "+
-					   " and it.fechavalidacion(+) <=SYSDATE AND (IT.FECHABAJA(+) IS NULL OR IT.FECHABAJA(+)>SYSDATE)" +
+					   " and it.fechavalidacion(+) <=SYSDATE " +
+					   " AND nvl(It.Fechabaja(+), '31/12/2999') > Sysdate" +
 					   
 					   " order by it.fechavalidacion asc";
 		
