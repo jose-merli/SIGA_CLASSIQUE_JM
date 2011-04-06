@@ -281,6 +281,8 @@
 								<html:option value=""/>
 								<option value="1"><siga:Idioma key="cajg.opcion.conErrores"/></option>								
 								<option value="2"><siga:Idioma key="cajg.opcion.sinErrores"/></option>
+								<option value="3"><siga:Idioma key="cajg.opcion.conErroresAntesEnvio"/></option>
+								<option value="4"><siga:Idioma key="cajg.opcion.conErroresDespuesEnvio"/></option>
 							</html:select>
 							
 						</td>

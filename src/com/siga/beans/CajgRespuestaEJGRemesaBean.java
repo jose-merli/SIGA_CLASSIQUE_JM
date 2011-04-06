@@ -11,6 +11,10 @@ import es.satec.siga.util.SigaSequence;
 
 public class CajgRespuestaEJGRemesaBean extends MasterBean{
 	
+	public static int TIPO_RESPUESTA_SIGA = 1;
+	public static int TIPO_RESPUESTA_COMISION = 2;
+	
+	
 	/*
 	 *  Variables */ 
 	private SigaSequence idRespuesta = new SigaSequence("SEQ_CAJG_RESPUESTA_EJGREMESA");
@@ -19,13 +23,14 @@ public class CajgRespuestaEJGRemesaBean extends MasterBean{
 	private String descripcion;
 	private String abreviatura;
 	private String fecha;
+	private Integer idTipoRespuesta = TIPO_RESPUESTA_SIGA;
 	
 	
 	
 	/*
 	 *  Nombre de Tabla*/
 	
-	
+		
 	static public String T_NOMBRETABLA = "CAJG_RESPUESTA_EJGREMESA";
 	
 	/*
@@ -36,6 +41,7 @@ public class CajgRespuestaEJGRemesaBean extends MasterBean{
 	static public final String C_DESCRIPCION = "DESCRIPCION"; 
 	static public final String C_ABREVIATURA = "ABREVIATURA";
 	static public final String C_FECHA = "FECHA";
+	static public final String C_IDTIPORESPUESTA = "IDTIPORESPUESTA";
 	 
 	
 //	
@@ -123,6 +129,13 @@ public class CajgRespuestaEJGRemesaBean extends MasterBean{
 	public void setIdRespuesta(SigaSequence idRespuesta) {
 		this.idRespuesta = idRespuesta;
 	}
-		
+	public Integer getIdTipoRespuesta() {
+		return idTipoRespuesta;
+	}
+	public void setIdTipoRespuesta(Integer idTipoRespuesta) {
+		this.idTipoRespuesta = idTipoRespuesta;
+	}
+
+	
 	
 }

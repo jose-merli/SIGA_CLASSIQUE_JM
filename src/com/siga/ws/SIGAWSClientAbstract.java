@@ -251,7 +251,7 @@ public abstract class SIGAWSClientAbstract {
 			valido = false;
 			for (String st : list) {
 				if (st != null) {
-					escribeErrorExpediente(anio, numejg, numero, idTipoEJG, st);
+					escribeErrorExpediente(anio, numejg, numero, idTipoEJG, st, CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA);
 				}
 			}
 		}
@@ -344,7 +344,7 @@ public abstract class SIGAWSClientAbstract {
 	 * @throws IOException
 	 * @throws ClsExceptions
 	 */
-	protected void escribeErrorExpediente(String anio, String numEjg, String numero, String idTipoEJG, String descripcionError) throws IOException, ClsExceptions {		
+	protected void escribeErrorExpediente(String anio, String numEjg, String numero, String idTipoEJG, String descripcionError, Integer idTipoRespuesta) throws IOException, ClsExceptions {		
 		
 		CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(getUsrBean());
 		CajgRespuestaEJGRemesaAdm cajgRespuestaEJGRemesaAdm = new CajgRespuestaEJGRemesaAdm(getUsrBean());
@@ -374,7 +374,8 @@ public abstract class SIGAWSClientAbstract {
 				descripcionError = descripcionError.substring(0, 1499);
 			}
 			cajgRespuestaEJGRemesaBean.setDescripcion(descripcionError);
-			cajgRespuestaEJGRemesaBean.setFecha("SYSDATE");		
+			cajgRespuestaEJGRemesaBean.setFecha("SYSDATE");
+			cajgRespuestaEJGRemesaBean.setIdTipoRespuesta(idTipoRespuesta);
 			
 			cajgRespuestaEJGRemesaAdm.insert(cajgRespuestaEJGRemesaBean);
 		}

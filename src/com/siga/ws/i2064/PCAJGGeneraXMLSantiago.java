@@ -21,6 +21,7 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.GstDate;
 import com.siga.beans.CajgRemesaEstadosAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaAdm;
+import com.siga.beans.CajgRespuestaEJGRemesaBean;
 import com.siga.informes.MasterWords;
 import com.siga.ws.SIGAWSClientAbstract;
 import com.siga.ws.SigaWSHelper;
@@ -133,13 +134,13 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 					if (anexoIType != null) {
 						solicitudeAXG.removeANEXOI(solicitudeAXG.sizeOfANEXOIArray()-1);
 					}
-					escribeErrorExpediente(anio, numejg, numero, idTipoEJG, e.getMessage());
+					escribeErrorExpediente(anio, numejg, numero, idTipoEJG, e.getMessage(), CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA);
 				} catch (Exception e) {
 					e.printStackTrace();
 					if (anexoIType != null) {
 						solicitudeAXG.removeANEXOI(solicitudeAXG.sizeOfANEXOIArray()-1);
 					}
-					escribeErrorExpediente(anio, numejg, numero, idTipoEJG, "Se ha producido un error al recuperar los datos del expediente");
+					escribeErrorExpediente(anio, numejg, numero, idTipoEJG, "Se ha producido un error al recuperar los datos del expediente", CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA);
 				}
 			}
 			

@@ -561,7 +561,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 											cajgRespuestaEJGRemesaBean.setCodigo("-1");
 											cajgRespuestaEJGRemesaBean.setDescripcion(descripcion.toString());
 											cajgRespuestaEJGRemesaBean.setFecha("SYSDATE");
-											
+											cajgRespuestaEJGRemesaBean.setIdTipoRespuesta(CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_COMISION);
 											
 											cajgRespuestaEJGRemesaAdm.insert(cajgRespuestaEJGRemesaBean);
 										}

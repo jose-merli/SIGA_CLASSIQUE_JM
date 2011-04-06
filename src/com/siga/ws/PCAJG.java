@@ -209,8 +209,8 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 			tipoIntercambio = (String) ht.get(TIPOINTERCAMBIO);
 			try {
 				addExpediente(expedientes, ht, tipoIntercambio);				
-			} catch (IllegalArgumentException e) {
-				escribeErrorExpediente(anyo, numejg, numero, idTipoEJG, e.getMessage());
+			} catch (IllegalArgumentException e) {				
+				escribeErrorExpediente(anyo, numejg, numero, idTipoEJG, e.getMessage(), CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA);
 			}
 		}
 		if (intercambio != null && expedientes.size() > 0) {
@@ -585,7 +585,7 @@ public class PCAJG extends SIGAWSClientAbstract implements PCAJGConstantes {
 					texto = "Debe rellenar el campo \"" + mensaje.substring(mensaje.indexOf("'")+1, mensaje.lastIndexOf("'")) + "\"";
 				}
 			}
-			escribeErrorExpediente(anyo, numejg, numero, idTipoEJG, texto);
+			escribeErrorExpediente(anyo, numejg, numero, idTipoEJG, texto, CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA);
 		}
 	
 	}

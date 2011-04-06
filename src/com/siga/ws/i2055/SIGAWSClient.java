@@ -29,6 +29,7 @@ import com.atos.utils.GstDate;
 import com.siga.Utilidades.LogHandler;
 import com.siga.beans.CajgRemesaEstadosAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaAdm;
+import com.siga.beans.CajgRespuestaEJGRemesaBean;
 import com.siga.ws.SIGAWSClientAbstract;
 
 /**
@@ -102,7 +103,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 						if (respuesta.getDescripcionError() != null) {
 							descripcionError += " " + respuesta.getDescripcionError(); 
 						}
-						escribeErrorExpediente(anio, numejg, numero, idTipoEJG, descripcionError);
+						escribeErrorExpediente(anio, numejg, numero, idTipoEJG, descripcionError, CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_COMISION);
 						continue;
 					}
 					
@@ -120,7 +121,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 						throw e;
 					} else {
 						String descripcionError = "Error al enviar el expediente. " + e.getMessage();
-						escribeErrorExpediente(anio, numejg, numero, idTipoEJG, descripcionError);
+						escribeErrorExpediente(anio, numejg, numero, idTipoEJG, descripcionError, CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA);
 						escribeLogRemesa("Se ha producido un error al enviar el expediente " + anio + "/" + numejg);					
 						ClsLogging.writeFileLogError(descripcionError, e, 3);
 					}

@@ -1151,16 +1151,21 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				
 				Vector datos = null;
 				
-				String cuentaErrores = "(SELECT COUNT(1) FROM CAJG_RESPUESTA_EJGREMESA ER WHERE ER.IDEJGREMESA = ejgremesa." +  CajgEJGRemesaBean.C_IDEJGREMESA + ")"; 
-
+				String cuentaErrores = "SELECT COUNT(1) FROM " + CajgRespuestaEJGRemesaBean.T_NOMBRETABLA + " ER" +
+					" WHERE ER." + CajgRespuestaEJGRemesaBean.C_IDEJGREMESA + " = ejgremesa." +  CajgEJGRemesaBean.C_IDEJGREMESA;
+				
 				String filtrado = "";
-				if (idIncidenciasEnvio != null) {
-					if (idIncidenciasEnvio.equals("1")) {//con errores
-						filtrado = " and " + cuentaErrores + " > 0";	
-					} else if (idIncidenciasEnvio.equals("2")) {//sin errores
-						filtrado = " and " + cuentaErrores + " = 0";
-					}
+				if (idIncidenciasEnvio != null && !idIncidenciasEnvio.trim().equals("")) {
 					 
+					if (idIncidenciasEnvio.equals("1")) {//con errores
+						filtrado = " and (" + cuentaErrores + ") > 0";	
+					} else if (idIncidenciasEnvio.equals("2")) {//sin errores
+						filtrado = " and (" + cuentaErrores + ") = 0";
+					} else if (idIncidenciasEnvio.equals("3")) {//con errores antes del envío a comisión
+						filtrado = " and (" + cuentaErrores + " AND ER." + CajgRespuestaEJGRemesaBean.C_IDTIPORESPUESTA + " = " + CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA + ") > 0";
+					} else if (idIncidenciasEnvio.equals("4")) {//con errores después del envío a comisión
+						filtrado = " and (" + cuentaErrores + " AND ER." + CajgRespuestaEJGRemesaBean.C_IDTIPORESPUESTA + " = " + CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_COMISION + ") > 0";
+					}					 
 				}
 				
 				/*
@@ -1206,7 +1211,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 //						+ ScsEstadoEJGBean.C_NUMERO + ") and rownum=1) as estado" +
 						+ " F_SIGA_GETRECURSO(f_siga_get_ultimoestadoejg(ejg.idinstitucion,ejg.idtipoejg, ejg.anio, ejg.numero), " + this.getUserBean(request).getLanguage() + ") as estado"								
 						+ ", ejg." + ScsEJGBean.C_NUMERO
-						+ ", "  + cuentaErrores + " AS ERRORES"						
+						+ ", ("  + cuentaErrores + ") AS ERRORES"						
 						+ " from " + ScsEJGBean.T_NOMBRETABLA + " ejg,"
 						+ ScsGuardiasTurnoBean.T_NOMBRETABLA + " guardia,"
 						+ ScsTipoEJGBean.T_NOMBRETABLA + " tipoejg,"

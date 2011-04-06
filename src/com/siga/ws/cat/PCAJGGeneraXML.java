@@ -28,6 +28,7 @@ import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CajgEJGRemesaAdm;
 import com.siga.beans.CajgRemesaEstadosAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaAdm;
+import com.siga.beans.CajgRespuestaEJGRemesaBean;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.action.DefinirRemesasCAJGAction;
 import com.siga.ws.PCAJGConstantes;
@@ -185,7 +186,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 				}
 				
 			} catch (IllegalArgumentException e) {				
-				escribeErrorExpediente(anyo, numejg, numero, idTipoEJG, e.getMessage());
+				escribeErrorExpediente(anyo, numejg, numero, idTipoEJG, e.getMessage(), CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA);
 			}
 			
 		}

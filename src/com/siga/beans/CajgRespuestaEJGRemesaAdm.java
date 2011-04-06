@@ -34,6 +34,8 @@ public class CajgRespuestaEJGRemesaAdm extends MasterBeanAdministrador {
 				CajgRespuestaEJGRemesaBean.C_DESCRIPCION,
 				CajgRespuestaEJGRemesaBean.C_ABREVIATURA,
 				CajgRespuestaEJGRemesaBean.C_FECHA,
+				CajgRespuestaEJGRemesaBean.C_IDTIPORESPUESTA,
+				
 				CajgRespuestaEJGRemesaBean.C_FECHAMODIFICACION,	CajgRespuestaEJGRemesaBean.C_USUMODIFICACION};
 		return campos;
 	}
@@ -59,7 +61,8 @@ public class CajgRespuestaEJGRemesaAdm extends MasterBeanAdministrador {
 			bean.setCodigo(UtilidadesHash.getString(hash,CajgRespuestaEJGRemesaBean.C_CODIGO));
 			bean.setDescripcion(UtilidadesHash.getString(hash,CajgRespuestaEJGRemesaBean.C_DESCRIPCION));
 			bean.setAbreviatura(UtilidadesHash.getString(hash,CajgRespuestaEJGRemesaBean.C_ABREVIATURA));
-			bean.setFecha(UtilidadesHash.getString(hash,CajgRespuestaEJGRemesaBean.C_FECHA));
+			bean.setFecha(UtilidadesHash.getString(hash,CajgRespuestaEJGRemesaBean.C_FECHA));			
+			bean.setIdTipoRespuesta(UtilidadesHash.getInteger(hash,CajgRespuestaEJGRemesaBean.C_IDTIPORESPUESTA));
 			
 			bean.setFechaMod(UtilidadesHash.getString (hash,CajgRemesaBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,CajgRemesaBean.C_USUMODIFICACION));
@@ -85,6 +88,7 @@ public class CajgRespuestaEJGRemesaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, CajgRespuestaEJGRemesaBean.C_DESCRIPCION, b.getDescripcion());
 			UtilidadesHash.set(hash, CajgRespuestaEJGRemesaBean.C_ABREVIATURA, b.getAbreviatura());
 			UtilidadesHash.set(hash, CajgRespuestaEJGRemesaBean.C_FECHA, b.getFecha());			
+			UtilidadesHash.set(hash, CajgRespuestaEJGRemesaBean.C_IDTIPORESPUESTA, b.getIdTipoRespuesta());
 			
 			UtilidadesHash.set(hash, CajgRespuestaEJGRemesaBean.C_FECHAMODIFICACION, b.getFechaMod());	
 			UtilidadesHash.set(hash, CajgRespuestaEJGRemesaBean.C_USUMODIFICACION, b.getUsuMod());	
@@ -145,9 +149,17 @@ public class CajgRespuestaEJGRemesaAdm extends MasterBeanAdministrador {
 	public void insertaErrorEJGnoEnviados(int idInstitucion, int idRemesa, UsrBean usrBean, String vista) throws ClsExceptions {
 		CajgRespuestaEJGRemesaBean cajgRespuestaEJGRemesaBean = new CajgRespuestaEJGRemesaBean();
 		String sql = "insert into cajg_respuesta_ejgremesa" +
-				" (idrespuesta, idejgremesa, codigo, descripcion, abreviatura, fecha, fechamodificacion, usumodificacion)" +
+				" (" + CajgRespuestaEJGRemesaBean.C_IDRESPUESTA + ", "
+				+ CajgRespuestaEJGRemesaBean.C_IDEJGREMESA + ", "
+				+ CajgRespuestaEJGRemesaBean.C_CODIGO + ", "
+				+ CajgRespuestaEJGRemesaBean.C_DESCRIPCION + ", "
+				+ CajgRespuestaEJGRemesaBean.C_ABREVIATURA + ", "
+				+ CajgRespuestaEJGRemesaBean.C_FECHA + ", "
+				+ CajgRespuestaEJGRemesaBean.C_IDTIPORESPUESTA + ", "
+				+ CajgRespuestaEJGRemesaBean.C_FECHAMODIFICACION + ", "
+				+ CajgRespuestaEJGRemesaBean.C_USUMODIFICACION + ")" +
 				" SELECT " + cajgRespuestaEJGRemesaBean.getIdRespuesta().nextVal() + ", ER.IDEJGREMESA, '-1'," +
-				" 'El expediente no cumple las condiciones para ser enviado', null, sysdate, sysdate, " + usrBean.getUserName() +
+				" 'El expediente no cumple las condiciones para ser enviado', null, sysdate, " + CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA + ", sysdate, " + usrBean.getUserName() +
 				" FROM CAJG_EJGREMESA ER" +
 				" WHERE ER.IDINSTITUCION = " + idInstitucion +
 				" AND ER.IDREMESA = " + idRemesa +
