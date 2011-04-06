@@ -799,23 +799,20 @@
 
 	<!-- FILA -->
 		<tr>					
-			<td class="labelText">
-				<html:hidden name="ExpDatosGeneralesForm" property = "idPersona"/>
-				<html:hidden name="ExpDatosGeneralesForm" property = "idDireccion"/>
-				
-				<siga:Idioma key="expedientes.auditoria.literal.nombre"/>&nbsp(*)
+			<td class="labelText">			
+				<siga:Idioma key="expedientes.auditoria.literal.nombre"/>&nbsp
 			</td>				
 			<td>
 				<html:text name="ExpDatosGeneralesForm" property="nombreDenunciante" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 			<td class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.primerapellido"/>&nbsp(*)
+				<siga:Idioma key="expedientes.auditoria.literal.primerapellido"/>&nbsp
 			</td>
 			<td>
 				<html:text name="ExpDatosGeneralesForm" property="primerApellidoDenunciante" styleClass="boxConsulta" readonly="true"></html:text>				
 			</td>
 			<td class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.segundoapellido"/>&nbsp(*)
+				<siga:Idioma key="expedientes.auditoria.literal.segundoapellido"/>&nbsp
 			</td>
 			<td>
 				<html:text name="ExpDatosGeneralesForm" property="segundoApellidoDenunciante" styleClass="boxConsulta" readonly="true"></html:text>				
@@ -825,7 +822,7 @@
 	<!-- FILA -->
 		<tr>					
 			<td class="labelText">
-				<siga:Idioma key="expedientes.auditoria.literal.nif"/>&nbsp(*)
+				<siga:Idioma key="expedientes.auditoria.literal.nif"/>&nbsp
 			</td>				
 			<td>				
 				<html:text name="ExpDatosGeneralesForm" property="nifDenunciante" styleClass="boxConsulta" readonly="true"></html:text>
