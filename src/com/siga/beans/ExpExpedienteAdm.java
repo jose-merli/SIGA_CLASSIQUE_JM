@@ -624,7 +624,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		where += (estado!=null && !estado.equals("")) ? " AND E." + ExpExpedienteBean.C_IDESTADO + " = " + estado : "";
 		where += (materia!=null && !materia.equals("")) ? " AND E." + ExpExpedienteBean.C_IDMATERIA + " = " + materia : "";
 		where += (juzgado!=null && !juzgado.equals("")) ? " AND juz." + ScsJuzgadoBean.C_IDJUZGADO + " = " + juzgado : "";
-		where += (numAsunto!=null && !numAsunto.equals("")) ? " AND lower (E." + ExpExpedienteBean.C_NUMASUNTO + ") like " + numAsunto.toLowerCase() : "";
+		where += (numAsunto!=null && !numAsunto.equals("")) ? " AND "+ComodinBusquedas.prepararSentenciaCompleta(numAsunto.trim(),"E." + ExpExpedienteBean.C_NUMASUNTO): "";
 		
 
 		if((nombreDenunciado!=null && !nombreDenunciado.equals(""))||(ap1Denunciado!=null && !ap1Denunciado.equals(""))||(ap2Denunciado!=null && !ap2Denunciado.equals(""))){
