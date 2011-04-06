@@ -162,7 +162,9 @@ public class ScsOrdenacionColasAdm extends MasterBeanAdministrador {
 		String orden = "";
 		for (int i=4; i>0; i--) {
 			if (Math.abs(apellidos) == i) {
-				orden += ScsOrdenacionColasBean.C_ALFABETICOAPELLIDOS+","+ScsOrdenacionColasBean.AUX_ALFABETICOAPELLIDOS_NOMBRE;
+				orden += ScsOrdenacionColasBean.C_ALFABETICOAPELLIDOS;
+				if (Math.abs(apellidos) != apellidos) orden += " desc";
+				orden += "," + ScsOrdenacionColasBean.AUX_ALFABETICOAPELLIDOS_NOMBRE;
 				if (Math.abs(apellidos) != apellidos) orden += " desc";
 				orden += ", ";
 			}
