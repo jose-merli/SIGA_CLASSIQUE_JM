@@ -2622,7 +2622,8 @@ public class Plantilla {
 		}
 		finally {
 			try {
-				outTemp.close();
+				if(outTemp!=null)
+					outTemp.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

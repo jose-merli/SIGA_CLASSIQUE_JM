@@ -79,6 +79,7 @@ import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.informes.InformeFactura;
 import com.siga.productos.form.SolicitudCompraForm;
 
 
@@ -1533,37 +1534,6 @@ public class SolicitudCompraAction extends MasterAction{
 		        beanPeticion = (PysPeticionCompraSuscripcionBean) vP.get(0);
 		    }
 		    
-	        ////////////////////////////////////////////////////////
-		    // en este punto tenemos una peticion de compra aprobada
-	        ////////////////////////////////////////////////////////
-		    
-		    
-		    // Compruebo que no esta facturada la compra
-	        /*
-		    if (beanCompra.getIdFactura()!=null && !beanCompra.getIdFactura().trim().equals("")) {
-		        //throw new SIGAException("messages.facturacionRapida.error.facturado");
-		        ReadProperties rp = new ReadProperties("SIGA.properties");
-		        String rutaAlmacen = rp.returnProperty("facturacion.directorioFisicoFacturaPDFJava")+rp.returnProperty("facturacion.directorioFacturaPDFJava");
-		        String barraAlmacen = "";
-		        String nombreFicheroAlmacen = "";
-		        if (rutaAlmacen.indexOf("/") > -1){ 
-		        	barraAlmacen = "/";
-		        }
-		        if (rutaAlmacen.indexOf("\\") > -1){ 
-		        	barraAlmacen = "\\";
-		        }    		
-		        nombreFicheroAlmacen = beanCompra.getIdFactura() +".pdf";
-		        rutaAlmacen += barraAlmacen + idInstitucion + barraAlmacen + nombreFicheroAlmacen;
-				File fileFAC = new File(rutaAlmacen);
-			    if (!fileFAC.exists())  {
-			        throw new SIGAException("messages.general.error.ficheroNoExiste");
-			    }
-		        request.setAttribute("nombreFichero", nombreFicheroAlmacen);
-				request.setAttribute("rutaFichero", rutaAlmacen);			
-				return "descargaFichero";
-		    }
-		    */
-		    
 			FacSerieFacturacionBean serieFacturacionCandidata = null;
 			FacSerieFacturacionBean serieFacturacionTemporal = null;
 			FacFacturacionProgramadaBean programacion = null;
@@ -1592,7 +1562,7 @@ public class SolicitudCompraAction extends MasterAction{
 		        }
 		        
 		        PysCompraBean pysCompraBean = (PysCompraBean) compras.get(0);
-		if (pysCompraBean.getIdFactura()==null ||pysCompraBean.getIdFactura().equals("")){// Si despues de hacer la facturacion se vuelve a pulsar el boton, mostrará la factura asociada 
+		  if (pysCompraBean.getIdFactura()==null ||pysCompraBean.getIdFactura().equals("")){// Si despues de hacer la facturacion se vuelve a pulsar el boton, mostrará la factura asociada 
 		        String serieSeleccionada = request.getParameter("serieSeleccionada");
 		        if (serieSeleccionada==null || serieSeleccionada.equals("")) {
 				    Vector series =  admSerie.obtenerSeriesAdecuadas(compras);
@@ -1644,8 +1614,9 @@ public class SolicitudCompraAction extends MasterAction{
 			    programacion = facturacion.restaurarSerieFacturacion(serieFacturacionCandidata, serieFacturacionTemporal);
 		        
 			    tx.commit();
-			}
-		else{
+	
+			}else{
+		
 				FacFacturaAdm admF1 = new FacFacturaAdm(this.getUserBean(request));
 				FacFacturaBean facturaFinal=null;
 				Hashtable factHash=new Hashtable();
@@ -1661,8 +1632,23 @@ public class SolicitudCompraAction extends MasterAction{
 				Vector vFac=admF1.select(factHash);
 				if (vFac==null || vFac.size()==0) {
 				    throw new SIGAException("messages.facturacionRapida.noFactura");
-				} 
-				else {
+				
+				} else {
+					//Simular comportamiento del módulo de Facturas
+					InformeFactura informe = new InformeFactura(usr);
+					File filePDF = informe.generarFactura(request, usr.getLanguage().toUpperCase(), idInstitucion, pysCompraBean.getIdFactura(), nColegiado);
+
+					if (filePDF == null) {
+						throw new ClsExceptions("Error al generar la factura. Fichero devuelto es nulo.");
+					}
+					tx.commit();
+					request.setAttribute("nombreFichero", filePDF.getName());
+					request.setAttribute("rutaFichero", filePDF.getPath());
+					request.setAttribute("generacionOK", "OK");
+					salida = "descarga";
+					return salida;
+					
+					/*					 
 					String nombreFichero = "";
 					rutaAlmacen += 	((FacFacturaBean)vFac.get(0)).getIdSerieFacturacion() + "_" + 
 									((FacFacturaBean)vFac.get(0)).getIdProgramacion() + ClsConstants.FILE_SEP;
@@ -1714,10 +1700,11 @@ public class SolicitudCompraAction extends MasterAction{
 						request.setAttribute("generacionOK","OK");
 						salida = "descarga";
     					return salida;
+					}					
+					*/
 					}
-		    	}
-			  	
-			}
+
+				}
 		    } catch (Exception e) {
 			    try { tx.rollback(); } catch (Exception ee) {}
 			    throw e;
@@ -1793,24 +1780,6 @@ public class SolicitudCompraAction extends MasterAction{
 				} 
 				else {
 				    ArrayList ficherosPDF= new ArrayList();
-//				    for (int i=0;i<facts.size();i++) {
-//					    FacFacturaBean bf = (FacFacturaBean) facts.get(i);
-//					    CenColegiadoAdm admCol = new CenColegiadoAdm(this.getUserBean(request));
-//						
-//			  			Hashtable htCol = admCol.obtenerDatosColegiado(this.getUserBean(request).getLocation(),bf.getIdPersona().toString(),this.getUserBean(request).getLanguage());
-//			  			String nColegiado = "";
-//			  			if (htCol!=null && htCol.size()>0) {
-//			  			    nColegiado = (String)htCol.get("NCOLEGIADO_LETRADO");
-//			  			}	
-//					    if (bf.getNumeroFactura()!=null && !bf.getNumeroFactura().equals("")) 
-//					    	nombreFichero = bf.getNumeroFactura();
-//					    else 
-//					    	nombreFichero = bf.getIdFactura();
-//					    
-//					    String ruta = rutaAlmacen + UtilidadesString.validarNombreFichero(nColegiado+"-"+nombreFichero) + ".pdf";
-//					    File filePDF = new File(ruta);
-//					    ficherosPDF.add(filePDF);
-//				    }
 				    for (int i=0;i<sFacturas.length;i++) {
 					    
 				        nombreFichero = sFacturas[i];
@@ -1840,6 +1809,7 @@ public class SolicitudCompraAction extends MasterAction{
 		}
 		return salida;
 	}
+	
 	
 	/** 
 	 * Funcion que atiende la accion facturacionRapidaCompra. Este proceso va a realizar la 
