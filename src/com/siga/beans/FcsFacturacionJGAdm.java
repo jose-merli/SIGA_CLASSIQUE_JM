@@ -4004,13 +4004,12 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			//////////////////////////////////
 			// cambio de estado
 		    tx.begin();
-		    String idOrdenEstado= admEstado.getIdordenestadoMaximo(idInstitucion, idFacturacion);
 			beanEstado = new FcsFactEstadosFacturacionBean();
 			beanEstado.setIdInstitucion(new Integer(idInstitucion));
 			beanEstado.setIdFacturacion(new Integer(idFacturacion));
 			beanEstado.setIdEstadoFacturacion(new Integer(ClsConstants.ESTADO_FACTURACION_EN_EJECUCION));
 			beanEstado.setFechaEstado("SYSDATE");			
-			beanEstado.setIdOrdenEstado(new Integer(idOrdenEstado));
+			beanEstado.setIdOrdenEstado(new Integer(admEstado.getIdordenestadoMaximo(idInstitucion, idFacturacion)));
 			admEstado.insert(beanEstado);
 			boolean prevision = false;
 			tx.commit();
@@ -4105,22 +4104,21 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				importeEJG = new Double(resultado[0].replaceAll(",","."));
 				importeTotal += importeEJG.doubleValue();
 				
-				//////////////////////////////////////
-				/// CREAMOS EL INFORME
-				String rutaFichero = this.generarInformeYObtenerRuta(beanFac.getIdInstitucion().toString(), beanFac.getIdFacturacion().toString());
-				File fichero = null;
-				try {
-					fichero = new File(rutaFichero);
-					if (fichero == null || !fichero.exists()) {
-						throw new SIGAException("messages.general.error.ficheroNoExiste");
-					}
-				} catch (Exception e) {
-					throw new SIGAException("messages.general.error");
-				}
-				beanFac.setNombreFisico(rutaFichero);
-				
-				
 				if(prevision){
+					//////////////////////////////////////
+					/// CREAMOS EL INFORME
+					String rutaFichero = this.generarInformeYObtenerRuta(beanFac.getIdInstitucion().toString(), beanFac.getIdFacturacion().toString());
+					File fichero = null;
+					try {
+						fichero = new File(rutaFichero);
+						if (fichero == null || !fichero.exists()) {
+							throw new SIGAException("messages.general.error.ficheroNoExiste");
+						}
+					} catch (Exception e) {
+						throw new SIGAException("messages.general.error");
+					}
+					beanFac.setNombreFisico(rutaFichero);
+				
 					tx.rollback();
 				}else{
 					tx.commit();
@@ -4148,13 +4146,12 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			//////////////////////////////////
 			// cambio de estado
 			tx.begin();
-			idOrdenEstado= admEstado.getIdordenestadoMaximo(idInstitucion, idFacturacion);
 			beanEstado = new FcsFactEstadosFacturacionBean();
 			beanEstado.setIdInstitucion(new Integer(idInstitucion));
 			beanEstado.setIdFacturacion(new Integer(idFacturacion));
 			beanEstado.setIdEstadoFacturacion(new Integer(ClsConstants.ESTADO_FACTURACION_EJECUTADA));
 			beanEstado.setFechaEstado("SYSDATE");
-			beanEstado.setIdOrdenEstado(new Integer(idOrdenEstado));
+			beanEstado.setIdOrdenEstado(new Integer(admEstado.getIdordenestadoMaximo(idInstitucion, idFacturacion)));
 			Thread.sleep(1000);
 			admEstado.insert(beanEstado);
 			tx.commit();
@@ -4176,6 +4173,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				beanEstado.setIdInstitucion(new Integer(idInstitucion));
 				beanEstado.setIdFacturacion(new Integer(idFacturacion));
 				beanEstado.setIdEstadoFacturacion(new Integer(ClsConstants.ESTADO_FACTURACION_ABIERTA));
+				beanEstado.setIdOrdenEstado(new Integer(admEstado.getIdordenestadoMaximo(idInstitucion, idFacturacion)));
 				beanEstado.setFechaEstado("SYSDATE");
 				Thread.sleep(1000);
 				admEstado.insert(beanEstado);
@@ -4200,6 +4198,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				beanEstado.setIdInstitucion(new Integer(idInstitucion));
 				beanEstado.setIdFacturacion(new Integer(idFacturacion));
 				beanEstado.setIdEstadoFacturacion(new Integer(ClsConstants.ESTADO_FACTURACION_ABIERTA));
+				beanEstado.setIdOrdenEstado(new Integer(admEstado.getIdordenestadoMaximo(idInstitucion, idFacturacion)));
 				beanEstado.setFechaEstado("SYSDATE");
 				Thread.sleep(1000);
 				admEstado.insert(beanEstado);

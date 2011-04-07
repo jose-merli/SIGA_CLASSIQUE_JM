@@ -105,37 +105,55 @@
 	catch(Exception e){}
 	
 	//Para los modos de presentar los objetos de html
-	if (bRegularizacion || modo.equalsIgnoreCase("consulta") || idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_LISTA_CONSEJO || idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_PROGRAMADA || idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_EN_EJECUCION){
+	if (bRegularizacion || modo.equalsIgnoreCase("consulta")) {
 		consulta = true;
 		desactivado = "true";
 		readonly = true;
 		clase = "boxConsulta";
+		
 		botones ="GM";
 	}
-	if ((idEstado!=null) && (idEstado.intValue() != ClsConstants.ESTADO_FACTURACION_LISTA_CONSEJO && idEstado.intValue() != ClsConstants.ESTADO_FACTURACION_PROGRAMADA && idEstado.intValue() != ClsConstants.ESTADO_FACTURACION_EN_EJECUCION))
-	{
-		botones += "G";
+	
+	if ((idEstado!=null) && ( 
+			idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_LISTA_CONSEJO)) {
+		consulta = true;
+		desactivado = "true";
+		readonly = true;
+		clase = "boxConsulta";
 		
+		botones ="GM";
 	}
-
-	if ((idEstado!=null)&&(idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_ABIERTA)) {
+	else if ((idEstado!=null) && (
+			idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_PROGRAMADA || 
+			idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_EN_EJECUCION)) {
+		consulta = true;
+		desactivado = "true";
+		readonly = true;
+		clase = "boxConsulta";
+		
+		botones ="";
+	}
+	else if ((idEstado!=null) && (
+			idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_ABIERTA)) {
+		botones = "G,R,EF";
+		
 		if (!bRegularizacion) botonesAbajo = "V,N"; 
 		else botonesAbajo = "V";
-		botones += ",R,EF";
-		if (bYaHaSidoEjecutada) {
-			botones += ",LF";
+		
+		if (bYaHaSidoEjecutada) botones += ",LF";
+	}
+	else if ((idEstado!=null) && (
+			idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_EJECUTADA)) {
+		if (strutTrans.equalsIgnoreCase("FCS_MantenimientoPrevisiones")) {
+			botones = "EF,GM"; //en las previsiones ejecutadas se permite reejecutar y descargar el informe
 		}
-	} else {
-		if ((idEstado!=null)&&(idEstado.intValue() == ClsConstants.ESTADO_FACTURACION_EJECUTADA)){
-			if (!strutTrans.equalsIgnoreCase("FCS_MantenimientoPrevisiones")) {
-				botones = "LC,GM";
-				consulta = true;
-				desactivado = "true";
-				readonly = true;
-				clase = "boxConsulta";
-			}else{
-				botones ="EF,GM";
-			}
+		else {
+			consulta = true;
+			desactivado = "true";
+			readonly = true;
+			clase = "boxConsulta";
+			
+			botones = "LC,GM"; //en las facturaciones ejecutadas se permite reejecutar y descargar el informe
 		}
 	}
 
