@@ -22,7 +22,7 @@
 <%@ page import="com.atos.utils.*,com.siga.expedientes.form.ExpDatosGeneralesForm,java.util.*"%>
 <%@ page import="com.siga.beans.ExpExpedienteBean"%>
 <%@ page import="com.siga.expedientes.form.ExpDatosGeneralesForm"%>
-
+<%@ page import="com.siga.Utilidades.UtilidadesNumero"%>
 
 <!-- JSP -->
 <%  
@@ -32,6 +32,9 @@
 	UsrBean userBean = ((UsrBean)ses.getAttribute(("USRBEAN")));
 
 	String mostrarMinuta = (String)request.getAttribute("mostarMinuta");
+	String mostrarMinutaFinal = (String)request.getAttribute("mostarMinutaFinal");
+	String derechosColegiales = (String)request.getAttribute("derechosColegiales");
+	
 	String totalMinuta = (String) request.getAttribute("totalMinuta");
 	if (totalMinuta == null) totalMinuta = new String("");
 	
@@ -271,8 +274,21 @@
 						if (document.forms[0].importeIVA){
 							  document.forms[0].importeIVA.value = document.forms[0].importeIVA.value.replace(/,/,".");
 						}
-						if (document.forms[0].porcentajeIVA){
-							  document.forms[0].porcentajeIVA.value = document.forms[0].porcentajeIVA.value.replace(/,/,".");
+						if (document.forms[0].minutaFinal){
+							  document.forms[0].minutaFinal.value = document.forms[0].minutaFinal.value.replace(/,/,".");
+						}
+						if (document.forms[0].importeTotalFinal){
+							  document.forms[0].importeTotalFinal.value = document.forms[0].importeTotalFinal.value.replace(/,/,".");
+						}
+						if (document.forms[0].importeIVAFinal){
+							  document.forms[0].importeIVAFinal.value = document.forms[0].importeIVAFinal.value.replace(/,/,".");
+						}
+						if (document.forms[0].porcentajeIVA){							
+							  if(document.forms[0].porcentajeIVA.value.replace(/,/,".") == ""){
+								 document.forms[0].porcentajeIVA.value = 0;
+							  }else{
+								  document.forms[0].porcentajeIVA.value = document.forms[0].porcentajeIVA.value.replace(/,/,".");
+							  }
 						}
 										
 						<%if (accion.equals("nuevo")){%>
@@ -389,19 +405,81 @@
 		
 		function calcularTotalMinuta () 
 		{
-			iva = document.getElementById("idTipoIVA").value.split(",")[1];
-			if (!iva) {
-				iva = 0;
-			} 
-			minuta = document.getElementById("minuta").value.replace(/,/,".");
-			if (!minuta) {
-				minuta = 0;
-			}
+			if(document.getElementById("minuta") != null){
+				if( document.getElementById("minuta").value != ""){	
+					iva = document.getElementById("porcentajeIVA").value.replace(/,/,".");
+					if (!iva) {
+						iva = 0;
+					} 
+					minuta = document.getElementById("minuta").value.replace(/,/,".");
+					minuta = formatNumber(minuta);
+		
+					var b = eval(minuta) * eval(iva) / 100;
+					var a = b + eval(minuta);
+					a = Math.round(a*100)/100;
 			
-			var a = eval(minuta) * eval(iva) / 100;
-			a = a + eval(minuta);
-			a = Math.round(a*100)/100;
-			document.getElementById("totalMinuta").value = a;
+					document.getElementById("importeIVA").value = b.toFixed(2).toString().replace(".",",");
+					document.getElementById("importeTotal").value = a.toFixed(2).toString().replace(".",",");
+					document.getElementById("minuta").value = minuta.replace(".",",");
+				}
+			}
+		}
+
+		function formatNumber(value){
+			if (!value) {
+				value = 0;
+			} else if (value.toString().indexOf(".", 0) == -1){
+				value = value + ".00";
+			} else if (value.toString().charAt(value.toString().length -1) == "."){
+				value = value + "00";
+			} else if (value.toString().charAt(value.toString().length -2) == "."){
+				value = value + "0";
+			}
+
+			return value;
+		}
+		
+		function calcularTotalMinuta2 () 
+		{
+			if(document.getElementById("minuta") != null){
+				if( document.getElementById("minuta").value != ""){	
+					iva = document.getElementById("porcentajeIVA").value.replace(/,/,".");
+					iva = formatNumber(iva);
+					minuta = document.getElementById("minuta").value.replace(/,/,".");
+					minuta = formatNumber(minuta);
+					
+					var b = eval(minuta) * eval(iva) / 100;
+					var a = b + eval(minuta);
+					a = Math.round(a*100)/100;
+					document.getElementById("porcentajeIVA").value = iva.replace(".",",");
+					document.getElementById("porcentajeIVAFinal").value = iva.replace(".",",");
+					document.getElementById("importeIVA").value = b.toFixed(2).toString().replace(".",",");
+					document.getElementById("importeTotal").value = a.toFixed(2).toString().replace(".",",");
+					document.getElementById("minuta").value = minuta.replace(".",",");
+					calcularTotalMinutaFinal ();
+				}
+			}
+		}
+
+		function calcularTotalMinutaFinal () 
+		{			
+			if(document.getElementById("minutaFinal") != null){
+				if( document.getElementById("minutaFinal").value != ""){				
+					iva = document.getElementById("porcentajeIVAFinal").value.replace(/,/,".");
+					if (!iva) {
+						iva = 0;
+					} 
+					minuta = document.getElementById("minutaFinal").value.replace(/,/,".");
+					minuta = formatNumber(minuta);
+					
+					var b = eval(minuta) * eval(iva) / 100;
+					var a = b + eval(minuta);
+					a = Math.round(a*100)/100;			
+					document.getElementById("importeIVAFinal").value = b.toFixed(2).toString().replace(".",",");
+					document.getElementById("importeTotalFinal").value = a.toFixed(2).toString().replace(".",",");
+					document.getElementById("minutaFinal").value = minuta.replace(".",",");
+				}
+			}
 		}
 
 		function accionComunicar()
@@ -455,7 +533,7 @@
 	
 </head>
 
-<body class="detallePestanas" onload="<%=recargarCombos%>">
+<body class="detallePestanas" onload="<%=recargarCombos%>, calcularTotalMinuta (), calcularTotalMinutaFinal ()">
 
 	<!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
 
@@ -698,35 +776,84 @@
 	<siga:ConjCampos leyenda="expedientes.auditoria.literal.minuta">
 		<table class="tablaCampos" border="0">
 			<tr>
-				<td class="labelText">
+				<td class="labelText" width="150">
 					<siga:Idioma key="expedientes.auditoria.literal.minuta"/>
 				</td>
 				<td class="labelTextValue">
-					<html:text name="ExpDatosGeneralesForm" property="minuta" size="10" maxlength="10" styleClass="<%=boxNumero%>" readonly="<%=!bEditable%>" onkeypress="filterChars(this,false,true);" onkeyup="filterCharsUp(this);" onblur="filterCharsNaN(this);" ></html:text> &euro;
+					<html:text name="ExpDatosGeneralesForm" property="minuta" size="10" maxlength="10" styleClass="<%=boxNumero%>" readonly="<%=!bEditable%>" onkeypress="filterChars(this,false,true);" onkeyup="filterCharsUp(this);" onblur="calcularTotalMinuta();" ></html:text> &euro;
 				</td>
 				
 				<td class="labelText">
 					<siga:Idioma key="expedientes.auditoria.literal.porcentajeIVA"/>
 				</td>				
 				<td class="labelTextValue">
-					<html:text name="ExpDatosGeneralesForm" property="porcentajeIVA" size="10" maxlength="10" styleClass="<%=boxNumero%>" readonly="<%=!bEditable%>" onkeypress="filterChars(this,false,true);" onkeyup="filterCharsUp(this);" onblur="filterCharsNaN(this);" ></html:text> %
+					<html:text name="ExpDatosGeneralesForm" property="porcentajeIVA" size="6" maxlength="6" styleClass="<%=boxNumero%>" readonly="<%=!bEditable%>" onkeypress="filterCharsNumberEs(this,false,true);" onkeyup="filterCharsUp(this);" onblur="calcularTotalMinuta2();" ></html:text> %
 				</td>
 				
 				<td class="labelText">
 					<siga:Idioma key="expedientes.auditoria.literal.importeIVA"/>
 				</td>				
 				<td class="labelTextValue">
-					<html:text name="ExpDatosGeneralesForm" property="importeIVA" size="10" maxlength="10" styleClass="<%=boxNumero%>" readonly="<%=!bEditable%>" onkeypress="filterChars(this,false,true);" onkeyup="filterCharsUp(this);" onblur="filterCharsNaN(this);" ></html:text> &euro;
+					<html:text name="ExpDatosGeneralesForm" property="importeIVA" size="10" maxlength="10" styleClass="boxConsultaNumber" readonly="true"  onblur="filterCharsNaN(this);" ></html:text> &euro;
 				</td>
 				
 				<td class="labelText" width="10%">
 					<siga:Idioma key="expedientes.auditoria.literal.totalMinuta"/>
 				</td>				
 				<td class="labelTextValue">
-					<html:text name="ExpDatosGeneralesForm" property="importeTotal" size="10" maxlength="10" styleClass="<%=boxNumero%>" readonly="<%=!bEditable%>" onkeypress="filterChars(this,false,true);" onkeyup="filterCharsUp(this);" onblur="filterCharsNaN(this);" ></html:text> &euro;
+					<html:text name="ExpDatosGeneralesForm" property="importeTotal" size="10" maxlength="10" styleClass="boxConsultaNumber" readonly="true"  onblur="filterCharsNaN(this);" ></html:text> &euro;
 				</td>
 			</tr>
 		</table>
+	</siga:ConjCampos>
+	
+<% } %>
+
+<% if (mostrarMinutaFinal != null && mostrarMinutaFinal.equalsIgnoreCase("S")) {%>
+
+	<siga:ConjCampos leyenda="expedientes.auditoria.literal.minutafinal">
+		<table class="tablaCampos" border="0">
+			<tr>
+				<td class="labelText" width="150">
+					<siga:Idioma key="expedientes.auditoria.literal.minutafinal"/>
+				</td>
+				<td class="labelTextValue">
+					<html:text name="ExpDatosGeneralesForm" property="minutaFinal" size="10" maxlength="10" styleClass="<%=boxNumero%>" readonly="<%=!bEditable%>" onkeypress="filterChars(this,false,true);" onkeyup="filterCharsUp(this);" onblur="calcularTotalMinutaFinal();" ></html:text> &euro;
+				</td>
+				
+				<td class="labelText">
+					<siga:Idioma key="expedientes.auditoria.literal.porcentajeIVA"/>
+				</td>				
+				<td class="labelTextValue">
+					<html:text name="ExpDatosGeneralesForm" property="porcentajeIVAFinal" size="6" maxlength="6" styleClass="boxConsultaNumber" readonly="true"  onblur="filterCharsNaN(this);"></html:text> %
+				</td>
+				
+				<td class="labelText">
+					<siga:Idioma key="expedientes.auditoria.literal.importeIVA"/>
+				</td>				
+				<td class="labelTextValue">
+					<html:text name="ExpDatosGeneralesForm" property="importeIVAFinal" size="10" maxlength="10" styleClass="boxConsultaNumber" readonly="true"  onblur="filterCharsNaN(this);" ></html:text> &euro;
+				</td>
+				
+				<td class="labelText" width="10%">
+					<siga:Idioma key="expedientes.auditoria.literal.totalMinuta"/>
+				</td>				
+				<td class="labelTextValue">
+					<html:text name="ExpDatosGeneralesForm" property="importeTotalFinal" size="10" maxlength="10" styleClass="boxConsultaNumber" readonly="true"  onblur="filterCharsNaN(this);" ></html:text> &euro;
+				</td>
+			</tr>
+			</table>
+			<% if (derechosColegiales != null && derechosColegiales.equalsIgnoreCase("S")) {%>			
+				<table>
+					<td class="labelText" width="150">
+						<siga:Idioma key="expedientes.auditoria.literal.derechoscolegiales"/>
+					</td>
+					<td class="labelTextValue" >
+						<html:text name="ExpDatosGeneralesForm" property="derechosColegiales" size="125" maxlength="125" styleClass="box" readonly="<%=!bEditable%>" ></html:text> 
+					</td>
+				</table>
+			<% } %>
+		
 	</siga:ConjCampos>
 	
 <% } %>

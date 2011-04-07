@@ -290,7 +290,23 @@
 										<siga:Idioma key="expedientes.auditoria.literal.minuta"/> :
 									</td>
 									<td>
-										<html:checkbox name="camposForm" property="minuta" value="true" disabled="<%=bLectura%>"/>
+										<html:checkbox name="camposForm" property="minutaInicial" value="true" disabled="<%=bLectura%>"/>
+									</td>
+								</tr>
+								<tr>
+									<td id="titulo" class="labelText">
+										<siga:Idioma key="expedientes.auditoria.literal.minutafinal"/> :
+									</td>
+									<td>
+										<html:checkbox name="camposForm" property="minutaFinal" value="true" disabled="<%=bLectura%>"/>
+									</td>
+								</tr>
+								<tr>
+									<td id="titulo" class="labelText">
+										<siga:Idioma key="expedientes.auditoria.literal.derechoscolegiales"/> :
+									</td>
+									<td>
+										<html:checkbox name="camposForm" property="derechos" value="true" disabled="<%=bLectura%>"/>
 									</td>
 								</tr>
 								<tr>

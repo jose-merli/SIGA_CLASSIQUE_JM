@@ -218,10 +218,20 @@ public class CampoTipoExpedienteAction extends MasterAction {
 
 	        ExpCampoTipoExpedienteBean beanMinuta = (ExpCampoTipoExpedienteBean)camposExp.elementAt(10);
 	        //  Modificamos el bean antiguo
-	        beanMinuta.setVisible(form.getMinuta()?ExpCampoTipoExpedienteBean.si:ExpCampoTipoExpedienteBean.no);
+	        beanMinuta.setVisible(form.getMinutaInicial()?ExpCampoTipoExpedienteBean.si:ExpCampoTipoExpedienteBean.no);
 	        campoTipoExpedienteAdm.update(beanMinuta);
+	        
+	        ExpCampoTipoExpedienteBean beanFinal = (ExpCampoTipoExpedienteBean)camposExp.elementAt(11);
+	        //  Modificamos el bean antiguo
+	        beanFinal.setVisible(form.getMinutaFinal()?ExpCampoTipoExpedienteBean.si:ExpCampoTipoExpedienteBean.no);
+	        campoTipoExpedienteAdm.update(beanFinal);
+	        
+	        ExpCampoTipoExpedienteBean beanDerechos = (ExpCampoTipoExpedienteBean)camposExp.elementAt(13);
+	        //  Modificamos el bean antiguo
+	        beanDerechos.setVisible(form.getDerechos()?ExpCampoTipoExpedienteBean.si:ExpCampoTipoExpedienteBean.no);
+	        campoTipoExpedienteAdm.update(beanDerechos);	        
 
-	        ExpCampoTipoExpedienteBean beanResolucionInforme = (ExpCampoTipoExpedienteBean)camposExp.elementAt(11);
+	        ExpCampoTipoExpedienteBean beanResolucionInforme = (ExpCampoTipoExpedienteBean)camposExp.elementAt(12);
 	        //  Modificamos el bean antiguo
 	        beanResolucionInforme.setVisible(form.getResultadoInforme()?ExpCampoTipoExpedienteBean.si:ExpCampoTipoExpedienteBean.no);
 	        campoTipoExpedienteAdm.update(beanResolucionInforme);
@@ -295,11 +305,17 @@ public class CampoTipoExpedienteAction extends MasterAction {
 		        break;	        
 	
 			case 11:
-		        form.setMinuta(visible.equals("S"));
+		        form.setMinutaInicial(visible.equals("S"));
 		        break;	        
-			case 12:
+			case 13:
 		        form.setResultadoInforme(visible.equals("S"));
 		        break;
+			case 12:
+		        form.setMinutaFinal(visible.equals("S"));
+		        break;
+			case 14:
+		        form.setDerechos(visible.equals("S"));
+		        break;		        
 			case 15:
 				if(nombre ==null||nombre.equals(""))
 		    		nombre = ExpCampoTipoExpedienteBean.DENUNCIADO;

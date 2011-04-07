@@ -84,8 +84,10 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			ExpExpedienteBean.C_FECHAINICIALFASE,
 			ExpExpedienteBean.C_OBSERVACIONES,
 			ExpExpedienteBean.C_MINUTA,
-			ExpExpedienteBean.C_IMPORTEIVA,
 			ExpExpedienteBean.C_IMPORTETOTAL,
+			ExpExpedienteBean.C_MINUTAFINAL,
+			ExpExpedienteBean.C_IMPORTETOTALFINAL,
+			ExpExpedienteBean.C_DERECHOSCOLEGIALES,
 			ExpExpedienteBean.C_PORCENTAJEIVA,
 			ExpExpedienteBean.C_IDAREA,
 			ExpExpedienteBean.C_IDMATERIA,
@@ -179,9 +181,12 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			bean.setFechaResolucion(UtilidadesHash.getString(hash, ExpExpedienteBean.C_FECHARESOLUCION));
 			bean.setObservaciones(UtilidadesHash.getString(hash, ExpExpedienteBean.C_OBSERVACIONES));
 			bean.setMinuta(UtilidadesHash.getDouble(hash, ExpExpedienteBean.C_MINUTA));
-			bean.setImporteIVA(UtilidadesHash.getDouble(hash, ExpExpedienteBean.C_IMPORTEIVA));
 			bean.setImporteTotal(UtilidadesHash.getDouble(hash, ExpExpedienteBean.C_IMPORTETOTAL));
 			bean.setPorcentajeIVA(UtilidadesHash.getDouble(hash, ExpExpedienteBean.C_PORCENTAJEIVA));
+			bean.setPorcentajeIVAFinal(UtilidadesHash.getDouble(hash, ExpExpedienteBean.C_PORCENTAJEIVA));
+			bean.setMinutaFinal(UtilidadesHash.getDouble(hash, ExpExpedienteBean.C_MINUTAFINAL));
+			bean.setImporteTotalFinal(UtilidadesHash.getDouble(hash, ExpExpedienteBean.C_IMPORTETOTALFINAL));
+			bean.setDerechosColegiales(UtilidadesHash.getString(hash, ExpExpedienteBean.C_DERECHOSCOLEGIALES));
 			bean.setIdTipoIVA(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_IDTIPOIVA));
 			bean.setIdResultadoJuntaGobierno(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_IDRESULTADOJUNTAGOBIERNO));
 			
@@ -258,9 +263,12 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_FECHARESOLUCION, b.getFechaResolucion());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_OBSERVACIONES, b.getObservaciones());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_MINUTA, b.getMinuta());
-			UtilidadesHash.set(htData, ExpExpedienteBean.C_IMPORTEIVA, b.getImporteIVA());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IMPORTETOTAL, b.getImporteTotal());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_PORCENTAJEIVA, b.getPorcentajeIVA());
+			UtilidadesHash.set(htData, ExpExpedienteBean.C_PORCENTAJEIVA, b.getPorcentajeIVAFinal());
+			UtilidadesHash.set(htData, ExpExpedienteBean.C_MINUTAFINAL, b.getMinutaFinal());
+			UtilidadesHash.set(htData, ExpExpedienteBean.C_IMPORTETOTALFINAL, b.getImporteTotalFinal());
+			UtilidadesHash.set(htData, ExpExpedienteBean.C_DERECHOSCOLEGIALES, b.getDerechosColegiales());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDTIPOIVA, b.getIdTipoIVA());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDRESULTADOJUNTAGOBIERNO, b.getIdResultadoJuntaGobierno());
 
@@ -2077,9 +2085,12 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_FECHARESOLUCION, b.getFechaResolucion());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_OBSERVACIONES, b.getObservaciones());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_MINUTA, b.getMinuta());
-			UtilidadesHash.set(htData, ExpExpedienteBean.C_IMPORTEIVA, b.getImporteIVA());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IMPORTETOTAL, b.getImporteTotal());
+			UtilidadesHash.set(htData, ExpExpedienteBean.C_MINUTAFINAL, b.getMinutaFinal());
+			UtilidadesHash.set(htData, ExpExpedienteBean.C_IMPORTETOTALFINAL, b.getImporteTotalFinal());
+			UtilidadesHash.set(htData, ExpExpedienteBean.C_DERECHOSCOLEGIALES, b.getDerechosColegiales());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_PORCENTAJEIVA, b.getPorcentajeIVA());
+			UtilidadesHash.set(htData, ExpExpedienteBean.C_PORCENTAJEIVA, b.getPorcentajeIVAFinal());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDTIPOIVA, b.getIdTipoIVA());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDRESULTADOJUNTAGOBIERNO, b.getIdResultadoJuntaGobierno());
 
@@ -2135,10 +2146,8 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			sql.append(" TO_CHAR(EXP.FECHARESOLUCION, 'dd-mm-yyyy') AS FECHARESOLUCION, ");
 			sql.append(" TO_CHAR(EXP.FECHACADUCIDAD, 'dd-mm-yyyy') AS FECHACADUCIDAD, ");
 			sql.append(" EXP.OBSERVACIONES, ");
-			sql.append(" EXP.MINUTA,EXP.PORCENTAJEIVA,EXP.IMPORTEIVA,EXP.IMPORTETOTAL,");
-			sql.append(" EXP.IMPORTETOTAL, ");
-			sql.append(" EXP.IMPORTEIVA, ");
-			sql.append(" EXP.PORCENTAJEIVA, ");
+			sql.append(" f_siga_formatonumero(EXP.MINUTA,2) MINUTA, f_siga_formatonumero(EXP.PORCENTAJEIVA,2) PORCENTAJEIVA, f_siga_formatonumero(EXP.IMPORTETOTAL,2) IMPORTETOTAL, ");
+			sql.append(" f_siga_formatonumero(EXP.MINUTAFINAL,2) MINUTAFINAL, EXP.DERECHOSCOLEGIALES, f_siga_formatonumero(EXP.IMPORTETOTALFINAL,2) IMPORTETOTALFINAL,");
 			sql.append(" EXP.IDDIRECCION as IDDIRECCION_PRIN, ");
 			sql.append(" PER.IDPERSONA, ");
 			sql.append(" PER.NOMBRE PER_NOMBRE, ");
@@ -2167,7 +2176,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			sql.append(" AND EXP.IDTIPOEXPEDIENTE = CLA.IDTIPOEXPEDIENTE(+)    AND EXP.IDINSTITUCION = FASE.IDINSTITUCION (+)   AND EXP.IDTIPOEXPEDIENTE = FASE.IDTIPOEXPEDIENTE (+)   AND EXP.IDFASE = FASE.IDFASE (+)   AND EXP.IDINSTITUCION_TIPOEXPEDIENTE = EST.IDINSTITUCION(+)   AND EXP.IDFASE = EST.IDFASE(+)   AND EXP.IDESTADO = EST.IDESTADO(+) ");
 			sql.append(" AND EXP.IDTIPOEXPEDIENTE = EST.IDTIPOEXPEDIENTE(+)   AND EXP.IDTIPOIVA = IVA.IDTIPOIVA(+)   AND EXP.IDINSTITUCION = RES.IDINSTITUCION(+)   AND EXP.IDRESULTADOJUNTAGOBIERNO = RES.IDTIPORESULTADO(+)   AND EXP.IDINSTITUCION_JUZ = JUZ.IDINSTITUCION(+)   AND EXP.JUZGADO = JUZ.IDJUZGADO(+)   AND JUZ.IDPROVINCIA = PRO.IDPROVINCIA(+) ");
 			sql.append(" AND JUZ.IDPOBLACION = POB.IDPOBLACION(+)   AND EXP.IDINSTITUCION_PROC = PROC.IDINSTITUCION(+)   AND EXP.PROCEDIMIENTO = PROC.IDPROCEDIMIENTO(+) ");
-			sql.append(" and exp.IDINSTITUCION = dir.idinstitucion AND EXP.IDPERSONA = dir.idpersona AND exp.iddireccion = dir.iddireccion and pob1.idpoblacion = dir.idpoblacion   AND dir.idprovincia = pro1.idprovincia ");
+			sql.append(" AND exp.IDINSTITUCION = dir.idinstitucion(+)  AND EXP.IDPERSONA = dir.idpersona(+)  AND exp.iddireccion = dir.iddireccion(+)  AND dir.idpoblacion = pob1.idpoblacion(+)  AND dir.idprovincia = pro1.idprovincia(+) ");
    
    
 			keyContador++;
@@ -2233,7 +2242,8 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			datos = helperInformes.getNombresPartesExpediente(datos,idInstitucion,idInstitucionTipoExp,idTipoExp,anio, numero, idPersona, this.usrbean.getLanguage());			
 			// Implicados y direcciones
 			datos = helperInformes.getImplicadosDireccionesExpediente(datos,idInstitucion,idInstitucionTipoExp,idTipoExp,anio, numero, idPersona, this.usrbean.getLanguage(), isASolicitantes);		
-	
+			
+		
 		}
 		catch (Exception e) {
 			throw new ClsExceptions (e, "Error ExpExpedienteAdm.getDatosInformeExpediente.");

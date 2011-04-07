@@ -63,6 +63,11 @@ public class ExpExpedienteBean extends MasterBean {
 	private Double  importeIVA;
 	private Double  importeTotal;
 	private Double  porcentajeIVA;
+	private Double  porcentajeIVAFinal;
+	private Double  minutaFinal;
+	private Double  importeIVAFinal;
+	private Double  importeTotalFinal;
+	private String  derechosColegiales;
 	private Integer idTipoIVA;
 	private Integer idResultadoJuntaGobierno;
 	
@@ -117,8 +122,10 @@ public class ExpExpedienteBean extends MasterBean {
 	static public final String C_FECHARESOLUCION ="FECHARESOLUCION";
 	static public final String C_OBSERVACIONES ="OBSERVACIONES";
 	static public final String C_MINUTA ="MINUTA";
-	static public final String C_IMPORTEIVA ="IMPORTEIVA";
 	static public final String C_IMPORTETOTAL ="IMPORTETOTAL";
+	static public final String C_MINUTAFINAL ="MINUTAFINAL";
+	static public final String C_IMPORTETOTALFINAL ="IMPORTETOTALFINAL";
+	static public final String C_DERECHOSCOLEGIALES ="DERECHOSCOLEGIALES";	
 	static public final String C_PORCENTAJEIVA ="PORCENTAJEIVA";
 	static public final String C_IDTIPOIVA ="IDTIPOIVA";
 	static public final String C_IDRESULTADOJUNTAGOBIERNO ="IDRESULTADOJUNTAGOBIERNO";
@@ -171,6 +178,13 @@ public class ExpExpedienteBean extends MasterBean {
 	}
 	public void setPorcentajeIVA(Double valor) {
 		this.porcentajeIVA = valor;
+	}
+	
+	public Double getPorcentajeIVAFinal() {
+		return porcentajeIVAFinal;
+	}
+	public void setPorcentajeIVAFinal(Double porcentajeIVAFinal) {
+		this.porcentajeIVAFinal = porcentajeIVAFinal;
 	}
 	public Integer getIdTipoIVA() {
 		return idTipoIVA;
@@ -456,5 +470,28 @@ public class ExpExpedienteBean extends MasterBean {
 	public void setIdDireccion(String idDireccion) {
 		this.idDireccion = idDireccion;
 	}
-
+	public Double getMinutaFinal() {
+		return minutaFinal;
+	}
+	public void setMinutaFinal(Double minutaFinal) {
+		this.minutaFinal = minutaFinal;
+	}
+	public Double getImporteIVAFinal() {
+		return importeIVAFinal;
+	}
+	public void setImporteIVAFinal(Double importeIVAFinal) {
+		this.importeIVAFinal = importeIVAFinal;
+	}
+	public Double getImporteTotalFinal() {
+		return importeTotalFinal;
+	}
+	public void setImporteTotalFinal(Double importeTotalFinal) {
+		this.importeTotalFinal = importeTotalFinal;
+	}
+	public String getDerechosColegiales() {
+		return derechosColegiales;
+	}
+	public void setDerechosColegiales(String derechosColegiales) {
+		this.derechosColegiales = derechosColegiales;
+	}
 }

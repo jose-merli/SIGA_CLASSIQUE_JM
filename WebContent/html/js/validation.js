@@ -318,21 +318,97 @@ function filterChars(f, SN_negative, SN_decimal) {
 			}
    		}
 
- 		if (SN_negative && keyChar == '-') {
- 			if (f.value == '') return true;
- 			if (f.value.indexOf('-') != -1){
-                event.keyCode=0;
- 				return false;
-			}
-		return false;
- 		}
-
- 		if (isNaN(keyChar) || keyChar == ' '){
-	   		event.keyCode=0;
- 		   	return false;
+	if (SN_negative && keyChar == '-') {
+		if (f.value == '') 
+			return true;
+		
+		if (f.value.indexOf('-') != -1){
+            event.keyCode=0;
+			return false;
 		}
+		
+		return false;
+ 	}
 
-	  		return true;
+	if (isNaN(keyChar) || keyChar == ' '){
+   		event.keyCode=0;
+	   	return false;
+	}
+
+  	return true;
+}
+
+/*
+ * This function limits enter chars that aren´t númerics, "." or "-" or ","
+ *
+ * f: numeric field
+ * SN_negative: True or false depending on the value can be negative or not
+ * SN_decimal: True or false depending on the value can be decimal or not
+ */
+
+function filterCharsNumberEs(f, SN_negative, SN_decimal) {
+	var point = '.';
+	var coma = ',';
+	var key = event.keyCode;
+	if (key == null)
+		return true;
+
+	var keyChar = String.fromCharCode(key);
+
+	if (keyChar == null)
+		return true;
+
+	if (SN_decimal) {
+   		if (event.keyCode == point.charCodeAt(0)) {
+   			if(f.value != ''){
+   				if(f.value.indexOf(point) != -1){
+   					event.keyCode=0;
+   					return false;
+   				}else if (f.value.indexOf(coma) != -1){
+   					event.keyCode=0;
+   					return false;
+   				}
+   			}   			
+   			return true;
+   			
+   		} else if (event.keyCode == coma.charCodeAt(0)) {
+   			if(f.value != ''){
+   				if(f.value.indexOf(point) != -1){
+   					event.keyCode=0;
+   					return false;
+   				}else if (f.value.indexOf(coma) != -1){
+   					event.keyCode=0;
+   					return false;
+   				}
+   			}
+   			return true;
+		}
+   		
+   	} else {
+   		
+   		if (keyChar == '.' || keyChar == ','){
+                event.keyCode=0;
+   				return false;
+   		}
+   	}
+
+	if (SN_negative && keyChar == '-') {
+		if (f.value == '') 
+			return true;
+		if (f.value.indexOf('-') != -1){
+            event.keyCode=0;
+			return false;
+		}
+		
+		return false;
+	}
+
+	if (isNaN(keyChar) || keyChar == ' '){
+   		event.keyCode=0;
+	   	return false;
+	}
+  		
+	return true;
 }
 
 /*

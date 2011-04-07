@@ -30,7 +30,9 @@ public class CampoTipoExpedienteForm extends MasterForm {
     private boolean partes;
     private boolean resolucion;
 
-    private boolean minuta;
+    private boolean minutaInicial;
+    private boolean minutaFinal;
+    private boolean derechos;
     private boolean resultadoInforme;
 
     private String chkPestanaConf1;
@@ -146,11 +148,24 @@ public class CampoTipoExpedienteForm extends MasterForm {
         this.idTipoExpediente = idTipoExpediente;
     }
     
-	public boolean getMinuta() {
-		return minuta;
+	public boolean getMinutaInicial() {
+		return minutaInicial;
 	}
-	public void setMinuta(boolean minuta) {
-		this.minuta = minuta;
+	public void setMinutaInicial(boolean minuta) {
+		this.minutaInicial = minuta;
+	}
+	
+	public boolean getMinutaFinal() {
+		return minutaFinal;
+	}
+	public void setMinutaFinal(boolean minutaFinal) {
+		this.minutaFinal = minutaFinal;
+	}
+	public boolean getDerechos() {
+		return derechos;
+	}
+	public void setDerechos(boolean derechos) {
+		this.derechos = derechos;
 	}
 	public boolean getResultadoInforme() {
 		return resultadoInforme;
@@ -158,7 +173,6 @@ public class CampoTipoExpedienteForm extends MasterForm {
 	public void setResultadoInforme(boolean resultadoInforme) {
 		this.resultadoInforme = resultadoInforme;
 	}
-
 
     public void setChkPestanaConf1(String valor) {
         this.chkPestanaConf1 = valor;

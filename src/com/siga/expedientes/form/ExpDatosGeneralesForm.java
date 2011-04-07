@@ -65,10 +65,21 @@ public class ExpDatosGeneralesForm extends MasterForm {
     private String importeIVA="";
     private String importeTotal="";
     private String porcentajeIVA="";
+    private String porcentajeIVAFinal="";
     private String idTipoIVA="";
     private String idDireccion;
+    private String minutaFinal="";
+    private String importeIVAFinal="";
+    private String importeTotalFinal="";
+    private String derechosColegiales="";
         
-    public String getFechaCaducidad() {
+    public String getDerechosColegiales() {
+		return derechosColegiales;
+	}
+	public void setDerechosColegiales(String derechosColegiales) {
+		this.derechosColegiales = derechosColegiales;
+	}
+	public String getFechaCaducidad() {
 		return fechaCaducidad;
 	}
 	public void setFechaCaducidad(String fechaCaducidad) {
@@ -82,6 +93,24 @@ public class ExpDatosGeneralesForm extends MasterForm {
 		this.observaciones = observaciones;
 	}
 	
+	public String getMinutaFinal() {
+		return minutaFinal;
+	}
+	public void setMinutaFinal(String minutaFinal) {
+		this.minutaFinal = minutaFinal;
+	}
+	public String getImporteIVAFinal() {
+		return importeIVAFinal;
+	}
+	public void setImporteIVAFinal(String importeIVAFinal) {
+		this.importeIVAFinal = importeIVAFinal;
+	}
+	public String getImporteTotalFinal() {
+		return importeTotalFinal;
+	}
+	public void setImporteTotalFinal(String importeTotalFinal) {
+		this.importeTotalFinal = importeTotalFinal;
+	}
 	public String getMinuta() {
 		return minuta;
 	}
@@ -108,6 +137,13 @@ public class ExpDatosGeneralesForm extends MasterForm {
 	}
 	public void setPorcentajeIVA(String valor) {
 		this.porcentajeIVA = valor;
+	}
+	
+	public String getPorcentajeIVAFinal() {
+		return porcentajeIVAFinal;
+	}
+	public void setPorcentajeIVAFinal(String valor) {
+		this.porcentajeIVAFinal = valor;
 	}
 
 	public String getIdTipoIVA() {
