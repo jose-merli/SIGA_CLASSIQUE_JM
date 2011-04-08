@@ -249,19 +249,41 @@
 	
 	<script>
 		function convertirAFormato(n){
-			var d = n.replace(",",".");
-			d = new Number(d);
-			d = Number(d.toFixed(2));
-			d = d.toLocaleString();
-			//d = d.replace(".","");
-			if(String(d).indexOf(',') < 0){
-				d += ',00'; // aqui puede variar segun la cantidad de decimales que desees;
-			}	
+			
+			if (n.toString().indexOf(".", 0) != -1  && n.toString().indexOf(",", 0) != -1){
+				var d = n.replace(".","");
+				d = d.replace(",",".");
+				d = new Number(d);
+				d = Number(d.toFixed(2));
+				d = d.toString();			
+			}else{
+				var d = n.replace(",",".");
+				d = new Number(d);
+				d = Number(d.toFixed(2));
+				d = d.toLocaleString();
+				//d = d.replace(".","");
+				if(String(d).indexOf(',') < 0){
+					d += ',00'; // aqui puede variar segun la cantidad de decimales que desees;
+				}	
+			}
+			
 			return d;	
 		}
 
-		function convertirANumero(n){
+		function convertirANumero2(n){
 			return convertirAFormato(n).replace(",",".");
+		}
+
+		function convertirANumero(n){
+			
+			numero = convertirAFormato(n);
+			
+			if (numero.toString().indexOf(".", 0) != -1  && numero.toString().indexOf(",", 0) != -1){
+				numero = numero.replace(".","");
+				return numero.replace(",",".");
+			}else{
+				return numero.replace(",",".");
+			}
 		}
 				
 		/*	NOTA:
@@ -611,7 +633,7 @@
 							<input name="importeOficio" id="importeOficio" style="width:50%" class="<%=estiloNumber%>" onblur="actualizaConcepto('Oficio', totalOficio, importePendOficio, porcentajePendOficio);" onfocus="backup('importeOficio')" />						
 							<span style="vertical-align:40%">&euro;	&nbsp;</span>
 						  	<input name="radioApagarOficio" id="radioPorcentajeOficio" value="porcentaje" type="radio" onclick="cambiar('Oficio');" />
-							<input name="porcentajeOficio" id="porcentajeOficio" style="width:15%" maxlength="5" class="boxConsultaNumber" readonly="true" onblur="actualizaConcepto('Oficio', totalOficio, importePendOficio, porcentajePendOficio);"	onfocus="backup('porcentajeOficio');" />						
+							<input name="porcentajeOficio" id="porcentajeOficio" style="width:15%" maxlength="6" class="boxConsultaNumber" readonly="true" onblur="actualizaConcepto('Oficio', totalOficio, importePendOficio, porcentajePendOficio);"	onfocus="backup('porcentajeOficio');" />						
 							<span style="vertical-align:40%">&#37;</span>
 						<% } else {%>
 							<input name="txtAPagarOficio" id="txtAPagarOficio" style="width:100%" class="boxConsultaNumber" readonly="true"/>
@@ -640,7 +662,7 @@
 							<input name="importeGuardias" id="importeGuardias" style="width:50%" class="<%=estiloNumber%>" onblur="actualizaConcepto('Guardias', totalGuardias, importePendGuardias, porcentajePendGuardias);" onfocus="backup('importeGuardias');" />						
 							<span style="vertical-align:40%">&euro;	&nbsp;</span>
 						  	<input name="radioAPagarGuardias" id="radioPorcentajeGuardias" value="porcentaje" type="radio" onclick="cambiar('Guardias');"/>
-							<input name="porcentajeGuardias" id="porcentajeGuardias" style="width:15%" maxlength="5" class="boxConsultaNumber" readonly="true"  									
+							<input name="porcentajeGuardias" id="porcentajeGuardias" style="width:15%" maxlength="6" class="boxConsultaNumber" readonly="true"  									
 										onblur="actualizaConcepto('Guardias', totalGuardias, importePendGuardias, porcentajePendGuardias);"
 										onfocus="backup('porcentajeGuardias');" />						
 							<span style="vertical-align:40%">&#37;</span>
@@ -671,7 +693,7 @@
 							<input name="importeEJG" id="importeEJG" style="width:50%" class="<%=estiloNumber%>" onblur="actualizaConcepto('EJG', totalEJG, importePendEJG, porcentajePendEJG);" onfocus="backup('importeEJG');" />						
 							<span style="vertical-align:40%">&euro;	&nbsp;</span>
 						  	<input name="radioAPagarEJG" id="radioPorcentajeEJG" value="porcentaje" type="radio" onclick="cambiar('EJG');"/>
-							<input name="porcentajeEJG" id="porcentajeEJG" style="width:15%" maxlength="5" class="boxConsultaNumber" readonly="true" onblur="actualizaConcepto('EJG', totalEJG, importePendEJG, porcentajePendEJG);" onfocus="backup('porcentajeEJG');" />						
+							<input name="porcentajeEJG" id="porcentajeEJG" style="width:15%" maxlength="6" class="boxConsultaNumber" readonly="true" onblur="actualizaConcepto('EJG', totalEJG, importePendEJG, porcentajePendEJG);" onfocus="backup('porcentajeEJG');" />						
 							<span style="vertical-align:40%">&#37;</span>
 						<% } else {%>
 							<input name="txtAPagarEJG" id="txtAPagarEJG" size="18" class="boxConsultaNumber" readonly="true"/>
@@ -700,7 +722,7 @@
 							<input name="importeSOJ" id="importeSOJ" style="width:50%" class="<%=estiloNumber%>" onblur="actualizaConcepto('SOJ', totalSOJ, importePendSOJ, porcentajePendSOJ);" onfocus="backup('importeSOJ');" />						
 							<span style="vertical-align:40%">&euro;	&nbsp;</span>
 						  	<input name="radioAPagarSOJ" id="radioPorcentajeSOJ" value="porcentaje" type="radio" onclick="cambiar('SOJ');"/>
-							<input name="porcentajeSOJ" id="porcentajeSOJ" style="width:15%" maxlength="5" class="boxConsultaNumber" readonly="true" onblur="actualizaConcepto('SOJ', totalSOJ, importePendSOJ, porcentajePendSOJ);" onfocus="backup('porcentajeSOJ');" />						
+							<input name="porcentajeSOJ" id="porcentajeSOJ" style="width:15%" maxlength="6" class="boxConsultaNumber" readonly="true" onblur="actualizaConcepto('SOJ', totalSOJ, importePendSOJ, porcentajePendSOJ);" onfocus="backup('porcentajeSOJ');" />						
 							<span style="vertical-align:40%">&#37;</span>
 						<% } else {%>
 							<input name="txtAPagarSOJ" id="txtAPagarSOJ" size="18" class="boxConsultaNumber" readonly="true"/>
@@ -775,13 +797,18 @@
 			document.forms[0].importeRepartir.value=document.forms[0].importeRepartir.value.replace(/,/,".");
 			document.forms[0].importePagado.value=document.forms[0].importePagado.value.replace(/,/,".");
 			document.forms[0].importeFacturado.value=document.forms[0].importeFacturado.value.replace(/,/,".");
-
+			
 			//Convierte los importes y porcentajes de cada concepto
 			for (i=0;i<4;i++){
-				var objImporte = document.getElementById("importe"+conceptos[i]);
-				objImporte.value = objImporte.value.replace(/,/,".");
 				var objPorcentaje = document.getElementById("porcentaje"+conceptos[i]);
-				objPorcentaje.value = objPorcentaje.value.replace(/,/,".");
+				var objImporte = document.getElementById("importe"+conceptos[i]);
+				if (objImporte.value.toString().indexOf(".", 0) != -1  && objImporte.value.toString().indexOf(",", 0) != -1){			
+					objImporte.value = convertirAFormato(document.getElementById("importe"+conceptos[i]).value);
+					objPorcentaje.value = objPorcentaje.value.replace(/,/,".");
+				}else{					
+					objImporte.value = objImporte.value.replace(/,/,".");
+					objPorcentaje.value = objPorcentaje.value.replace(/,/,".");
+				}
 			}
 		}
 		
@@ -809,7 +836,7 @@
 					document.getElementById("txtPendiente"+conceptos[i]).value = convertirAFormato(eval("importePend"+conceptos[i])+"") + '\u20AC (' + convertirAFormato(eval("porcentajePend"+conceptos[i])+"") + '%)';
 					document.getElementById("txtRestante"+conceptos[i]).value = convertirAFormato(eval("importePend"+conceptos[i])+"") + '\u20AC (' + convertirAFormato(eval("porcentajePend"+conceptos[i])+"") + '%)';
 					<% if (esConsulta || esEdicion && !estadoAbierto){%>
-					document.getElementById("txtAPagar"+conceptos[i]).value = convertirAFormato(eval("importe"+conceptos[i])+"") + '\u20AC (' + convertirAFormato(eval("porcentaje"+conceptos[i])+"") + '%)';
+					document.getElementById("txtAPagar"+conceptos[i]).value = convertirAFormato(eval("importe"+conceptos[i])+"") + '\u20AC (' + convertirAFormato(eval("porcentaje"+conceptos[i])+"") + '%)';					
 					document.getElementById("importe"+conceptos[i]).value = convertirAFormato(eval("importe"+conceptos[i])+"");
 					document.getElementById("porcentaje"+conceptos[i]).value = convertirAFormato(eval("porcentaje"+conceptos[i])+"");;
 					<% }%>
@@ -858,6 +885,7 @@
 			//calcula el importe y el porcenaje restante
 			if (document.getElementsByName("radioAPagar"+concepto)[0].checked){
 				importe = convertirANumero(document.getElementById("importe"+concepto).value);
+				
 				//si no se ha introducido un valor correcto no se actualiza nada
 				if (isNaN(importe) || importe < 0 || importe > importePendiente){
 					document.getElementById("importe"+concepto).value = backupAPagar;				
@@ -875,10 +903,11 @@
 				importe = parseFloat(porcentaje * total / 100);
 			}
 
+			
 			//actualiza los input por si se ha corregido una coma o el redondeo
 			document.getElementById("importe"+concepto).value = convertirAFormato(""+importe);				
 			document.getElementById("porcentaje"+concepto).value = convertirAFormato(""+porcentaje);	
-			
+
 			importeRestante = parseFloat(importePendiente) - parseFloat(importe);
 			porcentajeRestante = parseFloat(importeRestante * 100 / total);	
 
@@ -924,7 +953,7 @@
 			for (i=0;i<4;i++){
 				var objImporte = document.getElementById("importe"+conceptos[i]);
 				var importe = convertirANumero(objImporte.value);
-
+				
 				//Copia del importe restante para recuperarla tras enviar el formulario
 				restantes[i] = document.getElementById("txtRestante"+conceptos[i]).value;
 				
@@ -933,6 +962,7 @@
 					document.getElementById("porcentaje"+conceptos[i]).value = 0;
 				}
 				else{
+					
 					var objPorcentaje = document.getElementById("porcentaje"+conceptos[i]);
 					var porcentaje = convertirANumero(objPorcentaje.value);
 					importeRepartirTotal = parseFloat(importeRepartirTotal) + parseFloat(importe);
@@ -948,7 +978,7 @@
 			f.target = "submitArea";
 			sub();	
 	
-			if (validateDatosGeneralesPagoForm(f)) {	
+			if (validateDatosGeneralesPagoForm(f)) {
 				//Calculo lo que le queda por pagar:
 				var importeFacturado = 0;
 				var importePagado = 0;				
@@ -960,10 +990,10 @@
 					//actualiza el importe pagado 
 					f.importePagado.value = importeRepartirTotal;	
 				}
-											
+							
 				//Convierte a formato java los campos numericos con decimales
 				actualizarCamposPrecio();
-
+				
 				f.submit();
 				
 				//Dejo el formato con los 2 decimales y la coma:
@@ -977,6 +1007,8 @@
 				}
 				<% } %>	
 
+				
+				
 				formatearCamposprecio();
 			}else{
 				fin();
