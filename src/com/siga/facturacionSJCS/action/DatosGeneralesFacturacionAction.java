@@ -1222,7 +1222,16 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 				}
 
 			}else if((!nombreFichero.equals("")) && (fichero==null || !fichero.exists())){
-				throw new SIGAException("messages.general.error.ficheroNoExiste");
+				nombreFichero = fact.generarInformeYObtenerRuta(idInstitucion,idFacturacion);
+				FcsFacturacionJGBean bean = new FcsFacturacionJGBean();
+				bean.setIdInstitucion(Integer.parseInt(idInstitucion));
+				bean.setIdFacturacion(Integer.parseInt(idFacturacion));
+				bean.setNombreFisico(nombreFichero);
+				fact.update(bean,beanOriginal);
+				fichero = new File(nombreFichero);
+				if (fichero == null || !fichero.exists()) {
+					throw new SIGAException("messages.general.error.ficheroNoExiste");
+				}
 			}
 			request.setAttribute("nombreFichero", fichero.getName());
 			request.setAttribute("rutaFichero", fichero.getPath());
