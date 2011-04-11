@@ -156,6 +156,9 @@
 			botones = "LC,GM"; //en las facturaciones ejecutadas se permite reejecutar y descargar el informe
 		}
 	}
+	else {
+		botones ="G";
+	}
 
 	
 	
