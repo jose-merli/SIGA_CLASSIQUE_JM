@@ -290,6 +290,10 @@
 								  document.forms[0].porcentajeIVA.value = document.forms[0].porcentajeIVA.value.replace(/,/,".");
 							  }
 						}
+
+						if (document.forms[0].derechosColegiales){
+							  document.forms[0].derechosColegiales.value = document.forms[0].derechosColegiales.value.replace(/,/,".");
+						}
 										
 						<%if (accion.equals("nuevo")){%>
 							document.forms[0].modo.value="insertar";
@@ -478,6 +482,17 @@
 					document.getElementById("importeIVAFinal").value = b.toFixed(2).toString().replace(".",",");
 					document.getElementById("importeTotalFinal").value = a.toFixed(2).toString().replace(".",",");
 					document.getElementById("minutaFinal").value = minuta.replace(".",",");
+				}
+			}
+		}
+
+		function formateoDerechos () 
+		{			
+			if(document.getElementById("derechosColegiales") != null){
+				if( document.getElementById("derechosColegiales").value != ""){				
+					derechos = document.getElementById("derechosColegiales").value.replace(/,/,".");
+					derechos = formatNumber(derechos);					
+					document.getElementById("derechosColegiales").value = derechos.replace(".",",");
 				}
 			}
 		}
@@ -801,7 +816,7 @@
 					<siga:Idioma key="expedientes.auditoria.literal.totalMinuta"/>
 				</td>				
 				<td class="labelTextValue">
-					<html:text name="ExpDatosGeneralesForm" property="importeTotal" size="10" maxlength="10" styleClass="boxConsultaNumber" readonly="true"  onblur="filterCharsNaN(this);" ></html:text> &euro;
+					<html:text name="ExpDatosGeneralesForm" property="importeTotal" size="10" maxlength="10" styleClass="boxConsultaNumber" readonly="true" onblur="filterCharsNaN(this);" ></html:text> &euro;
 				</td>
 			</tr>
 		</table>
@@ -849,7 +864,7 @@
 						<siga:Idioma key="expedientes.auditoria.literal.derechoscolegiales"/>
 					</td>
 					<td class="labelTextValue" >
-						<html:text name="ExpDatosGeneralesForm" property="derechosColegiales" size="125" maxlength="125" styleClass="box" readonly="<%=!bEditable%>" ></html:text> 
+						<html:text name="ExpDatosGeneralesForm" property="derechosColegiales" size="10" maxlength="10" styleClass="<%=boxNumero%>" readonly="<%=!bEditable%>" onkeypress="filterCharsNumberEs(this,false,true);" onkeyup="filterCharsUp(this);" onblur="formateoDerechos();"></html:text> &euro;
 					</td>
 				</table>
 			<% } %>

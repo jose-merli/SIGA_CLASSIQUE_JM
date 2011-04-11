@@ -67,7 +67,7 @@ public class ExpExpedienteBean extends MasterBean {
 	private Double  minutaFinal;
 	private Double  importeIVAFinal;
 	private Double  importeTotalFinal;
-	private String  derechosColegiales;
+	private Double  derechosColegiales;
 	private Integer idTipoIVA;
 	private Integer idResultadoJuntaGobierno;
 	
@@ -488,10 +488,10 @@ public class ExpExpedienteBean extends MasterBean {
 	public void setImporteTotalFinal(Double importeTotalFinal) {
 		this.importeTotalFinal = importeTotalFinal;
 	}
-	public String getDerechosColegiales() {
+	public Double getDerechosColegiales() {
 		return derechosColegiales;
 	}
-	public void setDerechosColegiales(String derechosColegiales) {
+	public void setDerechosColegiales(Double derechosColegiales) {
 		this.derechosColegiales = derechosColegiales;
 	}
 }

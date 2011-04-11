@@ -186,7 +186,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			bean.setPorcentajeIVAFinal(UtilidadesHash.getDouble(hash, ExpExpedienteBean.C_PORCENTAJEIVA));
 			bean.setMinutaFinal(UtilidadesHash.getDouble(hash, ExpExpedienteBean.C_MINUTAFINAL));
 			bean.setImporteTotalFinal(UtilidadesHash.getDouble(hash, ExpExpedienteBean.C_IMPORTETOTALFINAL));
-			bean.setDerechosColegiales(UtilidadesHash.getString(hash, ExpExpedienteBean.C_DERECHOSCOLEGIALES));
+			bean.setDerechosColegiales(UtilidadesHash.getDouble(hash, ExpExpedienteBean.C_DERECHOSCOLEGIALES));
 			bean.setIdTipoIVA(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_IDTIPOIVA));
 			bean.setIdResultadoJuntaGobierno(UtilidadesHash.getInteger(hash, ExpExpedienteBean.C_IDRESULTADOJUNTAGOBIERNO));
 			

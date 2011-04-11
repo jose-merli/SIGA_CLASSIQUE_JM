@@ -455,8 +455,9 @@ public class ExpDatosGeneralesAction extends MasterAction
 			}			
 			
 			String sDerechosColegiales = fila.getString(ExpExpedienteBean.C_DERECHOSCOLEGIALES); 
-			if (sDerechosColegiales != null && !sDerechosColegiales.equals("")) {	
-				form.setDerechosColegiales(sDerechosColegiales);
+			if (sDerechosColegiales != null && !sDerechosColegiales.equals("")) {
+				double derechos = Double.parseDouble(sDerechosColegiales);
+				form.setDerechosColegiales("" + UtilidadesNumero.formatoCampo(derechos));
 			}
 			
 			form.setObservaciones(fila.getString(ExpExpedienteBean.C_OBSERVACIONES));
@@ -629,7 +630,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 			}
 			
 			if (form.getDerechosColegiales()!= null && !form.getDerechosColegiales().trim().equals("")) {
-			    expBean.setDerechosColegiales(form.getDerechosColegiales());
+			    expBean.setDerechosColegiales(new Double(form.getDerechosColegiales()));
 			}
 			if (form.getPorcentajeIVA()!= null && !form.getPorcentajeIVA().trim().equals("")) {
 			    expBean.setPorcentajeIVA(new Double(form.getPorcentajeIVA()));
@@ -833,7 +834,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 			    expBean.setImporteTotalFinal(new Double(form.getImporteTotalFinal()));
 			}
 			if (form.getDerechosColegiales()!= null && !form.getDerechosColegiales().trim().equals("")) {
-			    expBean.setDerechosColegiales(form.getDerechosColegiales());
+			    expBean.setDerechosColegiales(new Double(form.getDerechosColegiales()));
 			}
 			if (form.getIdTipoIVA() != null && !form.getIdTipoIVA().equals("")) {
 	        	String a = form.getIdTipoIVA().split(",")[0];
