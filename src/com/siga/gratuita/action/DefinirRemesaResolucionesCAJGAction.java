@@ -256,7 +256,7 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 						
 				}
 				
-				consulta += " ORDER BY R." + CajgRemesaResolucionBean.C_PREFIJO + " DESC, R." + CajgRemesaResolucionBean.C_NUMERO + " DESC , R." + CajgRemesaResolucionBean.C_SUFIJO + " DESC";
+				consulta += " ORDER BY R." + CajgRemesaResolucionBean.C_IDREMESARESOLUCION + " DESC";
 
 
 				PaginadorCaseSensitive paginador = new PaginadorCaseSensitive(consulta);			
