@@ -1138,8 +1138,9 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 		String modificarPreferencia="";
 		Vector vDir=new Vector();
 		
+		if (idDireccion == null || idDireccion.equals("")) return salida;
+		
 		try {
-			
 			idDir=idDireccion.split("@");
 			pref=preferencia.split("#");
 			CenDireccionesAdm direccionesAdm =new CenDireccionesAdm(this.usrbean);
@@ -1150,10 +1151,6 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 			CenHistoricoBean beanHis = new CenHistoricoBean ();
 			String msg=UtilidadesString.getMensajeIdioma(this.usrbean, "messages.censo.direcciones.modificacionAutoPref");
 			beanHis.setMotivo (msg);
-			
-			
-			
-			
 			
 			for (int i=0; i<idDir.length; i++){
 				
