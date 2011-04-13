@@ -309,8 +309,10 @@
 		   nombre="tablaDatos"
 		   borde="1"
 		   clase="tableTitle"		   
-		   nombreCol="gratuita.busquedaEJG.literal.turno, gratuita.busquedaEJG.literal.guardia, gratuita.busquedaEJG.literal.anyo, gratuita.busquedaEJG.literal.codigo, gratuita.busquedaEJG.literal.tipoEJG, gratuita.listadoActuacionesAsistencia.literal.fecha, gratuita.busquedaEJG.literal.estadoEJG, gratuita.busquedaEJG.literal.solicitante,"
-		   tamanoCol="15,14,4,5,15,9,10,15,13"
+		   nombreCol="gratuita.busquedaEJG.literal.turno, gratuita.busquedaEJG.literal.guardia, gratuita.busquedaEJG.literal.anyo, 
+		   	gratuita.busquedaEJG.literal.codigo, gratuita.busquedaEJG.literal.tipoEJG, gratuita.listadoActuacionesAsistencia.literal.fecha, 
+		   	gratuita.busquedaEJG.literal.estadoEJG, gratuita.busquedaEJG.literal.solicitante, gratuita.pcajg.listadoEJGremesa.enNuevaRemesa,"
+		   tamanoCol="13,12,4,5,15,9,8,13,7,13"
 		   alto="100%" 
 		   ajustePaginador="true"
 		   ajusteBotonera="true"	
@@ -353,6 +355,12 @@
 				CODIGO="&nbsp;";
 			else
 				CODIGO=(String)registro.get(ScsEJGBean.C_NUMEJG);
+			
+			String enNuevaRemesa = "Si";
+			if (((String)registro.get("EN_NUEVA_REMESA")).trim().equals("0")) {
+				enNuevaRemesa = "No";
+			}
+			
 
 			%>
 				
@@ -374,6 +382,7 @@
 					<td><%=GstDate.getFormatedDateShort("",registro.get(ScsEJGBean.C_FECHAAPERTURA))%>&nbsp;</td>
 					<td><%=(String)registro.get("ESTADO")%>&nbsp;</td>
 					<td><%=(String)registro.get(ScsPersonaJGBean.C_NOMBRE) + " " + (String)registro.get(ScsPersonaJGBean.C_APELLIDO1) + " " + (String)registro.get(ScsPersonaJGBean.C_APELLIDO2)%>&nbsp;</td>
+					<td><%=enNuevaRemesa%></td>
 				</siga:FilaConIconos>		
 			<% 	recordNumber++;
 			} %>

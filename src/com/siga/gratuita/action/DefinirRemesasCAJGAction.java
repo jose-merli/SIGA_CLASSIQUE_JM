@@ -266,7 +266,19 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 						+ "," + "f_siga_getrecurso(t.descripcion, " + this.getLenguaje(request)
 						+ ") AS ESTADO," + "f_siga_get_fechaEstadoRemesa(e.idinstitucion, e.idremesa, 1) AS FECHAGENERACION,"
 						+ "f_siga_get_fechaEstadoRemesa(e.idinstitucion, e.idremesa, 2) AS FECHAENVIO,"
-						+ "f_siga_get_fechaEstadoRemesa(e.idinstitucion, e.idremesa, 3) AS FECHARECEPCION"
+						+ "f_siga_get_fechaEstadoRemesa(e.idinstitucion, e.idremesa, 3) AS FECHARECEPCION, "
+						+ " (SELECT DECODE(COUNT(1), 0, NULL, COUNT(1))" +
+								" FROM CAJG_EJGREMESA ER" +
+								" WHERE ER.IDINSTITUCION = R.IDINSTITUCION" +
+								" AND ER.IDREMESA = R.IDREMESA" +
+								" AND ER.IDEJGREMESA IN (SELECT RE.IDEJGREMESA FROM CAJG_RESPUESTA_EJGREMESA RE)" +//--QUE TENGA ERRORES
+								" AND (ER.IDINSTITUCION, ER.ANIO, ER.NUMERO, ER.IDTIPOEJG)" +//--QUE NO ESTÉ EN OTRA REMESA POSTERIOR
+								" NOT IN (SELECT ER2.IDINSTITUCION, ER2.ANIO, ER2.NUMERO, ER2.IDTIPOEJG" +
+								" FROM  CAJG_EJGREMESA ER2 WHERE ER2.IDINSTITUCION = ER.IDINSTITUCION" +
+								" AND ER.IDREMESA < ER2.IDREMESA" + //--REMESA POSTERIOR                      
+								//" AND ER2.IDEJGREMESA NOT IN (SELECT RE2.IDEJGREMESA FROM CAJG_RESPUESTA_EJGREMESA RE2)" +//SIN ERRORES
+								" )) AS CUENTA_INCIDENCIAS," +
+								" (SELECT COUNT(1) FROM CAJG_EJGREMESA ER WHERE ER.IDINSTITUCION = R.IDINSTITUCION AND ER.IDREMESA = R.IDREMESA) AS CUENTA_EXPEDIENTES"
 						+ " from cajg_remesa r, cajg_remesaestados e, cajg_tipoestadoremesa t" + " where r.idinstitucion = " + this.getIDInstitucion(request)
 						+ "" + " and r.idinstitucion = e.idinstitucion" + " and r.idremesa = e.idremesa" + " and e.idestado = t.idestado"
 						+ " and e.idestado = (select max(idestado)" + " from cajg_remesaestados" + " where idinstitucion = e.idinstitucion"
@@ -1165,7 +1177,12 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 						filtrado = " and (" + cuentaErrores + " AND ER." + CajgRespuestaEJGRemesaBean.C_IDTIPORESPUESTA + " = " + CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA + ") > 0";
 					} else if (idIncidenciasEnvio.equals("4")) {//con errores después del envío a comisión
 						filtrado = " and (" + cuentaErrores + " AND ER." + CajgRespuestaEJGRemesaBean.C_IDTIPORESPUESTA + " = " + CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_COMISION + ") > 0";
-					}					 
+					} else if (idIncidenciasEnvio.equals("5")) {//con errores no en nueva remesa
+						filtrado = " and (" + cuentaErrores + ") > 0 AND 0 = (SELECT COUNT(1) FROM CAJG_EJGREMESA ER2" +
+								" WHERE ER2.IDINSTITUCION = EJGREMESA.IDINSTITUCION AND ER2.ANIO = EJGREMESA.ANIO" +
+								" AND ER2.NUMERO = EJGREMESA.NUMERO AND ER2.IDTIPOEJG = EJGREMESA.IDTIPOEJG" +
+								" AND ER2.IDREMESA > EJGREMESA.IDREMESA)";
+					}
 				}
 				
 				/*
@@ -1211,7 +1228,8 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 //						+ ScsEstadoEJGBean.C_NUMERO + ") and rownum=1) as estado" +
 						+ " F_SIGA_GETRECURSO(f_siga_get_ultimoestadoejg(ejg.idinstitucion,ejg.idtipoejg, ejg.anio, ejg.numero), " + this.getUserBean(request).getLanguage() + ") as estado"								
 						+ ", ejg." + ScsEJGBean.C_NUMERO
-						+ ", ("  + cuentaErrores + ") AS ERRORES"						
+						+ ", ("  + cuentaErrores + ") AS ERRORES"
+						+ " , (SELECT COUNT(1) FROM CAJG_EJGREMESA ER2 WHERE ER2.IDINSTITUCION = EJGREMESA.IDINSTITUCION AND ER2.ANIO = EJGREMESA.ANIO AND ER2.NUMERO = EJGREMESA.NUMERO AND ER2.IDTIPOEJG = EJGREMESA.IDTIPOEJG AND ER2.IDREMESA > EJGREMESA.IDREMESA) EN_NUEVA_REMESA"						
 						+ " from " + ScsEJGBean.T_NOMBRETABLA + " ejg,"
 						+ ScsGuardiasTurnoBean.T_NOMBRETABLA + " guardia,"
 						+ ScsTipoEJGBean.T_NOMBRETABLA + " tipoejg,"

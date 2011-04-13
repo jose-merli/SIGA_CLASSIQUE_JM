@@ -22,6 +22,7 @@
 <%@ page import="com.siga.administracion.SIGAMasterTable"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.Utilidades.PaginadorCaseSensitive"%>
+<%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.siga.gratuita.action.DefinirRemesasCAJGAction"%>
 
 <%@ page import="com.atos.utils.*"%>
@@ -199,8 +200,8 @@
 		   nombre="listadoEJG"
 		   borde="1"
 		   clase="tableTitle"		   
-		   nombreCol="gratuita.BusquedaRemesas_CAJG.literal.nRegistro, gratuita.BusquedaRemesas_CAJG.literal.Descripcion, gratuita.BusquedaRemesas_CAJG.literal.fGeneracion, gratuita.BusquedaRemesas_CAJG.literal.fEnvio, gratuita.BusquedaRemesas_CAJG.literal.fRecepcion,gratuita.BusquedaRemesas_CAJG.literal.estado, "
-		   tamanoCol="8,20,6,6,6,4,10"
+		   nombreCol="gratuita.BusquedaRemesas_CAJG.literal.nRegistro, gratuita.BusquedaRemesas_CAJG.literal.Descripcion, gratuita.BusquedaRemesas_CAJG.literal.fGeneracion, gratuita.BusquedaRemesas_CAJG.literal.fEnvio, gratuita.BusquedaRemesas_CAJG.literal.fRecepcion,gratuita.BusquedaRemesas_CAJG.literal.estado,gratuita.BusquedaRemesas_CAJG.literal.incidencias,"
+		   tamanoCol="7,13,4,4,4,3,3,6"
 		   alto="100%" 
 		   ajustePaginador="true"
 		   activarFilaSel="true" >
@@ -244,22 +245,25 @@
 	    		elems[1]=new FilaExtElement("download", "descargar", SIGAConstants.ACCESS_FULL);
 	    	}
 	    		    	
-	    	
+	    	String incidencias = "";
+	    	if (!((String)registro.get("CUENTA_INCIDENCIAS")).trim().equals("")) {
+	    		incidencias = registro.get("CUENTA_INCIDENCIAS") + " / " + registro.get("CUENTA_EXPEDIENTES");
+	    	}
 			%>
 			
 				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' elementos="<%=elems%>" visibleBorrado="false" pintarEspacio="no" botones="<%=botones%>" clase="listaNonEdit">
 					<td><%=numRemesa%>&nbsp;</td>
-					<td><%=(String)registro.get("DESCRIPCION_REMESA")%>&nbsp;</td>
-					<td>
+					<td><%=UtilidadesString.mostrarDatoJSP((String)registro.get("DESCRIPCION_REMESA"))%></td>
+					<td style="text-align: center;">
 					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=registro.get("IDREMESA")%>">
 					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=usr.getLocation()%>">
 					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=registro.get("IDESTADO")%>">
 					
-					<%=registro.get("FECHAGENERACION")%>&nbsp;</td>
-					<td><%=registro.get("FECHAENVIO")%>&nbsp;</td>
-					<td><%=registro.get("FECHARECEPCION")%>&nbsp;</td>
-					<td><%=registro.get("ESTADO")%>&nbsp;</td>
-					
+					<%=UtilidadesString.mostrarDatoJSP(registro.get("FECHAGENERACION"))%></td>
+					<td style="text-align: center;"><%=UtilidadesString.mostrarDatoJSP(registro.get("FECHAENVIO"))%></td>
+					<td style="text-align: center;"><%=UtilidadesString.mostrarDatoJSP(registro.get("FECHARECEPCION"))%></td>
+					<td><%=UtilidadesString.mostrarDatoJSP(registro.get("ESTADO"))%></td>
+					<td style="text-align: right;"><%=UtilidadesString.mostrarDatoJSP(incidencias)%></td>
 				</siga:FilaConIconos>		
 			<% 	recordNumber++;		   
 			} %>

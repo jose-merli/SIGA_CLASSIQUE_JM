@@ -283,6 +283,7 @@
 								<option value="2"><siga:Idioma key="cajg.opcion.sinErrores"/></option>
 								<option value="3"><siga:Idioma key="cajg.opcion.conErroresAntesEnvio"/></option>
 								<option value="4"><siga:Idioma key="cajg.opcion.conErroresDespuesEnvio"/></option>
+								<option value="5"><siga:Idioma key="cajg.opcion.conErroresNoEnNuevaRemesa"/></option>
 							</html:select>
 							
 						</td>
