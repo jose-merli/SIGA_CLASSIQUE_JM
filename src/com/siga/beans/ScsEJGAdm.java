@@ -3586,6 +3586,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			//sql.append(keyContador);
 			//sql.append(")) AS SEXO_INTERESADO, ");
 			sql.append(") AS SEXOINTERESADO, ");
+			sql.append("	DECODE(INTERESADO.SEXO,'H','o','a') as O_A_INTERESADO,");
+			sql.append("	DECODE(INTERESADO.SEXO,'H','el','la') as EL_LA_INTERESADO,");
 			sql.append(" INTERESADO.IDLENGUAJE AS LENGUAJE_INTERESADO, ");			
 			sql.append(" (Select  Descripcion " );
 			sql.append("    From Scs_Tipoencalidad  ");
@@ -3782,6 +3784,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" ,DECODE(COLDES.SEXO, null, null,'M','gratuita.personaEJG.sexo.mujer','gratuita.personaEJG.sexo.hombre') AS SEXO_ST");
 			sql.append("_");
 			sql.append(aliasSalida);
+			sql.append("  ,DECODE(COLDES.SEXO,'H','o','a') as O_A");	
+			sql.append("  ,DECODE(COLDES.SEXO,'H','el','la') as EL_LA");			
 			sql.append(",COLDES.NIFCIF AS NIFCIF");
 			sql.append("_");
 			sql.append(aliasSalida);
@@ -4048,8 +4052,12 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 					helperInformes.completarHashSalida(registro,getColegiadoSalida(idInstitucion, 
 							idLetradoEjg,"LETRADO"));
 					String sexoLetradoEjg  = (String)registro.get("SEXO_ST_LETRADO");
-					sexoLetradoEjg = UtilidadesString.getMensajeIdioma(usrbean, sexoLetradoEjg);
+					sexoLetradoEjg = UtilidadesString.getMensajeIdioma(usrbean, sexoLetradoEjg);					
+					String o_a = (String)registro.get("O_A");
+					String el_la = (String)registro.get("EL_LA");
 					registro.put("SEXO_LETRADO", sexoLetradoEjg);
+					registro.put("O_A_LETRADO", o_a);
+					registro.put("EL_LA_LETRADO", el_la);
 					helperInformes.completarHashSalida(registro,getDireccionLetradoSalida(idLetradoEjg,idInstitucion,"LETRADO"));
 					
 					helperInformes.completarHashSalida(registro,getDireccionPersonalLetradoSalida(idLetradoEjg,idInstitucion,"LETRADO"));			
@@ -4428,6 +4436,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							htFuncion, "F_SIGA_GETRECURSO_ETIQUETA", "SEXO_INTERESADO"));
 						}else{
 							registro.put("SEXO_INTERESADO", "");
+							registro.put("O_A_INTERESADO", "o");
+							registro.put("EL_LA_INTERESADO", "el");
 						}
 						
 						calidadInteresado = (String)registro.get("CALIDADINTERESADO");		

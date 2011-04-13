@@ -1140,7 +1140,9 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 			
 			sql.append(" SELECT PER.NOMBRE, PER.APELLIDOS1, PER.APELLIDOS2, ");
 			sql.append(" PER.NIFCIF, PER.IDTIPOIDENTIFICACION, TO_CHAR(PER.FECHANACIMIENTO, 'dd-mm-yyyy') FECHANACIMIENTO, ");
-			sql.append(" PER.IDESTADOCIVIL,PER.NATURALDE, PER.FALLECIDO, PER.SEXO, ");  
+			sql.append(" PER.IDESTADOCIVIL,PER.NATURALDE, PER.FALLECIDO, PER.SEXO,"); 
+			sql.append(" DECODE(PER.SEXO,'H','o','a') as O_A,");
+			sql.append(" DECODE(PER.SEXO,'H','el','la') as EL_LA,");
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idioma);
 			sql.append(" F_SIGA_GETRECURSO(EC.DESCRIPCION, :");
