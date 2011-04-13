@@ -29,11 +29,9 @@
 			.getAttribute(SIGAConstants.STYLESHEET_REF);
 	
 	Integer PCAJG_ACTIVADO =(Integer) (request.getAttribute("PCAJG_ACTIVO"));
-	String pintarAsterisco="";
-	if (PCAJG_ACTIVADO!=null && PCAJG_ACTIVADO.intValue()>1){
-		pintarAsterisco="&nbsp;(*)";
-		
-	}
+	String pintarAsterisco="&nbsp;(*)";
+	boolean tipoEJGColegioObligatorio = PCAJG_ACTIVADO!=null && (PCAJG_ACTIVADO.intValue() == 2 || PCAJG_ACTIVADO.intValue() == 3 || PCAJG_ACTIVADO.intValue() == 4 || PCAJG_ACTIVADO.intValue() == 5);  
+	
 
 	// Validamos si es una consulta o no.
 	String modo = (String) request.getAttribute("MODO");
@@ -532,7 +530,7 @@
 		<tr>
 			<td class="labelText">
 			   
-				 <siga:Idioma key='gratuita.busquedaEJG.literal.EJGColegio'/><%=pintarAsterisco%>
+				 <siga:Idioma key='gratuita.busquedaEJG.literal.EJGColegio'/><%=tipoEJGColegioObligatorio?pintarAsterisco:""%>
 				
 			</td>
 			<td>	
@@ -927,7 +925,7 @@
 			sub();
 			var observaciones = document.forms[0].observaciones.value;
 			
-		 <%if (PCAJG_ACTIVADO!=null && PCAJG_ACTIVADO.intValue()>1){%>
+		 <%if (tipoEJGColegioObligatorio){%>
 		   if (document.forms[0].idTipoEJGColegio.value==""){
 		    fin();
 		    alert('<siga:Idioma key="gratuita.operarEJG.message.requeridoTipoEJGColegio"/>');
