@@ -439,11 +439,13 @@ public class DefinirEnviosAction extends MasterAction {
 		DefinirEnviosForm form = (DefinirEnviosForm)formulario;
 
 		EnvEnviosAdm enviosAdm = new EnvEnviosAdm (this.getUserBean(request));
+		EnvEstatEnvioAdm estatEnvioAdm = new EnvEstatEnvioAdm (this.getUserBean(request));
 
 		Vector vOcultos = form.getDatosTablaOcultos(0);		
 
 		String idInstitucion = userBean.getLocation();
 		String idEnvio = (String)vOcultos.elementAt(0);
+		String idTipoEnvio = (String)vOcultos.elementAt(1);
 		Vector resultado=new Vector();
 		EnvComunicacionMorososAdm admComunicaMorosos = new EnvComunicacionMorososAdm(userBean);
 		UserTransaction tx = userBean.getTransaction();
@@ -465,6 +467,7 @@ public class DefinirEnviosAction extends MasterAction {
 			}
 			
 			tx.begin();
+			estatEnvioAdm.borrarEnvio(idInstitucion,idEnvio, idTipoEnvio);
             enviosAdm.borrarEnvio(idInstitucion,idEnvio,htEnvioMorosos,tmIdEnviosAActualizar);
             tx.commit();
 		} catch (Exception e) {

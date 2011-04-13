@@ -41,7 +41,8 @@ public class EnvEstatEnvioAdm extends MasterBeanAdministrador {
 				EnvEstatEnvioBean.C_IDTIPOENVIO,
 				EnvEstatEnvioBean.C_IDPERSONA,
 				EnvEstatEnvioBean.C_USUMODIFICACION,
-				EnvEstatEnvioBean.C_FECHAMODIFICACION};
+				EnvEstatEnvioBean.C_FECHAMODIFICACION,
+				EnvEstatEnvioBean.C_IDESTATENVIO};
 		return campos;
 	}
 	
@@ -71,6 +72,7 @@ public class EnvEstatEnvioAdm extends MasterBeanAdministrador {
 		
 		try {
 			bean = new EnvEstatEnvioBean();
+			bean.setIdEstatEnvio(UtilidadesHash.getLong(hash,EnvEstatEnvioBean.C_IDESTATENVIO));
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash,EnvEstatEnvioBean.C_IDINSTITUCION));			
 			bean.setIdEnvio(UtilidadesHash.getInteger(hash,EnvEstatEnvioBean.C_IDENVIO));
 			bean.setIdTipoEnvio(UtilidadesHash.getInteger(hash,EnvEstatEnvioBean.C_IDTIPOENVIO));
@@ -97,6 +99,7 @@ public class EnvEstatEnvioAdm extends MasterBeanAdministrador {
 		try {
 			htData = new Hashtable();
 			EnvEstatEnvioBean b = (EnvEstatEnvioBean) bean;
+			UtilidadesHash.set(htData,EnvEstatEnvioBean.C_IDESTATENVIO,b.getIdEstatEnvio());
 			UtilidadesHash.set(htData,EnvEstatEnvioBean.C_IDINSTITUCION,b.getIdInstitucion());
 			UtilidadesHash.set(htData,EnvEstatEnvioBean.C_IDENVIO, b.getIdEnvio());
 			UtilidadesHash.set(htData,EnvEstatEnvioBean.C_IDTIPOENVIO,b.getIdTipoEnvio());
@@ -253,6 +256,9 @@ public class EnvEstatEnvioAdm extends MasterBeanAdministrador {
         }
         
 	    EnvEstatEnvioBean bean = new EnvEstatEnvioBean();
+	    
+	    Long idEstatEnvio = getSecuenciaNextVal(EnvEstatEnvioBean.SEQ_ENV_ESTAT_ENVIO);
+	    bean.setIdEstatEnvio(idEstatEnvio);
 	    bean.setIdInstitucion(idInstitucion);
 	    bean.setIdEnvio(idEnvio);
 	    bean.setIdTipoEnvio(idTipoEnvio);
@@ -285,6 +291,8 @@ public class EnvEstatEnvioAdm extends MasterBeanAdministrador {
         }
         
 	    EnvEstatEnvioBean bean = new EnvEstatEnvioBean();
+	    Long idEstatEnvio = getSecuenciaNextVal(EnvEstatEnvioBean.SEQ_ENV_ESTAT_ENVIO);
+	    bean.setIdEstatEnvio(idEstatEnvio);
 	    bean.setIdInstitucion(idInstitucion);
 	    bean.setIdEnvio(idEnvio);
 	    bean.setIdTipoEnvio(idTipoEnvio);
@@ -298,5 +306,18 @@ public class EnvEstatEnvioAdm extends MasterBeanAdministrador {
     }
 }
 
+	public void borrarEnvio(String idInstitucion, String idEnvio, String idTipoEnvio) throws SIGAException, ClsExceptions {
+
+		Hashtable htEnvio = new Hashtable();
+		htEnvio.put(EnvEstatEnvioBean.C_IDINSTITUCION, idInstitucion);
+		htEnvio.put(EnvEstatEnvioBean.C_IDENVIO, idEnvio);
+		htEnvio.put(EnvEstatEnvioBean.C_IDTIPOENVIO, idTipoEnvio);
+
+		try {
+			this.delete(htEnvio);
+		} catch (Exception e) {
+			throw new SIGAException("messages.general.error", e);
+		}
+	}
 
 }
