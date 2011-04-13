@@ -856,7 +856,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 		return datos;
 	} // getDatosListaGuardias ()
 	
-	
+	/*
 	public Vector getDatosPlantillas(String idinstitucion,
 			String anio,
 			String idturno,
@@ -1064,7 +1064,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 		}
 		return datos;
 	} // getDatosPlantillas ()
-
+*/
 	public static String getNombreGuardiaJSP(String institucion, String idturno, String idguardia) throws ClsExceptions, SIGAException
 	{
 		String datos = "";

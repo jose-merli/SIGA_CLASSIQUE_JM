@@ -1514,6 +1514,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			 String sql= " Select TO_CHAR(Dp.Fechadesigna,'dd/mm/yyyy') as FECHALETRADO_ACTUAL, "+           
 			 			  " P.NOMBRE || ' ' || P.APELLIDOS1 || ' ' ||P.APELLIDOS2 AS NOMBRE_LETRADO, "+
 			 			  " P.NIFCIF AS NIF_LETRADO, DECODE(P.SEXO, null, null,'M','gratuita.personaEJG.sexo.mujer','gratuita.personaEJG.sexo.hombre') AS SEXO_LETRADO_SINTRADUCIR "+
+			 			  " , DECODE(P.SEXO,'H','o','a') AS O_A_LETRADO "+
+			 			  " , DECODE(P.SEXO,'H','el','la') AS EL_LA_LETRADO "+
 			 			  " From Scs_Designasletrado Dp, Cen_Persona p, Cen_Colegiado c "+
 			 			  " Where Dp.Idinstitucion= :1 "+
 			 			  " And Dp.Idinstitucion = c.Idinstitucion "+
@@ -1833,35 +1835,31 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		}
 	} //getDesignaSalidaOficio()
 	
-	public Vector getDefendidosDesignaSalidaOficio (String idInstitucion, String numero, 
-			String idTurno, String anio, String idPersonaJG) throws ClsExceptions  
-	{
+	public Vector getDefendidosDesignaSalidaOficio(String idInstitucion, String numero, String idTurno, String anio, String idPersonaJG)
+			throws ClsExceptions {
 		try {
-			Hashtable h = new Hashtable();
-			h.put(new Integer(1), idInstitucion);
-			h.put(new Integer(2), anio);
-			h.put(new Integer(3), idTurno);
-			h.put(new Integer(4), numero);
-			h.put(new Integer(5), idInstitucion);
-			h.put(new Integer(6), anio);
-			h.put(new Integer(7), idTurno);
-			h.put(new Integer(8), numero);
-			h.put(new Integer(9), idInstitucion);
-			h.put(new Integer(10), anio);
-			h.put(new Integer(11), idTurno);
-			h.put(new Integer(12), numero);
-			h.put(new Integer(13), idInstitucion);
-			h.put(new Integer(14), anio);
-			h.put(new Integer(15), idTurno);
-			h.put(new Integer(16), numero);			
-			h.put(new Integer(17), idInstitucion);
-			h.put(new Integer(18), anio);
-			h.put(new Integer(19), idTurno);
-			h.put(new Integer(20), numero);
-			if (idPersonaJG!=null && !idPersonaJG.trim().equals("")) {
-				h.put(new Integer(21), idPersonaJG);
+
+			Vector defendidos = getVectorDefendidosDesigna(idInstitucion, numero, idTurno, anio, idPersonaJG);
+
+			if (defendidos != null && defendidos.size() > 0) {
+				Hashtable htPrimerDefendido = (Hashtable) defendidos.get(0);
+				if (((String) htPrimerDefendido.get("COUNT_EJG")).equals("1")) {
+					Vector datos = getDatosEJGDefendidoDesigna(idInstitucion, numero, idTurno, anio);
+					// Recorrer los defendidos
+					for (int i = 0; i < defendidos.size(); i++) {
+						((Hashtable) defendidos.get(i)).put("ANIO_EJG", (String) ((Hashtable) datos.get(0)).get("ANIO_EJG"));
+						((Hashtable) defendidos.get(i)).put("NUMERO_EJG", (String) ((Hashtable) datos.get(0)).get("NUMERO_EJG"));
+						((Hashtable) defendidos.get(i)).put("FECHARESOLUCIONCAJG", (String) ((Hashtable) datos.get(0)).get("FECHARESOLUCIONCAJG"));
+					}
+				}
+				return defendidos;
+
+			} else {
+				Vector solicitantes = getSolicitantesEJGDesigna(idInstitucion, numero, idTurno, anio, idPersonaJG);
+				return solicitantes;
 			}
-			String sql = "SELECT INTERESADO.IDPERSONAJG IDPERSONAINTERESADO,INTERESADO.IDINSTITUCION,"+
+				
+			/*String sql = "SELECT INTERESADO.IDPERSONAJG IDPERSONAINTERESADO,INTERESADO.IDINSTITUCION,"+
 				" INTERESADO.IDTURNO,   INTERESADO.ANIO,   INTERESADO.NUMERO,"+
 				" DECODE((select count(EJGDES1.idinstitucion) from SCS_EJGDESIGNA EJGDES1"+
 				" where EJGDES1.IDINSTITUCION = :1"+
@@ -1925,15 +1923,212 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				" and INTERESADO.NUMERO = :20";
 				if (idPersonaJG!=null && !idPersonaJG.trim().equals("")) {
 					sql+= " and INTERESADO.IDPERSONAJG = :21";
-				}
-				HelperInformesAdm helperInformes = new HelperInformesAdm();	
-				return helperInformes.ejecutaConsultaBind(sql, h);
+				}*/
+			
+			
 		}
 		catch (Exception e) {
 			throw new ClsExceptions (e, "Error al obtener la informacion sobre getDefendidosDesignaSalidaOficio.");
 		}
 	}
 	
+	public Vector getVectorDefendidosDesigna(String idInstitucion, String numero, String idTurno, String anio, String idPersonaJG) {
+		Hashtable h = new Hashtable();
+		h.put(new Integer(1), idInstitucion);
+		h.put(new Integer(2), idTurno);
+		h.put(new Integer(3), anio);
+		h.put(new Integer(4), numero);
+		h.put(new Integer(5), idInstitucion);
+		h.put(new Integer(6), idTurno);
+		h.put(new Integer(7), anio);
+		h.put(new Integer(8), numero);
+
+		StringBuffer sql = new StringBuffer("SELECT DEF.IDINSTITUCION, ");
+		Vector defendidos = null;
+		sql.append(" DEF.IDTURNO, ");
+		sql.append(" DEF.ANIO, ");
+		sql.append(" DEF.NUMERO, ");
+		sql.append(" PERJG.IDPERSONA IDPERSONAINTERESADO, ");
+		sql.append(" PERJG.NOMBRE || ' ' || PERJG.APELLIDO1 || ' ' ||  PERJG.APELLIDO2 AS NOMBRE_DEFENDIDO, ");	
+		sql.append(" PERJG.DIRECCION AS DOMICILIO_DEFENDIDO, ");
+		sql.append(" PERJG.CODIGOPOSTAL AS CP_DEFENDIDO, ");
+		sql.append(" POB.NOMBRE AS POBLACION_DEFENDIDO, ");
+		sql.append(" PROV.NOMBRE AS PROVINCIA_DEFENDIDO, ");
+		sql.append(" f_siga_getrecurso(PAIS.NOMBRE, 1) AS NOMBRE_PAIS, ");
+		sql.append(" perjg.OBSERVACIONES AS OBS_INTERESADO, ");
+		sql.append(" perjg.OBSERVACIONES AS OBS_DEFENDIDO, ");
+		sql.append(" (SELECT TEL2.NUMEROTELEFONO ");
+		sql.append(" FROM SCS_TELEFONOSPERSONA TEL2 ");
+		sql.append(" WHERE TEL2.IDINSTITUCION = PERJG.IDINSTITUCION ");
+		sql.append(" AND TEL2.IDPERSONA = PERJG.IDPERSONA ");
+		sql.append(" AND ROWNUM < 2) AS TELEFONO1_DEFENDIDO, ");
+		sql.append(" PERJG.NIF AS NIF_DEFENDIDO, ");
+		sql.append(" DECODE(PERJG.SEXO,  null,  null,  'M','gratuita.personaEJG.sexo.mujer','gratuita.personaEJG.sexo.hombre') AS SEXO_DEFENDIDO, ");
+		sql.append(" F_SIGA_GETCODIDIOMA(PERJG.IDLENGUAJE) AS IDLENGUAJE_DEFENDIDO, ");
+		sql.append(" 0 as ANIOEJG,  ");
+		sql.append(" 0 AS NUMERO_EJG, ");
+		sql.append(" '' FECHARESOLUCIONCAJG, ");		
+		sql.append(" (SELECT COUNT(1) ");
+		sql.append(" FROM scs_ejgdesigna ejgdes ");
+		sql.append(" WHERE ejgdes.idinstitucion  = :1  ");
+		sql.append(" AND ejgdes.IDTURNO = :2 ");
+		sql.append(" AND ejgdes.Aniodesigna = :3 ");
+		sql.append(" AND ejgdes.Numerodesigna = :4 ) COUNT_EJG, ");
+
+		sql.append(" f_siga_getrecurso(CAL.DESCRIPCION, 1) AS CALIDAD, ");
+		sql.append(" CAL.IDTIPOENCALIDAD, ");
+		sql.append(" f_siga_getrecurso(CAL.DESCRIPCION, 1) AS CALIDADIDINSTITUCION ");
+
+		sql.append(" FROM SCS_DEFENDIDOSDESIGNA DEF, ");
+		sql.append(" SCS_PERSONAJG         PERJG, ");
+		sql.append(" scs_tipoencalidad     CAL, ");
+		sql.append(" CEN_POBLACIONES       POB, ");
+		sql.append(" CEN_PROVINCIAS        PROV, ");
+		sql.append(" CEN_PAIS              PAIS ");
+		sql.append(" WHERE PERJG.IDINSTITUCION = DEF.IDINSTITUCION ");
+		sql.append(" AND PERJG.IDPERSONA = DEF.IDPERSONA ");
+		sql.append(" AND cal.idtipoencalidad(+) = def.idtipoencalidad ");
+		sql.append(" AND cal.Idinstitucion(+) = def.Idinstitucion ");
+		sql.append(" AND PERJG.IDPOBLACION = POB.IDPOBLACION(+) ");
+		sql.append(" AND PERJG.IDPROVINCIA = PROV.IDPROVINCIA(+) ");
+		sql.append(" AND PERJG.IDPAIS = PAIS.IDPAIS(+) ");
+
+		sql.append(" AND DEF.IDINSTITUCION = :5 ");
+		sql.append(" AND DEF.IDTURNO = :6 ");
+		sql.append(" AND DEF.ANIO = :7 ");
+		sql.append(" AND DEF.NUMERO = :8  ");
+		if (idPersonaJG != null && !idPersonaJG.trim().equals("")) {
+			h.put(new Integer(9), idPersonaJG);
+			sql.append(" AND PERJG.IDPERSONA = :9  ");
+		}
+
+		try {
+			defendidos = this.ejecutaSelectBind(sql.toString(), h);
+		} catch (ClsExceptions e) {
+			e.printStackTrace();
+		}
+
+		return defendidos;
+	}
+	
+	public Vector getSolicitantesEJGDesigna(String idInstitucion, String numero, String idTurno, String anio, String idPersonaJG) {
+
+		HelperInformesAdm helperInformes = new HelperInformesAdm();
+		Vector solicitantes = null;
+		Hashtable h = new Hashtable();
+		h.put(new Integer(1), idInstitucion);
+		h.put(new Integer(2), idTurno);
+		h.put(new Integer(3), anio);
+		h.put(new Integer(4), numero);
+
+		StringBuffer sql = new StringBuffer("SELECT DES.IDINSTITUCION, ");
+		sql.append(" des.IDTURNO, ");
+		sql.append(" des.Aniodesigna, ");
+		sql.append(" des.Numerodesigna, ");
+		sql.append(" PERJG.IDPERSONA IDPERSONAINTERESADO, ");
+		sql.append(" PERJG.NOMBRE || ' ' || PERJG.APELLIDO1 || ' ' ||  PERJG.APELLIDO2 AS NOMBRE_DEFENDIDO, ");	
+		sql.append(" PERJG.DIRECCION AS DOMICILIO_DEFENDIDO, ");
+		sql.append(" PERJG.CODIGOPOSTAL AS CP_DEFENDIDO, ");
+		sql.append(" POB.NOMBRE AS POBLACION_DEFENDIDO, ");
+		sql.append(" PROV.NOMBRE AS PROVINCIA_DEFENDIDO, ");
+		sql.append(" f_siga_getrecurso(PAIS.NOMBRE, 1) AS NOMBRE_PAIS, ");
+		sql.append(" perjg.OBSERVACIONES AS OBS_INTERESADO, ");
+		sql.append(" perjg.OBSERVACIONES AS OBS_DEFENDIDO, ");
+		sql.append(" (SELECT TEL2.NUMEROTELEFONO ");
+		sql.append(" FROM SCS_TELEFONOSPERSONA TEL2 ");
+		sql.append(" WHERE TEL2.IDINSTITUCION = PERJG.IDINSTITUCION ");
+		sql.append(" AND TEL2.IDPERSONA = PERJG.IDPERSONA ");
+		sql.append(" AND ROWNUM < 2) AS TELEFONO1_DEFENDIDO, ");
+		sql.append(" PERJG.NIF AS NIF_DEFENDIDO, ");
+		sql.append(" DECODE(PERJG.SEXO,  null,  null,  'M','gratuita.personaEJG.sexo.mujer','gratuita.personaEJG.sexo.hombre') AS SEXO_DEFENDIDO, ");
+		sql.append(" DECODE(PERJG.SEXO, 'H','o','a') AS O_A_DEFENDIDO, ");
+		sql.append(" DECODE(PERJG.SEXO, 'H','el','la') AS EL_LA_DEFENDIDO, ");
+		sql.append(" F_SIGA_GETCODIDIOMA(PERJG.IDLENGUAJE) AS IDLENGUAJE_DEFENDIDO, ");
+		sql.append(" ejg.anio ANIOEJG,  ");
+		sql.append(" ejg.ANIO || '/' || ejg.NUMEJG AS NUMERO_EJG, ");
+		sql.append(" to_char(ejg.FECHARESOLUCIONCAJG, 'dd/mm/yyyy') AS FECHARESOLUCIONCAJG, ");
+
+		sql.append(" f_siga_getrecurso(CAL.DESCRIPCION, 1) AS CALIDAD, ");
+		sql.append(" CAL.IDTIPOENCALIDAD, ");
+		sql.append(" f_siga_getrecurso(CAL.DESCRIPCION, 1) AS CALIDADIDINSTITUCION ");
+
+		sql.append(" FROM SCS_EJG          ejg, ");
+		sql.append(" Scs_Ejgdesigna        des, ");
+		sql.append(" Scs_Unidadfamiliarejg UFA, ");
+		sql.append(" SCS_PERSONAJG         PERJG, ");
+		sql.append(" scs_tipoencalidad     CAL, ");
+		sql.append(" CEN_POBLACIONES       POB, ");
+		sql.append(" CEN_PROVINCIAS        PROV, ");
+		sql.append(" CEN_PAIS              PAIS ");
+		sql.append(" WHERE cal.idtipoencalidad(+) = ejg.idtipoencalidad ");
+		sql.append(" AND cal.Idinstitucion(+) = ejg.Idinstitucion ");
+
+		sql.append(" AND UFA.IDINSTITUCION = PERJG.IDINSTITUCION ");
+		sql.append(" AND UFA.SOLICITANTE = 1 ");
+		sql.append(" AND UFA.IDPERSONA = PERJG.IDPERSONA ");
+		sql.append(" AND UFA.IDINSTITUCION = ejg.IDINSTITUCION ");
+		sql.append(" AND UFA.IDTIPOEJG = ejg.IDTIPOEJG ");
+		sql.append(" AND UFA.ANIO = ejg.ANIO ");
+		sql.append(" AND UFA.NUMERO = ejg.NUMERO ");
+
+		sql.append(" AND des.IDINSTITUCION = ejg.IDINSTITUCION ");
+		sql.append(" AND des.Idtipoejg = ejg.IDTIPOEJG ");
+		sql.append(" AND des.Anioejg = ejg.ANIO ");
+		sql.append(" AND des.Numeroejg = ejg.NUMERO ");
+
+		sql.append(" AND PERJG.IDPOBLACION = POB.IDPOBLACION(+) ");
+		sql.append(" AND PERJG.IDPROVINCIA = PROV.IDPROVINCIA(+) ");
+		sql.append(" AND PERJG.IDPAIS = PAIS.IDPAIS(+) ");
+
+		sql.append(" AND DES.IDINSTITUCION = :1 ");
+		sql.append(" AND DES.IDTURNO = :2 ");
+		sql.append(" AND DES.ANIODESIGNA = :3 ");
+		sql.append(" AND DES.NUMERODESIGNA = :4  ");
+		if (idPersonaJG != null && !idPersonaJG.trim().equals("")) {
+			h.put(new Integer(5), idPersonaJG);
+			sql.append(" AND PERJG.IDPERSONA = :5  ");
+		}
+
+		try {
+			solicitantes = helperInformes.ejecutaConsultaBind(sql.toString(), h);
+		} catch (ClsExceptions e) {
+			e.printStackTrace();
+		}
+
+		return solicitantes;
+	}
+	
+	public Vector getDatosEJGDefendidoDesigna(String idInstitucion, String numero, String idTurno, String anio) {
+
+		Vector datos = null;
+		Hashtable h = new Hashtable();
+		h.put(new Integer(1), idInstitucion);
+		h.put(new Integer(2), idTurno);
+		h.put(new Integer(3), anio);
+		h.put(new Integer(4), numero);
+
+		StringBuffer sql = new StringBuffer("SELECT ejg.ANIO ANIO_EJG, (ejg.ANIO || '/' || ejg.NUMEJG) AS NUMERO_EJG, ejg.FECHARESOLUCIONCAJG ");
+		sql.append(" FROM SCS_EJG ejg, Scs_Ejgdesigna des ");
+		sql.append(" WHERE des.IDINSTITUCION = ejg.IDINSTITUCION ");
+		sql.append(" AND des.Idtipoejg = ejg.IDTIPOEJG ");
+		sql.append(" AND des.Anioejg = ejg.ANIO ");
+		sql.append(" AND des.Numeroejg = ejg.NUMERO ");
+
+		sql.append(" AND DES.IDINSTITUCION = :1 ");
+		sql.append(" AND DES.IDTURNO = :2 ");
+		sql.append(" AND DES.ANIODESIGNA = :3 ");
+		sql.append(" AND DES.NUMERODESIGNA = :4  ");
+
+		try {
+			datos = this.ejecutaSelectBind(sql.toString(), h);
+		} catch (ClsExceptions e) {
+			e.printStackTrace();
+		}
+
+		return datos;
+	}
+	
+
 	
 	public void anularDesigna(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException{
 		// TODO Auto-generated method stub
@@ -2740,6 +2935,28 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		}
 			return registro;
 	  }
+	  public Vector ejecutaSelectBind(String select, Hashtable codigos) throws ClsExceptions 
+	{
+		Vector datos = new Vector();
+		
+		// Acceso a BBDD
+		RowsContainer rc = null;
+		try { 
+			rc = new RowsContainer(); 
+			if (rc.queryBind(select,codigos)) {
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					Hashtable registro = (Hashtable) fila.getRow(); 
+					if (registro != null) 
+						datos.add(registro);
+				}
+			}
+		} 
+		catch (Exception e) { 	
+			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D."); 
+		}
+		return datos;
+	}
 	  
 	
 }
