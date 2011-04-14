@@ -90,40 +90,11 @@ public class InformesFacturacionMultipleAction extends MasterAction
 		try {
 			File fichero = null;
 
-//			{	// Crystal
-//				String idInstitucion = "" + this.getIDInstitucion(request);
-//				String fDesde = UtilidadesHash.getString(formulario.getDatos(), "FECHA_DESDE");
-//				String fHasta = UtilidadesHash.getString(formulario.getDatos(), "FECHA_HASTA");
-//
-//				Hashtable parametros = new Hashtable();
-//
-//				UtilidadesHash.set (parametros, "idinstitucion", idInstitucion);
-//				UtilidadesHash.set (parametros, "fecha_inicio", fDesde);	// "02/02/2005"
-//				UtilidadesHash.set (parametros, "fecha_fin",    fHasta);
-//
-////				String informe = "/Datos/plantillas/informes_genericos/2040/prueba/LibroDeFacturasMia.rpt";
-////				fichero = CrystalReportMaster.generarPDF(informe, "/Datos/plantillas/informes_genericos/2040/prueba/salidaCrystalLibroDeFacturasMia.pdf", parametros);
-//
-//				// windows
-//				String informe = "C:/Datos/plantillas/listado_facturas_emitidas/2040/LibroDeFacturasMia.rpt";
-//				fichero = CrystalReportMaster.generarPDF(informe, "C://salidaSIGA_BD.pdf", parametros);
-//			}
-
 			{	// FOP
 				InformeFacturasEmitidas informe = new InformeFacturasEmitidas (this.getUserBean(request));
 				fichero = informe.generarListadoFacturasEmitidasOld(request, formulario.getDatos());
 			}
 			
-			/*if(fichero!= null){
-				request.setAttribute("nombreFichero", fichero.getName());
-				request.setAttribute("rutaFichero", fichero.getAbsolutePath());			
-				request.setAttribute("borrarFichero", "false");			
-				request.setAttribute("generacionOK","OK");
-				salida = "descargaFichero";
-			}
-			else{
-				throw new SIGAException("facturacion.informes.facturasEmitidas.generarInforme.error");
-			}*/
 			if(fichero!= null){
 				request.setAttribute("nombreFichero", fichero.getName());
 				request.setAttribute("rutaFichero", fichero.getAbsolutePath());			
@@ -145,25 +116,6 @@ public class InformesFacturacionMultipleAction extends MasterAction
 	    String salida = "";
 		try {
 			File fichero = null;
-
-//			{	// Crystal
-//				String idInstitucion = "" + this.getIDInstitucion(request);
-//				String fDesde = UtilidadesHash.getString(formulario.getDatos(), "FECHA_DESDE");
-//				String fHasta = UtilidadesHash.getString(formulario.getDatos(), "FECHA_HASTA");
-//
-//				Hashtable parametros = new Hashtable();
-//
-//				UtilidadesHash.set (parametros, "idinstitucion", idInstitucion);
-//				UtilidadesHash.set (parametros, "fecha_inicio", fDesde);	// "02/02/2005"
-//				UtilidadesHash.set (parametros, "fecha_fin",    fHasta);
-//
-////				String informe = "/Datos/plantillas/informes_genericos/2040/prueba/LibroDeFacturasMia.rpt";
-////				fichero = CrystalReportMaster.generarPDF(informe, "/Datos/plantillas/informes_genericos/2040/prueba/salidaCrystalLibroDeFacturasMia.pdf", parametros);
-//
-//				// windows
-//				String informe = "C:/Datos/plantillas/listado_facturas_emitidas/2040/LibroDeFacturasMia.rpt";
-//				fichero = CrystalReportMaster.generarPDF(informe, "C://salidaSIGA_BD.pdf", parametros);
-//			}
 
 			{	// FOP
 				InformeFacturasEmitidas informe = new InformeFacturasEmitidas (this.getUserBean(request));
