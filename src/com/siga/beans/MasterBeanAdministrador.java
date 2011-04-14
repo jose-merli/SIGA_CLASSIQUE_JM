@@ -1154,6 +1154,18 @@ public abstract class MasterBeanAdministrador {
 		return id;
 	}
 	
+	
+	public int updateDirectSQL(String sql) throws ClsExceptions {
+		int filaModificadas = 0;
+		try {
+			Row row = new Row();	
+			filaModificadas =  row.updateDirectSQL(sql) ;
+		}
+		catch (Exception e) {
+			throw new ClsExceptions(e,  e.getMessage());	
+		}
+		return filaModificadas;	
+	}
 
 
 }

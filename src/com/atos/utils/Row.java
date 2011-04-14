@@ -3251,4 +3251,66 @@ public class Row implements Serializable
 		return salida;
 
 	}
+	public int updateDirectSQL(String sql) throws ClsExceptions 
+	{
+		int updatedRecords = 0;
+		Statement st = null;
+		Connection connec = null;
+		try
+		{
+			ClsLogging.writeFileLog("SQL updateDirectSQL: " + sql, 10);
+			connec = ClsMngBBDD.getConnection();
+			st = connec.createStatement();
+			try {
+				updatedRecords = st.executeUpdate(sql);
+				ClsLogging.writeFileLog("updatedRecords: " + updatedRecords, 10);
+			} catch (SQLException exce) {
+				throw exce;
+			}
+
+		} 
+		catch (SQLException ex) 
+		{
+			ClsExceptions psscEx = new ClsExceptions(ex,ex.getMessage().substring(0, ex.getMessage().length() - 1));
+			ClsLogging.writeFileLog(ex.toString(), this.request, 3);
+			psscEx.setErrorType("9");
+			psscEx.setParam(sql);
+
+			throw psscEx;
+		} 
+
+		finally 
+		{
+			try 
+			{
+				if (st != null)
+				{
+					st.close();
+				}
+
+				if (connec != null)
+				{
+					ClsMngBBDD.closeConnection(connec);
+				}
+			} 
+
+			catch (SQLException exc) 
+			{
+				if (connec != null)
+				{
+					ClsMngBBDD.closeConnection(connec);
+				}
+
+				ClsExceptions psscEx = new ClsExceptions(exc,exc.getMessage().substring(0, exc.getMessage().length() - 1));
+				psscEx.setErrorType("9");
+				psscEx.setParam(sql);
+
+				throw psscEx;
+			}
+		}
+
+		return updatedRecords;
+	}
+
+	
 }
