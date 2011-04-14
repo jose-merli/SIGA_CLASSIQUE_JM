@@ -379,6 +379,8 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		updateSql.append(" ");
 		updateSql.append(getWherePeticionesIniciadas());
 		boolean isUpdated = updateSQL(updateSql.toString());
+		//int filaModificadas = updateDirectSQL(updateSql.toString());
+		
 		
 	}
 
