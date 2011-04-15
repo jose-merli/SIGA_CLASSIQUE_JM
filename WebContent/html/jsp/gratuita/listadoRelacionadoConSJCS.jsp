@@ -121,8 +121,9 @@
 		</tr>
 	</table>
 
+<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
 	
-	<html:form action = "/JGR_RelacionadoConSJCS.do" method="POST" target="submitArea">
+	<html:form action = "${path}" method="POST" target="submitArea">
 		<html:hidden property ="modo" value= ""/>
 
 		<input type="hidden" name="conceptoE" value="<%=relacionesDe%>"/>

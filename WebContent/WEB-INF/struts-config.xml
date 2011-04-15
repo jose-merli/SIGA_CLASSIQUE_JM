@@ -2381,6 +2381,10 @@
 		<action path="/JGR_RelacionadoConSJCS" type="com.siga.gratuita.action.RelacionadoConSJCSAction" name="DummyForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/listadoRelacionadoConSJCS.jsp"/>
 		</action>
+		<action path="/JGR_DesignaRelacionadoConSJCS" type="com.siga.gratuita.action.RelacionadoConSJCSAction" name="DummyForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/listadoRelacionadoConSJCS.jsp"/>
+		</action>
+		
 
 		<!-- ***** Justicia Gratuita / Configurar Turnos / Mantenimiento de Facturas *****
 -->
