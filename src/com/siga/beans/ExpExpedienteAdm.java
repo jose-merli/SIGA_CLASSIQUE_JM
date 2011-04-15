@@ -2084,13 +2084,39 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_FECHACADUCIDAD, b.getFechaCaducidad());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_FECHARESOLUCION, b.getFechaResolucion());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_OBSERVACIONES, b.getObservaciones());
-			UtilidadesHash.set(htData, ExpExpedienteBean.C_MINUTA, b.getMinuta());
-			UtilidadesHash.set(htData, ExpExpedienteBean.C_IMPORTETOTAL, b.getImporteTotal());
-			UtilidadesHash.set(htData, ExpExpedienteBean.C_MINUTAFINAL, b.getMinutaFinal());
-			UtilidadesHash.set(htData, ExpExpedienteBean.C_IMPORTETOTALFINAL, b.getImporteTotalFinal());
-			UtilidadesHash.set(htData, ExpExpedienteBean.C_DERECHOSCOLEGIALES, b.getDerechosColegiales());
-			UtilidadesHash.set(htData, ExpExpedienteBean.C_PORCENTAJEIVA, b.getPorcentajeIVA());
-			UtilidadesHash.set(htData, ExpExpedienteBean.C_PORCENTAJEIVA, b.getPorcentajeIVAFinal());
+			if (b.getMinuta() != null) {
+				UtilidadesHash.set(htData, ExpExpedienteBean.C_MINUTA, b.getMinuta());
+			} else {
+				UtilidadesHash.set(htData, ExpExpedienteBean.C_MINUTA, "");
+			}
+			if(b.getImporteTotal() != null){
+				UtilidadesHash.set(htData, ExpExpedienteBean.C_IMPORTETOTAL, b.getImporteTotal());
+			}else{
+				UtilidadesHash.set(htData, ExpExpedienteBean.C_IMPORTETOTAL, "");
+			}
+			
+			if(b.getMinutaFinal()!=null){
+				UtilidadesHash.set(htData, ExpExpedienteBean.C_MINUTAFINAL, b.getMinutaFinal());
+			}else{
+				UtilidadesHash.set(htData, ExpExpedienteBean.C_MINUTAFINAL, "");
+			}
+			if(b.getImporteTotalFinal()!=null){
+				UtilidadesHash.set(htData, ExpExpedienteBean.C_IMPORTETOTALFINAL, b.getImporteTotalFinal());
+			}else{
+				UtilidadesHash.set(htData, ExpExpedienteBean.C_IMPORTETOTALFINAL,"");
+			}
+			if(b.getDerechosColegiales()!= null){
+				UtilidadesHash.set(htData, ExpExpedienteBean.C_DERECHOSCOLEGIALES, b.getDerechosColegiales());
+			}else{
+				UtilidadesHash.set(htData, ExpExpedienteBean.C_DERECHOSCOLEGIALES, "");
+			}
+			
+			if(b.getPorcentajeIVA()!=null){
+				UtilidadesHash.set(htData, ExpExpedienteBean.C_PORCENTAJEIVA, b.getPorcentajeIVA());
+			}else{
+				UtilidadesHash.set(htData, ExpExpedienteBean.C_PORCENTAJEIVA, "");
+			}
+			
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDTIPOIVA, b.getIdTipoIVA());
 			UtilidadesHash.set(htData, ExpExpedienteBean.C_IDRESULTADOJUNTAGOBIERNO, b.getIdResultadoJuntaGobierno());
 

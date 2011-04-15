@@ -610,31 +610,60 @@ public class ExpDatosGeneralesAction extends MasterAction
 	        expBean.setFechaCaducidad(form.getFechaCaducidad().equals("")?"":GstDate.getApplicationFormatDate("",form.getFechaCaducidad()));
 	        if (form.getObservaciones()!= null && !form.getObservaciones().equals(""))
 	        	expBean.setObservaciones(form.getObservaciones());
-	        if (form.getMinuta()!= null && !form.getMinuta().equals(""))
-	        	expBean.setMinuta(new Double(form.getMinuta()));
+	        if (form.getMinuta()!= null){
+	        	if(!form.getMinuta().equals(""))
+	        		expBean.setMinuta(new Double(form.getMinuta()));
+	        	else
+	        		expBean.setMinuta(null);
+	        }
+			if (form.getImporteIVA()!= null){
+				 if(!form.getImporteIVA().trim().equals("")) {
+					 expBean.setImporteIVA(new Double(form.getImporteIVA()));
+				 }else{
+					 expBean.setImporteIVA(null);
+				 }
+			}
+			if (form.getImporteTotal()!= null){
+				if(!form.getImporteTotal().trim().equals("")) {
+					expBean.setImporteTotal(new Double(form.getImporteTotal()));
+				}else{
+					expBean.setImporteTotal(null);
+				}
+			}
+			if (form.getMinutaFinal()!= null){
+				if(!form.getMinutaFinal().equals("")){
+					expBean.setMinutaFinal(new Double(form.getMinutaFinal()));
+				}else{
+					expBean.setMinutaFinal(null);
+				}
+			}
 
-			if (form.getImporteIVA()!= null && !form.getImporteIVA().trim().equals("")) {
-			    expBean.setImporteIVA(new Double(form.getImporteIVA()));
+			if (form.getImporteIVAFinal()!= null){
+				if(!form.getImporteIVAFinal().trim().equals("")) {
+					expBean.setImporteIVAFinal(new Double(form.getImporteIVAFinal()));
+				}else{
+					expBean.setImporteIVAFinal(null);
+				}
 			}
-			if (form.getImporteTotal()!= null && !form.getImporteTotal().trim().equals("")) {
-			    expBean.setImporteTotal(new Double(form.getImporteTotal()));
-			}
-			if (form.getMinutaFinal()!= null && !form.getMinutaFinal().equals(""))
-	        	expBean.setMinutaFinal(new Double(form.getMinutaFinal()));
-
-			if (form.getImporteIVAFinal()!= null && !form.getImporteIVAFinal().trim().equals("")) {
-			    expBean.setImporteIVAFinal(new Double(form.getImporteIVAFinal()));
-			}
-			if (form.getImporteTotalFinal()!= null && !form.getImporteTotalFinal().trim().equals("")) {
-			    expBean.setImporteTotalFinal(new Double(form.getImporteTotalFinal()));
+			if (form.getImporteTotalFinal()!= null) {
+				if(!form.getImporteTotalFinal().trim().equals("")) {
+					expBean.setImporteTotalFinal(new Double(form.getImporteTotalFinal()));
+				}else{
+					expBean.setImporteTotalFinal(null);
+				}
 			}
 			
 			if (form.getDerechosColegiales()!= null && !form.getDerechosColegiales().trim().equals("")) {
 			    expBean.setDerechosColegiales(new Double(form.getDerechosColegiales()));
 			}
-			if (form.getPorcentajeIVA()!= null && !form.getPorcentajeIVA().trim().equals("")) {
-			    expBean.setPorcentajeIVA(new Double(form.getPorcentajeIVA()));
-			    expBean.setPorcentajeIVAFinal(new Double(form.getPorcentajeIVA()));
+			if (form.getPorcentajeIVA()!= null){
+				if(!form.getPorcentajeIVA().trim().equals("")) {
+					expBean.setPorcentajeIVA(new Double(form.getPorcentajeIVA()));
+			    	expBean.setPorcentajeIVAFinal(new Double(form.getPorcentajeIVA()));
+				}else{
+					expBean.setPorcentajeIVA(null);
+			    	expBean.setPorcentajeIVAFinal(null);
+				}
 			}
 	        
 	        if (form.getIdTipoIVA() != null && !form.getIdTipoIVA().equals("")) {

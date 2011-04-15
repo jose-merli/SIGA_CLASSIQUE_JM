@@ -266,7 +266,7 @@
 							}
 						}
 						if (document.forms[0].minuta){
-							  document.forms[0].minuta.value = document.forms[0].minuta.value.replace(/,/,".");
+							  document.forms[0].minuta.value = document.forms[0].minuta.value.replace(/,/,".");		
 						}
 						if (document.forms[0].importeTotal){
 							  document.forms[0].importeTotal.value = document.forms[0].importeTotal.value.replace(/,/,".");
@@ -284,11 +284,7 @@
 							  document.forms[0].importeIVAFinal.value = document.forms[0].importeIVAFinal.value.replace(/,/,".");
 						}
 						if (document.forms[0].porcentajeIVA){							
-							  if(document.forms[0].porcentajeIVA.value.replace(/,/,".") == ""){
-								 document.forms[0].porcentajeIVA.value = 0;
-							  }else{
-								  document.forms[0].porcentajeIVA.value = document.forms[0].porcentajeIVA.value.replace(/,/,".");
-							  }
+							 document.forms[0].porcentajeIVA.value = document.forms[0].porcentajeIVA.value.replace(/,/,".");							  
 						}
 
 						if (document.forms[0].derechosColegiales){
@@ -406,28 +402,6 @@
 				document.forms[0].submit();
 			}
 		}
-		
-		function calcularTotalMinuta () 
-		{
-			if(document.getElementById("minuta") != null){
-				if( document.getElementById("minuta").value != ""){	
-					iva = document.getElementById("porcentajeIVA").value.replace(/,/,".");
-					if (!iva) {
-						iva = 0;
-					} 
-					minuta = document.getElementById("minuta").value.replace(/,/,".");
-					minuta = formatNumber(minuta);
-		
-					var b = eval(minuta) * eval(iva) / 100;
-					var a = b + eval(minuta);
-					a = Math.round(a*100)/100;
-			
-					document.getElementById("importeIVA").value = b.toFixed(2).toString().replace(".",",");
-					document.getElementById("importeTotal").value = a.toFixed(2).toString().replace(".",",");
-					document.getElementById("minuta").value = minuta.replace(".",",");
-				}
-			}
-		}
 
 		function formatNumber(value){
 			if (!value) {
@@ -443,10 +417,45 @@
 			return value;
 		}
 		
-		function calcularTotalMinuta2 () 
+		function calcularTotalMinuta () 
 		{
 			if(document.getElementById("minuta") != null){
-				if( document.getElementById("minuta").value != ""){	
+				if(document.getElementById("minuta").value != ""){	
+					iva = document.getElementById("porcentajeIVA").value.replace(/,/,".");
+					if (!iva) {
+						iva = 0;
+					} 
+					minuta = document.getElementById("minuta").value.replace(/,/,".");
+					minuta = formatNumber(minuta);
+		
+					var b = eval(minuta) * eval(iva) / 100;
+					var a = b + eval(minuta);
+					a = Math.round(a*100)/100;
+					if(document.getElementById("porcentajeIVA").value != ""){
+						document.getElementById("importeIVA").value = b.toFixed(2).toString().replace(".",",");
+					}else{						
+						document.getElementById("importeIVA").value = "0,00";	
+					}
+					
+					document.getElementById("importeTotal").value = a.toFixed(2).toString().replace(".",",");
+					document.getElementById("minuta").value = minuta.replace(".",",");
+				}else{
+					document.getElementById("minuta").value = "";
+					if(document.getElementById("porcentajeIVA").value != ""){
+						document.getElementById("importeIVA").value = "0,00";
+						document.getElementById("importeTotal").value = "0,00";
+					}else{						
+						document.getElementById("importeIVA").value = "";
+						document.getElementById("importeTotal").value ="";
+					}
+				}					
+			}
+		}
+		
+		function calcularTotalMinuta2 () 
+		{
+			if(document.getElementById("porcentajeIVA") != null){
+				if(document.getElementById("porcentajeIVA").value != ""){	
 					iva = document.getElementById("porcentajeIVA").value.replace(/,/,".");
 					iva = formatNumber(iva);
 					minuta = document.getElementById("minuta").value.replace(/,/,".");
@@ -457,10 +466,28 @@
 					a = Math.round(a*100)/100;
 					document.getElementById("porcentajeIVA").value = iva.replace(".",",");
 					document.getElementById("porcentajeIVAFinal").value = iva.replace(".",",");
-					document.getElementById("importeIVA").value = b.toFixed(2).toString().replace(".",",");
-					document.getElementById("importeTotal").value = a.toFixed(2).toString().replace(".",",");
-					document.getElementById("minuta").value = minuta.replace(".",",");
+					calcularTotalMinuta ();
 					calcularTotalMinutaFinal ();
+				}else{
+					document.getElementById("porcentajeIVAFinal").value = "";
+					document.getElementById("porcentajeIVA").value = "";
+					
+					if(document.getElementById("minuta").value != ""){							
+						document.getElementById("importeIVA").value = "0,00";				
+						document.getElementById("importeTotal").value = document.getElementById("minuta").value;
+					}else{			
+						document.getElementById("importeIVA").value = "";
+						document.getElementById("importeTotal").value = "";
+					}
+
+					if(document.getElementById("minutaFinal").value != ""){							
+						document.getElementById("importeIVAFinal").value = "0,00";						
+						document.getElementById("importeTotalFinal").value = document.getElementById("minutaFinal").value;
+					}else{			
+						document.getElementById("importeIVAFinal").value = "";
+						document.getElementById("importeTotalFinal").value = "";
+					}
+						
 				}
 			}
 		}
@@ -468,7 +495,7 @@
 		function calcularTotalMinutaFinal () 
 		{			
 			if(document.getElementById("minutaFinal") != null){
-				if( document.getElementById("minutaFinal").value != ""){				
+				if(document.getElementById("minutaFinal").value != ""){
 					iva = document.getElementById("porcentajeIVAFinal").value.replace(/,/,".");
 					if (!iva) {
 						iva = 0;
@@ -479,10 +506,25 @@
 					var b = eval(minuta) * eval(iva) / 100;
 					var a = b + eval(minuta);
 					a = Math.round(a*100)/100;			
+
+					if(document.getElementById("porcentajeIVA").value != ""){
+						document.getElementById("importeIVAFinal").value = b.toFixed(2).toString().replace(".",",");
+					}else{						
+						document.getElementById("importeIVAFinal").value = "0,00";
+					}
 					document.getElementById("importeIVAFinal").value = b.toFixed(2).toString().replace(".",",");
 					document.getElementById("importeTotalFinal").value = a.toFixed(2).toString().replace(".",",");
 					document.getElementById("minutaFinal").value = minuta.replace(".",",");
-				}
+				}else{
+					document.getElementById("minutaFinal").value = "";
+					if(document.getElementById("porcentajeIVA").value != ""){	
+						document.getElementById("importeIVAFinal").value = "0,00";
+						document.getElementById("importeTotalFinal").value = "0,00";
+					}else{						
+						document.getElementById("importeIVAFinal").value = ""
+						document.getElementById("importeTotalFinal").value = "";
+					}
+				}				
 			}
 		}
 
@@ -548,7 +590,7 @@
 	
 </head>
 
-<body class="detallePestanas" onload="<%=recargarCombos%>, calcularTotalMinuta (), calcularTotalMinutaFinal ()">
+<body class="detallePestanas" onload="<%=recargarCombos%>; calcularTotalMinuta (); calcularTotalMinutaFinal ()">
 
 	<!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
 
