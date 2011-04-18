@@ -464,13 +464,18 @@
 					var b = eval(minuta) * eval(iva) / 100;
 					var a = b + eval(minuta);
 					a = Math.round(a*100)/100;
-					document.getElementById("porcentajeIVA").value = iva.replace(".",",");
-					document.getElementById("porcentajeIVAFinal").value = iva.replace(".",",");
+					document.getElementById("porcentajeIVA").value = iva.replace(".",",");					
 					calcularTotalMinuta ();
-					calcularTotalMinutaFinal ();
+					if(document.getElementById("porcentajeIVAFinal") != null){
+						document.getElementById("porcentajeIVAFinal").value = iva.replace(".",",");
+						calcularTotalMinutaFinal ();
+					}
 				}else{
-					document.getElementById("porcentajeIVAFinal").value = "";
+					
 					document.getElementById("porcentajeIVA").value = "";
+					if(document.getElementById("porcentajeIVAFinal") != null){
+						document.getElementById("porcentajeIVAFinal").value = "";
+					}
 					
 					if(document.getElementById("minuta").value != ""){							
 						document.getElementById("importeIVA").value = "0,00";				
@@ -480,12 +485,14 @@
 						document.getElementById("importeTotal").value = "";
 					}
 
-					if(document.getElementById("minutaFinal").value != ""){							
-						document.getElementById("importeIVAFinal").value = "0,00";						
-						document.getElementById("importeTotalFinal").value = document.getElementById("minutaFinal").value;
-					}else{			
-						document.getElementById("importeIVAFinal").value = "";
-						document.getElementById("importeTotalFinal").value = "";
+					if(document.getElementById("minutaFinal") != null){
+						if(document.getElementById("minutaFinal").value != ""){							
+							document.getElementById("importeIVAFinal").value = "0,00";						
+							document.getElementById("importeTotalFinal").value = document.getElementById("minutaFinal").value;
+						}else{			
+							document.getElementById("importeIVAFinal").value = "";
+							document.getElementById("importeTotalFinal").value = "";
+						}
 					}
 						
 				}
