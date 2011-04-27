@@ -3,6 +3,7 @@
  */
 package com.siga.ws.i2055;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.ConnectException;
@@ -24,6 +25,7 @@ import org.apache.axis.transport.http.HTTPTransport;
 import org.apache.axis.types.PositiveInteger;
 
 import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.siga.Utilidades.LogHandler;
@@ -37,6 +39,8 @@ import com.siga.ws.SIGAWSClientAbstract;
  *
  */
 public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstantes {
+	
+	private static int TIPO_TERCERO_SOLICITANTE = 1;
 
 	Map<String, List<Map<String, String>>> htCargaDtPersonas = new Hashtable<String, List<Map<String,String>>>();
 	Map<String, List<Map<String, String>>> htCargaDtArchivo = new Hashtable<String, List<Map<String,String>>>();
@@ -113,17 +117,14 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 					}
 					
 					correctos++;
-					
+									
 				} catch (Exception e) {
 					if (e.getCause() instanceof ConnectException) {						
 						escribeLogRemesa("Se ha producido un error de conexión con el WebService");					
 						ClsLogging.writeFileLogError("Error de conexión al enviar el expediente", e, 3);
 						throw e;
 					} else {
-						String descripcionError = "Error al enviar el expediente. " + e.getMessage();
-						escribeErrorExpediente(anio, numejg, numero, idTipoEJG, descripcionError, CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA);
-						escribeLogRemesa("Se ha producido un error al enviar el expediente " + anio + "/" + numejg);					
-						ClsLogging.writeFileLogError(descripcionError, e, 3);
+						trataError(anio, numejg, numero, idTipoEJG, e);						
 					}
 				}
 			}
@@ -141,6 +142,22 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		}  finally {			
 			tx.commit();
 		}				
+	}
+
+
+
+	private void trataError(String anio, String numejg, String numero, String idTipoEJG, Exception e) throws ClsExceptions, IOException {
+		String descripcionError = "Error al enviar el expediente. ";
+		if (e.getMessage().indexOf("Non nillable element") > -1) {
+			String campo = e.getMessage().substring(e.getMessage().indexOf("'"), e.getMessage().lastIndexOf("'"));
+			descripcionError += "El campo '" + campo + "' no puede estar vacío."; 
+		} else {
+			 descripcionError += e.getMessage();
+		}
+		
+		escribeErrorExpediente(anio, numejg, numero, idTipoEJG, descripcionError, CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA);
+		escribeLogRemesa("Se ha producido un error al enviar el expediente " + anio + "/" + numejg);					
+		ClsLogging.writeFileLogError(descripcionError, e, 3);		
 	}
 
 
@@ -319,8 +336,8 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 	 * @return
 	 */
 	 
-	private void addDtDireccion(SIGAAsignaDtExpedientesDtPersonas dtPersona, Map<String, String> map) {		
-		SIGAAsignaDtExpedientesDtPersonasDtDirecciones dtDirecciones = new SIGAAsignaDtExpedientesDtPersonasDtDirecciones();
+	private SIGAAsignaDtExpedientesDtSolicitanteDtDirecciones getDtDireccion(Map<String, String> map) {		
+		SIGAAsignaDtExpedientesDtSolicitanteDtDirecciones dtDirecciones = new SIGAAsignaDtExpedientesDtSolicitanteDtDirecciones();
 		PositiveInteger in = getInteger(map.get(DIR_IDTIPOVIA));
 		if (in != null) dtDirecciones.setIDTipoVia(in);
 		String st = map.get(DIR_NOMBREVIA);
@@ -344,9 +361,10 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		in = getInteger(map.get(DIR_IDPAIS));
 		if (in != null) dtDirecciones.setIDPais(in);
 		
-		if (dtDirecciones.getIDPoblacion() != null) {
-			dtPersona.setDtDirecciones(dtDirecciones);
+		if (dtDirecciones.getIDPoblacion() == null) {
+			dtDirecciones = null;
 		}
+		return dtDirecciones;
 	}
 
 	
@@ -393,50 +411,161 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 		
 		List<Map<String, String>> list = htCargaDtPersonas.get(str);		
 		if (list != null) {			
-			SIGAAsignaDtExpedientesDtPersonas dtPersonas[] = new SIGAAsignaDtExpedientesDtPersonas[list.size()];
-			for (int i = 0; i < list.size(); i++) {
-				Map<String, String> map = list.get(i);
-				
-				SIGAAsignaDtExpedientesDtPersonas dtPersona = new SIGAAsignaDtExpedientesDtPersonas();
-				PositiveInteger in = getInteger(map.get(IDTIPOTERCERO));
-				if (in != null) dtPersona.setIDTipoTercero(in);
-				in = getInteger(map.get(IDTIPOPERSONA));
-				if (in != null) dtPersona.setIDTipoPersona(in);
-				String st = map.get(NOMBRE);
-				if (st != null) dtPersona.setNombre(st);
-				st = map.get(APELLIDO1);
-				if (st != null) dtPersona.setApellido1(st);
-				st = map.get(APELLIDO2);
-				if (st != null) dtPersona.setApellido2(st);
-				in = getInteger(map.get(IDTIPOIDENTIFICACION));
-				if (in != null) dtPersona.setIDTipoIdentificacion(in);
-				st = map.get(NUMEROIDENTIFICACION);
-				if (st != null) dtPersona.setNumeroIdentificacion(st);
-				addDtDireccion(dtPersona, map);
-				in = getInteger(map.get(IDESTADOCIVIL));
-				if (in != null)	dtPersona.setIDEstadoCivil(in);
-				BigInteger bi = getBigInteger(map.get(RAZONSOCIAL));
-				if (bi != null)	dtPersona.setRazonSocial(bi);
-				BigDecimal bd = getBigDecimal(map.get(INGRESOSANUALES));
-				if (bd != null) dtPersona.setIngresosAnuales(bd);
-				Date cal = getDate(map.get(FECHANACIMIENTO));
-				if (cal != null) dtPersona.setFechaNacimiento(cal);
-				st = map.get(OBSERVACIONES);
-				if (st != null) dtPersona.setObservaciones(st);
-				st = map.get(PROFESION);
-				if (st != null) dtPersona.setProfesion(st);
-				in = getInteger(map.get(IDREGIMENECONOMICOMATRIMONIAL));
-				if (in != null) dtPersona.setIDRegimenEconomicoMatrimonial(in);
-				in = getInteger(map.get(IDOTRAPRESTACION));
-				if (in != null) dtPersona.setIDOtraPrestacion(in);
-				bd = getBigDecimal(map.get(IMPORTEOTRAPRESTACION));
-				if (bd != null) dtPersona.setImporteOtraPrestacion(bd);
-				in = getInteger(map.get(IDNACIONALIDAD));
-				if (in != null) dtPersona.setIDNacionalidad(in);
-				addDtOtrosIngresosBienesPorPersona(dtPersona, map);
-				dtPersonas[i] = dtPersona;				
+			SIGAAsignaDtExpedientesDtIntervinientes[] dtIntervinientes = null;
+			
+			if (list.size() > 1) {//tiene solicitante y contrarios o miembros de la unidad familiar
+				dtIntervinientes = new SIGAAsignaDtExpedientesDtIntervinientes[list.size()-1];	
 			}
-			dtExpedientes.setDtPersonas(dtPersonas);
+			
+			int pos = 0;
+			
+			for (int i = 0; i < list.size(); i++) {
+				Map<String, String> map = list.get(i);				
+				
+				PositiveInteger in = getInteger(map.get(IDTIPOTERCERO));
+				
+				if (in != null && in.intValue() == TIPO_TERCERO_SOLICITANTE) {
+					SIGAAsignaDtExpedientesDtSolicitante datosPersona = new SIGAAsignaDtExpedientesDtSolicitante();
+					if (in != null) datosPersona.setIDTipoTercero(in);
+					in = getInteger(map.get(IDTIPOPERSONA));
+					if (in != null) datosPersona.setIDTipoPersona(in);
+					String st = map.get(NOMBRE);
+					if (st != null) datosPersona.setNombre(st);
+					st = map.get(APELLIDO1);
+					if (st != null) datosPersona.setApellido1(st);
+					st = map.get(APELLIDO2);
+					if (st != null) datosPersona.setApellido2(st);
+					in = getInteger(map.get(IDTIPOIDENTIFICACION));
+					if (in != null) datosPersona.setIDTipoIdentificacion(in);
+					st = map.get(NUMEROIDENTIFICACION);
+					if (st != null) datosPersona.setNumeroIdentificacion(st);
+					
+					//DIRECCION
+					SIGAAsignaDtExpedientesDtSolicitanteDtDirecciones dtDirecciones = new SIGAAsignaDtExpedientesDtSolicitanteDtDirecciones();
+					in = getInteger(map.get(DIR_IDTIPOVIA));
+					if (in != null) dtDirecciones.setIDTipoVia(in);
+					st = map.get(DIR_NOMBREVIA);
+					if (st != null) dtDirecciones.setNombreVia(st);
+					st = map.get(DIR_NUMERO);
+					if (st != null) dtDirecciones.setNumero(st);
+					st = map.get(DIR_PISO);
+					if (st != null) dtDirecciones.setPiso(st);
+					in = getInteger(map.get(DIR_IDPOBLACION));
+					if (in != null) dtDirecciones.setIDPoblacion(in);
+					st = map.get(DIR_CODIGOPOSTAL);
+					if (st != null) dtDirecciones.setCodigoPostal(st);
+					st = map.get(DIR_TELEFONO1);
+					if (st != null) dtDirecciones.setTelefono1(st);
+					st = map.get(DIR_TELEFONO2);
+					if (st != null)	dtDirecciones.setTelefono2(st);
+					st = map.get(DIR_FAX);
+					if (st != null) dtDirecciones.setFax(st);
+					st = map.get(DIR_EMAIL);
+					if (st != null) dtDirecciones.setEmail(st);
+					in = getInteger(map.get(DIR_IDPAIS));
+					if (in != null) dtDirecciones.setIDPais(in);					
+					if (dtDirecciones.getIDPoblacion() == null) {
+						dtDirecciones = null;
+					}
+					datosPersona.setDtDirecciones(dtDirecciones);
+					
+					in = getInteger(map.get(IDESTADOCIVIL));
+					if (in != null)	datosPersona.setIDEstadoCivil(in);
+					BigInteger bi = getBigInteger(map.get(RAZONSOCIAL));
+					if (bi != null)	datosPersona.setRazonSocial(bi);
+					BigDecimal bd = getBigDecimal(map.get(INGRESOSANUALES));
+					if (bd != null) datosPersona.setIngresosAnuales(bd);
+					Date cal = getDate(map.get(FECHANACIMIENTO));
+					if (cal != null) datosPersona.setFechaNacimiento(cal);
+					st = map.get(OBSERVACIONES);
+					if (st != null) datosPersona.setObservaciones(st);
+					st = map.get(PROFESION);
+					if (st != null) datosPersona.setProfesion(st);
+					in = getInteger(map.get(IDREGIMENECONOMICOMATRIMONIAL));
+					if (in != null) datosPersona.setIDRegimenEconomicoMatrimonial(in);
+					in = getInteger(map.get(IDOTRAPRESTACION));
+					if (in != null) datosPersona.setIDOtraPrestacion(in);
+					bd = getBigDecimal(map.get(IMPORTEOTRAPRESTACION));
+					if (bd != null) datosPersona.setImporteOtraPrestacion(bd);
+					in = getInteger(map.get(IDNACIONALIDAD));
+					if (in != null) datosPersona.setIDNacionalidad(in);
+					addDtOtrosIngresosBienesPorPersona(datosPersona, map);
+					dtExpedientes.setDtSolicitante(datosPersona);					
+				} else {
+					SIGAAsignaDtExpedientesDtIntervinientes datosPersona = new SIGAAsignaDtExpedientesDtIntervinientes();
+					if (in != null) datosPersona.setIDTipoTercero(in);
+					in = getInteger(map.get(IDTIPOPERSONA));
+					if (in != null) datosPersona.setIDTipoPersona(in);
+					String st = map.get(NOMBRE);
+					if (st != null) datosPersona.setNombre(st);
+					st = map.get(APELLIDO1);
+					if (st != null) datosPersona.setApellido1(st);
+					st = map.get(APELLIDO2);
+					if (st != null) datosPersona.setApellido2(st);
+					in = getInteger(map.get(IDTIPOIDENTIFICACION));
+					if (in != null) datosPersona.setIDTipoIdentificacion(in);
+					st = map.get(NUMEROIDENTIFICACION);
+					if (st != null) datosPersona.setNumeroIdentificacion(st);
+					//DIRECCION
+					SIGAAsignaDtExpedientesDtIntervinientesDtDirecciones dtDirecciones = new SIGAAsignaDtExpedientesDtIntervinientesDtDirecciones();
+					in = getInteger(map.get(DIR_IDTIPOVIA));
+					if (in != null) dtDirecciones.setIDTipoVia(in);
+					st = map.get(DIR_NOMBREVIA);
+					if (st != null) dtDirecciones.setNombreVia(st);
+					st = map.get(DIR_NUMERO);
+					if (st != null) dtDirecciones.setNumero(st);
+					st = map.get(DIR_PISO);
+					if (st != null) dtDirecciones.setPiso(st);
+					in = getInteger(map.get(DIR_IDPOBLACION));
+					if (in != null) dtDirecciones.setIDPoblacion(in);
+					st = map.get(DIR_CODIGOPOSTAL);
+					if (st != null) dtDirecciones.setCodigoPostal(st);
+					st = map.get(DIR_TELEFONO1);
+					if (st != null) dtDirecciones.setTelefono1(st);
+					st = map.get(DIR_TELEFONO2);
+					if (st != null)	dtDirecciones.setTelefono2(st);
+					st = map.get(DIR_FAX);
+					if (st != null) dtDirecciones.setFax(st);
+					st = map.get(DIR_EMAIL);
+					if (st != null) dtDirecciones.setEmail(st);
+					in = getInteger(map.get(DIR_IDPAIS));
+					if (in != null) dtDirecciones.setIDPais(in);					
+					if (dtDirecciones.getIDPoblacion() == null) {
+						dtDirecciones = null;
+					}
+					datosPersona.setDtDirecciones(dtDirecciones);
+					in = getInteger(map.get(IDESTADOCIVIL));
+					if (in != null)	datosPersona.setIDEstadoCivil(in);
+					BigInteger bi = getBigInteger(map.get(RAZONSOCIAL));
+					if (bi != null)	datosPersona.setRazonSocial(bi);
+					BigDecimal bd = getBigDecimal(map.get(INGRESOSANUALES));
+					if (bd != null) datosPersona.setIngresosAnuales(bd);
+					Date cal = getDate(map.get(FECHANACIMIENTO));
+					if (cal != null) datosPersona.setFechaNacimiento(cal);
+					st = map.get(OBSERVACIONES);
+					if (st != null) datosPersona.setObservaciones(st);
+					st = map.get(PROFESION);
+					if (st != null) datosPersona.setProfesion(st);
+					in = getInteger(map.get(IDREGIMENECONOMICOMATRIMONIAL));
+					if (in != null) datosPersona.setIDRegimenEconomicoMatrimonial(in);
+					in = getInteger(map.get(IDOTRAPRESTACION));
+					if (in != null) datosPersona.setIDOtraPrestacion(in);
+					bd = getBigDecimal(map.get(IMPORTEOTRAPRESTACION));
+					if (bd != null) datosPersona.setImporteOtraPrestacion(bd);
+					in = getInteger(map.get(IDNACIONALIDAD));
+					if (in != null) datosPersona.setIDNacionalidad(in);
+					
+					BigInteger idOtroIngresoBien = getBigInteger(map.get(IDOTROINGRESOBIEN));
+					if (idOtroIngresoBien != null) {
+						datosPersona.setDtOtrosIngresosBienesPorPersona(new BigInteger[]{idOtroIngresoBien});
+					}
+					
+					dtIntervinientes[pos++] = datosPersona;
+				}
+				
+								
+			}
+			dtExpedientes.setDtIntervinientes(dtIntervinientes);
 		}
 		
 	}
@@ -447,7 +576,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract implements PCAJGConstante
 	 * @param map
 	 * @return
 	 */
-	private void addDtOtrosIngresosBienesPorPersona(SIGAAsignaDtExpedientesDtPersonas dtPersona, Map<String, String> map) {			
+	private void addDtOtrosIngresosBienesPorPersona(SIGAAsignaDtExpedientesDtSolicitante dtPersona, Map<String, String> map) {			
 		BigInteger idOtroIngresoBien = getBigInteger(map.get(IDOTROINGRESOBIEN));
 		if (idOtroIngresoBien != null) {
 			dtPersona.setDtOtrosIngresosBienesPorPersona(new BigInteger[]{idOtroIngresoBien});
