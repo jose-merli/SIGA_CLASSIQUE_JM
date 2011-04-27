@@ -2107,7 +2107,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		h.put(new Integer(3), anio);
 		h.put(new Integer(4), numero);
 
-		StringBuffer sql = new StringBuffer("SELECT ejg.ANIO ANIO_EJG, (ejg.ANIO || '/' || ejg.NUMEJG) AS NUMERO_EJG, ejg.FECHARESOLUCIONCAJG ");
+		StringBuffer sql = new StringBuffer("SELECT ejg.ANIO ANIO_EJG, (ejg.ANIO || '/' || ejg.NUMEJG) AS NUMERO_EJG, to_char(ejg.FECHARESOLUCIONCAJG, 'dd/mm/yyyy') AS FECHARESOLUCIONCAJG");
 		sql.append(" FROM SCS_EJG ejg, Scs_Ejgdesigna des ");
 		sql.append(" WHERE des.IDINSTITUCION = ejg.IDINSTITUCION ");
 		sql.append(" AND des.Idtipoejg = ejg.IDTIPOEJG ");
