@@ -1964,7 +1964,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" AND ROWNUM < 2) AS TELEFONO1_DEFENDIDO, ");
 		sql.append(" PERJG.NIF AS NIF_DEFENDIDO, ");
 		sql.append(" DECODE(PERJG.SEXO,  null,  null,  'M','gratuita.personaEJG.sexo.mujer','gratuita.personaEJG.sexo.hombre') AS SEXO_DEFENDIDO, ");
-		sql.append(" F_SIGA_GETCODIDIOMA(PERJG.IDLENGUAJE) AS IDLENGUAJE_DEFENDIDO, ");
+		sql.append(" PERJG.IDLENGUAJE AS IDLENGUAJE_DEFENDIDO, ");
 		sql.append(" 0 as ANIOEJG,  ");
 		sql.append(" 0 AS NUMERO_EJG, ");
 		sql.append(" '' FECHARESOLUCIONCAJG, ");		
@@ -2043,7 +2043,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" DECODE(PERJG.SEXO,  null,  null,  'M','gratuita.personaEJG.sexo.mujer','gratuita.personaEJG.sexo.hombre') AS SEXO_DEFENDIDO, ");
 		sql.append(" DECODE(PERJG.SEXO, 'H','o','a') AS O_A_DEFENDIDO, ");
 		sql.append(" DECODE(PERJG.SEXO, 'H','el','la') AS EL_LA_DEFENDIDO, ");
-		sql.append(" F_SIGA_GETCODIDIOMA(PERJG.IDLENGUAJE) AS IDLENGUAJE_DEFENDIDO, ");
+		sql.append(" PERJG.IDLENGUAJE AS IDLENGUAJE_DEFENDIDO, ");
 		sql.append(" ejg.anio ANIOEJG,  ");
 		sql.append(" ejg.ANIO || '/' || ejg.NUMEJG AS NUMERO_EJG, ");
 		sql.append(" to_char(ejg.FECHARESOLUCIONCAJG, 'dd/mm/yyyy') AS FECHARESOLUCIONCAJG, ");
