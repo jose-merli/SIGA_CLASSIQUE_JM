@@ -1236,8 +1236,10 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			request.setAttribute("nombreFichero", fichero.getName());
 			request.setAttribute("rutaFichero", fichero.getPath());
 		
-		} 
-		catch (Exception e) { 
+		} catch (SIGAException e) {
+			throwExcp(e.getLiteral(),e, null);
+		
+		} catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null); 
 		}
 		

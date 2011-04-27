@@ -54,6 +54,8 @@ import com.siga.informes.InformePersonalizable;
 public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 
 	
+	private static Boolean alguienEjecutando=Boolean.FALSE;
+	
 	public FcsFacturacionJGAdm(UsrBean usuario) {
 		super(FcsFacturacionJGBean.T_NOMBRETABLA, usuario);
 	}
@@ -4210,30 +4212,54 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		}
 	}
 	
-	public String generarInformeYObtenerRuta(String idInstitucion, String idFacturacion) throws SIGAException{
-		InformePersonalizable inf = new InformePersonalizable();
-		ArrayList<HashMap<String, String>> filtrosInforme = new ArrayList<HashMap<String, String>>();
+	public boolean isAlguienEjecutando(){
+		synchronized(FcsFacturacionJGAdm.alguienEjecutando){
+			if (!FcsFacturacionJGAdm.alguienEjecutando){
+				FcsFacturacionJGAdm.alguienEjecutando=Boolean.TRUE;
+				return false;
+			} else {
+				return true;
+			}
+		}
+	}
+	private void setNadieEjecutando(){
+		synchronized(FcsFacturacionJGAdm.alguienEjecutando){
+			FcsFacturacionJGAdm.alguienEjecutando=Boolean.FALSE;
+		}
+	}
+	
+	public String generarInformeYObtenerRuta(String idInstitucion, String idFacturacion)throws ClsExceptions,SIGAException{
 		
 		String rutaFichero = "";
+		InformePersonalizable inf = new InformePersonalizable();
+		ArrayList<HashMap<String, String>> filtrosInforme = new ArrayList<HashMap<String, String>>();
 		HashMap<String, String> filtro;
-		filtro = new HashMap<String, String>();
-		filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDINSTITUCION");
-		filtro.put("VALOR", idInstitucion);
-		filtrosInforme.add(filtro);
-		filtro = new HashMap<String, String>();
-		filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "FACTURACIONES");
-		filtro.put("VALOR", idFacturacion);
-		filtrosInforme.add(filtro);
-		filtro = new HashMap<String, String>();
-		filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDIOMA");
-		filtro.put("VALOR", this.usrbean.getLanguage());
-		filtrosInforme.add(filtro);
-		try {
-			rutaFichero = inf.generarInformes(this.usrbean, InformePersonalizable.I_INFORMEFACTSJCS, filtrosInforme);
-		} catch (ClsExceptions e) {
-			e.printStackTrace();
+		
+		if (isAlguienEjecutando()){			
+			throw new SIGAException(UtilidadesString.getMensajeIdioma(this.usrbean,"mensaje.error.facturacionsjcs.wait"));			
 		}
 
+		try {			
+			filtro = new HashMap<String, String>();
+			filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDINSTITUCION");
+			filtro.put("VALOR", idInstitucion);
+			filtrosInforme.add(filtro);
+			filtro = new HashMap<String, String>();
+			filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "FACTURACIONES");
+			filtro.put("VALOR", idFacturacion);
+			filtrosInforme.add(filtro);
+			filtro = new HashMap<String, String>();
+			filtro.put(AdmTipoFiltroInformeBean.C_NOMBRECAMPO, "IDIOMA");
+			filtro.put("VALOR", this.usrbean.getLanguage());
+			filtrosInforme.add(filtro);			
+			rutaFichero = inf.generarInformes(this.usrbean, InformePersonalizable.I_INFORMEFACTSJCS, filtrosInforme);
+			
+		} catch (ClsExceptions e) {
+			throw new SIGAException(e);
+		
+		} finally {
+			setNadieEjecutando();
+		}
 		
 		return rutaFichero;							
 	}
