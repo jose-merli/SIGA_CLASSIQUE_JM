@@ -211,6 +211,7 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 							   ScsEJGBean.C_NUMEROPROCEDIMIENTO, 		ScsEJGBean.C_NUMERODILIGENCIA,
 							   ScsEJGBean.C_IDPERSONA,                  ScsEJGBean.C_GUARDIATURNO_IDTURNO,
 							   ScsEJGBean.C_GUARDIATURNO_IDGUARDIA,     ScsEJGBean.C_FECHAAPERTURA,
+							   ScsEJGBean.C_USUMODIFICACION,		    ScsEJGBean.C_FECHAMODIFICACION,
 							   ScsEJGBean.C_IDORIGENCAJG  };
 
 			// Campos a modificar

@@ -214,7 +214,6 @@ public class DefinirEJGAction extends MasterAction
 								}
 							}
 						}
-
 					}
 				}
 
@@ -714,6 +713,8 @@ public class DefinirEJGAction extends MasterAction
 				miHash.put(ScsEJGBean.C_CALIDAD,"0");
 				miHash.put(ScsEJGBean.C_IDTIPOENCALIDAD,0);
 				miHash.put(ScsEJGBean.C_CALIDADIDINSTITUCION,usr.getLocation());
+				miHash.put(ScsEJGBean.C_USUCREACION,new Integer (usr.getUserName()));
+				miHash.put(ScsEJGBean.C_FECHACREACION,"sysdate");
 				
 				// 1. Insertamos el EJG
 				if (!ejgAdm.insert(miHash)) {

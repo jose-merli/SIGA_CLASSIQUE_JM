@@ -408,6 +408,7 @@ public class CalendarioSJCS
 					}
 
 					beanCabeceraGuardias.setFechaAlta("SYSDATE");
+					beanCabeceraGuardias.setUsuAlta(new Integer(usrBean.getUserName()));
 					beanCabeceraGuardias.setPosicion(letrado.getPosicion());
 					admCabeceraGuardias.insert(beanCabeceraGuardias);
 

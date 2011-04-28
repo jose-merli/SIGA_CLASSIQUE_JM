@@ -1037,6 +1037,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		cabeceraGuardiaBean.setValidado(ClsConstants.DB_TRUE);
 		
 		cabeceraGuardiaBean.setFechaAlta("SYSDATE");
+		cabeceraGuardiaBean.setUsuAlta(usuModificacion);
 		
 		
 		guardiaColegiadoBean.setIdInstitucion(idInstitucion);
@@ -1215,6 +1216,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 			cabeceraGuarSal.setComenSustitucion(comenSustitucion);
 		}
 		cabeceraGuarSal.setFechaAlta("SYSDATE");
+		cabeceraGuarSal.setUsuAlta(usuModificacion);
 		if(!cabeceraGuardiasAdm.insert((cabeceraGuarSal)))
 			throw new ClsExceptions(cabeceraGuardiasAdm.getError());
 		

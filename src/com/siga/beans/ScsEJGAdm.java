@@ -351,7 +351,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							ScsEJGBean.C_FECHADESIGPROC,			ScsEJGBean.C_IDENTIFICADORDS,
 							ScsEJGBean.C_SITUACION,					ScsEJGBean.C_IDTIPOENCALIDAD,
 							ScsEJGBean.C_CALIDADIDINSTITUCION,		ScsEJGBean.C_NUMERODESIGNAPROC,
-							ScsEJGBean.C_DOCRESOLUCION};
+							ScsEJGBean.C_DOCRESOLUCION,				ScsEJGBean.C_USUCREACION,
+							ScsEJGBean.C_FECHACREACION};
 		return campos;
 	}
 	
@@ -3377,7 +3378,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
             sql.append(" ,Easi.Idguardia AS IDGUARDIAASISTENCIA ");
 			sql.append(" ,to_char(EASI.FECHAHORA, 'dd/mm/yyyy') AS FECHA_ASISTENCIA ");
 			sql.append(" ,  (select nombre ||' '||apellidos1||' '|| apellidos2 from cen_persona where idpersona = EASI.IDPERSONACOLEGIADO) AS NOMBRE_LETRADO_ASISTENCIA");
-			
+			sql.append(" ,  (SELECT Ncolegiado FROM cen_colegiado WHERE idpersona = EASI.IDPERSONACOLEGIADO and idinstitucion = EASI.IDINSTITUCION) AS NCOLEGIADO_LETRADO_ASISTENCIA ");
 			// Campos necesarios para las comucioncaciones de la comision
 			// Nos quedamos con los digitos para saber la cantidad que se reduce
 			sql.append(" ,regexp_replace( (select F_SIGA_GETRECURSO(r.descripcion, 1) From Scs_Tiporesolucion r");
@@ -3863,6 +3864,58 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error al obtener la informacion sobre getDireccionLetrado");
 		}
 	}
+	
+	public Vector getDireccionLetradoSalidaCorreo(String idPersona,String idInstitucion,String aliasSalida) throws ClsExceptions {
+		try {
+			Hashtable h = new Hashtable();
+			h.put(new Integer(1), idInstitucion);
+			h.put(new Integer(2), idPersona);
+			StringBuffer sql = new StringBuffer();
+			sql.append("SELECT ");
+			sql.append(" DIR.Domicilio DOMICILIO");
+			sql.append("_");
+			sql.append(aliasSalida);
+			
+			sql.append(",dir.codigopostal CP");
+			sql.append("_");
+			sql.append(aliasSalida); 
+			sql.append(",dir.poblacionextranjera POBLACION");
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(",dir.idpoblacion ID_POBLACION");
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(",dir.idprovincia ID_PROVINCIA");
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(",dir.telefono1 TELDESPACHO");
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(",dir.fax1 FAX");
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(",dir.correoelectronico EMAIL");
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(" from CEN_DIRECCIONES DIR, CEN_DIRECCION_TIPODIRECCION TIP " );
+			sql.append(" where dir.idinstitucion = tip.idinstitucion ");
+			sql.append(" and dir.idpersona = tip.idpersona  " );
+			sql.append(" and dir.iddireccion = tip.iddireccion " );
+			sql.append(" and dir.preferente = 'C' ");
+			sql.append(" and tip.idtipodireccion = 2 " );
+			sql.append(" and dir.fechabaja is null ");
+			sql.append(" and dir.idinstitucion = :1 ");
+			sql.append(" and dir.idpersona = :2 ");
+			sql.append(" and rownum = 1 ");
+
+			HelperInformesAdm helperInformes = new HelperInformesAdm();	
+			return helperInformes.ejecutaConsultaBind(sql.toString(), h);
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la informacion sobre getDireccionLetrado");
+		}
+	}
+	
 	public Vector getDireccionPersonalLetradoSalida(String idPersona,String idInstitucion,String aliasSalida) throws ClsExceptions  
 	{
 		try {
@@ -4058,7 +4111,12 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 					registro.put("SEXO_LETRADO", sexoLetradoEjg);
 					registro.put("O_A_LETRADO", o_a);
 					registro.put("EL_LA_LETRADO", el_la);
-					helperInformes.completarHashSalida(registro,getDireccionLetradoSalida(idLetradoEjg,idInstitucion,"LETRADO"));
+					Vector dirCorreo = getDireccionLetradoSalidaCorreo(idLetradoEjg,idInstitucion,"LETRADO");
+					if(dirCorreo.size() > 0){
+						helperInformes.completarHashSalida(registro,dirCorreo);
+					}else{
+						helperInformes.completarHashSalida(registro,getDireccionLetradoSalida(idLetradoEjg,idInstitucion,"LETRADO"));
+					}
 					
 					helperInformes.completarHashSalida(registro,getDireccionPersonalLetradoSalida(idLetradoEjg,idInstitucion,"LETRADO"));			
 					String telefonoDespacho = (String)registro.get("TELDESPACHO_LETRADO");
@@ -4900,9 +4958,17 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							}else{
 								registro.put("FECHA_ASISTENCIA", "");
 							} 
-							String letradoAsistencia = (String)registro.get("NOMBRE_LETRADO_ASISTENCIA");
-							if(letradoAsistencia!=null && !fechaAsistencia.trim().equalsIgnoreCase("")){
-								registro.put("NOMBRE_LETRADO_ASISTENCIA", letradoAsistencia);
+							String letradoAsistencia = (String)registro.get("NCOLEGIADO_LETRADO_ASISTENCIA");
+							if(letradoAsistencia!=null && !letradoAsistencia.trim().equalsIgnoreCase("")){
+								registro.put("NCOLEGIADO_LETRADO_ASISTENCIA", letradoAsistencia);
+								
+							}else{
+								registro.put("NCOLEGIADO_LETRADO_ASISTENCIA", "");
+							} 
+							
+							String numColLetradoAsistencia = (String)registro.get("NOMBRE_LETRADO_ASISTENCIA");
+							if(numColLetradoAsistencia!=null && !fechaAsistencia.trim().equalsIgnoreCase("")){
+								registro.put("NOMBRE_LETRADO_ASISTENCIA", numColLetradoAsistencia);
 								
 							}else{
 								registro.put("NOMBRE_LETRADO_ASISTENCIA", "");

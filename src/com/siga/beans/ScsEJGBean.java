@@ -177,6 +177,8 @@ public class ScsEJGBean extends MasterBean{
     static public final String C_IDTIPOENCALIDAD   = "IDTIPOENCALIDAD";
     static public final String C_CALIDADIDINSTITUCION   = "CALIDADIDINSTITUCION";
     static public final String C_DOCRESOLUCION   = "DOCRESOLUCION";
+    static public final String C_FECHACREACION  = "FECHACREACION";
+    static public final String C_USUCREACION   = "USUCREACION";
 	
 	
 		

@@ -531,6 +531,7 @@ public class MantenimientoAsistenciasAction extends MasterAction
 					cabeceraGuardiasModelo.setComenSustitucion(UtilidadesString.getMensajeIdioma(usr.getLanguage(),"gratuita.literal.letrado.refuerzo.asistencias"));
 					cabeceraGuardiasModelo.setSustituto("1");
 					cabeceraGuardiasModelo.setFechaAlta("SYSDATE");
+					cabeceraGuardiasModelo.setUsuAlta(new Integer(usr.getUserName()));
 					if(!cabeceraAdm.insert(cabeceraGuardiasModelo))
 						throw new ClsExceptions(cabeceraAdm.getError());
 					
