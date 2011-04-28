@@ -109,11 +109,18 @@
 		   <br>
 			 <LI > Las consultas de tipo "Facturación" o "Envío a Grupos" tienen las siguientes restricciones:
 			 	<ul class="labelText" type="square">
-		 			<LI ><B style="FONT-SIZE: 14px;">No puede incorporar solicitudes de criterios dinámicos por interfaz.</LI>   
-			 		<LI ><B style="FONT-SIZE: 14px;">Para las consultas de tipo "Facturación" los siguientes campos son obligatorios: IDINSTITUCION , IDPERSONA.</LI>   
+		 			<LI ><B style="FONT-SIZE: 14px;">No puede incorporar solicitudes de criterios dinámicos por interfaz.</B></LI>   
+			 		<LI ><B style="FONT-SIZE: 14px;">Para las consultas de tipo "Facturación" los siguientes campos son obligatorios: IDINSTITUCION , IDPERSONA</B>.</LI>   
 			 		<LI ><B style="FONT-SIZE: 14px;">Para las consultas de tipo "Envío a Grupos": IDINSTITUCION, IDPERSONA, CODIGOPOSTAL, CORREOELECTRONICO,
 			  DOMICILIO, MOVIL, FAX1, FAX1, IDPAIS, IDPROVINCIA, IDPOBLACION.
-			  		</LI>   
+			  		</B></LI>   
+			 	</ul> 
+			 </LI>	   
+		     <br>
+			 <LI> Las consultas de tipo "Envío a Grupos" tiene las siguientes restricciones:
+			 	<ul class="labelText" type="square">
+		 			<LI ><B style="FONT-SIZE: 14px;">Las consultas listas para envíos han de llevar la tabla CEN_CLIENTE y CEN_DIRECCIONES sin alias.</LI>   
+			 		<LI ><B style="FONT-SIZE: 14px;">NO se debe añadir condiciones para filtrar la dirección, ya que eso se hace automáticamente.</LI>   
 			 	</ul> 
 			 </LI>
 		</ol>
