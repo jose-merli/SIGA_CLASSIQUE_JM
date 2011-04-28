@@ -743,7 +743,6 @@ protected String insertar (ActionMapping mapping,
 				
 				if (new Integer (tipos[i]).intValue () == ClsConstants.TIPO_DIRECCION_GUARDIA)
 				{
-					
 					String sql = direccionesAdm.comprobarTipoDireccion(tipo, miForm.getIDInstitucion().toString(), miForm.getIDPersona().toString());					
 					if (rc2.query(sql)) {
 						if (rc2.size()>=1) {
@@ -756,28 +755,40 @@ protected String insertar (ActionMapping mapping,
 								return exito("messages.inserted.error.ExisteYaGuardia", request);
 							}	
 						}
+						
+						if (!idDireccionesPreferentes.equals("")) {
+							direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString(), idDireccionesPreferentes,
+									preferenteModif, request);
+						}
 					}  
 				}else if (new Integer (tipos[i]).intValue () == ClsConstants.TIPO_DIRECCION_CORREO){						
 					String sql1 = direccionesAdm.comprobarTipoDireccion(tipo, miForm.getIDInstitucion().toString(), miForm.getIDPersona().toString());
-					cambiodireccioncensoweb (miForm,i,sql1, tipo, idDireccionesCensoWeb, request);
-					if ((request.getParameter("modificarPreferencias")!=null && request.getParameter("modificarPreferencias").equals("1")) || (request.getParameter("modificarDireccionesCensoWeb")!=null && request.getParameter("modificarDireccionesCensoWeb").equals("1"))){
-						
-						if ( request.getParameter("control").equals("0")){
-						if (!preferenteModif.equals("")){
-								direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif,request);	
+					cambiodireccioncensoweb(miForm, i, sql1, tipo, idDireccionesCensoWeb, request);
+					if ((request.getParameter("modificarPreferencias") != null && request.getParameter("modificarPreferencias").equals("1"))
+							|| (request.getParameter("modificarDireccionesCensoWeb") != null && request.getParameter("modificarDireccionesCensoWeb")
+									.equals("1"))) {
+
+						if (request.getParameter("control").equals("0")) {
+							if (!preferenteModif.equals("")) {
+								direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString(), idDireccionesPreferentes,
+										preferenteModif, request);
 							}
-						}else cambiodireccioncensoweb (miForm,i,sql1, tipo, idDireccionesCensoWeb, request);
+						} else
+							cambiodireccioncensoweb(miForm, i, sql1, tipo, idDireccionesCensoWeb, request);
 					}
-				}else { if (!preferenteModif.equals("")){
-							 if (!idDireccionesCensoWeb.equals("") &&(!idDireccionesPreferentes.equals(""))){
-								 direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif,request);
-							 }
-							 if (control.equals("0")){
-								  direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString (), idDireccionesPreferentes, preferenteModif,request);
-								 
-							 }
-							 }
+				} else {
+					if (!preferenteModif.equals("")) {
+						if (!idDireccionesCensoWeb.equals("") && (!idDireccionesPreferentes.equals(""))) {
+							direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString(), idDireccionesPreferentes,
+									preferenteModif, request);
 						}
+						if (control.equals("0")) {
+							direccionesAdm.modificarDireccionesPreferentes(idPersona, idInstitucionPersona.toString(), idDireccionesPreferentes,
+									preferenteModif, request);
+
+						}
+					}
+				}
 						
 					
 			
