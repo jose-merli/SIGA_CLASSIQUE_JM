@@ -147,33 +147,35 @@ public class MaestroDesignasAction extends MasterAction {
 			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
 			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
 			
-			// Consulto la designa:
-					
+			// Consulto la designa:					
 			Vector vDesignas = admDesigna.select(resultado);
 			beanDesigna = (ScsDesignaBean)vDesignas.get(0);
 			request.setAttribute("beanDesigna",beanDesigna);
-			
+			if ((beanDesigna.getIdTurno()!=null)&&(!(beanDesigna.getIdTurno()).equals(""))){
+				consultaTurno=" where idTurno = " + beanDesigna.getIdTurno() + " and idinstitucion="+usr.getLocation()+" ";
+				nombreTurno = ((ScsTurnoBean)((Vector)turno.select(consultaTurno)).get(0)).getAbreviatura();
+			}
+				
 			//Se recupera el campo calidad, si tiene para el interesado de la designa.
 			//para que se pase el dato a la jsp,y para cuando le damos al botón volver
 			//vuelva con los datos de la busqueda que se realizo.
 			ScsDefendidosDesignaAdm defendidosAdm = new ScsDefendidosDesignaAdm(usr);
 			idtipoencalidad= defendidosAdm.getidTipoEnCalidad(resultado);
 			
-		
-			
-			
 			//recuperando el idJuzgado.
-			 idJuzgado = beanDesigna.getIdJuzgado().toString();
-						
-			consultaTurno=" where idTurno = " + beanDesigna.getIdTurno() + " and idinstitucion="+usr.getLocation()+" ";
-			consultaTipoDesigna = " where "+ScsTipoDesignaColegioBean.C_IDTIPODESIGNACOLEGIADO +" = " + request.getParameter("TIPODESIGNA") + " and idinstitucion ="+ usr.getLocation()+" ";
-
-			nombreTurno = ((ScsTurnoBean)((Vector)turno.select(consultaTurno)).get(0)).getAbreviatura();
-			nombreTipoDesigna = ((ScsTipoDesignaColegioBean)((Vector)tipodesigna.select(consultaTipoDesigna)).get(0)).getDescripcion();
-		} catch(Exception e){ 
-			consultaTipoDesigna = " where "+ScsTipoDesignaColegioBean.C_IDTIPODESIGNACOLEGIADO +" = " + beanDesigna.getIdTipoDesignaColegio() + " and idinstitucion ="+ usr.getLocation()+" ";
-			if ((beanDesigna.getIdTipoDesignaColegio()!=null)&&(!(beanDesigna.getIdTipoDesignaColegio()).equals("")))
+			if(beanDesigna.getIdJuzgado()!= null){
+				 idJuzgado = beanDesigna.getIdJuzgado().toString();
+			}
+			
+			if ((beanDesigna.getIdTipoDesignaColegio()!=null)&&(!(beanDesigna.getIdTipoDesignaColegio()).equals(""))){
+				consultaTipoDesigna = " where "+ScsTipoDesignaColegioBean.C_IDTIPODESIGNACOLEGIADO +" = " + beanDesigna.getIdTipoDesignaColegio() + " and idinstitucion ="+ usr.getLocation()+" ";
 				nombreTipoDesigna = ((ScsTipoDesignaColegioBean)((Vector)tipodesigna.select(consultaTipoDesigna)).get(0)).getDescripcion();
+			}
+		} catch(Exception e){
+			if ((beanDesigna.getIdTipoDesignaColegio()!=null)&&(!(beanDesigna.getIdTipoDesignaColegio()).equals(""))){
+				consultaTipoDesigna = " where "+ScsTipoDesignaColegioBean.C_IDTIPODESIGNACOLEGIADO +" = " + beanDesigna.getIdTipoDesignaColegio() + " and idinstitucion ="+ usr.getLocation()+" ";
+				nombreTipoDesigna = ((ScsTipoDesignaColegioBean)((Vector)tipodesigna.select(consultaTipoDesigna)).get(0)).getDescripcion();
+			}
 		}
 		try {
 			resultado = beanDesigna.getOriginalHash();
