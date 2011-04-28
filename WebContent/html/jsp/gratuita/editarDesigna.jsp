@@ -94,7 +94,7 @@
 	
 	String estilo = "box", readOnly="false", estiloCombo="boxCombo";
 	String idPretension = "",pretension="";
-
+	String turno = "";
 	
 	 
 	try {
@@ -104,7 +104,7 @@
 		asistenciaBean = (ScsAsistenciasBean) request.getAttribute("asistenciaBean");
 
 		tipo = (String) resultado.get("IDTIPODESIGNACOLEGIO");
-		
+		turno = (String)resultado.get("TURNO");
 		estado = (String) resultado.get("ESTADO");
 		
 		if (modo=="Ver"){
@@ -608,7 +608,7 @@ function accionCerrar() {
 							<siga:Idioma key="gratuita.busquedaSOJ.literal.turno" />
 						</td>
 						<td>
-							<html:text name="MaestroDesignasForm" property="turno" styleClass="boxConsulta" value='<%=(String)resultado.get("TURNO")%>' readonly="true"></html:text>
+							<html:text name="MaestroDesignasForm" property="turno" styleClass="boxConsulta" value="<%=turno%>" readonly="true"></html:text>
 						</td>
 						<td class="labelText">
 							<siga:Idioma key="gratuita.inicio_PestanaCalendarioGuardias.literal.fecha" />
