@@ -1560,6 +1560,33 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		}
 	}
 	
+		public Vector getDireccionLetradoSalidaOficioPreferente(String idPersona,String idInstitucion) throws ClsExceptions  
+	{
+		try {
+			Hashtable h = new Hashtable();
+			h.put(new Integer(1), idInstitucion);
+			h.put(new Integer(2), idPersona);
+			String sql = "SELECT "+
+			" DIR.Domicilio DOMICILIO_LETRADO,dir.codigopostal CP_LETRADO ,dir.poblacionextranjera POBLACION_LETRADO,dir.idpoblacion ID_POBLACION_LETRADO, "+
+			" dir.idprovincia ID_PROVINCIA_LETRADO,dir.telefono1 TELEFONODESPACHO_LET,dir.fax1 FAX_LETRADO,dir.correoelectronico EMAIL_LETRADO, dir.movil MOVILDESPACHO_LET"+
+			" from CEN_DIRECCIONES DIR, CEN_DIRECCION_TIPODIRECCION TIP " +
+			" where dir.idinstitucion = tip.idinstitucion " +
+			" and dir.idpersona = tip.idpersona  " +
+			" and dir.iddireccion = tip.iddireccion " +
+			" and dir.preferente = 'C' "+
+			" and tip.idtipodireccion = 2 " +
+			" and dir.fechabaja is null "+
+			" and dir.idinstitucion = :1 "+
+			" and dir.idpersona = :2 "+
+			" and rownum = 1 ";
+
+			HelperInformesAdm helperInformes = new HelperInformesAdm();	
+			return helperInformes.ejecutaConsultaBind(sql, h);
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la informacion sobre getDireccionLetrado");
+		}
+	}
 	
 	
 	public Vector getDireccionPersonalLetradoSalidaOficio(String idPersona,String idInstitucion) throws ClsExceptions  
@@ -1964,8 +1991,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" AND ROWNUM < 2) AS TELEFONO1_DEFENDIDO, ");
 		sql.append(" PERJG.NIF AS NIF_DEFENDIDO, ");
 		sql.append(" DECODE(PERJG.SEXO,  null,  null,  'M','gratuita.personaEJG.sexo.mujer','gratuita.personaEJG.sexo.hombre') AS SEXO_DEFENDIDO, ");
-		sql.append(" PERJG.IDLENGUAJE AS IDLENGUAJE_DEFENDIDO, ");
-		sql.append(" 0 as ANIOEJG,  ");
+		sql.append(" PERJG.IDLENGUAJE AS IDLENGUAJE_DEFENDIDO, ");		sql.append(" 0 as ANIOEJG,  ");
 		sql.append(" 0 AS NUMERO_EJG, ");
 		sql.append(" '' FECHARESOLUCIONCAJG, ");		
 		sql.append(" (SELECT COUNT(1) ");
@@ -2043,7 +2069,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" DECODE(PERJG.SEXO,  null,  null,  'M','gratuita.personaEJG.sexo.mujer','gratuita.personaEJG.sexo.hombre') AS SEXO_DEFENDIDO, ");
 		sql.append(" DECODE(PERJG.SEXO, 'H','o','a') AS O_A_DEFENDIDO, ");
 		sql.append(" DECODE(PERJG.SEXO, 'H','el','la') AS EL_LA_DEFENDIDO, ");
-		sql.append(" PERJG.IDLENGUAJE AS IDLENGUAJE_DEFENDIDO, ");
+		sql.append(" PERJG.IDLENGUAJE AS IDLENGUAJE_DEFENDIDO, ");		
 		sql.append(" ejg.anio ANIOEJG,  ");
 		sql.append(" ejg.ANIO || '/' || ejg.NUMEJG AS NUMERO_EJG, ");
 		sql.append(" to_char(ejg.FECHARESOLUCIONCAJG, 'dd/mm/yyyy') AS FECHARESOLUCIONCAJG, ");
@@ -2665,7 +2691,15 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 						}
 				
 				
-				helperInformes.completarHashSalida(registro,getDireccionLetradoSalidaOficio(idPersona,idInstitucion));
+					Vector vPreferente = getDireccionLetradoSalidaOficioPreferente(idPersona,idInstitucion);		
+					String dir = (String)((Hashtable)vPreferente.get(0)).get("DOMICILIO_LETRADO");
+					if (dir != null && !dir.trim().equals("")){
+						helperInformes.completarHashSalida(registro,vPreferente);
+					} else {
+						helperInformes.completarHashSalida(registro, getDireccionLetradoSalidaOficio(idPersona, idInstitucion));
+					}
+				
+				
 				helperInformes.completarHashSalida(registro,getDireccionPersonalLetradoSalidaOficio(idPersona,idInstitucion));
 				String pobLetrado = (String)registro.get("POBLACION_LETRADO");
 				if(pobLetrado==null ||pobLetrado.trim().equalsIgnoreCase("")){
