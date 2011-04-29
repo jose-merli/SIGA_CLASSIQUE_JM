@@ -284,7 +284,8 @@
 							  document.forms[0].importeIVAFinal.value = document.forms[0].importeIVAFinal.value.replace(/,/,".");
 						}
 						if (document.forms[0].porcentajeIVA){							
-							 document.forms[0].porcentajeIVA.value = document.forms[0].porcentajeIVA.value.replace(/,/,".");							  
+							 document.forms[0].porcentajeIVA.value = document.forms[0].porcentajeIVA.value.replace(/,/,".");		
+							 document.forms[0].porcentajeIVAFinal.value = document.forms[0].porcentajeIVA.value.replace(/,/,".");						  
 						}
 
 						if (document.forms[0].derechosColegiales){
@@ -513,23 +514,32 @@
 					var b = eval(minuta) * eval(iva) / 100;
 					var a = b + eval(minuta);
 					a = Math.round(a*100)/100;			
-
-					if(document.getElementById("porcentajeIVA").value != ""){
-						document.getElementById("importeIVAFinal").value = b.toFixed(2).toString().replace(".",",");
-					}else{						
-						document.getElementById("importeIVAFinal").value = "0,00";
+					if(document.getElementById("porcentajeIVA") != null){
+						if(document.getElementById("porcentajeIVA").value != ""){
+							document.getElementById("importeIVAFinal").value = b.toFixed(2).toString().replace(".",",");
+						}else{						
+							document.getElementById("importeIVAFinal").value = "0,00";
+						}
 					}
 					document.getElementById("importeIVAFinal").value = b.toFixed(2).toString().replace(".",",");
 					document.getElementById("importeTotalFinal").value = a.toFixed(2).toString().replace(".",",");
 					document.getElementById("minutaFinal").value = minuta.replace(".",",");
 				}else{
 					document.getElementById("minutaFinal").value = "";
-					if(document.getElementById("porcentajeIVA").value != ""){	
-						document.getElementById("importeIVAFinal").value = "0,00";
-						document.getElementById("importeTotalFinal").value = "0,00";
-					}else{						
-						document.getElementById("importeIVAFinal").value = ""
-						document.getElementById("importeTotalFinal").value = "";
+					if(document.getElementById("porcentajeIVA") != null){
+						if(document.getElementById("porcentajeIVA").value != ""){	
+							document.getElementById("importeIVAFinal").value = "0,00";
+							document.getElementById("importeTotalFinal").value = "0,00";
+						}else{						
+							document.getElementById("importeIVAFinal").value = "";
+							document.getElementById("importeTotalFinal").value = "";
+						}
+					}else{
+						if(document.getElementById("importeTotalFinal").value == ""){
+							document.getElementById("importeIVAFinal").value = "";
+						} else{
+							document.getElementById("importeIVAFinal").value = "0,00";
+						}	
 					}
 				}				
 			}
