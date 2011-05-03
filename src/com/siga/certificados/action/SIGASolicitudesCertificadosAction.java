@@ -2330,17 +2330,17 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		    	bean.setFechaDescarga(null);
 		    }
 		    
-		    
-		    
+		    if (!form.getFechaSolicitud().trim().equals("")) {
+		    	bean.setFechaSolicitud(GstDate.getApplicationFormatDate(usr.getLanguage(),form.getFechaSolicitud()));
+		    }else{
+		    	bean.setFechaSolicitud(null);
+		    }		    
 		    
 		    if (!form.getFechaCobro().trim().equals("")) {
 		    	bean.setFechaCobro(GstDate.getApplicationFormatDate(usr.getLanguage(),form.getFechaCobro()));
 		    }else{
 		    	bean.setFechaCobro(null);
 		    }
-		   
-		    
-		   
 		    
 		    if (!form.getFechaEntregaInfo().trim().equals("")) {
 		    	bean.setFechaEntregaInfo(GstDate.getApplicationFormatDate(usr.getLanguage(),form.getFechaEntregaInfo()));

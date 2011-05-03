@@ -34,6 +34,7 @@ public class SIGASolicitudesCertificadosForm extends MasterForm
     private String fechaDescarga="";
     private String fechaCobro="";
     private String fechaEmision="";
+    private String fechaSolicitud="";
     private String textoSanciones="";
     private String comentario="";
     private String buscarNumCertificadoCompra="",buscarIdSolicitudCertif="";
@@ -111,6 +112,7 @@ public class SIGASolicitudesCertificadosForm extends MasterForm
 	    this.fechaDescarga="";
 	    this.fechaCobro="";
 	    this.fechaEmision="";
+	    this.fechaSolicitud="";
 	    this.textoSanciones="";
 	    this.buscarNumCertificadoCompra="";
 	    this.buscarIdSolicitudCertif="";
@@ -324,7 +326,13 @@ public class SIGASolicitudesCertificadosForm extends MasterForm
     	this.fechaEmision=fechaEmision;
     }
 
-    public String getIdInstitucion()
+    public String getFechaSolicitud() {
+		return fechaSolicitud;
+	}
+	public void setFechaSolicitud(String fechaSolicitud) {
+		this.fechaSolicitud = fechaSolicitud;
+	}
+	public String getIdInstitucion()
     {
     	return idInstitucion;
     }

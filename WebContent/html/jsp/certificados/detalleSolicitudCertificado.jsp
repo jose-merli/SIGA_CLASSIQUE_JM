@@ -16,6 +16,7 @@
 <%@ page import="com.siga.administracion.*"%>
 <%@ page import="com.siga.Utilidades.*"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
+<%@ page import="java.text.SimpleDateFormat"%>
 
 <%
 	String app = request.getContextPath();
@@ -170,6 +171,11 @@
 			function accionGuardarCerrar() 
 			{	
 				sub();
+				if (SolicitudesCertificadosForm.fechaSolicitud.value==""){
+				      alert("Debe introducir una fecha de solicitud");
+				      fin();
+					  return false;
+				    }
 				var idInstitucion = SolicitudesCertificadosForm.idInstitucion.value;
 				if (SolicitudesCertificadosForm.idInstitucionOrigen.value==""){
 			      alert("<siga:Idioma key="messages.certificado.error.noExisteColegioOrigen"/>");
@@ -195,6 +201,7 @@
 				  }
 			  <%}%>	    	
 			  }
+			  		  	
 				SolicitudesCertificadosForm.modo.value="modificar";
 				SolicitudesCertificadosForm.submit();
 			}
@@ -296,7 +303,7 @@
 		<html:hidden property="idInstitucion" value="<%=beanSolicitud.getIdInstitucion().toString() %>" />
 		<html:hidden property="idInstitucionSolicitud" value="<%=String.valueOf(beanSolicitud.getIdInstitucion_Sol()) %>" />
 		<html:hidden property="buscarIdPeticionCompra" value="<%=sIdCompra %>" />
-			
+		
 			
 		<html:hidden property="idSolicitud" value="<%=numSolicitud%>" />
 		<tr>
@@ -308,7 +315,26 @@
 						<td class="labelText" ><siga:Idioma key="certificados.solicitudes.literal.numeroCertificado" /></td>
 						<td class="labelTextValor"><%=codigo%></td>
 						<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.fechaSolicitud" /></td>
-						<td class="labelTextValor"><%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(userBean.getLanguage(), beanSolicitud.getFechaSolicitud()))%>
+						<td class="labelTextValor">
+							<%if (modificarSolicitud.equals("1") && idEstadoSolicitud.equals("1")) {%> 
+								<%if(modoEditar){
+									SimpleDateFormat sdf = new SimpleDateFormat(UtilidadesFecha.FORMATO_FECHA_ES);
+									Date date = new Date(beanSolicitud.getFechaSolicitud());
+									String fechaSol = sdf.format(date);	%>
+									<siga:Fecha nombreCampo="fechaSolicitud" valorInicial="<%=fechaSol%>" />&nbsp
+									<a onClick="return showCalendarGeneral(fechaSolicitud);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+								<%} else {%>
+									<html:text	name="SolicitudesCertificadosForm" style="width:80px"
+										property="fechaSolicitud" styleClass="boxConsulta" readonly="true"
+										value="<%=GstDate.getFormatedDateShort(userBean.getLanguage(), beanSolicitud.getFechaSolicitud()) %>">
+									</html:text>
+								<%}%>
+							<%} else {%>
+									<html:text name="SolicitudesCertificadosForm" style="width:80px"
+										property="fechaSolicitud" styleClass="boxConsulta" readonly="true"
+										value="<%=GstDate.getFormatedDateShort(userBean.getLanguage(), beanSolicitud.getFechaSolicitud()) %>">
+									</html:text>
+							<%}%>
 						</td>
 					</tr>
 					<tr>
@@ -379,14 +405,22 @@
 							key="certificados.solicitudes.literal.fechaEmision" /></td>
 						<td>
 						<%if (modificarSolicitud.equals("1")) {%> 
-							<html:text
-								name="SolicitudesCertificadosForm" style="width:80px"
-								property="fechaEmision" styleClass="<%=tipoBox %>" readonly="true"
-								value="<%=GstDate.getFormatedDateShort(userBean.getLanguage(), beanSolicitud.getFechaEmisionCertificado()) %>">
-							</html:text> 
-							<%if(modoEditar){%>
-								<a href='javascript://' onClick="return showCalendarGeneral(fechaEmision);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
-							<%}%> 
+							<%if(modoEditar){
+									String fechaEm ="";									
+									if(!beanSolicitud.getFechaEmisionCertificado().equals("")){
+										SimpleDateFormat sdf = new SimpleDateFormat(UtilidadesFecha.FORMATO_FECHA_ES);
+										Date date = new Date(beanSolicitud.getFechaEmisionCertificado());
+										fechaEm = sdf.format(date);
+									}%>
+								<siga:Fecha nombreCampo="fechaEmision" valorInicial="<%=fechaEm%>" />&nbsp
+								<a onClick="return showCalendarGeneral(fechaEmision);" onMouseOut="MM_swapImgRestore();" onMouseOver="MM_swapImage('Calendario','','<%=app%>/html/imagenes/calendar_hi.gif',1);"><img src="<%=app%>/html/imagenes/calendar.gif" alt="<siga:Idioma key="gratuita.listadoCalendario.literal.seleccionarFecha"/>"  border="0"></a>
+							<%} else {%>
+								<html:text
+									name="SolicitudesCertificadosForm" style="width:80px"
+									property="fechaEmision" styleClass="<%=tipoBox %>" readonly="true"
+									value="<%=GstDate.getFormatedDateShort(userBean.getLanguage(), beanSolicitud.getFechaEmisionCertificado()) %>">
+								</html:text>
+							<%}%>
 						<%} else {%>
 							<html:text name="SolicitudesCertificadosForm" style="width:80px" property="fechaEmision" styleClass="boxConsulta" readonly="true"
 								value="<%=GstDate.getFormatedDateShort(userBean.getLanguage(), beanSolicitud.getFechaEmisionCertificado()) %>">
