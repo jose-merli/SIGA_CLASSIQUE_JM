@@ -36,6 +36,7 @@ import com.siga.beans.HelperInformesAdm;
 import com.siga.beans.ScsDesignaBean;
 import com.siga.censo.form.BusquedaClientesForm;
 import com.siga.facturacion.form.ConsultaMorososForm;
+import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -140,6 +141,7 @@ public class InformePagosColegiadoAction extends MasterAction {
 		MantenimientoInformesForm form = (MantenimientoInformesForm) formulario;
 		form.setIdInstitucion(user.getLocation());
 		form.setParametrosComboPago(parametrosComboPago);
+		form.setParametrosComboPagoFin(parametrosComboPago);
 
 		return "inicio";
 	}
@@ -197,8 +199,10 @@ public class InformePagosColegiadoAction extends MasterAction {
 				Vector datos = null;
 				FcsPagosJGAdm pagosAdm = new FcsPagosJGAdm(user);
 				
-				resultado = pagosAdm.getPaginadorDetallePago(miFormulario,
-						idInstitucion, user.getLanguage());
+				
+				String idPagos = EjecucionPLs.ejecutarFuncPagosIntervalo(idInstitucion, miFormulario.getIdPago(),miFormulario.getIdPagoFinal());
+				
+				resultado = pagosAdm.getPaginadorDetallePago(miFormulario,idPagos, idInstitucion, user.getLanguage());
 				
 				
 				databackup.put("paginador",resultado);
@@ -299,8 +303,7 @@ public class InformePagosColegiadoAction extends MasterAction {
 
 				FcsPagosJGAdm pagosAdm = new FcsPagosJGAdm(user);
 
-				resultado = pagosAdm.getPaginadorDetallePago(form,
-						idInstitucion, user.getLanguage());
+				resultado = pagosAdm.getPaginadorDetallePago(form,"",idInstitucion, user.getLanguage());
 				// resultado = facAdm.selectMorosos(user,form);
 
 				// Paso de parametros empleando la sesion

@@ -924,6 +924,127 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		
 	} //getQueryDetallePago()
 	
+	
+		private String getQueryDetallePagoInicioFin (MantenimientoInformesForm form,String idPagos,
+									   String idInstitucion, Hashtable codigos, String idioma) 
+	{
+		//Variables
+		int contador = 0;
+		boolean isFiltrado;
+		String sql;
+		
+		
+		//Iniciando consulta si existe un filtrado
+		sql = "SELECT * FROM ( ";
+		isFiltrado = false;
+		if ((form.getLetrado()!=null				&& !form.getLetrado().equals(""))||
+			(form.getInteresadoNif()!=null			&& !form.getInteresadoNif().equals(""))||
+			(form.getInteresadoNombre()!=null		&& !form.getInteresadoNombre().equals(""))||
+			(form.getInteresadoApellido1()!=null	&& !form.getInteresadoApellido1().equals(""))||
+			(form.getInteresadoApellido2()!=null	&& !form.getInteresadoApellido2().equals("")))
+		{
+			isFiltrado = true;
+		}
+		
+		//Obtiene la consulta base
+		sql += getQueryDetallePagoColegiadoPaginadorInicioFin(idInstitucion, idPagos,null, idioma);
+
+		// no se genera carta de pagos si no tiene pagos de SJCS
+		sql += ") WHERE totalImporteSJCS > 0 ";
+
+		if (isFiltrado) {
+			sql +=
+				" AND 1=1 ";
+
+			if ((form.getLetrado()!=null && !form.getLetrado().equals(""))) {
+				contador++;
+				codigos.put(new Integer(contador), form.getLetrado());
+				sql +=
+					"   AND idpersonaSJCS = :"+contador;
+			}
+			boolean isInteresado = false;
+
+			if ((form.getInteresadoNif()!=null && !form.getInteresadoNif().equals(""))) {
+				sql +=
+					"   AND idpersonaSJCS in (select pers.idpersona " +
+					"                           from cen_persona pers " +
+					"                          where ";
+				contador++;
+				codigos.put(new Integer(contador), form.getInteresadoNif().toUpperCase());
+				sql += ComodinBusquedas.prepararSentenciaCompletaBind(
+						form.getInteresadoNif().toUpperCase(),
+						"upper(pers.nifcif)", contador, codigos);
+				isInteresado = true;
+			}
+
+			if ((form.getInteresadoNombre()!=null && !form.getInteresadoNombre().equals(""))) {
+				if (isInteresado) {
+					sql +=
+						"                            AND ";
+				}
+				else {
+					sql +=
+						"   AND idpersonaSJCS in (select pers.idpersona " +
+						"                           from cen_persona pers " +
+						"                          where ";
+					isInteresado = true;
+				}
+				contador++;
+				codigos.put(new Integer(contador), form.getInteresadoNombre().toUpperCase());
+				sql += ComodinBusquedas.prepararSentenciaCompletaBind(
+						form.getInteresadoNombre().toUpperCase(),
+						"upper(pers.nombre)", contador, codigos);
+			}
+
+			if ((form.getInteresadoApellido1()!=null && !form.getInteresadoApellido1().equals(""))) {
+				if (isInteresado) {
+					sql +=
+						"                            AND ";
+				}
+				else {
+					sql +=
+						"   AND idpersonaSJCS in (select pers.idpersona " +
+						"                           from cen_persona pers " +
+						"                          where ";
+					isInteresado = true;
+				}
+				contador++;
+				codigos.put(new Integer(contador), form.getInteresadoApellido1().toUpperCase());
+				sql += ComodinBusquedas.prepararSentenciaCompletaBind(
+						form.getInteresadoApellido1().toUpperCase(),
+						"upper(pers.apellidos1)", contador, codigos);
+			}
+
+			if ((form.getInteresadoApellido2()!=null && !form.getInteresadoApellido2().equals(""))) {
+				if (isInteresado) {
+					sql +=
+						"                            AND ";
+				}
+				else {
+					sql +=
+						"   AND idpersonaSJCS in (select pers.idpersona " +
+						"                           from cen_persona pers " +
+						"                          where ";
+					isInteresado = true;
+				}
+				contador++;
+				codigos.put(new Integer(contador), form.getInteresadoApellido2().toUpperCase());
+				sql += ComodinBusquedas.prepararSentenciaCompletaBind(
+						form.getInteresadoApellido2().toUpperCase(),
+						"upper(pers.apellidos2)", contador, codigos);
+				isInteresado = true;
+			}
+
+			if (isInteresado)
+				sql +=	"                        ) ";
+		}
+		
+		sql+=" ORDER BY nombre";
+		
+		return sql;
+		
+	} //getQueryDetallePago()
+	
 	public String getQueryDetallePagoColegiado(String idInstitucion,
 											   String idPagosJg,
 											   boolean irpf,
@@ -981,6 +1102,55 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		return sql.toString();
 	} //getQueryDetallePagoColegiado()
 	
+		/**
+	 * Obtiene los datos de Detalle de Pago:
+	 * usado en el Excel de Detalle de Letrado, por ejemplo 
+	 */
+	public String getQueryDetallePagoColegiadoInicioFin(String idInstitucion,
+											   String idPagos, 
+											   String idPersona, 
+											   boolean irpf,
+											   String idioma)
+	{
+		StringBuffer sql = new StringBuffer();
+		
+		sql.append("select ");
+		if (irpf)
+			sql.append("   nvl(idperdestino, idperorigen) as idpersonaSJCS, ");
+		else
+			sql.append("   pc.IDPERORIGEN as idpersonaSJCS, ");
+		
+		sql.append("       pc.idpagosjg as idpagos, ");
+		sql.append("       sum(pc.impOficio + pc.impAsistencia + pc.impEJG + pc.impSOJ) as totalImporteSJCS, ");
+		sql.append("       sum(pc.impRet) as importeTotalRetenciones, ");
+		sql.append("       sum(pc.impMovVar) as importeTotalMovimientos, ");
+		sql.append("       -1*round(abs(sum(pc.impOficio + pc.impAsistencia + pc.impEJG + pc.impSOJ + pc.impMovVar) * max(pc.impirpf) / 100), 2) as TOTALIMPORTEIRPF, ");
+		sql.append("       pc.idinstitucion, ");
+		sql.append("       f_siga_getrecurso_etiqueta(decode(");
+		sql.append("       (select a.idcuenta ");
+		sql.append("          from FAC_ABONO A ");
+		sql.append("         where nvl(idperdestino, idperorigen) = a.idpersona ");
+		sql.append("           and pc.idinstitucion = a.idinstitucion ");
+		sql.append("           and pc.idpagosjg = a.idpagosjg ");
+		sql.append("           and rownum = 1), ");
+		sql.append("       null, 'gratuita.pagos.porCaja', 'gratuita.pagos.porBanco'), "+idioma+") ");
+		sql.append("       as FORMADEPAGO ");
+		
+		sql.append("  from FCS_PAGO_COLEGIADO pc, cen_persona cen ");
+		sql.append(" where pc.IDINSTITUCION = "+idInstitucion+" ");
+		sql.append("   and pc.IDPAGOSJG IN("+idPagos+") ");
+		sql.append("   and pc.IDPERORIGEN = nvl("+idPersona+", pc.IDPERORIGEN) ");
+		sql.append("   and cen.idpersona = nvl("+idPersona+", pc.IDPERORIGEN) ");
+		
+		if (irpf)
+			sql.append(
+					"  and impirpf > 0 ");		
+		sql.append(" group by cen.apellidos1,cen.apellidos2, pc.IDPERORIGEN, pc.IDPERDESTINO, pc.IDPAGOSJG, pc.IDINSTITUCION ");
+		sql.append(" order by cen.apellidos1, cen.apellidos2 ");
+		
+		return sql.toString();
+	} //getQueryDetallePagoColegiado()
+	
 	public String getQueryDetallePagoColegiadoPaginador(String idInstitucion,
 														String idPagosJg,
 														String idPersona,
@@ -1003,13 +1173,33 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		return sql.toString();
 	} // getQueryDetallePagoColegiadoPaginador()
 	
-	public PaginadorCaseSensitiveBind getPaginadorDetallePago(MantenimientoInformesForm form,
-															  String idInstitucion,
-															  String idioma)
+	public String getQueryDetallePagoColegiadoPaginadorInicioFin(String idInstitucion,
+														String idPagoss,
+														String idPersona,
+														String idioma)
+	{
+		StringBuffer sql = new StringBuffer();
+		sql.append(" select pagoAColegiados.*, ");
+		sql.append("        f_siga_calculoncolegiado(pagoAColegiados.idinstitucion, pagoAColegiados.idpersonaSJCS) as NCOLEGIADO, ");
+		sql.append("        (select p.apellidos1 || ' ' || p.apellidos2 || ', ' || p.nombre ");
+		sql.append("           from cen_persona p, cen_cliente c ");
+		sql.append("          where p.idpersona = c.idpersona ");
+		sql.append("            and c.idinstitucion = pagoAColegiados.idinstitucion ");
+		sql.append("            and c.idpersona = pagoAColegiados.idpersonaSJCS) as NOMBRE ");
+		sql.append("   from ( ");
+		
+		sql.append(getQueryDetallePagoColegiadoInicioFin(idInstitucion, idPagoss, idPersona, false, idioma));
+		
+		sql.append("        ) pagoAColegiados ");
+		
+		return sql.toString();
+	} // getQueryDetallePagoColegiadoPaginador()
+	
+	public PaginadorCaseSensitiveBind getPaginadorDetallePago(MantenimientoInformesForm form, String idPagos,String idInstitucion,String idioma)
 			throws ClsExceptions
 	{
 		Hashtable codigos = new Hashtable();
-		String sql = getQueryDetallePago(form, idInstitucion, codigos, idioma);
+		String sql = getQueryDetallePagoInicioFin(form,idPagos,idInstitucion, codigos, idioma);
 		
 		try {
 			PaginadorCaseSensitiveBind paginador = new PaginadorCaseSensitiveBind(

@@ -51,20 +51,15 @@
 	String valorCheckPersona = "";
 	if (datosPaginador != null) {
 
-		if (datosPaginador.get("datos") != null
-				&& !datosPaginador.get("datos").equals("")) {
+		if (datosPaginador.get("datos") != null && !datosPaginador.get("datos").equals("")) {
 			resultado = (Vector) datosPaginador.get("datos");
 
-			PaginadorCaseSensitiveBind paginador = (PaginadorCaseSensitiveBind) datosPaginador
-					.get("paginador");
-			paginaSeleccionada = String.valueOf(paginador
-					.getPaginaActual());
+			PaginadorCaseSensitiveBind paginador = (PaginadorCaseSensitiveBind) datosPaginador.get("paginador");
+			paginaSeleccionada = String.valueOf(paginador.getPaginaActual());
 
-			totalRegistros = String.valueOf(paginador
-					.getNumeroTotalRegistros());
+			totalRegistros = String.valueOf(paginador.getNumeroTotalRegistros());
 
-			registrosPorPagina = String.valueOf(paginador
-					.getNumeroRegistrosPorPagina());
+			registrosPorPagina = String.valueOf(paginador.getNumeroRegistrosPorPagina());
 
 		} else {
 			resultado = new Vector();
@@ -170,113 +165,70 @@
 	<br>
 	<br>
 	<%
-		}
-
-			else {
+		} else {
 				for (int i = 0; i < resultado.size(); i++) {
 					Row fila = (Row) resultado.elementAt(i);
 					FilaExtElement[] elemento = new FilaExtElement[1];
-					elemento[0] = new FilaExtElement("enviar", "comunicar",
-							SIGAConstants.ACCESS_READ);
+					elemento[0] = new FilaExtElement("enviar", "comunicar", SIGAConstants.ACCESS_READ);
 	%>
 	<siga:FilaConIconos fila='<%=""+(i+1)%>' botones=""
 		visibleConsulta="no" visibleEdicion="no" visibleBorrado="no"
 		elementos='<%=elemento%>' pintarEspacio="no" clase="listaNonEdit">
 
 
-		<input type="hidden" name="idPersona<%=""+(i+1)%>"
+		<input type="hidden" name="idPersona<%="" + (i + 1)%>"
 			value="<%=fila.getString("IDPERSONASJCS")%>">
+			
+		<input type="hidden" name="idPago<%="" + (i + 1)%>"
+			value="<%=fila.getString("IDPAGOS")%>">
 
 		<td align="center">
 		<%
-			String idInstitucionRow = fila
-									.getString("IDINSTITUCION");
-							String idPersonaRow = fila
-									.getString("IDPERSONASJCS");
-							String valorCheck = idInstitucionRow + "||"
-									+ idPersonaRow;
-							boolean isChecked = false;
-							for (int z = 0; z < registrosSeleccionados.size(); z++) {
+			String idInstitucionRow = fila.getString("IDINSTITUCION");
+			String idPersonaRow = fila.getString("IDPERSONASJCS");
+			String idPagosRow = fila.getString("IDPAGOS");
+			String valorCheck = idInstitucionRow + "||" + idPersonaRow + "##" + idPagosRow;
+			boolean isChecked = false;
+			for (int z = 0; z < registrosSeleccionados.size(); z++) {
 
-								Hashtable clavesRegistro = (Hashtable) registrosSeleccionados
-										.get(z);
+				Hashtable clavesRegistro = (Hashtable) registrosSeleccionados.get(z);
 
-								if (valorCheck.equals((String) clavesRegistro
-										.get("CLAVE"))) {
+				if (valorCheck.equals((String) clavesRegistro.get("CLAVE"))) {
+					isChecked = true;
+					break;
+				}
 
-									isChecked = true;
-									break;
-								}
+			}
 
-							}
-
-							if (isChecked) {
+			if (isChecked) {
 		%> <input type="checkbox" value="<%=valorCheck%>" name="chkPersona"
 			checked onclick="pulsarCheck(this)"> <%
  	} else {
- %> <input type="checkbox" value="<%=valorCheck%>"
-			name="chkPersona" onclick="pulsarCheck(this)"> <%
+ %> <input type="checkbox" value="<%=valorCheck%>" name="chkPersona"
+			onclick="pulsarCheck(this)"> <%
  	}
  %>
 		</td>
 
 
-		<td><%=UtilidadesString
-													.mostrarDatoJSP(fila
-															.getString(CenColegiadoBean.C_NCOLEGIADO))%></td>
-		<td><%=UtilidadesString.mostrarDatoJSP(fila
-											.getString("NOMBRE"))%></td>
-		<td align="right"><%=UtilidadesNumero
-													.formatoCampo(UtilidadesNumero
-															.redondea(
-																	fila
-																			.getString("TOTALIMPORTESJCS"),
-																	2))%>&nbsp;&euro;</td>
-		<td align="right"><%=UtilidadesNumero
-													.formatoCampo(UtilidadesNumero
-															.redondea(
-																	fila
-																			.getString("IMPORTETOTALMOVIMIENTOS"),
-																	2))%>&nbsp;&euro;</td>
+		<td><%=UtilidadesString.mostrarDatoJSP(fila.getString(CenColegiadoBean.C_NCOLEGIADO))%></td>
+		<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("NOMBRE"))%></td>
+		<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(fila.getString("TOTALIMPORTESJCS"), 2))%>&nbsp;&euro;</td>
+		<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(fila.getString("IMPORTETOTALMOVIMIENTOS"), 2))%>&nbsp;&euro;</td>
 		<%
-			float aux = Float.parseFloat(fila
-									.getString("TOTALIMPORTESJCS"))
-									+ Float
-											.parseFloat(fila
-													.getString("IMPORTETOTALMOVIMIENTOS"));
-							String importe = UtilidadesString
-									.mostrarDatoJSP(UtilidadesNumero.redondea(
-											(new Float(aux)).toString(), 2));
+			float aux = Float.parseFloat(fila.getString("TOTALIMPORTESJCS"))
+									+ Float.parseFloat(fila.getString("IMPORTETOTALMOVIMIENTOS"));
+							String importe = UtilidadesString.mostrarDatoJSP(UtilidadesNumero.redondea((new Float(aux)).toString(), 2));
 		%>
-		<td align="right"><%=UtilidadesNumero
-											.formatoCampo(UtilidadesNumero
-													.redondea(importe, 2))%>&nbsp;&euro;</td>
-		<td align="right"><%=UtilidadesNumero
-													.formatoCampo(UtilidadesNumero
-															.redondea(
-																	fila
-																			.getString("TOTALIMPORTEIRPF"),
-																	2))%>&nbsp;&euro;</td>
-		<td align="right"><%=UtilidadesNumero
-													.formatoCampo(UtilidadesNumero
-															.redondea(
-																	fila
-																			.getString("IMPORTETOTALRETENCIONES"),
-																	2))%>&nbsp;&euro;</td>
+		<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(importe, 2))%>&nbsp;&euro;</td>
+		<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(fila.getString("TOTALIMPORTEIRPF"), 2))%>&nbsp;&euro;</td>
+		<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(fila.getString("IMPORTETOTALRETENCIONES"), 2))%>&nbsp;&euro;</td>
 		<%
-			aux = aux
-									+ Float.parseFloat(fila
-											.getString("TOTALIMPORTEIRPF"))
-									+ Float
-											.parseFloat(fila
-													.getString("IMPORTETOTALRETENCIONES"));
-							importe = UtilidadesString
-									.mostrarDatoJSP(UtilidadesNumero.redondea(
-											(new Float(aux)).toString(), 2));
+			aux = aux + Float.parseFloat(fila.getString("TOTALIMPORTEIRPF"))
+									+ Float.parseFloat(fila.getString("IMPORTETOTALRETENCIONES"));
+							importe = UtilidadesString.mostrarDatoJSP(UtilidadesNumero.redondea((new Float(aux)).toString(), 2));
 		%>
-		<td align="right"><%=UtilidadesNumero
-											.formatoCampo(UtilidadesNumero
-													.redondea(importe, 2))%>&nbsp;&euro;</td>
+		<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(importe, 2))%>&nbsp;&euro;</td>
 
 	</siga:FilaConIconos>
 	<%
@@ -289,10 +241,8 @@
 </siga:TablaCabecerasFijas>
 <siga:ConjBotonesAccion botones="COM" />
 <%
-	if (datosPaginador != null && datosPaginador.get("datos") != null
-			&& !datosPaginador.get("datos").equals("")) {
-		String regSeleccionados = ("" + ((registrosSeleccionados == null) ? 0
-				: registrosSeleccionados.size()));
+	if (datosPaginador != null && datosPaginador.get("datos") != null && !datosPaginador.get("datos").equals("")) {
+		String regSeleccionados = ("" + ((registrosSeleccionados == null) ? 0 : registrosSeleccionados.size()));
 %>
 
 <siga:Paginador totalRegistros="<%=totalRegistros%>"
@@ -339,16 +289,15 @@
 		   
 	}
 	function cargarChecks(){
-		<%if (registrosSeleccionados!=null){
-	   		for (int p=0;p<registrosSeleccionados.size();p++){
-		   		Hashtable clavesEJG= (Hashtable) registrosSeleccionados.get(p);
-				valorCheckPersona=(String)clavesEJG.get("CLAVE");
-				%>
-					var aux='<%=valorCheckPersona%>';
+		<%if (registrosSeleccionados != null) {
+				for (int p = 0; p < registrosSeleccionados.size(); p++) {
+					Hashtable clavesEJG = (Hashtable) registrosSeleccionados.get(p);
+					valorCheckPersona = (String) clavesEJG.get("CLAVE");
+					String valorPago =(String) clavesEJG.get("IDPAGOS");%>
+					var aux='<%=valorCheckPersona +"##" + valorPago%>';
 					ObjArray.push(aux);
-				<%
-			} 
-	   	}%>
+				<%}
+			}%>
 	   	
 		ObjArray.toString();
 		seleccionados1=ObjArray;
@@ -438,12 +387,14 @@
 		{
 		sub();
 		datos = "";
+		
 		for (i = 0; i < ObjArray.length; i++) {
 			var idRegistros = ObjArray[i];
 			index = idRegistros.indexOf('||');
 			idInstitucion  = idRegistros.substring(0,index);
 			idPersona = idRegistros.substring(index+2);
-			idPago = parent.document.mantenimientoInformesForm.idPago.value;
+			index2 = idRegistros.indexOf('##');
+			idPago = idRegistros.substring(index2+2);
 			idioma = parent.document.mantenimientoInformesForm.idioma.value;
  		   	datos += "idPersona=="+idPersona + "##idPago==" +idPago + "##idInstitucion==" +idInstitucion + "##idioma==" +idioma +"%%%";
 		}
@@ -477,10 +428,11 @@
 	function comunicar(fila)
 		{
 		var idPers = "idPersona"+fila;
+		var idPago = "idPago"+fila;
 		idPersona = document.getElementById(idPers).value;
-		idPago = parent.document.mantenimientoInformesForm.idPago.value;
+		idPago = document.getElementById(idPago).value;
 		idInstitucion = document.mantenimientoInformesForm.idInstitucion.value;
-					   	datos = "idInstitucion=="+idInstitucion +"##idPago=="+idPago+"##idPersona=="+idPersona +"%%%";
+		datos = "idInstitucion=="+idInstitucion +"##idPago=="+idPago+"##idPersona=="+idPersona +"%%%";
 		
 		var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='/SIGA/INF_InformesGenericos.do' target='submitArea'>");
 		formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=idInstitucion%>'>"));

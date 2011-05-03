@@ -66,7 +66,15 @@
 		<td class="labelText" width="10%">
 			<siga:Idioma key="informes.sjcs.pagos.literal.pago"/>&nbsp;(*)
 			<bean:define id="parametrosComboPago" name="mantenimientoInformesForm" property="parametrosComboPago"/>
-			<siga:ComboBD nombre="idPago" tipo="cmb_PagosCerrados" parametro="<%=(String[])parametrosComboPago%>" clase="boxCombo" obligatorio="false" accion=";buscar();"/>
+			<siga:ComboBD nombre="idPago" tipo="cmb_PagosCerrados" parametro="<%=(String[])parametrosComboPago%>" clase="boxCombo" obligatorio="false" />
+		</td>
+	</tr>
+	
+	<tr>
+		<td class="labelText" width="10%">
+			<siga:Idioma key="informes.sjcs.pagos.literal.pago"/>&nbsp;(*)
+			<bean:define id="parametrosComboPagoFin" name="mantenimientoInformesForm" property="parametrosComboPagoFin"/>
+			<siga:ComboBD nombre="idPagoFinal" tipo="cmb_PagosCerrados" parametro="<%=(String[])parametrosComboPagoFin%>" clase="boxCombo" obligatorio="false" />
 		</td>
 	</tr>
 

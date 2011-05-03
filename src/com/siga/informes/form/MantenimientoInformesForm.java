@@ -16,6 +16,7 @@ public class MantenimientoInformesForm extends MasterForm
 	private String interesadoNif;
 	private String idPersona;
 	String[] parametrosComboPago = null;
+	String[] parametrosComboPagoFin = null;
 
 	
 	// Getters
@@ -29,9 +30,11 @@ public class MantenimientoInformesForm extends MasterForm
 	public String getInteresadoNif() {return interesadoNif;}
 	public String getIdPersona() {return idPersona;}
 	public String[] getParametrosComboPago() {return parametrosComboPago;}
+	public String[] getParametrosComboPagoFin() {return parametrosComboPagoFin;}
 	
 	public String getIdioma() {return UtilidadesHash.getString(this.datos, "IDIOMA");}
 	public String getIdPago() {return UtilidadesHash.getString(this.datos, "IDPAGO");}
+	public String getIdPagoFinal() {return UtilidadesHash.getString(this.datos, "IDPAGOFINAL");}
 	public String getIdFacturacion() {return UtilidadesHash.getString(this.datos, "IDFACTURACION");}
 	public String getNombreFichero() {return UtilidadesHash.getString(this.datos, "NOMBREFICHERO");}
 	public String getRutaFichero() {return UtilidadesHash.getString(this.datos, "RUTAFICHERO");}
@@ -49,9 +52,11 @@ public class MantenimientoInformesForm extends MasterForm
 	public void setInteresadoNif(String valor) {this.interesadoNif = valor;}
 	public void setIdPersona(String valor) {this.idPersona = valor;}
 	public void setParametrosComboPago(String[] valor) {this.parametrosComboPago = valor;}
+	public void setParametrosComboPagoFin(String[] valor) {this.parametrosComboPagoFin = valor;}
 	
 	public void setIdioma(String valor) {UtilidadesHash.set(this.datos, "IDIOMA", valor);}
 	public void setIdPago(String valor) {UtilidadesHash.set(this.datos, "IDPAGO", valor);}
+	public void setIdPagoFinal(String valor) {UtilidadesHash.set(this.datos, "IDPAGOFINAL", valor);}
 	public void setIdFacturacion(String valor) {UtilidadesHash.set(this.datos, "IDFACTURACION", valor);}
 	public void setNombreFichero(String valor) {UtilidadesHash.set(this.datos, "NOMBREFICHERO", valor);}
 	public void setRutaFichero(String valor) {UtilidadesHash.set(this.datos, "RUTAFICHERO", valor);}
