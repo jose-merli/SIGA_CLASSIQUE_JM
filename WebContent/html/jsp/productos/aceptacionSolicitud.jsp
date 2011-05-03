@@ -194,34 +194,23 @@
 			f = document.solicitudCompraForm;
 			
 			for(j=1; j < <%=vArticulos.size()%>+1; j++) { 
-				//esservicio=eval("f.certificado" + j +"_1");
-				//alert(esservicio);	
-				//if(){
-
-					nofacturable=eval("f.oculto" + j +"_7");
-					if(nofacturable.value=="0"){ //En el caso de que sea facturable
-						cuenta=eval("f.oculto" + j +"_5");	
-						formaPago=eval("f.oculto" + j +"_6");
-						numeroCuenta=eval("f.cuenta" + j);				
-						pago=eval("f.formaPago" + j);
-						cuentaelegida=eval("f.oculto" + j +"_8");	
-						idcuenta=eval("f.oculto" + j +"_9");
-						if(pago.value==<%=factura%>){	
-							if(cuentaelegida.value!=""){
-								cuenta.value=idcuenta.value;
-						
-								numeroCuenta.value=cuentaelegida.value;
-								//alert(cuentaelegida.value);
-							}
+				nofacturable=eval("f.oculto" + j +"_7");
+				if(nofacturable.value=="0"){ //En el caso de que sea facturable
+					cuenta=eval("f.oculto" + j +"_5");	
+					formaPago=eval("f.oculto" + j +"_6");
+					numeroCuenta=eval("f.cuenta" + j);				
+					pago=eval("f.formaPago" + j);
+					cuentaelegida=eval("f.oculto" + j +"_8");	
+					idcuenta=eval("f.oculto" + j +"_9");
+					if(pago.value==<%=factura%>){	
+						if(cuentaelegida.value!=""){
+							cuenta.value=idcuenta.value;						
+							numeroCuenta.value=cuentaelegida.value;
+							document.getElementById("cuenta"+j).value = 1;								
 						}
 					}
-				//}
-			}
-			//formaPago.value=pago[pago.selectedIndex].text; 		
-
-			//formaPago.selectedIndex=1;
-			//formaPago[1].selected=true;	
-				   
+				}
+			}		   
  		}
 	
 	
@@ -233,9 +222,12 @@
 			pago=eval("f.formaPago" + fila);
 			cuentaelegida=eval("f.oculto" + fila +"_8");	
 			idcuenta=eval("f.oculto" + fila +"_9");
-						
-			if(pago.value==<%=factura%>){	
-				if(cuentaelegida.value==""){			
+			if(pago.value==<%=factura%>){
+				document.getElementById("cuenta" + fila).disabled="";	
+				// numeroCuenta.clase = "boxCombo";
+				// numeroCuenta.readonly = "false";
+				if(cuentaelegida.value==""){
+					/*			
 					f.modo.value = "modificarCuenta";
 					var resultado = ventaModalGeneral("solicitudCompraForm","P");					
 					if(resultado!= undefined && resultado[0]!=undefined){
@@ -245,17 +237,24 @@
 						cuenta.value="";
 						numeroCuenta.value="";
 						//pago.value="";			
-					}
-				}
-				else{
+					}*/
+
+					alert("Seleccione una Cuenta Bancaria en Nº de Cuenta");
+					
+					
+				}else{
 					cuenta.value=idcuenta.value;
 					//alert(idcuenta.value);
 					numeroCuenta.value=cuentaelegida.value;
 					//alert(cuentaelegida.value);
 				}
-			}else{			
+			}else{
+				document.getElementById("cuenta" + fila).disabled="disabled";			
+				// numeroCuenta.readonly = "true";
+				//numeroCuenta.clase = "boxConsulta";
 				cuenta.value="";
-				numeroCuenta.value="";				
+				numeroCuenta.value="";	
+							
 			}	
 			formaPago.value=pago[pago.selectedIndex].text; 					   
  		}
@@ -548,12 +547,13 @@
     			String nombrecol1;
   				String tamanoCol1;
   				int var=1;
+
   				if(!user.isLetrado()&&aprobarSolicitud.equals("S"))  { 
-  					nombrecol1="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.periodicidad,pys.solicitudCompra.literal.iva,pys.solicitudCompra.literal.fechaEfectiva,";  
-  					tamanoCol1="15,18,18,6,8,8,7,12,12";
+  					nombrecol1="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.periodicidad,pys.solicitudCompra.literal.iva,pys.solicitudCompra.literal.fechaEfectiva";  
+  					tamanoCol1="14,17,29,6,8,8,6,12";
 				}else{
-				   	nombrecol1="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.periodicidad,pys.solicitudCompra.literal.iva,"  ;	  				
-				   	tamanoCol1="18,18,18,7,8,8,7,16";
+				   	nombrecol1="pys.solicitudCompra.literal.concepto,pys.solicitudCompra.literal.formaPago,pys.solicitudCompra.literal.nCuenta,pys.solicitudCompra.literal.cantidad,pys.solicitudCompra.literal.precio,pys.solicitudCompra.literal.periodicidad,pys.solicitudCompra.literal.iva"  ;	  				
+				   	tamanoCol1="20,17,35,6,8,8,6";
 				}%>
 
    					<siga:TablaCabecerasFijas 
@@ -669,7 +669,7 @@
 
 														 				
 	%> 				
-								<siga:FilaConIconos fila='<%=String.valueOf(fila)%>' botones=''visibleBorrado="false" visibleConsulta="false" visibleEdicion="false" pintarEspacio="no" elementos='<%=elems%>' clase="listaNonEdit">
+								<siga:FilaConIconos fila='<%=String.valueOf(fila)%>' botones='' visibleBorrado="false" visibleConsulta="false" visibleEdicion="false" pintarEspacio="no" elementos='<%=elems%>' clase="listaNonEdit">
 								<td> 													
 									<input type='hidden' name='oculto<%=String.valueOf(fila)%>_1' value='<%=String.valueOf((Integer)a.getIdTipo())%>'>	 							
 									<input type='hidden' name='oculto<%=String.valueOf(fila)%>_2' value='<%=String.valueOf((Long)a.getIdArticulo())%>'>	
@@ -714,19 +714,27 @@
 	<%								}	
 								}%>				
 			  				</td>
-			  				<td>
-								<input type='text' name='cuenta<%=String.valueOf(fila)%>' value="<%=sCuenta%>" class=listaNonEdit readOnly=true style="border:none; background-color:transparent;width:200px">
-			  				</td>
+							<td>								
+	<%							String parametro[] = new String[2];
+	   						 	parametro[0] = carro.getIdPersona().toString();
+	   						 	parametro[1] = idInstitucion.toString(); 
+	   						 	String n = "cuenta"+String.valueOf(fila);
+	   						 	
+	   						 	ArrayList cuentaSel   = new ArrayList();
+  								cuentaSel.add("1");
+	%>
+								<siga:ComboBD nombre="<%=n%>" tipo="cuentaCargo" clase="boxCombo" parametro="<%=parametro%>" ancho="15" readonly="false"  />
+							</td>
 			  				<td>
 								<input type='text' name='cantidad<%=String.valueOf(fila)%>' value="<%=sCantidad%>" maxlength="5" class="box" styleClass="box" size="3" <%=desactivado%> onBlur="<%=validarCantidad%>,this)">
 			  				</td>
 			  				<td align="right">
 								<% // Producto
 								   if (a.getClaseArticulo() == Articulo.CLASE_PRODUCTO) {%><% if (bModPrecio) {%>
-<input type='text' name='precio<%=String.valueOf(fila)%>' value="<%=UtilidadesNumero.formatoCampo(sPrecio)%>"  class="boxNumber"  size="6">
-<%} else { %>
-														<input type='text' name='precio<%=String.valueOf(fila)%>' value="<%=UtilidadesNumero.formatoCampo(sPrecio)%>"  class=listaNonEdit readOnly=true style="border:none; background-color:transparent; width:70px; text-align:right;">
-														<%}  %>
+										<input type='text' name='precio<%=String.valueOf(fila)%>' value="<%=UtilidadesNumero.formatoCampo(sPrecio)%>"  class="boxNumber"  size="6">
+									<%} else { %>
+										<input type='text' name='precio<%=String.valueOf(fila)%>' value="<%=UtilidadesNumero.formatoCampo(sPrecio)%>"  class=listaNonEdit readOnly=true style="border:none; background-color:transparent; width:70px; text-align:right;">
+									<%}  %>
 								<% }  // Servicio
 								   else { %>
 										 <input type='text' name='precio<%=String.valueOf(fila)%>' value="<%=UtilidadesNumero.formatoCampo(sPrecio)%>" class=listaNonEdit readOnly=true style="border:none; background-color:transparent; width:70px; text-align:right;">
@@ -737,7 +745,7 @@
 			  					<%=sPeriodicidad%>
 			  				</td>
 			  				<td>
-			  					<input type='text' name='iva<%=String.valueOf(fila)%>' value="<%=UtilidadesNumero.formatoCampo(sIva)%>" class=listaNonEdit readOnly=true style="border:none; background-color:transparent" size="3">% 
+			  					<input type='text' name='iva<%=String.valueOf(fila)%>' value="<%=UtilidadesNumero.formatoCampo(sIva)%>" class=listaNonEdit readOnly=true style="border:none; background-color:transparent" size="2">% 
 			  				</td>
 			  				<%if(!user.isLetrado()&& aprobarSolicitud.equals("S")){ %>
 				  				<td class="labelText">
