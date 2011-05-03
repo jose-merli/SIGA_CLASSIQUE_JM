@@ -1657,8 +1657,9 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			sqlClientes = "SELECT "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+" , " +
 			
 			" "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NOMBRE+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+","+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_FECHANACIMIENTO+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDPERSONA+" , "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" "+
+			" ,"+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_DOMICILIO+", "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_CODIGOPOSTAL+", nvl("+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_POBLACIONEXTRANJERA+","+CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_NOMBRE+") as POBLACION"+
 			" ,  nvl("+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_NOAPARECERREDABOGACIA+",'0') "+CenClienteBean.C_NOAPARECERREDABOGACIA+" " +
-			" FROM  "+CenPersonaBean.T_NOMBRETABLA+" ,  "+CenClienteBean.T_NOMBRETABLA;
+			" FROM  "+CenPersonaBean.T_NOMBRETABLA+" ,  "+CenClienteBean.T_NOMBRETABLA  +" ,  "+ CenDireccionesBean.T_NOMBRETABLA+" ,  "+CenPoblacionesBean.T_NOMBRETABLA;
 			 if (formulario.getResidente()!=null && !formulario.getResidente().equals("0")){
 				 
 			 	sqlClientes+=", "+CenColegiadoBean.T_NOMBRETABLA;
@@ -1676,6 +1677,14 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			codigos.put(new Integer (contador),idInstitucion);
 			sqlClientes+=" and "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+"= :"+contador;
 			   
+			
+			//añadimos la información sobre las direcciones del censo web
+			sqlClientes+= "AND "+ CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_IDPOBLACION+" = "+CenPoblacionesBean.T_NOMBRETABLA+"."+CenPoblacionesBean.C_IDPOBLACION +"(+)"+
+                  " AND "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_IDPERSONA+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA +
+                  " AND "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_IDINSTITUCION+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+
+                  " AND "+CenDireccionesBean.T_NOMBRETABLA+"."+CenDireccionesBean.C_IDDIRECCION+" = f_siga_getiddireccion_tipopre2("+idInstitucion+","+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDPERSONA+",3,null)";
+                   
+                  
 // 3
        if (formulario.getNombrePersona()!=null && !formulario.getNombrePersona().trim().equals("")) {
        	if ((bBusqueda ) ) {

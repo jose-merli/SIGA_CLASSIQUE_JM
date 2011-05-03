@@ -51,85 +51,80 @@
 <bean:define id="colegiado" name="busquedaClientesForm" property="colegiado" type="java.lang.String"/>
 
 <%
-try{
-	String app = request.getContextPath();
-	HttpSession ses = request.getSession();
-	Properties src = (Properties) ses
-			.getAttribute(SIGAConstants.STYLESHEET_REF);
-	UsrBean usrbean = (UsrBean) session
-			.getAttribute(ClsConstants.USERBEAN);
-	String idioma = usrbean.getLanguage().toUpperCase();
-	String idInstitucionLocation = usrbean.getLocation();
-	int idInstitucionInt = Integer.parseInt(idInstitucionLocation);
-	boolean esColegio = (idInstitucionInt>2000 && idInstitucionInt<3000);
-	
-	boolean ParametrolopdActivo = ((String)request.getAttribute("ParametrolopdActivo")).equals("1");
-	
-	CenClienteAdm admCen = new CenClienteAdm(usrbean);
-	String valorCheckPersona = "";
-	// locales
-	//BusquedaClientesForm formulario = (BusquedaClientesForm) request
+	try {
+		String app = request.getContextPath();
+		HttpSession ses = request.getSession();
+		Properties src = (Properties) ses.getAttribute(SIGAConstants.STYLESHEET_REF);
+		UsrBean usrbean = (UsrBean) session.getAttribute(ClsConstants.USERBEAN);
+		String idioma = usrbean.getLanguage().toUpperCase();
+		String idInstitucionLocation = usrbean.getLocation();
+		int idInstitucionInt = Integer.parseInt(idInstitucionLocation);
+		boolean esColegio = (idInstitucionInt > 2000 && idInstitucionInt < 3000);
+
+		boolean ParametrolopdActivo = ((String) request.getAttribute("ParametrolopdActivo")).equals("1");
+
+		CenClienteAdm admCen = new CenClienteAdm(usrbean);
+		String valorCheckPersona = "";
+		// locales
+		//BusquedaClientesForm formulario = (BusquedaClientesForm) request
 		//	.getSession().getAttribute("busquedaClientesForm");
 
-	//String colegiado = formulario.getColegiado();
-	if (colegiado == null)
-		colegiado = " ";
+		//String colegiado = formulario.getColegiado();
+		if (colegiado == null)
+			colegiado = " ";
 
-	Vector resultado = null;
-	
-	String titu = "";
-	
-	if (colegiado.equals(ClsConstants.DB_TRUE)) {
-		//colegiados
-		
-		titu = "censo.busquedaClientes.colegiados.titulo";
-	} else {
-		if (colegiado.equals(ClsConstants.DB_FALSE)) {
-			//no colegiados
-			titu = "censo.busquedaClientes.noColegiados.titulo";
+		Vector resultado = null;
+
+		String titu = "";
+
+		if (colegiado.equals(ClsConstants.DB_TRUE)) {
+			//colegiados
+
+			titu = "censo.busquedaClientes.colegiados.titulo";
 		} else {
-			//Letrados
-			titu = "censo.busquedaClientes.letrados.titulo";
-		}
-	}
-	/** PAGINADOR ***/
-	String paginaSeleccionada = "";
-
-	String totalRegistros = "";
-
-	String registrosPorPagina = "";
-	
-	
-	if (datosPaginador!=null) {
-	
-
-		if (datosPaginador.get("datos") != null && !datosPaginador.get("datos").equals("")) {
-			resultado = (Vector) datosPaginador.get("datos");
-			if (colegiado.equals(ClsConstants.DB_FALSE)
-					|| colegiado.equals(ClsConstants.DB_TRUE)) {
-				PaginadorBind paginador = (PaginadorBind) datosPaginador
-						.get("paginador");
-				paginaSeleccionada = String.valueOf(paginador
-						.getPaginaActual());
-
-				totalRegistros = String.valueOf(paginador
-						.getNumeroTotalRegistros());
-
-				registrosPorPagina = String.valueOf(paginador
-						.getNumeroRegistrosPorPagina());
+			if (colegiado.equals(ClsConstants.DB_FALSE)) {
+				//no colegiados
+				titu = "censo.busquedaClientes.noColegiados.titulo";
 			} else {
-				PaginadorCaseSensitiveBind paginadorCS = (PaginadorCaseSensitiveBind) datosPaginador
-						.get("paginador");
-				paginaSeleccionada = String.valueOf(paginadorCS
-						.getPaginaActual());
-
-				totalRegistros = String.valueOf(paginadorCS
-						.getNumeroTotalRegistros());
-
-				registrosPorPagina = String.valueOf(paginadorCS
-						.getNumeroRegistrosPorPagina());
+				//Letrados
+				titu = "censo.busquedaClientes.letrados.titulo";
 			}
+		}
+		/** PAGINADOR ***/
+		String paginaSeleccionada = "";
 
+		String totalRegistros = "";
+
+		String registrosPorPagina = "";
+
+		if (datosPaginador != null) {
+
+			if (datosPaginador.get("datos") != null && !datosPaginador.get("datos").equals("")) {
+				resultado = (Vector) datosPaginador.get("datos");
+				if (colegiado.equals(ClsConstants.DB_FALSE) || colegiado.equals(ClsConstants.DB_TRUE)) {
+					PaginadorBind paginador = (PaginadorBind) datosPaginador.get("paginador");
+					paginaSeleccionada = String.valueOf(paginador.getPaginaActual());
+
+					totalRegistros = String.valueOf(paginador.getNumeroTotalRegistros());
+
+					registrosPorPagina = String.valueOf(paginador.getNumeroRegistrosPorPagina());
+				} else {
+					PaginadorCaseSensitiveBind paginadorCS = (PaginadorCaseSensitiveBind) datosPaginador.get("paginador");
+					paginaSeleccionada = String.valueOf(paginadorCS.getPaginaActual());
+
+					totalRegistros = String.valueOf(paginadorCS.getNumeroTotalRegistros());
+
+					registrosPorPagina = String.valueOf(paginadorCS.getNumeroRegistrosPorPagina());
+				}
+
+			} else {
+				resultado = new Vector();
+				paginaSeleccionada = "0";
+
+				totalRegistros = "0";
+
+				registrosPorPagina = "0";
+			}
 		} else {
 			resultado = new Vector();
 			paginaSeleccionada = "0";
@@ -138,17 +133,9 @@ try{
 
 			registrosPorPagina = "0";
 		}
-	} else {
-		resultado = new Vector();
-		paginaSeleccionada = "0";
 
-		totalRegistros = "0";
-
-		registrosPorPagina = "0";
-	}
-
-	String action = app + "/CEN_BusquedaClientes.do?noReset=true";
-	/**************/
+		String action = app + "/CEN_BusquedaClientes.do?noReset=true";
+		/**************/
 %>
 
 <html>
@@ -254,33 +241,31 @@ try{
 
 <%
 	String tamanosCol = "";
-	String nombresCol = "";
-	String alto = "";
-	if (colegiado.equals(ClsConstants.DB_TRUE)) {//colegiado
-		// cliente colegiado
-		if (esColegio){
-			tamanosCol = "3,12,6,13,12,11,10,6,13,15";
-			nombresCol += "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,censo.busquedaClientesAvanzada.literal.nif,censo.busquedaClientesAvanzada.literal.nColegiado,gratuita.turnos.literal.apellidosSolo,censo.busquedaClientesAvanzada.literal.nombre,censo.busquedaClientesAvanzada.literal.fechaIngreso,censo.busquedaClientesAvanzada.literal.estadoColegial,censo.busquedaClientesAvanzada.literal.residente,censo.busquedaClientesAvanzada.literal.tlfn1movil,";
-			alto = "200";
-		}else{
-			tamanosCol = "3,12,6,12,11,11,8,8,6,9,15";
-			nombresCol += "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,censo.busquedaClientesAvanzada.literal.nif,censo.busquedaClientesAvanzada.literal.nColegiado,gratuita.turnos.literal.apellidosSolo,censo.busquedaClientesAvanzada.literal.nombre,censo.busquedaClientesAvanzada.literal.fechaIngreso,censo.busquedaClientes.literal.institucion,censo.busquedaClientesAvanzada.literal.estadoColegial,censo.busquedaClientesAvanzada.literal.residente,censo.busquedaClientesAvanzada.literal.fechaNacimiento,";
-			alto = "200";
-		}
+		String nombresCol = "";
+		String alto = "";
+		if (colegiado.equals(ClsConstants.DB_TRUE)) {//colegiado
+			// cliente colegiado
+			if (esColegio) {
+				tamanosCol = "3,12,6,13,12,11,10,6,13,15";
+				nombresCol += "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,censo.busquedaClientesAvanzada.literal.nif,censo.busquedaClientesAvanzada.literal.nColegiado,gratuita.turnos.literal.apellidosSolo,censo.busquedaClientesAvanzada.literal.nombre,censo.busquedaClientesAvanzada.literal.fechaIngreso,censo.busquedaClientesAvanzada.literal.estadoColegial,censo.busquedaClientesAvanzada.literal.residente,censo.busquedaClientesAvanzada.literal.tlfn1movil,";
+				alto = "200";
+			} else {
+				tamanosCol = "3,12,6,12,11,11,8,8,6,9,15";
+				nombresCol += "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,censo.busquedaClientesAvanzada.literal.nif,censo.busquedaClientesAvanzada.literal.nColegiado,gratuita.turnos.literal.apellidosSolo,censo.busquedaClientesAvanzada.literal.nombre,censo.busquedaClientesAvanzada.literal.fechaIngreso,censo.busquedaClientes.literal.institucion,censo.busquedaClientesAvanzada.literal.estadoColegial,censo.busquedaClientesAvanzada.literal.residente,censo.busquedaClientesAvanzada.literal.fechaNacimiento,";
+				alto = "200";
+			}
 
-	} else {
-		if (colegiado.equals(ClsConstants.DB_FALSE)) {//no colegiado
-			tamanosCol = "3,10,12,16,16,15,15,16";
-			nombresCol = "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,censo.busquedaClientesAvanzada.literal.tipo,censo.busquedaClientesAvanzada.literal.nif,gratuita.turnos.literal.apellidosSolo,censo.busquedaClientesAvanzada.literal.nombre,censo.busquedaClientes.literal.institucion,censo.busquedaClientes.literal.FechaNacimientoConstitucion,";
-			alto = "200";
-		} else {//letrado
-			tamanosCol = "3,8,12,27,18,10,10";
-			nombresCol = "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,censo.busquedaClientes.idPersona,censo.busquedaClientesAvanzada.literal.nif,gratuita.turnos.literal.apellidosSolo,censo.busquedaClientesAvanzada.literal.nombre,censo.busquedaClientesAvanzada.literal.fechaNacimiento,";
-			alto = "250";
+		} else {
+			if (colegiado.equals(ClsConstants.DB_FALSE)) {//no colegiado
+				tamanosCol = "3,10,12,16,16,15,15,16";
+				nombresCol = "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,censo.busquedaClientesAvanzada.literal.tipo,censo.busquedaClientesAvanzada.literal.nif,gratuita.turnos.literal.apellidosSolo,censo.busquedaClientesAvanzada.literal.nombre,censo.busquedaClientes.literal.institucion,censo.busquedaClientes.literal.FechaNacimientoConstitucion,";
+				alto = "200";
+			} else {//letrado
+				tamanosCol = "3,8,8,19,14,7,19,10";
+				nombresCol = "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,censo.busquedaClientes.idPersona,censo.busquedaClientesAvanzada.literal.nif,gratuita.turnos.literal.apellidosSolo,censo.busquedaClientesAvanzada.literal.nombre,censo.busquedaClientesAvanzada.literal.fechaNacimiento,Dirección,";
+				alto = "250";
+			}
 		}
-	}	
-	
-				
 %>
 
 <siga:TablaCabecerasFijas nombre="tablaDatos"
@@ -302,192 +287,167 @@ try{
 	<%
 		} else {
 
-				// recorro el resultado
+					// recorro el resultado
 
-				for (int i = 0; i < resultado.size(); i++) {
-					Row fila = (Row) resultado.elementAt(i);
-					Hashtable registro = (Hashtable) fila.getRow();
-					boolean isAplicarLOPD = (String) registro
-							.get(CenClienteBean.C_NOAPARECERREDABOGACIA) != null
-							&& ((String) registro
-									.get(CenClienteBean.C_NOAPARECERREDABOGACIA))
-									.equals(ClsConstants.DB_TRUE);
-					String cont = new Integer(i + 1).toString();
-					UsrBean user = (UsrBean) ses.getAttribute("USRBEAN");
-					String valor = "";
-					String idPersona = (registro
-							.get(CenColegiadoBean.C_IDPERSONA) == null || ((String) registro
-							.get(CenColegiadoBean.C_IDPERSONA)).equals("")) ? "&nbsp;"
-							: (String) registro
-									.get(CenColegiadoBean.C_IDPERSONA);
+					for (int i = 0; i < resultado.size(); i++) {
+						Row fila = (Row) resultado.elementAt(i);
+						Hashtable registro = (Hashtable) fila.getRow();
+						boolean isAplicarLOPD = (String) registro.get(CenClienteBean.C_NOAPARECERREDABOGACIA) != null
+								&& ((String) registro.get(CenClienteBean.C_NOAPARECERREDABOGACIA)).equals(ClsConstants.DB_TRUE);
+						String cont = new Integer(i + 1).toString();
+						UsrBean user = (UsrBean) ses.getAttribute("USRBEAN");
+						String valor = "";
+						String idPersona = (registro.get(CenColegiadoBean.C_IDPERSONA) == null || ((String) registro
+								.get(CenColegiadoBean.C_IDPERSONA)).equals("")) ? "&nbsp;" : (String) registro.get(CenColegiadoBean.C_IDPERSONA);
 
-					// permisos de acceso
-					String permisos = "C,E";
-					String select = "";
-					FilaExtElement[] elems = null;
-					
-					//Comprueba si la institucion conectada es un Consejo
-					if (idInstitucionLocation.equals("2000") || idInstitucionLocation.substring(0, 1).equals("3")) {
-						//SI ES COLEGIADO
-						if (colegiado.equals(ClsConstants.DB_TRUE)) {
-							valor = CenClienteAdm.getEsLetrado(idPersona, user.getLocation());
-							if (isAplicarLOPD) {
-								elems = new FilaExtElement[2];
-								elems[1] = new FilaExtElement("lopd","lopd", SIGAConstants.ACCESS_READ);
-								if (valor != null && valor.equals("1")) {
-									elems[0] = new FilaExtElement("informacionLetrado","informacionLetrado",SIGAConstants.ACCESS_READ);
-								} 
-								else {
-									elems[0] = new FilaExtElement("informacionLetrado","informacionLetrado",SIGAConstants.ACCESS_SIGAENPRODUCCION);
+						// permisos de acceso
+						String permisos = "C,E";
+						String select = "";
+						FilaExtElement[] elems = null;
+
+						//Comprueba si la institucion conectada es un Consejo
+						if (idInstitucionLocation.equals("2000") || idInstitucionLocation.substring(0, 1).equals("3")) {
+							//SI ES COLEGIADO
+							if (colegiado.equals(ClsConstants.DB_TRUE)) {
+								valor = CenClienteAdm.getEsLetrado(idPersona, user.getLocation());
+								if (isAplicarLOPD) {
+									elems = new FilaExtElement[2];
+									elems[1] = new FilaExtElement("lopd", "lopd", SIGAConstants.ACCESS_READ);
+									if (valor != null && valor.equals("1")) {
+										elems[0] = new FilaExtElement("informacionLetrado", "informacionLetrado", SIGAConstants.ACCESS_READ);
+									} else {
+										elems[0] = new FilaExtElement("informacionLetrado", "informacionLetrado",
+												SIGAConstants.ACCESS_SIGAENPRODUCCION);
+									}
+								} else {
+									elems = new FilaExtElement[2];
+									if (valor != null && valor.equals("1")) {
+										elems[0] = new FilaExtElement("informacionLetrado", "informacionLetrado", SIGAConstants.ACCESS_READ);
+										elems[1] = new FilaExtElement("enviar", "comunicar", SIGAConstants.ACCESS_READ);
+									} else {
+										elems[0] = new FilaExtElement("informacionLetrado", "informacionLetrado",
+												SIGAConstants.ACCESS_SIGAENPRODUCCION);
+										elems[1] = new FilaExtElement("enviar", "comunicar", SIGAConstants.ACCESS_SIGAENPRODUCCION);
+									}
 								}
-							} 
+							}
+							// LETRADO O NO COLEGIADO
 							else {
-								elems = new FilaExtElement[2];
-								if (valor != null && valor.equals("1")) {
-									elems[0] = new FilaExtElement("informacionLetrado","informacionLetrado",SIGAConstants.ACCESS_READ);
-									elems[1]=new FilaExtElement("enviar","comunicar",SIGAConstants.ACCESS_READ);
-								} 
-								else {
-									elems[0] = new FilaExtElement("informacionLetrado","informacionLetrado",SIGAConstants.ACCESS_SIGAENPRODUCCION);
-									elems[1]=new FilaExtElement("enviar","comunicar",SIGAConstants.ACCESS_SIGAENPRODUCCION);
+								if (isAplicarLOPD) {
+									elems = new FilaExtElement[1];
+									elems[0] = new FilaExtElement("lopd", "lopd", SIGAConstants.ACCESS_READ);
+
+								} else {
+									elems = new FilaExtElement[1];
+									elems[0] = new FilaExtElement("enviar", "comunicar", SIGAConstants.ACCESS_READ);
 								}
+
 							}
-						} 
-						// LETRADO O NO COLEGIADO
-						else {
+						} else {
 							if (isAplicarLOPD) {
 								elems = new FilaExtElement[1];
-								elems[0] = new FilaExtElement("lopd","lopd", SIGAConstants.ACCESS_READ);
+								elems[0] = new FilaExtElement("lopd", "lopd", SIGAConstants.ACCESS_READ);
 
-							}else{
+							} else {
 								elems = new FilaExtElement[1];
-								elems[0]=new FilaExtElement("enviar","comunicar",SIGAConstants.ACCESS_READ);
+								elems[0] = new FilaExtElement("enviar", "comunicar", SIGAConstants.ACCESS_READ);
 							}
-							
+
 						}
-					}
-					else {
-						if (isAplicarLOPD) {
-							elems = new FilaExtElement[1];
-							elems[0] = new FilaExtElement("lopd", "lopd",SIGAConstants.ACCESS_READ);
 
-						}else{
-							elems = new FilaExtElement[1];
-							elems[0]=new FilaExtElement("enviar","comunicar",SIGAConstants.ACCESS_READ);
-						}						
-						
-					}
-					
-					if (ParametrolopdActivo){
-						isAplicarLOPD=false;
-					}
-
-					String modo = "";
-					String idInstitucion = (registro.get(CenColegiadoBean.C_IDINSTITUCION) == null || 
-								((String) registro.get(CenColegiadoBean.C_IDINSTITUCION)).
-									equals("")) ? "&nbsp;" : (String) registro.get(CenColegiadoBean.C_IDINSTITUCION);
-
-					if (user.getLocation().equals(idInstitucion)) {
-						modo = "edicion";
-					} else {
-						modo = "consulta";
-					}
-
-					//No colegiado
-					if (!colegiado.equals(ClsConstants.DB_TRUE) && !colegiado.equals("2")) {
-						permisos += ",B";
-					}
-
-					// calculo de campos
-
-					String apellido1 = UtilidadesString	.mostrarDatoJSP(registro.get(CenPersonaBean.C_APELLIDOS1));					String apellido2 = UtilidadesString
-							.mostrarDatoJSP(registro.get(CenPersonaBean.C_APELLIDOS2));
-					String nombre = UtilidadesString
-							.mostrarDatoJSP(registro
-									.get(CenPersonaBean.C_NOMBRE));
-					String nif = UtilidadesString.mostrarDatoJSP(registro
-							.get(CenPersonaBean.C_NIFCIF));
-					String fechaNacimiento = UtilidadesString
-							.mostrarDatoJSP(GstDate
-									.getFormatedDateShort(
-											usrbean.getLanguage(),
-											registro
-													.get(CenPersonaBean.C_FECHANACIMIENTO)));
-					String nTelefonos="";
-					String nTelef1="";
-					String nMovil="";
-					if (colegiado.equals(ClsConstants.DB_TRUE)) {//colegiado
-						nTelef1 = registro.get("TELEFONO").toString();
-						nMovil = registro.get("MOVIL").toString();
-						if(nTelef1!=null && !nTelef1.equalsIgnoreCase(""))
-							nTelefonos+= UtilidadesString.mostrarDatoJSP(registro.get("TELEFONO"));
-						if(nMovil!=null && !nMovil.equalsIgnoreCase("")){
-							if(!nTelefonos.equalsIgnoreCase("")) nTelefonos += " -";
-							nTelefonos+= UtilidadesString.mostrarDatoJSP(nMovil)+" (M)";
+						if (ParametrolopdActivo) {
+							isAplicarLOPD = false;
 						}
-						nTelefonos=UtilidadesString.mostrarDatoJSP(nTelefonos);
-					}
-					String ncomunitario = "";
-					String ncolegiado = "";
-					String fechaIncorporacion = "";
-					String estadoColegial = "";
-					String fechaEstadoColegial = "";
-					String residente = "";
-					String SociedaSJ = (String) registro.get(CenNoColegiadoBean.C_SOCIEDADSJ);
 
-					//Campo que indica que si va a ir a el jsp para no colegiados para sociedades o nif de tipo no personal
-					String tipo = (String) registro
-							.get(CenNoColegiadoBean.C_TIPO);
-					String tipo1 = (String) registro.get("TIPO1");
-					String tipoaux = "";
-					if (tipo != null && tipo.equals("1")) {
-						tipoaux = UtilidadesString
-								.mostrarDatoJSP(UtilidadesMultidioma
-										.getDatoMaestroIdioma(
-												"censo.general.literal.Personal",
-												usrbean));
+						String modo = "";
+						String idInstitucion = (registro.get(CenColegiadoBean.C_IDINSTITUCION) == null || ((String) registro
+								.get(CenColegiadoBean.C_IDINSTITUCION)).equals("")) ? "&nbsp;" : (String) registro
+								.get(CenColegiadoBean.C_IDINSTITUCION);
 
-					} else {
-						if (tipo1 != null && tipo1.equals("2")) {
-							tipoaux = UtilidadesString
-									.mostrarDatoJSP(UtilidadesMultidioma
-											.getDatoMaestroIdioma(
-													"censo.busquedaClientesAvanzada.literal.Sociedad",
-													usrbean));
+						if (user.getLocation().equals(idInstitucion)) {
+							modo = "edicion";
 						} else {
-							tipoaux = UtilidadesString
-									.mostrarDatoJSP(UtilidadesMultidioma
-											.getDatoMaestroIdioma(
-													"censo.busquedaClientes.literal.institucion",
-													usrbean));
+							modo = "consulta";
 						}
-					}
 
-					if (registro != null
-							&& !registro
-									.equals(ClsConstants.COMBO_TIPO_PERSONAL))
-						tipo = (String) registro
-								.get(CenNoColegiadoBean.C_TIPO);
-					else
-						tipo = "NINGUNO";
+						//No colegiado
+						if (!colegiado.equals(ClsConstants.DB_TRUE) && !colegiado.equals("2")) {
+							permisos += ",B";
+						}
 
-					if (colegiado.equals(ClsConstants.DB_TRUE)) {
-						ncomunitario = UtilidadesString.mostrarDatoJSP(registro.get(CenColegiadoBean.C_NCOMUNITARIO));
-						ncolegiado = UtilidadesString.mostrarDatoJSP(registro.get(CenColegiadoBean.C_NCOLEGIADO));
-						fechaIncorporacion = UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usrbean.getLanguage(),
-												registro.get(CenColegiadoBean.C_FECHAINCORPORACION)));
-						//estadoColegial = UtilidadesString.mostrarDatoJSP(UtilidadesMultidioma.getDatoMaestroIdioma((String)registro.get("ESTADOCOLEGIAL"),usrbean));
-						estadoColegial = UtilidadesString.mostrarDatoJSP(admCen.getEstadoColegial(
-												registro.get(CenColegiadoBean.C_IDPERSONA).toString(),
-												registro.get(CenColegiadoBean.C_IDINSTITUCION).toString()));
-						fechaEstadoColegial = UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usrbean.getLanguage(),
-												admCen.getFechaEstadoColegial(
-													registro.get(CenColegiadoBean.C_IDPERSONA).toString(),
-													registro.get(CenColegiadoBean.C_IDINSTITUCION).toString())));
-						//				
-						residente = UtilidadesString.mostrarDatoJSP(registro.get(CenColegiadoBean.C_SITUACIONRESIDENTE));
-					}
-					String institucion = CenVisibilidad.getAbreviaturaInstitucion(idInstitucion);
+						// calculo de campos
+
+						String apellido1 = UtilidadesString.mostrarDatoJSP(registro.get(CenPersonaBean.C_APELLIDOS1));
+						String apellido2 = UtilidadesString.mostrarDatoJSP(registro.get(CenPersonaBean.C_APELLIDOS2));
+						String nombre = UtilidadesString.mostrarDatoJSP(registro.get(CenPersonaBean.C_NOMBRE));
+						String nif = UtilidadesString.mostrarDatoJSP(registro.get(CenPersonaBean.C_NIFCIF));
+						String fechaNacimiento = UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usrbean.getLanguage(), registro
+								.get(CenPersonaBean.C_FECHANACIMIENTO)));
+
+						String domicilio = UtilidadesString.mostrarDatoJSP(registro.get(CenDireccionesBean.C_DOMICILIO));
+						String poblacion = UtilidadesString.mostrarDatoJSP(registro.get("POBLACION"));
+						String CP = UtilidadesString.mostrarDatoJSP(registro.get(CenDireccionesBean.C_CODIGOPOSTAL));
+						String nTelefonos = "";
+						String nTelef1 = "";
+						String nMovil = "";
+						if (colegiado.equals(ClsConstants.DB_TRUE)) {//colegiado
+							nTelef1 = registro.get("TELEFONO").toString();
+							nMovil = registro.get("MOVIL").toString();
+							if (nTelef1 != null && !nTelef1.equalsIgnoreCase(""))
+								nTelefonos += UtilidadesString.mostrarDatoJSP(registro.get("TELEFONO"));
+							if (nMovil != null && !nMovil.equalsIgnoreCase("")) {
+								if (!nTelefonos.equalsIgnoreCase(""))
+									nTelefonos += " -";
+								nTelefonos += UtilidadesString.mostrarDatoJSP(nMovil) + " (M)";
+							}
+							nTelefonos = UtilidadesString.mostrarDatoJSP(nTelefonos);
+						}
+						String ncomunitario = "";
+						String ncolegiado = "";
+						String fechaIncorporacion = "";
+						String estadoColegial = "";
+						String fechaEstadoColegial = "";
+						String residente = "";
+						String SociedaSJ = (String) registro.get(CenNoColegiadoBean.C_SOCIEDADSJ);
+
+						//Campo que indica que si va a ir a el jsp para no colegiados para sociedades o nif de tipo no personal
+						String tipo = (String) registro.get(CenNoColegiadoBean.C_TIPO);
+						String tipo1 = (String) registro.get("TIPO1");
+						String tipoaux = "";
+						if (tipo != null && tipo.equals("1")) {
+							tipoaux = UtilidadesString.mostrarDatoJSP(UtilidadesMultidioma.getDatoMaestroIdioma("censo.general.literal.Personal",
+									usrbean));
+
+						} else {
+							if (tipo1 != null && tipo1.equals("2")) {
+								tipoaux = UtilidadesString.mostrarDatoJSP(UtilidadesMultidioma.getDatoMaestroIdioma(
+										"censo.busquedaClientesAvanzada.literal.Sociedad", usrbean));
+							} else {
+								tipoaux = UtilidadesString.mostrarDatoJSP(UtilidadesMultidioma.getDatoMaestroIdioma(
+										"censo.busquedaClientes.literal.institucion", usrbean));
+							}
+						}
+
+						if (registro != null && !registro.equals(ClsConstants.COMBO_TIPO_PERSONAL))
+							tipo = (String) registro.get(CenNoColegiadoBean.C_TIPO);
+						else
+							tipo = "NINGUNO";
+
+						if (colegiado.equals(ClsConstants.DB_TRUE)) {
+							ncomunitario = UtilidadesString.mostrarDatoJSP(registro.get(CenColegiadoBean.C_NCOMUNITARIO));
+							ncolegiado = UtilidadesString.mostrarDatoJSP(registro.get(CenColegiadoBean.C_NCOLEGIADO));
+							fechaIncorporacion = UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usrbean.getLanguage(), registro
+									.get(CenColegiadoBean.C_FECHAINCORPORACION)));
+							//estadoColegial = UtilidadesString.mostrarDatoJSP(UtilidadesMultidioma.getDatoMaestroIdioma((String)registro.get("ESTADOCOLEGIAL"),usrbean));
+							estadoColegial = UtilidadesString.mostrarDatoJSP(admCen.getEstadoColegial(registro.get(CenColegiadoBean.C_IDPERSONA)
+									.toString(), registro.get(CenColegiadoBean.C_IDINSTITUCION).toString()));
+							fechaEstadoColegial = UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usrbean.getLanguage(), admCen
+									.getFechaEstadoColegial(registro.get(CenColegiadoBean.C_IDPERSONA).toString(), registro.get(
+											CenColegiadoBean.C_IDINSTITUCION).toString())));
+							//				
+							residente = UtilidadesString.mostrarDatoJSP(registro.get(CenColegiadoBean.C_SITUACIONRESIDENTE));
+						}
+						String institucion = CenVisibilidad.getAbreviaturaInstitucion(idInstitucion);
 	%>
 	<!-- REGISTRO  -->
 	<!-- Esto es un ejemplo de dos columnas de datos, lo que significa
@@ -499,129 +459,158 @@ try{
 		clase="listaNonEdit" pintarEspacio="no">
 		<td>
 		<%
-		
-					String valorCheck = idInstitucion+"||"+idPersona;
-			
-							if(!ParametrolopdActivo && isAplicarLOPD){								
-									valorCheck+="||"+ClsConstants.DB_TRUE;	
-																						
-							%>
-								<input type="checkbox" value="<%=valorCheck%>"  name="chkPersona"  disabled >
-							<% }else{
-									if (!ParametrolopdActivo){
-										valorCheck+="||"+ClsConstants.DB_FALSE;
-									}
-							
-								boolean isChecked = false;
-								for (int z = 0; z < registrosSeleccionados.size(); z++) {
-									Hashtable clavesRegistro = (Hashtable) registrosSeleccionados
-											.get(z);
+			String valorCheck = idInstitucion + "||" + idPersona;
 
-									String clave = (String)clavesRegistro.get("CLAVE");
-									
-									if (valorCheck.equals(clave)) {
-										isChecked = true;
-										break;
-									}
-									
+					if (!ParametrolopdActivo && isAplicarLOPD) {
+									valorCheck += "||" + ClsConstants.DB_TRUE;
+		%> <input type="checkbox" value="<%=valorCheck%>" name="chkPersona"
+			disabled> <%
+ 					} else {
+ 							if (!ParametrolopdActivo) {
+ 								valorCheck += "||" + ClsConstants.DB_FALSE;
+ 							}
 
-								}
-								if (isChecked) {
-			%>							
-									<input type="checkbox" value="<%=valorCheck%>"  name="chkPersona" checked onclick="pulsarCheck(this)">
-								<%
-									} else {
-								%>
-									<input type="checkbox" value="<%=valorCheck%>"  name="chkPersona" onclick="pulsarCheck(this)" >
-							<%
-								}
-							}
-							%>
+ 							boolean isChecked = false;
+ 							for (int z = 0; z < registrosSeleccionados.size(); z++) {
+ 								Hashtable clavesRegistro = (Hashtable) registrosSeleccionados.get(z);
+
+ 								String clave = (String) clavesRegistro.get("CLAVE");
+
+ 								if (valorCheck.equals(clave)) {
+ 									isChecked = true;
+ 									break;
+ 								}
+
+ 							}
+ 							if (isChecked) {
+ %> <input type="checkbox" value="<%=valorCheck%>" name="chkPersona"
+			checked onclick="pulsarCheck(this)"> <%
+ 	} else {
+ %> <input type="checkbox" value="<%=valorCheck%>"
+			name="chkPersona" onclick="pulsarCheck(this)"> <%
+ 	}
+ 						}
+ %>
 		</td>
-		
-	
-		<% //Si es un colegiado:
-		   if (colegiado.equals(ClsConstants.DB_TRUE)) { %>
+
+
+		<%
+			//Si es un colegiado:
+								if (colegiado.equals(ClsConstants.DB_TRUE)) {
+		%>
 		<td><!-- campos hidden --> 
-		<input type="hidden" name="oculto<%=cont %>_1" value="<%=idPersona %>"> 
-		<input type="hidden" name="oculto<%=cont %>_2" value="<%=idInstitucion %>">
-		<input type="hidden" name="oculto<%=cont %>_3" value="NINGUNO">
-		<input type="hidden" name="oculto<%=cont %>_4" value="1"> <%=nif%>
+		<input type="hidden" name="oculto<%=cont%>_1" value="<%=idPersona%>"> 
+		<input type="hidden" name="oculto<%=cont%>_2" value="<%=idInstitucion%>">
+		<input type="hidden" name="oculto<%=cont%>_3" value="NINGUNO">
+		<input type="hidden" name="oculto<%=cont%>_4" value="1"> <%=nif%>
 		</td>
 		<td><%=ncolegiado%></td>
 		<td><%=apellido1 + " " + apellido2%></td>
 		<td><%=nombre%></td>
 		<td><%=fechaIncorporacion%></td>
-		<%if (!esColegio){ %>
+		<%
+			if (!esColegio) {
+		%>
 			<td><%=institucion%></td>
-		<% } %>
+		<%
+			}
+		%>
 		<td>
-		<% if (estadoColegial!=null && !estadoColegial.equals("&nbsp")){%>
+		<%
+			if (estadoColegial != null && !estadoColegial.equals("&nbsp")) {
+		%>
 		   <%=estadoColegial%>  (<%=fechaEstadoColegial%>)  
-		<%}else{ // para colegiados sin estado colegial o con estado colegial a futuro %>
+		<%
+		   	} else { // para colegiados sin estado colegial o con estado colegial a futuro
+		   %>
 		    <siga:Idioma key="censo.busquedaClientes.literal.sinEstadoColegial"/>
-		<%} %>   
+		<%
+			}
+		%>   
 		</td>
 		<td><%=residente.equals("0") ? "No" : "Si"%></td>
-		<%if (!esColegio){ %>
+		<%
+			if (!esColegio) {
+		%>
 			<td><%=fechaNacimiento%></td>
-		<% } else { %>
+		<%
+			} else {
+		%>
 			<td><%=nTelefonos%></td>
-		<% } %>
+		<%
+			}
+		%>
 
-		<% } else { 
-			 if (colegiado.equals(ClsConstants.DB_FALSE)) { %>
+		<%
+			} else {
+									if (colegiado.equals(ClsConstants.DB_FALSE)) {
+		%>
 
 		<td><!-- campos hidden --> <input type="hidden"
-			name="oculto<%=cont %>_1" value="<%=idPersona%>"> <input
-			type="hidden" name="oculto<%=cont %>_2" value="<%=idInstitucion%>">
-		<input type="hidden" name="oculto<%=cont %>_3" value="<%=tipo%>">
+			name="oculto<%=cont%>_1" value="<%=idPersona%>"> <input
+			type="hidden" name="oculto<%=cont%>_2" value="<%=idInstitucion%>">
+		<input type="hidden" name="oculto<%=cont%>_3" value="<%=tipo%>">
 
 		<siga:Idioma key='<%=tipoaux %>' /></td>
 		<td><%=nif%></td>
-		<% if (tipo != null && tipo != "" && !tipo.equals("1")) { %>
+		<%
+			if (tipo != null && tipo != "" && !tipo.equals("1")) {
+		%>
 		<td>&nbsp;</td>
 		<td><%=nombre%></td>
-		<% } else { %>
-		<td><%=apellido1 + " "
-												+ apellido2%></td>
+		<%
+			} else {
+		%>
+		<td><%=apellido1 + " " + apellido2%></td>
 		<td><%=nombre%></td>
-		<% } %>
+		<%
+			}
+		%>
 		<td><%=institucion%></td>
 		<td><%=fechaNacimiento%></td>
-		<% } else { %>
+		<%
+			} else {
+		%>
 		<td><!-- campos hidden --> <input type="hidden"
-			name="oculto<%=cont %>_1" value="<%=idPersona%>"> <input
-			type="hidden" name="oculto<%=cont %>_2" value="<%=idInstitucion%>">
-		<input type="hidden" name="oculto<%=cont %>_3" value="LETRADO">
+			name="oculto<%=cont%>_1" value="<%=idPersona%>"> <input
+			type="hidden" name="oculto<%=cont%>_2" value="<%=idInstitucion%>">
+		<input type="hidden" name="oculto<%=cont%>_3" value="LETRADO">
 
 		<%=idPersona%></td>
 		<td><%=nif%></td>
 		<td><%=apellido1 + " " + apellido2%></td>
 		<td><%=nombre%></td>
 		<td><%=fechaNacimiento%></td>
-		<% } %>
-		<% } %>
+		<td><%=domicilio + ", " + CP + ", " + poblacion%></td>
+		<%
+			}
+		%>
+		<%
+			}
+		%>
 	</siga:FilaConIconos>
 
 
 	<!-- FIN REGISTRO -->
-	<% } // del for %>
+	<%
+		} // del for
+	%>
 
 	<!-- FIN: ZONA DE REGISTROS -->
 
-	<% } // del if %>
+	<%
+		} // del if
+	%>
 
 </siga:TablaCabecerasFijas>
 	<siga:ConjBotonesAccion botones="GX,COM" />
 
 <!-- FIN: LISTA DE VALORES -->
 <%
-	if ( datosPaginador!=null && datosPaginador.get("datos") != null && !datosPaginador.get("datos").equals("")) {
-		String regSeleccionados = ("" + ((registrosSeleccionados == null) ? 0
-				: registrosSeleccionados.size()));
+	if (datosPaginador != null && datosPaginador.get("datos") != null && !datosPaginador.get("datos").equals("")) {
+			String regSeleccionados = ("" + ((registrosSeleccionados == null) ? 0 : registrosSeleccionados.size()));
 
-		if (colegiado.equals("2")) {
+			if (colegiado.equals("2")) {
 %>
 <siga:Paginador totalRegistros="<%=totalRegistros%>"
 	registrosPorPagina="<%=registrosPorPagina%>"
@@ -650,7 +639,7 @@ try{
 
 <%
 	}
-	}
+		}
 %>
 
 
@@ -685,26 +674,22 @@ try{
 
 		
 	function cargarChecks(){
-		<%
-		if (registrosSeleccionados!=null){
-	   		for (int p=0;p<registrosSeleccionados.size();p++){
-		   		Hashtable clavesEJG= (Hashtable) registrosSeleccionados.get(p);
-				valorCheckPersona=(String)clavesEJG.get("CLAVE");						
-				if(!ParametrolopdActivo){
-					String noApareceEnRedAbogacia =  (String)clavesEJG.get(CenClienteBean.C_NOAPARECERREDABOGACIA);
-					if(noApareceEnRedAbogacia==null || noApareceEnRedAbogacia.equals("")|| noApareceEnRedAbogacia.equals(ClsConstants.DB_FALSE)){
-					%>
+		<%if (registrosSeleccionados != null) {
+					for (int p = 0; p < registrosSeleccionados.size(); p++) {
+						Hashtable clavesEJG = (Hashtable) registrosSeleccionados.get(p);
+						valorCheckPersona = (String) clavesEJG.get("CLAVE");
+						if (!ParametrolopdActivo) {
+							String noApareceEnRedAbogacia = (String) clavesEJG.get(CenClienteBean.C_NOAPARECERREDABOGACIA);
+							if (noApareceEnRedAbogacia == null || noApareceEnRedAbogacia.equals("")
+									|| noApareceEnRedAbogacia.equals(ClsConstants.DB_FALSE)) {%>
 						ObjArray.push('<%=valorCheckPersona%>');
-					<%
+					<%}
+						} else {%>
+						ObjArray.push('<%=valorCheckPersona%>');
+					<%}
 					}
-				}else{
-					%>
-						ObjArray.push('<%=valorCheckPersona%>');
-					<%
-			    }
-	   		}
-			 
-	   	}%>
+
+				}%>
 		ObjArray.toString();
 		seleccionados1=ObjArray;
 		document.forms[0].registrosSeleccionados.value=seleccionados1;
@@ -811,7 +796,7 @@ try{
 	   	datos = "idPersona=="+idPersona + "##idInstitucion==" +idInstPersona ; 
 		
 		var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='/SIGA/INF_InformesGenericos.do' target='submitArea'>");
-		formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=idInstitucionLocation %>'>"));
+		formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=idInstitucionLocation%>'>"));
 		formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
 		formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='CENSO'>"));
 		formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
@@ -860,7 +845,7 @@ try{
 		}
 			
 			var formu=document.createElement("<form name='InformesGenericosForm'  method='POST'  action='/SIGA/INF_InformesGenericos.do' target='submitArea'>");
-			formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=idInstitucionLocation %>'>"));
+			formu.appendChild(document.createElement("<input type='hidden' name='idInstitucion' value='<%=idInstitucionLocation%>'>"));
 			formu.appendChild(document.createElement("<input type='hidden' name='idInforme' value=''>"));
 			formu.appendChild(document.createElement("<input type='hidden' name='idTipoInforme' value='CENSO'>"));
 			formu.appendChild(document.createElement("<input type='hidden' name='datosInforme' value=''>"));
@@ -927,4 +912,8 @@ try{
 </body>
 </html>
 
-<%}catch(Exception e){e.printStackTrace();}%>
+<%
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+%>
