@@ -67,10 +67,12 @@ public class InformePersonalizable extends MasterReport
 		String fichero = null;
 		tx = usr.getTransactionLigera();
 		try {			
-			tx.begin();
+//			tx.begin();
 			fichero = generarInformes(usr, idtipoinforme, filtrosInforme);
-			tx.commit();
-		} catch (Exception e) {
+//			tx.commit();
+		}  catch (SIGAException e) {
+			throw e;
+		}catch (Exception e) {
 			e.printStackTrace();
 		}
 		
@@ -139,7 +141,9 @@ public class InformePersonalizable extends MasterReport
 				return "";
 			}
 			
-		} catch (Exception e) {
+		} catch (SIGAException e) {
+			throw e;
+		}catch (Exception e) {
 			throw new SIGAException(e, new String [] {"Error al generar el informe"});
 		}
 	}
@@ -225,8 +229,7 @@ public class InformePersonalizable extends MasterReport
 				}
 			}
 			if (! encontrado)
-				throw new SIGAException(
-						"Problema en la configuracion del informe: No estan configurados todos los tipos de filtros obligatorios");
+				throw new SIGAException("informes.personalizable.error.configuracion.sinFiltros");
 			
 		}
 
@@ -244,8 +247,8 @@ public class InformePersonalizable extends MasterReport
 			// sustituyendo los filtros en la consulta por los datos del informe
 			if ((sentencia = consultaAdm.sustituirFiltrosConsulta(consulta, filtrosInforme)) == null)
 				// falla si la consulta no tiene los filtros obligatorios
-				throw new ClsExceptions(
-						"Problema en la configuracion del informe: La consulta no lleva los filtros obligatorios o lleva de mas");
+				
+				throw new SIGAException("informes.personalizable.error.configuracion.filtros");
 
 			// ejecutando la consulta
 			//tx = usr.getTransactionLigera();
@@ -260,13 +263,11 @@ public class InformePersonalizable extends MasterReport
 				String mensaje = sqle.getMessage();
 				if (mensaje.indexOf("TimedOutException") != -1
 						|| mensaje.indexOf("timed out") != -1) {
-					throw new SIGAException("messages.transaccion.timeout", sqle);
+					throw new SIGAException("messages.transaccion.timeout");
 				} else if (sqle.toString().indexOf("ORA-") != -1) {
-					throw new SIGAException("messages.general.sql", sqle, new String[] { sqle.toString() });
+					throw new SIGAException("informes.personalizable.error.query", sqle, new String[] {"\""+consulta.getDescripcion()+"\"" });
 				} else {
-					throw new SIGAException(
-							"Problema en la configuracion del informe: No funciona la consulta",
-							sqle, new String[] { sqle.toString() });
+					throw new SIGAException("informes.personalizable.error.query.indeterminado");
 				}
 			}
 
@@ -355,8 +356,7 @@ public class InformePersonalizable extends MasterReport
 				}
 			}
 			if (! encontrado)
-				throw new SIGAException(
-						"Problema en la configuracion del informe: No estan configurados todos los tipos de filtros obligatorios");
+				throw new SIGAException("informes.personalizable.error.configuracion.sinFiltros");
 			
 		}
 
@@ -393,7 +393,7 @@ public class InformePersonalizable extends MasterReport
 			if ((sentencia = consultaAdm.sustituirFiltrosConsulta(consulta, filtrosInforme)) == null)
 				// falla si la consulta no tiene los filtros obligatorios
 				throw new SIGAException(
-						"Problema en la configuracion del informe: La consulta no lleva los filtros obligatorios o lleva de mas");
+						"informes.personalizable.error.configuracion.filtros");
 
 			// ejecutando la consulta
 			//tx = usr.getTransactionLigera();
@@ -408,13 +408,11 @@ public class InformePersonalizable extends MasterReport
 				String mensaje = sqle.getMessage();
 				if (mensaje.indexOf("TimedOutException") != -1
 						|| mensaje.indexOf("timed out") != -1) {
-					throw new SIGAException("messages.transaccion.timeout", sqle);
+					throw new SIGAException("messages.transaccion.timeout");
 				} else if (sqle.toString().indexOf("ORA-") != -1) {
-					throw new SIGAException("messages.general.sql", sqle, new String[] { sqle.toString() });
+					throw new SIGAException("informes.personalizable.error.query", sqle, new String[] {"\""+consulta.getDescripcion()+"\"" });
 				} else {
-					throw new SIGAException(
-							"Problema en la configuracion del informe: No funciona la consulta",
-							sqle, new String[] { sqle.toString() });
+					throw new SIGAException("informes.personalizable.error.query.indeterminado");
 				}
 			}
 

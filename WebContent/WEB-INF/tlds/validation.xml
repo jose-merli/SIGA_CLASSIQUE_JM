@@ -3240,7 +3240,7 @@
                     <var-value>400</var-value>
                 </var> 
             </field>
-                <field property = "importe" depends = "required,maxlength,double,mask">
+                <field property = "importe" depends = "maxlength,double,mask">
                         <arg0 key="FactSJCS.mantRetencionesJ.literal.importe"/>
                         <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
                         <var>

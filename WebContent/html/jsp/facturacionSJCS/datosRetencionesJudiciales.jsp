@@ -173,7 +173,13 @@
 			  
 			  }
 		}
-			
+		function onchangeTipoRetencion(){
+			if(document.MantenimientoRetencionesJudicialesForm.tipoRetencion.value=='L'){
+				document.getElementById("importe").style.display="none";
+			}else{
+				document.getElementById("importe").style.display="block";
+			}
+		}
 		function traspasoDatos(resultado){
 		  document.getElementById("cuentaContable").value=resultado[0]
 		}		
@@ -248,18 +254,25 @@
 		<siga:Idioma key="FactSJCS.mantRetencionesJ.literal.tramoLec"/>&nbsp;(*)
 	</td>
 	
-	<td class="labelText" colspan="3">
+	<td class="labelText" >
 		<%if (accion.equalsIgnoreCase("ver")||(!accion.equalsIgnoreCase("ver") && (aplicaRetencion!=null && aplicaRetencion.equalsIgnoreCase("1")))){%>
-			<select name="tipoRetencion" class="boxCombo" disabled="disabled">
+			<select name="tipoRetencion" class="boxCombo" disabled="disabled" onchange="onchangeTipoRetencion();">
 				<option  value="<%=ClsConstants.TIPO_RETENCION_PORCENTAJE%>" <%if(tipoRetencion.equalsIgnoreCase("P")){ %>selected<%}%>><siga:Idioma key="FactSJCS.mantRetencionesJ.literal.porcentual"/></option>
 				<option  value="<%=ClsConstants.TIPO_RETENCION_IMPORTEFIJO%>" <%if(tipoRetencion.equalsIgnoreCase("F")){ %>selected<%}%>><siga:Idioma key="FactSJCS.mantRetencionesJ.literal.importeFijo"/></option>
+				<option  value="<%=ClsConstants.TIPO_RETENCION_LEC%>" <%if(tipoRetencion.equalsIgnoreCase(ClsConstants.TIPO_RETENCION_LEC)){ %>selected<%}%>><siga:Idioma key="FactSJCS.mantRetencionesJ.literal.tramosLEC"/></option>
+									</option>
+				
 			</select>
 		<%} else  {%>
-			<select name="tipoRetencion" class="boxCombo">
+			<select name="tipoRetencion" class="boxCombo" onchange="onchangeTipoRetencion();">
 				<option  value="<%=ClsConstants.TIPO_RETENCION_PORCENTAJE%>" <%if(tipoRetencion.equalsIgnoreCase("P")){ %>selected<%}%>><siga:Idioma key="FactSJCS.mantRetencionesJ.literal.porcentual"/></option>
 				<option  value="<%=ClsConstants.TIPO_RETENCION_IMPORTEFIJO%>" <%if(tipoRetencion.equalsIgnoreCase("F")){ %>selected<%}%>><siga:Idioma key="FactSJCS.mantRetencionesJ.literal.importeFijo"/></option>
+				<option  value="<%=ClsConstants.TIPO_RETENCION_LEC%>" <%if(tipoRetencion.equalsIgnoreCase(ClsConstants.TIPO_RETENCION_LEC)){ %>selected<%}%>><siga:Idioma key="FactSJCS.mantRetencionesJ.literal.tramosLEC"/></option>
+				</option>
 			</select>
 		<%}%>	
+		</td>
+	<td class="labelText" style="vertical-align:left" colspan="2">
 		<html:text name="MantenimientoRetencionesJudicialesForm" property="importe" size="10" maxlength="10" styleClass="<%=estiloNum%>" value= "<%=UtilidadesNumero.formatoCampo(importe)%>" readonly="<%=lectura%>" ></html:text>
 	</td>
 	
@@ -374,6 +387,15 @@
 			  			fin();
 			  			return false;
 			 		}
+			 		if ((MantenimientoRetencionesJudicialesForm.tipoRetencion.value=='P' || MantenimientoRetencionesJudicialesForm.tipoRetencion.value=='I')&&MantenimientoRetencionesJudicialesForm.importe.value==''){
+			 			msg = "<siga:Idioma key='errors.required' arg0='FactSJCS.mantRetencionesJ.literal.importe'/>";
+						alert(msg);
+						fin();
+						return false;
+
+			  			
+			 		}
+			 		
 			 		if (MantenimientoRetencionesJudicialesForm.tipoRetencion.value=='P' && MantenimientoRetencionesJudicialesForm.importe.value>100){
 			  			alert('<siga:Idioma key="FactSJCS.mantRetencionesJ.literal.avisoPorcentaje"/>');
 			  			fin();
@@ -399,7 +421,7 @@
 		{
 			top.cierraConParametros("NORMAL");
 		}
-		
+		onchangeTipoRetencion();
 		
 	</script>
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe></body>

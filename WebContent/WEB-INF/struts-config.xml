@@ -307,6 +307,7 @@
 		<form-bean name="BajasTemporalesForm" type="com.siga.censo.form.BajasTemporalesForm"/>
 		<form-bean name="InformeForm" type="com.siga.administracion.form.InformeForm"/>
 		<form-bean name="InformeFormEdicion" type="com.siga.administracion.form.InformeForm"/>
+		<form-bean name="TramosRetencionForm" type="com.siga.facturacionSJCS.form.TramosRetencionForm"/>
 		
 		
 	</form-beans>
@@ -3019,6 +3020,10 @@
 			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>
 			
 		</action>	
+		<action path="/FCS_GestionTramosLEC" type="com.siga.facturacionSJCS.action.GestionTramosRetencionAction" name="TramosRetencionForm" >
+			<forward name="inicio" path="/html/jsp/facturacionSJCS/consultaTramosRetencion.jsp"/>
+			<forward name="listadoTramosRetencion" path="/html/jsp/facturacionSJCS/listadoTramosRetencion.jsp"/>
+		</action>
 
 		<!-- ****************************************************************************
 -->

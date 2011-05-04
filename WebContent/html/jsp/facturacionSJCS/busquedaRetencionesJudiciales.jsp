@@ -109,8 +109,10 @@
 	<td class="labelText">	
 		<select name="tipoRetencion" class="boxCombo">
 			<option value="" selected></option>
-			<option value="<%=ClsConstants.TIPO_RETENCION_PORCENTAJE%>"><siga:Idioma key="FactSJCS.mantRetencionesJ.literal.porcentual"/></option>
-									<option value="<%=ClsConstants.TIPO_RETENCION_IMPORTEFIJO%>"><siga:Idioma key="FactSJCS.mantRetencionesJ.literal.importeFijo"/></option>
+				<option value="<%=ClsConstants.TIPO_RETENCION_PORCENTAJE%>"><siga:Idioma key="FactSJCS.mantRetencionesJ.literal.porcentual"/></option>
+				<option value="<%=ClsConstants.TIPO_RETENCION_IMPORTEFIJO%>"><siga:Idioma key="FactSJCS.mantRetencionesJ.literal.importeFijo"/></option>
+				<option value="<%=ClsConstants.TIPO_RETENCION_LEC%>"><siga:Idioma key="FactSJCS.mantRetencionesJ.literal.tramosLEC"/>
+									</option>
 		</select>
 	</td>
 	<td class="labelText">

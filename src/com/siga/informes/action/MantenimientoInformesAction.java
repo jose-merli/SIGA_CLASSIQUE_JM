@@ -86,7 +86,9 @@ public class MantenimientoInformesAction extends MasterAction {
 			} else
 				return super.executeInternal(mapping, formulario, request,
 						response);
-		} catch (Exception e) {
+		} catch (SIGAException e) {
+			throw e;
+		}catch (Exception e) {
 			throw new SIGAException("messages.general.error", e,
 					new String[] { "modulo.facturacionSJCS" });
 		}

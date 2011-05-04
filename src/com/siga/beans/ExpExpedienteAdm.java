@@ -998,7 +998,27 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		}
 		return datos;
 	}
-
+	public Vector selectGenerico(String select) throws ClsExceptions {
+		Vector datos = new Vector();
+		
+		// Acceso a BBDD
+		RowsContainer rc = null;
+		try { 
+			rc = new RowsContainer(); 
+			if (rc.query(select)) {
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					Hashtable registro = (Hashtable) fila.getRow(); 
+					if (registro != null) 
+						datos.add(registro);
+				}
+			}
+		} 
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Excepcion en ExpExpedienteAdm.selectGenerico(). Consulta SQL:"+select);
+		}
+		return datos;	
+	}
 	/*
 	 * ;étodo utilizado para obtener el número de denunciantes / impugnantes de un determinado expediente
 	 */	
@@ -1013,7 +1033,6 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		
 		String resultadoStr;
 		
-		FcsTramosLecAdm tramoAdm = new FcsTramosLecAdm (this.usrbean);
 		
         String sql = "SELECT COUNT(*) AS NUMERO ";
 
@@ -1024,7 +1043,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 		
 		try{
 			
-			contador = (Hashtable)((Vector)tramoAdm.selectGenerico(sql)).get(0);
+			contador = (Hashtable)((Vector)this.selectGenerico(sql)).get(0);
 			//devolverá true si el contador es = 0
 			resultado = Integer.parseInt(contador.get("NUMERO").toString());
 			

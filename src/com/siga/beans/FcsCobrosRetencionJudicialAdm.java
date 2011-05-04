@@ -278,8 +278,7 @@ public class FcsCobrosRetencionJudicialAdm extends MasterBeanAdministrador {
 	}
 	private Vector getRetencionesAplicadas(String sql, Hashtable codigos,UsrBean usrBean)throws ClsExceptions{
 		RowsContainer rc = null;
-		String descTipoRetPorcentaje = UtilidadesString.getMensajeIdioma(usrBean, "FactSJCS.mantRetencionesJ.literal.porcentual");
-		String descTipoRetImporte= UtilidadesString.getMensajeIdioma(usrBean,"FactSJCS.mantRetencionesJ.literal.importeFijo");
+		
 		Vector datos = new Vector();
 		
 		try { 
@@ -327,10 +326,14 @@ public class FcsCobrosRetencionJudicialAdm extends MasterBeanAdministrador {
 					retencionJudicial.setTipoRetencion(tipoRetencion);
 					
 					retencionAplicada.setRetencionJudicial(retencionJudicial);
+					
 					if(retencionJudicial.getTipoRetencion().equals(ClsConstants.TIPO_RETENCION_PORCENTAJE))
-						retencionJudicial.setDescTipoRetencion(descTipoRetPorcentaje);
+						retencionJudicial.setDescTipoRetencion(UtilidadesString.getMensajeIdioma(usrBean, "FactSJCS.mantRetencionesJ.literal.porcentual"));
+					
+					else if(retencionJudicial.getTipoRetencion().equals(ClsConstants.TIPO_RETENCION_IMPORTEFIJO))
+						retencionJudicial.setDescTipoRetencion(UtilidadesString.getMensajeIdioma(usrBean,"FactSJCS.mantRetencionesJ.literal.importeFijo"));
 					else
-						retencionJudicial.setDescTipoRetencion(descTipoRetImporte);
+						retencionJudicial.setDescTipoRetencion(UtilidadesString.getMensajeIdioma(usrBean,"FactSJCS.mantRetencionesJ.literal.tramosLEC"));
 					retencionAplicada.setPersona(persona);
 					retencionAplicada.setFechaRetencion((String)registro.get("FECHARETENCION"));
 					if((String)registro.get("IMPORTERETENIDO")!=null)
@@ -352,8 +355,7 @@ public class FcsCobrosRetencionJudicialAdm extends MasterBeanAdministrador {
 	}
 	private Vector getRetencionesAplicadasAExportar(String sql, Hashtable codigos,UsrBean usrBean)throws ClsExceptions{
 		RowsContainer rc = null;
-		String descTipoRetPorcentaje = UtilidadesString.getMensajeIdioma(usrBean, "FactSJCS.mantRetencionesJ.literal.porcentual");
-		String descTipoRetImporte= UtilidadesString.getMensajeIdioma(usrBean,"FactSJCS.mantRetencionesJ.literal.importeFijo");
+		
 		Vector datos = new Vector();
 		
 		try { 
@@ -382,11 +384,13 @@ public class FcsCobrosRetencionJudicialAdm extends MasterBeanAdministrador {
 					registro.put("NOMBRE", nombre);
 					String tipoRetencion = (String)registro.get("TIPORETENCION");
 			
-					
 					if(tipoRetencion.equals(ClsConstants.TIPO_RETENCION_PORCENTAJE))
-						registro.put("DESCTIPORETENCION", descTipoRetPorcentaje);
+						registro.put("DESCTIPORETENCION", UtilidadesString.getMensajeIdioma(usrBean, "FactSJCS.mantRetencionesJ.literal.porcentual"));
+					else if(tipoRetencion.equals(ClsConstants.TIPO_RETENCION_IMPORTEFIJO))
+						registro.put("DESCTIPORETENCION", UtilidadesString.getMensajeIdioma(usrBean,"FactSJCS.mantRetencionesJ.literal.importeFijo"));
 					else
-						registro.put("DESCTIPORETENCION", descTipoRetImporte);
+						registro.put("DESCTIPORETENCION", UtilidadesString.getMensajeIdioma(usrBean, "FactSJCS.mantRetencionesJ.literal.tramosLEC"));
+						
 					
 					if((String)registro.get("IMPORTERETENIDO")!=null){
 						registro.put("IMPORTERETENIDO",UtilidadesNumero.formatoCampo(UtilidadesHash.getString(registro, "IMPORTERETENIDO")));
