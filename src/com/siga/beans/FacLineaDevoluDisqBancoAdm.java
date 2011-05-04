@@ -22,7 +22,7 @@ public class FacLineaDevoluDisqBancoAdm extends MasterBeanAdministrador {
 		super (FacLineaDevoluDisqBancoBean.T_NOMBRETABLA, usu);
 	}
 	
-	protected String[] getCamposBean() {
+	public String[] getCamposBean() {
 		String [] campos = {FacLineaDevoluDisqBancoBean.C_IDINSTITUCION,
 							FacLineaDevoluDisqBancoBean.C_IDDISQUETECARGOS,
 							FacLineaDevoluDisqBancoBean.C_IDRECIBO,
@@ -160,5 +160,6 @@ public class FacLineaDevoluDisqBancoAdm extends MasterBeanAdministrador {
 	       }
 	       return datos;                        
 	    }
+
 	
 }

@@ -85,7 +85,7 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 	 * @author nuria.rgonzalez 14-12-04	 
 	 * @param Hashtable 
 	 */
-	protected MasterBean hashTableToBean(Hashtable hash) throws ClsExceptions {
+	public MasterBean hashTableToBean(Hashtable hash) throws ClsExceptions {
 		CenCuentasBancariasBean bean = null;
 		try{
 			bean = new CenCuentasBancariasBean();
@@ -318,6 +318,29 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 			throw new ClsExceptions (e, e.toString());
 		}
 		return alCuentasAbono;
+	}
+	public ArrayList getCuentasCargo(Long idPersona, Integer idInstitucion) throws ClsExceptions, SIGAException{
+		ArrayList alCuentasCargo = null;
+		try{			
+			RowsContainer rc = null;
+			String where = " WHERE " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDPERSONA + " = " + idPersona +
+			" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + idInstitucion + 
+			" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_FECHABAJA+ " IS NULL " + 
+			" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_ABONOCARGO + " in ('T','C')" ;
+			//" AND ROWNUM<2 ";
+		
+			Vector vCuentasCargo = this.select(where);
+			alCuentasCargo = new ArrayList();
+			for (int i = 0; i < vCuentasCargo.size(); i++) {
+				CenCuentasBancariasBean salida = (CenCuentasBancariasBean) vCuentasCargo.get(i);
+				alCuentasCargo.add(salida);
+			}
+			
+		}
+		catch(Exception e){			
+			throw new ClsExceptions (e, e.toString());
+		}
+		return alCuentasCargo;
 	}
 	
 	/**
@@ -708,6 +731,148 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 		}
 		return false;
 	}
+	
+	/**
+	 * Este metodo nos devolvera una cuanta bancaria de una factura simepre que todos los servicios
+	 * tengan la misma cuenta, esta no este de baja y se de Cargo
+	 * @param idInstitucion
+	 * @param idFactura
+	 * @return devolvera nuell si no existe
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
+	public CenCuentasBancariasBean getCuentaUnicaServiciosFactura (Integer idInstitucion,String idFactura)
+	throws ClsExceptions,SIGAException
+{
+		CenCuentasBancariasBean cuentaBean = null;
+	try {
+		Hashtable codigosHashtable = new Hashtable();
+		int contador = 0;
+		RowsContainer rc = new RowsContainer();
+		StringBuffer sql = new StringBuffer();
+		sql.append(" ");
+		sql.append(" SELECT CUENTA.IDINSTITUCION,CUENTA.IDPERSONA,CUENTA.IDCUENTA FROM ( ");
+		sql.append(" SELECT S.IDCUENTA, ");
+		sql.append(" FS.IDINSTITUCION,S.IDPERSONA, ");
+		sql.append(" COUNT(*) NUMCUENTAS,FS.IDFACTURA, ");
+				        
+		sql.append(" (SELECT COUNT(*) ");
+		sql.append(" FROM FAC_FACTURACIONSUSCRIPCION FS2, PYS_SUSCRIPCION S2 ");
+		sql.append(" WHERE FS2.IDINSTITUCION = S2.IDINSTITUCION ");
+		sql.append(" AND FS2.IDTIPOSERVICIOS = S2.IDTIPOSERVICIOS ");
+		sql.append(" AND FS2.IDSERVICIO = S2.IDSERVICIO ");
+		sql.append(" AND FS2.IDSERVICIOSINSTITUCION = S2.IDSERVICIOSINSTITUCION ");
+		sql.append(" AND FS2.IDSUSCRIPCION = S2.IDSUSCRIPCION ");
+		sql.append(" AND FS2.IDINSTITUCION = FS.IDINSTITUCION ");
+		sql.append(" AND FS2.IDFACTURA = FS.IDFACTURA ");
+		sql.append(" ) NUMSERVICIOS ");
+		sql.append(" FROM FAC_FACTURACIONSUSCRIPCION FS, PYS_SUSCRIPCION S ");
+		sql.append(" WHERE FS.IDINSTITUCION = S.IDINSTITUCION ");
+		sql.append(" AND FS.IDTIPOSERVICIOS = S.IDTIPOSERVICIOS ");
+		sql.append(" AND FS.IDSERVICIO = S.IDSERVICIO ");
+		sql.append(" AND FS.IDSERVICIOSINSTITUCION = S.IDSERVICIOSINSTITUCION ");
+		sql.append(" AND FS.IDSUSCRIPCION = S.IDSUSCRIPCION ");
+		
+		sql.append(" AND FS.IDINSTITUCION = :");
+		contador ++;
+		sql.append(contador);
+		codigosHashtable.put(new Integer(contador),idInstitucion);
+		sql.append(" AND FS.IDFACTURA = :");
+		contador ++;
+		sql.append(contador);
+		codigosHashtable.put(new Integer(contador),idFactura);
+		sql.append(" GROUP BY S.IDCUENTA,FS.IDFACTURA,FS.IDINSTITUCION,S.IDPERSONA ");
+		sql.append(" ) CUENTA,CEN_CUENTASBANCARIAS CB ");
+				   
+		sql.append(" WHERE  ");
+		sql.append(" CB.IDCUENTA = CUENTA.IDCUENTA ");
+		sql.append(" AND CB.IDINSTITUCION = CUENTA.IDINSTITUCION ");
+		sql.append(" AND CB.IDPERSONA = CUENTA.IDPERSONA ");
+		sql.append(" AND CB.ABONOCARGO IN ('C','T') ");
+		sql.append(" AND CB.FECHABAJA IS NULL AND ");
+		sql.append(" NUMCUENTAS = NUMSERVICIOS  ");
+		
+		
+						
+		if (rc.findBind(sql.toString(),codigosHashtable)) {
+			
+			if(rc.size()>0){
+			
+				Row fila = (Row) rc.get(0);
+				Hashtable<String, Object> htFila=fila.getRow();
+        		
+				cuentaBean = new CenCuentasBancariasBean();
+				cuentaBean.setIdCuenta(UtilidadesHash.getInteger(htFila, CenCuentasBancariasBean.C_IDCUENTA));
+				cuentaBean.setIdPersona(UtilidadesHash.getLong(htFila, CenCuentasBancariasBean.C_IDPERSONA));
+				cuentaBean.setIdInstitucion(UtilidadesHash.getInteger(htFila, CenCuentasBancariasBean.C_IDINSTITUCION));
+				
+			}
+		}
+	}
+	catch (Exception e) {
+		throw new ClsExceptions (e, "Error al obtener la informacion sobre getCuentaUnicaServiciosFactura.");
+	}
+	
+	return cuentaBean;                        
+} //getCuentaUnicaServiciosFactura()
+	public CenCuentasBancariasBean getCuenta(CenCuentasBancariasBean cuentaBancaria)
+	throws ClsExceptions,SIGAException
+{
+		CenCuentasBancariasBean cuentaBean = null;
+	try {
+		Hashtable codigosHashtable = new Hashtable();
+		int contador = 0;
+		RowsContainer rc = new RowsContainer();
+		StringBuffer sql = new StringBuffer();
+		
+		
+		sql.append(" SELECT CB.IDCUENTA,substr(B.NOMBRE,0,25) || ' ' ||'nº ' || CB.cbo_codigo || '-' || CB.codigosucursal ||'-' ||CB.digitocontrol ||'-' || LPAD(SUBSTR(CB.numerocuenta, 7), 10, '*') as DESCRIPCION ");
+		
+		sql.append(" FROM  ");
+		sql.append(" CEN_CUENTASBANCARIAS CB, CEN_BANCOS B ");
+		sql.append(" WHERE  ");
+
+
+		sql.append(" CB.CBO_CODIGO = B.CODIGO ");
+		sql.append(" AND CB.IDCUENTA =:");
+		contador ++;
+		sql.append(contador);
+		codigosHashtable.put(new Integer(contador),cuentaBancaria.getIdCuenta());
+		sql.append(" AND CB.IDINSTITUCION = :");
+		contador ++;
+		sql.append(contador);
+		codigosHashtable.put(new Integer(contador),cuentaBancaria.getIdInstitucion());
+		sql.append(" AND CB.IDPERSONA =  :");
+		contador ++;
+		sql.append(contador);
+		codigosHashtable.put(new Integer(contador),cuentaBancaria.getIdPersona());
+		
+		
+		
+		
+						
+		if (rc.findBind(sql.toString(),codigosHashtable)) {
+			
+			if(rc.size()>0){
+			
+				Row fila = (Row) rc.get(0);
+				Hashtable<String, Object> htFila=fila.getRow();
+				cuentaBean = new CenCuentasBancariasBean();
+				cuentaBean.setIdCuenta(UtilidadesHash.getInteger(htFila, CenCuentasBancariasBean.C_IDCUENTA));
+				cuentaBean.setNumeroCuenta(UtilidadesHash.getString(htFila,"DESCRIPCION"));
+				
+				
+			}
+		}
+	}
+	catch (Exception e) {
+		throw new ClsExceptions (e, "Error al obtener la informacion sobre getCuentaUnicaServiciosFactura.");
+	}
+	
+	return cuentaBean;                        
+}
+	
+
 
 	
 }

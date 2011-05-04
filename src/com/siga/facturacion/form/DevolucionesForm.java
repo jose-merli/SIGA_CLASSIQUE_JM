@@ -24,8 +24,22 @@ public class DevolucionesForm extends MasterForm{
 	protected FormFile ruta;
 	private String comisiones="";
 	private String idDisqueteDevoluciones="";
-
-		
+	private String datosPagosRenegociarObservaciones;
+	private String datosPagosRenegociarNuevaFormaPago;
+	private String datosFacturas;	
+	public String getDatosFacturas() {
+		return datosFacturas;
+	}
+	public void setDatosFacturas(String datosFacturas) {
+		this.datosFacturas = datosFacturas;
+	}
+	public String getDatosPagosRenegociarObservaciones() {
+		return datosPagosRenegociarObservaciones;
+	}
+	public void setDatosPagosRenegociarObservaciones(
+			String datosPagosRenegociarObservaciones) {
+		this.datosPagosRenegociarObservaciones = datosPagosRenegociarObservaciones;
+	}
 	/**
 	 * @return Returns the idDisqueteDevoluciones.
 	 */
@@ -74,5 +88,12 @@ public class DevolucionesForm extends MasterForm{
 	 */
 	public void setComisiones(String comisiones) {
 		this.comisiones = comisiones;
+	}
+	public String getDatosPagosRenegociarNuevaFormaPago() {
+		return datosPagosRenegociarNuevaFormaPago;
+	}
+	public void setDatosPagosRenegociarNuevaFormaPago(
+			String datosPagosRenegociarNuevaFormaPago) {
+		this.datosPagosRenegociarNuevaFormaPago = datosPagosRenegociarNuevaFormaPago;
 	}
 }

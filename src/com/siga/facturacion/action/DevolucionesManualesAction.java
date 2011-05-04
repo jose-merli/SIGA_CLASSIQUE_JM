@@ -29,6 +29,7 @@ import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.*;
 import com.siga.general.*;
 import com.siga.informes.form.MantenimientoInformesForm;
+import com.siga.facturacion.Facturacion;
 import com.siga.facturacion.form.DevolucionesManualesForm;
 
 
@@ -169,8 +170,13 @@ public class DevolucionesManualesAction extends MasterAction{
 		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 //			ReadProperties rp 	 = new ReadProperties("SIGA.properties");			
 		    String rutaServidor  = rp.returnProperty("facturacion.directorioFisicoDevolucionesJava") + rp.returnProperty("facturacion.directorioDevolucionesJava");
-	 		rutaServidor += File.separator + idInstitucion;
-	 		String nombreFichero = rutaServidor + File.separator +"Manual-"+UtilidadesString.formatoFecha(form.getFechaDevolucion(),"dd/MM/yyyy","ddMMyy")+"-"+form.getBanco()+"-"+identificador+".d19";
+	 		
+		    String barra 	= "";
+    		if (rutaServidor.indexOf("/") > -1) barra = "/"; 
+    		if (rutaServidor.indexOf("\\") > -1) barra = "\\";        		
+    		rutaServidor 	+= barra + idInstitucion ;
+		    
+	 		String nombreFichero = rutaServidor+ barra +"Manual-"+UtilidadesString.formatoFecha(form.getFechaDevolucion(),"dd/MM/yyyy","ddMMyy")+"-"+form.getBanco()+"-"+identificador+".d19";
 
 			FacFacturaIncluidaEnDisqueteAdm facdisq = new FacFacturaIncluidaEnDisqueteAdm(user);
 			File fichero = facdisq.crearFicheroDevoluciones(banco, fechaDevolucion, aplicaComisiones, recibos, idInstitucion, identificador, nombreFichero);
@@ -183,16 +189,15 @@ public class DevolucionesManualesAction extends MasterAction{
 					// Aplicacion de comisiones
 					if (aplicaComisiones!=null && aplicaComisiones.equalsIgnoreCase(ClsConstants.DB_TRUE)){
 				    	ClsLogging.writeFileLog("Aplicando Comisiones de devolucion="+identificador,8);
-				    	boolean ok=devoluciones.aplicarComisiones(idInstitucion,identificador,aplicaComisiones,this.getUserBean(request));
+				    	Facturacion facturacion = new Facturacion(this.getUserBean(request));
+				    	boolean ok=facturacion.aplicarComisiones(idInstitucion,identificador,aplicaComisiones,this.getUserBean(request));
 				    	if (!ok) {
 				    		throw new ClsExceptions("Fichero de devoluciones manuales: Error al aplicar devoluciones.");
 				    	}
 				    }
-				} else
-				if (ret.equals("5397")) {
+				} else	if (ret.equals("5397")) {
 					throw new ClsExceptions("Fichero de devoluciones manuales: El fichero no se ha encontrado.");
-				} else 
-				if (ret.equals("5402")) {
+				} else 	if (ret.equals("5402")) {
 					throw new ClsExceptions("Fichero de devoluciones manuales: Formato del fichero incorrecto.");
 				} else 
 				{

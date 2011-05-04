@@ -13,7 +13,14 @@ import com.siga.general.MasterForm;
  *
  */
 public class GestionarFacturaForm extends MasterForm{
-
+	private String datosFacturas;
+	
+	public String getDatosFacturas() {
+		return datosFacturas;
+	}
+	public void setDatosFacturas(String datosFacturas) {
+		this.datosFacturas = datosFacturas;
+	}
 	public void setIdInstitucion (Integer a) {
 		UtilidadesHash.set(this.datos,"_IDINSTITUCION_", a);
 	}

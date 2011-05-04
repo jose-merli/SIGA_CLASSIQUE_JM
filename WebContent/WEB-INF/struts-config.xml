@@ -1136,6 +1136,8 @@
 			<forward name="editar" path="/html/jsp/facturacion/datosDevoluciones.jsp"/>
 			<forward name="editarFactura" path="/html/jsp/facturacion/facturaAdministracionPestanas.jsp"/>
 			<forward name="mostrarVentana" path="/html/jsp/facturacion/confirmar.jsp"/>
+			<forward name="renegociar" path="/html/jsp/facturacion/renegociar.jsp"/>
+			
 		</action>
 
 		<!-- ***** Facturación / Plantillas ***** -->
@@ -2381,10 +2383,6 @@
 		<action path="/JGR_RelacionadoConSJCS" type="com.siga.gratuita.action.RelacionadoConSJCSAction" name="DummyForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/listadoRelacionadoConSJCS.jsp"/>
 		</action>
-		<action path="/JGR_DesignaRelacionadoConSJCS" type="com.siga.gratuita.action.RelacionadoConSJCSAction" name="DummyForm" scope="request">
-			<forward name="inicio" path="/html/jsp/gratuita/listadoRelacionadoConSJCS.jsp"/>
-		</action>
-		
 
 		<!-- ***** Justicia Gratuita / Configurar Turnos / Mantenimiento de Facturas *****
 -->

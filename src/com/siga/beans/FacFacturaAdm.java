@@ -1797,6 +1797,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 				   // sql += FacFacturaBean.C_FECHAEMISION+", ";
 				    sql += FacFacturaBean.C_NUMEROFACTURA+", ";
 				    sql += "DEUDA,"+FacFacturaBean.C_IDFACTURA+", COMUNICACIONES" ;
+				    sql += ",ESTADO_FACTURA ";
 				    if(isFacturasPendientes)
 				    	sql +=" ,FACTURASPENDIENTES ";
 				    
@@ -1818,7 +1819,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 		    contador++;
 		    codigos.put(new Integer(contador),this.usrbean.getLocation());
 		    sql += ", F_SIGA_GETCOMFACTURA(:"+contador+",F."+FacFacturaBean.C_IDPERSONA+",F."+FacFacturaBean.C_IDFACTURA+",0)  COMUNICACIONES";
-		    
+		    sql += ",f_siga_getrecurso_etiqueta(ef.descripcion,1) ESTADO_FACTURA ";
 		    if(nComunicacionesDesde!=null && !nComunicacionesDesde.equalsIgnoreCase("") || (nComunicacionesHasta!=null && !nComunicacionesHasta.equalsIgnoreCase(""))){
 		    sql += ",(SELECT count("+EnvComunicacionMorososBean.C_IDINSTITUCION+") FROM "+EnvComunicacionMorososBean.T_NOMBRETABLA+" ECM ";
 		    sql += "WHERE ECM."+EnvComunicacionMorososBean.C_IDFACTURA+" = F."+FacFacturaBean.C_IDFACTURA;
@@ -1842,13 +1843,16 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 		    }
 		    
 		    
-		    sql += " FROM "+FacFacturaBean.T_NOMBRETABLA+" F, "+CenPersonaBean.T_NOMBRETABLA+" P , "+CenClienteBean.T_NOMBRETABLA+" C ";
+		    sql += " FROM "+FacFacturaBean.T_NOMBRETABLA+" F, "+CenPersonaBean.T_NOMBRETABLA+" P , "+CenClienteBean.T_NOMBRETABLA+" C ,fac_estadofactura EF ";
 		    contador++;
 		    codigos.put(new Integer(contador),this.usrbean.getLocation());
 		    sql += " WHERE F."+FacFacturaBean.C_IDINSTITUCION+"=:"+contador;
+		    sql += " AND F."+FacFacturaBean.C_ESTADO+"=EF.IDESTADO ";
 		    sql += " and C."+CenClienteBean.C_IDINSTITUCION+"=F."+FacFacturaBean.C_IDINSTITUCION;
 		    sql += " and C."+CenClienteBean.C_IDPERSONA+"= F."+CenPersonaBean.C_IDPERSONA+ " ";
 		    sql += " AND P."+CenPersonaBean.C_IDPERSONA+"=F."+FacFacturaBean.C_IDPERSONA+ " ";
+		   
+		    
 		    
 		   
 		    String letrado = form.getLetrado();
@@ -3818,4 +3822,49 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	    }
 		return null;
 	}
+	public Vector getFacturasDevueltas (Integer idInstitucion,String [] strFacturas)
+	throws ClsExceptions,SIGAException
+{
+	Vector factDevueltasYRenegociadas=new Vector();
+	
+	try {
+		Hashtable codigosHashtable = new Hashtable();
+		int contador = 0;
+		RowsContainer rc = new RowsContainer();
+		StringBuffer sql = new StringBuffer();
+		sql.append(" ");
+		
+		sql.append(" SELECT FAC.NUMEROFACTURA,FAC.IDFACTURA,FAC.IDINSTITUCION,FAC.ESTADO,FAC.IMPTOTALPORPAGAR "); 
+		sql.append(" from FAC_FACTURA FAC ");
+		sql.append(" WHERE FAC.ESTADO IN (4) ");
+		sql.append(" AND IDINSTITUCION = :");
+		contador ++;
+		sql.append(contador);
+		codigosHashtable.put(new Integer(contador),idInstitucion);
+		sql.append(" AND FAC.IDFACTURA IN ( ");
+		for (int i = 0; i < strFacturas.length; i++) {
+			String factura = strFacturas[i];
+			contador ++;
+			sql.append(":");
+			sql.append(contador);
+			if(i!=strFacturas.length-1)
+				sql.append(",");
+			codigosHashtable.put(new Integer(contador),factura);
+		}
+		sql.append(" )");
+		
+		
+		if (rc.findBind(sql.toString(),codigosHashtable)) {
+			for (int i = 0; i < rc.size(); i++){
+				Row fila = (Row) rc.get(i);
+				factDevueltasYRenegociadas.add(fila);
+			}
+		}
+	}
+	catch (Exception e) {
+		throw new ClsExceptions (e, "Error al obtener la informacion sobre del disquete de devoluciones.");
+	}
+	
+	return factDevueltasYRenegociadas;                        
+} //getFacturasDevueltasyRenegociadas()
 }

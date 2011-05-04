@@ -189,18 +189,17 @@
 		 boton una funcion que abajo se reescribe. Los valores asociados separados por comas
 		 son: V Volver, B Buscar,A Avanzada ,S Simple,N Nuevo registro ,L Limpiar,R Borrar Log
 	-->
-
 <siga:ConjBotonesBusqueda botones="B" />
+
 
 <!-- FIN: BOTONES BUSQUEDA -->
 
 <!-- Formularios auxiliares para la busqueda de persona-->
-	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="" style="display:none">
-		<html:hidden property="actionModal" value=""/>
-		<html:hidden property="modo" value="abrirBusquedaModal"/>
-		
-	</html:form>
-
+<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="" style="display:none">
+	<html:hidden property="actionModal" value=""/>
+	<html:hidden property="modo" value="abrirBusquedaModal"/>
+	
+</html:form>
 
 <!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 <script language="JavaScript">
@@ -288,7 +287,7 @@
 				document.forms[0].submit();	
 			}
 		}
-
+		
 			
 	</script>
 <!-- FIN: SCRIPTS BOTONES BUSQUEDA -->

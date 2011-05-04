@@ -68,7 +68,14 @@
 		
 		<!-- Asociada al boton Volver -->
 		function accionGuardarCerrar(){ 
-			if (document.DevolucionesForm.comisiones.checked && !tieneProductoComision) {
+			
+			if(document.getElementById('comision').checked)
+				document.forms[0].comisiones.value="1";
+			else
+				document.forms[0].comisiones.value="0";
+			
+				
+			if (document.getElementById('comision').checked && !tieneProductoComision) {
 				alert(msgNoTieneProductoComision);	
 			} else {
 				if (validateDevolucionesForm(document.DevolucionesForm)){
@@ -99,6 +106,7 @@
 	<!-- Zona de campos de busqueda o filtro -->
 	<html:form action="/FAC_Devoluciones.do" method="POST" target="submitArea"  enctype="multipart/form-data">
 		<html:hidden property ="modo" value = ""/>
+		<html:hidden property ="comisiones" />
 		<html:hidden property="idInstitucion" value="<%=idInstitucion%>"/>
 		<table  class="tablaCentralCamposPeque"  align="center">			
 			<tr>				
@@ -118,16 +126,56 @@
 									</div>
 								</td>
 							</tr>
-							<tr>
-								<td class="labelText" width="90%">
-									<siga:Idioma key="facturacion.nuevoFichero.literal.cargaComisiones"/>&nbsp;&nbsp;
-									<input type="checkbox" name="comisiones" value="<%=ClsConstants.DB_TRUE%>">
-								</td>
-							</tr>
+							
 						</table>
 					</siga:ConjCampos>
 				</td>
 			</tr>
+			
+			<tr>
+				<td>
+					<siga:ConjCampos leyenda="facturacion.pagosFactura.Renegociar.Titulo">
+					<table class="tablaCampos" border="0">
+						<tr>
+							<td class="labelText" colspan="2">
+								<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" checked="checked" value="noRenegociarAutomaticamente" >
+									No renegociar automáticamente.
+								<br>
+								<input type="radio" id="radio1" name="datosPagosRenegociarNuevaFormaPago" value="mismaCuenta" >
+									<siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.NuevaFormaPago.MismaCuenta"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<table class="tablaCampos" border="0">
+									<tr>
+										<td class="labelText"><siga:Idioma key="facturacion.pagosFactura.Renegociar.literal.Observaciones"/></td>
+										<td class="labelText"><html:textarea property="datosPagosRenegociarObservaciones" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" cols="80" rows="3" styleClass="box" value=""/></td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>
+					</siga:ConjCampos>
+				</td>
+			</tr>
+		
+			<tr>
+				<td>
+					<siga:ConjCampos leyenda="Comisiones">
+						<table class="tablaCampos" border="0">
+							<tr>
+									<td class="labelText" width="90%">
+										<siga:Idioma key="facturacion.nuevoFichero.literal.cargaComisiones"/>&nbsp;&nbsp;
+										<input type = "checkbox"  name="comision"  />
+									</td>
+								</tr>
+						</table>
+					</siga:ConjCampos>
+				</td>
+			</tr>
+			
+			
 		</table>
 	</html:form>
 	<siga:ConjBotonesAccion botones='Y,C' modo=''  modal="P"/>

@@ -24,7 +24,9 @@ public enum SearchButtonsConstants {
 	GENERAR_RECURSOS ("gr","general.boton.generarRecursos","generarRecursos()",17),
 	LISTO_PARA_ENVIAR ("le","gratuita.busquedaEJG_CAJG.listoParaEnviar","accionListoParaEnviar()",18),
 	ANIADIR_A_REMESA ("ar","general.boton.aniadirARemesa","aniadirARemesa(true)",19),
-	DESCARGA_EJG ("dee","general.boton.descargaEejg","descargaEejg(true)",20);
+	DESCARGA_EJG ("dee","general.boton.descargaEejg","descargaEejg(true)",20),
+	RENEGOCIAR ("rn","general.boton.renegociar","renegociar(true)",21);
+	
 	
     private final String valor;   
 	private final String label;   

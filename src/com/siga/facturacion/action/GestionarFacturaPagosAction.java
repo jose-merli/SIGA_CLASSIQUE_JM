@@ -16,8 +16,11 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.Row;
+import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.*;
+import com.siga.facturacion.Facturacion;
 import com.siga.facturacion.form.GestionarFacturaForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -48,7 +51,11 @@ public class GestionarFacturaPagosAction extends MasterAction {
 					mapDestino = abrir(mapping, miForm, request, response);
 					break;
 				}
-
+				if (accion.equalsIgnoreCase("renegociar")){
+					mapDestino = renegociar(mapping, miForm, request, response);
+					break;
+				}
+				
 				// Pago por caja
 				if (accion.equalsIgnoreCase("pagoPorCaja")){
 					mapDestino = pagoPorCaja(mapping, miForm, request, response);
@@ -372,6 +379,16 @@ public class GestionarFacturaPagosAction extends MasterAction {
 			request.setAttribute("estadoFactura", 		estadoFactura);
 			request.setAttribute("numeroCuenta", 		numeroCuenta);
 			request.setAttribute("codigoEntidad", 		codigoEntidad);
+			CenCuentasBancariasBean cuentaBancaria = cuentasAdm.getCuentaUnicaServiciosFactura(idInstitucion, idFactura);
+			if(cuentaBancaria!=null){
+				cuentaBancaria = cuentasAdm.getCuenta(cuentaBancaria);
+				
+			}else{
+				cuentaBancaria = new CenCuentasBancariasBean();	
+			}
+			request.setAttribute("cuentaUnicaServicios",cuentaBancaria);
+			
+			
 		} 
 		catch (Exception e) { 
 			throwExcp("messages.general.error", new String[] {"modulo.facturacion"}, e, null); 
@@ -390,7 +407,6 @@ public class GestionarFacturaPagosAction extends MasterAction {
 	 * @exception  SIGAException  Errores de aplicación
 	 */
 	protected String insertarRenegociar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
-		UserTransaction t = this.getUserBean(request).getTransaction();
 
 		try {
 			GestionarFacturaForm miForm = (GestionarFacturaForm) formulario;
@@ -398,140 +414,74 @@ public class GestionarFacturaPagosAction extends MasterAction {
 			String idFactura 		= miForm.getIdFactura();
 			Integer estadoFactura 	= miForm.getDatosPagosRenegociarEstadoFactura();
 			String nuevaFormaPago 	= miForm.getDatosPagosRenegociarNuevaFormaPago();  
-			Integer idCuenta 		= null;
-			int idFormaPago			= 0;
-			boolean actualizarFacturaEnDisco = false;
+			Facturacion facturacion = new Facturacion(this.getUserBean(request));
+			facturacion.insertarRenegociar(idInstitucion, idFactura, estadoFactura, 
+					nuevaFormaPago, miForm.getDatosPagosRenegociarIdCuenta().toString(),
+						miForm.getDatosPagosRenegociarImportePendiente(), 
+						miForm.getDatosPagosRenegociarObservaciones(),false,false,false,null);
 			
-			// Recuperamos la factura asociada a la renegociacion
-			Hashtable claves = new Hashtable();
-			UtilidadesHash.set(claves, FacFacturaBean.C_IDINSTITUCION, idInstitucion);
-			UtilidadesHash.set(claves, FacFacturaBean.C_IDFACTURA, idFactura);
-			FacFacturaAdm facturaAdm = new FacFacturaAdm (this.getUserBean(request));
-			Vector vFacturas = facturaAdm.selectByPK(claves);
-			FacFacturaBean facturaBean = (FacFacturaBean) vFacturas.get(0);
-
-			do {
-				if (estadoFactura.intValue() == ConsPLFacturacion.PENDIENTE_COBRO){ // 2
-					if (nuevaFormaPago.equalsIgnoreCase("porCaja")) {
-						return exitoModal("messages.inserted.success", request);
-					}
-					if (nuevaFormaPago.equalsIgnoreCase("porBanco")) {
-					    idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA;
-						idCuenta = miForm.getDatosPagosRenegociarIdCuenta();
-						break;
-					}
-				}
-				if (estadoFactura.intValue() == ConsPLFacturacion.RENEGOCIADA) {
-					if (nuevaFormaPago.equalsIgnoreCase("mismaCuenta")) {
-						return exitoModal("messages.inserted.success", request);
-					}
-					if (nuevaFormaPago.equalsIgnoreCase("porCaja")) {
-						idCuenta = null;
-						idFormaPago=ClsConstants.TIPO_FORMAPAGO_METALICO;
-						break;
-					}
-					if (nuevaFormaPago.equalsIgnoreCase("porBanco")) {
-					    idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA;
-						idCuenta = miForm.getDatosPagosRenegociarIdCuenta();
-						break;
-					}
-				}
-				if(estadoFactura.intValue() == ConsPLFacturacion.DEVUELTA) {
-					actualizarFacturaEnDisco = true;
-
-					if (nuevaFormaPago.equalsIgnoreCase("mismaCuenta")) {
-					    idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA;
-						idCuenta = facturaBean.getIdCuenta();
-						break;
-					}
-					if (nuevaFormaPago.equalsIgnoreCase("porCaja")) {
-					    idFormaPago=ClsConstants.TIPO_FORMAPAGO_METALICO;
-						idCuenta = null;
-						break;
-					}
-					if (nuevaFormaPago.equalsIgnoreCase("porBanco")) {
-					    idFormaPago = ClsConstants.TIPO_FORMAPAGO_FACTURA;
-						idCuenta = miForm.getDatosPagosRenegociarIdCuenta();
-						break;
-					}
-				}
-				
-				
-				// Nunca deberia llegar aqui
-				throwExcp("Operacion no permitida", new String[] {"modulo.facturacion"},new ClsExceptions("Operacion no permitida"), null);					
-			
-			} while (false);
-
-			
-			
-			// Insertamos un nuevo registro en Fac_Renegociacion
-			FacRenegociacionAdm renegociacionAdm = new FacRenegociacionAdm (this.getUserBean(request));
-			FacRenegociacionBean renegociacionBean = new FacRenegociacionBean ();
-			renegociacionBean.setComentario(miForm.getDatosPagosRenegociarObservaciones());
-			renegociacionBean.setFechaRenegociacion("sysdate");
-			renegociacionBean.setIdCuenta(idCuenta);
-			renegociacionBean.setIdFactura(idFactura);
-			renegociacionBean.setIdInstitucion(idInstitucion);
-			renegociacionBean.setIdPersona(facturaBean.getIdPersona());
-			renegociacionBean.setIdRenegociacion(renegociacionAdm.getNuevoID(idInstitucion, idFactura));
-			renegociacionBean.setImporte(miForm.getDatosPagosRenegociarImportePendiente());
-			
-			t.begin();
-			if(!renegociacionAdm.insert(renegociacionBean)) {
-				throw new ClsExceptions("Error al insertar la renegociación: "+renegociacionAdm.getError());
-			    //throwExcp("messages.general.error",new String[] {"modulo.facturacion"},new ClsExceptions("messages.inserted.error"),t); 
-			}
-
-			// Actualizamos la tabla FacFacturaInclidaEnDisquete
-			if (actualizarFacturaEnDisco) {
-				FacFacturaIncluidaEnDisqueteAdm facturaDiscoAdm = new FacFacturaIncluidaEnDisqueteAdm (this.getUserBean(request)); 
-				if (!facturaDiscoAdm.updateRenegociacion(renegociacionBean.getIdInstitucion(), renegociacionBean.getIdFactura(), renegociacionBean.getIdRenegociacion())) {
-					throw new ClsExceptions("Error al actualizar la factura incluida en disquete: "+facturaDiscoAdm.getError());
-					//throwExcp("messages.general.error",new String[] {"modulo.facturacion"},new ClsExceptions("messages.inserted.error"),t); 
-				}
-			}
-
-			// Aquí hay que actualizar el estado de la factura según haya quedado finalmente la factura
-			// Actualizamos el idCuenta de la tabla FacFactura
-			facturaBean.setIdCuenta(idCuenta);
-			
-	        // AQUI VAMOS A MODIFICAR LOS VALORES DE IMPORTES
-			// Esto no paga nada por lo que no cambia nada
-//	        facturaBean.setImpTotalPagadoPorBanco(new Double(facturaBean.getImpTotalPagadoPorCaja().doubleValue()+miForm.getDatosPagosRenegociarImportePendiente().doubleValue()));
-//	        facturaBean.setImpTotalPagado(new Double(facturaBean.getImpTotalPagado().doubleValue()+miForm.getDatosPagosRenegociarImportePendiente().doubleValue()));
-//	        facturaBean.setImpTotalPorPagar(new Double(facturaBean.getImpTotalPorPagar().doubleValue()-miForm.getDatosPagosRenegociarImportePendiente().doubleValue()));
-	        // vamos a poner a pelo el estado renegociada.
-			
-			facturaBean.setEstado(new Integer(3)); // renegociada
-			if (idFormaPago!=0) {
-			    facturaBean.setIdFormaPago(new Integer(idFormaPago)); 
-			}
-	        
-			if (facturaAdm.update(facturaBean)) {
-		        // AQUI VAMOS A MODIFICAR EL VALOR DE ESTADO
-				//facturaAdm.actualizarEstadoFactura(facturaBean, this.getUserName(request));
-			    // Atencion, por un problema de la capa basica, los valores nulos no se actualizan.
-			    // actualizo ahora la cuenta.
-			    if (idCuenta==null) {
-			        if (!facturaAdm.insertSQL("UPDATE FAC_FACTURA SET IDCUENTA=NULL WHERE IDINSTITUCION="+idInstitucion+" AND IDFACTURA="+idFactura)) {
-			            throw new ClsExceptions("Error al actualizar la cuenta a nulo: "+facturaAdm.getError());        
-			        }
-			    }
-			    
-	        } else {
-	            throw new ClsExceptions("Error al actualizar los importes de la factura: "+facturaAdm.getError());
-	        }
-			
-			t.commit();
-
+		}catch (SIGAException e) { 
+			return exito(e.getLiteral(), request);
 			
 		}
 		catch (Exception e) { 
-			throwExcp("messages.general.error", new String[] {"modulo.facturacion"}, e, t); 
+			throwExcp("messages.general.error", new String[] {"modulo.facturacion"}, e, null); 
 		}				
 		return exitoModal("messages.inserted.success", request);
 	}
+	
+	protected String renegociar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
+		String forward = "exception";
+		UserTransaction tx 	= null;
+		try {
+			
+			GestionarFacturaForm miForm = (GestionarFacturaForm) formulario;
+			UsrBean usr = this.getUserBean(request);
+			Integer idInstitucion 	= new Integer(usr.getLocation());
+			String nuevaFormaPago 	= miForm.getDatosPagosRenegociarNuevaFormaPago();
+			Facturacion facturacion = new Facturacion(usr);
+			FacFacturaAdm facturaAdm = new FacFacturaAdm(usr);
+			String datosFacturas = miForm.getDatosFacturas();
+			String strFacturas[] = datosFacturas.split("##");
+			
+			Vector factDevueltasYRenegociadas = facturaAdm.getFacturasDevueltas(idInstitucion,strFacturas);
+			boolean isTodasRenegociadas = true;
+			tx = usr.getTransactionPesada();
+			tx.begin();
+			for (int i = 0; i < factDevueltasYRenegociadas.size(); i++) {
+				Row fila = (Row) factDevueltasYRenegociadas.get(i);
+        		Hashtable<String, Object> htFila=fila.getRow();
+        		String idFactura = UtilidadesHash.getString(htFila, FacFacturaBean.C_IDFACTURA);
+        		Integer estadoFactura = UtilidadesHash.getInteger(htFila, FacFacturaBean.C_ESTADO);
+        		Double impTotalPorPagar = UtilidadesHash.getDouble(htFila, FacFacturaBean.C_IMPTOTALPORPAGAR);
+				try {
+					facturacion.insertarRenegociar(new Integer(idInstitucion), idFactura, estadoFactura, 
+							nuevaFormaPago, null,	impTotalPorPagar, 
+								miForm.getDatosPagosRenegociarObservaciones(),true,true,false,null);	
+				} catch (SIGAException e) {
+					isTodasRenegociadas = false;
+					continue;
+				}
+        		
+			}
+			tx.commit();
+			
+			if(isTodasRenegociadas){
+				forward = exitoModal("facturacion.nuevoFichero.literal.procesoCorrecto",request);
+				
+			}else{
+				forward=exitoModal("facturacion.renegociar.aviso.noTodasRenegociadas",request);
+				
+			}
 
+		}catch (Exception e) { 
+			throwExcp("messages.general.error", new String[] {"modulo.facturacion"}, e, tx); 
+		}				
+		return forward;
+	}
+	
+	
+	
 	/**
 	 * Funcion que recupera los datos para la visualizacion de un pago por tarjeta
 	 * @param  mapping - Mapeo de los struts

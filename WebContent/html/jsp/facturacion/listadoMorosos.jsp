@@ -160,6 +160,13 @@
 			<html:hidden property = "datosEnvios" value=""/>
 			
 		</html:form>
+		<html:form action="/FAC_Devoluciones" target="submitArea">
+			<html:hidden property="modo" value="renegociarCobrosRecobros" />
+			<html:hidden property="datosFacturas" />
+			<input type="hidden" name="actionModal" value="">
+			
+		</html:form>
+		
 				
 			<siga:TablaCabecerasFijas 
 		   	      nombre="tablaDatos"
@@ -169,8 +176,9 @@
 				   facturacion.consultamorosos.literal.nombreyapellidos,
 		   		  	facturacion.consultamorosos.literal.fecha,
 		   		  	facturacion.consultamorosos.literal.factura,
+		   		  	facturacion.consultamorosos.literal.estadoFactura,
 		   		  	facturacion.consultamorosos.literal.pendientepago,facturacion.consultamorosos.literal.comunicaciones, "
-		   		  tamanoCol="5,10,30,8,10,10,10,15"
+		   		  tamanoCol="5,10,20,8,12,18,8,10,7"
 		   		  alto="70%"
 		   		  ajusteBotonera="true"
 		   		  activarFilaSel="true"	
@@ -206,6 +214,7 @@
 	  				visibleConsulta = "no"
 	  				visibleEdicion = "no"
 	  				visibleBorrado = "no"
+	  				pintarEspacio="false"
 	  				elementos='<%=elemento%>' 
 					
 	  				clase="listaNonEdit">
@@ -255,6 +264,7 @@
 					<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("NOMBRE"))%></td>
 					<td align="center"><%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(userBean.getLanguage(),fila.getString(""+FacFacturaBean.C_FECHAEMISION+"")))%></td>
 					<td align="right"><%=UtilidadesString.mostrarDatoJSP(fila.getString(""+FacFacturaBean.C_NUMEROFACTURA+""))%></td>
+					<td align="left"><%=UtilidadesString.mostrarDatoJSP(fila.getString("ESTADO_FACTURA"))%></td>
 					<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(fila.getString("DEUDA"),2))%>&nbsp;&euro;</td>
 					<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("COMUNICACIONES"))%></td>
 					
@@ -267,7 +277,7 @@
            
 			<!-- FIN: ZONA DE REGISTROS -->
 			</siga:TablaCabecerasFijas>
-			<siga:ConjBotonesAccion botones="GX,COM" />
+			<siga:ConjBotonesAccion botones="GX,COM,RN" />
 			
 			
   
@@ -611,7 +621,39 @@
 		window.close();
 	}
 	
+	function renegociar() 
+	{
+		var isConfirmado = confirm('<siga:Idioma key="facturacion.consultamorosos.mensaje.confirmaRenegociar"/>');
+		if(!isConfirmado)
+			return;
+		datos = "";
+		for (i = 0; i < ObjArray.length; i++) {
+			var idRegistros = ObjArray[i];
+			index = idRegistros.indexOf('||');
+			//alert("index"+index);
+			idFactura  = idRegistros.substring(0,index);
+			
+			
+ 		   	datos = datos +	idFactura + "##"; 
+			
+			
+		}
+		if (datos == '') {
+			
+			alert ('<siga:Idioma key="general.message.seleccionar"/>');
+			fin();
+			return;
+		}
+			
+		document.DevolucionesForm.datosFacturas.value = datos;
+		
+		var resultado = ventaModalGeneral("DevolucionesForm","P");
+		if (resultado=="MODIFICADO")
+		{
+		}
 	
+	
+	}
 			
 		
 			
