@@ -61,6 +61,7 @@
 		
 	}
 	function preAccionImporte(){
+		TramosRetencionForm.importe.value=TramosRetencionForm.importe.value.replace(/,/,".");
 		if(TramosRetencionForm.importe.value==''){
 			return 'cancel';
 		}
@@ -93,45 +94,52 @@
 <html:hidden property="modo"/>
 <html:hidden property="idInstitucion"/>
 <siga:ConjCampos leyenda="general.criterios">
-	<table width="100%" border="0">
+	<table width="100%" class="tablaCampos" border="0" >
 		<tr>
 			<td width="20%"></td>
-			<td width="30%"></td>
-			<td width="15%"></td>
-			<td width="35%"></td>
+			<td width="10%"></td>
+			<td width="25%"></td>
+			<td></td>
 		</tr>
 		<tr>
-			<td><siga:Idioma
+			<td class="labelText"><siga:Idioma
 					key="fcs.tramosLEC.literal.año" /></td>
 			<td><html:text styleId="idAnio"
 				property="anio" size="4" maxlength="4"
-				styleClass="box"></html:text></td>
-			<td><siga:Idioma
+				styleClass="box" style="width:50"></html:text></td>
+			<td class="labelText"><siga:Idioma
 					key="fcs.tramosLEC.literal.smi" /></td>
 			<td><html:text	property="smi" styleClass="box" readonly="true"></html:text></td>
 		</tr>
 		<tr>
-			<td><siga:Idioma key="fcs.tramosLEC.literal.numeroMeses" /></td>
+			<td class="labelText"><siga:Idioma key="fcs.tramosLEC.literal.numeroMeses" /></td>
 			<td><html:text 
 				property="numeroMeses" 
-				styleClass="box" onchange="onChangeNumeroMeses();"></html:text></td>
+				styleClass="box" maxlength="2" style="width:30" onchange="onChangeNumeroMeses();"></html:text></td>
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
 		</tr>
 	</table>
 </siga:ConjCampos>
 <siga:ConjCampos leyenda="fcs.tramosLEC.leyenda.simulacionRetencion">
+<table width="100%" class="tablaCampos" border="0" >
 <tr>
-			<td><siga:Idioma key="fcs.tramosLEC.literal.importe" /></td>
+	<td width="20%"></td>
+	<td width="10%"></td>
+	<td width="20%"></td>
+	<td></td>
+</tr>
+<tr>
+			<td class="labelText"><siga:Idioma key="fcs.tramosLEC.literal.importe" /></td>
 			<td><html:text 
 				property="importe" styleId="idImporte"
-				styleClass="box" /></td>
-			<td><siga:Idioma key="fcs.tramosLEC.literal.importeRetencion" /></td>
+				styleClass="box" style="width:70;text-align=right" /></td>
+			<td class="labelText"><siga:Idioma key="fcs.tramosLEC.literal.importeRetencion" /></td>
 			<td><html:text 
 				property="importeRetencion" 
-				styleClass="box" readonly="true" /></td>
+				styleClass="box" readonly="true" style="width:70;text-align=right" /></td>
 		</tr>
-
+</table>
 </siga:ConjCampos>
 <input type='button'  id = 'idBuscarTramosRetencion' name='idButton' style="display:none" value='Buscar' alt='Buscar' class='busquedaTramosRetencion'>
 <ajax:updateFieldFromField 
