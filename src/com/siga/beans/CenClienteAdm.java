@@ -596,19 +596,6 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			sqlClientes = "SELECT "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+" , nvl(" + CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_NOAPARECERREDABOGACIA+" ,'0') "+CenClienteBean.C_NOAPARECERREDABOGACIA+"  ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_NOENVIARREVISTA+" , " +
 				" DECODE("+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_COMUNITARIO+",'" + ClsConstants.DB_TRUE + "',"+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOMUNITARIO+","+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOLEGIADO+") AS "+CenColegiadoBean.C_NCOLEGIADO+"," +
 				" "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOMUNITARIO+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NOMBRE+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+","+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_FECHANACIMIENTO+", "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_FECHAINCORPORACION+", "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDPERSONA+" , "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDINSTITUCION+", "+
-//				" (SELECT F_SIGA_GETRECURSO("+CenEstadoColegialBean.T_NOMBRETABLA+"."+CenEstadoColegialBean.C_DESCRIPCION+", " + idioma + ") \"" + CenEstadoColegialBean.T_NOMBRETABLA+"."+CenEstadoColegialBean.C_DESCRIPCION + "\" " + 
-				/*" (SELECT " +CenEstadoColegialBean.T_NOMBRETABLA+"."+CenEstadoColegialBean.C_DESCRIPCION +  
-				" FROM  "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"  ,  "+CenEstadoColegialBean.T_NOMBRETABLA+"   " + 
-				" WHERE "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDESTADO+" = "+CenEstadoColegialBean.T_NOMBRETABLA+"."+CenEstadoColegialBean.C_IDESTADO+"  " +
-				" AND "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDPERSONA+"= "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDPERSONA+"  " +
-				" AND "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDINSTITUCION+" = "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDINSTITUCION + " " + 
-				" AND "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_FECHAESTADO+" = (SELECT MAX("+CenDatosColegialesEstadoBean.C_FECHAESTADO+") " + 
-				" FROM  "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"   " +
-				" WHERE "+CenColegiadoBean.C_IDPERSONA+" = "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDPERSONA+"  " +
-				" AND "+CenColegiadoBean.C_IDINSTITUCION+"= "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDINSTITUCION+" AND CEN_DATOSCOLEGIALESESTADO.FECHAESTADO <= SYSDATE)) AS ESTADOCOLEGIAL, " +*/
-				//jbd
-			    //"   F_SIGA_GETDIRECCIONCLIENTE(CEN_CLIENTE.IDINSTITUCION, CEN_CLIENTE.IDPERSONA,2, 11) as TELEFONO," +
-			    //"   F_SIGA_GETDIRECCIONCLIENTE(CEN_CLIENTE.IDINSTITUCION, CEN_CLIENTE.IDPERSONA,2, 13) as MOVIL," +
 			       
 				" "+CenColegiadoBean.C_SITUACIONRESIDENTE+" ";
 				//" F_SIGA_ESLETRADO("+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+", "+idInstitucion+") LETRADO";
@@ -647,26 +634,6 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	       	contador++;
 			codigosBind.put(new Integer(contador),formulario.getNumeroColegiado().trim());
 	       	    sqlClientesWhere += " AND LTRIM(DECODE(CEN_COLEGIADO.COMUNITARIO,'1',CEN_COLEGIADO.NCOMUNITARIO, CEN_COLEGIADO.NCOLEGIADO),'0') = LTRIM(:"+contador+",'0') " ;
-//	       		sqlClientesWhere += " AND ( "+
-//								      
-//	       								"("+ComodinBusquedas.tratarNumeroColegiado(formulario.getNumeroColegiado(),CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOLEGIADO)+
-//								      " AND "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_COMUNITARIO+"='"+ClsConstants.DB_FALSE+"') "+
-//									  " OR "+
-//									  
-//									  "("+ComodinBusquedas.tratarNumeroColegiado(formulario.getNumeroColegiado(),CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOMUNITARIO)+
-//									  " AND "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_COMUNITARIO+"='"+ClsConstants.DB_TRUE+"') "+
-//							       " ) ";
-//	       	}else{
-//	       		sqlClientesWhere += " AND ( "+
-//			      
-//						"("+ComodinBusquedas.tratarNumeroColegiadoAproximado(formulario.getNumeroColegiado().trim(),CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOLEGIADO)+
-//			      " AND "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_COMUNITARIO+"='"+ClsConstants.DB_FALSE+"') "+
-//				  " OR "+
-//				  
-//				  "("+ComodinBusquedas.tratarNumeroColegiadoAproximado(formulario.getNumeroColegiado().trim(),CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOMUNITARIO)+
-//				  " AND "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_COMUNITARIO+"='"+ClsConstants.DB_TRUE+"') "+
-//		       " ) ";
-//	       	}
 	       }
 //	 3
 	       if (!formulario.getNombrePersona().trim().equals("")) {
@@ -801,7 +768,6 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	       }
 //	 11
 	       
-//		  	 11 fecha incorporacion
 	       String fDesdeInc = formulario.getFechaIncorporacionDesde(); 
 		   String fHastaInc = formulario.getFechaIncorporacionHasta();
 			if ((fDesdeInc != null && !fDesdeInc.trim().equals("")) || (fHastaInc != null && !fHastaInc.trim().equals(""))) {
@@ -816,10 +782,6 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 				sqlClientesWhere +=" and " + vCondicion.get(1) ;
 				
 			}
-	       
-	       /*if (formulario.getFechaIncorporacion()!=null && !formulario.getFechaIncorporacion().trim().equals("")) {
-	       	sqlClientesWhere += " AND (TO_CHAR("+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_FECHAINCORPORACION+",'DD/MM/YYYY') = '" + formulario.getFechaIncorporacion() + "') ";
-	       }*/
 //	 12
 	       if (formulario.getResidente()!=null && !formulario.getResidente().trim().equals("")) {
 	    	contador++;
@@ -910,40 +872,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 				contador=new Integer(vCondicion.get(0).toString()).intValue();
 				sqlClientesWhere +=" and " + vCondicion.get(1) + ") ";
 				
-				
-				
-				
-				
-				
 			}
-	       
-	       
-	      /* if (formulario.getFechaAlta()!=null && !formulario.getFechaAlta().trim().equals("")) {
-	       	sqlClientesWhere += " AND EXISTS (SELECT 1 "+
-				" FROM FAC_FACTURA "+
-				" WHERE FAC_FACTURA.IDPERSONA = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" "+
-				" AND FAC_FACTURA.IDINSTITUCION = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" "+
-				" AND TO_CHAR(FAC_FACTURA.FECHAEMISION,'DD/MM/YYYY') = '" + formulario.getFechaAlta() + "') ";
-		   } */
-//	 19   
-	       //jta comento esto porque tarda mucho
-			/*if (formulario.getConcepto()!=null && !formulario.getConcepto().trim().equals("")) {
-	       	sqlClientesWhere += " AND EXISTS (SELECT 1 "+
-				" FROM FAC_LINEAFACTURA , FAC_FACTURA  "+ 
-				" WHERE FAC_LINEAFACTURA.IDINSTITUCION = FAC_FACTURA.IDINSTITUCION "+
-				" AND FAC_LINEAFACTURA.IDFACTURA = FAC_FACTURA.IDFACTURA "+
-				" AND FAC_FACTURA.IDPERSONA = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" "+
-				" AND FAC_FACTURA.IDINSTITUCION = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" ";
-	       	contador++;
-	       
-	       	sqlClientesWhere +=	" AND "+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getConcepto().trim(),"FAC_LINEAFACTURA.DESCRIPCION",contador,codigosBind)+") ";
-				
-		   }*/
-
-	       /*if (formulario.getFechaNacimiento()!=null && !formulario.getFechaNacimiento().trim().equals("")) {
-	       	sqlClientesWhere += 
-					" AND TO_CHAR("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_FECHANACIMIENTO+",'DD/MM/YYYY') = '" + formulario.getFechaNacimiento() + "' ";
-		   }*/
 	       
 //		  	 20 fecha nacimiento
 	       String fDesdeNac = formulario.getFechaNacimientoDesde(); 
@@ -1105,16 +1034,6 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			if (totalRegistros==0){					
 				paginador =null;
 			}
-	       	
-			// RGG cambio para visibilidad
-			/*rcClientes = this.find(sqlClientes); 
-			salida = new Vector();
-			if (rcClientes!=null) {
-	       		for (int i = 0; i < rcClientes.size(); i++)	{
-					Row filaClientes = (Row) rcClientes.get(i);
-					salida.add(filaClientes.getRow());
-				}
-			}*/
 			
 			return paginador;
 		} 
@@ -4798,6 +4717,53 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 		}
 		return v;
 	}
+ 	
+ 	/**
+ 	 * Devuelve true si el cliente puede ser gestionado por su propio colegio
+ 	 * Si no puede ser gestionado por el debera gestionarse desde otro colegio
+ 	 * @param idPersona
+ 	 * @return true si coincide el idpersona con idinstitucion
+ 	 */
+ 	public boolean getExisteColegioCreador(Long idPersona){
+ 		String sql = " SELECT cli."+ CenClienteBean.C_IDINSTITUCION + " , cli."+CenClienteBean.C_IDPERSONA +
+			 " FROM   " + CenClienteBean.T_NOMBRETABLA + " cli "+
+			 " WHERE   cli."+CenClienteBean.C_IDINSTITUCION+"  = substr(cli."+CenClienteBean.C_IDPERSONA+",1,4)  " +			 
+			 " AND   cli."+CenClienteBean.C_IDPERSONA+" = " + idPersona.toString();
+ 			Vector v;
+			try {
+				v = this.selectGenerico(sql);
+				if (v!=null && v.size()>0) {
+					return true;
+				}else{
+					return false;
+				}
+			} catch (Exception e) {
+				return false;
+			}
+ 	}
 	
+ 	/** 
+	 * Obtiene los datos colegiales de una persona dependiendo de la institucion
+	 * @param  idPersona - identificador de la persona
+	 * @param  idInstitucion - identificador de la institucion	
+	 * @return  CenColegiadoBean con los datos colegiales  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */		
+	public Vector getClientes (String idPersona) throws ClsExceptions, SIGAException{
+		Vector clientes = new Vector();
+		try {
+			Hashtable hash = new Hashtable();
+			UtilidadesHash.set(hash, CenClienteBean.C_IDPERSONA, idPersona);
+			Vector v = this.select(hash);
+			if ((v != null) && (v.size()>0)) {
+				for (int i = 0; i < v.size(); i++) {
+					clientes.add(((CenClienteBean)v.get(i)).getIdInstitucion());
+				}
+			}
+		}catch (Exception e) {
+			throw new ClsExceptions (e, "Error al recuperar los datos");
+		}
+		return clientes;
+	}
 
 }
