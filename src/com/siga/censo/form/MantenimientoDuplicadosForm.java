@@ -18,6 +18,8 @@ public class MantenimientoDuplicadosForm extends MasterForm {
 	String campoOrdenacion="", sentidoOrdenacion="", tipoConexion="";
 	String idPersonaOrigen = "", idPersonaDestino = "", idInstOrigen = "";
 	String listaDirecciones;
+	String seleccionados;
+	String agruparColegiaciones;
 
 	public String getListaDirecciones() {
 		return listaDirecciones;
@@ -134,4 +136,19 @@ public class MantenimientoDuplicadosForm extends MasterForm {
 	public void setTipoConexion(String tipoConexion) {
 		this.tipoConexion = tipoConexion;
 	}
+	
+	public String getSeleccionados() {
+		return seleccionados;
+	}
+	public void setSeleccionados(String seleccionados) {
+		this.seleccionados = seleccionados;
+	}
+	public String getAgruparColegiaciones() {
+		return agruparColegiaciones;
+	}
+	public void setAgruparColegiaciones(String agruparColegiaciones) {
+		this.agruparColegiaciones = agruparColegiaciones;
+	}
+	
+	
 }

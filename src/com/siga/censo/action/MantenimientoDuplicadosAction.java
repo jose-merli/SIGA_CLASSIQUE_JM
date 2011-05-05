@@ -15,17 +15,23 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.NotSupportedException;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.Utilidades.paginadores.Paginador;
-import com.siga.Utilidades.paginadores.PaginadorBind;
+//import com.siga.Utilidades.paginadores.Paginador;
+//import com.siga.Utilidades.paginadores.PaginadorBind;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenClienteBean;
 import com.siga.beans.CenColegiadoAdm;
@@ -34,6 +40,8 @@ import com.siga.beans.CenCuentasBancariasAdm;
 import com.siga.beans.CenCuentasBancariasBean;
 import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenDireccionesBean;
+import com.siga.beans.CenHistoricoAdm;
+import com.siga.beans.CenHistoricoBean;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
@@ -151,62 +159,15 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		try {
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			String idInstitucion=user.getLocation();
+			Vector resultado = null;
 
 			MantenimientoDuplicadosForm miFormulario = (MantenimientoDuplicadosForm)formulario;
 
-			ArrayList clavesRegSeleccinados = new ArrayList();
-			String seleccionados = request.getParameter("Seleccion");
-			if (seleccionados != null && !seleccionados.equalsIgnoreCase("")) {
-				ArrayList alRegistros = actualizarSelecionados(this.clavesBusqueda,seleccionados, new ArrayList());
-				if (alRegistros != null) {
-					clavesRegSeleccinados = alRegistros;
-				}
-			}
-			miFormulario.setRegistrosSeleccionados(clavesRegSeleccinados);
-
 			DuplicadosHelper helper = new DuplicadosHelper();
 			HashMap databackup = new HashMap();
-			if(request.getSession().getAttribute("DATOSPAGINADOR")!=null)
-				databackup=(HashMap)request.getSession().getAttribute("DATOSPAGINADOR");
-			if (databackup!=null && databackup.get("paginador")!=null){ 
-				
-				
-				Paginador paginador = (Paginador)databackup.get("paginador");
-				Vector datos=new Vector();
-				if (paginador!=null){
-					String pagina = (String)request.getParameter("pagina");
-					if (pagina!=null){
-						datos = paginador.obtenerPagina(Integer.parseInt(pagina));
-					}else{
-						datos = paginador.obtenerPagina((paginador.getPaginaActual()));
-					}
-				}
-				databackup.put("paginador",paginador);
-				databackup.put("datos",datos);
-				miFormulario.setDatosPaginador(databackup);	
-
-			}else{	
-
-				databackup=new HashMap();
-				 			
-				Paginador resultado = null;
-				Vector datos = null;
-				
-				resultado = helper.getDuplicados(miFormulario);
-				databackup.put("paginador",resultado);
-				
-				if (resultado!=null){ 
-					miFormulario.setRegistrosSeleccionados(new ArrayList());
-					datos = resultado.obtenerPagina(1);
-					databackup.put("datos",datos);
-				}else{
-					miFormulario.setRegistrosSeleccionados(new ArrayList());
-				} 
-				miFormulario.setDatosPaginador(databackup);
-				miFormulario.setRegistrosSeleccionados(new ArrayList());
-				request.setAttribute("CenResultadoBusquedaDuplicados",resultado);
-				request.getSession().setAttribute("DATOSPAGINADOR", databackup);
-			}
+			
+			resultado = helper.getDuplicados(miFormulario);
+			request.setAttribute("resultado", resultado);
 
 			destino="resultado";
 
@@ -234,49 +195,88 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 							HttpServletResponse response) throws SIGAException
 	{
 		Vector similares = new Vector();
+		Vector colegiaciones = new Vector();
 		CenPersonaAdm admPersona = new CenPersonaAdm(this.getUserBean(request));
 		CenClienteAdm admCliente = new CenClienteAdm(this.getUserBean(request));
 		CenColegiadoAdm admColeg = new CenColegiadoAdm(this.getUserBean(request));
 		CenInstitucionAdm admInstitucion = new CenInstitucionAdm(this.getUserBean(request)); 
-		
+		// Vamos a leer los datos de la bbdd para cargarlos en la ventana de consulta de colegiaciones 
 		try {
 			Hashtable datos = new Hashtable();
 			MantenimientoDuplicadosForm miFormulario = (MantenimientoDuplicadosForm)formulario;
 			ArrayList clavesRegSeleccinados = (ArrayList) miFormulario.getRegistrosSeleccionados();
 			String seleccionados = request.getParameter("registrosSeleccionados");
+			// Los seleccionados deberian ser 2, separados por comas
 			if (seleccionados != null && !seleccionados.equalsIgnoreCase("")) {
 				String[] registros = UtilidadesString.split(seleccionados, ",");
 				for (int i=0; i<registros.length;i++){
+					
+					Hashtable hashPersona = new Hashtable(); // Aqui meteremos todos los datos de la persona
+					
+					// Las claves de cada registro estan separadas por ||
 					String[] claves = UtilidadesString.split(registros[i], "||");
 					String idInstitucion="";
 					String idPersona="";
+					Vector estadosPersona = new Vector();
+					Vector colegiacionesPersona = new Vector();
+					Row estado = null;
 					if(claves.length>1){
+						colegiaciones = new Vector();
 						idInstitucion = claves[0];
 						idPersona = claves[1]; 
-						
-						CenColegiadoBean colegiacion = admColeg.getDatosColegiales(Long.valueOf(idPersona), Integer.valueOf(idInstitucion));
-						datos.put("colegiacion"+i, colegiacion);
-						//admInstitucion.getNombreInstitucion(idInstitucion);
-						datos.put("nombreInstitucion"+i, admInstitucion.getAbreviaturaInstitucion(idInstitucion));
-						
-						Vector estados = admColeg.getEstadosColegiales(Long.valueOf(idPersona), Integer.valueOf(idInstitucion), "1");
-						if(estados!=null && estados.size()>0){
-							Row estado = (Row)estados.get(0);
-							datos.put("estado"+i, estado);
+						// Si la institucion es nula significa que estamos mirando una persona y necesitamos todas las colegiaciones
+						if(idInstitucion==null || idInstitucion.equalsIgnoreCase("")|| idInstitucion.equalsIgnoreCase("null")){
+							colegiaciones=admColeg.getColegiaciones(idPersona);
+						}else{
+							colegiaciones.add(idInstitucion);
 						}
+						String stColegiaciones = "";
+						// Buscamos los datos de cada colegiacion
+						for (int c=0; c<colegiaciones.size();c++){
+							Hashtable hashColegiacion = new Hashtable(); // Aqui meteremos todos los datos de la colegiacion de la persona
+							String idInstitucionCol=colegiaciones.get(c).toString();
+							stColegiaciones+=idInstitucionCol+"_";
+							CenColegiadoBean colegiacion = admColeg.getDatosColegiales(Long.valueOf(idPersona), Integer.valueOf(idInstitucionCol));
+							if(colegiacion!=null && colegiacion.getFechaIncorporacion()!=null && !colegiacion.getFechaIncorporacion().equalsIgnoreCase("")){
+								colegiacion.setFechaIncorporacion(UtilidadesString.formatoFecha(colegiacion.getFechaIncorporacion(),ClsConstants.DATE_FORMAT_JAVA,ClsConstants.DATE_FORMAT_SHORT_SPANISH));
+								hashColegiacion.put("datosColegiacion", colegiacion);
+							}
+							hashColegiacion.put("institucionColegiacion", admInstitucion.getAbreviaturaInstitucion(idInstitucionCol));
+							hashColegiacion.put("fechaProduccion", admInstitucion.getFechaEnProduccion (idInstitucionCol));
+							
+							Vector estadosColegio = admColeg.getEstadosColegiales(Long.valueOf(idPersona), Integer.valueOf(idInstitucionCol), "1");
+							if(estadosColegio!=null && estadosColegio.size()>0){
+								estado = (Row)estadosColegio.get(0);
+								estado.getRow().put("FECHAESTADO", UtilidadesString.formatoFecha(estado.getRow().get("FECHAESTADO").toString(),ClsConstants.DATE_FORMAT_JAVA,ClsConstants.DATE_FORMAT_SHORT_SPANISH));
+								hashColegiacion.put("estadoColegiacion", estado);
+							}
+							
+							colegiacionesPersona.add(hashColegiacion);
+						}
+						hashPersona.put("datosColegiales", colegiacionesPersona);
+						hashPersona.put("colegiaciones", stColegiaciones);
+						
+						CenPersonaBean beanP = admPersona.getPersonaPorId(idPersona);
+						if(beanP.getFechaNacimiento()!=null && !beanP.getFechaNacimiento().equalsIgnoreCase("")){
+							beanP.setFechaNacimiento(UtilidadesString.formatoFecha(beanP.getFechaNacimiento(),ClsConstants.DATE_FORMAT_JAVA,ClsConstants.DATE_FORMAT_SHORT_SPANISH));
+						}
+						beanP.setFechaMod(UtilidadesString.formatoFecha(beanP.getFechaMod(),ClsConstants.DATE_FORMAT_JAVA,ClsConstants.DATE_FORMAT_SHORT_SPANISH));
+						hashPersona.put("datosPersonales", beanP);
+						
+						Vector vDirecciones = admCliente.getDirecciones(Long.valueOf(idPersona), Integer.valueOf(2000), false);
+						for (int j=0; j<vDirecciones.size();j++){
+							Hashtable dir = (Hashtable)vDirecciones.get(j);
+							dir.put("FECHAMODIFICACION", UtilidadesString.formatoFecha(dir.get("FECHAMODIFICACION").toString(),ClsConstants.DATE_FORMAT_JAVA,ClsConstants.DATE_FORMAT_SHORT_SPANISH));
+						}
+						hashPersona.put("datosDirecciones", vDirecciones);
+						
 						
 					}else{
 						idPersona = claves[0];
 					}
-					CenPersonaBean beanP = admPersona.getPersonaPorId(idPersona); 
-					datos.put("persona"+i, beanP);
 					
-					Vector vDirecciones = admCliente.getDirecciones(Long.valueOf(idPersona), Integer.valueOf(2000), false);
-					datos.put("direcciones"+i, vDirecciones);
-					
-					Vector vColegiaciones = admColeg.getColegiaciones(idPersona);
-					datos.put("colegiaciones"+i, vColegiaciones);
-
+					datos.put("persona"+i, hashPersona);
+					datos.put("numeroPersonas", i+1);
 				}
 				
 			}
@@ -296,20 +296,34 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 	 * @param response
 	 * @return
 	 * @throws SIGAException
+	 * @throws SystemException 
+	 * @throws NotSupportedException 
 	 */
 	protected String combinar(ActionMapping mapping, 		
 							MasterForm formulario, 
 							HttpServletRequest request, 
 							HttpServletResponse response) throws SIGAException{
 		
+		UsrBean user = this.getUserBean(request);
 		MantenimientoDuplicadosForm miForm = (MantenimientoDuplicadosForm)formulario;
-		CenDireccionesAdm admDireccion = new CenDireccionesAdm(this.getUserBean(request));
-		CenDireccionesBean beanDireccion = new CenDireccionesBean();	
+		CenDireccionesAdm admDireccion     = new CenDireccionesAdm(user);
+		CenDireccionesBean beanDireccion   = new CenDireccionesBean();
+		CenHistoricoBean beanHistorico     = new CenHistoricoBean();
+		CenColegiadoAdm admColeg  = new CenColegiadoAdm(user);
+		CenPersonaAdm admPersona  = new CenPersonaAdm(user);
+		CenClienteAdm admCliente  = new CenClienteAdm(user);
+		CenInstitucionAdm admInst = new CenInstitucionAdm(user);
+		CenHistoricoAdm	  admHistorico = new CenHistoricoAdm(user);
 		
 		String personaDestino = miForm.getIdPersonaDestino();
 		String personaOrigen = miForm.getIdPersonaOrigen();
 		String institucion = miForm.getIdInstOrigen();
+		String msgError = "";
+		String msgSalida = "Se han copiado correctamente los datos de la persona";
 		Hashtable hashDireccionOriginal, hashDireccionDestino ;
+		int colegiacionesCopiadas = 0;
+		
+		UserTransaction tx = null;
 		
 		try {
 			
@@ -318,9 +332,13 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			String[] direcciones = miForm.getListaDirecciones().split(","); 
 			String[] direccion;
 			String idInstitucion="2000", idPersona="", idDireccion="";
-			beanDireccion.setIdInstitucion(Integer.valueOf(institucion));
+			beanDireccion.setIdInstitucion(Integer.valueOf(idInstitucion));
 			// Cogemos la direccion que vamos a copiar 
-			beanDireccion.setIdPersona(Long.valueOf(personaDestino)); 
+			beanDireccion.setIdPersona(Long.valueOf(personaDestino));
+			
+			tx = this.getUserBean(request).getTransactionPesada();
+			tx.begin();	
+			
 			if(direcciones.length>0){
 				for (int i = 0; i < direcciones.length; i++) {
 					direccion=direcciones[i].split("&&");
@@ -340,15 +358,64 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 					}
 				}
 			}
-		
-			// Realizamos el proceso de copia
-			EjecucionPLs. ejecutarPL_copiaColegiado(miForm.getIdPersonaDestino(), miForm.getIdPersonaOrigen(), miForm.getIdInstOrigen());
-		 
-		} catch (ClsExceptions e) {
-			e.printStackTrace();
-			return exitoModal("Exito en la fusion", request);
+			
+			Vector instCliente = admCliente.getClientes(personaOrigen);
+			String stInstitucion = "";
+			String nombreInstitucion = "";
+			int intInstitucion;
+			// muevePersona
+			
+			for(int i=0;i<instCliente.size();i++){	
+			// Recorremos la lista de clientes del colegiado origen
+				stInstitucion = instCliente.get(i).toString();
+				intInstitucion = Integer.parseInt(stInstitucion);
+				nombreInstitucion = admInst.getAbreviaturaInstitucion(stInstitucion);
+				if(admCliente.existeCliente(Long.parseLong(personaDestino),intInstitucion )!=null){
+				// Si la persona destino ya es cliente de la institucion ...
+					if(intInstitucion<=3000&&intInstitucion>2000){
+					// Si la institucion es un colegio damos error porque no se puede hacer
+						tx.rollback();
+						throw new SIGAException("No se puede realizar la fusión porque ya existe como colegiado o no colegiado en "+nombreInstitucion);
+					}
+				}else{
+					msgError= "Error al copiar los datos del cliente de " + nombreInstitucion;
+					EjecucionPLs.ejecutarPL_copiaCliente(personaDestino, personaOrigen, stInstitucion);
+				}
+			}
+			
+			msgError= "Error al mover los datos de la persona";
+			EjecucionPLs.ejecutarPL_mueveDatosPersona(personaDestino, personaOrigen);
+			
+			for(int i=0;i<instCliente.size();i++){	
+			// Recorremos la lista de clientes del colegiado origen
+				stInstitucion = instCliente.get(i).toString();
+				intInstitucion = Integer.parseInt(stInstitucion);
+				nombreInstitucion = admInst.getAbreviaturaInstitucion(stInstitucion);
+				if(admCliente.existeCliente(Long.parseLong(personaDestino),intInstitucion )==null){
+					msgError= "Error al borrar los datos del cliente de " + nombreInstitucion;
+					EjecucionPLs.ejecutarPL_borraCliente(personaOrigen, stInstitucion);
+				}
+			}
+			msgError= "Error al borrar los datos de la persona";
+			EjecucionPLs.ejecutarPL_borraPersona(personaOrigen); // borraPersona
+			
+			// Modificamos la persona para que modifique la fechamodificacion
+			admPersona.update(admPersona.getPersonaPorId(personaDestino));
+			beanHistorico.setIdPersona(Long.parseLong(personaDestino));
+			beanHistorico.setIdInstitucion(Integer.parseInt(user.getLocation()));
+			beanHistorico.setIdHistorico(admHistorico.getNuevoID(beanHistorico));
+			beanHistorico.setFechaEfectiva(GstDate.getHoyJsp());
+			beanHistorico.setFechaEntrada(GstDate.getHoyJsp());
+			beanHistorico.setMotivo("Se ha realizado un mantenimiento de duplicados sobre esta persona.");
+			beanHistorico.setIdTipoCambio(10); // Datos Generales
+			
+			admHistorico.insertarRegistroHistorico(beanHistorico, user);
+					
+			tx.commit();
+		} catch (Exception e) {
+			throwExcp(msgError,new String[] {"modulo.censo"},e,tx);
 		}
-		return exitoModal("Exito en la fusion", request);
+		return exitoModal(msgSalida, request);
 	}
 
 }

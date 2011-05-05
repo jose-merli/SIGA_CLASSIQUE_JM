@@ -92,7 +92,7 @@
 	<table  class="tablaCentralCampos"  align="center"><tr><td>
 	
 		<siga:ConjCampos leyenda="censo.busquedaDuplicados.coincidencias.cabecera">
-			<table class="tablaCampos" align="center">
+			<table class="tablaCampos" align="center" width="100%">
 				<tr>
 					<td colspan="3" class="labelText">
 						<siga:Idioma key="censo.busquedaDuplicados.coincidencias.explicacion"/>
@@ -124,7 +124,6 @@
 						<html:select name="MantenimientoDuplicadosForm" property="campoOrdenacion" styleClass="boxCombo">
 							<html:option value="apellidos" key="gratuita.turnos.literal.apellidosSolo"></html:option>
 							<html:option value="nif" key="censo.busquedaClientesAvanzada.literal.nif"></html:option>
-							<html:option value="numeroColegiado" key="censo.busquedaClientesAvanzada.literal.nColegiado"></html:option>
 						</html:select>
 						<html:select name="MantenimientoDuplicadosForm" property="sentidoOrdenacion" styleClass="boxCombo">
 							<html:option value="asc" key="orden.literal.ascendente"></html:option>						
@@ -133,13 +132,18 @@
 					</td>
 					
 					<td class="labelText" style="align:right">
-						
 						<html:select name="MantenimientoDuplicadosForm" property="tipoConexion" styleClass="boxCombo">
 							<html:option value="intersect"><siga:Idioma key="censo.busquedaDuplicados.coincidencias.criterios.todos"/></html:option>
 							<html:option value="union"><siga:Idioma key="censo.busquedaDuplicados.coincidencias.criterios.alguno"/></html:option>
 						</html:select>
 					</td>
 					
+					<td class="labelText" style="align:right;display:none">
+						<html:select name="MantenimientoDuplicadosForm" property="agruparColegiaciones" styleClass="boxCombo">
+							<html:option value="s"><siga:Idioma key="Mostrar personas"/></html:option>
+							<html:option value="n"><siga:Idioma key="Mostrar colegiaciones"/></html:option>
+						</html:select>
+					</td>
 				</tr>
 			</table>
 		</siga:ConjCampos>
@@ -147,54 +151,29 @@
 		<siga:ConjCampos leyenda="censo.busquedaDuplicados.patron.cabecera">
 			<table class="tablaCampos" align="center">
 			<tr>
-				<td colspan="6" class="labelText">
-					<siga:Idioma key="censo.busquedaDuplicados.patron.explicacion"/>
-				</td>
+				<td colspan="6" class="labelText"><siga:Idioma key="censo.busquedaDuplicados.patron.explicacion"/></td>
 			</tr>
 			<tr></tr>
 			
 			<tr>
-				<td class="labelText">
-					<siga:Idioma key="censo.busquedaDuplicados.patron.nif"/>
-				</td>
-				<td>
-					<html:text name="MantenimientoDuplicadosForm" property="nifcif" size="15" styleClass="box"></html:text>
-				</td>
-				<td class="labelText">
-					<siga:Idioma key="censo.busquedaDuplicados.patron.institucion"/>
-				</td>
-				<td>
-					<siga:ComboBD nombre = "idInstitucion" tipo="cmbNombreColegiosTodos" parametro="<%=parametro %>" clase="boxCombo" />	
-				</td>
-				<td class="labelText">
-					<siga:Idioma key="censo.busquedaDuplicados.patron.numeroColegiado"/>
-				</td>
-				<td>
-					<html:text name="MantenimientoDuplicadosForm" property="numeroColegiado" size="20" styleClass="box"></html:text>
-				</td>
+				<td class="labelText"> <siga:Idioma key="censo.busquedaDuplicados.patron.nif"/> </td>
+				<td> <html:text name="MantenimientoDuplicadosForm" property="nifcif" size="15" styleClass="box"></html:text> </td>
+				
+				<td class="labelText"> <siga:Idioma key="censo.busquedaDuplicados.patron.institucion"/> </td>
+				<td> <siga:ComboBD nombre = "idInstitucion" tipo="cmbNombreColegiosTodos" parametro="<%=parametro %>" clase="boxCombo" /> </td>
+				
+				<td class="labelText"> <siga:Idioma key="censo.busquedaDuplicados.patron.numeroColegiado"/> </td>
+				<td> <html:text name="MantenimientoDuplicadosForm" property="numeroColegiado" size="20" styleClass="box"></html:text> </td>
 			</tr>
 			<tr>
-				<td class="labelText">
-					<siga:Idioma key="censo.busquedaDuplicados.patron.nombre"/>
-				</td>				
-				<td>
-					<html:text name="MantenimientoDuplicadosForm" property="nombre" size="25" styleClass="box"></html:text>
-				</td>
+				<td class="labelText"><siga:Idioma key="censo.busquedaDuplicados.patron.nombre"/></td>				
+				<td><html:text name="MantenimientoDuplicadosForm" property="nombre" size="25" styleClass="box"></html:text></td>
 				
-				<td class="labelText">
-					<siga:Idioma key="censo.busquedaDuplicados.patron.apellido1"/>
-				</td>
-				<td>
-					<html:text name="MantenimientoDuplicadosForm" property="apellido1" size="35" styleClass="box"></html:text>
-				</td>
+				<td class="labelText"><siga:Idioma key="censo.busquedaDuplicados.patron.apellido1"/></td>
+				<td><html:text name="MantenimientoDuplicadosForm" property="apellido1" size="35" styleClass="box"></html:text></td>
 			
-			
-				<td class="labelText">
-					<siga:Idioma key="censo.busquedaDuplicados.patron.apellido2"/>
-				</td>
-				<td>
-					<html:text name="MantenimientoDuplicadosForm" property="apellido2" size="35" styleClass="box"></html:text>
-				</td>
+				<td class="labelText"><siga:Idioma key="censo.busquedaDuplicados.patron.apellido2"/></td>
+				<td><html:text name="MantenimientoDuplicadosForm" property="apellido2" size="35" styleClass="box"></html:text></td>
 			</tr>
 			</table>
 		</siga:ConjCampos>

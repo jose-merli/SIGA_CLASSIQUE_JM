@@ -1010,6 +1010,7 @@ public static String[] ejecutarF_SIGA_COMPROBAR_ANTICIPAR (
 			
 			// Ejecucion del PL
 		    resultado = ClsMngBBDD.callPLProcedure("{call Pkg_Siga_Administracion.Revocarcertificados (?,?,?,?)}", 2, param_in);
+
 		} 
 		catch (Exception e){
 			resultado[0] = "-1";     
@@ -1018,10 +1019,82 @@ public static String[] ejecutarF_SIGA_COMPROBAR_ANTICIPAR (
 	    
 	    return resultado;
 	} // ejecutarPL_RevocarCertificados()
-
 	
-	// PROC_SIGA_ACTESTADOABONO
-	public static String[] ejecutarPL_copiaColegiado(String idPersonaD, String idPersonaO, String idInstitucion) throws ClsExceptions{
+	public static String[] ejecutarPL_mueveDatosPersona(String idPersonaD, String idPersonaO) throws ClsExceptions{
+		Object[] param_in; //Parametros de entrada del PL
+		String resultado[] = null; //Parametros de salida del PL
+	
+		try {
+			resultado = new String[2];
+			param_in = new Object[2];
+			param_in[0] = idPersonaO;
+			param_in[1] = idPersonaD;
+		        
+			//Ejecucion del PL
+		    resultado = ClsMngBBDD.callPLProcedure("{call PKG_FUSION_PERSONAS.MueveCosasDePersonaAPersona(?,?,?,?)}", 2, param_in);
+			if(resultado[0].equalsIgnoreCase("-1")){
+		    	throw new ClsExceptions(resultado[1]);
+		    }
+		} catch (Exception e){
+			resultado[0] = "-1"; //ERROR P_CODRETORNO
+	    	resultado[1] = resultado[1]; //ERROR P_DATOSERROR       
+	    	throw new ClsExceptions(e.getMessage());
+		}
+	    
+	    //Resultado del PL        
+	    return resultado;
+	}
+	
+	public static String[] ejecutarPL_borraPersona(String idPersonaO) throws ClsExceptions{
+		Object[] param_in; //Parametros de entrada del PL
+		String resultado[] = null; //Parametros de salida del PL
+	
+		try {
+			resultado = new String[2];
+			param_in = new Object[1];
+			param_in[0] = idPersonaO;
+		        
+			//Ejecucion del PL
+		    resultado = ClsMngBBDD.callPLProcedure("{call PKG_FUSION_PERSONAS.BorraPersona_simple(?,?,?)}", 2, param_in);
+			if(resultado[0].equalsIgnoreCase("-1")){
+		    	throw new ClsExceptions(resultado[1]);
+		    }
+		} catch (Exception e){
+			resultado[0] = "-1"; //ERROR P_CODRETORNO
+	    	resultado[1] = resultado[1]; //ERROR P_DATOSERROR        
+	    	throw new ClsExceptions(e.getMessage());
+		}
+	    
+	    //Resultado del PL        
+	    return resultado;
+	}
+	
+	public static String[] ejecutarPL_borraCliente(String idPersonaO, String idInstitucion) throws ClsExceptions{
+		Object[] param_in; //Parametros de entrada del PL
+		String resultado[] = null; //Parametros de salida del PL
+	
+		try {
+			resultado = new String[2];
+			param_in = new Object[2];
+			param_in[0] = idPersonaO;
+			param_in[1] = idInstitucion;
+		        
+			//Ejecucion del PL
+		    resultado = ClsMngBBDD.callPLProcedure("{call PKG_FUSION_PERSONAS.BorraCliente_simple(?,?,?,?)}", 2, param_in);
+			if(resultado[0].equalsIgnoreCase("-1")){
+		    	throw new ClsExceptions(resultado[1]);
+		    }
+		} catch (Exception e){
+			resultado[0] = "-1"; //ERROR P_CODRETORNO
+	    	resultado[1] = resultado[1]; //ERROR P_DATOSERROR    
+	    	throw new ClsExceptions(e.getMessage());
+		}
+	    
+	    //Resultado del PL        
+	    return resultado;
+	}
+
+	public static String[] ejecutarPL_copiaCliente(String idPersonaD, String idPersonaO, String idInstitucion) throws ClsExceptions{
 		Object[] param_in; //Parametros de entrada del PL
 		String resultado[] = null; //Parametros de salida del PL
 	
@@ -1033,16 +1106,17 @@ public static String[] ejecutarF_SIGA_COMPROBAR_ANTICIPAR (
 			param_in[2] = idInstitucion;
 		        
 			//Ejecucion del PL
-		    resultado = ClsMngBBDD.callPLProcedure("{call PKG_FUSION_PERSONAS.Combo_IIIUD(?,?,?,?,?)}", 2, param_in);
-			
+		    resultado = ClsMngBBDD.callPLProcedure("{call PKG_FUSION_PERSONAS.CopiaClienteAotraPersona(?,?,?,?,?)}", 2, param_in);
+			if(resultado[0].equalsIgnoreCase("-1")){
+		    	throw new ClsExceptions(resultado[1]);
+		    }
 		} catch (Exception e){
-			resultado[0] = "1"; //ERROR P_CODRETORNO
-	    	resultado[1] = "ERROR"; //ERROR P_DATOSERROR        	
+			resultado[0] = "-1"; //ERROR P_CODRETORNO
+	    	resultado[1] = resultado[1]; //ERROR P_DATOSERROR     
+	    	throw new ClsExceptions(e.getMessage());
 		}
 	    
 	    //Resultado del PL        
 	    return resultado;
-	}	
-	
-
+	}
 }

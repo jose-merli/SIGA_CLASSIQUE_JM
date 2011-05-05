@@ -60,7 +60,7 @@ public class DuplicadosHelper{
 			sqlGenerico.append("        p.nombre, ");
 			sqlGenerico.append("        p.apellidos1, ");
 			sqlGenerico.append("        p.apellidos2, ");
-			sqlGenerico.append("        c.idinstitucion, ");
+			sqlGenerico.append("        cli.idinstitucion, ");
 			sqlGenerico.append("        c.ncolegiado ");
 			sqlGenerico.append("   from cen_persona p, cen_persona p2, ");
 			sqlGenerico.append("        cen_colegiado c, cen_colegiado c2, ");
@@ -205,7 +205,7 @@ public class DuplicadosHelper{
 	 * @param formulario Formulario de busqueda de clientes con los datos de busqueda 
 	 * @return java.util.Vector Vector de tablas hash  
 	 */
-	public Paginador getDuplicados(MantenimientoDuplicadosForm formulario) throws ClsExceptions, SIGAException {
+	public Vector getDuplicados(MantenimientoDuplicadosForm formulario) throws ClsExceptions, SIGAException {
 
 		Vector salida = null;
 		String sqlClientes = "";
@@ -226,6 +226,7 @@ public class DuplicadosHelper{
 			boolean checkApellidos = formulario.getChkApellidos();
 			boolean checkNombreApellidos = formulario.getChkNombreApellidos();
 			boolean checkNumColegiado = formulario.getChkNumColegiado();
+			boolean ocultarColegiaciones = formulario.getAgruparColegiaciones().equalsIgnoreCase("s");
 			
 			Hashtable codigos = new Hashtable();
 			int contador = 0;
@@ -238,10 +239,14 @@ public class DuplicadosHelper{
 			sqlGenerico.append("        p.nombre, ");
 			sqlGenerico.append("        p.apellidos1, ");
 			sqlGenerico.append("        p.apellidos2, ");
-			sqlGenerico.append("        c.idinstitucion, ");
-			sqlGenerico.append("        decode(c.comunitario,'1',c.ncomunitario,c.ncolegiado) ncolegiado, ");
-			sqlGenerico.append("        c.ncomunitario, ");
-			sqlGenerico.append("        i.abreviatura ");
+			if(ocultarColegiaciones){
+				sqlGenerico.append("        (select count(1) from cen_colegiado where idpersona=p.idpersona) as colegiaciones ");
+			}else{
+				sqlGenerico.append("        c.idinstitucion, ");
+				sqlGenerico.append("        decode(c.comunitario,'1',c.ncomunitario,c.ncolegiado) ncolegiado, ");
+				sqlGenerico.append("        c.ncomunitario, ");
+				sqlGenerico.append("        i.abreviatura ");
+			}
 			sqlGenerico.append("   from cen_persona p, cen_persona p2, ");
 			sqlGenerico.append("        cen_colegiado c, cen_colegiado c2, ");
 			sqlGenerico.append("        cen_cliente cli, cen_cliente cli2, ");
@@ -321,7 +326,7 @@ public class DuplicadosHelper{
 	       	if (campoOrden.equalsIgnoreCase("numeroColegiado"))
 	       		sqlOrden.append(" order by abreviatura, to_number(ncolegiado) ");
 	       	if (campoOrden.equalsIgnoreCase("apellidos"))
-	       		sqlOrden.append(" order by apellidos1, apellidos2 ");
+	       		sqlOrden.append(" order by apellidos1||' '||apellidos2 ");
 			sqlOrden.append(formulario.getSentidoOrdenacion());      	
 	       	
 			
@@ -375,16 +380,11 @@ public class DuplicadosHelper{
 	       	Vector similares = new Vector();
 	       	// Completamos la query que se va a ejecutar
 	       	String sql=" select distinct * from (" + sqlFinal.toString() + ")" + sqlOrden.toString();
+	       	
 	       	// Si se ha seleccionado algun criterio o patron realizamos la busqueda, si no no
 	       	if(!sqlFinal.equalsIgnoreCase("")){
 	       		similares=this.selectGenerico(sql);
-		       	Paginador paginador = new Paginador(sql);				
-		       	int totalRegistros = paginador.getNumeroTotalRegistros();
-	       	
-				if (totalRegistros==0){					
-					paginador =null;
-				}
-				return paginador;
+				return similares;
 	       	}else{
 	       		return null;
 	       	}
