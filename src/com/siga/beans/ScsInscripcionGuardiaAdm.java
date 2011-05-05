@@ -1197,6 +1197,74 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 		return datos;
 	} //getNumLetradosGrupos()
 	
+	/**
+	 * Obtiene las inscripciones que se pueden dar de baja, dada una persona y un turno.
+	 *  Este metodo se usa cuando hay que saber que inscripciones dar de baja en el caso
+	 * de que se de de baja las guardias de un turno configurado como todas o ninguna
+	 * 
+	 * @param idInstitucion
+	 * @param idTurno
+	 * @param idPersona
+	 * @return Vector<Hashtable>
+	 * @throws ClsExceptions
+	 */
+	public Vector<ScsInscripcionGuardiaBean> getInscripcionesParaBajaDeTodasoNinguna(Integer idInstitucion,
+			Integer idTurno,
+			Long idPersona, 
+			Integer idGuardia) throws ClsExceptions
+	{
+		if (idInstitucion == null || idInstitucion.equals(""))
+			return null;
+		if (idTurno == null || idTurno.equals(""))
+			return null;
+		if (idPersona == null || idPersona.equals(""))
+			return null;
+		
+		String consulta =
+			"Select " +
+			getBaseConsultaInscripciones() +
+			"   And Ins."+ScsGrupoGuardiaColegiadoBean.C_IDINSTITUCION+" = "+idInstitucion+" " +
+			"   And Ins."+ScsGrupoGuardiaColegiadoBean.C_IDTURNO+" = "+idTurno+" " +
+			"   And Ins."+ScsGrupoGuardiaColegiadoBean.C_IDPERSONA+" = "+idPersona+" " +
+//			--altas pendientes de validar
+		    " AND ((Ins."+ScsInscripcionGuardiaBean.C_FECHAVALIDACION+" IS NULL and" +
+			" Ins."+ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA+" IS NULL AND" +
+			" Ins."+ScsInscripcionGuardiaBean.C_FECHABAJA+" is null and" +
+			" Ins."+ScsInscripcionGuardiaBean.C_FECHADENEGACION+" IS NULL" +
+			" ) OR" +
+//		        --altas validadas
+			" (Ins."+ScsInscripcionGuardiaBean.C_FECHAVALIDACION+" IS NOT NULL AND" +
+			" Ins."+ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA+" IS NULL AND" +
+			" Ins."+ScsInscripcionGuardiaBean.C_FECHABAJA+" is null and" +
+			" Ins."+ScsInscripcionGuardiaBean.C_FECHADENEGACION+" is null) OR" +
+//		        --bajas denegadas
+			" (Ins."+ScsInscripcionGuardiaBean.C_FECHAVALIDACION+" is not null and" +
+			" Ins."+ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA+" IS NOT NULL and" +
+			" Ins."+ScsInscripcionGuardiaBean.C_FECHABAJA+" is null and" +
+			" Ins."+ScsInscripcionGuardiaBean.C_FECHADENEGACION+" IS NOT NULL))";
+		if(idGuardia!=null)
+			consulta +="   And Ins."+ScsInscripcionGuardiaBean.C_IDGUARDIA+" = "+idGuardia;
+					
+		consulta +="   order by Ins."+ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION;
+		
+		Vector<ScsInscripcionGuardiaBean> datos = null;
+		Hashtable hashGrupo;
+		try {
+			RowsContainer rc = new RowsContainer();
+			if (rc.find(consulta)) {
+				datos = new Vector<ScsInscripcionGuardiaBean>();
+				for (int i = 0; i < rc.size(); i++) {
+					Row fila = (Row) rc.get(i);
+					Hashtable<String, Object> htFila = fila.getRow();
+					datos.add(getInscripcionDesdeHashCola(htFila));
+				}
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al ejecutar el 'select' en B.D.");
+		}
+		return datos;
+	}
+	
 	public String getBaseConsultaInscripciones() {
 		return new String(
 			"       Ins.Idinstitucion,"+

@@ -281,9 +281,9 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 						(String) turnoHash.get("FECHASOLICITUD"), usrbean, true);
 				String fechaSolicitudBaja =(String) turnoHash.get("FECHASOLICITUDBAJA");
 				if(fechaSolicitudBaja!=null){
-					inscripcion.validarBaja("sysdate", (String) turnoHash.get("FECHAVALIDACION"),motivo, usrbean);
+					inscripcion.validarBaja("sysdate", (String) turnoHash.get("FECHAVALIDACION"),motivo,null, usrbean);
 				}else{
-					inscripcion.solicitarBaja("sysdate",motivo,"sysdate","---",(String) turnoHash.get("FECHAVALIDACION"),"N", usrbean);	
+					inscripcion.solicitarBaja("sysdate",motivo,"sysdate","---",(String) turnoHash.get("FECHAVALIDACION"),"N",null, usrbean);	
 				}
 				
 
@@ -1085,7 +1085,7 @@ public class ScsInscripcionTurnoAdm extends MasterBeanAdministrador {
 				inscripcion = InscripcionTurno.getInscripcionTurno(
 						new Integer(idInstitucion), new Integer(idTurno), idPersona,
 						(String) turnoHash.get("FECHASOLICITUD"), usrbean, false);
-				inscripcion.validarBaja("sysdate",(String) turnoHash.get("FECHAVALIDACION"),"--", usrbean);
+				inscripcion.validarBaja("sysdate",(String) turnoHash.get("FECHAVALIDACION"),"--", null, usrbean);
 
 			}
 		}

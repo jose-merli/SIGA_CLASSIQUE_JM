@@ -83,6 +83,7 @@ public class InscripcionTGForm extends MasterForm {
 	
 	String fechaActiva = null;
 	String  observacionesValBaja = null;
+	String tipoActualizacionSyC = null;
 	
 	private String porGrupos;
 	List<LetradoInscripcion> gruposGuardiaLetrado;
@@ -332,7 +333,7 @@ public class InscripcionTGForm extends MasterForm {
 		fechaDenegacion = null;
 		observacionesDenegacion = null;
 		observacionesValBaja = null;
-		
+		tipoActualizacionSyC = null;		
 		tipo = null;
 		clase = null;
 		turnosInscripcion = null;
@@ -389,7 +390,7 @@ public class InscripcionTGForm extends MasterForm {
 		fechaValidacion = null;
 		observacionesValidacion = null;
 		fechaBaja = null;
-	
+		tipoActualizacionSyC = null;	
 				
 
 	}
@@ -639,6 +640,12 @@ public class InscripcionTGForm extends MasterForm {
 	}
 	public void setObservacionesValBaja(String observacionesValBaja) {
 		this.observacionesValBaja = observacionesValBaja;
+	}
+	public String getTipoActualizacionSyC() {
+		return tipoActualizacionSyC;
+	}
+	public void setTipoActualizacionSyC(String tipoActualizacionSyC) {
+		this.tipoActualizacionSyC = tipoActualizacionSyC;
 	}
 	public List<LetradoInscripcion> getGruposGuardiaLetrado() {
 		return gruposGuardiaLetrado;

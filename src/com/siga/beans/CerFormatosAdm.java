@@ -4,6 +4,7 @@ import java.util.*;
 
 import com.atos.utils.*;
 import com.siga.Utilidades.*;
+import com.siga.general.SIGAException;
 
 public class CerFormatosAdm extends MasterBeanAdministrador
 {
@@ -90,4 +91,26 @@ public class CerFormatosAdm extends MasterBeanAdministrador
     {
         return null;
     }
+	public Vector selectGenerico(String select) throws ClsExceptions, SIGAException 
+	{
+		Vector datos = new Vector();
+		
+		RowsContainer rc = null;
+		try { 
+			rc = new RowsContainer(); 
+			if (rc.query(select)) {
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					Hashtable registro = (Hashtable) fila.getRow(); 
+					if (registro != null) 
+						datos.add(registro);
+				}
+			}
+		} 
+		catch (Exception e) {
+			throw new ClsExceptions (e,  e.getMessage() + "Consulta SQL:"+select);
+		}
+		return datos;	
+	}
+
 }

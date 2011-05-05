@@ -1,5 +1,6 @@
 package com.siga.certificados.form;
 
+import java.util.Hashtable;
 import java.util.StringTokenizer;
 import com.siga.general.MasterForm;
 
@@ -19,6 +20,16 @@ public class SIGAMantenimientoCertificadosCamposForm extends MasterForm
     private String idCampoCertificado="";
     
     private String descripcionCertificado="";
+    public String filasSelect=null;
+    public String getFilasSelect() {
+		return filasSelect;
+	}
+
+	public void setFilasSelect(String filasSelect) {
+		this.filasSelect = filasSelect;
+	}
+
+	public Hashtable certificados= null;
 
 //    public String getModo() 
 //    {
@@ -30,7 +41,15 @@ public class SIGAMantenimientoCertificadosCamposForm extends MasterForm
 //        this.modo = modo;
 //    }
     
-    public String getCertificado()
+    public Hashtable getCertificados() {
+		return certificados;
+	}
+
+	public void setCertificados(Hashtable certificados) {
+		this.certificados = certificados;
+	}
+
+	public String getCertificado()
     {
     	return certificado;
     }

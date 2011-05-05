@@ -82,6 +82,7 @@ public enum ActionButtonsConstants {
 	INFORME_RETENCIONES_IRPF ("iri","general.boton.informeRetencionesIRPF","accionInformeRetencionesIRPF()",75),
 	ARCHIVAR ("ar","general.botons.Archivar","accionArchivar()",76),
 	INFORME_JUSTIFICACION ("ij","general.boton.informeJustificacion","informeJustificacion()",77),
+	BAJA_EN_TURNOS_SEL ("bajaEnTurnosSel","general.boton.bajaEnTurnosSel","darDeBajaEnTurnosSel(true)",78),
 	RENEGOCIAR ("rn","general.boton.renegociar","renegociar()",78),
 	;
 

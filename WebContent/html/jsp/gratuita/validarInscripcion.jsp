@@ -32,7 +32,7 @@
 	type="text/javascript"></script>
 
 <script type="text/javascript">
-	
+
 	function mostrarFechaSolicitud()
 	{
 		if(document.InscripcionTGForm.fechaSolicitud.value==''||document.InscripcionTGForm.fechaSolicitudBaja.value=='')
@@ -46,8 +46,19 @@
 		if(document.InscripcionTGForm.modo.value=='vbgComprobarValidar'||document.InscripcionTGForm.modo.value=='vbtComprobarValidar'){
 			document.getElementById('observacionesValidacion').style.display = "block";
 		}
+
+		if(document.getElementById("fechaCheck") && document.InscripcionTGForm.validarInscripciones.value=='N'&&  (document.InscripcionTGForm.modo.value=='sbtComprobarInsertar'||document.InscripcionTGForm.modo.value=='sbgComprobarInsertar')){
+			fechaActual = getFechaActualDDMMYYYY();
+			document.getElementById("fechaCheck").value = fechaActual;
+			if(document.InscripcionTGForm.modo.value=='sbtComprobarInsertar'){
+				document.getElementById("observacionesValidacion").value = "<siga:Idioma key='censo.sjcs.turnos.bajaEnTurnoAutomatico.observacion.literal'/>";
+			}
+			if(document.InscripcionTGForm.modo.value=='sbgComprobarInsertar'){
+				document.getElementById("observacionesValidacion").value = "<siga:Idioma key='censo.sjcs.turnos.bajaEnGuardiaAutomatico.observacion.literal'/>";
+			}	
 		
-	}
+		}
+	}	
 	function comprobarGuardiaGrupo(checkValidar){
 		
 		if(document.InscripcionTGForm.porGrupos.value=='1'){
@@ -78,6 +89,14 @@
 				if(document.InscripcionTGForm.modo.value=='vbgComprobarValidar'||document.InscripcionTGForm.modo.value=='vbtComprobarValidar'){
 					document.getElementById('observacionesValidacion').style.display = "block";
 				}
+				if(document.InscripcionTGForm.modo.value=='vbgComprobarValidar'||document.InscripcionTGForm.modo.value=='vbtComprobarValidar'||document.InscripcionTGForm.modo.value=='vmbtComprobarValidar'||document.InscripcionTGForm.modo.value=='vmbgComprobarValidar' || document.InscripcionTGForm.modo.value=='sbtComprobarInsertar' || document.InscripcionTGForm.modo.value=='smbtInsertarBaja' || document.InscripcionTGForm.modo.value=='sbgComprobarInsertar'){
+					document.InscripcionTGForm.syc[0].style.visibility="visible";
+					document.InscripcionTGForm.syc[1].style.visibility="visible";
+					document.getElementById("capa1").style.visibility="visible"; 
+					document.InscripcionTGForm.syc[0].checked=false;
+					document.InscripcionTGForm.syc[1].checked=false;
+				}
+
 			}
 			else
 			{
@@ -88,6 +107,15 @@
 				if(document.InscripcionTGForm.modo.value=='vbgComprobarValidar'||document.InscripcionTGForm.modo.value=='vbtComprobarValidar'){
 					document.getElementById('observacionesValidacion').style.display = "block";
 				}
+				if(document.InscripcionTGForm.modo.value=='vbgComprobarValidar'||document.InscripcionTGForm.modo.value=='vbtComprobarValidar'||document.InscripcionTGForm.modo.value=='vmbtComprobarValidar'||document.InscripcionTGForm.modo.value=='vmbgComprobarValidar' || document.InscripcionTGForm.modo.value=='sbtComprobarInsertar' || document.InscripcionTGForm.modo.value=='smbtInsertarBaja' || document.InscripcionTGForm.modo.value=='sbgComprobarInsertar'){
+
+					document.InscripcionTGForm.syc[0].style.visibility="hidden";
+					document.InscripcionTGForm.syc[1].style.visibility="hidden";
+					document.getElementById("capa1").style.visibility="hidden"; 
+					document.InscripcionTGForm.syc[0].checked=false;
+					document.InscripcionTGForm.syc[1].checked=false;
+				}
+				
 				
 			}
 		}else if(tipoAccion == 'denegar')
@@ -103,7 +131,14 @@
 				document.getElementById('fechaCheck').value = fechaActual;
 				document.getElementById('validar').checked = false;
 				document.getElementById("calendarioTd").style.visibility="visible";
-				
+				if(document.InscripcionTGForm.modo.value=='vbgComprobarValidar'||document.InscripcionTGForm.modo.value=='vbtComprobarValidar'||document.InscripcionTGForm.modo.value=='vmbtComprobarValidar'||document.InscripcionTGForm.modo.value=='vmbgComprobarValidar' || document.InscripcionTGForm.modo.value=='sbtComprobarInsertar' || document.InscripcionTGForm.modo.value=='smbtInsertarBaja' || document.InscripcionTGForm.modo.value=='sbgComprobarInsertar'){
+
+					document.InscripcionTGForm.syc[0].checked=false;
+					document.InscripcionTGForm.syc[1].checked=false;
+					document.InscripcionTGForm.syc[0].style.visibility="hidden";
+					document.InscripcionTGForm.syc[1].style.visibility="hidden";
+					document.getElementById("capa1").style.visibility="hidden"; 
+				}		
 				if(document.InscripcionTGForm.modo.value=='vbgComprobarValidar'||document.InscripcionTGForm.modo.value=='vbtComprobarValidar'){
 					document.getElementById('observacionesValidacion').style.display = "block";
 			}
@@ -211,7 +246,7 @@ if((document.getElementById('validar')&&document.getElementById('validar').check
 			//sigInsertar -->insercion de guardia
 			//sbgComprobarInsertar --> insercion de la baja de guaadia
 			//sbtComprobarInsertar --> insercion de la baja de turno
-			if(document.InscripcionTGForm.modo.value!='sigInsertar'&&document.InscripcionTGForm.modo.value!='sbgComprobarInsertar'&&document.InscripcionTGForm.modo.value!='sbtComprobarInsertar' && document.getElementById('validar').checked==false && document.getElementById('denegar').checked==false){
+			if(document.InscripcionTGForm.modo.value!='sigInsertar'&&document.InscripcionTGForm.modo.value!='sbgComprobarInsertar'&&document.InscripcionTGForm.modo.value!='sbtComprobarInsertar'&&document.InscripcionTGForm.modo.value=='smbtInsertarBaja' && document.getElementById('validar').checked==false && document.getElementById('denegar').checked==false){
 					fin();
 					alert("<siga:Idioma key="gratuita.altaTurno.literal.alert1"/>");
 					return false;
@@ -278,8 +313,6 @@ if((document.getElementById('validar')&&document.getElementById('validar').check
 			// vmbtComprobarValidar
 			// vbgComprobarValidar
 			// vmbgComprobarValidar
-			
-			
 				if(document.getElementById('validar').checked)
 				{
 					document.InscripcionTGForm.fechaBaja.value = document.getElementById('fechaCheck').value;
@@ -312,6 +345,14 @@ if((document.getElementById('validar')&&document.getElementById('validar').check
 							alert(error);
 							return false;
 						}
+							
+						if((document.InscripcionTGForm.modo.value=='vbtComprobarValidar'|| document.InscripcionTGForm.modo.value=='vmbtComprobarValidar' || document.InscripcionTGForm.modo.value=='sbtComprobarInsertar' || document.InscripcionTGForm.modo.value=='smbtInsertarBaja') && document.InscripcionTGForm.syc[0].checked==true){
+							document.getElementById("tipoActualizacionSyC").value="T";	
+
+						}else if((document.InscripcionTGForm.modo.value=='vbtComprobarValidar'|| document.InscripcionTGForm.modo.value=='vmbtComprobarValidar' || document.InscripcionTGForm.modo.value=='sbtComprobarInsertar' || document.InscripcionTGForm.modo.value=='smbtInsertarBaja') && document.InscripcionTGForm.syc[1].checked==true){
+							document.getElementById("tipoActualizacionSyC").value="";
+						}		
+							
 					}
 					//validaciones de guardia
 					if(document.InscripcionTGForm.idGuardia.value!=''){
@@ -331,12 +372,24 @@ if((document.getElementById('validar')&&document.getElementById('validar').check
 							alert(error);
 							return false;
 						}
-					
-					
+
+						if((document.InscripcionTGForm.modo.value=='vbgComprobarValidar'||document.InscripcionTGForm.modo.value=='vmbgComprobarValidar' ||  document.InscripcionTGForm.modo.value=='sbgComprobarInsertar') && document.InscripcionTGForm.syc[0].checked==true){
+							document.getElementById("tipoActualizacionSyC").value="G";	
+
+						}else if((document.InscripcionTGForm.modo.value=='vbgComprobarValidar'||document.InscripcionTGForm.modo.value=='vmbgComprobarValidar' ||  document.InscripcionTGForm.modo.value=='sbgComprobarInsertar') && document.InscripcionTGForm.syc[1].checked==true){
+							document.getElementById("tipoActualizacionSyC").value="";
+						}
 					}
 					
 					document.InscripcionTGForm.observacionesValBaja.value = document.InscripcionTGForm.observacionesValidacion.value;
+
 					
+					if((document.InscripcionTGForm.modo.value=='vbgComprobarValidar'||document.InscripcionTGForm.modo.value=='vbtComprobarValidar'||document.InscripcionTGForm.modo.value=='vmbtComprobarValidar'||document.InscripcionTGForm.modo.value=='vmbgComprobarValidar' || document.InscripcionTGForm.modo.value=='sbtComprobarInsertar' || document.InscripcionTGForm.modo.value=='smbtInsertarBaja' || document.InscripcionTGForm.modo.value=='sbgComprobarInsertar') && document.InscripcionTGForm.syc[0].checked==false && document.InscripcionTGForm.syc[1].checked==false){
+						fin();
+						alert("<siga:Idioma key='gratuita.altaTurnos.literal.defsaltosycompensaciones'/>");
+						
+						return false;
+					}
 					
 					
 				}else if(document.getElementById('denegar').checked){
@@ -412,7 +465,7 @@ if((document.getElementById('validar')&&document.getElementById('validar').check
 		<c:if test="${InscripcionTGForm.modo=='sitEditarTelefonosGuardia'}">
 			<siga:Idioma key="gratuita.gestionInscripciones.paso.inscripcion.turno.solicitud.datos" />
 		</c:if>
-		<c:if test="${InscripcionTGForm.modo=='sbtComprobarInsertar'}">
+		<c:if test="${InscripcionTGForm.modo=='sbtComprobarInsertar' || InscripcionTGForm.modo=='smbtInsertarBaja'}">
 			<siga:Idioma key="gratuita.gestionInscripciones.paso.inscripcion.turno.solicitudBaja.datos" />
 		</c:if>
 		<c:if test="${InscripcionTGForm.modo=='sigInsertar'}">
@@ -472,6 +525,7 @@ if((document.getElementById('validar')&&document.getElementById('validar').check
 	<html:hidden property="fechaDenegacion" />
 	<html:hidden property="observacionesDenegacion" />
 	<html:hidden property="observacionesValBaja" />
+	<html:hidden property="tipoActualizacionSyC" />	
 	
 	
 	
@@ -687,7 +741,7 @@ if((document.getElementById('validar')&&document.getElementById('validar').check
 
 								<c:choose>
 									<c:when
-										test="${InscripcionTGForm.modo=='vigValidar'||InscripcionTGForm.modo=='vitValidar'||InscripcionTGForm.modo=='vbgComprobarValidar'||InscripcionTGForm.modo=='vbtComprobarValidar'||InscripcionTGForm.modo=='vmitValidar'||InscripcionTGForm.modo=='vmigValidar'||InscripcionTGForm.modo=='vmbtComprobarValidar'||InscripcionTGForm.modo=='vmbgComprobarValidar'}">
+										test="${InscripcionTGForm.modo=='vigValidar'||InscripcionTGForm.modo=='vitValidar'||InscripcionTGForm.modo=='vmitValidar'||InscripcionTGForm.modo=='vmigValidar'}">
 										<td><input type="checkbox" name="validar" value="no"
 											onClick="obtenerFecha('validar');comprobarGuardiaGrupo(this);">
 										</td>
@@ -696,17 +750,45 @@ if((document.getElementById('validar')&&document.getElementById('validar').check
 										<td><input type="checkbox" name="denegar" value="no"
 											onClick="obtenerFecha('denegar');document.getElementById('calendarioTd').style.visibility='hidden';document.getElementById('divGuardiaGrupo').style.display = 'none';">
 										</td>
+										<td>&nbsp;</td>
 									</c:when>
-
-
 									<c:when
-										test="${InscripcionTGForm.modo=='sbgComprobarInsertar'||InscripcionTGForm.modo=='sbtComprobarInsertar'}">
+										test="${InscripcionTGForm.modo=='vbgComprobarValidar'||InscripcionTGForm.modo=='vbtComprobarValidar'||InscripcionTGForm.modo=='vmbtComprobarValidar'||InscripcionTGForm.modo=='vmbgComprobarValidar'}">
 										<td><input type="checkbox" name="validar" value="no"
 											onClick="obtenerFecha('validar');comprobarGuardiaGrupo(this);">
 										</td>
-										<td>&nbsp;</td>
+										<td class="labelText"><siga:Idioma
+											key="gratuita.altaTurnos.literal.denegar" /></td>
+										<td><input type="checkbox" name="denegar" value="no"
+											onClick="obtenerFecha('denegar');document.getElementById('calendarioTd').style.visibility='hidden';document.getElementById('divGuardiaGrupo').style.display = 'none';">
+										</td>
+										<td class="labelText">
+										<div id="capa1" style="visibility: hidden">								
+										<siga:Idioma
+											key="gratuita.altaTurnos.literal.actualizarSyC" />:
+										<!-- td><input type="checkbox" name="syc" value="no" style="visibility: hidden"></td> -->
+										<input type="Radio" name="syc" value="s"  style="visibility: hidden"> si 
+										<input type="Radio" name="syc" value="n"  style="visibility: hidden"> no 
+										</div>
+										</td>	
+									</c:when>
+									<c:when
+										test="${InscripcionTGForm.modo=='sbgComprobarInsertar'||InscripcionTGForm.modo=='sbtComprobarInsertar'||InscripcionTGForm.modo=='smbtInsertarBaja'}">
+										<td><input type="checkbox" name="validar" value="no"
+											onClick="obtenerFecha('validar');comprobarGuardiaGrupo(this);">
+										</td>
 										<td><input type="checkbox" name="denegar" value="no"
 											style="visibility: hidden"></td>
+										<td>&nbsp;</td>	
+										<td class="labelText">
+										<div id="capa1" style="visibility: hidden">								
+										<siga:Idioma
+											key="gratuita.altaTurnos.literal.actualizarSyC" />:
+										<!-- td><input type="checkbox" name="syc" value="no" style="visibility: hidden"></td> -->
+										<input type="Radio" name="syc" value="s"  style="visibility: hidden"> si 
+										<input type="Radio" name="syc" value="n"  style="visibility: hidden"> no 
+										</div>
+										</td>	
 									</c:when>
 
 
@@ -717,6 +799,7 @@ if((document.getElementById('validar')&&document.getElementById('validar').check
 										<td>&nbsp;</td>
 										<td><input type="checkbox" name="denegar" value="no"
 											style="visibility: hidden"></td>
+										<td>&nbsp;</td>	
 									</c:otherwise>
 								</c:choose>
 							</tr>
@@ -727,7 +810,7 @@ if((document.getElementById('validar')&&document.getElementById('validar').check
 					<c:if
 						test="${InscripcionTGForm.modo=='vigValidar'||InscripcionTGForm.modo=='vitValidar'||InscripcionTGForm.modo=='vbgComprobarValidar'||InscripcionTGForm.modo=='vbtComprobarValidar'||
 					InscripcionTGForm.modo=='vmitValidar'||InscripcionTGForm.modo=='vmigValidar'||
-					InscripcionTGForm.modo=='sitEditarTelefonosGuardia'||InscripcionTGForm.modo=='sigInsertar'||InscripcionTGForm.modo=='smitEditarTelefonosGuardia'||InscripcionTGForm.modo=='sbgComprobarInsertar'||InscripcionTGForm.modo=='sbtComprobarInsertar'||InscripcionTGForm.modo=='vmbtComprobarValidar'||InscripcionTGForm.modo=='vmbgComprobarValidar'  }">
+					InscripcionTGForm.modo=='sitEditarTelefonosGuardia'||InscripcionTGForm.modo=='sigInsertar'||InscripcionTGForm.modo=='smitEditarTelefonosGuardia'||InscripcionTGForm.modo=='sbgComprobarInsertar'||InscripcionTGForm.modo=='sbtComprobarInsertar'||InscripcionTGForm.modo=='smbtInsertarBaja'||InscripcionTGForm.modo=='vmbtComprobarValidar'||InscripcionTGForm.modo=='vmbgComprobarValidar'  }">
 						<tr id="observacionesValidacion">
 							<td class="labelText"><siga:Idioma
 								key="gratuita.altaTurnos.literal.ovalidacion" /></td>
@@ -747,6 +830,76 @@ if((document.getElementById('validar')&&document.getElementById('validar').check
 
 
 		</c:if>
+		<!-- principio baja con validacion automatica  -->
+				<c:if
+			test="${InscripcionTGForm.validarInscripciones=='N'&&InscripcionTGForm.validacionBaja==true && (InscripcionTGForm.modo=='sbtComprobarInsertar' || InscripcionTGForm.modo=='sbgComprobarInsertar')}">
+
+			<siga:ConjCampos leyenda="gratuita.altaTurnos.literal.validacion">
+				
+					<table width="100%" border="0">
+				 	<tr>
+					 	<td width="25%"></td>
+					 	<td width="15%"></td>
+					 	<td width="15%"></td>
+					 	<td width="35%"></td>
+				 	
+				 	</tr>
+					<tr>
+					<!-- obtenemos los campos para el alta de turnos -->
+						<td class="labelText"><siga:Idioma
+							key="gratuita.altaTurnos.literal.fvalidacion" /></td>
+						<td class="labelText">
+							<input type="text" name="fechaCheck" class="boxConsulta" readOnly="true"/>
+							
+						</td>
+						<td class="labelText"><siga:Idioma
+									key="gratuita.altaTurnos.literal.validacion" /></td>
+						<td class="labelText"><input type="checkbox" name="validar" value="si"
+											 checked="checked" disabled="true"></td>
+			
+					</tr>
+					<tr>
+						
+						<td class="labelText"><siga:Idioma key="gratuita.altaTurnos.literal.validacion"/>
+						</td>
+						<td colspan="3"> 
+								<html:textarea name="InscripcionTGForm" property="observacionesValidacion"  onChange="cuenta(this,1024)" cols="65" rows="2" onkeydown="cuenta(this,1024);" styleClass="box" style="overflow:auto;width=400;height=80" readOnly="true">
+								</html:textarea>
+						</td>
+						<td class="labelText">&nbsp;</td>
+						<td class="labelText">&nbsp;</td>
+					</tr>
+				 </table>
+				
+
+			</siga:ConjCampos>
+			<siga:ConjCampos leyenda="gratuita.altaTurnos.literal.saltosycompensaciones">
+				
+					<table width="100%" border="0">
+				 	<tr>
+					 	<td width="35%"></td>
+					 	<td width="15%"></td>
+					 	<td width="10%"></td>
+					 	<td width="40%"></td>
+				 	
+				 	</tr>
+					<tr>
+						<td class="labelText">	<siga:Idioma
+											key="gratuita.altaTurnos.literal.actualizarSyC" />:</td>
+							<td class="labelText" align="right">					
+										<input type="Radio" name="syc" value="s"> si
+										<input type="Radio" name="syc" value="n"> no  </td>
+							<td class="labelText"  align="left"></td>
+					
+						<td class="labelText">&nbsp;</td>
+					</tr>
+				 </table>
+				
+
+			</siga:ConjCampos>
+		</c:if>
+		<!-- fin baja con validacion automatica-->
+		
 		<div id="divGuardiaGrupo" style="display: none"><c:choose>
 
 			<c:when
@@ -875,7 +1028,7 @@ if((document.getElementById('validar')&&document.getElementById('validar').check
 	style="display: none"></iframe>
 <!-- FIN: SUBMIT AREA -->
 <script>
-		if(document.InscripcionTGForm.validarInscripciones.value=='N')
+		if(document.getElementById("divGuardiaGrupo")!=null && document.InscripcionTGForm.validarInscripciones.value=='N')
 			document.getElementById("divGuardiaGrupo").style.display = "block";
 </script>
 </body>

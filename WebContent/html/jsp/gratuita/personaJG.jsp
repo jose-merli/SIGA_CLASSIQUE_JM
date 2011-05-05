@@ -649,6 +649,24 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
                   document.forms[0].regimenConyugal.options[1].selected = 'true';
                }
        }
+
+     function createProvince() {
+
+  			  var Primary = document.forms[0].cp.value;
+  			  if ((Primary == null) || (Primary == 0)) return;
+  			
+  			  while(Primary.length<5){
+  				  Primary="0"+Primary;
+  			  }	  
+  			  var idProvincia	= Primary.substring(0,2);
+  			  document.forms[0].provincia.value=idProvincia;  				  
+  			  rellenarCampos();
+
+  	}
+		function rellenarCampos(){
+			document.forms[0].provincia.onchange();
+	} 
+               
 		</script>
 		
 
@@ -1047,7 +1065,7 @@ String calidadIdinstitucion=miform.getCalidadIdinstitucion();
  			%>		
 		</td>
 		<td colspan="2">
-			<html:text name="PersonaJGForm" property="cp" size="5" maxlength="5" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"></html:text>
+			<html:text name="PersonaJGForm" property="cp" size="5" maxlength="5" styleClass="<%=estiloBox%>" readOnly="<%=readonly%>"  onChange="createProvince()"></html:text>
 		</td>
 	</tr>
 	<tr>

@@ -1557,6 +1557,7 @@
 		<action path="/CER_Campos" type="com.siga.certificados.action.SIGAMantenimientoCertificadosCamposAction" name="MantenimientoCertificadosCamposForm" scope="request">
 			<forward name="abrir" path="/html/jsp/certificados/pestanaCampos.jsp"/>
 			<forward name="mostrar" path="/html/jsp/certificados/detalleRegistroCamposCertificado.jsp"/>
+			<forward name="cargar" path="/html/jsp/certificados/detalleRegistroCamposCertificadoTodos.jsp"/>
 		</action>
 
 		<!-- ***** Certificados / Mantenimiento de Certificados / Plantillas *****
@@ -2188,6 +2189,8 @@
 			<forward name="msjAvisoEstado" path="/html/jsp/gratuita/msjAvisoEstado.jsp"/>
 		</action>
 		<action path="/JGR_SolicitarBajaTurno" type="com.siga.gratuita.action.GestionInscripcionesTGAction" name="InscripcionTGForm">
+			<forward name="busquedaTurnosDisponiblesBaja" path="/html/jsp/gratuita/busquedaTurnosDisponiblesBaja.jsp"/>
+			<forward name="listadoTurnosDisponiblesBaja" path="/html/jsp/gratuita/listadoTurnosDisponiblesBaja.jsp"/>
 			<forward name="consultaTurnoInscripcion" path="/html/jsp/gratuita/consultaTurnoInscripcion.jsp"/>
 			<forward name="consultaGuardiasInscripcion" path="/html/jsp/gratuita/consultaGuardiasInscripcion.jsp"/>
 			<forward name="validarInscripcion" path="/html/jsp/gratuita/validarInscripcion.jsp"/>
@@ -2384,6 +2387,10 @@
 		<action path="/JGR_RelacionadoConSJCS" type="com.siga.gratuita.action.RelacionadoConSJCSAction" name="DummyForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/listadoRelacionadoConSJCS.jsp"/>
 		</action>
+		<action path="/JGR_DesignaRelacionadoConSJCS" type="com.siga.gratuita.action.RelacionadoConSJCSAction" name="DummyForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/listadoRelacionadoConSJCS.jsp"/>
+		</action>
+		
 
 		<!-- ***** Justicia Gratuita / Configurar Turnos / Mantenimiento de Facturas *****
 -->

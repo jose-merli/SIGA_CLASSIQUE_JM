@@ -126,7 +126,6 @@
 		}
 		
 
-
 		
 		
 	}
@@ -385,6 +384,7 @@
 			}
 			
 		}
+
 		if(datos==''){
 			alert('<siga:Idioma key="general.message.seleccionar"/>');
 			return false;

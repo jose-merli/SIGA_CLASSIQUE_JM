@@ -5,6 +5,8 @@
  */
 package com.siga.consultas.form;
 
+import java.util.Vector;
+
 import com.siga.general.MasterForm;
 
 /**
@@ -18,9 +20,23 @@ public class PermisosConsultaForm extends MasterForm {
     private String gruposAntiguos="";
     private String idConsulta="";
     private String idInstitucion_Consulta="";
+    public Vector datosSelec= null;
+    public Vector datosTodos= null;
     
     
     
+	public Vector getDatosSelec() {
+		return datosSelec;
+	}
+	public void setDatosSelec(Vector datosSelec) {
+		this.datosSelec = datosSelec;
+	}
+	public Vector getDatosTodos() {
+		return datosTodos;
+	}
+	public void setDatosTodos(Vector datosTodos) {
+		this.datosTodos = datosTodos;
+	}
 	public String getIdConsulta() {
 		return idConsulta;
 	}
@@ -51,6 +67,7 @@ public class PermisosConsultaForm extends MasterForm {
 	public void setModal(String modal) {
 		this.modal = modal;
 	}
+
 //	public String getModo() {
 //		return modo;
 //	}

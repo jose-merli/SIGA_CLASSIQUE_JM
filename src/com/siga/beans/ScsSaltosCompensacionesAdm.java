@@ -4,6 +4,7 @@ package com.siga.beans;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -514,6 +515,69 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 		}
 		return salida;
 	}
+
+	/**
+	 * Quita el cumplimiento de saltos y compensaciones ya que se ha dado de baja en el turno SRL
+	 */
+
+	public boolean updateSaltosCompensacionesBajaTurno(ArrayList<ScsSaltosCompensacionesBean>  ibeanSaltosCompensaciones) throws ClsExceptions {
+		boolean salida = false;
+		StringBuffer sql = new StringBuffer();
+		
+		try {
+			for (Iterator<ScsSaltosCompensacionesBean> it = ibeanSaltosCompensaciones.iterator(); it.hasNext(); ) {
+				ScsSaltosCompensacionesBean syc = it.next();
+			    System.out.println(syc);
+
+				sql.append(" update "+ScsSaltosCompensacionesBean.T_NOMBRETABLA);
+				sql.append("    set "+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+"= SYSDATE");
+				sql.append("      , "+ScsSaltosCompensacionesBean.C_FECHAMODIFICACION+"= SYSDATE");
+				sql.append("      , "+ScsSaltosCompensacionesBean.C_USUMODIFICACION+"="+this.usuModificacion);
+				sql.append("  where "+ScsSaltosCompensacionesBean.C_IDINSTITUCION+"="+ syc.getIdInstitucion());
+				sql.append("    and "+ScsSaltosCompensacionesBean.C_IDTURNO+"="+syc.getIdTurno());
+				sql.append("    and "+ScsSaltosCompensacionesBean.C_IDPERSONA+"="+syc.getIdPersona());
+				sql.append("    and "+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+" is null");
+				if (syc.getIdGuardia()!=null)
+					sql.append("    and "+ScsSaltosCompensacionesBean.C_IDGUARDIA+"="+syc.getIdGuardia());
+
+				
+				updateSQL(sql.toString());
+				
+			}
+			salida = true;
+		} catch (Exception e) {
+			salida = false;
+		}
+		return salida;
+	}
+	
+	public boolean updateSaltosCompensacionesBajaTurno(Integer idinstitucion,Integer idturno,Long idpersona, Integer idguardia, String tipoSyC) throws ClsExceptions {
+		boolean salida = false;
+		StringBuffer sql = new StringBuffer();
+		
+		try {
+				sql.append(" update "+ScsSaltosCompensacionesBean.T_NOMBRETABLA);
+				sql.append("    set "+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+"= SYSDATE");
+				sql.append("      , "+ScsSaltosCompensacionesBean.C_FECHAMODIFICACION+"= SYSDATE");
+				sql.append("      , "+ScsSaltosCompensacionesBean.C_USUMODIFICACION+"="+this.usuModificacion);
+				sql.append("  where "+ScsSaltosCompensacionesBean.C_IDINSTITUCION+"="+ idinstitucion);
+				sql.append("    and "+ScsSaltosCompensacionesBean.C_IDTURNO+"="+idturno);
+				sql.append("    and "+ScsSaltosCompensacionesBean.C_IDPERSONA+"="+idpersona);
+				sql.append("    and "+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+" is null");
+				if (idguardia!=null)
+					sql.append("    and "+ScsSaltosCompensacionesBean.C_IDGUARDIA+"="+idguardia);
+				if (tipoSyC.equalsIgnoreCase("G") && idguardia==null)
+					sql.append("    and "+ScsSaltosCompensacionesBean.C_IDGUARDIA+" is not null");
+				
+				updateSQL(sql.toString());
+				
+			salida = true;
+		} catch (Exception e) {
+			salida = false;
+		}
+		return salida;
+	}
+	
 	
 	/**
 	 * Borra los saltos y compensaciones creados en el caledario pasado como parametro
@@ -757,7 +821,27 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 
 		return sql.toString();
 	}
+	
 
+	private String getQuerySaltosCompensacionesPersonaTurno(
+			Integer idInstitucion,
+			Integer idTurno,
+			Long idPersona,
+			Integer idGuardia)
+	{
+		StringBuffer sql = new StringBuffer();
+
+		sql.append(" select * ");
+		sql.append("   from "+ ScsSaltosCompensacionesBean.T_NOMBRETABLA);
+		sql.append("  where "+ ScsSaltosCompensacionesBean.C_IDINSTITUCION+" = " +  idInstitucion);
+		sql.append("    and "+ ScsSaltosCompensacionesBean.C_IDTURNO+" = " +  idTurno);
+		sql.append("    and "+ ScsSaltosCompensacionesBean.C_IDPERSONA+" = " + idPersona);
+		sql.append("    and "+ ScsSaltosCompensacionesBean.C_IDGUARDIA+" = " + idGuardia);		
+		sql.append("    and "+ ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+"  is  null " );
+		return sql.toString();
+	}
+
+	
 	/**
 	 * Obtiene todos los saltos asociados a una guardia
 	 * 
@@ -876,6 +960,40 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 		return alLetradosCompensados;
 	}
 
+	public ArrayList<ScsSaltosCompensacionesBean> getSaltosCompensaciones(Integer idInstitucion, Integer idTurno, Long idPersona, Integer idGuardia) throws ClsExceptions
+	{
+
+		// obteniendo query de saltos y compensaciones
+		String sql = getQuerySaltosCompensacionesPersonaTurno( idInstitucion, idTurno, idPersona, idGuardia);
+		ArrayList saltosycompen = null;
+		try {
+			// obtiene las compesaciones del letrado de idPersona de un turno
+			RowsContainer rc = this.find(sql);
+			if (rc == null || rc.size()==0) {
+				saltosycompen = null;
+			}
+			else {
+				saltosycompen = new ArrayList<ScsSaltosCompensacionesBean>();
+				for (int i = 0; i < rc.size(); i++) {
+					Hashtable registro  = (Hashtable)((Row) rc.get(i)).getRow();
+
+					ScsSaltosCompensacionesBean SCbean = new ScsSaltosCompensacionesBean();
+					SCbean.setIdInstitucion(UtilidadesHash.getInteger(registro, ScsSaltosCompensacionesBean.C_IDINSTITUCION));
+					SCbean.setIdPersona(UtilidadesHash.getLong(registro, ScsSaltosCompensacionesBean.C_IDPERSONA));
+					SCbean.setIdTurno(UtilidadesHash.getInteger(registro, ScsSaltosCompensacionesBean.C_IDTURNO));
+					saltosycompen.add(SCbean);
+				}
+				
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al obtener saltos y compensaciones  en BD.");
+		}
+
+		return saltosycompen;
+	}
+	
+	
+	
 	/**
 	 * Obtiene las compensaciones asociadas a un turno
 	 * 

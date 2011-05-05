@@ -627,6 +627,8 @@
 				
 				function darDeBajaEnTodosLosTurnos(mostrarMensaje) 
 				{
+					/*
+					----ANTES-----
 					sub();
 					if (mostrarMensaje) {
 						var mensaje = "<siga:Idioma key="censo.fichaCliente.turnoInscrito.pregunta.bajaEnTodosLosTurnos"/>";
@@ -635,11 +637,17 @@
 							return;
 						}
 					}
+					----ANTES-----
+					*/
 					document.FormASolicitarBaja.idInstitucion.value = <%=usr.getLocation()%>;
 	   				document.FormASolicitarBaja.idPersona.value = <%=request.getSession().getAttribute("idPersonaTurno")%>;
-					document.FormASolicitarBaja.modo.value = "comprobarBajaEnTodosLosTurnos";
-					document.FormASolicitarBaja.target = "submitArea";
-					document.FormASolicitarBaja.submit();
+					document.FormASolicitarBaja.modo.value	= "busquedaTurnosDisponiblesBaja";
+					//document.FormASolicitarBaja.modo.value = "comprobarBajaEnTodosLosTurnos";					
+					//document.FormASolicitarBaja.target = "submitArea";
+					//document.FormASolicitarBaja.submit();
+			   		var resultado = ventaModalGeneral(document.FormASolicitarBaja.name,"G");
+				    if(resultado == "MODIFICADO") 
+				    	refrescarLocal();
 					// refrescarLocal();
 				}
 				

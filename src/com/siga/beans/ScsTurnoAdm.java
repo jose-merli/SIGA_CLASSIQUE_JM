@@ -940,6 +940,135 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 		
 		return vTurno;
 }
+	
+	
+	
+	public Vector getTurnosDisponiblesBaja(Hashtable hashFiltro,Long idPersona,Integer idInstitucion) throws ClsExceptions{
+
+		
+
+
+		String sql = 
+			 " SELECT SCS_TURNO.IDTURNO IDTURNO, SCS_TURNO.NOMBRE NOMBRE, SCS_TURNO.ABREVIATURA ABREVIATURA,  SCS_AREA.NOMBRE AREA,   "+
+			 " SCS_AREA.IDAREA IDAREA, SCS_MATERIA.NOMBRE MATERIA, SCS_MATERIA.IDMATERIA IDMATERIA,  SCS_ZONA.NOMBRE ZONA,   "+
+			 " SCS_ZONA.IDZONA IDZONA, SCS_SUBZONA.NOMBRE SUBZONA, SCS_SUBZONA.IDSUBZONA IDSUBZONA,    "+
+			 " Pkg_Siga_Sjcs.FUN_SJ_PARTIDOSJUDICIALES("+idInstitucion+",SCS_SUBZONA.IDSUBZONA,SCS_ZONA.IDZONA) PARTIDOS,CEN_PARTIDOJUDICIAL.NOMBRE PARTIDOJUDICIAL, CEN_PARTIDOJUDICIAL.IDPARTIDO IDPARTIDOJUDICIAL,    "+
+			 " SCS_PARTIDAPRESUPUESTARIA.NOMBREPARTIDA PARTIDAPRESUPUESTARIA,    "+
+			 " SCS_PARTIDAPRESUPUESTARIA.IDPARTIDAPRESUPUESTARIA IDPARTIDAPRESUPUESTARIA,    "+
+			 UtilidadesMultidioma.getCampoMultidiomaSimple("SCS_GRUPOFACTURACION.NOMBRE", usrbean.getLanguage())+" GRUPOFACTURACION, SCS_GRUPOFACTURACION.IDGRUPOFACTURACION IDGRUPOFACTURACION,    "+
+			 " SCS_TURNO.GUARDIAS GUARDIAS, SCS_TURNO.VALIDARJUSTIFICACIONES VALIDARJUSTIFICACIONES,    "+
+			 " SCS_TURNO.VALIDARINSCRIPCIONES VALIDARINSCRIPCIONES, SCS_TURNO.DESIGNADIRECTA DESIGNADIRECTA,    "+
+			 " SCS_TURNO.DESCRIPCION DESCRIPCION, SCS_TURNO.REQUISITOS REQUISITOS,    "+
+			 " SCS_TURNO.IDPERSONA_ULTIMO IDPERSONAULTIMO,SCS_TURNO.FECHASOLICITUD_ULTIMO FECHASOLICITUD_ULTIMO, SCS_TURNO.IDORDENACIONCOLAS IDORDENACIONCOLAS,    "+
+			 " SCS_ORDENACIONCOLAS.ALFABETICOAPELLIDOS A8LFABETICOAPELLIDOS, SCS_ORDENACIONCOLAS.FECHANACIMIENTO EDAD,    "+
+			 " SCS_ORDENACIONCOLAS.NUMEROCOLEGIADO ANTIGUEDAD, SCS_ORDENACIONCOLAS.ANTIGUEDADCOLA ANTIGUEDADENCOLA,   "+
+			 " (select count(1) "+
+			 "  from scs_guardiasturno g "+
+			 "  where g.idinstitucion=SCS_TURNO.Idinstitucion "+
+			 "     and g.idturno=scs_turno.idturno) NGUARDIAS "+
+			 "   ,SCS_TURNO.IDINSTITUCION, SCS_INSCRIPCIONTURNO.Fechasolicitud "+
+			 "  FROM SCS_TURNO,                       "+                                         
+			 "       SCS_PARTIDAPRESUPUESTARIA,       "+                                         
+			 "       SCS_GRUPOFACTURACION,            "+                                         
+			 "       SCS_MATERIA,                     "+                                         
+			 "       SCS_AREA,                        "+                                         
+			 "       SCS_SUBZONA,                     "+ 
+			 "       SCS_ZONA,                        "+ 
+			 "       CEN_PARTIDOJUDICIAL,             "+ 
+			 "       SCS_INSCRIPCIONTURNO,   "+ 
+			 "       SCS_ORDENACIONCOLAS     "+ 
+			 " WHERE SCS_PARTIDAPRESUPUESTARIA.idinstitucion(+) = SCS_TURNO.idinstitucion"+ 
+			 "   AND SCS_PARTIDAPRESUPUESTARIA.idpartidapresupuestaria(+) =              "+ 
+			 "       SCS_TURNO.idpartidapresupuestaria                                   "+ 
+			 "   AND SCS_GRUPOFACTURACION.idinstitucion = SCS_TURNO.idinstitucion        "+ 
+			 "   AND SCS_GRUPOFACTURACION.idgrupofacturacion =                           "+ 
+			 "       SCS_TURNO.idgrupofacturacion                                        "+ 
+			 "   AND SCS_MATERIA.idinstitucion = SCS_TURNO.idinstitucion                 "+ 
+			 "   AND SCS_MATERIA.idarea = SCS_TURNO.idarea                               "+ 
+			 "   AND SCS_MATERIA.idmateria = SCS_TURNO.idmateria                          "+ 
+			 "   AND SCS_AREA.idinstitucion = SCS_MATERIA.idinstitucion                   "+ 
+			 "   AND SCS_AREA.idarea = SCS_MATERIA.idarea                                 "+ 
+			 "   AND SCS_SUBZONA.idinstitucion(+) = SCS_TURNO.idinstitucion               "+ 
+			 "   AND SCS_SUBZONA.idzona(+) = SCS_TURNO.idzona                             "+ 
+			 "   AND SCS_SUBZONA.idsubzona(+) = SCS_TURNO.idsubzona                       "+ 
+			 "   AND SCS_ZONA.idinstitucion(+) = SCS_TURNO.idinstitucion                  "+ 
+			 "   AND SCS_ZONA.idzona(+) = SCS_TURNO.idzona                                "+ 
+			 "   AND CEN_PARTIDOJUDICIAL.idpartido(+) = SCS_SUBZONA.idpartido             "+ 
+			 "   and scs_ordenacioncolas.idordenacioncolas = scs_turno.idordenacioncolas  "+ 
+			 "   AND SCS_TURNO.idinstitucion = "+idInstitucion+
+			 "   AND SCS_INSCRIPCIONTURNO.idinstitucion = "+idInstitucion+
+			 "   AND SCS_INSCRIPCIONTURNO.idturno = SCS_TURNO.idturno                     "+ 
+			 "   AND SCS_INSCRIPCIONTURNO.idpersona = "+idPersona+ 
+			 //"   --altas pendientes de validar                                            "+ 
+			 "   AND ((SCS_INSCRIPCIONTURNO.FECHAVALIDACION IS NULL and                   "+ 
+			 "        SCS_INSCRIPCIONTURNO.FECHASOLICITUDBAJA IS NULL AND                 "+ 
+			 "        scs_inscripcionturno.fechabaja is null and                          "+ 
+			 "        SCS_INSCRIPCIONTURNO.FECHADENEGACION IS NULL                        "+ 
+			 "        ) OR                                                                "+ 
+			 "                                                                            "+ 
+			 //"        --altas validadas                                                   "+ 
+			 "        (SCS_INSCRIPCIONTURNO.FECHAVALIDACION IS NOT NULL AND               "+ 
+			 "        SCS_INSCRIPCIONTURNO.FECHASOLICITUDBAJA IS NULL AND                 "+ 
+			 "        scs_inscripcionturno.fechabaja is null and                "+ 
+			 "        Scs_Inscripcionturno.Fechadenegacion is null) OR          "+ 
+			 "                                                                  "+ 
+			 //"        --bajas denegadas                                         "+ 
+			 "        (scs_inscripcionturno.fechavalidacion is not null and     "+ 
+			 "        SCS_INSCRIPCIONTURNO.FECHASOLICITUDBAJA IS NOT NULL and   "+ 
+			 "        scs_inscripcionturno.fechabaja is null and                "+ 
+			 "        SCS_INSCRIPCIONTURNO.FECHADENEGACION IS NOT NULL))        ";
+
+		try{
+			Integer.parseInt((String)hashFiltro.get("IDPARTIDOJUDICIAL"));
+		}catch(Exception e){hashFiltro.put("IDPARTIDOJUDICIAL","-1");}
+						
+		if(!((String)hashFiltro.get("ABREVIATURA")).equalsIgnoreCase("")){
+			sql += " AND "+ComodinBusquedas.prepararSentenciaCompleta(((String)hashFiltro.get("ABREVIATURA")).trim(),"SCS_TURNO."+ScsTurnoBean.C_ABREVIATURA);
+		}
+		if(!((String)hashFiltro.get("NOMBRE")).equalsIgnoreCase("")){
+			sql += " AND "+ComodinBusquedas.prepararSentenciaCompleta(((String)hashFiltro.get("NOMBRE")).trim(),"SCS_TURNO."+ScsTurnoBean.C_NOMBRE);
+		}
+		//if((ant)&&(Integer.parseInt((String)hash.get("IDAREA"))>0))where+=" and ";
+		if(Integer.parseInt((String)hashFiltro.get("IDAREA"))>0){
+			sql+=	" AND SCS_AREA.idarea = "+(String)hashFiltro.get("IDAREA");
+				//ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDAREA+" = "+((String)hash.get("IDAREA")).toUpperCase();
+		}
+		//if((ant)&&(Integer.parseInt((String)hash.get("IDMATERIA"))>0))where+=" and ";
+		try{
+			if(Integer.parseInt((String)hashFiltro.get("IDMATERIA"))>0){
+			sql+=	" AND SCS_MATERIA.idmateria ="+(String)hashFiltro.get("IDMATERIA");
+			// ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDAREA+" = "+((String)hash.get("IDAREA")).toUpperCase();
+			}
+		}catch(Exception e){}
+		//if((ant)&&(Integer.parseInt((String)hash.get("IDZONA"))>0))where+=" and ";
+		String idzon = "";
+		if (hashFiltro.get("IDZONA")!=null && !hashFiltro.get("IDZONA").equals("0")&& !hashFiltro.get("IDZONA").equals("")) {
+			idzon=(String)hashFiltro.get("IDZONA");
+			//idzon=idzon.substring(idzon.indexOf(","),idzon.length());
+			if(Integer.parseInt(idzon)>0){
+				sql+=	" AND SCS_ZONA.idzona ="+idzon;
+				//ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDZONA+" = "+((String)hash.get("IDZONA")).toUpperCase();
+			}
+		}
+		//if((ant)&&(Integer.parseInt((String)hash.get("IDSUBZONA"))>0))where+=" and ";
+		try{
+			if(Integer.parseInt((String)hashFiltro.get("IDSUBZONA"))>0){
+			sql+=	" AND SCS_SUBZONA.idsubzona = "+(String)hashFiltro.get("IDSUBZONA");
+			}
+		}catch(Exception e){}
+		//if((ant)&&(Integer.parseInt((String)hash.get("IDPARTIDAPRESUPUESTARIA"))>0))where+=" and ";
+		//ScsTurnoBean.T_NOMBRETABLA+"."+ScsTurnoBean.C_IDSUBZONA+"="+form.getSubzona()+" and "+
+		sql+=" ORDER BY NOMBRE, FECHASOLICITUD ";
+		
+		Vector vTurno;
+		
+		vTurno = this.ejecutaSelect(sql);
+		
+	
+	return vTurno;
+}
+
+	
 	public void cambiarUltimoCola (Integer idInstitucion,
 			Integer idTurno,
 			Long idPersonaUltimo,

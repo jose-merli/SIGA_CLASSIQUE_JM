@@ -4,6 +4,7 @@ import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
@@ -73,10 +74,11 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			do {
 				miForm = (InscripcionTGForm) formulario;
 				if (miForm != null) {
-					if(miForm.getUsrBean()==null)
-						miForm.setUsrBean(this.getUserBean(request));
+					miForm.setUsrBean(this.getUserBean(request));
 					String accion = miForm.getModo();
 					String modo = request.getParameter("modo");
+						
+						System.out.println(" SESSION: " + request.getSession().getAttributeNames()); 
 					if(modo!=null)
 						accion = modo;
 					
@@ -190,10 +192,15 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					}else if (accion.equalsIgnoreCase("smitDatos")){
 						
 						mapDestino = smitDatos(mapping, miForm, request, response);
+					}else if (accion.equalsIgnoreCase("smitDatosBaja")){
+						
+						mapDestino = smitDatosBaja(mapping, miForm, request, response);
 					}else if (accion.equalsIgnoreCase("smitEditarTelefonosGuardia")){
 						mapDestino = smitEditarTelefonosGuardia(mapping, miForm, request, response);
 					}else if (accion.equalsIgnoreCase("smitInsertar")){
 						mapDestino = smitInsertar(mapping, miForm, request, response);
+					}else if (accion.equalsIgnoreCase("smbtInsertarBaja")){
+						mapDestino = smbtInsertarBaja(mapping, miForm, request, response);
 					}else if(accion.equalsIgnoreCase("comprobarBajaEnTodosLosTurnos")){
 						mapDestino =  comprobarBajaEnTodosLosTurnos(mapping,  miForm,  request,  response);
 					}else if(accion.equalsIgnoreCase("solicitarBajaEnTodosLosTurnos")){
@@ -256,9 +263,14 @@ public class GestionInscripcionesTGAction extends MasterAction {
 						mapDestino =  consultaInscripcion(mapping,  miForm,  request,  response);
 					}else if(accion.equalsIgnoreCase("busquedaTurnosDisponibles")){
 						mapDestino =  busquedaTurnosDisponibles(mapping,  miForm,  request,  response);
+					}else if(accion.equalsIgnoreCase("busquedaTurnosDisponiblesBaja")){
+						mapDestino =  busquedaTurnosDisponiblesBaja(mapping,  miForm,  request,  response);
 					}else if(accion.equalsIgnoreCase("listadoTurnosDisponibles")){
 						mapDestino =  listadoTurnosDisponibles(mapping,  miForm,  request,  response);
+					}else if(accion.equalsIgnoreCase("listadoTurnosDisponiblesBaja")){
+						mapDestino =  listadoTurnosDisponiblesBaja(mapping,  miForm,  request,  response);
 					}
+					
 					else {
 						return super.executeInternal(mapping,formulario,request,response);
 					}
@@ -575,7 +587,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				inscripcion.denegarBajaInscripcionTurno(miForm.getFechaDenegacion(),miForm.getObservacionesDenegacion(),usr);
 			}else if(miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equals(""))
 			{
-				inscripcion.validarBaja(miForm.getFechaBaja(),null,miForm.getObservacionesValBaja(),usr);
+				inscripcion.validarBaja(miForm.getFechaBaja(),null,miForm.getObservacionesValBaja(), miForm.getTipoActualizacionSyC(), usr);
 
 
 			}
@@ -753,7 +765,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 			
 			
 			
-			inscripcion.solicitarBaja(miForm.getFechaSolicitudBaja(),miForm.getObservacionesBaja(),miForm.getFechaBaja(),miForm.getObservacionesValBaja(), miForm.getFechaValidacionTurno(),miForm.getValidarInscripciones(), usr);
+			inscripcion.solicitarBaja(miForm.getFechaSolicitudBaja(),miForm.getObservacionesBaja(),miForm.getFechaBaja(),miForm.getObservacionesValBaja(), miForm.getFechaValidacionTurno(),miForm.getValidarInscripciones(),miForm.getTipoActualizacionSyC(), usr);
 			request.setAttribute("mensaje","messages.updated.success");
 			forward = "exito";
 	        request.setAttribute("modal", "1");
@@ -954,7 +966,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				miForm.setFechaBaja("sysdate");
 			
 			inscripcionGuardia.setBajas(miForm.getObservacionesBaja(), miForm.getFechaSolicitudBaja(), miForm.getFechaBaja(),miForm.getObservacionesValBaja());
-			inscripcionGuardia.solicitarBaja(usr);
+			inscripcionGuardia.solicitarBaja(usr,miForm.getTipoActualizacionSyC());
 			forward = "exito";
 			request.setAttribute("mensaje","messages.updated.success");
 			request.setAttribute("modal","1");
@@ -975,7 +987,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		UsrBean usr = this.getUserBean(request);
 		String forward = "error";
 		try {
-			if(miForm.getFechaDenegacion()!=null && !miForm.getFechaDenegacion().equals("")){
+			if(miForm.getFechaDenegacion()==null || miForm.getFechaDenegacion().equals("")){
 				Date fechaBaja = GstDate.convertirFecha(miForm.getFechaBaja(),"dd/MM/yyyy");
 				//En la fecha de validacion turno no se sete al fechad evalidacion de la guardia
 				Date fechaValidacion= GstDate.convertirFechaHora(miForm.getFechaValidacionTurno());
@@ -989,15 +1001,16 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				miForm.setEstadoPendientes(estadoPendientes);
 			}
 			if(miForm.getEstadoPendientes()!=null&&!miForm.getEstadoPendientes().equals("")){
-				miForm.setModo("vbgValidar");
-				forward = "msjAvisoEstado";
-				return forward;
+					miForm.setModo("vbgValidar");
+					forward = "msjAvisoEstado";
+					return forward;
+				
 			}else{
 				return vbgValidar(mapping,  formulario,  request,  response);
 			}
 			
-		} 
-		catch (Exception e) 
+		
+		}catch (Exception e) 
 		{
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
 		} 
@@ -1027,7 +1040,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				}else if(miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equals(""))
 				{
 					inscripcion.setBajas(null, null, miForm.getFechaBaja(),miForm.getObservacionesValBaja());
-					inscripcion.validarBaja(usr);
+					inscripcion.validarBaja(usr, miForm.getTipoActualizacionSyC());
 				}
 			
 			request.setAttribute("mensaje","messages.updated.success");
@@ -1113,7 +1126,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 				}else if(miForm.getFechaBaja()!=null && !miForm.getFechaBaja().equals(""))
 				{
 					inscripcion.setBajas(null, null, miForm.getFechaBaja(),miForm.getObservacionesValBaja());
-					inscripcion.validarBaja(usr);
+					inscripcion.validarBaja(usr, null);
 				}
 			}else{
 				miForm.setFechaSolicitud("sysdate");
@@ -1446,6 +1459,29 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		} 
 		return forward;
 	}
+	private String smitDatosBaja(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		String forward = "";
+		try {
+
+			InscripcionTGForm miForm = (InscripcionTGForm) formulario;
+			miForm.setSolicitudAlta(false);
+			miForm.setSolicitudBaja(true);
+			miForm.setValidacionAlta(false);
+			miForm.setValidacionBaja(true);
+			miForm.setMasivo(true);
+			miForm.reset(true,true);
+			miForm.setModo("smbtInsertarBaja");
+			miForm.setPorGrupos("1");
+			forward = "validarInscripcion";
+			
+		}
+		catch (Exception e) 
+		{
+			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
+		} 
+		return forward;
+	}
+
 		
 	private String vitConsultaTurno(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		String forward ="";
@@ -2115,7 +2151,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 						miForm.setFechaBaja("sysdate");
 					else
 						miForm.setFechaBaja(null);
-					inscripcion.solicitarBaja(miForm.getFechaSolicitudBaja(),observaciones,miForm.getFechaBaja(),null,(String) turnoHash.get("FECHAVALIDACION"),validarInscripciones, usr);
+					inscripcion.solicitarBaja(miForm.getFechaSolicitudBaja(),observaciones,miForm.getFechaBaja(),null,(String) turnoHash.get("FECHAVALIDACION"),validarInscripciones, null, usr);
 	
 				}
 				forward = this.exitoRefresco("messages.updated.success", request);
@@ -2134,6 +2170,49 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		
 
 	}
+	private String smbtInsertarBaja(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
+		
+		String forward = "error";
+		try {
+		///comprobarInsertar
+			UsrBean usr = this.getUserBean(request);
+			String turnosSel = miForm.getTurnosSel();
+			GstStringTokenizer st1 = new GstStringTokenizer(turnosSel,",");
+			miForm.setFechaSolicitudBaja("sysdate");
+			//dando de baja todos los turnos
+			InscripcionTurno inscripcion;
+			while (st1.hasMoreTokens()) {
+				String registro = st1.nextToken();
+				String d[]= registro.split("##");
+				String idTurnoSel=d[0];
+				String validarInscripciones=d[1];
+				String fechaSolicitud=d[2];
+				miForm.setIdTurno(idTurnoSel);
+				miForm.setValidarInscripciones(validarInscripciones);
+
+				Integer idTurno = new Integer(idTurnoSel);
+
+				inscripcion = InscripcionTurno.getInscripcionTurno(
+						new Integer(miForm.getIdInstitucion()), idTurno, Long.valueOf(miForm.getIdPersona()),
+						 fechaSolicitud, usr, false);
+
+				if(validarInscripciones.equals("N"))
+					miForm.setFechaBaja("sysdate");
+				
+				inscripcion.solicitarBaja(miForm.getFechaSolicitudBaja(),miForm.getObservacionesBaja(),miForm.getFechaBaja(),miForm.getObservacionesValBaja(), miForm.getFechaValidacionTurno(),validarInscripciones, miForm.getTipoActualizacionSyC(), usr);
+
+			}
+			forward = "exito";
+			request.setAttribute("modal", "1");
+		} 
+		catch (Exception e) 
+		{
+			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
+		} 
+		return forward;
+	}
+
 	private String solicitudesMasivas (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response)
 	throws SIGAException 
 	{
@@ -2338,6 +2417,118 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		
 	}
 	
+	private String vmigValidarBaja(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
+		
+		String forward = "error";
+		try {
+			UsrBean usr = this.getUserBean(request);
+			String turnosSel = miForm.getTurnosSel();
+			GstStringTokenizer st1 = new GstStringTokenizer(turnosSel,",");
+			boolean existenErrores = false;
+			while (st1.hasMoreTokens()) {
+				String registro = st1.nextToken();
+				String d[]= registro.split("##");
+				String idInstitucion = d[0];
+				String idPersona= d[1];
+				String idTurno= d[2];
+				String fechaSolicitud= d[4];
+				String tipoGuardias = d[6];				
+				Integer idGuardia = null;
+				if(Integer.parseInt(tipoGuardias)==ScsTurnoBean.TURNO_GUARDIAS_ELEGIR)
+					idGuardia = new Integer(d[3]);
+				
+//				String validarInscripciones = d[5];
+
+				try {
+					ScsInscripcionTurnoBean insTurnoActiva = null;
+					ScsInscripcionGuardiaBean insGuardiaSiguiente = null;
+					if(miForm.getFechaValidacion()!=null && !miForm.getFechaValidacion().equals("")&&(miForm.getFechaBaja()==null || miForm.getFechaBaja().equals("")))
+					{
+
+						ScsInscripcionTurnoAdm admInsTurno = new ScsInscripcionTurnoAdm(usr);
+						insTurnoActiva = admInsTurno.getInscripcion(new Integer(idInstitucion),new Integer( idTurno), new Long(idPersona), miForm.getFechaValidacion());
+						//miramos si tiene fecha de baja para que puedan solictar altas nuevas de inscripciones de guardia
+						if(insTurnoActiva!=null){
+							String fechaBajaTurno = null;
+							if(insTurnoActiva.getFechaBaja()!=null && !insTurnoActiva.getFechaBaja().equals("")){
+								Date dateFechaBajaTurno = GstDate.convertirFechaHora(insTurnoActiva.getFechaBaja());
+								Date fechaHoy = GstDate.convertirFecha(GstDate.getHoyJsp(),"dd/MM/yyyy");
+								
+								fechaBajaTurno = GstDate.getFormatedDateShort("", insTurnoActiva.getFechaBaja());
+								
+								if(dateFechaBajaTurno.compareTo(fechaHoy)<0){
+									request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.error.guardia.inscripcionturno.menor.hoy"));
+									return "errorConAviso";
+								}
+							}
+							ScsInscripcionGuardiaAdm admInsguardia = new ScsInscripcionGuardiaAdm(usr);
+							
+							//comprobamos si hay una inscripcion de guardia posterior dentro de las fechas del turno
+							insGuardiaSiguiente = admInsguardia.getSiguienteInscripcion(idInstitucion,idTurno, idPersona,new Integer(d[3]),fechaBajaTurno, miForm.getFechaValidacion());
+							
+						}else{
+							request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.error.guardia.sin.turno"));
+							return "errorConAviso";
+							
+						}
+						
+					}
+					
+					
+					
+					
+					
+					//solo dejaremos validar una a una cuando sean a elegir
+						InscripcionGuardia inscripcion = InscripcionGuardia.getInscripcionGuardia(
+								new Integer(idInstitucion), new Integer(idTurno),idGuardia
+										, Long.valueOf(idPersona),	fechaSolicitud, usr, false);
+						
+						if(miForm.getFechaValidacion()!=null && !miForm.getFechaValidacion().equals("")&&(miForm.getFechaBaja()==null || miForm.getFechaBaja().equals("")))
+						{
+							inscripcion.setAltas(null, miForm.getFechaValidacion(), miForm.getObservacionesValidacion());
+							if(miForm.getFechaBaja()==null || miForm.getFechaBaja().equals("")){
+								if(insGuardiaSiguiente!=null ){
+									inscripcion.setBajas(null, null, GstDate.getFormatedDateShort("",insGuardiaSiguiente.getFechaValidacion()),miForm.getObservacionesValBaja());
+								}else if(insTurnoActiva!=null&&insTurnoActiva.getFechaBaja()!=null && !insTurnoActiva.getFechaBaja().equals("")){
+									inscripcion.setBajas(null, null, GstDate.getFormatedDateShort("",insTurnoActiva.getFechaBaja()),miForm.getObservacionesValBaja());
+							}
+						}
+							
+							
+							inscripcion.validarAlta(usr);
+						}else if(miForm.getFechaDenegacion()!=null && !miForm.getFechaDenegacion().equals(""))
+						{
+							inscripcion.setDenegacion(miForm.getObservacionesDenegacion(),miForm.getFechaDenegacion());
+							inscripcion.denegarBajaGuardia(usr);
+						}
+					
+					
+					
+				} catch (Exception e) {
+					existenErrores = true;
+				}
+				
+				
+			} 
+			miForm.reset(true,true);
+			if(existenErrores){
+				request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr,"gratuita.gestionInscripciones.error.solapamiento"));
+			}else{
+				request.setAttribute("mensaje","messages.updated.success");				
+			}			
+			forward = "exito";
+			request.setAttribute("modal", "1");
+
+
+		} 
+		catch (Exception e) 
+		{
+			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
+		} 
+		return forward;
+		
+	}
 	private String vmigValidar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
 		
@@ -2524,6 +2715,9 @@ public class GestionInscripcionesTGAction extends MasterAction {
 	}
 	
 	
+	
+	
+	
 	private String vmbtValidar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
 		miForm.setEstadoPendientes(null);
@@ -2576,7 +2770,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 						}
 						
 						inscripcion.validarBaja(miForm.getFechaBaja(),
-							fechaValidacion,miForm.getObservacionesValBaja(),usr);
+							fechaValidacion,miForm.getObservacionesValBaja(), miForm.getValidarInscripciones(), usr);
 					
 					}
 				} catch (Exception e) {
@@ -2722,7 +2916,7 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					
 					
 						inscripcion.setBajas(null,null, miForm.getFechaBaja(),miForm.getObservacionesValBaja());
-						inscripcion.validarBaja(usr);
+						inscripcion.validarBaja(usr, miForm.getTipoActualizacionSyC());
 					}
 					
 					
@@ -3349,7 +3543,19 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		request.getSession().removeAttribute("pestanas");
 		return "busquedaTurnosDisponibles";
 	}
-	
+	protected String busquedaTurnosDisponiblesBaja(ActionMapping mapping, 
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws SIGAException {
+		InscripcionTGForm miForm = (InscripcionTGForm) formulario;
+		miForm.clear();
+		request.getSession().removeAttribute("DATABACKUP");
+		request.getSession().removeAttribute("DATOSFORMULARIO");
+		request.getSession().removeAttribute("BUSQUEDAREALIZADA");
+		request.getSession().removeAttribute("accionTurno");
+		request.getSession().removeAttribute("pestanas");
+		return "busquedaTurnosDisponiblesBaja";
+	}	
 	
 	protected String listadoTurnosDisponibles(ActionMapping mapping, 
 			MasterForm formulario, 
@@ -3374,6 +3580,30 @@ public class GestionInscripcionesTGAction extends MasterAction {
 		}
 		return forward;
 }
+	protected String listadoTurnosDisponiblesBaja(ActionMapping mapping, 
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws SIGAException {
+		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+		String forward = "listadoTurnosDisponiblesBaja";
+		try {
+			ScsTurnoAdm turnoAdm = new ScsTurnoAdm(this.getUserBean(request));
+			Hashtable hash = (Hashtable)formulario.getDatos();
+
+			request.getSession().setAttribute("DATOSFORMULARIO",hash);
+			request.getSession().setAttribute("BUSQUEDAREALIZADA","SI");
+			Vector vTurno = turnoAdm.getTurnosDisponiblesBaja(hash,new Long((String)request.getSession().getAttribute("idPersonaTurno")),new Integer(usr.getLocation()));
+			request.setAttribute("resultado",vTurno);
+			request.setAttribute("mantTurnos","1");
+			request.setAttribute("idPersonaTurno",(String)request.getSession().getAttribute("idPersonaTurno"));
+
+		}
+		catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
+		}
+		return forward;
+}
+
 	private String afvtModificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		InscripcionTGForm miForm = (InscripcionTGForm) formulario;		
 		UsrBean usr = this.getUserBean(request);

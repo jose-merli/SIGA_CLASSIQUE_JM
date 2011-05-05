@@ -744,6 +744,22 @@
 		function rellenarCampos(){
 				document.getElementById("provincia").onchange();
 		}
+		function createProvince() {
+
+				if(trim(document.consultaDireccionesForm.pais.value)==idEspana) 
+			    {
+				  var Primary = document.consultaDireccionesForm.codigoPostal.value;
+				  if ((Primary == null) || (Primary == 0)) return;
+				
+				  while(Primary.length<5){
+					  Primary="0"+Primary;
+				  }	  
+				  var idProvincia	= Primary.substring(0,2);
+				  document.getElementById("provincia").value=idProvincia;  				  
+				  rellenarCampos();
+			  }
+
+		} 
  
        
 	</script>	
@@ -878,9 +894,15 @@
 
 								<td class="labelText"  width="180px"  id="cpSinAsterisco" nowrap><siga:Idioma key="censo.datosDireccion.literal.cp"/>&nbsp</td>
 								<td class="ocultar"  width="180px"  id="cpConAsterisco" nowrap><siga:Idioma key="censo.datosDireccion.literal.cp"/>&nbsp(*)</td>
-								<td><html:text name="consultaDireccionesForm" property="codigoPostal" value="<%=codigoPostal%>" maxlength="5" size="5" styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text></td>
+								<td>
+		   						<%if (editarCampos){%>
+		   								<html:text name="consultaDireccionesForm" property="codigoPostal" value="<%=codigoPostal%>" maxlength="5" size="5" styleClass="<%=clase%>"  onChange="createProvince()"></html:text>
 
-
+									<%} else {
+									%>
+										<html:text name="consultaDireccionesForm" property="codigoPostal" value="<%=codigoPostal%>" maxlength="5" size="5" styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text>
+									<%}%>
+								</td>
 							</tr>
 
 							<tr>		

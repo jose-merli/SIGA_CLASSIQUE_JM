@@ -57,7 +57,7 @@
 			{
 				MantenimientoCertificadosCamposForm.action = "/SIGA/CER_Campos.do";
 				MantenimientoCertificadosCamposForm.modo.value="nuevo";
-				var resultado=ventaModalGeneral("MantenimientoCertificadosCamposForm","M");
+				var resultado=ventaModalGeneral("MantenimientoCertificadosCamposForm","G");
 				
 				if (resultado=="MODIFICADO")
 				{

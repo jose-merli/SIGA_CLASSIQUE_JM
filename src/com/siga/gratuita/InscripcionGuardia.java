@@ -2,7 +2,9 @@ package com.siga.gratuita;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Vector;
 
 import javax.transaction.SystemException;
@@ -21,6 +23,7 @@ import com.siga.beans.ScsInscripcionGuardiaBean;
 import com.siga.beans.ScsInscripcionTurnoAdm;
 import com.siga.beans.ScsOrdenacionColasAdm;
 import com.siga.beans.ScsOrdenacionColasBean;
+import com.siga.beans.ScsSaltosCompensacionesAdm;
 import com.siga.beans.ScsTurnoAdm;
 import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
 
@@ -193,7 +196,8 @@ public class InscripcionGuardia
 		Hashtable hashGuardia = new Hashtable();
 		hashGuardia.put(ScsGuardiasTurnoBean.C_IDINSTITUCION, idInstitucion.toString());
 		hashGuardia.put(ScsGuardiasTurnoBean.C_IDTURNO, idTurno.toString());
-		hashGuardia.put(ScsGuardiasTurnoBean.C_IDGUARDIA, idGuardia.toString());
+		if (idGuardia!=null)
+			hashGuardia.put(ScsGuardiasTurnoBean.C_IDGUARDIA, idGuardia.toString());
 		Vector vGuardia = guaadm.select(hashGuardia);
 		beanGuardia = (ScsGuardiasTurnoBean) vGuardia.get(0);
 		porGrupos = beanGuardia.getPorGrupos().equals(ClsConstants.DB_TRUE);
@@ -215,8 +219,14 @@ public class InscripcionGuardia
 			ultimoAnterior = new ScsInscripcionGuardiaBean(idInstitucion, idTurno, idGuardia, idPersonaUltimo, fechaSuscripcionUltimo);
 
 		// obteniendo lista de letrados (ordenada)
-		Vector<ScsInscripcionGuardiaBean> listaLetrados = insadm.getColaGuardia(idInstitucion.toString(), 
+		Vector<ScsInscripcionGuardiaBean> listaLetrados = null;
+		if(idGuardia!=null) {
+			 listaLetrados = insadm.getColaGuardia(idInstitucion.toString(), 
 				idTurno.toString(), idGuardia.toString(), fechaInicio, fechaFin, porGrupos, orden);
+		}else{
+			 listaLetrados = insadm.getColaGuardia(idInstitucion.toString(), 
+					idTurno.toString(), null, fechaInicio, fechaFin, porGrupos, orden);
+		}	
 		if (listaLetrados == null || listaLetrados.size() == 0)
 			return colaLetrados;
 		
@@ -618,7 +628,7 @@ public class InscripcionGuardia
 		}
 	} 
 	
-	public void solicitarBaja (UsrBean usr)throws ClsExceptions
+	public void solicitarBaja (UsrBean usr, String bajaSyC)throws ClsExceptions
 	{
 		solicitaBaja(usr);
 		
@@ -641,12 +651,13 @@ public class InscripcionGuardia
 					Hashtable htGuardia = (Hashtable)vTurno.get(x);
 					this.bean.setIdGuardia(new Integer((String)htGuardia.get("IDGUARDIA")));
 					this.bean.setFechaSuscripcion((String)htGuardia.get("FECHASUSCRIPCION"));
-					validarBaja(usr);
+					validarBaja(usr,bajaSyC);
 				}
 			}else{
-				validarBaja(usr);
+				validarBaja(usr, bajaSyC);
 			}
 		}
+
 		
 	}
 	
@@ -682,8 +693,9 @@ public class InscripcionGuardia
 					ScsInscripcionGuardiaBean.C_FECHASUSCRIPCION};
 			
 		}
-
+		
 		ScsInscripcionGuardiaAdm inscripcionAdm = new ScsInscripcionGuardiaAdm(usr);
+		
 		Vector<ScsInscripcionGuardiaBean> v = inscripcionAdm.select(laHash);
 		
 		laHash.put(ScsInscripcionGuardiaBean.C_FECHASOLICITUDBAJA,fechSolicitudBaja);
@@ -699,6 +711,7 @@ public class InscripcionGuardia
 					observacionesSolicitudBaja += "[Observaciones denegación previa:"+observacionDenegacion+"]";
 					
 				}
+				
 				String observacionesPrevias = inscripcionBean.getObservacionesBaja()==null?"":"{"+inscripcionBean.getObservacionesBaja()+"}";
 				inscripcionBean.setObservacionesBaja(observacionesSolicitudBaja+observacionesPrevias);
 				laHash.put(ScsInscripcionGuardiaBean.C_OBSERVACIONESBAJA,observacionesSolicitudBaja+observacionesPrevias);
@@ -847,7 +860,7 @@ public class InscripcionGuardia
 	/**
 	 * Da de baja la inscripcion actual del colegiado en la guardia
 	 */
-	public void validarBaja (UsrBean usr)
+	public void validarBaja (UsrBean usr, String bajaSyC)
 		throws ClsExceptions
 	{
 		// Controles
@@ -882,7 +895,7 @@ public class InscripcionGuardia
 			if (idPersonaUltimoGuardia!=null && idPersonaUltimoGuardia.equals(idPersona)) {
 				ArrayList<LetradoInscripcion> colaLetrados = InscripcionGuardia.getColaGuardia(
 						idInstitucion,  idTurno, idGuardia,"sysdate","sysdate",usr);
-				if (colaLetrados.get(0) != null && !colaLetrados.isEmpty()) {
+				if (!colaLetrados.isEmpty() && colaLetrados.get(0) != null) {
 					int tamanyoCola = colaLetrados.size();
 					Long ultimoDeLaCola = ((LetradoInscripcion) colaLetrados.get(tamanyoCola-1)).getIdPersona();
 					//el letrado a dar de baja es el primero en la cola:
@@ -937,11 +950,32 @@ public class InscripcionGuardia
 			String[] campos = {ScsInscripcionGuardiaBean.C_FECHABAJA,ScsInscripcionGuardiaBean.C_OBSERVACIONESVALBAJA,ScsInscripcionGuardiaBean.C_FECHAMODIFICACION,ScsInscripcionGuardiaBean.C_USUMODIFICACION};
 			ScsInscripcionGuardiaAdm insguardia = new ScsInscripcionGuardiaAdm(usr);
 			insguardia.updateDirect(laHash,claves,campos);
+
+			// Saltos y Compensaciones
+			try {
+
+
+				if(bajaSyC!=null && bajaSyC.equalsIgnoreCase("G")){
+				
+					ScsSaltosCompensacionesAdm saladm = new ScsSaltosCompensacionesAdm(usr);
+					//ArrayList<ScsSaltosCompensacionesBean> vSaldosyCompensTurno =  (ArrayList<ScsSaltosCompensacionesBean>) admSaltosYCompensacions.getSaltosCompensaciones(this.bean.getIdInstitucion(), 
+					//this.bean.getIdTurno(),this.bean.getIdPersona(), null);
+					if(idGuardia!=null)
+					saladm.updateSaltosCompensacionesBajaTurno(idInstitucion, 
+							idTurno,idPersona, idGuardia, bajaSyC);
+				}
+			}catch (Exception e) {
+					System.out.println("Error al solicitar la baja en los saltos y turnos en la baja de guardia ");
+					//throw new ClsExceptions (e, "Error al solicitar la baja en los Saltos y turnos");
+			}
+
 			
 		}
 		catch (Exception e) {
 			throw new ClsExceptions (e, "Error al solicitar la baja en la guardia");
 		}
+		
+		
 	} 
 
 }

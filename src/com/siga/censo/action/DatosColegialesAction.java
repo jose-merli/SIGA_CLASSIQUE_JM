@@ -956,7 +956,7 @@ public class DatosColegialesAction extends MasterAction {
 				} catch (Exception e) {
 					// Si ha fallado será porque el formato ya es el adecuado DATE_FORMAT_JAVA  
 				}
-				inscripcionTurno.solicitarBaja(fechaEstado, observacionesBaja,fechaEstado,observacionesBaja,c.getFechaValidacion(),"N", usr);
+				inscripcionTurno.solicitarBaja(fechaEstado, observacionesBaja,fechaEstado,observacionesBaja,c.getFechaValidacion(),"N",null, usr);
 				//inscripcionTurno.validarBaja(fechaEstado, observacionesBaja, usr);
 			}
 		}
