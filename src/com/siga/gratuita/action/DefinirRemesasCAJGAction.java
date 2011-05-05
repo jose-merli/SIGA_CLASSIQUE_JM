@@ -1398,7 +1398,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		CajgRemesaEstadosAdm cajgRemesaEstadosAdm = new CajgRemesaEstadosAdm(usr);
 		CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(usr);
 
-		if (cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIDInstitucion(request), Integer.valueOf(miForm.getIdRemesa()), Integer.valueOf("2"))) {
+		if (cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIDInstitucion(request), Integer.valueOf(miForm.getIdRemesa()), ClsConstants.ESTADO_REMESA_ENVIADA)) {
 			cajgEJGRemesaAdm.nuevoEstadoEJGRemitidoComision(usr, getIDInstitucion(request).toString(), miForm.getIdRemesa(), ClsConstants.REMITIDO_COMISION);
 		}
 
