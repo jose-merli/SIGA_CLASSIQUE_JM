@@ -272,6 +272,8 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 	         resultado = admSolicitud.buscarSolicitudes(idInstitucion,
 	                									  form.getFechaDesde(),
 	                									  form.getFechaHasta(),
+	                									  form.getFechaEmisionDesde(),
+	                									  form.getFechaEmisionHasta(),
 	                									  form.getEstado(),
 	                									  form.getTipoCertificado(),
 	                									  form.getNumeroCertificado(),

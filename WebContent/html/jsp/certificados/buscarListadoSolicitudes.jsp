@@ -556,14 +556,14 @@
 		   		  clase="tableTitle"
 		   		  nombreCol="&nbsp;,
 		   		  			certificados.solicitudes.literal.idsolicitud,
-		   		  			certificados.solicitudes.literal.fechaEstado,
 		   		  			certificados.solicitudes.literal.estadosolicitud,
 		   		  			certificados.solicitudes.literal.apellidosynombre,
 		   		  			certificados.mantenimiento.literal.certificado,
 		   		  			certificados.solicitudes.literal.institucionOrigenLista,
 		   		  			certificados.solicitudes.literal.institucionDestino,
-		   		  			certificados.solicitudes.literal.estadocertificado,"
-		   		   tamanoCol="3,7,7,8,11,10,10,10,7,27"
+		   		  			certificados.solicitudes.literal.estadocertificado,
+		   		  			certificados.solicitudes.literal.fechaEmision,"
+		   		   tamanoCol="3,7,8,11,10,10,10,7,7,27"
 		   		  alto="100%"
 		   		  modal="G"
 	   		  	  activarFilaSel="true" 
@@ -809,13 +809,13 @@
 %>
 					</td>
 					<td><%=fila.getString("IDSOLICITUD")%></td>
-					<td><%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(userBean.getLanguage(), fila.getString("FECHAESTADO")))%></td>
-					<td><%=UtilidadesMultidioma.getDatoMaestroIdioma(fila.getString("ESTADOSOLICITUD"),userBean)%></td>
+					<td><%=UtilidadesMultidioma.getDatoMaestroIdioma(fila.getString("ESTADOSOLICITUD"),userBean)%>(<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(userBean.getLanguage(), fila.getString("FECHAESTADO")))%>)</td>
 					<td><%=fila.getString("CLIENTE")%></td>
 					<td><%=fila.getString("TIPOCERTIFICADO")%></td>
 					<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("INSTITUCIONORIGEN"))%></td>
 					<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("INSTITUCIONDESTINO"))%></td>
 					<td><%=UtilidadesMultidioma.getDatoMaestroIdioma(fila.getString("ESTADOCERTIFICADO"),userBean)%></td>
+					<td><%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(userBean.getLanguage(), fila.getString("FECHAEMISION")))%></td>
 
 				</siga:FilaConIconos>
 <%

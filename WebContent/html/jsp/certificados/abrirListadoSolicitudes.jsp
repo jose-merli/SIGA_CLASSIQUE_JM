@@ -54,12 +54,18 @@
 	String fBuscar="";
 	String fechaDesde=UtilidadesBDAdm.getFechaBD("");
 	String fechaHasta="";
+	String fechaEmisionDesde="";
+	String fechaEmisionHasta="";
 	if (request.getParameter("buscar")!=null&&request.getParameter("buscar").equals("true")){
 		if(formulario!=null){
 			if(formulario.getFechaDesde()!=null)
 				fechaDesde=formulario.getFechaDesde();
 			if(formulario.getFechaHasta()!=null)
 				fechaHasta=formulario.getFechaHasta();
+			if(formulario.getFechaEmisionDesde()!=null)
+				fechaEmisionDesde=formulario.getFechaEmisionDesde();
+			if(formulario.getFechaEmisionHasta()!=null)
+				fechaEmisionHasta=formulario.getFechaEmisionHasta();
 		}
 		fBuscar="buscar";
 	}
@@ -377,6 +383,25 @@
 							   }
 							 %>
 							</select>
+						</td>
+					</tr>
+					<tr>
+						<td class="labelText">
+							<!-- siga:Idioma key="certificados.solicitudes.literal.fechaemision"/ -->
+							Fecha Emision Desde
+						</td>
+						<td>
+							<siga:Fecha nombreCampo="fechaEmisionDesde" valorInicial="<%=fechaEmisionDesde%>" />
+							<a href='javascript://'onClick="return showCalendarGeneral(fechaEmisionDesde);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
+						</td>
+						
+						<td class="labelText">
+							<!-- siga:Idioma key="certificados.solicitudes.literal.fechaemision"/ -->
+							Hasta
+						</td>
+						<td>
+							<siga:Fecha nombreCampo="fechaEmisionHasta" valorInicial="<%=fechaEmisionHasta%>"/>						
+							<a href='javascript://'onClick="return showCalendarGeneral(fechaEmisionHasta);"><img src="<%=app%>/html/imagenes/calendar.gif" border="0"></a>
 						</td>
 					</tr>
 					<tr>

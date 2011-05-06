@@ -363,11 +363,9 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
         return getRutaCertificadoDirectorio(solicitud, sRutaBD) + File.separator + solicitud.getIdSolicitud() + ".pdf";
     }
 
-	public PaginadorBind buscarSolicitudes(String idInstitucion,
-			String fechaDesde, String fechaHasta, String estadoSolicitud,
-			String tipoCertificado, String numeroColegiado, String CIFNIF,
-			String nombre, String apellido1, String idInstitucionOrigen,
-			String idInstitucionDestino, String idSolicitud,
+	public PaginadorBind buscarSolicitudes(String idInstitucion, String fechaDesde, String fechaHasta, String fechaEmisionDesde, 
+			String fechaEmisionHasta, String estadoSolicitud, String tipoCertificado, String numeroColegiado, String CIFNIF,
+			String nombre, String apellido1, String idInstitucionOrigen, String idInstitucionDestino, String idSolicitud,
 			String numeroCertificado) throws ClsExceptions, SIGAException {
 
 		try {
@@ -375,83 +373,35 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 			int contador = 0;
 			int totalRegistros = 0;
 
-			String sSQL = " SELECT     " + "SOL."
-					+ CerSolicitudCertificadosBean.C_FECHASOLICITUD
-					+ " AS FECHA, "
-					+ "SOL."
-					+ CerSolicitudCertificadosBean.C_FECHAESTADO
-					+ " AS FECHAESTADO, "
-					+ "SOL."
-					+ CerSolicitudCertificadosBean.C_FECHADESCARGA
-					+ " AS FECHADESCARGA, "
-					+ "SOL."
-					+ CerSolicitudCertificadosBean.C_FECHACOBRO
-					+ " AS FECHACOBRO, "
-					+ "SOL."
-					+ CerSolicitudCertificadosBean.C_FECHAENVIO
-					+ " AS FECHAENVIO, "
-					+ "SOL."
-					+ CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO
-					+ " AS FECHAEMISION, "
-					+ "SOL."
-					+ CerSolicitudCertificadosBean.C_IDINSTITUCION
-					+ ", "
-					+ "SOL."
-					+ CerSolicitudCertificadosBean.C_IDINSTITUCIONDESTINO
-					+ ", "
-					+ "SOL."
-					+ CerSolicitudCertificadosBean.C_IDSOLICITUD
-					+ ", "
-					+ "SOL."
-					+ CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO
-					+ ", "
-					+ "SOL."
-					+ CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO
-					+ ", "
-					+ "SOL."
-					+ CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION
-					+ ", "
-					+ "PR."
-					+ PysProductosInstitucionBean.C_TIPOCERTIFICADO
-					+ " AS TIPOCERTIFICADO2, "
-					+ "SOL."
-					+ CerSolicitudCertificadosBean.C_IDINSTITUCIONORIGEN
-					+ ", "
-					+ "PR."
-					+ PysProductosInstitucionBean.C_DESCRIPCION
-					+ " AS TIPOCERTIFICADO, "
-					+ "PER."
-					+ CenPersonaBean.C_APELLIDOS1
-					+ "||' '||PER."
-					+ CenPersonaBean.C_APELLIDOS2
-					+ "||', '||PER."
-					+ CenPersonaBean.C_NOMBRE
-					+ " AS CLIENTE, "
-					+ "SOL."
-					+ CerSolicitudCertificadosBean.C_IDPERSONA_DES
-					+ " AS IDPERSONA, "
-					+ "INSO."
-					+ CenInstitucionBean.C_ABREVIATURA
-					+ " AS INSTITUCIONORIGEN, "
-					+ "INSD."
-					+ CenInstitucionBean.C_ABREVIATURA
-					+ " AS INSTITUCIONDESTINO, "
-					+ "SOL."
-					+ CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO
-					+ ", " + "ES." + CerEstadoSoliCertifiBean.C_DESCRIPCION
-					+ " AS ESTADOSOLICITUD, " + "SOL."
-					+ CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO + ", "
-					+ "EC." + CerEstadoCertificadoBean.C_DESCRIPCION
-					+ " AS ESTADOCERTIFICADO, " +
+			String sSQL = " SELECT     " + "SOL." + CerSolicitudCertificadosBean.C_FECHASOLICITUD + " AS FECHA, "
+					+ "SOL." + CerSolicitudCertificadosBean.C_FECHAESTADO + " AS FECHAESTADO, "
+					+ "SOL." + CerSolicitudCertificadosBean.C_FECHADESCARGA + " AS FECHADESCARGA, "
+					+ "SOL." + CerSolicitudCertificadosBean.C_FECHACOBRO + " AS FECHACOBRO, "
+					+ "SOL." + CerSolicitudCertificadosBean.C_FECHAENVIO + " AS FECHAENVIO, "
+					+ "SOL." + CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO + " AS FECHAEMISION, "
+					+ "SOL." + CerSolicitudCertificadosBean.C_IDINSTITUCION + ", "
+					+ "SOL." + CerSolicitudCertificadosBean.C_IDINSTITUCIONDESTINO + ", "
+					+ "SOL." + CerSolicitudCertificadosBean.C_IDSOLICITUD + ", "
+					+ "SOL." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO + ", "
+					+ "SOL." + CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO + ", "
+					+ "SOL." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION + ", "
+					+ "PR." + PysProductosInstitucionBean.C_TIPOCERTIFICADO + " AS TIPOCERTIFICADO2, "
+					+ "SOL." + CerSolicitudCertificadosBean.C_IDINSTITUCIONORIGEN + ", "
+					+ "PR." + PysProductosInstitucionBean.C_DESCRIPCION + " AS TIPOCERTIFICADO, "
+					+ "PER." + CenPersonaBean.C_APELLIDOS1 + "||' '||PER." + CenPersonaBean.C_APELLIDOS2 + "||', '||PER." + CenPersonaBean.C_NOMBRE + " AS CLIENTE, "
+					+ "SOL." + CerSolicitudCertificadosBean.C_IDPERSONA_DES + " AS IDPERSONA, "
+					+ "INSO." + CenInstitucionBean.C_ABREVIATURA + " AS INSTITUCIONORIGEN, "
+					+ "INSD." + CenInstitucionBean.C_ABREVIATURA + " AS INSTITUCIONDESTINO, "
+					+ "SOL." + CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO + ", " 
+					+ "ES." + CerEstadoSoliCertifiBean.C_DESCRIPCION + " AS ESTADOSOLICITUD, " 
+					+ "SOL." + CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO + ", "
+					+ "EC." + CerEstadoCertificadoBean.C_DESCRIPCION + " AS ESTADOCERTIFICADO, " 
+					+ "SOL." + CerSolicitudCertificadosBean.C_IDPETICIONPRODUCTO + " AS IDPETICION" + ", "
+					+ "SOL." + CerSolicitudCertificadosBean.C_IDINSTITUCION_SOL + " AS IDINSTITUCION_SOL ";
 
-					"SOL." + CerSolicitudCertificadosBean.C_IDPETICIONPRODUCTO
-					+ " AS IDPETICION" + ",SOL."
-					+ CerSolicitudCertificadosBean.C_IDINSTITUCION_SOL
-					+ " AS IDINSTITUCION_SOL ";
-
-			sSQL += " FROM " + CerSolicitudCertificadosBean.T_NOMBRETABLA
-					+ " SOL, " + PysProductosInstitucionBean.T_NOMBRETABLA
-					+ " PR, " + CenPersonaBean.T_NOMBRETABLA + " PER, "
+			sSQL += " FROM " + CerSolicitudCertificadosBean.T_NOMBRETABLA + " SOL, " 
+					+ PysProductosInstitucionBean.T_NOMBRETABLA + " PR, " 
+					+ CenPersonaBean.T_NOMBRETABLA + " PER, "
 					+ CenInstitucionBean.T_NOMBRETABLA + " INSO, "
 					+ CenInstitucionBean.T_NOMBRETABLA + " INSD, "
 					+ CerEstadoCertificadoBean.T_NOMBRETABLA + " EC, "
@@ -464,84 +414,51 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 			sSQL += " WHERE ";
 			contador++;
 			codigos.put(new Integer(contador), idInstitucion);
-			sSQL += "SOL."
-					+ CerSolicitudCertificadosBean.C_IDINSTITUCION
-					+ "=:"
-					+ contador
-					+ " AND "
-					+ "SOL."
-					+ CerSolicitudCertificadosBean.C_IDPERSONA_DES
-					+ "=PER."
-					+ CenPersonaBean.C_IDPERSONA
-					+ " AND "
-					+ "SOL."
-					+ CerSolicitudCertificadosBean.C_IDINSTITUCION
-					+ "=PR."
-					+ PysProductosInstitucionBean.C_IDINSTITUCION
-					+ " AND "
-					+ "SOL."
-					+ CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO
-					+ "=PR."
-					+ PysProductosInstitucionBean.C_IDPRODUCTO
-					+ " AND "
-					+ "SOL."
-					+ CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO
-					+ "=PR."
-					+ PysProductosInstitucionBean.C_IDTIPOPRODUCTO
-					+ " AND "
-					+ "SOL."
-					+ CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION
-					+ "=PR."
-					+ PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION
-					+ " AND "
-					+ "SOL."
-					+ CerSolicitudCertificadosBean.C_IDINSTITUCIONORIGEN
-					+ "=INSO."
-					+ CenInstitucionBean.C_IDINSTITUCION
-					+ "(+) AND "
-					+ "SOL."
-					+ CerSolicitudCertificadosBean.C_IDINSTITUCIONDESTINO
-					+ "=INSD."
-					+ CenInstitucionBean.C_IDINSTITUCION
-					+ "(+) AND "
-					+ "SOL."
-					+ CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO
-					+ "=ES."
-					+ CerEstadoSoliCertifiBean.C_IDESTADOSOLICITUDCERTIFICADO
-					+ " AND " + "SOL."
-					+ CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO
-					+ "=EC." + CerEstadoCertificadoBean.C_IDESTADOCERTIFICADO;
+			sSQL += "SOL." + CerSolicitudCertificadosBean.C_IDINSTITUCION + "=:" + contador
+					+ " AND " + "SOL." + CerSolicitudCertificadosBean.C_IDPERSONA_DES + "=PER." + CenPersonaBean.C_IDPERSONA
+					+ " AND " + "SOL." + CerSolicitudCertificadosBean.C_IDINSTITUCION + "=PR." + PysProductosInstitucionBean.C_IDINSTITUCION
+					+ " AND " + "SOL." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO + "=PR." + PysProductosInstitucionBean.C_IDPRODUCTO
+					+ " AND " + "SOL." + CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO + "=PR." + PysProductosInstitucionBean.C_IDTIPOPRODUCTO
+					+ " AND " + "SOL." + CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION + "=PR." + PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION
+					+ " AND " + "SOL." + CerSolicitudCertificadosBean.C_IDINSTITUCIONORIGEN + "=INSO." + CenInstitucionBean.C_IDINSTITUCION + "(+)"
+					+ " AND " + "SOL." + CerSolicitudCertificadosBean.C_IDINSTITUCIONDESTINO + "=INSD." + CenInstitucionBean.C_IDINSTITUCION + "(+)"
+					+ " AND " + "SOL." + CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO + "=ES." + CerEstadoSoliCertifiBean.C_IDESTADOSOLICITUDCERTIFICADO
+					+ " AND " + "SOL." + CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO + "=EC." + CerEstadoCertificadoBean.C_IDESTADOCERTIFICADO;
 
 			if (fechaDesde != null && !fechaDesde.equals("")
 					|| fechaHasta != null && !fechaHasta.equals("")) {
 				// -------------- dateBetweenDesdeAndHastaBind
 				Vector v = GstDate.dateBetweenDesdeAndHastaBind(
 						CerSolicitudCertificadosBean.C_FECHAESTADO,
-						fechaDesde != null && !fechaDesde.equals("") ? GstDate
-								.getApplicationFormatDate("", fechaDesde)
-								: null, fechaHasta != null
-								&& !fechaHasta.equals("") ? GstDate
-								.getApplicationFormatDate("", fechaHasta)
-								: null, contador, codigos);
+						fechaDesde != null && !fechaDesde.equals("") ? GstDate.getApplicationFormatDate("", fechaDesde) : null, 
+						fechaHasta != null && !fechaHasta.equals("") ? GstDate.getApplicationFormatDate("", fechaHasta) : null, contador, codigos);
 				Integer in = (Integer) v.get(0);
 				String st = (String) v.get(1);
 				contador = in.intValue();
 				// --------------
-
+				sSQL += " AND " + st;
+			}
+			if (fechaEmisionDesde != null && !fechaEmisionDesde.equals("")
+					|| fechaEmisionHasta != null && !fechaEmisionHasta.equals("")) {
+				// -------------- dateBetweenDesdeAndHastaBind
+				Vector v = GstDate.dateBetweenDesdeAndHastaBind(
+						CerSolicitudCertificadosBean.C_FECHAEMISIONCERTIFICADO,
+						fechaEmisionDesde != null && !fechaEmisionDesde.equals("") ? GstDate.getApplicationFormatDate("", fechaEmisionDesde) : null, 
+						fechaEmisionHasta != null && !fechaEmisionHasta.equals("") ? GstDate.getApplicationFormatDate("", fechaEmisionHasta) : null, contador, codigos);
+				Integer in = (Integer) v.get(0);
+				String st = (String) v.get(1);
+				contador = in.intValue();
+				// --------------
 				sSQL += " AND " + st;
 			}
 			if ((estadoSolicitud != null && !estadoSolicitud.equals("") && !estadoSolicitud
 					.equals("99"))) {
 				contador++;
 				codigos.put(new Integer(contador), estadoSolicitud);
-				sSQL += " AND SOL."
-						+ CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO
-						+ "=:" + contador;
+				sSQL += " AND SOL." + CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO + "=:" + contador;
 			}
-			if ((estadoSolicitud != null && !estadoSolicitud.equals("") && estadoSolicitud
-					.equals("99"))) {
-				sSQL += " AND SOL." + CerSolicitudCertificadosBean.C_FECHAENVIO
-						+ " IS NULL";
+			if ((estadoSolicitud != null && !estadoSolicitud.equals("") && estadoSolicitud .equals("99"))) {
+				sSQL += " AND SOL." + CerSolicitudCertificadosBean.C_FECHAENVIO + " IS NULL";
 			}
 
 			// RGG CAMBIO PAR BUSCAR POR ID PRODUCTO

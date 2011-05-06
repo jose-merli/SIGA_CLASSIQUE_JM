@@ -12,6 +12,8 @@ public class SIGASolicitudesCertificadosForm extends MasterForm
 //    private String modo="";
     private String fechaDesde="";
     private String fechaHasta="";
+    private String fechaEmisionDesde="";
+    private String fechaEmisionHasta="";
     private String estado="";
     private String tipoCertificado="";
     private String numeroCertificado="";
@@ -94,6 +96,8 @@ public class SIGASolicitudesCertificadosForm extends MasterForm
 	{
 		this.fechaDesde="";
 	    this.fechaHasta="";
+	    this.fechaEmisionDesde="";
+	    this.fechaEmisionHasta="";
 	    this.estado="";
 	    this.tipoCertificado="";
 	    this.numeroCertificado="";
@@ -148,6 +152,26 @@ public class SIGASolicitudesCertificadosForm extends MasterForm
     public void setFechaHasta(String fechaHasta)
     {
     	this.fechaHasta=fechaHasta;
+    }
+    
+    public String getFechaEmisionDesde()
+    {
+    	return fechaEmisionDesde;
+    }
+    
+    public void setFechaEmisionDesde(String fechaDesde)
+    {
+    	this.fechaEmisionDesde=fechaDesde;
+    }
+    
+    public String getFechaEmisionHasta()
+    {
+    	return fechaEmisionHasta;
+    }
+    
+    public void setFechaEmisionHasta(String fechaHasta)
+    {
+    	this.fechaEmisionHasta=fechaHasta;
     }
 
     public String getEstado()
