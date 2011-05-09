@@ -478,6 +478,8 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 				String idInstitucion = identificacionIntercambio.getCodOrigenIntercambio();
 				int idRemesa = (int)identificacionIntercambio.getIdentificadorIntercambio();
 				setIdRemesa(idRemesa/10);
+				//cerramos el log para a partir de ahora escribir en el log correspondiente
+				closeLogFile();
 				
 				if (!String.valueOf(getIdInstitucion()).equals(idInstitucion)) {
 					escribeLogRemesa("La institucion del fichero es nula o distinta a la del usuario de SIGA");
@@ -503,7 +505,27 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 					ErrorGeneral errorGeneral = datosError.getErrorGeneral();
 					
 					if (errorGeneral != null) {
-						escribeLogRemesa(errorGeneral.getDescErrorGen().toString());					
+						escribeLogRemesa(errorGeneral.getDescErrorGen().toString());
+						
+						Hashtable<String, Object> hashEjgRem = new Hashtable<String, Object>();
+						
+						hashEjgRem.put(CajgEJGRemesaBean.C_IDINSTITUCIONREMESA, idInstitucion);
+						hashEjgRem.put(CajgEJGRemesaBean.C_IDREMESA, getIdRemesa());
+						
+						Vector<CajgEJGRemesaBean> vectorRemesa = cajgEJGRemesaAdm.select(hashEjgRem);
+						
+						for (CajgEJGRemesaBean cajgEJGRemesaBean : vectorRemesa) {							
+							CajgRespuestaEJGRemesaBean cajgRespuestaEJGRemesaBean = new CajgRespuestaEJGRemesaBean();											
+							cajgRespuestaEJGRemesaBean.setIdEjgRemesa(cajgEJGRemesaBean.getIdEjgRemesa());
+							cajgRespuestaEJGRemesaBean.setCodigo("-1");
+							cajgRespuestaEJGRemesaBean.setDescripcion(errorGeneral.getDescErrorGen().toString());
+							cajgRespuestaEJGRemesaBean.setFecha("SYSDATE");
+							cajgRespuestaEJGRemesaBean.setIdTipoRespuesta(CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_COMISION);
+							
+							cajgRespuestaEJGRemesaAdm.insert(cajgRespuestaEJGRemesaBean);
+						}
+					
+						
 					} else {
 						ErrorContenido[] erroresContenido = datosError.getErrorContenidoArray();
 						CodigoExpedienteError expedientError = null;

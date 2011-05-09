@@ -474,6 +474,10 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			
 			tramiteDictamen.setIntervaloIngresosRecursos((String)htEJGs.get(DTE_TD_INTERVALOINGRESOSRECURS));
 			tramiteDictamen.setObservacionesDictamen((String)htEJGs.get(DTE_TD_OBSERVACIONESDICTAMEN));
+			
+			if (tramiteDictamen.getCodTipoDictamen() == null || tramiteDictamen.getCodTipoDictamen().trim().equals("")) {
+				throw new IllegalArgumentException("Debe rellenar el tipo de dictámen.");
+			}
 		} else if (tipoIntercambio.equals(INTERCAMBIO_RESOLUCIONES)) {		
 			datosTramitacionExpediente = expediente.addNewDatosTramitacionExpediente();
 			TramiteResolucion tramiteResolucion = datosTramitacionExpediente.addNewTramiteResolucion();
