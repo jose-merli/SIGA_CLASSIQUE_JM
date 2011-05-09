@@ -177,7 +177,7 @@ public class InscripcionGuardia
 		Integer idOrdenacionColas;
 		String orden;
 		boolean porGrupos;
-		Long idPersonaUltimo;
+		Long idPersonaUltimo, idGrupoGuardiaUltimo;
 		String fechaSuscripcionUltimo;
 
 		// Controles
@@ -203,6 +203,7 @@ public class InscripcionGuardia
 		porGrupos = beanGuardia.getPorGrupos().equals(ClsConstants.DB_TRUE);
 		idOrdenacionColas = beanGuardia.getIdOrdenacionColas();
 		idPersonaUltimo = beanGuardia.getIdPersona_Ultimo();
+		idGrupoGuardiaUltimo = beanGuardia.getIdGrupoGuardiaColegiado_Ultimo();
 		fechaSuscripcionUltimo = beanGuardia.getFechaSuscripcion_Ultimo();
 		
 		// obteniendo ordenacion de la guardia
@@ -216,7 +217,7 @@ public class InscripcionGuardia
 		if (idPersonaUltimo == null)
 			ultimoAnterior = null;
 		else
-			ultimoAnterior = new ScsInscripcionGuardiaBean(idInstitucion, idTurno, idGuardia, idPersonaUltimo, fechaSuscripcionUltimo);
+			ultimoAnterior = new ScsInscripcionGuardiaBean(idInstitucion, idTurno, idGuardia, idPersonaUltimo, fechaSuscripcionUltimo,idGrupoGuardiaUltimo);
 
 		// obteniendo lista de letrados (ordenada)
 		Vector<ScsInscripcionGuardiaBean> listaLetrados = null;
@@ -657,7 +658,6 @@ public class InscripcionGuardia
 				validarBaja(usr, bajaSyC);
 			}
 		}
-
 		
 	}
 	
@@ -882,10 +882,12 @@ public class InscripcionGuardia
 				hashGuardia.put(ScsGuardiasTurnoBean.C_IDGUARDIA, idGuardia);
 			Vector vGuardias = guardiaAdm.select(hashGuardia);
 			Long idPersonaUltimoGuardia = null;
+			Long idGrupoUltimoGuardia = null;
 			String fechaSuscripcion_Ultimo = null;
 			if(vGuardias!=null && vGuardias.size()>0) {
 				ScsGuardiasTurnoBean beanGuardia = (ScsGuardiasTurnoBean)vGuardias.get(0);
 				idPersonaUltimoGuardia = beanGuardia.getIdPersona_Ultimo();
+				idGrupoUltimoGuardia = beanGuardia.getIdGrupoGuardiaColegiado_Ultimo();
 				fechaSuscripcion_Ultimo = beanGuardia.getFechaSuscripcion_Ultimo();
 			}
 			
@@ -900,18 +902,20 @@ public class InscripcionGuardia
 					Long ultimoDeLaCola = ((LetradoInscripcion) colaLetrados.get(tamanyoCola-1)).getIdPersona();
 					//el letrado a dar de baja es el primero en la cola:
 					//asi que hay que poner al anterior como ultimo en la cola
-					Long penultimoDeLaCola;
+					Long penultimoDeLaCola, idGrupoGuardiaPenultimo;
 					String fechaSusc_penultimo;
 					if (tamanyoCola == 1) {
 						penultimoDeLaCola = null;
 						fechaSusc_penultimo = null;
+						idGrupoGuardiaPenultimo= null;
 					}
 					else {
 						penultimoDeLaCola = ((LetradoInscripcion) colaLetrados.get(tamanyoCola-2)).getIdPersona();
+						idGrupoGuardiaPenultimo = ((LetradoInscripcion) colaLetrados.get(tamanyoCola-2)).getIdGrupoGuardiaColegiado();
 						fechaSusc_penultimo = ((LetradoInscripcion) colaLetrados.get(tamanyoCola-2)).getInscripcionGuardia().getFechaSuscripcion();
 					}
 					
-					guardiaAdm.cambiarUltimoCola (idInstitucion, idTurno, idGuardia, penultimoDeLaCola, fechaSusc_penultimo);
+					guardiaAdm.cambiarUltimoCola (idInstitucion, idTurno, idGuardia, penultimoDeLaCola, fechaSusc_penultimo,idGrupoGuardiaPenultimo);
 				}
 			}
 			

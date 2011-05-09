@@ -453,7 +453,7 @@ public class ScsGrupoGuardiaColegiadoAdm extends MasterBeanAdministrador
 		}
 	}
 	
-		/**
+	/**
 	 * 
 	*/
 	public void actualizarColaGuardia(Integer idInstitucion,Integer idTurno,Integer idGuardia) {
@@ -463,25 +463,33 @@ public class ScsGrupoGuardiaColegiadoAdm extends MasterBeanAdministrador
 		//Guardia del Turno
 		ScsGuardiasTurnoBean beanGuardiasTurno = new ScsGuardiasTurnoBean();
 		ScsGuardiasTurnoAdm guardiaAdm = new ScsGuardiasTurnoAdm(this.usrbean);
-		Long idPersona=null;
+		Long idPersona, idGrupoGuardiaColegiado=null;
 		String fechaSubs="";
-		sql.append(" SELECT gru.idpersona, gru.Fechasuscripcion ");
+		sql.append(" SELECT gru.idpersona, gru.Fechasuscripcion ,Gruult.IdgrupoguardiaColegiado ");
 		sql.append(" FROM Scs_Grupoguardiacolegiado Gru,Scs_Inscripcionguardia Ins,Scs_Grupoguardiacolegiado Gruult,Scs_Guardiasturno Gua ");
 		sql.append(" WHERE Gru.Idinstitucion = Ins.Idinstitucion ");
 		sql.append(" AND  Gru.Idpersona = Ins.Idpersona");
 		sql.append(" AND Gru.Idturno = Ins.Idturno");
 		sql.append(" AND Gru.Idguardia = Ins.Idguardia");
 		sql.append(" AND Gru.Fechasuscripcion = Ins.Fechasuscripcion");
+		
+		sql.append(" AND Gruult.Idpersona = Gru.Idpersona");
+		sql.append(" AND Gruult.IdgrupoguardiaColegiado = Gru.IdgrupoguardiaColegiado");
+		
 		sql.append(" AND Gruult.Idinstitucion = Gua.Idinstitucion");
 		sql.append(" AND Gruult.Idturno = Gua.Idturno");
 		sql.append(" AND Gruult.Idguardia = Gua.Idguardia");
+
 		sql.append(" AND Gruult.Idpersona = Gua.Idpersona_Ultimo");
 		sql.append(" AND Gruult.Fechasuscripcion = Gua.Fechasuscripcion_Ultimo");
+		sql.append(" AND Gruult.IdgrupoguardiaColegiado = Gua.Idgrupoguardia_Ultimo");
+
 		sql.append(" AND Gru.Idgrupoguardia = Gruult.Idgrupoguardia");
-		sql.append(" AND Gru.Orden > Gruult.Orden");
-		sql.append(" AND Gru.Idinstitucion = "+idInstitucion +" ");
-		sql.append(" AND Gru.Idturno = "+idTurno +" ");
-		sql.append(" AND Gru.Idguardia = "+idGuardia);
+
+		sql.append(" AND Gru.Orden >= Gruult.Orden");
+		sql.append(" AND Gru.Idinstitucion = " + idInstitucion + " ");
+		sql.append(" AND Gru.Idturno = " + idTurno + " ");
+		sql.append(" AND Gru.Idguardia = " + idGuardia);
 		sql.append(" ORDER BY Gru.Orden desc");
 		RowsContainer rc = new RowsContainer();
 		try {
@@ -490,6 +498,7 @@ public class ScsGrupoGuardiaColegiadoAdm extends MasterBeanAdministrador
 				Hashtable registro = (Hashtable) fila.getRow();
 				if (registro != null) {
 					idPersona = new Long((String) registro.get("IDPERSONA"));
+					idGrupoGuardiaColegiado = new Long((String) registro.get("IDGRUPOGUARDIACOLEGIADO"));
 					fechaSubs = (String) registro.get("FECHASUSCRIPCION");
 					Hashtable<String, String> hashGuardiasTurno=new Hashtable<String, String>();
 					hashGuardiasTurno.put(ScsGuardiasTurnoBean.C_IDGUARDIA, idGuardia.toString());
@@ -497,6 +506,7 @@ public class ScsGrupoGuardiaColegiadoAdm extends MasterBeanAdministrador
 					hashGuardiasTurno.put(ScsGuardiasTurnoBean.C_IDTURNO, idTurno.toString());
 					beanGuardiasTurno = (ScsGuardiasTurnoBean)guardiaAdm.selectByPK(hashGuardiasTurno).get(0);
 					beanGuardiasTurno.setIdPersona_Ultimo(idPersona);
+					beanGuardiasTurno.setIdGrupoGuardiaColegiado_Ultimo(idGrupoGuardiaColegiado);
 					beanGuardiasTurno.setFechaSuscripcion_Ultimo(fechaSubs);
 					guardiaAdm.updateDirect(beanGuardiasTurno);
 				}

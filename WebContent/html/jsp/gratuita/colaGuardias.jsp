@@ -26,32 +26,24 @@
 <%
 	String app = request.getContextPath();
 
-	UsrBean usrbean = (UsrBean) session
-	.getAttribute(ClsConstants.USERBEAN);
-	String nListad = request.getAttribute("NLETRADOSINSCRITOS") != null
-	? (String) request.getAttribute("NLETRADOSINSCRITOS")
-	: "";
+	UsrBean usrbean = (UsrBean) session.getAttribute(ClsConstants.USERBEAN);
+	String nListad = request.getAttribute("NLETRADOSINSCRITOS") != null ? (String) request.getAttribute("NLETRADOSINSCRITOS") : "";
 
 	String idGuardia = (String) request.getAttribute("idGuardia");
-	String idInstitucion = (String) request
-	.getAttribute("idInstitucion");
+	String idInstitucion = (String) request.getAttribute("idInstitucion");
 	String idTurno = (String) request.getAttribute("idTurno");
 
-	String buscarLetrado = UtilidadesString.getMensajeIdioma(usrbean,
-	"gratuita.turnos.literal.buscarLetrado");
-	String literalNColegiado = UtilidadesString.getMensajeIdioma(
-	usrbean, "gratuita.turnos.literal.nColegiado");
-	String literalFijarUltimoLetrado = UtilidadesString
-	.getMensajeIdioma(usrbean,
-			"gratuita.turnos.literal.fijarUltimoLetrado");
-
+	String buscarLetrado = UtilidadesString.getMensajeIdioma(usrbean, "gratuita.turnos.literal.buscarLetrado");
+	String literalNColegiado = UtilidadesString.getMensajeIdioma(usrbean, "gratuita.turnos.literal.nColegiado");
+	String literalFijarUltimoLetrado = UtilidadesString.getMensajeIdioma(usrbean, "gratuita.turnos.literal.fijarUltimoLetrado");
+	String literalAnadirFila = UtilidadesString.getMensajeIdioma(usrbean, "gratuita.turnos.literal.anadirFila");
 	boolean porGrupos;
 	String tamanoCol;
 	String nombreCol;
 	String grupos = (String) request.getAttribute("porGrupos");
 	if (grupos != null && grupos.equalsIgnoreCase("1")) {
 		porGrupos = true;
-		tamanoCol = "5,6,6,16,28,16,15,8";
+		tamanoCol = "5,6,6,15,28,14,14,12";
 		nombreCol = " ,Gr,Or,gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,F.Val,F.Baja,";
 	} else {
 		porGrupos = false;
@@ -173,8 +165,77 @@
 		document.forms[0].target = "submitArea";
 		document.forms[0].submit();
 	 }
+
+	 function anadirFilaLetrado(fila) {
+
+		table = document.getElementById("tablaLetrados");
+		
+		if(table.rows.length>0){			
+			numFila = table.rows.length;
+
+			tr = table.insertRow(numFila);
+			if(numFila % 2 == 0){
+				tr.className = "filaTablaPar";
+			}else{
+				tr.className = "filaTablaImPar";
+			}
+			val = numFila + 1;
 			
+			td = tr.insertCell();	
+			td.id = "check_"+numFila;
+			td.innerText="";
+			td.innerHTML ='<input type="checkbox" id="checkGrupoOrden" value='+val+' onclick="modificaParametro(this)" checked/>';
 			
+			td = tr.insertCell();	
+			td.id = "grupo_"+numFila;
+			td.innerText="";
+			
+			td.innerHTML ='<input type="text" value="" id=grupo_'+val+' size="1">'+
+						  '<input type="hidden" value="" id=grupoOriginal_'+val+'>';
+
+
+			td = tr.insertCell();	
+			td.id = "orden_"+numFila;
+			td.innerText="";
+			td.innerHTML ='<input type="text" value="" id=orden_'+val+' size="1" maxlength="4">'+
+						  '<input type="hidden" value="" id=ordenOriginal_'+val+'>';
+
+			td = tr.insertCell();	
+			td.id = "colegiado_"+numFila;			
+			numColBusqueda = document.getElementById("numeroColegiadoBusqueda").value;
+			person = document.getElementById("idPersona_"+(fila+1)).value;
+			fSuscr = document.getElementById("fechaSuscripcion_"+(fila+1)).value;
+			//idGrupoGuar = document.getElementById("idGrupoGuardiaColegiado_"+(fila+1)).value;
+			td.innerText=document.getElementById("colegiado_"+fila).innerText;
+
+			td.innerHTML = td.innerText +
+						   ' <input name="numeroColegiadoBusqueda" type="hidden" class="box" size="10" value="'+numColBusqueda+'" > '+
+						   ' <input name="idPersona_'+val+'" type="hidden" class="box" size="10" value="'+person+'" > '+
+						   ' <input name="fechaSuscripcion_'+val+'" type="hidden" class="box" size="20" value="'+fSuscr+'" > '+
+						   ' <input name="idGrupoGuardiaColegiado_'+val+'" type="hidden" class="box" size="10" value="" >';
+
+			td = tr.insertCell();	
+			td.id = "nombre_"+numFila;
+			td.innerText=document.getElementById("nombre_"+fila).innerText;
+
+			td = tr.insertCell();	
+			td.id = "falta_"+numFila;
+			td.innerText=document.getElementById("falta_"+fila).innerText;
+
+			td = tr.insertCell();	
+			td.id = "fbaja_"+numFila;
+			td.innerText=document.getElementById("fbaja_"+fila).innerText;
+
+			td = tr.insertCell();	
+			td.id = "iconos_"+numFila;
+			td.innerText="";
+			td.align="center";
+			td.innerHTML = '<img src=/SIGA/html/imagenes/bcambiarusuario.gif name="bcambiarusuario" onClick="fijarUltimoLetrado('+(numFila+1)+')" style="cursor:hand;" alt="<siga:Idioma key="gratuita.turnos.literal.fijarUltimoLetrado"/>" >'+
+			   			   '<img src=/SIGA/html/imagenes/icono+.gif          name="banadirlinea"    onClick="anadirFilaLetrado('+numFila+')"  style="cursor:hand;" alt="<siga:Idioma key="gratuita.turnos.literal.anadirFila"/>"         >';
+
+		}
+	 }
+				
 	</script>
 </head>
 
@@ -290,10 +351,8 @@
 		
 
 	<%
-				ArrayList letradosColaGuardiaList = (ArrayList) request
-								.getAttribute("letradosColaGuardiaList");
-						if (letradosColaGuardiaList == null
-								|| letradosColaGuardiaList.size() == 0) {
+				ArrayList letradosColaGuardiaList = (ArrayList) request.getAttribute("letradosColaGuardiaList");
+					if (letradosColaGuardiaList == null || letradosColaGuardiaList.size() == 0) {
 			%>			
 	 		<tr>
 	 		
@@ -303,66 +362,59 @@
 	 		</tr>	 		
 <%
 	 			} else {
-	 			 					// recorro el resultado
-	 			 					String grupoAnt = "";
-	 			 					String ordenAnt = "";
-	 			 					String apellido1 = "";
-	 			 					String apellido2 = "";
-	 			 					String nombre = "";
-	 			 					String ncolegiado = "";
-	 			 					String idPersona = "";
-	 			 					String fechaSuscripcion = "";
-	 			 					String numeroColegiadoBusqueda = "";
-	 			 					String grupo = "";
-	 			 					String ordenGrupo = "";
-	 			 					String idGrupoGuardiaColegiado = "";
-	 			 					int nFila = 0;
-	 			 					for (int i = 0; i < letradosColaGuardiaList.size(); i++) {
-	 			 						LetradoInscripcion letradoGuardia = (LetradoInscripcion) letradosColaGuardiaList
-	 			 								.get(i);
+	 					// recorro el resultado
+	 					String grupoAnt = "";
+	 					String ordenAnt = "";
+	 					String apellido1 = "";
+	 					String apellido2 = "";
+	 					String nombre = "";
+	 					String ncolegiado = "";
+	 					String idPersona = "";
+	 					String fechaSuscripcion = "";
+	 					String numeroColegiadoBusqueda = "";
+	 					String grupo = "";
+	 					String ordenGrupo = "";
+	 					String idGrupoGuardiaColegiado = "";
+	 					int nFila = 0;
+	 					for (int i = 0; i < letradosColaGuardiaList.size(); i++) {
+	 						LetradoInscripcion letradoGuardia = (LetradoInscripcion) letradosColaGuardiaList.get(i);
 
-	 			 						// calculo de campos
-	 			 						apellido1 = letradoGuardia.getPersona().getApellido1();
-	 			 						apellido2 = letradoGuardia.getPersona().getApellido2();
-	 			 						nombre = letradoGuardia.getPersona().getNombre();
-	 			 						ncolegiado = letradoGuardia.getPersona().getColegiado()
-	 			 								.getNColegiado();
-	 			 						idPersona = letradoGuardia.getIdPersona().toString();
-	 			 						fechaSuscripcion = letradoGuardia.getInscripcionGuardia().getFechaSuscripcion();
-	 			 						numeroColegiadoBusqueda = "" + i + "_" + ncolegiado;
-	 			 						grupo = letradoGuardia.getNumeroGrupo() != null
-	 			 								? letradoGuardia.getNumeroGrupo().toString()
-	 			 								: "";
-	 			 						if (porGrupos) {
-	 			 							if (!grupo.equalsIgnoreCase(grupoAnt)) {
-	 			 								nFila++;
-	 			 								grupoAnt = grupo;
-	 			 							}
-	 			 						} else {
-	 			 							nFila++;
-	 			 						}
-	 			 						ordenGrupo = letradoGuardia.getOrdenGrupo() != null
-	 			 								? letradoGuardia.getOrdenGrupo().toString()
-	 			 								: "";
-	 			 						idGrupoGuardiaColegiado = letradoGuardia
-	 			 								.getIdGrupoGuardiaColegiado() != null
-	 			 								? letradoGuardia.getIdGrupoGuardiaColegiado()
-	 			 										.toString()
-	 			 								: "";
+	 						// calculo de campos
+	 						apellido1 = letradoGuardia.getPersona().getApellido1();
+	 						apellido2 = letradoGuardia.getPersona().getApellido2();
+	 						nombre = letradoGuardia.getPersona().getNombre();
+	 						ncolegiado = letradoGuardia.getPersona().getColegiado().getNColegiado();
+	 						idPersona = letradoGuardia.getIdPersona().toString();
+	 						fechaSuscripcion = letradoGuardia.getInscripcionGuardia().getFechaSuscripcion();
+	 						numeroColegiadoBusqueda = "" + i + "_" + ncolegiado;
+	 						grupo = letradoGuardia.getNumeroGrupo() != null ? letradoGuardia.getNumeroGrupo().toString() : "";
+	 						if (porGrupos) {
+	 							if (!grupo.equalsIgnoreCase(grupoAnt)) {
+	 								nFila++;
+	 								grupoAnt = grupo;
+	 							}
+	 						} else {
+	 							nFila++;
+	 						}
+	 						ordenGrupo = letradoGuardia.getOrdenGrupo() != null ? letradoGuardia.getOrdenGrupo().toString() : "";
+	 						idGrupoGuardiaColegiado = letradoGuardia.getIdGrupoGuardiaColegiado() != null ? letradoGuardia.getIdGrupoGuardiaColegiado()
+	 								.toString() : "";
 	 		%>
 	
 			<!-- REGISTRO  -->
-  			<tr class="<%=((nFila + 1) % 2 == 0
-								? "filaTablaPar"
-								: "filaTablaImpar")%>">
+  			<tr class="<%=((nFila + 1) % 2 == 0 ? "filaTablaPar" : "filaTablaImpar")%>">
   				<%
   					if (porGrupos) {
   				%>
-  					<td><input type="checkbox" id="checkGrupoOrden" value="<%=i + 1%>" onclick="modificaParametro(this)"/></td>
+  					<td>
+  						<input type="checkbox" id="checkGrupoOrden" value="<%=i + 1%>" onclick="modificaParametro(this)"/>
+  					</td>
+  					
 					<td>
 						<input type="text" value="<%=grupo%>" id="grupo_<%=i + 1%>" disabled size="1">
 						<input type="hidden" value="<%=grupo%>" id="grupoOriginal_<%=i + 1%>" >
 					</td>
+					
 					<td>
 						<input type="text" value="<%=ordenGrupo%>" id="orden_<%=i + 1%>" disabled size="1" maxlength="4">
 						<input type="hidden" value="<%=ordenGrupo%>" id="ordenOriginal_<%=i + 1%>" >
@@ -370,20 +422,20 @@
 				<%
 					}
 				%>	
-				<td>
+				<td id="colegiado_<%=i%>">
 					<input name="numeroColegiadoBusqueda" type="hidden" class="box" size="10" value="<%=numeroColegiadoBusqueda%>" >
 					<input name="idPersona_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=idPersona%>" >
 					<input name="fechaSuscripcion_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=fechaSuscripcion%>" >
 					<input name="idGrupoGuardiaColegiado_<%=i + 1%>" type="hidden" class="box" size="10" value="<%=idGrupoGuardiaColegiado%>" >
 					<%=ncolegiado%>
 				</td>
-				<td>
-					<%=apellido1+" "+apellido2+", "+nombre%>
+				<td id="nombre_<%=i%>">
+					<%=apellido1 + " " + apellido2 + ", " + nombre%>
 				</td>
-				<td>
+				<td id="falta_<%=i%>">
 				<%
 					if (letradoGuardia.getInscripcionGuardia().getFechaValidacion() != null
-						&& !letradoGuardia.getInscripcionGuardia().getFechaValidacion().equals("")) {
+										&& !letradoGuardia.getInscripcionGuardia().getFechaValidacion().equals("")) {
 				%>
 					<%=letradoGuardia.getInscripcionGuardia().getFechaValidacion()%>
 				<%
@@ -394,10 +446,10 @@
 					}
 				%>
 				</td>
-				<td>
+				<td id="fbaja_<%=i%>">
 				<%
 					if (letradoGuardia.getInscripcionGuardia().getFechaBaja() != null
-						&& !letradoGuardia.getInscripcionGuardia().getFechaBaja().equals("")) {
+										&& !letradoGuardia.getInscripcionGuardia().getFechaBaja().equals("")) {
 				%>
 					<%=letradoGuardia.getInscripcionGuardia().getFechaBaja()%>
 				<%
@@ -410,8 +462,11 @@
 
 				</td>
 			
-				<td align="center">
+				<td id="iconos_<%=i%>" align="center">
 					<img src="<%=app%>/html/imagenes/bcambiarusuario.gif" name="bcambiarusuario" style="cursor:hand;" onClick="fijarUltimoLetrado(<%=i + 1%>)" alt="<%=literalFijarUltimoLetrado%>">
+					<% if (porGrupos) {	%>
+						<img src="<%=app%>/html/imagenes/icono+.gif" name="banadirlinea" style="cursor:hand;" onClick="anadirFilaLetrado(<%=i%>)" alt="<%=literalAnadirFila%>">
+					<% } %>	
 				</td>
 			</tr>		
 			<!-- FIN REGISTRO -->
@@ -455,8 +510,7 @@
 			<!-- Aqui se iteran los diferentes registros de la lista -->
 			
 <%
-				Vector resultado = (Vector) request
-							.getAttribute("vCompensaciones");
+				Vector resultado = (Vector) request.getAttribute("vCompensaciones");
 					if (resultado == null || resultado.size() == 0) {
 			%>			
 	 		<tr>
@@ -471,20 +525,11 @@
 	 						Row registro = (Row) resultado.elementAt(i);
 
 	 						// calculo de campos
-	 						String apellido1 = UtilidadesString
-	 								.mostrarDatoJSP(registro
-	 										.getString(CenPersonaBean.C_APELLIDOS1));
-	 						String apellido2 = UtilidadesString
-	 								.mostrarDatoJSP(registro
-	 										.getString(CenPersonaBean.C_APELLIDOS2));
-	 						String nombre = UtilidadesString
-	 								.mostrarDatoJSP(registro
-	 										.getString(CenPersonaBean.C_NOMBRE));
-	 						String ncolegiado = UtilidadesString
-	 								.mostrarDatoJSP(registro
-	 										.getString(CenColegiadoBean.C_NCOLEGIADO));
-	 						String numero = UtilidadesString
-	 								.mostrarDatoJSP(registro.getString("NUMERO"));
+	 						String apellido1 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS1));
+	 						String apellido2 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS2));
+	 						String nombre = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_NOMBRE));
+	 						String ncolegiado = UtilidadesString.mostrarDatoJSP(registro.getString(CenColegiadoBean.C_NCOLEGIADO));
+	 						String numero = UtilidadesString.mostrarDatoJSP(registro.getString("NUMERO"));
 	 		%>
 			<!-- REGISTRO  -->
   			<tr class="listaNonEdit">
@@ -552,20 +597,11 @@
 	 						Row registro = (Row) resultado.elementAt(i);
 
 	 						// calculo de campos
-	 						String apellido1 = UtilidadesString
-	 								.mostrarDatoJSP(registro
-	 										.getString(CenPersonaBean.C_APELLIDOS1));
-	 						String apellido2 = UtilidadesString
-	 								.mostrarDatoJSP(registro
-	 										.getString(CenPersonaBean.C_APELLIDOS2));
-	 						String nombre = UtilidadesString
-	 								.mostrarDatoJSP(registro
-	 										.getString(CenPersonaBean.C_NOMBRE));
-	 						String ncolegiado = UtilidadesString
-	 								.mostrarDatoJSP(registro
-	 										.getString(CenColegiadoBean.C_NCOLEGIADO));
-	 						String numero = UtilidadesString
-	 								.mostrarDatoJSP(registro.getString("NUMERO"));
+	 						String apellido1 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS1));
+	 						String apellido2 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS2));
+	 						String nombre = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_NOMBRE));
+	 						String ncolegiado = UtilidadesString.mostrarDatoJSP(registro.getString(CenColegiadoBean.C_NCOLEGIADO));
+	 						String numero = UtilidadesString.mostrarDatoJSP(registro.getString("NUMERO"));
 	 		%>
 			<!-- REGISTRO  -->
   			<tr class="listaNonEdit">
@@ -631,6 +667,7 @@
 		var ele = document.getElementsByName("checkGrupoOrden");
 		for (i = 0; i < ele.length; i++) {
 			if (ele[i].checked) {
+					
 					if( (document.getElementById("grupo_" + ele[i].value).value.length<1 &&
 					   	 document.getElementById("orden_" + ele[i].value).value.length>=1)||
 					   	(document.getElementById("grupo_" + ele[i].value).value.length>=1 &&
@@ -642,19 +679,21 @@
 							return;
 
 					}else{
+						
 						if(document.getElementById("orden_" + ele[i].value).value.length>=1 && 
 						   document.getElementById("orden_" + ele[i].value).value<=0){
 							alert ("El orden debe ser un número comprendido entre 1 y 9999");
 							return;					
 						}
 					}
-				
+					
 					if (datos.length > 0) datos = datos + "#;;#";
 					datos = datos + document.getElementById("idGrupoGuardiaColegiado_" + ele[i].value).value + "#;#" + 	// idgrupoguardiacolegiado
 						            document.getElementById("grupo_" + ele[i].value).value + "#;#" +	// grupo
 						            document.getElementById("orden_" + ele[i].value).value + "#;#" + 	// orden
 							        document.getElementById("idPersona_" + ele[i].value).value + "#;#"+ 	// idPersona
 							        document.getElementById("fechaSuscripcion_" + ele[i].value).value + "#;#"; 	// fechaSuscripcion
+
 			}
 		}
 		

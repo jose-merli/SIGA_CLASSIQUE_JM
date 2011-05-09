@@ -62,6 +62,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 				ScsGuardiasTurnoBean.C_IDORDENACIONCOLAS,
 				ScsGuardiasTurnoBean.C_IDPARTIDAPRESUPUESTARIA,
 				ScsGuardiasTurnoBean.C_IDPERSONA_ULTIMO,
+				ScsGuardiasTurnoBean.C_IDGRUPOGUARDIACOLEGIADO_ULTIMO,
 				ScsGuardiasTurnoBean.C_FECHASUSCRIPCION_ULTIMO,
 				ScsGuardiasTurnoBean.C_TIPODIASGUARDIA,
 				ScsGuardiasTurnoBean.C_DIASPERIODO,
@@ -126,6 +127,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 			bean.setIdOrdenacionColas(UtilidadesHash.getInteger(hash,ScsGuardiasTurnoBean.C_IDORDENACIONCOLAS));
 			bean.setIdPartidaPresupuestaria(UtilidadesHash.getInteger(hash,ScsGuardiasTurnoBean.C_IDPARTIDAPRESUPUESTARIA));
 			bean.setIdPersona_Ultimo(UtilidadesHash.getLong(hash, ScsGuardiasTurnoBean.C_IDPERSONA_ULTIMO));
+			bean.setIdGrupoGuardiaColegiado_Ultimo(UtilidadesHash.getLong(hash, ScsGuardiasTurnoBean.C_IDGRUPOGUARDIACOLEGIADO_ULTIMO));
 			bean.setFechaSuscripcion_Ultimo(UtilidadesHash.getString(hash, ScsGuardiasTurnoBean.C_FECHASUSCRIPCION_ULTIMO));
 			bean.setTipodiasGuardia(UtilidadesHash.getString(hash,ScsGuardiasTurnoBean.C_TIPODIASGUARDIA));
 			bean.setDiasPeriodo(UtilidadesHash.getInteger(hash,ScsGuardiasTurnoBean.C_DIASPERIODO));
@@ -182,6 +184,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_IDORDENACIONCOLAS, b.getIdOrdenacionColas());
 			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_IDPARTIDAPRESUPUESTARIA, b.getIdPartidaPresupuestaria());
 			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_IDPERSONA_ULTIMO, b.getIdPersona_Ultimo());
+			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_IDGRUPOGUARDIACOLEGIADO_ULTIMO, b.getIdGrupoGuardiaColegiado_Ultimo());
 			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_FECHASUSCRIPCION_ULTIMO, b.getFechaSuscripcion_Ultimo());
 			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_TIPODIASGUARDIA, b.getTipodiasGuardia());
 			UtilidadesHash.set(hash, ScsGuardiasTurnoBean.C_DIASPERIODO, b.getDiasPeriodo());
@@ -1337,7 +1340,8 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 								   Integer idTurno,
 								   Integer idGuardia,
 								   Long idPersona_Ultimo,
-								   String fechaSuscripcion_Ultimo)
+								   String fechaSuscripcion_Ultimo,
+								   Long idGrupoGuardiaColegiado_Ultimo)
 		throws ClsExceptions
 	{
 		String sIdinstitucion = idInstitucion.toString();
@@ -1346,10 +1350,12 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 		String sIdpersona = (idPersona_Ultimo == null) ? "null" : idPersona_Ultimo.toString();
 		String sFechaSusc = (fechaSuscripcion_Ultimo == null || fechaSuscripcion_Ultimo.equals("")) ?
 				"null" : fechaSuscripcion_Ultimo.toString();
+		String sIdGrupoGuardiaColegiado_Ultimo = (idGrupoGuardiaColegiado_Ultimo == null) ? "null" : idGrupoGuardiaColegiado_Ultimo.toString();
 		
 		String[] campos = 
 		{
 				ScsGuardiasTurnoBean.C_IDPERSONA_ULTIMO,
+				ScsGuardiasTurnoBean.C_IDGRUPOGUARDIACOLEGIADO_ULTIMO,
 				ScsGuardiasTurnoBean.C_FECHASUSCRIPCION_ULTIMO,
 				ScsGuardiasTurnoBean.C_USUMODIFICACION,
 				ScsGuardiasTurnoBean.C_FECHAMODIFICACION
@@ -1360,6 +1366,7 @@ public class ScsGuardiasTurnoAdm extends MasterBeanAdministrador
 		hash.put(ScsGuardiasTurnoBean.C_IDTURNO, sIdTurno);
 		hash.put(ScsGuardiasTurnoBean.C_IDGUARDIA, sIdGuardia);
 		hash.put(ScsGuardiasTurnoBean.C_IDPERSONA_ULTIMO, sIdpersona);
+		hash.put(ScsGuardiasTurnoBean.C_IDGRUPOGUARDIACOLEGIADO_ULTIMO, sIdGrupoGuardiaColegiado_Ultimo);
 		hash.put(ScsGuardiasTurnoBean.C_FECHASUSCRIPCION_ULTIMO, sFechaSusc);
 		hash.put(ScsGuardiasTurnoBean.C_USUMODIFICACION, this.usrbean.getUserName());
 		hash.put(ScsGuardiasTurnoBean.C_FECHAMODIFICACION, "SYSDATE");

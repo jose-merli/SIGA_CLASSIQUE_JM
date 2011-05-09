@@ -36,6 +36,7 @@ public class ScsGuardiasTurnoBean extends MasterBean
 	static public final String C_IDPARTIDAPRESUPUESTARIA	= "IDPARTIDAPRESUPUESTARIA";	
 	static public final String C_NUMEROACTUACIONES			= "NUMEROACTUACIONES";
 	static public final String C_IDPERSONA_ULTIMO			= "IDPERSONA_ULTIMO";
+	static public final String C_IDGRUPOGUARDIACOLEGIADO_ULTIMO		= "IDGRUPOGUARDIA_ULTIMO";
 	static public final String C_FECHASUSCRIPCION_ULTIMO	= "FECHASUSCRIPCION_ULTIMO";
 	static public final String C_TIPODIASGUARDIA			= "TIPODIASGUARDIA";
 	static public final String C_DIASPERIODO				= "DIASPERIODO";
@@ -73,6 +74,7 @@ public class ScsGuardiasTurnoBean extends MasterBean
 	private Integer 	numeroActuaciones;
 	private String		designaDirecta;
 	private Long 		idPersona_Ultimo;
+	private Long 		idGrupoGuardiaColegiado_Ultimo;
 	private String		fechaSuscripcion_Ultimo;
 	private String 		tipodiasGuardia;
 	private Integer		diasPeriodo;
@@ -137,7 +139,8 @@ public class ScsGuardiasTurnoBean extends MasterBean
 	public Integer getIdInstitucionPrincipal() {return idInstitucionPrincipal;}
 	public Integer getIdTurnoPrincipal() {return idTurnoPrincipal;}
 	public Integer getIdGuardiaPrincipal() {return idGuardiaPrincipal;}
-	
+	public Long getIdGrupoGuardiaColegiado_Ultimo() {return idGrupoGuardiaColegiado_Ultimo;}
+
 	
 	//////////////////// SETTERS ////////////////////
 	public void setDescripcion(String descripcion) {this.descripcion = descripcion;}
@@ -179,5 +182,6 @@ public class ScsGuardiasTurnoBean extends MasterBean
 	public void setIdInstitucionPrincipal(Integer idInstitucionPrincipal) {this.idInstitucionPrincipal = idInstitucionPrincipal;}
 	public void setIdTurnoPrincipal(Integer idTurnoPrincipal) {this.idTurnoPrincipal = idTurnoPrincipal;}
 	public void setIdGuardiaPrincipal(Integer idGuardiaPrincipal) {this.idGuardiaPrincipal = idGuardiaPrincipal;}
-	
+	public void setIdGrupoGuardiaColegiado_Ultimo(Long idGrupoGuardiaUltimo) {this.idGrupoGuardiaColegiado_Ultimo = idGrupoGuardiaUltimo;
+	}
 }

@@ -82,13 +82,14 @@ public class ScsInscripcionGuardiaBean extends MasterBean
 		
 	}
 	public ScsInscripcionGuardiaBean(Integer idInstitucion, Integer idTurno, Integer idGuardia, Long idPersona,
-			String fechaSuscripcion)
+			String fechaSuscripcion, Long idGrupoGuardiaColegiado)
 	{
 		this.idInstitucion = idInstitucion;
 		this.idTurno = idTurno;
 		this.idGuardia = idGuardia;
 		this.idPersona = idPersona;
 		this.fechaSuscripcion = fechaSuscripcion;
+		this.idGrupoGuardiaColegiado = idGrupoGuardiaColegiado;
 	}
 	
 	
@@ -213,6 +214,10 @@ public class ScsInscripcionGuardiaBean extends MasterBean
 		result &= idGuardia.intValue() == bean.getIdGuardia().intValue();
 		result &= idPersona.longValue() == bean.getIdPersona().longValue();
 		result &= fechaSuscripcion.equalsIgnoreCase(bean.getFechaSuscripcion());
+		//Miramos si la guardia es de grupos
+		if(bean.getIdGrupoGuardiaColegiado() != null){
+			result &= idGrupoGuardiaColegiado.longValue() == bean.getIdGrupoGuardiaColegiado().longValue();
+		}
 		
 		return result;
 	}

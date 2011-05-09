@@ -16,6 +16,7 @@ public class ScsCalendarioGuardiasBean extends MasterBean
 	private String  observaciones;
 	private Long    idPersonaUltimoAnterior;
 	private String	fechaSuscUltimoAnterior;
+	private Long	idGrupoGuardiaColegiadoAnterior;
 	private Integer idTurnoPrincipal;
 	private Integer idGuardiaPrincipal;
 	private Integer	idCalendarioGuardiasPrincipal;	
@@ -33,6 +34,7 @@ public class ScsCalendarioGuardiasBean extends MasterBean
 	static public final String C_FECHAFIN					        = "FECHAFIN";
 	static public final String C_OBSERVACIONES				        = "OBSERVACIONES";
 	static public final String C_IDPERSONA_ULTIMOANTERIOR	        = "IDPERSONA_ULTIMOANTERIOR";
+	static public final String C_IDGRUPOGUARDIACOLEGIADO_ULTIMOANTERIOR	    = "IDGRUPOGUARDIA_ULTIMOANTERIOR";
 	static public final String C_FECHASUSC_ULTIMOANTERIOR	        = "FECHASUSC_ULTIMOANTERIOR";
 	static public final String C_IDTURNO_PRINCIPAL  		        = "IDTURNOPRINCIPAL";
 	static public final String C_IDGUARDIA_PRINCIPAL		        = "IDGUARDIAPRINCIPAL";
@@ -73,7 +75,7 @@ public class ScsCalendarioGuardiasBean extends MasterBean
 	public void setIdTurnoPrincipal                   (Integer idTurnoPrincipal)                {this.idTurnoPrincipal              = idTurnoPrincipal;}
 	public void setIdGuardiaPrincipal                 (Integer idGuardiaPrincipal)              {this.idGuardiaPrincipal            = idGuardiaPrincipal;}
 	public void setIdCalendarioGuardiasPrincipal      (Integer idCalendarioGuardiasPrincipal)   {this.idCalendarioGuardiasPrincipal = idCalendarioGuardiasPrincipal;}
-	
+	public void setIdGrupoGuardiaColegiadoAnterior   		  (Long idGrupoGuardiaColegiadoAnterior) 		{this.idGrupoGuardiaColegiadoAnterior 		= idGrupoGuardiaColegiadoAnterior;}
 
 
 	// Getters
@@ -89,7 +91,7 @@ public class ScsCalendarioGuardiasBean extends MasterBean
 	public Integer getIdTurnoPrincipal               () {return idTurnoPrincipal;}
 	public Integer getIdGuardiaPrincipal             () {return idGuardiaPrincipal;}
 	public Integer getIdCalendarioGuardiasPrincipal  () {return idCalendarioGuardiasPrincipal;}
-	
+	public Long getIdGrupoGuardiaColegiadoAnterior			 () {return idGrupoGuardiaColegiadoAnterior;	}
 	
 	public String toString() {
 		return "Cal. " + this.idTurno + "." + this.idGuardia + "." + this.idCalendarioGuardias + "-" + this.fechaInicio + "-" + this.fechaFin + "-" + this.idTurnoPrincipal + "-"  + this.idGuardiaPrincipal + this.idCalendarioGuardiasPrincipal;

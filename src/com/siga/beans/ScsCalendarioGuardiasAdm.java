@@ -53,6 +53,7 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
 				ScsCalendarioGuardiasBean.C_FECHAMODIFICACION,
 				ScsCalendarioGuardiasBean.C_USUMODIFICACION,
 				ScsCalendarioGuardiasBean.C_IDPERSONA_ULTIMOANTERIOR,
+				ScsCalendarioGuardiasBean.C_IDGRUPOGUARDIACOLEGIADO_ULTIMOANTERIOR,
 				ScsCalendarioGuardiasBean.C_FECHASUSC_ULTIMOANTERIOR,
 				ScsCalendarioGuardiasBean.C_IDTURNO_PRINCIPAL,
 				ScsCalendarioGuardiasBean.C_IDGUARDIA_PRINCIPAL,
@@ -95,6 +96,7 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
 			bean.setUsuMod				(UtilidadesHash.getInteger(hash, ScsCalendarioGuardiasBean.C_USUMODIFICACION));
 			bean.setFechaMod			(UtilidadesHash.getString (hash, ScsCalendarioGuardiasBean.C_FECHAMODIFICACION));
 			bean.setIdPersonaUltimoAnterior(UtilidadesHash.getLong(hash, ScsCalendarioGuardiasBean.C_IDPERSONA_ULTIMOANTERIOR));
+			bean.setIdGrupoGuardiaColegiadoAnterior(UtilidadesHash.getLong(hash, ScsCalendarioGuardiasBean.C_IDGRUPOGUARDIACOLEGIADO_ULTIMOANTERIOR));
 			bean.setFechaSuscUltimoAnterior(UtilidadesHash.getString(hash, ScsCalendarioGuardiasBean.C_FECHASUSC_ULTIMOANTERIOR));
 			bean.setIdTurnoPrincipal(UtilidadesHash.getInteger(hash, ScsCalendarioGuardiasBean.C_IDTURNO_PRINCIPAL));
 			bean.setIdGuardiaPrincipal(UtilidadesHash.getInteger(hash, ScsCalendarioGuardiasBean.C_IDGUARDIA_PRINCIPAL));
@@ -127,6 +129,7 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(hash, ScsCalendarioGuardiasBean.C_USUMODIFICACION, b.getUsuMod());
 			UtilidadesHash.set(hash, ScsCalendarioGuardiasBean.C_FECHAMODIFICACION, b.getFechaMod());
 			UtilidadesHash.set(hash, ScsCalendarioGuardiasBean.C_IDPERSONA_ULTIMOANTERIOR, b.getIdPersonaUltimoAnterior());
+			UtilidadesHash.set(hash, ScsCalendarioGuardiasBean.C_IDGRUPOGUARDIACOLEGIADO_ULTIMOANTERIOR, b.getIdGrupoGuardiaColegiadoAnterior());
 			UtilidadesHash.set(hash, ScsCalendarioGuardiasBean.C_FECHASUSC_ULTIMOANTERIOR, b.getFechaSuscUltimoAnterior());
 			UtilidadesHash.set(hash, ScsCalendarioGuardiasBean.C_IDTURNO_PRINCIPAL, b.getIdTurnoPrincipal());
 			UtilidadesHash.set(hash, ScsCalendarioGuardiasBean.C_IDGUARDIA_PRINCIPAL, b.getIdGuardiaPrincipal());
@@ -387,7 +390,8 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
 			ScsGuardiasTurnoAdm guardiaAdm = new ScsGuardiasTurnoAdm(usrbean);
 			guardiaAdm.cambiarUltimoCola(calendarioBean.getIdInstitucion(), 
 					calendarioBean.getIdTurno(), calendarioBean.getIdGuardia(), 
-					calendarioBean.getIdPersonaUltimoAnterior(), calendarioBean.getFechaSuscUltimoAnterior());
+					calendarioBean.getIdPersonaUltimoAnterior(), calendarioBean.getFechaSuscUltimoAnterior()
+					,calendarioBean.getIdGrupoGuardiaColegiadoAnterior());
 
 			ok = true;
 		} catch (Exception e) {

@@ -1198,7 +1198,7 @@ public class CalendarioSJCS
 				if (unLetrado.getSaltoCompensacion() == null)
 					guardiaAdm.cambiarUltimoCola(unLetrado.getIdInstitucion(), unLetrado.getIdTurno(), 
 							unLetrado.getIdGuardia(), unLetrado.getIdPersona(), 
-							unLetrado.getInscripcionGuardia().getFechaSuscripcion());
+							unLetrado.getInscripcionGuardia().getFechaSuscripcion(),unLetrado.getIdGrupoGuardiaColegiado());
 				
 				// avanzando el puntero de dia en el caso de guardias vinculadas
 				if (this.calendariosVinculados != null)
@@ -1345,7 +1345,7 @@ public class CalendarioSJCS
 				if (unLetrado.getSaltoCompensacion() == null)
 					guardiaAdm.cambiarUltimoCola(unLetrado.getIdInstitucion(), unLetrado.getIdTurno(), 
 							unLetrado.getIdGuardia(), unLetrado.getIdPersona(), 
-							unLetrado.getInscripcionGuardia().getFechaSuscripcion());
+							unLetrado.getInscripcionGuardia().getFechaSuscripcion(),unLetrado.getIdGrupoGuardiaColegiado());
 				
 				// metiendo grupo en el periodo de guardia
 				alLetradosInsertar = new ArrayList<LetradoInscripcion>();

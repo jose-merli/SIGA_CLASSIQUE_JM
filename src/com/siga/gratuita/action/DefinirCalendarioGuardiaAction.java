@@ -669,7 +669,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 		// Variables
 		Hashtable miHash = new Hashtable();
 		String idcalendarioguardias;
-		String idPersonaUltimoAnterior, fechaSuscUltimoAnterior;
+		String idPersonaUltimoAnterior, fechaSuscUltimoAnterior, idGrupoGuardiaColegiadoAnterior;
 		Vector registros = new Vector();
 
 		// calculando idPersonaUltimoAnterior de guardias turno
@@ -685,9 +685,11 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 		if (guardiaBean.getIdPersona_Ultimo() == null) {
 			idPersonaUltimoAnterior = "";
 			fechaSuscUltimoAnterior = "";
+			idGrupoGuardiaColegiadoAnterior = "";
 		}
 		else {
 			idPersonaUltimoAnterior = guardiaBean.getIdPersona_Ultimo().toString();
+			idGrupoGuardiaColegiadoAnterior = guardiaBean.getIdGrupoGuardiaColegiado_Ultimo().toString();
 			fechaSuscUltimoAnterior = guardiaBean.getFechaSuscripcion_Ultimo();
 		}
 
@@ -708,6 +710,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 		miHash.put(ScsCalendarioGuardiasBean.C_USUMODIFICACION, "0");
 		miHash.put(ScsCalendarioGuardiasBean.C_FECHAMODIFICACION, "sysdate");
 		miHash.put(ScsCalendarioGuardiasBean.C_IDPERSONA_ULTIMOANTERIOR, idPersonaUltimoAnterior);
+		miHash.put(ScsCalendarioGuardiasBean.C_IDGRUPOGUARDIACOLEGIADO_ULTIMOANTERIOR, idGrupoGuardiaColegiadoAnterior);
 		miHash.put(ScsCalendarioGuardiasBean.C_FECHASUSC_ULTIMOANTERIOR, fechaSuscUltimoAnterior);
 		if(idTurnoPrincipal!=null){
 			miHash.put(ScsCalendarioGuardiasBean.C_IDTURNO_PRINCIPAL, idTurnoPrincipal);

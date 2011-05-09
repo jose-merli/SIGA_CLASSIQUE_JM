@@ -245,7 +245,7 @@ public class ColaGuardiasAction extends MasterAction {
 		hashTurno.put(ScsGuardiasTurnoBean.C_IDGUARDIA,guardia);
 		ScsGuardiasTurnoBean guardiasTurnoBean = (ScsGuardiasTurnoBean)((Vector)guardiasTurnoAdm.select(hashTurno)).get(0);
 		Long ultimo=guardiasTurnoBean.getIdPersona_Ultimo();
-		
+				
 		if(ultimo!=null){
 			//buscar numero colegiado
 			Hashtable hashColegiado = new Hashtable();
@@ -293,9 +293,10 @@ public class ColaGuardiasAction extends MasterAction {
 					if(!miForm.getIdGrupoGuardiaColegiado().equalsIgnoreCase("")){
 						ScsGrupoGuardiaColegiadoAdm admGrupoGuardia = new ScsGrupoGuardiaColegiadoAdm(this.getUserBean(request));
 						admGrupoGuardia.setUltimoDeGrupo(miForm.getIdGrupoGuardiaColegiado());
+						b.setIdGrupoGuardiaColegiado_Ultimo(new Long(miForm.getIdGrupoGuardiaColegiado()));
 					}
 				}
-				b.setIdPersona_Ultimo(new Long(miForm.getIdPersona()));
+				b.setIdPersona_Ultimo(new Long(miForm.getIdPersona()));				
 				b.setFechaSuscripcion_Ultimo(miForm.getFechaSuscripcion());
 				if (!adm.update(b)) {
 					return exito("messages.updated.error",request);

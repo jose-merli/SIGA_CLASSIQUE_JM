@@ -181,6 +181,7 @@ public class DefinirGuardiasTurnosForm extends MasterForm
 	public String getAsistencias() {return (String) this.datos.get("NUMEROASISTENCIAS");}
 	public String getActuaciones() {return (String) this.datos.get("NUMEROACTUACIONES");}
 	public String getUltimoLetrado() {return (String) this.datos.get("IDPERSONA_ULTIMO");}
+	public String getUltimoGrupoGuardiaLetrado() {return (String) this.datos.get("IDGRUPOGUARDIACOLEGIADO_ULTIMO");}
 	public String getJustificaciones() {return (String) this.datos.get("VALIDARJUSTIFICACIONES");}
 	public String getGuardiaElegida() {return (String) this.datos.get("GUARDIAELEGIDA");}
 	public String getGuardias() {return (String) this.datos.get("GUARDIAS");}
@@ -242,6 +243,7 @@ public class DefinirGuardiasTurnosForm extends MasterForm
 	public void setAsistencias(String valor) {this.datos.put("NUMEROASISTENCIAS",valor);}
 	public void setActuaciones(String valor) {this.datos.put("NUMEROACTUACIONES",valor);}
 	public void setUltimoLetrado(String valor) {this.datos.put("IDPERSONA_ULTIMO",valor);}
+	public void setUltimoGrupoGuardiaLetrado(String valor) {this.datos.put("IDGRUPOGUARDIACOLEGIADO_ULTIMO",valor);}
 	public void setJustificaciones(String valor) {this.datos.put("VALIDARJUSTIFICACIONES",valor);}
 	public void setGuardiaElegida(String valor) {this.datos.put("GUARDIAELEGIDA",valor);}
 	public void setGuardias(String valor) {this.datos.put("GUARDIAS",valor);}
