@@ -264,7 +264,7 @@ while (ek.hasMoreElements()) { //tablas
 		<%    	 
     }
     %>
-    <td align='center' width='<%=tam%>%'><siga:Idioma key="certificados.mantenimiento.literal.porDefecto"/></td>
+    <td align='center' width='<%=tam%>%'><siga:Idioma key="certificados.mantenimiento.literal.sinFrmt"/></td>
     </tr>
    	<tr class = 'tableTitle'>
     	 <td align='center' width='20%'></td>
