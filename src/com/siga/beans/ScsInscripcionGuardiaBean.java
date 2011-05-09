@@ -215,7 +215,7 @@ public class ScsInscripcionGuardiaBean extends MasterBean
 		result &= idPersona.longValue() == bean.getIdPersona().longValue();
 		result &= fechaSuscripcion.equalsIgnoreCase(bean.getFechaSuscripcion());
 		//Miramos si la guardia es de grupos
-		if(bean.getIdGrupoGuardiaColegiado() != null){
+		if(bean.getIdGrupoGuardiaColegiado() != null && idGrupoGuardiaColegiado != null){
 			result &= idGrupoGuardiaColegiado.longValue() == bean.getIdGrupoGuardiaColegiado().longValue();
 		}
 		
