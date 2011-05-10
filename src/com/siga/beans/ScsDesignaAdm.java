@@ -2002,7 +2002,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" AND ejgdes.Numerodesigna = :4 ) COUNT_EJG, ");
 
 		sql.append(" f_siga_getrecurso(CAL.DESCRIPCION, 1) AS CALIDAD, ");
-		sql.append(" CAL.IDTIPOENCALIDAD, ");
+		sql.append(" CAL.IDTIPOENCALIDAD ");
 
 		sql.append(" FROM SCS_DEFENDIDOSDESIGNA DEF, ");
 		sql.append(" SCS_PERSONAJG         PERJG, ");
@@ -2073,7 +2073,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" to_char(ejg.FECHARESOLUCIONCAJG, 'dd/mm/yyyy') AS FECHARESOLUCIONCAJG, ");
 
 		sql.append(" f_siga_getrecurso(CAL.DESCRIPCION, 1) AS CALIDAD_DEFENDIDO, ");
-		sql.append(" CAL.IDTIPOENCALIDAD, ");
+		sql.append(" CAL.IDTIPOENCALIDAD ");
 
 		sql.append(" FROM SCS_EJG          ejg, ");
 		sql.append(" Scs_Ejgdesigna        des, ");
