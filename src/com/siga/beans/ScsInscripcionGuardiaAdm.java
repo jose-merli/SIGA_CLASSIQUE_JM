@@ -1364,4 +1364,206 @@ public class ScsInscripcionGuardiaAdm extends MasterBeanAdministrador
 		return inscripcionBean;
 
 	}
+	
+	
+	
+	public Vector<ScsInscripcionGuardiaBean> getColegiadosInscritosRepetidos(String idinstitucion, String idturno, String idguardia,
+			String fechaInicio, String fechaFin) throws ClsExceptions {
+
+		
+		if (idinstitucion == null || idinstitucion.equals(""))
+			return null;
+		if (idturno == null || idturno.equals(""))
+			return null;
+		if (idguardia == null || idguardia.equals(""))
+			return null;
+		if (fechaInicio == null || fechaInicio.equals(""))
+			fechaInicio = "null";
+		else if (!fechaInicio.trim().equalsIgnoreCase("sysdate"))
+			fechaInicio = "'" + fechaInicio.trim() + "'";
+		if (fechaFin == null || fechaFin.equals(""))
+			fechaFin = "null";
+		else if (!fechaFin.trim().equalsIgnoreCase("sysdate"))
+			fechaFin = "'" + fechaFin.trim() + "'";
+		
+				
+		StringBuffer consulta = new StringBuffer();
+		consulta.append("SELECT datos.Nombre AS NOMBRE_REP, datos.Apellidos1 AS APE1_REP, datos.apellidos2 AS APE2_REP, datos.NUMEROCOLEGIADO AS NCOLEGIADO_REP ");
+		consulta.append("  FROM ( ");
+		consulta.append("Select ");
+		consulta.append("       (case when Ins.Fechavalidacion Is Not Null ");
+		consulta.append("              And Trunc(Ins.Fechavalidacion) <= nvl("+fechaInicio+",  Ins.Fechavalidacion) ");
+		consulta.append("              And (Ins.Fechabaja Is Null Or ");
+		consulta.append("                   Trunc(Ins.Fechabaja) > nvl("+fechaFin+", '01/01/1900')) ");
+		consulta.append("             then '1' ");
+		consulta.append("             else '0' ");
+		consulta.append("        end) Activo, ");
+		consulta.append(getBaseConsultaInscripciones());
+		
+		consulta.append("   And Ins.Fechavalidacion Is Not Null ");
+		consulta.append("   And Gua.Idinstitucion = "+idinstitucion+" ");
+		consulta.append("   And Gua.Idturno = "+idturno+" ");
+		consulta.append("   And Gua.Idguardia = "+idguardia+" ");
+		consulta.append(" order by Ins.FechaValidacion ");
+		
+		
+		consulta.append(" ) datos  ");
+		consulta.append(" WHERE datos.activo = 1  ");
+		consulta.append(" GROUP BY  datos.Nombre, datos.Apellidos1, datos.apellidos2, datos.NUMEROCOLEGIADO HAVING COUNT(*) > 1  ");
+		consulta.append(" ORDER BY datos.Apellidos1 ");
+		
+		Vector datos = null;
+		try {
+			RowsContainer rc = new RowsContainer();
+			if (rc.find(consulta.toString())) {
+				datos = new Vector();
+				for (int i = 0; i < rc.size(); i++) {
+					Row fila = (Row) rc.get(i);
+					Hashtable<String, Object> htFila = fila.getRow();
+					datos.add(htFila);
+				}
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al ejecutar el 'select' en B.D.");
+		}
+		return datos;
+	}
+	
+	
+	public Vector<ScsInscripcionGuardiaBean> getListadoColegiadosInscritosRepetidosOrden(String idinstitucion, String idturno, String idguardia,
+			String fechaInicio, String fechaFin) throws ClsExceptions {
+
+		
+		if (idinstitucion == null || idinstitucion.equals(""))
+			return null;
+		if (idturno == null || idturno.equals(""))
+			return null;
+		if (idguardia == null || idguardia.equals(""))
+			return null;
+		if (fechaInicio == null || fechaInicio.equals(""))
+			fechaInicio = "null";
+		else if (!fechaInicio.trim().equalsIgnoreCase("sysdate"))
+			fechaInicio = "'" + fechaInicio.trim() + "'";
+		if (fechaFin == null || fechaFin.equals(""))
+			fechaFin = "null";
+		else if (!fechaFin.trim().equalsIgnoreCase("sysdate"))
+			fechaFin = "'" + fechaFin.trim() + "'";
+		
+				
+		StringBuffer consulta = new StringBuffer();
+		consulta.append("SELECT datos.Nombre AS NOMBRE_REP, datos.Apellidos1 AS APE1_REP, datos.apellidos2 AS APE2_REP, datos.NUMEROCOLEGIADO AS NCOLEGIADO_REP ");
+		consulta.append("  ,datos.numeroGrupo AS GRUPO_REP,datos.ordenGrupo AS ORDENGRUPO_REP");
+		consulta.append("  FROM ( ");
+		consulta.append("Select ");
+		consulta.append("       (case when Ins.Fechavalidacion Is Not Null ");
+		consulta.append("              And Trunc(Ins.Fechavalidacion) <= nvl("+fechaInicio+",  Ins.Fechavalidacion) ");
+		consulta.append("              And (Ins.Fechabaja Is Null Or ");
+		consulta.append("                   Trunc(Ins.Fechabaja) > nvl("+fechaFin+", '01/01/1900')) ");
+		consulta.append("             then '1' ");
+		consulta.append("             else '0' ");
+		consulta.append("        end) Activo, ");
+		consulta.append(getBaseConsultaInscripciones());
+		
+		consulta.append("   And Ins.Fechavalidacion Is Not Null ");
+		consulta.append("   And Gua.Idinstitucion = "+idinstitucion+" ");
+		consulta.append("   And Gua.Idturno = "+idturno+" ");
+		consulta.append("   And Gua.Idguardia = "+idguardia+" ");
+		consulta.append("   AND (ins.idinstitucion, ins.idturno, ins.idguardia, ins.idpersona,  ");
+		consulta.append("   ins.fechasuscripcion) IN ");
+		consulta.append("   (SELECT ins2.idinstitucion,	");
+		consulta.append("   ins2.idturno, ");
+		consulta.append("   ins2.idguardia, ");
+		consulta.append("   ins2.idpersona, ");
+		consulta.append("   ins2.fechasuscripcion ");
+		consulta.append("   FROM scs_grupoguardiacolegiado ins2 ");
+		consulta.append("   GROUP BY ins2.idinstitucion, ");
+		consulta.append("   ins2.idturno, ins2.idguardia, ins2.idpersona, ins2.fechasuscripcion ");
+		consulta.append("   HAVING COUNT(*) > 1)  ");		           		
+		consulta.append(" ) datos  ");
+		consulta.append(" WHERE datos.activo = 1  ");
+		consulta.append(" ORDER BY datos.Apellidos1,datos.numeroGrupo  ");
+		
+		Vector datos = null;
+		try {
+			RowsContainer rc = new RowsContainer();
+			if (rc.find(consulta.toString())) {
+				datos = new Vector();
+				for (int i = 0; i < rc.size(); i++) {
+					Row fila = (Row) rc.get(i);
+					Hashtable<String, Object> htFila = fila.getRow();
+					datos.add(htFila);
+				}
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al ejecutar el 'select' en B.D.");
+		}
+		return datos;
+	}
+	
+	public String getCantidadGrupos(String idinstitucion, String idturno, String idguardia,
+			String fechaInicio, String fechaFin, String numeroGrupo) throws ClsExceptions {
+
+		String cantidad="0";
+		if (idinstitucion == null || idinstitucion.equals(""))
+			return "0";
+		if (idturno == null || idturno.equals(""))
+			return "0";
+		if (idguardia == null || idguardia.equals(""))
+			return "0";
+		if (fechaInicio == null || fechaInicio.equals(""))
+			fechaInicio = "null";
+		else if (!fechaInicio.trim().equalsIgnoreCase("sysdate"))
+			fechaInicio = "'" + fechaInicio.trim() + "'";
+		if (fechaFin == null || fechaFin.equals(""))
+			fechaFin = "null";
+		else if (!fechaFin.trim().equalsIgnoreCase("sysdate"))
+			fechaFin = "'" + fechaFin.trim() + "'";
+		
+				
+		StringBuffer consulta = new StringBuffer();
+		consulta.append("SELECT count(*) AS CANTIDAD");
+		consulta.append("  FROM ( ");
+		consulta.append("Select ");
+		consulta.append("       (case when Ins.Fechavalidacion Is Not Null ");
+		consulta.append("              And Trunc(Ins.Fechavalidacion) <= nvl("+fechaInicio+",  Ins.Fechavalidacion) ");
+		consulta.append("              And (Ins.Fechabaja Is Null Or ");
+		consulta.append("                   Trunc(Ins.Fechabaja) > nvl("+fechaFin+", '01/01/1900')) ");
+		consulta.append("             then '1' ");
+		consulta.append("             else '0' ");
+		consulta.append("        end) Activo ");
+		consulta.append("   FROM Scs_Guardiasturno         Gua, ");
+		consulta.append("  		 Scs_Inscripcionguardia    Ins,  ");
+		consulta.append("  		 SCS_GRUPOGUARDIACOLEGIADO Gru,  ");
+		consulta.append(" 		 SCS_GRUPOGUARDIA          Grg   ");
+		consulta.append("  WHERE Ins.Idinstitucion = Gua.Idinstitucion  ");
+		consulta.append("  		AND Ins.Idturno = Gua.Idturno  ");
+		consulta.append("  		AND Ins.Idguardia = Gua.Idguardia  ");
+		consulta.append("  		AND Ins.Idinstitucion = Gru.Idinstitucion(+)  ");
+		consulta.append("  		AND Ins.Idturno = Gru.Idturno(+)  ");
+		consulta.append("  		AND Ins.Idguardia = Gru.Idguardia(+)  ");
+		consulta.append(" 		AND Ins.Idpersona = Gru.Idpersona(+)   ");
+		consulta.append("  		AND Ins.Fechasuscripcion = Gru.Fechasuscripcion(+)  ");
+		consulta.append("   	AND Gru.Idgrupoguardia = Grg.Idgrupoguardia(+) ");
+		consulta.append("   	And Grg.NUMEROGRUPO = "+numeroGrupo+" ");
+		consulta.append("  		And Gua.Idinstitucion = "+idinstitucion+" ");
+		consulta.append("   	And Gua.Idturno = "+idturno+" ");
+		consulta.append("   	And Gua.Idguardia = "+idguardia+" ");
+		consulta.append(" ) datos ");
+		consulta.append(" WHERE datos.activo = 1  ");
+		
+		try {
+			RowsContainer rc = new RowsContainer();
+			if (rc.find(consulta.toString())) {
+				for (int i = 0; i < rc.size(); i++) {
+					Row fila = (Row) rc.get(i);
+					Hashtable<String, Object> htFila = fila.getRow();
+					cantidad = (String)(htFila.get("CANTIDAD"));
+				}
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al ejecutar el 'select' en B.D.");
+		}
+		
+		return cantidad;
+	}
 }

@@ -2,6 +2,7 @@ package com.siga.informes;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -19,6 +20,7 @@ import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
+import com.siga.beans.ScsInscripcionGuardiaAdm;
 import com.siga.beans.ScsInscripcionGuardiaBean;
 import com.siga.beans.ScsSaltosCompensacionesAdm;
 import com.siga.gratuita.InscripcionGuardia;
@@ -99,11 +101,20 @@ public class InformeColaGuardias extends MasterReport {
 		String nombreTurno =(String)turnoElegido.get("NOMBRE");
 		String guardia=coForm.getIdGuardia();
 		String fecha  = coForm.getFechaConsulta();
-		fecha = (fecha!=null&&!fecha.trim().equals(""))?fecha:null;
-		
+		fecha = (fecha != null && !fecha.trim().equals("")) ? fecha : null;
+
+		Hashtable hashGuardia = new Hashtable();
+		hashGuardia.put(ScsGuardiasTurnoBean.C_IDINSTITUCION, institucion);
+		hashGuardia.put(ScsGuardiasTurnoBean.C_IDTURNO, turno);
+		if (guardia != null)
+			hashGuardia.put(ScsGuardiasTurnoBean.C_IDGUARDIA, guardia);
 		ScsGuardiasTurnoAdm guardiasTurnoAdm = new ScsGuardiasTurnoAdm(usr);
+		Vector vGuardia = guardiasTurnoAdm.select(hashGuardia);
+		ScsGuardiasTurnoBean beanGuardia = (ScsGuardiasTurnoBean) vGuardia.get(0);
+		boolean porGrupos = beanGuardia.getPorGrupos().equals(ClsConstants.DB_TRUE);
 		ScsSaltosCompensacionesAdm saltosCompensacionesAdm = new ScsSaltosCompensacionesAdm(usr);
-		
+		ScsInscripcionGuardiaAdm insadm = new ScsInscripcionGuardiaAdm(usr);
+
 		//Cargar último letrado
 		cargarUltimoLetrado(usr, institucion, turno, guardia, coForm);
 		htDatos=coForm.getDatos();//contiene la descripcion de la guardia (DEFGUARDIA), la trae de la pagina jsp
@@ -112,15 +123,15 @@ public class InformeColaGuardias extends MasterReport {
 		htDatos.put("NOMBRE_TURNO", nombreTurno);
 		htDatos.put("FECHA_GENERACION",  new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date()));
 		htDatos.put("FECHA_CONSULTA", (fecha!=null&&!fecha.trim().equals(""))?fecha:"Muestra todas las inscripciones");
-		
-		
+				
 		//Cargar listado de letrados en cola
 		ArrayList<LetradoInscripcion> alLetrados = InscripcionGuardia.getColaGuardia(new Integer(institucion),new Integer(turno), new Integer(guardia), fecha,fecha, usr);
 		Vector vLetradosEnCola = new Vector();
+		ArrayList<String> gruposUnicos = new ArrayList<String>();
+		ArrayList<String> colegiadosRepetidos = new ArrayList<String>();
 		for(LetradoInscripcion letradoGuardia:alLetrados){
 			Row row = new Row();
-			Hashtable htRow = new Hashtable();
-			
+			Hashtable htRow = new Hashtable();			
 			htRow.put(CenPersonaBean.C_IDPERSONA, letradoGuardia.getIdPersona());
 //			CenPersonaBean persona = admPersona.getPersonaColegiado(letradoGuardia.getIdPersona(), letradoGuardia.getIdInstitucion());
 			htRow.put(CenPersonaBean.C_APELLIDOS1, letradoGuardia.getPersona().getApellido1());
@@ -129,9 +140,17 @@ public class InformeColaGuardias extends MasterReport {
 			htRow.put(CenColegiadoBean.C_NCOLEGIADO, letradoGuardia.getPersona().getColegiado().getNColegiado());
 			htRow.put(ScsInscripcionGuardiaBean.C_FECHAVALIDACION, letradoGuardia.getInscripcionGuardia().getFechaValidacion());
 			htRow.put(ScsInscripcionGuardiaBean.C_FECHABAJA, letradoGuardia.getInscripcionGuardia().getFechaBaja());
+			htRow.put(ScsInscripcionGuardiaBean.C_GRUPO, letradoGuardia.getNumeroGrupo());
+			if(porGrupos && letradoGuardia.getOrdenGrupo() != null){
+				htRow.put(ScsInscripcionGuardiaBean.C_ORDENGRUPO, letradoGuardia.getOrdenGrupo().toString());
+			}
+			if(gruposUnicos.size() < 1 || !gruposUnicos.contains(letradoGuardia.getNumeroGrupo())){
+				if(letradoGuardia.getNumeroGrupo() != null && !letradoGuardia.getNumeroGrupo().equals("")){
+					gruposUnicos.add(letradoGuardia.getNumeroGrupo());
+				}
+			}
 			row.setRow(htRow);
 			vLetradosEnCola.add(row);
-			
 		}
 		
 		plantilla = this.reemplazaRegistros(plantilla, vLetradosEnCola, htDatos, "LETRADOS");
@@ -144,6 +163,35 @@ public class InformeColaGuardias extends MasterReport {
 		Vector vSaltos=saltosCompensacionesAdm.selectSaltosCompensaciones(institucion, turno, guardia, ClsConstants.SALTOS);
 		plantilla = this.reemplazaRegistros(plantilla, vSaltos, htDatos, "SALTOS");
 				
+		
+		if (porGrupos) {
+			//Cargar listado de repetidos
+			Hashtable htRow = new Hashtable();
+			Row row = new Row();
+			Vector vTotalGrupos = new Vector();
+			htRow.put("TOTAL_GRUPOS", gruposUnicos.size() + "");
+			row.setRow(htRow);
+			vTotalGrupos.add(row);
+			plantilla = this.reemplazaRegistros(plantilla, vTotalGrupos, htDatos, "TOTALES");
+			//Cargar listado de colegiados repetidos
+			Vector vColegiadosRepetidos = insadm.getColegiadosInscritosRepetidos(institucion, turno, guardia, fecha, fecha);
+			plantilla = this.reemplazaRegistros(plantilla, vColegiadosRepetidos, htDatos, "COLEGIADOS_REPETIDOS");
+			//Cargar listado de catidad grupos
+			vColegiadosRepetidos = new Vector();
+			vColegiadosRepetidos = insadm.getListadoColegiadosInscritosRepetidosOrden(institucion, turno, guardia, fecha, fecha);
+			plantilla = this.reemplazaRegistros(plantilla, vColegiadosRepetidos, htDatos, "LISTADO_COLEGIADOS_REPETIDOS");
+			Vector vCantidadGrupos = new Vector();
+			Collections.sort(gruposUnicos);
+			for (int i = 0; i < gruposUnicos.size(); i++) {
+				row = new Row();
+				htRow = new Hashtable();
+				htRow.put("NUMMERO_GRUPO", gruposUnicos.get(i));
+				htRow.put("CANTIDAD", insadm.getCantidadGrupos(institucion, turno, guardia, fecha, fecha, gruposUnicos.get(i)));
+				row.setRow(htRow);
+				vCantidadGrupos.add(row);
+			}
+			plantilla = this.reemplazaRegistros(plantilla, vCantidadGrupos, htDatos, "CANTIDAD_GRUPOS");
+		}
 		plantilla = this.reemplazaVariables(htDatos, plantilla);
 		return plantilla;
 	}
